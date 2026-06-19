@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://dyr45spqln4bn"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_yviga"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_8d5vg"]
+[ext_resource type="Resource" uid="uid://ba6i46vdoabdv" path="res://data/spells/frappe.tres" id="3_3ckqh"]
+[ext_resource type="Resource" uid="uid://bpl7jcy8ix86j" path="res://data/spells/mur_de_glace.tres" id="4_sglo2"]
+
+[resource]
+script = ExtResource("1_yviga")
+unit_name = "Mage"
+spells = Array[ExtResource("2_8d5vg")]([ExtResource("3_3ckqh"), ExtResource("4_sglo2")])
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

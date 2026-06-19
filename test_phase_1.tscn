@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://43grdh6sb34t"]
+
+[sub_resource type="GDScript" id="GDScript_j7po2"]
+script/source = "# test_phase1.gd
+# ============================================================
+# SCRIPT DE TEST — Vérifie grid_data.gd + pathfinder.gd.
+# Aucun visuel : tout s'affiche dans la console (Sortie).
+# À supprimer une fois la Phase 1 validée.
+#
+# Attache ce script à un noeud Node simple, et lance la scène.
+# ============================================================
+
+extends Node
+
+func _ready() -> void:
+	print(\"========================================\")
+	print(\"   TEST PHASE 1 — Logique de grille\")
+	print(\"========================================\\n\")
+
+	# --- 1. Création de la grille ---
+	var grid = GridData.new(15, 10)
+	print(\"Grille créée : %d x %d\" % [grid.cols, grid.rows])
+
+	# --- 2. On pose un mur vertical au milieu (colonne 5, lignes 2 à 6) ---
+	# Ce mur va forcer le pathfinder à contourner.
+	for y in range(2, 7):
+		grid.set_type(Vector2i(5, y), GridData.CellType.WALL)
+	print(\"Mur posé en colonne 5, lignes 2 à 6.\")
+
+	# --- 3. On place une fausse unité ---
+	# Pour le test, une unité peut être n'importe quel objet. On met une String.
+	var fake_unit = \"HÉROS\"
+	grid.set_unit(Vector2i(2, 4), fake_unit)
+	print(\"Unité '%s' placée en (2, 4).\\n\" % fake_unit)
+
+	# --- 4. Création du pathfinder ---
+	var pf = Pathfinder.new(grid)
+
+	# --- 5. TEST : cases accessibles avec 3 PM ---
+	print(\"--- Cases accessibles depuis (2,4) avec 3 PM ---\")
+	var reachable = pf.get_reachable(Vector2i(2, 4), 3, fake_unit)
+	print(\"Nombre de cases accessibles : %d\" % reachable.size())
+	print(\"Cases : %s\\n\" % str(reachable))
+
+	# --- 6. TEST : chemin qui doit contourner le mur ---
+	# De (2,4) vers (8,4) : tout droit, le mur en (5,4) bloque → doit contourner.
+	print(\"--- Chemin de (2,4) vers (8,4) [doit contourner le mur] ---\")
+	var path = pf.get_path(Vector2i(2, 4), Vector2i(8, 4), fake_unit)
+	print(\"Longueur du chemin : %d cases\" % path.size())
+	print(\"Chemin : %s\\n\" % str(path))
+
+	# --- 7. TEST : ligne de vue à travers le mur ---
+	print(\"--- Ligne de vue ---\")
+	var los_through_wall = pf.has_line_of_sight(Vector2i(2, 4), Vector2i(8, 4))
+	print(\"Vue de (2,4) vers (8,4) à travers le mur : %s\" % los_through_wall)
+	# Devrait être FALSE car le mur en (5,4) est opaque.
+
+	var los_clear = pf.has_line_of_sight(Vector2i(2, 8), Vector2i(8, 8))
+	print(\"Vue de (2,8) vers (8,8) en terrain dégagé : %s\" % los_clear)
+	# Devrait être TRUE car la ligne 8 est libre.
+
+	print(\"\\n========================================\")
+	print(\"   FIN DU TEST\")
+	print(\"========================================\")
+"
+
+[node name="TestPhase1" type="Node" unique_id=108660258]
+script = SubResource("GDScript_j7po2")

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://bpl7jcy8ix86j"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_s2kpe"]
+
+[resource]
+script = ExtResource("1_s2kpe")
+spell_name = "Mur de glace"
+target_type = 2
+element = 2
+terrain_effect = 2
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

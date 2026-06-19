@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bnefwnsiof7oq"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_m7lpr"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_3acek"]
+
+[resource]
+script = ExtResource("1_m7lpr")
+unit_name = "Gobelin"
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://dxa0ndijcgww0"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_vftmu"]
+
+[resource]
+script = ExtResource("1_vftmu")
+spell_name = "Soin"
+target_type = 1
+heal = 11
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

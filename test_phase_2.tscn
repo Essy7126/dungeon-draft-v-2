@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://cksk8g1btcw6p"]
+
+[sub_resource type="GDScript" id="GDScript_37w0q"]
+script/source = "# test_phase2.gd
+# ============================================================
+# TEST PHASE 2 — Vérifie stats.gd + unit.gd + turn_queue.gd.
+# Tout s'affiche dans la console (Sortie). À supprimer après validation.
+#
+# Attache ce script à un noeud Node simple et lance la scène.
+# ============================================================
+
+extends Node
+
+func _ready() -> void:
+	print(\"========================================\")
+	print(\"   TEST PHASE 2 — Tour par tour\")
+	print(\"========================================\\n\")
+
+	test_stats()
+	test_turn_order()
+	test_combat_and_death()
+
+
+# ============================================================
+# TEST 1 — Le système de stats et modificateurs
+# ============================================================
+func test_stats() -> void:
+	print(\"--- TEST 1 : Stats et modificateurs ---\")
+
+	var init = Stat.new(15)
+	print(\"Initiative de base : %d\" % init.get_int())   # attendu : 15
+
+	# Objet équipé : +5 permanent
+	init.add_modifier(5, Stat.ModType.FLAT, \"bottes_hermes\")
+	print(\"Avec bottes (+5) : %d\" % init.get_int())      # attendu : 20
+
+	# Malus de boss : -20% sur tout le run
+	init.add_modifier(-0.20, Stat.ModType.PERCENT, \"boss_meduse\")
+	print(\"Avec malus boss (-20%%) : %d\" % init.get_int())  # attendu : (15+5)*0.8 = 16
+
+	# Buff temporaire : +3 pendant 2 tours
+	init.add_modifier(3, Stat.ModType.FLAT, \"potion_hate\", 2)
+	print(\"Avec potion temporaire (+3) : %d\" % init.get_int())  # attendu : (15+5+3)*0.8 = 18
+
+	# On simule 2 passages de tour → le buff temporaire doit expirer
+	init.tick_durations()
+	print(\"Après 1 tour : %d\" % init.get_int())          # encore actif : 18
+	init.tick_durations()
+	print(\"Après 2 tours (buff expiré) : %d\" % init.get_int())  # retour à 16
+
+	# Le boss meurt → on retire son malus
+	init.remove_modifiers_from(\"boss_meduse\")
+	print(\"Boss vaincu, malus retiré : %d\" % init.get_int())  # attendu : 20
+
+	print(\"\")
+
+
+# ============================================================
+# TEST 2 — L'ordre des tours par initiative
+# ============================================================
+func test_turn_order() -> void:
+	print(\"--- TEST 2 : Ordre d'initiative ---\")
+
+	# 4 unités avec des initiatives variées.
+	# Unit.new(nom, équipe, pv, initiative, pa, pm, attaque)
+	var tank   = Unit.new(\"Tank\",    0, 150, 8,  6, 2, 15)
+	var dps    = Unit.new(\"DPS\",     0, 80,  18, 6, 4, 35)
+	var heal   = Unit.new(\"Support\", 0, 90,  12, 6, 3, 10)
+	var gobelin = Unit.new(\"Gobelin\", 1, 60, 14, 4, 3, 20)
+
+	var queue = TurnQueue.new()
+	queue.setup([tank, dps, heal, gobelin])
+
+	# On affiche l'ordre trié (doit être : DPS 18, Gobelin 14, Support 12, Tank 8)
+	print(\"Ordre attendu : DPS(18) > Gobelin(14) > Support(12) > Tank(8)\")
+	print(\"Ordre obtenu :\")
+	for unit in queue.get_full_order():
+		print(\"   %s (initiative %d)\" % [unit.unit_name, unit.get_initiative()])
+
+	print(\"\")
+
+
+# ============================================================
+# TEST 3 — Combat, mort et saut des unités mortes
+# ============================================================
+func test_combat_and_death() -> void:
+	print(\"--- TEST 3 : Combat et mort ---\")
+
+	var hero    = Unit.new(\"Héros\",   0, 100, 20, 6, 3, 25)
+	var gobelin = Unit.new(\"Gobelin\", 1, 50,  10, 4, 3, 15)
+
+	var queue = TurnQueue.new()
+	queue.setup([hero, gobelin])
+
+	# On connecte le signal de mort pour réagir.
+	hero.died.connect(_on_died)
+	gobelin.died.connect(_on_died)
+
+	# Démarrage du combat → première unité active.
+	queue.start()
+	print(\"Round %d — Unité active : %s\" % [queue.round_number, queue.get_current_unit().unit_name])
+	# Héros a l'initiative la plus haute (20), il commence.
+
+	# Le héros tape le gobelin (50 PV, attaque 25 → 2 coups pour tuer).
+	print(\"\\nLe héros attaque le gobelin (25 dégâts) :\")
+	gobelin.take_damage(hero.get_attack())
+	print(\"   PV gobelin : %d\" % gobelin.current_hp)
+
+	# Tour suivant.
+	queue.advance()
+	print(\"\\nUnité active : %s\" % queue.get_current_unit().unit_name)  # Gobelin
+
+	# Le gobelin tape le héros.
+	print(\"Le gobelin attaque le héros (15 dégâts) :\")
+	hero.take_damage(gobelin.get_attack())
+	print(\"   PV héros : %d\" % hero.current_hp)
+
+	# Tour suivant : retour au héros, il achève le gobelin.
+	queue.advance()
+	print(\"\\nUnité active : %s\" % queue.get_current_unit().unit_name)  # Héros
+	print(\"Le héros achève le gobelin :\")
+	gobelin.take_damage(hero.get_attack())
+	queue.on_unit_died(gobelin)
+
+	# On vérifie le comptage des survivants.
+	print(\"\\nSurvivants équipe joueur : %d\" % queue.count_living_in_team(0))   # 1
+	print(\"Survivants équipe ennemie : %d\" % queue.count_living_in_team(1))   # 0
+
+	# Tour suivant : le gobelin est mort, advance() doit le sauter.
+	queue.advance()
+	var active = queue.get_current_unit()
+	if active != null:
+		print(\"\\nUnité active après mort du gobelin : %s\" % active.unit_name)
+		print(\"(le gobelin mort a bien été sauté)\")
+
+	print(\"\\n========================================\")
+	print(\"   FIN DU TEST PHASE 2\")
+	print(\"========================================\")
+
+
+# Réagit à la mort d'une unité (signal).
+func _on_died(unit) -> void:
+	print(\"   >> SIGNAL : %s est mort !\" % unit.unit_name)
+"
+
+[node name="TestPhase2" type="Node" unique_id=1297677701]
+script = SubResource("GDScript_37w0q")

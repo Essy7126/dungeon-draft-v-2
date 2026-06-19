@@ -1,0 +1,116 @@
+[gd_scene format=3 uid="uid://bkin85blv6h4h"]
+
+[ext_resource type="Texture2D" uid="uid://l0crtv2mrm4p" path="res://Soldier.png" id="1_1vxy3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oxp8w"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(100, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7sfm4"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(200, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i431l"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(300, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6t8i5"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(400, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dw4jg"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(300, 300, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0npn6"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(400, 300, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mhv3b"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(400, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lcjiy"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(300, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ol6im"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(200, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b1i6x"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(200, 300, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sl0w2"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(200, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elvfr"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(500, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4s0ev"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(600, 400, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pihy1"]
+atlas = ExtResource("1_1vxy3")
+region = Rect2(700, 400, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_slotg"]
+resource_name = "T"
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oxp8w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7sfm4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i431l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6t8i5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dw4jg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0npn6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mhv3b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lcjiy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ol6im")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b1i6x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sl0w2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elvfr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4s0ev")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pihy1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Hero" type="CharacterBody2D" unique_id=201722812]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1762770427]
+position = Vector2(745, 591)
+sprite_frames = SubResource("SpriteFrames_slotg")
