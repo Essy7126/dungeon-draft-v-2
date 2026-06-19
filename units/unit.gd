@@ -24,13 +24,18 @@ var current_mp: int = 0
 var is_alive: bool = true
 var grid_pos: Vector2i = Vector2i(-1, -1)
 
-# --- Apparence (rempli depuis UnitData) ---
+# --- Apparence ---
 var sprite_frames: SpriteFrames = null
 var sprite_scale: float = 3.0
 var idle_animation: String = "default"
 
 # --- Sorts ---
 var spells: Array = []
+
+# --- Statuts actifs ---
+# Dictionnaire : nom du statut -> nombre de tours restants.
+# Ex : { "stun": 1 } = l'unité est stun pour 1 tour.
+var statuses: Dictionary = {}
 
 # --- Signaux ---
 signal died(unit)
@@ -39,7 +44,6 @@ signal stats_changed(unit)
 
 # ============================================================
 # CONSTRUCTION
-# Deux façons : par valeurs directes (ancien) ou depuis UnitData (nouveau).
 # ============================================================
 
 func _init(
@@ -62,33 +66,53 @@ func _init(
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
 
-# Crée une Unit à partir d'une UnitData (Resource).
-# Usage : var u = Unit.from_data(ma_unit_data)
 static func from_data(data: UnitData) -> Unit:
 	var u = Unit.new(
-		data.unit_name,
-		data.team,
-		data.max_hp,
-		data.initiative,
-		data.max_ap,
-		data.max_mp,
-		data.attack_power
+		data.unit_name, data.team, data.max_hp, data.initiative,
+		data.max_ap, data.max_mp, data.attack_power
 	)
-	# Apparence
 	u.sprite_frames = data.sprite_frames
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
-	# Sorts
 	for spell in data.spells:
 		u.add_spell(spell)
 	return u
 
-# --- Gestion des sorts ---
-
 func add_spell(spell: Spell) -> void:
 	spells.append(spell)
 
-# --- Gestion du tour ---
+# ============================================================
+# STATUTS
+# ============================================================
+
+# Applique un statut à l'unité pour une durée donnée (en tours).
+func apply_status(status_name: String, duration: int) -> void:
+	# Si le statut existe déjà, on garde la durée la plus longue.
+	if statuses.has(status_name):
+		statuses[status_name] = max(statuses[status_name], duration)
+	else:
+		statuses[status_name] = duration
+
+# L'unité a-t-elle ce statut actif ?
+func has_status(status_name: String) -> bool:
+	return statuses.has(status_name) and statuses[status_name] > 0
+
+# Fait vieillir les statuts d'un tour (appelé en début de tour).
+# Retourne true si l'unité était stun (et doit donc sauter son tour).
+func tick_statuses() -> bool:
+	var was_stunned = has_status("stun")
+
+	# On décrémente toutes les durées, on retire les expirés.
+	for key in statuses.keys():
+		statuses[key] -= 1
+		if statuses[key] <= 0:
+			statuses.erase(key)
+
+	return was_stunned
+
+# ============================================================
+# GESTION DU TOUR
+# ============================================================
 
 func start_turn() -> void:
 	max_hp.tick_durations()
@@ -100,7 +124,9 @@ func start_turn() -> void:
 	current_mp = max_mp.get_int()
 	stats_changed.emit(self)
 
-# --- Dépense de ressources ---
+# ============================================================
+# DÉPENSE DE RESSOURCES
+# ============================================================
 
 func spend_mp(amount: int) -> bool:
 	if amount > current_mp:
@@ -116,7 +142,9 @@ func spend_ap(amount: int) -> bool:
 	stats_changed.emit(self)
 	return true
 
-# --- Combat ---
+# ============================================================
+# COMBAT
+# ============================================================
 
 func take_damage(amount: int) -> void:
 	if not is_alive:
@@ -137,7 +165,9 @@ func _die() -> void:
 	is_alive = false
 	died.emit(self)
 
-# --- Lecture pratique ---
+# ============================================================
+# LECTURE
+# ============================================================
 
 func get_initiative() -> int:
 	return initiative.get_int()
