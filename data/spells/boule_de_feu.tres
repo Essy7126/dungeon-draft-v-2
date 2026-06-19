@@ -10,4 +10,5 @@ can_target_free_cell = true
 aoe_shape = 1
 aoe_size = 2
 damage = 20
+terrain_effect = 1
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

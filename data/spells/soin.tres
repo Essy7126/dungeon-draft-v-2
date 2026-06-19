@@ -5,6 +5,5 @@
 [resource]
 script = ExtResource("1_vftmu")
 spell_name = "Soin"
-target_type = 1
 heal = 11
 metadata/_custom_type_script = "uid://bd5080ch70ymn"
