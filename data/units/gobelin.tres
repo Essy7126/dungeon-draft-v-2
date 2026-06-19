@@ -2,8 +2,26 @@
 
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_m7lpr"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_3acek"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="3_3acek"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7redg"]
+atlas = ExtResource("3_3acek")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_stemn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7redg")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [resource]
 script = ExtResource("1_m7lpr")
 unit_name = "Gobelin"
+team = 1
+sprite_frames = SubResource("SpriteFrames_stemn")
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

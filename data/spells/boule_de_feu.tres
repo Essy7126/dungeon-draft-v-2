@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://b87ak8kotokmw"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_y40te"]
+
+[resource]
+script = ExtResource("1_y40te")
+spell_name = "feu"
+spell_range = 14
+can_target_free_cell = true
+aoe_shape = 1
+aoe_size = 2
+damage = 20
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

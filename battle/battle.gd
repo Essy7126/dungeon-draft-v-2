@@ -31,6 +31,7 @@ var _battle_over: bool = false
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
 const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
+const AOE_COLOR = Color(1.0, 0.5, 0.1, 0.5)
 
 func _ready() -> void:
 	_setup_logic()
@@ -251,8 +252,31 @@ func _refresh_mode_button() -> void:
 func _on_cell_clicked(cell: Vector2i) -> void:
 	turn_state.on_cell_clicked(cell)
 
-func _on_cell_hovered(_cell: Vector2i) -> void:
-	pass
+# Remplace la fonction _on_cell_hovered() dans ton battle.gd par celle-ci,
+# et ajoute la constante AOE_COLOR près des autres couleurs en haut du fichier.
+
+# --- À ajouter en haut, près de MOVE_COLOR / ATTACK_COLOR / SPELL_COLOR ---
+# const AOE_COLOR = Color(1.0, 0.5, 0.1, 0.5)   # orange = zone d'effet touchée
+
+
+# --- Remplace _on_cell_hovered() par ceci ---
+func _on_cell_hovered(cell: Vector2i) -> void:
+	# En mode ciblage de sort, on montre la zone d'effet sous le curseur.
+	if turn_state.current != TurnState.State.TARGET_SPELL:
+		return
+	var spell = turn_state.selected_spell
+	var unit = turn_queue.get_current_unit()
+	if spell == null or unit == null:
+		return
+
+	# On redessine : portée du sort en bleu + zone d'effet en orange sous le curseur.
+	grid_view.clear_highlights()
+	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
+
+	# Si la case survolée est dans la portée, on montre la zone d'effet.
+	if spell_caster.get_targetable_cells(unit, spell).has(cell):
+		var aoe = spell_caster.get_aoe_cells(spell, cell)
+		grid_view.highlight(aoe, AOE_COLOR)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:

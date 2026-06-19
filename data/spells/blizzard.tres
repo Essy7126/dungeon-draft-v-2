@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://j8vyk6a0y688"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_pk5ov"]
+
+[resource]
+script = ExtResource("1_pk5ov")
+spell_name = "blizzard"
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

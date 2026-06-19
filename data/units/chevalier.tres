@@ -2,8 +2,26 @@
 
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_x6yfb"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_e27bm"]
+[ext_resource type="Texture2D" uid="uid://rb1r15gp461k" path="res://asset/MeleeRun.png" id="3_e27bm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ld1g7"]
+atlas = ExtResource("3_e27bm")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_421w0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ld1g7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.0
+}]
 
 [resource]
 script = ExtResource("1_x6yfb")
 unit_name = "Chevalier"
+sprite_frames = SubResource("SpriteFrames_421w0")
+sprite_scale = 1.0
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

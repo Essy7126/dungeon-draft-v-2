@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://l0crtv2mrm4p"
-path="res://.godot/imported/Soldier.png-77a82a333d2c5a177195cc1e6afc6d36.ctex"
+uid="uid://rb1r15gp461k"
+path="res://.godot/imported/MeleeRun.png-2eb959e16e5844efab2cbf06e65f7498.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Soldier.png"
-dest_files=["res://.godot/imported/Soldier.png-77a82a333d2c5a177195cc1e6afc6d36.ctex"]
+source_file="res://asset/MeleeRun.png"
+dest_files=["res://.godot/imported/MeleeRun.png-2eb959e16e5844efab2cbf06e65f7498.ctex"]
 
 [params]
 

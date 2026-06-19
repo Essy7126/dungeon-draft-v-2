@@ -4,9 +4,27 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_8d5vg"]
 [ext_resource type="Resource" uid="uid://ba6i46vdoabdv" path="res://data/spells/frappe.tres" id="3_3ckqh"]
 [ext_resource type="Resource" uid="uid://bpl7jcy8ix86j" path="res://data/spells/mur_de_glace.tres" id="4_sglo2"]
+[ext_resource type="Resource" uid="uid://b87ak8kotokmw" path="res://data/spells/boule_de_feu.tres" id="5_sglo2"]
+[ext_resource type="Texture2D" uid="uid://l0crtv2mrm4p" path="res://asset/Soldier.png" id="6_j17p4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bs4io"]
+atlas = ExtResource("6_j17p4")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qm8lk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bs4io")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [resource]
 script = ExtResource("1_yviga")
 unit_name = "Mage"
-spells = Array[ExtResource("2_8d5vg")]([ExtResource("3_3ckqh"), ExtResource("4_sglo2")])
+sprite_frames = SubResource("SpriteFrames_qm8lk")
+spells = Array[ExtResource("2_8d5vg")]([ExtResource("3_3ckqh"), ExtResource("4_sglo2"), ExtResource("5_sglo2")])
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

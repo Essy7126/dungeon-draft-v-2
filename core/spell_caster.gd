@@ -1,14 +1,7 @@
 # core/spell_caster.gd
 # ============================================================
 # SPELL CASTER — Moteur d'exécution des sorts. Logique pure.
-#
-# Répond à trois questions :
-#   1. get_targetable_cells : quelles cases ce sort peut cibler ?
-#   2. is_valid_target      : cette case est-elle une cible légale ?
-#   3. cast                 : exécute le sort (dégâts, soin, terrain)
-#
-# Version actuelle : portée + ciblage + dégâts/soin/terrain.
-# (AOE, crit, élément, buffs : champs présents, branchés ensuite)
+# Ciblage flexible (cases à cocher) + AOE.
 # ============================================================
 
 class_name SpellCaster
@@ -22,85 +15,100 @@ func _init(grid: GridData, pathfinder: Pathfinder) -> void:
 	_pathfinder = pathfinder
 
 # ============================================================
-# 1. CASES CIBLABLES
-# Toutes les cases à portée du sort (selon spell_range),
-# filtrées par ligne de vue si nécessaire.
+# 1. CASES CIBLABLES (portée)
 # ============================================================
 
 func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 	var result: Array = []
 
-	# Cas spécial : un sort sur SOI ne cible que la case du lanceur.
-	if spell.target_type == Spell.TargetType.SELF:
+	# Sort sur soi uniquement : seule la case du lanceur.
+	if spell.is_self_only():
 		return [caster.grid_pos]
 
-	# On parcourt toutes les cases dans le rayon de portée (distance Manhattan).
 	for x in _grid.cols:
 		for y in _grid.rows:
 			var pos = Vector2i(x, y)
-			if pos == caster.grid_pos:
+			# On peut inclure la case du lanceur si le sort se cible soi.
+			if pos == caster.grid_pos and not spell.can_target_self:
 				continue
-			var dist = _grid.manhattan(caster.grid_pos, pos)
-			if dist > spell.spell_range:
+			if _grid.manhattan(caster.grid_pos, pos) > spell.spell_range:
 				continue
-			# Ligne de vue si le sort l'exige.
 			if spell.needs_line_of_sight:
 				if not _pathfinder.has_line_of_sight(caster.grid_pos, pos):
 					continue
-			result.append(pos)
-
+			# La case doit correspondre à au moins un type de cible autorisé.
+			if _matches_target(caster, spell, pos):
+				result.append(pos)
 	return result
 
 # ============================================================
-# 2. CIBLE VALIDE ?
-# Vérifie qu'une case cliquée est une cible légale pour ce sort.
+# 2. ZONE D'EFFET (AOE)
 # ============================================================
 
-func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
-	# La case doit être dans les cases ciblables.
-	if not get_targetable_cells(caster, spell).has(cell):
-		return false
+func get_aoe_cells(spell: Spell, center: Vector2i) -> Array:
+	var result: Array = []
+	match spell.aoe_shape:
+		Spell.AoeShape.SINGLE:
+			result.append(center)
+		Spell.AoeShape.CROSS:
+			result.append(center)
+			for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+				for i in range(1, spell.aoe_size + 1):
+					var pos = center + dir * i
+					if _grid.is_valid(pos):
+						result.append(pos)
+		Spell.AoeShape.SQUARE:
+			for dx in range(-spell.aoe_size, spell.aoe_size + 1):
+				for dy in range(-spell.aoe_size, spell.aoe_size + 1):
+					var pos = center + Vector2i(dx, dy)
+					if _grid.is_valid(pos):
+						result.append(pos)
+		Spell.AoeShape.LINE:
+			result.append(center)
+	return result
 
+# ============================================================
+# 3. VALIDATION DE CIBLE
+# ============================================================
+
+# Vérifie qu'une case correspond à un des types de cibles cochés du sort.
+func _matches_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 	var occupant = _grid.get_unit(cell)
 
-	match spell.target_type:
-		Spell.TargetType.ENEMY:
-			# Il faut une unité ennemie sur la case.
-			return occupant != null and occupant.team != caster.team
-		Spell.TargetType.ALLY:
-			# Il faut une unité alliée (y compris soi-même ? non : un allié).
-			return occupant != null and occupant.team == caster.team
-		Spell.TargetType.FREE_CELL:
-			# Il faut une case libre et marchable (pour poser du terrain).
-			return occupant == null and _grid.is_valid(cell)
-		Spell.TargetType.SELF:
-			return cell == caster.grid_pos
+	# Case avec une unité ennemie.
+	if occupant != null and occupant.team != caster.team:
+		return spell.can_target_enemy
+
+	# Case avec un allié (ou soi).
+	if occupant != null and occupant.team == caster.team:
+		if occupant == caster:
+			return spell.can_target_self or spell.can_target_ally
+		return spell.can_target_ally
+
+	# Case vide.
+	if occupant == null:
+		return spell.can_target_free_cell
+
 	return false
 
+# Cible valide = dans la portée ET correspond à un type coché.
+func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
+	if not get_targetable_cells(caster, spell).has(cell):
+		return false
+	return _matches_target(caster, spell, cell)
+
 # ============================================================
-# 3. EXÉCUTION DU SORT
-# Applique l'effet du sort sur la case ciblée.
-# Retourne un dictionnaire décrivant ce qui s'est passé (pour l'UI/animations).
+# 4. EXÉCUTION (avec AOE)
 # ============================================================
 
 func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 	var report = {
-		"caster": caster,
-		"spell": spell,
-		"cell": cell,
-		"affected_units": [],   # unités touchées
-		"terrain_changed": [],  # cases de terrain modifiées
+		"caster": caster, "spell": spell, "cell": cell,
+		"affected_units": [], "terrain_changed": [],
 	}
-
-	# Pour l'instant : zone d'effet = la case seule (SINGLE).
-	# (l'AOE multi-cases viendra juste après)
-	var affected_cells = [cell]
-
-	# --- Application sur chaque case affectée ---
+	var affected_cells = get_aoe_cells(spell, cell)
 	for target_cell in affected_cells:
 		var target = _grid.get_unit(target_cell)
-
-		# Effet sur l'unité présente (dégâts ou soin).
 		if target != null:
 			if spell.deals_damage():
 				target.take_damage(spell.damage)
@@ -108,27 +116,20 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 			if spell.is_healing():
 				target.heal(spell.heal)
 				report["affected_units"].append(target)
-
-		# Effet de terrain (pose lave/glace/ombre/rune).
 		if spell.has_terrain_effect():
 			_apply_terrain(target_cell, spell)
 			report["terrain_changed"].append(target_cell)
-
 	return report
 
-# Applique l'effet de terrain d'un sort sur une case.
 func _apply_terrain(cell: Vector2i, spell: Spell) -> void:
-	# On traduit le TerrainEffect du sort en CellType de la grille.
 	var cell_type = _terrain_to_cell_type(spell.terrain_effect)
 	if cell_type != -1:
 		_grid.set_type(cell, cell_type)
-		# On enregistre aussi l'effet avec sa durée (pour le faire expirer plus tard).
 		_grid.set_effect(cell, _terrain_name(spell.terrain_effect), {
 			"duration": spell.terrain_duration,
 			"original_type": GridData.CellType.NORMAL,
 		})
 
-# Correspondance TerrainEffect (Spell) -> CellType (GridData).
 func _terrain_to_cell_type(effect: Spell.TerrainEffect) -> int:
 	match effect:
 		Spell.TerrainEffect.LAVA:   return GridData.CellType.LAVA
