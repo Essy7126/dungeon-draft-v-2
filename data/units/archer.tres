@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://61ohx8wju27"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_xswrj"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_myn1o"]
+[ext_resource type="Resource" uid="uid://ba6i46vdoabdv" path="res://data/spells/frappe.tres" id="3_c613e"]
+[ext_resource type="Texture2D" uid="uid://l0crtv2mrm4p" path="res://asset/Soldier.png" id="4_4sx6m"]
+
+[sub_resource type="Resource" id="Resource_4sx6m"]
+script = ExtResource("2_myn1o")
+spell_name = "tir critique"
+ap_cost = 4
+spell_range = 12
+aoe_size = 2
+damage = 100
+damage_type = 0
+crit_chance = 1.0
+metadata/_custom_type_script = "uid://bd5080ch70ymn"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_34fyh"]
+atlas = ExtResource("4_4sx6m")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c613e"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_34fyh")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_xswrj")
+unit_name = "archer"
+max_hp = 80
+initiative = 12
+attack_power = 50
+sprite_frames = SubResource("SpriteFrames_c613e")
+sprite_scale = 1.0
+spells = Array[ExtResource("2_myn1o")]([ExtResource("3_c613e"), SubResource("Resource_4sx6m")])
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
