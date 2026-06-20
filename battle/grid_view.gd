@@ -21,6 +21,8 @@ const TYPE_COLORS = {
 var grid: GridData
 var _highlights: Dictionary = {}
 var _hovered: Vector2i = Vector2i(-1, -1)
+var show_terrain_colors: bool = false
+var show_grid_lines: bool = true
 
 signal cell_clicked(grid_pos: Vector2i)
 signal cell_hovered(grid_pos: Vector2i)
@@ -90,16 +92,23 @@ func _draw() -> void:
 			var corner = grid_to_corner(pos)
 			var rect = Rect2(corner, Vector2(CELL_SIZE, CELL_SIZE))
 
-			var base_color = TYPE_COLORS[grid.get_type(pos)]
-			draw_rect(rect, base_color, true)
+			# Sol/mur en rectangles : seulement si activé (debug sans TileMap).
+			if show_terrain_colors:
+				draw_rect(rect, TYPE_COLORS[grid.get_type(pos)], true)
 
+			# Surbrillances de gameplay : toujours.
 			if _highlights.has(pos):
 				draw_rect(rect, _highlights[pos], true)
 
+			# Effet de terrain dynamique : toujours.
 			if grid.get_effect(pos) != null:
 				draw_rect(rect, Color(1, 0.8, 0.2, 0.2), true)
 
+			# Survol souris : toujours.
 			if pos == _hovered and grid.is_valid(_hovered):
 				draw_rect(rect, Color(1, 1, 1, 0.10), true)
 
-			draw_rect(rect, Color(1, 1, 1, 0.10), false)
+			# Liseré de grille : optionnel.
+			if show_grid_lines:
+				draw_rect(rect, Color(1, 1, 1, 0.10), false)
+	
