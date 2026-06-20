@@ -63,6 +63,39 @@ func _setup_logic() -> void:
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
 	enemy_ai = EnemyAI.new(grid, pathfinder)
+	# ============================================================
+# IMPORT DU TERRAIN DESSINÉ (TileMapLayer → GridData)
+# Lit le TileMapLayer "TerrainLayer" une fois au démarrage et
+# traduit chaque case en CellType logique via le custom data
+# "cell_type". Ensuite, GridData fait foi.
+# ============================================================
+
+func _import_terrain_from_tilemap() -> void:
+	var layer = get_node_or_null("TerrainLayer")
+	if layer == null:
+		return
+
+	for cell in layer.get_used_cells():
+		var grid_pos = Vector2i(cell.x, cell.y)
+		if not grid.is_valid(grid_pos):
+			continue
+		var tile_data = layer.get_cell_tile_data(cell)
+		if tile_data == null:
+			continue
+		var type_name = tile_data.get_custom_data("cell_type")
+		var cell_type = _cell_type_from_string(type_name)
+		grid.set_type(grid_pos, cell_type)
+
+func _cell_type_from_string(type_name: String) -> GridData.CellType:
+	match type_name:
+		"NORMAL": return GridData.CellType.NORMAL
+		"WALL":   return GridData.CellType.WALL
+		"HOLE":   return GridData.CellType.HOLE
+		"LAVA":   return GridData.CellType.LAVA
+		"ICE":    return GridData.CellType.ICE
+		"SHADOW": return GridData.CellType.SHADOW
+		"RUNE":   return GridData.CellType.RUNE
+		_:        return GridData.CellType.NORMAL
 
 func _setup_view() -> void:
 	grid_view = Node2D.new()
