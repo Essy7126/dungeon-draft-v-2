@@ -406,7 +406,8 @@ func _animate_move(unit: Unit, path: Array) -> void:
 	for i in range(1, path.size()):
 		var from_pos = grid_view.grid_to_world(path[i - 1])
 		var target_pos = grid_view.grid_to_world(path[i])
-		view.face_direction(from_pos, target_pos)
+		if is_instance_valid(view):
+			view.face_direction(from_pos, target_pos)
 		var tween = create_tween()
 		tween.tween_property(view, "position", target_pos, 0.15)
 		await tween.finished
