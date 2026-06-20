@@ -8,6 +8,10 @@ extends Node2D
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
 
+# La salle à charger. Pour l'instant on en assigne une en dur dans _ready.
+# Plus tard, le GameManager la fournira.
+@export var room_data: RoomData = null
+
 # Logique
 var grid: GridData
 var pathfinder: Pathfinder
@@ -40,6 +44,8 @@ func _ready() -> void:
 	_setup_camera()
 	_setup_ui()
 	_setup_state()
+	if room_data == null:
+		room_data = load("res://data/rooms/salle_1.tres")  # salle de test
 	_spawn_units()
 	_start_battle()
 
@@ -95,24 +101,52 @@ func _setup_state() -> void:
 	turn_state.request_cast_spell.connect(_on_request_cast_spell)
 
 func _spawn_units() -> void:
+	units = []
+	_spawn_heroes()
+	_spawn_enemies()
+
+# --- Héros : placement auto pour l'instant (déploiement manuel plus tard) ---
+func _spawn_heroes() -> void:
 	var chevalier_data = load("res://data/units/chevalier.tres")
 	var mage_data      = load("res://data/units/mage.tres")
-	var gobelin_data   = load("res://data/units/gobelin.tres")
 
 	var chevalier = Unit.from_data(chevalier_data)
 	var mage      = Unit.from_data(mage_data)
-	var gob1      = Unit.from_data(gobelin_data)
-	var gob2      = Unit.from_data(gobelin_data)
 
-	gob1.unit_name = "Gobelin A"
-	gob2.unit_name = "Gobelin B"
+	# Zone de déploiement héros : vient de la salle si définie,
+	# sinon on retombe sur des cases par défaut à gauche.
+	var zone = []
+	if room_data != null and room_data.hero_spawn_zone.size() > 0:
+		zone = room_data.hero_spawn_zone.duplicate()
+	else:
+		zone = [Vector2i(2, 6), Vector2i(2, 8)]
 
-	_place(chevalier, Vector2i(2, 6))
-	_place(mage,      Vector2i(2, 8))
-	_place(gob1, Vector2i(grid_cols - 3, 6))
-	_place(gob2, Vector2i(grid_cols - 3, 8))
+	# Placement auto : on pose les héros sur les premières cases de la zone.
+	var heroes = [chevalier, mage]
+	for i in heroes.size():
+		if i < zone.size():
+			_place(heroes[i], zone[i])
+			units.append(heroes[i])
 
-	units = [chevalier, mage, gob1, gob2]
+# --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone ---
+func _spawn_enemies() -> void:
+	if room_data == null:
+		push_warning("Aucune RoomData assignée : pas d'ennemis.")
+		return
+
+	# On copie la zone pour piocher dedans sans répétition.
+	var available = room_data.enemy_spawn_zone.duplicate()
+	available.shuffle()
+
+	var index = 0
+	for enemy_data in room_data.enemies:
+		if index >= available.size():
+			push_warning("Pas assez de cases dans enemy_spawn_zone pour tous les ennemis.")
+			break
+		var enemy = Unit.from_data(enemy_data)
+		_place(enemy, available[index])
+		units.append(enemy)
+		index += 1
 
 func _place(unit: Unit, pos: Vector2i) -> void:
 	grid.set_unit(pos, unit)
