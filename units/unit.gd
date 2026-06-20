@@ -33,9 +33,8 @@ var idle_animation: String = "default"
 var spells: Array = []
 
 # --- Statuts actifs ---
-# Dictionnaire : nom du statut -> nombre de tours restants.
-# Ex : { "stun": 1 } = l'unité est stun pour 1 tour.
-var statuses: Dictionary = {}
+# Liste de dictionnaires : { "data": StatusData, "remaining": int }
+var active_statuses: Array = []
 
 # --- Signaux ---
 signal died(unit)
@@ -85,30 +84,69 @@ func add_spell(spell: Spell) -> void:
 # STATUTS
 # ============================================================
 
-# Applique un statut à l'unité pour une durée donnée (en tours).
-func apply_status(status_name: String, duration: int) -> void:
-	# Si le statut existe déjà, on garde la durée la plus longue.
-	if statuses.has(status_name):
-		statuses[status_name] = max(statuses[status_name], duration)
-	else:
-		statuses[status_name] = duration
+# Applique un statut (StatusData) à l'unité.
+# Si le statut est déjà présent, on rafraîchit sa durée (pas de cumul).
+func apply_status(status_data: StatusData) -> void:
+	if status_data == null:
+		return
+	# Cherche si ce statut est déjà actif.
+	for entry in active_statuses:
+		if entry["data"].status_name == status_data.status_name:
+			# Déjà présent : on rafraîchit la durée (la plus longue gagne).
+			entry["remaining"] = max(entry["remaining"], status_data.duration)
+			return
+	# Nouveau statut.
+	active_statuses.append({ "data": status_data, "remaining": status_data.duration })
 
-# L'unité a-t-elle ce statut actif ?
-func has_status(status_name: String) -> bool:
-	return statuses.has(status_name) and statuses[status_name] > 0
+# L'unité a-t-elle un statut qui la fait sauter son tour ?
+func is_stunned() -> bool:
+	for entry in active_statuses:
+		if entry["data"].skips_turn:
+			return true
+	return false
 
-# Fait vieillir les statuts d'un tour (appelé en début de tour).
-# Retourne true si l'unité était stun (et doit donc sauter son tour).
-func tick_statuses() -> bool:
-	var was_stunned = has_status("stun")
+# Applique les effets de tous les statuts en début de tour.
+# Retourne true si l'unité doit sauter son tour (stun).
+# (à appeler APRÈS start_turn qui recharge PA/PM)
+func process_statuses() -> bool:
+	var skip = false
 
-	# On décrémente toutes les durées, on retire les expirés.
-	for key in statuses.keys():
-		statuses[key] -= 1
-		if statuses[key] <= 0:
-			statuses.erase(key)
+	for entry in active_statuses:
+		var data: StatusData = entry["data"]
 
-	return was_stunned
+		# Dégâts par tour (poison, saignement, brûlure).
+		if data.damage_per_turn > 0:
+			take_damage(data.damage_per_turn)
+			print("%s subit %d dégâts de %s." % [unit_name, data.damage_per_turn, data.status_name])
+
+		# Soin par tour (régénération).
+		if data.heal_per_turn > 0:
+			heal(data.heal_per_turn)
+
+		# Réduction de PM / PA (slow).
+		if data.mp_reduction > 0:
+			current_mp = max(0, current_mp - data.mp_reduction)
+		if data.ap_reduction > 0:
+			current_ap = max(0, current_ap - data.ap_reduction)
+
+		# Stun.
+		if data.skips_turn:
+			skip = true
+
+	stats_changed.emit(self)
+	return skip
+
+# Fait vieillir les statuts d'un tour, retire les expirés.
+# (à appeler en FIN de tour de l'unité)
+func tick_statuses() -> void:
+	for i in range(active_statuses.size() - 1, -1, -1):
+		active_statuses[i]["remaining"] -= 1
+		if active_statuses[i]["remaining"] <= 0:
+			active_statuses.remove_at(i)
+
+# Retourne la liste des statuts actifs (pour l'UI).
+func get_active_statuses() -> Array:
+	return active_statuses
 
 # ============================================================
 # GESTION DU TOUR

@@ -1,6 +1,6 @@
 # battle/battle.gd
 # ============================================================
-# BATTLE — Chef d'orchestre. Combat complet : joueur + IA + fin de combat.
+# BATTLE — Chef d'orchestre. Combat complet : joueur + IA + terrain + statuts.
 # ============================================================
 
 extends Node2D
@@ -12,6 +12,7 @@ extends Node2D
 var grid: GridData
 var pathfinder: Pathfinder
 var spell_caster: SpellCaster
+var terrain_effects: TerrainEffects
 var enemy_ai: EnemyAI
 var turn_queue: TurnQueue
 var units: Array = []
@@ -25,13 +26,13 @@ var _unit_views: Dictionary = {}
 var turn_state: TurnState
 var action_bar: CanvasLayer
 
-# État de fin de combat.
+# Fin de combat
 var _battle_over: bool = false
 
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
 const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
-const AOE_COLOR = Color(1.0, 0.5, 0.1, 0.5)
+const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
 
 func _ready() -> void:
 	_setup_logic()
@@ -49,7 +50,8 @@ func _ready() -> void:
 func _setup_logic() -> void:
 	grid = GridData.new(grid_cols, grid_rows)
 	pathfinder = Pathfinder.new(grid)
-	spell_caster = SpellCaster.new(grid, pathfinder)
+	terrain_effects = TerrainEffects.new(grid)
+	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
 	enemy_ai = EnemyAI.new(grid, pathfinder)
 
 func _setup_view() -> void:
@@ -92,26 +94,19 @@ func _setup_state() -> void:
 	turn_state.request_attack.connect(_on_request_attack)
 	turn_state.request_cast_spell.connect(_on_request_cast_spell)
 
-# Remplace UNIQUEMENT la fonction _spawn_units() dans ton battle.gd par ceci.
-# (le reste du fichier ne change pas)
-
 func _spawn_units() -> void:
-	# On charge les unités depuis leurs Resources (.tres).
 	var chevalier_data = load("res://data/units/chevalier.tres")
 	var mage_data      = load("res://data/units/mage.tres")
 	var gobelin_data   = load("res://data/units/gobelin.tres")
 
-	# On crée les Unit à partir des données.
 	var chevalier = Unit.from_data(chevalier_data)
 	var mage      = Unit.from_data(mage_data)
 	var gob1      = Unit.from_data(gobelin_data)
-	var gob2      = Unit.from_data(gobelin_data)   # deuxième gobelin (même data)
+	var gob2      = Unit.from_data(gobelin_data)
 
-	# On renomme les gobelins pour les distinguer.
 	gob1.unit_name = "Gobelin A"
 	gob2.unit_name = "Gobelin B"
 
-	# Placement sur la grille.
 	_place(chevalier, Vector2i(2, 6))
 	_place(mage,      Vector2i(2, 8))
 	_place(gob1, Vector2i(grid_cols - 3, 6))
@@ -147,20 +142,41 @@ func _on_turn_started(unit: Unit) -> void:
 	if _battle_over:
 		return
 
+	# 1. Effet de terrain en début de tour (lave, feu...).
+	terrain_effects.on_turn_start(unit)
+
+	# 2. Statuts : applique leurs effets (poison, regen, slow, stun).
+	var is_stunned = unit.process_statuses()
+
+	# 3. Morte des dégâts (terrain ou poison) ?
+	if not unit.is_alive:
+		unit.tick_statuses()
+		if not _battle_over:
+			turn_queue.advance()
+		return
+
+	# 4. Stun : l'unité saute son tour.
+	if is_stunned:
+		print("%s est stun et passe son tour." % unit.unit_name)
+		unit.tick_statuses()
+		await get_tree().create_timer(0.6).timeout
+		if not _battle_over:
+			turn_queue.advance()
+		return
+
+	# 5. Déroulement normal.
 	_update_active_highlight(unit)
 	action_bar.update_info(unit)
 	action_bar.build_spell_buttons(unit)
 
 	if unit.team == 1:
-		# Tour ennemi : l'IA joue.
 		turn_state.begin_enemy_turn()
 		action_bar.set_player_controls_enabled(false)
 		await _run_enemy_turn(unit)
-		# Après le tour ennemi, on passe au suivant (si le combat continue).
+		unit.tick_statuses()
 		if not _battle_over:
 			turn_queue.advance()
 	else:
-		# Tour joueur.
 		turn_state.begin_player_turn()
 		action_bar.set_player_controls_enabled(true)
 		action_bar.set_active_mode("")
@@ -176,13 +192,8 @@ func _update_active_highlight(active_unit: Unit) -> void:
 # ============================================================
 
 func _run_enemy_turn(enemy: Unit) -> void:
-	# Petite pause avant que l'ennemi agisse (lisibilité).
 	await get_tree().create_timer(0.3).timeout
-
-	# L'IA décide son plan.
 	var plan = enemy_ai.decide(enemy, units)
-
-	# On exécute chaque action du plan dans l'ordre.
 	for action in plan:
 		if _battle_over:
 			return
@@ -193,7 +204,6 @@ func _run_enemy_turn(enemy: Unit) -> void:
 				await _execute_ai_attack(enemy, action["target"])
 		await get_tree().create_timer(0.2).timeout
 
-# Déplace l'ennemi le long du chemin décidé par l'IA.
 func _execute_ai_move(enemy: Unit, path: Array) -> void:
 	if path.size() < 2:
 		return
@@ -204,7 +214,6 @@ func _execute_ai_move(enemy: Unit, path: Array) -> void:
 	enemy.grid_pos = destination
 	await _animate_move(enemy, path)
 
-# L'ennemi attaque une cible.
 func _execute_ai_attack(enemy: Unit, target: Unit) -> void:
 	if not is_instance_valid(target) or not target.is_alive:
 		return
@@ -232,6 +241,9 @@ func _on_spell_pressed(spell: Spell) -> void:
 
 func _on_end_turn_pressed() -> void:
 	grid_view.clear_highlights()
+	var unit = turn_queue.get_current_unit()
+	if unit != null:
+		unit.tick_statuses()
 	turn_queue.advance()
 
 func _refresh_mode_button() -> void:
@@ -252,31 +264,18 @@ func _refresh_mode_button() -> void:
 func _on_cell_clicked(cell: Vector2i) -> void:
 	turn_state.on_cell_clicked(cell)
 
-# Remplace la fonction _on_cell_hovered() dans ton battle.gd par celle-ci,
-# et ajoute la constante AOE_COLOR près des autres couleurs en haut du fichier.
-
-# --- À ajouter en haut, près de MOVE_COLOR / ATTACK_COLOR / SPELL_COLOR ---
-# const AOE_COLOR = Color(1.0, 0.5, 0.1, 0.5)   # orange = zone d'effet touchée
-
-
-# --- Remplace _on_cell_hovered() par ceci ---
 func _on_cell_hovered(cell: Vector2i) -> void:
-	# En mode ciblage de sort, on montre la zone d'effet sous le curseur.
 	if turn_state.current != TurnState.State.TARGET_SPELL:
 		return
 	var spell = turn_state.selected_spell
 	var unit = turn_queue.get_current_unit()
 	if spell == null or unit == null:
 		return
-
-	# On redessine : portée du sort en bleu + zone d'effet en orange sous le curseur.
 	grid_view.clear_highlights()
-	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
-
-	# Si la case survolée est dans la portée, on montre la zone d'effet.
-	if spell_caster.get_targetable_cells(unit, spell).has(cell):
-		var aoe = spell_caster.get_aoe_cells(spell, cell)
-		grid_view.highlight(aoe, AOE_COLOR)
+	var targetable = spell_caster.get_targetable_cells(unit, spell)
+	grid_view.highlight(targetable, SPELL_COLOR)
+	if targetable.has(cell):
+		grid_view.highlight(spell_caster.get_aoe_cells(spell, cell), AOE_COLOR)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
@@ -324,6 +323,7 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		var tween = create_tween()
 		tween.tween_property(view, "position", target_pos, 0.15)
 		await tween.finished
+		terrain_effects.on_enter_cell(unit, path[i])
 
 # ============================================================
 # INTENTIONS — ATTAQUE
@@ -409,6 +409,9 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 
 func _on_round_started(number: int) -> void:
 	print("\n========== ROUND %d ==========" % number)
+	if terrain_effects != null and number > 1:
+		terrain_effects.tick_all_effects()
+		grid_view.queue_redraw()
 
 func _on_unit_died(unit: Unit) -> void:
 	grid.clear_unit(unit.grid_pos)
@@ -416,17 +419,14 @@ func _on_unit_died(unit: Unit) -> void:
 	print("%s est vaincu." % unit.unit_name)
 	_check_battle_end()
 
-# Vérifie si un camp est éliminé.
 func _check_battle_end() -> void:
 	var heroes_alive = turn_queue.count_living_in_team(0)
 	var enemies_alive = turn_queue.count_living_in_team(1)
-
 	if heroes_alive == 0:
 		_end_battle(false)
 	elif enemies_alive == 0:
 		_end_battle(true)
 
-# Termine le combat avec un écran Victoire/Défaite.
 func _end_battle(victory: bool) -> void:
 	if _battle_over:
 		return
@@ -435,17 +435,14 @@ func _end_battle(victory: bool) -> void:
 	action_bar.set_player_controls_enabled(false)
 	_show_end_screen(victory)
 
-# Affiche un panneau de fin simple.
 func _show_end_screen(victory: bool) -> void:
 	var layer = CanvasLayer.new()
 	add_child(layer)
-
 	var panel = ColorRect.new()
 	panel.color = Color(0, 0, 0, 0.7)
 	panel.anchor_right = 1.0
 	panel.anchor_bottom = 1.0
 	layer.add_child(panel)
-
 	var label = Label.new()
 	label.text = "VICTOIRE !" if victory else "DÉFAITE"
 	label.add_theme_font_size_override("font_size", 64)
@@ -459,5 +456,4 @@ func _show_end_screen(victory: bool) -> void:
 	label.size = Vector2(400, 80)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	layer.add_child(label)
-
 	print("\n===== COMBAT TERMINÉ : %s =====" % ("VICTOIRE" if victory else "DÉFAITE"))

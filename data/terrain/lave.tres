@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://d135dg0elxcx5"]
+
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_c2dyb"]
+
+[resource]
+script = ExtResource("1_c2dyb")
+color = Color(0.8862745, 0.007843138, 0.023529412, 1)
+trigger = 1
+damage = 15
+status_duration = 2
+metadata/_custom_type_script = "uid://c15pw2f0yrhuh"
