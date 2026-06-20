@@ -1,11 +1,15 @@
 [gd_resource type="Resource" script_class="Spell" format=3 uid="uid://bpl7jcy8ix86j"]
 
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_s2kpe"]
+[ext_resource type="Resource" uid="uid://b6utveihynose" path="res://data/terrain/glace.tres" id="2_wlyno"]
 
 [resource]
 script = ExtResource("1_s2kpe")
 spell_name = "Mur de glace"
-target_type = 2
+spell_range = 6
+can_target_free_cell = true
+aoe_shape = 1
+aoe_size = 3
 element = 2
-terrain_effect = 2
+terrain_effect = ExtResource("2_wlyno")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

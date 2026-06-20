@@ -86,11 +86,17 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 	for target_cell in affected_cells:
 		var target = _grid.get_unit(target_cell)
 		if target != null:
+			var affected = false
 			if spell.deals_damage():
 				target.take_damage(spell.damage)
-				report["affected_units"].append(target)
+				affected = true
 			if spell.is_healing():
 				target.heal(spell.heal)
+				affected = true
+			if spell.applied_status != null:
+				target.apply_status(spell.applied_status)
+				affected = true
+			if affected and not report["affected_units"].has(target):
 				report["affected_units"].append(target)
 		if spell.has_terrain_effect():
 			_terrain.place_effect(target_cell, spell.terrain_effect)

@@ -1,9 +1,10 @@
 [gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://b6utveihynose"]
 
-[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_k2bv0"]
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_w0tat"]
 
 [resource]
-script = ExtResource("1_k2bv0")
+script = ExtResource("1_w0tat")
+effect_name = "glace"
 color = Color(0.5019608, 0.8980392, 0.5019608, 1)
 trigger = 2
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

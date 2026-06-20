@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://dfhv7b6st2rf1"]
+
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_1qiso"]
+
+[resource]
+script = ExtResource("1_1qiso")
+effect_name = "eau"
+metadata/_custom_type_script = "uid://c15pw2f0yrhuh"
