@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://drpkg3luyjmvd"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_ud3f4"]
+[ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/gobelin.tres" id="2_bny7i"]
+[ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_ss0dn"]
+
+[resource]
+script = ExtResource("2_ss0dn")
+room_name = "Salle 3"
+enemies = Array[ExtResource("1_ud3f4")]([ExtResource("2_bny7i"), ExtResource("2_bny7i"), ExtResource("2_bny7i"), ExtResource("2_bny7i"), ExtResource("2_bny7i")])
+enemy_spawn_zone = Array[Vector2i]([Vector2i(15, 5), Vector2i(17, 4), Vector2i(18, 3), Vector2i(19, 6), Vector2i(14, 4), Vector2i(12, 6)])
+metadata/_custom_type_script = "uid://clm64nm8ki4yj"

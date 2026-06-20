@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Dungeon Draft v2"
-run/main_scene="uid://cqor6fmeteciq"
+run/main_scene="uid://cdja6vmujr20f"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*uid://bkqluvhsrm1gs"
 
 [display]
 

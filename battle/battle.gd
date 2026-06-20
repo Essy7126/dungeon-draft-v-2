@@ -44,8 +44,11 @@ func _ready() -> void:
 	_setup_camera()
 	_setup_ui()
 	_setup_state()
+	# La salle vient du run en cours.
+	room_data = GameManager.get_current_room()
 	if room_data == null:
-		room_data = load("res://data/rooms/salle_1.tres")  # salle de test
+		push_error("Aucune salle fournie par le GameManager.")
+		return
 	_spawn_units()
 	_start_battle()
 
@@ -106,27 +109,29 @@ func _spawn_units() -> void:
 	_spawn_enemies()
 
 # --- Héros : placement auto pour l'instant (déploiement manuel plus tard) ---
+# --- Héros : EMPRUNTÉS au GameManager (persistent entre les salles) ---
+# --- Héros : EMPRUNTÉS au GameManager (persistent entre les salles) ---
 func _spawn_heroes() -> void:
-	var chevalier_data = load("res://data/units/chevalier.tres")
-	var mage_data      = load("res://data/units/mage.tres")
-
-	var chevalier = Unit.from_data(chevalier_data)
-	var mage      = Unit.from_data(mage_data)
-
-	# Zone de déploiement héros : vient de la salle si définie,
-	# sinon on retombe sur des cases par défaut à gauche.
+	# Zone de déploiement : vient de la salle, sinon défaut à gauche.
 	var zone = []
 	if room_data != null and room_data.hero_spawn_zone.size() > 0:
 		zone = room_data.hero_spawn_zone.duplicate()
 	else:
 		zone = [Vector2i(2, 6), Vector2i(2, 8)]
 
-	# Placement auto : on pose les héros sur les premières cases de la zone.
-	var heroes = [chevalier, mage]
-	for i in heroes.size():
+	# On récupère les héros vivants du run.
+	var run_heroes = GameManager.get_living_heroes()
+
+	# Placement auto sur les cases de la zone.
+	for i in run_heroes.size():
 		if i < zone.size():
-			_place(heroes[i], zone[i])
-			units.append(heroes[i])
+			var hero = run_heroes[i]
+			# On recharge PA/PM pour le nouveau combat,
+			# mais PAS les HP (pas de regen entre les salles).
+			hero.current_ap = hero.max_ap.get_int()
+			hero.current_mp = hero.max_mp.get_int()
+			_place(hero, zone[i])
+			units.append(hero)
 
 # --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone ---
 func _spawn_enemies() -> void:
@@ -469,6 +474,12 @@ func _end_battle(victory: bool) -> void:
 	action_bar.set_player_controls_enabled(false)
 	_show_end_screen(victory)
 
+	# On laisse le joueur voir l'écran un instant, puis on prévient le run.
+	await get_tree().create_timer(1.5).timeout
+	if victory:
+		GameManager.on_battle_won()
+	else:
+		GameManager.on_battle_lost()
 func _show_end_screen(victory: bool) -> void:
 	var layer = CanvasLayer.new()
 	add_child(layer)

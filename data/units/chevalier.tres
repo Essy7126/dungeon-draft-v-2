@@ -35,6 +35,7 @@ animations = [{
 [resource]
 script = ExtResource("1_x6yfb")
 unit_name = "Chevalier"
+max_mp = 13
 sprite_frames = SubResource("SpriteFrames_421w0")
 sprite_scale = 1.0
 spells = Array[ExtResource("2_e27bm")]([SubResource("Resource_0fivp"), ExtResource("3_ld1g7")])
