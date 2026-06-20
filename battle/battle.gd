@@ -62,7 +62,7 @@ func _setup_logic() -> void:
 	pathfinder = Pathfinder.new(grid)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
-	enemy_ai = EnemyAI.new(grid, pathfinder)
+	enemy_ai = EnemyAI.new(grid, pathfinder, spell_caster)
 	# ============================================================
 # IMPORT DU TERRAIN DESSINÉ (TileMapLayer → GridData)
 # Lit le TileMapLayer "TerrainLayer" une fois au démarrage et
@@ -275,7 +275,19 @@ func _run_enemy_turn(enemy: Unit) -> void:
 				await _execute_ai_move(enemy, action["path"])
 			"attack":
 				await _execute_ai_attack(enemy, action["target"])
+			"cast":
+				await _execute_ai_cast(enemy, action["spell"], action["cell"])
 		await get_tree().create_timer(0.2).timeout
+func _execute_ai_cast(enemy: Unit, spell: Spell, cell: Vector2i) -> void:
+	if enemy.current_ap < spell.ap_cost:
+		return
+	if not spell_caster.is_valid_target(enemy, spell, cell):
+		return
+	enemy.spend_ap(spell.ap_cost)
+	spell_caster.cast(enemy, spell, cell)
+	grid_view.queue_redraw()
+	# Petite pause pour que l'effet soit visible.
+	await get_tree().create_timer(0.3).timeout
 
 func _execute_ai_move(enemy: Unit, path: Array) -> void:
 	if path.size() < 2:

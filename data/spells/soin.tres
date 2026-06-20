@@ -5,5 +5,9 @@
 [resource]
 script = ExtResource("1_vftmu")
 spell_name = "Soin"
+spell_range = 6
+can_target_enemy = false
+can_target_ally = true
+can_target_self = true
 heal = 11
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

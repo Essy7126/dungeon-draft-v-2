@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_0240p"]
 [ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/gobelin.tres" id="2_tdi8f"]
+[ext_resource type="Resource" uid="uid://bt1wphyv18e5k" path="res://data/units/mage_healer_gobelin.tres" id="3_tdi8f"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="3_w42hg"]
 
 [resource]
 script = ExtResource("3_w42hg")
 room_name = "Salle 1"
-enemies = Array[ExtResource("1_0240p")]([ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f")])
+enemies = Array[ExtResource("1_0240p")]([ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("3_tdi8f"), ExtResource("3_tdi8f")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(2, 6), Vector2i(2, 8)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(17, 7), Vector2i(17, 4), Vector2i(17, 5), Vector2i(15, 7), Vector2i(17, 4), Vector2i(15, 5), Vector2i(18, 9)])
 metadata/_custom_type_script = "uid://clm64nm8ki4yj"

@@ -52,3 +52,13 @@ extends Resource
 @export_group("Sorts")
 # Liste des sorts (Resources Spell) que cette unité connaît.
 @export var spells: Array[Spell] = []
+# ============================================================
+# COMPORTEMENT D'IA
+# ============================================================
+
+@export_group("Comportement IA")
+# Détermine comment l'unité décide ses actions à son tour.
+# MELEE  : fonce et frappe au corps-à-corps (comportement par défaut).
+# RANGED : garde ses distances, attaque de loin (kiting).
+# HEALER : soigne l'allié le plus blessé, évite le combat.
+@export_enum("Mêlée:0", "Distance:1", "Soigneur:2") var ai_behavior: int = 0
