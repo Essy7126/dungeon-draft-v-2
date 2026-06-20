@@ -22,7 +22,7 @@ var grid: GridData
 var _highlights: Dictionary = {}
 var _hovered: Vector2i = Vector2i(-1, -1)
 var show_terrain_colors: bool = false
-var show_grid_lines: bool = true
+var show_grid_lines: bool = false
 
 signal cell_clicked(grid_pos: Vector2i)
 signal cell_hovered(grid_pos: Vector2i)
