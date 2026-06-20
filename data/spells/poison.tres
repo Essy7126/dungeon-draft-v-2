@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://b5l7blsdtke12"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_g5oae"]
+[ext_resource type="Resource" uid="uid://uivi4lmktwep" path="res://data/status/poison.tres" id="1_qfqvg"]
+
+[resource]
+script = ExtResource("1_g5oae")
+spell_name = "Poison"
+spell_range = 20
+applied_status = ExtResource("1_qfqvg")
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

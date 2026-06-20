@@ -41,12 +41,11 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 # Le sort peut poser un effet de terrain (Resource TerrainEffectData).
 @export var terrain_effect: TerrainEffectData = null
 
-@export_group("Buff / Debuff")
-@export var applies_modifier: bool = false
-@export var modifier_stat: String = ""
-@export var modifier_value: float = 0.0
-@export var modifier_is_percent: bool = false
-@export var modifier_duration: int = 2
+# Dans spell.gd, remplace tout le groupe "Buff / Debuff" par ceci :
+
+@export_group("Statut appliqué")
+# Statut infligé aux unités touchées (poison, stun, slow...).
+@export var applied_status: StatusData = null
 
 func deals_damage() -> bool:
 	return damage > 0
