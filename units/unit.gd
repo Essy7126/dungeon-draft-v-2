@@ -9,6 +9,7 @@ extends RefCounted
 # --- Identité ---
 var unit_name: String = "Sans nom"
 var team: int = 0
+var ai_behavior: int = 0
 
 # --- Stats max (modifiables) ---
 var max_hp: Stat
@@ -73,6 +74,7 @@ static func from_data(data: UnitData) -> Unit:
 	u.sprite_frames = data.sprite_frames
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
+	u.ai_behavior = data.ai_behavior
 	for spell in data.spells:
 		u.add_spell(spell)
 	return u

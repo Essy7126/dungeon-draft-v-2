@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_m7lpr"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_3acek"]
 [ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="3_3acek"]
+[ext_resource type="Resource" uid="uid://c5ja68c1s6fx1" path="res://data/spells/mêlée_gobelin.tres" id="3_7redg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7redg"]
 atlas = ExtResource("3_3acek")
@@ -24,4 +25,5 @@ script = ExtResource("1_m7lpr")
 unit_name = "Gobelin"
 team = 1
 sprite_frames = SubResource("SpriteFrames_stemn")
+spells = Array[ExtResource("2_3acek")]([ExtResource("3_7redg")])
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

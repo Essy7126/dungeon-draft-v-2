@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://c5ja68c1s6fx1"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_2naiq"]
+
+[resource]
+script = ExtResource("1_2naiq")
+spell_name = "mêlée_gobelin "
+spell_range = 1
+damage = 20
+damage_type = 0
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

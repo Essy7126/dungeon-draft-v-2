@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bt1wphyv18e5k"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_yh21w"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_lify1"]
+[ext_resource type="Resource" uid="uid://dxa0ndijcgww0" path="res://data/spells/soin.tres" id="3_lify1"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_a0v5p"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4hus3"]
+atlas = ExtResource("4_a0v5p")
+region = Rect2(100, 400, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_en8bq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4hus3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_yh21w")
+unit_name = "mage_healer_gobelin"
+team = 1
+sprite_frames = SubResource("SpriteFrames_en8bq")
+spells = Array[ExtResource("2_lify1")]([ExtResource("3_lify1")])
+ai_behavior = 2
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
