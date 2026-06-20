@@ -30,7 +30,11 @@ const ROOM_PATHS = [
 	"res://data/rooms/salle_3.tres",
 ]
 
-const BATTLE_SCENE = "res://battle.tscn"
+const BATTLE_SCENES = [
+	"res://data/rooms/maps/battle_salle1.tscn",
+	"res://data/rooms/maps/battle_salle2.tscn",
+	"res://data/rooms/maps/battle_salle3.tscn",
+]
 
 # --- État du run (vivant pendant tout le run) ---
 var heroes: Array = []          # Array[Unit] — persistent, HP conservés
@@ -88,7 +92,7 @@ func _go_to_next_room() -> void:
 		return
 
 	# On (re)charge la scène de combat pour la nouvelle salle.
-	get_tree().change_scene_to_file(BATTLE_SCENE)
+	get_tree().change_scene_to_file(BATTLE_SCENES[current_room_index])
 
 # La salle en cours (lue par battle au démarrage).
 func get_current_room() -> RoomData:

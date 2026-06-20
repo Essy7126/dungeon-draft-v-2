@@ -8,5 +8,5 @@
 script = ExtResource("2_ss0dn")
 room_name = "Salle 3"
 enemies = Array[ExtResource("1_ud3f4")]([ExtResource("2_bny7i"), ExtResource("2_bny7i"), ExtResource("2_bny7i"), ExtResource("2_bny7i"), ExtResource("2_bny7i")])
-enemy_spawn_zone = Array[Vector2i]([Vector2i(15, 5), Vector2i(17, 4), Vector2i(18, 3), Vector2i(19, 6), Vector2i(14, 4), Vector2i(12, 6)])
+enemy_spawn_zone = Array[Vector2i]([Vector2i(15, 5), Vector2i(17, 4), Vector2i(18, 3), Vector2i(19, 6), Vector2i(14, 5), Vector2i(12, 6)])
 metadata/_custom_type_script = "uid://clm64nm8ki4yj"
