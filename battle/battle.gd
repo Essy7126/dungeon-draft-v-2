@@ -40,6 +40,7 @@ const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
 
 func _ready() -> void:
 	_setup_logic()
+	_import_terrain_from_tilemap()
 	_setup_view()
 	_setup_camera()
 	_setup_ui()
