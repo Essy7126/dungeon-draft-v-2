@@ -69,6 +69,14 @@ func set_active(active: bool) -> void:
 	_is_active = active
 	queue_redraw()
 
+func face_direction(from: Vector2, to: Vector2) -> void:
+	if _sprite == null:
+		return
+	if to.x < from.x:
+		_sprite.flip_h = true
+	elif to.x > from.x:
+		_sprite.flip_h = false
+
 func _on_hp_changed(_unit: Unit) -> void:
 	_update_hp_bar()
 
