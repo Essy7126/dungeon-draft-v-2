@@ -388,15 +388,25 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	action_bar.update_info(unit)
 
 func _animate_move(unit: Unit, path: Array) -> void:
-	var view = _unit_views[unit]
+	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
 	for i in range(1, path.size()):
+		# L'unité a pu mourir à l'étape précédente (lave, etc.) :
+		# on revérifie AVANT chaque segment d'animation.
+		if not unit.is_alive or not is_instance_valid(view):
+			return
 		var target_pos = grid_view.grid_to_world(path[i])
 		var tween = create_tween()
 		tween.tween_property(view, "position", target_pos, 0.15)
 		await tween.finished
+		# La vue a pu être libérée pendant l'await : on revérifie APRÈS.
+		if not is_instance_valid(view):
+			return
 		terrain_effects.on_enter_cell(unit, path[i])
+		# on_enter_cell a pu tuer l'unité : si oui, on stoppe le déplacement.
+		if not unit.is_alive:
+			return
 
 # ============================================================
 # INTENTIONS — ATTAQUE
@@ -439,7 +449,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 	action_bar.update_info(unit)
 
 func _animate_attack(unit: Unit, target: Unit) -> void:
-	var view = _unit_views[unit]
+	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
 	var start = grid_view.grid_to_world(unit.grid_pos)
