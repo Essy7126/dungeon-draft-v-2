@@ -91,14 +91,30 @@ func build_spell_buttons(unit) -> void:
 
 	# Un bouton par sort de l'unité.
 	for spell in unit.spells:
+		if spell == null:
+			continue
+
 		var btn = Button.new()
-		btn.text = "%s\n(%d PA)" % [spell.spell_name, spell.ap_cost]
-		btn.custom_minimum_size = Vector2(110, 44)
+		btn.custom_minimum_size = Vector2(72, 72)
+		btn.tooltip_text = "%s\n%d PA" % [spell.spell_name, spell.ap_cost]
+
+		if spell.icon != null:
+			# --- Sort avec icône : on affiche l'image + le coût en PA. ---
+			btn.icon = spell.icon
+			btn.expand_icon = true             # l'icône s'adapte à la taille du bouton
+			btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			btn.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+			btn.text = "%d PA" % spell.ap_cost
+			btn.add_theme_font_size_override("font_size", 11)
+		else:
+			# --- Pas d'icône : fallback texte (nom + coût). ---
+			btn.text = "%s\n(%d PA)" % [spell.spell_name, spell.ap_cost]
+			btn.add_theme_font_size_override("font_size", 12)
+
 		# On capture le sort dans la lambda.
 		btn.pressed.connect(func(): spell_pressed.emit(spell))
 		_spell_box.add_child(btn)
 		_spell_buttons.append(btn)
-
 # ============================================================
 # MISE À JOUR
 # ============================================================
