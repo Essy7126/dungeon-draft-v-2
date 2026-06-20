@@ -18,6 +18,14 @@ const TYPE_COLORS = {
 	GridData.CellType.RUNE   : Color(0.45, 0.14, 0.65),
 }
 
+# Dessiner le sol/mur en rectangles colorés ?
+# false = on laisse le TileMap afficher le terrain (mode normal avec textures).
+# true  = mode debug sans TileMap (rectangles colorés).
+var show_terrain_colors: bool = false
+
+# Dessiner le liseré fin de la grille par-dessus les textures ?
+var show_grid_lines: bool = true
+
 var grid: GridData
 var _highlights: Dictionary = {}
 var _hovered: Vector2i = Vector2i(-1, -1)
@@ -90,16 +98,23 @@ func _draw() -> void:
 			var corner = grid_to_corner(pos)
 			var rect = Rect2(corner, Vector2(CELL_SIZE, CELL_SIZE))
 
-			var base_color = TYPE_COLORS[grid.get_type(pos)]
-			draw_rect(rect, base_color, true)
+			# Le sol/mur n'est plus dessiné en rectangle : le TileMap s'en charge.
+			# On garde l'option pour débug (mettre show_terrain_colors = true).
+			if show_terrain_colors:
+				draw_rect(rect, TYPE_COLORS[grid.get_type(pos)], true)
 
+			# Surbrillances de gameplay (déplacement, sort) : on les garde TOUJOURS.
 			if _highlights.has(pos):
 				draw_rect(rect, _highlights[pos], true)
 
+			# Effet de terrain dynamique (lave d'un sort) : on le garde.
 			if grid.get_effect(pos) != null:
 				draw_rect(rect, Color(1, 0.8, 0.2, 0.2), true)
 
+			# Survol souris : on le garde.
 			if pos == _hovered and grid.is_valid(_hovered):
 				draw_rect(rect, Color(1, 1, 1, 0.10), true)
 
-			draw_rect(rect, Color(1, 1, 1, 0.10), false)
+			# Liseré de grille : à toi de voir si tu le gardes (voir note plus bas).
+			if show_grid_lines:
+				draw_rect(rect, Color(1, 1, 1, 0.10), false)

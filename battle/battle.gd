@@ -167,25 +167,37 @@ func _spawn_heroes() -> void:
 			_place(hero, zone[i])
 			units.append(hero)
 
-# --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone ---
 func _spawn_enemies() -> void:
 	if room_data == null:
 		push_warning("Aucune RoomData assignée : pas d'ennemis.")
 		return
 
-	# On copie la zone pour piocher dedans sans répétition.
+	# On copie la zone et on la mélange pour un placement aléatoire.
 	var available = room_data.enemy_spawn_zone.duplicate()
 	available.shuffle()
 
-	var index = 0
 	for enemy_data in room_data.enemies:
-		if index >= available.size():
-			push_warning("Pas assez de cases dans enemy_spawn_zone pour tous les ennemis.")
+		if enemy_data == null:
+			push_warning("Un ennemi de la salle est null : ignoré.")
+			continue
+
+		# On cherche la première case libre dans la zone mélangée.
+		var spawn_cell = Vector2i(-1, -1)
+		while not available.is_empty():
+			var candidate = available.pop_front()
+			# Case valide, marchable, et SURTOUT pas déjà occupée.
+			if grid.is_valid(candidate) and not grid.has_unit(candidate) \
+					and grid.is_walkable(candidate):
+				spawn_cell = candidate
+				break
+
+		if spawn_cell == Vector2i(-1, -1):
+			push_warning("Plus de case libre dans enemy_spawn_zone pour %s." % enemy_data.unit_name)
 			break
+
 		var enemy = Unit.from_data(enemy_data)
-		_place(enemy, available[index])
+		_place(enemy, spawn_cell)
 		units.append(enemy)
-		index += 1
 
 func _place(unit: Unit, pos: Vector2i) -> void:
 	grid.set_unit(pos, unit)
