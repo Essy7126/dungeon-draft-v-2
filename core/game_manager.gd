@@ -87,10 +87,8 @@ func _go_to_next_room() -> void:
 		run_won.emit()
 		return
 
-# On (re)charge la scène de combat pour la nouvelle salle.
-	# call_deferred : on attend la fin du frame courant pour changer de scène,
-	# sinon Godot râle s'il est en train de construire l'arbre (au démarrage).
-	get_tree().change_scene_to_file.call_deferred(BATTLE_SCENE)
+	# On (re)charge la scène de combat pour la nouvelle salle.
+	get_tree().change_scene_to_file(BATTLE_SCENE)
 
 # La salle en cours (lue par battle au démarrage).
 func get_current_room() -> RoomData:

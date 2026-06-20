@@ -167,37 +167,25 @@ func _spawn_heroes() -> void:
 			_place(hero, zone[i])
 			units.append(hero)
 
+# --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone ---
 func _spawn_enemies() -> void:
 	if room_data == null:
 		push_warning("Aucune RoomData assignée : pas d'ennemis.")
 		return
 
-	# On copie la zone et on la mélange pour un placement aléatoire.
+	# On copie la zone pour piocher dedans sans répétition.
 	var available = room_data.enemy_spawn_zone.duplicate()
 	available.shuffle()
 
+	var index = 0
 	for enemy_data in room_data.enemies:
-		if enemy_data == null:
-			push_warning("Un ennemi de la salle est null : ignoré.")
-			continue
-
-		# On cherche la première case libre dans la zone mélangée.
-		var spawn_cell = Vector2i(-1, -1)
-		while not available.is_empty():
-			var candidate = available.pop_front()
-			# Case valide, marchable, et SURTOUT pas déjà occupée.
-			if grid.is_valid(candidate) and not grid.has_unit(candidate) \
-					and grid.is_walkable(candidate):
-				spawn_cell = candidate
-				break
-
-		if spawn_cell == Vector2i(-1, -1):
-			push_warning("Plus de case libre dans enemy_spawn_zone pour %s." % enemy_data.unit_name)
+		if index >= available.size():
+			push_warning("Pas assez de cases dans enemy_spawn_zone pour tous les ennemis.")
 			break
-
 		var enemy = Unit.from_data(enemy_data)
-		_place(enemy, spawn_cell)
+		_place(enemy, available[index])
 		units.append(enemy)
+		index += 1
 
 func _place(unit: Unit, pos: Vector2i) -> void:
 	grid.set_unit(pos, unit)
@@ -400,25 +388,15 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	action_bar.update_info(unit)
 
 func _animate_move(unit: Unit, path: Array) -> void:
-	var view = _unit_views.get(unit)
+	var view = _unit_views[unit]
 	if not is_instance_valid(view):
 		return
 	for i in range(1, path.size()):
-		# L'unité a pu mourir à l'étape précédente (lave, etc.) :
-		# on revérifie AVANT chaque segment d'animation.
-		if not unit.is_alive or not is_instance_valid(view):
-			return
 		var target_pos = grid_view.grid_to_world(path[i])
 		var tween = create_tween()
 		tween.tween_property(view, "position", target_pos, 0.15)
 		await tween.finished
-		# La vue a pu être libérée pendant l'await : on revérifie APRÈS.
-		if not is_instance_valid(view):
-			return
 		terrain_effects.on_enter_cell(unit, path[i])
-		# on_enter_cell a pu tuer l'unité : si oui, on stoppe le déplacement.
-		if not unit.is_alive:
-			return
 
 # ============================================================
 # INTENTIONS — ATTAQUE
@@ -461,7 +439,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 	action_bar.update_info(unit)
 
 func _animate_attack(unit: Unit, target: Unit) -> void:
-	var view = _unit_views.get(unit)
+	var view = _unit_views[unit]
 	if not is_instance_valid(view):
 		return
 	var start = grid_view.grid_to_world(unit.grid_pos)
