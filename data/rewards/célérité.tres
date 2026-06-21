@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RewardData" format=3 uid="uid://b5m7ajllc5vya"]
+
+[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_eod5d"]
+
+[resource]
+script = ExtResource("1_eod5d")
+reward_name = "Célérité"
+stat = 3
+stat_amount = 1.0
+metadata/_custom_type_script = "uid://dy2rw6nbn2v4s"

@@ -1,13 +1,19 @@
 [gd_resource type="Resource" script_class="RunData" format=3 uid="uid://dv8ycdf2npk6g"]
 
+[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_e26ei"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="1_j623t"]
 [ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/runs/run_data.gd" id="2_ehr63"]
 [ext_resource type="Resource" uid="uid://6ll6yf2b2wvt" path="res://data/rooms/salle_1.tres" id="2_fe2p7"]
+[ext_resource type="Resource" uid="uid://b5m7ajllc5vya" path="res://data/rewards/célérité.tres" id="2_th275"]
 [ext_resource type="Resource" uid="uid://2jf8xpwsjmhb" path="res://data/rooms/salle_2.tres" id="3_0db7e"]
+[ext_resource type="Resource" uid="uid://dtgax72gn0y6c" path="res://data/rewards/force.tres" id="3_mt7cc"]
+[ext_resource type="Resource" uid="uid://bhcacs4nst0e6" path="res://data/rewards/repos_equipe.tres" id="4_56ehc"]
 [ext_resource type="Resource" uid="uid://drpkg3luyjmvd" path="res://data/rooms/salle_3.tres" id="4_mpvhp"]
+[ext_resource type="Resource" uid="uid://cjdlo5ghbpxna" path="res://data/rewards/vigueur.tres" id="5_3byhy"]
 
 [resource]
 script = ExtResource("2_ehr63")
 run_name = "Run par défaut"
 rooms = Array[ExtResource("1_j623t")]([ExtResource("2_fe2p7"), ExtResource("3_0db7e"), ExtResource("4_mpvhp")])
+reward_pool = Array[ExtResource("1_e26ei")]([ExtResource("2_th275"), ExtResource("3_mt7cc"), ExtResource("4_56ehc"), ExtResource("5_3byhy")])
 metadata/_custom_type_script = "uid://cc8h5jsj5dk65"
