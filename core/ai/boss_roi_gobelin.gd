@@ -40,6 +40,7 @@ func decide(boss, all_units, ai) -> Array:
 		_enraged = true
 		boss.attack_power.add_modifier(enrage_attack_bonus, Stat.ModType.PERCENT, "enrage", -1)
 		boss.stats_changed.emit(boss)
+		DebugLogger.warn(DebugLogger.LogCategory.AI, "%s entre en rage (+%d%% attaque)" % [boss.unit_name, int(enrage_attack_bonus*100)])
 		print("%s entre en RAGE ! (+%d%% attaque)" % [boss.unit_name, int(enrage_attack_bonus * 100)])
 
 	# --- Mécanique 2 : COUP SIGNATURE (tous les N tours). ---
@@ -47,6 +48,7 @@ func decide(boss, all_units, ai) -> Array:
 		if boss.current_ap >= signature_spell.ap_cost:
 			var cell = ai.find_target_cell_for_spell(boss, signature_spell)
 			if cell != Vector2i(-1, -1):
+				DebugLogger.info(DebugLogger.LogCategory.AI, "%s prépare son coup signature" % boss.unit_name)
 				print("%s prépare son coup signature !" % boss.unit_name)
 				return [{ "type": "cast", "spell": signature_spell, "cell": cell }]
 

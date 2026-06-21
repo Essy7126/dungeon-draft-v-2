@@ -10,8 +10,9 @@
 #   3. Sinon → frappe à distance (étreinte des enfers) sur le plus proche.
 #   4. Hors de portée → elle se rapproche, mais sans jamais coller.
 #
-# Les trois sorts sont assignés par RÔLE dans le .tres (pas devinés),
-# pour que tu voies clairement qui fait quoi et puisses les changer.
+# Cette version est BAVARDE : chaque décision (et chaque option écartée)
+# est tracée dans la console de debug, catégorie AI. Filtre sur "AI"
+# pour suivre son raisonnement tour par tour.
 # ============================================================
 
 class_name BossPersephone
@@ -28,6 +29,9 @@ extends BossBehavior
 # Distance qu'elle cherche à garder avec les héros (en cases).
 @export var keep_distance: int = 2
 
+# Raccourci de catégorie pour alléger les appels.
+const CAT := DebugLogger.LogCategory.AI
+
 # ============================================================
 # DÉCISION
 # ============================================================
@@ -36,45 +40,90 @@ func decide(boss, all_units, ai) -> Array:
 	var grid = ai.get_grid()
 	var caster = ai.get_spell_caster()
 	var heroes = _living_heroes(boss, all_units)
+
+	DebugLogger.info(CAT, "%s réfléchit" % boss.unit_name, {
+		"PA": boss.current_ap, "PM": boss.current_mp,
+		"PV": "%d/%d" % [boss.current_hp, boss.max_hp.get_int()],
+		"héros_vivants": heroes.size(),
+	})
+
 	if heroes.is_empty():
+		DebugLogger.warn(CAT, "%s : aucun héros vivant, rien à faire" % boss.unit_name)
 		return []
 
 	# --- Priorité 1 : AoE si elle touche assez de héros groupés. ---
 	if _can_cast(boss, aoe_spell):
 		var best = _best_aoe_cell(boss, caster, heroes)
+		DebugLogger.trace(CAT, "Option AoE (%s)" % _spell_name(aoe_spell), {
+			"meilleure_case": str(best["cell"]),
+			"héros_touchés": best["count"],
+			"seuil": aoe_min_targets,
+		})
 		if best["count"] >= aoe_min_targets:
+			DebugLogger.info(CAT, "%s → AoE %s sur %s (%d héros)" % [
+				boss.unit_name, _spell_name(aoe_spell), str(best["cell"]), best["count"]])
 			return [_cast(aoe_spell, best["cell"])]
+		else:
+			DebugLogger.trace(CAT, "AoE écartée : pas assez de héros groupés")
+	else:
+		DebugLogger.trace(CAT, "AoE indisponible (sort manquant ou PA insuffisants)")
 
 	# --- Priorité 2 : un héros au contact → flétrissement + repli (kiting). ---
 	var intruder = _adjacent_hero(boss, heroes, grid)
 	if intruder != null:
+		DebugLogger.debug(CAT, "%s : %s est au contact → contrôle + repli" % [
+			boss.unit_name, intruder.unit_name])
 		var plan: Array = []
 		if _can_cast(boss, debuff_spell) \
 				and caster.is_valid_target(boss, debuff_spell, intruder.grid_pos):
 			plan.append(_cast(debuff_spell, intruder.grid_pos))
+			DebugLogger.info(CAT, "%s → flétrissement (%s) sur %s" % [
+				boss.unit_name, _spell_name(debuff_spell), intruder.unit_name])
+		else:
+			DebugLogger.trace(CAT, "Flétrissement indisponible sur %s" % intruder.unit_name)
 		var retreat = _retreat_action(boss, heroes, ai)
 		if not retreat.is_empty():
+			var dest = retreat["path"][retreat["path"].size() - 1]
 			plan.append(retreat)
+			DebugLogger.info(CAT, "%s → repli vers %s" % [boss.unit_name, str(dest)])
+		else:
+			DebugLogger.trace(CAT, "Aucun repli possible (coincée)")
 		if not plan.is_empty():
 			return plan
+		DebugLogger.trace(CAT, "Contact géré sans action : on passe à la suite")
 
 	# --- Priorité 3 : frappe mono-cible à distance sur le plus proche. ---
 	var target = _nearest(boss, heroes, grid)
 	if target != null and _can_cast(boss, single_spell):
+		var dist = grid.manhattan(boss.grid_pos, target.grid_pos)
 		if caster.is_valid_target(boss, single_spell, target.grid_pos):
+			DebugLogger.info(CAT, "%s → %s sur %s (dist %d)" % [
+				boss.unit_name, _spell_name(single_spell), target.unit_name, dist])
 			return [_cast(single_spell, target.grid_pos)]
+		else:
+			DebugLogger.trace(CAT, "%s hors de portée du mono-cible (dist %d)" % [
+				target.unit_name, dist])
+	elif target != null:
+		DebugLogger.trace(CAT, "Mono-cible indisponible (PA insuffisants)")
 
 	# --- Priorité 4 : pas à portée → se rapprocher sans coller. ---
 	var approach = _approach_action(boss, target, ai)
 	if not approach.is_empty():
+		var dest = approach["path"][approach["path"].size() - 1]
+		DebugLogger.info(CAT, "%s → se rapproche vers %s" % [boss.unit_name, str(dest)])
 		return [approach]
 
 	# --- Repli par défaut (sécurité). ---
+	DebugLogger.warn(CAT, "%s : aucune option idéale, comportement par défaut" % boss.unit_name)
 	return ai.default_attack_plan(boss, all_units)
 
 # ============================================================
 # OUTILS
 # ============================================================
+
+# Nom lisible d'un sort (ou "—" s'il manque).
+func _spell_name(spell) -> String:
+	return spell.spell_name if spell != null else "—"
 
 # Les héros vivants (équipe différente du boss).
 func _living_heroes(boss, all_units) -> Array:

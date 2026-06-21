@@ -7,7 +7,7 @@
 script = ExtResource("1_lukfn")
 spell_name = "Étreinte des Enfers"
 ap_cost = 5
-spell_range = 2
+spell_range = 10
 damage = 30
 damage_type = 0
 crit_chance = 0.15

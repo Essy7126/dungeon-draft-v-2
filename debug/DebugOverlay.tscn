@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://i5c6lt5m6q0w"]
+
+[ext_resource type="Script" uid="uid://xb2poqkjql8" path="res://debug/DebugOverlay.gd" id="1_xbgyx"]
+
+[node name="DebugOverlay" type="CanvasLayer" unique_id=1584521355]
+layer = 10
+script = ExtResource("1_xbgyx")
+
+[node name="Panel" type="Panel" parent="." unique_id=997876299]
+offset_left = 690.0
+offset_top = 10.0
+offset_right = 1190.0
+offset_bottom = 410.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1972428674]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 400.0
+
+[node name="Header" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=831364544]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/Header" unique_id=858339910]
+layout_mode = 2
+text = "DEBUG OVERLAY"
+
+[node name="Button" type="Button" parent="Panel/VBoxContainer/Header" unique_id=874726885]
+layout_mode = 2
+text = "X"
+
+[node name="CategoryFilters" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=1988423277]
+layout_mode = 2
+
+[node name="LevelFilter" type="OptionButton" parent="Panel/VBoxContainer" unique_id=874397677]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer" unique_id=346873378]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LogContainer" type="VBoxContainer" parent="Panel/VBoxContainer/ScrollContainer" unique_id=2107181859]
+layout_mode = 2
+
+[node name="Footer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=1428615647]
+layout_mode = 2
+
+[node name="CountLabel" type="Label" parent="Panel/VBoxContainer/Footer" unique_id=1725251270]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0 entrée"
+
+[node name="Button" type="Button" parent="Panel/VBoxContainer/Footer" unique_id=1548906153]
+layout_mode = 2
+text = "Clear"

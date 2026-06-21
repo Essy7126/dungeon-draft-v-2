@@ -450,6 +450,7 @@ func _on_turn_started(unit: Unit) -> void:
 
 	# 4. Stun : l'unité saute son tour.
 	if is_stunned:
+		DebugLogger.debug(DebugLogger.LogCategory.TURN, "%s est stun, passe son tour" % unit.unit_name)
 		print("%s est stun et passe son tour." % unit.unit_name)
 		unit.tick_statuses()
 		await get_tree().create_timer(0.6).timeout
@@ -736,6 +737,8 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 # ============================================================
 
 func _on_round_started(number: int) -> void:
+	DebugLogger.set_turn(number)
+	DebugLogger.info(DebugLogger.LogCategory.TURN, "Round %d" % number)
 	print("\n========== ROUND %d ==========" % number)
 	if terrain_effects != null and number > 1:
 		terrain_effects.tick_all_effects()
@@ -744,6 +747,7 @@ func _on_round_started(number: int) -> void:
 func _on_unit_died(unit: Unit) -> void:
 	grid.clear_unit(unit.grid_pos)
 	turn_queue.on_unit_died(unit)
+	DebugLogger.info(DebugLogger.LogCategory.COMBAT, "%s est vaincu" % unit.unit_name)
 	print("%s est vaincu." % unit.unit_name)
 	_check_battle_end()
 
