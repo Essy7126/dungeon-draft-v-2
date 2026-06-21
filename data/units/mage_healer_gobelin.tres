@@ -15,7 +15,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4hus3")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -23,8 +23,16 @@ animations = [{
 [resource]
 script = ExtResource("1_yh21w")
 unit_name = "mage_healer_gobelin"
+description = null
 team = 1
+max_hp = null
+initiative = null
+max_ap = null
+max_mp = null
+attack_power = null
 sprite_frames = SubResource("SpriteFrames_en8bq")
+sprite_scale = null
+idle_animation = null
 spells = Array[ExtResource("2_lify1")]([ExtResource("3_lify1")])
 ai_behavior = 2
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

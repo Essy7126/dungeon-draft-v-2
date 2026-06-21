@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://dlsrnmpudbgkb"]
 
+[ext_resource type="Script" uid="uid://dp8btyw2tdoh0" path="res://core/ai/boss_persephone.gd" id="1_qbsat"]
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_qmwoj"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_nbiri"]
 [ext_resource type="Resource" uid="uid://cmp5h2kc86dqy" path="res://data/spells/tombeau fleuri.tres" id="3_fredc"]
@@ -7,13 +8,17 @@
 [ext_resource type="Resource" uid="uid://bb81wvxuigu6p" path="res://data/spells/étreinte des enfers.tres" id="5_5l2md"]
 [ext_resource type="Texture2D" uid="uid://co518a66n3ut0" path="res://asset/persephone.png" id="6_qbtm6"]
 
+[sub_resource type="Resource" id="Resource_5l2md"]
+script = ExtResource("1_qbsat")
+metadata/_custom_type_script = "uid://dp8btyw2tdoh0"
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_kqkp3"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("6_qbtm6")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -30,5 +35,8 @@ max_mp = 5
 attack_power = 25
 sprite_frames = SubResource("SpriteFrames_kqkp3")
 sprite_scale = 1.0
+idle_animation = null
 spells = Array[ExtResource("2_nbiri")]([ExtResource("3_fredc"), ExtResource("4_qbsat"), ExtResource("5_5l2md")])
+ai_behavior = null
+boss_behavior = SubResource("Resource_5l2md")
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
