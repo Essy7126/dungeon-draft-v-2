@@ -6,11 +6,13 @@
 [ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/gobelin.tres" id="2_tdi8f"]
 [ext_resource type="Resource" uid="uid://bt1wphyv18e5k" path="res://data/units/mage_healer_gobelin.tres" id="3_tdi8f"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="3_w42hg"]
+[ext_resource type="PackedScene" uid="uid://bg56yej80p5ie" path="res://ui/Particles/particles_feuilles.tscn" id="6_xbmud"]
 
 [resource]
 script = ExtResource("3_w42hg")
 room_name = "Salle 1"
 background_image = ExtResource("1_t5m7n")
+particles_scene = ExtResource("6_xbmud")
 battle_scene = ExtResource("1_w42hg")
 enemies = Array[ExtResource("1_0240p")]([ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("3_tdi8f"), ExtResource("3_tdi8f")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(7, 11), Vector2i(6, 13), Vector2i(8, 11)])

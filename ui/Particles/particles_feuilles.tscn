@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bg56yej80p5ie"]
+
+[ext_resource type="Texture2D" uid="uid://byae4w3iiyyjw" path="res://asset/Background/feuille_basique-removebg-preview.png" id="1_s3ksc"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ogini"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(1200, 1, 1)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -14.9999895
+angle_max = 15.0000105
+gravity = Vector3(20, 98, 0)
+scale_min = 0.099999994
+scale_max = 0.29999998
+
+[node name="GPUParticles2D" type="GPUParticles2D" unique_id=298011089]
+position = Vector2(600, 0)
+amount = 50
+texture = ExtResource("1_s3ksc")
+lifetime = 6.0
+process_material = SubResource("ParticleProcessMaterial_ogini")

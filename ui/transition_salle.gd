@@ -15,6 +15,9 @@ func _ready() -> void:
 	description.text = ""
 	if room.background_image != null:
 		fond_image.texture = room.background_image
+	if room.particles_scene != null:
+		var particles = room.particles_scene.instantiate()
+		add_child(particles)
 	_build_heroes_display()
 	bouton.pressed.connect(GameManager.start_next_battle)
 
