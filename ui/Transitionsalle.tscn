@@ -1,18 +1,6 @@
 [gd_scene format=3 uid="uid://cu4745fuo5o2c"]
 
 [ext_resource type="Script" uid="uid://c7kkujg43dfem" path="res://ui/transition_salle.gd" id="1_fkna3"]
-[ext_resource type="Texture2D" uid="uid://byae4w3iiyyjw" path="res://asset/Background/feuille_basique-removebg-preview.png" id="2_ekr1y"]
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u6spt"]
-particle_flag_disable_z = true
-emission_shape_scale = Vector3(1200, 1, 1)
-emission_shape = 3
-emission_box_extents = Vector3(1, 1, 1)
-angle_min = -14.9999895
-angle_max = 15.0000105
-gravity = Vector3(20, 98, 0)
-scale_min = 0.099999994
-scale_max = 0.29999998
 
 [node name="Transitionsalle" type="Control" unique_id=1688673201]
 layout_mode = 3
@@ -42,14 +30,8 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5019608)
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=1380578076]
-position = Vector2(600, 0)
-amount = 50
-texture = ExtResource("2_ekr1y")
-lifetime = 4.0
-process_material = SubResource("ParticleProcessMaterial_u6spt")
-
 [node name="Contenu" type="VBoxContainer" parent="." unique_id=1142014223]
+z_index = 1
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
