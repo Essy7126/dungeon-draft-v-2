@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dt4yq5ppivne5"
-path="res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.ctex"
+uid="uid://cf8h4kxxdypls"
+path="res://.godot/imported/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png-43b70b0f9a1bb496be94cab67381bde4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://asset/icone/boule de feu.png"
-dest_files=["res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.ctex"]
+source_file="res://asset/icone/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png"
+dest_files=["res://.godot/imported/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png-43b70b0f9a1bb496be94cab67381bde4.ctex"]
 
 [params]
 

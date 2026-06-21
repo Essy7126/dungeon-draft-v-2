@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dt4yq5ppivne5"
-path="res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.ctex"
+uid="uid://bbh4wi8752b58"
+path="res://.godot/imported/icone spell.png_31.png-ec88a26dec74d2d8079e01b4cd552d93.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://asset/icone/boule de feu.png"
-dest_files=["res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.ctex"]
+source_file="res://asset/icone/icone spell.png_31.png"
+dest_files=["res://.godot/imported/icone spell.png_31.png-ec88a26dec74d2d8079e01b4cd552d93.ctex"]
 
 [params]
 
