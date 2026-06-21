@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://cu4745fuo5o2c"]
+
+[ext_resource type="Script" uid="uid://c7kkujg43dfem" path="res://ui/transition_salle.gd" id="1_fkna3"]
+
+[node name="Transitionsalle" type="Control" unique_id=1688673201]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fkna3")
+
+[node name="Fond" type="ColorRect" parent="." unique_id=1953940587]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8509804)
+
+[node name="Contenu" type="VBoxContainer" parent="." unique_id=1142014223]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -33.0
+offset_right = 4.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="Image" type="TextureRect" parent="Contenu" unique_id=1711977328]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Nomsalle" type="Label" parent="Contenu" unique_id=1124718546]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="Contenu" unique_id=1646303248]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Heroes" type="HBoxContainer" parent="Contenu" unique_id=216261430]
+layout_mode = 2
+
+[node name="BoutonContinuer" type="Button" parent="Contenu" unique_id=1608383894]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Continuer →"

@@ -92,8 +92,11 @@ func _go_to_next_room() -> void:
 		return
 
 	# On (re)charge la scène de combat pour la nouvelle salle.
-	get_tree().change_scene_to_file(BATTLE_SCENES[current_room_index])
+	get_tree().change_scene_to_file("res://ui/Transitionsalle.tscn")
 
+# Appelé par Transitionsalle au clic sur "Continuer".
+func start_next_battle() -> void:
+	get_tree().change_scene_to_file(BATTLE_SCENES[current_room_index])
 # La salle en cours (lue par battle au démarrage).
 func get_current_room() -> RoomData:
 	if current_room_index < 0 or current_room_index >= rooms.size():
