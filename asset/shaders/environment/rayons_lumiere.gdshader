@@ -1,39 +1,30 @@
 shader_type canvas_item;
 
-uniform float vitesse : hint_range(0.0, 0.5) = 0.06;
-uniform float intensite : hint_range(0.0, 1.0) = 0.75;
-uniform float nombre_rayons : hint_range(1.0, 20.0) = 8.0;
-uniform float angle : hint_range(0.0, 1.0) = 0.25;
-uniform vec4 couleur_rayon : source_color = vec4(1.0, 0.95, 0.75, 1.0);
+uniform float vitesse : hint_range(0.0, 1.0) = 0.02;
+uniform float intensite : hint_range(0.0, 2.0) = 0.8;
+uniform float nombre_rayons : hint_range(1.0, 20.0) = 3.0;
+uniform float angle : hint_range(-1.0, 1.0) = 0.3;
+uniform vec4 couleur_rayon : source_color = vec4(1.0, 0.9, 0.6, 1.0);
+
+float hash(float x) {
+	return fract(sin(x * 127.1) * 43758.5453);
+}
 
 void fragment() {
 	vec2 uv = UV;
 	uv.x += uv.y * angle;
+	uv.x += TIME * vitesse;
 
-	// Couche 1 - grands rayons lents
-	float x1 = uv.x * nombre_rayons + TIME * vitesse;
-	float rayon1 = sin(x1 * 3.14159) * sin(x1 * 1.7 + 0.5) * sin(x1 * 2.3 + 1.2);
-	rayon1 = clamp(rayon1, 0.0, 1.0);
-	rayon1 = pow(rayon1, 0.6);
+	float x = uv.x * nombre_rayons;
+	float rayons = fract(x);
+	rayons = smoothstep(0.0, 0.4, rayons) * smoothstep(1.0, 0.4, rayons);
 
-	// Couche 2 - petits rayons plus rapides
-	float x2 = uv.x * nombre_rayons * 1.8 + TIME * vitesse * 1.5 + 2.1;
-	float rayon2 = sin(x2 * 3.14159) * sin(x2 * 2.1 + 1.0) * sin(x2 * 1.4 + 0.7);
-	rayon2 = clamp(rayon2, 0.0, 1.0);
-	rayon2 = pow(rayon2, 0.8);
+	float variation = 0.75 + 0.25 * hash(floor(x));
+	float pulsation = 0.6 + 0.4 * sin(TIME * 0.3 + hash(floor(x)) * 6.28);
+	rayons *= variation * pulsation;
 
-	float rayons = rayon1 * 0.7 + rayon2 * 0.3;
-
-	// Gradient vertical — fort en haut, disparaît vers le bas
-	float gradient = pow(1.0 - UV.y, 1.2);
-
-	// Halo lumineux en haut au centre
-	float halo = exp(-pow((UV.x - 0.5) * 3.0, 2.0)) * 0.4;
-	halo *= exp(-UV.y * 4.0);
-
-	// Pulsation organique
-	float pulsation = 1.0 + 0.12 * sin(TIME * 0.4) + 0.06 * sin(TIME * 1.1);
-
-	float alpha = (rayons * gradient + halo) * intensite * pulsation;
-	COLOR = vec4(couleur_rayon.rgb, clamp(alpha, 0.0, 1.0));
+	float fondu_haut = 1.0 - UV.y;
+	fondu_haut = pow(fondu_haut, 0.8);
+	float alpha = rayons * fondu_haut * intensite;
+	COLOR = vec4(couleur_rayon.rgb, alpha);
 }
