@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RewardData" format=3 uid="uid://cjdlo5ghbpxna"]
+
+[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_ljo1q"]
+
+[resource]
+script = ExtResource("1_ljo1q")
+reward_name = "Vigueur"
+target = 1
+stat = 1
+stat_amount = 30.0
+metadata/_custom_type_script = "uid://dy2rw6nbn2v4s"
