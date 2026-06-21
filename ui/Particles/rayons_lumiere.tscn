@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bklisc2gyx17o"]
+
+[ext_resource type="Shader" uid="uid://balrv7m0hnplt" path="res://asset/shaders/environment/rayons_lumiere.gdshader" id="1_u84dl"]
+[ext_resource type="Script" uid="uid://bp7j0h8ceupnt" path="res://ui/Particles/rayons_lumiere.gd" id="2_b7ltl"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u6spt"]
+shader = ExtResource("1_u84dl")
+shader_parameter/vitesse = 0.02
+shader_parameter/intensite = 0.3
+shader_parameter/nombre_rayons = 6.0
+shader_parameter/angle = 0.3
+shader_parameter/couleur_rayon = Color(1, 0.9, 0.6, 1)
+
+[node name="RayonsLumiere" type="Node2D" unique_id=1488296066]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=384321176]
+material = SubResource("ShaderMaterial_u6spt")
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_b7ltl")

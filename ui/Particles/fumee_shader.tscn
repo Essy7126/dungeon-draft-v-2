@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://cyw0qpasbtsb1"]
 
 [ext_resource type="Shader" uid="uid://pisw144a5bne" path="res://asset/shaders/environment/fumee.gdshader" id="1_fjvi6"]
-[ext_resource type="Script" uid="uid://bc7ksg36f8qsa" path="res://fumee_shader.gd" id="2_c8u0n"]
+[ext_resource type="Script" uid="uid://bc7ksg36f8qsa" path="res://ui/Particles/fumee_shader.gd" id="2_c8u0n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u6spt"]
 shader = ExtResource("1_fjvi6")
-shader_parameter/vitesse = 0.050000002375
-shader_parameter/echelle = 6.0000002375
-shader_parameter/densite = 0.800000038
-shader_parameter/couleur_fumee = Color(0.6, 0.6, 0.6, 1)
+shader_parameter/vitesse = 0.02000000095
+shader_parameter/echelle = 2.0000000475
+shader_parameter/densite = 0.6000000285
+shader_parameter/couleur_fumee = Color(0.53333336, 0.6, 0.6666667, 0.78431374)
 
 [node name="FumeeShader" type="Node2D" unique_id=1705253492]
 
