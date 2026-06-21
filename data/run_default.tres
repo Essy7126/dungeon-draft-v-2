@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RunData" format=3 uid="uid://dv8ycdf2npk6g"]
+
+[ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="1_08ibw"]
+[ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/run_data.gd" id="2_q32ko"]
+[ext_resource type="Resource" uid="uid://6ll6yf2b2wvt" path="res://data/rooms/salle_1.tres" id="2_u4g1q"]
+[ext_resource type="Resource" uid="uid://2jf8xpwsjmhb" path="res://data/rooms/salle_2.tres" id="3_cjd65"]
+[ext_resource type="Resource" uid="uid://drpkg3luyjmvd" path="res://data/rooms/salle_3.tres" id="4_ypbyj"]
+
+[resource]
+script = ExtResource("2_q32ko")
+run_name = "Run par défaut"
+rooms = Array[ExtResource("1_08ibw")]([ExtResource("2_u4g1q"), ExtResource("3_cjd65"), ExtResource("4_ypbyj")])
+metadata/_custom_type_script = "uid://cc8h5jsj5dk65"

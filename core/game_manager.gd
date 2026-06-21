@@ -24,17 +24,9 @@ const HERO_DATA_PATHS = [
 ]
 
 # La liste ordonnée des salles du run.
-const ROOM_PATHS = [
-	"res://data/rooms/salle_1.tres",
-	"res://data/rooms/salle_2.tres",
-	"res://data/rooms/salle_3.tres",
-]
+const RUN_DATA_PATH = "res://data/run_default.tres"
 
-const BATTLE_SCENES = [
-	"res://data/rooms/maps/battle_salle1.tscn",
-	"res://data/rooms/maps/battle_salle2.tscn",
-	"res://data/rooms/maps/battle_salle3.tscn",
-]
+
 
 # --- État du run (vivant pendant tout le run) ---
 var heroes: Array = []          # Array[Unit] — persistent, HP conservés
@@ -69,13 +61,11 @@ func _build_heroes() -> void:
 		heroes.append(Unit.from_data(data))
 
 func _load_rooms() -> void:
-	rooms.clear()
-	for path in ROOM_PATHS:
-		var room = load(path)
-		if room == null:
-			push_error("Salle introuvable : %s" % path)
-			continue
-		rooms.append(room)
+	var run_data: RunData = load(RUN_DATA_PATH)
+	if run_data == null:
+		push_error("RunData introuvable : %s" % RUN_DATA_PATH)
+		return
+	rooms = run_data.rooms.duplicate()
 
 # ============================================================
 # PROGRESSION ENTRE LES SALLES
@@ -92,11 +82,16 @@ func _go_to_next_room() -> void:
 		return
 
 	# On (re)charge la scène de combat pour la nouvelle salle.
-	get_tree().change_scene_to_file("res://ui/Transitionsalle.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://ui/Transitionsalle.tscn")
 
 # Appelé par Transitionsalle au clic sur "Continuer".
+# Appelé par Transitionsalle au clic sur "Continuer".
 func start_next_battle() -> void:
-	get_tree().change_scene_to_file(BATTLE_SCENES[current_room_index])
+	var room = get_current_room()
+	if room == null or room.battle_scene == null:
+		push_error("Aucune battle_scene assignée dans RoomData index %d" % current_room_index)
+		return
+	get_tree().change_scene_to_packed.call_deferred(room.battle_scene)
 # La salle en cours (lue par battle au démarrage).
 func get_current_room() -> RoomData:
 	if current_room_index < 0 or current_room_index >= rooms.size():

@@ -18,6 +18,7 @@ extends Resource
 
 @export var transition_image: Texture2D
 
+@export var battle_scene: PackedScene
 # Les ennemis présents dans cette salle.
 @export var enemies: Array[UnitData] = []
 
