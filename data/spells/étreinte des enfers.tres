@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://bb81wvxuigu6p"]
+
+[ext_resource type="Resource" uid="uid://uivi4lmktwep" path="res://data/status/poison.tres" id="1_1r0sq"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_lukfn"]
+
+[resource]
+script = ExtResource("1_lukfn")
+spell_name = "Étreinte des Enfers"
+ap_cost = 5
+spell_range = 2
+damage = 30
+damage_type = 0
+crit_chance = 0.15
+applied_status = ExtResource("1_1r0sq")
+metadata/_custom_type_script = "uid://bd5080ch70ymn"
