@@ -16,6 +16,9 @@ extends Resource
 
 @export var room_name: String = "Salle"
 
+@export var background_image: Texture2D
+
+@export var battle_scene: PackedScene
 # Les ennemis présents dans cette salle.
 @export var enemies: Array[UnitData] = []
 

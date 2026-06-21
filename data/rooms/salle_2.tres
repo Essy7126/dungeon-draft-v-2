@@ -1,12 +1,16 @@
 [gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://2jf8xpwsjmhb"]
 
+[ext_resource type="PackedScene" uid="uid://dfe0tghqlccuo" path="res://data/rooms/maps/battle_salle2.tscn" id="1_a62wb"]
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_g31o3"]
+[ext_resource type="Texture2D" uid="uid://3u7yx36rpq3l" path="res://asset/Background/Dungeon background cartoon 2d 1.jpg" id="1_u80w3"]
 [ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/gobelin.tres" id="2_a62wb"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_vkarx"]
 
 [resource]
 script = ExtResource("2_vkarx")
 room_name = "Salle 2"
+background_image = ExtResource("1_u80w3")
+battle_scene = ExtResource("1_a62wb")
 enemies = Array[ExtResource("1_g31o3")]([ExtResource("2_a62wb"), ExtResource("2_a62wb"), ExtResource("2_a62wb"), ExtResource("2_a62wb")])
-enemy_spawn_zone = Array[Vector2i]([Vector2i(13, 6), Vector2i(13, 0), Vector2i(12, 2), Vector2i(13, 3), Vector2i(13, 4)])
+enemy_spawn_zone = Array[Vector2i]([Vector2i(13, 6), Vector2i(12, 2), Vector2i(13, 3), Vector2i(13, 4), Vector2i(13, 1)])
 metadata/_custom_type_script = "uid://clm64nm8ki4yj"
