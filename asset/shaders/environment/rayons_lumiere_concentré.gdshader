@@ -1,18 +1,20 @@
 shader_type canvas_item;
-render_mode unshaded, blend_add;
 
-uniform float angle = -0.3;
-uniform float position = -0.2;
-uniform float spread : hint_range(0.0, 1.0) = 0.2;
-uniform float cutoff : hint_range(-1.0, 1.0) = 0.05;
-uniform float falloff : hint_range(0.0, 1.0) = 0.35;
-uniform float edge_fade : hint_range(0.0, 1.0) = 0.1;
-uniform float speed = 0.8;
-uniform float ray1_density = 12.0;
-uniform float ray2_density = 40.0;
+uniform float angle = 30.0;
+uniform float position : hint_range(-1.0, 1.0) = 0.0;
+uniform float spread : hint_range(0.0, 1.0) = 0.8;
+uniform float cutoff : hint_range(-1.0, 1.0) = 0.1;
+uniform float falloff : hint_range(0.0, 1.0) = 0.2;
+uniform float edge_fade : hint_range(0.0, 1.0) = 0.15;
+uniform float speed = 1.0;
+uniform float ray1_density = 6.0;
+uniform float ray2_density = 20.0;
 uniform float ray2_intensity : hint_range(0.0, 1.0) = 0.4;
-uniform vec4 color : source_color = vec4(1.0, 0.95, 0.8, 0.2);
+uniform vec4 color : source_color = vec4(1.0, 0.95, 0.7, 0.8);
+uniform bool hdr = false;
 uniform float seed = 5.0;
+
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 float random(vec2 _uv) {
 	_uv += min(TIME, 0.0);
@@ -31,7 +33,12 @@ float noise(in vec2 uv) {
 }
 
 mat2 rotate(float _angle) {
+	_angle = radians(_angle);
 	return mat2(vec2(cos(_angle), -sin(_angle)), vec2(sin(_angle), cos(_angle)));
+}
+
+vec4 screen(vec4 base, vec4 blend) {
+	return 1.0 - (1.0 - base) * (1.0 - blend);
 }
 
 void fragment() {
@@ -44,11 +51,18 @@ void fragment() {
 	ray1 *= cut;
 	ray2 *= cut;
 
-	float rays = clamp(noise(ray1) + (noise(ray2) * ray2_intensity), 0.0, 1.0);
+	float rays;
+	if (hdr) {
+		rays = noise(ray1) + (noise(ray2) * ray2_intensity);
+	} else {
+		rays = clamp(noise(ray1) + (noise(ray2) * ray2_intensity), 0.0, 1.0);
+	}
 
 	rays *= smoothstep(0.0, falloff, (1.0 - UV.y));
 	rays *= smoothstep(0.0 + cutoff, edge_fade + cutoff, transformed_uv.x);
 	rays *= smoothstep(0.0 + cutoff, edge_fade + cutoff, 1.0 - transformed_uv.x);
 
-	COLOR = vec4(color.rgb * rays, rays * color.a);
+	vec3 shine = screen(texture(SCREEN_TEXTURE, SCREEN_UV), vec4(color)).rgb;
+
+	COLOR = vec4(shine, rays * color.a);
 }
