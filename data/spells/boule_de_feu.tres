@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Spell" format=3 uid="uid://b87ak8kotokmw"]
 
-[ext_resource type="Texture2D" uid="uid://d1lofy3ruhg54" path="res://asset/icone/boule de feu.png" id="1_7k23c"]
+[ext_resource type="Texture2D" uid="uid://dt4yq5ppivne5" path="res://asset/icone/boule de feu.png" id="1_7k23c"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_y40te"]
 [ext_resource type="Resource" uid="uid://d135dg0elxcx5" path="res://data/terrain/lave.tres" id="2_jpltc"]
 

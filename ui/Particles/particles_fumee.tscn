@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://p2wk3o41o13e"]
 
-[ext_resource type="Texture2D" uid="uid://b61rlxt3cq0e5" path="res://asset/Background/smoke2.png" id="1_37d83"]
+[ext_resource type="Texture2D" uid="uid://cxp3rdkfidt7o" path="res://asset/Background/smoke1.png" id="1_37d83"]
 
 [sub_resource type="Curve" id="Curve_e0ps7"]
 _data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -14,18 +14,22 @@ particle_flag_disable_z = true
 emission_shape_scale = Vector3(1200, 1, 1)
 emission_shape = 3
 emission_box_extents = Vector3(1, 1, 1)
-angle_min = -19.99999
+angle_min = -44.99999
 angle_max = 45.00001
 angular_velocity_min = -30.000015
 angular_velocity_max = -30.000015
+orbit_velocity_min = 9.49949e-08
+orbit_velocity_max = 9.49949e-08
+radial_velocity_min = -2.2351742e-05
+radial_velocity_max = -2.2351742e-05
 gravity = Vector3(15, -60, 0)
-scale_min = 0.5
-scale_max = 3.0
+scale_min = 1.5
+scale_max = 4.0
 alpha_curve = SubResource("CurveTexture_i8faq")
 
 [node name="GPUParticles2D" type="GPUParticles2D" unique_id=592804033]
 position = Vector2(600, 896)
-amount = 30
+amount = 60
 texture = ExtResource("1_37d83")
-lifetime = 10.0
+lifetime = 12.0
 process_material = SubResource("ParticleProcessMaterial_7p856")
