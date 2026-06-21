@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://6ll6yf2b2wvt"]
 
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_0240p"]
+[ext_resource type="Texture2D" uid="uid://cl5f0vfll5e5k" path="res://asset/Background/Village background cartoon 2d-6.jpg" id="1_t5m7n"]
 [ext_resource type="PackedScene" uid="uid://607lpefu0v11" path="res://data/rooms/maps/battle_salle1.tscn" id="1_w42hg"]
 [ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/gobelin.tres" id="2_tdi8f"]
 [ext_resource type="Resource" uid="uid://bt1wphyv18e5k" path="res://data/units/mage_healer_gobelin.tres" id="3_tdi8f"]
@@ -9,6 +10,7 @@
 [resource]
 script = ExtResource("3_w42hg")
 room_name = "Salle 1"
+background_image = ExtResource("1_t5m7n")
 battle_scene = ExtResource("1_w42hg")
 enemies = Array[ExtResource("1_0240p")]([ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("3_tdi8f"), ExtResource("3_tdi8f")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(7, 11), Vector2i(6, 13), Vector2i(8, 11)])
