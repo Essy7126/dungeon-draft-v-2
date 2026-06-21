@@ -11,6 +11,6 @@ script = ExtResource("3_w42hg")
 room_name = "Salle 1"
 battle_scene = ExtResource("1_w42hg")
 enemies = Array[ExtResource("1_0240p")]([ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("3_tdi8f"), ExtResource("3_tdi8f")])
-hero_spawn_zone = Array[Vector2i]([Vector2i(2, 6), Vector2i(2, 8)])
+hero_spawn_zone = Array[Vector2i]([Vector2i(7, 11), Vector2i(6, 13), Vector2i(8, 11)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(17, 7), Vector2i(17, 4), Vector2i(17, 5), Vector2i(15, 7), Vector2i(17, 4), Vector2i(15, 5), Vector2i(18, 9)])
 metadata/_custom_type_script = "uid://clm64nm8ki4yj"

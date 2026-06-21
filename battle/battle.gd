@@ -1,6 +1,12 @@
 # battle/battle.gd
 # ============================================================
-# BATTLE — Chef d'orchestre. Combat complet : joueur + IA + terrain + statuts.
+# BATTLE — Chef d'orchestre d'UN combat.
+# Assemble : logique (grille, pathfinding, sorts, terrain, IA) + visuel
+# (grille, sprites, caméra) + contrôle (états de tour, barre d'action).
+#
+# RÔLE : gérer un seul combat, du spawn à la victoire/défaite.
+# Ce qu'il NE fait PAS : gérer le run (ça, c'est le GameManager).
+# Les héros sont EMPRUNTÉS au GameManager (ils persistent entre salles).
 # ============================================================
 
 extends Node2D
@@ -8,11 +14,10 @@ extends Node2D
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
 
-# La salle à charger. Pour l'instant on en assigne une en dur dans _ready.
-# Plus tard, le GameManager la fournira.
+# La salle est fournie par le GameManager au démarrage.
 @export var room_data: RoomData = null
 
-# Logique
+# --- Logique ---
 var grid: GridData
 var pathfinder: Pathfinder
 var spell_caster: SpellCaster
@@ -21,16 +26,16 @@ var enemy_ai: EnemyAI
 var turn_queue: TurnQueue
 var units: Array = []
 
-# Visuel
+# --- Visuel ---
 var grid_view: Node2D
 var camera: Camera2D
 var _unit_views: Dictionary = {}
 
-# Contrôle
+# --- Contrôle ---
 var turn_state: TurnState
 var action_bar: CanvasLayer
 
-# Fin de combat
+# --- Fin de combat ---
 var _battle_over: bool = false
 
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
@@ -38,23 +43,28 @@ const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
 const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
 const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
 
+# Durée d'affichage de l'écran de fin avant de rendre la main au run.
+const END_SCREEN_DELAY := 1.5
+
 func _ready() -> void:
+	# La salle vient du run en cours. On la lit AVANT de construire la logique,
+	# pour pouvoir, plus tard, adapter la grille à la salle si besoin.
+	room_data = GameManager.get_current_room()
+	if room_data == null:
+		push_error("Aucune salle fournie par le GameManager.")
+		return
+
 	_setup_logic()
 	_import_terrain_from_tilemap()
 	_setup_view()
 	_setup_camera()
 	_setup_ui()
 	_setup_state()
-	# La salle vient du run en cours.
-	room_data = GameManager.get_current_room()
-	if room_data == null:
-		push_error("Aucune salle fournie par le GameManager.")
-		return
 	_spawn_units()
 	_start_battle()
 
 # ============================================================
-# MISE EN PLACE
+# MISE EN PLACE — LOGIQUE
 # ============================================================
 
 func _setup_logic() -> void:
@@ -63,11 +73,12 @@ func _setup_logic() -> void:
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
 	enemy_ai = EnemyAI.new(grid, pathfinder, spell_caster)
-	# ============================================================
+
+# ============================================================
 # IMPORT DU TERRAIN DESSINÉ (TileMapLayer → GridData)
-# Lit le TileMapLayer "TerrainLayer" une fois au démarrage et
-# traduit chaque case en CellType logique via le custom data
-# "cell_type". Ensuite, GridData fait foi.
+# Lit le TileMapLayer "TerrainLayer" une fois au démarrage et traduit
+# chaque case en CellType logique via le custom data "cell_type".
+# Ensuite, GridData fait foi : plus personne ne lit le TileMap.
 # ============================================================
 
 func _import_terrain_from_tilemap() -> void:
@@ -96,6 +107,10 @@ func _cell_type_from_string(type_name: String) -> GridData.CellType:
 		"SHADOW": return GridData.CellType.SHADOW
 		"RUNE":   return GridData.CellType.RUNE
 		_:        return GridData.CellType.NORMAL
+
+# ============================================================
+# MISE EN PLACE — VISUEL & CONTRÔLE
+# ============================================================
 
 func _setup_view() -> void:
 	grid_view = Node2D.new()
@@ -137,55 +152,74 @@ func _setup_state() -> void:
 	turn_state.request_attack.connect(_on_request_attack)
 	turn_state.request_cast_spell.connect(_on_request_cast_spell)
 
+# ============================================================
+# SPAWN DES UNITÉS
+# ============================================================
+
 func _spawn_units() -> void:
 	units = []
 	_spawn_heroes()
 	_spawn_enemies()
 
-# --- Héros : placement auto pour l'instant (déploiement manuel plus tard) ---
-# --- Héros : EMPRUNTÉS au GameManager (persistent entre les salles) ---
-# --- Héros : EMPRUNTÉS au GameManager (persistent entre les salles) ---
+# --- Héros : EMPRUNTÉS au GameManager (persistent entre les salles). ---
+# Placement automatique pour l'instant.
+# POINT D'EXTENSION (à venir) : phase de déploiement manuel où le joueur
+# place lui-même ses héros dans hero_spawn_zone (la donnée est déjà prête).
 func _spawn_heroes() -> void:
-	# Zone de déploiement : vient de la salle, sinon défaut à gauche.
-	var zone = []
+	var zone: Array = []
 	if room_data != null and room_data.hero_spawn_zone.size() > 0:
 		zone = room_data.hero_spawn_zone.duplicate()
 	else:
 		zone = [Vector2i(2, 6), Vector2i(2, 8)]
 
-	# On récupère les héros vivants du run.
 	var run_heroes = GameManager.get_living_heroes()
 
-	# Placement auto sur les cases de la zone.
 	for i in run_heroes.size():
-		if i < zone.size():
-			var hero = run_heroes[i]
-			# On recharge PA/PM pour le nouveau combat,
-			# mais PAS les HP (pas de regen entre les salles).
-			hero.current_ap = hero.max_ap.get_int()
-			hero.current_mp = hero.max_mp.get_int()
-			_place(hero, zone[i])
-			units.append(hero)
+		if i >= zone.size():
+			push_warning("Pas assez de cases dans hero_spawn_zone pour tous les héros.")
+			break
+		var hero = run_heroes[i]
+		# On recharge PA/PM pour le nouveau combat, mais PAS les HP
+		# (pas de regen entre les salles : c'est le pilier de design).
+		hero.current_ap = hero.max_ap.get_int()
+		hero.current_mp = hero.max_mp.get_int()
+		var spawn_cell = _resolve_spawn_cell(zone, hero.unit_name)
+		if spawn_cell == Vector2i(-1, -1):
+			continue
+		_place(hero, spawn_cell)
+		units.append(hero)
 
-# --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone ---
+# --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone. ---
 func _spawn_enemies() -> void:
 	if room_data == null:
 		push_warning("Aucune RoomData assignée : pas d'ennemis.")
 		return
 
-	# On copie la zone pour piocher dedans sans répétition.
 	var available = room_data.enemy_spawn_zone.duplicate()
 	available.shuffle()
 
-	var index = 0
 	for enemy_data in room_data.enemies:
-		if index >= available.size():
-			push_warning("Pas assez de cases dans enemy_spawn_zone pour tous les ennemis.")
+		if enemy_data == null:
+			push_warning("Un ennemi de la salle est null : ignoré.")
+			continue
+		var spawn_cell = _resolve_spawn_cell(available, enemy_data.unit_name)
+		if spawn_cell == Vector2i(-1, -1):
+			push_warning("Plus de case libre pour %s." % enemy_data.unit_name)
 			break
 		var enemy = Unit.from_data(enemy_data)
-		_place(enemy, available[index])
+		_place(enemy, spawn_cell)
 		units.append(enemy)
-		index += 1
+
+# Pioche la première case LIBRE d'une liste (et la retire de la liste).
+# "Libre" = valide, marchable, et sans unité dessus.
+# Évite toute superposition d'unités. Modifie la liste passée (pop).
+func _resolve_spawn_cell(pool: Array, who: String) -> Vector2i:
+	while not pool.is_empty():
+		var candidate = pool.pop_front()
+		if grid.is_valid(candidate) and not grid.has_unit(candidate) \
+				and grid.is_walkable(candidate):
+			return candidate
+	return Vector2i(-1, -1)
 
 func _place(unit: Unit, pos: Vector2i) -> void:
 	grid.set_unit(pos, unit)
@@ -221,7 +255,7 @@ func _on_turn_started(unit: Unit) -> void:
 	# 2. Statuts : applique leurs effets (poison, regen, slow, stun).
 	var is_stunned = unit.process_statuses()
 
-	# 3. Morte des dégâts (terrain ou poison) ?
+	# 3. Mort des dégâts (terrain ou poison) en début de tour ?
 	if not unit.is_alive:
 		unit.tick_statuses()
 		if not _battle_over:
@@ -270,6 +304,9 @@ func _run_enemy_turn(enemy: Unit) -> void:
 	for action in plan:
 		if _battle_over:
 			return
+		# Sécurité : une action précédente a pu tuer l'ennemi (réaction de terrain).
+		if not enemy.is_alive:
+			return
 		match action["type"]:
 			"move":
 				await _execute_ai_move(enemy, action["path"])
@@ -278,6 +315,7 @@ func _run_enemy_turn(enemy: Unit) -> void:
 			"cast":
 				await _execute_ai_cast(enemy, action["spell"], action["cell"])
 		await get_tree().create_timer(0.2).timeout
+
 func _execute_ai_cast(enemy: Unit, spell: Spell, cell: Vector2i) -> void:
 	if enemy.current_ap < spell.ap_cost:
 		return
@@ -286,7 +324,6 @@ func _execute_ai_cast(enemy: Unit, spell: Spell, cell: Vector2i) -> void:
 	enemy.spend_ap(spell.ap_cost)
 	spell_caster.cast(enemy, spell, cell)
 	grid_view.queue_redraw()
-	# Petite pause pour que l'effet soit visible.
 	await get_tree().create_timer(0.3).timeout
 
 func _execute_ai_move(enemy: Unit, path: Array) -> void:
@@ -399,19 +436,31 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	turn_state.end_animating()
 	action_bar.update_info(unit)
 
+# Animation de déplacement BLINDÉE contre les objets détruits.
+# Une unité peut mourir en cours de route (lave via on_enter_cell) : on
+# vérifie is_instance_valid(view) ET unit.is_alive avant/après chaque await.
+# Sans ça : erreur "Freed Object" + tour figé (cause des freezes passés).
 func _animate_move(unit: Unit, path: Array) -> void:
-	var view = _unit_views[unit]
+	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
 	for i in range(1, path.size()):
+		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.
+		if not unit.is_alive or not is_instance_valid(view):
+			return
 		var from_pos = grid_view.grid_to_world(path[i - 1])
 		var target_pos = grid_view.grid_to_world(path[i])
-		if is_instance_valid(view):
-			view.face_direction(from_pos, target_pos)
+		view.face_direction(from_pos, target_pos)
 		var tween = create_tween()
 		tween.tween_property(view, "position", target_pos, 0.15)
 		await tween.finished
+		# La vue a pu être libérée pendant l'await.
+		if not is_instance_valid(view):
+			return
 		terrain_effects.on_enter_cell(unit, path[i])
+		# on_enter_cell a pu tuer l'unité (lave) : on stoppe le déplacement.
+		if not unit.is_alive:
+			return
 
 # ============================================================
 # INTENTIONS — ATTAQUE
@@ -453,8 +502,9 @@ func _on_request_attack(cell: Vector2i) -> void:
 	turn_state.end_animating()
 	action_bar.update_info(unit)
 
+# Animation d'attaque BLINDÉE (accès .get() + vérif de validité).
 func _animate_attack(unit: Unit, target: Unit) -> void:
-	var view = _unit_views[unit]
+	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
 	var start = grid_view.grid_to_world(unit.grid_pos)
@@ -492,7 +542,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	action_bar.set_active_mode("")
 
 # ============================================================
-# FIN DE COMBAT
+# ÉVÉNEMENTS DE COMBAT
 # ============================================================
 
 func _on_round_started(number: int) -> void:
@@ -515,6 +565,11 @@ func _check_battle_end() -> void:
 	elif enemies_alive == 0:
 		_end_battle(true)
 
+# ============================================================
+# FIN DE COMBAT
+# Prévient le GameManager, qui orchestre la suite (transition + salle).
+# ============================================================
+
 func _end_battle(victory: bool) -> void:
 	if _battle_over:
 		return
@@ -523,12 +578,13 @@ func _end_battle(victory: bool) -> void:
 	action_bar.set_player_controls_enabled(false)
 	_show_end_screen(victory)
 
-	# On laisse le joueur voir l'écran un instant, puis on prévient le run.
-	await get_tree().create_timer(1.5).timeout
+	# On laisse voir l'écran un instant, puis on rend la main au run.
+	await get_tree().create_timer(END_SCREEN_DELAY).timeout
 	if victory:
 		GameManager.on_battle_won()
 	else:
 		GameManager.on_battle_lost()
+
 func _show_end_screen(victory: bool) -> void:
 	var layer = CanvasLayer.new()
 	add_child(layer)
