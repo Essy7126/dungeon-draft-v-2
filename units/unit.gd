@@ -10,6 +10,7 @@ extends RefCounted
 var unit_name: String = "Sans nom"
 var team: int = 0
 var ai_behavior: int = 0
+var boss_behavior = null
 
 # --- Stats max (modifiables) ---
 var max_hp: Stat
@@ -75,6 +76,9 @@ static func from_data(data: UnitData) -> Unit:
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
 	u.ai_behavior = data.ai_behavior
+	# On DUPLIQUE le comportement : chaque boss a son propre état (compteur
+	# de tours, enrage...), sinon deux boss partageraient le même.
+	u.boss_behavior = data.boss_behavior.duplicate() if data.boss_behavior != null else null
 	for spell in data.spells:
 		u.add_spell(spell)
 	return u
