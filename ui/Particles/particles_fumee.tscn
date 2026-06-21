@@ -15,9 +15,12 @@ emission_shape_scale = Vector3(1200, 1, 1)
 emission_shape = 3
 emission_box_extents = Vector3(1, 1, 1)
 angle_min = -19.99999
-angle_max = 50.00001
-gravity = Vector3(0, -60, 0)
-scale_max = 2.0
+angle_max = 45.00001
+angular_velocity_min = -30.000015
+angular_velocity_max = -30.000015
+gravity = Vector3(15, -60, 0)
+scale_min = 0.5
+scale_max = 3.0
 alpha_curve = SubResource("CurveTexture_i8faq")
 
 [node name="GPUParticles2D" type="GPUParticles2D" unique_id=592804033]
