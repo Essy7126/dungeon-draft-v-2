@@ -12,9 +12,7 @@
 #   - il ne stocke aucun état local de combat (turn_queue, highlights...)
 # On garde ce manager "boring" : il transporte, il ne joue pas.
 # ============================================================
-
 extends Node
-
 # --- Configuration du run ---
 # Les UnitData des héros du joueur (en dur pour l'instant ;
 # viendra de la sélection d'équipe plus tard).
@@ -22,34 +20,29 @@ const HERO_DATA_PATHS = [
 	"res://data/units/chevalier.tres",
 	"res://data/units/mage.tres",
 ]
-
 # La liste ordonnée des salles du run.
-const RUN_DATA_PATH = "res://data/run_default.tres"
-
-
 
 # --- État du run (vivant pendant tout le run) ---
 var heroes: Array = []          # Array[Unit] — persistent, HP conservés
 var rooms: Array = []           # Array[RoomData]
 var current_room_index: int = -1
 var run_active: bool = false
-
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
 signal run_lost
 signal room_cleared(index)
-
 # ============================================================
 # DÉMARRAGE D'UN RUN
 # ============================================================
-
-func start_run() -> void:
+func start_run(run_data: RunData) -> void:
+	if run_data == null:
+		push_error("Aucun RunData fourni.")
+		return
 	_build_heroes()
-	_load_rooms()
+	rooms = run_data.rooms.duplicate()
 	current_room_index = -1
 	run_active = true
 	_go_to_next_room()
-
 # Crée les héros UNE fois pour tout le run.
 func _build_heroes() -> void:
 	heroes.clear()
@@ -60,30 +53,19 @@ func _build_heroes() -> void:
 			continue
 		heroes.append(Unit.from_data(data))
 
-func _load_rooms() -> void:
-	var run_data: RunData = load(RUN_DATA_PATH)
-	if run_data == null:
-		push_error("RunData introuvable : %s" % RUN_DATA_PATH)
-		return
-	rooms = run_data.rooms.duplicate()
-
 # ============================================================
 # PROGRESSION ENTRE LES SALLES
 # ============================================================
-
 # Passe à la salle suivante, ou termine le run s'il n'y en a plus.
 func _go_to_next_room() -> void:
 	current_room_index += 1
-
 	# Plus de salle = run gagné.
 	if current_room_index >= rooms.size():
 		run_active = false
 		run_won.emit()
 		return
-
 	# On (re)charge la scène de combat pour la nouvelle salle.
 	get_tree().change_scene_to_file.call_deferred("res://ui/Transitionsalle.tscn")
-
 # Appelé par Transitionsalle au clic sur "Continuer".
 # Appelé par Transitionsalle au clic sur "Continuer".
 func start_next_battle() -> void:
@@ -97,21 +79,18 @@ func get_current_room() -> RoomData:
 	if current_room_index < 0 or current_room_index >= rooms.size():
 		return null
 	return rooms[current_room_index]
-
 # Appelé par battle quand le joueur GAGNE le combat.
 func on_battle_won() -> void:
 	room_cleared.emit(current_room_index)
 	_go_to_next_room()
-
 # Appelé par battle quand le joueur PERD le combat.
 func on_battle_lost() -> void:
 	run_active = false
 	run_lost.emit()
-
 # ============================================================
 # LECTURE DES HÉROS (par battle)
 # ============================================================
-
 # Les héros encore vivants, à déployer dans la salle.
 func get_living_heroes() -> Array:
 	return heroes.filter(func(u): return u.is_alive)
+	
