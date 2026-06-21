@@ -38,6 +38,16 @@ var action_bar: CanvasLayer
 # --- Fin de combat ---
 var _battle_over: bool = false
 
+# --- Phase de déploiement (placement manuel des héros, façon Dofus) ---
+# Le joueur place ses héros un par un, dans l'ordre imposé, sur les cases
+# illuminées de hero_spawn_zone, AVANT que le combat ne démarre.
+var _deploying: bool = false
+var _heroes_to_place: Array = []        # héros restant à placer (ordre imposé)
+var _deploy_zone: Array = []            # toutes les cases de placement valides
+var _deployed: Array = []               # historique : [{ "unit":Unit, "cell":Vector2i }]
+var _deploy_ui: CanvasLayer = null      # label + bouton "Annuler" pendant la phase
+var _deploy_label: Label = null
+
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
 const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
@@ -60,8 +70,10 @@ func _ready() -> void:
 	_setup_camera()
 	_setup_ui()
 	_setup_state()
+	# _spawn_units() pose les ennemis puis lance la phase de déploiement.
+	# C'est la fin du déploiement (ou le secours auto) qui appellera
+	# _start_battle() : on ne le lance donc PAS directement ici.
 	_spawn_units()
-	_start_battle()
 
 # ============================================================
 # MISE EN PLACE — LOGIQUE
@@ -158,36 +170,191 @@ func _setup_state() -> void:
 
 func _spawn_units() -> void:
 	units = []
-	_spawn_heroes()
+	# Les ennemis sont posés automatiquement (placement aléatoire dans leur zone).
 	_spawn_enemies()
+	# Les héros, eux, sont placés PAR LE JOUEUR (phase de déploiement).
+	_start_deployment()
 
-# --- Héros : EMPRUNTÉS au GameManager (persistent entre les salles). ---
-# Placement automatique pour l'instant.
-# POINT D'EXTENSION (à venir) : phase de déploiement manuel où le joueur
-# place lui-même ses héros dans hero_spawn_zone (la donnée est déjà prête).
-func _spawn_heroes() -> void:
+# ============================================================
+# PHASE DE DÉPLOIEMENT (placement manuel des héros, façon Dofus)
+# ------------------------------------------------------------
+# Flux : les cases de hero_spawn_zone s'illuminent → le joueur clique
+# pour poser chaque héros (ordre imposé) → quand tous sont placés, le
+# combat démarre. Un label indique qui placer ; un bouton "Annuler"
+# reprend le dernier héros posé.
+#
+# La donnée vient de RoomData.hero_spawn_zone. On ne place RIEN ici tant
+# que le joueur n'a pas cliqué : le turn_queue ne démarre qu'à la fin.
+# ============================================================
+
+func _start_deployment() -> void:
+	# Héros à placer (vivants, empruntés au GameManager), dans l'ordre.
+	_heroes_to_place = GameManager.get_living_heroes().duplicate()
+	_deployed = []
+
+	# Zone de placement : on ne garde que les cases réellement utilisables.
 	var zone: Array = []
 	if room_data != null and room_data.hero_spawn_zone.size() > 0:
 		zone = room_data.hero_spawn_zone.duplicate()
 	else:
 		zone = [Vector2i(2, 6), Vector2i(2, 8)]
 
-	var run_heroes = GameManager.get_living_heroes()
+	_deploy_zone = []
+	for cell in zone:
+		if grid.is_valid(cell) and grid.is_walkable(cell):
+			_deploy_zone.append(cell)
 
-	for i in run_heroes.size():
-		if i >= zone.size():
-			push_warning("Pas assez de cases dans hero_spawn_zone pour tous les héros.")
-			break
-		var hero = run_heroes[i]
-		# On recharge PA/PM pour le nouveau combat, mais PAS les HP
-		# (pas de regen entre les salles : c'est le pilier de design).
+	# Cas dégénéré : aucun héros, ou pas assez de cases pour les placer.
+	# On ne reste pas coincé : on prévient et on démarre le combat tel quel.
+	if _heroes_to_place.is_empty():
+		push_warning("Déploiement : aucun héros à placer.")
+		_start_battle()
+		return
+	if _deploy_zone.size() < _heroes_to_place.size():
+		push_warning("Déploiement : pas assez de cases (%d) pour %d héros. Placement auto de secours." \
+				% [_deploy_zone.size(), _heroes_to_place.size()])
+		_deploy_fallback_auto()
+		return
+
+	_deploying = true
+	_build_deploy_ui()
+	_refresh_deploy()
+
+# --- Secours : si la zone est trop petite, on place automatiquement. ---
+# Garantit qu'on n'a JAMAIS un combat sans héros (sinon boucle infinie).
+func _deploy_fallback_auto() -> void:
+	var pool = _deploy_zone.duplicate()
+	for hero in _heroes_to_place:
 		hero.current_ap = hero.max_ap.get_int()
 		hero.current_mp = hero.max_mp.get_int()
-		var spawn_cell = _resolve_spawn_cell(zone, hero.unit_name)
-		if spawn_cell == Vector2i(-1, -1):
+		var cell = _resolve_spawn_cell(pool, hero.unit_name)
+		if cell == Vector2i(-1, -1):
 			continue
-		_place(hero, spawn_cell)
+		_place(hero, cell)
 		units.append(hero)
+	_heroes_to_place = []
+	_start_battle()
+
+# --- Rafraîchit l'affichage : cases libres illuminées + label. ---
+func _refresh_deploy() -> void:
+	_highlight_deploy_zone()
+	_update_deploy_label()
+
+# Illumine en bleu les cases de déploiement encore libres.
+func _highlight_deploy_zone() -> void:
+	grid_view.clear_highlights()
+	var free_cells: Array = []
+	for cell in _deploy_zone:
+		if not grid.has_unit(cell):
+			free_cells.append(cell)
+	grid_view.highlight(free_cells, SPELL_COLOR)
+
+# Appelé quand le joueur clique une case pendant le déploiement.
+func _on_deploy_click(cell: Vector2i) -> void:
+	if _heroes_to_place.is_empty():
+		return
+	# La case doit appartenir à la zone et être libre.
+	if not _deploy_zone.has(cell):
+		return
+	if grid.has_unit(cell):
+		return
+
+	# Place le héros courant (ordre imposé : le premier de la liste).
+	var hero = _heroes_to_place.pop_front()
+	hero.current_ap = hero.max_ap.get_int()
+	hero.current_mp = hero.max_mp.get_int()
+	_place(hero, cell)
+	units.append(hero)
+	_deployed.append({ "unit": hero, "cell": cell })
+
+	# Tous placés ? On termine. Sinon on passe au suivant.
+	if _heroes_to_place.is_empty():
+		_end_deployment()
+	else:
+		_refresh_deploy()
+
+# --- Annule le dernier placement (bouton "Annuler"). ---
+func _undo_last_deploy() -> void:
+	if _deployed.is_empty():
+		return
+	var last = _deployed.pop_back()
+	var hero: Unit = last["unit"]
+	var cell: Vector2i = last["cell"]
+
+	# On retire le héros de la grille, de la vue et de la liste des unités.
+	grid.clear_unit(cell)
+	if hero.died.is_connected(_on_unit_died):
+		hero.died.disconnect(_on_unit_died)
+	var view = _unit_views.get(hero)
+	if is_instance_valid(view):
+		view.queue_free()
+	_unit_views.erase(hero)
+	units.erase(hero)
+
+	# Le héros repasse en tête de file (il sera le prochain à placer).
+	_heroes_to_place.push_front(hero)
+	_refresh_deploy()
+
+func _end_deployment() -> void:
+	_deploying = false
+	grid_view.clear_highlights()
+	_destroy_deploy_ui()
+	_start_battle()
+
+# ============================================================
+# UI DE DÉPLOIEMENT (label + bouton Annuler, construits en code)
+# Volontairement simple. Plus tard, ça pourra devenir une vraie scène.
+# ============================================================
+
+func _build_deploy_ui() -> void:
+	_deploy_ui = CanvasLayer.new()
+	add_child(_deploy_ui)
+
+	var panel = PanelContainer.new()
+	panel.anchor_left = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_top = 0.0
+	panel.offset_left = -220
+	panel.offset_right = 220
+	panel.offset_top = 16
+	_deploy_ui.add_child(panel)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+
+	_deploy_label = Label.new()
+	_deploy_label.add_theme_font_size_override("font_size", 20)
+	_deploy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(_deploy_label)
+
+	var hint = Label.new()
+	hint.text = "Cliquez une case bleue pour placer ce héros."
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+	vbox.add_child(hint)
+
+	var undo_btn = Button.new()
+	undo_btn.text = "Annuler le dernier placement"
+	undo_btn.pressed.connect(_undo_last_deploy)
+	vbox.add_child(undo_btn)
+
+func _update_deploy_label() -> void:
+	if _deploy_label == null:
+		return
+	if _heroes_to_place.is_empty():
+		_deploy_label.text = ""
+		return
+	var hero = _heroes_to_place[0]
+	var total = GameManager.get_living_heroes().size()
+	var current = total - _heroes_to_place.size() + 1
+	_deploy_label.text = "Placez : %s  (%d/%d)" % [hero.unit_name, current, total]
+
+func _destroy_deploy_ui() -> void:
+	if is_instance_valid(_deploy_ui):
+		_deploy_ui.queue_free()
+	_deploy_ui = null
+	_deploy_label = null
 
 # --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone. ---
 func _spawn_enemies() -> void:
@@ -235,6 +402,25 @@ func _create_unit_view(unit: Unit) -> void:
 	_unit_views[unit] = view
 
 func _start_battle() -> void:
+	# Garde-fou : on ne lance JAMAIS un combat avec une équipe vide.
+	# Sans héros, aucune mort ne survient, donc _check_battle_end() n'est
+	# jamais déclenché et les ennemis tourneraient en boucle à l'infini.
+	var heroes_count := 0
+	var enemies_count := 0
+	for u in units:
+		if u.team == 0:
+			heroes_count += 1
+		else:
+			enemies_count += 1
+	if heroes_count == 0:
+		push_error("Aucun héros dans le combat : défaite immédiate (évite la boucle infinie).")
+		_end_battle(false)
+		return
+	if enemies_count == 0:
+		push_warning("Aucun ennemi dans la salle : victoire immédiate.")
+		_end_battle(true)
+		return
+
 	turn_queue = TurnQueue.new()
 	turn_queue.setup(units)
 	turn_queue.turn_started.connect(_on_turn_started)
@@ -384,6 +570,10 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
+	# Pendant le déploiement, les clics servent à placer les héros.
+	if _deploying:
+		_on_deploy_click(cell)
+		return
 	turn_state.on_cell_clicked(cell)
 
 func _on_cell_hovered(cell: Vector2i) -> void:
