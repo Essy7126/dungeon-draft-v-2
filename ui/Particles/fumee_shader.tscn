@@ -5,10 +5,10 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u6spt"]
 shader = ExtResource("1_fjvi6")
-shader_parameter/vitesse = 0.02000000095
-shader_parameter/echelle = 2.0000000475
-shader_parameter/densite = 0.6000000285
-shader_parameter/couleur_fumee = Color(0.53333336, 0.6, 0.6666667, 0.78431374)
+shader_parameter/vitesse = 0.04800000228
+shader_parameter/echelle = 3.750000130625
+shader_parameter/densite = 0.494000023465
+shader_parameter/couleur_fumee = Color(1, 1, 1, 1)
 
 [node name="FumeeShader" type="Node2D" unique_id=1705253492]
 

@@ -36,6 +36,6 @@ float fbm(vec2 p) {
 void fragment() {
 	vec2 p = UV * echelle + vec2(TIME * vitesse, TIME * vitesse * 0.3);
 	float n = fbm(p + fbm(p + fbm(p)));
-	float alpha = clamp(n * densite * 2.0, 0.0, 1.0);
+	float alpha = clamp(n * densite * 4.0, 0.0, 1.0);
 	COLOR = vec4(couleur_fumee.rgb, alpha);
 }
