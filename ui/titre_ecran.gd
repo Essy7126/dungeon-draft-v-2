@@ -9,13 +9,11 @@ extends Node2D
 @onready var bouton_continuer: Button = $UI/Boutons/BoutonContinuer
 @onready var bouton_quitter: Button = $UI/Boutons/BoutonQuitter
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var fumee_shader: Node2D = $Fond/FumeeShader
 
 var _run_default: RunData = preload("res://data/runs/run_default.tres")
 
 
 func _ready() -> void:
-	fumee_shader.modulate.a = 0.0
 	bouton_nouvelle_partie.pressed.connect(_on_nouvelle_partie)
 	bouton_continuer.pressed.connect(_on_continuer)
 	bouton_quitter.pressed.connect(_on_quitter)
