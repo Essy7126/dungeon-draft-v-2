@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://d2bk38v2imbvv"]
+
+[ext_resource type="Script" uid="uid://dp3bl1y8mrd68" path="res://ui/fondu.gd" id="1_ql5iu"]
+
+[node name="Fondu" type="CanvasLayer" unique_id=342689948]
+layer = 128
+script = ExtResource("1_ql5iu")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1769985293]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

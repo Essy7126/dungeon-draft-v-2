@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://bwyukygilkgot"]
+
+[sub_resource type="GDScript" id="GDScript_ck3cw"]
+script/source = "extends Node2D
+
+@onready var bouton_nouvelle_partie: Button = $UI/Boutons/BoutonNouvellePartie
+@onready var bouton_continuer: Button = $UI/Boutons/BoutonContinuer
+@onready var bouton_quitter: Button = $UI/Boutons/BoutonQuitter
+
+
+func _ready() -> void:
+	bouton_nouvelle_partie.pressed.connect(_on_nouvelle_partie)
+	bouton_continuer.pressed.connect(_on_continuer)
+	bouton_quitter.pressed.connect(_on_quitter)
+	call_deferred(\"_demarrer_intro\")
+
+
+func _demarrer_intro() -> void:
+	pass
+
+
+func _on_nouvelle_partie() -> void:
+	pass
+
+
+func _on_continuer() -> void:
+	pass
+
+
+func _on_quitter() -> void:
+	get_tree().quit()
+"
+
+[node name="EcranTitreBase" type="Node2D" unique_id=1669852402]
+script = SubResource("GDScript_ck3cw")
+
+[node name="Fond" type="Node2D" parent="." unique_id=1223249741]
+
+[node name="Decor" type="Sprite2D" parent="Fond" unique_id=1761991838]
+
+[node name="CoucheEffets" type="Node2D" parent="Fond" unique_id=516069480]
+
+[node name="CouchePersonnages" type="Node2D" parent="Fond" unique_id=315262203]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1494018769]
+layer = 10
+
+[node name="Logo" type="TextureRect" parent="UI" unique_id=1216611059]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Boutons" type="VBoxContainer" parent="UI" unique_id=1475692661]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BoutonNouvellePartie" type="Button" parent="UI/Boutons" unique_id=2051366516]
+layout_mode = 2
+
+[node name="BoutonContinuer" type="Button" parent="UI/Boutons" unique_id=774008379]
+layout_mode = 2
+
+[node name="BoutonQuitter" type="Button" parent="UI/Boutons" unique_id=2044655594]
+layout_mode = 2
