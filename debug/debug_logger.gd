@@ -50,7 +50,7 @@ const LEVEL_COLORS := {
 }
 
 # Config
-var min_level: LogLevel = LogLevel.DEBUG
+var min_level: LogLevel = LogLevel.TRACE
 var enabled_categories: Dictionary = {}  # LogCategory -> bool
 var max_entries: int = 200
 

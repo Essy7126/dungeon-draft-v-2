@@ -7,6 +7,5 @@ script = ExtResource("1_tx0ik")
 spell_name = "tombeau fleuri"
 ap_cost = 4
 spell_range = 12
-aoe_shape = 1
 damage = 22
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

@@ -18,6 +18,7 @@ func _ready() -> void:
 	_build_category_buttons()
 	_build_level_filter()
 	_refresh_log()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	DebugLogger.log_added.connect(_on_log_added)
 
 func _input(event: InputEvent) -> void:
@@ -76,6 +77,8 @@ func _add_label(entry: Dictionary) -> void:
 	lbl.bbcode_enabled = true
 	lbl.fit_content = true
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+	lbl.custom_minimum_size = Vector2(470, 0)          # ← largeur fixe : le texte a la place de s'afficher
+	lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL  # ← remplit la largeur dispo
 
 	var color: Color = DebugLogger.LEVEL_COLORS[entry.level]
 	var hex: String = "#%s" % color.to_html(false)

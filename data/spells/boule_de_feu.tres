@@ -13,5 +13,6 @@ can_target_free_cell = true
 aoe_shape = 1
 aoe_size = 2
 damage = 400
+element = 1
 terrain_effect = ExtResource("2_jpltc")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

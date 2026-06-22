@@ -2,6 +2,10 @@
 # ============================================================
 # SPELL CASTER — Moteur d'exécution des sorts. Logique pure.
 # Ciblage flexible + AOE + pose d'effets de terrain via TerrainEffects.
+#
+# Émet des logs SPELL (lancement, cibles, résumé). Le DÉTAIL des dégâts
+# et soins est déjà loggé par Unit (take_damage / heal / apply_status) :
+# on ne le duplique pas ici, on annonce le sort et on résume.
 # ============================================================
 
 class_name SpellCaster
@@ -10,6 +14,8 @@ extends RefCounted
 var _grid: GridData
 var _pathfinder: Pathfinder
 var _terrain: TerrainEffects
+
+const CAT_SPELL := DebugLogger.LogCategory.SPELL
 
 func _init(grid: GridData, pathfinder: Pathfinder, terrain: TerrainEffects) -> void:
 	_grid = grid
@@ -78,17 +84,36 @@ func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 
 # --- Exécution (avec AOE) ---
 func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
+	# Annonce du sort (vu par le joueur).
+	DebugLogger.info(CAT_SPELL, "%s lance %s sur %s" % [
+		caster.unit_name, spell.spell_name, str(cell)], {
+		"PA": spell.ap_cost,
+		"portée": spell.spell_range,
+		"zone": spell.aoe_size if spell.aoe_shape != Spell.AoeShape.SINGLE else 0,
+	})
+
 	var report = {
 		"caster": caster, "spell": spell, "cell": cell,
-		"affected_units": [], "terrain_changed": [],
+		"affected_units": [], "terrain_changed": [], "crits": [], "dodges": [],
 	}
 	var affected_cells = get_aoe_cells(spell, cell)
 	for target_cell in affected_cells:
 		var target = _grid.get_unit(target_cell)
 		if target != null:
 			var affected = false
+			# Dégâts : passent par le resolver (armure, résist, crit, esquive).
+			# On transmet l'attaquant + le type du sort. Le crit du sort
+			# s'ajoute au crit de l'attaquant via bonus_crit_chance.
 			if spell.deals_damage():
-				target.take_damage(spell.damage)
+				var result = target.take_damage(
+					spell.damage, caster,
+					spell.damage_type, spell.element,
+					{ "bonus_crit_chance": spell.crit_chance })
+				if result != null:
+					if result.is_crit:
+						report["crits"].append(target)
+					if result.dodged:
+						report["dodges"].append(target)
 				affected = true
 			if spell.is_healing():
 				target.heal(spell.heal)
@@ -101,4 +126,14 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 		if spell.has_terrain_effect():
 			_terrain.place_effect(target_cell, spell.terrain_effect)
 			report["terrain_changed"].append(target_cell)
+
+	# Résumé du sort (combien d'unités touchées, combien de cases de terrain).
+	var hit_names: Array = []
+	for u in report["affected_units"]:
+		hit_names.append(u.unit_name)
+	DebugLogger.debug(CAT_SPELL, "%s : %d unité(s) touchée(s), %d case(s) de terrain" % [
+		spell.spell_name, report["affected_units"].size(), report["terrain_changed"].size()], {
+		"cibles": hit_names,
+	})
+
 	return report

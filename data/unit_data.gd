@@ -34,6 +34,33 @@ extends Resource
 @export var attack_power: int = 20
 
 # ============================================================
+# DÉFENSE (Couche 1)
+# ============================================================
+
+@export_group("Défense")
+# Armure : mitigation des dégâts PHYSIQUES. Formule à rendement
+# décroissant (armure/(armure+100)) : 100 → 50%, 200 → 66%. Jamais 100%.
+@export var armure: float = 0.0
+# Résistance magique : idem pour les dégâts MAGIQUES.
+@export var resist_magique: float = 0.0
+# Esquive : proba (0.0–1.0) d'annuler complètement un coup.
+@export_range(0.0, 1.0) var esquive: float = 0.0
+# Résistances élémentaires : dictionnaire { Spell.Element → pourcentage }.
+# Ex : { 1: 0.5 } = -50% de dégâts de feu (FIRE=1 dans l'enum Spell.Element).
+# Valeur négative = vulnérabilité. Ne remplis que les éléments utiles.
+@export var resistances: Dictionary = {}
+
+# ============================================================
+# CRITIQUE (Couche 1)
+# ============================================================
+
+@export_group("Critique")
+# Chance de critique de base de l'unité (0.0–1.0). S'ajoute au crit du sort.
+@export_range(0.0, 1.0) var crit_chance: float = 0.0
+# Multiplicateur de dégâts en cas de critique.
+@export var crit_multi: float = 1.5
+
+# ============================================================
 # APPARENCE
 # ============================================================
 

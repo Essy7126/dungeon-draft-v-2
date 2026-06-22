@@ -15,7 +15,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7redg")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -23,16 +23,9 @@ animations = [{
 [resource]
 script = ExtResource("1_m7lpr")
 unit_name = "Gobelin"
-description = null
 team = 1
-max_hp = null
-initiative = null
-max_ap = null
-max_mp = null
-attack_power = null
+resist_magique = 250.0
+esquive = 0.2
 sprite_frames = SubResource("SpriteFrames_stemn")
-sprite_scale = null
-idle_animation = null
 spells = Array[ExtResource("2_3acek")]([ExtResource("3_7redg")])
-ai_behavior = null
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

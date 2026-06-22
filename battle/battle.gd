@@ -529,7 +529,11 @@ func _execute_ai_attack(enemy: Unit, target: Unit) -> void:
 	if not grid.are_adjacent(enemy.grid_pos, target.grid_pos):
 		return
 	enemy.spend_ap(1)
-	target.take_damage(enemy.get_attack())
+	target.take_damage(
+		enemy.get_attack(),        # dégâts bruts
+		enemy,                     # l'attaquant → active son crit
+		Spell.DamageType.PHYSICAL, # catégorie
+		Spell.Element.NONE)        # pas d'élément
 	await _animate_attack(enemy, target)
 
 # ============================================================
@@ -687,7 +691,11 @@ func _on_request_attack(cell: Vector2i) -> void:
 	if target == null:
 		return
 	unit.spend_ap(1)
-	target.take_damage(unit.get_attack())
+	target.take_damage(
+		unit.get_attack(),         # dégâts bruts
+		unit,                      # l'attaquant → active son crit
+		Spell.DamageType.PHYSICAL, # catégorie
+		Spell.Element.NONE)        # pas d'élément
 	turn_state.begin_animating()
 	await _animate_attack(unit, target)
 	turn_state.end_animating()
