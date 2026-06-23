@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="TraitData" format=3 uid="uid://5773rwafwmml"]
+
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="1_uti36"]
+
+[resource]
+script = ExtResource("1_uti36")
+metadata/_custom_type_script = "uid://dnktho3c3febl"

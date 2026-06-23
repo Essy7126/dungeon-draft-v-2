@@ -82,9 +82,10 @@ signal turn_started(unit)
 signal turn_ended(unit)
 
 # ============================================================
-# (Réservé) SIGNAUX D'ÉNERGIE — Couche 4, posés ici pour mémoire.
-# Décommente quand le système d'énergie arrivera. Les GenerationRule et
-# CostRule s'y abonneront ; rien d'autre à toucher dans le combat.
+# SIGNAUX D'ÉNERGIE — l'économie d'action (remplace les PA).
+# energy_generated : de l'énergie a été réellement produite (après plafond).
+# energy_spent     : de l'énergie a été dépensée par une action.
+# Les futurs convertisseurs/terrain/UI s'y abonnent.
 # ============================================================
-# signal energy_generated(unit, energy_type, amount)
-# signal energy_spent(unit, energy_type, amount)
+signal energy_generated(unit, energy_id, amount)
+signal energy_spent(unit, energy_id, amount)

@@ -61,6 +61,15 @@ extends Resource
 @export var crit_multi: float = 1.5
 
 # ============================================================
+# ÉNERGIE (économie d'action — remplace les PA)
+# ============================================================
+
+@export_group("Énergie")
+# Le type d'énergie de cette unité (Rage, Foi, Ombre, Nature). Glisse ici un
+# EnergyTypeData. Laisser VIDE = unité sans énergie (ennemi simple par ex.).
+@export var energy_type: EnergyTypeData = null
+
+# ============================================================
 # APPARENCE
 # ============================================================
 

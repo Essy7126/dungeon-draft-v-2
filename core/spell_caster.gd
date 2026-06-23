@@ -82,12 +82,39 @@ func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 		return false
 	return _matches_target(caster, spell, cell)
 
+# Le caster a-t-il de quoi PAYER ce sort ? (vérif sans dépenser, pour l'UI/IA :
+# griser un sort trop cher, empêcher l'IA de le choisir). La dépense réelle a
+# lieu dans cast(). Une unité sans énergie n'est pas soumise au coût (rétrocompat).
+func can_afford(caster: Unit, spell: Spell) -> bool:
+	if spell.is_generator():
+		return true
+	if not caster.has_energy():
+		return true
+	return caster.can_afford_energy(spell.energy_cost)
+
 # --- Exécution (avec AOE) ---
 func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
+	# --- GARDE DE COÛT EN ÉNERGIE ---
+	# L'énergie remplace les PA : un consommateur ne se lance que si l'unité
+	# peut payer. La dépense vit ICI = loi du cast, aucun chemin ne la contourne.
+	# Rétrocompat : une unité SANS énergie configurée (ennemi simple) n'est pas
+	# soumise au coût — le système ne s'active que pour les unités à énergie.
+	if spell.is_consumer() and caster.has_energy():
+		if not caster.spend_energy(spell.energy_cost, spell.spell_name):
+			DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (énergie insuffisante : %d/%d)" % [
+				caster.unit_name, spell.spell_name,
+				int(caster.current_energy), int(spell.energy_cost)])
+			return {
+				"caster": caster, "spell": spell, "cell": cell, "failed": true,
+				"reason": "energy", "affected_units": [], "terrain_changed": [],
+				"crits": [], "dodges": [],
+			}
+
 	# Annonce du sort (vu par le joueur).
 	DebugLogger.info(CAT_SPELL, "%s lance %s sur %s" % [
 		caster.unit_name, spell.spell_name, str(cell)], {
 		"PA": spell.ap_cost,
+		"énergie": int(spell.energy_cost) if spell.is_consumer() else 0,
 		"portée": spell.spell_range,
 		"zone": spell.aoe_size if spell.aoe_shape != Spell.AoeShape.SINGLE else 0,
 	})

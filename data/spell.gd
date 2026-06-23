@@ -16,6 +16,10 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 
 @export_group("Coût et portée")
 @export var ap_cost: int = 2
+# Coût en ÉNERGIE (Rage, Foi...). L'énergie remplace les PA comme économie
+# d'action. 0 = GÉNÉRATEUR (sort gratuit qui sert à lancer le moteur).
+# > 0 = CONSOMMATEUR (sort puissant qui dépense l'énergie construite).
+@export var energy_cost: float = 0.0
 @export var spell_range: int = 3
 @export var needs_line_of_sight: bool = true
 
@@ -52,6 +56,14 @@ func deals_damage() -> bool:
 
 func is_healing() -> bool:
 	return heal > 0
+
+# Un GÉNÉRATEUR ne coûte pas d'énergie (il sert à lancer le moteur).
+func is_generator() -> bool:
+	return energy_cost <= 0.0
+
+# Un CONSOMMATEUR dépense de l'énergie.
+func is_consumer() -> bool:
+	return energy_cost > 0.0
 
 func has_terrain_effect() -> bool:
 	return terrain_effect != null

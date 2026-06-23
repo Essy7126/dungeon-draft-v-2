@@ -63,10 +63,17 @@ const DEFENSE_MAX := 1000.0
 
 # --- État courant ---
 var current_hp: int = 0
-var current_ap: int = 0
-var current_mp: int = 0
+var current_ap: int = 0   # DORMANT : les PA sont remplacés par l'énergie.
+var current_mp: int = 0   # PM conservés : ressource de déplacement.
 var is_alive: bool = true
 var grid_pos: Vector2i = Vector2i(-1, -1)
+
+# --- Énergie (remplace les PA comme économie d'action) ---
+# Une seule énergie par unité pour l'instant (Rage). Définie par un
+# EnergyTypeData. current_energy est la réserve courante ; on la GÉNÈRE
+# (générateurs/traits) et on la DÉPENSE (sorts consommateurs).
+var energy_type: EnergyTypeData = null
+var current_energy: float = 0.0
 
 # --- Apparence ---
 var sprite_frames: SpriteFrames = null
@@ -90,6 +97,7 @@ var traits: Array = []
 signal died(unit)
 signal hp_changed(unit)
 signal stats_changed(unit)
+signal energy_changed(unit)
 
 # Raccourcis de catégories de log (combat = vu par le joueur).
 const CAT_COMBAT := DebugLogger.LogCategory.COMBAT
@@ -147,6 +155,11 @@ static func from_data(data: UnitData) -> Unit:
 	for element in data.resistances:
 		var stat := u.get_resistance(element)   # crée le Stat (clampé) si absent
 		stat.base_value = data.resistances[element]
+	# Énergie : on récupère le type défini sur l'UnitData (ex: Rage) et on
+	# initialise la réserve à start_energy (la machine démarre tiède).
+	if data.energy_type != null:
+		u.energy_type = data.energy_type
+		u.current_energy = data.energy_type.start_energy
 	# On DUPLIQUE le comportement : chaque boss a son propre état (compteur
 	# de tours, enrage...), sinon deux boss partageraient le même.
 	u.boss_behavior = data.boss_behavior.duplicate() if data.boss_behavior != null else null
@@ -349,6 +362,56 @@ func spend_ap(amount: int) -> bool:
 	current_ap -= amount
 	stats_changed.emit(self)
 	return true
+
+# ============================================================
+# ÉNERGIE — l'économie d'action (remplace les PA)
+# ============================================================
+
+# L'unité a-t-elle une énergie configurée ? (les ennemis simples peuvent ne
+# pas en avoir ; dans ce cas les sorts à coût d'énergie ne s'appliquent pas).
+func has_energy() -> bool:
+	return energy_type != null
+
+# Peut-on payer ce coût en énergie ? (true aussi si coût <= 0).
+func can_afford_energy(amount: float) -> bool:
+	if amount <= 0.0:
+		return true
+	if not has_energy():
+		return false
+	return current_energy >= amount
+
+# Génère de l'énergie (générateurs, terrain, traits). Plafonné à max_energy :
+# le surplus est PERDU (garde-fou : pas de thésaurisation infinie).
+# `source` sert aux logs / au futur rendement décroissant.
+func generate_energy(amount: float, source: String = "") -> void:
+	if not has_energy() or amount <= 0.0:
+		return
+	var before := current_energy
+	current_energy = min(current_energy + amount, energy_type.max_energy)
+	var real := current_energy - before
+	if real <= 0.0:
+		return                                   # déjà au max : rien produit
+	EventBus.energy_generated.emit(self, energy_type.energy_id, real)
+	energy_changed.emit(self)
+
+# Dépense de l'énergie (consommateurs). Renvoie false si insuffisant (l'action
+# ne doit alors PAS se faire). C'est le garde-fou central : on ne dépense que
+# ce qu'on a.
+func spend_energy(amount: float, source: String = "") -> bool:
+	if amount <= 0.0:
+		return true                              # action gratuite : toujours OK
+	if not can_afford_energy(amount):
+		return false
+	current_energy -= amount
+	EventBus.energy_spent.emit(self, energy_type.energy_id, amount)
+	energy_changed.emit(self)
+	return true
+
+# Ratio 0.0–1.0 pour la jauge d'UI.
+func get_energy_ratio() -> float:
+	if not has_energy() or energy_type.max_energy <= 0.0:
+		return 0.0
+	return current_energy / energy_type.max_energy
 
 # ============================================================
 # COMBAT

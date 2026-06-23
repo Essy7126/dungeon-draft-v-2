@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="TraitData" format=3 uid="uid://dr8tm1b4ybc41"]
 
-[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://data/traits/trait_data.gd" id="1_xj610"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="1_c2nce"]
+[ext_resource type="Script" uid="uid://cqyl6gg6idtu8" path="res://traits/trait_vengeance.gd" id="2_5sam0"]
 
 [resource]
-script = ExtResource("1_xj610")
+script = ExtResource("1_c2nce")
+trait_script = ExtResource("2_5sam0")
+display_name = "Vengeance"
 metadata/_custom_type_script = "uid://dnktho3c3febl"

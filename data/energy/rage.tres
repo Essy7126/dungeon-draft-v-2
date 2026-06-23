@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EnergyTypeData" format=3 uid="uid://dy1jdsj4qtvwb"]
+
+[ext_resource type="Script" uid="uid://b47puqafimbk5" path="res://data/energy/energy_type.gd" id="1_iljyy"]
+
+[resource]
+script = ExtResource("1_iljyy")
+metadata/_custom_type_script = "uid://b47puqafimbk5"
