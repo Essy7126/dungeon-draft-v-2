@@ -12,17 +12,17 @@ config_version=5
 
 config/name="Dungeon Draft v2"
 run/main_scene="uid://bhxy4lh81uk3i"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 DebugLogger="*uid://cqowcxd62yalq"
-EventBus="*uid://b7ud323xfkfr4"
-CombatLogger="*uid://doclkvcosndc2"
 DebugOverlay="*uid://i5c6lt5m6q0w"
 GameManager="*uid://bkqluvhsrm1gs"
 AudioManager="*uid://b6yj2wg2t5akr"
+EventBus="*uid://b7ud323xfkfr4"
+CombatLogger="*uid://doclkvcosndc2"
 
 [display]
 

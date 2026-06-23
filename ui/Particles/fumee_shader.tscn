@@ -8,6 +8,7 @@ shader = ExtResource("1_fjvi6")
 shader_parameter/vitesse = 0.04800000228
 shader_parameter/echelle = 3.750000130625
 shader_parameter/densite = 0.2000000095
+shader_parameter/durete = 2.0
 shader_parameter/couleur_fumee = Color(1, 1, 1, 1)
 
 [node name="FumeeShader" type="Node2D" unique_id=1705253492]
@@ -17,3 +18,7 @@ material = SubResource("ShaderMaterial_u6spt")
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("2_c8u0n")
+densite = 10.0
+vitesse = 0.03
+echelle = 4.0
+durete = 0.1

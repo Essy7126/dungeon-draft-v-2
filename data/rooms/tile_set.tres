@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://b072eekl323i5" path="res://asset/map/tilemap_packed.png" id="1_pj1lo"]
 [ext_resource type="Texture2D" uid="uid://buswcm4xwct67" path="res://asset/map/tilemap_packed (2).png" id="2_r1f3j"]
+[ext_resource type="Texture2D" uid="uid://cr7ca3kwybp25" path="res://asset/Background/fond terrain.webp" id="3_r1f3j"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oxp8w"]
 texture = ExtResource("1_pj1lo")
@@ -382,8 +383,13 @@ texture = ExtResource("2_r1f3j")
 10:10/0 = 0
 11:10/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r1f3j"]
+texture = ExtResource("3_r1f3j")
+texture_region_size = Vector2i(50, 50)
+
 [resource]
 custom_data_layer_0/name = "cell_type"
 custom_data_layer_0/type = 4
 sources/0 = SubResource("TileSetAtlasSource_oxp8w")
 sources/1 = SubResource("TileSetAtlasSource_i431l")
+sources/3 = SubResource("TileSetAtlasSource_r1f3j")

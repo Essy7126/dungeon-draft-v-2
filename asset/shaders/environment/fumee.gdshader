@@ -3,6 +3,7 @@ shader_type canvas_item;
 uniform float vitesse : hint_range(0.0, 1.0) = 0.05;
 uniform float echelle : hint_range(1.0, 20.0) = 3.0;
 uniform float densite : hint_range(0.0, 1.0) = 0.6;
+uniform float durete : hint_range(0.5, 8.0) = 2.0;
 uniform vec4 couleur_fumee : source_color = vec4(0.7, 0.7, 0.7, 1.0);
 
 vec2 bruit_hash(vec2 p) {
@@ -36,6 +37,6 @@ float fbm(vec2 p) {
 void fragment() {
 	vec2 p = UV * echelle + vec2(TIME * vitesse, TIME * vitesse * 0.3);
 	float n = fbm(p + fbm(p + fbm(p)));
-	float alpha = clamp(n * densite * 4.0, 0.0, 1.0);
+	float alpha = clamp(n * densite * durete, 0.0, 1.0);
 	COLOR = vec4(couleur_fumee.rgb, alpha);
 }
