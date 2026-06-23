@@ -422,7 +422,8 @@ energy = 1.5
 texture = SubResource("GradientTexture2D_u6spt")
 
 [node name="RayonsPortee" parent="Fond/CoucheEffets" unique_id=1488296066 instance=ExtResource("4_2ct6b")]
-position = Vector2(900, 390)
+position = Vector2(820, 620)
+skew = 0.9302605
 
 [node name="CouchePersonnages" type="Node2D" parent="Fond" unique_id=315262203]
 modulate = Color(1, 1, 1, 0)
