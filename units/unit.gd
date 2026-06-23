@@ -404,6 +404,7 @@ func _die() -> void:
 	if not is_alive:
 		return
 	is_alive = false
+	print(">>> EMIT unit_died pour ", unit_name)   # ← ligne de test
 	# Le CombatLogger écoute unit_died et produit la ligne "est vaincu".
 	EventBus.unit_died.emit(self)
 	died.emit(self)

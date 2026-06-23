@@ -753,10 +753,11 @@ func _on_round_started(number: int) -> void:
 		grid_view.queue_redraw()
 
 func _on_unit_died(unit: Unit) -> void:
+	# Logique de combat uniquement. Le LOG ("est vaincu") est désormais produit
+	# par le CombatLogger, abonné au signal unit_died du bus. battle.gd ne logge
+	# plus la mort : il réagit à ses conséquences sur le terrain et le combat.
 	grid.clear_unit(unit.grid_pos)
 	turn_queue.on_unit_died(unit)
-	DebugLogger.info(DebugLogger.LogCategory.COMBAT, "%s est vaincu" % unit.unit_name)
-	print("%s est vaincu." % unit.unit_name)
 	_check_battle_end()
 
 func _check_battle_end() -> void:

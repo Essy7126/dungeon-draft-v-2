@@ -68,6 +68,7 @@ func _on_unit_healed(unit, amount: int) -> void:
 	})
 
 func _on_unit_died(unit) -> void:
+	print(">>> RECU unit_died (handler CombatLogger)")   # ← ligne de test
 	DebugLogger.info(CAT_COMBAT, "%s est vaincu" % unit.unit_name)
 
 func _on_status_applied(unit, status_data) -> void:
