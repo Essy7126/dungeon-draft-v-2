@@ -64,6 +64,16 @@ class HitContext:
 	var ignore_defense: bool = false           # ignore armure ET résist (dégâts vrais)
 	var cannot_be_dodged: bool = false         # l'esquive ne s'applique pas
 
+	# Coefficient d'efficacité des dégâts (anti-erreur Dofus). Neutre = 1.0.
+	# Détermine quelle PROPORTION des bonus de dégâts PLATS futurs s'applique.
+	# Un sort lourd (1 gros coup) = 1.0 ; un poison/multi-hit = ex. 0.2, pour
+	# qu'un "+10 dégâts" ne soit pas appliqué en entier sur chaque tic et ne
+	# rende pas les builds à fréquence mathématiquement invincibles.
+	# Posé maintenant comme crochet ; reste neutre tant qu'aucun bonus plat
+	# global n'existe. Le jour où tu ajoutes ces bonus, tu les multiplies
+	# par ce coefficient — l'équité est garantie par construction.
+	var damage_effectiveness: float = 1.0
+
 # ============================================================
 # CALCUL PRINCIPAL
 # Ordre : esquive → résistance d'élément → mitigation de catégorie
@@ -158,10 +168,11 @@ static func _get_element_resist(defender, element: int) -> float:
 	# NONE = pas de sous-type, aucune résistance élémentaire.
 	if element == Spell.Element.NONE:
 		return 0.0
-	if defender.resistances == null:
-		return 0.0
-	# Dictionnaire { Spell.Element → float }. Absent = 0.
-	return defender.resistances.get(element, 0.0)
+	# Les résistances sont désormais des Stat (lues via le helper de l'unité).
+	# get_resistance_value renvoie 0.0 si l'élément n'est pas géré, sans rien créer.
+	if defender.has_method("get_resistance_value"):
+		return defender.get_resistance_value(element)
+	return 0.0
 
 static func _get_dodge(defender) -> float:
 	if defender.esquive != null:

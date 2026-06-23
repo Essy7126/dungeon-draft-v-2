@@ -1,0 +1,90 @@
+# core/event_bus.gd
+# ============================================================
+# EVENT BUS — Le système nerveux du combat. Autoload (singleton).
+#
+# Ne contient QUE des signaux typés et nommés. AUCUNE logique, AUCUN état.
+# C'est un tableau d'affichage : la logique ANNONCE des faits ("X a pris des
+# dégâts"), et tout ce qui est intéressé (DebugLogger, UI, son, futurs traits)
+# ÉCOUTE sans se connaître. La logique n'a plus besoin de connaître ses lecteurs.
+#
+# ------------------------------------------------------------
+# CONFIGURATION GODOT (à faire une fois) :
+#   Projet → Paramètres du projet → Autoloads (Variables globales)
+#   Ajouter ce script sous le nom EXACT : EventBus
+#   Le placer APRÈS DebugLogger dans l'ordre (DebugLogger doit exister en premier
+#   car il s'abonnera au bus).
+# ------------------------------------------------------------
+# LA RÈGLE D'OR (ne jamais l'enfreindre) :
+#   - Signaux TYPÉS et NOMMÉS pour les ANNONCES (un fait qui s'est produit).
+#   - Appel DIRECT quand on a besoin d'un RÉSULTAT tout de suite (ex : calculer
+#     un chemin, lire une valeur). Le bus n'est pas pour ça.
+#   - JAMAIS de signal générique fourre-tout (genre "event(type, data)") : ça
+#     rend le flux invisible et indébogable. Chaque fait a son signal nommé.
+# ------------------------------------------------------------
+# POINT D'ÉMISSION UNIQUE :
+#   Un fait n'est émis QUE depuis UN seul endroit, après que le fait est acté.
+#   Ex : damage_dealt est émis depuis Unit._apply_damage_result (une fois les
+#   PV réellement retirés), jamais depuis l'appelant. Zéro doublon garanti.
+# ============================================================
+
+extends Node
+
+# ============================================================
+# SIGNAUX DE COMBAT
+# Émis depuis Unit, une fois le fait acté sur les PV.
+# ============================================================
+
+# Des dégâts ont été réellement infligés (après mitigation, PV déjà retirés).
+# target   : l'Unit qui a encaissé
+# attacker : l'Unit source, ou null (terrain, poison)
+# amount   : dégâts réels appliqués
+# category : Spell.DamageType (physique / magique)
+# element  : Spell.Element (feu, glace... ou NONE)
+# is_crit  : true si c'était un critique
+signal damage_dealt(target, attacker, amount, category, element, is_crit)
+
+# Une attaque a été totalement esquivée (aucun dégât).
+# target   : l'Unit qui a esquivé
+# attacker : l'Unit source, ou null
+signal attack_dodged(target, attacker)
+
+# Un critique s'est produit (émis EN PLUS de damage_dealt, pour les réactions
+# spécifiques au crit : son particulier, trait "les crits appliquent un statut").
+signal critical_hit(target, attacker, amount)
+
+# Une unité a été soignée (PV réellement rendus).
+# unit   : l'Unit soignée
+# amount : PV réellement rendus (peut être < au soin théorique si plafond atteint)
+signal unit_healed(unit, amount)
+
+# Une unité est morte (PV tombés à 0). Émis UNE fois, depuis _die().
+signal unit_died(unit)
+
+# ============================================================
+# SIGNAUX DE STATUTS
+# ============================================================
+
+# Un statut vient d'être appliqué (nouveau, pas un simple rafraîchissement).
+signal status_applied(unit, status_data)
+
+# Un statut a expiré et a été retiré.
+signal status_expired(unit, status_name)
+
+# ============================================================
+# SIGNAUX DE TOUR
+# Émis depuis la TurnQueue / Unit.start_turn.
+# ============================================================
+
+# Le tour d'une unité commence (PA/PM rechargés, statuts à traiter).
+signal turn_started(unit)
+
+# Le tour d'une unité se termine.
+signal turn_ended(unit)
+
+# ============================================================
+# (Réservé) SIGNAUX D'ÉNERGIE — Couche 4, posés ici pour mémoire.
+# Décommente quand le système d'énergie arrivera. Les GenerationRule et
+# CostRule s'y abonneront ; rien d'autre à toucher dans le combat.
+# ============================================================
+# signal energy_generated(unit, energy_type, amount)
+# signal energy_spent(unit, energy_type, amount)

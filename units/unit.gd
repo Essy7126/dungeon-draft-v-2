@@ -37,10 +37,29 @@ var crit_chance: Stat
 var crit_multi: Stat
 
 # --- Résistances élémentaires ---
-# Dictionnaire { Spell.Element → float } en POURCENTAGE (0.5 = -50%).
-# Valeur négative = vulnérabilité (dégâts augmentés). Absent = 0.
-# Léger : on ne renseigne que les éléments qui concernent l'unité.
+# Dictionnaire { Spell.Element → Stat } en POURCENTAGE (0.5 = -50% de dégâts).
+# Chaque résistance est une VRAIE Stat (modifiable par reliques/équipement,
+# avec durée, source, clamp), exactement comme l'armure. Une relique
+# "+30% résist feu pour la run" se branche donc proprement dessus.
+# Valeur négative = vulnérabilité (dégâts augmentés). Élément absent = 0.
+# Création PARESSEUSE via get_resistance() : on ne crée le Stat que si besoin.
+# Bornes : chaque résistance est clampée dans [RESIST_MIN, RESIST_MAX].
 var resistances: Dictionary = {}
+
+# Bornes des résistances élémentaires (symétriques) :
+# +0.75 = au plus -75% de dégâts (jamais l'immunité totale).
+# -0.75 = au plus +75% de dégâts subis (vulnérabilité bornée, pas x4).
+const RESIST_MIN := -0.75
+const RESIST_MAX := 0.75
+
+# Borne haute de l'esquive : 50% max, peu importe l'empilement de bonus.
+# (Choix tactique : l'esquive reste un bonus, jamais une invincibilité.)
+const ESQUIVE_MAX := 0.50
+
+# Borne haute des défenses (armure / résist magique).
+# La formule LoL ne sature jamais à 100%, donc cette borne sert juste à
+# empêcher des valeurs absurdes (nombres qui explosent). Généreuse.
+const DEFENSE_MAX := 1000.0
 
 # --- État courant ---
 var current_hp: int = 0
@@ -91,11 +110,12 @@ func _init(
 	max_mp       = Stat.new(p_mp)
 	attack_power = Stat.new(p_attack)
 	# Stats défensives : neutres par défaut (renseignées via from_data).
-	armure         = Stat.new(0.0)
-	resist_magique = Stat.new(0.0)
-	esquive        = Stat.new(0.0)
-	crit_chance    = Stat.new(0.0)
-	crit_multi     = Stat.new(1.5)
+	# Bornes posées dès la construction = garde-fou permanent.
+	armure         = Stat.new(0.0).set_bounds(0.0, DEFENSE_MAX)
+	resist_magique = Stat.new(0.0).set_bounds(0.0, DEFENSE_MAX)
+	esquive        = Stat.new(0.0).set_bounds(0.0, ESQUIVE_MAX)
+	crit_chance    = Stat.new(0.0).set_min(0.0)
+	crit_multi     = Stat.new(1.5).set_min(1.0)
 	current_hp = max_hp.get_int()
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
@@ -115,8 +135,12 @@ static func from_data(data: UnitData) -> Unit:
 	u.esquive.base_value = data.esquive
 	u.crit_chance.base_value = data.crit_chance
 	u.crit_multi.base_value = data.crit_multi
-	# Résistances élémentaires : copie défensive du dictionnaire.
-	u.resistances = data.resistances.duplicate()
+	# Résistances élémentaires : le .tres porte des float simples
+	# { Element → float }. On les convertit en Stat clampées via le helper,
+	# pour que designer = nombres simples, runtime = stats modifiables.
+	for element in data.resistances:
+		var stat := u.get_resistance(element)   # crée le Stat (clampé) si absent
+		stat.base_value = data.resistances[element]
 	# On DUPLIQUE le comportement : chaque boss a son propre état (compteur
 	# de tours, enrage...), sinon deux boss partageraient le même.
 	u.boss_behavior = data.boss_behavior.duplicate() if data.boss_behavior != null else null
@@ -126,6 +150,40 @@ static func from_data(data: UnitData) -> Unit:
 
 func add_spell(spell: Spell) -> void:
 	spells.append(spell)
+
+# ============================================================
+# ACCÈS AUX STATS
+# ============================================================
+
+# Renvoie le Stat de résistance pour un élément donné, en le CRÉANT
+# paresseusement (clampé) s'il n'existe pas encore. Toujours non-null.
+# C'est par ici que reliques/équipement modifient une résistance :
+#   unit.get_resistance(Spell.Element.FIRE).add_modifier(0.3, FLAT, "relique_x")
+func get_resistance(element: int) -> Stat:
+	if not resistances.has(element):
+		resistances[element] = Stat.new(0.0).set_bounds(RESIST_MIN, RESIST_MAX)
+	return resistances[element]
+
+# Renvoie la valeur effective d'une résistance (0.0 si l'élément n'est pas géré).
+# Lecture seule : ne crée PAS de Stat (utilisé en boucle par le resolver).
+func get_resistance_value(element: int) -> float:
+	if resistances.has(element):
+		return resistances[element].get_value()
+	return 0.0
+
+# Liste centralisée de TOUTES les stats à durée (hors résistances, ajoutées
+# dynamiquement). Source unique de vérité : tout ce qui doit "tick" est ici.
+# Ajouter une stat future = l'ajouter à cette liste, et tick_durations
+# la couvrira automatiquement. Plus aucun oubli possible.
+func _all_durational_stats() -> Array:
+	var list := [
+		max_hp, initiative, max_ap, max_mp, attack_power,
+		armure, resist_magique, esquive, crit_chance, crit_multi,
+	]
+	# Les résistances sont des Stat à part entière : elles ticktent aussi.
+	for element in resistances:
+		list.append(resistances[element])
+	return list
 
 # ============================================================
 # STATUTS
@@ -146,8 +204,8 @@ func apply_status(status_data: StatusData) -> void:
 			return
 	# Nouveau statut.
 	active_statuses.append({ "data": status_data, "remaining": status_data.duration })
-	DebugLogger.info(CAT_STATS, "%s subit %s (%d tours)" % [
-		unit_name, status_data.status_name, status_data.duration])
+	# Le CombatLogger écoute status_applied et produit la ligne de log.
+	EventBus.status_applied.emit(self, status_data)
 
 # L'unité a-t-elle un statut qui la fait sauter son tour ?
 func is_stunned() -> bool:
@@ -212,7 +270,8 @@ func tick_statuses() -> void:
 		if active_statuses[i]["remaining"] <= 0:
 			var ended = active_statuses[i]["data"].status_name
 			active_statuses.remove_at(i)
-			DebugLogger.debug(CAT_STATS, "%s : %s expire" % [unit_name, ended])
+			# Le CombatLogger écoute status_expired et produit la ligne de log.
+			EventBus.status_expired.emit(self, ended)
 
 # Retourne la liste des statuts actifs (pour l'UI).
 func get_active_statuses() -> Array:
@@ -223,13 +282,14 @@ func get_active_statuses() -> Array:
 # ============================================================
 
 func start_turn() -> void:
-	max_hp.tick_durations()
-	initiative.tick_durations()
-	max_ap.tick_durations()
-	max_mp.tick_durations()
-	attack_power.tick_durations()
+	# Tick TOUTES les stats à durée d'un coup (défenses et résistances
+	# comprises). Avant, seules 5 stats étaient tickées → un buff temporaire
+	# "+20 armure 2 tours" ne expirait jamais. Corrigé : liste centralisée.
+	for stat in _all_durational_stats():
+		stat.tick_durations()
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
+	EventBus.turn_started.emit(self)
 	stats_changed.emit(self)
 
 # ============================================================
@@ -289,7 +349,7 @@ func take_damage(
 	ctx.pen_flat = options.get("pen_flat", 0.0)
 
 	var result := DamageResolver.compute(self, ctx)
-	_apply_damage_result(result)
+	_apply_damage_result(result, ctx.attacker)
 	return result
 
 # take_hit : variante explicite quand on a déjà un HitContext construit
@@ -298,26 +358,29 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	if not is_alive:
 		return null
 	var result := DamageResolver.compute(self, ctx)
-	_apply_damage_result(result)
+	_apply_damage_result(result, ctx.attacker)
 	return result
 
-# Applique le résultat calculé aux PV + logs.
-func _apply_damage_result(result: DamageResolver.DamageResult) -> void:
+# Applique le résultat calculé aux PV.
+# POINT D'ÉMISSION UNIQUE du flux de dégâts : le bus n'est émis QUE d'ici,
+# une fois les PV réellement modifiés. Zéro doublon possible.
+# Les logs de combat sont produits par le CombatLogger (abonné du bus) :
+# unit.gd ne connaît plus le DebugLogger pour le combat, il annonce des faits.
+func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) -> void:
 	if result.dodged:
-		DebugLogger.info(CAT_COMBAT, "%s esquive l'attaque" % unit_name)
+		EventBus.attack_dodged.emit(self, attacker)
 		hp_changed.emit(self)
 		return
 
 	current_hp -= result.amount
+
+	# Annonce le fait sur le bus (après modification réelle des PV).
+	# Le CombatLogger écoute et produit la ligne de log (crit inclus).
+	EventBus.damage_dealt.emit(
+		self, attacker, result.amount, result.category, result.element, result.is_crit)
 	if result.is_crit:
-		DebugLogger.info(CAT_COMBAT, "%s subit %d dégâts (CRITIQUE)" % [
-			unit_name, result.amount], {
-			"PV": "%d/%d" % [max(current_hp, 0), max_hp.get_int()],
-		})
-	else:
-		DebugLogger.info(CAT_COMBAT, "%s subit %d dégâts" % [unit_name, result.amount], {
-			"PV": "%d/%d" % [max(current_hp, 0), max_hp.get_int()],
-		})
+		EventBus.critical_hit.emit(self, attacker, result.amount)
+
 	hp_changed.emit(self)
 	if current_hp <= 0:
 		current_hp = 0
@@ -329,14 +392,20 @@ func heal(amount: int) -> void:
 	var before = current_hp
 	current_hp = min(current_hp + amount, max_hp.get_int())
 	var real = current_hp - before
-	DebugLogger.info(CAT_COMBAT, "%s récupère %d PV" % [unit_name, real], {
-		"PV": "%d/%d" % [current_hp, max_hp.get_int()],
-	})
+	# Le CombatLogger écoute unit_healed et produit la ligne de log.
+	EventBus.unit_healed.emit(self, real)
 	hp_changed.emit(self)
 
 func _die() -> void:
+	# Garde d'idempotence : une unité ne peut mourir qu'UNE fois.
+	# Sans ça, si _die est atteint deux fois (deux sources de dégâts dans le
+	# même cycle, double appel...), unit_died serait émis deux fois → log et
+	# réactions en double. C'est ce qui causait le doublon "est vaincu".
+	if not is_alive:
+		return
 	is_alive = false
-	DebugLogger.info(CAT_COMBAT, "%s est vaincu" % unit_name)
+	# Le CombatLogger écoute unit_died et produit la ligne "est vaincu".
+	EventBus.unit_died.emit(self)
 	died.emit(self)
 
 # ============================================================

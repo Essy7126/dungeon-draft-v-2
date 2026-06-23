@@ -22,7 +22,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("6_qbtm6")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -32,11 +32,15 @@ script = ExtResource("1_qmwoj")
 unit_name = "pérsephone"
 description = "Reine des Enfers, déesse du printemps captif."
 team = 1
-max_hp = 320
-initiative = 15
-max_ap = 7
-max_mp = 5
+max_hp = 900
+initiative = 30
+max_ap = 8
+max_mp = 7
 attack_power = 25
+armure = 125.0
+resist_magique = 350.0
+esquive = 0.3
+crit_chance = 0.3
 sprite_frames = SubResource("SpriteFrames_kqkp3")
 sprite_scale = 1.0
 idle_animation = null

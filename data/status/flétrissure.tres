@@ -6,7 +6,6 @@
 script = ExtResource("1_wme25")
 status_name = "flétrissure"
 description = "Les fleurs se fanent autour de la cible, entravant ses mouvements."
-skips_turn = true
 mp_reduction = 2
 ap_reduction = 1
 metadata/_custom_type_script = "uid://sr3n54wflcuj"

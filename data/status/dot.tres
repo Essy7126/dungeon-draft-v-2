@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_lx15v")
-skips_turn = true
+damage_per_turn = 16
 metadata/_custom_type_script = "uid://sr3n54wflcuj"
