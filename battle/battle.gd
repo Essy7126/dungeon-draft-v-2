@@ -420,6 +420,17 @@ func _start_battle() -> void:
 		push_warning("Aucun ennemi dans la salle : victoire immédiate.")
 		_end_battle(true)
 		return
+		
+		
+		
+		# === TEST TEMPORAIRE : attacher Vengeance au premier héros ===
+	for u in units:
+		if u.team == 0 and u.is_alive:
+			u.add_trait(TraitVengeance.new())
+			DebugLogger.info(DebugLogger.LogCategory.COMBAT,
+				"TEST: Vengeance attachée à %s" % u.unit_name)
+			break
+	# === fin du test ===
 
 	turn_queue = TurnQueue.new()
 	turn_queue.setup(units)

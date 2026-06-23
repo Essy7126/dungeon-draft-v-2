@@ -80,6 +80,12 @@ var spells: Array = []
 # Liste de dictionnaires : { "data": StatusData, "remaining": int }
 var active_statuses: Array = []
 
+# --- Traits actifs ---
+# Liste de Trait attachés à cette unité (reliques, sources d'énergie,
+# détournements, scars...). Chacun s'abonne au bus et réagit. Ajout/retrait
+# via add_trait / remove_trait, qui gèrent l'activation/désactivation propre.
+var traits: Array = []
+
 # --- Signaux ---
 signal died(unit)
 signal hp_changed(unit)
@@ -184,6 +190,40 @@ func _all_durational_stats() -> Array:
 	for element in resistances:
 		list.append(resistances[element])
 	return list
+
+# ============================================================
+# TRAITS (le moteur des combos — Couche 3)
+# ============================================================
+
+# Attache un trait à cette unité et l'active (il s'abonne au bus).
+# Un trait = une relique, une source d'énergie, un détournement, une scar...
+func add_trait(t: Trait) -> void:
+	if t == null or t in traits:
+		return
+	traits.append(t)
+	t.attach(self)
+
+# Attache un trait à partir d'une fiche TraitData (.tres) : la fabrique
+# instancie le bon script, le configure avec ses params, puis on l'attache.
+# C'est la voie data-driven : les reliques/équipements porteront des TraitData.
+func add_trait_from_data(data: TraitData) -> Trait:
+	var t := TraitFactory.create(data)
+	if t != null:
+		add_trait(t)
+	return t
+
+# Retire un trait : le désactive (désabonnement + nettoyage de ses modifiers).
+func remove_trait(t: Trait) -> void:
+	if t == null or not (t in traits):
+		return
+	t.deactivate()
+	traits.erase(t)
+
+# Désactive tous les traits (ex : unité détruite, fin de combat). Propre.
+func clear_traits() -> void:
+	for t in traits:
+		t.deactivate()
+	traits.clear()
 
 # ============================================================
 # STATUTS
@@ -404,7 +444,6 @@ func _die() -> void:
 	if not is_alive:
 		return
 	is_alive = false
-	print(">>> EMIT unit_died pour ", unit_name)   # ← ligne de test
 	# Le CombatLogger écoute unit_died et produit la ligne "est vaincu".
 	EventBus.unit_died.emit(self)
 	died.emit(self)
