@@ -4,6 +4,17 @@
 [ext_resource type="Texture2D" uid="uid://dx2ibewxjukef" path="res://asset/Background/fantasy-dungeons_dragons-536932.png" id="2_yw150"]
 [ext_resource type="PackedScene" uid="uid://cyw0qpasbtsb1" path="res://ui/Particles/fumee_shader.tscn" id="3_vsutf"]
 [ext_resource type="Texture2D" uid="uid://bc76t1dpmr220" path="res://asset/Background/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png" id="3_yw150"]
+[ext_resource type="PackedScene" uid="uid://bklisc2gyx17o" path="res://ui/Particles/rayons_lumiere.tscn" id="4_2ct6b"]
+[ext_resource type="Texture2D" uid="uid://byae4w3iiyyjw" path="res://asset/Background/feuille_basique-removebg-preview.png" id="5_ci13c"]
+
+[sub_resource type="Gradient" id="Gradient_mdtna"]
+colors = PackedColorArray(1, 0.6, 0.101960786, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_u6spt"]
+gradient = SubResource("Gradient_mdtna")
+width = 256
+height = 256
+fill = 1
 
 [sub_resource type="Animation" id="Animation_kobah"]
 resource_name = "RESET"
@@ -13,7 +24,7 @@ tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath("Fond:modulate:a")
 tracks/0/interp = 1
-tracks/0/loop_wrap = true
+tracks/0/loop_wrap = false
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
@@ -25,7 +36,7 @@ tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/path = NodePath("Fond/CoucheEffets:modulate:a")
 tracks/1/interp = 1
-tracks/1/loop_wrap = true
+tracks/1/loop_wrap = false
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
@@ -37,7 +48,7 @@ tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/path = NodePath("Fond/CouchePersonnages:modulate:a")
 tracks/2/interp = 1
-tracks/2/loop_wrap = true
+tracks/2/loop_wrap = false
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
@@ -49,7 +60,7 @@ tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/path = NodePath("UI/Logo:modulate:a")
 tracks/3/interp = 1
-tracks/3/loop_wrap = true
+tracks/3/loop_wrap = false
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
@@ -61,7 +72,7 @@ tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/path = NodePath("UI/Boutons:modulate:a")
 tracks/4/interp = 1
-tracks/4/loop_wrap = true
+tracks/4/loop_wrap = false
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
@@ -73,38 +84,148 @@ tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/path = NodePath("Fond/CoucheEffets/FumeeShader:modulate:a")
 tracks/5/interp = 1
-tracks/5/loop_wrap = true
+tracks/5/loop_wrap = false
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [0.0]
 }
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Fond/CouchePersonnages/Soldat:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Fond/CouchePersonnages/Soldat:position:x")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [990.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Fond/CouchePersonnages/Soldat:position:y")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [630.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Fond/CouchePersonnages/Soldat:scale:x")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0.12]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Fond/CouchePersonnages/Soldat:scale:y")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0.12]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Fond/CoucheEffets/HaloPorte:modulate:a")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0.0]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Fond/CoucheEffets/HaloPorte:energy")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.5]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Fond/CoucheEffets/RayonsPortee:modulate:a")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1.0]
+}
 
 [sub_resource type="Animation" id="Animation_yw150"]
 resource_name = "idle"
+length = 4.0
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Fond/CoucheEffets:modulate:a")
+tracks/0/path = NodePath("Fond/CoucheEffets/HaloPorte:energy")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1, 2),
+"times": PackedFloat32Array(0, 2, 4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [1.0, 0.8, 1.0]
+"values": [1.5, 0.9, 1.5]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Fond/CoucheEffets/RayonsPortee:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [1.0, 0.6, 1.0]
 }
 
 [sub_resource type="Animation" id="Animation_vsutf"]
 resource_name = "intro"
-length = 4.0
+length = 8.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath("Fond:modulate:a")
 tracks/0/interp = 1
-tracks/0/loop_wrap = true
+tracks/0/loop_wrap = false
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5, 1.5),
 "transitions": PackedFloat32Array(1, 1, 1),
@@ -116,7 +237,7 @@ tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/path = NodePath("Fond/CoucheEffets:modulate:a")
 tracks/1/interp = 1
-tracks/1/loop_wrap = true
+tracks/1/loop_wrap = false
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 1.5, 2.5),
 "transitions": PackedFloat32Array(1, 1, 1),
@@ -128,7 +249,7 @@ tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/path = NodePath("Fond/CouchePersonnages:modulate:a")
 tracks/2/interp = 1
-tracks/2/loop_wrap = true
+tracks/2/loop_wrap = false
 tracks/2/keys = {
 "times": PackedFloat32Array(0, 2.5, 3.5),
 "transitions": PackedFloat32Array(1, 1, 1),
@@ -140,9 +261,9 @@ tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/path = NodePath("UI/Logo:modulate:a")
 tracks/3/interp = 1
-tracks/3/loop_wrap = true
+tracks/3/loop_wrap = false
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 3, 4),
+"times": PackedFloat32Array(0, 6, 7),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0]
@@ -152,9 +273,9 @@ tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/path = NodePath("UI/Boutons:modulate:a")
 tracks/4/interp = 1
-tracks/4/loop_wrap = true
+tracks/4/loop_wrap = false
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 3, 4),
+"times": PackedFloat32Array(0, 5, 6),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0]
@@ -164,12 +285,108 @@ tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/path = NodePath("Fond/CoucheEffets/FumeeShader:modulate:a")
 tracks/5/interp = 1
-tracks/5/loop_wrap = true
+tracks/5/loop_wrap = false
 tracks/5/keys = {
 "times": PackedFloat32Array(0, 0.5, 1.5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Fond/CouchePersonnages/Soldat:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = false
+tracks/6/keys = {
+"times": PackedFloat32Array(3.5, 4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Fond/CouchePersonnages/Soldat:position:x")
+tracks/7/interp = 1
+tracks/7/loop_wrap = false
+tracks/7/keys = {
+"times": PackedFloat32Array(4, 4.8, 5.3, 6.8),
+"transitions": PackedFloat32Array(0.9999998, 1, 1, 1),
+"update": 0,
+"values": [990.0, 940.0, 900.0, 650.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Fond/CoucheEffets/HaloPorte:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.5, 2.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Fond/CoucheEffets/HaloPorte:energy")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(2.2666667, 2.8666666),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.5, 1.5]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Fond/CoucheEffets/RayonsPortee:modulate:a")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 2, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Fond/CouchePersonnages/Soldat:position:y")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(4, 4.8, 5.3, 6.8),
+"transitions": PackedFloat32Array(1, 1.0000013, 1, 1),
+"update": 0,
+"values": [630.0, 690.0, 730.0, 670.0]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Fond/CouchePersonnages/Soldat:scale:x")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(5.3, 6.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.12, 0.15]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Fond/CouchePersonnages/Soldat:scale:y")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(5.3, 6.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.12, 0.15]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2ct6b"]
@@ -196,8 +413,25 @@ modulate = Color(1, 1, 1, 0)
 [node name="FumeeShader" parent="Fond/CoucheEffets" unique_id=1705253492 instance=ExtResource("3_vsutf")]
 modulate = Color(1, 1, 1, 0)
 
+[node name="HaloPorte" type="PointLight2D" parent="Fond/CoucheEffets" unique_id=919560582]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(990, 650)
+scale = Vector2(0.5, 0.5)
+color = Color(1, 0.79595864, 0.3491902, 1)
+energy = 1.5
+texture = SubResource("GradientTexture2D_u6spt")
+
+[node name="RayonsPortee" parent="Fond/CoucheEffets" unique_id=1488296066 instance=ExtResource("4_2ct6b")]
+position = Vector2(900, 390)
+
 [node name="CouchePersonnages" type="Node2D" parent="Fond" unique_id=315262203]
 modulate = Color(1, 1, 1, 0)
+
+[node name="Soldat" type="Sprite2D" parent="Fond/CouchePersonnages" unique_id=793777574]
+modulate = Color(0.69803923, 0.54901963, 0.4, 0)
+position = Vector2(990, 630)
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("5_ci13c")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1494018769]
 layer = 10
