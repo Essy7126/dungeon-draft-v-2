@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://d34iddlly07em"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_pfltm"]
+[ext_resource type="Resource" uid="uid://drc5vb6vd841v" path="res://data/energy/foi.tres" id="1_r50s2"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_r50s2"]
+[ext_resource type="Resource" uid="uid://vucrqrj2s022" path="res://data/spells/Gardien/rempart.tres" id="4_ddix6"]
+[ext_resource type="Resource" uid="uid://dwt6x1da4m1h1" path="res://data/spells/Gardien/garde.tres" id="5_vp8gc"]
+[ext_resource type="Resource" uid="uid://dtohbvvqqdjey" path="res://data/spells/Gardien/frappe_de_bouclier.tres" id="6_ipjya"]
+[ext_resource type="Texture2D" uid="uid://cr574clmwl13g" path="res://asset/personnage/alliés/500.png" id="7_vp8gc"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ipjya"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_vp8gc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_pfltm")
+unit_name = "Guerrier"
+energy_type = ExtResource("1_r50s2")
+sprite_frames = SubResource("SpriteFrames_ipjya")
+sprite_scale = 0.1
+spells = Array[ExtResource("2_r50s2")]([ExtResource("4_ddix6"), ExtResource("5_vp8gc"), ExtResource("6_ipjya")])
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

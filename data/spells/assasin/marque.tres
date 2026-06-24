@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://c33alie1vyhvs"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_7lwug"]
+[ext_resource type="Resource" uid="uid://borbjlismrg6m" path="res://data/status/core/marqué.tres" id="1_mmkep"]
+
+[resource]
+script = ExtResource("1_7lwug")
+spell_name = "Marque"
+applied_status = ExtResource("1_mmkep")
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

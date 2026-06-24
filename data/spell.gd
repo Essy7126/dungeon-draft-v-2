@@ -55,6 +55,14 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 # Statut infligé aux unités touchées (poison, stun, slow...).
 @export var applied_status: StatusData = null
 
+@export_group("Mécanique spéciale")
+# Pousse la cible de N cases dans la direction caster→target. 0 = pas de poussée.
+@export var push_distance: int = 0
+# Bouclier accordé aux cibles AMIES touchées par ce sort (Garde, Rempart...).
+@export var shield_grant: int = 0
+# Bonus de dégâts si la cible porte le statut "Marqué" (Exécution de l'Assassin).
+@export var bonus_damage_if_marked: int = 0
+
 func deals_damage() -> bool:
 	return damage > 0
 

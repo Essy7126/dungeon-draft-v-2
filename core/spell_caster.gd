@@ -113,6 +113,77 @@ func _has_angle_advantage(caster: Unit, target_cell: Vector2i) -> bool:
 			return true
 	return false
 
+# ============================================================
+# POUSSÉE — déplace la cible dans la direction caster→target
+# Renvoie un dict avec les résultats tactiques pour le rapport.
+# ============================================================
+
+func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
+	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false }
+	if cells <= 0 or target == null:
+		return result
+
+	# Direction cardinale caster → target
+	var raw_dir := target.grid_pos - caster.grid_pos
+	var dir: Vector2i
+	if abs(raw_dir.x) >= abs(raw_dir.y):
+		dir = Vector2i(sign(raw_dir.x), 0)
+	else:
+		dir = Vector2i(0, sign(raw_dir.y))
+	if dir == Vector2i.ZERO:
+		return result
+
+	var from_pos := target.grid_pos
+	var landed_pos := from_pos
+	var had_collision := false
+
+	for _i in range(cells):
+		var next := landed_pos + dir
+		if not _grid.is_valid(next) or not _grid.is_walkable(next) or _grid.has_unit(next):
+			had_collision = true
+			break
+		landed_pos = next
+
+	# Applique le déplacement si la cible a bougé
+	if landed_pos != from_pos:
+		_grid.move_unit(from_pos, landed_pos)
+		target.grid_pos = landed_pos
+		result["pushed"] = true
+		result["collision"] = had_collision
+		# Vérifie si la poussée a éloigné d'un allié du caster
+		result["pushed_away_from_ally"] = _pushed_away_from_ally(caster, from_pos, landed_pos)
+		EventBus.unit_pushed.emit(target, from_pos, landed_pos, had_collision)
+		DebugLogger.debug(CAT_SPELL, "%s poussé de %s à %s%s" % [
+			target.unit_name, str(from_pos), str(landed_pos),
+			" (collision)" if had_collision else ""])
+	elif had_collision:
+		# Poussée bloquée immédiatement — collision sur place
+		result["collision"] = true
+		EventBus.unit_pushed.emit(target, from_pos, from_pos, true)
+
+	return result
+
+# La poussée a-t-elle éloigné la cible d'un allié du caster ?
+func _pushed_away_from_ally(caster: Unit, from_pos: Vector2i, to_pos: Vector2i) -> bool:
+	for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+		var adj: Vector2i = from_pos + dir
+		if not _grid.is_valid(adj):
+			continue
+		var occupant: Unit = _grid.get_unit(adj)
+		if occupant != null and occupant.team == caster.team and occupant != caster:
+			return not (to_pos - occupant.grid_pos).length() < 1.5
+	return false
+
+# Vérifie si une unité porte un statut par son nom.
+func _has_status(unit: Unit, status_name: String) -> bool:
+	if not unit.has_method("get_active_statuses"):
+		return false
+	for entry in unit.get_active_statuses():
+		var sd: StatusData = entry.get("data")
+		if sd != null and sd.status_name == status_name:
+			return true
+	return false
+
 # Le caster a-t-il de quoi PAYER ce sort ? (vérif sans dépenser, pour l'UI/IA :
 # griser un sort trop cher, empêcher l'IA de le choisir). La dépense réelle a
 # lieu dans cast(). Une unité sans énergie n'est pas soumise au coût (rétrocompat).
@@ -153,10 +224,6 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 	var report = {
 		"caster": caster, "spell": spell, "cell": cell,
 		"affected_units": [], "terrain_changed": [], "crits": [], "dodges": [],
-		# --- Données tactiques pour les traits de châssis ---
-		# Remplies ici par SpellCaster qui connaît la grille.
-		# Les conditions push/collision/pushed_away seront vraies quand
-		# la mécanique de poussée sera implémentée.
 		"ally_adjacent_to_caster": _has_ally_adjacent(caster),
 		"angle_advantage":         _has_angle_advantage(caster, cell),
 		"pushed":                  false,
@@ -168,12 +235,17 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 		var target = _grid.get_unit(target_cell)
 		if target != null:
 			var affected = false
-			# Dégâts : passent par le resolver (armure, résist, crit, esquive).
-			# On transmet l'attaquant + le type du sort. Le crit du sort
-			# s'ajoute au crit de l'attaquant via bonus_crit_chance.
+
+			# --- Dégâts ---
 			if spell.deals_damage():
+				var base_dmg := spell.damage
+				# Bonus si cible Marquée (Exécution de l'Assassin)
+				if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marqué"):
+					base_dmg += spell.bonus_damage_if_marked
+					DebugLogger.debug(CAT_SPELL, "%s : bonus Marqué +%d sur %s" % [
+						spell.spell_name, spell.bonus_damage_if_marked, target.unit_name])
 				var result = target.take_damage(
-					spell.damage, caster,
+					base_dmg, caster,
 					spell.damage_type, spell.element,
 					{ "bonus_crit_chance": spell.crit_chance })
 				if result != null:
@@ -182,17 +254,37 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 					if result.dodged:
 						report["dodges"].append(target)
 				affected = true
+
+			# --- Soin ---
 			if spell.is_healing():
 				target.heal(spell.heal)
 				affected = true
+
+			# --- Statut ---
 			if spell.applied_status != null:
 				target.apply_status(spell.applied_status)
 				affected = true
+
+			# --- Bouclier sur allié (Garde, Rempart) ---
+			if spell.shield_grant > 0 and target.team == caster.team:
+				target.add_shield(spell.shield_grant)
+				affected = true
+
 			if affected and not report["affected_units"].has(target):
 				report["affected_units"].append(target)
+
 		if spell.has_terrain_effect():
 			_terrain.place_effect(target_cell, spell.terrain_effect)
 			report["terrain_changed"].append(target_cell)
+
+	# --- Poussée (après les effets, pour que les dégâts soient appliqués d'abord) ---
+	if spell.push_distance > 0:
+		var push_target = _grid.get_unit(cell)
+		if push_target != null and push_target.team != caster.team:
+			var push_result = _push_unit(caster, push_target, spell.push_distance)
+			report["pushed"]    = push_result["pushed"]
+			report["collision"] = push_result["collision"]
+			report["pushed_away_from_ally"] = push_result["pushed_away_from_ally"]
 
 	# Résumé du sort (combien d'unités touchées, combien de cases de terrain).
 	var hit_names: Array = []

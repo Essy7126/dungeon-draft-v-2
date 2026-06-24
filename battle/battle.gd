@@ -56,6 +56,14 @@ const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
 # Durée d'affichage de l'écran de fin avant de rendre la main au run.
 const END_SCREEN_DELAY := 1.5
 
+# --- Draft d'énergie (phase avant combat) ---
+# Chemins à ajuster si ton arborescence diffère.
+const PATH_RAGE := "res://data/energy/rage.tres"
+const PATH_FOI  := "res://data/energy/foi.tres"
+var _draft_ui: CanvasLayer = null
+var _draft_choices: Dictionary = {}   # Unit → EnergyTypeData
+var _draft_pending: int = 0           # nombre de héros n'ayant pas encore choisi
+
 func _ready() -> void:
 	# La salle vient du run en cours. On la lit AVANT de construire la logique,
 	# pour pouvoir, plus tard, adapter la grille à la salle si besoin.
@@ -402,9 +410,6 @@ func _create_unit_view(unit: Unit) -> void:
 	_unit_views[unit] = view
 
 func _start_battle() -> void:
-	# Garde-fou : on ne lance JAMAIS un combat avec une équipe vide.
-	# Sans héros, aucune mort ne survient, donc _check_battle_end() n'est
-	# jamais déclenché et les ennemis tourneraient en boucle à l'infini.
 	var heroes_count := 0
 	var enemies_count := 0
 	for u in units:
@@ -413,27 +418,147 @@ func _start_battle() -> void:
 		else:
 			enemies_count += 1
 	if heroes_count == 0:
-		push_error("Aucun héros dans le combat : défaite immédiate (évite la boucle infinie).")
+		push_error("Aucun héros dans le combat : défaite immédiate.")
 		_end_battle(false)
 		return
 	if enemies_count == 0:
 		push_warning("Aucun ennemi dans la salle : victoire immédiate.")
 		_end_battle(true)
 		return
-		
-		
-	# === TEST TEMPORAIRE : châssis Guerrier sur le premier héros éligible ===
-	# Le châssis gère TOUTE la génération selon l'énergie équipée (Rage ou Foi).
-	for u in units:
-		if u.team == 0 and u.is_alive and u.has_energy():
-			var t = TraitChassisGuerrier.new()
-			u.add_trait(t)
-			DebugLogger.info(DebugLogger.LogCategory.COMBAT,
-				"TEST: Châssis Guerrier attaché à %s (énergie: %s)" \
-				% [u.unit_name, u.energy_type.energy_id])
-			break
-	# === fin du test ===
 
+	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
+	EventBus.unit_pushed.connect(_on_unit_pushed)
+
+	# Draft d'énergie avant le premier tour
+	_start_energy_draft()
+
+
+# ============================================================
+# DÉBUT DE TOUR
+# ============================================================
+
+# ============================================================
+# DRAFT D'ÉNERGIE — overlay avant le combat
+# ============================================================
+
+func _start_energy_draft() -> void:
+	var heroes: Array = []
+	for u in units:
+		if u.team == 0:
+			heroes.append(u)
+
+	var any_has_energy := false
+	for h in heroes:
+		if h.has_energy():
+			any_has_energy = true
+			break
+
+	if heroes.is_empty() or not any_has_energy:
+		_launch_combat()
+		return
+
+	var rage_res: EnergyTypeData = load(PATH_RAGE) as EnergyTypeData
+	var foi_res: EnergyTypeData  = load(PATH_FOI)  as EnergyTypeData
+	if rage_res == null or foi_res == null:
+		push_warning("Draft : rage.tres ou foi.tres introuvable. Combat sans draft.")
+		_launch_combat()
+		return
+
+	action_bar.set_player_controls_enabled(false)
+
+	_draft_ui = CanvasLayer.new()
+	add_child(_draft_ui)
+	_draft_pending = heroes.size()
+
+	var bg := ColorRect.new()
+	bg.color = Color(0, 0, 0, 0.75)
+	bg.anchor_right = 1.0
+	bg.anchor_bottom = 1.0
+	_draft_ui.add_child(bg)
+
+	var title := Label.new()
+	title.text = "Choisissez l'énergie de vos champions"
+	title.add_theme_font_size_override("font_size", 24)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.anchor_left = 0.0
+	title.anchor_right = 1.0
+	title.anchor_top = 0.15
+	title.anchor_bottom = 0.25
+	_draft_ui.add_child(title)
+
+	var slot_width  := 200
+	var total_width := heroes.size() * slot_width + (heroes.size() - 1) * 24
+	var start_x     := -total_width / 2
+
+	for i in heroes.size():
+		var hero: Unit = heroes[i]
+		var slot := VBoxContainer.new()
+		slot.anchor_left   = 0.5
+		slot.anchor_right  = 0.5
+		slot.anchor_top    = 0.3
+		slot.anchor_bottom = 0.75
+		slot.offset_left   = start_x + i * (slot_width + 24)
+		slot.offset_right  = start_x + i * (slot_width + 24) + slot_width
+		slot.alignment = BoxContainer.ALIGNMENT_CENTER
+		slot.add_theme_constant_override("separation", 12)
+		_draft_ui.add_child(slot)
+
+		var name_lbl := Label.new()
+		name_lbl.text = hero.unit_name
+		name_lbl.add_theme_font_size_override("font_size", 18)
+		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		slot.add_child(name_lbl)
+
+		var rage_btn := Button.new()
+		rage_btn.text = "⚔ Rage"
+		rage_btn.add_theme_font_size_override("font_size", 16)
+		rage_btn.custom_minimum_size = Vector2(slot_width, 48)
+		rage_btn.modulate = Color(1.0, 0.45, 0.1)
+		rage_btn.pressed.connect(_on_draft_choice.bind(hero, rage_res))
+		slot.add_child(rage_btn)
+
+		var foi_btn := Button.new()
+		foi_btn.text = "✦ Foi"
+		foi_btn.add_theme_font_size_override("font_size", 16)
+		foi_btn.custom_minimum_size = Vector2(slot_width, 48)
+		foi_btn.modulate = Color(0.4, 0.7, 1.0)
+		foi_btn.pressed.connect(_on_draft_choice.bind(hero, foi_res))
+		slot.add_child(foi_btn)
+
+func _on_draft_choice(hero: Unit, energy: EnergyTypeData) -> void:
+	hero.energy_type    = energy
+	hero.current_energy = energy.start_energy
+	_draft_choices[hero] = energy
+	DebugLogger.info(DebugLogger.LogCategory.COMBAT,
+		"Draft : %s → %s" % [hero.unit_name, energy.energy_name])
+	_attach_chassis_trait(hero)
+	_draft_pending -= 1
+	if _draft_pending <= 0:
+		_end_energy_draft()
+
+func _attach_chassis_trait(hero: Unit) -> void:
+	# Identifie le châssis selon le nom de l'unité (convention : nom contient le type)
+	var n := hero.unit_name.to_lower()
+	var t: Trait = null
+	if "guerrier" in n:
+		t = TraitChassisGuerrier.new()
+	elif "gardien" in n:
+		t = TraitChassisGardien.new()
+	elif "assassin" in n:
+		t = TraitChassisAssassin.new()
+	if t != null:
+		hero.add_trait(t)
+		DebugLogger.info(DebugLogger.LogCategory.COMBAT,
+			"Châssis %s → %s" % [t._trait_name(), hero.unit_name])
+
+func _end_energy_draft() -> void:
+	if is_instance_valid(_draft_ui):
+		_draft_ui.queue_free()
+	_draft_ui = null
+	action_bar.set_player_controls_enabled(true)
+	_launch_combat()
+
+func _launch_combat() -> void:
 	turn_queue = TurnQueue.new()
 	turn_queue.setup(units)
 	turn_queue.turn_started.connect(_on_turn_started)
@@ -441,8 +566,13 @@ func _start_battle() -> void:
 	turn_queue.start()
 
 # ============================================================
-# DÉBUT DE TOUR
+# HANDLER POUSSÉE VISUELLE
 # ============================================================
+
+func _on_unit_pushed(unit: Unit, _from: Vector2i, to_pos: Vector2i, _collision: bool) -> void:
+	var view = _unit_views.get(unit)
+	if is_instance_valid(view):
+		view.position = grid_view.grid_to_world(to_pos)
 
 func _on_turn_started(unit: Unit) -> void:
 	if _battle_over:

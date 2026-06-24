@@ -102,6 +102,17 @@ signal shield_absorbed(unit, amount)
 signal shield_broken(unit)
 
 # ============================================================
+# SIGNAUX DE DÉPLACEMENT FORCÉ
+# Émis par SpellCaster quand un sort pousse une unité.
+# battle.gd écoute pour mettre à jour la position visuelle.
+# unit     : l'Unit déplacée
+# from_pos : position grille de départ
+# to_pos   : position grille d'arrivée
+# collision: true si la poussée a été stoppée par un obstacle
+# ============================================================
+signal unit_pushed(unit, from_pos, to_pos, collision)
+
+# ============================================================
 # SIGNAUX DE SORT
 # Émis depuis SpellCaster après un cast réussi (énergie payée, effets appliqués).
 # Utilisé par les traits de châssis pour réagir conditionnellement.

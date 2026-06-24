@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://dtohbvvqqdjey"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_s6txf"]
+
+[resource]
+script = ExtResource("1_s6txf")
+spell_name = "Frappe de bouclier"
+spell_range = 1
+damage = 12
+damage_type = 0
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

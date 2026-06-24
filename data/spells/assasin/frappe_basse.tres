@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://f86bs6grnsf6"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_d8pi4"]
+
+[resource]
+script = ExtResource("1_d8pi4")
+spell_name = "Frappe basse"
+spell_range = 1
+damage = 15
+damage_type = 0
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

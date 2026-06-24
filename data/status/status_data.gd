@@ -53,3 +53,17 @@ extends Resource
 @export_group("Durée")
 # Nombre de tours pendant lesquels le statut reste actif.
 @export var duration: int = 3
+
+# ============================================================
+# MODIFICATEURS DE DÉGÂTS
+# Permettent de créer Vulnérable, Résistant, ou tout statut qui
+# amplifie/réduit les dégâts reçus — sans toucher au resolver.
+# ============================================================
+
+@export_group("Modificateurs de dégâts")
+# Multiplicateur appliqué aux dégâts reçus par l'unité affectée.
+# 1.0 = aucun effet (défaut).
+# 1.3 = Vulnérable (prend +30% de dégâts).
+# 0.8 = Résistant (prend -20% de dégâts).
+# Plusieurs statuts s'accumulent par multiplication.
+@export var damage_multiplier_received: float = 1.0

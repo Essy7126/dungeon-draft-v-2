@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://dwt6x1da4m1h1"]
+
+[ext_resource type="Resource" uid="uid://cru2n0guric0g" path="res://data/status/core/protégé.tres" id="1_88v6x"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_anvwb"]
+
+[resource]
+script = ExtResource("1_anvwb")
+spell_name = "Garde"
+spell_range = 2
+can_target_enemy = false
+can_target_ally = true
+can_target_self = true
+applied_status = ExtResource("1_88v6x")
+shield_grant = 20
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

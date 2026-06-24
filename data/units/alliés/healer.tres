@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bq7tyibldjx6x"]
+
+[ext_resource type="Resource" uid="uid://t8xipeik7ih8" path="res://data/energy/nature.tres" id="1_b83qh"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_y7o4r"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_b83qh"]
+
+[resource]
+script = ExtResource("1_y7o4r")
+energy_type = ExtResource("1_b83qh")
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

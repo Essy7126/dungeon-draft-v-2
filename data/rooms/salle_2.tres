@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dfe0tghqlccuo" path="res://data/rooms/maps/battle_salle2.tscn" id="1_a62wb"]
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_g31o3"]
 [ext_resource type="Texture2D" uid="uid://3u7yx36rpq3l" path="res://asset/Background/Dungeon background cartoon 2d 1.jpg" id="1_u80w3"]
-[ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/gobelin.tres" id="2_a62wb"]
+[ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/ennemie/gobelin.tres" id="2_a62wb"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_vkarx"]
 [ext_resource type="PackedScene" uid="uid://cyw0qpasbtsb1" path="res://ui/Particles/fumee_shader.tscn" id="5_4wsok"]
 

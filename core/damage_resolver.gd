@@ -116,6 +116,15 @@ static func compute(defender, ctx: HitContext) -> DamageResult:
 		var mitig := mitigation(defense)
 		dmg *= (1.0 - mitig)
 
+	# --- 3.5. MULTIPLICATEURS DE STATUT ---
+	# Statuts actifs sur la cible qui amplifient ou réduisent les dégâts reçus
+	# (Vulnérable, Résistant...). Appliqués APRÈS la mitigation d'armure, AVANT
+	# le crit — ils expriment un état de la cible, pas une propriété de l'attaque.
+	# Plusieurs statuts s'accumulent par multiplication (1.3 × 1.2 = ×1.56).
+	var status_mult := _get_status_damage_multiplier(defender)
+	if status_mult != 1.0:
+		dmg *= status_mult
+
 	# --- 4. CRITIQUE ---
 	# Chance = crit de l'unité attaquante + bonus ponctuel (traits).
 	# force_crit court-circuite le jet. Le multiplicateur vient de l'attaquant.
@@ -188,3 +197,15 @@ static func _get_crit_multi(attacker) -> float:
 	if attacker.crit_multi != null:
 		return attacker.crit_multi.get_value()
 	return 1.5
+
+# Produit des multiplicateurs de dégâts reçus de tous les statuts actifs.
+# Retourne 1.0 si aucun statut ne modifie les dégâts.
+static func _get_status_damage_multiplier(defender) -> float:
+	var mult := 1.0
+	if not defender.has_method("get_active_statuses"):
+		return mult
+	for entry in defender.get_active_statuses():
+		var sd = entry.get("data")
+		if sd != null and sd.get("damage_multiplier_received") != null:
+			mult *= sd.damage_multiplier_received
+	return mult

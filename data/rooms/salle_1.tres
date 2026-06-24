@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_0240p"]
 [ext_resource type="Texture2D" uid="uid://cl5f0vfll5e5k" path="res://asset/Background/Village background cartoon 2d-6.jpg" id="1_t5m7n"]
 [ext_resource type="PackedScene" uid="uid://607lpefu0v11" path="res://data/rooms/maps/battle_salle1.tscn" id="1_w42hg"]
-[ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/gobelin.tres" id="2_tdi8f"]
-[ext_resource type="Resource" uid="uid://bt1wphyv18e5k" path="res://data/units/mage_healer_gobelin.tres" id="3_tdi8f"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="3_w42hg"]
+[ext_resource type="Resource" uid="uid://bnefwnsiof7oq" path="res://data/units/ennemie/gobelin.tres" id="4_xbmud"]
+[ext_resource type="Resource" uid="uid://bt1wphyv18e5k" path="res://data/units/ennemie/mage_healer_gobelin.tres" id="5_c2wvm"]
 [ext_resource type="PackedScene" uid="uid://bklisc2gyx17o" path="res://ui/Particles/rayons_lumiere.tscn" id="6_xbmud"]
 
 [resource]
@@ -14,7 +14,7 @@ room_name = "Salle 1"
 background_image = ExtResource("1_t5m7n")
 particles_scene = ExtResource("6_xbmud")
 battle_scene = ExtResource("1_w42hg")
-enemies = Array[ExtResource("1_0240p")]([ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("2_tdi8f"), ExtResource("3_tdi8f"), ExtResource("3_tdi8f")])
-hero_spawn_zone = Array[Vector2i]([Vector2i(7, 11), Vector2i(6, 13), Vector2i(8, 11), Vector2i(7, 4), Vector2i(4, 9)])
+enemies = Array[ExtResource("1_0240p")]([ExtResource("4_xbmud"), ExtResource("4_xbmud"), ExtResource("4_xbmud"), ExtResource("5_c2wvm"), ExtResource("5_c2wvm")])
+hero_spawn_zone = Array[Vector2i]([Vector2i(7, 11), Vector2i(6, 13), Vector2i(8, 11), Vector2i(7, 4), Vector2i(4, 9), Vector2i(8, 7), Vector2i(11, 6), Vector2i(7, 6)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(17, 7), Vector2i(17, 4), Vector2i(17, 5), Vector2i(15, 7), Vector2i(17, 4), Vector2i(15, 5), Vector2i(18, 9)])
 metadata/_custom_type_script = "uid://clm64nm8ki4yj"

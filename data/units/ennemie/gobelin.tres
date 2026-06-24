@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_m7lpr"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_3acek"]
 [ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="3_3acek"]
-[ext_resource type="Resource" uid="uid://c5ja68c1s6fx1" path="res://data/spells/mêlée_gobelin.tres" id="3_7redg"]
+[ext_resource type="Resource" uid="uid://c5ja68c1s6fx1" path="res://data/spells/gobelin/mêlée_gobelin.tres" id="3_7redg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7redg"]
 atlas = ExtResource("3_3acek")

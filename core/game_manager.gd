@@ -19,8 +19,9 @@ extends Node
 # Les UnitData des héros du joueur (en dur pour l'instant ;
 # viendra de la sélection d'équipe plus tard).
 const HERO_DATA_PATHS = [
-	"res://data/units/chevalier.tres",
-	"res://data/units/mage.tres",
+	"res://data/units/alliés/Gardien.tres",
+	"res://data/units/alliés/Guerrier.tres",
+	"res://data/units/alliés/Assassin.tres",
 ]
 
 # Nombre de récompenses proposées après chaque salle.
