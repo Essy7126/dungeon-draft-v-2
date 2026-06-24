@@ -51,10 +51,9 @@ func _deactivate() -> void:
 func _on_damage_dealt(target, attacker, _amount, _category, _element, _is_crit) -> void:
 	if owner == null or not owner.is_alive or not owner.has_energy():
 		return
-	# Seuls les alliés non-Gardien déclenchent la réaction
-	if target == owner or target.team != owner.team:
+	# Réagit si : un allié OU le Gardien lui-même est touché par un ennemi
+	if target.team != owner.team:
 		return
-	# L'attaque doit venir d'un ennemi
 	if attacker == null or attacker.team == owner.team:
 		return
 
@@ -65,18 +64,17 @@ func _on_damage_dealt(target, attacker, _amount, _category, _element, _is_crit) 
 		"rage":
 			owner.generate_energy(rage_on_ally_hit, source_id)
 			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s génère %.0f Rage (châssis Gardien, allié touché)" \
+				"%s génère %.0f Rage (châssis Gardien, allié/soi touché)" \
 				% [owner.unit_name, rage_on_ally_hit])
 			if had_protege:
 				owner.generate_energy(rage_bonus_protege, source_id)
 				DebugLogger.debug(DebugLogger.LogCategory.STATS,
 					"%s génère %.0f Rage bonus (Protégé actif)" \
 					% [owner.unit_name, rage_bonus_protege])
-
 		"foi":
 			owner.generate_energy(foi_on_ally_hit, source_id)
 			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s génère %.0f Foi (châssis Gardien, allié touché)" \
+				"%s génère %.0f Foi (châssis Gardien, allié/soi touché)" \
 				% [owner.unit_name, foi_on_ally_hit])
 			if had_protege:
 				owner.generate_energy(foi_bonus_protege, source_id)

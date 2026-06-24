@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_nnx18"]
 [ext_resource type="Resource" uid="uid://0flkpto1jkby" path="res://data/spells/Guerrier/frappe_lourde.tres" id="3_3i8e2"]
 [ext_resource type="Resource" uid="uid://dpmhlxq1x24eq" path="res://data/spells/Guerrier/brise_garde.tres" id="4_s0rgo"]
+[ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="5_qjwhl"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="6_s0rgo"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_qjwhl"]
@@ -22,5 +23,5 @@ script = ExtResource("1_r2tug")
 unit_name = "Guerrier"
 sprite_frames = SubResource("SpriteFrames_qjwhl")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_nnx18")]([ExtResource("3_3i8e2"), ExtResource("4_s0rgo"), ExtResource("4_s0rgo")])
+spells = Array[ExtResource("2_nnx18")]([ExtResource("3_3i8e2"), ExtResource("5_qjwhl"), ExtResource("4_s0rgo")])
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

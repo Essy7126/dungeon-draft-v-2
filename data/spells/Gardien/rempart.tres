@@ -7,5 +7,7 @@ script = ExtResource("1_hhxbp")
 spell_name = "Rempart"
 energy_cost = 30.0
 spell_range = 0
+can_target_enemy = false
+can_target_self = true
 shield_grant = 40
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

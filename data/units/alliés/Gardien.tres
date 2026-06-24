@@ -21,7 +21,7 @@ animations = [{
 
 [resource]
 script = ExtResource("1_pfltm")
-unit_name = "Guerrier"
+unit_name = "Gardien"
 energy_type = ExtResource("1_r50s2")
 sprite_frames = SubResource("SpriteFrames_ipjya")
 sprite_scale = 0.1

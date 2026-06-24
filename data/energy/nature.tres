@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_fk0v5")
 energy_name = "Nature"
-energy_id = "Nature"
+energy_id = "nature"
 start_energy = 15.0
 color = Color(0.031185694, 0.49002808, 0.04623615, 1)
 metadata/_custom_type_script = "uid://b47puqafimbk5"

@@ -39,27 +39,16 @@ func configure(params: Dictionary) -> void:
 	foi_bonus_angle   = params.get("foi_bonus_angle",   foi_bonus_angle)
 
 func _activate() -> void:
-	EventBus.damage_dealt.connect(_on_damage_dealt)
 	EventBus.spell_cast.connect(_on_spell_cast)
 
 func _deactivate() -> void:
-	if EventBus.damage_dealt.is_connected(_on_damage_dealt):
-		EventBus.damage_dealt.disconnect(_on_damage_dealt)
 	if EventBus.spell_cast.is_connected(_on_spell_cast):
 		EventBus.spell_cast.disconnect(_on_spell_cast)
 
 # ============================================================
-# GÉNÉRATION DE BASE — sur toute frappe de l'Assassin
-# ============================================================
-
-func _on_damage_dealt(_target, attacker, _amount, _category, _element, _is_crit) -> void:
-	if attacker != owner or not owner.is_alive or not owner.has_energy():
-		return
-	_generate_base()
-
-# ============================================================
-# GÉNÉRATION CONDITIONNELLE — sur sort générateur
-# Lit angle_advantage et les cibles Marquées depuis le rapport.
+# GÉNÉRATION — sur tout sort générateur de l'Assassin
+# Base : chaque sort générateur produit de l'énergie.
+# Bonus : angle avantageux, cible Marquée.
 # ============================================================
 
 func _on_spell_cast(caster, spell: Spell, report: Dictionary) -> void:
@@ -72,6 +61,10 @@ func _on_spell_cast(caster, spell: Spell, report: Dictionary) -> void:
 	var has_marked: bool = _any_marked(report.get("affected_units", []))
 	var angle_ok: bool   = report.get("angle_advantage", false)
 
+	# Génération de base sur tout sort générateur
+	_generate_base()
+
+	# Bonus conditionnels
 	match energy_id:
 		"rage":
 			if has_marked:
