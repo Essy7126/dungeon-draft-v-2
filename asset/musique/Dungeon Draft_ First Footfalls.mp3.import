@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ccb7eepjta8nh"
+path="res://.godot/imported/Dungeon Draft_ First Footfalls.mp3-a0c09fb1930dbd3c7ebb6e6cddd58ee5.mp3str"
+
+[deps]
+
+source_file="res://asset/musique/Dungeon Draft_ First Footfalls.mp3"
+dest_files=["res://.godot/imported/Dungeon Draft_ First Footfalls.mp3-a0c09fb1930dbd3c7ebb6e6cddd58ee5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -23,6 +23,13 @@ var _info_label: Label
 var _spell_box: HBoxContainer
 var _spell_buttons: Array = []
 
+# --- Jauge d'énergie ---
+# Affiche la réserve courante du champion actif (Rage, Foi...).
+# Mise à jour via le signal energy_changed de l'unité.
+var _energy_bar: ProgressBar
+var _energy_label: Label
+var _current_unit = null   # référence pour déconnecter le signal
+
 func _ready() -> void:
 	_build_ui()
 
@@ -42,9 +49,28 @@ func _build_ui() -> void:
 
 	_info_label = Label.new()
 	_info_label.add_theme_font_size_override("font_size", 16)
-	_info_label.custom_minimum_size = Vector2(200, 0)
+	_info_label.custom_minimum_size = Vector2(160, 0)
 	_info_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_hbox.add_child(_info_label)
+
+	# --- Jauge d'énergie ---
+	var energy_vbox = VBoxContainer.new()
+	energy_vbox.custom_minimum_size = Vector2(120, 0)
+	energy_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	_hbox.add_child(energy_vbox)
+
+	_energy_label = Label.new()
+	_energy_label.add_theme_font_size_override("font_size", 12)
+	_energy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_energy_label.text = ""
+	energy_vbox.add_child(_energy_label)
+
+	_energy_bar = ProgressBar.new()
+	_energy_bar.custom_minimum_size = Vector2(120, 14)
+	_energy_bar.max_value = 100.0
+	_energy_bar.value = 0.0
+	_energy_bar.show_percentage = false
+	energy_vbox.add_child(_energy_bar)
 
 	_move_btn = Button.new()
 	_move_btn.text = "Déplacer"
@@ -120,10 +146,50 @@ func build_spell_buttons(unit) -> void:
 # ============================================================
 
 func update_info(unit) -> void:
+	# --- Déconnexion de l'ancienne unité ---
+	if _current_unit != null and is_instance_valid(_current_unit):
+		if _current_unit.energy_changed.is_connected(_on_energy_changed):
+			_current_unit.energy_changed.disconnect(_on_energy_changed)
+	_current_unit = unit
+
 	if unit == null:
 		_info_label.text = ""
+		_energy_label.text = ""
+		_energy_bar.value = 0.0
 		return
-	_info_label.text = "%s\nPA: %d  PM: %d" % [unit.unit_name, unit.current_ap, unit.current_mp]
+
+	# Texte : nom + PM (les PA sont remplacés par l'énergie)
+	_info_label.text = "%s\nPM: %d" % [unit.unit_name, unit.current_mp]
+
+	# --- Connexion à la nouvelle unité ---
+	if unit.energy_changed.is_connected(_on_energy_changed) == false:
+		unit.energy_changed.connect(_on_energy_changed)
+
+	# Mise à jour immédiate de la jauge
+	_refresh_energy_bar(unit)
+
+# ============================================================
+# JAUGE D'ÉNERGIE
+# ============================================================
+
+func _on_energy_changed(unit) -> void:
+	if unit == _current_unit:
+		_refresh_energy_bar(unit)
+
+func _refresh_energy_bar(unit) -> void:
+	if unit == null or not unit.has_energy():
+		_energy_label.text = ""
+		_energy_bar.value = 0.0
+		_energy_bar.modulate = Color.WHITE
+		return
+
+	# On lit tout depuis le .tres : energy_name, max_energy, color.
+	# Plus besoin de match en dur — chaque EnergyTypeData porte sa propre couleur.
+	var et: EnergyTypeData = unit.energy_type
+	_energy_bar.max_value = et.max_energy
+	_energy_bar.value = unit.current_energy
+	_energy_label.text = "%s : %d / %d" % [et.energy_name, int(unit.current_energy), int(et.max_energy)]
+	_energy_bar.modulate = et.color
 
 func set_player_controls_enabled(enabled: bool) -> void:
 	_move_btn.disabled = not enabled

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ib6fx0je05b4"
+path="res://.godot/imported/Dungeon Draft Tactics.mp3-beb09cd3f8d831fcddfad74f05ec3159.mp3str"
+
+[deps]
+
+source_file="res://asset/musique/Dungeon Draft Tactics.mp3"
+dest_files=["res://.godot/imported/Dungeon Draft Tactics.mp3-beb09cd3f8d831fcddfad74f05ec3159.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

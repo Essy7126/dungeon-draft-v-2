@@ -422,20 +422,15 @@ func _start_battle() -> void:
 		return
 		
 		
-		
-	# === TEST TEMPORAIRE : attacher le générateur de Rage au premier héros éligible ===
+	# === TEST TEMPORAIRE : châssis Guerrier sur le premier héros éligible ===
+	# Le châssis gère TOUTE la génération selon l'énergie équipée (Rage ou Foi).
 	for u in units:
 		if u.team == 0 and u.is_alive and u.has_energy():
-			var trait_data = load("res://traits/Fureur_de_combat.tres") as TraitData
-			if trait_data != null:
-				var t = trait_data.trait_script.new()
-				t.configure(trait_data.params)
-				u.add_trait(t)
-				DebugLogger.info(DebugLogger.LogCategory.COMBAT,
-					"TEST: Fureur de combat attachée à %s (rage_per_hit=%s)" \
-					% [u.unit_name, trait_data.params.get("rage_per_hit", 15.0)])
-			else:
-				push_warning("TEST: res://traits/Fureur_de_combat.tres introuvable — vérifie le chemin.")
+			var t = TraitChassisGuerrier.new()
+			u.add_trait(t)
+			DebugLogger.info(DebugLogger.LogCategory.COMBAT,
+				"TEST: Châssis Guerrier attaché à %s (énergie: %s)" \
+				% [u.unit_name, u.energy_type.energy_id])
 			break
 	# === fin du test ===
 

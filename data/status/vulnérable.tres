@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="StatusData" format=3 uid="uid://bi00hrkuytoaa"]
+
+[ext_resource type="Script" uid="uid://sr3n54wflcuj" path="res://data/status/status_data.gd" id="1_mm8pb"]
+
+[resource]
+script = ExtResource("1_mm8pb")
+status_name = "Vulnérable"
+color = Color(0.7490196, 0.24705882, 0.16862746, 1)
+duration = 1
+metadata/_custom_type_script = "uid://sr3n54wflcuj"

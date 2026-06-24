@@ -65,6 +65,7 @@ const DEFENSE_MAX := 1000.0
 var current_hp: int = 0
 var current_ap: int = 0   # DORMANT : les PA sont remplacés par l'énergie.
 var current_mp: int = 0   # PM conservés : ressource de déplacement.
+var current_shield: int = 0  # Bouclier actif : absorbe les dégâts avant les PV.
 var is_alive: bool = true
 var grid_pos: Vector2i = Vector2i(-1, -1)
 
@@ -98,6 +99,7 @@ signal died(unit)
 signal hp_changed(unit)
 signal stats_changed(unit)
 signal energy_changed(unit)
+signal shield_changed(unit)
 
 # Raccourcis de catégories de log (combat = vu par le joueur).
 const CAT_COMBAT := DebugLogger.LogCategory.COMBAT
@@ -414,6 +416,36 @@ func get_energy_ratio() -> float:
 	return current_energy / energy_type.max_energy
 
 # ============================================================
+# BOUCLIER — couche défensive entre l'énergie et les PV
+# Le bouclier absorbe les dégâts AVANT les PV. Il n'expire pas
+# naturellement : il tient jusqu'à être épuisé ou remplacé.
+# Design : on ne cumule pas les boucliers — un nouveau remplace
+# l'ancien s'il est plus élevé, sinon il est ignoré. Évite le
+# spam de boucliers qui empilement indéfiniment.
+# ============================================================
+
+# Accorde un bouclier. Remplace l'ancien s'il est plus faible.
+# Un bouclier plus faible est ignoré : on ne perd jamais son bouclier
+# parce qu'un sort de soutien a donné moins que ce qu'on a déjà.
+func add_shield(amount: int) -> void:
+	if not is_alive or amount <= 0:
+		return
+	if amount <= current_shield:
+		return                           # bouclier actuel déjà plus fort : ignoré
+	current_shield = amount
+	EventBus.shield_gained.emit(self, amount)
+	shield_changed.emit(self)
+	DebugLogger.debug(CAT_STATS,
+		"%s reçoit un bouclier de %d" % [unit_name, amount])
+
+# Retire le bouclier complètement (fin de tour, sort ennemi...).
+func clear_shield() -> void:
+	if current_shield <= 0:
+		return
+	current_shield = 0
+	shield_changed.emit(self)
+
+# ============================================================
 # COMBAT
 # ============================================================
 
@@ -464,30 +496,45 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	_apply_damage_result(result, ctx.attacker)
 	return result
 
-# Applique le résultat calculé aux PV.
-# POINT D'ÉMISSION UNIQUE du flux de dégâts : le bus n'est émis QUE d'ici,
-# une fois les PV réellement modifiés. Zéro doublon possible.
-# Les logs de combat sont produits par le CombatLogger (abonné du bus) :
-# unit.gd ne connaît plus le DebugLogger pour le combat, il annonce des faits.
+# Applique le résultat calculé aux PV, en absorbant d'abord le bouclier.
+# POINT D'ÉMISSION UNIQUE du flux de dégâts.
 func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) -> void:
 	if result.dodged:
 		EventBus.attack_dodged.emit(self, attacker)
 		hp_changed.emit(self)
 		return
 
-	current_hp -= result.amount
+	# --- Absorption par le bouclier ---
+	# Le bouclier prend les dégâts en premier. Si tout est absorbé, les PV ne bougent pas.
+	var damage_to_hp := result.amount
+	if current_shield > 0 and damage_to_hp > 0:
+		var absorbed := mini(current_shield, damage_to_hp)
+		current_shield -= absorbed
+		damage_to_hp -= absorbed
+		EventBus.shield_absorbed.emit(self, absorbed)
+		if current_shield <= 0:
+			EventBus.shield_broken.emit(self)
+		shield_changed.emit(self)
+		DebugLogger.debug(CAT_STATS,
+			"%s : bouclier absorbe %d (reste %d)" % [unit_name, absorbed, current_shield])
 
-	# Annonce le fait sur le bus (après modification réelle des PV).
-	# Le CombatLogger écoute et produit la ligne de log (crit inclus).
+	# Annonce la frappe sur le bus (montant après mitigation armure/résist, avant bouclier).
+	# shield_absorbed est émis séparément pour les traits qui y réagissent.
 	EventBus.damage_dealt.emit(
 		self, attacker, result.amount, result.category, result.element, result.is_crit)
 	if result.is_crit:
 		EventBus.critical_hit.emit(self, attacker, result.amount)
 
-	hp_changed.emit(self)
-	if current_hp <= 0:
-		current_hp = 0
-		_die()
+	# --- Application aux PV ---
+	if damage_to_hp > 0:
+		current_hp -= damage_to_hp
+		hp_changed.emit(self)
+		if current_hp <= 0:
+			current_hp = 0
+			_die()
+	else:
+		# Tout absorbé : les PV n'ont pas bougé, mais on notifie pour l'UI.
+		hp_changed.emit(self)
 
 func heal(amount: int) -> void:
 	if not is_alive:

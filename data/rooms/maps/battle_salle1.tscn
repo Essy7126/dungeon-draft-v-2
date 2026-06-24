@@ -2,10 +2,13 @@
 
 [ext_resource type="Script" uid="uid://coox5sq37keko" path="res://battle/battle.gd" id="1_tvocr"]
 [ext_resource type="TileSet" uid="uid://dwxuc86lo7ekw" path="res://data/rooms/tile_set.tres" id="2_ejelh"]
+[ext_resource type="AudioStream" uid="uid://ccb7eepjta8nh" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="3_1q8vd"]
 
 [node name="Battle" type="Node2D" unique_id=1156281053]
 texture_filter = 1
 script = ExtResource("1_tvocr")
+grid_cols = null
+grid_rows = null
 
 [node name="BackgroundLayer" type="TileMapLayer" parent="." unique_id=263730114]
 scale = Vector2(4, 4)
@@ -21,3 +24,8 @@ tile_set = ExtResource("2_ejelh")
 scale = Vector2(4, 4)
 tile_map_data = PackedByteArray("AAAKAAwAAQAJAAoAAAAMAAMAAQAHAAkAAAASAAMAAQAKAAkAAAAQAAMAAQALAAkAAAARAAAAAQALAAcAAAAAAAUAAQALAAYAAAA=")
 tile_set = ExtResource("2_ejelh")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1881748809]
+stream = ExtResource("3_1q8vd")
+autoplay = true
+parameters/looping = true

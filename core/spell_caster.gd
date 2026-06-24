@@ -82,6 +82,37 @@ func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 		return false
 	return _matches_target(caster, spell, cell)
 
+# ============================================================
+# HELPERS TACTIQUES — pour enrichir le rapport de cast
+# Utilisés par les traits de châssis (angle avantageux, allié adjacent...).
+# ============================================================
+
+# Un allié de l'unité est-il adjacent à elle (dans les 4 directions) ?
+func _has_ally_adjacent(unit: Unit) -> bool:
+	for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+		var pos = unit.grid_pos + dir
+		if not _grid.is_valid(pos):
+			continue
+		var occupant = _grid.get_unit(pos)
+		if occupant != null and occupant.team == unit.team and occupant != unit:
+			return true
+	return false
+
+# Angle avantageux : la cible est adjacente à un allié du caster (autre que lui).
+# Utilisé par le châssis Assassin. Extension future : attaque de dos.
+func _has_angle_advantage(caster: Unit, target_cell: Vector2i) -> bool:
+	var target = _grid.get_unit(target_cell)
+	if target == null:
+		return false
+	for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+		var pos = target.grid_pos + dir
+		if not _grid.is_valid(pos):
+			continue
+		var occupant = _grid.get_unit(pos)
+		if occupant != null and occupant.team == caster.team and occupant != caster:
+			return true
+	return false
+
 # Le caster a-t-il de quoi PAYER ce sort ? (vérif sans dépenser, pour l'UI/IA :
 # griser un sort trop cher, empêcher l'IA de le choisir). La dépense réelle a
 # lieu dans cast(). Une unité sans énergie n'est pas soumise au coût (rétrocompat).
@@ -122,6 +153,15 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 	var report = {
 		"caster": caster, "spell": spell, "cell": cell,
 		"affected_units": [], "terrain_changed": [], "crits": [], "dodges": [],
+		# --- Données tactiques pour les traits de châssis ---
+		# Remplies ici par SpellCaster qui connaît la grille.
+		# Les conditions push/collision/pushed_away seront vraies quand
+		# la mécanique de poussée sera implémentée.
+		"ally_adjacent_to_caster": _has_ally_adjacent(caster),
+		"angle_advantage":         _has_angle_advantage(caster, cell),
+		"pushed":                  false,
+		"collision":               false,
+		"pushed_away_from_ally":   false,
 	}
 	var affected_cells = get_aoe_cells(spell, cell)
 	for target_cell in affected_cells:
@@ -162,5 +202,14 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 		spell.spell_name, report["affected_units"].size(), report["terrain_changed"].size()], {
 		"cibles": hit_names,
 	})
+
+	# --- Génération de base (energy_generated du sort, agnostique du type) ---
+	# La génération CONDITIONNELLE selon Rage/Foi/... vit dans le TraitChassis.
+	if spell.energy_generated > 0.0 and caster.has_energy():
+		caster.generate_energy(spell.energy_generated, spell.spell_name)
+
+	# --- Annonce sur le bus (après tous les effets et la génération de base) ---
+	# Les traits de châssis écoutent ce signal pour leur génération conditionnelle.
+	EventBus.spell_cast.emit(caster, spell, report)
 
 	return report

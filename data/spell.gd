@@ -20,6 +20,10 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 # d'action. 0 = GÉNÉRATEUR (sort gratuit qui sert à lancer le moteur).
 # > 0 = CONSOMMATEUR (sort puissant qui dépense l'énergie construite).
 @export var energy_cost: float = 0.0
+# Énergie générée à l'exécution de ce sort (génération de BASE, agnostique du
+# type d'énergie). La génération conditionnelle selon Rage/Foi/... vit dans le
+# TraitChassis du champion. 0 = pas de génération directe.
+@export var energy_generated: float = 0.0
 @export var spell_range: int = 3
 @export var needs_line_of_sight: bool = true
 

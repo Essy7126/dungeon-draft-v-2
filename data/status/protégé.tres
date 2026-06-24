@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StatusData" format=3 uid="uid://cru2n0guric0g"]
+
+[ext_resource type="Script" uid="uid://sr3n54wflcuj" path="res://data/status/status_data.gd" id="1_onenm"]
+
+[resource]
+script = ExtResource("1_onenm")
+color = Color(0.10086777, 0.4511395, 0.8946983, 1)
+duration = 1
+metadata/_custom_type_script = "uid://sr3n54wflcuj"

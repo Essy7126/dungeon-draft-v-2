@@ -89,3 +89,34 @@ signal turn_ended(unit)
 # ============================================================
 signal energy_generated(unit, energy_id, amount)
 signal energy_spent(unit, energy_id, amount)
+
+# ============================================================
+# SIGNAUX DE BOUCLIER
+# Le bouclier absorbe les dégâts AVANT les PV (couche défensive supplémentaire).
+# shield_gained   : un bouclier vient d'être accordé (traits, sorts de soutien).
+# shield_absorbed : le bouclier a absorbé une partie ou la totalité d'une frappe.
+# shield_broken   : le bouclier vient de tomber à 0 (épuisé par une frappe).
+# ============================================================
+signal shield_gained(unit, amount)
+signal shield_absorbed(unit, amount)
+signal shield_broken(unit)
+
+# ============================================================
+# SIGNAUX DE SORT
+# Émis depuis SpellCaster après un cast réussi (énergie payée, effets appliqués).
+# Utilisé par les traits de châssis pour réagir conditionnellement.
+#
+# caster : l'Unit qui a lancé le sort
+# spell  : le Spell lancé
+# report : Dictionary avec les données tactiques du cast :
+#   "affected_units"         : Array[Unit] touchées
+#   "terrain_changed"        : Array[Vector2i] cases modifiées
+#   "crits"                  : Array[Unit] touchées en critique
+#   "dodges"                 : Array[Unit] ayant esquivé
+#   "ally_adjacent_to_caster": bool — un allié était adjacent au caster
+#   "angle_advantage"        : bool — attaque depuis un angle favorable
+#   "pushed"                 : bool — une cible a été poussée (futur)
+#   "collision"              : bool — une poussée a causé une collision (futur)
+#   "pushed_away_from_ally"  : bool — poussée éloignant d'un allié (futur)
+# ============================================================
+signal spell_cast(caster, spell, report)

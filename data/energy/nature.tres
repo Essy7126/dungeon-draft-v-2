@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EnergyTypeData" format=3 uid="uid://t8xipeik7ih8"]
+
+[ext_resource type="Script" uid="uid://b47puqafimbk5" path="res://data/energy/energy_type.gd" id="1_fk0v5"]
+
+[resource]
+script = ExtResource("1_fk0v5")
+energy_name = "Nature"
+energy_id = "Nature"
+start_energy = 15.0
+color = Color(0.031185694, 0.49002808, 0.04623615, 1)
+metadata/_custom_type_script = "uid://b47puqafimbk5"
