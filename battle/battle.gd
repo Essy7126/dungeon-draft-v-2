@@ -423,12 +423,19 @@ func _start_battle() -> void:
 		
 		
 		
-		# === TEST TEMPORAIRE : attacher Vengeance au premier héros ===
+	# === TEST TEMPORAIRE : attacher le générateur de Rage au premier héros éligible ===
 	for u in units:
-		if u.team == 0 and u.is_alive:
-			u.add_trait(TraitVengeance.new())
-			DebugLogger.info(DebugLogger.LogCategory.COMBAT,
-				"TEST: Vengeance attachée à %s" % u.unit_name)
+		if u.team == 0 and u.is_alive and u.has_energy():
+			var trait_data = load("res://traits/Fureur_de_combat.tres") as TraitData
+			if trait_data != null:
+				var t = trait_data.trait_script.new()
+				t.configure(trait_data.params)
+				u.add_trait(t)
+				DebugLogger.info(DebugLogger.LogCategory.COMBAT,
+					"TEST: Fureur de combat attachée à %s (rage_per_hit=%s)" \
+					% [u.unit_name, trait_data.params.get("rage_per_hit", 15.0)])
+			else:
+				push_warning("TEST: res://traits/Fureur_de_combat.tres introuvable — vérifie le chemin.")
 			break
 	# === fin du test ===
 
