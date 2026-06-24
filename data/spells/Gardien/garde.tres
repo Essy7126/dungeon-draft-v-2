@@ -2,14 +2,18 @@
 
 [ext_resource type="Resource" uid="uid://cru2n0guric0g" path="res://data/status/core/protégé.tres" id="1_88v6x"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_anvwb"]
+[ext_resource type="Texture2D" uid="uid://dwp2bcvx0m7yi" path="res://asset/icone/icone spell.png_11.png" id="2_byomw"]
+[ext_resource type="AudioStream" uid="uid://b1goulmxwvrx6" path="res://asset/bruitage sort/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3" id="4_ghkog"]
 
 [resource]
 script = ExtResource("1_anvwb")
 spell_name = "Garde"
+icon = ExtResource("2_byomw")
 spell_range = 2
 can_target_enemy = false
 can_target_ally = true
 can_target_self = true
 applied_status = ExtResource("1_88v6x")
 shield_grant = 20
+sound_cast = ExtResource("4_ghkog")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

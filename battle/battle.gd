@@ -882,6 +882,19 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	action_bar.update_info(unit)
 	turn_state.set_state(TurnState.State.IDLE)
 	action_bar.set_active_mode("")
+	
+	# 🔊 Son de lancement
+	AudioManager.play_sfx_at(spell.sound_cast, grid_view.grid_to_world(unit.grid_pos))
+
+	spell_caster.cast(unit, spell, cell)
+
+	# 🔊 Son d'impact
+	AudioManager.play_sfx_at(spell.sound_impact, grid_view.grid_to_world(cell))
+
+	grid_view.queue_redraw()
+	action_bar.update_info(unit)
+	turn_state.set_state(TurnState.State.IDLE)
+	action_bar.set_active_mode("")
 
 # ============================================================
 # ÉVÉNEMENTS DE COMBAT

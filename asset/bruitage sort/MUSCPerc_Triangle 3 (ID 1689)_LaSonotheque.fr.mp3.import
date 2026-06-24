@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b1goulmxwvrx6"
+path="res://.godot/imported/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3-f1d88b64f5367df0379e63a892e4aa34.mp3str"
+
+[deps]
+
+source_file="res://asset/bruitage sort/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3"
+dest_files=["res://.godot/imported/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3-f1d88b64f5367df0379e63a892e4aa34.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

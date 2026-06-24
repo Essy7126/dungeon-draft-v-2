@@ -83,3 +83,7 @@ func has_terrain_effect() -> bool:
 func is_self_only() -> bool:
 	return can_target_self and not can_target_enemy \
 		and not can_target_ally and not can_target_free_cell
+
+@export_group("Audio")
+@export var sound_cast: AudioStream = null
+@export var sound_impact: AudioStream = null
