@@ -4,4 +4,5 @@
 
 [resource]
 script = ExtResource("1_iljyy")
+energy_name = "Rage"
 metadata/_custom_type_script = "uid://b47puqafimbk5"

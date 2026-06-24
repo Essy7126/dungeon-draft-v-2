@@ -5,4 +5,5 @@
 [resource]
 script = ExtResource("1_pk5ov")
 spell_name = "blizzard"
+energy_cost = 15.0
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

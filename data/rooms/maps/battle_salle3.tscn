@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://coox5sq37keko" path="res://battle/battle.gd" id="1_4vcun"]
 [ext_resource type="TileSet" uid="uid://dwxuc86lo7ekw" path="res://data/rooms/tile_set.tres" id="2_c1ne7"]
+[ext_resource type="AudioStream" uid="uid://bdp8mnsvr5yhj" path="res://asset/musique/Dungeon Draft Oath.mp3" id="3_og85u"]
 
 [node name="Battle" type="Node2D" unique_id=1156281053]
 texture_filter = 1
@@ -21,3 +22,8 @@ tile_set = ExtResource("2_c1ne7")
 scale = Vector2(4, 4)
 tile_map_data = PackedByteArray("AAAMAA0AAAAGAAQAAAA=")
 tile_set = ExtResource("2_c1ne7")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=168178154]
+stream = ExtResource("3_og85u")
+autoplay = true
+parameters/looping = true

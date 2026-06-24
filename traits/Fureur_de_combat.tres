@@ -1,7 +1,10 @@
 [gd_resource type="Resource" script_class="TraitData" format=3 uid="uid://5773rwafwmml"]
 
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="1_uti36"]
+[ext_resource type="Script" uid="uid://c5k5wqsl5rp6a" path="res://traits/trait_gen_rage_on_hit.gd" id="2_2xnpv"]
 
 [resource]
 script = ExtResource("1_uti36")
+trait_script = ExtResource("2_2xnpv")
+display_name = "Fureur"
 metadata/_custom_type_script = "uid://dnktho3c3febl"
