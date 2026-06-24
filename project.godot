@@ -23,6 +23,7 @@ CombatLogger="*uid://doclkvcosndc2"
 DebugOverlay="*uid://i5c6lt5m6q0w"
 GameManager="*uid://bkqluvhsrm1gs"
 AudioManager="*uid://b6yj2wg2t5akr"
+VFXManager="*uid://bjqhf4gosaohn"
 
 [display]
 

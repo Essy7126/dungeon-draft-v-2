@@ -140,6 +140,9 @@ func _setup_view() -> void:
 	grid_view.setup(grid)
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
+	VFXManager.register_battle_view(grid_view)
+	
+	
 
 func _setup_camera() -> void:
 	camera = Camera2D.new()
@@ -878,6 +881,12 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 		return
 	unit.spend_ap(spell.ap_cost)
 	spell_caster.cast(unit, spell, cell)
+	if spell.vfx_scene != null:
+		var caster_view = _unit_views.get(unit)
+		if caster_view != null:
+			var vfx = spell.vfx_scene.instantiate()
+			grid_view.add_child(vfx)
+			vfx.initialiser(caster_view.global_position, grid_view.grid_to_world(cell))
 	grid_view.queue_redraw()
 	action_bar.update_info(unit)
 	turn_state.set_state(TurnState.State.IDLE)

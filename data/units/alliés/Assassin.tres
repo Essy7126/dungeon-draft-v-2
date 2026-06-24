@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_4eywv"]
 [ext_resource type="Resource" uid="uid://c33alie1vyhvs" path="res://data/spells/assasin/marque.tres" id="3_6n4or"]
 [ext_resource type="Resource" uid="uid://c6sfm4fst1dx5" path="res://data/spells/assasin/execution.tres" id="4_ku6rj"]
-[ext_resource type="Resource" uid="uid://f86bs6grnsf6" path="res://data/spells/assasin/frappe_basse.tres" id="5_2mlh8"]
 [ext_resource type="Texture2D" uid="uid://0e3p3neu72cw" path="res://asset/personnage/alliés/493.png" id="6_4eywv"]
+[ext_resource type="Resource" uid="uid://b87ak8kotokmw" path="res://data/spells/Mage/boule_de_feu.tres" id="6_6n4or"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6n4or"]
 animations = [{
@@ -23,5 +23,5 @@ script = ExtResource("1_lqagd")
 unit_name = "Assasin"
 sprite_frames = SubResource("SpriteFrames_6n4or")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_4eywv")]([ExtResource("3_6n4or"), ExtResource("4_ku6rj"), ExtResource("5_2mlh8")])
+spells = Array[ExtResource("2_4eywv")]([ExtResource("3_6n4or"), ExtResource("4_ku6rj"), ExtResource("6_6n4or"), ExtResource("6_6n4or")])
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
