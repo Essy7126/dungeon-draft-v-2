@@ -6,7 +6,7 @@
 [ext_resource type="Resource" uid="uid://vucrqrj2s022" path="res://data/spells/Gardien/rempart.tres" id="4_ddix6"]
 [ext_resource type="Resource" uid="uid://dwt6x1da4m1h1" path="res://data/spells/Gardien/garde.tres" id="5_vp8gc"]
 [ext_resource type="Resource" uid="uid://dtohbvvqqdjey" path="res://data/spells/Gardien/frappe_de_bouclier.tres" id="6_ipjya"]
-[ext_resource type="Texture2D" uid="uid://cr574clmwl13g" path="res://asset/personnage/alliés/500.png" id="7_vp8gc"]
+[ext_resource type="Texture2D" uid="uid://b43ryok3ptgvy" path="res://asset/personnage/alliés/500.png" id="7_vp8gc"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ipjya"]
 animations = [{
@@ -14,7 +14,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("7_vp8gc")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

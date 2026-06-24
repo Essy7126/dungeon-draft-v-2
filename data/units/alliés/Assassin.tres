@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://c33alie1vyhvs" path="res://data/spells/assasin/marque.tres" id="3_6n4or"]
 [ext_resource type="Resource" uid="uid://c6sfm4fst1dx5" path="res://data/spells/assasin/execution.tres" id="4_ku6rj"]
 [ext_resource type="Resource" uid="uid://f86bs6grnsf6" path="res://data/spells/assasin/frappe_basse.tres" id="5_2mlh8"]
-[ext_resource type="Texture2D" uid="uid://0gvxy57itirw" path="res://asset/personnage/alliés/493.png" id="6_4eywv"]
+[ext_resource type="Texture2D" uid="uid://0e3p3neu72cw" path="res://asset/personnage/alliés/493.png" id="6_4eywv"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6n4or"]
 animations = [{
@@ -13,7 +13,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("6_4eywv")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

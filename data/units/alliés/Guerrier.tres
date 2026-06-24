@@ -4,16 +4,20 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_nnx18"]
 [ext_resource type="Resource" uid="uid://0flkpto1jkby" path="res://data/spells/Guerrier/frappe_lourde.tres" id="3_3i8e2"]
 [ext_resource type="Resource" uid="uid://dpmhlxq1x24eq" path="res://data/spells/Guerrier/brise_garde.tres" id="4_s0rgo"]
+<<<<<<< Updated upstream
 [ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="5_qjwhl"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="6_s0rgo"]
+=======
+[ext_resource type="Texture2D" uid="uid://ddcinrmjhlilr" path="res://asset/personnage/alliés/492.png" id="5_3i8e2"]
+>>>>>>> Stashed changes
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_qjwhl"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_s0rgo")
+"texture": ExtResource("5_3i8e2")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
