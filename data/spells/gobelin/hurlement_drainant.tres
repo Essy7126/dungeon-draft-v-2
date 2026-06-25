@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Hurlement drainant"
+description = "Menace economique: draine Elan et Ferveur."
+ap_cost = 2
+spell_range = 3
+can_target_enemy = true
+damage = 1
+damage_type = 1
+elan_drain = 20.0
+fervor_drain = 12.0
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

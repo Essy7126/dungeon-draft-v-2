@@ -1,11 +1,23 @@
 [gd_resource type="Resource" script_class="EnergyTypeData" format=3 uid="uid://t8xipeik7ih8"]
 
 [ext_resource type="Script" uid="uid://b47puqafimbk5" path="res://data/energy/energy_type.gd" id="1_fk0v5"]
+[ext_resource type="Resource" path="res://data/traits/threshold_identity.tres" id="2_threshold"]
 
 [resource]
 script = ExtResource("1_fk0v5")
 energy_name = "Nature"
 energy_id = "nature"
-start_energy = 15.0
-color = Color(0.031185694, 0.49002808, 0.04623615, 1)
+color = Color(0.05, 0.62, 0.24, 1)
+start_energy = 0.0
+gain_table = {"EXPLOIT": 6.0, "HEAL": 14.0, "HIT": 3.0, "PROTECT": 3.0, "TAKE_DAMAGE": 3.0}
+threshold_name = "Symbiose"
+threshold_trait = ExtResource("2_threshold")
+threshold_overheal_to_shield = true
+threshold_overheal_shield_multiplier = 0.5
+awakening_terrain_duration_multiplier = 2.0
+awakening_elan_income_penalty = 15.0
+awakening_heal_multiplier = 1.15
+reaction_cost = 25.0
+reaction_damage_multiplier = 0.5
+reaction_next_turn_elan_bonus = 10.0
 metadata/_custom_type_script = "uid://b47puqafimbk5"

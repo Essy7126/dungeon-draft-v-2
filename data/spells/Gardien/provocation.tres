@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Provocation"
+description = "Force un ennemi adjacent a cibler le Gardien au prochain tour."
+energy_cost = 25.0
+charge_verb = "PROTECT"
+spell_range = 1
+can_target_enemy = true
+forces_taunt = true
+taunt_duration = 1
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

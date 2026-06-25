@@ -1,13 +1,3 @@
-# core/spell_caster.gd
-# ============================================================
-# SPELL CASTER — Moteur d'exécution des sorts. Logique pure.
-# Ciblage flexible + AOE + pose d'effets de terrain via TerrainEffects.
-#
-# Émet des logs SPELL (lancement, cibles, résumé). Le DÉTAIL des dégâts
-# et soins est déjà loggé par Unit (take_damage / heal / apply_status) :
-# on ne le duplique pas ici, on annonce le sort et on résume.
-# ============================================================
-
 class_name SpellCaster
 extends RefCounted
 
@@ -22,7 +12,6 @@ func _init(grid: GridData, pathfinder: Pathfinder, terrain: TerrainEffects) -> v
 	_pathfinder = pathfinder
 	_terrain = terrain
 
-# --- Cases ciblables (portée) ---
 func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 	var result: Array = []
 	if spell.is_self_only():
@@ -34,14 +23,12 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 				continue
 			if _grid.manhattan(caster.grid_pos, pos) > spell.spell_range:
 				continue
-			if spell.needs_line_of_sight:
-				if not _pathfinder.has_line_of_sight(caster.grid_pos, pos):
-					continue
+			if spell.needs_line_of_sight and not _pathfinder.has_line_of_sight(caster.grid_pos, pos):
+				continue
 			if _matches_target(caster, spell, pos):
 				result.append(pos)
 	return result
 
-# --- Zone d'effet (AOE) ---
 func get_aoe_cells(spell: Spell, center: Vector2i) -> Array:
 	var result: Array = []
 	match spell.aoe_shape:
@@ -64,7 +51,6 @@ func get_aoe_cells(spell: Spell, center: Vector2i) -> Array:
 			result.append(center)
 	return result
 
-# --- Validation de cible ---
 func _matches_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 	var occupant = _grid.get_unit(cell)
 	if occupant != null and occupant.team != caster.team:
@@ -82,12 +68,6 @@ func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 		return false
 	return _matches_target(caster, spell, cell)
 
-# ============================================================
-# HELPERS TACTIQUES — pour enrichir le rapport de cast
-# Utilisés par les traits de châssis (angle avantageux, allié adjacent...).
-# ============================================================
-
-# Un allié de l'unité est-il adjacent à elle (dans les 4 directions) ?
 func _has_ally_adjacent(unit: Unit) -> bool:
 	for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
 		var pos = unit.grid_pos + dir
@@ -98,8 +78,6 @@ func _has_ally_adjacent(unit: Unit) -> bool:
 			return true
 	return false
 
-# Angle avantageux : la cible est adjacente à un allié du caster (autre que lui).
-# Utilisé par le châssis Assassin. Extension future : attaque de dos.
 func _has_angle_advantage(caster: Unit, target_cell: Vector2i) -> bool:
 	var target = _grid.get_unit(target_cell)
 	if target == null:
@@ -113,17 +91,10 @@ func _has_angle_advantage(caster: Unit, target_cell: Vector2i) -> bool:
 			return true
 	return false
 
-# ============================================================
-# POUSSÉE — déplace la cible dans la direction caster→target
-# Renvoie un dict avec les résultats tactiques pour le rapport.
-# ============================================================
-
 func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
-	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false }
+	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false }
 	if cells <= 0 or target == null:
 		return result
-
-	# Direction cardinale caster → target
 	var raw_dir := target.grid_pos - caster.grid_pos
 	var dir: Vector2i
 	if abs(raw_dir.x) >= abs(raw_dir.y):
@@ -132,38 +103,52 @@ func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
 		dir = Vector2i(0, sign(raw_dir.y))
 	if dir == Vector2i.ZERO:
 		return result
-
 	var from_pos := target.grid_pos
 	var landed_pos := from_pos
 	var had_collision := false
-
 	for _i in range(cells):
 		var next := landed_pos + dir
 		if not _grid.is_valid(next) or not _grid.is_walkable(next) or _grid.has_unit(next):
 			had_collision = true
 			break
 		landed_pos = next
-
-	# Applique le déplacement si la cible a bougé
 	if landed_pos != from_pos:
 		_grid.move_unit(from_pos, landed_pos)
 		target.grid_pos = landed_pos
+		if _terrain.get_effect_data(landed_pos) != null:
+			result["landed_on_terrain"] = true
+			_terrain.on_enter_cell(target, landed_pos)
 		result["pushed"] = true
 		result["collision"] = had_collision
-		# Vérifie si la poussée a éloigné d'un allié du caster
 		result["pushed_away_from_ally"] = _pushed_away_from_ally(caster, from_pos, landed_pos)
 		EventBus.unit_pushed.emit(target, from_pos, landed_pos, had_collision)
-		DebugLogger.debug(CAT_SPELL, "%s poussé de %s à %s%s" % [
-			target.unit_name, str(from_pos), str(landed_pos),
-			" (collision)" if had_collision else ""])
+		DebugLogger.debug(CAT_SPELL, "%s pousse de %s a %s" % [target.unit_name, str(from_pos), str(landed_pos)])
 	elif had_collision:
-		# Poussée bloquée immédiatement — collision sur place
 		result["collision"] = true
 		EventBus.unit_pushed.emit(target, from_pos, from_pos, true)
-
 	return result
 
-# La poussée a-t-elle éloigné la cible d'un allié du caster ?
+func _teleport_behind_target(caster: Unit, target: Unit) -> bool:
+	if caster == null or target == null:
+		return false
+	var raw_dir := target.grid_pos - caster.grid_pos
+	var dir: Vector2i
+	if abs(raw_dir.x) >= abs(raw_dir.y):
+		dir = Vector2i(sign(raw_dir.x), 0)
+	else:
+		dir = Vector2i(0, sign(raw_dir.y))
+	if dir == Vector2i.ZERO:
+		return false
+	var destination := target.grid_pos + dir
+	if not _grid.is_valid(destination) or not _grid.is_walkable(destination) or _grid.has_unit(destination):
+		return false
+	var from_pos := caster.grid_pos
+	_grid.move_unit(from_pos, destination)
+	caster.grid_pos = destination
+	EventBus.unit_pushed.emit(caster, from_pos, destination, false)
+	DebugLogger.debug(CAT_SPELL, "%s se replace en %s" % [caster.unit_name, str(destination)])
+	return true
+
 func _pushed_away_from_ally(caster: Unit, from_pos: Vector2i, to_pos: Vector2i) -> bool:
 	for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
 		var adj: Vector2i = from_pos + dir
@@ -174,9 +159,8 @@ func _pushed_away_from_ally(caster: Unit, from_pos: Vector2i, to_pos: Vector2i) 
 			return not (to_pos - occupant.grid_pos).length() < 1.5
 	return false
 
-# Vérifie si une unité porte un statut par son nom.
 func _has_status(unit: Unit, status_name: String) -> bool:
-	if not unit.has_method("get_active_statuses"):
+	if unit == null or not unit.has_method("get_active_statuses"):
 		return false
 	for entry in unit.get_active_statuses():
 		var sd: StatusData = entry.get("data")
@@ -184,124 +168,140 @@ func _has_status(unit: Unit, status_name: String) -> bool:
 			return true
 	return false
 
-# Le caster a-t-il de quoi PAYER ce sort ? (vérif sans dépenser, pour l'UI/IA :
-# griser un sort trop cher, empêcher l'IA de le choisir). La dépense réelle a
-# lieu dans cast(). Une unité sans énergie n'est pas soumise au coût (rétrocompat).
-func can_afford(caster: Unit, spell: Spell) -> bool:
-	if spell.is_generator():
-		return true
+func can_afford(caster: Unit, spell: Spell, imprinted: bool = false) -> bool:
+	if caster == null or spell == null:
+		return false
 	if not caster.has_energy():
 		return true
-	return caster.can_afford_energy(spell.energy_cost)
+	return caster.can_afford_spell_resources(spell, imprinted)
 
-# --- Exécution (avec AOE) ---
-func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
-	# --- GARDE DE COÛT EN ÉNERGIE ---
-	# L'énergie remplace les PA : un consommateur ne se lance que si l'unité
-	# peut payer. La dépense vit ICI = loi du cast, aucun chemin ne la contourne.
-	# Rétrocompat : une unité SANS énergie configurée (ennemi simple) n'est pas
-	# soumise au coût — le système ne s'active que pour les unités à énergie.
-	if spell.is_consumer() and caster.has_energy():
-		if not caster.spend_energy(spell.energy_cost, spell.spell_name):
-			DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (énergie insuffisante : %d/%d)" % [
-				caster.unit_name, spell.spell_name,
-				int(caster.current_energy), int(spell.energy_cost)])
-			return {
-				"caster": caster, "spell": spell, "cell": cell, "failed": true,
-				"reason": "energy", "affected_units": [], "terrain_changed": [],
-				"crits": [], "dodges": [],
-			}
-
-	# Annonce du sort (vu par le joueur).
-	DebugLogger.info(CAT_SPELL, "%s lance %s sur %s" % [
-		caster.unit_name, spell.spell_name, str(cell)], {
-		"PA": spell.ap_cost,
-		"énergie": int(spell.energy_cost) if spell.is_consumer() else 0,
-		"portée": spell.spell_range,
+func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -> Dictionary:
+	var elan_cost := 0.0
+	var fervor_cost := 0.0
+	if caster.has_energy():
+		elan_cost = caster.get_spell_elan_cost(spell)
+		fervor_cost = caster.get_spell_fervor_cost(spell, imprinted)
+		if not caster.can_afford_elan(elan_cost):
+			DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (Elan insuffisant : %d/%d)" % [caster.unit_name, spell.spell_name, int(caster.current_elan), int(elan_cost)])
+			return _failed_report(caster, spell, cell, "elan")
+		if not caster.can_afford_energy(fervor_cost):
+			DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (Ferveur insuffisante : %d/%d)" % [caster.unit_name, spell.spell_name, int(caster.current_energy), int(fervor_cost)])
+			return _failed_report(caster, spell, cell, "fervor")
+		caster.spend_elan(elan_cost, spell.spell_name)
+		caster.spend_energy(fervor_cost, spell.spell_name)
+	DebugLogger.info(CAT_SPELL, "%s lance %s sur %s" % [caster.unit_name, spell.spell_name, str(cell)], {
+		"Elan": int(elan_cost), "Ferveur": int(fervor_cost), "empreinte": imprinted, "portee": spell.spell_range,
 		"zone": spell.aoe_size if spell.aoe_shape != Spell.AoeShape.SINGLE else 0,
 	})
-
 	var report = {
-		"caster": caster, "spell": spell, "cell": cell,
-		"affected_units": [], "terrain_changed": [], "crits": [], "dodges": [],
-		"ally_adjacent_to_caster": _has_ally_adjacent(caster),
-		"angle_advantage":         _has_angle_advantage(caster, cell),
-		"pushed":                  false,
-		"collision":               false,
-		"pushed_away_from_ally":   false,
+		"caster": caster, "spell": spell, "cell": cell, "imprinted": imprinted,
+		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
+		"controlled_enemies": [], "drained_units": [], "terrain_changed": [],
+		"crits": [], "dodges": [], "ally_adjacent_to_caster": _has_ally_adjacent(caster),
+		"angle_advantage": _has_angle_advantage(caster, cell), "pushed": false,
+		"collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false,
 	}
 	var affected_cells = get_aoe_cells(spell, cell)
 	for target_cell in affected_cells:
 		var target = _grid.get_unit(target_cell)
 		if target != null:
-			var affected = false
-
-			# --- Dégâts ---
+			var affected := false
 			if spell.deals_damage():
-				var base_dmg := spell.damage
-				# Bonus si cible Marquée (Exécution de l'Assassin)
-				if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marqué"):
+				var raw_damage := spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
+				var base_dmg := caster.get_modified_spell_damage(spell, raw_damage)
+				if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marque"):
 					base_dmg += spell.bonus_damage_if_marked
-					DebugLogger.debug(CAT_SPELL, "%s : bonus Marqué +%d sur %s" % [
-						spell.spell_name, spell.bonus_damage_if_marked, target.unit_name])
-				var result = target.take_damage(
-					base_dmg, caster,
-					spell.damage_type, spell.element,
-					{ "bonus_crit_chance": spell.crit_chance })
-				if result != null:
-					if result.is_crit:
+				var damage_result = target.take_damage(base_dmg, caster, spell.damage_type, spell.element, { "bonus_crit_chance": spell.crit_chance })
+				if damage_result != null:
+					if damage_result.is_crit:
 						report["crits"].append(target)
-					if result.dodged:
+					if damage_result.dodged:
 						report["dodges"].append(target)
+					elif damage_result.amount > 0 and target.team != caster.team and not report["damaged_enemies"].has(target):
+						report["damaged_enemies"].append(target)
 				affected = true
-
-			# --- Soin ---
 			if spell.is_healing():
-				target.heal(spell.heal)
+				var before_hp: int = target.current_hp
+				var raw_heal := spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
+				var heal_amount := caster.get_modified_spell_heal(spell, raw_heal)
+				if spell.heal_bonus_effect_name.strip_edges() != "":
+					var heal_effect := _terrain.get_effect_data(target.grid_pos)
+					if heal_effect != null and heal_effect.effect_name == spell.heal_bonus_effect_name:
+						heal_amount = maxi(0, int(round(float(heal_amount) * spell.heal_bonus_multiplier)))
+				target.heal(heal_amount)
+				if target.current_hp > before_hp and not report["healed_units"].has(target):
+					report["healed_units"].append(target)
 				affected = true
-
-			# --- Statut ---
 			if spell.applied_status != null:
 				target.apply_status(spell.applied_status)
 				affected = true
-
-			# --- Bouclier sur allié (Garde, Rempart) ---
-			if spell.shield_grant > 0 and target.team == caster.team:
-				target.add_shield(spell.shield_grant)
+			if imprinted and spell.imprint_status != null:
+				target.apply_status(spell.imprint_status)
 				affected = true
-
+			if spell.forces_taunt and target.team != caster.team:
+				target.apply_taunt(caster, spell.taunt_duration)
+				if not report["controlled_enemies"].has(target):
+					report["controlled_enemies"].append(target)
+				affected = true
+			if target.team != caster.team and (spell.elan_drain > 0.0 or spell.fervor_drain > 0.0):
+				if spell.elan_drain > 0.0 and target.has_method("spend_elan"):
+					target.spend_elan(minf(target.current_elan, spell.elan_drain), spell.spell_name)
+				if spell.fervor_drain > 0.0 and target.has_energy():
+					target.spend_energy(minf(target.current_energy, spell.fervor_drain), spell.spell_name)
+				if not report["drained_units"].has(target):
+					report["drained_units"].append(target)
+				affected = true
+			var raw_shield := spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+			if raw_shield > 0 and target.team == caster.team:
+				var before_shield: int = target.current_shield
+				target.add_shield(caster.get_modified_spell_shield(spell, raw_shield))
+				if target.current_shield > before_shield and not report["shielded_units"].has(target):
+					report["shielded_units"].append(target)
+				affected = true
 			if affected and not report["affected_units"].has(target):
 				report["affected_units"].append(target)
-
+		var terrain_payloads: Array = []
 		if spell.has_terrain_effect():
-			_terrain.place_effect(target_cell, spell.terrain_effect)
-			report["terrain_changed"].append(target_cell)
-
-	# --- Poussée (après les effets, pour que les dégâts soient appliqués d'abord) ---
-	if spell.push_distance > 0:
+			terrain_payloads.append(spell.terrain_effect)
+		if imprinted and spell.imprint_terrain_effect != null:
+			terrain_payloads.append(spell.imprint_terrain_effect)
+		for terrain_data in terrain_payloads:
+			var terrain_result: Dictionary = _terrain.place_effect(target_cell, terrain_data, caster, spell)
+			if terrain_result.get("changed", false) and not report["terrain_changed"].has(target_cell):
+				report["terrain_changed"].append(target_cell)
+	if spell.push_all_adjacent and spell.push_distance > 0:
+		for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+			var adjacent_target = _grid.get_unit(caster.grid_pos + dir)
+			if adjacent_target != null and adjacent_target.team != caster.team:
+				var adjacent_push = _push_unit(caster, adjacent_target, spell.push_distance)
+				report["pushed"] = report["pushed"] or adjacent_push["pushed"]
+				report["collision"] = report["collision"] or adjacent_push["collision"]
+				report["pushed_away_from_ally"] = report["pushed_away_from_ally"] or adjacent_push["pushed_away_from_ally"]
+				report["landed_on_terrain"] = report["landed_on_terrain"] or adjacent_push.get("landed_on_terrain", false)
+	elif spell.push_distance > 0:
 		var push_target = _grid.get_unit(cell)
 		if push_target != null and push_target.team != caster.team:
 			var push_result = _push_unit(caster, push_target, spell.push_distance)
-			report["pushed"]    = push_result["pushed"]
+			report["pushed"] = push_result["pushed"]
 			report["collision"] = push_result["collision"]
 			report["pushed_away_from_ally"] = push_result["pushed_away_from_ally"]
-
-	# Résumé du sort (combien d'unités touchées, combien de cases de terrain).
+			report["landed_on_terrain"] = push_result.get("landed_on_terrain", false)
+	if spell.teleport_behind_target:
+		var teleport_target = _grid.get_unit(cell)
+		if teleport_target != null and teleport_target.team != caster.team and _teleport_behind_target(caster, teleport_target):
+			report["angle_advantage"] = true
 	var hit_names: Array = []
 	for u in report["affected_units"]:
 		hit_names.append(u.unit_name)
-	DebugLogger.debug(CAT_SPELL, "%s : %d unité(s) touchée(s), %d case(s) de terrain" % [
-		spell.spell_name, report["affected_units"].size(), report["terrain_changed"].size()], {
-		"cibles": hit_names,
-	})
-
-	# --- Génération de base (energy_generated du sort, agnostique du type) ---
-	# La génération CONDITIONNELLE selon Rage/Foi/... vit dans le TraitChassis.
+	DebugLogger.debug(CAT_SPELL, "%s : %d unite(s), %d terrain(s)" % [spell.spell_name, report["affected_units"].size(), report["terrain_changed"].size()], { "cibles": hit_names })
 	if spell.energy_generated > 0.0 and caster.has_energy():
 		caster.generate_energy(spell.energy_generated, spell.spell_name)
-
-	# --- Annonce sur le bus (après tous les effets et la génération de base) ---
-	# Les traits de châssis écoutent ce signal pour leur génération conditionnelle.
 	EventBus.spell_cast.emit(caster, spell, report)
-
 	return report
+
+func _failed_report(caster: Unit, spell: Spell, cell: Vector2i, reason: String) -> Dictionary:
+	return {
+		"caster": caster, "spell": spell, "cell": cell, "imprinted": false, "failed": true, "reason": reason,
+		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
+		"controlled_enemies": [], "drained_units": [], "terrain_changed": [], "crits": [], "dodges": [],
+	}

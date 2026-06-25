@@ -160,6 +160,7 @@ func _setup_ui() -> void:
 	action_bar.move_pressed.connect(_on_move_pressed)
 	action_bar.attack_pressed.connect(_on_attack_pressed)
 	action_bar.spell_pressed.connect(_on_spell_pressed)
+	action_bar.awakening_pressed.connect(_on_awakening_pressed)
 	action_bar.end_turn_pressed.connect(_on_end_turn_pressed)
 
 func _setup_state() -> void:
@@ -430,6 +431,7 @@ func _start_battle() -> void:
 	EventBus.unit_pushed.connect(_on_unit_pushed)
 
 	# Les energies et chassis sont prepares par le run.
+	_reset_combat_resources()
 	_launch_combat()
 
 
@@ -528,6 +530,8 @@ func _start_energy_draft() -> void:
 func _on_draft_choice(hero: Unit, energy: EnergyTypeData) -> void:
 	hero.energy_type    = energy
 	hero.current_energy = energy.start_energy
+	hero.ensure_energy_traits()
+	hero.reset_combat_resources()
 	_draft_choices[hero] = energy
 	DebugLogger.info(DebugLogger.LogCategory.COMBAT,
 		"Draft : %s → %s" % [hero.unit_name, energy.energy_name])
@@ -540,7 +544,13 @@ func _end_energy_draft() -> void:
 		_draft_ui.queue_free()
 	_draft_ui = null
 	action_bar.set_player_controls_enabled(true)
+	_reset_combat_resources()
 	_launch_combat()
+
+func _reset_combat_resources() -> void:
+	for unit in units:
+		if unit != null and unit.team == 0 and unit.has_method("reset_combat_resources"):
+			unit.reset_combat_resources()
 
 func _launch_combat() -> void:
 	turn_queue = TurnQueue.new()
@@ -554,6 +564,7 @@ func _launch_combat() -> void:
 # ============================================================
 
 func _on_unit_pushed(unit: Unit, _from: Vector2i, to_pos: Vector2i, _collision: bool) -> void:
+	_sync_unit_terrain(unit)
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
 		view.position = grid_view.grid_to_world(to_pos)
@@ -564,6 +575,7 @@ func _on_turn_started(unit: Unit) -> void:
 
 	# 1. Effet de terrain en début de tour (lave, feu...).
 	terrain_effects.on_turn_start(unit)
+	_sync_unit_terrain(unit)
 
 	# 2. Statuts : applique leurs effets (poison, regen, slow, stun).
 	var is_stunned = unit.process_statuses()
@@ -601,6 +613,12 @@ func _on_turn_started(unit: Unit) -> void:
 		turn_state.begin_player_turn()
 		action_bar.set_player_controls_enabled(true)
 		action_bar.set_active_mode("")
+
+func _sync_unit_terrain(unit: Unit) -> void:
+	if unit == null or terrain_effects == null:
+		return
+	if unit.has_method("set_current_terrain_effect"):
+		unit.set_current_terrain_effect(terrain_effects.get_effect_data(unit.grid_pos))
 
 func _update_active_highlight(active_unit: Unit) -> void:
 	for unit in _unit_views:
@@ -677,10 +695,17 @@ func _on_attack_pressed() -> void:
 	turn_state.on_attack_button()
 	_refresh_mode_button()
 
-func _on_spell_pressed(spell: Spell) -> void:
-	turn_state.on_spell_selected(spell)
+func _on_spell_pressed(spell: Spell, imprinted: bool = false) -> void:
+	turn_state.on_spell_selected(spell, imprinted)
 	_refresh_mode_button()
 
+func _on_awakening_pressed() -> void:
+	var unit = turn_queue.get_current_unit()
+	if unit == null or unit.team != 0:
+		return
+	if unit.activate_awakening():
+		action_bar.update_info(unit)
+		action_bar.build_spell_buttons(unit)
 func _on_end_turn_pressed() -> void:
 	grid_view.clear_highlights()
 	var unit = turn_queue.get_current_unit()
@@ -695,7 +720,7 @@ func _refresh_mode_button() -> void:
 		TurnState.State.TARGET_MELEE:
 			action_bar.set_active_mode("attack")
 		TurnState.State.TARGET_SPELL:
-			action_bar.set_active_mode("spell", turn_state.selected_spell)
+			action_bar.set_active_mode("spell", turn_state.selected_spell, turn_state.selected_spell_imprinted)
 		_:
 			action_bar.set_active_mode("")
 
@@ -782,6 +807,7 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		if not is_instance_valid(view):
 			return
 		terrain_effects.on_enter_cell(unit, path[i])
+		_sync_unit_terrain(unit)
 		# on_enter_cell a pu tuer l'unité (lave) : on stoppe le déplacement.
 		if not unit.is_alive:
 			return
@@ -814,24 +840,27 @@ func _on_request_attack(cell: Vector2i) -> void:
 		return
 	if not _get_attackable_cells(unit).has(cell):
 		return
+	var elan_cost := 0.0
 	if unit.team == 0:
-		if unit.used_base_action:
+		elan_cost = unit.get_basic_attack_elan_cost()
+		if not unit.can_afford_elan(elan_cost):
 			return
 	elif unit.current_ap < 1:
 		return
 	var target = grid.get_unit(cell)
 	if target == null:
 		return
-	if unit.team == 1:
+	if unit.team == 0:
+		if not unit.spend_elan(elan_cost, "Attaque"):
+			return
+	else:
 		unit.spend_ap(1)
 	var result = target.take_damage(
-		unit.get_attack(),         # dégâts bruts
-		unit,                      # l'attaquant → active son crit
-		Spell.DamageType.PHYSICAL, # catégorie
-		Spell.Element.NONE)        # pas d'élément
+		unit.get_attack(),
+		unit,
+		Spell.DamageType.PHYSICAL,
+		Spell.Element.NONE)
 	turn_state.begin_animating()
-	if unit.team == 0:
-		unit.used_base_action = true
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(unit, target)
 	await _animate_attack(unit, target)
@@ -855,40 +884,26 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 # INTENTIONS — SORTS
 # ============================================================
 
-func _on_request_show_spell_range(spell: Spell) -> void:
+func _on_request_show_spell_range(spell: Spell, _imprinted: bool = false) -> void:
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
 	grid_view.clear_highlights()
 	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
 
-func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
+func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = false) -> void:
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
 	if not spell_caster.is_valid_target(unit, spell, cell):
 		return
-	if unit.team == 0:
-		if spell.is_generator() and unit.used_base_action:
-			return
-		if spell.is_consumer() and unit.used_energy_action:
-			return
-	var report = spell_caster.cast(unit, spell, cell)
+	var report = spell_caster.cast(unit, spell, cell, imprinted)
 	if report.get("failed", false):
 		return
-	if unit.team == 0:
-		if spell.is_generator():
-			unit.used_base_action = true
-		elif spell.is_consumer():
-			unit.used_energy_action = true
 	grid_view.queue_redraw()
 	action_bar.update_info(unit)
 	turn_state.set_state(TurnState.State.IDLE)
 	action_bar.set_active_mode("")
-
-# ============================================================
-# ÉVÉNEMENTS DE COMBAT
-# ============================================================
 
 func _on_round_started(number: int) -> void:
 	DebugLogger.set_turn(number)

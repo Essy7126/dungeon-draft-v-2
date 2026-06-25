@@ -1,118 +1,65 @@
-# traits/trait_chassis_assassin.gd
-# ============================================================
-# CHÂSSIS ASSASSIN — La grammaire de base de l'Assassin.
-#
-# L'Assassin génère de l'énergie par l'EXPLOITATION des failles :
-# attaquer une cible Marquée ou depuis un angle avantageux.
-#
-#   Rage : marquer → tuer → rembourser → enchaîner
-#   Foi  : marquer → allié frappe → bouclier → stabiliser
-#
-# Paramètres (.tres optionnel) :
-#   rage_on_hit           : float = 8.0   — Rage de base à chaque frappe
-#   rage_bonus_marked     : float = 10.0  — bonus si cible Marquée
-#   rage_bonus_angle      : float = 8.0   — bonus si angle avantageux
-#   foi_on_hit            : float = 8.0   — Foi de base à chaque frappe
-#   foi_bonus_marked      : float = 8.0   — bonus si cible Marquée
-#   foi_bonus_angle       : float = 6.0   — bonus si angle avantageux
-# ============================================================
-
 class_name TraitChassisAssassin
 extends Trait
-
-var rage_on_hit: float       = 8.0
-var rage_bonus_marked: float = 10.0
-var rage_bonus_angle: float  = 8.0
-var foi_on_hit: float        = 8.0
-var foi_bonus_marked: float  = 8.0
-var foi_bonus_angle: float   = 6.0
 
 func _trait_name() -> String:
 	return "chassis_assassin"
 
-func configure(params: Dictionary) -> void:
-	rage_on_hit       = params.get("rage_on_hit",       rage_on_hit)
-	rage_bonus_marked = params.get("rage_bonus_marked", rage_bonus_marked)
-	rage_bonus_angle  = params.get("rage_bonus_angle",  rage_bonus_angle)
-	foi_on_hit        = params.get("foi_on_hit",        foi_on_hit)
-	foi_bonus_marked  = params.get("foi_bonus_marked",  foi_bonus_marked)
-	foi_bonus_angle   = params.get("foi_bonus_angle",   foi_bonus_angle)
-
 func _activate() -> void:
+	EventBus.basic_attack_performed.connect(_on_basic_attack_performed)
 	EventBus.spell_cast.connect(_on_spell_cast)
 
 func _deactivate() -> void:
+	if EventBus.basic_attack_performed.is_connected(_on_basic_attack_performed):
+		EventBus.basic_attack_performed.disconnect(_on_basic_attack_performed)
 	if EventBus.spell_cast.is_connected(_on_spell_cast):
 		EventBus.spell_cast.disconnect(_on_spell_cast)
 
-# ============================================================
-# GÉNÉRATION — sur tout sort générateur de l'Assassin
-# Base : chaque sort générateur produit de l'énergie.
-# Bonus : angle avantageux, cible Marquée.
-# ============================================================
+func _on_basic_attack_performed(attacker, _target) -> void:
+	if attacker == owner:
+		_generate(EnergyTypeData.VERB_HIT, "attaque")
 
 func _on_spell_cast(caster, spell: Spell, report: Dictionary) -> void:
-	if caster != owner or not owner.is_alive or not owner.has_energy():
+	if caster != owner or spell == null or not _can_generate():
 		return
-	if not spell.is_generator():
+	var verb := spell.charge_verb.strip_edges().to_upper()
+	if _verb_happened(verb, report):
+		_generate(verb, spell.spell_name)
+	if report.get("angle_advantage", false) or _any_marked(report.get("affected_units", [])):
+		_generate(EnergyTypeData.VERB_EXPLOIT, "faille")
+
+func _verb_happened(verb: String, report: Dictionary) -> bool:
+	match verb:
+		EnergyTypeData.VERB_HIT:
+			return not report.get("damaged_enemies", []).is_empty()
+		EnergyTypeData.VERB_EXPLOIT:
+			return not report.get("affected_units", []).is_empty() or not report.get("terrain_changed", []).is_empty()
+		EnergyTypeData.VERB_PROTECT:
+			return not report.get("shielded_units", []).is_empty() or not report.get("controlled_enemies", []).is_empty() or not report.get("terrain_changed", []).is_empty()
+		EnergyTypeData.VERB_HEAL:
+			return not report.get("healed_units", []).is_empty()
+	return false
+
+func _generate(verb: String, reason: String) -> void:
+	if verb == "":
 		return
+	var amount: float = owner.generate_fervor_from_verb(verb, source_id)
+	if amount > 0.0:
+		DebugLogger.debug(DebugLogger.LogCategory.STATS,
+			"%s genere %.0f %s (%s)" % [owner.unit_name, amount, owner.energy_type.energy_name, reason])
 
-	var energy_id: String = owner.energy_type.energy_id
-	var has_marked: bool = _any_marked(report.get("affected_units", []))
-	var angle_ok: bool   = report.get("angle_advantage", false)
-
-	# Génération de base sur tout sort générateur
-	_generate_base()
-
-	# Bonus conditionnels
-	match energy_id:
-		"rage":
-			if has_marked:
-				owner.generate_energy(rage_bonus_marked, source_id)
-				DebugLogger.debug(DebugLogger.LogCategory.STATS,
-					"%s génère %.0f Rage (cible Marquée)" \
-					% [owner.unit_name, rage_bonus_marked])
-			if angle_ok:
-				owner.generate_energy(rage_bonus_angle, source_id)
-				DebugLogger.debug(DebugLogger.LogCategory.STATS,
-					"%s génère %.0f Rage (angle avantageux)" \
-					% [owner.unit_name, rage_bonus_angle])
-		"foi":
-			if has_marked:
-				owner.generate_energy(foi_bonus_marked, source_id)
-				DebugLogger.debug(DebugLogger.LogCategory.STATS,
-					"%s génère %.0f Foi (cible Marquée)" \
-					% [owner.unit_name, foi_bonus_marked])
-			if angle_ok:
-				owner.generate_energy(foi_bonus_angle, source_id)
-				DebugLogger.debug(DebugLogger.LogCategory.STATS,
-					"%s génère %.0f Foi (angle avantageux)" \
-					% [owner.unit_name, foi_bonus_angle])
-
-# ============================================================
-# HELPERS
-# ============================================================
-
-func _generate_base() -> void:
-	var energy_id: String = owner.energy_type.energy_id
-	match energy_id:
-		"rage":
-			owner.generate_energy(rage_on_hit, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s génère %.0f Rage (châssis Assassin)" % [owner.unit_name, rage_on_hit])
-		"foi":
-			owner.generate_energy(foi_on_hit, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s génère %.0f Foi (châssis Assassin)" % [owner.unit_name, foi_on_hit])
+func _can_generate() -> bool:
+	return owner != null and owner.is_alive and owner.has_energy()
 
 func _any_marked(targets: Array) -> bool:
 	for target in targets:
-		if _has_status(target, "Marqué"):
+		if target != null and _has_status(target, "Marque"):
+			return true
+		if target != null and _has_status(target, "Marqué"):
 			return true
 	return false
 
 func _has_status(unit, status_name: String) -> bool:
-	if not unit.has_method("get_active_statuses"):
+	if unit == null or not unit.has_method("get_active_statuses"):
 		return false
 	for entry in unit.get_active_statuses():
 		var sd: StatusData = entry.get("data")

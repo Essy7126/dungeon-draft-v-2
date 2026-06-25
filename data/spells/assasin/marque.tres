@@ -6,5 +6,7 @@
 [resource]
 script = ExtResource("1_7lwug")
 spell_name = "Marque"
+energy_cost = 25.0
+charge_verb = "EXPLOIT"
 applied_status = ExtResource("1_mmkep")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

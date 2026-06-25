@@ -109,8 +109,8 @@ func _decide_healer(enemy: Unit, all_units: Array) -> Array:
 	var heal_spell = _find_heal_spell(enemy)
 
 	if heal_spell == null or enemy.current_ap < heal_spell.ap_cost:
-		DebugLogger.debug(CAT, "%s (soigneur) : pas de soin dispo → repli" % enemy.unit_name)
-		return _decide_flee(enemy, all_units)
+		DebugLogger.debug(CAT, "%s (soigneur) : pas de soin dispo -> attaque faible" % enemy.unit_name)
+		return _decide_melee(enemy, all_units)
 
 	var heal_target = _find_heal_target_in_range(enemy, heal_spell, all_units)
 	if heal_target != Vector2i(-1, -1):
@@ -132,8 +132,8 @@ func _decide_healer(enemy: Unit, all_units: Array) -> Array:
 					plan.append({ "type": "move", "path": reachable })
 		return plan
 
-	DebugLogger.debug(CAT, "%s (soigneur) : personne à soigner → repli" % enemy.unit_name)
-	return _decide_flee(enemy, all_units)
+	DebugLogger.debug(CAT, "%s (soigneur) : personne a soigner -> attaque faible" % enemy.unit_name)
+	return _decide_melee(enemy, all_units)
 
 func _find_heal_spell(enemy: Unit) -> Spell:
 	for spell in enemy.spells:
@@ -267,6 +267,10 @@ func _try_offensive_spell(enemy: Unit, all_units: Array) -> Dictionary:
 # ============================================================
 
 func _find_nearest_enemy(enemy: Unit, all_units: Array) -> Unit:
+	if enemy.has_method("get_forced_target"):
+		var forced = enemy.get_forced_target()
+		if forced != null:
+			return forced
 	var nearest: Unit = null
 	var best_dist = 999999
 	for u in all_units:
@@ -292,8 +296,20 @@ func _find_approach_cell(enemy: Unit, target: Unit) -> Vector2i:
 		var path = _pathfinder.find_path(enemy.grid_pos, cell, enemy)
 		if path.size() < 2:
 			continue
-		var dist = path.size()
+		var dist = path.size() + int(round(_path_danger_score(path) * 4.0))
 		if dist < best_dist:
 			best_dist = dist
 			best_cell = cell
 	return best_cell
+
+func _path_danger_score(path: Array) -> float:
+	var score := 0.0
+	for cell in path:
+		var stored = _grid.get_effect(cell)
+		if stored == null:
+			continue
+		if stored.has("data") and stored["data"].has("data"):
+			var effect: TerrainEffectData = stored["data"]["data"]
+			if effect != null and effect.dangerous_for_ai:
+				score += effect.ai_danger_weight
+	return score

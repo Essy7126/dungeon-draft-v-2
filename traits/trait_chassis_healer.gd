@@ -1,19 +1,8 @@
-# traits/trait_chassis_healer.gd
-
 class_name TraitChassisHealer
 extends Trait
 
-var nature_on_generator: float = 10.0
-var nature_bonus_heal: float = 5.0
-var nature_bonus_terrain: float = 4.0
-
 func _trait_name() -> String:
 	return "chassis_healer"
-
-func configure(params: Dictionary) -> void:
-	nature_on_generator = params.get("nature_on_generator", nature_on_generator)
-	nature_bonus_heal = params.get("nature_bonus_heal", nature_bonus_heal)
-	nature_bonus_terrain = params.get("nature_bonus_terrain", nature_bonus_terrain)
 
 func _activate() -> void:
 	EventBus.spell_cast.connect(_on_spell_cast)
@@ -23,19 +12,33 @@ func _deactivate() -> void:
 		EventBus.spell_cast.disconnect(_on_spell_cast)
 
 func _on_spell_cast(caster, spell: Spell, report: Dictionary) -> void:
-	if caster != owner or not owner.is_alive or not owner.has_energy():
+	if caster != owner or spell == null or not _can_generate():
 		return
-	if owner.energy_type.energy_id != "nature":
-		return
-	if not spell.is_generator():
-		return
-
-	var amount := nature_on_generator
-	if spell.is_healing() and not report.get("affected_units", []).is_empty():
-		amount += nature_bonus_heal
+	var verb := spell.charge_verb.strip_edges().to_upper()
+	if _verb_happened(verb, report):
+		_generate(verb, spell.spell_name)
 	if not report.get("terrain_changed", []).is_empty():
-		amount += nature_bonus_terrain
+		_generate(EnergyTypeData.VERB_EXPLOIT, "terrain")
 
-	owner.generate_energy(amount, source_id)
-	DebugLogger.debug(DebugLogger.LogCategory.STATS,
-		"%s genere %.0f Nature (chassis Healer)" % [owner.unit_name, amount])
+func _verb_happened(verb: String, report: Dictionary) -> bool:
+	match verb:
+		EnergyTypeData.VERB_HEAL:
+			return not report.get("healed_units", []).is_empty()
+		EnergyTypeData.VERB_PROTECT:
+			return not report.get("shielded_units", []).is_empty() or not report.get("controlled_enemies", []).is_empty() or not report.get("terrain_changed", []).is_empty()
+		EnergyTypeData.VERB_HIT:
+			return not report.get("damaged_enemies", []).is_empty()
+		EnergyTypeData.VERB_EXPLOIT:
+			return not report.get("affected_units", []).is_empty() or not report.get("terrain_changed", []).is_empty()
+	return false
+
+func _generate(verb: String, reason: String) -> void:
+	if verb == "":
+		return
+	var amount: float = owner.generate_fervor_from_verb(verb, source_id)
+	if amount > 0.0:
+		DebugLogger.debug(DebugLogger.LogCategory.STATS,
+			"%s genere %.0f %s (%s)" % [owner.unit_name, amount, owner.energy_type.energy_name, reason])
+
+func _can_generate() -> bool:
+	return owner != null and owner.is_alive and owner.has_energy()

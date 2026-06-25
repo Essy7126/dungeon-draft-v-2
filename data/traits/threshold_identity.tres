@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_trait"]
+[ext_resource type="Script" path="res://traits/trait_threshold.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_trait")
+trait_script = ExtResource("2_trait")
+display_name = "Seuil de Charge"
+description = "Active l'identite de l'energie quand la Charge atteint son seuil."
+metadata/_custom_type_script = "uid://dnktho3c3febl"

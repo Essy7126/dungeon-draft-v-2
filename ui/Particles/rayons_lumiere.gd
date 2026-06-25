@@ -11,7 +11,7 @@ extends ColorRect
 @export var ray2_density: float = 25.0
 @export var ray2_intensity: float = 0.3
 @export var couleur: Color = Color(1.0, 0.85, 0.4, 0.35)
-@export var seed: float = 5.0
+@export var ray_seed: float = 5.0
 @export var largeur: float = 220.0
 @export var hauteur: float = 380.0
 
@@ -30,4 +30,4 @@ func _ready() -> void:
 	material.set_shader_parameter("ray2_density", ray2_density)
 	material.set_shader_parameter("ray2_intensity", ray2_intensity)
 	material.set_shader_parameter("color", couleur)
-	material.set_shader_parameter("seed", seed)
+	material.set_shader_parameter("seed", ray_seed)

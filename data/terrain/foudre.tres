@@ -1,8 +1,12 @@
 [gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://dv7rw1l3bmujn"]
 
-[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_7ma0n"]
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
 
 [resource]
-script = ExtResource("1_7ma0n")
+script = ExtResource("1_terrain")
 effect_name = "foudre"
+description = "Declenche Choc sur l'eau."
+color = Color(0.8, 0.9, 1, 1)
+trigger = 2
+duration = 1
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

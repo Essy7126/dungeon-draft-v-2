@@ -5,7 +5,9 @@
 [resource]
 script = ExtResource("1_s6txf")
 spell_name = "Frappe de bouclier"
+energy_cost = 15.0
+charge_verb = "HIT"
 spell_range = 1
-damage = 12
+damage = 10
 damage_type = 0
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

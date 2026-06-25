@@ -1,10 +1,15 @@
 [gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://b6utveihynose"]
 
-[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_w0tat"]
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
 
 [resource]
-script = ExtResource("1_w0tat")
+script = ExtResource("1_terrain")
 effect_name = "glace"
-color = Color(0.5019608, 0.8980392, 0.5019608, 1)
+description = "Zone glissante et repoussoir d'IA."
+color = Color(0.5, 0.9, 1, 1)
 trigger = 2
+cell_type = 4
+dangerous_for_ai = true
+ai_danger_weight = 1.5
+duration = 3
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

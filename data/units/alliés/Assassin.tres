@@ -9,6 +9,7 @@
 [ext_resource type="Resource" uid="uid://dy1jdsj4qtvwb" path="res://data/energy/rage.tres" id="7_energy"]
 [ext_resource type="Resource" path="res://data/traits/chassis_assassin.tres" id="8_chassis"]
 
+[ext_resource type="Resource" path="res://data/spells/assasin/pas_de_l_ombre.tres" id="9_shadow_step"]
 [sub_resource type="SpriteFrames" id="SpriteFrames_6n4or"]
 animations = [{
 "frames": [{
@@ -27,5 +28,5 @@ energy_type = ExtResource("7_energy")
 chassis_trait = ExtResource("8_chassis")
 sprite_frames = SubResource("SpriteFrames_6n4or")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_4eywv")]([ExtResource("3_6n4or"), ExtResource("4_ku6rj"), ExtResource("5_2mlh8")])
+spells = Array[ExtResource("2_4eywv")]([ExtResource("3_6n4or"), ExtResource("4_ku6rj"), ExtResource("5_2mlh8"), ExtResource("9_shadow_step")])
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

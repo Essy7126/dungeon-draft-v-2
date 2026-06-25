@@ -7,6 +7,8 @@
 [ext_resource type="Resource" path="res://data/units/ennemie/run_eclaireur_gobelin.tres" id="3_scout"]
 [ext_resource type="Resource" path="res://data/units/ennemie/run_brute_gobelin.tres" id="4_brute"]
 [ext_resource type="PackedScene" uid="uid://cyw0qpasbtsb1" path="res://ui/Particles/fumee_shader.tscn" id="5_particles"]
+[ext_resource type="Resource" path="res://data/units/ennemie/run_pyromage_gobelin.tres" id="6_pyro"]
+[ext_resource type="Resource" path="res://data/units/ennemie/run_porte_bouclier_gobelin.tres" id="7_shield"]
 
 [resource]
 script = ExtResource("2_room")
@@ -14,7 +16,7 @@ room_name = "Salle 2 - Foi offensive"
 background_image = ExtResource("1_bg")
 particles_scene = ExtResource("5_particles")
 battle_scene = ExtResource("1_battle")
-enemies = Array[ExtResource("1_unit")]([ExtResource("4_brute"), ExtResource("3_scout"), ExtResource("3_scout")])
+enemies = Array[ExtResource("1_unit")]([ExtResource("4_brute"), ExtResource("7_shield"), ExtResource("6_pyro"), ExtResource("3_scout")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(2, 6), Vector2i(2, 7), Vector2i(2, 8), Vector2i(3, 6), Vector2i(3, 7), Vector2i(3, 8)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(13, 6), Vector2i(12, 2), Vector2i(13, 3), Vector2i(13, 4), Vector2i(13, 1)])
 metadata/_custom_type_script = "uid://clm64nm8ki4yj"

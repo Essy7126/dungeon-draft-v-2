@@ -15,10 +15,13 @@
 [ext_resource type="Resource" path="res://data/rewards/reward_pacte_de_fer.tres" id="12_fer"]
 [ext_resource type="Resource" path="res://data/rewards/reward_lame_d_elan.tres" id="13_lame"]
 [ext_resource type="Resource" path="res://data/rewards/reward_vengeance.tres" id="14_vengeance"]
+[ext_resource type="Resource" path="res://data/rewards/reward_soif_de_sang.tres" id="15_blood"]
+[ext_resource type="Resource" path="res://data/rewards/reward_stigmates.tres" id="16_stig"]
+[ext_resource type="Resource" path="res://data/rewards/reward_seconde_nature.tres" id="17_second"]
 
 [resource]
 script = ExtResource("2_run")
 run_name = "Run theorique - Flux, Foi, Nature"
 rooms = Array[ExtResource("1_room_type")]([ExtResource("3_room1"), ExtResource("4_room2"), ExtResource("5_room3")])
-reward_pool = Array[ExtResource("1_reward_type")]([ExtResource("6_celerite"), ExtResource("7_force"), ExtResource("8_repos"), ExtResource("9_vigueur"), ExtResource("10_braise"), ExtResource("11_racines"), ExtResource("12_fer"), ExtResource("13_lame"), ExtResource("14_vengeance")])
+reward_pool = Array[ExtResource("1_reward_type")]([ExtResource("6_celerite"), ExtResource("7_force"), ExtResource("8_repos"), ExtResource("9_vigueur"), ExtResource("10_braise"), ExtResource("11_racines"), ExtResource("12_fer"), ExtResource("13_lame"), ExtResource("14_vengeance"), ExtResource("15_blood"), ExtResource("16_stig"), ExtResource("17_second")])
 metadata/_custom_type_script = "uid://cc8h5jsj5dk65"

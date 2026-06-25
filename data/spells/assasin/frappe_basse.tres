@@ -5,7 +5,9 @@
 [resource]
 script = ExtResource("1_d8pi4")
 spell_name = "Frappe basse"
+energy_cost = 25.0
+charge_verb = "HIT"
 spell_range = 1
-damage = 15
+damage = 14
 damage_type = 0
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

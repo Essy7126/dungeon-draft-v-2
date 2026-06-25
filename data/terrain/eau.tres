@@ -1,8 +1,17 @@
 [gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://dfhv7b6st2rf1"]
 
-[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_1qiso"]
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+[ext_resource type="Resource" path="res://data/status/core/mouille.tres" id="2_status"]
 
 [resource]
-script = ExtResource("1_1qiso")
+script = ExtResource("1_terrain")
 effect_name = "eau"
+description = "Mouille, conduit la foudre, soutient la Nature."
+color = Color(0.15, 0.45, 1, 1)
+trigger = 1
+applied_status = ExtResource("2_status")
+native_energy_id = "nature"
+elan_discount = 5.0
+fervor_generation_multiplier = 1.5
+duration = 3
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StatusData" format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_name = "Mouille"
+description = "Conducteur: plus vulnerable a la foudre, mouvement reduit."
+color = Color(0.25, 0.55, 1, 1)
+mp_reduction = 1
+duration = 2

@@ -4,10 +4,14 @@
 
 [resource]
 script = ExtResource("1_v0ulw")
-spell_name = "Exécution"
-energy_cost = 35.0
+spell_name = "Execution"
+energy_cost = 60.0
+fervor_cost = 0.0
+charge_verb = "HIT"
 spell_range = 1
-damage = 40
+damage = 32
 damage_type = 0
 bonus_damage_if_marked = 20
+imprint_fervor_cost = 18.0
+imprint_damage_bonus = 14
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

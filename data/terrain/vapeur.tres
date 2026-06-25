@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3]
+
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+
+[resource]
+script = ExtResource("1_terrain")
+effect_name = "vapeur"
+description = "Nuage de reaction: bloque la vision, dure peu."
+color = Color(0.75, 0.75, 0.75, 0.75)
+trigger = 2
+blocks_vision = true
+duration = 2
+metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

@@ -4,9 +4,11 @@
 
 [resource]
 script = ExtResource("1_dx6u5")
-spell_name = "Coup d'épaule"
+spell_name = "Coup d'epaule"
+energy_cost = 25.0
+charge_verb = "HIT"
 spell_range = 1
-damage = 20
+damage = 6
 damage_type = 0
 push_distance = 1
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

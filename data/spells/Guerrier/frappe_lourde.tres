@@ -2,10 +2,17 @@
 
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_by432"]
 
+[ext_resource type="Resource" path="res://data/status/core/saignement.tres" id="2_bleed"]
+
 [resource]
 script = ExtResource("1_by432")
 spell_name = "Frappe Lourde"
+energy_cost = 40.0
+charge_verb = "HIT"
 spell_range = 1
-damage = 10
+damage = 18
 damage_type = 0
+imprint_fervor_cost = 18.0
+imprint_damage_bonus = 12
+imprint_status = ExtResource("2_bleed")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

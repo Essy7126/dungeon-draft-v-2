@@ -9,7 +9,7 @@
 class_name Unit
 extends RefCounted
 
-# --- Identité ---
+# --- Identite ---
 var unit_name: String = "Sans nom"
 var team: int = 0
 var ai_behavior: int = 0
@@ -22,63 +22,50 @@ var max_ap: Stat
 var max_mp: Stat
 var attack_power: Stat
 
-# --- Stats défensives (Couche 1) ---
-# Armure : mitigation des dégâts PHYSIQUES (formule LoL, valeur/(valeur+100)).
-# Resist_magique : idem pour les dégâts MAGIQUES.
-# Esquive : proba (0.0–1.0) d'annuler totalement un coup.
+# --- Stats defensives ---
 var armure: Stat
 var resist_magique: Stat
 var esquive: Stat
 
-# --- Stats de critique (Couche 1) ---
-# Crit_chance : proba de base de l'attaquant (0.0–1.0).
-# Crit_multi : multiplicateur de dégâts en cas de critique.
+# --- Stats de critique ---
 var crit_chance: Stat
 var crit_multi: Stat
 
-# --- Résistances élémentaires ---
-# Dictionnaire { Spell.Element → Stat } en POURCENTAGE (0.5 = -50% de dégâts).
-# Chaque résistance est une VRAIE Stat (modifiable par reliques/équipement,
-# avec durée, source, clamp), exactement comme l'armure. Une relique
-# "+30% résist feu pour la run" se branche donc proprement dessus.
-# Valeur négative = vulnérabilité (dégâts augmentés). Élément absent = 0.
-# Création PARESSEUSE via get_resistance() : on ne crée le Stat que si besoin.
-# Bornes : chaque résistance est clampée dans [RESIST_MIN, RESIST_MAX].
+# --- Resistances elementaires ---
 var resistances: Dictionary = {}
 
-# Bornes des résistances élémentaires (symétriques) :
-# +0.75 = au plus -75% de dégâts (jamais l'immunité totale).
-# -0.75 = au plus +75% de dégâts subis (vulnérabilité bornée, pas x4).
 const RESIST_MIN := -0.75
 const RESIST_MAX := 0.75
-
-# Borne haute de l'esquive : 50% max, peu importe l'empilement de bonus.
-# (Choix tactique : l'esquive reste un bonus, jamais une invincibilité.)
 const ESQUIVE_MAX := 0.50
-
-# Borne haute des défenses (armure / résist magique).
-# La formule LoL ne sature jamais à 100%, donc cette borne sert juste à
-# empêcher des valeurs absurdes (nombres qui explosent). Généreuse.
 const DEFENSE_MAX := 1000.0
 
-# --- État courant ---
+# --- Etat courant ---
 var current_hp: int = 0
-var current_ap: int = 0   # DORMANT : les PA sont remplacés par l'énergie.
-var current_mp: int = 0   # PM conservés : ressource de déplacement.
-var current_shield: int = 0  # Bouclier actif : absorbe les dégâts avant les PV.
+var current_ap: int = 0
+var current_mp: int = 0
+var current_shield: int = 0
 var is_alive: bool = true
 var grid_pos: Vector2i = Vector2i(-1, -1)
+# --- Ressources de combat ---
+# Elan paie les actions du tour. Ferveur (current_energy) est la jauge
+# d'identite liee au type choisi au draft : Rage, Foi, Nature...
+const ELAN_MAX := 90.0
+const ELAN_START := 50.0
+const ELAN_BASE_INCOME := 50.0
+const ELAN_INCOME_PER_TIER := 5.0
+const ELAN_BASIC_ATTACK_COST := 10.0
 
-# Loi d'action joueur : 1 action de base + 1 action d'energie par tour.
-var used_base_action: bool = false
-var used_energy_action: bool = false
-
-# --- Énergie (remplace les PA comme économie d'action) ---
-# Une seule énergie par unité pour l'instant (Rage). Définie par un
-# EnergyTypeData. current_energy est la réserve courante ; on la GÉNÈRE
-# (générateurs/traits) et on la DÉPENSE (sorts consommateurs).
 var energy_type: EnergyTypeData = null
-var current_energy: float = 0.0
+var current_energy: float = 0.0 # Ferveur. Nom conserve pour compatibilite.
+var current_elan: float = ELAN_START
+var max_elan: float = ELAN_MAX
+var charge_threshold_active: bool = false
+var awakening_turns_remaining: int = 0
+var next_turn_elan_bonus: float = 0.0
+var current_terrain_effect: TerrainEffectData = null
+var terrain_elan_discount_used: bool = false
+var taunt_source = null
+var taunt_turns: int = 0
 
 # --- Apparence ---
 var sprite_frames: SpriteFrames = null
@@ -103,6 +90,7 @@ signal died(unit)
 signal hp_changed(unit)
 signal stats_changed(unit)
 signal energy_changed(unit)
+signal elan_changed(unit)
 signal shield_changed(unit)
 
 # Raccourcis de catégories de log (combat = vu par le joueur).
@@ -171,6 +159,8 @@ static func from_data(data: UnitData) -> Unit:
 	for trait_data in data.starting_traits:
 		if trait_data != null:
 			u.add_trait_from_data(trait_data)
+	u.ensure_energy_traits()
+	u.sync_charge_state(false)
 	# On DUPLIQUE le comportement : chaque boss a son propre état (compteur
 	# de tours, enrage...), sinon deux boss partageraient le même.
 	u.boss_behavior = data.boss_behavior.duplicate() if data.boss_behavior != null else null
@@ -281,6 +271,17 @@ func is_stunned() -> bool:
 # Applique les effets de tous les statuts en début de tour.
 # Retourne true si l'unité doit sauter son tour (stun).
 # (à appeler APRÈS start_turn qui recharge PA/PM)
+func apply_taunt(source, duration: int = 1) -> void:
+	taunt_source = source
+	taunt_turns = maxi(1, duration)
+	var source_name: String = source.unit_name if source != null else "une force inconnue"
+	DebugLogger.info(CAT_STATS, "%s est provoque par %s" % [unit_name, source_name])
+
+func get_forced_target():
+	if taunt_source != null and taunt_turns > 0 and taunt_source.is_alive:
+		return taunt_source
+	return null
+
 func process_statuses() -> bool:
 	var skip = false
 
@@ -323,6 +324,10 @@ func process_statuses() -> bool:
 			DebugLogger.info(CAT_STATS, "%s est neutralisé par %s (passe son tour)" % [
 				unit_name, data.status_name])
 
+	if taunt_turns > 0:
+		taunt_turns -= 1
+		if taunt_turns <= 0:
+			taunt_source = null
 	stats_changed.emit(self)
 	return skip
 
@@ -336,6 +341,7 @@ func tick_statuses() -> void:
 			active_statuses.remove_at(i)
 			# Le CombatLogger écoute status_expired et produit la ligne de log.
 			EventBus.status_expired.emit(self, ended)
+	_tick_awakening()
 
 # Retourne la liste des statuts actifs (pour l'UI).
 func get_active_statuses() -> Array:
@@ -353,8 +359,8 @@ func start_turn() -> void:
 		stat.tick_durations()
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
-	used_base_action = false
-	used_energy_action = false
+	terrain_elan_discount_used = false
+	_refresh_turn_elan_budget()
 	EventBus.turn_started.emit(self)
 	stats_changed.emit(self)
 
@@ -385,47 +391,269 @@ func spend_ap(amount: int) -> bool:
 func has_energy() -> bool:
 	return energy_type != null
 
-# Peut-on payer ce coût en énergie ? (true aussi si coût <= 0).
+func ensure_energy_traits() -> void:
+	if energy_type == null or energy_type.threshold_trait == null:
+		return
+	for t in traits:
+		if t != null and t.has_method("_trait_name") and t._trait_name() == "trait_threshold":
+			return
+	add_trait_from_data(energy_type.threshold_trait)
+
+func reset_combat_resources() -> void:
+	charge_threshold_active = false
+	awakening_turns_remaining = 0
+	next_turn_elan_bonus = 0.0
+	max_elan = _compute_elan_income()
+	current_elan = max_elan
+	current_energy = energy_type.start_energy if has_energy() else 0.0
+	sync_charge_state(true)
+	elan_changed.emit(self)
+	energy_changed.emit(self)
+	EventBus.elan_changed.emit(self, current_elan, max_elan)
+	if has_energy():
+		EventBus.fervor_changed.emit(self, current_energy, energy_type.max_energy, charge_threshold_active)
+
+func set_current_terrain_effect(effect: TerrainEffectData) -> void:
+	current_terrain_effect = effect
+
+func _terrain_matches_energy() -> bool:
+	return current_terrain_effect != null and has_energy() and current_terrain_effect.matches_energy(energy_type.energy_id)
+
+func _current_terrain_elan_discount() -> float:
+	if terrain_elan_discount_used or not _terrain_matches_energy():
+		return 0.0
+	return maxf(0.0, current_terrain_effect.elan_discount)
+
+func _current_terrain_fervor_multiplier() -> float:
+	if not _terrain_matches_energy():
+		return 1.0
+	return maxf(0.0, current_terrain_effect.fervor_generation_multiplier)
+
+func can_afford_elan(amount: float) -> bool:
+	var cost: float = maxf(0.0, amount)
+	return current_elan >= cost
+
+func generate_elan(amount: float, source: String = "") -> float:
+	var gain: float = maxf(0.0, amount)
+	if gain <= 0.0:
+		return 0.0
+	var before: float = current_elan
+	current_elan = minf(current_elan + gain, max_elan)
+	var real: float = current_elan - before
+	if real <= 0.0:
+		return 0.0
+	EventBus.elan_generated.emit(self, real)
+	EventBus.elan_changed.emit(self, current_elan, max_elan)
+	elan_changed.emit(self)
+	return real
+
+func spend_elan(amount: float, source: String = "") -> bool:
+	var cost: float = maxf(0.0, amount)
+	if cost <= 0.0:
+		return true
+	if not can_afford_elan(cost):
+		return false
+	current_elan = maxf(0.0, current_elan - cost)
+	if source != "" and _current_terrain_elan_discount() > 0.0:
+		terrain_elan_discount_used = true
+	EventBus.elan_spent.emit(self, cost)
+	EventBus.elan_changed.emit(self, current_elan, max_elan)
+	elan_changed.emit(self)
+	return true
+
+func _compute_elan_income() -> float:
+	var tier := GameManager.get_elan_tier() if GameManager.has_method("get_elan_tier") else GameManager.get_charge_tier()
+	var amount := ELAN_BASE_INCOME + float(maxi(1, tier) - 1) * ELAN_INCOME_PER_TIER
+	if has_charge_threshold() and energy_type.awakening_elan_income_penalty > 0.0:
+		amount -= energy_type.awakening_elan_income_penalty
+	amount += next_turn_elan_bonus
+	next_turn_elan_bonus = 0.0
+	return clampf(amount, 0.0, ELAN_MAX)
+
+func _refresh_turn_elan_budget() -> void:
+	max_elan = _compute_elan_income()
+	current_elan = max_elan
+	EventBus.elan_changed.emit(self, current_elan, max_elan)
+	elan_changed.emit(self)
+
 func can_afford_energy(amount: float) -> bool:
-	if amount <= 0.0:
+	var cost: float = maxf(0.0, amount)
+	if cost <= 0.0:
 		return true
 	if not has_energy():
 		return false
-	return current_energy >= amount
+	return current_energy >= cost
 
-# Génère de l'énergie (générateurs, terrain, traits). Plafonné à max_energy :
-# le surplus est PERDU (garde-fou : pas de thésaurisation infinie).
-# `source` sert aux logs / au futur rendement décroissant.
-func generate_energy(amount: float, source: String = "") -> void:
+func has_charge_threshold() -> bool:
+	return has_energy() and charge_threshold_active
+
+func get_basic_attack_elan_cost() -> float:
+	var cost := ELAN_BASIC_ATTACK_COST - _current_terrain_elan_discount()
+	return maxf(0.0, cost)
+
+func get_basic_attack_cost() -> float:
+	return get_basic_attack_elan_cost()
+
+func get_spell_elan_cost(spell: Spell) -> float:
+	if spell == null:
+		return 0.0
+	var cost := maxf(0.0, spell.energy_cost - _current_terrain_elan_discount())
+	return maxf(0.0, cost)
+
+func get_spell_energy_cost(spell: Spell) -> float:
+	return get_spell_elan_cost(spell)
+
+func get_spell_imprint_fervor_cost(spell: Spell) -> float:
+	if spell == null or not spell.can_imprint():
+		return 0.0
+	var cost: float = spell.imprint_fervor_cost
+	if has_charge_threshold() and energy_type.awakening_imprint_discount > 0.0:
+		cost -= energy_type.awakening_imprint_discount
+	return maxf(0.0, cost)
+
+func get_spell_fervor_cost(spell: Spell, imprinted: bool = false) -> float:
+	if spell == null:
+		return 0.0
+	var cost := maxf(0.0, spell.fervor_cost)
+	if imprinted:
+		cost += get_spell_imprint_fervor_cost(spell)
+	return maxf(0.0, cost)
+
+func can_afford_spell_resources(spell: Spell, imprinted: bool = false) -> bool:
+	if spell == null:
+		return false
+	return can_afford_elan(get_spell_elan_cost(spell)) and can_afford_energy(get_spell_fervor_cost(spell, imprinted))
+
+func get_modified_spell_damage(spell: Spell, amount: int) -> int:
+	if spell == null or amount <= 0:
+		return amount
+	if has_charge_threshold():
+		if energy_type.awakening_blocks_direct_damage:
+			return 0
+		if energy_type.awakening_damage_multiplier > 0.0:
+			return maxi(0, int(round(float(amount) * energy_type.awakening_damage_multiplier)))
+	return amount
+
+func get_modified_spell_heal(spell: Spell, amount: int) -> int:
+	if spell == null or amount <= 0:
+		return amount
+	if has_charge_threshold() and energy_type.awakening_heal_multiplier > 0.0:
+		return maxi(0, int(round(float(amount) * energy_type.awakening_heal_multiplier)))
+	return amount
+
+func get_modified_spell_shield(spell: Spell, amount: int) -> int:
+	if spell == null or amount <= 0:
+		return amount
+	if has_charge_threshold() and energy_type.awakening_shield_multiplier > 0.0:
+		return maxi(0, int(round(float(amount) * energy_type.awakening_shield_multiplier)))
+	return amount
+
+func _get_modified_incoming_damage(amount: int) -> int:
+	if amount <= 0:
+		return amount
+	var modified := float(amount)
+	if has_charge_threshold():
+		if energy_type.threshold_damage_reduction_pct > 0.0:
+			var reduction := clampf(energy_type.threshold_damage_reduction_pct, 0.0, 0.95)
+			modified *= (1.0 - reduction)
+		if energy_type.awakening_incoming_damage_multiplier > 0.0:
+			modified *= energy_type.awakening_incoming_damage_multiplier
+	return maxi(0, int(round(modified)))
+
+func generate_fervor_from_verb(verb: String, source: String = "") -> float:
+	if not has_energy():
+		return 0.0
+	var key := verb.strip_edges().to_upper()
+	if key == "":
+		return 0.0
+	var amount := energy_type.gain_for(key)
+	amount *= energy_type.gain_multiplier_for(key, charge_threshold_active)
+	amount *= _current_terrain_fervor_multiplier()
+	amount *= GameManager.get_fervor_multiplier() if GameManager.has_method("get_fervor_multiplier") else GameManager.get_charge_multiplier()
+	return generate_energy(amount, source if source != "" else key)
+
+func generate_charge_from_verb(verb: String, source: String = "") -> float:
+	return generate_fervor_from_verb(verb, source)
+
+func generate_energy(amount: float, source: String = "") -> float:
 	if not has_energy() or amount <= 0.0:
-		return
+		return 0.0
 	var before := current_energy
-	current_energy = min(current_energy + amount, energy_type.max_energy)
+	current_energy = minf(current_energy + amount, energy_type.max_energy)
 	var real := current_energy - before
 	if real <= 0.0:
-		return                                   # déjà au max : rien produit
+		return 0.0
 	EventBus.energy_generated.emit(self, energy_type.energy_id, real)
+	sync_charge_state()
 	energy_changed.emit(self)
+	return real
 
-# Dépense de l'énergie (consommateurs). Renvoie false si insuffisant (l'action
-# ne doit alors PAS se faire). C'est le garde-fou central : on ne dépense que
-# ce qu'on a.
 func spend_energy(amount: float, source: String = "") -> bool:
-	if amount <= 0.0:
-		return true                              # action gratuite : toujours OK
-	if not can_afford_energy(amount):
+	var cost := maxf(0.0, amount)
+	if cost <= 0.0:
+		return true
+	if not can_afford_energy(cost):
 		return false
-	current_energy -= amount
-	EventBus.energy_spent.emit(self, energy_type.energy_id, amount)
+	current_energy = maxf(0.0, current_energy - cost)
+	EventBus.energy_spent.emit(self, energy_type.energy_id, cost)
+	sync_charge_state()
 	energy_changed.emit(self)
 	return true
 
-# Ratio 0.0–1.0 pour la jauge d'UI.
+func sync_charge_state(emit_events: bool = true) -> void:
+	var max_value := energy_type.max_energy if has_energy() else 0.0
+	if not emit_events:
+		return
+	if has_energy():
+		EventBus.fervor_changed.emit(self, current_energy, max_value, charge_threshold_active)
+	EventBus.charge_changed.emit(self, current_energy, max_value, charge_threshold_active)
+
+
+func can_activate_awakening() -> bool:
+	return has_energy() and is_alive and not charge_threshold_active and current_energy >= energy_type.awakening_cost
+
+func activate_awakening() -> bool:
+	if not can_activate_awakening():
+		return false
+	if not spend_energy(energy_type.awakening_cost, "eveil"):
+		return false
+	charge_threshold_active = true
+	awakening_turns_remaining = maxi(1, energy_type.awakening_duration_turns)
+	EventBus.fervor_threshold_changed.emit(self, true)
+	EventBus.charge_threshold_changed.emit(self, true)
+	EventBus.awakening_activated.emit(self, energy_type.energy_id, awakening_turns_remaining)
+	sync_charge_state(true)
+	stats_changed.emit(self)
+	DebugLogger.info(CAT_STATS, "%s declenche %s (%d tours)" % [unit_name, energy_type.threshold_name, awakening_turns_remaining])
+	return true
+
+func _tick_awakening() -> void:
+	if not charge_threshold_active:
+		return
+	awakening_turns_remaining -= 1
+	if awakening_turns_remaining <= 0:
+		_end_awakening()
+
+func _end_awakening() -> void:
+	if not charge_threshold_active:
+		return
+	charge_threshold_active = false
+	awakening_turns_remaining = 0
+	if has_energy():
+		EventBus.fervor_threshold_changed.emit(self, false)
+		EventBus.charge_threshold_changed.emit(self, false)
+		EventBus.awakening_ended.emit(self, energy_type.energy_id)
+	sync_charge_state(true)
+	stats_changed.emit(self)
 func get_energy_ratio() -> float:
 	if not has_energy() or energy_type.max_energy <= 0.0:
 		return 0.0
 	return current_energy / energy_type.max_energy
 
+func get_elan_ratio() -> float:
+	if max_elan <= 0.0:
+		return 0.0
+	return current_elan / max_elan
 # ============================================================
 # BOUCLIER — couche défensive entre l'énergie et les PV
 # Le bouclier absorbe les dégâts AVANT les PV. Il n'expire pas
@@ -439,6 +667,8 @@ func get_energy_ratio() -> float:
 # Un bouclier plus faible est ignoré : on ne perd jamais son bouclier
 # parce qu'un sort de soutien a donné moins que ce qu'on a déjà.
 func add_shield(amount: int) -> void:
+	if has_charge_threshold() and energy_type.awakening_blocks_shield:
+		return
 	if not is_alive or amount <= 0:
 		return
 	if amount <= current_shield:
@@ -470,6 +700,25 @@ func clear_shield() -> void:
 #
 # Renvoie le DamageResult (montant réel, crit, esquive) pour que
 # l'appelant puisse afficher les retours visuels.
+func _apply_defensive_reaction_to_raw(amount: int, attacker, options: Dictionary) -> int:
+	if amount <= 0 or not has_energy() or attacker == null:
+		return amount
+	if options.get("disable_fervor_reaction", false):
+		return amount
+	if attacker.team == team:
+		return amount
+	var cost: float = maxf(0.0, energy_type.reaction_cost)
+	if cost <= 0.0 or current_energy < cost:
+		return amount
+	var multiplier: float = clampf(energy_type.reaction_damage_multiplier, 0.0, 1.0)
+	if not spend_energy(cost, "reaction"):
+		return amount
+	var reduced := maxi(0, int(round(float(amount) * multiplier)))
+	var mitigated := maxi(0, amount - reduced)
+	next_turn_elan_bonus += maxf(0.0, energy_type.reaction_next_turn_elan_bonus)
+	EventBus.fervor_reaction_used.emit(self, attacker, cost, mitigated)
+	DebugLogger.info(CAT_STATS, "%s brule %.0f Ferveur en reaction (-%d degats)" % [unit_name, cost, mitigated])
+	return reduced
 func take_damage(
 		amount: int,
 		attacker = null,
@@ -483,7 +732,7 @@ func take_damage(
 	# Construit le contexte du coup.
 	var ctx := DamageResolver.HitContext.new()
 	ctx.attacker = attacker
-	ctx.raw_damage = amount
+	ctx.raw_damage = _get_modified_incoming_damage(_apply_defensive_reaction_to_raw(amount, attacker, options))
 	ctx.category = category
 	ctx.element = element
 	# Options éventuelles (terrain, sorts spéciaux, futurs traits).
@@ -548,15 +797,22 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 		hp_changed.emit(self)
 
 func heal(amount: int) -> void:
+	if has_charge_threshold() and energy_type.awakening_blocks_healing:
+		DebugLogger.debug(CAT_STATS, "%s ne peut pas etre soigne pendant %s" % [unit_name, energy_type.threshold_name])
+		return
 	if not is_alive:
 		return
-	var before = current_hp
-	current_hp = min(current_hp + amount, max_hp.get_int())
-	var real = current_hp - before
-	# Le CombatLogger écoute unit_healed et produit la ligne de log.
+	var max_value := max_hp.get_int()
+	var before := current_hp
+	current_hp = mini(current_hp + amount, max_value)
+	var real := current_hp - before
+	var overheal := maxi(0, amount - real)
+	if overheal > 0 and has_charge_threshold() and energy_type.threshold_overheal_to_shield:
+		var shield_amount := int(round(float(overheal) * energy_type.threshold_overheal_shield_multiplier))
+		if shield_amount > 0:
+			add_shield(shield_amount)
 	EventBus.unit_healed.emit(self, real)
 	hp_changed.emit(self)
-
 func _die() -> void:
 	# Garde d'idempotence : une unité ne peut mourir qu'UNE fois.
 	# Sans ça, si _die est atteint deux fois (deux sources de dégâts dans le

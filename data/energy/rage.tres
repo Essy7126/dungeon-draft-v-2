@@ -1,9 +1,25 @@
 [gd_resource type="Resource" script_class="EnergyTypeData" format=3 uid="uid://dy1jdsj4qtvwb"]
 
 [ext_resource type="Script" uid="uid://b47puqafimbk5" path="res://data/energy/energy_type.gd" id="1_iljyy"]
+[ext_resource type="Resource" path="res://data/traits/threshold_identity.tres" id="2_threshold"]
 
 [resource]
 script = ExtResource("1_iljyy")
 energy_name = "Rage"
-start_energy = 15.0
+energy_id = "rage"
+color = Color(0.9, 0.18, 0.08, 1)
+start_energy = 0.0
+gain_table = {"EXPLOIT": 10.0, "HEAL": 3.0, "HIT": 12.0, "PROTECT": 3.0, "TAKE_DAMAGE": 0.0}
+threshold_name = "Berserker"
+threshold_trait = ExtResource("2_threshold")
+threshold_attack_cost_discount = 5.0
+threshold_damage_multiplier = 1.25
+threshold_take_damage_gain = 8.0
+awakening_damage_multiplier = 1.3
+awakening_incoming_damage_multiplier = 1.2
+awakening_imprint_discount = 10.0
+awakening_blocks_healing = true
+reaction_cost = 25.0
+reaction_damage_multiplier = 0.5
+reaction_next_turn_elan_bonus = 10.0
 metadata/_custom_type_script = "uid://b47puqafimbk5"

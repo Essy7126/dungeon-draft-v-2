@@ -1,8 +1,4 @@
 # data/spell.gd
-# ============================================================
-# SPELL — Définition d'un sort (Resource).
-# ============================================================
-
 class_name Spell
 extends Resource
 
@@ -13,21 +9,27 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export var spell_name: String = "Sort sans nom"
 @export_multiline var description: String = ""
 @export var icon: Texture2D = null
+@export_group("Presentation")
+@export var vfx_scene: PackedScene = null
+@export var sound_cast: AudioStream = null
 
-@export_group("Coût et portée")
-@export var ap_cost: int = 2
-# Coût en ÉNERGIE (Rage, Foi...). L'énergie remplace les PA comme économie
-# d'action. 0 = GÉNÉRATEUR (sort gratuit qui sert à lancer le moteur).
-# > 0 = CONSOMMATEUR (sort puissant qui dépense l'énergie construite).
-@export var energy_cost: float = 0.0
-# Énergie générée à l'exécution de ce sort (génération de BASE, agnostique du
-# type d'énergie). La génération conditionnelle selon Rage/Foi/... vit dans le
-# TraitChassis du champion. 0 = pas de génération directe.
+@export_group("Cout et portee")
+@export var ap_cost: int = 1
+@export var energy_cost: float = 0.0 # Elan
+@export var fervor_cost: float = 0.0
 @export var energy_generated: float = 0.0
+@export_group("Empreinte")
+@export var imprint_fervor_cost: float = 0.0
+@export var imprint_damage_bonus: int = 0
+@export var imprint_heal_bonus: int = 0
+@export var imprint_shield_bonus: int = 0
+@export var imprint_status: StatusData = null
+@export var imprint_terrain_effect: TerrainEffectData = null
+@export var charge_verb: String = ""
 @export var spell_range: int = 3
 @export var needs_line_of_sight: bool = true
 
-@export_group("Cibles autorisées")
+@export_group("Cibles autorisees")
 @export var can_target_enemy: bool = true
 @export var can_target_ally: bool = false
 @export var can_target_free_cell: bool = false
@@ -46,24 +48,23 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export var crit_multiplier: float = 1.5
 
 @export_group("Effet de terrain")
-# Le sort peut poser un effet de terrain (Resource TerrainEffectData).
 @export var terrain_effect: TerrainEffectData = null
 
-# Dans spell.gd, remplace tout le groupe "Buff / Debuff" par ceci :
-
-@export_group("Statut appliqué")
-# Statut infligé aux unités touchées (poison, stun, slow...).
+@export_group("Statut applique")
 @export var applied_status: StatusData = null
 
-@export_group("Mécanique spéciale")
-# Pousse la cible de N cases dans la direction caster→target. 0 = pas de poussée.
+@export_group("Mecanique speciale")
 @export var push_distance: int = 0
-# Bouclier accordé aux cibles AMIES touchées par ce sort (Garde, Rempart...).
+@export var push_all_adjacent: bool = false
 @export var shield_grant: int = 0
-# Bonus de dégâts si la cible porte le statut "Marqué" (Exécution de l'Assassin).
 @export var bonus_damage_if_marked: int = 0
-@export_group("Visuel")
-@export var vfx_scene: PackedScene = null
+@export var forces_taunt: bool = false
+@export var taunt_duration: int = 1
+@export var elan_drain: float = 0.0
+@export var fervor_drain: float = 0.0
+@export var teleport_behind_target: bool = false
+@export var heal_bonus_effect_name: String = ""
+@export var heal_bonus_multiplier: float = 1.0
 
 func deals_damage() -> bool:
 	return damage > 0
@@ -71,13 +72,11 @@ func deals_damage() -> bool:
 func is_healing() -> bool:
 	return heal > 0
 
-# Un GÉNÉRATEUR ne coûte pas d'énergie (il sert à lancer le moteur).
 func is_generator() -> bool:
-	return energy_cost <= 0.0
+	return energy_cost <= 0.0 and fervor_cost <= 0.0
 
-# Un CONSOMMATEUR dépense de l'énergie.
 func is_consumer() -> bool:
-	return energy_cost > 0.0
+	return energy_cost > 0.0 or fervor_cost > 0.0
 
 func has_terrain_effect() -> bool:
 	return terrain_effect != null
@@ -85,7 +84,5 @@ func has_terrain_effect() -> bool:
 func is_self_only() -> bool:
 	return can_target_self and not can_target_enemy \
 		and not can_target_ally and not can_target_free_cell
-
-@export_group("Audio")
-@export var sound_cast: AudioStream = null
-@export var sound_impact: AudioStream = null
+func can_imprint() -> bool:
+	return imprint_fervor_cost > 0.0

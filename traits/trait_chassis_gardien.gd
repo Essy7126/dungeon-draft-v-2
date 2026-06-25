@@ -1,45 +1,8 @@
-# traits/trait_chassis_gardien.gd
-# ============================================================
-# CHÂSSIS GARDIEN — La grammaire de base du Gardien.
-#
-# Le Gardien génère de l'énergie quand il PROTÈGE : quand un allié
-# adjacent est attaqué, ou quand l'allié qu'il a placé sous Protégé
-# reçoit des dégâts.
-#
-#   Rage : protéger → Rage → Riposte (Frappe de bouclier renforcée)
-#   Foi  : protéger → Foi → Rempart ou bouclier allié
-#
-# Paramètres (.tres optionnel) :
-#   rage_on_ally_hit       : float = 12.0  — Rage quand allié adjacent touché
-#   rage_bonus_protege     : float = 8.0   — bonus Rage si l'allié avait Protégé
-#   foi_on_ally_hit        : float = 10.0  — Foi quand allié adjacent touché
-#   foi_bonus_protege      : float = 6.0   — bonus Foi si l'allié avait Protégé
-# ============================================================
-
 class_name TraitChassisGardien
 extends Trait
 
-var rage_on_ally_hit: float    = 12.0
-var rage_bonus_protege: float  = 8.0
-var foi_on_ally_hit: float     = 10.0
-var foi_bonus_protege: float   = 6.0
-var rage_on_guard_cast: float  = 6.0
-var foi_on_guard_cast: float   = 8.0
-var rage_on_absorb: float      = 10.0
-var foi_on_absorb: float       = 12.0
-
 func _trait_name() -> String:
 	return "chassis_gardien"
-
-func configure(params: Dictionary) -> void:
-	rage_on_ally_hit    = params.get("rage_on_ally_hit",    rage_on_ally_hit)
-	rage_bonus_protege  = params.get("rage_bonus_protege",  rage_bonus_protege)
-	foi_on_ally_hit     = params.get("foi_on_ally_hit",     foi_on_ally_hit)
-	foi_bonus_protege   = params.get("foi_bonus_protege",   foi_bonus_protege)
-	rage_on_guard_cast  = params.get("rage_on_guard_cast",  rage_on_guard_cast)
-	foi_on_guard_cast   = params.get("foi_on_guard_cast",   foi_on_guard_cast)
-	rage_on_absorb      = params.get("rage_on_absorb",      rage_on_absorb)
-	foi_on_absorb       = params.get("foi_on_absorb",       foi_on_absorb)
 
 func _activate() -> void:
 	EventBus.spell_cast.connect(_on_spell_cast)
@@ -52,87 +15,38 @@ func _deactivate() -> void:
 		EventBus.shield_absorbed.disconnect(_on_shield_absorbed)
 
 func _on_spell_cast(caster, spell: Spell, report: Dictionary) -> void:
-	if caster != owner or not owner.is_alive or not owner.has_energy():
+	if caster != owner or spell == null or not _can_generate():
 		return
-	if not spell.is_generator() or spell.shield_grant <= 0:
-		return
-	if report.get("affected_units", []).is_empty():
-		return
-
-	match owner.energy_type.energy_id:
-		"rage":
-			owner.generate_energy(rage_on_guard_cast, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s genere %.0f Rage (protection)" % [owner.unit_name, rage_on_guard_cast])
-		"foi":
-			owner.generate_energy(foi_on_guard_cast, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s genere %.0f Foi (protection)" % [owner.unit_name, foi_on_guard_cast])
+	var verb := spell.charge_verb.strip_edges().to_upper()
+	if _verb_happened(verb, report):
+		_generate(verb, spell.spell_name)
 
 func _on_shield_absorbed(unit, amount: int) -> void:
-	if owner == null or not owner.is_alive or not owner.has_energy():
+	if not _can_generate():
 		return
 	if unit == null or unit.team != owner.team or amount <= 0:
 		return
+	_generate(EnergyTypeData.VERB_TAKE_DAMAGE, "bouclier")
 
-	match owner.energy_type.energy_id:
-		"rage":
-			owner.generate_energy(rage_on_absorb, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s genere %.0f Rage (bouclier absorbe)" % [owner.unit_name, rage_on_absorb])
-		"foi":
-			owner.generate_energy(foi_on_absorb, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s genere %.0f Foi (bouclier absorbe)" % [owner.unit_name, foi_on_absorb])
-
-# ============================================================
-# GÉNÉRATION — quand un allié reçoit des dégâts
-# Le Gardien réagit si :
-#   - il est vivant et a une énergie
-#   - la cible est un allié (même team, pas lui-même)
-#   - l'attaquant est un ennemi
-# ============================================================
-
-func _on_damage_dealt(target, attacker, _amount, _category, _element, _is_crit) -> void:
-	if owner == null or not owner.is_alive or not owner.has_energy():
-		return
-	# Réagit si : un allié OU le Gardien lui-même est touché par un ennemi
-	if target.team != owner.team:
-		return
-	if attacker == null or attacker.team == owner.team:
-		return
-
-	var energy_id: String = owner.energy_type.energy_id
-	var had_protege := _has_status(target, "Protégé")
-
-	match energy_id:
-		"rage":
-			owner.generate_energy(rage_on_ally_hit, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s génère %.0f Rage (châssis Gardien, allié/soi touché)" \
-				% [owner.unit_name, rage_on_ally_hit])
-			if had_protege:
-				owner.generate_energy(rage_bonus_protege, source_id)
-				DebugLogger.debug(DebugLogger.LogCategory.STATS,
-					"%s génère %.0f Rage bonus (Protégé actif)" \
-					% [owner.unit_name, rage_bonus_protege])
-		"foi":
-			owner.generate_energy(foi_on_ally_hit, source_id)
-			DebugLogger.debug(DebugLogger.LogCategory.STATS,
-				"%s génère %.0f Foi (châssis Gardien, allié/soi touché)" \
-				% [owner.unit_name, foi_on_ally_hit])
-			if had_protege:
-				owner.generate_energy(foi_bonus_protege, source_id)
-				DebugLogger.debug(DebugLogger.LogCategory.STATS,
-					"%s génère %.0f Foi bonus (Protégé actif)" \
-					% [owner.unit_name, foi_bonus_protege])
-
-# Helper — vérifie si une unité porte un statut par son nom
-func _has_status(unit, status_name: String) -> bool:
-	if not unit.has_method("get_active_statuses"):
-		return false
-	for entry in unit.get_active_statuses():
-		var sd: StatusData = entry.get("data")
-		if sd != null and sd.status_name == status_name:
-			return true
+func _verb_happened(verb: String, report: Dictionary) -> bool:
+	match verb:
+		EnergyTypeData.VERB_PROTECT:
+			return not report.get("shielded_units", []).is_empty() or not report.get("controlled_enemies", []).is_empty() or not report.get("terrain_changed", []).is_empty()
+		EnergyTypeData.VERB_HIT:
+			return not report.get("damaged_enemies", []).is_empty()
+		EnergyTypeData.VERB_HEAL:
+			return not report.get("healed_units", []).is_empty()
+		EnergyTypeData.VERB_EXPLOIT:
+			return not report.get("affected_units", []).is_empty() or not report.get("terrain_changed", []).is_empty()
 	return false
+
+func _generate(verb: String, reason: String) -> void:
+	if verb == "":
+		return
+	var amount: float = owner.generate_fervor_from_verb(verb, source_id)
+	if amount > 0.0:
+		DebugLogger.debug(DebugLogger.LogCategory.STATS,
+			"%s genere %.0f %s (%s)" % [owner.unit_name, amount, owner.energy_type.energy_name, reason])
+
+func _can_generate() -> bool:
+	return owner != null and owner.is_alive and owner.has_energy()

@@ -6,9 +6,13 @@
 [resource]
 script = ExtResource("1_suoxf")
 spell_name = "Brise Garde"
-energy_cost = 30.0
+energy_cost = 60.0
+fervor_cost = 0.0
+charge_verb = "HIT"
 spell_range = 1
-damage = 25
+damage = 28
 damage_type = 0
 applied_status = ExtResource("1_0isfq")
+imprint_fervor_cost = 20.0
+imprint_damage_bonus = 8
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

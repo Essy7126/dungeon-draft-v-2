@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Onde de choc"
+description = "Pousse tous les ennemis adjacents. Exploite collisions et terrains."
+energy_cost = 40.0
+spell_range = 0
+can_target_enemy = false
+can_target_self = true
+push_distance = 1
+push_all_adjacent = true
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

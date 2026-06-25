@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://traits/trait_stigmata.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_data")
+trait_script = ExtResource("2_trait")
+display_name = "Stigmates"
+description = "+8 Ferveur quand tu encaisses, mais -10 PV max."
+params = {"fervor_on_hit": 8.0, "max_hp_penalty": -10.0}

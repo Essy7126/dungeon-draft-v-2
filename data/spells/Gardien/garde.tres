@@ -9,6 +9,8 @@
 script = ExtResource("1_anvwb")
 spell_name = "Garde"
 icon = ExtResource("2_byomw")
+energy_cost = 25.0
+charge_verb = "PROTECT"
 spell_range = 2
 can_target_enemy = false
 can_target_ally = true

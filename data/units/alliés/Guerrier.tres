@@ -9,6 +9,7 @@
 [ext_resource type="Resource" uid="uid://dy1jdsj4qtvwb" path="res://data/energy/rage.tres" id="7_energy"]
 [ext_resource type="Resource" uid="uid://cav8k84gqbymp" path="res://data/traits/chassis_guerrier.tres" id="8_chassis"]
 
+[ext_resource type="Resource" path="res://data/spells/Guerrier/onde_de_choc.tres" id="9_onde"]
 [sub_resource type="SpriteFrames" id="SpriteFrames_qjwhl"]
 animations = [{
 "frames": [{
@@ -27,5 +28,5 @@ energy_type = ExtResource("7_energy")
 chassis_trait = ExtResource("8_chassis")
 sprite_frames = SubResource("SpriteFrames_qjwhl")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_nnx18")]([ExtResource("3_3i8e2"), ExtResource("5_qjwhl"), ExtResource("4_s0rgo")])
+spells = Array[ExtResource("2_nnx18")]([ExtResource("3_3i8e2"), ExtResource("5_qjwhl"), ExtResource("4_s0rgo"), ExtResource("9_onde")])
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

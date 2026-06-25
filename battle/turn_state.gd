@@ -19,15 +19,16 @@ var current: State = State.IDLE
 
 # Le sort en cours de ciblage (null si aucun).
 var selected_spell: Spell = null
+var selected_spell_imprinted: bool = false
 
 # Signaux d'intention vers Battle.
 signal request_show_move_range
 signal request_show_attack_range
-signal request_show_spell_range(spell)
+signal request_show_spell_range(spell, imprinted)
 signal request_clear_highlights
 signal request_move_to(cell)
 signal request_attack(cell)
-signal request_cast_spell(spell, cell)
+signal request_cast_spell(spell, cell, imprinted)
 
 func set_state(new_state: State) -> void:
 	current = new_state
@@ -37,13 +38,14 @@ func _on_enter_state(state: State) -> void:
 	match state:
 		State.IDLE:
 			selected_spell = null
+			selected_spell_imprinted = false
 			request_clear_highlights.emit()
 		State.MOVE:
 			request_show_move_range.emit()
 		State.TARGET_MELEE:
 			request_show_attack_range.emit()
 		State.TARGET_SPELL:
-			request_show_spell_range.emit(selected_spell)
+			request_show_spell_range.emit(selected_spell, selected_spell_imprinted)
 		State.ENEMY_TURN:
 			request_clear_highlights.emit()
 		State.ANIMATING:
@@ -66,12 +68,13 @@ func on_attack_button() -> void:
 		set_state(State.TARGET_MELEE)
 
 # Le joueur a sélectionné un sort dans la barre.
-func on_spell_selected(spell: Spell) -> void:
+func on_spell_selected(spell: Spell, imprinted: bool = false) -> void:
 	# Si on reclique le même sort déjà sélectionné, on annule.
-	if current == State.TARGET_SPELL and selected_spell == spell:
+	if current == State.TARGET_SPELL and selected_spell == spell and selected_spell_imprinted == imprinted:
 		set_state(State.IDLE)
 	else:
 		selected_spell = spell
+		selected_spell_imprinted = imprinted
 		set_state(State.TARGET_SPELL)
 
 func on_cell_clicked(cell: Vector2i) -> void:
@@ -81,7 +84,7 @@ func on_cell_clicked(cell: Vector2i) -> void:
 		State.TARGET_MELEE:
 			request_attack.emit(cell)
 		State.TARGET_SPELL:
-			request_cast_spell.emit(selected_spell, cell)
+			request_cast_spell.emit(selected_spell, cell, selected_spell_imprinted)
 		_:
 			pass
 

@@ -1,11 +1,19 @@
 [gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://d135dg0elxcx5"]
 
-[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_c2dyb"]
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
 
 [resource]
-script = ExtResource("1_c2dyb")
+script = ExtResource("1_terrain")
 effect_name = "lave"
+description = "Feu au sol: menace les deux camps, evitee par l'IA."
 color = Color(0.8862745, 0.007843138, 0.023529412, 1)
 trigger = 1
 damage = 15
+cell_type = 3
+dangerous_for_ai = true
+ai_danger_weight = 3.0
+native_energy_id = "rage"
+elan_discount = 5.0
+fervor_generation_multiplier = 1.5
+duration = 3
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

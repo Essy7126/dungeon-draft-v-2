@@ -5,6 +5,8 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Seve legere"
+energy_cost = 15.0
+charge_verb = "HEAL"
 spell_range = 4
 can_target_enemy = false
 can_target_ally = true

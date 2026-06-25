@@ -49,6 +49,8 @@ const FIRST_REWARD_PATH := "res://data/rewards/reward_marteau_jugement.tres"
 
 # Nombre de récompenses proposées après chaque salle.
 const REWARDS_OFFERED := 3
+const ELAN_TIER_PER_ROOM := 1
+const CHARGE_TIER_PER_ROOM := ELAN_TIER_PER_ROOM
 
 # --- État du run (vivant pendant tout le run) ---
 var heroes: Array = []          # Array[Unit] — persistent, HP conservés
@@ -93,6 +95,20 @@ func confirm_run_draft(hero_paths: Array, energy_paths: Array, trait_paths: Arra
 func cancel_run_draft() -> void:
 	_pending_run_data = null
 	get_tree().change_scene_to_file.call_deferred("res://ui/TitreEcran.tscn")
+
+func get_elan_tier() -> int:
+	if current_room_index < 0:
+		return 1
+	return maxi(1, current_room_index + ELAN_TIER_PER_ROOM)
+
+func get_charge_tier() -> int:
+	return get_elan_tier()
+
+func get_fervor_multiplier() -> float:
+	return 1.0
+
+func get_charge_multiplier() -> float:
+	return get_fervor_multiplier()
 
 func get_default_draft() -> Array:
 	return DEFAULT_DRAFT.duplicate(true)
@@ -142,6 +158,8 @@ func _build_heroes_from_draft(hero_paths: Array, energy_paths: Array, trait_path
 					hero.add_trait_from_data(starting_trait)
 				else:
 					push_warning("Trait de depart introuvable : %s" % trait_path)
+		hero.ensure_energy_traits()
+		hero.reset_combat_resources()
 		heroes.append(hero)
 
 # ============================================================

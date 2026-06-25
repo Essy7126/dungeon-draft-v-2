@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://traits/trait_bloodthirst.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_data")
+trait_script = ExtResource("2_trait")
+display_name = "Soif de sang"
+description = "Tes degats te soignent et comptent comme HEAL: ouvre Nature sur un attaquant."
+params = {"heal_ratio": 0.25, "fervor_gain": 4.0}
