@@ -20,7 +20,7 @@
 #   (30 Foi dépensés → 9 dégâts sacrés sur le prochain coup)
 # ============================================================
 
-class_name ReliqueMartauJugement
+class_name ReliqueMarteauJugement
 extends Trait
 
 var conversion_ratio: float = 0.3   # % de Foi convertie en dégâts sacrés

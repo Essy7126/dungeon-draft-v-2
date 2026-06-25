@@ -33,6 +33,9 @@ extends Resource
 # Nom lisible (inspecteur, logs, futurs tooltips joueur). Purement cosmétique.
 @export var display_name: String = "Trait"
 
+# Description courte pour les choix de draft / recompense.
+@export var description: String = ""
+
 # Paramètres réglables passés au trait à sa création. Les clés correspondent
 # aux variables que le trait sait lire (ex: { "attack_bonus": 5.0 }).
 # Laisser vide = le trait utilise ses valeurs par défaut.

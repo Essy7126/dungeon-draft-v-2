@@ -429,8 +429,8 @@ func _start_battle() -> void:
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
 	EventBus.unit_pushed.connect(_on_unit_pushed)
 
-	# Draft d'énergie avant le premier tour
-	_start_energy_draft()
+	# Les energies et chassis sont prepares par le run.
+	_launch_combat()
 
 
 # ============================================================
@@ -531,25 +531,9 @@ func _on_draft_choice(hero: Unit, energy: EnergyTypeData) -> void:
 	_draft_choices[hero] = energy
 	DebugLogger.info(DebugLogger.LogCategory.COMBAT,
 		"Draft : %s → %s" % [hero.unit_name, energy.energy_name])
-	_attach_chassis_trait(hero)
 	_draft_pending -= 1
 	if _draft_pending <= 0:
 		_end_energy_draft()
-
-func _attach_chassis_trait(hero: Unit) -> void:
-	# Identifie le châssis selon le nom de l'unité (convention : nom contient le type)
-	var n := hero.unit_name.to_lower()
-	var t: Trait = null
-	if "guerrier" in n:
-		t = TraitChassisGuerrier.new()
-	elif "gardien" in n:
-		t = TraitChassisGardien.new()
-	elif "assassin" in n:
-		t = TraitChassisAssassin.new()
-	if t != null:
-		hero.add_trait(t)
-		DebugLogger.info(DebugLogger.LogCategory.COMBAT,
-			"Châssis %s → %s" % [t._trait_name(), hero.unit_name])
 
 func _end_energy_draft() -> void:
 	if is_instance_valid(_draft_ui):
@@ -672,11 +656,13 @@ func _execute_ai_attack(enemy: Unit, target: Unit) -> void:
 	if not grid.are_adjacent(enemy.grid_pos, target.grid_pos):
 		return
 	enemy.spend_ap(1)
-	target.take_damage(
+	var result = target.take_damage(
 		enemy.get_attack(),        # dégâts bruts
 		enemy,                     # l'attaquant → active son crit
 		Spell.DamageType.PHYSICAL, # catégorie
 		Spell.Element.NONE)        # pas d'élément
+	if result != null and not result.dodged:
+		EventBus.basic_attack_performed.emit(enemy, target)
 	await _animate_attack(enemy, target)
 
 # ============================================================
@@ -828,18 +814,26 @@ func _on_request_attack(cell: Vector2i) -> void:
 		return
 	if not _get_attackable_cells(unit).has(cell):
 		return
-	if unit.current_ap < 1:
+	if unit.team == 0:
+		if unit.used_base_action:
+			return
+	elif unit.current_ap < 1:
 		return
 	var target = grid.get_unit(cell)
 	if target == null:
 		return
-	unit.spend_ap(1)
-	target.take_damage(
+	if unit.team == 1:
+		unit.spend_ap(1)
+	var result = target.take_damage(
 		unit.get_attack(),         # dégâts bruts
 		unit,                      # l'attaquant → active son crit
 		Spell.DamageType.PHYSICAL, # catégorie
 		Spell.Element.NONE)        # pas d'élément
 	turn_state.begin_animating()
+	if unit.team == 0:
+		unit.used_base_action = true
+	if result != null and not result.dodged:
+		EventBus.basic_attack_performed.emit(unit, target)
 	await _animate_attack(unit, target)
 	turn_state.end_animating()
 	action_bar.update_info(unit)
@@ -872,12 +866,21 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
-	if unit.current_ap < spell.ap_cost:
-		return
 	if not spell_caster.is_valid_target(unit, spell, cell):
 		return
-	unit.spend_ap(spell.ap_cost)
-	spell_caster.cast(unit, spell, cell)
+	if unit.team == 0:
+		if spell.is_generator() and unit.used_base_action:
+			return
+		if spell.is_consumer() and unit.used_energy_action:
+			return
+	var report = spell_caster.cast(unit, spell, cell)
+	if report.get("failed", false):
+		return
+	if unit.team == 0:
+		if spell.is_generator():
+			unit.used_base_action = true
+		elif spell.is_consumer():
+			unit.used_energy_action = true
 	grid_view.queue_redraw()
 	action_bar.update_info(unit)
 	turn_state.set_state(TurnState.State.IDLE)

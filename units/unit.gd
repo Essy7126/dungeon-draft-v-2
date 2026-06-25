@@ -69,6 +69,10 @@ var current_shield: int = 0  # Bouclier actif : absorbe les dégâts avant les P
 var is_alive: bool = true
 var grid_pos: Vector2i = Vector2i(-1, -1)
 
+# Loi d'action joueur : 1 action de base + 1 action d'energie par tour.
+var used_base_action: bool = false
+var used_energy_action: bool = false
+
 # --- Énergie (remplace les PA comme économie d'action) ---
 # Une seule énergie par unité pour l'instant (Rage). Définie par un
 # EnergyTypeData. current_energy est la réserve courante ; on la GÉNÈRE
@@ -162,6 +166,11 @@ static func from_data(data: UnitData) -> Unit:
 	if data.energy_type != null:
 		u.energy_type = data.energy_type
 		u.current_energy = data.energy_type.start_energy
+	if data.chassis_trait != null:
+		u.add_trait_from_data(data.chassis_trait)
+	for trait_data in data.starting_traits:
+		if trait_data != null:
+			u.add_trait_from_data(trait_data)
 	# On DUPLIQUE le comportement : chaque boss a son propre état (compteur
 	# de tours, enrage...), sinon deux boss partageraient le même.
 	u.boss_behavior = data.boss_behavior.duplicate() if data.boss_behavior != null else null
@@ -344,6 +353,8 @@ func start_turn() -> void:
 		stat.tick_durations()
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
+	used_base_action = false
+	used_energy_action = false
 	EventBus.turn_started.emit(self)
 	stats_changed.emit(self)
 

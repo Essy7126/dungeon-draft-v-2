@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_3acek"]
 [ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="3_3acek"]
 [ext_resource type="Resource" uid="uid://c5ja68c1s6fx1" path="res://data/spells/gobelin/mêlée_gobelin.tres" id="3_7redg"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_306gr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7redg"]
 atlas = ExtResource("3_3acek")
@@ -15,7 +16,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7redg")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]

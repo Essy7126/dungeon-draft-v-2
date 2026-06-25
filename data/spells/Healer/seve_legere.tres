@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://d2rbmtnp3it51"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Seve legere"
+spell_range = 4
+can_target_enemy = false
+can_target_ally = true
+can_target_self = true
+heal = 8
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

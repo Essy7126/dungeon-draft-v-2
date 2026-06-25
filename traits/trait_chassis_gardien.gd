@@ -23,6 +23,10 @@ var rage_on_ally_hit: float    = 12.0
 var rage_bonus_protege: float  = 8.0
 var foi_on_ally_hit: float     = 10.0
 var foi_bonus_protege: float   = 6.0
+var rage_on_guard_cast: float  = 6.0
+var foi_on_guard_cast: float   = 8.0
+var rage_on_absorb: float      = 10.0
+var foi_on_absorb: float       = 12.0
 
 func _trait_name() -> String:
 	return "chassis_gardien"
@@ -32,13 +36,54 @@ func configure(params: Dictionary) -> void:
 	rage_bonus_protege  = params.get("rage_bonus_protege",  rage_bonus_protege)
 	foi_on_ally_hit     = params.get("foi_on_ally_hit",     foi_on_ally_hit)
 	foi_bonus_protege   = params.get("foi_bonus_protege",   foi_bonus_protege)
+	rage_on_guard_cast  = params.get("rage_on_guard_cast",  rage_on_guard_cast)
+	foi_on_guard_cast   = params.get("foi_on_guard_cast",   foi_on_guard_cast)
+	rage_on_absorb      = params.get("rage_on_absorb",      rage_on_absorb)
+	foi_on_absorb       = params.get("foi_on_absorb",       foi_on_absorb)
 
 func _activate() -> void:
-	EventBus.damage_dealt.connect(_on_damage_dealt)
+	EventBus.spell_cast.connect(_on_spell_cast)
+	EventBus.shield_absorbed.connect(_on_shield_absorbed)
 
 func _deactivate() -> void:
-	if EventBus.damage_dealt.is_connected(_on_damage_dealt):
-		EventBus.damage_dealt.disconnect(_on_damage_dealt)
+	if EventBus.spell_cast.is_connected(_on_spell_cast):
+		EventBus.spell_cast.disconnect(_on_spell_cast)
+	if EventBus.shield_absorbed.is_connected(_on_shield_absorbed):
+		EventBus.shield_absorbed.disconnect(_on_shield_absorbed)
+
+func _on_spell_cast(caster, spell: Spell, report: Dictionary) -> void:
+	if caster != owner or not owner.is_alive or not owner.has_energy():
+		return
+	if not spell.is_generator() or spell.shield_grant <= 0:
+		return
+	if report.get("affected_units", []).is_empty():
+		return
+
+	match owner.energy_type.energy_id:
+		"rage":
+			owner.generate_energy(rage_on_guard_cast, source_id)
+			DebugLogger.debug(DebugLogger.LogCategory.STATS,
+				"%s genere %.0f Rage (protection)" % [owner.unit_name, rage_on_guard_cast])
+		"foi":
+			owner.generate_energy(foi_on_guard_cast, source_id)
+			DebugLogger.debug(DebugLogger.LogCategory.STATS,
+				"%s genere %.0f Foi (protection)" % [owner.unit_name, foi_on_guard_cast])
+
+func _on_shield_absorbed(unit, amount: int) -> void:
+	if owner == null or not owner.is_alive or not owner.has_energy():
+		return
+	if unit == null or unit.team != owner.team or amount <= 0:
+		return
+
+	match owner.energy_type.energy_id:
+		"rage":
+			owner.generate_energy(rage_on_absorb, source_id)
+			DebugLogger.debug(DebugLogger.LogCategory.STATS,
+				"%s genere %.0f Rage (bouclier absorbe)" % [owner.unit_name, rage_on_absorb])
+		"foi":
+			owner.generate_energy(foi_on_absorb, source_id)
+			DebugLogger.debug(DebugLogger.LogCategory.STATS,
+				"%s genere %.0f Foi (bouclier absorbe)" % [owner.unit_name, foi_on_absorb])
 
 # ============================================================
 # GÉNÉRATION — quand un allié reçoit des dégâts

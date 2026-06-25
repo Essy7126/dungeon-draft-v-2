@@ -28,6 +28,7 @@ var _spell_buttons: Array = []
 # Mise à jour via le signal energy_changed de l'unité.
 var _energy_bar: ProgressBar
 var _energy_label: Label
+var _player_controls_enabled: bool = true
 var _current_unit = null   # référence pour déconnecter le signal
 
 func _ready() -> void:
@@ -122,7 +123,9 @@ func build_spell_buttons(unit) -> void:
 
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(72, 72)
-		btn.tooltip_text = "%s\n%d PA" % [spell.spell_name, spell.ap_cost]
+		var action_label := _get_spell_action_label(unit, spell)
+		btn.tooltip_text = "%s\n%s" % [spell.spell_name, action_label]
+		btn.set_meta("spell", spell)
 
 		if spell.icon != null:
 			# --- Sort avec icône : on affiche l'image + le coût en PA. ---
@@ -130,17 +133,47 @@ func build_spell_buttons(unit) -> void:
 			btn.expand_icon = true             # l'icône s'adapte à la taille du bouton
 			btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			btn.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-			btn.text = "%d PA" % spell.ap_cost
+			btn.text = action_label
 			btn.add_theme_font_size_override("font_size", 11)
 		else:
 			# --- Pas d'icône : fallback texte (nom + coût). ---
-			btn.text = "%s\n(%d PA)" % [spell.spell_name, spell.ap_cost]
+			btn.text = "%s\n%s" % [spell.spell_name, action_label]
 			btn.add_theme_font_size_override("font_size", 12)
 
 		# On capture le sort dans la lambda.
 		btn.pressed.connect(func(): spell_pressed.emit(spell))
 		_spell_box.add_child(btn)
 		_spell_buttons.append(btn)
+	_refresh_button_states()
+
+func _get_spell_action_label(unit, spell) -> String:
+	if spell.is_generator():
+		return "Base"
+	var energy_name := "Energie"
+	if unit != null and unit.has_energy():
+		energy_name = unit.energy_type.energy_name
+	return "%d %s" % [int(spell.energy_cost), energy_name]
+
+func _can_use_spell(unit, spell) -> bool:
+	if unit == null or spell == null:
+		return false
+	if spell.is_generator():
+		return not unit.used_base_action
+	if unit.used_energy_action:
+		return false
+	if unit.has_energy() and not unit.can_afford_energy(spell.energy_cost):
+		return false
+	return true
+
+func _refresh_button_states() -> void:
+	_move_btn.disabled = not _player_controls_enabled
+	_end_btn.disabled = not _player_controls_enabled
+	_attack_btn.disabled = not _player_controls_enabled \
+		or _current_unit == null \
+		or _current_unit.used_base_action
+	for btn in _spell_buttons:
+		var spell = btn.get_meta("spell") if btn.has_meta("spell") else null
+		btn.disabled = not _player_controls_enabled or not _can_use_spell(_current_unit, spell)
 # ============================================================
 # MISE À JOUR
 # ============================================================
@@ -156,6 +189,7 @@ func update_info(unit) -> void:
 		_info_label.text = ""
 		_energy_label.text = ""
 		_energy_bar.value = 0.0
+		_refresh_button_states()
 		return
 
 	# Texte : nom + PM (les PA sont remplacés par l'énergie)
@@ -167,6 +201,7 @@ func update_info(unit) -> void:
 
 	# Mise à jour immédiate de la jauge
 	_refresh_energy_bar(unit)
+	_refresh_button_states()
 
 # ============================================================
 # JAUGE D'ÉNERGIE
@@ -175,6 +210,7 @@ func update_info(unit) -> void:
 func _on_energy_changed(unit) -> void:
 	if unit == _current_unit:
 		_refresh_energy_bar(unit)
+		_refresh_button_states()
 
 func _refresh_energy_bar(unit) -> void:
 	if unit == null or not unit.has_energy():
@@ -192,11 +228,8 @@ func _refresh_energy_bar(unit) -> void:
 	_energy_bar.modulate = et.color
 
 func set_player_controls_enabled(enabled: bool) -> void:
-	_move_btn.disabled = not enabled
-	_attack_btn.disabled = not enabled
-	_end_btn.disabled = not enabled
-	for btn in _spell_buttons:
-		btn.disabled = not enabled
+	_player_controls_enabled = enabled
+	_refresh_button_states()
 
 # Met en évidence le mode actif. mode = "move", "attack", "spell", ou ""
 func set_active_mode(mode: String, active_spell = null) -> void:

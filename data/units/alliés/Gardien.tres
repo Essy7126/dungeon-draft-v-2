@@ -6,7 +6,8 @@
 [ext_resource type="Resource" uid="uid://vucrqrj2s022" path="res://data/spells/Gardien/rempart.tres" id="4_ddix6"]
 [ext_resource type="Resource" uid="uid://dwt6x1da4m1h1" path="res://data/spells/Gardien/garde.tres" id="5_vp8gc"]
 [ext_resource type="Resource" uid="uid://dtohbvvqqdjey" path="res://data/spells/Gardien/frappe_de_bouclier.tres" id="6_ipjya"]
-[ext_resource type="Texture2D" uid="uid://b43ryok3ptgvy" path="res://asset/personnage/alliés/500.png" id="7_vp8gc"]
+[ext_resource type="Texture2D" uid="uid://cr574clmwl13g" path="res://asset/personnage/alliés/500.png" id="7_vp8gc"]
+[ext_resource type="Resource" uid="uid://cnv4el22tcv30" path="res://data/traits/chassis_gardien.tres" id="8_chassis"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ipjya"]
 animations = [{
@@ -14,7 +15,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("7_vp8gc")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -23,6 +24,7 @@ animations = [{
 script = ExtResource("1_pfltm")
 unit_name = "Gardien"
 energy_type = ExtResource("1_r50s2")
+chassis_trait = ExtResource("8_chassis")
 sprite_frames = SubResource("SpriteFrames_ipjya")
 sprite_scale = 0.1
 spells = Array[ExtResource("2_r50s2")]([ExtResource("4_ddix6"), ExtResource("5_vp8gc"), ExtResource("6_ipjya")])

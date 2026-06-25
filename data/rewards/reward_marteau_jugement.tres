@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RewardData" format=3 uid="uid://cv4pdaw43hhjv"]
+
+[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" uid="uid://bkxg301c33kxu" path="res://data/traits/relique_marteau_jugement.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_reward")
+reward_name = "Marteau du Jugement"
+description = "La Foi depensee charge la prochaine attaque en degats sacres."
+target = 0
+rarity = 1
+trait_data = ExtResource("2_trait")
+metadata/_custom_type_script = "uid://dy2rw6nbn2v4s"

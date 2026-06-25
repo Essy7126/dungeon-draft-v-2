@@ -42,12 +42,12 @@ func configure(params: Dictionary) -> void:
 	foi_bonus_ally_adjacent = params.get("foi_bonus_ally_adjacent", foi_bonus_ally_adjacent)
 
 func _activate() -> void:
-	EventBus.damage_dealt.connect(_on_damage_dealt)
+	EventBus.basic_attack_performed.connect(_on_basic_attack_performed)
 	EventBus.spell_cast.connect(_on_spell_cast)
 
 func _deactivate() -> void:
-	if EventBus.damage_dealt.is_connected(_on_damage_dealt):
-		EventBus.damage_dealt.disconnect(_on_damage_dealt)
+	if EventBus.basic_attack_performed.is_connected(_on_basic_attack_performed):
+		EventBus.basic_attack_performed.disconnect(_on_basic_attack_performed)
 	if EventBus.spell_cast.is_connected(_on_spell_cast):
 		EventBus.spell_cast.disconnect(_on_spell_cast)
 
@@ -57,7 +57,7 @@ func _deactivate() -> void:
 # damage_dealt est émis par Unit._apply_damage_result après les PV.
 # ============================================================
 
-func _on_damage_dealt(_target, attacker, _amount, _category, _element, _is_crit) -> void:
+func _on_basic_attack_performed(attacker, _target) -> void:
 	if attacker != owner or not owner.is_alive or not owner.has_energy():
 		return
 	_generate_for_hit()
@@ -76,6 +76,9 @@ func _on_spell_cast(caster, spell: Spell, report: Dictionary) -> void:
 		return
 
 	var energy_id: String = owner.energy_type.energy_id
+
+	if spell.deals_damage() and _has_enemy_affected(report):
+		_generate_for_hit()
 
 	match energy_id:
 		"rage":
@@ -115,3 +118,9 @@ func _handle_foi_spell(report: Dictionary) -> void:
 	# Bouclier allié sur poussée : actif quand push implémenté.
 	# if report.get("pushed_away_from_ally", false):
 	#     _protect_nearest_ally(8)
+
+func _has_enemy_affected(report: Dictionary) -> bool:
+	for target in report.get("affected_units", []):
+		if target != null and target.team != owner.team:
+			return true
+	return false

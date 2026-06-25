@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://c5qeqn107yiju"]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" uid="uid://dfhv7b6st2rf1" path="res://data/terrain/eau.tres" id="2_terrain"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Graine vive"
+spell_range = 4
+can_target_enemy = false
+can_target_ally = true
+can_target_free_cell = true
+can_target_self = true
+heal = 4
+terrain_effect = ExtResource("2_terrain")
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

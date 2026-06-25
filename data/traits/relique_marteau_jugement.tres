@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TraitData" format=3 uid="uid://bkxg301c33kxu"]
+
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="1_trait"]
+[ext_resource type="Script" uid="uid://ubi1d544h4d6" path="res://traits/relique_marteau_jugement.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_trait")
+trait_script = ExtResource("2_trait")
+display_name = "Marteau du Jugement"
+params = {
+"conversion_ratio": 0.35
+}
+metadata/_custom_type_script = "uid://dnktho3c3febl"

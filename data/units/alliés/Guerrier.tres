@@ -4,20 +4,18 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_nnx18"]
 [ext_resource type="Resource" uid="uid://0flkpto1jkby" path="res://data/spells/Guerrier/frappe_lourde.tres" id="3_3i8e2"]
 [ext_resource type="Resource" uid="uid://dpmhlxq1x24eq" path="res://data/spells/Guerrier/brise_garde.tres" id="4_s0rgo"]
-<<<<<<< Updated upstream
 [ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="5_qjwhl"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="6_s0rgo"]
-=======
-[ext_resource type="Texture2D" uid="uid://ddcinrmjhlilr" path="res://asset/personnage/alliés/492.png" id="5_3i8e2"]
->>>>>>> Stashed changes
+[ext_resource type="Resource" uid="uid://dy1jdsj4qtvwb" path="res://data/energy/rage.tres" id="7_energy"]
+[ext_resource type="Resource" uid="uid://cav8k84gqbymp" path="res://data/traits/chassis_guerrier.tres" id="8_chassis"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_qjwhl"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("5_3i8e2")
+"texture": ExtResource("6_s0rgo")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -25,6 +23,8 @@ animations = [{
 [resource]
 script = ExtResource("1_r2tug")
 unit_name = "Guerrier"
+energy_type = ExtResource("7_energy")
+chassis_trait = ExtResource("8_chassis")
 sprite_frames = SubResource("SpriteFrames_qjwhl")
 sprite_scale = 0.1
 spells = Array[ExtResource("2_nnx18")]([ExtResource("3_3i8e2"), ExtResource("5_qjwhl"), ExtResource("4_s0rgo")])

@@ -52,6 +52,9 @@ signal attack_dodged(target, attacker)
 # spécifiques au crit : son particulier, trait "les crits appliquent un statut").
 signal critical_hit(target, attacker, amount)
 
+# Normal attack landed. Traits use this without treating spell damage as basic.
+signal basic_attack_performed(attacker, target)
+
 # Une unité a été soignée (PV réellement rendus).
 # unit   : l'Unit soignée
 # amount : PV réellement rendus (peut être < au soin théorique si plafond atteint)

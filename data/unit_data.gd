@@ -69,6 +69,10 @@ extends Resource
 # EnergyTypeData. Laisser VIDE = unité sans énergie (ennemi simple par ex.).
 @export var energy_type: EnergyTypeData = null
 
+@export_group("Traits")
+@export var chassis_trait: TraitData = null
+@export var starting_traits: Array[TraitData] = []
+
 # ============================================================
 # APPARENCE
 # ============================================================

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TraitData" format=3 uid="uid://b71myxswqwgix"]
+
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="1_trait"]
+[ext_resource type="Script" uid="uid://c2h6rbllx5nna" path="res://traits/trait_chassis_healer.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_trait")
+trait_script = ExtResource("2_trait")
+display_name = "Chassis Healer"
+metadata/_custom_type_script = "uid://dnktho3c3febl"

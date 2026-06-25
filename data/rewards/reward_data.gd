@@ -59,9 +59,12 @@ enum StatKind { NONE, MAX_HP, ATTACK, MAX_MP, MAX_AP, INITIATIVE }
 @export_group("Nouveau sort")
 @export var spell: Spell = null
 
+@export_group("Trait / Relique")
+@export var trait_data: TraitData = null
+
 @export_group("Statut permanent (ex: saignement de malédiction)")
 # Pointe vers un StatusData (ex: saignement -2 PV/tour, durée très longue).
-@export var status: StatusData = null
+@export var status_effect: StatusData = null
 
 # La récompense demande-t-elle au joueur de choisir un héros ?
 func needs_hero_choice() -> bool:
