@@ -39,3 +39,14 @@ func play_sfx(stream: AudioStream, volume_db: float = 0.0) -> void:
 
 func set_music_volume(volume_db: float) -> void:
 	_musique.volume_db = volume_db
+
+func play_sfx_at(stream: AudioStream, pos: Vector2, volume_db: float = 0.0) -> void:
+	if stream == null:
+		return
+	var player = AudioStreamPlayer2D.new()
+	get_tree().root.add_child(player)
+	player.stream = stream
+	player.volume_db = volume_db
+	player.global_position = pos
+	player.play()
+	player.finished.connect(player.queue_free)

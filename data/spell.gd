@@ -62,6 +62,8 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export var shield_grant: int = 0
 # Bonus de dégâts si la cible porte le statut "Marqué" (Exécution de l'Assassin).
 @export var bonus_damage_if_marked: int = 0
+@export_group("Visuel")
+@export var vfx_scene: PackedScene = null
 
 func deals_damage() -> bool:
 	return damage > 0
@@ -83,3 +85,7 @@ func has_terrain_effect() -> bool:
 func is_self_only() -> bool:
 	return can_target_self and not can_target_enemy \
 		and not can_target_ally and not can_target_free_cell
+
+@export_group("Audio")
+@export var sound_cast: AudioStream = null
+@export var sound_impact: AudioStream = null
