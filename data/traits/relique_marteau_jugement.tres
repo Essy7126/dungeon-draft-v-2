@@ -7,6 +7,7 @@
 script = ExtResource("1_trait")
 trait_script = ExtResource("2_trait")
 display_name = "Marteau du Jugement"
+description = "La Foi depensee charge la prochaine attaque en degats sacres."
 params = {
 "conversion_ratio": 0.35
 }

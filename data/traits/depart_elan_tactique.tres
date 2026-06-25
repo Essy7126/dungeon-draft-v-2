@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_trait"]
+[ext_resource type="Script" path="res://traits/trait_stat_bonus.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_trait")
+trait_script = ExtResource("2_trait")
+display_name = "Elan Tactique"
+description = "+1 PM et +2 initiative pour mieux choisir l'engagement."
+params = {
+"initiative_flat": 2.0,
+"max_mp_flat": 1.0
+}

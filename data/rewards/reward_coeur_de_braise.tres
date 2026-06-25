@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" path="res://data/traits/relique_coeur_de_braise.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_reward")
+reward_name = "Coeur de Braise"
+description = "La premiere action de base de chaque tour rend 10 energie."
+target = 0
+rarity = 1
+trait_data = ExtResource("2_trait")

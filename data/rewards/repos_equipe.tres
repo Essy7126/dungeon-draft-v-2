@@ -1,10 +1,11 @@
 [gd_resource type="Resource" script_class="RewardData" format=3 uid="uid://bhcacs4nst0e6"]
 
-[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_hauof"]
+[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_reward"]
 
 [resource]
-script = ExtResource("1_hauof")
-reward_name = "Repos d'équipe"
+script = ExtResource("1_reward")
+reward_name = "Repos d'equipe"
+description = "Soigne toute l'equipe de 50 PV entre deux salles."
 target = 1
 heal_amount = 50
 metadata/_custom_type_script = "uid://dy2rw6nbn2v4s"

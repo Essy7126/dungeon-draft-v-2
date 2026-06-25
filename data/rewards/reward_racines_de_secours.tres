@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" path="res://data/traits/relique_racines_de_secours.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_reward")
+reward_name = "Racines de Secours"
+description = "Depenser de l'energie soigne le porteur. Excellent sur Foi ou Nature."
+target = 0
+rarity = 1
+trait_data = ExtResource("2_trait")

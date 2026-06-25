@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Texture2D" path="res://asset/Orc.png" id="2_sprite"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_brute"]
+atlas = ExtResource("2_sprite")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_brute"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_brute")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Brute gobeline"
+description = "Menace lente qui force le Gardien a proteger."
+team = 1
+max_hp = 75
+initiative = 5
+max_mp = 2
+attack_power = 16
+armure = 8.0
+sprite_frames = SubResource("SpriteFrames_brute")

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_trait"]
+[ext_resource type="Script" path="res://traits/trait_stat_bonus.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_trait")
+trait_script = ExtResource("2_trait")
+display_name = "Posture Defensive"
+description = "+18 PV max et +8 armure pour stabiliser le debut de run."
+params = {
+"armure_flat": 8.0,
+"max_hp_flat": 18.0
+}

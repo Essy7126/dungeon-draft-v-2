@@ -32,14 +32,16 @@ const ENERGY_DATA_PATHS = [
 ]
 
 const STARTING_TRAIT_PATHS = [
-	"res://data/traits/vengeance.tres",
-	"res://data/traits/fureur.tres",
+	"res://data/traits/depart_etincelle_flux.tres",
+	"res://data/traits/depart_posture_defensive.tres",
+	"res://data/traits/depart_sang_vif.tres",
+	"res://data/traits/depart_elan_tactique.tres",
 ]
 
 const DEFAULT_DRAFT = [
-	{ "hero_path": "res://data/units/alliés/Gardien.tres", "energy_path": "res://data/energy/foi.tres", "trait_path": "" },
-	{ "hero_path": "res://data/units/alliés/Guerrier.tres", "energy_path": "res://data/energy/rage.tres", "trait_path": "" },
-	{ "hero_path": "res://data/units/alliés/healer.tres", "energy_path": "res://data/energy/nature.tres", "trait_path": "" },
+	{ "hero_path": "res://data/units/alliés/Gardien.tres", "energy_path": "res://data/energy/foi.tres", "trait_path": "res://data/traits/depart_posture_defensive.tres" },
+	{ "hero_path": "res://data/units/alliés/Guerrier.tres", "energy_path": "res://data/energy/rage.tres", "trait_path": "res://data/traits/depart_etincelle_flux.tres" },
+	{ "hero_path": "res://data/units/alliés/healer.tres", "energy_path": "res://data/energy/nature.tres", "trait_path": "res://data/traits/depart_elan_tactique.tres" },
 ]
 
 const RUN_DRAFT_SCREEN_PATH := "res://ui/RunDraftScreen.tscn"
@@ -102,11 +104,7 @@ func get_draft_energy_options() -> Array:
 	return _load_draft_options(ENERGY_DATA_PATHS)
 
 func get_draft_trait_options() -> Array:
-	var options: Array = [
-		{ "path": "", "data": null, "name": "Aucun trait", "description": "Garde seulement le chassis du heros." },
-	]
-	options.append_array(_load_draft_options(STARTING_TRAIT_PATHS))
-	return options
+	return _load_draft_options(STARTING_TRAIT_PATHS)
 
 func _load_draft_options(paths: Array) -> Array:
 	var options: Array = []
@@ -236,6 +234,9 @@ func choose_reward(reward: RewardData, chosen_hero: Unit = null) -> void:
 # Détermine quels héros reçoivent la récompense selon sa cible.
 func _resolve_reward_targets(reward: RewardData, chosen_hero: Unit) -> Array:
 	var living = get_living_heroes()
+	if reward.forced_unit_name.strip_edges() != "":
+		var forced = _hero_by_name(living, reward.forced_unit_name)
+		return [forced] if forced != null else []
 	match reward.target:
 		RewardData.Target.ALL:
 			return living
@@ -303,6 +304,15 @@ func _get_stat(hero: Unit, stat_kind: int):
 	return null
 
 # Héros vivant avec le moins (ou le plus) de PV.
+func _hero_by_name(living: Array, unit_name: String) -> Unit:
+	var wanted := unit_name.strip_edges().to_lower()
+	for u in living:
+		if u != null and u.unit_name.to_lower() == wanted:
+			return u
+	for u in living:
+		if u != null and wanted in u.unit_name.to_lower():
+			return u
+	return null
 func _hero_by_hp(living: Array, lowest: bool) -> Unit:
 	var best: Unit = null
 	for u in living:

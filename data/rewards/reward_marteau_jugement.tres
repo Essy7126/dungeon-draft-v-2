@@ -8,6 +8,7 @@ script = ExtResource("1_reward")
 reward_name = "Marteau du Jugement"
 description = "La Foi depensee charge la prochaine attaque en degats sacres."
 target = 0
+forced_unit_name = "Gardien"
 rarity = 1
 trait_data = ExtResource("2_trait")
 metadata/_custom_type_script = "uid://dy2rw6nbn2v4s"

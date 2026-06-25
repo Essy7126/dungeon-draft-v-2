@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/spells/soin.tres" id="3_heal"]
+[ext_resource type="Texture2D" path="res://asset/Orc.png" id="4_sprite"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_shaman"]
+atlas = ExtResource("4_sprite")
+region = Rect2(100, 400, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_shaman"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_shaman")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Chamane gobelin"
+description = "Soigneur fragile: apprend au joueur a prioriser."
+team = 1
+max_hp = 42
+initiative = 4
+max_mp = 3
+attack_power = 6
+sprite_frames = SubResource("SpriteFrames_shaman")
+spells = Array[ExtResource("2_spell_type")]([ExtResource("3_heal")])
+ai_behavior = 2

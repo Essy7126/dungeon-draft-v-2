@@ -1,10 +1,11 @@
 [gd_resource type="Resource" script_class="RewardData" format=3 uid="uid://dtgax72gn0y6c"]
 
-[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_1xtet"]
+[ext_resource type="Script" uid="uid://dy2rw6nbn2v4s" path="res://data/rewards/reward_data.gd" id="1_reward"]
 
 [resource]
-script = ExtResource("1_1xtet")
-reward_name = "Force brut"
+script = ExtResource("1_reward")
+reward_name = "Force Brute"
+description = "+15% attaque pour toute l'equipe. Simple, lisible, efficace."
 target = 1
 stat = 2
 stat_amount = 0.15

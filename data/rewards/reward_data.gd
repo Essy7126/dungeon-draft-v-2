@@ -34,6 +34,8 @@ enum StatKind { NONE, MAX_HP, ATTACK, MAX_MP, MAX_AP, INITIATIVE }
 @export_multiline var description: String = ""
 @export var icon: Texture2D = null
 @export var target: Target = Target.CHOICE
+# Optionnel : si rempli, la recompense cible automatiquement ce heros vivant.
+@export var forced_unit_name: String = ""
 @export_enum("Commune:0", "Rare:1", "Épique:2") var rarity: int = 0
 
 # ============================================================
@@ -68,4 +70,4 @@ enum StatKind { NONE, MAX_HP, ATTACK, MAX_MP, MAX_AP, INITIATIVE }
 
 # La récompense demande-t-elle au joueur de choisir un héros ?
 func needs_hero_choice() -> bool:
-	return target == Target.CHOICE
+	return target == Target.CHOICE and forced_unit_name.strip_edges() == ""

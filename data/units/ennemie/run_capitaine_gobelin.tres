@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Texture2D" path="res://asset/Orc.png" id="2_sprite"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_captain"]
+atlas = ExtResource("2_sprite")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_captain"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_captain")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Capitaine gobelin"
+description = "Mini-boss de premiere run: robuste mais sans double action."
+team = 1
+max_hp = 125
+initiative = 5
+max_mp = 2
+attack_power = 18
+armure = 15.0
+sprite_frames = SubResource("SpriteFrames_captain")

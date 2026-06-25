@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_trait"]
+[ext_resource type="Script" path="res://traits/trait_stat_bonus.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_trait")
+trait_script = ExtResource("2_trait")
+display_name = "Sang Vif"
+description = "+4 attaque et +5% critique pour une ligne plus offensive."
+params = {
+"attack_flat": 4.0,
+"crit_chance_flat": 0.05
+}

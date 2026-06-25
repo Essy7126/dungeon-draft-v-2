@@ -104,6 +104,8 @@ func _make_card(reward: RewardData) -> Control:
 	return btn
 
 func _target_hint(reward: RewardData) -> String:
+	if reward.forced_unit_name.strip_edges() != "":
+		return "[%s]" % reward.forced_unit_name
 	match reward.target:
 		RewardData.Target.ALL:        return "[Toute l'équipe]"
 		RewardData.Target.LOWEST_HP:  return "[Le plus blessé]"
