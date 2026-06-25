@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://el3ukrnp1fjb"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
-[ext_resource type="Resource" path="res://data/spells/soin.tres" id="3_heal"]
-[ext_resource type="Texture2D" path="res://asset/Orc.png" id="4_sprite"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" uid="uid://dxa0ndijcgww0" path="res://data/spells/soin.tres" id="3_heal"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_0shhh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_shaman"]
 atlas = ExtResource("4_sprite")
@@ -15,7 +16,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_shaman")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -27,7 +28,6 @@ description = "Soigneur fragile: apprend au joueur a prioriser."
 team = 1
 max_hp = 42
 initiative = 4
-max_mp = 3
 attack_power = 6
 sprite_frames = SubResource("SpriteFrames_shaman")
 spells = Array[ExtResource("2_spell_type")]([ExtResource("3_heal")])

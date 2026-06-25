@@ -174,7 +174,7 @@ func _refresh_button_states() -> void:
 	if _current_unit != null and _current_unit.has_energy():
 		attack_blocked = not _current_unit.can_afford_elan(_current_unit.get_basic_attack_elan_cost())
 	_attack_btn.disabled = not _player_controls_enabled or attack_blocked
-	var can_awaken := _current_unit != null and _current_unit.has_method("can_activate_awakening") and _current_unit.can_activate_awakening()
+	var can_awaken : bool = _current_unit != null and _current_unit.has_method("can_activate_awakening") and _current_unit.can_activate_awakening()
 	_awakening_btn.disabled = not _player_controls_enabled or not can_awaken
 	for btn in _spell_buttons:
 		var spell = btn.get_meta("spell") if btn.has_meta("spell") else null

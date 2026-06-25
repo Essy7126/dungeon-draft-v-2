@@ -1,16 +1,25 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bdp8p8lfj33i"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Resource" path="res://data/spells/gobelin/braise_gobeline.tres" id="3_spell"]
-[ext_resource type="Texture2D" path="res://asset/Orc.png" id="4_sprite"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_14cy5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pyro"]
 atlas = ExtResource("4_sprite")
 region = Rect2(200, 200, 100, 100)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pyro"]
-animations = [{"frames": [{"duration": 1.0,"texture": SubResource("AtlasTexture_pyro")}],"loop": true,"name": &"default","speed": 5.0}]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pyro")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
 
 [resource]
 script = ExtResource("1_unit")
@@ -19,7 +28,6 @@ description = "Pose du feu: menace lisible et terrain exploitable."
 team = 1
 max_hp = 46
 initiative = 6
-max_mp = 3
 attack_power = 7
 sprite_frames = SubResource("SpriteFrames_pyro")
 spells = Array[ExtResource("2_spell_type")]([ExtResource("3_spell")])

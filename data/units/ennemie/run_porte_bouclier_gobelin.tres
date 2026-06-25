@@ -1,14 +1,24 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://0unqor4mioyr"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Texture2D" path="res://asset/Orc.png" id="2_sprite"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_ikpwe"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="2_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="4_h2wn0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_shield"]
 atlas = ExtResource("2_sprite")
 region = Rect2(300, 100, 100, 100)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_shield"]
-animations = [{"frames": [{"duration": 1.0,"texture": SubResource("AtlasTexture_shield")}],"loop": true,"name": &"default","speed": 5.0}]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_shield")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
 
 [resource]
 script = ExtResource("1_unit")
