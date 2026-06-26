@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ctkedj8b1va14"]
 
-[ext_resource type="Script" uid="uid://cgxe8uuxl72k4" path="res://battle/vfx/boule_de_feu_vfx2.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dkay5dxjqqb6s" path="res://data/spells/Mage/boule_de_feu.gd" id="1_gyyad"]
 
 [sub_resource type="Gradient" id="Grad_smoke"]
 offsets = PackedFloat32Array(0, 0.35, 0.7, 1)
@@ -106,7 +106,7 @@ scale_max = 2.0
 color_ramp = SubResource("GT_explosion")
 
 [node name="BouleDeFeu" type="Node2D" unique_id=1960563686]
-script = ExtResource("1_script")
+script = ExtResource("1_gyyad")
 
 [node name="SmokeTrail" type="GPUParticles2D" parent="." unique_id=178476368]
 position = Vector2(-72, 0)

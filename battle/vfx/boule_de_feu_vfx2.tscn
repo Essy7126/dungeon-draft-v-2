@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://hmp238551qj7"]
+[gd_scene format=3 uid="uid://ciddm87xk55ye"]
 
 [ext_resource type="Script" uid="uid://dkay5dxjqqb6s" path="res://data/spells/Mage/boule_de_feu.gd" id="1_7dyng"]
 [ext_resource type="Shader" uid="uid://dbkm7o7kwurmc" path="res://asset/shaders/spells/boule_de_feu.gdshader" id="1_keyb7"]

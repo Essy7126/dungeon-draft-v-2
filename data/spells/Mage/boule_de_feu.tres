@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_y40te"]
 [ext_resource type="Resource" uid="uid://d135dg0elxcx5" path="res://data/terrain/lave.tres" id="2_jpltc"]
 [ext_resource type="AudioStream" uid="uid://fss7jt8nvolg" path="res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3" id="3_f6mhv"]
-[ext_resource type="PackedScene" uid="uid://hmp238551qj7" path="res://battle/vfx/boule_de_feu_vfx2.tscn" id="5_p1ved"]
+[ext_resource type="PackedScene" uid="uid://ctkedj8b1va14" path="res://data/spells/Mage/boule_de_feu.tscn" id="5_p1ved"]
 
 [resource]
 script = ExtResource("1_y40te")
