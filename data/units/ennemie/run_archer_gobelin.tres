@@ -5,14 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://cb1o6ejevfq4w" path="res://asset/personnage/ennemi/goebleinscenario.png" id="4_m5idi"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_qjag1"]
 [ext_resource type="Resource" path="res://data/spells/enemies/fleche.tres" id="10_spell"]
-
-
 [ext_resource type="Resource" path="res://data/ai_behaviors/archer_kiter.tres" id="99_ai"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4q84f"]
 atlas = ExtResource("4_m5idi")
 region = Rect2(0, 0, 512, 1024)
-
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_dkbr3"]
 animations = [{
@@ -20,7 +17,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4q84f")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

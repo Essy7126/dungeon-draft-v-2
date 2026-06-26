@@ -8,6 +8,7 @@ func register_battle_view(view: Node) -> void:
 
 func _ready() -> void:
 	EventBus.spell_cast.connect(_on_spell_cast)
+	EventBus.battle_view_ready.connect(register_battle_view)
 
 func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 	if spell.vfx_scene == null:

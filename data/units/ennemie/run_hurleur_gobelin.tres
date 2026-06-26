@@ -5,14 +5,11 @@
 [ext_resource type="Resource" path="res://data/spells/gobelin/hurlement_drainant.tres" id="3_spell"]
 [ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_sprite"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_5a26j"]
-
-
 [ext_resource type="Resource" path="res://data/ai_behaviors/hurleur_drain.tres" id="99_ai"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hurleur"]
 atlas = ExtResource("4_sprite")
 region = Rect2(300, 0, 100, 100)
-
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hurleur"]
 animations = [{
@@ -20,7 +17,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hurleur")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

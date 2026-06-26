@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://hmp238551qj7"]
 
-[ext_resource type="Script" uid="uid://cgxe8uuxl72k4" path="res://battle/vfx/boule_de_feu.gd" id="1_7dyng"]
+[ext_resource type="Script" uid="uid://dkay5dxjqqb6s" path="res://data/spells/Mage/boule_de_feu.gd" id="1_7dyng"]
 [ext_resource type="Shader" uid="uid://dbkm7o7kwurmc" path="res://asset/shaders/spells/boule_de_feu.gdshader" id="1_keyb7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_keyb7"]

@@ -77,7 +77,8 @@ func _ready() -> void:
 
 	_setup_logic()
 	_import_terrain_from_tilemap()
-	_setup_view()
+	_setup_view() 
+	EventBus.battle_view_ready.emit(grid_view)
 	_setup_camera()
 	_setup_ui()
 	_setup_state()
@@ -992,3 +993,4 @@ func _show_end_screen(victory: bool) -> void:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	layer.add_child(label)
 	print("\n===== COMBAT TERMINÉ : %s =====" % ("VICTOIRE" if victory else "DÉFAITE"))
+	

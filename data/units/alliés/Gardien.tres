@@ -8,16 +8,18 @@
 [ext_resource type="Resource" uid="uid://dtohbvvqqdjey" path="res://data/spells/Gardien/frappe_de_bouclier.tres" id="6_ipjya"]
 [ext_resource type="Texture2D" uid="uid://cr574clmwl13g" path="res://asset/personnage/alliés/500.png" id="7_vp8gc"]
 [ext_resource type="Resource" uid="uid://cnv4el22tcv30" path="res://data/traits/chassis_gardien.tres" id="8_chassis"]
-
 [ext_resource type="Resource" path="res://data/spells/Gardien/provocation.tres" id="9_provo"]
+[ext_resource type="Resource" uid="uid://b87ak8kotokmw" path="res://data/spells/Mage/boule_de_feu.tres" id="10_3jo17"]
 [ext_resource type="Resource" path="res://data/spells/Gardien/bastion.tres" id="10_bastion"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="12_780k1"]
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_ipjya"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("7_vp8gc")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -25,10 +27,10 @@ animations = [{
 [resource]
 script = ExtResource("1_pfltm")
 unit_name = "Gardien"
+description = "Protecteur. Il stabilise l equipe avec boucliers, provocation et terrains defensifs."
 energy_type = ExtResource("1_r50s2")
 chassis_trait = ExtResource("8_chassis")
 sprite_frames = SubResource("SpriteFrames_ipjya")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_r50s2")]([ExtResource("4_ddix6"), ExtResource("5_vp8gc"), ExtResource("6_ipjya"), ExtResource("9_provo"), ExtResource("10_bastion")])
-description = "Protecteur. Il stabilise l equipe avec boucliers, provocation et terrains defensifs."
+spells = Array[ExtResource("2_r50s2")]([ExtResource("4_ddix6"), ExtResource("5_vp8gc"), ExtResource("6_ipjya"), ExtResource("9_provo"), ExtResource("10_bastion"), ExtResource("10_3jo17")])
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

@@ -4,13 +4,15 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_y40te"]
 [ext_resource type="Resource" uid="uid://d135dg0elxcx5" path="res://data/terrain/lave.tres" id="2_jpltc"]
 [ext_resource type="AudioStream" uid="uid://fss7jt8nvolg" path="res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3" id="3_f6mhv"]
-[ext_resource type="PackedScene" uid="uid://hmp238551qj7" path="res://battle/vfx/boule_de_feu.tscn" id="5_p1ved"]
+[ext_resource type="PackedScene" uid="uid://hmp238551qj7" path="res://battle/vfx/boule_de_feu_vfx2.tscn" id="5_p1ved"]
 
 [resource]
 script = ExtResource("1_y40te")
 spell_name = "feu"
 description = "Lecture joueur: Cout 0 Elan. Portee 14. Cible: case libre. Effets: 400 degats; pose ou modifie un terrain."
 icon = ExtResource("1_7k23c")
+vfx_scene = ExtResource("5_p1ved")
+sound_cast = ExtResource("3_f6mhv")
 spell_range = 14
 can_target_free_cell = true
 aoe_shape = 1
@@ -18,6 +20,4 @@ aoe_size = 2
 damage = 400
 element = 1
 terrain_effect = ExtResource("2_jpltc")
-vfx_scene = ExtResource("5_p1ved")
-sound_cast = ExtResource("3_f6mhv")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

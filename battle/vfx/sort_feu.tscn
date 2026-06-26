@@ -1,0 +1,144 @@
+; Godot 4 — FireballProjectile
+; Structure :
+;   FireballProjectile (Node2D)  ← attache un script de mouvement ici
+;     SmokeTrail   (GPUParticles2D)  blend = MIX,  local_coords = false
+;     FireTrail    (GPUParticles2D)  blend = ADD,  local_coords = false
+;     FireballCore (GPUParticles2D)  blend = ADD,  local_coords = true
+;
+; Usage : instancie la scène, applique une vélocité sur FireballProjectile.
+; Les particules restent en world-space (local_coords=false) → traînée naturelle.
+
+[gd_scene load_steps=14 format=3]
+
+; ── Matériaux de blend ───────────────────────────────────────────────
+
+[sub_resource type="CanvasItemMaterial" id="CIM_add"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CIM_mix"]
+blend_mode = 0
+
+; ── Gradients couleur ────────────────────────────────────────────────
+
+; Smoke : gris sombre → transparent
+[sub_resource type="Gradient" id="Grad_smoke"]
+colors = PackedColorArray(0.38, 0.36, 0.34, 0.45,  0.25, 0.24, 0.23, 0.22,  0.1, 0.1, 0.1, 0.06,  0.0, 0.0, 0.0, 0.0)
+offsets = PackedFloat32Array(0.0, 0.35, 0.7, 1.0)
+
+[sub_resource type="GradientTexture1D" id="GT_smoke"]
+gradient = SubResource("Grad_smoke")
+width = 128
+
+; Fire trail : blanc-jaune → orange → rouge sombre → transparent
+[sub_resource type="Gradient" id="Grad_fire"]
+colors = PackedColorArray(1.0, 0.95, 0.55, 1.0,  1.0, 0.45, 0.02, 0.9,  0.55, 0.06, 0.0, 0.4,  0.0, 0.0, 0.0, 0.0)
+offsets = PackedFloat32Array(0.0, 0.3, 0.65, 1.0)
+
+[sub_resource type="GradientTexture1D" id="GT_fire"]
+gradient = SubResource("Grad_fire")
+width = 128
+
+; Fireball core : blanc pur → jaune chaud → orange → transparent
+[sub_resource type="Gradient" id="Grad_core"]
+colors = PackedColorArray(1.0, 1.0, 0.95, 1.0,  1.0, 0.88, 0.3, 1.0,  1.0, 0.38, 0.0, 0.7,  0.0, 0.0, 0.0, 0.0)
+offsets = PackedFloat32Array(0.0, 0.25, 0.6, 1.0)
+
+[sub_resource type="GradientTexture1D" id="GT_core"]
+gradient = SubResource("Grad_core")
+width = 128
+
+; ── Process materials ────────────────────────────────────────────────
+
+; Smoke : particules larges, derrière (-X), montée légère (-Y), grossissent
+[sub_resource type="ParticleProcessMaterial" id="PPM_smoke"]
+direction = Vector3(-1.0, -0.15, 0.0)
+spread = 28.0
+gravity = Vector3(0.0, -12.0, 0.0)
+initial_velocity_min = 18.0
+initial_velocity_max = 55.0
+angular_velocity_min = -25.0
+angular_velocity_max = 25.0
+damping_min = 4.0
+damping_max = 10.0
+scale_min = 2.8
+scale_max = 5.5
+lifetime_randomness = 0.45
+color_ramp = SubResource("GT_smoke")
+emission_shape = 0
+
+; Fire trail : falloff custom via 3 zones d'émission simulées avec spread étroit
+[sub_resource type="ParticleProcessMaterial" id="PPM_fire"]
+direction = Vector3(-1.0, 0.0, 0.0)
+spread = 22.0
+gravity = Vector3(0.0, 0.0, 0.0)
+initial_velocity_min = 55.0
+initial_velocity_max = 160.0
+angular_velocity_min = -40.0
+angular_velocity_max = 40.0
+damping_min = 8.0
+damping_max = 22.0
+scale_min = 0.9
+scale_max = 2.4
+lifetime_randomness = 0.35
+color_ramp = SubResource("GT_fire")
+emission_shape = 0
+
+; Fireball core : émission sphérique, particules courtes, dense
+[sub_resource type="ParticleProcessMaterial" id="PPM_core"]
+direction = Vector3(0.0, 0.0, 0.0)
+spread = 180.0
+gravity = Vector3(0.0, 0.0, 0.0)
+initial_velocity_min = 12.0
+initial_velocity_max = 45.0
+angular_velocity_min = -90.0
+angular_velocity_max = 90.0
+damping_min = 20.0
+damping_max = 50.0
+scale_min = 1.2
+scale_max = 2.8
+lifetime_randomness = 0.3
+color_ramp = SubResource("GT_core")
+emission_shape = 1
+emission_sphere_radius = 18.0
+
+; ── Scène ────────────────────────────────────────────────────────────
+
+[node name="FireballProjectile" type="Node2D"]
+; → Attache ici un script qui fait : position.x += speed * delta
+
+[node name="SmokeTrail" type="GPUParticles2D" parent="."]
+; Décalé derrière la tête pour que la fumée parte plus loin
+position = Vector2(-72.0, 0.0)
+material = SubResource("CIM_mix")
+amount = 22
+lifetime = 1.8
+preprocess = 0.0
+speed_scale = 1.0
+explosiveness = 0.0
+randomness = 0.5
+local_coords = false
+process_material = SubResource("PPM_smoke")
+
+[node name="FireTrail" type="GPUParticles2D" parent="."]
+position = Vector2(-18.0, 0.0)
+material = SubResource("CIM_add")
+amount = 55
+lifetime = 0.55
+preprocess = 0.0
+speed_scale = 1.0
+explosiveness = 0.0
+randomness = 0.4
+local_coords = false
+process_material = SubResource("PPM_fire")
+
+[node name="FireballCore" type="GPUParticles2D" parent="."]
+position = Vector2(0.0, 0.0)
+material = SubResource("CIM_add")
+amount = 38
+lifetime = 0.28
+preprocess = 0.0
+speed_scale = 1.0
+explosiveness = 0.0
+randomness = 0.25
+local_coords = true
+process_material = SubResource("PPM_core")
