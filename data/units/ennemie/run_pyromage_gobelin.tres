@@ -3,18 +3,18 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Resource" path="res://data/spells/gobelin/braise_gobeline.tres" id="3_spell"]
-[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_sprite"]
+[ext_resource type="Texture2D" uid="uid://beeq2jfjcwdn8" path="res://asset/personnage/ennemi/pyromagev4.png" id="4_14cy5"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_14cy5"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_pyro"]
-atlas = ExtResource("4_sprite")
-region = Rect2(200, 200, 100, 100)
+[sub_resource type="AtlasTexture" id="AtlasTexture_yk0t4"]
+atlas = ExtResource("4_14cy5")
+region = Rect2(200, 0, 200, 280)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pyro"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_pyro")
+"texture": SubResource("AtlasTexture_yk0t4")
 }],
 "loop": true,
 "name": &"default",
@@ -30,5 +30,6 @@ max_hp = 46
 initiative = 6
 attack_power = 7
 sprite_frames = SubResource("SpriteFrames_pyro")
+sprite_scale = 0.3
 spells = Array[ExtResource("2_spell_type")]([ExtResource("3_spell")])
 ai_behavior = 1
