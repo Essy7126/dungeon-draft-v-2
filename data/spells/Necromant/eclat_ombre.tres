@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Eclat d Ombre"
-description = "Projectile faible qui amorce les builds Ombre."
+description = "Projectile faible qui amorce les builds Ombre.\n\nLecture joueur: Cout 10 Elan. Portee 4. Cible: ennemi. Effets: 7 degats; genere via verbe HIT."
 energy_cost = 10
 fervor_cost = 0
 imprint_fervor_cost = 0

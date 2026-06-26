@@ -9,6 +9,7 @@
 [resource]
 script = ExtResource("1_y40te")
 spell_name = "feu"
+description = "Lecture joueur: Cout 0 Elan. Portee 14. Cible: case libre. Effets: 400 degats; pose ou modifie un terrain."
 icon = ExtResource("1_7k23c")
 spell_range = 14
 can_target_free_cell = true

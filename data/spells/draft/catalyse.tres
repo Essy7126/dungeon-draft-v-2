@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Catalyse"
-description = "Prepare une Empreinte gratuite dans la bible; ici, applique un marqueur de lecture temporaire."
+description = "Prepare une Empreinte gratuite dans la bible; ici, applique un marqueur de lecture temporaire.\n\nLecture joueur: Cout 25 Elan. Portee 0. Cible: soi. Effets: applique un statut; genere via verbe EXPLOIT."
 energy_cost = 25
 fervor_cost = 0
 imprint_fervor_cost = 0

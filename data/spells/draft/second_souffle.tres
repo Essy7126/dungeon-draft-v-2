@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Second souffle"
-description = "Rend de l Elan dans la bible; ici, soin court et tempo defensif une fois integre."
+description = "Rend de l Elan dans la bible; ici, soin court et tempo defensif une fois integre.\n\nLecture joueur: Cout 25 Elan. Portee 0. Cible: allie/soi. Effets: 14 soin; genere via verbe HEAL."
 energy_cost = 25
 fervor_cost = 0
 imprint_fervor_cost = 0

@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_g5oae")
 spell_name = "Poison"
+description = "Lecture joueur: Cout 0 Elan. Portee 20. Cible: cible valide. Effets: applique un statut."
 spell_range = 20
 applied_status = ExtResource("1_qfqvg")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

@@ -6,9 +6,13 @@
 [ext_resource type="Texture2D" uid="uid://beeq2jfjcwdn8" path="res://asset/personnage/ennemi/pyromagev4.png" id="4_14cy5"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_14cy5"]
 
+
+[ext_resource type="Resource" path="res://data/ai_behaviors/pyromage_poseur_de_feu.tres" id="99_ai"]
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_yk0t4"]
 atlas = ExtResource("4_14cy5")
 region = Rect2(200, 0, 200, 280)
+
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pyro"]
 animations = [{
@@ -33,3 +37,4 @@ sprite_frames = SubResource("SpriteFrames_pyro")
 sprite_scale = 0.3
 spells = Array[ExtResource("2_spell_type")]([ExtResource("3_spell")])
 ai_behavior = 1
+boss_behavior = ExtResource("99_ai")

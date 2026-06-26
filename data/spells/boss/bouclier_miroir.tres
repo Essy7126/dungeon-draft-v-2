@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Bouclier-Miroir"
-description = "Persee taxe les patterns repetes; ici, se protege et force a varier."
+description = "Persee taxe les patterns repetes; ici, se protege et force a varier.\n\nLecture joueur: Cout 40 Elan. Portee 0. Cible: soi. Effets: 35 bouclier; genere via verbe PROTECT."
 energy_cost = 40
 fervor_cost = 0
 imprint_fervor_cost = 0

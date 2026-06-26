@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_s6txf")
 spell_name = "Frappe de bouclier"
+description = "Lecture joueur: Cout 15 Elan. Portee 1. Cible: cible valide. Effets: 10 degats; genere via verbe HIT."
 energy_cost = 15.0
 charge_verb = "HIT"
 spell_range = 1

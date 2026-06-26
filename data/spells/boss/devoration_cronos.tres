@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Devoration du temps"
-description = "Cronos combine les taxes de boss et frappe toute la ligne."
+description = "Cronos combine les taxes de boss et frappe toute la ligne.\n\nLecture joueur: Cout 60 Elan, 40 Ferveur. Portee 6. Cible: ennemi. Effets: 40 degats; applique un statut; genere via verbe HIT."
 energy_cost = 60
 fervor_cost = 40
 imprint_fervor_cost = 0

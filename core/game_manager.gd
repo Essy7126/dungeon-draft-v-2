@@ -211,6 +211,7 @@ func on_battle_won() -> void:
 	var forced_reward = _get_forced_reward_for_room(current_room_index)
 	if forced_reward != null:
 		_offered_rewards = [forced_reward]
+		_offered_rewards.append_array(_draw_rewards(REWARDS_OFFERED - 1, [forced_reward]))
 	elif reward_pool.size() > 0:
 		_offered_rewards = _draw_rewards(REWARDS_OFFERED)
 	else:
@@ -229,10 +230,28 @@ func on_battle_lost() -> void:
 # ============================================================
 
 # Tire `count` récompenses au hasard dans le pool (sans doublon).
-func _draw_rewards(count: int) -> Array:
-	var pool = reward_pool.duplicate()
+func _draw_rewards(count: int, excluded: Array = []) -> Array:
+	var excluded_paths := {}
+	for reward in excluded:
+		if reward != null:
+			excluded_paths[_resource_path_key(reward)] = true
+
+	var pool: Array = []
+	for reward in reward_pool:
+		if reward == null:
+			continue
+		if excluded_paths.has(_resource_path_key(reward)):
+			continue
+		pool.append(reward)
 	pool.shuffle()
 	return pool.slice(0, min(count, pool.size()))
+
+func _resource_path_key(resource: Resource) -> String:
+	if resource == null:
+		return ""
+	if resource.resource_path != "":
+		return resource.resource_path
+	return str(resource.get_instance_id())
 
 func _get_forced_reward_for_room(room_index: int) -> RewardData:
 	if room_index != 0:

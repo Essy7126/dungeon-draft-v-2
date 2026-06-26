@@ -5,5 +5,6 @@
 [resource]
 script = ExtResource("1_56ms8")
 spell_name = "frappe"
+description = "Lecture joueur: Cout 0 Elan. Portee 0. Cible: cible valide. Effets: 10 degats."
 damage = 10
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

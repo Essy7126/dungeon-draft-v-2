@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Pas de l'ombre"
-description = "Se replace derriere la cible et pose Ombre pour ouvrir un angle."
+description = "Se replace derriere la cible et pose Ombre pour ouvrir un angle.\n\nLecture joueur: Cout 25 Elan. Portee 4. Cible: ennemi. Effets: pose ou modifie un terrain; repositionne derriere la cible; genere via verbe EXPLOIT."
 energy_cost = 25.0
 charge_verb = "EXPLOIT"
 spell_range = 4

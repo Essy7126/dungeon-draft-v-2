@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_tegf3"]
 [ext_resource type="Resource" path="res://data/spells/enemies/entrave.tres" id="10_spell"]
 
+[ext_resource type="Resource" path="res://data/ai_behaviors/lieur_entrave.tres" id="99_ai"]
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_enemy"]
 animations = [{
 "frames": [{
@@ -29,3 +31,4 @@ sprite_frames = SubResource("SpriteFrames_enemy")
 sprite_scale = 1.0
 spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell")])
 ai_behavior = 1
+boss_behavior = ExtResource("99_ai")

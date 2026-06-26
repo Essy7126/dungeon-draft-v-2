@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_tx0ik")
 spell_name = "tombeau fleuri"
+description = "Lecture joueur: Cout 0 Elan. Portee 12. Cible: cible valide. Effets: 22 degats."
 ap_cost = 4
 spell_range = 12
 damage = 22

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Frappe"
-description = "Geste Rage simple: degats modestes, generation HIT fiable."
+description = "Geste Rage simple: degats modestes, generation HIT fiable.\n\nLecture joueur: Cout 10 Elan. Portee 1. Cible: cible valide. Effets: 8 degats; genere via verbe HIT."
 energy_cost = 10
 charge_verb = "HIT"
 spell_range = 1

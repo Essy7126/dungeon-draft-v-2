@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Lame"
-description = "Geste Ombre simple: petite frappe pour ouvrir Marque ou Execution."
+description = "Geste Ombre simple: petite frappe pour ouvrir Marque ou Execution.\n\nLecture joueur: Cout 10 Elan. Portee 1. Cible: cible valide. Effets: 9 degats; genere via verbe HIT."
 energy_cost = 10
 charge_verb = "HIT"
 spell_range = 1

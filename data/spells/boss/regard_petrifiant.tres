@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Regard petrifiant"
-description = "Pose Regard et menace la prochaine economie d action."
+description = "Pose Regard et menace la prochaine economie d action.\n\nLecture joueur: Cout 40 Elan. Portee 5. Cible: ennemi/case libre. Effets: pose ou modifie un terrain; applique un statut; genere via verbe EXPLOIT."
 energy_cost = 40
 fervor_cost = 0
 imprint_fervor_cost = 0

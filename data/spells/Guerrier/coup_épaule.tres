@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_dx6u5")
 spell_name = "Coup d'epaule"
+description = "Lecture joueur: Cout 25 Elan. Portee 1. Cible: cible valide. Effets: 6 degats; pousse de 1 case(s); genere via verbe HIT."
 energy_cost = 25.0
 charge_verb = "HIT"
 spell_range = 1

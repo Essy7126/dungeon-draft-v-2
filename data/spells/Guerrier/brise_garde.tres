@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_suoxf")
 spell_name = "Brise Garde"
+description = "Lecture joueur: Cout 60 Elan. Portee 1. Cible: cible valide. Effets: 28 degats; applique un statut; genere via verbe HIT."
 energy_cost = 60.0
 fervor_cost = 0.0
 charge_verb = "HIT"

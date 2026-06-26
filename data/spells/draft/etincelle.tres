@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Etincelle"
-description = "Petit degat Feu et amorce les reactions inflammables."
+description = "Petit degat Feu et amorce les reactions inflammables.\n\nLecture joueur: Cout 10 Elan. Portee 3. Cible: ennemi/case libre. Effets: 5 degats; pose ou modifie un terrain; genere via verbe HIT."
 energy_cost = 10
 fervor_cost = 0
 imprint_fervor_cost = 0

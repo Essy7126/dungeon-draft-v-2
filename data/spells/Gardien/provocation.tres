@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Provocation"
-description = "Force un ennemi adjacent a cibler le Gardien au prochain tour."
+description = "Force un ennemi adjacent a cibler le Gardien au prochain tour.\n\nLecture joueur: Cout 25 Elan. Portee 1. Cible: ennemi. Effets: force la cible a te viser; genere via verbe PROTECT."
 energy_cost = 25.0
 charge_verb = "PROTECT"
 spell_range = 1

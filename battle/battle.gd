@@ -35,6 +35,8 @@ var _unit_views: Dictionary = {}
 var turn_state: TurnState
 var action_bar: CanvasLayer
 var inspect_panel: CanvasLayer
+var player_combat_log: CanvasLayer
+var keyword_tooltip_layer: CanvasLayer
 
 # --- Fin de combat ---
 var _battle_over: bool = false
@@ -167,6 +169,14 @@ func _setup_ui() -> void:
 	inspect_panel = CanvasLayer.new()
 	inspect_panel.set_script(load("res://ui/inspect_panel.gd"))
 	add_child(inspect_panel)
+
+	player_combat_log = CanvasLayer.new()
+	player_combat_log.set_script(load("res://ui/player_combat_log.gd"))
+	add_child(player_combat_log)
+
+	keyword_tooltip_layer = CanvasLayer.new()
+	keyword_tooltip_layer.set_script(load("res://ui/keyword_tooltip_layer.gd"))
+	add_child(keyword_tooltip_layer)
 
 func _setup_state() -> void:
 	turn_state = TurnState.new()
@@ -756,6 +766,8 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 	grid_view.highlight(targetable, SPELL_COLOR)
 	if targetable.has(cell):
 		grid_view.highlight(spell_caster.get_aoe_cells(spell, cell), AOE_COLOR)
+		if inspect_panel != null:
+			inspect_panel.show_spell_preview(unit, spell, cell, grid, spell_caster, turn_state.selected_spell_imprinted)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:

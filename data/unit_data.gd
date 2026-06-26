@@ -103,6 +103,6 @@ extends Resource
 # HEALER : soigne l'allié le plus blessé, évite le combat.
 @export_enum("Mêlée:0", "Distance:1", "Soigneur:2") var ai_behavior: int = 0
 @export_group("Boss")
-# Comportement spécial. Laisse VIDE pour un ennemi normal.
-# Si rempli, il REMPLACE l'ai_behavior standard.
+# Override IA avance, utilisable sur un boss OU un ennemi normal.
+# Si rempli, il REMPLACE l'ai_behavior standard et peut contenir un etat interne.
 @export var boss_behavior: BossBehavior = null

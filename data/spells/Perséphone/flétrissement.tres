@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_sai8m")
 spell_name = "Flétrissement"
-description = "Pers­éphone fane la végétation autour de sa cible."
+description = "Pers­éphone fane la végétation autour de sa cible.\n\nLecture joueur: Cout 0 Elan. Portee 12. Cible: cible valide. Effets: 18 degats; applique un statut."
 icon = ExtResource("2_gh8le")
 ap_cost = 3
 spell_range = 12

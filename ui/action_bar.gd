@@ -1,4 +1,6 @@
-extends CanvasLayer
+﻿extends CanvasLayer
+
+const TooltipLayer = preload("res://ui/keyword_tooltip_layer.gd")
 
 signal move_pressed
 signal attack_pressed
@@ -45,7 +47,7 @@ func _build_ui() -> void:
 	_info_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_hbox.add_child(_info_label)
 
-	var resource_vbox = VBoxContainer.new()
+	var resource_vbox := VBoxContainer.new()
 	resource_vbox.custom_minimum_size = Vector2(185, 0)
 	resource_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	resource_vbox.add_theme_constant_override("separation", 3)
@@ -76,12 +78,14 @@ func _build_ui() -> void:
 	_move_btn = Button.new()
 	_move_btn.text = "Deplacer"
 	_move_btn.custom_minimum_size = Vector2(92, 44)
+	_move_btn.tooltip_text = "PM : sert uniquement au deplacement. Elan : sert aux attaques et sorts."
 	_move_btn.pressed.connect(func(): move_pressed.emit())
 	_hbox.add_child(_move_btn)
 
 	_attack_btn = Button.new()
 	_attack_btn.text = "Attaquer"
 	_attack_btn.custom_minimum_size = Vector2(92, 44)
+	_attack_btn.tooltip_text = "Attaque de base : consomme de l'Elan pour frapper au contact."
 	_attack_btn.pressed.connect(func(): attack_pressed.emit())
 	_hbox.add_child(_attack_btn)
 
@@ -122,66 +126,30 @@ func build_spell_buttons(unit) -> void:
 	_refresh_button_states()
 
 func _add_spell_button(unit, spell, imprinted: bool) -> void:
-	var btn = Button.new()
-	btn.custom_minimum_size = Vector2(76, 72)
-	var action_label: String = _get_spell_action_label(unit, spell, imprinted)
-	var prefix := "Emp. " if imprinted else ""
-	btn.tooltip_text = _build_spell_tooltip(unit, spell, imprinted)
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(82, 72)
+	btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn.tooltip_text = ""
+	btn.mouse_entered.connect(func(): _show_spell_card(unit, spell, imprinted))
+	btn.mouse_exited.connect(_hide_keyword_tooltip)
 	btn.set_meta("spell", spell)
 	btn.set_meta("imprinted", imprinted)
+	var action_label: String = _get_spell_action_label(unit, spell, imprinted)
+	var name_prefix := "Emp. " if imprinted else ""
 	if spell.icon != null:
 		btn.icon = spell.icon
 		btn.expand_icon = true
 		btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		btn.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-		btn.text = action_label if not imprinted else "Emp.\n%s" % action_label
-		btn.add_theme_font_size_override("font_size", 10)
+		btn.text = "%s%s\n%s" % [name_prefix, spell.spell_name, action_label]
+		btn.add_theme_font_size_override("font_size", 9)
 	else:
-		btn.text = "%s%s\n%s" % [prefix, spell.spell_name, action_label]
+		btn.text = "%s%s\n%s" % [name_prefix, spell.spell_name, action_label]
 		btn.add_theme_font_size_override("font_size", 10)
 	btn.pressed.connect(func(): spell_pressed.emit(spell, imprinted))
 	_spell_box.add_child(btn)
 	_spell_buttons.append(btn)
 
-func _build_spell_tooltip(unit, spell: Spell, imprinted: bool) -> String:
-	var lines: Array = []
-	lines.append(("Empreinte - " if imprinted else "") + spell.spell_name)
-	var cost: String = _get_spell_action_label(unit, spell, imprinted)
-	lines.append("Cout : %s" % cost)
-	lines.append("Portee : %d" % spell.spell_range)
-	if spell.description.strip_edges() != "":
-		lines.append(spell.description)
-	var effects: Array = []
-	if spell.damage > 0:
-		var damage_value: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
-		effects.append("%d degats" % damage_value)
-	if spell.heal > 0:
-		var heal_value: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
-		effects.append("%d soin" % heal_value)
-	var shield_value: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
-	if shield_value > 0:
-		effects.append("%d bouclier" % shield_value)
-	if spell.applied_status != null:
-		effects.append("applique %s" % spell.applied_status.status_name)
-	if imprinted and spell.imprint_status != null:
-		effects.append("empreinte: applique %s" % spell.imprint_status.status_name)
-	if spell.has_terrain_effect():
-		effects.append("pose %s" % spell.terrain_effect.effect_name)
-	if imprinted and spell.imprint_terrain_effect != null:
-		effects.append("empreinte: pose %s" % spell.imprint_terrain_effect.effect_name)
-	if spell.push_distance > 0:
-		effects.append("pousse de %d case(s)" % spell.push_distance)
-	if spell.forces_taunt:
-		effects.append("force la cible a te viser")
-	if spell.teleport_behind_target:
-		effects.append("se replace derriere la cible")
-	if not effects.is_empty():
-		lines.append("Effets : " + " | ".join(effects))
-	if spell.charge_verb.strip_edges() != "":
-		lines.append("Verbe : %s" % spell.charge_verb)
-	if spell.can_imprint() and not imprinted:
-		lines.append("Empreinte disponible : brule de la Ferveur pour amplifier ce sort.")
-	return "\n".join(lines)
 func _get_spell_action_label(unit, spell, imprinted: bool = false) -> String:
 	var parts: Array = []
 	if unit != null and unit.has_energy():
@@ -213,12 +181,19 @@ func _refresh_button_states() -> void:
 	if _current_unit != null and _current_unit.has_energy():
 		attack_blocked = not _current_unit.can_afford_elan(_current_unit.get_basic_attack_elan_cost())
 	_attack_btn.disabled = not _player_controls_enabled or attack_blocked
+	if _current_unit != null and _current_unit.has_energy():
+		_attack_btn.text = "Attaquer\n%d Elan" % int(_current_unit.get_basic_attack_elan_cost())
+		_attack_btn.tooltip_text = _attack_tooltip(_current_unit)
+	else:
+		_attack_btn.text = "Attaquer"
+		_attack_btn.tooltip_text = "Attaque de base au contact."
 	var can_awaken: bool = _current_unit != null and _current_unit.has_method("can_activate_awakening") and _current_unit.can_activate_awakening()
 	_awakening_btn.disabled = not _player_controls_enabled or not can_awaken
 	for btn in _spell_buttons:
 		var spell = btn.get_meta("spell") if btn.has_meta("spell") else null
 		var imprinted: bool = btn.get_meta("imprinted") if btn.has_meta("imprinted") else false
 		btn.disabled = not _player_controls_enabled or not _can_use_spell(_current_unit, spell, imprinted)
+	_apply_base_button_modulates()
 
 func update_info(unit) -> void:
 	_disconnect_current_unit()
@@ -228,7 +203,7 @@ func update_info(unit) -> void:
 		_refresh_resource_bars(null)
 		_refresh_button_states()
 		return
-	_info_label.text = "%s\nPM: %d" % [unit.unit_name, unit.current_mp]
+	_info_label.text = "Tour : %s\nPM : %d / %d" % [unit.unit_name, unit.current_mp, unit.max_mp.get_int()]
 	if not unit.energy_changed.is_connected(_on_resource_changed):
 		unit.energy_changed.connect(_on_resource_changed)
 	if not unit.elan_changed.is_connected(_on_resource_changed):
@@ -281,9 +256,67 @@ func set_player_controls_enabled(enabled: bool) -> void:
 	_refresh_button_states()
 
 func set_active_mode(mode: String, active_spell = null, imprinted: bool = false) -> void:
-	_move_btn.modulate = Color(0.6, 1.0, 0.6) if mode == "move" else Color.WHITE
-	_attack_btn.modulate = Color(1.0, 0.6, 0.6) if mode == "attack" else Color.WHITE
+	_apply_base_button_modulates()
+	if mode == "move" and not _move_btn.disabled:
+		_move_btn.modulate = Color(0.6, 1.0, 0.6)
+	if mode == "attack" and not _attack_btn.disabled:
+		_attack_btn.modulate = Color(1.0, 0.6, 0.6)
 	for btn in _spell_buttons:
 		var spell = btn.get_meta("spell") if btn.has_meta("spell") else null
 		var btn_imprinted: bool = btn.get_meta("imprinted") if btn.has_meta("imprinted") else false
-		btn.modulate = Color(0.7, 0.85, 1.0) if mode == "spell" and spell == active_spell and btn_imprinted == imprinted else Color.WHITE
+		if mode == "spell" and spell == active_spell and btn_imprinted == imprinted and not btn.disabled:
+			btn.modulate = Color(0.7, 0.85, 1.0)
+
+func _apply_base_button_modulates() -> void:
+	for button in [_move_btn, _attack_btn, _awakening_btn, _end_btn]:
+		if button != null:
+			button.modulate = Color(0.48, 0.48, 0.48, 0.78) if button.disabled else Color.WHITE
+	for btn in _spell_buttons:
+		btn.modulate = Color(0.48, 0.48, 0.48, 0.78) if btn.disabled else Color.WHITE
+
+func _attack_tooltip(unit) -> String:
+	if unit == null:
+		return "Aucun combattant actif."
+	if not unit.has_energy():
+		return "Attaque de base au contact."
+	var cost := int(unit.get_basic_attack_elan_cost())
+	if not unit.can_afford_elan(cost):
+		return "Injouable : Elan insuffisant (%d / %d)." % [int(unit.current_elan), cost]
+	return "Attaque de base : coute %d Elan et frappe une cible adjacente." % cost
+
+func _show_spell_card(unit, spell: Spell, imprinted: bool) -> void:
+	var layer = _tooltip_layer()
+	if layer == null:
+		return
+	layer.show_spell(unit, spell, imprinted, _spell_unusable_reason(unit, spell, imprinted), get_viewport().get_mouse_position())
+
+func _hide_keyword_tooltip() -> void:
+	var layer = _tooltip_layer()
+	if layer != null:
+		layer.request_hide()
+
+func _tooltip_layer():
+	if get_tree() == null:
+		return null
+	var layer = get_tree().get_first_node_in_group("keyword_tooltip_layer")
+	if layer != null:
+		return layer
+	layer = TooltipLayer.new()
+	get_tree().root.add_child(layer)
+	return layer
+
+func _spell_unusable_reason(unit, spell: Spell, imprinted: bool) -> String:
+	if unit == null:
+		return "aucun lanceur actif"
+	if spell == null:
+		return "sort invalide"
+	if unit.has_energy():
+		var elan_cost: float = unit.get_spell_elan_cost(spell)
+		var fervor_cost: float = unit.get_spell_fervor_cost(spell, imprinted)
+		if not unit.can_afford_elan(elan_cost):
+			return "Elan insuffisant (%d / %d)" % [int(unit.current_elan), int(elan_cost)]
+		if not unit.can_afford_energy(fervor_cost):
+			return "Ferveur insuffisante (%d / %d)" % [int(unit.current_energy), int(fervor_cost)]
+	elif unit.current_ap < spell.ap_cost:
+		return "PA insuffisants"
+	return ""

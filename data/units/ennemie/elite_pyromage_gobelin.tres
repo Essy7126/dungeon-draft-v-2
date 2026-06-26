@@ -6,6 +6,8 @@
 [ext_resource type="Resource" path="res://data/spells/gobelin/braise_gobeline.tres" id="10_spell"]
 [ext_resource type="Resource" path="res://data/spells/draft/etincelle.tres" id="11_spell"]
 
+[ext_resource type="Resource" path="res://data/ai_behaviors/pyromage_poseur_de_feu.tres" id="99_ai"]
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_enemy"]
 
 [resource]
@@ -20,3 +22,4 @@ sprite_frames = SubResource("SpriteFrames_enemy")
 sprite_scale = 1.0
 spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell")])
 ai_behavior = 1
+boss_behavior = ExtResource("99_ai")

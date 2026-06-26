@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_lukfn")
 spell_name = "Étreinte des Enfers"
+description = "Lecture joueur: Cout 0 Elan. Portee 10. Cible: cible valide. Effets: 30 degats; applique un statut."
 ap_cost = 5
 spell_range = 10
 damage = 30

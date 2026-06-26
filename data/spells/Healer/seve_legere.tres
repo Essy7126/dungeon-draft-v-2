@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Seve legere"
+description = "Lecture joueur: Cout 15 Elan. Portee 4. Cible: allie/soi. Effets: 8 soin; genere via verbe HEAL."
 energy_cost = 15.0
 charge_verb = "HEAL"
 spell_range = 4

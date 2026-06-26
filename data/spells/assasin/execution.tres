@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_v0ulw")
 spell_name = "Execution"
-description = "Frappe signature de finition. Inflige de lourds degats et devient brutale sur une cible marquee."
+description = "Frappe signature de finition. Inflige de lourds degats et devient brutale sur une cible marquee.\n\nLecture joueur: Cout 60 Elan. Portee 1. Cible: cible valide. Effets: 32 degats; +20 degats sur cible marquee; genere via verbe HIT."
 energy_cost = 60.0
 fervor_cost = 0.0
 charge_verb = "HIT"

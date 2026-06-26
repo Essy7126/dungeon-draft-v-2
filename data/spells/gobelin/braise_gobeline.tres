@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Braise gobeline"
-description = "Petit projectile qui pose du feu exploitable par les deux camps."
+description = "Petit projectile qui pose du feu exploitable par les deux camps.\n\nLecture joueur: Cout 0 Elan. Portee 5. Cible: ennemi. Effets: 5 degats; pose ou modifie un terrain."
 ap_cost = 2
 energy_cost = 0.0
 spell_range = 5

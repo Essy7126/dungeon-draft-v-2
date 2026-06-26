@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Morsure de serpent"
-description = "Petite frappe de sbire invoque par Meduse."
+description = "Petite frappe de sbire invoque par Meduse.\n\nLecture joueur: Cout 10 Elan. Portee 1. Cible: ennemi. Effets: 9 degats; applique un statut; genere via verbe HIT."
 energy_cost = 10
 fervor_cost = 0
 imprint_fervor_cost = 0

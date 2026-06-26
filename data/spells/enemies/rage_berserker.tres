@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Rage gobeline"
-description = "Frappe plus fort quand le combat traine."
+description = "Frappe plus fort quand le combat traine.\n\nLecture joueur: Cout 25 Elan. Portee 1. Cible: ennemi. Effets: 15 degats; genere via verbe HIT."
 energy_cost = 25
 fervor_cost = 0
 imprint_fervor_cost = 0

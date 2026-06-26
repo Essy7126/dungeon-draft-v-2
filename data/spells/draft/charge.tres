@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Charge"
-description = "Se jette sur une cible, frappe et pousse. Sert d amorce EXPLOIT."
+description = "Se jette sur une cible, frappe et pousse. Sert d amorce EXPLOIT.\n\nLecture joueur: Cout 25 Elan. Portee 4. Cible: ennemi. Effets: 12 degats; pousse de 1 case(s); genere via verbe EXPLOIT."
 energy_cost = 25
 fervor_cost = 0
 imprint_fervor_cost = 0

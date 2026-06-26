@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_s2kpe")
 spell_name = "Mur de glace"
+description = "Lecture joueur: Cout 0 Elan. Portee 6. Cible: case libre. Effets: pose ou modifie un terrain."
 spell_range = 6
 can_target_free_cell = true
 aoe_shape = 1

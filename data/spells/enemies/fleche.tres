@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Fleche"
-description = "Attaque a distance simple."
+description = "Attaque a distance simple.\n\nLecture joueur: Cout 10 Elan. Portee 5. Cible: ennemi. Effets: 8 degats; genere via verbe HIT."
 energy_cost = 10
 fervor_cost = 0
 imprint_fervor_cost = 0

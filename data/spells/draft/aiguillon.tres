@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Aiguillon"
-description = "Applique Vulnerable pour ouvrir une fenetre de burst."
+description = "Applique Vulnerable pour ouvrir une fenetre de burst.\n\nLecture joueur: Cout 25 Elan. Portee 4. Cible: ennemi. Effets: 5 degats; applique un statut; genere via verbe HIT."
 energy_cost = 25
 fervor_cost = 0
 imprint_fervor_cost = 0

@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Faille"
-description = "Applique Faille, un debuff Ombre exploitable."
+description = "Applique Faille, un debuff Ombre exploitable.\n\nLecture joueur: Cout 25 Elan. Portee 4. Cible: ennemi. Effets: applique un statut; genere via verbe EXPLOIT."
 energy_cost = 25
 fervor_cost = 0
 imprint_fervor_cost = 0

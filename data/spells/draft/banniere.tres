@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Banniere"
-description = "Pose un point de ralliement qui aide les generations d equipe."
+description = "Pose un point de ralliement qui aide les generations d equipe.\n\nLecture joueur: Cout 40 Elan. Portee 3. Cible: case libre. Effets: pose ou modifie un terrain; genere via verbe PROTECT."
 energy_cost = 40
 fervor_cost = 0
 imprint_fervor_cost = 0

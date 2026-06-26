@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Moisson"
-description = "Consomme les ombres dans la bible; ici, gros degat de zone Ombre."
+description = "Consomme les ombres dans la bible; ici, gros degat de zone Ombre.\n\nLecture joueur: Cout 60 Elan, 25 Ferveur. Portee 4. Cible: ennemi. Effets: 28 degats; genere via verbe EXPLOIT."
 energy_cost = 60
 fervor_cost = 25
 imprint_fervor_cost = 0

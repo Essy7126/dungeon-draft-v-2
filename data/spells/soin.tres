@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_vftmu")
 spell_name = "Soin"
+description = "Lecture joueur: Cout 15 Elan. Portee 6. Cible: allie/soi. Effets: 11 soin."
 energy_cost = 15.0
 spell_range = 6
 can_target_enemy = false

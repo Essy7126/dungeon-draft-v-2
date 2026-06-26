@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyBehaviorHazardPlacer" format=3]
+
+[ext_resource type="Script" path="res://core/ai/enemy_behavior_hazard_placer.gd" id="1_behavior"]
+[ext_resource type="Resource" path="res://data/spells/gobelin/braise_gobeline.tres" id="2_spell"]
+
+[resource]
+script = ExtResource("1_behavior")
+hazard_spell = ExtResource("2_spell")
+every_n_turns = 1
+fallback_to_default = true

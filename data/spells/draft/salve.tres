@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Salve"
-description = "Trois petites frappes dans la bible; represente ici une source multi-hit concentree."
+description = "Trois petites frappes dans la bible; represente ici une source multi-hit concentree.\n\nLecture joueur: Cout 40 Elan. Portee 4. Cible: ennemi. Effets: 21 degats; genere via verbe HIT."
 energy_cost = 40
 fervor_cost = 0
 imprint_fervor_cost = 0

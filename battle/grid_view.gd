@@ -100,9 +100,16 @@ func _draw() -> void:
 			if _highlights.has(pos):
 				draw_rect(rect, _highlights[pos], true)
 
-			# Effet de terrain dynamique : toujours.
-			if grid.get_effect(pos) != null:
-				draw_rect(rect, Color(1, 0.8, 0.2, 0.2), true)
+			# Effet de terrain dynamique : toujours, avec couleur propre a l'effet.
+			var stored_effect = grid.get_effect(pos)
+			if stored_effect != null:
+				var effect_color := Color(1, 0.8, 0.2, 0.26)
+				if stored_effect.has("data") and stored_effect["data"].has("data"):
+					var effect_data: TerrainEffectData = stored_effect["data"]["data"]
+					if effect_data != null:
+						effect_color = effect_data.color
+						effect_color.a = 0.34
+				draw_rect(rect, effect_color, true)
 
 			# Survol souris : toujours.
 			if pos == _hovered and grid.is_valid(_hovered):

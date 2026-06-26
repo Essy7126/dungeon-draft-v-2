@@ -6,9 +6,13 @@
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_qjag1"]
 [ext_resource type="Resource" path="res://data/spells/enemies/fleche.tres" id="10_spell"]
 
+
+[ext_resource type="Resource" path="res://data/ai_behaviors/archer_kiter.tres" id="99_ai"]
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_4q84f"]
 atlas = ExtResource("4_m5idi")
 region = Rect2(0, 0, 512, 1024)
+
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_dkbr3"]
 animations = [{
@@ -32,3 +36,4 @@ sprite_frames = SubResource("SpriteFrames_dkbr3")
 sprite_scale = 1.0
 spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell")])
 ai_behavior = 1
+boss_behavior = ExtResource("99_ai")

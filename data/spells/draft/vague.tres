@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Vague"
-description = "Pose une bande d Eau pour preparer Nature, Foudre ou Glace."
+description = "Pose une bande d Eau pour preparer Nature, Foudre ou Glace.\n\nLecture joueur: Cout 40 Elan. Portee 4. Cible: case libre. Effets: pose ou modifie un terrain; genere via verbe EXPLOIT."
 energy_cost = 40
 fervor_cost = 0
 imprint_fervor_cost = 0

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Appel"
-description = "Amorce Resonance dans la bible; actuellement petit bouclier de coordination."
+description = "Amorce Resonance dans la bible; actuellement petit bouclier de coordination.\n\nLecture joueur: Cout 10 Elan. Portee 1. Cible: allie/soi. Effets: 8 bouclier; genere via verbe PROTECT."
 energy_cost = 10
 fervor_cost = 0
 imprint_fervor_cost = 0

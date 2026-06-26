@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_d8pi4")
 spell_name = "Frappe basse"
-description = "Attaque legere de proximite pour maintenir la pression et charger les ouvertures."
+description = "Attaque legere de proximite pour maintenir la pression et charger les ouvertures.\n\nLecture joueur: Cout 25 Elan. Portee 1. Cible: cible valide. Effets: 14 degats; genere via verbe HIT."
 energy_cost = 25.0
 charge_verb = "HIT"
 spell_range = 1

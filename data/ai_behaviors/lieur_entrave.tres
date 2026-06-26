@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyBehaviorDisruptor" format=3]
+
+[ext_resource type="Script" path="res://core/ai/enemy_behavior_disruptor.gd" id="1_behavior"]
+[ext_resource type="Resource" path="res://data/spells/enemies/entrave.tres" id="2_spell"]
+
+[resource]
+script = ExtResource("1_behavior")
+disrupt_spell = ExtResource("2_spell")
+prefer_high_resources = false
+fallback_to_default = true

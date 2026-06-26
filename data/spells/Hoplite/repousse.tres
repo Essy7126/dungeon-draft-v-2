@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Repousse"
-description = "Pousse de deux cases en ligne pour preparer terrain et collisions."
+description = "Pousse de deux cases en ligne pour preparer terrain et collisions.\n\nLecture joueur: Cout 25 Elan. Portee 2. Cible: ennemi. Effets: 4 degats; pousse de 2 case(s); genere via verbe EXPLOIT."
 energy_cost = 25
 fervor_cost = 0
 imprint_fervor_cost = 0

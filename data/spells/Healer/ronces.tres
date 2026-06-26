@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Ronces"
-description = "Pose un terrain de deni. Pousser dedans declenche EXPLOIT."
+description = "Pose un terrain de deni. Pousser dedans declenche EXPLOIT.\n\nLecture joueur: Cout 25 Elan. Portee 4. Cible: ennemi/case libre. Effets: pose ou modifie un terrain; genere via verbe EXPLOIT."
 energy_cost = 25.0
 charge_verb = "EXPLOIT"
 spell_range = 4

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Phalange"
-description = "Bouclier d equipe autour du Hoplite. Signature defensive."
+description = "Bouclier d equipe autour du Hoplite. Signature defensive.\n\nLecture joueur: Cout 60 Elan, 20 Ferveur. Portee 2. Cible: allie/soi. Effets: 26 bouclier; genere via verbe PROTECT."
 energy_cost = 60
 fervor_cost = 20
 imprint_fervor_cost = 0

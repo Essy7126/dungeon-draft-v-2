@@ -6,9 +6,13 @@
 [ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_sprite"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_5a26j"]
 
+
+[ext_resource type="Resource" path="res://data/ai_behaviors/hurleur_drain.tres" id="99_ai"]
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_hurleur"]
 atlas = ExtResource("4_sprite")
 region = Rect2(300, 0, 100, 100)
+
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hurleur"]
 animations = [{
@@ -32,3 +36,4 @@ attack_power = 6
 sprite_frames = SubResource("SpriteFrames_hurleur")
 spells = Array[ExtResource("2_spell_type")]([ExtResource("3_spell")])
 ai_behavior = 1
+boss_behavior = ExtResource("99_ai")

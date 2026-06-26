@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyBehaviorSupport" format=3]
+
+[ext_resource type="Script" path="res://core/ai/enemy_behavior_support.gd" id="1_behavior"]
+[ext_resource type="Resource" path="res://data/spells/soin.tres" id="2_spell"]
+
+[resource]
+script = ExtResource("1_behavior")
+support_spell = ExtResource("2_spell")
+heal_threshold = 0.7
+fallback_to_default = true

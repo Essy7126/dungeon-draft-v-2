@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Graine vive"
+description = "Lecture joueur: Cout 25 Elan. Portee 4. Cible: allie/soi/case libre. Effets: 4 soin; pose ou modifie un terrain; genere via verbe HEAL."
 energy_cost = 25.0
 charge_verb = "HEAL"
 spell_range = 4

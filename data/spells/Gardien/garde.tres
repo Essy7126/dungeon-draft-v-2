@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_anvwb")
 spell_name = "Garde"
+description = "Lecture joueur: Cout 25 Elan. Portee 2. Cible: allie/soi. Effets: 20 bouclier; applique un statut; genere via verbe PROTECT."
 icon = ExtResource("2_byomw")
 energy_cost = 25.0
 charge_verb = "PROTECT"
