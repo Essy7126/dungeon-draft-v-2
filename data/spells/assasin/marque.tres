@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_7lwug")
 spell_name = "Marque"
+description = "Applique Marque: les attaques opportunistes et les executions de l Assassin exploitent mieux cette cible."
 energy_cost = 25.0
 charge_verb = "EXPLOIT"
 applied_status = ExtResource("1_mmkep")

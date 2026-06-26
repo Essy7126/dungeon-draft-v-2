@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Catalyseur"
+description = "Poser un terrain sur terrain ennemi force la reaction."
+hook = "Terrain"
+rarity = 2
+tradeoff = "Specialisation terrain forte; hook complet a implementer."

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RunEventData" format=3]
+
+[ext_resource type="Script" path="res://data/events/run_event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_name = "Mendiant"
+description = "Donner de l or pour une benediction future ou une arnaque."
+risk_level = 1
+choices = Array[Dictionary]([{"label":"Donner", "gain":"benediction future", "cost":"or"}, {"label":"Ignorer", "gain":"aucun", "cost":"aucun"}])

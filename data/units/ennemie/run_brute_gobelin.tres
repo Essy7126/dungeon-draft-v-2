@@ -1,17 +1,19 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://btbxw14ahk5k2"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Texture2D" path="res://asset/Orc.png" id="2_sprite"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_4fddj"]
+[ext_resource type="Texture2D" uid="uid://cb1o6ejevfq4w" path="res://asset/personnage/ennemi/goebleinscenario.png" id="3_4fddj"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="4_wl0mp"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_brute"]
-atlas = ExtResource("2_sprite")
-region = Rect2(100, 0, 100, 100)
+[sub_resource type="AtlasTexture" id="AtlasTexture_wl0mp"]
+atlas = ExtResource("3_4fddj")
+region = Rect2(0, 0, 512, 1024)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_brute"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_brute")
+"texture": SubResource("AtlasTexture_wl0mp")
 }],
 "loop": true,
 "name": &"default",
@@ -29,3 +31,4 @@ max_mp = 2
 attack_power = 16
 armure = 8.0
 sprite_frames = SubResource("SpriteFrames_brute")
+sprite_scale = 0.1

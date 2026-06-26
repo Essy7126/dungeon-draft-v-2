@@ -23,12 +23,15 @@ const HERO_DATA_PATHS = [
 	"res://data/units/alliés/Guerrier.tres",
 	"res://data/units/alliés/healer.tres",
 	"res://data/units/alliés/Assassin.tres",
+	"res://data/units/alliés/Necromant.tres",
+	"res://data/units/alliés/Hoplite.tres",
 ]
 
 const ENERGY_DATA_PATHS = [
 	"res://data/energy/rage.tres",
 	"res://data/energy/foi.tres",
 	"res://data/energy/nature.tres",
+	"res://data/energy/ombre.tres",
 ]
 
 const STARTING_TRAIT_PATHS = [

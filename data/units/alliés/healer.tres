@@ -1,36 +1,27 @@
-[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bq7tyibldjx6x"]
+[gd_resource type="Resource" script_class="UnitData" format=3]
 
-[ext_resource type="Resource" uid="uid://t8xipeik7ih8" path="res://data/energy/nature.tres" id="1_b83qh"]
-[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_y7o4r"]
-[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_b83qh"]
-[ext_resource type="Resource" uid="uid://d2rbmtnp3it51" path="res://data/spells/Healer/seve_legere.tres" id="3_spell"]
-[ext_resource type="Resource" uid="uid://c5qeqn107yiju" path="res://data/spells/Healer/graine_vive.tres" id="4_spell"]
-[ext_resource type="Resource" uid="uid://bo0sbsw3m0ljv" path="res://data/spells/Healer/floraison.tres" id="5_spell"]
-[ext_resource type="Texture2D" uid="uid://2lnx7hhimevw" path="res://asset/personnage/alliés/480.png" id="6_sprite"]
-[ext_resource type="Resource" uid="uid://b71myxswqwgix" path="res://data/traits/chassis_healer.tres" id="7_chassis"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/energy/nature.tres" id="3_energy"]
+[ext_resource type="Resource" path="res://data/traits/chassis_healer.tres" id="4_chassis"]
+[ext_resource type="Texture2D" path="res://asset/personnage/alliés/480.png" id="5_sprite"]
+[ext_resource type="Resource" path="res://data/spells/Healer/seve_legere.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/Healer/ronces.tres" id="11_spell"]
+[ext_resource type="Resource" path="res://data/spells/Healer/graine_vive.tres" id="12_spell"]
+[ext_resource type="Resource" path="res://data/spells/Healer/floraison.tres" id="13_spell"]
 
-[ext_resource type="Resource" path="res://data/spells/Healer/ronces.tres" id="8_ronces"]
-[sub_resource type="SpriteFrames" id="SpriteFrames_healer"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("6_sprite")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
+[sub_resource type="SpriteFrames" id="SpriteFrames_main"]
+animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("5_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
 
 [resource]
-script = ExtResource("1_y7o4r")
-unit_name = "Healer"
+script = ExtResource("1_unit")
+unit_name = "Druide"
+description = "Soutien Nature. Il soigne, pose Eau/Ronces/Rune et transforme la survie en tempo."
 max_hp = 90
 initiative = 11
 attack_power = 8
-energy_type = ExtResource("1_b83qh")
-chassis_trait = ExtResource("7_chassis")
-sprite_frames = SubResource("SpriteFrames_healer")
+energy_type = ExtResource("3_energy")
+chassis_trait = ExtResource("4_chassis")
+sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_b83qh")]([ExtResource("3_spell"), ExtResource("4_spell"), ExtResource("5_spell"), ExtResource("8_ronces")])
-description = "Soutien Nature. Il soigne, pose des terrains utiles et transforme la survie en tempo."
-metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell"), ExtResource("12_spell"), ExtResource("13_spell")])

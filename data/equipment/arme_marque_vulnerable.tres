@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EquipmentData" format=3]
+
+[ext_resource type="Script" path="res://data/equipment/equipment_data.gd" id="1_equipment"]
+[ext_resource type="Resource" path="res://data/traits/relique_empreinte_tellurique.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_equipment")
+equipment_name = "Pointe de duel"
+description = "Arme rare anti-cible exposee."
+slot = 0
+rarity = 1
+affixes = Array[String](["+20% degats sur cible Marquee ou Vulnerable", "Critique leger"])
+tradeoff = ""
+traits = Array[ExtResource("2_trait")]([ExtResource("2_trait")])

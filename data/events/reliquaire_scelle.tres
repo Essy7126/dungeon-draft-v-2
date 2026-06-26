@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RunEventData" format=3]
+
+[ext_resource type="Script" path="res://data/events/run_event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_name = "Reliquaire scelle"
+description = "Echanger une relique contre une rarete superieure aveugle."
+risk_level = 3
+choices = Array[Dictionary]([{"label":"Echanger", "gain":"relique superieure", "cost":"relique"}, {"label":"Garder", "gain":"aucun", "cost":"aucun"}])

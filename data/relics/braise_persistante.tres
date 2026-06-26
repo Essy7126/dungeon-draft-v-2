@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+[ext_resource type="Resource" path="res://data/traits/relique_braise_persistante.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Braise persistante"
+description = "Eveil plus confortable."
+hook = "Eveil"
+rarity = 0
+tradeoff = "Cout accru dans la version complete."
+trait_data = ExtResource("2_trait")

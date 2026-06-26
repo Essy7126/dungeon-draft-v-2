@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Script" path="res://core/ai/boss_roi_gobelin.gd" id="3_boss_behavior"]
+[ext_resource type="Texture2D" path="res://asset/persephone.png" id="4_sprite"]
+[ext_resource type="Resource" path="res://data/spells/boss/bouclier_miroir.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/draft/salve.tres" id="11_spell"]
+
+[sub_resource type="Resource" id="BossBehavior_main"]
+script = ExtResource("3_boss_behavior")
+signature_spell = ExtResource("10_spell")
+signature_every = 3
+enrage_threshold = 0.5
+enrage_attack_bonus = 0.35
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_boss"]
+animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("4_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Persee"
+description = "Boss EXT: taxe les patterns repetes avec Bouclier-Miroir."
+team = 1
+max_hp = 300
+initiative = 15
+max_ap = 8
+max_mp = 5
+attack_power = 21
+armure = 55
+resist_magique = 75
+sprite_frames = SubResource("SpriteFrames_boss")
+sprite_scale = 1.0
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell")])
+ai_behavior = 0
+boss_behavior = SubResource("BossBehavior_main")

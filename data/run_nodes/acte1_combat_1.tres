@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RunNodeData" format=3]
+
+[ext_resource type="Script" path="res://data/run_nodes/run_node_data.gd" id="1_node"]
+[ext_resource type="Resource" path="res://data/rooms/le_gue.tres" id="2_room"]
+
+[resource]
+script = ExtResource("1_node")
+node_name = "Combat facile"
+node_type = 0
+description = "Premier combat lisible."
+room = ExtResource("2_room")

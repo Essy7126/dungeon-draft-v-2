@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3]
+
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+
+[resource]
+script = ExtResource("1_terrain")
+effect_name = "mur de lances"
+description = "Zone de controle: les ennemis qui traversent prennent des degats."
+color = Color(0.75, 0.72, 0.62, 1)
+trigger = 1
+damage = 10
+blocks_movement = false
+blocks_vision = false
+cell_type = -1
+dangerous_for_ai = true
+ai_danger_weight = 2
+native_energy_id = "foi"
+counts_as_rune = false
+elan_discount = 0
+fervor_generation_multiplier = 1.2
+duration = 2

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://6p00mmpij2u6"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Script" uid="uid://b5qxyvddqfj2p" path="res://core/ai/boss_roi_gobelin.gd" id="3_boss_behavior"]
+[ext_resource type="Texture2D" uid="uid://co518a66n3ut0" path="res://asset/persephone.png" id="4_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="7_kw3d5"]
+[ext_resource type="Resource" path="res://data/spells/boss/regard_petrifiant.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/boss/morsure_serpent.tres" id="11_spell"]
+
+[sub_resource type="Resource" id="BossBehavior_main"]
+script = ExtResource("3_boss_behavior")
+signature_spell = ExtResource("10_spell")
+enrage_attack_bonus = 0.35
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_boss"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_sprite")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Meduse"
+description = "Boss MVP: taxe l economie d action avec Regard et Petrifie."
+team = 1
+max_hp = 260
+initiative = 16
+max_ap = 8
+max_mp = 4
+attack_power = 18
+armure = 45
+resist_magique = 70
+sprite_frames = SubResource("SpriteFrames_boss")
+sprite_scale = 1.0
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell")])
+boss_behavior = SubResource("BossBehavior_main")

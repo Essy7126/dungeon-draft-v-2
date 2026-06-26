@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+[ext_resource type="Resource" path="res://data/traits/relique_etincelle_ame.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Etincelle d ame"
+description = "+3 generation de Ferveur."
+hook = "Ferveur"
+rarity = 0
+tradeoff = "Boucle moderee."
+trait_data = ExtResource("2_trait")

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://traits/trait_elan_on_turn_start.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_data")
+trait_script = ExtResource("2_trait")
+display_name = "Reflexe"
+description = "Bonus defensif de tempo, approximation de la premiere Reaction gratuite."
+params = {"amount": 10.0, "once_per_combat": true}

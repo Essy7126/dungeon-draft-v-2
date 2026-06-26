@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BossMalusData" format=3]
+
+[ext_resource type="Script" path="res://data/boss_malus/boss_malus_data.gd" id="1_malus"]
+
+[resource]
+script = ExtResource("1_malus")
+malus_name = "Reflet"
+description = "Repeter un sort dans le meme tour renvoie une partie des degats."
+taxed_axis = "Pattern de sorts"
+source_boss = "Persee"
+severity = 3

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+[ext_resource type="Resource" path="res://data/traits/relique_calice_de_rage.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Calice de Rage"
+description = "Convertit la depense de Ferveur en soin."
+hook = "Convertisseur"
+rarity = 1
+tradeoff = "Sustain conditionnel a la depense."
+trait_data = ExtResource("2_trait")

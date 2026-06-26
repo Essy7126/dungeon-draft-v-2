@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BossMalusData" format=3]
+
+[ext_resource type="Script" path="res://data/boss_malus/boss_malus_data.gd" id="1_malus"]
+
+[resource]
+script = ExtResource("1_malus")
+malus_name = "Regard de pierre"
+description = "Une unite immobile au tour precedent risque de perdre son action."
+taxed_axis = "Action"
+source_boss = "Meduse"
+severity = 2

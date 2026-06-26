@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RunEventData" format=3]
+
+[ext_resource type="Script" path="res://data/events/run_event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_name = "Source trouble"
+description = "Soin total ou relique aleatoire."
+risk_level = 2
+choices = Array[Dictionary]([{"label":"Boire", "gain":"soin", "cost":"risque"}, {"label":"Fouiller", "gain":"relique", "cost":"pile-face"}])

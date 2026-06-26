@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Transe"
+description = "Eveil ne se coupe plus en cours de tour."
+hook = "Eveil"
+rarity = 2
+tradeoff = "-5 Elan/tour; hook complet a implementer."

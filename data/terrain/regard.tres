@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3]
+
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+[ext_resource type="Resource" path="res://data/status/core/petrifie.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_terrain")
+effect_name = "regard"
+description = "Zone de Meduse: finir ou commencer dedans expose a Petrifie."
+color = Color(0.55, 0.62, 0.52, 1)
+trigger = 0
+damage = 0
+applied_status = ExtResource("2_status")
+blocks_movement = false
+blocks_vision = true
+cell_type = 5
+dangerous_for_ai = true
+ai_danger_weight = 4
+native_energy_id = ""
+counts_as_rune = false
+elan_discount = 0
+fervor_generation_multiplier = 1
+duration = 2

@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/status/core/vulnerable_bible.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Devoration du temps"
+description = "Cronos combine les taxes de boss et frappe toute la ligne."
+energy_cost = 60
+fervor_cost = 40
+imprint_fervor_cost = 0
+imprint_damage_bonus = 0
+imprint_heal_bonus = 0
+imprint_shield_bonus = 0
+charge_verb = "HIT"
+spell_range = 6
+can_target_enemy = true
+can_target_ally = false
+can_target_free_cell = false
+can_target_self = false
+aoe_shape = 3
+aoe_size = 4
+damage = 40
+heal = 0
+damage_type = 1
+element = 4
+applied_status = ExtResource("2_status")
+push_distance = 0
+shield_grant = 0
+bonus_damage_if_marked = 0
+forces_taunt = false
+elan_drain = 0
+fervor_drain = 0
+teleport_behind_target = false

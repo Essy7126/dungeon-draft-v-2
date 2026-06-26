@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/energy/ombre.tres" id="3_energy"]
+[ext_resource type="Resource" path="res://data/traits/chassis_assassin.tres" id="4_chassis"]
+[ext_resource type="Texture2D" path="res://asset/personnage/alliés/480.png" id="5_sprite"]
+[ext_resource type="Resource" path="res://data/spells/Necromant/eclat_ombre.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/Necromant/lever.tres" id="11_spell"]
+[ext_resource type="Resource" path="res://data/spells/Necromant/faille.tres" id="12_spell"]
+[ext_resource type="Resource" path="res://data/spells/Necromant/moisson.tres" id="13_spell"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_main"]
+animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("5_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Necromant"
+description = "Controleur Ombre. Il pose Faille, occupe le terrain et convertit les patterns en Moisson."
+max_hp = 85
+initiative = 12
+attack_power = 10
+energy_type = ExtResource("3_energy")
+chassis_trait = ExtResource("4_chassis")
+sprite_frames = SubResource("SpriteFrames_main")
+sprite_scale = 0.1
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell"), ExtResource("12_spell"), ExtResource("13_spell")])

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnergyTypeData" format=3]
+
+[ext_resource type="Script" uid="uid://b47puqafimbk5" path="res://data/energy/energy_type.gd" id="1_energy"]
+[ext_resource type="Resource" path="res://data/traits/threshold_identity.tres" id="2_threshold"]
+
+[resource]
+script = ExtResource("1_energy")
+energy_name = "Ombre"
+energy_id = "ombre"
+color = Color(0.34, 0.14, 0.62, 1)
+start_energy = 0.0
+gain_table = {"EXPLOIT": 14.0, "HEAL": 2.0, "HIT": 6.0, "PROTECT": 2.0, "TAKE_DAMAGE": 0.0}
+threshold_gain_multipliers = {"EXPLOIT": 1.5}
+threshold_name = "Voile"
+threshold_trait = ExtResource("2_threshold")
+threshold_esquive_bonus = 0.18
+threshold_attack_bonus_pct = 0.1
+awakening_damage_multiplier = 1.15
+awakening_imprint_discount = 8.0
+awakening_incoming_damage_multiplier = 0.85
+reaction_cost = 25.0
+reaction_damage_multiplier = 0.55
+reaction_next_turn_elan_bonus = 10.0
+description = "Ombre construit la Ferveur en exploitant les angles, les cibles marquees et le terrain Ombre. Son Eveil donne de l'esquive, amplifie les opportunites et rend les Empreintes moins cheres."
+metadata/_custom_type_script = "uid://b47puqafimbk5"

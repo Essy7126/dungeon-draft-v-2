@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+[ext_resource type="Resource" path="res://data/traits/relique_empreinte_tellurique.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Empreinte tellurique"
+description = "+10% degats sur ton terrain."
+hook = "Terrain"
+rarity = 0
+tradeoff = "Conditionnel au placement."
+trait_data = ExtResource("2_trait")

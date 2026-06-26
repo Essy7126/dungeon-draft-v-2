@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://traits/trait_elan_on_turn_start.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_data")
+trait_script = ExtResource("2_trait")
+display_name = "Elan brut"
+description = "Gain de tempo en debut de tour: approxime la premiere action moins chere."
+params = {"amount": 5.0, "once_per_combat": false}

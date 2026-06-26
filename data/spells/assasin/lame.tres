@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Lame"
+description = "Geste Ombre simple: petite frappe pour ouvrir Marque ou Execution."
+energy_cost = 10
+charge_verb = "HIT"
+spell_range = 1
+damage = 9
+damage_type = 0

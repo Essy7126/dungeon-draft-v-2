@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EquipmentData" format=3]
+
+[ext_resource type="Script" path="res://data/equipment/equipment_data.gd" id="1_equipment"]
+[ext_resource type="Resource" path="res://data/traits/relique_pacte_de_fer.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_equipment")
+equipment_name = "Egide du Martyr"
+description = "Redirige les degats allies."
+slot = 1
+rarity = 2
+affixes = Array[String](["Redirige 50% degats allies", "PV max accrus"])
+tradeoff = "Ne peut etre soigne par autrui."
+traits = Array[ExtResource("2_trait")]([ExtResource("2_trait")])

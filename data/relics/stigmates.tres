@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+[ext_resource type="Resource" path="res://data/traits/relique_stigmates.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Stigmates"
+description = "+Ferveur quand tu subis des degats."
+hook = "Ferveur"
+rarity = 1
+tradeoff = "PV max reduits / soin fragilise."
+trait_data = ExtResource("2_trait")

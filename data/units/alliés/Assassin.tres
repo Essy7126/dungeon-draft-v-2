@@ -1,33 +1,27 @@
-[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://boi1v8rf72fw3"]
+[gd_resource type="Resource" script_class="UnitData" format=3]
 
-[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_lqagd"]
-[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_4eywv"]
-[ext_resource type="Resource" uid="uid://c33alie1vyhvs" path="res://data/spells/assasin/marque.tres" id="3_6n4or"]
-[ext_resource type="Resource" uid="uid://c6sfm4fst1dx5" path="res://data/spells/assasin/execution.tres" id="4_ku6rj"]
-[ext_resource type="Resource" uid="uid://f86bs6grnsf6" path="res://data/spells/assasin/frappe_basse.tres" id="5_2mlh8"]
-[ext_resource type="Texture2D" uid="uid://0gvxy57itirw" path="res://asset/personnage/alliés/493.png" id="6_4eywv"]
-[ext_resource type="Resource" uid="uid://dy1jdsj4qtvwb" path="res://data/energy/rage.tres" id="7_energy"]
-[ext_resource type="Resource" path="res://data/traits/chassis_assassin.tres" id="8_chassis"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/energy/ombre.tres" id="3_energy"]
+[ext_resource type="Resource" path="res://data/traits/chassis_assassin.tres" id="4_chassis"]
+[ext_resource type="Texture2D" path="res://asset/personnage/alliés/493.png" id="5_sprite"]
+[ext_resource type="Resource" path="res://data/spells/assasin/lame.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/assasin/marque.tres" id="11_spell"]
+[ext_resource type="Resource" path="res://data/spells/assasin/pas_de_l_ombre.tres" id="12_spell"]
+[ext_resource type="Resource" path="res://data/spells/assasin/execution.tres" id="13_spell"]
 
-[ext_resource type="Resource" path="res://data/spells/assasin/pas_de_l_ombre.tres" id="9_shadow_step"]
-[sub_resource type="SpriteFrames" id="SpriteFrames_6n4or"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("6_4eywv")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
+[sub_resource type="SpriteFrames" id="SpriteFrames_main"]
+animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("5_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
 
 [resource]
-script = ExtResource("1_lqagd")
+script = ExtResource("1_unit")
 unit_name = "Assassin"
-energy_type = ExtResource("7_energy")
-chassis_trait = ExtResource("8_chassis")
-sprite_frames = SubResource("SpriteFrames_6n4or")
+description = "Finisseur Ombre. Il marque les cibles, exploite les angles et convertit les ouvertures en executions."
+max_hp = 80
+initiative = 14
+attack_power = 15
+energy_type = ExtResource("3_energy")
+chassis_trait = ExtResource("4_chassis")
+sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_4eywv")]([ExtResource("3_6n4or"), ExtResource("4_ku6rj"), ExtResource("5_2mlh8"), ExtResource("9_shadow_step")])
-description = "Finisseur mobile. Il marque les cibles, exploite les angles et convertit les ouvertures en executions."
-metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell"), ExtResource("12_spell"), ExtResource("13_spell")])

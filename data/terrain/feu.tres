@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3]
+
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+[ext_resource type="Resource" path="res://data/status/core/brulure.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_terrain")
+effect_name = "feu"
+description = "Feu au sol: inflige Brulure et sert aux reactions Eau/Feu."
+color = Color(1, 0.18, 0.03, 1)
+trigger = 1
+damage = 8
+applied_status = ExtResource("2_status")
+blocks_movement = false
+blocks_vision = false
+cell_type = 3
+dangerous_for_ai = true
+ai_danger_weight = 2.2
+native_energy_id = "rage"
+counts_as_rune = false
+elan_discount = 5
+fervor_generation_multiplier = 1.35
+duration = 3

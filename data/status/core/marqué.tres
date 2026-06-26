@@ -5,5 +5,6 @@
 [resource]
 script = ExtResource("1_uq0ed")
 status_name = "Marqué"
+description = "Cible exposee aux executions et aux effets EXPLOIT de l Assassin."
 duration = 2
 metadata/_custom_type_script = "uid://sr3n54wflcuj"

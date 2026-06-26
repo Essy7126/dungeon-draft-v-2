@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/terrain/feu.tres" id="2_terrain"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Deflagration"
+description = "Gros degat de zone Feu; consommera les terrains Feu quand la reaction sera complete."
+energy_cost = 60
+fervor_cost = 30
+imprint_fervor_cost = 0
+imprint_damage_bonus = 0
+imprint_heal_bonus = 0
+imprint_shield_bonus = 0
+charge_verb = "HIT"
+spell_range = 4
+can_target_enemy = true
+can_target_ally = false
+can_target_free_cell = true
+can_target_self = false
+aoe_shape = 2
+aoe_size = 1
+damage = 34
+heal = 0
+damage_type = 1
+element = 1
+terrain_effect = ExtResource("2_terrain")
+push_distance = 0
+shield_grant = 0
+bonus_damage_if_marked = 0
+forces_taunt = false
+elan_drain = 0
+fervor_drain = 0
+teleport_behind_target = false

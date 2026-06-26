@@ -6,15 +6,15 @@
 [ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_a0v5p"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_pnk24"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_4hus3"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_pnk24"]
 atlas = ExtResource("4_a0v5p")
-region = Rect2(100, 400, 100, 100)
+region = Rect2(200, 200, 100, 100)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_en8bq"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_4hus3")
+"texture": SubResource("AtlasTexture_pnk24")
 }],
 "loop": true,
 "name": &"default",

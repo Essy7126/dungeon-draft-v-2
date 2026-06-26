@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_d8pi4")
 spell_name = "Frappe basse"
+description = "Attaque legere de proximite pour maintenir la pression et charger les ouvertures."
 energy_cost = 25.0
 charge_verb = "HIT"
 spell_range = 1

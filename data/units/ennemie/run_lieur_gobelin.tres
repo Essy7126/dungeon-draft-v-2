@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://bvwb0l5w6fils"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="3_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_tegf3"]
+[ext_resource type="Resource" path="res://data/spells/enemies/entrave.tres" id="10_spell"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_enemy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_sprite")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Lieur gobelin"
+description = "Enracine une unite: taxe le mouvement sous Meduse ou Thor."
+team = 1
+max_hp = 40
+initiative = 8
+attack_power = 5
+sprite_frames = SubResource("SpriteFrames_enemy")
+sprite_scale = 1.0
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell")])
+ai_behavior = 1

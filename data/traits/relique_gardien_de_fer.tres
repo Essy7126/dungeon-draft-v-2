@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://traits/trait_shield_on_damage_dealt.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_data")
+trait_script = ExtResource("2_trait")
+display_name = "Gardien de fer"
+description = "Tes degats te donnent un bouclier et comptent comme PROTECT."
+params = {"shield_ratio": 0.35, "minimum_shield": 2, "generate_protect": true}

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Choeur"
+description = "Ouverture dure 2 tours."
+hook = "Resonance"
+rarity = 2
+tradeoff = "Consomme toute la Resonance; systeme a brancher."

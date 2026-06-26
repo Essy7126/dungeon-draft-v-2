@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://dopduwu6dpjs8"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="3_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="6_vi0l4"]
+[ext_resource type="Resource" path="res://data/spells/gobelin/braise_gobeline.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/draft/etincelle.tres" id="11_spell"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oiyhc"]
+atlas = ExtResource("3_sprite")
+region = Rect2(100, 400, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_enemy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oiyhc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Pyromage d elite"
+description = "Elite terrain: multiplie Feu/Lave et force le repositionnement."
+team = 1
+max_hp = 69
+initiative = 7
+attack_power = 10
+sprite_frames = SubResource("SpriteFrames_enemy")
+sprite_scale = 1.0
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell")])
+ai_behavior = 1

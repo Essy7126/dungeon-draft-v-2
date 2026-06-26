@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" path="res://data/spells/draft/salve.tres" id="2_spell"]
+
+[resource]
+script = ExtResource("1_reward")
+reward_name = "Salve"
+description = "Ajoute Salve: source multi-hit concentree."
+target = 0
+rarity = 1
+spell = ExtResource("2_spell")

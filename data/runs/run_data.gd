@@ -15,3 +15,9 @@ extends Resource
 # Pool de récompenses : on en tire 3 au hasard après chaque salle gagnée.
 # Mélange bénédictions et malédictions pour créer de vrais choix.
 @export var reward_pool: Array[RewardData] = []
+@export_group("Pools etendus - Bible")
+@export var relic_pool: Array[Resource] = []
+@export var equipment_pool: Array[Resource] = []
+@export var event_pool: Array[Resource] = []
+@export var boss_malus_pool: Array[Resource] = []
+@export var run_nodes: Array[Resource] = []

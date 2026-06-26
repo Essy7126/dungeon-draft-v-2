@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3]
+
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+
+[resource]
+script = ExtResource("1_terrain")
+effect_name = "banniere"
+description = "Point de ralliement: compte comme rune de soutien pour les synergies d equipe."
+color = Color(0.95, 0.72, 0.25, 1)
+trigger = 2
+damage = 0
+blocks_movement = false
+blocks_vision = false
+cell_type = 6
+dangerous_for_ai = false
+ai_danger_weight = 0
+native_energy_id = ""
+counts_as_rune = true
+elan_discount = 0
+fervor_generation_multiplier = 1.25
+duration = 3

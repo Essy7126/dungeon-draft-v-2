@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="StatusData" format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_name = "Faille"
+description = "Debuff Ombre cumulable dans la bible; ici, rend la cible plus fragile."
+color = Color(0.35, 0.1, 0.65, 1)
+damage_per_turn = 0
+heal_per_turn = 0
+skips_turn = false
+mp_reduction = 0
+duration = 3
+damage_multiplier_received = 1.15

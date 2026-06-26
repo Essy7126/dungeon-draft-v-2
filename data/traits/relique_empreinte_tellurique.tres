@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://traits/trait_stat_bonus.gd" id="2_trait"]
+
+[resource]
+script = ExtResource("1_data")
+trait_script = ExtResource("2_trait")
+display_name = "Empreinte tellurique"
+description = "Degats accrus quand le build joue autour du terrain."
+params = {"attack_pct": 0.10}

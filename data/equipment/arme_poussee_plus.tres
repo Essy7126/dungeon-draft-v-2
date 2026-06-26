@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EquipmentData" format=3]
+
+[ext_resource type="Script" path="res://data/equipment/equipment_data.gd" id="1_equipment"]
+
+[resource]
+script = ExtResource("1_equipment")
+equipment_name = "Maillet de recul"
+description = "Arme qui specialisera les poussees."
+slot = 0
+rarity = 0
+affixes = Array[String](["Tes poussees font +1 case"])
+tradeoff = "Pas encore branche au moteur de push."

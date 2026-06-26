@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+[ext_resource type="Resource" path="res://data/traits/relique_seconde_nature.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Seconde nature"
+description = "+20 max Elan; ouverture reduite."
+hook = "Elan"
+rarity = 1
+tradeoff = "Depart plus lent."
+trait_data = ExtResource("2_trait")

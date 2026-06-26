@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Script" path="res://data/relics/relic_data.gd" id="1_relic"]
+
+[resource]
+script = ExtResource("1_relic")
+relic_name = "Geomancien"
+description = "Tes terrains durent +2 tours."
+hook = "Terrain"
+rarity = 1
+tradeoff = "Pas de bonus hors terrain; hook complet a implementer."

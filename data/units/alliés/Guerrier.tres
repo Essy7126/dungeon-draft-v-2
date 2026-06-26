@@ -1,33 +1,27 @@
-[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://r0qij5fe4l2i"]
+[gd_resource type="Resource" script_class="UnitData" format=3]
 
-[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_r2tug"]
-[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_nnx18"]
-[ext_resource type="Resource" uid="uid://0flkpto1jkby" path="res://data/spells/Guerrier/frappe_lourde.tres" id="3_3i8e2"]
-[ext_resource type="Resource" uid="uid://dpmhlxq1x24eq" path="res://data/spells/Guerrier/brise_garde.tres" id="4_s0rgo"]
-[ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="5_qjwhl"]
-[ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="6_s0rgo"]
-[ext_resource type="Resource" uid="uid://dy1jdsj4qtvwb" path="res://data/energy/rage.tres" id="7_energy"]
-[ext_resource type="Resource" uid="uid://cav8k84gqbymp" path="res://data/traits/chassis_guerrier.tres" id="8_chassis"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/energy/rage.tres" id="3_energy"]
+[ext_resource type="Resource" path="res://data/traits/chassis_guerrier.tres" id="4_chassis"]
+[ext_resource type="Texture2D" path="res://asset/personnage/alliés/495.png" id="5_sprite"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/frappe.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/coup_épaule.tres" id="11_spell"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/frappe_lourde.tres" id="12_spell"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/brise_garde.tres" id="13_spell"]
 
-[ext_resource type="Resource" path="res://data/spells/Guerrier/onde_de_choc.tres" id="9_onde"]
-[sub_resource type="SpriteFrames" id="SpriteFrames_qjwhl"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("6_s0rgo")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
+[sub_resource type="SpriteFrames" id="SpriteFrames_main"]
+animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("5_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
 
 [resource]
-script = ExtResource("1_r2tug")
+script = ExtResource("1_unit")
 unit_name = "Guerrier"
-energy_type = ExtResource("7_energy")
-chassis_trait = ExtResource("8_chassis")
-sprite_frames = SubResource("SpriteFrames_qjwhl")
+description = "Bruiser Rage. Il frappe, pousse et transforme le terrain en fenetre Berserker."
+max_hp = 100
+initiative = 10
+attack_power = 18
+energy_type = ExtResource("3_energy")
+chassis_trait = ExtResource("4_chassis")
+sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_nnx18")]([ExtResource("3_3i8e2"), ExtResource("5_qjwhl"), ExtResource("4_s0rgo"), ExtResource("9_onde")])
-description = "Combattant de ligne. Il transforme les coups et les poussees en Ferveur, puis brule cette reserve pour de grosses Empreintes."
-metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell"), ExtResource("12_spell"), ExtResource("13_spell")])

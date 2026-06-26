@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BossMalusData" format=3]
+
+[ext_resource type="Script" path="res://data/boss_malus/boss_malus_data.gd" id="1_malus"]
+
+[resource]
+script = ExtResource("1_malus")
+malus_name = "Jugement"
+description = "Soins recus reduits pour le reste de la run."
+taxed_axis = "Soin"
+source_boss = "Anubis"
+severity = 3

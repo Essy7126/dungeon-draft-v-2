@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RunEventData" format=3]
+
+[ext_resource type="Script" path="res://data/events/run_event_data.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+event_name = "Pacte d Ombre"
+description = "Sort puissant contre malus permanent."
+risk_level = 4
+choices = Array[Dictionary]([{"label":"Signer", "gain":"sort Ombre", "cost":"malus"}, {"label":"Briser le pacte", "gain":"combat", "cost":"elite"}])

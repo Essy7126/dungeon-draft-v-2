@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/energy/foi.tres" id="3_energy"]
+[ext_resource type="Resource" path="res://data/traits/chassis_guerrier.tres" id="4_chassis"]
+[ext_resource type="Texture2D" path="res://asset/personnage/alliés/500.png" id="5_sprite"]
+[ext_resource type="Resource" path="res://data/spells/Hoplite/estoc.tres" id="10_spell"]
+[ext_resource type="Resource" path="res://data/spells/Hoplite/repousse.tres" id="11_spell"]
+[ext_resource type="Resource" path="res://data/spells/Hoplite/mur_de_lances.tres" id="12_spell"]
+[ext_resource type="Resource" path="res://data/spells/Hoplite/phalange.tres" id="13_spell"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_main"]
+animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("5_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Hoplite"
+description = "Controleur de ligne. Portee 2, repoussements et phalange pour tenir les chokepoints."
+max_hp = 105
+initiative = 9
+attack_power = 14
+energy_type = ExtResource("3_energy")
+chassis_trait = ExtResource("4_chassis")
+sprite_frames = SubResource("SpriteFrames_main")
+sprite_scale = 0.1
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell"), ExtResource("12_spell"), ExtResource("13_spell")])

@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://6ll6yf2b2wvt"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Texture2D" uid="uid://cl5f0vfll5e5k" path="res://asset/Background/Village background cartoon 2d-6.jpg" id="1_bg"]
 [ext_resource type="PackedScene" uid="uid://607lpefu0v11" path="res://data/rooms/maps/battle_salle1.tscn" id="1_battle"]
+[ext_resource type="Texture2D" uid="uid://cl5f0vfll5e5k" path="res://asset/Background/Village background cartoon 2d-6.jpg" id="1_bg"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
-[ext_resource type="Resource" path="res://data/units/ennemie/run_eclaireur_gobelin.tres" id="3_scout"]
-[ext_resource type="Resource" path="res://data/units/ennemie/run_chamane_gobelin.tres" id="4_shaman"]
+[ext_resource type="Resource" uid="uid://egrvlbi7ke5p" path="res://data/units/ennemie/run_eclaireur_gobelin.tres" id="3_scout"]
+[ext_resource type="Resource" uid="uid://el3ukrnp1fjb" path="res://data/units/ennemie/run_chamane_gobelin.tres" id="4_shaman"]
 [ext_resource type="PackedScene" uid="uid://bklisc2gyx17o" path="res://ui/Particles/rayons_lumiere.tscn" id="5_particles"]
 
 [resource]
