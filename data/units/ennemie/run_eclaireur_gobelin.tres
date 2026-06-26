@@ -1,9 +1,7 @@
-[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://egrvlbi7ke5p"]
+[gd_resource type="Resource" script_class="UnitData" format=3]
 
-[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_13lnx"]
-[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="2_sprite"]
-[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="4_skn8w"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Texture2D" path="res://asset/Orc.png" id="2_sprite"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_scout"]
 atlas = ExtResource("2_sprite")
@@ -15,7 +13,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_scout")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
@@ -27,5 +25,6 @@ description = "Ennemi de premiere run: fragile, lisible, une seule attaque."
 team = 1
 max_hp = 45
 initiative = 7
+max_mp = 3
 attack_power = 11
 sprite_frames = SubResource("SpriteFrames_scout")

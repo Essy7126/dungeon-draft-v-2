@@ -9,6 +9,7 @@ const VERB_TAKE_DAMAGE := "TAKE_DAMAGE"
 
 @export_group("Identite")
 @export var energy_name: String = "Ferveur"
+@export_multiline var description: String = ""
 @export var energy_id: String = "rage"
 @export var color: Color = Color(0.8, 0.2, 0.2)
 

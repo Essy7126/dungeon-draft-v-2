@@ -29,4 +29,5 @@ chassis_trait = ExtResource("8_chassis")
 sprite_frames = SubResource("SpriteFrames_6n4or")
 sprite_scale = 0.1
 spells = Array[ExtResource("2_4eywv")]([ExtResource("3_6n4or"), ExtResource("4_ku6rj"), ExtResource("5_2mlh8"), ExtResource("9_shadow_step")])
+description = "Finisseur mobile. Il marque les cibles, exploite les angles et convertit les ouvertures en executions."
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

@@ -20,4 +20,5 @@ awakening_blocks_direct_damage = true
 reaction_cost = 25.0
 reaction_damage_multiplier = 0.45
 reaction_next_turn_elan_bonus = 12.0
+description = "Foi construit la Ferveur en protegeant. Son Eveil renforce les boucliers et la reaction defensive, mais bloque les degats directs."
 metadata/_custom_type_script = "uid://b47puqafimbk5"

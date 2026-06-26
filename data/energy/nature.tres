@@ -20,4 +20,5 @@ awakening_heal_multiplier = 1.15
 reaction_cost = 25.0
 reaction_damage_multiplier = 0.5
 reaction_next_turn_elan_bonus = 10.0
+description = "Nature construit la Ferveur en soignant et en exploitant le terrain. Son Eveil renforce soins et terrains, mais reduit le revenu d Elan."
 metadata/_custom_type_script = "uid://b47puqafimbk5"

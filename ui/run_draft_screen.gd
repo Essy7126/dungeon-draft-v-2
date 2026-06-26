@@ -22,14 +22,14 @@ func _ready() -> void:
 	_refresh_start_button()
 
 func _init_defaults() -> void:
-	var defaults := GameManager.get_default_draft()
+	var defaults: Array = GameManager.get_default_draft()
 	_selected_heroes.clear()
 	_selected_energies.clear()
 	_selected_traits.clear()
 	for i in range(SLOT_COUNT):
-		var default_hero = defaults[i].get("hero_path", "") if i < defaults.size() else ""
-		var default_energy = defaults[i].get("energy_path", "") if i < defaults.size() else ""
-		var default_trait = defaults[i].get("trait_path", "") if i < defaults.size() else ""
+		var default_hero: String = defaults[i].get("hero_path", "") if i < defaults.size() else ""
+		var default_energy: String = defaults[i].get("energy_path", "") if i < defaults.size() else ""
+		var default_trait: String = defaults[i].get("trait_path", "") if i < defaults.size() else ""
 		_selected_heroes.append(max(_find_option_index(_hero_options, default_hero), 0))
 		_selected_energies.append(max(_find_option_index(_energy_options, default_energy), 0))
 		_selected_traits.append(max(_find_option_index(_trait_options, default_trait), 0))
@@ -65,10 +65,11 @@ func _build_ui() -> void:
 	root.add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.text = "Choisis 3 heros, leur energie et leur trait de depart."
+	subtitle.text = "Choisis 3 heros, leur energie et leur trait de depart. Survole un choix pour lire ses effets."
 	subtitle.add_theme_font_size_override("font_size", 18)
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_color_override("font_color", Color(0.78, 0.73, 0.66))
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(subtitle)
 
 	_slots_row = HBoxContainer.new()
@@ -103,7 +104,7 @@ func _refresh_slots() -> void:
 
 func _make_slot(slot_index: int) -> Control:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(330, 520)
+	panel.custom_minimum_size = Vector2(346, 560)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 14)
@@ -113,7 +114,7 @@ func _make_slot(slot_index: int) -> Control:
 	panel.add_child(margin)
 
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(302, 492)
+	scroll.custom_minimum_size = Vector2(318, 532)
 	margin.add_child(scroll)
 
 	var box := VBoxContainer.new()
@@ -139,18 +140,24 @@ func _make_slot(slot_index: int) -> Control:
 	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(summary)
 
+	_add_section_label(box, "Lecture du build")
+	box.add_child(_make_detail_label(_get_hero_description(_hero_options[_selected_heroes[slot_index]])))
+	box.add_child(_make_detail_label(_get_energy_description(_energy_options[_selected_energies[slot_index]])))
+	box.add_child(_make_detail_label(_get_trait_description(_trait_options[_selected_traits[slot_index]])))
+
 	_add_section_label(box, "Heros")
 	for i in range(_hero_options.size()):
 		var selected: bool = _selected_heroes[slot_index] == i
 		var taken: bool = _is_hero_taken(i, slot_index)
-		var button := _make_option_button(_get_hero_name(_hero_options[i]), selected, taken, "Deja choisi dans un autre emplacement." if taken else "")
+		var tooltip: String = "Deja choisi dans un autre emplacement." if taken else _get_hero_description(_hero_options[i])
+		var button := _make_option_button(_get_hero_name(_hero_options[i]), selected, taken, tooltip)
 		button.pressed.connect(_select_hero.bind(slot_index, i))
 		box.add_child(button)
 
 	_add_section_label(box, "Energie")
 	for i in range(_energy_options.size()):
 		var selected: bool = _selected_energies[slot_index] == i
-		var button := _make_option_button(_get_energy_name(_energy_options[i]), selected, false)
+		var button := _make_option_button(_get_energy_name(_energy_options[i]), selected, false, _get_energy_description(_energy_options[i]))
 		var data = _energy_options[i].get("data")
 		if data != null and selected:
 			button.modulate = data.color
@@ -164,13 +171,6 @@ func _make_slot(slot_index: int) -> Control:
 		button.pressed.connect(_select_trait.bind(slot_index, i))
 		box.add_child(button)
 
-	var trait_note := Label.new()
-	trait_note.text = _get_trait_description(_trait_options[_selected_traits[slot_index]])
-	trait_note.add_theme_font_size_override("font_size", 12)
-	trait_note.add_theme_color_override("font_color", Color(0.72, 0.68, 0.6))
-	trait_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(trait_note)
-
 	return panel
 
 func _add_section_label(parent: VBoxContainer, text: String) -> void:
@@ -180,11 +180,19 @@ func _add_section_label(parent: VBoxContainer, text: String) -> void:
 	label.add_theme_font_size_override("font_size", 14)
 	parent.add_child(label)
 
+func _make_detail_label(text: String) -> Label:
+	var label := Label.new()
+	label.text = text if text.strip_edges() != "" else "Aucune description renseignee."
+	label.add_theme_font_size_override("font_size", 12)
+	label.add_theme_color_override("font_color", Color(0.74, 0.71, 0.64))
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return label
+
 func _make_option_button(label_text: String, selected: bool, disabled: bool, tooltip: String = "") -> Button:
 	var button := Button.new()
-	var marker := "[x] " if selected else "[ ] "
+	var marker: String = "[x] " if selected else "[ ] "
 	button.text = ("[pris] " if disabled and not selected else marker) + label_text
-	button.custom_minimum_size = Vector2(290, 30)
+	button.custom_minimum_size = Vector2(306, 32)
 	button.toggle_mode = true
 	button.button_pressed = selected
 	button.disabled = disabled
@@ -241,9 +249,127 @@ func _get_trait_name(option: Dictionary) -> String:
 		return data.display_name
 	return option.get("name", "Aucun trait")
 
+func _get_hero_description(option: Dictionary) -> String:
+	var data = option.get("data")
+	if data == null:
+		return ""
+	var lines: Array = []
+	if data.description.strip_edges() != "":
+		lines.append(data.description)
+	lines.append("Stats: %d PV, %d attaque, %d init., %d PM, armure %s, resist. %s, esquive %d%%." % [
+		int(data.max_hp),
+		int(data.attack_power),
+		int(data.initiative),
+		int(data.max_mp),
+		_fmt_float(float(data.armure)),
+		_fmt_float(float(data.resist_magique)),
+		int(round(float(data.esquive) * 100.0)),
+	])
+	var spell_summary: String = _get_spell_summary(data.spells)
+	if spell_summary != "":
+		lines.append("Sorts: %s" % spell_summary)
+	return "\n".join(lines)
+
+func _get_energy_description(option: Dictionary) -> String:
+	var data = option.get("data")
+	if data == null:
+		return ""
+	var lines: Array = []
+	if data.description.strip_edges() != "":
+		lines.append(data.description)
+	lines.append("Ferveur: max %d, seuil %s a %d, eveil %d Ferveur pendant %d tour(s), reaction %d Ferveur." % [
+		int(data.max_energy),
+		data.threshold_name,
+		int(data.threshold),
+		int(data.awakening_cost),
+		int(data.awakening_duration_turns),
+		int(data.reaction_cost),
+	])
+	var gains: String = _get_gain_summary(data.gain_table)
+	if gains != "":
+		lines.append("Generation: %s." % gains)
+	var awakening: String = _get_awakening_summary(data)
+	if awakening != "":
+		lines.append("Eveil: %s." % awakening)
+	return "\n".join(lines)
+
 func _get_trait_description(option: Dictionary) -> String:
 	var data = option.get("data")
 	if data != null:
 		var description = data.get("description")
 		return description if typeof(description) == TYPE_STRING else ""
 	return option.get("description", "")
+
+func _get_spell_summary(spells: Array) -> String:
+	var parts: Array = []
+	for spell in spells:
+		if spell == null:
+			continue
+		parts.append(_get_spell_line(spell))
+	return " | ".join(parts)
+
+func _get_spell_line(spell: Spell) -> String:
+	var effects: Array = []
+	if spell.damage > 0:
+		effects.append("%d degats" % spell.damage)
+	if spell.heal > 0:
+		effects.append("%d soin" % spell.heal)
+	if spell.shield_grant > 0:
+		effects.append("%d bouclier" % spell.shield_grant)
+	if spell.applied_status != null:
+		effects.append(spell.applied_status.status_name)
+	if spell.terrain_effect != null:
+		effects.append(spell.terrain_effect.effect_name)
+	if spell.push_distance > 0:
+		effects.append("pousse %d" % spell.push_distance)
+	if effects.is_empty():
+		return spell.spell_name
+	return "%s (%s)" % [spell.spell_name, ", ".join(effects)]
+
+func _get_gain_summary(gain_table: Dictionary) -> String:
+	var parts: Array = []
+	for key in gain_table.keys():
+		var amount: float = float(gain_table[key])
+		if amount <= 0.0:
+			continue
+		parts.append("%s +%d" % [_verb_label(str(key)), int(amount)])
+	return ", ".join(parts)
+
+func _get_awakening_summary(data) -> String:
+	var parts: Array = []
+	if data.awakening_damage_multiplier != 1.0:
+		parts.append("degats x%s" % _fmt_float(float(data.awakening_damage_multiplier)))
+	if data.awakening_incoming_damage_multiplier != 1.0:
+		parts.append("degats recus x%s" % _fmt_float(float(data.awakening_incoming_damage_multiplier)))
+	if data.awakening_shield_multiplier != 1.0:
+		parts.append("boucliers x%s" % _fmt_float(float(data.awakening_shield_multiplier)))
+	if data.awakening_heal_multiplier != 1.0:
+		parts.append("soins x%s" % _fmt_float(float(data.awakening_heal_multiplier)))
+	if data.awakening_imprint_discount > 0.0:
+		parts.append("empreintes -%d" % int(data.awakening_imprint_discount))
+	if data.awakening_blocks_healing:
+		parts.append("bloque les soins directs")
+	if data.awakening_blocks_direct_damage:
+		parts.append("bloque les degats directs")
+	if data.awakening_blocks_shield:
+		parts.append("bloque les boucliers")
+	return ", ".join(parts)
+
+func _verb_label(verb: String) -> String:
+	match verb.strip_edges().to_upper():
+		"HIT":
+			return "frappe"
+		"PROTECT":
+			return "protection"
+		"HEAL":
+			return "soin"
+		"EXPLOIT":
+			return "exploitation"
+		"TAKE_DAMAGE":
+			return "encaisse"
+	return verb
+
+func _fmt_float(value: float) -> String:
+	if abs(value - round(value)) < 0.01:
+		return str(int(round(value)))
+	return "%.2f" % value

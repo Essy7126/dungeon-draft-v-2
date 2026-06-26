@@ -29,4 +29,5 @@ chassis_trait = ExtResource("8_chassis")
 sprite_frames = SubResource("SpriteFrames_qjwhl")
 sprite_scale = 0.1
 spells = Array[ExtResource("2_nnx18")]([ExtResource("3_3i8e2"), ExtResource("5_qjwhl"), ExtResource("4_s0rgo"), ExtResource("9_onde")])
+description = "Combattant de ligne. Il transforme les coups et les poussees en Ferveur, puis brule cette reserve pour de grosses Empreintes."
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

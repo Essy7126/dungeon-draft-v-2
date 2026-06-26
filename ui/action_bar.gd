@@ -124,9 +124,9 @@ func build_spell_buttons(unit) -> void:
 func _add_spell_button(unit, spell, imprinted: bool) -> void:
 	var btn = Button.new()
 	btn.custom_minimum_size = Vector2(76, 72)
-	var action_label := _get_spell_action_label(unit, spell, imprinted)
+	var action_label: String = _get_spell_action_label(unit, spell, imprinted)
 	var prefix := "Emp. " if imprinted else ""
-	btn.tooltip_text = "%s%s\n%s" % [prefix, spell.spell_name, action_label]
+	btn.tooltip_text = _build_spell_tooltip(unit, spell, imprinted)
 	btn.set_meta("spell", spell)
 	btn.set_meta("imprinted", imprinted)
 	if spell.icon != null:
@@ -143,6 +143,45 @@ func _add_spell_button(unit, spell, imprinted: bool) -> void:
 	_spell_box.add_child(btn)
 	_spell_buttons.append(btn)
 
+func _build_spell_tooltip(unit, spell: Spell, imprinted: bool) -> String:
+	var lines: Array = []
+	lines.append(("Empreinte - " if imprinted else "") + spell.spell_name)
+	var cost: String = _get_spell_action_label(unit, spell, imprinted)
+	lines.append("Cout : %s" % cost)
+	lines.append("Portee : %d" % spell.spell_range)
+	if spell.description.strip_edges() != "":
+		lines.append(spell.description)
+	var effects: Array = []
+	if spell.damage > 0:
+		var damage_value: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
+		effects.append("%d degats" % damage_value)
+	if spell.heal > 0:
+		var heal_value: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
+		effects.append("%d soin" % heal_value)
+	var shield_value: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+	if shield_value > 0:
+		effects.append("%d bouclier" % shield_value)
+	if spell.applied_status != null:
+		effects.append("applique %s" % spell.applied_status.status_name)
+	if imprinted and spell.imprint_status != null:
+		effects.append("empreinte: applique %s" % spell.imprint_status.status_name)
+	if spell.has_terrain_effect():
+		effects.append("pose %s" % spell.terrain_effect.effect_name)
+	if imprinted and spell.imprint_terrain_effect != null:
+		effects.append("empreinte: pose %s" % spell.imprint_terrain_effect.effect_name)
+	if spell.push_distance > 0:
+		effects.append("pousse de %d case(s)" % spell.push_distance)
+	if spell.forces_taunt:
+		effects.append("force la cible a te viser")
+	if spell.teleport_behind_target:
+		effects.append("se replace derriere la cible")
+	if not effects.is_empty():
+		lines.append("Effets : " + " | ".join(effects))
+	if spell.charge_verb.strip_edges() != "":
+		lines.append("Verbe : %s" % spell.charge_verb)
+	if spell.can_imprint() and not imprinted:
+		lines.append("Empreinte disponible : brule de la Ferveur pour amplifier ce sort.")
+	return "\n".join(lines)
 func _get_spell_action_label(unit, spell, imprinted: bool = false) -> String:
 	var parts: Array = []
 	if unit != null and unit.has_energy():
@@ -174,7 +213,7 @@ func _refresh_button_states() -> void:
 	if _current_unit != null and _current_unit.has_energy():
 		attack_blocked = not _current_unit.can_afford_elan(_current_unit.get_basic_attack_elan_cost())
 	_attack_btn.disabled = not _player_controls_enabled or attack_blocked
-	var can_awaken : bool = _current_unit != null and _current_unit.has_method("can_activate_awakening") and _current_unit.can_activate_awakening()
+	var can_awaken: bool = _current_unit != null and _current_unit.has_method("can_activate_awakening") and _current_unit.can_activate_awakening()
 	_awakening_btn.disabled = not _player_controls_enabled or not can_awaken
 	for btn in _spell_buttons:
 		var spell = btn.get_meta("spell") if btn.has_meta("spell") else null

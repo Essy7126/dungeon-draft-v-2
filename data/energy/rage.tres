@@ -22,4 +22,5 @@ awakening_blocks_healing = true
 reaction_cost = 25.0
 reaction_damage_multiplier = 0.5
 reaction_next_turn_elan_bonus = 10.0
+description = "Rage construit la Ferveur en frappant. Son Eveil augmente les degats, rend les Empreintes moins cheres, mais rend le porteur fragile et insoignable."
 metadata/_custom_type_script = "uid://b47puqafimbk5"

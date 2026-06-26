@@ -34,6 +34,7 @@ var _unit_views: Dictionary = {}
 # --- Contrôle ---
 var turn_state: TurnState
 var action_bar: CanvasLayer
+var inspect_panel: CanvasLayer
 
 # --- Fin de combat ---
 var _battle_over: bool = false
@@ -162,6 +163,10 @@ func _setup_ui() -> void:
 	action_bar.spell_pressed.connect(_on_spell_pressed)
 	action_bar.awakening_pressed.connect(_on_awakening_pressed)
 	action_bar.end_turn_pressed.connect(_on_end_turn_pressed)
+
+	inspect_panel = CanvasLayer.new()
+	inspect_panel.set_script(load("res://ui/inspect_panel.gd"))
+	add_child(inspect_panel)
 
 func _setup_state() -> void:
 	turn_state = TurnState.new()
@@ -729,13 +734,17 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
-	# Pendant le déploiement, les clics servent à placer les héros.
 	if _deploying:
 		_on_deploy_click(cell)
 		return
+	if turn_state.current == TurnState.State.IDLE:
+		if inspect_panel != null:
+			inspect_panel.show_cell(cell, grid, terrain_effects, true)
+		return
 	turn_state.on_cell_clicked(cell)
-
 func _on_cell_hovered(cell: Vector2i) -> void:
+	if inspect_panel != null:
+		inspect_panel.show_cell(cell, grid, terrain_effects, false)
 	if turn_state.current != TurnState.State.TARGET_SPELL:
 		return
 	var spell = turn_state.selected_spell

@@ -32,4 +32,5 @@ chassis_trait = ExtResource("7_chassis")
 sprite_frames = SubResource("SpriteFrames_healer")
 sprite_scale = 0.1
 spells = Array[ExtResource("2_b83qh")]([ExtResource("3_spell"), ExtResource("4_spell"), ExtResource("5_spell"), ExtResource("8_ronces")])
+description = "Soutien Nature. Il soigne, pose des terrains utiles et transforme la survie en tempo."
 metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
