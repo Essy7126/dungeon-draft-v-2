@@ -207,7 +207,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 		if target != null:
 			var affected := false
 			if spell.deals_damage():
-				var raw_damage := spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
+				var raw_damage: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
 				var base_dmg := caster.get_modified_spell_damage(spell, raw_damage)
 				if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marque"):
 					base_dmg += spell.bonus_damage_if_marked
@@ -222,7 +222,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 				affected = true
 			if spell.is_healing():
 				var before_hp: int = target.current_hp
-				var raw_heal := spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
+				var raw_heal: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
 				var heal_amount := caster.get_modified_spell_heal(spell, raw_heal)
 				if spell.heal_bonus_effect_name.strip_edges() != "":
 					var heal_effect := _terrain.get_effect_data(target.grid_pos)
@@ -251,7 +251,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 				if not report["drained_units"].has(target):
 					report["drained_units"].append(target)
 				affected = true
-			var raw_shield := spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+			var raw_shield: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
 			if raw_shield > 0 and target.team == caster.team:
 				var before_shield: int = target.current_shield
 				target.add_shield(caster.get_modified_spell_shield(spell, raw_shield))

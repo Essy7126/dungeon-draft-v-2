@@ -1,83 +1,269 @@
-[gd_scene format=3 uid="uid://ciddm87xk55ye"]
+[gd_scene format=3 uid="uid://hmp238551qj7"]
 
-[ext_resource type="Script" uid="uid://dkay5dxjqqb6s" path="res://data/spells/Mage/boule_de_feu.gd" id="1_7dyng"]
-[ext_resource type="Shader" uid="uid://dbkm7o7kwurmc" path="res://asset/shaders/spells/boule_de_feu.gdshader" id="1_keyb7"]
+[ext_resource type="Script" uid="uid://cgxe8uuxl72k4" path="res://battle/vfx/boule_de_feu_vfx2.gd" id="1_script"]
+[ext_resource type="Shader" uid="uid://dbkm7o7kwurmc" path="res://asset/shaders/spells/boule_de_feu.gdshader" id="2_shader"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_keyb7"]
-shader = ExtResource("1_keyb7")
-shader_parameter/vitesse = 0.8
-shader_parameter/echelle = 4.0
-shader_parameter/couleur_coeur = Color(1, 0.9, 0.3, 1)
-shader_parameter/couleur_bord = Color(1, 0.2, 0, 1)
-shader_parameter/intensite = 1.2
+; ── Shader head ─────────────────────────────────────────────────────────────
+[sub_resource type="ShaderMaterial" id="SM_fireball"]
+shader = ExtResource("2_shader")
+shader_parameter/vitesse = 1.4
+shader_parameter/echelle = 3.0
+shader_parameter/couleur_coeur = Color(1, 0.95, 0.7, 1)
+shader_parameter/couleur_bord = Color(1, 0.42, 0.0, 1)
+shader_parameter/intensite = 1.7
+shader_parameter/blob_rayon_orbite = 0.20
+shader_parameter/blob_vitesse_orbite = 2.5
+shader_parameter/blob_taille = 0.13
 
-[sub_resource type="Gradient" id="Gradient_7dyng"]
+; ── Texture cercle doux (partagée fire + smoke) ──────────────────────────────
+[sub_resource type="Gradient" id="Grad_soft"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_keyb7"]
-gradient = SubResource("Gradient_7dyng")
+[sub_resource type="GradientTexture2D" id="GT_soft_circle"]
+gradient = SubResource("Grad_soft")
+width = 64
+height = 64
 fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
-[sub_resource type="Gradient" id="Gradient_keyb7"]
-offsets = PackedFloat32Array(0, 0.3112245, 0.60714287, 1)
-colors = PackedColorArray(1, 1, 1, 1, 1, 0.4, 0, 1, 0.8, 0, 0, 1, 1, 1, 1, 0)
+; ── Smoke ────────────────────────────────────────────────────────────────────
+[sub_resource type="Gradient" id="Grad_smoke"]
+offsets = PackedFloat32Array(0, 0.35, 0.7, 1)
+colors = PackedColorArray(0.45, 0.28, 0.12, 0.32, 0.28, 0.16, 0.08, 0.16, 0.1, 0.06, 0.02, 0.04, 0, 0, 0, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_7dyng"]
-gradient = SubResource("Gradient_keyb7")
+[sub_resource type="GradientTexture1D" id="GT_smoke"]
+gradient = SubResource("Grad_smoke")
+width = 128
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_keyb7"]
+[sub_resource type="ParticleProcessMaterial" id="PPM_smoke"]
+lifetime_randomness = 0.4
 particle_flag_disable_z = true
-spread = 25.0
-initial_velocity_min = 10.0
+direction = Vector3(-1, 0, 0)
+spread = 8.0
+initial_velocity_min = 16.0
 initial_velocity_max = 40.0
-gravity = Vector3(0, 98, 0)
-scale_min = 0.29999998
-scale_max = 0.79999995
-color_ramp = SubResource("GradientTexture1D_7dyng")
+angular_velocity_min = -6.0
+angular_velocity_max = 6.0
+gravity = Vector3(0, 0, 0)
+damping_min = 2.5
+damping_max = 6.0
+scale_min = 0.3
+scale_max = 0.65
+color_ramp = SubResource("GT_smoke")
 
-[sub_resource type="Gradient" id="Gradient_7ne3j"]
-colors = PackedColorArray(1, 0.93333334, 0, 1, 1, 0.4, 0, 1)
+; ── Additive blend ───────────────────────────────────────────────────────────
+[sub_resource type="CanvasItemMaterial" id="CIM_add"]
+blend_mode = 1
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_2t7ry"]
-gradient = SubResource("Gradient_7ne3j")
+; ── Fire trail niveau 1 (pleine puissance, près de la tête) ──────────────────
+[sub_resource type="Gradient" id="Grad_fire1"]
+offsets = PackedFloat32Array(0, 0.22, 0.55, 1)
+colors = PackedColorArray(1, 0.65, 0.1, 1, 0.95, 0.25, 0.0, 0.9, 0.7, 0.08, 0.0, 0.5, 0, 0, 0, 0)
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7dyng"]
+[sub_resource type="GradientTexture1D" id="GT_fire1"]
+gradient = SubResource("Grad_fire1")
+width = 128
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_fire1"]
+lifetime_randomness = 0.2
+particle_flag_disable_z = true
+direction = Vector3(-1, 0, 0)
+spread = 4.0
+initial_velocity_min = 95.0
+initial_velocity_max = 185.0
+angular_velocity_min = -4.0
+angular_velocity_max = 4.0
+gravity = Vector3(0, 0, 0)
+damping_min = 14.0
+damping_max = 32.0
+scale_min = 0.28
+scale_max = 0.55
+color_ramp = SubResource("GT_fire1")
+
+; ── Fire trail niveau 2 (75 %, position -35) ─────────────────────────────────
+[sub_resource type="Gradient" id="Grad_fire2"]
+offsets = PackedFloat32Array(0, 0.25, 0.6, 1)
+colors = PackedColorArray(0.95, 0.4, 0.02, 1, 0.85, 0.15, 0.0, 0.85, 0.6, 0.05, 0.0, 0.4, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GT_fire2"]
+gradient = SubResource("Grad_fire2")
+width = 128
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_fire2"]
+lifetime_randomness = 0.25
+particle_flag_disable_z = true
+direction = Vector3(-1, 0, 0)
+spread = 5.0
+initial_velocity_min = 70.0
+initial_velocity_max = 140.0
+angular_velocity_min = -5.0
+angular_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+damping_min = 12.0
+damping_max = 28.0
+scale_min = 0.20
+scale_max = 0.40
+color_ramp = SubResource("GT_fire2")
+
+; ── Fire trail niveau 3 (45 %, position -60) ─────────────────────────────────
+[sub_resource type="Gradient" id="Grad_fire3"]
+offsets = PackedFloat32Array(0, 0.3, 0.65, 1)
+colors = PackedColorArray(0.8, 0.18, 0.0, 0.85, 0.6, 0.08, 0.0, 0.65, 0.35, 0.02, 0.0, 0.3, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GT_fire3"]
+gradient = SubResource("Grad_fire3")
+width = 128
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_fire3"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+direction = Vector3(-1, 0, 0)
+spread = 6.0
+initial_velocity_min = 45.0
+initial_velocity_max = 90.0
+angular_velocity_min = -6.0
+angular_velocity_max = 6.0
+gravity = Vector3(0, 0, 0)
+damping_min = 10.0
+damping_max = 22.0
+scale_min = 0.12
+scale_max = 0.28
+color_ramp = SubResource("GT_fire3")
+
+; ── Core (halo autour de la tête) ────────────────────────────────────────────
+[sub_resource type="Gradient" id="Grad_core"]
+offsets = PackedFloat32Array(0, 0.25, 0.6, 1)
+colors = PackedColorArray(1, 1, 0.95, 1, 1, 0.88, 0.3, 1, 1, 0.38, 0, 0.7, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GT_core"]
+gradient = SubResource("Grad_core")
+width = 128
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_core"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 5.0
+direction = Vector3(-1, 0, 0)
+spread = 35.0
+initial_velocity_min = 6.0
+initial_velocity_max = 18.0
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+gravity = Vector3(0, 0, 0)
+damping_min = 20.0
+damping_max = 50.0
+scale_min = 0.10
+scale_max = 0.22
+color_ramp = SubResource("GT_core")
+
+; ── Line2D (queue de comète — trait lumineux continu) ─────────────────────────
+[sub_resource type="Gradient" id="Grad_tail"]
+offsets = PackedFloat32Array(0, 0.35, 0.7, 0.88, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.6, 0.08, 0.0, 0.3, 0.95, 0.3, 0.0, 0.75, 1, 0.6, 0.1, 1, 1, 0.85, 0.35, 1)
+
+[sub_resource type="Curve" id="Curve_tail"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+; ── Explosion ────────────────────────────────────────────────────────────────
+[sub_resource type="Gradient" id="Grad_explosion"]
+offsets = PackedFloat32Array(0, 0.31, 0.61, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.4, 0, 1, 0.8, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GT_explosion"]
+gradient = SubResource("Grad_explosion")
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_explosion"]
 particle_flag_disable_z = true
 spread = 180.0
-initial_velocity_min = 60.0
-initial_velocity_max = 180.0
-angular_velocity_min = -180.00002
-angular_velocity_max = 179.99998
-gravity = Vector3(0, 98, 0)
-scale_min = 0.5
-scale_max = 2.0
-color_ramp = SubResource("GradientTexture1D_2t7ry")
+initial_velocity_min = 80.0
+initial_velocity_max = 220.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.15
+scale_max = 0.5
+color_ramp = SubResource("GT_explosion")
 
-[node name="BouleDeFeu" type="Node2D" unique_id=1859129245]
-script = ExtResource("1_7dyng")
+; ════════════════════════════════════════════════════════════════════════════
+; NODES
+; ════════════════════════════════════════════════════════════════════════════
 
-[node name="Corps" type="ColorRect" parent="." unique_id=1088033571]
-material = SubResource("ShaderMaterial_keyb7")
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="BouleDeFeu" type="Node2D" unique_id=1016249993]
+script = ExtResource("1_script")
 
-[node name="Lueur" type="PointLight2D" parent="." unique_id=1338539764]
-scale = Vector2(4, 4)
-color = Color(1, 0.4, 0, 1)
-energy = 1.5
-texture = SubResource("GradientTexture2D_keyb7")
+; Queue de comète — Line2D lumineux (additif), de la tête vers l'arrière
+[node name="TailLine" type="Line2D" parent="." unique_id=4200000001]
+material = SubResource("CIM_add")
+width = 5.0
+width_curve = SubResource("Curve_tail")
+gradient = SubResource("Grad_tail")
+begin_cap_mode = 1
+end_cap_mode = 1
 
-[node name="Trainee" type="GPUParticles2D" parent="." unique_id=1661552472]
-amount = 15
-lifetime = 0.25
-process_material = SubResource("ParticleProcessMaterial_keyb7")
+; Fumée (derrière le feu, blend normal)
+[node name="SmokeTrail" type="GPUParticles2D" parent="." unique_id=2031777442]
+position = Vector2(-26, 0)
+amount = 18
+lifetime = 0.9
+texture = SubResource("GT_soft_circle")
+process_material = SubResource("PPM_smoke")
 
-[node name="Explosion" type="GPUParticles2D" parent="." unique_id=1618957191]
+; Feu niveau 1 — pleine puissance, juste derrière la tête
+[node name="FireTrail" type="GPUParticles2D" parent="." unique_id=947563205]
+material = SubResource("CIM_add")
+position = Vector2(-5, 0)
+amount = 55
+lifetime = 0.38
+texture = SubResource("GT_soft_circle")
+process_material = SubResource("PPM_fire1")
+
+; Feu niveau 2 — 75 %, milieu de la queue
+[node name="FireTrail2" type="GPUParticles2D" parent="." unique_id=4200000002]
+material = SubResource("CIM_add")
+position = Vector2(-14, 0)
+amount = 38
+lifetime = 0.32
+texture = SubResource("GT_soft_circle")
+process_material = SubResource("PPM_fire2")
+
+; Feu niveau 3 — 45 %, fin de la queue
+[node name="FireTrail3" type="GPUParticles2D" parent="." unique_id=4200000003]
+material = SubResource("CIM_add")
+position = Vector2(-22, 0)
+amount = 22
+lifetime = 0.26
+texture = SubResource("GT_soft_circle")
+process_material = SubResource("PPM_fire3")
+
+; Halo de particules autour de la tête
+[node name="FireballCore" type="GPUParticles2D" parent="." unique_id=1429454186]
+material = SubResource("CIM_add")
+amount = 28
+lifetime = 0.22
+local_coords = true
+texture = SubResource("GT_soft_circle")
+process_material = SubResource("PPM_core")
+
+; Tête shader (ColorRect + shader FBM + blobs)
+[node name="FireballHead" type="ColorRect" parent="." unique_id=3141592653]
+material = SubResource("SM_fireball")
+offset_left = -45.0
+offset_top = -30.0
+offset_right = 63.0
+offset_bottom = 30.0
+
+; Explosion à l'impact
+[node name="Explosion" type="GPUParticles2D" parent="." unique_id=1700664205]
+material = SubResource("CIM_add")
 emitting = false
-amount = 25
-lifetime = 0.5
+amount = 35
+lifetime = 0.55
 one_shot = true
 explosiveness = 0.9
-process_material = SubResource("ParticleProcessMaterial_7dyng")
+texture = SubResource("GT_soft_circle")
+process_material = SubResource("PPM_explosion")
 
 [connection signal="finished" from="Explosion" to="." method="_on_explosion_finished"]
