@@ -26,6 +26,9 @@ var enemy_ai: EnemyAI
 var turn_queue: TurnQueue
 var units: Array = []
 
+# Exécuteur du tour ennemi (déroulé de l'IA). Logique extraite par composition.
+var _enemy_turn: EnemyTurnRunner = null
+
 # --- Visuel ---
 var grid_view: Node2D
 var camera: Camera2D
@@ -94,6 +97,11 @@ func _setup_logic() -> void:
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
 	enemy_ai = EnemyAI.new(grid, pathfinder, spell_caster)
+	# Exécuteur du tour ennemi (Node : a besoin de get_tree() pour cadencer).
+	# Lit les systèmes/vue/animations de battle au moment du run, pas avant.
+	_enemy_turn = EnemyTurnRunner.new()
+	add_child(_enemy_turn)
+	_enemy_turn.setup(self)
 
 # ============================================================
 # IMPORT DU TERRAIN DESSINÉ (TileMapLayer → GridData)
@@ -524,7 +532,7 @@ func _on_turn_started(unit: Unit) -> void:
 	if unit.team == 1:
 		turn_state.begin_enemy_turn()
 		action_bar.set_player_controls_enabled(false)
-		await _run_enemy_turn(unit)
+		await _enemy_turn.run(unit)
 		unit.tick_statuses()
 		if not _battle_over:
 			turn_queue.advance()
@@ -544,63 +552,6 @@ func _update_active_highlight(active_unit: Unit) -> void:
 		var view = _unit_views[unit]
 		if is_instance_valid(view):
 			view.set_active(unit == active_unit)
-
-# ============================================================
-# TOUR DE L'IA
-# ============================================================
-
-func _run_enemy_turn(enemy: Unit) -> void:
-	await get_tree().create_timer(0.3).timeout
-	var plan = enemy_ai.decide(enemy, units)
-	for action in plan:
-		if _battle_over:
-			return
-		# Sécurité : une action précédente a pu tuer l'ennemi (réaction de terrain).
-		if not enemy.is_alive:
-			return
-		match action["type"]:
-			"move":
-				await _execute_ai_move(enemy, action["path"])
-			"attack":
-				await _execute_ai_attack(enemy, action["target"])
-			"cast":
-				await _execute_ai_cast(enemy, action["spell"], action["cell"])
-		await get_tree().create_timer(0.2).timeout
-
-func _execute_ai_cast(enemy: Unit, spell: Spell, cell: Vector2i) -> void:
-	if enemy.current_ap < spell.ap_cost:
-		return
-	if not spell_caster.is_valid_target(enemy, spell, cell):
-		return
-	enemy.spend_ap(spell.ap_cost)
-	spell_caster.cast(enemy, spell, cell)
-	grid_view.queue_redraw()
-	await get_tree().create_timer(0.3).timeout
-
-func _execute_ai_move(enemy: Unit, path: Array) -> void:
-	if path.size() < 2:
-		return
-	var destination = path[path.size() - 1]
-	var cost = path.size() - 1
-	enemy.spend_mp(cost)
-	grid.move_unit(enemy.grid_pos, destination)
-	enemy.grid_pos = destination
-	await _animate_move(enemy, path)
-
-func _execute_ai_attack(enemy: Unit, target: Unit) -> void:
-	if not is_instance_valid(target) or not target.is_alive:
-		return
-	if not grid.are_adjacent(enemy.grid_pos, target.grid_pos):
-		return
-	enemy.spend_ap(1)
-	var result = target.take_damage(
-		enemy.get_attack(),        # dégâts bruts
-		enemy,                     # l'attaquant → active son crit
-		Spell.DamageType.PHYSICAL, # catégorie
-		Spell.Element.NONE)        # pas d'élément
-	if result != null and not result.dodged:
-		EventBus.basic_attack_performed.emit(enemy, target)
-	await _animate_attack(enemy, target)
 
 # ============================================================
 # BOUTONS JOUEUR
