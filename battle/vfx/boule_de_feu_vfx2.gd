@@ -17,13 +17,6 @@ func initialiser(depuis: Vector2, vers: Vector2) -> void:
 	_target         = vers
 	_flying         = true
 	rotation        = (vers - depuis).angle()
-	var dir         := (vers - depuis).normalized()
-
-	for node_name in ["SmokeTrail", "FireTrail", "FireTrail2", "FireTrail3"]:
-		var child := get_node_or_null(node_name)
-		if child and child.process_material:
-			child.process_material = child.process_material.duplicate()
-			child.process_material.direction = Vector3(-dir.x, -dir.y, 0.0)
 
 	# Points fixes en espace local : queue derrière la tête le long de -X
 	_tail.clear_points()
