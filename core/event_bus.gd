@@ -81,9 +81,6 @@ signal status_expired(unit, status_name)
 # Le tour d'une unité commence (PA/PM rechargés, statuts à traiter).
 signal turn_started(unit)
 
-# Le tour d'une unité se termine.
-signal turn_ended(unit)
-
 # ============================================================
 # SIGNAUX DE CYCLE DE VIE DE LA VUE
 # Émis depuis battle.gd une fois la vue de combat construite.
