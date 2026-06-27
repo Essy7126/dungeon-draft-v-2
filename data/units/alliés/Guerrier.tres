@@ -5,7 +5,7 @@
 [ext_resource type="Resource" uid="uid://dy1jdsj4qtvwb" path="res://data/energy/rage.tres" id="3_energy"]
 [ext_resource type="Resource" uid="uid://cav8k84gqbymp" path="res://data/traits/chassis_guerrier.tres" id="4_chassis"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="5_sprite"]
-[ext_resource type="Resource" uid="uid://b87ak8kotokmw" path="res://data/spells/Mage/boule_de_feu.tres" id="9_5gm43"]
+[ext_resource type="Resource" uid="uid://c33alie1vyhvs" path="res://data/spells/assasin/marque.tres" id="9_5gm43"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/frappe.tres" id="10_spell"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="11_0hljd"]
 [ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="11_spell"]

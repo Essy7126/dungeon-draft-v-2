@@ -151,10 +151,10 @@ shader_parameter/vitesse = 1.4
 shader_parameter/echelle = 3.0
 shader_parameter/couleur_coeur = Color(1, 0.95, 0.7, 1)
 shader_parameter/couleur_bord = Color(1, 0.42, 0, 1)
-shader_parameter/intensite = 2.2
+shader_parameter/intensite = 1.4
 shader_parameter/blob_rayon_orbite = 0.2
 shader_parameter/blob_vitesse_orbite = 2.5
-shader_parameter/blob_taille = 0.13
+shader_parameter/blob_taille = 0.39
 
 [sub_resource type="Gradient" id="Grad_explosion"]
 offsets = PackedFloat32Array(0, 0.31, 0.61, 1)
