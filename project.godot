@@ -30,6 +30,10 @@ VFXManager="*uid://bjqhf4gosaohn"
 window/size/viewport_width=1200
 window/size/viewport_height=896
 
+[filesystem]
+
+import/blender/enabled=false
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

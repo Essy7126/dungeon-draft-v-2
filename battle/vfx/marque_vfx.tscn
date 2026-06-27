@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://jklphl2fdvlg"]
+
+[ext_resource type="Script" path="res://battle/vfx/marque_vfx.gd" id="1_script"]
+
+[node name="MarqueVFX" type="Node2D"]
+script = ExtResource("1_script")

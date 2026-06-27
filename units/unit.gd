@@ -255,6 +255,7 @@ func apply_status(status_data: StatusData) -> void:
 			entry["remaining"] = max(entry["remaining"], status_data.duration)
 			DebugLogger.debug(CAT_STATS, "%s : %s rafraîchi (%d tours)" % [
 				unit_name, status_data.status_name, entry["remaining"]])
+			EventBus.status_applied.emit(self, status_data)
 			return
 	# Nouveau statut.
 	active_statuses.append({ "data": status_data, "remaining": status_data.duration })
