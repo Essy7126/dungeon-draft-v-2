@@ -85,6 +85,14 @@ signal turn_started(unit)
 signal turn_ended(unit)
 
 # ============================================================
+# SIGNAUX DE CYCLE DE VIE DE LA VUE
+# Émis depuis battle.gd une fois la vue de combat construite.
+# grid_view : le GridView prêt à l'affichage (caméra, overlays, futurs systèmes
+# visuels peuvent s'y abonner sans que battle.gd ait à les connaître).
+# ============================================================
+signal battle_view_ready(grid_view)
+
+# ============================================================
 # SIGNAUX D'ÉNERGIE — l'économie d'action (remplace les PA).
 # energy_generated : de l'énergie a été réellement produite (après plafond).
 # energy_spent     : de l'énergie a été dépensée par une action.
