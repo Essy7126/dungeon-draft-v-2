@@ -67,11 +67,3 @@ extends Resource
 # 0.8 = Résistant (prend -20% de dégâts).
 # Plusieurs statuts s'accumulent par multiplication.
 @export var damage_multiplier_received: float = 1.0
-
-# ============================================================
-# VISUEL
-# ============================================================
-
-@export_group("Visuel")
-# Scène VFX instanciée sur la cible au moment de l'application du statut.
-@export var vfx_scene: PackedScene = null

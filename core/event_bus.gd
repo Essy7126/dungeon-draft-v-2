@@ -144,4 +144,3 @@ signal unit_pushed(unit, from_pos, to_pos, collision)
 #   "pushed_away_from_ally"  : bool — poussée éloignant d'un allié (futur)
 # ============================================================
 signal spell_cast(caster, spell, report)
-signal battle_view_ready(view: Node2D)

@@ -7,12 +7,14 @@ signal attack_pressed
 signal end_turn_pressed
 signal spell_pressed(spell, imprinted)
 signal awakening_pressed
+signal reaction_pressed
 
 var _panel: PanelContainer
 var _hbox: HBoxContainer
 var _move_btn: Button
 var _attack_btn: Button
 var _awakening_btn: Button
+var _reaction_btn: Button
 var _end_btn: Button
 var _info_label: Label
 var _spell_box: HBoxContainer
@@ -95,6 +97,13 @@ func _build_ui() -> void:
 	_awakening_btn.tooltip_text = "Depense 50 Ferveur pour activer l'identite pendant 2 tours."
 	_awakening_btn.pressed.connect(func(): awakening_pressed.emit())
 	_hbox.add_child(_awakening_btn)
+
+	_reaction_btn = Button.new()
+	_reaction_btn.text = "Garde"
+	_reaction_btn.custom_minimum_size = Vector2(92, 44)
+	_reaction_btn.tooltip_text = "Arme une reaction defensive pour le tour ennemi."
+	_reaction_btn.pressed.connect(func(): reaction_pressed.emit())
+	_hbox.add_child(_reaction_btn)
 
 	_hbox.add_child(VSeparator.new())
 
@@ -189,6 +198,12 @@ func _refresh_button_states() -> void:
 		_attack_btn.tooltip_text = "Attaque de base au contact."
 	var can_awaken: bool = _current_unit != null and _current_unit.has_method("can_activate_awakening") and _current_unit.can_activate_awakening()
 	_awakening_btn.disabled = not _player_controls_enabled or not can_awaken
+	var can_toggle_reaction := false
+	if _current_unit != null and _current_unit.team == 0 and _current_unit.has_method("can_arm_reaction"):
+		can_toggle_reaction = _current_unit.can_arm_reaction() or _current_unit.reaction_armed
+	_reaction_btn.disabled = not _player_controls_enabled or not can_toggle_reaction
+	_reaction_btn.text = _reaction_button_text(_current_unit)
+	_reaction_btn.tooltip_text = _reaction_tooltip(_current_unit)
 	for btn in _spell_buttons:
 		var spell = btn.get_meta("spell") if btn.has_meta("spell") else null
 		var imprinted: bool = btn.get_meta("imprinted") if btn.has_meta("imprinted") else false
@@ -208,6 +223,8 @@ func update_info(unit) -> void:
 		unit.energy_changed.connect(_on_resource_changed)
 	if not unit.elan_changed.is_connected(_on_resource_changed):
 		unit.elan_changed.connect(_on_resource_changed)
+	if not unit.stats_changed.is_connected(_on_resource_changed):
+		unit.stats_changed.connect(_on_resource_changed)
 	_refresh_resource_bars(unit)
 	_refresh_button_states()
 
@@ -218,6 +235,8 @@ func _disconnect_current_unit() -> void:
 		_current_unit.energy_changed.disconnect(_on_resource_changed)
 	if _current_unit.elan_changed.is_connected(_on_resource_changed):
 		_current_unit.elan_changed.disconnect(_on_resource_changed)
+	if _current_unit.stats_changed.is_connected(_on_resource_changed):
+		_current_unit.stats_changed.disconnect(_on_resource_changed)
 
 func _on_resource_changed(unit) -> void:
 	if unit == _current_unit:
@@ -247,6 +266,8 @@ func _refresh_resource_bars(unit) -> void:
 	var suffix := ""
 	if unit.charge_threshold_active:
 		suffix = " | %s %dt" % [et.threshold_name, unit.awakening_turns_remaining]
+	elif unit.reaction_armed:
+		suffix = " | Garde"
 	elif unit.current_energy >= et.reaction_cost:
 		suffix = " | Reaction"
 	_fervor_label.text = "%s : %d / %d%s" % [et.energy_name, int(unit.current_energy), int(et.max_energy), suffix]
@@ -268,11 +289,33 @@ func set_active_mode(mode: String, active_spell = null, imprinted: bool = false)
 			btn.modulate = Color(0.7, 0.85, 1.0)
 
 func _apply_base_button_modulates() -> void:
-	for button in [_move_btn, _attack_btn, _awakening_btn, _end_btn]:
+	for button in [_move_btn, _attack_btn, _awakening_btn, _reaction_btn, _end_btn]:
 		if button != null:
 			button.modulate = Color(0.48, 0.48, 0.48, 0.78) if button.disabled else Color.WHITE
+	if _reaction_btn != null and _current_unit != null and _current_unit.has_method("set_reaction_armed") and _current_unit.reaction_armed and not _reaction_btn.disabled:
+		_reaction_btn.modulate = Color(0.55, 0.78, 1.0)
 	for btn in _spell_buttons:
 		btn.modulate = Color(0.48, 0.48, 0.48, 0.78) if btn.disabled else Color.WHITE
+
+func _reaction_button_text(unit) -> String:
+	if unit == null or not unit.has_method("get_reaction_cost"):
+		return "Garde"
+	var prefix := "Garde ON" if unit.reaction_armed else "Garde"
+	return "%s\n%d Ferveur" % [prefix, int(unit.get_reaction_cost())]
+
+func _reaction_tooltip(unit) -> String:
+	if unit == null:
+		return "Aucun heros actif."
+	if unit.team != 0:
+		return "La Garde est un choix du joueur."
+	if not unit.has_energy():
+		return "Ce heros n'a pas de Ferveur."
+	var cost := int(unit.get_reaction_cost())
+	if unit.reaction_armed:
+		return "Garde armee : la prochaine attaque ennemie peut depenser %d Ferveur pour reduire les degats." % cost
+	if not unit.can_arm_reaction():
+		return "Injouable : Ferveur insuffisante (%d / %d)." % [int(unit.current_energy), cost]
+	return "Arme une reaction defensive pour le tour ennemi. Coute %d Ferveur seulement si elle se declenche." % cost
 
 func _attack_tooltip(unit) -> String:
 	if unit == null:

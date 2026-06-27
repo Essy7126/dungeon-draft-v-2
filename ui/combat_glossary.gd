@@ -230,9 +230,9 @@ static func _aoe_text(spell: Spell) -> String:
 
 static func _effect_text(spell: Spell, imprinted: bool) -> String:
 	var effects: Array = []
-	var damage: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
-	var heal: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
-	var shield: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+	var damage := spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
+	var heal := spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
+	var shield := spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
 	if damage > 0:
 		effects.append("Inflige %d degats." % damage)
 	if heal > 0:

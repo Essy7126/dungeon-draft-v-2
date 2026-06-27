@@ -1,7 +1,3 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-
-# Fichiers source Blender (assets de travail, non nécessaires au jeu)
-*.blend
-*.blend1

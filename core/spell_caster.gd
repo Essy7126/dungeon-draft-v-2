@@ -1,4 +1,4 @@
-class_name SpellCaster
+﻿class_name SpellCaster
 extends RefCounted
 
 var _grid: GridData
@@ -113,8 +113,8 @@ func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
 			break
 		landed_pos = next
 	if landed_pos != from_pos:
-		_grid.move_unit(from_pos, landed_pos)
-		target.grid_pos = landed_pos
+		if not _grid.relocate_unit(target, landed_pos):
+			return result
 		if _terrain.get_effect_data(landed_pos) != null:
 			result["landed_on_terrain"] = true
 			_terrain.on_enter_cell(target, landed_pos)
@@ -143,8 +143,8 @@ func _teleport_behind_target(caster: Unit, target: Unit) -> bool:
 	if not _grid.is_valid(destination) or not _grid.is_walkable(destination) or _grid.has_unit(destination):
 		return false
 	var from_pos := caster.grid_pos
-	_grid.move_unit(from_pos, destination)
-	caster.grid_pos = destination
+	if not _grid.relocate_unit(caster, destination):
+		return false
 	EventBus.unit_pushed.emit(caster, from_pos, destination, false)
 	DebugLogger.debug(CAT_SPELL, "%s se replace en %s" % [caster.unit_name, str(destination)])
 	return true
@@ -207,7 +207,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 		if target != null:
 			var affected := false
 			if spell.deals_damage():
-				var raw_damage: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
+				var raw_damage := spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
 				var base_dmg := caster.get_modified_spell_damage(spell, raw_damage)
 				if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marque"):
 					base_dmg += spell.bonus_damage_if_marked
@@ -222,7 +222,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 				affected = true
 			if spell.is_healing():
 				var before_hp: int = target.current_hp
-				var raw_heal: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
+				var raw_heal := spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
 				var heal_amount := caster.get_modified_spell_heal(spell, raw_heal)
 				if spell.heal_bonus_effect_name.strip_edges() != "":
 					var heal_effect := _terrain.get_effect_data(target.grid_pos)
@@ -251,7 +251,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 				if not report["drained_units"].has(target):
 					report["drained_units"].append(target)
 				affected = true
-			var raw_shield: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+			var raw_shield := spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
 			if raw_shield > 0 and target.team == caster.team:
 				var before_shield: int = target.current_shield
 				target.add_shield(caster.get_modified_spell_shield(spell, raw_shield))
@@ -294,10 +294,17 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 	for u in report["affected_units"]:
 		hit_names.append(u.unit_name)
 	DebugLogger.debug(CAT_SPELL, "%s : %d unite(s), %d terrain(s)" % [spell.spell_name, report["affected_units"].size(), report["terrain_changed"].size()], { "cibles": hit_names })
-	if spell.energy_generated > 0.0 and caster.has_energy():
+	if spell.energy_generated > 0.0 and caster.has_energy() and _spell_had_real_effect(report):
 		caster.generate_energy(spell.energy_generated, spell.spell_name)
 	EventBus.spell_cast.emit(caster, spell, report)
 	return report
+
+func _spell_had_real_effect(report: Dictionary) -> bool:
+	return not report.get("affected_units", []).is_empty() \
+		or not report.get("terrain_changed", []).is_empty() \
+		or bool(report.get("pushed", false)) \
+		or bool(report.get("collision", false)) \
+		or bool(report.get("landed_on_terrain", false))
 
 func _failed_report(caster: Unit, spell: Spell, cell: Vector2i, reason: String) -> Dictionary:
 	return {
@@ -305,3 +312,4 @@ func _failed_report(caster: Unit, spell: Spell, cell: Vector2i, reason: String) 
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
 		"controlled_enemies": [], "drained_units": [], "terrain_changed": [], "crits": [], "dodges": [],
 	}
+
