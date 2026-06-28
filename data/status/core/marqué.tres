@@ -1,10 +1,13 @@
 [gd_resource type="Resource" script_class="StatusData" format=3 uid="uid://borbjlismrg6m"]
 
 [ext_resource type="Script" uid="uid://sr3n54wflcuj" path="res://data/status/status_data.gd" id="1_uq0ed"]
+[ext_resource type="PackedScene" uid="uid://jklphl2fdvlg" path="res://battle/vfx/marque_vfx.tscn" id="2_vfx"]
 
 [resource]
 script = ExtResource("1_uq0ed")
 status_name = "Marqué"
 description = "Cible exposee aux executions et aux effets EXPLOIT de l Assassin."
+color = Color(0.55, 0.04, 0.04, 1)
 duration = 2
+vfx_scene = ExtResource("2_vfx")
 metadata/_custom_type_script = "uid://sr3n54wflcuj"

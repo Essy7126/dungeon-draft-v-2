@@ -1,17 +1,26 @@
-[gd_resource type="Resource" script_class="UnitData" format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://b0f4kp7gj2pha"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Resource" path="res://data/energy/ombre.tres" id="3_energy"]
 [ext_resource type="Resource" path="res://data/traits/chassis_assassin.tres" id="4_chassis"]
-[ext_resource type="Texture2D" path="res://asset/personnage/alliés/493.png" id="5_sprite"]
+[ext_resource type="Texture2D" uid="uid://0gvxy57itirw" path="res://asset/personnage/alliés/493.png" id="5_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="10_o6cm0"]
 [ext_resource type="Resource" path="res://data/spells/assasin/lame.tres" id="10_spell"]
-[ext_resource type="Resource" path="res://data/spells/assasin/marque.tres" id="11_spell"]
+[ext_resource type="Resource" uid="uid://c33alie1vyhvs" path="res://data/spells/assasin/marque.tres" id="11_spell"]
 [ext_resource type="Resource" path="res://data/spells/assasin/pas_de_l_ombre.tres" id="12_spell"]
-[ext_resource type="Resource" path="res://data/spells/assasin/execution.tres" id="13_spell"]
+[ext_resource type="Resource" uid="uid://c6sfm4fst1dx5" path="res://data/spells/assasin/execution.tres" id="13_spell"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]
-animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("5_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_sprite")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
 
 [resource]
 script = ExtResource("1_unit")
