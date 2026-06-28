@@ -57,11 +57,6 @@ const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
 # Durée d'affichage de l'écran de fin avant de rendre la main au run.
 const END_SCREEN_DELAY := 1.5
 
-# --- Draft d'énergie (phase avant combat) ---
-# La logique du draft vit dans son propre contrôleur (composition).
-# battle.gd ne fait que le lancer et réagir à draft_completed.
-var _energy_draft: EnergyDraftController = null
-
 func _ready() -> void:
 	# La salle vient du run en cours. On la lit AVANT de construire la logique,
 	# pour pouvoir, plus tard, adapter la grille à la salle si besoin.
@@ -184,12 +179,6 @@ func _setup_ui() -> void:
 	keyword_tooltip_layer.set_script(load("res://ui/keyword_tooltip_layer.gd"))
 	add_child(keyword_tooltip_layer)
 
-	# Contrôleur du draft d'énergie (overlay avant combat). Recréé à chaque
-	# combat en même temps que cette scène : son état est donc par-combat.
-	_energy_draft = EnergyDraftController.new()
-	add_child(_energy_draft)
-	_energy_draft.draft_completed.connect(_on_draft_completed)
-
 func _setup_state() -> void:
 	turn_state = TurnState.new()
 	turn_state.request_show_move_range.connect(_on_request_show_move_range)
@@ -276,19 +265,7 @@ func _start_battle() -> void:
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
 	EventBus.unit_pushed.connect(_on_unit_pushed)
 
-	# Phase de draft d'énergie avant le combat. Le contrôleur affiche l'overlay
-	# de choix (ou passe la main immédiatement s'il n'y a rien à drafter) puis
-	# émet draft_completed → _on_draft_completed enchaîne sur le combat.
-	var heroes: Array = []
-	for u in units:
-		if u.team == 0:
-			heroes.append(u)
-	action_bar.set_player_controls_enabled(false)
-	_energy_draft.start(heroes)
-
-# Appelé quand le draft d'énergie est terminé (choix faits ou aucun draft requis).
-func _on_draft_completed() -> void:
-	# Les energies et chassis sont prepares par le run (ou par le draft).
+	# Les energies et chassis sont prepares par le run (draft d'avant-combat).
 	_reset_combat_resources()
 	_launch_combat()
 
