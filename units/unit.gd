@@ -1,8 +1,8 @@
-# units/unit.gd
+﻿# units/unit.gd
 # ============================================================
-# UNIT — Un combattant (héros ou ennemi). Logique pure.
+# UNIT â€” Un combattant (hÃ©ros ou ennemi). Logique pure.
 #
-# Émet des logs de COMBAT (dégâts, soins, mort) et de STATS (statuts),
+# Ã‰met des logs de COMBAT (dÃ©gÃ¢ts, soins, mort) et de STATS (statuts),
 # pour que la console de debug serve de vrai suivi de combat.
 # ============================================================
 
@@ -71,6 +71,7 @@ var awakening_turns_remaining: int = 0
 var next_turn_elan_bonus: float = 0.0
 var current_terrain_effect: TerrainEffectData = null
 var terrain_elan_discount_used: bool = false
+var reaction_armed: bool = false
 var taunt_source = null
 var taunt_turns: int = 0
 
@@ -87,9 +88,9 @@ var spells: Array = []
 var active_statuses: Array = []
 
 # --- Traits actifs ---
-# Liste de Trait attachés à cette unité (reliques, sources d'énergie,
-# détournements, scars...). Chacun s'abonne au bus et réagit. Ajout/retrait
-# via add_trait / remove_trait, qui gèrent l'activation/désactivation propre.
+# Liste de Trait attachÃ©s Ã  cette unitÃ© (reliques, sources d'Ã©nergie,
+# dÃ©tournements, scars...). Chacun s'abonne au bus et rÃ©agit. Ajout/retrait
+# via add_trait / remove_trait, qui gÃ¨rent l'activation/dÃ©sactivation propre.
 var traits: Array = []
 
 # --- Signaux ---
@@ -101,7 +102,7 @@ signal energy_changed(unit)
 signal elan_changed(unit)
 signal shield_changed(unit)
 
-# Raccourcis de catégories de log (combat = vu par le joueur).
+# Raccourcis de catÃ©gories de log (combat = vu par le joueur).
 const CAT_COMBAT := DebugLogger.LogCategory.COMBAT
 const CAT_STATS := DebugLogger.LogCategory.STATS
 
@@ -125,8 +126,8 @@ func _init(
 	max_ap       = Stat.new(p_ap)
 	max_mp       = Stat.new(p_mp)
 	attack_power = Stat.new(p_attack)
-	# Stats défensives : neutres par défaut (renseignées via from_data).
-	# Bornes posées dès la construction = garde-fou permanent.
+	# Stats dÃ©fensives : neutres par dÃ©faut (renseignÃ©es via from_data).
+	# Bornes posÃ©es dÃ¨s la construction = garde-fou permanent.
 	armure         = Stat.new(0.0).set_bounds(0.0, DEFENSE_MAX)
 	resist_magique = Stat.new(0.0).set_bounds(0.0, DEFENSE_MAX)
 	esquive        = Stat.new(0.0).set_bounds(0.0, ESQUIVE_MAX)
@@ -145,20 +146,20 @@ static func from_data(data: UnitData) -> Unit:
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
 	u.ai_behavior = data.ai_behavior
-	# Stats défensives : on règle la valeur de BASE de chaque Stat.
+	# Stats dÃ©fensives : on rÃ¨gle la valeur de BASE de chaque Stat.
 	u.armure.base_value = data.armure
 	u.resist_magique.base_value = data.resist_magique
 	u.esquive.base_value = data.esquive
 	u.crit_chance.base_value = data.crit_chance
 	u.crit_multi.base_value = data.crit_multi
-	# Résistances élémentaires : le .tres porte des float simples
-	# { Element → float }. On les convertit en Stat clampées via le helper,
+	# RÃ©sistances Ã©lÃ©mentaires : le .tres porte des float simples
+	# { Element â†’ float }. On les convertit en Stat clampÃ©es via le helper,
 	# pour que designer = nombres simples, runtime = stats modifiables.
 	for element in data.resistances:
-		var stat := u.get_resistance(element)   # crée le Stat (clampé) si absent
+		var stat := u.get_resistance(element)   # crÃ©e le Stat (clampÃ©) si absent
 		stat.base_value = data.resistances[element]
-	# Énergie : on récupère le type défini sur l'UnitData (ex: Rage) et on
-	# initialise la réserve à start_energy (la machine démarre tiède).
+	# Ã‰nergie : on rÃ©cupÃ¨re le type dÃ©fini sur l'UnitData (ex: Rage) et on
+	# initialise la rÃ©serve Ã  start_energy (la machine dÃ©marre tiÃ¨de).
 	if data.energy_type != null:
 		u.energy_type = data.energy_type
 		u.current_energy = data.energy_type.start_energy
@@ -169,8 +170,8 @@ static func from_data(data: UnitData) -> Unit:
 			u.add_trait_from_data(trait_data)
 	u.ensure_energy_traits()
 	u.sync_charge_state(false)
-	# On DUPLIQUE le comportement : chaque boss a son propre état (compteur
-	# de tours, enrage...), sinon deux boss partageraient le même.
+	# On DUPLIQUE le comportement : chaque boss a son propre Ã©tat (compteur
+	# de tours, enrage...), sinon deux boss partageraient le mÃªme.
 	u.boss_behavior = data.boss_behavior.duplicate() if data.boss_behavior != null else null
 	for spell in data.spells:
 		u.add_spell(spell)
@@ -180,68 +181,68 @@ func add_spell(spell: Spell) -> void:
 	spells.append(spell)
 
 # ============================================================
-# ACCÈS AUX STATS
+# ACCÃˆS AUX STATS
 # ============================================================
 
-# Renvoie le Stat de résistance pour un élément donné, en le CRÉANT
-# paresseusement (clampé) s'il n'existe pas encore. Toujours non-null.
-# C'est par ici que reliques/équipement modifient une résistance :
+# Renvoie le Stat de rÃ©sistance pour un Ã©lÃ©ment donnÃ©, en le CRÃ‰ANT
+# paresseusement (clampÃ©) s'il n'existe pas encore. Toujours non-null.
+# C'est par ici que reliques/Ã©quipement modifient une rÃ©sistance :
 #   unit.get_resistance(Spell.Element.FIRE).add_modifier(0.3, FLAT, "relique_x")
 func get_resistance(element: int) -> Stat:
 	if not resistances.has(element):
 		resistances[element] = Stat.new(0.0).set_bounds(RESIST_MIN, RESIST_MAX)
 	return resistances[element]
 
-# Renvoie la valeur effective d'une résistance (0.0 si l'élément n'est pas géré).
-# Lecture seule : ne crée PAS de Stat (utilisé en boucle par le resolver).
+# Renvoie la valeur effective d'une rÃ©sistance (0.0 si l'Ã©lÃ©ment n'est pas gÃ©rÃ©).
+# Lecture seule : ne crÃ©e PAS de Stat (utilisÃ© en boucle par le resolver).
 func get_resistance_value(element: int) -> float:
 	if resistances.has(element):
 		return resistances[element].get_value()
 	return 0.0
 
-# Liste centralisée de TOUTES les stats à durée (hors résistances, ajoutées
-# dynamiquement). Source unique de vérité : tout ce qui doit "tick" est ici.
-# Ajouter une stat future = l'ajouter à cette liste, et tick_durations
+# Liste centralisÃ©e de TOUTES les stats Ã  durÃ©e (hors rÃ©sistances, ajoutÃ©es
+# dynamiquement). Source unique de vÃ©ritÃ© : tout ce qui doit "tick" est ici.
+# Ajouter une stat future = l'ajouter Ã  cette liste, et tick_durations
 # la couvrira automatiquement. Plus aucun oubli possible.
 func _all_durational_stats() -> Array:
 	var list := [
 		max_hp, initiative, max_ap, max_mp, attack_power,
 		armure, resist_magique, esquive, crit_chance, crit_multi,
 	]
-	# Les résistances sont des Stat à part entière : elles ticktent aussi.
+	# Les rÃ©sistances sont des Stat Ã  part entiÃ¨re : elles ticktent aussi.
 	for element in resistances:
 		list.append(resistances[element])
 	return list
 
 # ============================================================
-# TRAITS (le moteur des combos — Couche 3)
+# TRAITS (le moteur des combos â€” Couche 3)
 # ============================================================
 
-# Attache un trait à cette unité et l'active (il s'abonne au bus).
-# Un trait = une relique, une source d'énergie, un détournement, une scar...
+# Attache un trait Ã  cette unitÃ© et l'active (il s'abonne au bus).
+# Un trait = une relique, une source d'Ã©nergie, un dÃ©tournement, une scar...
 func add_trait(t: Trait) -> void:
 	if t == null or t in traits:
 		return
 	traits.append(t)
 	t.attach(self)
 
-# Attache un trait à partir d'une fiche TraitData (.tres) : la fabrique
+# Attache un trait Ã  partir d'une fiche TraitData (.tres) : la fabrique
 # instancie le bon script, le configure avec ses params, puis on l'attache.
-# C'est la voie data-driven : les reliques/équipements porteront des TraitData.
+# C'est la voie data-driven : les reliques/Ã©quipements porteront des TraitData.
 func add_trait_from_data(data: TraitData) -> Trait:
 	var t := TraitFactory.create(data)
 	if t != null:
 		add_trait(t)
 	return t
 
-# Retire un trait : le désactive (désabonnement + nettoyage de ses modifiers).
+# Retire un trait : le dÃ©sactive (dÃ©sabonnement + nettoyage de ses modifiers).
 func remove_trait(t: Trait) -> void:
 	if t == null or not (t in traits):
 		return
 	t.deactivate()
 	traits.erase(t)
 
-# Désactive tous les traits (ex : unité détruite, fin de combat). Propre.
+# DÃ©sactive tous les traits (ex : unitÃ© dÃ©truite, fin de combat). Propre.
 func clear_traits() -> void:
 	for t in traits:
 		t.deactivate()
@@ -251,35 +252,34 @@ func clear_traits() -> void:
 # STATUTS
 # ============================================================
 
-# Applique un statut (StatusData) à l'unité.
-# Si le statut est déjà présent, on rafraîchit sa durée (pas de cumul).
+# Applique un statut (StatusData) Ã  l'unitÃ©.
+# Si le statut est dÃ©jÃ  prÃ©sent, on rafraÃ®chit sa durÃ©e (pas de cumul).
 func apply_status(status_data: StatusData) -> void:
 	if status_data == null:
 		return
-	# Cherche si ce statut est déjà actif.
+	# Cherche si ce statut est dÃ©jÃ  actif.
 	for entry in active_statuses:
 		if entry["data"].status_name == status_data.status_name:
-			# Déjà présent : on rafraîchit la durée (la plus longue gagne).
+			# DÃ©jÃ  prÃ©sent : on rafraÃ®chit la durÃ©e (la plus longue gagne).
 			entry["remaining"] = max(entry["remaining"], status_data.duration)
-			DebugLogger.debug(CAT_STATS, "%s : %s rafraîchi (%d tours)" % [
+			DebugLogger.debug(CAT_STATS, "%s : %s rafraÃ®chi (%d tours)" % [
 				unit_name, status_data.status_name, entry["remaining"]])
-			EventBus.status_applied.emit(self, status_data)
 			return
 	# Nouveau statut.
 	active_statuses.append({ "data": status_data, "remaining": status_data.duration })
-	# Le CombatLogger écoute status_applied et produit la ligne de log.
+	# Le CombatLogger Ã©coute status_applied et produit la ligne de log.
 	EventBus.status_applied.emit(self, status_data)
 
-# L'unité a-t-elle un statut qui la fait sauter son tour ?
+# L'unitÃ© a-t-elle un statut qui la fait sauter son tour ?
 func is_stunned() -> bool:
 	for entry in active_statuses:
 		if entry["data"].skips_turn:
 			return true
 	return false
 
-# Applique les effets de tous les statuts en début de tour.
-# Retourne true si l'unité doit sauter son tour (stun).
-# (à appeler APRÈS start_turn qui recharge PA/PM)
+# Applique les effets de tous les statuts en dÃ©but de tour.
+# Retourne true si l'unitÃ© doit sauter son tour (stun).
+# (Ã  appeler APRÃˆS start_turn qui recharge PA/PM)
 func apply_taunt(source, duration: int = 1) -> void:
 	taunt_source = source
 	taunt_turns = maxi(1, duration)
@@ -297,27 +297,27 @@ func process_statuses() -> bool:
 	for entry in active_statuses:
 		var data: StatusData = entry["data"]
 
-		# Dégâts par tour (poison, saignement, brûlure).
-		# Dégâts "vrais" : un poison ignore l'armure et ne s'esquive pas.
-		# (quand StatusData portera un élément, on le passera ici)
+		# DÃ©gÃ¢ts par tour (poison, saignement, brÃ»lure).
+		# DÃ©gÃ¢ts "vrais" : un poison ignore l'armure et ne s'esquive pas.
+		# (quand StatusData portera un Ã©lÃ©ment, on le passera ici)
 		if data.damage_per_turn > 0:
 			take_damage(data.damage_per_turn, null,
 				Spell.DamageType.MAGICAL, Spell.Element.NONE,
 				{ "ignore_defense": true, "cannot_be_dodged": true })
-			DebugLogger.info(CAT_STATS, "%s subit %d dégâts de %s" % [
+			DebugLogger.info(CAT_STATS, "%s subit %d dÃ©gÃ¢ts de %s" % [
 				unit_name, data.damage_per_turn, data.status_name], {
 				"PV_restants": current_hp,
 			})
 
-		# Soin par tour (régénération).
+		# Soin par tour (rÃ©gÃ©nÃ©ration).
 		if data.heal_per_turn > 0:
 			heal(data.heal_per_turn)
-			DebugLogger.info(CAT_STATS, "%s récupère %d PV de %s" % [
+			DebugLogger.info(CAT_STATS, "%s rÃ©cupÃ¨re %d PV de %s" % [
 				unit_name, data.heal_per_turn, data.status_name], {
 				"PV": current_hp,
 			})
 
-		# Réduction de PM / PA (slow).
+		# RÃ©duction de PM / PA (slow).
 		if data.mp_reduction > 0:
 			current_mp = max(0, current_mp - data.mp_reduction)
 			DebugLogger.debug(CAT_STATS, "%s : -%d PM (%s)" % [
@@ -330,7 +330,7 @@ func process_statuses() -> bool:
 		# Stun.
 		if data.skips_turn:
 			skip = true
-			DebugLogger.info(CAT_STATS, "%s est neutralisé par %s (passe son tour)" % [
+			DebugLogger.info(CAT_STATS, "%s est neutralisÃ© par %s (passe son tour)" % [
 				unit_name, data.status_name])
 
 	if taunt_turns > 0:
@@ -340,15 +340,15 @@ func process_statuses() -> bool:
 	stats_changed.emit(self)
 	return skip
 
-# Fait vieillir les statuts d'un tour, retire les expirés.
-# (à appeler en FIN de tour de l'unité)
+# Fait vieillir les statuts d'un tour, retire les expirÃ©s.
+# (Ã  appeler en FIN de tour de l'unitÃ©)
 func tick_statuses() -> void:
 	for i in range(active_statuses.size() - 1, -1, -1):
 		active_statuses[i]["remaining"] -= 1
 		if active_statuses[i]["remaining"] <= 0:
 			var ended = active_statuses[i]["data"].status_name
 			active_statuses.remove_at(i)
-			# Le CombatLogger écoute status_expired et produit la ligne de log.
+			# Le CombatLogger Ã©coute status_expired et produit la ligne de log.
 			EventBus.status_expired.emit(self, ended)
 	_tick_awakening()
 
@@ -361,20 +361,24 @@ func get_active_statuses() -> Array:
 # ============================================================
 
 func start_turn() -> void:
-	# Tick TOUTES les stats à durée d'un coup (défenses et résistances
-	# comprises). Avant, seules 5 stats étaient tickées → un buff temporaire
-	# "+20 armure 2 tours" ne expirait jamais. Corrigé : liste centralisée.
+	# Tick TOUTES les stats Ã  durÃ©e d'un coup (dÃ©fenses et rÃ©sistances
+	# comprises). Avant, seules 5 stats Ã©taient tickÃ©es â†’ un buff temporaire
+	# "+20 armure 2 tours" ne expirait jamais. CorrigÃ© : liste centralisÃ©e.
 	for stat in _all_durational_stats():
 		stat.tick_durations()
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
 	terrain_elan_discount_used = false
+	if team == 0:
+		reaction_armed = false
+	else:
+		reaction_armed = can_arm_reaction()
 	_refresh_turn_elan_budget()
 	EventBus.turn_started.emit(self)
 	stats_changed.emit(self)
 
 # ============================================================
-# DÉPENSE DE RESSOURCES
+# DÃ‰PENSE DE RESSOURCES
 # ============================================================
 
 func spend_mp(amount: int) -> bool:
@@ -392,11 +396,11 @@ func spend_ap(amount: int) -> bool:
 	return true
 
 # ============================================================
-# ÉNERGIE — l'économie d'action (remplace les PA)
+# Ã‰NERGIE â€” l'Ã©conomie d'action (remplace les PA)
 # ============================================================
 
-# L'unité a-t-elle une énergie configurée ? (les ennemis simples peuvent ne
-# pas en avoir ; dans ce cas les sorts à coût d'énergie ne s'appliquent pas).
+# L'unitÃ© a-t-elle une Ã©nergie configurÃ©e ? (les ennemis simples peuvent ne
+# pas en avoir ; dans ce cas les sorts Ã  coÃ»t d'Ã©nergie ne s'appliquent pas).
 func has_energy() -> bool:
 	return energy_type != null
 
@@ -492,6 +496,26 @@ func can_afford_energy(amount: float) -> bool:
 	if not has_energy():
 		return false
 	return current_energy >= cost
+
+func get_reaction_cost() -> float:
+	return maxf(0.0, energy_type.reaction_cost) if has_energy() else 0.0
+
+func can_arm_reaction() -> bool:
+	var cost := get_reaction_cost()
+	return has_energy() and is_alive and cost > 0.0 and current_energy >= cost
+
+func set_reaction_armed(armed: bool) -> bool:
+	if not armed:
+		if reaction_armed:
+			reaction_armed = false
+			stats_changed.emit(self)
+		return true
+	if not can_arm_reaction():
+		return false
+	reaction_armed = true
+	stats_changed.emit(self)
+	DebugLogger.info(CAT_STATS, "%s garde %.0f Ferveur pour une reaction defensive" % [unit_name, get_reaction_cost()])
+	return true
 
 func has_charge_threshold() -> bool:
 	return has_energy() and charge_threshold_active
@@ -664,31 +688,31 @@ func get_elan_ratio() -> float:
 		return 0.0
 	return current_elan / max_elan
 # ============================================================
-# BOUCLIER — couche défensive entre l'énergie et les PV
-# Le bouclier absorbe les dégâts AVANT les PV. Il n'expire pas
-# naturellement : il tient jusqu'à être épuisé ou remplacé.
-# Design : on ne cumule pas les boucliers — un nouveau remplace
-# l'ancien s'il est plus élevé, sinon il est ignoré. Évite le
-# spam de boucliers qui empilement indéfiniment.
+# BOUCLIER â€” couche dÃ©fensive entre l'Ã©nergie et les PV
+# Le bouclier absorbe les dÃ©gÃ¢ts AVANT les PV. Il n'expire pas
+# naturellement : il tient jusqu'Ã  Ãªtre Ã©puisÃ© ou remplacÃ©.
+# Design : on ne cumule pas les boucliers â€” un nouveau remplace
+# l'ancien s'il est plus Ã©levÃ©, sinon il est ignorÃ©. Ã‰vite le
+# spam de boucliers qui empilement indÃ©finiment.
 # ============================================================
 
 # Accorde un bouclier. Remplace l'ancien s'il est plus faible.
-# Un bouclier plus faible est ignoré : on ne perd jamais son bouclier
-# parce qu'un sort de soutien a donné moins que ce qu'on a déjà.
+# Un bouclier plus faible est ignorÃ© : on ne perd jamais son bouclier
+# parce qu'un sort de soutien a donnÃ© moins que ce qu'on a dÃ©jÃ .
 func add_shield(amount: int) -> void:
 	if has_charge_threshold() and energy_type.awakening_blocks_shield:
 		return
 	if not is_alive or amount <= 0:
 		return
 	if amount <= current_shield:
-		return                           # bouclier actuel déjà plus fort : ignoré
+		return                           # bouclier actuel dÃ©jÃ  plus fort : ignorÃ©
 	current_shield = amount
 	EventBus.shield_gained.emit(self, amount)
 	shield_changed.emit(self)
 	DebugLogger.debug(CAT_STATS,
-		"%s reçoit un bouclier de %d" % [unit_name, amount])
+		"%s reÃ§oit un bouclier de %d" % [unit_name, amount])
 
-# Retire le bouclier complètement (fin de tour, sort ennemi...).
+# Retire le bouclier complÃ¨tement (fin de tour, sort ennemi...).
 func clear_shield() -> void:
 	if current_shield <= 0:
 		return
@@ -700,14 +724,14 @@ func clear_shield() -> void:
 # ============================================================
 
 # take_damage INTELLIGENT (Couche 1).
-# Toute la mitigation (esquive, résist, armure, crit) vit ICI : c'est la
-# loi physique du combat, aucune source ne peut y échapper.
+# Toute la mitigation (esquive, rÃ©sist, armure, crit) vit ICI : c'est la
+# loi physique du combat, aucune source ne peut y Ã©chapper.
 #
-# Rétrocompatible : take_damage(15) marche toujours (coup brut, sans
-# attaquant, traité comme physique sans défense calculée → dégâts pleins).
+# RÃ©trocompatible : take_damage(15) marche toujours (coup brut, sans
+# attaquant, traitÃ© comme physique sans dÃ©fense calculÃ©e â†’ dÃ©gÃ¢ts pleins).
 # Les nouveaux appels passent un HitContext complet via take_hit().
 #
-# Renvoie le DamageResult (montant réel, crit, esquive) pour que
+# Renvoie le DamageResult (montant rÃ©el, crit, esquive) pour que
 # l'appelant puisse afficher les retours visuels.
 func _apply_defensive_reaction_to_raw(amount: int, attacker, options: Dictionary) -> int:
 	if amount <= 0 or not has_energy() or attacker == null:
@@ -716,12 +740,18 @@ func _apply_defensive_reaction_to_raw(amount: int, attacker, options: Dictionary
 		return amount
 	if attacker.team == team:
 		return amount
+	if not reaction_armed:
+		return amount
 	var cost: float = maxf(0.0, energy_type.reaction_cost)
 	if cost <= 0.0 or current_energy < cost:
+		reaction_armed = false
+		stats_changed.emit(self)
 		return amount
 	var multiplier: float = clampf(energy_type.reaction_damage_multiplier, 0.0, 1.0)
 	if not spend_energy(cost, "reaction"):
 		return amount
+	reaction_armed = false
+	stats_changed.emit(self)
 	var reduced := maxi(0, int(round(float(amount) * multiplier)))
 	var mitigated := maxi(0, amount - reduced)
 	next_turn_elan_bonus += maxf(0.0, energy_type.reaction_next_turn_elan_bonus)
@@ -744,7 +774,7 @@ func take_damage(
 	ctx.raw_damage = _get_modified_incoming_damage(_apply_defensive_reaction_to_raw(amount, attacker, options))
 	ctx.category = category
 	ctx.element = element
-	# Options éventuelles (terrain, sorts spéciaux, futurs traits).
+	# Options Ã©ventuelles (terrain, sorts spÃ©ciaux, futurs traits).
 	ctx.ignore_defense = options.get("ignore_defense", false)
 	ctx.cannot_be_dodged = options.get("cannot_be_dodged", false)
 	ctx.bonus_crit_chance = options.get("bonus_crit_chance", 0.0)
@@ -756,7 +786,7 @@ func take_damage(
 	_apply_damage_result(result, ctx.attacker)
 	return result
 
-# take_hit : variante explicite quand on a déjà un HitContext construit
+# take_hit : variante explicite quand on a dÃ©jÃ  un HitContext construit
 # (utile pour les futurs traits qui veulent pousser des crochets).
 func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	if not is_alive:
@@ -765,8 +795,8 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	_apply_damage_result(result, ctx.attacker)
 	return result
 
-# Applique le résultat calculé aux PV, en absorbant d'abord le bouclier.
-# POINT D'ÉMISSION UNIQUE du flux de dégâts.
+# Applique le rÃ©sultat calculÃ© aux PV, en absorbant d'abord le bouclier.
+# POINT D'Ã‰MISSION UNIQUE du flux de dÃ©gÃ¢ts.
 func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) -> void:
 	if result.dodged:
 		EventBus.attack_dodged.emit(self, attacker)
@@ -774,7 +804,7 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 		return
 
 	# --- Absorption par le bouclier ---
-	# Le bouclier prend les dégâts en premier. Si tout est absorbé, les PV ne bougent pas.
+	# Le bouclier prend les dÃ©gÃ¢ts en premier. Si tout est absorbÃ©, les PV ne bougent pas.
 	var damage_to_hp := result.amount
 	if current_shield > 0 and damage_to_hp > 0:
 		var absorbed := mini(current_shield, damage_to_hp)
@@ -787,8 +817,8 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 		DebugLogger.debug(CAT_STATS,
 			"%s : bouclier absorbe %d (reste %d)" % [unit_name, absorbed, current_shield])
 
-	# Annonce la frappe sur le bus (montant après mitigation armure/résist, avant bouclier).
-	# shield_absorbed est émis séparément pour les traits qui y réagissent.
+	# Annonce la frappe sur le bus (montant aprÃ¨s mitigation armure/rÃ©sist, avant bouclier).
+	# shield_absorbed est Ã©mis sÃ©parÃ©ment pour les traits qui y rÃ©agissent.
 	EventBus.damage_dealt.emit(
 		self, attacker, result.amount, result.category, result.element, result.is_crit)
 	if result.is_crit:
@@ -802,7 +832,7 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 			current_hp = 0
 			_die()
 	else:
-		# Tout absorbé : les PV n'ont pas bougé, mais on notifie pour l'UI.
+		# Tout absorbÃ© : les PV n'ont pas bougÃ©, mais on notifie pour l'UI.
 		hp_changed.emit(self)
 
 func heal(amount: int) -> void:
@@ -823,14 +853,14 @@ func heal(amount: int) -> void:
 	EventBus.unit_healed.emit(self, real)
 	hp_changed.emit(self)
 func _die() -> void:
-	# Garde d'idempotence : une unité ne peut mourir qu'UNE fois.
-	# Sans ça, si _die est atteint deux fois (deux sources de dégâts dans le
-	# même cycle, double appel...), unit_died serait émis deux fois → log et
-	# réactions en double. C'est ce qui causait le doublon "est vaincu".
+	# Garde d'idempotence : une unitÃ© ne peut mourir qu'UNE fois.
+	# Sans Ã§a, si _die est atteint deux fois (deux sources de dÃ©gÃ¢ts dans le
+	# mÃªme cycle, double appel...), unit_died serait Ã©mis deux fois â†’ log et
+	# rÃ©actions en double. C'est ce qui causait le doublon "est vaincu".
 	if not is_alive:
 		return
 	is_alive = false
-	# Le CombatLogger écoute unit_died et produit la ligne "est vaincu".
+	# Le CombatLogger Ã©coute unit_died et produit la ligne "est vaincu".
 	EventBus.unit_died.emit(self)
 	died.emit(self)
 
@@ -849,3 +879,5 @@ func get_hp_ratio() -> float:
 	if max_val <= 0:
 		return 0.0
 	return float(current_hp) / float(max_val)
+
+

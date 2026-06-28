@@ -1,17 +1,17 @@
-# core/grid_data.gd
+﻿# core/grid_data.gd
 # ============================================================
-# DONNÉES DE LA GRILLE — Logique pure, AUCUN visuel.
-# Ne dessine rien, ne gère pas les clics, ne connaît pas les pixels.
-# Raisonne uniquement en coordonnées de grille (Vector2i).
+# DONNÃ‰ES DE LA GRILLE â€” Logique pure, AUCUN visuel.
+# Ne dessine rien, ne gÃ¨re pas les clics, ne connaÃ®t pas les pixels.
+# Raisonne uniquement en coordonnÃ©es de grille (Vector2i).
 #
-# C'est la "source de vérité" de l'état spatial du combat :
-# où sont les unités, quels types de cases, quels effets actifs.
+# C'est la "source de vÃ©ritÃ©" de l'Ã©tat spatial du combat :
+# oÃ¹ sont les unitÃ©s, quels types de cases, quels effets actifs.
 # ============================================================
 
 class_name GridData
 extends RefCounted
-# RefCounted = objet léger sans présence dans la scène (pas un Node).
-# Parfait pour de la donnée pure qui n'a pas besoin d'être affichée.
+# RefCounted = objet lÃ©ger sans prÃ©sence dans la scÃ¨ne (pas un Node).
+# Parfait pour de la donnÃ©e pure qui n'a pas besoin d'Ãªtre affichÃ©e.
 
 # ============================================================
 # DIMENSIONS
@@ -29,14 +29,14 @@ enum CellType {
 	NORMAL,   # Sol standard, marchable, transparent
 	WALL,     # Mur : infranchissable, bloque la ligne de vue
 	HOLE,     # Trou : infranchissable, mais laisse passer la vue
-	LAVA,     # Marchable, infligera des dégâts (géré plus tard)
-	ICE,      # Marchable, glissant (géré plus tard)
+	LAVA,     # Marchable, infligera des dÃ©gÃ¢ts (gÃ©rÃ© plus tard)
+	ICE,      # Marchable, glissant (gÃ©rÃ© plus tard)
 	SHADOW,   # Marchable, bloque la vue (brouillard/ombre)
-	RUNE,     # Marchable, déclenchera un effet magique (géré plus tard)
+	RUNE,     # Marchable, dÃ©clenchera un effet magique (gÃ©rÃ© plus tard)
 }
 
-# Propriétés mécaniques de chaque type.
-# walkable    : une unité peut-elle s'y arrêter / marcher dessus ?
+# PropriÃ©tÃ©s mÃ©caniques de chaque type.
+# walkable    : une unitÃ© peut-elle s'y arrÃªter / marcher dessus ?
 # transparent : laisse-t-elle passer la ligne de vue ?
 const PROPERTIES = {
 	CellType.NORMAL : { "walkable": true,  "transparent": true  },
@@ -49,10 +49,10 @@ const PROPERTIES = {
 }
 
 # ============================================================
-# ÉTAT DES CASES
-# Trois dictionnaires séparés plutôt qu'un gros objet par case.
-# Plus simple à lire, plus rapide à interroger.
-# Clé = Vector2i(col, row) dans tous les cas.
+# Ã‰TAT DES CASES
+# Trois dictionnaires sÃ©parÃ©s plutÃ´t qu'un gros objet par case.
+# Plus simple Ã  lire, plus rapide Ã  interroger.
+# ClÃ© = Vector2i(col, row) dans tous les cas.
 # ============================================================
 
 var _types: Dictionary = {}     # Vector2i -> CellType
@@ -61,30 +61,30 @@ var _effects: Dictionary = {}   # Vector2i -> { "name": String, "data": Dictiona
 
 # ============================================================
 # CONSTRUCTION
-# Appelé avec GridData.new(15, 10) par exemple.
+# AppelÃ© avec GridData.new(15, 10) par exemple.
 # ============================================================
 
 func _init(grid_cols: int, grid_rows: int) -> void:
 	cols = grid_cols
 	rows = grid_rows
-	# Toutes les cases démarrent en NORMAL.
+	# Toutes les cases dÃ©marrent en NORMAL.
 	for x in cols:
 		for y in rows:
 			_types[Vector2i(x, y)] = CellType.NORMAL
 
 # ============================================================
-# VALIDITÉ ET PROPRIÉTÉS
+# VALIDITÃ‰ ET PROPRIÃ‰TÃ‰S
 # ============================================================
 
 # La position est-elle dans les limites de la grille ?
 func is_valid(pos: Vector2i) -> bool:
 	return pos.x >= 0 and pos.x < cols and pos.y >= 0 and pos.y < rows
 
-# Type de la case (NORMAL par défaut si hors grille).
+# Type de la case (NORMAL par dÃ©faut si hors grille).
 func get_type(pos: Vector2i) -> CellType:
 	return _types.get(pos, CellType.NORMAL)
 
-# Peut-on marcher sur cette case ? (bon type ET aucune unité dessus)
+# Peut-on marcher sur cette case ? (bon type ET aucune unitÃ© dessus)
 func is_walkable(pos: Vector2i) -> bool:
 	if not is_valid(pos):
 		return false
@@ -99,7 +99,7 @@ func is_transparent(pos: Vector2i) -> bool:
 	return PROPERTIES[get_type(pos)]["transparent"]
 
 # ============================================================
-# MODIFICATION DES TYPES (sorts de terrain, génération de map)
+# MODIFICATION DES TYPES (sorts de terrain, gÃ©nÃ©ration de map)
 # ============================================================
 
 func set_type(pos: Vector2i, type: CellType) -> void:
@@ -107,8 +107,8 @@ func set_type(pos: Vector2i, type: CellType) -> void:
 		_types[pos] = type
 
 # ============================================================
-# GESTION DES UNITÉS
-# On stocke juste QUI est où. Le déplacement visuel est géré ailleurs.
+# GESTION DES UNITÃ‰S
+# On stocke juste QUI est oÃ¹. Le dÃ©placement visuel est gÃ©rÃ© ailleurs.
 # ============================================================
 
 func has_unit(pos: Vector2i) -> bool:
@@ -117,22 +117,61 @@ func has_unit(pos: Vector2i) -> bool:
 func get_unit(pos: Vector2i):
 	return _units.get(pos, null)
 
+func place_unit(unit, pos: Vector2i) -> bool:
+	if unit == null or not is_valid(pos):
+		return false
+	var previous := find_unit(unit)
+	if previous != Vector2i(-1, -1):
+		_units.erase(previous)
+	if _units.has(pos) and _units[pos] != unit:
+		return false
+	_units[pos] = unit
+	unit.grid_pos = pos
+	return true
+
+func remove_unit(unit) -> void:
+	if unit == null:
+		return
+	var pos := find_unit(unit)
+	if pos == Vector2i(-1, -1) and is_valid(unit.grid_pos):
+		pos = unit.grid_pos
+	if pos != Vector2i(-1, -1):
+		_units.erase(pos)
+	unit.grid_pos = Vector2i(-1, -1)
+
+func relocate_unit(unit, to: Vector2i) -> bool:
+	if unit == null or not is_valid(to):
+		return false
+	var from := find_unit(unit)
+	if from == Vector2i(-1, -1):
+		from = unit.grid_pos
+	if from == to:
+		unit.grid_pos = to
+		return true
+	if _units.has(to):
+		return false
+	if from != Vector2i(-1, -1):
+		_units.erase(from)
+	_units[to] = unit
+	unit.grid_pos = to
+	return true
+
 func set_unit(pos: Vector2i, unit) -> void:
-	if is_valid(pos):
-		_units[pos] = unit
+	place_unit(unit, pos)
 
 func clear_unit(pos: Vector2i) -> void:
+	var unit = _units.get(pos, null)
 	_units.erase(pos)
+	if unit != null and unit.grid_pos == pos:
+		unit.grid_pos = Vector2i(-1, -1)
 
-# Déplace une unité d'une case à une autre dans les données.
+# DÃ©place une unitÃ© d'une case Ã  une autre dans les donnÃ©es.
 func move_unit(from: Vector2i, to: Vector2i) -> void:
-	if not _units.has(from):
-		return
-	var unit = _units[from]
-	_units.erase(from)
-	_units[to] = unit
+	var unit = _units.get(from, null)
+	if unit != null:
+		relocate_unit(unit, to)
 
-# Retourne la position d'une unité donnée (ou Vector2i(-1,-1) si absente).
+# Retourne la position d'une unitÃ© donnÃ©e (ou Vector2i(-1,-1) si absente).
 func find_unit(unit) -> Vector2i:
 	for pos in _units:
 		if _units[pos] == unit:
@@ -140,8 +179,8 @@ func find_unit(unit) -> Vector2i:
 	return Vector2i(-1, -1)
 
 # ============================================================
-# EFFETS DE TERRAIN (sorts actifs avec durée, dégâts, etc.)
-# Stockés à part. Le contenu de "data" est libre.
+# EFFETS DE TERRAIN (sorts actifs avec durÃ©e, dÃ©gÃ¢ts, etc.)
+# StockÃ©s Ã  part. Le contenu de "data" est libre.
 # ============================================================
 
 func set_effect(pos: Vector2i, effect_name: String, data: Dictionary = {}) -> void:
@@ -165,3 +204,4 @@ func manhattan(a: Vector2i, b: Vector2i) -> int:
 
 func are_adjacent(a: Vector2i, b: Vector2i) -> bool:
 	return manhattan(a, b) == 1
+
