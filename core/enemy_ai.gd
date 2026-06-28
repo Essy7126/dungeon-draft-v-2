@@ -1,4 +1,4 @@
-﻿class_name EnemyAI
+class_name EnemyAI
 extends RefCounted
 
 var _grid: GridData
@@ -358,4 +358,3 @@ func _path_danger_score(path: Array) -> float:
 			if effect != null and effect.dangerous_for_ai:
 				score += effect.ai_danger_weight
 	return score
-

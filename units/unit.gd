@@ -1,4 +1,4 @@
-﻿# units/unit.gd
+# units/unit.gd
 # ============================================================
 # UNIT â€” Un combattant (hÃ©ros ou ennemi). Logique pure.
 #
@@ -879,5 +879,3 @@ func get_hp_ratio() -> float:
 	if max_val <= 0:
 		return 0.0
 	return float(current_hp) / float(max_val)
-
-
