@@ -5,14 +5,11 @@
 [ext_resource type="Resource" uid="uid://dxa0ndijcgww0" path="res://data/spells/soin.tres" id="3_heal"]
 [ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="4_sprite"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_0shhh"]
-
-
 [ext_resource type="Resource" path="res://data/ai_behaviors/chamane_soutien.tres" id="99_ai"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_shaman"]
 atlas = ExtResource("4_sprite")
 region = Rect2(100, 400, 100, 100)
-
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_shaman"]
 animations = [{
@@ -20,7 +17,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_shaman")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
