@@ -47,11 +47,21 @@ func run(enemy: Unit) -> void:
 		await get_tree().create_timer(0.2).timeout
 
 func _execute_cast(enemy: Unit, spell: Spell, cell: Vector2i) -> void:
-	if enemy.current_ap < spell.ap_cost:
-		return
-	if not _battle.spell_caster.is_valid_target(enemy, spell, cell):
-		return
-	enemy.spend_ap(spell.ap_cost)
+	# Économie selon le type d'ennemi, pour éviter une double dépense :
+	#   - avec énergie : spell_caster.cast() paie Élan/Ferveur (comme le chemin
+	#     joueur), donc on ne dépense PAS de PA et on gate sur les ressources ;
+	#   - sans énergie : ancienne économie PA (gate + spend_ap), inchangée.
+	if enemy.has_energy():
+		if not enemy.can_afford_spell_resources(spell):
+			return
+		if not _battle.spell_caster.is_valid_target(enemy, spell, cell):
+			return
+	else:
+		if enemy.current_ap < spell.ap_cost:
+			return
+		if not _battle.spell_caster.is_valid_target(enemy, spell, cell):
+			return
+		enemy.spend_ap(spell.ap_cost)
 	_battle.spell_caster.cast(enemy, spell, cell)
 	_battle.grid_view.queue_redraw()
 	await get_tree().create_timer(0.3).timeout
