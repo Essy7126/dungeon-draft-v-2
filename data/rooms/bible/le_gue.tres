@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="PackedScene" uid="uid://607lpefu0v11" path="res://data/rooms/maps/battle_salle1.tscn" id="3_battle"]
 [ext_resource type="Resource" uid="uid://bdp8p8lfj33i" path="res://data/units/ennemie/run_pyromage_gobelin.tres" id="4_inybt"]
-[ext_resource type="Resource" path="res://data/units/ennemie/GobTestUnitData_v2.tres" id="5_aw5fu"]
+[ext_resource type="Resource" uid="uid://b3ri36tk4j1ki" path="res://data/units/ennemie/GobTestUnitData_v2.tres" id="5_aw5fu"]
 [ext_resource type="Resource" uid="uid://egrvlbi7ke5p" path="res://data/units/ennemie/run_eclaireur_gobelin.tres" id="11_enemy"]
 
 [resource]

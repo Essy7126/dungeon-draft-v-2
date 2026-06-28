@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://gobtest001"]
+
+[ext_resource type="PackedScene" path="res://asset/gobtest.glb" id="1_gobtest"]
+[ext_resource type="Script" path="res://gobtest.gd" id="2_gobtest"]
+
+[node name="GobTest" type="Node3D"]
+script = ExtResource("2_gobtest")
+
+[node name="Model" parent="." instance=ExtResource("1_gobtest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 1.5, 3)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 3, 0)
+light_energy = 1.5
+shadow_enabled = true

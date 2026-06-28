@@ -65,6 +65,10 @@ region = Rect2(3072, 0, 256, 256)
 atlas = ExtResource("5_attack")
 region = Rect2(3328, 0, 256, 256)
 
+[sub_resource type="AtlasTexture" id="Attack_f14"]
+atlas = ExtResource("5_attack")
+region = Rect2(3584, 0, 256, 256)
+
 [sub_resource type="AtlasTexture" id="Death_f00"]
 atlas = ExtResource("6_death")
 region = Rect2(0, 0, 256, 256)
@@ -113,6 +117,10 @@ region = Rect2(2560, 0, 256, 256)
 atlas = ExtResource("6_death")
 region = Rect2(2816, 0, 256, 256)
 
+[sub_resource type="AtlasTexture" id="Death_f12"]
+atlas = ExtResource("6_death")
+region = Rect2(3072, 0, 256, 256)
+
 [sub_resource type="AtlasTexture" id="Idle_f00"]
 atlas = ExtResource("3_idle")
 region = Rect2(0, 0, 256, 256)
@@ -149,18 +157,6 @@ region = Rect2(1792, 0, 256, 256)
 atlas = ExtResource("3_idle")
 region = Rect2(2048, 0, 256, 256)
 
-[sub_resource type="AtlasTexture" id="Idle_f09"]
-atlas = ExtResource("3_idle")
-region = Rect2(2304, 0, 256, 256)
-
-[sub_resource type="AtlasTexture" id="Idle_f10"]
-atlas = ExtResource("3_idle")
-region = Rect2(2560, 0, 256, 256)
-
-[sub_resource type="AtlasTexture" id="Idle_f11"]
-atlas = ExtResource("3_idle")
-region = Rect2(2816, 0, 256, 256)
-
 [sub_resource type="AtlasTexture" id="Walk_f00"]
 atlas = ExtResource("4_walk")
 region = Rect2(0, 0, 256, 256)
@@ -192,6 +188,10 @@ region = Rect2(1536, 0, 256, 256)
 [sub_resource type="AtlasTexture" id="Walk_f07"]
 atlas = ExtResource("4_walk")
 region = Rect2(1792, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="Walk_f08"]
+atlas = ExtResource("4_walk")
+region = Rect2(2048, 0, 256, 256)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gobtest_v2"]
 animations = [{
@@ -237,6 +237,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("Attack_f13")
+}, {
+"duration": 1.0,
+"texture": SubResource("Attack_f14")
 }],
 "loop": 0,
 "name": &"attack",
@@ -278,6 +281,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("Death_f11")
+}, {
+"duration": 1.0,
+"texture": SubResource("Death_f12")
 }],
 "loop": 0,
 "name": &"death",
@@ -310,15 +316,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("Idle_f08")
-}, {
-"duration": 1.0,
-"texture": SubResource("Idle_f09")
-}, {
-"duration": 1.0,
-"texture": SubResource("Idle_f10")
-}, {
-"duration": 1.0,
-"texture": SubResource("Idle_f11")
 }],
 "loop": 1,
 "name": &"default",
@@ -348,6 +345,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("Walk_f07")
+}, {
+"duration": 1.0,
+"texture": SubResource("Walk_f08")
 }],
 "loop": 1,
 "name": &"walk",
