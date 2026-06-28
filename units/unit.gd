@@ -45,7 +45,14 @@ var current_ap: int = 0
 var current_mp: int = 0
 var current_shield: int = 0
 var is_alive: bool = true
-var grid_pos: Vector2i = Vector2i(-1, -1)
+var _grid_pos: Vector2i = Vector2i(-1, -1)
+var grid_pos: Vector2i:
+	get: return _grid_pos
+	set(value):
+		var old := _grid_pos
+		_grid_pos = value
+		if old != Vector2i(-1, -1) and old != value:
+			moved.emit(old, value)
 # --- Ressources de combat ---
 # Elan paie les actions du tour. Ferveur (current_energy) est la jauge
 # d'identite liee au type choisi au draft : Rage, Foi, Nature...
@@ -87,6 +94,7 @@ var traits: Array = []
 
 # --- Signaux ---
 signal died(unit)
+signal moved(from_pos: Vector2i, to_pos: Vector2i)
 signal hp_changed(unit)
 signal stats_changed(unit)
 signal energy_changed(unit)

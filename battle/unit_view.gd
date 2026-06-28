@@ -7,6 +7,7 @@ const UNIT_SIZE = 48
 
 var unit: Unit
 var _sprite: AnimatedSprite2D
+var _facing_row: int = 0
 var _hp_bar: ProgressBar
 var _shield_bar: ProgressBar
 var _elan_bar: ProgressBar
@@ -22,10 +23,13 @@ func setup(p_unit: Unit) -> void:
 	_build_visual()
 	unit.hp_changed.connect(_on_hp_changed)
 	unit.died.connect(_on_died)
+	unit.moved.connect(_on_unit_moved)
 	unit.shield_changed.connect(_on_shield_changed)
 	unit.elan_changed.connect(_on_resource_changed)
 	unit.energy_changed.connect(_on_resource_changed)
 	unit.stats_changed.connect(_on_stats_changed)
+	EventBus.basic_attack_performed.connect(_on_attack_performed)
+	EventBus.turn_started.connect(_on_any_turn_started)
 	EventBus.damage_dealt.connect(_on_damage_dealt)
 	EventBus.unit_healed.connect(_on_unit_healed)
 	EventBus.energy_generated.connect(_on_energy_generated)
@@ -41,7 +45,7 @@ func setup(p_unit: Unit) -> void:
 func _build_visual() -> void:
 	_sprite = AnimatedSprite2D.new()
 	if unit.sprite_frames != null:
-		_sprite.sprite_frames = unit.sprite_frames
+		_sprite.sprite_frames = unit.sprite_frames.duplicate(true)
 		_sprite.scale = Vector2(unit.sprite_scale, unit.sprite_scale)
 		var anims = unit.sprite_frames.get_animation_names()
 		if unit.idle_animation in anims:
@@ -168,15 +172,65 @@ func set_active(active: bool) -> void:
 func face_direction(from: Vector2, to: Vector2) -> void:
 	if _sprite == null:
 		return
-	if to.x < from.x:
-		_sprite.flip_h = true
-	elif to.x > from.x:
-		_sprite.flip_h = false
+	var dx := to.x - from.x
+	var dy := to.y - from.y
+	var row: int
+	if abs(dx) >= abs(dy):
+		row = 2 if dx >= 0.0 else 6  # E ou O
+	else:
+		row = 0 if dy >= 0.0 else 4  # S ou N
+	_set_facing_row(row)
+
+func _set_facing_row(row: int) -> void:
+	if _facing_row == row or _sprite == null or _sprite.sprite_frames == null:
+		return
+	_facing_row = row
+	var sf := _sprite.sprite_frames
+	for anim_name in sf.get_animation_names():
+		for i in sf.get_frame_count(anim_name):
+			var tex = sf.get_frame_texture(anim_name, i)
+			if not tex is AtlasTexture:
+				continue
+			if tex.atlas == null:
+				continue
+			var frame_h := int(tex.region.size.y)
+			if frame_h <= 0:
+				continue
+			# N'applique que si le spritesheet a assez de rangées
+			if tex.atlas.get_height() < (row + 1) * frame_h:
+				continue
+			tex.region = Rect2(tex.region.position.x, float(row * frame_h), tex.region.size.x, tex.region.size.y)
 
 func _on_hp_changed(_unit: Unit) -> void:
 	_update_hp_bar()
 
+func _play_anim(anim_name: String) -> void:
+	if _sprite == null or unit.sprite_frames == null:
+		return
+	if anim_name in unit.sprite_frames.get_animation_names():
+		_sprite.play(anim_name)
+
+func _play_idle() -> void:
+	if _sprite == null or unit.sprite_frames == null:
+		return
+	_sprite.play(unit.idle_animation)
+
+func _on_unit_moved(_from: Vector2i, _to: Vector2i) -> void:
+	_play_anim("walk")
+
+func _on_attack_performed(attacker, _target) -> void:
+	if attacker != unit:
+		return
+	_play_anim("attack")
+
+func _on_any_turn_started(_u) -> void:
+	_play_idle()
+
 func _on_died(_unit: Unit) -> void:
+	if _sprite != null and unit.sprite_frames != null \
+			and "death" in unit.sprite_frames.get_animation_names():
+		_sprite.play("death")
+		await _sprite.animation_finished
 	queue_free()
 
 func _on_shield_changed(u: Unit) -> void:

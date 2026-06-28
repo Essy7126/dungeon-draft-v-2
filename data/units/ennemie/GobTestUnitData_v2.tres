@@ -1,0 +1,151 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://gobtest_v2_unitdata"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_m7lpr"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_3acek"]
+[ext_resource type="Texture2D" path="res://asset/GobTest_idle_v2.png" id="3_idle"]
+[ext_resource type="Texture2D" path="res://asset/GobTest_walk_v2.png" id="4_walk"]
+[ext_resource type="Texture2D" path="res://asset/GobTest_attack_v2.png" id="5_attack"]
+[ext_resource type="Texture2D" path="res://asset/GobTest_death_v2.png" id="6_death"]
+[ext_resource type="Resource" uid="uid://c5ja68c1s6fx1" path="res://data/spells/gobelin/mêlée_gobelin.tres" id="7_spell"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="8_trait"]
+
+; === IDLE (12 frames, rangée 0 = direction S = face caméra) ===
+[sub_resource type="AtlasTexture" id="Idle_f00"] atlas = ExtResource("3_idle") region = Rect2(0, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f01"] atlas = ExtResource("3_idle") region = Rect2(256, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f02"] atlas = ExtResource("3_idle") region = Rect2(512, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f03"] atlas = ExtResource("3_idle") region = Rect2(768, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f04"] atlas = ExtResource("3_idle") region = Rect2(1024, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f05"] atlas = ExtResource("3_idle") region = Rect2(1280, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f06"] atlas = ExtResource("3_idle") region = Rect2(1536, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f07"] atlas = ExtResource("3_idle") region = Rect2(1792, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f08"] atlas = ExtResource("3_idle") region = Rect2(2048, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f09"] atlas = ExtResource("3_idle") region = Rect2(2304, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f10"] atlas = ExtResource("3_idle") region = Rect2(2560, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Idle_f11"] atlas = ExtResource("3_idle") region = Rect2(2816, 0, 256, 256)
+
+; === WALK (8 frames, rangée 0) ===
+[sub_resource type="AtlasTexture" id="Walk_f00"] atlas = ExtResource("4_walk") region = Rect2(0, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Walk_f01"] atlas = ExtResource("4_walk") region = Rect2(256, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Walk_f02"] atlas = ExtResource("4_walk") region = Rect2(512, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Walk_f03"] atlas = ExtResource("4_walk") region = Rect2(768, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Walk_f04"] atlas = ExtResource("4_walk") region = Rect2(1024, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Walk_f05"] atlas = ExtResource("4_walk") region = Rect2(1280, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Walk_f06"] atlas = ExtResource("4_walk") region = Rect2(1536, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Walk_f07"] atlas = ExtResource("4_walk") region = Rect2(1792, 0, 256, 256)
+
+; === ATTACK (14 frames, rangée 0) ===
+[sub_resource type="AtlasTexture" id="Attack_f00"] atlas = ExtResource("5_attack") region = Rect2(0, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f01"] atlas = ExtResource("5_attack") region = Rect2(256, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f02"] atlas = ExtResource("5_attack") region = Rect2(512, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f03"] atlas = ExtResource("5_attack") region = Rect2(768, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f04"] atlas = ExtResource("5_attack") region = Rect2(1024, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f05"] atlas = ExtResource("5_attack") region = Rect2(1280, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f06"] atlas = ExtResource("5_attack") region = Rect2(1536, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f07"] atlas = ExtResource("5_attack") region = Rect2(1792, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f08"] atlas = ExtResource("5_attack") region = Rect2(2048, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f09"] atlas = ExtResource("5_attack") region = Rect2(2304, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f10"] atlas = ExtResource("5_attack") region = Rect2(2560, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f11"] atlas = ExtResource("5_attack") region = Rect2(2816, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f12"] atlas = ExtResource("5_attack") region = Rect2(3072, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Attack_f13"] atlas = ExtResource("5_attack") region = Rect2(3328, 0, 256, 256)
+
+; === DEATH (12 frames, rangée 0) ===
+[sub_resource type="AtlasTexture" id="Death_f00"] atlas = ExtResource("6_death") region = Rect2(0, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f01"] atlas = ExtResource("6_death") region = Rect2(256, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f02"] atlas = ExtResource("6_death") region = Rect2(512, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f03"] atlas = ExtResource("6_death") region = Rect2(768, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f04"] atlas = ExtResource("6_death") region = Rect2(1024, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f05"] atlas = ExtResource("6_death") region = Rect2(1280, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f06"] atlas = ExtResource("6_death") region = Rect2(1536, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f07"] atlas = ExtResource("6_death") region = Rect2(1792, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f08"] atlas = ExtResource("6_death") region = Rect2(2048, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f09"] atlas = ExtResource("6_death") region = Rect2(2304, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f10"] atlas = ExtResource("6_death") region = Rect2(2560, 0, 256, 256)
+[sub_resource type="AtlasTexture" id="Death_f11"] atlas = ExtResource("6_death") region = Rect2(2816, 0, 256, 256)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gobtest_v2"]
+animations = [{
+"frames": [
+{"duration": 1.0, "texture": SubResource("Idle_f00")},
+{"duration": 1.0, "texture": SubResource("Idle_f01")},
+{"duration": 1.0, "texture": SubResource("Idle_f02")},
+{"duration": 1.0, "texture": SubResource("Idle_f03")},
+{"duration": 1.0, "texture": SubResource("Idle_f04")},
+{"duration": 1.0, "texture": SubResource("Idle_f05")},
+{"duration": 1.0, "texture": SubResource("Idle_f06")},
+{"duration": 1.0, "texture": SubResource("Idle_f07")},
+{"duration": 1.0, "texture": SubResource("Idle_f08")},
+{"duration": 1.0, "texture": SubResource("Idle_f09")},
+{"duration": 1.0, "texture": SubResource("Idle_f10")},
+{"duration": 1.0, "texture": SubResource("Idle_f11")}
+],
+"loop": 1,
+"name": &"default",
+"speed": 8.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": SubResource("Walk_f00")},
+{"duration": 1.0, "texture": SubResource("Walk_f01")},
+{"duration": 1.0, "texture": SubResource("Walk_f02")},
+{"duration": 1.0, "texture": SubResource("Walk_f03")},
+{"duration": 1.0, "texture": SubResource("Walk_f04")},
+{"duration": 1.0, "texture": SubResource("Walk_f05")},
+{"duration": 1.0, "texture": SubResource("Walk_f06")},
+{"duration": 1.0, "texture": SubResource("Walk_f07")}
+],
+"loop": 1,
+"name": &"walk",
+"speed": 10.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": SubResource("Attack_f00")},
+{"duration": 1.0, "texture": SubResource("Attack_f01")},
+{"duration": 1.0, "texture": SubResource("Attack_f02")},
+{"duration": 1.0, "texture": SubResource("Attack_f03")},
+{"duration": 1.0, "texture": SubResource("Attack_f04")},
+{"duration": 1.0, "texture": SubResource("Attack_f05")},
+{"duration": 1.0, "texture": SubResource("Attack_f06")},
+{"duration": 1.0, "texture": SubResource("Attack_f07")},
+{"duration": 1.0, "texture": SubResource("Attack_f08")},
+{"duration": 1.0, "texture": SubResource("Attack_f09")},
+{"duration": 1.0, "texture": SubResource("Attack_f10")},
+{"duration": 1.0, "texture": SubResource("Attack_f11")},
+{"duration": 1.0, "texture": SubResource("Attack_f12")},
+{"duration": 1.0, "texture": SubResource("Attack_f13")}
+],
+"loop": 0,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [
+{"duration": 1.0, "texture": SubResource("Death_f00")},
+{"duration": 1.0, "texture": SubResource("Death_f01")},
+{"duration": 1.0, "texture": SubResource("Death_f02")},
+{"duration": 1.0, "texture": SubResource("Death_f03")},
+{"duration": 1.0, "texture": SubResource("Death_f04")},
+{"duration": 1.0, "texture": SubResource("Death_f05")},
+{"duration": 1.0, "texture": SubResource("Death_f06")},
+{"duration": 1.0, "texture": SubResource("Death_f07")},
+{"duration": 1.0, "texture": SubResource("Death_f08")},
+{"duration": 1.0, "texture": SubResource("Death_f09")},
+{"duration": 1.0, "texture": SubResource("Death_f10")},
+{"duration": 1.0, "texture": SubResource("Death_f11")}
+],
+"loop": 0,
+"name": &"death",
+"speed": 8.0
+}]
+
+[resource]
+script = ExtResource("1_m7lpr")
+unit_name = "GobTest Gobelin"
+description = "Gobelin de test - 3D isométrique style Hades"
+team = 1
+max_hp = 30
+initiative = 8
+attack_power = 8
+esquive = 0.15
+sprite_frames = SubResource("SpriteFrames_gobtest_v2")
+sprite_scale = 0.6
+spells = Array[ExtResource("2_3acek")]([ExtResource("7_spell")])
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"
