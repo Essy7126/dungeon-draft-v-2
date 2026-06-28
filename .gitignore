@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Fichiers temporaires de l'éditeur (sauvegardes de scène en cours d'écriture)
+*.tmp
+*.tmp[0-9]*

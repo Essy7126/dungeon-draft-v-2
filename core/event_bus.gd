@@ -81,8 +81,13 @@ signal status_expired(unit, status_name)
 # Le tour d'une unité commence (PA/PM rechargés, statuts à traiter).
 signal turn_started(unit)
 
-# Le tour d'une unité se termine.
-signal turn_ended(unit)
+# ============================================================
+# SIGNAUX DE CYCLE DE VIE DE LA VUE
+# Émis depuis battle.gd une fois la vue de combat construite.
+# grid_view : le GridView prêt à l'affichage (caméra, overlays, futurs systèmes
+# visuels peuvent s'y abonner sans que battle.gd ait à les connaître).
+# ============================================================
+signal battle_view_ready(grid_view)
 
 # ============================================================
 # SIGNAUX D'ÉNERGIE — l'économie d'action (remplace les PA).

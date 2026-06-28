@@ -26,6 +26,9 @@ var enemy_ai: EnemyAI
 var turn_queue: TurnQueue
 var units: Array = []
 
+# Exécuteur du tour ennemi (déroulé de l'IA). Logique extraite par composition.
+var _enemy_turn: EnemyTurnRunner = null
+
 # --- Visuel ---
 var grid_view: Node2D
 var camera: Camera2D
@@ -42,14 +45,9 @@ var keyword_tooltip_layer: CanvasLayer
 var _battle_over: bool = false
 
 # --- Phase de déploiement (placement manuel des héros, façon Dofus) ---
-# Le joueur place ses héros un par un, dans l'ordre imposé, sur les cases
-# illuminées de hero_spawn_zone, AVANT que le combat ne démarre.
-var _deploying: bool = false
-var _heroes_to_place: Array = []        # héros restant à placer (ordre imposé)
-var _deploy_zone: Array = []            # toutes les cases de placement valides
-var _deployed: Array = []               # historique : [{ "unit":Unit, "cell":Vector2i }]
-var _deploy_ui: CanvasLayer = null      # label + bouton "Annuler" pendant la phase
-var _deploy_label: Label = null
+# La logique vit dans son propre contrôleur (composition). battle.gd l'instancie,
+# route les clics vers lui et lance le combat à la fin (deployment_completed).
+var _deployment: DeploymentController = null
 
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
@@ -60,12 +58,9 @@ const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
 const END_SCREEN_DELAY := 1.5
 
 # --- Draft d'énergie (phase avant combat) ---
-# Chemins à ajuster si ton arborescence diffère.
-const PATH_RAGE := "res://data/energy/rage.tres"
-const PATH_FOI  := "res://data/energy/foi.tres"
-var _draft_ui: CanvasLayer = null
-var _draft_choices: Dictionary = {}   # Unit → EnergyTypeData
-var _draft_pending: int = 0           # nombre de héros n'ayant pas encore choisi
+# La logique du draft vit dans son propre contrôleur (composition).
+# battle.gd ne fait que le lancer et réagir à draft_completed.
+var _energy_draft: EnergyDraftController = null
 
 func _ready() -> void:
 	# La salle vient du run en cours. On la lit AVANT de construire la logique,
@@ -97,6 +92,16 @@ func _setup_logic() -> void:
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
 	enemy_ai = EnemyAI.new(grid, pathfinder, spell_caster)
+	# Exécuteur du tour ennemi (Node : a besoin de get_tree() pour cadencer).
+	# Lit les systèmes/vue/animations de battle au moment du run, pas avant.
+	_enemy_turn = EnemyTurnRunner.new()
+	add_child(_enemy_turn)
+	_enemy_turn.setup(self)
+	# Contrôleur de la phase de déploiement (placement manuel des héros).
+	_deployment = DeploymentController.new()
+	add_child(_deployment)
+	_deployment.setup(self)
+	_deployment.deployment_completed.connect(_start_battle)
 
 # ============================================================
 # IMPORT DU TERRAIN DESSINÉ (TileMapLayer → GridData)
@@ -179,6 +184,12 @@ func _setup_ui() -> void:
 	keyword_tooltip_layer.set_script(load("res://ui/keyword_tooltip_layer.gd"))
 	add_child(keyword_tooltip_layer)
 
+	# Contrôleur du draft d'énergie (overlay avant combat). Recréé à chaque
+	# combat en même temps que cette scène : son état est donc par-combat.
+	_energy_draft = EnergyDraftController.new()
+	add_child(_energy_draft)
+	_energy_draft.draft_completed.connect(_on_draft_completed)
+
 func _setup_state() -> void:
 	turn_state = TurnState.new()
 	turn_state.request_show_move_range.connect(_on_request_show_move_range)
@@ -198,188 +209,7 @@ func _spawn_units() -> void:
 	# Les ennemis sont posés automatiquement (placement aléatoire dans leur zone).
 	_spawn_enemies()
 	# Les héros, eux, sont placés PAR LE JOUEUR (phase de déploiement).
-	_start_deployment()
-
-# ============================================================
-# PHASE DE DÉPLOIEMENT (placement manuel des héros, façon Dofus)
-# ------------------------------------------------------------
-# Flux : les cases de hero_spawn_zone s'illuminent → le joueur clique
-# pour poser chaque héros (ordre imposé) → quand tous sont placés, le
-# combat démarre. Un label indique qui placer ; un bouton "Annuler"
-# reprend le dernier héros posé.
-#
-# La donnée vient de RoomData.hero_spawn_zone. On ne place RIEN ici tant
-# que le joueur n'a pas cliqué : le turn_queue ne démarre qu'à la fin.
-# ============================================================
-
-func _start_deployment() -> void:
-	# Héros à placer (vivants, empruntés au GameManager), dans l'ordre.
-	_heroes_to_place = GameManager.get_living_heroes().duplicate()
-	_deployed = []
-
-	# Zone de placement : on ne garde que les cases réellement utilisables.
-	var zone: Array = []
-	if room_data != null and room_data.hero_spawn_zone.size() > 0:
-		zone = room_data.hero_spawn_zone.duplicate()
-	else:
-		zone = [Vector2i(2, 6), Vector2i(2, 8)]
-
-	_deploy_zone = []
-	for cell in zone:
-		if grid.is_valid(cell) and grid.is_walkable(cell):
-			_deploy_zone.append(cell)
-
-	# Cas dégénéré : aucun héros, ou pas assez de cases pour les placer.
-	# On ne reste pas coincé : on prévient et on démarre le combat tel quel.
-	if _heroes_to_place.is_empty():
-		push_warning("Déploiement : aucun héros à placer.")
-		_start_battle()
-		return
-	if _deploy_zone.size() < _heroes_to_place.size():
-		push_warning("Déploiement : pas assez de cases (%d) pour %d héros. Placement auto de secours." \
-				% [_deploy_zone.size(), _heroes_to_place.size()])
-		_deploy_fallback_auto()
-		return
-
-	_deploying = true
-	_build_deploy_ui()
-	_refresh_deploy()
-
-# --- Secours : si la zone est trop petite, on place automatiquement. ---
-# Garantit qu'on n'a JAMAIS un combat sans héros (sinon boucle infinie).
-func _deploy_fallback_auto() -> void:
-	var pool = _deploy_zone.duplicate()
-	for hero in _heroes_to_place:
-		hero.current_ap = hero.max_ap.get_int()
-		hero.current_mp = hero.max_mp.get_int()
-		var cell = _resolve_spawn_cell(pool, hero.unit_name)
-		if cell == Vector2i(-1, -1):
-			continue
-		_place(hero, cell)
-		units.append(hero)
-	_heroes_to_place = []
-	_start_battle()
-
-# --- Rafraîchit l'affichage : cases libres illuminées + label. ---
-func _refresh_deploy() -> void:
-	_highlight_deploy_zone()
-	_update_deploy_label()
-
-# Illumine en bleu les cases de déploiement encore libres.
-func _highlight_deploy_zone() -> void:
-	grid_view.clear_highlights()
-	var free_cells: Array = []
-	for cell in _deploy_zone:
-		if not grid.has_unit(cell):
-			free_cells.append(cell)
-	grid_view.highlight(free_cells, SPELL_COLOR)
-
-# Appelé quand le joueur clique une case pendant le déploiement.
-func _on_deploy_click(cell: Vector2i) -> void:
-	if _heroes_to_place.is_empty():
-		return
-	# La case doit appartenir à la zone et être libre.
-	if not _deploy_zone.has(cell):
-		return
-	if grid.has_unit(cell):
-		return
-
-	# Place le héros courant (ordre imposé : le premier de la liste).
-	var hero = _heroes_to_place.pop_front()
-	hero.current_ap = hero.max_ap.get_int()
-	hero.current_mp = hero.max_mp.get_int()
-	_place(hero, cell)
-	units.append(hero)
-	_deployed.append({ "unit": hero, "cell": cell })
-
-	# Tous placés ? On termine. Sinon on passe au suivant.
-	if _heroes_to_place.is_empty():
-		_end_deployment()
-	else:
-		_refresh_deploy()
-
-# --- Annule le dernier placement (bouton "Annuler"). ---
-func _undo_last_deploy() -> void:
-	if _deployed.is_empty():
-		return
-	var last = _deployed.pop_back()
-	var hero: Unit = last["unit"]
-	var cell: Vector2i = last["cell"]
-
-	# On retire le héros de la grille, de la vue et de la liste des unités.
-	grid.clear_unit(cell)
-	if hero.died.is_connected(_on_unit_died):
-		hero.died.disconnect(_on_unit_died)
-	var view = _unit_views.get(hero)
-	if is_instance_valid(view):
-		view.queue_free()
-	_unit_views.erase(hero)
-	units.erase(hero)
-
-	# Le héros repasse en tête de file (il sera le prochain à placer).
-	_heroes_to_place.push_front(hero)
-	_refresh_deploy()
-
-func _end_deployment() -> void:
-	_deploying = false
-	grid_view.clear_highlights()
-	_destroy_deploy_ui()
-	_start_battle()
-
-# ============================================================
-# UI DE DÉPLOIEMENT (label + bouton Annuler, construits en code)
-# Volontairement simple. Plus tard, ça pourra devenir une vraie scène.
-# ============================================================
-
-func _build_deploy_ui() -> void:
-	_deploy_ui = CanvasLayer.new()
-	add_child(_deploy_ui)
-
-	var panel = PanelContainer.new()
-	panel.anchor_left = 0.5
-	panel.anchor_right = 0.5
-	panel.anchor_top = 0.0
-	panel.offset_left = -220
-	panel.offset_right = 220
-	panel.offset_top = 16
-	_deploy_ui.add_child(panel)
-
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
-	panel.add_child(vbox)
-
-	_deploy_label = Label.new()
-	_deploy_label.add_theme_font_size_override("font_size", 20)
-	_deploy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(_deploy_label)
-
-	var hint = Label.new()
-	hint.text = "Cliquez une case bleue pour placer ce héros."
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
-	vbox.add_child(hint)
-
-	var undo_btn = Button.new()
-	undo_btn.text = "Annuler le dernier placement"
-	undo_btn.pressed.connect(_undo_last_deploy)
-	vbox.add_child(undo_btn)
-
-func _update_deploy_label() -> void:
-	if _deploy_label == null:
-		return
-	if _heroes_to_place.is_empty():
-		_deploy_label.text = ""
-		return
-	var hero = _heroes_to_place[0]
-	var total = GameManager.get_living_heroes().size()
-	var current = total - _heroes_to_place.size() + 1
-	_deploy_label.text = "Placez : %s  (%d/%d)" % [hero.unit_name, current, total]
-
-func _destroy_deploy_ui() -> void:
-	if is_instance_valid(_deploy_ui):
-		_deploy_ui.queue_free()
-	_deploy_ui = null
-	_deploy_label = null
+	_deployment.start()
 
 # --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone. ---
 func _spawn_enemies() -> void:
@@ -446,122 +276,22 @@ func _start_battle() -> void:
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
 	EventBus.unit_pushed.connect(_on_unit_pushed)
 
-	# Les energies et chassis sont prepares par le run.
-	_reset_combat_resources()
-	_launch_combat()
-
-
-# ============================================================
-# DÉBUT DE TOUR
-# ============================================================
-
-# ============================================================
-# DRAFT D'ÉNERGIE — overlay avant le combat
-# ============================================================
-
-func _start_energy_draft() -> void:
+	# Phase de draft d'énergie avant le combat. Le contrôleur affiche l'overlay
+	# de choix (ou passe la main immédiatement s'il n'y a rien à drafter) puis
+	# émet draft_completed → _on_draft_completed enchaîne sur le combat.
 	var heroes: Array = []
 	for u in units:
 		if u.team == 0:
 			heroes.append(u)
-
-	var any_has_energy := false
-	for h in heroes:
-		if h.has_energy():
-			any_has_energy = true
-			break
-
-	if heroes.is_empty() or not any_has_energy:
-		_launch_combat()
-		return
-
-	var rage_res: EnergyTypeData = load(PATH_RAGE) as EnergyTypeData
-	var foi_res: EnergyTypeData  = load(PATH_FOI)  as EnergyTypeData
-	if rage_res == null or foi_res == null:
-		push_warning("Draft : rage.tres ou foi.tres introuvable. Combat sans draft.")
-		_launch_combat()
-		return
-
 	action_bar.set_player_controls_enabled(false)
+	_energy_draft.start(heroes)
 
-	_draft_ui = CanvasLayer.new()
-	add_child(_draft_ui)
-	_draft_pending = heroes.size()
-
-	var bg := ColorRect.new()
-	bg.color = Color(0, 0, 0, 0.75)
-	bg.anchor_right = 1.0
-	bg.anchor_bottom = 1.0
-	_draft_ui.add_child(bg)
-
-	var title := Label.new()
-	title.text = "Choisissez l'énergie de vos champions"
-	title.add_theme_font_size_override("font_size", 24)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.anchor_left = 0.0
-	title.anchor_right = 1.0
-	title.anchor_top = 0.15
-	title.anchor_bottom = 0.25
-	_draft_ui.add_child(title)
-
-	var slot_width  := 200
-	var total_width := heroes.size() * slot_width + (heroes.size() - 1) * 24
-	var start_x     := -total_width / 2
-
-	for i in heroes.size():
-		var hero: Unit = heroes[i]
-		var slot := VBoxContainer.new()
-		slot.anchor_left   = 0.5
-		slot.anchor_right  = 0.5
-		slot.anchor_top    = 0.3
-		slot.anchor_bottom = 0.75
-		slot.offset_left   = start_x + i * (slot_width + 24)
-		slot.offset_right  = start_x + i * (slot_width + 24) + slot_width
-		slot.alignment = BoxContainer.ALIGNMENT_CENTER
-		slot.add_theme_constant_override("separation", 12)
-		_draft_ui.add_child(slot)
-
-		var name_lbl := Label.new()
-		name_lbl.text = hero.unit_name
-		name_lbl.add_theme_font_size_override("font_size", 18)
-		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		slot.add_child(name_lbl)
-
-		var rage_btn := Button.new()
-		rage_btn.text = "⚔ Rage"
-		rage_btn.add_theme_font_size_override("font_size", 16)
-		rage_btn.custom_minimum_size = Vector2(slot_width, 48)
-		rage_btn.modulate = Color(1.0, 0.45, 0.1)
-		rage_btn.pressed.connect(_on_draft_choice.bind(hero, rage_res))
-		slot.add_child(rage_btn)
-
-		var foi_btn := Button.new()
-		foi_btn.text = "✦ Foi"
-		foi_btn.add_theme_font_size_override("font_size", 16)
-		foi_btn.custom_minimum_size = Vector2(slot_width, 48)
-		foi_btn.modulate = Color(0.4, 0.7, 1.0)
-		foi_btn.pressed.connect(_on_draft_choice.bind(hero, foi_res))
-		slot.add_child(foi_btn)
-
-func _on_draft_choice(hero: Unit, energy: EnergyTypeData) -> void:
-	hero.energy_type    = energy
-	hero.current_energy = energy.start_energy
-	hero.ensure_energy_traits()
-	hero.reset_combat_resources()
-	_draft_choices[hero] = energy
-	DebugLogger.info(DebugLogger.LogCategory.COMBAT,
-		"Draft : %s → %s" % [hero.unit_name, energy.energy_name])
-	_draft_pending -= 1
-	if _draft_pending <= 0:
-		_end_energy_draft()
-
-func _end_energy_draft() -> void:
-	if is_instance_valid(_draft_ui):
-		_draft_ui.queue_free()
-	_draft_ui = null
-	action_bar.set_player_controls_enabled(true)
+# Appelé quand le draft d'énergie est terminé (choix faits ou aucun draft requis).
+func _on_draft_completed() -> void:
+	# Les energies et chassis sont prepares par le run (ou par le draft).
 	_reset_combat_resources()
 	_launch_combat()
+
 
 func _reset_combat_resources() -> void:
 	for unit in units:
@@ -621,7 +351,7 @@ func _on_turn_started(unit: Unit) -> void:
 	if unit.team == 1:
 		turn_state.begin_enemy_turn()
 		action_bar.set_player_controls_enabled(false)
-		await _run_enemy_turn(unit)
+		await _enemy_turn.run(unit)
 		unit.tick_statuses()
 		if not _battle_over:
 			turn_queue.advance()
@@ -641,63 +371,6 @@ func _update_active_highlight(active_unit: Unit) -> void:
 		var view = _unit_views[unit]
 		if is_instance_valid(view):
 			view.set_active(unit == active_unit)
-
-# ============================================================
-# TOUR DE L'IA
-# ============================================================
-
-func _run_enemy_turn(enemy: Unit) -> void:
-	await get_tree().create_timer(0.3).timeout
-	var plan = enemy_ai.decide(enemy, units)
-	for action in plan:
-		if _battle_over:
-			return
-		# Sécurité : une action précédente a pu tuer l'ennemi (réaction de terrain).
-		if not enemy.is_alive:
-			return
-		match action["type"]:
-			"move":
-				await _execute_ai_move(enemy, action["path"])
-			"attack":
-				await _execute_ai_attack(enemy, action["target"])
-			"cast":
-				await _execute_ai_cast(enemy, action["spell"], action["cell"])
-		await get_tree().create_timer(0.2).timeout
-
-func _execute_ai_cast(enemy: Unit, spell: Spell, cell: Vector2i) -> void:
-	if enemy.current_ap < spell.ap_cost:
-		return
-	if not spell_caster.is_valid_target(enemy, spell, cell):
-		return
-	enemy.spend_ap(spell.ap_cost)
-	spell_caster.cast(enemy, spell, cell)
-	grid_view.queue_redraw()
-	await get_tree().create_timer(0.3).timeout
-
-func _execute_ai_move(enemy: Unit, path: Array) -> void:
-	if path.size() < 2:
-		return
-	var destination = path[path.size() - 1]
-	var cost = path.size() - 1
-	enemy.spend_mp(cost)
-	grid.move_unit(enemy.grid_pos, destination)
-	enemy.grid_pos = destination
-	await _animate_move(enemy, path)
-
-func _execute_ai_attack(enemy: Unit, target: Unit) -> void:
-	if not is_instance_valid(target) or not target.is_alive:
-		return
-	if not grid.are_adjacent(enemy.grid_pos, target.grid_pos):
-		return
-	enemy.spend_ap(1)
-	var result = target.take_damage(
-		enemy.get_attack(),        # dégâts bruts
-		enemy,                     # l'attaquant → active son crit
-		Spell.DamageType.PHYSICAL, # catégorie
-		Spell.Element.NONE)        # pas d'élément
-	if result != null and not result.dodged:
-		EventBus.basic_attack_performed.emit(enemy, target)
-	await _animate_attack(enemy, target)
 
 # ============================================================
 # BOUTONS JOUEUR
@@ -745,8 +418,8 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
-	if _deploying:
-		_on_deploy_click(cell)
+	if _deployment.is_active():
+		_deployment.on_cell_clicked(cell)
 		return
 	if turn_state.current == TurnState.State.IDLE:
 		if inspect_panel != null:
