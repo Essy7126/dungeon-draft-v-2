@@ -130,6 +130,13 @@ signal shield_broken(unit)
 # ============================================================
 signal unit_pushed(unit, from_pos, to_pos, collision)
 
+# Une poussée a percuté un obstacle (collision dure). Émis EN PLUS de unit_pushed.
+# Sert au payoff de l'école Rage : « les collisions font mal quand la jauge est haute ».
+# pusher  : l'Unit qui a poussé
+# pushed  : l'Unit projetée qui a percuté
+# blocker : l'Unit dans laquelle elle s'est encastrée, ou null (mur / bord de grille)
+signal unit_collided(pusher, pushed, blocker)
+
 # ============================================================
 # SIGNAUX DE SORT
 # Émis depuis SpellCaster après un cast réussi (énergie payée, effets appliqués).

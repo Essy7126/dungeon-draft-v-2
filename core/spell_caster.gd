@@ -106,10 +106,15 @@ func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
 	var from_pos := target.grid_pos
 	var landed_pos := from_pos
 	var had_collision := false
+	var blocker: Unit = null   # l'unité percutée (null si mur / bord de grille)
 	for _i in range(cells):
 		var next := landed_pos + dir
-		if not _grid.is_valid(next) or not _grid.is_walkable(next) or _grid.has_unit(next):
+		if not _grid.is_valid(next) or not _grid.is_walkable(next):
 			had_collision = true
+			break
+		if _grid.has_unit(next):
+			had_collision = true
+			blocker = _grid.get_unit(next)
 			break
 		landed_pos = next
 	if landed_pos != from_pos:
@@ -122,10 +127,13 @@ func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
 		result["collision"] = had_collision
 		result["pushed_away_from_ally"] = _pushed_away_from_ally(caster, from_pos, landed_pos)
 		EventBus.unit_pushed.emit(target, from_pos, landed_pos, had_collision)
+		if had_collision:
+			EventBus.unit_collided.emit(caster, target, blocker)
 		DebugLogger.debug(CAT_SPELL, "%s pousse de %s a %s" % [target.unit_name, str(from_pos), str(landed_pos)])
 	elif had_collision:
 		result["collision"] = true
 		EventBus.unit_pushed.emit(target, from_pos, from_pos, true)
+		EventBus.unit_collided.emit(caster, target, blocker)
 	return result
 
 func _teleport_behind_target(caster: Unit, target: Unit) -> bool:
@@ -269,11 +277,15 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 			var terrain_result: Dictionary = _terrain.place_effect(target_cell, terrain_data, caster, spell)
 			if terrain_result.get("changed", false) and not report["terrain_changed"].has(target_cell):
 				report["terrain_changed"].append(target_cell)
+	# Distance effective : la poussée porte plus loin pendant l'Éveil (école Rage).
+	# On garde le garde-fou sur spell.push_distance > 0 pour ne pas transformer un
+	# sort sans poussée en poussée pendant l'Éveil.
+	var push_dist := spell.push_distance + caster.get_awakening_push_bonus()
 	if spell.push_all_adjacent and spell.push_distance > 0:
 		for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
 			var adjacent_target = _grid.get_unit(caster.grid_pos + dir)
 			if adjacent_target != null and adjacent_target.team != caster.team:
-				var adjacent_push = _push_unit(caster, adjacent_target, spell.push_distance)
+				var adjacent_push = _push_unit(caster, adjacent_target, push_dist)
 				report["pushed"] = report["pushed"] or adjacent_push["pushed"]
 				report["collision"] = report["collision"] or adjacent_push["collision"]
 				report["pushed_away_from_ally"] = report["pushed_away_from_ally"] or adjacent_push["pushed_away_from_ally"]
@@ -281,7 +293,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 	elif spell.push_distance > 0:
 		var push_target = _grid.get_unit(cell)
 		if push_target != null and push_target.team != caster.team:
-			var push_result = _push_unit(caster, push_target, spell.push_distance)
+			var push_result = _push_unit(caster, push_target, push_dist)
 			report["pushed"] = push_result["pushed"]
 			report["collision"] = push_result["collision"]
 			report["pushed_away_from_ally"] = push_result["pushed_away_from_ally"]

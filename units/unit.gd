@@ -521,6 +521,13 @@ func set_reaction_armed(armed: bool) -> bool:
 func has_charge_threshold() -> bool:
 	return has_energy() and charge_threshold_active
 
+# Bonus de distance de poussée accordé pendant l'Éveil (école Rage / placement).
+# 0 hors Éveil ou pour les écoles qui ne le configurent pas.
+func get_awakening_push_bonus() -> int:
+	if not has_charge_threshold():
+		return 0
+	return energy_type.awakening_push_bonus
+
 func get_basic_attack_elan_cost() -> float:
 	var cost := ELAN_BASIC_ATTACK_COST - _current_terrain_elan_discount()
 	return maxf(0.0, cost)

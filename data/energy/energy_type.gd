@@ -62,6 +62,10 @@ const VERB_TAKE_DAMAGE := "TAKE_DAMAGE"
 @export var awakening_blocks_shield: bool = false
 @export var awakening_elan_income_penalty: float = 0.0
 @export var awakening_terrain_duration_multiplier: float = 1.0
+# École Rage (placement) : pendant l'Éveil, les poussées vont plus loin et les
+# collisions infligent des dégâts. Défaut 0 ⇒ aucun effet sur les autres écoles.
+@export var awakening_push_bonus: int = 0
+@export var awakening_collision_damage: int = 0
 
 @export_group("Reaction v2")
 @export var reaction_cost: float = 25.0
