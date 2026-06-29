@@ -11,6 +11,8 @@
 [ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="11_spell"]
 [ext_resource type="Resource" uid="uid://0flkpto1jkby" path="res://data/spells/Guerrier/frappe_lourde.tres" id="12_spell"]
 [ext_resource type="Resource" uid="uid://dpmhlxq1x24eq" path="res://data/spells/Guerrier/brise_garde.tres" id="13_spell"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/onde_de_choc.tres" id="14_onde"]
+[ext_resource type="Resource" path="res://data/traits/rage_collision.tres" id="15_ragecol"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]
 animations = [{
@@ -30,6 +32,7 @@ description = "Bruiser Rage. Il frappe, pousse et transforme le terrain en fenet
 attack_power = 18
 energy_type = ExtResource("3_energy")
 chassis_trait = ExtResource("4_chassis")
+starting_traits = Array[ExtResource("11_0hljd")]([ExtResource("15_ragecol")])
 sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell"), ExtResource("12_spell"), ExtResource("13_spell"), ExtResource("9_5gm43")])
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("11_spell"), ExtResource("12_spell"), ExtResource("13_spell"), ExtResource("14_onde"), ExtResource("9_5gm43")])

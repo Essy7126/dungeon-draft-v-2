@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Onde de choc"
-description = "Pousse tous les ennemis adjacents. Exploite collisions et terrains.\n\nLecture joueur: Cout 40 Elan. Portee 0. Cible: soi. Effets: pousse de 1 case(s)."
-energy_cost = 40.0
+description = "Pousse tous les ennemis adjacents. Exploite collisions et terrains.\n\nLecture joueur: Cout 40 Rage. Portee 0. Cible: soi. Effets: pousse de 1 case(s)."
+fervor_cost = 40.0
 spell_range = 0
 can_target_enemy = false
 can_target_self = true
