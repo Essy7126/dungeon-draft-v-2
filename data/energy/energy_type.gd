@@ -37,7 +37,6 @@ const VERB_TAKE_DAMAGE := "TAKE_DAMAGE"
 @export var threshold_attack_cost_discount: float = 0.0
 @export var threshold_protect_cost_discount: float = 0.0
 @export var threshold_heal_cost_discount: float = 0.0
-@export var threshold_damage_multiplier: float = 1.0
 @export var threshold_damage_reduction_pct: float = 0.0
 @export var threshold_shield_multiplier: float = 1.0
 @export var threshold_heal_multiplier: float = 1.0

@@ -331,10 +331,12 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 			var terrain_result: Dictionary = _terrain.place_effect(target_cell, terrain_data, caster, spell)
 			if terrain_result.get("changed", false) and not report["terrain_changed"].has(target_cell):
 				report["terrain_changed"].append(target_cell)
-	# Force (Rage) : scale multiplicativement distance de poussee, collision et souffle.
+	# Force (Rage) : scale multiplicativement toute forme de deplacement force
+	# (poussee, attraction) ainsi que les degats de collision et le souffle.
 	var force_mult := caster.get_force_multiplier()
 	var eff_push := int(round(spell.push_distance * force_mult))
 	var eff_collision := int(round(spell.collision_damage * force_mult))
+	var eff_pull := int(round(spell.pull_distance * force_mult))
 	if spell.push_all_adjacent and spell.push_distance > 0:
 		# On recense d'abord les ennemis entasses autour du lanceur : le souffle
 		# scale avec leur nombre (recompense d'avoir regroupe avant de detoner).
@@ -373,7 +375,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 	if spell.pull_distance > 0:
 		var pull_target = _grid.get_unit(cell)
 		if pull_target != null and pull_target.team != caster.team:
-			var pull_result = _pull_unit(caster, pull_target, spell.pull_distance)
+			var pull_result = _pull_unit(caster, pull_target, eff_pull)
 			report["pushed"] = report["pushed"] or pull_result["pushed"]
 			report["landed_on_terrain"] = report["landed_on_terrain"] or pull_result.get("landed_on_terrain", false)
 	if spell.teleport_behind_target:
