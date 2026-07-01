@@ -93,6 +93,7 @@ func advance() -> void:
 			_current_index = 0
 			round_number += 1
 			round_started.emit(round_number)
+			EventBus.round_started.emit(round_number)
 
 		attempts += 1
 
@@ -110,8 +111,18 @@ func advance() -> void:
 func start() -> void:
 	round_number = 1
 	round_started.emit(round_number)
+	EventBus.round_started.emit(round_number)
 	_current_index = -1
 	advance()
+
+# Ajoute une unité EN COURS de combat (renfort spawné par un totem/source).
+# On l'insère en fin d'ordre pour ne pas perturber l'index de l'unité active :
+# elle jouera plus tard ce round (si l'index ne l'a pas dépassée) ou au suivant.
+func add_unit(unit) -> void:
+	if unit == null or unit in _order:
+		return
+	_order.append(unit)
+	queue_changed.emit()
 
 # ============================================================
 # GESTION DES MORTS

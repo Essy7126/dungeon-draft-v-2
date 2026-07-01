@@ -49,6 +49,9 @@ var _battle_over: bool = false
 # route les clics vers lui et lance le combat à la fin (deployment_completed).
 var _deployment: DeploymentController = null
 
+# --- Salle-situation (optionnel) — instancié seulement si la salle est configurée.
+var _situation: SituationRoomController = null
+
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
 const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
@@ -97,6 +100,20 @@ func _setup_logic() -> void:
 	add_child(_deployment)
 	_deployment.setup(self)
 	_deployment.deployment_completed.connect(_start_battle)
+	# Salle-situation : uniquement si la RoomData la configure (totem defini).
+	# battle ne fait que l'instancier ; toute la logique vit dans le controleur.
+	if room_data != null and room_data.situation_totem != null:
+		_situation = SituationRoomController.new()
+		add_child(_situation)
+		_situation.setup(self, {
+			"totem_data": room_data.situation_totem,
+			"spawn_data": room_data.situation_spawn,
+			"totem_cell": room_data.situation_totem_cell,
+			"spawn_period": room_data.situation_spawn_period,
+			"lava_effect": room_data.situation_lava_effect,
+			"lava_origin": room_data.situation_lava_origin,
+			"lava_cap": room_data.situation_lava_cap,
+		})
 
 # ============================================================
 # IMPORT DU TERRAIN DESSINÉ (TileMapLayer → GridData)

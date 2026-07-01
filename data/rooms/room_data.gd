@@ -29,3 +29,19 @@ extends Resource
 
 # Cases autorisées pour l'apparition des ennemis (placement aléatoire).
 @export var enemy_spawn_zone: Array[Vector2i] = []
+
+# ============================================================
+# SALLE-SITUATION (optionnel) — menace qui s'aggrave + objectif != tuer tout.
+# Si situation_totem est défini, battle instancie un SituationRoomController :
+# le totem (immobile) spawn un renfort tous les N rounds, la lave s'étend d'1
+# case/round (plafonnée), et détruire le totem = victoire. Laisser vide = salle
+# classique.
+# ============================================================
+@export_group("Salle-situation")
+@export var situation_totem: UnitData = null      # la source coupable (immobile, destructible)
+@export var situation_spawn: UnitData = null      # le renfort spawné périodiquement
+@export var situation_totem_cell: Vector2i = Vector2i(-1, -1)
+@export var situation_spawn_period: int = 2       # 1 renfort tous les N rounds
+@export var situation_lava_effect: TerrainEffectData = null
+@export var situation_lava_origin: Vector2i = Vector2i(-1, -1)
+@export var situation_lava_cap: int = 8           # nombre max de cases de lave (anti-invasion)

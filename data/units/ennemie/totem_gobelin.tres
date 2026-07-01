@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Texture2D" uid="uid://cv0xpdey2miey" path="res://asset/Orc.png" id="2_orc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_totem"]
+atlas = ExtResource("2_orc")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_totem"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_totem")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Totem Gobelin"
+team = 1
+max_hp = 45
+initiative = 1
+max_ap = 0
+max_mp = 0
+attack_power = 0
+sprite_frames = SubResource("SpriteFrames_totem")
+sprite_scale = 3.0
+metadata/_custom_type_script = "uid://b2i0gvw5kv6a1"

@@ -81,6 +81,11 @@ signal status_expired(unit, status_name)
 # Le tour d'une unité commence (PA/PM rechargés, statuts à traiter).
 signal turn_started(unit)
 
+# Un nouveau round commence (tous les vivants ont joué une fois). Émis par la
+# TurnQueue. Sert aux systèmes de salle-situation (menace qui s'aggrave par round :
+# spawn, terrain qui s'étend) sans qu'ils connaissent la TurnQueue.
+signal round_started(number)
+
 # ============================================================
 # SIGNAUX DE CYCLE DE VIE DE LA VUE
 # Émis depuis battle.gd une fois la vue de combat construite.
