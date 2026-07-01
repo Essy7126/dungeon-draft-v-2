@@ -5,11 +5,13 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Onde de choc"
-description = "Pousse tous les ennemis adjacents. Exploite collisions et terrains.\n\nLecture joueur: Cout 40 Elan. Portee 0. Cible: soi. Effets: pousse de 1 case(s)."
+description = "Payoff placement : repousse tous les ennemis adjacents vers l'exterieur (2 cases, collision) et inflige un souffle qui SCALE avec le nombre d'ennemis entasses autour (5 degats par ennemi present). Recompense d'avoir regroupe avant de detoner.\n\nLecture joueur: Cout 40 Elan. Portee 0 (soi). Effets: pousse de 2 cases; collision 8; souffle 5 x (ennemis autour)."
 energy_cost = 40.0
 spell_range = 0
 can_target_enemy = false
 can_target_self = true
-push_distance = 1
+push_distance = 2
+collision_damage = 8
+cluster_bonus_damage = 5
 push_all_adjacent = true
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

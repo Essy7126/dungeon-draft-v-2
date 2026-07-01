@@ -332,14 +332,32 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 			if terrain_result.get("changed", false) and not report["terrain_changed"].has(target_cell):
 				report["terrain_changed"].append(target_cell)
 	if spell.push_all_adjacent and spell.push_distance > 0:
+		# On recense d'abord les ennemis entasses autour du lanceur : le souffle
+		# scale avec leur nombre (recompense d'avoir regroupe avant de detoner).
+		var cluster: Array = []
 		for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
-			var adjacent_target = _grid.get_unit(caster.grid_pos + dir)
-			if adjacent_target != null and adjacent_target.team != caster.team:
-				var adjacent_push = _push_unit(caster, adjacent_target, spell.push_distance, spell.collision_damage)
-				report["pushed"] = report["pushed"] or adjacent_push["pushed"]
-				report["collision"] = report["collision"] or adjacent_push["collision"]
-				report["pushed_away_from_ally"] = report["pushed_away_from_ally"] or adjacent_push["pushed_away_from_ally"]
-				report["landed_on_terrain"] = report["landed_on_terrain"] or adjacent_push.get("landed_on_terrain", false)
+			var adj = _grid.get_unit(caster.grid_pos + dir)
+			if adj != null and adj.team != caster.team:
+				cluster.append(adj)
+		var blast: int = spell.cluster_bonus_damage * cluster.size()
+		for adjacent_target in cluster:
+			# Degats de souffle (scalent avec la taille du paquet) AVANT la poussee.
+			if blast > 0 and adjacent_target.is_alive:
+				adjacent_target.take_damage(blast, caster, Spell.DamageType.PHYSICAL, Spell.Element.NONE)
+				if not report["damaged_enemies"].has(adjacent_target):
+					report["damaged_enemies"].append(adjacent_target)
+				if not report["affected_units"].has(adjacent_target):
+					report["affected_units"].append(adjacent_target)
+			# Puis la projection vers l'exterieur (peut percuter mur/hasard).
+			if not adjacent_target.is_alive:
+				continue
+			var adjacent_push = _push_unit(caster, adjacent_target, spell.push_distance, spell.collision_damage)
+			report["pushed"] = report["pushed"] or adjacent_push["pushed"]
+			report["collision"] = report["collision"] or adjacent_push["collision"]
+			report["pushed_away_from_ally"] = report["pushed_away_from_ally"] or adjacent_push["pushed_away_from_ally"]
+			report["landed_on_terrain"] = report["landed_on_terrain"] or adjacent_push.get("landed_on_terrain", false)
+			if adjacent_push["pushed"] and not report["affected_units"].has(adjacent_target):
+				report["affected_units"].append(adjacent_target)
 	elif spell.push_distance > 0:
 		var push_target = _grid.get_unit(cell)
 		if push_target != null and push_target.team != caster.team:

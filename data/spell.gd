@@ -62,6 +62,10 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 # Attire la cible de N cases VERS le lanceur (le "pull" du Crochet). Genere de
 # l'energie comme une poussee (deplacement force).
 @export var pull_distance: int = 0
+# Souffle de zone (Onde de choc) : degats infliges a CHAQUE ennemi adjacent,
+# multiplies par le nombre d'ennemis entasses autour. Recompense le regroupement
+# avant de detoner. N'a de sens qu'avec push_all_adjacent.
+@export var cluster_bonus_damage: int = 0
 @export var shield_grant: int = 0
 @export var bonus_damage_if_marked: int = 0
 @export var forces_taunt: bool = false
