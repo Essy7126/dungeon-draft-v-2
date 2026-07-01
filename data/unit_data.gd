@@ -35,6 +35,9 @@ extends Resource
 # Force : colonne de Rage (placement). Scale distance de poussee, degats de
 # collision/hasard et energie gagnee sur deplacement. 0 = pas d'ecole placement.
 @export var force: float = 0.0
+# Direction logique initiale (facing) au spawn. Sert aux mecaniques directionnelles
+# (ex: boss qui durcit de face). Ecrasee des le premier deplacement reel de l'unite.
+@export var facing_dir: Vector2i = Vector2i(0, 1)
 
 # ============================================================
 # DÉFENSE (Couche 1)

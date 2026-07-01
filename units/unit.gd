@@ -52,13 +52,29 @@ var current_mp: int = 0
 var current_shield: int = 0
 var is_alive: bool = true
 var _grid_pos: Vector2i = Vector2i(-1, -1)
+# Direction LOGIQUE (pas visuelle) vers laquelle l'unite est orientee. Utilisee
+# par les mecaniques de boss type "durcit de face" (ex: Le Colosse). Mise a
+# jour automatiquement a chaque deplacement reel ; sinon garde sa derniere
+# valeur (position de spawn si l'unite ne bouge jamais).
+var facing_dir: Vector2i = Vector2i(0, 1)
 var grid_pos: Vector2i:
 	get: return _grid_pos
 	set(value):
 		var old := _grid_pos
 		_grid_pos = value
 		if old != Vector2i(-1, -1) and old != value:
+			facing_dir = _snap_to_cardinal(value - old)
 			moved.emit(old, value)
+
+# Reduit un vecteur de deplacement a l'une des 4 directions cardinales (meme
+# motif que _push_unit/_pull_unit dans SpellCaster), pour rester robuste a un
+# relocate non-adjacent (teleportation).
+func _snap_to_cardinal(delta: Vector2i) -> Vector2i:
+	if delta == Vector2i.ZERO:
+		return facing_dir
+	if abs(delta.x) >= abs(delta.y):
+		return Vector2i(sign(delta.x), 0)
+	return Vector2i(0, sign(delta.y))
 # --- Ressources de combat ---
 # Elan paie les actions du tour. Ferveur (current_energy) est la jauge
 # d'identite liee au type choisi au draft : Rage, Foi, Nature...
@@ -153,6 +169,7 @@ static func from_data(data: UnitData) -> Unit:
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
 	u.ai_behavior = data.ai_behavior
+	u.facing_dir = data.facing_dir
 	# Stats dÃ©fensives : on rÃ¨gle la valeur de BASE de chaque Stat.
 	u.armure.base_value = data.armure
 	u.resist_magique.base_value = data.resist_magique
