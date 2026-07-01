@@ -331,6 +331,10 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 			var terrain_result: Dictionary = _terrain.place_effect(target_cell, terrain_data, caster, spell)
 			if terrain_result.get("changed", false) and not report["terrain_changed"].has(target_cell):
 				report["terrain_changed"].append(target_cell)
+	# Force (Rage) : scale multiplicativement distance de poussee, collision et souffle.
+	var force_mult := caster.get_force_multiplier()
+	var eff_push := int(round(spell.push_distance * force_mult))
+	var eff_collision := int(round(spell.collision_damage * force_mult))
 	if spell.push_all_adjacent and spell.push_distance > 0:
 		# On recense d'abord les ennemis entasses autour du lanceur : le souffle
 		# scale avec leur nombre (recompense d'avoir regroupe avant de detoner).
@@ -339,7 +343,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 			var adj = _grid.get_unit(caster.grid_pos + dir)
 			if adj != null and adj.team != caster.team:
 				cluster.append(adj)
-		var blast: int = spell.cluster_bonus_damage * cluster.size()
+		var blast: int = int(round(spell.cluster_bonus_damage * cluster.size() * force_mult))
 		for adjacent_target in cluster:
 			# Degats de souffle (scalent avec la taille du paquet) AVANT la poussee.
 			if blast > 0 and adjacent_target.is_alive:
@@ -351,7 +355,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 			# Puis la projection vers l'exterieur (peut percuter mur/hasard).
 			if not adjacent_target.is_alive:
 				continue
-			var adjacent_push = _push_unit(caster, adjacent_target, spell.push_distance, spell.collision_damage)
+			var adjacent_push = _push_unit(caster, adjacent_target, eff_push, eff_collision)
 			report["pushed"] = report["pushed"] or adjacent_push["pushed"]
 			report["collision"] = report["collision"] or adjacent_push["collision"]
 			report["pushed_away_from_ally"] = report["pushed_away_from_ally"] or adjacent_push["pushed_away_from_ally"]
@@ -361,7 +365,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 	elif spell.push_distance > 0:
 		var push_target = _grid.get_unit(cell)
 		if push_target != null and push_target.team != caster.team:
-			var push_result = _push_unit(caster, push_target, spell.push_distance, spell.collision_damage)
+			var push_result = _push_unit(caster, push_target, eff_push, eff_collision)
 			report["pushed"] = push_result["pushed"]
 			report["collision"] = push_result["collision"]
 			report["pushed_away_from_ally"] = push_result["pushed_away_from_ally"]

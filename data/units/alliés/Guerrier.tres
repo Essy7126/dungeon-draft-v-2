@@ -30,6 +30,7 @@ script = ExtResource("1_unit")
 unit_name = "Guerrier"
 description = "Bruiser Rage. Il frappe, pousse et transforme le terrain en fenetre Berserker."
 attack_power = 18
+force = 20.0
 energy_type = ExtResource("3_energy")
 chassis_trait = ExtResource("4_chassis")
 sprite_frames = SubResource("SpriteFrames_main")

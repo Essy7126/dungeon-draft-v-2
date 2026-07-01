@@ -31,6 +31,12 @@ var esquive: Stat
 var crit_chance: Stat
 var crit_multi: Stat
 
+# --- Stat d'ecole ---
+# Force : colonne de Rage. Scale la distance de poussee, les degats de
+# collision/hasard, et l'energie gagnee sur deplacement (EXPLOIT).
+# Multiplicatif au payoff : 1 + Force/100.
+var force: Stat
+
 # --- Resistances elementaires ---
 var resistances: Dictionary = {}
 
@@ -133,6 +139,7 @@ func _init(
 	esquive        = Stat.new(0.0).set_bounds(0.0, ESQUIVE_MAX)
 	crit_chance    = Stat.new(0.0).set_min(0.0)
 	crit_multi     = Stat.new(1.5).set_min(1.0)
+	force          = Stat.new(0.0).set_min(0.0)
 	current_hp = max_hp.get_int()
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
@@ -152,6 +159,7 @@ static func from_data(data: UnitData) -> Unit:
 	u.esquive.base_value = data.esquive
 	u.crit_chance.base_value = data.crit_chance
 	u.crit_multi.base_value = data.crit_multi
+	u.force.base_value = data.force
 	# RÃ©sistances Ã©lÃ©mentaires : le .tres porte des float simples
 	# { Element â†’ float }. On les convertit en Stat clampÃ©es via le helper,
 	# pour que designer = nombres simples, runtime = stats modifiables.
@@ -207,7 +215,7 @@ func get_resistance_value(element: int) -> float:
 func _all_durational_stats() -> Array:
 	var list := [
 		max_hp, initiative, max_ap, max_mp, attack_power,
-		armure, resist_magique, esquive, crit_chance, crit_multi,
+		armure, resist_magique, esquive, crit_chance, crit_multi, force,
 	]
 	# Les rÃ©sistances sont des Stat Ã  part entiÃ¨re : elles ticktent aussi.
 	for element in resistances:
@@ -594,6 +602,11 @@ func _get_modified_incoming_damage(amount: int) -> int:
 			modified *= energy_type.awakening_incoming_damage_multiplier
 	return maxi(0, int(round(modified)))
 
+# Multiplicateur de payoff de la Force (colonne de Rage). 1.0 si Force nulle.
+# Multiplicatif pour permettre l'empilement exponentiel (modele Ravenswatch).
+func get_force_multiplier() -> float:
+	return 1.0 + force.get_value() / 100.0
+
 func generate_fervor_from_verb(verb: String, source: String = "") -> float:
 	if not has_energy():
 		return 0.0
@@ -604,6 +617,9 @@ func generate_fervor_from_verb(verb: String, source: String = "") -> float:
 	amount *= energy_type.gain_multiplier_for(key, charge_threshold_active)
 	amount *= _current_terrain_fervor_multiplier()
 	amount *= GameManager.get_fervor_multiplier() if GameManager.has_method("get_fervor_multiplier") else GameManager.get_charge_multiplier()
+	# Force (Rage) : l'energie gagnee SUR DEPLACEMENT scale avec la Force.
+	if key == EnergyTypeData.VERB_EXPLOIT:
+		amount *= get_force_multiplier()
 	return generate_energy(amount, source if source != "" else key)
 
 func generate_charge_from_verb(verb: String, source: String = "") -> float:

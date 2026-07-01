@@ -32,6 +32,9 @@ extends Resource
 @export var max_ap: int = 6
 @export var max_mp: int = 3
 @export var attack_power: int = 20
+# Force : colonne de Rage (placement). Scale distance de poussee, degats de
+# collision/hasard et energie gagnee sur deplacement. 0 = pas d'ecole placement.
+@export var force: float = 0.0
 
 # ============================================================
 # DÉFENSE (Couche 1)
