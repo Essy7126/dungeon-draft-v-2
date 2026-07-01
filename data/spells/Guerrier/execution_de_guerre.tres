@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Execution de guerre"
+description = "Ecole Ombre, payoff : coup final qui exploite une cible Marquee. Sequence : Marque de guerre d'abord, puis ce coup.\n\nLecture joueur: Cout 35 Ferveur. Portee 1. Effets: 16 degats (+24 si Marque); genere via verbe HIT."
+fervor_cost = 35.0
+charge_verb = "HIT"
+spell_range = 1
+damage = 16
+damage_type = 0
+bonus_damage_if_marked = 24
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

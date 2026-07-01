@@ -9,6 +9,8 @@
 [ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="11_spell"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/crochet.tres" id="14_crochet"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/onde_de_choc.tres" id="15_onde"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/marque_de_guerre.tres" id="16_marque"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/execution_de_guerre.tres" id="17_execution"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]
 animations = [{
@@ -24,11 +26,11 @@ animations = [{
 [resource]
 script = ExtResource("1_unit")
 unit_name = "Guerrier"
-description = "Ecole Rage : le placement. Petits degats directs, toute la puissance vient de la poussee et de la collision. Monte en Rage en deplacant l'adversaire, explose en Berserker."
+description = "Chassis energie-agnostique : ses outils (poussee, collision) changent de sens selon l'ecole equipee. Rage = placement brutal. Ombre = marque puis execute. Nature = entasse et corrompt le sol."
 attack_power = 18
 force = 20.0
 energy_type = ExtResource("3_energy")
 chassis_trait = ExtResource("4_chassis")
 sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("14_crochet"), ExtResource("11_spell"), ExtResource("15_onde")])
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("14_crochet"), ExtResource("11_spell"), ExtResource("15_onde"), ExtResource("16_marque"), ExtResource("17_execution")])

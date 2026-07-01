@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" uid="uid://borbjlismrg6m" path="res://data/status/core/marqué.tres" id="2_marque"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Marque de guerre"
+description = "Ecole Ombre : bouscule et marque la cible pour un futur coup de grace.\n\nLecture joueur: Cout 15 Elan. Portee 1. Effets: 2 degats; pousse de 1 case; applique Marque; genere via verbe HIT (+ EXPLOIT sur poussee)."
+energy_cost = 15.0
+energy_generated = 6.0
+charge_verb = "HIT"
+spell_range = 1
+damage = 2
+damage_type = 0
+push_distance = 1
+applied_status = ExtResource("2_marque")
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

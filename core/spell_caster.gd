@@ -271,7 +271,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 			if spell.deals_damage():
 				var raw_damage := spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
 				var base_dmg := caster.get_modified_spell_damage(spell, raw_damage)
-				if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marque"):
+				if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marqué"):
 					base_dmg += spell.bonus_damage_if_marked
 				var damage_result = target.take_damage(base_dmg, caster, spell.damage_type, spell.element, { "bonus_crit_chance": spell.crit_chance })
 				if damage_result != null:
