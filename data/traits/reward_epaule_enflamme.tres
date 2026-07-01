@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TraitData" format=3]
+
+[ext_resource type="Script" path="res://traits/trait_data.gd" id="1_trait"]
+[ext_resource type="Script" path="res://traits/trait_reward_epaule_enflamme.gd" id="2_trait"]
+[ext_resource type="Resource" path="res://data/status/core/bruleure.tres" id="3_status"]
+
+[resource]
+script = ExtResource("1_trait")
+trait_script = ExtResource("2_trait")
+display_name = "Brassard Incendiaire"
+description = "Coup d'epaule enflamme les ennemis pousses ou percutes."
+params = {"status": ExtResource("3_status")}

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RewardData" format=3]
+
+[ext_resource type="Script" path="res://data/rewards/reward_data.gd" id="1_reward"]
+[ext_resource type="Resource" path="res://data/traits/reward_epaule_enflamme.tres" id="2_trait"]
+
+[resource]
+script = ExtResource("1_reward")
+reward_name = "Brassard Incendiaire"
+description = "Coup d'epaule enflamme desormais les ennemis pousses ou percutes (Brulure, 6 degats/tour, 2 tours)."
+target = 0
+forced_unit_name = "Guerrier"
+rarity = 1
+trait_data = ExtResource("2_trait")
