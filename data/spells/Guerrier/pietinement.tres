@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/terrain/ronces.tres" id="2_ronces"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Pietinement"
+description = "Ecole Nature : pietine le sol sous la cible (ronces) puis la bouscule hors de la zone.\n\nLecture joueur: Cout 15 Elan. Portee 1. Effets: 2 degats; pose ronces sur la case ciblee; pousse de 1 case; genere via verbe HIT (+ EXPLOIT sur poussee/terrain)."
+energy_cost = 15.0
+energy_generated = 10.0
+charge_verb = "HIT"
+spell_range = 1
+damage = 2
+damage_type = 0
+push_distance = 1
+terrain_effect = ExtResource("2_ronces")
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

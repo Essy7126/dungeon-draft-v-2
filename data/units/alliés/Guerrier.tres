@@ -11,6 +11,8 @@
 [ext_resource type="Resource" path="res://data/spells/Guerrier/onde_de_choc.tres" id="15_onde"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/marque_de_guerre.tres" id="16_marque"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/execution_de_guerre.tres" id="17_execution"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/pietinement.tres" id="18_pietinement"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/sol_corrompu.tres" id="19_sol"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]
 animations = [{
@@ -33,4 +35,4 @@ energy_type = ExtResource("3_energy")
 chassis_trait = ExtResource("4_chassis")
 sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
-spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("14_crochet"), ExtResource("11_spell"), ExtResource("15_onde"), ExtResource("16_marque"), ExtResource("17_execution")])
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("14_crochet"), ExtResource("11_spell"), ExtResource("15_onde"), ExtResource("16_marque"), ExtResource("17_execution"), ExtResource("18_pietinement"), ExtResource("19_sol")])

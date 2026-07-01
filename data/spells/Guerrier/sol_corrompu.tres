@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/terrain/ronces.tres" id="2_ronces"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Sol Corrompu"
+description = "Ecole Nature, payoff : fait pousser des ronces en croix autour de la case ciblee. Le plateau devient un territoire hostile.\n\nLecture joueur: Cout 35 Ferveur. Portee 3. Effets: 4 degats; pose ronces en croix (taille 1); genere via verbe HIT."
+fervor_cost = 35.0
+charge_verb = "HIT"
+spell_range = 3
+can_target_enemy = true
+can_target_free_cell = true
+aoe_shape = 1
+aoe_size = 1
+damage = 4
+damage_type = 0
+terrain_effect = ExtResource("2_ronces")
+metadata/_custom_type_script = "uid://bd5080ch70ymn"
