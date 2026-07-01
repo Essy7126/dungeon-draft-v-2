@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Bourrade"
+description = "Action de base de l'ecole placement : pousse l'ennemi d'1 case, degats ridicules. Le geste par defaut du Guerrier+Rage est une poussee, pas une frappe.\n\nLecture joueur: Cout 5 Elan. Portee 1. Effets: 2 degats; pousse de 1 case; genere via EXPLOIT (poussee)."
+energy_cost = 5.0
+charge_verb = "HIT"
+spell_range = 1
+damage = 2
+damage_type = 0
+push_distance = 1
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

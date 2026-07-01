@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Spell" format=3]
+
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_name = "Crochet"
+description = "Attire un ennemi distant de 2 cases vers le Guerrier (ou vers un hasard). Sert a constituer les paquets avant de detoner. Deplacement force : genere de la Rage.\n\nLecture joueur: Cout 15 Elan. Portee 3. Effets: 2 degats; attire de 2 cases; genere via EXPLOIT (deplacement)."
+energy_cost = 15.0
+charge_verb = "HIT"
+spell_range = 3
+damage = 2
+damage_type = 0
+pull_distance = 2
+metadata/_custom_type_script = "uid://bd5080ch70ymn"

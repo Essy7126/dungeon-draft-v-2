@@ -56,6 +56,12 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export_group("Mecanique speciale")
 @export var push_distance: int = 0
 @export var push_all_adjacent: bool = false
+# Collision en chaine : si > 0, une unite poussee qui en percute une autre (ou un
+# mur/hasard) inflige ces degats aux deux, et transmet la poussee a la percutee.
+@export var collision_damage: int = 0
+# Attire la cible de N cases VERS le lanceur (le "pull" du Crochet). Genere de
+# l'energie comme une poussee (deplacement force).
+@export var pull_distance: int = 0
 @export var shield_grant: int = 0
 @export var bonus_damage_if_marked: int = 0
 @export var forces_taunt: bool = false

@@ -91,7 +91,7 @@ func _has_angle_advantage(caster: Unit, target_cell: Vector2i) -> bool:
 			return true
 	return false
 
-func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
+func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 0) -> Dictionary:
 	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false }
 	if cells <= 0 or target == null:
 		return result
@@ -106,12 +106,35 @@ func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
 	var from_pos := target.grid_pos
 	var landed_pos := from_pos
 	var had_collision := false
-	for _i in range(cells):
+	for i in range(cells):
 		var next := landed_pos + dir
-		if not _grid.is_valid(next) or not _grid.is_walkable(next) or _grid.has_unit(next):
+		# Collision dure : mur ou bord de grille.
+		if not _grid.is_valid(next) or not _grid.is_walkable(next):
 			had_collision = true
+			if collision_damage > 0:
+				_apply_collision_damage(caster, target, collision_damage)
+			break
+		# Collision EN CHAINE : la cible en percute une autre.
+		if _grid.has_unit(next):
+			had_collision = true
+			var blocker = _grid.get_unit(next)
+			if collision_damage > 0:
+				# Les deux encaissent le choc...
+				_apply_collision_damage(caster, target, collision_damage)
+				_apply_collision_damage(caster, blocker, collision_damage)
+				# ...et l'elan restant est transmis a la percutee, qui peut a son
+				# tour en percuter une autre (la chaine se propage).
+				if blocker != null and blocker.is_alive:
+					_push_unit(caster, blocker, maxi(1, cells - i), collision_damage)
+			# Si la case s'est liberee (percutee morte ou poussee plus loin), on avance.
+			if not _grid.has_unit(next):
+				landed_pos = next
 			break
 		landed_pos = next
+	# La cible a pu mourir d'une collision (mur/hasard) avant tout deplacement.
+	if not target.is_alive:
+		result["collision"] = had_collision
+		return result
 	if landed_pos != from_pos:
 		if not _grid.relocate_unit(target, landed_pos):
 			return result
@@ -126,6 +149,45 @@ func _push_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
 	elif had_collision:
 		result["collision"] = true
 		EventBus.unit_pushed.emit(target, from_pos, from_pos, true)
+	return result
+
+# Degats de collision : applique le choc a une victime (cible poussee ou percutee).
+func _apply_collision_damage(caster: Unit, victim, amount: int) -> void:
+	if victim == null or not victim.is_alive:
+		return
+	victim.take_damage(amount, caster, Spell.DamageType.PHYSICAL, Spell.Element.NONE)
+	DebugLogger.debug(CAT_SPELL, "Collision : %s subit %d" % [victim.unit_name, amount])
+
+# Attire la cible VERS le lanceur (Crochet). S'arrete avant le lanceur / obstacle.
+func _pull_unit(caster: Unit, target: Unit, cells: int) -> Dictionary:
+	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false }
+	if cells <= 0 or target == null:
+		return result
+	var raw_dir := caster.grid_pos - target.grid_pos
+	var dir: Vector2i
+	if abs(raw_dir.x) >= abs(raw_dir.y):
+		dir = Vector2i(sign(raw_dir.x), 0)
+	else:
+		dir = Vector2i(0, sign(raw_dir.y))
+	if dir == Vector2i.ZERO:
+		return result
+	var from_pos := target.grid_pos
+	var landed_pos := from_pos
+	for _i in range(cells):
+		var next := landed_pos + dir
+		if next == caster.grid_pos or not _grid.is_valid(next) or not _grid.is_walkable(next) or _grid.has_unit(next):
+			break
+		landed_pos = next
+	if landed_pos != from_pos:
+		if not _grid.relocate_unit(target, landed_pos):
+			return result
+		if _terrain.get_effect_data(landed_pos) != null:
+			result["landed_on_terrain"] = true
+			_terrain.on_enter_cell(target, landed_pos)
+		# Un deplacement force : compte comme une poussee pour la generation EXPLOIT.
+		result["pushed"] = true
+		EventBus.unit_pushed.emit(target, from_pos, landed_pos, false)
+		DebugLogger.debug(CAT_SPELL, "%s attire %s en %s" % [caster.unit_name, target.unit_name, str(landed_pos)])
 	return result
 
 func _teleport_behind_target(caster: Unit, target: Unit) -> bool:
@@ -273,7 +335,7 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 		for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
 			var adjacent_target = _grid.get_unit(caster.grid_pos + dir)
 			if adjacent_target != null and adjacent_target.team != caster.team:
-				var adjacent_push = _push_unit(caster, adjacent_target, spell.push_distance)
+				var adjacent_push = _push_unit(caster, adjacent_target, spell.push_distance, spell.collision_damage)
 				report["pushed"] = report["pushed"] or adjacent_push["pushed"]
 				report["collision"] = report["collision"] or adjacent_push["collision"]
 				report["pushed_away_from_ally"] = report["pushed_away_from_ally"] or adjacent_push["pushed_away_from_ally"]
@@ -281,11 +343,17 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 	elif spell.push_distance > 0:
 		var push_target = _grid.get_unit(cell)
 		if push_target != null and push_target.team != caster.team:
-			var push_result = _push_unit(caster, push_target, spell.push_distance)
+			var push_result = _push_unit(caster, push_target, spell.push_distance, spell.collision_damage)
 			report["pushed"] = push_result["pushed"]
 			report["collision"] = push_result["collision"]
 			report["pushed_away_from_ally"] = push_result["pushed_away_from_ally"]
 			report["landed_on_terrain"] = push_result.get("landed_on_terrain", false)
+	if spell.pull_distance > 0:
+		var pull_target = _grid.get_unit(cell)
+		if pull_target != null and pull_target.team != caster.team:
+			var pull_result = _pull_unit(caster, pull_target, spell.pull_distance)
+			report["pushed"] = report["pushed"] or pull_result["pushed"]
+			report["landed_on_terrain"] = report["landed_on_terrain"] or pull_result.get("landed_on_terrain", false)
 	if spell.teleport_behind_target:
 		var teleport_target = _grid.get_unit(cell)
 		if teleport_target != null and teleport_target.team != caster.team and _teleport_behind_target(caster, teleport_target):
