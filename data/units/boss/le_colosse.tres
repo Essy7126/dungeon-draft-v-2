@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Texture2D" path="res://asset/persephone.png" id="2_sprite"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="3_trait_type"]
+[ext_resource type="Resource" path="res://data/traits/hardened_front.tres" id="4_hardened"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_colosse"]
+animations = [{"frames": [{"duration": 1.0,"texture": ExtResource("2_sprite")}],"loop": true,"name": &"default","speed": 5.0}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Le Colosse"
+description = "Durcit (+armure) a chaque coup recu de face, reste vulnerable de dos et de cote. Lourd et lent : casse le bourrinage frontal, recompense le placement."
+team = 1
+max_hp = 180
+initiative = 6
+max_ap = 6
+max_mp = 2
+attack_power = 22
+armure = 20.0
+facing_dir = Vector2i(-1, 0)
+sprite_frames = SubResource("SpriteFrames_colosse")
+sprite_scale = 1.0
+starting_traits = Array[ExtResource("3_trait_type")]([ExtResource("4_hardened")])
+ai_behavior = 0
