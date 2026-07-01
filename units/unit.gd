@@ -852,6 +852,13 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 		# Tout absorbÃ© : les PV n'ont pas bougÃ©, mais on notifie pour l'UI.
 		hp_changed.emit(self)
 
+	# --- Endurance : encaisser un coup gÃ©nÃ¨re de l'Ã©nergie selon l'Ã©cole ---
+	# Data-driven via gain_table[TAKE_DAMAGE] : nul pour Rage/Ombre (0), paie pour
+	# Foi (montÃ©e en puissance) et Nature. result.amount est le coup mitigÃ© (avant
+	# bouclier), donc absorber compte aussi comme "tenir bon". Point unique du flux.
+	if result.amount > 0 and is_alive:
+		generate_fervor_from_verb(EnergyTypeData.VERB_TAKE_DAMAGE, "endurance")
+
 func heal(amount: int) -> void:
 	if has_charge_threshold() and energy_type.awakening_blocks_healing:
 		DebugLogger.debug(CAT_STATS, "%s ne peut pas etre soigne pendant %s" % [unit_name, energy_type.threshold_name])
