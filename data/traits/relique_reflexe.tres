@@ -7,5 +7,5 @@
 script = ExtResource("1_data")
 trait_script = ExtResource("2_trait")
 display_name = "Reflexe"
-description = "Bonus defensif de tempo, approximation de la premiere Reaction gratuite."
+description = "Genere 10 Ferveur au premier tour : la premiere Reaction est quasi offerte."
 params = {"amount": 10.0, "once_per_combat": true}

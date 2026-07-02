@@ -1,3 +1,15 @@
+# traits/trait_elan_on_turn_start.gd
+# ============================================================
+# FERVEUR AU DEBUT DU TOUR — reliques de tempo (Ferveur brute, Reflexe...).
+#
+# Migration PA : l'ancienne ressource d'action n'existe plus. L'intention
+# d'origine ("un peu plus de ressource pour agir en debut de tour") se traduit
+# desormais en JAUGE d'ecole : le porteur genere `amount` Ferveur au debut de
+# son tour (ou une seule fois par combat si once_per_combat). Le nom de
+# fichier est conserve (regle : ne jamais deplacer un .gd, les .tres le
+# referencent par chemin).
+# ============================================================
+
 class_name TraitElanOnTurnStart
 extends Trait
 
@@ -22,10 +34,9 @@ func _deactivate() -> void:
 func _on_turn_started(unit) -> void:
 	if unit != owner or owner == null or amount <= 0.0:
 		return
+	if not owner.has_energy():
+		return
 	if once_per_combat and _used:
 		return
 	_used = true
-	owner.max_elan += amount
-	owner.current_elan = minf(owner.current_elan + amount, owner.max_elan)
-	EventBus.elan_changed.emit(owner, owner.current_elan, owner.max_elan)
-	owner.elan_changed.emit(owner)
+	owner.generate_energy(amount, source_id)

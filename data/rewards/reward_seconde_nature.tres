@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_reward")
 reward_name = "Seconde nature"
-description = "+20 max Elan, mais -10 Elan a l'ouverture de combat."
+description = "+1 PA max, mais -1 PA au premier tour du combat."
 target = 0
 rarity = 1
 trait_data = ExtResource("2_trait")

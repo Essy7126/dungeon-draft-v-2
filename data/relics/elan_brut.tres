@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_relic")
-relic_name = "Elan brut"
-description = "Premiere action du tour moins chere."
-hook = "Elan"
+relic_name = "Ferveur brute"
+description = "Genere 5 Ferveur au debut de chaque tour."
+hook = "Ferveur"
 rarity = 0
 tradeoff = "Faible impact brut."
 trait_data = ExtResource("2_trait")

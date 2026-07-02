@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_trait")
 trait_script = ExtResource("2_trait")
-display_name = "Lame d'Elan"
+display_name = "Lame vive"
 description = "+6 attaque et +2 initiative pour accelerer la pression."
 params = {
 "attack_flat": 6.0,

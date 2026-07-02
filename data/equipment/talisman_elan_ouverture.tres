@@ -9,6 +9,6 @@ equipment_name = "Gemme d ouverture"
 description = "Tempo immediat."
 slot = 2
 rarity = 0
-affixes = Array[String](["+5 Elan d ouverture"])
+affixes = Array[String](["+5 Ferveur au debut de chaque tour"])
 tradeoff = ""
 traits = Array[ExtResource("2_trait")]([ExtResource("2_trait")])

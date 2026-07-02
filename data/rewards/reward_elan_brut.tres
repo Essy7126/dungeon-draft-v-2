@@ -5,8 +5,8 @@
 
 [resource]
 script = ExtResource("1_reward")
-reward_name = "Elan brut"
-description = "Plus de tempo au debut du tour."
+reward_name = "Ferveur brute"
+description = "Genere 5 Ferveur au debut de chaque tour."
 target = 0
 rarity = 0
 trait_data = ExtResource("2_trait")

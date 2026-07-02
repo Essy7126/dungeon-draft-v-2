@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_reward")
-reward_name = "Lame d'Elan"
+reward_name = "Lame vive"
 description = "+6 attaque et +2 initiative sur un heros au choix."
 target = 0
 rarity = 1

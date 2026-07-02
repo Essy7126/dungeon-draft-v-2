@@ -38,13 +38,13 @@ const STARTING_TRAIT_PATHS = [
 	"res://data/traits/depart_etincelle_flux.tres",
 	"res://data/traits/depart_posture_defensive.tres",
 	"res://data/traits/depart_sang_vif.tres",
-	"res://data/traits/depart_elan_tactique.tres",
+	"res://data/traits/depart_instinct_tactique.tres",
 ]
 
 const DEFAULT_DRAFT = [
 	{ "hero_path": "res://data/units/alliés/Gardien.tres", "energy_path": "res://data/energy/foi.tres", "trait_path": "res://data/traits/depart_posture_defensive.tres" },
 	{ "hero_path": "res://data/units/alliés/Guerrier.tres", "energy_path": "res://data/energy/rage.tres", "trait_path": "res://data/traits/depart_etincelle_flux.tres" },
-	{ "hero_path": "res://data/units/alliés/healer.tres", "energy_path": "res://data/energy/nature.tres", "trait_path": "res://data/traits/depart_elan_tactique.tres" },
+	{ "hero_path": "res://data/units/alliés/healer.tres", "energy_path": "res://data/energy/nature.tres", "trait_path": "res://data/traits/depart_instinct_tactique.tres" },
 ]
 
 const RUN_DRAFT_SCREEN_PATH := "res://ui/RunDraftScreen.tscn"

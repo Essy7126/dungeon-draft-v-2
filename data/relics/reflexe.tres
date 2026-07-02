@@ -9,5 +9,5 @@ relic_name = "Reflexe"
 description = "Premiere Reaction du combat gratuite."
 hook = "Reaction"
 rarity = 0
-tradeoff = "Approxime par un bonus d Elan defensif."
+tradeoff = "Approxime par 10 Ferveur offertes au premier tour."
 trait_data = ExtResource("2_trait")

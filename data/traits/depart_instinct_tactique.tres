@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_trait")
 trait_script = ExtResource("2_trait")
-display_name = "Elan Tactique"
+display_name = "Instinct Tactique"
 description = "+1 PM et +2 initiative pour mieux choisir l'engagement."
 params = {
 "initiative_flat": 2.0,

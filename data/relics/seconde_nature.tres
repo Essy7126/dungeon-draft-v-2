@@ -6,8 +6,8 @@
 [resource]
 script = ExtResource("1_relic")
 relic_name = "Seconde nature"
-description = "+20 max Elan; ouverture reduite."
-hook = "Elan"
+description = "+1 PA max; -1 PA au premier tour."
+hook = "PA"
 rarity = 1
 tradeoff = "Depart plus lent."
 trait_data = ExtResource("2_trait")

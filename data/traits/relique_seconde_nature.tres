@@ -7,5 +7,5 @@
 script = ExtResource("1_data")
 trait_script = ExtResource("2_trait")
 display_name = "Seconde nature"
-description = "+20 max Elan, mais -10 Elan a l'ouverture de combat."
-params = {"max_elan_bonus": 20.0, "opening_penalty": 10.0}
+description = "+1 PA max, mais -1 PA au premier tour du combat."
+params = {"max_ap_bonus": 1.0, "opening_ap_penalty": 1}

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_relic")
 relic_name = "Sang-froid"
-description = "L Elan devrait se reporter entre tours."
-hook = "Elan"
+description = "Les PA non depenses devraient se reporter au tour suivant."
+hook = "PA"
 rarity = 2
 tradeoff = "-20 PV max; hook complet a implementer."
