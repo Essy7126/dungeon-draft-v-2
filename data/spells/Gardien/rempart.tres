@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_hhxbp")
 spell_name = "Rempart"
-description = "Lecture joueur: Cout 60 Elan. Portee 0. Cible: soi. Effets: 40 bouclier; genere via verbe PROTECT."
-energy_cost = 60.0
+description = "Lecture joueur: Cout 5 PA. Portee 0. Cible: soi. Effets: 40 bouclier; genere via verbe PROTECT."
+ap_cost = 5
 fervor_cost = 0.0
 charge_verb = "PROTECT"
 spell_range = 0

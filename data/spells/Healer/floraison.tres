@@ -6,8 +6,8 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Floraison"
-description = "Lecture joueur: Cout 60 Elan. Portee 4. Cible: allie/soi. Effets: 22 soin; pose ou modifie un terrain; genere via verbe HEAL."
-energy_cost = 60.0
+description = "Lecture joueur: Cout 5 PA. Portee 4. Cible: allie/soi. Effets: 22 soin; pose ou modifie un terrain; genere via verbe HEAL."
+ap_cost = 5
 fervor_cost = 0.0
 charge_verb = "HEAL"
 spell_range = 4

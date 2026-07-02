@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Crochet"
-description = "Attire un ennemi distant de 2 cases vers le Guerrier (ou vers un hasard). Sert a constituer les paquets avant de detoner. Deplacement force : genere de la Rage.\n\nLecture joueur: Cout 15 Elan. Portee 3. Effets: 2 degats; attire de 2 cases; genere via EXPLOIT (deplacement)."
-energy_cost = 15.0
+description = "Attire un ennemi distant de 2 cases vers le Guerrier (ou vers un hasard). Sert a constituer les paquets avant de detoner. Deplacement force : genere de la Rage.\n\nLecture joueur: Cout 2 PA. Portee 3. Effets: 2 degats; attire de 2 cases; genere via EXPLOIT (deplacement)."
+ap_cost = 2
 charge_verb = "HIT"
 spell_range = 3
 damage = 2

@@ -6,8 +6,8 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Foudre de Thor"
-description = "Frappe Foudre violente, surtout contre les cibles mouillees dans la version complete.\n\nLecture joueur: Cout 60 Elan. Portee 5. Cible: ennemi. Effets: 32 degats; applique un statut; genere via verbe HIT."
-energy_cost = 60
+description = "Frappe Foudre violente, surtout contre les cibles mouillees dans la version complete.\n\nLecture joueur: Cout 5 PA. Portee 5. Cible: ennemi. Effets: 32 degats; applique un statut; genere via verbe HIT."
+ap_cost = 5
 fervor_cost = 0
 imprint_fervor_cost = 0
 imprint_damage_bonus = 0

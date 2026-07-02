@@ -6,8 +6,8 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Inondation"
-description = "Thor pose de l Eau avant de punir les cibles mouillees.\n\nLecture joueur: Cout 40 Elan. Portee 5. Cible: case libre. Effets: pose ou modifie un terrain; genere via verbe EXPLOIT."
-energy_cost = 40
+description = "Thor pose de l Eau avant de punir les cibles mouillees.\n\nLecture joueur: Cout 4 PA. Portee 5. Cible: case libre. Effets: pose ou modifie un terrain; genere via verbe EXPLOIT."
+ap_cost = 4
 fervor_cost = 0
 imprint_fervor_cost = 0
 imprint_damage_bonus = 0

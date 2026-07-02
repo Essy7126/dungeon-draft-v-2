@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_dx6u5")
 spell_name = "Coup d'epaule"
-description = "Ecole placement : pousse de 3 cases avec collision en chaine (l'ennemi percute en entraine un autre, les deux encaissent le choc). Degats directs faibles ; la puissance est dans le deplacement.\n\nLecture joueur: Cout 25 Elan. Portee 1. Effets: 3 degats; pousse de 3 cases; collision 8; genere via verbe HIT (+ EXPLOIT sur poussee/collision)."
-energy_cost = 25.0
+description = "Ecole placement : pousse de 3 cases avec collision en chaine (l'ennemi percute en entraine un autre, les deux encaissent le choc). Degats directs faibles ; la puissance est dans le deplacement.\n\nLecture joueur: Cout 3 PA. Portee 1. Effets: 3 degats; pousse de 3 cases; collision 8; genere via verbe HIT (+ EXPLOIT sur poussee/collision)."
+ap_cost = 3
 charge_verb = "HIT"
 spell_range = 1
 damage = 3

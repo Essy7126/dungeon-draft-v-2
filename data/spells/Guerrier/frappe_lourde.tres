@@ -7,11 +7,11 @@
 [resource]
 script = ExtResource("1_by432")
 spell_name = "Frappe Lourde"
-description = "Lecture joueur: Cout 40 Elan. Portee 1. Cible: cible valide. Effets: 18 degats; genere via verbe HIT."
-energy_cost = 40.0
+description = "Lecture joueur: Cout 4 PA. Portee 1. Cible: cible valide. Effets: 24 degats; genere via verbe HIT."
+ap_cost = 4
 charge_verb = "HIT"
 spell_range = 1
-damage = 18
+damage = 24
 damage_type = 0
 imprint_fervor_cost = 18.0
 imprint_damage_bonus = 12

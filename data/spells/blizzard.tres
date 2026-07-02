@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_pk5ov")
 spell_name = "blizzard"
-description = "Lecture joueur: Cout 15 Elan. Portee 0. Cible: cible valide. Effets: effet tactique ou utilitaire."
-energy_cost = 15.0
+description = "Lecture joueur: Cout 2 PA. Portee 0. Cible: cible valide. Effets: effet tactique ou utilitaire."
+ap_cost = 2
 metadata/_custom_type_script = "uid://bd5080ch70ymn"

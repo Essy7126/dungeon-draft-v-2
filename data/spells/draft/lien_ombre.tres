@@ -6,8 +6,8 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Lien d Ombre"
-description = "Relie deux ennemis dans la bible; ici, applique un debuff Ombre exploitable.\n\nLecture joueur: Cout 25 Elan. Portee 4. Cible: ennemi. Effets: applique un statut; genere via verbe EXPLOIT."
-energy_cost = 25
+description = "Relie deux ennemis dans la bible; ici, applique un debuff Ombre exploitable.\n\nLecture joueur: Cout 3 PA. Portee 4. Cible: ennemi. Effets: applique un statut; genere via verbe EXPLOIT."
+ap_cost = 3
 fervor_cost = 0
 imprint_fervor_cost = 0
 imprint_damage_bonus = 0
