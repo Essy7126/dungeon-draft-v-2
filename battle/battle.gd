@@ -529,21 +529,15 @@ func _on_request_attack(cell: Vector2i) -> void:
 		return
 	if not _get_attackable_cells(unit).has(cell):
 		return
-	var elan_cost := 0.0
-	if unit.team == 0:
-		elan_cost = unit.get_basic_attack_elan_cost()
-		if not unit.can_afford_elan(elan_cost):
-			return
-	elif unit.current_ap < 1:
+	# Une seule economie pour tout le monde : l'attaque de base coute 1 PA.
+	var ap_cost: int = unit.get_basic_attack_ap_cost()
+	if unit.current_ap < ap_cost:
 		return
 	var target = grid.get_unit(cell)
 	if target == null:
 		return
-	if unit.team == 0:
-		if not unit.spend_elan(elan_cost, "Attaque"):
-			return
-	else:
-		unit.spend_ap(1)
+	if not unit.spend_ap(ap_cost):
+		return
 	var result = target.take_damage(
 		unit.get_attack(),
 		unit,

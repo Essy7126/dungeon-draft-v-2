@@ -12,7 +12,6 @@ start_energy = 12.0
 gain_table = {"EXPLOIT": 16.0, "HEAL": 3.0, "HIT": 4.0, "PROTECT": 3.0, "TAKE_DAMAGE": 0.0}
 threshold_name = "Berserker"
 threshold_trait = ExtResource("2_threshold")
-threshold_attack_cost_discount = 5.0
 threshold_take_damage_gain = 8.0
 awakening_damage_multiplier = 1.3
 awakening_incoming_damage_multiplier = 1.2

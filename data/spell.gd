@@ -14,8 +14,12 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export var sound_cast: AudioStream = null
 
 @export_group("Cout et portee")
+# Cout en Points d'Action (entier). La colonne vertebrale du tour.
 @export var ap_cost: int = 1
-@export var energy_cost: float = 0.0 # Elan
+# Conserve uniquement pour la compatibilite de chargement des vieux .tres :
+# NE SERT PLUS. Tous les couts d'action passent par ap_cost.
+@export var energy_cost: float = 0.0
+# Cout en jauge d'ecole (Ferveur) : reserve aux sorts payoff signature.
 @export var fervor_cost: float = 0.0
 @export var energy_generated: float = 0.0
 @export_group("Empreinte")
@@ -70,7 +74,9 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export var bonus_damage_if_marked: int = 0
 @export var forces_taunt: bool = false
 @export var taunt_duration: int = 1
-@export var elan_drain: float = 0.0
+# Draine des PA a la cible : ampute son budget du PROCHAIN tour (drain du
+# Disruptor, hurlements gobelins).
+@export var ap_drain: int = 0
 @export var fervor_drain: float = 0.0
 @export var teleport_behind_target: bool = false
 @export var heal_bonus_effect_name: String = ""
@@ -82,11 +88,13 @@ func deals_damage() -> bool:
 func is_healing() -> bool:
 	return heal > 0
 
+# Un sort "generateur" ne puise pas dans la jauge d'ecole (il la construit) ;
+# un "consommateur" (payoff) la depense. Les PA ne comptent pas ici.
 func is_generator() -> bool:
-	return energy_cost <= 0.0 and fervor_cost <= 0.0
+	return fervor_cost <= 0.0
 
 func is_consumer() -> bool:
-	return energy_cost > 0.0 or fervor_cost > 0.0
+	return fervor_cost > 0.0
 
 func has_terrain_effect() -> bool:
 	return terrain_effect != null

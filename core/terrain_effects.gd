@@ -139,13 +139,13 @@ func get_effect_data(cell: Vector2i) -> TerrainEffectData:
 		return stored["data"]["data"]
 	return null
 
-func get_elan_discount_for(unit: Unit) -> float:
+func get_ap_discount_for(unit: Unit) -> int:
 	var effect := get_effect_data(unit.grid_pos)
 	if effect == null or not unit.has_energy():
-		return 0.0
+		return 0
 	if effect.matches_energy(unit.energy_type.energy_id):
-		return effect.elan_discount
-	return 0.0
+		return effect.ap_discount
+	return 0
 
 func get_fervor_multiplier_for(unit: Unit) -> float:
 	var effect := get_effect_data(unit.grid_pos)

@@ -29,7 +29,9 @@ func _disrupt_action(enemy, all_units: Array, ai) -> Dictionary:
 			continue
 		if not targetable.has(unit.grid_pos):
 			continue
-		var resource_score: float = float(unit.current_elan + unit.current_energy)
+		# Prefere la cible la plus riche : PA restants (ponderes, un PA vaut gros)
+		# + jauge d'ecole accumulee. Le drain lui coutera le plus cher.
+		var resource_score: float = float(unit.current_ap * 10 + unit.current_energy)
 		var distance_penalty: float = float(grid.manhattan(enemy.grid_pos, unit.grid_pos))
 		var score: float = resource_score - distance_penalty if prefer_high_resources else -distance_penalty
 		if score > best_score:

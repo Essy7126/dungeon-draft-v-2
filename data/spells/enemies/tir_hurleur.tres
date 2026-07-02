@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Hurlement drainant"
-description = "Attaque l economie en drainant Elan et Ferveur.\n\nLecture joueur: Cout 3 PA. Portee 4. Cible: ennemi. Effets: 6 degats; draine 8 Elan; draine 8 Ferveur; genere via verbe EXPLOIT."
+description = "Attaque l economie en drainant Elan et Ferveur.\n\nLecture joueur: Cout 3 PA. Portee 4. Cible: ennemi. Effets: 6 degats; Draine 1 PA (prochain tour); draine 8 Ferveur; genere via verbe EXPLOIT."
 ap_cost = 3
 fervor_cost = 0
 imprint_fervor_cost = 0
@@ -28,6 +28,6 @@ push_distance = 0
 shield_grant = 0
 bonus_damage_if_marked = 0
 forces_taunt = false
-elan_drain = 8
+ap_drain = 1
 fervor_drain = 8
 teleport_behind_target = false

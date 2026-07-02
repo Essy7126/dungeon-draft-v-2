@@ -32,6 +32,5 @@ push_distance = 0
 shield_grant = 0
 bonus_damage_if_marked = 0
 forces_taunt = false
-elan_drain = 0
 fervor_drain = 0
 teleport_behind_target = false

@@ -122,8 +122,8 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 				# Les deux encaissent le choc...
 				_apply_collision_damage(caster, target, collision_damage)
 				_apply_collision_damage(caster, blocker, collision_damage)
-				# ...et l'elan restant est transmis a la percutee, qui peut a son
-				# tour en percuter une autre (la chaine se propage).
+				# ...et la quantite de mouvement restante est transmise a la
+				# percutee, qui peut a son tour en percuter une autre (chaine).
 				if blocker != null and blocker.is_alive:
 					_push_unit(caster, blocker, maxi(1, cells - i), collision_damage)
 			# Si la case s'est liberee (percutee morte ou poussee plus loin), on avance.
@@ -238,21 +238,21 @@ func can_afford(caster: Unit, spell: Spell, imprinted: bool = false) -> bool:
 	return caster.can_afford_spell_resources(spell, imprinted)
 
 func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -> Dictionary:
-	var elan_cost := 0.0
-	var fervor_cost := 0.0
-	if caster.has_energy():
-		elan_cost = caster.get_spell_elan_cost(spell)
-		fervor_cost = caster.get_spell_fervor_cost(spell, imprinted)
-		if not caster.can_afford_elan(elan_cost):
-			DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (Elan insuffisant : %d/%d)" % [caster.unit_name, spell.spell_name, int(caster.current_elan), int(elan_cost)])
-			return _failed_report(caster, spell, cell, "elan")
-		if not caster.can_afford_energy(fervor_cost):
-			DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (Ferveur insuffisante : %d/%d)" % [caster.unit_name, spell.spell_name, int(caster.current_energy), int(fervor_cost)])
-			return _failed_report(caster, spell, cell, "fervor")
-		caster.spend_elan(elan_cost, spell.spell_name)
-		caster.spend_energy(fervor_cost, spell.spell_name)
+	# POINT UNIQUE de verification et de depense du cout d'un sort, pour TOUTES
+	# les unites (heros et ennemis) : PA d'abord, Ferveur ensuite (payoff/empreinte).
+	var ap_cost := caster.get_spell_ap_cost(spell)
+	var fervor_cost := caster.get_spell_fervor_cost(spell, imprinted)
+	if caster.current_ap < ap_cost:
+		DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (PA insuffisants : %d/%d)" % [caster.unit_name, spell.spell_name, caster.current_ap, ap_cost])
+		return _failed_report(caster, spell, cell, "pa")
+	if not caster.can_afford_energy(fervor_cost):
+		DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (Ferveur insuffisante : %d/%d)" % [caster.unit_name, spell.spell_name, int(caster.current_energy), int(fervor_cost)])
+		return _failed_report(caster, spell, cell, "fervor")
+	caster.consume_terrain_ap_discount(spell)
+	caster.spend_ap(ap_cost)
+	caster.spend_energy(fervor_cost, spell.spell_name)
 	DebugLogger.info(CAT_SPELL, "%s lance %s sur %s" % [caster.unit_name, spell.spell_name, str(cell)], {
-		"Elan": int(elan_cost), "Ferveur": int(fervor_cost), "empreinte": imprinted, "portee": spell.spell_range,
+		"PA": ap_cost, "Ferveur": int(fervor_cost), "empreinte": imprinted, "portee": spell.spell_range,
 		"zone": spell.aoe_size if spell.aoe_shape != Spell.AoeShape.SINGLE else 0,
 	})
 	var report = {
@@ -305,9 +305,11 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 				if not report["controlled_enemies"].has(target):
 					report["controlled_enemies"].append(target)
 				affected = true
-			if target.team != caster.team and (spell.elan_drain > 0.0 or spell.fervor_drain > 0.0):
-				if spell.elan_drain > 0.0 and target.has_method("spend_elan"):
-					target.spend_elan(minf(target.current_elan, spell.elan_drain), spell.spell_name)
+			if target.team != caster.team and (spell.ap_drain > 0 or spell.fervor_drain > 0.0):
+				if spell.ap_drain > 0:
+					# Drain de PA : ampute le budget du PROCHAIN tour de la cible.
+					target.next_turn_ap_modifier -= spell.ap_drain
+					DebugLogger.debug(CAT_SPELL, "%s draine %d PA a %s (prochain tour)" % [caster.unit_name, spell.ap_drain, target.unit_name])
 				if spell.fervor_drain > 0.0 and target.has_energy():
 					target.spend_energy(minf(target.current_energy, spell.fervor_drain), spell.spell_name)
 				if not report["drained_units"].has(target):
