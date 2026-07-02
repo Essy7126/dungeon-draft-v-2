@@ -76,23 +76,21 @@ func _snap_to_cardinal(delta: Vector2i) -> Vector2i:
 		return Vector2i(sign(delta.x), 0)
 	return Vector2i(0, sign(delta.y))
 # --- Ressources de combat ---
-# Elan paie les actions du tour. Ferveur (current_energy) est la jauge
-# d'identite liee au type choisi au draft : Rage, Foi, Nature...
-const ELAN_MAX := 90.0
-const ELAN_START := 50.0
-const ELAN_BASE_INCOME := 50.0
-const ELAN_INCOME_PER_TIER := 5.0
-const ELAN_BASIC_ATTACK_COST := 10.0
+# Les PA paient les actions du tour (colonne vertebrale, entiers, reviennent
+# chaque tour). Ferveur (current_energy) est la jauge d'ECOLE : elle se gagne
+# par la gain_table et ne se depense QUE sur l'Eveil, l'empreinte et les sorts
+# payoff signature (fervor_cost > 0). Jamais sur les sorts normaux.
+const BASIC_ATTACK_AP_COST := 1
 
 var energy_type: EnergyTypeData = null
 var current_energy: float = 0.0 # Ferveur. Nom conserve pour compatibilite.
-var current_elan: float = ELAN_START
-var max_elan: float = ELAN_MAX
 var charge_threshold_active: bool = false
 var awakening_turns_remaining: int = 0
-var next_turn_elan_bonus: float = 0.0
+# Modificateur de PA applique au PROCHAIN tour puis remis a zero : positif
+# (bonus de reaction/relique) ou negatif (drain du Disruptor).
+var next_turn_ap_modifier: int = 0
 var current_terrain_effect: TerrainEffectData = null
-var terrain_elan_discount_used: bool = false
+var terrain_ap_discount_used: bool = false
 var reaction_armed: bool = false
 var taunt_source = null
 var taunt_turns: int = 0
@@ -121,7 +119,6 @@ signal moved(from_pos: Vector2i, to_pos: Vector2i)
 signal hp_changed(unit)
 signal stats_changed(unit)
 signal energy_changed(unit)
-signal elan_changed(unit)
 signal shield_changed(unit)
 
 # Raccourcis de catÃ©gories de log (combat = vu par le joueur).
@@ -392,14 +389,20 @@ func start_turn() -> void:
 	# "+20 armure 2 tours" ne expirait jamais. CorrigÃ© : liste centralisÃ©e.
 	for stat in _all_durational_stats():
 		stat.tick_durations()
-	current_ap = max_ap.get_int()
+	# PA du tour : budget de base + modificateur "prochain tour" (bonus de
+	# reaction, drain du Disruptor...), consomme puis remis a zero. Jamais < 0.
+	var awakening_penalty := 0
+	if has_charge_threshold():
+		awakening_penalty = energy_type.awakening_ap_penalty
+	current_ap = maxi(0, max_ap.get_int() + next_turn_ap_modifier - awakening_penalty)
+	next_turn_ap_modifier = 0
 	current_mp = max_mp.get_int()
-	terrain_elan_discount_used = false
+	terrain_ap_discount_used = false
 	if team == 0:
 		reaction_armed = false
 	else:
 		reaction_armed = can_arm_reaction()
-	_refresh_turn_elan_budget()
+	EventBus.ap_changed.emit(self, current_ap, max_ap.get_int())
 	EventBus.turn_started.emit(self)
 	stats_changed.emit(self)
 
@@ -418,11 +421,12 @@ func spend_ap(amount: int) -> bool:
 	if amount > current_ap:
 		return false
 	current_ap -= amount
+	EventBus.ap_changed.emit(self, current_ap, max_ap.get_int())
 	stats_changed.emit(self)
 	return true
 
 # ============================================================
-# Ã‰NERGIE â€” l'Ã©conomie d'action (remplace les PA)
+# FERVEUR â€” la jauge d'ecole (Eveil / empreinte / payoff uniquement)
 # ============================================================
 
 # L'unitÃ© a-t-elle une Ã©nergie configurÃ©e ? (les ennemis simples peuvent ne
@@ -441,14 +445,12 @@ func ensure_energy_traits() -> void:
 func reset_combat_resources() -> void:
 	charge_threshold_active = false
 	awakening_turns_remaining = 0
-	next_turn_elan_bonus = 0.0
-	max_elan = _compute_elan_income()
-	current_elan = max_elan
+	next_turn_ap_modifier = 0
+	current_ap = max_ap.get_int()
 	current_energy = energy_type.start_energy if has_energy() else 0.0
 	sync_charge_state(true)
-	elan_changed.emit(self)
 	energy_changed.emit(self)
-	EventBus.elan_changed.emit(self, current_elan, max_elan)
+	EventBus.ap_changed.emit(self, current_ap, max_ap.get_int())
 	if has_energy():
 		EventBus.fervor_changed.emit(self, current_energy, energy_type.max_energy, charge_threshold_active)
 
@@ -458,62 +460,17 @@ func set_current_terrain_effect(effect: TerrainEffectData) -> void:
 func _terrain_matches_energy() -> bool:
 	return current_terrain_effect != null and has_energy() and current_terrain_effect.matches_energy(energy_type.energy_id)
 
-func _current_terrain_elan_discount() -> float:
-	if terrain_elan_discount_used or not _terrain_matches_energy():
-		return 0.0
-	return maxf(0.0, current_terrain_effect.elan_discount)
+# Reduction de cout PA offerte par un terrain natif de l'ecole (Sanctuaire...).
+# Une seule fois par tour : le premier sort paye la reduction, pas les suivants.
+func _current_terrain_ap_discount() -> int:
+	if terrain_ap_discount_used or not _terrain_matches_energy():
+		return 0
+	return maxi(0, current_terrain_effect.ap_discount)
 
 func _current_terrain_fervor_multiplier() -> float:
 	if not _terrain_matches_energy():
 		return 1.0
 	return maxf(0.0, current_terrain_effect.fervor_generation_multiplier)
-
-func can_afford_elan(amount: float) -> bool:
-	var cost: float = maxf(0.0, amount)
-	return current_elan >= cost
-
-func generate_elan(amount: float, source: String = "") -> float:
-	var gain: float = maxf(0.0, amount)
-	if gain <= 0.0:
-		return 0.0
-	var before: float = current_elan
-	current_elan = minf(current_elan + gain, max_elan)
-	var real: float = current_elan - before
-	if real <= 0.0:
-		return 0.0
-	EventBus.elan_generated.emit(self, real)
-	EventBus.elan_changed.emit(self, current_elan, max_elan)
-	elan_changed.emit(self)
-	return real
-
-func spend_elan(amount: float, source: String = "") -> bool:
-	var cost: float = maxf(0.0, amount)
-	if cost <= 0.0:
-		return true
-	if not can_afford_elan(cost):
-		return false
-	current_elan = maxf(0.0, current_elan - cost)
-	if source != "" and _current_terrain_elan_discount() > 0.0:
-		terrain_elan_discount_used = true
-	EventBus.elan_spent.emit(self, cost)
-	EventBus.elan_changed.emit(self, current_elan, max_elan)
-	elan_changed.emit(self)
-	return true
-
-func _compute_elan_income() -> float:
-	var tier := GameManager.get_elan_tier() if GameManager.has_method("get_elan_tier") else GameManager.get_charge_tier()
-	var amount := ELAN_BASE_INCOME + float(maxi(1, tier) - 1) * ELAN_INCOME_PER_TIER
-	if has_charge_threshold() and energy_type.awakening_elan_income_penalty > 0.0:
-		amount -= energy_type.awakening_elan_income_penalty
-	amount += next_turn_elan_bonus
-	next_turn_elan_bonus = 0.0
-	return clampf(amount, 0.0, ELAN_MAX)
-
-func _refresh_turn_elan_budget() -> void:
-	max_elan = _compute_elan_income()
-	current_elan = max_elan
-	EventBus.elan_changed.emit(self, current_elan, max_elan)
-	elan_changed.emit(self)
 
 func can_afford_energy(amount: float) -> bool:
 	var cost: float = maxf(0.0, amount)
@@ -546,21 +503,25 @@ func set_reaction_armed(armed: bool) -> bool:
 func has_charge_threshold() -> bool:
 	return has_energy() and charge_threshold_active
 
-func get_basic_attack_elan_cost() -> float:
-	var cost := ELAN_BASIC_ATTACK_COST - _current_terrain_elan_discount()
-	return maxf(0.0, cost)
+func get_basic_attack_ap_cost() -> int:
+	return BASIC_ATTACK_AP_COST
 
-func get_basic_attack_cost() -> float:
-	return get_basic_attack_elan_cost()
+func get_basic_attack_cost() -> int:
+	return get_basic_attack_ap_cost()
 
-func get_spell_elan_cost(spell: Spell) -> float:
+# Cout PA effectif d'un sort : ap_cost - remise de terrain natif (jamais sous
+# 1 PA pour un sort qui coute quelque chose : la remise allege, ne rend pas gratuit).
+func get_spell_ap_cost(spell: Spell) -> int:
 	if spell == null:
-		return 0.0
-	var cost := maxf(0.0, spell.energy_cost - _current_terrain_elan_discount())
-	return maxf(0.0, cost)
+		return 0
+	if spell.ap_cost <= 0:
+		return 0
+	return maxi(1, spell.ap_cost - _current_terrain_ap_discount())
 
-func get_spell_energy_cost(spell: Spell) -> float:
-	return get_spell_elan_cost(spell)
+# Consomme la remise de terrain du tour si elle vient d'etre utilisee sur ce sort.
+func consume_terrain_ap_discount(spell: Spell) -> void:
+	if spell != null and spell.ap_cost > 0 and _current_terrain_ap_discount() > 0:
+		terrain_ap_discount_used = true
 
 func get_spell_imprint_fervor_cost(spell: Spell) -> float:
 	if spell == null or not spell.can_imprint():
@@ -581,7 +542,7 @@ func get_spell_fervor_cost(spell: Spell, imprinted: bool = false) -> float:
 func can_afford_spell_resources(spell: Spell, imprinted: bool = false) -> bool:
 	if spell == null:
 		return false
-	return can_afford_elan(get_spell_elan_cost(spell)) and can_afford_energy(get_spell_fervor_cost(spell, imprinted))
+	return current_ap >= get_spell_ap_cost(spell) and can_afford_energy(get_spell_fervor_cost(spell, imprinted))
 
 func get_modified_spell_damage(spell: Spell, amount: int) -> int:
 	if spell == null or amount <= 0:
@@ -717,10 +678,6 @@ func get_energy_ratio() -> float:
 		return 0.0
 	return current_energy / energy_type.max_energy
 
-func get_elan_ratio() -> float:
-	if max_elan <= 0.0:
-		return 0.0
-	return current_elan / max_elan
 # ============================================================
 # BOUCLIER â€” couche dÃ©fensive entre l'Ã©nergie et les PV
 # Le bouclier absorbe les dÃ©gÃ¢ts AVANT les PV. Il n'expire pas
@@ -788,7 +745,7 @@ func _apply_defensive_reaction_to_raw(amount: int, attacker, options: Dictionary
 	stats_changed.emit(self)
 	var reduced := maxi(0, int(round(float(amount) * multiplier)))
 	var mitigated := maxi(0, amount - reduced)
-	next_turn_elan_bonus += maxf(0.0, energy_type.reaction_next_turn_elan_bonus)
+	next_turn_ap_modifier += maxi(0, energy_type.reaction_next_turn_ap_bonus)
 	EventBus.fervor_reaction_used.emit(self, attacker, cost, mitigated)
 	DebugLogger.info(CAT_STATS, "%s brule %.0f Ferveur en reaction (-%d degats)" % [unit_name, cost, mitigated])
 	return reduced

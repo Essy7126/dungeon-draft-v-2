@@ -102,9 +102,8 @@ signal battle_view_ready(grid_view)
 # ============================================================
 signal energy_generated(unit, energy_id, amount)
 signal energy_spent(unit, energy_id, amount)
-signal elan_generated(unit, amount)
-signal elan_spent(unit, amount)
-signal elan_changed(unit, current, max_value)
+# Les PA d'une unite ont change (depense, refresh de tour, drain/bonus).
+signal ap_changed(unit, current, max_value)
 signal fervor_changed(unit, current, max_value, threshold_active)
 signal fervor_threshold_changed(unit, active)
 signal charge_changed(unit, current, max_value, threshold_active)

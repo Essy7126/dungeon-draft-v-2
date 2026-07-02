@@ -29,7 +29,9 @@ enum Trigger {
 @export_group("Hooks energie")
 @export var native_energy_id: String = ""
 @export var counts_as_rune: bool = false
-@export var elan_discount: float = 0.0
+# Remise de cout PA (une fois par tour, min 1 PA) pour une unite de l'ecole
+# native qui lance un sort depuis ce terrain.
+@export var ap_discount: int = 0
 @export var fervor_generation_multiplier: float = 1.0
 @export var exploit_fervor_bonus: float = 0.0
 

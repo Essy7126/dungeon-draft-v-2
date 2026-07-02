@@ -59,13 +59,15 @@ const VERB_TAKE_DAMAGE := "TAKE_DAMAGE"
 @export var awakening_blocks_healing: bool = false
 @export var awakening_blocks_direct_damage: bool = false
 @export var awakening_blocks_shield: bool = false
-@export var awakening_elan_income_penalty: float = 0.0
+# PA en moins pendant l'Eveil (le prix a payer pour l'etat surpuissant).
+@export var awakening_ap_penalty: int = 0
 @export var awakening_terrain_duration_multiplier: float = 1.0
 
 @export_group("Reaction v2")
 @export var reaction_cost: float = 25.0
 @export var reaction_damage_multiplier: float = 0.5
-@export var reaction_next_turn_elan_bonus: float = 10.0
+# PA bonus au prochain tour quand la reaction se declenche.
+@export var reaction_next_turn_ap_bonus: int = 1
 
 func gain_for(verb: String) -> float:
 	var key := verb.strip_edges().to_upper()

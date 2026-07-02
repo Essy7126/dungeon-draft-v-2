@@ -16,6 +16,6 @@ dangerous_for_ai = true
 ai_danger_weight = 2
 native_energy_id = "foi"
 counts_as_rune = false
-elan_discount = 0
+ap_discount = 1
 fervor_generation_multiplier = 1.2
 duration = 2

@@ -18,6 +18,5 @@ awakening_damage_multiplier = 2.0
 awakening_incoming_damage_multiplier = 1.2
 reaction_cost = 25.0
 reaction_damage_multiplier = 0.45
-reaction_next_turn_elan_bonus = 12.0
 description = "Foi monte en puissance en tenant bon (encaisser, proteger). Son Eveil (Sanctifie) libere la patience accumulee : degats massivement amplifies pour exploser en un coup, mais le porteur devient fragile."
 metadata/_custom_type_script = "uid://b47puqafimbk5"

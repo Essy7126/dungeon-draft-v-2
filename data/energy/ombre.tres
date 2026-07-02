@@ -20,6 +20,5 @@ awakening_imprint_discount = 8.0
 awakening_incoming_damage_multiplier = 0.85
 reaction_cost = 25.0
 reaction_damage_multiplier = 0.55
-reaction_next_turn_elan_bonus = 10.0
 description = "Ombre construit la Ferveur en exploitant les angles, les cibles marquees et le terrain Ombre. Son Eveil donne de l'esquive, amplifie les opportunites et rend les Empreintes moins cheres."
 metadata/_custom_type_script = "uid://b47puqafimbk5"

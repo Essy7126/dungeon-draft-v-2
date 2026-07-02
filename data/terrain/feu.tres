@@ -18,6 +18,6 @@ dangerous_for_ai = true
 ai_danger_weight = 2.2
 native_energy_id = "rage"
 counts_as_rune = false
-elan_discount = 5
+ap_discount = 1
 fervor_generation_multiplier = 1.35
 duration = 3
