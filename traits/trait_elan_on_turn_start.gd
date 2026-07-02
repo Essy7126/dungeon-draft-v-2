@@ -2,9 +2,8 @@
 # ============================================================
 # FERVEUR AU DEBUT DU TOUR — reliques de tempo (Ferveur brute, Reflexe...).
 #
-# Migration PA : l'ancienne ressource d'action n'existe plus. L'intention
-# d'origine ("un peu plus de ressource pour agir en debut de tour") se traduit
-# desormais en JAUGE d'ecole : le porteur genere `amount` Ferveur au debut de
+# L'intention d'origine ("un peu plus de ressource en debut de tour") se
+# traduit en JAUGE d'ecole : le porteur genere `amount` Ferveur au debut de
 # son tour (ou une seule fois par combat si once_per_combat). Le nom de
 # fichier est conserve (regle : ne jamais deplacer un .gd, les .tres le
 # referencent par chemin).

@@ -2,9 +2,8 @@
 # ============================================================
 # SECONDE NATURE — plus de reserve, depart plus lent.
 #
-# Migration PA : l'ancien "+20 max Elan, -10 a l'ouverture" devient
-# "+1 PA max permanent, -1 PA au premier tour du combat". Meme profil :
-# le porteur agit plus par tour en regime de croisiere, mais demarre engourdi.
+# "+1 PA max permanent, -1 PA au premier tour du combat" : le porteur agit
+# plus par tour en regime de croisiere, mais demarre engourdi.
 # ============================================================
 
 class_name TraitSecondNature
