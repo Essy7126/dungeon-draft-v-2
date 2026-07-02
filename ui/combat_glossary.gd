@@ -3,9 +3,9 @@ extends RefCounted
 
 static func entries() -> Dictionary:
 	return {
-		"elan": _entry("Elan", Color(0.42, 0.84, 1.0), "Energie d'action des heros. Elle sert aux attaques et aux sorts, puis revient au debut du tour."),
+		"pa": _entry("PA", Color(1.0, 0.85, 0.3), "Points d'Action. Ils paient les attaques et les sorts, et reviennent en entier au debut de chaque tour."),
 		"pm": _entry("PM", Color(0.74, 0.88, 1.0), "Points de mouvement. Ils servent uniquement a se deplacer sur la grille."),
-		"ferveur": _entry("Ferveur", Color(0.86, 0.74, 1.0), "Energie d'identite. Elle se gagne en jouant selon le style du heros, puis se depense en Empreinte, Eveil ou Reaction."),
+		"ferveur": _entry("Ferveur", Color(0.86, 0.74, 1.0), "Energie d'ecole. Elle se gagne par vos actions d'ecole (poussee, protection, soin, marque...) et ne se depense que sur trois choses : l'Eveil, l'Empreinte et le sort signature."),
 		"rage": _entry("Rage", Color(1.0, 0.28, 0.22), "Ferveur offensive. Favorise les coups, la prise de risque et les pics de degats."),
 		"foi": _entry("Foi", Color(1.0, 0.82, 0.28), "Ferveur defensive. Favorise la protection, les boucliers et la tenue de ligne."),
 		"nature": _entry("Nature", Color(0.35, 0.9, 0.45), "Ferveur vitale. Favorise le soin, les terrains et les effets de symbiose."),
@@ -16,7 +16,7 @@ static func entries() -> Dictionary:
 		"reaction": _entry("Reaction", Color(0.85, 0.78, 1.0), "Defense automatique possible pendant le tour ennemi quand assez de Ferveur est disponible."),
 		"berserker": _entry("Berserker", Color(1.0, 0.22, 0.15), "Eveil de la Rage : degats augmentes, mais soins refuses pendant la fenetre."),
 		"sanctifie": _entry("Sanctifie", Color(1.0, 0.86, 0.28), "Eveil de la Foi : boucliers amplifies, mais degats directs bloques pendant la fenetre."),
-		"symbiose": _entry("Symbiose", Color(0.42, 1.0, 0.48), "Eveil de la Nature : surplus de soin converti en bouclier, avec un revenu d'Elan reduit."),
+		"symbiose": _entry("Symbiose", Color(0.42, 1.0, 0.48), "Eveil de la Nature : surplus de soin converti en bouclier, au prix de 1 PA par tour."),
 		"voile": _entry("Voile", Color(0.58, 0.42, 1.0), "Eveil de l'Ombre : difficile a cibler, mais soins refuses pendant la fenetre."),
 		"eau": _entry("Eau", Color(0.34, 0.7, 1.0), "Terrain humide. Il applique Mouille et reagit avec certains elements."),
 		"feu": _entry("Feu", Color(1.0, 0.38, 0.12), "Terrain brulant. Il blesse les unites qui y restent."),
@@ -54,8 +54,8 @@ static func keyword_id_for_name(value: String) -> String:
 	var n := value.strip_edges().to_lower()
 	if n == "":
 		return ""
-	if "elan" in n:
-		return "elan"
+	if "pa" == n:
+		return "pa"
 	if "pm" == n:
 		return "pm"
 	if "ferveur" in n:
@@ -127,7 +127,7 @@ static func annotate_text(text: String) -> String:
 		return text
 	var out := text
 	var pairs := [
-		["Ferveur", "ferveur"], ["Elan", "elan"], ["PM", "pm"], ["Empreinte", "empreinte"], ["Eveil", "eveil"], ["Reaction", "reaction"],
+		["Ferveur", "ferveur"], ["PA", "pa"], ["PM", "pm"], ["Empreinte", "empreinte"], ["Eveil", "eveil"], ["Reaction", "reaction"],
 		["Berserker", "berserker"], ["Sanctifie", "sanctifie"], ["Symbiose", "symbiose"], ["Voile", "voile"],
 		["Vulnerable", "vulnerable"], ["Saignement", "saignement"], ["Mouille", "mouille"], ["Marque", "marque"],
 		["Petrifie", "petrifie"], ["Enracine", "enracine"], ["Etourdi", "etourdi"], ["Protege", "protege"],
@@ -203,14 +203,14 @@ static func spell_card_bbcode(caster, spell: Spell, imprinted: bool, unusable_re
 
 static func _cost_text(caster, spell: Spell, imprinted: bool) -> String:
 	var parts: Array = []
+	var ap_cost: int = spell.ap_cost
+	if caster != null and caster.has_method("get_spell_ap_cost"):
+		ap_cost = caster.get_spell_ap_cost(spell)
+	parts.append("%d PA" % ap_cost)
 	if caster != null and caster.has_method("has_energy") and caster.has_energy():
-		var elan_cost: float = caster.get_spell_elan_cost(spell)
 		var fervor_cost: float = caster.get_spell_fervor_cost(spell, imprinted)
-		parts.append("%d Elan" % int(elan_cost))
 		if fervor_cost > 0.0:
 			parts.append("%d %s" % [int(fervor_cost), caster.energy_type.energy_name])
-	else:
-		parts.append("%d PA" % spell.ap_cost)
 	return " / ".join(parts)
 
 static func _imprint_cost_text(caster, spell: Spell) -> String:
@@ -251,8 +251,8 @@ static func _effect_text(spell: Spell, imprinted: bool) -> String:
 		effects.append("Pousse de %d case(s)." % spell.push_distance)
 	if spell.forces_taunt:
 		effects.append("Force la cible a viser le lanceur.")
-	if spell.elan_drain > 0.0:
-		effects.append("Draine %d [kw:elan]." % int(spell.elan_drain))
+	if spell.ap_drain > 0:
+		effects.append("Draine %d [kw:pa] au prochain tour." % spell.ap_drain)
 	if spell.fervor_drain > 0.0:
 		effects.append("Draine %d [kw:ferveur]." % int(spell.fervor_drain))
 	if spell.teleport_behind_target:

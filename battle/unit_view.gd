@@ -10,7 +10,6 @@ var _sprite: AnimatedSprite2D
 var _facing_row: int = 0
 var _hp_bar: ProgressBar
 var _shield_bar: ProgressBar
-var _elan_bar: ProgressBar
 var _fervor_bar: ProgressBar
 var _status_row: HBoxContainer
 var _is_active: bool = false
@@ -25,7 +24,6 @@ func setup(p_unit: Unit) -> void:
 	unit.died.connect(_on_died)
 	unit.moved.connect(_on_unit_moved)
 	unit.shield_changed.connect(_on_shield_changed)
-	unit.elan_changed.connect(_on_resource_changed)
 	unit.energy_changed.connect(_on_resource_changed)
 	unit.stats_changed.connect(_on_stats_changed)
 	EventBus.basic_attack_performed.connect(_on_attack_performed)
@@ -33,7 +31,6 @@ func setup(p_unit: Unit) -> void:
 	EventBus.damage_dealt.connect(_on_damage_dealt)
 	EventBus.unit_healed.connect(_on_unit_healed)
 	EventBus.energy_generated.connect(_on_energy_generated)
-	EventBus.elan_generated.connect(_on_elan_generated)
 	EventBus.shield_absorbed.connect(_on_shield_absorbed)
 	EventBus.shield_broken.connect(_on_shield_broken)
 	EventBus.shield_gained.connect(_on_shield_gained)
@@ -61,10 +58,7 @@ func _build_visual() -> void:
 	_shield_bar.visible = false
 	add_child(_shield_bar)
 
-	_elan_bar = _make_bar(Vector2(UNIT_SIZE, 4), Vector2(-UNIT_SIZE / 2.0, 35), Color(0.42, 0.84, 1.0))
-	add_child(_elan_bar)
-
-	_fervor_bar = _make_bar(Vector2(UNIT_SIZE, 4), Vector2(-UNIT_SIZE / 2.0, 41), Color(0.86, 0.74, 1.0))
+	_fervor_bar = _make_bar(Vector2(UNIT_SIZE, 4), Vector2(-UNIT_SIZE / 2.0, 35), Color(0.86, 0.74, 1.0))
 	add_child(_fervor_bar)
 
 	_status_row = HBoxContainer.new()
@@ -119,15 +113,8 @@ func _update_shield_bar() -> void:
 	queue_redraw()
 
 func _update_resource_bars() -> void:
-	if _elan_bar == null or _fervor_bar == null:
+	if _fervor_bar == null:
 		return
-	if unit.team != 0 and not unit.has_energy():
-		_elan_bar.visible = false
-		_fervor_bar.visible = false
-		return
-	_elan_bar.visible = true
-	_elan_bar.max_value = maxf(1.0, unit.max_elan)
-	_elan_bar.value = unit.current_elan
 	if not unit.has_energy():
 		_fervor_bar.visible = false
 		return
@@ -270,11 +257,6 @@ func _on_energy_generated(u: Unit, _energy_id: String, amount: float) -> void:
 		return
 	var color := unit.energy_type.color if unit.has_energy() else Color(0.86, 0.74, 1.0)
 	_show_floating_number("+%d" % int(round(amount)), color)
-
-func _on_elan_generated(u: Unit, amount: float) -> void:
-	if u != unit or amount <= 0.0:
-		return
-	_show_floating_number("+%d Elan" % int(round(amount)), Color(0.42, 0.84, 1.0))
 
 func _on_shield_gained(u: Unit, amount: int) -> void:
 	if u != unit:

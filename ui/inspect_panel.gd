@@ -146,8 +146,8 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 		_add_section("Energie")
 		if effect.native_energy_id.strip_edges() != "":
 			_add_line("Affinite", effect.native_energy_id)
-		if effect.elan_discount > 0.0:
-			_add_line("Elan", "-%d sur la prochaine action" % int(effect.elan_discount))
+		if effect.ap_discount > 0:
+			_add_line("PA", "-%d sur le premier sort du tour (min 1)" % effect.ap_discount)
 		if effect.fervor_generation_multiplier != 1.0:
 			_add_line("Ferveur", "x%s generation" % _fmt_float(effect.fervor_generation_multiplier))
 
@@ -185,8 +185,8 @@ func _add_resources(unit) -> void:
 	_add_line("PV", "%d / %d" % [unit.current_hp, unit.max_hp.get_int()])
 	_add_line("Bouclier", str(unit.current_shield))
 	_add_line("PM", "%d / %d" % [unit.current_mp, unit.max_mp.get_int()])
+	_add_line("PA", "%d / %d" % [unit.current_ap, unit.max_ap.get_int()])
 	if unit.has_energy():
-		_add_line("Elan", "%d / %d" % [int(unit.current_elan), int(unit.max_elan)])
 		_add_line(unit.energy_type.energy_name, "%d / %d" % [int(unit.current_energy), int(unit.energy_type.max_energy)])
 		if unit.charge_threshold_active:
 			_add_line("Eveil", "%s, %d tour(s)" % [unit.energy_type.threshold_name, unit.awakening_turns_remaining])
@@ -314,13 +314,12 @@ func _add_traits(unit) -> void:
 
 func _spell_summary(spell: Spell, unit = null, imprinted: bool = false) -> String:
 	var parts: Array = []
+	var ap_cost: int = unit.get_spell_ap_cost(spell) if unit != null else spell.ap_cost
+	parts.append("%d PA" % ap_cost)
 	if unit != null and unit.has_energy():
-		parts.append("%d Elan" % int(unit.get_spell_elan_cost(spell)))
 		var fervor_cost: float = unit.get_spell_fervor_cost(spell, imprinted)
 		if fervor_cost > 0.0:
 			parts.append("%d Ferveur" % int(fervor_cost))
-	else:
-		parts.append("%d PA" % spell.ap_cost)
 	var damage: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
 	var heal: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
 	var shield: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
@@ -385,15 +384,13 @@ func _spell_unusable_reason(unit, spell: Spell, imprinted: bool) -> String:
 		return "aucun lanceur actif"
 	if spell == null:
 		return "sort invalide"
+	var ap_cost: int = unit.get_spell_ap_cost(spell)
+	if unit.current_ap < ap_cost:
+		return "PA insuffisants (%d / %d)" % [unit.current_ap, ap_cost]
 	if unit.has_energy():
-		var elan_cost: float = unit.get_spell_elan_cost(spell)
 		var fervor_cost: float = unit.get_spell_fervor_cost(spell, imprinted)
-		if not unit.can_afford_elan(elan_cost):
-			return "Elan insuffisant (%d / %d)" % [int(unit.current_elan), int(elan_cost)]
 		if not unit.can_afford_energy(fervor_cost):
 			return "Ferveur insuffisante (%d / %d)" % [int(unit.current_energy), int(fervor_cost)]
-	elif unit.current_ap < spell.ap_cost:
-		return "PA insuffisants"
 	return ""
 
 func _clear_content() -> void:
