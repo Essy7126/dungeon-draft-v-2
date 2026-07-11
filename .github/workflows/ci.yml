@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  GODOT_VERSION: "4.7"
+
+jobs:
+  tests:
+    name: Import + tests GUT (Godot headless)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache du binaire Godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot-bin
+          key: godot-${{ env.GODOT_VERSION }}-stable-linux-x86_64
+
+      - name: Telechargement de Godot ${{ env.GODOT_VERSION }} (headless Linux)
+        run: |
+          set -euo pipefail
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            FILE="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+            curl -fsSL -o godot.zip \
+              "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${FILE}.zip" \
+            || curl -fsSL -o godot.zip \
+              "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/${FILE}.zip"
+            unzip -q godot.zip
+            mkdir -p "$HOME/godot-bin"
+            mv "$FILE" "$HOME/godot-bin/godot"
+            chmod +x "$HOME/godot-bin/godot"
+          fi
+          "$HOME/godot-bin/godot" --version
+
+      - name: Import du projet (echoue sur toute erreur de parse)
+        run: |
+          set -euo pipefail
+          "$HOME/godot-bin/godot" --headless --path . --import 2>&1 | tee import.log
+          if grep -qE "SCRIPT ERROR|Parse Error|Failed to load script" import.log; then
+            echo "::error::Erreurs de script detectees pendant l'import du projet"
+            exit 1
+          fi
+
+      - name: Tests unitaires GUT
+        run: |
+          set -euo pipefail
+          "$HOME/godot-bin/godot" --headless --path . \
+            -s res://addons/gut/gut_cmdln.gd \
+            -gdir=res://test/unit -ginclude_subdirs -gprefix=test_ -gexit
