@@ -30,6 +30,10 @@ VFXManager="*uid://bjqhf4gosaohn"
 window/size/viewport_width=1200
 window/size/viewport_height=896
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
 [filesystem]
 
 import/blender/enabled=false
