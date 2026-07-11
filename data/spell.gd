@@ -82,6 +82,12 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export var heal_bonus_effect_name: String = ""
 @export var heal_bonus_multiplier: float = 1.0
 
+@export_group("Transformations")
+# Modificateurs attaches au sort en donnee : chaque SpellModifier recoit les
+# hooks du pipeline de SpellCaster (on_costs_resolved, on_movement_resolved...).
+# Un reward peut donc transformer ce sort sans toucher au code du caster.
+@export var modifiers: Array[SpellModifier] = []
+
 func deals_damage() -> bool:
 	return damage > 0
 
