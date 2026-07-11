@@ -108,13 +108,10 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 	var had_collision := false
 	for i in range(cells):
 		var next := landed_pos + dir
-		# Collision dure : mur ou bord de grille.
-		if not _grid.is_valid(next) or not _grid.is_walkable(next):
-			had_collision = true
-			if collision_damage > 0:
-				_apply_collision_damage(caster, target, collision_damage)
-			break
-		# Collision EN CHAINE : la cible en percute une autre.
+		# Collision EN CHAINE : la cible en percute une autre. Testee AVANT la
+		# collision dure, car is_walkable() est aussi faux pour une case OCCUPEE :
+		# sinon percuter une unite serait traite comme percuter un mur (pas de
+		# degats au bloqueur, pas de transmission d'elan).
 		if _grid.has_unit(next):
 			had_collision = true
 			var blocker = _grid.get_unit(next)
@@ -129,6 +126,12 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 			# Si la case s'est liberee (percutee morte ou poussee plus loin), on avance.
 			if not _grid.has_unit(next):
 				landed_pos = next
+			break
+		# Collision dure : mur ou bord de grille.
+		if not _grid.is_valid(next) or not _grid.is_walkable(next):
+			had_collision = true
+			if collision_damage > 0:
+				_apply_collision_damage(caster, target, collision_damage)
 			break
 		landed_pos = next
 	# La cible a pu mourir d'une collision (mur/hasard) avant tout deplacement.
