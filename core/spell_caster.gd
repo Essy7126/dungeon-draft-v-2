@@ -266,11 +266,13 @@ func _has_status(unit: Unit, status_name: String) -> bool:
 			return true
 	return false
 
+# Miroir EXACT du garde-fou de _resolve_costs : les PA se vérifient pour TOUTE
+# unité, la jauge seulement si le sort en coûte (can_afford_energy renvoie true
+# pour un coût nul). L'IA ennemie planifie avec cette réponse — elle doit être
+# identique à ce que cast() acceptera.
 func can_afford(caster: Unit, spell: Spell, imprinted: bool = false) -> bool:
 	if caster == null or spell == null:
 		return false
-	if not caster.has_energy():
-		return true
 	return caster.can_afford_spell_resources(spell, imprinted)
 
 # ============================================================
