@@ -155,7 +155,7 @@ func _init(
 	# Relais via weakref : une Callable retient sa cible RefCounted, un relais
 	# direct fermerait le cycle Unit <-> jauge et aucun des deux ne serait libere.
 	_energy_gauge = EnergyGauge.new(self)
-	var wr := weakref(self)
+	var wr: WeakRef = weakref(self)
 	_energy_gauge.changed.connect(func () -> void:
 		var u = wr.get_ref()
 		if u != null: u.energy_changed.emit(u))
