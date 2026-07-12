@@ -4,8 +4,14 @@ extends GutTest
 
 const Factory = preload("res://test/support/factory.gd")
 
+# La jauge tient son porteur en weakref : on le garde vivant le temps du test.
+var _owner_unit: Unit = null
+
+func before_each() -> void:
+	_owner_unit = Factory.make_unit()
+
 func _make_gauge(cost := 50.0, duration := 2, start := 0.0) -> EnergyGauge:
-	var gauge := EnergyGauge.new(Factory.make_unit())
+	var gauge := EnergyGauge.new(_owner_unit)
 	gauge.energy_type = Factory.make_energy({}, {
 		"awakening_cost": cost,
 		"awakening_duration_turns": duration,
@@ -60,7 +66,7 @@ func test_reset_revient_a_start_energy_et_purge_l_eveil() -> void:
 	assert_eq(gauge.awakening_turns_remaining, 0)
 
 func test_reset_sans_energie_revient_a_zero() -> void:
-	var gauge := EnergyGauge.new(Factory.make_unit())
+	var gauge := EnergyGauge.new(_owner_unit)
 	gauge.current_energy = 33.0
 	gauge.reset()
 	assert_almost_eq(gauge.current_energy, 0.0, 0.0001)

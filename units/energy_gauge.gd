@@ -7,8 +7,9 @@
 # signaux EventBus liés à l'énergie/éveil À L'IDENTIQUE de l'ancien code de
 # Unit (mêmes signaux, mêmes arguments, même ordre).
 #
-# RÈGLE D'ISOLEMENT : la jauge ne lit RIEN de son unité. `owner_unit` ne sert
-# QUE de charge utile aux signaux EventBus (qui portent l'unité). Toute
+# RÈGLE D'ISOLEMENT : la jauge ne lit RIEN de son unité. La référence au
+# porteur ne sert QUE de charge utile aux signaux EventBus (qui portent
+# l'unité), via l'accesseur interne _owner(). Toute
 # dépendance de la logique vers les stats de l'unité (Force, terrain,
 # multiplicateur global) est PASSÉE EN PARAMÈTRE par l'appelant — c'est ce
 # qui rend la jauge testable isolément.
@@ -27,7 +28,9 @@ signal changed
 signal awakening_expired
 
 # L'unité porteuse — UNIQUEMENT pour les signaux EventBus. Jamais lue.
-var owner_unit = null
+# Référence FAIBLE : Unit possède sa jauge (référence forte) ; si la jauge
+# tenait l'unité en retour, le cycle RefCounted ne serait jamais libéré.
+var _owner_ref: WeakRef = null
 
 var energy_type: EnergyTypeData = null
 var current_energy: float = 0.0 # Ferveur. Nom conserve pour compatibilite.
@@ -35,7 +38,11 @@ var charge_threshold_active: bool = false
 var awakening_turns_remaining: int = 0
 
 func _init(p_owner = null) -> void:
-	owner_unit = p_owner
+	_owner_ref = weakref(p_owner) if p_owner != null else null
+
+# L'unité à mettre dans les signaux EventBus (null si elle a été libérée).
+func _owner():
+	return _owner_ref.get_ref() if _owner_ref != null else null
 
 # ============================================================
 # LECTURE
@@ -158,7 +165,7 @@ func generate(amount: float, source: String = "") -> float:
 	var real := current_energy - before
 	if real <= 0.0:
 		return 0.0
-	EventBus.energy_generated.emit(owner_unit, energy_type.energy_id, real)
+	EventBus.energy_generated.emit(_owner(), energy_type.energy_id, real)
 	sync_charge_state()
 	changed.emit()
 	return real
@@ -174,7 +181,7 @@ func spend(amount: float, source: String = "") -> bool:
 	if not can_afford_energy(cost):
 		return false
 	current_energy = maxf(0.0, current_energy - cost)
-	EventBus.energy_spent.emit(owner_unit, energy_type.energy_id, cost)
+	EventBus.energy_spent.emit(_owner(), energy_type.energy_id, cost)
 	sync_charge_state()
 	changed.emit()
 	return true
@@ -184,8 +191,8 @@ func sync_charge_state(emit_events: bool = true) -> void:
 	if not emit_events:
 		return
 	if has_energy():
-		EventBus.fervor_changed.emit(owner_unit, current_energy, max_value, charge_threshold_active)
-	EventBus.charge_changed.emit(owner_unit, current_energy, max_value, charge_threshold_active)
+		EventBus.fervor_changed.emit(_owner(), current_energy, max_value, charge_threshold_active)
+	EventBus.charge_changed.emit(_owner(), current_energy, max_value, charge_threshold_active)
 
 # ============================================================
 # ÉVEIL — franchir le coût rend l'activation POSSIBLE ; l'activation
@@ -203,9 +210,9 @@ func activate_awakening() -> bool:
 		return false
 	charge_threshold_active = true
 	awakening_turns_remaining = maxi(1, energy_type.awakening_duration_turns)
-	EventBus.fervor_threshold_changed.emit(owner_unit, true)
-	EventBus.charge_threshold_changed.emit(owner_unit, true)
-	EventBus.awakening_activated.emit(owner_unit, energy_type.energy_id, awakening_turns_remaining)
+	EventBus.fervor_threshold_changed.emit(_owner(), true)
+	EventBus.charge_threshold_changed.emit(_owner(), true)
+	EventBus.awakening_activated.emit(_owner(), energy_type.energy_id, awakening_turns_remaining)
 	sync_charge_state(true)
 	return true
 
@@ -222,9 +229,9 @@ func _end_awakening() -> void:
 	charge_threshold_active = false
 	awakening_turns_remaining = 0
 	if has_energy():
-		EventBus.fervor_threshold_changed.emit(owner_unit, false)
-		EventBus.charge_threshold_changed.emit(owner_unit, false)
-		EventBus.awakening_ended.emit(owner_unit, energy_type.energy_id)
+		EventBus.fervor_threshold_changed.emit(_owner(), false)
+		EventBus.charge_threshold_changed.emit(_owner(), false)
+		EventBus.awakening_ended.emit(_owner(), energy_type.energy_id)
 	sync_charge_state(true)
 	awakening_expired.emit()
 

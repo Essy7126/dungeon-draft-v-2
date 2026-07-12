@@ -5,9 +5,15 @@ extends GutTest
 
 const Factory = preload("res://test/support/factory.gd")
 
+# L'unite proprietaire ne sert QUE de charge utile aux signaux EventBus.
+# La jauge la tient en weakref : on la garde vivante le temps du test.
+var _owner_unit: Unit = null
+
+func before_each() -> void:
+	_owner_unit = Factory.make_unit()
+
 func _make_gauge(gains: Dictionary = {}, overrides: Dictionary = {}) -> EnergyGauge:
-	# L'unite proprietaire ne sert QUE de charge utile aux signaux EventBus.
-	var gauge := EnergyGauge.new(Factory.make_unit())
+	var gauge := EnergyGauge.new(_owner_unit)
 	gauge.energy_type = Factory.make_energy(gains, overrides)
 	return gauge
 
@@ -22,7 +28,7 @@ func test_generation_par_verbe_credite_la_gain_table() -> void:
 func test_verbe_inconnu_ou_sans_energie() -> void:
 	var gauge := _make_gauge({ "HIT": 10.0 })
 	assert_almost_eq(gauge.generate_from_verb("DANSER"), 0.0, 0.0001)
-	var sans_ecole := EnergyGauge.new(Factory.make_unit())
+	var sans_ecole := EnergyGauge.new(_owner_unit)
 	assert_almost_eq(sans_ecole.generate_from_verb("HIT"), 0.0, 0.0001, "sans energy_type : aucun gain")
 
 func test_plafond_max_energy_tronque_le_gain() -> void:

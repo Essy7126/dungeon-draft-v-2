@@ -152,9 +152,16 @@ func _init(
 	) -> void:
 	# La jauge d'ecole en premier : les proprietes deleguees (energy_type,
 	# current_energy...) doivent pouvoir repondre des la construction.
+	# Relais via weakref : une Callable retient sa cible RefCounted, un relais
+	# direct fermerait le cycle Unit <-> jauge et aucun des deux ne serait libere.
 	_energy_gauge = EnergyGauge.new(self)
-	_energy_gauge.changed.connect(_on_gauge_changed)
-	_energy_gauge.awakening_expired.connect(_on_gauge_awakening_expired)
+	var wr := weakref(self)
+	_energy_gauge.changed.connect(func () -> void:
+		var u = wr.get_ref()
+		if u != null: u.energy_changed.emit(u))
+	_energy_gauge.awakening_expired.connect(func () -> void:
+		var u = wr.get_ref()
+		if u != null: u.stats_changed.emit(u))
 	unit_name = p_name
 	team = p_team
 	max_hp       = Stat.new(p_hp)
@@ -589,11 +596,6 @@ func _tick_awakening() -> void: _energy_gauge.tick_awakening()
 
 func get_energy_ratio() -> float: return _energy_gauge.get_energy_ratio()
 
-# --- Relais des signaux de la jauge vers les signaux de Unit ---
-
-func _on_gauge_changed() -> void: energy_changed.emit(self)
-
-func _on_gauge_awakening_expired() -> void: stats_changed.emit(self)
 
 # ============================================================
 # BOUCLIER â€” couche dÃ©fensive entre l'Ã©nergie et les PV
