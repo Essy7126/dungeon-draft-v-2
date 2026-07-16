@@ -12,6 +12,12 @@ const VERB_TAKE_DAMAGE := "TAKE_DAMAGE"
 @export_multiline var description: String = ""
 @export var energy_id: String = "rage"
 @export var color: Color = Color(0.8, 0.2, 0.2)
+# Couleur d'ECOLE : la couleur officielle de lisibilite (barres, textes
+# flottants, fiches). Alpha 0 = non renseignee -> repli sur `color` (legacy).
+@export var school_color: Color = Color(0, 0, 0, 0)
+# La signature en une phrase : COMMENT cette ecole gagne sa jauge. Doit decrire
+# exactement les verbes les plus payants de la gain_table (ne jamais mentir).
+@export_multiline var signature_text: String = ""
 
 @export_group("Ferveur")
 @export var max_energy: float = 100.0
@@ -65,6 +71,14 @@ const VERB_TAKE_DAMAGE := "TAKE_DAMAGE"
 @export var reaction_damage_multiplier: float = 0.5
 # PA bonus au prochain tour quand la reaction se declenche.
 @export var reaction_next_turn_ap_bonus: int = 1
+
+# Couleur d'ecole effective : school_color si renseignee, sinon l'ancienne
+# `color` — une seule source de verite pour toute l'UI.
+func get_school_color() -> Color:
+	return school_color if school_color.a > 0.0 else color
+
+func get_signature_text() -> String:
+	return signature_text.strip_edges()
 
 func gain_for(verb: String) -> float:
 	var key := verb.strip_edges().to_upper()

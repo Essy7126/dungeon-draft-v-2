@@ -70,6 +70,14 @@ func get_energy_ratio() -> float:
 		return 0.0
 	return current_energy / energy_type.max_energy
 
+# Acces simple pour TOUTE UI : couleur d'ecole et signature du type d'energie.
+# Valeurs neutres si l'unite n'a pas d'ecole.
+func get_school_color() -> Color:
+	return energy_type.get_school_color() if has_energy() else Color(0.86, 0.74, 1.0)
+
+func get_signature_text() -> String:
+	return energy_type.get_signature_text() if has_energy() else ""
+
 # ============================================================
 # COÛTS DE SORT (part jauge : payoff + empreinte)
 # ============================================================
