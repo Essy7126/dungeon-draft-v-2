@@ -4,6 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://b072eekl323i5" path="res://asset/map/tilemap_packed.png" id="2_oxp8w"]
 [ext_resource type="Texture2D" uid="uid://buswcm4xwct67" path="res://asset/map/tilemap_packed (2).png" id="3_7sfm4"]
 [ext_resource type="PackedScene" uid="uid://i5c6lt5m6q0w" path="res://debug/DebugOverlay.tscn" id="4_i431l"]
+[ext_resource type="Script" path="res://battle/floating_text_spawner.gd" id="5_ftsp"]
+[ext_resource type="Script" path="res://battle/impact_juice.gd" id="6_juice"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oxp8w"]
 texture = ExtResource("2_oxp8w")
@@ -309,3 +311,9 @@ tile_map_data = PackedByteArray("AAAAAAAAAAAEAAMAAAAAAAEAAAAEAAMAAAAAAAIAAAAEAAM
 tile_set = SubResource("TileSet_oxp8w")
 
 [node name="DebugOverlay" parent="." unique_id=1584521355 instance=ExtResource("4_i431l")]
+
+[node name="FloatingTextSpawner" type="Node2D" parent="."]
+script = ExtResource("5_ftsp")
+
+[node name="ImpactJuice" type="Node" parent="."]
+script = ExtResource("6_juice")
