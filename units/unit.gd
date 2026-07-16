@@ -82,10 +82,22 @@ func _snap_to_cardinal(delta: Vector2i) -> Vector2i:
 # payoff signature (fervor_cost > 0). Jamais sur les sorts normaux.
 const BASIC_ATTACK_AP_COST := 1
 
-var energy_type: EnergyTypeData = null
-var current_energy: float = 0.0 # Ferveur. Nom conserve pour compatibilite.
-var charge_threshold_active: bool = false
-var awakening_turns_remaining: int = 0
+# La jauge d'ecole vit dans son propre composant (units/energy_gauge.gd) :
+# Unit ne garde que des FACADES (memes noms, memes signatures) qui deleguent.
+# L'interface publique de Unit est inchangee d'un caractere.
+var _energy_gauge: EnergyGauge = null
+var energy_type: EnergyTypeData:
+	get: return _energy_gauge.energy_type
+	set(value): _energy_gauge.energy_type = value
+var current_energy: float: # Ferveur. Nom conserve pour compatibilite.
+	get: return _energy_gauge.current_energy
+	set(value): _energy_gauge.current_energy = value
+var charge_threshold_active: bool:
+	get: return _energy_gauge.charge_threshold_active
+	set(value): _energy_gauge.charge_threshold_active = value
+var awakening_turns_remaining: int:
+	get: return _energy_gauge.awakening_turns_remaining
+	set(value): _energy_gauge.awakening_turns_remaining = value
 # Modificateur de PA applique au PROCHAIN tour puis remis a zero : positif
 # (bonus de reaction/relique) ou negatif (drain du Disruptor).
 var next_turn_ap_modifier: int = 0
@@ -138,6 +150,18 @@ func _init(
 		p_mp: float = 3,
 		p_attack: float = 20
 	) -> void:
+	# La jauge d'ecole en premier : les proprietes deleguees (energy_type,
+	# current_energy...) doivent pouvoir repondre des la construction.
+	# Relais via weakref : une Callable retient sa cible RefCounted, un relais
+	# direct fermerait le cycle Unit <-> jauge et aucun des deux ne serait libere.
+	_energy_gauge = EnergyGauge.new(self)
+	var wr: WeakRef = weakref(self)
+	_energy_gauge.changed.connect(func () -> void:
+		var u = wr.get_ref()
+		if u != null: u.energy_changed.emit(u))
+	_energy_gauge.awakening_expired.connect(func () -> void:
+		var u = wr.get_ref()
+		if u != null: u.stats_changed.emit(u))
 	unit_name = p_name
 	team = p_team
 	max_hp       = Stat.new(p_hp)
@@ -443,12 +467,9 @@ func ensure_energy_traits() -> void:
 	add_trait_from_data(energy_type.threshold_trait)
 
 func reset_combat_resources() -> void:
-	charge_threshold_active = false
-	awakening_turns_remaining = 0
 	next_turn_ap_modifier = 0
 	current_ap = max_ap.get_int()
-	current_energy = energy_type.start_energy if has_energy() else 0.0
-	sync_charge_state(true)
+	_energy_gauge.reset() # eveil purge, retour a start_energy, sync emis
 	energy_changed.emit(self)
 	EventBus.ap_changed.emit(self, current_ap, max_ap.get_int())
 	if has_energy():
@@ -472,16 +493,10 @@ func _current_terrain_fervor_multiplier() -> float:
 		return 1.0
 	return maxf(0.0, current_terrain_effect.fervor_generation_multiplier)
 
-func can_afford_energy(amount: float) -> bool:
-	var cost: float = maxf(0.0, amount)
-	if cost <= 0.0:
-		return true
-	if not has_energy():
-		return false
-	return current_energy >= cost
+# Facades de pure delegation vers la jauge (une ligne = aucun comportement ici).
+func can_afford_energy(amount: float) -> bool: return _energy_gauge.can_afford_energy(amount)
 
-func get_reaction_cost() -> float:
-	return maxf(0.0, energy_type.reaction_cost) if has_energy() else 0.0
+func get_reaction_cost() -> float: return _energy_gauge.get_reaction_cost()
 
 func can_arm_reaction() -> bool:
 	var cost := get_reaction_cost()
@@ -500,8 +515,7 @@ func set_reaction_armed(armed: bool) -> bool:
 	DebugLogger.info(CAT_STATS, "%s garde %.0f Ferveur pour une reaction defensive" % [unit_name, get_reaction_cost()])
 	return true
 
-func has_charge_threshold() -> bool:
-	return has_energy() and charge_threshold_active
+func has_charge_threshold() -> bool: return _energy_gauge.has_charge_threshold()
 
 func get_basic_attack_ap_cost() -> int:
 	return BASIC_ATTACK_AP_COST
@@ -523,160 +537,65 @@ func consume_terrain_ap_discount(spell: Spell) -> void:
 	if spell != null and spell.ap_cost > 0 and _current_terrain_ap_discount() > 0:
 		terrain_ap_discount_used = true
 
-func get_spell_imprint_fervor_cost(spell: Spell) -> float:
-	if spell == null or not spell.can_imprint():
-		return 0.0
-	var cost: float = spell.imprint_fervor_cost
-	if has_charge_threshold() and energy_type.awakening_imprint_discount > 0.0:
-		cost -= energy_type.awakening_imprint_discount
-	return maxf(0.0, cost)
+func get_spell_imprint_fervor_cost(spell: Spell) -> float: return _energy_gauge.get_spell_imprint_fervor_cost(spell)
 
-func get_spell_fervor_cost(spell: Spell, imprinted: bool = false) -> float:
-	if spell == null:
-		return 0.0
-	var cost := maxf(0.0, spell.fervor_cost)
-	if imprinted:
-		cost += get_spell_imprint_fervor_cost(spell)
-	return maxf(0.0, cost)
+func get_spell_fervor_cost(spell: Spell, imprinted: bool = false) -> float: return _energy_gauge.get_spell_fervor_cost(spell, imprinted)
 
 func can_afford_spell_resources(spell: Spell, imprinted: bool = false) -> bool:
 	if spell == null:
 		return false
 	return current_ap >= get_spell_ap_cost(spell) and can_afford_energy(get_spell_fervor_cost(spell, imprinted))
 
-func get_modified_spell_damage(spell: Spell, amount: int) -> int:
-	if spell == null or amount <= 0:
-		return amount
-	if has_charge_threshold():
-		if energy_type.awakening_blocks_direct_damage:
-			return 0
-		if energy_type.awakening_damage_multiplier > 0.0:
-			return maxi(0, int(round(float(amount) * energy_type.awakening_damage_multiplier)))
-	return amount
+func get_modified_spell_damage(spell: Spell, amount: int) -> int: return _energy_gauge.get_modified_spell_damage(spell, amount)
 
-func get_modified_spell_heal(spell: Spell, amount: int) -> int:
-	if spell == null or amount <= 0:
-		return amount
-	if has_charge_threshold() and energy_type.awakening_heal_multiplier > 0.0:
-		return maxi(0, int(round(float(amount) * energy_type.awakening_heal_multiplier)))
-	return amount
+func get_modified_spell_heal(spell: Spell, amount: int) -> int: return _energy_gauge.get_modified_spell_heal(spell, amount)
 
-func get_modified_spell_shield(spell: Spell, amount: int) -> int:
-	if spell == null or amount <= 0:
-		return amount
-	if has_charge_threshold() and energy_type.awakening_shield_multiplier > 0.0:
-		return maxi(0, int(round(float(amount) * energy_type.awakening_shield_multiplier)))
-	return amount
+func get_modified_spell_shield(spell: Spell, amount: int) -> int: return _energy_gauge.get_modified_spell_shield(spell, amount)
 
-func _get_modified_incoming_damage(amount: int) -> int:
-	if amount <= 0:
-		return amount
-	var modified := float(amount)
-	if has_charge_threshold():
-		if energy_type.threshold_damage_reduction_pct > 0.0:
-			var reduction := clampf(energy_type.threshold_damage_reduction_pct, 0.0, 0.95)
-			modified *= (1.0 - reduction)
-		if energy_type.awakening_incoming_damage_multiplier > 0.0:
-			modified *= energy_type.awakening_incoming_damage_multiplier
-	return maxi(0, int(round(modified)))
+func _get_modified_incoming_damage(amount: int) -> int: return _energy_gauge.get_modified_incoming_damage(amount)
 
 # Multiplicateur de payoff de la Force (colonne de Rage). 1.0 si Force nulle.
 # Multiplicatif pour permettre l'empilement exponentiel (modele Ravenswatch).
 func get_force_multiplier() -> float:
 	return 1.0 + force.get_value() / 100.0
 
+# Les facteurs qui dependent de l'UNITE (terrain natif, multiplicateur global
+# du run, Force sur EXPLOIT) sont calcules ICI et passes a la jauge en params.
 func generate_fervor_from_verb(verb: String, source: String = "") -> float:
 	if not has_energy():
 		return 0.0
 	var key := verb.strip_edges().to_upper()
 	if key == "":
 		return 0.0
-	var amount := energy_type.gain_for(key)
-	amount *= energy_type.gain_multiplier_for(key, charge_threshold_active)
-	amount *= _current_terrain_fervor_multiplier()
-	amount *= GameManager.get_fervor_multiplier() if GameManager.has_method("get_fervor_multiplier") else GameManager.get_charge_multiplier()
+	var global_multiplier: float = GameManager.get_fervor_multiplier() if GameManager.has_method("get_fervor_multiplier") else GameManager.get_charge_multiplier()
 	# Force (Rage) : l'energie gagnee SUR DEPLACEMENT scale avec la Force.
-	if key == EnergyTypeData.VERB_EXPLOIT:
-		amount *= get_force_multiplier()
-	return generate_energy(amount, source if source != "" else key)
+	var exploit_multiplier := get_force_multiplier() if key == EnergyTypeData.VERB_EXPLOIT else 1.0
+	return _energy_gauge.generate_from_verb(key, source, _current_terrain_fervor_multiplier(), global_multiplier, exploit_multiplier)
 
-func generate_charge_from_verb(verb: String, source: String = "") -> float:
-	return generate_fervor_from_verb(verb, source)
+func generate_charge_from_verb(verb: String, source: String = "") -> float: return generate_fervor_from_verb(verb, source)
 
-func generate_energy(amount: float, source: String = "") -> float:
-	if not has_energy() or amount <= 0.0:
-		return 0.0
-	var before := current_energy
-	current_energy = minf(current_energy + amount, energy_type.max_energy)
-	var real := current_energy - before
-	if real <= 0.0:
-		return 0.0
-	EventBus.energy_generated.emit(self, energy_type.energy_id, real)
-	sync_charge_state()
-	energy_changed.emit(self)
-	return real
+func generate_energy(amount: float, source: String = "") -> float: return _energy_gauge.generate(amount, source)
 
-func spend_energy(amount: float, source: String = "") -> bool:
-	var cost := maxf(0.0, amount)
-	if cost <= 0.0:
-		return true
-	if not can_afford_energy(cost):
-		return false
-	current_energy = maxf(0.0, current_energy - cost)
-	EventBus.energy_spent.emit(self, energy_type.energy_id, cost)
-	sync_charge_state()
-	energy_changed.emit(self)
-	return true
+func spend_energy(amount: float, source: String = "") -> bool: return _energy_gauge.spend(amount, source)
 
-func sync_charge_state(emit_events: bool = true) -> void:
-	var max_value := energy_type.max_energy if has_energy() else 0.0
-	if not emit_events:
-		return
-	if has_energy():
-		EventBus.fervor_changed.emit(self, current_energy, max_value, charge_threshold_active)
-	EventBus.charge_changed.emit(self, current_energy, max_value, charge_threshold_active)
+func sync_charge_state(emit_events: bool = true) -> void: _energy_gauge.sync_charge_state(emit_events)
 
-
-func can_activate_awakening() -> bool:
-	return has_energy() and is_alive and not charge_threshold_active and current_energy >= energy_type.awakening_cost
+# is_alive est un etat de l'UNITE : la jauge verifie le reste.
+func can_activate_awakening() -> bool: return is_alive and _energy_gauge.can_activate_awakening()
 
 func activate_awakening() -> bool:
 	if not can_activate_awakening():
 		return false
-	if not spend_energy(energy_type.awakening_cost, "eveil"):
+	if not _energy_gauge.activate_awakening():
 		return false
-	charge_threshold_active = true
-	awakening_turns_remaining = maxi(1, energy_type.awakening_duration_turns)
-	EventBus.fervor_threshold_changed.emit(self, true)
-	EventBus.charge_threshold_changed.emit(self, true)
-	EventBus.awakening_activated.emit(self, energy_type.energy_id, awakening_turns_remaining)
-	sync_charge_state(true)
 	stats_changed.emit(self)
 	DebugLogger.info(CAT_STATS, "%s declenche %s (%d tours)" % [unit_name, energy_type.threshold_name, awakening_turns_remaining])
 	return true
 
-func _tick_awakening() -> void:
-	if not charge_threshold_active:
-		return
-	awakening_turns_remaining -= 1
-	if awakening_turns_remaining <= 0:
-		_end_awakening()
+func _tick_awakening() -> void: _energy_gauge.tick_awakening()
 
-func _end_awakening() -> void:
-	if not charge_threshold_active:
-		return
-	charge_threshold_active = false
-	awakening_turns_remaining = 0
-	if has_energy():
-		EventBus.fervor_threshold_changed.emit(self, false)
-		EventBus.charge_threshold_changed.emit(self, false)
-		EventBus.awakening_ended.emit(self, energy_type.energy_id)
-	sync_charge_state(true)
-	stats_changed.emit(self)
-func get_energy_ratio() -> float:
-	if not has_energy() or energy_type.max_energy <= 0.0:
-		return 0.0
-	return current_energy / energy_type.max_energy
+func get_energy_ratio() -> float: return _energy_gauge.get_energy_ratio()
+
 
 # ============================================================
 # BOUCLIER â€” couche dÃ©fensive entre l'Ã©nergie et les PV
