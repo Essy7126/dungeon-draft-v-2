@@ -99,6 +99,7 @@ func show_unit(unit, locked: bool = false) -> void:
 		return
 	_title.text = unit.unit_name
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
+	_add_school_signature(unit)
 	_add_resources(unit)
 	_add_statuses(unit)
 	_add_details_toggle(unit)
@@ -179,6 +180,27 @@ func show_spell_preview(caster, spell: Spell, cell: Vector2i, grid: GridData, sp
 		_add_line("Terrain", "Pose %s" % Glossary.token_for_name(spell.terrain_effect.effect_name))
 	if imprinted and spell.imprint_terrain_effect != null:
 		_add_line("Empreinte", "Pose %s" % Glossary.token_for_name(spell.imprint_terrain_effect.effect_name))
+
+# En tete de fiche : le nom de l'ecole dans sa couleur + sa signature
+# (comment cette ecole gagne sa jauge). Rien si l'unite n'a pas d'ecole.
+func _add_school_signature(unit) -> void:
+	if not unit.has_energy():
+		return
+	var school: Color = unit.energy_type.get_school_color()
+	var name_label := Label.new()
+	name_label.text = unit.energy_type.energy_name
+	name_label.add_theme_font_size_override("font_size", 14)
+	name_label.add_theme_color_override("font_color", school)
+	_content.add_child(name_label)
+	var signature: String = unit.energy_type.get_signature_text()
+	if signature != "":
+		var sig := Label.new()
+		sig.text = signature
+		sig.custom_minimum_size = Vector2(286, 0)
+		sig.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sig.add_theme_font_size_override("font_size", 11)
+		sig.add_theme_color_override("font_color", Color(school.r, school.g, school.b, 0.85))
+		_content.add_child(sig)
 
 func _add_resources(unit) -> void:
 	_add_section("Ressources")
@@ -279,13 +301,18 @@ func _add_spells(unit) -> void:
 		_add_spell_row(unit, spell)
 
 func _add_spell_row(unit, spell: Spell) -> void:
-	var label := Label.new()
+	# RichTextLabel : permet d'afficher le cout de jauge des payoffs dans la
+	# couleur d'ecole, a cote du cout en PA (le reste du texte est inchange).
+	var label := RichTextLabel.new()
+	label.bbcode_enabled = true
+	label.fit_content = true
+	label.scroll_active = false
 	label.custom_minimum_size = Vector2(286, 0)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", 12)
-	label.add_theme_color_override("font_color", Color(0.9, 0.88, 0.82))
+	label.add_theme_font_size_override("normal_font_size", 12)
+	label.add_theme_color_override("default_color", Color(0.9, 0.88, 0.82))
 	label.mouse_filter = Control.MOUSE_FILTER_STOP
-	label.text = "%s - %s" % [spell.spell_name, _spell_summary(spell, unit)]
+	label.text = "%s - %s" % [spell.spell_name, _spell_summary(spell, unit, false, true)]
 	label.mouse_entered.connect(func(): _show_spell_tooltip(unit, spell, false))
 	label.mouse_exited.connect(_hide_keyword_tooltip)
 	_content.add_child(label)
@@ -312,14 +339,19 @@ func _add_traits(unit) -> void:
 		var trait_name: String = unit_trait._trait_name() if unit_trait.has_method("_trait_name") else "trait"
 		_add_paragraph(trait_name)
 
-func _spell_summary(spell: Spell, unit = null, imprinted: bool = false) -> String:
+# `fervor_bbcode` : colore le cout de jauge (payoffs) dans la couleur d'ecole
+# du porteur — a n'utiliser que dans un RichTextLabel.
+func _spell_summary(spell: Spell, unit = null, imprinted: bool = false, fervor_bbcode: bool = false) -> String:
 	var parts: Array = []
 	var ap_cost: int = unit.get_spell_ap_cost(spell) if unit != null else spell.ap_cost
 	parts.append("%d PA" % ap_cost)
 	if unit != null and unit.has_energy():
 		var fervor_cost: float = unit.get_spell_fervor_cost(spell, imprinted)
 		if fervor_cost > 0.0:
-			parts.append("%d Ferveur" % int(fervor_cost))
+			var fervor_text := "%d Ferveur" % int(fervor_cost)
+			if fervor_bbcode:
+				fervor_text = "[color=#%s]%s[/color]" % [unit.energy_type.get_school_color().to_html(false), fervor_text]
+			parts.append(fervor_text)
 	var damage: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
 	var heal: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
 	var shield: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
