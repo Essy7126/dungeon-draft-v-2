@@ -122,6 +122,8 @@ func _damage_area(center: Vector2i, amount: int, caster = null) -> void:
 		var unit = _grid.get_unit(c)
 		if unit != null and unit.is_alive:
 			unit.take_damage(amount, caster, Spell.DamageType.MAGICAL, Spell.Element.LIGHTNING)
+			if not unit.is_alive:
+				EventBus.hazard_kill.emit(unit, "reaction")
 			touched += 1
 			DebugLogger.debug(CAT, "%s subit %d degats de reaction" % [unit.unit_name, amount], { "case": str(c), "PV_restants": unit.current_hp })
 	if touched == 0:
@@ -180,6 +182,8 @@ func on_enter_cell(unit: Unit, cell: Vector2i) -> void:
 func _apply_effect_to_unit(unit: Unit, effect: TerrainEffectData) -> void:
 	if effect.damage > 0:
 		unit.take_damage(effect.damage, null, Spell.DamageType.MAGICAL, Spell.Element.FIRE, { "ignore_defense": false })
+		if not unit.is_alive:
+			EventBus.hazard_kill.emit(unit, effect.effect_name)
 		DebugLogger.debug(CAT, "%s subit %d degats de %s" % [unit.unit_name, effect.damage, effect.effect_name], { "PV_restants": unit.current_hp })
 	if effect.applied_status != null:
 		unit.apply_status(effect.applied_status)

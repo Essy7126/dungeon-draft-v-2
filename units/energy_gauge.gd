@@ -162,10 +162,12 @@ func generate_from_verb(
 	amount *= global_multiplier
 	if key == EnergyTypeData.VERB_EXPLOIT:
 		amount *= exploit_multiplier
-	return generate(amount, source if source != "" else key)
+	return generate(amount, source if source != "" else key, key)
 
 # Crédite la jauge, plafonnée à max_energy. Renvoie le gain RÉEL.
-func generate(amount: float, source: String = "") -> float:
+# `verb` (optionnel) : le verbe d'origine, transmis au signal riche
+# EventBus.fervor_gained pour que l'UI explique le gain au joueur.
+func generate(amount: float, source: String = "", verb: String = "") -> float:
 	if not has_energy() or amount <= 0.0:
 		return 0.0
 	var before := current_energy
@@ -174,6 +176,7 @@ func generate(amount: float, source: String = "") -> float:
 	if real <= 0.0:
 		return 0.0
 	EventBus.energy_generated.emit(_owner(), energy_type.energy_id, real)
+	EventBus.fervor_gained.emit(_owner(), energy_type.energy_id, real, verb)
 	sync_charge_state()
 	changed.emit()
 	return real

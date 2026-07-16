@@ -190,6 +190,7 @@ func _apply_collision_damage(caster: Unit, victim, amount: int) -> void:
 	if victim == null or not victim.is_alive:
 		return
 	victim.take_damage(amount, caster, Spell.DamageType.PHYSICAL, Spell.Element.NONE)
+	EventBus.collision_impact.emit(caster, victim, amount)
 	DebugLogger.debug(CAT_SPELL, "Collision : %s subit %d" % [victim.unit_name, amount])
 
 # Attire la cible VERS le lanceur (Crochet). S'arrete avant le lanceur / obstacle.
