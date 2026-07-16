@@ -241,7 +241,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Attack_f14")
 }],
-"loop": 0,
+"loop": false,
 "name": &"attack",
 "speed": 12.0
 }, {
@@ -285,7 +285,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Death_f12")
 }],
-"loop": 0,
+"loop": false,
 "name": &"death",
 "speed": 8.0
 }, {
@@ -317,7 +317,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Idle_f08")
 }],
-"loop": 1,
+"loop": true,
 "name": &"default",
 "speed": 8.0
 }, {
@@ -349,7 +349,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Walk_f08")
 }],
-"loop": 1,
+"loop": true,
 "name": &"walk",
 "speed": 10.0
 }]

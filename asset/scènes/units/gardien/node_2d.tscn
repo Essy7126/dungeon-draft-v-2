@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bwikxxoa657v2"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wqlde"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"idle_ne",
+"speed": 8.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"idle_nw",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"idle_se",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"idle_sw",
+"speed": 5.0
+}]
+
+[node name="Node2D" type="Node2D" unique_id=1382943436]
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1138482488]
+
+[node name="gardien" type="CharacterBody2D" parent="SubViewport" unique_id=1472260528]
+
+[node name="visual" type="Node2D" parent="SubViewport/gardien" unique_id=1509498842]
+
+[node name="Body" type="AnimatedSprite2D" parent="SubViewport/gardien/visual" unique_id=117673510]
+sprite_frames = SubResource("SpriteFrames_wqlde")
+animation = &"idle_se"
