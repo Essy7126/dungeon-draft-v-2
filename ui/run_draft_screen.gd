@@ -159,8 +159,11 @@ func _make_slot(slot_index: int) -> Control:
 		var selected: bool = _selected_energies[slot_index] == i
 		var button := _make_option_button(_get_energy_name(_energy_options[i]), selected, false, _get_energy_description(_energy_options[i]))
 		var data = _energy_options[i].get("data")
-		if data != null and selected:
-			button.modulate = data.color
+		if data != null:
+			# Couleur d'ecole sur chaque option d'energie proposee.
+			button.add_theme_color_override("font_color", data.get_school_color())
+			if selected:
+				button.modulate = Color(1.15, 1.15, 1.15)
 		button.pressed.connect(_select_energy.bind(slot_index, i))
 		box.add_child(button)
 
@@ -275,6 +278,10 @@ func _get_energy_description(option: Dictionary) -> String:
 	if data == null:
 		return ""
 	var lines: Array = []
+	# La signature d'ecole d'abord : comment cette energie se gagne, en une
+	# phrase verifiee contre la gain_table (le bandeau ne ment pas au joueur).
+	if data.get_signature_text() != "":
+		lines.append(data.get_signature_text())
 	if data.description.strip_edges() != "":
 		lines.append(data.description)
 	lines.append("Ferveur: max %d, seuil %s a %d, eveil %d Ferveur pendant %d tour(s), reaction %d Ferveur." % [
