@@ -1,0 +1,114 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://battle/iso/iso_map_lab.gd" id="1_lab"]
+[ext_resource type="Script" path="res://battle/iso/iso_grid_view.gd" id="2_grid"]
+
+[node name="IsoMapLab" type="Node2D"]
+script = ExtResource("1_lab")
+
+[node name="IsoGridView" type="Node2D" parent="."]
+script = ExtResource("2_grid")
+
+[node name="Geometry" type="TileMapLayer" parent="IsoGridView"]
+
+[node name="YSortedWorld" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="MarkerA" type="Node2D" parent="YSortedWorld"]
+
+[node name="Shadow" type="Polygon2D" parent="YSortedWorld/MarkerA"]
+polygon = PackedVector2Array(-25, 0, -14, -7, 14, -7, 25, 0, 14, 7, -14, 7)
+color = Color(0.01, 0.015, 0.025, 0.58)
+
+[node name="Body" type="Polygon2D" parent="YSortedWorld/MarkerA"]
+polygon = PackedVector2Array(-24, 0, -28, -46, -18, -83, 0, -100, 18, -83, 28, -46, 24, 0)
+color = Color(0.94, 0.25, 0.18, 1)
+
+[node name="Accent" type="Polygon2D" parent="YSortedWorld/MarkerA"]
+polygon = PackedVector2Array(-15, -16, -14, -47, 0, -67, 14, -47, 15, -16, 0, -7)
+color = Color(1, 0.72, 0.24, 1)
+
+[node name="GroundPivot" type="Polygon2D" parent="YSortedWorld/MarkerA"]
+polygon = PackedVector2Array(0, -5, 5, 0, 0, 5, -5, 0)
+color = Color(1, 1, 1, 1)
+
+[node name="MarkerB" type="Node2D" parent="YSortedWorld"]
+
+[node name="Shadow" type="Polygon2D" parent="YSortedWorld/MarkerB"]
+polygon = PackedVector2Array(-25, 0, -14, -7, 14, -7, 25, 0, 14, 7, -14, 7)
+color = Color(0.01, 0.015, 0.025, 0.58)
+
+[node name="Body" type="Polygon2D" parent="YSortedWorld/MarkerB"]
+polygon = PackedVector2Array(-23, 0, -27, -44, -17, -78, 0, -94, 17, -78, 27, -44, 23, 0)
+color = Color(0.16, 0.48, 0.96, 1)
+
+[node name="Accent" type="Polygon2D" parent="YSortedWorld/MarkerB"]
+polygon = PackedVector2Array(-14, -15, -13, -44, 0, -62, 13, -44, 14, -15, 0, -7)
+color = Color(0.40, 0.90, 1, 1)
+
+[node name="GroundPivot" type="Polygon2D" parent="YSortedWorld/MarkerB"]
+polygon = PackedVector2Array(0, -5, 5, 0, 0, 5, -5, 0)
+color = Color(1, 1, 1, 1)
+
+[node name="MarkerC" type="Node2D" parent="YSortedWorld"]
+
+[node name="Shadow" type="Polygon2D" parent="YSortedWorld/MarkerC"]
+polygon = PackedVector2Array(-25, 0, -14, -7, 14, -7, 25, 0, 14, 7, -14, 7)
+color = Color(0.01, 0.015, 0.025, 0.58)
+
+[node name="Body" type="Polygon2D" parent="YSortedWorld/MarkerC"]
+polygon = PackedVector2Array(-25, 0, -29, -48, -19, -86, 0, -104, 19, -86, 29, -48, 25, 0)
+color = Color(0.18, 0.80, 0.44, 1)
+
+[node name="Accent" type="Polygon2D" parent="YSortedWorld/MarkerC"]
+polygon = PackedVector2Array(-15, -17, -14, -49, 0, -70, 14, -49, 15, -17, 0, -8)
+color = Color(0.70, 1, 0.45, 1)
+
+[node name="GroundPivot" type="Polygon2D" parent="YSortedWorld/MarkerC"]
+polygon = PackedVector2Array(0, -5, 5, 0, 0, 5, -5, 0)
+color = Color(1, 1, 1, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = false
+
+[node name="DebugUI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="DebugUI"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 515.0
+offset_bottom = 238.0
+
+[node name="Margin" type="MarginContainer" parent="DebugUI/Panel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="DebugUI/Panel/Margin"]
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Laboratoire isometrique 2D — footprint 64 x 32"
+theme_override_font_sizes/font_size = 18
+
+[node name="Hovered" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Survol : (-, -)"
+
+[node name="Selected" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Selection : (-, -)"
+
+[node name="Marker" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Marqueur mobile : (-, -)"
+
+[node name="Direction" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Direction logique : (0, 0)"
+
+[node name="Bounds" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Bounds : -"
+
+[node name="Zoom" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Zoom camera : -"
+
+[node name="Instructions" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Fleches : deplacer le marqueur rouge | clic : selectionner | F1 : debug"
