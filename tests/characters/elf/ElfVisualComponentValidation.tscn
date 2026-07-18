@@ -1,0 +1,137 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://tests/characters/elf/elf_visual_component_validation.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://characters/elf/ElfVisual3D.tscn" id="2_visual"]
+
+[sub_resource type="Environment" id="Environment_neutral"]
+background_mode = 1
+background_color = Color(0.105, 0.115, 0.13, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.78, 0.82, 0.9, 1)
+ambient_light_energy = 0.85
+reflected_light_source = 2
+
+[sub_resource type="StandardMaterial3D" id="Material_floor"]
+albedo_color = Color(0.32, 0.33, 0.35, 1)
+roughness = 0.9
+
+[sub_resource type="PlaneMesh" id="Plane_floor"]
+material = SubResource("Material_floor")
+size = Vector2(7, 7)
+
+[sub_resource type="StandardMaterial3D" id="Material_left_item"]
+albedo_color = Color(1, 0.35, 0.06, 1)
+metallic = 0.2
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="Mesh_left_item"]
+material = SubResource("Material_left_item")
+size = Vector3(5, 18, 4)
+
+[sub_resource type="StandardMaterial3D" id="Material_right_item"]
+albedo_color = Color(0.05, 0.65, 1, 1)
+metallic = 0.2
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="Mesh_right_item"]
+material = SubResource("Material_right_item")
+size = Vector3(5, 18, 4)
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.025, 0.03, 0.04, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.4, 0.5, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="ElfVisualComponentValidation" type="Node3D"]
+script = ExtResource("1_controller")
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_neutral")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -32, 0)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.003, 0)
+mesh = SubResource("Plane_floor")
+
+[node name="ElfVisual3D" parent="." instance=ExtResource("2_visual")]
+
+[node name="EquipmentPool" type="Node3D" parent="."]
+
+[node name="DebugLeftItem" type="Node3D" parent="EquipmentPool"]
+position = Vector3(-0.8, 0.1, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="EquipmentPool/DebugLeftItem"]
+mesh = SubResource("Mesh_left_item")
+
+[node name="DebugRightItem" type="Node3D" parent="EquipmentPool"]
+position = Vector3(0.8, 0.1, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="EquipmentPool/DebugRightItem"]
+mesh = SubResource("Mesh_right_item")
+
+[node name="CameraThreeQuarter" type="Camera3D" parent="."]
+position = Vector3(3.8, 2.8, 3.8)
+current = true
+fov = 34.0
+near = 0.05
+far = 50.0
+
+[node name="CameraSide" type="Camera3D" parent="."]
+position = Vector3(4.5, 1.45, 0)
+fov = 33.0
+near = 0.05
+far = 50.0
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 530.0
+offset_bottom = 250.0
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="UI/Panel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="UI/Panel/Margin"]
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="UI/Panel/Margin/VBox"]
+theme_override_colors/font_color = Color(0.82, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 19
+text = "Validation ElfVisual3D"
+
+[node name="Animation" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Animation :"
+
+[node name="Camera" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Caméra :"
+
+[node name="Sockets" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Sockets :"
+
+[node name="Signals" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Signaux :"
+
+[node name="Status" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Structure :"
+
+[node name="Controls" type="Label" parent="UI/Panel/Margin/VBox"]
+theme_override_colors/font_color = Color(0.72, 0.75, 0.8, 1)
+text = "1–9 animations   L sockets   G objet gauche   D objet droit\nC caméra   R retour Idle"

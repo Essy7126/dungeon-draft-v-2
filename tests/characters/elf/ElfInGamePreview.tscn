@@ -1,0 +1,237 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://tests/characters/elf/elf_in_game_preview.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://characters/elf/ElfVisual3D.tscn" id="2_elf_visual"]
+
+[sub_resource type="Environment" id="Environment_preview"]
+background_mode = 1
+background_color = Color(0.08, 0.095, 0.12, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.72, 0.78, 0.9, 1)
+ambient_light_energy = 0.75
+reflected_light_source = 2
+
+[sub_resource type="StandardMaterial3D" id="Material_floor"]
+albedo_color = Color(0.25, 0.27, 0.3, 1)
+roughness = 0.92
+
+[sub_resource type="PlaneMesh" id="Mesh_floor"]
+material = SubResource("Material_floor")
+size = Vector2(7.5, 7.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_center_cell"]
+albedo_color = Color(0.25, 0.34, 0.36, 1)
+roughness = 0.88
+
+[sub_resource type="PlaneMesh" id="Mesh_center_cell"]
+material = SubResource("Material_center_cell")
+size = Vector2(1.47, 1.47)
+
+[sub_resource type="StandardMaterial3D" id="Material_grid"]
+albedo_color = Color(0.08, 0.1, 0.12, 1)
+shading_mode = 0
+
+[sub_resource type="BoxMesh" id="Mesh_grid_line"]
+material = SubResource("Material_grid")
+size = Vector3(0.018, 0.008, 7.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_boundary"]
+albedo_color = Color(0.2, 0.75, 0.78, 1)
+emission_enabled = true
+emission = Color(0.05, 0.25, 0.27, 1)
+shading_mode = 0
+
+[sub_resource type="BoxMesh" id="Mesh_boundary_line"]
+material = SubResource("Material_boundary")
+size = Vector3(0.025, 0.014, 1.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_center_marker"]
+albedo_color = Color(1, 0.78, 0.16, 1)
+shading_mode = 0
+
+[sub_resource type="CylinderMesh" id="Mesh_center_marker"]
+material = SubResource("Material_center_marker")
+top_radius = 0.065
+bottom_radius = 0.065
+height = 0.012
+radial_segments = 24
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.02, 0.025, 0.035, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.4, 0.52, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="ElfInGamePreview" type="Node3D"]
+script = ExtResource("1_controller")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_preview")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-52, -38, 0)
+light_color = Color(1, 0.94, 0.84, 1)
+light_energy = 1.35
+shadow_enabled = true
+
+[node name="FillLight" type="OmniLight3D" parent="."]
+position = Vector3(-2.5, 3.8, 2.5)
+light_color = Color(0.55, 0.68, 1, 1)
+light_energy = 4.0
+omni_range = 8.0
+shadow_enabled = false
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.012, 0)
+mesh = SubResource("Mesh_floor")
+
+[node name="GridVisual" type="Node3D" parent="."]
+
+[node name="CenterCell" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, -0.006, 0)
+mesh = SubResource("Mesh_center_cell")
+
+[node name="GridX0" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(-3.75, 0, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridX1" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(-2.25, 0, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridX2" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(-0.75, 0, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridX3" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0.75, 0, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridX4" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(2.25, 0, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridX5" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(3.75, 0, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridZ0" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0, -3.75)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridZ1" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0, -2.25)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridZ2" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0, -0.75)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridZ3" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0, 0.75)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridZ4" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0, 2.25)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="GridZ5" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0, 3.75)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_grid_line")
+
+[node name="CenterBoundaryLeft" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(-0.75, 0.012, 0)
+mesh = SubResource("Mesh_boundary_line")
+
+[node name="CenterBoundaryRight" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0.75, 0.012, 0)
+mesh = SubResource("Mesh_boundary_line")
+
+[node name="CenterBoundaryFront" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0.012, -0.75)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_boundary_line")
+
+[node name="CenterBoundaryBack" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0.012, 0.75)
+rotation_degrees = Vector3(0, 90, 0)
+mesh = SubResource("Mesh_boundary_line")
+
+[node name="InitialCellCenter" type="MeshInstance3D" parent="GridVisual"]
+position = Vector3(0, 0.015, 0)
+mesh = SubResource("Mesh_center_marker")
+
+[node name="ElfAnchor" type="Node3D" parent="."]
+
+[node name="ElfVisual3D" parent="ElfAnchor" instance=ExtResource("2_elf_visual")]
+
+[node name="IsometricCamera" type="Camera3D" parent="."]
+position = Vector3(6, 6.4, 6)
+projection = 1
+current = true
+size = 6.0
+near = 0.05
+far = 50.0
+
+[node name="SideCamera" type="Camera3D" parent="."]
+position = Vector3(7, 1.8, 0)
+projection = 1
+size = 4.2
+near = 0.05
+far = 50.0
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 510.0
+offset_bottom = 310.0
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="UI/Panel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="UI/Panel/Margin"]
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="UI/Panel/Margin/VBox"]
+theme_override_colors/font_color = Color(0.82, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 19
+text = "Elf 3D — aperçu tactique isométrique"
+
+[node name="AnimationLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Animation :"
+
+[node name="SpeedLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Vitesse :"
+
+[node name="CameraLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Caméra :"
+
+[node name="MovementLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Déplacement :"
+
+[node name="PerformanceLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Performance :"
+autowrap_mode = 2
+
+[node name="ControlsLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+theme_override_colors/font_color = Color(0.72, 0.75, 0.8, 1)
+text = "1 Idle  2 Walk  3 Run  4 Cast  5 Hit  6 Death\n7/8/9 Cast Start/Hold/End\nR Idle  C caméra  +/- vitesse  M déplacement  L sockets"
+autowrap_mode = 2
