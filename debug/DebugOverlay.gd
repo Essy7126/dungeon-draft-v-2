@@ -17,6 +17,7 @@ func _ready() -> void:
 	panel.visible = false
 	_build_category_buttons()
 	_build_level_filter()
+	_build_juice_toggle()
 	_refresh_log()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	DebugLogger.log_added.connect(_on_log_added)
@@ -50,6 +51,14 @@ func _build_level_filter() -> void:
 		_level_filter = idx
 		_refresh_log()
 	)
+
+# Interrupteur global de la juice (hit-stop / shake) — accessibilite & debug.
+func _build_juice_toggle() -> void:
+	var toggle := CheckButton.new()
+	toggle.text = "Juice (hit-stop / shake)"
+	toggle.button_pressed = ImpactJuice.juice_enabled
+	toggle.toggled.connect(func(active: bool): ImpactJuice.juice_enabled = active)
+	$Panel/VBoxContainer.add_child(toggle)
 
 func _toggle_category(cat: int, active: bool) -> void:
 	_category_filters[cat] = active
