@@ -20,6 +20,7 @@ var _pulse_tween: Tween = null
 
 func setup(p_unit: Unit) -> void:
 	unit = p_unit
+	add_to_group("unit_views")
 	_last_threshold_active = unit.charge_threshold_active
 	_build_visual()
 	unit.hp_changed.connect(_on_hp_changed)
@@ -200,6 +201,18 @@ func face_direction(from: Vector2, to: Vector2) -> void:
 		row = 2 if dx >= 0.0 else 6  # E ou O
 	else:
 		row = 0 if dy >= 0.0 else 4  # S ou N
+	_set_facing_row(row)
+
+## Oriente les sprites depuis la direction logique de GridData. Cette API ne
+## depend pas de la projection a l'ecran et reste donc stable en isometrique.
+func face_grid_direction(direction: Vector2i) -> void:
+	if _sprite == null or direction == Vector2i.ZERO:
+		return
+	var row: int
+	if abs(direction.x) >= abs(direction.y):
+		row = 2 if direction.x >= 0 else 6  # +X / -X
+	else:
+		row = 0 if direction.y >= 0 else 4  # +Y / -Y
 	_set_facing_row(row)
 
 func _set_facing_row(row: int) -> void:

@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://battle/battle.gd" id="1_battle"]
+[ext_resource type="PackedScene" path="res://battle/iso/forest_room_01_background.tscn" id="2_background"]
+[ext_resource type="Script" path="res://battle/iso/iso_grid_view.gd" id="3_grid"]
+[ext_resource type="PackedScene" path="res://debug/DebugOverlay.tscn" id="4_debug"]
+[ext_resource type="Script" path="res://battle/floating_text_spawner.gd" id="5_text"]
+[ext_resource type="Script" path="res://battle/impact_juice.gd" id="6_impact"]
+[ext_resource type="AudioStream" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="7_music"]
+
+[node name="Battle" type="Node2D"]
+texture_filter = 2
+script = ExtResource("1_battle")
+grid_cols = 10
+grid_rows = 8
+standalone_preview_without_room = true
+temporary_iso_placeholders = true
+
+[node name="ForestBackground" parent="." instance=ExtResource("2_background")]
+
+[node name="IsoGridView" type="Node2D" parent="." groups=["battle_grid_view"]]
+script = ExtResource("3_grid")
+draw_base_cells = false
+draw_grid_lines = false
+draw_cell_centers = false
+draw_map_bounds = false
+
+[node name="Geometry" type="TileMapLayer" parent="IsoGridView"]
+
+[node name="TerrainEffectLayer" type="Node2D" parent="."]
+
+[node name="YSortedWorld" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="ForegroundLayer" type="Node2D" parent="."]
+z_index = 20
+
+[node name="VFXLayer" type="Node2D" parent="."]
+z_index = 50
+
+[node name="DebugOverlay" parent="." instance=ExtResource("4_debug")]
+
+[node name="FloatingTextSpawner" type="Node2D" parent="."]
+z_index = 100
+script = ExtResource("5_text")
+
+[node name="ImpactJuice" type="Node" parent="."]
+script = ExtResource("6_impact")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_music")
+autoplay = true
+parameters/looping = true

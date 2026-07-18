@@ -22,7 +22,6 @@ extends Node2D
 
 const FloatingTextScene := preload("res://battle/floating_text.tscn")
 
-const CELL_SIZE := 64          # même grille que grid_view.gd
 const BASE_OFFSET_Y := -52.0   # naissance au-dessus de la tête de l'unité
 const STACK_STEP := 14.0       # décalage vertical entre textes simultanés
 const STACK_WINDOW := 1.0      # fenêtre (s) pendant laquelle on empile
@@ -47,6 +46,7 @@ const VERB_LABELS := {
 var _pool: Array = []
 # unit → { "until": float (ticks ms), "count": int } pour l'empilement.
 var _stacks: Dictionary = {}
+var _battle_view: Node2D = null
 
 func _ready() -> void:
 	# Les vues d'unités vivent dans GridView, ajouté au root APRÈS nous :
@@ -58,6 +58,10 @@ func _ready() -> void:
 	EventBus.shield_gained.connect(_on_shield_gained)
 	EventBus.attack_dodged.connect(_on_attack_dodged)
 	EventBus.fervor_threshold_changed.connect(_on_threshold_changed)
+	EventBus.battle_view_ready.connect(_register_battle_view)
+
+func _register_battle_view(view: Node) -> void:
+	_battle_view = view as Node2D
 
 # --- Handlers EventBus ---
 
@@ -104,10 +108,22 @@ func _spawn(unit, text: String, color: Color, source_text: String = "", font_siz
 	ft.position = _anchor_for(unit) + Vector2(0, -STACK_STEP * float(_stack_slot(unit)))
 	ft.play(text, color, source_text, font_size)
 
-# Position monde de la tête de l'unité (même conversion que grid_view).
+# Position locale de la tete de l'unite. La vue d'unite est l'ancre de
+# reference lorsqu'elle existe ; le facade de grille sert de repli. Aucune
+# hypothese sur la taille ou la projection des cellules n'est faite ici.
 func _anchor_for(unit) -> Vector2:
-	var cell: Vector2i = unit.grid_pos
-	return Vector2(cell.x * CELL_SIZE + CELL_SIZE / 2.0, cell.y * CELL_SIZE + CELL_SIZE / 2.0 + BASE_OFFSET_Y)
+	if get_tree() != null:
+		for candidate in get_tree().get_nodes_in_group("unit_views"):
+			if candidate is Node2D and candidate.get("unit") == unit:
+				return to_local(candidate.to_global(Vector2(0.0, BASE_OFFSET_Y)))
+	if is_instance_valid(_battle_view):
+		var cell_local: Vector2
+		if _battle_view.has_method("grid_to_local"):
+			cell_local = _battle_view.grid_to_local(unit.grid_pos)
+		else:
+			cell_local = _battle_view.grid_to_world(unit.grid_pos)
+		return to_local(_battle_view.to_global(cell_local) + Vector2(0.0, BASE_OFFSET_Y))
+	return Vector2(0.0, BASE_OFFSET_Y)
 
 # Rang d'empilement : 0 pour le premier texte, +1 par texte né sur la même
 # unité dans la fenêtre STACK_WINDOW, remis à zéro ensuite.

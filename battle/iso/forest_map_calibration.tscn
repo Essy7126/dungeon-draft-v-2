@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://battle/iso/forest_map_calibration.gd" id="1_calibration"]
+[ext_resource type="PackedScene" path="res://battle/iso/forest_room_01_background.tscn" id="2_background"]
+[ext_resource type="Script" path="res://battle/iso/iso_grid_view.gd" id="3_grid"]
+
+[node name="ForestMapCalibration" type="Node2D"]
+script = ExtResource("1_calibration")
+
+[node name="ForestBackground" parent="." instance=ExtResource("2_background")]
+
+[node name="IsoGridView" type="Node2D" parent="." groups=["battle_grid_view"]]
+script = ExtResource("3_grid")
+draw_base_cells = false
+
+[node name="Geometry" type="TileMapLayer" parent="IsoGridView"]
+
+[node name="YSortedWorld" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="ControlMarkers" type="Node2D" parent="YSortedWorld"]
+
+[node name="CalibrationOverlay" type="Node2D" parent="."]
+z_index = 80
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 566.0
+offset_bottom = 198.0
+
+[node name="Margin" type="MarginContainer" parent="UI/Panel"]
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="UI/Panel/Margin"]
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "FOREST ROOM 01 — calibration isometrique"
+
+[node name="Mode" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Mode F1 : fond"
+
+[node name="Status" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Calibration VALIDEE — source partagee"
+
+[node name="Help" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Fond: IJKL position, Q/E echelle X, Z/C echelle Y, U/O rotation\nMarqueur: fleches | Shift = pas rapide | G grille | H fond | -/+ opacite | R reset"

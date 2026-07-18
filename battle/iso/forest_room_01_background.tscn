@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://asset/map/iso/forest_room_01_source.png" id="1_forest"]
+
+[node name="ForestRoom01Background" type="Node2D"]
+z_index = -100
+
+[node name="ForestSprite" type="Sprite2D" parent="."]
+texture_filter = 2
+position = Vector2(29.88284, 133.16354)
+rotation = 0.005951573
+scale = Vector2(0.368949, 0.3456)
+texture = ExtResource("1_forest")
+centered = true
+offset = Vector2(0, 0)

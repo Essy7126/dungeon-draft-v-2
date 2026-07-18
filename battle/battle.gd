@@ -17,6 +17,16 @@ extends Node2D
 # La salle est fournie par le GameManager au démarrage.
 @export var room_data: RoomData = null
 
+## Permet de lancer une scene de carte seule pour verifier son cadrage. Cette
+## option ne demarre ni logique de tour ni deploiement et reste desactivee sur
+## toutes les scenes historiques.
+@export var standalone_preview_without_room := false
+
+## Remplacement strictement local des visuels historiques. Seule la scene iso
+## de la premiere salle active cette option ; les UnitView et UnitData restent
+## inchanges et continuent de porter toute la logique de combat.
+@export var temporary_iso_placeholders := false
+
 # --- Logique ---
 var grid: GridData
 var pathfinder: Pathfinder
@@ -33,6 +43,7 @@ var _enemy_turn: EnemyTurnRunner = null
 var grid_view: Node2D
 var camera: Camera2D
 var _unit_views: Dictionary = {}
+var _unit_view_parent: Node2D = null
 
 # --- Contrôle ---
 var turn_state: TurnState
@@ -65,6 +76,13 @@ func _ready() -> void:
 	# pour pouvoir, plus tard, adapter la grille à la salle si besoin.
 	room_data = GameManager.get_current_room()
 	if room_data == null:
+		if standalone_preview_without_room:
+			grid = GridData.new(grid_cols, grid_rows)
+			_import_terrain_from_tilemap()
+			_setup_view()
+			EventBus.battle_view_ready.emit(grid_view)
+			_setup_camera()
+			return
 		push_error("Aucune salle fournie par le GameManager.")
 		return
 
@@ -154,25 +172,106 @@ func _cell_type_from_string(type_name: String) -> GridData.CellType:
 # ============================================================
 
 func _setup_view() -> void:
-	grid_view = Node2D.new()
-	grid_view.set_script(load("res://battle/grid_view.gd"))
-	grid_view.name = "GridView"
-	add_child(grid_view)
+	grid_view = _find_configured_grid_view()
+	if grid_view == null:
+		grid_view = Node2D.new()
+		grid_view.set_script(load("res://battle/grid_view.gd"))
+		grid_view.name = "GridView"
+		add_child(grid_view)
 	grid_view.setup(grid)
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
+	_unit_view_parent = _find_unit_view_parent()
+
+func _find_configured_grid_view() -> Node2D:
+	var named_view := get_node_or_null("IsoGridView") as Node2D
+	if named_view != null and named_view.has_method("setup"):
+		return named_view
+	for candidate in get_tree().get_nodes_in_group("battle_grid_view"):
+		if candidate is Node2D and is_ancestor_of(candidate) and candidate.has_method("setup"):
+			return candidate
+	return null
+
+func _find_unit_view_parent() -> Node2D:
+	var y_sorted_world := get_node_or_null("YSortedWorld") as Node2D
+	if y_sorted_world != null:
+		return y_sorted_world
+	var units_layer := get_node_or_null("UnitsLayer") as Node2D
+	if units_layer != null:
+		return units_layer
+	return grid_view
+
+func grid_cell_to_grid_local(cell: Vector2i) -> Vector2:
+	if grid_view.has_method("grid_to_local"):
+		return grid_view.grid_to_local(cell)
+	return grid_view.grid_to_world(cell)
+
+func grid_cell_to_global(cell: Vector2i) -> Vector2:
+	return grid_view.to_global(grid_cell_to_grid_local(cell))
+
+func grid_cell_to_parent_local(cell: Vector2i, parent: Node2D) -> Vector2:
+	return parent.to_local(grid_cell_to_global(cell))
 
 func _setup_camera() -> void:
-	camera = Camera2D.new()
-	add_child(camera)
+	camera = get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		camera = Camera2D.new()
+		camera.name = "Camera2D"
+		add_child(camera)
 	camera.make_current()
-	var pixel_size = grid_view.get_pixel_size()
-	camera.position = pixel_size / 2.0
+	_fit_camera_to_battle()
+	if not get_viewport().size_changed.is_connected(_fit_camera_to_battle):
+		get_viewport().size_changed.connect(_fit_camera_to_battle)
+
+func _fit_camera_to_battle() -> void:
+	if camera == null or grid_view == null:
+		return
+	var camera_parent := camera.get_parent() as Node2D
+	if camera_parent == null:
+		return
+	var frame_rect: Rect2
+	if grid_view.has_method("get_map_bounds"):
+		frame_rect = _rect_in_parent(grid_view, grid_view.get_map_bounds(), camera_parent)
+	else:
+		frame_rect = _rect_in_parent(
+			grid_view,
+			Rect2(Vector2.ZERO, grid_view.get_pixel_size()),
+			camera_parent
+		)
+	var background := _find_battle_background()
+	if background != null and background.texture != null:
+		frame_rect = frame_rect.merge(_rect_in_parent(background, background.get_rect(), camera_parent))
+	if frame_rect.size.x <= 0.0 or frame_rect.size.y <= 0.0:
+		return
+	camera.position = frame_rect.get_center()
 	var viewport_size = get_viewport_rect().size
-	var zoom_x = viewport_size.x / pixel_size.x
-	var zoom_y = viewport_size.y / pixel_size.y
+	var zoom_x = viewport_size.x / frame_rect.size.x
+	var zoom_y = viewport_size.y / frame_rect.size.y
 	var zoom_factor = min(zoom_x, zoom_y) * 0.9
 	camera.zoom = Vector2(zoom_factor, zoom_factor)
+
+func _find_battle_background() -> Sprite2D:
+	for path in ["ForestBackground/ForestSprite", "ForestSprite", "Background/ForestSprite"]:
+		var sprite := get_node_or_null(path) as Sprite2D
+		if sprite != null:
+			return sprite
+	return null
+
+func _rect_in_parent(source: Node2D, rect: Rect2, target_parent: Node2D) -> Rect2:
+	var corners := [
+		rect.position,
+		rect.position + Vector2(rect.size.x, 0.0),
+		rect.end,
+		rect.position + Vector2(0.0, rect.size.y),
+	]
+	var first := target_parent.to_local(source.to_global(corners[0]))
+	var minimum := first
+	var maximum := first
+	for corner in corners.slice(1):
+		var converted := target_parent.to_local(source.to_global(corner))
+		minimum = minimum.min(converted)
+		maximum = maximum.max(converted)
+	return Rect2(minimum, maximum - minimum)
 
 func _setup_ui() -> void:
 	action_bar = CanvasLayer.new()
@@ -257,10 +356,19 @@ func _place(unit: Unit, pos: Vector2i) -> void:
 
 func _create_unit_view(unit: Unit) -> void:
 	var view = preload("res://battle/unit_view.tscn").instantiate()
-	grid_view.add_child(view)
+	var parent := _unit_view_parent if _unit_view_parent != null else grid_view
+	parent.add_child(view)
 	view.setup(unit)
-	view.position = grid_view.grid_to_world(unit.grid_pos)
+	view.position = grid_cell_to_parent_local(unit.grid_pos, parent)
+	if temporary_iso_placeholders:
+		_install_temporary_iso_placeholder(view, unit)
 	_unit_views[unit] = view
+
+func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
+	var placeholder := Node2D.new()
+	placeholder.set_script(load("res://battle/iso/iso_unit_placeholder.gd"))
+	view.add_child(placeholder)
+	placeholder.setup(unit, view)
 
 func _start_battle() -> void:
 	var heroes_count := 0
@@ -307,7 +415,7 @@ func _on_unit_pushed(unit: Unit, _from: Vector2i, to_pos: Vector2i, _collision: 
 	_sync_unit_terrain(unit)
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
-		view.position = grid_view.grid_to_world(to_pos)
+		view.position = grid_cell_to_parent_local(to_pos, view.get_parent())
 
 func _on_turn_started(unit: Unit) -> void:
 	if _battle_over:
@@ -412,8 +520,12 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
-	if _deployment.is_active():
+	if _deployment != null and _deployment.is_active():
 		_deployment.on_cell_clicked(cell)
+		return
+	if turn_state == null:
+		if inspect_panel != null:
+			inspect_panel.show_cell(cell, grid, terrain_effects, true)
 		return
 	if turn_state.current == TurnState.State.IDLE:
 		if inspect_panel != null:
@@ -423,6 +535,8 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 func _on_cell_hovered(cell: Vector2i) -> void:
 	if inspect_panel != null:
 		inspect_panel.show_cell(cell, grid, terrain_effects, false)
+	if turn_state == null:
+		return
 	if turn_state.current != TurnState.State.TARGET_SPELL:
 		return
 	var spell = turn_state.selected_spell
@@ -439,8 +553,11 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		if turn_state == null:
+			return
 		turn_state.on_cancel()
-		action_bar.set_active_mode("")
+		if action_bar != null:
+			action_bar.set_active_mode("")
 
 # ============================================================
 # INTENTIONS — DÉPLACEMENT
@@ -486,9 +603,12 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.
 		if not unit.is_alive or not is_instance_valid(view):
 			return
-		var from_pos = grid_view.grid_to_world(path[i - 1])
-		var target_pos = grid_view.grid_to_world(path[i])
-		view.face_direction(from_pos, target_pos)
+		var from_pos = grid_cell_to_parent_local(path[i - 1], view.get_parent())
+		var target_pos = grid_cell_to_parent_local(path[i], view.get_parent())
+		if view.has_method("face_grid_direction"):
+			view.face_grid_direction(path[i] - path[i - 1])
+		else:
+			view.face_direction(from_pos, target_pos)
 		var tween = create_tween()
 		tween.tween_property(view, "position", target_pos, 0.15)
 		await tween.finished
@@ -555,8 +675,10 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
-	var start = grid_view.grid_to_world(unit.grid_pos)
-	var toward = grid_view.grid_to_world(target.grid_pos)
+	var start = grid_cell_to_parent_local(unit.grid_pos, view.get_parent())
+	var toward = grid_cell_to_parent_local(target.grid_pos, view.get_parent())
+	if view.has_method("face_grid_direction"):
+		view.face_grid_direction(target.grid_pos - unit.grid_pos)
 	var bump = start.lerp(toward, 0.4)
 	var tween = create_tween()
 	tween.tween_property(view, "position", bump, 0.1)

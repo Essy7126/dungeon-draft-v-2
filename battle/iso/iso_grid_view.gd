@@ -31,6 +31,15 @@ const SELECTED_LINE_COLOR := Color(1.0, 0.78, 0.28, 1.0)
 var grid: GridData = null
 var debug_draw_enabled := true
 
+## Les quatre couches de dessin peuvent etre desactivees independamment.
+## Les valeurs par defaut conservent exactement le rendu du laboratoire
+## historique. Les surbrillances, la selection et le survol restent actifs
+## meme lorsque toutes ces couches sont transparentes.
+@export var draw_base_cells := true
+@export var draw_grid_lines := true
+@export var draw_cell_centers := true
+@export var draw_map_bounds := true
+
 var _geometry_layer: TileMapLayer = null
 var _hovered_cell := INVALID_CELL
 var _selected_cell := INVALID_CELL
@@ -63,6 +72,23 @@ func get_selected_cell() -> Vector2i:
 
 func set_debug_draw_enabled(enabled: bool) -> void:
 	debug_draw_enabled = enabled
+	draw_grid_lines = enabled
+	draw_cell_centers = enabled
+	draw_map_bounds = enabled
+	queue_redraw()
+
+
+func set_render_options(
+		base_cells: bool,
+		grid_lines: bool,
+		cell_centers: bool,
+		map_bounds: bool
+	) -> void:
+	draw_base_cells = base_cells
+	draw_grid_lines = grid_lines
+	draw_cell_centers = cell_centers
+	draw_map_bounds = map_bounds
+	debug_draw_enabled = grid_lines or cell_centers or map_bounds
 	queue_redraw()
 
 
@@ -227,11 +253,13 @@ func _draw() -> void:
 			var fill_color: Color = TYPE_COLORS.get(
 				grid.get_type(cell), TYPE_COLORS[GridData.CellType.NORMAL]
 			)
-			draw_colored_polygon(polygon, fill_color)
+			if draw_base_cells:
+				draw_colored_polygon(polygon, fill_color)
 			if _highlights.has(cell):
 				draw_colored_polygon(polygon, _highlights[cell])
-			if debug_draw_enabled:
+			if draw_grid_lines:
 				_draw_polygon_outline(polygon, GRID_LINE_COLOR, 1.0)
+			if draw_cell_centers:
 				draw_circle(grid_to_local(cell), 1.7, CENTER_COLOR)
 
 	if grid.is_valid(_selected_cell):
@@ -244,7 +272,7 @@ func _draw() -> void:
 		draw_colored_polygon(hovered_polygon, HOVER_FILL_COLOR)
 		_draw_polygon_outline(hovered_polygon, HOVER_LINE_COLOR, 2.0)
 
-	if debug_draw_enabled:
+	if draw_map_bounds:
 		draw_rect(get_map_bounds(), BOUNDS_COLOR, false, 2.0)
 
 
