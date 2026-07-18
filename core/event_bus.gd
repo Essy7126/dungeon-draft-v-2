@@ -101,6 +101,12 @@ signal battle_view_ready(grid_view)
 # Les futurs convertisseurs/terrain/UI s'y abonnent.
 # ============================================================
 signal energy_generated(unit, energy_id, amount)
+# Variante RICHE de energy_generated, emise juste apres lui par EnergyGauge :
+# `source` est le VERBE de la gain_table ("HIT", "EXPLOIT"...) quand le gain
+# vient d'un verbe, "" sinon (gain brut : sort generateur, relique...).
+# energy_generated est conserve tel quel pour ses abonnes existants (traits) ;
+# celui-ci sert a l'UI qui veut repondre au "pourquoi +12 ?".
+signal fervor_gained(unit, energy_id, amount, source)
 signal energy_spent(unit, energy_id, amount)
 # Les PA d'une unite ont change (depense, refresh de tour, drain/bonus).
 signal ap_changed(unit, current, max_value)
@@ -133,6 +139,18 @@ signal shield_broken(unit)
 # collision: true si la poussée a été stoppée par un obstacle
 # ============================================================
 signal unit_pushed(unit, from_pos, to_pos, collision)
+
+# Des degats de COLLISION viennent d'etre infliges (poussee contre mur/unite,
+# chaine comprise). Emis par SpellCaster._apply_collision_damage, une fois le
+# coup applique. C'est LE moment signature de l'ecole du placement : la juice
+# (hit-stop, shake) et les futurs retours s'y abonnent.
+# attacker : l'Unit qui a pousse | victim : l'Unit qui encaisse | damage : brut
+signal collision_impact(attacker, victim, damage)
+
+# Une unite vient d'etre TUEE par un terrain-hasard (lave, reaction...).
+# Emis par TerrainEffects juste apres le coup fatal. unit : la victime,
+# effect_name : le nom de l'effet de terrain responsable.
+signal hazard_kill(unit, effect_name)
 
 # ============================================================
 # SIGNAUX DE SORT

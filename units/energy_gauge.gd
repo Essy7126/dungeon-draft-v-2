@@ -70,6 +70,14 @@ func get_energy_ratio() -> float:
 		return 0.0
 	return current_energy / energy_type.max_energy
 
+# Acces simple pour TOUTE UI : couleur d'ecole et signature du type d'energie.
+# Valeurs neutres si l'unite n'a pas d'ecole.
+func get_school_color() -> Color:
+	return energy_type.get_school_color() if has_energy() else Color(0.86, 0.74, 1.0)
+
+func get_signature_text() -> String:
+	return energy_type.get_signature_text() if has_energy() else ""
+
 # ============================================================
 # COÛTS DE SORT (part jauge : payoff + empreinte)
 # ============================================================
@@ -154,10 +162,12 @@ func generate_from_verb(
 	amount *= global_multiplier
 	if key == EnergyTypeData.VERB_EXPLOIT:
 		amount *= exploit_multiplier
-	return generate(amount, source if source != "" else key)
+	return generate(amount, source if source != "" else key, key)
 
 # Crédite la jauge, plafonnée à max_energy. Renvoie le gain RÉEL.
-func generate(amount: float, source: String = "") -> float:
+# `verb` (optionnel) : le verbe d'origine, transmis au signal riche
+# EventBus.fervor_gained pour que l'UI explique le gain au joueur.
+func generate(amount: float, source: String = "", verb: String = "") -> float:
 	if not has_energy() or amount <= 0.0:
 		return 0.0
 	var before := current_energy
@@ -166,6 +176,7 @@ func generate(amount: float, source: String = "") -> float:
 	if real <= 0.0:
 		return 0.0
 	EventBus.energy_generated.emit(_owner(), energy_type.energy_id, real)
+	EventBus.fervor_gained.emit(_owner(), energy_type.energy_id, real, verb)
 	sync_charge_state()
 	changed.emit()
 	return real
