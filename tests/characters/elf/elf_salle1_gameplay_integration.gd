@@ -7,6 +7,11 @@ const SCREENSHOT_DIR := "res://tests/characters/elf/screenshots"
 const REVIEW_OUTPUT := "C:/Blender_AI_Test/Output/godot_elf_first_playable_integration.json"
 const SHARPNESS_AUDIT_OUTPUT := "C:/Blender_AI_Test/Output/godot_elf_sharpness_audit.json"
 const SHARPNESS_FINAL_OUTPUT := "C:/Blender_AI_Test/Output/godot_elf_sharpness_final.json"
+const FIREBALL_AUDIT_OUTPUT := "C:/Blender_AI_Test/Output/godot_fireball_lifecycle_audit.json"
+const FIREBALL_INTERRUPTED_OUTPUT := \
+	"C:/Blender_AI_Test/Output/godot_fireball_lifecycle_interrupted_before.json"
+const FIREBALL_VALIDATION_OUTPUT := \
+	"C:/Blender_AI_Test/Output/godot_fireball_lifecycle_validation.json"
 const HERO_START_CELL := Vector2i(9, 7)
 const REVIEW_CENTER_CELL := Vector2i(5, 4)
 
@@ -36,6 +41,7 @@ var _cast_release_msec := -1
 var _spell_cast_msec := -1
 var _cast_vfx_origin_delta := -1.0
 var _captured_cast_vfx: Node2D = null
+var _freeze_cast_vfx_for_capture := true
 var _hero_spell_damage_events := 0
 var _initial_hit_count := 0
 var _death_started_count := 0
@@ -63,6 +69,15 @@ func _ready() -> void:
 	elf_view.set_facing(reference_goblin.grid_pos - hero.grid_pos)
 	elf_view.play_idle()
 	_update_debug_label()
+	if args.is_empty():
+		battle._on_cell_clicked(hero.grid_pos)
+		hero_view.set_active(true)
+	if "--fireball-lifecycle-validation" in args:
+		await _run_fireball_lifecycle_validation("--fireball-lifecycle-auto-exit" in args)
+		return
+	if "--fireball-lifecycle-audit" in args:
+		await _run_fireball_lifecycle_audit("--fireball-lifecycle-auto-exit" in args)
+		return
 	if "--elf-sharpness-audit" in args:
 		await _run_sharpness_audit("--elf-sharpness-auto-exit" in args)
 		return
@@ -174,10 +189,319 @@ func _on_spell_cast_observed(caster, _spell, _report: Dictionary) -> void:
 		var actual_vfx := vfx_layer.get_children().back() as Node2D
 		if actual_vfx != null:
 			_captured_cast_vfx = actual_vfx
-			_captured_cast_vfx.set_process(false)
+			if _freeze_cast_vfx_for_capture:
+				_captured_cast_vfx.set_process(false)
 			_cast_vfx_origin_delta = actual_vfx.global_position.distance_to(
 				hero_view.get_cast_effect_origin_global()
 			)
+
+
+func _run_fireball_lifecycle_audit(exit_when_done: bool) -> void:
+	_freeze_cast_vfx_for_capture = false
+	var force_interruption := "--fireball-force-interrupt" in OS.get_cmdline_user_args()
+	var vfx_layer := battle.get_node_or_null("VFXLayer") as Node2D
+	var result := {
+		"initial": {},
+		"samples": [],
+		"cast_vfx_origin_delta_pixels": -1.0,
+		"damage_events": 0,
+		"forced_interruption": force_interruption,
+		"errors": [],
+	}
+	if vfx_layer == null:
+		result.errors.append("VFXLayer introuvable.")
+		_write_json(FIREBALL_AUDIT_OUTPUT, result)
+		print("FIREBALL_LIFECYCLE_AUDIT_RESULT=", JSON.stringify(result))
+		if exit_when_done:
+			get_tree().quit(12)
+		return
+	result.initial = _fireball_layer_snapshot("before_cast", vfx_layer, null, 0.0)
+	var spell := hero.spells[2] as Spell
+	var target_cell := Vector2i(3, 3)
+	_relocate_for_review(hero, REVIEW_CENTER_CELL, hero_view)
+	_place_reference_goblin(Vector2i(3, 4))
+	reference_goblin.current_hp = 1000
+	hero.current_ap = hero.max_ap.get_int()
+	var previous_cast_count := _observed_cast_count
+	var previous_damage_count := _hero_spell_damage_events
+	battle._on_request_cast_spell(spell, target_cell, false)
+	var cast_timeout := Time.get_ticks_msec() + 7000
+	while _observed_cast_count == previous_cast_count and Time.get_ticks_msec() < cast_timeout:
+		await get_tree().process_frame
+	if _observed_cast_count != previous_cast_count + 1:
+		result.errors.append("Le cast réel n'a pas créé exactement une instance observable.")
+	var fireball_ref: WeakRef = weakref(_captured_cast_vfx) \
+		if is_instance_valid(_captured_cast_vfx) else null
+	if force_interruption and is_instance_valid(_captured_cast_vfx):
+		_captured_cast_vfx.set_process(false)
+	var started_at := Time.get_ticks_msec()
+	var sample_times: Array[float] = [0.0, 0.25, 0.5, 1.0, 2.0, 5.0]
+	for sample_time: float in sample_times:
+		while float(Time.get_ticks_msec() - started_at) / 1000.0 < sample_time:
+			await get_tree().process_frame
+		var instance: Node2D = fireball_ref.get_ref() as Node2D if fireball_ref != null else null
+		result.samples.append(_fireball_layer_snapshot(
+			"after_%.2f_s" % sample_time,
+			vfx_layer,
+			instance,
+			sample_time
+		))
+		if is_equal_approx(sample_time, 5.0):
+			await _capture("fireball_residue_before.png")
+	result.cast_vfx_origin_delta_pixels = _cast_vfx_origin_delta
+	result.damage_events = _hero_spell_damage_events - previous_damage_count
+	var output_path := FIREBALL_INTERRUPTED_OUTPUT if force_interruption else FIREBALL_AUDIT_OUTPUT
+	_write_json(output_path, result)
+	print("FIREBALL_LIFECYCLE_AUDIT_RESULT=", JSON.stringify(result))
+	elf_view.play_idle()
+	if exit_when_done:
+		await _wait_render_frames(2)
+		get_tree().quit(0 if result.errors.is_empty() else 12)
+
+
+func _fireball_layer_snapshot(
+	label: String,
+	vfx_layer: Node2D,
+	instance,
+	elapsed_seconds: float
+) -> Dictionary:
+	var layer_children: Array[Dictionary] = []
+	for child in vfx_layer.get_children():
+		layer_children.append({"name": child.name, "type": child.get_class()})
+	var snapshot := {
+		"label": label,
+		"elapsed_seconds": elapsed_seconds,
+		"vfx_layer_child_count": vfx_layer.get_child_count(),
+		"vfx_layer_children": layer_children,
+		"processed_tween_count": get_tree().get_processed_tweens().size(),
+		"instance_present": is_instance_valid(instance) and instance.is_inside_tree(),
+		"instance": {},
+	}
+	if not is_instance_valid(instance):
+		return snapshot
+	var child_states: Array[Dictionary] = []
+	for child in instance.get_children():
+		var state := {
+			"name": child.name,
+			"type": child.get_class(),
+			"process_mode": child.process_mode,
+		}
+		if child is CanvasItem:
+			state.visible = child.visible
+			state.modulate = [child.modulate.r, child.modulate.g, child.modulate.b, child.modulate.a]
+		if child is Node2D:
+			state.scale = [child.scale.x, child.scale.y]
+		elif child is Control:
+			state.scale = [child.scale.x, child.scale.y]
+		if child is GPUParticles2D:
+			state.emitting = child.emitting
+			state.one_shot = child.one_shot
+			state.lifetime = child.lifetime
+			state.finished_connection_count = child.get_signal_connection_list(&"finished").size()
+		child_states.append(state)
+	snapshot.instance = {
+		"name": instance.name,
+		"type": instance.get_class(),
+		"global_position": [instance.global_position.x, instance.global_position.y],
+		"visible": instance.visible,
+		"process_mode": instance.process_mode,
+		"is_processing": instance.is_processing(),
+		"modulate": [instance.modulate.r, instance.modulate.g, instance.modulate.b, instance.modulate.a],
+		"scale": [instance.scale.x, instance.scale.y],
+		"inside_tree": instance.is_inside_tree(),
+		"child_states": child_states,
+	}
+	return snapshot
+
+
+func _run_fireball_lifecycle_validation(exit_when_done: bool) -> void:
+	_freeze_cast_vfx_for_capture = false
+	var vfx_layer := battle.get_node_or_null("VFXLayer") as Node2D
+	var result := {
+		"verdict": "FIREBALL_VFX_CLEANUP_FIXED",
+		"initial_vfx_layer_children": [],
+		"initial_vfx_layer_child_count": -1,
+		"casts": [],
+		"successive_instance_ids_are_distinct": false,
+		"watchdog_interruption": {},
+		"caster_death_interruption": {},
+		"selection_unchanged": false,
+		"y_sort_unchanged": false,
+		"pivot_unchanged": false,
+		"final_vfx_layer_child_count": -1,
+		"errors": [],
+	}
+	if vfx_layer == null:
+		result.errors.append("VFXLayer introuvable.")
+		result.verdict = "FIREBALL_VFX_CLEANUP_NOT_FIXED"
+		_write_json(FIREBALL_VALIDATION_OUTPUT, result)
+		print("FIREBALL_LIFECYCLE_VALIDATION_RESULT=", JSON.stringify(result))
+		if exit_when_done:
+			get_tree().quit(13)
+		return
+	var initial_children: Array[Dictionary] = []
+	for child in vfx_layer.get_children():
+		initial_children.append({"name": child.name, "type": child.get_class()})
+	result.initial_vfx_layer_children = initial_children
+	result.initial_vfx_layer_child_count = vfx_layer.get_child_count()
+	var y_sort_before: bool = battle._unit_view_parent.y_sort_enabled
+	var pivot_before: Vector3 = elf_view.model_scale_multiplier
+	battle._on_cell_clicked(hero.grid_pos)
+	hero_view.set_active(true)
+	var selection_before: bool = bool(hero_view.get("_is_active"))
+	var spell := hero.spells[2] as Spell
+	var target_cell := Vector2i(3, 3)
+	_relocate_for_review(hero, REVIEW_CENTER_CELL, hero_view)
+	_place_reference_goblin(Vector2i(3, 4))
+	var cast_results: Array[Dictionary] = []
+	cast_results.append(await _perform_fireball_cast_probe(spell, target_cell, false))
+	cast_results.append(await _perform_fireball_cast_probe(spell, target_cell, false))
+	result.casts = cast_results
+	var first_id := int(cast_results[0].get("instance_id", 0))
+	var second_id := int(cast_results[1].get("instance_id", 0))
+	result.successive_instance_ids_are_distinct = first_id > 0 and second_id > 0 and first_id != second_id
+	if not result.successive_instance_ids_are_distinct:
+		result.errors.append("Les deux casts successifs n'ont pas utilisé deux instances distinctes.")
+	for cast_result: Dictionary in cast_results:
+		if not bool(cast_result.get("origin_is_exact", false)):
+			result.errors.append("Un cast ne part pas exactement de la main droite.")
+		if not bool(cast_result.get("reached_target", false)):
+			result.errors.append("Un projectile n'a pas rejoint sa cible.")
+		if int(cast_result.get("damage_events", 0)) != 1:
+			result.errors.append("Un cast n'a pas produit exactement un événement de dégâts.")
+		if int(cast_result.get("vfx_layer_child_count_after", -1)) \
+				!= int(result.initial_vfx_layer_child_count):
+			result.errors.append("VFXLayer n'est pas revenu à son nombre initial après un cast.")
+	await _capture("fireball_cleanup_after.png")
+	var damage_before_watchdog := _hero_spell_damage_events
+	var watchdog_instance := spell.vfx_scene.instantiate() as Node2D
+	vfx_layer.add_child(watchdog_instance)
+	watchdog_instance.call(
+		"initialiser",
+		hero_view.get_cast_effect_origin_global(),
+		VFXManager._grid_cell_global(target_cell)
+	)
+	var watchdog_id := watchdog_instance.get_instance_id()
+	var watchdog_ref: WeakRef = weakref(watchdog_instance)
+	watchdog_instance.set_process(false)
+	var watchdog_started := Time.get_ticks_msec()
+	while is_instance_valid(watchdog_ref.get_ref()) \
+			and Time.get_ticks_msec() - watchdog_started < 5000:
+		await get_tree().process_frame
+	var watchdog_seconds := float(Time.get_ticks_msec() - watchdog_started) / 1000.0
+	result.watchdog_interruption = {
+		"instance_id": watchdog_id,
+		"freed": not is_instance_valid(watchdog_ref.get_ref()),
+		"lifetime_seconds": watchdog_seconds,
+		"damage_events": _hero_spell_damage_events - damage_before_watchdog,
+		"vfx_layer_child_count_after": vfx_layer.get_child_count(),
+	}
+	if not bool(result.watchdog_interruption.freed):
+		result.errors.append("Le watchdog local n'a pas libéré un projectile interrompu.")
+	if int(result.watchdog_interruption.damage_events) != 0:
+		result.errors.append("Le watchdog visuel a déclenché un événement de dégâts.")
+	var death_cast: Dictionary = await _perform_fireball_cast_probe(spell, target_cell, true)
+	result.caster_death_interruption = death_cast
+	if not bool(death_cast.get("freed", false)):
+		result.errors.append("Le VFX n'a pas été libéré après la mort du lanceur.")
+	if int(death_cast.get("damage_events", 0)) != 1:
+		result.errors.append("Le cast suivi de la mort n'a pas produit exactement un événement de dégâts.")
+	result.selection_unchanged = selection_before and bool(hero_view.get("_is_active")) \
+		if is_instance_valid(hero_view) else selection_before
+	result.y_sort_unchanged = battle._unit_view_parent.y_sort_enabled == y_sort_before
+	result.pivot_unchanged = elf_view.model_scale_multiplier.is_equal_approx(pivot_before) \
+		if is_instance_valid(elf_view) else true
+	result.final_vfx_layer_child_count = vfx_layer.get_child_count()
+	if int(result.final_vfx_layer_child_count) != int(result.initial_vfx_layer_child_count):
+		result.errors.append("VFXLayer ne revient pas à son nombre d'enfants initial.")
+	if not result.y_sort_unchanged:
+		result.errors.append("Le Y-sort a changé pendant la validation du VFX.")
+	if not result.pivot_unchanged:
+		result.errors.append("Le pivot de l'elfe a changé pendant la validation du VFX.")
+	if not result.errors.is_empty():
+		result.verdict = "FIREBALL_VFX_CLEANUP_NOT_FIXED"
+	_write_json(FIREBALL_VALIDATION_OUTPUT, result)
+	print("FIREBALL_LIFECYCLE_VALIDATION_RESULT=", JSON.stringify(result))
+	if exit_when_done:
+		await _wait_render_frames(2)
+		get_tree().quit(0 if result.errors.is_empty() else 13)
+
+
+func _perform_fireball_cast_probe(
+	spell: Spell,
+	target_cell: Vector2i,
+	kill_caster_after_spawn: bool
+) -> Dictionary:
+	if hero.is_alive:
+		_relocate_for_review(hero, REVIEW_CENTER_CELL, hero_view)
+		elf_view.play_idle()
+		elf_view.set_facing(target_cell - hero.grid_pos)
+	_place_reference_goblin(Vector2i(3, 4))
+	reference_goblin.current_hp = 1000
+	hero.current_ap = hero.max_ap.get_int()
+	var previous_cast_count := _observed_cast_count
+	var previous_damage_count := _hero_spell_damage_events
+	_captured_cast_vfx = null
+	_cast_vfx_origin_delta = -1.0
+	battle._on_request_cast_spell(spell, target_cell, false)
+	var cast_timeout := Time.get_ticks_msec() + 7000
+	while _observed_cast_count == previous_cast_count and Time.get_ticks_msec() < cast_timeout:
+		await get_tree().process_frame
+	if _observed_cast_count != previous_cast_count + 1 or not is_instance_valid(_captured_cast_vfx):
+		return {
+			"instance_id": 0,
+			"origin_delta_pixels": _cast_vfx_origin_delta,
+			"origin_is_exact": false,
+			"reached_target": false,
+			"freed": false,
+			"damage_events": _hero_spell_damage_events - previous_damage_count,
+			"vfx_layer_child_count_after": -1,
+			"error": "Instance non observée après le cast.",
+		}
+	var instance_id := _captured_cast_vfx.get_instance_id()
+	var fireball_ref: WeakRef = weakref(_captured_cast_vfx)
+	var target_global: Vector2 = VFXManager._grid_cell_global(target_cell)
+	var min_target_distance := _captured_cast_vfx.global_position.distance_to(target_global)
+	var arrival_seconds := -1.0
+	var spawned_at := Time.get_ticks_msec()
+	if kill_caster_after_spawn:
+		hero.take_damage(
+			hero.current_hp + 1000,
+			reference_goblin,
+			Spell.DamageType.PHYSICAL,
+			Spell.Element.NONE
+		)
+	while is_instance_valid(fireball_ref.get_ref()) and Time.get_ticks_msec() - spawned_at < 5000:
+		var instance := fireball_ref.get_ref() as Node2D
+		if is_instance_valid(instance):
+			min_target_distance = minf(
+				min_target_distance,
+				instance.global_position.distance_to(target_global)
+			)
+			if arrival_seconds < 0.0 and not instance.is_processing():
+				arrival_seconds = float(Time.get_ticks_msec() - spawned_at) / 1000.0
+		await get_tree().process_frame
+	var lifetime_seconds := float(Time.get_ticks_msec() - spawned_at) / 1000.0
+	if hero.is_alive:
+		var idle_timeout := Time.get_ticks_msec() + 6000
+		while elf_view.get_elf_visual().get_current_animation() != ElfVisual3D.ANIM_IDLE \
+				and Time.get_ticks_msec() < idle_timeout:
+			await get_tree().process_frame
+	var vfx_layer := battle.get_node_or_null("VFXLayer") as Node2D
+	return {
+		"instance_id": instance_id,
+		"origin_delta_pixels": _cast_vfx_origin_delta,
+		"origin_is_exact": is_zero_approx(_cast_vfx_origin_delta),
+		"minimum_target_distance_pixels": min_target_distance,
+		"reached_target": min_target_distance < 8.0,
+		"arrival_seconds": arrival_seconds,
+		"lifetime_seconds": lifetime_seconds,
+		"freed": not is_instance_valid(fireball_ref.get_ref()),
+		"damage_events": _hero_spell_damage_events - previous_damage_count,
+		"caster_killed_after_spawn": kill_caster_after_spawn,
+		"caster_alive_after": hero.is_alive,
+		"vfx_layer_child_count_after": vfx_layer.get_child_count() if vfx_layer != null else -1,
+	}
 
 
 func _on_damage_observed(_target, attacker, _amount: int, _category: int, _element: int, _is_crit: bool) -> void:

@@ -2,6 +2,7 @@
 extends Node2D
 
 @export var speed: float = 600.0
+@export_range(2.0, 5.0, 0.1) var maximum_lifetime_seconds: float = 3.0
 
 const TRAIL_POINTS := 16
 const TRAIL_LENGTH := 34.0
@@ -92,6 +93,10 @@ func initialiser(depuis: Vector2, vers: Vector2) -> void:
 	global_position = depuis
 	_target         = vers
 	_flying         = true
+	get_tree().create_timer(maximum_lifetime_seconds, true, false, true).timeout.connect(
+		_on_maximum_lifetime_timeout,
+		CONNECT_ONE_SHOT
+	)
 	rotation        = (vers - depuis).angle()
 	var dir         := (vers - depuis).normalized()
 
@@ -118,12 +123,26 @@ func _process(delta: float) -> void:
 func _arriver() -> void:
 	_flying = false
 	set_process(false)
+	_stop_projectile_visuals(false)
+	_explosion.emitting = true
+
+func _stop_projectile_visuals(stop_explosion: bool) -> void:
 	_head.visible = false
 	_tail.visible = false
 	for child in get_children():
-		if child is GPUParticles2D and child != _explosion:
+		if child is PointLight2D:
+			child.enabled = false
+		elif child is GPUParticles2D and (stop_explosion or child != _explosion):
 			child.emitting = false
-	_explosion.emitting = true
 
 func _on_explosion_finished() -> void:
+	_stop_projectile_visuals(true)
+	queue_free()
+
+func _on_maximum_lifetime_timeout() -> void:
+	if not is_inside_tree() or is_queued_for_deletion():
+		return
+	_flying = false
+	set_process(false)
+	_stop_projectile_visuals(true)
 	queue_free()
