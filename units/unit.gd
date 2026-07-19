@@ -111,6 +111,7 @@ var taunt_turns: int = 0
 var sprite_frames: SpriteFrames = null
 var sprite_scale: float = 3.0
 var idle_animation: String = "default"
+var visual_scene: PackedScene = null
 
 # --- Sorts ---
 var spells: Array = []
@@ -189,6 +190,7 @@ static func from_data(data: UnitData) -> Unit:
 	u.sprite_frames = data.sprite_frames
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
+	u.visual_scene = data.visual_scene
 	u.ai_behavior = data.ai_behavior
 	u.facing_dir = data.facing_dir
 	# Stats dÃ©fensives : on rÃ¨gle la valeur de BASE de chaque Stat.

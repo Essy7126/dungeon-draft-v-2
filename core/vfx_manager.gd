@@ -16,12 +16,20 @@ func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 		return
 	if _battle_view == null:
 		return
-	var caster_view_pos := _grid_cell_global(caster.grid_pos)
+	var caster_view_pos := _caster_effect_origin(caster)
 	var cell_cible : Vector2i = report.get("cell", caster.grid_pos)
 	var vers := _grid_cell_global(cell_cible)
 	var vfx = spell.vfx_scene.instantiate()
 	_vfx_parent().add_child(vfx)
 	vfx.initialiser(caster_view_pos, vers)
+
+func _caster_effect_origin(caster: Unit) -> Vector2:
+	if _battle_view != null and _battle_view.get_tree() != null:
+		for candidate in _battle_view.get_tree().get_nodes_in_group("unit_views"):
+			if candidate.get("unit") == caster \
+					and candidate.has_method("get_cast_effect_origin_global"):
+				return candidate.get_cast_effect_origin_global()
+	return _grid_cell_global(caster.grid_pos)
 
 func _on_status_applied(unit: Unit, status_data: StatusData) -> void:
 	if status_data.vfx_scene == null:

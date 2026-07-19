@@ -25,6 +25,7 @@ const HERO_DATA_PATHS = [
 	"res://data/units/alliés/Assassin.tres",
 	"res://data/units/alliés/Necromant.tres",
 	"res://data/units/alliés/Hoplite.tres",
+	"res://data/units/alliés/elfe.tres",
 ]
 
 const ENERGY_DATA_PATHS = [

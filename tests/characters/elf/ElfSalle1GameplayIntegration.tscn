@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://tests/characters/elf/elf_salle1_gameplay_integration.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/battle_salle1_iso.tscn" id="2_battle"]
+
+[sub_resource type="StyleBoxFlat" id="Style_debug_panel"]
+bg_color = Color(0.025, 0.035, 0.045, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.65, 0.72, 0.8)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="ElfSalle1GameplayIntegration" type="Node"]
+script = ExtResource("1_controller")
+
+[node name="Battle" parent="." instance=ExtResource("2_battle")]
+
+[node name="IntegrationUI" type="CanvasLayer" parent="."]
+layer = 110
+
+[node name="Panel" type="PanelContainer" parent="IntegrationUI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -720.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 82.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("Style_debug_panel")
+
+[node name="Margin" type="MarginContainer" parent="IntegrationUI/Panel"]
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="IntegrationUI/Panel/Margin"]
+
+[node name="Title" type="Label" parent="IntegrationUI/Panel/Margin/VBox"]
+theme_override_colors/font_color = Color(0.65, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Salle 1 — intégration ElfIsoUnitView sur le vrai UnitView"
+
+[node name="DebugLabel" type="Label" parent="IntegrationUI/Panel/Margin/VBox"]
+theme_override_font_sizes/font_size = 12
+text = "Initialisation…"

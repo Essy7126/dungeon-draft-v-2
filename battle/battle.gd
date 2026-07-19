@@ -702,6 +702,14 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = fals
 		return
 	if not spell_caster.is_valid_target(unit, spell, cell):
 		return
+	var view = _unit_views.get(unit)
+	if is_instance_valid(view):
+		if view.has_method("prepare_spell_visual"):
+			var visual_ready: bool = await view.prepare_spell_visual(cell)
+			if not visual_ready:
+				return
+		elif view.has_method("face_grid_direction"):
+			view.face_grid_direction(cell - unit.grid_pos)
 	var report = spell_caster.cast(unit, spell, cell, imprinted)
 	if report.get("failed", false):
 		return

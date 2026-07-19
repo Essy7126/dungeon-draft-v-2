@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="UnitData" format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit_data"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="Resource" path="res://data/spells/frappe.tres" id="3_strike"]
+[ext_resource type="Resource" path="res://data/spells/mur_de_glace.tres" id="4_ice_wall"]
+[ext_resource type="Resource" path="res://data/spells/Mage/boule_de_feu.tres" id="5_fireball"]
+[ext_resource type="Texture2D" path="res://asset/Soldier.png" id="6_fallback_texture"]
+[ext_resource type="PackedScene" path="res://characters/elf/ElfIsoUnitView.tscn" id="7_elf_visual"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
+atlas = ExtResource("6_fallback_texture")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fallback"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fallback")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit_data")
+unit_name = "Elfe"
+description = "Lanceuse de sorts elfique projetee en 3D dans la salle isometrique."
+sprite_frames = SubResource("SpriteFrames_fallback")
+visual_scene = ExtResource("7_elf_visual")
+spells = Array[ExtResource("2_spell")]([ExtResource("3_strike"), ExtResource("4_ice_wall"), ExtResource("5_fireball")])

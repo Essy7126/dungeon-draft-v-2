@@ -28,10 +28,17 @@ func setup(p_unit, unit_view: Node2D) -> void:
 	for child in unit_view.get_children():
 		if child == self or not child is CanvasItem:
 			continue
+		if child.is_in_group("optional_unit_visuals"):
+			continue
 		_legacy_items.append(child)
 		child.visible = false
 		if not _draw_marker and _reference_sprite == null and child is AnimatedSprite2D:
 			_reference_sprite = child
+	if unit_view.has_method("has_optional_visual") and unit_view.has_optional_visual():
+		visible = false
+		set_process(false)
+		queue_redraw()
+		return
 	if is_instance_valid(_reference_sprite):
 		_prepare_reference_goblin(_reference_sprite)
 	set_process(true)

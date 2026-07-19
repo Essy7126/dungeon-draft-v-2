@@ -17,6 +17,8 @@ var _flash_tween: Tween = null
 var _last_threshold_active: bool = false
 var _threshold_notch: ColorRect
 var _pulse_tween: Tween = null
+var _optional_visual: Node2D = null
+var _optional_visual_cast_pending := false
 
 func setup(p_unit: Unit) -> void:
 	unit = p_unit
@@ -76,6 +78,67 @@ func _build_visual() -> void:
 	_status_row.position = Vector2(-UNIT_SIZE / 2.0, -66)
 	_status_row.add_theme_constant_override("separation", 2)
 	add_child(_status_row)
+
+	_instantiate_optional_visual()
+
+func _instantiate_optional_visual() -> void:
+	if unit.visual_scene == null:
+		return
+	var candidate := unit.visual_scene.instantiate()
+	if not candidate is Node2D:
+		push_warning("UnitView: la scene visuelle optionnelle de %s doit avoir une racine Node2D." % unit.unit_name)
+		candidate.queue_free()
+		return
+	_optional_visual = candidate as Node2D
+	add_child(_optional_visual)
+	_optional_visual.add_to_group("optional_unit_visuals")
+	if is_instance_valid(_sprite):
+		_sprite.visible = false
+	if _optional_visual.has_method("bind_unit"):
+		_optional_visual.bind_unit(unit)
+
+func has_optional_visual() -> bool:
+	return is_instance_valid(_optional_visual)
+
+func get_optional_visual() -> Node2D:
+	return _optional_visual if is_instance_valid(_optional_visual) else null
+
+func get_cast_effect_origin_global() -> Vector2:
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("get_default_cast_effect_origin"):
+		var local_origin: Vector2 = _optional_visual.get_default_cast_effect_origin()
+		return _optional_visual.to_global(local_origin)
+	return global_position
+
+## Synchronisation visuelle seulement : le calcul du sort reste dans
+## SpellCaster. Le bool false ignore un second clic pendant le meme wind-up.
+func prepare_spell_visual(target_cell: Vector2i) -> bool:
+	face_grid_direction(target_cell - unit.grid_pos)
+	if not is_instance_valid(_optional_visual) or not _optional_visual.has_method("play_cast"):
+		return true
+	if _optional_visual_cast_pending:
+		return false
+	_optional_visual_cast_pending = true
+	var started = _optional_visual.play_cast()
+	if started is bool and not started:
+		_optional_visual_cast_pending = false
+		return false
+	if not _optional_visual.has_signal("cast_release_reached"):
+		_optional_visual_cast_pending = false
+		return true
+	var release_state := {"released": false}
+	var mark_released := func() -> void: release_state["released"] = true
+	_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
+	var deadline := Time.get_ticks_msec() + 5000
+	while not release_state["released"] and unit.is_alive and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.is_connected("cast_release_reached", mark_released):
+		_optional_visual.disconnect("cast_release_reached", mark_released)
+	_optional_visual_cast_pending = false
+	if not release_state["released"] and unit.is_alive:
+		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le gameplay reprend sans blocage." % unit.unit_name)
+	return unit.is_alive
 
 func _make_bar(size: Vector2, pos: Vector2, color: Color) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -206,7 +269,11 @@ func face_direction(from: Vector2, to: Vector2) -> void:
 ## Oriente les sprites depuis la direction logique de GridData. Cette API ne
 ## depend pas de la projection a l'ecran et reste donc stable en isometrique.
 func face_grid_direction(direction: Vector2i) -> void:
-	if _sprite == null or direction == Vector2i.ZERO:
+	if direction == Vector2i.ZERO:
+		return
+	if is_instance_valid(_optional_visual) and _optional_visual.has_method("set_facing"):
+		_optional_visual.set_facing(direction)
+	if _sprite == null:
 		return
 	var row: int
 	if abs(direction.x) >= abs(direction.y):
@@ -245,6 +312,8 @@ func _play_anim(anim_name: String) -> void:
 		_sprite.play(anim_name)
 
 func _play_idle() -> void:
+	if is_instance_valid(_optional_visual) and _optional_visual.has_method("play_idle"):
+		_optional_visual.play_idle()
 	if _sprite == null or unit.sprite_frames == null:
 		return
 	_sprite.play(unit.idle_animation)
@@ -261,6 +330,24 @@ func _on_any_turn_started(_u) -> void:
 	_play_idle()
 
 func _on_died(_unit: Unit) -> void:
+	if is_instance_valid(_optional_visual):
+		if not _optional_visual.has_signal("death_animation_finished"):
+			push_warning("UnitView: visuel optionnel sans death_animation_finished pour %s; il reste affiche." % unit.unit_name)
+			return
+		var death_state := {"finished": false}
+		var mark_finished := func() -> void: death_state["finished"] = true
+		_optional_visual.connect("death_animation_finished", mark_finished, CONNECT_ONE_SHOT)
+		var deadline := Time.get_ticks_msec() + 8000
+		while not death_state["finished"] and Time.get_ticks_msec() < deadline:
+			await get_tree().process_frame
+		if is_instance_valid(_optional_visual) \
+				and _optional_visual.is_connected("death_animation_finished", mark_finished):
+			_optional_visual.disconnect("death_animation_finished", mark_finished)
+		if death_state["finished"]:
+			queue_free()
+		else:
+			push_warning("UnitView: Death n'a pas termine en 8 s pour %s; le visuel est conserve." % unit.unit_name)
+		return
 	if _sprite != null and unit.sprite_frames != null \
 			and "death" in unit.sprite_frames.get_animation_names():
 		_sprite.play("death")
@@ -352,4 +439,12 @@ func _draw() -> void:
 		var arc_end := TAU * ratio
 		draw_arc(Vector2.ZERO, UNIT_SIZE * 0.82, -PI / 2.0, -PI / 2.0 + arc_end, 32, Color(0.35, 0.65, 1.0, 0.75), 4.0)
 	if _is_active:
-		draw_arc(Vector2.ZERO, UNIT_SIZE * 0.75, 0, TAU, 32, Color(1.0, 0.9, 0.2), 3.0)
+		if has_optional_visual():
+			var diamond := PackedVector2Array([
+				Vector2(0.0, -16.0), Vector2(32.0, 0.0),
+				Vector2(0.0, 16.0), Vector2(-32.0, 0.0),
+				Vector2(0.0, -16.0),
+			])
+			draw_polyline(diamond, Color(1.0, 0.9, 0.2, 0.62), 1.5, true)
+		else:
+			draw_arc(Vector2.ZERO, UNIT_SIZE * 0.75, 0, TAU, 32, Color(1.0, 0.9, 0.2), 3.0)

@@ -90,6 +90,9 @@ extends Resource
 @export var sprite_scale: float = 3.0
 # Nom de l'animation à jouer par défaut (idle).
 @export var idle_animation: String = "default"
+# Scene visuelle optionnelle instanciee par UnitView. Si elle est vide, le
+# rendu historique de l'unite reste le fallback.
+@export var visual_scene: PackedScene = null
 
 # ============================================================
 # SORTS
