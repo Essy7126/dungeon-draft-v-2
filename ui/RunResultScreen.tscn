@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/run_result_screen.gd" id="1_script"]
+
+[node name="RunResultScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.055, 0.08, 1)
+
+[node name="Center" type="CenterContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Background/Center"]
+custom_minimum_size = Vector2(440, 260)
+layout_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="Background/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="Result" type="Label" parent="Background/Center/Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "Victoire"
+horizontal_alignment = 1
+
+[node name="RunName" type="Label" parent="Background/Center/Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Run : Prototype"
+horizontal_alignment = 1
+
+[node name="ReturnButton" type="Button" parent="Background/Center/Panel/Content"]
+custom_minimum_size = Vector2(260, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Retour à l'écran titre"

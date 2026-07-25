@@ -49,6 +49,8 @@ const DEFAULT_DRAFT = [
 ]
 
 const RUN_DRAFT_SCREEN_PATH := "res://ui/RunDraftScreen.tscn"
+const RUN_RESULT_SCREEN_PATH := "res://ui/RunResultScreen.tscn"
+const TITLE_SCREEN_PATH := "res://ui/TitreEcran.tscn"
 const FIRST_REWARD_PATH := "res://data/rewards/reward_marteau_jugement.tres"
 
 # Nombre de récompenses proposées après chaque salle.
@@ -61,6 +63,8 @@ var reward_pool: Array = []     # Array[RewardData]
 var current_room_index: int = -1
 var run_active: bool = false
 var _pending_run_data: RunData = null
+var _active_run_name: String = ""
+var _last_run_result: Dictionary = {}
 
 # Récompenses actuellement proposées (lues par l'écran de récompense).
 var _offered_rewards: Array = []
@@ -81,6 +85,13 @@ func start_run(run_data: RunData) -> void:
 	_pending_run_data = run_data
 	get_tree().change_scene_to_file.call_deferred(RUN_DRAFT_SCREEN_PATH)
 
+## Lance un run deja configure sans passer par le draft historique.
+## `hero_sources` accepte des chemins res:// vers des UnitData ou des UnitData.
+func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:
+	if not _prepare_preconfigured_run(run_data, hero_sources):
+		return
+	_go_to_next_room()
+
 func confirm_run_draft(hero_paths: Array, energy_paths: Array, trait_paths: Array = []) -> void:
 	if _pending_run_data == null:
 		push_error("Aucun RunData en attente pour le draft.")
@@ -88,15 +99,57 @@ func confirm_run_draft(hero_paths: Array, energy_paths: Array, trait_paths: Arra
 	var run_data := _pending_run_data
 	_pending_run_data = null
 	_build_heroes_from_draft(hero_paths, energy_paths, trait_paths)
+	_initialize_run_state(run_data)
+	_go_to_next_room()
+
+## Prepare l'etat sans changer de scene. Separe de start_preconfigured_run pour
+## garder la construction testable sans dependre d'une transition graphique.
+func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
+	if run_data == null:
+		push_error("Aucun RunData fourni pour le run preconfigure.")
+		return false
+	if hero_sources.is_empty():
+		push_error("Aucun heros fourni pour le run preconfigure.")
+		return false
+
+	var hero_data_list: Array[UnitData] = []
+	for source in hero_sources:
+		var data := _resolve_unit_data(source)
+		if data == null:
+			push_error("UnitData preconfigure invalide : %s" % str(source))
+			return false
+		hero_data_list.append(data)
+
+	_pending_run_data = null
+	_clear_heroes()
+	for data in hero_data_list:
+		var hero := Unit.from_data(data)
+		# Unit.from_data conserve l'energy_type et les traits propres au UnitData.
+		# Aucun choix d'ecole ou trait de draft n'est applique sur cette voie.
+		hero.reset_combat_resources()
+		heroes.append(hero)
+	_initialize_run_state(run_data)
+	return true
+
+func _resolve_unit_data(source) -> UnitData:
+	if source is UnitData:
+		return source
+	if source is String or source is StringName:
+		return load(str(source)) as UnitData
+	return null
+
+func _initialize_run_state(run_data: RunData) -> void:
 	rooms = run_data.rooms.duplicate()
 	reward_pool = run_data.reward_pool.duplicate()
 	current_room_index = -1
 	run_active = true
-	_go_to_next_room()
+	_active_run_name = run_data.run_name
+	_last_run_result = {}
+	_offered_rewards = []
 
 func cancel_run_draft() -> void:
 	_pending_run_data = null
-	get_tree().change_scene_to_file.call_deferred("res://ui/TitreEcran.tscn")
+	get_tree().change_scene_to_file.call_deferred(TITLE_SCREEN_PATH)
 
 func get_fervor_multiplier() -> float:
 	return 1.0
@@ -128,10 +181,7 @@ func _load_draft_options(paths: Array) -> Array:
 
 # Cree les heros UNE fois pour tout le run, depuis le draft.
 func _build_heroes_from_draft(hero_paths: Array, energy_paths: Array, trait_paths: Array = []) -> void:
-	for hero in heroes:
-		if hero != null and hero.has_method("clear_traits"):
-			hero.clear_traits()
-	heroes.clear()
+	_clear_heroes()
 	for i in range(hero_paths.size()):
 		var path: String = hero_paths[i]
 		var data = load(path)
@@ -156,6 +206,12 @@ func _build_heroes_from_draft(hero_paths: Array, energy_paths: Array, trait_path
 		hero.reset_combat_resources()
 		heroes.append(hero)
 
+func _clear_heroes() -> void:
+	for hero in heroes:
+		if hero != null and hero.has_method("clear_traits"):
+			hero.clear_traits()
+	heroes.clear()
+
 # ============================================================
 # PROGRESSION ENTRE LES SALLES
 # ============================================================
@@ -165,8 +221,7 @@ func _go_to_next_room() -> void:
 	current_room_index += 1
 	# Plus de salle = run gagné.
 	if current_room_index >= rooms.size():
-		run_active = false
-		run_won.emit()
+		_finish_run(true)
 		return
 	# On (re)charge l'écran de transition pour la nouvelle salle.
 	get_tree().change_scene_to_file.call_deferred("res://ui/Transitionsalle.tscn")
@@ -199,13 +254,8 @@ func on_battle_won() -> void:
 		_go_to_next_room()
 		return
 
-	var forced_reward = _get_forced_reward_for_room(current_room_index)
-	if forced_reward != null:
-		_offered_rewards = [forced_reward]
-		_offered_rewards.append_array(_draw_rewards(REWARDS_OFFERED - 1, [forced_reward]))
-	elif reward_pool.size() > 0:
-		_offered_rewards = _draw_rewards(REWARDS_OFFERED)
-	else:
+	_offered_rewards = _build_reward_offer()
+	if _offered_rewards.is_empty():
 		_go_to_next_room()
 		return
 
@@ -213,12 +263,23 @@ func on_battle_won() -> void:
 
 # Appelé par battle quand le joueur PERD le combat.
 func on_battle_lost() -> void:
-	run_active = false
-	run_lost.emit()
+	_finish_run(false)
 
 # ============================================================
 # RÉCOMPENSES
 # ============================================================
+
+func _build_reward_offer() -> Array:
+	# Un run sans pool de récompenses ne doit jamais ouvrir RewardScreen,
+	# y compris dans la première salle qui possède une récompense forcée.
+	if reward_pool.is_empty():
+		return []
+	var forced_reward = _get_forced_reward_for_room(current_room_index)
+	if forced_reward != null:
+		var offer: Array = [forced_reward]
+		offer.append_array(_draw_rewards(REWARDS_OFFERED - 1, [forced_reward]))
+		return offer
+	return _draw_rewards(REWARDS_OFFERED)
 
 # Tire `count` récompenses au hasard dans le pool (sans doublon).
 func _draw_rewards(count: int, excluded: Array = []) -> Array:
@@ -261,6 +322,35 @@ func choose_reward(reward: RewardData, chosen_hero: Unit = null) -> void:
 		_apply_reward(reward, targets)
 	_offered_rewards = []
 	_go_to_next_room()
+
+func _finish_run(victory: bool) -> void:
+	run_active = false
+	_offered_rewards = []
+	_record_run_result(victory)
+	if victory:
+		run_won.emit()
+	else:
+		run_lost.emit()
+	get_tree().change_scene_to_file.call_deferred(RUN_RESULT_SCREEN_PATH)
+
+func _record_run_result(victory: bool) -> void:
+	_last_run_result = {
+		"victory": victory,
+		"run_name": _active_run_name,
+	}
+
+func get_last_run_result() -> Dictionary:
+	return _last_run_result.duplicate(true)
+
+func return_to_title() -> void:
+	_pending_run_data = null
+	_offered_rewards = []
+	run_active = false
+	current_room_index = -1
+	_clear_heroes()
+	rooms.clear()
+	reward_pool.clear()
+	get_tree().change_scene_to_file.call_deferred(TITLE_SCREEN_PATH)
 
 # Détermine quels héros reçoivent la récompense selon sa cible.
 func _resolve_reward_targets(reward: RewardData, chosen_hero: Unit) -> Array:

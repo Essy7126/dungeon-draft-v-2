@@ -5,15 +5,19 @@ extends Node2D
 @onready var couche_personnages: Node2D = $Fond/CouchePersonnages
 @onready var logo: TextureRect = $UI/Logo
 @onready var boutons: VBoxContainer = $UI/Boutons
+@onready var bouton_prototype_elfe: Button = $UI/Boutons/BoutonPrototypeElfe
 @onready var bouton_nouvelle_partie: Button = $UI/Boutons/BoutonNouvellePartie
 @onready var bouton_continuer: Button = $UI/Boutons/BoutonContinuer
 @onready var bouton_quitter: Button = $UI/Boutons/BoutonQuitter
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var _run_default: RunData = preload("res://data/runs/run_default.tres")
+var _elf_prototype_run: RunData = preload("res://data/runs/elf_prototype_run.tres")
+const ELF_UNIT_PATH := "res://data/units/alliés/elfe.tres"
 
 
 func _ready() -> void:
+	bouton_prototype_elfe.pressed.connect(_on_prototype_elfe)
 	bouton_nouvelle_partie.pressed.connect(_on_nouvelle_partie)
 	bouton_continuer.pressed.connect(_on_continuer)
 	bouton_quitter.pressed.connect(_on_quitter)
@@ -28,6 +32,9 @@ func _on_intro_terminee(anim_name: StringName) -> void:
 
 func _on_nouvelle_partie() -> void:
 	GameManager.start_run(_run_default)
+
+func _on_prototype_elfe() -> void:
+	GameManager.start_preconfigured_run(_elf_prototype_run, [ELF_UNIT_PATH])
 
 
 func _on_continuer() -> void:
