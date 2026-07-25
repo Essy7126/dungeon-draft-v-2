@@ -12,6 +12,8 @@ extends Node2D
 
 var _run_default: RunData = preload("res://data/runs/run_default.tres")
 
+var _intro_en_cours: bool = true
+
 
 func _ready() -> void:
 	bouton_nouvelle_partie.pressed.connect(_on_nouvelle_partie)
@@ -21,8 +23,24 @@ func _ready() -> void:
 	animation_player.play("intro")
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not _intro_en_cours:
+		return
+	var touche_pressee: bool = (
+		(event is InputEventKey and event.pressed and not event.echo)
+		or (event is InputEventMouseButton and event.pressed)
+		or (event is InputEventJoypadButton and event.pressed)
+	)
+	if touche_pressee:
+		get_viewport().set_input_as_handled()
+		var animation_intro: Animation = animation_player.get_animation(&"intro")
+		animation_player.seek(animation_intro.length, true)
+		_on_intro_terminee(&"intro")
+
+
 func _on_intro_terminee(anim_name: StringName) -> void:
 	if anim_name == "intro":
+		_intro_en_cours = false
 		animation_player.play("idle")
 
 
