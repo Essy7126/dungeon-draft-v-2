@@ -421,6 +421,10 @@ func _on_turn_started(unit: Unit) -> void:
 	if _battle_over:
 		return
 
+	# Un ciblage appartient exclusivement au personnage qui l'a ouvert. Il est
+	# annule avant de remplacer le HUD, y compris lors d'un passage allie -> allie.
+	_cancel_action_selection_for_active_unit()
+
 	# 1. Effet de terrain en début de tour (lave, feu...).
 	terrain_effects.on_turn_start(unit)
 	_sync_unit_terrain(unit)
@@ -461,6 +465,13 @@ func _on_turn_started(unit: Unit) -> void:
 		turn_state.begin_player_turn()
 		action_bar.set_player_controls_enabled(true)
 		action_bar.set_active_mode("")
+
+
+func _cancel_action_selection_for_active_unit() -> void:
+	if turn_state == null or action_bar == null:
+		return
+	turn_state.on_cancel()
+	action_bar.set_active_mode("")
 
 func _sync_unit_terrain(unit: Unit) -> void:
 	if unit == null or terrain_effects == null:

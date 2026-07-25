@@ -122,9 +122,7 @@ func _build_ui() -> void:
 	_set_energy_controls_visible(false)
 
 func build_spell_buttons(unit) -> void:
-	for btn in _spell_buttons:
-		btn.queue_free()
-	_spell_buttons.clear()
+	_clear_spell_buttons()
 	if unit == null:
 		_refresh_button_states()
 		return
@@ -135,6 +133,32 @@ func build_spell_buttons(unit) -> void:
 		if unit.has_energy() and spell.can_imprint():
 			_add_spell_button(unit, spell, true)
 	_refresh_button_states()
+
+
+func _clear_spell_buttons() -> void:
+	if get_tree() != null:
+		var tooltip = get_tree().get_first_node_in_group("keyword_tooltip_layer")
+		if tooltip != null:
+			tooltip.request_hide()
+	for button_value in _spell_buttons:
+		var btn := button_value as Button
+		if not is_instance_valid(btn):
+			continue
+		# Les lambdas capturent le sort et l'ancienne unite. On les debranche
+		# explicitement avant de retirer le bouton afin qu'aucune action differee
+		# ne puisse encore piloter le ciblage du prochain personnage.
+		for connection in btn.pressed.get_connections():
+			btn.pressed.disconnect(connection["callable"])
+		for connection in btn.mouse_entered.get_connections():
+			btn.mouse_entered.disconnect(connection["callable"])
+		for connection in btn.mouse_exited.get_connections():
+			btn.mouse_exited.disconnect(connection["callable"])
+		btn.set_block_signals(true)
+		if btn.get_parent() != null:
+			btn.get_parent().remove_child(btn)
+		btn.free()
+	_spell_buttons.clear()
+
 
 func _add_spell_button(unit, spell, imprinted: bool) -> void:
 	var btn := Button.new()

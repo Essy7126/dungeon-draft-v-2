@@ -41,9 +41,13 @@ func test_elf_run_is_exactly_three_rooms_with_all_progression_pools_empty() -> v
 	assert_true(run.run_nodes.is_empty())
 
 
-func test_title_screen_exposes_both_prototype_entries_explicitly() -> void:
+func test_title_screen_exposes_solo_validation_and_historical_entries_explicitly() -> void:
 	var title = load("res://ui/TitreEcran.tscn").instantiate()
 	assert_eq(title.get_node("UI/Boutons/BoutonPrototypeElfe").text, "Prototype Elfe")
+	assert_eq(
+		title.get_node("UI/Boutons/BoutonValidationEquipe").text,
+		"Validation technique — équipe de 3",
+	)
 	assert_eq(
 		title.get_node("UI/Boutons/BoutonNouvellePartie").text,
 		"Ancien prototype / Draft historique",
@@ -66,6 +70,7 @@ func test_preconfigured_elf_has_one_hero_without_energy_or_draft_trait() -> void
 
 func test_preconfigured_builder_preserves_energy_owned_by_unit_data() -> void:
 	var data := UnitData.new()
+	data.unit_id = &"configured_energy_hero"
 	data.unit_name = "Héros configuré"
 	data.energy_type = Factory.make_energy({}, {"start_energy": 12.0})
 	var run := RunData.new()
@@ -85,8 +90,10 @@ func test_run_state_duplicates_room_and_reward_arrays() -> void:
 	source_run.run_name = "Copie isolée"
 	source_run.rooms.append(room)
 	source_run.reward_pool.append(reward)
+	var hero_data := UnitData.new()
+	hero_data.unit_id = &"run_copy_hero"
 
-	assert_true(manager._prepare_preconfigured_run(source_run, [UnitData.new()]))
+	assert_true(manager._prepare_preconfigured_run(source_run, [hero_data]))
 	source_run.rooms.clear()
 	source_run.reward_pool.clear()
 
@@ -125,7 +132,9 @@ func test_filled_historical_pool_keeps_the_first_forced_reward() -> void:
 func test_result_state_keeps_outcome_and_run_name() -> void:
 	var run := RunData.new()
 	run.run_name = "Run terminal"
-	assert_true(manager._prepare_preconfigured_run(run, [UnitData.new()]))
+	var hero_data := UnitData.new()
+	hero_data.unit_id = &"terminal_result_hero"
+	assert_true(manager._prepare_preconfigured_run(run, [hero_data]))
 	manager._record_run_result(false)
 	assert_eq(manager.get_last_run_result(), {
 		"victory": false,

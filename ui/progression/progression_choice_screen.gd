@@ -222,5 +222,8 @@ func _clear_content() -> void:
 	_cards.clear()
 	_confirm_button = null
 	for child in _content.get_children():
-		_content.remove_child(child)
-		child.queue_free()
+		if child is Control:
+			child.hide()
+			child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if not child.is_queued_for_deletion():
+			child.queue_free()

@@ -18,14 +18,18 @@ extends Node
 # --- Configuration du run ---
 # Options disponibles dans l'ecran de draft. Le build appartient au run,
 # pas au combat : les batailles recoivent des heros deja configures.
+const GUARDIAN_DATA_PATH := "res://data/units/alliés/Gardien.tres"
+const WARRIOR_DATA_PATH := "res://data/units/alliés/Guerrier.tres"
+const ELF_DATA_PATH := "res://data/units/alliés/elfe.tres"
+
 const HERO_DATA_PATHS = [
-	"res://data/units/alliés/Gardien.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	GUARDIAN_DATA_PATH,
+	WARRIOR_DATA_PATH,
 	"res://data/units/alliés/healer.tres",
 	"res://data/units/alliés/Assassin.tres",
 	"res://data/units/alliés/Necromant.tres",
 	"res://data/units/alliés/Hoplite.tres",
-	"res://data/units/alliés/elfe.tres",
+	ELF_DATA_PATH,
 ]
 
 const ENERGY_DATA_PATHS = [
@@ -43,8 +47,8 @@ const STARTING_TRAIT_PATHS = [
 ]
 
 const DEFAULT_DRAFT = [
-	{ "hero_path": "res://data/units/alliés/Gardien.tres", "energy_path": "res://data/energy/foi.tres", "trait_path": "res://data/traits/depart_posture_defensive.tres" },
-	{ "hero_path": "res://data/units/alliés/Guerrier.tres", "energy_path": "res://data/energy/rage.tres", "trait_path": "res://data/traits/depart_etincelle_flux.tres" },
+	{ "hero_path": GUARDIAN_DATA_PATH, "energy_path": "res://data/energy/foi.tres", "trait_path": "res://data/traits/depart_posture_defensive.tres" },
+	{ "hero_path": WARRIOR_DATA_PATH, "energy_path": "res://data/energy/rage.tres", "trait_path": "res://data/traits/depart_etincelle_flux.tres" },
 	{ "hero_path": "res://data/units/alliés/healer.tres", "energy_path": "res://data/energy/nature.tres", "trait_path": "res://data/traits/depart_instinct_tactique.tres" },
 ]
 
@@ -159,25 +163,37 @@ func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
 			push_error("UnitData preconfigure invalide : %s" % str(source))
 			return false
 		var character_id := data.get_effective_unit_id()
+		if not _is_valid_character_id(character_id):
+			push_error("Identifiant de personnage preconfigure invalide : %s" % character_id)
+			return false
 		if requested_ids.has(character_id):
 			push_error("Identifiant de personnage duplique : %s" % character_id)
 			return false
 		requested_ids[character_id] = true
 		hero_data_list.append(data)
 
-	cleanup_run_state()
+	# La nouvelle equipe est entierement construite hors de l'etat courant.
+	# Ainsi, meme un echec inattendu d'initialisation preserve la run precedente
+	# et ne laisse aucun personnage partiellement rattache au manager.
+	var prepared_heroes: Array[Unit] = []
+	var prepared_states: Dictionary = {}
 	for data in hero_data_list:
 		var hero := Unit.from_data(data)
 		# Unit.from_data conserve l'energy_type et les traits propres au UnitData.
 		# Aucun choix d'ecole ou trait de draft n'est applique sur cette voie.
 		hero.reset_combat_resources()
-		heroes.append(hero)
 		var character_state := CharacterRunState.new()
 		if not character_state.initialize(hero, data):
 			push_error("Impossible d'initialiser l'etat du personnage : %s" % hero.unit_id)
-			cleanup_run_state()
+			_dispose_prepared_characters(prepared_heroes, prepared_states)
+			hero.clear_traits()
 			return false
-		character_states[character_state.character_id] = character_state
+		prepared_heroes.append(hero)
+		prepared_states[character_state.character_id] = character_state
+
+	cleanup_run_state()
+	heroes.assign(prepared_heroes)
+	character_states.assign(prepared_states)
 	_initialize_run_state(run_data)
 	return true
 
@@ -187,6 +203,27 @@ func _resolve_unit_data(source) -> UnitData:
 	if source is String or source is StringName:
 		return load(str(source)) as UnitData
 	return null
+
+
+func _is_valid_character_id(character_id: StringName) -> bool:
+	var normalized := str(character_id).strip_edges()
+	return normalized != "" and normalized != "unit_data:unassigned"
+
+
+func _dispose_prepared_characters(
+		prepared_heroes: Array[Unit],
+		prepared_states: Dictionary
+	) -> void:
+	for state_value in prepared_states.values():
+		var state := state_value as CharacterRunState
+		if state != null:
+			state.dispose()
+	for hero in prepared_heroes:
+		if hero != null:
+			hero.clear_progression_spell_modifiers()
+			hero.clear_traits()
+	prepared_heroes.clear()
+	prepared_states.clear()
 
 func _initialize_run_state(run_data: RunData) -> void:
 	rooms = run_data.rooms.duplicate()
@@ -298,6 +335,36 @@ func get_character_state(character_id: StringName) -> CharacterRunState:
 	return character_states.get(character_id) as CharacterRunState
 
 
+## Retrouve l'etat par l'identite runtime exacte de l'unite, jamais par son nom.
+func get_character_state_for_unit(unit: Unit) -> CharacterRunState:
+	if unit == null:
+		return null
+	for state_value in character_states.values():
+		var state := state_value as CharacterRunState
+		if state != null and state.unit == unit:
+			return state
+	return null
+
+
+## Vue defensive des heros dans l'ordre de la composition.
+func get_ordered_heroes() -> Array[Unit]:
+	var ordered: Array[Unit] = []
+	for hero in heroes:
+		if hero is Unit:
+			ordered.append(hero)
+	return ordered
+
+
+## Etats ordonnes par composition, avec rattachement par identite runtime.
+func get_ordered_character_states() -> Array[CharacterRunState]:
+	var ordered: Array[CharacterRunState] = []
+	for hero in heroes:
+		var state := get_character_state_for_unit(hero as Unit)
+		if state != null:
+			ordered.append(state)
+	return ordered
+
+
 func _on_successful_spell_cast(caster, spell, report: Dictionary) -> void:
 	var result := _progression_service.grant_cast_xp(
 		character_states,
@@ -325,12 +392,8 @@ func _on_successful_spell_cast(caster, spell, report: Dictionary) -> void:
 
 func get_pending_progression_choices() -> Array[Dictionary]:
 	var pending: Array[Dictionary] = []
-	for hero in heroes:
-		if hero == null:
-			continue
-		var state := get_character_state(hero.unit_id)
-		if state != null:
-			pending.append_array(state.get_pending_progression_choices())
+	for state in get_ordered_character_states():
+		pending.append_array(state.get_pending_progression_choices())
 	return pending
 
 
@@ -587,7 +650,7 @@ func _apply_reward(reward: RewardData, targets: Array) -> void:
 			_apply_stat_mod(hero, reward.malus_stat, reward.malus_amount, reward.malus_is_percent)
 		# 4. Nouveau sort.
 		if reward.spell != null:
-			var character_state := get_character_state(hero.unit_id)
+			var character_state := get_character_state_for_unit(hero)
 			if character_state != null:
 				character_state.loadout.learn_spell(reward.spell)
 			else:
@@ -656,4 +719,4 @@ func _hero_by_hp(living: Array, lowest: bool) -> Unit:
 
 # Les héros encore vivants, à déployer dans la salle.
 func get_living_heroes() -> Array:
-	return heroes.filter(func(u): return u.is_alive)
+	return get_ordered_heroes().filter(func(u): return u.is_alive)

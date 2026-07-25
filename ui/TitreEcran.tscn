@@ -466,6 +466,10 @@ grow_vertical = 2
 layout_mode = 2
 text = "Prototype Elfe"
 
+[node name="BoutonValidationEquipe" type="Button" parent="UI/Boutons"]
+layout_mode = 2
+text = "Validation technique — équipe de 3"
+
 [node name="BoutonNouvellePartie" type="Button" parent="UI/Boutons" unique_id=2051366516]
 layout_mode = 2
 text = "Ancien prototype / Draft historique"
