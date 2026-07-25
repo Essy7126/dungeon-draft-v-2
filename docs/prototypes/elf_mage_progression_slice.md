@@ -62,8 +62,12 @@ XP, rang, file et sélection vivent dans le `CharacterRunState` conservé par `G
 
 Le draft historique ne crée toujours aucun `CharacterRunState` plafonné. Ses héros, huit sorts du Guerrier, énergies, Empreintes, traits, récompenses et `SpellModifier` par nom restent fonctionnels. Un sort sans `discipline_id` continue de se lancer normalement sans donner d'XP. Le flux historique conserve `RewardScreen`.
 
-## Limites et prochaines étapes
+## Suite
 
-Ce lot ne contient que le rang 2 Mage de l'Elfe. Il n'ajoute ni rangs 3 à 5, évolutions Archer/Assassin/Soigneur, arbre complet, grimoire, remplacement interactif, équipement, énergie, métaprogression ou sauvegarde disque.
+Cette tranche reste la référence des deux choix Mage inchangés. Archer,
+Assassin et Soigneur possèdent désormais eux aussi un rang 2 jouable; voir
+`elf_rank_two_disciplines.md`.
 
-Les étapes suivantes pourront ajouter les autres rangs et disciplines, une présentation artistique définitive, un résumé de progression plus riche et une politique d'XP affinée à partir de cette séparation données/état/runtime.
+Les rangs 3 à 5, l’arbre complet, le grimoire, le remplacement interactif,
+l’équipement, l’énergie, la métaprogression et la sauvegarde disque restent
+hors périmètre.

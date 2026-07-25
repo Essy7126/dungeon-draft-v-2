@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkillUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="1_upgrade"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/modifiers/repel_arrow.tres" id="3_modifier"]
+
+[resource]
+script = ExtResource("1_upgrade")
+upgrade_id = &"elf_archer_repel_arrow"
+display_name = "Flèche de recul"
+description = "Tir précis repousse sa cible d’exactement une case, si la grille le permet."
+discipline_id = &"archer"
+rank = 2
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])

@@ -110,6 +110,7 @@ préserver les chemins Unicode.
 | parent `aeaa9e3b0174a2c55dc5384a4850bfdf9f78f32f` | 15 | 106/106 | 668 | 0 |
 | départ `f174c998fbbd9e732e8f0ac3f62927e1683deddb` | 16 | 133/133 | 841 | 0 |
 | stabilisation locale | 17 | 151/151 | 1002 | 0 |
+| rang 2 des quatre disciplines | 19 | 190/190 | 1393 | 0 |
 
 À la fermeture GUT, les trois mesures donnent exactement :
 
@@ -144,13 +145,14 @@ L'addon GUT n'a donc pas été modifié.
 
 ## Validation et limites
 
-Les 18 tests de `test_progression_lifecycle.gd` exécutent notamment trois
+Les 19 tests de `test_progression_lifecycle.gd` exécutent notamment trois
 démarrages successifs,
 un ancien lanceur, les transitions de salle, les resets de combat, la
 libération d'une ancienne `Unit` par `WeakRef`, les nettoyages pendant un choix,
 les doubles confirmations, deux personnages indépendants et cinq cycles de
-stress. Le premier cast de chaque run fraîche donne exactement `1 XP`, avec
-rang `1` et zéro modifier.
+stress. Ils vérifient aussi que le retour au titre détache chacun des six
+modifiers ajoutés aux rangs 2 Archer, Assassin et Soigneur. Le premier cast de
+chaque run fraîche donne exactement `1 XP`, avec rang `1` et zéro modifier.
 
 La validation automatique couvre le flux réel `EventBus` et le stress
 headless. Elle ne remplace pas une longue session interactive avec changement

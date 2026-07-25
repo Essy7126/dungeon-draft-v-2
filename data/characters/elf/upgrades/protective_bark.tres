@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkillUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="1_upgrade"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/modifiers/protective_bark.tres" id="3_modifier"]
+
+[resource]
+script = ExtResource("1_upgrade")
+upgrade_id = &"elf_healer_protective_bark"
+display_name = "Écorce protectrice"
+description = "Après Soin sylvestre, la cible reçoit un bouclier de 3 selon la règle de remplacement existante."
+discipline_id = &"healer"
+rank = 2
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])

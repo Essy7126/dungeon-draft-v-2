@@ -8,6 +8,14 @@ const ProgressionScreenScript = preload(
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const INCANDESCENT_ID := &"elf_mage_incandescent_core"
 const EMBERS_ID := &"elf_mage_persistent_embers"
+const NEW_UPGRADES := [
+	[&"archer", &"elf_archer_eagle_eye"],
+	[&"archer", &"elf_archer_repel_arrow"],
+	[&"assassin", &"elf_assassin_backstab"],
+	[&"assassin", &"elf_assassin_venomous_blade"],
+	[&"healer", &"elf_healer_abundant_sap"],
+	[&"healer", &"elf_healer_protective_bark"],
+]
 
 var manager
 
@@ -170,6 +178,21 @@ func test_return_to_title_clears_all_progression_transients() -> void:
 	assert_true(manager.get_last_run_result().is_empty())
 	assert_false(manager.has_active_progression_screen())
 	assert_true(screen.is_closed_for_progression())
+
+
+func test_return_to_title_clears_each_new_rank_two_modifier() -> void:
+	for upgrade_entry in NEW_UPGRADES:
+		var state := _prepare_elf()
+		var discipline_id: StringName = upgrade_entry[0]
+		var upgrade_id: StringName = upgrade_entry[1]
+		state.add_discipline_xp(discipline_id, 3)
+		assert_true(state.select_upgrade(discipline_id, 2, upgrade_id))
+		var old_unit := state.unit
+		assert_eq(old_unit.get_progression_spell_modifiers().size(), 1)
+		manager.return_to_title()
+		assert_true(manager.character_states.is_empty())
+		assert_true(manager.heroes.is_empty())
+		assert_eq(old_unit.get_progression_spell_modifiers().size(), 0)
 
 
 func test_new_run_starts_at_zero_xp_rank_one_without_choice_or_result() -> void:

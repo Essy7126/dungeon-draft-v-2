@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DisciplineRankData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_upgrade_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/eagle_eye.tres" id="3_eagle_eye"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/repel_arrow.tres" id="4_repel_arrow"]
+
+[resource]
+script = ExtResource("1_rank")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_upgrade_type")]([ExtResource("3_eagle_eye"), ExtResource("4_repel_arrow")])

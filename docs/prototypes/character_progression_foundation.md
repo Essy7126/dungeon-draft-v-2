@@ -25,6 +25,12 @@ L'Elfe déclare quatre disciplines data-driven et un sort actif par discipline :
 
 La Boule de feu de l'Elfe est une ressource distincte, car la ressource historique est également utilisée par le Mage. Elle réutilise les mêmes VFX, audio, terrain et effets sans modifier le contenu historique.
 
-## Limites volontaires
+## Évolutions construites sur la fondation
 
-Ce lot fondateur n'ajoutait ni XP, rang, seuil, arbre, amélioration, remplacement interactif, grimoire, équipement ou énergie. La tranche suivante ajoute désormais le premier rang Mage jouable au-dessus de cette architecture ; voir `elf_mage_progression_slice.md`.
+La progression d’XP, les rangs et les choix post-combat sont désormais posés
+au-dessus de cette architecture sans changer le contrat du loadout. La tranche
+Mage initiale est décrite dans `elf_mage_progression_slice.md`; le rang 2 des
+quatre disciplines est décrit dans `elf_rank_two_disciplines.md`.
+
+Les rangs 3+, le remplacement interactif, le grimoire, les équipements et les
+énergies propres à ces personnages restent hors périmètre.

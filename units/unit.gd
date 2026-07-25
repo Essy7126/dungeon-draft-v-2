@@ -78,6 +78,16 @@ func _snap_to_cardinal(delta: Vector2i) -> Vector2i:
 	if abs(delta.x) >= abs(delta.y):
 		return Vector2i(sign(delta.x), 0)
 	return Vector2i(0, sign(delta.y))
+
+
+# La case logique situee exactement derriere l'unite, a l'oppose de son regard.
+# Ce helper ne depend d'aucune projection visuelle/isometrique.
+func get_behind_grid_cell() -> Vector2i:
+	return grid_pos - _snap_to_cardinal(facing_dir)
+
+
+func is_grid_position_behind(position: Vector2i) -> bool:
+	return position == get_behind_grid_cell()
 # --- Ressources de combat ---
 # Les PA paient les actions du tour (colonne vertebrale, entiers, reviennent
 # chaque tour). Ferveur (current_energy) est la jauge d'ECOLE : elle se gagne
