@@ -37,6 +37,20 @@ func initialize(
 	return true
 
 
+func dispose() -> void:
+	if loadout != null:
+		var callback := Callable(self, "sync_loadout_to_unit")
+		if loadout.changed.is_connected(callback):
+			loadout.changed.disconnect(callback)
+	if unit != null:
+		unit.clear_progression_spell_modifiers()
+	character_id = &""
+	unit = null
+	loadout = null
+	disciplines.clear()
+	_discipline_progressions.clear()
+
+
 func sync_loadout_to_unit() -> void:
 	if unit == null or loadout == null:
 		return

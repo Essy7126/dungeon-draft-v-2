@@ -6,14 +6,26 @@ var _selected_upgrade_id: StringName = &""
 var _content: VBoxContainer = null
 var _cards: Array[Button] = []
 var _confirm_button: Button = null
+var _confirmation_in_flight: bool = false
+var _closed: bool = false
 var progression_controller = null
 
 
 func _ready() -> void:
 	if progression_controller == null:
 		progression_controller = GameManager
+	if progression_controller.has_method("register_progression_screen") \
+			and not progression_controller.register_progression_screen(self):
+		_closed = true
+		hide()
+		queue_free()
+		return
 	_build_ui()
 	show_choice(progression_controller.get_next_pending_progression_choice())
+
+
+func _exit_tree() -> void:
+	_unregister_from_controller()
 
 
 func _build_ui() -> void:
@@ -39,8 +51,11 @@ func _build_ui() -> void:
 
 
 func show_choice(choice: Dictionary) -> void:
+	if _closed:
+		return
 	_choice = choice.duplicate(true)
 	_selected_upgrade_id = &""
+	_confirmation_in_flight = false
 	if _content == null:
 		return
 	_clear_content()
@@ -113,7 +128,8 @@ func _make_upgrade_card(upgrade: SkillUpgradeData) -> Button:
 
 
 func select_upgrade_card(upgrade_id: StringName) -> bool:
-	if upgrade_id == &"" or _choice.is_empty():
+	if _closed or _confirmation_in_flight \
+			or upgrade_id == &"" or _choice.is_empty():
 		return false
 	var exists := false
 	for upgrade_value in _choice.get("choices", []):
@@ -132,8 +148,12 @@ func select_upgrade_card(upgrade_id: StringName) -> bool:
 
 
 func confirm_selection() -> bool:
-	if _selected_upgrade_id == &"" or _choice.is_empty():
+	if _closed or _confirmation_in_flight \
+			or _selected_upgrade_id == &"" or _choice.is_empty():
 		return false
+	_confirmation_in_flight = true
+	if _confirm_button != null:
+		_confirm_button.disabled = true
 	var accepted: bool = progression_controller.choose_progression_upgrade(
 		_choice.get("character_id", &""),
 		_choice.get("discipline_id", &""),
@@ -141,10 +161,19 @@ func confirm_selection() -> bool:
 		_selected_upgrade_id
 	)
 	if not accepted:
+		_confirmation_in_flight = false
+		if _confirm_button != null:
+			_confirm_button.disabled = false
 		return false
 	var next_choice: Dictionary = progression_controller.get_next_pending_progression_choice()
 	if not next_choice.is_empty():
 		show_choice(next_choice)
+	else:
+		_closed = true
+		hide()
+		_choice.clear()
+		_selected_upgrade_id = &""
+		_unregister_from_controller()
 	return true
 
 
@@ -158,6 +187,35 @@ func is_confirmation_enabled() -> bool:
 
 func get_choice_card_count() -> int:
 	return _cards.size()
+
+
+func get_current_choice() -> Dictionary:
+	return _choice.duplicate(true)
+
+
+func is_closed_for_progression() -> bool:
+	return _closed
+
+
+func close_for_run_cleanup() -> void:
+	if _closed:
+		return
+	_closed = true
+	hide()
+	_confirmation_in_flight = false
+	_choice.clear()
+	_selected_upgrade_id = &""
+	if _confirm_button != null:
+		_confirm_button.disabled = true
+	_unregister_from_controller()
+	if is_inside_tree():
+		queue_free()
+
+
+func _unregister_from_controller() -> void:
+	if progression_controller != null \
+			and progression_controller.has_method("unregister_progression_screen"):
+		progression_controller.unregister_progression_screen(self)
 
 
 func _clear_content() -> void:

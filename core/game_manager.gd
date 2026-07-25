@@ -70,6 +70,8 @@ var _pending_run_data: RunData = null
 var _active_run_name: String = ""
 var _last_run_result: Dictionary = {}
 var _awaiting_post_battle_progression: bool = false
+var _room_outcome_resolved: bool = false
+var _active_progression_screen_ref: WeakRef = null
 var _progression_service := CharacterProgressionService.new()
 
 # Récompenses actuellement proposées (lues par l'écran de récompense).
@@ -84,15 +86,29 @@ signal scene_change_requested(path)
 
 
 func _ready() -> void:
+	_connect_progression_service()
+
+
+func _connect_progression_service() -> void:
 	var callback := Callable(self, "_on_successful_spell_cast")
 	if not EventBus.spell_cast.is_connected(callback):
 		EventBus.spell_cast.connect(callback)
 
 
 func _exit_tree() -> void:
+	_disconnect_progression_service()
+
+
+func _disconnect_progression_service() -> void:
 	var callback := Callable(self, "_on_successful_spell_cast")
 	if EventBus.spell_cast.is_connected(callback):
 		EventBus.spell_cast.disconnect(callback)
+
+
+func is_progression_service_connected() -> bool:
+	return EventBus.spell_cast.is_connected(
+		Callable(self, "_on_successful_spell_cast")
+	)
 
 # ============================================================
 # DÉMARRAGE D'UN RUN
@@ -102,6 +118,7 @@ func start_run(run_data: RunData) -> void:
 	if run_data == null:
 		push_error("Aucun RunData fourni.")
 		return
+	cleanup_run_state()
 	_pending_run_data = run_data
 	_request_scene_change(RUN_DRAFT_SCREEN_PATH)
 
@@ -118,7 +135,9 @@ func confirm_run_draft(hero_paths: Array, energy_paths: Array, trait_paths: Arra
 		return
 	var run_data := _pending_run_data
 	_pending_run_data = null
-	_build_heroes_from_draft(hero_paths, energy_paths, trait_paths)
+	if not _build_heroes_from_draft(hero_paths, energy_paths, trait_paths):
+		cleanup_run_state()
+		return
 	_initialize_run_state(run_data)
 	_go_to_next_room()
 
@@ -146,8 +165,7 @@ func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
 		requested_ids[character_id] = true
 		hero_data_list.append(data)
 
-	_pending_run_data = null
-	_clear_heroes()
+	cleanup_run_state()
 	for data in hero_data_list:
 		var hero := Unit.from_data(data)
 		# Unit.from_data conserve l'energy_type et les traits propres au UnitData.
@@ -157,7 +175,7 @@ func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
 		var character_state := CharacterRunState.new()
 		if not character_state.initialize(hero, data):
 			push_error("Impossible d'initialiser l'etat du personnage : %s" % hero.unit_id)
-			_clear_heroes()
+			cleanup_run_state()
 			return false
 		character_states[character_state.character_id] = character_state
 	_initialize_run_state(run_data)
@@ -179,9 +197,11 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_last_run_result = {}
 	_offered_rewards = []
 	_awaiting_post_battle_progression = false
+	_room_outcome_resolved = false
+	_active_progression_screen_ref = null
 
 func cancel_run_draft() -> void:
-	_pending_run_data = null
+	cleanup_run_state()
 	_request_scene_change(TITLE_SCREEN_PATH)
 
 func get_fervor_multiplier() -> float:
@@ -213,14 +233,19 @@ func _load_draft_options(paths: Array) -> Array:
 	return options
 
 # Cree les heros UNE fois pour tout le run, depuis le draft.
-func _build_heroes_from_draft(hero_paths: Array, energy_paths: Array, trait_paths: Array = []) -> void:
-	_clear_heroes()
+func _build_heroes_from_draft(
+		hero_paths: Array,
+		energy_paths: Array,
+		trait_paths: Array = []
+	) -> bool:
+	cleanup_run_state()
 	for i in range(hero_paths.size()):
 		var path: String = hero_paths[i]
 		var data = load(path)
 		if data == null:
 			push_error("Heros introuvable : %s" % path)
-			continue
+			cleanup_run_state()
+			return false
 		var hero := Unit.from_data(data)
 		if i < energy_paths.size():
 			var energy = load(energy_paths[i]) as EnergyTypeData
@@ -238,13 +263,36 @@ func _build_heroes_from_draft(hero_paths: Array, energy_paths: Array, trait_path
 		hero.ensure_energy_traits()
 		hero.reset_combat_resources()
 		heroes.append(hero)
+	return not heroes.is_empty()
 
 func _clear_heroes() -> void:
+	for state_value in character_states.values():
+		var state := state_value as CharacterRunState
+		if state != null:
+			state.dispose()
 	for hero in heroes:
-		if hero != null and hero.has_method("clear_traits"):
+		if hero == null:
+			continue
+		hero.clear_progression_spell_modifiers()
+		if hero.has_method("clear_traits"):
 			hero.clear_traits()
 	heroes.clear()
 	character_states.clear()
+
+
+func cleanup_run_state() -> void:
+	_close_active_progression_screen()
+	_awaiting_post_battle_progression = false
+	_room_outcome_resolved = false
+	_pending_run_data = null
+	_offered_rewards.clear()
+	run_active = false
+	current_room_index = -1
+	_clear_heroes()
+	rooms.clear()
+	reward_pool.clear()
+	_active_run_name = ""
+	_last_run_result.clear()
 
 func get_character_state(character_id: StringName) -> CharacterRunState:
 	return character_states.get(character_id) as CharacterRunState
@@ -294,6 +342,45 @@ func get_next_pending_progression_choice() -> Dictionary:
 func has_pending_progression_choices() -> bool:
 	return not get_next_pending_progression_choice().is_empty()
 
+
+func register_progression_screen(screen: Control) -> bool:
+	if screen == null:
+		return false
+	var active := get_active_progression_screen()
+	if active != null and active != screen:
+		return false
+	_active_progression_screen_ref = weakref(screen)
+	return true
+
+
+func unregister_progression_screen(screen: Control) -> void:
+	if get_active_progression_screen() == screen:
+		_active_progression_screen_ref = null
+
+
+func get_active_progression_screen() -> Control:
+	if _active_progression_screen_ref == null:
+		return null
+	var screen := _active_progression_screen_ref.get_ref() as Control
+	if screen == null:
+		_active_progression_screen_ref = null
+	return screen
+
+
+func has_active_progression_screen() -> bool:
+	return get_active_progression_screen() != null
+
+
+func _close_active_progression_screen() -> void:
+	var screen := get_active_progression_screen()
+	_active_progression_screen_ref = null
+	if screen == null:
+		return
+	if screen.has_method("close_for_run_cleanup"):
+		screen.close_for_run_cleanup()
+	elif screen.is_inside_tree():
+		screen.queue_free()
+
 # ============================================================
 # PROGRESSION ENTRE LES SALLES
 # ============================================================
@@ -314,6 +401,7 @@ func start_next_battle() -> void:
 	if room == null or room.battle_scene == null:
 		push_error("Aucune battle_scene assignée dans RoomData index %d" % current_room_index)
 		return
+	_room_outcome_resolved = false
 	get_tree().change_scene_to_packed.call_deferred(room.battle_scene)
 
 # La salle en cours (lue par battle au démarrage).
@@ -328,6 +416,9 @@ func get_current_room() -> RoomData:
 
 # Appelé par battle quand le joueur GAGNE le combat.
 func on_battle_won() -> void:
+	if not run_active or _room_outcome_resolved:
+		return
+	_room_outcome_resolved = true
 	room_cleared.emit(current_room_index)
 	_awaiting_post_battle_progression = true
 	if has_pending_progression_choices():
@@ -367,6 +458,9 @@ func choose_progression_upgrade(
 
 # Appelé par battle quand le joueur PERD le combat.
 func on_battle_lost() -> void:
+	if not run_active or _room_outcome_resolved:
+		return
+	_room_outcome_resolved = true
 	_finish_run(false)
 
 # ============================================================
@@ -431,6 +525,7 @@ func _finish_run(victory: bool) -> void:
 	run_active = false
 	_offered_rewards = []
 	_awaiting_post_battle_progression = false
+	_close_active_progression_screen()
 	_record_run_result(victory)
 	if victory:
 		run_won.emit()
@@ -448,14 +543,7 @@ func get_last_run_result() -> Dictionary:
 	return _last_run_result.duplicate(true)
 
 func return_to_title() -> void:
-	_pending_run_data = null
-	_offered_rewards = []
-	run_active = false
-	_awaiting_post_battle_progression = false
-	current_room_index = -1
-	_clear_heroes()
-	rooms.clear()
-	reward_pool.clear()
+	cleanup_run_state()
 	_request_scene_change(TITLE_SCREEN_PATH)
 
 

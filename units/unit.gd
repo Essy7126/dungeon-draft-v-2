@@ -235,7 +235,14 @@ func add_spell(spell: Spell) -> void:
 
 
 func set_progression_spell_modifiers(modifiers: Array[SpellModifier]) -> void:
-	_progression_spell_modifiers = modifiers.duplicate()
+	_progression_spell_modifiers.clear()
+	for modifier in modifiers:
+		if modifier != null and not _progression_spell_modifiers.has(modifier):
+			_progression_spell_modifiers.append(modifier)
+
+
+func clear_progression_spell_modifiers() -> void:
+	_progression_spell_modifiers.clear()
 
 
 func get_progression_spell_modifiers() -> Array[SpellModifier]:
