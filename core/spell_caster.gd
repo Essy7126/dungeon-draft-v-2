@@ -290,6 +290,14 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 	ctx.imprinted = imprinted
 	ctx.grid = _grid
 	ctx.terrain = _terrain
+	if caster == null or spell == null:
+		ctx.failed = true
+		ctx.report = _failed_report(caster, spell, cell, "arguments")
+		return ctx.report
+	if not is_valid_target(caster, spell, cell):
+		ctx.failed = true
+		ctx.report = _failed_report(caster, spell, cell, "target")
+		return ctx.report
 	ctx.modifiers = _gather_modifiers(caster, spell)
 
 	if not _resolve_costs(ctx):
@@ -327,6 +335,9 @@ func _gather_modifiers(caster: Unit, spell: Spell) -> Array:
 				for m in t.get_spell_modifiers():
 					if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
 						mods.append(m)
+		for m in caster.get_progression_spell_modifiers():
+			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
+				mods.append(m)
 	return mods
 
 func _run_hook(ctx: CastContext, hook: String) -> void:
@@ -380,19 +391,22 @@ func _resolve_impacts(ctx: CastContext) -> void:
 	for target_cell in ctx.affected_cells:
 		var target = _grid.get_unit(target_cell)
 		if target != null:
-			_resolve_unit_impact(ctx, target)
+			_resolve_unit_impact(ctx, target, target_cell)
 		_resolve_cell_terrain(ctx, target_cell)
 
 # Effets directs du sort sur UNE unité touchée : dégâts, soins, statuts,
 # provocation, drains, bouclier. Alimente les listes du rapport.
-func _resolve_unit_impact(ctx: CastContext, target) -> void:
+func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> void:
 	var caster: Unit = ctx.caster
 	var spell: Spell = ctx.spell
 	var report: Dictionary = ctx.report
 	var imprinted := ctx.imprinted
 	var affected := false
 	if spell.deals_damage():
-		var raw_damage := spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
+		var cell_bonus := int(ctx.damage_bonus_by_cell.get(target_cell, 0))
+		var raw_damage := spell.damage \
+			+ (spell.imprint_damage_bonus if imprinted else 0) \
+			+ cell_bonus
 		var base_dmg := caster.get_modified_spell_damage(spell, raw_damage)
 		if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marqué"):
 			base_dmg += spell.bonus_damage_if_marked

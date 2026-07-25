@@ -27,4 +27,4 @@ La Boule de feu de l'Elfe est une ressource distincte, car la ressource historiq
 
 ## Limites volontaires
 
-Ce lot n'ajoute ni XP, rang, seuil, arbre, amélioration, remplacement interactif, grimoire, équipement ou énergie. La prochaine étape prévue est l'ajout d'un état d'XP et de rang par discipline, au-dessus de cette fondation sans déplacer la logique dans le moteur de combat.
+Ce lot fondateur n'ajoutait ni XP, rang, seuil, arbre, amélioration, remplacement interactif, grimoire, équipement ou énergie. La tranche suivante ajoute désormais le premier rang Mage jouable au-dessus de cette architecture ; voir `elf_mage_progression_slice.md`.

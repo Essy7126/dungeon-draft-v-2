@@ -6,3 +6,4 @@ extends Resource
 @export_multiline var description: String = ""
 @export var icon: Texture2D = null
 @export var presentation_color: Color = Color.WHITE
+@export var ranks: Array[DisciplineRankData] = []

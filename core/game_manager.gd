@@ -51,6 +51,9 @@ const DEFAULT_DRAFT = [
 const RUN_DRAFT_SCREEN_PATH := "res://ui/RunDraftScreen.tscn"
 const RUN_RESULT_SCREEN_PATH := "res://ui/RunResultScreen.tscn"
 const TITLE_SCREEN_PATH := "res://ui/TitreEcran.tscn"
+const PROGRESSION_CHOICE_SCREEN_PATH := "res://ui/progression/ProgressionChoiceScreen.tscn"
+const REWARD_SCREEN_PATH := "res://ui/RewardScreen.tscn"
+const ROOM_TRANSITION_SCREEN_PATH := "res://ui/Transitionsalle.tscn"
 const FIRST_REWARD_PATH := "res://data/rewards/reward_marteau_jugement.tres"
 
 # Nombre de récompenses proposées après chaque salle.
@@ -66,6 +69,8 @@ var run_active: bool = false
 var _pending_run_data: RunData = null
 var _active_run_name: String = ""
 var _last_run_result: Dictionary = {}
+var _awaiting_post_battle_progression: bool = false
+var _progression_service := CharacterProgressionService.new()
 
 # Récompenses actuellement proposées (lues par l'écran de récompense).
 var _offered_rewards: Array = []
@@ -74,6 +79,20 @@ var _offered_rewards: Array = []
 signal run_won
 signal run_lost
 signal room_cleared(index)
+signal discipline_xp_gained(character_id, discipline_id, amount, snapshot)
+signal scene_change_requested(path)
+
+
+func _ready() -> void:
+	var callback := Callable(self, "_on_successful_spell_cast")
+	if not EventBus.spell_cast.is_connected(callback):
+		EventBus.spell_cast.connect(callback)
+
+
+func _exit_tree() -> void:
+	var callback := Callable(self, "_on_successful_spell_cast")
+	if EventBus.spell_cast.is_connected(callback):
+		EventBus.spell_cast.disconnect(callback)
 
 # ============================================================
 # DÉMARRAGE D'UN RUN
@@ -84,7 +103,7 @@ func start_run(run_data: RunData) -> void:
 		push_error("Aucun RunData fourni.")
 		return
 	_pending_run_data = run_data
-	get_tree().change_scene_to_file.call_deferred(RUN_DRAFT_SCREEN_PATH)
+	_request_scene_change(RUN_DRAFT_SCREEN_PATH)
 
 ## Lance un run deja configure sans passer par le draft historique.
 ## `hero_sources` accepte des chemins res:// vers des UnitData ou des UnitData.
@@ -159,10 +178,11 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_active_run_name = run_data.run_name
 	_last_run_result = {}
 	_offered_rewards = []
+	_awaiting_post_battle_progression = false
 
 func cancel_run_draft() -> void:
 	_pending_run_data = null
-	get_tree().change_scene_to_file.call_deferred(TITLE_SCREEN_PATH)
+	_request_scene_change(TITLE_SCREEN_PATH)
 
 func get_fervor_multiplier() -> float:
 	return 1.0
@@ -229,6 +249,51 @@ func _clear_heroes() -> void:
 func get_character_state(character_id: StringName) -> CharacterRunState:
 	return character_states.get(character_id) as CharacterRunState
 
+
+func _on_successful_spell_cast(caster, spell, report: Dictionary) -> void:
+	var result := _progression_service.grant_cast_xp(
+		character_states,
+		caster as Unit,
+		spell as Spell,
+		report
+	)
+	if result.is_empty():
+		return
+	var character_id: StringName = result["character_id"]
+	var discipline_id: StringName = result["discipline_id"]
+	var amount: int = result["gained_xp"]
+	discipline_xp_gained.emit(character_id, discipline_id, amount, result.duplicate(true))
+	DebugLogger.info(
+		DebugLogger.LogCategory.COMBAT,
+		"+%d XP %s" % [amount, result["discipline_display_name"]],
+		{
+			"personnage": caster.unit_name,
+			"xp": result["xp"],
+			"rang": result["rank"],
+			"prochain_seuil": result["next_required_total_xp"],
+		}
+	)
+
+
+func get_pending_progression_choices() -> Array[Dictionary]:
+	var pending: Array[Dictionary] = []
+	for hero in heroes:
+		if hero == null:
+			continue
+		var state := get_character_state(hero.unit_id)
+		if state != null:
+			pending.append_array(state.get_pending_progression_choices())
+	return pending
+
+
+func get_next_pending_progression_choice() -> Dictionary:
+	var pending := get_pending_progression_choices()
+	return pending[0].duplicate(true) if not pending.is_empty() else {}
+
+
+func has_pending_progression_choices() -> bool:
+	return not get_next_pending_progression_choice().is_empty()
+
 # ============================================================
 # PROGRESSION ENTRE LES SALLES
 # ============================================================
@@ -241,7 +306,7 @@ func _go_to_next_room() -> void:
 		_finish_run(true)
 		return
 	# On (re)charge l'écran de transition pour la nouvelle salle.
-	get_tree().change_scene_to_file.call_deferred("res://ui/Transitionsalle.tscn")
+	_request_scene_change(ROOM_TRANSITION_SCREEN_PATH)
 
 # Appelé par Transitionsalle au clic sur "Continuer".
 func start_next_battle() -> void:
@@ -264,8 +329,15 @@ func get_current_room() -> RoomData:
 # Appelé par battle quand le joueur GAGNE le combat.
 func on_battle_won() -> void:
 	room_cleared.emit(current_room_index)
-	# Récompense seulement s'il reste au moins une salle APRÈS celle-ci
-	# (pas de récompense après la dernière salle : le run se termine).
+	_awaiting_post_battle_progression = true
+	if has_pending_progression_choices():
+		_request_scene_change(PROGRESSION_CHOICE_SCREEN_PATH)
+		return
+	_awaiting_post_battle_progression = false
+	_continue_after_progression()
+
+
+func _continue_after_progression() -> void:
 	var has_next = current_room_index + 1 < rooms.size()
 	if not has_next:
 		_go_to_next_room()
@@ -276,7 +348,22 @@ func on_battle_won() -> void:
 		_go_to_next_room()
 		return
 
-	get_tree().change_scene_to_file.call_deferred("res://ui/RewardScreen.tscn")
+	_request_scene_change(REWARD_SCREEN_PATH)
+
+
+func choose_progression_upgrade(
+		character_id: StringName,
+		discipline_id: StringName,
+		choice_rank: int,
+		upgrade_id: StringName
+	) -> bool:
+	var state := get_character_state(character_id)
+	if state == null or not state.select_upgrade(discipline_id, choice_rank, upgrade_id):
+		return false
+	if _awaiting_post_battle_progression and not has_pending_progression_choices():
+		_awaiting_post_battle_progression = false
+		_continue_after_progression()
+	return true
 
 # Appelé par battle quand le joueur PERD le combat.
 func on_battle_lost() -> void:
@@ -343,12 +430,13 @@ func choose_reward(reward: RewardData, chosen_hero: Unit = null) -> void:
 func _finish_run(victory: bool) -> void:
 	run_active = false
 	_offered_rewards = []
+	_awaiting_post_battle_progression = false
 	_record_run_result(victory)
 	if victory:
 		run_won.emit()
 	else:
 		run_lost.emit()
-	get_tree().change_scene_to_file.call_deferred(RUN_RESULT_SCREEN_PATH)
+	_request_scene_change(RUN_RESULT_SCREEN_PATH)
 
 func _record_run_result(victory: bool) -> void:
 	_last_run_result = {
@@ -363,11 +451,18 @@ func return_to_title() -> void:
 	_pending_run_data = null
 	_offered_rewards = []
 	run_active = false
+	_awaiting_post_battle_progression = false
 	current_room_index = -1
 	_clear_heroes()
 	rooms.clear()
 	reward_pool.clear()
-	get_tree().change_scene_to_file.call_deferred(TITLE_SCREEN_PATH)
+	_request_scene_change(TITLE_SCREEN_PATH)
+
+
+func _request_scene_change(path: String) -> void:
+	scene_change_requested.emit(path)
+	if is_inside_tree():
+		get_tree().change_scene_to_file.call_deferred(path)
 
 # Détermine quels héros reçoivent la récompense selon sa cible.
 func _resolve_reward_targets(reward: RewardData, chosen_hero: Unit) -> Array:

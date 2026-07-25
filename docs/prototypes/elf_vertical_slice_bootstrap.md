@@ -27,5 +27,5 @@ Une unité sans `energy_type` garde les PA, PM, déplacement, attaque, sorts et 
 
 - Le lot suivant définit désormais quatre sorts actifs data-driven ; voir `character_progression_foundation.md`.
 - Les cartes, ennemis et règles de combat restent ceux du prototype historique.
-- Ce bootstrap historique n'introduisait aucune progression ; le lot suivant ajoute les disciplines et le loadout, mais toujours ni expérience, rang, amélioration de sort, méta-progression ou récompense propre à l'Elfe.
+- Ce bootstrap historique n'introduisait aucune progression ; les lots suivants ajoutent le loadout puis le rang 2 Mage, documenté dans `elf_mage_progression_slice.md`.
 - La première salle conserve son rendu isométrique existant ; les salles suivantes gardent leur présentation actuelle.

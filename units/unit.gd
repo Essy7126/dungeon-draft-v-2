@@ -118,6 +118,7 @@ var visual_scene: PackedScene = null
 
 # --- Sorts ---
 var spells: Array = []
+var _progression_spell_modifiers: Array[SpellModifier] = []
 
 # --- Statuts actifs ---
 # Liste de dictionnaires : { "data": StatusData, "remaining": int }
@@ -231,6 +232,14 @@ static func from_data(data: UnitData) -> Unit:
 
 func add_spell(spell: Spell) -> void:
 	spells.append(spell)
+
+
+func set_progression_spell_modifiers(modifiers: Array[SpellModifier]) -> void:
+	_progression_spell_modifiers = modifiers.duplicate()
+
+
+func get_progression_spell_modifiers() -> Array[SpellModifier]:
+	return _progression_spell_modifiers.duplicate()
 
 # ============================================================
 # ACCÃˆS AUX STATS

@@ -29,6 +29,7 @@ var fervor_cost: float = 0.0
 # --- État de résolution ---
 var report: Dictionary = {}
 var affected_cells: Array = []
+var damage_bonus_by_cell: Dictionary = {} # Vector2i -> int, propre au cast
 var failed: bool = false
 
 # --- Modificateurs actifs de ce cast (sort + lanceur) ---
