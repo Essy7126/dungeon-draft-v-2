@@ -3,24 +3,12 @@
 
 extends Node
 
-enum LogLevel {
-	TRACE = 0,
-	DEBUG = 1,
-	INFO  = 2,
-	WARN  = 3,
-	ERROR = 4
-}
+const LogDefinitions = preload("res://debug/log_definitions.gd")
 
-enum LogCategory {
-	COMBAT,
-	AI,
-	STATS,
-	SPELL,
-	TERRAIN,
-	TURN,
-	PATHFINDING,
-	SYSTEM
-}
+# Compatibilite de l'API publique : les appels existants peuvent continuer
+# d'utiliser DebugLogger.LogLevel et DebugLogger.LogCategory.
+const LogLevel = LogDefinitions.LogLevel
+const LogCategory = LogDefinitions.LogCategory
 
 const CATEGORY_LABELS := {
 	LogCategory.COMBAT:      "[COMBAT]",

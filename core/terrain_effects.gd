@@ -1,9 +1,11 @@
 class_name TerrainEffects
 extends RefCounted
 
+const LogDefinitions = preload("res://debug/log_definitions.gd")
+
 var _grid: GridData
 
-const CAT := DebugLogger.LogCategory.TERRAIN
+const CAT: LogDefinitions.LogCategory = LogDefinitions.LogCategory.TERRAIN
 const REACTION_DAMAGE := 20
 
 const REACTIONS := {

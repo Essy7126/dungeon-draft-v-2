@@ -28,11 +28,13 @@
 class_name SpellCaster
 extends RefCounted
 
+const LogDefinitions = preload("res://debug/log_definitions.gd")
+
 var _grid: GridData
 var _pathfinder: Pathfinder
 var _terrain: TerrainEffects
 
-const CAT_SPELL := DebugLogger.LogCategory.SPELL
+const CAT_SPELL: LogDefinitions.LogCategory = LogDefinitions.LogCategory.SPELL
 
 func _init(grid: GridData, pathfinder: Pathfinder, terrain: TerrainEffects) -> void:
 	_grid = grid

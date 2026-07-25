@@ -1,7 +1,8 @@
 extends Node
 
-const CAT_COMBAT := DebugLogger.LogCategory.COMBAT
-const CAT_STATS := DebugLogger.LogCategory.STATS
+const LogDefinitions = preload("res://debug/log_definitions.gd")
+const CAT_COMBAT: LogDefinitions.LogCategory = LogDefinitions.LogCategory.COMBAT
+const CAT_STATS: LogDefinitions.LogCategory = LogDefinitions.LogCategory.STATS
 
 func _ready() -> void:
 	EventBus.damage_dealt.connect(_on_damage_dealt)

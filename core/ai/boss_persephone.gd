@@ -18,6 +18,8 @@
 class_name BossPersephone
 extends BossBehavior
 
+const LogDefinitions = preload("res://debug/log_definitions.gd")
+
 @export_group("Sorts par rôle")
 @export var aoe_spell: Spell = null      # tombeau fleuri (dégâts de zone)
 @export var debuff_spell: Spell = null   # flétrissement (malus PM/PA)
@@ -30,7 +32,7 @@ extends BossBehavior
 @export var keep_distance: int = 2
 
 # Raccourci de catégorie pour alléger les appels.
-const CAT := DebugLogger.LogCategory.AI
+const CAT: LogDefinitions.LogCategory = LogDefinitions.LogCategory.AI
 
 # ============================================================
 # DÉCISION

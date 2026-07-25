@@ -9,6 +9,8 @@
 class_name Unit
 extends RefCounted
 
+const LogDefinitions = preload("res://debug/log_definitions.gd")
+
 # --- Identite ---
 var unit_name: String = "Sans nom"
 var team: int = 0
@@ -135,8 +137,8 @@ signal energy_changed(unit)
 signal shield_changed(unit)
 
 # Raccourcis de catÃ©gories de log (combat = vu par le joueur).
-const CAT_COMBAT := DebugLogger.LogCategory.COMBAT
-const CAT_STATS := DebugLogger.LogCategory.STATS
+const CAT_COMBAT: LogDefinitions.LogCategory = LogDefinitions.LogCategory.COMBAT
+const CAT_STATS: LogDefinitions.LogCategory = LogDefinitions.LogCategory.STATS
 
 # ============================================================
 # CONSTRUCTION

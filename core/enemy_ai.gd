@@ -1,11 +1,13 @@
 class_name EnemyAI
 extends RefCounted
 
+const LogDefinitions = preload("res://debug/log_definitions.gd")
+
 var _grid: GridData
 var _pathfinder: Pathfinder
 var _spell_caster: SpellCaster
 
-const CAT := DebugLogger.LogCategory.AI
+const CAT: LogDefinitions.LogCategory = LogDefinitions.LogCategory.AI
 
 const BEHAVIOR_MELEE := 0
 const BEHAVIOR_RANGED := 1
