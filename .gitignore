@@ -5,3 +5,6 @@
 # Fichiers temporaires de l'éditeur (sauvegardes de scène en cours d'écriture)
 *.tmp
 *.tmp[0-9]*
+
+addons/godot_ai_workbench/icon.png.import
+tests/characters/elf/screenshots/*.png.import
