@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"assassin"
+display_name = "Assassin"
+description = "Maîtrise des frappes rapprochées et opportunistes."
+presentation_color = Color(0.48, 0.3, 0.64, 1)

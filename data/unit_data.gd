@@ -16,6 +16,7 @@ extends Resource
 # IDENTITÉ
 # ============================================================
 
+@export var unit_id: StringName = &""
 @export var unit_name: String = "Unité"
 @export_multiline var description: String = ""
 
@@ -98,6 +99,9 @@ extends Resource
 # SORTS
 # ============================================================
 
+@export_group("Progression")
+@export var disciplines: Array[DisciplineData] = []
+
 @export_group("Sorts")
 # Liste des sorts (Resources Spell) que cette unité connaît.
 @export var spells: Array[Spell] = []
@@ -115,3 +119,11 @@ extends Resource
 # Override IA avance, utilisable sur un boss OU un ennemi normal.
 # Si rempli, il REMPLACE l'ai_behavior standard et peut contenir un etat interne.
 @export var boss_behavior: BossBehavior = null
+
+
+func get_effective_unit_id() -> StringName:
+	if unit_id != &"":
+		return unit_id
+	if resource_path != "":
+		return StringName(resource_path)
+	return &"unit_data:unassigned"

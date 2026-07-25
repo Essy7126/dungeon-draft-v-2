@@ -6,6 +6,8 @@ enum AoeShape { SINGLE, CROSS, SQUARE, LINE }
 enum DamageType { PHYSICAL, MAGICAL }
 enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 
+@export var spell_id: StringName = &""
+@export var discipline_id: StringName = &""
 @export var spell_name: String = "Sort sans nom"
 @export_multiline var description: String = ""
 @export var icon: Texture2D = null
@@ -110,3 +112,10 @@ func is_self_only() -> bool:
 		and not can_target_ally and not can_target_free_cell
 func can_imprint() -> bool:
 	return imprint_fervor_cost > 0.0
+
+func get_effective_spell_id() -> StringName:
+	if spell_id != &"":
+		return spell_id
+	if resource_path != "":
+		return StringName(resource_path)
+	return &"spell:unassigned"

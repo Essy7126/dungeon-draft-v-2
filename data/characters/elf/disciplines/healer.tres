@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"healer"
+display_name = "Soigneur"
+description = "Maîtrise des soins et de la protection des alliés."
+presentation_color = Color(0.3, 0.72, 0.58, 1)

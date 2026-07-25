@@ -58,6 +58,7 @@ const REWARDS_OFFERED := 3
 
 # --- État du run (vivant pendant tout le run) ---
 var heroes: Array = []          # Array[Unit] — persistent, HP conservés
+var character_states: Dictionary = {} # StringName -> CharacterRunState
 var rooms: Array = []           # Array[RoomData]
 var reward_pool: Array = []     # Array[RewardData]
 var current_room_index: int = -1
@@ -113,11 +114,17 @@ func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
 		return false
 
 	var hero_data_list: Array[UnitData] = []
+	var requested_ids := {}
 	for source in hero_sources:
 		var data := _resolve_unit_data(source)
 		if data == null:
 			push_error("UnitData preconfigure invalide : %s" % str(source))
 			return false
+		var character_id := data.get_effective_unit_id()
+		if requested_ids.has(character_id):
+			push_error("Identifiant de personnage duplique : %s" % character_id)
+			return false
+		requested_ids[character_id] = true
 		hero_data_list.append(data)
 
 	_pending_run_data = null
@@ -128,6 +135,12 @@ func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
 		# Aucun choix d'ecole ou trait de draft n'est applique sur cette voie.
 		hero.reset_combat_resources()
 		heroes.append(hero)
+		var character_state := CharacterRunState.new()
+		if not character_state.initialize(hero, data):
+			push_error("Impossible d'initialiser l'etat du personnage : %s" % hero.unit_id)
+			_clear_heroes()
+			return false
+		character_states[character_state.character_id] = character_state
 	_initialize_run_state(run_data)
 	return true
 
@@ -211,6 +224,10 @@ func _clear_heroes() -> void:
 		if hero != null and hero.has_method("clear_traits"):
 			hero.clear_traits()
 	heroes.clear()
+	character_states.clear()
+
+func get_character_state(character_id: StringName) -> CharacterRunState:
+	return character_states.get(character_id) as CharacterRunState
 
 # ============================================================
 # PROGRESSION ENTRE LES SALLES
@@ -387,7 +404,11 @@ func _apply_reward(reward: RewardData, targets: Array) -> void:
 			_apply_stat_mod(hero, reward.malus_stat, reward.malus_amount, reward.malus_is_percent)
 		# 4. Nouveau sort.
 		if reward.spell != null:
-			hero.add_spell(reward.spell)
+			var character_state := get_character_state(hero.unit_id)
+			if character_state != null:
+				character_state.loadout.learn_spell(reward.spell)
+			else:
+				hero.add_spell(reward.spell)
 		if reward.trait_data != null:
 			hero.add_trait_from_data(reward.trait_data)
 		# 5. Statut permanent (saignement de malédiction, etc.).

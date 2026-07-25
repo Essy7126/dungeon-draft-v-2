@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"archer"
+display_name = "Archer"
+description = "Maîtrise des attaques précises à longue portée."
+presentation_color = Color(0.35, 0.72, 0.32, 1)

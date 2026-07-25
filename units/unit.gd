@@ -12,6 +12,7 @@ extends RefCounted
 const LogDefinitions = preload("res://debug/log_definitions.gd")
 
 # --- Identite ---
+var unit_id: StringName = &""
 var unit_name: String = "Sans nom"
 var team: int = 0
 var ai_behavior: int = 0
@@ -189,6 +190,7 @@ static func from_data(data: UnitData) -> Unit:
 		data.unit_name, data.team, data.max_hp, data.initiative,
 		data.max_ap, data.max_mp, data.attack_power
 	)
+	u.unit_id = data.get_effective_unit_id()
 	u.sprite_frames = data.sprite_frames
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation

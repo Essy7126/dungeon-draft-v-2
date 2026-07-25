@@ -2,11 +2,17 @@
 
 [ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit_data"]
 [ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
-[ext_resource type="Resource" path="res://data/spells/frappe.tres" id="3_strike"]
-[ext_resource type="Resource" path="res://data/spells/mur_de_glace.tres" id="4_ice_wall"]
-[ext_resource type="Resource" path="res://data/spells/Mage/boule_de_feu.tres" id="5_fireball"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/precise_shot.tres" id="3_precise"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/sneak_strike.tres" id="4_sneak"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/fireball.tres" id="5_fireball"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/sylvan_heal.tres" id="6_heal"]
 [ext_resource type="Texture2D" path="res://asset/Soldier.png" id="6_fallback_texture"]
 [ext_resource type="PackedScene" path="res://characters/elf/ElfIsoUnitView.tscn" id="7_elf_visual"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer.tres" id="9_archer"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin.tres" id="10_assassin"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/mage.tres" id="11_mage"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/healer.tres" id="12_healer"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
 atlas = ExtResource("6_fallback_texture")
@@ -25,8 +31,10 @@ animations = [{
 
 [resource]
 script = ExtResource("1_unit_data")
+unit_id = &"elf"
 unit_name = "Elfe"
 description = "Lanceuse de sorts elfique projetee en 3D dans la salle isometrique."
 sprite_frames = SubResource("SpriteFrames_fallback")
 visual_scene = ExtResource("7_elf_visual")
-spells = Array[ExtResource("2_spell")]([ExtResource("3_strike"), ExtResource("4_ice_wall"), ExtResource("5_fireball")])
+disciplines = Array[ExtResource("8_discipline_type")]([ExtResource("9_archer"), ExtResource("10_assassin"), ExtResource("11_mage"), ExtResource("12_healer")])
+spells = Array[ExtResource("2_spell")]([ExtResource("3_precise"), ExtResource("4_sneak"), ExtResource("5_fireball"), ExtResource("6_heal")])
