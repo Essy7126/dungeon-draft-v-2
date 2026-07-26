@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://asset/shaders/environment/brume_vallee.gdshader" id="1_shader"]
+[ext_resource type="Script" path="res://ui/Particles/brume_vallee.gd" id="2_script"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_brume_vallee"]
+shader = ExtResource("1_shader")
+shader_parameter/vitesse = 0.03
+shader_parameter/echelle = 0.006
+shader_parameter/etirement_vertical = 3.0
+shader_parameter/densite = 1.0
+shader_parameter/seuil_bas = 0.2
+shader_parameter/seuil_haut = 0.75
+shader_parameter/position_masque = 0.45
+shader_parameter/douceur_masque = 0.4
+shader_parameter/couleur_fumee = Color(0.96, 0.94, 0.87, 1.0)
+shader_parameter/couleur_ombre = Color(0.78, 0.75, 0.68, 1.0)
+shader_parameter/respiration_vitesse = 0.2
+shader_parameter/respiration_amplitude = 0.08
+shader_parameter/zone_haut = 0.0
+shader_parameter/zone_bas = 100.0
+
+[node name="BrumeVallee" type="Polygon2D"]
+material = SubResource("ShaderMaterial_brume_vallee")
+polygon = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+script = ExtResource("2_script")
