@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/mage_glace/mage_glace_unit_view_2d.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://characters/mage_glace/mage_glace_sprite_frames.tres" id="2_frames"]
+
+[node name="MageGlaceUnitView2D" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Shadow" type="Polygon2D" parent="."]
+z_index = -2
+polygon = PackedVector2Array(-15, 0, -13.86, -1.72, -10.61, -3.18, -5.74, -4.16, 0, -4.5, 5.74, -4.16, 10.61, -3.18, 13.86, -1.72, 15, 0, 13.86, 1.72, 10.61, 3.18, 5.74, 4.16, 0, 4.5, -5.74, 4.16, -10.61, 3.18, -13.86, 1.72)
+color = Color(0.02, 0.025, 0.03, 0.28)
+
+[node name="SpriteRoot" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="SpriteRoot"]
+position = Vector2(0, -37.92)
+scale = Vector2(0.24, 0.24)
+texture_filter = 2
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="LeftHandEffectOrigin" type="Node2D" parent="."]
+position = Vector2(-18, -47)
+
+[node name="RightHandEffectOrigin" type="Node2D" parent="."]
+position = Vector2(19, -48)
+
+[node name="DefaultCastEffectOrigin" type="Node2D" parent="."]
+position = Vector2(19, -50)

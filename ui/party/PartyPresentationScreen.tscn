@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://data/runs/fixed_trio_prototype_run.tres" id="3_run"]
 [ext_resource type="Resource" path="res://data/units/alliés/elfe.tres" id="4_elf"]
 [ext_resource type="Resource" path="res://data/units/alliés/mage.tres" id="5_mage"]
-[ext_resource type="Resource" path="res://data/units/alliés/Gardien.tres" id="6_guardian"]
+[ext_resource type="Resource" path="res://characters/mage_glace/mage_glace.tres" id="6_mage_glace"]
 
 [sub_resource type="StyleBoxFlat" id="Style_start"]
 bg_color = Color(0.2, 0.42, 0.3, 1)
@@ -30,7 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 run_data = ExtResource("3_run")
-party_members = Array[ExtResource("2_unit_type")]([ExtResource("4_elf"), ExtResource("5_mage"), ExtResource("6_guardian")])
+party_members = Array[ExtResource("2_unit_type")]([ExtResource("4_elf"), ExtResource("5_mage"), ExtResource("6_mage_glace")])
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1

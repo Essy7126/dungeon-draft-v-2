@@ -1,0 +1,187 @@
+[gd_resource type="SpriteFrames" load_steps=33 format=3]
+
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_00.png" id="i0"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_01.png" id="i1"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_02.png" id="i2"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_03.png" id="i3"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_04.png" id="i4"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_05.png" id="i5"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_06.png" id="i6"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/idle_07.png" id="i7"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_00.png" id="w0"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_01.png" id="w1"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_02.png" id="w2"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_03.png" id="w3"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_04.png" id="w4"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_05.png" id="w5"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_06.png" id="w6"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/walk_07.png" id="w7"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/cast_00.png" id="c0"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/cast_01.png" id="c1"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/cast_02.png" id="c2"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/cast_03.png" id="c3"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/hit_00.png" id="h0"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/hit_01.png" id="h1"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/hit_02.png" id="h2"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/hit_03.png" id="h3"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/hit_04.png" id="h4"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/death_00.png" id="d0"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/death_01.png" id="d1"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/death_02.png" id="d2"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/death_03.png" id="d3"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/death_04.png" id="d4"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/death_05.png" id="d5"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/death_06.png" id="d6"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("c0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c2")
+}, {
+"duration": 1.45,
+"texture": ExtResource("c3")
+}],
+"loop": false,
+"name": &"cast",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("d0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("d1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("d2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("d3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("d4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("d5")
+}, {
+"duration": 1.3,
+"texture": ExtResource("d6")
+}],
+"loop": false,
+"name": &"death",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("h0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("h1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("h2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("h3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("h4")
+}],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.1,
+"texture": ExtResource("i0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("i1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("i2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("i3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("i4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("i5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("i6")
+}, {
+"duration": 1.1,
+"texture": ExtResource("i7")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("w0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w7")
+}],
+"loop": true,
+"name": &"run",
+"speed": 13.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("w0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("w7")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]

@@ -115,6 +115,13 @@ func _anchor_for(unit) -> Vector2:
 	if get_tree() != null:
 		for candidate in get_tree().get_nodes_in_group("unit_views"):
 			if candidate is Node2D and candidate.get("unit") == unit:
+				if candidate.has_method("get_optional_visual"):
+					var optional_visual = candidate.get_optional_visual()
+					if is_instance_valid(optional_visual) \
+							and optional_visual.has_method("get_popup_anchor"):
+						return to_local(optional_visual.to_global(
+							optional_visual.get_popup_anchor()
+						))
 				return to_local(candidate.to_global(Vector2(0.0, BASE_OFFSET_Y)))
 	if is_instance_valid(_battle_view):
 		var cell_local: Vector2

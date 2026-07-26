@@ -19,16 +19,16 @@ func test_screen_builds_three_data_driven_cards_in_fixed_order() -> void:
 	assert_eq(cards.map(func(card): return card.character_data.unit_name), [
 		"Elfe",
 		"Mage",
-		"Gardien",
+		"Mage de glace",
 	])
 	assert_eq(cards.map(func(card): return card.spell_count_label.text), [
 		"4 sorts",
 		"4 sorts",
-		"5 sorts",
+		"4 sorts",
 	])
 
 
-func test_elf_and_mage_use_real_3d_previews_while_guardian_has_clean_fallback() -> void:
+func test_elf_and_mage_use_3d_previews_while_ice_mage_uses_its_portrait() -> void:
 	var cards := screen.get_cards()
 	assert_true(cards[0].preview.get_visual_instance() is ElfVisual3D)
 	assert_false(cards[0].preview.is_using_fallback())
@@ -45,8 +45,10 @@ func test_elf_and_mage_use_real_3d_previews_while_guardian_has_clean_fallback() 
 	assert_false(cards[1].badge_label.visible)
 
 	assert_null(cards[2].preview.get_visual_instance())
-	assert_true(cards[2].preview.is_using_fallback())
-	assert_eq(cards[2].badge_label.text, "Troisième héros provisoire")
+	assert_false(cards[2].preview.is_using_fallback())
+	assert_true(cards[2].preview.portrait_rect.visible)
+	assert_not_null(cards[2].preview.portrait_rect.texture)
+	assert_eq(cards[2].badge_label.text, "Prototype sprite 2D")
 	assert_true(cards[2].badge_label.visible)
 
 
@@ -58,7 +60,8 @@ func test_preview_replacement_frees_the_previous_true_visual() -> void:
 	assert_true(preview.get_visual_instance() is MageVisual3D)
 	preview.configure(screen.party_members[2])
 	assert_false(preview.get_visual_instance() is MageVisual3D)
-	assert_true(preview.is_using_fallback())
+	assert_false(preview.is_using_fallback())
+	assert_true(preview.portrait_rect.visible)
 
 
 func test_start_uses_existing_preconfigured_run_api_with_exact_party() -> void:
@@ -72,7 +75,7 @@ func test_start_uses_existing_preconfigured_run_api_with_exact_party() -> void:
 	assert_eq(manager.get_ordered_heroes().map(func(hero): return hero.unit_name), [
 		"Elfe",
 		"Mage",
-		"Gardien",
+		"Mage de glace",
 	])
 	assert_eq(manager.current_room_index, 0)
 	assert_true(screen.start_button.disabled)

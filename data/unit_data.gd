@@ -95,6 +95,7 @@ extends Resource
 # rendu historique de l'unite reste le fallback.
 @export var visual_scene: PackedScene = null
 @export var preview_visual_scene: PackedScene = null
+@export var portrait: Texture2D = null
 
 @export_group("Presentation")
 @export var role: String = ""

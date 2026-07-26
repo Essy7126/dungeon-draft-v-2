@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="Resource" path="res://data/spells/Mage/boule_de_feu.tres" id="3_fireball"]
+[ext_resource type="Resource" path="res://data/spells/mur_de_glace.tres" id="4_ice_wall"]
+[ext_resource type="Resource" path="res://data/spells/Mage/tempete_orageuse.tres" id="5_thunderstorm"]
+[ext_resource type="Resource" path="res://data/spells/Mage/onde_sismique.tres" id="6_seismic_wave"]
+[ext_resource type="SpriteFrames" path="res://characters/mage_glace/mage_glace_sprite_frames.tres" id="7_frames"]
+[ext_resource type="PackedScene" path="res://characters/mage_glace/MageGlaceUnitView2D.tscn" id="8_visual"]
+[ext_resource type="Texture2D" path="res://characters/mage_glace/processed/portrait.png" id="9_portrait"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="10_discipline_type"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/fire.tres" id="11_fire"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/ice.tres" id="12_ice"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/lightning.tres" id="13_lightning"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/earth.tres" id="14_earth"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"mage_glace_test"
+unit_name = "Mage de glace"
+description = "Prototype jouable 2D du Mage de glace, construit a partir de planches IA nettoyees et alignees."
+team = 0
+max_hp = 100
+initiative = 10
+max_ap = 6
+max_mp = 3
+attack_power = 20
+sprite_frames = ExtResource("7_frames")
+sprite_scale = 0.24
+idle_animation = "idle"
+visual_scene = ExtResource("8_visual")
+portrait = ExtResource("9_portrait")
+role = "Cryomancien experimental"
+presentation_summary = "Controle le champ de bataille avec le kit elementaire stable du Mage, dans une vue 2D animee."
+progression_summary = "Quatre disciplines elementaires au rang 1"
+presentation_badge = "Prototype sprite 2D"
+disciplines = Array[ExtResource("10_discipline_type")]([ExtResource("11_fire"), ExtResource("12_ice"), ExtResource("13_lightning"), ExtResource("14_earth")])
+basic_attack_enabled = false
+spells = Array[ExtResource("2_spell")]([ExtResource("3_fireball"), ExtResource("4_ice_wall"), ExtResource("5_thunderstorm"), ExtResource("6_seismic_wave")])
