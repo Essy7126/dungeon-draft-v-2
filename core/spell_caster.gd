@@ -50,6 +50,8 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 			var pos = Vector2i(x, y)
 			if pos == caster.grid_pos and not spell.can_target_self:
 				continue
+			if not _grid.is_terrain_interactable(pos):
+				continue
 			if _grid.manhattan(caster.grid_pos, pos) > spell.spell_range:
 				continue
 			if spell.line_from_caster and not _is_cardinal_line_target(caster.grid_pos, pos):
