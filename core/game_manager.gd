@@ -21,6 +21,7 @@ extends Node
 const GUARDIAN_DATA_PATH := "res://data/units/alliés/Gardien.tres"
 const WARRIOR_DATA_PATH := "res://data/units/alliés/Guerrier.tres"
 const ELF_DATA_PATH := "res://data/units/alliés/elfe.tres"
+const MAGE_DATA_PATH := "res://data/units/alliés/mage.tres"
 
 const HERO_DATA_PATHS = [
 	GUARDIAN_DATA_PATH,

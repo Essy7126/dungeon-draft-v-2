@@ -208,9 +208,10 @@ func _refresh_button_states() -> void:
 		return
 	_move_btn.disabled = not _player_controls_enabled
 	_end_btn.disabled = not _player_controls_enabled
-	var attack_blocked := _current_unit == null
-	if _current_unit != null:
-		attack_blocked = _current_unit.current_ap < _current_unit.get_basic_attack_ap_cost()
+	var attack_available: bool = _current_unit != null \
+		and _current_unit.can_use_basic_attack()
+	var attack_blocked: bool = not attack_available
+	_attack_btn.visible = _current_unit == null or _current_unit.basic_attack_enabled
 	_attack_btn.disabled = not _player_controls_enabled or attack_blocked
 	if _current_unit != null:
 		_attack_btn.text = "Attaquer\n%d PA" % _current_unit.get_basic_attack_ap_cost()
@@ -359,6 +360,8 @@ func _reaction_tooltip(unit) -> String:
 func _attack_tooltip(unit) -> String:
 	if unit == null:
 		return "Aucun combattant actif."
+	if not unit.basic_attack_enabled:
+		return "Ce personnage ne possede pas d'attaque de base."
 	var cost: int = unit.get_basic_attack_ap_cost()
 	if unit.current_ap < cost:
 		return "Injouable : PA insuffisants (%d / %d)." % [unit.current_ap, cost]

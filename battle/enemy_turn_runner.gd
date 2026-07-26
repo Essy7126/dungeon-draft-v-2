@@ -71,6 +71,8 @@ func _execute_move(enemy: Unit, path: Array) -> void:
 func _execute_attack(enemy: Unit, target: Unit) -> void:
 	if not is_instance_valid(target) or not target.is_alive:
 		return
+	if not enemy.basic_attack_enabled:
+		return
 	if not _battle.grid.are_adjacent(enemy.grid_pos, target.grid_pos):
 		return
 	if not enemy.spend_ap(enemy.get_basic_attack_ap_cost()):

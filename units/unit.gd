@@ -125,8 +125,10 @@ var sprite_frames: SpriteFrames = null
 var sprite_scale: float = 3.0
 var idle_animation: String = "default"
 var visual_scene: PackedScene = null
+var preview_visual_scene: PackedScene = null
 
 # --- Sorts ---
+var basic_attack_enabled: bool = true
 var spells: Array = []
 var _progression_spell_modifiers: Array[SpellModifier] = []
 
@@ -206,6 +208,8 @@ static func from_data(data: UnitData) -> Unit:
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
 	u.visual_scene = data.visual_scene
+	u.preview_visual_scene = data.preview_visual_scene
+	u.basic_attack_enabled = data.basic_attack_enabled
 	u.ai_behavior = data.ai_behavior
 	u.facing_dir = data.facing_dir
 	# Stats dÃ©fensives : on rÃ¨gle la valeur de BASE de chaque Stat.
@@ -554,6 +558,9 @@ func get_basic_attack_ap_cost() -> int:
 
 func get_basic_attack_cost() -> int:
 	return get_basic_attack_ap_cost()
+
+func can_use_basic_attack() -> bool:
+	return basic_attack_enabled and is_alive and current_ap >= get_basic_attack_ap_cost()
 
 # Cout PA effectif d'un sort : ap_cost - remise de terrain natif (jamais sous
 # 1 PA pour un sort qui coute quelque chose : la remise allege, ne rend pas gratuit).

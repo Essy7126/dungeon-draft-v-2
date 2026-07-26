@@ -287,14 +287,14 @@ func test_action_bar_receives_four_ordered_elf_spells_without_imprints_or_overfl
 	assert_lte(bar.get("_hbox").get_combined_minimum_size().x, 1200.0)
 
 
-func test_elf_fireball_is_distinct_without_mutating_the_historical_mage_spell() -> void:
+func test_elf_fireball_remains_distinct_from_the_stable_mage_fireball() -> void:
 	var elf_data := load(ELF_PATH) as UnitData
 	var legacy_fireball := load(LEGACY_FIREBALL_PATH) as Spell
 	var legacy_mage := load(LEGACY_MAGE_PATH) as UnitData
 	var elf_fireball: Spell = elf_data.spells[2]
 	assert_ne(elf_fireball.resource_path, legacy_fireball.resource_path)
 	assert_eq(elf_fireball.get_effective_spell_id(), &"elf_fireball")
-	assert_eq(legacy_fireball.spell_id, &"")
+	assert_eq(legacy_fireball.spell_id, &"mage_fireball")
 	assert_eq(legacy_fireball.discipline_id, &"")
 	assert_true(legacy_fireball in legacy_mage.spells)
 

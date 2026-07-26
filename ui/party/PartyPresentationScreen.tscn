@@ -1,0 +1,97 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://ui/party/party_presentation_screen.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="2_unit_type"]
+[ext_resource type="Resource" path="res://data/runs/fixed_trio_prototype_run.tres" id="3_run"]
+[ext_resource type="Resource" path="res://data/units/alliés/elfe.tres" id="4_elf"]
+[ext_resource type="Resource" path="res://data/units/alliés/mage.tres" id="5_mage"]
+[ext_resource type="Resource" path="res://data/units/alliés/Gardien.tres" id="6_guardian"]
+
+[sub_resource type="StyleBoxFlat" id="Style_start"]
+bg_color = Color(0.2, 0.42, 0.3, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="Style_back"]
+bg_color = Color(0.18, 0.2, 0.27, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[node name="PartyPresentationScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+run_data = ExtResource("3_run")
+party_members = Array[ExtResource("2_unit_type")]([ExtResource("4_elf"), ExtResource("5_mage"), ExtResource("6_guardian")])
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.018, 0.024, 0.04, 1)
+
+[node name="Margin" type="MarginContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 20
+
+[node name="Layout" type="VBoxContainer" parent="Background/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Title" type="Label" parent="Background/Margin/Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.91, 1, 1)
+theme_override_font_sizes/font_size = 36
+text = "Votre groupe"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Background/Margin/Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.68, 0.78, 1)
+text = "Trio fixe — prototype"
+horizontal_alignment = 1
+
+[node name="Cards" type="HBoxContainer" parent="Background/Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Background/Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Start" type="Button" parent="Background/Margin/Layout/Buttons"]
+custom_minimum_size = Vector2(240, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("Style_start")
+text = "Commencer la run"
+
+[node name="Back" type="Button" parent="Background/Margin/Layout/Buttons"]
+custom_minimum_size = Vector2(150, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("Style_back")
+text = "Retour"

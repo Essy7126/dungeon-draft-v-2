@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/characters/elf/spells/sylvan_heal.tres" id="6_heal"]
 [ext_resource type="Texture2D" path="res://asset/Soldier.png" id="6_fallback_texture"]
 [ext_resource type="PackedScene" path="res://characters/elf/ElfIsoUnitView.tscn" id="7_elf_visual"]
+[ext_resource type="PackedScene" path="res://characters/elf/ElfVisual3D.tscn" id="7_elf_preview"]
 [ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer.tres" id="9_archer"]
 [ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin.tres" id="10_assassin"]
@@ -36,5 +37,9 @@ unit_name = "Elfe"
 description = "Lanceuse de sorts elfique projetee en 3D dans la salle isometrique."
 sprite_frames = SubResource("SpriteFrames_fallback")
 visual_scene = ExtResource("7_elf_visual")
+preview_visual_scene = ExtResource("7_elf_preview")
+role = "Polyvalente"
+presentation_summary = "Quatre voies complementaires pour adapter ses sorts au combat."
+progression_summary = "4 disciplines"
 disciplines = Array[ExtResource("8_discipline_type")]([ExtResource("9_archer"), ExtResource("10_assassin"), ExtResource("11_mage"), ExtResource("12_healer")])
 spells = Array[ExtResource("2_spell")]([ExtResource("3_precise"), ExtResource("4_sneak"), ExtResource("5_fireball"), ExtResource("6_heal")])

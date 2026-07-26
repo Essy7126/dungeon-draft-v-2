@@ -94,6 +94,13 @@ extends Resource
 # Scene visuelle optionnelle instanciee par UnitView. Si elle est vide, le
 # rendu historique de l'unite reste le fallback.
 @export var visual_scene: PackedScene = null
+@export var preview_visual_scene: PackedScene = null
+
+@export_group("Presentation")
+@export var role: String = ""
+@export_multiline var presentation_summary: String = ""
+@export var progression_summary: String = ""
+@export var presentation_badge: String = ""
 
 # ============================================================
 # SORTS
@@ -103,6 +110,7 @@ extends Resource
 @export var disciplines: Array[DisciplineData] = []
 
 @export_group("Sorts")
+@export var basic_attack_enabled: bool = true
 # Liste des sorts (Resources Spell) que cette unité connaît.
 @export var spells: Array[Spell] = []
 # ============================================================

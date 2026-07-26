@@ -19,6 +19,7 @@ var _threshold_notch: ColorRect
 var _pulse_tween: Tween = null
 var _optional_visual: Node2D = null
 var _optional_visual_cast_pending := false
+var _optional_visual_cast_generation := 0
 
 func setup(p_unit: Unit) -> void:
 	unit = p_unit
@@ -42,6 +43,11 @@ func setup(p_unit: Unit) -> void:
 	EventBus.status_expired.connect(_on_status_expired)
 	_update_all_bars()
 	_update_status_icons()
+
+
+func _exit_tree() -> void:
+	_optional_visual_cast_generation += 1
+	_optional_visual_cast_pending = false
 
 func _build_visual() -> void:
 	_sprite = AnimatedSprite2D.new()
@@ -119,6 +125,8 @@ func prepare_spell_visual(target_cell: Vector2i) -> bool:
 	if _optional_visual_cast_pending:
 		return false
 	_optional_visual_cast_pending = true
+	_optional_visual_cast_generation += 1
+	var cast_generation := _optional_visual_cast_generation
 	var started = _optional_visual.play_cast()
 	if started is bool and not started:
 		_optional_visual_cast_pending = false
@@ -127,18 +135,27 @@ func prepare_spell_visual(target_cell: Vector2i) -> bool:
 		_optional_visual_cast_pending = false
 		return true
 	var release_state := {"released": false}
-	var mark_released := func() -> void: release_state["released"] = true
+	var mark_released := func() -> void:
+		if cast_generation == _optional_visual_cast_generation:
+			release_state["released"] = true
 	_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
 	var deadline := Time.get_ticks_msec() + 5000
-	while not release_state["released"] and unit.is_alive and Time.get_ticks_msec() < deadline:
+	while cast_generation == _optional_visual_cast_generation \
+			and not release_state["released"] \
+			and unit.is_alive \
+			and is_instance_valid(_optional_visual) \
+			and Time.get_ticks_msec() < deadline:
 		await get_tree().process_frame
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.is_connected("cast_release_reached", mark_released):
 		_optional_visual.disconnect("cast_release_reached", mark_released)
-	_optional_visual_cast_pending = false
+	if cast_generation == _optional_visual_cast_generation:
+		_optional_visual_cast_pending = false
 	if not release_state["released"] and unit.is_alive:
-		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le gameplay reprend sans blocage." % unit.unit_name)
-	return unit.is_alive
+		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le cast visuel est annule." % unit.unit_name)
+	return cast_generation == _optional_visual_cast_generation \
+		and unit.is_alive \
+		and release_state["released"]
 
 func _make_bar(size: Vector2, pos: Vector2, color: Color) -> ProgressBar:
 	var bar := ProgressBar.new()

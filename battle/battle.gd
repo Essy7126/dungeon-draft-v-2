@@ -494,6 +494,9 @@ func _on_move_pressed() -> void:
 	_refresh_mode_button()
 
 func _on_attack_pressed() -> void:
+	var unit = turn_queue.get_current_unit()
+	if unit == null or not unit.basic_attack_enabled:
+		return
 	turn_state.on_attack_button()
 	_refresh_mode_button()
 
@@ -638,7 +641,8 @@ func _animate_move(unit: Unit, path: Array) -> void:
 
 func _on_request_show_attack_range() -> void:
 	var unit = turn_queue.get_current_unit()
-	if unit == null:
+	if unit == null or not unit.basic_attack_enabled:
+		turn_state.set_state(TurnState.State.IDLE)
 		return
 	grid_view.clear_highlights()
 	grid_view.highlight(_get_attackable_cells(unit), ATTACK_COLOR)
@@ -656,7 +660,8 @@ func _get_attackable_cells(unit: Unit) -> Array:
 
 func _on_request_attack(cell: Vector2i) -> void:
 	var unit = turn_queue.get_current_unit()
-	if unit == null:
+	if unit == null or not unit.basic_attack_enabled:
+		turn_state.set_state(TurnState.State.IDLE)
 		return
 	if not _get_attackable_cells(unit).has(cell):
 		return

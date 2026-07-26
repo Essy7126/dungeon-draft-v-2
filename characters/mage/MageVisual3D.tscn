@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/mage/mage_visual_3d.gd" id="1_controller"]
+[ext_resource type="PackedScene" uid="uid://clu1i2akn0hhj" path="res://assets/characters/mage/mage_godot_baseline.glb" id="2_mage"]
+
+[node name="MageVisual3D" type="Node3D"]
+script = ExtResource("1_controller")
+
+[node name="ModelPivot" type="Node3D" parent="."]
+
+[node name="MageModel" parent="ModelPivot" instance=ExtResource("2_mage")]
