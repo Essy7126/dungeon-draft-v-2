@@ -1,0 +1,195 @@
+[gd_scene load_steps=8 format=3 uid="uid://bnbb3vym4gxtq"]
+
+[ext_resource type="Texture2D" uid="uid://x8mxtrlq0l8" path="res://asset/sorts/tempete_orageuse/tex_storm_ground_impact.png.png" id="1_mhkut"]
+[ext_resource type="Texture2D" uid="uid://b2thwf2pgd46g" path="res://asset/sorts/tempete_orageuse/tex_storm_cloud.png.png" id="2_qutn2"]
+[ext_resource type="Texture2D" uid="uid://ciejclsrsoiwq" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="3_v8dya"]
+[ext_resource type="Script" path="res://asset/sorts/tempete_orageuse/tempete_orageuse_vfx.gd" id="4_script"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_usgtg"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_mhkut"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("GroundImpact:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GroundImpact:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.12, 0.12)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("LightningCluster:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("StormCloud:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = false
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("StormCloud:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = false
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.18, 0.18)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("StormCloud:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = false
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.06981317]
+}
+
+[sub_resource type="Animation" id="Animation_qs18r"]
+resource_name = "cast"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("StormCloud:modulate")
+tracks/0/interp = 2
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.18, 0.55, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("StormCloud:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.18, 0.55, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.18, 0.18), Vector2(0.25, 0.25), Vector2(0.26, 0.26), Vector2(0.28, 0.28)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("StormCloud:rotation")
+tracks/2/interp = 2
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.18, 0.55, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [-0.06981317, 0.0, 0.05235988, 0.08726646]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("LightningCluster:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = false
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.27, 0.29, 0.35, 0.39, 0.46),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0.45), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GroundImpact:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = false
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.29, 0.31, 0.4, 0.58, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0.35), Color(1, 1, 1, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("GroundImpact:scale")
+tracks/5/interp = 2
+tracks/5/loop_wrap = false
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.29, 0.31, 0.4, 0.58, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.12, 0.12), Vector2(0.22, 0.22), Vector2(0.28, 0.28), Vector2(0.31, 0.31), Vector2(0.33, 0.33)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6whmt"]
+_data = {
+&"RESET": SubResource("Animation_mhkut"),
+&"cast": SubResource("Animation_qs18r")
+}
+
+[node name="TempeteOrageuseVFX" type="Node2D" unique_id=1081333280 groups=["tempete_orageuse_vfx"]]
+script = ExtResource("4_script")
+
+[node name="GroundImpact" type="Sprite2D" parent="." unique_id=2139172317]
+modulate = Color(1, 1, 1, 0)
+material = SubResource("CanvasItemMaterial_usgtg")
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("1_mhkut")
+
+[node name="LightningCluster" type="Sprite2D" parent="." unique_id=1793515044]
+modulate = Color(1, 1, 1, 0)
+z_index = 1
+material = SubResource("CanvasItemMaterial_usgtg")
+position = Vector2(0, -120)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_v8dya")
+
+[node name="StormCloud" type="Sprite2D" parent="." unique_id=727155600]
+modulate = Color(1, 1, 1, 0)
+z_index = 2
+position = Vector2(0, -260)
+rotation = -0.06981317
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("2_qutn2")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=250859908]
+libraries/ = SubResource("AnimationLibrary_6whmt")
