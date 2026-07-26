@@ -118,16 +118,23 @@ func get_cast_effect_origin_global() -> Vector2:
 
 ## Synchronisation visuelle seulement : le calcul du sort reste dans
 ## SpellCaster. Le bool false ignore un second clic pendant le meme wind-up.
-func prepare_spell_visual(target_cell: Vector2i) -> bool:
+func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 	face_grid_direction(target_cell - unit.grid_pos)
-	if not is_instance_valid(_optional_visual) or not _optional_visual.has_method("play_cast"):
+	if not is_instance_valid(_optional_visual):
+		return true
+	var has_spell_action := _optional_visual.has_method("play_spell_action")
+	if not has_spell_action and not _optional_visual.has_method("play_cast"):
 		return true
 	if _optional_visual_cast_pending:
 		return false
 	_optional_visual_cast_pending = true
 	_optional_visual_cast_generation += 1
 	var cast_generation := _optional_visual_cast_generation
-	var started = _optional_visual.play_cast()
+	var started = (
+		_optional_visual.play_spell_action(spell)
+		if has_spell_action
+		else _optional_visual.play_cast()
+	)
 	if started is bool and not started:
 		_optional_visual_cast_pending = false
 		return false
@@ -151,6 +158,10 @@ func prepare_spell_visual(target_cell: Vector2i) -> bool:
 		_optional_visual.disconnect("cast_release_reached", mark_released)
 	if cast_generation == _optional_visual_cast_generation:
 		_optional_visual_cast_pending = false
+	if not release_state["released"] \
+			and is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("cancel_spell_action"):
+		_optional_visual.cancel_spell_action()
 	if not release_state["released"] and unit.is_alive:
 		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le cast visuel est annule." % unit.unit_name)
 	return cast_generation == _optional_visual_cast_generation \

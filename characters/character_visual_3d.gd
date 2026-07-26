@@ -49,6 +49,9 @@ var _left_hand_item: Node3D = null
 var _right_hand_item: Node3D = null
 var _attachment_origins: Dictionary = {}
 var _cast_release_emitted := true
+var _release_animation_name: StringName = &""
+var _release_time_seconds := -1.0
+var _release_normalized_time := 0.0
 var _death_locked := false
 
 
@@ -67,14 +70,16 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _animation_player == null or _cast_release_emitted or _death_locked:
 		return
-	if not _animation_player.is_playing() or get_current_animation() != animation_cast:
+	if _release_animation_name == &"" \
+			or not _animation_player.is_playing() \
+			or get_current_animation() != _release_animation_name:
 		return
-	var animation := _animation_player.get_animation(animation_cast)
+	var animation := _animation_player.get_animation(_release_animation_name)
 	if animation == null or animation.length <= 0.0:
 		return
-	var release_time := cast_release_time_seconds
+	var release_time := _release_time_seconds
 	if release_time < 0.0:
-		release_time = animation.length * clampf(cast_release_normalized_time, 0.0, 1.0)
+		release_time = animation.length * clampf(_release_normalized_time, 0.0, 1.0)
 	if _animation_player.current_animation_position + 0.000001 < release_time:
 		return
 	_cast_release_emitted = true
@@ -83,6 +88,7 @@ func _process(_delta: float) -> void:
 
 func _exit_tree() -> void:
 	_cast_release_emitted = true
+	_release_animation_name = &""
 	if _animation_player != null:
 		var started := Callable(self, "_on_player_animation_started")
 		var finished := Callable(self, "_on_player_animation_finished")
@@ -113,7 +119,13 @@ func play_run(speed_scale: float = 1.0, blend_time: float = 0.1) -> bool:
 func play_cast_full(speed_scale: float = 1.0) -> bool:
 	if _death_locked:
 		return false
-	return play_animation(animation_cast, speed_scale, 0.1)
+	return play_animation_with_release(
+		animation_cast,
+		cast_release_normalized_time,
+		cast_release_time_seconds,
+		speed_scale,
+		0.1
+	)
 
 
 func play_cast_start(speed_scale: float = 1.0) -> bool:
@@ -163,8 +175,29 @@ func play_animation(
 		push_warning("%s: vitesse invalide pour %s : %s" % [get_class(), animation_name, speed_scale])
 		return false
 	_animation_player.speed_scale = 1.0
-	_cast_release_emitted = animation_name != animation_cast
+	_cast_release_emitted = true
+	_release_animation_name = &""
+	_release_time_seconds = -1.0
+	_release_normalized_time = 0.0
 	_animation_player.play(animation_name, maxf(blend_time, 0.0), speed_scale)
+	return true
+
+
+func play_animation_with_release(
+		animation_name: StringName,
+		release_normalized_time: float,
+		release_time_seconds: float = -1.0,
+		speed_scale: float = 1.0,
+		blend_time: float = 0.1
+	) -> bool:
+	if _death_locked:
+		return false
+	if not play_animation(animation_name, speed_scale, blend_time):
+		return false
+	_release_animation_name = animation_name
+	_release_time_seconds = release_time_seconds
+	_release_normalized_time = clampf(release_normalized_time, 0.0, 1.0)
+	_cast_release_emitted = false
 	return true
 
 
@@ -174,6 +207,9 @@ func stop_animation() -> void:
 	_animation_player.stop()
 	_animation_player.speed_scale = 1.0
 	_cast_release_emitted = true
+	_release_animation_name = &""
+	_release_time_seconds = -1.0
+	_release_normalized_time = 0.0
 
 
 func reset_to_idle() -> void:
@@ -216,6 +252,16 @@ func is_animation_playing(animation_name: StringName = &"") -> bool:
 	if _animation_player == null or not _animation_player.is_playing():
 		return false
 	return animation_name == &"" or get_current_animation() == animation_name
+
+
+func is_cast_animation(animation_name: StringName) -> bool:
+	return animation_name == animation_cast or (
+		animation_cast_end != &"" and animation_name == animation_cast_end
+	)
+
+
+func is_death_locked() -> bool:
+	return _death_locked
 
 
 func get_animation_name_for_action(action: StringName) -> StringName:
@@ -329,6 +375,9 @@ func _on_player_animation_started(animation_name: StringName) -> void:
 
 func _on_player_animation_finished(animation_name: StringName) -> void:
 	_animation_player.speed_scale = 1.0
+	if animation_name == _release_animation_name and not _cast_release_emitted and not _death_locked:
+		_cast_release_emitted = true
+		cast_release_reached.emit()
 	animation_finished.emit(animation_name)
 	if animation_name == animation_death:
 		death_animation_finished.emit()
@@ -336,9 +385,7 @@ func _on_player_animation_finished(animation_name: StringName) -> void:
 		hit_reaction_finished.emit()
 		if not _death_locked:
 			play_idle()
-	elif animation_name == animation_cast or (
-			animation_cast_end != &"" and animation_name == animation_cast_end
-	):
+	elif is_cast_animation(animation_name):
 		if not _death_locked:
 			play_idle()
 

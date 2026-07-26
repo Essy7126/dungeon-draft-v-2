@@ -190,6 +190,24 @@ func play_cast() -> bool:
 	return _play_if_new(CharacterVisual3D.ACTION_CAST, VisualPriority.CAST, 1.0)
 
 
+func play_spell_action(_spell: Spell = null) -> bool:
+	return play_cast()
+
+
+func _play_cast_action(animation_name: StringName, play_callable: Callable) -> bool:
+	if _death_locked or _visual_priority > VisualPriority.CAST:
+		return false
+	if character_visual.get_current_animation() == animation_name \
+			and character_visual.is_animation_playing(animation_name):
+		return false
+	_visual_priority = VisualPriority.CAST
+	var started = play_callable.call()
+	if started is bool and not started:
+		_visual_priority = VisualPriority.IDLE
+		return false
+	return true
+
+
 func play_hit() -> bool:
 	if _death_locked or _visual_priority > VisualPriority.HIT:
 		return false
@@ -444,10 +462,8 @@ func _on_visual_animation_finished(animation_name: StringName) -> void:
 	if animation_name == character_visual.animation_hit \
 			and _visual_priority == VisualPriority.HIT:
 		_visual_priority = VisualPriority.IDLE
-	elif animation_name in [
-			character_visual.animation_cast,
-			character_visual.animation_cast_end,
-		] and _visual_priority == VisualPriority.CAST:
+	elif character_visual.is_cast_animation(animation_name) \
+			and _visual_priority == VisualPriority.CAST:
 		_visual_priority = VisualPriority.IDLE
 
 

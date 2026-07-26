@@ -729,7 +729,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = fals
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
 		if view.has_method("prepare_spell_visual"):
-			var visual_ready: bool = await view.prepare_spell_visual(cell)
+			var visual_ready: bool = await view.prepare_spell_visual(cell, spell)
 			if not visual_ready:
 				_spell_resolution_pending = false
 				return

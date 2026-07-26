@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://dn1kfp35ufkjm"]
+
+[ext_resource type="Texture2D" uid="uid://ckqxuaxrxocj2" path="res://asset/sorts/elfe_arc_magique/Meshy_AI_58e7958069a2b17a3131699f250e88716204d958abe9618c90aed37df322a7a3.png" id="1_14tcs"]
+[ext_resource type="Script" uid="uid://b0v8a8vhgql6h" path="res://asset/sorts/elfe_arc_magique/elf_magic_arrow_impact.gd" id="1_jqyau"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jqyau"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tf7se"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(0, 0, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lmbch"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(458, 0, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ujdxg"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(916, 0, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xmsbo"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(0, 256, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7qkcj"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(458, 256, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0itpn"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(0, 512, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ahvw"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(916, 256, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w3n6p"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(458, 512, 458, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ryibx"]
+atlas = ExtResource("1_14tcs")
+region = Rect2(916, 512, 458, 256)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_05x6l"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tf7se")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lmbch")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ujdxg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xmsbo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7qkcj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0itpn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ahvw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w3n6p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ryibx")
+}],
+"loop": 0,
+"name": &"impact",
+"speed": 12.0
+}]
+
+[node name="ElfMagicArrowImpact" type="Node2D" unique_id=1553549780]
+script = ExtResource("1_jqyau")
+
+[node name="ImpactAnimation" type="AnimatedSprite2D" parent="." unique_id=1947931163]
+material = SubResource("CanvasItemMaterial_jqyau")
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("SpriteFrames_05x6l")
+animation = &"impact"

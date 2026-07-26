@@ -123,7 +123,9 @@ func _run_structural_validation() -> Dictionary:
 		)
 	warnings.append("cast_release_normalized_time=0.32 doit être calibré visuellement avec le futur effet de sort.")
 	warnings.append("Elf_Death conserve son déplacement Hips importé ; aucun root motion n’est extrait.")
-	warnings.append("Aucune animation Bow Attack n’est disponible dans ce GLB de production.")
+	warnings.append(
+		"Le clip provisoire de tir est chargé comme Animation externe et conserve une légère translation Hips."
+	)
 	var missing_animations: Array[String] = []
 	if player != null:
 		for animation_name in ANIMATION_ORDER:
@@ -131,6 +133,14 @@ func _run_structural_validation() -> Dictionary:
 				missing_animations.append(str(animation_name))
 	if not missing_animations.is_empty():
 		errors.append("Animations manquantes : %s" % str(missing_animations))
+	if player != null and not player.has_animation(ElfVisual3D.ANIM_BOW_SHOT):
+		errors.append("Animation provisoire de tir à l'arc manquante.")
+	elif player != null:
+		var bow_animation := player.get_animation(ElfVisual3D.ANIM_BOW_SHOT)
+		if not is_equal_approx(bow_animation.length, 0.7):
+			errors.append(
+				"Durée inattendue pour le tir à l'arc : %.6f s." % bow_animation.length
+			)
 	var left_socket := visual.find_child("WeaponSocketLeft", true, false) as BoneAttachment3D
 	var right_socket := visual.find_child("WeaponSocketRight", true, false) as BoneAttachment3D
 	var left_marker := visual.find_child("DebugLeftHandMarker", true, false) as Node3D
@@ -229,6 +239,10 @@ func _run_automated_validation(exit_when_done: bool) -> void:
 		ElfVisual3D.ANIM_DEATH,
 	]:
 		observations.append(await _observe_animation(animation_name, errors))
+	# L'observation de Death verrouille volontairement le composant. Les tests
+	# d'API indépendants qui suivent doivent repartir d'un état vivant.
+	visual.reset_to_idle()
+	await get_tree().process_frame
 	var cast_release_before := _cast_release_signal_count
 	visual.play_cast_full(8.0)
 	await get_tree().create_timer(player.get_animation(ElfVisual3D.ANIM_CAST_FULL).length / 8.0 + 0.12).timeout

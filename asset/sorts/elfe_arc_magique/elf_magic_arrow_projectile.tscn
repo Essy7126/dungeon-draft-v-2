@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cet65tb6e0w4d"]
+
+[ext_resource type="Texture2D" uid="uid://cgpkuvsetmv41" path="res://asset/sorts/elfe_arc_magique/Meshy_AI_fa41a3267447c0eff9de1c960eec9ecfc15bffa2d3ff2d4c633f568a57b44b19 (1).png" id="1_8fxkp"]
+[ext_resource type="Script" uid="uid://w7ieqch4f4hl" path="res://asset/sorts/elfe_arc_magique/elf_magic_arrow_projectile.gd" id="1_wktpm"]
+[ext_resource type="PackedScene" uid="uid://dn1kfp35ufkjm" path="res://asset/sorts/elfe_arc_magique/elf_magic_arrow_impact.tscn" id="2_d1k3v"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wktpm"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d1k3v"]
+atlas = ExtResource("1_8fxkp")
+region = Rect2(512, 682, 512, 341)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xbp0e"]
+atlas = ExtResource("1_8fxkp")
+region = Rect2(0, 682, 512, 341)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o0vld"]
+atlas = ExtResource("1_8fxkp")
+region = Rect2(512, 341, 512, 341)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5lx04"]
+atlas = ExtResource("1_8fxkp")
+region = Rect2(0, 341, 512, 341)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y6ha6"]
+atlas = ExtResource("1_8fxkp")
+region = Rect2(512, 0, 512, 341)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6gdpd"]
+atlas = ExtResource("1_8fxkp")
+region = Rect2(0, 0, 512, 341)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rffi5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d1k3v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xbp0e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o0vld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5lx04")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y6ha6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6gdpd")
+}],
+"loop": 1,
+"name": &"fly",
+"speed": 12.0
+}]
+
+[node name="ElfMagicArrowProjectile" type="Node2D" unique_id=905270944]
+script = ExtResource("1_wktpm")
+travel_duration = 1.2
+impact_scene = ExtResource("2_d1k3v")
+
+[node name="ArrowAnimation" type="AnimatedSprite2D" parent="." unique_id=1973514806]
+material = SubResource("CanvasItemMaterial_wktpm")
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("SpriteFrames_rffi5")
+animation = &"fly"

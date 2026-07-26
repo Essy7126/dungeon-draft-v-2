@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://dtqvktdftlgdi"]
+
+[ext_resource type="Texture2D" uid="uid://dr1b2f6c7x44m" path="res://asset/sorts/elfe_arc_magique/Meshy_AI_14c3045b0900c06574f6024efd69c66673616be737a9e7d89fb95c8a4c3b20e9.png" id="1_k0r1i"]
+[ext_resource type="Script" uid="uid://dwyrvc0f5hmhn" path="res://asset/sorts/elfe_arc_magique/elf_magic_bow_charge.gd" id="1_nm1pu"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_82je8"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_k0r1i"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BowSprite:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_nm1pu"]
+resource_name = "charge_release"
+length = 0.45
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BowSprite:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(-0.13333344, 0, 0.1, 0.3, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ov2p2"]
+_data = {
+&"RESET": SubResource("Animation_k0r1i"),
+&"charge_release": SubResource("Animation_nm1pu")
+}
+
+[node name="ElfMagicBowCharge" type="Node2D" unique_id=1579587987]
+script = ExtResource("1_nm1pu")
+
+[node name="BowSprite" type="Sprite2D" parent="." unique_id=451255895]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 5
+material = SubResource("CanvasItemMaterial_82je8")
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_k0r1i")
+
+[node name="ReleasePoint" type="Marker2D" parent="BowSprite" unique_id=592001907]
+position = Vector2(336, 4)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1424132675]
+libraries/ = SubResource("AnimationLibrary_ov2p2")
