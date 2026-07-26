@@ -48,7 +48,8 @@ offset_bottom = 796.39996
 intensity = 1.6
 
 [node name="BrumeValleeDroite" parent="TerrainEffectLayer" unique_id=1718493407 instance=ExtResource("11_brume")]
-polygon = PackedVector2Array(457, 557, 623, 556, 766, 559, 766.8, 796.4, 535, 796, 535, 781, 538, 762, 541, 733, 545, 721, 542, 712, 515, 690, 444, 641, 438, 642, 413, 627, 384, 605)
+polygon = PackedVector2Array(457, 557, 623, 556, 766, 559, 766.8, 796.4, 535, 796, 535, 781, 538, 762, 541, 733, 545, 721, 542, 712, 515, 690, 444, 641, 438, 642, 413, 627, 384, 605, 389, 559)
+etirement_vertical = 1.0
 
 [node name="YSortedWorld" type="Node2D" parent="." unique_id=148614310]
 y_sort_enabled = true
