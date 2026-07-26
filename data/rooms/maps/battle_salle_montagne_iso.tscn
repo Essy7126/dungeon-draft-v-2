@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://pm1sjpja3a5s" path="res://battle/impact_juice.gd" id="6_impact"]
 [ext_resource type="AudioStream" uid="uid://ccb7eepjta8nh" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="7_music"]
 [ext_resource type="TileSet" uid="uid://by7jccj4xyx5i" path="res://data/rooms/tile_set_iso_terrain.tres" id="8_terrain_tileset"]
+[ext_resource type="TileSet" uid="uid://c5e41kal2h1sr" path="res://data/rooms/tile_set_iso_decor.tres" id="9_decor_tileset"]
 
 [node name="Battle" type="Node2D" unique_id=600240518]
 texture_filter = 2
@@ -37,6 +38,11 @@ tile_set = ExtResource("8_terrain_tileset")
 
 [node name="YSortedWorld" type="Node2D" parent="." unique_id=148614310]
 y_sort_enabled = true
+
+[node name="DecorationLayer" type="TileMapLayer" parent="YSortedWorld" unique_id=834143352]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAANABoAAAAAAAAAAAANAAUAAAAAAAAAAAACABQAAAAAAAAAAAAUAAAAAAAAAAAAAAARABQAAAAAAAAAAAAWABEAAAAAAAAAAAAVABEAAAAAAAAAAAASAAwAAAAAAAAAAAARAAYAAAAAAAAAAAAQAAIAAAAAAAAAAAASAAEAAAAAAAAAAAATAAIAAAAAAAAAAAATAAQAAAAAAAAAAAA=")
+tile_set = ExtResource("9_decor_tileset")
 
 [node name="ForegroundLayer" type="Node2D" parent="." unique_id=1519276990]
 z_index = 20

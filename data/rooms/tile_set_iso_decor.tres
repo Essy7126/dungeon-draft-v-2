@@ -1,0 +1,13 @@
+[gd_resource type="TileSet" format=3 uid="uid://c5e41kal2h1sr"]
+
+[ext_resource type="PackedScene" path="res://battle/iso/drapeau.tscn" id="1_drapeau"]
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_decor"]
+scenes/0/scene = ExtResource("1_drapeau")
+scenes/0/display_placeholder = true
+
+[resource]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(64, 32)
+sources/0 = SubResource("TileSetScenesCollectionSource_decor")

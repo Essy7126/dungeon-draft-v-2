@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bukgtd0jx02rw"]
+
+[ext_resource type="Texture2D" uid="uid://2tt115cq25mo" path="res://asset/Background/drapeau.png" id="1_drapeau"]
+[ext_resource type="Script" uid="uid://ddlog4t3ffu2h" path="res://battle/iso/drapeau_vfx.gd" id="2_vfx"]
+[ext_resource type="Shader" uid="uid://b1nwlkufogkw" path="res://asset/shaders/environment/drapeau_vent.gdshader" id="3_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_drapeau"]
+shader = ExtResource("3_shader")
+shader_parameter/amplitude = 0.02
+shader_parameter/frequence = 6.0
+shader_parameter/vitesse = 2.0
+shader_parameter/zone_haut = 0.08
+shader_parameter/zone_milieu = 0.3
+shader_parameter/zone_bas = 0.5
+shader_parameter/zone_hampe = 0.58
+
+[node name="Drapeau" type="Sprite2D" unique_id=1043173712]
+texture_filter = 2
+material = SubResource("ShaderMaterial_drapeau")
+scale = Vector2(0.166, 0.166)
+texture = ExtResource("1_drapeau")
+offset = Vector2(0, -349)
+script = ExtResource("2_vfx")
