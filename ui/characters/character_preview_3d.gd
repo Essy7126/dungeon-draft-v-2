@@ -48,7 +48,9 @@ func configure(source) -> void:
 		return
 	_visual_instance = candidate as Node3D
 	visual_root.add_child(_visual_instance)
+	var authored_scale := _visual_instance.scale
 	_visual_instance.transform = Transform3D.IDENTITY
+	_visual_instance.scale = authored_scale
 	if _visual_instance.has_method("reset_to_idle"):
 		_visual_instance.reset_to_idle()
 	elif _visual_instance.has_method("play_idle"):

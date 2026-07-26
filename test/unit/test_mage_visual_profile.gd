@@ -3,6 +3,9 @@ extends GutTest
 const MAGE_DATA_PATH := "res://data/units/alliés/mage.tres"
 const MAGE_VISUAL_SCENE := preload("res://characters/mage/MageVisual3D.tscn")
 const MAGE_ISO_SCENE := preload("res://characters/mage/MageIsoUnitView.tscn")
+const ELF_VISUAL_SCENE := preload("res://characters/elf/ElfVisual3D.tscn")
+const ELF_ISO_SCENE := preload("res://characters/elf/ElfIsoUnitView.tscn")
+const EXPECTED_MAGE_VISUAL_SCALE := Vector3(1.2, 1.2, 1.2)
 const EXPECTED_ANIMATIONS := [
 	"DD_Mage_Cast",
 	"DD_Mage_Death",
@@ -65,6 +68,30 @@ func test_profile_maps_six_exact_animations_and_never_defines_attack() -> void:
 	assert_eq(visual.animation_cast, MageVisual3D.ANIM_CAST)
 	assert_eq(visual.animation_hit, MageVisual3D.ANIM_HIT)
 	assert_eq(visual.animation_death, MageVisual3D.ANIM_DEATH)
+
+
+func test_mage_scale_is_uniform_profile_specific_and_keeps_elf_unchanged() -> void:
+	assert_eq(visual.scale, EXPECTED_MAGE_VISUAL_SCALE)
+	assert_eq(visual.position, Vector3.ZERO)
+	var mage_iso := MAGE_ISO_SCENE.instantiate() as MageIsoUnitView
+	var elf_iso := ELF_ISO_SCENE.instantiate() as ElfIsoUnitView
+	var elf_visual := ELF_VISUAL_SCENE.instantiate() as ElfVisual3D
+	add_child_autofree(mage_iso)
+	add_child_autofree(elf_iso)
+	add_child_autofree(elf_visual)
+	await wait_process_frames(2)
+	assert_almost_eq(mage_iso.character_scale, 1.10, 0.0001)
+	assert_eq(mage_iso.character_pivot.scale, Vector3(1.1, 1.1, 1.1))
+	assert_eq(mage_iso.render_offset_adjustment, Vector2.ZERO)
+	assert_almost_eq(mage_iso.camera_orthographic_size, 2.75, 0.0001)
+	assert_almost_eq(mage_iso.camera_look_at_height, 0.85, 0.0001)
+	assert_eq(mage_iso.get_mage_visual().scale, EXPECTED_MAGE_VISUAL_SCALE)
+	assert_eq(mage_iso.get_mage_visual().position, Vector3.ZERO)
+	assert_almost_eq(elf_iso.character_scale, 1.10, 0.0001)
+	assert_eq(elf_iso.character_pivot.scale, Vector3(1.1, 1.1, 1.1))
+	assert_eq(elf_iso.render_offset_adjustment, Vector2.ZERO)
+	assert_almost_eq(elf_iso.camera_orthographic_size, 2.220395, 0.0001)
+	assert_eq(elf_visual.scale, Vector3.ONE)
 
 
 func test_cast_release_is_absolute_exact_and_emitted_once() -> void:

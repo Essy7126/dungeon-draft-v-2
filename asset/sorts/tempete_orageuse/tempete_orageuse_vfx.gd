@@ -5,7 +5,7 @@ signal impact_reached
 
 const CAST_ANIMATION: StringName = &"cast"
 const IMPACT_TIME := 0.31
-const WATCHDOG_SECONDS := 1.5
+const WATCHDOG_SECONDS := 1.8
 
 @onready var _animation_player: AnimationPlayer = $AnimationPlayer
 

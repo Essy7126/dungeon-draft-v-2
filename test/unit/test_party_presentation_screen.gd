@@ -38,6 +38,14 @@ func test_elf_and_mage_use_real_3d_previews_while_guardian_has_clean_fallback() 
 	assert_true(cards[1].preview.get_visual_instance() is MageVisual3D)
 	assert_false(cards[1].preview.is_using_fallback())
 	assert_eq(
+		(cards[1].preview.get_visual_instance() as MageVisual3D).scale,
+		Vector3(1.2, 1.2, 1.2),
+	)
+	assert_eq(
+		(cards[0].preview.get_visual_instance() as ElfVisual3D).scale,
+		Vector3.ONE,
+	)
+	assert_eq(
 		cards[1].disciplines_label.text,
 		"Disciplines : Pyromancie, Cryomancie, Foudromancie, Géomancie",
 	)
