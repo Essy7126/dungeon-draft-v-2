@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cta01bm4n8l62"]
 
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="2_4q84f"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Texture2D" uid="uid://cb1o6ejevfq4w" path="res://asset/personnage/ennemi/goebleinscenario.png" id="4_m5idi"]
 [ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="5_qjag1"]
@@ -17,7 +18,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4q84f")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

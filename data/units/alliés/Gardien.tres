@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_pfltm"]
 [ext_resource type="Resource" uid="uid://drc5vb6vd841v" path="res://data/energy/foi.tres" id="1_r50s2"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="2_3jo17"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_r50s2"]
 [ext_resource type="Resource" uid="uid://vucrqrj2s022" path="res://data/spells/Gardien/rempart.tres" id="4_ddix6"]
 [ext_resource type="Resource" uid="uid://dwt6x1da4m1h1" path="res://data/spells/Gardien/garde.tres" id="5_vp8gc"]

@@ -1,0 +1,19 @@
+[gd_resource type="TileSet" format=3 uid="uid://by7jccj4xyx5i"]
+
+[ext_resource type="Texture2D" uid="uid://bj7yhnvw7vrvy" path="res://data/rooms/iso_terrain_markers.png" id="1_markers"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iso1"]
+texture = ExtResource("1_markers")
+texture_region_size = Vector2i(64, 32)
+0:0/0 = 0
+0:0/0/custom_data_0 = "NORMAL"
+1:0/0 = 0
+1:0/0/custom_data_0 = "WALL"
+
+[resource]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(64, 32)
+custom_data_layer_0/name = "cell_type"
+custom_data_layer_0/type = 4
+sources/0 = SubResource("TileSetAtlasSource_iso1")

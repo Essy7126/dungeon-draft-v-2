@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="DisciplineData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://btfmeqpqbam07"]
 
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_4fnru"]
+[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
 
 [sub_resource type="Resource" id="Rank_lightning_1"]
 script = ExtResource("2_rank_type")
-rank = 1
-required_total_xp = 0
 
 [resource]
 script = ExtResource("1_discipline")

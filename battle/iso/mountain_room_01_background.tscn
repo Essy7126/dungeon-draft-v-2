@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://asset/Background/montagne 2.webp" id="1_montagne"]
+
+[node name="MountainRoom01Background" type="Node2D"]
+z_index = -100
+
+[node name="MountainSprite" type="Sprite2D" parent="."]
+texture_filter = 2
+position = Vector2(96, 422)
+rotation = 0.0
+scale = Vector2(0.975, 0.975)
+texture = ExtResource("1_montagne")
+centered = true
+offset = Vector2(0, 0)

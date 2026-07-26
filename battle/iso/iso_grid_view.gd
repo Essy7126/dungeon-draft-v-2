@@ -20,7 +20,7 @@ const TYPE_COLORS := {
 	GridData.CellType.RUNE: Color(0.43, 0.16, 0.62, 0.94),
 }
 
-const GRID_LINE_COLOR := Color(0.62, 0.72, 0.86, 0.62)
+const GRID_LINE_COLOR := Color(0.95, 0.97, 0.9, 0.22)
 const CENTER_COLOR := Color(0.82, 0.92, 1.0, 0.85)
 const BOUNDS_COLOR := Color(1.0, 0.28, 0.70, 0.95)
 const HOVER_FILL_COLOR := Color(0.35, 0.88, 1.0, 0.32)
@@ -213,7 +213,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _valid_cell_at(local_position: Vector2) -> Vector2i:
 	var candidate := local_to_grid(local_position)
-	if grid != null and grid.is_valid(candidate):
+	if grid != null and grid.is_terrain_interactable(candidate):
 		return candidate
 	return INVALID_CELL
 
@@ -257,8 +257,8 @@ func _draw() -> void:
 				draw_colored_polygon(polygon, fill_color)
 			if _highlights.has(cell):
 				draw_colored_polygon(polygon, _highlights[cell])
-			if draw_grid_lines:
-				_draw_polygon_outline(polygon, GRID_LINE_COLOR, 1.0)
+			if draw_grid_lines and grid.is_terrain_interactable(cell):
+				_draw_polygon_outline(polygon, GRID_LINE_COLOR, 0.75)
 			if draw_cell_centers:
 				draw_circle(grid_to_local(cell), 1.7, CENTER_COLOR)
 

@@ -1,17 +1,17 @@
-[gd_resource type="Resource" script_class="Spell" format=3]
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://bp74t3nutch7h"]
 
-[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
-[ext_resource type="PackedScene" path="res://asset/sorts/elfe_arc_magique/elf_magic_arrow_projectile.tscn" id="2_vfx"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="1_qw0xo"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="PackedScene" uid="uid://cet65tb6e0w4d" path="res://asset/sorts/elfe_arc_magique/elf_magic_arrow_projectile.tscn" id="2_vfx"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"elf_precise_shot"
 discipline_id = &"archer"
-vfx_scene = ExtResource("2_vfx")
-vfx_placement = 0
-impact_delay_seconds = 1.2
 spell_name = "Tir précis"
 description = "Un tir physique précis à longue portée."
+vfx_scene = ExtResource("2_vfx")
+impact_delay_seconds = 1.2
 ap_cost = 2
 spell_range = 7
 damage = 7

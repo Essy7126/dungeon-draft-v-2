@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://b3ri36tk4j1ki"]
 
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_m7lpr"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_xmhhn"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_3acek"]
 [ext_resource type="Texture2D" uid="uid://b5o5s3w3rf67v" path="res://asset/GobTest_idle_v2.png" id="3_idle"]
 [ext_resource type="Texture2D" uid="uid://ruobgtbf0bau" path="res://asset/GobTest_walk_v2.png" id="4_walk"]
@@ -241,7 +242,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Attack_f14")
 }],
-"loop": false,
+"loop": 0,
 "name": &"attack",
 "speed": 12.0
 }, {
@@ -285,7 +286,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Death_f12")
 }],
-"loop": false,
+"loop": 0,
 "name": &"death",
 "speed": 8.0
 }, {
@@ -317,7 +318,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Idle_f08")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 8.0
 }, {
@@ -349,7 +350,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Walk_f08")
 }],
-"loop": true,
+"loop": 1,
 "name": &"walk",
 "speed": 10.0
 }]

@@ -27,6 +27,19 @@ extends Node2D
 ## inchanges et continuent de porter toute la logique de combat.
 @export var temporary_iso_placeholders := false
 
+## Cache le TerrainLayer une fois ses donnees lues (au demarrage reel du jeu),
+## tout en le laissant visible/peignable dans l'editeur. A utiliser uniquement
+## quand TerrainLayer ne sert qu'a stocker le cell_type (pas a afficher un sol,
+## contrairement aux salles carrees classiques ou TerrainLayer EST le sol).
+@export var hide_terrain_layer_after_import := false
+
+## GridData part toutes les cases en NORMAL par defaut ; ce reglage inverse ce
+## defaut pour cette salle : toute case non peinte explicitement dans
+## TerrainLayer devient WALL (decor, non-interactive), seules les cases
+## peintes NORMAL restent interactives. Ne touche pas les salles carrees
+## classiques (WALL n'y est marque qu'a la main, le reste doit rester NORMAL).
+@export var terrain_unpainted_defaults_to_wall := false
+
 # --- Logique ---
 var grid: GridData
 var pathfinder: Pathfinder
@@ -150,6 +163,11 @@ func _import_terrain_from_tilemap() -> void:
 	if layer == null:
 		return
 
+	if terrain_unpainted_defaults_to_wall:
+		for x in grid.cols:
+			for y in grid.rows:
+				grid.set_type(Vector2i(x, y), GridData.CellType.WALL)
+
 	for cell in layer.get_used_cells():
 		var grid_pos = Vector2i(cell.x, cell.y)
 		if not grid.is_valid(grid_pos):
@@ -160,6 +178,9 @@ func _import_terrain_from_tilemap() -> void:
 		var type_name = tile_data.get_custom_data("cell_type")
 		var cell_type = _cell_type_from_string(type_name)
 		grid.set_type(grid_pos, cell_type)
+
+	if hide_terrain_layer_after_import:
+		layer.visible = false
 
 func _cell_type_from_string(type_name: String) -> GridData.CellType:
 	match type_name:
@@ -234,8 +255,16 @@ func _fit_camera_to_battle() -> void:
 	var camera_parent := camera.get_parent() as Node2D
 	if camera_parent == null:
 		return
+	var background := _find_battle_background()
 	var frame_rect: Rect2
-	if grid_view.has_method("get_map_bounds"):
+	if background != null and background.texture != null:
+		# Le fond peint fait foi pour le cadrage ecran quand il existe : la
+		# taille logique de la grille (grid_cols/grid_rows) ne sert alors plus
+		# qu'au gameplay (forme du terrain, pathfinding), plus au zoom/centrage
+		# camera. Ca permet un trace peint aussi grand que necessaire sans
+		# jamais avoir a retoucher le cadrage visuel.
+		frame_rect = _rect_in_parent(background, background.get_rect(), camera_parent)
+	elif grid_view.has_method("get_map_bounds"):
 		frame_rect = _rect_in_parent(grid_view, grid_view.get_map_bounds(), camera_parent)
 	else:
 		frame_rect = _rect_in_parent(
@@ -243,9 +272,6 @@ func _fit_camera_to_battle() -> void:
 			Rect2(Vector2.ZERO, grid_view.get_pixel_size()),
 			camera_parent
 		)
-	var background := _find_battle_background()
-	if background != null and background.texture != null:
-		frame_rect = frame_rect.merge(_rect_in_parent(background, background.get_rect(), camera_parent))
 	if frame_rect.size.x <= 0.0 or frame_rect.size.y <= 0.0:
 		return
 	camera.position = frame_rect.get_center()
@@ -260,6 +286,25 @@ func _find_battle_background() -> Sprite2D:
 		var sprite := get_node_or_null(path) as Sprite2D
 		if sprite != null:
 			return sprite
+	# Recherche generique : un enfant direct dont le nom finit par "Background"
+	# (convention "XxxBackground"), contenant un Sprite2D. Permet a toute
+	# nouvelle salle iso avec un fond peint de se cadrer automatiquement, sans
+	# avoir a ajouter son nom en dur ici.
+	for child in get_children():
+		if not child.name.ends_with("Background"):
+			continue
+		var sprite := _find_sprite_recursive(child)
+		if sprite != null:
+			return sprite
+	return null
+
+func _find_sprite_recursive(node: Node) -> Sprite2D:
+	if node is Sprite2D:
+		return node
+	for child in node.get_children():
+		var found := _find_sprite_recursive(child)
+		if found != null:
+			return found
 	return null
 
 func _rect_in_parent(source: Node2D, rect: Rect2, target_parent: Node2D) -> Rect2:
@@ -729,7 +774,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = fals
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
 		if view.has_method("prepare_spell_visual"):
-			var visual_ready: bool = await view.prepare_spell_visual(cell, spell)
+			var visual_ready: bool = await view.prepare_spell_visual(cell)
 			if not visual_ready:
 				_spell_resolution_pending = false
 				return

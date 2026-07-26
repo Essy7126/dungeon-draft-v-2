@@ -1,19 +1,20 @@
 [gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://dyr45spqln4bn"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
-[ext_resource type="Resource" path="res://data/spells/Mage/boule_de_feu.tres" id="3_fireball"]
-[ext_resource type="Resource" path="res://data/spells/mur_de_glace.tres" id="4_ice_wall"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell"]
+[ext_resource type="Resource" uid="uid://b87ak8kotokmw" path="res://data/spells/Mage/boule_de_feu.tres" id="3_fireball"]
+[ext_resource type="Resource" uid="uid://bpl7jcy8ix86j" path="res://data/spells/mur_de_glace.tres" id="4_ice_wall"]
+[ext_resource type="Texture2D" uid="uid://l0crtv2mrm4p" path="res://asset/Soldier.png" id="5_fallback_texture"]
 [ext_resource type="Resource" path="res://data/spells/Mage/tempete_orageuse.tres" id="5_thunderstorm"]
-[ext_resource type="Resource" path="res://data/spells/Mage/onde_sismique.tres" id="6_seismic_wave"]
-[ext_resource type="Texture2D" path="res://asset/Soldier.png" id="5_fallback_texture"]
 [ext_resource type="PackedScene" path="res://characters/mage/MageIsoUnitView.tscn" id="6_combat_visual"]
+[ext_resource type="Resource" path="res://data/spells/Mage/onde_sismique.tres" id="6_seismic_wave"]
 [ext_resource type="PackedScene" path="res://characters/mage/MageVisual3D.tscn" id="7_preview_visual"]
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
-[ext_resource type="Resource" path="res://data/characters/mage/disciplines/fire.tres" id="9_fire"]
-[ext_resource type="Resource" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
-[ext_resource type="Resource" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
-[ext_resource type="Resource" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
+[ext_resource type="Resource" uid="uid://di8c4cp4okyc3" path="res://data/characters/mage/disciplines/fire.tres" id="9_fire"]
+[ext_resource type="Resource" uid="uid://dypft5nxcoofy" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
+[ext_resource type="Resource" uid="uid://btfmeqpqbam07" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
+[ext_resource type="Resource" uid="uid://b412prwsu5mdq" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
+[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="14_8vaj1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
 atlas = ExtResource("5_fallback_texture")
@@ -25,7 +26,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fallback")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -35,11 +36,6 @@ script = ExtResource("1_unit")
 unit_id = &"mage"
 unit_name = "Mage"
 description = "Lanceur de sorts pur projete en 3D dans la salle isometrique."
-max_hp = 100
-initiative = 10
-max_ap = 6
-max_mp = 3
-attack_power = 20
 sprite_frames = SubResource("SpriteFrames_fallback")
 visual_scene = ExtResource("6_combat_visual")
 preview_visual_scene = ExtResource("7_preview_visual")

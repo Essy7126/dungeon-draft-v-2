@@ -92,6 +92,15 @@ func is_walkable(pos: Vector2i) -> bool:
 		return false
 	return PROPERTIES[get_type(pos)]["walkable"]
 
+# Le TYPE de la case autorise-t-il l'interaction (survol/clic/ciblage) ?
+# Contrairement Ã  is_walkable(), ignore l'occupation par une unitÃ© : on doit
+# pouvoir cibler une case occupÃ©e par un ennemi (attaque, sort), seul le
+# terrain (WALL, etc.) doit bloquer l'interaction.
+func is_terrain_interactable(pos: Vector2i) -> bool:
+	if not is_valid(pos):
+		return false
+	return PROPERTIES[get_type(pos)]["walkable"]
+
 # La case laisse-t-elle passer la ligne de vue ?
 func is_transparent(pos: Vector2i) -> bool:
 	if not is_valid(pos):
