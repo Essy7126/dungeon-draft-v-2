@@ -8,9 +8,12 @@ extends ColorRect
 @export var falloff: float = 0.18
 @export var edge_fade: float = 0.3
 @export var speed: float = 0.15
+@export var drift_speed: float = 0.05
+@export var pulse_speed: float = 0.25
+@export var pulse_amplitude: float = 0.1
 @export var ray_density: float = 3.0
 @export var diffusion: float = 0.5
-@export var intensity: float = 2.2
+@export var intensity: float = 1.6
 @export var couleur: Color = Color(1.0, 0.93, 0.78, 0.4)
 @export var hdr: bool = false
 @export var ray_seed: float = 5.0
@@ -26,6 +29,9 @@ func _ready() -> void:
 	material.set_shader_parameter("falloff", falloff)
 	material.set_shader_parameter("edge_fade", edge_fade)
 	material.set_shader_parameter("speed", speed)
+	material.set_shader_parameter("drift_speed", drift_speed)
+	material.set_shader_parameter("pulse_speed", pulse_speed)
+	material.set_shader_parameter("pulse_amplitude", pulse_amplitude)
 	material.set_shader_parameter("ray_density", ray_density)
 	material.set_shader_parameter("diffusion", diffusion)
 	material.set_shader_parameter("intensity", intensity)

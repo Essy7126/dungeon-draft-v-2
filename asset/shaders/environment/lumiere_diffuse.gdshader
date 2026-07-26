@@ -8,6 +8,9 @@ uniform float height : hint_range(0.0, 1.0) = 0.4;
 uniform float falloff : hint_range(0.0, 1.0) = 0.18;
 uniform float edge_fade : hint_range(0.0, 1.0) = 0.3;
 uniform float speed = 0.15;
+uniform float drift_speed : hint_range(0.0, 1.0) = 0.05;
+uniform float pulse_speed : hint_range(0.0, 2.0) = 0.25;
+uniform float pulse_amplitude : hint_range(0.0, 1.0) = 0.15;
 uniform float ray_density = 3.0;
 uniform float diffusion : hint_range(0.0, 1.0) = 0.5;
 uniform float intensity : hint_range(0.0, 4.0) = 2.2;
@@ -51,7 +54,10 @@ float diffused_rays(vec2 transformed_uv, float cut) {
 	for (int i = 0; i < DIFFUSION_SAMPLES; i++) {
 		float t = (float(i) / float(DIFFUSION_SAMPLES - 1)) - 0.5;
 		float blur_offset = t * diffusion * 0.35;
-		vec2 ray = vec2((transformed_uv.x + blur_offset) * ray_density + sin(TIME * speed) * (ray_density * 0.1) + seed, 1.0);
+		// Ondulation bornee (va-et-vient), jamais de derive nette : la source
+		// (angle/position) reste fixe, seule la texture interne des rayons ondule.
+		float ondulation = sin(TIME * drift_speed) * (ray_density * 0.6);
+		vec2 ray = vec2((transformed_uv.x + blur_offset) * ray_density + ondulation + sin(TIME * speed) * (ray_density * 0.1) + seed, 1.0);
 		rays += noise(ray);
 	}
 	rays /= float(DIFFUSION_SAMPLES);
@@ -81,7 +87,10 @@ void fragment() {
 	rays *= smoothstep(0.0 + cutoff, edge_fade + cutoff, transformed_uv.x);
 	rays *= smoothstep(0.0 + cutoff, edge_fade + cutoff, 1.0 - transformed_uv.x);
 
-	rays *= intensity;
+	// Respiration : pulsation lente de l'intensite, pour que la lumiere
+	// paraisse vivante plutot que figee.
+	float pulse = 1.0 + sin(TIME * pulse_speed) * pulse_amplitude;
+	rays *= intensity * pulse;
 
 	vec3 shine = screen(texture(SCREEN_TEXTURE, SCREEN_UV), vec4(color)).rgb;
 

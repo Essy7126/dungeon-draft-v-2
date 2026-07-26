@@ -40,10 +40,15 @@ tile_set = ExtResource("8_terrain_tileset")
 
 [node name="TerrainEffectLayer" type="Node2D" parent="." unique_id=828111028]
 
+[node name="LumiereDiffuse" parent="TerrainEffectLayer" unique_id=1020663696 instance=ExtResource("10_lumiere")]
+offset_left = -575.4
+offset_top = 47.6
+offset_right = 766.7999
+offset_bottom = 796.39996
+intensity = 1.6
+
 [node name="BrumeValleeDroite" parent="TerrainEffectLayer" unique_id=1718493407 instance=ExtResource("11_brume")]
-polygon = PackedVector2Array(457, 557, 623, 556, 766, 559, 766.8, 796.4, 535, 795, 538, 762, 541, 733, 545, 721, 542, 712, 515, 690, 444, 641, 438, 642, 413, 627, 384, 605)
-material/shader_parameter/zone_haut = 556.0
-material/shader_parameter/zone_bas = 796.4
+polygon = PackedVector2Array(457, 557, 623, 556, 766, 559, 766.8, 796.4, 535, 796, 535, 781, 538, 762, 541, 733, 545, 721, 542, 712, 515, 690, 444, 641, 438, 642, 413, 627, 384, 605)
 
 [node name="YSortedWorld" type="Node2D" parent="." unique_id=148614310]
 y_sort_enabled = true
@@ -59,12 +64,6 @@ z_index = 20
 
 [node name="VFXLayer" type="Node2D" parent="." unique_id=871559240]
 z_index = 50
-
-[node name="AmbianceLumiere" type="CanvasLayer" parent="." unique_id=1548395099]
-layer = 40
-
-[node name="LumiereDiffuse" parent="AmbianceLumiere" unique_id=1331388297 instance=ExtResource("10_lumiere")]
-couleur = Color(1, 0.93, 0.78, 0.4)
 
 [node name="DebugOverlay" parent="." unique_id=1888636913 instance=ExtResource("4_debug")]
 
