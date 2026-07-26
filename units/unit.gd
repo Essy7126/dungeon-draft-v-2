@@ -12,6 +12,7 @@ extends RefCounted
 const LogDefinitions = preload("res://debug/log_definitions.gd")
 
 # --- Identite ---
+var unit_id: StringName = &""
 var unit_name: String = "Sans nom"
 var team: int = 0
 var ai_behavior: int = 0
@@ -77,6 +78,16 @@ func _snap_to_cardinal(delta: Vector2i) -> Vector2i:
 	if abs(delta.x) >= abs(delta.y):
 		return Vector2i(sign(delta.x), 0)
 	return Vector2i(0, sign(delta.y))
+
+
+# La case logique situee exactement derriere l'unite, a l'oppose de son regard.
+# Ce helper ne depend d'aucune projection visuelle/isometrique.
+func get_behind_grid_cell() -> Vector2i:
+	return grid_pos - _snap_to_cardinal(facing_dir)
+
+
+func is_grid_position_behind(position: Vector2i) -> bool:
+	return position == get_behind_grid_cell()
 # --- Ressources de combat ---
 # Les PA paient les actions du tour (colonne vertebrale, entiers, reviennent
 # chaque tour). Ferveur (current_energy) est la jauge d'ECOLE : elle se gagne
@@ -114,9 +125,12 @@ var sprite_frames: SpriteFrames = null
 var sprite_scale: float = 3.0
 var idle_animation: String = "default"
 var visual_scene: PackedScene = null
+var preview_visual_scene: PackedScene = null
 
 # --- Sorts ---
+var basic_attack_enabled: bool = true
 var spells: Array = []
+var _progression_spell_modifiers: Array[SpellModifier] = []
 
 # --- Statuts actifs ---
 # Liste de dictionnaires : { "data": StatusData, "remaining": int }
@@ -189,10 +203,13 @@ static func from_data(data: UnitData) -> Unit:
 		data.unit_name, data.team, data.max_hp, data.initiative,
 		data.max_ap, data.max_mp, data.attack_power
 	)
+	u.unit_id = data.get_effective_unit_id()
 	u.sprite_frames = data.sprite_frames
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
 	u.visual_scene = data.visual_scene
+	u.preview_visual_scene = data.preview_visual_scene
+	u.basic_attack_enabled = data.basic_attack_enabled
 	u.ai_behavior = data.ai_behavior
 	u.facing_dir = data.facing_dir
 	# Stats dÃ©fensives : on rÃ¨gle la valeur de BASE de chaque Stat.
@@ -229,6 +246,21 @@ static func from_data(data: UnitData) -> Unit:
 
 func add_spell(spell: Spell) -> void:
 	spells.append(spell)
+
+
+func set_progression_spell_modifiers(modifiers: Array[SpellModifier]) -> void:
+	_progression_spell_modifiers.clear()
+	for modifier in modifiers:
+		if modifier != null and not _progression_spell_modifiers.has(modifier):
+			_progression_spell_modifiers.append(modifier)
+
+
+func clear_progression_spell_modifiers() -> void:
+	_progression_spell_modifiers.clear()
+
+
+func get_progression_spell_modifiers() -> Array[SpellModifier]:
+	return _progression_spell_modifiers.duplicate()
 
 # ============================================================
 # ACCÃˆS AUX STATS
@@ -526,6 +558,9 @@ func get_basic_attack_ap_cost() -> int:
 
 func get_basic_attack_cost() -> int:
 	return get_basic_attack_ap_cost()
+
+func can_use_basic_attack() -> bool:
+	return basic_attack_enabled and is_alive and current_ap >= get_basic_attack_ap_cost()
 
 # Cout PA effectif d'un sort : ap_cost - remise de terrain natif (jamais sous
 # 1 PA pour un sort qui coute quelque chose : la remise allege, ne rend pas gratuit).

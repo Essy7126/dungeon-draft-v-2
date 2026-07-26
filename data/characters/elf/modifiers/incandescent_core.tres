@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellModCentralCellDamageBonus" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_central_cell_damage_bonus.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Cœur incandescent"
+target_spell_id = &"elf_fireball"
+bonus_damage = 3

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellModBackstabDamageBonus" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_backstab_damage_bonus.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Dans le dos"
+target_spell_id = &"elf_sneak_strike"
+bonus_damage = 4

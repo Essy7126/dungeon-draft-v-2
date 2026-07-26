@@ -18,14 +18,19 @@ extends Node
 # --- Configuration du run ---
 # Options disponibles dans l'ecran de draft. Le build appartient au run,
 # pas au combat : les batailles recoivent des heros deja configures.
+const GUARDIAN_DATA_PATH := "res://data/units/alliés/Gardien.tres"
+const WARRIOR_DATA_PATH := "res://data/units/alliés/Guerrier.tres"
+const ELF_DATA_PATH := "res://data/units/alliés/elfe.tres"
+const MAGE_DATA_PATH := "res://data/units/alliés/mage.tres"
+
 const HERO_DATA_PATHS = [
-	"res://data/units/alliés/Gardien.tres",
-	"res://data/units/alliés/Guerrier.tres",
+	GUARDIAN_DATA_PATH,
+	WARRIOR_DATA_PATH,
 	"res://data/units/alliés/healer.tres",
 	"res://data/units/alliés/Assassin.tres",
 	"res://data/units/alliés/Necromant.tres",
 	"res://data/units/alliés/Hoplite.tres",
-	"res://data/units/alliés/elfe.tres",
+	ELF_DATA_PATH,
 ]
 
 const ENERGY_DATA_PATHS = [
@@ -43,12 +48,17 @@ const STARTING_TRAIT_PATHS = [
 ]
 
 const DEFAULT_DRAFT = [
-	{ "hero_path": "res://data/units/alliés/Gardien.tres", "energy_path": "res://data/energy/foi.tres", "trait_path": "res://data/traits/depart_posture_defensive.tres" },
-	{ "hero_path": "res://data/units/alliés/Guerrier.tres", "energy_path": "res://data/energy/rage.tres", "trait_path": "res://data/traits/depart_etincelle_flux.tres" },
+	{ "hero_path": GUARDIAN_DATA_PATH, "energy_path": "res://data/energy/foi.tres", "trait_path": "res://data/traits/depart_posture_defensive.tres" },
+	{ "hero_path": WARRIOR_DATA_PATH, "energy_path": "res://data/energy/rage.tres", "trait_path": "res://data/traits/depart_etincelle_flux.tres" },
 	{ "hero_path": "res://data/units/alliés/healer.tres", "energy_path": "res://data/energy/nature.tres", "trait_path": "res://data/traits/depart_instinct_tactique.tres" },
 ]
 
 const RUN_DRAFT_SCREEN_PATH := "res://ui/RunDraftScreen.tscn"
+const RUN_RESULT_SCREEN_PATH := "res://ui/RunResultScreen.tscn"
+const TITLE_SCREEN_PATH := "res://ui/TitreEcran.tscn"
+const PROGRESSION_CHOICE_SCREEN_PATH := "res://ui/progression/ProgressionChoiceScreen.tscn"
+const REWARD_SCREEN_PATH := "res://ui/RewardScreen.tscn"
+const ROOM_TRANSITION_SCREEN_PATH := "res://ui/Transitionsalle.tscn"
 const FIRST_REWARD_PATH := "res://data/rewards/reward_marteau_jugement.tres"
 
 # Nombre de récompenses proposées après chaque salle.
@@ -56,11 +66,18 @@ const REWARDS_OFFERED := 3
 
 # --- État du run (vivant pendant tout le run) ---
 var heroes: Array = []          # Array[Unit] — persistent, HP conservés
+var character_states: Dictionary = {} # StringName -> CharacterRunState
 var rooms: Array = []           # Array[RoomData]
 var reward_pool: Array = []     # Array[RewardData]
 var current_room_index: int = -1
 var run_active: bool = false
 var _pending_run_data: RunData = null
+var _active_run_name: String = ""
+var _last_run_result: Dictionary = {}
+var _awaiting_post_battle_progression: bool = false
+var _room_outcome_resolved: bool = false
+var _active_progression_screen_ref: WeakRef = null
+var _progression_service := CharacterProgressionService.new()
 
 # Récompenses actuellement proposées (lues par l'écran de récompense).
 var _offered_rewards: Array = []
@@ -69,6 +86,34 @@ var _offered_rewards: Array = []
 signal run_won
 signal run_lost
 signal room_cleared(index)
+signal discipline_xp_gained(character_id, discipline_id, amount, snapshot)
+signal scene_change_requested(path)
+
+
+func _ready() -> void:
+	_connect_progression_service()
+
+
+func _connect_progression_service() -> void:
+	var callback := Callable(self, "_on_successful_spell_cast")
+	if not EventBus.spell_cast.is_connected(callback):
+		EventBus.spell_cast.connect(callback)
+
+
+func _exit_tree() -> void:
+	_disconnect_progression_service()
+
+
+func _disconnect_progression_service() -> void:
+	var callback := Callable(self, "_on_successful_spell_cast")
+	if EventBus.spell_cast.is_connected(callback):
+		EventBus.spell_cast.disconnect(callback)
+
+
+func is_progression_service_connected() -> bool:
+	return EventBus.spell_cast.is_connected(
+		Callable(self, "_on_successful_spell_cast")
+	)
 
 # ============================================================
 # DÉMARRAGE D'UN RUN
@@ -78,8 +123,16 @@ func start_run(run_data: RunData) -> void:
 	if run_data == null:
 		push_error("Aucun RunData fourni.")
 		return
+	cleanup_run_state()
 	_pending_run_data = run_data
-	get_tree().change_scene_to_file.call_deferred(RUN_DRAFT_SCREEN_PATH)
+	_request_scene_change(RUN_DRAFT_SCREEN_PATH)
+
+## Lance un run deja configure sans passer par le draft historique.
+## `hero_sources` accepte des chemins res:// vers des UnitData ou des UnitData.
+func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:
+	if not _prepare_preconfigured_run(run_data, hero_sources):
+		return
+	_go_to_next_room()
 
 func confirm_run_draft(hero_paths: Array, energy_paths: Array, trait_paths: Array = []) -> void:
 	if _pending_run_data == null:
@@ -87,16 +140,107 @@ func confirm_run_draft(hero_paths: Array, energy_paths: Array, trait_paths: Arra
 		return
 	var run_data := _pending_run_data
 	_pending_run_data = null
-	_build_heroes_from_draft(hero_paths, energy_paths, trait_paths)
+	if not _build_heroes_from_draft(hero_paths, energy_paths, trait_paths):
+		cleanup_run_state()
+		return
+	_initialize_run_state(run_data)
+	_go_to_next_room()
+
+## Prepare l'etat sans changer de scene. Separe de start_preconfigured_run pour
+## garder la construction testable sans dependre d'une transition graphique.
+func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
+	if run_data == null:
+		push_error("Aucun RunData fourni pour le run preconfigure.")
+		return false
+	if hero_sources.is_empty():
+		push_error("Aucun heros fourni pour le run preconfigure.")
+		return false
+
+	var hero_data_list: Array[UnitData] = []
+	var requested_ids := {}
+	for source in hero_sources:
+		var data := _resolve_unit_data(source)
+		if data == null:
+			push_error("UnitData preconfigure invalide : %s" % str(source))
+			return false
+		var character_id := data.get_effective_unit_id()
+		if not _is_valid_character_id(character_id):
+			push_error("Identifiant de personnage preconfigure invalide : %s" % character_id)
+			return false
+		if requested_ids.has(character_id):
+			push_error("Identifiant de personnage duplique : %s" % character_id)
+			return false
+		requested_ids[character_id] = true
+		hero_data_list.append(data)
+
+	# La nouvelle equipe est entierement construite hors de l'etat courant.
+	# Ainsi, meme un echec inattendu d'initialisation preserve la run precedente
+	# et ne laisse aucun personnage partiellement rattache au manager.
+	var prepared_heroes: Array[Unit] = []
+	var prepared_states: Dictionary = {}
+	for data in hero_data_list:
+		var hero := Unit.from_data(data)
+		# Unit.from_data conserve l'energy_type et les traits propres au UnitData.
+		# Aucun choix d'ecole ou trait de draft n'est applique sur cette voie.
+		hero.reset_combat_resources()
+		var character_state := CharacterRunState.new()
+		if not character_state.initialize(hero, data):
+			push_error("Impossible d'initialiser l'etat du personnage : %s" % hero.unit_id)
+			_dispose_prepared_characters(prepared_heroes, prepared_states)
+			hero.clear_traits()
+			return false
+		prepared_heroes.append(hero)
+		prepared_states[character_state.character_id] = character_state
+
+	cleanup_run_state()
+	heroes.assign(prepared_heroes)
+	character_states.assign(prepared_states)
+	_initialize_run_state(run_data)
+	return true
+
+func _resolve_unit_data(source) -> UnitData:
+	if source is UnitData:
+		return source
+	if source is String or source is StringName:
+		return load(str(source)) as UnitData
+	return null
+
+
+func _is_valid_character_id(character_id: StringName) -> bool:
+	var normalized := str(character_id).strip_edges()
+	return normalized != "" and normalized != "unit_data:unassigned"
+
+
+func _dispose_prepared_characters(
+		prepared_heroes: Array[Unit],
+		prepared_states: Dictionary
+	) -> void:
+	for state_value in prepared_states.values():
+		var state := state_value as CharacterRunState
+		if state != null:
+			state.dispose()
+	for hero in prepared_heroes:
+		if hero != null:
+			hero.clear_progression_spell_modifiers()
+			hero.clear_traits()
+	prepared_heroes.clear()
+	prepared_states.clear()
+
+func _initialize_run_state(run_data: RunData) -> void:
 	rooms = run_data.rooms.duplicate()
 	reward_pool = run_data.reward_pool.duplicate()
 	current_room_index = -1
 	run_active = true
-	_go_to_next_room()
+	_active_run_name = run_data.run_name
+	_last_run_result = {}
+	_offered_rewards = []
+	_awaiting_post_battle_progression = false
+	_room_outcome_resolved = false
+	_active_progression_screen_ref = null
 
 func cancel_run_draft() -> void:
-	_pending_run_data = null
-	get_tree().change_scene_to_file.call_deferred("res://ui/TitreEcran.tscn")
+	cleanup_run_state()
+	_request_scene_change(TITLE_SCREEN_PATH)
 
 func get_fervor_multiplier() -> float:
 	return 1.0
@@ -127,17 +271,19 @@ func _load_draft_options(paths: Array) -> Array:
 	return options
 
 # Cree les heros UNE fois pour tout le run, depuis le draft.
-func _build_heroes_from_draft(hero_paths: Array, energy_paths: Array, trait_paths: Array = []) -> void:
-	for hero in heroes:
-		if hero != null and hero.has_method("clear_traits"):
-			hero.clear_traits()
-	heroes.clear()
+func _build_heroes_from_draft(
+		hero_paths: Array,
+		energy_paths: Array,
+		trait_paths: Array = []
+	) -> bool:
+	cleanup_run_state()
 	for i in range(hero_paths.size()):
 		var path: String = hero_paths[i]
 		var data = load(path)
 		if data == null:
 			push_error("Heros introuvable : %s" % path)
-			continue
+			cleanup_run_state()
+			return false
 		var hero := Unit.from_data(data)
 		if i < energy_paths.size():
 			var energy = load(energy_paths[i]) as EnergyTypeData
@@ -155,6 +301,149 @@ func _build_heroes_from_draft(hero_paths: Array, energy_paths: Array, trait_path
 		hero.ensure_energy_traits()
 		hero.reset_combat_resources()
 		heroes.append(hero)
+	return not heroes.is_empty()
+
+func _clear_heroes() -> void:
+	for state_value in character_states.values():
+		var state := state_value as CharacterRunState
+		if state != null:
+			state.dispose()
+	for hero in heroes:
+		if hero == null:
+			continue
+		hero.clear_progression_spell_modifiers()
+		if hero.has_method("clear_traits"):
+			hero.clear_traits()
+	heroes.clear()
+	character_states.clear()
+
+
+func cleanup_run_state() -> void:
+	_close_active_progression_screen()
+	_awaiting_post_battle_progression = false
+	_room_outcome_resolved = false
+	_pending_run_data = null
+	_offered_rewards.clear()
+	run_active = false
+	current_room_index = -1
+	_clear_heroes()
+	rooms.clear()
+	reward_pool.clear()
+	_active_run_name = ""
+	_last_run_result.clear()
+
+func get_character_state(character_id: StringName) -> CharacterRunState:
+	return character_states.get(character_id) as CharacterRunState
+
+
+## Retrouve l'etat par l'identite runtime exacte de l'unite, jamais par son nom.
+func get_character_state_for_unit(unit: Unit) -> CharacterRunState:
+	if unit == null:
+		return null
+	for state_value in character_states.values():
+		var state := state_value as CharacterRunState
+		if state != null and state.unit == unit:
+			return state
+	return null
+
+
+## Vue defensive des heros dans l'ordre de la composition.
+func get_ordered_heroes() -> Array[Unit]:
+	var ordered: Array[Unit] = []
+	for hero in heroes:
+		if hero is Unit:
+			ordered.append(hero)
+	return ordered
+
+
+## Etats ordonnes par composition, avec rattachement par identite runtime.
+func get_ordered_character_states() -> Array[CharacterRunState]:
+	var ordered: Array[CharacterRunState] = []
+	for hero in heroes:
+		var state := get_character_state_for_unit(hero as Unit)
+		if state != null:
+			ordered.append(state)
+	return ordered
+
+
+func _on_successful_spell_cast(caster, spell, report: Dictionary) -> void:
+	var result := _progression_service.grant_cast_xp(
+		character_states,
+		caster as Unit,
+		spell as Spell,
+		report
+	)
+	if result.is_empty():
+		return
+	var character_id: StringName = result["character_id"]
+	var discipline_id: StringName = result["discipline_id"]
+	var amount: int = result["gained_xp"]
+	discipline_xp_gained.emit(character_id, discipline_id, amount, result.duplicate(true))
+	DebugLogger.info(
+		DebugLogger.LogCategory.COMBAT,
+		"+%d XP %s" % [amount, result["discipline_display_name"]],
+		{
+			"personnage": caster.unit_name,
+			"xp": result["xp"],
+			"rang": result["rank"],
+			"prochain_seuil": result["next_required_total_xp"],
+		}
+	)
+
+
+func get_pending_progression_choices() -> Array[Dictionary]:
+	var pending: Array[Dictionary] = []
+	for state in get_ordered_character_states():
+		pending.append_array(state.get_pending_progression_choices())
+	return pending
+
+
+func get_next_pending_progression_choice() -> Dictionary:
+	var pending := get_pending_progression_choices()
+	return pending[0].duplicate(true) if not pending.is_empty() else {}
+
+
+func has_pending_progression_choices() -> bool:
+	return not get_next_pending_progression_choice().is_empty()
+
+
+func register_progression_screen(screen: Control) -> bool:
+	if screen == null:
+		return false
+	var active := get_active_progression_screen()
+	if active != null and active != screen:
+		return false
+	_active_progression_screen_ref = weakref(screen)
+	return true
+
+
+func unregister_progression_screen(screen: Control) -> void:
+	if get_active_progression_screen() == screen:
+		_active_progression_screen_ref = null
+
+
+func get_active_progression_screen() -> Control:
+	if _active_progression_screen_ref == null:
+		return null
+	var screen := _active_progression_screen_ref.get_ref() as Control
+	if screen == null:
+		_active_progression_screen_ref = null
+	return screen
+
+
+func has_active_progression_screen() -> bool:
+	return get_active_progression_screen() != null
+
+
+func _close_active_progression_screen() -> void:
+	var screen := get_active_progression_screen()
+	_active_progression_screen_ref = null
+	if screen == null:
+		return
+	if screen.has_method("close_for_run_cleanup"):
+		screen.close_for_run_cleanup()
+	elif screen.is_inside_tree():
+		screen.queue_free()
 
 # ============================================================
 # PROGRESSION ENTRE LES SALLES
@@ -165,11 +454,10 @@ func _go_to_next_room() -> void:
 	current_room_index += 1
 	# Plus de salle = run gagné.
 	if current_room_index >= rooms.size():
-		run_active = false
-		run_won.emit()
+		_finish_run(true)
 		return
 	# On (re)charge l'écran de transition pour la nouvelle salle.
-	get_tree().change_scene_to_file.call_deferred("res://ui/Transitionsalle.tscn")
+	_request_scene_change(ROOM_TRANSITION_SCREEN_PATH)
 
 # Appelé par Transitionsalle au clic sur "Continuer".
 func start_next_battle() -> void:
@@ -177,6 +465,7 @@ func start_next_battle() -> void:
 	if room == null or room.battle_scene == null:
 		push_error("Aucune battle_scene assignée dans RoomData index %d" % current_room_index)
 		return
+	_room_outcome_resolved = false
 	get_tree().change_scene_to_packed.call_deferred(room.battle_scene)
 
 # La salle en cours (lue par battle au démarrage).
@@ -191,34 +480,68 @@ func get_current_room() -> RoomData:
 
 # Appelé par battle quand le joueur GAGNE le combat.
 func on_battle_won() -> void:
+	if not run_active or _room_outcome_resolved:
+		return
+	_room_outcome_resolved = true
 	room_cleared.emit(current_room_index)
-	# Récompense seulement s'il reste au moins une salle APRÈS celle-ci
-	# (pas de récompense après la dernière salle : le run se termine).
+	_awaiting_post_battle_progression = true
+	if has_pending_progression_choices():
+		_request_scene_change(PROGRESSION_CHOICE_SCREEN_PATH)
+		return
+	_awaiting_post_battle_progression = false
+	_continue_after_progression()
+
+
+func _continue_after_progression() -> void:
 	var has_next = current_room_index + 1 < rooms.size()
 	if not has_next:
 		_go_to_next_room()
 		return
 
-	var forced_reward = _get_forced_reward_for_room(current_room_index)
-	if forced_reward != null:
-		_offered_rewards = [forced_reward]
-		_offered_rewards.append_array(_draw_rewards(REWARDS_OFFERED - 1, [forced_reward]))
-	elif reward_pool.size() > 0:
-		_offered_rewards = _draw_rewards(REWARDS_OFFERED)
-	else:
+	_offered_rewards = _build_reward_offer()
+	if _offered_rewards.is_empty():
 		_go_to_next_room()
 		return
 
-	get_tree().change_scene_to_file.call_deferred("res://ui/RewardScreen.tscn")
+	_request_scene_change(REWARD_SCREEN_PATH)
+
+
+func choose_progression_upgrade(
+		character_id: StringName,
+		discipline_id: StringName,
+		choice_rank: int,
+		upgrade_id: StringName
+	) -> bool:
+	var state := get_character_state(character_id)
+	if state == null or not state.select_upgrade(discipline_id, choice_rank, upgrade_id):
+		return false
+	if _awaiting_post_battle_progression and not has_pending_progression_choices():
+		_awaiting_post_battle_progression = false
+		_continue_after_progression()
+	return true
 
 # Appelé par battle quand le joueur PERD le combat.
 func on_battle_lost() -> void:
-	run_active = false
-	run_lost.emit()
+	if not run_active or _room_outcome_resolved:
+		return
+	_room_outcome_resolved = true
+	_finish_run(false)
 
 # ============================================================
 # RÉCOMPENSES
 # ============================================================
+
+func _build_reward_offer() -> Array:
+	# Un run sans pool de récompenses ne doit jamais ouvrir RewardScreen,
+	# y compris dans la première salle qui possède une récompense forcée.
+	if reward_pool.is_empty():
+		return []
+	var forced_reward = _get_forced_reward_for_room(current_room_index)
+	if forced_reward != null:
+		var offer: Array = [forced_reward]
+		offer.append_array(_draw_rewards(REWARDS_OFFERED - 1, [forced_reward]))
+		return offer
+	return _draw_rewards(REWARDS_OFFERED)
 
 # Tire `count` récompenses au hasard dans le pool (sans doublon).
 func _draw_rewards(count: int, excluded: Array = []) -> Array:
@@ -262,6 +585,37 @@ func choose_reward(reward: RewardData, chosen_hero: Unit = null) -> void:
 	_offered_rewards = []
 	_go_to_next_room()
 
+func _finish_run(victory: bool) -> void:
+	run_active = false
+	_offered_rewards = []
+	_awaiting_post_battle_progression = false
+	_close_active_progression_screen()
+	_record_run_result(victory)
+	if victory:
+		run_won.emit()
+	else:
+		run_lost.emit()
+	_request_scene_change(RUN_RESULT_SCREEN_PATH)
+
+func _record_run_result(victory: bool) -> void:
+	_last_run_result = {
+		"victory": victory,
+		"run_name": _active_run_name,
+	}
+
+func get_last_run_result() -> Dictionary:
+	return _last_run_result.duplicate(true)
+
+func return_to_title() -> void:
+	cleanup_run_state()
+	_request_scene_change(TITLE_SCREEN_PATH)
+
+
+func _request_scene_change(path: String) -> void:
+	scene_change_requested.emit(path)
+	if is_inside_tree():
+		get_tree().change_scene_to_file.call_deferred(path)
+
 # Détermine quels héros reçoivent la récompense selon sa cible.
 func _resolve_reward_targets(reward: RewardData, chosen_hero: Unit) -> Array:
 	var living = get_living_heroes()
@@ -297,7 +651,11 @@ func _apply_reward(reward: RewardData, targets: Array) -> void:
 			_apply_stat_mod(hero, reward.malus_stat, reward.malus_amount, reward.malus_is_percent)
 		# 4. Nouveau sort.
 		if reward.spell != null:
-			hero.add_spell(reward.spell)
+			var character_state := get_character_state_for_unit(hero)
+			if character_state != null:
+				character_state.loadout.learn_spell(reward.spell)
+			else:
+				hero.add_spell(reward.spell)
 		if reward.trait_data != null:
 			hero.add_trait_from_data(reward.trait_data)
 		# 5. Statut permanent (saignement de malédiction, etc.).
@@ -362,4 +720,4 @@ func _hero_by_hp(living: Array, lowest: bool) -> Unit:
 
 # Les héros encore vivants, à déployer dans la salle.
 func get_living_heroes() -> Array:
-	return heroes.filter(func(u): return u.is_alive)
+	return get_ordered_heroes().filter(func(u): return u.is_alive)

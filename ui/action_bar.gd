@@ -22,6 +22,8 @@ var _spell_buttons: Array = []
 var _ap_label: Label
 var _fervor_bar: ProgressBar
 var _fervor_label: Label
+var _energy_separator_before: VSeparator
+var _energy_separator_after: VSeparator
 var _player_controls_enabled: bool = true
 var _current_unit = null
 
@@ -86,6 +88,9 @@ func _build_ui() -> void:
 	_attack_btn.pressed.connect(func(): attack_pressed.emit())
 	_hbox.add_child(_attack_btn)
 
+	_energy_separator_before = VSeparator.new()
+	_hbox.add_child(_energy_separator_before)
+
 	_awakening_btn = Button.new()
 	_awakening_btn.text = "Eveil"
 	_awakening_btn.custom_minimum_size = Vector2(82, 44)
@@ -100,7 +105,8 @@ func _build_ui() -> void:
 	_reaction_btn.pressed.connect(func(): reaction_pressed.emit())
 	_hbox.add_child(_reaction_btn)
 
-	_hbox.add_child(VSeparator.new())
+	_energy_separator_after = VSeparator.new()
+	_hbox.add_child(_energy_separator_after)
 
 	_spell_box = HBoxContainer.new()
 	_spell_box.add_theme_constant_override("separation", 6)
@@ -113,11 +119,10 @@ func _build_ui() -> void:
 	_end_btn.custom_minimum_size = Vector2(100, 44)
 	_end_btn.pressed.connect(func(): end_turn_pressed.emit())
 	_hbox.add_child(_end_btn)
+	_set_energy_controls_visible(false)
 
 func build_spell_buttons(unit) -> void:
-	for btn in _spell_buttons:
-		btn.queue_free()
-	_spell_buttons.clear()
+	_clear_spell_buttons()
 	if unit == null:
 		_refresh_button_states()
 		return
@@ -125,9 +130,35 @@ func build_spell_buttons(unit) -> void:
 		if spell == null:
 			continue
 		_add_spell_button(unit, spell, false)
-		if spell.can_imprint():
+		if unit.has_energy() and spell.can_imprint():
 			_add_spell_button(unit, spell, true)
 	_refresh_button_states()
+
+
+func _clear_spell_buttons() -> void:
+	if get_tree() != null:
+		var tooltip = get_tree().get_first_node_in_group("keyword_tooltip_layer")
+		if tooltip != null:
+			tooltip.request_hide()
+	for button_value in _spell_buttons:
+		var btn := button_value as Button
+		if not is_instance_valid(btn):
+			continue
+		# Les lambdas capturent le sort et l'ancienne unite. On les debranche
+		# explicitement avant de retirer le bouton afin qu'aucune action differee
+		# ne puisse encore piloter le ciblage du prochain personnage.
+		for connection in btn.pressed.get_connections():
+			btn.pressed.disconnect(connection["callable"])
+		for connection in btn.mouse_entered.get_connections():
+			btn.mouse_entered.disconnect(connection["callable"])
+		for connection in btn.mouse_exited.get_connections():
+			btn.mouse_exited.disconnect(connection["callable"])
+		btn.set_block_signals(true)
+		if btn.get_parent() != null:
+			btn.get_parent().remove_child(btn)
+		btn.free()
+	_spell_buttons.clear()
+
 
 func _add_spell_button(unit, spell, imprinted: bool) -> void:
 	var btn := Button.new()
@@ -177,9 +208,10 @@ func _refresh_button_states() -> void:
 		return
 	_move_btn.disabled = not _player_controls_enabled
 	_end_btn.disabled = not _player_controls_enabled
-	var attack_blocked := _current_unit == null
-	if _current_unit != null:
-		attack_blocked = _current_unit.current_ap < _current_unit.get_basic_attack_ap_cost()
+	var attack_available: bool = _current_unit != null \
+		and _current_unit.can_use_basic_attack()
+	var attack_blocked: bool = not attack_available
+	_attack_btn.visible = _current_unit == null or _current_unit.basic_attack_enabled
 	_attack_btn.disabled = not _player_controls_enabled or attack_blocked
 	if _current_unit != null:
 		_attack_btn.text = "Attaquer\n%d PA" % _current_unit.get_basic_attack_ap_cost()
@@ -232,16 +264,19 @@ func _on_resource_changed(unit) -> void:
 
 func _refresh_resource_bars(unit) -> void:
 	if unit == null:
+		_set_energy_controls_visible(false)
 		_ap_label.text = ""
 		_fervor_label.text = ""
 		_fervor_bar.value = 0.0
 		return
 	_ap_label.text = "PA  %s" % _ap_pips(unit.current_ap, unit.max_ap.get_int())
 	if not unit.has_energy():
+		_set_energy_controls_visible(false)
 		_fervor_label.text = ""
 		_fervor_bar.value = 0.0
 		_fervor_bar.modulate = Color.WHITE
 		return
+	_set_energy_controls_visible(true)
 	var et: EnergyTypeData = unit.energy_type
 	_fervor_bar.max_value = et.max_energy
 	_fervor_bar.value = unit.current_energy
@@ -254,6 +289,18 @@ func _refresh_resource_bars(unit) -> void:
 	elif unit.current_energy >= et.reaction_cost:
 		suffix = " | Reaction"
 	_fervor_label.text = "%s : %d / %d%s" % [et.energy_name, int(unit.current_energy), int(et.max_energy), suffix]
+
+func _set_energy_controls_visible(visible: bool) -> void:
+	for control in [
+		_fervor_label,
+		_fervor_bar,
+		_awakening_btn,
+		_reaction_btn,
+		_energy_separator_before,
+		_energy_separator_after,
+	]:
+		if control != null:
+			control.visible = visible
 
 # Pips de PA : pleins pour les PA restants, vides pour les depenses.
 # Si un bonus pousse au-dela du max, les PA supplementaires s'affichent en "+N".
@@ -313,6 +360,8 @@ func _reaction_tooltip(unit) -> String:
 func _attack_tooltip(unit) -> String:
 	if unit == null:
 		return "Aucun combattant actif."
+	if not unit.basic_attack_enabled:
+		return "Ce personnage ne possede pas d'attaque de base."
 	var cost: int = unit.get_basic_attack_ap_cost()
 	if unit.current_ap < cost:
 		return "Injouable : PA insuffisants (%d / %d)." % [unit.current_ap, cost]

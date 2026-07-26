@@ -188,12 +188,12 @@ func _decide_melee(enemy: Unit, all_units: Array) -> Array:
 	if not spell_action.is_empty():
 		DebugLogger.info(CAT, "%s -> sort %s sur %s" % [enemy.unit_name, spell_action["spell"].spell_name, str(spell_action["cell"])])
 		plan.append(spell_action)
-		if _grid.are_adjacent(enemy.grid_pos, target.grid_pos) and enemy.current_ap >= 1:
+		if _grid.are_adjacent(enemy.grid_pos, target.grid_pos) and enemy.can_use_basic_attack():
 			plan.append({ "type": "attack", "target": target })
 		return plan
 
 	if _grid.are_adjacent(enemy.grid_pos, target.grid_pos):
-		if enemy.current_ap >= 1:
+		if enemy.can_use_basic_attack():
 			DebugLogger.info(CAT, "%s -> attaque %s" % [enemy.unit_name, target.unit_name])
 			plan.append({ "type": "attack", "target": target })
 		return plan
@@ -207,7 +207,7 @@ func _decide_melee(enemy: Unit, all_units: Array) -> Array:
 				var final_pos = reachable_path[reachable_path.size() - 1]
 				DebugLogger.info(CAT, "%s -> s'approche de %s (vers %s)" % [enemy.unit_name, target.unit_name, str(final_pos)])
 				plan.append({ "type": "move", "path": reachable_path })
-				if _grid.are_adjacent(final_pos, target.grid_pos) and enemy.current_ap >= 1:
+				if _grid.are_adjacent(final_pos, target.grid_pos) and enemy.can_use_basic_attack():
 					plan.append({ "type": "attack", "target": target })
 	else:
 		DebugLogger.trace(CAT, "%s : aucune case d'approche vers %s" % [enemy.unit_name, target.unit_name])

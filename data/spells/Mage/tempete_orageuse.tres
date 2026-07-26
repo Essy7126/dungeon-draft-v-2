@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Texture2D" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="2_icon"]
+[ext_resource type="PackedScene" path="res://asset/sorts/tempete_orageuse/tempete_orageuse_vfx.tscn" id="3_vfx"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"mage_thunderstorm"
+discipline_id = &"mage_lightning"
+spell_name = "Tempête orageuse"
+description = "Déchaîne une tempête électrique sur une zone carrée de 3 × 3. Chaque cible subit un unique impact."
+icon = ExtResource("2_icon")
+vfx_scene = ExtResource("3_vfx")
+vfx_placement = 1
+impact_delay_seconds = 0.31
+ap_cost = 3
+spell_range = 5
+needs_line_of_sight = true
+can_target_enemy = true
+can_target_free_cell = true
+aoe_shape = 2
+aoe_size = 1
+damage = 7
+damage_type = 1
+element = 3

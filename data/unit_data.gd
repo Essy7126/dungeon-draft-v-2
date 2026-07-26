@@ -16,6 +16,7 @@ extends Resource
 # IDENTITÉ
 # ============================================================
 
+@export var unit_id: StringName = &""
 @export var unit_name: String = "Unité"
 @export_multiline var description: String = ""
 
@@ -93,12 +94,23 @@ extends Resource
 # Scene visuelle optionnelle instanciee par UnitView. Si elle est vide, le
 # rendu historique de l'unite reste le fallback.
 @export var visual_scene: PackedScene = null
+@export var preview_visual_scene: PackedScene = null
+
+@export_group("Presentation")
+@export var role: String = ""
+@export_multiline var presentation_summary: String = ""
+@export var progression_summary: String = ""
+@export var presentation_badge: String = ""
 
 # ============================================================
 # SORTS
 # ============================================================
 
+@export_group("Progression")
+@export var disciplines: Array[DisciplineData] = []
+
 @export_group("Sorts")
+@export var basic_attack_enabled: bool = true
 # Liste des sorts (Resources Spell) que cette unité connaît.
 @export var spells: Array[Spell] = []
 # ============================================================
@@ -115,3 +127,11 @@ extends Resource
 # Override IA avance, utilisable sur un boss OU un ennemi normal.
 # Si rempli, il REMPLACE l'ai_behavior standard et peut contenir un etat interne.
 @export var boss_behavior: BossBehavior = null
+
+
+func get_effective_unit_id() -> StringName:
+	if unit_id != &"":
+		return unit_id
+	if resource_path != "":
+		return StringName(resource_path)
+	return &"unit_data:unassigned"

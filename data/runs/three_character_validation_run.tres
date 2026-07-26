@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RunData" format=3]
+
+[ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
+[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room_type"]
+[ext_resource type="Resource" path="res://data/rooms/bible/le_gue.tres" id="3_gue"]
+[ext_resource type="Resource" path="res://data/rooms/bible/la_forge.tres" id="4_forge"]
+[ext_resource type="Resource" path="res://data/rooms/bible/elite_brute.tres" id="5_elite"]
+
+[resource]
+script = ExtResource("1_run")
+run_name = "Validation technique — équipe de 3"
+rooms = Array[ExtResource("2_room_type")]([ExtResource("3_gue"), ExtResource("4_forge"), ExtResource("5_elite")])

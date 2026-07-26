@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin_rank_1.tres" id="3_rank_1"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin_rank_2.tres" id="4_rank_2"]
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"assassin"
+display_name = "Assassin"
+description = "Maîtrise des frappes rapprochées et opportunistes."
+presentation_color = Color(0.48, 0.3, 0.64, 1)
+ranks = Array[ExtResource("2_rank_type")]([ExtResource("3_rank_1"), ExtResource("4_rank_2")])

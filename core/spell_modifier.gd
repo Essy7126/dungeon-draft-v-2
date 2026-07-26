@@ -20,6 +20,8 @@ class_name SpellModifier
 extends Resource
 
 @export var modifier_name: String = "Modificateur"
+# Filtre stable pour les nouvelles données. Le nom reste le fallback historique.
+@export var target_spell_id: StringName = &""
 # Filtre : nom EXACT du sort transformé. Vide = s'applique à tous les sorts.
 @export var target_spell_name: String = ""
 
@@ -27,6 +29,8 @@ extends Resource
 func applies_to(spell) -> bool:
 	if spell == null:
 		return false
+	if target_spell_id != &"":
+		return spell.get_effective_spell_id() == target_spell_id
 	if target_spell_name.strip_edges() == "":
 		return true
 	return spell.spell_name.strip_edges() == target_spell_name.strip_edges()

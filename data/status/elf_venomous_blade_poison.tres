@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StatusData" format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_name = "Poison de Lame venimeuse"
+description = "Inflige 2 dégâts au début des deux prochains tours de la cible."
+color = Color(0.38, 0.7, 0.24, 1)
+damage_per_turn = 2
+duration = 2

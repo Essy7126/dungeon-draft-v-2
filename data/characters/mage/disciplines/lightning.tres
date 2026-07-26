@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DisciplineData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+
+[sub_resource type="Resource" id="Rank_lightning_1"]
+script = ExtResource("2_rank_type")
+rank = 1
+required_total_xp = 0
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"mage_lightning"
+display_name = "Foudromancie"
+description = "Maîtrise des zones, des impacts électriques et de la propagation future."
+presentation_color = Color(0.63, 0.48, 1, 1)
+ranks = Array[ExtResource("2_rank_type")]([SubResource("Rank_lightning_1")])

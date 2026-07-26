@@ -52,13 +52,19 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 				continue
 			if _grid.manhattan(caster.grid_pos, pos) > spell.spell_range:
 				continue
+			if spell.line_from_caster and not _is_cardinal_line_target(caster.grid_pos, pos):
+				continue
 			if spell.needs_line_of_sight and not _pathfinder.has_line_of_sight(caster.grid_pos, pos):
 				continue
 			if _matches_target(caster, spell, pos):
 				result.append(pos)
 	return result
 
-func get_aoe_cells(spell: Spell, center: Vector2i) -> Array:
+func get_aoe_cells(
+		spell: Spell,
+		center: Vector2i,
+		origin: Vector2i = Vector2i(-1, -1)
+	) -> Array:
 	var result: Array = []
 	match spell.aoe_shape:
 		Spell.AoeShape.SINGLE:
@@ -77,8 +83,22 @@ func get_aoe_cells(spell: Spell, center: Vector2i) -> Array:
 					if _grid.is_valid(pos):
 						result.append(pos)
 		Spell.AoeShape.LINE:
-			result.append(center)
+			if spell.line_from_caster and origin != Vector2i(-1, -1):
+				var delta := center - origin
+				if _is_cardinal_line_target(origin, center):
+					var direction := Vector2i(signi(delta.x), signi(delta.y))
+					for distance in range(1, absi(delta.x) + absi(delta.y) + 1):
+						var pos := origin + direction * distance
+						if _grid.is_valid(pos):
+							result.append(pos)
+			else:
+				result.append(center)
 	return result
+
+
+func _is_cardinal_line_target(origin: Vector2i, target: Vector2i) -> bool:
+	var delta := target - origin
+	return delta != Vector2i.ZERO and (delta.x == 0 or delta.y == 0)
 
 func _matches_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 	var occupant = _grid.get_unit(cell)
@@ -283,6 +303,17 @@ func can_afford(caster: Unit, spell: Spell, imprinted: bool = false) -> bool:
 # ============================================================
 
 func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -> Dictionary:
+	return resolve_cast(begin_cast(caster, spell, cell, imprinted))
+
+
+## Valide et engage les couts au release, sans appliquer les impacts.
+## Le CastContext retourne est ensuite resolu exactement une fois par resolve_cast().
+func begin_cast(
+		caster: Unit,
+		spell: Spell,
+		cell: Vector2i,
+		imprinted: bool = false
+	) -> CastContext:
 	var ctx := CastContext.new()
 	ctx.caster = caster
 	ctx.spell = spell
@@ -290,11 +321,31 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 	ctx.imprinted = imprinted
 	ctx.grid = _grid
 	ctx.terrain = _terrain
+	if caster == null or spell == null:
+		ctx.failed = true
+		ctx.report = _failed_report(caster, spell, cell, "arguments")
+		return ctx
+	if not is_valid_target(caster, spell, cell):
+		ctx.failed = true
+		ctx.report = _failed_report(caster, spell, cell, "target")
+		return ctx
 	ctx.modifiers = _gather_modifiers(caster, spell)
 
 	if not _resolve_costs(ctx):
-		return ctx.report
+		return ctx
 	_run_hook(ctx, "on_costs_resolved")
+	ctx.costs_committed = true
+	return ctx
+
+
+## Termine un cast engage. Un second appel retourne le meme rapport sans
+## reappliquer degats, mouvements, XP ou evenements.
+func resolve_cast(ctx: CastContext) -> Dictionary:
+	if ctx == null:
+		return _failed_report(null, null, Vector2i.ZERO, "context")
+	if ctx.failed or ctx.resolved:
+		return ctx.report
+	ctx.resolved = true
 
 	_resolve_targets(ctx)
 	_run_hook(ctx, "on_targets_resolved")
@@ -327,6 +378,9 @@ func _gather_modifiers(caster: Unit, spell: Spell) -> Array:
 				for m in t.get_spell_modifiers():
 					if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
 						mods.append(m)
+		for m in caster.get_progression_spell_modifiers():
+			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
+				mods.append(m)
 	return mods
 
 func _run_hook(ctx: CastContext, hook: String) -> void:
@@ -366,12 +420,17 @@ func _resolve_targets(ctx: CastContext) -> void:
 	ctx.report = {
 		"caster": ctx.caster, "spell": ctx.spell, "cell": ctx.cell, "imprinted": ctx.imprinted,
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
+		"healing_by_unit": {},
 		"controlled_enemies": [], "drained_units": [], "terrain_changed": [],
 		"crits": [], "dodges": [], "ally_adjacent_to_caster": _has_ally_adjacent(ctx.caster),
 		"angle_advantage": _has_angle_advantage(ctx.caster, ctx.cell), "pushed": false,
 		"collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false,
 	}
-	ctx.affected_cells = get_aoe_cells(ctx.spell, ctx.cell)
+	ctx.affected_cells = get_aoe_cells(
+		ctx.spell,
+		ctx.cell,
+		ctx.caster.grid_pos
+	)
 
 # --- Étape 3 : impacts. Par cellule : effets sur l'unité PUIS terrains du
 # sort — l'ordre par cellule est préservé (une réaction de terrain peut
@@ -380,19 +439,22 @@ func _resolve_impacts(ctx: CastContext) -> void:
 	for target_cell in ctx.affected_cells:
 		var target = _grid.get_unit(target_cell)
 		if target != null:
-			_resolve_unit_impact(ctx, target)
+			_resolve_unit_impact(ctx, target, target_cell)
 		_resolve_cell_terrain(ctx, target_cell)
 
 # Effets directs du sort sur UNE unité touchée : dégâts, soins, statuts,
 # provocation, drains, bouclier. Alimente les listes du rapport.
-func _resolve_unit_impact(ctx: CastContext, target) -> void:
+func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> void:
 	var caster: Unit = ctx.caster
 	var spell: Spell = ctx.spell
 	var report: Dictionary = ctx.report
 	var imprinted := ctx.imprinted
 	var affected := false
 	if spell.deals_damage():
-		var raw_damage := spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
+		var cell_bonus := int(ctx.damage_bonus_by_cell.get(target_cell, 0))
+		var raw_damage := spell.damage \
+			+ (spell.imprint_damage_bonus if imprinted else 0) \
+			+ cell_bonus
 		var base_dmg := caster.get_modified_spell_damage(spell, raw_damage)
 		if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marqué"):
 			base_dmg += spell.bonus_damage_if_marked
@@ -407,13 +469,16 @@ func _resolve_unit_impact(ctx: CastContext, target) -> void:
 		affected = true
 	if spell.is_healing():
 		var before_hp: int = target.current_hp
-		var raw_heal := spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
+		var raw_heal := spell.heal \
+			+ (spell.imprint_heal_bonus if imprinted else 0) \
+			+ int(ctx.heal_bonus_by_unit.get(target, 0))
 		var heal_amount := caster.get_modified_spell_heal(spell, raw_heal)
 		if spell.heal_bonus_effect_name.strip_edges() != "":
 			var heal_effect := _terrain.get_effect_data(target.grid_pos)
 			if heal_effect != null and heal_effect.effect_name == spell.heal_bonus_effect_name:
 				heal_amount = maxi(0, int(round(float(heal_amount) * spell.heal_bonus_multiplier)))
 		target.heal(heal_amount)
+		report["healing_by_unit"][target] = target.current_hp - before_hp
 		if target.current_hp > before_hp and not report["healed_units"].has(target):
 			report["healed_units"].append(target)
 		affected = true
@@ -423,6 +488,11 @@ func _resolve_unit_impact(ctx: CastContext, target) -> void:
 	if imprinted and spell.imprint_status != null:
 		target.apply_status(spell.imprint_status)
 		affected = true
+	for extra_status_value in ctx.additional_statuses_by_unit.get(target, []):
+		var extra_status := extra_status_value as StatusData
+		if extra_status != null:
+			target.apply_status(extra_status)
+			affected = true
 	if spell.forces_taunt and target.team != caster.team:
 		target.apply_taunt(caster, spell.taunt_duration)
 		if not report["controlled_enemies"].has(target):
@@ -438,7 +508,9 @@ func _resolve_unit_impact(ctx: CastContext, target) -> void:
 		if not report["drained_units"].has(target):
 			report["drained_units"].append(target)
 		affected = true
-	var raw_shield := spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+	var raw_shield := spell.shield_grant \
+		+ (spell.imprint_shield_bonus if imprinted else 0) \
+		+ int(ctx.additional_shield_by_unit.get(target, 0))
 	if raw_shield > 0 and target.team == caster.team:
 		var before_shield: int = target.current_shield
 		target.add_shield(caster.get_modified_spell_shield(spell, raw_shield))
@@ -499,13 +571,37 @@ func _resolve_movement(ctx: CastContext) -> void:
 			if adjacent_push["pushed"] and not report["affected_units"].has(adjacent_target):
 				report["affected_units"].append(adjacent_target)
 	elif spell.push_distance > 0:
-		var push_target = _grid.get_unit(ctx.cell)
-		if push_target != null and push_target.team != caster.team:
-			var push_result = _push_unit(caster, push_target, eff_push, eff_collision, ctx.movement)
-			report["pushed"] = push_result["pushed"]
-			report["collision"] = push_result["collision"]
-			report["pushed_away_from_ally"] = push_result["pushed_away_from_ally"]
-			report["landed_on_terrain"] = push_result.get("landed_on_terrain", false)
+		var push_targets: Array = []
+		if spell.push_affected_units:
+			for affected_cell in ctx.affected_cells:
+				var affected_target = _grid.get_unit(affected_cell)
+				if affected_target != null \
+						and affected_target.team != caster.team \
+						and affected_target.is_alive \
+						and not push_targets.has(affected_target):
+					push_targets.append(affected_target)
+		else:
+			var selected_target = _grid.get_unit(ctx.cell)
+			if selected_target != null and selected_target.team != caster.team:
+				push_targets.append(selected_target)
+		for push_target in push_targets:
+			var push_result = _push_unit(
+				caster,
+				push_target,
+				eff_push,
+				eff_collision,
+				ctx.movement
+			)
+			report["pushed"] = report["pushed"] or push_result["pushed"]
+			report["collision"] = report["collision"] or push_result["collision"]
+			report["pushed_away_from_ally"] = (
+				report["pushed_away_from_ally"]
+				or push_result["pushed_away_from_ally"]
+			)
+			report["landed_on_terrain"] = (
+				report["landed_on_terrain"]
+				or push_result.get("landed_on_terrain", false)
+			)
 	if spell.pull_distance > 0:
 		var pull_target = _grid.get_unit(ctx.cell)
 		if pull_target != null and pull_target.team != caster.team:
@@ -516,6 +612,18 @@ func _resolve_movement(ctx: CastContext) -> void:
 		var teleport_target = _grid.get_unit(ctx.cell)
 		if teleport_target != null and teleport_target.team != caster.team and _teleport_behind_target(caster, teleport_target, ctx.movement):
 			report["angle_advantage"] = true
+	for push_target_value in ctx.additional_push_by_unit:
+		var push_target := push_target_value as Unit
+		if push_target == null or not push_target.is_alive or push_target.team == caster.team:
+			continue
+		var push_cells := maxi(0, int(ctx.additional_push_by_unit[push_target_value]))
+		var extra_push := _push_unit(caster, push_target, push_cells, 0, ctx.movement)
+		report["pushed"] = report["pushed"] or extra_push["pushed"]
+		report["collision"] = report["collision"] or extra_push["collision"]
+		report["pushed_away_from_ally"] = report["pushed_away_from_ally"] or extra_push["pushed_away_from_ally"]
+		report["landed_on_terrain"] = report["landed_on_terrain"] or extra_push.get("landed_on_terrain", false)
+		if extra_push["pushed"] and not report["affected_units"].has(push_target):
+			report["affected_units"].append(push_target)
 
 # --- Étape 5 : énergie. Récapitulatif de log puis génération du lanceur
 # (seulement si le sort a eu un effet réel — pas de jauge gratuite). ---
@@ -540,5 +648,6 @@ func _failed_report(caster: Unit, spell: Spell, cell: Vector2i, reason: String) 
 	return {
 		"caster": caster, "spell": spell, "cell": cell, "imprinted": false, "failed": true, "reason": reason,
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
+		"healing_by_unit": {},
 		"controlled_enemies": [], "drained_units": [], "terrain_changed": [], "crits": [], "dodges": [],
 	}

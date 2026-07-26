@@ -20,7 +20,13 @@ const REACTIONS := {
 func _init(grid: GridData) -> void:
 	_grid = grid
 
-func place_effect(cell: Vector2i, effect: TerrainEffectData, caster = null, source_spell: Spell = null) -> Dictionary:
+func place_effect(
+		cell: Vector2i,
+		effect: TerrainEffectData,
+		caster = null,
+		source_spell: Spell = null,
+		duration_override: int = -999999
+	) -> Dictionary:
 	var result := { "changed": false, "reaction": "", "same": false }
 	if effect == null or not _grid.is_valid(cell):
 		return result
@@ -40,10 +46,13 @@ func place_effect(cell: Vector2i, effect: TerrainEffectData, caster = null, sour
 			return result
 		DebugLogger.trace(CAT, "%s remplace %s en %s" % [effect.effect_name, existing.effect_name, str(cell)])
 
-	_set_effect_cell(cell, effect, _modified_duration(effect, caster))
+	var resolved_duration := duration_override
+	if resolved_duration == -999999:
+		resolved_duration = _modified_duration(effect, caster)
+	_set_effect_cell(cell, effect, resolved_duration)
 	result["changed"] = true
 	DebugLogger.debug(CAT, "Pose %s en %s" % [effect.effect_name, str(cell)], {
-		"duree": effect.duration,
+		"duree": resolved_duration,
 		"declencheur": effect.trigger,
 		"degats": effect.damage,
 	})

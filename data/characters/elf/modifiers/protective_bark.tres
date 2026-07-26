@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellModAdditionalShield" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_additional_shield.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Écorce protectrice"
+target_spell_id = &"elf_sylvan_heal"
+shield_amount = 3

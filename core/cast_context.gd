@@ -29,7 +29,14 @@ var fervor_cost: float = 0.0
 # --- État de résolution ---
 var report: Dictionary = {}
 var affected_cells: Array = []
+var damage_bonus_by_cell: Dictionary = {} # Vector2i -> int, propre au cast
+var heal_bonus_by_unit: Dictionary = {} # Unit -> int, propre au cast
+var additional_statuses_by_unit: Dictionary = {} # Unit -> Array[StatusData]
+var additional_shield_by_unit: Dictionary = {} # Unit -> int
+var additional_push_by_unit: Dictionary = {} # Unit -> int (cases exactes)
 var failed: bool = false
+var costs_committed: bool = false
+var resolved: bool = false
 
 # --- Modificateurs actifs de ce cast (sort + lanceur) ---
 var modifiers: Array = []

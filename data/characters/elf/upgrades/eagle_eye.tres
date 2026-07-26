@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkillUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="1_upgrade"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/modifiers/eagle_eye.tres" id="3_modifier"]
+
+[resource]
+script = ExtResource("1_upgrade")
+upgrade_id = &"elf_archer_eagle_eye"
+display_name = "Œil d’aigle"
+description = "Tir précis inflige 3 dégâts supplémentaires à une cible située à au moins quatre cases."
+discipline_id = &"archer"
+rank = 2
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])
