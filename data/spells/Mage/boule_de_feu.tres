@@ -9,6 +9,7 @@
 [resource]
 script = ExtResource("1_y40te")
 spell_id = &"mage_fireball"
+discipline_id = &"mage_fire"
 spell_name = "Boule de feu du Mage"
 description = "Projette une boule de feu et embrase la zone ciblee."
 icon = ExtResource("1_7k23c")

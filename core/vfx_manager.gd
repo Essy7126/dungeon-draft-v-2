@@ -12,16 +12,30 @@ func _ready() -> void:
 	EventBus.battle_view_ready.connect(register_battle_view)
 
 func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
+	if spell.impact_delay_seconds > 0.0:
+		return
+	play_spell_vfx(caster, spell, report.get("cell", caster.grid_pos))
+
+
+func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 	if spell.vfx_scene == null:
-		return
+		return null
 	if _battle_view == null:
-		return
+		return null
 	var caster_view_pos := _caster_effect_origin(caster)
-	var cell_cible : Vector2i = report.get("cell", caster.grid_pos)
-	var vers := _grid_cell_global(cell_cible)
+	var target_position := _grid_cell_global(cell)
 	var vfx = spell.vfx_scene.instantiate()
 	_vfx_parent().add_child(vfx)
-	vfx.initialiser(caster_view_pos, vers)
+	if spell.vfx_placement == Spell.VfxPlacement.TARGET_CELL:
+		if vfx is Node2D:
+			(vfx as Node2D).global_position = target_position
+		elif vfx.has_method("initialiser_cible"):
+			vfx.initialiser_cible(target_position)
+	elif vfx.has_method("initialiser"):
+		vfx.initialiser(caster_view_pos, target_position)
+	elif vfx is Node2D:
+		(vfx as Node2D).global_position = target_position
+	return vfx
 
 func _caster_effect_origin(caster: Unit) -> Vector2:
 	if _battle_view != null and _battle_view.get_tree() != null:

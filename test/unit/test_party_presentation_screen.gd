@@ -23,7 +23,7 @@ func test_screen_builds_three_data_driven_cards_in_fixed_order() -> void:
 	])
 	assert_eq(cards.map(func(card): return card.spell_count_label.text), [
 		"4 sorts",
-		"2 sorts",
+		"4 sorts",
 		"5 sorts",
 	])
 
@@ -37,7 +37,11 @@ func test_elf_and_mage_use_real_3d_previews_while_guardian_has_clean_fallback() 
 
 	assert_true(cards[1].preview.get_visual_instance() is MageVisual3D)
 	assert_false(cards[1].preview.is_using_fallback())
-	assert_eq(cards[1].disciplines_label.text, "Progression à concevoir")
+	assert_eq(
+		cards[1].disciplines_label.text,
+		"Disciplines : Pyromancie, Cryomancie, Foudromancie, Géomancie",
+	)
+	assert_eq(cards[1].role_label.text, "Mage de combat élémentaire")
 	assert_false(cards[1].badge_label.visible)
 
 	assert_null(cards[2].preview.get_visual_instance())

@@ -38,6 +38,8 @@ var units: Array = []
 
 # Exécuteur du tour ennemi (déroulé de l'IA). Logique extraite par composition.
 var _enemy_turn: EnemyTurnRunner = null
+var _spell_impact_scheduler: SpellImpactScheduler = null
+var _spell_resolution_pending := false
 
 # --- Visuel ---
 var grid_view: Node2D
@@ -107,6 +109,9 @@ func _setup_logic() -> void:
 	pathfinder = Pathfinder.new(grid)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
+	_spell_impact_scheduler = SpellImpactScheduler.new()
+	add_child(_spell_impact_scheduler)
+	_spell_impact_scheduler.impact_due.connect(_on_delayed_spell_impact)
 	enemy_ai = EnemyAI.new(grid, pathfinder, spell_caster)
 	# Exécuteur du tour ennemi (Node : a besoin de get_tree() pour cadencer).
 	# Lit les systèmes/vue/animations de battle au moment du run, pas avant.
@@ -713,26 +718,60 @@ func _on_request_show_spell_range(spell: Spell, _imprinted: bool = false) -> voi
 	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
 
 func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = false) -> void:
+	if _spell_resolution_pending:
+		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
 	if not spell_caster.is_valid_target(unit, spell, cell):
 		return
+	_spell_resolution_pending = true
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
 		if view.has_method("prepare_spell_visual"):
 			var visual_ready: bool = await view.prepare_spell_visual(cell)
 			if not visual_ready:
+				_spell_resolution_pending = false
 				return
 		elif view.has_method("face_grid_direction"):
 			view.face_grid_direction(cell - unit.grid_pos)
-	var report = spell_caster.cast(unit, spell, cell, imprinted)
+	var context := spell_caster.begin_cast(unit, spell, cell, imprinted)
+	if context.failed:
+		_spell_resolution_pending = false
+		return
+	if spell.impact_delay_seconds > 0.0:
+		VFXManager.play_spell_vfx(unit, spell, cell)
+		if _spell_impact_scheduler.schedule(context, spell.impact_delay_seconds):
+			return
+	var report = spell_caster.resolve_cast(context)
+	_finish_spell_resolution(unit, report)
+
+
+func _on_delayed_spell_impact(context: CastContext) -> void:
+	if context == null or spell_caster == null:
+		_spell_resolution_pending = false
+		return
+	var report := spell_caster.resolve_cast(context)
+	_finish_spell_resolution(context.caster, report)
+
+
+func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
+	_spell_resolution_pending = false
 	if report.get("failed", false):
 		return
-	grid_view.queue_redraw()
-	action_bar.update_info(unit)
-	turn_state.set_state(TurnState.State.IDLE)
-	action_bar.set_active_mode("")
+	if is_instance_valid(grid_view):
+		grid_view.queue_redraw()
+	if is_instance_valid(action_bar):
+		action_bar.update_info(unit)
+		action_bar.set_active_mode("")
+	if turn_state != null:
+		turn_state.set_state(TurnState.State.IDLE)
+
+
+func _exit_tree() -> void:
+	_spell_resolution_pending = false
+	if is_instance_valid(_spell_impact_scheduler):
+		_spell_impact_scheduler.cancel_all()
 
 func _on_round_started(number: int) -> void:
 	DebugLogger.set_turn(number)

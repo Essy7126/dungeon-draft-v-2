@@ -35,6 +35,8 @@ var additional_statuses_by_unit: Dictionary = {} # Unit -> Array[StatusData]
 var additional_shield_by_unit: Dictionary = {} # Unit -> int
 var additional_push_by_unit: Dictionary = {} # Unit -> int (cases exactes)
 var failed: bool = false
+var costs_committed: bool = false
+var resolved: bool = false
 
 # --- Modificateurs actifs de ce cast (sort + lanceur) ---
 var modifiers: Array = []

@@ -61,14 +61,17 @@ func test_fixed_composition_order_ids_states_and_loadouts_are_exact() -> void:
 		assert_same(manager.get_character_state_for_unit(heroes[index]), states[index])
 		assert_eq(states[index].loadout.get_equipped_spells(), heroes[index].spells)
 	assert_eq(states[0].loadout.get_equipped_spells().size(), 4)
-	assert_eq(states[1].loadout.get_equipped_spells().size(), 2)
+	assert_eq(states[1].loadout.get_equipped_spells().size(), 4)
 	assert_eq(states[2].loadout.get_equipped_spells().size(), 4)
 	assert_eq(states[0].get_disciplines().size(), 4)
-	assert_true(states[1].get_disciplines().is_empty())
-	assert_true(states[1].get_discipline_progressions().is_empty())
+	assert_eq(
+		states[1].get_disciplines().map(func(item): return item.discipline_id),
+		[&"mage_fire", &"mage_ice", &"mage_lightning", &"mage_earth"],
+	)
+	assert_eq(states[1].get_discipline_progressions().size(), 4)
 
 
-func test_mage_spell_cast_never_creates_xp_or_elf_modifiers() -> void:
+func test_mage_spell_cast_grants_only_its_own_discipline_xp() -> void:
 	var states := _prepare()
 	var elf := states[0]
 	var mage := states[1]
@@ -77,7 +80,10 @@ func test_mage_spell_cast_never_creates_xp_or_elf_modifiers() -> void:
 	assert_eq(elf.unit.get_progression_spell_modifiers().size(), 1)
 	assert_true(mage.unit.get_progression_spell_modifiers().is_empty())
 	EventBus.spell_cast.emit(mage.unit, mage.unit.spells[0], {})
-	assert_true(mage.get_discipline_progressions().is_empty())
+	assert_eq(mage.get_discipline_progress(&"mage_fire").xp, 1)
+	assert_eq(mage.get_discipline_progress(&"mage_ice").xp, 0)
+	assert_eq(mage.get_discipline_progress(&"mage_lightning").xp, 0)
+	assert_eq(mage.get_discipline_progress(&"mage_earth").xp, 0)
 	assert_true(mage.unit.get_progression_spell_modifiers().is_empty())
 	assert_eq(elf.get_discipline_progress(&"mage").xp, 3)
 
@@ -121,7 +127,7 @@ func test_hud_cycles_elf_mage_guardian_elf_without_buttons_or_state_residue() ->
 	bar.build_spell_buttons(heroes[1])
 	assert_true(elf_buttons.all(func(button): return not is_instance_valid(button)))
 	assert_false(bar.get("_attack_btn").visible)
-	assert_eq(bar.get("_spell_buttons").size(), 2)
+	assert_eq(bar.get("_spell_buttons").size(), 4)
 	assert_false(bar.get("_fervor_bar").visible)
 	var mage_buttons: Array = bar.get("_spell_buttons").duplicate()
 

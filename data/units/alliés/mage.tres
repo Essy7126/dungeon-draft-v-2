@@ -4,9 +4,16 @@
 [ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
 [ext_resource type="Resource" path="res://data/spells/Mage/boule_de_feu.tres" id="3_fireball"]
 [ext_resource type="Resource" path="res://data/spells/mur_de_glace.tres" id="4_ice_wall"]
+[ext_resource type="Resource" path="res://data/spells/Mage/tempete_orageuse.tres" id="5_thunderstorm"]
+[ext_resource type="Resource" path="res://data/spells/Mage/onde_sismique.tres" id="6_seismic_wave"]
 [ext_resource type="Texture2D" path="res://asset/Soldier.png" id="5_fallback_texture"]
 [ext_resource type="PackedScene" path="res://characters/mage/MageIsoUnitView.tscn" id="6_combat_visual"]
 [ext_resource type="PackedScene" path="res://characters/mage/MageVisual3D.tscn" id="7_preview_visual"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/fire.tres" id="9_fire"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
 atlas = ExtResource("5_fallback_texture")
@@ -36,8 +43,9 @@ attack_power = 20
 sprite_frames = SubResource("SpriteFrames_fallback")
 visual_scene = ExtResource("6_combat_visual")
 preview_visual_scene = ExtResource("7_preview_visual")
-role = "Lanceur de sorts pur"
-presentation_summary = "Controle le terrain et frappe a distance avec ses sorts."
-progression_summary = "Progression à concevoir"
+role = "Mage de combat élémentaire"
+presentation_summary = "Combine feu, glace, foudre et terre pour contrôler le champ de bataille."
+progression_summary = "Quatre disciplines élémentaires au rang 1"
+disciplines = Array[ExtResource("8_discipline_type")]([ExtResource("9_fire"), ExtResource("10_ice"), ExtResource("11_lightning"), ExtResource("12_earth")])
 basic_attack_enabled = false
-spells = Array[ExtResource("2_spell")]([ExtResource("3_fireball"), ExtResource("4_ice_wall")])
+spells = Array[ExtResource("2_spell")]([ExtResource("3_fireball"), ExtResource("4_ice_wall"), ExtResource("5_thunderstorm"), ExtResource("6_seismic_wave")])

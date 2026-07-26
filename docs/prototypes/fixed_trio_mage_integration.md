@@ -14,7 +14,9 @@ pools de récompenses, reliques, équipements, événements, malus et nœuds de 
 restent vides. La progression existante de l’Elfe, ses transitions et son écran
 terminal restent ceux du cycle de run partagé.
 
-Le Mage est intégré techniquement comme lanceur de sorts pur. Son système de disciplines et sa progression ne sont pas encore conçus.
+Le Mage est intégré comme Mage de combat élémentaire. Il possède quatre
+disciplines de rang 1, quatre sorts équipés et une progression d’XP
+indépendante. La conception de ses rangs 2 reste volontairement différée.
 
 Le Gardien occupe seulement le troisième emplacement du prototype. Il conserve
 ses données et son rendu historiques ; aucune fausse représentation 3D ne lui
@@ -125,11 +127,12 @@ génération de cast invalident le release précédent.
 - `RightHandAttachment/ProjectileMount` sur le bone `RightHand` ;
 - `LeftHandAttachment/CastSupportMount` sur le bone `LeftHand`.
 
-`ProjectileMount` est le mount de cast par défaut. Après
-`cast_release_reached`, le pipeline de sort existant émet `EventBus.spell_cast`.
-`VFXManager` demande alors l’origine projetée au vrai `UnitView`, qui la calcule
-depuis la position courante de `ProjectileMount`. Le visuel ne calcule ni dégâts
-ni ciblage.
+`ProjectileMount` reste le mount de cast par défaut pour les projectiles.
+Après `cast_release_reached`, un sort immédiat suit le pipeline historique.
+Un sort portant un `impact_delay_seconds` engage ses coûts au release, puis un
+scheduler de bataille déclenche sa résolution après le délai. Tempête orageuse
+utilise `0,31 s` et son VFX est placé directement sur la cellule cible ; il ne
+part pas de `ProjectileMount`. Le visuel ne calcule ni dégâts ni ciblage.
 
 ## Données et sorts
 
@@ -140,15 +143,16 @@ ni ciblage.
   6 PA, 3 PM et 20 puissance ;
 - `MageIsoUnitView.tscn` pour le combat ;
 - `MageVisual3D.tscn` pour les aperçus ;
-- aucune énergie, aucun trait de draft, aucune discipline ;
+- aucune énergie ni trait de draft ;
+- quatre disciplines : Pyromancie, Cryomancie, Foudromancie et Géomancie ;
 - `basic_attack_enabled = false` ;
-- deux sorts équipés sur les quatre emplacements disponibles.
+- quatre sorts équipés sur les quatre emplacements disponibles.
 
-Les sorts sont `mage_fireball` et le Mur de glace existant. La boule de feu du
-Mage est une ressource distincte de `elf_fireball`, utilise le VFX actif et ne
-porte aucun `discipline_id`. Le Mage ne gagne donc aucun XP. Le sort de frappe
-historique a été retiré de son loadout : il ne sert pas de fausse attaque au
-bâton.
+Les sorts sont `mage_fireball`, `mage_ice_wall`, `mage_thunderstorm` et
+`mage_seismic_wave`. Chaque sort crédite exactement une XP à sa discipline
+après un cast réussi. La boule de feu du Mage reste une ressource distincte de
+`elf_fireball`. Le sort de frappe historique reste absent du loadout : il ne
+sert pas de fausse attaque au bâton.
 
 L’Elfe conserve ses quatre sorts, ses quatre disciplines, ses rangs, ses
 améliorations et son identifiant `elf_fireball` sans modification.
@@ -182,6 +186,7 @@ démarrage propre au trio n’a été ajouté.
 - son instance `Unit` et ses PV ;
 - son `CharacterRunState` ;
 - son `SpellLoadoutState`, ses sorts connus et équipés ;
+- les XP indépendantes de ses quatre disciplines ;
 - ses scènes de combat et d’aperçu ;
 - le même profil, les mêmes mounts et le même contrat de release.
 
@@ -211,7 +216,7 @@ Les suites ciblées ajoutées couvrent :
 - provenance et exclusion des fichiers `LAB_ONLY` ;
 - six animations exactes, absence d’Attack et release unique à `0.933333 s` ;
 - `ProjectileMount`, interruption, mort et destruction ;
-- données Mage, sorts sans discipline et absence d’XP ;
+- données Mage, quatre disciplines, quatre sorts et XP indépendante ;
 - composition, ordre, états, loadouts et persistance sur trois salles ;
 - cycle HUD Elfe → Mage → Gardien → Elfe ;
 - présentation, vrais aperçus, fallback, démarrage, retour et libération ;
@@ -231,7 +236,7 @@ ne sont pas masqués.
 
 ## Limites et prochaines étapes
 
-- Concevoir les disciplines, l’XP, les rangs et les améliorations du Mage.
+- Concevoir et simuler le rang 2 des quatre disciplines du Mage.
 - Remplacer le Gardien provisoire par le troisième héros final et lui fournir
   un vrai profil d’aperçu.
 - Corriger Walk/Death dans Cascadeur, puis revalider l’import.

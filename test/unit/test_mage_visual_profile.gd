@@ -155,12 +155,18 @@ func test_mage_unit_data_uses_profile_without_energy_or_basic_attack() -> void:
 	assert_eq(data.unit_id, &"mage")
 	assert_false(data.basic_attack_enabled)
 	assert_null(data.energy_type)
-	assert_true(data.disciplines.is_empty())
+	assert_eq(
+		data.disciplines.map(func(discipline): return discipline.discipline_id),
+		[&"mage_fire", &"mage_ice", &"mage_lightning", &"mage_earth"],
+	)
 	assert_eq(data.visual_scene.resource_path, "res://characters/mage/MageIsoUnitView.tscn")
 	assert_eq(data.preview_visual_scene.resource_path, "res://characters/mage/MageVisual3D.tscn")
-	assert_eq(data.spells.size(), 2)
+	assert_eq(data.spells.size(), 4)
 	assert_true(data.spells.any(func(spell): return spell.damage > 0))
-	assert_true(data.spells.all(func(spell): return spell.discipline_id == &""))
+	assert_eq(
+		data.spells.map(func(spell): return spell.discipline_id),
+		[&"mage_fire", &"mage_ice", &"mage_lightning", &"mage_earth"],
+	)
 	assert_true(data.spells.all(func(spell): return spell.get_effective_spell_id() != &""))
 	assert_false(data.spells.any(
 		func(spell): return spell.get_effective_spell_id() == &"elf_fireball"

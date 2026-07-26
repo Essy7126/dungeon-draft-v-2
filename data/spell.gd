@@ -4,7 +4,8 @@ extends Resource
 
 enum AoeShape { SINGLE, CROSS, SQUARE, LINE }
 enum DamageType { PHYSICAL, MAGICAL }
-enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
+enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY, EARTH }
+enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 
 @export var spell_id: StringName = &""
 @export var discipline_id: StringName = &""
@@ -13,7 +14,11 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export var icon: Texture2D = null
 @export_group("Presentation")
 @export var vfx_scene: PackedScene = null
+@export var vfx_placement: VfxPlacement = VfxPlacement.FROM_CASTER_TO_TARGET
 @export var sound_cast: AudioStream = null
+
+@export_group("Timing")
+@export_range(0.0, 10.0, 0.01) var impact_delay_seconds: float = 0.0
 
 @export_group("Cout et portee")
 # Cout en Points d'Action (entier). La colonne vertebrale du tour.
@@ -44,6 +49,7 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export_group("Zone d'effet")
 @export var aoe_shape: AoeShape = AoeShape.SINGLE
 @export var aoe_size: int = 1
+@export var line_from_caster: bool = false
 
 @export_group("Effet de combat")
 @export var damage: int = 0
@@ -62,6 +68,7 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY }
 @export_group("Mecanique speciale")
 @export var push_distance: int = 0
 @export var push_all_adjacent: bool = false
+@export var push_affected_units: bool = false
 # Collision en chaine : si > 0, une unite poussee qui en percute une autre (ou un
 # mur/hasard) inflige ces degats aux deux, et transmet la poussee a la percutee.
 @export var collision_damage: int = 0

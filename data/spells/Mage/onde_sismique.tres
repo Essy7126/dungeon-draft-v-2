@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"mage_seismic_wave"
+discipline_id = &"mage_earth"
+spell_name = "Onde sismique"
+description = "Propage une onde tellurique en ligne et repousse d'une case les ennemis touchés."
+ap_cost = 2
+spell_range = 3
+needs_line_of_sight = true
+can_target_enemy = true
+can_target_free_cell = true
+aoe_shape = 3
+aoe_size = 3
+line_from_caster = true
+damage = 6
+damage_type = 1
+element = 6
+push_distance = 1
+push_affected_units = true
