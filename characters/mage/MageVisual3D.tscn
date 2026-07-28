@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://clu1i2akn0hhj" path="res://assets/characters/mage/mage_godot_baseline.glb" id="2_mage"]
 
 [node name="MageVisual3D" type="Node3D"]
+scale = Vector3(1.2, 1.2, 1.2)
 script = ExtResource("1_controller")
 
 [node name="ModelPivot" type="Node3D" parent="."]

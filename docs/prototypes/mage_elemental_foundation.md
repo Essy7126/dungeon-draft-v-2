@@ -67,9 +67,37 @@ la destruction de la bataille détruit le scheduler et ses Timers enfants :
 aucune callback ne survit au nettoyage de salle ou de run.
 
 Le VFX reste sans autorité de gameplay. Sa scène autonome joue `cast` pendant
-0,80 seconde, émet son signal visuel `impact_reached` vers 0,31 seconde, puis se
-libère. Son watchdog est fixé à 1,5 seconde et `cancel()` ne produit aucun
+1,15 seconde, émet son signal visuel `impact_reached` vers 0,31 seconde, puis se
+libère. Son watchdog est fixé à 1,8 seconde et `cancel()` ne produit aucun
 impact visuel tardif. Les éclairs multiples sont uniquement graphiques.
+
+### Calibration visuelle
+
+La passe de calibration conserve l'apparition et l'impact rapides, puis allonge
+uniquement la lecture de la dissipation :
+
+- les flashes principaux restent groupés entre 0,27 et 0,52 seconde ;
+- le nuage reste présent après l'impact et disparaît à 1,15 seconde ;
+- l'impact au sol poursuit son expansion et disparaît à 1,05 seconde ;
+- `Spell.impact_delay_seconds`, les dégâts, le coût, la portée et la zone 3 × 3
+  ne changent pas.
+
+Les trois sprites sont regroupés sous un `VisualRoot` centré, uniformément
+réduit à `Vector2(0.72, 0.72)`. Le centre de `GroundImpact` reste `(0, 0)`, et
+les scales, positions, matériaux additifs et Z-order relatifs sont conservés.
+
+Le profil `MageVisual3D` porte désormais un scale racine uniforme de `1,20`.
+La composition de combat conserve son scale commun `1,10`, sa caméra
+orthographique `2,75`, son look-at `0,85` et un offset écran nul. Le pivot des
+pieds reste donc l'origine logique utilisée par l'ancrage automatique de
+`CharacterIsoUnitView`.
+
+La preview remet toujours la position et la rotation du personnage à
+l'identité, mais préserve le scale authored de la scène visuelle. Le Mage y est
+donc affiché à `1,20` une seule fois, tandis que l'Elfe reste à `1,00`. Aucun
+ajustement de caméra ou scale supplémentaire propre à la preview n'est appliqué.
+Cette calibration technique doit encore être confirmée visuellement par un
+humain dans la salle réelle avant fusion dans `main`.
 
 ## Onde sismique
 

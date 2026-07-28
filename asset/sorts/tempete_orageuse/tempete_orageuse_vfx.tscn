@@ -14,7 +14,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("GroundImpact:modulate")
+tracks/0/path = NodePath("VisualRoot/GroundImpact:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = false
 tracks/0/keys = {
@@ -26,7 +26,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("GroundImpact:scale")
+tracks/1/path = NodePath("VisualRoot/GroundImpact:scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = false
 tracks/1/keys = {
@@ -38,7 +38,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("LightningCluster:modulate")
+tracks/2/path = NodePath("VisualRoot/LightningCluster:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = false
 tracks/2/keys = {
@@ -50,7 +50,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("StormCloud:modulate")
+tracks/3/path = NodePath("VisualRoot/StormCloud:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = false
 tracks/3/keys = {
@@ -62,7 +62,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("StormCloud:scale")
+tracks/4/path = NodePath("VisualRoot/StormCloud:scale")
 tracks/4/interp = 1
 tracks/4/loop_wrap = false
 tracks/4/keys = {
@@ -74,7 +74,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("StormCloud:rotation")
+tracks/5/path = NodePath("VisualRoot/StormCloud:rotation")
 tracks/5/interp = 1
 tracks/5/loop_wrap = false
 tracks/5/keys = {
@@ -86,15 +86,15 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_qs18r"]
 resource_name = "cast"
-length = 0.8
+length = 1.15
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("StormCloud:modulate")
+tracks/0/path = NodePath("VisualRoot/StormCloud:modulate")
 tracks/0/interp = 2
 tracks/0/loop_wrap = false
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.18, 0.55, 0.8),
+"times": PackedFloat32Array(0, 0.18, 0.75, 1.15),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
@@ -102,11 +102,11 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("StormCloud:scale")
+tracks/1/path = NodePath("VisualRoot/StormCloud:scale")
 tracks/1/interp = 2
 tracks/1/loop_wrap = false
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.18, 0.55, 0.8),
+"times": PackedFloat32Array(0, 0.18, 0.75, 1.15),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.18, 0.18), Vector2(0.25, 0.25), Vector2(0.26, 0.26), Vector2(0.28, 0.28)]
@@ -114,11 +114,11 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("StormCloud:rotation")
+tracks/2/path = NodePath("VisualRoot/StormCloud:rotation")
 tracks/2/interp = 2
 tracks/2/loop_wrap = false
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.18, 0.55, 0.8),
+"times": PackedFloat32Array(0, 0.18, 0.75, 1.15),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [-0.06981317, 0.0, 0.05235988, 0.08726646]
@@ -126,11 +126,11 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("LightningCluster:modulate")
+tracks/3/path = NodePath("VisualRoot/LightningCluster:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = false
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.27, 0.29, 0.35, 0.39, 0.46),
+"times": PackedFloat32Array(0, 0.27, 0.29, 0.35, 0.39, 0.52),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0.45), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
@@ -138,11 +138,11 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("GroundImpact:modulate")
+tracks/4/path = NodePath("VisualRoot/GroundImpact:modulate")
 tracks/4/interp = 1
 tracks/4/loop_wrap = false
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.29, 0.31, 0.4, 0.58, 0.7),
+"times": PackedFloat32Array(0, 0.29, 0.31, 0.4, 0.75, 1.05),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0.35), Color(1, 1, 1, 0)]
@@ -150,11 +150,11 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("GroundImpact:scale")
+tracks/5/path = NodePath("VisualRoot/GroundImpact:scale")
 tracks/5/interp = 2
 tracks/5/loop_wrap = false
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.29, 0.31, 0.4, 0.58, 0.7),
+"times": PackedFloat32Array(0, 0.29, 0.31, 0.4, 0.75, 1.05),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(0.12, 0.12), Vector2(0.12, 0.12), Vector2(0.22, 0.22), Vector2(0.28, 0.28), Vector2(0.31, 0.31), Vector2(0.33, 0.33)]
@@ -169,13 +169,16 @@ _data = {
 [node name="TempeteOrageuseVFX" type="Node2D" unique_id=1081333280 groups=["tempete_orageuse_vfx"]]
 script = ExtResource("4_script")
 
-[node name="GroundImpact" type="Sprite2D" parent="." unique_id=2139172317]
+[node name="VisualRoot" type="Node2D" parent="."]
+scale = Vector2(0.72, 0.72)
+
+[node name="GroundImpact" type="Sprite2D" parent="VisualRoot" unique_id=2139172317]
 modulate = Color(1, 1, 1, 0)
 material = SubResource("CanvasItemMaterial_usgtg")
 scale = Vector2(0.12, 0.12)
 texture = ExtResource("1_mhkut")
 
-[node name="LightningCluster" type="Sprite2D" parent="." unique_id=1793515044]
+[node name="LightningCluster" type="Sprite2D" parent="VisualRoot" unique_id=1793515044]
 modulate = Color(1, 1, 1, 0)
 z_index = 1
 material = SubResource("CanvasItemMaterial_usgtg")
@@ -183,7 +186,7 @@ position = Vector2(0, -120)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_v8dya")
 
-[node name="StormCloud" type="Sprite2D" parent="." unique_id=727155600]
+[node name="StormCloud" type="Sprite2D" parent="VisualRoot" unique_id=727155600]
 modulate = Color(1, 1, 1, 0)
 z_index = 2
 position = Vector2(0, -260)
