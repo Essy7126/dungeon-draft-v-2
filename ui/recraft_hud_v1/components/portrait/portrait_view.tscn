@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/components/portrait/portrait_view.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/portrait_frame.png" id="2_frame"]
+[ext_resource type="PackedScene" path="res://ui/characters/CharacterPreview3D.tscn" id="3_preview"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_active"]
 bg_color = Color(0.04, 0.08, 0.11, 0.08)
@@ -16,7 +17,6 @@ corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
 [node name="PortraitView" type="Control"]
-custom_minimum_size = Vector2(96, 96)
 mouse_filter = 1
 script = ExtResource("1_script")
 
@@ -26,13 +26,29 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 17.0
-offset_top = 17.0
-offset_right = -17.0
-offset_bottom = -17.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
+
+[node name="CharacterPreview" parent="." instance=ExtResource("3_preview")]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="PlaceholderLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -40,10 +56,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 18.0
-offset_top = 18.0
-offset_right = -18.0
-offset_bottom = -18.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.65, 0.69, 0.75, 1)
 theme_override_font_sizes/font_size = 30
@@ -68,18 +84,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = -5.0
-offset_bottom = -5.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_active")
-
-[node name="OptionalStatusContainer" type="HBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 13.0
-offset_top = 73.0
-offset_right = 83.0
-offset_bottom = 91.0
-mouse_filter = 2
-alignment = 1

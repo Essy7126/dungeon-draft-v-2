@@ -115,8 +115,15 @@ func get_pending_progression_choices() -> Array[Dictionary]:
 			continue
 		for pending_rank in progress.get_pending_rank_choices():
 			var rank_data := progress.get_rank_data(pending_rank)
-			if rank_data == null or rank_data.choices.is_empty():
+			if rank_data == null:
 				continue
+			var available_choices := SkillTreeResolver.get_available_nodes(
+				discipline,
+				pending_rank,
+				progress.rank,
+				progress.get_pending_rank_choices(),
+				progress.get_selected_upgrade_ids()
+			)
 			pending.append({
 				"character_id": character_id,
 				"character_name": unit.unit_name if unit != null else str(character_id),
@@ -125,7 +132,7 @@ func get_pending_progression_choices() -> Array[Dictionary]:
 				"rank": pending_rank,
 				"xp": progress.xp,
 				"required_total_xp": rank_data.required_total_xp,
-				"choices": rank_data.choices.duplicate(),
+				"choices": available_choices,
 			})
 	return pending
 

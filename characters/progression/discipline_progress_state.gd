@@ -58,24 +58,22 @@ func select_upgrade(upgrade_id: StringName, choice_rank: int = -1) -> SkillUpgra
 		if _pending_rank_choices.is_empty():
 			return null
 		rank_to_resolve = _pending_rank_choices[0]
-	if not _pending_rank_choices.has(rank_to_resolve):
+	var decision := SkillTreeResolver.evaluate_selection(
+		_discipline_data,
+		rank_to_resolve,
+		upgrade_id,
+		rank,
+		get_pending_rank_choices(),
+		get_selected_upgrade_ids()
+	)
+	if not decision.get("allowed", false):
 		return null
-
-	var rank_data := get_rank_data(rank_to_resolve)
-	if rank_data == null:
+	var selected := decision.get("node") as SkillUpgradeData
+	if selected == null:
 		return null
-	for upgrade in rank_data.choices:
-		if upgrade == null \
-				or upgrade.upgrade_id != upgrade_id \
-				or upgrade.discipline_id != discipline_id \
-				or upgrade.rank != rank_to_resolve:
-			continue
-		if _selected_upgrade_ids.has(upgrade_id):
-			return null
-		_selected_upgrade_ids.append(upgrade_id)
-		_pending_rank_choices.erase(rank_to_resolve)
-		return upgrade
-	return null
+	_selected_upgrade_ids.append(selected.upgrade_id)
+	_pending_rank_choices.erase(rank_to_resolve)
+	return selected
 
 
 func get_selected_upgrade_ids() -> Array[StringName]:

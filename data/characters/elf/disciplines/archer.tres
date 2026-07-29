@@ -4,6 +4,9 @@
 [ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer_rank_1.tres" id="3_rank_1"]
 [ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer_rank_2.tres" id="4_rank_2"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer_rank_3.tres" id="5_rank_3"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer_rank_4.tres" id="6_rank_4"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer_rank_5.tres" id="7_rank_5"]
 
 [resource]
 script = ExtResource("1_discipline")
@@ -11,4 +14,4 @@ discipline_id = &"archer"
 display_name = "Archer"
 description = "Maîtrise des attaques précises à longue portée."
 presentation_color = Color(0.35, 0.72, 0.32, 1)
-ranks = Array[ExtResource("2_rank_type")]([ExtResource("3_rank_1"), ExtResource("4_rank_2")])
+ranks = Array[ExtResource("2_rank_type")]([ExtResource("3_rank_1"), ExtResource("4_rank_2"), ExtResource("5_rank_3"), ExtResource("6_rank_4"), ExtResource("7_rank_5")])

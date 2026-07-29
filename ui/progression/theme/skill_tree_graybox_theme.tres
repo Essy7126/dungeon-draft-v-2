@@ -1,0 +1,155 @@
+[gd_resource type="Theme" load_steps=11 format=3]
+
+[sub_resource type="StyleBoxFlat" id="StyleScreen"]
+bg_color = Color(0.025, 0.032, 0.045, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.38, 0.44, 0.52, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleSelected"]
+bg_color = Color(0.12, 0.28, 0.2, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.55, 0.92, 0.68, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleAvailable"]
+bg_color = Color(0.18, 0.22, 0.29, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95, 0.8, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleLockedXp"]
+bg_color = Color(0.075, 0.085, 0.105, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.34, 0.4, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleLockedBranch"]
+bg_color = Color(0.065, 0.065, 0.07, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.28, 0.2, 0.22, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleFuture"]
+bg_color = Color(0.105, 0.12, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.38, 0.44, 0.52, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleCapstone"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.76, 0.62, 0.35, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleTooltip"]
+bg_color = Color(0.045, 0.055, 0.075, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.52, 0.58, 0.66, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+content_margin_left = 14.0
+content_margin_top = 12.0
+content_margin_right = 14.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="StyleStatusButton"]
+bg_color = Color(0.07, 0.09, 0.12, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.66, 0.48, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleStatusButtonHover"]
+bg_color = Color(0.11, 0.15, 0.18, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72, 0.86, 0.62, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[resource]
+default_font_size = 14
+Label/colors/font_color = Color(0.91, 0.92, 0.9, 1)
+Button/colors/font_color = Color(0.92, 0.93, 0.9, 1)
+Button/colors/font_hover_color = Color(1, 0.94, 0.7, 1)
+SkillTreeScreen/base_type = &"PanelContainer"
+SkillTreeScreen/styles/panel = SubResource("StyleScreen")
+SkillTreeNodeSelected/base_type = &"PanelContainer"
+SkillTreeNodeSelected/styles/panel = SubResource("StyleSelected")
+SkillTreeNodeAvailable/base_type = &"PanelContainer"
+SkillTreeNodeAvailable/styles/panel = SubResource("StyleAvailable")
+SkillTreeNodeLockedXp/base_type = &"PanelContainer"
+SkillTreeNodeLockedXp/styles/panel = SubResource("StyleLockedXp")
+SkillTreeNodeLockedBranch/base_type = &"PanelContainer"
+SkillTreeNodeLockedBranch/styles/panel = SubResource("StyleLockedBranch")
+SkillTreeNodeFuture/base_type = &"PanelContainer"
+SkillTreeNodeFuture/styles/panel = SubResource("StyleFuture")
+SkillTreeNodeCapstone/base_type = &"Panel"
+SkillTreeNodeCapstone/styles/panel = SubResource("StyleCapstone")
+SkillTreeTooltip/base_type = &"PanelContainer"
+SkillTreeTooltip/styles/panel = SubResource("StyleTooltip")
+SkillTreeStatusButton/base_type = &"Button"
+SkillTreeStatusButton/styles/normal = SubResource("StyleStatusButton")
+SkillTreeStatusButton/styles/hover = SubResource("StyleStatusButtonHover")
+SkillTreeStatusButton/styles/focus = SubResource("StyleStatusButtonHover")
+SkillTreeGraphView/base_type = &"Control"
+SkillTreeGraphView/colors/connection_selected = Color(0.58, 0.95, 0.7, 1)
+SkillTreeGraphView/colors/connection_compatible = Color(0.43, 0.5, 0.58, 1)
+SkillTreeGraphView/colors/connection_incompatible = Color(0.23, 0.2, 0.22, 1)

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SpellModDamageBonusAtMinRange" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_damage_bonus_at_min_range.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Vue parfaite"
+target_spell_id = &"elf_precise_shot"
+minimum_range = 6
+bonus_damage = 3

@@ -13,6 +13,11 @@
 class_name StatusData
 extends Resource
 
+enum PeriodicTiming {
+	TURN_START,
+	TURN_END,
+}
+
 # ============================================================
 # IDENTITÉ
 # ============================================================
@@ -31,6 +36,7 @@ extends Resource
 @export_group("Effets par tour")
 # Dégâts infligés chaque tour (poison, saignement, brûlure).
 @export var damage_per_turn: int = 0
+@export var damage_timing: PeriodicTiming = PeriodicTiming.TURN_START
 # Soin reçu chaque tour (régénération).
 @export var heal_per_turn: int = 0
 

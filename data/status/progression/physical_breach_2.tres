@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ChargedDamageVulnerabilityData" format=3]
+
+[ext_resource type="Script" path="res://data/status/charged_damage_vulnerability_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_name = "Brèche physique"
+description = "Les deux prochaines attaques physiques reçues infligent 2 dégâts supplémentaires."
+color = Color(0.78, 0.36, 0.18, 1)
+duration = 99
+trigger_damage_type = 0
+max_charges = 2
+bonus_damage = 2

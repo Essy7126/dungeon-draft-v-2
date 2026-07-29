@@ -7,33 +7,21 @@
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.tscn" id="5_badge"]
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/components/primary_button/primary_button_view.tscn" id="6_button"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/spellbar_panel.png" id="7_spellbar"]
+[ext_resource type="Script" path="res://ui/recraft_hud_v1/combat/layout_debug_overlay.gd" id="8_debug"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dock"]
-bg_color = Color(0.018, 0.024, 0.034, 0.88)
-border_width_left = 1
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_background"]
+bg_color = Color(0.012, 0.017, 0.026, 0.9)
 border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.24, 0.29, 0.36, 0.88)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0, 0, 0, 0.5)
-shadow_size = 8
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_margin"]
-content_margin_left = 12.0
-content_margin_top = 8.0
-content_margin_right = 12.0
-content_margin_bottom = 8.0
+border_color = Color(0.24, 0.29, 0.36, 0.92)
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_name"]
-bg_color = Color(0.06, 0.075, 0.095, 0.8)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+bg_color = Color(0.045, 0.06, 0.08, 0.86)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="CombatHUDRecraftV1" type="CanvasLayer"]
 layer = 20
@@ -49,164 +37,263 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("2_theme")
 
-[node name="SafeMargin" type="MarginContainer" parent="Root"]
+[node name="HudBand" type="Control" parent="Root"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 12
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = -157.0
-offset_right = -12.0
-offset_bottom = -12.0
+offset_top = -150.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="DockPanel" type="PanelContainer" parent="Root/SafeMargin"]
-layout_mode = 2
-mouse_filter = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_dock")
-
-[node name="DockMargin" type="PanelContainer" parent="Root/SafeMargin/DockPanel"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_margin")
-
-[node name="HudRow" type="HBoxContainer" parent="Root/SafeMargin/DockPanel/DockMargin"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="CharacterSection" type="HBoxContainer" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow"]
-layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="PortraitView" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection" instance=ExtResource("3_portrait")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="CharacterInfo" type="VBoxContainer" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection"]
-custom_minimum_size = Vector2(138, 0)
-layout_mode = 2
-theme_override_constants/separation = -5
-alignment = 1
-
-[node name="CharacterName" type="Label" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection/CharacterInfo"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 22)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.86, 0.67, 1)
-theme_override_font_sizes/font_size = 14
-text = "Personnage actif"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HealthBar" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection/CharacterInfo" instance=ExtResource("4_bar")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="EnergyBar" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection/CharacterInfo" instance=ExtResource("4_bar")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="EnergyNameLabel" type="Label" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection/CharacterInfo"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.72, 0.68, 0.88, 1)
-theme_override_font_sizes/font_size = 9
-horizontal_alignment = 1
-
-[node name="ResourceBadges" type="HBoxContainer" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection"]
-layout_mode = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="ActionPointsBadge" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection/ResourceBadges" instance=ExtResource("5_badge")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="MovementPointsBadge" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/CharacterSection/ResourceBadges" instance=ExtResource("5_badge")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ActionSection" type="GridContainer" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow"]
-custom_minimum_size = Vector2(174, 100)
-layout_mode = 2
-theme_override_constants/h_separation = 2
-theme_override_constants/v_separation = 2
-columns = 2
-
-[node name="MoveButton" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/ActionSection" instance=ExtResource("6_button")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(84, 48)
-layout_mode = 2
-
-[node name="AttackButton" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/ActionSection" instance=ExtResource("6_button")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(84, 48)
-layout_mode = 2
-
-[node name="AwakeningButton" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/ActionSection" instance=ExtResource("6_button")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(84, 48)
-layout_mode = 2
-
-[node name="ReactionButton" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/ActionSection" instance=ExtResource("6_button")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(84, 48)
-layout_mode = 2
-
-[node name="SpellSection" type="Control" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow"]
-custom_minimum_size = Vector2(520, 112)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="SpellBarBackground" type="TextureRect" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/SpellSection"]
+[node name="Background" type="Panel" parent="Root/HudBand"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_background")
+
+[node name="CharacterAnchor" type="Control" parent="Root/HudBand"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -140.0
+offset_right = 440.0
+offset_bottom = -10.0
+grow_horizontal = 1
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="CharacterSection" type="MarginContainer" parent="Root/HudBand/CharacterAnchor"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LeftCenter" type="CenterContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CharacterRow" type="HBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PortraitView" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow" instance=ExtResource("3_portrait")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="CharacterInfo" type="VBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="CharacterName" type="Label" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.86, 0.67, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_name")
+text = "Personnage actif"
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="BarStack" type="VBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="HealthBar" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/BarStack" instance=ExtResource("4_bar")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="EnergyBar" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/BarStack" instance=ExtResource("4_bar")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="EnergyNameLabel" type="Label" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="ActionButtons" type="GridContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 4
+columns = 2
+
+[node name="MoveButton" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ActionButtons" instance=ExtResource("6_button")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AttackButton" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ActionButtons" instance=ExtResource("6_button")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AwakeningButton" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ActionButtons" instance=ExtResource("6_button")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ReactionButton" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ActionButtons" instance=ExtResource("6_button")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ResourceBadges" type="HBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="ActionPointsBadge" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/ResourceBadges" instance=ExtResource("5_badge")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="MovementPointsBadge" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/ResourceBadges" instance=ExtResource("5_badge")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="SpellAnchor" type="Control" parent="Root/HudBand"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -140.0
+offset_right = 260.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="SpellSection" type="Control" parent="Root/HudBand/SpellAnchor"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SpellBarBackground" type="TextureRect" parent="Root/HudBand/SpellAnchor/SpellSection"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 110.0
+offset_top = 19.0
+offset_right = 410.0
+offset_bottom = 111.0
 mouse_filter = 2
 texture = ExtResource("7_spellbar")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="SpellMargin" type="MarginContainer" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/SpellSection"]
+[node name="SpellSlotsCenter" type="CenterContainer" parent="Root/HudBand/SpellAnchor/SpellSection"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 18.0
-offset_right = -20.0
-offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SpellSlotsContainer" type="HBoxContainer" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/SpellSection/SpellMargin"]
+[node name="SpellSlotsContainer" type="HBoxContainer" parent="Root/HudBand/SpellAnchor/SpellSection/SpellSlotsCenter"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 6
 alignment = 1
 
-[node name="TurnSection" type="VBoxContainer" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow"]
-custom_minimum_size = Vector2(104, 92)
-layout_mode = 2
-alignment = 1
+[node name="TurnAnchor" type="Control" parent="Root/HudBand"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -170.0
+offset_top = -140.0
+offset_right = -18.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
 
-[node name="TurnLabel" type="Label" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/TurnSection"]
+[node name="TurnSection" type="MarginContainer" parent="Root/HudBand/TurnAnchor"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TurnCenter" type="CenterContainer" parent="Root/HudBand/TurnAnchor/TurnSection"]
 layout_mode = 2
+mouse_filter = 2
+
+[node name="TurnContent" type="Control" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(136, 68)
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 12.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(0.62, 0.67, 0.73, 1)
 theme_override_font_sizes/font_size = 10
 text = "TOUR"
 horizontal_alignment = 1
 
-[node name="EndTurnButton" parent="Root/SafeMargin/DockPanel/DockMargin/HudRow/TurnSection" instance=ExtResource("6_button")]
+[node name="EndTurnButton" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent" instance=ExtResource("6_button")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(104, 58)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -68.0
+offset_top = -22.0
+offset_right = 68.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LayoutDebugOverlay" type="Control" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_debug")
+target_paths = [NodePath("../HudBand"), NodePath("../HudBand/CharacterAnchor"), NodePath("../HudBand/SpellAnchor"), NodePath("../HudBand/TurnAnchor"), NodePath("../HudBand/CharacterAnchor/CharacterSection"), NodePath("../HudBand/SpellAnchor/SpellSection"), NodePath("../HudBand/TurnAnchor/TurnSection")]

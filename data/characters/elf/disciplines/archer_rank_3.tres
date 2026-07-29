@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DisciplineRankData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_upgrade_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/long_range.tres" id="3_long_range"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/piercing_shot.tres" id="4_piercing"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/hindering_arrow.tres" id="5_hindering"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/impact_bolt.tres" id="6_impact"]
+
+[resource]
+script = ExtResource("1_rank")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_upgrade_type")]([ExtResource("3_long_range"), ExtResource("4_piercing"), ExtResource("5_hindering"), ExtResource("6_impact")])

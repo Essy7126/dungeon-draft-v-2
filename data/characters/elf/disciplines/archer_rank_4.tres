@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DisciplineRankData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_upgrade_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/perfect_sight.tres" id="3_perfect_sight"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/stabilization.tres" id="4_stabilization"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/barbed_tip.tres" id="5_barbed_tip"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/open_breach.tres" id="6_open_breach"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/pin_arrow.tres" id="7_pin_arrow"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/tactical_retreat.tres" id="8_retreat"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/siege_bolt.tres" id="9_siege_bolt"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/shatter.tres" id="10_shatter"]
+
+[resource]
+script = ExtResource("1_rank")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_upgrade_type")]([ExtResource("3_perfect_sight"), ExtResource("4_stabilization"), ExtResource("5_barbed_tip"), ExtResource("6_open_breach"), ExtResource("7_pin_arrow"), ExtResource("8_retreat"), ExtResource("9_siege_bolt"), ExtResource("10_shatter")])

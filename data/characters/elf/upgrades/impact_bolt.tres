@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SkillTreeNodeData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_node"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/modifiers/impact_bolt.tres" id="3_modifier"]
+
+[resource]
+script = ExtResource("1_node")
+upgrade_id = &"elf_archer_impact_bolt"
+display_name = "Trait d’impact"
+description = "Une collision provoquée par la poussée de Tir précis inflige 4 dégâts physiques supplémentaires."
+discipline_id = &"archer"
+rank = 3
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])
+prerequisite_node_ids = Array[StringName]([&"elf_archer_repel_arrow"])

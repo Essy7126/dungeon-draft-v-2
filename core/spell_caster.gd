@@ -45,6 +45,7 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 	var result: Array = []
 	if spell.is_self_only():
 		return [caster.grid_pos]
+	var effective_range := get_effective_spell_range(caster, spell)
 	for x in _grid.cols:
 		for y in _grid.rows:
 			var pos = Vector2i(x, y)
@@ -52,7 +53,7 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 				continue
 			if not _grid.is_terrain_interactable(pos):
 				continue
-			if _grid.manhattan(caster.grid_pos, pos) > spell.spell_range:
+			if _grid.manhattan(caster.grid_pos, pos) > effective_range:
 				continue
 			if spell.line_from_caster and not _is_cardinal_line_target(caster.grid_pos, pos):
 				continue
@@ -61,6 +62,15 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 			if _matches_target(caster, spell, pos):
 				result.append(pos)
 	return result
+
+
+func get_effective_spell_range(caster: Unit, spell: Spell) -> int:
+	if caster == null or spell == null:
+		return 0
+	var effective_range := spell.spell_range
+	for modifier in _gather_modifiers(caster, spell):
+		effective_range += int(modifier.get_range_bonus(caster, spell))
+	return maxi(0, effective_range)
 
 func get_aoe_cells(
 		spell: Spell,
@@ -145,7 +155,13 @@ func _has_angle_advantage(caster: Unit, target_cell: Vector2i) -> bool:
 # `journal` (optionnel) : consigne chaque déplacement résolu (chaînes comprises)
 # dans le CastContext, pour les hooks des modifiers. N'affecte pas le rapport.
 func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 0, journal: Array = []) -> Dictionary:
-	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false }
+	var result := {
+		"pushed": false,
+		"collision": false,
+		"pushed_away_from_ally": false,
+		"landed_on_terrain": false,
+		"collision_units": [],
+	}
 	if cells <= 0 or target == null:
 		return result
 	var raw_dir := target.grid_pos - caster.grid_pos
@@ -168,6 +184,10 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 		if _grid.has_unit(next):
 			had_collision = true
 			var blocker = _grid.get_unit(next)
+			if not result["collision_units"].has(target):
+				result["collision_units"].append(target)
+			if blocker != null and not result["collision_units"].has(blocker):
+				result["collision_units"].append(blocker)
 			if collision_damage > 0:
 				# Les deux encaissent le choc...
 				_apply_collision_damage(caster, target, collision_damage)
@@ -183,6 +203,8 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 		# Collision dure : mur ou bord de grille.
 		if not _grid.is_valid(next) or not _grid.is_walkable(next):
 			had_collision = true
+			if not result["collision_units"].has(target):
+				result["collision_units"].append(target)
 			if collision_damage > 0:
 				_apply_collision_damage(caster, target, collision_damage)
 			break
@@ -200,12 +222,24 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 		result["pushed"] = true
 		result["collision"] = had_collision
 		result["pushed_away_from_ally"] = _pushed_away_from_ally(caster, from_pos, landed_pos)
-		journal.append({ "unit": target, "from": from_pos, "to": landed_pos, "collision": had_collision })
+		journal.append({
+			"unit": target,
+			"from": from_pos,
+			"to": landed_pos,
+			"collision": had_collision,
+			"collision_units": result["collision_units"].duplicate(),
+		})
 		EventBus.unit_pushed.emit(target, from_pos, landed_pos, had_collision)
 		DebugLogger.debug(CAT_SPELL, "%s pousse de %s a %s" % [target.unit_name, str(from_pos), str(landed_pos)])
 	elif had_collision:
 		result["collision"] = true
-		journal.append({ "unit": target, "from": from_pos, "to": from_pos, "collision": true })
+		journal.append({
+			"unit": target,
+			"from": from_pos,
+			"to": from_pos,
+			"collision": true,
+			"collision_units": result["collision_units"].duplicate(),
+		})
 		EventBus.unit_pushed.emit(target, from_pos, from_pos, true)
 	return result
 
@@ -410,7 +444,7 @@ func _resolve_costs(ctx: CastContext) -> bool:
 	caster.spend_ap(ctx.ap_cost)
 	caster.spend_energy(ctx.fervor_cost, spell.spell_name)
 	DebugLogger.info(CAT_SPELL, "%s lance %s sur %s" % [caster.unit_name, spell.spell_name, str(ctx.cell)], {
-		"PA": ctx.ap_cost, "Ferveur": int(ctx.fervor_cost), "empreinte": ctx.imprinted, "portee": spell.spell_range,
+		"PA": ctx.ap_cost, "Ferveur": int(ctx.fervor_cost), "empreinte": ctx.imprinted, "portee": get_effective_spell_range(caster, spell),
 		"zone": spell.aoe_size if spell.aoe_shape != Spell.AoeShape.SINGLE else 0,
 	})
 	return true
@@ -433,6 +467,7 @@ func _resolve_targets(ctx: CastContext) -> void:
 		ctx.cell,
 		ctx.caster.grid_pos
 	)
+	ctx.primary_target = _grid.get_unit(ctx.cell) as Unit
 
 # --- Étape 3 : impacts. Par cellule : effets sur l'unité PUIS terrains du
 # sort — l'ordre par cellule est préservé (une réaction de terrain peut
@@ -462,6 +497,7 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 			base_dmg += spell.bonus_damage_if_marked
 		var damage_result = target.take_damage(base_dmg, caster, spell.damage_type, spell.element, { "bonus_crit_chance": spell.crit_chance })
 		if damage_result != null:
+			ctx.damage_result_by_unit[target] = damage_result
 			if damage_result.is_crit:
 				report["crits"].append(target)
 			if damage_result.dodged:
@@ -572,7 +608,7 @@ func _resolve_movement(ctx: CastContext) -> void:
 			report["landed_on_terrain"] = report["landed_on_terrain"] or adjacent_push.get("landed_on_terrain", false)
 			if adjacent_push["pushed"] and not report["affected_units"].has(adjacent_target):
 				report["affected_units"].append(adjacent_target)
-	elif spell.push_distance > 0:
+	elif spell.push_distance > 0 or not ctx.push_distance_override_by_unit.is_empty():
 		var push_targets: Array = []
 		if spell.push_affected_units:
 			for affected_cell in ctx.affected_cells:
@@ -583,14 +619,20 @@ func _resolve_movement(ctx: CastContext) -> void:
 						and not push_targets.has(affected_target):
 					push_targets.append(affected_target)
 		else:
-			var selected_target = _grid.get_unit(ctx.cell)
+			var selected_target = ctx.primary_target
 			if selected_target != null and selected_target.team != caster.team:
 				push_targets.append(selected_target)
 		for push_target in push_targets:
+			var resolved_push_distance := eff_push
+			if ctx.push_distance_override_by_unit.has(push_target):
+				resolved_push_distance = maxi(
+					0,
+					int(ctx.push_distance_override_by_unit[push_target])
+				)
 			var push_result = _push_unit(
 				caster,
 				push_target,
-				eff_push,
+				resolved_push_distance,
 				eff_collision,
 				ctx.movement
 			)
@@ -617,6 +659,8 @@ func _resolve_movement(ctx: CastContext) -> void:
 	for push_target_value in ctx.additional_push_by_unit:
 		var push_target := push_target_value as Unit
 		if push_target == null or not push_target.is_alive or push_target.team == caster.team:
+			continue
+		if ctx.push_distance_override_by_unit.has(push_target):
 			continue
 		var push_cells := maxi(0, int(ctx.additional_push_by_unit[push_target_value]))
 		var extra_push := _push_unit(caster, push_target, push_cells, 0, ctx.movement)

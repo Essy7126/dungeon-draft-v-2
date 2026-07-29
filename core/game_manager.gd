@@ -60,6 +60,8 @@ const PROGRESSION_CHOICE_SCREEN_PATH := "res://ui/progression/ProgressionChoiceS
 const REWARD_SCREEN_PATH := "res://ui/RewardScreen.tscn"
 const ROOM_TRANSITION_SCREEN_PATH := "res://ui/Transitionsalle.tscn"
 const FIRST_REWARD_PATH := "res://data/rewards/reward_marteau_jugement.tres"
+const PERSISTENT_RUN_UI_SCENE := preload("res://ui/run/PersistentRunUI.tscn")
+const PersistentRunUIScript := preload("res://ui/run/persistent_run_ui.gd")
 
 # Nombre de récompenses proposées après chaque salle.
 const REWARDS_OFFERED := 3
@@ -78,6 +80,7 @@ var _awaiting_post_battle_progression: bool = false
 var _room_outcome_resolved: bool = false
 var _active_progression_screen_ref: WeakRef = null
 var _progression_service := CharacterProgressionService.new()
+var _persistent_run_ui: PersistentRunUI = null
 
 # Récompenses actuellement proposées (lues par l'écran de récompense).
 var _offered_rewards: Array = []
@@ -237,6 +240,8 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_awaiting_post_battle_progression = false
 	_room_outcome_resolved = false
 	_active_progression_screen_ref = null
+	_ensure_persistent_run_ui()
+	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 
 func cancel_run_draft() -> void:
 	cleanup_run_state()
@@ -319,6 +324,7 @@ func _clear_heroes() -> void:
 
 
 func cleanup_run_state() -> void:
+	_release_persistent_run_ui()
 	_close_active_progression_screen()
 	_awaiting_post_battle_progression = false
 	_room_outcome_resolved = false
@@ -331,6 +337,61 @@ func cleanup_run_state() -> void:
 	reward_pool.clear()
 	_active_run_name = ""
 	_last_run_result.clear()
+
+
+func _ensure_persistent_run_ui() -> PersistentRunUI:
+	if is_instance_valid(_persistent_run_ui):
+		return _persistent_run_ui
+	_persistent_run_ui = PERSISTENT_RUN_UI_SCENE.instantiate() as PersistentRunUI
+	if _persistent_run_ui == null:
+		push_error("Impossible d'instancier l'interface persistante de run.")
+		return null
+	add_child(_persistent_run_ui)
+	return _persistent_run_ui
+
+
+func _release_persistent_run_ui() -> void:
+	if not is_instance_valid(_persistent_run_ui):
+		_persistent_run_ui = null
+		return
+	_persistent_run_ui.unbind_combat_context()
+	if _persistent_run_ui.get_parent() != null:
+		_persistent_run_ui.get_parent().remove_child(_persistent_run_ui)
+	_persistent_run_ui.free()
+	_persistent_run_ui = null
+
+
+func has_persistent_run_ui() -> bool:
+	return run_active and is_instance_valid(_persistent_run_ui)
+
+
+func get_persistent_run_ui() -> PersistentRunUI:
+	return _persistent_run_ui if is_instance_valid(_persistent_run_ui) else null
+
+
+func bind_combat_context(context: Node) -> CanvasLayer:
+	if not run_active or context == null:
+		return null
+	var run_ui := _ensure_persistent_run_ui()
+	if run_ui == null:
+		return null
+	return run_ui.bind_combat_context(context)
+
+
+func unbind_combat_context(expected_context: Node = null) -> void:
+	if is_instance_valid(_persistent_run_ui):
+		_persistent_run_ui.unbind_combat_context(expected_context)
+
+
+func set_run_ui_mode(mode: PersistentRunUI.RunUIMode) -> void:
+	if is_instance_valid(_persistent_run_ui):
+		_persistent_run_ui.set_ui_mode(mode)
+
+
+func get_run_ui_mode() -> PersistentRunUI.RunUIMode:
+	if is_instance_valid(_persistent_run_ui):
+		return _persistent_run_ui.get_ui_mode()
+	return PersistentRunUIScript.RunUIMode.NON_COMBAT
 
 func get_character_state(character_id: StringName) -> CharacterRunState:
 	return character_states.get(character_id) as CharacterRunState
@@ -451,13 +512,18 @@ func _close_active_progression_screen() -> void:
 
 # Passe à la salle suivante, ou termine le run s'il n'y en a plus.
 func _go_to_next_room() -> void:
+	unbind_combat_context()
+	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 	current_room_index += 1
 	# Plus de salle = run gagné.
 	if current_room_index >= rooms.size():
 		_finish_run(true)
 		return
 	# On (re)charge l'écran de transition pour la nouvelle salle.
-	_request_scene_change(ROOM_TRANSITION_SCREEN_PATH)
+	_request_scene_change(
+		ROOM_TRANSITION_SCREEN_PATH,
+		PersistentRunUIScript.RunUIMode.TRANSITION
+	)
 
 # Appelé par Transitionsalle au clic sur "Continuer".
 func start_next_battle() -> void:
@@ -466,6 +532,8 @@ func start_next_battle() -> void:
 		push_error("Aucune battle_scene assignée dans RoomData index %d" % current_room_index)
 		return
 	_room_outcome_resolved = false
+	unbind_combat_context()
+	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 	get_tree().change_scene_to_packed.call_deferred(room.battle_scene)
 
 # La salle en cours (lue par battle au démarrage).
@@ -611,7 +679,12 @@ func return_to_title() -> void:
 	_request_scene_change(TITLE_SCREEN_PATH)
 
 
-func _request_scene_change(path: String) -> void:
+func _request_scene_change(
+		path: String,
+		ui_mode: PersistentRunUI.RunUIMode = PersistentRunUI.RunUIMode.NON_COMBAT
+	) -> void:
+	unbind_combat_context()
+	set_run_ui_mode(ui_mode)
 	scene_change_requested.emit(path)
 	if is_inside_tree():
 		get_tree().change_scene_to_file.call_deferred(path)

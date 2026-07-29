@@ -114,6 +114,8 @@ var awakening_turns_remaining: int:
 # Modificateur de PA applique au PROCHAIN tour puis remis a zero : positif
 # (bonus de reaction/relique) ou negatif (drain du Disruptor).
 var next_turn_ap_modifier: int = 0
+var next_turn_mp_bonus: int = 0
+var next_turn_mp_penalty: int = 0
 var current_terrain_effect: TerrainEffectData = null
 var terrain_ap_discount_used: bool = false
 var reaction_armed: bool = false
@@ -121,6 +123,10 @@ var taunt_source = null
 var taunt_turns: int = 0
 
 # --- Apparence ---
+# Ressource d'origine commune aux ecrans de presentation et au HUD. Elle reste
+# en lecture seule cote combat : les statistiques runtime continuent de vivre
+# sur Unit, tandis que les visuels de presentation gardent une source unique.
+var character_data: UnitData = null
 var sprite_frames: SpriteFrames = null
 var sprite_scale: float = 3.0
 var idle_animation: String = "default"
@@ -204,6 +210,7 @@ static func from_data(data: UnitData) -> Unit:
 		data.max_ap, data.max_mp, data.attack_power
 	)
 	u.unit_id = data.get_effective_unit_id()
+	u.character_data = data
 	u.sprite_frames = data.sprite_frames
 	u.sprite_scale = data.sprite_scale
 	u.idle_animation = data.idle_animation
@@ -344,12 +351,29 @@ func apply_status(status_data: StatusData) -> void:
 		if entry["data"].status_name == status_data.status_name:
 			# DÃ©jÃ  prÃ©sent : on rafraÃ®chit la durÃ©e (la plus longue gagne).
 			entry["remaining"] = max(entry["remaining"], status_data.duration)
+			if status_data is ChargedDamageVulnerabilityData:
+				var charged := status_data as ChargedDamageVulnerabilityData
+				var current_data := (
+					entry["data"] as ChargedDamageVulnerabilityData
+				)
+				entry["charges"] = maxi(
+					int(entry.get("charges", 0)),
+					charged.max_charges
+				)
+				if current_data == null \
+						or charged.max_charges >= current_data.max_charges:
+					entry["data"] = charged
 			DebugLogger.debug(CAT_STATS, "%s : %s rafraîchi (%d tours)" % [
 				unit_name, status_data.status_name, entry["remaining"]])
 			EventBus.status_applied.emit(self, status_data)
 			return
 	# Nouveau statut.
-	active_statuses.append({ "data": status_data, "remaining": status_data.duration })
+	var new_entry := { "data": status_data, "remaining": status_data.duration }
+	if status_data is ChargedDamageVulnerabilityData:
+		new_entry["charges"] = (
+			status_data as ChargedDamageVulnerabilityData
+		).max_charges
+	active_statuses.append(new_entry)
 	# Le CombatLogger Ã©coute status_applied et produit la ligne de log.
 	EventBus.status_applied.emit(self, status_data)
 
@@ -383,7 +407,8 @@ func process_statuses() -> bool:
 		# DÃ©gÃ¢ts par tour (poison, saignement, brÃ»lure).
 		# DÃ©gÃ¢ts "vrais" : un poison ignore l'armure et ne s'esquive pas.
 		# (quand StatusData portera un Ã©lÃ©ment, on le passera ici)
-		if data.damage_per_turn > 0:
+		if data.damage_per_turn > 0 \
+				and data.damage_timing == StatusData.PeriodicTiming.TURN_START:
 			take_damage(data.damage_per_turn, null,
 				Spell.DamageType.MAGICAL, Spell.Element.NONE,
 				{ "ignore_defense": true, "cannot_be_dodged": true })
@@ -427,6 +452,24 @@ func process_statuses() -> bool:
 # (Ã  appeler en FIN de tour de l'unitÃ©)
 func tick_statuses() -> void:
 	for i in range(active_statuses.size() - 1, -1, -1):
+		var data := active_statuses[i]["data"] as StatusData
+		if data != null \
+				and data.damage_per_turn > 0 \
+				and data.damage_timing == StatusData.PeriodicTiming.TURN_END:
+			take_damage(
+				data.damage_per_turn,
+				null,
+				Spell.DamageType.MAGICAL,
+				Spell.Element.NONE,
+				{ "ignore_defense": true, "cannot_be_dodged": true }
+			)
+			DebugLogger.info(CAT_STATS, "%s subit %d degats de %s" % [
+				unit_name,
+				data.damage_per_turn,
+				data.status_name,
+			], {
+				"PV_restants": current_hp,
+			})
 		active_statuses[i]["remaining"] -= 1
 		if active_statuses[i]["remaining"] <= 0:
 			var ended = active_statuses[i]["data"].status_name
@@ -456,7 +499,12 @@ func start_turn() -> void:
 		awakening_penalty = energy_type.awakening_ap_penalty
 	current_ap = maxi(0, max_ap.get_int() + next_turn_ap_modifier - awakening_penalty)
 	next_turn_ap_modifier = 0
-	current_mp = max_mp.get_int()
+	current_mp = maxi(
+		0,
+		max_mp.get_int() + next_turn_mp_bonus - next_turn_mp_penalty
+	)
+	next_turn_mp_bonus = 0
+	next_turn_mp_penalty = 0
 	terrain_ap_discount_used = false
 	if team == 0:
 		reaction_armed = false
@@ -476,6 +524,13 @@ func spend_mp(amount: int) -> bool:
 	current_mp -= amount
 	stats_changed.emit(self)
 	return true
+
+
+func queue_next_turn_mp_modifier(amount: int) -> void:
+	if amount > 0:
+		next_turn_mp_bonus += amount
+	elif amount < 0:
+		next_turn_mp_penalty = maxi(next_turn_mp_penalty, -amount)
 
 func spend_ap(amount: int) -> bool:
 	if amount > current_ap:
@@ -504,6 +559,8 @@ func ensure_energy_traits() -> void:
 
 func reset_combat_resources() -> void:
 	next_turn_ap_modifier = 0
+	next_turn_mp_bonus = 0
+	next_turn_mp_penalty = 0
 	current_ap = max_ap.get_int()
 	_energy_gauge.reset() # eveil purge, retour a start_energy, sync emis
 	energy_changed.emit(self)
@@ -717,10 +774,17 @@ func take_damage(
 	if not is_alive:
 		return null
 
+	var charged_bonus := _get_charged_damage_bonus(category)
 	# Construit le contexte du coup.
 	var ctx := DamageResolver.HitContext.new()
 	ctx.attacker = attacker
-	ctx.raw_damage = _get_modified_incoming_damage(_apply_defensive_reaction_to_raw(amount, attacker, options))
+	ctx.raw_damage = _get_modified_incoming_damage(
+		_apply_defensive_reaction_to_raw(
+			amount + charged_bonus,
+			attacker,
+			options
+		)
+	)
 	ctx.category = category
 	ctx.element = element
 	# Options Ã©ventuelles (terrain, sorts spÃ©ciaux, futurs traits).
@@ -732,6 +796,8 @@ func take_damage(
 	ctx.pen_flat = options.get("pen_flat", 0.0)
 
 	var result := DamageResolver.compute(self, ctx)
+	if result != null and not result.dodged and charged_bonus > 0:
+		_consume_charged_damage_vulnerabilities(category)
 	_apply_damage_result(result, ctx.attacker)
 	return result
 
@@ -740,9 +806,41 @@ func take_damage(
 func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	if not is_alive:
 		return null
+	var charged_bonus := _get_charged_damage_bonus(ctx.category)
+	ctx.raw_damage += charged_bonus
 	var result := DamageResolver.compute(self, ctx)
+	if result != null and not result.dodged and charged_bonus > 0:
+		_consume_charged_damage_vulnerabilities(ctx.category)
 	_apply_damage_result(result, ctx.attacker)
 	return result
+
+
+func _get_charged_damage_bonus(category: int) -> int:
+	var bonus := 0
+	for entry in active_statuses:
+		var data := entry.get("data") as ChargedDamageVulnerabilityData
+		if data == null \
+				or data.trigger_damage_type != category \
+				or int(entry.get("charges", 0)) <= 0:
+			continue
+		bonus += data.bonus_damage
+	return bonus
+
+
+func _consume_charged_damage_vulnerabilities(category: int) -> void:
+	for index in range(active_statuses.size() - 1, -1, -1):
+		var entry: Dictionary = active_statuses[index]
+		var data := entry.get("data") as ChargedDamageVulnerabilityData
+		if data == null \
+				or data.trigger_damage_type != category \
+				or int(entry.get("charges", 0)) <= 0:
+			continue
+		var remaining_charges := int(entry["charges"]) - 1
+		if remaining_charges <= 0:
+			active_statuses.remove_at(index)
+			EventBus.status_expired.emit(self, data.status_name)
+		else:
+			active_statuses[index]["charges"] = remaining_charges
 
 # Applique le rÃ©sultat calculÃ© aux PV, en absorbant d'abord le bouclier.
 # POINT D'Ã‰MISSION UNIQUE du flux de dÃ©gÃ¢ts.

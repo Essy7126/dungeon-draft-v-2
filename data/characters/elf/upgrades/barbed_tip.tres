@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SkillTreeNodeData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_node"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/modifiers/barbed_tip.tres" id="3_modifier"]
+
+[resource]
+script = ExtResource("1_node")
+upgrade_id = &"elf_archer_barbed_tip"
+display_name = "Pointe barbelée"
+description = "Tir précis applique Saignement : 2 dégâts pendant 2 tours. Une nouvelle application rafraîchit sa durée."
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])
+prerequisite_node_ids = Array[StringName]([&"elf_archer_piercing_shot"])

@@ -1,0 +1,104 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/components/skill_tree_node_detail_panel.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+
+[node name="SkillTreeNodeDetailPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(310, 0)
+theme = ExtResource("2_theme")
+theme_type_variation = &"SkillTreeTooltip"
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconBox" type="Control" parent="Margin/Content"]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Icon" type="TextureRect" parent="Margin/Content/IconBox"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Placeholder" type="Label" parent="Margin/Content/IconBox"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+text = "?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.84, 0.5, 1)
+theme_override_font_sizes/font_size = 19
+text = "DÉTAIL DU NŒUD"
+autowrap_mode = 2
+
+[node name="MetaLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.73, 0.8, 1)
+text = "Archer — Rang 1 — 0 XP"
+autowrap_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Description"
+autowrap_mode = 2
+
+[node name="SeparatorA" type="HSeparator" parent="Margin/Content"]
+layout_mode = 2
+
+[node name="SpellLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Sort affecté"
+autowrap_mode = 2
+
+[node name="PrerequisitesLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Prérequis"
+autowrap_mode = 2
+
+[node name="SeparatorB" type="HSeparator" parent="Margin/Content"]
+layout_mode = 2
+
+[node name="StateLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "État"
+autowrap_mode = 2
+
+[node name="ReasonLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
+text = "Raison"
+autowrap_mode = 2

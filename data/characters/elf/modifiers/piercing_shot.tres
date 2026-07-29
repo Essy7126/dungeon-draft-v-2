@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SpellModApplyStatus" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_apply_status.gd" id="1_modifier"]
+[ext_resource type="Resource" path="res://data/status/progression/physical_breach_1.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Tir perforant"
+target_spell_id = &"elf_precise_shot"
+status = ExtResource("2_status")

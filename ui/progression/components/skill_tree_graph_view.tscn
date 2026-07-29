@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/components/skill_tree_graph_view.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+
+[node name="SkillTreeGraphView" type="Control"]
+custom_minimum_size = Vector2(1400, 1080)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1400.0
+offset_bottom = 1080.0
+mouse_filter = 1
+theme = ExtResource("2_theme")
+theme_type_variation = &"SkillTreeGraphView"
+script = ExtResource("1_script")

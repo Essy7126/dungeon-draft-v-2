@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DisciplineRankData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_upgrade_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/perfect_shot.tres" id="3_perfect_shot"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/transpiercing_bolt.tres" id="4_transpiercing"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/siege_arrow.tres" id="5_siege_arrow"]
+[ext_resource type="Resource" path="res://data/characters/elf/upgrades/stopping_arrow.tres" id="6_stopping_arrow"]
+
+[resource]
+script = ExtResource("1_rank")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_upgrade_type")]([ExtResource("3_perfect_shot"), ExtResource("4_transpiercing"), ExtResource("5_siege_arrow"), ExtResource("6_stopping_arrow")])

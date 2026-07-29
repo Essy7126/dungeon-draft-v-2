@@ -4,6 +4,9 @@ const HUD_SCENE := "res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn"
 const FIRST_ROOM_SCENE := "res://data/rooms/maps/battle_salle1_iso.tscn"
 const LEGACY_HUD_SCRIPT := "res://ui/action_bar.gd"
 const PROCESSED_DIR := "res://asset/ui/recraft_hud_v1/processed"
+const HUD_METRICS := preload(
+	"res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd"
+)
 
 
 func test_recraft_components_and_processed_assets_load() -> void:
@@ -20,16 +23,16 @@ func test_recraft_components_and_processed_assets_load() -> void:
 		assert_not_null(load(path), path)
 
 
-func test_first_room_selects_recraft_hud_and_battle_keeps_legacy_fallback() -> void:
+func test_first_room_has_no_local_recraft_hud_and_battle_keeps_legacy_fallback() -> void:
 	var packed := load(FIRST_ROOM_SCENE) as PackedScene
 	assert_not_null(packed)
 	var battle := packed.instantiate()
-	assert_not_null(battle.get("action_bar_scene"))
-	assert_eq(battle.get("action_bar_scene").resource_path, HUD_SCENE)
+	assert_null(battle.get("action_bar_scene"))
 	battle.free()
 	var battle_source := FileAccess.get_file_as_string("res://battle/battle.gd")
 	assert_true("action_bar_scene" in battle_source)
 	assert_true(LEGACY_HUD_SCRIPT in battle_source)
+	assert_true("GameManager.bind_combat_context(self)" in battle_source)
 
 
 func test_first_room_launches_with_only_the_recraft_hud_active() -> void:
@@ -51,6 +54,11 @@ func test_first_room_launches_with_only_the_recraft_hud_active() -> void:
 	assert_eq(
 		battle.action_bar.get_script().resource_path,
 		"res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd"
+	)
+	assert_ne(battle.action_bar.get_parent(), battle)
+	assert_same(
+		battle.action_bar,
+		GameManager.get_persistent_run_ui().get_combat_hud()
 	)
 	assert_true(battle.action_bar.end_turn_pressed.is_connected(
 		Callable(battle, "_on_end_turn_pressed")
@@ -97,12 +105,35 @@ func test_hud_reads_real_unit_resources_and_builds_real_spell_slots() -> void:
 	guardian.clear_traits()
 
 
+func test_hud_uses_the_same_preview_source_as_the_party_presentation() -> void:
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	add_child_autofree(hud)
+	for data_path in [
+		"res://data/units/alliés/elfe.tres",
+		"res://data/units/alliés/mage.tres",
+	]:
+		var data := load(data_path) as UnitData
+		var unit := Unit.from_data(data)
+		hud.update_info(unit)
+		var portrait: RecraftPortraitView = hud.get_node("%PortraitView")
+		assert_same(unit.character_data, data)
+		assert_same(portrait.character_data, data)
+		assert_same(
+			portrait.character_data.preview_visual_scene,
+			data.preview_visual_scene
+		)
+		assert_not_null(portrait.character_preview.get_visual_instance())
+		unit.clear_traits()
+
+
 func test_hud_selection_unaffordable_controls_and_end_turn_signal() -> void:
 	var guardian := Unit.from_data(load("res://data/units/alliés/Gardien.tres"))
 	guardian.current_ap = guardian.max_ap.get_int()
 	guardian.current_energy = guardian.energy_type.max_energy
 	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
 	add_child_autofree(hud)
+	hud.set_ui_mode(hud.RunUIMode.COMBAT)
+	hud.set_player_controls_enabled(true)
 	hud.update_info(guardian)
 	hud.build_spell_buttons(guardian)
 	var first_button: RecraftSpellSlotView = hud.get("_spell_buttons")[0]
@@ -150,3 +181,70 @@ func test_spell_slot_exposes_all_required_visual_states() -> void:
 	for state in RecraftSpellSlotView.VisualState.values():
 		slot.set_visual_state(state, 2)
 		assert_eq(slot.visual_state, state)
+
+
+func test_recraft_reference_metrics_and_independent_sections_align() -> void:
+	assert_eq(HUD_METRICS.HUD_HEIGHT, 150.0)
+	assert_eq(HUD_METRICS.PORTRAIT_SIZE, 96.0)
+	assert_eq(HUD_METRICS.RESOURCE_BAR_SIZE, Vector2(190.0, 18.0))
+	assert_eq(HUD_METRICS.RESOURCE_BADGE_SIZE, 42.0)
+	assert_eq(HUD_METRICS.SPELL_VISUAL_SIZE, 64.0)
+	assert_eq(HUD_METRICS.SPELL_GAP, 6.0)
+	assert_eq(HUD_METRICS.END_TURN_SIZE, Vector2(136.0, 44.0))
+
+	var guardian := Unit.from_data(load("res://data/units/alliés/Gardien.tres"))
+	var reference_viewport := SubViewport.new()
+	reference_viewport.size = Vector2i(1600, 900)
+	add_child_autofree(reference_viewport)
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	reference_viewport.add_child(hud)
+	hud.set_ui_mode(hud.RunUIMode.COMBAT)
+	hud.update_info(guardian)
+	hud.build_spell_buttons(guardian)
+	await get_tree().process_frame
+
+	var bottom_rect: Rect2 = hud.get_node("%HudBand").get_global_rect()
+	var left_rect: Rect2 = hud.get_node("%CharacterAnchor").get_global_rect()
+	var spell_rect: Rect2 = hud.get_node("%SpellAnchor").get_global_rect()
+	var right_rect: Rect2 = hud.get_node("%TurnAnchor").get_global_rect()
+	var portrait_rect: Rect2 = hud.get_node("%PortraitView").get_global_rect()
+	var end_turn_rect: Rect2 = hud.get_node("%EndTurnButton").get_global_rect()
+	assert_almost_eq(spell_rect.get_center().x, bottom_rect.get_center().x, 0.1)
+	assert_almost_eq(portrait_rect.get_center().y, bottom_rect.get_center().y, 0.5)
+	assert_almost_eq(end_turn_rect.get_center().y, bottom_rect.get_center().y, 0.1)
+	assert_lt(left_rect.end.x, spell_rect.position.x)
+	assert_lt(spell_rect.end.x, right_rect.position.x)
+	assert_eq(
+		Vector4(
+			hud.get_node("%CharacterAnchor").offset_left,
+			hud.get_node("%CharacterAnchor").offset_top,
+			hud.get_node("%CharacterAnchor").offset_right,
+			hud.get_node("%CharacterAnchor").offset_bottom
+		),
+		Vector4(18.0, -140.0, 440.0, -10.0)
+	)
+	assert_eq(
+		Vector4(
+			hud.get_node("%SpellAnchor").offset_left,
+			hud.get_node("%SpellAnchor").offset_top,
+			hud.get_node("%SpellAnchor").offset_right,
+			hud.get_node("%SpellAnchor").offset_bottom
+		),
+		Vector4(-260.0, -140.0, 260.0, -10.0)
+	)
+	assert_eq(
+		Vector4(
+			hud.get_node("%TurnAnchor").offset_left,
+			hud.get_node("%TurnAnchor").offset_top,
+			hud.get_node("%TurnAnchor").offset_right,
+			hud.get_node("%TurnAnchor").offset_bottom
+		),
+		Vector4(-170.0, -140.0, -18.0, -10.0)
+	)
+
+	var slots: Array = hud.get("_spell_buttons")
+	assert_gt(slots.size(), 1)
+	var slot_bottom: float = (slots[0] as Control).get_global_rect().end.y
+	for slot in slots:
+		assert_almost_eq((slot as Control).get_global_rect().end.y, slot_bottom, 0.1)
+	guardian.clear_traits()

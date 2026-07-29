@@ -121,8 +121,13 @@ func test_new_disciplines_reach_rank_two_at_three_xp_once() -> void:
 		assert_eq(progress.add_xp(1), [2], str(discipline_id))
 		assert_eq(progress.rank, 2, str(discipline_id))
 		assert_eq(progress.get_pending_rank_choices(), [2], str(discipline_id))
-		assert_true(progress.add_xp(10).is_empty(), str(discipline_id))
-		assert_eq(progress.get_pending_rank_choices(), [2], str(discipline_id))
+		var later_reached_ranks := progress.add_xp(10)
+		if discipline_id == &"archer":
+			assert_eq(later_reached_ranks, [3, 4], str(discipline_id))
+			assert_eq(progress.get_pending_rank_choices(), [2, 3, 4], str(discipline_id))
+		else:
+			assert_true(later_reached_ranks.is_empty(), str(discipline_id))
+			assert_eq(progress.get_pending_rank_choices(), [2], str(discipline_id))
 
 
 func test_each_new_rank_has_exactly_two_expected_exclusive_choices() -> void:
@@ -131,7 +136,14 @@ func test_each_new_rank_has_exactly_two_expected_exclusive_choices() -> void:
 		var discipline: DisciplineData = elf_data.disciplines[
 			DISCIPLINE_IDS.find(NEW_DISCIPLINE_IDS[index])
 		]
-		assert_eq(discipline.ranks.size(), 2, str(discipline.discipline_id))
+		var expected_rank_count := (
+			5 if discipline.discipline_id == &"archer" else 2
+		)
+		assert_eq(
+			discipline.ranks.size(),
+			expected_rank_count,
+			str(discipline.discipline_id)
+		)
 		assert_eq([discipline.ranks[0].rank, discipline.ranks[0].required_total_xp], [1, 0])
 		assert_eq([discipline.ranks[1].rank, discipline.ranks[1].required_total_xp], [2, 3])
 		assert_eq(

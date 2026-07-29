@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellModAlignedSecondaryTarget" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_aligned_secondary_target.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Trait transperçant"
+target_spell_id = &"elf_precise_shot"
+damage_ratio = 0.5

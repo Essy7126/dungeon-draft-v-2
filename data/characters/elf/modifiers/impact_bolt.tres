@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellModCollisionDamage" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_collision_damage.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Trait d’impact"
+target_spell_id = &"elf_precise_shot"
+bonus_damage = 4

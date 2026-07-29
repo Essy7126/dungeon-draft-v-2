@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SpellModNextTurnMovement" format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_next_turn_movement.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Flèche clouante"
+target_spell_id = &"elf_precise_shot"
+recipient = 1
+movement_points = -2

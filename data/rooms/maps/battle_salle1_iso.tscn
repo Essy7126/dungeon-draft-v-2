@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_battle"]
 [ext_resource type="PackedScene" path="res://battle/iso/forest_room_01_background.tscn" id="2_background"]
@@ -7,8 +7,6 @@
 [ext_resource type="Script" path="res://battle/floating_text_spawner.gd" id="5_text"]
 [ext_resource type="Script" path="res://battle/impact_juice.gd" id="6_impact"]
 [ext_resource type="AudioStream" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="7_music"]
-[ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn" id="8_hud"]
-
 [node name="Battle" type="Node2D"]
 texture_filter = 2
 script = ExtResource("1_battle")
@@ -16,7 +14,6 @@ grid_cols = 10
 grid_rows = 8
 standalone_preview_without_room = true
 temporary_iso_placeholders = true
-action_bar_scene = ExtResource("8_hud")
 
 [node name="ForestBackground" parent="." instance=ExtResource("2_background")]
 

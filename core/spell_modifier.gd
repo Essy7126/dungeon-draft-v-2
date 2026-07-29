@@ -35,6 +35,11 @@ func applies_to(spell) -> bool:
 		return true
 	return spell.spell_name.strip_edges() == target_spell_name.strip_edges()
 
+# Bonus de portee consultable avant la validation de cible. Le retour par
+# defaut conserve strictement le ciblage de tous les modifiers historiques.
+func get_range_bonus(_caster, _spell) -> int:
+	return 0
+
 # ============================================================
 # HOOKS DU PIPELINE — no-op par défaut, à surcharger au besoin.
 # Ordre d'appel dans un cast : costs → targets → damage → terrain

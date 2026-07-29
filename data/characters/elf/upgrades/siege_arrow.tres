@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillTreeNodeData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_node"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Resource" path="res://data/characters/elf/modifiers/siege_arrow_push.tres" id="3_push"]
+[ext_resource type="Resource" path="res://data/characters/elf/modifiers/siege_arrow_collision.tres" id="4_collision"]
+
+[resource]
+script = ExtResource("1_node")
+upgrade_id = &"elf_archer_siege_arrow"
+display_name = "Flèche de siège"
+description = "La poussée totale de Tir précis devient 3 cases et son bonus total de collision devient 8."
+discipline_id = &"archer"
+rank = 5
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_push"), ExtResource("4_collision")])
+prerequisite_node_ids = Array[StringName]([&"elf_archer_repel_arrow"])

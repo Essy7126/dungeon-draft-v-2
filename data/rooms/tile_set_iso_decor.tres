@@ -1,6 +1,6 @@
 [gd_resource type="TileSet" format=3 uid="uid://c5e41kal2h1sr"]
 
-[ext_resource type="PackedScene" path="res://battle/iso/drapeau.tscn" id="1_drapeau"]
+[ext_resource type="PackedScene" uid="uid://bukgtd0jx02rw" path="res://battle/iso/drapeau.tscn" id="1_drapeau"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_decor"]
 scenes/0/scene = ExtResource("1_drapeau")

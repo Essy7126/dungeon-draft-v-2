@@ -1,6 +1,8 @@
 class_name RecraftResourceBarView
 extends Control
 
+const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+
 @onready var trough: ColorRect = %Trough
 @onready var delayed_value_fill: ColorRect = %DelayedValueFill
 @onready var main_fill: ColorRect = %MainFill
@@ -17,10 +19,38 @@ var preview_gain := 0.0
 var resource_color := Color(0.76, 0.18, 0.18)
 var _delayed_value := 0.0
 var _delayed_tween: Tween
+var _layout_scale := 1.0
 
 
 func _ready() -> void:
 	resized.connect(_layout_fills)
+	apply_layout(1.0)
+	_layout_fills()
+
+
+func apply_layout(scale_factor: float) -> void:
+	_layout_scale = scale_factor
+	custom_minimum_size = METRICS.scaled_vector(METRICS.RESOURCE_BAR_SIZE, scale_factor)
+	value_label.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(METRICS.RESOURCE_VALUE_FONT_SIZE, scale_factor)
+	)
+	resource_icon_fallback.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, scale_factor)
+	)
+	var icon_size := METRICS.scaled(14.0, scale_factor)
+	var icon_left := METRICS.scaled(8.0, scale_factor)
+	resource_icon.position = Vector2(
+		icon_left,
+		roundf((custom_minimum_size.y - icon_size) * 0.5)
+	)
+	resource_icon.size = Vector2(icon_size, icon_size)
+	resource_icon_fallback.position = Vector2(
+		icon_left,
+		roundf((custom_minimum_size.y - icon_size) * 0.5)
+	)
+	resource_icon_fallback.size = Vector2(icon_size, icon_size)
+	value_label.offset_left = METRICS.scaled(24.0, scale_factor)
+	value_label.offset_right = -METRICS.scaled(6.0, scale_factor)
 	_layout_fills()
 
 
@@ -80,7 +110,14 @@ func _set_delayed_value(value: float) -> void:
 func _layout_fills() -> void:
 	if not is_node_ready():
 		return
-	var bar_rect := Rect2(15.0, size.y * 0.37, maxf(size.x - 30.0, 1.0), maxf(size.y * 0.27, 3.0))
+	var insets := METRICS.RESOURCE_BAR_INSETS * _layout_scale
+	var bar_rect := Rect2(
+		Vector2(insets.x, insets.y),
+		Vector2(
+			maxf(size.x - insets.x - insets.z, 1.0),
+			maxf(size.y - insets.y - insets.w, 1.0)
+		)
+	)
 	_set_rect(trough, bar_rect.position, bar_rect.size)
 	var current_ratio := clampf(current_value / maximum_value, 0.0, 1.0)
 	var delayed_ratio := clampf(_delayed_value / maximum_value, 0.0, 1.0)

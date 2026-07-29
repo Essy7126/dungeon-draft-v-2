@@ -1,0 +1,2236 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dungeon Draft — Arbres de compétences complets</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg:#080d12;
+  --surface:#0f1720;
+  --surface2:#121e29;
+  --text:#edf4fa;
+  --muted:#a6b6c6;
+  --r1:#45a7ff;
+  --r2:#83d94c;
+  --r3:#a76bf3;
+  --r4:#f0ad2f;
+  --r5:#ef4f42;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:
+  radial-gradient(circle at top, #162434 0, var(--bg) 42rem);
+  color:var(--text); font:15px/1.45 Inter,Segoe UI,Arial,sans-serif;
+}
+.topbar {
+  position:sticky; top:0; z-index:20;
+  background:rgba(8,13,18,.94); backdrop-filter:blur(12px);
+  border-bottom:1px solid #263746; padding:16px 24px;
+}
+.topbar h1 { margin:0 0 8px; font-size:26px; }
+.topbar p { margin:0; color:var(--muted); max-width:1100px; }
+nav { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+nav a {
+  color:white; text-decoration:none; border:1px solid #3b5368;
+  border-radius:999px; padding:7px 12px; background:#101b25;
+}
+main { max-width:1800px; margin:auto; padding:24px; }
+.rules {
+  display:grid; grid-template-columns:repeat(5,minmax(120px,1fr));
+  gap:10px; margin:0 0 24px;
+}
+.rule {
+  border:1px solid #304253; border-radius:12px; padding:12px;
+  background:linear-gradient(180deg,#152331,#0d151d);
+}
+.rule strong { display:block; font-size:16px; }
+.rule span { color:var(--muted); }
+.character-section {
+  margin:0 0 42px; border:1px solid var(--border);
+  border-radius:18px; overflow:hidden;
+  background:linear-gradient(180deg,var(--panel),#0b1218 260px);
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+.character-header {
+  padding:22px 24px; border-bottom:1px solid var(--border);
+  display:flex; align-items:end; justify-content:space-between; gap:20px;
+}
+.character-header h2 { margin:0; color:var(--accent); font-size:30px; }
+.character-header p { margin:0; color:var(--muted); }
+.discipline { border-bottom:1px solid color-mix(in srgb,var(--border),transparent 40%); }
+.discipline:last-child { border-bottom:0; }
+.discipline > summary {
+  cursor:pointer; list-style:none; padding:16px 22px; display:flex;
+  justify-content:space-between; gap:16px; background:rgba(255,255,255,.025);
+  font-size:18px;
+}
+.discipline > summary::-webkit-details-marker { display:none; }
+.path-count { color:var(--accent); font-size:13px; font-weight:700; }
+.discipline-body { padding:20px; }
+.base-wrap { max-width:560px; margin:0 auto; }
+.split-label, .capstone-label {
+  text-align:center; color:var(--muted); margin:14px 0 10px; font-size:13px;
+}
+.branches {
+  display:grid; grid-template-columns:repeat(2,minmax(520px,1fr));
+  gap:18px;
+}
+.branch {
+  border:1px solid var(--border); border-radius:16px; padding:14px;
+  background:rgba(0,0,0,.16);
+}
+.branch-title {
+  text-align:center; text-transform:uppercase; letter-spacing:.14em;
+  font-weight:800; color:var(--accent); margin-bottom:10px;
+}
+.node {
+  border:1px solid #344a5c; border-left-width:5px; border-radius:12px;
+  background:linear-gradient(180deg,#182632,#101820);
+  padding:11px 12px; min-height:112px;
+}
+.node h4 { margin:7px 0 5px; font-size:15px; }
+.node p { margin:0; color:#cfdae4; font-size:13px; }
+.node-head {
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+}
+.node-head code {
+  color:#7890a5; font-size:9px; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; max-width:58%;
+}
+.rank-label { font-weight:800; font-size:11px; }
+.rank-1 { border-left-color:var(--r1); }
+.rank-2 { border-left-color:var(--r2); }
+.rank-3 { border-left-color:var(--r3); }
+.rank-4 { border-left-color:var(--r4); }
+.rank-5 {
+  border-left-color:var(--r5);
+  background:linear-gradient(180deg,#2a1816,#151111);
+}
+.foundation { max-width:520px; margin:auto; }
+.r3-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.subpath {
+  border:1px dashed color-mix(in srgb,var(--border),white 15%);
+  border-radius:14px; padding:10px;
+}
+.r4-grid, .r5-grid {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;
+}
+.connector.vertical {
+  width:2px; height:16px; margin:2px auto;
+  background:linear-gradient(var(--accent),transparent);
+}
+.legend {
+  margin:30px 0; padding:18px; border:1px solid #304253;
+  border-radius:15px; background:#0d161e;
+}
+.legend h3 { margin-top:0; }
+.legend ul { margin-bottom:0; }
+.footer-note { color:var(--muted); font-size:13px; margin:22px 0 4px; }
+@media (max-width:1200px) {
+  .branches { grid-template-columns:1fr; }
+}
+@media (max-width:760px) {
+  main { padding:12px; }
+  .rules { grid-template-columns:1fr 1fr; }
+  .r3-grid,.r4-grid,.r5-grid { grid-template-columns:1fr; }
+  .character-header { display:block; }
+  .character-header p { margin-top:8px; }
+  .discipline > summary { display:block; }
+  .path-count { display:block; margin-top:5px; }
+}
+@media print {
+  .topbar { position:static; }
+  details { break-inside:avoid; }
+  body { background:white; color:black; }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>Dungeon Draft — Arbres de compétences complets</h1>
+  <p>
+    Chaque lancement réussi rapporte 1 XP à la discipline du sort.
+    Un seul nœud est choisi par rang. Le Rang 2 verrouille la branche principale ;
+    le Rang 3 choisit une sous-spécialisation ; le Rang 4 perfectionne cette sous-spécialisation ;
+    le Rang 5 choisit un capstone de la branche principale.
+  </p>
+  <nav>
+    <a href="#elfe">Elfe</a>
+    <a href="#mage">Mage</a>
+    <a href="#guerrier">Guerrier</a>
+  </nav>
+</header>
+<main>
+  <section class="rules">
+    <div class="rule"><strong>Rang 1</strong><span>0 XP · Sort de base</span></div>
+    <div class="rule"><strong>Rang 2</strong><span>3 XP · 2 branches</span></div>
+    <div class="rule"><strong>Rang 3</strong><span>7 XP · 2 sous-spécialisations accessibles</span></div>
+    <div class="rule"><strong>Rang 4</strong><span>12 XP · 2 perfectionnements accessibles</span></div>
+    <div class="rule"><strong>Rang 5</strong><span>18 XP · 2 capstones accessibles</span></div>
+  </section>
+
+  <section class="legend">
+    <h3>Comment lire un arbre</h3>
+    <ul>
+      <li><strong>Rang 2 :</strong> choisir la branche A ou B. Ce choix est définitif pour la run.</li>
+      <li><strong>Rang 3 :</strong> choisir l’une des deux sous-spécialisations de la branche retenue.</li>
+      <li><strong>Rang 4 :</strong> choisir l’un des deux perfectionnements placés sous la sous-spécialisation retenue.</li>
+      <li><strong>Rang 5 :</strong> choisir l’un des deux capstones de la branche principale.</li>
+      <li>Chaque discipline possède <strong>16 configurations finales</strong>, mais un personnage ne peut en suivre qu’une par run.</li>
+    </ul>
+  </section>
+
+  
+    <section class="character-section" id="elfe"
+             style="--accent:#7ddc65;--border:#1c5d2a;--panel:#0d2a16;">
+      <header class="character-header">
+        <h2>Elfe</h2>
+        <p>Polyvalente : distance, corps à corps, zone et soutien.</p>
+      </header>
+      
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Archer</strong> — Tir précis</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>elfe.archer.r1.base</code></div>
+      <h4>Tir précis</h4>
+      <p>2 PA · Portée 7 · 7 dégâts physiques · Cible unique.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.archer.r2.a.il_daigle</code></div>
+      <h4>Œil d’aigle</h4>
+      <p>+3 dégâts si la cible se trouve à au moins 4 cases.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.archer.r3.a.longue_portee</code></div>
+      <h4>Longue portée</h4>
+      <p>+2 portée.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.a.longue_portee.vue_parfaite</code></div>
+      <h4>Vue parfaite</h4>
+      <p>+3 dégâts supplémentaires à partir de 6 cases.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.a.longue_portee.stabilisation</code></div>
+      <h4>Stabilisation</h4>
+      <p>+2 dégâts sans condition.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.archer.r3.a.tir_perforant</code></div>
+      <h4>Tir perforant</h4>
+      <p>La cible subit +2 dégâts physiques sur la prochaine attaque reçue.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.a.tir_perforant.pointe_barbelee</code></div>
+      <h4>Pointe barbelée</h4>
+      <p>Applique Saignement : 2 dégâts pendant 2 tours.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.a.tir_perforant.breche_ouverte</code></div>
+      <h4>Brèche ouverte</h4>
+      <p>Le bonus de vulnérabilité s’applique aux 2 prochaines attaques physiques.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.archer.r5.a.tir_parfait</code></div>
+      <h4>Tir parfait</h4>
+      <p>+6 dégâts à partir de 6 cases et +1 portée.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.archer.r5.a.trait_transpercant</code></div>
+      <h4>Trait transperçant</h4>
+      <p>Le projectile touche aussi le premier ennemi aligné derrière la cible pour 50 % des dégâts.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.archer.r2.b.fleche_de_recul</code></div>
+      <h4>Flèche de recul</h4>
+      <p>Repousse la cible de 1 case.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.archer.r3.b.fleche_entravante</code></div>
+      <h4>Flèche entravante</h4>
+      <p>La cible perd 1 PM pendant son prochain tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.b.fleche_entravante.fleche_clouante</code></div>
+      <h4>Flèche clouante</h4>
+      <p>La perte passe à −2 PM pour le prochain tour.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.b.fleche_entravante.recul_tactique</code></div>
+      <h4>Recul tactique</h4>
+      <p>Après un tir réussi, l’Elfe gagne 1 PM à son prochain tour.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.archer.r3.b.trait_dimpact</code></div>
+      <h4>Trait d’impact</h4>
+      <p>Une collision inflige 4 dégâts supplémentaires.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.b.trait_dimpact.trait_de_siege</code></div>
+      <h4>Trait de siège</h4>
+      <p>+1 case de poussée.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.archer.r4.b.trait_dimpact.fracas</code></div>
+      <h4>Fracas</h4>
+      <p>+4 dégâts de collision supplémentaires.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.archer.r5.b.fleche_de_siege</code></div>
+      <h4>Flèche de siège</h4>
+      <p>Poussée totale de 3 cases et 8 dégâts de collision.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.archer.r5.b.fleche_darret</code></div>
+      <h4>Flèche d’arrêt</h4>
+      <p>Inflige −2 PM et +4 dégâts si la cible termine contre un obstacle.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Assassin</strong> — Frappe sournoise</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>elfe.assassin.r1.base</code></div>
+      <h4>Frappe sournoise</h4>
+      <p>2 PA · Portée 1 · 7 dégâts physiques · Corps à corps.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.assassin.r2.a.dans_le_dos</code></div>
+      <h4>Dans le dos</h4>
+      <p>+4 dégâts lors d’une véritable attaque arrière.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.assassin.r3.a.executrice</code></div>
+      <h4>Exécutrice</h4>
+      <p>+4 dégâts contre une cible sous 40 % de ses PV.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.a.executrice.coup_fatal</code></div>
+      <h4>Coup fatal</h4>
+      <p>Le seuil d’exécution passe à 50 % des PV.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.a.executrice.ouverture</code></div>
+      <h4>Ouverture</h4>
+      <p>La cible subit +3 dégâts sur la prochaine attaque physique reçue.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.assassin.r3.a.repli</code></div>
+      <h4>Repli</h4>
+      <p>Après une attaque arrière réussie, l’Elfe gagne 1 PM à son prochain tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.a.repli.allonge_elfique</code></div>
+      <h4>Allonge elfique</h4>
+      <p>+1 portée.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.a.repli.pas_leger</code></div>
+      <h4>Pas léger</h4>
+      <p>Le bonus de mobilité passe à +2 PM au prochain tour.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.assassin.r5.a.assassinat</code></div>
+      <h4>Assassinat</h4>
+      <p>+8 dégâts si la cible est dans le dos ou sous 35 % de ses PV.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.assassin.r5.a.lame_fantome</code></div>
+      <h4>Lame fantôme</h4>
+      <p>Portée totale de 3 cases et +3 dégâts.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.assassin.r2.b.lame_venimeuse</code></div>
+      <h4>Lame venimeuse</h4>
+      <p>Applique Poison : 2 dégâts pendant 2 tours.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.assassin.r3.b.empoisonneuse</code></div>
+      <h4>Empoisonneuse</h4>
+      <p>Le Poison inflige +1 dégât par tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.b.empoisonneuse.toxines_persistantes</code></div>
+      <h4>Toxines persistantes</h4>
+      <p>Le Poison dure 1 tour supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.b.empoisonneuse.double_dose</code></div>
+      <h4>Double dose</h4>
+      <p>Le Poison inflige 3 dégâts pendant 2 tours.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.assassin.r3.b.saboteuse</code></div>
+      <h4>Saboteuse</h4>
+      <p>La cible perd 1 PM pendant son prochain tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.b.saboteuse.tendon_tranche</code></div>
+      <h4>Tendon tranché</h4>
+      <p>La perte passe à −2 PM pour le prochain tour.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.assassin.r4.b.saboteuse.affaiblissement</code></div>
+      <h4>Affaiblissement</h4>
+      <p>La cible inflige −2 dégâts pendant son prochain tour.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.assassin.r5.b.venin_mortel</code></div>
+      <h4>Venin mortel</h4>
+      <p>Poison : 3 dégâts pendant 3 tours.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.assassin.r5.b.sabotage</code></div>
+      <h4>Sabotage</h4>
+      <p>−2 PM et +3 dégâts reçus sur les 2 prochaines attaques.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Mage</strong> — Boule de feu de l’Elfe</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>elfe.mage.r1.base</code></div>
+      <h4>Boule de feu de l’Elfe</h4>
+      <p>Explosion de feu de zone · Valeurs de base à normaliser avant équilibrage final.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.mage.r2.a.cur_incandescent</code></div>
+      <h4>Cœur incandescent</h4>
+      <p>+3 dégâts sur la cellule centrale.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.mage.r3.a.detonation</code></div>
+      <h4>Détonation</h4>
+      <p>+3 dégâts supplémentaires au centre.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.a.detonation.noyau_ardent</code></div>
+      <h4>Noyau ardent</h4>
+      <p>+4 dégâts supplémentaires au centre.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.a.detonation.portee_arcanique</code></div>
+      <h4>Portée arcanique</h4>
+      <p>+2 portée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.mage.r3.a.explosion_elargie</code></div>
+      <h4>Explosion élargie</h4>
+      <p>La zone gagne 1 cellule sur ses extrémités cardinales.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.a.explosion_elargie.grande_explosion</code></div>
+      <h4>Grande explosion</h4>
+      <p>La zone gagne encore 1 cellule cardinale.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.a.explosion_elargie.eclats_brulants</code></div>
+      <h4>Éclats brûlants</h4>
+      <p>+2 dégâts à toutes les cibles touchées.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.mage.r5.a.comete_elfique</code></div>
+      <h4>Comète elfique</h4>
+      <p>+8 dégâts au centre et +2 portée.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.mage.r5.a.nova_elfique</code></div>
+      <h4>Nova elfique</h4>
+      <p>+3 dégâts à toutes les cibles et zone agrandie.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.mage.r2.b.braises_persistantes</code></div>
+      <h4>Braises persistantes</h4>
+      <p>Le terrain enflammé dure 1 tour supplémentaire.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.mage.r3.b.incendiaire</code></div>
+      <h4>Incendiaire</h4>
+      <p>Applique Brûlure : 2 dégâts pendant 2 tours.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.b.incendiaire.braises_longues</code></div>
+      <h4>Braises longues</h4>
+      <p>La Brûlure dure 1 tour supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.b.incendiaire.feu_mordant</code></div>
+      <h4>Feu mordant</h4>
+      <p>La Brûlure inflige +1 dégât par tour.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.mage.r3.b.souffle_ardent</code></div>
+      <h4>Souffle ardent</h4>
+      <p>Repousse les ennemis touchés de 1 case.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.b.souffle_ardent.souffle_puissant</code></div>
+      <h4>Souffle puissant</h4>
+      <p>+1 case de poussée.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.mage.r4.b.souffle_ardent.fracas_ardent</code></div>
+      <h4>Fracas ardent</h4>
+      <p>Une collision inflige 4 dégâts supplémentaires.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.mage.r5.b.incendie_sauvage</code></div>
+      <h4>Incendie sauvage</h4>
+      <p>Brûlure : 3 dégâts pendant 3 tours et terrain +1 tour.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.mage.r5.b.onde_explosive</code></div>
+      <h4>Onde explosive</h4>
+      <p>Poussée de 2 cases, 6 dégâts de collision et terrain +1 tour.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Soigneur</strong> — Soin sylvestre</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>elfe.soigneur.r1.base</code></div>
+      <h4>Soin sylvestre</h4>
+      <p>2 PA · Portée 5 · Rend 7 PV · Soi-même ou allié.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.soigneur.r2.a.seve_abondante</code></div>
+      <h4>Sève abondante</h4>
+      <p>+3 soins immédiats.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.soigneur.r3.a.sauveteuse</code></div>
+      <h4>Sauveteuse</h4>
+      <p>+5 soins si la cible possède moins de 50 % de ses PV.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.a.sauveteuse.miracle_mineur</code></div>
+      <h4>Miracle mineur</h4>
+      <p>+5 soins supplémentaires sous 35 % des PV.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.a.sauveteuse.racines_lointaines</code></div>
+      <h4>Racines lointaines</h4>
+      <p>+2 portée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.soigneur.r3.a.regeneratrice</code></div>
+      <h4>Régénératrice</h4>
+      <p>Rend 2 PV à la fin des 2 prochains tours.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.a.regeneratrice.seve_longue</code></div>
+      <h4>Sève longue</h4>
+      <p>La régénération dure 1 tour supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.a.regeneratrice.seve_riche</code></div>
+      <h4>Sève riche</h4>
+      <p>La régénération rend +1 PV par tour.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.soigneur.r5.a.miracle_sylvestre</code></div>
+      <h4>Miracle sylvestre</h4>
+      <p>+10 soins sous 35 % des PV et retire un effet de dégâts sur la durée.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.soigneur.r5.a.floraison</code></div>
+      <h4>Floraison</h4>
+      <p>Les alliés adjacents à la cible reçoivent 50 % du soin principal.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>elfe.soigneur.r2.b.ecorce_protectrice</code></div>
+      <h4>Écorce protectrice</h4>
+      <p>Ajoute 3 points de bouclier.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.soigneur.r3.b.bastion_naturel</code></div>
+      <h4>Bastion naturel</h4>
+      <p>Ajoute 3 points de bouclier supplémentaires.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.b.bastion_naturel.ecorce_epaisse</code></div>
+      <h4>Écorce épaisse</h4>
+      <p>Ajoute encore 3 points de bouclier.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.b.bastion_naturel.protection_partagee</code></div>
+      <h4>Protection partagée</h4>
+      <p>L’Elfe reçoit 3 points de bouclier lorsqu’elle protège un allié.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>elfe.soigneur.r3.b.garde_mobile</code></div>
+      <h4>Garde mobile</h4>
+      <p>La cible gagne 1 PM pendant son prochain tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.b.garde_mobile.elan_sylvestre</code></div>
+      <h4>Élan sylvestre</h4>
+      <p>Le bonus passe à +2 PM pour le prochain tour.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>elfe.soigneur.r4.b.garde_mobile.purification</code></div>
+      <h4>Purification</h4>
+      <p>Retire un Poison, Saignement, Brûlure ou ralentissement.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.soigneur.r5.b.ecorce_vivante</code></div>
+      <h4>Écorce vivante</h4>
+      <p>Ajoute 8 points de bouclier et l’Elfe en reçoit 4.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>elfe.soigneur.r5.b.elan_protecteur</code></div>
+      <h4>Élan protecteur</h4>
+      <p>La cible gagne +2 PM et 6 points de bouclier.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+    </section>
+    
+    <section class="character-section" id="mage"
+             style="--accent:#66c7ff;--border:#154b73;--panel:#0c2233;">
+      <header class="character-header">
+        <h2>Mage</h2>
+        <p>Spécialiste des zones, du terrain et du contrôle élémentaire.</p>
+      </header>
+      
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Pyromancie</strong> — Boule de feu</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>mage.pyromancie.r1.base</code></div>
+      <h4>Boule de feu</h4>
+      <p>Explosion de feu de zone · Valeurs de base à normaliser avant équilibrage final.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.pyromancie.r2.a.conflagration</code></div>
+      <h4>Conflagration</h4>
+      <p>+2 dégâts à toutes les cibles touchées.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.pyromancie.r3.a.noyau_instable</code></div>
+      <h4>Noyau instable</h4>
+      <p>+4 dégâts sur la cellule centrale.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.a.noyau_instable.detonation_intense</code></div>
+      <h4>Détonation intense</h4>
+      <p>+4 dégâts supplémentaires au centre.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.a.noyau_instable.projection_lointaine</code></div>
+      <h4>Projection lointaine</h4>
+      <p>+2 portée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.pyromancie.r3.a.maitre_des_explosions</code></div>
+      <h4>Maître des explosions</h4>
+      <p>La zone gagne 1 cellule sur ses extrémités cardinales.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.a.maitre_des_explosions.superficie_accrue</code></div>
+      <h4>Superficie accrue</h4>
+      <p>La zone gagne encore 1 cellule cardinale.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.a.maitre_des_explosions.chaleur_extreme</code></div>
+      <h4>Chaleur extrême</h4>
+      <p>+2 dégâts à toutes les cibles.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.pyromancie.r5.a.supernova</code></div>
+      <h4>Supernova</h4>
+      <p>+6 dégâts au centre, +3 dégâts de zone et zone agrandie.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.pyromancie.r5.a.bombardement</code></div>
+      <h4>Bombardement</h4>
+      <p>+4 portée et +4 dégâts à toutes les cibles.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.pyromancie.r2.b.brasier_durable</code></div>
+      <h4>Brasier durable</h4>
+      <p>Le terrain enflammé dure 1 tour supplémentaire.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.pyromancie.r3.b.incendiaire</code></div>
+      <h4>Incendiaire</h4>
+      <p>Applique Brûlure : 2 dégâts pendant 2 tours.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.b.incendiaire.feu_devorant</code></div>
+      <h4>Feu dévorant</h4>
+      <p>La Brûlure inflige +1 dégât par tour.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.b.incendiaire.braises_eternelles</code></div>
+      <h4>Braises éternelles</h4>
+      <p>La Brûlure dure 1 tour supplémentaire.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.pyromancie.r3.b.sol_ardent</code></div>
+      <h4>Sol ardent</h4>
+      <p>Les ennemis qui commencent leur tour sur le feu subissent +2 dégâts.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.b.sol_ardent.terrain_persistant</code></div>
+      <h4>Terrain persistant</h4>
+      <p>Le terrain dure 1 tour supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.pyromancie.r4.b.sol_ardent.fournaise</code></div>
+      <h4>Fournaise</h4>
+      <p>Les dégâts supplémentaires du terrain passent à +4.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.pyromancie.r5.b.enfer</code></div>
+      <h4>Enfer</h4>
+      <p>Brûlure : 3 dégâts pendant 3 tours et terrain +2 tours.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.pyromancie.r5.b.mer_de_flammes</code></div>
+      <h4>Mer de flammes</h4>
+      <p>Zone de terrain agrandie, durée +2 tours et +3 dégâts au début du tour.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Cryomancie</strong> — Mur de glace</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>mage.cryomancie.r1.base</code></div>
+      <h4>Mur de glace</h4>
+      <p>Portée 6 · Crée une zone de glace · Aucun dégât direct de base.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.cryomancie.r2.a.mur_etendu</code></div>
+      <h4>Mur étendu</h4>
+      <p>Ajoute 1 cellule à chaque extrémité du mur.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.cryomancie.r3.a.glace_tenace</code></div>
+      <h4>Glace tenace</h4>
+      <p>La glace dure 1 tour supplémentaire.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.a.glace_tenace.mur_durable</code></div>
+      <h4>Mur durable</h4>
+      <p>La glace dure encore 1 tour supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.a.glace_tenace.projection_glaciale</code></div>
+      <h4>Projection glaciale</h4>
+      <p>+2 portée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.cryomancie.r3.a.cristallomancie</code></div>
+      <h4>Cristallomancie</h4>
+      <p>Les alliés présents sur la glace reçoivent 3 boucliers.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.a.cristallomancie.glace_miroir</code></div>
+      <h4>Glace miroir</h4>
+      <p>Le bouclier accordé passe à 6.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.a.cristallomancie.passage_sur</code></div>
+      <h4>Passage sûr</h4>
+      <p>Les alliés présents sur la glace gagnent 1 PM au prochain tour.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.cryomancie.r5.a.forteresse_gelee</code></div>
+      <h4>Forteresse gelée</h4>
+      <p>Ajoute 4 cellules au total et +2 tours de durée.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.cryomancie.r5.a.sanctuaire_de_glace</code></div>
+      <h4>Sanctuaire de glace</h4>
+      <p>Les alliés sur la glace reçoivent 8 boucliers et +1 PM.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.cryomancie.r2.b.gel_mordant</code></div>
+      <h4>Gel mordant</h4>
+      <p>Inflige 3 dégâts aux ennemis présents lors de la création.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.cryomancie.r3.b.geolier_du_froid</code></div>
+      <h4>Geôlier du froid</h4>
+      <p>Les ennemis touchés perdent 1 PM au prochain tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.b.geolier_du_froid.gel_profond</code></div>
+      <h4>Gel profond</h4>
+      <p>La perte passe à −2 PM.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.b.geolier_du_froid.froid_tranchant</code></div>
+      <h4>Froid tranchant</h4>
+      <p>+2 dégâts lors de la création.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.cryomancie.r3.b.cristallisation</code></div>
+      <h4>Cristallisation</h4>
+      <p>Les ennemis touchés subissent +2 dégâts sur la prochaine attaque reçue.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.b.cristallisation.fragilite_glacee</code></div>
+      <h4>Fragilité glacée</h4>
+      <p>Le bonus s’applique aux 2 prochaines attaques.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.cryomancie.r4.b.cristallisation.point_de_rupture</code></div>
+      <h4>Point de rupture</h4>
+      <p>Le bonus de dégâts reçus passe à +4.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.cryomancie.r5.b.hiver_brutal</code></div>
+      <h4>Hiver brutal</h4>
+      <p>7 dégâts lors de la création et −2 PM.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.cryomancie.r5.b.prison_cristalline</code></div>
+      <h4>Prison cristalline</h4>
+      <p>5 dégâts et +4 dégâts reçus sur les 2 prochaines attaques.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Foudromancie</strong> — Tempête orageuse</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>mage.foudromancie.r1.base</code></div>
+      <h4>Tempête orageuse</h4>
+      <p>3 PA · Portée 5 · Zone 3×3 · 7 dégâts de foudre.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.foudromancie.r2.a.surcharge</code></div>
+      <h4>Surcharge</h4>
+      <p>+2 dégâts à toutes les cibles.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.foudromancie.r3.a.cur_de_lorage</code></div>
+      <h4>Cœur de l’orage</h4>
+      <p>+4 dégâts sur la cellule centrale.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.a.cur_de_lorage.impact_central</code></div>
+      <h4>Impact central</h4>
+      <p>+3 dégâts supplémentaires au centre.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.a.cur_de_lorage.orage_lointain</code></div>
+      <h4>Orage lointain</h4>
+      <p>+2 portée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.foudromancie.r3.a.front_orageux</code></div>
+      <h4>Front orageux</h4>
+      <p>La zone gagne 1 cellule sur ses extrémités cardinales.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.a.front_orageux.supercellule_mineure</code></div>
+      <h4>Supercellule mineure</h4>
+      <p>La zone gagne encore 1 cellule cardinale.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.a.front_orageux.haute_tension</code></div>
+      <h4>Haute tension</h4>
+      <p>+2 dégâts à toutes les cibles.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.foudromancie.r5.a.cur_de_tonnerre</code></div>
+      <h4>Cœur de tonnerre</h4>
+      <p>+8 dégâts au centre et +3 dégâts à toutes les cibles.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.foudromancie.r5.a.supercellule</code></div>
+      <h4>Supercellule</h4>
+      <p>Zone agrandie, +2 portée et +3 dégâts de zone.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.foudromancie.r2.b.champ_statique</code></div>
+      <h4>Champ statique</h4>
+      <p>Les ennemis touchés perdent 1 PM au prochain tour.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.foudromancie.r3.b.paralysie</code></div>
+      <h4>Paralysie</h4>
+      <p>La perte de PM s’applique pendant 2 tours.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.b.paralysie.entrave_majeure</code></div>
+      <h4>Entrave majeure</h4>
+      <p>La perte passe à −2 PM pour le prochain tour.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.b.paralysie.electricite_residuelle</code></div>
+      <h4>Électricité résiduelle</h4>
+      <p>Inflige 2 dégâts à la fin du prochain tour.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.foudromancie.r3.b.conductivite</code></div>
+      <h4>Conductivité</h4>
+      <p>Chaque cible subit +3 dégâts sur la prochaine attaque reçue.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.b.conductivite.charge_persistante</code></div>
+      <h4>Charge persistante</h4>
+      <p>Le bonus s’applique aux 2 prochaines attaques.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.foudromancie.r4.b.conductivite.arc_secondaire</code></div>
+      <h4>Arc secondaire</h4>
+      <p>La première attaque bonus inflige aussi 3 dégâts à un ennemi adjacent.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.foudromancie.r5.b.paralysie_complete</code></div>
+      <h4>Paralysie complète</h4>
+      <p>−2 PM au prochain tour et 3 dégâts différés.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.foudromancie.r5.b.orage_conducteur</code></div>
+      <h4>Orage conducteur</h4>
+      <p>+4 dégâts reçus sur les 2 prochaines attaques et arc secondaire de 3 dégâts.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Géomancie</strong> — Onde sismique</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>mage.geomancie.r1.base</code></div>
+      <h4>Onde sismique</h4>
+      <p>2 PA · Portée 3 en ligne · 6 dégâts de terre · Pousse de 1 case.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.geomancie.r2.a.onde_renforcee</code></div>
+      <h4>Onde renforcée</h4>
+      <p>+2 dégâts à toutes les cibles de la ligne.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.geomancie.r3.a.fracture</code></div>
+      <h4>Fracture</h4>
+      <p>Les cibles subissent +2 dégâts sur les 2 prochaines attaques.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.a.fracture.breche_profonde</code></div>
+      <h4>Brèche profonde</h4>
+      <p>Le bonus de dégâts reçus passe à +4.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.a.fracture.fracture_durable</code></div>
+      <h4>Fracture durable</h4>
+      <p>Le bonus s’applique aux 3 prochaines attaques.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.geomancie.r3.a.faille_prolongee</code></div>
+      <h4>Faille prolongée</h4>
+      <p>+2 portée.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.a.faille_prolongee.portee_tellurique</code></div>
+      <h4>Portée tellurique</h4>
+      <p>+2 portée supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.a.faille_prolongee.secousse_puissante</code></div>
+      <h4>Secousse puissante</h4>
+      <p>+2 dégâts supplémentaires.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.geomancie.r5.a.cataclysme</code></div>
+      <h4>Cataclysme</h4>
+      <p>+5 dégâts de ligne et +4 dégâts reçus sur les 2 prochaines attaques.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.geomancie.r5.a.faille_majeure</code></div>
+      <h4>Faille majeure</h4>
+      <p>+4 portée totale supplémentaire et +3 dégâts.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>mage.geomancie.r2.b.recul_tectonique</code></div>
+      <h4>Recul tectonique</h4>
+      <p>+1 case de poussée.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.geomancie.r3.b.fracasseur</code></div>
+      <h4>Fracasseur</h4>
+      <p>Une collision inflige 4 dégâts supplémentaires.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.b.fracasseur.ecrasement</code></div>
+      <h4>Écrasement</h4>
+      <p>+4 dégâts de collision supplémentaires.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.b.fracasseur.projection</code></div>
+      <h4>Projection</h4>
+      <p>+1 case de poussée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>mage.geomancie.r3.b.eboulement</code></div>
+      <h4>Éboulement</h4>
+      <p>Les cibles touchées perdent 1 PM au prochain tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.b.eboulement.terrain_instable</code></div>
+      <h4>Terrain instable</h4>
+      <p>La perte passe à −2 PM.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>mage.geomancie.r4.b.eboulement.secousse</code></div>
+      <h4>Secousse</h4>
+      <p>+2 dégâts directs.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.geomancie.r5.b.impact_tectonique</code></div>
+      <h4>Impact tectonique</h4>
+      <p>Poussée totale de 3 cases et 8 dégâts de collision.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>mage.geomancie.r5.b.glissement_de_terrain</code></div>
+      <h4>Glissement de terrain</h4>
+      <p>Poussée de 2 cases, −2 PM et +3 dégâts.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+    </section>
+    
+    <section class="character-section" id="guerrier"
+             style="--accent:#ff835d;--border:#7e2d1b;--panel:#32130d;">
+      <header class="character-header">
+        <h2>Guerrier</h2>
+        <p>Combattant de première ligne : dégâts, charge, contrôle et protection.</p>
+      </header>
+      
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Brutalité</strong> — Frappe lourde</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>guerrier.brutalite.r1.base</code></div>
+      <h4>Frappe lourde</h4>
+      <p>2 PA · Portée 1 · 8 dégâts physiques.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.brutalite.r2.a.coup_brutal</code></div>
+      <h4>Coup brutal</h4>
+      <p>+3 dégâts directs.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.brutalite.r3.a.executeur</code></div>
+      <h4>Exécuteur</h4>
+      <p>+4 dégâts contre une cible sous 40 % de ses PV.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.a.executeur.coup_fatal</code></div>
+      <h4>Coup fatal</h4>
+      <p>Le seuil d’exécution passe à 50 % des PV.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.a.executeur.allonge_martiale</code></div>
+      <h4>Allonge martiale</h4>
+      <p>+1 portée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.brutalite.r3.a.brise_armure</code></div>
+      <h4>Brise-armure</h4>
+      <p>La cible subit +2 dégâts physiques sur les 2 prochaines attaques.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.a.brise_armure.armure_fendue</code></div>
+      <h4>Armure fendue</h4>
+      <p>Le bonus de dégâts reçus passe à +4.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.a.brise_armure.frappe_repoussante</code></div>
+      <h4>Frappe repoussante</h4>
+      <p>Repousse la cible de 1 case.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.brutalite.r5.a.decapitation</code></div>
+      <h4>Décapitation</h4>
+      <p>+8 dégâts contre une cible sous 35 % de ses PV.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.brutalite.r5.a.armure_pulverisee</code></div>
+      <h4>Armure pulvérisée</h4>
+      <p>+4 dégâts physiques reçus sur les 3 prochaines attaques.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.brutalite.r2.b.entaille_profonde</code></div>
+      <h4>Entaille profonde</h4>
+      <p>Applique Saignement : 2 dégâts pendant 2 tours.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.brutalite.r3.b.boucher</code></div>
+      <h4>Boucher</h4>
+      <p>Le Saignement inflige +1 dégât par tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.b.boucher.hemorragie</code></div>
+      <h4>Hémorragie</h4>
+      <p>Le Saignement inflige encore +1 dégât par tour.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.b.boucher.coup_appuye</code></div>
+      <h4>Coup appuyé</h4>
+      <p>+2 dégâts directs.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.brutalite.r3.b.plaie_ouverte</code></div>
+      <h4>Plaie ouverte</h4>
+      <p>Le Saignement dure 1 tour supplémentaire.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.b.plaie_ouverte.plaie_beante</code></div>
+      <h4>Plaie béante</h4>
+      <p>Le Saignement dure encore 1 tour supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.brutalite.r4.b.plaie_ouverte.tendon_sectionne</code></div>
+      <h4>Tendon sectionné</h4>
+      <p>La cible perd 1 PM au prochain tour.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.brutalite.r5.b.hemorragie_brutale</code></div>
+      <h4>Hémorragie brutale</h4>
+      <p>Saignement : 3 dégâts pendant 3 tours.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.brutalite.r5.b.plaie_incapacitante</code></div>
+      <h4>Plaie incapacitante</h4>
+      <p>Saignement : 2 dégâts pendant 4 tours et −1 PM.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Assaut</strong> — Charge</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>guerrier.assaut.r1.base</code></div>
+      <h4>Charge</h4>
+      <p>2 PA · Portée 3 en ligne · Se déplace au contact et inflige 5 dégâts.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.assaut.r2.a.elan_prolonge</code></div>
+      <h4>Élan prolongé</h4>
+      <p>+1 portée.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.assaut.r3.a.intercepteur</code></div>
+      <h4>Intercepteur</h4>
+      <p>La Charge peut cibler une case libre et servir uniquement de déplacement.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.a.intercepteur.course_longue</code></div>
+      <h4>Course longue</h4>
+      <p>+1 portée supplémentaire.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.a.intercepteur.repositionnement</code></div>
+      <h4>Repositionnement</h4>
+      <p>Le Guerrier gagne 1 PM à son prochain tour.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.assaut.r3.a.armure_delan</code></div>
+      <h4>Armure d’élan</h4>
+      <p>Après une Charge réussie, le Guerrier gagne 3 boucliers.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.a.armure_delan.avant_garde</code></div>
+      <h4>Avant-garde</h4>
+      <p>Le bouclier gagné passe à 6.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.a.armure_delan.protection_mobile</code></div>
+      <h4>Protection mobile</h4>
+      <p>Un allié adjacent au point d’arrivée reçoit 3 boucliers.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.assaut.r5.a.charge_tactique</code></div>
+      <h4>Charge tactique</h4>
+      <p>Peut cibler une case libre, +2 portée et +1 PM au prochain tour.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.assaut.r5.a.avant_garde_supreme</code></div>
+      <h4>Avant-garde suprême</h4>
+      <p>+2 portée et 7 boucliers après la Charge.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.assaut.r2.b.impact_puissant</code></div>
+      <h4>Impact puissant</h4>
+      <p>+3 dégâts à la cible atteinte.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.assaut.r3.b.belier</code></div>
+      <h4>Bélier</h4>
+      <p>Repousse la cible de 1 case.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.b.belier.projection</code></div>
+      <h4>Projection</h4>
+      <p>+1 case de poussée.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.b.belier.impact_lourd</code></div>
+      <h4>Impact lourd</h4>
+      <p>+2 dégâts directs.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.assaut.r3.b.percuteur</code></div>
+      <h4>Percuteur</h4>
+      <p>Une collision inflige 4 dégâts supplémentaires.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.b.percuteur.collision_brutale</code></div>
+      <h4>Collision brutale</h4>
+      <p>+4 dégâts de collision supplémentaires.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.assaut.r4.b.percuteur.plaie_dimpact</code></div>
+      <h4>Plaie d’impact</h4>
+      <p>Applique Saignement : 2 dégâts pendant 2 tours.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.assaut.r5.b.belier_de_guerre</code></div>
+      <h4>Bélier de guerre</h4>
+      <p>Poussée totale de 3 cases et +3 dégâts directs.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.assaut.r5.b.impact_devastateur</code></div>
+      <h4>Impact dévastateur</h4>
+      <p>+6 dégâts directs et 8 dégâts de collision.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Furie</strong> — Tourbillon</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>guerrier.furie.r1.base</code></div>
+      <h4>Tourbillon</h4>
+      <p>3 PA · Frappe tous les ennemis adjacents pour 5 dégâts.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.furie.r2.a.lames_lourdes</code></div>
+      <h4>Lames lourdes</h4>
+      <p>+2 dégâts à toutes les cibles.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.furie.r3.a.ravageur</code></div>
+      <h4>Ravageur</h4>
+      <p>+2 dégâts supplémentaires à toutes les cibles.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.a.ravageur.tourbillon_renforce</code></div>
+      <h4>Tourbillon renforcé</h4>
+      <p>+2 dégâts supplémentaires.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.a.ravageur.cercle_elargi</code></div>
+      <h4>Cercle élargi</h4>
+      <p>Ajoute les cases situées à 2 cases cardinales du Guerrier.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.furie.r3.a.faucheur</code></div>
+      <h4>Faucheur</h4>
+      <p>Applique Saignement : 2 dégâts pendant 2 tours.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.a.faucheur.lames_dentelees</code></div>
+      <h4>Lames dentelées</h4>
+      <p>Le Saignement inflige +1 dégât par tour.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.a.faucheur.moisson_longue</code></div>
+      <h4>Moisson longue</h4>
+      <p>Le Saignement dure 1 tour supplémentaire.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.furie.r5.a.tempete_dacier</code></div>
+      <h4>Tempête d’acier</h4>
+      <p>+5 dégâts à toutes les cibles et zone élargie.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.furie.r5.a.moissonneur</code></div>
+      <h4>Moissonneur</h4>
+      <p>Saignement : 3 dégâts pendant 3 tours.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.furie.r2.b.cercle_de_force</code></div>
+      <h4>Cercle de force</h4>
+      <p>Repousse chaque ennemi touché de 1 case.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.furie.r3.b.controleur</code></div>
+      <h4>Contrôleur</h4>
+      <p>Les ennemis touchés perdent 1 PM au prochain tour.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.b.controleur.fauchage</code></div>
+      <h4>Fauchage</h4>
+      <p>La perte passe à −2 PM.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.b.controleur.balayage_lourd</code></div>
+      <h4>Balayage lourd</h4>
+      <p>+2 dégâts directs.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.furie.r3.b.projection_circulaire</code></div>
+      <h4>Projection circulaire</h4>
+      <p>+1 case de poussée.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.b.projection_circulaire.onde_circulaire</code></div>
+      <h4>Onde circulaire</h4>
+      <p>+1 case de poussée.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.furie.r4.b.projection_circulaire.fracas_circulaire</code></div>
+      <h4>Fracas circulaire</h4>
+      <p>Une collision inflige 4 dégâts supplémentaires.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.furie.r5.b.balayage_total</code></div>
+      <h4>Balayage total</h4>
+      <p>−2 PM et +3 dégâts à toutes les cibles.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.furie.r5.b.onde_de_choc</code></div>
+      <h4>Onde de choc</h4>
+      <p>Poussée totale de 3 cases et 6 dégâts de collision.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+        <details class="discipline" open>
+          <summary>
+            <span><strong>Rempart</strong> — Garde</span>
+            <span class="path-count">16 configurations finales</span>
+          </summary>
+          <div class="discipline-body">
+            <div class="base-wrap">
+    <article class="node rank-1 base-node">
+      <div class="node-head"><span class="rank-label">R1 · 0 XP</span><code>guerrier.rempart.r1.base</code></div>
+      <h4>Garde</h4>
+      <p>2 PA · Portée 1 · Donne 6 boucliers à soi-même ou à un allié.</p>
+    </article>
+    </div>
+            <div class="split-label">Rang 2 : choisir définitivement une branche principale</div>
+            <div class="branches">
+            <section class="branch">
+              <div class="branch-title">Branche A</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.rempart.r2.a.bouclier_renforce</code></div>
+      <h4>Bouclier renforcé</h4>
+      <p>+3 points de bouclier.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.rempart.r3.a.bastion</code></div>
+      <h4>Bastion</h4>
+      <p>Ajoute 4 boucliers supplémentaires.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.a.bastion.fortification</code></div>
+      <h4>Fortification</h4>
+      <p>Ajoute encore 3 boucliers.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.a.bastion.vigilance</code></div>
+      <h4>Vigilance</h4>
+      <p>+2 portée.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.rempart.r3.a.protection_partagee</code></div>
+      <h4>Protection partagée</h4>
+      <p>Le Guerrier reçoit 3 boucliers lorsqu’il protège un allié.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.a.protection_partagee.serment</code></div>
+      <h4>Serment</h4>
+      <p>Le bouclier reçu par le Guerrier passe à 6.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.a.protection_partagee.soutien_durable</code></div>
+      <h4>Soutien durable</h4>
+      <p>L’allié protégé récupère 2 PV pendant 2 tours.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.rempart.r5.a.forteresse_vivante</code></div>
+      <h4>Forteresse vivante</h4>
+      <p>Ajoute 10 boucliers à la cible.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.rempart.r5.a.serment_du_protecteur</code></div>
+      <h4>Serment du protecteur</h4>
+      <p>Le Guerrier et l’allié ciblé reçoivent chacun 7 boucliers.</p>
+    </article>
+    </div>
+            </section>
+            
+            <section class="branch">
+              <div class="branch-title">Branche B</div>
+              
+    <article class="node rank-2 foundation">
+      <div class="node-head"><span class="rank-label">R2 · 3 XP</span><code>guerrier.rempart.r2.b.garde_mobile</code></div>
+      <h4>Garde mobile</h4>
+      <p>La cible gagne 1 PM pendant son prochain tour.</p>
+    </article>
+    
+              <div class="connector vertical"></div>
+              <div class="r3-grid">
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.rempart.r3.b.ordre_dassaut</code></div>
+      <h4>Ordre d’assaut</h4>
+      <p>La prochaine attaque de la cible inflige +2 dégâts.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.b.ordre_dassaut.commandement</code></div>
+      <h4>Commandement</h4>
+      <p>Le bonus de la prochaine attaque passe à +4 dégâts.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.b.ordre_dassaut.marche_forcee</code></div>
+      <h4>Marche forcée</h4>
+      <p>Le bonus de mobilité passe à +2 PM.</p>
+    </article>
+    </div>
+                </div>
+                
+                <div class="subpath">
+                  
+    <article class="node rank-3 subspec">
+      <div class="node-head"><span class="rank-label">R3 · 7 XP</span><code>guerrier.rempart.r3.b.purification_martiale</code></div>
+      <h4>Purification martiale</h4>
+      <p>Retire un Poison, Saignement, Brûlure ou ralentissement.</p>
+    </article>
+    
+                  <div class="connector vertical"></div>
+                  <div class="r4-grid">
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.b.purification_martiale.nettoyage_complet</code></div>
+      <h4>Nettoyage complet</h4>
+      <p>Retire jusqu’à 2 effets négatifs simples.</p>
+    </article>
+    
+    <article class="node rank-4 refinement">
+      <div class="node-head"><span class="rank-label">R4 · 12 XP</span><code>guerrier.rempart.r4.b.purification_martiale.garde_purifiante</code></div>
+      <h4>Garde purifiante</h4>
+      <p>Ajoute aussi 3 boucliers.</p>
+    </article>
+    </div>
+                </div>
+                </div>
+              <div class="capstone-label">Après n’importe quel choix R4 de cette branche :</div>
+              <div class="r5-grid">
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.rempart.r5.b.ordre_de_guerre</code></div>
+      <h4>Ordre de guerre</h4>
+      <p>+2 PM et +4 dégâts sur la prochaine attaque.</p>
+    </article>
+    
+    <article class="node rank-5 capstone">
+      <div class="node-head"><span class="rank-label">R5 · 18 XP</span><code>guerrier.rempart.r5.b.protection_absolue</code></div>
+      <h4>Protection absolue</h4>
+      <p>Ajoute 6 boucliers et retire tous les effets négatifs simples.</p>
+    </article>
+    </div>
+            </section>
+            </div>
+          </div>
+        </details>
+        
+    </section>
+    
+
+  <p class="footer-note">
+    Spécification de conception : les identifiants affichés dans chaque nœud sont stables et repris dans le fichier JSON joint.
+    Les valeurs numériques restent des valeurs de prototype à tester en jeu.
+  </p>
+</main>
+</body>
+</html>

@@ -1,6 +1,8 @@
 class_name RecraftSpellSlotView
 extends Button
 
+const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+
 enum VisualState {
 	NORMAL,
 	HOVER,
@@ -12,6 +14,7 @@ enum VisualState {
 }
 
 @onready var background: ColorRect = %Background
+@onready var visual_area: Control = %VisualArea
 @onready var spell_icon: TextureRect = %SpellIcon
 @onready var frame: TextureRect = %Frame
 @onready var selection_overlay: Panel = %SelectionOverlay
@@ -21,6 +24,8 @@ enum VisualState {
 @onready var cooldown_label: Label = %CooldownLabel
 @onready var cost_icon: Label = %CostIcon
 @onready var cost_label: Label = %CostLabel
+@onready var cost_badge: Panel = %CostBadge
+@onready var energy_cost_badge: Panel = %EnergyCostBadge
 @onready var energy_cost_label: Label = %EnergyCostLabel
 @onready var shortcut_label: Label = %ShortcutLabel
 @onready var lock_icon: Label = %LockIcon
@@ -39,8 +44,65 @@ func _ready() -> void:
 	focus_entered.connect(_refresh_visuals)
 	focus_exited.connect(_refresh_visuals)
 	resized.connect(_update_pivot)
+	apply_layout(1.0)
 	_update_pivot()
 	_refresh_visuals()
+
+
+func apply_layout(scale_factor: float) -> void:
+	custom_minimum_size = Vector2(
+		METRICS.scaled(METRICS.SPELL_VISUAL_SIZE, scale_factor),
+		METRICS.scaled(METRICS.SPELL_SLOT_HEIGHT, scale_factor)
+	)
+	var shortcut_height := METRICS.scaled(METRICS.SPELL_SHORTCUT_HEIGHT, scale_factor)
+	var icon_inset := roundf(
+		(
+			METRICS.scaled(METRICS.SPELL_VISUAL_SIZE, scale_factor)
+			- METRICS.scaled(METRICS.SPELL_ICON_SIZE, scale_factor)
+		) * 0.5
+	)
+	shortcut_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	shortcut_label.offset_bottom = shortcut_height
+	visual_area.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	visual_area.offset_top = shortcut_height
+	for icon_control in [background, spell_icon, fallback_label]:
+		icon_control.offset_left = icon_inset
+		icon_control.offset_top = icon_inset
+		icon_control.offset_right = -icon_inset
+		icon_control.offset_bottom = -icon_inset
+	var cost_size := METRICS.scaled_vector(METRICS.SPELL_COST_BADGE_SIZE, scale_factor)
+	cost_badge.offset_left = -cost_size.x
+	cost_badge.offset_top = -cost_size.y
+	var energy_size := METRICS.scaled_vector(
+		METRICS.SPELL_ENERGY_BADGE_SIZE, scale_factor
+	)
+	energy_cost_badge.offset_top = -energy_size.y
+	energy_cost_badge.offset_right = energy_size.x
+	shortcut_label.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(METRICS.SHORTCUT_FONT_SIZE, scale_factor)
+	)
+	cost_label.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(METRICS.COST_FONT_SIZE, scale_factor)
+	)
+	energy_cost_label.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, scale_factor)
+	)
+	cost_icon.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(8, scale_factor)
+	)
+	imprint_label.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, scale_factor)
+	)
+	fallback_label.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(24, scale_factor)
+	)
+	cooldown_label.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(22, scale_factor)
+	)
+	lock_icon.add_theme_font_size_override(
+		"font_size", METRICS.scaled_font(20, scale_factor)
+	)
+	_update_pivot()
 
 
 func configure(
@@ -61,10 +123,11 @@ func configure(
 	cost_label.text = str(maxi(ap_cost, 0))
 	var energy_abbreviation := energy_name.left(1).to_upper()
 	energy_cost_label.text = (
-		"%d %s" % [int(energy_cost), energy_abbreviation]
+		"%d%s" % [int(energy_cost), energy_abbreviation]
 		if energy_cost > 0.0
 		else ""
 	)
+	energy_cost_badge.visible = energy_cost > 0.0
 	shortcut_label.text = shortcut
 	imprint_label.visible = imprinted
 	tooltip_text = ""

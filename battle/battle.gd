@@ -71,6 +71,7 @@ var action_bar: CanvasLayer
 var inspect_panel: CanvasLayer
 var player_combat_log: CanvasLayer
 var keyword_tooltip_layer: CanvasLayer
+var _uses_persistent_action_bar := false
 
 # --- Fin de combat ---
 var _battle_over: bool = false
@@ -329,20 +330,20 @@ func _rect_in_parent(source: Node2D, rect: Rect2, target_parent: Node2D) -> Rect
 	return Rect2(minimum, maximum - minimum)
 
 func _setup_ui() -> void:
-	if action_bar_scene != null:
-		action_bar = action_bar_scene.instantiate() as CanvasLayer
-	else:
-		action_bar = CanvasLayer.new()
-		action_bar.set_script(load("res://ui/action_bar.gd"))
+	action_bar = GameManager.bind_combat_context(self)
+	_uses_persistent_action_bar = action_bar != null
+	if not _uses_persistent_action_bar:
+		if action_bar_scene != null:
+			action_bar = action_bar_scene.instantiate() as CanvasLayer
+		else:
+			action_bar = CanvasLayer.new()
+			action_bar.set_script(load("res://ui/action_bar.gd"))
 	if action_bar == null:
 		push_error("La scene de HUD doit avoir un CanvasLayer pour racine.")
 		return
-	add_child(action_bar)
-	action_bar.move_pressed.connect(_on_move_pressed)
-	action_bar.attack_pressed.connect(_on_attack_pressed)
-	action_bar.spell_pressed.connect(_on_spell_pressed)
-	action_bar.awakening_pressed.connect(_on_awakening_pressed)
-	action_bar.end_turn_pressed.connect(_on_end_turn_pressed)
+	if not _uses_persistent_action_bar:
+		add_child(action_bar)
+		_connect_local_action_bar_signals()
 
 	inspect_panel = CanvasLayer.new()
 	inspect_panel.set_script(load("res://ui/inspect_panel.gd"))
@@ -355,6 +356,19 @@ func _setup_ui() -> void:
 	keyword_tooltip_layer = CanvasLayer.new()
 	keyword_tooltip_layer.set_script(load("res://ui/keyword_tooltip_layer.gd"))
 	add_child(keyword_tooltip_layer)
+
+
+func _connect_local_action_bar_signals() -> void:
+	_connect_action_bar_signal(action_bar.move_pressed, _on_move_pressed)
+	_connect_action_bar_signal(action_bar.attack_pressed, _on_attack_pressed)
+	_connect_action_bar_signal(action_bar.spell_pressed, _on_spell_pressed)
+	_connect_action_bar_signal(action_bar.awakening_pressed, _on_awakening_pressed)
+	_connect_action_bar_signal(action_bar.end_turn_pressed, _on_end_turn_pressed)
+
+
+func _connect_action_bar_signal(action_signal: Signal, callback: Callable) -> void:
+	if not action_signal.is_connected(callback):
+		action_signal.connect(callback)
 
 func _setup_state() -> void:
 	turn_state = TurnState.new()
@@ -526,6 +540,12 @@ func _on_turn_started(unit: Unit) -> void:
 		turn_state.begin_player_turn()
 		action_bar.set_player_controls_enabled(true)
 		action_bar.set_active_mode("")
+
+
+func get_active_unit():
+	if turn_queue == null:
+		return null
+	return turn_queue.get_current_unit()
 
 
 func _cancel_action_selection_for_active_unit() -> void:
@@ -825,6 +845,9 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 
 
 func _exit_tree() -> void:
+	if _uses_persistent_action_bar:
+		GameManager.unbind_combat_context(self)
+	_uses_persistent_action_bar = false
 	_spell_resolution_pending = false
 	if is_instance_valid(_spell_impact_scheduler):
 		_spell_impact_scheduler.cancel_all()

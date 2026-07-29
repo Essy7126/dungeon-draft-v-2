@@ -1,6 +1,8 @@
 class_name RecraftPrimaryButtonView
 extends Button
 
+const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+
 @onready var background: TextureRect = %Background
 @onready var label: Label = %Label
 @onready var focus_overlay: Panel = %FocusOverlay
@@ -10,6 +12,8 @@ var _hovered := false
 
 
 func _ready() -> void:
+	if custom_minimum_size == Vector2.ZERO:
+		apply_layout(METRICS.ACTION_BUTTON_SIZE, METRICS.ACTION_BUTTON_FONT_SIZE)
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	button_down.connect(_refresh_visuals)
@@ -21,9 +25,18 @@ func _ready() -> void:
 	_refresh_visuals()
 
 
+func apply_layout(button_size: Vector2, font_size: int) -> void:
+	custom_minimum_size = button_size
+	set_text_size(font_size)
+
+
 func set_label(text: String) -> void:
 	label.text = text
 	accessibility_name = text.replace("\n", " ")
+
+
+func set_text_size(font_size: int) -> void:
+	label.add_theme_font_size_override("font_size", font_size)
 
 
 func set_active(active: bool) -> void:
