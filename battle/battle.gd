@@ -40,6 +40,11 @@ extends Node2D
 ## classiques (WALL n'y est marque qu'a la main, le reste doit rester NORMAL).
 @export var terrain_unpainted_defaults_to_wall := false
 
+## Scene de HUD optionnelle, strictement visuelle. Quand elle est vide, le
+## HUD historique ui/action_bar.gd est construit exactement comme avant.
+## Une salle peut ainsi choisir une presentation sans dupliquer le combat.
+@export var action_bar_scene: PackedScene = null
+
 # --- Logique ---
 var grid: GridData
 var pathfinder: Pathfinder
@@ -324,8 +329,14 @@ func _rect_in_parent(source: Node2D, rect: Rect2, target_parent: Node2D) -> Rect
 	return Rect2(minimum, maximum - minimum)
 
 func _setup_ui() -> void:
-	action_bar = CanvasLayer.new()
-	action_bar.set_script(load("res://ui/action_bar.gd"))
+	if action_bar_scene != null:
+		action_bar = action_bar_scene.instantiate() as CanvasLayer
+	else:
+		action_bar = CanvasLayer.new()
+		action_bar.set_script(load("res://ui/action_bar.gd"))
+	if action_bar == null:
+		push_error("La scene de HUD doit avoir un CanvasLayer pour racine.")
+		return
 	add_child(action_bar)
 	action_bar.move_pressed.connect(_on_move_pressed)
 	action_bar.attack_pressed.connect(_on_attack_pressed)

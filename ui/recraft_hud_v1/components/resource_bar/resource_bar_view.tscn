@@ -1,0 +1,111 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/resource_bar_frame.png" id="2_frame"]
+
+[node name="ResourceBarView" type="Control"]
+custom_minimum_size = Vector2(138, 47)
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Trough" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 15.0
+offset_top = 20.0
+offset_right = 123.0
+offset_bottom = 31.0
+mouse_filter = 2
+color = Color(0.018, 0.025, 0.035, 0.96)
+
+[node name="DelayedValueFill" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 15.0
+offset_top = 20.0
+offset_right = 15.0
+offset_bottom = 31.0
+mouse_filter = 2
+color = Color(0.95, 0.5, 0.3, 0.75)
+
+[node name="MainFill" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 15.0
+offset_top = 20.0
+offset_right = 15.0
+offset_bottom = 31.0
+mouse_filter = 2
+color = Color(0.75, 0.16, 0.16, 0.95)
+
+[node name="CostPreviewFill" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 15.0
+offset_top = 20.0
+offset_right = 15.0
+offset_bottom = 31.0
+mouse_filter = 2
+color = Color(0.04, 0.045, 0.055, 0.72)
+
+[node name="GainPreviewFill" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 15.0
+offset_top = 20.0
+offset_right = 15.0
+offset_bottom = 31.0
+mouse_filter = 2
+color = Color(0.4, 1, 0.66, 0.64)
+
+[node name="Frame" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ResourceIcon" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 16.0
+offset_right = 31.0
+offset_bottom = 39.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ResourceIconFallback" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 15.0
+offset_right = 34.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.96, 0.91, 0.76, 1)
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ValueLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_right = -10.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.86, 1)
+theme_override_font_sizes/font_size = 11
+text = "0 / 0"
+horizontal_alignment = 1
+vertical_alignment = 1

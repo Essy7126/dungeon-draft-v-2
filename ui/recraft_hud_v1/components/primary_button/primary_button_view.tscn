@@ -1,0 +1,72 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://ui/recraft_hud_v1/components/primary_button/primary_button_view.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/primary_button_base.png" id="2_base"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_button"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+bg_color = Color(0.1, 0.1, 0.08, 0.08)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.95, 0.75, 0.3, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="PrimaryButtonView" type="Button"]
+custom_minimum_size = Vector2(90, 48)
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_button")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_button")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_button")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_button")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_button")
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_base")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FocusOverlay" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 4.0
+offset_right = -3.0
+offset_bottom = -4.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_focus")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -6.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
+theme_override_font_sizes/font_size = 12
+text = "Action"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
