@@ -1,0 +1,217 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://ui/menus/dark_pause_menu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/themes/dark_pause_menu_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" path="res://asset/ui/dark_menu/generated/main_frame.png" id="3_frame"]
+[ext_resource type="Texture2D" path="res://asset/ui/dark_menu/generated/title_header.png" id="4_header"]
+[ext_resource type="Texture2D" path="res://asset/ui/dark_menu/generated/close_button.png" id="5_close"]
+[ext_resource type="Texture2D" path="res://asset/ui/dark_menu/generated/bottom_section.png" id="6_bottom"]
+[ext_resource type="PackedScene" path="res://ui/components/dark_menu_button.tscn" id="7_button"]
+
+[node name="DarkPauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 70
+script = ExtResource("1_script")
+
+[node name="PauseRoot" type="Control" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 2
+texture_repeat = 1
+
+[node name="Dim" type="ColorRect" parent="PauseRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.006, 0.008, 0.012, 0.78)
+
+[node name="Center" type="CenterContainer" parent="PauseRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="MenuPanel" type="Control" parent="PauseRoot/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(650, 650)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MainFrame" type="TextureRect" parent="PauseRoot/Center/MenuPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ContentMargin" type="MarginContainer" parent="PauseRoot/Center/MenuPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 78
+theme_override_constants/margin_top = 59
+theme_override_constants/margin_right = 78
+theme_override_constants/margin_bottom = 59
+
+[node name="Layout" type="VBoxContainer" parent="PauseRoot/Center/MenuPanel/ContentMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderSlot" type="Control" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="HeaderTexture" type="TextureRect" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/HeaderSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_header")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/HeaderSlot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+theme_type_variation = &"DarkMenuTitle"
+text = "MENU DE JEU"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MainButtons" type="VBoxContainer" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="ResumeButton" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/MainButtons" instance=ExtResource("7_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "REPRENDRE"
+
+[node name="CharactersButton" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/MainButtons" instance=ExtResource("7_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "PERSONNAGES"
+
+[node name="EquipmentButton" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/MainButtons" instance=ExtResource("7_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ÉQUIPEMENTS"
+
+[node name="CompendiumButton" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/MainButtons" instance=ExtResource("7_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "COMPENDIUM"
+
+[node name="OptionsButton" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/MainButtons" instance=ExtResource("7_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "OPTIONS"
+
+[node name="AbandonButton" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/MainButtons" instance=ExtResource("7_button")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ABANDONNER LA RUN"
+
+[node name="BottomSlot" type="Control" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="BottomTexture" type="TextureRect" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/BottomSlot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_bottom")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ReturnButton" type="Button" parent="PauseRoot/Center/MenuPanel/ContentMargin/Layout/BottomSlot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 8.0
+offset_right = -18.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("2_theme")
+theme_type_variation = &"DarkMenuBottomButton"
+text = "RETOUR AU MENU PRINCIPAL"
+
+[node name="CloseButton" type="TextureButton" parent="PauseRoot/Center/MenuPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -92.0
+offset_top = 29.0
+offset_right = -36.0
+offset_bottom = 85.0
+grow_horizontal = 0
+focus_mode = 2
+mouse_default_cursor_shape = 2
+tooltip_text = "Reprendre"
+texture_normal = ExtResource("5_close")
+texture_pressed = ExtResource("5_close")
+texture_hover = ExtResource("5_close")
+texture_focused = ExtResource("5_close")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ExitConfirmation" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+title = "Confirmer"
+initial_position = 2
+exclusive = true
+dialog_text = "Quitter la run et revenir au menu principal ?"

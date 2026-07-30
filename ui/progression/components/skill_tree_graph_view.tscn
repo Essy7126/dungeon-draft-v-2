@@ -6,11 +6,11 @@
 [ext_resource type="Resource" path="res://ui/progression/skin/elf_archer_visual_map.tres" id="4_map"]
 
 [node name="SkillTreeGraphView" type="Control"]
-custom_minimum_size = Vector2(958, 1092)
+custom_minimum_size = Vector2(1150, 790)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 958.0
-offset_bottom = 1092.0
+offset_right = 1150.0
+offset_bottom = 790.0
 mouse_filter = 1
 theme = ExtResource("2_theme")
 theme_type_variation = &"SkillTreeGraphView"

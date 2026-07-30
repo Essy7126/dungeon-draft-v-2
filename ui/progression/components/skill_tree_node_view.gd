@@ -3,6 +3,10 @@ extends Control
 
 signal inspection_requested(node_view)
 
+const PROFILE_LARGE := &"large"
+const PROFILE_MEDIUM := &"medium"
+const PROFILE_COMPACT := &"compact"
+
 @onready var _state_backdrop: Panel = %StateBackdrop
 @onready var _frame_texture: TextureRect = %FrameTexture
 @onready var _icon_override: TextureRect = %IconOverride
@@ -26,6 +30,8 @@ var is_base_rank := false
 var skin: SkillTreeSkinData = null
 var node_visual: SkillTreeNodeVisualData = null
 var _state_icon_id: StringName = &"future"
+var _layout_profile: StringName = PROFILE_LARGE
+var _visual_frame_size := 132.0
 
 
 func _ready() -> void:
@@ -36,6 +42,10 @@ func _ready() -> void:
 	focus_exited.connect(_on_focus_exited)
 	gui_input.connect(_on_gui_input)
 	_focus_overlay.hide()
+	_name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_name_label.max_lines_visible = 2
+	_name_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	apply_layout_profile(_layout_profile)
 
 
 func configure_node(
@@ -61,6 +71,7 @@ func configure_node(
 		presentation.get("required_xp", 0)
 	)
 	_configure_skin(rank)
+	apply_layout_profile(_layout_profile)
 	_configure_glyphs(node.icon if node != null else null)
 	_apply_visual_state()
 
@@ -87,6 +98,7 @@ func configure_base(
 		presentation.get("required_xp", 0)
 	)
 	_configure_skin(1)
+	apply_layout_profile(_layout_profile)
 	_configure_glyphs(null)
 	_apply_visual_state()
 
@@ -129,6 +141,143 @@ func get_rank_badge_text() -> String:
 	return _rank_label.text
 
 
+func apply_layout_profile(profile: StringName) -> void:
+	_layout_profile = profile
+	if not is_node_ready():
+		return
+	var rank := get_rank()
+	var metrics := _layout_metrics(profile, rank)
+	_visual_frame_size = float(metrics["frame"])
+	var control_size: Vector2 = metrics["control"]
+	custom_minimum_size = control_size
+	size = control_size
+
+	var frame_left := (control_size.x - _visual_frame_size) * 0.5
+	var frame_rect := Rect2(
+		Vector2(frame_left, 0.0),
+		Vector2(_visual_frame_size, _visual_frame_size)
+	)
+	var halo_padding := float(metrics["halo_padding"])
+	_set_control_rect(
+		_capstone_halo,
+		frame_rect.grow(halo_padding).position,
+		frame_rect.grow(halo_padding).size
+	)
+	_set_control_rect(_state_backdrop, frame_rect.position, frame_rect.size)
+	_set_control_rect(_frame_texture, frame_rect.position, frame_rect.size)
+	_set_control_rect(_focus_overlay, frame_rect.grow(3.0).position, frame_rect.grow(3.0).size)
+
+	var discipline_size := float(metrics["discipline_icon"])
+	_set_control_rect(
+		_discipline_icon,
+		frame_rect.position + Vector2(10.0, 9.0),
+		Vector2(discipline_size, discipline_size)
+	)
+	var primary_size := float(metrics["primary_glyph"])
+	var primary_position := (
+		frame_rect.position
+		+ (frame_rect.size - Vector2(primary_size, primary_size)) * 0.5
+		+ Vector2(0.0, -2.0)
+	)
+	_set_control_rect(
+		_icon_override,
+		primary_position,
+		Vector2(primary_size, primary_size)
+	)
+	_set_control_rect(
+		_primary_glyph,
+		primary_position,
+		Vector2(primary_size, primary_size)
+	)
+	var secondary_size := float(metrics["secondary_glyph"])
+	_set_control_rect(
+		_secondary_glyph,
+		Vector2(
+			frame_rect.end.x - secondary_size - 12.0,
+			frame_rect.position.y + _visual_frame_size * 0.5
+		),
+		Vector2(secondary_size, secondary_size)
+	)
+	var state_size := float(metrics["state_icon"])
+	_set_control_rect(
+		_state_icon,
+		Vector2(
+			frame_rect.end.x - state_size - 8.0,
+			frame_rect.position.y + 8.0
+		),
+		Vector2(state_size, state_size)
+	)
+	var badge_size: Vector2 = metrics["rank_badge"]
+	var badge_position := Vector2(
+		frame_rect.position.x + 7.0,
+		frame_rect.position.y + _visual_frame_size * 0.58
+	)
+	_set_control_rect(_rank_badge_texture, badge_position, badge_size)
+	_set_control_rect(_rank_badge_fallback, badge_position, badge_size)
+	_set_control_rect(_rank_label, badge_position, badge_size)
+
+	var title_top := float(metrics["title_top"])
+	var title_height := float(metrics["title_height"])
+	_set_control_rect(
+		_name_label,
+		Vector2(0.0, title_top),
+		Vector2(control_size.x, title_height)
+	)
+	var threshold_top := float(metrics["threshold_top"])
+	_set_control_rect(
+		_threshold_label,
+		Vector2(0.0, threshold_top),
+		Vector2(
+			control_size.x,
+			control_size.y - threshold_top
+		)
+	)
+	_name_label.add_theme_font_size_override(
+		"font_size",
+		int(metrics["name_font"])
+	)
+	_name_label.add_theme_color_override(
+		"font_outline_color",
+		Color(0.02, 0.025, 0.03, 0.96)
+	)
+	_name_label.add_theme_constant_override("outline_size", 4)
+	_name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_rank_label.add_theme_font_size_override(
+		"font_size",
+		int(metrics["rank_font"])
+	)
+	_threshold_label.add_theme_font_size_override(
+		"font_size",
+		int(metrics["xp_font"])
+	)
+
+
+func get_layout_profile() -> StringName:
+	return _layout_profile
+
+
+func get_visual_frame_size() -> Vector2:
+	return Vector2(_visual_frame_size, _visual_frame_size)
+
+
+func get_visual_frame_rect() -> Rect2:
+	return _frame_texture.get_rect()
+
+
+func get_name_layout_snapshot() -> Dictionary:
+	return {
+		"text": _name_label.text,
+		"bounds": _name_label.get_rect(),
+		"line_count": _name_label.get_line_count(),
+		"font_size": _name_label.get_theme_font_size("font_size"),
+		"truncated": is_name_truncated(),
+	}
+
+
+func is_name_truncated() -> bool:
+	return _name_label.get_line_count() > 2
+
+
 func get_connection_anchor(side: StringName) -> Vector2:
 	var frame_rect := _frame_texture.get_rect()
 	var frame_center := frame_rect.position + frame_rect.size * 0.5
@@ -137,6 +286,96 @@ func get_connection_anchor(side: StringName) -> Vector2:
 		if side == &"right"
 		else Vector2(frame_rect.position.x, frame_center.y)
 	)
+
+
+func _layout_metrics(profile: StringName, rank: int) -> Dictionary:
+	var frame := 120.0
+	var control_width := 148.0
+	var name_font := 16
+	var rank_font := 14
+	var xp_font := 13
+	var title_height := 36.0
+	var discipline_icon := 24.0
+	var primary_glyph := 54.0
+	var secondary_glyph := 28.0
+	var state_icon := 28.0
+	var rank_badge := Vector2(44.0, 22.0)
+	if profile == PROFILE_MEDIUM:
+		frame = 108.0
+		control_width = 136.0
+		name_font = 15
+		rank_font = 13
+		xp_font = 12
+		title_height = 34.0
+		discipline_icon = 22.0
+		primary_glyph = 49.0
+		secondary_glyph = 25.0
+		state_icon = 25.0
+		rank_badge = Vector2(40.0, 20.0)
+	elif profile == PROFILE_COMPACT:
+		frame = 98.0
+		control_width = 124.0
+		name_font = 13
+		rank_font = 12
+		xp_font = 11
+		title_height = 31.0
+		discipline_icon = 20.0
+		primary_glyph = 44.0
+		secondary_glyph = 23.0
+		state_icon = 23.0
+		rank_badge = Vector2(38.0, 19.0)
+	if rank <= 1:
+		frame = (
+			132.0
+			if profile == PROFILE_LARGE
+			else 120.0 if profile == PROFILE_MEDIUM else 106.0
+		)
+		control_width += 12.0
+	elif rank >= 5:
+		frame = (
+			148.0
+			if profile == PROFILE_LARGE
+			else 134.0 if profile == PROFILE_MEDIUM else 120.0
+		)
+		control_width += (
+			26.0
+			if profile == PROFILE_LARGE
+			else 22.0 if profile == PROFILE_MEDIUM else 18.0
+		)
+		primary_glyph = frame * 0.45
+	var title_top := frame * (
+		0.68 if rank >= 5 else 0.75
+	)
+	var threshold_top := title_top + title_height - 3.0
+	var control_height := threshold_top + float(xp_font) + 7.0
+	return {
+		"frame": frame,
+		"control": Vector2(control_width, control_height),
+		"name_font": name_font,
+		"rank_font": rank_font,
+		"xp_font": xp_font,
+		"title_top": title_top,
+		"title_height": title_height,
+		"threshold_top": threshold_top,
+		"discipline_icon": discipline_icon,
+		"primary_glyph": primary_glyph,
+		"secondary_glyph": secondary_glyph,
+		"state_icon": state_icon,
+		"rank_badge": rank_badge,
+		"halo_padding": (
+			7.0 if rank >= 5 else 0.0
+		),
+	}
+
+
+func _set_control_rect(
+		control: Control,
+		wanted_position: Vector2,
+		wanted_size: Vector2
+	) -> void:
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = wanted_position
+	control.size = wanted_size
 
 
 func is_consultative() -> bool:

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://ui/run/persistent_run_ui.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn" id="2_hud"]
 [ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_status_button.tscn" id="3_status_button"]
 [ext_resource type="PackedScene" path="res://ui/progression/screens/skill_tree_screen.tscn" id="4_screen"]
+[ext_resource type="PackedScene" path="res://ui/menus/dark_pause_menu.tscn" id="5_pause"]
 
 [node name="PersistentRunUI" type="Node"]
 script = ExtResource("1_script")
@@ -49,3 +50,6 @@ offset_bottom = 94.0
 [node name="SkillTreeScreen" parent="OverlayLayer/OverlayRoot" instance=ExtResource("4_screen")]
 unique_name_in_owner = true
 layout_mode = 1
+
+[node name="DarkPauseMenu" parent="." instance=ExtResource("5_pause")]
+unique_name_in_owner = true

@@ -36,9 +36,12 @@ var visual_state := VisualState.NORMAL
 var spell = null
 var imprinted := false
 var _hovered := false
+var _icon_override: Texture2D = null
+var _default_frame_texture: Texture2D = null
 
 
 func _ready() -> void:
+	_default_frame_texture = frame.texture
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	focus_entered.connect(_refresh_visuals)
@@ -50,17 +53,28 @@ func _ready() -> void:
 
 
 func apply_layout(scale_factor: float) -> void:
-	custom_minimum_size = Vector2(
+	apply_calibrated_layout(
 		METRICS.scaled(METRICS.SPELL_VISUAL_SIZE, scale_factor),
-		METRICS.scaled(METRICS.SPELL_SLOT_HEIGHT, scale_factor)
+		METRICS.scaled(METRICS.SPELL_ICON_SIZE, scale_factor),
+		METRICS.scaled(METRICS.SPELL_SHORTCUT_HEIGHT, scale_factor),
+		scale_factor
 	)
-	var shortcut_height := METRICS.scaled(METRICS.SPELL_SHORTCUT_HEIGHT, scale_factor)
-	var icon_inset := roundf(
-		(
-			METRICS.scaled(METRICS.SPELL_VISUAL_SIZE, scale_factor)
-			- METRICS.scaled(METRICS.SPELL_ICON_SIZE, scale_factor)
-		) * 0.5
+
+
+func apply_calibrated_layout(
+		visual_size: float,
+		icon_size: float,
+		shortcut_height: float,
+		text_scale: float
+	) -> void:
+	visual_size = roundf(visual_size)
+	icon_size = minf(roundf(icon_size), visual_size)
+	shortcut_height = roundf(shortcut_height)
+	custom_minimum_size = Vector2(
+		visual_size,
+		visual_size + shortcut_height
 	)
+	var icon_inset := roundf((visual_size - icon_size) * 0.5)
 	shortcut_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	shortcut_label.offset_bottom = shortcut_height
 	visual_area.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -70,37 +84,45 @@ func apply_layout(scale_factor: float) -> void:
 		icon_control.offset_top = icon_inset
 		icon_control.offset_right = -icon_inset
 		icon_control.offset_bottom = -icon_inset
-	var cost_size := METRICS.scaled_vector(METRICS.SPELL_COST_BADGE_SIZE, scale_factor)
+	var cost_size := METRICS.scaled_vector(
+		METRICS.SPELL_COST_BADGE_SIZE,
+		text_scale
+	)
 	cost_badge.offset_left = -cost_size.x
 	cost_badge.offset_top = -cost_size.y
 	var energy_size := METRICS.scaled_vector(
-		METRICS.SPELL_ENERGY_BADGE_SIZE, scale_factor
+		METRICS.SPELL_ENERGY_BADGE_SIZE,
+		text_scale
 	)
 	energy_cost_badge.offset_top = -energy_size.y
 	energy_cost_badge.offset_right = energy_size.x
 	shortcut_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(METRICS.SHORTCUT_FONT_SIZE, scale_factor)
+		"font_size",
+		METRICS.scaled_font(METRICS.SHORTCUT_FONT_SIZE, text_scale)
 	)
 	cost_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(METRICS.COST_FONT_SIZE, scale_factor)
+		"font_size",
+		METRICS.scaled_font(METRICS.COST_FONT_SIZE, text_scale)
 	)
 	energy_cost_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, scale_factor)
+		"font_size",
+		METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, text_scale)
 	)
 	cost_icon.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(8, scale_factor)
+		"font_size", METRICS.scaled_font(8, text_scale)
 	)
 	imprint_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, scale_factor)
+		"font_size",
+		METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, text_scale)
 	)
 	fallback_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(24, scale_factor)
+		"font_size", METRICS.scaled_font(24, text_scale)
 	)
 	cooldown_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(22, scale_factor)
+		"font_size", METRICS.scaled_font(22, text_scale)
 	)
 	lock_icon.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(20, scale_factor)
+		"font_size", METRICS.scaled_font(20, text_scale)
 	)
 	_update_pivot()
 
@@ -115,9 +137,8 @@ func configure(
 ) -> void:
 	spell = new_spell
 	imprinted = is_imprinted
-	var icon: Texture2D = spell.icon if spell != null else null
-	spell_icon.texture = icon
-	fallback_label.visible = icon == null
+	_icon_override = null
+	_refresh_icon()
 	fallback_label.text = _fallback_text()
 	cost_icon.text = "PA"
 	cost_label.text = str(maxi(ap_cost, 0))
@@ -132,6 +153,29 @@ func configure(
 	imprint_label.visible = imprinted
 	tooltip_text = ""
 	accessibility_name = _accessible_description(ap_cost, energy_cost, energy_name)
+
+
+func set_icon_override(texture: Texture2D) -> void:
+	_icon_override = texture
+	_refresh_icon()
+
+
+func get_displayed_icon() -> Texture2D:
+	return spell_icon.texture
+
+
+func set_frame_override(texture: Texture2D) -> void:
+	frame.texture = texture if texture != null else _default_frame_texture
+
+
+func _refresh_icon() -> void:
+	if not is_node_ready():
+		return
+	var icon: Texture2D = _icon_override
+	if icon == null and spell != null:
+		icon = spell.icon
+	spell_icon.texture = icon
+	fallback_label.visible = icon == null
 
 
 func set_visual_state(state: VisualState, cooldown_turns: int = 0) -> void:

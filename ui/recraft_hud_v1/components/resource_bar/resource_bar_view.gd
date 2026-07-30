@@ -8,6 +8,8 @@ const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.g
 @onready var main_fill: ColorRect = %MainFill
 @onready var cost_preview_fill: ColorRect = %CostPreviewFill
 @onready var gain_preview_fill: ColorRect = %GainPreviewFill
+@onready var frame: TextureRect = %Frame
+@onready var theme_frame: NinePatchRect = %ThemeFrame
 @onready var resource_icon: TextureRect = %ResourceIcon
 @onready var resource_icon_fallback: Label = %ResourceIconFallback
 @onready var value_label: Label = %ValueLabel
@@ -29,8 +31,22 @@ func _ready() -> void:
 
 
 func apply_layout(scale_factor: float) -> void:
+	_apply_layout(
+		METRICS.scaled_vector(METRICS.RESOURCE_BAR_SIZE, scale_factor),
+		scale_factor
+	)
+
+
+func apply_calibrated_layout(
+	bar_size: Vector2,
+	text_scale: float
+	) -> void:
+	_apply_layout(bar_size.round(), text_scale)
+
+
+func _apply_layout(bar_size: Vector2, scale_factor: float) -> void:
 	_layout_scale = scale_factor
-	custom_minimum_size = METRICS.scaled_vector(METRICS.RESOURCE_BAR_SIZE, scale_factor)
+	custom_minimum_size = bar_size
 	value_label.add_theme_font_size_override(
 		"font_size", METRICS.scaled_font(METRICS.RESOURCE_VALUE_FONT_SIZE, scale_factor)
 	)
@@ -52,6 +68,12 @@ func apply_layout(scale_factor: float) -> void:
 	value_label.offset_left = METRICS.scaled(24.0, scale_factor)
 	value_label.offset_right = -METRICS.scaled(6.0, scale_factor)
 	_layout_fills()
+
+
+func set_frame_texture(texture: Texture2D) -> void:
+	frame.visible = texture == null
+	theme_frame.texture = texture
+	theme_frame.visible = texture != null
 
 
 func set_resource(

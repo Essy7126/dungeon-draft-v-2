@@ -4,6 +4,9 @@ extends PanelContainer
 @export var skin: SkillTreeSkinData = null
 
 @onready var _frame_texture: NinePatchRect = %FrameTexture
+@onready var _safe_margin: MarginContainer = %SafeMargin
+@onready var _content: VBoxContainer = %Content
+@onready var _icon_stage: Control = %IconStage
 @onready var _icon_override: TextureRect = %IconOverride
 @onready var _discipline_icon: SkillTreeEffectGlyph = %DisciplineIcon
 @onready var _primary_glyph: SkillTreeEffectGlyph = %PrimaryGlyph
@@ -16,12 +19,109 @@ extends PanelContainer
 @onready var _state_label: Label = %StateLabel
 @onready var _reason_label: Label = %ReasonLabel
 @onready var _scroll: ScrollContainer = %ContentScroll
+@onready var _section_headings: Array[Label] = [
+	%DescriptionHeading,
+	%SpellHeading,
+	%PrerequisitesHeading,
+	%StateHeading,
+	%ReasonHeading,
+]
 
 var current_presentation_id: StringName = &""
+var _layout_profile: StringName = &"large"
 
 
 func _ready() -> void:
 	_frame_texture.texture = skin.detail_panel_texture if skin != null else null
+	apply_layout_profile(_layout_profile)
+
+
+func apply_layout_profile(profile: StringName) -> void:
+	_layout_profile = profile
+	if not is_node_ready():
+		return
+	var compact := profile == &"compact"
+	var medium := profile == &"medium"
+	var title_font := 20 if compact else 22 if medium else 24
+	var subtitle_font := 14 if compact else 15 if medium else 16
+	var description_font := 14 if compact else 15 if medium else 16
+	var heading_font := 12 if compact else 12 if medium else 13
+	var value_font := 13 if compact else 14 if medium else 15
+	var horizontal_margin := 28 if compact else 34 if medium else 40
+	var vertical_margin := 24 if compact else 30 if medium else 36
+	_safe_margin.add_theme_constant_override(
+		"margin_left",
+		horizontal_margin
+	)
+	_safe_margin.add_theme_constant_override(
+		"margin_right",
+		horizontal_margin
+	)
+	_safe_margin.add_theme_constant_override(
+		"margin_top",
+		vertical_margin
+	)
+	_safe_margin.add_theme_constant_override(
+		"margin_bottom",
+		vertical_margin
+	)
+	_content.add_theme_constant_override(
+		"separation",
+		6 if compact else 7 if medium else 8
+	)
+	_icon_stage.custom_minimum_size.y = (
+		68.0 if compact else 78.0 if medium else 88.0
+	)
+	_name_label.add_theme_font_size_override("font_size", title_font)
+	_meta_label.add_theme_font_size_override("font_size", subtitle_font)
+	_xp_label.add_theme_font_size_override("font_size", value_font)
+	_description_label.add_theme_font_size_override(
+		"font_size",
+		description_font
+	)
+	_description_label.custom_minimum_size.y = (
+		78.0 if compact else 92.0 if medium else 108.0
+	)
+	for heading in _section_headings:
+		heading.add_theme_font_size_override("font_size", heading_font)
+	for value_label in [
+		_spell_label,
+		_prerequisites_label,
+		_state_label,
+		_reason_label,
+	]:
+		(value_label as Label).add_theme_font_size_override(
+			"font_size",
+			value_font
+		)
+	_reason_label.custom_minimum_size.y = (
+		44.0 if compact else 50.0 if medium else 58.0
+	)
+
+
+func get_layout_profile() -> StringName:
+	return _layout_profile
+
+
+func get_typography_snapshot() -> Dictionary:
+	return {
+		"title": _name_label.get_theme_font_size("font_size"),
+		"subtitle": _meta_label.get_theme_font_size("font_size"),
+		"description": _description_label.get_theme_font_size("font_size"),
+		"section": (
+			_section_headings[0].get_theme_font_size("font_size")
+			if not _section_headings.is_empty()
+			else 0
+		),
+		"value": _spell_label.get_theme_font_size("font_size"),
+	}
+
+
+func get_section_labels() -> Array[String]:
+	var result: Array[String] = []
+	for heading in _section_headings:
+		result.append(heading.text)
+	return result
 
 
 func configure_node(

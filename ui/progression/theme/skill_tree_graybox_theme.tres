@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=20 format=3]
+[gd_resource type="Theme" load_steps=21 format=3]
 
 [sub_resource type="StyleBoxFlat" id="StyleTransparent"]
 bg_color = Color(0, 0, 0, 0)
@@ -8,38 +8,38 @@ bg_color = Color(0.015, 0.02, 0.03, 0.18)
 
 [sub_resource type="StyleBoxFlat" id="StyleSelected"]
 bg_color = Color(0.08, 0.3, 0.18, 0.66)
-corner_radius_top_left = 43
-corner_radius_top_right = 43
-corner_radius_bottom_right = 43
-corner_radius_bottom_left = 43
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
 
 [sub_resource type="StyleBoxFlat" id="StyleAvailable"]
 bg_color = Color(0.42, 0.25, 0.07, 0.68)
-corner_radius_top_left = 43
-corner_radius_top_right = 43
-corner_radius_bottom_right = 43
-corner_radius_bottom_left = 43
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
 
 [sub_resource type="StyleBoxFlat" id="StyleLockedXp"]
 bg_color = Color(0.035, 0.045, 0.06, 0.82)
-corner_radius_top_left = 43
-corner_radius_top_right = 43
-corner_radius_bottom_right = 43
-corner_radius_bottom_left = 43
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
 
 [sub_resource type="StyleBoxFlat" id="StyleLockedBranch"]
 bg_color = Color(0.08, 0.035, 0.045, 0.8)
-corner_radius_top_left = 43
-corner_radius_top_right = 43
-corner_radius_bottom_right = 43
-corner_radius_bottom_left = 43
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
 
 [sub_resource type="StyleBoxFlat" id="StyleFuture"]
 bg_color = Color(0.05, 0.075, 0.105, 0.72)
-corner_radius_top_left = 43
-corner_radius_top_right = 43
-corner_radius_bottom_right = 43
-corner_radius_bottom_left = 43
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
 
 [sub_resource type="StyleBoxFlat" id="StyleCapstone"]
 bg_color = Color(0.32, 0.2, 0.045, 0.24)
@@ -48,10 +48,10 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.91, 0.7, 0.27, 0.72)
-corner_radius_top_left = 47
-corner_radius_top_right = 47
-corner_radius_bottom_right = 47
-corner_radius_bottom_left = 47
+corner_radius_top_left = 90
+corner_radius_top_right = 90
+corner_radius_bottom_right = 90
+corner_radius_bottom_left = 90
 shadow_color = Color(0.78, 0.52, 0.12, 0.24)
 shadow_size = 4
 
@@ -62,10 +62,10 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 0.88, 0.52, 0.95)
-corner_radius_top_left = 46
-corner_radius_top_right = 46
-corner_radius_bottom_right = 46
-corner_radius_bottom_left = 46
+corner_radius_top_left = 90
+corner_radius_top_right = 90
+corner_radius_bottom_right = 90
+corner_radius_bottom_left = 90
 
 [sub_resource type="StyleBoxFlat" id="StyleTooltip"]
 bg_color = Color(0.035, 0.045, 0.062, 0.98)
@@ -84,6 +84,18 @@ content_margin_right = 14.0
 content_margin_bottom = 12.0
 shadow_color = Color(0, 0, 0, 0.55)
 shadow_size = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleDetailReading"]
+bg_color = Color(0.018, 0.022, 0.03, 0.42)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.56, 0.48, 0.34, 0.24)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleStatusHover"]
 bg_color = Color(0.16, 0.2, 0.22, 0.32)
@@ -209,6 +221,8 @@ SkillTreeRankBadge/base_type = &"PanelContainer"
 SkillTreeRankBadge/styles/panel = SubResource("StyleRankBadge")
 SkillTreeDetailSurface/base_type = &"PanelContainer"
 SkillTreeDetailSurface/styles/panel = SubResource("StyleTransparent")
+SkillTreeDetailReadingSurface/base_type = &"Panel"
+SkillTreeDetailReadingSurface/styles/panel = SubResource("StyleDetailReading")
 SkillTreeTooltip/base_type = &"PanelContainer"
 SkillTreeTooltip/styles/panel = SubResource("StyleTooltip")
 SkillTreeStatusButton/base_type = &"Button"
@@ -240,7 +254,11 @@ SkillTreeGlyphView/colors/glyph_shadow = Color(0.035, 0.045, 0.055, 0.96)
 SkillTreeGraphView/base_type = &"Control"
 SkillTreeGraphView/colors/connection_selected = Color(0.58, 0.94, 0.68, 1)
 SkillTreeGraphView/colors/connection_available = Color(0.95, 0.7, 0.25, 1)
-SkillTreeGraphView/colors/connection_compatible = Color(0.38, 0.46, 0.54, 0.88)
-SkillTreeGraphView/colors/connection_incompatible = Color(0.24, 0.17, 0.18, 0.72)
-SkillTreeGraphView/colors/branch_eagle = Color(0.19, 0.31, 0.24, 0.2)
-SkillTreeGraphView/colors/branch_repel = Color(0.22, 0.24, 0.31, 0.2)
+SkillTreeGraphView/colors/connection_compatible = Color(0.5, 0.59, 0.67, 0.94)
+SkillTreeGraphView/colors/connection_incompatible = Color(0.5, 0.3, 0.31, 0.84)
+SkillTreeGraphView/colors/connection_underlay = Color(0.012, 0.016, 0.023, 0.9)
+SkillTreeGraphView/colors/branch_eagle = Color(0.12, 0.27, 0.25, 0.24)
+SkillTreeGraphView/colors/branch_repel = Color(0.3, 0.15, 0.1, 0.22)
+SkillTreeGraphView/colors/branch_eagle_accent = Color(0.48, 0.76, 0.7, 0.9)
+SkillTreeGraphView/colors/branch_repel_accent = Color(0.79, 0.51, 0.34, 0.9)
+SkillTreeGraphView/colors/rank_title = Color(0.86, 0.88, 0.9, 1)
