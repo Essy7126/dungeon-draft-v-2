@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://g242jnirujaf"]
+
+[ext_resource type="Texture2D" uid="uid://byo2rjdiy4kdy" path="res://asset/Background/pic center.png" id="1_pic"]
+
+[node name="AvantPlanRochers" type="Sprite2D" unique_id=1731228615]
+texture_filter = 2
+position = Vector2(96, 422)
+scale = Vector2(0.975, 0.975)
+texture = ExtResource("1_pic")

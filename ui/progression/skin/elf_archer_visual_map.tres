@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="SkillTreeVisualMapData" load_steps=22 format=3]
+[gd_resource type="Resource" script_class="SkillTreeVisualMapData" format=3 uid="uid://dwakysvpjhs26"]
 
-[ext_resource type="Script" path="res://ui/progression/skin/skill_tree_visual_map_data.gd" id="1_map"]
-[ext_resource type="Script" path="res://ui/progression/skin/skill_tree_node_visual_data.gd" id="2_entry"]
+[ext_resource type="Script" uid="uid://dtwj60uwetqxc" path="res://ui/progression/skin/skill_tree_visual_map_data.gd" id="1_map"]
+[ext_resource type="Script" uid="uid://jcam3xiqidwd" path="res://ui/progression/skin/skill_tree_node_visual_data.gd" id="2_entry"]
 
 [sub_resource type="Resource" id="Base"]
 script = ExtResource("2_entry")

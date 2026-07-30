@@ -1,17 +1,80 @@
-[gd_resource type="Theme" load_steps=21 format=3]
+[gd_resource type="Theme" format=3 uid="uid://dt4rafn5yl2c7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBranchBand"]
+bg_color = Color(0.045, 0.055, 0.07, 0.42)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.26, 0.31, 0.36, 0.42)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBranchTitle"]
+content_margin_left = 9.0
+content_margin_top = 3.0
+content_margin_right = 9.0
+content_margin_bottom = 3.0
+bg_color = Color(0.08, 0.1, 0.13, 0.92)
+border_width_bottom = 1
+border_color = Color(0.67, 0.51, 0.27, 0.8)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleCloseHover"]
+bg_color = Color(0.22, 0.11, 0.08, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.92, 0.7, 0.35, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleClose"]
+bg_color = Color(0.12, 0.08, 0.075, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.66, 0.49, 0.29, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleDetailReading"]
+bg_color = Color(0.018, 0.022, 0.03, 0.42)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.56, 0.48, 0.34, 0.24)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleTransparent"]
 bg_color = Color(0, 0, 0, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleScreen"]
-bg_color = Color(0.015, 0.02, 0.03, 0.18)
-
-[sub_resource type="StyleBoxFlat" id="StyleSelected"]
-bg_color = Color(0.08, 0.3, 0.18, 0.66)
-corner_radius_top_left = 80
-corner_radius_top_right = 80
-corner_radius_bottom_right = 80
-corner_radius_bottom_left = 80
+[sub_resource type="StyleBoxFlat" id="StyleStatusHover"]
+bg_color = Color(0.16, 0.2, 0.22, 0.32)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.94, 0.76, 0.36, 0.8)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleAvailable"]
 bg_color = Color(0.42, 0.25, 0.07, 0.68)
@@ -20,8 +83,8 @@ corner_radius_top_right = 80
 corner_radius_bottom_right = 80
 corner_radius_bottom_left = 80
 
-[sub_resource type="StyleBoxFlat" id="StyleLockedXp"]
-bg_color = Color(0.035, 0.045, 0.06, 0.82)
+[sub_resource type="StyleBoxFlat" id="StyleFuture"]
+bg_color = Color(0.05, 0.075, 0.105, 0.72)
 corner_radius_top_left = 80
 corner_radius_top_right = 80
 corner_radius_bottom_right = 80
@@ -34,8 +97,15 @@ corner_radius_top_right = 80
 corner_radius_bottom_right = 80
 corner_radius_bottom_left = 80
 
-[sub_resource type="StyleBoxFlat" id="StyleFuture"]
-bg_color = Color(0.05, 0.075, 0.105, 0.72)
+[sub_resource type="StyleBoxFlat" id="StyleLockedXp"]
+bg_color = Color(0.035, 0.045, 0.06, 0.82)
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+
+[sub_resource type="StyleBoxFlat" id="StyleSelected"]
+bg_color = Color(0.08, 0.3, 0.18, 0.66)
 corner_radius_top_left = 80
 corner_radius_top_right = 80
 corner_radius_bottom_right = 80
@@ -67,48 +137,6 @@ corner_radius_top_right = 90
 corner_radius_bottom_right = 90
 corner_radius_bottom_left = 90
 
-[sub_resource type="StyleBoxFlat" id="StyleTooltip"]
-bg_color = Color(0.035, 0.045, 0.062, 0.98)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.56, 0.48, 0.34, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-content_margin_left = 14.0
-content_margin_top = 12.0
-content_margin_right = 14.0
-content_margin_bottom = 12.0
-shadow_color = Color(0, 0, 0, 0.55)
-shadow_size = 7
-
-[sub_resource type="StyleBoxFlat" id="StyleDetailReading"]
-bg_color = Color(0.018, 0.022, 0.03, 0.42)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.56, 0.48, 0.34, 0.24)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-
-[sub_resource type="StyleBoxFlat" id="StyleStatusHover"]
-bg_color = Color(0.16, 0.2, 0.22, 0.32)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.94, 0.76, 0.36, 0.8)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleRankBadge"]
 bg_color = Color(0.12, 0.14, 0.16, 0.95)
 border_width_left = 1
@@ -120,6 +148,27 @@ corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleScreen"]
+bg_color = Color(0.015, 0.02, 0.03, 0.18)
+
+[sub_resource type="StyleBoxFlat" id="StyleTooltip"]
+content_margin_left = 14.0
+content_margin_top = 12.0
+content_margin_right = 14.0
+content_margin_bottom = 12.0
+bg_color = Color(0.035, 0.045, 0.062, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.56, 0.48, 0.34, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleProgressBackground"]
 bg_color = Color(0.025, 0.03, 0.035, 0.9)
@@ -135,130 +184,81 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBranchBand"]
-bg_color = Color(0.045, 0.055, 0.07, 0.42)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.26, 0.31, 0.36, 0.42)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBranchTitle"]
-bg_color = Color(0.08, 0.1, 0.13, 0.92)
-border_width_bottom = 1
-border_color = Color(0.67, 0.51, 0.27, 0.8)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-content_margin_left = 9.0
-content_margin_top = 3.0
-content_margin_right = 9.0
-content_margin_bottom = 3.0
-
-[sub_resource type="StyleBoxFlat" id="StyleClose"]
-bg_color = Color(0.12, 0.08, 0.075, 0.88)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.66, 0.49, 0.29, 0.9)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleCloseHover"]
-bg_color = Color(0.22, 0.11, 0.08, 0.95)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.92, 0.7, 0.35, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
 [resource]
 default_font_size = 14
-Label/colors/font_color = Color(0.91, 0.92, 0.9, 1)
 Button/colors/font_color = Color(0.92, 0.93, 0.9, 1)
 Button/colors/font_hover_color = Color(1, 0.94, 0.7, 1)
-SkillTreeScreen/base_type = &"PanelContainer"
-SkillTreeScreen/styles/panel = SubResource("StyleScreen")
-SkillTreeNodeSurface/base_type = &"PanelContainer"
-SkillTreeNodeSurface/styles/panel = SubResource("StyleTransparent")
-SkillTreeNodeSelected/base_type = &"PanelContainer"
-SkillTreeNodeSelected/styles/panel = SubResource("StyleSelected")
-SkillTreeNodeAvailable/base_type = &"PanelContainer"
-SkillTreeNodeAvailable/styles/panel = SubResource("StyleAvailable")
-SkillTreeNodeLockedXp/base_type = &"PanelContainer"
-SkillTreeNodeLockedXp/styles/panel = SubResource("StyleLockedXp")
-SkillTreeNodeLockedBranch/base_type = &"PanelContainer"
-SkillTreeNodeLockedBranch/styles/panel = SubResource("StyleLockedBranch")
-SkillTreeNodeFuture/base_type = &"PanelContainer"
-SkillTreeNodeFuture/styles/panel = SubResource("StyleFuture")
-SkillTreeNodeBackdropSelected/base_type = &"Panel"
-SkillTreeNodeBackdropSelected/styles/panel = SubResource("StyleSelected")
-SkillTreeNodeBackdropAvailable/base_type = &"Panel"
-SkillTreeNodeBackdropAvailable/styles/panel = SubResource("StyleAvailable")
-SkillTreeNodeBackdropLockedXp/base_type = &"Panel"
-SkillTreeNodeBackdropLockedXp/styles/panel = SubResource("StyleLockedXp")
-SkillTreeNodeBackdropLockedBranch/base_type = &"Panel"
-SkillTreeNodeBackdropLockedBranch/styles/panel = SubResource("StyleLockedBranch")
-SkillTreeNodeBackdropFuture/base_type = &"Panel"
-SkillTreeNodeBackdropFuture/styles/panel = SubResource("StyleFuture")
-SkillTreeNodeCapstone/base_type = &"Panel"
-SkillTreeNodeCapstone/styles/panel = SubResource("StyleCapstone")
-SkillTreeNodeFocus/base_type = &"Panel"
-SkillTreeNodeFocus/styles/panel = SubResource("StyleNodeFocus")
-SkillTreeRankBadge/base_type = &"PanelContainer"
-SkillTreeRankBadge/styles/panel = SubResource("StyleRankBadge")
-SkillTreeDetailSurface/base_type = &"PanelContainer"
-SkillTreeDetailSurface/styles/panel = SubResource("StyleTransparent")
-SkillTreeDetailReadingSurface/base_type = &"Panel"
-SkillTreeDetailReadingSurface/styles/panel = SubResource("StyleDetailReading")
-SkillTreeTooltip/base_type = &"PanelContainer"
-SkillTreeTooltip/styles/panel = SubResource("StyleTooltip")
-SkillTreeStatusButton/base_type = &"Button"
-SkillTreeStatusButton/styles/normal = SubResource("StyleTransparent")
-SkillTreeStatusButton/styles/hover = SubResource("StyleStatusHover")
-SkillTreeStatusButton/styles/pressed = SubResource("StyleStatusHover")
-SkillTreeStatusButton/styles/focus = SubResource("StyleStatusHover")
-SkillTreeDisciplineTabButton/base_type = &"Button"
-SkillTreeDisciplineTabButton/styles/normal = SubResource("StyleTransparent")
-SkillTreeDisciplineTabButton/styles/hover = SubResource("StyleStatusHover")
-SkillTreeDisciplineTabButton/styles/pressed = SubResource("StyleStatusHover")
-SkillTreeDisciplineTabButton/styles/focus = SubResource("StyleStatusHover")
-SkillTreeCloseButton/base_type = &"Button"
-SkillTreeCloseButton/styles/normal = SubResource("StyleClose")
-SkillTreeCloseButton/styles/hover = SubResource("StyleCloseHover")
-SkillTreeCloseButton/styles/pressed = SubResource("StyleCloseHover")
-SkillTreeCloseButton/styles/focus = SubResource("StyleCloseHover")
-SkillTreeXpProgress/base_type = &"ProgressBar"
-SkillTreeXpProgress/styles/background = SubResource("StyleProgressBackground")
-SkillTreeXpProgress/styles/fill = SubResource("StyleProgressFill")
+Label/colors/font_color = Color(0.91, 0.92, 0.9, 1)
 SkillTreeBranchBand/base_type = &"Panel"
 SkillTreeBranchBand/styles/panel = SubResource("StyleBranchBand")
 SkillTreeBranchTitle/base_type = &"PanelContainer"
 SkillTreeBranchTitle/styles/panel = SubResource("StyleBranchTitle")
+SkillTreeCloseButton/base_type = &"Button"
+SkillTreeCloseButton/styles/focus = SubResource("StyleCloseHover")
+SkillTreeCloseButton/styles/hover = SubResource("StyleCloseHover")
+SkillTreeCloseButton/styles/normal = SubResource("StyleClose")
+SkillTreeCloseButton/styles/pressed = SubResource("StyleCloseHover")
+SkillTreeDetailReadingSurface/base_type = &"Panel"
+SkillTreeDetailReadingSurface/styles/panel = SubResource("StyleDetailReading")
+SkillTreeDetailSurface/base_type = &"PanelContainer"
+SkillTreeDetailSurface/styles/panel = SubResource("StyleTransparent")
+SkillTreeDisciplineTabButton/base_type = &"Button"
+SkillTreeDisciplineTabButton/styles/focus = SubResource("StyleStatusHover")
+SkillTreeDisciplineTabButton/styles/hover = SubResource("StyleStatusHover")
+SkillTreeDisciplineTabButton/styles/normal = SubResource("StyleTransparent")
+SkillTreeDisciplineTabButton/styles/pressed = SubResource("StyleStatusHover")
 SkillTreeGlyphView/base_type = &"Control"
-SkillTreeGlyphView/colors/glyph_ink = Color(0.8, 0.86, 0.84, 1)
 SkillTreeGlyphView/colors/glyph_accent = Color(0.85, 0.65, 0.31, 1)
+SkillTreeGlyphView/colors/glyph_ink = Color(0.8, 0.86, 0.84, 1)
 SkillTreeGlyphView/colors/glyph_shadow = Color(0.035, 0.045, 0.055, 0.96)
 SkillTreeGraphView/base_type = &"Control"
-SkillTreeGraphView/colors/connection_selected = Color(0.58, 0.94, 0.68, 1)
+SkillTreeGraphView/colors/branch_eagle = Color(0.12, 0.27, 0.25, 0.24)
+SkillTreeGraphView/colors/branch_eagle_accent = Color(0.48, 0.76, 0.7, 0.9)
+SkillTreeGraphView/colors/branch_repel = Color(0.3, 0.15, 0.1, 0.22)
+SkillTreeGraphView/colors/branch_repel_accent = Color(0.79, 0.51, 0.34, 0.9)
 SkillTreeGraphView/colors/connection_available = Color(0.95, 0.7, 0.25, 1)
 SkillTreeGraphView/colors/connection_compatible = Color(0.5, 0.59, 0.67, 0.94)
 SkillTreeGraphView/colors/connection_incompatible = Color(0.5, 0.3, 0.31, 0.84)
+SkillTreeGraphView/colors/connection_selected = Color(0.58, 0.94, 0.68, 1)
 SkillTreeGraphView/colors/connection_underlay = Color(0.012, 0.016, 0.023, 0.9)
-SkillTreeGraphView/colors/branch_eagle = Color(0.12, 0.27, 0.25, 0.24)
-SkillTreeGraphView/colors/branch_repel = Color(0.3, 0.15, 0.1, 0.22)
-SkillTreeGraphView/colors/branch_eagle_accent = Color(0.48, 0.76, 0.7, 0.9)
-SkillTreeGraphView/colors/branch_repel_accent = Color(0.79, 0.51, 0.34, 0.9)
 SkillTreeGraphView/colors/rank_title = Color(0.86, 0.88, 0.9, 1)
+SkillTreeNodeAvailable/base_type = &"PanelContainer"
+SkillTreeNodeAvailable/styles/panel = SubResource("StyleAvailable")
+SkillTreeNodeBackdropAvailable/base_type = &"Panel"
+SkillTreeNodeBackdropAvailable/styles/panel = SubResource("StyleAvailable")
+SkillTreeNodeBackdropFuture/base_type = &"Panel"
+SkillTreeNodeBackdropFuture/styles/panel = SubResource("StyleFuture")
+SkillTreeNodeBackdropLockedBranch/base_type = &"Panel"
+SkillTreeNodeBackdropLockedBranch/styles/panel = SubResource("StyleLockedBranch")
+SkillTreeNodeBackdropLockedXp/base_type = &"Panel"
+SkillTreeNodeBackdropLockedXp/styles/panel = SubResource("StyleLockedXp")
+SkillTreeNodeBackdropSelected/base_type = &"Panel"
+SkillTreeNodeBackdropSelected/styles/panel = SubResource("StyleSelected")
+SkillTreeNodeCapstone/base_type = &"Panel"
+SkillTreeNodeCapstone/styles/panel = SubResource("StyleCapstone")
+SkillTreeNodeFocus/base_type = &"Panel"
+SkillTreeNodeFocus/styles/panel = SubResource("StyleNodeFocus")
+SkillTreeNodeFuture/base_type = &"PanelContainer"
+SkillTreeNodeFuture/styles/panel = SubResource("StyleFuture")
+SkillTreeNodeLockedBranch/base_type = &"PanelContainer"
+SkillTreeNodeLockedBranch/styles/panel = SubResource("StyleLockedBranch")
+SkillTreeNodeLockedXp/base_type = &"PanelContainer"
+SkillTreeNodeLockedXp/styles/panel = SubResource("StyleLockedXp")
+SkillTreeNodeSelected/base_type = &"PanelContainer"
+SkillTreeNodeSelected/styles/panel = SubResource("StyleSelected")
+SkillTreeNodeSurface/base_type = &"PanelContainer"
+SkillTreeNodeSurface/styles/panel = SubResource("StyleTransparent")
+SkillTreeRankBadge/base_type = &"PanelContainer"
+SkillTreeRankBadge/styles/panel = SubResource("StyleRankBadge")
+SkillTreeScreen/base_type = &"PanelContainer"
+SkillTreeScreen/styles/panel = SubResource("StyleScreen")
+SkillTreeStatusButton/base_type = &"Button"
+SkillTreeStatusButton/styles/focus = SubResource("StyleStatusHover")
+SkillTreeStatusButton/styles/hover = SubResource("StyleStatusHover")
+SkillTreeStatusButton/styles/normal = SubResource("StyleTransparent")
+SkillTreeStatusButton/styles/pressed = SubResource("StyleStatusHover")
+SkillTreeTooltip/base_type = &"PanelContainer"
+SkillTreeTooltip/styles/panel = SubResource("StyleTooltip")
+SkillTreeXpProgress/base_type = &"ProgressBar"
+SkillTreeXpProgress/styles/background = SubResource("StyleProgressBackground")
+SkillTreeXpProgress/styles/fill = SubResource("StyleProgressFill")
