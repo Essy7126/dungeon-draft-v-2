@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SkillTreeSkinData" load_steps=18 format=3]
+[gd_resource type="Resource" script_class="SkillTreeSkinData" load_steps=52 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/skin/skill_tree_skin_data.gd" id="1_skin"]
 [ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_tree_panel_main.png.png" id="2_main"]
@@ -13,6 +13,20 @@
 [ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_state_excluded.svg.png" id="11_excluded"]
 [ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_damage.png" id="12_damage"]
 [ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_area..png" id="13_area"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_node_root_v2.png.png" id="14_root_v2"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_rank_badge_base_v2.png.png" id="15_rank_badge_v2"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_state_pending.svg.png" id="16_pending"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/icon_discipline_elf_archer.png.png" id="17_archer"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/icon_discipline_elf_assassin.png.png" id="18_assassin"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/icon_discipline_elf_mage.png.png" id="19_mage"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/icon_discipline_elf_healer.png.png" id="20_healer"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_range.svg.png" id="21_range"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_push.svg.png" id="22_push"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_movement.svg.png" id="23_movement"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_bleed.svg.png" id="24_bleed"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_vulnerability.svg.png" id="25_vulnerability"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_collision.svg.png" id="26_collision"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_duration.svg.png" id="27_duration"]
 
 [sub_resource type="AtlasTexture" id="AtlasMain"]
 atlas = ExtResource("2_main")
@@ -74,20 +88,109 @@ atlas = ExtResource("13_area")
 region = Rect2(200, 815, 1650, 580)
 filter_clip = true
 
+[sub_resource type="AtlasTexture" id="AtlasRootV2"]
+atlas = ExtResource("14_root_v2")
+region = Rect2(64, 64, 896, 896)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasRankBadgeV2"]
+atlas = ExtResource("15_rank_badge_v2")
+region = Rect2(287, 367, 1981, 973)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasPending"]
+atlas = ExtResource("16_pending")
+region = Rect2(800, 800, 448, 448)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasArcher"]
+atlas = ExtResource("17_archer")
+region = Rect2(380, 445, 1290, 1160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasAssassin"]
+atlas = ExtResource("18_assassin")
+region = Rect2(545, 245, 970, 1560)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasMage"]
+atlas = ExtResource("19_mage")
+region = Rect2(495, 420, 1060, 1200)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasHealer"]
+atlas = ExtResource("20_healer")
+region = Rect2(545, 395, 960, 1265)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasRange"]
+atlas = ExtResource("21_range")
+region = Rect2(300, 785, 1450, 470)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasPush"]
+atlas = ExtResource("22_push")
+region = Rect2(195, 575, 1615, 860)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasMovement"]
+atlas = ExtResource("23_movement")
+region = Rect2(555, 605, 950, 840)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasBleed"]
+atlas = ExtResource("24_bleed")
+region = Rect2(890, 575, 275, 910)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasVulnerability"]
+atlas = ExtResource("25_vulnerability")
+region = Rect2(570, 585, 905, 1000)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasCollision"]
+atlas = ExtResource("26_collision")
+region = Rect2(125, 740, 1800, 585)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasDuration"]
+atlas = ExtResource("27_duration")
+region = Rect2(600, 465, 1100, 1100)
+filter_clip = true
+
 [resource]
 script = ExtResource("1_skin")
 main_panel_texture = SubResource("AtlasMain")
 detail_panel_texture = SubResource("AtlasDetail")
 node_standard_texture = SubResource("AtlasStandard")
-node_root_texture = SubResource("AtlasBase")
+node_root_texture = SubResource("AtlasRootV2")
 node_capstone_texture = SubResource("AtlasBase")
+rank_badge_texture = SubResource("AtlasRankBadgeV2")
 character_tab_texture = SubResource("AtlasCharacterTab")
 discipline_tab_texture = SubResource("AtlasDisciplineTab")
 xp_bar_frame_texture = SubResource("AtlasXpBar")
 state_lock_texture = SubResource("AtlasLock")
 state_selected_texture = SubResource("AtlasSelected")
 state_excluded_texture = SubResource("AtlasExcluded")
+state_pending_texture = SubResource("AtlasPending")
+discipline_icons = {
+&"elf_archer": SubResource("AtlasArcher"),
+&"elf_assassin": SubResource("AtlasAssassin"),
+&"elf_healer": SubResource("AtlasHealer"),
+&"elf_mage": SubResource("AtlasMage")
+}
 effect_glyphs = {
 &"area_or_pierce": SubResource("AtlasArea"),
-&"damage": SubResource("AtlasDamage")
+&"bleed": SubResource("AtlasBleed"),
+&"collision": SubResource("AtlasCollision"),
+&"damage": SubResource("AtlasDamage"),
+&"duration": SubResource("AtlasDuration"),
+&"elf_archer": SubResource("AtlasArcher"),
+&"elf_assassin": SubResource("AtlasAssassin"),
+&"elf_healer": SubResource("AtlasHealer"),
+&"elf_mage": SubResource("AtlasMage"),
+&"movement": SubResource("AtlasMovement"),
+&"push": SubResource("AtlasPush"),
+&"range": SubResource("AtlasRange"),
+&"vulnerability": SubResource("AtlasVulnerability")
 }

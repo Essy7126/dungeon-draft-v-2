@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/recraft_hud_v1/theme/recraft_hud_theme_v1.tres" id="2_theme"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/components/primary_button/primary_button_view.tscn" id="6_button"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/spellbar_panel.png" id="7_spellbar"]
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/combat/layout_debug_overlay.gd" id="8_debug"]
+[ext_resource type="PackedScene" path="res://ui/combat/turn_intro_banner.tscn" id="9_turn_banner"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_background"]
 bg_color = Color(0.012, 0.017, 0.026, 0.9)
@@ -49,6 +50,7 @@ grow_vertical = 0
 mouse_filter = 2
 
 [node name="Background" type="Panel" parent="Root/HudBand"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -57,6 +59,20 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_background")
+
+[node name="CharacterThemeBar" type="TextureRect" parent="Root/HudBand"]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 0.92)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="CharacterAnchor" type="Control" parent="Root/HudBand"]
 unique_name_in_owner = true
@@ -157,18 +173,17 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ResourceBadges" type="HBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow"]
+[node name="ResourceBadges" type="HBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8
-alignment = 1
 
-[node name="ActionPointsBadge" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/ResourceBadges" instance=ExtResource("5_badge")]
+[node name="ActionPointsBadge" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ResourceBadges" instance=ExtResource("5_badge")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="MovementPointsBadge" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/ResourceBadges" instance=ExtResource("5_badge")]
+[node name="MovementPointsBadge" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ResourceBadges" instance=ExtResource("5_badge")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
@@ -210,7 +225,16 @@ texture = ExtResource("7_spellbar")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="BasicAttackHost" type="CenterContainer" parent="Root/HudBand/SpellAnchor/SpellSection"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 82.0
+offset_bottom = 98.0
+mouse_filter = 2
+
 [node name="SpellSlotsCenter" type="CenterContainer" parent="Root/HudBand/SpellAnchor/SpellSection"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -285,6 +309,10 @@ offset_right = 68.0
 offset_bottom = 22.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="TurnIntroBanner" parent="Root" instance=ExtResource("9_turn_banner")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [node name="LayoutDebugOverlay" type="Control" parent="Root"]
 unique_name_in_owner = true

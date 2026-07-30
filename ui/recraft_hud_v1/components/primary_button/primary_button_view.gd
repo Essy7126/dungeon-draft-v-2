@@ -4,14 +4,19 @@ extends Button
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
 
 @onready var background: TextureRect = %Background
+@onready var action_icon: TextureRect = %ActionIcon
 @onready var label: Label = %Label
 @onready var focus_overlay: Panel = %FocusOverlay
 
 var _active := false
 var _hovered := false
+var _compact_icon_mode := false
+var _compact_icon_size := 56.0
+var _default_background_texture: Texture2D = null
 
 
 func _ready() -> void:
+	_default_background_texture = background.texture
 	if custom_minimum_size == Vector2.ZERO:
 		apply_layout(METRICS.ACTION_BUTTON_SIZE, METRICS.ACTION_BUTTON_FONT_SIZE)
 	mouse_entered.connect(_on_mouse_entered)
@@ -28,6 +33,8 @@ func _ready() -> void:
 func apply_layout(button_size: Vector2, font_size: int) -> void:
 	custom_minimum_size = button_size
 	set_text_size(font_size)
+	if is_node_ready():
+		_apply_content_layout()
 
 
 func set_label(text: String) -> void:
@@ -37,6 +44,34 @@ func set_label(text: String) -> void:
 
 func set_text_size(font_size: int) -> void:
 	label.add_theme_font_size_override("font_size", font_size)
+
+
+func set_icon(texture: Texture2D) -> void:
+	action_icon.texture = texture
+	action_icon.visible = texture != null
+	if is_node_ready():
+		_apply_content_layout()
+
+
+func set_background_texture(
+	texture: Texture2D,
+	stretch_to_fit: bool = false
+	) -> void:
+	background.texture = (
+		texture if texture != null else _default_background_texture
+	)
+	background.stretch_mode = (
+		TextureRect.STRETCH_SCALE
+		if texture != null and stretch_to_fit
+		else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	)
+
+
+func set_compact_icon_mode(enabled: bool, icon_size: float = 56.0) -> void:
+	_compact_icon_mode = enabled
+	_compact_icon_size = maxf(icon_size, 16.0)
+	if is_node_ready():
+		_apply_content_layout()
 
 
 func set_active(active: bool) -> void:
@@ -64,6 +99,7 @@ func _refresh_visuals() -> void:
 		tint = Color(1.08, 1.04, 0.94, 1.0)
 	background.modulate = tint
 	label.modulate = Color(0.56, 0.57, 0.59, 0.82) if disabled else Color.WHITE
+	action_icon.modulate = Color(0.48, 0.49, 0.5, 0.72) if disabled else Color.WHITE
 	var target_scale := Vector2(0.98, 0.98) if is_pressed() else Vector2(1.02, 1.02) if _hovered and not disabled else Vector2.ONE
 	scale = target_scale
 
@@ -80,3 +116,32 @@ func _on_mouse_exited() -> void:
 
 func _update_pivot() -> void:
 	pivot_offset = size * 0.5
+
+
+func _apply_content_layout() -> void:
+	if _compact_icon_mode:
+		action_icon.set_anchors_preset(Control.PRESET_CENTER)
+		action_icon.offset_left = -_compact_icon_size * 0.5
+		action_icon.offset_top = -_compact_icon_size * 0.5 - 5.0
+		action_icon.offset_right = _compact_icon_size * 0.5
+		action_icon.offset_bottom = _compact_icon_size * 0.5 - 5.0
+		label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		label.offset_left = 4.0
+		label.offset_top = -20.0
+		label.offset_right = -4.0
+		label.offset_bottom = -2.0
+		return
+	var icon_size := minf(
+		22.0,
+		maxf(16.0, custom_minimum_size.y - 8.0)
+	)
+	action_icon.set_anchors_preset(Control.PRESET_CENTER_LEFT)
+	action_icon.offset_left = 5.0
+	action_icon.offset_top = -icon_size * 0.5
+	action_icon.offset_right = 5.0 + icon_size
+	action_icon.offset_bottom = icon_size * 0.5
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	label.offset_left = 29.0 if action_icon.texture != null else 6.0
+	label.offset_top = 2.0
+	label.offset_right = -6.0
+	label.offset_bottom = -2.0

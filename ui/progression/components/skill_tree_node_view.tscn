@@ -120,9 +120,13 @@ offset_bottom = 74.0
 mouse_filter = 2
 theme_type_variation = &"SkillTreeRankBadge"
 
-[node name="RankLabel" type="Label" parent="RankBadgeFallback"]
+[node name="RankLabel" type="Label" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 27.0
+offset_top = 56.0
+offset_right = 61.0
+offset_bottom = 74.0
 mouse_filter = 2
 theme_override_font_sizes/font_size = 10
 text = "R1"

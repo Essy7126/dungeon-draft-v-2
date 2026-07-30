@@ -1,0 +1,1098 @@
+{
+  "source": "asset/ui/dark_menu/source/spell_icons/icone_sorts.jpg",
+  "source_sha256": "bb55de18d58897a4c9e700117bae608c4ace0ee5bdfa4921e215b1da67d639de",
+  "rows": 10,
+  "columns": 6,
+  "cell_size": 112,
+  "atlas": "spell_icons_atlas.png",
+  "detected_columns": [
+    {
+      "left": 54,
+      "right": 144
+    },
+    {
+      "left": 161,
+      "right": 251
+    },
+    {
+      "left": 270,
+      "right": 360
+    },
+    {
+      "left": 376,
+      "right": 467
+    },
+    {
+      "left": 484,
+      "right": 575
+    },
+    {
+      "left": 591,
+      "right": 681
+    }
+  ],
+  "detected_rows": [
+    {
+      "top": 51,
+      "bottom": 141
+    },
+    {
+      "top": 159,
+      "bottom": 250
+    },
+    {
+      "top": 270,
+      "bottom": 360
+    },
+    {
+      "top": 378,
+      "bottom": 467
+    },
+    {
+      "top": 488,
+      "bottom": 577
+    },
+    {
+      "top": 596,
+      "bottom": 685
+    },
+    {
+      "top": 704,
+      "bottom": 796
+    },
+    {
+      "top": 817,
+      "bottom": 906
+    },
+    {
+      "top": 924,
+      "bottom": 1015
+    },
+    {
+      "top": 1033,
+      "bottom": 1122
+    }
+  ],
+  "icons": [
+    {
+      "row": 0,
+      "column": 0,
+      "filename": "spell_icon_r00_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 48,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 0,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 0,
+      "column": 1,
+      "filename": "spell_icon_r00_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 48,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 0,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 0,
+      "column": 2,
+      "filename": "spell_icon_r00_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 48,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 0,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 0,
+      "column": 3,
+      "filename": "spell_icon_r00_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 48,
+        "width": 97,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 0,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 0,
+      "column": 4,
+      "filename": "spell_icon_r00_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 48,
+        "width": 97,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 0,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 0,
+      "column": 5,
+      "filename": "spell_icon_r00_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 48,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 0,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 1,
+      "column": 0,
+      "filename": "spell_icon_r01_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 156,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 112,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 1,
+      "column": 1,
+      "filename": "spell_icon_r01_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 156,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 112,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 1,
+      "column": 2,
+      "filename": "spell_icon_r01_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 156,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 112,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 1,
+      "column": 3,
+      "filename": "spell_icon_r01_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 156,
+        "width": 97,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 112,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 1,
+      "column": 4,
+      "filename": "spell_icon_r01_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 156,
+        "width": 97,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 112,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 1,
+      "column": 5,
+      "filename": "spell_icon_r01_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 156,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 112,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 2,
+      "column": 0,
+      "filename": "spell_icon_r02_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 267,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 224,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 2,
+      "column": 1,
+      "filename": "spell_icon_r02_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 267,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 224,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 2,
+      "column": 2,
+      "filename": "spell_icon_r02_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 267,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 224,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 2,
+      "column": 3,
+      "filename": "spell_icon_r02_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 267,
+        "width": 97,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 224,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 2,
+      "column": 4,
+      "filename": "spell_icon_r02_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 267,
+        "width": 97,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 224,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 2,
+      "column": 5,
+      "filename": "spell_icon_r02_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 267,
+        "width": 96,
+        "height": 96
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 224,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 3,
+      "column": 0,
+      "filename": "spell_icon_r03_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 375,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 336,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 3,
+      "column": 1,
+      "filename": "spell_icon_r03_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 375,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 336,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 3,
+      "column": 2,
+      "filename": "spell_icon_r03_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 375,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 336,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 3,
+      "column": 3,
+      "filename": "spell_icon_r03_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 375,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 336,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 3,
+      "column": 4,
+      "filename": "spell_icon_r03_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 375,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 336,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 3,
+      "column": 5,
+      "filename": "spell_icon_r03_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 375,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 336,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 4,
+      "column": 0,
+      "filename": "spell_icon_r04_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 485,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 448,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 4,
+      "column": 1,
+      "filename": "spell_icon_r04_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 485,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 448,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 4,
+      "column": 2,
+      "filename": "spell_icon_r04_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 485,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 448,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 4,
+      "column": 3,
+      "filename": "spell_icon_r04_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 485,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 448,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 4,
+      "column": 4,
+      "filename": "spell_icon_r04_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 485,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 448,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 4,
+      "column": 5,
+      "filename": "spell_icon_r04_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 485,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 448,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 5,
+      "column": 0,
+      "filename": "spell_icon_r05_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 593,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 560,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 5,
+      "column": 1,
+      "filename": "spell_icon_r05_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 593,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 560,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 5,
+      "column": 2,
+      "filename": "spell_icon_r05_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 593,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 560,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 5,
+      "column": 3,
+      "filename": "spell_icon_r05_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 593,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 560,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 5,
+      "column": 4,
+      "filename": "spell_icon_r05_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 593,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 560,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 5,
+      "column": 5,
+      "filename": "spell_icon_r05_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 593,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 560,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 6,
+      "column": 0,
+      "filename": "spell_icon_r06_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 701,
+        "width": 96,
+        "height": 98
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 672,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 6,
+      "column": 1,
+      "filename": "spell_icon_r06_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 701,
+        "width": 96,
+        "height": 98
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 672,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 6,
+      "column": 2,
+      "filename": "spell_icon_r06_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 701,
+        "width": 96,
+        "height": 98
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 672,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 6,
+      "column": 3,
+      "filename": "spell_icon_r06_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 701,
+        "width": 97,
+        "height": 98
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 672,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 6,
+      "column": 4,
+      "filename": "spell_icon_r06_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 701,
+        "width": 97,
+        "height": 98
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 672,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 6,
+      "column": 5,
+      "filename": "spell_icon_r06_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 701,
+        "width": 96,
+        "height": 98
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 672,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 7,
+      "column": 0,
+      "filename": "spell_icon_r07_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 814,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 784,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 7,
+      "column": 1,
+      "filename": "spell_icon_r07_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 814,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 784,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 7,
+      "column": 2,
+      "filename": "spell_icon_r07_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 814,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 784,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 7,
+      "column": 3,
+      "filename": "spell_icon_r07_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 814,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 784,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 7,
+      "column": 4,
+      "filename": "spell_icon_r07_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 814,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 784,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 7,
+      "column": 5,
+      "filename": "spell_icon_r07_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 814,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 784,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 8,
+      "column": 0,
+      "filename": "spell_icon_r08_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 921,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 896,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 8,
+      "column": 1,
+      "filename": "spell_icon_r08_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 921,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 896,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 8,
+      "column": 2,
+      "filename": "spell_icon_r08_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 921,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 896,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 8,
+      "column": 3,
+      "filename": "spell_icon_r08_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 921,
+        "width": 97,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 896,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 8,
+      "column": 4,
+      "filename": "spell_icon_r08_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 921,
+        "width": 97,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 896,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 8,
+      "column": 5,
+      "filename": "spell_icon_r08_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 921,
+        "width": 96,
+        "height": 97
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 896,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 9,
+      "column": 0,
+      "filename": "spell_icon_r09_c00.png",
+      "source_rect": {
+        "x": 51,
+        "y": 1030,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 0,
+        "y": 1008,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 9,
+      "column": 1,
+      "filename": "spell_icon_r09_c01.png",
+      "source_rect": {
+        "x": 158,
+        "y": 1030,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 112,
+        "y": 1008,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 9,
+      "column": 2,
+      "filename": "spell_icon_r09_c02.png",
+      "source_rect": {
+        "x": 267,
+        "y": 1030,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 224,
+        "y": 1008,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 9,
+      "column": 3,
+      "filename": "spell_icon_r09_c03.png",
+      "source_rect": {
+        "x": 373,
+        "y": 1030,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 336,
+        "y": 1008,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 9,
+      "column": 4,
+      "filename": "spell_icon_r09_c04.png",
+      "source_rect": {
+        "x": 481,
+        "y": 1030,
+        "width": 97,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 448,
+        "y": 1008,
+        "width": 112,
+        "height": 112
+      }
+    },
+    {
+      "row": 9,
+      "column": 5,
+      "filename": "spell_icon_r09_c05.png",
+      "source_rect": {
+        "x": 588,
+        "y": 1030,
+        "width": 96,
+        "height": 95
+      },
+      "atlas_rect": {
+        "x": 560,
+        "y": 1008,
+        "width": 112,
+        "height": 112
+      }
+    }
+  ]
+}

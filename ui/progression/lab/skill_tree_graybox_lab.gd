@@ -28,6 +28,7 @@ const SCENARIO_NAMES := [
 @onready var skill_tree_screen: SkillTreeScreen = %SkillTreeScreen
 @onready var scenario_label: Label = %ScenarioLabel
 @onready var scenario_selector: OptionButton = %ScenarioSelector
+@onready var layout_debug_toggle: CheckButton = %LayoutDebugToggle
 
 var preview_state: CharacterRunState = null
 var current_scenario: Scenario = Scenario.EAGLE_RANK_THREE_AVAILABLE
@@ -39,6 +40,8 @@ func _ready() -> void:
 	for scenario_name in SCENARIO_NAMES:
 		scenario_selector.add_item(scenario_name)
 	scenario_selector.item_selected.connect(show_scenario)
+	layout_debug_toggle.toggled.connect(_on_layout_debug_toggled)
+	layout_debug_toggle.button_pressed = false
 	scenario_selector.select(Scenario.EAGLE_RANK_THREE_AVAILABLE)
 	show_scenario(Scenario.EAGLE_RANK_THREE_AVAILABLE)
 
@@ -101,6 +104,14 @@ func show_scenario(scenario_index: int) -> void:
 
 func get_scenario_count() -> int:
 	return SCENARIO_NAMES.size()
+
+
+func is_layout_debug_enabled() -> bool:
+	return skill_tree_screen.get_graph().is_layout_debug_enabled()
+
+
+func _on_layout_debug_toggled(value: bool) -> void:
+	skill_tree_screen.get_graph().set_layout_debug_enabled(value)
 
 
 func _build_preview_state(

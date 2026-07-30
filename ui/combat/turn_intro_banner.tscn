@@ -1,0 +1,117 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://ui/combat/turn_intro_banner.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/components/portrait/portrait_view.tscn" id="2_portrait"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text"]
+bg_color = Color(0.055, 0.04, 0.03, 0.72)
+border_width_top = 1
+border_width_bottom = 1
+border_color = Color(0.72, 0.5, 0.2, 0.62)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="TurnIntroBanner" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Presentation" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -250.0
+offset_right = 94.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BannerTexture" type="TextureRect" parent="Presentation"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Content" type="VBoxContainer" parent="Presentation"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 22.0
+offset_top = 65.0
+offset_right = -22.0
+offset_bottom = -90.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="PortraitCenter" type="CenterContainer" parent="Presentation/Content"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PortraitView" parent="Presentation/Content/PortraitCenter" instance=ExtResource("2_portrait")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+
+[node name="TextPanel" type="PanelContainer" parent="Presentation/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_text")
+
+[node name="Labels" type="VBoxContainer" parent="Presentation/Content/TextPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="TurnLabel" type="Label" parent="Presentation/Content/TextPanel/Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.98, 0.9, 0.68, 1)
+theme_override_colors/font_outline_color = Color(0.04, 0.025, 0.015, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "TOUR DE L'ELFE"
+horizontal_alignment = 1
+
+[node name="CharacterName" type="Label" parent="Presentation/Content/TextPanel/Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.86, 0.65, 1)
+theme_override_font_sizes/font_size = 13
+text = "Elfe"
+horizontal_alignment = 1
+
+[node name="DisciplineName" type="Label" parent="Presentation/Content/TextPanel/Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.78, 0.86, 0.62, 1)
+theme_override_font_sizes/font_size = 10
+text = "Hunter · Nature"
+horizontal_alignment = 1

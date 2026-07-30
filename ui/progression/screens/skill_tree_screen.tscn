@@ -65,15 +65,17 @@ patch_margin_right = 112
 patch_margin_bottom = 84
 
 [node name="FrameMargin" type="MarginContainer" parent="OuterMargin/Frame"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/margin_left = 34
-theme_override_constants/margin_top = 26
-theme_override_constants/margin_right = 34
-theme_override_constants/margin_bottom = 25
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 14
 
 [node name="Main" type="VBoxContainer" parent="OuterMargin/Frame/FrameMargin"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 7
+theme_override_constants/separation = 4
 
 [node name="Header" type="HBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
 layout_mode = 2
@@ -90,18 +92,20 @@ text = "ELFE — PROGRESSION"
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.7, 0.75, 1)
+theme_override_font_sizes/font_size = 13
 text = "CONSULTATION · aucun choix en combat"
 
 [node name="CloseButton" type="Button" parent="OuterMargin/Frame/FrameMargin/Main/Header"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(104, 34)
+custom_minimum_size = Vector2(116, 38)
 layout_mode = 2
 focus_mode = 2
 theme_type_variation = &"SkillTreeCloseButton"
 text = "Fermer"
 
 [node name="TabsScroll" type="ScrollContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
-custom_minimum_size = Vector2(0, 60)
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 74)
 layout_mode = 2
 horizontal_scroll_mode = 1
 vertical_scroll_mode = 0
@@ -110,12 +114,13 @@ vertical_scroll_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 
 [node name="ContentSplit" type="HSplitContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-split_offset = -390
+split_offset = -410
 dragger_visibility = 1
 
 [node name="GraphScroll" type="ScrollContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit"]
@@ -136,8 +141,12 @@ layout_mode = 2
 
 [node name="FooterLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.76, 0.79, 0.82, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_outline_color = Color(0.015, 0.02, 0.028, 0.96)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
 text = "Archer — Rang 1 — 0 / 3 XP"
 horizontal_alignment = 1
+vertical_alignment = 1

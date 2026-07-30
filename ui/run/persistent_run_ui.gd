@@ -14,19 +14,32 @@ enum RunUIMode {
 	%SkillTreeStatusButton
 )
 @onready var skill_tree_screen: SkillTreeScreen = %SkillTreeScreen
+@onready var pause_menu: DarkPauseMenu = %DarkPauseMenu
 
 var _ui_mode: RunUIMode = RunUIMode.TRANSITION
 var _combat_controls_before_skill_tree := false
+var _combat_controls_before_pause := false
+var _tree_was_paused_before_menu := false
+var _owns_tree_pause := false
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	skill_tree_status_button.tree_requested.connect(
 		_on_skill_tree_requested
 	)
 	skill_tree_screen.screen_closed.connect(
 		_on_skill_tree_screen_closed
 	)
+	pause_menu.resume_requested.connect(close_pause_menu)
+	pause_menu.return_to_title_requested.connect(
+		_on_pause_return_to_title_requested
+	)
 	set_ui_mode(_ui_mode)
+
+
+func _exit_tree() -> void:
+	close_pause_menu()
 
 
 func bind_combat_context(context: Node) -> CanvasLayer:
@@ -59,6 +72,8 @@ func refresh_from_context() -> void:
 
 
 func set_ui_mode(mode: RunUIMode) -> void:
+	if mode == RunUIMode.TRANSITION or not GameManager.run_active:
+		close_pause_menu()
 	_ui_mode = mode
 	if (
 		mode != RunUIMode.COMBAT
@@ -94,6 +109,76 @@ func get_skill_tree_screen() -> SkillTreeScreen:
 	return skill_tree_screen
 
 
+func get_pause_menu() -> DarkPauseMenu:
+	return pause_menu
+
+
+func is_pause_menu_open() -> bool:
+	return is_instance_valid(pause_menu) and pause_menu.is_open()
+
+
+func open_pause_menu() -> bool:
+	if (
+		not GameManager.run_active
+		or _ui_mode == RunUIMode.TRANSITION
+		or is_pause_menu_open()
+		or (
+			is_instance_valid(skill_tree_screen)
+			and skill_tree_screen.visible
+		)
+	):
+		return false
+	_tree_was_paused_before_menu = get_tree().paused
+	_owns_tree_pause = true
+	_combat_controls_before_pause = bool(
+		combat_hud.get("_player_controls_enabled")
+	) if is_instance_valid(combat_hud) else false
+	if is_instance_valid(combat_hud):
+		combat_hud.set_player_controls_enabled(false)
+	pause_menu.open_menu()
+	get_tree().paused = true
+	return true
+
+
+func close_pause_menu() -> bool:
+	var was_open := is_pause_menu_open()
+	if is_instance_valid(pause_menu):
+		pause_menu.close_menu()
+	var scene_tree: SceneTree = get_tree() if is_inside_tree() else null
+	if _owns_tree_pause and scene_tree != null:
+		scene_tree.paused = _tree_was_paused_before_menu
+	_owns_tree_pause = false
+	_tree_was_paused_before_menu = false
+	if (
+		was_open
+		and _ui_mode == RunUIMode.COMBAT
+		and is_instance_valid(combat_hud)
+		and is_instance_valid(combat_hud.get_combat_context())
+	):
+		combat_hud.set_player_controls_enabled(
+			_combat_controls_before_pause
+		)
+	_combat_controls_before_pause = false
+	return was_open
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_action_pressed("ui_cancel"):
+		return
+	if is_pause_menu_open():
+		get_viewport().set_input_as_handled()
+		if not pause_menu.dismiss_confirmation():
+			close_pause_menu()
+		return
+	if (
+		is_instance_valid(skill_tree_screen)
+		and skill_tree_screen.visible
+	):
+		return
+	if open_pause_menu():
+		get_viewport().set_input_as_handled()
+
+
 func _on_skill_tree_requested(
 		character_id: StringName,
 		discipline_id: StringName
@@ -124,3 +209,8 @@ func _on_skill_tree_screen_closed() -> void:
 			_combat_controls_before_skill_tree
 		)
 	_combat_controls_before_skill_tree = false
+
+
+func _on_pause_return_to_title_requested(_reason: StringName) -> void:
+	close_pause_menu()
+	GameManager.return_to_title()

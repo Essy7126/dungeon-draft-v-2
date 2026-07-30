@@ -1,0 +1,116 @@
+[gd_resource type="Theme" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://asset/ui/dark_menu/generated/button_normal.png" id="1_normal"]
+[ext_resource type="Texture2D" path="res://asset/ui/dark_menu/generated/button_hover.png" id="2_hover"]
+[ext_resource type="Texture2D" path="res://asset/ui/dark_menu/generated/button_pressed.png" id="3_pressed"]
+
+[sub_resource type="StyleBoxTexture" id="StyleButtonNormal"]
+texture = ExtResource("1_normal")
+texture_margin_left = 80.0
+texture_margin_top = 24.0
+texture_margin_right = 80.0
+texture_margin_bottom = 24.0
+content_margin_left = 36.0
+content_margin_top = 10.0
+content_margin_right = 36.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleButtonHover"]
+texture = ExtResource("2_hover")
+texture_margin_left = 82.0
+texture_margin_top = 25.0
+texture_margin_right = 82.0
+texture_margin_bottom = 25.0
+content_margin_left = 36.0
+content_margin_top = 10.0
+content_margin_right = 36.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleButtonPressed"]
+texture = ExtResource("3_pressed")
+texture_margin_left = 86.0
+texture_margin_top = 25.0
+texture_margin_right = 86.0
+texture_margin_bottom = 25.0
+content_margin_left = 36.0
+content_margin_top = 12.0
+content_margin_right = 36.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxTexture" id="StyleButtonDisabled"]
+texture = ExtResource("1_normal")
+texture_margin_left = 80.0
+texture_margin_top = 24.0
+texture_margin_right = 80.0
+texture_margin_bottom = 24.0
+content_margin_left = 36.0
+content_margin_top = 10.0
+content_margin_right = 36.0
+content_margin_bottom = 10.0
+modulate_color = Color(0.38, 0.38, 0.4, 0.72)
+
+[sub_resource type="StyleBoxFlat" id="StyleButtonFocus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.96, 0.72, 0.32, 0.95)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBottomFocus"]
+bg_color = Color(0.38, 0.04, 0.035, 0.42)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.92, 0.58, 0.26, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleTransparent"]
+bg_color = Color(0, 0, 0, 0)
+
+[resource]
+default_font_size = 18
+DarkMenuButton/base_type = &"Button"
+DarkMenuButton/colors/font_color = Color(0.97, 0.9, 0.76, 1)
+DarkMenuButton/colors/font_hover_color = Color(1, 0.97, 0.86, 1)
+DarkMenuButton/colors/font_pressed_color = Color(1, 0.88, 0.68, 1)
+DarkMenuButton/colors/font_focus_color = Color(1, 0.97, 0.86, 1)
+DarkMenuButton/colors/font_disabled_color = Color(0.55, 0.53, 0.5, 0.8)
+DarkMenuButton/colors/font_outline_color = Color(0.06, 0.025, 0.02, 0.95)
+DarkMenuButton/constants/outline_size = 2
+DarkMenuButton/font_sizes/font_size = 19
+DarkMenuButton/styles/normal = SubResource("StyleButtonNormal")
+DarkMenuButton/styles/hover = SubResource("StyleButtonHover")
+DarkMenuButton/styles/pressed = SubResource("StyleButtonPressed")
+DarkMenuButton/styles/hover_pressed = SubResource("StyleButtonPressed")
+DarkMenuButton/styles/disabled = SubResource("StyleButtonDisabled")
+DarkMenuButton/styles/focus = SubResource("StyleButtonFocus")
+DarkMenuTitle/base_type = &"Label"
+DarkMenuTitle/colors/font_color = Color(0.96, 0.88, 0.72, 1)
+DarkMenuTitle/colors/font_outline_color = Color(0.04, 0.025, 0.02, 1)
+DarkMenuTitle/constants/outline_size = 4
+DarkMenuTitle/font_sizes/font_size = 28
+DarkMenuBottomButton/base_type = &"Button"
+DarkMenuBottomButton/colors/font_color = Color(0.88, 0.82, 0.72, 1)
+DarkMenuBottomButton/colors/font_hover_color = Color(1, 0.91, 0.72, 1)
+DarkMenuBottomButton/colors/font_pressed_color = Color(0.95, 0.7, 0.55, 1)
+DarkMenuBottomButton/colors/font_focus_color = Color(1, 0.91, 0.72, 1)
+DarkMenuBottomButton/colors/font_outline_color = Color(0.02, 0.02, 0.025, 1)
+DarkMenuBottomButton/constants/outline_size = 2
+DarkMenuBottomButton/font_sizes/font_size = 16
+DarkMenuBottomButton/styles/normal = SubResource("StyleTransparent")
+DarkMenuBottomButton/styles/hover = SubResource("StyleBottomFocus")
+DarkMenuBottomButton/styles/pressed = SubResource("StyleBottomFocus")
+DarkMenuBottomButton/styles/focus = SubResource("StyleBottomFocus")

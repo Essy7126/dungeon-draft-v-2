@@ -26,12 +26,27 @@ patch_margin_top = 150
 patch_margin_right = 72
 patch_margin_bottom = 150
 
+[node name="ReadingVeil" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 26.0
+offset_right = -24.0
+offset_bottom = -26.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeDetailReadingSurface"
+
 [node name="SafeMargin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/margin_left = 35
-theme_override_constants/margin_top = 34
-theme_override_constants/margin_right = 35
-theme_override_constants/margin_bottom = 34
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 36
 
 [node name="ContentScroll" type="ScrollContainer" parent="SafeMargin"]
 unique_name_in_owner = true
@@ -40,12 +55,14 @@ horizontal_scroll_mode = 0
 vertical_scroll_mode = 1
 
 [node name="Content" type="VBoxContainer" parent="SafeMargin/ContentScroll"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 7
+theme_override_constants/separation = 8
 
 [node name="IconStage" type="Control" parent="SafeMargin/ContentScroll/Content"]
-custom_minimum_size = Vector2(0, 74)
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 88)
 layout_mode = 2
 mouse_filter = 2
 
@@ -94,7 +111,7 @@ grow_vertical = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.96, 0.84, 0.5, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 24
 text = "DÉTAIL DU NŒUD"
 horizontal_alignment = 1
 autowrap_mode = 2
@@ -103,6 +120,7 @@ autowrap_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
+theme_override_font_sizes/font_size = 16
 text = "Archer — Rang 1"
 horizontal_alignment = 1
 autowrap_mode = 2
@@ -111,14 +129,22 @@ autowrap_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.84, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 15
 text = "0 XP requis"
 horizontal_alignment = 1
 
+[node name="DescriptionHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
+theme_override_font_sizes/font_size = 13
+text = "DESCRIPTION"
+
 [node name="DescriptionLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 76)
+custom_minimum_size = Vector2(0, 108)
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 text = "Description"
 autowrap_mode = 2
 
@@ -126,26 +152,32 @@ autowrap_mode = 2
 layout_mode = 2
 
 [node name="SpellHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
+theme_override_font_sizes/font_size = 13
 text = "SORT AFFECTÉ"
 
 [node name="SpellLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
+theme_override_font_sizes/font_size = 15
 text = "Tir précis"
 autowrap_mode = 2
 
 [node name="PrerequisitesHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
+theme_override_font_sizes/font_size = 13
 text = "PRÉREQUIS"
 
 [node name="PrerequisitesLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
+theme_override_font_sizes/font_size = 15
 text = "Aucun"
 autowrap_mode = 2
 
@@ -153,28 +185,32 @@ autowrap_mode = 2
 layout_mode = 2
 
 [node name="StateHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
+theme_override_font_sizes/font_size = 13
 text = "ÉTAT"
 
 [node name="StateLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.8, 0.45, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 text = "Futur compatible"
 autowrap_mode = 2
 
 [node name="ReasonHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
+theme_override_font_sizes/font_size = 13
 text = "RAISON"
 
 [node name="ReasonLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.78, 0.8, 0.82, 1)
+theme_override_font_sizes/font_size = 15
 text = "Évolution future compatible."
 autowrap_mode = 2

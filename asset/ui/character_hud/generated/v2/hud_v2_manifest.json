@@ -1,0 +1,80 @@
+{
+  "background_policy": "Only exterior-connected flattened backgrounds are removed; source files are never modified.",
+  "excluded_sources": {
+    "pack/pack_bouton.jpg": "Excluded: repeated PCAT007 SAMPLE watermark; never loaded or extracted."
+  },
+  "generator": "tools/ui/prepare_character_hud_v2_assets.py",
+  "outputs": {
+    "gold_end_turn_button.png": {
+      "height": 36,
+      "opaque": 1480,
+      "partial": 58,
+      "sha256": "ab3f83ec7908b603",
+      "source_rectangle": [
+        386,
+        314,
+        495,
+        361
+      ],
+      "transparent": 1702,
+      "width": 90
+    },
+    "gold_health_bar_frame.png": {
+      "height": 20,
+      "opaque": 1231,
+      "partial": 120,
+      "sha256": "a6d127ef22b5b0b7",
+      "source_rectangle": [
+        370,
+        286,
+        489,
+        318
+      ],
+      "transparent": 1129,
+      "width": 124
+    },
+    "spell_frame_archer.png": {
+      "height": 882,
+      "opaque": 370071,
+      "partial": 9444,
+      "sha256": "de16b6f9e1d10011",
+      "transparent": 405465,
+      "width": 890
+    },
+    "spell_frame_assassin.png": {
+      "height": 888,
+      "opaque": 346895,
+      "partial": 16860,
+      "sha256": "6324cee39fa1bbab",
+      "transparent": 419461,
+      "width": 882
+    },
+    "spell_frame_healer.png": {
+      "height": 851,
+      "opaque": 304064,
+      "partial": 11217,
+      "sha256": "920b4edb97f0fb5f",
+      "transparent": 402963,
+      "width": 844
+    },
+    "spell_frame_mage.png": {
+      "height": 845,
+      "opaque": 361581,
+      "partial": 20527,
+      "sha256": "4d7ee8a2bfdfb20b",
+      "transparent": 340367,
+      "width": 855
+    }
+  },
+  "rejected_candidates": {
+    "gold_portrait_frame.png": "Rejected after visual inspection: the tiny square source has incomplete corners and visible color compression; the clean archer frame is reused.",
+    "gold_resource_badge.png": "Rejected after visual inspection: the medallion touches a neighboring separator on the flattened sheet; the existing clean badge is retained."
+  },
+  "sources": {
+    "84f1c661db9220f4e9d51fdfdbf6c787.jpg": "74c92d738c61e8635ccabdee0ff2f53e69ba3ba78846c8276d9db5b27c68d239",
+    "cadre_sort_archer.png": "40b0c66f936ee2ae9c00d0f60a4ced24bd8f2eab03c25bf53f63c037da5257d7",
+    "cadre_sort_assassin.png": "75209bf25b79dd5bfc57f5d2bc873de3cbe9d4fca5cc5bd7d4c04e7d744d67a3",
+    "cadre_sort_healer.png": "72ac573ce5db5c0fcbc1dc37a6d66d6cc7e60a797594a87605d83b781189bd56",
+    "cadre_sort_mage.png": "42dc399037b4bdc5091c59449e798d1371482609bb6699dc373eb92e32823477"
+  }
+}

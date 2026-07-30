@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/components/dark_menu_button.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/themes/dark_pause_menu_theme.tres" id="2_theme"]
+
+[node name="DarkMenuButton" type="Button"]
+custom_minimum_size = Vector2(450, 58)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("2_theme")
+theme_type_variation = &"DarkMenuButton"
+text = "ACTION"
+script = ExtResource("1_script")

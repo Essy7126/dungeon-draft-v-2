@@ -12,9 +12,13 @@ const TAB_SCENE := preload(
 
 @onready var _outer_margin: MarginContainer = %OuterMargin
 @onready var _main_frame: NinePatchRect = %MainFrame
+@onready var _frame_margin: MarginContainer = %FrameMargin
+@onready var _main: VBoxContainer = %Main
 @onready var _title_label: Label = %TitleLabel
 @onready var _consultative_label: Label = %ConsultativeLabel
+@onready var _tabs_scroll: ScrollContainer = %TabsScroll
 @onready var _tabs: HBoxContainer = %DisciplineTabs
+@onready var _content_split: HSplitContainer = %ContentSplit
 @onready var _graph_scroll: ScrollContainer = %GraphScroll
 @onready var _graph: SkillTreeGraphView = %SkillTreeGraphView
 @onready var _detail_panel: SkillTreeNodeDetailPanel = %NodeDetailPanel
@@ -28,6 +32,7 @@ var _preview_character_state: CharacterRunState = null
 var _tab_buttons: Array[SkillTreeDisciplineTab] = []
 var _previous_focus_owner: Control = null
 var _last_inspected_by_discipline: Dictionary = {}
+var _layout_profile: StringName = &"large"
 
 
 func _ready() -> void:
@@ -39,6 +44,7 @@ func _ready() -> void:
 	_close_button.pressed.connect(close_screen)
 	_graph.node_inspected.connect(_on_node_inspected)
 	resized.connect(_on_resized)
+	_graph_scroll.resized.connect(_on_graph_scroll_resized)
 	hide()
 
 
@@ -143,12 +149,18 @@ func get_layout_snapshot() -> Dictionary:
 		"screen_global": get_global_rect(),
 		"outer_global": _outer_margin.get_global_rect(),
 		"tabs_global": _tabs.get_global_rect(),
+		"tabs_scroll_global": _tabs_scroll.get_global_rect(),
 		"graph_scroll_global": _graph_scroll.get_global_rect(),
+		"graph_content_global": _graph.get_global_rect(),
+		"graph_layout": _graph.get_layout_snapshot(),
 		"detail_global": _detail_panel.get_global_rect(),
 		"close_global": _close_button.get_global_rect(),
 		"footer_global": _footer_label.get_global_rect(),
 		"consultative_visible": _consultative_label.visible,
 		"detail_minimum_width": _detail_panel.custom_minimum_size.x,
+		"layout_profile": _layout_profile,
+		"footer_text": _footer_label.text,
+		"footer_visible": _footer_label.visible,
 	}
 
 
@@ -159,6 +171,10 @@ func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
 
 func is_consultative() -> bool:
 	return true
+
+
+func get_footer_text() -> String:
+	return _footer_label.text
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -187,6 +203,7 @@ func _build_tabs(character_state: CharacterRunState) -> void:
 			skin,
 			discipline.discipline_id == current_discipline_id
 		)
+		button.apply_layout_profile(_layout_profile)
 		button.pressed.connect(
 			_show_discipline.bind(discipline.discipline_id)
 		)
@@ -213,6 +230,7 @@ func _show_discipline(discipline_id: StringName) -> void:
 		progress,
 		base_spell.spell_name if base_spell != null else discipline.display_name
 	)
+	_queue_graph_layout()
 	var next_rank := progress.get_next_rank_data()
 	_footer_label.text = "%s — Rang %d — %s%s" % [
 		discipline.display_name,
@@ -346,22 +364,97 @@ func _on_resized() -> void:
 		_apply_responsive_layout(size)
 
 
+func _on_graph_scroll_resized() -> void:
+	if is_node_ready():
+		_queue_graph_layout()
+
+
 func _apply_responsive_layout(viewport_size: Vector2) -> void:
 	var compact := viewport_size.x <= 1320.0 or viewport_size.y <= 760.0
 	var medium := viewport_size.x <= 1650.0 or viewport_size.y <= 940.0
-	var margin := 10.0 if compact else 18.0 if medium else 28.0
+	_layout_profile = (
+		&"compact" if compact else &"medium" if medium else &"large"
+	)
+	var margin := 8.0 if compact else 12.0 if medium else 18.0
 	_outer_margin.offset_left = margin
 	_outer_margin.offset_top = margin
 	_outer_margin.offset_right = -margin
 	_outer_margin.offset_bottom = -margin
-	_detail_panel.custom_minimum_size.x = (
-		318.0 if compact else 352.0 if medium else 400.0
+	var detail_width := (
+		330.0 if compact else 360.0 if medium else 410.0
 	)
+	_detail_panel.custom_minimum_size.x = detail_width
+	_content_split.split_offset = -int(detail_width)
+	var horizontal_frame_margin := (
+		18 if compact else 24 if medium else 28
+	)
+	_frame_margin.add_theme_constant_override(
+		"margin_left",
+		horizontal_frame_margin
+	)
+	_frame_margin.add_theme_constant_override(
+		"margin_right",
+		horizontal_frame_margin
+	)
+	_frame_margin.add_theme_constant_override(
+		"margin_top",
+		10 if compact else 14 if medium else 16
+	)
+	_frame_margin.add_theme_constant_override(
+		"margin_bottom",
+		10 if compact else 12 if medium else 14
+	)
+	_main.add_theme_constant_override("separation", 4)
 	_title_label.add_theme_font_size_override(
 		"font_size",
-		18 if compact else 21 if medium else 24
+		19 if compact else 22 if medium else 24
+	)
+	_consultative_label.add_theme_font_size_override(
+		"font_size",
+		11 if compact else 12 if medium else 13
 	)
 	_consultative_label.visible = viewport_size.x >= 1460.0
+	_tabs_scroll.custom_minimum_size.y = (
+		62.0 if compact else 68.0 if medium else 74.0
+	)
+	_tabs.add_theme_constant_override(
+		"separation",
+		6 if compact else 8
+	)
+	for button in _tab_buttons:
+		button.apply_layout_profile(_layout_profile)
+	_detail_panel.apply_layout_profile(_layout_profile)
+	_close_button.custom_minimum_size = Vector2(
+		104.0 if compact else 108.0 if medium else 116.0,
+		34.0 if compact else 36.0 if medium else 38.0
+	)
+	_footer_label.custom_minimum_size.y = (
+		20.0 if compact else 22.0 if medium else 24.0
+	)
+	_footer_label.add_theme_font_size_override(
+		"font_size",
+		13 if compact else 14 if medium else 15
+	)
+	_queue_graph_layout()
+
+
+func _queue_graph_layout() -> void:
+	if is_inside_tree():
+		_apply_graph_layout.call_deferred()
+
+
+func _apply_graph_layout() -> void:
+	if not is_instance_valid(_graph_scroll) or not is_instance_valid(_graph):
+		return
+	if _graph_scroll.size.x < 100.0 or _graph_scroll.size.y < 100.0:
+		return
+	_graph.apply_layout(
+		size,
+		Vector2(
+			maxf(_graph_scroll.size.x, 1.0),
+			maxf(_graph_scroll.size.y, 1.0)
+		)
+	)
 
 
 func _get_character_state() -> CharacterRunState:
