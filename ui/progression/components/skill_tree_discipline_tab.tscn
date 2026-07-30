@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/components/skill_tree_discipline_tab.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_effect_glyph.tscn" id="2_glyph"]
+[ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="3_theme"]
+
+[node name="SkillTreeDisciplineTab" type="Button"]
+custom_minimum_size = Vector2(212, 58)
+offset_right = 212.0
+offset_bottom = 58.0
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("3_theme")
+theme_type_variation = &"SkillTreeDisciplineTabButton"
+script = ExtResource("1_script")
+
+[node name="FrameTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ContentMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 7.0
+offset_right = -12.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Content" type="HBoxContainer" parent="ContentMargin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 7
+
+[node name="DisciplineIcon" parent="ContentMargin/Content" instance=ExtResource("2_glyph")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+
+[node name="Labels" type="VBoxContainer" parent="ContentMargin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="NameLabel" type="Label" parent="ContentMargin/Content/Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 14
+text = "Archer"
+text_overrun_behavior = 3
+
+[node name="ActiveMarker" type="Label" parent="ContentMargin/Content/Labels"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.76, 0.36, 1)
+theme_override_font_sizes/font_size = 9
+text = "ACTIF"
+
+[node name="RankLabel" type="Label" parent="ContentMargin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 14
+text = "R1"
+
+[node name="PendingBadge" parent="ContentMargin/Content" instance=ExtResource("2_glyph")]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2

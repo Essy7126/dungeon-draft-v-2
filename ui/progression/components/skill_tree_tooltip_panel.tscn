@@ -1,19 +1,20 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/components/skill_tree_tooltip_panel.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+[ext_resource type="Resource" path="res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres" id="3_skin"]
 
 [node name="SkillTreeTooltipPanel" type="PanelContainer"]
 visible = false
 custom_minimum_size = Vector2(390, 0)
-offset_left = -410.0
-offset_top = 0.0
-offset_right = -14.0
-offset_bottom = 520.0
+offset_left = -402.0
+offset_right = -12.0
+offset_bottom = 480.0
 mouse_filter = 2
 theme = ExtResource("2_theme")
 theme_type_variation = &"SkillTreeTooltip"
 script = ExtResource("1_script")
+skin = ExtResource("3_skin")
 
 [node name="Content" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -24,16 +25,12 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.84, 0.52, 1)
 theme_override_font_sizes/font_size = 18
-text = "Elfe — Progression"
+text = "ELFE — PROGRESSION"
 
-[node name="Summary" type="RichTextLabel" parent="Content"]
+[node name="DisciplineRows" type="VBoxContainer" parent="Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(360, 385)
 layout_mode = 2
-bbcode_enabled = true
-fit_content = true
-scroll_active = false
-autowrap_mode = 2
+theme_override_constants/separation = 7
 
 [node name="Separator" type="HSeparator" parent="Content"]
 layout_mode = 2

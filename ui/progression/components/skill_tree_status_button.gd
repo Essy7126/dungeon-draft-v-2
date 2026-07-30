@@ -5,22 +5,37 @@ signal tree_requested(character_id: StringName, discipline_id: StringName)
 
 @export var character_id: StringName = &"elf"
 @export var discipline_id: StringName = &"archer"
+@export var skin: SkillTreeSkinData = null
 
+@onready var _frame_texture: TextureRect = %FrameTexture
+@onready var _discipline_icon: SkillTreeEffectGlyph = %DisciplineIcon
 @onready var _discipline_label: Label = %DisciplineLabel
 @onready var _rank_label: Label = %RankLabel
 @onready var _xp_label: Label = %XPLabel
 @onready var _progress_bar: ProgressBar = %XPProgress
-@onready var _pending_badge: Label = %PendingBadge
+@onready var _xp_frame: NinePatchRect = %XPFrame
+@onready var _pending_badge: SkillTreeEffectGlyph = %PendingBadge
+@onready var _change_glow: Panel = %ChangeGlow
 @onready var _tooltip_panel: SkillTreeTooltipPanel = %TooltipPanel
 
 var progression_controller = null
 var _context_visible := true
 var _has_character_state := false
+var _last_rank := -1
+var _animation: Tween = null
 
 
 func _ready() -> void:
 	if progression_controller == null:
 		progression_controller = GameManager
+	_frame_texture.texture = skin.character_tab_texture if skin != null else null
+	_xp_frame.texture = skin.xp_bar_frame_texture if skin != null else null
+	_discipline_icon.configure_discipline(&"elf_archer", skin)
+	_pending_badge.configure(
+		&"pending",
+		skin.get_state_texture(&"pending") if skin != null else null
+	)
+	_change_glow.hide()
 	pressed.connect(_on_pressed)
 	mouse_entered.connect(_show_structured_tooltip)
 	mouse_exited.connect(_hide_structured_tooltip)
@@ -32,6 +47,8 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_disconnect_progression_signal()
+	if _animation != null:
+		_animation.kill()
 
 
 func set_progression_controller(controller) -> void:
@@ -51,7 +68,7 @@ func set_context_visible(value: bool) -> void:
 		_hide_structured_tooltip()
 
 
-func refresh_from_state() -> void:
+func refresh_from_state(animate_change: bool = false) -> void:
 	var character_state := _get_character_state()
 	_has_character_state = character_state != null
 	visible = _context_visible and _has_character_state
@@ -64,6 +81,7 @@ func refresh_from_state() -> void:
 		_progress_bar.value = 0.0
 		_pending_badge.hide()
 		_tooltip_panel.refresh_from_state(null)
+		_last_rank = -1
 		return
 	var discipline := _find_discipline(character_state, discipline_id)
 	var progress := character_state.get_discipline_progress(discipline_id)
@@ -84,13 +102,18 @@ func refresh_from_state() -> void:
 	)
 	_progress_bar.min_value = 0.0
 	_progress_bar.max_value = maxf(float(next_threshold), 1.0)
-	_progress_bar.value = clampf(
+	var new_value := clampf(
 		float(progress.xp),
 		0.0,
 		_progress_bar.max_value
 	)
+	if animate_change and is_inside_tree():
+		_animate_progress(new_value, progress.rank != _last_rank)
+	else:
+		_progress_bar.value = new_value
 	_pending_badge.visible = not progress.get_pending_rank_choices().is_empty()
 	_tooltip_panel.refresh_from_state(character_state)
+	_last_rank = progress.rank
 
 
 func get_rank_text() -> String:
@@ -109,6 +132,22 @@ func get_tooltip_panel() -> SkillTreeTooltipPanel:
 	return _tooltip_panel
 
 
+func get_frame_texture() -> Texture2D:
+	return _frame_texture.texture
+
+
+func get_xp_frame_texture() -> Texture2D:
+	return _xp_frame.texture
+
+
+func get_xp_progress_snapshot() -> Dictionary:
+	return {
+		"minimum": _progress_bar.min_value,
+		"maximum": _progress_bar.max_value,
+		"value": _progress_bar.value,
+	}
+
+
 func _on_discipline_xp_gained(
 		gained_character_id,
 		gained_discipline_id,
@@ -118,7 +157,7 @@ func _on_discipline_xp_gained(
 	if StringName(gained_character_id) != character_id \
 			or StringName(gained_discipline_id) != discipline_id:
 		return
-	refresh_from_state()
+	refresh_from_state(true)
 
 
 func _on_pressed() -> void:
@@ -128,13 +167,53 @@ func _on_pressed() -> void:
 
 func _show_structured_tooltip() -> void:
 	refresh_from_state()
-	if _has_character_state:
-		_tooltip_panel.show()
+	if not _has_character_state:
+		return
+	_tooltip_panel.show()
+	_position_tooltip.call_deferred()
 
 
 func _hide_structured_tooltip() -> void:
 	if is_instance_valid(_tooltip_panel):
 		_tooltip_panel.hide()
+
+
+func _position_tooltip() -> void:
+	if not _tooltip_panel.visible:
+		return
+	_tooltip_panel.place_near(
+		get_global_rect(),
+		get_viewport_rect()
+	)
+
+
+func _animate_progress(target_value: float, rank_changed: bool) -> void:
+	if _animation != null:
+		_animation.kill()
+	_animation = create_tween()
+	_animation.set_parallel(true)
+	_animation.tween_property(
+		_progress_bar,
+		"value",
+		target_value,
+		0.24
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if rank_changed:
+		_change_glow.modulate.a = 0.0
+		_change_glow.show()
+		_animation.tween_property(
+			_change_glow,
+			"modulate:a",
+			0.75,
+			0.12
+		)
+		_animation.chain().tween_property(
+			_change_glow,
+			"modulate:a",
+			0.0,
+			0.28
+		)
+		_animation.finished.connect(_change_glow.hide)
 
 
 func _get_character_state() -> CharacterRunState:

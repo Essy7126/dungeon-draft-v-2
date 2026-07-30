@@ -1,46 +1,75 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/components/skill_tree_status_button.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_tooltip_panel.tscn" id="2_tooltip"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="3_theme"]
+[ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_effect_glyph.tscn" id="4_glyph"]
+[ext_resource type="Resource" path="res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres" id="5_skin"]
 
 [node name="SkillTreeStatusButton" type="Button"]
-custom_minimum_size = Vector2(156, 94)
-offset_right = 156.0
-offset_bottom = 94.0
+custom_minimum_size = Vector2(196, 76)
+offset_right = 196.0
+offset_bottom = 76.0
 focus_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("3_theme")
 theme_type_variation = &"SkillTreeStatusButton"
 script = ExtResource("1_script")
+skin = ExtResource("5_skin")
 
-[node name="Content" type="VBoxContainer" parent="."]
+[node name="FrameTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 7.0
-offset_right = -10.0
-offset_bottom = -7.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+expand_mode = 1
+stretch_mode = 5
 
-[node name="TopRow" type="HBoxContainer" parent="Content"]
+[node name="ChangeGlow" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeNodeFocus"
+
+[node name="Content" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 9.0
+offset_right = -13.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 7
+
+[node name="DisciplineIcon" parent="Content" instance=ExtResource("4_glyph")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+
+[node name="Info" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 1
+
+[node name="TopRow" type="HBoxContainer" parent="Content/Info"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="DisciplineIcon" type="Label" parent="Content/TopRow"]
-custom_minimum_size = Vector2(24, 0)
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 17
-text = "A"
-horizontal_alignment = 1
-
-[node name="DisciplineLabel" type="Label" parent="Content/TopRow"]
+[node name="DisciplineLabel" type="Label" parent="Content/Info/TopRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -48,41 +77,64 @@ mouse_filter = 2
 theme_override_font_sizes/font_size = 14
 text = "Archer"
 
-[node name="RankLabel" type="Label" parent="Content/TopRow"]
+[node name="RankLabel" type="Label" parent="Content/Info/TopRow"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.95, 0.8, 0.43, 1)
+theme_override_font_sizes/font_size = 15
 text = "R1"
 
-[node name="PendingBadge" type="Label" parent="Content/TopRow"]
+[node name="PendingBadge" parent="Content/Info/TopRow" instance=ExtResource("4_glyph")]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 0.82, 0.24, 1)
-theme_override_font_sizes/font_size = 16
-text = "!"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="XPLabel" type="Label" parent="Content"]
+[node name="XPLabel" type="Label" parent="Content/Info"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.76, 0.8, 0.82, 1)
-theme_override_font_sizes/font_size = 12
-text = "0 / 3"
+theme_override_font_sizes/font_size = 10
+text = "0 / 3 XP"
 horizontal_alignment = 1
 
-[node name="XPProgress" type="ProgressBar" parent="Content"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 12)
+[node name="XPStage" type="Control" parent="Content/Info"]
+custom_minimum_size = Vector2(0, 13)
 layout_mode = 2
 mouse_filter = 2
+
+[node name="XPProgress" type="ProgressBar" parent="Content/Info/XPStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = -6.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeXpProgress"
 max_value = 3.0
 show_percentage = false
+
+[node name="XPFrame" type="NinePatchRect" parent="Content/Info/XPStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+patch_margin_left = 70
+patch_margin_top = 80
+patch_margin_right = 70
+patch_margin_bottom = 80
 
 [node name="TooltipPanel" parent="." instance=ExtResource("2_tooltip")]
 unique_name_in_owner = true

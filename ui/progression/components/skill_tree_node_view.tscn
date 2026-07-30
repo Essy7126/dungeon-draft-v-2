@@ -1,96 +1,172 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/components/skill_tree_node_view.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_effect_glyph.tscn" id="3_glyph"]
 
-[node name="SkillTreeNodeView" type="PanelContainer"]
-custom_minimum_size = Vector2(210, 120)
-offset_right = 210.0
-offset_bottom = 120.0
+[node name="SkillTreeNodeView" type="Control"]
+custom_minimum_size = Vector2(134, 104)
+offset_right = 134.0
+offset_bottom = 104.0
+focus_mode = 2
 mouse_filter = 0
 theme = ExtResource("2_theme")
-theme_type_variation = &"SkillTreeNodeFuture"
+theme_type_variation = &"SkillTreeNodeSurface"
 script = ExtResource("1_script")
 
-[node name="CapstoneFrame" type="Panel" parent="."]
+[node name="StateBackdrop" type="Panel" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -38.0
+offset_right = 38.0
+offset_bottom = 76.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeNodeBackdropFuture"
+
+[node name="CapstoneHalo" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.0
+offset_top = -4.0
+offset_right = 42.0
+offset_bottom = 80.0
+grow_horizontal = 2
 mouse_filter = 2
 theme_type_variation = &"SkillTreeNodeCapstone"
 
-[node name="ContentMargin" type="MarginContainer" parent="."]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 8
-
-[node name="Content" type="VBoxContainer" parent="ContentMargin"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="Header" type="HBoxContainer" parent="ContentMargin/Content"]
-layout_mode = 2
-
-[node name="IconBox" type="Control" parent="ContentMargin/Content/Header"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="Icon" type="TextureRect" parent="ContentMargin/Content/Header/IconBox"]
+[node name="FrameTexture" type="TextureRect" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -38.0
+offset_right = 38.0
+offset_bottom = 76.0
 grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Placeholder" type="Label" parent="ContentMargin/Content/Header/IconBox"]
+[node name="DisciplineIcon" parent="." instance=ExtResource("3_glyph")]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_left = 31.0
+offset_top = 8.0
+offset_right = 49.0
+offset_bottom = 26.0
+
+[node name="IconOverride" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 47.0
+offset_top = 18.0
+offset_right = 87.0
+offset_bottom = 58.0
 mouse_filter = 2
-text = "?"
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EffectGlyphPrimary" parent="." instance=ExtResource("3_glyph")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 46.0
+offset_top = 17.0
+offset_right = 88.0
+offset_bottom = 59.0
+
+[node name="EffectGlyphSecondary" parent="." instance=ExtResource("3_glyph")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 77.0
+offset_top = 49.0
+offset_right = 99.0
+offset_bottom = 71.0
+
+[node name="StateIcon" parent="." instance=ExtResource("3_glyph")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 85.0
+offset_top = 6.0
+offset_right = 107.0
+offset_bottom = 28.0
+
+[node name="RankBadgeTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 27.0
+offset_top = 56.0
+offset_right = 61.0
+offset_bottom = 74.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RankBadgeFallback" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 27.0
+offset_top = 56.0
+offset_right = 61.0
+offset_bottom = 74.0
+mouse_filter = 2
+theme_type_variation = &"SkillTreeRankBadge"
+
+[node name="RankLabel" type="Label" parent="RankBadgeFallback"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 10
+text = "R1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="NameLabel" type="Label" parent="ContentMargin/Content/Header"]
+[node name="NameLabel" type="Label" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 77.0
+offset_bottom = 91.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 12
 text = "Évolution"
+horizontal_alignment = 1
 text_overrun_behavior = 3
 
-[node name="StateSymbol" type="Label" parent="ContentMargin/Content/Header"]
+[node name="ThresholdLabel" type="Label" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(24, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 17
-text = "◇"
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 90.0
+offset_bottom = 104.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.68, 0.72, 0.76, 1)
+theme_override_font_sizes/font_size = 10
+text = "0 XP"
 horizontal_alignment = 1
 
-[node name="RankLabel" type="Label" parent="ContentMargin/Content"]
+[node name="FocusOverlay" type="Panel" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.69, 0.73, 0.78, 1)
-theme_override_font_sizes/font_size = 12
-text = "R1 · 0 XP"
-
-[node name="StateHint" type="Label" parent="ContentMargin/Content"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.82, 0.84, 0.82, 1)
-theme_override_font_sizes/font_size = 11
-text = "Futur compatible"
-autowrap_mode = 2
-vertical_alignment = 2
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -41.0
+offset_top = -3.0
+offset_right = 41.0
+offset_bottom = 79.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeNodeFocus"

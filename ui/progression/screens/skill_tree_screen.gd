@@ -3,8 +3,19 @@ extends Control
 
 signal screen_closed
 
+const TAB_SCENE := preload(
+	"res://ui/progression/components/skill_tree_discipline_tab.tscn"
+)
+
+@export var skin: SkillTreeSkinData = null
+@export var visual_map: SkillTreeVisualMapData = null
+
+@onready var _outer_margin: MarginContainer = %OuterMargin
+@onready var _main_frame: NinePatchRect = %MainFrame
 @onready var _title_label: Label = %TitleLabel
+@onready var _consultative_label: Label = %ConsultativeLabel
 @onready var _tabs: HBoxContainer = %DisciplineTabs
+@onready var _graph_scroll: ScrollContainer = %GraphScroll
 @onready var _graph: SkillTreeGraphView = %SkillTreeGraphView
 @onready var _detail_panel: SkillTreeNodeDetailPanel = %NodeDetailPanel
 @onready var _footer_label: Label = %FooterLabel
@@ -14,13 +25,20 @@ var progression_controller = null
 var character_id: StringName = &""
 var current_discipline_id: StringName = &"archer"
 var _preview_character_state: CharacterRunState = null
-var _tab_buttons: Array[Button] = []
+var _tab_buttons: Array[SkillTreeDisciplineTab] = []
+var _previous_focus_owner: Control = null
+var _last_inspected_by_discipline: Dictionary = {}
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_main_frame.texture = skin.main_panel_texture if skin != null else null
+	_graph.skin = skin
+	_graph.visual_map = visual_map
+	_detail_panel.skin = skin
 	_close_button.pressed.connect(close_screen)
 	_graph.node_inspected.connect(_on_node_inspected)
+	resized.connect(_on_resized)
 	hide()
 
 
@@ -36,10 +54,11 @@ func open_for_character(
 	if _get_character_state() == null:
 		hide()
 		return false
+	_capture_previous_focus()
 	show()
 	move_to_front()
 	refresh_from_state()
-	_close_button.grab_focus.call_deferred()
+	_focus_last_or_first.call_deferred()
 	return true
 
 
@@ -55,10 +74,11 @@ func open_for_state(
 	if character_state == null:
 		hide()
 		return false
+	_capture_previous_focus()
 	show()
 	move_to_front()
 	refresh_from_state()
-	_close_button.grab_focus.call_deferred()
+	_focus_last_or_first.call_deferred()
 	return true
 
 
@@ -74,6 +94,7 @@ func refresh_from_state() -> void:
 	)
 	_build_tabs(character_state)
 	_show_discipline(current_discipline_id)
+	_apply_responsive_layout(size)
 
 
 func close_screen() -> void:
@@ -81,6 +102,9 @@ func close_screen() -> void:
 		return
 	hide()
 	screen_closed.emit()
+	if is_instance_valid(_previous_focus_owner):
+		_previous_focus_owner.grab_focus.call_deferred()
+	_previous_focus_owner = null
 
 
 func get_graph() -> SkillTreeGraphView:
@@ -93,6 +117,44 @@ func get_detail_panel() -> SkillTreeNodeDetailPanel:
 
 func get_tab_count() -> int:
 	return _tab_buttons.size()
+
+
+func get_tab_buttons() -> Array[SkillTreeDisciplineTab]:
+	return _tab_buttons.duplicate()
+
+
+func get_close_button() -> Button:
+	return _close_button
+
+
+func get_last_inspected_id(
+		discipline_id: StringName = current_discipline_id
+	) -> StringName:
+	return StringName(_last_inspected_by_discipline.get(
+		discipline_id,
+		&""
+	))
+
+
+func get_layout_snapshot() -> Dictionary:
+	return {
+		"screen": get_rect(),
+		"outer": _outer_margin.get_rect(),
+		"screen_global": get_global_rect(),
+		"outer_global": _outer_margin.get_global_rect(),
+		"tabs_global": _tabs.get_global_rect(),
+		"graph_scroll_global": _graph_scroll.get_global_rect(),
+		"detail_global": _detail_panel.get_global_rect(),
+		"close_global": _close_button.get_global_rect(),
+		"footer_global": _footer_label.get_global_rect(),
+		"consultative_visible": _consultative_label.visible,
+		"detail_minimum_width": _detail_panel.custom_minimum_size.x,
+	}
+
+
+func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
+	size = viewport_size
+	_apply_responsive_layout(viewport_size)
 
 
 func is_consultative() -> bool:
@@ -117,19 +179,17 @@ func _build_tabs(character_state: CharacterRunState) -> void:
 		var progress := character_state.get_discipline_progress(
 			discipline.discipline_id
 		)
-		var button := Button.new()
-		button.text = "%s · R%d" % [
-			discipline.display_name,
-			progress.rank if progress != null else 1,
-		]
-		button.toggle_mode = true
-		button.button_pressed = (
+		var button := TAB_SCENE.instantiate() as SkillTreeDisciplineTab
+		_tabs.add_child(button)
+		button.configure(
+			discipline,
+			progress,
+			skin,
 			discipline.discipline_id == current_discipline_id
 		)
 		button.pressed.connect(
 			_show_discipline.bind(discipline.discipline_id)
 		)
-		_tabs.add_child(button)
 		_tab_buttons.append(button)
 
 
@@ -143,9 +203,7 @@ func _show_discipline(discipline_id: StringName) -> void:
 		return
 	current_discipline_id = discipline_id
 	for button in _tab_buttons:
-		button.button_pressed = button.text.begins_with(
-			discipline.display_name
-		)
+		button.set_selected(button.discipline_id == discipline_id)
 	var base_spell := _base_spell_for_discipline(
 		character_state,
 		discipline
@@ -156,20 +214,35 @@ func _show_discipline(discipline_id: StringName) -> void:
 		base_spell.spell_name if base_spell != null else discipline.display_name
 	)
 	var next_rank := progress.get_next_rank_data()
-	_footer_label.text = "%s — Rang %d — %s" % [
+	_footer_label.text = "%s — Rang %d — %s%s" % [
 		discipline.display_name,
 		progress.rank,
 		(
-			"%d/%d XP" % [progress.xp, next_rank.required_total_xp]
+			"%d / %d XP" % [progress.xp, next_rank.required_total_xp]
 			if next_rank != null
-			else "%d XP — rang maximum" % progress.xp
+			else "%d XP — RANG MAXIMUM" % progress.xp
+		),
+		(
+			" — CHOIX EN ATTENTE"
+			if not progress.get_pending_rank_choices().is_empty()
+			else ""
 		),
 	]
-	var first_view := _graph.get_first_node_view()
+	var wanted_id := StringName(
+		_last_inspected_by_discipline.get(discipline_id, &"")
+	)
+	var first_view := (
+		_graph.get_node_view(wanted_id)
+		if wanted_id != &""
+		else _graph.get_first_node_view()
+	)
 	if first_view != null:
 		_on_node_inspected(first_view)
 	else:
 		_detail_panel.set_empty()
+	_configure_focus_navigation()
+	if visible:
+		_focus_last_or_first.call_deferred()
 
 
 func _on_node_inspected(view: SkillTreeNodeView) -> void:
@@ -179,6 +252,9 @@ func _on_node_inspected(view: SkillTreeNodeView) -> void:
 	var discipline := view.discipline_data
 	if character_state == null or discipline == null:
 		return
+	_last_inspected_by_discipline[discipline.discipline_id] = (
+		view.presentation_id
+	)
 	if view.is_base_rank:
 		var base_spell := _base_spell_for_discipline(
 			character_state,
@@ -192,7 +268,8 @@ func _on_node_inspected(view: SkillTreeNodeView) -> void:
 				if base_spell != null
 				else discipline.description
 			),
-			view.visual_presentation
+			view.visual_presentation,
+			view.node_visual
 		)
 		return
 	var node := view.node_data
@@ -201,8 +278,90 @@ func _on_node_inspected(view: SkillTreeNodeView) -> void:
 		node,
 		view.visual_presentation,
 		_node_name_map(discipline),
-		_spell_display_name(character_state, node.target_spell_id)
+		_spell_display_name(character_state, node.target_spell_id),
+		view.node_visual
 	)
+
+
+func _configure_focus_navigation() -> void:
+	if _tab_buttons.is_empty():
+		return
+	for index in range(_tab_buttons.size()):
+		var button := _tab_buttons[index]
+		if index > 0:
+			button.focus_neighbor_left = button.get_path_to(
+				_tab_buttons[index - 1]
+			)
+		if index + 1 < _tab_buttons.size():
+			button.focus_neighbor_right = button.get_path_to(
+				_tab_buttons[index + 1]
+			)
+	var nodes := _graph.get_node_views_in_focus_order()
+	if not nodes.is_empty():
+		for button in _tab_buttons:
+			button.focus_neighbor_bottom = button.get_path_to(nodes[0])
+		for node in nodes:
+			if node.focus_neighbor_top.is_empty():
+				var active_tab := _active_tab()
+				if active_tab != null:
+					node.focus_neighbor_top = node.get_path_to(active_tab)
+			if node.focus_neighbor_right.is_empty():
+				node.focus_neighbor_right = node.get_path_to(_close_button)
+	_close_button.focus_neighbor_left = _close_button.get_path_to(
+		_tab_buttons[_tab_buttons.size() - 1]
+	)
+	if not nodes.is_empty():
+		_close_button.focus_neighbor_bottom = _close_button.get_path_to(
+			nodes[nodes.size() - 1]
+		)
+
+
+func _focus_last_or_first() -> void:
+	if not visible:
+		return
+	var wanted_id := get_last_inspected_id()
+	if wanted_id != &"" and _graph.focus_node_by_id(wanted_id):
+		return
+	var first := _graph.get_first_node_view()
+	if first != null:
+		first.grab_focus()
+	else:
+		_close_button.grab_focus()
+
+
+func _capture_previous_focus() -> void:
+	var owner := get_viewport().gui_get_focus_owner()
+	_previous_focus_owner = owner as Control
+
+
+func _active_tab() -> SkillTreeDisciplineTab:
+	for button in _tab_buttons:
+		if button.discipline_id == current_discipline_id:
+			return button
+	return null
+
+
+func _on_resized() -> void:
+	if is_node_ready():
+		_apply_responsive_layout(size)
+
+
+func _apply_responsive_layout(viewport_size: Vector2) -> void:
+	var compact := viewport_size.x <= 1320.0 or viewport_size.y <= 760.0
+	var medium := viewport_size.x <= 1650.0 or viewport_size.y <= 940.0
+	var margin := 10.0 if compact else 18.0 if medium else 28.0
+	_outer_margin.offset_left = margin
+	_outer_margin.offset_top = margin
+	_outer_margin.offset_right = -margin
+	_outer_margin.offset_bottom = -margin
+	_detail_panel.custom_minimum_size.x = (
+		318.0 if compact else 352.0 if medium else 400.0
+	)
+	_title_label.add_theme_font_size_override(
+		"font_size",
+		18 if compact else 21 if medium else 24
+	)
+	_consultative_label.visible = viewport_size.x >= 1460.0
 
 
 func _get_character_state() -> CharacterRunState:
@@ -246,11 +405,11 @@ func _spell_display_name(
 		spell_id: StringName
 	) -> String:
 	if character_state == null or character_state.unit == null:
-		return str(spell_id)
+		return "Sort de la discipline"
 	for spell in character_state.unit.spells:
 		if spell != null and spell.get_effective_spell_id() == spell_id:
 			return spell.spell_name
-	return str(spell_id)
+	return "Sort de la discipline"
 
 
 func _node_name_map(discipline: DisciplineData) -> Dictionary:

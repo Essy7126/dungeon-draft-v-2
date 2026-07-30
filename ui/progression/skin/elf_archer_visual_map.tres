@@ -1,0 +1,134 @@
+[gd_resource type="Resource" script_class="SkillTreeVisualMapData" load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/skin/skill_tree_visual_map_data.gd" id="1_map"]
+[ext_resource type="Script" path="res://ui/progression/skin/skill_tree_node_visual_data.gd" id="2_entry"]
+
+[sub_resource type="Resource" id="Base"]
+script = ExtResource("2_entry")
+node_id = &"__base_rank_1"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"elf_archer"
+
+[sub_resource type="Resource" id="EagleEye"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_eagle_eye"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"damage"
+secondary_glyph_id = &"range"
+
+[sub_resource type="Resource" id="RepelArrow"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_repel_arrow"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"push"
+
+[sub_resource type="Resource" id="LongRange"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_long_range"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"range"
+
+[sub_resource type="Resource" id="PiercingShot"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_piercing_shot"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"vulnerability"
+secondary_glyph_id = &"damage"
+
+[sub_resource type="Resource" id="HinderingArrow"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_hindering_arrow"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"movement"
+
+[sub_resource type="Resource" id="ImpactBolt"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_impact_bolt"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"collision"
+secondary_glyph_id = &"push"
+
+[sub_resource type="Resource" id="PerfectSight"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_perfect_sight"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"range"
+secondary_glyph_id = &"damage"
+
+[sub_resource type="Resource" id="Stabilization"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_stabilization"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"damage"
+
+[sub_resource type="Resource" id="BarbedTip"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_barbed_tip"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"bleed"
+secondary_glyph_id = &"duration"
+
+[sub_resource type="Resource" id="OpenBreach"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_open_breach"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"vulnerability"
+secondary_glyph_id = &"duration"
+
+[sub_resource type="Resource" id="PinArrow"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_pin_arrow"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"movement"
+
+[sub_resource type="Resource" id="TacticalRetreat"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_tactical_retreat"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"movement"
+secondary_glyph_id = &"push"
+
+[sub_resource type="Resource" id="SiegeBolt"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_siege_bolt"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"push"
+
+[sub_resource type="Resource" id="Shatter"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_shatter"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"collision"
+secondary_glyph_id = &"damage"
+
+[sub_resource type="Resource" id="PerfectShot"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_perfect_shot"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"damage"
+secondary_glyph_id = &"range"
+
+[sub_resource type="Resource" id="TranspiercingBolt"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_transpiercing_bolt"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"area_or_pierce"
+secondary_glyph_id = &"damage"
+
+[sub_resource type="Resource" id="SiegeArrow"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_siege_arrow"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"push"
+secondary_glyph_id = &"collision"
+
+[sub_resource type="Resource" id="StoppingArrow"]
+script = ExtResource("2_entry")
+node_id = &"elf_archer_stopping_arrow"
+discipline_icon_id = &"elf_archer"
+primary_glyph_id = &"movement"
+secondary_glyph_id = &"collision"
+
+[resource]
+script = ExtResource("1_map")
+entries = Array[ExtResource("2_entry")]([SubResource("Base"), SubResource("EagleEye"), SubResource("RepelArrow"), SubResource("LongRange"), SubResource("PiercingShot"), SubResource("HinderingArrow"), SubResource("ImpactBolt"), SubResource("PerfectSight"), SubResource("Stabilization"), SubResource("BarbedTip"), SubResource("OpenBreach"), SubResource("PinArrow"), SubResource("TacticalRetreat"), SubResource("SiegeBolt"), SubResource("Shatter"), SubResource("PerfectShot"), SubResource("TranspiercingBolt"), SubResource("SiegeArrow"), SubResource("StoppingArrow")])

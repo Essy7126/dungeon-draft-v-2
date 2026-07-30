@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/components/skill_tree_effect_glyph.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+
+[node name="SkillTreeEffectGlyph" type="Control"]
+custom_minimum_size = Vector2(28, 28)
+offset_right = 28.0
+offset_bottom = 28.0
+mouse_filter = 2
+theme = ExtResource("2_theme")
+theme_type_variation = &"SkillTreeGlyphView"
+script = ExtResource("1_script")

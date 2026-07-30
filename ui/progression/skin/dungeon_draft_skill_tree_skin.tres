@@ -1,0 +1,93 @@
+[gd_resource type="Resource" script_class="SkillTreeSkinData" load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/skin/skill_tree_skin_data.gd" id="1_skin"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_tree_panel_main.png.png" id="2_main"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_details_panel.png.png" id="3_detail"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_node_standard.png.png" id="4_standard"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_node_frame_base.png" id="5_base"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_character_tab_base.png" id="6_character_tab"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_discipline_tab_base.png.png" id="7_discipline_tab"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_xp_bar_frame.png.png" id="8_xp"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_state_lock.svg.png" id="9_lock"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_state_purchased.svg.png" id="10_selected"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/skill_state_excluded.svg.png" id="11_excluded"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_damage.png" id="12_damage"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/glyph_area..png" id="13_area"]
+
+[sub_resource type="AtlasTexture" id="AtlasMain"]
+atlas = ExtResource("2_main")
+region = Rect2(570, 374, 1548, 788)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasDetail"]
+atlas = ExtResource("3_detail")
+region = Rect2(425, 244, 690, 2200)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasStandard"]
+atlas = ExtResource("4_standard")
+region = Rect2(400, 395, 1248, 1250)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasBase"]
+atlas = ExtResource("5_base")
+region = Rect2(400, 395, 1248, 1255)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasCharacterTab"]
+atlas = ExtResource("6_character_tab")
+region = Rect2(260, 525, 2010, 690)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasDisciplineTab"]
+atlas = ExtResource("7_discipline_tab")
+region = Rect2(300, 500, 2470, 560)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasXpBar"]
+atlas = ExtResource("8_xp")
+region = Rect2(30, 560, 3010, 420)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasLock"]
+atlas = ExtResource("9_lock")
+region = Rect2(650, 460, 750, 1050)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasSelected"]
+atlas = ExtResource("10_selected")
+region = Rect2(790, 790, 470, 470)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasExcluded"]
+atlas = ExtResource("11_excluded")
+region = Rect2(500, 520, 1050, 1000)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasDamage"]
+atlas = ExtResource("12_damage")
+region = Rect2(560, 555, 930, 950)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasArea"]
+atlas = ExtResource("13_area")
+region = Rect2(200, 815, 1650, 580)
+filter_clip = true
+
+[resource]
+script = ExtResource("1_skin")
+main_panel_texture = SubResource("AtlasMain")
+detail_panel_texture = SubResource("AtlasDetail")
+node_standard_texture = SubResource("AtlasStandard")
+node_root_texture = SubResource("AtlasBase")
+node_capstone_texture = SubResource("AtlasBase")
+character_tab_texture = SubResource("AtlasCharacterTab")
+discipline_tab_texture = SubResource("AtlasDisciplineTab")
+xp_bar_frame_texture = SubResource("AtlasXpBar")
+state_lock_texture = SubResource("AtlasLock")
+state_selected_texture = SubResource("AtlasSelected")
+state_excluded_texture = SubResource("AtlasExcluded")
+effect_glyphs = {
+&"area_or_pierce": SubResource("AtlasArea"),
+&"damage": SubResource("AtlasDamage")
+}

@@ -1,15 +1,19 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/components/skill_tree_graph_view.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+[ext_resource type="Resource" path="res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres" id="3_skin"]
+[ext_resource type="Resource" path="res://ui/progression/skin/elf_archer_visual_map.tres" id="4_map"]
 
 [node name="SkillTreeGraphView" type="Control"]
-custom_minimum_size = Vector2(1400, 1080)
+custom_minimum_size = Vector2(958, 1092)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1400.0
-offset_bottom = 1080.0
+offset_right = 958.0
+offset_bottom = 1092.0
 mouse_filter = 1
 theme = ExtResource("2_theme")
 theme_type_variation = &"SkillTreeGraphView"
 script = ExtResource("1_script")
+skin = ExtResource("3_skin")
+visual_map = ExtResource("4_map")

@@ -1,31 +1,18 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/components/skill_tree_node_detail_panel.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_effect_glyph.tscn" id="3_glyph"]
+[ext_resource type="Resource" path="res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres" id="4_skin"]
 
 [node name="SkillTreeNodeDetailPanel" type="PanelContainer"]
-custom_minimum_size = Vector2(310, 0)
+custom_minimum_size = Vector2(360, 0)
 theme = ExtResource("2_theme")
-theme_type_variation = &"SkillTreeTooltip"
+theme_type_variation = &"SkillTreeDetailSurface"
 script = ExtResource("1_script")
+skin = ExtResource("4_skin")
 
-[node name="Margin" type="MarginContainer" parent="."]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
-
-[node name="Content" type="VBoxContainer" parent="Margin"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="IconBox" type="Control" parent="Margin/Content"]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="Icon" type="TextureRect" parent="Margin/Content/IconBox"]
+[node name="FrameTexture" type="NinePatchRect" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -33,72 +20,161 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+patch_margin_left = 72
+patch_margin_top = 150
+patch_margin_right = 72
+patch_margin_bottom = 150
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 34
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 34
+
+[node name="ContentScroll" type="ScrollContainer" parent="SafeMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+
+[node name="IconStage" type="Control" parent="SafeMargin/ContentScroll/Content"]
+custom_minimum_size = Vector2(0, 74)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DisciplineIcon" parent="SafeMargin/ContentScroll/Content/IconStage" instance=ExtResource("3_glyph")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 38.0
+offset_bottom = 38.0
+
+[node name="IconOverride" type="TextureRect" parent="SafeMargin/ContentScroll/Content/IconStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Placeholder" type="Label" parent="Margin/Content/IconBox"]
+[node name="PrimaryGlyph" parent="SafeMargin/ContentScroll/Content/IconStage" instance=ExtResource("3_glyph")]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 22
-text = "?"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="NameLabel" type="Label" parent="Margin/Content"]
+[node name="NameLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.96, 0.84, 0.5, 1)
 theme_override_font_sizes/font_size = 19
 text = "DÉTAIL DU NŒUD"
+horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="MetaLabel" type="Label" parent="Margin/Content"]
+[node name="MetaLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.68, 0.73, 0.8, 1)
-text = "Archer — Rang 1 — 0 XP"
+theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
+text = "Archer — Rang 1"
+horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="DescriptionLabel" type="Label" parent="Margin/Content"]
+[node name="XPLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.7, 0.4, 1)
+text = "0 XP requis"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 76)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "Description"
 autowrap_mode = 2
 
-[node name="SeparatorA" type="HSeparator" parent="Margin/Content"]
+[node name="SeparatorA" type="HSeparator" parent="SafeMargin/ContentScroll/Content"]
 layout_mode = 2
 
-[node name="SpellLabel" type="Label" parent="Margin/Content"]
+[node name="SpellHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
+theme_override_font_sizes/font_size = 11
+text = "SORT AFFECTÉ"
+
+[node name="SpellLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Sort affecté"
+text = "Tir précis"
 autowrap_mode = 2
 
-[node name="PrerequisitesLabel" type="Label" parent="Margin/Content"]
+[node name="PrerequisitesHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
+theme_override_font_sizes/font_size = 11
+text = "PRÉREQUIS"
+
+[node name="PrerequisitesLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Prérequis"
+text = "Aucun"
 autowrap_mode = 2
 
-[node name="SeparatorB" type="HSeparator" parent="Margin/Content"]
+[node name="SeparatorB" type="HSeparator" parent="SafeMargin/ContentScroll/Content"]
 layout_mode = 2
 
-[node name="StateLabel" type="Label" parent="Margin/Content"]
+[node name="StateHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
+theme_override_font_sizes/font_size = 11
+text = "ÉTAT"
+
+[node name="StateLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "État"
+theme_override_colors/font_color = Color(0.92, 0.8, 0.45, 1)
+theme_override_font_sizes/font_size = 14
+text = "Futur compatible"
 autowrap_mode = 2
 
-[node name="ReasonLabel" type="Label" parent="Margin/Content"]
+[node name="ReasonHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.67, 0.72, 0.78, 1)
+theme_override_font_sizes/font_size = 11
+text = "RAISON"
+
+[node name="ReasonLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.75, 0.78, 0.8, 1)
-text = "Raison"
+theme_override_colors/font_color = Color(0.78, 0.8, 0.82, 1)
+text = "Évolution future compatible."
 autowrap_mode = 2
