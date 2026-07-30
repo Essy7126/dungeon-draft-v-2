@@ -1,0 +1,72 @@
+[gd_scene format=4 uid="uid://xkiwx2a3m0gu"]
+
+[ext_resource type="Script" uid="uid://coox5sq37keko" path="res://battle/battle.gd" id="1_battle"]
+[ext_resource type="PackedScene" uid="uid://drk7p27rf2vv3" path="res://battle/iso/cave_room_01_background.tscn" id="2_background"]
+[ext_resource type="Script" uid="uid://coglln4uya5g3" path="res://battle/iso/iso_grid_view.gd" id="3_grid"]
+[ext_resource type="PackedScene" uid="uid://i5c6lt5m6q0w" path="res://debug/DebugOverlay.tscn" id="4_debug"]
+[ext_resource type="Script" uid="uid://b7j325rx638ux" path="res://battle/floating_text_spawner.gd" id="5_text"]
+[ext_resource type="Script" uid="uid://pm1sjpja3a5s" path="res://battle/impact_juice.gd" id="6_impact"]
+[ext_resource type="AudioStream" uid="uid://ccb7eepjta8nh" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="7_music"]
+[ext_resource type="TileSet" uid="uid://by7jccj4xyx5i" path="res://data/rooms/tile_set_iso_terrain.tres" id="8_terrain_tileset"]
+[ext_resource type="TileSet" uid="uid://c5e41kal2h1sr" path="res://data/rooms/tile_set_iso_decor.tres" id="9_decor_tileset"]
+
+[node name="Battle" type="Node2D" unique_id=600240518]
+texture_filter = 2
+script = ExtResource("1_battle")
+grid_cols = 34
+grid_rows = 30
+standalone_preview_without_room = true
+temporary_iso_placeholders = true
+hide_terrain_layer_after_import = true
+terrain_unpainted_defaults_to_wall = true
+
+[node name="MountainBackground" parent="." unique_id=64852786 instance=ExtResource("2_background")]
+
+[node name="IsoGridView" type="Node2D" parent="." unique_id=1504659854 groups=["battle_grid_view"]]
+position = Vector2(30, 20)
+scale = Vector2(1.5, 1.5)
+script = ExtResource("3_grid")
+draw_base_cells = false
+draw_cell_centers = false
+draw_map_bounds = false
+
+[node name="Geometry" type="TileMapLayer" parent="IsoGridView" unique_id=1391381566]
+
+[node name="TerrainLayer" type="TileMapLayer" parent="." unique_id=260694950]
+position = Vector2(30, 20)
+scale = Vector2(1.5, 1.5)
+tile_map_data = PackedByteArray("AAAGAAkAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAgAAAAAAAAAAAAGAAcAAAAAAAAAAAAGAAoAAAAAAAAAAAAGAAsAAAAAAAAAAAAFAAoAAAAAAAAAAAAFAAsAAAAAAAAAAAAFAAwAAAAAAAAAAAAFAA0AAAAAAAAAAAAGAA0AAAAAAAAAAAAGAA4AAAAAAAAAAAAHAA8AAAAAAAAAAAAIABAAAAAAAAAAAAAJABEAAAAAAAAAAAAKABEAAAAAAAAAAAALABEAAAAAAAAAAAAMABEAAAAAAAAAAAANABEAAAAAAAAAAAAMABAAAAAAAAAAAAANABAAAAAAAAAAAAALABAAAAAAAAAAAAAHAA4AAAAAAAAAAAAHABAAAAAAAAAAAAAIAA4AAAAAAAAAAAAIAA8AAAAAAAAAAAAJAA4AAAAAAAAAAAAJAA8AAAAAAAAAAAAJABAAAAAAAAAAAAAKAA4AAAAAAAAAAAAKAA8AAAAAAAAAAAAKABAAAAAAAAAAAAALAA4AAAAAAAAAAAALAA8AAAAAAAAAAAAGAAwAAAAAAAAAAAAHAAcAAAAAAAAAAAAHAAgAAAAAAAAAAAAHAAkAAAAAAAAAAAAHAAoAAAAAAAAAAAAHAAsAAAAAAAAAAAAHAAwAAAAAAAAAAAAIAAcAAAAAAAAAAAAIAAgAAAAAAAAAAAAIAAkAAAAAAAAAAAAIAAoAAAAAAAAAAAAIAAsAAAAAAAAAAAAIAAwAAAAAAAAAAAAJAAcAAAAAAAAAAAAJAAgAAAAAAAAAAAAJAAkAAAAAAAAAAAAJAAoAAAAAAAAAAAAJAAsAAAAAAAAAAAAJAAwAAAAAAAAAAAAKAAcAAAAAAAAAAAAKAAgAAAAAAAAAAAAKAAkAAAAAAAAAAAAKAAoAAAAAAAAAAAAKAAsAAAAAAAAAAAAKAAwAAAAAAAAAAAALAAcAAAAAAAAAAAALAAgAAAAAAAAAAAALAAkAAAAAAAAAAAALAAoAAAAAAAAAAAALAAsAAAAAAAAAAAALAAwAAAAAAAAAAAAHAA0AAAAAAAAAAAAIAA0AAAAAAAAAAAAJAA0AAAAAAAAAAAAKAA0AAAAAAAAAAAALAA0AAAAAAAAAAAAMAAwAAAAAAAAAAAAMAA0AAAAAAAAAAAAMAA4AAAAAAAAAAAAMAA8AAAAAAAAAAAANAA8AAAAAAAAAAAAOABAAAAAAAAAAAAAPAA8AAAAAAAAAAAAPAA4AAAAAAAAAAAAOAA8AAAAAAAAAAAANAA4AAAAAAAAAAAAMAAsAAAAAAAAAAAANAAsAAAAAAAAAAAANAAwAAAAAAAAAAAANAA0AAAAAAAAAAAAOAAsAAAAAAAAAAAAOAAwAAAAAAAAAAAAOAA0AAAAAAAAAAAAOAA4AAAAAAAAAAAAQAA4AAAAAAAAAAAARAA0AAAAAAAAAAAAQAA0AAAAAAAAAAAARAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAAQAAsAAAAAAAAAAAAPAAwAAAAAAAAAAAAPAAsAAAAAAAAAAAAPAA0AAAAAAAAAAAAMAAcAAAAAAAAAAAAMAAgAAAAAAAAAAAAMAAkAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAYAAAAAAAAAAAANAAcAAAAAAAAAAAANAAgAAAAAAAAAAAANAAkAAAAAAAAAAAANAAoAAAAAAAAAAAAOAAYAAAAAAAAAAAAOAAcAAAAAAAAAAAAOAAgAAAAAAAAAAAAOAAkAAAAAAAAAAAAOAAoAAAAAAAAAAAAPAAYAAAAAAAAAAAAPAAcAAAAAAAAAAAAPAAgAAAAAAAAAAAAPAAkAAAAAAAAAAAAPAAoAAAAAAAAAAAAQAAcAAAAAAAAAAAAQAAgAAAAAAAAAAAAQAAkAAAAAAAAAAAASAAoAAAAAAAAAAAARAAkAAAAAAAAAAAARAAoAAAAAAAAAAAAQAAoAAAAAAAAAAAARAAsAAAAAAAAAAAASAAsAAAAAAAAAAAAPABAAAAAAAAAAAAAQAA8AAAAAAAAAAAARAA4AAAAAAAAAAAA=")
+tile_set = ExtResource("8_terrain_tileset")
+
+[node name="TerrainEffectLayer" type="Node2D" parent="." unique_id=828111028]
+
+[node name="YSortedWorld" type="Node2D" parent="." unique_id=148614310]
+y_sort_enabled = true
+position = Vector2(30, 20)
+scale = Vector2(1.5, 1.5)
+
+[node name="DecorationLayer" type="TileMapLayer" parent="YSortedWorld" unique_id=834143352]
+y_sort_enabled = true
+tile_set = ExtResource("9_decor_tileset")
+
+[node name="ForegroundLayer" type="Node2D" parent="." unique_id=1519276990]
+z_index = 20
+
+[node name="VFXLayer" type="Node2D" parent="." unique_id=871559240]
+z_index = 50
+
+[node name="DebugOverlay" parent="." unique_id=1888636913 instance=ExtResource("4_debug")]
+
+[node name="FloatingTextSpawner" type="Node2D" parent="." unique_id=83189085]
+z_index = 100
+script = ExtResource("5_text")
+
+[node name="ImpactJuice" type="Node" parent="." unique_id=1114312820]
+script = ExtResource("6_impact")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=511192312]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1126653515]
+stream = ExtResource("7_music")
+autoplay = true
+parameters/looping = true
