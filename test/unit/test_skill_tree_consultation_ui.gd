@@ -271,7 +271,7 @@ func test_ui_cancel_closes_screen_without_awarding_xp() -> void:
 	)
 
 
-func test_persistent_run_ui_hosts_button_and_restores_combat_controls() -> void:
+func test_persistent_run_ui_uses_refined_dock_and_restores_combat_controls() -> void:
 	assert_true(GameManager._prepare_preconfigured_run(RUN_DATA, [
 		"res://data/units/alliés/elfe.tres",
 		"res://data/units/alliés/mage.tres",
@@ -287,12 +287,23 @@ func test_persistent_run_ui_hosts_button_and_restores_combat_controls() -> void:
 	var before := state.get_discipline_progress_snapshot(&"archer")
 
 	var button := run_ui.get_skill_tree_status_button()
-	assert_true(button.visible)
-	button.tree_requested.emit(&"elf", &"archer")
+	assert_false(button.visible)
+	var dock_button := hud.get_node("%SkillsButton") as Button
+	assert_false(dock_button.disabled)
+	dock_button.pressed.emit()
 	assert_true(run_ui.get_skill_tree_screen().visible)
 	assert_false(bool(hud.get("_player_controls_enabled")))
+	assert_eq(run_ui.get_skill_tree_screen().get_active_theme().character_id, &"elf")
+	assert_false(run_ui.open_pause_menu())
+	assert_false(run_ui.is_pause_menu_open())
 	run_ui.get_skill_tree_screen().close_screen()
 	assert_false(run_ui.get_skill_tree_screen().visible)
+	assert_true(bool(hud.get("_player_controls_enabled")))
+	assert_true(run_ui.open_pause_menu())
+	assert_true(run_ui.is_pause_menu_open())
+	assert_true(get_tree().paused)
+	assert_true(run_ui.close_pause_menu())
+	assert_false(get_tree().paused)
 	assert_true(bool(hud.get("_player_controls_enabled")))
 	assert_eq(
 		state.get_discipline_progress_snapshot(&"archer"),

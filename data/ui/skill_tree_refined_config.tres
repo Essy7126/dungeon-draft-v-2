@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SkillTreeRefinedConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/theme/skill_tree_refined_config.gd" id="1_config"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/lock_refined.png" id="2_lock"]
+
+[resource]
+script = ExtResource("1_config")
+reveal_depth = 1
+show_next_rank_names = false
+show_next_rank_icons = true
+hide_future_connections = true
+lock_icon_texture = ExtResource("2_lock")

@@ -581,9 +581,9 @@ func test_screen_reflows_without_panel_overlap_at_three_resolutions() -> void:
 	assert_true(screen.open_for_state(state, &"archer"))
 
 	var cases := [
-		[Vector2(1920, 1080), 410.0, true],
-		[Vector2(1600, 900), 360.0, true],
-		[Vector2(1280, 720), 330.0, false],
+		[Vector2(1920, 1080), 360.0, true],
+		[Vector2(1600, 900), 326.0, true],
+		[Vector2(1280, 720), 286.0, false],
 	]
 	for layout_case in cases:
 		host.size = layout_case[0]
@@ -647,9 +647,9 @@ func test_node_and_tab_metrics_follow_the_three_layout_profiles() -> void:
 	await get_tree().process_frame
 	assert_true(screen.open_for_state(state, &"archer"))
 	var cases := [
-		[Vector2(1920, 1080), &"large", 120.0, 132.0, 148.0, Vector2(260, 72)],
-		[Vector2(1600, 900), &"medium", 108.0, 120.0, 134.0, Vector2(232, 66)],
-		[Vector2(1280, 720), &"compact", 98.0, 106.0, 120.0, Vector2(210, 60)],
+		[Vector2(1920, 1080), &"large", 88.0, 96.0, 106.0, Vector2(252, 122)],
+		[Vector2(1600, 900), &"medium", 82.0, 90.0, 100.0, Vector2(222, 112)],
+		[Vector2(1280, 720), &"compact", 74.0, 82.0, 92.0, Vector2(202, 104)],
 	]
 	for layout_case in cases:
 		host.size = layout_case[0]
@@ -830,9 +830,10 @@ func test_detail_hierarchy_and_consultation_do_not_mutate_progression() -> void:
 	))
 	var detail := screen.get_detail_panel()
 	assert_eq(detail.get_section_labels(), [
-		"DESCRIPTION",
+		"EFFET",
 		"SORT AFFECTÉ",
 		"PRÉREQUIS",
+		"INCOMPATIBILITÉ",
 		"ÉTAT",
 		"RAISON",
 	])
@@ -851,14 +852,14 @@ func test_detail_hierarchy_and_consultation_do_not_mutate_progression() -> void:
 	assert_eq(progress.get_selected_upgrade_ids(), initial_selections)
 
 
-func test_lab_exposes_eight_scenarios_in_a_reserved_bottom_band() -> void:
+func test_lab_exposes_refined_scenarios_in_a_reserved_bottom_band() -> void:
 	var host := Control.new()
 	host.size = Vector2(1280, 720)
 	add_child_autofree(host)
 	var lab := LAB_SCENE.instantiate() as SkillTreeGrayboxLab
 	host.add_child(lab)
 	await get_tree().process_frame
-	assert_eq(lab.get_scenario_count(), 8)
+	assert_eq(lab.get_scenario_count(), 13)
 	lab.show_rank_one_preview()
 	await get_tree().process_frame
 	var preview_progress := lab.preview_state.get_discipline_progress(

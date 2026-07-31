@@ -5,9 +5,9 @@
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="3_theme"]
 
 [node name="SkillTreeDisciplineTab" type="Button"]
-custom_minimum_size = Vector2(260, 72)
-offset_right = 260.0
-offset_bottom = 72.0
+custom_minimum_size = Vector2(252, 122)
+offset_right = 252.0
+offset_bottom = 122.0
 focus_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("3_theme")
@@ -26,16 +26,29 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
+[node name="SelectionRail" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeSelectionRail"
+
 [node name="ContentMargin" type="MarginContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 8.0
-offset_right = -15.0
-offset_bottom = -8.0
+offset_left = 16.0
+offset_top = 10.0
+offset_right = -13.0
+offset_bottom = -9.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -46,43 +59,92 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 10
 
-[node name="DisciplineIcon" parent="ContentMargin/Content" instance=ExtResource("2_glyph")]
+[node name="IconColumn" type="VBoxContainer" parent="ContentMargin/Content"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DisciplineIcon" parent="ContentMargin/Content/IconColumn" instance=ExtResource("2_glyph")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(42, 42)
+custom_minimum_size = Vector2(44, 44)
 layout_mode = 2
 
-[node name="Labels" type="VBoxContainer" parent="ContentMargin/Content"]
+[node name="PendingBadge" parent="ContentMargin/Content/IconColumn" instance=ExtResource("2_glyph")]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Information" type="VBoxContainer" parent="ContentMargin/Content"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 1
 
-[node name="NameLabel" type="Label" parent="ContentMargin/Content/Labels"]
-unique_name_in_owner = true
+[node name="TitleRow" type="HBoxContainer" parent="ContentMargin/Content/Information"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 16
+
+[node name="NameLabel" type="Label" parent="ContentMargin/Content/Information/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/font_size = 17
 text = "Archer"
 text_overrun_behavior = 3
 
-[node name="ActiveMarker" type="Label" parent="ContentMargin/Content/Labels"]
+[node name="RankLabel" type="Label" parent="ContentMargin/Content/Information/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.46, 1)
+theme_override_font_sizes/font_size = 13
+text = "RANG 1"
+
+[node name="XPProgress" type="ProgressBar" parent="ContentMargin/Content/Information"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeXpProgress"
+show_percentage = false
+
+[node name="ProgressRow" type="HBoxContainer" parent="ContentMargin/Content/Information"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="XPLabel" type="Label" parent="ContentMargin/Content/Information/ProgressRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.78, 0.81, 0.82, 1)
+theme_override_font_sizes/font_size = 12
+text = "0 / 3 XP"
+
+[node name="ActiveMarker" type="Label" parent="ContentMargin/Content/Information/ProgressRow"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.94, 0.76, 0.36, 1)
-theme_override_font_sizes/font_size = 10
-text = "ACTIF"
+theme_override_font_sizes/font_size = 11
+text = "BRANCHE ACTIVE"
 
-[node name="RankLabel" type="Label" parent="ContentMargin/Content"]
+[node name="NextRankLabel" type="Label" parent="ContentMargin/Content/Information"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_font_sizes/font_size = 16
-text = "R1"
+theme_override_colors/font_color = Color(0.62, 0.67, 0.72, 1)
+theme_override_font_sizes/font_size = 11
+text = "Prochain rang : 2"
 
-[node name="PendingBadge" parent="ContentMargin/Content" instance=ExtResource("2_glyph")]
+[node name="PathLabel" type="Label" parent="ContentMargin/Content/Information"]
 unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.69, 1)
+theme_override_font_sizes/font_size = 11
+text = "Aucun choix acquis"
+text_overrun_behavior = 3

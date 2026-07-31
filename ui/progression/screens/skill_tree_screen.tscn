@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/screens/skill_tree_screen.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_graph_view.tscn" id="2_graph"]
@@ -6,6 +6,7 @@
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="4_theme"]
 [ext_resource type="Resource" path="res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres" id="5_skin"]
 [ext_resource type="Resource" path="res://ui/progression/skin/elf_archer_visual_map.tres" id="6_map"]
+[ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/components/portrait/portrait_view.tscn" id="7_portrait"]
 
 [node name="SkillTreeScreen" type="Control"]
 visible = false
@@ -29,18 +30,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
-color = Color(0.005, 0.008, 0.012, 0.9)
+color = Color(0.005, 0.008, 0.012, 0.82)
 
 [node name="OuterMargin" type="MarginContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 28.0
-offset_top = 28.0
-offset_right = -28.0
-offset_bottom = -28.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -840.0
+offset_top = -460.0
+offset_right = 840.0
+offset_bottom = 460.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
@@ -67,86 +70,244 @@ patch_margin_bottom = 84
 [node name="FrameMargin" type="MarginContainer" parent="OuterMargin/Frame"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
 
 [node name="Main" type="VBoxContainer" parent="OuterMargin/Frame/FrameMargin"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 8
 
-[node name="Header" type="HBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
+[node name="CharacterHeader" type="PanelContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+theme_type_variation = &"SkillTreeCharacterHeader"
+
+[node name="HeaderAccent" type="Panel" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"SkillTreeSelectionRail"
+
+[node name="HeaderMargin" type="MarginContainer" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="HeaderContent" type="HBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderPortrait" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent" instance=ExtResource("7_portrait")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/Header"]
+[node name="IdentityBadge" type="TextureRect" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 3
+stretch_mode = 5
+
+[node name="IdentityColumn" type="VBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.96, 0.84, 0.52, 1)
-theme_override_font_sizes/font_size = 24
-text = "ELFE — PROGRESSION"
+theme_override_constants/separation = 1
 
-[node name="ConsultativeLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/Header"]
+[node name="TitleLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent/IdentityColumn"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.7, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "CONSULTATION · aucun choix en combat"
+theme_override_colors/font_color = Color(0.96, 0.84, 0.52, 1)
+theme_override_font_sizes/font_size = 27
+text = "ELF · PROGRESSION"
 
-[node name="CloseButton" type="Button" parent="OuterMargin/Frame/FrameMargin/Main/Header"]
+[node name="DisciplineSummaryLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent/IdentityColumn"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(116, 38)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.77, 0.82, 1)
+theme_override_font_sizes/font_size = 14
+text = "4 branches · Archer actif"
+
+[node name="HeaderSummaryLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent/IdentityColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.68, 0.72, 1)
+theme_override_font_sizes/font_size = 13
+text = "0 choix acquis · 0 choix disponibles"
+
+[node name="ConsultativeLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.7, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "CONSULTATION\nChoix confirmés après le combat"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 42)
 layout_mode = 2
 focus_mode = 2
 theme_type_variation = &"SkillTreeCloseButton"
-text = "Fermer"
+text = "FERMER"
 
-[node name="TabsScroll" type="ScrollContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 74)
-layout_mode = 2
-horizontal_scroll_mode = 1
-vertical_scroll_mode = 0
-
-[node name="DisciplineTabs" type="HBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main/TabsScroll"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="ContentSplit" type="HSplitContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
+[node name="ContentSplit" type="HBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-split_offset = -410
-dragger_visibility = 1
+theme_override_constants/separation = 10
 
-[node name="GraphScroll" type="ScrollContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit"]
+[node name="BranchNavigation" type="PanelContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(252, 0)
+layout_mode = 2
+theme_type_variation = &"SkillTreeBranchNavigation"
+
+[node name="BranchMargin" type="MarginContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/BranchNavigation"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 10
+
+[node name="BranchContent" type="VBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/BranchNavigation/BranchMargin"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="BranchTitleLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/BranchNavigation/BranchMargin/BranchContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.78, 0.48, 1)
+theme_override_font_sizes/font_size = 14
+text = "BRANCHES"
+
+[node name="TabsScroll" type="ScrollContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/BranchNavigation/BranchMargin/BranchContent"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
+
+[node name="DisciplineTabs" type="VBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/BranchNavigation/BranchMargin/BranchContent/TabsScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+
+[node name="CanvasSurface" type="PanelContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SkillTreeCanvasSurface"
+
+[node name="CanvasMargin" type="MarginContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="CanvasContent" type="VBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CanvasToolbar" type="HBoxContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent"]
+layout_mode = 2
+
+[node name="CanvasTitleLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/CanvasToolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.82, 0.84, 0.82, 1)
+theme_override_font_sizes/font_size = 14
+text = "CHEMIN DE PROGRESSION"
+
+[node name="CanvasHintLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/CanvasToolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.54, 0.59, 0.63, 1)
+theme_override_font_sizes/font_size = 11
+text = "Molette / glisser milieu pour parcourir"
+
+[node name="CenterGraphButton" type="Button" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/CanvasToolbar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(86, 28)
+layout_mode = 2
+focus_mode = 2
+theme_type_variation = &"SkillTreeCloseButton"
+text = "CENTRER"
+
+[node name="GraphStage" type="Control" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GraphScroll" type="ScrollContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/GraphStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 horizontal_scroll_mode = 1
 vertical_scroll_mode = 1
 
-[node name="SkillTreeGraphView" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/GraphScroll" instance=ExtResource("2_graph")]
+[node name="SkillTreeGraphView" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/GraphStage/GraphScroll" instance=ExtResource("2_graph")]
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="EmptyState" type="CenterContainer" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/GraphStage"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="EmptyStateLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/GraphStage/EmptyState"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 140)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.76, 0.78, 1)
+theme_override_font_sizes/font_size = 18
+text = "PROGRESSION NON DÉFINIE\n\nAucune branche n’existe dans les données de ce personnage."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="NodeDetailPanel" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit" instance=ExtResource("3_detail")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 
 [node name="FooterLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.76, 0.79, 0.82, 1)
+theme_override_colors/font_color = Color(0.72, 0.75, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0.015, 0.02, 0.028, 0.96)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 15
-text = "Archer — Rang 1 — 0 / 3 XP"
+theme_override_font_sizes/font_size = 13
+text = "Archer · Rang 1 · 0 / 3 XP"
 horizontal_alignment = 1
 vertical_alignment = 1

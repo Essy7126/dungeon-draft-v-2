@@ -257,7 +257,7 @@ func test_refined_hud_applies_identity_resources_costs_shortcuts_and_icons() -> 
 		assert_true(hud.get_node("%UtilityDock").visible)
 		assert_true(hud.get_node("%InventoryButton").disabled)
 		assert_true(hud.get_node("%MapButton").disabled)
-		assert_eq(hud.get_node("%SkillsButton").disabled, theme.default_discipline_id == &"")
+		assert_false(hud.get_node("%SkillsButton").disabled)
 
 		var all_buttons: Array = hud.get("_spell_buttons")
 		for index in range(all_buttons.size()):

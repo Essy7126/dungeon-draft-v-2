@@ -7,8 +7,6 @@ const NODE_SCENE := preload(
 	"res://ui/progression/components/skill_tree_node_view.tscn"
 )
 const BASE_ID := &"__base_rank_1"
-const EAGLE_BRANCH_ID := &"elf_archer_eagle_eye"
-const REPEL_BRANCH_ID := &"elf_archer_repel_arrow"
 const PROFILE_LARGE := &"large"
 const PROFILE_MEDIUM := &"medium"
 const PROFILE_COMPACT := &"compact"
@@ -19,8 +17,12 @@ const PROFILE_COMPACT := &"compact"
 var _discipline: DisciplineData = null
 var _progress: DisciplineProgressState = null
 var _base_display_name := ""
+var _base_icon: Texture2D = null
+var _character_id: StringName = &"elf"
 var _node_views: Dictionary = {}
 var _connections: Array[Dictionary] = []
+var _display_nodes_by_rank: Dictionary = {}
+var _gate_branch_ids: Dictionary = {}
 var _rank_headers: Array[Label] = []
 var _branch_headers: Array[PanelContainer] = []
 var _branch_rects: Array[Rect2] = []
@@ -30,25 +32,33 @@ var _layout_spec: Dictionary = {}
 var _viewport_size := Vector2(1920.0, 1080.0)
 var _available_size := Vector2(1320.0, 860.0)
 var _layout_debug_enabled := false
+var _primary_branch_ids: Array[StringName] = []
+var _inspected_id: StringName = &""
 
 
 func rebuild(
 		discipline: DisciplineData,
 		progress: DisciplineProgressState,
-		base_display_name: String
+		base_display_name: String,
+		base_icon: Texture2D = null,
+		character_id: StringName = &"elf"
 	) -> void:
 	_clear_graph()
 	_discipline = discipline
 	_progress = progress
 	_base_display_name = base_display_name
+	_base_icon = base_icon
+	_character_id = character_id
+	_primary_branch_ids = _rank_two_branch_ids(discipline)
 	if discipline == null or progress == null:
 		custom_minimum_size = Vector2(720, 440)
 		size = custom_minimum_size
 		queue_redraw()
 		return
 
+	_display_nodes_by_rank = _make_revealed_nodes_by_rank()
 	_create_node_views(
-		_nodes_by_rank(discipline),
+		_display_nodes_by_rank,
 		progress.get_selected_upgrade_ids(),
 		progress.get_pending_rank_choices()
 	)
@@ -116,6 +126,16 @@ func get_connection_records() -> Array[Dictionary]:
 
 func get_connection_width(state: StringName) -> float:
 	var scale := float(_layout_spec.get("line_scale", 1.0))
+	var config := skin.refined_config if skin != null else null
+	if config != null:
+		var key := (
+			&"acquired" if state == &"selected"
+			else &"available" if state == &"available"
+			else &"excluded" if state == &"incompatible"
+			else &"rank_gate" if state == &"rank_gate"
+			else &"locked"
+		)
+		return float(config.connection_widths.get(key, 2.0)) * scale
 	match state:
 		&"selected":
 			return 4.5 * scale
@@ -200,7 +220,7 @@ func get_node_views_in_focus_order() -> Array[SkillTreeNodeView]:
 	var result: Array[SkillTreeNodeView] = []
 	for value in _node_views.values():
 		var view := value as SkillTreeNodeView
-		if view != null:
+		if view != null and not view.is_rank_gate():
 			result.append(view)
 	result.sort_custom(
 		func(a: SkillTreeNodeView, b: SkillTreeNodeView) -> bool:
@@ -221,7 +241,7 @@ func inspect_node_by_id(node_id: StringName) -> bool:
 
 func focus_node_by_id(node_id: StringName) -> bool:
 	var view := get_node_view(node_id)
-	if view == null:
+	if view == null or view.is_rank_gate():
 		return false
 	view.grab_focus.call_deferred()
 	return true
@@ -285,7 +305,7 @@ func _draw_connection(connection: Dictionary) -> void:
 			else (
 				"connection_incompatible"
 				if state == &"incompatible"
-				else "connection_compatible"
+				else "connection_rank_gate" if state == &"rank_gate" else "connection_compatible"
 			)
 		)
 	)
@@ -317,32 +337,34 @@ func _draw_connection(connection: Dictionary) -> void:
 
 
 func _draw_root_branch_trunk() -> void:
-	if not _uses_archer_branch_layout():
+	if not _uses_split_branch_layout():
 		return
 	var root := get_node_view(BASE_ID)
-	var eagle := get_node_view(EAGLE_BRANCH_ID)
-	var repel := get_node_view(REPEL_BRANCH_ID)
-	if root == null or eagle == null or repel == null:
+	if _primary_branch_ids.size() != 2:
+		return
+	var first_branch := get_node_view(_primary_branch_ids[0])
+	var second_branch := get_node_view(_primary_branch_ids[1])
+	if root == null or first_branch == null or second_branch == null:
 		return
 	var root_anchor := root.position + root.get_connection_anchor(&"right")
-	var eagle_anchor := eagle.position + eagle.get_connection_anchor(&"left")
-	var repel_anchor := repel.position + repel.get_connection_anchor(&"left")
-	var fork_x := lerpf(root_anchor.x, eagle_anchor.x, 0.48)
+	var first_anchor := first_branch.position + first_branch.get_connection_anchor(&"left")
+	var second_anchor := second_branch.position + second_branch.get_connection_anchor(&"left")
+	var fork_x := lerpf(root_anchor.x, first_anchor.x, 0.48)
 	var trunk_points := PackedVector2Array([
-		Vector2(fork_x, eagle_anchor.y),
-		Vector2(fork_x, repel_anchor.y),
+		Vector2(fork_x, first_anchor.y),
+		Vector2(fork_x, second_anchor.y),
 	])
 	var root_points := PackedVector2Array([
 		root_anchor,
 		Vector2(fork_x, root_anchor.y),
 	])
-	var eagle_points := PackedVector2Array([
-		Vector2(fork_x, eagle_anchor.y),
-		eagle_anchor,
+	var first_points := PackedVector2Array([
+		Vector2(fork_x, first_anchor.y),
+		first_anchor,
 	])
-	var repel_points := PackedVector2Array([
-		Vector2(fork_x, repel_anchor.y),
-		repel_anchor,
+	var second_points := PackedVector2Array([
+		Vector2(fork_x, second_anchor.y),
+		second_anchor,
 	])
 	var width := 3.2 * float(_layout_spec.get("line_scale", 1.0))
 	var underlay := _theme_graph_color(
@@ -353,7 +375,7 @@ func _draw_root_branch_trunk() -> void:
 		"connection_compatible",
 		Color(0.5, 0.59, 0.67, 0.94)
 	)
-	for points in [trunk_points, root_points, eagle_points, repel_points]:
+	for points in [trunk_points, root_points, first_points, second_points]:
 		_draw_polyline_with_joints(points, underlay, width + 2.0)
 		_draw_polyline_with_joints(points, color, width)
 
@@ -416,15 +438,13 @@ func _reflow_layout() -> void:
 		if view != null:
 			view.apply_layout_profile(_layout_profile)
 
-	var max_rank := _maximum_rank(_discipline)
+	var max_rank := _display_maximum_rank()
 	var graph_width := maxf(
 		_available_size.x,
 		float(_layout_spec["minimum_width"])
 	)
-	var graph_height := _generic_graph_height(
-		_nodes_by_rank(_discipline)
-	)
-	if _uses_archer_branch_layout():
+	var graph_height := _generic_graph_height(_display_nodes_by_rank)
+	if _uses_split_branch_layout():
 		graph_height = maxf(
 			_available_size.y,
 			float(_layout_spec["minimum_height"])
@@ -444,9 +464,9 @@ func _reflow_layout() -> void:
 			rank_number,
 			int(_rank_thresholds(_discipline).get(rank_number, 0))
 		)
-	var nodes_by_rank := _nodes_by_rank(_discipline)
-	if _uses_archer_branch_layout():
-		_layout_archer_branches(nodes_by_rank)
+	var nodes_by_rank := _display_nodes_by_rank
+	if _uses_split_branch_layout():
+		_layout_split_branches(nodes_by_rank)
 	else:
 		_layout_generic(nodes_by_rank, graph_height)
 	_build_connections()
@@ -457,46 +477,46 @@ func _reflow_layout() -> void:
 func _make_layout_spec(profile: StringName) -> Dictionary:
 	if profile == PROFILE_MEDIUM:
 		return {
-			"minimum_width": 1080.0,
-			"side_margin": 48.0,
-			"minimum_height": 724.0,
-			"header_height": 38.0,
-			"branch_height": 329.0,
-			"branch_gap": 22.0,
+			"minimum_width": 900.0,
+			"side_margin": 36.0,
+			"minimum_height": 640.0,
+			"header_height": 34.0,
+			"branch_height": 289.0,
+			"branch_gap": 18.0,
 			"bottom_margin": 6.0,
 			"branch_title_height": 34.0,
 			"branch_title_font": 15,
 			"rank_title_font": 13,
-			"rank4_offset": 70.0,
+			"rank4_offset": 64.0,
 			"line_scale": 0.9,
 		}
 	if profile == PROFILE_COMPACT:
 		return {
-			"minimum_width": 1040.0,
-			"side_margin": 44.0,
-			"minimum_height": 662.0,
-			"header_height": 36.0,
-			"branch_height": 300.0,
-			"branch_gap": 20.0,
+			"minimum_width": 840.0,
+			"side_margin": 30.0,
+			"minimum_height": 586.0,
+			"header_height": 31.0,
+			"branch_height": 267.0,
+			"branch_gap": 16.0,
 			"bottom_margin": 6.0,
 			"branch_title_height": 31.0,
 			"branch_title_font": 13,
 			"rank_title_font": 12,
-			"rank4_offset": 64.0,
+			"rank4_offset": 58.0,
 			"line_scale": 0.82,
 		}
 	return {
-		"minimum_width": 1150.0,
-		"side_margin": 52.0,
-		"minimum_height": 790.0,
-		"header_height": 40.0,
-		"branch_height": 359.0,
-		"branch_gap": 26.0,
+		"minimum_width": 1000.0,
+		"side_margin": 40.0,
+		"minimum_height": 690.0,
+		"header_height": 36.0,
+		"branch_height": 311.0,
+		"branch_gap": 20.0,
 		"bottom_margin": 6.0,
 		"branch_title_height": 38.0,
 		"branch_title_font": 16,
 		"rank_title_font": 14,
-		"rank4_offset": 76.0,
+		"rank4_offset": 70.0,
 		"line_scale": 1.0,
 	}
 
@@ -557,6 +577,45 @@ func _nodes_by_rank(discipline: DisciplineData) -> Dictionary:
 	return result
 
 
+func _make_revealed_nodes_by_rank() -> Dictionary:
+	var result := {}
+	_gate_branch_ids.clear()
+	if _discipline == null or _progress == null:
+		return result
+	var all_nodes := _nodes_by_rank(_discipline)
+	var maximum_rank := _maximum_rank(_discipline)
+	var reveal_depth := (
+		skin.refined_config.reveal_depth
+		if skin != null and skin.refined_config != null
+		else 1
+	)
+	var visible_real_max := mini(maximum_rank, _progress.rank + reveal_depth)
+	for rank_number in range(1, visible_real_max + 1):
+		if all_nodes.has(rank_number):
+			result[rank_number] = (all_nodes[rank_number] as Array).duplicate()
+	var gate_rank := visible_real_max + 1
+	if gate_rank <= maximum_rank:
+		var gates: Array = []
+		if _uses_split_branch_layout() and _primary_branch_ids.size() == 2:
+			for branch_id in _primary_branch_ids:
+				var gate_id := StringName("__rank_gate_%d_%s" % [gate_rank, branch_id])
+				gates.append(gate_id)
+				_gate_branch_ids[gate_id] = branch_id
+		else:
+			var gate_id := StringName("__rank_gate_%d" % gate_rank)
+			gates.append(gate_id)
+			_gate_branch_ids[gate_id] = &""
+		result[gate_rank] = gates
+	return result
+
+
+func _display_maximum_rank() -> int:
+	var result := 1
+	for rank_value in _display_nodes_by_rank.keys():
+		result = maxi(result, int(rank_value))
+	return result
+
+
 func _rank_thresholds(discipline: DisciplineData) -> Dictionary:
 	var result := {}
 	for rank_data in discipline.ranks:
@@ -585,7 +644,10 @@ func _create_node_views(
 		for node_value in nodes_by_rank[rank_number]:
 			var view := NODE_SCENE.instantiate() as SkillTreeNodeView
 			var node_id := BASE_ID
-			if node_value != null:
+			var is_gate := node_value is StringName or node_value is String
+			if is_gate:
+				node_id = StringName(node_value)
+			elif node_value != null:
 				node_id = (node_value as SkillUpgradeData).upgrade_id
 			view.name = _safe_node_name(node_id)
 			add_child(view)
@@ -595,7 +657,15 @@ func _create_node_views(
 				if visual_map != null
 				else null
 			)
-			if node_value == null:
+			if is_gate:
+				view.configure_rank_gate(
+					_discipline,
+					rank_number,
+					skin,
+					_character_id,
+					_gate_branch_ids.get(node_id, &"")
+				)
+			elif node_value == null:
 				view.configure_base(
 					_discipline,
 					_base_display_name,
@@ -604,10 +674,17 @@ func _create_node_views(
 						0
 					),
 					skin,
-					visual
+					visual,
+					_base_icon,
+					_character_id
 				)
 			else:
 				var node := node_value as SkillUpgradeData
+				var reveal_mode := (
+					SkillTreeNodeView.RevealMode.NEXT_RANK
+					if node.rank > _progress.rank
+					else SkillTreeNodeView.RevealMode.FULL
+				)
 				view.configure_node(
 					_discipline,
 					node,
@@ -619,18 +696,20 @@ func _create_node_views(
 						pending_ranks
 					),
 					skin,
-					visual
+					visual,
+					_character_id,
+					reveal_mode
 				)
 			_node_views[node_id] = view
 
 
-func _layout_archer_branches(nodes_by_rank: Dictionary) -> void:
+func _layout_split_branches(nodes_by_rank: Dictionary) -> void:
 	var header_height := float(_layout_spec["header_height"])
 	var branch_height := float(_layout_spec["branch_height"])
 	var branch_gap := float(_layout_spec["branch_gap"])
 	var eagle_top := header_height
 	var repel_top := eagle_top + branch_height + branch_gap
-	var rank_two_view := get_node_view(EAGLE_BRANCH_ID)
+	var rank_two_view := get_node_view(_primary_branch_ids[0])
 	var band_left := (
 		get_rank_center(2)
 		- (rank_two_view.size.x * 0.5 if rank_two_view != null else 68.0)
@@ -651,16 +730,21 @@ func _layout_archer_branches(nodes_by_rank: Dictionary) -> void:
 			branch_height
 		),
 	]
-	_add_branch_header(
-		"BRANCHE ŒIL D’AIGLE",
-		_branch_rects[0],
-		&"branch_eagle_accent"
-	)
-	_add_branch_header(
-		"BRANCHE FLÈCHE DE RECUL",
-		_branch_rects[1],
-		&"branch_repel_accent"
-	)
+	for branch_index in range(_primary_branch_ids.size()):
+		var branch_node := _find_node(_primary_branch_ids[branch_index])
+		_add_branch_header(
+			"SPÉCIALISATION · %s" % (
+				branch_node.display_name.to_upper()
+				if branch_node != null
+				else "BRANCHE %d" % (branch_index + 1)
+			),
+			_branch_rects[branch_index],
+			(
+				&"branch_eagle_accent"
+				if branch_index == 0
+				else &"branch_repel_accent"
+			)
+		)
 
 	var base_view := get_node_view(BASE_ID)
 	if base_view != null:
@@ -674,17 +758,15 @@ func _layout_archer_branches(nodes_by_rank: Dictionary) -> void:
 			branches_center
 		)
 	for branch_index in range(2):
-		var branch_id := (
-			EAGLE_BRANCH_ID if branch_index == 0 else REPEL_BRANCH_ID
-		)
-		_layout_archer_branch(
+		var branch_id := _primary_branch_ids[branch_index]
+		_layout_split_branch(
 			branch_id,
 			_branch_rects[branch_index],
 			nodes_by_rank
 		)
 
 
-func _layout_archer_branch(
+func _layout_split_branch(
 		branch_id: StringName,
 		band_rect: Rect2,
 		nodes_by_rank: Dictionary
@@ -1055,7 +1137,7 @@ func _main_branch_id(
 		node_id: StringName,
 		visited: Dictionary
 	) -> StringName:
-	if node_id == EAGLE_BRANCH_ID or node_id == REPEL_BRANCH_ID:
+	if _primary_branch_ids.has(node_id):
 		return node_id
 	if visited.has(node_id):
 		return &""
@@ -1193,12 +1275,28 @@ func _add_branch_header(
 	_branch_headers.append(panel)
 
 
-func _uses_archer_branch_layout() -> bool:
+func _uses_split_branch_layout() -> bool:
 	return (
 		_discipline != null
-		and _discipline.discipline_id == &"archer"
 		and _maximum_rank(_discipline) >= 5
+		and _primary_branch_ids.size() == 2
 	)
+
+
+func _rank_two_branch_ids(
+		discipline: DisciplineData
+	) -> Array[StringName]:
+	var result: Array[StringName] = []
+	if discipline == null:
+		return result
+	for rank_data in discipline.ranks:
+		if rank_data == null or rank_data.rank != 2:
+			continue
+		for choice in rank_data.choices:
+			if choice != null:
+				result.append(choice.upgrade_id)
+		break
+	return result
 
 
 func _safe_node_name(node_id: StringName) -> String:
@@ -1216,6 +1314,15 @@ func _theme_graph_color(name: StringName, fallback: Color) -> Color:
 
 
 func _on_node_inspection(view: SkillTreeNodeView) -> void:
+	if view == null:
+		return
+	_inspected_id = view.presentation_id
+	for value in _node_views.values():
+		var candidate := value as SkillTreeNodeView
+		if candidate != null:
+			candidate.set_inspection_selected(
+				candidate.presentation_id == _inspected_id
+			)
 	node_inspected.emit(view)
 
 
@@ -1234,6 +1341,7 @@ func _clear_layout_chrome() -> void:
 
 
 func _clear_graph() -> void:
+	_inspected_id = &""
 	_node_views.clear()
 	_connections.clear()
 	_rank_headers.clear()

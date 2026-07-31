@@ -91,9 +91,9 @@ func set_ui_mode(mode: RunUIMode) -> void:
 	if is_instance_valid(overlay_layer):
 		overlay_layer.visible = mode != RunUIMode.TRANSITION
 	if is_instance_valid(skill_tree_status_button):
-		skill_tree_status_button.set_context_visible(
-			mode == RunUIMode.COMBAT
-		)
+		# Le UtilityDock REFINED est l’unique point d’accès visuel en combat.
+		# Le composant historique reste disponible pour ses autres consommateurs.
+		skill_tree_status_button.set_context_visible(false)
 
 
 func get_ui_mode() -> RunUIMode:

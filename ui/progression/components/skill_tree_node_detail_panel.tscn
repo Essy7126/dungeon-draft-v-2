@@ -138,7 +138,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
-text = "DESCRIPTION"
+text = "EFFET"
 
 [node name="DescriptionLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
@@ -184,6 +184,23 @@ autowrap_mode = 2
 [node name="SeparatorB" type="HSeparator" parent="SafeMargin/ContentScroll/Content"]
 layout_mode = 2
 
+[node name="IncompatibilitiesHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.52, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "INCOMPATIBILITÉ"
+
+[node name="IncompatibilitiesLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.62, 0.6, 1)
+theme_override_font_sizes/font_size = 15
+text = "L’autre choix a été acquis."
+autowrap_mode = 2
+
 [node name="StateHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -214,3 +231,12 @@ theme_override_colors/font_color = Color(0.78, 0.8, 0.82, 1)
 theme_override_font_sizes/font_size = 15
 text = "Évolution future compatible."
 autowrap_mode = 2
+
+[node name="ActionButton" type="Button" parent="SafeMargin/ContentScroll/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_mode = 2
+disabled = true
+theme_type_variation = &"SkillTreeAcquireButton"
+text = "VERROUILLÉ"

@@ -1,6 +1,10 @@
 class_name SkillTreeSkinData
 extends Resource
 
+@export_category("REFINED V2")
+@export var refined_config: SkillTreeRefinedConfig = null
+@export var icon_catalog: SkillTreeIconCatalog = null
+
 @export_category("Panels")
 @export var main_panel_texture: Texture2D = null
 @export var detail_panel_texture: Texture2D = null
@@ -36,14 +40,27 @@ func get_node_frame(rank: int) -> Texture2D:
 
 
 func get_discipline_icon(icon_id: StringName) -> Texture2D:
+	if icon_catalog != null:
+		var parts := str(icon_id).split("_", true, 1)
+		if parts.size() == 2:
+			var catalog_icon := icon_catalog.get_branch_badge(
+				StringName(parts[0]),
+				StringName(parts[1])
+			)
+			if catalog_icon != null:
+				return catalog_icon
 	return discipline_icons.get(icon_id) as Texture2D
 
 
 func get_effect_glyph(glyph_id: StringName) -> Texture2D:
+	if icon_catalog != null:
+		return icon_catalog.get_semantic_icon(glyph_id)
 	return effect_glyphs.get(glyph_id) as Texture2D
 
 
 func get_state_texture(state_id: StringName) -> Texture2D:
+	if icon_catalog != null:
+		return icon_catalog.get_state_icon(state_id)
 	match state_id:
 		&"selected":
 			return state_selected_texture
@@ -58,20 +75,12 @@ func get_state_texture(state_id: StringName) -> Texture2D:
 
 func get_missing_essential_textures() -> Array[StringName]:
 	var missing: Array[StringName] = []
-	var essentials := {
-		&"main_panel_texture": main_panel_texture,
-		&"detail_panel_texture": detail_panel_texture,
-		&"node_standard_texture": node_standard_texture,
-		&"node_root_texture": node_root_texture,
-		&"node_capstone_texture": node_capstone_texture,
-		&"character_tab_texture": character_tab_texture,
-		&"discipline_tab_texture": discipline_tab_texture,
-		&"xp_bar_frame_texture": xp_bar_frame_texture,
-		&"state_lock_texture": state_lock_texture,
-		&"state_selected_texture": state_selected_texture,
-		&"state_excluded_texture": state_excluded_texture,
-	}
-	for texture_id in essentials:
-		if essentials[texture_id] == null:
-			missing.append(texture_id)
+	if refined_config == null:
+		missing.append(&"refined_config")
+	elif refined_config.lock_icon_texture == null:
+		missing.append(&"lock_icon_texture")
+	if icon_catalog == null:
+		missing.append(&"icon_catalog")
+	elif icon_catalog.generic_upgrade_icon == null:
+		missing.append(&"generic_upgrade_icon")
 	return missing

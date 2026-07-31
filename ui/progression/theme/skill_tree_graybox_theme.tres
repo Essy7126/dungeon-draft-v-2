@@ -184,6 +184,74 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleHeaderSurface"]
+bg_color = Color(0.018, 0.024, 0.032, 0.88)
+border_width_bottom = 1
+border_color = Color(0.58, 0.45, 0.25, 0.72)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBranchNavigation"]
+bg_color = Color(0.012, 0.018, 0.025, 0.68)
+border_width_right = 1
+border_color = Color(0.42, 0.36, 0.26, 0.45)
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleCanvasSurface"]
+bg_color = Color(0.02, 0.027, 0.036, 0.5)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28, 0.33, 0.38, 0.52)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleSelectionRail"]
+bg_color = Color(0.94, 0.76, 0.36, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleAcquire"]
+bg_color = Color(0.22, 0.14, 0.055, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.78, 0.59, 0.27, 0.94)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleAcquireHover"]
+bg_color = Color(0.3, 0.19, 0.07, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.96, 0.77, 0.38, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleAcquireDisabled"]
+bg_color = Color(0.055, 0.065, 0.075, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34, 0.37, 0.39, 0.72)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [resource]
 default_font_size = 14
 Button/colors/font_color = Color(0.92, 0.93, 0.9, 1)
@@ -193,11 +261,23 @@ SkillTreeBranchBand/base_type = &"Panel"
 SkillTreeBranchBand/styles/panel = SubResource("StyleBranchBand")
 SkillTreeBranchTitle/base_type = &"PanelContainer"
 SkillTreeBranchTitle/styles/panel = SubResource("StyleBranchTitle")
+SkillTreeBranchNavigation/base_type = &"PanelContainer"
+SkillTreeBranchNavigation/styles/panel = SubResource("StyleBranchNavigation")
+SkillTreeCanvasSurface/base_type = &"PanelContainer"
+SkillTreeCanvasSurface/styles/panel = SubResource("StyleCanvasSurface")
+SkillTreeCharacterHeader/base_type = &"PanelContainer"
+SkillTreeCharacterHeader/styles/panel = SubResource("StyleHeaderSurface")
 SkillTreeCloseButton/base_type = &"Button"
 SkillTreeCloseButton/styles/focus = SubResource("StyleCloseHover")
 SkillTreeCloseButton/styles/hover = SubResource("StyleCloseHover")
 SkillTreeCloseButton/styles/normal = SubResource("StyleClose")
 SkillTreeCloseButton/styles/pressed = SubResource("StyleCloseHover")
+SkillTreeAcquireButton/base_type = &"Button"
+SkillTreeAcquireButton/styles/disabled = SubResource("StyleAcquireDisabled")
+SkillTreeAcquireButton/styles/focus = SubResource("StyleAcquireHover")
+SkillTreeAcquireButton/styles/hover = SubResource("StyleAcquireHover")
+SkillTreeAcquireButton/styles/normal = SubResource("StyleAcquire")
+SkillTreeAcquireButton/styles/pressed = SubResource("StyleAcquireHover")
 SkillTreeDetailReadingSurface/base_type = &"Panel"
 SkillTreeDetailReadingSurface/styles/panel = SubResource("StyleDetailReading")
 SkillTreeDetailSurface/base_type = &"PanelContainer"
@@ -250,6 +330,8 @@ SkillTreeNodeSurface/base_type = &"PanelContainer"
 SkillTreeNodeSurface/styles/panel = SubResource("StyleTransparent")
 SkillTreeRankBadge/base_type = &"PanelContainer"
 SkillTreeRankBadge/styles/panel = SubResource("StyleRankBadge")
+SkillTreeSelectionRail/base_type = &"Panel"
+SkillTreeSelectionRail/styles/panel = SubResource("StyleSelectionRail")
 SkillTreeScreen/base_type = &"PanelContainer"
 SkillTreeScreen/styles/panel = SubResource("StyleScreen")
 SkillTreeStatusButton/base_type = &"Button"

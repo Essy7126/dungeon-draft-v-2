@@ -12,16 +12,6 @@ const DEFAULT_CHARACTER_THEME: CharacterHUDThemeData = preload(
 const ORNATE_ELF_THEME: CharacterHUDThemeData = preload("res://data/ui/elf_hud_theme.tres")
 const CLEAN_ELF_THEME: CharacterHUDThemeData = preload("res://data/ui/elf_hud_theme_clean.tres")
 const REFINED_ELF_THEME: CharacterHUDThemeData = preload("res://data/ui/elf_hud_theme_refined.tres")
-const REFINED_CHARACTER_THEMES: Array[CharacterHUDThemeData] = [
-	REFINED_ELF_THEME,
-	preload("res://data/ui/mage_hud_theme_refined.tres"),
-	preload("res://data/ui/guardian_hud_theme_refined.tres"),
-	preload("res://data/ui/warrior_hud_theme_refined.tres"),
-	preload("res://data/ui/druid_hud_theme_refined.tres"),
-	preload("res://data/ui/assassin_hud_theme_refined.tres"),
-	preload("res://data/ui/necromancer_hud_theme_refined.tres"),
-	preload("res://data/ui/hoplite_hud_theme_refined.tres"),
-]
 const DEFAULT_LAYOUT: CombatHUDLayoutData = preload("res://data/ui/combat_hud_layout_clean.tres")
 const SPELLBAR_TEXTURE_RATIO := 3155.0 / 612.0
 const CHARACTER_BAR_TEXTURE_RATIO := 933.0 / 219.0
@@ -155,6 +145,12 @@ func _ready() -> void:
 	_reaction_btn.pressed.connect(func() -> void: reaction_pressed.emit())
 	_end_btn.pressed.connect(func() -> void: end_turn_pressed.emit())
 	_skills_button.pressed.connect(_on_skills_button_pressed)
+	var skills_shortcut := Shortcut.new()
+	var skills_key := InputEventKey.new()
+	skills_key.physical_keycode = KEY_K
+	skills_shortcut.events = [skills_key]
+	_skills_button.shortcut = skills_shortcut
+	_skills_button.shortcut_in_tooltip = true
 	if not EventBus.turn_started.is_connected(_on_event_bus_turn_started):
 		EventBus.turn_started.connect(_on_event_bus_turn_started)
 	_set_energy_controls_visible(false)
@@ -576,9 +572,7 @@ func _resolve_character_theme(unit) -> CharacterHUDThemeData:
 		if theme != null and theme.matches_unit(unit):
 			return theme
 	if skin_variant == HudSkinVariant.REFINED:
-		for theme in REFINED_CHARACTER_THEMES:
-			if theme.matches_unit(unit):
-				return theme
+		return CharacterHUDThemeCatalog.resolve_refined(unit)
 	if StringName(unit.unit_id) == &"elf":
 		return CLEAN_ELF_THEME if skin_variant == HudSkinVariant.CLEAN else ORNATE_ELF_THEME
 	return null
@@ -674,7 +668,6 @@ func _apply_character_theme(unit) -> void:
 	_set_refined_depth_visible(refined)
 	_skills_button.disabled = (
 		not refined
-		or _active_character_theme.default_discipline_id == &""
 	)
 	_set_attack_grouped_with_spells(_official_chassis_active())
 	_set_clean_composition(_clean_skin_active())
@@ -779,7 +772,6 @@ func _on_skills_button_pressed() -> void:
 	if (
 		_current_unit == null
 		or _active_character_theme == null
-		or _active_character_theme.default_discipline_id == &""
 	):
 		return
 	utility_skill_tree_requested.emit(

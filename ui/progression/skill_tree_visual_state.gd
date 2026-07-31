@@ -109,7 +109,7 @@ static func describe_base_rank(
 static func state_label(state: SkillTreeVisualState) -> String:
 	match state:
 		SkillTreeVisualState.SELECTED:
-			return "Sélectionné"
+			return "Acquis"
 		SkillTreeVisualState.AVAILABLE:
 			return "Disponible après le combat"
 		SkillTreeVisualState.LOCKED_BY_XP:
