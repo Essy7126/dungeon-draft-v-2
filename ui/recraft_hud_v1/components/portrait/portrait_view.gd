@@ -98,6 +98,11 @@ func set_active(active: bool) -> void:
 
 func set_portrait_frame(texture: Texture2D) -> void:
 	frame.texture = texture if texture != null else _default_frame_texture
+	frame.visible = true
+
+
+func set_refined_style(enabled: bool) -> void:
+	frame.visible = not enabled
 
 
 func set_discipline_emblem(

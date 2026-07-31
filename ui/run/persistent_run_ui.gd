@@ -28,6 +28,9 @@ func _ready() -> void:
 	skill_tree_status_button.tree_requested.connect(
 		_on_skill_tree_requested
 	)
+	combat_hud.utility_skill_tree_requested.connect(
+		_on_skill_tree_requested
+	)
 	skill_tree_screen.screen_closed.connect(
 		_on_skill_tree_screen_closed
 	)

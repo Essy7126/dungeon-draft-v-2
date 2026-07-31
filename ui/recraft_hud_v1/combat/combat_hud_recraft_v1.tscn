@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/recraft_hud_v1/theme/recraft_hud_theme_v1.tres" id="2_theme"]
@@ -18,11 +18,125 @@ shadow_color = Color(0, 0, 0, 0.45)
 shadow_size = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_name"]
-bg_color = Color(0.045, 0.06, 0.08, 0.86)
+bg_color = Color(0.055, 0.078, 0.07, 0.9)
+border_width_left = 1
+border_width_bottom = 1
+border_color = Color(0.37, 0.43, 0.26, 0.58)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_identity_plate"]
+bg_color = Color(0.039, 0.076, 0.058, 0.95)
+border_width_left = 2
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.31, 0.39, 0.24, 0.78)
+corner_radius_top_left = 6
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_function_plate"]
+bg_color = Color(0.039, 0.047, 0.042, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.31, 0.29, 0.22, 0.7)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.32)
+shadow_size = 3
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_context_plate"]
+bg_color = Color(0.025, 0.031, 0.029, 0.96)
+border_width_bottom = 1
+border_color = Color(0.48, 0.41, 0.25, 0.72)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_resource_plate"]
+bg_color = Color(0.045, 0.05, 0.048, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.27, 0.3, 0.27, 0.76)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utility_normal"]
+bg_color = Color(0.058, 0.068, 0.061, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.38, 0.29, 0.88)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utility_hover"]
+bg_color = Color(0.095, 0.112, 0.094, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.56, 0.48, 0.29, 0.92)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utility_pressed"]
+bg_color = Color(0.03, 0.036, 0.034, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.66, 0.52, 0.28, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utility_disabled"]
+bg_color = Color(0.048, 0.054, 0.051, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.29, 0.3, 0.27, 0.7)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Gradient" id="Gradient_panel_depth"]
+offsets = PackedFloat32Array(0, 0.42, 1)
+colors = PackedColorArray(0.11, 0.14, 0.1, 0.2, 0.045, 0.057, 0.048, 0.1, 0.006, 0.01, 0.008, 0.12)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_panel_depth"]
+gradient = SubResource("Gradient_panel_depth")
+width = 8
+height = 128
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_identity_divider"]
+bg_color = Color(0.53, 0.47, 0.28, 0.58)
+content_margin_left = 1.0
 
 [node name="CombatHUDRecraftV1" type="CanvasLayer"]
 layer = 20
@@ -97,6 +211,21 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="IdentityPlate" type="Panel" parent="Root/HudBand/CharacterAnchor/CharacterSection"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_identity_plate")
+
+[node name="IdentityDepth" type="TextureRect" parent="Root/HudBand/CharacterAnchor/CharacterSection"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_panel_depth")
+expand_mode = 1
+stretch_mode = 1
+
 [node name="LeftCenter" type="CenterContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection"]
 layout_mode = 2
 mouse_filter = 2
@@ -112,12 +241,30 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
+[node name="IdentityDivider" type="Panel" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(1, 86)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_identity_divider")
+
 [node name="CharacterInfo" type="VBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(210, 0)
 layout_mode = 2
 theme_override_constants/separation = 3
 alignment = 1
+
+[node name="IdentityDisciplineLabel" type="Label" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.63, 0.72, 0.51, 1)
+theme_override_font_sizes/font_size = 12
+text = "HUNTER"
+vertical_alignment = 1
 
 [node name="CharacterName" type="Label" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
 unique_name_in_owner = true
@@ -146,6 +293,31 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="EnergyNameLabel" type="Label" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="StatusEffectsContainer" type="HBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="EnergyBarSlot" type="Control" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="TemporaryPowerSlot" type="Control" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="ConsumableSlot" type="Control" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="TurnTimerSlot" type="Control" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -183,6 +355,38 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
+[node name="ActionResourcesAnchor" type="Control" parent="Root/HudBand"]
+unique_name_in_owner = true
+layout_mode = 0
+mouse_filter = 2
+
+[node name="ActionResourcesPlate" type="Panel" parent="Root/HudBand/ActionResourcesAnchor"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_resource_plate")
+
+[node name="CleanResourceBadges" type="VBoxContainer" parent="Root/HudBand/ActionResourcesAnchor"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
+
+[node name="MoveActionHost" type="CenterContainer" parent="Root/HudBand"]
+unique_name_in_owner = true
+layout_mode = 0
+mouse_filter = 2
+
 [node name="MovementPointsBadge" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ResourceBadges" instance=ExtResource("5_badge")]
 unique_name_in_owner = true
 layout_mode = 2
@@ -212,6 +416,31 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="SpellBlockPlate" type="Panel" parent="Root/HudBand/SpellAnchor/SpellSection"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_function_plate")
+
+[node name="ActionDepth" type="TextureRect" parent="Root/HudBand/SpellAnchor/SpellSection"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_panel_depth")
+expand_mode = 1
+stretch_mode = 1
 
 [node name="SpellBarBackground" type="TextureRect" parent="Root/HudBand/SpellAnchor/SpellSection"]
 unique_name_in_owner = true
@@ -249,6 +478,24 @@ layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 1
 
+[node name="SelectedSpellPlate" type="Label" parent="Root/HudBand/SpellAnchor/SpellSection"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -28.0
+offset_bottom = -4.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.91, 0.89, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.015, 0.02, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_context_plate")
+text = "Sort sélectionné"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="TurnAnchor" type="Control" parent="Root/HudBand"]
 unique_name_in_owner = true
 layout_mode = 1
@@ -273,6 +520,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="TurnPlate" type="Panel" parent="Root/HudBand/TurnAnchor/TurnSection"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_function_plate")
+
+[node name="TurnDepth" type="TextureRect" parent="Root/HudBand/TurnAnchor/TurnSection"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_panel_depth")
+expand_mode = 1
+stretch_mode = 1
 
 [node name="TurnCenter" type="CenterContainer" parent="Root/HudBand/TurnAnchor/TurnSection"]
 layout_mode = 2
@@ -309,6 +571,65 @@ offset_right = 68.0
 offset_bottom = 22.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="UtilityDock" type="HBoxContainer" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -75.0
+offset_top = -46.0
+offset_right = 75.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 6
+
+[node name="InventoryButton" type="Button" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent/UtilityDock"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "Inventaire — indisponible"
+focus_mode = 2
+disabled = true
+icon_max_width = 30
+theme_override_colors/icon_disabled_color = Color(0.54, 0.56, 0.52, 0.82)
+theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
+
+[node name="MapButton" type="Button" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent/UtilityDock"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "Carte — indisponible"
+focus_mode = 2
+disabled = true
+icon_max_width = 30
+theme_override_colors/icon_disabled_color = Color(0.54, 0.56, 0.52, 0.82)
+theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
+
+[node name="SkillsButton" type="Button" parent="Root/HudBand/TurnAnchor/TurnSection/TurnCenter/TurnContent/UtilityDock"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+tooltip_text = "Compétences"
+focus_mode = 2
+icon_max_width = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
 
 [node name="TurnIntroBanner" parent="Root" instance=ExtResource("9_turn_banner")]
 unique_name_in_owner = true

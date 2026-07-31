@@ -17,6 +17,7 @@ enum VisualState {
 @onready var visual_area: Control = %VisualArea
 @onready var spell_icon: TextureRect = %SpellIcon
 @onready var frame: TextureRect = %Frame
+@onready var refined_frame: Panel = %RefinedFrame
 @onready var selection_overlay: Panel = %SelectionOverlay
 @onready var hover_overlay: ColorRect = %HoverOverlay
 @onready var disabled_overlay: ColorRect = %DisabledOverlay
@@ -38,10 +39,17 @@ var imprinted := false
 var _hovered := false
 var _icon_override: Texture2D = null
 var _default_frame_texture: Texture2D = null
+var _refined_style := false
+var _selection_intensity := 1.0
+var _desaturation_intensity := 0.62
+var _cooldown_opacity := 0.58
+var _state_tween: Tween = null
 
 
 func _ready() -> void:
 	_default_frame_texture = frame.texture
+	if spell_icon.material != null:
+		spell_icon.material = spell_icon.material.duplicate()
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	focus_entered.connect(_refresh_visuals)
@@ -70,24 +78,17 @@ func apply_calibrated_layout(
 	visual_size = roundf(visual_size)
 	icon_size = minf(roundf(icon_size), visual_size)
 	shortcut_height = roundf(shortcut_height)
-	custom_minimum_size = Vector2(
-		visual_size,
-		visual_size + shortcut_height
-	)
+	custom_minimum_size = Vector2(visual_size, visual_size)
 	var icon_inset := roundf((visual_size - icon_size) * 0.5)
-	shortcut_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	shortcut_label.offset_bottom = shortcut_height
 	visual_area.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	visual_area.offset_top = shortcut_height
+	shortcut_label.position = Vector2(4.0, 4.0)
+	shortcut_label.size = Vector2(26.0, 24.0)
 	for icon_control in [background, spell_icon, fallback_label]:
 		icon_control.offset_left = icon_inset
 		icon_control.offset_top = icon_inset
 		icon_control.offset_right = -icon_inset
 		icon_control.offset_bottom = -icon_inset
-	var cost_size := METRICS.scaled_vector(
-		METRICS.SPELL_COST_BADGE_SIZE,
-		text_scale
-	)
+	var cost_size := (Vector2(50.0, 24.0) * text_scale).round()
 	cost_badge.offset_left = -cost_size.x
 	cost_badge.offset_top = -cost_size.y
 	var energy_size := METRICS.scaled_vector(
@@ -98,11 +99,11 @@ func apply_calibrated_layout(
 	energy_cost_badge.offset_right = energy_size.x
 	shortcut_label.add_theme_font_size_override(
 		"font_size",
-		METRICS.scaled_font(METRICS.SHORTCUT_FONT_SIZE, text_scale)
+		METRICS.scaled_font(16, text_scale)
 	)
 	cost_label.add_theme_font_size_override(
 		"font_size",
-		METRICS.scaled_font(METRICS.COST_FONT_SIZE, text_scale)
+		METRICS.scaled_font(15, text_scale)
 	)
 	energy_cost_label.add_theme_font_size_override(
 		"font_size",
@@ -140,8 +141,8 @@ func configure(
 	_icon_override = null
 	_refresh_icon()
 	fallback_label.text = _fallback_text()
-	cost_icon.text = "PA"
-	cost_label.text = str(maxi(ap_cost, 0))
+	cost_icon.text = ""
+	cost_label.text = "%d PA" % maxi(ap_cost, 0)
 	var energy_abbreviation := energy_name.left(1).to_upper()
 	energy_cost_label.text = (
 		"%d%s" % [int(energy_cost), energy_abbreviation]
@@ -166,6 +167,24 @@ func get_displayed_icon() -> Texture2D:
 
 func set_frame_override(texture: Texture2D) -> void:
 	frame.texture = texture if texture != null else _default_frame_texture
+
+
+func set_refined_style(enabled: bool) -> void:
+	_refined_style = enabled
+	frame.visible = not enabled
+	refined_frame.visible = enabled
+	_refresh_visuals()
+
+
+func set_polish_tuning(
+		selection_intensity: float = 1.0,
+		desaturation_intensity: float = 0.62,
+		cooldown_opacity: float = 0.58
+	) -> void:
+	_selection_intensity = clampf(selection_intensity, 0.0, 1.4)
+	_desaturation_intensity = clampf(desaturation_intensity, 0.0, 1.0)
+	_cooldown_opacity = clampf(cooldown_opacity, 0.2, 0.85)
+	_refresh_visuals()
 
 
 func _refresh_icon() -> void:
@@ -204,16 +223,14 @@ func _refresh_visuals() -> void:
 	var selected := visual_state == VisualState.SELECTED
 	var hovered := _hovered and not disabled
 	selection_overlay.visible = selected or has_focus()
+	selection_overlay.modulate = Color(1.0, 1.0, 1.0, _selection_intensity)
 	hover_overlay.visible = hovered and not selected
 	disabled_overlay.visible = visual_state in [VisualState.DISABLED, VisualState.UNAFFORDABLE]
 	cooldown_overlay.visible = visual_state == VisualState.COOLDOWN
+	cooldown_overlay.color = Color(0.015, 0.02, 0.025, _cooldown_opacity)
 	cooldown_label.visible = visual_state == VisualState.COOLDOWN
 	lock_icon.visible = visual_state == VisualState.LOCKED
-	disabled_overlay.color = (
-		Color(0.42, 0.06, 0.06, 0.62)
-		if visual_state == VisualState.UNAFFORDABLE
-		else Color(0.03, 0.04, 0.055, 0.68)
-	)
+	disabled_overlay.color = Color(0.035, 0.04, 0.045, 0.6)
 	frame.modulate = (
 		Color(1.12, 1.08, 0.82, 1.0)
 		if selected
@@ -221,11 +238,55 @@ func _refresh_visuals() -> void:
 		if disabled
 		else Color.WHITE
 	)
-	spell_icon.modulate = Color(0.5, 0.5, 0.52, 0.78) if disabled else Color.WHITE
-	var target_scale := Vector2(1.025, 1.025) if hovered or selected else Vector2.ONE
-	var tween := create_tween()
-	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "scale", target_scale, 0.08)
+	if not _refined_style:
+		if spell_icon.material is ShaderMaterial:
+			spell_icon.material.set_shader_parameter("saturation", 1.0)
+			spell_icon.material.set_shader_parameter("brightness", 1.0)
+		spell_icon.modulate = (
+			Color(0.66, 0.66, 0.64, 0.86)
+			if visual_state == VisualState.COOLDOWN
+			else Color(0.42, 0.43, 0.44, 0.72)
+			if disabled
+			else Color(0.9, 0.9, 0.88, 1.0)
+		)
+		visual_area.position.y = 0.0
+		scale = Vector2(1.015, 1.015) if hovered or selected else Vector2.ONE
+		return
+	spell_icon.modulate = Color.WHITE
+	scale = Vector2.ONE
+	var saturation := 0.9
+	var brightness := 0.96
+	if visual_state == VisualState.HOVER:
+		saturation = 0.96
+		brightness = 1.06
+	elif selected:
+		saturation = 0.95
+		brightness = 1.03
+	elif visual_state in [VisualState.DISABLED, VisualState.UNAFFORDABLE]:
+		saturation = 1.0 - _desaturation_intensity
+		brightness = 0.68
+	elif visual_state == VisualState.COOLDOWN:
+		saturation = 0.5
+		brightness = 0.76
+	if spell_icon.material is ShaderMaterial:
+		spell_icon.material.set_shader_parameter("saturation", saturation)
+		spell_icon.material.set_shader_parameter("brightness", brightness)
+	cost_label.modulate = (
+		Color(1.0, 0.58, 0.3, 1.0)
+		if visual_state == VisualState.UNAFFORDABLE
+		else Color.WHITE
+	)
+	cost_badge.modulate = (
+		Color(1.0, 0.72, 0.55, 1.0)
+		if visual_state == VisualState.UNAFFORDABLE
+		else Color.WHITE
+	)
+	var target_y := -2.0 if selected else -1.0 if hovered else 0.0
+	if _state_tween != null and _state_tween.is_valid():
+		_state_tween.kill()
+	_state_tween = create_tween()
+	_state_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_state_tween.tween_property(visual_area, "position:y", target_y, 0.1)
 
 
 func _on_mouse_entered() -> void:

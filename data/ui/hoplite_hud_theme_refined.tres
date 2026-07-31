@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r04_c04.png" id="2_badge"]
+[ext_resource type="Texture2D" path="res://asset/personnage/alliés/500.png" id="3_portrait"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="4_banner"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r08_c02.png" id="5_thrust"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="6_push"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r08_c01.png" id="7_spear_wall"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r04_c04.png" id="8_phalanx"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r08_c02.png" id="9_attack"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="10_inventory"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_map.png" id="11_map"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_skills.png" id="12_skills"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/move_action_icon.svg" id="13_move"]
+
+[resource]
+script = ExtResource("1_theme")
+character_id = &"res://data/units/alliés/Hoplite.tres"
+display_name = "Hoplite"
+discipline_name = "Phalangiste"
+energy_name = "Foi"
+discipline_emblem_texture = ExtResource("2_badge")
+portrait_texture = ExtResource("3_portrait")
+turn_banner_texture = ExtResource("4_banner")
+move_action_icon = ExtResource("13_move")
+utility_inventory_icon = ExtResource("10_inventory")
+utility_map_icon = ExtResource("11_map")
+utility_skills_icon = ExtResource("12_skills")
+refined_components = true
+primary_color = Color(0.2, 0.27, 0.35, 1)
+secondary_color = Color(0.43, 0.47, 0.54, 1)
+energy_color = Color(0.88, 0.72, 0.3, 1)
+text_color = Color(0.9, 0.93, 0.97, 1)
+spell_icon_mapping = {
+&"basic_attack": ExtResource("9_attack"),
+&"res://data/spells/Hoplite/estoc.tres": ExtResource("5_thrust"),
+&"res://data/spells/Hoplite/mur_de_lances.tres": ExtResource("7_spear_wall"),
+&"res://data/spells/Hoplite/phalange.tres": ExtResource("8_phalanx"),
+&"res://data/spells/Hoplite/repousse.tres": ExtResource("6_push")
+}

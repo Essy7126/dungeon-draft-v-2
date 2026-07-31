@@ -6,6 +6,7 @@ extends Resource
 @export var display_name := ""
 @export var discipline_name := ""
 @export var energy_name := ""
+@export var default_discipline_id: StringName = &""
 
 @export_category("Textures")
 @export var character_bar_texture: Texture2D
@@ -16,6 +17,11 @@ extends Resource
 @export var spell_slot_frame_texture: Texture2D
 @export var health_bar_frame_texture: Texture2D
 @export var end_turn_button_texture: Texture2D
+@export var move_action_icon: Texture2D
+@export var utility_inventory_icon: Texture2D
+@export var utility_map_icon: Texture2D
+@export var utility_skills_icon: Texture2D
+@export var refined_components := false
 
 @export_category("Palette")
 @export var primary_color := Color(0.25, 0.5, 0.28)

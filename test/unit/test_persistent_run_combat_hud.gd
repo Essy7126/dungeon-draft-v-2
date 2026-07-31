@@ -132,6 +132,39 @@ func test_active_character_refreshes_name_and_shared_draft_portrait() -> void:
 	mage.clear_traits()
 
 
+func test_refined_utility_dock_disables_missing_screens_and_reuses_skill_tree() -> void:
+	assert_true(GameManager._prepare_preconfigured_run(RUN_DATA, [
+		"res://data/units/alliés/elfe.tres",
+		"res://data/units/alliés/mage.tres",
+		"res://data/units/alliés/Gardien.tres",
+	]))
+	var run_ui := GameManager.get_persistent_run_ui()
+	var context := FakeCombatContext.new()
+	context.active_unit = GameManager.get_character_state(&"elf").unit
+	add_child_autofree(context)
+	var hud = run_ui.bind_combat_context(context)
+	hud.set_player_controls_enabled(true)
+
+	assert_true(hud.get_node("%UtilityDock").visible)
+	assert_true(hud.get_node("%InventoryButton").disabled)
+	assert_true(hud.get_node("%MapButton").disabled)
+	assert_false(hud.get_node("%SkillsButton").disabled)
+	assert_true(hud.utility_skill_tree_requested.is_connected(
+		Callable(run_ui, "_on_skill_tree_requested")
+	))
+	assert_not_null(hud.get_node("%InventoryButton").icon)
+	assert_not_null(hud.get_node("%MapButton").icon)
+	assert_not_null(hud.get_node("%SkillsButton").icon)
+	assert_not_null(hud.get_node("%MoveButton/ActionIcon").texture)
+	hud.get_node("%SkillsButton").pressed.emit()
+	assert_true(run_ui.get_skill_tree_screen().visible)
+	assert_false(bool(hud.get("_player_controls_enabled")))
+	assert_eq(run_ui.find_children("SkillTreeScreen", "SkillTreeScreen").size(), 1)
+	run_ui.get_skill_tree_screen().close_screen()
+	assert_false(run_ui.get_skill_tree_screen().visible)
+	assert_true(bool(hud.get("_player_controls_enabled")))
+
+
 func test_game_manager_keeps_one_hud_instance_across_contexts() -> void:
 	assert_true(GameManager._prepare_preconfigured_run(RUN_DATA, [
 		"res://data/units/alliés/elfe.tres",

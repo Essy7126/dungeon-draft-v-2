@@ -11,6 +11,7 @@ script = ExtResource("1_script")
 
 [node name="CombatHUDRecraftV1" parent="." instance=ExtResource("2_hud")]
 unique_name_in_owner = true
+skin_variant = 2
 
 [node name="ContextualUILayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true

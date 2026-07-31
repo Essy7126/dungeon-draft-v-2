@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "scope": "New untracked UI source images present before implementation",
+  "policy": "Original sources are immutable; watermarked and baked-background sources are rejected.",
+  "accepted_count": 0,
+  "rejected_count": 5,
+  "assets": [
+    {
+      "source_path": "asset/ui/dark_menu/source/character_bars/barres.jpg",
+      "sha256": "1444f03fafc025ed5861a3386bde329f5aa6b6b39b9ee26abe4789ce2a96f2a1",
+      "dimensions": {
+        "width": 640,
+        "height": 856
+      },
+      "aspect_ratio": 0.7477,
+      "file_mode": "RGB",
+      "has_alpha_channel": false,
+      "has_actual_transparency": false,
+      "alpha_extrema": null,
+      "mean_luminance": 240.02,
+      "category": "watermarked",
+      "decision": "rejected",
+      "used_in_clean_hud": false,
+      "reason": "Visible stock-image watermarks; pale decorative plates also have insufficient contrast.",
+      "source_modified": false
+    },
+    {
+      "source_path": "asset/ui/dark_menu/source/character_bars/pdv_mana.png",
+      "sha256": "c6fa053d4d44c47409d09e19d775895a396c64f4d115d409636353c966968077",
+      "dimensions": {
+        "width": 1152,
+        "height": 2048
+      },
+      "aspect_ratio": 0.5625,
+      "file_mode": "RGBA",
+      "has_alpha_channel": true,
+      "has_actual_transparency": false,
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "mean_luminance": 74.56,
+      "category": "unsuitable",
+      "decision": "rejected",
+      "used_in_clean_hud": false,
+      "reason": "RGBA container is fully opaque; checkerboard/background is baked in and packs several incompatible styles.",
+      "source_modified": false
+    },
+    {
+      "source_path": "asset/ui/dark_menu/source/spell_icons/flags.jpg",
+      "sha256": "762a908053123a319bb07a90718865c0f85fcbb0cc3f76e79700cb0456afb1a8",
+      "dimensions": {
+        "width": 736,
+        "height": 1104
+      },
+      "aspect_ratio": 0.6667,
+      "file_mode": "RGB",
+      "has_alpha_channel": false,
+      "has_actual_transparency": false,
+      "alpha_extrema": null,
+      "mean_luminance": 192.75,
+      "category": "branch_badge",
+      "decision": "rejected",
+      "used_in_clean_hud": false,
+      "reason": "Potential badge source, but white background, high saturation and uncertain crop ownership make extraction unsuitable for production HUD.",
+      "source_modified": false
+    },
+    {
+      "source_path": "asset/ui/dark_menu/source/spell_icons/icones.jpg",
+      "sha256": "71254b3fecfa523a70c7d100968137fc1dabfa9f4301282a3512f203d52b2b3d",
+      "dimensions": {
+        "width": 590,
+        "height": 1152
+      },
+      "aspect_ratio": 0.5122,
+      "file_mode": "RGB",
+      "has_alpha_channel": false,
+      "has_actual_transparency": false,
+      "alpha_extrema": null,
+      "mean_luminance": 64.69,
+      "category": "watermarked",
+      "decision": "rejected",
+      "used_in_clean_hud": false,
+      "reason": "Visible Envato watermarks and promotional text; must not be used or masked.",
+      "source_modified": false
+    },
+    {
+      "source_path": "asset/ui/dark_menu/source/spell_icons/icones2.jpg",
+      "sha256": "502b86bbcdea4b3e5ba9c918bcafd940180593d8c218d94fa3e49f7522e36d5d",
+      "dimensions": {
+        "width": 578,
+        "height": 480
+      },
+      "aspect_ratio": 1.2042,
+      "file_mode": "RGB",
+      "has_alpha_channel": false,
+      "has_actual_transparency": false,
+      "alpha_extrema": null,
+      "mean_luminance": 22.95,
+      "category": "action_icon",
+      "decision": "rejected",
+      "used_in_clean_hud": false,
+      "reason": "Readable silhouettes, but no alpha and a baked black background; no reliable, lossless extraction for the current HUD.",
+      "source_modified": false
+    }
+  ],
+  "clean_hud_existing_assets": [
+    {
+      "path": "asset/ui/recraft_hud_v1/processed/spell_slot_base.png",
+      "role": "common action slot"
+    },
+    {
+      "path": "asset/ui/character_hud/generated/elf_hunter_emblem.png",
+      "role": "character identity badge"
+    },
+    {
+      "path": "asset/ui/character_hud/generated/turn_intro_banner.png",
+      "role": "expressive turn banner"
+    }
+  ]
+}

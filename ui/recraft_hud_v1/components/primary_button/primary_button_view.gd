@@ -7,12 +7,16 @@ const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.g
 @onready var action_icon: TextureRect = %ActionIcon
 @onready var label: Label = %Label
 @onready var focus_overlay: Panel = %FocusOverlay
+@onready var refined_background: Panel = %RefinedBackground
+@onready var refined_top_edge: Panel = %RefinedTopEdge
 
 var _active := false
 var _hovered := false
 var _compact_icon_mode := false
 var _compact_icon_size := 56.0
 var _default_background_texture: Texture2D = null
+var _refined_style := false
+var _refined_primary := false
 
 
 func _ready() -> void:
@@ -79,6 +83,15 @@ func set_active(active: bool) -> void:
 	_refresh_visuals()
 
 
+func set_refined_style(enabled: bool, primary: bool = false) -> void:
+	_refined_style = enabled
+	_refined_primary = primary
+	background.visible = not enabled
+	refined_background.visible = enabled
+	refined_top_edge.visible = enabled
+	_refresh_visuals()
+
+
 func refresh_visual_state(active: bool = false) -> void:
 	_active = active
 	_refresh_visuals()
@@ -98,6 +111,38 @@ func _refresh_visuals() -> void:
 	elif _hovered:
 		tint = Color(1.08, 1.04, 0.94, 1.0)
 	background.modulate = tint
+	if _refined_style:
+		var style := StyleBoxFlat.new()
+		style.bg_color = (
+			Color(0.12, 0.105, 0.065, 0.98)
+			if _refined_primary
+			else Color(0.052, 0.06, 0.055, 0.98)
+		)
+		if disabled:
+			style.bg_color = Color(0.035, 0.038, 0.038, 0.9)
+		elif is_pressed():
+			style.bg_color = style.bg_color.darkened(0.2)
+		elif _hovered or _active:
+			style.bg_color = style.bg_color.lightened(0.1)
+		style.border_width_left = 2 if _refined_primary else 1
+		style.border_width_top = 2 if _refined_primary else 1
+		style.border_width_right = 2 if _refined_primary else 1
+		style.border_width_bottom = 2 if _refined_primary else 1
+		style.border_color = Color(0.65, 0.51, 0.27, 0.92 if _refined_primary else 0.7)
+		style.shadow_color = Color(0.0, 0.0, 0.0, 0.38)
+		style.shadow_size = 3 if _refined_primary else 2
+		style.shadow_offset = Vector2(0.0, 1.0)
+		style.corner_radius_top_left = 7
+		style.corner_radius_top_right = 7
+		style.corner_radius_bottom_left = 7
+		style.corner_radius_bottom_right = 7
+		refined_background.add_theme_stylebox_override("panel", style)
+		refined_top_edge.modulate = Color(
+			1.0,
+			1.0,
+			1.0,
+			0.82 if _refined_primary else 0.52
+		)
 	label.modulate = Color(0.56, 0.57, 0.59, 0.82) if disabled else Color.WHITE
 	action_icon.modulate = Color(0.48, 0.49, 0.5, 0.72) if disabled else Color.WHITE
 	var target_scale := Vector2(0.98, 0.98) if is_pressed() else Vector2(1.02, 1.02) if _hovered and not disabled else Vector2.ONE

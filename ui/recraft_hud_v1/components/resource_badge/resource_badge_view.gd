@@ -10,6 +10,8 @@ const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.g
 @onready var value_label: Label = %ValueLabel
 @onready var empty_overlay: ColorRect = %EmptyOverlay
 
+var _refined_style := false
+
 
 func _ready() -> void:
 	apply_layout(1.0)
@@ -40,7 +42,7 @@ func apply_layout(scale_factor: float) -> void:
 	value_label.offset_top = METRICS.scaled(13.0, scale_factor)
 	value_label.offset_bottom = -METRICS.scaled(3.0, scale_factor)
 	value_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(15, scale_factor)
+		"font_size", METRICS.scaled_font(17, scale_factor)
 	)
 	empty_overlay.set_offsets_preset(Control.PRESET_FULL_RECT)
 	empty_overlay.offset_left = frame_inset
@@ -57,11 +59,18 @@ func set_badge(
 	icon_text: String = ""
 ) -> void:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(color.r, color.g, color.b, 0.34)
-	style.corner_radius_top_left = 15
-	style.corner_radius_top_right = 15
-	style.corner_radius_bottom_left = 15
-	style.corner_radius_bottom_right = 15
+	style.bg_color = Color(color.r, color.g, color.b, 0.3 if _refined_style else 0.34)
+	var radius := 9 if _refined_style else 15
+	style.corner_radius_top_left = radius
+	style.corner_radius_top_right = radius
+	style.corner_radius_bottom_left = radius
+	style.corner_radius_bottom_right = radius
+	if _refined_style:
+		style.border_width_left = 1
+		style.border_width_top = 1
+		style.border_width_right = 1
+		style.border_width_bottom = 1
+		style.border_color = Color(color.r, color.g, color.b, 0.64)
 	color_overlay.add_theme_stylebox_override("panel", style)
 	icon.texture = icon_texture
 	icon.visible = icon_texture != null
@@ -70,3 +79,8 @@ func set_badge(
 	value_label.text = str(value)
 	empty_overlay.visible = value <= 0
 	tooltip_text = "%s : %d / %d" % [icon_text, value, maximum]
+
+
+func set_refined_style(enabled: bool) -> void:
+	_refined_style = enabled
+	base.visible = not enabled

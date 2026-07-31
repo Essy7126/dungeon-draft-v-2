@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/elf_hunter_emblem.png" id="2_emblem"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="3_banner"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r09_c01.png" id="4_precise"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r08_c02.png" id="5_sneak"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c03.png" id="6_fire"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c03.png" id="7_heal"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c04.png" id="8_attack"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png" id="9_slot"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/portrait_frame.png" id="10_portrait"]
+
+[resource]
+script = ExtResource("1_theme")
+character_id = &"elf"
+display_name = "Elfe"
+discipline_name = "Hunter"
+energy_name = "Nature"
+discipline_emblem_texture = ExtResource("2_emblem")
+turn_banner_texture = ExtResource("3_banner")
+portrait_frame_texture = ExtResource("10_portrait")
+spell_slot_frame_texture = ExtResource("9_slot")
+primary_color = Color(0.18, 0.34, 0.22, 1)
+secondary_color = Color(0.46, 0.36, 0.23, 1)
+energy_color = Color(0.31, 0.58, 0.34, 1)
+text_color = Color(0.91, 0.89, 0.8, 1)
+spell_icon_mapping = {
+&"basic_attack": ExtResource("8_attack"),
+&"elf_fireball": ExtResource("6_fire"),
+&"elf_precise_shot": ExtResource("4_precise"),
+&"elf_sneak_strike": ExtResource("5_sneak"),
+&"elf_sylvan_heal": ExtResource("7_heal")
+}
+spell_frame_mapping = {
+&"basic_attack": ExtResource("9_slot"),
+&"elf_fireball": ExtResource("9_slot"),
+&"elf_precise_shot": ExtResource("9_slot"),
+&"elf_sneak_strike": ExtResource("9_slot"),
+&"elf_sylvan_heal": ExtResource("9_slot")
+}

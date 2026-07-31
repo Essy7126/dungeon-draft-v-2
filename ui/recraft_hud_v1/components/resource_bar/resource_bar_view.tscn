@@ -1,7 +1,19 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/resource_bar_frame.png" id="2_frame"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_refined"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.48, 0.4, 0.24, 0.78)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="ResourceBarView" type="Control"]
 mouse_filter = 2
@@ -63,6 +75,18 @@ patch_margin_top = 7
 patch_margin_right = 12
 patch_margin_bottom = 7
 draw_center = false
+
+[node name="RefinedFrame" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_refined")
 
 [node name="ResourceIcon" type="TextureRect" parent="."]
 unique_name_in_owner = true

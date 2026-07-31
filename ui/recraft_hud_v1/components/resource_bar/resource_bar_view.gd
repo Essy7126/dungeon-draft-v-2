@@ -13,6 +13,7 @@ const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.g
 @onready var resource_icon: TextureRect = %ResourceIcon
 @onready var resource_icon_fallback: Label = %ResourceIconFallback
 @onready var value_label: Label = %ValueLabel
+@onready var refined_frame: Panel = %RefinedFrame
 
 var current_value := 0.0
 var maximum_value := 1.0
@@ -48,7 +49,7 @@ func _apply_layout(bar_size: Vector2, scale_factor: float) -> void:
 	_layout_scale = scale_factor
 	custom_minimum_size = bar_size
 	value_label.add_theme_font_size_override(
-		"font_size", METRICS.scaled_font(METRICS.RESOURCE_VALUE_FONT_SIZE, scale_factor)
+		"font_size", maxi(17 if bar_size.y >= 28.0 else 12, METRICS.scaled_font(METRICS.RESOURCE_VALUE_FONT_SIZE, scale_factor))
 	)
 	resource_icon_fallback.add_theme_font_size_override(
 		"font_size", METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, scale_factor)
@@ -76,6 +77,13 @@ func set_frame_texture(texture: Texture2D) -> void:
 	theme_frame.visible = texture != null
 
 
+func set_refined_style(enabled: bool) -> void:
+	refined_frame.visible = enabled
+	if enabled:
+		frame.visible = false
+		theme_frame.visible = false
+
+
 func set_resource(
 	value: float,
 	maximum: float,
@@ -89,7 +97,8 @@ func set_resource(
 	current_value = clampf(value, 0.0, maxf(maximum, 0.0))
 	maximum_value = maxf(maximum, 0.0001)
 	resource_color = color
-	main_fill.color = color
+	var is_critical_health := icon_fallback == "PV" and current_value / maximum_value <= 0.25
+	main_fill.color = color.lightened(0.12) if is_critical_health else color
 	delayed_value_fill.color = color.lightened(0.28)
 	resource_icon.texture = icon
 	resource_icon.visible = icon != null
@@ -97,6 +106,10 @@ func set_resource(
 	resource_icon_fallback.text = icon_fallback
 	value_label.visible = show_text
 	value_label.text = "%d / %d" % [int(round(current_value)), int(round(maximum))]
+	value_label.add_theme_color_override(
+		"font_color",
+		Color(1.0, 0.78, 0.7) if is_critical_health else Color(0.96, 0.94, 0.86)
+	)
 	if _delayed_tween != null:
 		_delayed_tween.kill()
 	if animate_change and current_value < previous:

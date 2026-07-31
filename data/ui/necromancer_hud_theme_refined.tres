@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r05_c02.png" id="2_badge"]
+[ext_resource type="Texture2D" path="res://asset/personnage/alliés/480.png" id="3_portrait"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="4_banner"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r05_c00.png" id="5_bolt"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r05_c02.png" id="6_raise"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r05_c04.png" id="7_rift"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r09_c04.png" id="8_harvest"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r06_c05.png" id="9_attack"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="10_inventory"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_map.png" id="11_map"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_skills.png" id="12_skills"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/move_action_icon.svg" id="13_move"]
+
+[resource]
+script = ExtResource("1_theme")
+character_id = &"res://data/units/alliés/Necromant.tres"
+display_name = "Nécromant"
+discipline_name = "Occultiste"
+energy_name = "Ombre"
+discipline_emblem_texture = ExtResource("2_badge")
+portrait_texture = ExtResource("3_portrait")
+turn_banner_texture = ExtResource("4_banner")
+move_action_icon = ExtResource("13_move")
+utility_inventory_icon = ExtResource("10_inventory")
+utility_map_icon = ExtResource("11_map")
+utility_skills_icon = ExtResource("12_skills")
+refined_components = true
+primary_color = Color(0.16, 0.1, 0.25, 1)
+secondary_color = Color(0.34, 0.23, 0.46, 1)
+energy_color = Color(0.55, 0.36, 0.96, 1)
+text_color = Color(0.88, 0.83, 0.94, 1)
+spell_icon_mapping = {
+&"basic_attack": ExtResource("9_attack"),
+&"res://data/spells/Necromant/eclat_ombre.tres": ExtResource("5_bolt"),
+&"res://data/spells/Necromant/faille.tres": ExtResource("7_rift"),
+&"res://data/spells/Necromant/lever.tres": ExtResource("6_raise"),
+&"res://data/spells/Necromant/moisson.tres": ExtResource("8_harvest")
+}

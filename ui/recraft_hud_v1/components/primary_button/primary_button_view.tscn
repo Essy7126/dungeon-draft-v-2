@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/components/primary_button/primary_button_view.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/primary_button_base.png" id="2_base"]
@@ -16,6 +16,23 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_refined"]
+bg_color = Color(0.055, 0.061, 0.055, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.46, 0.39, 0.25, 0.88)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_refined_top_edge"]
+bg_color = Color(0.72, 0.59, 0.33, 0.62)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
 
 [node name="PrimaryButtonView" type="Button"]
 focus_mode = 2
@@ -37,6 +54,32 @@ mouse_filter = 2
 texture = ExtResource("2_base")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="RefinedBackground" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_refined")
+
+[node name="RefinedTopEdge" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 7.0
+offset_top = 1.0
+offset_right = -7.0
+offset_bottom = 3.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_refined_top_edge")
 
 [node name="FocusOverlay" type="Panel" parent="."]
 unique_name_in_owner = true
