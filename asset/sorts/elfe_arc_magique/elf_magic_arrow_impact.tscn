@@ -83,6 +83,8 @@ script = ExtResource("1_jqyau")
 
 [node name="ImpactAnimation" type="AnimatedSprite2D" parent="." unique_id=1947931163]
 material = SubResource("CanvasItemMaterial_jqyau")
-scale = Vector2(0.25, 0.25)
+scale = Vector2(0.8, 0.8)
 sprite_frames = SubResource("SpriteFrames_05x6l")
 animation = &"impact"
+frame = 8
+frame_progress = 1.0

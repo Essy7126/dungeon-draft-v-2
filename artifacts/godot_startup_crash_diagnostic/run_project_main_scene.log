@@ -1,0 +1,1339 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Accessibility: window 0 adapter created.
+Devices:
+  #0: NVIDIA NVIDIA GeForce RTX 4070 Laptop GPU - Supported, Discrete
+  #1: Intel Intel(R) UHD Graphics - Supported, Discrete
+  #2: Microsoft Microsoft Basic Render Driver - Supported, CPU
+- Shader:
+  model: 6.6
+- D3D12 Variable Rate Shading supported:
+  Draw call
+  Primitive
+  Screen-space image (tile size: 16)
+- D3D12 multiview supported:
+  max view count: 4
+- Relaxed casting supported (but disabled for now)
+- D3D12 16-bit ops supported: yes
+- Depth bounds test supported
+D3D12: Device supports GPU UPLOAD heap.
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 4070 Laptop GPU
+SDL: Init OK!
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderRD' (group 0) SHA256: 54b47da3ce58bfeb483acea9e9e45b5de11793d45b2a38279aa17b08296ef514
+Loading cache for shader CanvasSdfShaderRD, variant 0
+Loading cache for shader CanvasSdfShaderRD, variant 1
+Loading cache for shader CanvasSdfShaderRD, variant 2
+Loading cache for shader CanvasSdfShaderRD, variant 3
+Loading cache for shader CanvasSdfShaderRD, variant 4
+Loading cache for shader CanvasSdfShaderRD, variant 5
+Shader 'SkeletonShaderRD' (group 0) SHA256: 08b4464d16133f4db97a8df4663b95b2b956ecd3e7addf44a16e644f488157c2
+Loading cache for shader SkeletonShaderRD, variant 0
+Loading cache for shader SkeletonShaderRD, variant 1
+Shader 'SortShaderRD' (group 0) SHA256: 8e4ebbbb19fcd734c6f15656afbe1bcd5eb3acdfdae9cab023ebd6f54c901ef8
+Loading cache for shader SortShaderRD, variant 0
+Loading cache for shader SortShaderRD, variant 1
+Loading cache for shader SortShaderRD, variant 2
+Shader 'ParticlesShaderRD' (group 0) SHA256: 8f4c25caa97a2f74d5fa5f299aabdd514f57d9737b8642ed65c20e846dad5db0
+Loading cache for shader ParticlesShaderRD, variant 0
+Shader 'ParticlesCopyShaderRD' (group 0) SHA256: 688d10aec3c2e17e8c578ba3e2db1ea2f054eedd511b1e1647952c0acaeeab72
+Loading cache for shader ParticlesCopyShaderRD, variant 0
+Loading cache for shader ParticlesCopyShaderRD, variant 1
+Loading cache for shader ParticlesCopyShaderRD, variant 2
+Loading cache for shader ParticlesCopyShaderRD, variant 3
+Loading cache for shader ParticlesCopyShaderRD, variant 4
+Loading cache for shader ParticlesCopyShaderRD, variant 5
+Loading cache for shader ParticlesCopyShaderRD, variant 6
+Loading cache for shader ParticlesCopyShaderRD, variant 7
+Loading cache for shader ParticlesCopyShaderRD, variant 8
+Loading cache for shader ParticlesCopyShaderRD, variant 9
+Loading cache for shader ParticlesCopyShaderRD, variant 10
+Loading cache for shader ParticlesCopyShaderRD, variant 11
+Loading cache for shader ParticlesCopyShaderRD, variant 12
+Loading cache for shader ParticlesCopyShaderRD, variant 13
+Loading cache for shader ParticlesCopyShaderRD, variant 14
+Loading cache for shader ParticlesCopyShaderRD, variant 15
+Loading cache for shader ParticlesCopyShaderRD, variant 16
+Loading cache for shader ParticlesCopyShaderRD, variant 17
+Loading cache for shader ParticlesCopyShaderRD, variant 18
+Loading cache for shader ParticlesCopyShaderRD, variant 19
+Loading cache for shader ParticlesCopyShaderRD, variant 20
+Shader 'CanvasShaderRD' (group 0) SHA256: 1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Shader 'CanvasOcclusionShaderRD' (group 0) SHA256: 3b765d5624135f9fbf3199b6660b8387d5b904f48be0914a622e5da9b906b504
+Loading cache for shader CanvasOcclusionShaderRD, variant 0
+Loading cache for shader CanvasOcclusionShaderRD, variant 1
+Loading cache for shader CanvasOcclusionShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Shader 'TexBlitShaderRD' (group 0) SHA256: ce377a6d54cd54d45abdd915ec4cf3877fef3cbace94de3df4ed73ec0124ea0c
+Loading cache for shader TexBlitShaderRD, variant 0
+Loading cache for shader TexBlitShaderRD, variant 1
+Loading cache for shader TexBlitShaderRD, variant 2
+Loading cache for shader TexBlitShaderRD, variant 3
+Shader 'ClusterRenderShaderRD' (group 0) SHA256: e1824bcfaf9ebab715957f09e04336284255c4a495944e7ca919e9c20509cf78
+Loading cache for shader ClusterRenderShaderRD, variant 0
+Loading cache for shader ClusterRenderShaderRD, variant 1
+Shader 'ClusterStoreShaderRD' (group 0) SHA256: 552b8bd4a514bf18836a8f9d32f41185bdb0efa58da3d5b3e68a39d68f6cecfc
+Loading cache for shader ClusterStoreShaderRD, variant 0
+Shader 'ClusterDebugShaderRD' (group 0) SHA256: 0825a26b8d0923d82c8881fc87e3d931ea89a116d0550106157b7033dfa382a7
+Loading cache for shader ClusterDebugShaderRD, variant 0
+Shader 'SceneForwardClusteredShaderRD' (group 0) SHA256: 069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692
+Shader 'SceneForwardClusteredShaderRD' (group 1) SHA256: e6ddf6e05db4f231ee7be3016d02a9e703882c6b2e93191499ae729257086fbf
+Shader 'SceneForwardClusteredShaderRD' (group 2) SHA256: 03231cc5a2baf868ce6ae9ca41bb9f199e71fe058e538a5f5121bcec6a77e72d
+Shader 'SceneForwardClusteredShaderRD' (group 3) SHA256: e3d89c1bd8f3ff6a0fef46ab1650f9c56e7ec927639ae227579c7831b94bc4ae
+Loading cache for shader SceneForwardClusteredShaderRD, variant 0
+Loading cache for shader SceneForwardClusteredShaderRD, variant 1
+Loading cache for shader SceneForwardClusteredShaderRD, variant 2
+Loading cache for shader SceneForwardClusteredShaderRD, variant 3
+Loading cache for shader SceneForwardClusteredShaderRD, variant 4
+Loading cache for shader SceneForwardClusteredShaderRD, variant 5
+Loading cache for shader SceneForwardClusteredShaderRD, variant 6
+Loading cache for shader SceneForwardClusteredShaderRD, variant 7
+Loading cache for shader SceneForwardClusteredShaderRD, variant 0
+Loading cache for shader SceneForwardClusteredShaderRD, variant 1
+Loading cache for shader SceneForwardClusteredShaderRD, variant 2
+Loading cache for shader SceneForwardClusteredShaderRD, variant 3
+Loading cache for shader SceneForwardClusteredShaderRD, variant 4
+Loading cache for shader SceneForwardClusteredShaderRD, variant 5
+Loading cache for shader SceneForwardClusteredShaderRD, variant 6
+Loading cache for shader SceneForwardClusteredShaderRD, variant 7
+Loading cache for shader SceneForwardClusteredShaderRD, variant 0
+Loading cache for shader SceneForwardClusteredShaderRD, variant 1
+Loading cache for shader SceneForwardClusteredShaderRD, variant 2
+Loading cache for shader SceneForwardClusteredShaderRD, variant 3
+Loading cache for shader SceneForwardClusteredShaderRD, variant 4
+Loading cache for shader SceneForwardClusteredShaderRD, variant 5
+Loading cache for shader SceneForwardClusteredShaderRD, variant 6
+Loading cache for shader SceneForwardClusteredShaderRD, variant 7
+Shader 'BestFitNormalShaderRD' (group 0) SHA256: 522b47cc4c3c4b572bc28faadfdeea9c0a31b5381e4ea2e3406d0f6fda73d52b
+Loading cache for shader BestFitNormalShaderRD, variant 0
+Shader 'IntegrateDfgShaderRD' (group 0) SHA256: 83448d29d7232c732c9d312b8e7faaa363fd72cf79165ec15256862089ebd46e
+Loading cache for shader IntegrateDfgShaderRD, variant 0
+Shader 'TaaResolveShaderRD' (group 0) SHA256: c5152f5d8d5e919024126af06b7cf1a216b5184957e1946e198175642a86027f
+Loading cache for shader TaaResolveShaderRD, variant 0
+Shader 'Fsr2DepthClipPassShaderRD' (group 0) SHA256: a20cc609c661dbc20c0e6a50851d7ef432d89eb01d24ccf77a8d354b1003b593
+Shader 'Fsr2ReconstructPreviousDepthPassShaderRD' (group 0) SHA256: cbbdd1c21ee3ee90d8d06a9dd43063e4947406284591dc52cda4af06f70cf4c5
+Shader 'Fsr2LockPassShaderRD' (group 0) SHA256: 995caf07233459282796e20cf661d1dff50d44e7f6b71a02f50ff28852375d11
+Shader 'Fsr2AccumulatePassShaderRD' (group 0) SHA256: 5d2518fa9d077ed7e9937130bcc8f122a0c112da50e4102e291ff2e2e3b3655a
+Shader 'Fsr2RcasPassShaderRD' (group 0) SHA256: 1a214ec56a6146372aa5be425b51e322c000385e510d969388b8a7b64e8633fe
+Shader 'Fsr2ComputeLuminancePyramidPassShaderRD' (group 0) SHA256: 858215f4d90283500ee2148c5aa0e0849b1581cc1eff4a636e59f7ab9c107253
+Shader 'Fsr2AutogenReactivePassShaderRD' (group 0) SHA256: 4c3e8464d1a8b62c5285265b7d298da6fd431f85d1353a00f4791bde194cda86
+Shader 'Fsr2TcrAutogenPassShaderRD' (group 0) SHA256: 6259947a4b72af42bd9446599035d159f6a0f4ad7816329d4ce18d50bf4ec655
+Shader 'SsEffectsDownsampleShaderRD' (group 0) SHA256: ccf4e10c5ab4528ecf8f9b97dbc17f491b409915c7c64f533bcc896c43acdfb0
+Loading cache for shader SsEffectsDownsampleShaderRD, variant 0
+Loading cache for shader SsEffectsDownsampleShaderRD, variant 1
+Loading cache for shader SsEffectsDownsampleShaderRD, variant 2
+Loading cache for shader SsEffectsDownsampleShaderRD, variant 3
+Loading cache for shader SsEffectsDownsampleShaderRD, variant 4
+Loading cache for shader SsEffectsDownsampleShaderRD, variant 5
+Loading cache for shader SsEffectsDownsampleShaderRD, variant 6
+Shader 'SsilShaderRD' (group 0) SHA256: 2b3bf37ba8a45aa5cbc064da9031687142e6f007565f6dee75f83189a9edcfa3
+Loading cache for shader SsilShaderRD, variant 0
+Loading cache for shader SsilShaderRD, variant 1
+Loading cache for shader SsilShaderRD, variant 2
+Shader 'SsilImportanceMapShaderRD' (group 0) SHA256: 1c4d07be7a352b493a9afdef9363514c1f219eb178911ec18626ea542c3b1334
+Loading cache for shader SsilImportanceMapShaderRD, variant 0
+Loading cache for shader SsilImportanceMapShaderRD, variant 1
+Loading cache for shader SsilImportanceMapShaderRD, variant 2
+Shader 'SsilBlurShaderRD' (group 0) SHA256: ba99bf82030acafb5628e8fbd1e0a70fb6a1fa2af5283800a6585fa9c71317d5
+Loading cache for shader SsilBlurShaderRD, variant 0
+Loading cache for shader SsilBlurShaderRD, variant 1
+Loading cache for shader SsilBlurShaderRD, variant 2
+Shader 'SsilInterleaveShaderRD' (group 0) SHA256: e3b6eab6e5b68136736435a560115616f4074e0be5dca3e2242912a504320162
+Loading cache for shader SsilInterleaveShaderRD, variant 0
+Loading cache for shader SsilInterleaveShaderRD, variant 1
+Loading cache for shader SsilInterleaveShaderRD, variant 2
+Shader 'SsaoShaderRD' (group 0) SHA256: 66a821ba71909db6948ec1aded9d3ee630866bfb4556c2e275650a1ba3b8f5e3
+Loading cache for shader SsaoShaderRD, variant 0
+Loading cache for shader SsaoShaderRD, variant 1
+Loading cache for shader SsaoShaderRD, variant 2
+Shader 'SsaoImportanceMapShaderRD' (group 0) SHA256: 8701d1e664bf71d29af6f5d0a42ba62d7efbdec7f5f82064ea3b0fe3eef94361
+Loading cache for shader SsaoImportanceMapShaderRD, variant 0
+Loading cache for shader SsaoImportanceMapShaderRD, variant 1
+Loading cache for shader SsaoImportanceMapShaderRD, variant 2
+Shader 'SsaoBlurShaderRD' (group 0) SHA256: 75c97c3818b26631d447852881b25a2a80e6c894e956c009b714072cbd46c1ef
+Loading cache for shader SsaoBlurShaderRD, variant 0
+Loading cache for shader SsaoBlurShaderRD, variant 1
+Loading cache for shader SsaoBlurShaderRD, variant 2
+Shader 'SsaoInterleaveShaderRD' (group 0) SHA256: bee8210303269b0457bb9b0180392661b1c86739a5b9b2efe8a252021fcca1f5
+Loading cache for shader SsaoInterleaveShaderRD, variant 0
+Loading cache for shader SsaoInterleaveShaderRD, variant 1
+Loading cache for shader SsaoInterleaveShaderRD, variant 2
+Shader 'ScreenSpaceReflectionDownsampleShaderRD' (group 0) SHA256: ce68b2844d60e91b13d566f130e5e6be4924ecd57975c33ed49db903d1d10cdd
+Loading cache for shader ScreenSpaceReflectionDownsampleShaderRD, variant 0
+Loading cache for shader ScreenSpaceReflectionDownsampleShaderRD, variant 1
+Loading cache for shader ScreenSpaceReflectionDownsampleShaderRD, variant 2
+Loading cache for shader ScreenSpaceReflectionDownsampleShaderRD, variant 3
+Shader 'ScreenSpaceReflectionHizShaderRD' (group 0) SHA256: d816ec3b916a39c24ef8495a965202569a714911181fd70869fdc76e1647898d
+Loading cache for shader ScreenSpaceReflectionHizShaderRD, variant 0
+Loading cache for shader ScreenSpaceReflectionHizShaderRD, variant 1
+Loading cache for shader ScreenSpaceReflectionHizShaderRD, variant 2
+Loading cache for shader ScreenSpaceReflectionHizShaderRD, variant 3
+Shader 'ScreenSpaceReflectionShaderRD' (group 0) SHA256: dd5e885eefeba0f65c2678de75b986844fb186f0d2a38e39381b435388d51dbb
+Loading cache for shader ScreenSpaceReflectionShaderRD, variant 0
+Shader 'ScreenSpaceReflectionFilterShaderRD' (group 0) SHA256: adaaba74fde6be6ed9036c3b4e1988baef6dcb0a7cc9aa46eee0f81796fd1ee7
+Loading cache for shader ScreenSpaceReflectionFilterShaderRD, variant 0
+Shader 'ScreenSpaceReflectionResolveShaderRD' (group 0) SHA256: 7179c7134fdf0cbefc7c3244957827cbec1fd0180b3dfa0ea580579b7b83a06c
+Loading cache for shader ScreenSpaceReflectionResolveShaderRD, variant 0
+Shader 'SubsurfaceScatteringShaderRD' (group 0) SHA256: 7c8ee12c5109342b5667f38d6fda4ec1c20f0d014ad9690457e6f19d602b96d9
+Loading cache for shader SubsurfaceScatteringShaderRD, variant 0
+Loading cache for shader SubsurfaceScatteringShaderRD, variant 1
+Loading cache for shader SubsurfaceScatteringShaderRD, variant 2
+Shader 'SkyShaderRD' (group 0) SHA256: 9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997
+Loading cache for shader SkyShaderRD, variant 0
+Loading cache for shader SkyShaderRD, variant 1
+Loading cache for shader SkyShaderRD, variant 2
+Loading cache for shader SkyShaderRD, variant 3
+Loading cache for shader SkyShaderRD, variant 4
+Loading cache for shader SkyShaderRD, variant 5
+Loading cache for shader SkyShaderRD, variant 0
+Loading cache for shader SkyShaderRD, variant 1
+Loading cache for shader SkyShaderRD, variant 2
+Loading cache for shader SkyShaderRD, variant 3
+Loading cache for shader SkyShaderRD, variant 4
+Loading cache for shader SkyShaderRD, variant 5
+Shader 'VoxelGiShaderRD' (group 0) SHA256: be32ca7811c1d8efa7aea8f6759edee078b2130e3ae5a44ffb2866906b7f344a
+Loading cache for shader VoxelGiShaderRD, variant 0
+Loading cache for shader VoxelGiShaderRD, variant 1
+Loading cache for shader VoxelGiShaderRD, variant 2
+Loading cache for shader VoxelGiShaderRD, variant 3
+Loading cache for shader VoxelGiShaderRD, variant 4
+Loading cache for shader VoxelGiShaderRD, variant 5
+Loading cache for shader VoxelGiShaderRD, variant 6
+Loading cache for shader VoxelGiShaderRD, variant 7
+Shader 'VoxelGiDebugShaderRD' (group 0) SHA256: 9a34146b67b3016d20f7a43d89748fc6c5eb980a677a57e30e08f4db1bc9a2c6
+Loading cache for shader VoxelGiDebugShaderRD, variant 0
+Loading cache for shader VoxelGiDebugShaderRD, variant 1
+Loading cache for shader VoxelGiDebugShaderRD, variant 2
+Loading cache for shader VoxelGiDebugShaderRD, variant 3
+Shader 'SdfgiPreprocessShaderRD' (group 0) SHA256: 1df3f43771989a4c102242eeab16de469b18c89bbd7ff3866c4fd78a99d2e961
+Loading cache for shader SdfgiPreprocessShaderRD, variant 0
+Loading cache for shader SdfgiPreprocessShaderRD, variant 1
+Loading cache for shader SdfgiPreprocessShaderRD, variant 2
+Loading cache for shader SdfgiPreprocessShaderRD, variant 3
+Loading cache for shader SdfgiPreprocessShaderRD, variant 4
+Loading cache for shader SdfgiPreprocessShaderRD, variant 5
+Loading cache for shader SdfgiPreprocessShaderRD, variant 6
+Loading cache for shader SdfgiPreprocessShaderRD, variant 7
+Loading cache for shader SdfgiPreprocessShaderRD, variant 8
+Shader 'SdfgiDirectLightShaderRD' (group 0) SHA256: 60b8f559824902a3ba6f601c82ba13bb027a01cf114421e8b3e7f1577251f982
+Loading cache for shader SdfgiDirectLightShaderRD, variant 0
+Loading cache for shader SdfgiDirectLightShaderRD, variant 1
+Shader 'SdfgiIntegrateShaderRD' (group 0) SHA256: 8402e25fb473b17f05fd8134b61bac8272f9bb13ec37039e0f82a546918f3004
+Loading cache for shader SdfgiIntegrateShaderRD, variant 0
+Loading cache for shader SdfgiIntegrateShaderRD, variant 1
+Loading cache for shader SdfgiIntegrateShaderRD, variant 2
+Loading cache for shader SdfgiIntegrateShaderRD, variant 3
+Shader 'GiShaderRD' (group 0) SHA256: a60cccbead6fab980bf996289c17b9a77b68a540d44ab8a15ec477060a5862cf
+Shader 'GiShaderRD' (group 1) SHA256: 4b8662cdf9663cca618a7d8d793e816df7b2d7e775eefbb9eb5fbb0bdbe7d3d3
+Loading cache for shader GiShaderRD, variant 0
+Loading cache for shader GiShaderRD, variant 1
+Loading cache for shader GiShaderRD, variant 2
+Loading cache for shader GiShaderRD, variant 3
+Loading cache for shader GiShaderRD, variant 4
+Loading cache for shader GiShaderRD, variant 0
+Loading cache for shader GiShaderRD, variant 1
+Loading cache for shader GiShaderRD, variant 2
+Loading cache for shader GiShaderRD, variant 3
+Loading cache for shader GiShaderRD, variant 4
+Shader 'SdfgiDebugShaderRD' (group 0) SHA256: 6c94a7679fba279d983d32e141b6648229956762362a863275c13ba2608c7e4d
+Loading cache for shader SdfgiDebugShaderRD, variant 0
+Shader 'SdfgiDebugProbesShaderRD' (group 0) SHA256: 9067100a09ae2d21f3f325a69e660546baba568b663847a9ba75cbdc3ea337ee
+Loading cache for shader SdfgiDebugProbesShaderRD, variant 0
+Loading cache for shader SdfgiDebugProbesShaderRD, variant 1
+Loading cache for shader SdfgiDebugProbesShaderRD, variant 2
+Loading cache for shader SdfgiDebugProbesShaderRD, variant 3
+Shader 'VolumetricFogShaderRD' (group 0) SHA256: 4fcd7eea54024fa982593be8aed8c9df465d0c4f629d7d1d1dfdf887cdaca664
+Shader 'VolumetricFogShaderRD' (group 1) SHA256: ca7636fab5e9482809eef50fa6684b206f196dada5f05272cb6f04bab7b39ad4
+Shader 'VolumetricFogShaderRD' (group 2) SHA256: cb01070fac4570703f705033e78fe8f33ec0bc024a29f53170c0e593709e87ce
+Shader 'VolumetricFogShaderRD' (group 3) SHA256: c66c1f9d3ee29cfbd36a5292e40323598a914dddef06f93951451c87654fd3ca
+Loading cache for shader VolumetricFogShaderRD, variant 0
+Shader 'VolumetricFogProcessShaderRD' (group 0) SHA256: b3d8b51125b8cc82b65e91af793ad8427f49e486687dd0559cabc908674c4390
+Shader 'VolumetricFogProcessShaderRD' (group 1) SHA256: fb70f1d0cde8662299c3e8439861294b94192590612d199e70f0f2380126ce56
+Shader 'VolumetricFogProcessShaderRD' (group 2) SHA256: ea198e67c91d4d2ddf767049e2aede96f6c4a7ebb51ac9f6f9bbb89e28b083df
+Shader 'VolumetricFogProcessShaderRD' (group 3) SHA256: 89e722db621fadf587f712b1100bfe8ade1e7ad5051befa7e3c3bb7bae4a1c18
+Loading cache for shader VolumetricFogProcessShaderRD, variant 0
+Loading cache for shader VolumetricFogProcessShaderRD, variant 1
+Loading cache for shader VolumetricFogProcessShaderRD, variant 2
+Loading cache for shader VolumetricFogProcessShaderRD, variant 3
+Loading cache for shader VolumetricFogProcessShaderRD, variant 4
+Shader 'BokehDofShaderRD' (group 0) SHA256: 07a1c984a30f7beb4c3290c8d0216119327b1f6eb8b36e5c96cfb751f30742e6
+Loading cache for shader BokehDofShaderRD, variant 0
+Loading cache for shader BokehDofShaderRD, variant 1
+Loading cache for shader BokehDofShaderRD, variant 3
+Loading cache for shader BokehDofShaderRD, variant 5
+Loading cache for shader BokehDofShaderRD, variant 6
+Shader 'CopyShaderRD' (group 0) SHA256: 23f6cf7986b46c68792dfd3f087267f14eebc49382f0c0fd265b45462b58afcf
+Loading cache for shader CopyShaderRD, variant 0
+Loading cache for shader CopyShaderRD, variant 1
+Loading cache for shader CopyShaderRD, variant 2
+Loading cache for shader CopyShaderRD, variant 3
+Loading cache for shader CopyShaderRD, variant 4
+Loading cache for shader CopyShaderRD, variant 5
+Loading cache for shader CopyShaderRD, variant 6
+Loading cache for shader CopyShaderRD, variant 7
+Loading cache for shader CopyShaderRD, variant 8
+Loading cache for shader CopyShaderRD, variant 9
+Loading cache for shader CopyShaderRD, variant 10
+Loading cache for shader CopyShaderRD, variant 11
+Loading cache for shader CopyShaderRD, variant 12
+Shader 'CopyToFbShaderRD' (group 0) SHA256: d00e29e632391ed3791124b988da290d922da3d9e2083273523bd8173b24ff97
+Loading cache for shader CopyToFbShaderRD, variant 0
+Loading cache for shader CopyToFbShaderRD, variant 1
+Loading cache for shader CopyToFbShaderRD, variant 2
+Loading cache for shader CopyToFbShaderRD, variant 3
+Shader 'CubeToDpShaderRD' (group 0) SHA256: 9825f5ee942047b6912a1b6fe49935a8c928598f40d2cdfc64a0f61134deed27
+Loading cache for shader CubeToDpShaderRD, variant 0
+Shader 'CubeToOctmapShaderRD' (group 0) SHA256: 8bf32929c5b41445f085dd302ccba233028481a94d43ce1b531bc8e2e66677a4
+Loading cache for shader CubeToOctmapShaderRD, variant 0
+Shader 'OctmapDownsamplerShaderRD' (group 0) SHA256: c79c7ea0ebc9a0833c5f465f1c555216a15727d2c4e3a227e9d5cd1e80f0669e
+Loading cache for shader OctmapDownsamplerShaderRD, variant 0
+Loading cache for shader OctmapDownsamplerShaderRD, variant 1
+Shader 'OctmapFilterShaderRD' (group 0) SHA256: a511f5ad922f5d701a26f801b4f9c96406071103345fa83fd394f8954c1dd7ac
+Loading cache for shader OctmapFilterShaderRD, variant 0
+Loading cache for shader OctmapFilterShaderRD, variant 1
+Loading cache for shader OctmapFilterShaderRD, variant 2
+Loading cache for shader OctmapFilterShaderRD, variant 3
+Loading cache for shader OctmapFilterShaderRD, variant 4
+Loading cache for shader OctmapFilterShaderRD, variant 5
+Loading cache for shader OctmapFilterShaderRD, variant 6
+Loading cache for shader OctmapFilterShaderRD, variant 7
+Shader 'OctmapRoughnessShaderRD' (group 0) SHA256: 9f66b38742366834aef44d557fed0d0753432ffb2cf24eebb14792092fc26b83
+Loading cache for shader OctmapRoughnessShaderRD, variant 0
+Loading cache for shader OctmapRoughnessShaderRD, variant 1
+Shader 'SpecularMergeShaderRD' (group 0) SHA256: 38d1cf8969e8f223baa218cbcd7ad415e6e945247fdb8cefddabba66acaab0e4
+Loading cache for shader SpecularMergeShaderRD, variant 0
+Loading cache for shader SpecularMergeShaderRD, variant 1
+Loading cache for shader SpecularMergeShaderRD, variant 2
+Loading cache for shader SpecularMergeShaderRD, variant 3
+Shader 'ShadowFrustumShaderRD' (group 0) SHA256: 7aba7a73f7499f30591bb36c54f106926052cdc0048232d9054de723408b1ea2
+Loading cache for shader ShadowFrustumShaderRD, variant 0
+Shader 'MotionVectorsShaderRD' (group 0) SHA256: 21fe2ffffa991405f5c0b4bb35dd8789b4049f8e56d80a5aa61aa8233992e3c1
+Loading cache for shader MotionVectorsShaderRD, variant 0
+Shader 'LuminanceReduceShaderRD' (group 0) SHA256: 926f3544c80af9c002aea2fe9f66f19b40ec81e54f627608fc28573493ac5edb
+Loading cache for shader LuminanceReduceShaderRD, variant 0
+Loading cache for shader LuminanceReduceShaderRD, variant 1
+Loading cache for shader LuminanceReduceShaderRD, variant 2
+Shader 'SmaaEdgeDetectionShaderRD' (group 0) SHA256: 749ffc0281a6ab411cf5a66f2560a2f33f9a258f57c513c67047f363e5e7ab33
+Loading cache for shader SmaaEdgeDetectionShaderRD, variant 0
+Shader 'SmaaWeightCalculationShaderRD' (group 0) SHA256: 510ed0d4e978b1a21f4e459da4ee2516c38f4460931e2a5714dae17c8b5547c2
+Loading cache for shader SmaaWeightCalculationShaderRD, variant 0
+Shader 'SmaaBlendingShaderRD' (group 0) SHA256: daa696d3938d7aadbc85111a68936e774199a2ded78d364782d43ef580b5296d
+Loading cache for shader SmaaBlendingShaderRD, variant 0
+Shader 'TonemapShaderRD' (group 0) SHA256: 6d008fe28b8fd25f510d360d45c329659bbd6cc2a222dc519c18fea4a3c17a36
+Loading cache for shader TonemapShaderRD, variant 0
+Loading cache for shader TonemapShaderRD, variant 1
+Loading cache for shader TonemapShaderRD, variant 2
+Loading cache for shader TonemapShaderRD, variant 3
+Shader 'VrsShaderRD' (group 0) SHA256: 9df305f4045418de07830cd11c3be6abf40ea73a66b1fc87b5e04821ac4f402c
+Loading cache for shader VrsShaderRD, variant 0
+Loading cache for shader VrsShaderRD, variant 2
+Loading cache for shader VrsShaderRD, variant 3
+Shader 'FsrUpscaleShaderRD' (group 0) SHA256: de60781f9669b1455afc7507208cad7b3c71f8e59f4c894548899e482420e8dd
+Loading cache for shader FsrUpscaleShaderRD, variant 0
+Loading cache for shader FsrUpscaleShaderRD, variant 1
+Shader 'ResolveShaderRD' (group 0) SHA256: b92e1e567b3ce7b008af4819aa7a8f7848a6f4dd09e28737bcd07456b04c2c7e
+Loading cache for shader ResolveShaderRD, variant 0
+Loading cache for shader ResolveShaderRD, variant 1
+Loading cache for shader ResolveShaderRD, variant 2
+Shader 'BlitShaderRD' (group 0) SHA256: 29b32016e1c23e0db5906fbe9b87108e39e7f5965c0016eb53fc5e1c03293243
+WASAPI: Activated output_device using IAudioClient3 interface
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 48000
+WASAPI: nAvgBytesPerSec = 384000
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: mix_rate = 48000
+WASAPI: fundamental_period_frames = 480
+WASAPI: min_period_frames = 480
+WASAPI: max_period_frames = 480
+WASAPI: selected a period frame size of 480
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 480 calculated latency: 10ms
+
+Loading cache for shader BlitShaderRD, variant 0
+Loading cache for shader BlitShaderRD, variant 1
+Loading cache for shader BlitShaderRD, variant 2
+Loading cache for shader BlitShaderRD, variant 3
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Loading resource: res://default_bus_layout.tres remapped: res://default_bus_layout.tres
+Completed load for: 'res://default_bus_layout.tres' remapped 'res://default_bus_layout.tres' at thread -1
+CORE API HASH: 3769296884
+EDITOR API HASH: 3146738256
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: res://debug/debug_logger.gd remapped: res://debug/debug_logger.gd
+Completed load for: 'res://debug/debug_logger.gd' remapped 'res://debug/debug_logger.gd' at thread -1
+Loading resource: res://core/event_bus.gd remapped: res://core/event_bus.gd
+Completed load for: 'res://core/event_bus.gd' remapped 'res://core/event_bus.gd' at thread -1
+Loading resource: res://core/combat_logger.gd remapped: res://core/combat_logger.gd
+Completed load for: 'res://core/combat_logger.gd' remapped 'res://core/combat_logger.gd' at thread -1
+Loading resource: res://debug/DebugOverlay.tscn remapped: res://debug/DebugOverlay.tscn
+Loading resource: res://debug/DebugOverlay.gd remapped: res://debug/DebugOverlay.gd
+Completed load for: 'res://debug/DebugOverlay.gd' remapped 'res://debug/DebugOverlay.gd' at thread -1
+Completed load for: 'res://debug/DebugOverlay.tscn' remapped 'res://debug/DebugOverlay.tscn' at thread -1
+Loading resource: res://core/game_manager.gd remapped: res://core/game_manager.gd
+Loading resource: res://ui/run/PersistentRunUI.tscn remapped: res://ui/run/PersistentRunUI.tscn
+Loading resource: res://ui/run/persistent_run_ui.gd remapped: res://ui/run/persistent_run_ui.gd
+Loading resource: res://ui/progression/components/skill_tree_effect_glyph.tscn remapped: res://ui/progression/components/skill_tree_effect_glyph.tscn
+Loading resource: res://ui/progression/theme/skill_tree_graybox_theme.tres remapped: res://ui/progression/theme/skill_tree_graybox_theme.tres
+Completed load for: 'res://ui/progression/theme/skill_tree_graybox_theme.tres' remapped 'res://ui/progression/theme/skill_tree_graybox_theme.tres' at thread -1
+Completed load for: 'res://ui/progression/components/skill_tree_effect_glyph.tscn' remapped 'res://ui/progression/components/skill_tree_effect_glyph.tscn' at thread -1
+Loading resource: res://ui/progression/components/skill_tree_discipline_tab.tscn remapped: res://ui/progression/components/skill_tree_discipline_tab.tscn
+Loading resource: res://ui/progression/components/skill_tree_discipline_tab.gd remapped: res://ui/progression/components/skill_tree_discipline_tab.gd
+Completed load for: 'res://ui/progression/components/skill_tree_discipline_tab.gd' remapped 'res://ui/progression/components/skill_tree_discipline_tab.gd' at thread -1
+Completed load for: 'res://ui/progression/components/skill_tree_discipline_tab.tscn' remapped 'res://ui/progression/components/skill_tree_discipline_tab.tscn' at thread -1
+Loading resource: res://ui/progression/components/skill_tree_node_view.tscn remapped: res://ui/progression/components/skill_tree_node_view.tscn
+Loading resource: res://ui/progression/components/skill_tree_node_view.gd remapped: res://ui/progression/components/skill_tree_node_view.gd
+Completed load for: 'res://ui/progression/components/skill_tree_node_view.gd' remapped 'res://ui/progression/components/skill_tree_node_view.gd' at thread -1
+Completed load for: 'res://ui/progression/components/skill_tree_node_view.tscn' remapped 'res://ui/progression/components/skill_tree_node_view.tscn' at thread -1
+Loading resource: res://data/ui/elf_hud_theme_refined.tres remapped: res://data/ui/elf_hud_theme_refined.tres
+Loading resource: res://asset/ui/character_hud/refined/hunter_badge.png remapped: res://asset/ui/character_hud/refined/hunter_badge.png
+Loading resource: res://.godot/imported/hunter_badge.png-814a21c83908049c155bbe01911c9714.ctex remapped: res://.godot/imported/hunter_badge.png-814a21c83908049c155bbe01911c9714.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/hunter_badge.png' remapped 'res://asset/ui/character_hud/refined/hunter_badge.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/turn_intro_banner.png remapped: res://asset/ui/character_hud/generated/turn_intro_banner.png
+Loading resource: res://.godot/imported/turn_intro_banner.png-a12ce09c888c21c045800abb27ded058.ctex remapped: res://.godot/imported/turn_intro_banner.png-a12ce09c888c21c045800abb27ded058.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/turn_intro_banner.png' remapped 'res://asset/ui/character_hud/generated/turn_intro_banner.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/spells/precise_shot.png remapped: res://asset/ui/character_hud/refined/spells/precise_shot.png
+Loading resource: res://.godot/imported/precise_shot.png-fbbde3ee473196055268b790c014b5c2.ctex remapped: res://.godot/imported/precise_shot.png-fbbde3ee473196055268b790c014b5c2.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/spells/precise_shot.png' remapped 'res://asset/ui/character_hud/refined/spells/precise_shot.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/spells/sneak_strike.png remapped: res://asset/ui/character_hud/refined/spells/sneak_strike.png
+Loading resource: res://.godot/imported/sneak_strike.png-b376518329695f0ab072dfd0b2e97150.ctex remapped: res://.godot/imported/sneak_strike.png-b376518329695f0ab072dfd0b2e97150.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/spells/sneak_strike.png' remapped 'res://asset/ui/character_hud/refined/spells/sneak_strike.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/spells/fireball.png remapped: res://asset/ui/character_hud/refined/spells/fireball.png
+Loading resource: res://.godot/imported/fireball.png-49abe67629c88a59007f2c6b357064ea.ctex remapped: res://.godot/imported/fireball.png-49abe67629c88a59007f2c6b357064ea.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/spells/fireball.png' remapped 'res://asset/ui/character_hud/refined/spells/fireball.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/spells/sylvan_heal.png remapped: res://asset/ui/character_hud/refined/spells/sylvan_heal.png
+Loading resource: res://.godot/imported/sylvan_heal.png-b011146775be7a0432f5c51d5a6b385f.ctex remapped: res://.godot/imported/sylvan_heal.png-b011146775be7a0432f5c51d5a6b385f.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/spells/sylvan_heal.png' remapped 'res://asset/ui/character_hud/refined/spells/sylvan_heal.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/spells/basic_attack.png remapped: res://asset/ui/character_hud/refined/spells/basic_attack.png
+Loading resource: res://.godot/imported/basic_attack.png-df807bd2ed8c68a01bfb060dc6043be9.ctex remapped: res://.godot/imported/basic_attack.png-df807bd2ed8c68a01bfb060dc6043be9.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/spells/basic_attack.png' remapped 'res://asset/ui/character_hud/refined/spells/basic_attack.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/utility_inventory.png remapped: res://asset/ui/character_hud/refined/utility_inventory.png
+Loading resource: res://.godot/imported/utility_inventory.png-38f481db29c98f1a1e7bc038a28a61d3.ctex remapped: res://.godot/imported/utility_inventory.png-38f481db29c98f1a1e7bc038a28a61d3.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/utility_inventory.png' remapped 'res://asset/ui/character_hud/refined/utility_inventory.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/utility_map.png remapped: res://asset/ui/character_hud/refined/utility_map.png
+Loading resource: res://.godot/imported/utility_map.png-7e63418f76596de1a7cce62bb531221d.ctex remapped: res://.godot/imported/utility_map.png-7e63418f76596de1a7cce62bb531221d.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/utility_map.png' remapped 'res://asset/ui/character_hud/refined/utility_map.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/utility_skills.png remapped: res://asset/ui/character_hud/refined/utility_skills.png
+Loading resource: res://.godot/imported/utility_skills.png-e935c36b9c25782b08130badde08c6fd.ctex remapped: res://.godot/imported/utility_skills.png-e935c36b9c25782b08130badde08c6fd.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/utility_skills.png' remapped 'res://asset/ui/character_hud/refined/utility_skills.png' at thread -1
+Loading resource: res://asset/ui/character_hud/refined/move_action_icon.svg remapped: res://asset/ui/character_hud/refined/move_action_icon.svg
+Loading resource: res://.godot/imported/move_action_icon.svg-af19ca37b6d05be571631606b6487b72.ctex remapped: res://.godot/imported/move_action_icon.svg-af19ca37b6d05be571631606b6487b72.ctex
+Completed load for: 'res://asset/ui/character_hud/refined/move_action_icon.svg' remapped 'res://asset/ui/character_hud/refined/move_action_icon.svg' at thread -1
+Completed load for: 'res://data/ui/elf_hud_theme_refined.tres' remapped 'res://data/ui/elf_hud_theme_refined.tres' at thread -1
+Loading resource: res://data/ui/mage_hud_theme_refined.tres remapped: res://data/ui/mage_hud_theme_refined.tres
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r06_c04.png remapped: res://asset/ui/character_hud/generated/spell_icon_r06_c04.png
+Loading resource: res://.godot/imported/spell_icon_r06_c04.png-36ca0651b9450ac1e6e9e452d843fefc.ctex remapped: res://.godot/imported/spell_icon_r06_c04.png-36ca0651b9450ac1e6e9e452d843fefc.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r06_c04.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r06_c04.png' at thread -1
+Loading resource: res://asset/icone/boule de feu.png remapped: res://asset/icone/boule de feu.png
+Loading resource: res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.ctex remapped: res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.ctex
+Completed load for: 'res://asset/icone/boule de feu.png' remapped 'res://asset/icone/boule de feu.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r08_c01.png remapped: res://asset/ui/character_hud/generated/spell_icon_r08_c01.png
+Loading resource: res://.godot/imported/spell_icon_r08_c01.png-fe0753098237256b97ad7c0bdfde8c07.ctex remapped: res://.godot/imported/spell_icon_r08_c01.png-fe0753098237256b97ad7c0bdfde8c07.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r08_c01.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r08_c01.png' at thread -1
+Loading resource: res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png remapped: res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png
+Loading resource: res://.godot/imported/tex_storm_lightning_cluster.png.png-1b00aaa2a4166b54e8b216d5afadf6e0.ctex remapped: res://.godot/imported/tex_storm_lightning_cluster.png.png-1b00aaa2a4166b54e8b216d5afadf6e0.ctex
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Completed load for: 'res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png' remapped 'res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r06_c01.png remapped: res://asset/ui/character_hud/generated/spell_icon_r06_c01.png
+Loading resource: res://.godot/imported/spell_icon_r06_c01.png-f2ceb0a35a4d74cfed109cb2478e6438.ctex remapped: res://.godot/imported/spell_icon_r06_c01.png-f2ceb0a35a4d74cfed109cb2478e6438.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r06_c01.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r06_c01.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r05_c03.png remapped: res://asset/ui/character_hud/generated/spell_icon_r05_c03.png
+Loading resource: res://.godot/imported/spell_icon_r05_c03.png-f83219a566a5f13536252d0ef953d52d.ctex remapped: res://.godot/imported/spell_icon_r05_c03.png-f83219a566a5f13536252d0ef953d52d.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r05_c03.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r05_c03.png' at thread -1
+Completed load for: 'res://data/ui/mage_hud_theme_refined.tres' remapped 'res://data/ui/mage_hud_theme_refined.tres' at thread -1
+Loading resource: res://data/ui/guardian_hud_theme_refined.tres remapped: res://data/ui/guardian_hud_theme_refined.tres
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r07_c00.png remapped: res://asset/ui/character_hud/generated/spell_icon_r07_c00.png
+Loading resource: res://.godot/imported/spell_icon_r07_c00.png-57556b15acc9ce71c3e9e303b7641f2b.ctex remapped: res://.godot/imported/spell_icon_r07_c00.png-57556b15acc9ce71c3e9e303b7641f2b.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r07_c00.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r07_c00.png' at thread -1
+Loading resource: res://asset/personnage/alliés/500.png remapped: res://asset/personnage/alliés/500.png
+Loading resource: res://.godot/imported/500.png-a7b74a000323778c57eb9cbe96837795.ctex remapped: res://.godot/imported/500.png-a7b74a000323778c57eb9cbe96837795.ctex
+Completed load for: 'res://asset/personnage/alliés/500.png' remapped 'res://asset/personnage/alliés/500.png' at thread -1
+Loading resource: res://asset/icone/icone spell.png_11.png remapped: res://asset/icone/icone spell.png_11.png
+Loading resource: res://.godot/imported/icone spell.png_11.png-9d489c654ab8ab3161e47f06aa6d6a92.ctex remapped: res://.godot/imported/icone spell.png_11.png-9d489c654ab8ab3161e47f06aa6d6a92.ctex
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Completed load for: 'res://asset/icone/icone spell.png_11.png' remapped 'res://asset/icone/icone spell.png_11.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r04_c04.png remapped: res://asset/ui/character_hud/generated/spell_icon_r04_c04.png
+Loading resource: res://.godot/imported/spell_icon_r04_c04.png-f6edd0980d7e948e1ed8439a51708310.ctex remapped: res://.godot/imported/spell_icon_r04_c04.png-f6edd0980d7e948e1ed8439a51708310.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r04_c04.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r04_c04.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r03_c03.png remapped: res://asset/ui/character_hud/generated/spell_icon_r03_c03.png
+Loading resource: res://.godot/imported/spell_icon_r03_c03.png-a0330a091e90502a71625fbff20220c1.ctex remapped: res://.godot/imported/spell_icon_r03_c03.png-a0330a091e90502a71625fbff20220c1.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r03_c03.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r03_c03.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r00_c05.png remapped: res://asset/ui/character_hud/generated/spell_icon_r00_c05.png
+Loading resource: res://.godot/imported/spell_icon_r00_c05.png-2ad36b0435e12824014cfa3eec85e18b.ctex remapped: res://.godot/imported/spell_icon_r00_c05.png-2ad36b0435e12824014cfa3eec85e18b.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r00_c05.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r00_c05.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r08_c02.png remapped: res://asset/ui/character_hud/generated/spell_icon_r08_c02.png
+Loading resource: res://.godot/imported/spell_icon_r08_c02.png-38e4cf0040cd0f3d87897950318d26fc.ctex remapped: res://.godot/imported/spell_icon_r08_c02.png-38e4cf0040cd0f3d87897950318d26fc.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r08_c02.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r08_c02.png' at thread -1
+Completed load for: 'res://data/ui/guardian_hud_theme_refined.tres' remapped 'res://data/ui/guardian_hud_theme_refined.tres' at thread -1
+Loading resource: res://data/ui/warrior_hud_theme_refined.tres remapped: res://data/ui/warrior_hud_theme_refined.tres
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r04_c02.png remapped: res://asset/ui/character_hud/generated/spell_icon_r04_c02.png
+Loading resource: res://.godot/imported/spell_icon_r04_c02.png-fb93dc758145a72b8e0ffc73d07f7769.ctex remapped: res://.godot/imported/spell_icon_r04_c02.png-fb93dc758145a72b8e0ffc73d07f7769.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r04_c02.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r04_c02.png' at thread -1
+Loading resource: res://asset/personnage/alliés/495.png remapped: res://asset/personnage/alliés/495.png
+Loading resource: res://.godot/imported/495.png-acb4a4d5463cbdef4feaf1fb33713d1d.ctex remapped: res://.godot/imported/495.png-acb4a4d5463cbdef4feaf1fb33713d1d.ctex
+Completed load for: 'res://asset/personnage/alliés/495.png' remapped 'res://asset/personnage/alliés/495.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r03_c02.png remapped: res://asset/ui/character_hud/generated/spell_icon_r03_c02.png
+Loading resource: res://.godot/imported/spell_icon_r03_c02.png-ac39ddadbe5d9014e96d4fe19946c6ed.ctex remapped: res://.godot/imported/spell_icon_r03_c02.png-ac39ddadbe5d9014e96d4fe19946c6ed.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r03_c02.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r03_c02.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r09_c04.png remapped: res://asset/ui/character_hud/generated/spell_icon_r09_c04.png
+Loading resource: res://.godot/imported/spell_icon_r09_c04.png-c6a1ab07f494d548b7901e1b7152b724.ctex remapped: res://.godot/imported/spell_icon_r09_c04.png-c6a1ab07f494d548b7901e1b7152b724.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r09_c04.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r09_c04.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r02_c05.png remapped: res://asset/ui/character_hud/generated/spell_icon_r02_c05.png
+Loading resource: res://.godot/imported/spell_icon_r02_c05.png-94cc0ed88da35a7a2575688acf2a54be.ctex remapped: res://.godot/imported/spell_icon_r02_c05.png-94cc0ed88da35a7a2575688acf2a54be.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r02_c05.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r02_c05.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r03_c01.png remapped: res://asset/ui/character_hud/generated/spell_icon_r03_c01.png
+Loading resource: res://.godot/imported/spell_icon_r03_c01.png-431bb972c6514be8b5622a05d57a23a6.ctex remapped: res://.godot/imported/spell_icon_r03_c01.png-431bb972c6514be8b5622a05d57a23a6.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r03_c01.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r03_c01.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r05_c04.png remapped: res://asset/ui/character_hud/generated/spell_icon_r05_c04.png
+Loading resource: res://.godot/imported/spell_icon_r05_c04.png-7cf807372677866d762f12c919ba0f65.ctex remapped: res://.godot/imported/spell_icon_r05_c04.png-7cf807372677866d762f12c919ba0f65.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r05_c04.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r05_c04.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r02_c02.png remapped: res://asset/ui/character_hud/generated/spell_icon_r02_c02.png
+Loading resource: res://.godot/imported/spell_icon_r02_c02.png-70429b6bb56dc757f82cc019feb9c358.ctex remapped: res://.godot/imported/spell_icon_r02_c02.png-70429b6bb56dc757f82cc019feb9c358.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r02_c02.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r02_c02.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r01_c05.png remapped: res://asset/ui/character_hud/generated/spell_icon_r01_c05.png
+Loading resource: res://.godot/imported/spell_icon_r01_c05.png-f1345ed68b3f1809901602859b86870b.ctex remapped: res://.godot/imported/spell_icon_r01_c05.png-f1345ed68b3f1809901602859b86870b.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r01_c05.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r01_c05.png' at thread -1
+Completed load for: 'res://data/ui/warrior_hud_theme_refined.tres' remapped 'res://data/ui/warrior_hud_theme_refined.tres' at thread -1
+Loading resource: res://data/ui/druid_hud_theme_refined.tres remapped: res://data/ui/druid_hud_theme_refined.tres
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r01_c03.png remapped: res://asset/ui/character_hud/generated/spell_icon_r01_c03.png
+Loading resource: res://.godot/imported/spell_icon_r01_c03.png-55c53d00acc48040fb666c0a5c3f780b.ctex remapped: res://.godot/imported/spell_icon_r01_c03.png-55c53d00acc48040fb666c0a5c3f780b.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r01_c03.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r01_c03.png' at thread -1
+Loading resource: res://asset/personnage/alliés/480.png remapped: res://asset/personnage/alliés/480.png
+Loading resource: res://.godot/imported/480.png-9a70da0836eddd8330aef42f08bbbb3c.ctex remapped: res://.godot/imported/480.png-9a70da0836eddd8330aef42f08bbbb3c.ctex
+Completed load for: 'res://asset/personnage/alliés/480.png' remapped 'res://asset/personnage/alliés/480.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r02_c00.png remapped: res://asset/ui/character_hud/generated/spell_icon_r02_c00.png
+Loading resource: res://.godot/imported/spell_icon_r02_c00.png-8d44f63266b1ec7cac08c6defe7d1699.ctex remapped: res://.godot/imported/spell_icon_r02_c00.png-8d44f63266b1ec7cac08c6defe7d1699.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r02_c00.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r02_c00.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r02_c04.png remapped: res://asset/ui/character_hud/generated/spell_icon_r02_c04.png
+Loading resource: res://.godot/imported/spell_icon_r02_c04.png-a4b47b79a5e9a5a1a576ba2c3e87eed1.ctex remapped: res://.godot/imported/spell_icon_r02_c04.png-a4b47b79a5e9a5a1a576ba2c3e87eed1.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r02_c04.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r02_c04.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r07_c03.png remapped: res://asset/ui/character_hud/generated/spell_icon_r07_c03.png
+Loading resource: res://.godot/imported/spell_icon_r07_c03.png-120f5fefb69bdc5b2fc766a2eec034ef.ctex remapped: res://.godot/imported/spell_icon_r07_c03.png-120f5fefb69bdc5b2fc766a2eec034ef.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r07_c03.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r07_c03.png' at thread -1
+Completed load for: 'res://data/ui/druid_hud_theme_refined.tres' remapped 'res://data/ui/druid_hud_theme_refined.tres' at thread -1
+Loading resource: res://data/ui/assassin_hud_theme_refined.tres remapped: res://data/ui/assassin_hud_theme_refined.tres
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r06_c00.png remapped: res://asset/ui/character_hud/generated/spell_icon_r06_c00.png
+Loading resource: res://.godot/imported/spell_icon_r06_c00.png-6b25799e786ecabf3da031af264736a3.ctex remapped: res://.godot/imported/spell_icon_r06_c00.png-6b25799e786ecabf3da031af264736a3.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r06_c00.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r06_c00.png' at thread -1
+Loading resource: res://asset/personnage/alliés/493.png remapped: res://asset/personnage/alliés/493.png
+Loading resource: res://.godot/imported/493.png-11c0b77266fb9ddc96301260025d01e2.ctex remapped: res://.godot/imported/493.png-11c0b77266fb9ddc96301260025d01e2.ctex
+Completed load for: 'res://asset/personnage/alliés/493.png' remapped 'res://asset/personnage/alliés/493.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r05_c05.png remapped: res://asset/ui/character_hud/generated/spell_icon_r05_c05.png
+Loading resource: res://.godot/imported/spell_icon_r05_c05.png-52711dc3f8ccb1c43b7e1284ea4706c2.ctex remapped: res://.godot/imported/spell_icon_r05_c05.png-52711dc3f8ccb1c43b7e1284ea4706c2.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r05_c05.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r05_c05.png' at thread -1
+Completed load for: 'res://data/ui/assassin_hud_theme_refined.tres' remapped 'res://data/ui/assassin_hud_theme_refined.tres' at thread -1
+Loading resource: res://data/ui/necromancer_hud_theme_refined.tres remapped: res://data/ui/necromancer_hud_theme_refined.tres
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r05_c02.png remapped: res://asset/ui/character_hud/generated/spell_icon_r05_c02.png
+Loading resource: res://.godot/imported/spell_icon_r05_c02.png-d646869031e38ef450eba984d9d2f10c.ctex remapped: res://.godot/imported/spell_icon_r05_c02.png-d646869031e38ef450eba984d9d2f10c.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r05_c02.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r05_c02.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r05_c00.png remapped: res://asset/ui/character_hud/generated/spell_icon_r05_c00.png
+Loading resource: res://.godot/imported/spell_icon_r05_c00.png-71a3f98e47e37c6549e47d101db92361.ctex remapped: res://.godot/imported/spell_icon_r05_c00.png-71a3f98e47e37c6549e47d101db92361.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r05_c00.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r05_c00.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r06_c05.png remapped: res://asset/ui/character_hud/generated/spell_icon_r06_c05.png
+Loading resource: res://.godot/imported/spell_icon_r06_c05.png-1340746aacdb254971c451d08e524f14.ctex remapped: res://.godot/imported/spell_icon_r06_c05.png-1340746aacdb254971c451d08e524f14.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r06_c05.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r06_c05.png' at thread -1
+Completed load for: 'res://data/ui/necromancer_hud_theme_refined.tres' remapped 'res://data/ui/necromancer_hud_theme_refined.tres' at thread -1
+Loading resource: res://data/ui/hoplite_hud_theme_refined.tres remapped: res://data/ui/hoplite_hud_theme_refined.tres
+Completed load for: 'res://data/ui/hoplite_hud_theme_refined.tres' remapped 'res://data/ui/hoplite_hud_theme_refined.tres' at thread -1
+Completed load for: 'res://ui/run/persistent_run_ui.gd' remapped 'res://ui/run/persistent_run_ui.gd' at thread -1
+Loading resource: res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn remapped: res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn
+Loading resource: res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd remapped: res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd
+Loading resource: res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn remapped: res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn
+Loading resource: res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.gd remapped: res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.gd
+Completed load for: 'res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.gd' remapped 'res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.gd' at thread -1
+Loading resource: res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png remapped: res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png
+Loading resource: res://.godot/imported/spell_slot_base.png-7af5c0a07ef92536bf0bf1de032b7af5.ctex remapped: res://.godot/imported/spell_slot_base.png-7af5c0a07ef92536bf0bf1de032b7af5.ctex
+Completed load for: 'res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png' remapped 'res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png' at thread -1
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Completed load for: 'res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn' remapped 'res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn' at thread -1
+Loading resource: res://data/ui/elf_hud_theme.tres remapped: res://data/ui/elf_hud_theme.tres
+Loading resource: res://asset/ui/character_hud/generated/elf_character_bar.png remapped: res://asset/ui/character_hud/generated/elf_character_bar.png
+Loading resource: res://.godot/imported/elf_character_bar.png-d6e7c67357316d2a18756cf07400c944.ctex remapped: res://.godot/imported/elf_character_bar.png-d6e7c67357316d2a18756cf07400c944.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/elf_character_bar.png' remapped 'res://asset/ui/character_hud/generated/elf_character_bar.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/elf_hunter_emblem.png remapped: res://asset/ui/character_hud/generated/elf_hunter_emblem.png
+Loading resource: res://.godot/imported/elf_hunter_emblem.png-6cb293839a138a26c213363ccc0d8a8e.ctex remapped: res://.godot/imported/elf_hunter_emblem.png-6cb293839a138a26c213363ccc0d8a8e.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/elf_hunter_emblem.png' remapped 'res://asset/ui/character_hud/generated/elf_hunter_emblem.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r09_c01.png remapped: res://asset/ui/character_hud/generated/spell_icon_r09_c01.png
+Loading resource: res://.godot/imported/spell_icon_r09_c01.png-70f8cc3400dd96807440f533208c72eb.ctex remapped: res://.godot/imported/spell_icon_r09_c01.png-70f8cc3400dd96807440f533208c72eb.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r09_c01.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r09_c01.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r02_c03.png remapped: res://asset/ui/character_hud/generated/spell_icon_r02_c03.png
+Loading resource: res://.godot/imported/spell_icon_r02_c03.png-f3a24486da76d4e4881436b14173e7ed.ctex remapped: res://.godot/imported/spell_icon_r02_c03.png-f3a24486da76d4e4881436b14173e7ed.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r02_c03.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r02_c03.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/spell_icon_r01_c04.png remapped: res://asset/ui/character_hud/generated/spell_icon_r01_c04.png
+Loading resource: res://.godot/imported/spell_icon_r01_c04.png-14ab16d4d739152abfab2f11118c0d22.ctex remapped: res://.godot/imported/spell_icon_r01_c04.png-14ab16d4d739152abfab2f11118c0d22.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/spell_icon_r01_c04.png' remapped 'res://asset/ui/character_hud/generated/spell_icon_r01_c04.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/v2/spell_frame_archer.png remapped: res://asset/ui/character_hud/generated/v2/spell_frame_archer.png
+Loading resource: res://.godot/imported/spell_frame_archer.png-d69b56d3c438fa186cf04e789299c629.ctex remapped: res://.godot/imported/spell_frame_archer.png-d69b56d3c438fa186cf04e789299c629.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/v2/spell_frame_archer.png' remapped 'res://asset/ui/character_hud/generated/v2/spell_frame_archer.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/v2/spell_frame_assassin.png remapped: res://asset/ui/character_hud/generated/v2/spell_frame_assassin.png
+Loading resource: res://.godot/imported/spell_frame_assassin.png-ae44b34b1356f86d3b71a77942c7d78b.ctex remapped: res://.godot/imported/spell_frame_assassin.png-ae44b34b1356f86d3b71a77942c7d78b.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/v2/spell_frame_assassin.png' remapped 'res://asset/ui/character_hud/generated/v2/spell_frame_assassin.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/v2/spell_frame_mage.png remapped: res://asset/ui/character_hud/generated/v2/spell_frame_mage.png
+Loading resource: res://.godot/imported/spell_frame_mage.png-cd158d080c033b53e68f9ad39b883408.ctex remapped: res://.godot/imported/spell_frame_mage.png-cd158d080c033b53e68f9ad39b883408.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/v2/spell_frame_mage.png' remapped 'res://asset/ui/character_hud/generated/v2/spell_frame_mage.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/v2/spell_frame_healer.png remapped: res://asset/ui/character_hud/generated/v2/spell_frame_healer.png
+Loading resource: res://.godot/imported/spell_frame_healer.png-ad5063b001ebbf9020dd338d3d35e8c7.ctex remapped: res://.godot/imported/spell_frame_healer.png-ad5063b001ebbf9020dd338d3d35e8c7.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/v2/spell_frame_healer.png' remapped 'res://asset/ui/character_hud/generated/v2/spell_frame_healer.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/v2/gold_health_bar_frame.png remapped: res://asset/ui/character_hud/generated/v2/gold_health_bar_frame.png
+Loading resource: res://.godot/imported/gold_health_bar_frame.png-c2dcf69d567d1789c0f5e321886d4793.ctex remapped: res://.godot/imported/gold_health_bar_frame.png-c2dcf69d567d1789c0f5e321886d4793.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/v2/gold_health_bar_frame.png' remapped 'res://asset/ui/character_hud/generated/v2/gold_health_bar_frame.png' at thread -1
+Loading resource: res://asset/ui/character_hud/generated/v2/gold_end_turn_button.png remapped: res://asset/ui/character_hud/generated/v2/gold_end_turn_button.png
+Loading resource: res://.godot/imported/gold_end_turn_button.png-b82d5203649a23b6429650e5f8f69cfd.ctex remapped: res://.godot/imported/gold_end_turn_button.png-b82d5203649a23b6429650e5f8f69cfd.ctex
+Completed load for: 'res://asset/ui/character_hud/generated/v2/gold_end_turn_button.png' remapped 'res://asset/ui/character_hud/generated/v2/gold_end_turn_button.png' at thread -1
+Completed load for: 'res://data/ui/elf_hud_theme.tres' remapped 'res://data/ui/elf_hud_theme.tres' at thread -1
+Loading resource: res://data/ui/elf_hud_theme_clean.tres remapped: res://data/ui/elf_hud_theme_clean.tres
+Loading resource: res://asset/ui/recraft_hud_v1/processed/portrait_frame.png remapped: res://asset/ui/recraft_hud_v1/processed/portrait_frame.png
+Loading resource: res://.godot/imported/portrait_frame.png-275ed7ad7454553aa1be0a15fa83d3e4.ctex remapped: res://.godot/imported/portrait_frame.png-275ed7ad7454553aa1be0a15fa83d3e4.ctex
+Completed load for: 'res://asset/ui/recraft_hud_v1/processed/portrait_frame.png' remapped 'res://asset/ui/recraft_hud_v1/processed/portrait_frame.png' at thread -1
+Completed load for: 'res://data/ui/elf_hud_theme_clean.tres' remapped 'res://data/ui/elf_hud_theme_clean.tres' at thread -1
+Loading resource: res://data/ui/combat_hud_layout_clean.tres remapped: res://data/ui/combat_hud_layout_clean.tres
+Loading resource: res://ui/combat/combat_hud_layout_data.gd remapped: res://ui/combat/combat_hud_layout_data.gd
+Completed load for: 'res://ui/combat/combat_hud_layout_data.gd' remapped 'res://ui/combat/combat_hud_layout_data.gd' at thread -1
+Completed load for: 'res://data/ui/combat_hud_layout_clean.tres' remapped 'res://data/ui/combat_hud_layout_clean.tres' at thread -1
+Completed load for: 'res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd' remapped 'res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.gd' at thread -1
+Loading resource: res://ui/recraft_hud_v1/theme/recraft_hud_theme_v1.tres remapped: res://ui/recraft_hud_v1/theme/recraft_hud_theme_v1.tres
+Completed load for: 'res://ui/recraft_hud_v1/theme/recraft_hud_theme_v1.tres' remapped 'res://ui/recraft_hud_v1/theme/recraft_hud_theme_v1.tres' at thread -1
+Loading resource: res://ui/recraft_hud_v1/components/portrait/portrait_view.tscn remapped: res://ui/recraft_hud_v1/components/portrait/portrait_view.tscn
+Loading resource: res://ui/characters/CharacterPreview3D.tscn remapped: res://ui/characters/CharacterPreview3D.tscn
+Completed load for: 'res://ui/characters/CharacterPreview3D.tscn' remapped 'res://ui/characters/CharacterPreview3D.tscn' at thread -1
+Completed load for: 'res://ui/recraft_hud_v1/components/portrait/portrait_view.tscn' remapped 'res://ui/recraft_hud_v1/components/portrait/portrait_view.tscn' at thread -1
+Loading resource: res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.tscn remapped: res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.tscn
+Loading resource: res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.gd remapped: res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.gd
+Completed load for: 'res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.gd' remapped 'res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.gd' at thread -1
+Loading resource: res://asset/ui/recraft_hud_v1/processed/resource_bar_frame.png remapped: res://asset/ui/recraft_hud_v1/processed/resource_bar_frame.png
+Loading resource: res://.godot/imported/resource_bar_frame.png-6b9c04900579e0906008c18c5a944f5c.ctex remapped: res://.godot/imported/resource_bar_frame.png-6b9c04900579e0906008c18c5a944f5c.ctex
+Completed load for: 'res://asset/ui/recraft_hud_v1/processed/resource_bar_frame.png' remapped 'res://asset/ui/recraft_hud_v1/processed/resource_bar_frame.png' at thread -1
+Completed load for: 'res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.tscn' remapped 'res://ui/recraft_hud_v1/components/resource_bar/resource_bar_view.tscn' at thread -1
+Loading resource: res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.tscn remapped: res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.tscn
+Loading resource: res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.gd remapped: res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.gd
+Completed load for: 'res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.gd' remapped 'res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.gd' at thread -1
+Loading resource: res://asset/ui/recraft_hud_v1/processed/resource_badge_base.png remapped: res://asset/ui/recraft_hud_v1/processed/resource_badge_base.png
+Loading resource: res://.godot/imported/resource_badge_base.png-d21fdcca5b9cb49eb69077e10e3ea4ed.ctex remapped: res://.godot/imported/resource_badge_base.png-d21fdcca5b9cb49eb69077e10e3ea4ed.ctex
+Completed load for: 'res://asset/ui/recraft_hud_v1/processed/resource_badge_base.png' remapped 'res://asset/ui/recraft_hud_v1/processed/resource_badge_base.png' at thread -1
+Completed load for: 'res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.tscn' remapped 'res://ui/recraft_hud_v1/components/resource_badge/resource_badge_view.tscn' at thread -1
+Loading resource: res://ui/recraft_hud_v1/components/primary_button/primary_button_view.tscn remapped: res://ui/recraft_hud_v1/components/primary_button/primary_button_view.tscn
+Loading resource: res://ui/recraft_hud_v1/components/primary_button/primary_button_view.gd remapped: res://ui/recraft_hud_v1/components/primary_button/primary_button_view.gd
+Completed load for: 'res://ui/recraft_hud_v1/components/primary_button/primary_button_view.gd' remapped 'res://ui/recraft_hud_v1/components/primary_button/primary_button_view.gd' at thread -1
+Loading resource: res://asset/ui/recraft_hud_v1/processed/primary_button_base.png remapped: res://asset/ui/recraft_hud_v1/processed/primary_button_base.png
+Loading resource: res://.godot/imported/primary_button_base.png-7b3aada445d9703b1abedf79dcb7f566.ctex remapped: res://.godot/imported/primary_button_base.png-7b3aada445d9703b1abedf79dcb7f566.ctex
+Completed load for: 'res://asset/ui/recraft_hud_v1/processed/primary_button_base.png' remapped 'res://asset/ui/recraft_hud_v1/processed/primary_button_base.png' at thread -1
+Completed load for: 'res://ui/recraft_hud_v1/components/primary_button/primary_button_view.tscn' remapped 'res://ui/recraft_hud_v1/components/primary_button/primary_button_view.tscn' at thread -1
+Loading resource: res://asset/ui/recraft_hud_v1/processed/spellbar_panel.png remapped: res://asset/ui/recraft_hud_v1/processed/spellbar_panel.png
+Loading resource: res://.godot/imported/spellbar_panel.png-6996d17d747d50de07f906efb177e74e.ctex remapped: res://.godot/imported/spellbar_panel.png-6996d17d747d50de07f906efb177e74e.ctex
+Completed load for: 'res://asset/ui/recraft_hud_v1/processed/spellbar_panel.png' remapped 'res://asset/ui/recraft_hud_v1/processed/spellbar_panel.png' at thread -1
+Loading resource: res://ui/recraft_hud_v1/combat/layout_debug_overlay.gd remapped: res://ui/recraft_hud_v1/combat/layout_debug_overlay.gd
+Completed load for: 'res://ui/recraft_hud_v1/combat/layout_debug_overlay.gd' remapped 'res://ui/recraft_hud_v1/combat/layout_debug_overlay.gd' at thread -1
+Loading resource: res://ui/combat/turn_intro_banner.tscn remapped: res://ui/combat/turn_intro_banner.tscn
+Completed load for: 'res://ui/combat/turn_intro_banner.tscn' remapped 'res://ui/combat/turn_intro_banner.tscn' at thread -1
+Completed load for: 'res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn' remapped 'res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn' at thread -1
+Loading resource: res://ui/progression/components/skill_tree_status_button.tscn remapped: res://ui/progression/components/skill_tree_status_button.tscn
+Loading resource: res://ui/progression/components/skill_tree_tooltip_panel.tscn remapped: res://ui/progression/components/skill_tree_tooltip_panel.tscn
+Loading resource: res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres remapped: res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres
+Loading resource: res://data/ui/skill_tree_refined_config.tres remapped: res://data/ui/skill_tree_refined_config.tres
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/lock_refined.png remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/lock_refined.png
+Loading resource: res://.godot/imported/lock_refined.png-dbe3c3f8fd6fccdd66276ade19a76f33.ctex remapped: res://.godot/imported/lock_refined.png-dbe3c3f8fd6fccdd66276ade19a76f33.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/lock_refined.png' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/lock_refined.png' at thread -1
+Completed load for: 'res://data/ui/skill_tree_refined_config.tres' remapped 'res://data/ui/skill_tree_refined_config.tres' at thread -1
+Loading resource: res://data/ui/skill_tree_icon_catalog_refined.tres remapped: res://data/ui/skill_tree_icon_catalog_refined.tres
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg
+Loading resource: res://.godot/imported/upgrade.svg-e6d579b002587fea4f6b12654ad3ba8a.ctex remapped: res://.godot/imported/upgrade.svg-e6d579b002587fea4f6b12654ad3ba8a.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/hidden.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/hidden.svg
+Loading resource: res://.godot/imported/hidden.svg-95a6ec26f8ccd8a24307b1b7ae1c64bf.ctex remapped: res://.godot/imported/hidden.svg-95a6ec26f8ccd8a24307b1b7ae1c64bf.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/hidden.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/hidden.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/damage.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/damage.svg
+Loading resource: res://.godot/imported/damage.svg-81e16fd87e18f7b6d0062545ea196e8d.ctex remapped: res://.godot/imported/damage.svg-81e16fd87e18f7b6d0062545ea196e8d.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/damage.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/damage.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/range.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/range.svg
+Loading resource: res://.godot/imported/range.svg-edee5d46762c473162324e5601be4c95.ctex remapped: res://.godot/imported/range.svg-edee5d46762c473162324e5601be4c95.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/range.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/range.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/push.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/push.svg
+Loading resource: res://.godot/imported/push.svg-7e56f742c013aa3d7671adae148e8967.ctex remapped: res://.godot/imported/push.svg-7e56f742c013aa3d7671adae148e8967.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/push.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/push.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/movement.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/movement.svg
+Loading resource: res://.godot/imported/movement.svg-33afa9d21ea276122edde7f40b48a650.ctex remapped: res://.godot/imported/movement.svg-33afa9d21ea276122edde7f40b48a650.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/movement.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/movement.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/bleed.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/bleed.svg
+Loading resource: res://.godot/imported/bleed.svg-2bb37c88d682e77ac743a133c0351e8e.ctex remapped: res://.godot/imported/bleed.svg-2bb37c88d682e77ac743a133c0351e8e.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/bleed.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/bleed.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/vulnerability.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/vulnerability.svg
+Loading resource: res://.godot/imported/vulnerability.svg-45a981ca2bad35b059f415b76a8ccd5b.ctex remapped: res://.godot/imported/vulnerability.svg-45a981ca2bad35b059f415b76a8ccd5b.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/vulnerability.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/vulnerability.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/collision.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/collision.svg
+Loading resource: res://.godot/imported/collision.svg-cfeac4963bd1bcc1c0e5da1275651f86.ctex remapped: res://.godot/imported/collision.svg-cfeac4963bd1bcc1c0e5da1275651f86.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/collision.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/collision.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/duration.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/duration.svg
+Loading resource: res://.godot/imported/duration.svg-bd4735916d50f70f6ea3c63613b47d6e.ctex remapped: res://.godot/imported/duration.svg-bd4735916d50f70f6ea3c63613b47d6e.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/duration.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/duration.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/pierce.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/pierce.svg
+Loading resource: res://.godot/imported/pierce.svg-7e7339f71292c1df91bef5f7b67c2b02.ctex remapped: res://.godot/imported/pierce.svg-7e7339f71292c1df91bef5f7b67c2b02.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/pierce.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/pierce.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/terrain.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/terrain.svg
+Loading resource: res://.godot/imported/terrain.svg-507d7af43c750a821386642d1fdd4e37.ctex remapped: res://.godot/imported/terrain.svg-507d7af43c750a821386642d1fdd4e37.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/terrain.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/terrain.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/heal.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/heal.svg
+Loading resource: res://.godot/imported/heal.svg-8852c0d5dab1b6c8565b2bbf5a81cb8b.ctex remapped: res://.godot/imported/heal.svg-8852c0d5dab1b6c8565b2bbf5a81cb8b.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/heal.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/heal.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/defense.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/defense.svg
+Loading resource: res://.godot/imported/defense.svg-069dd7116d9595dd8300510c5ec95bf1.ctex remapped: res://.godot/imported/defense.svg-069dd7116d9595dd8300510c5ec95bf1.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/defense.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/defense.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_check.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_check.svg
+Loading resource: res://.godot/imported/state_check.svg-0ca856d722b0cf1a68254cbd035f72db.ctex remapped: res://.godot/imported/state_check.svg-0ca856d722b0cf1a68254cbd035f72db.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_check.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_check.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_excluded.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_excluded.svg
+Loading resource: res://.godot/imported/state_excluded.svg-60258fffe256cf148ed6b0d93db27eeb.ctex remapped: res://.godot/imported/state_excluded.svg-60258fffe256cf148ed6b0d93db27eeb.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_excluded.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_excluded.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_pending.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_pending.svg
+Loading resource: res://.godot/imported/state_pending.svg-9f3e7ec8df607cfde32fc70752ae64a4.ctex remapped: res://.godot/imported/state_pending.svg-9f3e7ec8df607cfde32fc70752ae64a4.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_pending.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_pending.svg' at thread -1
+Loading resource: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg remapped: res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg
+Loading resource: res://.godot/imported/poison.svg-3b5754011a77217fa357aaef5ee5937d.ctex remapped: res://.godot/imported/poison.svg-3b5754011a77217fa357aaef5ee5937d.ctex
+Completed load for: 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg' remapped 'res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg' at thread -1
+Completed load for: 'res://data/ui/skill_tree_icon_catalog_refined.tres' remapped 'res://data/ui/skill_tree_icon_catalog_refined.tres' at thread -1
+Completed load for: 'res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres' remapped 'res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres' at thread -1
+Completed load for: 'res://ui/progression/components/skill_tree_tooltip_panel.tscn' remapped 'res://ui/progression/components/skill_tree_tooltip_panel.tscn' at thread -1
+Completed load for: 'res://ui/progression/components/skill_tree_status_button.tscn' remapped 'res://ui/progression/components/skill_tree_status_button.tscn' at thread -1
+Loading resource: res://ui/progression/screens/skill_tree_screen.tscn remapped: res://ui/progression/screens/skill_tree_screen.tscn
+Loading resource: res://ui/progression/components/skill_tree_graph_view.tscn remapped: res://ui/progression/components/skill_tree_graph_view.tscn
+Loading resource: res://ui/progression/skin/elf_archer_visual_map.tres remapped: res://ui/progression/skin/elf_archer_visual_map.tres
+Completed load for: 'res://ui/progression/skin/elf_archer_visual_map.tres' remapped 'res://ui/progression/skin/elf_archer_visual_map.tres' at thread -1
+Completed load for: 'res://ui/progression/components/skill_tree_graph_view.tscn' remapped 'res://ui/progression/components/skill_tree_graph_view.tscn' at thread -1
+Loading resource: res://ui/progression/components/skill_tree_node_detail_panel.tscn remapped: res://ui/progression/components/skill_tree_node_detail_panel.tscn
+Completed load for: 'res://ui/progression/components/skill_tree_node_detail_panel.tscn' remapped 'res://ui/progression/components/skill_tree_node_detail_panel.tscn' at thread -1
+Completed load for: 'res://ui/progression/screens/skill_tree_screen.tscn' remapped 'res://ui/progression/screens/skill_tree_screen.tscn' at thread -1
+Loading resource: res://ui/menus/dark_pause_menu.tscn remapped: res://ui/menus/dark_pause_menu.tscn
+Loading resource: res://ui/themes/dark_pause_menu_theme.tres remapped: res://ui/themes/dark_pause_menu_theme.tres
+Loading resource: res://asset/ui/dark_menu/generated/button_normal.png remapped: res://asset/ui/dark_menu/generated/button_normal.png
+Loading resource: res://.godot/imported/button_normal.png-4bb5fa7e4095485eefaa689c3d19c500.ctex remapped: res://.godot/imported/button_normal.png-4bb5fa7e4095485eefaa689c3d19c500.ctex
+Completed load for: 'res://asset/ui/dark_menu/generated/button_normal.png' remapped 'res://asset/ui/dark_menu/generated/button_normal.png' at thread -1
+Loading resource: res://asset/ui/dark_menu/generated/button_hover.png remapped: res://asset/ui/dark_menu/generated/button_hover.png
+Loading resource: res://.godot/imported/button_hover.png-8a337b237d0ef81004ac2c6b12c31865.ctex remapped: res://.godot/imported/button_hover.png-8a337b237d0ef81004ac2c6b12c31865.ctex
+Completed load for: 'res://asset/ui/dark_menu/generated/button_hover.png' remapped 'res://asset/ui/dark_menu/generated/button_hover.png' at thread -1
+Loading resource: res://asset/ui/dark_menu/generated/button_pressed.png remapped: res://asset/ui/dark_menu/generated/button_pressed.png
+Loading resource: res://.godot/imported/button_pressed.png-e16840e1248e3ce4bf5e6571a90a0477.ctex remapped: res://.godot/imported/button_pressed.png-e16840e1248e3ce4bf5e6571a90a0477.ctex
+Completed load for: 'res://asset/ui/dark_menu/generated/button_pressed.png' remapped 'res://asset/ui/dark_menu/generated/button_pressed.png' at thread -1
+Completed load for: 'res://ui/themes/dark_pause_menu_theme.tres' remapped 'res://ui/themes/dark_pause_menu_theme.tres' at thread -1
+Loading resource: res://asset/ui/dark_menu/generated/main_frame.png remapped: res://asset/ui/dark_menu/generated/main_frame.png
+Loading resource: res://.godot/imported/main_frame.png-8a86c42d3d8e3b1d99f115d68c6d5f4c.ctex remapped: res://.godot/imported/main_frame.png-8a86c42d3d8e3b1d99f115d68c6d5f4c.ctex
+Completed load for: 'res://asset/ui/dark_menu/generated/main_frame.png' remapped 'res://asset/ui/dark_menu/generated/main_frame.png' at thread -1
+Loading resource: res://asset/ui/dark_menu/generated/title_header.png remapped: res://asset/ui/dark_menu/generated/title_header.png
+Loading resource: res://.godot/imported/title_header.png-38519adc17b2661a49ac08a5729b35e3.ctex remapped: res://.godot/imported/title_header.png-38519adc17b2661a49ac08a5729b35e3.ctex
+Completed load for: 'res://asset/ui/dark_menu/generated/title_header.png' remapped 'res://asset/ui/dark_menu/generated/title_header.png' at thread -1
+Loading resource: res://asset/ui/dark_menu/generated/close_button.png remapped: res://asset/ui/dark_menu/generated/close_button.png
+Loading resource: res://.godot/imported/close_button.png-a8d749bc78e98b3fd89e0ebf51b7f3bb.ctex remapped: res://.godot/imported/close_button.png-a8d749bc78e98b3fd89e0ebf51b7f3bb.ctex
+Completed load for: 'res://asset/ui/dark_menu/generated/close_button.png' remapped 'res://asset/ui/dark_menu/generated/close_button.png' at thread -1
+Loading resource: res://asset/ui/dark_menu/generated/bottom_section.png remapped: res://asset/ui/dark_menu/generated/bottom_section.png
+Loading resource: res://.godot/imported/bottom_section.png-58cc2cd32cdc99b7a0177a8646f93cc3.ctex remapped: res://.godot/imported/bottom_section.png-58cc2cd32cdc99b7a0177a8646f93cc3.ctex
+Completed load for: 'res://asset/ui/dark_menu/generated/bottom_section.png' remapped 'res://asset/ui/dark_menu/generated/bottom_section.png' at thread -1
+Loading resource: res://ui/components/dark_menu_button.tscn remapped: res://ui/components/dark_menu_button.tscn
+Completed load for: 'res://ui/components/dark_menu_button.tscn' remapped 'res://ui/components/dark_menu_button.tscn' at thread -1
+Completed load for: 'res://ui/menus/dark_pause_menu.tscn' remapped 'res://ui/menus/dark_pause_menu.tscn' at thread -1
+Completed load for: 'res://ui/run/PersistentRunUI.tscn' remapped 'res://ui/run/PersistentRunUI.tscn' at thread -1
+Completed load for: 'res://core/game_manager.gd' remapped 'res://core/game_manager.gd' at thread -1
+Loading resource: res://core/audio_manager.gd remapped: res://core/audio_manager.gd
+Completed load for: 'res://core/audio_manager.gd' remapped 'res://core/audio_manager.gd' at thread -1
+Loading resource: res://core/vfx_manager.gd remapped: res://core/vfx_manager.gd
+Completed load for: 'res://core/vfx_manager.gd' remapped 'res://core/vfx_manager.gd' at thread -1
+MbedTLS: Some X509 certificates could not be parsed (1 certificates skipped).
+Loaded system CA certificates
+Loading resource: res://ui/TitreEcran.tscn remapped: res://ui/TitreEcran.tscn
+Loading resource: res://ui/titre_ecran.gd remapped: res://ui/titre_ecran.gd
+Loading resource: res://data/runs/run_default.tres remapped: res://data/runs/run_default.tres
+Loading resource: res://data/rooms/bible/le_gue.tres remapped: res://data/rooms/bible/le_gue.tres
+Loading resource: res://data/rooms/maps/battle_salle1_iso.tscn remapped: res://data/rooms/maps/battle_salle1_iso.tscn
+Loading resource: res://battle/battle.gd remapped: res://battle/battle.gd
+Loading resource: res://battle/unit_view.tscn remapped: res://battle/unit_view.tscn
+Loading resource: res://battle/unit_view.gd remapped: res://battle/unit_view.gd
+Completed load for: 'res://battle/unit_view.gd' remapped 'res://battle/unit_view.gd' at thread -1
+Completed load for: 'res://battle/unit_view.tscn' remapped 'res://battle/unit_view.tscn' at thread -1
+Completed load for: 'res://battle/battle.gd' remapped 'res://battle/battle.gd' at thread -1
+Loading resource: res://battle/iso/forest_room_01_background.tscn remapped: res://battle/iso/forest_room_01_background.tscn
+Loading resource: res://asset/map/iso/forest_room_01_source.png remapped: res://asset/map/iso/forest_room_01_source.png
+Loading resource: res://.godot/imported/forest_room_01_source.png-e0948f69771893ddeb5e577fc2f28f04.ctex remapped: res://.godot/imported/forest_room_01_source.png-e0948f69771893ddeb5e577fc2f28f04.ctex
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Completed load for: 'res://asset/map/iso/forest_room_01_source.png' remapped 'res://asset/map/iso/forest_room_01_source.png' at thread -1
+Completed load for: 'res://battle/iso/forest_room_01_background.tscn' remapped 'res://battle/iso/forest_room_01_background.tscn' at thread -1
+Loading resource: res://battle/iso/iso_grid_view.gd remapped: res://battle/iso/iso_grid_view.gd
+Completed load for: 'res://battle/iso/iso_grid_view.gd' remapped 'res://battle/iso/iso_grid_view.gd' at thread -1
+Loading resource: res://debug/DebugOverlay.tscn remapped: res://debug/DebugOverlay.tscn
+Completed load for: 'res://debug/DebugOverlay.tscn' remapped 'res://debug/DebugOverlay.tscn' at thread -1
+Loading resource: res://battle/floating_text_spawner.gd remapped: res://battle/floating_text_spawner.gd
+Loading resource: res://battle/floating_text.tscn remapped: res://battle/floating_text.tscn
+Loading resource: res://battle/floating_text.gd remapped: res://battle/floating_text.gd
+Completed load for: 'res://battle/floating_text.gd' remapped 'res://battle/floating_text.gd' at thread -1
+Completed load for: 'res://battle/floating_text.tscn' remapped 'res://battle/floating_text.tscn' at thread -1
+Completed load for: 'res://battle/floating_text_spawner.gd' remapped 'res://battle/floating_text_spawner.gd' at thread -1
+Loading resource: res://asset/musique/Dungeon Draft_ First Footfalls.mp3 remapped: res://asset/musique/Dungeon Draft_ First Footfalls.mp3
+Loading resource: res://.godot/imported/Dungeon Draft_ First Footfalls.mp3-a0c09fb1930dbd3c7ebb6e6cddd58ee5.mp3str remapped: res://.godot/imported/Dungeon Draft_ First Footfalls.mp3-a0c09fb1930dbd3c7ebb6e6cddd58ee5.mp3str
+Completed load for: 'res://asset/musique/Dungeon Draft_ First Footfalls.mp3' remapped 'res://asset/musique/Dungeon Draft_ First Footfalls.mp3' at thread -1
+Completed load for: 'res://data/rooms/maps/battle_salle1_iso.tscn' remapped 'res://data/rooms/maps/battle_salle1_iso.tscn' at thread -1
+Loading resource: res://data/units/ennemie/run_pyromage_gobelin.tres remapped: res://data/units/ennemie/run_pyromage_gobelin.tres
+Loading resource: res://data/spells/gobelin/braise_gobeline.tres remapped: res://data/spells/gobelin/braise_gobeline.tres
+Loading resource: res://data/terrain/lave.tres remapped: res://data/terrain/lave.tres
+Completed load for: 'res://data/terrain/lave.tres' remapped 'res://data/terrain/lave.tres' at thread -1
+Completed load for: 'res://data/spells/gobelin/braise_gobeline.tres' remapped 'res://data/spells/gobelin/braise_gobeline.tres' at thread -1
+Loading resource: res://asset/personnage/ennemi/pyromagev4.png remapped: res://asset/personnage/ennemi/pyromagev4.png
+Loading resource: res://.godot/imported/pyromagev4.png-c7174c668155ac5e7d7ca559699fd74f.ctex remapped: res://.godot/imported/pyromagev4.png-c7174c668155ac5e7d7ca559699fd74f.ctex
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Completed load for: 'res://asset/personnage/ennemi/pyromagev4.png' remapped 'res://asset/personnage/ennemi/pyromagev4.png' at thread -1
+Loading resource: res://data/ai_behaviors/pyromage_poseur_de_feu.tres remapped: res://data/ai_behaviors/pyromage_poseur_de_feu.tres
+Loading resource: res://core/ai/enemy_behavior_hazard_placer.gd remapped: res://core/ai/enemy_behavior_hazard_placer.gd
+Completed load for: 'res://core/ai/enemy_behavior_hazard_placer.gd' remapped 'res://core/ai/enemy_behavior_hazard_placer.gd' at thread -1
+Completed load for: 'res://data/ai_behaviors/pyromage_poseur_de_feu.tres' remapped 'res://data/ai_behaviors/pyromage_poseur_de_feu.tres' at thread -1
+Completed load for: 'res://data/units/ennemie/run_pyromage_gobelin.tres' remapped 'res://data/units/ennemie/run_pyromage_gobelin.tres' at thread -1
+Loading resource: res://data/units/ennemie/GobTestUnitData_v2.tres remapped: res://data/units/ennemie/GobTestUnitData_v2.tres
+Loading resource: res://asset/GobTest_idle_v2.png remapped: res://asset/GobTest_idle_v2.png
+Loading resource: res://.godot/imported/GobTest_idle_v2.png-147d75e6646630254eca075a0a63049d.ctex remapped: res://.godot/imported/GobTest_idle_v2.png-147d75e6646630254eca075a0a63049d.ctex
+Completed load for: 'res://asset/GobTest_idle_v2.png' remapped 'res://asset/GobTest_idle_v2.png' at thread -1
+Loading resource: res://asset/GobTest_walk_v2.png remapped: res://asset/GobTest_walk_v2.png
+Loading resource: res://.godot/imported/GobTest_walk_v2.png-51f492a6e1d027919f222159761bf08a.ctex remapped: res://.godot/imported/GobTest_walk_v2.png-51f492a6e1d027919f222159761bf08a.ctex
+Completed load for: 'res://asset/GobTest_walk_v2.png' remapped 'res://asset/GobTest_walk_v2.png' at thread -1
+Loading resource: res://asset/GobTest_attack_v2.png remapped: res://asset/GobTest_attack_v2.png
+Loading resource: res://.godot/imported/GobTest_attack_v2.png-d64a76ab8673f085e75b0a72126a79d1.ctex remapped: res://.godot/imported/GobTest_attack_v2.png-d64a76ab8673f085e75b0a72126a79d1.ctex
+Completed load for: 'res://asset/GobTest_attack_v2.png' remapped 'res://asset/GobTest_attack_v2.png' at thread -1
+Loading resource: res://asset/GobTest_death_v2.png remapped: res://asset/GobTest_death_v2.png
+Loading resource: res://.godot/imported/GobTest_death_v2.png-292491353ebd93a0ddc2e1d968239747.ctex remapped: res://.godot/imported/GobTest_death_v2.png-292491353ebd93a0ddc2e1d968239747.ctex
+Completed load for: 'res://asset/GobTest_death_v2.png' remapped 'res://asset/GobTest_death_v2.png' at thread -1
+Loading resource: res://data/spells/gobelin/mêlée_gobelin.tres remapped: res://data/spells/gobelin/mêlée_gobelin.tres
+Completed load for: 'res://data/spells/gobelin/mêlée_gobelin.tres' remapped 'res://data/spells/gobelin/mêlée_gobelin.tres' at thread -1
+Completed load for: 'res://data/units/ennemie/GobTestUnitData_v2.tres' remapped 'res://data/units/ennemie/GobTestUnitData_v2.tres' at thread -1
+Loading resource: res://data/units/ennemie/run_eclaireur_gobelin.tres remapped: res://data/units/ennemie/run_eclaireur_gobelin.tres
+Loading resource: res://asset/Orc.png remapped: res://asset/Orc.png
+Loading resource: res://.godot/imported/Orc.png-7ec8df8fc8191d220abe819f11ce4a42.ctex remapped: res://.godot/imported/Orc.png-7ec8df8fc8191d220abe819f11ce4a42.ctex
+Completed load for: 'res://asset/Orc.png' remapped 'res://asset/Orc.png' at thread -1
+Completed load for: 'res://data/units/ennemie/run_eclaireur_gobelin.tres' remapped 'res://data/units/ennemie/run_eclaireur_gobelin.tres' at thread -1
+Completed load for: 'res://data/rooms/bible/le_gue.tres' remapped 'res://data/rooms/bible/le_gue.tres' at thread -1
+Loading resource: res://data/rooms/bible/la_forge.tres remapped: res://data/rooms/bible/la_forge.tres
+Loading resource: res://data/rooms/maps/battle_salle2.tscn remapped: res://data/rooms/maps/battle_salle2.tscn
+Loading resource: res://data/rooms/tile_set.tres remapped: res://data/rooms/tile_set.tres
+Loading resource: res://asset/map/tilemap_packed.png remapped: res://asset/map/tilemap_packed.png
+Loading resource: res://.godot/imported/tilemap_packed.png-8520b2087728e14cdf6d70e0c1cfad1f.ctex remapped: res://.godot/imported/tilemap_packed.png-8520b2087728e14cdf6d70e0c1cfad1f.ctex
+Completed load for: 'res://asset/map/tilemap_packed.png' remapped 'res://asset/map/tilemap_packed.png' at thread -1
+Loading resource: res://asset/map/tilemap_packed (2).png remapped: res://asset/map/tilemap_packed (2).png
+Loading resource: res://.godot/imported/tilemap_packed (2).png-1510af1dffd1b70be7e8456f7ddd5cd3.ctex remapped: res://.godot/imported/tilemap_packed (2).png-1510af1dffd1b70be7e8456f7ddd5cd3.ctex
+Completed load for: 'res://asset/map/tilemap_packed (2).png' remapped 'res://asset/map/tilemap_packed (2).png' at thread -1
+Loading resource: res://asset/Background/fond terrain.webp remapped: res://asset/Background/fond terrain.webp
+Loading resource: res://.godot/imported/fond terrain.webp-154410d31e4a5dcfaa67693b97637eb5.ctex remapped: res://.godot/imported/fond terrain.webp-154410d31e4a5dcfaa67693b97637eb5.ctex
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Completed load for: 'res://asset/Background/fond terrain.webp' remapped 'res://asset/Background/fond terrain.webp' at thread -1
+Completed load for: 'res://data/rooms/tile_set.tres' remapped 'res://data/rooms/tile_set.tres' at thread -1
+Loading resource: res://asset/musique/Dungeon Draft Tactics.mp3 remapped: res://asset/musique/Dungeon Draft Tactics.mp3
+Loading resource: res://.godot/imported/Dungeon Draft Tactics.mp3-beb09cd3f8d831fcddfad74f05ec3159.mp3str remapped: res://.godot/imported/Dungeon Draft Tactics.mp3-beb09cd3f8d831fcddfad74f05ec3159.mp3str
+Completed load for: 'res://asset/musique/Dungeon Draft Tactics.mp3' remapped 'res://asset/musique/Dungeon Draft Tactics.mp3' at thread -1
+Completed load for: 'res://data/rooms/maps/battle_salle2.tscn' remapped 'res://data/rooms/maps/battle_salle2.tscn' at thread -1
+Loading resource: res://data/units/ennemie/run_brute_gobelin.tres remapped: res://data/units/ennemie/run_brute_gobelin.tres
+Loading resource: res://asset/personnage/ennemi/goebleinscenario.png remapped: res://asset/personnage/ennemi/goebleinscenario.png
+Loading resource: res://.godot/imported/goebleinscenario.png-9756bb3f4333e34e29fa4652f55ab0df.ctex remapped: res://.godot/imported/goebleinscenario.png-9756bb3f4333e34e29fa4652f55ab0df.ctex
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Completed load for: 'res://asset/personnage/ennemi/goebleinscenario.png' remapped 'res://asset/personnage/ennemi/goebleinscenario.png' at thread -1
+Completed load for: 'res://data/units/ennemie/run_brute_gobelin.tres' remapped 'res://data/units/ennemie/run_brute_gobelin.tres' at thread -1
+Loading resource: res://data/units/ennemie/run_porte_bouclier_gobelin.tres remapped: res://data/units/ennemie/run_porte_bouclier_gobelin.tres
+Completed load for: 'res://data/units/ennemie/run_porte_bouclier_gobelin.tres' remapped 'res://data/units/ennemie/run_porte_bouclier_gobelin.tres' at thread -1
+Completed load for: 'res://data/rooms/bible/la_forge.tres' remapped 'res://data/rooms/bible/la_forge.tres' at thread -1
+Loading resource: res://data/rooms/bible/elite_brute.tres remapped: res://data/rooms/bible/elite_brute.tres
+Loading resource: res://data/units/ennemie/elite_brute_gobelin.tres remapped: res://data/units/ennemie/elite_brute_gobelin.tres
+Completed load for: 'res://data/units/ennemie/elite_brute_gobelin.tres' remapped 'res://data/units/ennemie/elite_brute_gobelin.tres' at thread -1
+Loading resource: res://data/units/ennemie/elite_pyromage_gobelin.tres remapped: res://data/units/ennemie/elite_pyromage_gobelin.tres
+Loading resource: res://data/spells/draft/etincelle.tres remapped: res://data/spells/draft/etincelle.tres
+Loading resource: res://data/terrain/feu.tres remapped: res://data/terrain/feu.tres
+Loading resource: res://data/status/core/brulure.tres remapped: res://data/status/core/brulure.tres
+Completed load for: 'res://data/status/core/brulure.tres' remapped 'res://data/status/core/brulure.tres' at thread -1
+Completed load for: 'res://data/terrain/feu.tres' remapped 'res://data/terrain/feu.tres' at thread -1
+Completed load for: 'res://data/spells/draft/etincelle.tres' remapped 'res://data/spells/draft/etincelle.tres' at thread -1
+Completed load for: 'res://data/units/ennemie/elite_pyromage_gobelin.tres' remapped 'res://data/units/ennemie/elite_pyromage_gobelin.tres' at thread -1
+Completed load for: 'res://data/rooms/bible/elite_brute.tres' remapped 'res://data/rooms/bible/elite_brute.tres' at thread -1
+Loading resource: res://data/rooms/bible/catacombes.tres remapped: res://data/rooms/bible/catacombes.tres
+Loading resource: res://data/rooms/maps/battle_salle3.tscn remapped: res://data/rooms/maps/battle_salle3.tscn
+Loading resource: res://asset/musique/Dungeon Draft Oath.mp3 remapped: res://asset/musique/Dungeon Draft Oath.mp3
+Loading resource: res://.godot/imported/Dungeon Draft Oath.mp3-73bb7a8bb69947e61ece3a1dec9f929a.mp3str remapped: res://.godot/imported/Dungeon Draft Oath.mp3-73bb7a8bb69947e61ece3a1dec9f929a.mp3str
+Completed load for: 'res://asset/musique/Dungeon Draft Oath.mp3' remapped 'res://asset/musique/Dungeon Draft Oath.mp3' at thread -1
+Completed load for: 'res://data/rooms/maps/battle_salle3.tscn' remapped 'res://data/rooms/maps/battle_salle3.tscn' at thread -1
+Loading resource: res://data/units/ennemie/run_archer_gobelin.tres remapped: res://data/units/ennemie/run_archer_gobelin.tres
+Loading resource: res://data/spells/enemies/fleche.tres remapped: res://data/spells/enemies/fleche.tres
+Completed load for: 'res://data/spells/enemies/fleche.tres' remapped 'res://data/spells/enemies/fleche.tres' at thread -1
+Loading resource: res://data/ai_behaviors/archer_kiter.tres remapped: res://data/ai_behaviors/archer_kiter.tres
+Loading resource: res://core/ai/enemy_behavior_kiter.gd remapped: res://core/ai/enemy_behavior_kiter.gd
+Completed load for: 'res://core/ai/enemy_behavior_kiter.gd' remapped 'res://core/ai/enemy_behavior_kiter.gd' at thread -1
+Completed load for: 'res://data/ai_behaviors/archer_kiter.tres' remapped 'res://data/ai_behaviors/archer_kiter.tres' at thread -1
+Completed load for: 'res://data/units/ennemie/run_archer_gobelin.tres' remapped 'res://data/units/ennemie/run_archer_gobelin.tres' at thread -1
+Loading resource: res://data/units/ennemie/run_hurleur_gobelin.tres remapped: res://data/units/ennemie/run_hurleur_gobelin.tres
+Loading resource: res://data/spells/gobelin/hurlement_drainant.tres remapped: res://data/spells/gobelin/hurlement_drainant.tres
+Completed load for: 'res://data/spells/gobelin/hurlement_drainant.tres' remapped 'res://data/spells/gobelin/hurlement_drainant.tres' at thread -1
+Loading resource: res://data/ai_behaviors/hurleur_drain.tres remapped: res://data/ai_behaviors/hurleur_drain.tres
+Loading resource: res://core/ai/enemy_behavior_disruptor.gd remapped: res://core/ai/enemy_behavior_disruptor.gd
+Completed load for: 'res://core/ai/enemy_behavior_disruptor.gd' remapped 'res://core/ai/enemy_behavior_disruptor.gd' at thread -1
+Loading resource: res://data/spells/enemies/tir_hurleur.tres remapped: res://data/spells/enemies/tir_hurleur.tres
+Completed load for: 'res://data/spells/enemies/tir_hurleur.tres' remapped 'res://data/spells/enemies/tir_hurleur.tres' at thread -1
+Completed load for: 'res://data/ai_behaviors/hurleur_drain.tres' remapped 'res://data/ai_behaviors/hurleur_drain.tres' at thread -1
+Completed load for: 'res://data/units/ennemie/run_hurleur_gobelin.tres' remapped 'res://data/units/ennemie/run_hurleur_gobelin.tres' at thread -1
+Loading resource: res://data/units/ennemie/run_lieur_gobelin.tres remapped: res://data/units/ennemie/run_lieur_gobelin.tres
+Loading resource: res://data/spells/enemies/entrave.tres remapped: res://data/spells/enemies/entrave.tres
+Loading resource: res://data/status/core/enracine.tres remapped: res://data/status/core/enracine.tres
+Completed load for: 'res://data/status/core/enracine.tres' remapped 'res://data/status/core/enracine.tres' at thread -1
+Completed load for: 'res://data/spells/enemies/entrave.tres' remapped 'res://data/spells/enemies/entrave.tres' at thread -1
+Loading resource: res://data/ai_behaviors/lieur_entrave.tres remapped: res://data/ai_behaviors/lieur_entrave.tres
+Completed load for: 'res://data/ai_behaviors/lieur_entrave.tres' remapped 'res://data/ai_behaviors/lieur_entrave.tres' at thread -1
+Completed load for: 'res://data/units/ennemie/run_lieur_gobelin.tres' remapped 'res://data/units/ennemie/run_lieur_gobelin.tres' at thread -1
+Completed load for: 'res://data/rooms/bible/catacombes.tres' remapped 'res://data/rooms/bible/catacombes.tres' at thread -1
+Loading resource: res://data/rooms/bible/boss_meduse.tres remapped: res://data/rooms/bible/boss_meduse.tres
+Loading resource: res://data/units/boss/meduse.tres remapped: res://data/units/boss/meduse.tres
+Loading resource: res://core/ai/boss_roi_gobelin.gd remapped: res://core/ai/boss_roi_gobelin.gd
+Completed load for: 'res://core/ai/boss_roi_gobelin.gd' remapped 'res://core/ai/boss_roi_gobelin.gd' at thread -1
+Loading resource: res://asset/persephone.png remapped: res://asset/persephone.png
+Loading resource: res://.godot/imported/persephone.png-24a759b62f21b77916735b172f7acd3d.ctex remapped: res://.godot/imported/persephone.png-24a759b62f21b77916735b172f7acd3d.ctex
+Completed load for: 'res://asset/persephone.png' remapped 'res://asset/persephone.png' at thread -1
+Loading resource: res://data/spells/boss/regard_petrifiant.tres remapped: res://data/spells/boss/regard_petrifiant.tres
+Loading resource: res://data/status/core/petrifie.tres remapped: res://data/status/core/petrifie.tres
+Completed load for: 'res://data/status/core/petrifie.tres' remapped 'res://data/status/core/petrifie.tres' at thread -1
+Loading resource: res://data/terrain/regard.tres remapped: res://data/terrain/regard.tres
+Completed load for: 'res://data/terrain/regard.tres' remapped 'res://data/terrain/regard.tres' at thread -1
+Completed load for: 'res://data/spells/boss/regard_petrifiant.tres' remapped 'res://data/spells/boss/regard_petrifiant.tres' at thread -1
+Loading resource: res://data/spells/boss/morsure_serpent.tres remapped: res://data/spells/boss/morsure_serpent.tres
+Completed load for: 'res://data/spells/boss/morsure_serpent.tres' remapped 'res://data/spells/boss/morsure_serpent.tres' at thread -1
+Completed load for: 'res://data/units/boss/meduse.tres' remapped 'res://data/units/boss/meduse.tres' at thread -1
+Loading resource: res://data/units/ennemie/serpent_meduse.tres remapped: res://data/units/ennemie/serpent_meduse.tres
+Completed load for: 'res://data/units/ennemie/serpent_meduse.tres' remapped 'res://data/units/ennemie/serpent_meduse.tres' at thread -1
+Completed load for: 'res://data/rooms/bible/boss_meduse.tres' remapped 'res://data/rooms/bible/boss_meduse.tres' at thread -1
+Loading resource: res://data/rooms/terrain_2.tres remapped: res://data/rooms/terrain_2.tres
+Loading resource: res://data/rooms/maps/battle_salle_montagne_iso_v2.tscn remapped: res://data/rooms/maps/battle_salle_montagne_iso_v2.tscn
+Loading resource: res://battle/iso/mountain_room_01_background.tscn remapped: res://battle/iso/mountain_room_01_background.tscn
+Loading resource: res://asset/Background/montagne 2.webp remapped: res://asset/Background/montagne 2.webp
+Loading resource: res://.godot/imported/montagne 2.webp-96843f2ade4fee3fbf610e55aaa24141.ctex remapped: res://.godot/imported/montagne 2.webp-96843f2ade4fee3fbf610e55aaa24141.ctex
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Completed load for: 'res://asset/Background/montagne 2.webp' remapped 'res://asset/Background/montagne 2.webp' at thread -1
+Completed load for: 'res://battle/iso/mountain_room_01_background.tscn' remapped 'res://battle/iso/mountain_room_01_background.tscn' at thread -1
+Loading resource: res://data/rooms/tile_set_iso_terrain.tres remapped: res://data/rooms/tile_set_iso_terrain.tres
+Loading resource: res://data/rooms/iso_terrain_markers.png remapped: res://data/rooms/iso_terrain_markers.png
+Loading resource: res://.godot/imported/iso_terrain_markers.png-9b3fc6dc73d1ec092ccb336254e68f4e.ctex remapped: res://.godot/imported/iso_terrain_markers.png-9b3fc6dc73d1ec092ccb336254e68f4e.ctex
+Completed load for: 'res://data/rooms/iso_terrain_markers.png' remapped 'res://data/rooms/iso_terrain_markers.png' at thread -1
+Completed load for: 'res://data/rooms/tile_set_iso_terrain.tres' remapped 'res://data/rooms/tile_set_iso_terrain.tres' at thread -1
+Loading resource: res://data/rooms/tile_set_iso_decor.tres remapped: res://data/rooms/tile_set_iso_decor.tres
+Loading resource: res://battle/iso/drapeau.tscn remapped: res://battle/iso/drapeau.tscn
+Loading resource: res://asset/Background/drapeau.png remapped: res://asset/Background/drapeau.png
+Loading resource: res://.godot/imported/drapeau.png-64ed2460fb2fe222788d28499debaaf6.ctex remapped: res://.godot/imported/drapeau.png-64ed2460fb2fe222788d28499debaaf6.ctex
+Completed load for: 'res://asset/Background/drapeau.png' remapped 'res://asset/Background/drapeau.png' at thread -1
+Loading resource: res://battle/iso/drapeau_vfx.gd remapped: res://battle/iso/drapeau_vfx.gd
+Completed load for: 'res://battle/iso/drapeau_vfx.gd' remapped 'res://battle/iso/drapeau_vfx.gd' at thread -1
+Loading resource: res://asset/shaders/environment/drapeau_vent.gdshader remapped: res://asset/shaders/environment/drapeau_vent.gdshader
+Completed load for: 'res://asset/shaders/environment/drapeau_vent.gdshader' remapped 'res://asset/shaders/environment/drapeau_vent.gdshader' at thread -1
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Completed load for: 'res://battle/iso/drapeau.tscn' remapped 'res://battle/iso/drapeau.tscn' at thread -1
+Completed load for: 'res://data/rooms/tile_set_iso_decor.tres' remapped 'res://data/rooms/tile_set_iso_decor.tres' at thread -1
+Loading resource: res://ui/Particles/lumiere_diffuse.tscn remapped: res://ui/Particles/lumiere_diffuse.tscn
+Loading resource: res://asset/shaders/environment/lumiere_diffuse.gdshader remapped: res://asset/shaders/environment/lumiere_diffuse.gdshader
+Completed load for: 'res://asset/shaders/environment/lumiere_diffuse.gdshader' remapped 'res://asset/shaders/environment/lumiere_diffuse.gdshader' at thread -1
+Loading resource: res://ui/Particles/lumiere_diffuse.gd remapped: res://ui/Particles/lumiere_diffuse.gd
+Completed load for: 'res://ui/Particles/lumiere_diffuse.gd' remapped 'res://ui/Particles/lumiere_diffuse.gd' at thread -1
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Completed load for: 'res://ui/Particles/lumiere_diffuse.tscn' remapped 'res://ui/Particles/lumiere_diffuse.tscn' at thread -1
+Loading resource: res://ui/Particles/brume_vallee.tscn remapped: res://ui/Particles/brume_vallee.tscn
+Loading resource: res://asset/shaders/environment/brume_vallee.gdshader remapped: res://asset/shaders/environment/brume_vallee.gdshader
+Completed load for: 'res://asset/shaders/environment/brume_vallee.gdshader' remapped 'res://asset/shaders/environment/brume_vallee.gdshader' at thread -1
+Loading resource: res://ui/Particles/brume_vallee.gd remapped: res://ui/Particles/brume_vallee.gd
+Completed load for: 'res://ui/Particles/brume_vallee.gd' remapped 'res://ui/Particles/brume_vallee.gd' at thread -1
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Completed load for: 'res://ui/Particles/brume_vallee.tscn' remapped 'res://ui/Particles/brume_vallee.tscn' at thread -1
+Completed load for: 'res://data/rooms/maps/battle_salle_montagne_iso_v2.tscn' remapped 'res://data/rooms/maps/battle_salle_montagne_iso_v2.tscn' at thread -1
+Loading resource: res://data/units/ennemie/GobTestUnitData.tres remapped: res://data/units/ennemie/GobTestUnitData.tres
+Loading resource: res://asset/GobTest_idle.png remapped: res://asset/GobTest_idle.png
+Loading resource: res://.godot/imported/GobTest_idle.png-56b77720aa0c311b1865dedcacbf686c.ctex remapped: res://.godot/imported/GobTest_idle.png-56b77720aa0c311b1865dedcacbf686c.ctex
+Completed load for: 'res://asset/GobTest_idle.png' remapped 'res://asset/GobTest_idle.png' at thread -1
+Completed load for: 'res://data/units/ennemie/GobTestUnitData.tres' remapped 'res://data/units/ennemie/GobTestUnitData.tres' at thread -1
+Completed load for: 'res://data/rooms/terrain_2.tres' remapped 'res://data/rooms/terrain_2.tres' at thread -1
+Loading resource: res://data/rewards/célérité.tres remapped: res://data/rewards/célérité.tres
+Completed load for: 'res://data/rewards/célérité.tres' remapped 'res://data/rewards/célérité.tres' at thread -1
+Loading resource: res://data/rewards/force.tres remapped: res://data/rewards/force.tres
+Completed load for: 'res://data/rewards/force.tres' remapped 'res://data/rewards/force.tres' at thread -1
+Loading resource: res://data/rewards/repos_equipe.tres remapped: res://data/rewards/repos_equipe.tres
+Completed load for: 'res://data/rewards/repos_equipe.tres' remapped 'res://data/rewards/repos_equipe.tres' at thread -1
+Loading resource: res://data/rewards/reward_calice_de_rage.tres remapped: res://data/rewards/reward_calice_de_rage.tres
+Loading resource: res://data/traits/relique_calice_de_rage.tres remapped: res://data/traits/relique_calice_de_rage.tres
+Loading resource: res://traits/trait_heal_on_energy_spent.gd remapped: res://traits/trait_heal_on_energy_spent.gd
+Completed load for: 'res://traits/trait_heal_on_energy_spent.gd' remapped 'res://traits/trait_heal_on_energy_spent.gd' at thread -1
+Completed load for: 'res://data/traits/relique_calice_de_rage.tres' remapped 'res://data/traits/relique_calice_de_rage.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_calice_de_rage.tres' remapped 'res://data/rewards/reward_calice_de_rage.tres' at thread -1
+Loading resource: res://data/rewards/reward_coeur_de_braise.tres remapped: res://data/rewards/reward_coeur_de_braise.tres
+Loading resource: res://data/traits/relique_coeur_de_braise.tres remapped: res://data/traits/relique_coeur_de_braise.tres
+Loading resource: res://traits/trait_energy_on_generator.gd remapped: res://traits/trait_energy_on_generator.gd
+Completed load for: 'res://traits/trait_energy_on_generator.gd' remapped 'res://traits/trait_energy_on_generator.gd' at thread -1
+Completed load for: 'res://data/traits/relique_coeur_de_braise.tres' remapped 'res://data/traits/relique_coeur_de_braise.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_coeur_de_braise.tres' remapped 'res://data/rewards/reward_coeur_de_braise.tres' at thread -1
+Loading resource: res://data/rewards/reward_elan_brut.tres remapped: res://data/rewards/reward_elan_brut.tres
+Loading resource: res://data/traits/relique_elan_brut.tres remapped: res://data/traits/relique_elan_brut.tres
+Loading resource: res://traits/trait_elan_on_turn_start.gd remapped: res://traits/trait_elan_on_turn_start.gd
+Completed load for: 'res://traits/trait_elan_on_turn_start.gd' remapped 'res://traits/trait_elan_on_turn_start.gd' at thread -1
+Completed load for: 'res://data/traits/relique_elan_brut.tres' remapped 'res://data/traits/relique_elan_brut.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_elan_brut.tres' remapped 'res://data/rewards/reward_elan_brut.tres' at thread -1
+Loading resource: res://data/rewards/reward_etincelle_ame.tres remapped: res://data/rewards/reward_etincelle_ame.tres
+Loading resource: res://data/traits/relique_etincelle_ame.tres remapped: res://data/traits/relique_etincelle_ame.tres
+Loading resource: res://traits/trait_bonus_fervor_on_generation.gd remapped: res://traits/trait_bonus_fervor_on_generation.gd
+Completed load for: 'res://traits/trait_bonus_fervor_on_generation.gd' remapped 'res://traits/trait_bonus_fervor_on_generation.gd' at thread -1
+Completed load for: 'res://data/traits/relique_etincelle_ame.tres' remapped 'res://data/traits/relique_etincelle_ame.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_etincelle_ame.tres' remapped 'res://data/rewards/reward_etincelle_ame.tres' at thread -1
+Loading resource: res://data/rewards/reward_gardien_de_fer.tres remapped: res://data/rewards/reward_gardien_de_fer.tres
+Loading resource: res://data/traits/relique_gardien_de_fer.tres remapped: res://data/traits/relique_gardien_de_fer.tres
+Loading resource: res://traits/trait_shield_on_damage_dealt.gd remapped: res://traits/trait_shield_on_damage_dealt.gd
+Completed load for: 'res://traits/trait_shield_on_damage_dealt.gd' remapped 'res://traits/trait_shield_on_damage_dealt.gd' at thread -1
+Completed load for: 'res://data/traits/relique_gardien_de_fer.tres' remapped 'res://data/traits/relique_gardien_de_fer.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_gardien_de_fer.tres' remapped 'res://data/rewards/reward_gardien_de_fer.tres' at thread -1
+Loading resource: res://data/rewards/reward_lame_d_elan.tres remapped: res://data/rewards/reward_lame_d_elan.tres
+Loading resource: res://data/traits/relique_lame_d_elan.tres remapped: res://data/traits/relique_lame_d_elan.tres
+Loading resource: res://traits/trait_stat_bonus.gd remapped: res://traits/trait_stat_bonus.gd
+Completed load for: 'res://traits/trait_stat_bonus.gd' remapped 'res://traits/trait_stat_bonus.gd' at thread -1
+Completed load for: 'res://data/traits/relique_lame_d_elan.tres' remapped 'res://data/traits/relique_lame_d_elan.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_lame_d_elan.tres' remapped 'res://data/rewards/reward_lame_d_elan.tres' at thread -1
+Loading resource: res://data/rewards/reward_marteau_jugement.tres remapped: res://data/rewards/reward_marteau_jugement.tres
+Loading resource: res://data/traits/relique_marteau_jugement.tres remapped: res://data/traits/relique_marteau_jugement.tres
+Loading resource: res://traits/relique_marteau_jugement.gd remapped: res://traits/relique_marteau_jugement.gd
+Completed load for: 'res://traits/relique_marteau_jugement.gd' remapped 'res://traits/relique_marteau_jugement.gd' at thread -1
+Completed load for: 'res://data/traits/relique_marteau_jugement.tres' remapped 'res://data/traits/relique_marteau_jugement.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_marteau_jugement.tres' remapped 'res://data/rewards/reward_marteau_jugement.tres' at thread -1
+Loading resource: res://data/rewards/reward_pacte_de_fer.tres remapped: res://data/rewards/reward_pacte_de_fer.tres
+Loading resource: res://data/traits/relique_pacte_de_fer.tres remapped: res://data/traits/relique_pacte_de_fer.tres
+Completed load for: 'res://data/traits/relique_pacte_de_fer.tres' remapped 'res://data/traits/relique_pacte_de_fer.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_pacte_de_fer.tres' remapped 'res://data/rewards/reward_pacte_de_fer.tres' at thread -1
+Loading resource: res://data/rewards/reward_racines_de_secours.tres remapped: res://data/rewards/reward_racines_de_secours.tres
+Loading resource: res://data/traits/relique_racines_de_secours.tres remapped: res://data/traits/relique_racines_de_secours.tres
+Completed load for: 'res://data/traits/relique_racines_de_secours.tres' remapped 'res://data/traits/relique_racines_de_secours.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_racines_de_secours.tres' remapped 'res://data/rewards/reward_racines_de_secours.tres' at thread -1
+Loading resource: res://data/rewards/reward_reflexe.tres remapped: res://data/rewards/reward_reflexe.tres
+Loading resource: res://data/traits/relique_reflexe.tres remapped: res://data/traits/relique_reflexe.tres
+Completed load for: 'res://data/traits/relique_reflexe.tres' remapped 'res://data/traits/relique_reflexe.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_reflexe.tres' remapped 'res://data/rewards/reward_reflexe.tres' at thread -1
+Loading resource: res://data/rewards/reward_seconde_nature.tres remapped: res://data/rewards/reward_seconde_nature.tres
+Loading resource: res://data/traits/relique_seconde_nature.tres remapped: res://data/traits/relique_seconde_nature.tres
+Loading resource: res://traits/trait_second_nature.gd remapped: res://traits/trait_second_nature.gd
+Completed load for: 'res://traits/trait_second_nature.gd' remapped 'res://traits/trait_second_nature.gd' at thread -1
+Completed load for: 'res://data/traits/relique_seconde_nature.tres' remapped 'res://data/traits/relique_seconde_nature.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_seconde_nature.tres' remapped 'res://data/rewards/reward_seconde_nature.tres' at thread -1
+Loading resource: res://data/rewards/reward_soif_de_sang.tres remapped: res://data/rewards/reward_soif_de_sang.tres
+Loading resource: res://data/traits/relique_soif_de_sang.tres remapped: res://data/traits/relique_soif_de_sang.tres
+Loading resource: res://traits/trait_bloodthirst.gd remapped: res://traits/trait_bloodthirst.gd
+Completed load for: 'res://traits/trait_bloodthirst.gd' remapped 'res://traits/trait_bloodthirst.gd' at thread -1
+Completed load for: 'res://data/traits/relique_soif_de_sang.tres' remapped 'res://data/traits/relique_soif_de_sang.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_soif_de_sang.tres' remapped 'res://data/rewards/reward_soif_de_sang.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_aiguillon.tres remapped: res://data/rewards/reward_sort_aiguillon.tres
+Loading resource: res://data/spells/draft/aiguillon.tres remapped: res://data/spells/draft/aiguillon.tres
+Loading resource: res://data/status/core/vulnerable_bible.tres remapped: res://data/status/core/vulnerable_bible.tres
+Completed load for: 'res://data/status/core/vulnerable_bible.tres' remapped 'res://data/status/core/vulnerable_bible.tres' at thread -1
+Completed load for: 'res://data/spells/draft/aiguillon.tres' remapped 'res://data/spells/draft/aiguillon.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_aiguillon.tres' remapped 'res://data/rewards/reward_sort_aiguillon.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_appel.tres remapped: res://data/rewards/reward_sort_appel.tres
+Loading resource: res://data/spells/draft/appel.tres remapped: res://data/spells/draft/appel.tres
+Completed load for: 'res://data/spells/draft/appel.tres' remapped 'res://data/spells/draft/appel.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_appel.tres' remapped 'res://data/rewards/reward_sort_appel.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_banniere.tres remapped: res://data/rewards/reward_sort_banniere.tres
+Loading resource: res://data/spells/draft/banniere.tres remapped: res://data/spells/draft/banniere.tres
+Loading resource: res://data/terrain/banniere.tres remapped: res://data/terrain/banniere.tres
+Completed load for: 'res://data/terrain/banniere.tres' remapped 'res://data/terrain/banniere.tres' at thread -1
+Completed load for: 'res://data/spells/draft/banniere.tres' remapped 'res://data/spells/draft/banniere.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_banniere.tres' remapped 'res://data/rewards/reward_sort_banniere.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_catalyse.tres remapped: res://data/rewards/reward_sort_catalyse.tres
+Loading resource: res://data/spells/draft/catalyse.tres remapped: res://data/spells/draft/catalyse.tres
+Loading resource: res://data/status/core/catalyse.tres remapped: res://data/status/core/catalyse.tres
+Completed load for: 'res://data/status/core/catalyse.tres' remapped 'res://data/status/core/catalyse.tres' at thread -1
+Completed load for: 'res://data/spells/draft/catalyse.tres' remapped 'res://data/spells/draft/catalyse.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_catalyse.tres' remapped 'res://data/rewards/reward_sort_catalyse.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_charge.tres remapped: res://data/rewards/reward_sort_charge.tres
+Loading resource: res://data/spells/draft/charge.tres remapped: res://data/spells/draft/charge.tres
+Completed load for: 'res://data/spells/draft/charge.tres' remapped 'res://data/spells/draft/charge.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_charge.tres' remapped 'res://data/rewards/reward_sort_charge.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_deflagration.tres remapped: res://data/rewards/reward_sort_deflagration.tres
+Loading resource: res://data/spells/draft/deflagration.tres remapped: res://data/spells/draft/deflagration.tres
+Completed load for: 'res://data/spells/draft/deflagration.tres' remapped 'res://data/spells/draft/deflagration.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_deflagration.tres' remapped 'res://data/rewards/reward_sort_deflagration.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_etincelle.tres remapped: res://data/rewards/reward_sort_etincelle.tres
+Completed load for: 'res://data/rewards/reward_sort_etincelle.tres' remapped 'res://data/rewards/reward_sort_etincelle.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_glaciation.tres remapped: res://data/rewards/reward_sort_glaciation.tres
+Loading resource: res://data/spells/draft/glaciation.tres remapped: res://data/spells/draft/glaciation.tres
+Loading resource: res://data/terrain/glace.tres remapped: res://data/terrain/glace.tres
+Completed load for: 'res://data/terrain/glace.tres' remapped 'res://data/terrain/glace.tres' at thread -1
+Completed load for: 'res://data/spells/draft/glaciation.tres' remapped 'res://data/spells/draft/glaciation.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_glaciation.tres' remapped 'res://data/rewards/reward_sort_glaciation.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_lien_ombre.tres remapped: res://data/rewards/reward_sort_lien_ombre.tres
+Loading resource: res://data/spells/draft/lien_ombre.tres remapped: res://data/spells/draft/lien_ombre.tres
+Loading resource: res://data/status/core/lien_ombre.tres remapped: res://data/status/core/lien_ombre.tres
+Completed load for: 'res://data/status/core/lien_ombre.tres' remapped 'res://data/status/core/lien_ombre.tres' at thread -1
+Completed load for: 'res://data/spells/draft/lien_ombre.tres' remapped 'res://data/spells/draft/lien_ombre.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_lien_ombre.tres' remapped 'res://data/rewards/reward_sort_lien_ombre.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_onde_de_choc.tres remapped: res://data/rewards/reward_sort_onde_de_choc.tres
+Loading resource: res://data/spells/Guerrier/onde_de_choc.tres remapped: res://data/spells/Guerrier/onde_de_choc.tres
+Completed load for: 'res://data/spells/Guerrier/onde_de_choc.tres' remapped 'res://data/spells/Guerrier/onde_de_choc.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_onde_de_choc.tres' remapped 'res://data/rewards/reward_sort_onde_de_choc.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_salve.tres remapped: res://data/rewards/reward_sort_salve.tres
+Loading resource: res://data/spells/draft/salve.tres remapped: res://data/spells/draft/salve.tres
+Completed load for: 'res://data/spells/draft/salve.tres' remapped 'res://data/spells/draft/salve.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_salve.tres' remapped 'res://data/rewards/reward_sort_salve.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_sceau.tres remapped: res://data/rewards/reward_sort_sceau.tres
+Loading resource: res://data/spells/draft/sceau.tres remapped: res://data/spells/draft/sceau.tres
+Loading resource: res://data/terrain/rune_amplification.tres remapped: res://data/terrain/rune_amplification.tres
+Completed load for: 'res://data/terrain/rune_amplification.tres' remapped 'res://data/terrain/rune_amplification.tres' at thread -1
+Completed load for: 'res://data/spells/draft/sceau.tres' remapped 'res://data/spells/draft/sceau.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_sceau.tres' remapped 'res://data/rewards/reward_sort_sceau.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_second_souffle.tres remapped: res://data/rewards/reward_sort_second_souffle.tres
+Loading resource: res://data/spells/draft/second_souffle.tres remapped: res://data/spells/draft/second_souffle.tres
+Completed load for: 'res://data/spells/draft/second_souffle.tres' remapped 'res://data/spells/draft/second_souffle.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_second_souffle.tres' remapped 'res://data/rewards/reward_sort_second_souffle.tres' at thread -1
+Loading resource: res://data/rewards/reward_sort_vague.tres remapped: res://data/rewards/reward_sort_vague.tres
+Loading resource: res://data/spells/draft/vague.tres remapped: res://data/spells/draft/vague.tres
+Loading resource: res://data/terrain/eau.tres remapped: res://data/terrain/eau.tres
+Loading resource: res://data/status/core/mouille.tres remapped: res://data/status/core/mouille.tres
+Completed load for: 'res://data/status/core/mouille.tres' remapped 'res://data/status/core/mouille.tres' at thread -1
+Completed load for: 'res://data/terrain/eau.tres' remapped 'res://data/terrain/eau.tres' at thread -1
+Completed load for: 'res://data/spells/draft/vague.tres' remapped 'res://data/spells/draft/vague.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_sort_vague.tres' remapped 'res://data/rewards/reward_sort_vague.tres' at thread -1
+Loading resource: res://data/rewards/reward_stigmates.tres remapped: res://data/rewards/reward_stigmates.tres
+Loading resource: res://data/traits/relique_stigmates.tres remapped: res://data/traits/relique_stigmates.tres
+Loading resource: res://traits/trait_stigmata.gd remapped: res://traits/trait_stigmata.gd
+Completed load for: 'res://traits/trait_stigmata.gd' remapped 'res://traits/trait_stigmata.gd' at thread -1
+Completed load for: 'res://data/traits/relique_stigmates.tres' remapped 'res://data/traits/relique_stigmates.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_stigmates.tres' remapped 'res://data/rewards/reward_stigmates.tres' at thread -1
+Loading resource: res://data/rewards/reward_vengeance.tres remapped: res://data/rewards/reward_vengeance.tres
+Loading resource: res://data/traits/vengeance.tres remapped: res://data/traits/vengeance.tres
+Loading resource: res://traits/trait_vengeance.gd remapped: res://traits/trait_vengeance.gd
+Completed load for: 'res://traits/trait_vengeance.gd' remapped 'res://traits/trait_vengeance.gd' at thread -1
+Completed load for: 'res://data/traits/vengeance.tres' remapped 'res://data/traits/vengeance.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_vengeance.tres' remapped 'res://data/rewards/reward_vengeance.tres' at thread -1
+Loading resource: res://data/rewards/vigueur.tres remapped: res://data/rewards/vigueur.tres
+Completed load for: 'res://data/rewards/vigueur.tres' remapped 'res://data/rewards/vigueur.tres' at thread -1
+Loading resource: res://data/rewards/reward_coup_epaule_enflamme.tres remapped: res://data/rewards/reward_coup_epaule_enflamme.tres
+Loading resource: res://data/traits/reward_epaule_enflamme.tres remapped: res://data/traits/reward_epaule_enflamme.tres
+Loading resource: res://traits/trait_spell_modifier.gd remapped: res://traits/trait_spell_modifier.gd
+Completed load for: 'res://traits/trait_spell_modifier.gd' remapped 'res://traits/trait_spell_modifier.gd' at thread -1
+Loading resource: res://data/spell_mods/mod_enflamme_arrivee.tres remapped: res://data/spell_mods/mod_enflamme_arrivee.tres
+Loading resource: res://core/spell_mods/spell_mod_status_on_push.gd remapped: res://core/spell_mods/spell_mod_status_on_push.gd
+Completed load for: 'res://core/spell_mods/spell_mod_status_on_push.gd' remapped 'res://core/spell_mods/spell_mod_status_on_push.gd' at thread -1
+Loading resource: res://data/status/core/bruleure.tres remapped: res://data/status/core/bruleure.tres
+Completed load for: 'res://data/status/core/bruleure.tres' remapped 'res://data/status/core/bruleure.tres' at thread -1
+Completed load for: 'res://data/spell_mods/mod_enflamme_arrivee.tres' remapped 'res://data/spell_mods/mod_enflamme_arrivee.tres' at thread -1
+Completed load for: 'res://data/traits/reward_epaule_enflamme.tres' remapped 'res://data/traits/reward_epaule_enflamme.tres' at thread -1
+Completed load for: 'res://data/rewards/reward_coup_epaule_enflamme.tres' remapped 'res://data/rewards/reward_coup_epaule_enflamme.tres' at thread -1
+Loading resource: res://data/relics/balance_anubis.tres remapped: res://data/relics/balance_anubis.tres
+Loading resource: res://data/relics/relic_data.gd remapped: res://data/relics/relic_data.gd
+Completed load for: 'res://data/relics/relic_data.gd' remapped 'res://data/relics/relic_data.gd' at thread -1
+Completed load for: 'res://data/relics/balance_anubis.tres' remapped 'res://data/relics/balance_anubis.tres' at thread -1
+Loading resource: res://data/relics/braise_persistante.tres remapped: res://data/relics/braise_persistante.tres
+Loading resource: res://data/traits/relique_braise_persistante.tres remapped: res://data/traits/relique_braise_persistante.tres
+Loading resource: res://traits/trait_heal_on_awakening.gd remapped: res://traits/trait_heal_on_awakening.gd
+Completed load for: 'res://traits/trait_heal_on_awakening.gd' remapped 'res://traits/trait_heal_on_awakening.gd' at thread -1
+Completed load for: 'res://data/traits/relique_braise_persistante.tres' remapped 'res://data/traits/relique_braise_persistante.tres' at thread -1
+Completed load for: 'res://data/relics/braise_persistante.tres' remapped 'res://data/relics/braise_persistante.tres' at thread -1
+Loading resource: res://data/relics/calice_rage.tres remapped: res://data/relics/calice_rage.tres
+Completed load for: 'res://data/relics/calice_rage.tres' remapped 'res://data/relics/calice_rage.tres' at thread -1
+Loading resource: res://data/relics/catalyseur.tres remapped: res://data/relics/catalyseur.tres
+Completed load for: 'res://data/relics/catalyseur.tres' remapped 'res://data/relics/catalyseur.tres' at thread -1
+Loading resource: res://data/relics/choeur.tres remapped: res://data/relics/choeur.tres
+Completed load for: 'res://data/relics/choeur.tres' remapped 'res://data/relics/choeur.tres' at thread -1
+Loading resource: res://data/relics/coeur_de_braise.tres remapped: res://data/relics/coeur_de_braise.tres
+Completed load for: 'res://data/relics/coeur_de_braise.tres' remapped 'res://data/relics/coeur_de_braise.tres' at thread -1
+Loading resource: res://data/relics/contre_garde.tres remapped: res://data/relics/contre_garde.tres
+Completed load for: 'res://data/relics/contre_garde.tres' remapped 'res://data/relics/contre_garde.tres' at thread -1
+Loading resource: res://data/relics/diapason.tres remapped: res://data/relics/diapason.tres
+Completed load for: 'res://data/relics/diapason.tres' remapped 'res://data/relics/diapason.tres' at thread -1
+Loading resource: res://data/relics/elan_brut.tres remapped: res://data/relics/elan_brut.tres
+Completed load for: 'res://data/relics/elan_brut.tres' remapped 'res://data/relics/elan_brut.tres' at thread -1
+Loading resource: res://data/relics/empreinte_tellurique.tres remapped: res://data/relics/empreinte_tellurique.tres
+Loading resource: res://data/traits/relique_empreinte_tellurique.tres remapped: res://data/traits/relique_empreinte_tellurique.tres
+Completed load for: 'res://data/traits/relique_empreinte_tellurique.tres' remapped 'res://data/traits/relique_empreinte_tellurique.tres' at thread -1
+Completed load for: 'res://data/relics/empreinte_tellurique.tres' remapped 'res://data/relics/empreinte_tellurique.tres' at thread -1
+Loading resource: res://data/relics/etincelle_ame.tres remapped: res://data/relics/etincelle_ame.tres
+Completed load for: 'res://data/relics/etincelle_ame.tres' remapped 'res://data/relics/etincelle_ame.tres' at thread -1
+Loading resource: res://data/relics/ferveur_debordante.tres remapped: res://data/relics/ferveur_debordante.tres
+Completed load for: 'res://data/relics/ferveur_debordante.tres' remapped 'res://data/relics/ferveur_debordante.tres' at thread -1
+Loading resource: res://data/relics/geomancien.tres remapped: res://data/relics/geomancien.tres
+Completed load for: 'res://data/relics/geomancien.tres' remapped 'res://data/relics/geomancien.tres' at thread -1
+Loading resource: res://data/relics/marteau_jugement.tres remapped: res://data/relics/marteau_jugement.tres
+Completed load for: 'res://data/relics/marteau_jugement.tres' remapped 'res://data/relics/marteau_jugement.tres' at thread -1
+Loading resource: res://data/relics/oeil_ombre.tres remapped: res://data/relics/oeil_ombre.tres
+Completed load for: 'res://data/relics/oeil_ombre.tres' remapped 'res://data/relics/oeil_ombre.tres' at thread -1
+Loading resource: res://data/relics/reflexe.tres remapped: res://data/relics/reflexe.tres
+Completed load for: 'res://data/relics/reflexe.tres' remapped 'res://data/relics/reflexe.tres' at thread -1
+Loading resource: res://data/relics/sang_froid.tres remapped: res://data/relics/sang_froid.tres
+Completed load for: 'res://data/relics/sang_froid.tres' remapped 'res://data/relics/sang_froid.tres' at thread -1
+Loading resource: res://data/relics/seconde_nature.tres remapped: res://data/relics/seconde_nature.tres
+Completed load for: 'res://data/relics/seconde_nature.tres' remapped 'res://data/relics/seconde_nature.tres' at thread -1
+Loading resource: res://data/relics/stigmates.tres remapped: res://data/relics/stigmates.tres
+Completed load for: 'res://data/relics/stigmates.tres' remapped 'res://data/relics/stigmates.tres' at thread -1
+Loading resource: res://data/relics/transe.tres remapped: res://data/relics/transe.tres
+Completed load for: 'res://data/relics/transe.tres' remapped 'res://data/relics/transe.tres' at thread -1
+Loading resource: res://data/equipment/arme_exploit_ferveur.tres remapped: res://data/equipment/arme_exploit_ferveur.tres
+Loading resource: res://data/equipment/equipment_data.gd remapped: res://data/equipment/equipment_data.gd
+Completed load for: 'res://data/equipment/equipment_data.gd' remapped 'res://data/equipment/equipment_data.gd' at thread -1
+Completed load for: 'res://data/equipment/arme_exploit_ferveur.tres' remapped 'res://data/equipment/arme_exploit_ferveur.tres' at thread -1
+Loading resource: res://data/equipment/arme_frappe_lourde_gratuite.tres remapped: res://data/equipment/arme_frappe_lourde_gratuite.tres
+Completed load for: 'res://data/equipment/arme_frappe_lourde_gratuite.tres' remapped 'res://data/equipment/arme_frappe_lourde_gratuite.tres' at thread -1
+Loading resource: res://data/equipment/arme_marque_vulnerable.tres remapped: res://data/equipment/arme_marque_vulnerable.tres
+Completed load for: 'res://data/equipment/arme_marque_vulnerable.tres' remapped 'res://data/equipment/arme_marque_vulnerable.tres' at thread -1
+Loading resource: res://data/equipment/arme_poussee_plus.tres remapped: res://data/equipment/arme_poussee_plus.tres
+Completed load for: 'res://data/equipment/arme_poussee_plus.tres' remapped 'res://data/equipment/arme_poussee_plus.tres' at thread -1
+Loading resource: res://data/equipment/armure_bouclier_depart.tres remapped: res://data/equipment/armure_bouclier_depart.tres
+Completed load for: 'res://data/equipment/armure_bouclier_depart.tres' remapped 'res://data/equipment/armure_bouclier_depart.tres' at thread -1
+Loading resource: res://data/equipment/armure_survie_letale.tres remapped: res://data/equipment/armure_survie_letale.tres
+Completed load for: 'res://data/equipment/armure_survie_letale.tres' remapped 'res://data/equipment/armure_survie_letale.tres' at thread -1
+Loading resource: res://data/equipment/armure_terrain_allie.tres remapped: res://data/equipment/armure_terrain_allie.tres
+Completed load for: 'res://data/equipment/armure_terrain_allie.tres' remapped 'res://data/equipment/armure_terrain_allie.tres' at thread -1
+Loading resource: res://data/equipment/armure_touche_ferveur.tres remapped: res://data/equipment/armure_touche_ferveur.tres
+Completed load for: 'res://data/equipment/armure_touche_ferveur.tres' remapped 'res://data/equipment/armure_touche_ferveur.tres' at thread -1
+Loading resource: res://data/equipment/epique_couronne_cendre.tres remapped: res://data/equipment/epique_couronne_cendre.tres
+Completed load for: 'res://data/equipment/epique_couronne_cendre.tres' remapped 'res://data/equipment/epique_couronne_cendre.tres' at thread -1
+Loading resource: res://data/equipment/epique_egide_martyr.tres remapped: res://data/equipment/epique_egide_martyr.tres
+Completed load for: 'res://data/equipment/epique_egide_martyr.tres' remapped 'res://data/equipment/epique_egide_martyr.tres' at thread -1
+Loading resource: res://data/equipment/epique_gantelet_briseur.tres remapped: res://data/equipment/epique_gantelet_briseur.tres
+Completed load for: 'res://data/equipment/epique_gantelet_briseur.tres' remapped 'res://data/equipment/epique_gantelet_briseur.tres' at thread -1
+Loading resource: res://data/equipment/epique_voile_spectre.tres remapped: res://data/equipment/epique_voile_spectre.tres
+Completed load for: 'res://data/equipment/epique_voile_spectre.tres' remapped 'res://data/equipment/epique_voile_spectre.tres' at thread -1
+Loading resource: res://data/equipment/talisman_elan_ouverture.tres remapped: res://data/equipment/talisman_elan_ouverture.tres
+Completed load for: 'res://data/equipment/talisman_elan_ouverture.tres' remapped 'res://data/equipment/talisman_elan_ouverture.tres' at thread -1
+Loading resource: res://data/equipment/talisman_empreinte_moins.tres remapped: res://data/equipment/talisman_empreinte_moins.tres
+Completed load for: 'res://data/equipment/talisman_empreinte_moins.tres' remapped 'res://data/equipment/talisman_empreinte_moins.tres' at thread -1
+Loading resource: res://data/equipment/talisman_eveil_soin.tres remapped: res://data/equipment/talisman_eveil_soin.tres
+Completed load for: 'res://data/equipment/talisman_eveil_soin.tres' remapped 'res://data/equipment/talisman_eveil_soin.tres' at thread -1
+Loading resource: res://data/equipment/talisman_resonance_combo.tres remapped: res://data/equipment/talisman_resonance_combo.tres
+Completed load for: 'res://data/equipment/talisman_resonance_combo.tres' remapped 'res://data/equipment/talisman_resonance_combo.tres' at thread -1
+Loading resource: res://data/events/autel_oublie.tres remapped: res://data/events/autel_oublie.tres
+Loading resource: res://data/events/run_event_data.gd remapped: res://data/events/run_event_data.gd
+Completed load for: 'res://data/events/run_event_data.gd' remapped 'res://data/events/run_event_data.gd' at thread -1
+Completed load for: 'res://data/events/autel_oublie.tres' remapped 'res://data/events/autel_oublie.tres' at thread -1
+Loading resource: res://data/events/champ_bataille.tres remapped: res://data/events/champ_bataille.tres
+Completed load for: 'res://data/events/champ_bataille.tres' remapped 'res://data/events/champ_bataille.tres' at thread -1
+Loading resource: res://data/events/forgeron_errant.tres remapped: res://data/events/forgeron_errant.tres
+Completed load for: 'res://data/events/forgeron_errant.tres' remapped 'res://data/events/forgeron_errant.tres' at thread -1
+Loading resource: res://data/events/mendiant.tres remapped: res://data/events/mendiant.tres
+Completed load for: 'res://data/events/mendiant.tres' remapped 'res://data/events/mendiant.tres' at thread -1
+Loading resource: res://data/events/pacte_ombre.tres remapped: res://data/events/pacte_ombre.tres
+Completed load for: 'res://data/events/pacte_ombre.tres' remapped 'res://data/events/pacte_ombre.tres' at thread -1
+Loading resource: res://data/events/reliquaire_scelle.tres remapped: res://data/events/reliquaire_scelle.tres
+Completed load for: 'res://data/events/reliquaire_scelle.tres' remapped 'res://data/events/reliquaire_scelle.tres' at thread -1
+Loading resource: res://data/events/source_trouble.tres remapped: res://data/events/source_trouble.tres
+Completed load for: 'res://data/events/source_trouble.tres' remapped 'res://data/events/source_trouble.tres' at thread -1
+Loading resource: res://data/events/stele_gravee.tres remapped: res://data/events/stele_gravee.tres
+Completed load for: 'res://data/events/stele_gravee.tres' remapped 'res://data/events/stele_gravee.tres' at thread -1
+Loading resource: res://data/boss_malus/charge_statique.tres remapped: res://data/boss_malus/charge_statique.tres
+Loading resource: res://data/boss_malus/boss_malus_data.gd remapped: res://data/boss_malus/boss_malus_data.gd
+Completed load for: 'res://data/boss_malus/boss_malus_data.gd' remapped 'res://data/boss_malus/boss_malus_data.gd' at thread -1
+Completed load for: 'res://data/boss_malus/charge_statique.tres' remapped 'res://data/boss_malus/charge_statique.tres' at thread -1
+Loading resource: res://data/boss_malus/devoration_temporelle.tres remapped: res://data/boss_malus/devoration_temporelle.tres
+Completed load for: 'res://data/boss_malus/devoration_temporelle.tres' remapped 'res://data/boss_malus/devoration_temporelle.tres' at thread -1
+Loading resource: res://data/boss_malus/jugement.tres remapped: res://data/boss_malus/jugement.tres
+Completed load for: 'res://data/boss_malus/jugement.tres' remapped 'res://data/boss_malus/jugement.tres' at thread -1
+Loading resource: res://data/boss_malus/reflet.tres remapped: res://data/boss_malus/reflet.tres
+Completed load for: 'res://data/boss_malus/reflet.tres' remapped 'res://data/boss_malus/reflet.tres' at thread -1
+Loading resource: res://data/boss_malus/regard_de_pierre.tres remapped: res://data/boss_malus/regard_de_pierre.tres
+Completed load for: 'res://data/boss_malus/regard_de_pierre.tres' remapped 'res://data/boss_malus/regard_de_pierre.tres' at thread -1
+Loading resource: res://data/run_nodes/acte1_boss_meduse.tres remapped: res://data/run_nodes/acte1_boss_meduse.tres
+Loading resource: res://data/run_nodes/run_node_data.gd remapped: res://data/run_nodes/run_node_data.gd
+Completed load for: 'res://data/run_nodes/run_node_data.gd' remapped 'res://data/run_nodes/run_node_data.gd' at thread -1
+Completed load for: 'res://data/run_nodes/acte1_boss_meduse.tres' remapped 'res://data/run_nodes/acte1_boss_meduse.tres' at thread -1
+Loading resource: res://data/run_nodes/acte1_combat_1.tres remapped: res://data/run_nodes/acte1_combat_1.tres
+Completed load for: 'res://data/run_nodes/acte1_combat_1.tres' remapped 'res://data/run_nodes/acte1_combat_1.tres' at thread -1
+Loading resource: res://data/run_nodes/acte1_elite.tres remapped: res://data/run_nodes/acte1_elite.tres
+Completed load for: 'res://data/run_nodes/acte1_elite.tres' remapped 'res://data/run_nodes/acte1_elite.tres' at thread -1
+Loading resource: res://data/run_nodes/acte1_repos.tres remapped: res://data/run_nodes/acte1_repos.tres
+Completed load for: 'res://data/run_nodes/acte1_repos.tres' remapped 'res://data/run_nodes/acte1_repos.tres' at thread -1
+Loading resource: res://data/run_nodes/acte1_tresor.tres remapped: res://data/run_nodes/acte1_tresor.tres
+Completed load for: 'res://data/run_nodes/acte1_tresor.tres' remapped 'res://data/run_nodes/acte1_tresor.tres' at thread -1
+Loading resource: res://data/run_nodes/event_pacte_ombre.tres remapped: res://data/run_nodes/event_pacte_ombre.tres
+Completed load for: 'res://data/run_nodes/event_pacte_ombre.tres' remapped 'res://data/run_nodes/event_pacte_ombre.tres' at thread -1
+Completed load for: 'res://data/runs/run_default.tres' remapped 'res://data/runs/run_default.tres' at thread -1
+Loading resource: res://data/runs/elf_prototype_run.tres remapped: res://data/runs/elf_prototype_run.tres
+Completed load for: 'res://data/runs/elf_prototype_run.tres' remapped 'res://data/runs/elf_prototype_run.tres' at thread -1
+Loading resource: res://data/runs/three_character_validation_run.tres remapped: res://data/runs/three_character_validation_run.tres
+Completed load for: 'res://data/runs/three_character_validation_run.tres' remapped 'res://data/runs/three_character_validation_run.tres' at thread -1
+Completed load for: 'res://ui/titre_ecran.gd' remapped 'res://ui/titre_ecran.gd' at thread -1
+Loading resource: res://asset/Background/fantasy-dungeons_dragons-536932.png remapped: res://asset/Background/fantasy-dungeons_dragons-536932.png
+Loading resource: res://.godot/imported/fantasy-dungeons_dragons-536932.png-c99c44a31459d2479897952f5cd35bf1.ctex remapped: res://.godot/imported/fantasy-dungeons_dragons-536932.png-c99c44a31459d2479897952f5cd35bf1.ctex
+Completed load for: 'res://asset/Background/fantasy-dungeons_dragons-536932.png' remapped 'res://asset/Background/fantasy-dungeons_dragons-536932.png' at thread -1
+Loading resource: res://ui/Particles/fumee_shader.tscn remapped: res://ui/Particles/fumee_shader.tscn
+Loading resource: res://asset/shaders/environment/fumee.gdshader remapped: res://asset/shaders/environment/fumee.gdshader
+Completed load for: 'res://asset/shaders/environment/fumee.gdshader' remapped 'res://asset/shaders/environment/fumee.gdshader' at thread -1
+Loading resource: res://ui/Particles/fumee_shader.gd remapped: res://ui/Particles/fumee_shader.gd
+Completed load for: 'res://ui/Particles/fumee_shader.gd' remapped 'res://ui/Particles/fumee_shader.gd' at thread -1
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Completed load for: 'res://ui/Particles/fumee_shader.tscn' remapped 'res://ui/Particles/fumee_shader.tscn' at thread -1
+Loading resource: res://asset/Background/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png remapped: res://asset/Background/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png
+Loading resource: res://.godot/imported/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png-28def9eb6fcab867adb2750f9776ffe7.ctex remapped: res://.godot/imported/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png-28def9eb6fcab867adb2750f9776ffe7.ctex
+Completed load for: 'res://asset/Background/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png' remapped 'res://asset/Background/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png' at thread -1
+Loading resource: res://ui/Particles/rayons_lumiere.tscn remapped: res://ui/Particles/rayons_lumiere.tscn
+Loading resource: res://asset/shaders/environment/rayons_lumiere.gdshader remapped: res://asset/shaders/environment/rayons_lumiere.gdshader
+Completed load for: 'res://asset/shaders/environment/rayons_lumiere.gdshader' remapped 'res://asset/shaders/environment/rayons_lumiere.gdshader' at thread -1
+Loading resource: res://ui/Particles/rayons_lumiere.gd remapped: res://ui/Particles/rayons_lumiere.gd
+Completed load for: 'res://ui/Particles/rayons_lumiere.gd' remapped 'res://ui/Particles/rayons_lumiere.gd' at thread -1
+Loading cache for shader CanvasShaderRD, variant 0
+Loading cache for shader CanvasShaderRD, variant 1
+Loading cache for shader CanvasShaderRD, variant 2
+Loading cache for shader CanvasShaderRD, variant 3
+Loading cache for shader CanvasShaderRD, variant 4
+Loading cache for shader CanvasShaderRD, variant 5
+Completed load for: 'res://ui/Particles/rayons_lumiere.tscn' remapped 'res://ui/Particles/rayons_lumiere.tscn' at thread -1
+Loading resource: res://asset/Background/feuille_basique-removebg-preview.png remapped: res://asset/Background/feuille_basique-removebg-preview.png
+Loading resource: res://.godot/imported/feuille_basique-removebg-preview.png-1f2f8422f59284967d16ff4706aab07f.ctex remapped: res://.godot/imported/feuille_basique-removebg-preview.png-1f2f8422f59284967d16ff4706aab07f.ctex
+Completed load for: 'res://asset/Background/feuille_basique-removebg-preview.png' remapped 'res://asset/Background/feuille_basique-removebg-preview.png' at thread -1
+Loading resource: res://asset/musique/Dungeon Draft.mp3 remapped: res://asset/musique/Dungeon Draft.mp3
+Loading resource: res://.godot/imported/Dungeon Draft.mp3-47305a7014d968e0b996ed739f3131b7.mp3str remapped: res://.godot/imported/Dungeon Draft.mp3-47305a7014d968e0b996ed739f3131b7.mp3str
+Completed load for: 'res://asset/musique/Dungeon Draft.mp3' remapped 'res://asset/musique/Dungeon Draft.mp3' at thread -1
+Completed load for: 'res://ui/TitreEcran.tscn' remapped 'res://ui/TitreEcran.tscn' at thread -1
+DebugOverlay _ready appelé
+Panel : Panel:<Panel#37715183063>
+Accessibility: window 0 adapter activated.
+WARNING: Image format RGB8 not supported by hardware, converting to RGBA8.
+   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)
+Accessibility: window 0 adapter initial update completed.

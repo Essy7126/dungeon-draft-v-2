@@ -21,9 +21,9 @@ extends Resource
 
 @export_category("Node geometry")
 @export var node_sizes: Dictionary = {
-	&"large": {&"root": 92.0, &"standard": 82.0, &"specialization": 92.0, &"capstone": 108.0, &"rank_gate": 88.0},
-	&"medium": {&"root": 88.0, &"standard": 78.0, &"specialization": 88.0, &"capstone": 104.0, &"rank_gate": 84.0},
-	&"compact": {&"root": 86.0, &"standard": 76.0, &"specialization": 86.0, &"capstone": 100.0, &"rank_gate": 80.0},
+	&"large": {&"root": 92.0, &"standard": 82.0, &"specialization": 92.0, &"capstone": 106.0, &"rank_gate": 88.0},
+	&"medium": {&"root": 88.0, &"standard": 78.0, &"specialization": 88.0, &"capstone": 101.0, &"rank_gate": 84.0},
+	&"compact": {&"root": 86.0, &"standard": 76.0, &"specialization": 86.0, &"capstone": 98.0, &"rank_gate": 80.0},
 }
 @export var icon_sizes: Dictionary = {
 	&"large": {&"standard": 54.0, &"major": 68.0},

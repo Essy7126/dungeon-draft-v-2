@@ -59,6 +59,7 @@ animations = [{
 }]
 
 [node name="ElfMagicArrowProjectile" type="Node2D" unique_id=905270944]
+scale = Vector2(0.5, 0.5)
 script = ExtResource("1_wktpm")
 travel_duration = 1.2
 impact_scene = ExtResource("2_d1k3v")

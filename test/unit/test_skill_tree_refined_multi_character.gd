@@ -9,7 +9,7 @@ const CASES := [
 		"unit": "res://data/units/alliés/elfe.tres",
 		"theme": "res://data/ui/elf_hud_theme_refined.tres",
 		"branches": {
-			&"archer": 19,
+			&"archer": 5,
 			&"assassin": 3,
 			&"mage": 3,
 			&"healer": 3,

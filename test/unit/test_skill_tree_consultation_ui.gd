@@ -315,6 +315,8 @@ func test_lab_scene_exposes_requested_graybox_states() -> void:
 	var lab := LAB_SCENE.instantiate() as SkillTreeGrayboxLab
 	add_child_autofree(lab)
 	await get_tree().process_frame
+	lab.show_scenario(SkillTreeGrayboxLab.Scenario.PREREQUISITE_LOCKED)
+	await get_tree().process_frame
 	var graph := lab.skill_tree_screen.get_graph()
 	assert_eq(graph.get_node_view_count(), 19)
 	assert_eq(

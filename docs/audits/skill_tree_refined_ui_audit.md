@@ -1,8 +1,10 @@
-# Audit fonctionnel — arbre de compétences avant refonte REFINED
+# Audit fonctionnel et validation — arbre de compétences REFINED V2
 
-Date de référence : 2026-07-31  
-Branche : `main`  
-HEAD initial : `dd7cbafd5dea14d5e337e792af81516a43d6e32d`
+Date de référence : 2026-08-01
+
+Branche : `main`
+
+HEAD de départ après synchronisation : `79c4aebf3ff10fbab8b40bed45ea242dd41ea963`
 
 ## Périmètre réellement présent
 
@@ -87,3 +89,14 @@ Seuils réels de l’Archer : 0, 3, 7, 12 et 18 XP. Les autres branches Elf ont 
 - Remplacer les préfixes visuels codés par une résolution discipline/personnage avec fallback neutre.
 - Conserver les connexions issues uniquement de `prerequisite_node_ids` et les exclusions issues uniquement du resolver.
 - Garder l’acquisition dans le flux existant ; le panneau de combat expliquera l’état sans créer un second mécanisme de sélection.
+
+## Validation finale de la passe V2
+
+- L’unique `SkillTreeScreen` conserve les quatre zones validées : `CharacterHeader`, `BranchNavigation`, `SkillTreeCanvas` et `NodeDetailPanel`.
+- La révélation est fondée sur `DisciplineProgressState.rank` et sur le rang requis porté par les vraies ressources, avec une profondeur configurable de 1. Les rangs au-delà de la frontière sont remplacés par des `RankGate` génériques et leurs nodes réels ne sont pas instanciés.
+- Le prochain rang peut être inspecté, mais son nom, son effet, son tooltip mécanique et son détail sont masqués conformément aux options de la ressource `skill_tree_refined_config.tres`.
+- Le panneau de détail utilise un contenu générique pour le rang verrouillé. Il n’appelle pas de mutation et conserve le message consultatif du flux après combat.
+- Le layout spécial Archer ne change aucune règle : il organise uniquement les vrais identifiants issus des ressources. Le layout générique reste utilisé pour les autres disciplines.
+- Les 17 scénarios de preview utilisent exclusivement des `CharacterRunState` et des disciplines réelles : aucun node ou rang fictif n’est injecté dans le runtime.
+- Les huit personnages restent couverts. Elf et Mage affichent leurs seules disciplines réelles ; Guardian, Warrior, Druid, Assassin, Necromancer et Hoplite affichent l’état vide `Progression non définie` sans `RankGate` fictif.
+- Les validations ciblées arbre, intégration et multi-personnages totalisent 24 tests et 1 433 assertions sans échec avant la suite élargie.

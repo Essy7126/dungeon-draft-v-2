@@ -360,6 +360,9 @@ func _on_node_inspected(view: SkillTreeNodeView) -> void:
 	if character_state == null or discipline == null:
 		return
 	_last_inspected_by_discipline[discipline.discipline_id] = view.presentation_id
+	if not view.is_content_revealed():
+		_detail_panel.configure_locked(discipline, view.get_rank(), character_id)
+		return
 	if view.is_base_rank:
 		var base_spell := _base_spell_for_discipline(character_state, discipline)
 		_detail_panel.configure_base(
