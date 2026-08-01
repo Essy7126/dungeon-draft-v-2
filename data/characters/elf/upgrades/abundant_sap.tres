@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="SkillTreeNodeData" format=3]
+[gd_resource type="Resource" script_class="SkillTreeNodeData" format=3 uid="uid://dkosojaifov2j"]
 
-[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_upgrade"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Script" uid="uid://dfwja3hug8lax" path="res://data/characters/skill_tree_node_data.gd" id="1_upgrade"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/abundant_sap.tres" id="3_modifier"]
 
 [resource]
