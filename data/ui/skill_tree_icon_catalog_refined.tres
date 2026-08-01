@@ -1,99 +1,115 @@
-[gd_resource type="Resource" script_class="SkillTreeIconCatalog" load_steps=29 format=3]
+[gd_resource type="Resource" script_class="SkillTreeIconCatalog" format=3 uid="uid://bhe54oyeqa8yp"]
 
-[ext_resource type="Script" path="res://ui/progression/theme/skill_tree_icon_catalog.gd" id="1_catalog"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg" id="2_upgrade"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/hidden.svg" id="3_hidden"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/damage.svg" id="4_damage"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/range.svg" id="5_range"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/push.svg" id="6_push"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/movement.svg" id="7_movement"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/bleed.svg" id="8_bleed"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/vulnerability.svg" id="9_vulnerability"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/collision.svg" id="10_collision"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/duration.svg" id="11_duration"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/pierce.svg" id="12_pierce"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/terrain.svg" id="13_terrain"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/heal.svg" id="14_heal"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/defense.svg" id="15_defense"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_check.svg" id="16_check"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_excluded.svg" id="17_excluded"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_pending.svg" id="18_pending"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/lock_refined.png" id="19_lock"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/spells/precise_shot.png" id="20_elf_archer"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/spells/sneak_strike.png" id="21_elf_assassin"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/spells/fireball.png" id="22_elf_mage"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/spells/sylvan_heal.png" id="23_elf_healer"]
-[ext_resource type="Texture2D" path="res://asset/icone/boule de feu.png" id="24_mage_fire"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r08_c01.png" id="25_mage_ice"]
-[ext_resource type="Texture2D" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="26_mage_lightning"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="27_mage_earth"]
-[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg" id="28_poison"]
+[ext_resource type="Script" uid="uid://bllx1wg8lv3h0" path="res://ui/progression/theme/skill_tree_icon_catalog.gd" id="1_catalog"]
+[ext_resource type="Texture2D" uid="uid://cf8g1u3tyecv0" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg" id="2_upgrade"]
+[ext_resource type="Texture2D" uid="uid://bxgcgrxtggowh" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/hidden.svg" id="3_hidden"]
+[ext_resource type="Texture2D" uid="uid://bhay5ysxjv4xn" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/damage.svg" id="4_damage"]
+[ext_resource type="Texture2D" uid="uid://d0jice71tm0yu" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/range.svg" id="5_range"]
+[ext_resource type="Texture2D" uid="uid://d2xf2phmt407t" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/push.svg" id="6_push"]
+[ext_resource type="Texture2D" uid="uid://c083y3p1ak6ty" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/movement.svg" id="7_movement"]
+[ext_resource type="Texture2D" uid="uid://cwnknvyjliuu" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/bleed.svg" id="8_bleed"]
+[ext_resource type="Texture2D" uid="uid://bkl4kvvxbv2lu" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/vulnerability.svg" id="9_vulnerability"]
+[ext_resource type="Texture2D" uid="uid://3ldr76jr2uel" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/collision.svg" id="10_collision"]
+[ext_resource type="Texture2D" uid="uid://bipnj6goaqqkn" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/duration.svg" id="11_duration"]
+[ext_resource type="Texture2D" uid="uid://b88imwg5hkh07" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/pierce.svg" id="12_pierce"]
+[ext_resource type="Texture2D" uid="uid://ojww5uygblv5" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/terrain.svg" id="13_terrain"]
+[ext_resource type="Texture2D" uid="uid://crbo6dx41l1xc" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/heal.svg" id="14_heal"]
+[ext_resource type="Texture2D" uid="uid://dhdhf6vis0m6d" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/defense.svg" id="15_defense"]
+[ext_resource type="Texture2D" uid="uid://d0whjuoevufi4" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_check.svg" id="16_check"]
+[ext_resource type="Texture2D" uid="uid://betx42g4dlfbj" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_excluded.svg" id="17_excluded"]
+[ext_resource type="Texture2D" uid="uid://dhcpyjhq132aq" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/state_pending.svg" id="18_pending"]
+[ext_resource type="Texture2D" uid="uid://di0mdus5jjqxr" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/lock_refined.png" id="19_lock"]
+[ext_resource type="Texture2D" uid="uid://b2pttu15n5a30" path="res://asset/ui/character_hud/refined/spells/precise_shot.png" id="20_elf_archer"]
+[ext_resource type="Texture2D" uid="uid://b6vm8gsjd2hy1" path="res://asset/ui/character_hud/refined/spells/sneak_strike.png" id="21_elf_assassin"]
+[ext_resource type="Texture2D" uid="uid://bkfkjn8b8uiq5" path="res://asset/ui/character_hud/refined/spells/fireball.png" id="22_elf_mage"]
+[ext_resource type="Texture2D" uid="uid://blb6hmacw7cl4" path="res://asset/ui/character_hud/refined/spells/sylvan_heal.png" id="23_elf_healer"]
+[ext_resource type="Texture2D" uid="uid://dt4yq5ppivne5" path="res://asset/icone/boule de feu.png" id="24_mage_fire"]
+[ext_resource type="Texture2D" uid="uid://bjnkgnw1phwoc" path="res://asset/ui/character_hud/generated/spell_icon_r08_c01.png" id="25_mage_ice"]
+[ext_resource type="Texture2D" uid="uid://ciejclsrsoiwq" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="26_mage_lightning"]
+[ext_resource type="Texture2D" uid="uid://dr571owpatp3u" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="27_mage_earth"]
+[ext_resource type="Texture2D" uid="uid://bflqve6nibh01" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg" id="28_poison"]
 
 [resource]
 script = ExtResource("1_catalog")
 node_icons = {
+&"elf_archer_barbed_tip": ExtResource("8_bleed"),
 &"elf_archer_eagle_eye": ExtResource("4_damage"),
-&"elf_archer_repel_arrow": ExtResource("6_push"),
-&"elf_archer_long_range": ExtResource("5_range"),
-&"elf_archer_piercing_shot": ExtResource("9_vulnerability"),
 &"elf_archer_hindering_arrow": ExtResource("7_movement"),
 &"elf_archer_impact_bolt": ExtResource("10_collision"),
-&"elf_archer_perfect_sight": ExtResource("5_range"),
-&"elf_archer_stabilization": ExtResource("4_damage"),
-&"elf_archer_barbed_tip": ExtResource("8_bleed"),
+&"elf_archer_long_range": ExtResource("5_range"),
 &"elf_archer_open_breach": ExtResource("9_vulnerability"),
-&"elf_archer_pin_arrow": ExtResource("7_movement"),
-&"elf_archer_tactical_retreat": ExtResource("7_movement"),
-&"elf_archer_siege_bolt": ExtResource("6_push"),
-&"elf_archer_shatter": ExtResource("10_collision"),
 &"elf_archer_perfect_shot": ExtResource("4_damage"),
-&"elf_archer_transpiercing_bolt": ExtResource("12_pierce"),
+&"elf_archer_perfect_sight": ExtResource("5_range"),
+&"elf_archer_piercing_shot": ExtResource("9_vulnerability"),
+&"elf_archer_pin_arrow": ExtResource("7_movement"),
+&"elf_archer_repel_arrow": ExtResource("6_push"),
+&"elf_archer_shatter": ExtResource("10_collision"),
 &"elf_archer_siege_arrow": ExtResource("6_push"),
+&"elf_archer_siege_bolt": ExtResource("6_push"),
+&"elf_archer_stabilization": ExtResource("4_damage"),
 &"elf_archer_stopping_arrow": ExtResource("10_collision"),
+&"elf_archer_tactical_retreat": ExtResource("7_movement"),
+&"elf_archer_transpiercing_bolt": ExtResource("12_pierce"),
 &"elf_assassin_backstab": ExtResource("4_damage"),
 &"elf_assassin_venomous_blade": ExtResource("28_poison"),
-&"elf_mage_incandescent_core": ExtResource("4_damage"),
-&"elf_mage_persistent_embers": ExtResource("13_terrain"),
 &"elf_healer_abundant_sap": ExtResource("14_heal"),
-&"elf_healer_protective_bark": ExtResource("15_defense")
+&"elf_healer_protective_bark": ExtResource("15_defense"),
+&"elf_mage_incandescent_core": ExtResource("4_damage"),
+&"elf_mage_persistent_embers": ExtResource("13_terrain")
 }
 semantic_icons = {
-&"upgrade": ExtResource("2_upgrade"), &"hidden": ExtResource("3_hidden"),
-&"damage": ExtResource("4_damage"), &"range": ExtResource("5_range"),
-&"push": ExtResource("6_push"), &"movement": ExtResource("7_movement"),
-&"bleed": ExtResource("8_bleed"), &"vulnerability": ExtResource("9_vulnerability"),
-&"collision": ExtResource("10_collision"), &"duration": ExtResource("11_duration"),
-&"pierce": ExtResource("12_pierce"), &"area_or_pierce": ExtResource("12_pierce"),
-&"terrain": ExtResource("13_terrain"), &"heal": ExtResource("14_heal"),
-&"defense": ExtResource("15_defense"), &"poison": ExtResource("28_poison")
+&"area_or_pierce": ExtResource("12_pierce"),
+&"bleed": ExtResource("8_bleed"),
+&"collision": ExtResource("10_collision"),
+&"damage": ExtResource("4_damage"),
+&"defense": ExtResource("15_defense"),
+&"duration": ExtResource("11_duration"),
+&"heal": ExtResource("14_heal"),
+&"hidden": ExtResource("3_hidden"),
+&"movement": ExtResource("7_movement"),
+&"pierce": ExtResource("12_pierce"),
+&"poison": ExtResource("28_poison"),
+&"push": ExtResource("6_push"),
+&"range": ExtResource("5_range"),
+&"terrain": ExtResource("13_terrain"),
+&"upgrade": ExtResource("2_upgrade"),
+&"vulnerability": ExtResource("9_vulnerability")
 }
 branch_badges = {
-&"elf:archer": ExtResource("20_elf_archer"), &"elf:assassin": ExtResource("21_elf_assassin"),
-&"elf:mage": ExtResource("22_elf_mage"), &"elf:healer": ExtResource("23_elf_healer"),
-&"mage:mage_fire": ExtResource("24_mage_fire"), &"mage:mage_ice": ExtResource("25_mage_ice"),
-&"mage:mage_lightning": ExtResource("26_mage_lightning"), &"mage:mage_earth": ExtResource("27_mage_earth")
+&"elf:archer": ExtResource("20_elf_archer"),
+&"elf:assassin": ExtResource("21_elf_assassin"),
+&"elf:healer": ExtResource("23_elf_healer"),
+&"elf:mage": ExtResource("22_elf_mage"),
+&"mage:mage_earth": ExtResource("27_mage_earth"),
+&"mage:mage_fire": ExtResource("24_mage_fire"),
+&"mage:mage_ice": ExtResource("25_mage_ice"),
+&"mage:mage_lightning": ExtResource("26_mage_lightning")
 }
 root_icons = {
-&"elf:archer": ExtResource("20_elf_archer"), &"elf:assassin": ExtResource("21_elf_assassin"),
-&"elf:mage": ExtResource("22_elf_mage"), &"elf:healer": ExtResource("23_elf_healer"),
-&"mage:mage_fire": ExtResource("24_mage_fire"), &"mage:mage_ice": ExtResource("25_mage_ice"),
-&"mage:mage_lightning": ExtResource("26_mage_lightning"), &"mage:mage_earth": ExtResource("27_mage_earth")
+&"elf:archer": ExtResource("20_elf_archer"),
+&"elf:assassin": ExtResource("21_elf_assassin"),
+&"elf:healer": ExtResource("23_elf_healer"),
+&"elf:mage": ExtResource("22_elf_mage"),
+&"mage:mage_earth": ExtResource("27_mage_earth"),
+&"mage:mage_fire": ExtResource("24_mage_fire"),
+&"mage:mage_ice": ExtResource("25_mage_ice"),
+&"mage:mage_lightning": ExtResource("26_mage_lightning")
 }
 capstone_icons = {
 &"elf_archer_perfect_shot": ExtResource("4_damage"),
-&"elf_archer_transpiercing_bolt": ExtResource("12_pierce"),
 &"elf_archer_siege_arrow": ExtResource("6_push"),
-&"elf_archer_stopping_arrow": ExtResource("10_collision")
+&"elf_archer_stopping_arrow": ExtResource("10_collision"),
+&"elf_archer_transpiercing_bolt": ExtResource("12_pierce")
 }
 specialization_icons = {
 &"elf_archer_eagle_eye": ExtResource("5_range"),
 &"elf_archer_repel_arrow": ExtResource("6_push")
 }
 state_icons = {
-&"selected": ExtResource("16_check"),
 &"excluded": ExtResource("17_excluded"),
+&"locked": ExtResource("19_lock"),
 &"pending": ExtResource("18_pending"),
-&"locked": ExtResource("19_lock")
+&"selected": ExtResource("16_check")
 }
 generic_upgrade_icon = ExtResource("2_upgrade")
 hidden_icon = ExtResource("3_hidden")
