@@ -1,4 +1,9 @@
-# Arbre de compétences — contrat d’assets
+# Arbre de compétences — contrat d’assets (archive du pipeline fantasy)
+
+> Ce document décrit l’ancien pipeline d’import et de recadrage. Depuis REFINED V2,
+> aucune texture listée ci-dessous n’est chargée par le runtime de l’arbre. La source
+> à jour se trouve dans `data/ui/skill_tree_refined_config.tres`,
+> `data/ui/skill_tree_icon_catalog_refined.tres` et le thème REFINED.
 
 Ce document décrit le skin de consultation de l’arbre passif de l’Elfe. Il ne
 modifie ni les règles de progression, ni les choix, ni l’XP. Un lancement de

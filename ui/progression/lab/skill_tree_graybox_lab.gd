@@ -6,35 +6,43 @@ const MAGE_DATA := preload("res://data/units/alliés/mage.tres")
 const GUARDIAN_DATA := preload("res://data/units/alliés/Gardien.tres")
 
 enum Scenario {
-	RANK_ONE_ZERO_XP,
-	RANK_TWO_AVAILABLE,
-	EAGLE_RANK_THREE_AVAILABLE,
-	REPEL_BRANCH,
-	RANK_FOUR_SELECTED,
-	RANK_FIVE_AVAILABLE,
-	TREE_COMPLETE,
-	LOW_RESOLUTION,
-	ELF_ASSASSIN,
-	ELF_MAGE,
-	ELF_HEALER,
-	MAGE_ROOTS,
+	RANK_ONE_BRANCH,
+	NEXT_RANK_LOCKED,
+	FUTURE_RANK_HIDDEN,
+	RANK_TWO_BRANCH,
+	RANK_FOUR_BRANCH,
+	TREE_MAXIMUM,
+	NODE_ACQUIRED,
+	NODE_AVAILABLE,
+	PREREQUISITE_LOCKED,
+	NODE_EXCLUDED,
+	SPECIALIZATION,
+	CAPSTONE,
 	GUARDIAN_UNDEFINED,
+	MAGE_ROOTS,
+	RESOLUTION_720P,
+	RESOLUTION_1080P,
+	RESOLUTION_1440P,
 }
 
 const SCENARIO_NAMES := [
-	"1 · Archer rang 1 — nodes verrouillés",
-	"2 · Archer rang 2 — choix disponible",
-	"3 · Œil d’aigle — acquis, disponible et exclu",
-	"4 · Spécialisation Flèche de recul",
-	"5 · Archer rang 4 — chemin acquis",
-	"6 · Archer rang 5 — capstone disponible",
-	"7 · Archer — rang MAX",
-	"8 · Responsive — 1280 × 720",
-	"9 · Elfe — branche Assassin",
-	"10 · Elfe — branche Mage",
-	"11 · Elfe — branche Soigneur",
-	"12 · Mage — quatre branches réelles",
-	"13 · Gardien — progression non définie",
+	"1 · Branche Archer · rang 1",
+	"2 · Prochain rang visible et verrouillé",
+	"3 · Rangs lointains cachés par RankGate",
+	"4 · Branche Archer · rang 2",
+	"5 · Branche Archer · rang 4",
+	"6 · Branche Archer · rang MAX",
+	"7 · Node acquis",
+	"8 · Node disponible",
+	"9 · Node verrouillé par prérequis",
+	"10 · Node exclu",
+	"11 · Spécialisation",
+	"12 · Capstone",
+	"13 · Gardien · progression non définie",
+	"14 · Mage · racines réelles uniquement",
+	"15 · Responsive · 1280 × 720",
+	"16 · Responsive · 1920 × 1080",
+	"17 · Responsive · 2560 × 1440",
 ]
 
 @onready var skill_tree_screen: SkillTreeScreen = %SkillTreeScreen
@@ -43,7 +51,7 @@ const SCENARIO_NAMES := [
 @onready var layout_debug_toggle: CheckButton = %LayoutDebugToggle
 
 var preview_state: CharacterRunState = null
-var current_scenario: Scenario = Scenario.EAGLE_RANK_THREE_AVAILABLE
+var current_scenario: Scenario = Scenario.NODE_AVAILABLE
 var _initial_window_size := Vector2i.ZERO
 
 
@@ -54,20 +62,20 @@ func _ready() -> void:
 	scenario_selector.item_selected.connect(show_scenario)
 	layout_debug_toggle.toggled.connect(_on_layout_debug_toggled)
 	layout_debug_toggle.button_pressed = false
-	scenario_selector.select(Scenario.EAGLE_RANK_THREE_AVAILABLE)
-	show_scenario(Scenario.EAGLE_RANK_THREE_AVAILABLE)
+	scenario_selector.select(Scenario.NODE_AVAILABLE)
+	show_scenario(Scenario.NODE_AVAILABLE)
 
 
 func show_rank_one_preview() -> void:
-	show_scenario(Scenario.RANK_ONE_ZERO_XP)
+	show_scenario(Scenario.RANK_ONE_BRANCH)
 
 
 func show_eagle_branch_preview() -> void:
-	show_scenario(Scenario.EAGLE_RANK_THREE_AVAILABLE)
+	show_scenario(Scenario.NODE_AVAILABLE)
 
 
 func show_assassin_branch_preview() -> void:
-	show_scenario(Scenario.ELF_ASSASSIN)
+	show_scenario(Scenario.SPECIALIZATION)
 
 
 func show_mage_character_preview() -> void:
@@ -80,60 +88,83 @@ func show_guardian_undefined_preview() -> void:
 
 func show_scenario(scenario_index: int) -> void:
 	current_scenario = scenario_index as Scenario
-	if current_scenario == Scenario.LOW_RESOLUTION:
+	if current_scenario == Scenario.RESOLUTION_720P:
 		get_window().size = Vector2i(1280, 720)
+	elif current_scenario == Scenario.RESOLUTION_1080P:
+		get_window().size = Vector2i(1920, 1080)
+	elif current_scenario == Scenario.RESOLUTION_1440P:
+		get_window().size = Vector2i(2560, 1440)
 	elif _initial_window_size != Vector2i.ZERO:
 		get_window().size = _initial_window_size
 	match current_scenario:
-		Scenario.RANK_ONE_ZERO_XP:
+		Scenario.RANK_ONE_BRANCH, Scenario.NEXT_RANK_LOCKED, Scenario.FUTURE_RANK_HIDDEN:
 			_build_preview_state(ELF_DATA, &"archer", 0, [])
-		Scenario.RANK_TWO_AVAILABLE:
+		Scenario.RANK_TWO_BRANCH:
 			_build_preview_state(ELF_DATA, &"archer", 3, [])
-		Scenario.EAGLE_RANK_THREE_AVAILABLE:
-			_build_preview_state(ELF_DATA, &"archer", 18, [
-				[2, &"elf_archer_eagle_eye"],
-			])
-		Scenario.REPEL_BRANCH:
-			_build_preview_state(ELF_DATA, &"archer", 7, [
-				[2, &"elf_archer_repel_arrow"],
-			])
-		Scenario.RANK_FOUR_SELECTED:
+		Scenario.RANK_FOUR_BRANCH:
 			_build_preview_state(ELF_DATA, &"archer", 12, [
 				[2, &"elf_archer_eagle_eye"],
 				[3, &"elf_archer_long_range"],
 				[4, &"elf_archer_perfect_sight"],
 			])
-		Scenario.RANK_FIVE_AVAILABLE:
-			_build_preview_state(ELF_DATA, &"archer", 18, [
-				[2, &"elf_archer_eagle_eye"],
-				[3, &"elf_archer_long_range"],
-				[4, &"elf_archer_perfect_sight"],
-			])
-		Scenario.TREE_COMPLETE:
+		Scenario.TREE_MAXIMUM:
 			_build_preview_state(ELF_DATA, &"archer", 18, [
 				[2, &"elf_archer_eagle_eye"],
 				[3, &"elf_archer_long_range"],
 				[4, &"elf_archer_perfect_sight"],
 				[5, &"elf_archer_perfect_shot"],
 			])
-		Scenario.LOW_RESOLUTION:
+		Scenario.NODE_ACQUIRED, Scenario.NODE_AVAILABLE:
+			_build_preview_state(ELF_DATA, &"archer", 7, [
+				[2, &"elf_archer_eagle_eye"],
+			])
+		Scenario.PREREQUISITE_LOCKED:
 			_build_preview_state(ELF_DATA, &"archer", 18, [
 				[2, &"elf_archer_eagle_eye"],
-				[3, &"elf_archer_piercing_shot"],
-				[4, &"elf_archer_barbed_tip"],
 			])
-		Scenario.ELF_ASSASSIN:
-			_build_preview_state(ELF_DATA, &"assassin", 3, [])
-		Scenario.ELF_MAGE:
-			_build_preview_state(ELF_DATA, &"mage", 3, [])
-		Scenario.ELF_HEALER:
-			_build_preview_state(ELF_DATA, &"healer", 3, [])
-		Scenario.MAGE_ROOTS:
-			_build_preview_state(MAGE_DATA, &"mage_fire", 0, [])
+		Scenario.NODE_EXCLUDED:
+			_build_preview_state(ELF_DATA, &"archer", 18, [
+				[2, &"elf_archer_eagle_eye"],
+				[3, &"elf_archer_long_range"],
+			])
+		Scenario.SPECIALIZATION:
+			_build_preview_state(ELF_DATA, &"archer", 3, [])
+		Scenario.CAPSTONE:
+			_build_preview_state(ELF_DATA, &"archer", 18, [
+				[2, &"elf_archer_eagle_eye"],
+				[3, &"elf_archer_long_range"],
+				[4, &"elf_archer_perfect_sight"],
+			])
 		Scenario.GUARDIAN_UNDEFINED:
 			_build_preview_state(GUARDIAN_DATA, &"", 0, [])
+		Scenario.MAGE_ROOTS:
+			_build_preview_state(MAGE_DATA, &"mage_fire", 0, [])
+		Scenario.RESOLUTION_720P, Scenario.RESOLUTION_1080P, Scenario.RESOLUTION_1440P:
+			_build_preview_state(ELF_DATA, &"archer", 12, [
+				[2, &"elf_archer_eagle_eye"],
+				[3, &"elf_archer_long_range"],
+				[4, &"elf_archer_perfect_sight"],
+			])
+	_select_scenario_focus()
 	scenario_label.text = SCENARIO_NAMES[current_scenario]
 	scenario_selector.select(current_scenario)
+
+
+func _select_scenario_focus() -> void:
+	var node_id := &""
+	match current_scenario:
+		Scenario.NEXT_RANK_LOCKED, Scenario.SPECIALIZATION:
+			node_id = &"elf_archer_eagle_eye"
+		Scenario.NODE_ACQUIRED:
+			node_id = &"elf_archer_eagle_eye"
+		Scenario.NODE_AVAILABLE:
+			node_id = &"elf_archer_long_range"
+		Scenario.PREREQUISITE_LOCKED, Scenario.NODE_EXCLUDED:
+			node_id = &"elf_archer_barbed_tip"
+		Scenario.CAPSTONE, Scenario.TREE_MAXIMUM:
+			node_id = &"elf_archer_perfect_shot"
+	if node_id != &"":
+		skill_tree_screen.get_graph().inspect_node_by_id(node_id)
 
 
 func get_scenario_count() -> int:

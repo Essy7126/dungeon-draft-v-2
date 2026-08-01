@@ -206,6 +206,53 @@ func configure_base(
 	_scroll.scroll_vertical = 0
 
 
+func configure_locked(
+		discipline: DisciplineData,
+		rank_number: int,
+		character_id: StringName = &"elf"
+	) -> void:
+	current_presentation_id = StringName("__locked_rank_%d" % rank_number)
+	_name_label.text = "COMPÉTENCE VERROUILLÉE"
+	_meta_label.text = "%s · Rang %d" % [
+		discipline.display_name if discipline != null else "Discipline",
+		rank_number,
+	]
+	_xp_label.text = "RANG %d REQUIS" % rank_number
+	_description_label.text = (
+		"Atteignez le rang %d de la branche pour révéler cette compétence."
+		% rank_number
+	)
+	_spell_heading.hide()
+	_spell_label.hide()
+	_spell_label.text = ""
+	_prerequisites_label.text = "Non révélé"
+	_state_label.text = "Verrouillée par le rang"
+	_reason_label.text = "Les informations mécaniques seront révélées avec ce rang."
+	_incompatibilities_heading.hide()
+	_incompatibilities_label.hide()
+	_incompatibilities_label.text = ""
+	_action_button.text = "VERROUILLÉ"
+	_action_button.disabled = true
+	var lock_texture := (
+		skin.icon_catalog.locked_icon
+		if skin != null and skin.icon_catalog != null
+		else null
+	)
+	_icon_override.texture = lock_texture
+	_icon_override.visible = lock_texture != null
+	_primary_glyph.visible = lock_texture == null
+	if _primary_glyph.visible:
+		_primary_glyph.configure(&"locked")
+	var discipline_icon_id := StringName(
+		"%s_%s" % [
+			character_id,
+			discipline.discipline_id if discipline != null else &"progression",
+		]
+	)
+	_discipline_icon.configure_discipline(discipline_icon_id, skin)
+	_scroll.scroll_vertical = 0
+
+
 func set_empty() -> void:
 	current_presentation_id = &""
 	_name_label.text = "DÉTAIL DU NODE"

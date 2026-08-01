@@ -445,9 +445,25 @@ func _reflow_layout() -> void:
 	)
 	var graph_height := _generic_graph_height(_display_nodes_by_rank)
 	if _uses_split_branch_layout():
+		var maximum_node_height := 0.0
+		for value in _node_views.values():
+			var node_view := value as SkillTreeNodeView
+			if node_view != null:
+				maximum_node_height = maxf(maximum_node_height, node_view.size.y)
+		var minimum_branch_height := (
+			float(_layout_spec["branch_title_height"])
+			+ maximum_node_height * 2.0
+			+ 34.0
+		)
+		var collision_free_height := (
+			float(_layout_spec["header_height"])
+			+ minimum_branch_height * 2.0
+			+ float(_layout_spec["branch_gap"])
+			+ float(_layout_spec["bottom_margin"])
+		)
 		graph_height = maxf(
-			_available_size.y,
-			float(_layout_spec["minimum_height"])
+			maxf(_available_size.y, float(_layout_spec["minimum_height"])),
+			collision_free_height
 		)
 		_layout_spec["branch_height"] = (
 			graph_height
@@ -775,7 +791,17 @@ func _layout_split_branch(
 	for node_value in nodes_by_rank.get(5, []):
 		if node_value == null:
 			continue
+		if node_value is StringName or node_value is String:
+			var gate_id := StringName(node_value)
+			if StringName(_gate_branch_ids.get(gate_id, &"")) != branch_id:
+				continue
+			var gate := get_node_view(gate_id)
+			if gate != null:
+				capstone_height = maxf(capstone_height, gate.size.y)
+			continue
 		var node := node_value as SkillUpgradeData
+		if node == null:
+			continue
 		if _main_branch_id(node.upgrade_id, {}) != branch_id:
 			continue
 		var capstone := get_node_view(node.upgrade_id)
@@ -851,7 +877,17 @@ func _branch_views(
 	for node_value in node_values:
 		if node_value == null:
 			continue
+		if node_value is StringName or node_value is String:
+			var gate_id := StringName(node_value)
+			if StringName(_gate_branch_ids.get(gate_id, &"")) != branch_id:
+				continue
+			var gate_view := get_node_view(gate_id)
+			if gate_view != null:
+				result.append(gate_view)
+			continue
 		var node := node_value as SkillUpgradeData
+		if node == null:
+			continue
 		if _main_branch_id(node.upgrade_id, {}) != branch_id:
 			continue
 		var view := get_node_view(node.upgrade_id)
@@ -882,11 +918,11 @@ func _layout_generic(
 		var views: Array[SkillTreeNodeView] = []
 		var column_height := 0.0
 		for node_value in rank_nodes:
-			var node_id := (
-				BASE_ID
-				if node_value == null
-				else (node_value as SkillUpgradeData).upgrade_id
-			)
+			var node_id := BASE_ID
+			if node_value is StringName or node_value is String:
+				node_id = StringName(node_value)
+			elif node_value is SkillUpgradeData:
+				node_id = (node_value as SkillUpgradeData).upgrade_id
 			var view := get_node_view(node_id)
 			if view != null:
 				views.append(view)
@@ -949,6 +985,41 @@ func _build_connections() -> void:
 					"state": _connection_state(source, target),
 					"points": _connection_points(source, target),
 				})
+	_build_rank_gate_connections()
+
+
+func _build_rank_gate_connections() -> void:
+	for gate_id_value in _gate_branch_ids:
+		var gate_id := StringName(gate_id_value)
+		var target := get_node_view(gate_id)
+		if target == null:
+			continue
+		var source_rank := target.get_rank() - 1
+		var branch_id := StringName(_gate_branch_ids.get(gate_id, &""))
+		var source_values: Array = _display_nodes_by_rank.get(source_rank, [])
+		for source_value in source_values:
+			var source_id := BASE_ID
+			if source_value is SkillUpgradeData:
+				var source_node := source_value as SkillUpgradeData
+				if (
+					branch_id != &""
+					and _main_branch_id(source_node.upgrade_id, {}) != branch_id
+				):
+					continue
+				source_id = source_node.upgrade_id
+			elif source_value is StringName or source_value is String:
+				continue
+			var source := get_node_view(source_id)
+			if source == null:
+				continue
+			_connections.append({
+				"source": source,
+				"target": target,
+				"source_id": source_id,
+				"target_id": gate_id,
+				"state": &"rank_gate",
+				"points": _connection_points(source, target),
+			})
 
 
 func _connection_points(

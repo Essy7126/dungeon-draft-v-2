@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SkillTreeIconCatalog" load_steps=28 format=3]
+[gd_resource type="Resource" script_class="SkillTreeIconCatalog" load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/theme/skill_tree_icon_catalog.gd" id="1_catalog"]
 [ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg" id="2_upgrade"]
@@ -27,6 +27,7 @@
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r08_c01.png" id="25_mage_ice"]
 [ext_resource type="Texture2D" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="26_mage_lightning"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="27_mage_earth"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg" id="28_poison"]
 
 [resource]
 script = ExtResource("1_catalog")
@@ -50,7 +51,7 @@ node_icons = {
 &"elf_archer_siege_arrow": ExtResource("6_push"),
 &"elf_archer_stopping_arrow": ExtResource("10_collision"),
 &"elf_assassin_backstab": ExtResource("4_damage"),
-&"elf_assassin_venomous_blade": ExtResource("8_bleed"),
+&"elf_assassin_venomous_blade": ExtResource("28_poison"),
 &"elf_mage_incandescent_core": ExtResource("4_damage"),
 &"elf_mage_persistent_embers": ExtResource("13_terrain"),
 &"elf_healer_abundant_sap": ExtResource("14_heal"),
@@ -64,7 +65,7 @@ semantic_icons = {
 &"collision": ExtResource("10_collision"), &"duration": ExtResource("11_duration"),
 &"pierce": ExtResource("12_pierce"), &"area_or_pierce": ExtResource("12_pierce"),
 &"terrain": ExtResource("13_terrain"), &"heal": ExtResource("14_heal"),
-&"defense": ExtResource("15_defense")
+&"defense": ExtResource("15_defense"), &"poison": ExtResource("28_poison")
 }
 branch_badges = {
 &"elf:archer": ExtResource("20_elf_archer"), &"elf:assassin": ExtResource("21_elf_assassin"),

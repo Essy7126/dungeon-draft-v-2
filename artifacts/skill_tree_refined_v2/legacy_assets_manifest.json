@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audit_date": "2026-07-31",
+  "audit_date": "2026-08-01",
   "runtime_skin": "res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres",
   "runtime_consumers": [
     "res://ui/progression/screens/skill_tree_screen.tscn",
@@ -36,11 +36,11 @@
     {"path":"res://asset/ui/dungeon_draft/arbre_compétences/glyph_vulnerability.svg.png","scenes":["runtime_skin"],"category":"old_effect_glyph","decision":"remplacer","replacement":"generated/icons/vulnerability.svg"},
     {"path":"res://asset/ui/dungeon_draft/arbre_compétences/glyph_collision.svg.png","scenes":["runtime_skin"],"category":"old_effect_glyph","decision":"remplacer","replacement":"generated/icons/collision.svg"},
     {"path":"res://asset/ui/dungeon_draft/arbre_compétences/glyph_duration.svg.png","scenes":["runtime_skin"],"category":"old_effect_glyph","decision":"remplacer","replacement":"generated/icons/duration.svg"},
-    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/386f619c-df3c-406e-8eda-e54a29efc0de.png","scenes":[],"category":"unidentified_unused","decision":"candidat à suppression ultérieure","replacement":null},
-    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/er skill_node_frame_capstone.png","scenes":[],"category":"unused_node_frame","decision":"candidat à suppression ultérieure","replacement":null},
-    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_node_capstone.png.png","scenes":[],"category":"unused_node_frame","decision":"candidat à suppression ultérieure","replacement":null},
-    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_node_capstone_v2.png.png","scenes":[],"category":"unused_node_frame","decision":"candidat à suppression ultérieure","replacement":null},
-    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_node_root.png.png","scenes":[],"category":"unused_node_frame","decision":"candidat à suppression ultérieure","replacement":null},
-    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_rank_badge_base.svg.png","scenes":[],"category":"unused_rank_badge","decision":"candidat à suppression ultérieure","replacement":null}
+    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/386f619c-df3c-406e-8eda-e54a29efc0de.png","scenes":[],"category":"unidentified_unused","decision":"inutilisé","replacement":null},
+    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/er skill_node_frame_capstone.png","scenes":[],"category":"unused_node_frame","decision":"inutilisé","replacement":null},
+    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_node_capstone.png.png","scenes":[],"category":"unused_node_frame","decision":"inutilisé","replacement":null},
+    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_node_capstone_v2.png.png","scenes":[],"category":"unused_node_frame","decision":"inutilisé","replacement":null},
+    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_node_root.png.png","scenes":[],"category":"unused_node_frame","decision":"inutilisé","replacement":null},
+    {"path":"res://asset/ui/dungeon_draft/arbre_compétences/skill_rank_badge_base.svg.png","scenes":[],"category":"unused_rank_badge","decision":"inutilisé","replacement":null}
   ]
 }

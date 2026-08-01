@@ -86,9 +86,18 @@ func configure_node(
 	if not is_node_ready():
 		await ready
 	var rank := node.rank if node != null else 1
+	var config := _config()
+	var may_show_name := (
+		reveal_mode == RevealMode.FULL
+		or (
+			reveal_mode == RevealMode.NEXT_RANK
+			and config != null
+			and config.show_next_rank_names
+		)
+	)
 	_name_label.text = (
 		node.display_name
-		if node != null and reveal_mode == RevealMode.FULL
+		if node != null and may_show_name
 		else "COMPÉTENCE VERROUILLÉE"
 	)
 	_rank_label.text = "R%d" % rank
@@ -251,8 +260,8 @@ func apply_layout_profile(profile: StringName) -> void:
 		else _fallback_frame_size(profile, kind)
 	)
 	var control_width := _visual_frame_size + (38.0 if kind == &"capstone" else 28.0)
-	var title_height := 36.0 if profile == PROFILE_LARGE else 33.0 if profile == PROFILE_MEDIUM else 31.0
-	var control_height := _visual_frame_size + title_height + 35.0
+	var title_height := 42.0 if profile == PROFILE_LARGE else 39.0 if profile == PROFILE_MEDIUM else 36.0
+	var control_height := _visual_frame_size + title_height + 46.0
 	var control_size := Vector2(control_width, control_height)
 	custom_minimum_size = control_size
 	size = control_size
@@ -307,8 +316,8 @@ func apply_layout_profile(profile: StringName) -> void:
 	)
 	var title_top := frame_rect.end.y + 2.0
 	_set_control_rect(_name_label, Vector2(0.0, title_top), Vector2(control_size.x, title_height))
-	_set_control_rect(_threshold_label, Vector2(0.0, title_top + title_height - 2.0), Vector2(control_size.x, 18.0))
-	_set_control_rect(_state_text, Vector2(0.0, title_top + title_height + 15.0), Vector2(control_size.x, 17.0))
+	_set_control_rect(_threshold_label, Vector2(0.0, title_top + title_height + 2.0), Vector2(control_size.x, 18.0))
+	_set_control_rect(_state_text, Vector2(0.0, title_top + title_height + 23.0), Vector2(control_size.x, 18.0))
 	_name_label.add_theme_font_size_override("font_size", 14 if profile == PROFILE_COMPACT else 15 if profile == PROFILE_MEDIUM else 16)
 	_rank_label.add_theme_font_size_override("font_size", 10 if profile == PROFILE_COMPACT else 11)
 	_threshold_label.add_theme_font_size_override("font_size", 9 if profile == PROFILE_COMPACT else 10)
@@ -388,13 +397,25 @@ func _configure_glyphs(legacy_icon: Texture2D = null) -> void:
 	elif node_data != null:
 		icon_id = node_data.upgrade_id
 		if catalog != null:
-			var kind := _node_kind(node_data.rank)
-			if kind == &"capstone":
-				icon = catalog.get_capstone_icon(node_data.upgrade_id)
-			elif kind == &"specialization":
-				icon = catalog.get_specialization_icon(node_data.upgrade_id)
+			var config := _config()
+			if (
+				reveal_mode == RevealMode.NEXT_RANK
+				and config != null
+				and not config.show_next_rank_icons
+			):
+				icon = catalog.hidden_icon
+				icon_id = &"hidden"
 			else:
-				icon = catalog.get_node_icon(node_data.upgrade_id, _semantic_category())
+				var kind := _node_kind(node_data.rank)
+				if kind == &"capstone":
+					icon = catalog.get_capstone_icon(node_data.upgrade_id)
+				elif kind == &"specialization":
+					icon = catalog.get_specialization_icon(node_data.upgrade_id)
+				else:
+					icon = catalog.get_node_icon(
+						node_data.upgrade_id,
+						_semantic_category()
+					)
 	if icon == null:
 		icon = legacy_icon
 	_icon_override.texture = icon
@@ -449,7 +470,10 @@ func _apply_locked_reveal() -> void:
 		else "RANG %d REQUIS" % rank
 	)
 	_state_icon.hide()
-	_state_text.text = "VERROUILLÉ"
+	_threshold_label.text = ""
+	_state_text.text = "À DÉCOUVRIR"
+	_rank_badge_fallback.hide()
+	_rank_label.hide()
 	var opacity := config.locked_node_opacity if config != null else 0.42
 	_icon_override.modulate = Color(0.72, 0.75, 0.78, maxf(opacity, 0.32))
 	_primary_glyph.modulate = _icon_override.modulate
@@ -467,7 +491,10 @@ func _apply_rank_gate() -> void:
 	_lock_icon.texture = config.lock_icon_texture if config != null else null
 	_requirement_label.text = "INCONNU"
 	_state_icon.hide()
-	_state_text.text = "NON RÉVÉLÉ"
+	_threshold_label.text = ""
+	_state_text.text = "CONTENU MASQUÉ"
+	_rank_badge_fallback.hide()
+	_rank_label.hide()
 	var opacity := config.hidden_node_opacity if config != null else 0.22
 	_icon_override.modulate = Color(0.66, 0.68, 0.7, opacity)
 	_primary_glyph.modulate = _icon_override.modulate
