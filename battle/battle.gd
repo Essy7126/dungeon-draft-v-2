@@ -27,6 +27,17 @@ extends Node2D
 ## inchanges et continuent de porter toute la logique de combat.
 @export var temporary_iso_placeholders := false
 
+## Echelle appliquee aux visuels d'unites (persos) dans les salles iso.
+## 1.0 = inchange (salles carrees historiques). Reduire pour des persos plus
+## petits face a un decor peint. N'affecte PAS l'ombre au sol : celle-ci reste
+## calee sur la case (calcul en coordonnees globales).
+@export var iso_unit_view_scale := 1.0
+
+## Materiau lumiere (golden hour) applique aux elements de gameplay (persos,
+## grille) pour qu'ils se fondent dans le decor peint. Laisser vide = aucun
+## eclairage ajoute (salles carrees classiques). Reglable dans l'Inspecteur.
+@export var iso_gameplay_light: ShaderMaterial = null
+
 ## Cache le TerrainLayer une fois ses donnees lues (au demarrage reel du jeu),
 ## tout en le laissant visible/peignable dans l'editeur. A utiliser uniquement
 ## quand TerrainLayer ne sert qu'a stocker le cell_type (pas a afficher un sol,
@@ -211,6 +222,8 @@ func _setup_view() -> void:
 		grid_view.name = "GridView"
 		add_child(grid_view)
 	grid_view.setup(grid)
+	# La grille NE reçoit PAS la lumiere : elle doit rester constante (pas de
+	# variation de nuages ni de teinte). Seuls les persos sont eclaires.
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
 	_unit_view_parent = _find_unit_view_parent()
@@ -434,10 +447,30 @@ func _create_unit_view(unit: Unit) -> void:
 	var parent := _unit_view_parent if _unit_view_parent != null else grid_view
 	parent.add_child(view)
 	view.setup(unit)
+	# Reduit la taille des persos face au decor. Fait AVANT le calcul de l'ombre
+	# pour que celle-ci, calculee en repere local, reste a la taille de la case.
+	if not is_equal_approx(iso_unit_view_scale, 1.0):
+		view.scale = Vector2(iso_unit_view_scale, iso_unit_view_scale)
 	view.position = grid_cell_to_parent_local(unit.grid_pos, parent)
 	if temporary_iso_placeholders:
+		_install_ground_shadow(view, unit.grid_pos)
 		_install_temporary_iso_placeholder(view, unit)
+	if iso_gameplay_light != null and view.has_method("set_light_material"):
+		view.set_light_material(iso_gameplay_light)
 	_unit_views[unit] = view
+
+## Ombre au sol qui suit le skew de la case (perspective). Le perso reste droit.
+func _install_ground_shadow(view: Node2D, cell: Vector2i) -> void:
+	if grid_view == null or not grid_view.has_method("get_cell_polygon"):
+		return
+	var footprint_local := PackedVector2Array()
+	for point in grid_view.get_cell_polygon(cell):
+		footprint_local.append(view.to_local(grid_view.to_global(point)))
+	var shadow := Node2D.new()
+	shadow.set_script(load("res://battle/iso/iso_ground_shadow.gd"))
+	view.add_child(shadow)
+	view.move_child(shadow, 0)
+	shadow.setup(footprint_local)
 
 func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
 	var placeholder := Node2D.new()

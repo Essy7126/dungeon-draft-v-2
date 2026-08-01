@@ -282,6 +282,40 @@ func set_active(active: bool) -> void:
 	_is_active = active
 	queue_redraw()
 
+## Applique un materiau lumiere (golden hour) aux visuels du perso pour qu'il se
+## fonde dans le decor. Parcourt TOUT le sous-arbre et vise les sprites
+## (Sprite2D / AnimatedSprite2D) + le placeholder iso, peu importe la profondeur.
+## Ignore l'ombre au sol (garde son rendu) ; les barres/jauges (Control) ne sont
+## pas des sprites, donc naturellement epargnees.
+func set_light_material(mat: Material) -> void:
+	# On pose le materiau sur la racine de l'UnitView, puis on force TOUS les
+	# visuels descendants (Node2D) a utiliser CE materiau via use_parent_material.
+	# Robuste : meme si un visuel (ex : elfe 3D) reassigne son propre material,
+	# use_parent_material le fait ignorer et rendre avec la lumiere golden hour.
+	material = mat
+	_use_parent_light_recursive(self)
+
+
+## Teinte chaude appliquee aux visuels 3D via modulate (multiplication simple,
+## sans shader canvas -> aucun artefact sur les rendus SubViewport).
+const _VISUAL_3D_WARM := Color(1.0, 0.95, 0.82)
+
+
+func _use_parent_light_recursive(node: Node) -> void:
+	for child in node.get_children():
+		if child.is_in_group("iso_ground_shadow"):
+			continue  # l'ombre au sol conserve son propre rendu
+		if child.is_in_group("optional_unit_visuals"):
+			# Visuel 3D (elfe/mage) : le shader canvas cree des artefacts sur le
+			# rendu SubViewport. On ne l'y applique PAS ; teinte chaude via
+			# modulate a la place, et on NE descend PAS dans son sous-arbre.
+			if child is CanvasItem:
+				(child as CanvasItem).modulate = _VISUAL_3D_WARM
+			continue
+		if child is Node2D:
+			(child as CanvasItem).use_parent_material = true
+		_use_parent_light_recursive(child)
+
 func face_direction(from: Vector2, to: Vector2) -> void:
 	if _sprite == null:
 		return
@@ -467,7 +501,15 @@ func _draw() -> void:
 		var arc_end := TAU * ratio
 		draw_arc(Vector2.ZERO, UNIT_SIZE * 0.82, -PI / 2.0, -PI / 2.0 + arc_end, 32, Color(0.35, 0.65, 1.0, 0.75), 4.0)
 	if _is_active:
-		if has_optional_visual():
+		# Si une ombre skewee epouse la case (salles iso), on cale la surbrillance
+		# d'unite active dessus : meme forme, meme taille, meme inclinaison que la
+		# case du TerrainLayer. Sinon, rendu historique (losange fixe / arc).
+		var footprint := _active_cell_footprint()
+		if footprint.size() >= 3:
+			var outline := PackedVector2Array(footprint)
+			outline.append(footprint[0])
+			draw_polyline(outline, Color(1.0, 0.9, 0.2, 0.9), 2.0, true)
+		elif has_optional_visual():
 			var diamond := PackedVector2Array([
 				Vector2(0.0, -16.0), Vector2(32.0, 0.0),
 				Vector2(0.0, 16.0), Vector2(-32.0, 0.0),
@@ -476,3 +518,12 @@ func _draw() -> void:
 			draw_polyline(diamond, Color(1.0, 0.9, 0.2, 0.62), 1.5, true)
 		else:
 			draw_arc(Vector2.ZERO, UNIT_SIZE * 0.75, 0, TAU, 32, Color(1.0, 0.9, 0.2), 3.0)
+
+
+## Contour de la case skewee, recupere aupres de l'ombre au sol (iso). Vide dans
+## les salles carrees classiques (aucune ombre iso) -> rendu historique.
+func _active_cell_footprint() -> PackedVector2Array:
+	for child in get_children():
+		if child.is_in_group("iso_ground_shadow") and child.has_method("get_footprint"):
+			return child.get_footprint()
+	return PackedVector2Array()
