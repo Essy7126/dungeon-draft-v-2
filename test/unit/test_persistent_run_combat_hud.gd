@@ -59,6 +59,12 @@ func test_bind_is_idempotent_and_context_replacement_disconnects_the_old_room() 
 	assert_true(hud.end_turn_pressed.is_connected(
 		Callable(first, "_on_end_turn_pressed")
 	))
+	assert_false(hud.awakening_pressed.is_connected(
+		Callable(first, "_on_awakening_pressed")
+	))
+	assert_false(hud.reaction_pressed.is_connected(
+		Callable(first, "_on_reaction_pressed")
+	))
 	assert_eq(_connection_count(
 		hud.end_turn_pressed,
 		Callable(first, "_on_end_turn_pressed")

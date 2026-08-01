@@ -187,7 +187,7 @@ func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
 		# Aucun choix d'ecole ou trait de draft n'est applique sur cette voie.
 		hero.reset_combat_resources()
 		var character_state := CharacterRunState.new()
-		if not character_state.initialize(hero, data):
+		if not character_state.initialize(hero, data, data.active_spell_slots):
 			push_error("Impossible d'initialiser l'etat du personnage : %s" % hero.unit_id)
 			_dispose_prepared_characters(prepared_heroes, prepared_states)
 			hero.clear_traits()

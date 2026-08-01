@@ -136,7 +136,10 @@ func test_three_successive_party_runs_keep_one_callback_and_fresh_xp() -> void:
 		assert_eq(_mage_xp(states[0]), 1)
 		assert_eq(_manager_callback_count(), 1)
 		assert_true(states[1].get_discipline_progressions().is_empty())
-		assert_true(states[2].get_discipline_progressions().is_empty())
+		assert_eq(states[2].get_discipline_progressions().size(), 3)
+		assert_true(states[2].get_discipline_progressions().values().all(
+			func(progress): return progress.xp == 0
+		))
 
 
 func test_old_party_hero_is_ignored_after_replacement() -> void:

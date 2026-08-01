@@ -20,10 +20,11 @@
 
 [resource]
 script = ExtResource("1_theme")
-character_id = &"res://data/units/alliés/Guerrier.tres"
+character_id = &"warrior"
 display_name = "Guerrier"
 discipline_name = "Briseur"
-energy_name = "Rage"
+energy_name = ""
+default_discipline_id = &"warrior_breaker"
 discipline_emblem_texture = ExtResource("2_badge")
 portrait_texture = ExtResource("3_portrait")
 turn_banner_texture = ExtResource("4_banner")
@@ -38,12 +39,12 @@ energy_color = Color(0.84, 0.27, 0.27, 1)
 text_color = Color(0.98, 0.86, 0.75, 1)
 spell_icon_mapping = {
 &"basic_attack": ExtResource("13_attack"),
-&"res://data/spells/Guerrier/bourrade.tres": ExtResource("5_shove"),
-&"res://data/spells/Guerrier/coup_épaule.tres": ExtResource("7_shoulder"),
-&"res://data/spells/Guerrier/crochet.tres": ExtResource("6_hook"),
-&"res://data/spells/Guerrier/execution_de_guerre.tres": ExtResource("10_execution"),
-&"res://data/spells/Guerrier/marque_de_guerre.tres": ExtResource("9_mark"),
-&"res://data/spells/Guerrier/onde_de_choc.tres": ExtResource("8_shockwave"),
-&"res://data/spells/Guerrier/pietinement.tres": ExtResource("11_stomp"),
-&"res://data/spells/Guerrier/sol_corrompu.tres": ExtResource("12_corrupt_ground")
+&"warrior_shove": ExtResource("5_shove"),
+&"warrior_shoulder_charge": ExtResource("7_shoulder"),
+&"warrior_hook": ExtResource("6_hook"),
+&"warrior_execution": ExtResource("10_execution"),
+&"warrior_war_mark": ExtResource("9_mark"),
+&"warrior_shockwave": ExtResource("8_shockwave"),
+&"warrior_stomp": ExtResource("11_stomp"),
+&"warrior_corrupted_ground": ExtResource("12_corrupt_ground")
 }

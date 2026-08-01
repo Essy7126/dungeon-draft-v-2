@@ -386,6 +386,9 @@ func _on_unit_moved(_from: Vector2i, _to: Vector2i) -> void:
 func _on_attack_performed(attacker, _target) -> void:
 	if attacker != unit:
 		return
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("play_basic_attack"):
+		_optional_visual.play_basic_attack()
 	_play_anim("attack")
 
 func _on_any_turn_started(_u) -> void:

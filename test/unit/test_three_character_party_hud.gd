@@ -101,10 +101,11 @@ func test_hud_switches_elf_guardian_warrior_and_back_without_residue() -> void:
 	_assert_old_buttons_detached(guardian_buttons)
 	assert_eq(_base_spell_buttons().size(), warrior.spells.size())
 	assert_eq(_base_spell_ids(), _equipped_spell_ids(warrior))
-	assert_true(_energy_controls_are_visible())
+	assert_false(_energy_controls_are_visible())
 	var expected_warrior_variants := warrior.spells.filter(
 		func(spell): return spell.can_imprint()
 	).size()
+	assert_eq(expected_warrior_variants, 0)
 	assert_eq(_spell_buttons().size(), warrior.spells.size() + expected_warrior_variants)
 	var warrior_buttons := _spell_buttons().duplicate()
 

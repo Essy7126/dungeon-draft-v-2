@@ -33,7 +33,11 @@ const CASES := [
 	{
 		"unit": "res://data/units/alliés/Guerrier.tres",
 		"theme": "res://data/ui/warrior_hud_theme_refined.tres",
-		"branches": {},
+		"branches": {
+			&"warrior_breaker": 4,
+			&"warrior_executioner": 4,
+			&"warrior_ravager": 4,
+		},
 	},
 	{
 		"unit": "res://data/units/alliés/healer.tres",

@@ -274,6 +274,8 @@ theme_override_colors/font_color = Color(0.96, 0.86, 0.67, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxFlat_name")
 text = "Personnage actif"
+text_overrun_behavior = 3
+clip_text = true
 vertical_alignment = 1
 text_overrun_behavior = 3
 

@@ -111,6 +111,7 @@ extends Resource
 
 @export_group("Sorts")
 @export var basic_attack_enabled: bool = true
+@export_range(1, 12, 1) var active_spell_slots: int = 4
 # Liste des sorts (Resources Spell) que cette unité connaît.
 @export var spells: Array[Spell] = []
 # ============================================================

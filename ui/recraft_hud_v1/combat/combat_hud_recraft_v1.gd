@@ -16,17 +16,27 @@ const DEFAULT_LAYOUT: CombatHUDLayoutData = preload("res://data/ui/combat_hud_la
 const SPELLBAR_TEXTURE_RATIO := 3155.0 / 612.0
 const CHARACTER_BAR_TEXTURE_RATIO := 933.0 / 219.0
 const NEUTRAL_NAME_COLOR := Color(0.96, 0.86, 0.67, 1.0)
-const ELF_PANEL_MIN_WIDTH := 920.0
-const ELF_PANEL_MAX_WIDTH := 1200.0
-const ELF_SPELL_VISUAL_SIZE := 100.0
-const ELF_SPELL_ICON_SIZE := 78.0
-const ELF_SPELL_SHORTCUT_HEIGHT := 14.0
-const ELF_SPELL_GAP := 8.0
-const ELF_PORTRAIT_SIZE := 112.0
-const ELF_HEALTH_BAR_SIZE := Vector2(230.0, 26.0)
-const ELF_BADGE_SIZE := 50.0
-const ELF_CHARACTER_WIDTH := 360.0
-const ELF_END_TURN_SIZE := Vector2(170.0, 54.0)
+const ORNATE_PANEL_MIN_WIDTH := 920.0
+const ORNATE_PANEL_MAX_WIDTH := 1200.0
+const ORNATE_SPELL_VISUAL_SIZE := 100.0
+const ORNATE_SPELL_ICON_SIZE := 78.0
+const ORNATE_SPELL_SHORTCUT_HEIGHT := 14.0
+const ORNATE_SPELL_GAP := 8.0
+const ORNATE_PORTRAIT_SIZE := 112.0
+const ORNATE_HEALTH_BAR_SIZE := Vector2(230.0, 26.0)
+const ORNATE_BADGE_SIZE := 50.0
+const ORNATE_CHARACTER_WIDTH := 360.0
+const ORNATE_END_TURN_SIZE := Vector2(170.0, 54.0)
+const SPELL_SHORTCUT_KEYS := [
+	KEY_1,
+	KEY_2,
+	KEY_3,
+	KEY_4,
+	KEY_5,
+	KEY_6,
+	KEY_7,
+	KEY_8,
+]
 
 enum RunUIMode {
 	COMBAT,
@@ -249,8 +259,11 @@ func _connect_context_actions() -> void:
 	_connect_action_to_context(move_pressed, &"_on_move_pressed")
 	_connect_action_to_context(attack_pressed, &"_on_attack_pressed")
 	_connect_action_to_context(spell_pressed, &"_on_spell_pressed")
-	_connect_action_to_context(awakening_pressed, &"_on_awakening_pressed")
-	_connect_action_to_context(reaction_pressed, &"_on_reaction_pressed")
+	# The production Refined HUD is PA/PM-only. Legacy Ornate/Clean screens keep
+	# their historical energy actions and signals unchanged.
+	if skin_variant != HudSkinVariant.REFINED:
+		_connect_action_to_context(awakening_pressed, &"_on_awakening_pressed")
+		_connect_action_to_context(reaction_pressed, &"_on_reaction_pressed")
 	_connect_action_to_context(end_turn_pressed, &"_on_end_turn_pressed")
 
 
@@ -310,6 +323,14 @@ func _add_spell_button(unit, spell, imprinted: bool) -> void:
 		str(_spell_buttons.size() + 1),
 		imprinted
 	)
+	var shortcut_index := _spell_buttons.size()
+	if shortcut_index < SPELL_SHORTCUT_KEYS.size():
+		var shortcut_event := InputEventKey.new()
+		shortcut_event.physical_keycode = SPELL_SHORTCUT_KEYS[shortcut_index]
+		var shortcut := Shortcut.new()
+		shortcut.events = [shortcut_event]
+		button.shortcut = shortcut
+		button.shortcut_in_tooltip = true
 	if _active_character_theme != null:
 		button.set_icon_override(
 			_active_character_theme.get_spell_icon_for(spell)
@@ -665,6 +686,9 @@ func _apply_character_theme(unit) -> void:
 	_map_button.icon = _active_character_theme.utility_map_icon
 	_skills_button.icon = _active_character_theme.utility_skills_icon
 	_utility_dock.visible = refined
+	_inventory_button.visible = refined and not _compact_layout_active()
+	_map_button.visible = refined and not _compact_layout_active()
+	_skills_button.visible = refined
 	_set_refined_depth_visible(refined)
 	_skills_button.disabled = (
 		not refined
@@ -730,6 +754,14 @@ func _refined_skin_active() -> bool:
 		_official_chassis_active()
 		and skin_variant == HudSkinVariant.REFINED
 		and _active_character_theme.refined_components
+	)
+
+
+func _compact_layout_active() -> bool:
+	return (
+		_clean_skin_active()
+		and layout_data != null
+		and layout_data.overall_height <= 118.0
 	)
 
 
@@ -805,7 +837,7 @@ func _chassis_visual_scale(viewport_width: float) -> float:
 func _effective_spell_visual_size(viewport_width: float) -> float:
 	if _official_chassis_active():
 		return roundf(
-			(layout_data.action_slot_size if _clean_skin_active() else ELF_SPELL_VISUAL_SIZE) * _chassis_visual_scale(viewport_width)
+			(layout_data.action_slot_size if _clean_skin_active() else ORNATE_SPELL_VISUAL_SIZE) * _chassis_visual_scale(viewport_width)
 		)
 	return METRICS.scaled(METRICS.SPELL_VISUAL_SIZE, _layout_scale)
 
@@ -813,7 +845,7 @@ func _effective_spell_visual_size(viewport_width: float) -> float:
 func _effective_spell_icon_size(viewport_width: float) -> float:
 	if _official_chassis_active():
 		return roundf(
-			(layout_data.action_icon_size if _clean_skin_active() else ELF_SPELL_ICON_SIZE) * _chassis_visual_scale(viewport_width)
+			(layout_data.action_icon_size if _clean_skin_active() else ORNATE_SPELL_ICON_SIZE) * _chassis_visual_scale(viewport_width)
 		)
 	return METRICS.scaled(METRICS.SPELL_ICON_SIZE, _layout_scale)
 
@@ -821,7 +853,7 @@ func _effective_spell_icon_size(viewport_width: float) -> float:
 func _effective_spell_shortcut_height(viewport_width: float) -> float:
 	if _official_chassis_active():
 		return roundf(
-			(layout_data.shortcut_plate_height if _clean_skin_active() else ELF_SPELL_SHORTCUT_HEIGHT) * _chassis_visual_scale(viewport_width)
+			(layout_data.shortcut_plate_height if _clean_skin_active() else ORNATE_SPELL_SHORTCUT_HEIGHT) * _chassis_visual_scale(viewport_width)
 		)
 	return METRICS.scaled(METRICS.SPELL_SHORTCUT_HEIGHT, _layout_scale)
 
@@ -829,27 +861,27 @@ func _effective_spell_shortcut_height(viewport_width: float) -> float:
 func _effective_spell_gap(viewport_width: float) -> float:
 	if _official_chassis_active():
 		return clampf(
-			roundf((layout_data.action_slot_spacing if _clean_skin_active() else ELF_SPELL_GAP) * _chassis_visual_scale(viewport_width)),
-			6.0,
+			roundf((layout_data.action_slot_spacing if _clean_skin_active() else ORNATE_SPELL_GAP) * _chassis_visual_scale(viewport_width)),
+			4.0 if _compact_layout_active() else 6.0,
 			10.0
 		)
 	return METRICS.scaled(METRICS.SPELL_GAP, _layout_scale)
 
 
 func _effective_portrait_size(viewport_width: float) -> float:
-	return roundf((layout_data.portrait_size if _clean_skin_active() else ELF_PORTRAIT_SIZE) * _chassis_visual_scale(viewport_width))
+	return roundf((layout_data.portrait_size if _clean_skin_active() else ORNATE_PORTRAIT_SIZE) * _chassis_visual_scale(viewport_width))
 
 
 func _effective_health_bar_size(viewport_width: float) -> Vector2:
 	return (
-		(layout_data.health_bar_size if _clean_skin_active() else ELF_HEALTH_BAR_SIZE) * _chassis_visual_scale(viewport_width)
+		(layout_data.health_bar_size if _clean_skin_active() else ORNATE_HEALTH_BAR_SIZE) * _chassis_visual_scale(viewport_width)
 	).round()
 
 
 func _effective_badge_size(viewport_width: float) -> float:
 	return clampf(
-		roundf((layout_data.action_resource_badge_size if _clean_skin_active() else ELF_BADGE_SIZE) * _chassis_visual_scale(viewport_width)),
-		44.0,
+		roundf((layout_data.action_resource_badge_size if _clean_skin_active() else ORNATE_BADGE_SIZE) * _chassis_visual_scale(viewport_width)),
+		32.0 if _compact_layout_active() else 44.0,
 		54.0
 	)
 
@@ -858,13 +890,13 @@ func _effective_end_turn_size(viewport_width: float) -> Vector2:
 	var visual_scale := _chassis_visual_scale(viewport_width)
 	return Vector2(
 		clampf(
-			roundf((layout_data.end_turn_size.x if _clean_skin_active() else ELF_END_TURN_SIZE.x) * visual_scale),
-			150.0,
+			roundf((layout_data.end_turn_size.x if _clean_skin_active() else ORNATE_END_TURN_SIZE.x) * visual_scale),
+			110.0 if _compact_layout_active() else 150.0,
 			205.0 if _clean_skin_active() else 190.0
 		),
 		clampf(
-			roundf((layout_data.end_turn_size.y if _clean_skin_active() else ELF_END_TURN_SIZE.y) * visual_scale),
-			48.0,
+			roundf((layout_data.end_turn_size.y if _clean_skin_active() else ORNATE_END_TURN_SIZE.y) * visual_scale),
+			34.0 if _compact_layout_active() else 48.0,
 			60.0
 		)
 	)
@@ -944,7 +976,7 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 	var panel_width := (
 		minf(layout_data.overall_width * _base_chassis_visual_scale(viewport_width), viewport_width - 24.0)
 		if _clean_skin_active()
-		else clampf(viewport_width * 0.6, ELF_PANEL_MIN_WIDTH, ELF_PANEL_MAX_WIDTH)
+		else clampf(viewport_width * 0.6, ORNATE_PANEL_MIN_WIDTH, ORNATE_PANEL_MAX_WIDTH)
 	)
 	var panel_height := (
 		layout_data.overall_height * _base_chassis_visual_scale(viewport_width)
@@ -985,7 +1017,7 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 	)
 	var ability_width := visual_size + slot_gap + spells_width
 	var character_width := roundf(
-		(layout_data.character_identity_width if _clean_skin_active() else ELF_CHARACTER_WIDTH) * calibration_scale
+		(layout_data.character_identity_width if _clean_skin_active() else ORNATE_CHARACTER_WIDTH) * calibration_scale
 	)
 	var resources_width := roundf((58.0 if _clean_skin_active() else 0.0) * calibration_scale)
 	var move_width := roundf((layout_data.move_action_size.x if _clean_skin_active() else 0.0) * calibration_scale)
@@ -1041,14 +1073,14 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 		)
 	)
 	content_left += ability_width + block_gap
+	var turn_top := content_top
+	var turn_height := content_height
+	if _clean_skin_active() and not _compact_layout_active():
+		turn_top += (23.0 if _refined_skin_active() else 42.0) * calibration_scale
+		turn_height = (158.0 if _refined_skin_active() else 120.0) * calibration_scale
 	_set_control_rect(
 		_turn_anchor,
-		Rect2(
-			content_left,
-			content_top + ((23.0 if _refined_skin_active() else 42.0) * calibration_scale if _clean_skin_active() else 0.0),
-			turn_width,
-			(158.0 if _refined_skin_active() else 120.0) * calibration_scale if _clean_skin_active() else content_height
-		)
+		Rect2(content_left, turn_top, turn_width, turn_height)
 	)
 	_set_control_rect(
 		_basic_attack_host,
@@ -1181,14 +1213,14 @@ func _apply_layout_metrics() -> void:
 		int(roundf((6.0 if _clean_skin_active() else METRICS.CHARACTER_SECTION_GAP) * _layout_scale))
 	)
 	_identity_discipline_label.add_theme_font_size_override(
-		"font_size", 13 if _clean_skin_active() else 12
+		"font_size", 11 if _compact_layout_active() else (13 if _clean_skin_active() else 12)
 	)
 	_info_label.custom_minimum_size.y = METRICS.scaled(
 		METRICS.CHARACTER_NAME_HEIGHT, _layout_scale
 	)
 	_info_label.add_theme_font_size_override(
 		"font_size",
-		20
+		16 if _compact_layout_active() else 20
 		if _clean_skin_active()
 		else METRICS.scaled_font(
 			METRICS.CHARACTER_NAME_FONT_SIZE, _layout_scale
@@ -1221,11 +1253,15 @@ func _apply_layout_metrics() -> void:
 	if _clean_skin_active():
 		_move_btn.apply_layout(
 			Vector2(layout_data.move_action_size.x, layout_data.move_action_size.y) * _chassis_visual_scale(viewport_width),
-			14
+			12 if _compact_layout_active() else 14
 		)
 		_move_btn.set_compact_icon_mode(
 			_refined_skin_active(),
-			clampf(64.0 * _chassis_visual_scale(viewport_width), 54.0, 72.0)
+			clampf(
+				(48.0 if _compact_layout_active() else 64.0) * _chassis_visual_scale(viewport_width),
+				38.0 if _compact_layout_active() else 54.0,
+				54.0 if _compact_layout_active() else 72.0
+			)
 		)
 	if _attack_grouped_with_spells:
 		var attack_visual_size := _effective_spell_visual_size(viewport_width)
@@ -1259,19 +1295,43 @@ func _apply_layout_metrics() -> void:
 	)
 	_end_btn.apply_layout(
 		end_turn_size,
-		19 if _clean_skin_active() else METRICS.scaled_font(METRICS.PRIMARY_BUTTON_FONT_SIZE, _layout_scale)
+		(15 if _compact_layout_active() else 19) if _clean_skin_active() else METRICS.scaled_font(METRICS.PRIMARY_BUTTON_FONT_SIZE, _layout_scale)
 	)
-	var turn_content_height := 118.0 if _refined_skin_active() else 68.0
+	var compact_turn_height := maxf(_character_panel_size.y - 16.0 * _base_chassis_visual_scale(viewport_width), 64.0)
+	var turn_content_height := (
+		compact_turn_height
+		if _compact_layout_active()
+		else (118.0 if _refined_skin_active() else 68.0)
+	)
 	_turn_content.custom_minimum_size = Vector2(
 		end_turn_size.x,
-		METRICS.scaled(turn_content_height, _layout_scale)
+		turn_content_height if _compact_layout_active() else METRICS.scaled(turn_content_height, _layout_scale)
 	)
-	_end_btn.set_anchors_preset(Control.PRESET_CENTER)
-	_end_btn.offset_left = -end_turn_size.x * 0.5
-	var end_turn_y_shift := -13.0 if _refined_skin_active() else 0.0
-	_end_btn.offset_top = -end_turn_size.y * 0.5 + end_turn_y_shift
-	_end_btn.offset_right = end_turn_size.x * 0.5
-	_end_btn.offset_bottom = end_turn_size.y * 0.5 + end_turn_y_shift
+	if _compact_layout_active():
+		var compact_scale := _chassis_visual_scale(viewport_width)
+		var end_top := 11.0 * compact_scale
+		_set_control_rect(
+			_end_btn,
+			Rect2(0.0, end_top, end_turn_size.x, end_turn_size.y)
+		)
+		var utility_size := clampf(28.0 * compact_scale, 22.0, 30.0)
+		_skills_button.custom_minimum_size = Vector2.ONE * utility_size
+		_set_control_rect(
+			_utility_dock,
+			Rect2(
+				(end_turn_size.x - utility_size) * 0.5,
+				turn_content_height - utility_size - 2.0,
+				utility_size,
+				utility_size
+			)
+		)
+	else:
+		_end_btn.set_anchors_preset(Control.PRESET_CENTER)
+		_end_btn.offset_left = -end_turn_size.x * 0.5
+		var end_turn_y_shift := -13.0 if _refined_skin_active() else 0.0
+		_end_btn.offset_top = -end_turn_size.y * 0.5 + end_turn_y_shift
+		_end_btn.offset_right = end_turn_size.x * 0.5
+		_end_btn.offset_bottom = end_turn_size.y * 0.5 + end_turn_y_shift
 	var turn_label_height := METRICS.scaled(12.0, _layout_scale)
 	var turn_label_gap := METRICS.scaled(METRICS.TURN_LABEL_GAP, _layout_scale)
 	_turn_label.add_theme_font_size_override(

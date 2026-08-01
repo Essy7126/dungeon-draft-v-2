@@ -56,6 +56,11 @@ extends Node2D
 ## Une salle peut ainsi choisir une presentation sans dupliquer le combat.
 @export var action_bar_scene: PackedScene = null
 
+## Les panneaux d'inspection et d'historique restent disponibles pour les
+## salles legacy, mais la premiere run de production peut les masquer afin de
+## conserver une vue de combat lisible.
+@export var show_auxiliary_panels := true
+
 # --- Logique ---
 var grid: GridData
 var pathfinder: Pathfinder
@@ -365,6 +370,8 @@ func _setup_ui() -> void:
 	player_combat_log = CanvasLayer.new()
 	player_combat_log.set_script(load("res://ui/player_combat_log.gd"))
 	add_child(player_combat_log)
+	inspect_panel.visible = show_auxiliary_panels
+	player_combat_log.visible = show_auxiliary_panels
 
 	keyword_tooltip_layer = CanvasLayer.new()
 	keyword_tooltip_layer.set_script(load("res://ui/keyword_tooltip_layer.gd"))
@@ -838,7 +845,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = fals
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
 		if view.has_method("prepare_spell_visual"):
-			var visual_ready: bool = await view.prepare_spell_visual(cell)
+			var visual_ready: bool = await view.prepare_spell_visual(cell, spell)
 			if not visual_ready:
 				_spell_resolution_pending = false
 				return

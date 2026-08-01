@@ -60,7 +60,7 @@ func test_three_valid_sources_keep_composition_and_state_order() -> void:
 		[
 			&"elf",
 			StringName(GUARDIAN_PATH),
-			StringName(WARRIOR_PATH),
+			&"warrior",
 		],
 	)
 	for index in range(3):
@@ -113,10 +113,10 @@ func test_invalid_source_preserves_the_existing_party() -> void:
 		assert_same(old_states[index].unit, old_heroes[index])
 
 
-func test_production_loadouts_are_independent_known_and_capped_at_four() -> void:
+func test_production_loadouts_are_independent_and_use_data_driven_slot_counts() -> void:
 	var states := _prepare_party()
 	var expected_known := [4, 5, 8]
-	var expected_equipped := [4, 4, 4]
+	var expected_equipped := [4, 4, 8]
 	for index in range(3):
 		var state: CharacterRunState = states[index]
 		assert_eq(state.loadout.get_known_spells().size(), expected_known[index])
