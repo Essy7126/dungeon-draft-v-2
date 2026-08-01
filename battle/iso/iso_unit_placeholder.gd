@@ -17,6 +17,9 @@ var _legacy_items: Array[CanvasItem] = []
 var _reference_sprite: AnimatedSprite2D = null
 var _reference_visual_bounds := Rect2()
 var _draw_marker := true
+# Faux quand une ombre skewee (IsoGroundShadow) epouse deja la case : on evite
+# alors la double ombre en n'affichant plus l'ellipse plate historique.
+var _draw_flat_shadow := true
 
 
 func setup(p_unit, unit_view: Node2D) -> void:
@@ -24,6 +27,11 @@ func setup(p_unit, unit_view: Node2D) -> void:
 	name = "IsoTemporaryPlaceholder"
 	add_to_group("iso_temporary_placeholders")
 	set_meta("temporary_iso_only", true)
+	# Si une ombre skewee epouse deja la case, on desactive l'ellipse plate.
+	for sibling in unit_view.get_children():
+		if sibling != self and sibling.is_in_group("iso_ground_shadow"):
+			_draw_flat_shadow = false
+			break
 	_draw_marker = not (unit.team != 0 and unit.unit_name == REFERENCE_GOBLIN_NAME)
 	for child in unit_view.get_children():
 		if child == self or not child is CanvasItem:
@@ -130,7 +138,8 @@ func uses_reference_goblin_sprite() -> bool:
 
 
 func _draw() -> void:
-	draw_colored_polygon(_ellipse(Vector2(0.0, 0.5), Vector2(13.0, 4.0)), SHADOW)
+	if _draw_flat_shadow:
+		draw_colored_polygon(_ellipse(Vector2(0.0, 0.5), Vector2(13.0, 4.0)), SHADOW)
 	if not _draw_marker:
 		return
 	var main: Color = HERO_COLOR if unit != null and unit.team == 0 else ENEMY_COLOR

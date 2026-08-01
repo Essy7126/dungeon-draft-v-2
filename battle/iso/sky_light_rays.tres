@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://asset/shaders/environment/rayons_lumiere.gdshader" id="1_rays"]
+
+[resource]
+shader = ExtResource("1_rays")

@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://drk7p27rf2vv3"]
 
-[ext_resource type="Texture2D" uid="uid://d0wyjdyh8nxuj" path="res://asset/Background/terrain caverne v2.png" id="1_caverne"]
+[ext_resource type="Texture2D" uid="uid://ens55jl601d7" path="res://asset/Background/Test montagne.png" id="1_sg31d"]
 
 [node name="CaveRoom01Background" type="Node2D" unique_id=125748510]
 z_index = -100
 
 [node name="CaveSprite" type="Sprite2D" parent="." unique_id=1060879564]
 texture_filter = 2
-position = Vector2(96, 422)
-scale = Vector2(0.975, 0.975)
-texture = ExtResource("1_caverne")
+position = Vector2(85, 411)
+scale = Vector2(0.45, 0.45)
+texture = ExtResource("1_sg31d")
