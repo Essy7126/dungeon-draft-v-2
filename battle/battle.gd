@@ -11,6 +11,8 @@
 
 extends Node2D
 
+const MovementTiming = preload("res://characters/character_movement_timing.gd")
+
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
 
@@ -745,7 +747,12 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		else:
 			view.face_direction(from_pos, target_pos)
 		var tween = create_tween()
-		tween.tween_property(view, "position", target_pos, 0.15)
+		tween.tween_property(
+			view,
+			"position",
+			target_pos,
+			MovementTiming.MOVE_SEGMENT_DURATION
+		)
 		await tween.finished
 		# La vue a pu être libérée pendant l'await.
 		if not is_instance_valid(view):
@@ -793,17 +800,31 @@ func _on_request_attack(cell: Vector2i) -> void:
 	var target = grid.get_unit(cell)
 	if target == null:
 		return
+	var view = _unit_views.get(unit)
+	var has_action_visual := false
+	turn_state.begin_animating()
+	if is_instance_valid(view) and view.has_method("prepare_basic_attack_visual"):
+		var visual_ready: bool = await view.prepare_basic_attack_visual(cell)
+		if not visual_ready:
+			turn_state.end_animating()
+			return
+		has_action_visual = view.has_method("has_optional_visual") \
+			and view.has_optional_visual()
 	if not unit.spend_ap(ap_cost):
+		turn_state.end_animating()
 		return
 	var result = target.take_damage(
 		unit.get_attack(),
 		unit,
 		Spell.DamageType.PHYSICAL,
 		Spell.Element.NONE)
-	turn_state.begin_animating()
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(unit, target)
-	await _animate_attack(unit, target)
+	if has_action_visual and is_instance_valid(view) \
+			and view.has_method("wait_for_action_visual_finished"):
+		await view.wait_for_action_visual_finished()
+	else:
+		await _animate_attack(unit, target)
 	turn_state.end_animating()
 	action_bar.update_info(unit)
 

@@ -54,9 +54,30 @@ func _execute_cast(enemy: Unit, spell: Spell, cell: Vector2i) -> void:
 		return
 	if not _battle.spell_caster.is_valid_target(enemy, spell, cell):
 		return
-	_battle.spell_caster.cast(enemy, spell, cell)
+	var view = _battle._unit_views.get(enemy)
+	var has_action_visual := false
+	if is_instance_valid(view):
+		if view.has_method("prepare_spell_visual"):
+			var visual_ready: bool = await view.prepare_spell_visual(cell, spell)
+			if not visual_ready:
+				return
+			has_action_visual = view.has_method("has_optional_visual") \
+				and view.has_optional_visual()
+		elif view.has_method("face_grid_direction"):
+			view.face_grid_direction(cell - enemy.grid_pos)
+	var context: CastContext = _battle.spell_caster.begin_cast(enemy, spell, cell)
+	if context.failed:
+		return
+	if spell.impact_delay_seconds > 0.0:
+		VFXManager.play_spell_vfx(enemy, spell, cell)
+		await get_tree().create_timer(spell.impact_delay_seconds).timeout
+	_battle.spell_caster.resolve_cast(context)
 	_battle.grid_view.queue_redraw()
-	await get_tree().create_timer(0.3).timeout
+	if has_action_visual and is_instance_valid(view) \
+			and view.has_method("wait_for_action_visual_finished"):
+		await view.wait_for_action_visual_finished()
+	else:
+		await get_tree().create_timer(0.3).timeout
 
 func _execute_move(enemy: Unit, path: Array) -> void:
 	if path.size() < 2:
@@ -75,7 +96,16 @@ func _execute_attack(enemy: Unit, target: Unit) -> void:
 		return
 	if not _battle.grid.are_adjacent(enemy.grid_pos, target.grid_pos):
 		return
-	if not enemy.spend_ap(enemy.get_basic_attack_ap_cost()):
+	var view = _battle._unit_views.get(enemy)
+	var has_action_visual := false
+	if is_instance_valid(view) and view.has_method("prepare_basic_attack_visual"):
+		var visual_ready: bool = await view.prepare_basic_attack_visual(target.grid_pos)
+		if not visual_ready:
+			return
+		has_action_visual = view.has_method("has_optional_visual") \
+			and view.has_optional_visual()
+	if not is_instance_valid(target) or not target.is_alive \
+			or not enemy.spend_ap(enemy.get_basic_attack_ap_cost()):
 		return
 	var result = target.take_damage(
 		enemy.get_attack(),        # dégâts bruts
@@ -84,4 +114,8 @@ func _execute_attack(enemy: Unit, target: Unit) -> void:
 		Spell.Element.NONE)        # pas d'élément
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(enemy, target)
-	await _battle._animate_attack(enemy, target)
+	if has_action_visual and is_instance_valid(view) \
+			and view.has_method("wait_for_action_visual_finished"):
+		await view.wait_for_action_visual_finished()
+	else:
+		await _battle._animate_attack(enemy, target)

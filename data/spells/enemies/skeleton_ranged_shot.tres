@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="PackedScene" path="res://battle/vfx/skeleton_ranged_projectile_vfx.tscn" id="2_vfx"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"skeleton_ranged_shot"
+spell_name = "Tir du squelette"
+description = "Attaque physique a distance simulee. Portee 6, ligne de vue requise."
+vfx_scene = ExtResource("2_vfx")
+impact_delay_seconds = 0.22
+ap_cost = 2
+spell_range = 6
+needs_line_of_sight = true
+can_target_enemy = true
+can_target_ally = false
+can_target_free_cell = false
+can_target_self = false
+aoe_shape = 0
+aoe_size = 1
+damage = 8
+damage_type = 0
+element = 0

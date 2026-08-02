@@ -93,7 +93,7 @@ func test_spell_profile_uses_stable_ids_and_emits_one_release() -> void:
 	var releases := {"count": 0}
 	visual.cast_release_reached.connect(func(): releases.count += 1)
 	assert_true(visual.play_spell_action(parry_spell))
-	await get_tree().create_timer(0.45).timeout
+	await get_tree().create_timer(0.65).timeout
 	assert_eq(releases.count, 1)
 
 
@@ -131,7 +131,7 @@ func test_death_is_locked_emits_once_and_never_returns_to_idle() -> void:
 	visual.death_animation_finished.connect(func(): finished.count += 1)
 	assert_true(visual.play_death())
 	assert_false(visual.play_death())
-	await get_tree().create_timer(1.65).timeout
+	await get_tree().create_timer(2.20).timeout
 	assert_eq(finished.count, 1)
 	assert_true(visual.is_death_locked())
 	assert_ne(visual.get_current_animation(), WarriorVisual3D.ANIM_IDLE)

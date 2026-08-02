@@ -20,6 +20,9 @@ var _pulse_tween: Tween = null
 var _optional_visual: Node2D = null
 var _optional_visual_cast_pending := false
 var _optional_visual_cast_generation := 0
+var _optional_visual_action_pending := false
+var _optional_visual_action_finished := false
+var _suppress_next_attack_event_visual := false
 
 func setup(p_unit: Unit) -> void:
 	unit = p_unit
@@ -48,6 +51,9 @@ func setup(p_unit: Unit) -> void:
 func _exit_tree() -> void:
 	_optional_visual_cast_generation += 1
 	_optional_visual_cast_pending = false
+	_optional_visual_action_pending = false
+	_optional_visual_action_finished = false
+	_suppress_next_attack_event_visual = false
 
 func _build_visual() -> void:
 	_sprite = AnimatedSprite2D.new()
@@ -102,6 +108,8 @@ func _instantiate_optional_visual() -> void:
 		_sprite.visible = false
 	if _optional_visual.has_method("bind_unit"):
 		_optional_visual.bind_unit(unit)
+	if _optional_visual.has_signal("animation_finished"):
+		_optional_visual.animation_finished.connect(_on_optional_visual_action_finished)
 
 func has_optional_visual() -> bool:
 	return is_instance_valid(_optional_visual)
@@ -128,6 +136,8 @@ func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 	if _optional_visual_cast_pending:
 		return false
 	_optional_visual_cast_pending = true
+	_optional_visual_action_pending = true
+	_optional_visual_action_finished = false
 	_optional_visual_cast_generation += 1
 	var cast_generation := _optional_visual_cast_generation
 	var started = (
@@ -137,9 +147,11 @@ func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 	)
 	if started is bool and not started:
 		_optional_visual_cast_pending = false
+		_optional_visual_action_pending = false
 		return false
 	if not _optional_visual.has_signal("cast_release_reached"):
 		_optional_visual_cast_pending = false
+		_optional_visual_action_pending = false
 		return true
 	var release_state := {"released": false}
 	var mark_released := func() -> void:
@@ -162,11 +174,86 @@ func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 			and is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("cancel_spell_action"):
 		_optional_visual.cancel_spell_action()
+	if not release_state["released"]:
+		_optional_visual_action_pending = false
 	if not release_state["released"] and unit.is_alive:
 		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le cast visuel est annule." % unit.unit_name)
 	return cast_generation == _optional_visual_cast_generation \
 		and unit.is_alive \
 		and release_state["released"]
+
+
+## Joue l'attaque jusqu'a son impact artistique. Les degats restent entierement
+## dans le systeme de combat et ne sont appliques qu'apres le retour true.
+func prepare_basic_attack_visual(target_cell: Vector2i) -> bool:
+	face_grid_direction(target_cell - unit.grid_pos)
+	if not is_instance_valid(_optional_visual) \
+			or not _optional_visual.has_method("play_basic_attack"):
+		return true
+	if _optional_visual_cast_pending:
+		return false
+	_optional_visual_cast_pending = true
+	_optional_visual_action_pending = true
+	_optional_visual_action_finished = false
+	_optional_visual_cast_generation += 1
+	var cast_generation := _optional_visual_cast_generation
+	var started = _optional_visual.play_basic_attack()
+	if started is bool and not started:
+		_optional_visual_cast_pending = false
+		_optional_visual_action_pending = false
+		return false
+	if not _optional_visual.has_signal("cast_release_reached"):
+		_optional_visual_cast_pending = false
+		_optional_visual_action_pending = false
+		return true
+	var release_state := {"released": false}
+	var mark_released := func() -> void:
+		if cast_generation == _optional_visual_cast_generation:
+			release_state["released"] = true
+	_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
+	var deadline := Time.get_ticks_msec() + 5000
+	while cast_generation == _optional_visual_cast_generation \
+			and not release_state["released"] \
+			and unit.is_alive \
+			and is_instance_valid(_optional_visual) \
+			and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.is_connected("cast_release_reached", mark_released):
+		_optional_visual.disconnect("cast_release_reached", mark_released)
+	if cast_generation == _optional_visual_cast_generation:
+		_optional_visual_cast_pending = false
+	if not release_state["released"]:
+		_optional_visual_action_pending = false
+	if not release_state["released"] and unit.is_alive:
+		push_warning("UnitView: impact d'attaque absent apres 5 s pour %s." % unit.unit_name)
+	var released: bool = cast_generation == _optional_visual_cast_generation \
+		and unit.is_alive and release_state["released"]
+	if released:
+		_suppress_next_attack_event_visual = true
+	return released
+
+
+## Attend la recuperation de l'Action deja declenchee, sans rejouer d'animation.
+func wait_for_action_visual_finished(timeout_msec: int = 8000) -> void:
+	if not _optional_visual_action_pending:
+		_suppress_next_attack_event_visual = false
+		return
+	var deadline := Time.get_ticks_msec() + maxi(timeout_msec, 1)
+	while not _optional_visual_action_finished \
+			and is_instance_valid(_optional_visual) \
+			and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	if not _optional_visual_action_finished and is_instance_valid(_optional_visual):
+		push_warning("UnitView: recuperation visuelle incomplete pour %s." % unit.unit_name)
+	_optional_visual_action_pending = false
+	_optional_visual_action_finished = false
+	_suppress_next_attack_event_visual = false
+
+
+func _on_optional_visual_action_finished(_animation_name: StringName) -> void:
+	if _optional_visual_action_pending:
+		_optional_visual_action_finished = true
 
 func _make_bar(size: Vector2, pos: Vector2, color: Color) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -386,7 +473,9 @@ func _on_unit_moved(_from: Vector2i, _to: Vector2i) -> void:
 func _on_attack_performed(attacker, _target) -> void:
 	if attacker != unit:
 		return
-	if is_instance_valid(_optional_visual) \
+	if _suppress_next_attack_event_visual:
+		_suppress_next_attack_event_visual = false
+	elif is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("play_basic_attack"):
 		_optional_visual.play_basic_attack()
 	_play_anim("attack")

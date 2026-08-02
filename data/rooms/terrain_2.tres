@@ -4,14 +4,14 @@
 [ext_resource type="Texture2D" uid="uid://dwq3k425mn4d1" path="res://asset/Background/montagne 2.webp" id="1_bg"]
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
-[ext_resource type="Resource" uid="uid://bdp8p8lfj33i" path="res://data/units/ennemie/run_pyromage_gobelin.tres" id="3_pyro"]
-[ext_resource type="Resource" uid="uid://ct4ms7lc6n2bk" path="res://data/units/ennemie/GobTestUnitData.tres" id="4_gob"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="3_melee"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="4_ranged"]
 
 [resource]
 script = ExtResource("2_room")
 room_name = "Terrain 2 - Montagne"
 background_image = ExtResource("1_bg")
 battle_scene = ExtResource("1_battle")
-enemies = Array[ExtResource("1_unit")]([ExtResource("4_gob"), ExtResource("4_gob"), ExtResource("3_pyro"), ExtResource("4_gob")])
+enemies = Array[ExtResource("1_unit")]([ExtResource("3_melee"), ExtResource("3_melee"), ExtResource("4_ranged")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(10, 19), Vector2i(11, 19), Vector2i(7, 15)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(10, 3), Vector2i(11, 2), Vector2i(12, 0), Vector2i(13, 2)])

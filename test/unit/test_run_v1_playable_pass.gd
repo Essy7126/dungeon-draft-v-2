@@ -163,12 +163,12 @@ func test_warrior_uses_four_offensive_profiles_with_calibrated_durations() -> vo
 		assert_gte(visual.get_impact_normalized_for_spell(spell), 0.0)
 		assert_lte(visual.get_impact_normalized_for_spell(spell), 1.0)
 	assert_eq(used_actions.size(), 4)
-	_assert_duration(visual, WarriorVisual3D.ANIM_ATTACK, 0.70, 0.90)
-	_assert_duration(visual, WarriorVisual3D.ANIM_SPIN_ATTACK, 0.85, 1.10)
-	_assert_duration(visual, WarriorVisual3D.ANIM_HEAVY_ATTACK, 0.95, 1.25)
-	_assert_duration(visual, WarriorVisual3D.ANIM_PARRY, 0.50, 0.75)
-	_assert_duration(visual, WarriorVisual3D.ANIM_HIT, 0.35, 0.60)
-	_assert_duration(visual, WarriorVisual3D.ANIM_DEATH, 1.10, 1.60)
+	_assert_duration(visual, WarriorVisual3D.ANIM_ATTACK, 1.15, 1.25)
+	_assert_duration(visual, WarriorVisual3D.ANIM_SPIN_ATTACK, 1.40, 1.50)
+	_assert_duration(visual, WarriorVisual3D.ANIM_HEAVY_ATTACK, 1.60, 1.70)
+	_assert_duration(visual, WarriorVisual3D.ANIM_PARRY, 0.75, 0.85)
+	_assert_duration(visual, WarriorVisual3D.ANIM_HIT, 0.60, 0.70)
+	_assert_duration(visual, WarriorVisual3D.ANIM_DEATH, 1.95, 2.05)
 
 
 func test_compact_hud_fits_eight_slots_at_all_required_resolutions() -> void:

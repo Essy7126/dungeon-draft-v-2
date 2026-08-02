@@ -11,12 +11,15 @@ const ANIM_PARRY: StringName = &"DD_Warrior_Parry"
 const ANIM_HIT: StringName = &"DD_Warrior_Hit"
 const ANIM_DEATH: StringName = &"DD_Warrior_Death"
 
-const ATTACK_SPEED := 7.15
-const SPIN_SPEED := 5.75
-const HEAVY_SPEED := 3.90
-const PARRY_SPEED := 1.0
-const HIT_SPEED := 2.55
-const DEATH_SPEED := 2.05
+# Cadence de presentation visee (les Actions importees restent intactes) :
+# Attack 1.20 s, Spin 1.45 s, Heavy 1.65 s, Parry 0.80 s,
+# Hit 0.65 s et Death 2.00 s.
+const ATTACK_SPEED := 4.944444
+const SPIN_SPEED := 3.908046
+const HEAVY_SPEED := 2.646465
+const PARRY_SPEED := 0.708333
+const HIT_SPEED := 1.897436
+const DEATH_SPEED := 1.483333
 
 # The imported artistic impact frames are retained as normalized positions.
 # Playback speed changes only the presentation duration, never gameplay damage.
@@ -90,7 +93,13 @@ func _init() -> void:
 func play_basic_attack(speed_scale: float = ATTACK_SPEED) -> bool:
 	if is_death_locked():
 		return false
-	return play_animation(ANIM_ATTACK, speed_scale, 0.08)
+	return play_animation_with_release(
+		ANIM_ATTACK,
+		IMPACT_BY_ANIMATION[ANIM_ATTACK],
+		-1.0,
+		speed_scale,
+		0.08
+	)
 
 
 func play_spell_action(spell: Spell = null) -> bool:

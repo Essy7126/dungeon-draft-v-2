@@ -16,6 +16,11 @@ var unit_id: StringName = &""
 var unit_name: String = "Sans nom"
 var team: int = 0
 var ai_behavior: int = 0
+var combat_style: int = 0
+var preferred_range: int = 1
+var minimum_range: int = 1
+var maximum_range: int = 1
+var keep_distance: bool = false
 var boss_behavior = null
 
 # --- Stats max (modifiables) ---
@@ -218,6 +223,11 @@ static func from_data(data: UnitData) -> Unit:
 	u.preview_visual_scene = data.preview_visual_scene
 	u.basic_attack_enabled = data.basic_attack_enabled
 	u.ai_behavior = data.ai_behavior
+	u.combat_style = data.combat_style
+	u.preferred_range = data.preferred_range
+	u.minimum_range = data.minimum_range
+	u.maximum_range = data.maximum_range
+	u.keep_distance = data.keep_distance
 	u.facing_dir = data.facing_dir
 	# Stats dÃ©fensives : on rÃ¨gle la valeur de BASE de chaque Stat.
 	u.armure.base_value = data.armure

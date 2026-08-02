@@ -124,6 +124,11 @@ extends Resource
 # RANGED : garde ses distances, attaque de loin (kiting).
 # HEALER : soigne l'allié le plus blessé, évite le combat.
 @export_enum("Mêlée:0", "Distance:1", "Soigneur:2") var ai_behavior: int = 0
+@export_enum("Melee:0", "Ranged:1") var combat_style: int = 0
+@export_range(1, 20, 1) var preferred_range: int = 1
+@export_range(1, 20, 1) var minimum_range: int = 1
+@export_range(1, 20, 1) var maximum_range: int = 1
+@export var keep_distance: bool = false
 @export_group("Boss")
 # Override IA avance, utilisable sur un boss OU un ennemi normal.
 # Si rempli, il REMPLACE l'ai_behavior standard et peut contenir un etat interne.
