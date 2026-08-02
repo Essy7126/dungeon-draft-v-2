@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/characters/warrior/warrior_salle1_gameplay_integration.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/battle_salle1_iso.tscn" id="2_battle"]
+
+[node name="WarriorSalle1GameplayIntegration" type="Node"]
+script = ExtResource("1_controller")
+
+[node name="Battle" parent="." instance=ExtResource("2_battle")]

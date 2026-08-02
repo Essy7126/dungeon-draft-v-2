@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellModCentralCellDamageBonus" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_central_cell_damage_bonus.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Sol hostile"
+target_spell_id = &"warrior_corrupted_ground"
+bonus_damage = 3

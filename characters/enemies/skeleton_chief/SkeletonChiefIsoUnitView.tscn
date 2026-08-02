@@ -1,0 +1,70 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://characters/enemies/skeleton_chief/skeleton_chief_iso_unit_view.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton_chief/SkeletonChiefVisual3D.tscn" id="2_visual"]
+
+[sub_resource type="Environment" id="Environment_character"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+ambient_light_source = 3
+ambient_light_color = Color(0.78, 0.82, 0.9, 1)
+ambient_light_energy = 0.8
+reflected_light_source = 2
+
+[node name="SkeletonChiefIsoUnitView" type="Node2D"]
+script = ExtResource("1_controller")
+camera_orthographic_size = 2.55
+camera_look_at_height = 0.82
+render_display_scale = 0.1387747
+character_scale = 1.16
+shadow_size = Vector2(34, 10)
+
+[node name="GroundShadow" type="Polygon2D" parent="."]
+color = Color(0.02, 0.025, 0.03, 0.28)
+
+[node name="RenderSprite" type="Sprite2D" parent="."]
+centered = false
+texture_filter = 2
+scale = Vector2(0.1387747, 0.1387747)
+
+[node name="CharacterViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(768, 512)
+render_target_update_mode = 4
+own_world_3d = true
+msaa_3d = 2
+gui_disable_input = true
+scaling_3d_scale = 1.0
+scaling_3d_mode = 0
+use_taa = false
+screen_space_aa = 0
+
+[node name="CharacterWorld" type="Node3D" parent="CharacterViewport"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="CharacterViewport/CharacterWorld"]
+environment = SubResource("Environment_character")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="CharacterViewport/CharacterWorld"]
+rotation_degrees = Vector3(-52, -38, 0)
+light_color = Color(1, 0.95, 0.86, 1)
+light_energy = 1.25
+shadow_enabled = false
+
+[node name="FillLight" type="OmniLight3D" parent="CharacterViewport/CharacterWorld"]
+position = Vector3(-2.5, 3.8, 2.5)
+light_color = Color(0.62, 0.72, 1, 1)
+light_energy = 3.5
+omni_range = 8.0
+shadow_enabled = false
+
+[node name="CharacterCamera" type="Camera3D" parent="CharacterViewport/CharacterWorld"]
+position = Vector3(5, 4.77, 5)
+projection = 1
+current = true
+size = 2.55
+near = 0.05
+far = 50.0
+
+[node name="CharacterPivot" type="Node3D" parent="CharacterViewport/CharacterWorld"]
+
+[node name="SkeletonChiefVisual3D" parent="CharacterViewport/CharacterWorld/CharacterPivot" instance=ExtResource("2_visual")]

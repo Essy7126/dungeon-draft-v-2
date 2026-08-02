@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonMeleeIsoUnitView.tscn" id="2_visual"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"skeleton_melee"
+unit_name = "Squelette de melee"
+description = "Combattant sans equipement visible qui cherche l'adjacence."
+team = 1
+max_hp = 75
+initiative = 5
+max_mp = 2
+attack_power = 16
+armure = 8.0
+visual_scene = ExtResource("2_visual")
+basic_attack_enabled = true
+ai_behavior = 0
+combat_style = 0
+preferred_range = 1
+minimum_range = 1
+maximum_range = 1
+keep_distance = false

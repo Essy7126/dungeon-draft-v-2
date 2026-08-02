@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellModAdditionalPush" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_additional_push.gd" id="1_modifier"]
+
+[resource]
+script = ExtResource("1_modifier")
+modifier_name = "Bourrade motrice"
+target_spell_id = &"warrior_shove"
+push_distance = 1

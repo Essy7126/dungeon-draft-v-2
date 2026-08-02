@@ -6,11 +6,13 @@ const BattleScript = preload("res://battle/battle.gd")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
+const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
 const GUARDIAN_PATH := "res://data/units/alliés/Gardien.tres"
 const RUN_PATH := "res://data/runs/fixed_trio_prototype_run.tres"
-const PARTY := [ELF_PATH, MAGE_PATH, GUARDIAN_PATH]
+const PARTY := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 const EXPECTED_ROOMS := [
 	"res://data/rooms/bible/le_gue.tres",
+	"res://data/rooms/terrain_2.tres",
 	"res://data/rooms/bible/la_forge.tres",
 	"res://data/rooms/bible/elite_brute.tres",
 ]
@@ -50,11 +52,11 @@ func test_run_has_exact_rooms_and_no_progression_or_reward_pool() -> void:
 func test_fixed_composition_order_ids_states_and_loadouts_are_exact() -> void:
 	var states := _prepare()
 	var heroes: Array[Unit] = manager.get_ordered_heroes()
-	assert_eq(heroes.map(func(hero): return hero.unit_name), ["Elfe", "Mage", "Gardien"])
+	assert_eq(heroes.map(func(hero): return hero.unit_name), ["Elfe", "Mage", "Guerrier"])
 	assert_eq(states.map(func(state): return state.character_id), [
 		&"elf",
 		&"mage",
-		StringName(GUARDIAN_PATH),
+		&"warrior",
 	])
 	for index in range(3):
 		assert_same(states[index].unit, heroes[index])
@@ -62,7 +64,8 @@ func test_fixed_composition_order_ids_states_and_loadouts_are_exact() -> void:
 		assert_eq(states[index].loadout.get_equipped_spells(), heroes[index].spells)
 	assert_eq(states[0].loadout.get_equipped_spells().size(), 4)
 	assert_eq(states[1].loadout.get_equipped_spells().size(), 4)
-	assert_eq(states[2].loadout.get_equipped_spells().size(), 4)
+	assert_eq(states[2].loadout.get_equipped_spells().size(), 8)
+	assert_eq((load(WARRIOR_PATH) as UnitData).spells.size(), 8)
 	assert_eq(states[0].get_disciplines().size(), 4)
 	assert_eq(
 		states[1].get_disciplines().map(func(item): return item.discipline_id),
@@ -111,7 +114,7 @@ func test_same_mage_state_unit_hp_loadout_and_visual_persist_between_rooms() -> 
 	assert_same(mage.preview_visual_scene, preview_visual)
 
 
-func test_hud_cycles_elf_mage_guardian_elf_without_buttons_or_state_residue() -> void:
+func test_hud_cycles_elf_mage_warrior_elf_without_buttons_or_state_residue() -> void:
 	_prepare()
 	var heroes: Array[Unit] = manager.get_ordered_heroes()
 	var bar = ActionBarScript.new()
@@ -135,12 +138,13 @@ func test_hud_cycles_elf_mage_guardian_elf_without_buttons_or_state_residue() ->
 	bar.build_spell_buttons(heroes[2])
 	assert_true(mage_buttons.all(func(button): return not is_instance_valid(button)))
 	assert_true(bar.get("_attack_btn").visible)
-	assert_true(bar.get("_fervor_bar").visible)
-	var guardian_buttons: Array = bar.get("_spell_buttons").duplicate()
+	assert_false(bar.get("_fervor_bar").visible)
+	assert_eq(bar.get("_spell_buttons").size(), 8)
+	var warrior_buttons: Array = bar.get("_spell_buttons").duplicate()
 
 	bar.update_info(heroes[0])
 	bar.build_spell_buttons(heroes[0])
-	assert_true(guardian_buttons.all(func(button): return not is_instance_valid(button)))
+	assert_true(warrior_buttons.all(func(button): return not is_instance_valid(button)))
 	assert_true(bar.get("_attack_btn").visible)
 	assert_false(bar.get("_fervor_bar").visible)
 	assert_eq(bar.get("_spell_buttons").size(), 4)
@@ -164,3 +168,18 @@ func test_battle_rejects_hidden_basic_attack_without_mage_special_case() -> void
 		FileAccess.get_file_as_string("res://ui/action_bar.gd").to_lower().contains("\"mage\"")
 	)
 	battle.free()
+
+
+func test_default_trio_is_unique_and_guardian_remains_loadable() -> void:
+	var states := _prepare()
+	assert_eq(states.size(), 3)
+	var ids := states.map(func(state): return state.character_id)
+	assert_eq(ids, [&"elf", &"mage", &"warrior"])
+	var unique_ids := {}
+	for character_id in ids:
+		unique_ids[character_id] = true
+	assert_eq(unique_ids.size(), 3)
+	assert_false(states.any(func(state): return state.character_id == StringName(GUARDIAN_PATH)))
+	var guardian := load(GUARDIAN_PATH) as UnitData
+	assert_not_null(guardian)
+	assert_eq(guardian.unit_name, "Gardien")

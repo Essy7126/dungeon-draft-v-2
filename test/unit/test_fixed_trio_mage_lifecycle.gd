@@ -6,8 +6,8 @@ const MAGE_VISUAL_SCENE := preload("res://characters/mage/MageVisual3D.tscn")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
-const GUARDIAN_PATH := "res://data/units/alliés/Gardien.tres"
-const PARTY := [ELF_PATH, MAGE_PATH, GUARDIAN_PATH]
+const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
+const PARTY := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 
 var manager
 

@@ -1,6 +1,8 @@
 class_name CharacterIsoUnitView
 extends Node2D
 
+const MovementTiming = preload("res://characters/character_movement_timing.gd")
+
 signal animation_started(animation_name: StringName)
 signal animation_finished(animation_name: StringName)
 signal cast_release_reached
@@ -8,7 +10,6 @@ signal hit_reaction_finished
 signal death_animation_finished
 
 const GRID_FOOTPRINT := Vector2(64.0, 32.0)
-const MOVE_SEGMENT_DURATION := 0.15
 
 enum VisualPriority {
 	IDLE,
@@ -344,21 +345,23 @@ func _on_bound_unit_moved(from_cell: Vector2i, to_cell: Vector2i) -> void:
 		else CharacterVisual3D.ACTION_WALK
 	)
 	var source_duration := character_visual.get_animation_length_for_action(action)
-	var playback_speed := _movement_playback_speed(source_duration, distance_cells)
+	var playback_speed := _movement_playback_speed(
+		source_duration,
+		distance_cells,
+		action == CharacterVisual3D.ACTION_RUN
+	)
 	if _debug_run_for_next_movement:
 		play_run(playback_speed)
 	else:
 		play_walk(playback_speed)
 
 
-func _movement_playback_speed(loop_duration: float, distance_cells: int) -> float:
-	if loop_duration <= 0.0:
-		return 1.0
-	var travelled_distance := maxf(float(distance_cells), 1.0) * GRID_FOOTPRINT.length() * 0.5
-	var one_cell_distance := GRID_FOOTPRINT.length() * 0.5
-	var visual_cycles := travelled_distance / one_cell_distance
-	var gameplay_duration := maxf(float(distance_cells), 1.0) * MOVE_SEGMENT_DURATION
-	return loop_duration * visual_cycles / gameplay_duration
+func _movement_playback_speed(
+		loop_duration: float,
+		_distance_cells: int,
+		running: bool = false
+	) -> float:
+	return MovementTiming.playback_speed_for_loop(loop_duration, running)
 
 
 func _on_bound_unit_died(unit: Unit) -> void:
@@ -429,7 +432,12 @@ func _realign_foot_deferred() -> void:
 
 
 func _realign_foot_after_frame() -> void:
-	await get_tree().process_frame
+	if not is_inside_tree():
+		return
+	var tree := get_tree()
+	if tree == null:
+		return
+	await tree.process_frame
 	if not is_inside_tree():
 		return
 	_foot_pixel = camera.unproject_position(character_world.to_global(Vector3.ZERO))

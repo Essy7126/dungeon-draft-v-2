@@ -81,6 +81,8 @@ var _room_outcome_resolved: bool = false
 var _active_progression_screen_ref: WeakRef = null
 var _progression_service := CharacterProgressionService.new()
 var _persistent_run_ui: PersistentRunUI = null
+var _battle_outcome_generation := 0
+var _battle_outcome_pending := false
 
 # Récompenses actuellement proposées (lues par l'écran de récompense).
 var _offered_rewards: Array = []
@@ -187,7 +189,7 @@ func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
 		# Aucun choix d'ecole ou trait de draft n'est applique sur cette voie.
 		hero.reset_combat_resources()
 		var character_state := CharacterRunState.new()
-		if not character_state.initialize(hero, data):
+		if not character_state.initialize(hero, data, data.active_spell_slots):
 			push_error("Impossible d'initialiser l'etat du personnage : %s" % hero.unit_id)
 			_dispose_prepared_characters(prepared_heroes, prepared_states)
 			hero.clear_traits()
@@ -239,6 +241,8 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_offered_rewards = []
 	_awaiting_post_battle_progression = false
 	_room_outcome_resolved = false
+	_battle_outcome_generation += 1
+	_battle_outcome_pending = false
 	_active_progression_screen_ref = null
 	_ensure_persistent_run_ui()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
@@ -324,6 +328,8 @@ func _clear_heroes() -> void:
 
 
 func cleanup_run_state() -> void:
+	_battle_outcome_generation += 1
+	_battle_outcome_pending = false
 	_release_persistent_run_ui()
 	_close_active_progression_screen()
 	_awaiting_post_battle_progression = false
@@ -546,6 +552,40 @@ func get_current_room() -> RoomData:
 # FIN DE COMBAT
 # ============================================================
 
+# Le délai d'écran de victoire appartient au GameManager persistant, jamais à
+# la Battle qui va être retirée de l'arbre. Une génération annule proprement
+# le délai si la run est nettoyée ou remplacée entre-temps.
+func schedule_battle_outcome(victory: bool, delay_seconds: float) -> void:
+	if not run_active or _room_outcome_resolved or _battle_outcome_pending:
+		return
+	_battle_outcome_pending = true
+	_battle_outcome_generation += 1
+	var generation := _battle_outcome_generation
+	_complete_battle_outcome_after_delay(victory, delay_seconds, generation)
+
+
+func _complete_battle_outcome_after_delay(
+	victory: bool,
+	delay_seconds: float,
+	generation: int
+	) -> void:
+	if not is_inside_tree():
+		return
+	var tree := get_tree()
+	if tree == null:
+		return
+	if delay_seconds > 0.0:
+		await tree.create_timer(delay_seconds).timeout
+	if not is_inside_tree() \
+			or generation != _battle_outcome_generation \
+			or not run_active:
+		return
+	_battle_outcome_pending = false
+	if victory:
+		on_battle_won()
+	else:
+		on_battle_lost()
+
 # Appelé par battle quand le joueur GAGNE le combat.
 func on_battle_won() -> void:
 	if not run_active or _room_outcome_resolved:
@@ -654,6 +694,8 @@ func choose_reward(reward: RewardData, chosen_hero: Unit = null) -> void:
 	_go_to_next_room()
 
 func _finish_run(victory: bool) -> void:
+	_battle_outcome_generation += 1
+	_battle_outcome_pending = false
 	run_active = false
 	_offered_rewards = []
 	_awaiting_post_battle_progression = false

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/enemies/skeleton/skeleton_visual_3d.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://assets/enemies/skeleton/skeleton_character_v01.glb" id="2_model"]
+
+[node name="SkeletonVisual3D" type="Node3D"]
+script = ExtResource("1_controller")
+
+[node name="ModelPivot" type="Node3D" parent="."]
+
+[node name="SkeletonModel" parent="ModelPivot" instance=ExtResource("2_model")]

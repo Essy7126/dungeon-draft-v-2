@@ -15,8 +15,6 @@ const BEHAVIOR_HEALER := 2
 
 const HEAL_THRESHOLD := 0.70
 const TARGET_RANDOM_POOL := 3
-const MIN_RANGED_DISTANCE := 3
-
 func _init(grid: GridData, pathfinder: Pathfinder, spell_caster: SpellCaster) -> void:
 	_grid = grid
 	_pathfinder = pathfinder
@@ -74,17 +72,17 @@ func _decide_ranged(enemy: Unit, all_units: Array) -> Array:
 	if target == null:
 		return plan
 
+	var dist := _grid.manhattan(enemy.grid_pos, target.grid_pos)
+	if enemy.keep_distance and dist < enemy.minimum_range:
+		var flee_plan := _decide_flee(enemy, all_units)
+		if not flee_plan.is_empty():
+			return flee_plan
+
 	var spell_action = _try_offensive_spell(enemy, all_units)
 	if not spell_action.is_empty():
 		DebugLogger.info(CAT, "%s -> sort %s sur %s" % [enemy.unit_name, spell_action["spell"].spell_name, str(spell_action["cell"])])
 		plan.append(spell_action)
 		return plan
-
-	var dist := _grid.manhattan(enemy.grid_pos, target.grid_pos)
-	if dist < MIN_RANGED_DISTANCE:
-		var flee_plan := _decide_flee(enemy, all_units)
-		if not flee_plan.is_empty():
-			return flee_plan
 
 	var range := _best_offensive_range(enemy)
 	var firing_cell := _find_best_ranged_cell(enemy, target, range)
@@ -329,16 +327,19 @@ func _best_offensive_range(enemy: Unit) -> int:
 	for spell in enemy.spells:
 		if spell != null and spell.deals_damage() and spell.can_target_enemy:
 			best = maxi(best, spell.spell_range)
+	if enemy.maximum_range > 1:
+		best = mini(best, enemy.maximum_range)
 	return best
 
 func _find_best_ranged_cell(enemy: Unit, target: Unit, max_range: int) -> Vector2i:
 	var reachable = _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
 	var best_cell := Vector2i(-1, -1)
 	var best_score := -999999.0
-	var desired := maxi(MIN_RANGED_DISTANCE, mini(max_range, 5))
+	var minimum := clampi(enemy.minimum_range, 1, max_range)
+	var desired := clampi(enemy.preferred_range, minimum, max_range)
 	for cell in reachable:
 		var dist := _grid.manhattan(cell, target.grid_pos)
-		if dist > max_range or dist < MIN_RANGED_DISTANCE:
+		if dist > max_range or dist < minimum:
 			continue
 		if max_range > 1 and not _pathfinder.has_line_of_sight(cell, target.grid_pos):
 			continue

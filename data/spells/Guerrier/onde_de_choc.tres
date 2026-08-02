@@ -5,9 +5,14 @@
 [resource]
 script = ExtResource("1_spell")
 spell_name = "Onde de choc"
-description = "Payoff placement : repousse tous les ennemis adjacents vers l'exterieur (2 cases, collision) et inflige un souffle qui SCALE avec le nombre d'ennemis entasses autour (5 degats par ennemi present). Recompense d'avoir regroupe avant de detoner.\n\nLecture joueur: Cout 4 PA + 40 Ferveur. Portee 0 (soi). Effets: pousse de 2 cases; collision 8; souffle 5 x (ennemis autour)."
+spell_id = &"warrior_shockwave"
+discipline_id = &"warrior_breaker"
+description = "Repousse de deux cases tous les ennemis adjacents. Les collisions infligent 8 degats et le souffle gagne 5 degats par ennemi adjacent. Cout : 4 PA. Cible : soi."
 ap_cost = 4
-fervor_cost = 40.0
+fervor_cost = 0.0
+energy_generated = 0.0
+charge_verb = ""
+imprint_fervor_cost = 0.0
 spell_range = 0
 can_target_enemy = false
 can_target_self = true

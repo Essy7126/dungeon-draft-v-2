@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="CombatHUDLayoutData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/combat/combat_hud_layout_data.gd" id="1_layout"]
+
+[resource]
+script = ExtResource("1_layout")
+overall_width = 1250.0
+overall_height = 108.0
+hud_scale = 1.0
+character_identity_width = 290.0
+block_separation = 6.0
+plate_opacity = 0.78
+character_accent_intensity = 0.38
+portrait_size = 80.0
+health_bar_size = Vector2(180, 18)
+special_resource_bar_size = Vector2(180, 18)
+action_resource_badge_size = 40.0
+identity_badge_size = 22.0
+move_action_size = Vector2(70, 82)
+contextual_text_size = 12
+action_slot_size = 70.0
+action_icon_size = 54.0
+action_slot_spacing = 5.0
+shortcut_plate_height = 12.0
+slot_desaturation = 0.18
+transition_duration = 0.1
+end_turn_size = Vector2(138, 42)
+turn_banner_size = Vector2(300, 800)
+banner_enter_duration = 0.28
+banner_hold_duration = 1.32
+banner_exit_duration = 0.3
+banner_animation_intensity = 0.65
