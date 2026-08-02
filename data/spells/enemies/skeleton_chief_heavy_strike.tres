@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"skeleton_chief_heavy_strike"
+spell_name = "Frappe lourde du Chef"
+description = "Un coup physique lourd à portée de mêlée, sans effet magique."
+ap_cost = 3
+spell_range = 1
+needs_line_of_sight = false
+can_target_enemy = true
+can_target_ally = false
+can_target_free_cell = false
+can_target_self = false
+aoe_shape = 0
+aoe_size = 1
+damage = 24
+damage_type = 0
+element = 0

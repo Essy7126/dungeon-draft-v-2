@@ -6,14 +6,18 @@ const TRANSITION_PATH := "res://ui/Transitionsalle.tscn"
 const RESULT_PATH := "res://ui/RunResultScreen.tscn"
 const FULL_REPORT_PATH := "C:/Blender_AI_Test/Output/room_transition_full_run_validation.json"
 const ROOM_TWO_REPORT_PATH := "C:/Blender_AI_Test/Output/room_transition_room2_open.json"
+const CINEMATIC_REPORT_PATH := "C:/Blender_AI_Test/Output/skeleton_chief_cinematic_capture.json"
+const CHIEF_ARTIFACT_DIR := "res://artifacts/skeleton_chief"
 const EXPECTED_HERO_IDS := [&"elf", &"mage", &"warrior"]
-const EXPECTED_ENEMY_IDS := [
-	&"skeleton_melee",
-	&"skeleton_melee",
-	&"skeleton_ranged",
-]
+const EXPECTED_ENEMY_IDS_BY_ROOM := {
+	0: [&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged"],
+	1: [&"skeleton_chief", &"skeleton_melee", &"skeleton_ranged"],
+	2: [&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged"],
+	3: [&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged"],
+}
 
 var stop_with_room_two_open := false
+var cinematic_capture := false
 var _handled_scene_id := 0
 var _handled_rooms := {}
 var _pending_old_scene := {}
@@ -140,7 +144,7 @@ func _handle_battle(battle: Node) -> void:
 	var enemy_ids := enemies.map(func(unit): return unit.unit_id)
 	var enemy_ids_sorted := enemy_ids.duplicate()
 	enemy_ids_sorted.sort()
-	var expected_sorted := EXPECTED_ENEMY_IDS.duplicate()
+	var expected_sorted: Array = EXPECTED_ENEMY_IDS_BY_ROOM.get(room_index, []).duplicate()
 	expected_sorted.sort()
 	if hero_ids != EXPECTED_HERO_IDS:
 		_fail("Salle %d: trio inattendu %s." % [room_index + 1, str(hero_ids)])
@@ -182,8 +186,23 @@ func _handle_battle(battle: Node) -> void:
 	if room_index == 1 and stop_with_room_two_open:
 		if room_record.projectiles_on_entry != 0 or room_record.vfx_children_on_entry != 0:
 			_fail("La salle 2 contient encore un projectile ou VFX de la salle 1.")
+		await get_tree().create_timer(1.35).timeout
+		_save_main_capture("room2_chief_melee_ranged.png")
+		_save_main_capture("room2_no_fourth_enemy.png")
 		_finish_room_two_open(battle, room_record)
 		return
+	if cinematic_capture:
+		if room_index == 0:
+			await get_tree().create_timer(0.90).timeout
+		elif room_index == 1:
+			await _capture_skeleton_chief_sequence(battle, enemies)
+		elif room_index == 2:
+			await get_tree().create_timer(1.10).timeout
+			_report["status"] = "CINEMATIC_CAPTURE_COMPLETE"
+			_report["duration_msec"] = Time.get_ticks_msec() - _started_at_msec
+			_write_report(CINEMATIC_REPORT_PATH, _report)
+			_finish_and_quit(0 if _report.errors.is_empty() else 93)
+			return
 
 	if room_index == 0:
 		await _start_active_ranged_visual_and_projectile(battle, enemies, heroes)
@@ -206,6 +225,68 @@ func _handle_battle(battle: Node) -> void:
 	if not battle._battle_over:
 		_fail("Salle %d: la victoire n'a pas marque la Battle terminee." % (room_index + 1))
 	print("ROOM_VALIDATION_VICTORY=", room_index + 1)
+
+
+func _capture_skeleton_chief_sequence(battle: Node, enemies: Array) -> void:
+	var chief: Unit = null
+	for enemy in enemies:
+		if enemy.unit_id == &"skeleton_chief":
+			chief = enemy
+			break
+	if chief == null:
+		_fail("Capture: Chef squelette absent de la salle 2.")
+		return
+	var view = battle._unit_views.get(chief)
+	if not is_instance_valid(view) or not view.has_method("get_optional_visual"):
+		_fail("Capture: UnitView du Chef absent.")
+		return
+	var visual = view.get_optional_visual()
+	if not is_instance_valid(visual):
+		_fail("Capture: SkeletonChiefIsoUnitView absent.")
+		return
+
+	await get_tree().create_timer(0.75).timeout
+	_save_main_capture("room2_chief_melee_ranged.png")
+	_save_main_capture("room2_no_fourth_enemy.png")
+	var start_position: Vector2 = view.position
+	if visual.has_method("set_facing"):
+		visual.set_facing(Vector2i.RIGHT)
+	if visual.has_method("play_walk"):
+		visual.play_walk()
+	var movement: Tween = view.create_tween()
+	movement.tween_property(view, "position", start_position + Vector2(72.0, 34.0), 0.24)
+	await movement.finished
+	await get_tree().create_timer(0.18).timeout
+	view.position = start_position
+
+	if visual.has_method("play_basic_attack"):
+		visual.play_basic_attack()
+	await get_tree().create_timer(0.76).timeout
+	_save_main_capture("skeleton_chief_room2_attack.png")
+	await get_tree().create_timer(0.80).timeout
+	if visual.has_method("play_hit"):
+		visual.play_hit()
+	await get_tree().create_timer(0.35).timeout
+	_save_main_capture("skeleton_chief_room2_hit.png")
+	await get_tree().create_timer(0.55).timeout
+	chief.take_damage(
+		chief.current_hp + 1000,
+		GameManager.heroes[0],
+		Spell.DamageType.PHYSICAL,
+		Spell.Element.NONE
+	)
+	await get_tree().create_timer(1.25).timeout
+	_save_main_capture("skeleton_chief_room2_death.png")
+	await get_tree().create_timer(1.20).timeout
+
+
+func _save_main_capture(filename: String) -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(CHIEF_ARTIFACT_DIR))
+	var image := get_viewport().get_texture().get_image()
+	var path := CHIEF_ARTIFACT_DIR.path_join(filename)
+	var error := image.save_png(path)
+	if error != OK:
+		_fail("Capture impossible %s: %s" % [path, error_string(error)])
 
 
 func _start_active_ranged_visual_and_projectile(

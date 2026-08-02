@@ -213,16 +213,21 @@ func test_ranged_ai_respects_blocked_line_of_sight_without_name_branching() -> v
 	target.clear_traits()
 
 
-func test_every_active_run_room_has_exactly_two_melee_and_one_ranged() -> void:
-	for room_path in ACTIVE_ROOMS:
+func test_active_run_rooms_keep_their_expected_three_enemy_rosters() -> void:
+	for room_index in ACTIVE_ROOMS.size():
+		var room_path: String = ACTIVE_ROOMS[room_index]
 		var room = load(room_path)
 		assert_not_null(room, room_path)
 		assert_eq(room.enemies.size(), 3, room_path)
 		var ids: Array = room.enemies.map(func(data): return data.unit_id)
-		assert_eq(ids.count(&"skeleton_melee"), 2, room_path)
-		assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
-		for id in ids:
-			assert_true(id in [&"skeleton_melee", &"skeleton_ranged"], room_path)
+		if room_index == 1:
+			assert_eq(ids.count(&"skeleton_chief"), 1, room_path)
+			assert_eq(ids.count(&"skeleton_melee"), 1, room_path)
+			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
+		else:
+			assert_eq(ids.count(&"skeleton_chief"), 0, room_path)
+			assert_eq(ids.count(&"skeleton_melee"), 2, room_path)
+			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
 
 
 func test_projectile_is_visual_only_and_cleans_itself() -> void:

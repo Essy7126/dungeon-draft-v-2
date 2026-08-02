@@ -6,12 +6,13 @@
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="3_melee"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="4_ranged"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_chief.tres" id="5_chief"]
 
 [resource]
 script = ExtResource("2_room")
 room_name = "Terrain 2 - Montagne"
 background_image = ExtResource("1_bg")
 battle_scene = ExtResource("1_battle")
-enemies = Array[ExtResource("1_unit")]([ExtResource("3_melee"), ExtResource("3_melee"), ExtResource("4_ranged")])
+enemies = Array[ExtResource("1_unit")]([ExtResource("5_chief"), ExtResource("3_melee"), ExtResource("4_ranged")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(10, 19), Vector2i(11, 19), Vector2i(7, 15)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(10, 3), Vector2i(11, 2), Vector2i(12, 0), Vector2i(13, 2)])
