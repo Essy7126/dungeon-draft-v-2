@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://battle/iso/mountain_pass_battle.gd" id="1"]
+[ext_resource type="Script" path="res://battle/iso/mountain_pass_blockout_view.gd" id="2"]
+[ext_resource type="Resource" path="res://data/maps/mountain_pass_blockout.tres" id="3"]
+
+[node name="MountainPassBlockout" type="Node2D"]
+texture_filter = 2
+script = ExtResource("1")
+grid_cols = 14
+grid_rows = 14
+standalone_preview_without_room = true
+temporary_iso_placeholders = true
+show_auxiliary_panels = false
+blockout_data = ExtResource("3")
+[node name="EnvironmentBack" type="Node2D" parent="."]
+[node name="PlatformCliffs" type="Node2D" parent="."]
+[node name="GroundCells" type="Node2D" parent="."]
+[node name="GroundVariants" type="Node2D" parent="."]
+[node name="IsoGridView" type="Node2D" parent="." groups=["battle_grid_view"]]
+script = ExtResource("2")
+blockout_data = ExtResource("3")
+grid_origin = Vector2(1024, 650)
+preview_scale = 0.75
+axis_x = Vector2(48, 24)
+axis_y = Vector2(-48, 24)
+cliff_depth = 58.0
+obstacle_height = 34.0
+landmark_height = 50.0
+[node name="StaticObstacles" type="Node2D" parent="."]
+[node name="LogicalGridDebug" type="Node2D" parent="."]
+[node name="YSortedWorld" type="Node2D" parent="."]
+y_sort_enabled = true
+[node name="UnitPreviewLayer" type="Node2D" parent="YSortedWorld"]
+y_sort_enabled = true
+[node name="OverlayPreviewLayer" type="Node2D" parent="."]
+z_index = 30
+[node name="EnvironmentFront" type="Node2D" parent="."]
+z_index = 20
+[node name="TerrainEffectLayer" type="Node2D" parent="."]
+z_index = 25
+[node name="ForegroundLayer" type="Node2D" parent="."]
+z_index = 40
+[node name="VFXLayer" type="Node2D" parent="."]
+z_index = 50
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(1024, 1024)

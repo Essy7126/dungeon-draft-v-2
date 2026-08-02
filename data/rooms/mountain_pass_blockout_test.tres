@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MountainPassBlockoutRoomData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/rooms/mountain_pass_blockout_room_data.gd" id="1"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="2"]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/mountain_pass_blockout_battle.tscn" id="3"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="4"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="5"]
+
+[resource]
+script = ExtResource("1")
+room_name = "mountain_pass_blockout_test"
+battle_scene = ExtResource("3")
+enemies = Array[ExtResource("2")]([ExtResource("4"), ExtResource("4"), ExtResource("5")])

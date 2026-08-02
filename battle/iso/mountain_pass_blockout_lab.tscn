@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://battle/iso/mountain_pass_blockout_lab.gd" id="1"]
+[ext_resource type="Script" path="res://battle/iso/mountain_pass_blockout_view.gd" id="2"]
+[ext_resource type="Resource" path="res://data/maps/mountain_pass_blockout.tres" id="3"]
+
+[node name="MountainPassBlockout" type="Node2D"]
+script = ExtResource("1")
+[node name="EnvironmentBack" type="Node2D" parent="."]
+[node name="PlatformCliffs" type="Node2D" parent="."]
+[node name="GroundCells" type="Node2D" parent="."]
+[node name="GroundVariants" type="Node2D" parent="."]
+[node name="IsoGridView" type="Node2D" parent="."]
+script = ExtResource("2")
+blockout_data = ExtResource("3")
+render_mode = 2
+grid_origin = Vector2(1024, 650)
+preview_scale = 0.75
+axis_x = Vector2(48, 24)
+axis_y = Vector2(-48, 24)
+show_calibration_overlay = true
+[node name="StaticObstacles" type="Node2D" parent="."]
+[node name="LogicalGridDebug" type="Node2D" parent="."]
+[node name="UnitPreviewLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+[node name="OverlayPreviewLayer" type="Node2D" parent="."]
+[node name="EnvironmentFront" type="Node2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(1024, 1024)
+[node name="DebugUI" type="CanvasLayer" parent="."]
+[node name="Panel" type="PanelContainer" parent="DebugUI"]
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 670.0
+offset_bottom = 150.0
+[node name="Margin" type="MarginContainer" parent="DebugUI/Panel"]
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+[node name="VBox" type="VBoxContainer" parent="DebugUI/Panel/Margin"]
+[node name="Title" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "MOUNTAIN PASS BLOCKOUT - calibration 2:1"
+[node name="Status" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "Calibration"
+[node name="Help" type="Label" parent="DebugUI/Panel/Margin/VBox"]
+text = "F1 reference/debug | M modes | G overlay calibration"
