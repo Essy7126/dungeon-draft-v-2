@@ -1,0 +1,78 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://hub/hub_archivist.gd" id="1_archivist"]
+[ext_resource type="PackedScene" path="res://imported_models/Lanternbound Archivist/Lanternbound Archivist.glb" id="2_model"]
+[ext_resource type="Resource" path="res://hub/data/lanternbound_archivist.tres" id="3_data"]
+
+[sub_resource type="Environment" id="Environment_archivist"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+ambient_light_source = 3
+ambient_light_color = Color(0.68, 0.73, 0.82, 1)
+ambient_light_energy = 0.72
+reflected_light_source = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape_click"]
+size = Vector2(250, 300)
+
+[node name="HubArchivist" type="Node2D"]
+script = ExtResource("1_archivist")
+data = ExtResource("3_data")
+facing_yaw_degrees = 55.0
+render_display_scale = 0.6
+
+[node name="GroundShadow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-34, 0, -24, -7, 0, -10, 24, -7, 34, 0, 24, 7, 0, 10, -24, 7)
+color = Color(0.02, 0.025, 0.03, 0.34)
+
+[node name="RenderSprite" type="Sprite2D" parent="."]
+centered = false
+texture_filter = 2
+
+[node name="CharacterViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(512, 512)
+render_target_update_mode = 4
+own_world_3d = true
+msaa_3d = 2
+gui_disable_input = true
+
+[node name="CharacterWorld" type="Node3D" parent="CharacterViewport"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="CharacterViewport/CharacterWorld"]
+environment = SubResource("Environment_archivist")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="CharacterViewport/CharacterWorld"]
+rotation_degrees = Vector3(-50, -32, 0)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 1.35
+shadow_enabled = false
+
+[node name="FillLight" type="OmniLight3D" parent="CharacterViewport/CharacterWorld"]
+position = Vector3(-2.2, 3.2, 2.6)
+light_color = Color(0.5, 0.62, 1, 1)
+light_energy = 2.2
+omni_range = 7.0
+shadow_enabled = false
+
+[node name="Camera3D" type="Camera3D" parent="CharacterViewport/CharacterWorld"]
+position = Vector3(3.8, 2.8, 4.6)
+projection = 1
+current = true
+size = 2.45
+near = 0.05
+far = 50.0
+
+[node name="ModelPivot" type="Node3D" parent="CharacterViewport/CharacterWorld"]
+
+[node name="Model" parent="CharacterViewport/CharacterWorld/ModelPivot" instance=ExtResource("2_model")]
+position = Vector3(0, 0.950803, 0)
+
+[node name="ClickArea" type="Area2D" parent="."]
+position = Vector2(14, -145)
+collision_layer = 1
+collision_mask = 0
+input_pickable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClickArea"]
+shape = SubResource("RectangleShape_click")

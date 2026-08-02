@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ui/party/party_presentation_screen.gd" id="1_script"]
 [ext_resource type="Script" path="res://data/unit_data.gd" id="2_unit_type"]
-[ext_resource type="Resource" path="res://data/runs/fixed_trio_prototype_run.tres" id="3_run"]
+[ext_resource type="Resource" path="res://data/runs/first_run.tres" id="3_run"]
 [ext_resource type="Resource" path="res://data/units/alliés/elfe.tres" id="4_elf"]
 [ext_resource type="Resource" path="res://data/units/alliés/mage.tres" id="5_mage"]
 [ext_resource type="Resource" path="res://data/units/alliés/Guerrier.tres" id="6_warrior"]
@@ -68,7 +68,7 @@ horizontal_alignment = 1
 [node name="Subtitle" type="Label" parent="Background/Margin/Layout"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.68, 0.78, 1)
-text = "Trio fixe — prototype"
+text = "Elfe · Mage · Guerrier"
 horizontal_alignment = 1
 
 [node name="Cards" type="HBoxContainer" parent="Background/Margin/Layout"]

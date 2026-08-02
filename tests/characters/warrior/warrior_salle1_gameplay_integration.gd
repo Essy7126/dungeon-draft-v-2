@@ -3,7 +3,7 @@ extends Node
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
 const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
-const ROOM_PATH := "res://data/rooms/bible/le_gue.tres"
+const ROOM_PATH := "res://data/rooms/first_run_room_01.tres"
 const PARTY_SCENE := preload("res://ui/party/PartyPresentationScreen.tscn")
 const SCREENSHOT_DIR := "res://tests/characters/warrior/screenshots"
 const REPORT_PATH := "C:/Blender_AI_Test/Output/godot_warrior_first_playable_integration.json"
@@ -312,8 +312,6 @@ func _review_all_spells() -> Array:
 		_prepare_warrior_and_enemy(spell.is_self_only())
 		_activate_warrior_turn()
 		warrior.current_ap = 100
-		if warrior.energy_type != null:
-			warrior.current_energy = warrior.energy_type.max_energy
 		battle._spell_resolution_pending = false
 		warrior_iso.cancel_spell_action()
 		var target_cell := warrior.grid_pos if spell.is_self_only() else reference_enemy.grid_pos

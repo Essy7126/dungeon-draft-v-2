@@ -5,7 +5,6 @@ extends Resource
 @export var character_id: StringName = &""
 @export var display_name := ""
 @export var discipline_name := ""
-@export var energy_name := ""
 @export var default_discipline_id: StringName = &""
 
 @export_category("Textures")
@@ -26,7 +25,6 @@ extends Resource
 @export_category("Palette")
 @export var primary_color := Color(0.25, 0.5, 0.28)
 @export var secondary_color := Color(0.62, 0.43, 0.2)
-@export var energy_color := Color(0.34, 0.7, 0.3)
 @export var text_color := Color(0.96, 0.92, 0.8)
 
 @export_category("Capabilities")

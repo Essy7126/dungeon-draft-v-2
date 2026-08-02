@@ -4,16 +4,15 @@ const Factory = preload("res://test/support/factory.gd")
 const GameManagerScript = preload("res://core/game_manager.gd")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
-const POISON_PATH := "res://data/status/elf_venomous_blade_poison.tres"
 
 const EAGLE_EYE_ID := &"elf_archer_eagle_eye"
 const REPEL_ARROW_ID := &"elf_archer_repel_arrow"
-const BACKSTAB_ID := &"elf_assassin_backstab"
-const VENOMOUS_BLADE_ID := &"elf_assassin_venomous_blade"
-const ABUNDANT_SAP_ID := &"elf_healer_abundant_sap"
-const PROTECTIVE_BARK_ID := &"elf_healer_protective_bark"
-const INCANDESCENT_ID := &"elf_mage_incandescent_core"
-const EMBERS_ID := &"elf_mage_persistent_embers"
+const BACKSTAB_ID := &"elf_assassin_dans_le_dos"
+const VENOMOUS_BLADE_ID := &"elf_assassin_lame_venimeuse"
+const ABUNDANT_SAP_ID := &"elf_healer_seve_abondante"
+const PROTECTIVE_BARK_ID := &"elf_healer_ecorce_protectrice"
+const INCANDESCENT_ID := &"elf_mage_cur_incandescent"
+const EMBERS_ID := &"elf_mage_braises_persistantes"
 
 const DISCIPLINE_IDS := [&"archer", &"assassin", &"mage", &"healer"]
 const NEW_DISCIPLINE_IDS := [&"archer", &"assassin", &"healer"]
@@ -122,12 +121,8 @@ func test_new_disciplines_reach_rank_two_at_three_xp_once() -> void:
 		assert_eq(progress.rank, 2, str(discipline_id))
 		assert_eq(progress.get_pending_rank_choices(), [2], str(discipline_id))
 		var later_reached_ranks := progress.add_xp(10)
-		if discipline_id == &"archer":
-			assert_eq(later_reached_ranks, [3, 4], str(discipline_id))
-			assert_eq(progress.get_pending_rank_choices(), [2, 3, 4], str(discipline_id))
-		else:
-			assert_true(later_reached_ranks.is_empty(), str(discipline_id))
-			assert_eq(progress.get_pending_rank_choices(), [2], str(discipline_id))
+		assert_eq(later_reached_ranks, [3, 4], str(discipline_id))
+		assert_eq(progress.get_pending_rank_choices(), [2, 3, 4], str(discipline_id))
 
 
 func test_each_new_rank_has_exactly_two_expected_exclusive_choices() -> void:
@@ -136,14 +131,7 @@ func test_each_new_rank_has_exactly_two_expected_exclusive_choices() -> void:
 		var discipline: DisciplineData = elf_data.disciplines[
 			DISCIPLINE_IDS.find(NEW_DISCIPLINE_IDS[index])
 		]
-		var expected_rank_count := (
-			5 if discipline.discipline_id == &"archer" else 2
-		)
-		assert_eq(
-			discipline.ranks.size(),
-			expected_rank_count,
-			str(discipline.discipline_id)
-		)
+		assert_eq(discipline.ranks.size(), 5, str(discipline.discipline_id))
 		assert_eq([discipline.ranks[0].rank, discipline.ranks[0].required_total_xp], [1, 0])
 		assert_eq([discipline.ranks[1].rank, discipline.ranks[1].required_total_xp], [2, 3])
 		assert_eq(
@@ -160,10 +148,10 @@ func test_each_new_rank_has_exactly_two_expected_exclusive_choices() -> void:
 		)
 
 
-func test_mage_rank_two_data_remains_unchanged() -> void:
+func test_mage_rank_two_data_matches_the_preview_migration() -> void:
 	var mage := (load(ELF_PATH) as UnitData).disciplines[2] as DisciplineData
 	assert_eq(mage.discipline_id, &"mage")
-	assert_eq(mage.ranks.size(), 2)
+	assert_eq(mage.ranks.size(), 5)
 	assert_eq([mage.ranks[1].rank, mage.ranks[1].required_total_xp], [2, 3])
 	assert_eq(
 		mage.ranks[1].choices.map(func(upgrade): return upgrade.upgrade_id),
@@ -434,13 +422,12 @@ func test_backstab_does_not_affect_other_spell_or_caster_or_resource() -> void:
 func test_venomous_blade_deals_two_damage_for_exactly_two_turn_starts() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"assassin", VENOMOUS_BLADE_ID)
-	var poison := load(POISON_PATH) as StatusData
 	var result := _make_enemy_cast(
 		state, _elf_spell(1), Vector2i(1, 1), Vector2i(2, 1)
 	)
 	var target: Unit = result["target"]
-	var status := _find_status(target, poison.status_name)
-	assert_same(status.get("data"), poison)
+	var status := _find_status(target, "Poison")
+	assert_not_null(status.get("data"))
 	assert_eq(status.get("remaining"), 2)
 	var after_strike := target.current_hp
 	target.process_statuses()
@@ -449,7 +436,7 @@ func test_venomous_blade_deals_two_damage_for_exactly_two_turn_starts() -> void:
 	target.process_statuses()
 	assert_eq(target.current_hp, after_strike - 4)
 	target.tick_statuses()
-	assert_true(_find_status(target, poison.status_name).is_empty())
+	assert_true(_find_status(target, "Poison").is_empty())
 	target.process_statuses()
 	assert_eq(target.current_hp, after_strike - 4)
 
@@ -457,7 +444,6 @@ func test_venomous_blade_deals_two_damage_for_exactly_two_turn_starts() -> void:
 func test_venomous_blade_reapplication_refreshes_duration_without_stack() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"assassin", VENOMOUS_BLADE_ID)
-	var poison := load(POISON_PATH) as StatusData
 	var result := _make_enemy_cast(
 		state, _elf_spell(1), Vector2i(1, 1), Vector2i(2, 1)
 	)
@@ -465,18 +451,18 @@ func test_venomous_blade_reapplication_refreshes_duration_without_stack() -> voi
 	var target: Unit = result["target"]
 	target.process_statuses()
 	target.tick_statuses()
-	assert_eq(_find_status(target, poison.status_name).get("remaining"), 1)
+	assert_eq(_find_status(target, "Poison").get("remaining"), 1)
 	state.unit.current_ap = state.unit.max_ap.get_int()
 	battlefield.caster.cast(state.unit, _elf_spell(1), target.grid_pos)
 	assert_eq(target.get_active_statuses().size(), 1)
-	assert_eq(_find_status(target, poison.status_name).get("remaining"), 2)
+	assert_eq(_find_status(target, "Poison").get("remaining"), 2)
 	var after_reapplication := target.current_hp
 	target.process_statuses()
 	target.tick_statuses()
 	target.process_statuses()
 	target.tick_statuses()
 	assert_eq(target.current_hp, after_reapplication - 4)
-	assert_true(_find_status(target, poison.status_name).is_empty())
+	assert_true(_find_status(target, "Poison").is_empty())
 	target.process_statuses()
 	assert_eq(target.current_hp, after_reapplication - 4)
 
@@ -516,19 +502,19 @@ func test_venomous_blade_does_not_leak_to_another_caster() -> void:
 	assert_true(target.get_active_statuses().is_empty())
 
 
-func test_venomous_blade_never_mutates_status_resource_runtime_duration() -> void:
+func test_venomous_blade_never_mutates_its_data_driven_modifier() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"assassin", VENOMOUS_BLADE_ID)
-	var poison := load(POISON_PATH) as StatusData
-	var original_duration := poison.duration
-	var original_damage := poison.damage_per_turn
+	var modifier := state.unit.get_progression_spell_modifiers()[0] as SpellModSkillTreeEffect
+	var original_duration := modifier.duration
+	var original_damage := modifier.amount
 	var result := _make_enemy_cast(
 		state, _elf_spell(1), Vector2i(1, 1), Vector2i(2, 1)
 	)
 	result["target"].process_statuses()
 	result["target"].tick_statuses()
-	assert_eq(poison.duration, original_duration)
-	assert_eq(poison.damage_per_turn, original_damage)
+	assert_eq(modifier.duration, original_duration)
+	assert_eq(modifier.amount, original_damage)
 
 
 func test_abundant_sap_adds_three_healing_and_reports_real_amount() -> void:

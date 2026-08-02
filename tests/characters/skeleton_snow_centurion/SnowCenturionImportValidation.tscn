@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/characters/skeleton_snow_centurion/snow_centurion_import_validation.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/enemies/skeleton_snow_centurion/skeleton_snow_centurion_character_v01.glb" id="2_model"]
+
+[node name="SnowCenturionImportValidation" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="SnowCenturionModel" parent="." instance=ExtResource("2_model")]

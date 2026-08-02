@@ -56,7 +56,6 @@ func _apply_secondary_damage(
 		{
 			"ignore_defense": true,
 			"cannot_be_dodged": true,
-			"disable_fervor_reaction": true,
 		}
 	)
 	if result == null:

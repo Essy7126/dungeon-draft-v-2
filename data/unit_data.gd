@@ -33,8 +33,8 @@ extends Resource
 @export var max_ap: int = 6
 @export var max_mp: int = 3
 @export var attack_power: int = 20
-# Force : colonne de Rage (placement). Scale distance de poussee, degats de
-# collision/hasard et energie gagnee sur deplacement. 0 = pas d'ecole placement.
+# Force reste une statistique de placement : elle module les poussees,
+# attractions et collisions. Elle n'est rattachee a aucune ressource speciale.
 @export var force: float = 0.0
 # Direction logique initiale (facing) au spawn. Sert aux mecaniques directionnelles
 # (ex: boss qui durcit de face). Ecrasee des le premier deplacement reel de l'unite.
@@ -66,19 +66,6 @@ extends Resource
 @export_range(0.0, 1.0) var crit_chance: float = 0.0
 # Multiplicateur de dégâts en cas de critique.
 @export var crit_multi: float = 1.5
-
-# ============================================================
-# ÉNERGIE (économie d'action — remplace les PA)
-# ============================================================
-
-@export_group("Énergie")
-# Le type d'énergie de cette unité (Rage, Foi, Ombre, Nature). Glisse ici un
-# EnergyTypeData. Laisser VIDE = unité sans énergie (ennemi simple par ex.).
-@export var energy_type: EnergyTypeData = null
-
-@export_group("Traits")
-@export var chassis_trait: TraitData = null
-@export var starting_traits: Array[TraitData] = []
 
 # ============================================================
 # APPARENCE
@@ -129,10 +116,6 @@ extends Resource
 @export_range(1, 20, 1) var minimum_range: int = 1
 @export_range(1, 20, 1) var maximum_range: int = 1
 @export var keep_distance: bool = false
-@export_group("Boss")
-# Override IA avance, utilisable sur un boss OU un ennemi normal.
-# Si rempli, il REMPLACE l'ai_behavior standard et peut contenir un etat interne.
-@export var boss_behavior: BossBehavior = null
 
 
 func get_effective_unit_id() -> StringName:

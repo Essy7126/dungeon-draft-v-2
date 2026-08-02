@@ -13,22 +13,23 @@ enum State {
 	TARGET_SPELL,   # ciblage d'un sort
 	ENEMY_TURN,
 	ANIMATING,
+	SKILL_EVOLUTION_PENDING,
+	SKILL_EVOLUTION_UI,
 }
 
 var current: State = State.IDLE
 
 # Le sort en cours de ciblage (null si aucun).
 var selected_spell: Spell = null
-var selected_spell_imprinted: bool = false
 
 # Signaux d'intention vers Battle.
 signal request_show_move_range
 signal request_show_attack_range
-signal request_show_spell_range(spell, imprinted)
+signal request_show_spell_range(spell)
 signal request_clear_highlights
 signal request_move_to(cell)
 signal request_attack(cell)
-signal request_cast_spell(spell, cell, imprinted)
+signal request_cast_spell(spell, cell)
 
 func set_state(new_state: State) -> void:
 	current = new_state
@@ -38,17 +39,19 @@ func _on_enter_state(state: State) -> void:
 	match state:
 		State.IDLE:
 			selected_spell = null
-			selected_spell_imprinted = false
 			request_clear_highlights.emit()
 		State.MOVE:
 			request_show_move_range.emit()
 		State.TARGET_MELEE:
 			request_show_attack_range.emit()
 		State.TARGET_SPELL:
-			request_show_spell_range.emit(selected_spell, selected_spell_imprinted)
+			request_show_spell_range.emit(selected_spell)
 		State.ENEMY_TURN:
 			request_clear_highlights.emit()
 		State.ANIMATING:
+			request_clear_highlights.emit()
+		State.SKILL_EVOLUTION_PENDING, State.SKILL_EVOLUTION_UI:
+			selected_spell = null
 			request_clear_highlights.emit()
 
 # ============================================================
@@ -56,39 +59,48 @@ func _on_enter_state(state: State) -> void:
 # ============================================================
 
 func on_move_button() -> void:
+	if is_skill_evolution_locked():
+		return
 	if current == State.MOVE:
 		set_state(State.IDLE)
 	else:
 		set_state(State.MOVE)
 
 func on_attack_button() -> void:
+	if is_skill_evolution_locked():
+		return
 	if current == State.TARGET_MELEE:
 		set_state(State.IDLE)
 	else:
 		set_state(State.TARGET_MELEE)
 
 # Le joueur a sélectionné un sort dans la barre.
-func on_spell_selected(spell: Spell, imprinted: bool = false) -> void:
+func on_spell_selected(spell: Spell) -> void:
+	if is_skill_evolution_locked():
+		return
 	# Si on reclique le même sort déjà sélectionné, on annule.
-	if current == State.TARGET_SPELL and selected_spell == spell and selected_spell_imprinted == imprinted:
+	if current == State.TARGET_SPELL and selected_spell == spell:
 		set_state(State.IDLE)
 	else:
 		selected_spell = spell
-		selected_spell_imprinted = imprinted
 		set_state(State.TARGET_SPELL)
 
 func on_cell_clicked(cell: Vector2i) -> void:
+	if is_skill_evolution_locked():
+		return
 	match current:
 		State.MOVE:
 			request_move_to.emit(cell)
 		State.TARGET_MELEE:
 			request_attack.emit(cell)
 		State.TARGET_SPELL:
-			request_cast_spell.emit(selected_spell, cell, selected_spell_imprinted)
+			request_cast_spell.emit(selected_spell, cell)
 		_:
 			pass
 
 func on_cancel() -> void:
+	if is_skill_evolution_locked():
+		return
 	if current in [State.MOVE, State.TARGET_MELEE, State.TARGET_SPELL]:
 		set_state(State.IDLE)
 
@@ -107,3 +119,18 @@ func begin_enemy_turn() -> void:
 
 func begin_player_turn() -> void:
 	set_state(State.IDLE)
+
+
+func begin_skill_evolution_pending() -> void:
+	set_state(State.SKILL_EVOLUTION_PENDING)
+
+
+func begin_skill_evolution_ui() -> void:
+	set_state(State.SKILL_EVOLUTION_UI)
+
+
+func is_skill_evolution_locked() -> bool:
+	return current in [
+		State.SKILL_EVOLUTION_PENDING,
+		State.SKILL_EVOLUTION_UI,
+	]

@@ -118,17 +118,11 @@ func test_pending_choices_follow_hero_then_discipline_then_rank_order() -> void:
 	assert_eq(pending.map(func(choice): return choice["rank"]), [2, 2, 2, 2])
 
 
-func test_one_screen_replaces_character_data_and_applies_each_choice_to_its_owner() -> void:
+func test_legacy_screen_api_keeps_owner_order_without_post_combat_routing() -> void:
 	var states := _prepare_pending_party()
 	manager.current_room_index = 0
 	var requested_scenes: Array[String] = []
 	manager.scene_change_requested.connect(func(path): requested_scenes.append(path))
-	manager.on_battle_won()
-	assert_eq(
-		requested_scenes,
-		[GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH],
-	)
-
 	var screen = _open_screen()
 	assert_same(manager.get_active_progression_screen(), screen)
 	var duplicate = _open_screen()
@@ -162,16 +156,25 @@ func test_one_screen_replaces_character_data_and_applies_each_choice_to_its_owne
 			assert_true(later_progress.get_selected_upgrade_ids().is_empty())
 		if index < expected.size() - 1:
 			assert_same(manager.get_active_progression_screen(), screen)
-			assert_eq(requested_scenes.size(), 1)
+			assert_eq(requested_scenes.size(), 0)
 
 	assert_true(screen.is_closed_for_progression())
 	assert_false(manager.has_active_progression_screen())
 	assert_false(manager._awaiting_post_battle_progression)
+	manager.on_battle_won()
+	assert_eq(requested_scenes, [GameManagerScript.POST_COMBAT_SCREEN_PATH])
+	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
+	assert_true(manager.confirm_post_combat_reward(
+		reward["reward_id"], reward["target_character_id"]
+	)["success"])
+	assert_true(manager.complete_post_combat_transition(
+		manager.get_current_combat_report().report_id
+	))
 	assert_eq(manager.current_room_index, 1)
 	assert_eq(
 		requested_scenes,
 		[
-			GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH,
+			GameManagerScript.POST_COMBAT_SCREEN_PATH,
 			GameManagerScript.ROOM_TRANSITION_SCREEN_PATH,
 		],
 	)

@@ -39,42 +39,6 @@ const RANK_TWO_MIGRATION := [
 		PRECISE_SHOT_ID,
 		"res://data/characters/elf/modifiers/repel_arrow.tres",
 	],
-	[
-		"res://data/characters/elf/upgrades/backstab.tres",
-		&"elf_assassin_backstab",
-		&"elf_sneak_strike",
-		"res://data/characters/elf/modifiers/backstab.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/venomous_blade.tres",
-		&"elf_assassin_venomous_blade",
-		&"elf_sneak_strike",
-		"res://data/characters/elf/modifiers/venomous_blade.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/incandescent_core.tres",
-		&"elf_mage_incandescent_core",
-		&"elf_fireball",
-		"res://data/characters/elf/modifiers/incandescent_core.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/persistent_embers.tres",
-		&"elf_mage_persistent_embers",
-		&"elf_fireball",
-		"res://data/characters/elf/modifiers/persistent_embers.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/abundant_sap.tres",
-		&"elf_healer_abundant_sap",
-		&"elf_sylvan_heal",
-		"res://data/characters/elf/modifiers/abundant_sap.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/protective_bark.tres",
-		&"elf_healer_protective_bark",
-		&"elf_sylvan_heal",
-		"res://data/characters/elf/modifiers/protective_bark.tres",
-	],
 ]
 
 const RANK_THREE_BY_BRANCH := {
@@ -232,7 +196,7 @@ func _count_status(unit: Unit, status_name: String) -> int:
 	return count
 
 
-func test_all_eight_rank_two_upgrades_migrate_without_contract_loss() -> void:
+func test_archer_rank_two_resources_keep_their_contract() -> void:
 	for contract in RANK_TWO_MIGRATION:
 		var node := load(contract[0]) as SkillUpgradeData
 		assert_not_null(node, contract[0])
@@ -360,7 +324,6 @@ func test_archer_tree_has_exactly_sixteen_final_configurations() -> void:
 
 func test_eighteen_successful_precise_shots_grant_exact_xp_and_queue_all_ranks() -> void:
 	var state := _prepare_manager_state()
-	assert_false(state.unit.has_energy())
 	var battle := _make_battle(
 		state,
 		Vector2i(0, 1),
@@ -663,7 +626,6 @@ func test_archer_choices_and_modifiers_persist_then_reset_on_new_run() -> void:
 		ARCHER_ID
 	).get_selected_upgrade_ids()
 	var modifier_count := state.unit.get_progression_spell_modifiers().size()
-	assert_false(state.unit.has_energy())
 	manager.current_room_index = 0
 	manager._go_to_next_room()
 	assert_same(manager.get_character_state(&"elf"), state)
@@ -689,4 +651,3 @@ func test_archer_choices_and_modifiers_persist_then_reset_on_new_run() -> void:
 		).get_selected_upgrade_ids().is_empty()
 	)
 	assert_true(fresh.unit.get_progression_spell_modifiers().is_empty())
-	assert_false(fresh.unit.has_energy())

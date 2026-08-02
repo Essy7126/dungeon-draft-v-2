@@ -6,12 +6,10 @@
 # unit_view.gd ont été migrés ici — un seul système, pas deux.)
 #
 # Signal → texte :
-#   fervor_gained            → « +12 » couleur d'école + verbe source dessous
-#   damage_dealt             → « -15 » blanc (crit : rouge-orangé, plus gros)
+#   health_damage_taken      → « -15 » blanc (crit : rouge-orangé, plus gros)
 #   unit_healed              → « +10 » vert clair
 #   shield_gained            → « +20 » bleu-gris
 #   attack_dodged            → « Esquive »
-#   fervor_threshold_changed → nom du seuil (« Berserker ») couleur d'école
 #
 # Anti-chevauchement : les textes nés sur la même unité dans la même
 # seconde s'empilent verticalement (STACK_STEP px) au lieu de se superposer.
@@ -32,16 +30,8 @@ const COLOR_DAMAGE := Color(0.96, 0.96, 0.96)
 const COLOR_CRIT := Color(1.0, 0.42, 0.18)
 const COLOR_HEAL := Color(0.55, 1.0, 0.62)
 const COLOR_SHIELD := Color(0.62, 0.72, 0.86)
-const COLOR_FALLBACK_ENERGY := Color(0.86, 0.74, 1.0)
 
 # Verbe de gain_table → étiquette lisible par le joueur.
-const VERB_LABELS := {
-	"HIT": "frappe",
-	"PROTECT": "protection",
-	"HEAL": "soin",
-	"EXPLOIT": "opportunité",
-	"TAKE_DAMAGE": "endurance",
-}
 
 var _pool: Array = []
 # unit → { "until": float (ticks ms), "count": int } pour l'empilement.
@@ -52,12 +42,10 @@ func _ready() -> void:
 	# Les vues d'unités vivent dans GridView, ajouté au root APRÈS nous :
 	# on force le dessus de la pile de dessin.
 	z_index = 100
-	EventBus.fervor_gained.connect(_on_fervor_gained)
-	EventBus.damage_dealt.connect(_on_damage_dealt)
+	EventBus.health_damage_taken.connect(_on_health_damage_taken)
 	EventBus.unit_healed.connect(_on_unit_healed)
 	EventBus.shield_gained.connect(_on_shield_gained)
 	EventBus.attack_dodged.connect(_on_attack_dodged)
-	EventBus.fervor_threshold_changed.connect(_on_threshold_changed)
 	EventBus.battle_view_ready.connect(_register_battle_view)
 
 func _register_battle_view(view: Node) -> void:
@@ -65,13 +53,7 @@ func _register_battle_view(view: Node) -> void:
 
 # --- Handlers EventBus ---
 
-func _on_fervor_gained(unit, _energy_id: String, amount: float, source: String) -> void:
-	if unit == null or amount <= 0.0:
-		return
-	var color: Color = unit.energy_type.get_school_color() if unit.has_energy() else COLOR_FALLBACK_ENERGY
-	_spawn(unit, "+%d" % int(round(amount)), color, VERB_LABELS.get(source, ""))
-
-func _on_damage_dealt(target, _attacker, amount: int, _category: int, _element: int, is_crit: bool) -> void:
+func _on_health_damage_taken(target, _attacker, amount: int, _category: int, _element: int, is_crit: bool) -> void:
 	if target == null or amount <= 0:
 		return
 	if is_crit:
@@ -93,11 +75,6 @@ func _on_attack_dodged(target, _attacker) -> void:
 	if target == null:
 		return
 	_spawn(target, "Esquive", Color(0.85, 0.85, 0.7), "", 12)
-
-func _on_threshold_changed(unit, active: bool) -> void:
-	if unit == null or not active or not unit.has_energy():
-		return
-	_spawn(unit, unit.energy_type.threshold_name, unit.energy_type.get_school_color(), "", 16)
 
 # --- Mécanique ---
 

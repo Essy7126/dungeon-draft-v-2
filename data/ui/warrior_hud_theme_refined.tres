@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterHUDThemeData" format=3 uid="uid://dk6vwygt78xrc"]
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" format=3 uid="uid://ylu122sl1k47"]
 
 [ext_resource type="Script" uid="uid://b56xspqybs0nk" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="3_portrait"]
@@ -21,7 +21,7 @@
 script = ExtResource("1_theme")
 character_id = &"warrior"
 display_name = "Guerrier"
-discipline_name = "Briseur"
+discipline_name = "Brutalité"
 default_discipline_id = &"warrior_breaker"
 discipline_emblem_texture = ExtResource("13_attack")
 portrait_texture = ExtResource("3_portrait")
@@ -33,16 +33,11 @@ utility_skills_icon = ExtResource("16_skills")
 refined_components = true
 primary_color = Color(0.4, 0.12, 0.08, 1)
 secondary_color = Color(0.65, 0.28, 0.15, 1)
-energy_color = Color(0.84, 0.27, 0.27, 1)
 text_color = Color(0.98, 0.86, 0.75, 1)
 spell_icon_mapping = {
 &"basic_attack": ExtResource("13_attack"),
-&"warrior_corrupted_ground": ExtResource("12_corrupt_ground"),
-&"warrior_execution": ExtResource("10_execution"),
-&"warrior_hook": ExtResource("6_hook"),
-&"warrior_shockwave": ExtResource("8_shockwave"),
-&"warrior_shoulder_charge": ExtResource("7_shoulder"),
-&"warrior_shove": ExtResource("5_shove"),
-&"warrior_stomp": ExtResource("11_stomp"),
-&"warrior_war_mark": ExtResource("9_mark")
+&"warrior_heavy_strike": ExtResource("10_execution"),
+&"warrior_charge": ExtResource("7_shoulder"),
+&"warrior_whirlwind": ExtResource("11_stomp"),
+&"warrior_guard": ExtResource("5_shove")
 }

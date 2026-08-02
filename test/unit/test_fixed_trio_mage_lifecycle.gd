@@ -55,13 +55,11 @@ func test_cleanup_removes_all_three_states_and_pending_continuations() -> void:
 	var loadouts := states.map(func(state): return state.loadout)
 	manager._awaiting_post_battle_progression = true
 	manager._room_outcome_resolved = true
-	manager._offered_rewards = [RewardData.new()]
 	manager.cleanup_run_state()
 	assert_true(manager.heroes.is_empty())
 	assert_true(manager.character_states.is_empty())
 	assert_false(manager._awaiting_post_battle_progression)
 	assert_false(manager._room_outcome_resolved)
-	assert_true(manager._offered_rewards.is_empty())
 	for index in range(3):
 		assert_null(states[index].unit)
 		assert_null(states[index].loadout)
@@ -87,7 +85,6 @@ func test_freeing_mage_iso_disconnects_unit_and_event_bus_signals() -> void:
 	assert_false(mage.moved.is_connected(moved_callback))
 	assert_false(mage.died.is_connected(died_callback))
 	assert_false(EventBus.damage_dealt.is_connected(damage_callback))
-	mage.clear_traits()
 
 
 func test_freed_mage_visual_cannot_emit_a_late_release() -> void:

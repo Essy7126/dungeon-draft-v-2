@@ -1,0 +1,417 @@
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_eul1k"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_gpem8"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_s7ts0"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_q3v26"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_2v242"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_0pbc6"]
+
+[sub_resource type="Resource" id="Resource_nsqgc"]
+script = ExtResource("1_eul1k")
+
+[sub_resource type="Resource" id="Resource_ix67p"]
+script = ExtResource("5_2v242")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Bouclier renforcé"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_icfwp"]
+script = ExtResource("3_s7ts0")
+excluded_node_ids = Array[StringName]([&"warrior_bulwark_garde_mobile"])
+upgrade_id = &"warrior_bulwark_bouclier_renforce"
+display_name = "Bouclier renforcé"
+description = "+3 points de bouclier."
+discipline_id = &"warrior_bulwark"
+rank = 2
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_ix67p")])
+
+[sub_resource type="Resource" id="Resource_p2cdp"]
+script = ExtResource("5_2v242")
+effect_type = 10
+target_scope = 1
+amount = 1
+modifier_name = "Garde mobile"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_p2pxe"]
+script = ExtResource("3_s7ts0")
+excluded_node_ids = Array[StringName]([&"warrior_bulwark_bouclier_renforce"])
+upgrade_id = &"warrior_bulwark_garde_mobile"
+display_name = "Garde mobile"
+description = "La cible gagne 1 PM pendant son prochain tour."
+discipline_id = &"warrior_bulwark"
+rank = 2
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_p2cdp")])
+
+[sub_resource type="Resource" id="Resource_vwdl6"]
+script = ExtResource("1_eul1k")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_gpem8")]([SubResource("Resource_icfwp"), SubResource("Resource_p2pxe")])
+
+[sub_resource type="Resource" id="Resource_btqmc"]
+script = ExtResource("5_2v242")
+effect_type = 8
+target_scope = 1
+amount = 4
+modifier_name = "Bastion"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_0tswo"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_bouclier_renforce"])
+upgrade_id = &"warrior_bulwark_bastion"
+display_name = "Bastion"
+description = "Ajoute 4 boucliers supplémentaires."
+discipline_id = &"warrior_bulwark"
+rank = 3
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_btqmc")])
+
+[sub_resource type="Resource" id="Resource_8c44j"]
+script = ExtResource("5_2v242")
+effect_type = 9
+target_scope = 1
+amount = 3
+modifier_name = "Protection partagée"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_tgf1f"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_bouclier_renforce"])
+upgrade_id = &"warrior_bulwark_protection_partagee"
+display_name = "Protection partagée"
+description = "Le Guerrier reçoit 3 boucliers lorsqu’il protège un allié."
+discipline_id = &"warrior_bulwark"
+rank = 3
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_8c44j")])
+
+[sub_resource type="Resource" id="Resource_by465"]
+script = ExtResource("5_2v242")
+effect_type = 28
+target_scope = 1
+amount = 2
+status_group = &"warrior_bulwark_attack_order"
+status_name = "Ordre d'assaut"
+modifier_name = "Ordre d’assaut"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_onvh2"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_garde_mobile"])
+upgrade_id = &"warrior_bulwark_ordre_dassaut"
+display_name = "Ordre d’assaut"
+description = "La prochaine attaque de la cible inflige +2 dégâts."
+discipline_id = &"warrior_bulwark"
+rank = 3
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_by465")])
+
+[sub_resource type="Resource" id="Resource_i0dge"]
+script = ExtResource("5_2v242")
+effect_type = 24
+target_scope = 1
+amount = 1
+modifier_name = "Purification martiale"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_0wqcn"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_garde_mobile"])
+upgrade_id = &"warrior_bulwark_purification_martiale"
+display_name = "Purification martiale"
+description = "Retire un Poison, Saignement, Brûlure ou ralentissement."
+discipline_id = &"warrior_bulwark"
+rank = 3
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_i0dge")])
+
+[sub_resource type="Resource" id="Resource_ybnk2"]
+script = ExtResource("1_eul1k")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_gpem8")]([SubResource("Resource_0tswo"), SubResource("Resource_tgf1f"), SubResource("Resource_onvh2"), SubResource("Resource_0wqcn")])
+
+[sub_resource type="Resource" id="Resource_ekrn1"]
+script = ExtResource("5_2v242")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Fortification"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_58te0"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_bastion"])
+upgrade_id = &"warrior_bulwark_fortification"
+display_name = "Fortification"
+description = "Ajoute encore 3 boucliers."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_ekrn1")])
+
+[sub_resource type="Resource" id="Resource_g1lys"]
+script = ExtResource("5_2v242")
+effect_type = 5
+amount = 2
+modifier_name = "Vigilance"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_xkugv"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_bastion"])
+upgrade_id = &"warrior_bulwark_vigilance"
+display_name = "Vigilance"
+description = "+2 portée."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_g1lys")])
+
+[sub_resource type="Resource" id="Resource_j0bnp"]
+script = ExtResource("5_2v242")
+effect_type = 9
+target_scope = 1
+amount = 3
+modifier_name = "Serment"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_nhtgh"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_protection_partagee"])
+upgrade_id = &"warrior_bulwark_serment"
+display_name = "Serment"
+description = "Le bouclier reçu par le Guerrier passe à 6."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_j0bnp")])
+
+[sub_resource type="Resource" id="Resource_3jn5v"]
+script = ExtResource("5_2v242")
+effect_type = 14
+target_scope = 1
+amount = 2
+duration = 2
+status_group = &"warrior_bulwark_regeneration"
+status_name = "Régénération"
+modifier_name = "Soutien durable"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_scb0h"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_protection_partagee"])
+upgrade_id = &"warrior_bulwark_soutien_durable"
+display_name = "Soutien durable"
+description = "L’allié protégé récupère 2 PV pendant 2 tours."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_3jn5v")])
+
+[sub_resource type="Resource" id="Resource_lumbx"]
+script = ExtResource("5_2v242")
+effect_type = 28
+target_scope = 1
+amount = 4
+status_group = &"warrior_bulwark_attack_order"
+status_name = "Ordre d'assaut"
+modifier_name = "Commandement"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_jlego"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_ordre_dassaut"])
+upgrade_id = &"warrior_bulwark_commandement"
+display_name = "Commandement"
+description = "Le bonus de la prochaine attaque passe à +4 dégâts."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_lumbx")])
+
+[sub_resource type="Resource" id="Resource_jvr05"]
+script = ExtResource("5_2v242")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Marche forcée"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_0eamp"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_ordre_dassaut"])
+upgrade_id = &"warrior_bulwark_marche_forcee"
+display_name = "Marche forcée"
+description = "Le bonus de mobilité passe à +2 PM."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_jvr05")])
+
+[sub_resource type="Resource" id="Resource_12le2"]
+script = ExtResource("5_2v242")
+effect_type = 24
+target_scope = 1
+amount = 2
+modifier_name = "Nettoyage complet"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_gfdc7"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_purification_martiale"])
+upgrade_id = &"warrior_bulwark_nettoyage_complet"
+display_name = "Nettoyage complet"
+description = "Retire jusqu’à 2 effets négatifs simples."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_12le2")])
+
+[sub_resource type="Resource" id="Resource_1onxh"]
+script = ExtResource("5_2v242")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Garde purifiante"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_025p0"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_purification_martiale"])
+upgrade_id = &"warrior_bulwark_garde_purifiante"
+display_name = "Garde purifiante"
+description = "Ajoute aussi 3 boucliers."
+discipline_id = &"warrior_bulwark"
+rank = 4
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_1onxh")])
+
+[sub_resource type="Resource" id="Resource_ulci5"]
+script = ExtResource("1_eul1k")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_gpem8")]([SubResource("Resource_58te0"), SubResource("Resource_xkugv"), SubResource("Resource_nhtgh"), SubResource("Resource_scb0h"), SubResource("Resource_jlego"), SubResource("Resource_0eamp"), SubResource("Resource_gfdc7"), SubResource("Resource_025p0")])
+
+[sub_resource type="Resource" id="Resource_fub4o"]
+script = ExtResource("5_2v242")
+effect_type = 8
+target_scope = 1
+amount = 10
+modifier_name = "Forteresse vivante"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_6v2g7"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_bouclier_renforce"])
+upgrade_id = &"warrior_bulwark_forteresse_vivante"
+display_name = "Forteresse vivante"
+description = "Ajoute 10 boucliers à la cible."
+discipline_id = &"warrior_bulwark"
+rank = 5
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_fub4o")])
+
+[sub_resource type="Resource" id="Resource_67wbn"]
+script = ExtResource("5_2v242")
+effect_type = 8
+target_scope = 1
+amount = 7
+modifier_name = "Serment du protecteur"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_n4yrk"]
+script = ExtResource("5_2v242")
+effect_type = 9
+target_scope = 1
+amount = 7
+modifier_name = "Serment du protecteur"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_mp5ja"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_bouclier_renforce"])
+upgrade_id = &"warrior_bulwark_serment_du_protecteur"
+display_name = "Serment du protecteur"
+description = "Le Guerrier et l’allié ciblé reçoivent chacun 7 boucliers."
+discipline_id = &"warrior_bulwark"
+rank = 5
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_67wbn"), SubResource("Resource_n4yrk")])
+
+[sub_resource type="Resource" id="Resource_68dl3"]
+script = ExtResource("5_2v242")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Ordre de guerre"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_a4oq4"]
+script = ExtResource("5_2v242")
+effect_type = 28
+target_scope = 1
+amount = 4
+status_group = &"warrior_bulwark_attack_order"
+status_name = "Ordre d'assaut"
+modifier_name = "Ordre de guerre"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_w1ltv"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_garde_mobile"])
+upgrade_id = &"warrior_bulwark_ordre_de_guerre"
+display_name = "Ordre de guerre"
+description = "+2 PM et +4 dégâts sur la prochaine attaque."
+discipline_id = &"warrior_bulwark"
+rank = 5
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_68dl3"), SubResource("Resource_a4oq4")])
+
+[sub_resource type="Resource" id="Resource_2ttnj"]
+script = ExtResource("5_2v242")
+effect_type = 8
+target_scope = 1
+amount = 6
+modifier_name = "Protection absolue"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_0tpg4"]
+script = ExtResource("5_2v242")
+effect_type = 24
+target_scope = 1
+amount = 99
+modifier_name = "Protection absolue"
+target_spell_id = &"warrior_guard"
+
+[sub_resource type="Resource" id="Resource_kpoyf"]
+script = ExtResource("3_s7ts0")
+prerequisite_node_ids = Array[StringName]([&"warrior_bulwark_garde_mobile"])
+upgrade_id = &"warrior_bulwark_protection_absolue"
+display_name = "Protection absolue"
+description = "Ajoute 6 boucliers et retire tous les effets négatifs simples."
+discipline_id = &"warrior_bulwark"
+rank = 5
+target_spell_id = &"warrior_guard"
+spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_2ttnj"), SubResource("Resource_0tpg4")])
+
+[sub_resource type="Resource" id="Resource_2jjtu"]
+script = ExtResource("1_eul1k")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_gpem8")]([SubResource("Resource_6v2g7"), SubResource("Resource_mp5ja"), SubResource("Resource_w1ltv"), SubResource("Resource_kpoyf")])
+
+[resource]
+script = ExtResource("6_0pbc6")
+discipline_id = &"warrior_bulwark"
+display_name = "Rempart"
+description = "Maîtrise de la garde, du commandement et de la purification."
+presentation_color = Color(0.32, 0.58, 0.82, 1)
+ranks = Array[ExtResource("1_eul1k")]([SubResource("Resource_nsqgc"), SubResource("Resource_vwdl6"), SubResource("Resource_ybnk2"), SubResource("Resource_ulci5"), SubResource("Resource_2jjtu")])

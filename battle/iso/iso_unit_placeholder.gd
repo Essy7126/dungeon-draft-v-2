@@ -54,7 +54,6 @@ func setup(p_unit, unit_view: Node2D) -> void:
 
 
 func _process(_delta: float) -> void:
-	# Les jauges historiques peuvent retenter de se rendre visibles lors d'un
 	# signal de stats. Ce composant local les maintient masquees sans modifier
 	# UnitView ni les ressources de personnages.
 	for item in _legacy_items:

@@ -148,8 +148,6 @@ func _cleanup_fixture(fixture: Dictionary) -> void:
 			battle.queue_free()
 		else:
 			battle.free()
-	fixture.attacker.clear_traits()
-	fixture.target.clear_traits()
 
 
 # 1. La fin de salle pendant la recuperation melee ne doit pas reprendre une
@@ -226,7 +224,6 @@ func test_last_enemy_dies_during_death_animation_then_scene_closes() -> void:
 	assert_true(is_instance_valid(controlled.view))
 	assert_false(controlled.view.is_inside_tree())
 	controlled.view.free()
-	enemy.clear_traits()
 
 
 # 5. Si la mort ferme la salle avant le marqueur d'impact, aucun degat melee
@@ -260,7 +257,6 @@ func test_unit_view_removed_during_prepare_basic_attack() -> void:
 	assert_true(state.done)
 	assert_false(state.result)
 	controlled.view.free()
-	unit.clear_traits()
 
 
 # 7. Retirer un UnitView pendant l'attente de recuperation doit annuler la
@@ -283,7 +279,6 @@ func test_unit_view_removed_during_recovery_wait() -> void:
 	await wait_process_frames(2)
 	assert_true(state.done)
 	controlled.view.free()
-	unit.clear_traits()
 
 
 # 8. Detacher toute la Battle pendant un tour ennemi annule a la fois le runner
@@ -340,4 +335,3 @@ func test_old_room_ranged_action_cannot_affect_next_room() -> void:
 	assert_eq(fixture.target.current_hp, 100)
 	assert_eq(next_room_target.current_hp, 100)
 	_cleanup_fixture(fixture)
-	next_room_target.clear_traits()

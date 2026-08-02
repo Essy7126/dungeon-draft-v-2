@@ -123,6 +123,34 @@ func get_snapshot() -> Dictionary:
 	}
 
 
+func restore_snapshot(snapshot: Dictionary) -> bool:
+	if _discipline_data == null \
+			or StringName(snapshot.get("discipline_id", &"")) != discipline_id:
+		return false
+	var wanted_xp := maxi(0, int(snapshot.get("xp", 0)))
+	var wanted_selected: Array[StringName] = []
+	for value in snapshot.get("selected_upgrade_ids", []):
+		wanted_selected.append(StringName(value))
+	xp = 0
+	rank = 1
+	_selected_upgrade_ids.clear()
+	_pending_rank_choices.clear()
+	add_xp(wanted_xp)
+	for rank_data in _get_sorted_rank_data():
+		if rank_data.rank <= 1:
+			continue
+		var selected_for_rank: StringName = &""
+		for candidate in rank_data.choices:
+			if candidate != null and wanted_selected.has(candidate.upgrade_id):
+				if selected_for_rank != &"":
+					return false
+				selected_for_rank = candidate.upgrade_id
+		if selected_for_rank != &"" \
+				and select_upgrade(selected_for_rank, rank_data.rank) == null:
+			return false
+	return get_selected_upgrade_ids() == wanted_selected
+
+
 func _has_selected_upgrade_for_rank(wanted_rank: int) -> bool:
 	var rank_data := get_rank_data(wanted_rank)
 	if rank_data == null:

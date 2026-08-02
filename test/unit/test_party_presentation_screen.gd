@@ -24,7 +24,7 @@ func test_screen_builds_three_data_driven_cards_in_fixed_order() -> void:
 	assert_eq(cards.map(func(card): return card.spell_count_label.text), [
 		"4 sorts",
 		"4 sorts",
-		"8 sorts",
+		"4 sorts",
 	])
 
 
@@ -103,23 +103,18 @@ func test_back_emits_and_frees_cards_previews_without_navigation() -> void:
 	))
 
 
-func test_title_primary_entry_opens_presentation_and_keeps_dev_entries() -> void:
+func test_title_has_one_primary_entry_and_quit() -> void:
 	var title = load("res://ui/TitreEcran.tscn").instantiate()
+	var buttons: Array = title.get_node("UI/Boutons").get_children()
+	assert_eq(buttons.map(func(button): return button.name), [
+		&"BoutonNouvellePartie", &"BoutonQuitter",
+	])
 	assert_eq(
-		title.get_node("UI/Boutons/BoutonTrioFixe").text,
-		"Trio fixe — prototype",
-	)
-	assert_eq(title.get_node("UI/Boutons/BoutonPrototypeElfe").text, "Prototype Elfe")
-	assert_eq(
-		title.get_node("UI/Boutons/BoutonValidationEquipe").text,
-		"Validation technique — équipe de 3",
-	)
-	assert_eq(
-		title.get_node("UI/Boutons/BoutonNouvellePartie").text,
-		"Ancien prototype / Draft historique",
+		buttons.map(func(button): return button.text),
+		["Nouvelle partie", "Quitter"],
 	)
 	assert_eq(
-		title.get_script().get_script_constant_map()["PARTY_PRESENTATION_SCREEN_PATH"],
-		"res://ui/party/PartyPresentationScreen.tscn",
+		title.get_script().get_script_constant_map()["START_HUB_SCENE_PATH"],
+		"res://hub/StartHub.tscn",
 	)
 	title.free()

@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="SpellModRangeBonus" load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://core/spell_mods/spell_mod_range_bonus.gd" id="1_modifier"]
-
-[resource]
-script = ExtResource("1_modifier")
-modifier_name = "Marque distante"
-target_spell_id = &"warrior_war_mark"
-range_bonus = 1

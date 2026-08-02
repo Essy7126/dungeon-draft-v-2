@@ -1,6 +1,8 @@
 class_name PersistentRunUI
 extends Node
 
+signal evolution_choice_resolved(request_id, upgrade_id)
+
 enum RunUIMode {
 	COMBAT,
 	NON_COMBAT,
@@ -15,12 +17,19 @@ enum RunUIMode {
 )
 @onready var skill_tree_screen: SkillTreeScreen = %SkillTreeScreen
 @onready var pause_menu: DarkPauseMenu = %DarkPauseMenu
+@onready var evolution_feedback: PanelContainer = %EvolutionFeedback
+@onready var evolution_emblem: TextureRect = %EvolutionEmblem
+@onready var evolution_title: Label = %EvolutionTitle
+@onready var evolution_discipline: Label = %EvolutionDiscipline
+
+@export var evolution_feedback_duration := 0.38
 
 var _ui_mode: RunUIMode = RunUIMode.TRANSITION
 var _combat_controls_before_skill_tree := false
 var _combat_controls_before_pause := false
 var _tree_was_paused_before_menu := false
 var _owns_tree_pause := false
+var _evolution_screen_active := false
 
 
 func _ready() -> void:
@@ -33,6 +42,9 @@ func _ready() -> void:
 	)
 	skill_tree_screen.screen_closed.connect(
 		_on_skill_tree_screen_closed
+	)
+	skill_tree_screen.evolution_choice_resolved.connect(
+		_on_skill_tree_evolution_resolved
 	)
 	pause_menu.resume_requested.connect(close_pause_menu)
 	pause_menu.return_to_title_requested.connect(
@@ -83,7 +95,10 @@ func set_ui_mode(mode: RunUIMode) -> void:
 		and is_instance_valid(skill_tree_screen)
 		and skill_tree_screen.visible
 	):
-		skill_tree_screen.close_screen()
+		skill_tree_screen.close_for_run_cleanup()
+		_evolution_screen_active = false
+	if is_instance_valid(evolution_feedback) and mode != RunUIMode.COMBAT:
+		evolution_feedback.hide()
 	if is_instance_valid(combat_hud):
 		combat_hud.set_ui_mode(mode)
 	if is_instance_valid(contextual_ui_layer):
@@ -125,6 +140,7 @@ func open_pause_menu() -> bool:
 		not GameManager.run_active
 		or _ui_mode == RunUIMode.TRANSITION
 		or is_pause_menu_open()
+		or _evolution_screen_active
 		or (
 			is_instance_valid(skill_tree_screen)
 			and skill_tree_screen.visible
@@ -186,7 +202,9 @@ func _on_skill_tree_requested(
 		character_id: StringName,
 		discipline_id: StringName
 	) -> void:
-	if _ui_mode != RunUIMode.COMBAT or skill_tree_screen.visible:
+	if _ui_mode != RunUIMode.COMBAT \
+			or skill_tree_screen.visible \
+			or _evolution_screen_active:
 		return
 	_combat_controls_before_skill_tree = bool(
 		combat_hud.get("_player_controls_enabled")
@@ -203,6 +221,8 @@ func _on_skill_tree_requested(
 
 
 func _on_skill_tree_screen_closed() -> void:
+	if _evolution_screen_active:
+		return
 	if (
 		_ui_mode == RunUIMode.COMBAT
 		and is_instance_valid(combat_hud)
@@ -212,6 +232,75 @@ func _on_skill_tree_screen_closed() -> void:
 			_combat_controls_before_skill_tree
 		)
 	_combat_controls_before_skill_tree = false
+
+
+func open_evolution_request(request: EvolutionRequest) -> bool:
+	if request == null \
+			or not request.is_valid() \
+			or _ui_mode != RunUIMode.COMBAT \
+			or _evolution_screen_active \
+			or skill_tree_screen.visible:
+		return false
+	_evolution_screen_active = true
+	_combat_controls_before_skill_tree = false
+	if is_instance_valid(combat_hud):
+		combat_hud.set_player_controls_enabled(false)
+	_show_evolution_feedback(request)
+	var tree := get_tree()
+	if tree == null:
+		_evolution_screen_active = false
+		return false
+	await tree.create_timer(maxf(evolution_feedback_duration, 0.001)).timeout
+	if not is_inside_tree() or _ui_mode != RunUIMode.COMBAT:
+		_evolution_screen_active = false
+		return false
+	evolution_feedback.hide()
+	if not skill_tree_screen.open_for_evolution(request, GameManager):
+		_evolution_screen_active = false
+		return false
+	return true
+
+
+func is_evolution_screen_active() -> bool:
+	return _evolution_screen_active
+
+
+func _show_evolution_feedback(request: EvolutionRequest) -> void:
+	var character_state := GameManager.get_character_state(request.character_id)
+	var character_name := str(request.character_id)
+	var discipline_name := str(request.discipline_id)
+	var emblem: Texture2D = null
+	if character_state != null:
+		if character_state.unit != null:
+			character_name = character_state.unit.unit_name
+			var hud_theme := CharacterHUDThemeCatalog.resolve_refined(
+				character_state.unit
+			)
+			if hud_theme != null:
+				emblem = hud_theme.discipline_emblem_texture
+		discipline_name = character_state.get_discipline_display_name(
+			request.discipline_id
+		)
+	evolution_emblem.texture = emblem
+	evolution_emblem.visible = emblem != null
+	evolution_title.text = "ÉVOLUTION DISPONIBLE"
+	evolution_discipline.text = "%s · %s · Rang %d" % [
+		character_name,
+		discipline_name,
+		request.pending_rank,
+	]
+	evolution_feedback.show()
+	evolution_feedback.move_to_front()
+
+
+func _on_skill_tree_evolution_resolved(
+		request_id: StringName,
+		upgrade_id: StringName
+	) -> void:
+	_evolution_screen_active = false
+	if is_instance_valid(evolution_feedback):
+		evolution_feedback.hide()
+	evolution_choice_resolved.emit(request_id, upgrade_id)
 
 
 func _on_pause_return_to_title_requested(_reason: StringName) -> void:

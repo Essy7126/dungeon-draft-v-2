@@ -1,16 +1,432 @@
-[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://btfmeqpqbam07"]
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
 
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_4fnru"]
-[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_3p3sc"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_inntv"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_oeks4"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_ufvum"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_bcw46"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_cqxa4"]
 
-[sub_resource type="Resource" id="Rank_lightning_1"]
-script = ExtResource("2_rank_type")
+[sub_resource type="Resource" id="Resource_25hle"]
+script = ExtResource("1_3p3sc")
+
+[sub_resource type="Resource" id="Resource_odiso"]
+script = ExtResource("5_bcw46")
+amount = 2
+modifier_name = "Surcharge"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_hkno0"]
+script = ExtResource("3_oeks4")
+excluded_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
+upgrade_id = &"mage_fulguromancy_surcharge"
+display_name = "Surcharge"
+description = "+2 dégâts à toutes les cibles."
+discipline_id = &"mage_fulguromancy"
+rank = 2
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_odiso")])
+
+[sub_resource type="Resource" id="Resource_7tckp"]
+script = ExtResource("5_bcw46")
+effect_type = 13
+amount = 1
+duration = 1
+status_group = &"mage_fulguromancy_slow"
+status_name = "Entrave"
+modifier_name = "Champ statique"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_3dlqs"]
+script = ExtResource("3_oeks4")
+excluded_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
+upgrade_id = &"mage_fulguromancy_champ_statique"
+display_name = "Champ statique"
+description = "Les ennemis touchés perdent 1 PM au prochain tour."
+discipline_id = &"mage_fulguromancy"
+rank = 2
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_7tckp")])
+
+[sub_resource type="Resource" id="Resource_rv7lw"]
+script = ExtResource("1_3p3sc")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_inntv")]([SubResource("Resource_hkno0"), SubResource("Resource_3dlqs")])
+
+[sub_resource type="Resource" id="Resource_6lo71"]
+script = ExtResource("5_bcw46")
+effect_type = 1
+amount = 4
+modifier_name = "Cœur de l’orage"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_sciyt"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
+upgrade_id = &"mage_fulguromancy_cur_de_lorage"
+display_name = "Cœur de l’orage"
+description = "+4 dégâts sur la cellule centrale."
+discipline_id = &"mage_fulguromancy"
+rank = 3
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_6lo71")])
+
+[sub_resource type="Resource" id="Resource_bhf0g"]
+script = ExtResource("5_bcw46")
+effect_type = 17
+amount = 1
+modifier_name = "Front orageux"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_6su5d"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
+upgrade_id = &"mage_fulguromancy_front_orageux"
+display_name = "Front orageux"
+description = "La zone gagne 1 cellule sur ses extrémités cardinales."
+discipline_id = &"mage_fulguromancy"
+rank = 3
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_bhf0g")])
+
+[sub_resource type="Resource" id="Resource_s5gle"]
+script = ExtResource("5_bcw46")
+effect_type = 13
+amount = 1
+duration = 2
+status_group = &"mage_fulguromancy_slow"
+status_name = "Paralysie"
+modifier_name = "Paralysie"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_fi72g"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
+upgrade_id = &"mage_fulguromancy_paralysie"
+display_name = "Paralysie"
+description = "La perte de PM s’applique pendant 2 tours."
+discipline_id = &"mage_fulguromancy"
+rank = 3
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_s5gle")])
+
+[sub_resource type="Resource" id="Resource_qs0iu"]
+script = ExtResource("5_bcw46")
+effect_type = 15
+amount = 3
+duration = 99
+status_group = &"mage_fulguromancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Conductivité"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_an0xa"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
+upgrade_id = &"mage_fulguromancy_conductivite"
+display_name = "Conductivité"
+description = "Chaque cible subit +3 dégâts sur la prochaine attaque reçue."
+discipline_id = &"mage_fulguromancy"
+rank = 3
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_qs0iu")])
+
+[sub_resource type="Resource" id="Resource_ow787"]
+script = ExtResource("1_3p3sc")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_inntv")]([SubResource("Resource_sciyt"), SubResource("Resource_6su5d"), SubResource("Resource_fi72g"), SubResource("Resource_an0xa")])
+
+[sub_resource type="Resource" id="Resource_u0f24"]
+script = ExtResource("5_bcw46")
+effect_type = 1
+amount = 3
+modifier_name = "Impact central"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_eu3sk"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_cur_de_lorage"])
+upgrade_id = &"mage_fulguromancy_impact_central"
+display_name = "Impact central"
+description = "+3 dégâts supplémentaires au centre."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_u0f24")])
+
+[sub_resource type="Resource" id="Resource_yn1f2"]
+script = ExtResource("5_bcw46")
+effect_type = 5
+amount = 2
+modifier_name = "Orage lointain"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_6wiwj"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_cur_de_lorage"])
+upgrade_id = &"mage_fulguromancy_orage_lointain"
+display_name = "Orage lointain"
+description = "+2 portée."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_yn1f2")])
+
+[sub_resource type="Resource" id="Resource_ee31r"]
+script = ExtResource("5_bcw46")
+effect_type = 17
+amount = 1
+modifier_name = "Supercellule mineure"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_dvgc6"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_front_orageux"])
+upgrade_id = &"mage_fulguromancy_supercellule_mineure"
+display_name = "Supercellule mineure"
+description = "La zone gagne encore 1 cellule cardinale."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_ee31r")])
+
+[sub_resource type="Resource" id="Resource_vw1lt"]
+script = ExtResource("5_bcw46")
+amount = 2
+modifier_name = "Haute tension"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_xjc1v"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_front_orageux"])
+upgrade_id = &"mage_fulguromancy_haute_tension"
+display_name = "Haute tension"
+description = "+2 dégâts à toutes les cibles."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_vw1lt")])
+
+[sub_resource type="Resource" id="Resource_wjas2"]
+script = ExtResource("5_bcw46")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"mage_fulguromancy_slow"
+status_name = "Entrave"
+modifier_name = "Entrave majeure"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_qfquh"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_paralysie"])
+upgrade_id = &"mage_fulguromancy_entrave_majeure"
+display_name = "Entrave majeure"
+description = "La perte passe à −2 PM pour le prochain tour."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_wjas2")])
+
+[sub_resource type="Resource" id="Resource_t0dra"]
+script = ExtResource("5_bcw46")
+effect_type = 12
+amount = 2
+duration = 1
+status_group = &"mage_fulguromancy_residual_lightning"
+status_name = "Électricité résiduelle"
+status_element = 3
+status_timing = 1
+modifier_name = "Électricité résiduelle"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_xgaan"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_paralysie"])
+upgrade_id = &"mage_fulguromancy_electricite_residuelle"
+display_name = "Électricité résiduelle"
+description = "Inflige 2 dégâts à la fin du prochain tour."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_t0dra")])
+
+[sub_resource type="Resource" id="Resource_0v83k"]
+script = ExtResource("5_bcw46")
+effect_type = 15
+amount = 3
+duration = 99
+charges = 2
+status_group = &"mage_fulguromancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Charge persistante"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_r18a4"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_conductivite"])
+upgrade_id = &"mage_fulguromancy_charge_persistante"
+display_name = "Charge persistante"
+description = "Le bonus s’applique aux 2 prochaines attaques."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_0v83k")])
+
+[sub_resource type="Resource" id="Resource_o1fvn"]
+script = ExtResource("5_bcw46")
+effect_type = 15
+secondary_amount = 3
+duration = 99
+status_group = &"mage_fulguromancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Arc secondaire"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_fs7kf"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_conductivite"])
+upgrade_id = &"mage_fulguromancy_arc_secondaire"
+display_name = "Arc secondaire"
+description = "La première attaque bonus inflige aussi 3 dégâts à un ennemi adjacent."
+discipline_id = &"mage_fulguromancy"
+rank = 4
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_o1fvn")])
+
+[sub_resource type="Resource" id="Resource_v0arg"]
+script = ExtResource("1_3p3sc")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_inntv")]([SubResource("Resource_eu3sk"), SubResource("Resource_6wiwj"), SubResource("Resource_dvgc6"), SubResource("Resource_xjc1v"), SubResource("Resource_qfquh"), SubResource("Resource_xgaan"), SubResource("Resource_r18a4"), SubResource("Resource_fs7kf")])
+
+[sub_resource type="Resource" id="Resource_p607g"]
+script = ExtResource("5_bcw46")
+effect_type = 1
+amount = 8
+modifier_name = "Cœur de tonnerre"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_etbh3"]
+script = ExtResource("5_bcw46")
+amount = 8
+modifier_name = "Cœur de tonnerre"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_qkxak"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
+upgrade_id = &"mage_fulguromancy_cur_de_tonnerre"
+display_name = "Cœur de tonnerre"
+description = "+8 dégâts au centre et +3 dégâts à toutes les cibles."
+discipline_id = &"mage_fulguromancy"
+rank = 5
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_p607g"), SubResource("Resource_etbh3")])
+
+[sub_resource type="Resource" id="Resource_vvamv"]
+script = ExtResource("5_bcw46")
+effect_type = 5
+amount = 2
+modifier_name = "Supercellule"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_fprhj"]
+script = ExtResource("5_bcw46")
+effect_type = 17
+amount = 1
+modifier_name = "Supercellule"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_66o4h"]
+script = ExtResource("5_bcw46")
+amount = 3
+modifier_name = "Supercellule"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_sk2if"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
+upgrade_id = &"mage_fulguromancy_supercellule"
+display_name = "Supercellule"
+description = "Zone agrandie, +2 portée et +3 dégâts de zone."
+discipline_id = &"mage_fulguromancy"
+rank = 5
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_vvamv"), SubResource("Resource_fprhj"), SubResource("Resource_66o4h")])
+
+[sub_resource type="Resource" id="Resource_etnce"]
+script = ExtResource("5_bcw46")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"mage_fulguromancy_slow"
+status_name = "Paralysie"
+modifier_name = "Paralysie complète"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_kawk3"]
+script = ExtResource("5_bcw46")
+effect_type = 12
+amount = 3
+duration = 1
+status_group = &"mage_fulguromancy_residual_lightning"
+status_name = "Électricité résiduelle"
+status_element = 3
+status_timing = 1
+modifier_name = "Paralysie complète"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_r7wfe"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
+upgrade_id = &"mage_fulguromancy_paralysie_complete"
+display_name = "Paralysie complète"
+description = "−2 PM au prochain tour et 3 dégâts différés."
+discipline_id = &"mage_fulguromancy"
+rank = 5
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_etnce"), SubResource("Resource_kawk3")])
+
+[sub_resource type="Resource" id="Resource_pmqqk"]
+script = ExtResource("5_bcw46")
+effect_type = 15
+amount = 4
+secondary_amount = 3
+duration = 99
+charges = 2
+status_group = &"mage_fulguromancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Orage conducteur"
+target_spell_id = &"mage_thunderstorm"
+
+[sub_resource type="Resource" id="Resource_kxjub"]
+script = ExtResource("3_oeks4")
+prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
+upgrade_id = &"mage_fulguromancy_orage_conducteur"
+display_name = "Orage conducteur"
+description = "+4 dégâts reçus sur les 2 prochaines attaques et arc secondaire de 3 dégâts."
+discipline_id = &"mage_fulguromancy"
+rank = 5
+target_spell_id = &"mage_thunderstorm"
+spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_pmqqk")])
+
+[sub_resource type="Resource" id="Resource_wyqdy"]
+script = ExtResource("1_3p3sc")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_inntv")]([SubResource("Resource_qkxak"), SubResource("Resource_sk2if"), SubResource("Resource_r7wfe"), SubResource("Resource_kxjub")])
 
 [resource]
-script = ExtResource("1_discipline")
-discipline_id = &"mage_lightning"
+script = ExtResource("6_cqxa4")
+discipline_id = &"mage_fulguromancy"
 display_name = "Foudromancie"
-description = "Maîtrise des zones, des impacts électriques et de la propagation future."
+description = "Maîtrise des zones électriques, de l'entrave et de la conductivité."
 presentation_color = Color(0.63, 0.48, 1, 1)
-ranks = Array[ExtResource("2_rank_type")]([SubResource("Rank_lightning_1")])
+ranks = Array[ExtResource("1_3p3sc")]([SubResource("Resource_25hle"), SubResource("Resource_rv7lw"), SubResource("Resource_ow787"), SubResource("Resource_v0arg"), SubResource("Resource_wyqdy")])

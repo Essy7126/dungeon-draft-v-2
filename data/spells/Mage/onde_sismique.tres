@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"mage_seismic_wave"
-discipline_id = &"mage_earth"
+discipline_id = &"mage_geomancy"
 spell_name = "Onde sismique"
 description = "Propage une onde tellurique en ligne et repousse d'une case les ennemis touchés."
 ap_cost = 2

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PostCombatRewardData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/post_combat/post_combat_reward_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/upgrade.svg" id="2"]
+
+[resource]
+script = ExtResource("1")
+reward_id = &"hero_max_hp_10"
+display_name = "Vigueur durable"
+description = "+10 PV maximum pour la run et soigne immédiatement de 10 PV."
+icon = ExtResource("2")
+reward_type = 1
+value = 10.0
+target_policy = 1

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tools/verify_menu_start_hub_flow.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://ui/TitreEcran.tscn" id="2_title"]
+
+[node name="VerifyMenuStartHubFlow" type="Node"]
+script = ExtResource("1_script")
+
+[node name="Title" parent="." instance=ExtResource("2_title")]

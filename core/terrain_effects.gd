@@ -48,7 +48,7 @@ func place_effect(
 
 	var resolved_duration := duration_override
 	if resolved_duration == -999999:
-		resolved_duration = _modified_duration(effect, caster)
+		resolved_duration = effect.duration
 	_set_effect_cell(cell, effect, resolved_duration)
 	result["changed"] = true
 	DebugLogger.debug(CAT, "Pose %s en %s" % [effect.effect_name, str(cell)], {
@@ -69,17 +69,6 @@ func _set_effect_cell(cell: Vector2i, effect: TerrainEffectData, duration_overri
 	if type_id >= 0:
 		_grid.set_type(cell, type_id)
 
-func _modified_duration(effect: TerrainEffectData, caster = null) -> int:
-	if effect == null or effect.duration <= 0:
-		return effect.duration if effect != null else 0
-	if caster == null or not caster.has_method("has_charge_threshold") or not caster.has_charge_threshold():
-		return effect.duration
-	if not caster.has_energy():
-		return effect.duration
-	var multiplier: float = caster.energy_type.awakening_terrain_duration_multiplier
-	if multiplier <= 1.0:
-		return effect.duration
-	return maxi(1, int(round(float(effect.duration) * multiplier)))
 func _cell_type_for_effect(effect_name: String) -> int:
 	match effect_name.strip_edges().to_lower():
 		"lave", "feu": return GridData.CellType.LAVA
@@ -151,22 +140,6 @@ func get_effect_data(cell: Vector2i) -> TerrainEffectData:
 	if stored.has("data") and stored["data"].has("data"):
 		return stored["data"]["data"]
 	return null
-
-func get_ap_discount_for(unit: Unit) -> int:
-	var effect := get_effect_data(unit.grid_pos)
-	if effect == null or not unit.has_energy():
-		return 0
-	if effect.matches_energy(unit.energy_type.energy_id):
-		return effect.ap_discount
-	return 0
-
-func get_fervor_multiplier_for(unit: Unit) -> float:
-	var effect := get_effect_data(unit.grid_pos)
-	if effect == null or not unit.has_energy():
-		return 1.0
-	if effect.matches_energy(unit.energy_type.energy_id):
-		return maxf(0.0, effect.fervor_generation_multiplier)
-	return 1.0
 
 func get_ai_danger_weight(cell: Vector2i) -> float:
 	var effect := get_effect_data(cell)

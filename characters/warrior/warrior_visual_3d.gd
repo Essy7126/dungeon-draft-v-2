@@ -54,25 +54,17 @@ const IMPORTED_ANIMATIONS: Array[StringName] = [
 # Stable spell IDs are the production API. Resource paths are a compatibility
 # fallback for historical spell resources that predate Spell.spell_id.
 const ANIMATION_BY_SPELL_ID := {
-	&"warrior_shove": ANIM_ATTACK,
-	&"warrior_hook": ANIM_PARRY,
-	&"warrior_shoulder_charge": ANIM_SPIN_ATTACK,
-	&"warrior_shockwave": ANIM_SPIN_ATTACK,
-	&"warrior_war_mark": ANIM_ATTACK,
-	&"warrior_execution": ANIM_HEAVY_ATTACK,
-	&"warrior_stomp": ANIM_SPIN_ATTACK,
-	&"warrior_corrupted_ground": ANIM_HEAVY_ATTACK,
+	&"warrior_heavy_strike": ANIM_HEAVY_ATTACK,
+	&"warrior_charge": ANIM_RUN,
+	&"warrior_whirlwind": ANIM_SPIN_ATTACK,
+	&"warrior_guard": ANIM_PARRY,
 }
 
 const SPELL_ID_BY_RESOURCE_PATH := {
-	"res://data/spells/Guerrier/bourrade.tres": &"warrior_shove",
-	"res://data/spells/Guerrier/crochet.tres": &"warrior_hook",
-	"res://data/spells/Guerrier/coup_épaule.tres": &"warrior_shoulder_charge",
-	"res://data/spells/Guerrier/onde_de_choc.tres": &"warrior_shockwave",
-	"res://data/spells/Guerrier/marque_de_guerre.tres": &"warrior_war_mark",
-	"res://data/spells/Guerrier/execution_de_guerre.tres": &"warrior_execution",
-	"res://data/spells/Guerrier/pietinement.tres": &"warrior_stomp",
-	"res://data/spells/Guerrier/sol_corrompu.tres": &"warrior_corrupted_ground",
+	"res://data/spells/Guerrier/frappe_lourde.tres": &"warrior_heavy_strike",
+	"res://data/spells/Guerrier/charge.tres": &"warrior_charge",
+	"res://data/spells/Guerrier/tourbillon.tres": &"warrior_whirlwind",
+	"res://data/spells/Guerrier/garde.tres": &"warrior_guard",
 }
 
 

@@ -2,6 +2,8 @@ class_name SkillTreeScreen
 extends Control
 
 signal screen_closed
+signal evolution_choice_resolved(request_id, upgrade_id)
+signal evolution_choice_rejected(request_id, upgrade_id, reason)
 
 const TAB_SCENE := preload(
 	"res://ui/progression/components/skill_tree_discipline_tab.tscn"
@@ -51,6 +53,10 @@ var _active_theme: CharacterHUDThemeData = null
 var _pan_active := false
 var _pan_mouse_origin := Vector2.ZERO
 var _pan_scroll_origin := Vector2.ZERO
+var _evolution_mode := false
+var _evolution_rank := 0
+var _evolution_request_id: StringName = &""
+var _evolution_source_spell_id: StringName = &""
 
 
 func _ready() -> void:
@@ -60,6 +66,9 @@ func _ready() -> void:
 	_graph.visual_map = visual_map
 	_detail_panel.skin = skin
 	_close_button.pressed.connect(close_screen)
+	_detail_panel.get_action_button().pressed.connect(
+		_on_evolution_action_pressed
+	)
 	_center_graph_button.pressed.connect(center_on_inspected_node)
 	_graph.node_inspected.connect(_on_node_inspected)
 	_graph_scroll.gui_input.connect(_on_graph_scroll_gui_input)
@@ -73,6 +82,7 @@ func open_for_character(
 		controller = null,
 		discipline_id: StringName = &"archer"
 	) -> bool:
+	_reset_evolution_mode()
 	_preview_character_state = null
 	character_id = wanted_character_id
 	current_discipline_id = discipline_id
@@ -92,6 +102,7 @@ func open_for_state(
 		character_state: CharacterRunState,
 		discipline_id: StringName = &"archer"
 	) -> bool:
+	_reset_evolution_mode()
 	_preview_character_state = character_state
 	character_id = character_state.character_id if character_state != null else &""
 	current_discipline_id = discipline_id
@@ -103,6 +114,38 @@ func open_for_state(
 	move_to_front()
 	refresh_from_state()
 	_focus_last_or_first.call_deferred()
+	return true
+
+
+func open_for_evolution(
+		request: EvolutionRequest,
+		controller = null
+	) -> bool:
+	if request == null or not request.is_valid():
+		return false
+	_preview_character_state = null
+	character_id = request.character_id
+	current_discipline_id = request.discipline_id
+	progression_controller = controller if controller != null else GameManager
+	var character_state := _get_character_state()
+	if character_state == null:
+		return false
+	var progress := character_state.get_discipline_progress(
+		request.discipline_id
+	)
+	if progress == null \
+			or not progress.get_pending_rank_choices().has(request.pending_rank):
+		return false
+	_evolution_mode = true
+	_evolution_rank = request.pending_rank
+	_evolution_request_id = request.request_id
+	_evolution_source_spell_id = request.source_spell_id
+	_capture_previous_focus()
+	show()
+	move_to_front()
+	refresh_from_state()
+	_apply_evolution_chrome()
+	_focus_evolution_choice.call_deferred()
 	return true
 
 
@@ -122,6 +165,20 @@ func refresh_from_state() -> void:
 
 
 func close_screen() -> void:
+	if not visible:
+		return
+	if _evolution_mode:
+		_footer_label.text = "CHOIX OBLIGATOIRE · sélectionnez une évolution disponible"
+		return
+	_force_close_screen()
+
+
+func close_for_run_cleanup() -> void:
+	_reset_evolution_mode()
+	_force_close_screen()
+
+
+func _force_close_screen() -> void:
 	if not visible:
 		return
 	_pan_active = false
@@ -195,11 +252,86 @@ func get_layout_snapshot() -> Dictionary:
 
 
 func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
+	set_anchors_preset(Control.PRESET_TOP_LEFT)
+	position = Vector2.ZERO
 	size = viewport_size
 	_apply_responsive_layout(viewport_size)
 
 
 func is_consultative() -> bool:
+	return not _evolution_mode
+
+
+func is_evolution_choice_mode() -> bool:
+	return _evolution_mode
+
+
+func get_evolution_rank() -> int:
+	return _evolution_rank
+
+
+func get_evolution_request_id() -> StringName:
+	return _evolution_request_id
+
+
+func get_available_evolution_node_ids() -> Array[StringName]:
+	var result: Array[StringName] = []
+	if not _evolution_mode:
+		return result
+	for view in _graph.get_node_views_in_focus_order():
+		if _is_available_evolution_view(view):
+			result.append(view.presentation_id)
+	return result
+
+
+func inspect_evolution_node(node_id: StringName) -> bool:
+	if not _evolution_mode:
+		return false
+	var view := _graph.get_node_view(node_id)
+	if not _is_available_evolution_view(view):
+		_detail_panel.show_evolution_rejection(
+			"Ce nœud ne peut pas résoudre le rang %d en attente." % _evolution_rank
+		)
+		evolution_choice_rejected.emit(
+			_evolution_request_id,
+			node_id,
+			"INVALID_EVOLUTION_NODE",
+		)
+		return false
+	_graph.inspect_node_by_id(node_id)
+	_graph.focus_node_by_id(node_id)
+	return true
+
+
+func confirm_evolution_choice(node_id: StringName = &"") -> bool:
+	if not _evolution_mode:
+		return false
+	var wanted_id := node_id
+	if wanted_id == &"":
+		wanted_id = _detail_panel.current_presentation_id
+	var view := _graph.get_node_view(wanted_id)
+	if not _is_available_evolution_view(view):
+		return inspect_evolution_node(wanted_id)
+	if progression_controller == null \
+			or not progression_controller.has_method("choose_progression_upgrade"):
+		_reject_evolution_choice(wanted_id, "Contrôleur de progression indisponible.")
+		return false
+	var accepted: bool = progression_controller.choose_progression_upgrade(
+		character_id,
+		current_discipline_id,
+		_evolution_rank,
+		wanted_id
+	)
+	if not accepted:
+		_reject_evolution_choice(
+			wanted_id,
+			"Le resolver a refusé ce choix : prérequis ou exclusion invalide."
+		)
+		return false
+	var completed_request_id := _evolution_request_id
+	_reset_evolution_mode()
+	_force_close_screen()
+	evolution_choice_resolved.emit(completed_request_id, wanted_id)
 	return true
 
 
@@ -236,7 +368,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	)
 	if event.is_action_pressed("ui_cancel") or closes_with_shortcut:
 		get_viewport().set_input_as_handled()
-		close_screen()
+		if _evolution_mode:
+			_footer_label.text = (
+				"CHOIX OBLIGATOIRE · le combat reprendra après confirmation"
+			)
+		else:
+			close_screen()
 
 
 func _build_tabs(character_state: CharacterRunState) -> void:
@@ -249,6 +386,8 @@ func _build_tabs(character_state: CharacterRunState) -> void:
 	for discipline_index in range(disciplines.size()):
 		var discipline := disciplines[discipline_index]
 		if discipline == null:
+			continue
+		if _evolution_mode and discipline.discipline_id != current_discipline_id:
 			continue
 		var progress := character_state.get_discipline_progress(
 			discipline.discipline_id
@@ -264,11 +403,15 @@ func _build_tabs(character_state: CharacterRunState) -> void:
 			_branch_icon(character_state, discipline_index, discipline)
 		)
 		button.apply_layout_profile(_layout_profile)
-		button.pressed.connect(_show_discipline.bind(discipline.discipline_id))
+		button.disabled = _evolution_mode
+		if not _evolution_mode:
+			button.pressed.connect(_show_discipline.bind(discipline.discipline_id))
 		_tab_buttons.append(button)
 
 
 func _show_discipline(discipline_id: StringName) -> void:
+	if _evolution_mode and discipline_id != current_discipline_id:
+		return
 	var character_state := _get_character_state()
 	if character_state == null:
 		return
@@ -288,7 +431,8 @@ func _show_discipline(discipline_id: StringName) -> void:
 		discipline,
 		progress,
 		base_spell.spell_name if base_spell != null else discipline.display_name,
-		base_icon
+		base_icon,
+		character_state.character_id
 	)
 	_queue_graph_layout()
 	var next_rank := progress.get_next_rank_data()
@@ -310,6 +454,11 @@ func _show_discipline(discipline_id: StringName) -> void:
 			else ""
 		),
 	]
+	if _evolution_mode:
+		_footer_label.text = "%s · RANG %d · CHOIX OBLIGATOIRE" % [
+			discipline.display_name.to_upper(),
+			_evolution_rank,
+		]
 	_update_header_branch_summary(character_state, discipline)
 	var wanted_id := StringName(
 		_last_inspected_by_discipline.get(discipline_id, &"")
@@ -383,6 +532,16 @@ func _on_node_inspected(view: SkillTreeNodeView) -> void:
 		_spell_display_name(character_state, node.target_spell_id),
 		view.node_visual
 	)
+	if _evolution_mode:
+		var available := _is_available_evolution_view(view)
+		_detail_panel.configure_evolution_action(
+			available,
+			"CHOISIR CETTE ÉVOLUTION" if available else "CHOIX INDISPONIBLE",
+			"" if available else str(view.visual_presentation.get(
+				"reason",
+				"Ce nœud ne peut pas résoudre le rang en attente."
+			)),
+		)
 
 
 func _configure_focus_navigation() -> void:
@@ -420,6 +579,69 @@ func _focus_last_or_first() -> void:
 		_tab_buttons[0].grab_focus()
 	else:
 		_close_button.grab_focus()
+
+
+func _focus_evolution_choice() -> void:
+	if not visible or not _evolution_mode:
+		return
+	for view in _graph.get_node_views_in_focus_order():
+		if not _is_available_evolution_view(view):
+			continue
+		_graph.inspect_node_by_id(view.presentation_id)
+		_graph.focus_node_by_id(view.presentation_id)
+		center_on_inspected_node.call_deferred()
+		return
+	_footer_label.text = "ERREUR · aucun choix valide pour le rang %d" % _evolution_rank
+
+
+func _is_available_evolution_view(view: SkillTreeNodeView) -> bool:
+	if view == null or view.is_base_rank or view.is_rank_gate():
+		return false
+	return view.get_rank() == _evolution_rank \
+		and int(view.visual_presentation.get("state", -1)) \
+		== SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE
+
+
+func _on_evolution_action_pressed() -> void:
+	if _evolution_mode:
+		confirm_evolution_choice()
+
+
+func _reject_evolution_choice(node_id: StringName, reason: String) -> void:
+	_detail_panel.show_evolution_rejection(reason)
+	evolution_choice_rejected.emit(
+		_evolution_request_id,
+		node_id,
+		reason,
+	)
+
+
+func _apply_evolution_chrome() -> void:
+	if not _evolution_mode:
+		return
+	_consultative_label.text = "ÉVOLUTION DISPONIBLE\nChoix requis pour reprendre le combat"
+	_consultative_label.show()
+	_branch_title_label.text = "DISCIPLINE CONCERNÉE"
+	_close_button.text = "CHOIX REQUIS"
+	_close_button.disabled = true
+	_canvas_title_label.text = "%s · RANG %d À RÉSOUDRE" % [
+		_canvas_title_label.text.get_slice(" · ", 0),
+		_evolution_rank,
+	]
+
+
+func _reset_evolution_mode() -> void:
+	_evolution_mode = false
+	_evolution_rank = 0
+	_evolution_request_id = &""
+	_evolution_source_spell_id = &""
+	if is_instance_valid(_close_button):
+		_close_button.text = "FERMER"
+		_close_button.disabled = false
+	if is_instance_valid(_consultative_label):
+		_consultative_label.text = "CONSULTATION\nProgression de la run"
+	if is_instance_valid(_branch_title_label):
+		_branch_title_label.text = "BRANCHES"
 
 
 func _capture_previous_focus() -> void:
@@ -609,15 +831,15 @@ func _base_spell_for_discipline(
 	) -> Spell:
 	if character_state == null or character_state.unit == null or discipline == null:
 		return null
-	var discipline_index := character_state.disciplines.find(discipline)
-	if discipline_index < 0 or discipline_index >= character_state.unit.spells.size():
-		return null
-	return character_state.unit.spells[discipline_index] as Spell
+	for spell in character_state.unit.spells:
+		if spell != null and spell.discipline_id == discipline.discipline_id:
+			return spell as Spell
+	return null
 
 
 func _branch_icon(
 		character_state: CharacterRunState,
-		discipline_index: int,
+		_discipline_index: int,
 		discipline: DisciplineData
 	) -> Texture2D:
 	if discipline != null and discipline.icon != null:
@@ -626,9 +848,12 @@ func _branch_icon(
 		return null
 	if _active_theme == null or character_state.unit == null:
 		return null
-	if discipline_index < 0 or discipline_index >= character_state.unit.spells.size():
-		return _active_theme.discipline_emblem_texture
-	return _active_theme.get_spell_icon_for(character_state.unit.spells[discipline_index])
+	var base_spell := _base_spell_for_discipline(character_state, discipline)
+	return (
+		_active_theme.get_spell_icon_for(base_spell)
+		if base_spell != null
+		else _active_theme.discipline_emblem_texture
+	)
 
 
 func _base_icon_for_graph(

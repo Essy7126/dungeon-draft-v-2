@@ -76,6 +76,39 @@ func get_discipline_progress_snapshot(discipline_id: StringName) -> Dictionary:
 	return progress.get_snapshot() if progress != null else {}
 
 
+func get_progression_snapshot() -> Dictionary:
+	var progression := {}
+	for discipline in disciplines:
+		if discipline == null:
+			continue
+		progression[str(discipline.discipline_id)] = get_discipline_progress_snapshot(
+			discipline.discipline_id
+		)
+	return {
+		"character_id": character_id,
+		"disciplines": progression,
+	}
+
+
+func restore_progression_snapshot(snapshot: Dictionary) -> bool:
+	if StringName(snapshot.get("character_id", &"")) != character_id:
+		return false
+	var progression := snapshot.get("disciplines", {}) as Dictionary
+	for discipline in disciplines:
+		if discipline == null:
+			continue
+		var key := str(discipline.discipline_id)
+		if not progression.has(key):
+			continue
+		var progress := get_discipline_progress(discipline.discipline_id)
+		if progress == null or not progress.restore_snapshot(
+			progression[key] as Dictionary
+		):
+			return false
+	_sync_progression_modifiers_to_unit()
+	return true
+
+
 func add_discipline_xp(discipline_id: StringName, amount: int) -> Dictionary:
 	var progress := get_discipline_progress(discipline_id)
 	if progress == null or amount <= 0:

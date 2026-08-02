@@ -10,12 +10,12 @@ var _sfx: AudioStreamPlayer
 func _ready() -> void:
 	_musique = AudioStreamPlayer.new()
 	_musique.name = "Musique"
-	_musique.bus = "Master"
+	_musique.bus = "Music"
 	add_child(_musique)
 
 	_sfx = AudioStreamPlayer.new()
 	_sfx.name = "SFX"
-	_sfx.bus = "Master"
+	_sfx.bus = "SFX"
 	add_child(_sfx)
 
 
@@ -46,6 +46,7 @@ func play_sfx_at(stream: AudioStream, pos: Vector2, volume_db: float = 0.0) -> v
 	var player = AudioStreamPlayer2D.new()
 	get_tree().root.add_child(player)
 	player.stream = stream
+	player.bus = "SFX"
 	player.volume_db = volume_db
 	player.global_position = pos
 	player.play()

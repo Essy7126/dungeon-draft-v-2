@@ -10,11 +10,10 @@
 [ext_resource type="Resource" path="res://data/spells/Mage/onde_sismique.tres" id="6_seismic_wave"]
 [ext_resource type="PackedScene" path="res://characters/mage/MageVisual3D.tscn" id="7_preview_visual"]
 [ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
-[ext_resource type="Resource" uid="uid://di8c4cp4okyc3" path="res://data/characters/mage/disciplines/fire.tres" id="9_fire"]
-[ext_resource type="Resource" uid="uid://dypft5nxcoofy" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
-[ext_resource type="Resource" uid="uid://btfmeqpqbam07" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
-[ext_resource type="Resource" uid="uid://b412prwsu5mdq" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
-[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="14_8vaj1"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/fire.tres" id="9_fire"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
 atlas = ExtResource("5_fallback_texture")

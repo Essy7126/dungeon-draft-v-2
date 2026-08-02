@@ -99,14 +99,12 @@ func show_unit(unit, locked: bool = false) -> void:
 		return
 	_title.text = unit.unit_name
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
-	_add_school_signature(unit)
 	_add_resources(unit)
 	_add_statuses(unit)
 	_add_details_toggle(unit)
 	if _details_expanded:
 		_add_detailed_stats(unit)
 	_add_spells(unit)
-	_add_traits(unit)
 
 func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = false) -> void:
 	if _locked and not locked:
@@ -143,16 +141,7 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 	var stored = grid.get_effect(cell)
 	if stored != null and stored.has("data") and stored["data"].has("duration"):
 		_add_line("Duree", _duration_label(stored["data"]["duration"]))
-	if effect.native_energy_id.strip_edges() != "" or effect.counts_as_rune:
-		_add_section("Energie")
-		if effect.native_energy_id.strip_edges() != "":
-			_add_line("Affinite", effect.native_energy_id)
-		if effect.ap_discount > 0:
-			_add_line("PA", "-%d sur le premier sort du tour (min 1)" % effect.ap_discount)
-		if effect.fervor_generation_multiplier != 1.0:
-			_add_line("Ferveur", "x%s generation" % _fmt_float(effect.fervor_generation_multiplier))
-
-func show_spell_preview(caster, spell: Spell, cell: Vector2i, grid: GridData, spell_caster: SpellCaster, imprinted: bool = false) -> void:
+func show_spell_preview(caster, spell: Spell, cell: Vector2i, grid: GridData, spell_caster: SpellCaster) -> void:
 	if _locked:
 		return
 	_displayed_unit = caster
@@ -175,32 +164,9 @@ func show_spell_preview(caster, spell: Spell, cell: Vector2i, grid: GridData, sp
 		_add_paragraph("Aucune unite touchee. Terrain ou case libre seulement.")
 	else:
 		for target in affected_units:
-			_add_line(target.unit_name, _preview_effect_on_unit(caster, spell, target, imprinted))
+			_add_line(target.unit_name, _preview_effect_on_unit(caster, spell, target))
 	if spell.terrain_effect != null:
 		_add_line("Terrain", "Pose %s" % Glossary.token_for_name(spell.terrain_effect.effect_name))
-	if imprinted and spell.imprint_terrain_effect != null:
-		_add_line("Empreinte", "Pose %s" % Glossary.token_for_name(spell.imprint_terrain_effect.effect_name))
-
-# En tete de fiche : le nom de l'ecole dans sa couleur + sa signature
-# (comment cette ecole gagne sa jauge). Rien si l'unite n'a pas d'ecole.
-func _add_school_signature(unit) -> void:
-	if not unit.has_energy():
-		return
-	var school: Color = unit.energy_type.get_school_color()
-	var name_label := Label.new()
-	name_label.text = unit.energy_type.energy_name
-	name_label.add_theme_font_size_override("font_size", 14)
-	name_label.add_theme_color_override("font_color", school)
-	_content.add_child(name_label)
-	var signature: String = unit.energy_type.get_signature_text()
-	if signature != "":
-		var sig := Label.new()
-		sig.text = signature
-		sig.custom_minimum_size = Vector2(286, 0)
-		sig.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		sig.add_theme_font_size_override("font_size", 11)
-		sig.add_theme_color_override("font_color", Color(school.r, school.g, school.b, 0.85))
-		_content.add_child(sig)
 
 func _add_resources(unit) -> void:
 	_add_section("Ressources")
@@ -208,12 +174,6 @@ func _add_resources(unit) -> void:
 	_add_line("Bouclier", str(unit.current_shield))
 	_add_line("PM", "%d / %d" % [unit.current_mp, unit.max_mp.get_int()])
 	_add_line("PA", "%d / %d" % [unit.current_ap, unit.max_ap.get_int()])
-	if unit.has_energy():
-		_add_line(unit.energy_type.energy_name, "%d / %d" % [int(unit.current_energy), int(unit.energy_type.max_energy)])
-		if unit.charge_threshold_active:
-			_add_line("Eveil", "%s, %d tour(s)" % [unit.energy_type.threshold_name, unit.awakening_turns_remaining])
-		else:
-			_add_line("Reaction", "%d Ferveur disponible" % int(unit.energy_type.reaction_cost))
 
 func _add_details_toggle(unit) -> void:
 	var btn := Button.new()
@@ -234,23 +194,17 @@ func _add_detailed_stats(unit) -> void:
 	_add_line("Esquive", "%d%%" % int(round(unit.esquive.get_value() * 100.0)))
 	_add_line("Critique", "%d%% x%s" % [int(round(unit.crit_chance.get_value() * 100.0)), _fmt_float(unit.crit_multi.get_value())])
 
-func _preview_effect_on_unit(caster, spell: Spell, target, imprinted: bool) -> String:
+func _preview_effect_on_unit(_caster, spell: Spell, _target) -> String:
 	var parts: Array = []
-	var raw_damage: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
-	if raw_damage > 0:
-		var dmg: int = caster.get_modified_spell_damage(spell, raw_damage) if caster != null and caster.has_method("get_modified_spell_damage") else raw_damage
-		parts.append("~%d degats" % dmg)
-	var raw_heal: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
-	if raw_heal > 0:
-		var heal: int = caster.get_modified_spell_heal(spell, raw_heal) if caster != null and caster.has_method("get_modified_spell_heal") else raw_heal
-		parts.append("~%d PV rendus" % heal)
-	var shield: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+	if spell.damage > 0:
+		parts.append("~%d degats" % spell.damage)
+	if spell.heal > 0:
+		parts.append("~%d PV rendus" % spell.heal)
+	var shield: int = spell.shield_grant
 	if shield > 0:
 		parts.append("%d bouclier" % shield)
 	if spell.applied_status != null:
 		parts.append("applique %s" % Glossary.token_for_name(spell.applied_status.status_name))
-	if imprinted and spell.imprint_status != null:
-		parts.append("applique %s" % Glossary.token_for_name(spell.imprint_status.status_name))
 	if spell.push_distance > 0:
 		parts.append("pousse %d" % spell.push_distance)
 	if parts.is_empty():
@@ -301,7 +255,6 @@ func _add_spells(unit) -> void:
 		_add_spell_row(unit, spell)
 
 func _add_spell_row(unit, spell: Spell) -> void:
-	# RichTextLabel : permet d'afficher le cout de jauge des payoffs dans la
 	# couleur d'ecole, a cote du cout en PA (le reste du texte est inchange).
 	var label := RichTextLabel.new()
 	label.bbcode_enabled = true
@@ -312,49 +265,18 @@ func _add_spell_row(unit, spell: Spell) -> void:
 	label.add_theme_font_size_override("normal_font_size", 12)
 	label.add_theme_color_override("default_color", Color(0.9, 0.88, 0.82))
 	label.mouse_filter = Control.MOUSE_FILTER_STOP
-	label.text = "%s - %s" % [spell.spell_name, _spell_summary(spell, unit, false, true)]
-	label.mouse_entered.connect(func(): _show_spell_tooltip(unit, spell, false))
+	label.text = "%s - %s" % [spell.spell_name, _spell_summary(spell, unit)]
+	label.mouse_entered.connect(func(): _show_spell_tooltip(unit, spell))
 	label.mouse_exited.connect(_hide_keyword_tooltip)
 	_content.add_child(label)
-	if spell.can_imprint():
-		var imprint := Label.new()
-		imprint.custom_minimum_size = Vector2(286, 0)
-		imprint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		imprint.add_theme_font_size_override("font_size", 11)
-		imprint.add_theme_color_override("font_color", Color(0.78, 0.66, 0.92))
-		imprint.mouse_filter = Control.MOUSE_FILTER_STOP
-		imprint.text = "Empreinte - %s" % _spell_summary(spell, unit, true)
-		imprint.mouse_entered.connect(func(): _show_spell_tooltip(unit, spell, true))
-		imprint.mouse_exited.connect(_hide_keyword_tooltip)
-		_content.add_child(imprint)
 
-func _add_traits(unit) -> void:
-	_add_section("Traits")
-	if unit.traits.is_empty():
-		_add_paragraph("Aucun trait actif.")
-		return
-	for unit_trait in unit.traits:
-		if unit_trait == null:
-			continue
-		var trait_name: String = unit_trait._trait_name() if unit_trait.has_method("_trait_name") else "trait"
-		_add_paragraph(trait_name)
-
-# `fervor_bbcode` : colore le cout de jauge (payoffs) dans la couleur d'ecole
-# du porteur — a n'utiliser que dans un RichTextLabel.
-func _spell_summary(spell: Spell, unit = null, imprinted: bool = false, fervor_bbcode: bool = false) -> String:
+func _spell_summary(spell: Spell, unit = null) -> String:
 	var parts: Array = []
 	var ap_cost: int = unit.get_spell_ap_cost(spell) if unit != null else spell.ap_cost
 	parts.append("%d PA" % ap_cost)
-	if unit != null and unit.has_energy():
-		var fervor_cost: float = unit.get_spell_fervor_cost(spell, imprinted)
-		if fervor_cost > 0.0:
-			var fervor_text := "%d Ferveur" % int(fervor_cost)
-			if fervor_bbcode:
-				fervor_text = "[color=#%s]%s[/color]" % [unit.energy_type.get_school_color().to_html(false), fervor_text]
-			parts.append(fervor_text)
-	var damage: int = spell.damage + (spell.imprint_damage_bonus if imprinted else 0)
-	var heal: int = spell.heal + (spell.imprint_heal_bonus if imprinted else 0)
-	var shield: int = spell.shield_grant + (spell.imprint_shield_bonus if imprinted else 0)
+	var damage: int = spell.damage
+	var heal: int = spell.heal
+	var shield: int = spell.shield_grant
 	if damage > 0:
 		parts.append("%d degats" % damage)
 	if heal > 0:
@@ -363,12 +285,8 @@ func _spell_summary(spell: Spell, unit = null, imprinted: bool = false, fervor_b
 		parts.append("%d bouclier" % shield)
 	if spell.applied_status != null:
 		parts.append("Applique %s" % spell.applied_status.status_name)
-	if imprinted and spell.imprint_status != null:
-		parts.append("Applique %s" % spell.imprint_status.status_name)
 	if spell.has_terrain_effect():
 		parts.append("Pose %s" % spell.terrain_effect.effect_name)
-	if imprinted and spell.imprint_terrain_effect != null:
-		parts.append("Pose %s" % spell.imprint_terrain_effect.effect_name)
 	if spell.push_distance > 0:
 		parts.append("Pousse %d" % spell.push_distance)
 	return " | ".join(parts)
@@ -395,11 +313,11 @@ func _add_paragraph(text: String) -> void:
 	label.set_keyword_text(Glossary.annotate_text(text))
 	_content.add_child(label)
 
-func _show_spell_tooltip(unit, spell: Spell, imprinted: bool) -> void:
+func _show_spell_tooltip(unit, spell: Spell) -> void:
 	var layer = _tooltip_layer()
 	if layer == null:
 		return
-	layer.show_spell(unit, spell, imprinted, _spell_unusable_reason(unit, spell, imprinted), get_viewport().get_mouse_position())
+	layer.show_spell(unit, spell, _spell_unusable_reason(unit, spell), get_viewport().get_mouse_position())
 
 func _hide_keyword_tooltip() -> void:
 	var layer = _tooltip_layer()
@@ -411,7 +329,7 @@ func _tooltip_layer():
 		return null
 	return get_tree().get_first_node_in_group("keyword_tooltip_layer")
 
-func _spell_unusable_reason(unit, spell: Spell, imprinted: bool) -> String:
+func _spell_unusable_reason(unit, spell: Spell) -> String:
 	if unit == null:
 		return "aucun lanceur actif"
 	if spell == null:
@@ -419,10 +337,6 @@ func _spell_unusable_reason(unit, spell: Spell, imprinted: bool) -> String:
 	var ap_cost: int = unit.get_spell_ap_cost(spell)
 	if unit.current_ap < ap_cost:
 		return "PA insuffisants (%d / %d)" % [unit.current_ap, ap_cost]
-	if unit.has_energy():
-		var fervor_cost: float = unit.get_spell_fervor_cost(spell, imprinted)
-		if not unit.can_afford_energy(fervor_cost):
-			return "Ferveur insuffisante (%d / %d)" % [int(unit.current_energy), int(fervor_cost)]
 	return ""
 
 func _clear_content() -> void:

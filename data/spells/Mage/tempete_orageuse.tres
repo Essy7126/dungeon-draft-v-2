@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"mage_thunderstorm"
-discipline_id = &"mage_lightning"
+discipline_id = &"mage_fulguromancy"
 spell_name = "Tempête orageuse"
 description = "Déchaîne une tempête électrique sur une zone carrée de 3 × 3. Chaque cible subit un unique impact."
 icon = ExtResource("2_icon")

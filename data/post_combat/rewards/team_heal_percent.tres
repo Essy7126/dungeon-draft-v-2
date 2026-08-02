@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PostCombatRewardData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/post_combat/post_combat_reward_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/heal.svg" id="2"]
+
+[resource]
+script = ExtResource("1")
+reward_id = &"team_heal_20_percent"
+display_name = "Souffle réparateur"
+description = "Rend 20 % des PV maximum à chaque héros vivant."
+icon = ExtResource("2")
+reward_type = 0
+value = 0.2
+target_policy = 0

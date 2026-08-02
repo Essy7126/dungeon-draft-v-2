@@ -4,7 +4,7 @@
 #
 # Construit en tête de SpellCaster.cast(), enrichi par chaque étape du
 # pipeline, et passé aux hooks des SpellModifier. Le `report` qu'il porte
-# est LE contrat avec l'UI/les logs/les traits : mêmes clés, mêmes valeurs
+# est LE contrat avec l'UI, les logs et les modificateurs : mêmes clés et valeurs
 # qu'avant le découpage en pipeline — ne jamais y renommer quoi que ce soit.
 #
 # `movement` est un journal INTERNE au pipeline (il n'entre pas dans le
@@ -20,11 +20,9 @@ extends RefCounted
 var caster: Unit = null
 var spell: Spell = null
 var cell: Vector2i = Vector2i.ZERO
-var imprinted: bool = false
 
 # --- Coûts calculés par _resolve_costs ---
 var ap_cost: int = 0
-var fervor_cost: float = 0.0
 
 # --- État de résolution ---
 var report: Dictionary = {}
@@ -39,6 +37,15 @@ var push_distance_override_by_unit: Dictionary = {} # Unit -> distance totale
 var collision_damage_bonus: int = 0
 var collision_damage_override: int = -1
 var collision_damage_resolved: bool = false
+# Agrégats génériques des arbres. Les modifiers écrivent pendant
+# on_targets_resolved puis matérialisent un seul statut/terrain final pendant
+# le passage de finalisation.
+var skill_tree_status_specs_by_unit: Dictionary = {}
+var skill_tree_status_groups_finalized: Dictionary = {}
+var skill_tree_damage_groups_by_cell: Dictionary = {}
+var skill_tree_damage_groups_finalized: bool = false
+var skill_tree_terrain_spec: Dictionary = {}
+var skill_tree_terrain_finalized: bool = false
 var primary_target: Unit = null
 var failed: bool = false
 var costs_committed: bool = false

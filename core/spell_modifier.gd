@@ -2,14 +2,11 @@
 # ============================================================
 # SPELL MODIFIER — Une transformation de sort, en donnée (.tres).
 #
-# C'est l'interface des « sorts évolutifs » (design §6) : un reward comme le
-# Brassard Incendiaire attache un SpellModifier à un sort ou à un porteur, et
-# le pipeline de SpellCaster.cast() appelle ses hooks aux bonnes étapes.
+# Interface data-driven des transformations de sorts de progression.
 # AUCUN code du caster à toucher pour une nouvelle transformation :
 #   1. un .gd qui étend SpellModifier et surcharge le(s) hook(s) utile(s) ;
 #   2. un .tres qui règle ses valeurs (statut, terrain, cible...) ;
-#   3. attaché soit au sort (Spell.modifiers), soit au porteur (via un
-#      TraitSpellModifier donné par un reward/une relique).
+#   3. attaché au sort ou au SpellLoadoutState par la progression.
 #
 # Chaque hook reçoit le CastContext : le rapport en construction, les cellules
 # touchées, le journal des déplacements, et l'accès grille/terrain.
@@ -40,25 +37,40 @@ func applies_to(spell) -> bool:
 func get_range_bonus(_caster, _spell) -> int:
 	return 0
 
+# Autorise un modifier data-driven à élargir le contrat de ciblage avant le
+# début du cast (par exemple la branche Intercepteur de Charge).
+func allows_free_cell_target(_caster, _spell) -> bool:
+	return false
+
 # ============================================================
 # HOOKS DU PIPELINE — no-op par défaut, à surcharger au besoin.
 # Ordre d'appel dans un cast : costs → targets → damage → terrain
 # → movement → cast_complete (juste avant l'émission du rapport).
 # ============================================================
 
-# Coûts vérifiés et payés (PA / jauge / empreinte).
+# Coût en PA vérifié et payé.
 func on_costs_resolved(_ctx) -> void:
 	pass
 
 # Cellules de la zone d'effet calculées, squelette du rapport posé.
+func on_area_resolved(_ctx) -> void:
+	pass
+
+# Zone finalisée ; les autres effets peuvent maintenant lire toutes les cibles.
 func on_targets_resolved(_ctx) -> void:
+	pass
+
+# Second passage après que tous les modifiers ont enrichi le CastContext.
+# Il permet aux effets cumulatifs (statuts d'un même arbre notamment) de
+# produire une seule ressource finale, sans dépendre de l'ordre des nodes.
+func on_targets_finalized(_ctx) -> void:
 	pass
 
 # Effets directs appliqués aux unités (dégâts, soins, statuts, drains, boucliers).
 func on_damage_resolved(_ctx) -> void:
 	pass
 
-# Terrains du sort (et de l'empreinte) posés sur les cellules touchées.
+# Terrains du sort posés sur les cellules touchées.
 func on_terrain_resolved(_ctx) -> void:
 	pass
 
@@ -67,7 +79,7 @@ func on_terrain_resolved(_ctx) -> void:
 func on_movement_resolved(_ctx) -> void:
 	pass
 
-# Tout est résolu (énergie du lanceur comprise). Appelé juste AVANT
+# Tout est résolu. Appelé juste AVANT
 # l'émission de EventBus.spell_cast : dernier point pour amender le rapport.
 func on_cast_complete(_ctx) -> void:
 	pass

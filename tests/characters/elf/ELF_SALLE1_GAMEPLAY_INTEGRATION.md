@@ -1,5 +1,7 @@
 # Intégration de l’elfe 3D dans la Salle 1 isométrique
 
+> Archive historique conservée pour documenter la mise au point visuelle initiale. Les chemins, héros temporaires, ennemis, captures, versions Godot et états Git décrits ci-dessous correspondent à cette ancienne revue et ne constituent plus la configuration de production. Le test conservé charge désormais `res://data/rooms/first_run_room_01.tres` avec l'Elfe et le Guerrier; la run cible complète utilise Elfe, Mage et Guerrier contre les squelettes.
+
 ## Verdict
 
 `ELF_SALLE1_INTEGRATION_VALIDATED_WITH_WARNINGS`
