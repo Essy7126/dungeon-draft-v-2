@@ -11,7 +11,6 @@ signal cell_hovered(
 	world_position: Vector2,
 	snapped_world_position: Vector2
 )
-
 const IsoProjectionScript = preload("res://battle/iso/iso_projection.gd")
 const INVALID_CELL := Vector2i(-1, -1)
 
@@ -25,7 +24,7 @@ const HOVER_LINE := Color(0.72, 0.96, 1.0, 1.0)
 
 @export var tile_size := Vector2(128.0, 64.0)
 @export var grid_origin := Vector2(1024.0, 640.0)
-@export var debug_visible := true
+@export var debug_visible := false
 @export_range(8, 32, 1) var coordinate_font_size := 18
 
 var navigation_grid: HubNavigationGrid = null
@@ -148,6 +147,8 @@ func _draw() -> void:
 			marker.debug_color
 		)
 
+	_draw_archivist_facing_guide()
+
 	if navigation_grid.is_valid(_hovered_cell):
 		var hovered_polygon := get_cell_polygon(_hovered_cell)
 		draw_colored_polygon(hovered_polygon, HOVER_FILL)
@@ -158,3 +159,35 @@ func _draw_outline(polygon: PackedVector2Array, color: Color, width: float) -> v
 	var closed := PackedVector2Array(polygon)
 	closed.append(polygon[0])
 	draw_polyline(closed, color, width, true)
+
+
+func _draw_archivist_facing_guide() -> void:
+	var archivist_cell := _find_marker(&"ArchivistCell")
+	var look_target := _find_marker(&"ArchivistLookTarget")
+	if archivist_cell == null or look_target == null:
+		return
+	var origin := cell_to_world(archivist_cell.cell)
+	var target := cell_to_world(look_target.cell)
+	var direction := origin.direction_to(target)
+	draw_dashed_line(origin, target, look_target.debug_color, 4.0, 16.0, true)
+	draw_line(
+		target,
+		target - direction.rotated(0.55) * 26.0,
+		look_target.debug_color,
+		4.0,
+		true
+	)
+	draw_line(
+		target,
+		target - direction.rotated(-0.55) * 26.0,
+		look_target.debug_color,
+		4.0,
+		true
+	)
+
+
+func _find_marker(marker_name: StringName) -> HubTechnicalMarker:
+	for marker in _technical_markers:
+		if is_instance_valid(marker) and marker.name == marker_name:
+			return marker
+	return null

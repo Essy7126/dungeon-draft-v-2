@@ -103,6 +103,7 @@ var _death_locked := false
 var _foot_pixel := Vector2.ZERO
 var _visual_priority := VisualPriority.IDLE
 var _missing_socket_warning_emitted := false
+var _foot_realign_pending := false
 
 
 func _ready() -> void:
@@ -129,6 +130,7 @@ func _process(delta: float) -> void:
 
 func _exit_tree() -> void:
 	set_process(false)
+	_foot_realign_pending = false
 	_disconnect_bound_unit()
 	if EventBus.damage_dealt.is_connected(_on_damage_dealt):
 		EventBus.damage_dealt.disconnect(_on_damage_dealt)
@@ -426,18 +428,17 @@ func _apply_viewport_configuration() -> void:
 
 
 func _realign_foot_deferred() -> void:
-	if not is_inside_tree():
-		return
-	call_deferred("_realign_foot_after_frame")
-
-
-func _realign_foot_after_frame() -> void:
-	if not is_inside_tree():
+	if not is_inside_tree() or _foot_realign_pending:
 		return
 	var tree := get_tree()
 	if tree == null:
 		return
-	await tree.process_frame
+	_foot_realign_pending = true
+	tree.process_frame.connect(_realign_foot_after_frame, CONNECT_ONE_SHOT)
+
+
+func _realign_foot_after_frame() -> void:
+	_foot_realign_pending = false
 	if not is_inside_tree():
 		return
 	_foot_pixel = camera.unproject_position(character_world.to_global(Vector3.ZERO))

@@ -114,7 +114,7 @@ func test_title_has_one_primary_entry_and_quit() -> void:
 		["Nouvelle partie", "Quitter"],
 	)
 	assert_eq(
-		title.get_script().get_script_constant_map()["PARTY_PRESENTATION_SCREEN_PATH"],
-		"res://ui/party/PartyPresentationScreen.tscn",
+		title.get_script().get_script_constant_map()["START_HUB_SCENE_PATH"],
+		"res://hub/StartHub.tscn",
 	)
 	title.free()

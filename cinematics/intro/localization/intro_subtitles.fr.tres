@@ -1,0 +1,16 @@
+[gd_resource type="Translation" format=3]
+
+[resource]
+resource_name = "Intro cinematic subtitles (French)"
+locale = "fr"
+messages = {
+&"INTRO_SUBTITLE_01": "Au-delà des royaumes connus s’élève une montagne qui défie les cieux.",
+&"INTRO_SUBTITLE_02": "À son sommet repose un donjon ancien, gardien d’un pouvoir oublié.",
+&"INTRO_SUBTITLE_03": "Ceux qui l’ont affronté n’en rapportent que des souvenirs brisés.",
+&"INTRO_SUBTITLE_04": "Et dans son ombre, quelque chose s’éveille.",
+&"INTRO_SUBTITLE_05": "Pourtant, trois voyageurs ont répondu à l’appel.",
+&"INTRO_SUBTITLE_06": "L’Elfe, le Mage et le Guerrier ont juré d’atteindre le sommet.",
+&"INTRO_SUBTITLE_07": "Au cœur de la montagne, l’aube attend encore d’être libérée.",
+&"INTRO_SUBTITLE_08": "Mais l’ascension transforme tous ceux qui osent la tenter.",
+&"INTRO_SUBTITLE_09": "L’Archiviste ouvre la voie. Leur histoire commence ici."
+}

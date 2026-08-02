@@ -1,11 +1,16 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://hub/start_hub_controller.gd" id="1_controller"]
 [ext_resource type="Texture2D" path="res://asset/hub/start_hub_background.jpg" id="2_background"]
 [ext_resource type="Script" path="res://hub/hub_grid_overlay.gd" id="3_overlay"]
-[ext_resource type="PackedScene" path="res://hub/HubElfPreview.tscn" id="4_player"]
-[ext_resource type="Script" path="res://hub/hub_navigation_grid.gd" id="5_navigation"]
+[ext_resource type="PackedScene" path="res://characters/elf/ElfIsoUnitView.tscn" id="4_player"]
+[ext_resource type="Script" path="res://hub/hub_navigation_grid_node.gd" id="5_navigation"]
 [ext_resource type="Script" path="res://hub/hub_technical_marker.gd" id="6_marker"]
+[ext_resource type="Script" path="res://hub/exploration_movement.gd" id="7_movement"]
+[ext_resource type="Script" path="res://hub/hub_interaction_resolver.gd" id="8_resolver"]
+[ext_resource type="PackedScene" path="res://hub/HubArchivist.tscn" id="9_archivist"]
+[ext_resource type="PackedScene" path="res://hub/ui/ArchivistPanel.tscn" id="10_panel"]
+[ext_resource type="PackedScene" path="res://hub/ui/TradePanel.tscn" id="11_trade"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_debug_panel"]
 bg_color = Color(0.025, 0.035, 0.055, 0.92)
@@ -32,6 +37,13 @@ texture_filter = 1
 
 [node name="HubController" type="Node" parent="."]
 script = ExtResource("1_controller")
+debug_enabled = false
+
+[node name="ExplorationMovement" type="Node" parent="HubController"]
+script = ExtResource("7_movement")
+
+[node name="InteractionResolver" type="Node" parent="HubController"]
+script = ExtResource("8_resolver")
 
 [node name="WorldRoot" type="Node2D" parent="."]
 
@@ -40,15 +52,19 @@ texture = ExtResource("2_background")
 centered = false
 
 [node name="GridOverlay" type="Node2D" parent="WorldRoot"]
+visible = false
 z_index = 2
 script = ExtResource("3_overlay")
+debug_visible = false
 
 [node name="SortableWorld" type="Node2D" parent="WorldRoot"]
 z_index = 4
 y_sort_enabled = true
 
 [node name="Player" parent="WorldRoot/SortableWorld" instance=ExtResource("4_player")]
-scale = Vector2(1.0, 1.0)
+render_display_scale = 0.275
+
+[node name="Archivist" parent="WorldRoot/SortableWorld" instance=ExtResource("9_archivist")]
 
 [node name="Foreground" type="Node2D" parent="WorldRoot"]
 z_index = 20
@@ -58,24 +74,40 @@ script = ExtResource("5_navigation")
 blocked_cells = Array[Vector2i]([Vector2i(0, 5), Vector2i(0, 6), Vector2i(0, 7), Vector2i(0, 8), Vector2i(0, 9), Vector2i(0, 10), Vector2i(1, 5), Vector2i(1, 6), Vector2i(1, 7), Vector2i(1, 8), Vector2i(1, 9), Vector2i(1, 10), Vector2i(1, 11), Vector2i(2, 6), Vector2i(2, 7), Vector2i(2, 8), Vector2i(2, 9), Vector2i(2, 10), Vector2i(2, 11), Vector2i(3, 6), Vector2i(3, 7), Vector2i(3, 8), Vector2i(3, 9), Vector2i(3, 10), Vector2i(3, 11), Vector2i(4, 7), Vector2i(4, 8), Vector2i(4, 9), Vector2i(4, 10), Vector2i(5, 0), Vector2i(6, 0), Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0), Vector2i(10, 0), Vector2i(5, 1), Vector2i(6, 1), Vector2i(7, 1), Vector2i(8, 1), Vector2i(9, 1), Vector2i(10, 1), Vector2i(11, 1), Vector2i(6, 2), Vector2i(7, 2), Vector2i(8, 2), Vector2i(9, 2), Vector2i(10, 2), Vector2i(11, 2), Vector2i(6, 3), Vector2i(7, 3), Vector2i(8, 3), Vector2i(9, 3), Vector2i(10, 3), Vector2i(11, 3), Vector2i(7, 4), Vector2i(8, 4), Vector2i(9, 4), Vector2i(10, 4), Vector2i(10, 19), Vector2i(11, 18), Vector2i(11, 19), Vector2i(12, 18), Vector2i(12, 19), Vector2i(18, 11), Vector2i(18, 12), Vector2i(19, 10), Vector2i(19, 11), Vector2i(19, 12), Vector2i(6, 19), Vector2i(7, 19), Vector2i(8, 19), Vector2i(11, 19), Vector2i(12, 19), Vector2i(13, 19), Vector2i(19, 6), Vector2i(19, 7), Vector2i(19, 8), Vector2i(19, 11), Vector2i(19, 12), Vector2i(19, 13)])
 
 [node name="PlayerSpawn" type="Marker2D" parent="NavigationGrid"]
+visible = false
 script = ExtResource("6_marker")
 cell = Vector2i(14, 14)
 debug_color = Color(0.28, 0.78, 1, 1)
 
 [node name="MerchantApproach" type="Marker2D" parent="NavigationGrid"]
+visible = false
 script = ExtResource("6_marker")
 cell = Vector2i(10, 5)
 debug_color = Color(1, 0.72, 0.24, 1)
 
 [node name="StrategyTableApproach" type="Marker2D" parent="NavigationGrid"]
+visible = false
 script = ExtResource("6_marker")
 cell = Vector2i(5, 10)
 debug_color = Color(0.72, 0.48, 1, 1)
 
 [node name="DungeonPortalApproach" type="Marker2D" parent="NavigationGrid"]
+visible = false
 script = ExtResource("6_marker")
 cell = Vector2i(2, 2)
 debug_color = Color(1, 0.34, 0.22, 1)
+
+[node name="ArchivistCell" type="Marker2D" parent="NavigationGrid"]
+visible = false
+script = ExtResource("6_marker")
+cell = Vector2i(5, 11)
+debug_color = Color(1, 0.86, 0.36, 1)
+
+[node name="ArchivistLookTarget" type="Marker2D" parent="NavigationGrid"]
+visible = false
+script = ExtResource("6_marker")
+cell = Vector2i(18, 18)
+debug_color = Color(0.28, 0.92, 1, 1)
 
 [node name="CameraRig" type="Node2D" parent="."]
 
@@ -85,33 +117,56 @@ position = Vector2(1024, 1024)
 [node name="HubUI" type="CanvasLayer" parent="."]
 
 [node name="DebugPanel" type="PanelContainer" parent="HubUI"]
+visible = false
 offset_left = 18.0
 offset_top = 18.0
 offset_right = 690.0
 offset_bottom = 167.0
 theme_override_styles/panel = SubResource("StyleBox_debug_panel")
+mouse_filter = 2
 
 [node name="Margin" type="MarginContainer" parent="HubUI/DebugPanel"]
+mouse_filter = 2
 theme_override_constants/margin_left = 14
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 10
 
 [node name="Content" type="VBoxContainer" parent="HubUI/DebugPanel/Margin"]
+mouse_filter = 2
 theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="HubUI/DebugPanel/Margin/Content"]
+mouse_filter = 2
 text = "START HUB - GRILLE DEBUG 20 x 20 - FOOTPRINT 128 x 64"
 label_settings = SubResource("LabelSettings_title")
 
 [node name="Hover" type="Label" parent="HubUI/DebugPanel/Margin/Content"]
+mouse_filter = 2
 text = "Cellule : deplacez la souris sur la salle"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="Conversion" type="Label" parent="HubUI/DebugPanel/Margin/Content"]
+mouse_filter = 2
 text = "Ecran -> monde -> cellule -> centre monde"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="Counts" type="Label" parent="HubUI/DebugPanel/Margin/Content"]
+mouse_filter = 2
 text = "Praticables : - | Bloquees : - | F1 : debug"
 label_settings = SubResource("LabelSettings_body")
+
+[node name="ArchivistPanel" parent="HubUI" instance=ExtResource("10_panel")]
+
+[node name="TradePanel" parent="HubUI" instance=ExtResource("11_trade")]
+
+[node name="TransitionFade" type="ColorRect" parent="HubUI"]
+visible = false
+z_index = 100
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0)
