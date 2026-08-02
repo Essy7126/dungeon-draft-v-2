@@ -1,0 +1,715 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-08-02",
+  "repository": {
+    "head": "309a6cda9e00e8db0327ea3188d64a937a9b4673",
+    "branch": "refactor/project-clean-slate",
+    "workspace": "res://"
+  },
+  "verdict": "SKILL_TREES_BLOCKED_BY_PREVIEW_GAPS",
+  "requested_reference": {
+    "path": "res://docs/design/reference/skill_tree_preview.html",
+    "exists": false,
+    "found_in_git_history": false
+  },
+  "candidate_reference": {
+    "path": "res://asset/ui/dungeon_draft/arbre_compétences/preview.html",
+    "exists": true,
+    "size_bytes": 97314,
+    "sha256": "3991432d4cb26915f76103664e082fa6d404b024465a7abe6a59418e8332c5e0",
+    "authority_confirmed": false,
+    "declared_companion_json_exists": false,
+    "character_count": 3,
+    "tree_count": 12,
+    "rank_thresholds": [0, 3, 7, 12, 18],
+    "choices_per_tree": 18,
+    "nodes_per_tree_including_base": 19,
+    "final_configurations_per_tree": 16,
+    "global_missing_fields": [
+      "icons",
+      "asset_paths",
+      "acquired_visual_state",
+      "available_visual_state",
+      "locked_visual_state",
+      "excluded_visual_state",
+      "hover_visual_state",
+      "focus_visual_state",
+      "keyboard_contract",
+      "mouse_contract",
+      "gamepad_contract"
+    ],
+    "ambiguous_fields": [
+      "elfe.mage.r1.base numerical values",
+      "mage.pyromancie.r1.base numerical values",
+      "stable id authority because companion JSON is missing",
+      "status stacking and refresh rules",
+      "shield stacking and replacement rules",
+      "50 percent rounding rules",
+      "generic enlarged area semantics",
+      "simple negative effect taxonomy",
+      "Charge pathing and collision semantics"
+    ]
+  },
+  "target_contract": {
+    "production_character_ids": ["elf", "mage", "warrior"],
+    "spells_per_character": 4,
+    "distinct_disciplines_per_character": 4,
+    "tree_count": 12,
+    "rank_count": 5,
+    "xp_per_successful_cast": 1,
+    "excluded_systems": ["energy", "Ferveur", "Éveil", "signature hits"]
+  },
+  "repository_summary": {
+    "production_character_count": 3,
+    "spell_count": 12,
+    "discipline_resource_count": 11,
+    "distinct_discipline_ids_by_character": {
+      "elf": 4,
+      "mage": 4,
+      "warrior": 3
+    },
+    "upgrade_resource_count": 31,
+    "modifier_resource_count": 34,
+    "full_rank_1_to_5_tree_count": 1,
+    "invalid_tree_count": 1,
+    "invalid_tree_diagnostics": [
+      "UNKNOWN_EXCLUSION: warrior_breaker_driving_shove -> warrior_breaker_long_hook"
+    ]
+  },
+  "tree_order": [
+    "elf:Tir précis",
+    "elf:Frappe sournoise",
+    "elf:Boule de feu de l’Elfe",
+    "elf:Soin sylvestre",
+    "mage:Boule de feu",
+    "mage:Mur de glace",
+    "mage:Tempête orageuse",
+    "mage:Onde sismique",
+    "warrior:Frappe lourde",
+    "warrior:Charge",
+    "warrior:Tourbillon",
+    "warrior:Garde"
+  ],
+  "trees": [
+    {
+      "character_id": "elf",
+      "character_preview_id": "elfe",
+      "spell_name": "Tir précis",
+      "spell_id": "elf_precise_shot",
+      "discipline_name": "Archer",
+      "discipline_id": "archer",
+      "classification": "PARTIEL",
+      "risk": "MEDIUM",
+      "preview": {
+        "base_id": "elfe.archer.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/characters/elf/spells/precise_shot.tres",
+        "discipline_path": "res://data/characters/elf/disciplines/archer.tres",
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": true,
+        "resolver_valid": true,
+        "current_upgrade_ids": [
+          "elf_archer_eagle_eye",
+          "elf_archer_repel_arrow",
+          "elf_archer_long_range",
+          "elf_archer_piercing_shot",
+          "elf_archer_hindering_arrow",
+          "elf_archer_impact_bolt",
+          "elf_archer_perfect_sight",
+          "elf_archer_stabilization",
+          "elf_archer_barbed_tip",
+          "elf_archer_open_breach",
+          "elf_archer_pin_arrow",
+          "elf_archer_tactical_retreat",
+          "elf_archer_siege_bolt",
+          "elf_archer_shatter",
+          "elf_archer_perfect_shot",
+          "elf_archer_transpiercing_bolt",
+          "elf_archer_siege_arrow",
+          "elf_archer_stopping_arrow"
+        ]
+      },
+      "gaps": [
+        "all stable ids differ from candidate ids",
+        "candidate has no icon or state contract",
+        "candidate companion JSON is missing"
+      ],
+      "missing_choice_count": 0
+    },
+    {
+      "character_id": "elf",
+      "character_preview_id": "elfe",
+      "spell_name": "Frappe sournoise",
+      "spell_id": "elf_sneak_strike",
+      "discipline_name": "Assassin",
+      "discipline_id": "assassin",
+      "classification": "PARTIEL",
+      "risk": "HIGH",
+      "preview": {
+        "base_id": "elfe.assassin.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/characters/elf/spells/sneak_strike.tres",
+        "discipline_path": "res://data/characters/elf/disciplines/assassin.tres",
+        "ranks": [1, 2],
+        "thresholds": [0, 3],
+        "choice_count": 2,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": true,
+        "resolver_valid": true,
+        "current_upgrade_ids": [
+          "elf_assassin_backstab",
+          "elf_assassin_venomous_blade"
+        ]
+      },
+      "gaps": [
+        "ranks 3 to 5 missing",
+        "16 candidate choices missing",
+        "stable ids differ",
+        "candidate has no icon or state contract"
+      ],
+      "missing_choice_count": 16,
+      "missing_ranks": [3, 4, 5]
+    },
+    {
+      "character_id": "warrior",
+      "character_preview_id": "guerrier",
+      "spell_name": "Frappe lourde",
+      "spell_id": null,
+      "discipline_name": "Brutalité",
+      "discipline_id": null,
+      "classification": "ABSENT",
+      "risk": "CRITICAL",
+      "preview": {
+        "base_id": "guerrier.brutalite.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": null,
+        "discipline_path": null,
+        "ranks": [],
+        "thresholds": [],
+        "choice_count": 0,
+        "data_present": false,
+        "ui_present": false,
+        "modifiers_functional": false,
+        "resolver_valid": null,
+        "obsolete_parallel_discipline_path": "res://data/characters/warrior/disciplines/breaker.tres",
+        "obsolete_parallel_spell_path": "res://data/spells/Guerrier/bourrade.tres",
+        "obsolete_parallel_diagnostic": "UNKNOWN_EXCLUSION: warrior_breaker_driving_shove -> warrior_breaker_long_hook"
+      },
+      "gaps": [
+        "target spell absent",
+        "target discipline absent",
+        "all ranks and 18 choices absent",
+        "obsolete Briseur tree is invalid"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [1, 2, 3, 4, 5]
+    },
+    {
+      "character_id": "warrior",
+      "character_preview_id": "guerrier",
+      "spell_name": "Charge",
+      "spell_id": null,
+      "discipline_name": "Assaut",
+      "discipline_id": null,
+      "classification": "ABSENT",
+      "risk": "CRITICAL",
+      "preview": {
+        "base_id": "guerrier.assaut.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": null,
+        "discipline_path": null,
+        "ranks": [],
+        "thresholds": [],
+        "choice_count": 0,
+        "data_present": false,
+        "ui_present": false,
+        "modifiers_functional": false,
+        "resolver_valid": null
+      },
+      "gaps": [
+        "target spell absent",
+        "target discipline absent",
+        "all ranks and 18 choices absent",
+        "Charge pathing contract incomplete"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [1, 2, 3, 4, 5]
+    },
+    {
+      "character_id": "warrior",
+      "character_preview_id": "guerrier",
+      "spell_name": "Tourbillon",
+      "spell_id": null,
+      "discipline_name": "Furie",
+      "discipline_id": null,
+      "classification": "ABSENT",
+      "risk": "CRITICAL",
+      "preview": {
+        "base_id": "guerrier.furie.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": null,
+        "discipline_path": null,
+        "ranks": [],
+        "thresholds": [],
+        "choice_count": 0,
+        "data_present": false,
+        "ui_present": false,
+        "modifiers_functional": false,
+        "resolver_valid": null,
+        "obsolete_parallel_discipline_path": "res://data/characters/warrior/disciplines/ravager.tres",
+        "obsolete_parallel_spell_path": "res://data/spells/Guerrier/pietinement.tres"
+      },
+      "gaps": [
+        "target spell absent",
+        "target discipline absent",
+        "all ranks and 18 choices absent"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [1, 2, 3, 4, 5]
+    },
+    {
+      "character_id": "warrior",
+      "character_preview_id": "guerrier",
+      "spell_name": "Garde",
+      "spell_id": null,
+      "discipline_name": "Rempart",
+      "discipline_id": null,
+      "classification": "ABSENT",
+      "risk": "CRITICAL",
+      "preview": {
+        "base_id": "guerrier.rempart.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": null,
+        "discipline_path": null,
+        "ranks": [],
+        "thresholds": [],
+        "choice_count": 0,
+        "data_present": false,
+        "ui_present": false,
+        "modifiers_functional": false,
+        "resolver_valid": null,
+        "obsolete_parallel_discipline_path": "res://data/characters/warrior/disciplines/executioner.tres",
+        "obsolete_parallel_spell_paths": [
+          "res://data/spells/Guerrier/marque_de_guerre.tres",
+          "res://data/spells/Guerrier/execution_de_guerre.tres"
+        ]
+      },
+      "gaps": [
+        "target spell absent",
+        "target discipline absent",
+        "all ranks and 18 choices absent",
+        "current executioner discipline is shared by two obsolete spells"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [1, 2, 3, 4, 5]
+    },
+    {
+      "character_id": "mage",
+      "character_preview_id": "mage",
+      "spell_name": "Boule de feu",
+      "spell_id": "mage_fireball",
+      "discipline_name": "Pyromancie",
+      "discipline_id": "mage_fire",
+      "classification": "AMBIGU DANS LA PREVIEW",
+      "risk": "CRITICAL",
+      "preview": {
+        "base_id": "mage.pyromancie.r1.base",
+        "base_defined": false,
+        "base_ambiguity": "Valeurs de base à normaliser avant équilibrage final",
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": false,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/spells/Mage/boule_de_feu.tres",
+        "discipline_path": "res://data/characters/mage/disciplines/fire.tres",
+        "ranks": [1],
+        "thresholds": [0],
+        "choice_count": 0,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": null,
+        "resolver_valid": true
+      },
+      "gaps": [
+        "base numerical values are undefined",
+        "ranks 2 to 5 missing",
+        "all 18 candidate choices missing"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [2, 3, 4, 5]
+    },
+    {
+      "character_id": "mage",
+      "character_preview_id": "mage",
+      "spell_name": "Mur de glace",
+      "spell_id": "mage_ice_wall",
+      "discipline_name": "Cryomancie",
+      "discipline_id": "mage_ice",
+      "classification": "PARTIEL",
+      "risk": "HIGH",
+      "preview": {
+        "base_id": "mage.cryomancie.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/spells/mur_de_glace.tres",
+        "discipline_path": "res://data/characters/mage/disciplines/ice.tres",
+        "ranks": [1],
+        "thresholds": [0],
+        "choice_count": 0,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": null,
+        "resolver_valid": true
+      },
+      "gaps": [
+        "ranks 2 to 5 missing",
+        "all 18 candidate choices missing",
+        "base area shape and ice trigger timing are not fully specified"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [2, 3, 4, 5]
+    },
+    {
+      "character_id": "mage",
+      "character_preview_id": "mage",
+      "spell_name": "Tempête orageuse",
+      "spell_id": "mage_thunderstorm",
+      "discipline_name": "Foudromancie",
+      "discipline_id": "mage_lightning",
+      "classification": "PARTIEL",
+      "risk": "HIGH",
+      "preview": {
+        "base_id": "mage.foudromancie.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/spells/Mage/tempete_orageuse.tres",
+        "discipline_path": "res://data/characters/mage/disciplines/lightning.tres",
+        "ranks": [1],
+        "thresholds": [0],
+        "choice_count": 0,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": null,
+        "resolver_valid": true
+      },
+      "gaps": [
+        "ranks 2 to 5 missing",
+        "all 18 candidate choices missing"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [2, 3, 4, 5]
+    },
+    {
+      "character_id": "mage",
+      "character_preview_id": "mage",
+      "spell_name": "Onde sismique",
+      "spell_id": "mage_seismic_wave",
+      "discipline_name": "Géomancie",
+      "discipline_id": "mage_earth",
+      "classification": "PARTIEL",
+      "risk": "HIGH",
+      "preview": {
+        "base_id": "mage.geomancie.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/spells/Mage/onde_sismique.tres",
+        "discipline_path": "res://data/characters/mage/disciplines/earth.tres",
+        "ranks": [1],
+        "thresholds": [0],
+        "choice_count": 0,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": null,
+        "resolver_valid": true
+      },
+      "gaps": [
+        "ranks 2 to 5 missing",
+        "all 18 candidate choices missing"
+      ],
+      "missing_choice_count": 18,
+      "missing_ranks": [2, 3, 4, 5]
+    },
+    {
+      "character_id": "elf",
+      "character_preview_id": "elfe",
+      "spell_name": "Boule de feu de l’Elfe",
+      "spell_id": "elf_fireball",
+      "discipline_name": "Mage",
+      "discipline_id": "mage",
+      "classification": "AMBIGU DANS LA PREVIEW",
+      "risk": "CRITICAL",
+      "preview": {
+        "base_id": "elfe.mage.r1.base",
+        "base_defined": false,
+        "base_ambiguity": "Valeurs de base à normaliser avant équilibrage final",
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": false,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/characters/elf/spells/fireball.tres",
+        "discipline_path": "res://data/characters/elf/disciplines/mage.tres",
+        "ranks": [1, 2],
+        "thresholds": [0, 3],
+        "choice_count": 2,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": true,
+        "resolver_valid": true,
+        "current_upgrade_ids": [
+          "elf_mage_incandescent_core",
+          "elf_mage_persistent_embers"
+        ]
+      },
+      "gaps": [
+        "base numerical values are undefined",
+        "ranks 3 to 5 missing",
+        "16 candidate choices missing",
+        "Persistent Embers creates one-turn fire instead of explicitly extending existing fire"
+      ],
+      "missing_choice_count": 16,
+      "missing_ranks": [3, 4, 5]
+    },
+    {
+      "character_id": "elf",
+      "character_preview_id": "elfe",
+      "spell_name": "Soin sylvestre",
+      "spell_id": "elf_sylvan_heal",
+      "discipline_name": "Soigneur",
+      "discipline_id": "healer",
+      "classification": "PARTIEL",
+      "risk": "HIGH",
+      "preview": {
+        "base_id": "elfe.soigneur.r1.base",
+        "base_defined": true,
+        "ranks": [1, 2, 3, 4, 5],
+        "thresholds": [0, 3, 7, 12, 18],
+        "choice_count": 18,
+        "mechanically_complete": true,
+        "visually_complete": false
+      },
+      "repository": {
+        "spell_path": "res://data/characters/elf/spells/sylvan_heal.tres",
+        "discipline_path": "res://data/characters/elf/disciplines/healer.tres",
+        "ranks": [1, 2],
+        "thresholds": [0, 3],
+        "choice_count": 2,
+        "data_present": true,
+        "ui_present": true,
+        "modifiers_functional": true,
+        "resolver_valid": true,
+        "current_upgrade_ids": [
+          "elf_healer_abundant_sap",
+          "elf_healer_protective_bark"
+        ]
+      },
+      "gaps": [
+        "ranks 3 to 5 missing",
+        "16 candidate choices missing",
+        "shield and regeneration stacking rules are unspecified"
+      ],
+      "missing_choice_count": 16,
+      "missing_ranks": [3, 4, 5]
+    }
+  ],
+  "classification_counts": {
+    "CONFORME": 0,
+    "PARTIEL": 6,
+    "DONNÉES OBSOLÈTES": 0,
+    "ABSENT": 4,
+    "AMBIGU DANS LA PREVIEW": 2
+  },
+  "transversal_contracts": [
+    {"contract": "fixed party elf mage warrior", "status": "PASS"},
+    {"contract": "exactly four spells per hero", "status": "PASS"},
+    {"contract": "four distinct discipline ids per hero", "status": "FAIL", "detail": "warrior has 3"},
+    {"contract": "twelve trees", "status": "FAIL", "detail": "repository has 11 current discipline resources and only 8 map to candidate target spells"},
+    {"contract": "ranks R1 to R5", "status": "FAIL", "detail": "only Archer is complete"},
+    {"contract": "one XP per successful cast", "status": "PASS"},
+    {"contract": "ordered pending choice resolution", "status": "PASS"},
+    {"contract": "definitive exclusions", "status": "PASS_ENGINE_FAIL_BREAKER_DATA"},
+    {"contract": "SpellModifier effective application", "status": "PASS_EXISTING_CONTENT"},
+    {"contract": "selection persists between rooms", "status": "PASS"},
+    {"contract": "no energy mechanic", "status": "PASS"},
+    {"contract": "no Ferveur mechanic", "status": "PASS_WITH_STALE_TEXT"},
+    {"contract": "no Éveil mechanic", "status": "PASS_WITH_NARRATIVE_WORD"},
+    {"contract": "no signature hit mechanic", "status": "PASS"},
+    {"contract": "old eight warrior abilities absent", "status": "FAIL", "detail": "Bourrade, Marque de guerre, Exécution de guerre and Piétinement remain equipped"}
+  ],
+  "ui_audit": {
+    "screen_present": true,
+    "consultative_during_combat": true,
+    "selection_screen_present": true,
+    "runtime_states": ["SELECTED", "AVAILABLE", "LOCKED_BY_XP", "LOCKED_BY_BRANCH", "FUTURE"],
+    "distinct_excluded_state": false,
+    "progressive_reveal_depth": 1,
+    "next_rank_names_visible": false,
+    "next_rank_icons_visible": true,
+    "mouse_support_static_check": true,
+    "keyboard_support_static_check": true,
+    "gamepad_support_static_check": "theoretical through ui actions and focus neighbors",
+    "input_automated_tests_present": false,
+    "resolution_profiles": {
+      "1280x720": "compact",
+      "1920x1080": "large",
+      "2560x1440": "large"
+    },
+    "resolution_automated_tests_present": false,
+    "known_defects": [
+      "base spell is resolved by discipline index instead of discipline_id",
+      "warrior ravager tab displays warrior_execution as base spell",
+      "warrior_stomp has no dedicated tab",
+      "graph rebuild does not receive character_id and defaults to elf",
+      "warrior icons are absent from the refined catalog"
+    ]
+  },
+  "implementation_files": {
+    "migrate": [
+      "res://data/units/alliés/elfe.tres",
+      "res://data/units/alliés/mage.tres",
+      "res://data/units/alliés/Guerrier.tres",
+      "res://data/characters/elf/disciplines/assassin.tres",
+      "res://data/characters/elf/disciplines/mage.tres",
+      "res://data/characters/elf/disciplines/healer.tres",
+      "res://data/characters/mage/disciplines/fire.tres",
+      "res://data/characters/mage/disciplines/ice.tres",
+      "res://data/characters/mage/disciplines/lightning.tres",
+      "res://data/characters/mage/disciplines/earth.tres",
+      "res://ui/progression/screens/skill_tree_screen.gd",
+      "res://ui/progression/components/skill_tree_graph_view.gd",
+      "res://data/ui/skill_tree_icon_catalog_refined.tres",
+      "res://ui/progression/skin/elf_archer_visual_map.tres",
+      "res://docs/reference/skill_tree_node_icon_mapping.json"
+    ],
+    "create_exact_known_paths": [
+      "res://data/characters/elf/disciplines/assassin_rank_3.tres",
+      "res://data/characters/elf/disciplines/assassin_rank_4.tres",
+      "res://data/characters/elf/disciplines/assassin_rank_5.tres",
+      "res://data/characters/elf/disciplines/mage_rank_3.tres",
+      "res://data/characters/elf/disciplines/mage_rank_4.tres",
+      "res://data/characters/elf/disciplines/mage_rank_5.tres",
+      "res://data/characters/elf/disciplines/healer_rank_3.tres",
+      "res://data/characters/elf/disciplines/healer_rank_4.tres",
+      "res://data/characters/elf/disciplines/healer_rank_5.tres"
+    ],
+    "create_unresolved_count": 192,
+    "create_unresolved_reason": "Exact paths depend on unresolved canonical id convention and missing companion JSON",
+    "delete_confirmed": [],
+    "delete_candidates_if_candidate_reference_is_confirmed": [
+      "res://data/characters/warrior/disciplines/breaker.tres",
+      "res://data/characters/warrior/disciplines/executioner.tres",
+      "res://data/characters/warrior/disciplines/ravager.tres",
+      "res://data/characters/warrior/upgrades/*.tres",
+      "res://data/characters/warrior/modifiers/*.tres",
+      "res://data/spells/Guerrier/bourrade.tres",
+      "res://data/spells/Guerrier/marque_de_guerre.tres",
+      "res://data/spells/Guerrier/execution_de_guerre.tres",
+      "res://data/spells/Guerrier/pietinement.tres"
+    ]
+  },
+  "tests_to_create_before_migration": [
+    "res://test/unit/test_skill_tree_preview_contract.gd",
+    "res://test/unit/test_fixed_trio_skill_tree_matrix.gd",
+    "res://test/unit/test_all_skill_tree_resources_validate.gd",
+    "res://test/unit/test_skill_tree_branch_exclusivity.gd",
+    "res://test/unit/test_all_skill_tree_modifier_integration.gd",
+    "res://test/unit/test_skill_tree_status_stacking_contract.gd",
+    "res://test/unit/test_warrior_four_discipline_contract.gd",
+    "res://test/unit/test_skill_tree_run_persistence.gd",
+    "res://test/unit/test_skill_tree_screen_contract.gd",
+    "res://test/unit/test_skill_tree_screen_responsive.gd",
+    "res://test/unit/test_skill_tree_input_navigation.gd",
+    "res://test/unit/test_no_legacy_progression_symbols.gd",
+    "res://test/unit/test_skill_tree_icon_coverage.gd"
+  ],
+  "validation": {
+    "godot_version": "4.7.1.stable",
+    "resource_scan": "PASS_WITH_SANDBOX_ENVIRONMENT_WARNINGS",
+    "resource_parse_errors": 0,
+    "progression_test_scripts": 14,
+    "progression_tests_total": 166,
+    "progression_tests_passed": 165,
+    "progression_tests_failed": 1,
+    "assertions_total": 1748,
+    "assertions_passed": 1747,
+    "failing_test": "res://test/unit/test_fixed_trio_mage_contract.gd::test_basic_attack_policy_is_explicit_for_the_fixed_party",
+    "failing_test_reason": "Gardien.tres still exists",
+    "legacy_grep": "COMPLETE",
+    "git_diff_check": "PASS",
+    "staged": false,
+    "committed": false,
+    "pushed": false,
+    "gameplay_files_modified": false
+  },
+  "report_path": "res://docs/audits/skill_trees_preview_gap_audit.md"
+}
