@@ -34,7 +34,6 @@ const SPELL_GAP := 6.0
 const SPELL_PANEL_PADDING := 12.0
 const SPELL_PANEL_HEIGHT := 92.0
 const SPELL_COST_BADGE_SIZE := Vector2(24.0, 18.0)
-const SPELL_ENERGY_BADGE_SIZE := Vector2(30.0, 18.0)
 
 const END_TURN_SIZE := Vector2(136.0, 44.0)
 const TURN_LABEL_GAP := 6.0

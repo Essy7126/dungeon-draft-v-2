@@ -18,7 +18,6 @@ script = ExtResource("1_theme")
 character_id = &"elf"
 display_name = "Elfe"
 discipline_name = "Hunter"
-energy_name = ""
 default_discipline_id = &"archer"
 discipline_emblem_texture = ExtResource("2_badge")
 turn_banner_texture = ExtResource("3_banner")
@@ -29,7 +28,6 @@ utility_skills_icon = ExtResource("11_skills")
 refined_components = true
 primary_color = Color(0.15, 0.31, 0.2, 1)
 secondary_color = Color(0.45, 0.36, 0.24, 1)
-energy_color = Color(0.29, 0.55, 0.33, 1)
 text_color = Color(0.92, 0.9, 0.82, 1)
 spell_icon_mapping = {
 &"basic_attack": ExtResource("8_attack"),

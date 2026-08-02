@@ -21,7 +21,6 @@ script = ExtResource("1_theme")
 character_id = &"elf"
 display_name = "Elfe"
 discipline_name = "Hunter"
-energy_name = "Nature"
 character_bar_texture = ExtResource("2_bar")
 discipline_emblem_texture = ExtResource("3_emblem")
 portrait_frame_texture = ExtResource("10_archer_frame")
@@ -30,7 +29,6 @@ health_bar_frame_texture = ExtResource("14_health_frame")
 end_turn_button_texture = ExtResource("15_end_turn")
 primary_color = Color(0.255, 0.475, 0.215, 1)
 secondary_color = Color(0.635, 0.43, 0.19, 1)
-energy_color = Color(0.33, 0.72, 0.3, 1)
 text_color = Color(0.98, 0.92, 0.72, 1)
 spell_icon_mapping = {
 &"basic_attack": ExtResource("9_basic_attack"),

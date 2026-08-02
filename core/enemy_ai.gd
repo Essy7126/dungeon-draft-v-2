@@ -21,9 +21,6 @@ func _init(grid: GridData, pathfinder: Pathfinder, spell_caster: SpellCaster) ->
 	_spell_caster = spell_caster
 
 func decide(enemy: Unit, all_units: Array) -> Array:
-	if enemy.boss_behavior != null:
-		return enemy.boss_behavior.decide(enemy, all_units, self)
-
 	match enemy.ai_behavior:
 		BEHAVIOR_MELEE:
 			return _decide_melee(enemy, all_units)

@@ -14,7 +14,6 @@
 [ext_resource type="Resource" uid="uid://dypft5nxcoofy" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
 [ext_resource type="Resource" uid="uid://btfmeqpqbam07" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
 [ext_resource type="Resource" uid="uid://b412prwsu5mdq" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
-[ext_resource type="Script" uid="uid://dnktho3c3febl" path="res://traits/trait_data.gd" id="14_8vaj1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
 atlas = ExtResource("5_fallback_texture")

@@ -1,6 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+artifacts/
+output/
+tests/characters/**/screenshots/
+*.blend1
 
 # Fichiers temporaires de l'éditeur (sauvegardes de scène en cours d'écriture)
 *.tmp

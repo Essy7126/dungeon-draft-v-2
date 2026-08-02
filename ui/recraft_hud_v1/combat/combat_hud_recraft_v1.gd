@@ -61,10 +61,8 @@ enum HudSkinVariant {
 
 @onready var _portrait_view: Control = %PortraitView
 @onready var _hp_bar: Control = %HealthBar
-@onready var _energy_bar: Control = %EnergyBar
 @onready var _ap_badge: Control = %ActionPointsBadge
 @onready var _mp_badge: Control = %MovementPointsBadge
-@onready var _energy_name_label: Label = %EnergyNameLabel
 @onready var _hud_band: Control = %HudBand
 @onready var _neutral_background: Panel = %Background
 @onready var _character_theme_bar: TextureRect = %CharacterThemeBar
@@ -102,7 +100,6 @@ enum HudSkinVariant {
 
 var _active_mode := ""
 var _active_spell = null
-var _active_spell_imprinted := false
 var _layout_scale := 1.0
 var _combat_context: Node = null
 var _context_tree_exiting_callback := Callable()
@@ -128,8 +125,6 @@ func _ready() -> void:
 	_spell_box = %SpellSlotsContainer
 	_move_btn = %MoveButton
 	_attack_btn = %AttackButton
-	_awakening_btn = %AwakeningButton
-	_reaction_btn = %ReactionButton
 	_end_btn = %EndTurnButton
 	_attack_button_home = _attack_btn.get_parent()
 	_attack_button_home_index = _attack_btn.get_index()
@@ -142,8 +137,6 @@ func _ready() -> void:
 
 	_move_btn.set_label("Déplacer")
 	_attack_btn.set_label("Attaquer")
-	_awakening_btn.set_label("Éveil")
-	_reaction_btn.set_label("Garde")
 	_end_btn.set_label("Fin de tour")
 
 	if not get_viewport().size_changed.is_connected(_apply_layout_metrics):
@@ -151,8 +144,6 @@ func _ready() -> void:
 	_move_btn.tooltip_text = "Déplacer — choisissez une case accessible (coût en PM)."
 	_move_btn.pressed.connect(func() -> void: move_pressed.emit())
 	_attack_btn.pressed.connect(func() -> void: attack_pressed.emit())
-	_awakening_btn.pressed.connect(func() -> void: awakening_pressed.emit())
-	_reaction_btn.pressed.connect(func() -> void: reaction_pressed.emit())
 	_end_btn.pressed.connect(func() -> void: end_turn_pressed.emit())
 	_skills_button.pressed.connect(_on_skills_button_pressed)
 	var skills_shortcut := Shortcut.new()
@@ -163,7 +154,6 @@ func _ready() -> void:
 	_skills_button.shortcut_in_tooltip = true
 	if not EventBus.turn_started.is_connected(_on_event_bus_turn_started):
 		EventBus.turn_started.connect(_on_event_bus_turn_started)
-	_set_energy_controls_visible(false)
 	_apply_layout_metrics()
 	_refresh_resource_bars(null)
 	_refresh_button_states()
@@ -259,11 +249,6 @@ func _connect_context_actions() -> void:
 	_connect_action_to_context(move_pressed, &"_on_move_pressed")
 	_connect_action_to_context(attack_pressed, &"_on_attack_pressed")
 	_connect_action_to_context(spell_pressed, &"_on_spell_pressed")
-	# The production Refined HUD is PA/PM-only. Legacy Ornate/Clean screens keep
-	# their historical energy actions and signals unchanged.
-	if skin_variant != HudSkinVariant.REFINED:
-		_connect_action_to_context(awakening_pressed, &"_on_awakening_pressed")
-		_connect_action_to_context(reaction_pressed, &"_on_reaction_pressed")
 	_connect_action_to_context(end_turn_pressed, &"_on_end_turn_pressed")
 
 
@@ -273,8 +258,6 @@ func _disconnect_context_actions() -> void:
 	_disconnect_action_from_context(move_pressed, &"_on_move_pressed")
 	_disconnect_action_from_context(attack_pressed, &"_on_attack_pressed")
 	_disconnect_action_from_context(spell_pressed, &"_on_spell_pressed")
-	_disconnect_action_from_context(awakening_pressed, &"_on_awakening_pressed")
-	_disconnect_action_from_context(reaction_pressed, &"_on_reaction_pressed")
 	_disconnect_action_from_context(end_turn_pressed, &"_on_end_turn_pressed")
 
 
@@ -302,26 +285,17 @@ func _on_bound_context_tree_exiting(context: Node) -> void:
 		unbind_combat_context()
 
 
-func _add_spell_button(unit, spell, imprinted: bool) -> void:
+func _add_spell_button(unit, spell) -> void:
 	var button := SPELL_SLOT_SCENE.instantiate() as Button
 	if button == null:
 		push_error("Impossible d'instancier SpellSlotView.")
 		return
 	var ap_cost: int = unit.get_spell_ap_cost(spell)
-	var energy_cost: float = (
-		unit.get_spell_fervor_cost(spell, imprinted)
-		if unit.has_energy()
-		else 0.0
-	)
-	var energy_name: String = unit.energy_type.energy_name if unit.has_energy() else ""
 	_spell_box.add_child(button)
 	button.configure(
 		spell,
 		ap_cost,
-		energy_cost,
-		energy_name,
-		str(_spell_buttons.size() + 1),
-		imprinted
+		str(_spell_buttons.size() + 1)
 	)
 	var shortcut_index := _spell_buttons.size()
 	if shortcut_index < SPELL_SHORTCUT_KEYS.size():
@@ -340,10 +314,9 @@ func _add_spell_button(unit, spell, imprinted: bool) -> void:
 		)
 	button.set_refined_style(_refined_skin_active())
 	button.set_meta("spell", spell)
-	button.set_meta("imprinted", imprinted)
-	button.mouse_entered.connect(func() -> void: _show_spell_card(unit, spell, imprinted))
+	button.mouse_entered.connect(func() -> void: _show_spell_card(unit, spell))
 	button.mouse_exited.connect(_hide_keyword_tooltip)
-	button.pressed.connect(func() -> void: spell_pressed.emit(spell, imprinted))
+	button.pressed.connect(func() -> void: spell_pressed.emit(spell))
 	_spell_buttons.append(button)
 	_apply_spell_button_layout(button)
 	_update_spell_section_geometry()
@@ -370,8 +343,6 @@ func update_info(unit) -> void:
 	_portrait_view.set_character_data(unit.character_data)
 	_portrait_view.set_active(true)
 	_apply_character_theme(unit)
-	if not unit.energy_changed.is_connected(_on_resource_changed):
-		unit.energy_changed.connect(_on_resource_changed)
 	if not unit.stats_changed.is_connected(_on_resource_changed):
 		unit.stats_changed.connect(_on_resource_changed)
 	if not unit.hp_changed.is_connected(_on_resource_changed):
@@ -395,13 +366,8 @@ func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:
 		_hp_bar.set_resource(
 			0.0, 1.0, Color(0.64, 0.15, 0.16), null, "PV", true, animate_changes
 		)
-		_energy_bar.set_resource(
-			0.0, 1.0, Color(0.36, 0.25, 0.58), null, "EN", true, animate_changes
-		)
-		_energy_bar.clear_preview()
 		_ap_badge.set_badge(0, 0, Color(0.92, 0.69, 0.18), null, "PA")
 		_mp_badge.set_badge(0, 0, Color(0.31, 0.67, 0.9), null, "PM")
-		_energy_name_label.text = ""
 		return
 
 	_hp_bar.set_resource(
@@ -428,31 +394,6 @@ func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:
 		"PM"
 	)
 
-	if not unit.has_energy():
-		_set_energy_controls_visible(false)
-		_energy_name_label.text = ""
-		_energy_bar.clear_preview()
-		return
-
-	_set_energy_controls_visible(true)
-	var energy_type: EnergyTypeData = unit.energy_type
-	var displayed_energy_name := energy_type.energy_name
-	var displayed_energy_color := energy_type.get_school_color()
-	if _active_character_theme != null:
-		if not _active_character_theme.energy_name.is_empty():
-			displayed_energy_name = _active_character_theme.energy_name
-		displayed_energy_color = _active_character_theme.energy_color
-	_energy_name_label.text = displayed_energy_name
-	_energy_bar.set_resource(
-		unit.current_energy,
-		energy_type.max_energy,
-		displayed_energy_color,
-		null,
-		displayed_energy_name.left(1).to_upper(),
-		true,
-		animate_changes
-	)
-	_energy_bar.set_preview(_selected_energy_cost(unit), 0.0)
 
 
 func _refresh_button_states() -> void:
@@ -477,37 +418,13 @@ func _refresh_button_states() -> void:
 	_attack_btn.set_label(attack_label)
 	_attack_btn.tooltip_text = _attack_tooltip(_current_unit)
 
-	var can_awaken: bool = (
-		_current_unit != null
-		and _current_unit.has_method("can_activate_awakening")
-		and _current_unit.can_activate_awakening()
-	)
-	_awakening_btn.disabled = not _player_controls_enabled or not can_awaken
-
-	var can_toggle_reaction := false
-	if (
-		_current_unit != null
-		and _current_unit.team == 0
-		and _current_unit.has_method("can_arm_reaction")
-	):
-		can_toggle_reaction = _current_unit.can_arm_reaction() or _current_unit.reaction_armed
-	_reaction_btn.disabled = not _player_controls_enabled or not can_toggle_reaction
-	_reaction_btn.set_label(
-		_reaction_button_text(_current_unit)
-		.replace("\n", " · ")
-		.replace(" Ferveur", " F")
-	)
-	_reaction_btn.tooltip_text = _reaction_tooltip(_current_unit)
-
 	for button_value in _spell_buttons:
 		var button := button_value as Button
 		var spell = button.get_meta("spell") if button.has_meta("spell") else null
-		var imprinted: bool = button.get_meta("imprinted", false)
-		var reason := _spell_unusable_reason(_current_unit, spell, imprinted)
+		var reason := _spell_unusable_reason(_current_unit, spell)
 		var is_selected: bool = (
 			_active_mode == "spell"
 			and spell == _active_spell
-			and imprinted == _active_spell_imprinted
 		)
 		if not _player_controls_enabled:
 			button.set_visual_state(RecraftSpellSlotView.VisualState.DISABLED)
@@ -520,18 +437,12 @@ func _refresh_button_states() -> void:
 
 	_sync_primary_button(_move_btn, _active_mode == "move")
 	_sync_primary_button(_attack_btn, _active_mode == "attack")
-	_sync_primary_button(_awakening_btn, false)
-	_sync_primary_button(
-		_reaction_btn,
-		_current_unit != null and _current_unit.reaction_armed
-	)
 	_sync_primary_button(_end_btn, false)
 
 
-func set_active_mode(mode: String, active_spell = null, imprinted: bool = false) -> void:
+func set_active_mode(mode: String, active_spell = null) -> void:
 	_active_mode = mode
 	_active_spell = active_spell
-	_active_spell_imprinted = imprinted
 	_selected_spell_plate.visible = (
 		mode == "move" or (mode == "spell" and active_spell != null)
 	)
@@ -553,24 +464,6 @@ func set_active_mode(mode: String, active_spell = null, imprinted: bool = false)
 
 func _apply_base_button_modulates() -> void:
 	_refresh_button_states()
-
-
-func _set_energy_controls_visible(visible: bool) -> void:
-	_energy_name_label.visible = false
-	for control in [_energy_bar, _awakening_btn, _reaction_btn]:
-		if control != null:
-			control.visible = visible
-
-
-func _selected_energy_cost(unit) -> float:
-	if (
-		unit == null
-		or _active_mode != "spell"
-		or _active_spell == null
-		or not unit.has_energy()
-	):
-		return 0.0
-	return unit.get_spell_fervor_cost(_active_spell, _active_spell_imprinted)
 
 
 func _sync_primary_button(button: Button, active: bool) -> void:
@@ -618,7 +511,6 @@ func _apply_character_theme(unit) -> void:
 		_end_btn.set_background_texture(null)
 		_portrait_view.set_refined_style(false)
 		_hp_bar.set_refined_style(false)
-		_energy_bar.set_refined_style(false)
 		_ap_badge.set_refined_style(false)
 		_mp_badge.set_refined_style(false)
 		_move_btn.set_refined_style(false)
@@ -660,7 +552,6 @@ func _apply_character_theme(unit) -> void:
 		_active_character_theme.health_bar_frame_texture
 	)
 	_hp_bar.set_refined_style(refined)
-	_energy_bar.set_refined_style(refined)
 	_ap_badge.set_refined_style(refined)
 	_mp_badge.set_refined_style(refined)
 	_attack_btn.set_icon(
@@ -1188,10 +1079,6 @@ func _apply_layout_metrics() -> void:
 			portrait_size / METRICS.PORTRAIT_SIZE
 		)
 		_hp_bar.apply_calibrated_layout(health_size, visual_scale)
-		if _clean_skin_active():
-			_energy_bar.apply_calibrated_layout(layout_data.special_resource_bar_size * visual_scale, visual_scale)
-		else:
-			_energy_bar.apply_layout(_layout_scale)
 		_ap_badge.apply_layout(
 			badge_size / METRICS.RESOURCE_BADGE_SIZE
 		)
@@ -1202,7 +1089,6 @@ func _apply_layout_metrics() -> void:
 	else:
 		_portrait_view.apply_layout(_layout_scale)
 		_hp_bar.apply_layout(_layout_scale)
-		_energy_bar.apply_layout(_layout_scale)
 		_ap_badge.apply_layout(_layout_scale)
 		_mp_badge.apply_layout(_layout_scale)
 		_character_info.custom_minimum_size.x = METRICS.scaled(
@@ -1248,7 +1134,7 @@ func _apply_layout_metrics() -> void:
 	var action_font := METRICS.scaled_font(
 		METRICS.ACTION_BUTTON_FONT_SIZE, _layout_scale
 	)
-	for action_button in [_move_btn, _awakening_btn, _reaction_btn]:
+	for action_button in [_move_btn]:
 		action_button.apply_layout(action_size, action_font)
 	if _clean_skin_active():
 		_move_btn.apply_layout(

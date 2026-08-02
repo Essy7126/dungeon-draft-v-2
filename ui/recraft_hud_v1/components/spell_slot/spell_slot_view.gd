@@ -26,16 +26,12 @@ enum VisualState {
 @onready var cost_icon: Label = %CostIcon
 @onready var cost_label: Label = %CostLabel
 @onready var cost_badge: Panel = %CostBadge
-@onready var energy_cost_badge: Panel = %EnergyCostBadge
-@onready var energy_cost_label: Label = %EnergyCostLabel
 @onready var shortcut_label: Label = %ShortcutLabel
 @onready var lock_icon: Label = %LockIcon
-@onready var imprint_label: Label = %ImprintLabel
 @onready var fallback_label: Label = %FallbackLabel
 
 var visual_state := VisualState.NORMAL
 var spell = null
-var imprinted := false
 var _hovered := false
 var _icon_override: Texture2D = null
 var _default_frame_texture: Texture2D = null
@@ -91,12 +87,6 @@ func apply_calibrated_layout(
 	var cost_size := (Vector2(50.0, 24.0) * text_scale).round()
 	cost_badge.offset_left = -cost_size.x
 	cost_badge.offset_top = -cost_size.y
-	var energy_size := METRICS.scaled_vector(
-		METRICS.SPELL_ENERGY_BADGE_SIZE,
-		text_scale
-	)
-	energy_cost_badge.offset_top = -energy_size.y
-	energy_cost_badge.offset_right = energy_size.x
 	shortcut_label.add_theme_font_size_override(
 		"font_size",
 		METRICS.scaled_font(16, text_scale)
@@ -105,16 +95,8 @@ func apply_calibrated_layout(
 		"font_size",
 		METRICS.scaled_font(15, text_scale)
 	)
-	energy_cost_label.add_theme_font_size_override(
-		"font_size",
-		METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, text_scale)
-	)
 	cost_icon.add_theme_font_size_override(
 		"font_size", METRICS.scaled_font(8, text_scale)
-	)
-	imprint_label.add_theme_font_size_override(
-		"font_size",
-		METRICS.scaled_font(METRICS.SECONDARY_FONT_SIZE, text_scale)
 	)
 	fallback_label.add_theme_font_size_override(
 		"font_size", METRICS.scaled_font(24, text_scale)
@@ -129,31 +111,19 @@ func apply_calibrated_layout(
 
 
 func configure(
-		new_spell,
+	new_spell,
 	ap_cost: int,
-	energy_cost: float = 0.0,
-	energy_name: String = "",
-	shortcut: String = "",
-	is_imprinted: bool = false
+	shortcut: String = ""
 ) -> void:
 	spell = new_spell
-	imprinted = is_imprinted
 	_icon_override = null
 	_refresh_icon()
 	fallback_label.text = _fallback_text()
 	cost_icon.text = ""
 	cost_label.text = "%d PA" % maxi(ap_cost, 0)
-	var energy_abbreviation := energy_name.left(1).to_upper()
-	energy_cost_label.text = (
-		"%d%s" % [int(energy_cost), energy_abbreviation]
-		if energy_cost > 0.0
-		else ""
-	)
-	energy_cost_badge.visible = energy_cost > 0.0
 	shortcut_label.text = shortcut
-	imprint_label.visible = imprinted
 	tooltip_text = ""
-	accessibility_name = _accessible_description(ap_cost, energy_cost, energy_name)
+	accessibility_name = _accessible_description(ap_cost)
 
 
 func set_icon_override(texture: Texture2D) -> void:
@@ -314,11 +284,6 @@ func _fallback_text() -> String:
 	return display_name.left(1).to_upper() if not display_name.is_empty() else "?"
 
 
-func _accessible_description(ap_cost: int, energy_cost: float, energy_name: String) -> String:
+func _accessible_description(ap_cost: int) -> String:
 	var display_name: String = spell.spell_name if spell != null else "Sort"
-	var parts := ["%s, %d PA" % [display_name, ap_cost]]
-	if energy_cost > 0.0:
-		parts.append("%d %s" % [int(energy_cost), energy_name])
-	if imprinted:
-		parts.append("Empreinte")
-	return ", ".join(parts)
+	return "%s, %d PA" % [display_name, ap_cost]

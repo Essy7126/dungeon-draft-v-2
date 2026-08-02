@@ -1,29 +1,4 @@
-# core/spell_caster.gd
-# ============================================================
-# SPELL CASTER — La résolution des sorts, en PIPELINE.
-#
-# cast() est le POINT UNIQUE de vérification, de dépense et d'application
-# d'un sort, pour TOUTES les unités (héros et ennemis). Il déroule des
-# étapes privées séquentielles, chacune enrichissant un CastContext :
-#
-#   _resolve_costs     → vérification + dépense PA / jauge (payoffs) / empreinte
-#   _resolve_targets   → squelette du rapport + cellules de la zone d'effet
-#   _resolve_impacts   → par cellule : dégâts/soins/statuts/drains/boucliers,
-#                        puis terrains du sort (ordre par cellule PRÉSERVÉ :
-#                        les réactions de terrain peuvent blesser, leur ordre
-#                        relatif aux dégâts fait partie du comportement)
-#   _resolve_movement  → poussées (avec collision en chaîne), attraction, téléport
-#   _resolve_energy    → récapitulatif de log + génération d'énergie du lanceur
-#
-# Après chaque étape, les hooks des SpellModifier actifs (attachés au sort
-# + au lanceur) sont appelés : on_costs_resolved, on_targets_resolved,
-# on_damage_resolved, on_terrain_resolved, on_movement_resolved, puis
-# on_cast_complete juste avant l'émission de EventBus.spell_cast.
-#
-# CONTRAT : le Dictionary de rapport (clés, valeurs, ordre d'émission des
-# signaux EventBus) est STRICTEMENT celui d'avant le découpage — l'UI, les
-# logs et les traits le consomment sans nous connaître.
-# ============================================================
+# Point unique de validation des PA, du ciblage et de résolution des sorts.
 
 class_name SpellCaster
 extends RefCounted
@@ -316,30 +291,29 @@ func _pushed_away_from_ally(caster: Unit, from_pos: Vector2i, to_pos: Vector2i) 
 			return not (to_pos - occupant.grid_pos).length() < 1.5
 	return false
 
-func _has_status(unit: Unit, status_name: String) -> bool:
+func _has_status(unit: Unit, status_id: StringName) -> bool:
 	if unit == null or not unit.has_method("get_active_statuses"):
+		return false
+	if status_id == &"":
 		return false
 	for entry in unit.get_active_statuses():
 		var sd: StatusData = entry.get("data")
-		if sd != null and sd.status_name == status_name:
+		if sd != null and sd.get_effective_status_id() == status_id:
 			return true
 	return false
 
-# Miroir EXACT du garde-fou de _resolve_costs : les PA se vérifient pour TOUTE
-# unité, la jauge seulement si le sort en coûte (can_afford_energy renvoie true
-# pour un coût nul). L'IA ennemie planifie avec cette réponse — elle doit être
-# identique à ce que cast() acceptera.
-func can_afford(caster: Unit, spell: Spell, imprinted: bool = false) -> bool:
+# L'IA et le cast utilisent le même garde-fou de ressources.
+func can_afford(caster: Unit, spell: Spell) -> bool:
 	if caster == null or spell == null:
 		return false
-	return caster.can_afford_spell_resources(spell, imprinted)
+	return caster.can_afford_spell_resources(spell)
 
 # ============================================================
 # LE PIPELINE DE CAST
 # ============================================================
 
-func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -> Dictionary:
-	return resolve_cast(begin_cast(caster, spell, cell, imprinted))
+func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
+	return resolve_cast(begin_cast(caster, spell, cell))
 
 
 ## Valide et engage les couts au release, sans appliquer les impacts.
@@ -347,14 +321,12 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i, imprinted: bool = false) -
 func begin_cast(
 		caster: Unit,
 		spell: Spell,
-		cell: Vector2i,
-		imprinted: bool = false
+		cell: Vector2i
 	) -> CastContext:
 	var ctx := CastContext.new()
 	ctx.caster = caster
 	ctx.spell = spell
 	ctx.cell = cell
-	ctx.imprinted = imprinted
 	ctx.grid = _grid
 	ctx.terrain = _terrain
 	if caster == null or spell == null:
@@ -393,15 +365,13 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 	_resolve_movement(ctx)
 	_run_hook(ctx, "on_movement_resolved")
 
-	_resolve_energy(ctx)
+	_log_cast_resolution(ctx)
 	_run_hook(ctx, "on_cast_complete")
 
 	EventBus.spell_cast.emit(ctx.caster, ctx.spell, ctx.report)
 	return ctx.report
 
-# Les modifiers actifs d'un cast : ceux attachés au sort (Spell.modifiers)
-# + ceux portés par le lanceur (traits exposant get_spell_modifiers, ex :
-# TraitSpellModifier donné par un reward). Filtrés par applies_to(spell).
+# Les modifiers actifs viennent des données du sort et de la progression.
 func _gather_modifiers(caster: Unit, spell: Spell) -> Array:
 	var mods: Array = []
 	if spell != null:
@@ -409,11 +379,6 @@ func _gather_modifiers(caster: Unit, spell: Spell) -> Array:
 			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
 				mods.append(m)
 	if caster != null:
-		for t in caster.traits:
-			if t != null and t.has_method("get_spell_modifiers"):
-				for m in t.get_spell_modifiers():
-					if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
-						mods.append(m)
 		for m in caster.get_progression_spell_modifiers():
 			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
 				mods.append(m)
@@ -423,28 +388,20 @@ func _run_hook(ctx: CastContext, hook: String) -> void:
 	for m in ctx.modifiers:
 		m.call(hook, ctx)
 
-# --- Étape 1 : coûts. PA d'abord, Ferveur ensuite (payoff/empreinte). ---
+# --- Étape 1 : coût en PA. ---
 # Renvoie false (et pose le rapport d'échec) si le lanceur ne peut pas payer.
 func _resolve_costs(ctx: CastContext) -> bool:
 	var caster: Unit = ctx.caster
 	var spell: Spell = ctx.spell
 	ctx.ap_cost = caster.get_spell_ap_cost(spell)
-	ctx.fervor_cost = caster.get_spell_fervor_cost(spell, ctx.imprinted)
 	if caster.current_ap < ctx.ap_cost:
 		DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (PA insuffisants : %d/%d)" % [caster.unit_name, spell.spell_name, caster.current_ap, ctx.ap_cost])
 		ctx.failed = true
 		ctx.report = _failed_report(caster, spell, ctx.cell, "pa")
 		return false
-	if not caster.can_afford_energy(ctx.fervor_cost):
-		DebugLogger.info(CAT_SPELL, "%s ne peut pas lancer %s (Ferveur insuffisante : %d/%d)" % [caster.unit_name, spell.spell_name, int(caster.current_energy), int(ctx.fervor_cost)])
-		ctx.failed = true
-		ctx.report = _failed_report(caster, spell, ctx.cell, "fervor")
-		return false
-	caster.consume_terrain_ap_discount(spell)
 	caster.spend_ap(ctx.ap_cost)
-	caster.spend_energy(ctx.fervor_cost, spell.spell_name)
 	DebugLogger.info(CAT_SPELL, "%s lance %s sur %s" % [caster.unit_name, spell.spell_name, str(ctx.cell)], {
-		"PA": ctx.ap_cost, "Ferveur": int(ctx.fervor_cost), "empreinte": ctx.imprinted, "portee": get_effective_spell_range(caster, spell),
+		"PA": ctx.ap_cost, "portee": get_effective_spell_range(caster, spell),
 		"zone": spell.aoe_size if spell.aoe_shape != Spell.AoeShape.SINGLE else 0,
 	})
 	return true
@@ -454,7 +411,7 @@ func _resolve_costs(ctx: CastContext) -> bool:
 # se font ICI, AVANT tout effet : c'est l'état du terrain au moment du cast.
 func _resolve_targets(ctx: CastContext) -> void:
 	ctx.report = {
-		"caster": ctx.caster, "spell": ctx.spell, "cell": ctx.cell, "imprinted": ctx.imprinted,
+		"caster": ctx.caster, "spell": ctx.spell, "cell": ctx.cell,
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
 		"healing_by_unit": {},
 		"controlled_enemies": [], "drained_units": [], "terrain_changed": [],
@@ -485,15 +442,12 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 	var caster: Unit = ctx.caster
 	var spell: Spell = ctx.spell
 	var report: Dictionary = ctx.report
-	var imprinted := ctx.imprinted
 	var affected := false
 	if spell.deals_damage():
 		var cell_bonus := int(ctx.damage_bonus_by_cell.get(target_cell, 0))
-		var raw_damage := spell.damage \
-			+ (spell.imprint_damage_bonus if imprinted else 0) \
-			+ cell_bonus
-		var base_dmg := caster.get_modified_spell_damage(spell, raw_damage)
-		if spell.bonus_damage_if_marked > 0 and _has_status(target, "Marqué"):
+		var base_dmg := spell.damage + cell_bonus
+		if spell.bonus_damage_if_marked > 0 \
+				and _has_status(target, spell.bonus_damage_status_id):
 			base_dmg += spell.bonus_damage_if_marked
 		var damage_result = target.take_damage(base_dmg, caster, spell.damage_type, spell.element, { "bonus_crit_chance": spell.crit_chance })
 		if damage_result != null:
@@ -507,10 +461,7 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 		affected = true
 	if spell.is_healing():
 		var before_hp: int = target.current_hp
-		var raw_heal := spell.heal \
-			+ (spell.imprint_heal_bonus if imprinted else 0) \
-			+ int(ctx.heal_bonus_by_unit.get(target, 0))
-		var heal_amount := caster.get_modified_spell_heal(spell, raw_heal)
+		var heal_amount := spell.heal + int(ctx.heal_bonus_by_unit.get(target, 0))
 		if spell.heal_bonus_effect_name.strip_edges() != "":
 			var heal_effect := _terrain.get_effect_data(target.grid_pos)
 			if heal_effect != null and heal_effect.effect_name == spell.heal_bonus_effect_name:
@@ -523,9 +474,6 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 	if spell.applied_status != null:
 		target.apply_status(spell.applied_status)
 		affected = true
-	if imprinted and spell.imprint_status != null:
-		target.apply_status(spell.imprint_status)
-		affected = true
 	for extra_status_value in ctx.additional_statuses_by_unit.get(target, []):
 		var extra_status := extra_status_value as StatusData
 		if extra_status != null:
@@ -536,42 +484,37 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 		if not report["controlled_enemies"].has(target):
 			report["controlled_enemies"].append(target)
 		affected = true
-	if target.team != caster.team and (spell.ap_drain > 0 or spell.fervor_drain > 0.0):
+	if target.team != caster.team and spell.ap_drain > 0:
 		if spell.ap_drain > 0:
 			# Drain de PA : ampute le budget du PROCHAIN tour de la cible.
 			target.next_turn_ap_modifier -= spell.ap_drain
 			DebugLogger.debug(CAT_SPELL, "%s draine %d PA a %s (prochain tour)" % [caster.unit_name, spell.ap_drain, target.unit_name])
-		if spell.fervor_drain > 0.0 and target.has_energy():
-			target.spend_energy(minf(target.current_energy, spell.fervor_drain), spell.spell_name)
 		if not report["drained_units"].has(target):
 			report["drained_units"].append(target)
 		affected = true
 	var raw_shield := spell.shield_grant \
-		+ (spell.imprint_shield_bonus if imprinted else 0) \
 		+ int(ctx.additional_shield_by_unit.get(target, 0))
 	if raw_shield > 0 and target.team == caster.team:
 		var before_shield: int = target.current_shield
-		target.add_shield(caster.get_modified_spell_shield(spell, raw_shield))
+		target.add_shield(raw_shield)
 		if target.current_shield > before_shield and not report["shielded_units"].has(target):
 			report["shielded_units"].append(target)
 		affected = true
 	if affected and not report["affected_units"].has(target):
 		report["affected_units"].append(target)
 
-# Terrains portés par le sort (et par l'empreinte) posés sur UNE cellule.
+# Terrain porté par le sort, posé sur une cellule.
 func _resolve_cell_terrain(ctx: CastContext, target_cell: Vector2i) -> void:
 	var spell: Spell = ctx.spell
 	var terrain_payloads: Array = []
 	if spell.has_terrain_effect():
 		terrain_payloads.append(spell.terrain_effect)
-	if ctx.imprinted and spell.imprint_terrain_effect != null:
-		terrain_payloads.append(spell.imprint_terrain_effect)
 	for terrain_data in terrain_payloads:
 		var terrain_result: Dictionary = _terrain.place_effect(target_cell, terrain_data, ctx.caster, spell)
 		if terrain_result.get("changed", false) and not ctx.report["terrain_changed"].has(target_cell):
 			ctx.report["terrain_changed"].append(target_cell)
 
-# --- Étape 4 : déplacements forcés. La Force (Rage) scale multiplicativement
+# --- Étape 4 : déplacements forcés. La Force scale multiplicativement
 # poussée, attraction et dégâts de collision/souffle. ---
 func _resolve_movement(ctx: CastContext) -> void:
 	var caster: Unit = ctx.caster
@@ -671,28 +614,18 @@ func _resolve_movement(ctx: CastContext) -> void:
 		if extra_push["pushed"] and not report["affected_units"].has(push_target):
 			report["affected_units"].append(push_target)
 
-# --- Étape 5 : énergie. Récapitulatif de log puis génération du lanceur
-# (seulement si le sort a eu un effet réel — pas de jauge gratuite). ---
-func _resolve_energy(ctx: CastContext) -> void:
+# --- Étape 5 : journalisation du résultat. ---
+func _log_cast_resolution(ctx: CastContext) -> void:
 	var report: Dictionary = ctx.report
 	var spell: Spell = ctx.spell
 	var hit_names: Array = []
 	for u in report["affected_units"]:
 		hit_names.append(u.unit_name)
 	DebugLogger.debug(CAT_SPELL, "%s : %d unite(s), %d terrain(s)" % [spell.spell_name, report["affected_units"].size(), report["terrain_changed"].size()], { "cibles": hit_names })
-	if spell.energy_generated > 0.0 and ctx.caster.has_energy() and _spell_had_real_effect(report):
-		ctx.caster.generate_energy(spell.energy_generated, spell.spell_name)
-
-func _spell_had_real_effect(report: Dictionary) -> bool:
-	return not report.get("affected_units", []).is_empty() \
-		or not report.get("terrain_changed", []).is_empty() \
-		or bool(report.get("pushed", false)) \
-		or bool(report.get("collision", false)) \
-		or bool(report.get("landed_on_terrain", false))
 
 func _failed_report(caster: Unit, spell: Spell, cell: Vector2i, reason: String) -> Dictionary:
 	return {
-		"caster": caster, "spell": spell, "cell": cell, "imprinted": false, "failed": true, "reason": reason,
+		"caster": caster, "spell": spell, "cell": cell, "failed": true, "reason": reason,
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
 		"healing_by_unit": {},
 		"controlled_enemies": [], "drained_units": [], "terrain_changed": [], "crits": [], "dodges": [],

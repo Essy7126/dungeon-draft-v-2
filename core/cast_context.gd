@@ -4,7 +4,7 @@
 #
 # Construit en tête de SpellCaster.cast(), enrichi par chaque étape du
 # pipeline, et passé aux hooks des SpellModifier. Le `report` qu'il porte
-# est LE contrat avec l'UI/les logs/les traits : mêmes clés, mêmes valeurs
+# est LE contrat avec l'UI, les logs et les modificateurs : mêmes clés et valeurs
 # qu'avant le découpage en pipeline — ne jamais y renommer quoi que ce soit.
 #
 # `movement` est un journal INTERNE au pipeline (il n'entre pas dans le
@@ -20,11 +20,9 @@ extends RefCounted
 var caster: Unit = null
 var spell: Spell = null
 var cell: Vector2i = Vector2i.ZERO
-var imprinted: bool = false
 
 # --- Coûts calculés par _resolve_costs ---
 var ap_cost: int = 0
-var fervor_cost: float = 0.0
 
 # --- État de résolution ---
 var report: Dictionary = {}

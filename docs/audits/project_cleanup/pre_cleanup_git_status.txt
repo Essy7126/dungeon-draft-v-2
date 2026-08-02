@@ -1,0 +1,12 @@
+Initial branch: main
+Initial HEAD: f9ae5bc81d4dfb1a356c3779367957cca7e79d11
+Initial git status --short: CLEAN
+Tracked modified files: NONE
+Untracked files: NONE
+Staged files: NONE
+Submodules: NONE (.gitmodules absent)
+Git LFS tracked objects: NONE
+Declared Godot version: 4.7 (project.godot config/features)
+Safety branch created: refactor/project-clean-slate
+Safety tag created: archive/pre-project-cleanup-2026-08-02
+Git reads used per-command safe.directory because of Windows sandbox ownership; no Git config was changed.

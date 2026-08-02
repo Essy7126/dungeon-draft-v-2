@@ -23,7 +23,6 @@ script = ExtResource("1_theme")
 character_id = &"warrior"
 display_name = "Guerrier"
 discipline_name = "Briseur"
-energy_name = ""
 default_discipline_id = &"warrior_breaker"
 discipline_emblem_texture = ExtResource("2_badge")
 portrait_texture = ExtResource("3_portrait")
@@ -35,7 +34,6 @@ utility_skills_icon = ExtResource("16_skills")
 refined_components = true
 primary_color = Color(0.4, 0.12, 0.08, 1)
 secondary_color = Color(0.65, 0.28, 0.15, 1)
-energy_color = Color(0.84, 0.27, 0.27, 1)
 text_color = Color(0.98, 0.86, 0.75, 1)
 spell_icon_mapping = {
 &"basic_attack": ExtResource("13_attack"),

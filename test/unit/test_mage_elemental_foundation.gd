@@ -6,8 +6,8 @@ const ActionBarScript = preload("res://ui/action_bar.gd")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
-const GUARDIAN_PATH := "res://data/units/alliés/Gardien.tres"
-const PARTY := [ELF_PATH, MAGE_PATH, GUARDIAN_PATH]
+const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
+const PARTY := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 const DISCIPLINE_IDS := [
 	&"mage_fire",
 	&"mage_ice",
@@ -123,7 +123,6 @@ func test_action_bar_shows_four_ordered_spells_and_no_basic_attack() -> void:
 		),
 		SPELL_IDS,
 	)
-	mage.clear_traits()
 
 
 func test_each_successful_spell_grants_exactly_one_xp_to_its_discipline() -> void:
@@ -151,7 +150,9 @@ func test_each_successful_spell_grants_exactly_one_xp_to_its_discipline() -> voi
 			1,
 		)
 	assert_eq(states[0].get_discipline_progress(&"mage").xp, 0)
-	assert_true(states[2].get_discipline_progressions().is_empty())
+	assert_true(states[2].get_discipline_progressions().values().all(
+		func(progress): return progress.xp == 0
+	))
 
 
 func test_thunderstorm_aoe_hits_three_targets_but_grants_only_one_xp() -> void:
@@ -173,7 +174,9 @@ func test_thunderstorm_aoe_hits_three_targets_but_grants_only_one_xp() -> void:
 	assert_true(targets.all(func(target): return target.current_hp == 93))
 	assert_eq(mage.get_discipline_progress(&"mage_lightning").xp, 1)
 	assert_eq(states[0].get_discipline_progress(&"mage").xp, 0)
-	assert_true(states[2].get_discipline_progressions().is_empty())
+	assert_true(states[2].get_discipline_progressions().values().all(
+		func(progress): return progress.xp == 0
+	))
 
 
 func test_mage_xp_persists_between_rooms_and_resets_on_new_run() -> void:

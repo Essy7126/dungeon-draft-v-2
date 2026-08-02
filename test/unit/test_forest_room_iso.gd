@@ -2,13 +2,12 @@ extends GutTest
 
 const IsoGridViewScript = preload("res://battle/iso/iso_grid_view.gd")
 const NEW_SCENE := "res://data/rooms/maps/battle_salle1_iso.tscn"
-const OLD_SCENE := "res://data/rooms/maps/battle_salle1.tscn"
 const CALIBRATION_SCENE := "res://battle/iso/forest_map_calibration.tscn"
 const BACKGROUND_SCENE := "res://battle/iso/forest_room_01_background.tscn"
 const PLACEHOLDER_SCRIPT := "res://battle/iso/iso_unit_placeholder.gd"
 const FOREST_TEXTURE := "res://asset/map/iso/forest_room_01_source.png"
-const FIRST_ROOM := "res://data/rooms/bible/le_gue.tres"
-const RUN_DEFAULT := "res://data/runs/run_default.tres"
+const FIRST_ROOM := "res://data/rooms/first_run_room_01.tres"
+const FIRST_RUN := "res://data/runs/first_run.tres"
 
 
 func test_round_trip_complet_de_la_grille_10_par_8() -> void:
@@ -84,10 +83,8 @@ func test_laboratoire_et_production_partagent_une_calibration_unique() -> void:
 func test_placeholders_temporaires_sont_limites_a_la_scene_iso() -> void:
 	assert_true(ResourceLoader.exists(PLACEHOLDER_SCRIPT))
 	var production_source := FileAccess.get_file_as_string(NEW_SCENE)
-	var old_source := FileAccess.get_file_as_string(OLD_SCENE)
 	var generic_source := FileAccess.get_file_as_string("res://battle.tscn")
 	assert_true("temporary_iso_placeholders = true" in production_source)
-	assert_false("temporary_iso_placeholders = true" in old_source)
 	assert_false("temporary_iso_placeholders = true" in generic_source)
 	var placeholder_source := FileAccess.get_file_as_string(PLACEHOLDER_SCRIPT)
 	assert_true("temporary_iso_only" in placeholder_source)
@@ -97,7 +94,7 @@ func test_placeholders_temporaires_sont_limites_a_la_scene_iso() -> void:
 
 
 func test_vraie_premiere_roomdata_reference_la_scene_iso() -> void:
-	var run = load(RUN_DEFAULT)
+	var run = load(FIRST_RUN)
 	assert_not_null(run)
 	assert_gt(run.rooms.size(), 0)
 	var first_room = run.rooms[0]
@@ -119,16 +116,6 @@ func test_zones_de_deploiement_sont_valides_dans_10_par_8() -> void:
 	var grid := GridData.new(10, 8)
 	for cell in room.hero_spawn_zone + room.enemy_spawn_zone:
 		assert_true(grid.is_valid(cell), "%s doit etre dans la grille" % cell)
-
-
-func test_ancienne_scene_et_anciennes_rooms_restent_chargeables() -> void:
-	assert_true(ResourceLoader.exists(OLD_SCENE))
-	assert_not_null(load(OLD_SCENE))
-	assert_not_null(load("res://data/rooms/salle_1.tres"))
-	var run = load(RUN_DEFAULT)
-	for room in run.rooms:
-		assert_not_null(room)
-		assert_not_null(room.battle_scene)
 
 
 func test_overlay_transparent_reste_interactif_sans_muter_griddata() -> void:

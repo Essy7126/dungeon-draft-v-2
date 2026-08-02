@@ -15,10 +15,10 @@ const CHIEF_PATH := "res://data/units/ennemie/skeleton_chief.tres"
 const MELEE_PATH := "res://data/units/ennemie/skeleton_melee.tres"
 const HEAVY_PATH := "res://data/spells/enemies/skeleton_chief_heavy_strike.tres"
 const ACTIVE_ROOMS := [
-	"res://data/rooms/bible/le_gue.tres",
-	"res://data/rooms/terrain_2.tres",
-	"res://data/rooms/bible/la_forge.tres",
-	"res://data/rooms/bible/elite_brute.tres",
+	"res://data/rooms/first_run_room_01.tres",
+	"res://data/rooms/first_run_room_02.tres",
+	"res://data/rooms/first_run_room_03.tres",
+	"res://data/rooms/first_run_room_04_boss.tres",
 ]
 
 
@@ -110,9 +110,6 @@ func test_chief_resource_is_elite_melee_without_hero_economy() -> void:
 	assert_eq(chief.unit_id, &"skeleton_chief")
 	assert_eq(chief.unit_name, "Chef squelette")
 	assert_eq(chief.team, 1)
-	assert_null(chief.energy_type)
-	assert_null(chief.chassis_trait)
-	assert_true(chief.starting_traits.is_empty())
 	assert_between(float(chief.max_hp) / float(melee.max_hp), 1.6, 2.0)
 	assert_between(float(chief.attack_power) / float(melee.attack_power), 1.20, 1.35)
 	assert_eq(chief.max_ap, 6)
@@ -160,8 +157,6 @@ func test_generic_melee_ai_moves_then_uses_heavy_strike_without_id_branch() -> v
 	var ai_source := FileAccess.get_file_as_string("res://core/enemy_ai.gd").to_lower()
 	assert_false("skeleton_chief" in ai_source)
 	assert_false("chef squelette" in ai_source)
-	chief.clear_traits()
-	target.clear_traits()
 
 
 func test_heavy_strike_applies_damage_exactly_once_through_spell_caster() -> void:
@@ -174,8 +169,6 @@ func test_heavy_strike_applies_damage_exactly_once_through_spell_caster() -> voi
 	var report := field.caster.cast(chief, chief.spells[0], target.grid_pos)
 	assert_false(report.get("failed", false))
 	assert_eq(before - target.current_hp, 24)
-	chief.clear_traits()
-	target.clear_traits()
 
 
 func test_room_two_exclusively_replaces_one_melee_and_keeps_three_enemies() -> void:
@@ -183,7 +176,7 @@ func test_room_two_exclusively_replaces_one_melee_and_keeps_three_enemies() -> v
 		var room = load(ACTIVE_ROOMS[room_index])
 		assert_eq(room.enemies.size(), 3, ACTIVE_ROOMS[room_index])
 		var ids: Array = room.enemies.map(func(data): return data.unit_id)
-		if room_index == 1:
+		if room_index in [1, 3]:
 			assert_eq(ids, [&"skeleton_chief", &"skeleton_melee", &"skeleton_ranged"])
 		else:
 			assert_eq(ids.count(&"skeleton_chief"), 0, ACTIVE_ROOMS[room_index])
@@ -215,7 +208,6 @@ func test_grid_clear_and_free_keep_visual_root_stable_and_release_viewport() -> 
 	await wait_process_frames(3)
 	assert_null(visual_ref.get_ref())
 	assert_null(viewport_ref.get_ref())
-	unit.clear_traits()
 
 
 func test_hit_then_death_and_scene_removal_cancel_the_chief_visual_cleanly() -> void:

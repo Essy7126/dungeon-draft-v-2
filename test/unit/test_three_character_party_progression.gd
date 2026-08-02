@@ -2,8 +2,6 @@ extends GutTest
 
 const GameManagerScript = preload("res://core/game_manager.gd")
 
-const GUARDIAN_PATH := "res://data/units/alliés/Gardien.tres"
-const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
 const SHARED_DISCIPLINE_ID := &"shared_discipline"
 const SHARED_SPELL_ID := &"shared_spell"
 
@@ -116,7 +114,6 @@ func test_foreign_instance_with_same_ids_is_ignored() -> void:
 	assert_null(manager.get_character_state_for_unit(foreign_unit))
 	EventBus.spell_cast.emit(foreign_unit, foreign_unit.spells[0], {})
 	assert_eq([_xp(states[0]), _xp(states[1]), _xp(states[2])], [0, 0, 0])
-	foreign_unit.clear_traits()
 
 
 func test_removed_caster_cannot_credit_a_new_party() -> void:
@@ -129,20 +126,3 @@ func test_removed_caster_cannot_credit_a_new_party() -> void:
 	assert_eq(fresh_states.map(func(state): return _xp(state)), [0, 0, 0])
 	_emit_cast(fresh_states[0])
 	assert_eq(fresh_states.map(func(state): return _xp(state)), [1, 0, 0])
-
-
-func test_guardian_stays_legacy_while_warrior_uses_its_real_progression() -> void:
-	assert_true(manager._prepare_preconfigured_run(
-		_make_run(),
-		[GUARDIAN_PATH, WARRIOR_PATH],
-	))
-	var states: Array[CharacterRunState] = manager.get_ordered_character_states()
-	assert_eq(states.size(), 2)
-	assert_true(states[0].get_disciplines().is_empty())
-	assert_eq(states[1].get_disciplines().size(), 3)
-	EventBus.spell_cast.emit(states[0].unit, states[0].unit.spells[0], {})
-	EventBus.spell_cast.emit(states[1].unit, states[1].unit.spells[0], {})
-	assert_true(states[0].get_discipline_progressions().is_empty())
-	assert_eq(states[1].get_discipline_progress(&"warrior_breaker").xp, 1)
-	assert_eq(states[1].get_discipline_progress(&"warrior_executioner").xp, 0)
-	assert_eq(states[1].get_discipline_progress(&"warrior_ravager").xp, 0)

@@ -5,7 +5,6 @@ const WarriorIsoScene := preload("res://characters/warrior/WarriorIsoUnitView.ts
 const ImportValidationScene := preload("res://tests/characters/warrior/WarriorImportValidation.tscn")
 const UnitViewScript := preload("res://battle/unit_view.gd")
 const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
-const GUARDIAN_PATH := "res://data/units/alliés/Gardien.tres"
 
 
 class BasicAttackSpy extends Node2D:
@@ -37,14 +36,14 @@ func test_warrior_resource_is_data_driven_and_preserves_gameplay() -> void:
 	assert_eq(warrior.force, 20.0)
 	assert_eq(warrior.max_ap, 6)
 	assert_eq(warrior.max_mp, 3)
-	assert_null(warrior.energy_type)
-	assert_null(warrior.chassis_trait)
-	assert_eq(warrior.active_spell_slots, 8)
-	assert_eq(warrior.spells.size(), 8)
+	assert_eq(warrior.active_spell_slots, 4)
+	assert_eq(warrior.spells.size(), 4)
 	assert_eq(warrior.disciplines.size(), 3)
 	assert_not_null(warrior.visual_scene)
 	assert_not_null(warrior.preview_visual_scene)
-	assert_not_null(load(GUARDIAN_PATH) as UnitData)
+	assert_eq(warrior.spells.map(func(spell): return spell.spell_id), [
+		&"warrior_shove", &"warrior_war_mark", &"warrior_execution", &"warrior_stomp"
+	])
 
 
 func test_visual_reuses_shared_class_and_builds_real_hand_sockets() -> void:
@@ -87,13 +86,13 @@ func test_spell_profile_uses_stable_ids_and_emits_one_release() -> void:
 	var visual := WarriorVisualScene.instantiate() as WarriorVisual3D
 	add_child_autofree(visual)
 	await wait_process_frames(3)
-	var parry_spell := load("res://data/spells/Guerrier/crochet.tres") as Spell
-	assert_eq(parry_spell.spell_id, &"warrior_hook")
-	assert_eq(visual.get_animation_for_spell(parry_spell), WarriorVisual3D.ANIM_PARRY)
+	var execution_spell := load("res://data/spells/Guerrier/execution_de_guerre.tres") as Spell
+	assert_eq(execution_spell.spell_id, &"warrior_execution")
+	assert_eq(visual.get_animation_for_spell(execution_spell), WarriorVisual3D.ANIM_HEAVY_ATTACK)
 	var releases := {"count": 0}
 	visual.cast_release_reached.connect(func(): releases.count += 1)
-	assert_true(visual.play_spell_action(parry_spell))
-	await get_tree().create_timer(0.65).timeout
+	assert_true(visual.play_spell_action(execution_spell))
+	await get_tree().create_timer(1.8).timeout
 	assert_eq(releases.count, 1)
 
 
@@ -120,7 +119,6 @@ func test_unit_view_basic_attack_calls_optional_visual_once_and_keeps_sprite_pat
 	view.call("_on_attack_performed", unit, null)
 	assert_eq(spy.call_count, 1)
 	assert_eq(sprite.animation, &"attack")
-	unit.clear_traits()
 
 
 func test_death_is_locked_emits_once_and_never_returns_to_idle() -> void:

@@ -1,0 +1,1874 @@
+res://.godot/editor/EditorRadioButton.tres-folding-977063b975ed2d07c571eeef00528018.cfg
+res://.godot/editor/GobTestUnitData.tres-folding-6adf45680e8ce094a3307ee86444f54a.cfg
+res://.godot/editor/GobTestUnitData_v2.tres-folding-36eaf33b444f29b330eb0f51dda3a4e1.cfg
+res://.godot/editor/dark_pause_menu_theme.tres-folding-648474b2ff974188bc07ee1f029b596f.cfg
+res://.godot/editor/editor_globals.gd-folding-ba246687388d68f51de978f123e0bd62.cfg
+res://.godot/editor/editor_layout.cfg
+res://.godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg
+res://.godot/editor/elf_archer_visual_map.tres-folding-cc8fe6a71132b68775de3e8311085e3b.cfg
+res://.godot/editor/elf_magic_arrow_impact.tscn-editstate-9803d08f7cbec5a920bd697fbea36950.cfg
+res://.godot/editor/elf_magic_arrow_impact.tscn-folding-9803d08f7cbec5a920bd697fbea36950.cfg
+res://.godot/editor/elf_magic_arrow_projectile.tscn-editstate-6ca3daafd98085567f1a02697e2cdcda.cfg
+res://.godot/editor/elf_magic_arrow_projectile.tscn-folding-6ca3daafd98085567f1a02697e2cdcda.cfg
+res://.godot/editor/elf_magic_bow_charge.tscn-editstate-1c26cea657803a2af3306c86d3a159ec.cfg
+res://.godot/editor/elf_magic_bow_charge.tscn-folding-1c26cea657803a2af3306c86d3a159ec.cfg
+res://.godot/editor/elite_brute_gobelin.tres-folding-4d2cec997c92eb4a9d9541fa4929aeba.cfg
+res://.godot/editor/filesystem_update4
+res://.godot/editor/fumee_shader.tscn-editstate-812dc20896a0a866c1b904c68d17e870.cfg
+res://.godot/editor/fumee_shader.tscn-folding-812dc20896a0a866c1b904c68d17e870.cfg
+res://.godot/editor/meduse.tres-folding-ff574eafc89d169083380eb469a5d3c0.cfg
+res://.godot/editor/precise_shot.tres-folding-f7d30d6a3bf73b2116bf443384c019c4.cfg
+res://.godot/editor/run_archer_gobelin.tres-folding-0980f59e8b6d540139a069589d18e00a.cfg
+res://.godot/editor/run_brute_gobelin.tres-folding-dffe94fe62061577a4f1bdeeb61dc67a.cfg
+res://.godot/editor/run_eclaireur_gobelin.tres-folding-38a1243f2c2165a310a2130a32896a9e.cfg
+res://.godot/editor/run_hurleur_gobelin.tres-folding-8d66f251d13c0ab49918d6afbb9a1d37.cfg
+res://.godot/editor/run_lieur_gobelin.tres-folding-a3fb00c37a135fbc2082ef00f54a36a6.cfg
+res://.godot/editor/run_porte_bouclier_gobelin.tres-folding-271a43cb0ee3262c455861dd41753af8.cfg
+res://.godot/editor/run_pyromage_gobelin.tres-folding-7ce1af8c0e2f74c87104b11dbcbd41f7.cfg
+res://.godot/editor/script_editor_cache.cfg
+res://.godot/editor/serpent_meduse.tres-folding-b81ca80ff2d422483a5a8d418ee3f82e.cfg
+res://.godot/editor/skill_tree_graybox_theme.tres-folding-4f72e1a5f271575f906ffdc31e15f891.cfg
+res://.godot/editor/tile_set.tres-folding-7cef87dac51042566b2f50b59ae0b3ed.cfg
+res://.godot/editor/tile_set_iso_decor.tres-folding-3e85b9ff00116f76bfe2f507313ed18a.cfg
+res://.godot/editor/tile_set_iso_terrain.tres-folding-3ec1e8e12e8245f27e6aef5929dcdede.cfg
+res://.godot/imported/assets_contact_sheet.png-fe7e5f1da63a134b4d87d691de099793.ctex
+res://.godot/imported/assets_contact_sheet.png-fe7e5f1da63a134b4d87d691de099793.md5
+res://.godot/imported/assets_contact_sheet_refined.png-b4f749e193a6bd9d478301fe22c05b27.ctex
+res://.godot/imported/assets_contact_sheet_refined.png-b4f749e193a6bd9d478301fe22c05b27.md5
+res://.godot/imported/cave-grid-isometrique.png-8ed5f2cea0152174df7ab1fa3f46a4bf.ctex
+res://.godot/imported/cave-grid-isometrique.png-8ed5f2cea0152174df7ab1fa3f46a4bf.md5
+res://.godot/imported/clean_v2_vs_refined.png-c81bdc60565ba4dfcfd44b998670d3af.ctex
+res://.godot/imported/clean_v2_vs_refined.png-c81bdc60565ba4dfcfd44b998670d3af.md5
+res://.godot/imported/elf_cast_end_isometric.png-fae1bbc6a4cea4554d783699412cf1da.ctex
+res://.godot/imported/elf_cast_end_isometric.png-fae1bbc6a4cea4554d783699412cf1da.md5
+res://.godot/imported/elf_cast_hold_isometric.png-068bf68a53a19c7867d7350bd5f03af4.ctex
+res://.godot/imported/elf_cast_hold_isometric.png-068bf68a53a19c7867d7350bd5f03af4.md5
+res://.godot/imported/elf_cast_isometric.png-704c1af6ebbd525c4ae18aad65cb91aa.ctex
+res://.godot/imported/elf_cast_isometric.png-704c1af6ebbd525c4ae18aad65cb91aa.md5
+res://.godot/imported/elf_cast_start_isometric.png-ba64c2c157eb33c455d48b8bfce5e9ac.ctex
+res://.godot/imported/elf_cast_start_isometric.png-ba64c2c157eb33c455d48b8bfce5e9ac.md5
+res://.godot/imported/elf_death_isometric.png-6ba31a4148869884b7d418aa902d3a19.ctex
+res://.godot/imported/elf_death_isometric.png-6ba31a4148869884b7d418aa902d3a19.md5
+res://.godot/imported/elf_death_side.png-41bb6e5bdd7cc87414e0bdd07a636fe4.ctex
+res://.godot/imported/elf_death_side.png-41bb6e5bdd7cc87414e0bdd07a636fe4.md5
+res://.godot/imported/elf_hit_isometric.png-0ddb3c9c90e588f49ef6802e8723e1e3.ctex
+res://.godot/imported/elf_hit_isometric.png-0ddb3c9c90e588f49ef6802e8723e1e3.md5
+res://.godot/imported/elf_hud_1280x720.png-10083302a94976b3f9dda0fc09dca753.ctex
+res://.godot/imported/elf_hud_1280x720.png-10083302a94976b3f9dda0fc09dca753.md5
+res://.godot/imported/elf_hud_1920x1080.png-4b649590706cd3bd258637051094573d.ctex
+res://.godot/imported/elf_hud_1920x1080.png-4b649590706cd3bd258637051094573d.md5
+res://.godot/imported/elf_hud_2560x1440.png-14a223847d3fe8c5492325cfdca426c1.ctex
+res://.godot/imported/elf_hud_2560x1440.png-14a223847d3fe8c5492325cfdca426c1.md5
+res://.godot/imported/elf_idle_isometric.png-d9e59db3859b0f6780310bbf20a98c54.ctex
+res://.godot/imported/elf_idle_isometric.png-d9e59db3859b0f6780310bbf20a98c54.md5
+res://.godot/imported/elf_run_in_place_isometric.png-8b70e628f839d7fe69a0366183fc4c32.ctex
+res://.godot/imported/elf_run_in_place_isometric.png-8b70e628f839d7fe69a0366183fc4c32.md5
+res://.godot/imported/elf_run_moving_isometric.png-3922dba038af5064f470fb5546e03e81.ctex
+res://.godot/imported/elf_run_moving_isometric.png-3922dba038af5064f470fb5546e03e81.md5
+res://.godot/imported/elf_sharpness_comparison.png-10f6bd6403befa3aa2684f892ab3c035.ctex
+res://.godot/imported/elf_sharpness_comparison.png-10f6bd6403befa3aa2684f892ab3c035.md5
+res://.godot/imported/elf_sharpness_final_cast.png-94a1d38b0b30d79e5deb5009738b801b.ctex
+res://.godot/imported/elf_sharpness_final_cast.png-94a1d38b0b30d79e5deb5009738b801b.md5
+res://.godot/imported/elf_sharpness_final_idle.png-12500b9e37726712739a6ff2f5f529f3.ctex
+res://.godot/imported/elf_sharpness_final_idle.png-12500b9e37726712739a6ff2f5f529f3.md5
+res://.godot/imported/elf_sharpness_final_walk.png-169b3fc8db6816115a9e14c9ab5f809f.ctex
+res://.godot/imported/elf_sharpness_final_walk.png-169b3fc8db6816115a9e14c9ab5f809f.md5
+res://.godot/imported/elf_sockets_isometric.png-e52e5209bcf5e84730a042eeac2e8498.ctex
+res://.godot/imported/elf_sockets_isometric.png-e52e5209bcf5e84730a042eeac2e8498.md5
+res://.godot/imported/elf_turn_banner_1920x1080.png-54c6b0ae7c0c23874898ccbb65ab5096.ctex
+res://.godot/imported/elf_turn_banner_1920x1080.png-54c6b0ae7c0c23874898ccbb65ab5096.md5
+res://.godot/imported/elf_walk_in_place_isometric.png-1bb1583227339356d74a127f2cd7da6e.ctex
+res://.godot/imported/elf_walk_in_place_isometric.png-1bb1583227339356d74a127f2cd7da6e.md5
+res://.godot/imported/elf_walk_isometric.png-53c85ed1c98152ceca1ad13454fabbef.ctex
+res://.godot/imported/elf_walk_isometric.png-53c85ed1c98152ceca1ad13454fabbef.md5
+res://.godot/imported/final_elf_cast_origin.png-c104ccf6fec62d1b9d11d8fb8f119049.ctex
+res://.godot/imported/final_elf_cast_origin.png-c104ccf6fec62d1b9d11d8fb8f119049.md5
+res://.godot/imported/final_elf_death.png-76ca63b65aae20038afa3f2113c8795e.ctex
+res://.godot/imported/final_elf_death.png-76ca63b65aae20038afa3f2113c8795e.md5
+res://.godot/imported/final_elf_moving.png-71877dc61405dc0fcde9991cddff737e.ctex
+res://.godot/imported/final_elf_moving.png-71877dc61405dc0fcde9991cddff737e.md5
+res://.godot/imported/final_elf_selected.png-5033135009346a954d10bcd2a833809a.ctex
+res://.godot/imported/final_elf_selected.png-5033135009346a954d10bcd2a833809a.md5
+res://.godot/imported/final_elf_y_sort.png-46f9010777fcf1dc9fcd397fea701fa0.ctex
+res://.godot/imported/final_elf_y_sort.png-46f9010777fcf1dc9fcd397fea701fa0.md5
+res://.godot/imported/fireball_cleanup_after.png-f3e56f6a00b4ac943d777ead80caaab0.ctex
+res://.godot/imported/fireball_cleanup_after.png-f3e56f6a00b4ac943d777ead80caaab0.md5
+res://.godot/imported/fireball_residue_before.png-5f770c726e070e7d15ed6a035354ed46.ctex
+res://.godot/imported/fireball_residue_before.png-5f770c726e070e7d15ed6a035354ed46.md5
+res://.godot/imported/first_room_trio_vs_skeletons_1920x1080.png-4af48aaa529e547bc4f5f6ec1f33fc6a.ctex
+res://.godot/imported/first_room_trio_vs_skeletons_1920x1080.png-4af48aaa529e547bc4f5f6ec1f33fc6a.md5
+res://.godot/imported/first_run_elf_mage_warrior.png-73d4a51d408649e9749268ae047f0b23.ctex
+res://.godot/imported/first_run_elf_mage_warrior.png-73d4a51d408649e9749268ae047f0b23.md5
+res://.godot/imported/hud_before_1080p.png-bb8d92617e71a5d15a2954cca3d7f566.ctex
+res://.godot/imported/hud_before_1080p.png-bb8d92617e71a5d15a2954cca3d7f566.md5
+res://.godot/imported/hud_clean_1280x720.png-ba2f5604dc899dadb55c17c2b9372116.ctex
+res://.godot/imported/hud_clean_1280x720.png-ba2f5604dc899dadb55c17c2b9372116.md5
+res://.godot/imported/hud_clean_1920x1080.png-7f81b4533e57d0b608802276095a652e.ctex
+res://.godot/imported/hud_clean_1920x1080.png-7f81b4533e57d0b608802276095a652e.md5
+res://.godot/imported/hud_clean_1920x1080_blurred_reduced.png-31a50fdccf3b58188f33bf07b6b8e8c4.ctex
+res://.godot/imported/hud_clean_1920x1080_blurred_reduced.png-31a50fdccf3b58188f33bf07b6b8e8c4.md5
+res://.godot/imported/hud_clean_1920x1080_grayscale.png-42f7f3995c7f10817d486ce39a915f5a.ctex
+res://.godot/imported/hud_clean_1920x1080_grayscale.png-42f7f3995c7f10817d486ce39a915f5a.md5
+res://.godot/imported/hud_clean_2560x1440.png-c8ebfa5b0bbdb0d4c43562031f3599c7.ctex
+res://.godot/imported/hud_clean_2560x1440.png-c8ebfa5b0bbdb0d4c43562031f3599c7.md5
+res://.godot/imported/hud_clean_v1_reference_1920x1080.png-2053d13e86b4e4107f00d3a0812a5314.ctex
+res://.godot/imported/hud_clean_v1_reference_1920x1080.png-2053d13e86b4e4107f00d3a0812a5314.md5
+res://.godot/imported/hud_clean_v1_vs_v2.png-7aeffd2692f39a80988058840a12b230.ctex
+res://.godot/imported/hud_clean_v1_vs_v2.png-7aeffd2692f39a80988058840a12b230.md5
+res://.godot/imported/hud_clean_v2_1280x720.png-f508da56f50eb5efc9955c358be449f5.ctex
+res://.godot/imported/hud_clean_v2_1280x720.png-f508da56f50eb5efc9955c358be449f5.md5
+res://.godot/imported/hud_clean_v2_1920x1080.png-b6476e4baaf51c79517c42c30cf522b2.ctex
+res://.godot/imported/hud_clean_v2_1920x1080.png-b6476e4baaf51c79517c42c30cf522b2.md5
+res://.godot/imported/hud_clean_v2_1920x1080_blurred_reduced.png-5aa65982f86487b70fc24da669979986.ctex
+res://.godot/imported/hud_clean_v2_1920x1080_blurred_reduced.png-5aa65982f86487b70fc24da669979986.md5
+res://.godot/imported/hud_clean_v2_1920x1080_grayscale.png-0c751da755147f63e8a6b6ac5456c1ac.ctex
+res://.godot/imported/hud_clean_v2_1920x1080_grayscale.png-0c751da755147f63e8a6b6ac5456c1ac.md5
+res://.godot/imported/hud_clean_v2_2560x1440.png-703f7803a3fb3ebee513f6aaff6047c5.ctex
+res://.godot/imported/hud_clean_v2_2560x1440.png-703f7803a3fb3ebee513f6aaff6047c5.md5
+res://.godot/imported/hud_clean_v2_low_health.png-dea2c29ddf1c97afefa03bec7afb9efa.ctex
+res://.godot/imported/hud_clean_v2_low_health.png-dea2c29ddf1c97afefa03bec7afb9efa.md5
+res://.godot/imported/hud_clean_v2_preview_with_special_resource.png-c899bdc8ba3f9de9f69e2cc924ddbe21.ctex
+res://.godot/imported/hud_clean_v2_preview_with_special_resource.png-c899bdc8ba3f9de9f69e2cc924ddbe21.md5
+res://.godot/imported/hud_clean_v2_selected_unavailable_cooldown.png-ac2ee7321b8b3fb916a9ab8965e25fff.ctex
+res://.godot/imported/hud_clean_v2_selected_unavailable_cooldown.png-ac2ee7321b8b3fb916a9ab8965e25fff.md5
+res://.godot/imported/hud_clean_v2_turn_banner.png-d5f4488cc29c514a30b69a2147cf85ce.ctex
+res://.godot/imported/hud_clean_v2_turn_banner.png-d5f4488cc29c514a30b69a2147cf85ce.md5
+res://.godot/imported/hud_clean_v2_without_special_resource.png-92a5c6f70a195bdb3a3e9cbd4a6ab1d1.ctex
+res://.godot/imported/hud_clean_v2_without_special_resource.png-92a5c6f70a195bdb3a3e9cbd4a6ab1d1.md5
+res://.godot/imported/hud_compact_1080p.png-85ee61458b6c484a5bf2d67fa9f397bb.ctex
+res://.godot/imported/hud_compact_1080p.png-85ee61458b6c484a5bf2d67fa9f397bb.md5
+res://.godot/imported/hud_compact_1440p.png-4afb9092999d0824fc9cbc1c527112a8.ctex
+res://.godot/imported/hud_compact_1440p.png-4afb9092999d0824fc9cbc1c527112a8.md5
+res://.godot/imported/hud_compact_720p.png-aac6f7ae4264c1c676be9f3fd253e19e.ctex
+res://.godot/imported/hud_compact_720p.png-aac6f7ae4264c1c676be9f3fd253e19e.md5
+res://.godot/imported/hud_low_health.png-395cd6c84bb4b356baf55296968866cc.ctex
+res://.godot/imported/hud_low_health.png-395cd6c84bb4b356baf55296968866cc.md5
+res://.godot/imported/hud_ornate_reference_1920x1080.png-278389fde752a7bfca2671120c866f60.ctex
+res://.godot/imported/hud_ornate_reference_1920x1080.png-278389fde752a7bfca2671120c866f60.md5
+res://.godot/imported/hud_ornate_reference_1920x1080.png-d926e3da318415b7d3ee3202e9edec15.ctex
+res://.godot/imported/hud_ornate_reference_1920x1080.png-d926e3da318415b7d3ee3202e9edec15.md5
+res://.godot/imported/hud_ornate_vs_clean.png-adf216968608e6760e5f6f78965f5e7c.ctex
+res://.godot/imported/hud_ornate_vs_clean.png-adf216968608e6760e5f6f78965f5e7c.md5
+res://.godot/imported/hud_preview_with_special_resource.png-f42eeb2909a3788a0fb1d0bb928696af.ctex
+res://.godot/imported/hud_preview_with_special_resource.png-f42eeb2909a3788a0fb1d0bb928696af.md5
+res://.godot/imported/hud_refined_1280x720.png-06ec5b4835c28996aba4ea1f289c2303.ctex
+res://.godot/imported/hud_refined_1280x720.png-06ec5b4835c28996aba4ea1f289c2303.md5
+res://.godot/imported/hud_refined_1920x1080.png-a8a4bb3e3fe5feff7c0f165020292d15.ctex
+res://.godot/imported/hud_refined_1920x1080.png-a8a4bb3e3fe5feff7c0f165020292d15.md5
+res://.godot/imported/hud_refined_2560x1440.png-a82ee29e3c48e6237d595ca90f3dbfaa.ctex
+res://.godot/imported/hud_refined_2560x1440.png-a82ee29e3c48e6237d595ca90f3dbfaa.md5
+res://.godot/imported/hud_refined_assassin_selected_1920x1080.png-fe3b4db2887ef2bd0c1b8f0343e4cf80.ctex
+res://.godot/imported/hud_refined_assassin_selected_1920x1080.png-fe3b4db2887ef2bd0c1b8f0343e4cf80.md5
+res://.godot/imported/hud_refined_assassin_turn_banner_1920x1080.png-80a1913f47cdc64528ce8abcaff67e65.ctex
+res://.godot/imported/hud_refined_assassin_turn_banner_1920x1080.png-80a1913f47cdc64528ce8abcaff67e65.md5
+res://.godot/imported/hud_refined_before_after_polish.png-d9e6328d5e89e4eb0d88800097945744.ctex
+res://.godot/imported/hud_refined_before_after_polish.png-d9e6328d5e89e4eb0d88800097945744.md5
+res://.godot/imported/hud_refined_characters_contact_sheet.png-9af7f00bb12a30981873435a8513dd93.ctex
+res://.godot/imported/hud_refined_characters_contact_sheet.png-9af7f00bb12a30981873435a8513dd93.md5
+res://.godot/imported/hud_refined_druid_selected_1920x1080.png-f464d4d261541cca9f141b066f41f78b.ctex
+res://.godot/imported/hud_refined_druid_selected_1920x1080.png-f464d4d261541cca9f141b066f41f78b.md5
+res://.godot/imported/hud_refined_druid_turn_banner_1920x1080.png-bde5b8997625974840f7170eada0aad9.ctex
+res://.godot/imported/hud_refined_druid_turn_banner_1920x1080.png-bde5b8997625974840f7170eada0aad9.md5
+res://.godot/imported/hud_refined_elf_selected_1280x720.png-c31e16d5e7b0ff8d2c84d46ec0832336.ctex
+res://.godot/imported/hud_refined_elf_selected_1280x720.png-c31e16d5e7b0ff8d2c84d46ec0832336.md5
+res://.godot/imported/hud_refined_elf_selected_1920x1080.png-41143a61566b93bd504b64aee8afdd5b.ctex
+res://.godot/imported/hud_refined_elf_selected_1920x1080.png-41143a61566b93bd504b64aee8afdd5b.md5
+res://.godot/imported/hud_refined_elf_selected_2560x1440.png-100b1d25c2c3cc492e281e66cdc59e81.ctex
+res://.godot/imported/hud_refined_elf_selected_2560x1440.png-100b1d25c2c3cc492e281e66cdc59e81.md5
+res://.godot/imported/hud_refined_elf_turn_banner_1920x1080.png-8277f5bcd13388e585516491588bf527.ctex
+res://.godot/imported/hud_refined_elf_turn_banner_1920x1080.png-8277f5bcd13388e585516491588bf527.md5
+res://.godot/imported/hud_refined_guardian_selected_1920x1080.png-14a7bef878372ce7a55ed20609264d34.ctex
+res://.godot/imported/hud_refined_guardian_selected_1920x1080.png-14a7bef878372ce7a55ed20609264d34.md5
+res://.godot/imported/hud_refined_guardian_turn_banner_1920x1080.png-caee81a992813dcb2fbd411718eb0e3d.ctex
+res://.godot/imported/hud_refined_guardian_turn_banner_1920x1080.png-caee81a992813dcb2fbd411718eb0e3d.md5
+res://.godot/imported/hud_refined_hoplite_selected_1920x1080.png-3f52745b8e53a41a07661d2fa4a67a92.ctex
+res://.godot/imported/hud_refined_hoplite_selected_1920x1080.png-3f52745b8e53a41a07661d2fa4a67a92.md5
+res://.godot/imported/hud_refined_hoplite_turn_banner_1920x1080.png-71612f4c1ea8eab9c67d1bd4797882ae.ctex
+res://.godot/imported/hud_refined_hoplite_turn_banner_1920x1080.png-71612f4c1ea8eab9c67d1bd4797882ae.md5
+res://.godot/imported/hud_refined_low_health.png-c06578b9ddfd98a3a07497969bad05bf.ctex
+res://.godot/imported/hud_refined_low_health.png-c06578b9ddfd98a3a07497969bad05bf.md5
+res://.godot/imported/hud_refined_mage_selected_1920x1080.png-1cc8f8e23f831a752ece98fedf63fcab.ctex
+res://.godot/imported/hud_refined_mage_selected_1920x1080.png-1cc8f8e23f831a752ece98fedf63fcab.md5
+res://.godot/imported/hud_refined_mage_turn_banner_1920x1080.png-0b5f1cc496621869cb9e0912a10b8c7f.ctex
+res://.godot/imported/hud_refined_mage_turn_banner_1920x1080.png-0b5f1cc496621869cb9e0912a10b8c7f.md5
+res://.godot/imported/hud_refined_necromancer_selected_1920x1080.png-e9826dc00ddaaeba1910bad851a4506c.ctex
+res://.godot/imported/hud_refined_necromancer_selected_1920x1080.png-e9826dc00ddaaeba1910bad851a4506c.md5
+res://.godot/imported/hud_refined_necromancer_turn_banner_1920x1080.png-77d690569a2a4e8e796880f4e5c857fd.ctex
+res://.godot/imported/hud_refined_necromancer_turn_banner_1920x1080.png-77d690569a2a4e8e796880f4e5c857fd.md5
+res://.godot/imported/hud_refined_polish_1280x720.png-cd988de4c7c076bfa2cf1e9fd666ca42.ctex
+res://.godot/imported/hud_refined_polish_1280x720.png-cd988de4c7c076bfa2cf1e9fd666ca42.md5
+res://.godot/imported/hud_refined_polish_1920x1080.png-c064edb16292d83bf76fe2c13f68c009.ctex
+res://.godot/imported/hud_refined_polish_1920x1080.png-c064edb16292d83bf76fe2c13f68c009.md5
+res://.godot/imported/hud_refined_polish_2560x1440.png-473110e58d153d2968fcdff32312cd83.ctex
+res://.godot/imported/hud_refined_polish_2560x1440.png-473110e58d153d2968fcdff32312cd83.md5
+res://.godot/imported/hud_refined_polish_blurred_reduced.png-30df8197442a1fab20dbbdeddd941d5c.ctex
+res://.godot/imported/hud_refined_polish_blurred_reduced.png-30df8197442a1fab20dbbdeddd941d5c.md5
+res://.godot/imported/hud_refined_polish_cooldown.png-ae8d8ecdd05a1a5d3e0c6fcee92ef70e.ctex
+res://.godot/imported/hud_refined_polish_cooldown.png-ae8d8ecdd05a1a5d3e0c6fcee92ef70e.md5
+res://.godot/imported/hud_refined_polish_grayscale.png-21cc3da91d6b981c41d6868df1f03e4c.ctex
+res://.godot/imported/hud_refined_polish_grayscale.png-21cc3da91d6b981c41d6868df1f03e4c.md5
+res://.godot/imported/hud_refined_polish_low_health.png-dec41a27430057642d695f7cacafe85d.ctex
+res://.godot/imported/hud_refined_polish_low_health.png-dec41a27430057642d695f7cacafe85d.md5
+res://.godot/imported/hud_refined_polish_move_selected.png-b9a87a3bbffb41c09d3d5ee92d120eb1.ctex
+res://.godot/imported/hud_refined_polish_move_selected.png-b9a87a3bbffb41c09d3d5ee92d120eb1.md5
+res://.godot/imported/hud_refined_polish_preview_energy.png-cb5b592ae89b4e196e44ef2b8b45ab7c.ctex
+res://.godot/imported/hud_refined_polish_preview_energy.png-cb5b592ae89b4e196e44ef2b8b45ab7c.md5
+res://.godot/imported/hud_refined_polish_spell_selected.png-bc349ab7f4aad386c8786094ff334cfb.ctex
+res://.godot/imported/hud_refined_polish_spell_selected.png-bc349ab7f4aad386c8786094ff334cfb.md5
+res://.godot/imported/hud_refined_polish_spell_unavailable.png-6c2f26f3b65afa0d53d8a63858abe102.ctex
+res://.godot/imported/hud_refined_polish_spell_unavailable.png-6c2f26f3b65afa0d53d8a63858abe102.md5
+res://.godot/imported/hud_refined_polish_unaffordable.png-240a68d74eb37ba2bb2a7f6d6e550587.ctex
+res://.godot/imported/hud_refined_polish_unaffordable.png-240a68d74eb37ba2bb2a7f6d6e550587.md5
+res://.godot/imported/hud_refined_polish_utility_dock.png-bd5375bb59e25d1476482885f2e191bf.ctex
+res://.godot/imported/hud_refined_polish_utility_dock.png-bd5375bb59e25d1476482885f2e191bf.md5
+res://.godot/imported/hud_refined_polish_without_energy.png-277e04360c930a57513fd9d607714892.ctex
+res://.godot/imported/hud_refined_polish_without_energy.png-277e04360c930a57513fd9d607714892.md5
+res://.godot/imported/hud_refined_preview_with_special_resource.png-c2b096c020ea3c2e25419e3dd208b96c.ctex
+res://.godot/imported/hud_refined_preview_with_special_resource.png-c2b096c020ea3c2e25419e3dd208b96c.md5
+res://.godot/imported/hud_refined_selected_unavailable_cooldown.png-467f77335e8641294b87cdbf870e355e.ctex
+res://.godot/imported/hud_refined_selected_unavailable_cooldown.png-467f77335e8641294b87cdbf870e355e.md5
+res://.godot/imported/hud_refined_system_dock_1920x1080.png-ab96354ef0bb185b618a7cbc00530302.ctex
+res://.godot/imported/hud_refined_system_dock_1920x1080.png-ab96354ef0bb185b618a7cbc00530302.md5
+res://.godot/imported/hud_refined_turn_banner.png-a0a8ef33a5d98a09a82085259a34a67b.ctex
+res://.godot/imported/hud_refined_turn_banner.png-a0a8ef33a5d98a09a82085259a34a67b.md5
+res://.godot/imported/hud_refined_warrior_selected_1920x1080.png-31f4ef90fd2d5c87185d4cb3e2bcca56.ctex
+res://.godot/imported/hud_refined_warrior_selected_1920x1080.png-31f4ef90fd2d5c87185d4cb3e2bcca56.md5
+res://.godot/imported/hud_refined_warrior_turn_banner_1920x1080.png-9b19e9832736a0ca6cd98fbfc1c48b07.ctex
+res://.godot/imported/hud_refined_warrior_turn_banner_1920x1080.png-9b19e9832736a0ca6cd98fbfc1c48b07.md5
+res://.godot/imported/hud_refined_without_special_resource.png-7eddf9622df1277672e87125be029943.ctex
+res://.godot/imported/hud_refined_without_special_resource.png-7eddf9622df1277672e87125be029943.md5
+res://.godot/imported/hud_selected_unavailable_cooldown.png-b7b9a1457040790697676ec7d0b5d36a.ctex
+res://.godot/imported/hud_selected_unavailable_cooldown.png-b7b9a1457040790697676ec7d0b5d36a.md5
+res://.godot/imported/hud_turn_banner.png-0ecae0ff89e037adeecd448bc485c30f.ctex
+res://.godot/imported/hud_turn_banner.png-0ecae0ff89e037adeecd448bc485c30f.md5
+res://.godot/imported/hud_without_special_resource.png-520a8b5f369bf1d4966b716380d50dd7.ctex
+res://.godot/imported/hud_without_special_resource.png-520a8b5f369bf1d4966b716380d50dd7.md5
+res://.godot/imported/movement_pacing_comparison.png-352e5e79dacf52cdd5c36ada3ad192c5.ctex
+res://.godot/imported/movement_pacing_comparison.png-352e5e79dacf52cdd5c36ada3ad192c5.md5
+res://.godot/imported/no_goblin_no_dummy.png-ebc8d9dbce413056555c59b6f6db81e1.ctex
+res://.godot/imported/no_goblin_no_dummy.png-ebc8d9dbce413056555c59b6f6db81e1.md5
+res://.godot/imported/room2_chief_melee_ranged.png-8ff969cd5ee70713d8d783c2b90b7af9.ctex
+res://.godot/imported/room2_chief_melee_ranged.png-8ff969cd5ee70713d8d783c2b90b7af9.md5
+res://.godot/imported/room2_no_fourth_enemy.png-1d99eda58d4e82b3d624e53d8846c3cf.ctex
+res://.godot/imported/room2_no_fourth_enemy.png-1d99eda58d4e82b3d624e53d8846c3cf.md5
+res://.godot/imported/run_room_three_skeletons.png-f68b6697286bd506cfc6f2ae4a2537ca.ctex
+res://.godot/imported/run_room_three_skeletons.png-f68b6697286bd506cfc6f2ae4a2537ca.md5
+res://.godot/imported/salle1_elf_behind_goblin.png-bb96ffa2492e1fb1726798999e4ab665.ctex
+res://.godot/imported/salle1_elf_behind_goblin.png-bb96ffa2492e1fb1726798999e4ab665.md5
+res://.godot/imported/salle1_elf_cast.png-76470d4b08fe344c903e2f1b67ef6c68.ctex
+res://.godot/imported/salle1_elf_cast.png-76470d4b08fe344c903e2f1b67ef6c68.md5
+res://.godot/imported/salle1_elf_death.png-a6266f7e163778d942d619b4b0c31ec3.ctex
+res://.godot/imported/salle1_elf_death.png-a6266f7e163778d942d619b4b0c31ec3.md5
+res://.godot/imported/salle1_elf_hit.png-2042b8d18bc62831e1179b54fe02fd8b.ctex
+res://.godot/imported/salle1_elf_hit.png-2042b8d18bc62831e1179b54fe02fd8b.md5
+res://.godot/imported/salle1_elf_idle.png-3212cdf81bde5372839f7b90a18a46af.ctex
+res://.godot/imported/salle1_elf_idle.png-3212cdf81bde5372839f7b90a18a46af.md5
+res://.godot/imported/salle1_elf_in_front_of_goblin.png-4eb65c11b0b00918fe6d49086173553a.ctex
+res://.godot/imported/salle1_elf_in_front_of_goblin.png-4eb65c11b0b00918fe6d49086173553a.md5
+res://.godot/imported/salle1_elf_walk_neg_x.png-2a983cc6e4266e5529772567df8b0597.ctex
+res://.godot/imported/salle1_elf_walk_neg_x.png-2a983cc6e4266e5529772567df8b0597.md5
+res://.godot/imported/salle1_elf_walk_neg_y.png-be0521bee01fcca3771b3ca9d65ae72d.ctex
+res://.godot/imported/salle1_elf_walk_neg_y.png-be0521bee01fcca3771b3ca9d65ae72d.md5
+res://.godot/imported/salle1_elf_walk_pos_x.png-7f44714f25c0e36a7cf07bdfa89ac816.ctex
+res://.godot/imported/salle1_elf_walk_pos_x.png-7f44714f25c0e36a7cf07bdfa89ac816.md5
+res://.godot/imported/salle1_elf_walk_pos_y.png-30be33461cfc9b9beb0634ccc3912b16.ctex
+res://.godot/imported/salle1_elf_walk_pos_y.png-30be33461cfc9b9beb0634ccc3912b16.md5
+res://.godot/imported/sharpness_512_linear_composite.png-86409a515327da3498b1f47442ba4e95.ctex
+res://.godot/imported/sharpness_512_linear_composite.png-86409a515327da3498b1f47442ba4e95.md5
+res://.godot/imported/sharpness_512_linear_composite_crop.png-8f5fa34fb44188fdf3d44b1dec20a2db.ctex
+res://.godot/imported/sharpness_512_linear_composite_crop.png-8f5fa34fb44188fdf3d44b1dec20a2db.md5
+res://.godot/imported/sharpness_512_linear_viewport.png-f95b551122690fc67ef43e12e7c415e5.ctex
+res://.godot/imported/sharpness_512_linear_viewport.png-f95b551122690fc67ef43e12e7c415e5.md5
+res://.godot/imported/sharpness_512_linear_viewport_crop.png-a9f6e6c4a712d45aed6586b74437653c.ctex
+res://.godot/imported/sharpness_512_linear_viewport_crop.png-a9f6e6c4a712d45aed6586b74437653c.md5
+res://.godot/imported/sharpness_512_nearest_composite.png-88fe643bad9ee74a9cb57757c1f7c06c.ctex
+res://.godot/imported/sharpness_512_nearest_composite.png-88fe643bad9ee74a9cb57757c1f7c06c.md5
+res://.godot/imported/sharpness_512_nearest_composite_crop.png-a0327fc8a4b479496de376b7a1fc869b.ctex
+res://.godot/imported/sharpness_512_nearest_composite_crop.png-a0327fc8a4b479496de376b7a1fc869b.md5
+res://.godot/imported/sharpness_512_nearest_viewport.png-2991a8b6693aaba8390c95171461e19b.ctex
+res://.godot/imported/sharpness_512_nearest_viewport.png-2991a8b6693aaba8390c95171461e19b.md5
+res://.godot/imported/sharpness_512_nearest_viewport_crop.png-5241b4f7a61ca4b193315587a7ca6cce.ctex
+res://.godot/imported/sharpness_512_nearest_viewport_crop.png-5241b4f7a61ca4b193315587a7ca6cce.md5
+res://.godot/imported/sharpness_640x512_linear_composite.png-ae15e503cdf44079bad8d6f4f0a8cb64.ctex
+res://.godot/imported/sharpness_640x512_linear_composite.png-ae15e503cdf44079bad8d6f4f0a8cb64.md5
+res://.godot/imported/sharpness_640x512_linear_composite_crop.png-080bd8f0943b72c2a3633d0c55ea421c.ctex
+res://.godot/imported/sharpness_640x512_linear_composite_crop.png-080bd8f0943b72c2a3633d0c55ea421c.md5
+res://.godot/imported/sharpness_640x512_linear_viewport.png-93d745b1674de60e1d7dfa204a701ce6.ctex
+res://.godot/imported/sharpness_640x512_linear_viewport.png-93d745b1674de60e1d7dfa204a701ce6.md5
+res://.godot/imported/sharpness_640x512_linear_viewport_crop.png-0c3bed5c5a32a4d4488752438e16127f.ctex
+res://.godot/imported/sharpness_640x512_linear_viewport_crop.png-0c3bed5c5a32a4d4488752438e16127f.md5
+res://.godot/imported/sharpness_768_linear_composite.png-f1f6e6c333e5728957e9da1462adf137.ctex
+res://.godot/imported/sharpness_768_linear_composite.png-f1f6e6c333e5728957e9da1462adf137.md5
+res://.godot/imported/sharpness_768_linear_composite_crop.png-8d4d96717723d9878bd6bc59fff27b94.ctex
+res://.godot/imported/sharpness_768_linear_composite_crop.png-8d4d96717723d9878bd6bc59fff27b94.md5
+res://.godot/imported/sharpness_768_linear_viewport.png-42faa38d34d850822e5e34d166fb8e59.ctex
+res://.godot/imported/sharpness_768_linear_viewport.png-42faa38d34d850822e5e34d166fb8e59.md5
+res://.godot/imported/sharpness_768_linear_viewport_crop.png-fde16993497aa4174c6e29960961d6e4.ctex
+res://.godot/imported/sharpness_768_linear_viewport_crop.png-fde16993497aa4174c6e29960961d6e4.md5
+res://.godot/imported/sharpness_768x512_linear_composite.png-3d73ca3e09b5b95f2dcc9a0ed172dfd2.ctex
+res://.godot/imported/sharpness_768x512_linear_composite.png-3d73ca3e09b5b95f2dcc9a0ed172dfd2.md5
+res://.godot/imported/sharpness_768x512_linear_composite_crop.png-d2deeb536c47680e9876b3def97568fc.ctex
+res://.godot/imported/sharpness_768x512_linear_composite_crop.png-d2deeb536c47680e9876b3def97568fc.md5
+res://.godot/imported/sharpness_768x512_linear_viewport.png-e0fab925e84b6660581905560d77f096.ctex
+res://.godot/imported/sharpness_768x512_linear_viewport.png-e0fab925e84b6660581905560d77f096.md5
+res://.godot/imported/sharpness_768x512_linear_viewport_crop.png-1b464112ea0f4b2ba77a61bd44a244c7.ctex
+res://.godot/imported/sharpness_768x512_linear_viewport_crop.png-1b464112ea0f4b2ba77a61bd44a244c7.md5
+res://.godot/imported/sharpness_before_composite.png-bcdbda09063e2961969eb772312ac52e.ctex
+res://.godot/imported/sharpness_before_composite.png-bcdbda09063e2961969eb772312ac52e.md5
+res://.godot/imported/sharpness_before_composite_crop.png-623138cf3bb1b37b7e25cfa156f8b0b3.ctex
+res://.godot/imported/sharpness_before_composite_crop.png-623138cf3bb1b37b7e25cfa156f8b0b3.md5
+res://.godot/imported/sharpness_before_viewport.png-3920897ad30d4a98f3f2e2a35b844d17.ctex
+res://.godot/imported/sharpness_before_viewport.png-3920897ad30d4a98f3f2e2a35b844d17.md5
+res://.godot/imported/sharpness_before_viewport_crop.png-a5c664edfb5e455bc6b46bdce41c3013.ctex
+res://.godot/imported/sharpness_before_viewport_crop.png-a5c664edfb5e455bc6b46bdce41c3013.md5
+res://.godot/imported/sharpness_final_idle_crop.png-0e0c10916cc48c782f8ef9ddc19adec8.ctex
+res://.godot/imported/sharpness_final_idle_crop.png-0e0c10916cc48c782f8ef9ddc19adec8.md5
+res://.godot/imported/sharpness_final_idle_viewport.png-32a333452d49fb3bf829055f4d37005a.ctex
+res://.godot/imported/sharpness_final_idle_viewport.png-32a333452d49fb3bf829055f4d37005a.md5
+res://.godot/imported/sharpness_final_idle_viewport_crop.png-911d715e526bf622ff10c5118ce4beb3.ctex
+res://.godot/imported/sharpness_final_idle_viewport_crop.png-911d715e526bf622ff10c5118ce4beb3.md5
+res://.godot/imported/sharpness_final_walk_crop.png-1e3e342fd52cca7d03a28acc7d8f4eff.ctex
+res://.godot/imported/sharpness_final_walk_crop.png-1e3e342fd52cca7d03a28acc7d8f4eff.md5
+res://.godot/imported/sharpness_motion_cast_viewport.png-89a4921eaeb00c66b62d41062ef4a1f7.ctex
+res://.godot/imported/sharpness_motion_cast_viewport.png-89a4921eaeb00c66b62d41062ef4a1f7.md5
+res://.godot/imported/sharpness_motion_death_viewport.png-dcbadc77f1b39351e0ab7571c87712f6.ctex
+res://.godot/imported/sharpness_motion_death_viewport.png-dcbadc77f1b39351e0ab7571c87712f6.md5
+res://.godot/imported/sharpness_motion_hit_viewport.png-7bc1b617476020adbdd5c7d11796356a.ctex
+res://.godot/imported/sharpness_motion_hit_viewport.png-7bc1b617476020adbdd5c7d11796356a.md5
+res://.godot/imported/sharpness_motion_idle_viewport.png-cd04cbf72761d210d028d189bad0f539.ctex
+res://.godot/imported/sharpness_motion_idle_viewport.png-cd04cbf72761d210d028d189bad0f539.md5
+res://.godot/imported/sharpness_motion_walk_viewport.png-03fb818232091f70e5489d292b028601.ctex
+res://.godot/imported/sharpness_motion_walk_viewport.png-03fb818232091f70e5489d292b028601.md5
+res://.godot/imported/skeleton_blender_bow_attack.png-62ebe0bb09675a56bb8217900d47a90e.ctex
+res://.godot/imported/skeleton_blender_bow_attack.png-62ebe0bb09675a56bb8217900d47a90e.md5
+res://.godot/imported/skeleton_blender_idle.png-3c0cb9642852feaecc7c8ad390aa52dd.ctex
+res://.godot/imported/skeleton_blender_idle.png-3c0cb9642852feaecc7c8ad390aa52dd.md5
+res://.godot/imported/skeleton_blender_melee_attack.png-953f204b26355a1df49f6d1d9ce825a0.ctex
+res://.godot/imported/skeleton_blender_melee_attack.png-953f204b26355a1df49f6d1d9ce825a0.md5
+res://.godot/imported/skeleton_blender_ranged_attack.png-34e0f29b18c6660f86f3b08b18eea977.ctex
+res://.godot/imported/skeleton_blender_ranged_attack.png-34e0f29b18c6660f86f3b08b18eea977.md5
+res://.godot/imported/skeleton_blender_sword_attack.png-9318e00106df66eb696f6427a53aaac1.ctex
+res://.godot/imported/skeleton_blender_sword_attack.png-9318e00106df66eb696f6427a53aaac1.md5
+res://.godot/imported/skeleton_character_v01_texture_0.png-1ab80f4de975688a4eaf10201bff90cd.ctex
+res://.godot/imported/skeleton_chief_blender_attack.png-e8289485b8bcceca7b382f5eea2180bc.ctex
+res://.godot/imported/skeleton_chief_blender_attack.png-e8289485b8bcceca7b382f5eea2180bc.md5
+res://.godot/imported/skeleton_chief_blender_death.png-46f5a78716e2bdfbbec9ee037aa020f6.ctex
+res://.godot/imported/skeleton_chief_blender_death.png-46f5a78716e2bdfbbec9ee037aa020f6.md5
+res://.godot/imported/skeleton_chief_blender_hit.png-914f27ba8dfc049b77fecf2e954b627b.ctex
+res://.godot/imported/skeleton_chief_blender_hit.png-914f27ba8dfc049b77fecf2e954b627b.md5
+res://.godot/imported/skeleton_chief_blender_idle.png-1722de9d60146c77132324a4bc4bdcea.ctex
+res://.godot/imported/skeleton_chief_blender_idle.png-1722de9d60146c77132324a4bc4bdcea.md5
+res://.godot/imported/skeleton_chief_blender_walk.png-2e39e9460699bb224787e2fa676fd4cd.ctex
+res://.godot/imported/skeleton_chief_blender_walk.png-2e39e9460699bb224787e2fa676fd4cd.md5
+res://.godot/imported/skeleton_chief_character_v01_texture_0.png-f0dfc8eed55e6b113d03ac748419ae0e.ctex
+res://.godot/imported/skeleton_chief_iso_attack.png-63419cede9e0dc79fdda676d5b03345b.ctex
+res://.godot/imported/skeleton_chief_iso_attack.png-63419cede9e0dc79fdda676d5b03345b.md5
+res://.godot/imported/skeleton_chief_iso_death.png-ebbd2112fea892155f0d69c791f1c1fd.ctex
+res://.godot/imported/skeleton_chief_iso_death.png-ebbd2112fea892155f0d69c791f1c1fd.md5
+res://.godot/imported/skeleton_chief_iso_hit.png-da02327b4d05e8f395ea3919ed82d629.ctex
+res://.godot/imported/skeleton_chief_iso_hit.png-da02327b4d05e8f395ea3919ed82d629.md5
+res://.godot/imported/skeleton_chief_iso_idle.png-d75b37c049e9d7244a172e9fde21879d.ctex
+res://.godot/imported/skeleton_chief_iso_idle.png-d75b37c049e9d7244a172e9fde21879d.md5
+res://.godot/imported/skeleton_chief_iso_walk.png-32b2c7509d1f13c8a08ff78adf98d70d.ctex
+res://.godot/imported/skeleton_chief_iso_walk.png-32b2c7509d1f13c8a08ff78adf98d70d.md5
+res://.godot/imported/skeleton_chief_room2_attack.png-713841421b8a6baf31acc6e4e95251c0.ctex
+res://.godot/imported/skeleton_chief_room2_attack.png-713841421b8a6baf31acc6e4e95251c0.md5
+res://.godot/imported/skeleton_chief_room2_death.png-7c7d6babe9a3931b0965fb122c34fdb7.ctex
+res://.godot/imported/skeleton_chief_room2_death.png-7c7d6babe9a3931b0965fb122c34fdb7.md5
+res://.godot/imported/skeleton_chief_room2_hit.png-3f8173e3a68697430f4c280489c9d09f.ctex
+res://.godot/imported/skeleton_chief_room2_hit.png-3f8173e3a68697430f4c280489c9d09f.md5
+res://.godot/imported/skeleton_chief_y_sort.png-4b2c0cfaffd6606a6f8e44c32e14af41.ctex
+res://.godot/imported/skeleton_chief_y_sort.png-4b2c0cfaffd6606a6f8e44c32e14af41.md5
+res://.godot/imported/skeleton_death.png-0ae78f936c3d7d73cd3fa926ad841189.ctex
+res://.godot/imported/skeleton_death.png-0ae78f936c3d7d73cd3fa926ad841189.md5
+res://.godot/imported/skeleton_hit.png-4a9d3645541432c76063462772dc58ad.ctex
+res://.godot/imported/skeleton_hit.png-4a9d3645541432c76063462772dc58ad.md5
+res://.godot/imported/skeleton_melee_attack_iso.png-3a6610b4b72a20721a67c63525ddef3d.ctex
+res://.godot/imported/skeleton_melee_attack_iso.png-3a6610b4b72a20721a67c63525ddef3d.md5
+res://.godot/imported/skeleton_melee_idle_iso.png-fcb87b709e48bead2add2014b2b01fb7.ctex
+res://.godot/imported/skeleton_melee_idle_iso.png-fcb87b709e48bead2add2014b2b01fb7.md5
+res://.godot/imported/skeleton_ranged_idle_iso.png-469543cd228ad54de7bf62286e6dd9c6.ctex
+res://.godot/imported/skeleton_ranged_idle_iso.png-469543cd228ad54de7bf62286e6dd9c6.md5
+res://.godot/imported/skeleton_ranged_projectile.png-3b98f641c19d901b96ef630f870f8874.ctex
+res://.godot/imported/skeleton_ranged_projectile.png-3b98f641c19d901b96ef630f870f8874.md5
+res://.godot/imported/skeleton_ranged_release_iso.png-44e0148a40605ca6341e29d4b493a532.ctex
+res://.godot/imported/skeleton_ranged_release_iso.png-44e0148a40605ca6341e29d4b493a532.md5
+res://.godot/imported/skeleton_y_sort_back.png-398d4630842828542659b879cc4e2a95.ctex
+res://.godot/imported/skeleton_y_sort_back.png-398d4630842828542659b879cc4e2a95.md5
+res://.godot/imported/skeleton_y_sort_front.png-d74249885558038afbab519d29ca9614.ctex
+res://.godot/imported/skeleton_y_sort_front.png-d74249885558038afbab519d29ca9614.md5
+res://.godot/imported/skill_tree_after_blurred_reduced.png-78d839d0eb7f18d218ebca0e7d5c7dd9.ctex
+res://.godot/imported/skill_tree_after_blurred_reduced.png-78d839d0eb7f18d218ebca0e7d5c7dd9.md5
+res://.godot/imported/skill_tree_after_elf_archer_1280x720.png-8b7b618b234a8837742bc1fc9f3b375c.ctex
+res://.godot/imported/skill_tree_after_elf_archer_1280x720.png-8b7b618b234a8837742bc1fc9f3b375c.md5
+res://.godot/imported/skill_tree_after_elf_archer_2560x1440.png-746f741a9b0a5ed1f0d82dc8c929ac10.ctex
+res://.godot/imported/skill_tree_after_elf_archer_2560x1440.png-746f741a9b0a5ed1f0d82dc8c929ac10.md5
+res://.godot/imported/skill_tree_after_elf_archer_acquired_1920x1080.png-ed4ff409ec55d277f0fc32ea853c3f60.ctex
+res://.godot/imported/skill_tree_after_elf_archer_acquired_1920x1080.png-ed4ff409ec55d277f0fc32ea853c3f60.md5
+res://.godot/imported/skill_tree_after_elf_archer_available_1920x1080.png-7172a2c3455c97dd0ab8847d02af1664.ctex
+res://.godot/imported/skill_tree_after_elf_archer_available_1920x1080.png-7172a2c3455c97dd0ab8847d02af1664.md5
+res://.godot/imported/skill_tree_after_elf_archer_exclusive_1920x1080.png-e177a63c11bf7a6325ecc633eb20b71f.ctex
+res://.godot/imported/skill_tree_after_elf_archer_exclusive_1920x1080.png-e177a63c11bf7a6325ecc633eb20b71f.md5
+res://.godot/imported/skill_tree_after_elf_archer_locked_1920x1080.png-5021389901f085df0b4b0d216d5fbce4.ctex
+res://.godot/imported/skill_tree_after_elf_archer_locked_1920x1080.png-5021389901f085df0b4b0d216d5fbce4.md5
+res://.godot/imported/skill_tree_after_elf_archer_max_1920x1080.png-66ec4fb8284da9ea3222d2d0513bf122.ctex
+res://.godot/imported/skill_tree_after_elf_archer_max_1920x1080.png-66ec4fb8284da9ea3222d2d0513bf122.md5
+res://.godot/imported/skill_tree_after_elf_archer_specialization_1920x1080.png-0533b7e9661157696b5c30872a7ba7ed.ctex
+res://.godot/imported/skill_tree_after_elf_archer_specialization_1920x1080.png-0533b7e9661157696b5c30872a7ba7ed.md5
+res://.godot/imported/skill_tree_after_elf_assassin_1920x1080.png-f8f1d3fbea7d3c7d97a81f6464c241b4.ctex
+res://.godot/imported/skill_tree_after_elf_assassin_1920x1080.png-f8f1d3fbea7d3c7d97a81f6464c241b4.md5
+res://.godot/imported/skill_tree_after_elf_healer_1920x1080.png-8e56d58b8e3f99d4e0416ff12ce768d1.ctex
+res://.godot/imported/skill_tree_after_elf_healer_1920x1080.png-8e56d58b8e3f99d4e0416ff12ce768d1.md5
+res://.godot/imported/skill_tree_after_elf_mage_1920x1080.png-0a6cabff75641e0e51aa254db598a4bb.ctex
+res://.godot/imported/skill_tree_after_elf_mage_1920x1080.png-0a6cabff75641e0e51aa254db598a4bb.md5
+res://.godot/imported/skill_tree_after_guardian_undefined_1920x1080.png-82283705ec7588beb10850a09a27a657.ctex
+res://.godot/imported/skill_tree_after_guardian_undefined_1920x1080.png-82283705ec7588beb10850a09a27a657.md5
+res://.godot/imported/skill_tree_after_mage_branches_1920x1080.png-cac5c0f87cd35d340038f0f74b22387a.ctex
+res://.godot/imported/skill_tree_after_mage_branches_1920x1080.png-cac5c0f87cd35d340038f0f74b22387a.md5
+res://.godot/imported/skill_tree_before_1920x1080.png-714e21ec57dbe8a7b0c8c5fecdcb501b.ctex
+res://.godot/imported/skill_tree_before_1920x1080.png-714e21ec57dbe8a7b0c8c5fecdcb501b.md5
+res://.godot/imported/skill_tree_before_after_comparison.png-1d21edfc434a0e064d6fb6d616adef98.ctex
+res://.godot/imported/skill_tree_before_after_comparison.png-1d21edfc434a0e064d6fb6d616adef98.md5
+res://.godot/imported/skill_tree_capture_contact_sheet.png-32cf3fa134dbb34ba2a8bc884a86c727.ctex
+res://.godot/imported/skill_tree_capture_contact_sheet.png-32cf3fa134dbb34ba2a8bc884a86c727.md5
+res://.godot/imported/trio_run_playable.png-79afe7b3f7a184ab1427d7bfde655416.ctex
+res://.godot/imported/trio_run_playable.png-79afe7b3f7a184ab1427d7bfde655416.md5
+res://.godot/imported/trio_vs_skeleton_chief.png-04ac03442c24d197713b72a1c4f466b8.ctex
+res://.godot/imported/trio_vs_skeleton_chief.png-04ac03442c24d197713b72a1c4f466b8.md5
+res://.godot/imported/trio_vs_three_skeletons.png-b38cb85cd54beb55edff044758d3dfda.ctex
+res://.godot/imported/trio_vs_three_skeletons.png-b38cb85cd54beb55edff044758d3dfda.md5
+res://.godot/imported/used_components_contact_sheet.png-73ce6c3e8d5fb6c79dd62f574982adb5.ctex
+res://.godot/imported/used_components_contact_sheet.png-73ce6c3e8d5fb6c79dd62f574982adb5.md5
+res://.godot/imported/warrior_basic_attack.png-4ade37d0e9aa8dae8d4ce72d88a81e38.ctex
+res://.godot/imported/warrior_basic_attack.png-4ade37d0e9aa8dae8d4ce72d88a81e38.md5
+res://.godot/imported/warrior_breaker_animation.png-cad97b659ec5dc13fe79e66ed974f405.ctex
+res://.godot/imported/warrior_breaker_animation.png-cad97b659ec5dc13fe79e66ed974f405.md5
+res://.godot/imported/warrior_character_v01_texture_0.png-0cf0540679c65d3488b50e0658864472.ctex
+res://.godot/imported/warrior_death.png-11d587ab1116089a593276b5b41c754c.ctex
+res://.godot/imported/warrior_death.png-11d587ab1116089a593276b5b41c754c.md5
+res://.godot/imported/warrior_draft_third_slot.png-07db1843fd4960505b3a5946d84d0748.ctex
+res://.godot/imported/warrior_draft_third_slot.png-07db1843fd4960505b3a5946d84d0748.md5
+res://.godot/imported/warrior_execution_animation.png-b87ce4e0ad9edcba9c794e6e3bf850bd.ctex
+res://.godot/imported/warrior_execution_animation.png-b87ce4e0ad9edcba9c794e6e3bf850bd.md5
+res://.godot/imported/warrior_hit.png-73c06be2ad318efc2031c1497cc5556e.ctex
+res://.godot/imported/warrior_hit.png-73c06be2ad318efc2031c1497cc5556e.md5
+res://.godot/imported/warrior_idle_iso.png-dd366340ee8a6b924c189d4372c85fb8.ctex
+res://.godot/imported/warrior_idle_iso.png-dd366340ee8a6b924c189d4372c85fb8.md5
+res://.godot/imported/warrior_no_energy_ui.png-8fab6fb99b9027e2ba1c0c56c557b612.ctex
+res://.godot/imported/warrior_no_energy_ui.png-8fab6fb99b9027e2ba1c0c56c557b612.md5
+res://.godot/imported/warrior_ravager_animation.png-342cc0066cb86d9c195bfd6137389ab6.ctex
+res://.godot/imported/warrior_ravager_animation.png-342cc0066cb86d9c195bfd6137389ab6.md5
+res://.godot/imported/warrior_skill_tree.png-1ba9bf7f4a0b7da0a3a2afe3093c4dab.ctex
+res://.godot/imported/warrior_skill_tree.png-1ba9bf7f4a0b7da0a3a2afe3093c4dab.md5
+res://.godot/imported/warrior_spell_action.png-9767a7c806d30b83f31e74b699c77e0e.ctex
+res://.godot/imported/warrior_spell_action.png-9767a7c806d30b83f31e74b699c77e0e.md5
+res://.godot/imported/warrior_walk_neg_x.png-51af5243260a2e2145f74c124e701a6d.ctex
+res://.godot/imported/warrior_walk_neg_x.png-51af5243260a2e2145f74c124e701a6d.md5
+res://.godot/imported/warrior_walk_neg_y.png-49460a3278c4db42bc1c7fb2901ad223.ctex
+res://.godot/imported/warrior_walk_neg_y.png-49460a3278c4db42bc1c7fb2901ad223.md5
+res://.godot/imported/warrior_walk_pos_x.png-95d2e2cde9a5d91f8ddbed491234779b.ctex
+res://.godot/imported/warrior_walk_pos_x.png-95d2e2cde9a5d91f8ddbed491234779b.md5
+res://.godot/imported/warrior_walk_pos_y.png-6060bb7c5aa2917a0bac80fbee8b7e6b.ctex
+res://.godot/imported/warrior_walk_pos_y.png-6060bb7c5aa2917a0bac80fbee8b7e6b.md5
+res://.godot/imported/warrior_y_sort_behind.png-9a4fb2eb1c0f6deb0c7a86ac1ab4e304.ctex
+res://.godot/imported/warrior_y_sort_behind.png-9a4fb2eb1c0f6deb0c7a86ac1ab4e304.md5
+res://.godot/imported/warrior_y_sort_front.png-25252f87d3f6e982f2a68f815d4c51c6.ctex
+res://.godot/imported/warrior_y_sort_front.png-25252f87d3f6e982f2a68f815d4c51c6.md5
+res://.godot/shader_cache/BestFitNormalShaderRD/522b47cc4c3c4b572bc28faadfdeea9c0a31b5381e4ea2e3406d0f6fda73d52b/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/BlitShaderRD/29b32016e1c23e0db5906fbe9b87108e39e7f5965c0016eb53fc5e1c03293243/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/BokehDofShaderRD/07a1c984a30f7beb4c3290c8d0216119327b1f6eb8b36e5c96cfb751f30742e6/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CanvasOcclusionShaderRD/3b765d5624135f9fbf3199b6660b8387d5b904f48be0914a622e5da9b906b504/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CanvasSdfShaderRD/54b47da3ce58bfeb483acea9e9e45b5de11793d45b2a38279aa17b08296ef514/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CanvasShaderGLES3/08e1f45a9911314e53d919657307abc4d0316e180498cc98d0ede2ec89c8ee9a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/008da05adf6899c167b5c12b02518201ac7b33ae.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/0c5198dcdf805275e890709219206893ccd593db.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/191b69a2c4438e53853754a26a9463dd1cfade90.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/45ab775ebcba024bd96079d0e22f30ec3c81355a.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/4cd98371c627c7d727d02a0e467cd14d5db1136e.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/60d846e16ed29e633e329ee2f89dffaecb4c163e.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/7679a2c7abd0021ca1e3bc0c7abc128702418ba0.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/89e0c5a264d1558e7bc2ca0dc3d0afd834fbe7b6.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/8f9335de72e837eeead40640cc01fddc5baf5a7c.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/b7f8864ed1b8040a3456125a335ae926e257bf47.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/c2f7efc3419efdd79fabd056897820a83f2ac2c9.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/d6eccecaa73e1b1efa0a5eadf4dadc68c86709b0.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/ddf1c2fb49f2d96e42d4ffa10cbbb808b4b14063.d3d12.cache
+res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/fc2e2512c7197a24db845f1083693445dbd91172.d3d12.cache
+res://.godot/shader_cache/ClusterDebugShaderRD/0825a26b8d0923d82c8881fc87e3d931ea89a116d0550106157b7033dfa382a7/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ClusterRenderShaderRD/e1824bcfaf9ebab715957f09e04336284255c4a495944e7ca919e9c20509cf78/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ClusterStoreShaderRD/552b8bd4a514bf18836a8f9d32f41185bdb0efa58da3d5b3e68a39d68f6cecfc/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CopyShaderGLES3/d284dc5d5ac7674e35dfbae462837dd601c7cc7fa3e20b3a176744ecc61a131a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://.godot/shader_cache/CopyShaderRD/23f6cf7986b46c68792dfd3f087267f14eebc49382f0c0fd265b45462b58afcf/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CopyToFbShaderRD/d00e29e632391ed3791124b988da290d922da3d9e2083273523bd8173b24ff97/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CubeToDpShaderRD/9825f5ee942047b6912a1b6fe49935a8c928598f40d2cdfc64a0f61134deed27/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CubeToOctmapShaderRD/8bf32929c5b41445f085dd302ccba233028481a94d43ce1b531bc8e2e66677a4/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/CubemapFilterShaderGLES3/d0a07c5cca7ae73966cb2fa2e24aafdf5e3123a37fc12814ebfd0ebf3e3bb158/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://.godot/shader_cache/FeedShaderGLES3/54e111b48f201e72c9738f2d8ca1b16720dbab2bfe8ce5f919d05ee312d1a9c0/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://.godot/shader_cache/FsrUpscaleShaderRD/de60781f9669b1455afc7507208cad7b3c71f8e59f4c894548899e482420e8dd/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/GiShaderRD/4b8662cdf9663cca618a7d8d793e816df7b2d7e775eefbb9eb5fbb0bdbe7d3d3/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/GiShaderRD/a60cccbead6fab980bf996289c17b9a77b68a540d44ab8a15ec477060a5862cf/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/IntegrateDfgShaderRD/83448d29d7232c732c9d312b8e7faaa363fd72cf79165ec15256862089ebd46e/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/LuminanceReduceShaderRD/926f3544c80af9c002aea2fe9f66f19b40ec81e54f627608fc28573493ac5edb/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/MotionVectorsShaderRD/21fe2ffffa991405f5c0b4bb35dd8789b4049f8e56d80a5aa61aa8233992e3c1/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/OctmapDownsamplerShaderRD/c79c7ea0ebc9a0833c5f465f1c555216a15727d2c4e3a227e9d5cd1e80f0669e/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/OctmapFilterShaderRD/a511f5ad922f5d701a26f801b4f9c96406071103345fa83fd394f8954c1dd7ac/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/OctmapRoughnessShaderRD/9f66b38742366834aef44d557fed0d0753432ffb2cf24eebb14792092fc26b83/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ParticlesCopyShaderRD/688d10aec3c2e17e8c578ba3e2db1ea2f054eedd511b1e1647952c0acaeeab72/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ParticlesShaderRD/8f4c25caa97a2f74d5fa5f299aabdd514f57d9737b8642ed65c20e846dad5db0/07b5904b662900d90454c39c46885098de79aa4c.d3d12.cache
+res://.godot/shader_cache/PostShaderGLES3/c73fbdebac2a876f8183450a9cb75248391a3e3d8c8de74db3ce8e692e076791/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://.godot/shader_cache/ResolveShaderRD/b92e1e567b3ce7b008af4819aa7a8f7848a6f4dd09e28737bcd07456b04c2c7e/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/078505235c4b1164be3a232fc53717e99ae38384.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/1ba09b8fe53b34cf07e3559908d37d9d8e1e7cd5.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/1d22b95377aadca3a0931113adee5cc3272a0404.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/2dc1b5cfff090b77444337c6816f834532bf6711.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/3095004172d685c18421882ee21d4bdf9830fe93.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/347259af253e6bbec7ad5c69332af5ca731015aa.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/4d161e027d36dae3228a2fd069c9016607e1d80e.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/766562d5bd8d8fe8f82fbed546ecf33e95f688ff.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/7755f626fb43ab902063f76f8ca023d95e7bfbe6.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/77e28fea868f1d640cf581ded2e966295b75d2d8.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/9ae935cd107ff04dc4904f4d9a48208144d11fe5.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/a108158d1a145ea996cac5b7f02478b69e74c614.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/a784797763b72ce058effad41b273eb697df9814.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/a8093275b3afef4ee8b8bb9191c8cd99e4e1378b.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/b600e18e20b53d8932999d48838b29553c586934.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/beb374e34d8d97adb5725df0bfd658fc24c4f80e.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/c4e6dfe2995976d5993c5eeff8c9d5680c538c04.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/de2b6c239d8c3f5684bf02f32d2468f1a12cf624.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/e6d93dcb7095f51274be348f1a89aa0e64db08d3.d3d12.cache
+res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/faba017f3680b49e2024b66cc6d194f77217733d.d3d12.cache
+res://.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/a38af2d0725c8e99d8492f4c72736f24d6a54cc5.cache
+res://.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/cafb1506f2db0c3681435e264aa18e216d1a7a40.cache
+res://.godot/shader_cache/ScreenSpaceReflectionDownsampleShaderRD/ce68b2844d60e91b13d566f130e5e6be4924ecd57975c33ed49db903d1d10cdd/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ScreenSpaceReflectionFilterShaderRD/adaaba74fde6be6ed9036c3b4e1988baef6dcb0a7cc9aa46eee0f81796fd1ee7/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ScreenSpaceReflectionHizShaderRD/d816ec3b916a39c24ef8495a965202569a714911181fd70869fdc76e1647898d/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ScreenSpaceReflectionResolveShaderRD/7179c7134fdf0cbefc7c3244957827cbec1fd0180b3dfa0ea580579b7b83a06c/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ScreenSpaceReflectionShaderRD/dd5e885eefeba0f65c2678de75b986844fb186f0d2a38e39381b435388d51dbb/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SdfgiDebugProbesShaderRD/9067100a09ae2d21f3f325a69e660546baba568b663847a9ba75cbdc3ea337ee/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SdfgiDebugShaderRD/6c94a7679fba279d983d32e141b6648229956762362a863275c13ba2608c7e4d/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SdfgiDirectLightShaderRD/60b8f559824902a3ba6f601c82ba13bb027a01cf114421e8b3e7f1577251f982/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SdfgiIntegrateShaderRD/8402e25fb473b17f05fd8134b61bac8272f9bb13ec37039e0f82a546918f3004/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SdfgiPreprocessShaderRD/1df3f43771989a4c102242eeab16de469b18c89bbd7ff3866c4fd78a99d2e961/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/ShadowFrustumShaderRD/7aba7a73f7499f30591bb36c54f106926052cdc0048232d9054de723408b1ea2/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SkeletonShaderRD/08b4464d16133f4db97a8df4663b95b2b956ecd3e7addf44a16e644f488157c2/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SkyShaderGLES3/54461e02781b9e4e4fbbf037a6b0d4f296d5b30c6898158b37cea91f5e8ab5cf/2c82eb5fea9b549e20c9f41e308abf9a4fc5d76f.cache
+res://.godot/shader_cache/SkyShaderRD/9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997/0fa1946a11e1cca806ebfe4b3b4ac7f723d8b701.d3d12.cache
+res://.godot/shader_cache/SkyShaderRD/9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997/9247dd7bf98483a15ebb05f8c580a398614a07d8.d3d12.cache
+res://.godot/shader_cache/SkyShaderRD/9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997/ff1961ca0c4c55a79eb12f819a7b6345801bbbaf.d3d12.cache
+res://.godot/shader_cache/SmaaBlendingShaderRD/daa696d3938d7aadbc85111a68936e774199a2ded78d364782d43ef580b5296d/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SmaaEdgeDetectionShaderRD/749ffc0281a6ab411cf5a66f2560a2f33f9a258f57c513c67047f363e5e7ab33/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SmaaWeightCalculationShaderRD/510ed0d4e978b1a21f4e459da4ee2516c38f4460931e2a5714dae17c8b5547c2/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SortShaderRD/8e4ebbbb19fcd734c6f15656afbe1bcd5eb3acdfdae9cab023ebd6f54c901ef8/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SpecularMergeShaderRD/38d1cf8969e8f223baa218cbcd7ad415e6e945247fdb8cefddabba66acaab0e4/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsEffectsDownsampleShaderRD/ccf4e10c5ab4528ecf8f9b97dbc17f491b409915c7c64f533bcc896c43acdfb0/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsaoBlurShaderRD/75c97c3818b26631d447852881b25a2a80e6c894e956c009b714072cbd46c1ef/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsaoImportanceMapShaderRD/8701d1e664bf71d29af6f5d0a42ba62d7efbdec7f5f82064ea3b0fe3eef94361/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsaoInterleaveShaderRD/bee8210303269b0457bb9b0180392661b1c86739a5b9b2efe8a252021fcca1f5/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsaoShaderRD/66a821ba71909db6948ec1aded9d3ee630866bfb4556c2e275650a1ba3b8f5e3/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsilBlurShaderRD/ba99bf82030acafb5628e8fbd1e0a70fb6a1fa2af5283800a6585fa9c71317d5/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsilImportanceMapShaderRD/1c4d07be7a352b493a9afdef9363514c1f219eb178911ec18626ea542c3b1334/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsilInterleaveShaderRD/e3b6eab6e5b68136736435a560115616f4074e0be5dca3e2242912a504320162/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SsilShaderRD/2b3bf37ba8a45aa5cbc064da9031687142e6f007565f6dee75f83189a9edcfa3/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/SubsurfaceScatteringShaderRD/7c8ee12c5109342b5667f38d6fda4ec1c20f0d014ad9690457e6f19d602b96d9/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/TaaResolveShaderRD/c5152f5d8d5e919024126af06b7cf1a216b5184957e1946e198175642a86027f/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/TexBlitShaderRD/ce377a6d54cd54d45abdd915ec4cf3877fef3cbace94de3df4ed73ec0124ea0c/1e8995c9eb0e9b0b053035999de68595c521a33e.d3d12.cache
+res://.godot/shader_cache/TonemapShaderRD/6d008fe28b8fd25f510d360d45c329659bbd6cc2a222dc519c18fea4a3c17a36/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/VolumetricFogProcessShaderRD/b3d8b51125b8cc82b65e91af793ad8427f49e486687dd0559cabc908674c4390/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/VolumetricFogShaderRD/4fcd7eea54024fa982593be8aed8c9df465d0c4f629d7d1d1dfdf887cdaca664/3377d4ca9d0fc2e16f62596ee37d619e8e7e3f54.d3d12.cache
+res://.godot/shader_cache/VoxelGiDebugShaderRD/9a34146b67b3016d20f7a43d89748fc6c5eb980a677a57e30e08f4db1bc9a2c6/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/VoxelGiShaderRD/be32ca7811c1d8efa7aea8f6759edee078b2130e3ae5a44ffb2866906b7f344a/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://.godot/shader_cache/VrsShaderRD/9df305f4045418de07830cd11c3be6abf40ea73a66b1fc87b5e04821ac4f402c/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache
+res://artifacts/godot_startup_crash_diagnostic/.gdignore
+res://artifacts/godot_startup_crash_diagnostic/capture_skill_tree_refined_validation.log
+res://artifacts/godot_startup_crash_diagnostic/diagnostic_report.md
+res://artifacts/godot_startup_crash_diagnostic/editor_minimal_project.log
+res://artifacts/godot_startup_crash_diagnostic/editor_normal_d3d12.log
+res://artifacts/godot_startup_crash_diagnostic/editor_normal_d3d12_rebuilt.log
+res://artifacts/godot_startup_crash_diagnostic/editor_normal_extended_1200_frames.log
+res://artifacts/godot_startup_crash_diagnostic/editor_normal_repeat_1.log
+res://artifacts/godot_startup_crash_diagnostic/editor_normal_repeat_2.log
+res://artifacts/godot_startup_crash_diagnostic/editor_normal_repeat_3.log
+res://artifacts/godot_startup_crash_diagnostic/editor_normal_without_ziva.log
+res://artifacts/godot_startup_crash_diagnostic/editor_recovery_d3d12.log
+res://artifacts/godot_startup_crash_diagnostic/editor_recovery_d3d12_rebuilt.log
+res://artifacts/godot_startup_crash_diagnostic/editor_recovery_gl_rebuilt.log
+res://artifacts/godot_startup_crash_diagnostic/git_snapshot_before_diagnostic.md
+res://artifacts/godot_startup_crash_diagnostic/gut_refined_targeted.log
+res://artifacts/godot_startup_crash_diagnostic/gut_refined_targeted_only.log
+res://artifacts/godot_startup_crash_diagnostic/headless_import_current_cache.log
+res://artifacts/godot_startup_crash_diagnostic/headless_import_rebuilt_cache.log
+res://artifacts/godot_startup_crash_diagnostic/headless_import_without_poison.log
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/.gdignore
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/editor_layout.cfg
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/editor_script_doc_cache.res
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/filesystem_cache10
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/project_metadata.cfg
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/script_editor_cache.cfg
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/global_script_class_cache.cfg
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CanvasShaderGLES3/08e1f45a9911314e53d919657307abc4d0316e180498cc98d0ede2ec89c8ee9a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CopyShaderGLES3/d284dc5d5ac7674e35dfbae462837dd601c7cc7fa3e20b3a176744ecc61a131a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CubemapFilterShaderGLES3/d0a07c5cca7ae73966cb2fa2e24aafdf5e3123a37fc12814ebfd0ebf3e3bb158/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/FeedShaderGLES3/54e111b48f201e72c9738f2d8ca1b16720dbab2bfe8ce5f919d05ee312d1a9c0/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/PostShaderGLES3/c73fbdebac2a876f8183450a9cb75248391a3e3d8c8de74db3ce8e692e076791/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/a38af2d0725c8e99d8492f4c72736f24d6a54cc5.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/cafb1506f2db0c3681435e264aa18e216d1a7a40.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SkyShaderGLES3/54461e02781b9e4e4fbbf037a6b0d4f296d5b30c6898158b37cea91f5e8ab5cf/2c82eb5fea9b549e20c9f41e308abf9a4fc5d76f.cache
+res://artifacts/godot_startup_crash_diagnostic/minimal_project/project.godot
+res://artifacts/godot_startup_crash_diagnostic/project_manager.log
+res://artifacts/godot_startup_crash_diagnostic/run_battle_salle1_iso.log
+res://artifacts/godot_startup_crash_diagnostic/run_project_main_scene.log
+res://artifacts/hud_clean_v1/assets_contact_sheet.png
+res://artifacts/hud_clean_v1/assets_contact_sheet.png.import
+res://artifacts/hud_clean_v1/assets_manifest.json
+res://artifacts/hud_clean_v1/captures/hud_clean_1280x720.png
+res://artifacts/hud_clean_v1/captures/hud_clean_1280x720.png.import
+res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080.png
+res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080.png.import
+res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_blurred_reduced.png
+res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_blurred_reduced.png.import
+res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_grayscale.png
+res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_grayscale.png.import
+res://artifacts/hud_clean_v1/captures/hud_clean_2560x1440.png
+res://artifacts/hud_clean_v1/captures/hud_clean_2560x1440.png.import
+res://artifacts/hud_clean_v1/captures/hud_low_health.png
+res://artifacts/hud_clean_v1/captures/hud_low_health.png.import
+res://artifacts/hud_clean_v1/captures/hud_ornate_reference_1920x1080.png
+res://artifacts/hud_clean_v1/captures/hud_ornate_reference_1920x1080.png.import
+res://artifacts/hud_clean_v1/captures/hud_ornate_vs_clean.png
+res://artifacts/hud_clean_v1/captures/hud_ornate_vs_clean.png.import
+res://artifacts/hud_clean_v1/captures/hud_preview_with_special_resource.png
+res://artifacts/hud_clean_v1/captures/hud_preview_with_special_resource.png.import
+res://artifacts/hud_clean_v1/captures/hud_selected_unavailable_cooldown.png
+res://artifacts/hud_clean_v1/captures/hud_selected_unavailable_cooldown.png.import
+res://artifacts/hud_clean_v1/captures/hud_turn_banner.png
+res://artifacts/hud_clean_v1/captures/hud_turn_banner.png.import
+res://artifacts/hud_clean_v1/captures/hud_without_special_resource.png
+res://artifacts/hud_clean_v1/captures/hud_without_special_resource.png.import
+res://artifacts/hud_clean_v1/gut_full_run.txt
+res://artifacts/hud_clean_v2/captures/hud_clean_v1_reference_1920x1080.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v1_reference_1920x1080.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v1_vs_v2.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v1_vs_v2.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1280x720.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1280x720.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_blurred_reduced.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_blurred_reduced.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_grayscale.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_grayscale.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_2560x1440.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_2560x1440.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_low_health.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_low_health.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_preview_with_special_resource.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_preview_with_special_resource.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_selected_unavailable_cooldown.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_selected_unavailable_cooldown.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_turn_banner.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_turn_banner.png.import
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_without_special_resource.png
+res://artifacts/hud_clean_v2/captures/hud_clean_v2_without_special_resource.png.import
+res://artifacts/hud_clean_v2/captures/hud_ornate_reference_1920x1080.png
+res://artifacts/hud_clean_v2/captures/hud_ornate_reference_1920x1080.png.import
+res://artifacts/hud_clean_v2/gut_hud_targeted.txt
+res://artifacts/hud_refined/assets_contact_sheet_refined.png
+res://artifacts/hud_refined/assets_contact_sheet_refined.png.import
+res://artifacts/hud_refined/assets_manifest_refined.json
+res://artifacts/hud_refined/captures/clean_v2_vs_refined.png
+res://artifacts/hud_refined/captures/clean_v2_vs_refined.png.import
+res://artifacts/hud_refined/captures/hud_refined_1280x720.png
+res://artifacts/hud_refined/captures/hud_refined_1280x720.png.import
+res://artifacts/hud_refined/captures/hud_refined_1920x1080.png
+res://artifacts/hud_refined/captures/hud_refined_1920x1080.png.import
+res://artifacts/hud_refined/captures/hud_refined_2560x1440.png
+res://artifacts/hud_refined/captures/hud_refined_2560x1440.png.import
+res://artifacts/hud_refined/captures/hud_refined_low_health.png
+res://artifacts/hud_refined/captures/hud_refined_low_health.png.import
+res://artifacts/hud_refined/captures/hud_refined_preview_with_special_resource.png
+res://artifacts/hud_refined/captures/hud_refined_preview_with_special_resource.png.import
+res://artifacts/hud_refined/captures/hud_refined_selected_unavailable_cooldown.png
+res://artifacts/hud_refined/captures/hud_refined_selected_unavailable_cooldown.png.import
+res://artifacts/hud_refined/captures/hud_refined_turn_banner.png
+res://artifacts/hud_refined/captures/hud_refined_turn_banner.png.import
+res://artifacts/hud_refined/captures/hud_refined_without_special_resource.png
+res://artifacts/hud_refined/captures/hud_refined_without_special_resource.png.import
+res://artifacts/hud_refined/gut_hud_targeted.txt
+res://artifacts/hud_refined/used_components_contact_sheet.png
+res://artifacts/hud_refined/used_components_contact_sheet.png.import
+res://artifacts/hud_refined_characters/capture_run.log
+res://artifacts/hud_refined_characters/captures/hud_refined_assassin_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_assassin_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_assassin_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_assassin_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_characters_contact_sheet.png
+res://artifacts/hud_refined_characters/captures/hud_refined_characters_contact_sheet.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_druid_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_druid_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_druid_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_druid_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1280x720.png
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1280x720.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_2560x1440.png
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_2560x1440.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_elf_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_guardian_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_guardian_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_guardian_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_guardian_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_mage_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_mage_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_mage_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_mage_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_system_dock_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_system_dock_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_warrior_selected_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_warrior_selected_1920x1080.png.import
+res://artifacts/hud_refined_characters/captures/hud_refined_warrior_turn_banner_1920x1080.png
+res://artifacts/hud_refined_characters/captures/hud_refined_warrior_turn_banner_1920x1080.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_before_after_polish.png
+res://artifacts/hud_refined_polish/captures/hud_refined_before_after_polish.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_1280x720.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_1280x720.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_1920x1080.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_1920x1080.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_2560x1440.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_2560x1440.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_blurred_reduced.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_blurred_reduced.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_cooldown.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_cooldown.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_grayscale.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_grayscale.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_low_health.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_low_health.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_move_selected.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_move_selected.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_preview_energy.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_preview_energy.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_selected.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_selected.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_unavailable.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_unavailable.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_unaffordable.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_unaffordable.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_utility_dock.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_utility_dock.png.import
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_without_energy.png
+res://artifacts/hud_refined_polish/captures/hud_refined_polish_without_energy.png.import
+res://artifacts/hud_refined_polish/gut_hud_targeted.txt
+res://artifacts/hud_v2/elf_hud_1280x720.png
+res://artifacts/hud_v2/elf_hud_1280x720.png.import
+res://artifacts/hud_v2/elf_hud_1920x1080.png
+res://artifacts/hud_v2/elf_hud_1920x1080.png.import
+res://artifacts/hud_v2/elf_hud_2560x1440.png
+res://artifacts/hud_v2/elf_hud_2560x1440.png.import
+res://artifacts/hud_v2/elf_turn_banner_1920x1080.png
+res://artifacts/hud_v2/elf_turn_banner_1920x1080.png.import
+res://artifacts/run_v1_playable_pass/hud_before_1080p.png
+res://artifacts/run_v1_playable_pass/hud_before_1080p.png.import
+res://artifacts/run_v1_playable_pass/hud_compact_1080p.png
+res://artifacts/run_v1_playable_pass/hud_compact_1080p.png.import
+res://artifacts/run_v1_playable_pass/hud_compact_1440p.png
+res://artifacts/run_v1_playable_pass/hud_compact_1440p.png.import
+res://artifacts/run_v1_playable_pass/hud_compact_720p.png
+res://artifacts/run_v1_playable_pass/hud_compact_720p.png.import
+res://artifacts/run_v1_playable_pass/run_v1_playable_review.avi
+res://artifacts/run_v1_playable_pass/run_v1_playable_review.mp4
+res://artifacts/run_v1_playable_pass/trio_run_playable.png
+res://artifacts/run_v1_playable_pass/trio_run_playable.png.import
+res://artifacts/run_v1_playable_pass/warrior_breaker_animation.png
+res://artifacts/run_v1_playable_pass/warrior_breaker_animation.png.import
+res://artifacts/run_v1_playable_pass/warrior_execution_animation.png
+res://artifacts/run_v1_playable_pass/warrior_execution_animation.png.import
+res://artifacts/run_v1_playable_pass/warrior_no_energy_ui.png
+res://artifacts/run_v1_playable_pass/warrior_no_energy_ui.png.import
+res://artifacts/run_v1_playable_pass/warrior_ravager_animation.png
+res://artifacts/run_v1_playable_pass/warrior_ravager_animation.png.import
+res://artifacts/run_v1_playable_pass/warrior_skill_tree.png
+res://artifacts/run_v1_playable_pass/warrior_skill_tree.png.import
+res://artifacts/skeleton_chief/room2_chief_melee_ranged.png
+res://artifacts/skeleton_chief/room2_chief_melee_ranged.png.import
+res://artifacts/skeleton_chief/room2_no_fourth_enemy.png
+res://artifacts/skeleton_chief/room2_no_fourth_enemy.png.import
+res://artifacts/skeleton_chief/skeleton_chief_blender_attack.png
+res://artifacts/skeleton_chief/skeleton_chief_blender_attack.png.import
+res://artifacts/skeleton_chief/skeleton_chief_blender_death.png
+res://artifacts/skeleton_chief/skeleton_chief_blender_death.png.import
+res://artifacts/skeleton_chief/skeleton_chief_blender_hit.png
+res://artifacts/skeleton_chief/skeleton_chief_blender_hit.png.import
+res://artifacts/skeleton_chief/skeleton_chief_blender_idle.png
+res://artifacts/skeleton_chief/skeleton_chief_blender_idle.png.import
+res://artifacts/skeleton_chief/skeleton_chief_blender_walk.png
+res://artifacts/skeleton_chief/skeleton_chief_blender_walk.png.import
+res://artifacts/skeleton_chief/skeleton_chief_iso_attack.png
+res://artifacts/skeleton_chief/skeleton_chief_iso_attack.png.import
+res://artifacts/skeleton_chief/skeleton_chief_iso_death.png
+res://artifacts/skeleton_chief/skeleton_chief_iso_death.png.import
+res://artifacts/skeleton_chief/skeleton_chief_iso_hit.png
+res://artifacts/skeleton_chief/skeleton_chief_iso_hit.png.import
+res://artifacts/skeleton_chief/skeleton_chief_iso_idle.png
+res://artifacts/skeleton_chief/skeleton_chief_iso_idle.png.import
+res://artifacts/skeleton_chief/skeleton_chief_iso_walk.png
+res://artifacts/skeleton_chief/skeleton_chief_iso_walk.png.import
+res://artifacts/skeleton_chief/skeleton_chief_room2_attack.png
+res://artifacts/skeleton_chief/skeleton_chief_room2_attack.png.import
+res://artifacts/skeleton_chief/skeleton_chief_room2_death.png
+res://artifacts/skeleton_chief/skeleton_chief_room2_death.png.import
+res://artifacts/skeleton_chief/skeleton_chief_room2_hit.png
+res://artifacts/skeleton_chief/skeleton_chief_room2_hit.png.import
+res://artifacts/skeleton_chief/skeleton_chief_room_flow.avi
+res://artifacts/skeleton_chief/skeleton_chief_room_flow.mp4
+res://artifacts/skeleton_chief/skeleton_chief_y_sort.png
+res://artifacts/skeleton_chief/skeleton_chief_y_sort.png.import
+res://artifacts/skeleton_chief/trio_vs_skeleton_chief.png
+res://artifacts/skeleton_chief/trio_vs_skeleton_chief.png.import
+res://artifacts/skeleton_first_enemy/first_room_trio_vs_skeletons_1920x1080.png
+res://artifacts/skeleton_first_enemy/first_room_trio_vs_skeletons_1920x1080.png.import
+res://artifacts/skeleton_first_enemy/movement_pacing_comparison.png
+res://artifacts/skeleton_first_enemy/movement_pacing_comparison.png.import
+res://artifacts/skeleton_first_enemy/no_goblin_no_dummy.png
+res://artifacts/skeleton_first_enemy/no_goblin_no_dummy.png.import
+res://artifacts/skeleton_first_enemy/run_room_three_skeletons.png
+res://artifacts/skeleton_first_enemy/run_room_three_skeletons.png.import
+res://artifacts/skeleton_first_enemy/skeleton_blender_bow_attack.png
+res://artifacts/skeleton_first_enemy/skeleton_blender_bow_attack.png.import
+res://artifacts/skeleton_first_enemy/skeleton_blender_idle.png
+res://artifacts/skeleton_first_enemy/skeleton_blender_idle.png.import
+res://artifacts/skeleton_first_enemy/skeleton_blender_melee_attack.png
+res://artifacts/skeleton_first_enemy/skeleton_blender_melee_attack.png.import
+res://artifacts/skeleton_first_enemy/skeleton_blender_ranged_attack.png
+res://artifacts/skeleton_first_enemy/skeleton_blender_ranged_attack.png.import
+res://artifacts/skeleton_first_enemy/skeleton_blender_sword_attack.png
+res://artifacts/skeleton_first_enemy/skeleton_blender_sword_attack.png.import
+res://artifacts/skeleton_first_enemy/skeleton_death.png
+res://artifacts/skeleton_first_enemy/skeleton_death.png.import
+res://artifacts/skeleton_first_enemy/skeleton_hit.png
+res://artifacts/skeleton_first_enemy/skeleton_hit.png.import
+res://artifacts/skeleton_first_enemy/skeleton_melee_attack_iso.png
+res://artifacts/skeleton_first_enemy/skeleton_melee_attack_iso.png.import
+res://artifacts/skeleton_first_enemy/skeleton_melee_idle_iso.png
+res://artifacts/skeleton_first_enemy/skeleton_melee_idle_iso.png.import
+res://artifacts/skeleton_first_enemy/skeleton_ranged_idle_iso.png
+res://artifacts/skeleton_first_enemy/skeleton_ranged_idle_iso.png.import
+res://artifacts/skeleton_first_enemy/skeleton_ranged_projectile.png
+res://artifacts/skeleton_first_enemy/skeleton_ranged_projectile.png.import
+res://artifacts/skeleton_first_enemy/skeleton_ranged_release_iso.png
+res://artifacts/skeleton_first_enemy/skeleton_ranged_release_iso.png.import
+res://artifacts/skeleton_first_enemy/skeleton_y_sort_back.png
+res://artifacts/skeleton_first_enemy/skeleton_y_sort_back.png.import
+res://artifacts/skeleton_first_enemy/skeleton_y_sort_front.png
+res://artifacts/skeleton_first_enemy/skeleton_y_sort_front.png.import
+res://artifacts/skeleton_first_enemy/trio_vs_three_skeletons.png
+res://artifacts/skeleton_first_enemy/trio_vs_three_skeletons.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_blurred_reduced.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_blurred_reduced.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_1280x720.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_1280x720.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_2560x1440.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_2560x1440.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_acquired_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_acquired_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_available_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_available_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_exclusive_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_exclusive_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_locked_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_locked_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_max_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_max_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_specialization_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_specialization_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_assassin_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_assassin_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_healer_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_healer_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_mage_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_mage_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_guardian_undefined_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_guardian_undefined_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_after_mage_branches_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_after_mage_branches_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_before_1920x1080.png
+res://artifacts/skill_tree_refined/captures/skill_tree_before_1920x1080.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_before_after_comparison.png
+res://artifacts/skill_tree_refined/captures/skill_tree_before_after_comparison.png.import
+res://artifacts/skill_tree_refined/captures/skill_tree_capture_contact_sheet.png
+res://artifacts/skill_tree_refined/captures/skill_tree_capture_contact_sheet.png.import
+res://artifacts/skill_tree_refined_v2/.gdignore
+res://artifacts/skill_tree_refined_v2/captures/before_after_comparison.png
+res://artifacts/skill_tree_refined_v2/captures/branch_navigation.png
+res://artifacts/skill_tree_refined_v2/captures/capstone_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/components_contact_sheet.png
+res://artifacts/skill_tree_refined_v2/captures/elf_max_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/elf_rank_1_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/elf_rank_2_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/elf_rank_4_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/future_rank_hidden_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/icon_mapping_sheet.png
+res://artifacts/skill_tree_refined_v2/captures/lock_closeup.png
+res://artifacts/skill_tree_refined_v2/captures/mage_roots_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/next_rank_locked_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/no_progression_guardian_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/node_acquired_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/node_available_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/node_detail_panel.png
+res://artifacts/skill_tree_refined_v2/captures/node_excluded_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/node_types_contact_sheet.png
+res://artifacts/skill_tree_refined_v2/captures/prerequisite_locked_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/refined_after_1920x1080.png
+res://artifacts/skill_tree_refined_v2/captures/refined_after_blurred_reduced.png
+res://artifacts/skill_tree_refined_v2/captures/refined_after_grayscale.png
+res://artifacts/skill_tree_refined_v2/captures/responsive_1280x720.png
+res://artifacts/skill_tree_refined_v2/captures/responsive_2560x1440.png
+res://artifacts/skill_tree_refined_v2/captures/specialization_1920x1080.png
+res://artifacts/skill_tree_refined_v2/legacy_assets_manifest.json
+res://artifacts/skill_tree_refined_v2/node_icon_mapping.json
+res://asset/GobTest_attack_v2.png
+res://asset/GobTest_attack_v2.png.import
+res://asset/GobTest_death_v2.png
+res://asset/GobTest_death_v2.png.import
+res://asset/GobTest_idle.png
+res://asset/GobTest_idle.png.import
+res://asset/GobTest_idle_v2.png
+res://asset/GobTest_idle_v2.png.import
+res://asset/GobTest_walk_v2.png
+res://asset/GobTest_walk_v2.png.import
+res://asset/MeleeRun.png
+res://asset/MeleeRun.png.import
+res://asset/Orc.png
+res://asset/Orc.png.import
+res://asset/gobtest.glb
+res://asset/gobtest.glb.import
+res://asset/gobtest_Material_Pbr_baseColor.png
+res://asset/gobtest_Material_Pbr_baseColor.png.import
+res://asset/gobtest_Material_Pbr_normal.png
+res://asset/gobtest_Material_Pbr_normal.png.import
+res://asset/icone/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png
+res://asset/icone/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png.import
+res://asset/icone/icone spell.png_1.png
+res://asset/icone/icone spell.png_1.png.import
+res://asset/icone/icone spell.png_10.png
+res://asset/icone/icone spell.png_10.png.import
+res://asset/icone/icone spell.png_11.png
+res://asset/icone/icone spell.png_11.png.import
+res://asset/icone/icone spell.png_12.png
+res://asset/icone/icone spell.png_12.png.import
+res://asset/icone/icone spell.png_13.png
+res://asset/icone/icone spell.png_13.png.import
+res://asset/icone/icone spell.png_14.png
+res://asset/icone/icone spell.png_14.png.import
+res://asset/icone/icone spell.png_15.png
+res://asset/icone/icone spell.png_15.png.import
+res://asset/icone/icone spell.png_16.png
+res://asset/icone/icone spell.png_16.png.import
+res://asset/icone/icone spell.png_17.png
+res://asset/icone/icone spell.png_17.png.import
+res://asset/icone/icone spell.png_18.png
+res://asset/icone/icone spell.png_18.png.import
+res://asset/icone/icone spell.png_19.png
+res://asset/icone/icone spell.png_19.png.import
+res://asset/icone/icone spell.png_2.png
+res://asset/icone/icone spell.png_2.png.import
+res://asset/icone/icone spell.png_20.png
+res://asset/icone/icone spell.png_20.png.import
+res://asset/icone/icone spell.png_21.png
+res://asset/icone/icone spell.png_21.png.import
+res://asset/icone/icone spell.png_22.png
+res://asset/icone/icone spell.png_22.png.import
+res://asset/icone/icone spell.png_23.png
+res://asset/icone/icone spell.png_23.png.import
+res://asset/icone/icone spell.png_24.png
+res://asset/icone/icone spell.png_24.png.import
+res://asset/icone/icone spell.png_25.png
+res://asset/icone/icone spell.png_25.png.import
+res://asset/icone/icone spell.png_26.png
+res://asset/icone/icone spell.png_26.png.import
+res://asset/icone/icone spell.png_27.png
+res://asset/icone/icone spell.png_27.png.import
+res://asset/icone/icone spell.png_28.png
+res://asset/icone/icone spell.png_28.png.import
+res://asset/icone/icone spell.png_29.png
+res://asset/icone/icone spell.png_29.png.import
+res://asset/icone/icone spell.png_3.png
+res://asset/icone/icone spell.png_3.png.import
+res://asset/icone/icone spell.png_30.png
+res://asset/icone/icone spell.png_30.png.import
+res://asset/icone/icone spell.png_31.png
+res://asset/icone/icone spell.png_31.png.import
+res://asset/icone/icone spell.png_32.png
+res://asset/icone/icone spell.png_32.png.import
+res://asset/icone/icone spell.png_33.png
+res://asset/icone/icone spell.png_33.png.import
+res://asset/icone/icone spell.png_34.png
+res://asset/icone/icone spell.png_34.png.import
+res://asset/icone/icone spell.png_35.png
+res://asset/icone/icone spell.png_35.png.import
+res://asset/icone/icone spell.png_36.png
+res://asset/icone/icone spell.png_36.png.import
+res://asset/icone/icone spell.png_37.png
+res://asset/icone/icone spell.png_37.png.import
+res://asset/icone/icone spell.png_38.png
+res://asset/icone/icone spell.png_38.png.import
+res://asset/icone/icone spell.png_39.png
+res://asset/icone/icone spell.png_39.png.import
+res://asset/icone/icone spell.png_4.png
+res://asset/icone/icone spell.png_4.png.import
+res://asset/icone/icone spell.png_40.png
+res://asset/icone/icone spell.png_40.png.import
+res://asset/icone/icone spell.png_41.png
+res://asset/icone/icone spell.png_41.png.import
+res://asset/icone/icone spell.png_42.png
+res://asset/icone/icone spell.png_42.png.import
+res://asset/icone/icone spell.png_43.png
+res://asset/icone/icone spell.png_43.png.import
+res://asset/icone/icone spell.png_44.png
+res://asset/icone/icone spell.png_44.png.import
+res://asset/icone/icone spell.png_45.png
+res://asset/icone/icone spell.png_45.png.import
+res://asset/icone/icone spell.png_46.png
+res://asset/icone/icone spell.png_46.png.import
+res://asset/icone/icone spell.png_47.png
+res://asset/icone/icone spell.png_47.png.import
+res://asset/icone/icone spell.png_48.png
+res://asset/icone/icone spell.png_48.png.import
+res://asset/icone/icone spell.png_49.png
+res://asset/icone/icone spell.png_49.png.import
+res://asset/icone/icone spell.png_5.png
+res://asset/icone/icone spell.png_5.png.import
+res://asset/icone/icone spell.png_50.png
+res://asset/icone/icone spell.png_50.png.import
+res://asset/icone/icone spell.png_51.png
+res://asset/icone/icone spell.png_51.png.import
+res://asset/icone/icone spell.png_52.png
+res://asset/icone/icone spell.png_52.png.import
+res://asset/icone/icone spell.png_53.png
+res://asset/icone/icone spell.png_53.png.import
+res://asset/icone/icone spell.png_54.png
+res://asset/icone/icone spell.png_54.png.import
+res://asset/icone/icone spell.png_55.png
+res://asset/icone/icone spell.png_55.png.import
+res://asset/icone/icone spell.png_56.png
+res://asset/icone/icone spell.png_56.png.import
+res://asset/icone/icone spell.png_57.png
+res://asset/icone/icone spell.png_57.png.import
+res://asset/icone/icone spell.png_58.png
+res://asset/icone/icone spell.png_58.png.import
+res://asset/icone/icone spell.png_59.png
+res://asset/icone/icone spell.png_59.png.import
+res://asset/icone/icone spell.png_6.png
+res://asset/icone/icone spell.png_6.png.import
+res://asset/icone/icone spell.png_60.png
+res://asset/icone/icone spell.png_60.png.import
+res://asset/icone/icone spell.png_61.png
+res://asset/icone/icone spell.png_61.png.import
+res://asset/icone/icone spell.png_62.png
+res://asset/icone/icone spell.png_62.png.import
+res://asset/icone/icone spell.png_63.png
+res://asset/icone/icone spell.png_63.png.import
+res://asset/icone/icone spell.png_64.png
+res://asset/icone/icone spell.png_64.png.import
+res://asset/icone/icone spell.png_65.png
+res://asset/icone/icone spell.png_65.png.import
+res://asset/icone/icone spell.png_66.png
+res://asset/icone/icone spell.png_66.png.import
+res://asset/icone/icone spell.png_67.png
+res://asset/icone/icone spell.png_67.png.import
+res://asset/icone/icone spell.png_68.png
+res://asset/icone/icone spell.png_68.png.import
+res://asset/icone/icone spell.png_69.png
+res://asset/icone/icone spell.png_69.png.import
+res://asset/icone/icone spell.png_7.png
+res://asset/icone/icone spell.png_7.png.import
+res://asset/icone/icone spell.png_70.png
+res://asset/icone/icone spell.png_70.png.import
+res://asset/icone/icone spell.png_71.png
+res://asset/icone/icone spell.png_71.png.import
+res://asset/icone/icone spell.png_72.png
+res://asset/icone/icone spell.png_72.png.import
+res://asset/icone/icone spell.png_73.png
+res://asset/icone/icone spell.png_73.png.import
+res://asset/icone/icone spell.png_74.png
+res://asset/icone/icone spell.png_74.png.import
+res://asset/icone/icone spell.png_75.png
+res://asset/icone/icone spell.png_75.png.import
+res://asset/icone/icone spell.png_76.png
+res://asset/icone/icone spell.png_76.png.import
+res://asset/icone/icone spell.png_77.png
+res://asset/icone/icone spell.png_77.png.import
+res://asset/icone/icone spell.png_78.png
+res://asset/icone/icone spell.png_78.png.import
+res://asset/icone/icone spell.png_79.png
+res://asset/icone/icone spell.png_79.png.import
+res://asset/icone/icone spell.png_8.png
+res://asset/icone/icone spell.png_8.png.import
+res://asset/icone/icone spell.png_80.png
+res://asset/icone/icone spell.png_80.png.import
+res://asset/icone/icone spell.png_81.png
+res://asset/icone/icone spell.png_81.png.import
+res://asset/icone/icone spell.png_82.png
+res://asset/icone/icone spell.png_82.png.import
+res://asset/icone/icone spell.png_83.png
+res://asset/icone/icone spell.png_83.png.import
+res://asset/icone/icone spell.png_84.png
+res://asset/icone/icone spell.png_84.png.import
+res://asset/icone/icone spell.png_85.png
+res://asset/icone/icone spell.png_85.png.import
+res://asset/icone/icone spell.png_86.png
+res://asset/icone/icone spell.png_86.png.import
+res://asset/icone/icone spell.png_87.png
+res://asset/icone/icone spell.png_87.png.import
+res://asset/icone/icone spell.png_88.png
+res://asset/icone/icone spell.png_88.png.import
+res://asset/icone/icone spell.png_89.png
+res://asset/icone/icone spell.png_89.png.import
+res://asset/icone/icone spell.png_9.png
+res://asset/icone/icone spell.png_9.png.import
+res://asset/icone/icone spell.png_90.png
+res://asset/icone/icone spell.png_90.png.import
+res://asset/icone/icone spell.png_91.png
+res://asset/icone/icone spell.png_91.png.import
+res://asset/icone/icone spell.png_92.png
+res://asset/icone/icone spell.png_92.png.import
+res://asset/icone/icone spell.png_93.png
+res://asset/icone/icone spell.png_93.png.import
+res://asset/icone/icone spell.png_94.png
+res://asset/icone/icone spell.png_94.png.import
+res://asset/icone/icone spell.png_95.png
+res://asset/icone/icone spell.png_95.png.import
+res://asset/icone/icone spell.png_96.png
+res://asset/icone/icone spell.png_96.png.import
+res://asset/icone/icone spell.png_97.png
+res://asset/icone/icone spell.png_97.png.import
+res://asset/icone/icone spell.png_98.png
+res://asset/icone/icone spell.png_98.png.import
+res://asset/icone/test.png
+res://asset/icone/test.png.import
+res://asset/persephone.png
+res://asset/persephone.png.import
+res://asset/personnage/alliés/473.png
+res://asset/personnage/alliés/473.png.import
+res://asset/personnage/alliés/474.png
+res://asset/personnage/alliés/474.png.import
+res://asset/personnage/alliés/475.png
+res://asset/personnage/alliés/475.png.import
+res://asset/personnage/alliés/479.png
+res://asset/personnage/alliés/479.png.import
+res://asset/personnage/alliés/480.png
+res://asset/personnage/alliés/480.png.import
+res://asset/personnage/alliés/481.png
+res://asset/personnage/alliés/481.png.import
+res://asset/personnage/alliés/482.png
+res://asset/personnage/alliés/482.png.import
+res://asset/personnage/alliés/483.png
+res://asset/personnage/alliés/483.png.import
+res://asset/personnage/alliés/484.png
+res://asset/personnage/alliés/484.png.import
+res://asset/personnage/alliés/485.png
+res://asset/personnage/alliés/485.png.import
+res://asset/personnage/alliés/486.png
+res://asset/personnage/alliés/486.png.import
+res://asset/personnage/alliés/487.png
+res://asset/personnage/alliés/487.png.import
+res://asset/personnage/alliés/488.png
+res://asset/personnage/alliés/488.png.import
+res://asset/personnage/alliés/489.png
+res://asset/personnage/alliés/489.png.import
+res://asset/personnage/alliés/490.png
+res://asset/personnage/alliés/490.png.import
+res://asset/personnage/alliés/491.png
+res://asset/personnage/alliés/491.png.import
+res://asset/personnage/alliés/492.png
+res://asset/personnage/alliés/492.png.import
+res://asset/personnage/alliés/493.png
+res://asset/personnage/alliés/493.png.import
+res://asset/personnage/alliés/494.png
+res://asset/personnage/alliés/494.png.import
+res://asset/personnage/alliés/496.png
+res://asset/personnage/alliés/496.png.import
+res://asset/personnage/alliés/497.png
+res://asset/personnage/alliés/497.png.import
+res://asset/personnage/alliés/498.png
+res://asset/personnage/alliés/498.png.import
+res://asset/personnage/alliés/499.png
+res://asset/personnage/alliés/499.png.import
+res://asset/personnage/alliés/500.png
+res://asset/personnage/alliés/500.png.import
+res://asset/personnage/alliés/501.png
+res://asset/personnage/alliés/501.png.import
+res://asset/personnage/alliés/505.png
+res://asset/personnage/alliés/505.png.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Fall_Dead_from_Abdominal_Injury_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Fall_Dead_from_Abdominal_Injury_withSkin.glb.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Lower_Weapon_Look_Raise_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Lower_Weapon_Look_Raise_withSkin.glb.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Run_02_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Run_02_withSkin.glb.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Running_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Running_withSkin.glb.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Shouting_Angrily_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Shouting_Angrily_withSkin.glb.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Skill_01_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Skill_01_withSkin.glb.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Thrust_Slash_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Thrust_Slash_withSkin.glb.import
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Walking_withSkin.glb
+res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Walking_withSkin.glb.import
+res://asset/personnage/ennemi/goebleinscenario.png
+res://asset/personnage/ennemi/goebleinscenario.png.import
+res://asset/personnage/ennemi/pyromage.png
+res://asset/personnage/ennemi/pyromage.png.import
+res://asset/personnage/ennemi/pyromagev2.png
+res://asset/personnage/ennemi/pyromagev2.png.import
+res://asset/personnage/ennemi/pyromagev3.png
+res://asset/personnage/ennemi/pyromagev3.png.import
+res://asset/personnage/ennemi/pyromagev4.png
+res://asset/personnage/ennemi/pyromagev4.png.import
+res://asset/scènes/units/gardien/node_2d.tscn
+res://asset/sorts/elfe_ronce/elf_magic_ronce_impact (1).gd
+res://asset/sorts/elfe_ronce/elf_magic_ronce_impact (1).gd.uid
+res://asset/sorts/elfe_ronce/elf_magic_ronce_impact (1).tscn
+res://asset/sorts/elfe_ronce/elf_magic_ronce_impact.tscn
+res://asset/sorts/elfe_ronce/elf_magic_ronce_impact_sheet (1).png
+res://asset/sorts/elfe_ronce/elf_magic_ronce_impact_sheet (1).png.import
+res://asset/sorts/elfe_ronce/roncesvfx.tscn
+res://asset/vfx/marque_blender.blend1
+res://battle/situation_room_controller.gd
+res://battle/situation_room_controller.gd.uid
+res://characters/warrior/WARRIOR_FIRST_PLAYABLE_INTEGRATION.md
+res://core/ai/boss_behavior.gd
+res://core/ai/boss_behavior.gd.uid
+res://core/ai/boss_persephone.gd
+res://core/ai/boss_persephone.gd.uid
+res://core/ai/boss_roi_gobelin.gd
+res://core/ai/boss_roi_gobelin.gd.uid
+res://core/ai/enemy_behavior_aggressive.gd
+res://core/ai/enemy_behavior_aggressive.gd.uid
+res://core/ai/enemy_behavior_disruptor.gd
+res://core/ai/enemy_behavior_disruptor.gd.uid
+res://core/ai/enemy_behavior_hazard_placer.gd
+res://core/ai/enemy_behavior_hazard_placer.gd.uid
+res://core/ai/enemy_behavior_kiter.gd
+res://core/ai/enemy_behavior_kiter.gd.uid
+res://core/ai/enemy_behavior_spell_user.gd
+res://core/ai/enemy_behavior_spell_user.gd.uid
+res://core/ai/enemy_behavior_support.gd
+res://core/ai/enemy_behavior_support.gd.uid
+res://core/spell_mods/spell_mod_status_on_push.gd
+res://core/spell_mods/spell_mod_status_on_push.gd.uid
+res://data/ai_behaviors/agressif_standard.tres
+res://data/ai_behaviors/archer_kiter.tres
+res://data/ai_behaviors/berserker_chasseur.tres
+res://data/ai_behaviors/chamane_soutien.tres
+res://data/ai_behaviors/hurleur_drain.tres
+res://data/ai_behaviors/lieur_entrave.tres
+res://data/ai_behaviors/pyromage_poseur_de_feu.tres
+res://data/boss_malus/boss_malus_data.gd
+res://data/boss_malus/boss_malus_data.gd.uid
+res://data/boss_malus/charge_statique.tres
+res://data/boss_malus/devoration_temporelle.tres
+res://data/boss_malus/jugement.tres
+res://data/boss_malus/reflet.tres
+res://data/boss_malus/regard_de_pierre.tres
+res://data/characters/warrior/disciplines/breaker_rank_3.tres
+res://data/characters/warrior/disciplines/ravager_rank_3.tres
+res://data/characters/warrior/modifiers/crushing_charge.tres
+res://data/characters/warrior/modifiers/distant_corruption.tres
+res://data/characters/warrior/modifiers/hostile_ground.tres
+res://data/characters/warrior/modifiers/long_hook.tres
+res://data/characters/warrior/modifiers/resonant_shockwave.tres
+res://data/characters/warrior/upgrades/crushing_charge.tres
+res://data/characters/warrior/upgrades/distant_corruption.tres
+res://data/characters/warrior/upgrades/hostile_ground.tres
+res://data/characters/warrior/upgrades/long_hook.tres
+res://data/characters/warrior/upgrades/resonant_shockwave.tres
+res://data/energy/energy_type.gd
+res://data/energy/energy_type.gd.uid
+res://data/energy/foi.tres
+res://data/energy/nature.tres
+res://data/energy/ombre.tres
+res://data/energy/rage.tres
+res://data/equipment/arme_exploit_ferveur.tres
+res://data/equipment/arme_frappe_lourde_gratuite.tres
+res://data/equipment/arme_marque_vulnerable.tres
+res://data/equipment/arme_poussee_plus.tres
+res://data/equipment/armure_bouclier_depart.tres
+res://data/equipment/armure_survie_letale.tres
+res://data/equipment/armure_terrain_allie.tres
+res://data/equipment/armure_touche_ferveur.tres
+res://data/equipment/epique_couronne_cendre.tres
+res://data/equipment/epique_egide_martyr.tres
+res://data/equipment/epique_gantelet_briseur.tres
+res://data/equipment/epique_voile_spectre.tres
+res://data/equipment/equipment_data.gd
+res://data/equipment/equipment_data.gd.uid
+res://data/equipment/talisman_elan_ouverture.tres
+res://data/equipment/talisman_empreinte_moins.tres
+res://data/equipment/talisman_eveil_soin.tres
+res://data/equipment/talisman_resonance_combo.tres
+res://data/events/autel_oublie.tres
+res://data/events/champ_bataille.tres
+res://data/events/forgeron_errant.tres
+res://data/events/mendiant.tres
+res://data/events/pacte_ombre.tres
+res://data/events/reliquaire_scelle.tres
+res://data/events/run_event_data.gd
+res://data/events/run_event_data.gd.uid
+res://data/events/source_trouble.tres
+res://data/events/stele_gravee.tres
+res://data/main.tscn
+res://data/relics/balance_anubis.tres
+res://data/relics/braise_persistante.tres
+res://data/relics/calice_rage.tres
+res://data/relics/catalyseur.tres
+res://data/relics/choeur.tres
+res://data/relics/coeur_de_braise.tres
+res://data/relics/contre_garde.tres
+res://data/relics/diapason.tres
+res://data/relics/elan_brut.tres
+res://data/relics/empreinte_tellurique.tres
+res://data/relics/etincelle_ame.tres
+res://data/relics/ferveur_debordante.tres
+res://data/relics/geomancien.tres
+res://data/relics/marteau_jugement.tres
+res://data/relics/oeil_ombre.tres
+res://data/relics/reflexe.tres
+res://data/relics/relic_data.gd
+res://data/relics/relic_data.gd.uid
+res://data/relics/sang_froid.tres
+res://data/relics/seconde_nature.tres
+res://data/relics/stigmates.tres
+res://data/relics/transe.tres
+res://data/rewards/célérité.tres
+res://data/rewards/force.tres
+res://data/rewards/repos_equipe.tres
+res://data/rewards/reward_calice_de_rage.tres
+res://data/rewards/reward_coeur_de_braise.tres
+res://data/rewards/reward_coup_epaule_enflamme.tres
+res://data/rewards/reward_data.gd
+res://data/rewards/reward_data.gd.uid
+res://data/rewards/reward_elan_brut.tres
+res://data/rewards/reward_etincelle_ame.tres
+res://data/rewards/reward_gardien_de_fer.tres
+res://data/rewards/reward_lame_d_elan.tres
+res://data/rewards/reward_marteau_jugement.tres
+res://data/rewards/reward_pacte_de_fer.tres
+res://data/rewards/reward_racines_de_secours.tres
+res://data/rewards/reward_reflexe.tres
+res://data/rewards/reward_seconde_nature.tres
+res://data/rewards/reward_soif_de_sang.tres
+res://data/rewards/reward_sort_aiguillon.tres
+res://data/rewards/reward_sort_appel.tres
+res://data/rewards/reward_sort_banniere.tres
+res://data/rewards/reward_sort_catalyse.tres
+res://data/rewards/reward_sort_charge.tres
+res://data/rewards/reward_sort_deflagration.tres
+res://data/rewards/reward_sort_etincelle.tres
+res://data/rewards/reward_sort_glaciation.tres
+res://data/rewards/reward_sort_lien_ombre.tres
+res://data/rewards/reward_sort_onde_de_choc.tres
+res://data/rewards/reward_sort_salve.tres
+res://data/rewards/reward_sort_sceau.tres
+res://data/rewards/reward_sort_second_souffle.tres
+res://data/rewards/reward_sort_vague.tres
+res://data/rewards/reward_stigmates.tres
+res://data/rewards/reward_vengeance.tres
+res://data/rewards/vigueur.tres
+res://data/rooms/bible/arene_mouvante.tres
+res://data/rooms/bible/boss_meduse.tres
+res://data/rooms/bible/catacombes.tres
+res://data/rooms/bible/elite_brute.tres
+res://data/rooms/bible/la_forge.tres
+res://data/rooms/bible/le_gue.tres
+res://data/rooms/bible/sanctuaire_objectif.tres
+res://data/rooms/boss_colosse.tres
+res://data/rooms/maps/battle test.tscn
+res://data/rooms/maps/battle_salle1.tscn
+res://data/rooms/maps/battle_salle3.tscn
+res://data/rooms/maps/battle_salle_caverne_iso_v2.tscn
+res://data/rooms/maps/battle_salle_montagne_iso.tscn
+res://data/rooms/maps/battle_salletest.tscn
+res://data/rooms/maps/batttest.tscn
+res://data/rooms/maps/test_battle_asphodel.tscn
+res://data/rooms/salle_1.tres
+res://data/rooms/salle_2.tres
+res://data/rooms/salle_3.tres
+res://data/rooms/situation_totem.tres
+res://data/rooms/terrain_2.tres
+res://data/rooms/test_tile_set_asphodel.tres
+res://data/run_nodes/acte1_boss_meduse.tres
+res://data/run_nodes/acte1_combat_1.tres
+res://data/run_nodes/acte1_elite.tres
+res://data/run_nodes/acte1_repos.tres
+res://data/run_nodes/acte1_tresor.tres
+res://data/run_nodes/event_pacte_ombre.tres
+res://data/run_nodes/run_node_data.gd
+res://data/run_nodes/run_node_data.gd.uid
+res://data/runs/elf_prototype_run.tres
+res://data/runs/fixed_trio_prototype_run.tres
+res://data/runs/run_default.tres
+res://data/runs/three_character_validation_run.tres
+res://data/spell_mods/mod_enflamme_arrivee.tres
+res://data/spells/Gardien/bastion.tres
+res://data/spells/Gardien/frappe_de_bouclier.tres
+res://data/spells/Gardien/garde.tres
+res://data/spells/Gardien/provocation.tres
+res://data/spells/Gardien/rempart.tres
+res://data/spells/Guerrier/brise_garde.tres
+res://data/spells/Guerrier/coup_épaule.tres
+res://data/spells/Guerrier/crochet.tres
+res://data/spells/Guerrier/frappe.tres
+res://data/spells/Guerrier/frappe_lourde.tres
+res://data/spells/Guerrier/onde_de_choc.tres
+res://data/spells/Guerrier/sol_corrompu.tres
+res://data/spells/Healer/floraison.tres
+res://data/spells/Healer/graine_vive.tres
+res://data/spells/Healer/ronces.tres
+res://data/spells/Healer/seve_legere.tres
+res://data/spells/Hoplite/estoc.tres
+res://data/spells/Hoplite/mur_de_lances.tres
+res://data/spells/Hoplite/phalange.tres
+res://data/spells/Hoplite/repousse.tres
+res://data/spells/Necromant/eclat_ombre.tres
+res://data/spells/Necromant/faille.tres
+res://data/spells/Necromant/lever.tres
+res://data/spells/Necromant/moisson.tres
+res://data/spells/Perséphone/flétrissement.tres
+res://data/spells/Perséphone/tombeau fleuri.tres
+res://data/spells/Perséphone/étreinte des enfers.tres
+res://data/spells/assasin/execution.tres
+res://data/spells/assasin/frappe_basse.tres
+res://data/spells/assasin/lame.tres
+res://data/spells/assasin/marque.tres
+res://data/spells/assasin/pas_de_l_ombre.tres
+res://data/spells/blizzard.tres
+res://data/spells/boss/bouclier_miroir.tres
+res://data/spells/boss/devoration_cronos.tres
+res://data/spells/boss/foudre_de_thor.tres
+res://data/spells/boss/inondation.tres
+res://data/spells/boss/jugement_anubis.tres
+res://data/spells/boss/morsure_serpent.tres
+res://data/spells/boss/regard_petrifiant.tres
+res://data/spells/carreau de glace.blend
+res://data/spells/carreau de glace.blend1
+res://data/spells/draft/aiguillon.tres
+res://data/spells/draft/appel.tres
+res://data/spells/draft/banniere.tres
+res://data/spells/draft/catalyse.tres
+res://data/spells/draft/charge.tres
+res://data/spells/draft/deflagration.tres
+res://data/spells/draft/etincelle.tres
+res://data/spells/draft/glaciation.tres
+res://data/spells/draft/lien_ombre.tres
+res://data/spells/draft/salve.tres
+res://data/spells/draft/sceau.tres
+res://data/spells/draft/second_souffle.tres
+res://data/spells/draft/vague.tres
+res://data/spells/enemies/entrave.tres
+res://data/spells/enemies/fleche.tres
+res://data/spells/enemies/rage_berserker.tres
+res://data/spells/enemies/tir_hurleur.tres
+res://data/spells/frappe.tres
+res://data/spells/gobelin/braise_gobeline.tres
+res://data/spells/gobelin/hurlement_drainant.tres
+res://data/spells/gobelin/mêlée_gobelin.tres
+res://data/spells/poison.tres
+res://data/spells/soin.tres
+res://data/status/core/bruleure.tres
+res://data/status/core/catalyse.tres
+res://data/status/core/enracine.tres
+res://data/status/core/etourdi.tres
+res://data/status/core/faille.tres
+res://data/status/core/jugement.tres
+res://data/status/core/lien_ombre.tres
+res://data/status/core/petrifie.tres
+res://data/status/core/protégé.tres
+res://data/status/core/saignement.tres
+res://data/status/core/vulnerable_bible.tres
+res://data/status/core/vulnérable.tres
+res://data/status/dot.tres
+res://data/status/flétrissure.tres
+res://data/status/poison.tres
+res://data/terrain/banniere.tres
+res://data/terrain/foudre.tres
+res://data/terrain/mur_lances.tres
+res://data/terrain/ombre.tres
+res://data/terrain/regard.tres
+res://data/terrain/rune_amplification.tres
+res://data/terrain/rune_soin.tres
+res://data/terrain/sanctuaire.tres
+res://data/traits/chassis_assassin.tres
+res://data/traits/chassis_gardien.tres
+res://data/traits/chassis_guerrier.tres
+res://data/traits/chassis_healer.tres
+res://data/traits/depart_etincelle_flux.tres
+res://data/traits/depart_instinct_tactique.tres
+res://data/traits/depart_posture_defensive.tres
+res://data/traits/depart_sang_vif.tres
+res://data/traits/fureur.tres
+res://data/traits/hardened_front.tres
+res://data/traits/relique_braise_persistante.tres
+res://data/traits/relique_calice_de_rage.tres
+res://data/traits/relique_coeur_de_braise.tres
+res://data/traits/relique_elan_brut.tres
+res://data/traits/relique_empreinte_tellurique.tres
+res://data/traits/relique_etincelle_ame.tres
+res://data/traits/relique_gardien_de_fer.tres
+res://data/traits/relique_lame_d_elan.tres
+res://data/traits/relique_marteau_jugement.tres
+res://data/traits/relique_pacte_de_fer.tres
+res://data/traits/relique_racines_de_secours.tres
+res://data/traits/relique_reflexe.tres
+res://data/traits/relique_seconde_nature.tres
+res://data/traits/relique_soif_de_sang.tres
+res://data/traits/relique_stigmates.tres
+res://data/traits/reward_epaule_enflamme.tres
+res://data/traits/threshold_identity.tres
+res://data/traits/vengeance.tres
+res://data/ui/assassin_hud_theme_refined.tres
+res://data/ui/druid_hud_theme_refined.tres
+res://data/ui/guardian_hud_theme_refined.tres
+res://data/ui/hoplite_hud_theme_refined.tres
+res://data/ui/necromancer_hud_theme_refined.tres
+res://data/units/alliés/Assassin.tres
+res://data/units/alliés/Gardien.tres
+res://data/units/alliés/Hoplite.tres
+res://data/units/alliés/Necromant.tres
+res://data/units/alliés/chevalier.tres
+res://data/units/alliés/healer.tres
+res://data/units/boss/anubis.tres
+res://data/units/boss/cronos.tres
+res://data/units/boss/le_colosse.tres
+res://data/units/boss/meduse.tres
+res://data/units/boss/persee.tres
+res://data/units/boss/pérsephone.tres
+res://data/units/boss/thor.tres
+res://data/units/ennemie/GobTestUnitData.tres
+res://data/units/ennemie/GobTestUnitData_v2.tres
+res://data/units/ennemie/elite_brute_gobelin.tres
+res://data/units/ennemie/elite_pyromage_gobelin.tres
+res://data/units/ennemie/gobelin.tres
+res://data/units/ennemie/mage_healer_gobelin.tres
+res://data/units/ennemie/run_archer_gobelin.tres
+res://data/units/ennemie/run_berserker_gobelin.tres
+res://data/units/ennemie/run_brute_gobelin.tres
+res://data/units/ennemie/run_capitaine_gobelin.tres
+res://data/units/ennemie/run_chamane_gobelin.tres
+res://data/units/ennemie/run_eclaireur_gobelin.tres
+res://data/units/ennemie/run_hurleur_gobelin.tres
+res://data/units/ennemie/run_lieur_gobelin.tres
+res://data/units/ennemie/run_porte_bouclier_gobelin.tres
+res://data/units/ennemie/run_pyromage_gobelin.tres
+res://data/units/ennemie/run_totem_gobelin.tres
+res://data/units/ennemie/serpent_meduse.tres
+res://data/units/ennemie/totem_gobelin.tres
+res://docs/audits/RUN_V1_PLAYABLE_PASS.md
+res://docs/prototypes/character_progression_foundation.md
+res://docs/prototypes/elf_mage_progression_slice.md
+res://docs/prototypes/elf_rank_two_disciplines.md
+res://docs/prototypes/elf_vertical_slice_bootstrap.md
+res://docs/prototypes/fixed_trio_mage_integration.md
+res://docs/prototypes/mage_elemental_foundation.md
+res://docs/prototypes/progression_lifecycle.md
+res://docs/prototypes/three_character_party_validation.md
+res://gobtest.gd
+res://gobtest.gd.uid
+res://gobtest.tscn
+res://imported_models/Armored Knight with T/Armored Knight with T.glb
+res://imported_models/Armored Knight with T/Armored Knight with T.glb.import
+res://imported_models/Armored Knight with T/Armored Knight with T_0.jpg
+res://imported_models/Armored Knight with T/Armored Knight with T_0.jpg.import
+res://imported_models/Armored Knight with T/Armored Knight with T_1.jpg
+res://imported_models/Armored Knight with T/Armored Knight with T_1.jpg.import
+res://imported_models/Armored Knight with T/Armored Knight with T_2.jpg
+res://imported_models/Armored Knight with T/Armored Knight with T_2.jpg.import
+res://imported_models/Armored Knight with T/Armored Knight with T_3.jpg
+res://imported_models/Armored Knight with T/Armored Knight with T_3.jpg.import
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1.glb
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1.glb.import
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_0.jpg
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_0.jpg.import
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_1.jpg
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_1.jpg.import
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_2.jpg
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_2.jpg.import
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_3.jpg
+res://imported_models/Armored Knight with T_1/Armored Knight with T_1_3.jpg.import
+res://output/imagegen/cave-grid-isometrique.png
+res://output/imagegen/cave-grid-isometrique.png.import
+res://test/unit/test_awakening.gd
+res://test/unit/test_awakening.gd.uid
+res://test/unit/test_elf_character_hud_v1.gd
+res://test/unit/test_elf_character_hud_v1.gd.uid
+res://test/unit/test_elf_prototype_flow.gd
+res://test/unit/test_elf_prototype_flow.gd.uid
+res://test/unit/test_energy_gauge_awakening.gd
+res://test/unit/test_energy_gauge_awakening.gd.uid
+res://test/unit/test_energy_gauge_gain.gd
+res://test/unit/test_energy_gauge_gain.gd.uid
+res://test/unit/test_gain_table.gd
+res://test/unit/test_gain_table.gd.uid
+res://test/unit/test_refined_character_hud_themes.gd
+res://test/unit/test_refined_character_hud_themes.gd.uid
+res://test/unit/test_run_v1_playable_pass.gd
+res://test/unit/test_run_v1_playable_pass.gd.uid
+res://test/unit/test_skill_tree_consultation_ui.gd
+res://test/unit/test_skill_tree_consultation_ui.gd.uid
+res://test/unit/test_skill_tree_refined_multi_character.gd
+res://test/unit/test_skill_tree_refined_multi_character.gd.uid
+res://test/unit/test_skill_tree_skin_ui.gd
+res://test/unit/test_skill_tree_skin_ui.gd.uid
+res://test_phase_2.tscn
+res://tests/characters/elf/screenshots/elf_cast_end_isometric.png
+res://tests/characters/elf/screenshots/elf_cast_end_isometric.png.import
+res://tests/characters/elf/screenshots/elf_cast_hold_isometric.png
+res://tests/characters/elf/screenshots/elf_cast_hold_isometric.png.import
+res://tests/characters/elf/screenshots/elf_cast_isometric.png
+res://tests/characters/elf/screenshots/elf_cast_isometric.png.import
+res://tests/characters/elf/screenshots/elf_cast_start_isometric.png
+res://tests/characters/elf/screenshots/elf_cast_start_isometric.png.import
+res://tests/characters/elf/screenshots/elf_death_isometric.png
+res://tests/characters/elf/screenshots/elf_death_isometric.png.import
+res://tests/characters/elf/screenshots/elf_death_side.png
+res://tests/characters/elf/screenshots/elf_death_side.png.import
+res://tests/characters/elf/screenshots/elf_hit_isometric.png
+res://tests/characters/elf/screenshots/elf_hit_isometric.png.import
+res://tests/characters/elf/screenshots/elf_idle_isometric.png
+res://tests/characters/elf/screenshots/elf_idle_isometric.png.import
+res://tests/characters/elf/screenshots/elf_run_in_place_isometric.png
+res://tests/characters/elf/screenshots/elf_run_in_place_isometric.png.import
+res://tests/characters/elf/screenshots/elf_run_moving_isometric.png
+res://tests/characters/elf/screenshots/elf_run_moving_isometric.png.import
+res://tests/characters/elf/screenshots/elf_sharpness_comparison.png
+res://tests/characters/elf/screenshots/elf_sharpness_comparison.png.import
+res://tests/characters/elf/screenshots/elf_sharpness_final_cast.png
+res://tests/characters/elf/screenshots/elf_sharpness_final_cast.png.import
+res://tests/characters/elf/screenshots/elf_sharpness_final_idle.png
+res://tests/characters/elf/screenshots/elf_sharpness_final_idle.png.import
+res://tests/characters/elf/screenshots/elf_sharpness_final_walk.png
+res://tests/characters/elf/screenshots/elf_sharpness_final_walk.png.import
+res://tests/characters/elf/screenshots/elf_sockets_isometric.png
+res://tests/characters/elf/screenshots/elf_sockets_isometric.png.import
+res://tests/characters/elf/screenshots/elf_walk_in_place_isometric.png
+res://tests/characters/elf/screenshots/elf_walk_in_place_isometric.png.import
+res://tests/characters/elf/screenshots/elf_walk_isometric.png
+res://tests/characters/elf/screenshots/elf_walk_isometric.png.import
+res://tests/characters/elf/screenshots/final_elf_cast_origin.png
+res://tests/characters/elf/screenshots/final_elf_cast_origin.png.import
+res://tests/characters/elf/screenshots/final_elf_death.png
+res://tests/characters/elf/screenshots/final_elf_death.png.import
+res://tests/characters/elf/screenshots/final_elf_moving.png
+res://tests/characters/elf/screenshots/final_elf_moving.png.import
+res://tests/characters/elf/screenshots/final_elf_selected.png
+res://tests/characters/elf/screenshots/final_elf_selected.png.import
+res://tests/characters/elf/screenshots/final_elf_y_sort.png
+res://tests/characters/elf/screenshots/final_elf_y_sort.png.import
+res://tests/characters/elf/screenshots/fireball_cleanup_after.png
+res://tests/characters/elf/screenshots/fireball_cleanup_after.png.import
+res://tests/characters/elf/screenshots/fireball_residue_before.png
+res://tests/characters/elf/screenshots/fireball_residue_before.png.import
+res://tests/characters/elf/screenshots/salle1_elf_behind_goblin.png
+res://tests/characters/elf/screenshots/salle1_elf_behind_goblin.png.import
+res://tests/characters/elf/screenshots/salle1_elf_cast.png
+res://tests/characters/elf/screenshots/salle1_elf_cast.png.import
+res://tests/characters/elf/screenshots/salle1_elf_death.png
+res://tests/characters/elf/screenshots/salle1_elf_death.png.import
+res://tests/characters/elf/screenshots/salle1_elf_hit.png
+res://tests/characters/elf/screenshots/salle1_elf_hit.png.import
+res://tests/characters/elf/screenshots/salle1_elf_idle.png
+res://tests/characters/elf/screenshots/salle1_elf_idle.png.import
+res://tests/characters/elf/screenshots/salle1_elf_in_front_of_goblin.png
+res://tests/characters/elf/screenshots/salle1_elf_in_front_of_goblin.png.import
+res://tests/characters/elf/screenshots/salle1_elf_walk_neg_x.png
+res://tests/characters/elf/screenshots/salle1_elf_walk_neg_x.png.import
+res://tests/characters/elf/screenshots/salle1_elf_walk_neg_y.png
+res://tests/characters/elf/screenshots/salle1_elf_walk_neg_y.png.import
+res://tests/characters/elf/screenshots/salle1_elf_walk_pos_x.png
+res://tests/characters/elf/screenshots/salle1_elf_walk_pos_x.png.import
+res://tests/characters/elf/screenshots/salle1_elf_walk_pos_y.png
+res://tests/characters/elf/screenshots/salle1_elf_walk_pos_y.png.import
+res://tests/characters/elf/screenshots/sharpness_512_linear_composite.png
+res://tests/characters/elf/screenshots/sharpness_512_linear_composite.png.import
+res://tests/characters/elf/screenshots/sharpness_512_linear_composite_crop.png
+res://tests/characters/elf/screenshots/sharpness_512_linear_composite_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_512_linear_viewport.png
+res://tests/characters/elf/screenshots/sharpness_512_linear_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_512_linear_viewport_crop.png
+res://tests/characters/elf/screenshots/sharpness_512_linear_viewport_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_512_nearest_composite.png
+res://tests/characters/elf/screenshots/sharpness_512_nearest_composite.png.import
+res://tests/characters/elf/screenshots/sharpness_512_nearest_composite_crop.png
+res://tests/characters/elf/screenshots/sharpness_512_nearest_composite_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport.png
+res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport_crop.png
+res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite.png
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite.png.import
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite_crop.png
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport.png
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport_crop.png
+res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_768_linear_composite.png
+res://tests/characters/elf/screenshots/sharpness_768_linear_composite.png.import
+res://tests/characters/elf/screenshots/sharpness_768_linear_composite_crop.png
+res://tests/characters/elf/screenshots/sharpness_768_linear_composite_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_768_linear_viewport.png
+res://tests/characters/elf/screenshots/sharpness_768_linear_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_768_linear_viewport_crop.png
+res://tests/characters/elf/screenshots/sharpness_768_linear_viewport_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite.png
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite.png.import
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite_crop.png
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport.png
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport_crop.png
+res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_before_composite.png
+res://tests/characters/elf/screenshots/sharpness_before_composite.png.import
+res://tests/characters/elf/screenshots/sharpness_before_composite_crop.png
+res://tests/characters/elf/screenshots/sharpness_before_composite_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_before_viewport.png
+res://tests/characters/elf/screenshots/sharpness_before_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_before_viewport_crop.png
+res://tests/characters/elf/screenshots/sharpness_before_viewport_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_final_idle_crop.png
+res://tests/characters/elf/screenshots/sharpness_final_idle_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_final_idle_viewport.png
+res://tests/characters/elf/screenshots/sharpness_final_idle_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_final_idle_viewport_crop.png
+res://tests/characters/elf/screenshots/sharpness_final_idle_viewport_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_final_walk_crop.png
+res://tests/characters/elf/screenshots/sharpness_final_walk_crop.png.import
+res://tests/characters/elf/screenshots/sharpness_motion_cast_viewport.png
+res://tests/characters/elf/screenshots/sharpness_motion_cast_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_motion_death_viewport.png
+res://tests/characters/elf/screenshots/sharpness_motion_death_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_motion_hit_viewport.png
+res://tests/characters/elf/screenshots/sharpness_motion_hit_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_motion_idle_viewport.png
+res://tests/characters/elf/screenshots/sharpness_motion_idle_viewport.png.import
+res://tests/characters/elf/screenshots/sharpness_motion_walk_viewport.png
+res://tests/characters/elf/screenshots/sharpness_motion_walk_viewport.png.import
+res://tests/characters/warrior/RunV1PlayableReview.tscn
+res://tests/characters/warrior/run_v1_playable_review.gd
+res://tests/characters/warrior/run_v1_playable_review.gd.uid
+res://tests/characters/warrior/screenshots/first_run_elf_mage_warrior.png
+res://tests/characters/warrior/screenshots/first_run_elf_mage_warrior.png.import
+res://tests/characters/warrior/screenshots/warrior_basic_attack.png
+res://tests/characters/warrior/screenshots/warrior_basic_attack.png.import
+res://tests/characters/warrior/screenshots/warrior_death.png
+res://tests/characters/warrior/screenshots/warrior_death.png.import
+res://tests/characters/warrior/screenshots/warrior_draft_third_slot.png
+res://tests/characters/warrior/screenshots/warrior_draft_third_slot.png.import
+res://tests/characters/warrior/screenshots/warrior_hit.png
+res://tests/characters/warrior/screenshots/warrior_hit.png.import
+res://tests/characters/warrior/screenshots/warrior_idle_iso.png
+res://tests/characters/warrior/screenshots/warrior_idle_iso.png.import
+res://tests/characters/warrior/screenshots/warrior_spell_action.png
+res://tests/characters/warrior/screenshots/warrior_spell_action.png.import
+res://tests/characters/warrior/screenshots/warrior_walk_neg_x.png
+res://tests/characters/warrior/screenshots/warrior_walk_neg_x.png.import
+res://tests/characters/warrior/screenshots/warrior_walk_neg_y.png
+res://tests/characters/warrior/screenshots/warrior_walk_neg_y.png.import
+res://tests/characters/warrior/screenshots/warrior_walk_pos_x.png
+res://tests/characters/warrior/screenshots/warrior_walk_pos_x.png.import
+res://tests/characters/warrior/screenshots/warrior_walk_pos_y.png
+res://tests/characters/warrior/screenshots/warrior_walk_pos_y.png.import
+res://tests/characters/warrior/screenshots/warrior_y_sort_behind.png
+res://tests/characters/warrior/screenshots/warrior_y_sort_behind.png.import
+res://tests/characters/warrior/screenshots/warrior_y_sort_front.png
+res://tests/characters/warrior/screenshots/warrior_y_sort_front.png.import
+res://tests/characters/warrior/warrior_first_playable_review.mp4
+res://tools/build_skill_tree_capture_review.py
+res://tools/build_skill_tree_refined_v2_review.ps1
+res://tools/capture_clean_hud.gd
+res://tools/capture_clean_hud.gd.uid
+res://tools/capture_clean_hud.tscn
+res://tools/capture_refined_character_huds.gd
+res://tools/capture_refined_character_huds.gd.uid
+res://tools/capture_refined_character_huds.tscn
+res://tools/capture_skill_tree_refined.gd
+res://tools/capture_skill_tree_refined.gd.uid
+res://tools/capture_skill_tree_refined.tscn
+res://tools/sprite_baker/gardien_baker.tscn
+res://tools/ui/build_refined_hud_contact_sheet.py
+res://traits/Fureur_de_combat.tres
+res://traits/relique_marteau_jugement.gd
+res://traits/relique_marteau_jugement.gd.uid
+res://traits/trait.gd
+res://traits/trait.gd.uid
+res://traits/trait_bloodthirst.gd
+res://traits/trait_bloodthirst.gd.uid
+res://traits/trait_bonus_fervor_on_generation.gd
+res://traits/trait_bonus_fervor_on_generation.gd.uid
+res://traits/trait_chassis_assassin.gd
+res://traits/trait_chassis_assassin.gd.uid
+res://traits/trait_chassis_gardien.gd
+res://traits/trait_chassis_gardien.gd.uid
+res://traits/trait_chassis_guerrier.gd
+res://traits/trait_chassis_guerrier.gd.uid
+res://traits/trait_chassis_healer.gd
+res://traits/trait_chassis_healer.gd.uid
+res://traits/trait_data.gd
+res://traits/trait_data.gd.uid
+res://traits/trait_elan_on_turn_start.gd
+res://traits/trait_elan_on_turn_start.gd.uid
+res://traits/trait_energy_on_generator.gd
+res://traits/trait_energy_on_generator.gd.uid
+res://traits/trait_factory.gd
+res://traits/trait_factory.gd.uid
+res://traits/trait_gen_rage_on_hit.gd
+res://traits/trait_gen_rage_on_hit.gd.uid
+res://traits/trait_hardened_front.gd
+res://traits/trait_hardened_front.gd.uid
+res://traits/trait_heal_on_awakening.gd
+res://traits/trait_heal_on_awakening.gd.uid
+res://traits/trait_heal_on_energy_spent.gd
+res://traits/trait_heal_on_energy_spent.gd.uid
+res://traits/trait_second_nature.gd
+res://traits/trait_second_nature.gd.uid
+res://traits/trait_shield_on_damage_dealt.gd
+res://traits/trait_shield_on_damage_dealt.gd.uid
+res://traits/trait_spell_modifier.gd
+res://traits/trait_spell_modifier.gd.uid
+res://traits/trait_stat_bonus.gd
+res://traits/trait_stat_bonus.gd.uid
+res://traits/trait_stigmata.gd
+res://traits/trait_stigmata.gd.uid
+res://traits/trait_threshold.gd
+res://traits/trait_threshold.gd.uid
+res://traits/trait_vengeance.gd
+res://traits/trait_vengeance.gd.uid
+res://ui/RewardScreen.tscn
+res://ui/RunDraftScreen.tscn
+res://ui/progression/lab/skill_tree_graybox_lab.gd
+res://ui/progression/lab/skill_tree_graybox_lab.gd.uid
+res://ui/progression/lab/skill_tree_graybox_lab.tscn
+res://ui/recraft_hud_v1/preview/elf_hud_clean_preview.gd
+res://ui/recraft_hud_v1/preview/elf_hud_clean_preview.gd.uid
+res://ui/recraft_hud_v1/preview/elf_hud_clean_preview.tscn
+res://ui/reward_screen.gd
+res://ui/reward_screen.gd.uid
+res://ui/run_draft_screen.gd
+res://ui/run_draft_screen.gd.uid
+res://units/energy_gauge.gd
+res://units/energy_gauge.gd.uid

@@ -462,26 +462,10 @@ offset_right = 380.0
 offset_bottom = 290.0
 grow_vertical = 2
 
-[node name="BoutonTrioFixe" type="Button" parent="UI/Boutons"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Trio fixe — prototype"
-
-[node name="BoutonPrototypeElfe" type="Button" parent="UI/Boutons"]
-layout_mode = 2
-text = "Prototype Elfe"
-
-[node name="BoutonValidationEquipe" type="Button" parent="UI/Boutons"]
-layout_mode = 2
-text = "Validation technique — équipe de 3"
-
 [node name="BoutonNouvellePartie" type="Button" parent="UI/Boutons" unique_id=2051366516]
 layout_mode = 2
-text = "Ancien prototype / Draft historique"
-
-[node name="BoutonContinuer" type="Button" parent="UI/Boutons" unique_id=774008379]
-layout_mode = 2
-text = "Continuer"
+theme_override_font_sizes/font_size = 18
+text = "Nouvelle partie"
 
 [node name="BoutonQuitter" type="Button" parent="UI/Boutons" unique_id=2044655594]
 layout_mode = 2

@@ -4,13 +4,9 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="5_sprite"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/bourrade.tres" id="10_spell"]
-[ext_resource type="Resource" uid="uid://br5eca5c16qvl" path="res://data/spells/Guerrier/coup_épaule.tres" id="11_spell"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/crochet.tres" id="14_crochet"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/onde_de_choc.tres" id="15_onde"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/marque_de_guerre.tres" id="16_marque"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/execution_de_guerre.tres" id="17_execution"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/pietinement.tres" id="18_pietinement"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/sol_corrompu.tres" id="19_sol"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorIsoUnitView.tscn" id="20_combat_visual"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorVisual3D.tscn" id="21_preview_visual"]
 [ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="22_discipline_type"]
@@ -44,6 +40,6 @@ role = "Contrôleur de mêlée"
 presentation_summary = "Brise les lignes ennemies avec poussées, collisions, Marque et zones de ronces."
 progression_summary = "Trois disciplines : Briseur, Bourreau et Saccageur."
 presentation_badge = "Troisième héros de la première run"
-active_spell_slots = 8
-spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("14_crochet"), ExtResource("11_spell"), ExtResource("15_onde"), ExtResource("16_marque"), ExtResource("17_execution"), ExtResource("18_pietinement"), ExtResource("19_sol")])
+active_spell_slots = 4
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("16_marque"), ExtResource("17_execution"), ExtResource("18_pietinement")])
 disciplines = Array[ExtResource("22_discipline_type")]([ExtResource("23_breaker"), ExtResource("24_executioner"), ExtResource("25_ravager")])

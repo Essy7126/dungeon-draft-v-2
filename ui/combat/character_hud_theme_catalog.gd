@@ -4,12 +4,7 @@ extends RefCounted
 const REFINED_THEMES: Array[CharacterHUDThemeData] = [
 	preload("res://data/ui/elf_hud_theme_refined.tres"),
 	preload("res://data/ui/mage_hud_theme_refined.tres"),
-	preload("res://data/ui/guardian_hud_theme_refined.tres"),
 	preload("res://data/ui/warrior_hud_theme_refined.tres"),
-	preload("res://data/ui/druid_hud_theme_refined.tres"),
-	preload("res://data/ui/assassin_hud_theme_refined.tres"),
-	preload("res://data/ui/necromancer_hud_theme_refined.tres"),
-	preload("res://data/ui/hoplite_hud_theme_refined.tres"),
 ]
 
 

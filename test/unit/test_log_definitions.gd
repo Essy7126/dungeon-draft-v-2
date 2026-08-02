@@ -6,7 +6,6 @@ const UnitScript = preload("res://units/unit.gd")
 const SpellCasterScript = preload("res://core/spell_caster.gd")
 const TerrainEffectsScript = preload("res://core/terrain_effects.gd")
 const EnemyAIScript = preload("res://core/enemy_ai.gd")
-const BossPersephoneScript = preload("res://core/ai/boss_persephone.gd")
 
 
 func test_logger_preserve_son_api_publique() -> void:
@@ -22,4 +21,3 @@ func test_raccourcis_utilisent_les_definitions_canoniques() -> void:
 	assert_eq(SpellCasterScript.CAT_SPELL, LogDefinitions.LogCategory.SPELL)
 	assert_eq(TerrainEffectsScript.CAT, LogDefinitions.LogCategory.TERRAIN)
 	assert_eq(EnemyAIScript.CAT, LogDefinitions.LogCategory.AI)
-	assert_eq(BossPersephoneScript.CAT, LogDefinitions.LogCategory.AI)

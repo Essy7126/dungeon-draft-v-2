@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_status")
+status_id = &"burn"
 status_name = "Brulure"
 description = "Subit des degats au debut de son tour."
 color = Color(1, 0.25, 0.05, 1)
@@ -13,3 +14,7 @@ skips_turn = false
 mp_reduction = 0
 duration = 3
 damage_multiplier_received = 1
+damage_type = 1
+element = 0
+ignores_defense = true
+can_be_dodged = false

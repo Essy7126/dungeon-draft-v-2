@@ -163,8 +163,6 @@ func test_return_to_title_clears_all_progression_transients() -> void:
 	var state := _prepare_elf()
 	_raise_mage_to_rank_two(state)
 	manager._awaiting_post_battle_progression = true
-	manager._pending_run_data = _make_run()
-	manager._offered_rewards = [RewardData.new()]
 	manager._record_run_result(true)
 	var screen = _open_progression_screen()
 	assert_true(manager.has_active_progression_screen())
@@ -173,8 +171,6 @@ func test_return_to_title_clears_all_progression_transients() -> void:
 	assert_true(manager.heroes.is_empty())
 	assert_true(manager.get_pending_progression_choices().is_empty())
 	assert_false(manager._awaiting_post_battle_progression)
-	assert_null(manager._pending_run_data)
-	assert_true(manager._offered_rewards.is_empty())
 	assert_true(manager.get_last_run_result().is_empty())
 	assert_false(manager.has_active_progression_screen())
 	assert_true(screen.is_closed_for_progression())
@@ -209,17 +205,6 @@ func test_new_run_starts_at_zero_xp_rank_one_without_choice_or_result() -> void:
 	assert_true(manager.get_pending_progression_choices().is_empty())
 	assert_true(manager.get_last_run_result().is_empty())
 	assert_true(state.unit.get_progression_spell_modifiers().is_empty())
-
-
-func test_failed_historical_rebuild_leaves_no_partial_run_state() -> void:
-	var state := _prepare_elf()
-	_raise_mage_to_rank_two(state)
-	assert_true(state.select_upgrade(&"mage", 2, INCANDESCENT_ID))
-	assert_false(manager._build_heroes_from_draft([], [], []))
-	assert_true(manager.heroes.is_empty())
-	assert_true(manager.character_states.is_empty())
-	assert_true(manager.get_pending_progression_choices().is_empty())
-	assert_false(manager.run_active)
 
 
 func test_repeated_modifier_sync_and_room_change_keep_one_modifier() -> void:

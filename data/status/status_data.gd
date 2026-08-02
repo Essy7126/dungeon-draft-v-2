@@ -22,6 +22,7 @@ enum PeriodicTiming {
 # IDENTITÉ
 # ============================================================
 
+@export var status_id: StringName = &""
 @export var status_name: String = "Statut"
 @export_multiline var description: String = ""
 
@@ -37,6 +38,10 @@ enum PeriodicTiming {
 # Dégâts infligés chaque tour (poison, saignement, brûlure).
 @export var damage_per_turn: int = 0
 @export var damage_timing: PeriodicTiming = PeriodicTiming.TURN_START
+@export var damage_type: Spell.DamageType = Spell.DamageType.MAGICAL
+@export var element: Spell.Element = Spell.Element.NONE
+@export var ignores_defense: bool = true
+@export var can_be_dodged: bool = false
 # Soin reçu chaque tour (régénération).
 @export var heal_per_turn: int = 0
 
@@ -81,3 +86,11 @@ enum PeriodicTiming {
 @export_group("Visuel")
 # Scène VFX instanciée sur la cible au moment de l'application du statut.
 @export var vfx_scene: PackedScene = null
+
+
+func get_effective_status_id() -> StringName:
+	if status_id != &"":
+		return status_id
+	if resource_path != "":
+		return StringName(resource_path)
+	return StringName("status:%s" % status_name.strip_edges().to_lower())

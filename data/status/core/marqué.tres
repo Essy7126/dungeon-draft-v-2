@@ -5,8 +5,9 @@
 
 [resource]
 script = ExtResource("1_uq0ed")
+status_id = &"warrior_marked"
 status_name = "Marqué"
-description = "Cible exposee aux executions et aux effets EXPLOIT de l Assassin."
+description = "Cible exposée aux exécutions du Guerrier."
 color = Color(0.55, 0.04, 0.04, 1)
 duration = 2
 vfx_scene = ExtResource("2_vfx")

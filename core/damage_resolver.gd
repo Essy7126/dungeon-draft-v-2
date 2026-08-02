@@ -52,7 +52,7 @@ class HitContext:
 	var category: int = Spell.DamageType.PHYSICAL
 	var element: int = Spell.Element.NONE
 
-	# Crochets de crit (poussés par les futurs traits ; neutres ici).
+	# Crochets de critique ponctuels ; neutres ici.
 	var bonus_crit_chance: float = 0.0         # +proba de crit ponctuelle
 	var force_crit: bool = false               # force le critique
 
@@ -126,13 +126,14 @@ static func compute(defender, ctx: HitContext) -> DamageResult:
 		dmg *= status_mult
 
 	# --- 4. CRITIQUE ---
-	# Chance = crit de l'unité attaquante + bonus ponctuel (traits).
+	# Chance = critique de l'unité attaquante + bonus ponctuel.
 	# force_crit court-circuite le jet. Le multiplicateur vient de l'attaquant.
 	var crit_chance := ctx.bonus_crit_chance
 	var crit_multi := 1.5
 	if ctx.attacker != null:
 		crit_chance += _get_crit_chance(ctx.attacker)
 		crit_multi = _get_crit_multi(ctx.attacker)
+	crit_chance = clampf(crit_chance, 0.0, 1.0)
 	if ctx.force_crit or (crit_chance > 0.0 and randf() < crit_chance):
 		result.is_crit = true
 		dmg *= crit_multi

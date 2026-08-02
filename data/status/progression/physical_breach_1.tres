@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_status")
+status_id = &"physical_breach"
 status_name = "Brèche physique"
 description = "La prochaine attaque physique reçue inflige 2 dégâts supplémentaires."
 color = Color(0.78, 0.36, 0.18, 1)

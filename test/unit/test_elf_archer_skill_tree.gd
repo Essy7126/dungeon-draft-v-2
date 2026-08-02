@@ -360,7 +360,6 @@ func test_archer_tree_has_exactly_sixteen_final_configurations() -> void:
 
 func test_eighteen_successful_precise_shots_grant_exact_xp_and_queue_all_ranks() -> void:
 	var state := _prepare_manager_state()
-	assert_false(state.unit.has_energy())
 	var battle := _make_battle(
 		state,
 		Vector2i(0, 1),
@@ -663,7 +662,6 @@ func test_archer_choices_and_modifiers_persist_then_reset_on_new_run() -> void:
 		ARCHER_ID
 	).get_selected_upgrade_ids()
 	var modifier_count := state.unit.get_progression_spell_modifiers().size()
-	assert_false(state.unit.has_energy())
 	manager.current_room_index = 0
 	manager._go_to_next_room()
 	assert_same(manager.get_character_state(&"elf"), state)
@@ -689,4 +687,3 @@ func test_archer_choices_and_modifiers_persist_then_reset_on_new_run() -> void:
 		).get_selected_upgrade_ids().is_empty()
 	)
 	assert_true(fresh.unit.get_progression_spell_modifiers().is_empty())
-	assert_false(fresh.unit.has_energy())

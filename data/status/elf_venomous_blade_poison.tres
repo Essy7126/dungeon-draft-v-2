@@ -4,8 +4,13 @@
 
 [resource]
 script = ExtResource("1_status")
+status_id = &"elf_venomous_blade_poison"
 status_name = "Poison de Lame venimeuse"
 description = "Inflige 2 dégâts au début des deux prochains tours de la cible."
 color = Color(0.38, 0.7, 0.24, 1)
 damage_per_turn = 2
+damage_type = 1
+element = 0
+ignores_defense = true
+can_be_dodged = false
 duration = 2

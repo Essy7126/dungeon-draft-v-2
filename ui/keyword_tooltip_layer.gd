@@ -39,8 +39,8 @@ func _build_ui() -> void:
 func show_keyword(id: String, global_pos: Vector2, pin: bool = false) -> void:
 	show_bbcode(Glossary.definition_bbcode(id), global_pos, pin)
 
-func show_spell(caster, spell: Spell, imprinted: bool, unusable_reason: String, global_pos: Vector2) -> void:
-	show_bbcode(Glossary.spell_card_bbcode(caster, spell, imprinted, unusable_reason), global_pos, false)
+func show_spell(caster, spell: Spell, unusable_reason: String, global_pos: Vector2) -> void:
+	show_bbcode(Glossary.spell_card_bbcode(caster, spell, unusable_reason), global_pos, false)
 
 func show_text(title: String, body: String, global_pos: Vector2, pin: bool = false) -> void:
 	var bbcode := "[b]%s[/b]\n%s" % [_escape_bbcode(title), Glossary.render_keywords(body)]

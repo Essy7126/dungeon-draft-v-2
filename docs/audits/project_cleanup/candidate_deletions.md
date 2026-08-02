@@ -1,0 +1,2923 @@
+# Candidats de suppression classifiés avant nettoyage
+
+Ce document est régénéré depuis `manifest_before.json`. Les restaurations validées par Godot (Brûlure, Mouillé et vulnérabilité à charges) ont été reclassifiées `KEEP` et n'apparaissent donc pas ici.
+
+- `res://.codex_project_cleanup_inventory.mjs` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.codex_project_cleanup_inventory.py` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/.gdignore` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/editor/AnonymousPro-Bold.ttf-9d8fef4d357af5b52cd60afbe608aa49.fontdata-folding-e49a585ac00cb4ac2d3ca167375433c3.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/AnonymousPro-BoldItalic.ttf-4274bf704d3d6b9cd32c4f0754d8c83d.fontdata-folding-15dadf01bc8f4bad788a8c5e20d2c465.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/AnonymousPro-Italic.ttf-9989590b02137b799e13d570de2a42c1.fontdata-folding-5f275e5d847e453db40602cc1450cc23.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/AnonymousPro-Regular.ttf-856c843fd6f89964d2ca8d8ff1724f13.fontdata-folding-56244a7ed71120eb24a03ac8d2cf9ac7.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Armored Knight with T_1.glb-566eba79e8d0c970fcc12e1c1e5b66b8.scn-folding-58575c587efc69d4bca4616938838e79.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Armored Knight with T.glb-7be70d93793fcf0c8e6b512617b52102.scn-folding-4fdc29276f82e5c0ca885c9c16d7b90a.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/CourierPrime-Bold.ttf-1f003c66d63ebed70964e7756f4fa235.fontdata-folding-7dde2eed2f73e8fa1acb660a8b16df17.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/CourierPrime-BoldItalic.ttf-65ebcc61dd5e1dfa8f96313da4ad7019.fontdata-folding-21850ced047b19b6bd6e9802dc57127e.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/CourierPrime-Italic.ttf-baa9156a73770735a0f72fb20b907112.fontdata-folding-cd5a846b9cdf6c5d33dc45b3d3b67cf4.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/CourierPrime-Regular.ttf-3babe7e4a7a588dfc9a84c14b4f1fe23.fontdata-folding-2842909bbce4b19f63c7c21206e0c638.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/dark_pause_menu_theme.tres-folding-648474b2ff974188bc07ee1f029b596f.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Dungeon Draft Oath.mp3-73bb7a8bb69947e61ece3a1dec9f929a.mp3str-folding-07dc3fa8e149dcfdcd005f45f26c4e5f.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Dungeon Draft Tactics.mp3-53853404c913454f5497b4461850132a.mp3str-folding-cb311561e2c039d8dc6a7ffeb4acaf57.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Dungeon Draft Tactics.mp3-beb09cd3f8d831fcddfad74f05ec3159.mp3str-folding-b23f6ea4b8ffacd0a531b4d2e796240c.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Dungeon Draft_ First Footfalls.mp3-a0c09fb1930dbd3c7ebb6e6cddd58ee5.mp3str-folding-243d459101843633aed86162952fe7d0.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Dungeon Draft.mp3-47305a7014d968e0b996ed739f3131b7.mp3str-folding-ff10b79c8ccad2c4e4048a5c0210b1bb.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/editor_globals.gd-folding-ba246687388d68f51de978f123e0bd62.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/editor_layout.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/EditorRadioButton.tres-folding-977063b975ed2d07c571eeef00528018.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_archer_visual_map.tres-folding-cc8fe6a71132b68775de3e8311085e3b.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_character_v01.glb-b5e8d1cf73176260f54b315a4bbb70e9.scn-folding-89e3fe8455df19053f8d68e7c11979de.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_magic_arrow_impact.tscn-editstate-9803d08f7cbec5a920bd697fbea36950.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_magic_arrow_impact.tscn-folding-9803d08f7cbec5a920bd697fbea36950.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_magic_arrow_projectile.tscn-editstate-6ca3daafd98085567f1a02697e2cdcda.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_magic_arrow_projectile.tscn-folding-6ca3daafd98085567f1a02697e2cdcda.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_magic_bow_charge.tscn-editstate-1c26cea657803a2af3306c86d3a159ec.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elf_magic_bow_charge.tscn-folding-1c26cea657803a2af3306c86d3a159ec.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/elite_brute_gobelin.tres-folding-4d2cec997c92eb4a9d9541fa4929aeba.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/filesystem_cache10` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/filesystem_update4` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3-2d3011aad6112122c3bca576046fb9ea.mp3str-folding-c48d24545996f1859bf922dae21e419a.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/fumee_shader.tscn-editstate-812dc20896a0a866c1b904c68d17e870.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/fumee_shader.tscn-folding-812dc20896a0a866c1b904c68d17e870.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/gobtest.glb-557268a99a86d7839a9fc66865cdc048.scn-folding-6ced54c3f9d75386367ead8b5477efd3.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/GobTestUnitData_v2.tres-folding-36eaf33b444f29b330eb0f51dda3a4e1.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/GobTestUnitData.tres-folding-6adf45680e8ce094a3307ee86444f54a.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/LobsterTwo-Bold.ttf-4833bbd73ba0ce4cdf58cf93c73ffa1c.fontdata-folding-9ea2b74691b5db2db86e965d11c602b8.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/LobsterTwo-Bold.ttf-7c7f734103b58a32491a4788186f3dcb.fontdata-folding-1a0c1200e23b02287986504707a15730.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/LobsterTwo-BoldItalic.ttf-227406a33e84448e6aa974176016de19.fontdata-folding-5159fb00644846f513758019b2eebb50.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/LobsterTwo-Italic.ttf-f93abf6c25390c85ad5fb6c4ee75159e.fontdata-folding-de2b7337b901b30d73644d8536a7b537.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/LobsterTwo-Regular.ttf-03a64490fedc2a2e4ade421d8d0319cb.fontdata-folding-b2dc70d5ad85c9e393ea43f2cf6dc5b3.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/LobsterTwo-Regular.ttf-f3fcfa01cd671c8da433dd875d0fe04b.fontdata-folding-74f1e76a40bdf3ae70ca09cf3eacf3c1.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/mage_godot_baseline.glb-bf70288b033040c16f389b871d4cb84d.scn-folding-edf47e5b852b83de65b19b678348bab7.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/meduse.tres-folding-ff574eafc89d169083380eb469a5d3c0.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Fall_Dead_from_Abdominal_Injury_withSkin.glb-fc3d1dd0031128c73bf262abb16d98e5.scn-folding-1ad9b8b9c69c1ee9b9bd6d55564a3716.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Lower_Weapon_Look_Raise_withSkin.glb-d6626ca71a6963286a2aaad0fff1c37b.scn-folding-153b61adc049a1ea822e0015e6ecf87f.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Run_02_withSkin.glb-621e98a5dd0b6c33fdc6bf524733aa9c.scn-folding-e321c71fa05dc94791a8adf620d77667.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Running_withSkin.glb-e20df5073757638c8bc51eda07131bef.scn-folding-c04fc5259aec70a98345abf13568bd74.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Shouting_Angrily_withSkin.glb-d05ed4695051ad5bcd245ea4838c6b65.scn-folding-b4305db8857ab16367d713ac04022a2c.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Skill_01_withSkin.glb-6627892777fb28b0523dcf4a0f10939e.scn-folding-6a226c21c05c6b7ac4bfae794ebf24b7.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Thrust_Slash_withSkin.glb-bce44d95544a323d88901be3374bd2b9.scn-folding-f6b6abd6881358365af206b0be91c8eb.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/Meshy_AI_Lumensteel_Knight_biped_Animation_Walking_withSkin.glb-9a6b5b8aa5b4464e5f279d326b58c018.scn-folding-bce183ce1dda95c1a53f228faf12daf4.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3-f1d88b64f5367df0379e63a892e4aa34.mp3str-folding-1070747d5140af6cf168c4e8d7c768f1.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/precise_shot.tres-folding-f7d30d6a3bf73b2116bf443384c019c4.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/project_metadata.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/run_archer_gobelin.tres-folding-0980f59e8b6d540139a069589d18e00a.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/run_brute_gobelin.tres-folding-dffe94fe62061577a4f1bdeeb61dc67a.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/run_eclaireur_gobelin.tres-folding-38a1243f2c2165a310a2130a32896a9e.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/run_hurleur_gobelin.tres-folding-8d66f251d13c0ab49918d6afbb9a1d37.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/run_lieur_gobelin.tres-folding-a3fb00c37a135fbc2082ef00f54a36a6.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/run_porte_bouclier_gobelin.tres-folding-271a43cb0ee3262c455861dd41753af8.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/run_pyromage_gobelin.tres-folding-7ce1af8c0e2f74c87104b11dbcbd41f7.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/script_editor_cache.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/serpent_meduse.tres-folding-b81ca80ff2d422483a5a8d418ee3f82e.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/skeleton_character_v01.glb-8c6535aaf4d9208c5559b07b415ce3c7.scn-folding-6e951195837c7c7754a5f1d1e207f8f8.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/skeleton_chief_character_v01.glb-b1e52792c5b1584fe6fef4c05a61f9f2.scn-folding-928be003b43713deb78fe63019a4f415.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/skill_tree_graybox_theme.tres-folding-4f72e1a5f271575f906ffdc31e15f891.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/source_code_pro.fnt-042fb383b3c7b4c19e67c852f7fbefca.fontdata-folding-714d3324455109ce8ea34c485164a4bd.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/tile_set_iso_decor.tres-folding-3e85b9ff00116f76bfe2f507313ed18a.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/tile_set_iso_terrain.tres-folding-3ec1e8e12e8245f27e6aef5929dcdede.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/tile_set.tres-folding-7cef87dac51042566b2f50b59ae0b3ed.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/TitreEcran.tscn-folding-36365c2f72c87815090629180fb7af0d.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/editor/warrior_character_v01.glb-7a87cdc670aef1cd3e8783b697de7d23.scn-folding-ee2acc8539f9f8259660ea5f280256b9.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/global_script_class_cache.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/imported/473.png-470aa2e3da292a73e47446bb8d11a4f4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/473.png-470aa2e3da292a73e47446bb8d11a4f4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/474.png-eb0a6024250fd9bc8f47db2713ef43e3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/474.png-eb0a6024250fd9bc8f47db2713ef43e3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/475.png-2399274c159b463abb2368631330b598.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/475.png-2399274c159b463abb2368631330b598.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/479.png-89d7715f06f12dfe66f6d3b4fb44e2f3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/479.png-89d7715f06f12dfe66f6d3b4fb44e2f3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/480.png-9a70da0836eddd8330aef42f08bbbb3c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/480.png-9a70da0836eddd8330aef42f08bbbb3c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/481.png-41d6ac261271b4b8357f41b0279d58c6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/481.png-41d6ac261271b4b8357f41b0279d58c6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/482.png-bfc2875a1098636308b177d67ba46bda.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/482.png-bfc2875a1098636308b177d67ba46bda.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/483.png-534ec5d40983cbe5bf738a8461dc378e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/483.png-534ec5d40983cbe5bf738a8461dc378e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/484.png-8ecd75406d0d98c43cde186d301f65cf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/484.png-8ecd75406d0d98c43cde186d301f65cf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/485.png-d94b2a4278c6aa6e307dd5503365ec15.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/485.png-d94b2a4278c6aa6e307dd5503365ec15.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/486.png-b64ccd5c808aadd86352ad5073d1edcb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/486.png-b64ccd5c808aadd86352ad5073d1edcb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/487.png-c81b6f09951e42995025ed66b44ea882.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/487.png-c81b6f09951e42995025ed66b44ea882.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/488.png-262a0113aa83f0de13d7c3dfbe0df7dd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/488.png-262a0113aa83f0de13d7c3dfbe0df7dd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/489.png-caa79d8319ab1081748c73a709bf8b43.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/489.png-caa79d8319ab1081748c73a709bf8b43.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/490.png-475d8821a6fddece61a015f55ba429cb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/490.png-475d8821a6fddece61a015f55ba429cb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/491.png-e020463a8e61fb4faeee428d2a249710.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/491.png-e020463a8e61fb4faeee428d2a249710.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/492.png-6f9eb360737311ea4675e099afb56d67.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/492.png-6f9eb360737311ea4675e099afb56d67.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/493.png-11c0b77266fb9ddc96301260025d01e2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/493.png-11c0b77266fb9ddc96301260025d01e2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/494.png-c034a5a6adaa34150407ae6097ffe625.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/494.png-c034a5a6adaa34150407ae6097ffe625.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/495.png-acb4a4d5463cbdef4feaf1fb33713d1d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/495.png-acb4a4d5463cbdef4feaf1fb33713d1d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/496.png-16ca3ece8cec8fc6e2a4731404434013.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/496.png-16ca3ece8cec8fc6e2a4731404434013.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/497.png-2d07f0de2848637e8af6499d54361bcd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/497.png-2d07f0de2848637e8af6499d54361bcd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/498.png-26ad04b5a605b041d17563c49fcd7d62.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/498.png-26ad04b5a605b041d17563c49fcd7d62.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/499.png-964952e0a523c75bf6ca4d51e90fda6c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/499.png-964952e0a523c75bf6ca4d51e90fda6c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/500.png-a7b74a000323778c57eb9cbe96837795.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/500.png-a7b74a000323778c57eb9cbe96837795.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/501.png-f0d083ac51d919d90a72fd151ae241b5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/501.png-f0d083ac51d919d90a72fd151ae241b5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/505.png-f2c31de81ca869bc9e6ab7fd99fd5842.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/505.png-f2c31de81ca869bc9e6ab7fd99fd5842.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/84f1c661db9220f4e9d51fdfdbf6c787.jpg-da3754d0c0ef7f8a5cbe648bf68d1d94.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/84f1c661db9220f4e9d51fdfdbf6c787.jpg-da3754d0c0ef7f8a5cbe648bf68d1d94.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-Bold.ttf-9d8fef4d357af5b52cd60afbe608aa49.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-Bold.ttf-9d8fef4d357af5b52cd60afbe608aa49.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-BoldItalic.ttf-4274bf704d3d6b9cd32c4f0754d8c83d.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-BoldItalic.ttf-4274bf704d3d6b9cd32c4f0754d8c83d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-Italic.ttf-9989590b02137b799e13d570de2a42c1.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-Italic.ttf-9989590b02137b799e13d570de2a42c1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-Regular.ttf-856c843fd6f89964d2ca8d8ff1724f13.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/AnonymousPro-Regular.ttf-856c843fd6f89964d2ca8d8ff1724f13.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_0.jpg-c1178ad030878cb96777898c9076c981.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_0.jpg-c1178ad030878cb96777898c9076c981.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_0.jpg-17e6a9ab576b070b530a86d5b68a48c9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_0.jpg-17e6a9ab576b070b530a86d5b68a48c9.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_1.jpg-1a5d4d5d623a623a59cc39facb3a285c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_1.jpg-1a5d4d5d623a623a59cc39facb3a285c.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_2.jpg-01256cf5e169cb75780fe97767cb498a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_2.jpg-01256cf5e169cb75780fe97767cb498a.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_3.jpg-83906b41ac9209f57422611ead1eb35b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1_3.jpg-83906b41ac9209f57422611ead1eb35b.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1.glb-566eba79e8d0c970fcc12e1c1e5b66b8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1.glb-566eba79e8d0c970fcc12e1c1e5b66b8.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1.jpg-e0e0e39f4230c8ed554120116c4cdb84.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_1.jpg-e0e0e39f4230c8ed554120116c4cdb84.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_2.jpg-2940a86650c64ed59b6bf9ea7fcd2072.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_2.jpg-2940a86650c64ed59b6bf9ea7fcd2072.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_3.jpg-85853413a2fa60cbf99607812156e7ec.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T_3.jpg-85853413a2fa60cbf99607812156e7ec.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T.glb-7be70d93793fcf0c8e6b512617b52102.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Armored Knight with T.glb-7be70d93793fcf0c8e6b512617b52102.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/arrow.png-2b5b2d838b5b3467cf300ac2da1630d9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/arrow.png-2b5b2d838b5b3467cf300ac2da1630d9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png-43b70b0f9a1bb496be94cab67381bde4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png-43b70b0f9a1bb496be94cab67381bde4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/assets_contact_sheet_refined.png-b4f749e193a6bd9d478301fe22c05b27.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/assets_contact_sheet_refined.png-b4f749e193a6bd9d478301fe22c05b27.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/assets_contact_sheet.png-fe7e5f1da63a134b4d87d691de099793.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/assets_contact_sheet.png-fe7e5f1da63a134b4d87d691de099793.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/barre_personnage.jpg-e3f5294d31e949dd03ed9ff449de1556.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/barre_personnage.jpg-e3f5294d31e949dd03ed9ff449de1556.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/barres.jpg-9e7cc1a94e79d3dff1d6ea08f977ea83.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/barres.jpg-9e7cc1a94e79d3dff1d6ea08f977ea83.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/basic_attack.png-df807bd2ed8c68a01bfb060dc6043be9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/basic_attack.png-df807bd2ed8c68a01bfb060dc6043be9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/bleed.svg-2bb37c88d682e77ac743a133c0351e8e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/bleed.svg-2bb37c88d682e77ac743a133c0351e8e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/bottom_section.png-58cc2cd32cdc99b7a0177a8646f93cc3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/bottom_section.png-58cc2cd32cdc99b7a0177a8646f93cc3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/boule de feu.png-7a49b079660dc4778bdae26ce0c91bb3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/branche_main_abre_competence.jpg-a19eed5d6c41995e74bbfad6b1ce8afd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/branche_main_abre_competence.jpg-a19eed5d6c41995e74bbfad6b1ce8afd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/button_hover.png-8a337b237d0ef81004ac2c6b12c31865.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/button_hover.png-8a337b237d0ef81004ac2c6b12c31865.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/button_normal.png-4bb5fa7e4095485eefaa689c3d19c500.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/button_normal.png-4bb5fa7e4095485eefaa689c3d19c500.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/button_pressed.png-e16840e1248e3ce4bf5e6571a90a0477.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/button_pressed.png-e16840e1248e3ce4bf5e6571a90a0477.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadenas.jpg-cd235d08641d7bce0a05dda2aedccd04.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadenas.jpg-cd235d08641d7bce0a05dda2aedccd04.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_jauge_v1.png-b862d9c0986e612d607a842b9b833f03.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_jauge_v1.png-b862d9c0986e612d607a842b9b833f03.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_archer.png-9364e2557e288aee467b941c939895db.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_archer.png-9364e2557e288aee467b941c939895db.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_assassin.png-29c96b6b7834c6e441f94a824a95efd7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_assassin.png-29c96b6b7834c6e441f94a824a95efd7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_healer.png-5209a2da8669a52ff821d2770d538af1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_healer.png-5209a2da8669a52ff821d2770d538af1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_mage.png-7f79798199faea0a7ee21581a1608ede.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cadre_sort_mage.png-7f79798199faea0a7ee21581a1608ede.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cave-grid-isometrique.png-8ed5f2cea0152174df7ab1fa3f46a4bf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/cave-grid-isometrique.png-8ed5f2cea0152174df7ab1fa3f46a4bf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/clean_v2_vs_refined.png-c81bdc60565ba4dfcfd44b998670d3af.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/clean_v2_vs_refined.png-c81bdc60565ba4dfcfd44b998670d3af.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/close_button.png-a8d749bc78e98b3fd89e0ebf51b7f3bb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/close_button.png-a8d749bc78e98b3fd89e0ebf51b7f3bb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/collision.svg-cfeac4963bd1bcc1c0e5da1275651f86.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/collision.svg-cfeac4963bd1bcc1c0e5da1275651f86.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-Bold.ttf-1f003c66d63ebed70964e7756f4fa235.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-Bold.ttf-1f003c66d63ebed70964e7756f4fa235.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-BoldItalic.ttf-65ebcc61dd5e1dfa8f96313da4ad7019.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-BoldItalic.ttf-65ebcc61dd5e1dfa8f96313da4ad7019.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-Italic.ttf-baa9156a73770735a0f72fb20b907112.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-Italic.ttf-baa9156a73770735a0f72fb20b907112.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-Regular.ttf-3babe7e4a7a588dfc9a84c14b4f1fe23.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/CourierPrime-Regular.ttf-3babe7e4a7a588dfc9a84c14b4f1fe23.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/damage.svg-81e16fd87e18f7b6d0062545ea196e8d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/damage.svg-81e16fd87e18f7b6d0062545ea196e8d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/defense.svg-069dd7116d9595dd8300510c5ec95bf1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/defense.svg-069dd7116d9595dd8300510c5ec95bf1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/drapeau.png-64ed2460fb2fe222788d28499debaaf6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/drapeau.png-64ed2460fb2fe222788d28499debaaf6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/drapeau.webp-6bf3735c709ab7968836829858c5c996.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/drapeau.webp-6bf3735c709ab7968836829858c5c996.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon background cartoon 2d 1.jpg-fa9a72532beb53766c8613001f06f6ad.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon background cartoon 2d 1.jpg-fa9a72532beb53766c8613001f06f6ad.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon background cartoon 2d-8.jpg-e148516f620132fe85484390b7092ef7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon background cartoon 2d-8.jpg-e148516f620132fe85484390b7092ef7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft Oath.mp3-73bb7a8bb69947e61ece3a1dec9f929a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft Oath.mp3-73bb7a8bb69947e61ece3a1dec9f929a.mp3str` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft Tactics.mp3-53853404c913454f5497b4461850132a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft Tactics.mp3-53853404c913454f5497b4461850132a.mp3str` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft Tactics.mp3-beb09cd3f8d831fcddfad74f05ec3159.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft Tactics.mp3-beb09cd3f8d831fcddfad74f05ec3159.mp3str` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft_ First Footfalls.mp3-a0c09fb1930dbd3c7ebb6e6cddd58ee5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft_ First Footfalls.mp3-a0c09fb1930dbd3c7ebb6e6cddd58ee5.mp3str` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft.mp3-47305a7014d968e0b996ed739f3131b7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Dungeon Draft.mp3-47305a7014d968e0b996ed739f3131b7.mp3str` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/duration.svg-bd4735916d50f70f6ea3c63613b47d6e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/duration.svg-bd4735916d50f70f6ea3c63613b47d6e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/e9af9a35-df78-4e8f-9b15-035429e39d9e.png-b2ddb666b627f5daf87ccdd5df02c5d7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/e9af9a35-df78-4e8f-9b15-035429e39d9e.png-b2ddb666b627f5daf87ccdd5df02c5d7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_end_isometric.png-fae1bbc6a4cea4554d783699412cf1da.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_end_isometric.png-fae1bbc6a4cea4554d783699412cf1da.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_hold_isometric.png-068bf68a53a19c7867d7350bd5f03af4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_hold_isometric.png-068bf68a53a19c7867d7350bd5f03af4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_isometric.png-704c1af6ebbd525c4ae18aad65cb91aa.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_isometric.png-704c1af6ebbd525c4ae18aad65cb91aa.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_start_isometric.png-ba64c2c157eb33c455d48b8bfce5e9ac.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_cast_start_isometric.png-ba64c2c157eb33c455d48b8bfce5e9ac.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_character_bar.png-d6e7c67357316d2a18756cf07400c944.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_character_bar.png-d6e7c67357316d2a18756cf07400c944.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_character_v01_texture_0.png-e8ce6527c2310297e5ce12a893d9b2f1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_character_v01_texture_0.png-e8ce6527c2310297e5ce12a893d9b2f1.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_character_v01.glb-b5e8d1cf73176260f54b315a4bbb70e9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_character_v01.glb-b5e8d1cf73176260f54b315a4bbb70e9.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_death_isometric.png-6ba31a4148869884b7d418aa902d3a19.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_death_isometric.png-6ba31a4148869884b7d418aa902d3a19.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_death_side.png-41bb6e5bdd7cc87414e0bdd07a636fe4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_death_side.png-41bb6e5bdd7cc87414e0bdd07a636fe4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hit_isometric.png-0ddb3c9c90e588f49ef6802e8723e1e3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hit_isometric.png-0ddb3c9c90e588f49ef6802e8723e1e3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hud_1280x720.png-10083302a94976b3f9dda0fc09dca753.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hud_1280x720.png-10083302a94976b3f9dda0fc09dca753.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hud_1920x1080.png-4b649590706cd3bd258637051094573d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hud_1920x1080.png-4b649590706cd3bd258637051094573d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hud_2560x1440.png-14a223847d3fe8c5492325cfdca426c1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hud_2560x1440.png-14a223847d3fe8c5492325cfdca426c1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hunter_emblem.png-6cb293839a138a26c213363ccc0d8a8e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_hunter_emblem.png-6cb293839a138a26c213363ccc0d8a8e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_idle_isometric.png-d9e59db3859b0f6780310bbf20a98c54.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_idle_isometric.png-d9e59db3859b0f6780310bbf20a98c54.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_magic_ronce_impact_sheet (1).png-f53494c27255fe253e9aae54e673ab72.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_magic_ronce_impact_sheet (1).png-f53494c27255fe253e9aae54e673ab72.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_run_in_place_isometric.png-8b70e628f839d7fe69a0366183fc4c32.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_run_in_place_isometric.png-8b70e628f839d7fe69a0366183fc4c32.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_run_moving_isometric.png-3922dba038af5064f470fb5546e03e81.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_run_moving_isometric.png-3922dba038af5064f470fb5546e03e81.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_comparison.png-10f6bd6403befa3aa2684f892ab3c035.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_comparison.png-10f6bd6403befa3aa2684f892ab3c035.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_final_cast.png-94a1d38b0b30d79e5deb5009738b801b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_final_cast.png-94a1d38b0b30d79e5deb5009738b801b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_final_idle.png-12500b9e37726712739a6ff2f5f529f3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_final_idle.png-12500b9e37726712739a6ff2f5f529f3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_final_walk.png-169b3fc8db6816115a9e14c9ab5f809f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sharpness_final_walk.png-169b3fc8db6816115a9e14c9ab5f809f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sockets_isometric.png-e52e5209bcf5e84730a042eeac2e8498.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_sockets_isometric.png-e52e5209bcf5e84730a042eeac2e8498.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_turn_banner_1920x1080.png-54c6b0ae7c0c23874898ccbb65ab5096.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_turn_banner_1920x1080.png-54c6b0ae7c0c23874898ccbb65ab5096.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_walk_in_place_isometric.png-1bb1583227339356d74a127f2cd7da6e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_walk_in_place_isometric.png-1bb1583227339356d74a127f2cd7da6e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_walk_isometric.png-53c85ed1c98152ceca1ad13454fabbef.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/elf_walk_isometric.png-53c85ed1c98152ceca1ad13454fabbef.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-a-single-standalone-game-menu-button-in-th (1).png-5206492da5e73de049bba1f2c3e36086.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-a-single-standalone-game-menu-button-in-th (1).png-5206492da5e73de049bba1f2c3e36086.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-a-single-standalone-game-menu-button-in-th (2).png-6cbbe26de6fbe0b4ebf069df9f5bb341.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-a-single-standalone-game-menu-button-in-th (2).png-6cbbe26de6fbe0b4ebf069df9f5bb341.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-a-single-standalone-game-menu-button-in-th.png-996f7b4d52ea57b208034ec1667e9e52.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-a-single-standalone-game-menu-button-in-th.png-996f7b4d52ea57b208034ec1667e9e52.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-only-the-small-round-red-close-button-with.png-9a94f7f6fac491f34a011424d9deb74d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-only-the-small-round-red-close-button-with.png-9a94f7f6fac491f34a011424d9deb74d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-the-plain-recessed-dark-stone-section-show.png-ff0745b788c10fb7e88638720608ae2f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/extract-the-plain-recessed-dark-stone-section-show.png-ff0745b788c10fb7e88638720608ae2f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/eyey.png-e0a721ab6b749f5d493d61e9f27f0654.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/eyey.png-e0a721ab6b749f5d493d61e9f27f0654.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fantasy-dungeons_dragons-536932.png-c99c44a31459d2479897952f5cd35bf1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fantasy-dungeons_dragons-536932.png-c99c44a31459d2479897952f5cd35bf1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/feuille_basique-removebg-preview.png-1f2f8422f59284967d16ff4706aab07f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/feuille_basique-removebg-preview.png-1f2f8422f59284967d16ff4706aab07f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_cast_origin.png-c104ccf6fec62d1b9d11d8fb8f119049.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_cast_origin.png-c104ccf6fec62d1b9d11d8fb8f119049.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_death.png-76ca63b65aae20038afa3f2113c8795e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_death.png-76ca63b65aae20038afa3f2113c8795e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_moving.png-71877dc61405dc0fcde9991cddff737e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_moving.png-71877dc61405dc0fcde9991cddff737e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_selected.png-5033135009346a954d10bcd2a833809a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_selected.png-5033135009346a954d10bcd2a833809a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_y_sort.png-46f9010777fcf1dc9fcd397fea701fa0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/final_elf_y_sort.png-46f9010777fcf1dc9fcd397fea701fa0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fireball_cleanup_after.png-f3e56f6a00b4ac943d777ead80caaab0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fireball_cleanup_after.png-f3e56f6a00b4ac943d777ead80caaab0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fireball_residue_before.png-5f770c726e070e7d15ed6a035354ed46.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fireball_residue_before.png-5f770c726e070e7d15ed6a035354ed46.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fireball.png-49abe67629c88a59007f2c6b357064ea.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fireball.png-49abe67629c88a59007f2c6b357064ea.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3-2d3011aad6112122c3bca576046fb9ea.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3-2d3011aad6112122c3bca576046fb9ea.mp3str` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/first_room_trio_vs_skeletons_1920x1080.png-4af48aaa529e547bc4f5f6ec1f33fc6a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/first_room_trio_vs_skeletons_1920x1080.png-4af48aaa529e547bc4f5f6ec1f33fc6a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/first_run_elf_mage_warrior.png-73d4a51d408649e9749268ae047f0b23.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/first_run_elf_mage_warrior.png-73d4a51d408649e9749268ae047f0b23.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/flags.jpg-522a48769d5c659ab6585caa2e4aaf18.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/flags.jpg-522a48769d5c659ab6585caa2e4aaf18.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fog.png-64f122b80779d6e1adceb51b9f4d90ec.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fog.png-64f122b80779d6e1adceb51b9f4d90ec.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Folder.svg-caa50e6a0be9d456fd81991dfb537916.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Folder.svg-caa50e6a0be9d456fd81991dfb537916.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fond terrain.webp-154410d31e4a5dcfaa67693b97637eb5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/fond terrain.webp-154410d31e4a5dcfaa67693b97637eb5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/forest_room_01_source.png-e0948f69771893ddeb5e577fc2f28f04.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/forest_room_01_source.png-e0948f69771893ddeb5e577fc2f28f04.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png-28def9eb6fcab867adb2750f9776ffe7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Generated_ The word _COLOCNESS_ as an epic heroic fantasy gam....png-28def9eb6fcab867adb2750f9776ffe7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_attack_v2.png-d64a76ab8673f085e75b0a72126a79d1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_attack_v2.png-d64a76ab8673f085e75b0a72126a79d1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_death_v2.png-292491353ebd93a0ddc2e1d968239747.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_death_v2.png-292491353ebd93a0ddc2e1d968239747.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_idle_v2.png-147d75e6646630254eca075a0a63049d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_idle_v2.png-147d75e6646630254eca075a0a63049d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_idle.png-56b77720aa0c311b1865dedcacbf686c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_idle.png-56b77720aa0c311b1865dedcacbf686c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gobtest_Material_Pbr_baseColor.png-8d3a16ad4218d9f9e9b18aaae81eea1c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gobtest_Material_Pbr_baseColor.png-8d3a16ad4218d9f9e9b18aaae81eea1c.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gobtest_Material_Pbr_normal.png-8a34a636522ed332df26d67d88a96ed2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gobtest_Material_Pbr_normal.png-8a34a636522ed332df26d67d88a96ed2.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_walk_v2.png-51f492a6e1d027919f222159761bf08a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GobTest_walk_v2.png-51f492a6e1d027919f222159761bf08a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gobtest.glb-557268a99a86d7839a9fc66865cdc048.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gobtest.glb-557268a99a86d7839a9fc66865cdc048.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/goebleinscenario.png-9756bb3f4333e34e29fa4652f55ab0df.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/goebleinscenario.png-9756bb3f4333e34e29fa4652f55ab0df.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gold_end_turn_button.png-b82d5203649a23b6429650e5f8f69cfd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gold_end_turn_button.png-b82d5203649a23b6429650e5f8f69cfd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gold_health_bar_frame.png-c2dcf69d567d1789c0f5e321886d4793.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/gold_health_bar_frame.png-c2dcf69d567d1789c0f5e321886d4793.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/green.png-e3a17091688e10a7013279b38edc7f8a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/green.png-e3a17091688e10a7013279b38edc7f8a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GutIconV2_base.png-7038b445a6dfa6ba4cec1a42fa81abae.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GutIconV2_base.png-7038b445a6dfa6ba4cec1a42fa81abae.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GutIconV2_no_shine.png-340880100fb7bae1a2e0530330841e58.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/GutIconV2_no_shine.png-340880100fb7bae1a2e0530330841e58.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/heal.svg-8852c0d5dab1b6c8565b2bbf5a81cb8b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/heal.svg-8852c0d5dab1b6c8565b2bbf5a81cb8b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hidden.svg-95a6ec26f8ccd8a24307b1b7ae1c64bf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hidden.svg-95a6ec26f8ccd8a24307b1b7ae1c64bf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/HSplitContainer.svg-81e594d94ee80e4176e099672ef6025b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/HSplitContainer.svg-81e594d94ee80e4176e099672ef6025b.editor.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/HSplitContainer.svg-81e594d94ee80e4176e099672ef6025b.editor.meta` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/HSplitContainer.svg-81e594d94ee80e4176e099672ef6025b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_before_1080p.png-bb8d92617e71a5d15a2954cca3d7f566.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_before_1080p.png-bb8d92617e71a5d15a2954cca3d7f566.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1280x720.png-ba2f5604dc899dadb55c17c2b9372116.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1280x720.png-ba2f5604dc899dadb55c17c2b9372116.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1920x1080_blurred_reduced.png-31a50fdccf3b58188f33bf07b6b8e8c4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1920x1080_blurred_reduced.png-31a50fdccf3b58188f33bf07b6b8e8c4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1920x1080_grayscale.png-42f7f3995c7f10817d486ce39a915f5a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1920x1080_grayscale.png-42f7f3995c7f10817d486ce39a915f5a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1920x1080.png-7f81b4533e57d0b608802276095a652e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_1920x1080.png-7f81b4533e57d0b608802276095a652e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_2560x1440.png-c8ebfa5b0bbdb0d4c43562031f3599c7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_2560x1440.png-c8ebfa5b0bbdb0d4c43562031f3599c7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v1_reference_1920x1080.png-2053d13e86b4e4107f00d3a0812a5314.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v1_reference_1920x1080.png-2053d13e86b4e4107f00d3a0812a5314.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v1_vs_v2.png-7aeffd2692f39a80988058840a12b230.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v1_vs_v2.png-7aeffd2692f39a80988058840a12b230.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1280x720.png-f508da56f50eb5efc9955c358be449f5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1280x720.png-f508da56f50eb5efc9955c358be449f5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1920x1080_blurred_reduced.png-5aa65982f86487b70fc24da669979986.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1920x1080_blurred_reduced.png-5aa65982f86487b70fc24da669979986.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1920x1080_grayscale.png-0c751da755147f63e8a6b6ac5456c1ac.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1920x1080_grayscale.png-0c751da755147f63e8a6b6ac5456c1ac.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1920x1080.png-b6476e4baaf51c79517c42c30cf522b2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_1920x1080.png-b6476e4baaf51c79517c42c30cf522b2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_2560x1440.png-703f7803a3fb3ebee513f6aaff6047c5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_2560x1440.png-703f7803a3fb3ebee513f6aaff6047c5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_low_health.png-dea2c29ddf1c97afefa03bec7afb9efa.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_low_health.png-dea2c29ddf1c97afefa03bec7afb9efa.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_preview_with_special_resource.png-c899bdc8ba3f9de9f69e2cc924ddbe21.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_preview_with_special_resource.png-c899bdc8ba3f9de9f69e2cc924ddbe21.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_selected_unavailable_cooldown.png-ac2ee7321b8b3fb916a9ab8965e25fff.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_selected_unavailable_cooldown.png-ac2ee7321b8b3fb916a9ab8965e25fff.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_turn_banner.png-d5f4488cc29c514a30b69a2147cf85ce.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_turn_banner.png-d5f4488cc29c514a30b69a2147cf85ce.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_without_special_resource.png-92a5c6f70a195bdb3a3e9cbd4a6ab1d1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_clean_v2_without_special_resource.png-92a5c6f70a195bdb3a3e9cbd4a6ab1d1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_compact_1080p.png-85ee61458b6c484a5bf2d67fa9f397bb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_compact_1080p.png-85ee61458b6c484a5bf2d67fa9f397bb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_compact_1440p.png-4afb9092999d0824fc9cbc1c527112a8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_compact_1440p.png-4afb9092999d0824fc9cbc1c527112a8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_compact_720p.png-aac6f7ae4264c1c676be9f3fd253e19e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_compact_720p.png-aac6f7ae4264c1c676be9f3fd253e19e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_low_health.png-395cd6c84bb4b356baf55296968866cc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_low_health.png-395cd6c84bb4b356baf55296968866cc.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_ornate_reference_1920x1080.png-278389fde752a7bfca2671120c866f60.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_ornate_reference_1920x1080.png-278389fde752a7bfca2671120c866f60.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_ornate_reference_1920x1080.png-d926e3da318415b7d3ee3202e9edec15.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_ornate_reference_1920x1080.png-d926e3da318415b7d3ee3202e9edec15.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_ornate_vs_clean.png-adf216968608e6760e5f6f78965f5e7c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_ornate_vs_clean.png-adf216968608e6760e5f6f78965f5e7c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_preview_with_special_resource.png-f42eeb2909a3788a0fb1d0bb928696af.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_preview_with_special_resource.png-f42eeb2909a3788a0fb1d0bb928696af.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_1280x720.png-06ec5b4835c28996aba4ea1f289c2303.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_1280x720.png-06ec5b4835c28996aba4ea1f289c2303.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_1920x1080.png-a8a4bb3e3fe5feff7c0f165020292d15.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_1920x1080.png-a8a4bb3e3fe5feff7c0f165020292d15.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_2560x1440.png-a82ee29e3c48e6237d595ca90f3dbfaa.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_2560x1440.png-a82ee29e3c48e6237d595ca90f3dbfaa.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_assassin_selected_1920x1080.png-fe3b4db2887ef2bd0c1b8f0343e4cf80.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_assassin_selected_1920x1080.png-fe3b4db2887ef2bd0c1b8f0343e4cf80.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_assassin_turn_banner_1920x1080.png-80a1913f47cdc64528ce8abcaff67e65.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_assassin_turn_banner_1920x1080.png-80a1913f47cdc64528ce8abcaff67e65.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_before_after_polish.png-d9e6328d5e89e4eb0d88800097945744.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_before_after_polish.png-d9e6328d5e89e4eb0d88800097945744.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_characters_contact_sheet.png-9af7f00bb12a30981873435a8513dd93.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_characters_contact_sheet.png-9af7f00bb12a30981873435a8513dd93.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_druid_selected_1920x1080.png-f464d4d261541cca9f141b066f41f78b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_druid_selected_1920x1080.png-f464d4d261541cca9f141b066f41f78b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_druid_turn_banner_1920x1080.png-bde5b8997625974840f7170eada0aad9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_druid_turn_banner_1920x1080.png-bde5b8997625974840f7170eada0aad9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_selected_1280x720.png-c31e16d5e7b0ff8d2c84d46ec0832336.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_selected_1280x720.png-c31e16d5e7b0ff8d2c84d46ec0832336.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_selected_1920x1080.png-41143a61566b93bd504b64aee8afdd5b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_selected_1920x1080.png-41143a61566b93bd504b64aee8afdd5b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_selected_2560x1440.png-100b1d25c2c3cc492e281e66cdc59e81.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_selected_2560x1440.png-100b1d25c2c3cc492e281e66cdc59e81.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_turn_banner_1920x1080.png-8277f5bcd13388e585516491588bf527.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_elf_turn_banner_1920x1080.png-8277f5bcd13388e585516491588bf527.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_guardian_selected_1920x1080.png-14a7bef878372ce7a55ed20609264d34.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_guardian_selected_1920x1080.png-14a7bef878372ce7a55ed20609264d34.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_guardian_turn_banner_1920x1080.png-caee81a992813dcb2fbd411718eb0e3d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_guardian_turn_banner_1920x1080.png-caee81a992813dcb2fbd411718eb0e3d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_hoplite_selected_1920x1080.png-3f52745b8e53a41a07661d2fa4a67a92.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_hoplite_selected_1920x1080.png-3f52745b8e53a41a07661d2fa4a67a92.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_hoplite_turn_banner_1920x1080.png-71612f4c1ea8eab9c67d1bd4797882ae.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_hoplite_turn_banner_1920x1080.png-71612f4c1ea8eab9c67d1bd4797882ae.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_low_health.png-c06578b9ddfd98a3a07497969bad05bf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_low_health.png-c06578b9ddfd98a3a07497969bad05bf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_mage_selected_1920x1080.png-1cc8f8e23f831a752ece98fedf63fcab.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_mage_selected_1920x1080.png-1cc8f8e23f831a752ece98fedf63fcab.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_mage_turn_banner_1920x1080.png-0b5f1cc496621869cb9e0912a10b8c7f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_mage_turn_banner_1920x1080.png-0b5f1cc496621869cb9e0912a10b8c7f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_necromancer_selected_1920x1080.png-e9826dc00ddaaeba1910bad851a4506c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_necromancer_selected_1920x1080.png-e9826dc00ddaaeba1910bad851a4506c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_necromancer_turn_banner_1920x1080.png-77d690569a2a4e8e796880f4e5c857fd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_necromancer_turn_banner_1920x1080.png-77d690569a2a4e8e796880f4e5c857fd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_1280x720.png-cd988de4c7c076bfa2cf1e9fd666ca42.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_1280x720.png-cd988de4c7c076bfa2cf1e9fd666ca42.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_1920x1080.png-c064edb16292d83bf76fe2c13f68c009.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_1920x1080.png-c064edb16292d83bf76fe2c13f68c009.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_2560x1440.png-473110e58d153d2968fcdff32312cd83.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_2560x1440.png-473110e58d153d2968fcdff32312cd83.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_blurred_reduced.png-30df8197442a1fab20dbbdeddd941d5c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_blurred_reduced.png-30df8197442a1fab20dbbdeddd941d5c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_cooldown.png-ae8d8ecdd05a1a5d3e0c6fcee92ef70e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_cooldown.png-ae8d8ecdd05a1a5d3e0c6fcee92ef70e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_grayscale.png-21cc3da91d6b981c41d6868df1f03e4c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_grayscale.png-21cc3da91d6b981c41d6868df1f03e4c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_low_health.png-dec41a27430057642d695f7cacafe85d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_low_health.png-dec41a27430057642d695f7cacafe85d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_move_selected.png-b9a87a3bbffb41c09d3d5ee92d120eb1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_move_selected.png-b9a87a3bbffb41c09d3d5ee92d120eb1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_preview_energy.png-cb5b592ae89b4e196e44ef2b8b45ab7c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_preview_energy.png-cb5b592ae89b4e196e44ef2b8b45ab7c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_spell_selected.png-bc349ab7f4aad386c8786094ff334cfb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_spell_selected.png-bc349ab7f4aad386c8786094ff334cfb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_spell_unavailable.png-6c2f26f3b65afa0d53d8a63858abe102.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_spell_unavailable.png-6c2f26f3b65afa0d53d8a63858abe102.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_unaffordable.png-240a68d74eb37ba2bb2a7f6d6e550587.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_unaffordable.png-240a68d74eb37ba2bb2a7f6d6e550587.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_utility_dock.png-bd5375bb59e25d1476482885f2e191bf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_utility_dock.png-bd5375bb59e25d1476482885f2e191bf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_without_energy.png-277e04360c930a57513fd9d607714892.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_polish_without_energy.png-277e04360c930a57513fd9d607714892.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_preview_with_special_resource.png-c2b096c020ea3c2e25419e3dd208b96c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_preview_with_special_resource.png-c2b096c020ea3c2e25419e3dd208b96c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_selected_unavailable_cooldown.png-467f77335e8641294b87cdbf870e355e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_selected_unavailable_cooldown.png-467f77335e8641294b87cdbf870e355e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_system_dock_1920x1080.png-ab96354ef0bb185b618a7cbc00530302.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_system_dock_1920x1080.png-ab96354ef0bb185b618a7cbc00530302.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_turn_banner.png-a0a8ef33a5d98a09a82085259a34a67b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_turn_banner.png-a0a8ef33a5d98a09a82085259a34a67b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_warrior_selected_1920x1080.png-31f4ef90fd2d5c87185d4cb3e2bcca56.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_warrior_selected_1920x1080.png-31f4ef90fd2d5c87185d4cb3e2bcca56.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_warrior_turn_banner_1920x1080.png-9b19e9832736a0ca6cd98fbfc1c48b07.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_warrior_turn_banner_1920x1080.png-9b19e9832736a0ca6cd98fbfc1c48b07.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_without_special_resource.png-7eddf9622df1277672e87125be029943.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_refined_without_special_resource.png-7eddf9622df1277672e87125be029943.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_selected_unavailable_cooldown.png-b7b9a1457040790697676ec7d0b5d36a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_selected_unavailable_cooldown.png-b7b9a1457040790697676ec7d0b5d36a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_turn_banner.png-0ecae0ff89e037adeecd448bc485c30f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_turn_banner.png-0ecae0ff89e037adeecd448bc485c30f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_without_special_resource.png-520a8b5f369bf1d4966b716380d50dd7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hud_without_special_resource.png-520a8b5f369bf1d4966b716380d50dd7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hunter_badge.png-814a21c83908049c155bbe01911c9714.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/hunter_badge.png-814a21c83908049c155bbe01911c9714.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icon.png-2b859bfe91efc381f019136b3ad4e3a2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icon.png-2b859bfe91efc381f019136b3ad4e3a2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icon.png-91b084043b8aaf2f1c906e7b9fa92969.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icon.png-91b084043b8aaf2f1c906e7b9fa92969.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_1.png-76f7e91a0610df9214011ceca084cd73.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_1.png-76f7e91a0610df9214011ceca084cd73.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_10.png-e7019a2f87cadcfa52c5164a99642196.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_10.png-e7019a2f87cadcfa52c5164a99642196.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_11.png-9d489c654ab8ab3161e47f06aa6d6a92.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_11.png-9d489c654ab8ab3161e47f06aa6d6a92.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_12.png-f1abcddb9836d0e4ff8ef61bad946df3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_12.png-f1abcddb9836d0e4ff8ef61bad946df3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_13.png-f94ad8012872d1da4b0d38b418f9fb92.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_13.png-f94ad8012872d1da4b0d38b418f9fb92.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_14.png-68ab2f05a79b02641735d60b29fef80b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_14.png-68ab2f05a79b02641735d60b29fef80b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_15.png-b15aba6deef43ae330f17eb4bd32b2b6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_15.png-b15aba6deef43ae330f17eb4bd32b2b6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_16.png-77f7150cff72509fd49f31cec4646195.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_16.png-77f7150cff72509fd49f31cec4646195.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_17.png-cd8110cd963941268441227fbb952612.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_17.png-cd8110cd963941268441227fbb952612.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_18.png-6e95169319f7b5bbae26c68236848e0c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_18.png-6e95169319f7b5bbae26c68236848e0c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_19.png-9d98a20ed45484a22e8d000312d58ac0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_19.png-9d98a20ed45484a22e8d000312d58ac0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_2.png-85e65263812dce20c4b5529374cf2885.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_2.png-85e65263812dce20c4b5529374cf2885.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_20.png-dda8af28f41fb1b549958783ea0c72e8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_20.png-dda8af28f41fb1b549958783ea0c72e8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_21.png-e7902476721b452dbb2a3cd93f30ebf3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_21.png-e7902476721b452dbb2a3cd93f30ebf3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_22.png-91f4dec9935092bbe59bc3c04d07f7bc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_22.png-91f4dec9935092bbe59bc3c04d07f7bc.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_23.png-b28b230fbe3400af8c668ab950664728.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_23.png-b28b230fbe3400af8c668ab950664728.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_24.png-35df86dd13a2aaa8bfc5bc25f022a356.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_24.png-35df86dd13a2aaa8bfc5bc25f022a356.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_25.png-0a1961e4e726a0093c5c2f3f788953f9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_25.png-0a1961e4e726a0093c5c2f3f788953f9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_26.png-933ad17fe543453715c2a4c4a4de5201.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_26.png-933ad17fe543453715c2a4c4a4de5201.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_27.png-3f68ea40ca7679aa64b19a1732de9792.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_27.png-3f68ea40ca7679aa64b19a1732de9792.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_28.png-313c4fd86a71d0fe520158b193837ffa.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_28.png-313c4fd86a71d0fe520158b193837ffa.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_29.png-a95b4419e48aba485d05894f659ccc53.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_29.png-a95b4419e48aba485d05894f659ccc53.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_3.png-98fd242b58e25607c3e52097fd01a187.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_3.png-98fd242b58e25607c3e52097fd01a187.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_30.png-2b490db58c49f790e3b59f082ff72519.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_30.png-2b490db58c49f790e3b59f082ff72519.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_31.png-ec88a26dec74d2d8079e01b4cd552d93.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_31.png-ec88a26dec74d2d8079e01b4cd552d93.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_32.png-ae791259517810b9c619ee23a1825c32.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_32.png-ae791259517810b9c619ee23a1825c32.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_33.png-497f4fa6c3fb351357454036d682f396.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_33.png-497f4fa6c3fb351357454036d682f396.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_34.png-9fdbe74b985be0e6f92d06a3f117634f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_34.png-9fdbe74b985be0e6f92d06a3f117634f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_35.png-fb9918baea1d791fca1bdf481b5e9c08.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_35.png-fb9918baea1d791fca1bdf481b5e9c08.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_36.png-2e5e2ad12c069dd8b49b8ee97b348bae.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_36.png-2e5e2ad12c069dd8b49b8ee97b348bae.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_37.png-7252ef47136d80accde80814620a1e09.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_37.png-7252ef47136d80accde80814620a1e09.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_38.png-8d53113d6669f7453c6c446798a0d662.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_38.png-8d53113d6669f7453c6c446798a0d662.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_39.png-5d823e69589633e5e7746ee840a4b775.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_39.png-5d823e69589633e5e7746ee840a4b775.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_4.png-df363f0f00bddecb458d4b75d9e4d7f5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_4.png-df363f0f00bddecb458d4b75d9e4d7f5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_40.png-bf00751a9d6ad18eefb55bbd0cd6d562.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_40.png-bf00751a9d6ad18eefb55bbd0cd6d562.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_41.png-477b37164a14682074f67dc520d6c6c3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_41.png-477b37164a14682074f67dc520d6c6c3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_42.png-f9fce98edf3f77366fac745608f65965.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_42.png-f9fce98edf3f77366fac745608f65965.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_43.png-5856a041939e5dc5110ae018cead2e5b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_43.png-5856a041939e5dc5110ae018cead2e5b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_44.png-96da69cea454222fc4bf69a24d4e2231.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_44.png-96da69cea454222fc4bf69a24d4e2231.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_45.png-3850183c6515f10a662a37def2b71f42.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_45.png-3850183c6515f10a662a37def2b71f42.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_46.png-0f8bc600606c56d3586c64fe0ddef180.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_46.png-0f8bc600606c56d3586c64fe0ddef180.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_47.png-aaeb40952d473ebaa873c391965c9758.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_47.png-aaeb40952d473ebaa873c391965c9758.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_48.png-57f4cc7cecaa92f267af2049fa187df8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_48.png-57f4cc7cecaa92f267af2049fa187df8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_49.png-501f6c40e14eceab40f450ff847166aa.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_49.png-501f6c40e14eceab40f450ff847166aa.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_5.png-67ebff6755dcf03b0ead6bd79383f14a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_5.png-67ebff6755dcf03b0ead6bd79383f14a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_50.png-368fd24919a5d05043499da2edc9bcb6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_50.png-368fd24919a5d05043499da2edc9bcb6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_51.png-fbf902aaf5fcdcea2f57b3771307980f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_51.png-fbf902aaf5fcdcea2f57b3771307980f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_52.png-dbd808cd014ced2234c91d596a40065a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_52.png-dbd808cd014ced2234c91d596a40065a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_53.png-8747fb5d6c4f0e01d60fb597b2ba1916.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_53.png-8747fb5d6c4f0e01d60fb597b2ba1916.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_54.png-c2b6df9322a3a2300ad8b0e9250ec824.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_54.png-c2b6df9322a3a2300ad8b0e9250ec824.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_55.png-9aec0f8f08cc1694ad09089c37c44c7a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_55.png-9aec0f8f08cc1694ad09089c37c44c7a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_56.png-45977b5a4a94e6fda9a8dcededbdeb50.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_56.png-45977b5a4a94e6fda9a8dcededbdeb50.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_57.png-97a05c268489d02a9f38bc1bcf600263.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_57.png-97a05c268489d02a9f38bc1bcf600263.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_58.png-edd188ac6ae19ae89698d33c77efd7ab.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_58.png-edd188ac6ae19ae89698d33c77efd7ab.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_59.png-3ea07b10a7ead57efc1132b6098424d1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_59.png-3ea07b10a7ead57efc1132b6098424d1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_6.png-abd32df2ed9022db3f5d64527aa4e40a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_6.png-abd32df2ed9022db3f5d64527aa4e40a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_60.png-3acc830d023dfb6bdee69b7cff655a7b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_60.png-3acc830d023dfb6bdee69b7cff655a7b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_61.png-d712195659de55dda7c12b228c1be5c2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_61.png-d712195659de55dda7c12b228c1be5c2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_62.png-f4d8650c57e7b8862fb253d37b031dfe.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_62.png-f4d8650c57e7b8862fb253d37b031dfe.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_63.png-7d7437667308a5af60e38d66b21f733f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_63.png-7d7437667308a5af60e38d66b21f733f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_64.png-f4b7a07af0c952251dbdf02f6dbb3ad3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_64.png-f4b7a07af0c952251dbdf02f6dbb3ad3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_65.png-6eee241b834828609a0bdc35cc832c69.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_65.png-6eee241b834828609a0bdc35cc832c69.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_66.png-65087b23a3b4076e4d3d7eb7f2f2e5ef.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_66.png-65087b23a3b4076e4d3d7eb7f2f2e5ef.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_67.png-724378c6b214800ac6a72ce171e02d24.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_67.png-724378c6b214800ac6a72ce171e02d24.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_68.png-f5b7ceb296b82873cfff717adbd2f192.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_68.png-f5b7ceb296b82873cfff717adbd2f192.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_69.png-157c6550a8f2e976f9bb9f210f2d2915.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_69.png-157c6550a8f2e976f9bb9f210f2d2915.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_7.png-79674051403f0f804280fc50a16b37eb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_7.png-79674051403f0f804280fc50a16b37eb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_70.png-a763220fd9d512227b8060b4bcf9ce33.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_70.png-a763220fd9d512227b8060b4bcf9ce33.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_71.png-540f0176b743284cf924518814ca0e6c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_71.png-540f0176b743284cf924518814ca0e6c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_72.png-b5dc1c33117daf583e8cfee62f456ba2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_72.png-b5dc1c33117daf583e8cfee62f456ba2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_73.png-9143307ccb260c22af0e10d782cc74bf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_73.png-9143307ccb260c22af0e10d782cc74bf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_74.png-65565cae60fba9768fae562aba62d9a7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_74.png-65565cae60fba9768fae562aba62d9a7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_75.png-c36ab75105b50907de0636bd0af4e924.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_75.png-c36ab75105b50907de0636bd0af4e924.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_76.png-4871b27c6c7b34fa3ce5fe4c0becf093.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_76.png-4871b27c6c7b34fa3ce5fe4c0becf093.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_77.png-9452bec191ac1479877ee4156ab45606.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_77.png-9452bec191ac1479877ee4156ab45606.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_78.png-5d0efd57ef2720892960d6e90367c30c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_78.png-5d0efd57ef2720892960d6e90367c30c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_79.png-30cd4c0eac6a4122d38f9a6cb3184fe0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_79.png-30cd4c0eac6a4122d38f9a6cb3184fe0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_8.png-8956a69985a23a48d16f335e2a5d6c32.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_8.png-8956a69985a23a48d16f335e2a5d6c32.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_80.png-6669c3217f7ba515b03e9c95742c389a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_80.png-6669c3217f7ba515b03e9c95742c389a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_81.png-73d7cb3f7085aa8ccab3bc2baf38020f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_81.png-73d7cb3f7085aa8ccab3bc2baf38020f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_82.png-0ef4e3a56d21f64f30b69207e6b57fd6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_82.png-0ef4e3a56d21f64f30b69207e6b57fd6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_83.png-8626969bf67c56b77b54db3006e336fb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_83.png-8626969bf67c56b77b54db3006e336fb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_84.png-a5696f64c74adf889663157fe94ca62f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_84.png-a5696f64c74adf889663157fe94ca62f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_85.png-1f9e39d832c3807e50a1c4e58794d2dd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_85.png-1f9e39d832c3807e50a1c4e58794d2dd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_86.png-9395a00fbbd3dd7d8c444db5a1018f62.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_86.png-9395a00fbbd3dd7d8c444db5a1018f62.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_87.png-94ec0df710bf64343fdc3e0ee4c4accf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_87.png-94ec0df710bf64343fdc3e0ee4c4accf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_88.png-a5b5c34774b7cd18597188687485445c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_88.png-a5b5c34774b7cd18597188687485445c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_89.png-0d2dc6b5c488a8f4f0b7a76e071194df.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_89.png-0d2dc6b5c488a8f4f0b7a76e071194df.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_9.png-56798e723e4c957d68702a7caeb5090e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_9.png-56798e723e4c957d68702a7caeb5090e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_90.png-b7984303963ef806ae6187d2f988f9bb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_90.png-b7984303963ef806ae6187d2f988f9bb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_91.png-ae707942455a59b490dc63697958accf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_91.png-ae707942455a59b490dc63697958accf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_92.png-e1d30cc58987c241a8f2a801594431c0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_92.png-e1d30cc58987c241a8f2a801594431c0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_93.png-9e1c271e28e8535521490d507a940947.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_93.png-9e1c271e28e8535521490d507a940947.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_94.png-663bb278dcc6864d7719487d0984a3e9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_94.png-663bb278dcc6864d7719487d0984a3e9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_95.png-7d0124f1a92538d503da8499613fabc1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_95.png-7d0124f1a92538d503da8499613fabc1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_96.png-6584c9c4144c3278927573dbd39227ef.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_96.png-6584c9c4144c3278927573dbd39227ef.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_97.png-c77f2e038ed055205b39503111f6fa07.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_97.png-c77f2e038ed055205b39503111f6fa07.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_98.png-6cd2e671c030238a43df87b9bc3d43de.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone spell.png_98.png-6cd2e671c030238a43df87b9bc3d43de.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone_sorts.jpg-44be3769b9fcfe2612f306267bc30c5b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icone_sorts.jpg-44be3769b9fcfe2612f306267bc30c5b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icones.jpg-ffb52f0c39d5969d02023b8459861661.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icones.jpg-ffb52f0c39d5969d02023b8459861661.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icones2.jpg-699199d7a64d7da76c15dce3a346aece.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/icones2.jpg-699199d7a64d7da76c15dce3a346aece.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/iso_terrain_markers.png-9b3fc6dc73d1ec092ccb336254e68f4e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/iso_terrain_markers.png-9b3fc6dc73d1ec092ccb336254e68f4e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Bold.ttf-4833bbd73ba0ce4cdf58cf93c73ffa1c.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Bold.ttf-4833bbd73ba0ce4cdf58cf93c73ffa1c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Bold.ttf-7c7f734103b58a32491a4788186f3dcb.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Bold.ttf-7c7f734103b58a32491a4788186f3dcb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-BoldItalic.ttf-227406a33e84448e6aa974176016de19.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-BoldItalic.ttf-227406a33e84448e6aa974176016de19.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Italic.ttf-f93abf6c25390c85ad5fb6c4ee75159e.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Italic.ttf-f93abf6c25390c85ad5fb6c4ee75159e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Regular.ttf-03a64490fedc2a2e4ade421d8d0319cb.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Regular.ttf-03a64490fedc2a2e4ade421d8d0319cb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Regular.ttf-f3fcfa01cd671c8da433dd875d0fe04b.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/LobsterTwo-Regular.ttf-f3fcfa01cd671c8da433dd875d0fe04b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/lock_refined.png-dbe3c3f8fd6fccdd66276ade19a76f33.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/lock_refined.png-dbe3c3f8fd6fccdd66276ade19a76f33.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/mage_godot_baseline_texture_0.png-78b513a31161fbd74edc69bb48f083e0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/mage_godot_baseline_texture_0.png-78b513a31161fbd74edc69bb48f083e0.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/mage_godot_baseline.glb-bf70288b033040c16f389b871d4cb84d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/mage_godot_baseline.glb-bf70288b033040c16f389b871d4cb84d.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/main_frame.png-8a86c42d3d8e3b1d99f115d68c6d5f4c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/main_frame.png-8a86c42d3d8e3b1d99f115d68c6d5f4c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/marque_icon_hd.png-432b4f1c315789fd78b628125700ca86.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/marque_icon_hd.png-432b4f1c315789fd78b628125700ca86.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/marque_icon.png-b92e0871c38145229ebc613ebbfe8d6a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/marque_icon.png-b92e0871c38145229ebc613ebbfe8d6a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/MeleeRun.png-2eb959e16e5844efab2cbf06e65f7498.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/MeleeRun.png-2eb959e16e5844efab2cbf06e65f7498.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_14c3045b0900c06574f6024efd69c66673616be737a9e7d89fb95c8a4c3b20e9.png-36f67f38bba6be80cf75371e68d64409.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_14c3045b0900c06574f6024efd69c66673616be737a9e7d89fb95c8a4c3b20e9.png-36f67f38bba6be80cf75371e68d64409.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_58e7958069a2b17a3131699f250e88716204d958abe9618c90aed37df322a7a3.png-267d62c46670f4d40da3e2fcea092051.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_58e7958069a2b17a3131699f250e88716204d958abe9618c90aed37df322a7a3.png-267d62c46670f4d40da3e2fcea092051.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_fa41a3267447c0eff9de1c960eec9ecfc15bffa2d3ff2d4c633f568a57b44b19 (1).png-a21c64c906e2e45e9755bd697e015196.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_fa41a3267447c0eff9de1c960eec9ecfc15bffa2d3ff2d4c633f568a57b44b19 (1).png-a21c64c906e2e45e9755bd697e015196.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Fall_Dead_from_Abdominal_Injury_withSkin.glb-fc3d1dd0031128c73bf262abb16d98e5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Fall_Dead_from_Abdominal_Injury_withSkin.glb-fc3d1dd0031128c73bf262abb16d98e5.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Lower_Weapon_Look_Raise_withSkin.glb-d6626ca71a6963286a2aaad0fff1c37b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Lower_Weapon_Look_Raise_withSkin.glb-d6626ca71a6963286a2aaad0fff1c37b.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Run_02_withSkin.glb-621e98a5dd0b6c33fdc6bf524733aa9c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Run_02_withSkin.glb-621e98a5dd0b6c33fdc6bf524733aa9c.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Running_withSkin.glb-e20df5073757638c8bc51eda07131bef.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Running_withSkin.glb-e20df5073757638c8bc51eda07131bef.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Shouting_Angrily_withSkin.glb-d05ed4695051ad5bcd245ea4838c6b65.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Shouting_Angrily_withSkin.glb-d05ed4695051ad5bcd245ea4838c6b65.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Skill_01_withSkin.glb-6627892777fb28b0523dcf4a0f10939e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Skill_01_withSkin.glb-6627892777fb28b0523dcf4a0f10939e.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Thrust_Slash_withSkin.glb-bce44d95544a323d88901be3374bd2b9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Thrust_Slash_withSkin.glb-bce44d95544a323d88901be3374bd2b9.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Walking_withSkin.glb-9a6b5b8aa5b4464e5f279d326b58c018.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_AI_Lumensteel_Knight_biped_Animation_Walking_withSkin.glb-9a6b5b8aa5b4464e5f279d326b58c018.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_Icon_36.png-45bf9fe5e79948bd21fa2b9d42bb6f48.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Meshy_Icon_36.png-45bf9fe5e79948bd21fa2b9d42bb6f48.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/montage arene HD.webp-cc91d94c76fce54c530192d11a623b56.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/montage arene HD.webp-cc91d94c76fce54c530192d11a623b56.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/montagne 2.webp-96843f2ade4fee3fbf610e55aaa24141.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/montagne 2.webp-96843f2ade4fee3fbf610e55aaa24141.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/montagne arene pont.png-a14cb440d2e3a87a89aceadc80462125.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/montagne arene pont.png-a14cb440d2e3a87a89aceadc80462125.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/move_action_icon.svg-af19ca37b6d05be571631606b6487b72.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/move_action_icon.svg-af19ca37b6d05be571631606b6487b72.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/movement_pacing_comparison.png-352e5e79dacf52cdd5c36ada3ad192c5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/movement_pacing_comparison.png-352e5e79dacf52cdd5c36ada3ad192c5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/movement.svg-33afa9d21ea276122edde7f40b48a650.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/movement.svg-33afa9d21ea276122edde7f40b48a650.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3-f1d88b64f5367df0379e63a892e4aa34.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/MUSCPerc_Triangle 3 (ID 1689)_LaSonotheque.fr.mp3-f1d88b64f5367df0379e63a892e4aa34.mp3str` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/no_goblin_no_dummy.png-ebc8d9dbce413056555c59b6f6db81e1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/no_goblin_no_dummy.png-ebc8d9dbce413056555c59b6f6db81e1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Orc.png-7ec8df8fc8191d220abe819f11ce4a42.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Orc.png-7ec8df8fc8191d220abe819f11ce4a42.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pack_bouton.jpg-fc310da288bdc0cf54a1faef75f19750.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pack_bouton.jpg-fc310da288bdc0cf54a1faef75f19750.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pdv_frame_pixel_candidate.png-530fbcdaaa00cb5f2e137adb1647099f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pdv_frame_pixel_candidate.png-530fbcdaaa00cb5f2e137adb1647099f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pdv_mana.png-a566ee6e90923b607454818f67de49b2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pdv_mana.png-a566ee6e90923b607454818f67de49b2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/persephone.png-24a759b62f21b77916735b172f7acd3d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/persephone.png-24a759b62f21b77916735b172f7acd3d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pic center.png-6ef756ba0172275e306d4ba993f0a263.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pic center.png-6ef756ba0172275e306d4ba993f0a263.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pierce.svg-7e7339f71292c1df91bef5f7b67c2b02.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pierce.svg-7e7339f71292c1df91bef5f7b67c2b02.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/play.png-5c90e88e8136487a183a099d67a7de24.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/play.png-5c90e88e8136487a183a099d67a7de24.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/poison.svg-3b5754011a77217fa357aaef5ee5937d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/poison.svg-3b5754011a77217fa357aaef5ee5937d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/portrait_frame.png-275ed7ad7454553aa1be0a15fa83d3e4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/portrait_frame.png-275ed7ad7454553aa1be0a15fa83d3e4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/precise_shot.png-fbbde3ee473196055268b790c014b5c2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/precise_shot.png-fbbde3ee473196055268b790c014b5c2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/présentation_tour.jpg-1e80022d72f1d6b3a2b5f940543e2aa8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/présentation_tour.jpg-1e80022d72f1d6b3a2b5f940543e2aa8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/primary_button_base.png-7b3aada445d9703b1abedf79dcb7f566.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/primary_button_base.png-7b3aada445d9703b1abedf79dcb7f566.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/push.svg-7e56f742c013aa3d7671adae148e8967.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/push.svg-7e56f742c013aa3d7671adae148e8967.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromage.png-be6ba4d896b6b6b970612f9de1b5db94.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromage.png-be6ba4d896b6b6b970612f9de1b5db94.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromagev2.png-7843ed14599cb0eec19209c1f4a8818d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromagev2.png-7843ed14599cb0eec19209c1f4a8818d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromagev3.png-9c871b7582e1000cbc41693f2027bb8e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromagev3.png-9c871b7582e1000cbc41693f2027bb8e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromagev4.png-c7174c668155ac5e7d7ca559699fd74f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/pyromagev4.png-c7174c668155ac5e7d7ca559699fd74f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/range.svg-edee5d46762c473162324e5601be4c95.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/range.svg-edee5d46762c473162324e5601be4c95.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/red.png-47a557c3922e800f76686bc1a4ad0c3c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/red.png-47a557c3922e800f76686bc1a4ad0c3c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/rem_0014.png-1b832545f78300957d564dbd7e3153ba.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/rem_0014.png-1b832545f78300957d564dbd7e3153ba.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/resource_badge_base.png-d21fdcca5b9cb49eb69077e10e3ea4ed.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/resource_badge_base.png-d21fdcca5b9cb49eb69077e10e3ea4ed.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/resource_bar_frame.png-6b9c04900579e0906008c18c5a944f5c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/resource_bar_frame.png-6b9c04900579e0906008c18c5a944f5c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/rocher escalier.png-bf70936d356490b4a6f8cfddcbf04c33.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/rocher escalier.png-bf70936d356490b4a6f8cfddcbf04c33.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/room2_chief_melee_ranged.png-8ff969cd5ee70713d8d783c2b90b7af9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/room2_chief_melee_ranged.png-8ff969cd5ee70713d8d783c2b90b7af9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/room2_no_fourth_enemy.png-1d99eda58d4e82b3d624e53d8846c3cf.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/room2_no_fourth_enemy.png-1d99eda58d4e82b3d624e53d8846c3cf.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/run_room_three_skeletons.png-f68b6697286bd506cfc6f2ae4a2537ca.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/run_room_three_skeletons.png-f68b6697286bd506cfc6f2ae4a2537ca.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_behind_goblin.png-bb96ffa2492e1fb1726798999e4ab665.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_behind_goblin.png-bb96ffa2492e1fb1726798999e4ab665.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_cast.png-76470d4b08fe344c903e2f1b67ef6c68.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_cast.png-76470d4b08fe344c903e2f1b67ef6c68.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_death.png-a6266f7e163778d942d619b4b0c31ec3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_death.png-a6266f7e163778d942d619b4b0c31ec3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_hit.png-2042b8d18bc62831e1179b54fe02fd8b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_hit.png-2042b8d18bc62831e1179b54fe02fd8b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_idle.png-3212cdf81bde5372839f7b90a18a46af.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_idle.png-3212cdf81bde5372839f7b90a18a46af.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_in_front_of_goblin.png-4eb65c11b0b00918fe6d49086173553a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_in_front_of_goblin.png-4eb65c11b0b00918fe6d49086173553a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_neg_x.png-2a983cc6e4266e5529772567df8b0597.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_neg_x.png-2a983cc6e4266e5529772567df8b0597.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_neg_y.png-be0521bee01fcca3771b3ca9d65ae72d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_neg_y.png-be0521bee01fcca3771b3ca9d65ae72d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_pos_x.png-7f44714f25c0e36a7cf07bdfa89ac816.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_pos_x.png-7f44714f25c0e36a7cf07bdfa89ac816.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_pos_y.png-30be33461cfc9b9beb0634ccc3912b16.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/salle1_elf_walk_pos_y.png-30be33461cfc9b9beb0634ccc3912b16.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Script.svg-34c66aae9c985e3e0470426acbbcda04.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Script.svg-34c66aae9c985e3e0470426acbbcda04.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_composite_crop.png-8f5fa34fb44188fdf3d44b1dec20a2db.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_composite_crop.png-8f5fa34fb44188fdf3d44b1dec20a2db.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_composite.png-86409a515327da3498b1f47442ba4e95.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_composite.png-86409a515327da3498b1f47442ba4e95.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_viewport_crop.png-a9f6e6c4a712d45aed6586b74437653c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_viewport_crop.png-a9f6e6c4a712d45aed6586b74437653c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_viewport.png-f95b551122690fc67ef43e12e7c415e5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_linear_viewport.png-f95b551122690fc67ef43e12e7c415e5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_composite_crop.png-a0327fc8a4b479496de376b7a1fc869b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_composite_crop.png-a0327fc8a4b479496de376b7a1fc869b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_composite.png-88fe643bad9ee74a9cb57757c1f7c06c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_composite.png-88fe643bad9ee74a9cb57757c1f7c06c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_viewport_crop.png-5241b4f7a61ca4b193315587a7ca6cce.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_viewport_crop.png-5241b4f7a61ca4b193315587a7ca6cce.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_viewport.png-2991a8b6693aaba8390c95171461e19b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_512_nearest_viewport.png-2991a8b6693aaba8390c95171461e19b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_composite_crop.png-080bd8f0943b72c2a3633d0c55ea421c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_composite_crop.png-080bd8f0943b72c2a3633d0c55ea421c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_composite.png-ae15e503cdf44079bad8d6f4f0a8cb64.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_composite.png-ae15e503cdf44079bad8d6f4f0a8cb64.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_viewport_crop.png-0c3bed5c5a32a4d4488752438e16127f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_viewport_crop.png-0c3bed5c5a32a4d4488752438e16127f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_viewport.png-93d745b1674de60e1d7dfa204a701ce6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_640x512_linear_viewport.png-93d745b1674de60e1d7dfa204a701ce6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_composite_crop.png-8d4d96717723d9878bd6bc59fff27b94.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_composite_crop.png-8d4d96717723d9878bd6bc59fff27b94.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_composite.png-f1f6e6c333e5728957e9da1462adf137.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_composite.png-f1f6e6c333e5728957e9da1462adf137.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_viewport_crop.png-fde16993497aa4174c6e29960961d6e4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_viewport_crop.png-fde16993497aa4174c6e29960961d6e4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_viewport.png-42faa38d34d850822e5e34d166fb8e59.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768_linear_viewport.png-42faa38d34d850822e5e34d166fb8e59.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_composite_crop.png-d2deeb536c47680e9876b3def97568fc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_composite_crop.png-d2deeb536c47680e9876b3def97568fc.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_composite.png-3d73ca3e09b5b95f2dcc9a0ed172dfd2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_composite.png-3d73ca3e09b5b95f2dcc9a0ed172dfd2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_viewport_crop.png-1b464112ea0f4b2ba77a61bd44a244c7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_viewport_crop.png-1b464112ea0f4b2ba77a61bd44a244c7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_viewport.png-e0fab925e84b6660581905560d77f096.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_768x512_linear_viewport.png-e0fab925e84b6660581905560d77f096.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_composite_crop.png-623138cf3bb1b37b7e25cfa156f8b0b3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_composite_crop.png-623138cf3bb1b37b7e25cfa156f8b0b3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_composite.png-bcdbda09063e2961969eb772312ac52e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_composite.png-bcdbda09063e2961969eb772312ac52e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_viewport_crop.png-a5c664edfb5e455bc6b46bdce41c3013.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_viewport_crop.png-a5c664edfb5e455bc6b46bdce41c3013.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_viewport.png-3920897ad30d4a98f3f2e2a35b844d17.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_before_viewport.png-3920897ad30d4a98f3f2e2a35b844d17.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_idle_crop.png-0e0c10916cc48c782f8ef9ddc19adec8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_idle_crop.png-0e0c10916cc48c782f8ef9ddc19adec8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_idle_viewport_crop.png-911d715e526bf622ff10c5118ce4beb3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_idle_viewport_crop.png-911d715e526bf622ff10c5118ce4beb3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_idle_viewport.png-32a333452d49fb3bf829055f4d37005a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_idle_viewport.png-32a333452d49fb3bf829055f4d37005a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_walk_crop.png-1e3e342fd52cca7d03a28acc7d8f4eff.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_final_walk_crop.png-1e3e342fd52cca7d03a28acc7d8f4eff.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_cast_viewport.png-89a4921eaeb00c66b62d41062ef4a1f7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_cast_viewport.png-89a4921eaeb00c66b62d41062ef4a1f7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_death_viewport.png-dcbadc77f1b39351e0ab7571c87712f6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_death_viewport.png-dcbadc77f1b39351e0ab7571c87712f6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_hit_viewport.png-7bc1b617476020adbdd5c7d11796356a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_hit_viewport.png-7bc1b617476020adbdd5c7d11796356a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_idle_viewport.png-cd04cbf72761d210d028d189bad0f539.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_idle_viewport.png-cd04cbf72761d210d028d189bad0f539.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_walk_viewport.png-03fb818232091f70e5489d292b028601.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sharpness_motion_walk_viewport.png-03fb818232091f70e5489d292b028601.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_bow_attack.png-62ebe0bb09675a56bb8217900d47a90e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_bow_attack.png-62ebe0bb09675a56bb8217900d47a90e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_idle.png-3c0cb9642852feaecc7c8ad390aa52dd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_idle.png-3c0cb9642852feaecc7c8ad390aa52dd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_melee_attack.png-953f204b26355a1df49f6d1d9ce825a0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_melee_attack.png-953f204b26355a1df49f6d1d9ce825a0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_ranged_attack.png-34e0f29b18c6660f86f3b08b18eea977.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_ranged_attack.png-34e0f29b18c6660f86f3b08b18eea977.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_sword_attack.png-9318e00106df66eb696f6427a53aaac1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_blender_sword_attack.png-9318e00106df66eb696f6427a53aaac1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_character_v01_texture_0.png-1ab80f4de975688a4eaf10201bff90cd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_character_v01_texture_0.png-1ab80f4de975688a4eaf10201bff90cd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_character_v01_texture_0.png-1ab80f4de975688a4eaf10201bff90cd.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_character_v01.glb-8c6535aaf4d9208c5559b07b415ce3c7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_character_v01.glb-8c6535aaf4d9208c5559b07b415ce3c7.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_attack.png-e8289485b8bcceca7b382f5eea2180bc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_attack.png-e8289485b8bcceca7b382f5eea2180bc.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_death.png-46f5a78716e2bdfbbec9ee037aa020f6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_death.png-46f5a78716e2bdfbbec9ee037aa020f6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_hit.png-914f27ba8dfc049b77fecf2e954b627b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_hit.png-914f27ba8dfc049b77fecf2e954b627b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_idle.png-1722de9d60146c77132324a4bc4bdcea.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_idle.png-1722de9d60146c77132324a4bc4bdcea.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_walk.png-2e39e9460699bb224787e2fa676fd4cd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_blender_walk.png-2e39e9460699bb224787e2fa676fd4cd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_character_v01_texture_0.png-f0dfc8eed55e6b113d03ac748419ae0e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_character_v01_texture_0.png-f0dfc8eed55e6b113d03ac748419ae0e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_character_v01_texture_0.png-f0dfc8eed55e6b113d03ac748419ae0e.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_character_v01.glb-b1e52792c5b1584fe6fef4c05a61f9f2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_character_v01.glb-b1e52792c5b1584fe6fef4c05a61f9f2.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_attack.png-63419cede9e0dc79fdda676d5b03345b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_attack.png-63419cede9e0dc79fdda676d5b03345b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_death.png-ebbd2112fea892155f0d69c791f1c1fd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_death.png-ebbd2112fea892155f0d69c791f1c1fd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_hit.png-da02327b4d05e8f395ea3919ed82d629.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_hit.png-da02327b4d05e8f395ea3919ed82d629.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_idle.png-d75b37c049e9d7244a172e9fde21879d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_idle.png-d75b37c049e9d7244a172e9fde21879d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_walk.png-32b2c7509d1f13c8a08ff78adf98d70d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_iso_walk.png-32b2c7509d1f13c8a08ff78adf98d70d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_room2_attack.png-713841421b8a6baf31acc6e4e95251c0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_room2_attack.png-713841421b8a6baf31acc6e4e95251c0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_room2_death.png-7c7d6babe9a3931b0965fb122c34fdb7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_room2_death.png-7c7d6babe9a3931b0965fb122c34fdb7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_room2_hit.png-3f8173e3a68697430f4c280489c9d09f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_room2_hit.png-3f8173e3a68697430f4c280489c9d09f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_y_sort.png-4b2c0cfaffd6606a6f8e44c32e14af41.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_chief_y_sort.png-4b2c0cfaffd6606a6f8e44c32e14af41.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_death.png-0ae78f936c3d7d73cd3fa926ad841189.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_death.png-0ae78f936c3d7d73cd3fa926ad841189.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_hit.png-4a9d3645541432c76063462772dc58ad.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_hit.png-4a9d3645541432c76063462772dc58ad.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_melee_attack_iso.png-3a6610b4b72a20721a67c63525ddef3d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_melee_attack_iso.png-3a6610b4b72a20721a67c63525ddef3d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_melee_idle_iso.png-fcb87b709e48bead2add2014b2b01fb7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_melee_idle_iso.png-fcb87b709e48bead2add2014b2b01fb7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_ranged_idle_iso.png-469543cd228ad54de7bf62286e6dd9c6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_ranged_idle_iso.png-469543cd228ad54de7bf62286e6dd9c6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_ranged_projectile.png-3b98f641c19d901b96ef630f870f8874.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_ranged_projectile.png-3b98f641c19d901b96ef630f870f8874.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_ranged_release_iso.png-44e0148a40605ca6341e29d4b493a532.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_ranged_release_iso.png-44e0148a40605ca6341e29d4b493a532.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_y_sort_back.png-398d4630842828542659b879cc4e2a95.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_y_sort_back.png-398d4630842828542659b879cc4e2a95.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_y_sort_front.png-d74249885558038afbab519d29ca9614.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skeleton_y_sort_front.png-d74249885558038afbab519d29ca9614.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_node_frame_base.png-1cc8f4641be26b5bdce4771aa46aceb9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_node_frame_base.png-1cc8f4641be26b5bdce4771aa46aceb9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_blurred_reduced.png-78d839d0eb7f18d218ebca0e7d5c7dd9.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_blurred_reduced.png-78d839d0eb7f18d218ebca0e7d5c7dd9.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_1280x720.png-8b7b618b234a8837742bc1fc9f3b375c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_1280x720.png-8b7b618b234a8837742bc1fc9f3b375c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_2560x1440.png-746f741a9b0a5ed1f0d82dc8c929ac10.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_2560x1440.png-746f741a9b0a5ed1f0d82dc8c929ac10.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_acquired_1920x1080.png-ed4ff409ec55d277f0fc32ea853c3f60.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_acquired_1920x1080.png-ed4ff409ec55d277f0fc32ea853c3f60.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_available_1920x1080.png-7172a2c3455c97dd0ab8847d02af1664.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_available_1920x1080.png-7172a2c3455c97dd0ab8847d02af1664.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_exclusive_1920x1080.png-e177a63c11bf7a6325ecc633eb20b71f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_exclusive_1920x1080.png-e177a63c11bf7a6325ecc633eb20b71f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_locked_1920x1080.png-5021389901f085df0b4b0d216d5fbce4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_locked_1920x1080.png-5021389901f085df0b4b0d216d5fbce4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_max_1920x1080.png-66ec4fb8284da9ea3222d2d0513bf122.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_max_1920x1080.png-66ec4fb8284da9ea3222d2d0513bf122.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_specialization_1920x1080.png-0533b7e9661157696b5c30872a7ba7ed.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_archer_specialization_1920x1080.png-0533b7e9661157696b5c30872a7ba7ed.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_assassin_1920x1080.png-f8f1d3fbea7d3c7d97a81f6464c241b4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_assassin_1920x1080.png-f8f1d3fbea7d3c7d97a81f6464c241b4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_healer_1920x1080.png-8e56d58b8e3f99d4e0416ff12ce768d1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_healer_1920x1080.png-8e56d58b8e3f99d4e0416ff12ce768d1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_mage_1920x1080.png-0a6cabff75641e0e51aa254db598a4bb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_elf_mage_1920x1080.png-0a6cabff75641e0e51aa254db598a4bb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_guardian_undefined_1920x1080.png-82283705ec7588beb10850a09a27a657.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_guardian_undefined_1920x1080.png-82283705ec7588beb10850a09a27a657.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_mage_branches_1920x1080.png-cac5c0f87cd35d340038f0f74b22387a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_after_mage_branches_1920x1080.png-cac5c0f87cd35d340038f0f74b22387a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_before_1920x1080.png-714e21ec57dbe8a7b0c8c5fecdcb501b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_before_1920x1080.png-714e21ec57dbe8a7b0c8c5fecdcb501b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_before_after_comparison.png-1d21edfc434a0e064d6fb6d616adef98.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_before_after_comparison.png-1d21edfc434a0e064d6fb6d616adef98.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_capture_contact_sheet.png-32cf3fa134dbb34ba2a8bc884a86c727.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/skill_tree_capture_contact_sheet.png-32cf3fa134dbb34ba2a8bc884a86c727.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/smoke1.png-10efba36c62ee9d83c0004c3e8c5f114.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/smoke1.png-10efba36c62ee9d83c0004c3e8c5f114.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/smoke2.png-5645e6631cb29029c50d186ef3d7634e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/smoke2.png-5645e6631cb29029c50d186ef3d7634e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sneak_strike.png-b376518329695f0ab072dfd0b2e97150.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sneak_strike.png-b376518329695f0ab072dfd0b2e97150.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Soldier.png-b96c15a315da2cffb28f422d144077a7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Soldier.png-b96c15a315da2cffb28f422d144077a7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/source_code_pro.fnt-042fb383b3c7b4c19e67c852f7fbefca.fontdata` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/source_code_pro.fnt-042fb383b3c7b4c19e67c852f7fbefca.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_archer.png-d69b56d3c438fa186cf04e789299c629.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_archer.png-d69b56d3c438fa186cf04e789299c629.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_assassin.png-ae44b34b1356f86d3b71a77942c7d78b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_assassin.png-ae44b34b1356f86d3b71a77942c7d78b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_healer.png-ad5063b001ebbf9020dd338d3d35e8c7.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_healer.png-ad5063b001ebbf9020dd338d3d35e8c7.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_mage.png-cd158d080c033b53e68f9ad39b883408.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_frame_mage.png-cd158d080c033b53e68f9ad39b883408.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c00.png-720250cdfa0324ca53cb658de8286247.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c00.png-720250cdfa0324ca53cb658de8286247.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c01.png-4db03713d36c4b4e84cb7038533aedff.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c01.png-4db03713d36c4b4e84cb7038533aedff.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c02.png-c9d5a2f788cd248d7d964494a997f2fd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c02.png-c9d5a2f788cd248d7d964494a997f2fd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c03.png-e1b357c2b489c42c70d51ed09d28ce18.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c03.png-e1b357c2b489c42c70d51ed09d28ce18.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c04.png-7906f873778ff99302b050e7c5a7e161.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c04.png-7906f873778ff99302b050e7c5a7e161.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c05.png-2ad36b0435e12824014cfa3eec85e18b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r00_c05.png-2ad36b0435e12824014cfa3eec85e18b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c00.png-f99c9698dc020c1b42c0a52365ad0c19.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c00.png-f99c9698dc020c1b42c0a52365ad0c19.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c01.png-ef1f70b40b8f2731d090fc7568a9cd6d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c01.png-ef1f70b40b8f2731d090fc7568a9cd6d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c02.png-8ccba8357c7182ec9ecfc8de918c1a3a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c02.png-8ccba8357c7182ec9ecfc8de918c1a3a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c03.png-55c53d00acc48040fb666c0a5c3f780b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c03.png-55c53d00acc48040fb666c0a5c3f780b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c04.png-14ab16d4d739152abfab2f11118c0d22.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c04.png-14ab16d4d739152abfab2f11118c0d22.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c05.png-f1345ed68b3f1809901602859b86870b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r01_c05.png-f1345ed68b3f1809901602859b86870b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c00.png-8d44f63266b1ec7cac08c6defe7d1699.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c00.png-8d44f63266b1ec7cac08c6defe7d1699.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c01.png-f39d46e477345aba184b5739e38c95b4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c01.png-f39d46e477345aba184b5739e38c95b4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c02.png-70429b6bb56dc757f82cc019feb9c358.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c02.png-70429b6bb56dc757f82cc019feb9c358.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c03.png-f3a24486da76d4e4881436b14173e7ed.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c03.png-f3a24486da76d4e4881436b14173e7ed.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c04.png-a4b47b79a5e9a5a1a576ba2c3e87eed1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c04.png-a4b47b79a5e9a5a1a576ba2c3e87eed1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c05.png-94cc0ed88da35a7a2575688acf2a54be.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r02_c05.png-94cc0ed88da35a7a2575688acf2a54be.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c00.png-063bc56aa2b732e26875c0ad81dc87c1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c00.png-063bc56aa2b732e26875c0ad81dc87c1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c01.png-431bb972c6514be8b5622a05d57a23a6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c01.png-431bb972c6514be8b5622a05d57a23a6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c02.png-ac39ddadbe5d9014e96d4fe19946c6ed.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c02.png-ac39ddadbe5d9014e96d4fe19946c6ed.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c03.png-a0330a091e90502a71625fbff20220c1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c03.png-a0330a091e90502a71625fbff20220c1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c04.png-afcfde1b6d7db2ce6954282cedf08aea.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c04.png-afcfde1b6d7db2ce6954282cedf08aea.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c05.png-4786669833fb0ae1943d18c4dfbae091.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r03_c05.png-4786669833fb0ae1943d18c4dfbae091.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c00.png-4743b24ec2454e1f499bcc4bcae5b47c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c00.png-4743b24ec2454e1f499bcc4bcae5b47c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c01.png-e3400a4767e1f31468d809f5b90bc1d3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c01.png-e3400a4767e1f31468d809f5b90bc1d3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c02.png-fb93dc758145a72b8e0ffc73d07f7769.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c02.png-fb93dc758145a72b8e0ffc73d07f7769.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c03.png-69f556ad803204df7dcce42a26a787e1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c03.png-69f556ad803204df7dcce42a26a787e1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c04.png-f6edd0980d7e948e1ed8439a51708310.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c04.png-f6edd0980d7e948e1ed8439a51708310.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c05.png-2c54cff7a6e58bab5b83918a28801102.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r04_c05.png-2c54cff7a6e58bab5b83918a28801102.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c00.png-71a3f98e47e37c6549e47d101db92361.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c00.png-71a3f98e47e37c6549e47d101db92361.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c01.png-ae0371ab57be3808b4f7a10428dd21f1.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c01.png-ae0371ab57be3808b4f7a10428dd21f1.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c02.png-d646869031e38ef450eba984d9d2f10c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c02.png-d646869031e38ef450eba984d9d2f10c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c03.png-f83219a566a5f13536252d0ef953d52d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c03.png-f83219a566a5f13536252d0ef953d52d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c04.png-7cf807372677866d762f12c919ba0f65.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c04.png-7cf807372677866d762f12c919ba0f65.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c05.png-52711dc3f8ccb1c43b7e1284ea4706c2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r05_c05.png-52711dc3f8ccb1c43b7e1284ea4706c2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c00.png-6b25799e786ecabf3da031af264736a3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c00.png-6b25799e786ecabf3da031af264736a3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c01.png-f2ceb0a35a4d74cfed109cb2478e6438.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c01.png-f2ceb0a35a4d74cfed109cb2478e6438.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c02.png-aa58105d8194bce512887e3da438b302.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c02.png-aa58105d8194bce512887e3da438b302.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c03.png-f9c676cab159f4e4cf85096ab0670413.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c03.png-f9c676cab159f4e4cf85096ab0670413.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c04.png-36ca0651b9450ac1e6e9e452d843fefc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c04.png-36ca0651b9450ac1e6e9e452d843fefc.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c05.png-1340746aacdb254971c451d08e524f14.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r06_c05.png-1340746aacdb254971c451d08e524f14.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c00.png-57556b15acc9ce71c3e9e303b7641f2b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c00.png-57556b15acc9ce71c3e9e303b7641f2b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c01.png-83531f353f54c534bfa8402ff87fb5fb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c01.png-83531f353f54c534bfa8402ff87fb5fb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c02.png-40706006a5d29903a07f6980e1bdb6c8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c02.png-40706006a5d29903a07f6980e1bdb6c8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c03.png-120f5fefb69bdc5b2fc766a2eec034ef.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c03.png-120f5fefb69bdc5b2fc766a2eec034ef.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c04.png-1a37ce3148bf9241e5fc7c40bd3b8ace.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c04.png-1a37ce3148bf9241e5fc7c40bd3b8ace.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c05.png-0ca3bd4f42f94073a68fce55286c7c44.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r07_c05.png-0ca3bd4f42f94073a68fce55286c7c44.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c00.png-c7cd6ffc0227836e3db336b9a14f8db3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c00.png-c7cd6ffc0227836e3db336b9a14f8db3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c01.png-fe0753098237256b97ad7c0bdfde8c07.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c01.png-fe0753098237256b97ad7c0bdfde8c07.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c02.png-38e4cf0040cd0f3d87897950318d26fc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c02.png-38e4cf0040cd0f3d87897950318d26fc.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c03.png-9de803d7e6248a6b4bc7cea007e5d20f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c03.png-9de803d7e6248a6b4bc7cea007e5d20f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c04.png-02d3d0c615ec4e577f71d58ab2eea0f0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c04.png-02d3d0c615ec4e577f71d58ab2eea0f0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c05.png-49094eefe7fdd63b655371a5bbc5c2a0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r08_c05.png-49094eefe7fdd63b655371a5bbc5c2a0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c00.png-6675b0a7fdb620a9f60e083af068cd8f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c00.png-6675b0a7fdb620a9f60e083af068cd8f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c01.png-70f8cc3400dd96807440f533208c72eb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c01.png-70f8cc3400dd96807440f533208c72eb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c02.png-acafde914fcd4022f5845bf11f1f8b0c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c02.png-acafde914fcd4022f5845bf11f1f8b0c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c03.png-5009a276e57254e10c745e8e2940f2a6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c03.png-5009a276e57254e10c745e8e2940f2a6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c04.png-c6a1ab07f494d548b7901e1b7152b724.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c04.png-c6a1ab07f494d548b7901e1b7152b724.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c05.png-cd12fccadf7ac86ac2836320a439067a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icon_r09_c05.png-cd12fccadf7ac86ac2836320a439067a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icons_atlas.png-65a93c96db14601fda78c1019d1de95c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_icons_atlas.png-65a93c96db14601fda78c1019d1de95c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_slot_base.png-7af5c0a07ef92536bf0bf1de032b7af5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spell_slot_base.png-7af5c0a07ef92536bf0bf1de032b7af5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spellbar_panel.png-6996d17d747d50de07f906efb177e74e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/spellbar_panel.png-6996d17d747d50de07f906efb177e74e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/start_hub_background.jpg-59edd600f27e54775fe5fa91e5b0edcd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/start_hub_background.jpg-59edd600f27e54775fe5fa91e5b0edcd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/state_check.svg-0ca856d722b0cf1a68254cbd035f72db.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/state_check.svg-0ca856d722b0cf1a68254cbd035f72db.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/state_excluded.svg-60258fffe256cf148ed6b0d93db27eeb.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/state_excluded.svg-60258fffe256cf148ed6b0d93db27eeb.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/state_pending.svg-9f3e7ec8df607cfde32fc70752ae64a4.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/state_pending.svg-9f3e7ec8df607cfde32fc70752ae64a4.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sylvan_heal.png-b011146775be7a0432f5c51d5a6b385f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/sylvan_heal.png-b011146775be7a0432f5c51d5a6b385f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/terrain caverne v2.png-03e7265bc29453609df6d98051ec1320.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/terrain caverne v2.png-03e7265bc29453609df6d98051ec1320.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/terrain caverne.png-96ab0f0032e3b4a63cac5b989737c775.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/terrain caverne.png-96ab0f0032e3b4a63cac5b989737c775.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/terrain.svg-507d7af43c750a821386642d1fdd4e37.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/terrain.svg-507d7af43c750a821386642d1fdd4e37.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Test montagne.png-389ff6cc80045df13a251a33419b8abe.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Test montagne.png-389ff6cc80045df13a251a33419b8abe.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/test test.png-7421f5154e72419fa75b7553b8cb6ffe.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/test test.png-7421f5154e72419fa75b7553b8cb6ffe.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/test_tileset_asphodel.png-2ba0423f995bd1ee3f0d446aa63a536a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/test_tileset_asphodel.png-2ba0423f995bd1ee3f0d446aa63a536a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/test.png-75164c94dc9de707ef4647269d6d2939.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/test.png-75164c94dc9de707ef4647269d6d2939.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tex_storm_cloud.png.png-9946e39b31f1557ff61902abf0088e87.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tex_storm_cloud.png.png-9946e39b31f1557ff61902abf0088e87.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tex_storm_ground_impact.png.png-905ceb3d1f64614a544a6ffa3b2804c3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tex_storm_ground_impact.png.png-905ceb3d1f64614a544a6ffa3b2804c3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tex_storm_lightning_cluster.png.png-1b00aaa2a4166b54e8b216d5afadf6e0.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tex_storm_lightning_cluster.png.png-1b00aaa2a4166b54e8b216d5afadf6e0.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tilemap_packed (2).png-1510af1dffd1b70be7e8456f7ddd5cd3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tilemap_packed (2).png-1510af1dffd1b70be7e8456f7ddd5cd3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tilemap_packed.png-8520b2087728e14cdf6d70e0c1cfad1f.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/tilemap_packed.png-8520b2087728e14cdf6d70e0c1cfad1f.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/title_header.png-38519adc17b2661a49ac08a5729b35e3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/title_header.png-38519adc17b2661a49ac08a5729b35e3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/trio_run_playable.png-79afe7b3f7a184ab1427d7bfde655416.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/trio_run_playable.png-79afe7b3f7a184ab1427d7bfde655416.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/trio_vs_skeleton_chief.png-04ac03442c24d197713b72a1c4f466b8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/trio_vs_skeleton_chief.png-04ac03442c24d197713b72a1c4f466b8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/trio_vs_three_skeletons.png-b38cb85cd54beb55edff044758d3dfda.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/trio_vs_three_skeletons.png-b38cb85cd54beb55edff044758d3dfda.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/turn_intro_banner.png-a12ce09c888c21c045800abb27ded058.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/turn_intro_banner.png-a12ce09c888c21c045800abb27ded058.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_button_primary_base_v1.png-cbf30eb4a52c6c727678353c4fdbee41.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_button_primary_base_v1.png-cbf30eb4a52c6c727678353c4fdbee41.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_portrait_frame_v1.png-3e69b23b77aa190ac95eb52f93724bd2.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_portrait_frame_v1.png-3e69b23b77aa190ac95eb52f93724bd2.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_resource_badge_base_v1.png-cee8013c83792828ddd5e7f8eddb6746.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_resource_badge_base_v1.png-cee8013c83792828ddd5e7f8eddb6746.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_spell_slot_base_v1.png.png-f4ac789d0edb75ba7e1771ed482ceb0c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_spell_slot_base_v1.png.png-f4ac789d0edb75ba7e1771ed482ceb0c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_spellbar_panel_v1..png-812d1beae130fa847e096981073cea1e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/ui_spellbar_panel_v1..png-812d1beae130fa847e096981073cea1e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/upgrade.svg-e6d579b002587fea4f6b12654ad3ba8a.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/upgrade.svg-e6d579b002587fea4f6b12654ad3ba8a.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/used_components_contact_sheet.png-73ce6c3e8d5fb6c79dd62f574982adb5.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/used_components_contact_sheet.png-73ce6c3e8d5fb6c79dd62f574982adb5.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/using-the-ornamental-title-header-bar-shown-in-the.png-b4cb22b0ebc2d78ceead81dfcf60057c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/using-the-ornamental-title-header-bar-shown-in-the.png-b4cb22b0ebc2d78ceead81dfcf60057c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/using-the-ornate-dark-stone-game-menu-frame-shown-.png-39092212f059018c9adc022a119196fc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/using-the-ornate-dark-stone-game-menu-frame-shown-.png-39092212f059018c9adc022a119196fc.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/utility_inventory.png-38f481db29c98f1a1e7bc038a28a61d3.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/utility_inventory.png-38f481db29c98f1a1e7bc038a28a61d3.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/utility_map.png-7e63418f76596de1a7cce62bb531221d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/utility_map.png-7e63418f76596de1a7cce62bb531221d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/utility_skills.png-e935c36b9c25782b08130badde08c6fd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/utility_skills.png-e935c36b9c25782b08130badde08c6fd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Village background cartoon 2d-6.jpg-4a929d250f9645f001d1b1ed5cd97332.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/Village background cartoon 2d-6.jpg-4a929d250f9645f001d1b1ed5cd97332.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/VSplitContainer.svg-6cec29fefa7e65d6ff7c2fdb9a1bb9ab.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/VSplitContainer.svg-6cec29fefa7e65d6ff7c2fdb9a1bb9ab.editor.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/VSplitContainer.svg-6cec29fefa7e65d6ff7c2fdb9a1bb9ab.editor.meta` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/VSplitContainer.svg-6cec29fefa7e65d6ff7c2fdb9a1bb9ab.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/vulnerability.svg-45a981ca2bad35b059f415b76a8ccd5b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/vulnerability.svg-45a981ca2bad35b059f415b76a8ccd5b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_basic_attack.png-4ade37d0e9aa8dae8d4ce72d88a81e38.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_basic_attack.png-4ade37d0e9aa8dae8d4ce72d88a81e38.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_breaker_animation.png-cad97b659ec5dc13fe79e66ed974f405.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_breaker_animation.png-cad97b659ec5dc13fe79e66ed974f405.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_character_v01_texture_0.png-0cf0540679c65d3488b50e0658864472.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_character_v01_texture_0.png-0cf0540679c65d3488b50e0658864472.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_character_v01_texture_0.png-0cf0540679c65d3488b50e0658864472.s3tc.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_character_v01.glb-7a87cdc670aef1cd3e8783b697de7d23.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_character_v01.glb-7a87cdc670aef1cd3e8783b697de7d23.scn` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_death.png-11d587ab1116089a593276b5b41c754c.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_death.png-11d587ab1116089a593276b5b41c754c.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_draft_third_slot.png-07db1843fd4960505b3a5946d84d0748.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_draft_third_slot.png-07db1843fd4960505b3a5946d84d0748.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_execution_animation.png-b87ce4e0ad9edcba9c794e6e3bf850bd.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_execution_animation.png-b87ce4e0ad9edcba9c794e6e3bf850bd.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_hit.png-73c06be2ad318efc2031c1497cc5556e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_hit.png-73c06be2ad318efc2031c1497cc5556e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_idle_iso.png-dd366340ee8a6b924c189d4372c85fb8.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_idle_iso.png-dd366340ee8a6b924c189d4372c85fb8.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_no_energy_ui.png-8fab6fb99b9027e2ba1c0c56c557b612.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_no_energy_ui.png-8fab6fb99b9027e2ba1c0c56c557b612.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_ravager_animation.png-342cc0066cb86d9c195bfd6137389ab6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_ravager_animation.png-342cc0066cb86d9c195bfd6137389ab6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_skill_tree.png-1ba9bf7f4a0b7da0a3a2afe3093c4dab.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_skill_tree.png-1ba9bf7f4a0b7da0a3a2afe3093c4dab.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_spell_action.png-9767a7c806d30b83f31e74b699c77e0e.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_spell_action.png-9767a7c806d30b83f31e74b699c77e0e.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_neg_x.png-51af5243260a2e2145f74c124e701a6d.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_neg_x.png-51af5243260a2e2145f74c124e701a6d.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_neg_y.png-49460a3278c4db42bc1c7fb2901ad223.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_neg_y.png-49460a3278c4db42bc1c7fb2901ad223.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_pos_x.png-95d2e2cde9a5d91f8ddbed491234779b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_pos_x.png-95d2e2cde9a5d91f8ddbed491234779b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_pos_y.png-6060bb7c5aa2917a0bac80fbee8b7e6b.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_walk_pos_y.png-6060bb7c5aa2917a0bac80fbee8b7e6b.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_y_sort_behind.png-9a4fb2eb1c0f6deb0c7a86ac1ab4e304.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_y_sort_behind.png-9a4fb2eb1c0f6deb0c7a86ac1ab4e304.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_y_sort_front.png-25252f87d3f6e982f2a68f815d4c51c6.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/warrior_y_sort_front.png-25252f87d3f6e982f2a68f815d4c51c6.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/yellow.png-b3cf3d463958a169d909273d3d742052.ctex` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/imported/yellow.png-b3cf3d463958a169d909273d3d742052.md5` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/scene_groups_cache.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/BestFitNormalShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/BestFitNormalShaderRD/522b47cc4c3c4b572bc28faadfdeea9c0a31b5381e4ea2e3406d0f6fda73d52b/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/BestFitNormalShaderRD/522b47cc4c3c4b572bc28faadfdeea9c0a31b5381e4ea2e3406d0f6fda73d52b/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/BlitShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/BlitShaderRD/29b32016e1c23e0db5906fbe9b87108e39e7f5965c0016eb53fc5e1c03293243/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/BlitShaderRD/29b32016e1c23e0db5906fbe9b87108e39e7f5965c0016eb53fc5e1c03293243/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/BokehDofShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/BokehDofShaderRD/07a1c984a30f7beb4c3290c8d0216119327b1f6eb8b36e5c96cfb751f30742e6/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/BokehDofShaderRD/07a1c984a30f7beb4c3290c8d0216119327b1f6eb8b36e5c96cfb751f30742e6/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasOcclusionShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasOcclusionShaderRD/3b765d5624135f9fbf3199b6660b8387d5b904f48be0914a622e5da9b906b504/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasOcclusionShaderRD/3b765d5624135f9fbf3199b6660b8387d5b904f48be0914a622e5da9b906b504/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasSdfShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasSdfShaderRD/54b47da3ce58bfeb483acea9e9e45b5de11793d45b2a38279aa17b08296ef514/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasSdfShaderRD/54b47da3ce58bfeb483acea9e9e45b5de11793d45b2a38279aa17b08296ef514/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasShaderGLES3/08e1f45a9911314e53d919657307abc4d0316e180498cc98d0ede2ec89c8ee9a/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasShaderGLES3/08e1f45a9911314e53d919657307abc4d0316e180498cc98d0ede2ec89c8ee9a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/008da05adf6899c167b5c12b02518201ac7b33ae.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/0c5198dcdf805275e890709219206893ccd593db.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/191b69a2c4438e53853754a26a9463dd1cfade90.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/45ab775ebcba024bd96079d0e22f30ec3c81355a.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/4cd98371c627c7d727d02a0e467cd14d5db1136e.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/60d846e16ed29e633e329ee2f89dffaecb4c163e.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/7679a2c7abd0021ca1e3bc0c7abc128702418ba0.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/89e0c5a264d1558e7bc2ca0dc3d0afd834fbe7b6.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/8f9335de72e837eeead40640cc01fddc5baf5a7c.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/b7f8864ed1b8040a3456125a335ae926e257bf47.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/c2f7efc3419efdd79fabd056897820a83f2ac2c9.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/d6eccecaa73e1b1efa0a5eadf4dadc68c86709b0.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/ddf1c2fb49f2d96e42d4ffa10cbbb808b4b14063.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CanvasShaderRD/1ac5f6c8d534ebab572b3f886e38134784245fbd5fa01c7cbb6cc452e5400080/fc2e2512c7197a24db845f1083693445dbd91172.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ClusterDebugShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ClusterDebugShaderRD/0825a26b8d0923d82c8881fc87e3d931ea89a116d0550106157b7033dfa382a7/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ClusterDebugShaderRD/0825a26b8d0923d82c8881fc87e3d931ea89a116d0550106157b7033dfa382a7/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ClusterRenderShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ClusterRenderShaderRD/e1824bcfaf9ebab715957f09e04336284255c4a495944e7ca919e9c20509cf78/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ClusterRenderShaderRD/e1824bcfaf9ebab715957f09e04336284255c4a495944e7ca919e9c20509cf78/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ClusterStoreShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ClusterStoreShaderRD/552b8bd4a514bf18836a8f9d32f41185bdb0efa58da3d5b3e68a39d68f6cecfc/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ClusterStoreShaderRD/552b8bd4a514bf18836a8f9d32f41185bdb0efa58da3d5b3e68a39d68f6cecfc/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CopyShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CopyShaderGLES3/d284dc5d5ac7674e35dfbae462837dd601c7cc7fa3e20b3a176744ecc61a131a/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CopyShaderGLES3/d284dc5d5ac7674e35dfbae462837dd601c7cc7fa3e20b3a176744ecc61a131a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CopyShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CopyShaderRD/23f6cf7986b46c68792dfd3f087267f14eebc49382f0c0fd265b45462b58afcf/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CopyShaderRD/23f6cf7986b46c68792dfd3f087267f14eebc49382f0c0fd265b45462b58afcf/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CopyToFbShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CopyToFbShaderRD/d00e29e632391ed3791124b988da290d922da3d9e2083273523bd8173b24ff97/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CopyToFbShaderRD/d00e29e632391ed3791124b988da290d922da3d9e2083273523bd8173b24ff97/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CubemapFilterShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CubemapFilterShaderGLES3/d0a07c5cca7ae73966cb2fa2e24aafdf5e3123a37fc12814ebfd0ebf3e3bb158/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CubemapFilterShaderGLES3/d0a07c5cca7ae73966cb2fa2e24aafdf5e3123a37fc12814ebfd0ebf3e3bb158/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CubeToDpShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CubeToDpShaderRD/9825f5ee942047b6912a1b6fe49935a8c928598f40d2cdfc64a0f61134deed27/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CubeToDpShaderRD/9825f5ee942047b6912a1b6fe49935a8c928598f40d2cdfc64a0f61134deed27/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/CubeToOctmapShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CubeToOctmapShaderRD/8bf32929c5b41445f085dd302ccba233028481a94d43ce1b531bc8e2e66677a4/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/CubeToOctmapShaderRD/8bf32929c5b41445f085dd302ccba233028481a94d43ce1b531bc8e2e66677a4/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/FeedShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/FeedShaderGLES3/54e111b48f201e72c9738f2d8ca1b16720dbab2bfe8ce5f919d05ee312d1a9c0/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/FeedShaderGLES3/54e111b48f201e72c9738f2d8ca1b16720dbab2bfe8ce5f919d05ee312d1a9c0/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/FsrUpscaleShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/FsrUpscaleShaderRD/de60781f9669b1455afc7507208cad7b3c71f8e59f4c894548899e482420e8dd/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/FsrUpscaleShaderRD/de60781f9669b1455afc7507208cad7b3c71f8e59f4c894548899e482420e8dd/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/GiShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/GiShaderRD/4b8662cdf9663cca618a7d8d793e816df7b2d7e775eefbb9eb5fbb0bdbe7d3d3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/GiShaderRD/4b8662cdf9663cca618a7d8d793e816df7b2d7e775eefbb9eb5fbb0bdbe7d3d3/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/GiShaderRD/a60cccbead6fab980bf996289c17b9a77b68a540d44ab8a15ec477060a5862cf/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/GiShaderRD/a60cccbead6fab980bf996289c17b9a77b68a540d44ab8a15ec477060a5862cf/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/IntegrateDfgShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/IntegrateDfgShaderRD/83448d29d7232c732c9d312b8e7faaa363fd72cf79165ec15256862089ebd46e/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/IntegrateDfgShaderRD/83448d29d7232c732c9d312b8e7faaa363fd72cf79165ec15256862089ebd46e/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/LuminanceReduceShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/LuminanceReduceShaderRD/926f3544c80af9c002aea2fe9f66f19b40ec81e54f627608fc28573493ac5edb/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/LuminanceReduceShaderRD/926f3544c80af9c002aea2fe9f66f19b40ec81e54f627608fc28573493ac5edb/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/MotionVectorsShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/MotionVectorsShaderRD/21fe2ffffa991405f5c0b4bb35dd8789b4049f8e56d80a5aa61aa8233992e3c1/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/MotionVectorsShaderRD/21fe2ffffa991405f5c0b4bb35dd8789b4049f8e56d80a5aa61aa8233992e3c1/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/OctmapDownsamplerShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/OctmapDownsamplerShaderRD/c79c7ea0ebc9a0833c5f465f1c555216a15727d2c4e3a227e9d5cd1e80f0669e/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/OctmapDownsamplerShaderRD/c79c7ea0ebc9a0833c5f465f1c555216a15727d2c4e3a227e9d5cd1e80f0669e/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/OctmapFilterShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/OctmapFilterShaderRD/a511f5ad922f5d701a26f801b4f9c96406071103345fa83fd394f8954c1dd7ac/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/OctmapFilterShaderRD/a511f5ad922f5d701a26f801b4f9c96406071103345fa83fd394f8954c1dd7ac/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/OctmapRoughnessShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/OctmapRoughnessShaderRD/9f66b38742366834aef44d557fed0d0753432ffb2cf24eebb14792092fc26b83/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/OctmapRoughnessShaderRD/9f66b38742366834aef44d557fed0d0753432ffb2cf24eebb14792092fc26b83/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ParticlesCopyShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ParticlesCopyShaderRD/688d10aec3c2e17e8c578ba3e2db1ea2f054eedd511b1e1647952c0acaeeab72/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ParticlesCopyShaderRD/688d10aec3c2e17e8c578ba3e2db1ea2f054eedd511b1e1647952c0acaeeab72/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ParticlesShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ParticlesShaderRD/8f4c25caa97a2f74d5fa5f299aabdd514f57d9737b8642ed65c20e846dad5db0/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ParticlesShaderRD/8f4c25caa97a2f74d5fa5f299aabdd514f57d9737b8642ed65c20e846dad5db0/07b5904b662900d90454c39c46885098de79aa4c.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/PostShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/PostShaderGLES3/c73fbdebac2a876f8183450a9cb75248391a3e3d8c8de74db3ce8e692e076791/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/PostShaderGLES3/c73fbdebac2a876f8183450a9cb75248391a3e3d8c8de74db3ce8e692e076791/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ResolveShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ResolveShaderRD/b92e1e567b3ce7b008af4819aa7a8f7848a6f4dd09e28737bcd07456b04c2c7e/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ResolveShaderRD/b92e1e567b3ce7b008af4819aa7a8f7848a6f4dd09e28737bcd07456b04c2c7e/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/078505235c4b1164be3a232fc53717e99ae38384.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/1ba09b8fe53b34cf07e3559908d37d9d8e1e7cd5.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/1d22b95377aadca3a0931113adee5cc3272a0404.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/2dc1b5cfff090b77444337c6816f834532bf6711.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/3095004172d685c18421882ee21d4bdf9830fe93.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/347259af253e6bbec7ad5c69332af5ca731015aa.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/4d161e027d36dae3228a2fd069c9016607e1d80e.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/766562d5bd8d8fe8f82fbed546ecf33e95f688ff.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/7755f626fb43ab902063f76f8ca023d95e7bfbe6.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/77e28fea868f1d640cf581ded2e966295b75d2d8.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/9ae935cd107ff04dc4904f4d9a48208144d11fe5.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/a108158d1a145ea996cac5b7f02478b69e74c614.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/a784797763b72ce058effad41b273eb697df9814.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/a8093275b3afef4ee8b8bb9191c8cd99e4e1378b.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/b600e18e20b53d8932999d48838b29553c586934.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/beb374e34d8d97adb5725df0bfd658fc24c4f80e.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/c4e6dfe2995976d5993c5eeff8c9d5680c538c04.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/de2b6c239d8c3f5684bf02f32d2468f1a12cf624.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/e6d93dcb7095f51274be348f1a89aa0e64db08d3.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneForwardClusteredShaderRD/069fad9662d1c110a7284347f6822a7ae0bb9be399f57215e33231e68a6e4692/faba017f3680b49e2024b66cc6d194f77217733d.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/a38af2d0725c8e99d8492f4c72736f24d6a54cc5.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/cafb1506f2db0c3681435e264aa18e216d1a7a40.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ScreenSpaceReflectionDownsampleShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionDownsampleShaderRD/ce68b2844d60e91b13d566f130e5e6be4924ecd57975c33ed49db903d1d10cdd/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionDownsampleShaderRD/ce68b2844d60e91b13d566f130e5e6be4924ecd57975c33ed49db903d1d10cdd/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ScreenSpaceReflectionFilterShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionFilterShaderRD/adaaba74fde6be6ed9036c3b4e1988baef6dcb0a7cc9aa46eee0f81796fd1ee7/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionFilterShaderRD/adaaba74fde6be6ed9036c3b4e1988baef6dcb0a7cc9aa46eee0f81796fd1ee7/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ScreenSpaceReflectionHizShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionHizShaderRD/d816ec3b916a39c24ef8495a965202569a714911181fd70869fdc76e1647898d/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionHizShaderRD/d816ec3b916a39c24ef8495a965202569a714911181fd70869fdc76e1647898d/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ScreenSpaceReflectionResolveShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionResolveShaderRD/7179c7134fdf0cbefc7c3244957827cbec1fd0180b3dfa0ea580579b7b83a06c/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionResolveShaderRD/7179c7134fdf0cbefc7c3244957827cbec1fd0180b3dfa0ea580579b7b83a06c/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ScreenSpaceReflectionShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionShaderRD/dd5e885eefeba0f65c2678de75b986844fb186f0d2a38e39381b435388d51dbb/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ScreenSpaceReflectionShaderRD/dd5e885eefeba0f65c2678de75b986844fb186f0d2a38e39381b435388d51dbb/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SdfgiDebugProbesShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiDebugProbesShaderRD/9067100a09ae2d21f3f325a69e660546baba568b663847a9ba75cbdc3ea337ee/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiDebugProbesShaderRD/9067100a09ae2d21f3f325a69e660546baba568b663847a9ba75cbdc3ea337ee/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SdfgiDebugShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiDebugShaderRD/6c94a7679fba279d983d32e141b6648229956762362a863275c13ba2608c7e4d/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiDebugShaderRD/6c94a7679fba279d983d32e141b6648229956762362a863275c13ba2608c7e4d/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SdfgiDirectLightShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiDirectLightShaderRD/60b8f559824902a3ba6f601c82ba13bb027a01cf114421e8b3e7f1577251f982/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiDirectLightShaderRD/60b8f559824902a3ba6f601c82ba13bb027a01cf114421e8b3e7f1577251f982/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SdfgiIntegrateShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiIntegrateShaderRD/8402e25fb473b17f05fd8134b61bac8272f9bb13ec37039e0f82a546918f3004/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiIntegrateShaderRD/8402e25fb473b17f05fd8134b61bac8272f9bb13ec37039e0f82a546918f3004/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SdfgiPreprocessShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiPreprocessShaderRD/1df3f43771989a4c102242eeab16de469b18c89bbd7ff3866c4fd78a99d2e961/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SdfgiPreprocessShaderRD/1df3f43771989a4c102242eeab16de469b18c89bbd7ff3866c4fd78a99d2e961/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/ShadowFrustumShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ShadowFrustumShaderRD/7aba7a73f7499f30591bb36c54f106926052cdc0048232d9054de723408b1ea2/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/ShadowFrustumShaderRD/7aba7a73f7499f30591bb36c54f106926052cdc0048232d9054de723408b1ea2/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SkeletonShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SkeletonShaderRD/08b4464d16133f4db97a8df4663b95b2b956ecd3e7addf44a16e644f488157c2/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SkeletonShaderRD/08b4464d16133f4db97a8df4663b95b2b956ecd3e7addf44a16e644f488157c2/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SkyShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SkyShaderGLES3/54461e02781b9e4e4fbbf037a6b0d4f296d5b30c6898158b37cea91f5e8ab5cf/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SkyShaderGLES3/54461e02781b9e4e4fbbf037a6b0d4f296d5b30c6898158b37cea91f5e8ab5cf/2c82eb5fea9b549e20c9f41e308abf9a4fc5d76f.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SkyShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SkyShaderRD/9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SkyShaderRD/9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997/0fa1946a11e1cca806ebfe4b3b4ac7f723d8b701.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SkyShaderRD/9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997/9247dd7bf98483a15ebb05f8c580a398614a07d8.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SkyShaderRD/9be8c23dcd20154e4a1ab0bef919421f8c51853d47c2fe6dc91221f8cfc74997/ff1961ca0c4c55a79eb12f819a7b6345801bbbaf.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SmaaBlendingShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SmaaBlendingShaderRD/daa696d3938d7aadbc85111a68936e774199a2ded78d364782d43ef580b5296d/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SmaaBlendingShaderRD/daa696d3938d7aadbc85111a68936e774199a2ded78d364782d43ef580b5296d/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SmaaEdgeDetectionShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SmaaEdgeDetectionShaderRD/749ffc0281a6ab411cf5a66f2560a2f33f9a258f57c513c67047f363e5e7ab33/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SmaaEdgeDetectionShaderRD/749ffc0281a6ab411cf5a66f2560a2f33f9a258f57c513c67047f363e5e7ab33/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SmaaWeightCalculationShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SmaaWeightCalculationShaderRD/510ed0d4e978b1a21f4e459da4ee2516c38f4460931e2a5714dae17c8b5547c2/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SmaaWeightCalculationShaderRD/510ed0d4e978b1a21f4e459da4ee2516c38f4460931e2a5714dae17c8b5547c2/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SortShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SortShaderRD/8e4ebbbb19fcd734c6f15656afbe1bcd5eb3acdfdae9cab023ebd6f54c901ef8/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SortShaderRD/8e4ebbbb19fcd734c6f15656afbe1bcd5eb3acdfdae9cab023ebd6f54c901ef8/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SpecularMergeShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SpecularMergeShaderRD/38d1cf8969e8f223baa218cbcd7ad415e6e945247fdb8cefddabba66acaab0e4/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SpecularMergeShaderRD/38d1cf8969e8f223baa218cbcd7ad415e6e945247fdb8cefddabba66acaab0e4/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsaoBlurShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoBlurShaderRD/75c97c3818b26631d447852881b25a2a80e6c894e956c009b714072cbd46c1ef/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoBlurShaderRD/75c97c3818b26631d447852881b25a2a80e6c894e956c009b714072cbd46c1ef/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsaoImportanceMapShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoImportanceMapShaderRD/8701d1e664bf71d29af6f5d0a42ba62d7efbdec7f5f82064ea3b0fe3eef94361/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoImportanceMapShaderRD/8701d1e664bf71d29af6f5d0a42ba62d7efbdec7f5f82064ea3b0fe3eef94361/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsaoInterleaveShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoInterleaveShaderRD/bee8210303269b0457bb9b0180392661b1c86739a5b9b2efe8a252021fcca1f5/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoInterleaveShaderRD/bee8210303269b0457bb9b0180392661b1c86739a5b9b2efe8a252021fcca1f5/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsaoShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoShaderRD/66a821ba71909db6948ec1aded9d3ee630866bfb4556c2e275650a1ba3b8f5e3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsaoShaderRD/66a821ba71909db6948ec1aded9d3ee630866bfb4556c2e275650a1ba3b8f5e3/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsEffectsDownsampleShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsEffectsDownsampleShaderRD/ccf4e10c5ab4528ecf8f9b97dbc17f491b409915c7c64f533bcc896c43acdfb0/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsEffectsDownsampleShaderRD/ccf4e10c5ab4528ecf8f9b97dbc17f491b409915c7c64f533bcc896c43acdfb0/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsilBlurShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilBlurShaderRD/ba99bf82030acafb5628e8fbd1e0a70fb6a1fa2af5283800a6585fa9c71317d5/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilBlurShaderRD/ba99bf82030acafb5628e8fbd1e0a70fb6a1fa2af5283800a6585fa9c71317d5/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsilImportanceMapShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilImportanceMapShaderRD/1c4d07be7a352b493a9afdef9363514c1f219eb178911ec18626ea542c3b1334/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilImportanceMapShaderRD/1c4d07be7a352b493a9afdef9363514c1f219eb178911ec18626ea542c3b1334/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsilInterleaveShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilInterleaveShaderRD/e3b6eab6e5b68136736435a560115616f4074e0be5dca3e2242912a504320162/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilInterleaveShaderRD/e3b6eab6e5b68136736435a560115616f4074e0be5dca3e2242912a504320162/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SsilShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilShaderRD/2b3bf37ba8a45aa5cbc064da9031687142e6f007565f6dee75f83189a9edcfa3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SsilShaderRD/2b3bf37ba8a45aa5cbc064da9031687142e6f007565f6dee75f83189a9edcfa3/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/SubsurfaceScatteringShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SubsurfaceScatteringShaderRD/7c8ee12c5109342b5667f38d6fda4ec1c20f0d014ad9690457e6f19d602b96d9/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/SubsurfaceScatteringShaderRD/7c8ee12c5109342b5667f38d6fda4ec1c20f0d014ad9690457e6f19d602b96d9/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/TaaResolveShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/TaaResolveShaderRD/c5152f5d8d5e919024126af06b7cf1a216b5184957e1946e198175642a86027f/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/TaaResolveShaderRD/c5152f5d8d5e919024126af06b7cf1a216b5184957e1946e198175642a86027f/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/TexBlitShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/TexBlitShaderRD/ce377a6d54cd54d45abdd915ec4cf3877fef3cbace94de3df4ed73ec0124ea0c/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/TexBlitShaderRD/ce377a6d54cd54d45abdd915ec4cf3877fef3cbace94de3df4ed73ec0124ea0c/1e8995c9eb0e9b0b053035999de68595c521a33e.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/TonemapShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/TonemapShaderRD/6d008fe28b8fd25f510d360d45c329659bbd6cc2a222dc519c18fea4a3c17a36/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/TonemapShaderRD/6d008fe28b8fd25f510d360d45c329659bbd6cc2a222dc519c18fea4a3c17a36/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/VolumetricFogProcessShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VolumetricFogProcessShaderRD/b3d8b51125b8cc82b65e91af793ad8427f49e486687dd0559cabc908674c4390/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VolumetricFogProcessShaderRD/b3d8b51125b8cc82b65e91af793ad8427f49e486687dd0559cabc908674c4390/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/VolumetricFogShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VolumetricFogShaderRD/4fcd7eea54024fa982593be8aed8c9df465d0c4f629d7d1d1dfdf887cdaca664/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VolumetricFogShaderRD/4fcd7eea54024fa982593be8aed8c9df465d0c4f629d7d1d1dfdf887cdaca664/3377d4ca9d0fc2e16f62596ee37d619e8e7e3f54.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/VoxelGiDebugShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VoxelGiDebugShaderRD/9a34146b67b3016d20f7a43d89748fc6c5eb980a677a57e30e08f4db1bc9a2c6/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VoxelGiDebugShaderRD/9a34146b67b3016d20f7a43d89748fc6c5eb980a677a57e30e08f4db1bc9a2c6/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/VoxelGiShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VoxelGiShaderRD/be32ca7811c1d8efa7aea8f6759edee078b2130e3ae5a44ffb2866906b7f344a/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VoxelGiShaderRD/be32ca7811c1d8efa7aea8f6759edee078b2130e3ae5a44ffb2866906b7f344a/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/shader_cache/VrsShaderRD/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VrsShaderRD/9df305f4045418de07830cd11c3be6abf40ea73a66b1fc87b5e04821ac4f402c/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://.godot/shader_cache/VrsShaderRD/9df305f4045418de07830cd11c3be6abf40ea73a66b1fc87b5e04821ac4f402c/8305c75c1294a9f00656f0f14344bb8bedcfe4e7.d3d12.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://.godot/uid_cache.bin` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/.gdignore` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/capture_skill_tree_refined_validation.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/diagnostic_report.md` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_minimal_project.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_normal_d3d12_rebuilt.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_normal_d3d12.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_normal_extended_1200_frames.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_normal_repeat_1.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_normal_repeat_2.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_normal_repeat_3.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_normal_without_ziva.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_recovery_d3d12_rebuilt.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_recovery_d3d12.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/editor_recovery_gl_rebuilt.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/git_snapshot_before_diagnostic.md` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/gut_refined_targeted_only.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/gut_refined_targeted.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/headless_import_current_cache.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/headless_import_rebuilt_cache.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/headless_import_without_poison.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/.gdignore` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/editor_layout.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/editor_script_doc_cache.res` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/filesystem_cache10` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/project_metadata.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/editor/script_editor_cache.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/global_script_class_cache.cfg` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CanvasShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CanvasShaderGLES3/08e1f45a9911314e53d919657307abc4d0316e180498cc98d0ede2ec89c8ee9a/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CanvasShaderGLES3/08e1f45a9911314e53d919657307abc4d0316e180498cc98d0ede2ec89c8ee9a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CopyShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CopyShaderGLES3/d284dc5d5ac7674e35dfbae462837dd601c7cc7fa3e20b3a176744ecc61a131a/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CopyShaderGLES3/d284dc5d5ac7674e35dfbae462837dd601c7cc7fa3e20b3a176744ecc61a131a/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CubemapFilterShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CubemapFilterShaderGLES3/d0a07c5cca7ae73966cb2fa2e24aafdf5e3123a37fc12814ebfd0ebf3e3bb158/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/CubemapFilterShaderGLES3/d0a07c5cca7ae73966cb2fa2e24aafdf5e3123a37fc12814ebfd0ebf3e3bb158/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/FeedShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/FeedShaderGLES3/54e111b48f201e72c9738f2d8ca1b16720dbab2bfe8ce5f919d05ee312d1a9c0/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/FeedShaderGLES3/54e111b48f201e72c9738f2d8ca1b16720dbab2bfe8ce5f919d05ee312d1a9c0/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/PostShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/PostShaderGLES3/c73fbdebac2a876f8183450a9cb75248391a3e3d8c8de74db3ce8e692e076791/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/PostShaderGLES3/c73fbdebac2a876f8183450a9cb75248391a3e3d8c8de74db3ce8e692e076791/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/a38af2d0725c8e99d8492f4c72736f24d6a54cc5.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SceneShaderGLES3/1ef07672fa1fa9403f64f0d9130d59bca18d2dbad4fea906bee79e4d1351178f/cafb1506f2db0c3681435e264aa18e216d1a7a40.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SkyShaderGLES3/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SkyShaderGLES3/54461e02781b9e4e4fbbf037a6b0d4f296d5b30c6898158b37cea91f5e8ab5cf/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/.godot/shader_cache/SkyShaderGLES3/54461e02781b9e4e4fbbf037a6b0d4f296d5b30c6898158b37cea91f5e8ab5cf/2c82eb5fea9b549e20c9f41e308abf9a4fc5d76f.cache` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/minimal_project/project.godot` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/project_manager.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/run_battle_salle1_iso.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/godot_startup_crash_diagnostic/run_project_main_scene.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_clean_v1/assets_contact_sheet.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/assets_contact_sheet.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/assets_manifest.json` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1280x720.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_blurred_reduced.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_blurred_reduced.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_grayscale.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080_grayscale.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_clean_2560x1440.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_low_health.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_low_health.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_ornate_reference_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_ornate_reference_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_ornate_vs_clean.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_ornate_vs_clean.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_preview_with_special_resource.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_preview_with_special_resource.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_selected_unavailable_cooldown.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_selected_unavailable_cooldown.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_turn_banner.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_turn_banner.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/captures/hud_without_special_resource.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v1/captures/hud_without_special_resource.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v1/gut_full_run.txt` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_clean_v2/captures/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v1_reference_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v1_reference_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v1_vs_v2.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v1_vs_v2.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1280x720.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_blurred_reduced.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_blurred_reduced.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_grayscale.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080_grayscale.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_2560x1440.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_low_health.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_low_health.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_preview_with_special_resource.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_preview_with_special_resource.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_selected_unavailable_cooldown.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_selected_unavailable_cooldown.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_turn_banner.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_turn_banner.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_without_special_resource.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_clean_v2_without_special_resource.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/captures/hud_ornate_reference_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_clean_v2/captures/hud_ornate_reference_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_clean_v2/gut_hud_targeted.txt` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_refined_characters/capture_run.log` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_assassin_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_assassin_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_assassin_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_assassin_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_characters_contact_sheet.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_characters_contact_sheet.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_druid_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_druid_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_druid_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_druid_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1280x720.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_selected_2560x1440.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_elf_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_guardian_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_guardian_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_guardian_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_guardian_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_hoplite_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_mage_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_mage_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_mage_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_mage_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_necromancer_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_system_dock_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_system_dock_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_warrior_selected_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_warrior_selected_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_warrior_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_characters/captures/hud_refined_warrior_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_refined_polish/captures/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_before_after_polish.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_before_after_polish.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_1280x720.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_2560x1440.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_blurred_reduced.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_blurred_reduced.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_cooldown.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_cooldown.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_grayscale.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_grayscale.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_low_health.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_low_health.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_move_selected.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_move_selected.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_preview_energy.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_preview_energy.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_selected.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_selected.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_unavailable.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_spell_unavailable.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_unaffordable.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_unaffordable.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_utility_dock.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_utility_dock.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_without_energy.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined_polish/captures/hud_refined_polish_without_energy.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined_polish/gut_hud_targeted.txt` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_refined/assets_contact_sheet_refined.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/assets_contact_sheet_refined.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/assets_manifest_refined.json` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_refined/captures/clean_v2_vs_refined.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/clean_v2_vs_refined.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_1280x720.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_2560x1440.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_low_health.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_low_health.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_preview_with_special_resource.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_preview_with_special_resource.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_selected_unavailable_cooldown.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_selected_unavailable_cooldown.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_turn_banner.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_turn_banner.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/captures/hud_refined_without_special_resource.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/captures/hud_refined_without_special_resource.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_refined/gut_hud_targeted.txt` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/used_components_contact_sheet.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_refined/used_components_contact_sheet.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_v2/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/hud_v2/elf_hud_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_v2/elf_hud_1280x720.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_v2/elf_hud_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_v2/elf_hud_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_v2/elf_hud_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_v2/elf_hud_2560x1440.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/hud_v2/elf_turn_banner_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/hud_v2/elf_turn_banner_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/run_v1_playable_pass/hud_before_1080p.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/hud_before_1080p.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/hud_compact_1080p.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/hud_compact_1080p.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/hud_compact_1440p.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/hud_compact_1440p.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/hud_compact_720p.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/hud_compact_720p.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/run_v1_playable_review.avi` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/run_v1_playable_review.mp4` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/trio_run_playable.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/trio_run_playable.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/warrior_breaker_animation.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/warrior_breaker_animation.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/warrior_execution_animation.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/warrior_execution_animation.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/warrior_no_energy_ui.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/warrior_no_energy_ui.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/warrior_ravager_animation.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/warrior_ravager_animation.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/run_v1_playable_pass/warrior_skill_tree.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/run_v1_playable_pass/warrior_skill_tree.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/skeleton_chief/room2_chief_melee_ranged.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/room2_chief_melee_ranged.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/room2_no_fourth_enemy.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/room2_no_fourth_enemy.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_death.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_death.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_hit.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_hit.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_idle.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_idle.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_walk.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_blender_walk.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_death.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_death.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_hit.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_hit.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_idle.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_idle.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_walk.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_iso_walk.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_room_flow.avi` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_room_flow.mp4` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_room2_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_room2_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_room2_death.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_room2_death.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_room2_hit.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_room2_hit.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/skeleton_chief_y_sort.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/skeleton_chief_y_sort.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_chief/trio_vs_skeleton_chief.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_chief/trio_vs_skeleton_chief.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/skeleton_first_enemy/first_room_trio_vs_skeletons_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/first_room_trio_vs_skeletons_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/movement_pacing_comparison.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/movement_pacing_comparison.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/no_goblin_no_dummy.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/no_goblin_no_dummy.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/run_room_three_skeletons.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/run_room_three_skeletons.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_bow_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_bow_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_idle.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_idle.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_melee_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_melee_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_ranged_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_ranged_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_sword_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_blender_sword_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_death.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_death.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_hit.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_hit.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_melee_attack_iso.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_melee_attack_iso.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_melee_idle_iso.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_melee_idle_iso.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_ranged_idle_iso.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_ranged_idle_iso.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_ranged_projectile.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_ranged_projectile.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_ranged_release_iso.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_ranged_release_iso.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_y_sort_back.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_y_sort_back.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/skeleton_y_sort_front.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/skeleton_y_sort_front.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skeleton_first_enemy/trio_vs_three_skeletons.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skeleton_first_enemy/trio_vs_three_skeletons.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined_v2/.gdignore` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/skill_tree_refined_v2/captures/before_after_comparison.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/branch_navigation.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/capstone_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/components_contact_sheet.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/elf_max_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/elf_rank_1_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/elf_rank_2_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/elf_rank_4_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/future_rank_hidden_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/icon_mapping_sheet.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/lock_closeup.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/mage_roots_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/next_rank_locked_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/no_progression_guardian_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/node_acquired_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/node_available_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/node_detail_panel.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/node_excluded_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/node_types_contact_sheet.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/prerequisite_locked_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/refined_after_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/refined_after_blurred_reduced.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/refined_after_grayscale.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/responsive_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/responsive_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/captures/specialization_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined_v2/legacy_assets_manifest.json` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/skill_tree_refined/captures/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_blurred_reduced.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_blurred_reduced.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_1280x720.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_1280x720.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_2560x1440.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_2560x1440.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_acquired_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_acquired_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_available_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_available_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_exclusive_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_exclusive_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_locked_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_locked_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_max_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_max_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_specialization_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_archer_specialization_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_assassin_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_assassin_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_healer_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_healer_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_mage_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_elf_mage_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_guardian_undefined_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_guardian_undefined_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_mage_branches_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_after_mage_branches_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_before_1920x1080.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_before_1920x1080.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_before_after_comparison.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_before_after_comparison.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_capture_contact_sheet.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://artifacts/skill_tree_refined/captures/skill_tree_capture_contact_sheet.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://asset/GobTest_attack_v2.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_attack_v2.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_death_v2.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_death_v2.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_idle_v2.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_idle_v2.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_idle.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_idle.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/gobtest_Material_Pbr_baseColor.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/gobtest_Material_Pbr_baseColor.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/gobtest_Material_Pbr_normal.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/gobtest_Material_Pbr_normal.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_walk_v2.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/GobTest_walk_v2.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/gobtest.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/gobtest.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/asset_8VAgXsXBQ1LGVT1K6HNc6a2R_fait moi un spritesheet contenant des sauts et la course avec cette image_img2img_1781891564.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_1.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_1.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_10.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_10.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_11.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_11.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_12.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_12.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_13.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_13.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_14.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_14.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_15.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_15.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_16.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_16.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_17.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_17.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_18.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_18.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_19.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_19.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_2.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_2.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_20.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_20.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_21.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_21.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_22.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_22.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_23.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_23.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_24.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_24.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_25.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_25.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_26.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_26.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_27.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_27.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_28.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_28.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_29.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_29.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_3.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_3.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_30.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_30.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_31.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_31.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_32.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_32.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_33.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_33.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_34.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_34.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_35.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_35.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_36.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_36.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_37.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_37.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_38.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_38.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_39.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_39.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_4.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_4.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_40.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_40.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_41.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_41.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_42.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_42.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_43.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_43.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_44.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_44.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_45.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_45.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_46.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_46.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_47.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_47.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_48.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_48.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_49.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_49.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_5.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_5.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_50.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_50.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_51.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_51.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_52.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_52.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_53.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_53.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_54.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_54.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_55.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_55.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_56.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_56.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_57.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_57.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_58.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_58.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_59.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_59.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_6.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_6.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_60.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_60.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_61.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_61.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_62.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_62.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_63.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_63.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_64.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_64.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_65.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_65.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_66.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_66.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_67.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_67.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_68.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_68.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_69.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_69.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_7.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_7.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_70.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_70.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_71.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_71.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_72.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_72.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_73.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_73.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_74.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_74.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_75.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_75.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_76.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_76.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_77.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_77.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_78.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_78.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_79.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_79.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_8.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_8.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_80.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_80.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_81.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_81.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_82.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_82.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_83.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_83.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_84.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_84.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_85.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_85.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_86.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_86.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_87.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_87.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_88.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_88.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_89.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_89.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_9.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_9.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_90.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_90.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_91.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_91.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_92.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_92.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_93.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_93.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_94.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_94.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_95.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_95.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_96.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_96.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_97.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_97.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_98.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/icone spell.png_98.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/test.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/icone/test.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/MeleeRun.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/MeleeRun.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/Orc.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/Orc.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/persephone.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/persephone.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/473.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/473.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/474.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/474.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/475.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/475.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/479.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/479.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/480.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/480.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/481.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/481.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/482.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/482.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/483.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/483.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/484.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/484.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/485.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/485.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/486.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/486.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/487.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/487.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/488.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/488.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/489.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/489.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/490.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/490.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/491.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/491.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/492.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/492.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/493.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/493.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/494.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/494.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/496.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/496.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/497.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/497.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/498.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/498.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/499.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/499.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/500.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/500.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/501.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/501.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/505.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/505.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Fall_Dead_from_Abdominal_Injury_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Fall_Dead_from_Abdominal_Injury_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Lower_Weapon_Look_Raise_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Lower_Weapon_Look_Raise_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Run_02_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Run_02_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Running_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Running_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Shouting_Angrily_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Shouting_Angrily_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Skill_01_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Skill_01_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Thrust_Slash_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Thrust_Slash_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Walking_withSkin.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/alliés/Meshy_AI_Lumensteel_Knight_biped/Meshy_AI_Lumensteel_Knight_biped_Animation_Walking_withSkin.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/goebleinscenario.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/goebleinscenario.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromage.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromage.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromagev2.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromagev2.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromagev3.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromagev3.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromagev4.png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/personnage/ennemi/pyromagev4.png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/scènes/units/gardien/node_2d.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/elf_magic_ronce_impact (1).gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/elf_magic_ronce_impact (1).gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/elf_magic_ronce_impact (1).tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/elf_magic_ronce_impact_sheet (1).png` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/elf_magic_ronce_impact_sheet (1).png.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/elf_magic_ronce_impact.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/sorts/elfe_ronce/roncesvfx.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://asset/vfx/marque_blender.blend1` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://battle/situation_room_controller.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://battle/situation_room_controller.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://characters/warrior/WARRIOR_FIRST_PLAYABLE_INTEGRATION.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/boss_behavior.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/boss_behavior.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/boss_persephone.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/boss_persephone.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/boss_roi_gobelin.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/boss_roi_gobelin.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_aggressive.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_aggressive.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_disruptor.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_disruptor.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_hazard_placer.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_hazard_placer.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_kiter.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_kiter.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_spell_user.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_spell_user.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_support.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/ai/enemy_behavior_support.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/spell_mods/spell_mod_status_on_push.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://core/spell_mods/spell_mod_status_on_push.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/agressif_standard.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/archer_kiter.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/berserker_chasseur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/chamane_soutien.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/hurleur_drain.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/lieur_entrave.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ai_behaviors/pyromage_poseur_de_feu.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/boss_malus_data.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/boss_malus_data.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/charge_statique.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/devoration_temporelle.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/jugement.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/reflet.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/boss_malus/regard_de_pierre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/disciplines/breaker_rank_3.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/disciplines/ravager_rank_3.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/modifiers/crushing_charge.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/modifiers/distant_corruption.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/modifiers/hostile_ground.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/modifiers/long_hook.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/modifiers/resonant_shockwave.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/upgrades/crushing_charge.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/upgrades/distant_corruption.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/upgrades/hostile_ground.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/upgrades/long_hook.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/characters/warrior/upgrades/resonant_shockwave.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/energy/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/energy/energy_type.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/energy/energy_type.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/energy/foi.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/energy/nature.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/energy/ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/energy/rage.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/arme_exploit_ferveur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/arme_frappe_lourde_gratuite.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/arme_marque_vulnerable.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/arme_poussee_plus.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/armure_bouclier_depart.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/armure_survie_letale.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/armure_terrain_allie.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/armure_touche_ferveur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/epique_couronne_cendre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/epique_egide_martyr.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/epique_gantelet_briseur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/epique_voile_spectre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/equipment_data.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/equipment_data.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/talisman_elan_ouverture.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/talisman_empreinte_moins.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/talisman_eveil_soin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/equipment/talisman_resonance_combo.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/autel_oublie.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/champ_bataille.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/forgeron_errant.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/mendiant.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/pacte_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/reliquaire_scelle.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/run_event_data.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/run_event_data.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/source_trouble.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/events/stele_gravee.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/main.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/balance_anubis.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/braise_persistante.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/calice_rage.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/catalyseur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/choeur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/coeur_de_braise.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/contre_garde.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/diapason.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/elan_brut.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/empreinte_tellurique.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/etincelle_ame.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/ferveur_debordante.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/geomancien.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/marteau_jugement.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/oeil_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/reflexe.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/relic_data.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/relic_data.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/sang_froid.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/seconde_nature.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/stigmates.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/relics/transe.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/célérité.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/force.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/repos_equipe.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_calice_de_rage.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_coeur_de_braise.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_coup_epaule_enflamme.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_data.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_data.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_elan_brut.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_etincelle_ame.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_gardien_de_fer.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_lame_d_elan.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_marteau_jugement.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_pacte_de_fer.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_racines_de_secours.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_reflexe.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_seconde_nature.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_soif_de_sang.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_aiguillon.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_appel.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_banniere.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_catalyse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_charge.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_deflagration.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_etincelle.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_glaciation.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_lien_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_onde_de_choc.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_salve.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_sceau.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_second_souffle.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_sort_vague.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_stigmates.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/reward_vengeance.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rewards/vigueur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/bible/arene_mouvante.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/bible/boss_meduse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/bible/catacombes.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/bible/elite_brute.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/bible/la_forge.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/bible/le_gue.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/bible/sanctuaire_objectif.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/boss_colosse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/battle test.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/battle_salle_caverne_iso_v2.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/battle_salle_montagne_iso.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/battle_salle1.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/battle_salle3.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/battle_salletest.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/batttest.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/maps/test_battle_asphodel.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/salle_1.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/salle_2.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/salle_3.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/situation_totem.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/terrain_2.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/rooms/test_tile_set_asphodel.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/acte1_boss_meduse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/acte1_combat_1.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/acte1_elite.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/acte1_repos.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/acte1_tresor.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/event_pacte_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/run_node_data.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/run_nodes/run_node_data.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/runs/elf_prototype_run.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/runs/fixed_trio_prototype_run.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/runs/run_default.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/runs/three_character_validation_run.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spell_mods/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spell_mods/mod_enflamme_arrivee.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/assasin/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/assasin/execution.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/assasin/frappe_basse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/assasin/lame.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/assasin/marque.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/assasin/pas_de_l_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/blizzard.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/bouclier_miroir.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/devoration_cronos.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/foudre_de_thor.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/inondation.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/jugement_anubis.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/morsure_serpent.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/boss/regard_petrifiant.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/carreau de glace.blend` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/carreau de glace.blend1` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://data/spells/draft/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/aiguillon.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/appel.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/banniere.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/catalyse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/charge.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/deflagration.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/etincelle.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/glaciation.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/lien_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/salve.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/sceau.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/second_souffle.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/draft/vague.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/enemies/entrave.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/enemies/fleche.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/enemies/rage_berserker.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/enemies/tir_hurleur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/frappe.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Gardien/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Gardien/bastion.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Gardien/frappe_de_bouclier.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Gardien/garde.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Gardien/provocation.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Gardien/rempart.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/gobelin/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/gobelin/braise_gobeline.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/gobelin/hurlement_drainant.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/gobelin/mêlée_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Guerrier/brise_garde.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Guerrier/coup_épaule.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Guerrier/crochet.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Guerrier/frappe_lourde.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Guerrier/frappe.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Guerrier/onde_de_choc.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Guerrier/sol_corrompu.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Healer/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Healer/floraison.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Healer/graine_vive.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Healer/ronces.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Healer/seve_legere.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Hoplite/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Hoplite/estoc.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Hoplite/mur_de_lances.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Hoplite/phalange.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Hoplite/repousse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Necromant/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Necromant/eclat_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Necromant/faille.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Necromant/lever.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Necromant/moisson.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Perséphone/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Perséphone/étreinte des enfers.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Perséphone/flétrissement.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/Perséphone/tombeau fleuri.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/poison.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/spells/soin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/bruleure.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/catalyse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/enracine.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/etourdi.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/faille.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/jugement.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/lien_ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/petrifie.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/protégé.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/saignement.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/vulnerable_bible.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/core/vulnérable.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/dot.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/flétrissure.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/status/poison.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/banniere.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/foudre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/mur_lances.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/ombre.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/regard.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/rune_amplification.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/rune_soin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/terrain/sanctuaire.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/chassis_assassin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/chassis_gardien.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/chassis_guerrier.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/chassis_healer.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/depart_etincelle_flux.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/depart_instinct_tactique.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/depart_posture_defensive.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/depart_sang_vif.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/fureur.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/hardened_front.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_braise_persistante.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_calice_de_rage.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_coeur_de_braise.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_elan_brut.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_empreinte_tellurique.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_etincelle_ame.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_gardien_de_fer.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_lame_d_elan.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_marteau_jugement.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_pacte_de_fer.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_racines_de_secours.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_reflexe.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_seconde_nature.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_soif_de_sang.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/relique_stigmates.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/reward_epaule_enflamme.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/threshold_identity.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/traits/vengeance.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ui/assassin_hud_theme_refined.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ui/druid_hud_theme_refined.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ui/guardian_hud_theme_refined.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ui/hoplite_hud_theme_refined.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/ui/necromancer_hud_theme_refined.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/alliés/Assassin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/alliés/chevalier.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/alliés/Gardien.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/alliés/healer.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/alliés/Hoplite.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/alliés/Necromant.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/anubis.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/cronos.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/le_colosse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/meduse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/persee.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/pérsephone.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/boss/thor.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/elite_brute_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/elite_pyromage_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/GobTestUnitData_v2.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/GobTestUnitData.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/mage_healer_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_archer_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_berserker_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_brute_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_capitaine_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_chamane_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_eclaireur_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_hurleur_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_lieur_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_porte_bouclier_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_pyromage_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/run_totem_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/serpent_meduse.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://data/units/ennemie/totem_gobelin.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/audits/RUN_V1_PLAYABLE_PASS.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/character_progression_foundation.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/elf_mage_progression_slice.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/elf_rank_two_disciplines.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/elf_vertical_slice_bootstrap.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/fixed_trio_mage_integration.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/mage_elemental_foundation.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/progression_lifecycle.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://docs/prototypes/three_character_party_validation.md` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://gobtest.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://gobtest.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://gobtest.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_0.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_0.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_1.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_1.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_2.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_2.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_3.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1_3.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T_1/Armored Knight with T_1.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_0.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_0.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_1.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_1.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_2.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_2.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_3.jpg` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T_3.jpg.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T.glb` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://imported_models/Armored Knight with T/Armored Knight with T.glb.import` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://output/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://output/imagegen/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://output/imagegen/cave-grid-isometrique.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://output/imagegen/cave-grid-isometrique.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://test_phase_2.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_awakening.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_awakening.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_elf_character_hud_v1.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_elf_character_hud_v1.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_elf_prototype_flow.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_elf_prototype_flow.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_energy_gauge_awakening.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_energy_gauge_awakening.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_energy_gauge_gain.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_energy_gauge_gain.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_gain_table.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_gain_table.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_refined_character_hud_themes.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_refined_character_hud_themes.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_run_v1_playable_pass.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_run_v1_playable_pass.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_skill_tree_consultation_ui.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_skill_tree_consultation_ui.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_skill_tree_refined_multi_character.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_skill_tree_refined_multi_character.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_skill_tree_skin_ui.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://test/unit/test_skill_tree_skin_ui.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tests/characters/elf/screenshots/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://tests/characters/elf/screenshots/elf_cast_end_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_cast_end_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_cast_hold_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_cast_hold_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_cast_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_cast_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_cast_start_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_cast_start_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_death_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_death_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_death_side.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_death_side.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_hit_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_hit_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_idle_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_idle_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_run_in_place_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_run_in_place_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_run_moving_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_run_moving_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_sharpness_comparison.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_sharpness_comparison.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_sharpness_final_cast.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_sharpness_final_cast.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_sharpness_final_idle.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_sharpness_final_idle.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_sharpness_final_walk.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_sharpness_final_walk.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_sockets_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_sockets_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_walk_in_place_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_walk_in_place_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/elf_walk_isometric.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/elf_walk_isometric.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/final_elf_cast_origin.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/final_elf_cast_origin.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/final_elf_death.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/final_elf_death.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/final_elf_moving.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/final_elf_moving.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/final_elf_selected.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/final_elf_selected.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/final_elf_y_sort.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/final_elf_y_sort.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/fireball_cleanup_after.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/fireball_cleanup_after.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/fireball_residue_before.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/fireball_residue_before.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_behind_goblin.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_behind_goblin.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_cast.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_cast.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_death.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_death.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_hit.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_hit.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_idle.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_idle.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_in_front_of_goblin.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_in_front_of_goblin.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_neg_x.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_neg_x.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_neg_y.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_neg_y.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_pos_x.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_pos_x.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_pos_y.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/salle1_elf_walk_pos_y.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_composite_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_composite_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_composite.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_composite.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_viewport_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_viewport_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_linear_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_composite_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_composite_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_composite.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_composite.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_512_nearest_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_composite.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_640x512_linear_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_composite_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_composite_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_composite.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_composite.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_viewport_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_viewport_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768_linear_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_composite.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_768x512_linear_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_before_composite_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_before_composite_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_before_composite.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_before_composite.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_before_viewport_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_before_viewport_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_before_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_before_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_final_idle_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_final_idle_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_final_idle_viewport_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_final_idle_viewport_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_final_idle_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_final_idle_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_final_walk_crop.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_final_walk_crop.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_motion_cast_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_motion_cast_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_motion_death_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_motion_death_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_motion_hit_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_motion_hit_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_motion_idle_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_motion_idle_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/elf/screenshots/sharpness_motion_walk_viewport.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/elf/screenshots/sharpness_motion_walk_viewport.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/run_v1_playable_review.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tests/characters/warrior/run_v1_playable_review.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tests/characters/warrior/RunV1PlayableReview.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tests/characters/warrior/screenshots/` — **GENERATED** — Statut agrégé des fichiers descendants.
+- `res://tests/characters/warrior/screenshots/first_run_elf_mage_warrior.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/first_run_elf_mage_warrior.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_basic_attack.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_basic_attack.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_death.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_death.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_draft_third_slot.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_draft_third_slot.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_hit.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_hit.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_idle_iso.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_idle_iso.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_spell_action.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_spell_action.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_walk_neg_x.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_walk_neg_x.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_walk_neg_y.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_walk_neg_y.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_walk_pos_x.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_walk_pos_x.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_walk_pos_y.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_walk_pos_y.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_y_sort_behind.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_y_sort_behind.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/screenshots/warrior_y_sort_front.png` — **GENERATED** — Cache, import, capture, export ou artefact reproductible.
+- `res://tests/characters/warrior/screenshots/warrior_y_sort_front.png.import` — **GENERATED** — Sidecar Godot de la source classée GENERATED; conserve UID et réglages d'import.
+- `res://tests/characters/warrior/warrior_first_playable_review.mp4` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/build_skill_tree_capture_review.py` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/build_skill_tree_refined_v2_review.ps1` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_clean_hud.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_clean_hud.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_clean_hud.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_refined_character_huds.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_refined_character_huds.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_refined_character_huds.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_skill_tree_refined.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_skill_tree_refined.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/capture_skill_tree_refined.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/sprite_baker/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/sprite_baker/gardien_baker.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://tools/ui/build_refined_hud_contact_sheet.py` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/Fureur_de_combat.tres` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/relique_marteau_jugement.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/relique_marteau_jugement.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_bloodthirst.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_bloodthirst.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_bonus_fervor_on_generation.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_bonus_fervor_on_generation.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_assassin.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_assassin.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_gardien.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_gardien.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_guerrier.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_guerrier.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_healer.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_chassis_healer.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_data.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_data.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_elan_on_turn_start.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_elan_on_turn_start.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_energy_on_generator.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_energy_on_generator.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_factory.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_factory.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_gen_rage_on_hit.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_gen_rage_on_hit.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_hardened_front.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_hardened_front.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_heal_on_awakening.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_heal_on_awakening.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_heal_on_energy_spent.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_heal_on_energy_spent.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_second_nature.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_second_nature.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_shield_on_damage_dealt.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_shield_on_damage_dealt.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_spell_modifier.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_spell_modifier.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_stat_bonus.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_stat_bonus.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_stigmata.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_stigmata.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_threshold.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_threshold.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_vengeance.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait_vengeance.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://traits/trait.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/progression/lab/skill_tree_graybox_lab.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/progression/lab/skill_tree_graybox_lab.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/progression/lab/skill_tree_graybox_lab.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/recraft_hud_v1/preview/elf_hud_clean_preview.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/recraft_hud_v1/preview/elf_hud_clean_preview.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/recraft_hud_v1/preview/elf_hud_clean_preview.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/reward_screen.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/reward_screen.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/RewardScreen.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/run_draft_screen.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/run_draft_screen.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://ui/RunDraftScreen.tscn` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://units/energy_gauge.gd` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.
+- `res://units/energy_gauge.gd.uid` — **DELETE** — Contenu legacy explicitement abandonné; ses références de production ont été migrées avant suppression.

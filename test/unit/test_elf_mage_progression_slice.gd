@@ -5,7 +5,6 @@ const GameManagerScript = preload("res://core/game_manager.gd")
 const ProgressionScreenScript = preload("res://ui/progression/progression_choice_screen.gd")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
-const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
 const MAGE_DISCIPLINE_PATH := "res://data/characters/elf/disciplines/mage.tres"
 const INCANDESCENT_ID := &"elf_mage_incandescent_core"
 const EMBERS_ID := &"elf_mage_persistent_embers"
@@ -26,12 +25,10 @@ func after_each() -> void:
 		manager.free()
 
 
-func _make_run(room_count: int = 2, with_reward: bool = false) -> RunData:
+func _make_run(room_count: int = 2) -> RunData:
 	var run := RunData.new()
 	for _index in range(room_count):
 		run.rooms.append(RoomData.new())
-	if with_reward:
-		run.reward_pool.append(RewardData.new())
 	return run
 
 
@@ -424,15 +421,3 @@ func test_last_room_resolves_progression_before_run_result() -> void:
 	assert_eq(requested_scenes[-1], GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH)
 	manager.choose_progression_upgrade(&"elf", &"mage", 2, INCANDESCENT_ID)
 	assert_eq(requested_scenes[-1], GameManagerScript.RUN_RESULT_SCREEN_PATH)
-
-
-func test_historical_victory_still_routes_to_reward_screen() -> void:
-	manager._build_heroes_from_draft([WARRIOR_PATH], [], [])
-	manager._initialize_run_state(_make_run(2, true))
-	manager.current_room_index = 0
-	var requested_scenes: Array = []
-	manager.scene_change_requested.connect(func(path): requested_scenes.append(path))
-	manager.on_battle_won()
-	assert_true(manager.character_states.is_empty())
-	assert_eq(requested_scenes[-1], GameManagerScript.REWARD_SCREEN_PATH)
-	assert_eq(manager.heroes[0].spells.size(), 8)

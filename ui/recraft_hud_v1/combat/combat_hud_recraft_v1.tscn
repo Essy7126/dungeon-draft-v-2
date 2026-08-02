@@ -289,22 +289,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="EnergyBar" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/BarStack" instance=ExtResource("4_bar")]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="EnergyNameLabel" type="Label" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
 [node name="StatusEffectsContainer" type="HBoxContainer" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="EnergyBarSlot" type="Control" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -336,14 +321,6 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="AttackButton" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ActionButtons" instance=ExtResource("6_button")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="AwakeningButton" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ActionButtons" instance=ExtResource("6_button")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ReactionButton" parent="Root/HudBand/CharacterAnchor/CharacterSection/LeftCenter/CharacterRow/CharacterInfo/ActionButtons" instance=ExtResource("6_button")]
 unique_name_in_owner = true
 layout_mode = 2
 

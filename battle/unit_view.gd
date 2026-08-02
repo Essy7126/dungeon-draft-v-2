@@ -10,13 +10,9 @@ var _sprite: AnimatedSprite2D
 var _facing_row: int = 0
 var _hp_bar: ProgressBar
 var _shield_bar: ProgressBar
-var _fervor_bar: ProgressBar
 var _status_row: HBoxContainer
 var _is_active: bool = false
 var _flash_tween: Tween = null
-var _last_threshold_active: bool = false
-var _threshold_notch: ColorRect
-var _pulse_tween: Tween = null
 var _optional_visual: Node2D = null
 var _optional_visual_cast_pending := false
 var _optional_visual_cast_generation := 0
@@ -31,13 +27,11 @@ var _active_death_callables: Array[Callable] = []
 func setup(p_unit: Unit) -> void:
 	unit = p_unit
 	add_to_group("unit_views")
-	_last_threshold_active = unit.charge_threshold_active
 	_build_visual()
 	unit.hp_changed.connect(_on_hp_changed)
 	unit.died.connect(_on_died)
 	unit.moved.connect(_on_unit_moved)
 	unit.shield_changed.connect(_on_shield_changed)
-	unit.energy_changed.connect(_on_resource_changed)
 	unit.stats_changed.connect(_on_stats_changed)
 	EventBus.basic_attack_performed.connect(_on_attack_performed)
 	EventBus.turn_started.connect(_on_any_turn_started)
@@ -47,6 +41,7 @@ func setup(p_unit: Unit) -> void:
 	EventBus.shield_broken.connect(_on_shield_broken)
 	EventBus.shield_gained.connect(_on_shield_gained)
 	EventBus.status_applied.connect(_on_status_changed)
+	EventBus.status_refreshed.connect(_on_status_changed)
 	EventBus.status_expired.connect(_on_status_expired)
 	_update_all_bars()
 	_update_status_icons()
@@ -129,7 +124,6 @@ func _disconnect_runtime_signals() -> void:
 			[unit.died, _on_died],
 			[unit.moved, _on_unit_moved],
 			[unit.shield_changed, _on_shield_changed],
-			[unit.energy_changed, _on_resource_changed],
 			[unit.stats_changed, _on_stats_changed],
 		]
 		for connection in unit_connections:
@@ -144,6 +138,7 @@ func _disconnect_runtime_signals() -> void:
 		[EventBus.shield_broken, _on_shield_broken],
 		[EventBus.shield_gained, _on_shield_gained],
 		[EventBus.status_applied, _on_status_changed],
+		[EventBus.status_refreshed, _on_status_changed],
 		[EventBus.status_expired, _on_status_expired],
 	]
 	for connection in event_connections:
@@ -168,18 +163,6 @@ func _build_visual() -> void:
 	_shield_bar = _make_bar(Vector2(UNIT_SIZE, 4), Vector2(-UNIT_SIZE / 2.0, -51), Color(1.0, 0.82, 0.30))
 	_shield_bar.visible = false
 	add_child(_shield_bar)
-
-	_fervor_bar = _make_bar(Vector2(UNIT_SIZE, 4), Vector2(-UNIT_SIZE / 2.0, 35), Color(0.86, 0.74, 1.0))
-	add_child(_fervor_bar)
-
-	# Encoche du seuil d'eveil : un trait vertical sur la barre d'ecole,
-	# positionne a awakening_cost / max_energy. Cachee sans energie.
-	_threshold_notch = ColorRect.new()
-	_threshold_notch.size = Vector2(2, 8)
-	_threshold_notch.color = Color(1, 1, 1, 0.9)
-	_threshold_notch.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_threshold_notch.visible = false
-	add_child(_threshold_notch)
 
 	_status_row = HBoxContainer.new()
 	_status_row.position = Vector2(-UNIT_SIZE / 2.0, -66)
@@ -393,7 +376,6 @@ func _make_bar(size: Vector2, pos: Vector2, color: Color) -> ProgressBar:
 func _update_all_bars() -> void:
 	_update_hp_bar()
 	_update_shield_bar()
-	_update_resource_bars()
 
 func _update_hp_bar() -> void:
 	if _hp_bar == null:
@@ -421,47 +403,6 @@ func _update_shield_bar() -> void:
 		_shield_bar.max_value = max(shield, unit.max_hp.get_int())
 		_shield_bar.value = shield
 	queue_redraw()
-
-func _update_resource_bars() -> void:
-	if _fervor_bar == null:
-		return
-	if not unit.has_energy():
-		_fervor_bar.visible = false
-		_threshold_notch.visible = false
-		_set_pulse(false)
-		return
-	var school := unit.energy_type.get_school_color()
-	_fervor_bar.visible = true
-	_fervor_bar.max_value = maxf(1.0, unit.energy_type.max_energy)
-	_fervor_bar.value = unit.current_energy
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = school
-	_fervor_bar.add_theme_stylebox_override("fill", fill)
-	# Encoche du seuil d'eveil, posee a awakening_cost / max_energy.
-	var ratio := clampf(unit.energy_type.awakening_cost / maxf(1.0, unit.energy_type.max_energy), 0.0, 1.0)
-	_threshold_notch.visible = true
-	_threshold_notch.position = Vector2(-UNIT_SIZE / 2.0 + ratio * UNIT_SIZE - 1.0, 33)
-	# "Tu peux t'eveiller" : la barre pulse doucement tant que l'Eveil est
-	# activable (jauge au seuil, pas encore en eveil).
-	_set_pulse(unit.can_activate_awakening())
-	if not _last_threshold_active and unit.charge_threshold_active:
-		_flash(school, 0.35)
-	_last_threshold_active = unit.charge_threshold_active
-	queue_redraw() # le lisere d'eveil vit dans _draw()
-
-# Pulse de luminosite de la barre d'ecole (~1 s de cycle, subtil).
-func _set_pulse(active: bool) -> void:
-	if active:
-		if _pulse_tween != null and _pulse_tween.is_valid():
-			return
-		_pulse_tween = create_tween().set_loops()
-		_pulse_tween.tween_property(_fervor_bar, "modulate", Color(1.35, 1.35, 1.35), 0.5).set_trans(Tween.TRANS_SINE)
-		_pulse_tween.tween_property(_fervor_bar, "modulate", Color(1.0, 1.0, 1.0), 0.5).set_trans(Tween.TRANS_SINE)
-	else:
-		if _pulse_tween != null and _pulse_tween.is_valid():
-			_pulse_tween.kill()
-			_pulse_tween = null
-		_fervor_bar.modulate = Color(1, 1, 1)
 
 func _update_status_icons() -> void:
 	if _status_row == null:
@@ -493,7 +434,6 @@ func set_active(active: bool) -> void:
 ## Applique un materiau lumiere (golden hour) aux visuels du perso pour qu'il se
 ## fonde dans le decor. Parcourt TOUT le sous-arbre et vise les sprites
 ## (Sprite2D / AnimatedSprite2D) + le placeholder iso, peu importe la profondeur.
-## Ignore l'ombre au sol (garde son rendu) ; les barres/jauges (Control) ne sont
 ## pas des sprites, donc naturellement epargnees.
 func set_light_material(mat: Material) -> void:
 	# On pose le materiau sur la racine de l'UnitView, puis on force TOUS les
@@ -639,9 +579,6 @@ func _on_shield_changed(u: Unit) -> void:
 		return
 	_update_shield_bar()
 
-func _on_resource_changed(_unit: Unit) -> void:
-	_update_resource_bars()
-
 func _on_stats_changed(_unit: Unit) -> void:
 	_update_all_bars()
 	_update_status_icons()
@@ -650,7 +587,7 @@ func _on_status_changed(u: Unit, _status_data) -> void:
 	if u == unit:
 		_update_status_icons()
 
-func _on_status_expired(u: Unit, _status_name: String) -> void:
+func _on_status_expired(u: Unit, _status_id: StringName) -> void:
 	if u == unit:
 		_update_status_icons()
 
@@ -709,11 +646,6 @@ func _tooltip_layer():
 	return get_tree().get_first_node_in_group("keyword_tooltip_layer")
 
 func _draw() -> void:
-	# Lisere d'eveil : fin cadre de la couleur d'ecole autour du sprite tant
-	# que l'etat est actif ; disparait a l'expiration (stats_changed relaye).
-	if unit != null and unit.has_energy() and unit.charge_threshold_active:
-		var school := unit.energy_type.get_school_color()
-		draw_rect(Rect2(-UNIT_SIZE / 2.0, -UNIT_SIZE / 2.0, UNIT_SIZE, UNIT_SIZE), Color(school.r, school.g, school.b, 0.9), false, 2.0)
 	if unit != null and unit.current_shield > 0:
 		var ratio := float(unit.current_shield) / float(max(unit.current_shield, unit.max_hp.get_int()))
 		var arc_end := TAU * ratio

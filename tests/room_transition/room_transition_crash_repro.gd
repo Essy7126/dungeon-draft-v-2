@@ -1,6 +1,6 @@
 extends Node
 
-const RUN_DATA := preload("res://data/runs/fixed_trio_prototype_run.tres")
+const RUN_DATA := preload("res://data/runs/first_run.tres")
 const HERO_PATHS := [
 	GameManager.ELF_DATA_PATH,
 	GameManager.MAGE_DATA_PATH,

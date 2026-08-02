@@ -102,7 +102,6 @@ var _lifecycle_generation := 0
 var _deployment: DeploymentController = null
 
 # --- Salle-situation (optionnel) — instancié seulement si la salle est configurée.
-var _situation: SituationRoomController = null
 
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
@@ -180,18 +179,6 @@ func _setup_logic() -> void:
 	_deployment.deployment_completed.connect(_start_battle)
 	# Salle-situation : uniquement si la RoomData la configure (totem defini).
 	# battle ne fait que l'instancier ; toute la logique vit dans le controleur.
-	if room_data != null and room_data.situation_totem != null:
-		_situation = SituationRoomController.new()
-		add_child(_situation)
-		_situation.setup(self, {
-			"totem_data": room_data.situation_totem,
-			"spawn_data": room_data.situation_spawn,
-			"totem_cell": room_data.situation_totem_cell,
-			"spawn_period": room_data.situation_spawn_period,
-			"lava_effect": room_data.situation_lava_effect,
-			"lava_origin": room_data.situation_lava_origin,
-			"lava_cap": room_data.situation_lava_cap,
-		})
 
 # ============================================================
 # IMPORT DU TERRAIN DESSINÉ (TileMapLayer → GridData)
@@ -402,7 +389,6 @@ func _connect_local_action_bar_signals() -> void:
 	_connect_action_bar_signal(action_bar.move_pressed, _on_move_pressed)
 	_connect_action_bar_signal(action_bar.attack_pressed, _on_attack_pressed)
 	_connect_action_bar_signal(action_bar.spell_pressed, _on_spell_pressed)
-	_connect_action_bar_signal(action_bar.awakening_pressed, _on_awakening_pressed)
 	_connect_action_bar_signal(action_bar.end_turn_pressed, _on_end_turn_pressed)
 
 
@@ -525,7 +511,6 @@ func _start_battle() -> void:
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
 	EventBus.unit_pushed.connect(_on_unit_pushed)
 
-	# Les energies et chassis sont prepares par le run (draft d'avant-combat).
 	_reset_combat_resources()
 	_launch_combat()
 
@@ -619,11 +604,8 @@ func _cancel_action_selection_for_active_unit() -> void:
 	turn_state.on_cancel()
 	action_bar.set_active_mode("")
 
-func _sync_unit_terrain(unit: Unit) -> void:
-	if unit == null or terrain_effects == null:
-		return
-	if unit.has_method("set_current_terrain_effect"):
-		unit.set_current_terrain_effect(terrain_effects.get_effect_data(unit.grid_pos))
+func _sync_unit_terrain(_unit: Unit) -> void:
+	pass
 
 func _update_active_highlight(active_unit: Unit) -> void:
 	for unit in _unit_views:
@@ -646,17 +628,10 @@ func _on_attack_pressed() -> void:
 	turn_state.on_attack_button()
 	_refresh_mode_button()
 
-func _on_spell_pressed(spell: Spell, imprinted: bool = false) -> void:
-	turn_state.on_spell_selected(spell, imprinted)
+func _on_spell_pressed(spell: Spell) -> void:
+	turn_state.on_spell_selected(spell)
 	_refresh_mode_button()
 
-func _on_awakening_pressed() -> void:
-	var unit = turn_queue.get_current_unit()
-	if unit == null or unit.team != 0:
-		return
-	if unit.activate_awakening():
-		action_bar.update_info(unit)
-		action_bar.build_spell_buttons(unit)
 func _on_end_turn_pressed() -> void:
 	grid_view.clear_highlights()
 	var unit = turn_queue.get_current_unit()
@@ -671,7 +646,7 @@ func _refresh_mode_button() -> void:
 		TurnState.State.TARGET_MELEE:
 			action_bar.set_active_mode("attack")
 		TurnState.State.TARGET_SPELL:
-			action_bar.set_active_mode("spell", turn_state.selected_spell, turn_state.selected_spell_imprinted)
+			action_bar.set_active_mode("spell", turn_state.selected_spell)
 		_:
 			action_bar.set_active_mode("")
 
@@ -709,7 +684,7 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 	if targetable.has(cell):
 		grid_view.highlight(spell_caster.get_aoe_cells(spell, cell), AOE_COLOR)
 		if inspect_panel != null:
-			inspect_panel.show_spell_preview(unit, spell, cell, grid, spell_caster, turn_state.selected_spell_imprinted)
+			inspect_panel.show_spell_preview(unit, spell, cell, grid, spell_caster)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
@@ -891,14 +866,14 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 # INTENTIONS — SORTS
 # ============================================================
 
-func _on_request_show_spell_range(spell: Spell, _imprinted: bool = false) -> void:
+func _on_request_show_spell_range(spell: Spell) -> void:
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
 	grid_view.clear_highlights()
 	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
 
-func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = false) -> void:
+func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	if _spell_resolution_pending or _closing or _battle_over:
 		return
 	var unit = turn_queue.get_current_unit()
@@ -917,7 +892,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = fals
 				return
 		elif view.has_method("face_grid_direction"):
 			view.face_grid_direction(cell - unit.grid_pos)
-	var context := spell_caster.begin_cast(unit, spell, cell, imprinted)
+	var context := spell_caster.begin_cast(unit, spell, cell)
 	if context.failed:
 		_spell_resolution_pending = false
 		return
