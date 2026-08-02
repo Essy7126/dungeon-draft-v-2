@@ -432,7 +432,12 @@ func _realign_foot_deferred() -> void:
 
 
 func _realign_foot_after_frame() -> void:
-	await get_tree().process_frame
+	if not is_inside_tree():
+		return
+	var tree := get_tree()
+	if tree == null:
+		return
+	await tree.process_frame
 	if not is_inside_tree():
 		return
 	_foot_pixel = camera.unproject_position(character_world.to_global(Vector3.ZERO))

@@ -57,6 +57,7 @@ class EnemyRunnerBattleSpy extends Node:
 	var grid: GridData
 	var grid_view := Node2D.new()
 	var _unit_views := {}
+	var _battle_over := false
 
 	func _init() -> void:
 		add_child(grid_view)

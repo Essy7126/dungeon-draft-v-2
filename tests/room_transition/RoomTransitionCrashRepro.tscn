@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/room_transition/room_transition_crash_repro.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/battle_salle1_iso.tscn" id="2_battle"]
+
+[node name="RoomTransitionCrashRepro" type="Node"]
+script = ExtResource("1_controller")
+
+[node name="Battle" parent="." instance=ExtResource("2_battle")]

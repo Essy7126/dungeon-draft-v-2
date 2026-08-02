@@ -23,6 +23,10 @@ var _optional_visual_cast_generation := 0
 var _optional_visual_action_pending := false
 var _optional_visual_action_finished := false
 var _suppress_next_attack_event_visual := false
+var _lifecycle_generation := 0
+var _closing := false
+var _active_release_callables: Array[Callable] = []
+var _active_death_callables: Array[Callable] = []
 
 func setup(p_unit: Unit) -> void:
 	unit = p_unit
@@ -49,11 +53,102 @@ func setup(p_unit: Unit) -> void:
 
 
 func _exit_tree() -> void:
+	_closing = true
+	_lifecycle_generation += 1
+	cancel_pending_visual_actions()
+	_disconnect_optional_visual_waits()
+	_disconnect_runtime_signals()
+
+
+func cancel_pending_visual_actions() -> void:
 	_optional_visual_cast_generation += 1
 	_optional_visual_cast_pending = false
 	_optional_visual_action_pending = false
 	_optional_visual_action_finished = false
 	_suppress_next_attack_event_visual = false
+	_disconnect_release_callables()
+
+
+func _is_async_context_valid(generation: int) -> bool:
+	return generation == _lifecycle_generation \
+		and not _closing \
+		and is_inside_tree()
+
+
+func _wait_one_safe_process_frame(generation: int) -> bool:
+	if not _is_async_context_valid(generation):
+		return false
+	var tree := get_tree()
+	if tree == null:
+		return false
+	await tree.process_frame
+	return _is_async_context_valid(generation)
+
+
+func _disconnect_release_callable(callback: Callable) -> void:
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_signal("cast_release_reached") \
+			and _optional_visual.is_connected("cast_release_reached", callback):
+		_optional_visual.disconnect("cast_release_reached", callback)
+	_active_release_callables.erase(callback)
+
+
+func _disconnect_release_callables() -> void:
+	for callback in _active_release_callables.duplicate():
+		_disconnect_release_callable(callback)
+	_active_release_callables.clear()
+
+
+func _disconnect_death_callable(callback: Callable) -> void:
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_signal("death_animation_finished") \
+			and _optional_visual.is_connected("death_animation_finished", callback):
+		_optional_visual.disconnect("death_animation_finished", callback)
+	_active_death_callables.erase(callback)
+
+
+func _disconnect_optional_visual_waits() -> void:
+	_disconnect_release_callables()
+	for callback in _active_death_callables.duplicate():
+		_disconnect_death_callable(callback)
+	_active_death_callables.clear()
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_signal("animation_finished") \
+			and _optional_visual.animation_finished.is_connected(
+				_on_optional_visual_action_finished
+			):
+		_optional_visual.animation_finished.disconnect(
+			_on_optional_visual_action_finished
+		)
+
+
+func _disconnect_runtime_signals() -> void:
+	if is_instance_valid(unit):
+		var unit_connections := [
+			[unit.hp_changed, _on_hp_changed],
+			[unit.died, _on_died],
+			[unit.moved, _on_unit_moved],
+			[unit.shield_changed, _on_shield_changed],
+			[unit.energy_changed, _on_resource_changed],
+			[unit.stats_changed, _on_stats_changed],
+		]
+		for connection in unit_connections:
+			if connection[0].is_connected(connection[1]):
+				connection[0].disconnect(connection[1])
+	var event_connections := [
+		[EventBus.basic_attack_performed, _on_attack_performed],
+		[EventBus.turn_started, _on_any_turn_started],
+		[EventBus.damage_dealt, _on_damage_dealt],
+		[EventBus.unit_healed, _on_unit_healed],
+		[EventBus.shield_absorbed, _on_shield_absorbed],
+		[EventBus.shield_broken, _on_shield_broken],
+		[EventBus.shield_gained, _on_shield_gained],
+		[EventBus.status_applied, _on_status_changed],
+		[EventBus.status_expired, _on_status_expired],
+	]
+	for connection in event_connections:
+		if connection[0].is_connected(connection[1]):
+			connection[0].disconnect(connection[1])
 
 func _build_visual() -> void:
 	_sprite = AnimatedSprite2D.new()
@@ -127,6 +222,8 @@ func get_cast_effect_origin_global() -> Vector2:
 ## Synchronisation visuelle seulement : le calcul du sort reste dans
 ## SpellCaster. Le bool false ignore un second clic pendant le meme wind-up.
 func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
+	if _closing or not is_inside_tree() or not is_instance_valid(unit):
+		return false
 	face_grid_direction(target_cell - unit.grid_pos)
 	if not is_instance_valid(_optional_visual):
 		return true
@@ -155,37 +252,45 @@ func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 		return true
 	var release_state := {"released": false}
 	var mark_released := func() -> void:
-		if cast_generation == _optional_visual_cast_generation:
+		if cast_generation == _optional_visual_cast_generation \
+				and not _closing:
 			release_state["released"] = true
 	_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
+	_active_release_callables.append(mark_released)
 	var deadline := Time.get_ticks_msec() + 5000
+	var lifecycle_generation := _lifecycle_generation
 	while cast_generation == _optional_visual_cast_generation \
 			and not release_state["released"] \
-			and unit.is_alive \
+			and is_instance_valid(unit) and unit.is_alive \
 			and is_instance_valid(_optional_visual) \
 			and Time.get_ticks_msec() < deadline:
-		await get_tree().process_frame
-	if is_instance_valid(_optional_visual) \
-			and _optional_visual.is_connected("cast_release_reached", mark_released):
-		_optional_visual.disconnect("cast_release_reached", mark_released)
-	if cast_generation == _optional_visual_cast_generation:
+		if not await _wait_one_safe_process_frame(lifecycle_generation):
+			break
+	_disconnect_release_callable(mark_released)
+	var context_active := _is_async_context_valid(lifecycle_generation) \
+		and cast_generation == _optional_visual_cast_generation
+	if context_active:
 		_optional_visual_cast_pending = false
-	if not release_state["released"] \
+	if context_active and not release_state["released"] \
 			and is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("cancel_spell_action"):
 		_optional_visual.cancel_spell_action()
-	if not release_state["released"]:
+	if context_active and not release_state["released"]:
 		_optional_visual_action_pending = false
-	if not release_state["released"] and unit.is_alive:
+	if context_active and not release_state["released"] \
+			and is_instance_valid(unit) and unit.is_alive \
+			and Time.get_ticks_msec() >= deadline:
 		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le cast visuel est annule." % unit.unit_name)
-	return cast_generation == _optional_visual_cast_generation \
-		and unit.is_alive \
+	return context_active \
+		and is_instance_valid(unit) and unit.is_alive \
 		and release_state["released"]
 
 
 ## Joue l'attaque jusqu'a son impact artistique. Les degats restent entierement
 ## dans le systeme de combat et ne sont appliques qu'apres le retour true.
 func prepare_basic_attack_visual(target_cell: Vector2i) -> bool:
+	if _closing or not is_inside_tree() or not is_instance_valid(unit):
+		return false
 	face_grid_direction(target_cell - unit.grid_pos)
 	if not is_instance_valid(_optional_visual) \
 			or not _optional_visual.has_method("play_basic_attack"):
@@ -208,27 +313,34 @@ func prepare_basic_attack_visual(target_cell: Vector2i) -> bool:
 		return true
 	var release_state := {"released": false}
 	var mark_released := func() -> void:
-		if cast_generation == _optional_visual_cast_generation:
+		if cast_generation == _optional_visual_cast_generation \
+				and not _closing:
 			release_state["released"] = true
 	_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
+	_active_release_callables.append(mark_released)
 	var deadline := Time.get_ticks_msec() + 5000
+	var lifecycle_generation := _lifecycle_generation
 	while cast_generation == _optional_visual_cast_generation \
 			and not release_state["released"] \
-			and unit.is_alive \
+			and is_instance_valid(unit) and unit.is_alive \
 			and is_instance_valid(_optional_visual) \
 			and Time.get_ticks_msec() < deadline:
-		await get_tree().process_frame
-	if is_instance_valid(_optional_visual) \
-			and _optional_visual.is_connected("cast_release_reached", mark_released):
-		_optional_visual.disconnect("cast_release_reached", mark_released)
-	if cast_generation == _optional_visual_cast_generation:
+		if not await _wait_one_safe_process_frame(lifecycle_generation):
+			break
+	_disconnect_release_callable(mark_released)
+	var context_active := _is_async_context_valid(lifecycle_generation) \
+		and cast_generation == _optional_visual_cast_generation
+	if context_active:
 		_optional_visual_cast_pending = false
-	if not release_state["released"]:
+	if context_active and not release_state["released"]:
 		_optional_visual_action_pending = false
-	if not release_state["released"] and unit.is_alive:
+	if context_active and not release_state["released"] \
+			and is_instance_valid(unit) and unit.is_alive \
+			and Time.get_ticks_msec() >= deadline:
 		push_warning("UnitView: impact d'attaque absent apres 5 s pour %s." % unit.unit_name)
-	var released: bool = cast_generation == _optional_visual_cast_generation \
-		and unit.is_alive and release_state["released"]
+	var released: bool = context_active \
+		and is_instance_valid(unit) and unit.is_alive \
+		and release_state["released"]
 	if released:
 		_suppress_next_attack_event_visual = true
 	return released
@@ -239,12 +351,21 @@ func wait_for_action_visual_finished(timeout_msec: int = 8000) -> void:
 	if not _optional_visual_action_pending:
 		_suppress_next_attack_event_visual = false
 		return
+	var lifecycle_generation := _lifecycle_generation
+	var cast_generation := _optional_visual_cast_generation
 	var deadline := Time.get_ticks_msec() + maxi(timeout_msec, 1)
 	while not _optional_visual_action_finished \
+			and cast_generation == _optional_visual_cast_generation \
 			and is_instance_valid(_optional_visual) \
 			and Time.get_ticks_msec() < deadline:
-		await get_tree().process_frame
-	if not _optional_visual_action_finished and is_instance_valid(_optional_visual):
+		if not await _wait_one_safe_process_frame(lifecycle_generation):
+			return
+	if not _is_async_context_valid(lifecycle_generation) \
+			or cast_generation != _optional_visual_cast_generation:
+		return
+	if not _optional_visual_action_finished \
+			and is_instance_valid(_optional_visual) \
+			and Time.get_ticks_msec() >= deadline:
 		push_warning("UnitView: recuperation visuelle incomplete pour %s." % unit.unit_name)
 	_optional_visual_action_pending = false
 	_optional_visual_action_finished = false
@@ -484,6 +605,8 @@ func _on_any_turn_started(_u) -> void:
 	_play_idle()
 
 func _on_died(_unit: Unit) -> void:
+	cancel_pending_visual_actions()
+	var lifecycle_generation := _lifecycle_generation
 	if is_instance_valid(_optional_visual):
 		if not _optional_visual.has_signal("death_animation_finished"):
 			push_warning("UnitView: visuel optionnel sans death_animation_finished pour %s; il reste affiche." % unit.unit_name)
@@ -491,22 +614,25 @@ func _on_died(_unit: Unit) -> void:
 		var death_state := {"finished": false}
 		var mark_finished := func() -> void: death_state["finished"] = true
 		_optional_visual.connect("death_animation_finished", mark_finished, CONNECT_ONE_SHOT)
+		_active_death_callables.append(mark_finished)
 		var deadline := Time.get_ticks_msec() + 8000
 		while not death_state["finished"] and Time.get_ticks_msec() < deadline:
-			await get_tree().process_frame
-		if is_instance_valid(_optional_visual) \
-				and _optional_visual.is_connected("death_animation_finished", mark_finished):
-			_optional_visual.disconnect("death_animation_finished", mark_finished)
+			if not await _wait_one_safe_process_frame(lifecycle_generation):
+				break
+		_disconnect_death_callable(mark_finished)
+		if not _is_async_context_valid(lifecycle_generation):
+			return
 		if death_state["finished"]:
 			queue_free()
-		else:
+		elif Time.get_ticks_msec() >= deadline:
 			push_warning("UnitView: Death n'a pas termine en 8 s pour %s; le visuel est conserve." % unit.unit_name)
 		return
 	if _sprite != null and unit.sprite_frames != null \
 			and "death" in unit.sprite_frames.get_animation_names():
 		_sprite.play("death")
 		await _sprite.animation_finished
-	queue_free()
+	if _is_async_context_valid(lifecycle_generation):
+		queue_free()
 
 func _on_shield_changed(u: Unit) -> void:
 	if u != unit:

@@ -93,6 +93,8 @@ var _uses_persistent_action_bar := false
 
 # --- Fin de combat ---
 var _battle_over: bool = false
+var _closing := false
+var _lifecycle_generation := 0
 
 # --- Phase de déploiement (placement manuel des héros, façon Dofus) ---
 # La logique vit dans son propre contrôleur (composition). battle.gd l'instancie,
@@ -109,6 +111,22 @@ const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
 
 # Durée d'affichage de l'écran de fin avant de rendre la main au run.
 const END_SCREEN_DELAY := 1.5
+
+
+func _is_operation_current(generation: int) -> bool:
+	return generation == _lifecycle_generation \
+		and not _closing \
+		and is_inside_tree()
+
+
+func _wait_battle_seconds_safe(seconds: float, generation: int) -> bool:
+	if not _is_operation_current(generation):
+		return false
+	var tree := get_tree()
+	if tree == null:
+		return false
+	await tree.create_timer(maxf(seconds, 0.001)).timeout
+	return _is_operation_current(generation)
 
 func _ready() -> void:
 	# La salle vient du run en cours. On la lit AVANT de construire la logique,
@@ -535,8 +553,9 @@ func _on_unit_pushed(unit: Unit, _from: Vector2i, to_pos: Vector2i, _collision: 
 		view.position = grid_cell_to_parent_local(to_pos, view.get_parent())
 
 func _on_turn_started(unit: Unit) -> void:
-	if _battle_over:
+	if _battle_over or _closing or not is_instance_valid(unit):
 		return
+	var lifecycle_generation := _lifecycle_generation
 
 	# Un ciblage appartient exclusivement au personnage qui l'a ouvert. Il est
 	# annule avant de remplacer le HUD, y compris lors d'un passage allie -> allie.
@@ -561,8 +580,9 @@ func _on_turn_started(unit: Unit) -> void:
 		DebugLogger.debug(DebugLogger.LogCategory.TURN, "%s est stun, passe son tour" % unit.unit_name)
 		print("%s est stun et passe son tour." % unit.unit_name)
 		unit.tick_statuses()
-		await get_tree().create_timer(0.6).timeout
-		if not _battle_over:
+		if not await _wait_battle_seconds_safe(0.6, lifecycle_generation):
+			return
+		if not _battle_over and is_instance_valid(turn_queue):
 			turn_queue.advance()
 		return
 
@@ -575,6 +595,9 @@ func _on_turn_started(unit: Unit) -> void:
 		turn_state.begin_enemy_turn()
 		action_bar.set_player_controls_enabled(false)
 		await _enemy_turn.run(unit)
+		if not _is_operation_current(lifecycle_generation) \
+				or not is_instance_valid(unit):
+			return
 		unit.tick_statuses()
 		if not _battle_over:
 			turn_queue.advance()
@@ -711,6 +734,8 @@ func _on_request_clear_highlights() -> void:
 	grid_view.clear_highlights()
 
 func _on_request_move_to(cell: Vector2i) -> void:
+	if _closing or _battle_over:
+		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null:
 		return
@@ -724,7 +749,10 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	grid.move_unit(unit.grid_pos, cell)
 	unit.grid_pos = cell
 	turn_state.begin_animating()
+	var lifecycle_generation := _lifecycle_generation
 	await _animate_move(unit, path)
+	if not _is_operation_current(lifecycle_generation):
+		return
 	turn_state.end_animating()
 	action_bar.update_info(unit)
 
@@ -733,6 +761,9 @@ func _on_request_move_to(cell: Vector2i) -> void:
 # vérifie is_instance_valid(view) ET unit.is_alive avant/après chaque await.
 # Sans ça : erreur "Freed Object" + tour figé (cause des freezes passés).
 func _animate_move(unit: Unit, path: Array) -> void:
+	if _closing or _battle_over:
+		return
+	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
@@ -755,7 +786,8 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		)
 		await tween.finished
 		# La vue a pu être libérée pendant l'await.
-		if not is_instance_valid(view):
+		if not _is_operation_current(lifecycle_generation) \
+				or not is_instance_valid(view):
 			return
 		terrain_effects.on_enter_cell(unit, path[i])
 		_sync_unit_terrain(unit)
@@ -787,6 +819,8 @@ func _get_attackable_cells(unit: Unit) -> Array:
 	return result
 
 func _on_request_attack(cell: Vector2i) -> void:
+	if _closing or _battle_over:
+		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
 		turn_state.set_state(TurnState.State.IDLE)
@@ -802,10 +836,11 @@ func _on_request_attack(cell: Vector2i) -> void:
 		return
 	var view = _unit_views.get(unit)
 	var has_action_visual := false
+	var lifecycle_generation := _lifecycle_generation
 	turn_state.begin_animating()
 	if is_instance_valid(view) and view.has_method("prepare_basic_attack_visual"):
 		var visual_ready: bool = await view.prepare_basic_attack_visual(cell)
-		if not visual_ready:
+		if not visual_ready or not _is_operation_current(lifecycle_generation):
 			turn_state.end_animating()
 			return
 		has_action_visual = view.has_method("has_optional_visual") \
@@ -820,16 +855,23 @@ func _on_request_attack(cell: Vector2i) -> void:
 		Spell.Element.NONE)
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(unit, target)
+	if not _is_operation_current(lifecycle_generation):
+		return
 	if has_action_visual and is_instance_valid(view) \
 			and view.has_method("wait_for_action_visual_finished"):
 		await view.wait_for_action_visual_finished()
 	else:
 		await _animate_attack(unit, target)
+	if not _is_operation_current(lifecycle_generation):
+		return
 	turn_state.end_animating()
 	action_bar.update_info(unit)
 
 # Animation d'attaque BLINDÉE (accès .get() + vérif de validité).
 func _animate_attack(unit: Unit, target: Unit) -> void:
+	if _closing or _battle_over:
+		return
+	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
@@ -842,6 +884,8 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 	tween.tween_property(view, "position", bump, 0.1)
 	tween.tween_property(view, "position", start, 0.1)
 	await tween.finished
+	if not _is_operation_current(lifecycle_generation):
+		return
 
 # ============================================================
 # INTENTIONS — SORTS
@@ -855,7 +899,7 @@ func _on_request_show_spell_range(spell: Spell, _imprinted: bool = false) -> voi
 	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
 
 func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = false) -> void:
-	if _spell_resolution_pending:
+	if _spell_resolution_pending or _closing or _battle_over:
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
@@ -863,11 +907,12 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = fals
 	if not spell_caster.is_valid_target(unit, spell, cell):
 		return
 	_spell_resolution_pending = true
+	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
 		if view.has_method("prepare_spell_visual"):
 			var visual_ready: bool = await view.prepare_spell_visual(cell, spell)
-			if not visual_ready:
+			if not visual_ready or not _is_operation_current(lifecycle_generation):
 				_spell_resolution_pending = false
 				return
 		elif view.has_method("face_grid_direction"):
@@ -885,7 +930,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i, imprinted: bool = fals
 
 
 func _on_delayed_spell_impact(context: CastContext) -> void:
-	if context == null or spell_caster == null:
+	if _closing or _battle_over or context == null or spell_caster == null:
 		_spell_resolution_pending = false
 		return
 	var report := spell_caster.resolve_cast(context)
@@ -894,7 +939,7 @@ func _on_delayed_spell_impact(context: CastContext) -> void:
 
 func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 	_spell_resolution_pending = false
-	if report.get("failed", false):
+	if _closing or _battle_over or report.get("failed", false):
 		return
 	if is_instance_valid(grid_view):
 		grid_view.queue_redraw()
@@ -906,12 +951,37 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 
 
 func _exit_tree() -> void:
+	_begin_battle_shutdown()
 	if _uses_persistent_action_bar:
 		GameManager.unbind_combat_context(self)
 	_uses_persistent_action_bar = false
 	_spell_resolution_pending = false
 	if is_instance_valid(_spell_impact_scheduler):
 		_spell_impact_scheduler.cancel_all()
+
+
+func _begin_battle_shutdown() -> void:
+	if not _closing:
+		_closing = true
+		_lifecycle_generation += 1
+	if is_instance_valid(_enemy_turn):
+		_enemy_turn.cancel_pending_actions()
+	if turn_queue != null \
+			and turn_queue.turn_started.is_connected(_on_turn_started):
+		turn_queue.turn_started.disconnect(_on_turn_started)
+	for view in _unit_views.values():
+		if is_instance_valid(view) \
+				and view.has_method("cancel_pending_visual_actions"):
+			view.cancel_pending_visual_actions()
+	if is_instance_valid(_spell_impact_scheduler):
+		_spell_impact_scheduler.cancel_all()
+	_spell_resolution_pending = false
+	var vfx_layer := get_node_or_null("VFXLayer")
+	if is_instance_valid(vfx_layer):
+		for child in vfx_layer.get_children():
+			child.queue_free()
+	if is_instance_valid(grid_view):
+		VFXManager.unregister_battle_view(grid_view)
 
 func _on_round_started(number: int) -> void:
 	DebugLogger.set_turn(number)
@@ -946,16 +1016,16 @@ func _end_battle(victory: bool) -> void:
 	if _battle_over:
 		return
 	_battle_over = true
-	grid_view.clear_highlights()
-	action_bar.set_player_controls_enabled(false)
+	_begin_battle_shutdown()
+	if is_instance_valid(grid_view):
+		grid_view.clear_highlights()
+	if is_instance_valid(action_bar):
+		action_bar.set_player_controls_enabled(false)
 	_show_end_screen(victory)
 
-	# On laisse voir l'écran un instant, puis on rend la main au run.
-	await get_tree().create_timer(END_SCREEN_DELAY).timeout
-	if victory:
-		GameManager.on_battle_won()
-	else:
-		GameManager.on_battle_lost()
+	# Le délai est possédé par le GameManager persistant. La Battle peut donc
+	# quitter l'arbre sans qu'une coroutine locale ne tente de reprendre.
+	GameManager.schedule_battle_outcome(victory, END_SCREEN_DELAY)
 
 func _show_end_screen(victory: bool) -> void:
 	var layer = CanvasLayer.new()

@@ -6,6 +6,10 @@ var _battle_view : Node = null
 func register_battle_view(view: Node) -> void:
 	_battle_view = view
 
+func unregister_battle_view(view: Node = null) -> void:
+	if view == null or _battle_view == view:
+		_battle_view = null
+
 func _ready() -> void:
 	EventBus.spell_cast.connect(_on_spell_cast)
 	EventBus.status_applied.connect(_on_status_applied)
@@ -20,12 +24,17 @@ func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 	if spell.vfx_scene == null:
 		return null
-	if _battle_view == null:
+	if not is_instance_valid(_battle_view) or not _battle_view.is_inside_tree():
+		_battle_view = null
 		return null
 	var caster_view_pos := _caster_effect_origin(caster)
 	var target_position := _grid_cell_global(cell)
 	var vfx = spell.vfx_scene.instantiate()
-	_vfx_parent().add_child(vfx)
+	var parent := _vfx_parent()
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		vfx.free()
+		return null
+	parent.add_child(vfx)
 	if spell.vfx_placement == Spell.VfxPlacement.TARGET_CELL:
 		if vfx is Node2D:
 			(vfx as Node2D).global_position = target_position
@@ -38,8 +47,11 @@ func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 	return vfx
 
 func _caster_effect_origin(caster: Unit) -> Vector2:
-	if _battle_view != null and _battle_view.get_tree() != null:
-		for candidate in _battle_view.get_tree().get_nodes_in_group("unit_views"):
+	if is_instance_valid(_battle_view) and _battle_view.is_inside_tree():
+		var tree := _battle_view.get_tree()
+		if tree == null:
+			return _grid_cell_global(caster.grid_pos)
+		for candidate in tree.get_nodes_in_group("unit_views"):
 			if candidate.get("unit") == caster \
 					and candidate.has_method("get_cast_effect_origin_global"):
 				return candidate.get_cast_effect_origin_global()
@@ -48,7 +60,8 @@ func _caster_effect_origin(caster: Unit) -> Vector2:
 func _on_status_applied(unit: Unit, status_data: StatusData) -> void:
 	if status_data.vfx_scene == null:
 		return
-	if _battle_view == null:
+	if not is_instance_valid(_battle_view) or not _battle_view.is_inside_tree():
+		_battle_view = null
 		return
 	var pos := _grid_cell_global(unit.grid_pos)
 	var vfx = status_data.vfx_scene.instantiate()
@@ -64,6 +77,8 @@ func _grid_cell_global(cell: Vector2i) -> Vector2:
 	return _battle_view.to_global(local_position)
 
 func _vfx_parent() -> Node:
+	if not is_instance_valid(_battle_view):
+		return null
 	var battle_root := _battle_view.get_parent()
 	if battle_root != null:
 		var layer := battle_root.get_node_or_null("VFXLayer")
