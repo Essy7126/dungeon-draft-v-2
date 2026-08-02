@@ -56,10 +56,10 @@ node_icons = {
 &"elf_archer_transpiercing_bolt": ExtResource("12_pierce"),
 &"elf_assassin_dans_le_dos": ExtResource("4_damage"),
 &"elf_assassin_lame_venimeuse": ExtResource("28_poison"),
-&"elf_healer_seve_abondante": ExtResource("14_heal"),
 &"elf_healer_ecorce_protectrice": ExtResource("15_defense"),
-&"elf_mage_cur_incandescent": ExtResource("4_damage"),
-&"elf_mage_braises_persistantes": ExtResource("13_terrain")
+&"elf_healer_seve_abondante": ExtResource("14_heal"),
+&"elf_mage_braises_persistantes": ExtResource("13_terrain"),
+&"elf_mage_cur_incandescent": ExtResource("4_damage")
 }
 semantic_icons = {
 &"area_or_pierce": ExtResource("12_pierce"),
@@ -84,28 +84,28 @@ branch_badges = {
 &"elf:assassin": ExtResource("21_elf_assassin"),
 &"elf:healer": ExtResource("23_elf_healer"),
 &"elf:mage": ExtResource("22_elf_mage"),
-&"mage:mage_geomancy": ExtResource("27_mage_earth"),
-&"mage:mage_pyromancy": ExtResource("24_mage_fire"),
 &"mage:mage_cryomancy": ExtResource("25_mage_ice"),
 &"mage:mage_fulguromancy": ExtResource("26_mage_lightning"),
-&"warrior:warrior_breaker": ExtResource("29_warrior_breaker"),
+&"mage:mage_geomancy": ExtResource("27_mage_earth"),
+&"mage:mage_pyromancy": ExtResource("24_mage_fire"),
 &"warrior:warrior_assault": ExtResource("30_warrior_assault"),
-&"warrior:warrior_fury": ExtResource("31_warrior_fury"),
-&"warrior:warrior_bulwark": ExtResource("32_warrior_bulwark")
+&"warrior:warrior_breaker": ExtResource("29_warrior_breaker"),
+&"warrior:warrior_bulwark": ExtResource("32_warrior_bulwark"),
+&"warrior:warrior_fury": ExtResource("31_warrior_fury")
 }
 root_icons = {
 &"elf:archer": ExtResource("20_elf_archer"),
 &"elf:assassin": ExtResource("21_elf_assassin"),
 &"elf:healer": ExtResource("23_elf_healer"),
 &"elf:mage": ExtResource("22_elf_mage"),
-&"mage:mage_geomancy": ExtResource("27_mage_earth"),
-&"mage:mage_pyromancy": ExtResource("24_mage_fire"),
 &"mage:mage_cryomancy": ExtResource("25_mage_ice"),
 &"mage:mage_fulguromancy": ExtResource("26_mage_lightning"),
-&"warrior:warrior_breaker": ExtResource("29_warrior_breaker"),
+&"mage:mage_geomancy": ExtResource("27_mage_earth"),
+&"mage:mage_pyromancy": ExtResource("24_mage_fire"),
 &"warrior:warrior_assault": ExtResource("30_warrior_assault"),
-&"warrior:warrior_fury": ExtResource("31_warrior_fury"),
-&"warrior:warrior_bulwark": ExtResource("32_warrior_bulwark")
+&"warrior:warrior_breaker": ExtResource("29_warrior_breaker"),
+&"warrior:warrior_bulwark": ExtResource("32_warrior_bulwark"),
+&"warrior:warrior_fury": ExtResource("31_warrior_fury")
 }
 capstone_icons = {
 &"elf_archer_perfect_shot": ExtResource("4_damage"),

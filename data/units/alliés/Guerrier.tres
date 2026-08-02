@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="5_sprite"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/frappe_lourde.tres" id="10_heavy"]
+[ext_resource type="Resource" uid="uid://0flkpto1jkby" path="res://data/spells/Guerrier/frappe_lourde.tres" id="10_heavy"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/charge.tres" id="16_charge"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/tourbillon.tres" id="17_whirlwind"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/garde.tres" id="18_guard"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorIsoUnitView.tscn" id="20_combat_visual"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorVisual3D.tscn" id="21_preview_visual"]
 [ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="22_discipline_type"]
-[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/breaker.tres" id="23_breaker"]
+[ext_resource type="Resource" uid="uid://cd061iquu3wbs" path="res://data/characters/warrior/disciplines/breaker.tres" id="23_breaker"]
 [ext_resource type="Resource" path="res://data/characters/warrior/disciplines/assault.tres" id="24_assault"]
 [ext_resource type="Resource" path="res://data/characters/warrior/disciplines/fury.tres" id="25_fury"]
 [ext_resource type="Resource" path="res://data/characters/warrior/disciplines/bulwark.tres" id="26_bulwark"]
@@ -32,7 +32,6 @@ unit_id = &"warrior"
 unit_name = "Guerrier"
 description = "Combattant de mêlée qui alterne brutalité, assaut, furie et protection."
 attack_power = 18
-force = 0.0
 sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
 visual_scene = ExtResource("20_combat_visual")

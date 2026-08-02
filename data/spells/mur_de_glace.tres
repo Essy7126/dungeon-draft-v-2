@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Spell" format=3 uid="uid://bpl7jcy8ix86j"]
 
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="1_rv1ov"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_s2kpe"]
 [ext_resource type="Resource" uid="uid://b6utveihynose" path="res://data/terrain/glace.tres" id="2_wlyno"]
 

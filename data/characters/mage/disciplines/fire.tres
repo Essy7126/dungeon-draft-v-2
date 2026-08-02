@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="DisciplineData" format=3]
+[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://dh8b4ap3c5e0w"]
 
-[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_xauly"]
-[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_ijbiy"]
-[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_1h2yo"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_4o0o6"]
-[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_h0kry"]
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_4e54h"]
+[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="1_xauly"]
+[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_ijbiy"]
+[ext_resource type="Script" uid="uid://dfwja3hug8lax" path="res://data/characters/skill_tree_node_data.gd" id="3_1h2yo"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_4o0o6"]
+[ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_h0kry"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="6_4e54h"]
 
 [sub_resource type="Resource" id="Resource_1k3vt"]
 script = ExtResource("1_xauly")

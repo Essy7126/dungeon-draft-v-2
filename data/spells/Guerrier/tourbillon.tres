@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://4cpddbesqcxb"]
 
-[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
-[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="2_modifier"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_boijo"]
+[ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="2_modifier"]
+[ext_resource type="Texture2D" uid="uid://dyvy32pjjepak" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="3_icon"]
 
 [sub_resource type="Resource" id="WhirlwindDamageModifier"]
 script = ExtResource("2_modifier")
@@ -22,7 +23,6 @@ spell_range = 0
 can_target_enemy = false
 can_target_self = true
 aoe_shape = 2
-aoe_size = 1
 damage_type = 0
 push_affected_units = true
-modifiers = Array[SpellModifier]([SubResource("WhirlwindDamageModifier")])
+modifiers = Array[ExtResource("2_boijo")]([SubResource("WhirlwindDamageModifier")])

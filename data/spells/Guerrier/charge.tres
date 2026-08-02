@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://d2gmr88ea1t1q"]
 
-[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
-[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="2_modifier"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_b5at6"]
+[ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="2_modifier"]
+[ext_resource type="Texture2D" uid="uid://3x280qssvstq" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="3_icon"]
 
 [sub_resource type="Resource" id="MoveCasterModifier"]
 script = ExtResource("2_modifier")
@@ -18,8 +19,7 @@ spell_name = "Charge"
 description = "2 PA · Portée 3 en ligne · Se déplace au contact et inflige 5 dégâts."
 icon = ExtResource("3_icon")
 ap_cost = 2
-spell_range = 3
 line_from_caster = true
 damage = 5
 damage_type = 0
-modifiers = Array[SpellModifier]([SubResource("MoveCasterModifier")])
+modifiers = Array[ExtResource("2_b5at6")]([SubResource("MoveCasterModifier")])

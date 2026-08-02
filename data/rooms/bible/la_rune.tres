@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://bnguitmin608i"]
+[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://buiqsb71lud8"]
 
-[ext_resource type="PackedScene" uid="uid://bbgpl0ncuxpbx" path="res://data/rooms/maps/battle_salle_montagne_iso_v2.tscn" id="1_battle"]
+[ext_resource type="PackedScene" uid="uid://c6g4bstclyvhc" path="res://data/rooms/maps/battle_salle_montagne_iso_v3.tscn" id="1_battle"]
 [ext_resource type="Texture2D" uid="uid://dwq3k425mn4d1" path="res://asset/Background/montagne 2.webp" id="1_bg"]
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
@@ -10,9 +10,9 @@
 
 [resource]
 script = ExtResource("2_room")
-room_name = "Salle 2 - Avant-poste montagneux"
+room_name = "La Rune"
 background_image = ExtResource("1_bg")
 battle_scene = ExtResource("1_battle")
 enemies = Array[ExtResource("1_unit")]([ExtResource("5_chief"), ExtResource("3_melee"), ExtResource("4_ranged")])
-hero_spawn_zone = Array[Vector2i]([Vector2i(10, 19), Vector2i(11, 19), Vector2i(7, 15)])
-enemy_spawn_zone = Array[Vector2i]([Vector2i(10, 3), Vector2i(11, 2), Vector2i(12, 0), Vector2i(13, 2)])
+hero_spawn_zone = Array[Vector2i]([Vector2i(13, 14), Vector2i(13, 11), Vector2i(14, 8)])
+enemy_spawn_zone = Array[Vector2i]([Vector2i(-1, 13), Vector2i(-1, 11), Vector2i(1, 14), Vector2i(2, 10)])
