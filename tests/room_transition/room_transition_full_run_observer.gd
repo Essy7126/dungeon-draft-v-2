@@ -14,7 +14,10 @@ const PARTY_DATA_PATHS := [
 const FULL_REPORT_PATH := "C:/Blender_AI_Test/Output/room_transition_full_run_validation.json"
 const ROOM_TWO_REPORT_PATH := "C:/Blender_AI_Test/Output/room_transition_room2_open.json"
 const CINEMATIC_REPORT_PATH := "C:/Blender_AI_Test/Output/skeleton_chief_cinematic_capture.json"
+const SNOW_CINEMATIC_REPORT_PATH := "C:/Blender_AI_Test/Output/snow_centurion_room4_cinematic_capture.json"
+const ROOM_FOUR_REPORT_PATH := "C:/Blender_AI_Test/Output/snow_centurion_room4_open.json"
 const CHIEF_ARTIFACT_DIR := "res://artifacts/skeleton_chief"
+const SNOW_ARTIFACT_DIR := "res://artifacts/skeleton_snow_centurion"
 const EXPECTED_HERO_IDS := [&"elf", &"mage", &"warrior"]
 const EXPECTED_ENEMY_IDS_BY_ROOM := {
 	0: [&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged"],
@@ -28,7 +31,9 @@ const EXPECTED_ENEMY_IDS_BY_ROOM := {
 }
 
 var stop_with_room_two_open := false
+var stop_with_room_four_open := false
 var cinematic_capture := false
+var snow_centurion_cinematic_capture := false
 var _handled_scene_id := 0
 var _handled_rooms := {}
 var _pending_old_scene := {}
@@ -49,6 +54,7 @@ var _report := {
 func begin() -> void:
 	_started_at_msec = Time.get_ticks_msec()
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_hide_debug_overlays()
 	get_tree().scene_changed.connect(_on_scene_changed)
 	GameManager.scene_change_requested.connect(_on_scene_change_requested)
 	GameManager.cleanup_run_state()
@@ -215,6 +221,16 @@ func _handle_battle(battle: Node) -> void:
 		_save_main_capture("room2_no_fourth_enemy.png")
 		_finish_room_two_open(battle, room_record)
 		return
+	if room_index == 3 and stop_with_room_four_open:
+		await get_tree().create_timer(2.20).timeout
+		var runtime_state := _validate_room_four_runtime_state(battle, enemies)
+		_save_snow_capture("room4_six_enemies.png")
+		_save_snow_capture("room4_three_normal_two_snow_one_ranged.png")
+		_save_snow_capture("trio_vs_room4_roster.png")
+		_save_snow_capture("room4_no_placeholder.png")
+		_save_snow_capture("room4_final_idle.png")
+		_finish_room_four_open(battle, room_record, runtime_state)
+		return
 	if cinematic_capture:
 		if room_index == 0:
 			await get_tree().create_timer(0.90).timeout
@@ -227,6 +243,12 @@ func _handle_battle(battle: Node) -> void:
 			_write_report(CINEMATIC_REPORT_PATH, _report)
 			_finish_and_quit(0 if _report.errors.is_empty() else 93)
 			return
+	if snow_centurion_cinematic_capture:
+		if room_index == 2:
+			await get_tree().create_timer(1.10).timeout
+			_save_snow_capture("room3_before_room4_transition.png")
+		elif room_index == 3:
+			await _capture_snow_centurion_sequence(battle, enemies)
 
 	if room_index == 0:
 		await _start_active_ranged_visual_and_projectile(battle, enemies, heroes)
@@ -336,6 +358,128 @@ func _save_main_capture(filename: String) -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(CHIEF_ARTIFACT_DIR))
 	var image := get_viewport().get_texture().get_image()
 	var path := CHIEF_ARTIFACT_DIR.path_join(filename)
+	var error := image.save_png(path)
+	if error != OK:
+		_fail("Capture impossible %s: %s" % [path, error_string(error)])
+
+
+func _capture_snow_centurion_sequence(battle: Node, enemies: Array) -> void:
+	var snow_units: Array = enemies.filter(
+		func(enemy): return enemy.unit_id == &"skeleton_snow_centurion"
+	)
+	var ranged_units: Array = enemies.filter(
+		func(enemy): return enemy.unit_id == &"skeleton_ranged"
+	)
+	if snow_units.size() != 2 or ranged_units.size() != 1:
+		_fail("Capture Snow: roster salle 4 invalide (%d Snow, %d distance)." % [
+			snow_units.size(), ranged_units.size(),
+		])
+		return
+	var snow: Unit = snow_units[0]
+	var view = battle._unit_views.get(snow)
+	if not is_instance_valid(view) or not view.has_method("get_optional_visual"):
+		_fail("Capture Snow: UnitView du Centurion des neiges absent.")
+		return
+	var visual = view.get_optional_visual()
+	if not visual is SnowCenturionIsoUnitView:
+		_fail("Capture Snow: SnowCenturionIsoUnitView absent.")
+		return
+	var heavy_spell := load(SnowCenturionVisual3D.HEAVY_STRIKE_PATH) as Spell
+	if heavy_spell == null:
+		_fail("Capture Snow: sort HeavyAttack introuvable.")
+		return
+
+	await get_tree().create_timer(0.80).timeout
+	_save_snow_capture("room4_six_enemies.png")
+	_save_snow_capture("room4_three_normal_two_snow_one_ranged.png")
+	_save_snow_capture("trio_vs_room4_roster.png")
+	_save_snow_capture("room4_no_placeholder.png")
+
+	var sequence := {
+		"room": 4,
+		"snow_unit_id": str(snow.unit_id),
+		"walk_started": false,
+		"attack_started": false,
+		"heavy_attack_started": false,
+		"hit_started": false,
+		"death_finished": false,
+		"ranged_attack_started": false,
+		"captures": [],
+	}
+	var start_position: Vector2 = view.position
+	visual.set_facing(Vector2i.RIGHT)
+	sequence.walk_started = visual.play_walk()
+	var movement: Tween = view.create_tween()
+	movement.tween_property(view, "position", start_position + Vector2(64.0, 32.0), 0.34)
+	await get_tree().create_timer(0.20).timeout
+	_save_snow_capture("snow_centurion_room4_walk.png")
+	sequence.captures.append("snow_centurion_room4_walk.png")
+	await movement.finished
+	view.position = start_position
+	visual.cancel_movement_feedback()
+	await get_tree().create_timer(0.15).timeout
+
+	sequence.attack_started = visual.play_basic_attack()
+	await get_tree().create_timer(0.34).timeout
+	_save_snow_capture("snow_centurion_room4_attack.png")
+	sequence.captures.append("snow_centurion_room4_attack.png")
+	await get_tree().create_timer(0.62).timeout
+
+	sequence.heavy_attack_started = visual.play_spell_action(heavy_spell)
+	await get_tree().create_timer(0.82).timeout
+	_save_snow_capture("snow_centurion_room4_heavy_attack.png")
+	sequence.captures.append("snow_centurion_room4_heavy_attack.png")
+	await get_tree().create_timer(0.62).timeout
+
+	sequence.hit_started = visual.play_hit()
+	await get_tree().create_timer(0.34).timeout
+	_save_snow_capture("snow_centurion_room4_hit.png")
+	sequence.captures.append("snow_centurion_room4_hit.png")
+	await get_tree().create_timer(0.52).timeout
+
+	var ranged: Unit = ranged_units[0]
+	var ranged_view = battle._unit_views.get(ranged)
+	if is_instance_valid(ranged_view) and ranged_view.has_method("get_optional_visual"):
+		var ranged_visual = ranged_view.get_optional_visual()
+		if is_instance_valid(ranged_visual) and ranged_visual.has_method("play_spell_action") \
+				and not ranged.spells.is_empty():
+			sequence.ranged_attack_started = ranged_visual.play_spell_action(ranged.spells[0])
+			await get_tree().create_timer(0.55).timeout
+			_save_snow_capture("skeleton_ranged_room4_attack.png")
+			sequence.captures.append("skeleton_ranged_room4_attack.png")
+			await get_tree().create_timer(0.65).timeout
+	if not sequence.ranged_attack_started:
+		_fail("Capture Snow: l'animation du Squelette distance n'a pas demarre.")
+
+	var death_state := {"finished": false}
+	var mark_death_finished := func() -> void: death_state.finished = true
+	visual.death_animation_finished.connect(mark_death_finished, CONNECT_ONE_SHOT)
+	snow.take_damage(
+		snow.current_hp + 1000,
+		GameManager.heroes[0],
+		Spell.DamageType.PHYSICAL,
+		Spell.Element.NONE
+	)
+	await get_tree().create_timer(1.05).timeout
+	_save_snow_capture("snow_centurion_room4_death.png")
+	sequence.captures.append("snow_centurion_room4_death.png")
+	var death_deadline := Time.get_ticks_msec() + 8000
+	while not death_state.finished and Time.get_ticks_msec() < death_deadline:
+		await get_tree().process_frame
+	sequence.death_finished = death_state.finished
+	if not sequence.death_finished:
+		_fail("Capture Snow: Death n'a pas atteint death_animation_finished.")
+
+	for key in ["walk_started", "attack_started", "heavy_attack_started", "hit_started"]:
+		if not sequence[key]:
+			_fail("Capture Snow: %s n'a pas demarre." % key)
+	_report["snow_centurion_sequence"] = sequence
+
+
+func _save_snow_capture(filename: String) -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(SNOW_ARTIFACT_DIR))
+	var image := get_viewport().get_texture().get_image()
+	var path := SNOW_ARTIFACT_DIR.path_join(filename)
 	var error := image.save_png(path)
 	if error != OK:
 		_fail("Capture impossible %s: %s" % [path, error_string(error)])
@@ -485,6 +629,84 @@ func _hud_is_bound_to(battle: Node) -> bool:
 	return is_instance_valid(hud) and hud.get_combat_context() == battle
 
 
+func _hide_debug_overlays() -> void:
+	var autoload_overlay := get_node_or_null("/root/DebugOverlay")
+	if is_instance_valid(autoload_overlay):
+		autoload_overlay.visible = false
+		var autoload_panel := autoload_overlay.get_node_or_null("Panel")
+		if is_instance_valid(autoload_panel):
+			autoload_panel.visible = false
+
+
+func _debug_overlays_are_hidden() -> bool:
+	for overlay in get_tree().root.find_children("DebugOverlay", "", true, false):
+		var panel := overlay.get_node_or_null("Panel")
+		if is_instance_valid(panel) and panel.visible:
+			return false
+	return true
+
+
+func _validate_room_four_runtime_state(battle: Node, enemies: Array) -> Dictionary:
+	var counts := {
+		"skeleton_chief": 0,
+		"skeleton_snow_centurion": 0,
+		"skeleton_ranged": 0,
+	}
+	var all_alive := true
+	var all_idle := true
+	var snow_visuals := 0
+	for enemy in enemies:
+		var enemy_id := str(enemy.unit_id)
+		if counts.has(enemy_id):
+			counts[enemy_id] += 1
+		all_alive = all_alive and enemy.is_alive
+		var view = battle._unit_views.get(enemy)
+		if not is_instance_valid(view) or not view.has_method("get_optional_visual"):
+			all_idle = false
+			continue
+		var optional = view.get_optional_visual()
+		if enemy.unit_id == &"skeleton_snow_centurion" and optional is SnowCenturionIsoUnitView:
+			snow_visuals += 1
+		if is_instance_valid(optional) and optional.has_method("get_character_visual"):
+			var character = optional.get_character_visual()
+			if is_instance_valid(character) and character.has_method("get_current_animation"):
+				all_idle = all_idle and str(character.get_current_animation()).to_lower().contains("idle")
+			else:
+				all_idle = false
+		else:
+			all_idle = false
+	var subviewports := battle.find_children("*", "SubViewport", true, false)
+	var vfx_layer := battle.get_node_or_null("VFXLayer")
+	var state := {
+		"enemy_count": enemies.size(),
+		"enemy_counts": counts,
+		"all_enemies_alive": all_alive,
+		"all_enemies_idle": all_idle,
+		"snow_visual_count": snow_visuals,
+		"subviewport_count": subviewports.size(),
+		"subviewport_sizes": subviewports.map(func(viewport): return str(viewport.size)),
+		"projectile_count": get_tree().get_nodes_in_group("skeleton_ranged_projectiles").size(),
+		"vfx_children": vfx_layer.get_child_count() if is_instance_valid(vfx_layer) else 0,
+		"debug_overlays_hidden": _debug_overlays_are_hidden(),
+	}
+	if state.enemy_count != 6 or counts.skeleton_chief != 3 \
+			or counts.skeleton_snow_centurion != 2 or counts.skeleton_ranged != 1:
+		_fail("Salle 4 finale: roster 3/2/1 non respecte: %s." % str(counts))
+	if not all_alive:
+		_fail("Salle 4 finale: au moins un ennemi n'est pas vivant.")
+	if not all_idle:
+		_fail("Salle 4 finale: au moins un ennemi n'est pas en Idle.")
+	if snow_visuals != 2:
+		_fail("Salle 4 finale: %d visuels Snow natifs au lieu de 2." % snow_visuals)
+	if state.subviewport_count != 9:
+		_fail("Salle 4 finale: %d SubViewports au lieu de 9." % state.subviewport_count)
+	if state.projectile_count != 0 or state.vfx_children != 0:
+		_fail("Salle 4 finale: projectile ou VFX residuel detecte.")
+	if not state.debug_overlays_hidden:
+		_fail("Salle 4 finale: un overlay debug est visible.")
+	return state
+
+
 func _finish_room_two_open(battle: Node, room_record: Dictionary) -> void:
 	if GameManager.current_room_index != 1:
 		_fail("Le mode visuel ne s'est pas arrete dans la salle 2.")
@@ -503,6 +725,29 @@ func _finish_room_two_open(battle: Node, room_record: Dictionary) -> void:
 	call_deferred("queue_free")
 
 
+func _finish_room_four_open(
+		battle: Node,
+		room_record: Dictionary,
+		runtime_state: Dictionary
+	) -> void:
+	if GameManager.current_room_index != 3:
+		_fail("Le mode visuel ne s'est pas arrete dans la salle 4.")
+	if battle._battle_over:
+		_fail("La salle 4 est deja terminee dans l'etat final.")
+	var payload := {
+		"status": "ROOM_4_OPEN",
+		"room": 4,
+		"scene": battle.scene_file_path,
+		"room_record": room_record,
+		"runtime_state": runtime_state,
+		"errors": _report.errors,
+	}
+	_write_report(ROOM_FOUR_REPORT_PATH, payload)
+	_finished = true
+	print("SNOW_CENTURION_ROOM_4_OPEN=", JSON.stringify(payload))
+	call_deferred("queue_free")
+
+
 func _finish_full_run() -> void:
 	if _handled_rooms.size() != 4:
 		_fail("Le parcours n'a visite que %d salle(s) sur 4." % _handled_rooms.size())
@@ -515,6 +760,8 @@ func _finish_full_run() -> void:
 	_report["duration_msec"] = Time.get_ticks_msec() - _started_at_msec
 	_report["status"] = "PASS" if _report.errors.is_empty() else "FAIL"
 	_write_report(FULL_REPORT_PATH, _report)
+	if snow_centurion_cinematic_capture:
+		_write_report(SNOW_CINEMATIC_REPORT_PATH, _report)
 	print("ROOM_TRANSITION_FULL_RUN_RESULT=", JSON.stringify(_report))
 	_finish_and_quit(0 if _report.errors.is_empty() else 92)
 

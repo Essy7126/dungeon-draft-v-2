@@ -165,7 +165,7 @@ func test_facade_de_vue_aligne_clics_overlays_et_pivots() -> void:
 	view.blockout_data = data
 	add_child_autofree(view)
 	view.setup(_make_grid())
-	for cell in [Vector2i(4, 9), Vector2i(8, 2), Vector2i(6, 7), Vector2i(12, 12)]:
+	for cell in [Vector2i(4, 9), Vector2i(8, 2), Vector2i(6, 7), Vector2i(11, 12)]:
 		assert_eq(view.local_to_grid(view.grid_to_local(cell)), cell)
 		assert_eq(view.click_at(view.grid_to_local(cell)), cell)
 	var blocked := Vector2i(9, 4)
@@ -203,9 +203,12 @@ func _reachable_without(grid: GridData, start: Vector2i, removed: Vector2i) -> D
 	var frontier: Array[Vector2i] = [start]
 	reached[start] = true
 	while not frontier.is_empty():
-		var current := frontier.pop_front()
-		for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
-			var neighbor := current + direction
+		var current: Vector2i = frontier.pop_front()
+		var directions: Array[Vector2i] = [
+			Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT,
+		]
+		for direction in directions:
+			var neighbor: Vector2i = current + direction
 			if neighbor == removed or reached.has(neighbor) \
 					or not grid.is_terrain_interactable(neighbor):
 				continue
