@@ -23,20 +23,6 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export_group("Cout et portee")
 # Cout en Points d'Action (entier). La colonne vertebrale du tour.
 @export var ap_cost: int = 1
-# Conserve uniquement pour la compatibilite de chargement des vieux .tres :
-# NE SERT PLUS. Tous les couts d'action passent par ap_cost.
-@export var energy_cost: float = 0.0
-# Cout en jauge d'ecole (Ferveur) : reserve aux sorts payoff signature.
-@export var fervor_cost: float = 0.0
-@export var energy_generated: float = 0.0
-@export_group("Empreinte")
-@export var imprint_fervor_cost: float = 0.0
-@export var imprint_damage_bonus: int = 0
-@export var imprint_heal_bonus: int = 0
-@export var imprint_shield_bonus: int = 0
-@export var imprint_status: StatusData = null
-@export var imprint_terrain_effect: TerrainEffectData = null
-@export var charge_verb: String = ""
 @export var spell_range: int = 3
 @export var needs_line_of_sight: bool = true
 
@@ -57,7 +43,6 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export var damage_type: DamageType = DamageType.MAGICAL
 @export var element: Element = Element.NONE
 @export_range(0.0, 1.0) var crit_chance: float = 0.0
-@export var crit_multiplier: float = 1.5
 
 @export_group("Effet de terrain")
 @export var terrain_effect: TerrainEffectData = null
@@ -81,12 +66,12 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export var cluster_bonus_damage: int = 0
 @export var shield_grant: int = 0
 @export var bonus_damage_if_marked: int = 0
+@export var bonus_damage_status_id: StringName = &""
 @export var forces_taunt: bool = false
 @export var taunt_duration: int = 1
 # Draine des PA a la cible : ampute son budget du PROCHAIN tour (drain du
 # Disruptor, hurlements gobelins).
 @export var ap_drain: int = 0
-@export var fervor_drain: float = 0.0
 @export var teleport_behind_target: bool = false
 @export var heal_bonus_effect_name: String = ""
 @export var heal_bonus_multiplier: float = 1.0
@@ -94,7 +79,6 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export_group("Transformations")
 # Modificateurs attaches au sort en donnee : chaque SpellModifier recoit les
 # hooks du pipeline de SpellCaster (on_costs_resolved, on_movement_resolved...).
-# Un reward peut donc transformer ce sort sans toucher au code du caster.
 @export var modifiers: Array[SpellModifier] = []
 
 func deals_damage() -> bool:
@@ -103,23 +87,12 @@ func deals_damage() -> bool:
 func is_healing() -> bool:
 	return heal > 0
 
-# Un sort "generateur" ne puise pas dans la jauge d'ecole (il la construit) ;
-# un "consommateur" (payoff) la depense. Les PA ne comptent pas ici.
-func is_generator() -> bool:
-	return fervor_cost <= 0.0
-
-func is_consumer() -> bool:
-	return fervor_cost > 0.0
-
 func has_terrain_effect() -> bool:
 	return terrain_effect != null
 
 func is_self_only() -> bool:
 	return can_target_self and not can_target_enemy \
 		and not can_target_ally and not can_target_free_cell
-func can_imprint() -> bool:
-	return imprint_fervor_cost > 0.0
-
 func get_effective_spell_id() -> StringName:
 	if spell_id != &"":
 		return spell_id

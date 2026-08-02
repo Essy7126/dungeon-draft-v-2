@@ -14,8 +14,14 @@ func _ready() -> void:
 	observer.stop_with_room_two_open = (
 		"--room-transition-stop-at-room-2" in OS.get_cmdline_user_args()
 	)
+	observer.stop_with_room_four_open = (
+		"--snow-centurion-stop-at-room-4" in OS.get_cmdline_user_args()
+	)
 	observer.cinematic_capture = (
 		"--skeleton-chief-cinematic-capture" in OS.get_cmdline_user_args()
+	)
+	observer.snow_centurion_cinematic_capture = (
+		"--snow-centurion-cinematic-capture" in OS.get_cmdline_user_args()
 	)
 	GameManager.add_child(observer)
 	observer.begin()

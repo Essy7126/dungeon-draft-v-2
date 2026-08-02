@@ -2,28 +2,24 @@ extends GutTest
 
 const GameManagerScript = preload("res://core/game_manager.gd")
 const ActionBarScript = preload("res://ui/action_bar.gd")
-const BattleScript = preload("res://battle/battle.gd")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
 const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
-const GUARDIAN_PATH := "res://data/units/alliés/Gardien.tres"
-const RUN_PATH := "res://data/runs/fixed_trio_prototype_run.tres"
+const RUN_PATH := "res://data/runs/first_run.tres"
 const PARTY := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 const EXPECTED_ROOMS := [
-	"res://data/rooms/bible/le_gue.tres",
-	"res://data/rooms/terrain_2.tres",
-	"res://data/rooms/bible/la_forge.tres",
-	"res://data/rooms/bible/elite_brute.tres",
+	"res://data/rooms/first_run_room_01.tres",
+	"res://data/rooms/first_run_room_02.tres",
+	"res://data/rooms/first_run_room_03.tres",
+	"res://data/rooms/first_run_room_04_boss.tres",
 ]
 
 var manager
 
-
 func before_each() -> void:
 	manager = GameManagerScript.new()
 	manager._ready()
-
 
 func after_each() -> void:
 	if manager != null and is_instance_valid(manager):
@@ -31,75 +27,46 @@ func after_each() -> void:
 		manager._exit_tree()
 		manager.free()
 
-
 func _prepare() -> Array[CharacterRunState]:
 	assert_true(manager._prepare_preconfigured_run(load(RUN_PATH) as RunData, PARTY))
 	return manager.get_ordered_character_states()
 
-
-func test_run_has_exact_rooms_and_no_progression_or_reward_pool() -> void:
+func test_first_run_contains_the_four_migrated_rooms_in_order() -> void:
 	var run := load(RUN_PATH) as RunData
-	assert_eq(run.run_name, "Trio fixe — prototype")
+	assert_not_null(run)
+	assert_eq(run.run_name, "Première run")
 	assert_eq(run.rooms.map(func(room): return room.resource_path), EXPECTED_ROOMS)
-	assert_true(run.reward_pool.is_empty())
-	assert_true(run.relic_pool.is_empty())
-	assert_true(run.equipment_pool.is_empty())
-	assert_true(run.event_pool.is_empty())
-	assert_true(run.boss_malus_pool.is_empty())
-	assert_true(run.run_nodes.is_empty())
+	assert_true(run.rooms.all(func(room): return room != null and room.battle_scene != null))
 
-
-func test_fixed_composition_order_ids_states_and_loadouts_are_exact() -> void:
+func test_fixed_party_has_exact_ids_resources_and_four_spells_each() -> void:
 	var states := _prepare()
 	var heroes: Array[Unit] = manager.get_ordered_heroes()
+	assert_eq(states.map(func(state): return state.character_id), [&"elf", &"mage", &"warrior"])
 	assert_eq(heroes.map(func(hero): return hero.unit_name), ["Elfe", "Mage", "Guerrier"])
-	assert_eq(states.map(func(state): return state.character_id), [
-		&"elf",
-		&"mage",
-		&"warrior",
-	])
 	for index in range(3):
 		assert_same(states[index].unit, heroes[index])
 		assert_same(manager.get_character_state_for_unit(heroes[index]), states[index])
+		assert_eq(heroes[index].max_ap.get_int(), 6)
+		assert_eq(heroes[index].max_mp.get_int(), 3)
+		assert_eq(heroes[index].spells.size(), 4)
 		assert_eq(states[index].loadout.get_equipped_spells(), heroes[index].spells)
-	assert_eq(states[0].loadout.get_equipped_spells().size(), 4)
-	assert_eq(states[1].loadout.get_equipped_spells().size(), 4)
-	assert_eq(states[2].loadout.get_equipped_spells().size(), 8)
-	assert_eq((load(WARRIOR_PATH) as UnitData).spells.size(), 8)
 	assert_eq(states[0].get_disciplines().size(), 4)
-	assert_eq(
-		states[1].get_disciplines().map(func(item): return item.discipline_id),
-		[&"mage_fire", &"mage_ice", &"mage_lightning", &"mage_earth"],
-	)
-	assert_eq(states[1].get_discipline_progressions().size(), 4)
+	assert_eq(states[1].get_disciplines().size(), 4)
+	assert_eq(states[2].get_disciplines().size(), 4)
 
+func test_mage_cast_grants_only_matching_discipline_xp() -> void:
+	var mage_state := _prepare()[1]
+	EventBus.spell_cast.emit(mage_state.unit, mage_state.unit.spells[0], {})
+	assert_eq(mage_state.get_discipline_progress(&"mage_pyromancy").xp, 1)
+	assert_eq(mage_state.get_discipline_progress(&"mage_cryomancy").xp, 0)
+	assert_eq(mage_state.get_discipline_progress(&"mage_fulguromancy").xp, 0)
+	assert_eq(mage_state.get_discipline_progress(&"mage_geomancy").xp, 0)
 
-func test_mage_spell_cast_grants_only_its_own_discipline_xp() -> void:
-	var states := _prepare()
-	var elf := states[0]
-	var mage := states[1]
-	elf.add_discipline_xp(&"mage", 3)
-	assert_true(elf.select_upgrade(&"mage", 2, &"elf_mage_incandescent_core"))
-	assert_eq(elf.unit.get_progression_spell_modifiers().size(), 1)
-	assert_true(mage.unit.get_progression_spell_modifiers().is_empty())
-	EventBus.spell_cast.emit(mage.unit, mage.unit.spells[0], {})
-	assert_eq(mage.get_discipline_progress(&"mage_fire").xp, 1)
-	assert_eq(mage.get_discipline_progress(&"mage_ice").xp, 0)
-	assert_eq(mage.get_discipline_progress(&"mage_lightning").xp, 0)
-	assert_eq(mage.get_discipline_progress(&"mage_earth").xp, 0)
-	assert_true(mage.unit.get_progression_spell_modifiers().is_empty())
-	assert_eq(elf.get_discipline_progress(&"mage").xp, 3)
-
-
-func test_same_mage_state_unit_hp_loadout_and_visual_persist_between_rooms() -> void:
+func test_state_hp_and_loadout_persist_between_rooms() -> void:
 	var states := _prepare()
 	var mage_state := states[1]
 	var mage := mage_state.unit
 	var loadout := mage_state.loadout
-	var known := loadout.get_known_spells()
-	var equipped := loadout.get_equipped_spells()
-	var combat_visual := mage.visual_scene
-	var preview_visual := mage.preview_visual_scene
 	mage.current_hp = 61
 	manager.current_room_index = 0
 	manager._go_to_next_room()
@@ -107,79 +74,22 @@ func test_same_mage_state_unit_hp_loadout_and_visual_persist_between_rooms() -> 
 	assert_same(manager.get_ordered_character_states()[1], mage_state)
 	assert_same(manager.get_ordered_heroes()[1], mage)
 	assert_same(mage_state.loadout, loadout)
-	assert_eq(loadout.get_known_spells(), known)
-	assert_eq(loadout.get_equipped_spells(), equipped)
 	assert_eq(mage.current_hp, 61)
-	assert_same(mage.visual_scene, combat_visual)
-	assert_same(mage.preview_visual_scene, preview_visual)
 
-
-func test_hud_cycles_elf_mage_warrior_elf_without_buttons_or_state_residue() -> void:
-	_prepare()
-	var heroes: Array[Unit] = manager.get_ordered_heroes()
+func test_action_bar_cycles_four_spells_without_legacy_resource_controls() -> void:
+	var heroes: Array = _prepare().map(func(state): return state.unit)
 	var bar = ActionBarScript.new()
 	add_child_autofree(bar)
+	for hero in heroes:
+		bar.update_info(hero)
+		bar.build_spell_buttons(hero)
+		assert_eq(bar.get("_spell_buttons").size(), 4)
+		assert_true(bar.get("_ap_label").text.begins_with("PA"))
 
-	bar.update_info(heroes[0])
-	bar.build_spell_buttons(heroes[0])
-	assert_true(bar.get("_attack_btn").visible)
-	assert_eq(bar.get("_spell_buttons").size(), 4)
-	var elf_buttons: Array = bar.get("_spell_buttons").duplicate()
-
-	bar.update_info(heroes[1])
-	bar.build_spell_buttons(heroes[1])
-	assert_true(elf_buttons.all(func(button): return not is_instance_valid(button)))
-	assert_false(bar.get("_attack_btn").visible)
-	assert_eq(bar.get("_spell_buttons").size(), 4)
-	assert_false(bar.get("_fervor_bar").visible)
-	var mage_buttons: Array = bar.get("_spell_buttons").duplicate()
-
-	bar.update_info(heroes[2])
-	bar.build_spell_buttons(heroes[2])
-	assert_true(mage_buttons.all(func(button): return not is_instance_valid(button)))
-	assert_true(bar.get("_attack_btn").visible)
-	assert_false(bar.get("_fervor_bar").visible)
-	assert_eq(bar.get("_spell_buttons").size(), 8)
-	var warrior_buttons: Array = bar.get("_spell_buttons").duplicate()
-
-	bar.update_info(heroes[0])
-	bar.build_spell_buttons(heroes[0])
-	assert_true(warrior_buttons.all(func(button): return not is_instance_valid(button)))
-	assert_true(bar.get("_attack_btn").visible)
-	assert_false(bar.get("_fervor_bar").visible)
-	assert_eq(bar.get("_spell_buttons").size(), 4)
-
-
-func test_battle_rejects_hidden_basic_attack_without_mage_special_case() -> void:
-	_prepare()
-	var mage := manager.get_ordered_heroes()[1] as Unit
-	var battle = BattleScript.new()
-	battle.turn_queue = TurnQueue.new()
-	battle.turn_queue.setup([mage])
-	battle.turn_queue.start()
-	battle.turn_state = TurnState.new()
-	battle._on_attack_pressed()
-	assert_eq(battle.turn_state.current, TurnState.State.IDLE)
-	assert_false(mage.can_use_basic_attack())
-	assert_false(
-		FileAccess.get_file_as_string("res://battle/battle.gd").to_lower().contains("\"mage\"")
-	)
-	assert_false(
-		FileAccess.get_file_as_string("res://ui/action_bar.gd").to_lower().contains("\"mage\"")
-	)
-	battle.free()
-
-
-func test_default_trio_is_unique_and_guardian_remains_loadable() -> void:
-	var states := _prepare()
-	assert_eq(states.size(), 3)
-	var ids := states.map(func(state): return state.character_id)
-	assert_eq(ids, [&"elf", &"mage", &"warrior"])
-	var unique_ids := {}
-	for character_id in ids:
-		unique_ids[character_id] = true
-	assert_eq(unique_ids.size(), 3)
-	assert_false(states.any(func(state): return state.character_id == StringName(GUARDIAN_PATH)))
-	var guardian := load(GUARDIAN_PATH) as UnitData
-	assert_not_null(guardian)
-	assert_eq(guardian.unit_name, "Gardien")
+func test_basic_attack_policy_is_explicit_for_the_fixed_party() -> void:
+	var heroes: Array = _prepare().map(func(state): return state.unit)
+	assert_true(heroes[0].basic_attack_enabled)
+	assert_false(heroes[1].basic_attack_enabled)
+	assert_true(heroes[2].basic_attack_enabled)
+	assert_false(FileAccess.file_exists("res://data/units/alliés/Gardien.tres"))
+	assert_false(FileAccess.file_exists("res://data/energy/energy_type.gd"))

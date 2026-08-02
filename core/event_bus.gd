@@ -4,7 +4,7 @@
 #
 # Ne contient QUE des signaux typés et nommés. AUCUNE logique, AUCUN état.
 # C'est un tableau d'affichage : la logique ANNONCE des faits ("X a pris des
-# dégâts"), et tout ce qui est intéressé (DebugLogger, UI, son, futurs traits)
+# dégâts"), et tout ce qui est intéressé (DebugLogger, UI, son)
 # ÉCOUTE sans se connaître. La logique n'a plus besoin de connaître ses lecteurs.
 #
 # ------------------------------------------------------------
@@ -43,6 +43,9 @@ extends Node
 # is_crit  : true si c'était un critique
 signal damage_dealt(target, attacker, amount, category, element, is_crit)
 
+# Perte reelle de PV apres mitigation et absorption par le bouclier.
+signal health_damage_taken(target, attacker, amount, category, element, is_crit)
+
 # Une attaque a été totalement esquivée (aucun dégât).
 # target   : l'Unit qui a esquivé
 # attacker : l'Unit source, ou null
@@ -60,8 +63,13 @@ signal basic_attack_performed(attacker, target)
 # amount : PV réellement rendus (peut être < au soin théorique si plafond atteint)
 signal unit_healed(unit, amount)
 
+# Variantes sourcées pour les statistiques de combat. Les signaux historiques
+# restent inchangés pour les vues et journaux existants.
+signal healing_applied(unit, source, amount)
+
 # Une unité est morte (PV tombés à 0). Émis UNE fois, depuis _die().
 signal unit_died(unit)
+signal unit_killed(unit, killer)
 
 # ============================================================
 # SIGNAUX DE STATUTS
@@ -69,6 +77,9 @@ signal unit_died(unit)
 
 # Un statut vient d'être appliqué (nouveau, pas un simple rafraîchissement).
 signal status_applied(unit, status_data)
+
+# Un statut deja present vient de voir sa duree ou ses charges rafraichies.
+signal status_refreshed(unit, status_data)
 
 # Un statut a expiré et a été retiré.
 signal status_expired(unit, status_name)
@@ -94,38 +105,18 @@ signal round_started(number)
 # ============================================================
 signal battle_view_ready(grid_view)
 
-# ============================================================
-# SIGNAUX D'ÉNERGIE — l'économie d'action (remplace les PA).
-# energy_generated : de l'énergie a été réellement produite (après plafond).
-# energy_spent     : de l'énergie a été dépensée par une action.
-# Les futurs convertisseurs/terrain/UI s'y abonnent.
-# ============================================================
-signal energy_generated(unit, energy_id, amount)
-# Variante RICHE de energy_generated, emise juste apres lui par EnergyGauge :
-# `source` est le VERBE de la gain_table ("HIT", "EXPLOIT"...) quand le gain
-# vient d'un verbe, "" sinon (gain brut : sort generateur, relique...).
-# energy_generated est conserve tel quel pour ses abonnes existants (traits) ;
-# celui-ci sert a l'UI qui veut repondre au "pourquoi +12 ?".
-signal fervor_gained(unit, energy_id, amount, source)
-signal energy_spent(unit, energy_id, amount)
 # Les PA d'une unite ont change (depense, refresh de tour, drain/bonus).
 signal ap_changed(unit, current, max_value)
-signal fervor_changed(unit, current, max_value, threshold_active)
-signal fervor_threshold_changed(unit, active)
-signal charge_changed(unit, current, max_value, threshold_active)
-signal charge_threshold_changed(unit, active)
-signal fervor_reaction_used(unit, attacker, cost, mitigated_amount)
-signal awakening_activated(unit, energy_id, duration)
-signal awakening_ended(unit, energy_id)
 
 # ============================================================
 # SIGNAUX DE BOUCLIER
 # Le bouclier absorbe les dégâts AVANT les PV (couche défensive supplémentaire).
-# shield_gained   : un bouclier vient d'être accordé (traits, sorts de soutien).
+# shield_gained   : un bouclier vient d'être accordé (sorts de soutien).
 # shield_absorbed : le bouclier a absorbé une partie ou la totalité d'une frappe.
 # shield_broken   : le bouclier vient de tomber à 0 (épuisé par une frappe).
 # ============================================================
 signal shield_gained(unit, amount)
+signal shield_applied(unit, source, amount)
 signal shield_absorbed(unit, amount)
 signal shield_broken(unit)
 
@@ -154,8 +145,7 @@ signal hazard_kill(unit, effect_name)
 
 # ============================================================
 # SIGNAUX DE SORT
-# Émis depuis SpellCaster après un cast réussi (énergie payée, effets appliqués).
-# Utilisé par les traits de châssis pour réagir conditionnellement.
+# Émis depuis SpellCaster après un cast réussi (PA payés, effets appliqués).
 #
 # caster : l'Unit qui a lancé le sort
 # spell  : le Spell lancé

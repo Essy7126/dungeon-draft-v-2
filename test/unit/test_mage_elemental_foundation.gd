@@ -6,13 +6,13 @@ const ActionBarScript = preload("res://ui/action_bar.gd")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
-const GUARDIAN_PATH := "res://data/units/alliés/Gardien.tres"
-const PARTY := [ELF_PATH, MAGE_PATH, GUARDIAN_PATH]
+const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
+const PARTY := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 const DISCIPLINE_IDS := [
-	&"mage_fire",
-	&"mage_ice",
-	&"mage_lightning",
-	&"mage_earth",
+	&"mage_pyromancy",
+	&"mage_cryomancy",
+	&"mage_fulguromancy",
+	&"mage_geomancy",
 ]
 const DISCIPLINE_NAMES := [
 	"Pyromancie",
@@ -54,7 +54,7 @@ func _prepare_party(room_count: int = 2) -> Array[CharacterRunState]:
 	return manager.get_ordered_character_states()
 
 
-func test_mage_has_four_ordered_rank_one_disciplines_without_rank_two_choices() -> void:
+func test_mage_has_four_ordered_complete_disciplines() -> void:
 	var data := load(MAGE_PATH) as UnitData
 	assert_eq(
 		data.disciplines.map(func(discipline): return discipline.discipline_id),
@@ -75,15 +75,15 @@ func test_mage_has_four_ordered_rank_one_disciplines_without_rank_two_choices() 
 		[]
 	).size(), 4)
 	for discipline in data.disciplines:
-		assert_eq(discipline.ranks.size(), 1, str(discipline.discipline_id))
+		assert_eq(discipline.ranks.size(), 5, str(discipline.discipline_id))
 		assert_eq(discipline.ranks[0].rank, 1)
 		assert_eq(discipline.ranks[0].required_total_xp, 0)
 		assert_true(discipline.ranks[0].choices.is_empty())
 		var progress := DisciplineProgressState.new()
 		assert_true(progress.initialize(discipline))
-		assert_true(progress.add_xp(100).is_empty())
-		assert_eq(progress.rank, 1)
-		assert_true(progress.get_pending_rank_choices().is_empty())
+		assert_eq(progress.add_xp(18), [2, 3, 4, 5])
+		assert_eq(progress.rank, 5)
+		assert_eq(progress.get_pending_rank_choices(), [2, 3, 4, 5])
 
 
 func test_mage_loadout_has_exactly_four_known_and_equipped_spells_in_order() -> void:
@@ -123,7 +123,6 @@ func test_action_bar_shows_four_ordered_spells_and_no_basic_attack() -> void:
 		),
 		SPELL_IDS,
 	)
-	mage.clear_traits()
 
 
 func test_each_successful_spell_grants_exactly_one_xp_to_its_discipline() -> void:
@@ -151,7 +150,9 @@ func test_each_successful_spell_grants_exactly_one_xp_to_its_discipline() -> voi
 			1,
 		)
 	assert_eq(states[0].get_discipline_progress(&"mage").xp, 0)
-	assert_true(states[2].get_discipline_progressions().is_empty())
+	assert_true(states[2].get_discipline_progressions().values().all(
+		func(progress): return progress.xp == 0
+	))
 
 
 func test_thunderstorm_aoe_hits_three_targets_but_grants_only_one_xp() -> void:
@@ -171,19 +172,21 @@ func test_thunderstorm_aoe_hits_three_targets_but_grants_only_one_xp() -> void:
 	)
 	assert_eq(report["damaged_enemies"].size(), 3)
 	assert_true(targets.all(func(target): return target.current_hp == 93))
-	assert_eq(mage.get_discipline_progress(&"mage_lightning").xp, 1)
+	assert_eq(mage.get_discipline_progress(&"mage_fulguromancy").xp, 1)
 	assert_eq(states[0].get_discipline_progress(&"mage").xp, 0)
-	assert_true(states[2].get_discipline_progressions().is_empty())
+	assert_true(states[2].get_discipline_progressions().values().all(
+		func(progress): return progress.xp == 0
+	))
 
 
 func test_mage_xp_persists_between_rooms_and_resets_on_new_run() -> void:
 	var states := _prepare_party(3)
 	var mage := states[1]
-	mage.add_discipline_xp(&"mage_lightning", 2)
+	mage.add_discipline_xp(&"mage_fulguromancy", 2)
 	manager.current_room_index = 0
 	manager._go_to_next_room()
 	assert_same(manager.get_character_state(&"mage"), mage)
-	assert_eq(mage.get_discipline_progress(&"mage_lightning").xp, 2)
+	assert_eq(mage.get_discipline_progress(&"mage_fulguromancy").xp, 2)
 	assert_true(manager._prepare_preconfigured_run(_run(3), PARTY))
 	var fresh: CharacterRunState = manager.get_character_state(&"mage")
 	assert_not_same(fresh, mage)
@@ -196,10 +199,10 @@ func test_mage_xp_persists_between_rooms_and_resets_on_new_run() -> void:
 		)
 
 
-func test_accumulated_mage_xp_never_creates_an_incomplete_pending_choice() -> void:
+func test_accumulated_mage_xp_creates_the_four_complete_pending_choices() -> void:
 	var mage := _prepare_party()[1]
 	for discipline_id in DISCIPLINE_IDS:
 		var result := mage.add_discipline_xp(discipline_id, 50)
-		assert_eq(result["rank"], 1)
+		assert_eq(result["rank"], 5)
 		assert_eq(result["next_required_total_xp"], -1)
-	assert_true(mage.get_pending_progression_choices().is_empty())
+	assert_eq(mage.get_pending_progression_choices().size(), 16)

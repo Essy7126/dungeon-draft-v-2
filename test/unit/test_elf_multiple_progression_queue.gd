@@ -9,9 +9,9 @@ const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const DISCIPLINE_ORDER := [&"archer", &"assassin", &"mage", &"healer"]
 const FIRST_CHOICE_IDS := [
 	&"elf_archer_eagle_eye",
-	&"elf_assassin_backstab",
-	&"elf_mage_incandescent_core",
-	&"elf_healer_abundant_sap",
+	&"elf_assassin_dans_le_dos",
+	&"elf_mage_cur_incandescent",
+	&"elf_healer_seve_abondante",
 ]
 
 var manager
@@ -112,18 +112,13 @@ func test_pending_queue_uses_hero_order_before_discipline_order() -> void:
 	)
 
 
-func test_one_screen_resolves_four_choices_sequentially_then_enters_next_room() -> void:
+func test_legacy_screen_api_resolves_queue_but_victory_never_opens_it() -> void:
 	var state := _prepare_elf(2)
 	_raise_all_disciplines(state)
 	manager.current_room_index = 0
 	var requested_scenes: Array = []
 	manager.scene_change_requested.connect(
 		func(path): requested_scenes.append(path)
-	)
-	manager.on_battle_won()
-	assert_eq(
-		requested_scenes,
-		[GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH],
 	)
 	var screen = _open_screen()
 	assert_same(manager.get_active_progression_screen(), screen)
@@ -157,11 +152,21 @@ func test_one_screen_resolves_four_choices_sequentially_then_enters_next_room() 
 	assert_true(screen.is_closed_for_progression())
 	assert_false(manager.has_active_progression_screen())
 	assert_true(manager.get_pending_progression_choices().is_empty())
+	manager.on_battle_won()
+	assert_eq(manager.current_room_index, 0)
+	assert_eq(requested_scenes, [GameManagerScript.POST_COMBAT_SCREEN_PATH])
+	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
+	assert_true(manager.confirm_post_combat_reward(
+		reward["reward_id"], reward["target_character_id"]
+	)["success"])
+	assert_true(manager.complete_post_combat_transition(
+		manager.get_current_combat_report().report_id
+	))
 	assert_eq(manager.current_room_index, 1)
 	assert_eq(
 		requested_scenes,
 		[
-			GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH,
+			GameManagerScript.POST_COMBAT_SCREEN_PATH,
 			GameManagerScript.ROOM_TRANSITION_SCREEN_PATH,
 		],
 	)

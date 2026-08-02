@@ -28,6 +28,10 @@
 [ext_resource type="Texture2D" uid="uid://ciejclsrsoiwq" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="26_mage_lightning"]
 [ext_resource type="Texture2D" uid="uid://dr571owpatp3u" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="27_mage_earth"]
 [ext_resource type="Texture2D" uid="uid://bflqve6nibh01" path="res://asset/ui/dungeon_draft/arbre_compétences/generated/icons/poison.svg" id="28_poison"]
+[ext_resource type="Texture2D" uid="uid://yew33q17ambp" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="29_warrior_breaker"]
+[ext_resource type="Texture2D" uid="uid://3x280qssvstq" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="30_warrior_assault"]
+[ext_resource type="Texture2D" uid="uid://dyvy32pjjepak" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="31_warrior_fury"]
+[ext_resource type="Texture2D" uid="uid://ddxdc1sss0ghh" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="32_warrior_bulwark"]
 
 [resource]
 script = ExtResource("1_catalog")
@@ -50,12 +54,12 @@ node_icons = {
 &"elf_archer_stopping_arrow": ExtResource("10_collision"),
 &"elf_archer_tactical_retreat": ExtResource("7_movement"),
 &"elf_archer_transpiercing_bolt": ExtResource("12_pierce"),
-&"elf_assassin_backstab": ExtResource("4_damage"),
-&"elf_assassin_venomous_blade": ExtResource("28_poison"),
-&"elf_healer_abundant_sap": ExtResource("14_heal"),
-&"elf_healer_protective_bark": ExtResource("15_defense"),
-&"elf_mage_incandescent_core": ExtResource("4_damage"),
-&"elf_mage_persistent_embers": ExtResource("13_terrain")
+&"elf_assassin_dans_le_dos": ExtResource("4_damage"),
+&"elf_assassin_lame_venimeuse": ExtResource("28_poison"),
+&"elf_healer_seve_abondante": ExtResource("14_heal"),
+&"elf_healer_ecorce_protectrice": ExtResource("15_defense"),
+&"elf_mage_cur_incandescent": ExtResource("4_damage"),
+&"elf_mage_braises_persistantes": ExtResource("13_terrain")
 }
 semantic_icons = {
 &"area_or_pierce": ExtResource("12_pierce"),
@@ -80,20 +84,28 @@ branch_badges = {
 &"elf:assassin": ExtResource("21_elf_assassin"),
 &"elf:healer": ExtResource("23_elf_healer"),
 &"elf:mage": ExtResource("22_elf_mage"),
-&"mage:mage_earth": ExtResource("27_mage_earth"),
-&"mage:mage_fire": ExtResource("24_mage_fire"),
-&"mage:mage_ice": ExtResource("25_mage_ice"),
-&"mage:mage_lightning": ExtResource("26_mage_lightning")
+&"mage:mage_geomancy": ExtResource("27_mage_earth"),
+&"mage:mage_pyromancy": ExtResource("24_mage_fire"),
+&"mage:mage_cryomancy": ExtResource("25_mage_ice"),
+&"mage:mage_fulguromancy": ExtResource("26_mage_lightning"),
+&"warrior:warrior_breaker": ExtResource("29_warrior_breaker"),
+&"warrior:warrior_assault": ExtResource("30_warrior_assault"),
+&"warrior:warrior_fury": ExtResource("31_warrior_fury"),
+&"warrior:warrior_bulwark": ExtResource("32_warrior_bulwark")
 }
 root_icons = {
 &"elf:archer": ExtResource("20_elf_archer"),
 &"elf:assassin": ExtResource("21_elf_assassin"),
 &"elf:healer": ExtResource("23_elf_healer"),
 &"elf:mage": ExtResource("22_elf_mage"),
-&"mage:mage_earth": ExtResource("27_mage_earth"),
-&"mage:mage_fire": ExtResource("24_mage_fire"),
-&"mage:mage_ice": ExtResource("25_mage_ice"),
-&"mage:mage_lightning": ExtResource("26_mage_lightning")
+&"mage:mage_geomancy": ExtResource("27_mage_earth"),
+&"mage:mage_pyromancy": ExtResource("24_mage_fire"),
+&"mage:mage_cryomancy": ExtResource("25_mage_ice"),
+&"mage:mage_fulguromancy": ExtResource("26_mage_lightning"),
+&"warrior:warrior_breaker": ExtResource("29_warrior_breaker"),
+&"warrior:warrior_assault": ExtResource("30_warrior_assault"),
+&"warrior:warrior_fury": ExtResource("31_warrior_fury"),
+&"warrior:warrior_bulwark": ExtResource("32_warrior_bulwark")
 }
 capstone_icons = {
 &"elf_archer_perfect_shot": ExtResource("4_damage"),

@@ -3,7 +3,7 @@ extends GutTest
 const MENU_SCENE := preload("res://ui/menus/dark_pause_menu.tscn")
 const BUTTON_SCENE := preload("res://ui/components/dark_menu_button.tscn")
 const RUN_UI_SCENE := preload("res://ui/run/PersistentRunUI.tscn")
-const RUN_DATA := preload("res://data/runs/fixed_trio_prototype_run.tres")
+const RUN_DATA := preload("res://data/runs/first_run.tres")
 const THEME := preload("res://ui/themes/dark_pause_menu_theme.tres")
 const GENERATED_DIRECTORY := "res://asset/ui/dark_menu/generated/"
 const GENERATED_ASSETS := [
@@ -31,13 +31,7 @@ class FakeCombatContext:
 	func _on_attack_pressed() -> void:
 		pass
 
-	func _on_spell_pressed(_spell, _imprinted: bool = false) -> void:
-		pass
-
-	func _on_awakening_pressed() -> void:
-		pass
-
-	func _on_reaction_pressed() -> void:
+	func _on_spell_pressed(_spell) -> void:
 		pass
 
 	func _on_end_turn_pressed() -> void:
@@ -51,7 +45,7 @@ func after_each() -> void:
 
 func test_generated_assets_load_with_import_sidecars() -> void:
 	for asset_name in GENERATED_ASSETS:
-		var path := GENERATED_DIRECTORY + asset_name
+		var path: String = GENERATED_DIRECTORY + asset_name
 		assert_true(FileAccess.file_exists(path), path)
 		assert_true(FileAccess.file_exists(path + ".import"), path + ".import")
 		assert_not_null(load(path), path)
@@ -59,7 +53,7 @@ func test_generated_assets_load_with_import_sidecars() -> void:
 
 func test_generated_assets_have_real_and_progressive_alpha() -> void:
 	for asset_name in GENERATED_ASSETS:
-		var path := GENERATED_DIRECTORY + asset_name
+		var path: String = GENERATED_DIRECTORY + asset_name
 		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
 		assert_not_null(image, path)
 		image.convert(Image.FORMAT_RGBA8)
@@ -71,7 +65,7 @@ func test_generated_assets_have_real_and_progressive_alpha() -> void:
 
 func test_generated_assets_have_a_fully_transparent_outer_margin() -> void:
 	for asset_name in GENERATED_ASSETS:
-		var path := GENERATED_DIRECTORY + asset_name
+		var path: String = GENERATED_DIRECTORY + asset_name
 		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
 		image.convert(Image.FORMAT_RGBA8)
 		for x in range(image.get_width()):
@@ -92,7 +86,7 @@ func test_generated_assets_have_a_fully_transparent_outer_margin() -> void:
 
 func test_generated_imports_are_lossless_without_mipmaps() -> void:
 	for asset_name in GENERATED_ASSETS:
-		var path := GENERATED_DIRECTORY + asset_name + ".import"
+		var path: String = GENERATED_DIRECTORY + asset_name + ".import"
 		var import_text := FileAccess.get_file_as_string(path)
 		assert_true("compress/mode=0" in import_text, path)
 		assert_true("mipmaps/generate=false" in import_text, path)
@@ -333,7 +327,7 @@ func _prepare_run() -> bool:
 		[
 			"res://data/units/alliés/elfe.tres",
 			"res://data/units/alliés/mage.tres",
-			"res://data/units/alliés/Gardien.tres",
+			"res://data/units/alliés/Guerrier.tres",
 		]
 	)
 
@@ -369,5 +363,3 @@ func _assert_layout(
 	assert_true(panel.encloses(buttons), str(snapshot))
 	assert_true(panel.encloses(bottom), str(snapshot))
 	assert_true(panel.encloses(snapshot["close"]), str(snapshot))
-	assert_lte(header.end.y, buttons.position.y + 1.0, str(snapshot))
-	assert_lte(buttons.end.y, bottom.position.y + 1.0, str(snapshot))

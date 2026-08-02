@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RunData" format=3]
+
+[ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
+[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room_type"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_01.tres" id="3_room_01"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_02.tres" id="4_room_02"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_03.tres" id="5_room_03"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_04_boss.tres" id="6_room_04"]
+
+[resource]
+script = ExtResource("1_run")
+run_name = "Première run"
+rooms = Array[ExtResource("2_room_type")]([ExtResource("3_room_01"), ExtResource("4_room_02"), ExtResource("5_room_03"), ExtResource("6_room_04")])

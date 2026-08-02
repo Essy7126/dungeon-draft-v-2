@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://gobtest001"]
+[gd_scene format=3 uid="uid://gobtest001"]
 
 [ext_resource type="PackedScene" path="res://asset/gobtest.glb" id="1_gobtest"]
 [ext_resource type="Script" path="res://gobtest.gd" id="2_gobtest"]

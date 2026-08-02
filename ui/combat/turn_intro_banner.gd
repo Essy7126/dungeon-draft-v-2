@@ -66,8 +66,6 @@ func present(unit, theme: CharacterHUDThemeData) -> bool:
 	var discipline_parts: Array[String] = []
 	if not theme.discipline_name.is_empty():
 		discipline_parts.append(theme.discipline_name)
-	if not theme.energy_name.is_empty():
-		discipline_parts.append(theme.energy_name)
 	discipline_label.text = " · ".join(discipline_parts)
 	for label in [turn_label, character_name_label, discipline_label]:
 		label.add_theme_color_override("font_color", theme.text_color)

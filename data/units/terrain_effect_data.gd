@@ -26,21 +26,5 @@ enum Trigger {
 @export var dangerous_for_ai: bool = false
 @export var ai_danger_weight: float = 0.0
 
-@export_group("Hooks energie")
-@export var native_energy_id: String = ""
-@export var counts_as_rune: bool = false
-# Remise de cout PA (une fois par tour, min 1 PA) pour une unite de l'ecole
-# native qui lance un sort depuis ce terrain.
-@export var ap_discount: int = 0
-@export var fervor_generation_multiplier: float = 1.0
-@export var exploit_fervor_bonus: float = 0.0
-
 @export_group("Duree")
 @export var duration: int = 3
-
-func matches_energy(energy_id: String) -> bool:
-	if counts_as_rune:
-		return true
-	if native_energy_id.strip_edges() == "":
-		return false
-	return native_energy_id.strip_edges().to_lower() == energy_id.strip_edges().to_lower()

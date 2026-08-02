@@ -513,7 +513,6 @@ func test_synthetic_fixture_uses_future_cumulative_thresholds() -> void:
 
 func test_successful_cast_still_grants_one_xp_without_energy() -> void:
 	var state := _prepare_manager(_make_tree(), true)
-	assert_false(state.unit.has_energy())
 	var spell: Spell = state.unit.spells[0]
 	EventBus.spell_cast.emit(state.unit, spell, {})
 	assert_eq(state.get_discipline_progress(DISCIPLINE_ID).xp, 1)
@@ -523,7 +522,6 @@ func test_successful_cast_still_grants_one_xp_without_energy() -> void:
 
 func test_valid_selection_applies_spell_modifiers_exactly_once() -> void:
 	var state := _make_character_state(_make_tree(true))
-	assert_false(state.unit.has_energy())
 	state.add_discipline_xp(DISCIPLINE_ID, 3)
 	assert_true(state.select_upgrade(DISCIPLINE_ID, 2, BRANCH_A))
 	assert_eq(state.unit.get_progression_spell_modifiers().size(), 1)

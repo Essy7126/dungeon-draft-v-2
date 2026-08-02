@@ -1,6 +1,5 @@
-# Multiplicateur de Force (colonne de Rage) : payoff = 1 + Force/100.
-# Doit s'appliquer a la distance de poussee, aux degats de collision
-# et au gain d'energie sur EXPLOIT (et UNIQUEMENT sur EXPLOIT).
+# Multiplicateur de Force : 1 + Force/100.
+# Il s'applique aux deplacements forces et aux degats de collision.
 extends GutTest
 
 const Factory = preload("res://test/support/factory.gd")
@@ -45,17 +44,3 @@ func test_degats_de_collision_scales_par_la_force() -> void:
 	assert_true(report["collision"], "la poussee doit finir en collision")
 	assert_eq(enemy.grid_pos, Vector2i(1, 1), "bloquee par le mur : ne bouge pas")
 	assert_eq(enemy.current_hp, 80, "degats de collision 10 x (1 + 100/100) = 20")
-
-func test_gain_energie_exploit_scale_par_la_force() -> void:
-	var unit := Factory.make_unit("Rageux", 0, 50.0)
-	unit.energy_type = Factory.make_energy({ "EXPLOIT": 10.0 })
-	var gained := unit.generate_fervor_from_verb("EXPLOIT")
-	assert_almost_eq(gained, 15.0, 0.0001, "EXPLOIT 10 x (1 + 50/100) = 15")
-	assert_almost_eq(unit.current_energy, 15.0, 0.0001)
-
-func test_gain_energie_hors_exploit_non_scale() -> void:
-	# La Force ne scale QUE le verbe EXPLOIT (deplacement force), pas HIT.
-	var unit := Factory.make_unit("Rageux", 0, 50.0)
-	unit.energy_type = Factory.make_energy({ "HIT": 10.0 })
-	var gained := unit.generate_fervor_from_verb("HIT")
-	assert_almost_eq(gained, 10.0, 0.0001, "HIT ne doit pas etre multiplie par la Force")

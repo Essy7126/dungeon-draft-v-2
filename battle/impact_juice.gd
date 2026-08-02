@@ -7,7 +7,6 @@
 # routine. Composant autonome (instancie par battle.tscn), zero couplage.
 #
 # Hit-stop : Engine.time_scale = 0 pendant FREEZE_TIME, restauration par un
-# SceneTreeTimer qui IGNORE time_scale (sinon on ne se reveillerait jamais).
 # Les tweens de l'UI sont figes ~60 ms — imperceptible et voulu.
 # Shake : offset de camera pilote en temps REEL (ticks), amorti lineairement,
 # donc insensible au time_scale du hit-stop.

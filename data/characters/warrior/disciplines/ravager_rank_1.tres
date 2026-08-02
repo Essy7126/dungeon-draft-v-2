@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="DisciplineRankData" load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_rank"]
-
-[resource]
-script = ExtResource("1_rank")
-rank = 1
-required_total_xp = 0

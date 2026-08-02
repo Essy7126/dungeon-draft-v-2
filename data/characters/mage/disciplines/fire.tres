@@ -1,16 +1,421 @@
-[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://di8c4cp4okyc3"]
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
 
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_lqdcm"]
-[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_xauly"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_ijbiy"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_1h2yo"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_4o0o6"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_h0kry"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_4e54h"]
 
-[sub_resource type="Resource" id="Rank_fire_1"]
-script = ExtResource("2_rank_type")
+[sub_resource type="Resource" id="Resource_1k3vt"]
+script = ExtResource("1_xauly")
+
+[sub_resource type="Resource" id="Resource_2i036"]
+script = ExtResource("5_h0kry")
+amount = 2
+modifier_name = "Conflagration"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_fi4nf"]
+script = ExtResource("3_1h2yo")
+excluded_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
+upgrade_id = &"mage_pyromancy_conflagration"
+display_name = "Conflagration"
+description = "+2 dégâts à toutes les cibles touchées."
+discipline_id = &"mage_pyromancy"
+rank = 2
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_2i036")])
+
+[sub_resource type="Resource" id="Resource_12rba"]
+script = ExtResource("5_h0kry")
+effect_type = 22
+amount = 1
+modifier_name = "Brasier durable"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_llof4"]
+script = ExtResource("3_1h2yo")
+excluded_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
+upgrade_id = &"mage_pyromancy_brasier_durable"
+display_name = "Brasier durable"
+description = "Le terrain enflammé dure 1 tour supplémentaire."
+discipline_id = &"mage_pyromancy"
+rank = 2
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_12rba")])
+
+[sub_resource type="Resource" id="Resource_b8yhm"]
+script = ExtResource("1_xauly")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_ijbiy")]([SubResource("Resource_fi4nf"), SubResource("Resource_llof4")])
+
+[sub_resource type="Resource" id="Resource_7u085"]
+script = ExtResource("5_h0kry")
+effect_type = 1
+amount = 4
+modifier_name = "Noyau instable"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_lg06m"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
+upgrade_id = &"mage_pyromancy_noyau_instable"
+display_name = "Noyau instable"
+description = "+4 dégâts sur la cellule centrale."
+discipline_id = &"mage_pyromancy"
+rank = 3
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_7u085")])
+
+[sub_resource type="Resource" id="Resource_a73u7"]
+script = ExtResource("5_h0kry")
+effect_type = 17
+amount = 1
+modifier_name = "Maître des explosions"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_snlw5"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
+upgrade_id = &"mage_pyromancy_maitre_des_explosions"
+display_name = "Maître des explosions"
+description = "La zone gagne 1 cellule sur ses extrémités cardinales."
+discipline_id = &"mage_pyromancy"
+rank = 3
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_a73u7")])
+
+[sub_resource type="Resource" id="Resource_y5h0i"]
+script = ExtResource("5_h0kry")
+effect_type = 12
+amount = 2
+duration = 2
+status_group = &"mage_pyromancy_burn"
+status_name = "Burn"
+status_element = 1
+modifier_name = "Incendiaire"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_twq8a"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
+upgrade_id = &"mage_pyromancy_incendiaire"
+display_name = "Incendiaire"
+description = "Applique Brûlure : 2 dégâts pendant 2 tours."
+discipline_id = &"mage_pyromancy"
+rank = 3
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_y5h0i")])
+
+[sub_resource type="Resource" id="Resource_857jg"]
+script = ExtResource("5_h0kry")
+amount = 2
+modifier_name = "Sol ardent"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_emh45"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
+upgrade_id = &"mage_pyromancy_sol_ardent"
+display_name = "Sol ardent"
+description = "Les ennemis qui commencent leur tour sur le feu subissent +2 dégâts."
+discipline_id = &"mage_pyromancy"
+rank = 3
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_857jg")])
+
+[sub_resource type="Resource" id="Resource_si6jh"]
+script = ExtResource("1_xauly")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_ijbiy")]([SubResource("Resource_lg06m"), SubResource("Resource_snlw5"), SubResource("Resource_twq8a"), SubResource("Resource_emh45")])
+
+[sub_resource type="Resource" id="Resource_7v38e"]
+script = ExtResource("5_h0kry")
+effect_type = 1
+amount = 4
+modifier_name = "Détonation intense"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_uj1li"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_noyau_instable"])
+upgrade_id = &"mage_pyromancy_detonation_intense"
+display_name = "Détonation intense"
+description = "+4 dégâts supplémentaires au centre."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_7v38e")])
+
+[sub_resource type="Resource" id="Resource_8w1l0"]
+script = ExtResource("5_h0kry")
+effect_type = 5
+amount = 2
+modifier_name = "Projection lointaine"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_gedfo"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_noyau_instable"])
+upgrade_id = &"mage_pyromancy_projection_lointaine"
+display_name = "Projection lointaine"
+description = "+2 portée."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_8w1l0")])
+
+[sub_resource type="Resource" id="Resource_u0w7m"]
+script = ExtResource("5_h0kry")
+effect_type = 17
+amount = 1
+modifier_name = "Superficie accrue"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_5ty5a"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_maitre_des_explosions"])
+upgrade_id = &"mage_pyromancy_superficie_accrue"
+display_name = "Superficie accrue"
+description = "La zone gagne encore 1 cellule cardinale."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_u0w7m")])
+
+[sub_resource type="Resource" id="Resource_pondv"]
+script = ExtResource("5_h0kry")
+amount = 2
+modifier_name = "Chaleur extrême"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_8x3eb"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_maitre_des_explosions"])
+upgrade_id = &"mage_pyromancy_chaleur_extreme"
+display_name = "Chaleur extrême"
+description = "+2 dégâts à toutes les cibles."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_pondv")])
+
+[sub_resource type="Resource" id="Resource_48u87"]
+script = ExtResource("5_h0kry")
+effect_type = 12
+amount = 1
+status_group = &"mage_pyromancy_burn"
+status_name = "Burn"
+status_mode = 1
+status_element = 1
+modifier_name = "Feu dévorant"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_eps67"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_incendiaire"])
+upgrade_id = &"mage_pyromancy_feu_devorant"
+display_name = "Feu dévorant"
+description = "La Brûlure inflige +1 dégât par tour."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_48u87")])
+
+[sub_resource type="Resource" id="Resource_vmwsp"]
+script = ExtResource("5_h0kry")
+effect_type = 12
+duration = 1
+status_group = &"mage_pyromancy_burn"
+status_name = "Burn"
+status_mode = 1
+status_element = 1
+modifier_name = "Braises éternelles"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_1xo17"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_incendiaire"])
+upgrade_id = &"mage_pyromancy_braises_eternelles"
+display_name = "Braises éternelles"
+description = "La Brûlure dure 1 tour supplémentaire."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_vmwsp")])
+
+[sub_resource type="Resource" id="Resource_72jwm"]
+script = ExtResource("5_h0kry")
+effect_type = 22
+amount = 1
+modifier_name = "Terrain persistant"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_kdyo7"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_sol_ardent"])
+upgrade_id = &"mage_pyromancy_terrain_persistant"
+display_name = "Terrain persistant"
+description = "Le terrain dure 1 tour supplémentaire."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_72jwm")])
+
+[sub_resource type="Resource" id="Resource_v2k3u"]
+script = ExtResource("5_h0kry")
+effect_type = 23
+amount = 2
+modifier_name = "Fournaise"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_ha4qi"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_sol_ardent"])
+upgrade_id = &"mage_pyromancy_fournaise"
+display_name = "Fournaise"
+description = "Les dégâts supplémentaires du terrain passent à +4."
+discipline_id = &"mage_pyromancy"
+rank = 4
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_v2k3u")])
+
+[sub_resource type="Resource" id="Resource_kph7d"]
+script = ExtResource("1_xauly")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_ijbiy")]([SubResource("Resource_uj1li"), SubResource("Resource_gedfo"), SubResource("Resource_5ty5a"), SubResource("Resource_8x3eb"), SubResource("Resource_eps67"), SubResource("Resource_1xo17"), SubResource("Resource_kdyo7"), SubResource("Resource_ha4qi")])
+
+[sub_resource type="Resource" id="Resource_bqvpu"]
+script = ExtResource("5_h0kry")
+effect_type = 1
+amount = 6
+modifier_name = "Supernova"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_t6n3c"]
+script = ExtResource("5_h0kry")
+amount = 3
+modifier_name = "Supernova"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_8waq0"]
+script = ExtResource("5_h0kry")
+effect_type = 17
+amount = 1
+modifier_name = "Supernova"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_rqfhi"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
+upgrade_id = &"mage_pyromancy_supernova"
+display_name = "Supernova"
+description = "+6 dégâts au centre, +3 dégâts de zone et zone agrandie."
+discipline_id = &"mage_pyromancy"
+rank = 5
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_bqvpu"), SubResource("Resource_t6n3c"), SubResource("Resource_8waq0")])
+
+[sub_resource type="Resource" id="Resource_2i36l"]
+script = ExtResource("5_h0kry")
+effect_type = 5
+amount = 4
+modifier_name = "Bombardement"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_fb66m"]
+script = ExtResource("5_h0kry")
+amount = 4
+modifier_name = "Bombardement"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_juy8o"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
+upgrade_id = &"mage_pyromancy_bombardement"
+display_name = "Bombardement"
+description = "+4 portée et +4 dégâts à toutes les cibles."
+discipline_id = &"mage_pyromancy"
+rank = 5
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_2i36l"), SubResource("Resource_fb66m")])
+
+[sub_resource type="Resource" id="Resource_7noku"]
+script = ExtResource("5_h0kry")
+effect_type = 12
+amount = 3
+duration = 3
+status_group = &"mage_pyromancy_burn"
+status_name = "Brûlure"
+status_mode = 2
+status_element = 1
+modifier_name = "Enfer"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_84npf"]
+script = ExtResource("5_h0kry")
+effect_type = 22
+amount = 2
+modifier_name = "Enfer"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_lgtcy"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
+upgrade_id = &"mage_pyromancy_enfer"
+display_name = "Enfer"
+description = "Brûlure : 3 dégâts pendant 3 tours et terrain +2 tours."
+discipline_id = &"mage_pyromancy"
+rank = 5
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_7noku"), SubResource("Resource_84npf")])
+
+[sub_resource type="Resource" id="Resource_3v25q"]
+script = ExtResource("5_h0kry")
+effect_type = 17
+amount = 1
+modifier_name = "Mer de flammes"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_2olhb"]
+script = ExtResource("5_h0kry")
+effect_type = 22
+amount = 2
+modifier_name = "Mer de flammes"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_vp0ry"]
+script = ExtResource("5_h0kry")
+effect_type = 23
+amount = 3
+modifier_name = "Mer de flammes"
+target_spell_id = &"mage_fireball"
+
+[sub_resource type="Resource" id="Resource_1vnxp"]
+script = ExtResource("3_1h2yo")
+prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
+upgrade_id = &"mage_pyromancy_mer_de_flammes"
+display_name = "Mer de flammes"
+description = "Zone de terrain agrandie, durée +2 tours et +3 dégâts au début du tour."
+discipline_id = &"mage_pyromancy"
+rank = 5
+target_spell_id = &"mage_fireball"
+spell_modifiers = Array[ExtResource("4_4o0o6")]([SubResource("Resource_3v25q"), SubResource("Resource_2olhb"), SubResource("Resource_vp0ry")])
+
+[sub_resource type="Resource" id="Resource_unp5u"]
+script = ExtResource("1_xauly")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_ijbiy")]([SubResource("Resource_rqfhi"), SubResource("Resource_juy8o"), SubResource("Resource_lgtcy"), SubResource("Resource_1vnxp")])
 
 [resource]
-script = ExtResource("1_discipline")
-discipline_id = &"mage_fire"
+script = ExtResource("6_4e54h")
+discipline_id = &"mage_pyromancy"
 display_name = "Pyromancie"
 description = "Maîtrise des dégâts directs, des explosions et du feu persistant."
 presentation_color = Color(0.94, 0.3, 0.12, 1)
-ranks = Array[ExtResource("2_rank_type")]([SubResource("Rank_fire_1")])
+ranks = Array[ExtResource("1_xauly")]([SubResource("Resource_1k3vt"), SubResource("Resource_b8yhm"), SubResource("Resource_si6jh"), SubResource("Resource_kph7d"), SubResource("Resource_unp5u")])

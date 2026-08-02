@@ -38,7 +38,7 @@ func _context_with_three_targets() -> Dictionary:
 func test_resource_matches_the_locked_thunderstorm_contract() -> void:
 	var spell := _spell()
 	assert_eq(spell.spell_id, &"mage_thunderstorm")
-	assert_eq(spell.discipline_id, &"mage_lightning")
+	assert_eq(spell.discipline_id, &"mage_fulguromancy")
 	assert_eq(spell.spell_name, "Tempête orageuse")
 	assert_eq([spell.ap_cost, spell.spell_range, spell.damage], [3, 5, 7])
 	assert_true(spell.needs_line_of_sight)

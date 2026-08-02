@@ -1,16 +1,425 @@
-[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://b412prwsu5mdq"]
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
 
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_pwwwd"]
-[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_t8061"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_0g0cx"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_1swla"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_4yf0j"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_duijt"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_5q0li"]
 
-[sub_resource type="Resource" id="Rank_earth_1"]
-script = ExtResource("2_rank_type")
+[sub_resource type="Resource" id="Resource_4qjet"]
+script = ExtResource("1_t8061")
+
+[sub_resource type="Resource" id="Resource_s3jc0"]
+script = ExtResource("5_duijt")
+amount = 2
+modifier_name = "Onde renforcée"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_ksw1x"]
+script = ExtResource("3_1swla")
+excluded_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
+upgrade_id = &"mage_geomancy_onde_renforcee"
+display_name = "Onde renforcée"
+description = "+2 dégâts à toutes les cibles de la ligne."
+discipline_id = &"mage_geomancy"
+rank = 2
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_s3jc0")])
+
+[sub_resource type="Resource" id="Resource_4li21"]
+script = ExtResource("5_duijt")
+effect_type = 18
+amount = 1
+modifier_name = "Recul tectonique"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_xxxig"]
+script = ExtResource("3_1swla")
+excluded_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
+upgrade_id = &"mage_geomancy_recul_tectonique"
+display_name = "Recul tectonique"
+description = "+1 case de poussée."
+discipline_id = &"mage_geomancy"
+rank = 2
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_4li21")])
+
+[sub_resource type="Resource" id="Resource_e0fjg"]
+script = ExtResource("1_t8061")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_0g0cx")]([SubResource("Resource_ksw1x"), SubResource("Resource_xxxig")])
+
+[sub_resource type="Resource" id="Resource_emwxe"]
+script = ExtResource("5_duijt")
+effect_type = 15
+amount = 2
+duration = 99
+charges = 2
+status_group = &"mage_geomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Fracture"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_aiox8"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
+upgrade_id = &"mage_geomancy_fracture"
+display_name = "Fracture"
+description = "Les cibles subissent +2 dégâts sur les 2 prochaines attaques."
+discipline_id = &"mage_geomancy"
+rank = 3
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_emwxe")])
+
+[sub_resource type="Resource" id="Resource_6t37m"]
+script = ExtResource("5_duijt")
+effect_type = 5
+amount = 2
+modifier_name = "Faille prolongée"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_lfd3w"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
+upgrade_id = &"mage_geomancy_faille_prolongee"
+display_name = "Faille prolongée"
+description = "+2 portée."
+discipline_id = &"mage_geomancy"
+rank = 3
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_6t37m")])
+
+[sub_resource type="Resource" id="Resource_egdnd"]
+script = ExtResource("5_duijt")
+effect_type = 20
+amount = 4
+modifier_name = "Fracasseur"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_s8rq5"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
+upgrade_id = &"mage_geomancy_fracasseur"
+display_name = "Fracasseur"
+description = "Une collision inflige 4 dégâts supplémentaires."
+discipline_id = &"mage_geomancy"
+rank = 3
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_egdnd")])
+
+[sub_resource type="Resource" id="Resource_ku1ux"]
+script = ExtResource("5_duijt")
+effect_type = 13
+amount = 1
+duration = 1
+status_group = &"mage_geomancy_slow"
+status_name = "Entrave"
+modifier_name = "Éboulement"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_mlnhy"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
+upgrade_id = &"mage_geomancy_eboulement"
+display_name = "Éboulement"
+description = "Les cibles touchées perdent 1 PM au prochain tour."
+discipline_id = &"mage_geomancy"
+rank = 3
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_ku1ux")])
+
+[sub_resource type="Resource" id="Resource_frmwp"]
+script = ExtResource("1_t8061")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_0g0cx")]([SubResource("Resource_aiox8"), SubResource("Resource_lfd3w"), SubResource("Resource_s8rq5"), SubResource("Resource_mlnhy")])
+
+[sub_resource type="Resource" id="Resource_pywcq"]
+script = ExtResource("5_duijt")
+effect_type = 15
+amount = 4
+duration = 99
+charges = 2
+status_group = &"mage_geomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Brèche profonde"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_le6vx"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracture"])
+upgrade_id = &"mage_geomancy_breche_profonde"
+display_name = "Brèche profonde"
+description = "Le bonus de dégâts reçus passe à +4."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_pywcq")])
+
+[sub_resource type="Resource" id="Resource_usts8"]
+script = ExtResource("5_duijt")
+effect_type = 15
+amount = 2
+duration = 99
+charges = 3
+status_group = &"mage_geomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Fracture durable"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_msmj0"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracture"])
+upgrade_id = &"mage_geomancy_fracture_durable"
+display_name = "Fracture durable"
+description = "Le bonus s’applique aux 3 prochaines attaques."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_usts8")])
+
+[sub_resource type="Resource" id="Resource_3r48v"]
+script = ExtResource("5_duijt")
+effect_type = 5
+amount = 2
+modifier_name = "Portée tellurique"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_hrjko"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_faille_prolongee"])
+upgrade_id = &"mage_geomancy_portee_tellurique"
+display_name = "Portée tellurique"
+description = "+2 portée supplémentaire."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_3r48v")])
+
+[sub_resource type="Resource" id="Resource_c15e3"]
+script = ExtResource("5_duijt")
+amount = 2
+modifier_name = "Secousse puissante"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_6bqtx"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_faille_prolongee"])
+upgrade_id = &"mage_geomancy_secousse_puissante"
+display_name = "Secousse puissante"
+description = "+2 dégâts supplémentaires."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_c15e3")])
+
+[sub_resource type="Resource" id="Resource_nqh5y"]
+script = ExtResource("5_duijt")
+effect_type = 20
+amount = 4
+modifier_name = "Écrasement"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_1xej1"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracasseur"])
+upgrade_id = &"mage_geomancy_ecrasement"
+display_name = "Écrasement"
+description = "+4 dégâts de collision supplémentaires."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_nqh5y")])
+
+[sub_resource type="Resource" id="Resource_grx0g"]
+script = ExtResource("5_duijt")
+effect_type = 18
+amount = 1
+modifier_name = "Projection"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_82e12"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracasseur"])
+upgrade_id = &"mage_geomancy_projection"
+display_name = "Projection"
+description = "+1 case de poussée."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_grx0g")])
+
+[sub_resource type="Resource" id="Resource_rmhmx"]
+script = ExtResource("5_duijt")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"mage_geomancy_slow"
+status_name = "Entrave"
+modifier_name = "Terrain instable"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_0yk86"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_eboulement"])
+upgrade_id = &"mage_geomancy_terrain_instable"
+display_name = "Terrain instable"
+description = "La perte passe à −2 PM."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_rmhmx")])
+
+[sub_resource type="Resource" id="Resource_q82ii"]
+script = ExtResource("5_duijt")
+amount = 2
+modifier_name = "Secousse"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_m554b"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_eboulement"])
+upgrade_id = &"mage_geomancy_secousse"
+display_name = "Secousse"
+description = "+2 dégâts directs."
+discipline_id = &"mage_geomancy"
+rank = 4
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_q82ii")])
+
+[sub_resource type="Resource" id="Resource_nypbv"]
+script = ExtResource("1_t8061")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_0g0cx")]([SubResource("Resource_le6vx"), SubResource("Resource_msmj0"), SubResource("Resource_hrjko"), SubResource("Resource_6bqtx"), SubResource("Resource_1xej1"), SubResource("Resource_82e12"), SubResource("Resource_0yk86"), SubResource("Resource_m554b")])
+
+[sub_resource type="Resource" id="Resource_n6joj"]
+script = ExtResource("5_duijt")
+amount = 5
+modifier_name = "Cataclysme"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_rbwx2"]
+script = ExtResource("5_duijt")
+effect_type = 15
+amount = 4
+duration = 99
+charges = 2
+status_group = &"mage_geomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Cataclysme"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_abtr4"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
+upgrade_id = &"mage_geomancy_cataclysme"
+display_name = "Cataclysme"
+description = "+5 dégâts de ligne et +4 dégâts reçus sur les 2 prochaines attaques."
+discipline_id = &"mage_geomancy"
+rank = 5
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_n6joj"), SubResource("Resource_rbwx2")])
+
+[sub_resource type="Resource" id="Resource_37wx7"]
+script = ExtResource("5_duijt")
+effect_type = 5
+amount = 4
+modifier_name = "Faille majeure"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_ex2pe"]
+script = ExtResource("5_duijt")
+amount = 3
+modifier_name = "Faille majeure"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_5q8vr"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
+upgrade_id = &"mage_geomancy_faille_majeure"
+display_name = "Faille majeure"
+description = "+4 portée totale supplémentaire et +3 dégâts."
+discipline_id = &"mage_geomancy"
+rank = 5
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_37wx7"), SubResource("Resource_ex2pe")])
+
+[sub_resource type="Resource" id="Resource_dbbct"]
+script = ExtResource("5_duijt")
+effect_type = 19
+amount = 3
+modifier_name = "Impact tectonique"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_fshxh"]
+script = ExtResource("5_duijt")
+effect_type = 21
+amount = 8
+modifier_name = "Impact tectonique"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_t0yl8"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
+upgrade_id = &"mage_geomancy_impact_tectonique"
+display_name = "Impact tectonique"
+description = "Poussée totale de 3 cases et 8 dégâts de collision."
+discipline_id = &"mage_geomancy"
+rank = 5
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_dbbct"), SubResource("Resource_fshxh")])
+
+[sub_resource type="Resource" id="Resource_f0sqs"]
+script = ExtResource("5_duijt")
+effect_type = 19
+amount = 2
+modifier_name = "Glissement de terrain"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_uxrcm"]
+script = ExtResource("5_duijt")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"mage_geomancy_slow"
+status_name = "Terrain instable"
+modifier_name = "Glissement de terrain"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_o5u7w"]
+script = ExtResource("5_duijt")
+amount = 3
+modifier_name = "Glissement de terrain"
+target_spell_id = &"mage_seismic_wave"
+
+[sub_resource type="Resource" id="Resource_8pt4e"]
+script = ExtResource("3_1swla")
+prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
+upgrade_id = &"mage_geomancy_glissement_de_terrain"
+display_name = "Glissement de terrain"
+description = "Poussée de 2 cases, −2 PM et +3 dégâts."
+discipline_id = &"mage_geomancy"
+rank = 5
+target_spell_id = &"mage_seismic_wave"
+spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_f0sqs"), SubResource("Resource_uxrcm"), SubResource("Resource_o5u7w")])
+
+[sub_resource type="Resource" id="Resource_7y6my"]
+script = ExtResource("1_t8061")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_0g0cx")]([SubResource("Resource_abtr4"), SubResource("Resource_5q8vr"), SubResource("Resource_t0yl8"), SubResource("Resource_8pt4e")])
 
 [resource]
-script = ExtResource("1_discipline")
-discipline_id = &"mage_earth"
+script = ExtResource("6_5q0li")
+discipline_id = &"mage_geomancy"
 display_name = "Géomancie"
-description = "Maîtrise des impacts telluriques, de la poussée et de la protection."
+description = "Maîtrise des impacts telluriques, de la poussée et des fractures."
 presentation_color = Color(0.58, 0.4, 0.2, 1)
-ranks = Array[ExtResource("2_rank_type")]([SubResource("Rank_earth_1")])
+ranks = Array[ExtResource("1_t8061")]([SubResource("Resource_4qjet"), SubResource("Resource_e0fjg"), SubResource("Resource_frmwp"), SubResource("Resource_nypbv"), SubResource("Resource_7y6my")])

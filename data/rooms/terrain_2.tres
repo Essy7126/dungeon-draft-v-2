@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://cl8530hnljphx"]
+[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://cu75nfsk7bpui"]
 
 [ext_resource type="PackedScene" uid="uid://bbgpl0ncuxpbx" path="res://data/rooms/maps/battle_salle_montagne_iso_v2.tscn" id="1_battle"]
 [ext_resource type="Texture2D" uid="uid://dwq3k425mn4d1" path="res://asset/Background/montagne 2.webp" id="1_bg"]

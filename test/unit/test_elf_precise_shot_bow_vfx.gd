@@ -148,7 +148,6 @@ func test_unit_view_forwards_spell_and_waits_for_bow_release() -> void:
 	assert_true(ready)
 	assert_eq(visual.get_current_animation(), ElfVisual3D.ANIM_BOW_SHOT)
 	assert_true(iso.has_active_magic_bow())
-	unit.clear_traits()
 
 
 func test_precise_shot_vfx_timing_matches_projectile_scene() -> void:

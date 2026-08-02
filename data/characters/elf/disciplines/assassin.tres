@@ -1,14 +1,425 @@
 [gd_resource type="Resource" script_class="DisciplineData" format=3]
 
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
-[ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin_rank_1.tres" id="3_rank_1"]
-[ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin_rank_2.tres" id="4_rank_2"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_ataah"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_pbc6h"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_4ddn3"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_m70xu"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_r5yah"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_npn1s"]
+
+[sub_resource type="Resource" id="Resource_f5c6o"]
+script = ExtResource("1_ataah")
+
+[sub_resource type="Resource" id="Resource_33rp0"]
+script = ExtResource("5_r5yah")
+effect_type = 3
+amount = 4
+modifier_name = "Dans le dos"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_1yf26"]
+script = ExtResource("3_4ddn3")
+excluded_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_dans_le_dos"
+display_name = "Dans le dos"
+description = "+4 dégâts lors d’une véritable attaque arrière."
+discipline_id = &"assassin"
+rank = 2
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_33rp0")])
+
+[sub_resource type="Resource" id="Resource_dhelu"]
+script = ExtResource("5_r5yah")
+effect_type = 12
+amount = 2
+duration = 2
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+modifier_name = "Lame venimeuse"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_kkhr2"]
+script = ExtResource("3_4ddn3")
+excluded_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_lame_venimeuse"
+display_name = "Lame venimeuse"
+description = "Applique Poison : 2 dégâts pendant 2 tours."
+discipline_id = &"assassin"
+rank = 2
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_dhelu")])
+
+[sub_resource type="Resource" id="Resource_hdd7f"]
+script = ExtResource("1_ataah")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_pbc6h")]([SubResource("Resource_1yf26"), SubResource("Resource_kkhr2")])
+
+[sub_resource type="Resource" id="Resource_eoga3"]
+script = ExtResource("5_r5yah")
+effect_type = 2
+amount = 4
+effect_group = &"elf_assassin_execution"
+threshold_ratio = 0.4
+modifier_name = "Exécutrice"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_0doci"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_executrice"
+display_name = "Exécutrice"
+description = "+4 dégâts contre une cible sous 40 % de ses PV."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_eoga3")])
+
+[sub_resource type="Resource" id="Resource_7l14q"]
+script = ExtResource("5_r5yah")
+effect_type = 11
+amount = 1
+require_backstab = true
+modifier_name = "Repli"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_vs8xt"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_repli"
+display_name = "Repli"
+description = "Après une attaque arrière réussie, l’Elfe gagne 1 PM à son prochain tour."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_7l14q")])
+
+[sub_resource type="Resource" id="Resource_h3jov"]
+script = ExtResource("5_r5yah")
+effect_type = 12
+amount = 1
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 1
+modifier_name = "Empoisonneuse"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_7s67p"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_empoisonneuse"
+display_name = "Empoisonneuse"
+description = "Le Poison inflige +1 dégât par tour."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_h3jov")])
+
+[sub_resource type="Resource" id="Resource_6qgk5"]
+script = ExtResource("5_r5yah")
+effect_type = 13
+amount = 1
+duration = 1
+status_group = &"elf_assassin_slow"
+status_name = "Entrave"
+modifier_name = "Saboteuse"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_fdsc6"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_saboteuse"
+display_name = "Saboteuse"
+description = "La cible perd 1 PM pendant son prochain tour."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_6qgk5")])
+
+[sub_resource type="Resource" id="Resource_j0cmp"]
+script = ExtResource("1_ataah")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_pbc6h")]([SubResource("Resource_0doci"), SubResource("Resource_vs8xt"), SubResource("Resource_7s67p"), SubResource("Resource_fdsc6")])
+
+[sub_resource type="Resource" id="Resource_3clhr"]
+script = ExtResource("5_r5yah")
+effect_type = 2
+amount = 4
+effect_group = &"elf_assassin_execution"
+threshold_ratio = 0.5
+modifier_name = "Coup fatal"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_t5sxw"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_executrice"])
+upgrade_id = &"elf_assassin_coup_fatal"
+display_name = "Coup fatal"
+description = "Le seuil d’exécution passe à 50 % des PV."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_3clhr")])
+
+[sub_resource type="Resource" id="Resource_1ly6t"]
+script = ExtResource("5_r5yah")
+effect_type = 15
+amount = 3
+duration = 99
+status_group = &"elf_assassin_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Ouverture"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_o0srm"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_executrice"])
+upgrade_id = &"elf_assassin_ouverture"
+display_name = "Ouverture"
+description = "La cible subit +3 dégâts sur la prochaine attaque physique reçue."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_1ly6t")])
+
+[sub_resource type="Resource" id="Resource_de7k5"]
+script = ExtResource("5_r5yah")
+effect_type = 5
+amount = 1
+modifier_name = "Allonge elfique"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_fq2ig"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_repli"])
+upgrade_id = &"elf_assassin_allonge_elfique"
+display_name = "Allonge elfique"
+description = "+1 portée."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_de7k5")])
+
+[sub_resource type="Resource" id="Resource_lvomd"]
+script = ExtResource("5_r5yah")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Pas léger"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_vnub8"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_repli"])
+upgrade_id = &"elf_assassin_pas_leger"
+display_name = "Pas léger"
+description = "Le bonus de mobilité passe à +2 PM au prochain tour."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_lvomd")])
+
+[sub_resource type="Resource" id="Resource_hcxhj"]
+script = ExtResource("5_r5yah")
+effect_type = 12
+duration = 1
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 1
+modifier_name = "Toxines persistantes"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_3srni"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_empoisonneuse"])
+upgrade_id = &"elf_assassin_toxines_persistantes"
+display_name = "Toxines persistantes"
+description = "Le Poison dure 1 tour supplémentaire."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_hcxhj")])
+
+[sub_resource type="Resource" id="Resource_1pa62"]
+script = ExtResource("5_r5yah")
+effect_type = 12
+amount = 3
+duration = 2
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 2
+modifier_name = "Double dose"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_vfwfa"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_empoisonneuse"])
+upgrade_id = &"elf_assassin_double_dose"
+display_name = "Double dose"
+description = "Le Poison inflige 3 dégâts pendant 2 tours."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_1pa62")])
+
+[sub_resource type="Resource" id="Resource_xssl8"]
+script = ExtResource("5_r5yah")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"elf_assassin_slow"
+status_name = "Entrave"
+modifier_name = "Tendon tranché"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_kk47c"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_saboteuse"])
+upgrade_id = &"elf_assassin_tendon_tranche"
+display_name = "Tendon tranché"
+description = "La perte passe à −2 PM pour le prochain tour."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_xssl8")])
+
+[sub_resource type="Resource" id="Resource_kj2fs"]
+script = ExtResource("5_r5yah")
+effect_type = 16
+amount = -2
+duration = 1
+status_group = &"elf_assassin_weakened"
+status_name = "Affaiblissement"
+modifier_name = "Affaiblissement"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_ijvtg"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_saboteuse"])
+upgrade_id = &"elf_assassin_affaiblissement"
+display_name = "Affaiblissement"
+description = "La cible inflige −2 dégâts pendant son prochain tour."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_kj2fs")])
+
+[sub_resource type="Resource" id="Resource_gxrux"]
+script = ExtResource("1_ataah")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_pbc6h")]([SubResource("Resource_t5sxw"), SubResource("Resource_o0srm"), SubResource("Resource_fq2ig"), SubResource("Resource_vnub8"), SubResource("Resource_3srni"), SubResource("Resource_vfwfa"), SubResource("Resource_kk47c"), SubResource("Resource_ijvtg")])
+
+[sub_resource type="Resource" id="Resource_02uqq"]
+script = ExtResource("5_r5yah")
+effect_type = 4
+amount = 8
+threshold_ratio = 0.35
+modifier_name = "Assassinat"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_k6dvu"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_assassinat"
+display_name = "Assassinat"
+description = "+8 dégâts si la cible est dans le dos ou sous 35 % de ses PV."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_02uqq")])
+
+[sub_resource type="Resource" id="Resource_bjt6y"]
+script = ExtResource("5_r5yah")
+effect_type = 5
+amount = 2
+modifier_name = "Lame fantôme"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_t0hvd"]
+script = ExtResource("5_r5yah")
+amount = 3
+modifier_name = "Lame fantôme"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_d4yno"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_lame_fantome"
+display_name = "Lame fantôme"
+description = "Portée totale de 3 cases et +3 dégâts."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_bjt6y"), SubResource("Resource_t0hvd")])
+
+[sub_resource type="Resource" id="Resource_pjncq"]
+script = ExtResource("5_r5yah")
+effect_type = 12
+amount = 3
+duration = 3
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 2
+modifier_name = "Venin mortel"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_ynu0b"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_venin_mortel"
+display_name = "Venin mortel"
+description = "Poison : 3 dégâts pendant 3 tours."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_pjncq")])
+
+[sub_resource type="Resource" id="Resource_oqsif"]
+script = ExtResource("5_r5yah")
+effect_type = 15
+amount = 3
+duration = 99
+charges = 2
+status_group = &"elf_assassin_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Sabotage"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_egks8"]
+script = ExtResource("5_r5yah")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"elf_assassin_slow"
+status_name = "Entrave"
+modifier_name = "Sabotage"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_qjsbp"]
+script = ExtResource("3_4ddn3")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_sabotage"
+display_name = "Sabotage"
+description = "−2 PM et +3 dégâts reçus sur les 2 prochaines attaques."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("4_m70xu")]([SubResource("Resource_oqsif"), SubResource("Resource_egks8")])
+
+[sub_resource type="Resource" id="Resource_ltdlv"]
+script = ExtResource("1_ataah")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_pbc6h")]([SubResource("Resource_k6dvu"), SubResource("Resource_d4yno"), SubResource("Resource_ynu0b"), SubResource("Resource_qjsbp")])
 
 [resource]
-script = ExtResource("1_discipline")
+script = ExtResource("6_npn1s")
 discipline_id = &"assassin"
 display_name = "Assassin"
 description = "Maîtrise des frappes rapprochées et opportunistes."
 presentation_color = Color(0.48, 0.3, 0.64, 1)
-ranks = Array[ExtResource("2_rank_type")]([ExtResource("3_rank_1"), ExtResource("4_rank_2")])
+ranks = Array[ExtResource("1_ataah")]([SubResource("Resource_f5c6o"), SubResource("Resource_hdd7f"), SubResource("Resource_j0cmp"), SubResource("Resource_gxrux"), SubResource("Resource_ltdlv")])

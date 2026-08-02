@@ -1,8 +1,8 @@
 extends Node
 
 const HERO_DATA_PATH := "res://data/units/alliés/elfe.tres"
-const SUPPORT_DATA_PATH := "res://data/units/alliés/Gardien.tres"
-const ROOM_DATA_PATH := "res://data/rooms/bible/le_gue.tres"
+const SUPPORT_DATA_PATH := "res://data/units/alliés/Guerrier.tres"
+const ROOM_DATA_PATH := "res://data/rooms/first_run_room_01.tres"
 const SCREENSHOT_DIR := "res://tests/characters/elf/screenshots"
 const REVIEW_OUTPUT := "C:/Blender_AI_Test/Output/godot_elf_first_playable_integration.json"
 const SHARPNESS_AUDIT_OUTPUT := "C:/Blender_AI_Test/Output/godot_elf_sharpness_audit.json"

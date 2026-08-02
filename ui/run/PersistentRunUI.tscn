@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://ui/run/persistent_run_ui.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn" id="2_hud"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://ui/progression/screens/skill_tree_screen.tscn" id="4_screen"]
 [ext_resource type="PackedScene" path="res://ui/menus/dark_pause_menu.tscn" id="5_pause"]
 [ext_resource type="Resource" path="res://data/ui/combat_hud_layout_run_v1_compact.tres" id="6_compact_layout"]
+[ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="7_skill_tree_theme"]
 
 [node name="PersistentRunUI" type="Node"]
 script = ExtResource("1_script")
@@ -49,6 +50,60 @@ offset_left = 18.0
 offset_top = 18.0
 offset_right = 214.0
 offset_bottom = 94.0
+
+[node name="EvolutionFeedback" type="PanelContainer" parent="OverlayLayer/OverlayRoot"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 28.0
+offset_right = 260.0
+offset_bottom = 112.0
+grow_horizontal = 2
+mouse_filter = 2
+theme = ExtResource("7_skill_tree_theme")
+theme_type_variation = &"SkillTreeCharacterHeader"
+
+[node name="Margin" type="MarginContainer" parent="OverlayLayer/OverlayRoot/EvolutionFeedback"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="HBoxContainer" parent="OverlayLayer/OverlayRoot/EvolutionFeedback/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="EvolutionEmblem" type="TextureRect" parent="OverlayLayer/OverlayRoot/EvolutionFeedback/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Text" type="VBoxContainer" parent="OverlayLayer/OverlayRoot/EvolutionFeedback/Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="EvolutionTitle" type="Label" parent="OverlayLayer/OverlayRoot/EvolutionFeedback/Margin/Content/Text"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.84, 0.52, 1)
+theme_override_font_sizes/font_size = 22
+text = "ÉVOLUTION DISPONIBLE"
+
+[node name="EvolutionDiscipline" type="Label" parent="OverlayLayer/OverlayRoot/EvolutionFeedback/Margin/Content/Text"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.8, 0.84, 1)
+theme_override_font_sizes/font_size = 15
+text = "Personnage · Discipline · Rang 2"
 
 [node name="SkillTreeScreen" parent="OverlayLayer/OverlayRoot" instance=ExtResource("4_screen")]
 unique_name_in_owner = true

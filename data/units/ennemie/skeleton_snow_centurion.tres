@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton_snow_centurion/SnowCenturionIsoUnitView.tscn" id="2_visual"]
+[ext_resource type="Resource" path="res://data/spells/enemies/skeleton_chief_heavy_strike.tres" id="3_spell"]
+[ext_resource type="Script" path="res://data/spell.gd" id="4_spell_type"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"skeleton_snow_centurion"
+unit_name = "Centurion squelette des neiges"
+description = "Centurion mort-vivant couvert de givre, variante visuelle du combattant d'élite de mêlée."
+team = 1
+max_hp = 130
+initiative = 6
+max_ap = 6
+max_mp = 2
+attack_power = 21
+armure = 12.0
+visual_scene = ExtResource("2_visual")
+basic_attack_enabled = true
+spells = Array[ExtResource("4_spell_type")]([ExtResource("3_spell")])
+ai_behavior = 0
+combat_style = 0
+preferred_range = 1
+minimum_range = 1
+maximum_range = 1
+keep_distance = false

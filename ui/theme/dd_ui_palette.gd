@@ -1,6 +1,5 @@
 class_name DDUiPalette
 extends Resource
-## Palette centrale de l'identité visuelle "Dungeon Draft".
 ## Direction : fantasy dessinée et chaleureuse — parchemin ivoire, bois peint
 ## sombre violacé, contours brun-aubergine épais, cuivre vieilli et or désaturé.
 ## Toutes les couleurs sont éditables dans l'Inspector ; la valeur par défaut

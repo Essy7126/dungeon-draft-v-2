@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="TerrainEffectData" format=3]
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://dthf7scmn4qco"]
 
-[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
-[ext_resource type="Resource" path="res://data/status/core/brulure.tres" id="2_status"]
+[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+[ext_resource type="Resource" uid="uid://c0pxjdojlo8qm" path="res://data/status/core/brulure.tres" id="2_status"]
 
 [resource]
 script = ExtResource("1_terrain")
@@ -11,13 +11,6 @@ color = Color(1, 0.18, 0.03, 1)
 trigger = 1
 damage = 8
 applied_status = ExtResource("2_status")
-blocks_movement = false
-blocks_vision = false
 cell_type = 3
 dangerous_for_ai = true
 ai_danger_weight = 2.2
-native_energy_id = "rage"
-counts_as_rune = false
-ap_discount = 1
-fervor_generation_multiplier = 1.35
-duration = 3

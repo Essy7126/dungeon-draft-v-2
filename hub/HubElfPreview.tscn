@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://hub/hub_character_preview.gd" id="1_preview"]
+[ext_resource type="Texture2D" path="res://asset/Soldier.png" id="2_sheet"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elf_idle"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 0, 100, 100)
+
+[node name="HubElfPreview" type="Node2D"]
+script = ExtResource("1_preview")
+
+[node name="GroundShadow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-30, 0, -21, -7, 0, -10, 21, -7, 30, 0, 21, 7, 0, 10, -21, 7)
+color = Color(0.02, 0.025, 0.03, 0.34)
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(-202.7143, -245.7143)
+scale = Vector2(4.095238, 4.095238)
+texture = SubResource("AtlasTexture_elf_idle")
+centered = false
+texture_filter = 1

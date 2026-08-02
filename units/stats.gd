@@ -15,8 +15,8 @@
 # RÈGLE D'OR ANTI-BOUCLE (à ne JAMAIS enfreindre) :
 #   Une stat ne lit JAMAIS une autre stat directement.
 #   Si un jour une stat doit dépendre d'une autre ("Puissance = +10% de
-#   l'Armure"), ce n'est PAS Stat qui lit Stat. C'est un TRAIT tiers (Couche 3)
-#   qui écoute le signal `changed` de la stat source, capture sa valeur
+#   l'Armure"), ce n'est PAS Stat qui lit Stat. Un système tiers écoute le
+#   signal `changed` de la stat source, capture sa valeur
 #   (snapshot), et injecte un modifier FLAT/PERCENT classique dans la cible.
 #   Ainsi la cible traite ça comme un bonus externe normal : aucun lien de
 #   dépendance circulaire dans le graphe → aucun risque de Stack Overflow.
@@ -94,7 +94,7 @@ func set_bounds(p_min: float, p_max: float) -> Stat:
 # Ajoute un modificateur à la stat.
 # value    : la valeur (ex: 5 pour +5, ou 0.20 pour +20%)
 # type     : ModType.FLAT ou ModType.PERCENT
-# source   : identifiant texte de l'origine (ex: "boss_meduse", "bottes_hermes")
+# source   : identifiant texte de l'origine (ex: "room_hazard", "skill_upgrade")
 #            permet de retrouver et retirer ce mod plus tard
 # duration : nombre de tours de vie. -1 = permanent.
 func add_modifier(value: float, type: ModType, source: String, duration: int = -1) -> void:
@@ -107,7 +107,7 @@ func add_modifier(value: float, type: ModType, source: String, duration: int = -
 	changed.emit()
 
 # Retire TOUS les modificateurs venant d'une source donnée.
-# Ex: remove_modifiers_from("boss_meduse") enlève tous ses malus d'un coup.
+# Ex: remove_modifiers_from("room_hazard") enlève tous ses malus d'un coup.
 func remove_modifiers_from(source: String) -> void:
 	var before = _modifiers.size()
 	_modifiers = _modifiers.filter(func(m): return m["source"] != source)

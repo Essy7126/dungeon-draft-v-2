@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="SpellModHealBonus" format=3]
-
-[ext_resource type="Script" path="res://core/spell_mods/spell_mod_heal_bonus.gd" id="1_modifier"]
-
-[resource]
-script = ExtResource("1_modifier")
-modifier_name = "Sève abondante"
-target_spell_id = &"elf_sylvan_heal"
-bonus_heal = 3

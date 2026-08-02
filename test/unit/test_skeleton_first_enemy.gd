@@ -22,10 +22,10 @@ const UnitViewScript = preload("res://battle/unit_view.gd")
 const MELEE_PATH := "res://data/units/ennemie/skeleton_melee.tres"
 const RANGED_PATH := "res://data/units/ennemie/skeleton_ranged.tres"
 const ACTIVE_ROOMS := [
-	"res://data/rooms/bible/le_gue.tres",
-	"res://data/rooms/terrain_2.tres",
-	"res://data/rooms/bible/la_forge.tres",
-	"res://data/rooms/bible/elite_brute.tres",
+	"res://data/rooms/first_run_room_01.tres",
+	"res://data/rooms/first_run_room_02.tres",
+	"res://data/rooms/first_run_room_03.tres",
+	"res://data/rooms/first_run_room_04_boss.tres",
 ]
 
 
@@ -190,10 +190,6 @@ func test_generic_ai_uses_adjacency_for_melee_and_range_six_for_ranged() -> void
 	assert_false(ranged_plan.is_empty())
 	assert_eq(ranged_plan[0].type, "cast")
 	assert_eq(ranged_plan[0].cell, ranged_target.grid_pos)
-	melee.clear_traits()
-	melee_target.clear_traits()
-	ranged.clear_traits()
-	ranged_target.clear_traits()
 
 
 func test_ranged_ai_respects_blocked_line_of_sight_without_name_branching() -> void:
@@ -209,22 +205,26 @@ func test_ranged_ai_respects_blocked_line_of_sight_without_name_branching() -> v
 	var ai_source := FileAccess.get_file_as_string("res://core/enemy_ai.gd").to_lower()
 	assert_false("squelette" in ai_source)
 	assert_false("skeleton" in ai_source)
-	ranged.clear_traits()
-	target.clear_traits()
 
 
-func test_active_run_rooms_keep_their_expected_three_enemy_rosters() -> void:
+func test_active_run_rooms_keep_their_expected_enemy_rosters() -> void:
 	for room_index in ACTIVE_ROOMS.size():
 		var room_path: String = ACTIVE_ROOMS[room_index]
 		var room = load(room_path)
 		assert_not_null(room, room_path)
-		assert_eq(room.enemies.size(), 3, room_path)
 		var ids: Array = room.enemies.map(func(data): return data.unit_id)
 		if room_index == 1:
+			assert_eq(room.enemies.size(), 3, room_path)
 			assert_eq(ids.count(&"skeleton_chief"), 1, room_path)
 			assert_eq(ids.count(&"skeleton_melee"), 1, room_path)
 			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
+		elif room_index == 3:
+			assert_eq(room.enemies.size(), 6, room_path)
+			assert_eq(ids.count(&"skeleton_chief"), 3, room_path)
+			assert_eq(ids.count(&"skeleton_snow_centurion"), 2, room_path)
+			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
 		else:
+			assert_eq(room.enemies.size(), 3, room_path)
 			assert_eq(ids.count(&"skeleton_chief"), 0, room_path)
 			assert_eq(ids.count(&"skeleton_melee"), 2, room_path)
 			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
@@ -248,8 +248,6 @@ func test_ranged_spell_deals_damage_exactly_once_through_spell_caster() -> void:
 	var report := battlefield.caster.cast(attacker, attacker.spells[0], target.grid_pos)
 	assert_false(report.get("failed", false))
 	assert_eq(before - target.current_hp, 8)
-	attacker.clear_traits()
-	target.clear_traits()
 
 
 func test_enemy_runner_resolves_each_skeleton_impact_once_and_waits_recovery() -> void:
@@ -294,10 +292,6 @@ func test_enemy_runner_resolves_each_skeleton_impact_once_and_waits_recovery() -
 	assert_eq(melee_hp_before - melee_target.current_hp, 16)
 	assert_eq(melee_view.attack_prepare_count, 1)
 	assert_eq(melee_view.recovery_count, 1)
-	ranged.clear_traits()
-	ranged_target.clear_traits()
-	melee.clear_traits()
-	melee_target.clear_traits()
 
 
 func test_grid_cleanup_keeps_skeleton_visual_root_stable() -> void:
@@ -321,7 +315,6 @@ func test_grid_cleanup_keeps_skeleton_visual_root_stable() -> void:
 	for direction in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
 		optional_visual.set_facing(direction)
 		assert_eq(view.global_position, root_before)
-	unit.clear_traits()
 
 
 func test_shared_movement_pacing_is_within_contract() -> void:

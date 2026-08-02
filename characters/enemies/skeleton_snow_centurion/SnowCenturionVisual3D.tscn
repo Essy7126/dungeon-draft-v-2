@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/enemies/skeleton_snow_centurion/snow_centurion_visual_3d.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://assets/enemies/skeleton_snow_centurion/skeleton_snow_centurion_character_v01.glb" id="2_model"]
+
+[node name="SnowCenturionVisual3D" type="Node3D"]
+script = ExtResource("1_controller")
+
+[node name="ModelPivot" type="Node3D" parent="."]
+
+[node name="SnowCenturionModel" parent="ModelPivot" instance=ExtResource("2_model")]

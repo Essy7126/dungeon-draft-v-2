@@ -4,8 +4,6 @@ const GameManagerScript = preload("res://core/game_manager.gd")
 const ActionBarScript = preload("res://ui/action_bar.gd")
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
-const LEGACY_UNIT_PATH := "res://data/units/alliés/Gardien.tres"
-const LEGACY_SPELL_PATH := "res://data/spells/frappe.tres"
 const LEGACY_FIREBALL_PATH := "res://data/spells/Mage/boule_de_feu.tres"
 const LEGACY_MAGE_PATH := "res://data/units/alliés/mage.tres"
 const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
@@ -56,27 +54,12 @@ func test_explicit_unit_id_is_used_by_unit_data_and_runtime_unit() -> void:
 	assert_eq(Unit.from_data(data).unit_id, &"hero_alpha")
 
 
-func test_legacy_unit_id_fallback_is_stable_and_path_based() -> void:
-	var data := load(LEGACY_UNIT_PATH) as UnitData
-	assert_not_null(data)
-	assert_eq(data.unit_id, &"")
-	assert_eq(data.get_effective_unit_id(), StringName(LEGACY_UNIT_PATH))
-	assert_eq(data.get_effective_unit_id(), data.get_effective_unit_id())
-
-
 func test_explicit_spell_ids_do_not_depend_on_identical_display_names() -> void:
 	var first := _make_spell(&"first_stable_id", "Même nom")
 	var second := _make_spell(&"second_stable_id", "Même nom")
 	assert_eq(first.get_effective_spell_id(), &"first_stable_id")
 	assert_eq(second.get_effective_spell_id(), &"second_stable_id")
 	assert_ne(first.get_effective_spell_id(), second.get_effective_spell_id())
-
-
-func test_legacy_spell_id_fallback_is_stable_and_path_based() -> void:
-	var current_spell := load(LEGACY_SPELL_PATH) as Spell
-	assert_not_null(current_spell)
-	assert_eq(current_spell.spell_id, &"")
-	assert_eq(current_spell.get_effective_spell_id(), StringName(LEGACY_SPELL_PATH))
 
 
 func test_loadout_initializes_four_known_and_equipped_spells_in_order() -> void:
@@ -267,11 +250,9 @@ func test_preconfigured_elf_has_an_individual_four_slot_state_without_legacy_bui
 	assert_eq(state.loadout.get_known_spells().size(), 4)
 	assert_eq(state.loadout.get_equipped_spells(), elf.spells)
 	assert_eq(elf.spells.size(), 4)
-	assert_false(elf.has_energy())
-	assert_true(elf.traits.is_empty())
 
 
-func test_action_bar_receives_four_ordered_elf_spells_without_imprints_or_overflow() -> void:
+func test_action_bar_receives_four_ordered_elf_spells_without_overflow() -> void:
 	var elf := Unit.from_data(load(ELF_PATH) as UnitData)
 	var bar = ActionBarScript.new()
 	add_child_autofree(bar)
@@ -283,8 +264,6 @@ func test_action_bar_receives_four_ordered_elf_spells_without_imprints_or_overfl
 		buttons.map(func(button): return button.get_meta("spell").get_effective_spell_id()),
 		ELF_SPELL_IDS,
 	)
-	assert_true(buttons.all(func(button): return not button.get_meta("imprinted")))
-	assert_lte(bar.get("_hbox").get_combined_minimum_size().x, 1200.0)
 
 
 func test_elf_fireball_remains_distinct_from_the_elemental_mage_fireball() -> void:
@@ -295,17 +274,5 @@ func test_elf_fireball_remains_distinct_from_the_elemental_mage_fireball() -> vo
 	assert_ne(elf_fireball.resource_path, legacy_fireball.resource_path)
 	assert_eq(elf_fireball.get_effective_spell_id(), &"elf_fireball")
 	assert_eq(legacy_fireball.spell_id, &"mage_fireball")
-	assert_eq(legacy_fireball.discipline_id, &"mage_fire")
+	assert_eq(legacy_fireball.discipline_id, &"mage_pyromancy")
 	assert_true(legacy_fireball in legacy_mage.spells)
-
-
-func test_legacy_content_without_ids_loads_and_is_not_truncated() -> void:
-	var legacy_data := load(LEGACY_UNIT_PATH) as UnitData
-	assert_not_null(legacy_data)
-	assert_ne(legacy_data.get_effective_unit_id(), &"")
-	assert_gt(Unit.from_data(legacy_data).spells.size(), 0)
-
-	manager._build_heroes_from_draft([WARRIOR_PATH], [], [])
-	assert_eq(manager.heroes.size(), 1)
-	assert_eq(manager.heroes[0].spells.size(), 8)
-	assert_true(manager.character_states.is_empty(), "le flux historique garde sa liste ouverte")

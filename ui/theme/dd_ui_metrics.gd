@@ -1,6 +1,5 @@
 class_name DDUiMetrics
 extends RefCounted
-## Métriques centrales de l'identité visuelle "Dungeon Draft".
 ## Toutes les dimensions de l'UI (épaisseurs, rayons, marges, tailles) vivent ici
 ## afin que le thème et les composants restent cohérents à toute résolution.
 

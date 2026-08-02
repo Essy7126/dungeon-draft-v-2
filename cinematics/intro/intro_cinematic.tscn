@@ -1,0 +1,205 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://cinematics/intro/intro_cinematic.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="Style_frame"]
+bg_color = Color(0.015, 0.018, 0.026, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.48, 0.37, 0.22, 0.82)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 8
+
+[sub_resource type="Shader" id="Shader_vignette"]
+code = "shader_type canvas_item;\nrender_mode unshaded;\n\nfloat intro_hash(vec2 point) {\n\treturn fract(sin(dot(point, vec2(12.9898, 78.233))) * 43758.5453);\n}\n\nvoid fragment() {\n\tvec2 centered = UV * 2.0 - 1.0;\n\tfloat vignette = smoothstep(0.48, 1.12, length(centered * vec2(0.88, 1.04)));\n\tfloat grain = intro_hash(floor(UV * vec2(480.0, 270.0)) + floor(TIME * 4.0));\n\tfloat alpha = vignette * 0.22 + grain * 0.012;\n\tCOLOR = vec4(0.0, 0.0, 0.0, alpha);\n}\n"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
+shader = SubResource("Shader_vignette")
+
+[sub_resource type="StyleBoxFlat" id="Style_subtitle"]
+bg_color = Color(0.018, 0.022, 0.032, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34, 0.3, 0.24, 0.62)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="Style_skip_normal"]
+bg_color = Color(0.08, 0.085, 0.105, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.62, 0.52, 0.35, 0.72)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="Style_skip_hover"]
+bg_color = Color(0.16, 0.15, 0.14, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.92, 0.72, 0.39, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="Style_skip_pressed"]
+bg_color = Color(0.26, 0.21, 0.14, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.78, 0.4, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="IntroCinematic" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 2
+script = ExtResource("1_script")
+music_path = "res://cinematics/intro/audio/The Heart of Dawn.mp3"
+music_volume_db = -18.0
+music_fade_in_duration = 1.5
+music_fade_out_duration = 1.0
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.006, 0.008, 0.013, 1)
+
+[node name="IllustrationFrame" type="PanelContainer" parent="."]
+clip_contents = true
+layout_mode = 1
+anchor_left = 0.1
+anchor_top = 0.05
+anchor_right = 0.9
+anchor_bottom = 0.77
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Style_frame")
+
+[node name="ImageA" type="TextureRect" parent="IllustrationFrame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ImageB" type="TextureRect" parent="IllustrationFrame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Vignette" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vignette")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SubtitlePanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.12
+anchor_top = 0.79
+anchor_right = 0.88
+anchor_bottom = 0.945
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Style_subtitle")
+
+[node name="Subtitle" type="RichTextLabel" parent="SubtitlePanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.92, 0.9, 0.84, 1)
+theme_override_constants/line_separation = 4
+bbcode_enabled = true
+fit_content = false
+scroll_active = false
+autowrap_mode = 3
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BlackFade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="SkipButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -158.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 70.0
+grow_horizontal = 0
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+theme_override_colors/font_color = Color(0.94, 0.9, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 0.83, 0.48, 1)
+theme_override_styles/normal = SubResource("Style_skip_normal")
+theme_override_styles/hover = SubResource("Style_skip_hover")
+theme_override_styles/pressed = SubResource("Style_skip_pressed")
+theme_override_styles/focus = SubResource("Style_skip_hover")
+text = "Passer"
+
+[node name="VoicePlayer" type="AudioStreamPlayer" parent="."]
+bus = &"Voice"
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -40.0
+bus = &"Music"
+
+[node name="SfxPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"SFX"

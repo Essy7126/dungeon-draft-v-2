@@ -21,7 +21,6 @@ var preferred_range: int = 1
 var minimum_range: int = 1
 var maximum_range: int = 1
 var keep_distance: bool = false
-var boss_behavior = null
 
 # --- Stats max (modifiables) ---
 var max_hp: Stat
@@ -39,10 +38,8 @@ var esquive: Stat
 var crit_chance: Stat
 var crit_multi: Stat
 
-# --- Stat d'ecole ---
-# Force : colonne de Rage. Scale la distance de poussee, les degats de
-# collision/hasard, et l'energie gagnee sur deplacement (EXPLOIT).
-# Multiplicatif au payoff : 1 + Force/100.
+# --- Placement force ---
+# Force module uniquement les poussees, attractions et collisions.
 var force: Stat
 
 # --- Resistances elementaires ---
@@ -60,6 +57,7 @@ var current_mp: int = 0
 var current_shield: int = 0
 var is_alive: bool = true
 var _grid_pos: Vector2i = Vector2i(-1, -1)
+var grid_context = null
 # Direction LOGIQUE (pas visuelle) vers laquelle l'unite est orientee. Utilisee
 # par les mecaniques de boss type "durcit de face" (ex: Le Colosse). Mise a
 # jour automatiquement a chaque deplacement reel ; sinon garde sa derniere
@@ -95,35 +93,14 @@ func is_grid_position_behind(position: Vector2i) -> bool:
 	return position == get_behind_grid_cell()
 # --- Ressources de combat ---
 # Les PA paient les actions du tour (colonne vertebrale, entiers, reviennent
-# chaque tour). Ferveur (current_energy) est la jauge d'ECOLE : elle se gagne
-# par la gain_table et ne se depense QUE sur l'Eveil, l'empreinte et les sorts
-# payoff signature (fervor_cost > 0). Jamais sur les sorts normaux.
+# chaque tour). Les PM paient les deplacements et reviennent egalement.
 const BASIC_ATTACK_AP_COST := 1
 
-# La jauge d'ecole vit dans son propre composant (units/energy_gauge.gd) :
-# Unit ne garde que des FACADES (memes noms, memes signatures) qui deleguent.
-# L'interface publique de Unit est inchangee d'un caractere.
-var _energy_gauge: EnergyGauge = null
-var energy_type: EnergyTypeData:
-	get: return _energy_gauge.energy_type
-	set(value): _energy_gauge.energy_type = value
-var current_energy: float: # Ferveur. Nom conserve pour compatibilite.
-	get: return _energy_gauge.current_energy
-	set(value): _energy_gauge.current_energy = value
-var charge_threshold_active: bool:
-	get: return _energy_gauge.charge_threshold_active
-	set(value): _energy_gauge.charge_threshold_active = value
-var awakening_turns_remaining: int:
-	get: return _energy_gauge.awakening_turns_remaining
-	set(value): _energy_gauge.awakening_turns_remaining = value
 # Modificateur de PA applique au PROCHAIN tour puis remis a zero : positif
-# (bonus de reaction/relique) ou negatif (drain du Disruptor).
+# ou negatif selon les effets de combat.
 var next_turn_ap_modifier: int = 0
 var next_turn_mp_bonus: int = 0
 var next_turn_mp_penalty: int = 0
-var current_terrain_effect: TerrainEffectData = null
-var terrain_ap_discount_used: bool = false
-var reaction_armed: bool = false
 var taunt_source = null
 var taunt_turns: int = 0
 
@@ -147,18 +124,11 @@ var _progression_spell_modifiers: Array[SpellModifier] = []
 # Liste de dictionnaires : { "data": StatusData, "remaining": int }
 var active_statuses: Array = []
 
-# --- Traits actifs ---
-# Liste de Trait attachÃ©s Ã  cette unitÃ© (reliques, sources d'Ã©nergie,
-# dÃ©tournements, scars...). Chacun s'abonne au bus et rÃ©agit. Ajout/retrait
-# via add_trait / remove_trait, qui gÃ¨rent l'activation/dÃ©sactivation propre.
-var traits: Array = []
-
 # --- Signaux ---
 signal died(unit)
 signal moved(from_pos: Vector2i, to_pos: Vector2i)
 signal hp_changed(unit)
 signal stats_changed(unit)
-signal energy_changed(unit)
 signal shield_changed(unit)
 
 # Raccourcis de catÃ©gories de log (combat = vu par le joueur).
@@ -178,18 +148,6 @@ func _init(
 		p_mp: float = 3,
 		p_attack: float = 20
 	) -> void:
-	# La jauge d'ecole en premier : les proprietes deleguees (energy_type,
-	# current_energy...) doivent pouvoir repondre des la construction.
-	# Relais via weakref : une Callable retient sa cible RefCounted, un relais
-	# direct fermerait le cycle Unit <-> jauge et aucun des deux ne serait libere.
-	_energy_gauge = EnergyGauge.new(self)
-	var wr: WeakRef = weakref(self)
-	_energy_gauge.changed.connect(func () -> void:
-		var u = wr.get_ref()
-		if u != null: u.energy_changed.emit(u))
-	_energy_gauge.awakening_expired.connect(func () -> void:
-		var u = wr.get_ref()
-		if u != null: u.stats_changed.emit(u))
 	unit_name = p_name
 	team = p_team
 	max_hp       = Stat.new(p_hp)
@@ -202,12 +160,13 @@ func _init(
 	armure         = Stat.new(0.0).set_bounds(0.0, DEFENSE_MAX)
 	resist_magique = Stat.new(0.0).set_bounds(0.0, DEFENSE_MAX)
 	esquive        = Stat.new(0.0).set_bounds(0.0, ESQUIVE_MAX)
-	crit_chance    = Stat.new(0.0).set_min(0.0)
+	crit_chance    = Stat.new(0.0).set_bounds(0.0, 1.0)
 	crit_multi     = Stat.new(1.5).set_min(1.0)
 	force          = Stat.new(0.0).set_min(0.0)
 	current_hp = max_hp.get_int()
 	current_ap = max_ap.get_int()
 	current_mp = max_mp.get_int()
+	max_hp.changed.connect(_on_max_hp_changed)
 
 static func from_data(data: UnitData) -> Unit:
 	var u = Unit.new(
@@ -243,23 +202,19 @@ static func from_data(data: UnitData) -> Unit:
 		var stat := u.get_resistance(element)   # crÃ©e le Stat (clampÃ©) si absent
 		stat.base_value = data.resistances[element]
 	# Ã‰nergie : on rÃ©cupÃ¨re le type dÃ©fini sur l'UnitData (ex: Rage) et on
-	# initialise la rÃ©serve Ã  start_energy (la machine dÃ©marre tiÃ¨de).
-	if data.energy_type != null:
-		u.energy_type = data.energy_type
-		u.current_energy = data.energy_type.start_energy
-	if data.chassis_trait != null:
-		u.add_trait_from_data(data.chassis_trait)
-	for trait_data in data.starting_traits:
-		if trait_data != null:
-			u.add_trait_from_data(trait_data)
-	u.ensure_energy_traits()
-	u.sync_charge_state(false)
 	# On DUPLIQUE le comportement : chaque boss a son propre Ã©tat (compteur
 	# de tours, enrage...), sinon deux boss partageraient le mÃªme.
-	u.boss_behavior = data.boss_behavior.duplicate() if data.boss_behavior != null else null
 	for spell in data.spells:
 		u.add_spell(spell)
 	return u
+
+
+func _on_max_hp_changed() -> void:
+	var capped_hp := mini(current_hp, maxi(0, max_hp.get_int()))
+	if capped_hp != current_hp:
+		current_hp = capped_hp
+		hp_changed.emit(self)
+	stats_changed.emit(self)
 
 func add_spell(spell: Spell) -> void:
 	spells.append(spell)
@@ -314,40 +269,6 @@ func _all_durational_stats() -> Array:
 	return list
 
 # ============================================================
-# TRAITS (le moteur des combos â€” Couche 3)
-# ============================================================
-
-# Attache un trait Ã  cette unitÃ© et l'active (il s'abonne au bus).
-# Un trait = une relique, une source d'Ã©nergie, un dÃ©tournement, une scar...
-func add_trait(t: Trait) -> void:
-	if t == null or t in traits:
-		return
-	traits.append(t)
-	t.attach(self)
-
-# Attache un trait Ã  partir d'une fiche TraitData (.tres) : la fabrique
-# instancie le bon script, le configure avec ses params, puis on l'attache.
-# C'est la voie data-driven : les reliques/Ã©quipements porteront des TraitData.
-func add_trait_from_data(data: TraitData) -> Trait:
-	var t := TraitFactory.create(data)
-	if t != null:
-		add_trait(t)
-	return t
-
-# Retire un trait : le dÃ©sactive (dÃ©sabonnement + nettoyage de ses modifiers).
-func remove_trait(t: Trait) -> void:
-	if t == null or not (t in traits):
-		return
-	t.deactivate()
-	traits.erase(t)
-
-# DÃ©sactive tous les traits (ex : unitÃ© dÃ©truite, fin de combat). Propre.
-func clear_traits() -> void:
-	for t in traits:
-		t.deactivate()
-	traits.clear()
-
-# ============================================================
 # STATUTS
 # ============================================================
 
@@ -357,31 +278,47 @@ func apply_status(status_data: StatusData) -> void:
 	if status_data == null:
 		return
 	# Cherche si ce statut est dÃ©jÃ  actif.
+	var status_id := status_data.get_effective_status_id()
 	for entry in active_statuses:
-		if entry["data"].status_name == status_data.status_name:
+		var current_data := entry["data"] as StatusData
+		if current_data != null and current_data.get_effective_status_id() == status_id:
 			# DÃ©jÃ  prÃ©sent : on rafraÃ®chit la durÃ©e (la plus longue gagne).
 			entry["remaining"] = max(entry["remaining"], status_data.duration)
 			if status_data is ChargedDamageVulnerabilityData:
 				var charged := status_data as ChargedDamageVulnerabilityData
-				var current_data := (
+				var current_charged_data := (
 					entry["data"] as ChargedDamageVulnerabilityData
 				)
 				entry["charges"] = maxi(
 					int(entry.get("charges", 0)),
 					charged.max_charges
 				)
-				if current_data == null \
-						or charged.max_charges >= current_data.max_charges:
+				if current_charged_data == null \
+						or charged.max_charges >= current_charged_data.max_charges:
 					entry["data"] = charged
+			elif status_data is ChargedOutgoingDamageData:
+				var outgoing := status_data as ChargedOutgoingDamageData
+				var current_outgoing := entry["data"] as ChargedOutgoingDamageData
+				entry["charges"] = maxi(
+					int(entry.get("charges", 0)),
+					outgoing.max_charges
+				)
+				if current_outgoing == null \
+						or outgoing.bonus_damage >= current_outgoing.bonus_damage:
+					entry["data"] = outgoing
 			DebugLogger.debug(CAT_STATS, "%s : %s rafraîchi (%d tours)" % [
 				unit_name, status_data.status_name, entry["remaining"]])
-			EventBus.status_applied.emit(self, status_data)
+			EventBus.status_refreshed.emit(self, status_data)
 			return
 	# Nouveau statut.
 	var new_entry := { "data": status_data, "remaining": status_data.duration }
 	if status_data is ChargedDamageVulnerabilityData:
 		new_entry["charges"] = (
 			status_data as ChargedDamageVulnerabilityData
+		).max_charges
+	elif status_data is ChargedOutgoingDamageData:
+		new_entry["charges"] = (
+			status_data as ChargedOutgoingDamageData
 		).max_charges
 	active_statuses.append(new_entry)
 	# Le CombatLogger Ã©coute status_applied et produit la ligne de log.
@@ -419,9 +356,16 @@ func process_statuses() -> bool:
 		# (quand StatusData portera un Ã©lÃ©ment, on le passera ici)
 		if data.damage_per_turn > 0 \
 				and data.damage_timing == StatusData.PeriodicTiming.TURN_START:
-			take_damage(data.damage_per_turn, null,
-				Spell.DamageType.MAGICAL, Spell.Element.NONE,
-				{ "ignore_defense": true, "cannot_be_dodged": true })
+			take_damage(
+				data.damage_per_turn,
+				null,
+				data.damage_type,
+				data.element,
+				{
+					"ignore_defense": data.ignores_defense,
+					"cannot_be_dodged": not data.can_be_dodged,
+				}
+			)
 			DebugLogger.info(CAT_STATS, "%s subit %d dÃ©gÃ¢ts de %s" % [
 				unit_name, data.damage_per_turn, data.status_name], {
 				"PV_restants": current_hp,
@@ -469,9 +413,12 @@ func tick_statuses() -> void:
 			take_damage(
 				data.damage_per_turn,
 				null,
-				Spell.DamageType.MAGICAL,
-				Spell.Element.NONE,
-				{ "ignore_defense": true, "cannot_be_dodged": true }
+				data.damage_type,
+				data.element,
+				{
+					"ignore_defense": data.ignores_defense,
+					"cannot_be_dodged": not data.can_be_dodged,
+				}
 			)
 			DebugLogger.info(CAT_STATS, "%s subit %d degats de %s" % [
 				unit_name,
@@ -482,15 +429,36 @@ func tick_statuses() -> void:
 			})
 		active_statuses[i]["remaining"] -= 1
 		if active_statuses[i]["remaining"] <= 0:
-			var ended = active_statuses[i]["data"].status_name
+			var ended := data.get_effective_status_id()
 			active_statuses.remove_at(i)
 			# Le CombatLogger Ã©coute status_expired et produit la ligne de log.
 			EventBus.status_expired.emit(self, ended)
-	_tick_awakening()
 
 # Retourne la liste des statuts actifs (pour l'UI).
 func get_active_statuses() -> Array:
 	return active_statuses
+
+
+# Retire les altérations simples utilisées par les arbres (DoT, entrave,
+# affaiblissement et vulnérabilité chargée), dans l'ordre le plus récent.
+func cleanse_simple_negative_statuses(maximum: int = 1) -> int:
+	var removed := 0
+	for index in range(active_statuses.size() - 1, -1, -1):
+		var data := active_statuses[index].get("data") as StatusData
+		if data == null or not (
+			data.damage_per_turn > 0
+			or data.mp_reduction > 0
+			or data.outgoing_damage_modifier < 0
+			or data is ChargedDamageVulnerabilityData
+		):
+			continue
+		var status_id := data.get_effective_status_id()
+		active_statuses.remove_at(index)
+		EventBus.status_expired.emit(self, status_id)
+		removed += 1
+		if removed >= maximum:
+			break
+	return removed
 
 # ============================================================
 # GESTION DU TOUR
@@ -504,10 +472,7 @@ func start_turn() -> void:
 		stat.tick_durations()
 	# PA du tour : budget de base + modificateur "prochain tour" (bonus de
 	# reaction, drain du Disruptor...), consomme puis remis a zero. Jamais < 0.
-	var awakening_penalty := 0
-	if has_charge_threshold():
-		awakening_penalty = energy_type.awakening_ap_penalty
-	current_ap = maxi(0, max_ap.get_int() + next_turn_ap_modifier - awakening_penalty)
+	current_ap = maxi(0, max_ap.get_int() + next_turn_ap_modifier)
 	next_turn_ap_modifier = 0
 	current_mp = maxi(
 		0,
@@ -515,11 +480,6 @@ func start_turn() -> void:
 	)
 	next_turn_mp_bonus = 0
 	next_turn_mp_penalty = 0
-	terrain_ap_discount_used = false
-	if team == 0:
-		reaction_armed = false
-	else:
-		reaction_armed = can_arm_reaction()
 	EventBus.ap_changed.emit(self, current_ap, max_ap.get_int())
 	EventBus.turn_started.emit(self)
 	stats_changed.emit(self)
@@ -551,74 +511,16 @@ func spend_ap(amount: int) -> bool:
 	return true
 
 # ============================================================
-# FERVEUR â€” la jauge d'ecole (Eveil / empreinte / payoff uniquement)
 # ============================================================
-
-# L'unitÃ© a-t-elle une Ã©nergie configurÃ©e ? (les ennemis simples peuvent ne
-# pas en avoir ; dans ce cas les sorts Ã  coÃ»t d'Ã©nergie ne s'appliquent pas).
-func has_energy() -> bool:
-	return energy_type != null
-
-func ensure_energy_traits() -> void:
-	if energy_type == null or energy_type.threshold_trait == null:
-		return
-	for t in traits:
-		if t != null and t.has_method("_trait_name") and t._trait_name() == "trait_threshold":
-			return
-	add_trait_from_data(energy_type.threshold_trait)
 
 func reset_combat_resources() -> void:
 	next_turn_ap_modifier = 0
 	next_turn_mp_bonus = 0
 	next_turn_mp_penalty = 0
 	current_ap = max_ap.get_int()
-	_energy_gauge.reset() # eveil purge, retour a start_energy, sync emis
-	energy_changed.emit(self)
+	current_mp = max_mp.get_int()
 	EventBus.ap_changed.emit(self, current_ap, max_ap.get_int())
-	if has_energy():
-		EventBus.fervor_changed.emit(self, current_energy, energy_type.max_energy, charge_threshold_active)
-
-func set_current_terrain_effect(effect: TerrainEffectData) -> void:
-	current_terrain_effect = effect
-
-func _terrain_matches_energy() -> bool:
-	return current_terrain_effect != null and has_energy() and current_terrain_effect.matches_energy(energy_type.energy_id)
-
-# Reduction de cout PA offerte par un terrain natif de l'ecole (Sanctuaire...).
-# Une seule fois par tour : le premier sort paye la reduction, pas les suivants.
-func _current_terrain_ap_discount() -> int:
-	if terrain_ap_discount_used or not _terrain_matches_energy():
-		return 0
-	return maxi(0, current_terrain_effect.ap_discount)
-
-func _current_terrain_fervor_multiplier() -> float:
-	if not _terrain_matches_energy():
-		return 1.0
-	return maxf(0.0, current_terrain_effect.fervor_generation_multiplier)
-
-# Facades de pure delegation vers la jauge (une ligne = aucun comportement ici).
-func can_afford_energy(amount: float) -> bool: return _energy_gauge.can_afford_energy(amount)
-
-func get_reaction_cost() -> float: return _energy_gauge.get_reaction_cost()
-
-func can_arm_reaction() -> bool:
-	var cost := get_reaction_cost()
-	return has_energy() and is_alive and cost > 0.0 and current_energy >= cost
-
-func set_reaction_armed(armed: bool) -> bool:
-	if not armed:
-		if reaction_armed:
-			reaction_armed = false
-			stats_changed.emit(self)
-		return true
-	if not can_arm_reaction():
-		return false
-	reaction_armed = true
 	stats_changed.emit(self)
-	DebugLogger.info(CAT_STATS, "%s garde %.0f Ferveur pour une reaction defensive" % [unit_name, get_reaction_cost()])
-	return true
-
-func has_charge_threshold() -> bool: return _energy_gauge.has_charge_threshold()
 
 func get_basic_attack_ap_cost() -> int:
 	return BASIC_ATTACK_AP_COST
@@ -629,82 +531,24 @@ func get_basic_attack_cost() -> int:
 func can_use_basic_attack() -> bool:
 	return basic_attack_enabled and is_alive and current_ap >= get_basic_attack_ap_cost()
 
-# Cout PA effectif d'un sort : ap_cost - remise de terrain natif (jamais sous
-# 1 PA pour un sort qui coute quelque chose : la remise allege, ne rend pas gratuit).
+# Cout PA effectif d'un sort.
 func get_spell_ap_cost(spell: Spell) -> int:
 	if spell == null:
 		return 0
 	if spell.ap_cost <= 0:
 		return 0
-	return maxi(1, spell.ap_cost - _current_terrain_ap_discount())
+	return spell.ap_cost
 
-# Consomme la remise de terrain du tour si elle vient d'etre utilisee sur ce sort.
-func consume_terrain_ap_discount(spell: Spell) -> void:
-	if spell != null and spell.ap_cost > 0 and _current_terrain_ap_discount() > 0:
-		terrain_ap_discount_used = true
-
-func get_spell_imprint_fervor_cost(spell: Spell) -> float: return _energy_gauge.get_spell_imprint_fervor_cost(spell)
-
-func get_spell_fervor_cost(spell: Spell, imprinted: bool = false) -> float: return _energy_gauge.get_spell_fervor_cost(spell, imprinted)
-
-func can_afford_spell_resources(spell: Spell, imprinted: bool = false) -> bool:
+func can_afford_spell_resources(spell: Spell) -> bool:
 	if spell == null:
 		return false
-	return current_ap >= get_spell_ap_cost(spell) and can_afford_energy(get_spell_fervor_cost(spell, imprinted))
+	return current_ap >= get_spell_ap_cost(spell)
 
-func get_modified_spell_damage(spell: Spell, amount: int) -> int: return _energy_gauge.get_modified_spell_damage(spell, amount)
-
-func get_modified_spell_heal(spell: Spell, amount: int) -> int: return _energy_gauge.get_modified_spell_heal(spell, amount)
-
-func get_modified_spell_shield(spell: Spell, amount: int) -> int: return _energy_gauge.get_modified_spell_shield(spell, amount)
-
-func _get_modified_incoming_damage(amount: int) -> int: return _energy_gauge.get_modified_incoming_damage(amount)
-
-# Multiplicateur de payoff de la Force (colonne de Rage). 1.0 si Force nulle.
-# Multiplicatif pour permettre l'empilement exponentiel (modele Ravenswatch).
+# Multiplicateur de placement de la Force. 1.0 si Force est nulle.
 func get_force_multiplier() -> float:
 	return 1.0 + force.get_value() / 100.0
 
-# Les facteurs qui dependent de l'UNITE (terrain natif, multiplicateur global
-# du run, Force sur EXPLOIT) sont calcules ICI et passes a la jauge en params.
-func generate_fervor_from_verb(verb: String, source: String = "") -> float:
-	if not has_energy():
-		return 0.0
-	var key := verb.strip_edges().to_upper()
-	if key == "":
-		return 0.0
-	var global_multiplier: float = GameManager.get_fervor_multiplier() if GameManager.has_method("get_fervor_multiplier") else GameManager.get_charge_multiplier()
-	# Force (Rage) : l'energie gagnee SUR DEPLACEMENT scale avec la Force.
-	var exploit_multiplier := get_force_multiplier() if key == EnergyTypeData.VERB_EXPLOIT else 1.0
-	return _energy_gauge.generate_from_verb(key, source, _current_terrain_fervor_multiplier(), global_multiplier, exploit_multiplier)
-
-func generate_charge_from_verb(verb: String, source: String = "") -> float: return generate_fervor_from_verb(verb, source)
-
-func generate_energy(amount: float, source: String = "") -> float: return _energy_gauge.generate(amount, source)
-
-func spend_energy(amount: float, source: String = "") -> bool: return _energy_gauge.spend(amount, source)
-
-func sync_charge_state(emit_events: bool = true) -> void: _energy_gauge.sync_charge_state(emit_events)
-
-# is_alive est un etat de l'UNITE : la jauge verifie le reste.
-func can_activate_awakening() -> bool: return is_alive and _energy_gauge.can_activate_awakening()
-
-func activate_awakening() -> bool:
-	if not can_activate_awakening():
-		return false
-	if not _energy_gauge.activate_awakening():
-		return false
-	stats_changed.emit(self)
-	DebugLogger.info(CAT_STATS, "%s declenche %s (%d tours)" % [unit_name, energy_type.threshold_name, awakening_turns_remaining])
-	return true
-
-func _tick_awakening() -> void: _energy_gauge.tick_awakening()
-
-func get_energy_ratio() -> float: return _energy_gauge.get_energy_ratio()
-
-
 # ============================================================
-# BOUCLIER â€” couche dÃ©fensive entre l'Ã©nergie et les PV
 # Le bouclier absorbe les dÃ©gÃ¢ts AVANT les PV. Il n'expire pas
 # naturellement : il tient jusqu'Ã  Ãªtre Ã©puisÃ© ou remplacÃ©.
 # Design : on ne cumule pas les boucliers â€” un nouveau remplace
@@ -715,15 +559,15 @@ func get_energy_ratio() -> float: return _energy_gauge.get_energy_ratio()
 # Accorde un bouclier. Remplace l'ancien s'il est plus faible.
 # Un bouclier plus faible est ignorÃ© : on ne perd jamais son bouclier
 # parce qu'un sort de soutien a donnÃ© moins que ce qu'on a dÃ©jÃ .
-func add_shield(amount: int) -> void:
-	if has_charge_threshold() and energy_type.awakening_blocks_shield:
-		return
+func add_shield(amount: int, source: Unit = null) -> void:
 	if not is_alive or amount <= 0:
 		return
 	if amount <= current_shield:
 		return                           # bouclier actuel dÃ©jÃ  plus fort : ignorÃ©
+	var before := current_shield
 	current_shield = amount
 	EventBus.shield_gained.emit(self, amount)
+	EventBus.shield_applied.emit(self, source, current_shield - before)
 	shield_changed.emit(self)
 	DebugLogger.debug(CAT_STATS,
 		"%s reÃ§oit un bouclier de %d" % [unit_name, amount])
@@ -749,31 +593,6 @@ func clear_shield() -> void:
 #
 # Renvoie le DamageResult (montant rÃ©el, crit, esquive) pour que
 # l'appelant puisse afficher les retours visuels.
-func _apply_defensive_reaction_to_raw(amount: int, attacker, options: Dictionary) -> int:
-	if amount <= 0 or not has_energy() or attacker == null:
-		return amount
-	if options.get("disable_fervor_reaction", false):
-		return amount
-	if attacker.team == team:
-		return amount
-	if not reaction_armed:
-		return amount
-	var cost: float = maxf(0.0, energy_type.reaction_cost)
-	if cost <= 0.0 or current_energy < cost:
-		reaction_armed = false
-		stats_changed.emit(self)
-		return amount
-	var multiplier: float = clampf(energy_type.reaction_damage_multiplier, 0.0, 1.0)
-	if not spend_energy(cost, "reaction"):
-		return amount
-	reaction_armed = false
-	stats_changed.emit(self)
-	var reduced := maxi(0, int(round(float(amount) * multiplier)))
-	var mitigated := maxi(0, amount - reduced)
-	next_turn_ap_modifier += maxi(0, energy_type.reaction_next_turn_ap_bonus)
-	EventBus.fervor_reaction_used.emit(self, attacker, cost, mitigated)
-	DebugLogger.info(CAT_STATS, "%s brule %.0f Ferveur en reaction (-%d degats)" % [unit_name, cost, mitigated])
-	return reduced
 func take_damage(
 		amount: int,
 		attacker = null,
@@ -784,20 +603,24 @@ func take_damage(
 	if not is_alive:
 		return null
 
-	var charged_bonus := _get_charged_damage_bonus(category)
+	var uses_vulnerability := not bool(options.get("skip_vulnerability", false))
+	var uses_outgoing := not bool(options.get("skip_outgoing", false))
+	var charged_bonus := _get_charged_damage_bonus(category) if uses_vulnerability else 0
+	var splash_spec := (
+		_get_charged_vulnerability_splash(category)
+		if uses_vulnerability and not bool(options.get("skip_splash", false))
+		else {}
+	)
+	var outgoing_bonus := 0
+	if attacker is Unit and uses_outgoing:
+		outgoing_bonus = (attacker as Unit)._get_outgoing_damage_bonus(category)
 	# Construit le contexte du coup.
 	var ctx := DamageResolver.HitContext.new()
 	ctx.attacker = attacker
-	ctx.raw_damage = _get_modified_incoming_damage(
-		_apply_defensive_reaction_to_raw(
-			amount + charged_bonus,
-			attacker,
-			options
-		)
-	)
+	ctx.raw_damage = amount + charged_bonus + outgoing_bonus
 	ctx.category = category
 	ctx.element = element
-	# Options Ã©ventuelles (terrain, sorts spÃ©ciaux, futurs traits).
+	# Options éventuelles (terrain et sorts spéciaux).
 	ctx.ignore_defense = options.get("ignore_defense", false)
 	ctx.cannot_be_dodged = options.get("cannot_be_dodged", false)
 	ctx.bonus_crit_chance = options.get("bonus_crit_chance", 0.0)
@@ -808,19 +631,28 @@ func take_damage(
 	var result := DamageResolver.compute(self, ctx)
 	if result != null and not result.dodged and charged_bonus > 0:
 		_consume_charged_damage_vulnerabilities(category)
+	if result != null and not result.dodged and attacker is Unit and uses_outgoing:
+		(attacker as Unit)._consume_charged_outgoing_damage(category)
 	_apply_damage_result(result, ctx.attacker)
+	if result != null and not result.dodged and not splash_spec.is_empty():
+		_apply_adjacent_vulnerability_splash(splash_spec, attacker)
 	return result
 
 # take_hit : variante explicite quand on a dÃ©jÃ  un HitContext construit
-# (utile pour les futurs traits qui veulent pousser des crochets).
+# (utile pour les modificateurs de sorts qui ajoutent des crochets).
 func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	if not is_alive:
 		return null
 	var charged_bonus := _get_charged_damage_bonus(ctx.category)
-	ctx.raw_damage += charged_bonus
+	var outgoing_bonus := 0
+	if ctx.attacker is Unit:
+		outgoing_bonus = (ctx.attacker as Unit)._get_outgoing_damage_bonus(ctx.category)
+	ctx.raw_damage += charged_bonus + outgoing_bonus
 	var result := DamageResolver.compute(self, ctx)
 	if result != null and not result.dodged and charged_bonus > 0:
 		_consume_charged_damage_vulnerabilities(ctx.category)
+	if result != null and not result.dodged and ctx.attacker is Unit:
+		(ctx.attacker as Unit)._consume_charged_outgoing_damage(ctx.category)
 	_apply_damage_result(result, ctx.attacker)
 	return result
 
@@ -837,6 +669,45 @@ func _get_charged_damage_bonus(category: int) -> int:
 	return bonus
 
 
+func _get_charged_vulnerability_splash(category: int) -> Dictionary:
+	var result := {}
+	for entry in active_statuses:
+		var data := entry.get("data") as ChargedDamageVulnerabilityData
+		if data == null \
+				or data.trigger_damage_type != category \
+				or int(entry.get("charges", 0)) <= 0 \
+				or data.adjacent_splash_damage <= 0:
+			continue
+		if data.adjacent_splash_damage > int(result.get("damage", 0)):
+			result = {
+				"damage": data.adjacent_splash_damage,
+				"damage_type": data.adjacent_splash_damage_type,
+				"element": data.adjacent_splash_element,
+			}
+	return result
+
+
+func _apply_adjacent_vulnerability_splash(spec: Dictionary, attacker) -> void:
+	if grid_context == null or grid_pos == Vector2i(-1, -1):
+		return
+	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
+		var adjacent := grid_context.get_unit(grid_pos + direction) as Unit
+		if adjacent == null or adjacent == self or adjacent.team != team:
+			continue
+		adjacent.take_damage(
+			int(spec.get("damage", 0)),
+			attacker,
+			int(spec.get("damage_type", Spell.DamageType.MAGICAL)),
+			int(spec.get("element", Spell.Element.LIGHTNING)),
+			{
+				"skip_vulnerability": true,
+				"skip_outgoing": true,
+				"skip_splash": true,
+			}
+		)
+		return
+
+
 func _consume_charged_damage_vulnerabilities(category: int) -> void:
 	for index in range(active_statuses.size() - 1, -1, -1):
 		var entry: Dictionary = active_statuses[index]
@@ -848,7 +719,40 @@ func _consume_charged_damage_vulnerabilities(category: int) -> void:
 		var remaining_charges := int(entry["charges"]) - 1
 		if remaining_charges <= 0:
 			active_statuses.remove_at(index)
-			EventBus.status_expired.emit(self, data.status_name)
+			EventBus.status_expired.emit(self, data.get_effective_status_id())
+		else:
+			active_statuses[index]["charges"] = remaining_charges
+
+
+func _get_outgoing_damage_bonus(category: int) -> int:
+	var bonus := 0
+	for entry in active_statuses:
+		var status := entry.get("data") as StatusData
+		if status != null:
+			bonus += status.outgoing_damage_modifier
+		var charged := entry.get("data") as ChargedOutgoingDamageData
+		if charged == null \
+				or int(entry.get("charges", 0)) <= 0 \
+				or (charged.trigger_damage_type >= 0 \
+				and charged.trigger_damage_type != category):
+			continue
+		bonus += charged.bonus_damage
+	return bonus
+
+
+func _consume_charged_outgoing_damage(category: int) -> void:
+	for index in range(active_statuses.size() - 1, -1, -1):
+		var entry: Dictionary = active_statuses[index]
+		var data := entry.get("data") as ChargedOutgoingDamageData
+		if data == null \
+				or int(entry.get("charges", 0)) <= 0 \
+				or (data.trigger_damage_type >= 0 \
+				and data.trigger_damage_type != category):
+			continue
+		var remaining_charges := int(entry["charges"]) - 1
+		if remaining_charges <= 0:
+			active_statuses.remove_at(index)
+			EventBus.status_expired.emit(self, data.get_effective_status_id())
 		else:
 			active_statuses[index]["charges"] = remaining_charges
 
@@ -875,7 +779,7 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 			"%s : bouclier absorbe %d (reste %d)" % [unit_name, absorbed, current_shield])
 
 	# Annonce la frappe sur le bus (montant aprÃ¨s mitigation armure/rÃ©sist, avant bouclier).
-	# shield_absorbed est Ã©mis sÃ©parÃ©ment pour les traits qui y rÃ©agissent.
+	# shield_absorbed est émis séparément pour les consommateurs du journal/UI.
 	EventBus.damage_dealt.emit(
 		self, attacker, result.amount, result.category, result.element, result.is_crit)
 	if result.is_crit:
@@ -883,40 +787,39 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 
 	# --- Application aux PV ---
 	if damage_to_hp > 0:
-		current_hp -= damage_to_hp
+		var health_loss := mini(current_hp, damage_to_hp)
+		current_hp -= health_loss
+		EventBus.health_damage_taken.emit(
+			self,
+			attacker,
+			health_loss,
+			result.category,
+			result.element,
+			result.is_crit
+		)
 		hp_changed.emit(self)
 		if current_hp <= 0:
 			current_hp = 0
-			_die()
+			_die(attacker)
 	else:
 		# Tout absorbÃ© : les PV n'ont pas bougÃ©, mais on notifie pour l'UI.
 		hp_changed.emit(self)
 
-	# --- Endurance : encaisser un coup gÃ©nÃ¨re de l'Ã©nergie selon l'Ã©cole ---
 	# Data-driven via gain_table[TAKE_DAMAGE] : nul pour Rage/Ombre (0), paie pour
 	# Foi (montÃ©e en puissance) et Nature. result.amount est le coup mitigÃ© (avant
 	# bouclier), donc absorber compte aussi comme "tenir bon". Point unique du flux.
-	if result.amount > 0 and is_alive:
-		generate_fervor_from_verb(EnergyTypeData.VERB_TAKE_DAMAGE, "endurance")
-
-func heal(amount: int) -> void:
-	if has_charge_threshold() and energy_type.awakening_blocks_healing:
-		DebugLogger.debug(CAT_STATS, "%s ne peut pas etre soigne pendant %s" % [unit_name, energy_type.threshold_name])
-		return
+func heal(amount: int, source: Unit = null) -> void:
 	if not is_alive:
 		return
 	var max_value := max_hp.get_int()
 	var before := current_hp
 	current_hp = mini(current_hp + amount, max_value)
 	var real := current_hp - before
-	var overheal := maxi(0, amount - real)
-	if overheal > 0 and has_charge_threshold() and energy_type.threshold_overheal_to_shield:
-		var shield_amount := int(round(float(overheal) * energy_type.threshold_overheal_shield_multiplier))
-		if shield_amount > 0:
-			add_shield(shield_amount)
 	EventBus.unit_healed.emit(self, real)
+	if real > 0:
+		EventBus.healing_applied.emit(self, source, real)
 	hp_changed.emit(self)
-func _die() -> void:
+func _die(killer: Unit = null) -> void:
 	# Garde d'idempotence : une unitÃ© ne peut mourir qu'UNE fois.
 	# Sans Ã§a, si _die est atteint deux fois (deux sources de dÃ©gÃ¢ts dans le
 	# mÃªme cycle, double appel...), unit_died serait Ã©mis deux fois â†’ log et
@@ -926,6 +829,7 @@ func _die() -> void:
 	is_alive = false
 	# Le CombatLogger Ã©coute unit_died et produit la ligne "est vaincu".
 	EventBus.unit_died.emit(self)
+	EventBus.unit_killed.emit(self, killer)
 	died.emit(self)
 
 # ============================================================

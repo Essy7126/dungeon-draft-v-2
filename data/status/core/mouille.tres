@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_status")
+status_id = &"wet"
 status_name = "Mouille"
 description = "Conducteur: plus vulnerable a la foudre, mouvement reduit."
 color = Color(0.25, 0.55, 1, 1)

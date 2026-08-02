@@ -174,17 +174,15 @@ func test_unit_view_projects_the_runtime_projectile_mount_as_cast_origin() -> vo
 		unit_view.get_cast_effect_origin_global(),
 		iso.to_global(expected_local),
 	)
-	unit.clear_traits()
 
 
-func test_mage_unit_data_uses_profile_without_energy_or_basic_attack() -> void:
+func test_mage_unit_data_uses_profile_and_disables_basic_attack() -> void:
 	var data := load(MAGE_DATA_PATH) as UnitData
 	assert_eq(data.unit_id, &"mage")
 	assert_false(data.basic_attack_enabled)
-	assert_null(data.energy_type)
 	assert_eq(
 		data.disciplines.map(func(discipline): return discipline.discipline_id),
-		[&"mage_fire", &"mage_ice", &"mage_lightning", &"mage_earth"],
+		[&"mage_pyromancy", &"mage_cryomancy", &"mage_fulguromancy", &"mage_geomancy"],
 	)
 	assert_eq(data.visual_scene.resource_path, "res://characters/mage/MageIsoUnitView.tscn")
 	assert_eq(data.preview_visual_scene.resource_path, "res://characters/mage/MageVisual3D.tscn")
@@ -192,7 +190,7 @@ func test_mage_unit_data_uses_profile_without_energy_or_basic_attack() -> void:
 	assert_true(data.spells.any(func(spell): return spell.damage > 0))
 	assert_eq(
 		data.spells.map(func(spell): return spell.discipline_id),
-		[&"mage_fire", &"mage_ice", &"mage_lightning", &"mage_earth"],
+		[&"mage_pyromancy", &"mage_cryomancy", &"mage_fulguromancy", &"mage_geomancy"],
 	)
 	assert_true(data.spells.all(func(spell): return spell.get_effective_spell_id() != &""))
 	assert_false(data.spells.any(

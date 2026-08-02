@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_s2kpe")
 spell_id = &"mage_ice_wall"
-discipline_id = &"mage_ice"
+discipline_id = &"mage_cryomancy"
 spell_name = "Mur de glace"
 description = "Lecture joueur: Cout 1 PA. Portee 6. Cible: case libre. Effets: pose ou modifie un terrain."
 spell_range = 6

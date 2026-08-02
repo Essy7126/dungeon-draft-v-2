@@ -69,7 +69,7 @@ Chaque roster préparé est exactement, dans cet ordre :
 2. `skeleton_melee`
 3. `skeleton_ranged`
 
-Toutes les références Gobelin, GobTest, Pyromage, Éclaireur et placeholders sont retirées de ces quatre listes seulement. Les ressources historiques restent présentes et chargeables. Le trio joueur reste strictement Elfe, Mage, Guerrier.
+Toutes les références Gobelin, GobTest, Pyromage, Éclaireur et placeholders sont retirées de ces quatre listes. Les ressources historiques sans consommateur ont ensuite été retirées de la branche cible et restent récupérables dans l'historique Git. Le trio joueur reste strictement Elfe, Mage, Guerrier.
 
 ## Validation automatisée
 
