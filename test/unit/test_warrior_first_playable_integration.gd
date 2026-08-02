@@ -33,16 +33,16 @@ func test_warrior_resource_is_data_driven_and_preserves_gameplay() -> void:
 	assert_eq(warrior.unit_id, &"warrior")
 	assert_eq(warrior.unit_name, "Guerrier")
 	assert_eq(warrior.attack_power, 18)
-	assert_eq(warrior.force, 20.0)
+	assert_eq(warrior.force, 0.0)
 	assert_eq(warrior.max_ap, 6)
 	assert_eq(warrior.max_mp, 3)
 	assert_eq(warrior.active_spell_slots, 4)
 	assert_eq(warrior.spells.size(), 4)
-	assert_eq(warrior.disciplines.size(), 3)
+	assert_eq(warrior.disciplines.size(), 4)
 	assert_not_null(warrior.visual_scene)
 	assert_not_null(warrior.preview_visual_scene)
 	assert_eq(warrior.spells.map(func(spell): return spell.spell_id), [
-		&"warrior_shove", &"warrior_war_mark", &"warrior_execution", &"warrior_stomp"
+		&"warrior_heavy_strike", &"warrior_charge", &"warrior_whirlwind", &"warrior_guard"
 	])
 
 
@@ -86,12 +86,12 @@ func test_spell_profile_uses_stable_ids_and_emits_one_release() -> void:
 	var visual := WarriorVisualScene.instantiate() as WarriorVisual3D
 	add_child_autofree(visual)
 	await wait_process_frames(3)
-	var execution_spell := load("res://data/spells/Guerrier/execution_de_guerre.tres") as Spell
-	assert_eq(execution_spell.spell_id, &"warrior_execution")
-	assert_eq(visual.get_animation_for_spell(execution_spell), WarriorVisual3D.ANIM_HEAVY_ATTACK)
+	var heavy_strike := load("res://data/spells/Guerrier/frappe_lourde.tres") as Spell
+	assert_eq(heavy_strike.spell_id, &"warrior_heavy_strike")
+	assert_eq(visual.get_animation_for_spell(heavy_strike), WarriorVisual3D.ANIM_HEAVY_ATTACK)
 	var releases := {"count": 0}
 	visual.cast_release_reached.connect(func(): releases.count += 1)
-	assert_true(visual.play_spell_action(execution_spell))
+	assert_true(visual.play_spell_action(heavy_strike))
 	await get_tree().create_timer(1.8).timeout
 	assert_eq(releases.count, 1)
 

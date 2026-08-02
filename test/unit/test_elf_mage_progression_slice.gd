@@ -6,8 +6,8 @@ const ProgressionScreenScript = preload("res://ui/progression/progression_choice
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_DISCIPLINE_PATH := "res://data/characters/elf/disciplines/mage.tres"
-const INCANDESCENT_ID := &"elf_mage_incandescent_core"
-const EMBERS_ID := &"elf_mage_persistent_embers"
+const INCANDESCENT_ID := &"elf_mage_cur_incandescent"
+const EMBERS_ID := &"elf_mage_braises_persistantes"
 const FIREBALL_ID := &"elf_fireball"
 
 var manager
@@ -89,7 +89,7 @@ func test_discipline_progress_adds_xp_and_reaches_rank_two_at_three() -> void:
 func test_rank_threshold_and_pending_choice_are_created_only_once() -> void:
 	var progress := _make_progress()
 	assert_eq(progress.add_xp(3), [2])
-	assert_true(progress.add_xp(5).is_empty())
+	assert_true(progress.add_xp(2).is_empty())
 	assert_eq(progress.rank, 2)
 	assert_eq(progress.get_pending_rank_choices(), [2])
 
@@ -132,7 +132,7 @@ func test_two_discipline_states_are_independent() -> void:
 
 func test_mage_rank_two_data_has_exactly_two_expected_choices() -> void:
 	var mage := _mage_data()
-	assert_eq(mage.ranks.size(), 2)
+	assert_eq(mage.ranks.size(), 5)
 	assert_eq([mage.ranks[0].rank, mage.ranks[0].required_total_xp], [1, 0])
 	assert_eq([mage.ranks[1].rank, mage.ranks[1].required_total_xp], [2, 3])
 	assert_eq(
@@ -316,7 +316,7 @@ func test_incandescent_core_does_not_leak_to_another_caster_using_same_spell() -
 	assert_eq(enemy.current_hp, 600)
 
 
-func test_persistent_embers_places_existing_fire_for_exactly_one_turn() -> void:
+func test_persistent_embers_extends_existing_lava_by_one_turn() -> void:
 	var state := _prepare_elf()
 	_raise_mage_to_rank_two(state)
 	assert_true(state.select_upgrade(&"mage", 2, EMBERS_ID))
@@ -329,10 +329,11 @@ func test_persistent_embers_places_existing_fire_for_exactly_one_turn() -> void:
 		var effect: TerrainEffectData = battlefield.terrain.get_effect_data(cell)
 		assert_not_null(effect)
 		if effect != null:
-			assert_eq(effect.effect_name, "feu")
+			assert_eq(effect.effect_name, "lave")
 		var stored: Dictionary = battlefield.grid.get_effect(cell)
-		assert_eq(stored["data"]["duration"], 1)
-	battlefield.terrain.tick_all_effects()
+		assert_eq(stored["data"]["duration"], 4)
+	for _turn in range(4):
+		battlefield.terrain.tick_all_effects()
 	for cell in affected_cells:
 		assert_null(battlefield.terrain.get_effect_data(cell))
 
@@ -363,7 +364,7 @@ func test_persistent_embers_remains_active_on_a_new_battlefield() -> void:
 	next_battlefield.caster.cast(state.unit, _elf_fireball(), Vector2i(3, 2))
 	assert_eq(
 		next_battlefield.terrain.get_effect_data(Vector2i(3, 2)).effect_name,
-		"feu"
+		"lave"
 	)
 
 
@@ -387,18 +388,30 @@ func test_progression_screen_requires_selection_then_confirms_one_choice() -> vo
 	assert_true(state.get_discipline_progress(&"mage").get_pending_rank_choices().is_empty())
 
 
-func test_victory_with_pending_choice_opens_progression_then_next_room() -> void:
+func test_victory_never_opens_post_combat_progression() -> void:
 	var state := _prepare_elf(2)
 	_raise_mage_to_rank_two(state)
 	manager.current_room_index = 0
 	var requested_scenes: Array = []
 	manager.scene_change_requested.connect(func(path): requested_scenes.append(path))
 	manager.on_battle_won()
-	assert_eq(requested_scenes[-1], GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH)
+	assert_push_error("Victoire différée")
+	assert_true(requested_scenes.is_empty())
 	assert_eq(manager.current_room_index, 0)
 	assert_true(manager.choose_progression_upgrade(&"elf", &"mage", 2, EMBERS_ID))
+	manager.on_battle_won()
+	assert_eq(manager.current_room_index, 0)
+	assert_eq(requested_scenes[-1], GameManagerScript.POST_COMBAT_SCREEN_PATH)
+	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
+	assert_true(manager.confirm_post_combat_reward(
+		reward["reward_id"], reward["target_character_id"]
+	)["success"])
+	assert_true(manager.complete_post_combat_transition(
+		manager.get_current_combat_report().report_id
+	))
 	assert_eq(manager.current_room_index, 1)
 	assert_eq(requested_scenes[-1], GameManagerScript.ROOM_TRANSITION_SCREEN_PATH)
+	assert_false(requested_scenes.has(GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH))
 
 
 func test_victory_without_pending_choice_skips_progression_screen() -> void:
@@ -408,16 +421,27 @@ func test_victory_without_pending_choice_skips_progression_screen() -> void:
 	manager.scene_change_requested.connect(func(path): requested_scenes.append(path))
 	manager.on_battle_won()
 	assert_false(requested_scenes.has(GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH))
-	assert_eq(requested_scenes[-1], GameManagerScript.ROOM_TRANSITION_SCREEN_PATH)
+	assert_eq(requested_scenes[-1], GameManagerScript.POST_COMBAT_SCREEN_PATH)
 
 
-func test_last_room_resolves_progression_before_run_result() -> void:
+func test_last_room_requires_in_combat_resolution_before_run_result() -> void:
 	var state := _prepare_elf(1)
 	_raise_mage_to_rank_two(state)
 	manager.current_room_index = 0
 	var requested_scenes: Array = []
 	manager.scene_change_requested.connect(func(path): requested_scenes.append(path))
 	manager.on_battle_won()
-	assert_eq(requested_scenes[-1], GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH)
-	manager.choose_progression_upgrade(&"elf", &"mage", 2, INCANDESCENT_ID)
+	assert_push_error("Victoire différée")
+	assert_true(requested_scenes.is_empty())
+	assert_true(manager.choose_progression_upgrade(&"elf", &"mage", 2, INCANDESCENT_ID))
+	manager.on_battle_won()
+	assert_eq(requested_scenes[-1], GameManagerScript.POST_COMBAT_SCREEN_PATH)
+	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
+	assert_true(manager.confirm_post_combat_reward(
+		reward["reward_id"], reward["target_character_id"]
+	)["success"])
+	assert_true(manager.complete_post_combat_transition(
+		manager.get_current_combat_report().report_id
+	))
 	assert_eq(requested_scenes[-1], GameManagerScript.RUN_RESULT_SCREEN_PATH)
+	assert_false(requested_scenes.has(GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH))

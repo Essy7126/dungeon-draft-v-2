@@ -227,6 +227,10 @@ func get_requirement_text() -> String:
 	return _requirement_label.text
 
 
+func get_state_text() -> String:
+	return _state_text.text
+
+
 func get_frame_texture() -> Texture2D:
 	return null
 
@@ -600,7 +604,57 @@ func _node_kind(rank: int) -> StringName:
 func _semantic_category() -> StringName:
 	if node_visual != null and node_visual.primary_glyph_id != &"":
 		return node_visual.primary_glyph_id
+	if node_data != null:
+		for modifier_value in node_data.get_spell_modifiers():
+			var modifier := modifier_value as SpellModSkillTreeEffect
+			if modifier != null:
+				return _skill_tree_effect_category(modifier)
 	return &"upgrade"
+
+
+func _skill_tree_effect_category(modifier: SpellModSkillTreeEffect) -> StringName:
+	match modifier.effect_type:
+		SpellModSkillTreeEffect.EffectType.RANGE:
+			return &"range"
+		SpellModSkillTreeEffect.EffectType.HEAL, \
+				SpellModSkillTreeEffect.EffectType.HEAL_LOW_HP, \
+				SpellModSkillTreeEffect.EffectType.ADJACENT_HEAL_RATIO:
+			return &"heal"
+		SpellModSkillTreeEffect.EffectType.SHIELD_TARGET, \
+				SpellModSkillTreeEffect.EffectType.SHIELD_CASTER_IF_ALLY, \
+				SpellModSkillTreeEffect.EffectType.SHIELD_ALLIES_ON_AREA, \
+				SpellModSkillTreeEffect.EffectType.ADJACENT_SHIELD, \
+				SpellModSkillTreeEffect.EffectType.SHIELD_CASTER, \
+				SpellModSkillTreeEffect.EffectType.CLEANSE:
+			return &"defense"
+		SpellModSkillTreeEffect.EffectType.STATUS_DOT:
+			return (
+				&"poison"
+				if modifier.status_name.to_lower().contains("poison")
+				else &"bleed"
+			)
+		SpellModSkillTreeEffect.EffectType.STATUS_SLOW, \
+				SpellModSkillTreeEffect.EffectType.NEXT_TURN_MP_TARGET, \
+				SpellModSkillTreeEffect.EffectType.NEXT_TURN_MP_CASTER, \
+				SpellModSkillTreeEffect.EffectType.MP_ALLIES_ON_AREA, \
+				SpellModSkillTreeEffect.EffectType.MOVE_CASTER_TO_TARGET, \
+				SpellModSkillTreeEffect.EffectType.ALLOW_FREE_CELL_TARGET:
+			return &"movement"
+		SpellModSkillTreeEffect.EffectType.STATUS_VULNERABILITY, \
+				SpellModSkillTreeEffect.EffectType.STATUS_OUTGOING_DAMAGE:
+			return &"vulnerability"
+		SpellModSkillTreeEffect.EffectType.AREA_CARDINAL:
+			return &"area_or_pierce"
+		SpellModSkillTreeEffect.EffectType.PUSH_BONUS, \
+				SpellModSkillTreeEffect.EffectType.PUSH_EXACT:
+			return &"push"
+		SpellModSkillTreeEffect.EffectType.COLLISION_BONUS, \
+				SpellModSkillTreeEffect.EffectType.COLLISION_EXACT:
+			return &"collision"
+		SpellModSkillTreeEffect.EffectType.TERRAIN_DURATION, \
+				SpellModSkillTreeEffect.EffectType.TERRAIN_DAMAGE:
+			return &"terrain"
+	return &"damage"
 
 
 func _fallback_frame_size(profile: StringName, kind: StringName) -> float:

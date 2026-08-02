@@ -78,6 +78,9 @@ enum PeriodicTiming {
 # 0.8 = Résistant (prend -20% de dégâts).
 # Plusieurs statuts s'accumulent par multiplication.
 @export var damage_multiplier_received: float = 1.0
+# Modificateur plat appliqué aux dégâts infligés par le porteur. Sert aux
+# affaiblissements temporaires data-driven ; 0 conserve le comportement actuel.
+@export var outgoing_damage_modifier: int = 0
 
 # ============================================================
 # VISUEL

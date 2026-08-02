@@ -31,6 +31,7 @@ const RUN_RESULT_SCREEN_PATH := "res://ui/RunResultScreen.tscn"
 const TITLE_SCREEN_PATH := "res://ui/TitreEcran.tscn"
 const PROGRESSION_CHOICE_SCREEN_PATH := "res://ui/progression/ProgressionChoiceScreen.tscn"
 const ROOM_TRANSITION_SCREEN_PATH := "res://ui/Transitionsalle.tscn"
+const POST_COMBAT_SCREEN_PATH := "res://ui/post_combat/PostCombatScreen.tscn"
 const PERSISTENT_RUN_UI_SCENE := preload("res://ui/run/PersistentRunUI.tscn")
 const PersistentRunUIScript := preload("res://ui/run/persistent_run_ui.gd")
 
@@ -49,6 +50,11 @@ var _progression_service := CharacterProgressionService.new()
 var _persistent_run_ui: PersistentRunUI = null
 var _battle_outcome_generation := 0
 var _battle_outcome_pending := false
+var _combat_report_tracker := CombatReportTracker.new()
+var _last_combat_report: CombatReport = null
+var _post_combat_reward_service := PostCombatRewardService.new()
+var _pending_next_combat_shields: Dictionary = {}
+var _post_combat_transition_pending := false
 
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
@@ -56,6 +62,8 @@ signal run_lost
 signal room_cleared(index)
 signal discipline_xp_gained(character_id, discipline_id, amount, snapshot)
 signal scene_change_requested(path)
+signal combat_report_ready(report)
+signal post_combat_reward_applied(result)
 
 
 func _ready() -> void:
@@ -182,6 +190,11 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_room_outcome_resolved = false
 	_battle_outcome_generation += 1
 	_battle_outcome_pending = false
+	_combat_report_tracker.discard()
+	_last_combat_report = null
+	_post_combat_reward_service.reset()
+	_pending_next_combat_shields.clear()
+	_post_combat_transition_pending = false
 	_active_progression_screen_ref = null
 	_ensure_persistent_run_ui()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
@@ -203,6 +216,11 @@ func _clear_heroes() -> void:
 func cleanup_run_state() -> void:
 	_battle_outcome_generation += 1
 	_battle_outcome_pending = false
+	_combat_report_tracker.discard()
+	_last_combat_report = null
+	_post_combat_reward_service.reset()
+	_pending_next_combat_shields.clear()
+	_post_combat_transition_pending = false
 	_release_persistent_run_ui()
 	_close_active_progression_screen()
 	_awaiting_post_battle_progression = false
@@ -418,6 +436,102 @@ func get_current_room() -> RoomData:
 		return null
 	return rooms[current_room_index]
 
+
+# ============================================================
+# RAPPORT ET RÉCOMPENSE D'APRÈS-COMBAT
+# ============================================================
+
+func begin_combat_report() -> CombatReport:
+	if _combat_report_tracker.is_active():
+		return _combat_report_tracker.get_report()
+	var room := get_current_room()
+	_post_combat_transition_pending = false
+	return _combat_report_tracker.begin(
+		get_ordered_character_states(),
+		current_room_index,
+		room.room_name if room != null else "Salle %d" % (current_room_index + 1),
+	)
+
+
+func _finalize_current_combat_report(victory: bool) -> CombatReport:
+	if not _combat_report_tracker.is_active():
+		begin_combat_report()
+	return _combat_report_tracker.finalize(
+		get_ordered_character_states(),
+		victory,
+	)
+
+
+func get_current_combat_report() -> CombatReport:
+	return _last_combat_report
+
+
+func get_post_combat_reward_options() -> Array[Dictionary]:
+	return _post_combat_reward_service.build_options(
+		_last_combat_report,
+		get_ordered_character_states(),
+	)
+
+
+func confirm_post_combat_reward(
+		reward_id: StringName,
+		target_character_id: StringName = &""
+	) -> Dictionary:
+	if _last_combat_report == null:
+		return {
+			"success": false,
+			"error_code": "COMBAT_REPORT_MISSING",
+			"error": "Rapport de combat indisponible.",
+		}
+	var selected_option: Dictionary = {}
+	for option in get_post_combat_reward_options():
+		if StringName(option.get("reward_id", &"")) != reward_id:
+			continue
+		if StringName(option.get("target_character_id", &"")) != target_character_id:
+			continue
+		selected_option = option
+		break
+	if selected_option.is_empty():
+		return {
+			"success": false,
+			"error_code": "REWARD_OPTION_INVALID",
+			"error": "Cette proposition de récompense n’est plus valide.",
+		}
+	var result := _post_combat_reward_service.apply(
+		_last_combat_report,
+		selected_option.get("reward") as PostCombatRewardData,
+		target_character_id,
+		get_ordered_character_states(),
+		_pending_next_combat_shields,
+	)
+	if result.get("success", false):
+		_last_combat_report.reward_result = result.duplicate(true)
+		post_combat_reward_applied.emit(result)
+	return result
+
+
+func complete_post_combat_transition(report_id: StringName) -> bool:
+	if _post_combat_transition_pending \
+		or _last_combat_report == null \
+		or _last_combat_report.report_id != report_id \
+		or not _last_combat_report.reward_result.get("success", false) \
+		or not _post_combat_reward_service.has_applied(report_id):
+		return false
+	_post_combat_transition_pending = true
+	_go_to_next_room()
+	return true
+
+
+func apply_pending_next_combat_rewards() -> Dictionary:
+	return _post_combat_reward_service.consume_next_combat_shields(
+		get_ordered_character_states(),
+		_pending_next_combat_shields,
+	)
+
+
+func get_pending_next_combat_shields() -> Dictionary:
+	return _pending_next_combat_shields.duplicate(true)
+
 # ============================================================
 # FIN DE COMBAT
 # ============================================================
@@ -460,14 +574,20 @@ func _complete_battle_outcome_after_delay(
 func on_battle_won() -> void:
 	if not run_active or _room_outcome_resolved:
 		return
-	_room_outcome_resolved = true
-	room_cleared.emit(current_room_index)
-	_awaiting_post_battle_progression = true
 	if has_pending_progression_choices():
-		_request_scene_change(PROGRESSION_CHOICE_SCREEN_PATH)
+		push_error(
+			"Victoire différée : une évolution de compétence reste à résoudre en combat."
+		)
 		return
+	_room_outcome_resolved = true
+	_last_combat_report = _finalize_current_combat_report(true)
+	room_cleared.emit(current_room_index)
 	_awaiting_post_battle_progression = false
-	_continue_after_progression()
+	combat_report_ready.emit(_last_combat_report)
+	_request_scene_change(
+		POST_COMBAT_SCREEN_PATH,
+		PersistentRunUIScript.RunUIMode.NON_COMBAT,
+	)
 
 
 func _continue_after_progression() -> void:
@@ -483,9 +603,6 @@ func choose_progression_upgrade(
 	var state := get_character_state(character_id)
 	if state == null or not state.select_upgrade(discipline_id, choice_rank, upgrade_id):
 		return false
-	if _awaiting_post_battle_progression and not has_pending_progression_choices():
-		_awaiting_post_battle_progression = false
-		_continue_after_progression()
 	return true
 
 # Appelé par battle quand le joueur PERD le combat.
@@ -493,6 +610,7 @@ func on_battle_lost() -> void:
 	if not run_active or _room_outcome_resolved:
 		return
 	_room_outcome_resolved = true
+	_finalize_current_combat_report(false)
 	_finish_run(false)
 
 func _finish_run(victory: bool) -> void:

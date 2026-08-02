@@ -5,7 +5,7 @@ const GameManagerScript = preload("res://core/game_manager.gd")
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
 const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
-const INCANDESCENT_ID := &"elf_mage_incandescent_core"
+const INCANDESCENT_ID := &"elf_mage_cur_incandescent"
 const PARTY_SOURCES := [ELF_PATH, MAGE_PATH, WARRIOR_PATH]
 
 var manager
@@ -135,7 +135,7 @@ func test_three_successive_party_runs_keep_one_callback_and_fresh_xp() -> void:
 		assert_true(states[1].get_discipline_progressions().values().all(
 			func(progress): return progress.xp == 0
 		))
-		assert_eq(states[2].get_discipline_progressions().size(), 3)
+		assert_eq(states[2].get_discipline_progressions().size(), 4)
 		assert_true(states[2].get_discipline_progressions().values().all(
 			func(progress): return progress.xp == 0
 		))

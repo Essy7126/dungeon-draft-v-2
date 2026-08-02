@@ -1,0 +1,248 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/post_combat/post_combat_screen.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+
+[node name="PostCombatScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BackgroundDim" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.015, 0.02, 0.024, 0.82)
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 22.0
+offset_top = 18.0
+offset_right = -22.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="MainPanel" type="PanelContainer" parent="SafeMargin"]
+layout_mode = 2
+theme_type_variation = &"SkillTreeScreen"
+
+[node name="MainMargin" type="MarginContainer" parent="SafeMargin/MainPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 16
+
+[node name="Main" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="VictoryHeader" type="PanelContainer" parent="SafeMargin/MainPanel/MainMargin/Main"]
+layout_mode = 2
+theme_type_variation = &"SkillTreeCharacterHeader"
+
+[node name="HeaderMargin" type="MarginContainer" parent="SafeMargin/MainPanel/MainMargin/Main/VictoryHeader"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 10
+
+[node name="Header" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/VictoryHeader/HeaderMargin"]
+layout_mode = 2
+
+[node name="HeaderIdentity" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/VictoryHeader/HeaderMargin/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PhaseTitle" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/VictoryHeader/HeaderMargin/Header/HeaderIdentity"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.78, 0.36, 1)
+theme_override_font_sizes/font_size = 25
+text = "COMBAT ACHEVÉ"
+
+[node name="RoomLabel" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/VictoryHeader/HeaderMargin/Header/HeaderIdentity"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.74, 0.75, 1)
+theme_override_font_sizes/font_size = 15
+text = "Salle"
+
+[node name="ContractLabel" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/VictoryHeader/HeaderMargin/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.63, 0.64, 1)
+theme_override_font_sizes/font_size = 13
+text = "RAPPORT DE RUN · AUCUN CHOIX D’ARBRE"
+vertical_alignment = 1
+
+[node name="ContentStack" type="Control" parent="SafeMargin/MainPanel/MainMargin/Main"]
+custom_minimum_size = Vector2(0, 440)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VictoryPanel" type="CenterContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VictoryContent" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/VictoryPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="VictoryTitle" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/VictoryPanel/VictoryContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.78, 0.28, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 5
+theme_override_font_sizes/font_size = 74
+text = "VICTOIRE"
+horizontal_alignment = 1
+
+[node name="VictorySubtitle" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/VictoryPanel/VictoryContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.82, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "Le trio demeure debout."
+horizontal_alignment = 1
+
+[node name="CombatStatsPanel" type="MarginContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="StatsCards" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/CombatStatsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ProgressionPanel" type="ScrollContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="ProgressionCards" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/ProgressionPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="RewardsPanel" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="RewardInstruction" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.81, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "Choisissez une faveur pour poursuivre la run."
+horizontal_alignment = 1
+
+[node name="RewardCards" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="RewardError" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.42, 0.35, 1)
+theme_override_font_sizes/font_size = 14
+text = "Erreur contrôlée"
+horizontal_alignment = 1
+
+[node name="Footer" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="StatusLabel" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.67, 0.71, 0.71, 1)
+theme_override_font_sizes/font_size = 14
+text = "Présentation de la victoire"
+vertical_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="SafeMargin/MainPanel/MainMargin/Main/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 48)
+layout_mode = 2
+theme_type_variation = &"SkillTreeCloseButton"
+text = "CONTINUER"
+
+[node name="TransitionLayer" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.006, 0.008, 0.012, 1)

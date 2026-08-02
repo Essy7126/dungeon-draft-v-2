@@ -1,14 +1,422 @@
-[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://r7kch7i00kw4"]
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
 
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
-[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/breaker_rank_1.tres" id="3_rank_1"]
-[ext_resource type="Resource" uid="uid://b1gxqpeha2g2y" path="res://data/characters/warrior/disciplines/breaker_rank_2.tres" id="4_rank_2"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_ns3vr"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_d4hu7"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_6n7b3"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_cndok"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_hf22r"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_ug743"]
+
+[sub_resource type="Resource" id="Resource_7ojm6"]
+script = ExtResource("1_ns3vr")
+
+[sub_resource type="Resource" id="Resource_7cbst"]
+script = ExtResource("5_hf22r")
+amount = 3
+modifier_name = "Coup brutal"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_0eiit"]
+script = ExtResource("3_6n7b3")
+excluded_node_ids = Array[StringName]([&"warrior_breaker_entaille_profonde"])
+upgrade_id = &"warrior_breaker_coup_brutal"
+display_name = "Coup brutal"
+description = "+3 dégâts directs."
+discipline_id = &"warrior_breaker"
+rank = 2
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_7cbst")])
+
+[sub_resource type="Resource" id="Resource_cesvq"]
+script = ExtResource("5_hf22r")
+effect_type = 12
+amount = 2
+duration = 2
+status_group = &"warrior_breaker_bleeding"
+status_name = "Bleeding"
+status_damage_type = 0
+modifier_name = "Entaille profonde"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_boi2f"]
+script = ExtResource("3_6n7b3")
+excluded_node_ids = Array[StringName]([&"warrior_breaker_coup_brutal"])
+upgrade_id = &"warrior_breaker_entaille_profonde"
+display_name = "Entaille profonde"
+description = "Applique Saignement : 2 dégâts pendant 2 tours."
+discipline_id = &"warrior_breaker"
+rank = 2
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_cesvq")])
+
+[sub_resource type="Resource" id="Resource_mq0ex"]
+script = ExtResource("1_ns3vr")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_d4hu7")]([SubResource("Resource_0eiit"), SubResource("Resource_boi2f")])
+
+[sub_resource type="Resource" id="Resource_gadpu"]
+script = ExtResource("5_hf22r")
+effect_type = 2
+amount = 4
+effect_group = &"warrior_breaker_execution"
+threshold_ratio = 0.4
+modifier_name = "Exécuteur"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_pxrew"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_coup_brutal"])
+upgrade_id = &"warrior_breaker_executeur"
+display_name = "Exécuteur"
+description = "+4 dégâts contre une cible sous 40 % de ses PV."
+discipline_id = &"warrior_breaker"
+rank = 3
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_gadpu")])
+
+[sub_resource type="Resource" id="Resource_7da5v"]
+script = ExtResource("5_hf22r")
+amount = 2
+modifier_name = "Brise-armure"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_ni5p2"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_coup_brutal"])
+upgrade_id = &"warrior_breaker_brise_armure"
+display_name = "Brise-armure"
+description = "La cible subit +2 dégâts physiques sur les 2 prochaines attaques."
+discipline_id = &"warrior_breaker"
+rank = 3
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_7da5v")])
+
+[sub_resource type="Resource" id="Resource_51n8r"]
+script = ExtResource("5_hf22r")
+effect_type = 12
+amount = 1
+status_group = &"warrior_breaker_bleeding"
+status_name = "Bleeding"
+status_mode = 1
+status_damage_type = 0
+modifier_name = "Boucher"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_nkbxf"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_entaille_profonde"])
+upgrade_id = &"warrior_breaker_boucher"
+display_name = "Boucher"
+description = "Le Saignement inflige +1 dégât par tour."
+discipline_id = &"warrior_breaker"
+rank = 3
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_51n8r")])
+
+[sub_resource type="Resource" id="Resource_p5avy"]
+script = ExtResource("5_hf22r")
+effect_type = 12
+duration = 1
+status_group = &"warrior_breaker_bleeding"
+status_name = "Bleeding"
+status_mode = 1
+status_damage_type = 0
+modifier_name = "Plaie ouverte"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_jqif5"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_entaille_profonde"])
+upgrade_id = &"warrior_breaker_plaie_ouverte"
+display_name = "Plaie ouverte"
+description = "Le Saignement dure 1 tour supplémentaire."
+discipline_id = &"warrior_breaker"
+rank = 3
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_p5avy")])
+
+[sub_resource type="Resource" id="Resource_o02qq"]
+script = ExtResource("1_ns3vr")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_d4hu7")]([SubResource("Resource_pxrew"), SubResource("Resource_ni5p2"), SubResource("Resource_nkbxf"), SubResource("Resource_jqif5")])
+
+[sub_resource type="Resource" id="Resource_0l18r"]
+script = ExtResource("5_hf22r")
+effect_type = 2
+amount = 4
+effect_group = &"warrior_breaker_execution"
+threshold_ratio = 0.5
+modifier_name = "Coup fatal"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_2dumj"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_executeur"])
+upgrade_id = &"warrior_breaker_coup_fatal"
+display_name = "Coup fatal"
+description = "Le seuil d’exécution passe à 50 % des PV."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_0l18r")])
+
+[sub_resource type="Resource" id="Resource_mo1sc"]
+script = ExtResource("5_hf22r")
+effect_type = 5
+amount = 1
+modifier_name = "Allonge martiale"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_kbbmb"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_executeur"])
+upgrade_id = &"warrior_breaker_allonge_martiale"
+display_name = "Allonge martiale"
+description = "+1 portée."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_mo1sc")])
+
+[sub_resource type="Resource" id="Resource_ycg4e"]
+script = ExtResource("5_hf22r")
+effect_type = 15
+amount = 4
+duration = 99
+charges = 2
+status_group = &"warrior_breaker_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Armure fendue"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_x16ql"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_brise_armure"])
+upgrade_id = &"warrior_breaker_armure_fendue"
+display_name = "Armure fendue"
+description = "Le bonus de dégâts reçus passe à +4."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_ycg4e")])
+
+[sub_resource type="Resource" id="Resource_sh1nr"]
+script = ExtResource("5_hf22r")
+effect_type = 18
+amount = 1
+modifier_name = "Frappe repoussante"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_syr1e"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_brise_armure"])
+upgrade_id = &"warrior_breaker_frappe_repoussante"
+display_name = "Frappe repoussante"
+description = "Repousse la cible de 1 case."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_sh1nr")])
+
+[sub_resource type="Resource" id="Resource_7sc8e"]
+script = ExtResource("5_hf22r")
+effect_type = 12
+amount = 1
+status_group = &"warrior_breaker_bleeding"
+status_name = "Bleeding"
+status_mode = 1
+status_damage_type = 0
+modifier_name = "Hémorragie"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_i0kyu"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_boucher"])
+upgrade_id = &"warrior_breaker_hemorragie"
+display_name = "Hémorragie"
+description = "Le Saignement inflige encore +1 dégât par tour."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_7sc8e")])
+
+[sub_resource type="Resource" id="Resource_q11b2"]
+script = ExtResource("5_hf22r")
+amount = 2
+modifier_name = "Coup appuyé"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_g8rx0"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_boucher"])
+upgrade_id = &"warrior_breaker_coup_appuye"
+display_name = "Coup appuyé"
+description = "+2 dégâts directs."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_q11b2")])
+
+[sub_resource type="Resource" id="Resource_0mi2a"]
+script = ExtResource("5_hf22r")
+effect_type = 12
+duration = 1
+status_group = &"warrior_breaker_bleeding"
+status_name = "Bleeding"
+status_mode = 1
+status_damage_type = 0
+modifier_name = "Plaie béante"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_s0a1g"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_plaie_ouverte"])
+upgrade_id = &"warrior_breaker_plaie_beante"
+display_name = "Plaie béante"
+description = "Le Saignement dure encore 1 tour supplémentaire."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_0mi2a")])
+
+[sub_resource type="Resource" id="Resource_42k6m"]
+script = ExtResource("5_hf22r")
+effect_type = 13
+amount = 1
+duration = 1
+status_group = &"warrior_breaker_slow"
+status_name = "Entrave"
+modifier_name = "Tendon sectionné"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_d1fj4"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_plaie_ouverte"])
+upgrade_id = &"warrior_breaker_tendon_sectionne"
+display_name = "Tendon sectionné"
+description = "La cible perd 1 PM au prochain tour."
+discipline_id = &"warrior_breaker"
+rank = 4
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_42k6m")])
+
+[sub_resource type="Resource" id="Resource_qvo8o"]
+script = ExtResource("1_ns3vr")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_d4hu7")]([SubResource("Resource_2dumj"), SubResource("Resource_kbbmb"), SubResource("Resource_x16ql"), SubResource("Resource_syr1e"), SubResource("Resource_i0kyu"), SubResource("Resource_g8rx0"), SubResource("Resource_s0a1g"), SubResource("Resource_d1fj4")])
+
+[sub_resource type="Resource" id="Resource_438wy"]
+script = ExtResource("5_hf22r")
+effect_type = 2
+amount = 8
+threshold_ratio = 0.35
+modifier_name = "Décapitation"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_1oi1p"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_coup_brutal"])
+upgrade_id = &"warrior_breaker_decapitation"
+display_name = "Décapitation"
+description = "+8 dégâts contre une cible sous 35 % de ses PV."
+discipline_id = &"warrior_breaker"
+rank = 5
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_438wy")])
+
+[sub_resource type="Resource" id="Resource_137ey"]
+script = ExtResource("5_hf22r")
+effect_type = 15
+amount = 4
+duration = 99
+charges = 3
+status_group = &"warrior_breaker_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Armure pulvérisée"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_7cs38"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_coup_brutal"])
+upgrade_id = &"warrior_breaker_armure_pulverisee"
+display_name = "Armure pulvérisée"
+description = "+4 dégâts physiques reçus sur les 3 prochaines attaques."
+discipline_id = &"warrior_breaker"
+rank = 5
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_137ey")])
+
+[sub_resource type="Resource" id="Resource_cca74"]
+script = ExtResource("5_hf22r")
+effect_type = 12
+amount = 3
+duration = 3
+status_group = &"warrior_breaker_bleeding"
+status_name = "Bleeding"
+status_mode = 2
+status_damage_type = 0
+modifier_name = "Hémorragie brutale"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_xoi8g"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_entaille_profonde"])
+upgrade_id = &"warrior_breaker_hemorragie_brutale"
+display_name = "Hémorragie brutale"
+description = "Saignement : 3 dégâts pendant 3 tours."
+discipline_id = &"warrior_breaker"
+rank = 5
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_cca74")])
+
+[sub_resource type="Resource" id="Resource_dobsi"]
+script = ExtResource("5_hf22r")
+effect_type = 12
+amount = 2
+duration = 4
+status_group = &"warrior_breaker_bleeding"
+status_name = "Saignement"
+status_mode = 2
+status_damage_type = 0
+modifier_name = "Plaie incapacitante"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_vch3o"]
+script = ExtResource("5_hf22r")
+effect_type = 13
+amount = 1
+duration = 1
+status_group = &"warrior_breaker_slow"
+status_name = "Tendon sectionné"
+modifier_name = "Plaie incapacitante"
+target_spell_id = &"warrior_heavy_strike"
+
+[sub_resource type="Resource" id="Resource_8vq30"]
+script = ExtResource("3_6n7b3")
+prerequisite_node_ids = Array[StringName]([&"warrior_breaker_entaille_profonde"])
+upgrade_id = &"warrior_breaker_plaie_incapacitante"
+display_name = "Plaie incapacitante"
+description = "Saignement : 2 dégâts pendant 4 tours et −1 PM."
+discipline_id = &"warrior_breaker"
+rank = 5
+target_spell_id = &"warrior_heavy_strike"
+spell_modifiers = Array[ExtResource("4_cndok")]([SubResource("Resource_dobsi"), SubResource("Resource_vch3o")])
+
+[sub_resource type="Resource" id="Resource_35vxm"]
+script = ExtResource("1_ns3vr")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_d4hu7")]([SubResource("Resource_1oi1p"), SubResource("Resource_7cs38"), SubResource("Resource_xoi8g"), SubResource("Resource_8vq30")])
 
 [resource]
-script = ExtResource("1_discipline")
+script = ExtResource("6_ug743")
 discipline_id = &"warrior_breaker"
-display_name = "Briseur"
-description = "Controle les lignes ennemies par les poussees, attractions et collisions."
-presentation_color = Color(0.78, 0.32, 0.16, 1)
-ranks = Array[ExtResource("2_rank_type")]([ExtResource("3_rank_1"), ExtResource("4_rank_2")])
+display_name = "Brutalité"
+description = "Maîtrise de la frappe lourde, de l'exécution et des blessures."
+presentation_color = Color(0.9, 0.28, 0.18, 1)
+ranks = Array[ExtResource("1_ns3vr")]([SubResource("Resource_7ojm6"), SubResource("Resource_mq0ex"), SubResource("Resource_o02qq"), SubResource("Resource_qvo8o"), SubResource("Resource_35vxm")])

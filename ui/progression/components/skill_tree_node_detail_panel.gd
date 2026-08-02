@@ -341,6 +341,23 @@ func get_action_button() -> Button:
 	return _action_button
 
 
+func configure_evolution_action(
+		enabled: bool,
+		button_text: String = "CHOISIR CETTE ÉVOLUTION",
+		rejection_reason: String = ""
+	) -> void:
+	_action_button.text = button_text
+	_action_button.disabled = not enabled
+	if not rejection_reason.is_empty():
+		_reason_label.text = rejection_reason
+
+
+func show_evolution_rejection(reason: String) -> void:
+	_action_button.text = "CHOIX REFUSÉ"
+	_action_button.disabled = true
+	_reason_label.text = reason
+
+
 func _prerequisite_text(
 		node: SkillUpgradeData,
 		node_names: Dictionary
@@ -393,7 +410,7 @@ func _configure_action(
 		SkillTreeVisualPresentation.SkillTreeVisualState.SELECTED:
 			_action_button.text = "ACQUIS"
 		SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE:
-			_action_button.text = "CHOISIR APRÈS LE COMBAT"
+			_action_button.text = "ÉVOLUTION DISPONIBLE"
 		SkillTreeVisualPresentation.SkillTreeVisualState.LOCKED_BY_XP:
 			_action_button.text = "XP INSUFFISANTE"
 		SkillTreeVisualPresentation.SkillTreeVisualState.LOCKED_BY_BRANCH:

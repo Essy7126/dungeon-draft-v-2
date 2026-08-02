@@ -3,7 +3,14 @@ extends Node
 const TITLE_PATH := "res://ui/TitreEcran.tscn"
 const PARTY_PATH := "res://ui/party/PartyPresentationScreen.tscn"
 const TRANSITION_PATH := "res://ui/Transitionsalle.tscn"
+const POST_COMBAT_PATH := "res://ui/post_combat/PostCombatScreen.tscn"
 const RESULT_PATH := "res://ui/RunResultScreen.tscn"
+const RUN_PATH := "res://data/runs/first_run.tres"
+const PARTY_DATA_PATHS := [
+	"res://data/units/alliés/elfe.tres",
+	"res://data/units/alliés/mage.tres",
+	"res://data/units/alliés/Guerrier.tres",
+]
 const FULL_REPORT_PATH := "C:/Blender_AI_Test/Output/room_transition_full_run_validation.json"
 const ROOM_TWO_REPORT_PATH := "C:/Blender_AI_Test/Output/room_transition_room2_open.json"
 const CINEMATIC_REPORT_PATH := "C:/Blender_AI_Test/Output/skeleton_chief_cinematic_capture.json"
@@ -13,7 +20,11 @@ const EXPECTED_ENEMY_IDS_BY_ROOM := {
 	0: [&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged"],
 	1: [&"skeleton_chief", &"skeleton_melee", &"skeleton_ranged"],
 	2: [&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged"],
-	3: [&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged"],
+	3: [
+		&"skeleton_chief", &"skeleton_chief", &"skeleton_chief",
+		&"skeleton_snow_centurion", &"skeleton_snow_centurion",
+		&"skeleton_ranged",
+	],
 }
 
 var stop_with_room_two_open := false
@@ -41,7 +52,15 @@ func begin() -> void:
 	get_tree().scene_changed.connect(_on_scene_changed)
 	GameManager.scene_change_requested.connect(_on_scene_change_requested)
 	GameManager.cleanup_run_state()
-	get_tree().change_scene_to_file.call_deferred(TITLE_PATH)
+	var run_data := load(RUN_PATH) as RunData
+	var party_data: Array[UnitData] = []
+	for path in PARTY_DATA_PATHS:
+		party_data.append(load(path) as UnitData)
+	if run_data == null or party_data.any(func(data): return data == null):
+		_fail("La configuration de la Run V1 est incomplete.")
+		_finish_and_quit(90)
+		return
+	GameManager.start_preconfigured_run.call_deferred(run_data, party_data)
 
 
 func _exit_tree() -> void:
@@ -97,6 +116,8 @@ func _handle_current_scene() -> void:
 			_fail("La transition ne possede aucune salle courante.")
 			return
 		GameManager.start_next_battle()
+	elif path == POST_COMBAT_PATH:
+		await _handle_post_combat(scene)
 	elif scene.has_method("_end_battle") and scene.has_method("_check_battle_end"):
 		_handle_battle(scene)
 	elif path == RESULT_PATH:
@@ -150,8 +171,11 @@ func _handle_battle(battle: Node) -> void:
 		_fail("Salle %d: trio inattendu %s." % [room_index + 1, str(hero_ids)])
 	if enemy_ids_sorted != expected_sorted:
 		_fail("Salle %d: roster ennemi inattendu %s." % [room_index + 1, str(enemy_ids)])
-	if enemies.size() != 3:
-		_fail("Salle %d: %d ennemis au lieu de 3." % [room_index + 1, enemies.size()])
+	var expected_enemy_count: int = EXPECTED_ENEMY_IDS_BY_ROOM.get(room_index, []).size()
+	if enemies.size() != expected_enemy_count:
+		_fail("Salle %d: %d ennemis au lieu de %d." % [
+			room_index + 1, enemies.size(), expected_enemy_count,
+		])
 
 	var hero_state := _snapshot_heroes(GameManager.heroes)
 	if room_index == 0:
@@ -211,6 +235,9 @@ func _handle_battle(battle: Node) -> void:
 		"battle": weakref(battle),
 		"runner": weakref(battle._enemy_turn),
 		"views": battle._unit_views.values().map(func(view): return weakref(view)),
+		"subviewports": battle.find_children("*", "SubViewport", true, false).map(
+			func(viewport): return weakref(viewport)
+		),
 	}
 	for enemy in enemies:
 		if not is_instance_valid(enemy) or not enemy.is_alive:
@@ -225,6 +252,31 @@ func _handle_battle(battle: Node) -> void:
 	if not battle._battle_over:
 		_fail("Salle %d: la victoire n'a pas marque la Battle terminee." % (room_index + 1))
 	print("ROOM_VALIDATION_VICTORY=", room_index + 1)
+
+
+func _handle_post_combat(screen: Node) -> void:
+	await get_tree().process_frame
+	await _validate_old_scene_cleanup("post_combat")
+	for _step in 12:
+		if not is_instance_valid(screen) or get_tree().current_scene != screen:
+			return
+		if screen.has_method("get_phase_name") \
+				and screen.get_phase_name() == &"REWARD_SELECTION":
+			break
+		screen.advance_or_skip()
+		await get_tree().process_frame
+	if not is_instance_valid(screen) or screen.get_phase_name() != &"REWARD_SELECTION":
+		_fail("L'ecran apres-combat n'a pas atteint la selection de recompense.")
+		return
+	var options: Array = GameManager.get_post_combat_reward_options()
+	if options.is_empty():
+		_fail("Aucune recompense apres-combat n'est disponible.")
+		return
+	var reward_id := StringName(options[0].get("reward_id", &""))
+	if not screen.select_reward_by_id(reward_id) or not screen.confirm_selected_reward():
+		_fail("La recompense apres-combat n'a pas pu etre confirmee.")
+		return
+	screen.advance_or_skip()
 
 
 func _capture_skeleton_chief_sequence(battle: Node, enemies: Array) -> void:
@@ -322,7 +374,7 @@ func _start_visual_without_gameplay(view: Node, cell: Vector2i, spell: Spell) ->
 
 
 func _on_scene_change_requested(path: String) -> void:
-	if path != TRANSITION_PATH and path != RESULT_PATH:
+	if path not in [POST_COMBAT_PATH, TRANSITION_PATH, RESULT_PATH]:
 		return
 	var battle_ref: WeakRef = _pending_old_scene.get("battle")
 	var battle = battle_ref.get_ref() if battle_ref != null else null
@@ -357,6 +409,10 @@ func _validate_old_scene_cleanup(destination: String) -> void:
 	for view_ref in _pending_old_scene.views:
 		if not _weak_is_empty(view_ref):
 			views_freed = false
+	var subviewports_freed := true
+	for viewport_ref in _pending_old_scene.subviewports:
+		if not _weak_is_empty(viewport_ref):
+			subviewports_freed = false
 	var projectile_count := get_tree().get_nodes_in_group("skeleton_ranged_projectiles").size()
 	var transition_record := {
 		"from_room": room_number,
@@ -364,6 +420,9 @@ func _validate_old_scene_cleanup(destination: String) -> void:
 		"battle_freed": battle_freed,
 		"runner_freed": runner_freed,
 		"unit_views_freed": views_freed,
+		"unit_view_count": _pending_old_scene.views.size(),
+		"subviewports_freed": subviewports_freed,
+		"subviewport_count": _pending_old_scene.subviewports.size(),
 		"projectile_count": projectile_count,
 		"vfx_manager_unbound": not is_instance_valid(VFXManager._battle_view),
 	}
@@ -374,6 +433,10 @@ func _validate_old_scene_cleanup(destination: String) -> void:
 		_fail("Salle %d: l'ancien EnemyTurnRunner est encore vivant." % room_number)
 	if not views_freed:
 		_fail("Salle %d: un ancien UnitView est encore vivant." % room_number)
+	if not subviewports_freed:
+		_fail("Salle %d: un ancien SubViewport est encore vivant." % room_number)
+	if room_number == 4 and transition_record.subviewport_count != 9:
+		_fail("Salle 4: %d SubViewports au lieu de 9." % transition_record.subviewport_count)
 	if projectile_count != 0:
 		_fail("Salle %d: %d projectile(s) residuel(s)." % [room_number, projectile_count])
 	if not transition_record.vfx_manager_unbound and destination == "transition":

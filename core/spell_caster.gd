@@ -96,7 +96,12 @@ func _matches_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 			return spell.can_target_self or spell.can_target_ally
 		return spell.can_target_ally
 	if occupant == null:
-		return spell.can_target_free_cell
+		if spell.can_target_free_cell:
+			return true
+		for modifier in _gather_modifiers(caster, spell):
+			if modifier.allows_free_cell_target(caster, spell):
+				return true
+		return false
 	return false
 
 func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
@@ -356,7 +361,9 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 	ctx.resolved = true
 
 	_resolve_targets(ctx)
+	_run_hook(ctx, "on_area_resolved")
 	_run_hook(ctx, "on_targets_resolved")
+	_run_hook(ctx, "on_targets_finalized")
 
 	_resolve_impacts(ctx)
 	_run_hook(ctx, "on_damage_resolved")
@@ -443,8 +450,8 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 	var spell: Spell = ctx.spell
 	var report: Dictionary = ctx.report
 	var affected := false
-	if spell.deals_damage():
-		var cell_bonus := int(ctx.damage_bonus_by_cell.get(target_cell, 0))
+	var cell_bonus := int(ctx.damage_bonus_by_cell.get(target_cell, 0))
+	if spell.deals_damage() or cell_bonus != 0:
 		var base_dmg := spell.damage + cell_bonus
 		if spell.bonus_damage_if_marked > 0 \
 				and _has_status(target, spell.bonus_damage_status_id):
@@ -466,7 +473,7 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 			var heal_effect := _terrain.get_effect_data(target.grid_pos)
 			if heal_effect != null and heal_effect.effect_name == spell.heal_bonus_effect_name:
 				heal_amount = maxi(0, int(round(float(heal_amount) * spell.heal_bonus_multiplier)))
-		target.heal(heal_amount)
+		target.heal(heal_amount, ctx.caster)
 		report["healing_by_unit"][target] = target.current_hp - before_hp
 		if target.current_hp > before_hp and not report["healed_units"].has(target):
 			report["healed_units"].append(target)
@@ -496,7 +503,7 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 		+ int(ctx.additional_shield_by_unit.get(target, 0))
 	if raw_shield > 0 and target.team == caster.team:
 		var before_shield: int = target.current_shield
-		target.add_shield(raw_shield)
+		target.add_shield(raw_shield, ctx.caster)
 		if target.current_shield > before_shield and not report["shielded_units"].has(target):
 			report["shielded_units"].append(target)
 		affected = true
@@ -508,7 +515,22 @@ func _resolve_cell_terrain(ctx: CastContext, target_cell: Vector2i) -> void:
 	var spell: Spell = ctx.spell
 	var terrain_payloads: Array = []
 	if spell.has_terrain_effect():
-		terrain_payloads.append(spell.terrain_effect)
+		var terrain_payload := spell.terrain_effect
+		if not ctx.skill_tree_terrain_spec.is_empty():
+			terrain_payload = spell.terrain_effect.duplicate(true) as TerrainEffectData
+			terrain_payload.duration = maxi(
+				0,
+				terrain_payload.duration + int(
+					ctx.skill_tree_terrain_spec.get("duration_delta", 0)
+				)
+			)
+			terrain_payload.damage = maxi(
+				0,
+				terrain_payload.damage + int(
+					ctx.skill_tree_terrain_spec.get("damage_delta", 0)
+				)
+			)
+		terrain_payloads.append(terrain_payload)
 	for terrain_data in terrain_payloads:
 		var terrain_result: Dictionary = _terrain.place_effect(target_cell, terrain_data, ctx.caster, spell)
 		if terrain_result.get("changed", false) and not ctx.report["terrain_changed"].has(target_cell):

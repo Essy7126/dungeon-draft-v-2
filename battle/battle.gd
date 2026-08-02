@@ -76,6 +76,14 @@ var units: Array = []
 var _enemy_turn: EnemyTurnRunner = null
 var _spell_impact_scheduler: SpellImpactScheduler = null
 var _spell_resolution_pending := false
+var _evolution_queue := EvolutionRequestQueue.new()
+var _evolution_processing := false
+var _evolution_request_counter := 0
+var _trigger_sequence := 0
+var _active_trigger_sequence := 0
+var _battle_outcome_waiting := false
+var _waiting_outcome_victory := false
+var _turn_start_deferred_for_evolution := false
 
 # --- Visuel ---
 var grid_view: Node2D
@@ -177,6 +185,10 @@ func _setup_logic() -> void:
 	add_child(_deployment)
 	_deployment.setup(self)
 	_deployment.deployment_completed.connect(_start_battle)
+	if not GameManager.discipline_xp_gained.is_connected(
+		_on_discipline_xp_gained
+	):
+		GameManager.discipline_xp_gained.connect(_on_discipline_xp_gained)
 	# Salle-situation : uniquement si la RoomData la configure (totem defini).
 	# battle ne fait que l'instancier ; toute la logique vit dans le controleur.
 
@@ -492,6 +504,9 @@ func _install_temporary_iso_placeholder(view: Node2D, unit: Unit) -> void:
 	placeholder.setup(unit, view)
 
 func _start_battle() -> void:
+	_enqueue_existing_pending_evolutions()
+	GameManager.apply_pending_next_combat_rewards()
+	GameManager.begin_combat_report()
 	var heroes_count := 0
 	var enemies_count := 0
 	for u in units:
@@ -501,11 +516,13 @@ func _start_battle() -> void:
 			enemies_count += 1
 	if heroes_count == 0:
 		push_error("Aucun héros dans le combat : défaite immédiate.")
-		_end_battle(false)
+		_request_battle_outcome(false)
 		return
 	if enemies_count == 0:
 		push_warning("Aucun ennemi dans la salle : victoire immédiate.")
-		_end_battle(true)
+		_request_battle_outcome(true)
+		if _evolution_queue.has_pending():
+			_process_evolution_queue_at_safe_point.call_deferred()
 		return
 
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
@@ -539,6 +556,11 @@ func _on_unit_pushed(unit: Unit, _from: Vector2i, to_pos: Vector2i, _collision: 
 
 func _on_turn_started(unit: Unit) -> void:
 	if _battle_over or _closing or not is_instance_valid(unit):
+		return
+	if _evolution_queue.has_pending() or _evolution_processing:
+		_turn_start_deferred_for_evolution = true
+		_lock_combat_for_evolution(false)
+		_process_evolution_queue_at_safe_point.call_deferred()
 		return
 	var lifecycle_generation := _lifecycle_generation
 
@@ -598,6 +620,28 @@ func get_active_unit():
 	return turn_queue.get_current_unit()
 
 
+func get_pending_evolution_requests() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for request in _evolution_queue.get_requests():
+		result.append(request.to_dictionary())
+	return result
+
+
+func is_combat_input_locked_for_evolution() -> bool:
+	return _is_evolution_locked()
+
+
+func get_combat_evolution_state() -> StringName:
+	if turn_state == null:
+		return &""
+	match turn_state.current:
+		TurnState.State.SKILL_EVOLUTION_PENDING:
+			return &"SKILL_EVOLUTION_PENDING"
+		TurnState.State.SKILL_EVOLUTION_UI:
+			return &"SKILL_EVOLUTION_UI"
+	return &""
+
+
 func _cancel_action_selection_for_active_unit() -> void:
 	if turn_state == null or action_bar == null:
 		return
@@ -618,10 +662,14 @@ func _update_active_highlight(active_unit: Unit) -> void:
 # ============================================================
 
 func _on_move_pressed() -> void:
+	if _is_evolution_locked():
+		return
 	turn_state.on_move_button()
 	_refresh_mode_button()
 
 func _on_attack_pressed() -> void:
+	if _is_evolution_locked():
+		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
 		return
@@ -629,10 +677,14 @@ func _on_attack_pressed() -> void:
 	_refresh_mode_button()
 
 func _on_spell_pressed(spell: Spell) -> void:
+	if _is_evolution_locked():
+		return
 	turn_state.on_spell_selected(spell)
 	_refresh_mode_button()
 
 func _on_end_turn_pressed() -> void:
+	if _is_evolution_locked() or _spell_resolution_pending:
+		return
 	grid_view.clear_highlights()
 	var unit = turn_queue.get_current_unit()
 	if unit != null:
@@ -655,6 +707,8 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
+	if _is_evolution_locked():
+		return
 	if _deployment != null and _deployment.is_active():
 		_deployment.on_cell_clicked(cell)
 		return
@@ -687,6 +741,8 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 			inspect_panel.show_spell_preview(unit, spell, cell, grid, spell_caster)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _is_evolution_locked():
+		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
 		if turn_state == null:
 			return
@@ -699,6 +755,8 @@ func _unhandled_input(event: InputEvent) -> void:
 # ============================================================
 
 func _on_request_show_move_range() -> void:
+	if _is_evolution_locked():
+		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null:
 		return
@@ -709,7 +767,7 @@ func _on_request_clear_highlights() -> void:
 	grid_view.clear_highlights()
 
 func _on_request_move_to(cell: Vector2i) -> void:
-	if _closing or _battle_over:
+	if _closing or _battle_over or _is_evolution_locked():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null:
@@ -775,6 +833,8 @@ func _animate_move(unit: Unit, path: Array) -> void:
 # ============================================================
 
 func _on_request_show_attack_range() -> void:
+	if _is_evolution_locked():
+		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
 		turn_state.set_state(TurnState.State.IDLE)
@@ -794,7 +854,7 @@ func _get_attackable_cells(unit: Unit) -> Array:
 	return result
 
 func _on_request_attack(cell: Vector2i) -> void:
-	if _closing or _battle_over:
+	if _closing or _battle_over or _is_evolution_locked():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
@@ -867,6 +927,8 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 # ============================================================
 
 func _on_request_show_spell_range(spell: Spell) -> void:
+	if _is_evolution_locked():
+		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
@@ -874,7 +936,10 @@ func _on_request_show_spell_range(spell: Spell) -> void:
 	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
 
 func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
-	if _spell_resolution_pending or _closing or _battle_over:
+	if _spell_resolution_pending \
+			or _closing \
+			or _battle_over \
+			or _is_evolution_locked():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
@@ -882,6 +947,10 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	if not spell_caster.is_valid_target(unit, spell, cell):
 		return
 	_spell_resolution_pending = true
+	_trigger_sequence += 1
+	_active_trigger_sequence = _trigger_sequence
+	turn_state.begin_animating()
+	action_bar.set_player_controls_enabled(false)
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
@@ -889,19 +958,25 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 			var visual_ready: bool = await view.prepare_spell_visual(cell, spell)
 			if not visual_ready or not _is_operation_current(lifecycle_generation):
 				_spell_resolution_pending = false
+				if turn_state != null:
+					turn_state.begin_player_turn()
+				if is_instance_valid(action_bar):
+					action_bar.set_player_controls_enabled(true)
 				return
 		elif view.has_method("face_grid_direction"):
 			view.face_grid_direction(cell - unit.grid_pos)
 	var context := spell_caster.begin_cast(unit, spell, cell)
 	if context.failed:
 		_spell_resolution_pending = false
+		turn_state.begin_player_turn()
+		action_bar.set_player_controls_enabled(true)
 		return
 	if spell.impact_delay_seconds > 0.0:
 		VFXManager.play_spell_vfx(unit, spell, cell)
 		if _spell_impact_scheduler.schedule(context, spell.impact_delay_seconds):
 			return
 	var report = spell_caster.resolve_cast(context)
-	_finish_spell_resolution(unit, report)
+	await _finish_spell_resolution(unit, report)
 
 
 func _on_delayed_spell_impact(context: CastContext) -> void:
@@ -913,24 +988,206 @@ func _on_delayed_spell_impact(context: CastContext) -> void:
 
 
 func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
-	_spell_resolution_pending = false
 	if _closing or _battle_over or report.get("failed", false):
+		_spell_resolution_pending = false
 		return
+	var lifecycle_generation := _lifecycle_generation
+	var view = _unit_views.get(unit)
+	if is_instance_valid(view) \
+			and view.has_method("has_optional_visual") \
+			and view.has_optional_visual() \
+			and view.has_method("wait_for_action_visual_finished"):
+		await view.wait_for_action_visual_finished()
+		if not _is_operation_current(lifecycle_generation):
+			_spell_resolution_pending = false
+			return
+	var tree := get_tree()
+	if tree != null:
+		await tree.process_frame
+		if not _is_operation_current(lifecycle_generation):
+			_spell_resolution_pending = false
+			return
 	if is_instance_valid(grid_view):
 		grid_view.queue_redraw()
 	if is_instance_valid(action_bar):
 		action_bar.update_info(unit)
 		action_bar.set_active_mode("")
+	_spell_resolution_pending = false
+	if _evolution_queue.has_pending():
+		await _process_evolution_queue_at_safe_point()
+		return
+	if _battle_outcome_waiting:
+		_commit_waiting_battle_outcome()
+		return
 	if turn_state != null:
-		turn_state.set_state(TurnState.State.IDLE)
+		turn_state.begin_player_turn()
+	if is_instance_valid(action_bar):
+		action_bar.set_player_controls_enabled(true)
+
+
+func _on_discipline_xp_gained(
+		character_id: StringName,
+		discipline_id: StringName,
+		_amount: int,
+		snapshot: Dictionary
+	) -> void:
+	if _closing or _battle_over:
+		return
+	var caster := snapshot.get("caster") as Unit
+	if caster == null or not units.has(caster):
+		return
+	var source_spell_id := StringName(snapshot.get("spell_id", &""))
+	for rank_value in snapshot.get("reached_ranks", []):
+		_enqueue_evolution_request(
+			character_id,
+			discipline_id,
+			int(rank_value),
+			source_spell_id,
+			_active_trigger_sequence,
+		)
+
+
+func _enqueue_existing_pending_evolutions() -> void:
+	for choice in GameManager.get_pending_progression_choices():
+		_enqueue_evolution_request(
+			StringName(choice.get("character_id", &"")),
+			StringName(choice.get("discipline_id", &"")),
+			int(choice.get("rank", 0)),
+			&"",
+			0,
+		)
+
+
+func _enqueue_evolution_request(
+		character_id: StringName,
+		discipline_id: StringName,
+		pending_rank: int,
+		source_spell_id: StringName,
+		trigger_sequence: int
+	) -> bool:
+	_evolution_request_counter += 1
+	var request_id := StringName("evolution_%06d_%04d" % [
+		maxi(trigger_sequence, 0),
+		_evolution_request_counter,
+	])
+	return _evolution_queue.enqueue(EvolutionRequest.create(
+		character_id,
+		discipline_id,
+		pending_rank,
+		source_spell_id,
+		trigger_sequence,
+		request_id,
+	))
+
+
+func _process_evolution_queue_at_safe_point() -> void:
+	if _evolution_processing or not _evolution_queue.has_pending():
+		return
+	_evolution_processing = true
+	_lock_combat_for_evolution(false)
+	while _evolution_queue.has_pending() and not _closing and not _battle_over:
+		var request := _evolution_queue.peek()
+		if not _is_request_still_pending(request):
+			_evolution_queue.discard_current()
+			continue
+		var run_ui := GameManager.get_persistent_run_ui()
+		if run_ui == null:
+			push_error("Évolution en combat impossible : PersistentRunUI indisponible.")
+			break
+		_lock_combat_for_evolution(false)
+		var opened: bool = await run_ui.open_evolution_request(request)
+		if not opened:
+			push_error(
+				"Évolution en combat impossible : ouverture de l’arbre refusée."
+			)
+			break
+		_lock_combat_for_evolution(true)
+		var resolved_request_id: StringName = &""
+		while resolved_request_id != request.request_id:
+			var resolution: Array = await run_ui.evolution_choice_resolved
+			if resolution.size() >= 1:
+				resolved_request_id = StringName(resolution[0])
+		if _is_request_still_pending(request):
+			push_error(
+				"Évolution en combat refusée : le choix n’a pas été enregistré."
+			)
+			break
+		_evolution_queue.complete_current()
+		run_ui.refresh_from_context()
+	_evolution_processing = false
+	if _evolution_queue.has_pending() or _closing or _battle_over:
+		return
+	_resume_combat_after_evolutions()
+
+
+func _is_request_still_pending(request: EvolutionRequest) -> bool:
+	if request == null:
+		return false
+	var state := GameManager.get_character_state(request.character_id)
+	if state == null:
+		return false
+	var progress := state.get_discipline_progress(request.discipline_id)
+	return progress != null \
+		and progress.get_pending_rank_choices().has(request.pending_rank)
+
+
+func _lock_combat_for_evolution(ui_open: bool) -> void:
+	if turn_state != null:
+		if ui_open:
+			turn_state.begin_skill_evolution_ui()
+		else:
+			turn_state.begin_skill_evolution_pending()
+	if is_instance_valid(action_bar):
+		action_bar.set_player_controls_enabled(false)
+		action_bar.set_active_mode("")
+	if is_instance_valid(grid_view):
+		grid_view.clear_highlights()
+
+
+func _resume_combat_after_evolutions() -> void:
+	if _battle_outcome_waiting:
+		_commit_waiting_battle_outcome()
+		return
+	if _turn_start_deferred_for_evolution:
+		_turn_start_deferred_for_evolution = false
+		var deferred_unit = get_active_unit()
+		if deferred_unit != null:
+			_on_turn_started(deferred_unit)
+		return
+	var active_unit = get_active_unit()
+	if active_unit == null:
+		if turn_state != null:
+			turn_state.begin_player_turn()
+		return
+	if active_unit.team == 0:
+		turn_state.begin_player_turn()
+		if is_instance_valid(action_bar):
+			action_bar.set_player_controls_enabled(true)
+			action_bar.update_info(active_unit)
+	else:
+		turn_state.begin_enemy_turn()
+		if is_instance_valid(action_bar):
+			action_bar.set_player_controls_enabled(false)
+
+
+func _is_evolution_locked() -> bool:
+	return _evolution_processing \
+		or _evolution_queue.has_pending() \
+		or (turn_state != null and turn_state.is_skill_evolution_locked())
 
 
 func _exit_tree() -> void:
 	_begin_battle_shutdown()
+	if GameManager.discipline_xp_gained.is_connected(
+		_on_discipline_xp_gained
+	):
+		GameManager.discipline_xp_gained.disconnect(_on_discipline_xp_gained)
 	if _uses_persistent_action_bar:
 		GameManager.unbind_combat_context(self)
 	_uses_persistent_action_bar = false
 	_spell_resolution_pending = false
+	_evolution_processing = false
+	_evolution_queue.clear()
 	if is_instance_valid(_spell_impact_scheduler):
 		_spell_impact_scheduler.cancel_all()
 
@@ -978,9 +1235,27 @@ func _check_battle_end() -> void:
 	var heroes_alive = turn_queue.count_living_in_team(0)
 	var enemies_alive = turn_queue.count_living_in_team(1)
 	if heroes_alive == 0:
-		_end_battle(false)
+		_request_battle_outcome(false)
 	elif enemies_alive == 0:
-		_end_battle(true)
+		_request_battle_outcome(true)
+
+
+func _request_battle_outcome(victory: bool) -> void:
+	if _spell_resolution_pending \
+			or _evolution_processing \
+			or _evolution_queue.has_pending():
+		_battle_outcome_waiting = true
+		_waiting_outcome_victory = victory
+		return
+	_end_battle(victory)
+
+
+func _commit_waiting_battle_outcome() -> void:
+	if not _battle_outcome_waiting:
+		return
+	var victory := _waiting_outcome_victory
+	_battle_outcome_waiting = false
+	_end_battle(victory)
 
 # ============================================================
 # FIN DE COMBAT
@@ -989,6 +1264,10 @@ func _check_battle_end() -> void:
 
 func _end_battle(victory: bool) -> void:
 	if _battle_over:
+		return
+	if _evolution_processing or _evolution_queue.has_pending():
+		_battle_outcome_waiting = true
+		_waiting_outcome_victory = victory
 		return
 	_battle_over = true
 	_begin_battle_shutdown()

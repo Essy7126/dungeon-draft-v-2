@@ -37,6 +37,11 @@ func applies_to(spell) -> bool:
 func get_range_bonus(_caster, _spell) -> int:
 	return 0
 
+# Autorise un modifier data-driven à élargir le contrat de ciblage avant le
+# début du cast (par exemple la branche Intercepteur de Charge).
+func allows_free_cell_target(_caster, _spell) -> bool:
+	return false
+
 # ============================================================
 # HOOKS DU PIPELINE — no-op par défaut, à surcharger au besoin.
 # Ordre d'appel dans un cast : costs → targets → damage → terrain
@@ -48,7 +53,17 @@ func on_costs_resolved(_ctx) -> void:
 	pass
 
 # Cellules de la zone d'effet calculées, squelette du rapport posé.
+func on_area_resolved(_ctx) -> void:
+	pass
+
+# Zone finalisée ; les autres effets peuvent maintenant lire toutes les cibles.
 func on_targets_resolved(_ctx) -> void:
+	pass
+
+# Second passage après que tous les modifiers ont enrichi le CastContext.
+# Il permet aux effets cumulatifs (statuts d'un même arbre notamment) de
+# produire une seule ressource finale, sans dépendre de l'ordre des nodes.
+func on_targets_finalized(_ctx) -> void:
 	pass
 
 # Effets directs appliqués aux unités (dégâts, soins, statuts, drains, boucliers).

@@ -24,7 +24,7 @@ animations = [{
 [resource]
 script = ExtResource("1_unit")
 unit_name = "Hurleur gobelin"
-description = "Draine PA/Ferveur: menace economique prioritaire."
+description = "Draine des PA : menace économique prioritaire."
 team = 1
 max_hp = 55
 initiative = 8

@@ -207,18 +207,24 @@ func test_ranged_ai_respects_blocked_line_of_sight_without_name_branching() -> v
 	assert_false("skeleton" in ai_source)
 
 
-func test_active_run_rooms_keep_their_expected_three_enemy_rosters() -> void:
+func test_active_run_rooms_keep_their_expected_enemy_rosters() -> void:
 	for room_index in ACTIVE_ROOMS.size():
 		var room_path: String = ACTIVE_ROOMS[room_index]
 		var room = load(room_path)
 		assert_not_null(room, room_path)
-		assert_eq(room.enemies.size(), 3, room_path)
 		var ids: Array = room.enemies.map(func(data): return data.unit_id)
-		if room_index in [1, 3]:
+		if room_index == 1:
+			assert_eq(room.enemies.size(), 3, room_path)
 			assert_eq(ids.count(&"skeleton_chief"), 1, room_path)
 			assert_eq(ids.count(&"skeleton_melee"), 1, room_path)
 			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
+		elif room_index == 3:
+			assert_eq(room.enemies.size(), 6, room_path)
+			assert_eq(ids.count(&"skeleton_chief"), 3, room_path)
+			assert_eq(ids.count(&"skeleton_snow_centurion"), 2, room_path)
+			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)
 		else:
+			assert_eq(room.enemies.size(), 3, room_path)
 			assert_eq(ids.count(&"skeleton_chief"), 0, room_path)
 			assert_eq(ids.count(&"skeleton_melee"), 2, room_path)
 			assert_eq(ids.count(&"skeleton_ranged"), 1, room_path)

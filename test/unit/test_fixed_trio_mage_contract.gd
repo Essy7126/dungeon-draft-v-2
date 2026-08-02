@@ -52,15 +52,15 @@ func test_fixed_party_has_exact_ids_resources_and_four_spells_each() -> void:
 		assert_eq(states[index].loadout.get_equipped_spells(), heroes[index].spells)
 	assert_eq(states[0].get_disciplines().size(), 4)
 	assert_eq(states[1].get_disciplines().size(), 4)
-	assert_eq(states[2].get_disciplines().size(), 3)
+	assert_eq(states[2].get_disciplines().size(), 4)
 
 func test_mage_cast_grants_only_matching_discipline_xp() -> void:
 	var mage_state := _prepare()[1]
 	EventBus.spell_cast.emit(mage_state.unit, mage_state.unit.spells[0], {})
-	assert_eq(mage_state.get_discipline_progress(&"mage_fire").xp, 1)
-	assert_eq(mage_state.get_discipline_progress(&"mage_ice").xp, 0)
-	assert_eq(mage_state.get_discipline_progress(&"mage_lightning").xp, 0)
-	assert_eq(mage_state.get_discipline_progress(&"mage_earth").xp, 0)
+	assert_eq(mage_state.get_discipline_progress(&"mage_pyromancy").xp, 1)
+	assert_eq(mage_state.get_discipline_progress(&"mage_cryomancy").xp, 0)
+	assert_eq(mage_state.get_discipline_progress(&"mage_fulguromancy").xp, 0)
+	assert_eq(mage_state.get_discipline_progress(&"mage_geomancy").xp, 0)
 
 func test_state_hp_and_loadout_persist_between_rooms() -> void:
 	var states := _prepare()

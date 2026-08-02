@@ -63,8 +63,13 @@ signal basic_attack_performed(attacker, target)
 # amount : PV réellement rendus (peut être < au soin théorique si plafond atteint)
 signal unit_healed(unit, amount)
 
+# Variantes sourcées pour les statistiques de combat. Les signaux historiques
+# restent inchangés pour les vues et journaux existants.
+signal healing_applied(unit, source, amount)
+
 # Une unité est morte (PV tombés à 0). Émis UNE fois, depuis _die().
 signal unit_died(unit)
+signal unit_killed(unit, killer)
 
 # ============================================================
 # SIGNAUX DE STATUTS
@@ -111,6 +116,7 @@ signal ap_changed(unit, current, max_value)
 # shield_broken   : le bouclier vient de tomber à 0 (épuisé par une frappe).
 # ============================================================
 signal shield_gained(unit, amount)
+signal shield_applied(unit, source, amount)
 signal shield_absorbed(unit, amount)
 signal shield_broken(unit)
 

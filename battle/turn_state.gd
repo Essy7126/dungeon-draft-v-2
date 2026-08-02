@@ -13,6 +13,8 @@ enum State {
 	TARGET_SPELL,   # ciblage d'un sort
 	ENEMY_TURN,
 	ANIMATING,
+	SKILL_EVOLUTION_PENDING,
+	SKILL_EVOLUTION_UI,
 }
 
 var current: State = State.IDLE
@@ -48,18 +50,25 @@ func _on_enter_state(state: State) -> void:
 			request_clear_highlights.emit()
 		State.ANIMATING:
 			request_clear_highlights.emit()
+		State.SKILL_EVOLUTION_PENDING, State.SKILL_EVOLUTION_UI:
+			selected_spell = null
+			request_clear_highlights.emit()
 
 # ============================================================
 # ENTRÉES DU JOUEUR
 # ============================================================
 
 func on_move_button() -> void:
+	if is_skill_evolution_locked():
+		return
 	if current == State.MOVE:
 		set_state(State.IDLE)
 	else:
 		set_state(State.MOVE)
 
 func on_attack_button() -> void:
+	if is_skill_evolution_locked():
+		return
 	if current == State.TARGET_MELEE:
 		set_state(State.IDLE)
 	else:
@@ -67,6 +76,8 @@ func on_attack_button() -> void:
 
 # Le joueur a sélectionné un sort dans la barre.
 func on_spell_selected(spell: Spell) -> void:
+	if is_skill_evolution_locked():
+		return
 	# Si on reclique le même sort déjà sélectionné, on annule.
 	if current == State.TARGET_SPELL and selected_spell == spell:
 		set_state(State.IDLE)
@@ -75,6 +86,8 @@ func on_spell_selected(spell: Spell) -> void:
 		set_state(State.TARGET_SPELL)
 
 func on_cell_clicked(cell: Vector2i) -> void:
+	if is_skill_evolution_locked():
+		return
 	match current:
 		State.MOVE:
 			request_move_to.emit(cell)
@@ -86,6 +99,8 @@ func on_cell_clicked(cell: Vector2i) -> void:
 			pass
 
 func on_cancel() -> void:
+	if is_skill_evolution_locked():
+		return
 	if current in [State.MOVE, State.TARGET_MELEE, State.TARGET_SPELL]:
 		set_state(State.IDLE)
 
@@ -104,3 +119,18 @@ func begin_enemy_turn() -> void:
 
 func begin_player_turn() -> void:
 	set_state(State.IDLE)
+
+
+func begin_skill_evolution_pending() -> void:
+	set_state(State.SKILL_EVOLUTION_PENDING)
+
+
+func begin_skill_evolution_ui() -> void:
+	set_state(State.SKILL_EVOLUTION_UI)
+
+
+func is_skill_evolution_locked() -> bool:
+	return current in [
+		State.SKILL_EVOLUTION_PENDING,
+		State.SKILL_EVOLUTION_UI,
+	]

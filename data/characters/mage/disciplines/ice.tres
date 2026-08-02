@@ -1,16 +1,423 @@
-[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://dypft5nxcoofy"]
+[gd_resource type="Resource" script_class="DisciplineData" format=3]
 
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_35ebv"]
-[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_2rv50"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_fi8q8"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_mn88o"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_h0wlg"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_ivfuc"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_orrpg"]
 
-[sub_resource type="Resource" id="Rank_ice_1"]
-script = ExtResource("2_rank_type")
+[sub_resource type="Resource" id="Resource_avipj"]
+script = ExtResource("1_2rv50")
+
+[sub_resource type="Resource" id="Resource_vdqhd"]
+script = ExtResource("5_ivfuc")
+effect_type = 17
+amount = 1
+modifier_name = "Mur étendu"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_aqsd7"]
+script = ExtResource("3_mn88o")
+excluded_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
+upgrade_id = &"mage_cryomancy_mur_etendu"
+display_name = "Mur étendu"
+description = "Ajoute 1 cellule à chaque extrémité du mur."
+discipline_id = &"mage_cryomancy"
+rank = 2
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_vdqhd")])
+
+[sub_resource type="Resource" id="Resource_jtxf6"]
+script = ExtResource("5_ivfuc")
+amount = 3
+modifier_name = "Gel mordant"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_44si5"]
+script = ExtResource("3_mn88o")
+excluded_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
+upgrade_id = &"mage_cryomancy_gel_mordant"
+display_name = "Gel mordant"
+description = "Inflige 3 dégâts aux ennemis présents lors de la création."
+discipline_id = &"mage_cryomancy"
+rank = 2
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_jtxf6")])
+
+[sub_resource type="Resource" id="Resource_rvbww"]
+script = ExtResource("1_2rv50")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_aqsd7"), SubResource("Resource_44si5")])
+
+[sub_resource type="Resource" id="Resource_k63xi"]
+script = ExtResource("5_ivfuc")
+effect_type = 22
+amount = 1
+modifier_name = "Glace tenace"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_e4x02"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
+upgrade_id = &"mage_cryomancy_glace_tenace"
+display_name = "Glace tenace"
+description = "La glace dure 1 tour supplémentaire."
+discipline_id = &"mage_cryomancy"
+rank = 3
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_k63xi")])
+
+[sub_resource type="Resource" id="Resource_ux2me"]
+script = ExtResource("5_ivfuc")
+effect_type = 26
+target_scope = 3
+amount = 3
+modifier_name = "Cristallomancie"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_ib0m5"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
+upgrade_id = &"mage_cryomancy_cristallomancie"
+display_name = "Cristallomancie"
+description = "Les alliés présents sur la glace reçoivent 3 boucliers."
+discipline_id = &"mage_cryomancy"
+rank = 3
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_ux2me")])
+
+[sub_resource type="Resource" id="Resource_earj5"]
+script = ExtResource("5_ivfuc")
+effect_type = 13
+amount = 1
+duration = 1
+status_group = &"mage_cryomancy_slow"
+status_name = "Gel"
+modifier_name = "Geôlier du froid"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_n836h"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
+upgrade_id = &"mage_cryomancy_geolier_du_froid"
+display_name = "Geôlier du froid"
+description = "Les ennemis touchés perdent 1 PM au prochain tour."
+discipline_id = &"mage_cryomancy"
+rank = 3
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_earj5")])
+
+[sub_resource type="Resource" id="Resource_mshnu"]
+script = ExtResource("5_ivfuc")
+effect_type = 15
+amount = 2
+duration = 99
+status_group = &"mage_cryomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Cristallisation"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_qmyyn"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
+upgrade_id = &"mage_cryomancy_cristallisation"
+display_name = "Cristallisation"
+description = "Les ennemis touchés subissent +2 dégâts sur la prochaine attaque reçue."
+discipline_id = &"mage_cryomancy"
+rank = 3
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_mshnu")])
+
+[sub_resource type="Resource" id="Resource_78g6c"]
+script = ExtResource("1_2rv50")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_e4x02"), SubResource("Resource_ib0m5"), SubResource("Resource_n836h"), SubResource("Resource_qmyyn")])
+
+[sub_resource type="Resource" id="Resource_e8hpe"]
+script = ExtResource("5_ivfuc")
+effect_type = 22
+amount = 1
+modifier_name = "Mur durable"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_wjemf"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_glace_tenace"])
+upgrade_id = &"mage_cryomancy_mur_durable"
+display_name = "Mur durable"
+description = "La glace dure encore 1 tour supplémentaire."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_e8hpe")])
+
+[sub_resource type="Resource" id="Resource_le1at"]
+script = ExtResource("5_ivfuc")
+effect_type = 5
+amount = 2
+modifier_name = "Projection glaciale"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_s0nyk"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_glace_tenace"])
+upgrade_id = &"mage_cryomancy_projection_glaciale"
+display_name = "Projection glaciale"
+description = "+2 portée."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_le1at")])
+
+[sub_resource type="Resource" id="Resource_75v5g"]
+script = ExtResource("5_ivfuc")
+effect_type = 26
+target_scope = 3
+amount = 3
+modifier_name = "Glace miroir"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_6f558"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallomancie"])
+upgrade_id = &"mage_cryomancy_glace_miroir"
+display_name = "Glace miroir"
+description = "Le bouclier accordé passe à 6."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_75v5g")])
+
+[sub_resource type="Resource" id="Resource_ulrje"]
+script = ExtResource("5_ivfuc")
+effect_type = 27
+target_scope = 3
+amount = 1
+modifier_name = "Passage sûr"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_y32w0"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallomancie"])
+upgrade_id = &"mage_cryomancy_passage_sur"
+display_name = "Passage sûr"
+description = "Les alliés présents sur la glace gagnent 1 PM au prochain tour."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_ulrje")])
+
+[sub_resource type="Resource" id="Resource_cmq6c"]
+script = ExtResource("5_ivfuc")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"mage_cryomancy_slow"
+status_name = "Entrave"
+modifier_name = "Gel profond"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_3mk34"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_geolier_du_froid"])
+upgrade_id = &"mage_cryomancy_gel_profond"
+display_name = "Gel profond"
+description = "La perte passe à −2 PM."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_cmq6c")])
+
+[sub_resource type="Resource" id="Resource_ptkib"]
+script = ExtResource("5_ivfuc")
+amount = 2
+modifier_name = "Froid tranchant"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_piuc8"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_geolier_du_froid"])
+upgrade_id = &"mage_cryomancy_froid_tranchant"
+display_name = "Froid tranchant"
+description = "+2 dégâts lors de la création."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_ptkib")])
+
+[sub_resource type="Resource" id="Resource_5vldo"]
+script = ExtResource("5_ivfuc")
+effect_type = 15
+amount = 2
+duration = 99
+charges = 2
+status_group = &"mage_cryomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Fragilité glacée"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_a67ar"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallisation"])
+upgrade_id = &"mage_cryomancy_fragilite_glacee"
+display_name = "Fragilité glacée"
+description = "Le bonus s’applique aux 2 prochaines attaques."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_5vldo")])
+
+[sub_resource type="Resource" id="Resource_v7chi"]
+script = ExtResource("5_ivfuc")
+effect_type = 15
+amount = 4
+duration = 99
+status_group = &"mage_cryomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Point de rupture"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_mkwd3"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallisation"])
+upgrade_id = &"mage_cryomancy_point_de_rupture"
+display_name = "Point de rupture"
+description = "Le bonus de dégâts reçus passe à +4."
+discipline_id = &"mage_cryomancy"
+rank = 4
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_v7chi")])
+
+[sub_resource type="Resource" id="Resource_11qqs"]
+script = ExtResource("1_2rv50")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_wjemf"), SubResource("Resource_s0nyk"), SubResource("Resource_6f558"), SubResource("Resource_y32w0"), SubResource("Resource_3mk34"), SubResource("Resource_piuc8"), SubResource("Resource_a67ar"), SubResource("Resource_mkwd3")])
+
+[sub_resource type="Resource" id="Resource_7kmfk"]
+script = ExtResource("5_ivfuc")
+effect_type = 17
+amount = 2
+modifier_name = "Forteresse gelée"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_lodt4"]
+script = ExtResource("5_ivfuc")
+effect_type = 22
+amount = 2
+modifier_name = "Forteresse gelée"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_ekb7c"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
+upgrade_id = &"mage_cryomancy_forteresse_gelee"
+display_name = "Forteresse gelée"
+description = "Ajoute 4 cellules au total et +2 tours de durée."
+discipline_id = &"mage_cryomancy"
+rank = 5
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_7kmfk"), SubResource("Resource_lodt4")])
+
+[sub_resource type="Resource" id="Resource_qpr55"]
+script = ExtResource("5_ivfuc")
+effect_type = 26
+target_scope = 3
+amount = 8
+modifier_name = "Sanctuaire de glace"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_by7h0"]
+script = ExtResource("5_ivfuc")
+effect_type = 27
+target_scope = 3
+amount = 1
+modifier_name = "Sanctuaire de glace"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_ctlk0"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
+upgrade_id = &"mage_cryomancy_sanctuaire_de_glace"
+display_name = "Sanctuaire de glace"
+description = "Les alliés sur la glace reçoivent 8 boucliers et +1 PM."
+discipline_id = &"mage_cryomancy"
+rank = 5
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_qpr55"), SubResource("Resource_by7h0")])
+
+[sub_resource type="Resource" id="Resource_7jdqa"]
+script = ExtResource("5_ivfuc")
+amount = 7
+modifier_name = "Hiver brutal"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_ykq0g"]
+script = ExtResource("5_ivfuc")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"mage_cryomancy_slow"
+status_name = "Gel profond"
+modifier_name = "Hiver brutal"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_tfoaa"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
+upgrade_id = &"mage_cryomancy_hiver_brutal"
+display_name = "Hiver brutal"
+description = "7 dégâts lors de la création et −2 PM."
+discipline_id = &"mage_cryomancy"
+rank = 5
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_7jdqa"), SubResource("Resource_ykq0g")])
+
+[sub_resource type="Resource" id="Resource_mfapd"]
+script = ExtResource("5_ivfuc")
+amount = 5
+modifier_name = "Prison cristalline"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_i5qn7"]
+script = ExtResource("5_ivfuc")
+effect_type = 15
+amount = 4
+duration = 99
+charges = 2
+status_group = &"mage_cryomancy_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Prison cristalline"
+target_spell_id = &"mage_ice_wall"
+
+[sub_resource type="Resource" id="Resource_co4jm"]
+script = ExtResource("3_mn88o")
+prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
+upgrade_id = &"mage_cryomancy_prison_cristalline"
+display_name = "Prison cristalline"
+description = "5 dégâts et +4 dégâts reçus sur les 2 prochaines attaques."
+discipline_id = &"mage_cryomancy"
+rank = 5
+target_spell_id = &"mage_ice_wall"
+spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_mfapd"), SubResource("Resource_i5qn7")])
+
+[sub_resource type="Resource" id="Resource_xod31"]
+script = ExtResource("1_2rv50")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_ekb7c"), SubResource("Resource_ctlk0"), SubResource("Resource_tfoaa"), SubResource("Resource_co4jm")])
 
 [resource]
-script = ExtResource("1_discipline")
-discipline_id = &"mage_ice"
+script = ExtResource("6_orrpg")
+discipline_id = &"mage_cryomancy"
 display_name = "Cryomancie"
 description = "Maîtrise des obstacles, du ralentissement et du verrouillage spatial."
 presentation_color = Color(0.35, 0.78, 1, 1)
-ranks = Array[ExtResource("2_rank_type")]([SubResource("Rank_ice_1")])
+ranks = Array[ExtResource("1_2rv50")]([SubResource("Resource_avipj"), SubResource("Resource_rvbww"), SubResource("Resource_78g6c"), SubResource("Resource_11qqs"), SubResource("Resource_xod31")])

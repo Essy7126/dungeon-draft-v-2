@@ -39,42 +39,6 @@ const RANK_TWO_MIGRATION := [
 		PRECISE_SHOT_ID,
 		"res://data/characters/elf/modifiers/repel_arrow.tres",
 	],
-	[
-		"res://data/characters/elf/upgrades/backstab.tres",
-		&"elf_assassin_backstab",
-		&"elf_sneak_strike",
-		"res://data/characters/elf/modifiers/backstab.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/venomous_blade.tres",
-		&"elf_assassin_venomous_blade",
-		&"elf_sneak_strike",
-		"res://data/characters/elf/modifiers/venomous_blade.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/incandescent_core.tres",
-		&"elf_mage_incandescent_core",
-		&"elf_fireball",
-		"res://data/characters/elf/modifiers/incandescent_core.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/persistent_embers.tres",
-		&"elf_mage_persistent_embers",
-		&"elf_fireball",
-		"res://data/characters/elf/modifiers/persistent_embers.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/abundant_sap.tres",
-		&"elf_healer_abundant_sap",
-		&"elf_sylvan_heal",
-		"res://data/characters/elf/modifiers/abundant_sap.tres",
-	],
-	[
-		"res://data/characters/elf/upgrades/protective_bark.tres",
-		&"elf_healer_protective_bark",
-		&"elf_sylvan_heal",
-		"res://data/characters/elf/modifiers/protective_bark.tres",
-	],
 ]
 
 const RANK_THREE_BY_BRANCH := {
@@ -232,7 +196,7 @@ func _count_status(unit: Unit, status_name: String) -> int:
 	return count
 
 
-func test_all_eight_rank_two_upgrades_migrate_without_contract_loss() -> void:
+func test_archer_rank_two_resources_keep_their_contract() -> void:
 	for contract in RANK_TWO_MIGRATION:
 		var node := load(contract[0]) as SkillUpgradeData
 		assert_not_null(node, contract[0])

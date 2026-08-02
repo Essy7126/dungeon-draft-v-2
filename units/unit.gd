@@ -57,6 +57,7 @@ var current_mp: int = 0
 var current_shield: int = 0
 var is_alive: bool = true
 var _grid_pos: Vector2i = Vector2i(-1, -1)
+var grid_context = null
 # Direction LOGIQUE (pas visuelle) vers laquelle l'unite est orientee. Utilisee
 # par les mecaniques de boss type "durcit de face" (ex: Le Colosse). Mise a
 # jour automatiquement a chaque deplacement reel ; sinon garde sa derniere
@@ -295,6 +296,16 @@ func apply_status(status_data: StatusData) -> void:
 				if current_charged_data == null \
 						or charged.max_charges >= current_charged_data.max_charges:
 					entry["data"] = charged
+			elif status_data is ChargedOutgoingDamageData:
+				var outgoing := status_data as ChargedOutgoingDamageData
+				var current_outgoing := entry["data"] as ChargedOutgoingDamageData
+				entry["charges"] = maxi(
+					int(entry.get("charges", 0)),
+					outgoing.max_charges
+				)
+				if current_outgoing == null \
+						or outgoing.bonus_damage >= current_outgoing.bonus_damage:
+					entry["data"] = outgoing
 			DebugLogger.debug(CAT_STATS, "%s : %s rafraîchi (%d tours)" % [
 				unit_name, status_data.status_name, entry["remaining"]])
 			EventBus.status_refreshed.emit(self, status_data)
@@ -304,6 +315,10 @@ func apply_status(status_data: StatusData) -> void:
 	if status_data is ChargedDamageVulnerabilityData:
 		new_entry["charges"] = (
 			status_data as ChargedDamageVulnerabilityData
+		).max_charges
+	elif status_data is ChargedOutgoingDamageData:
+		new_entry["charges"] = (
+			status_data as ChargedOutgoingDamageData
 		).max_charges
 	active_statuses.append(new_entry)
 	# Le CombatLogger Ã©coute status_applied et produit la ligne de log.
@@ -423,6 +438,28 @@ func tick_statuses() -> void:
 func get_active_statuses() -> Array:
 	return active_statuses
 
+
+# Retire les altérations simples utilisées par les arbres (DoT, entrave,
+# affaiblissement et vulnérabilité chargée), dans l'ordre le plus récent.
+func cleanse_simple_negative_statuses(maximum: int = 1) -> int:
+	var removed := 0
+	for index in range(active_statuses.size() - 1, -1, -1):
+		var data := active_statuses[index].get("data") as StatusData
+		if data == null or not (
+			data.damage_per_turn > 0
+			or data.mp_reduction > 0
+			or data.outgoing_damage_modifier < 0
+			or data is ChargedDamageVulnerabilityData
+		):
+			continue
+		var status_id := data.get_effective_status_id()
+		active_statuses.remove_at(index)
+		EventBus.status_expired.emit(self, status_id)
+		removed += 1
+		if removed >= maximum:
+			break
+	return removed
+
 # ============================================================
 # GESTION DU TOUR
 # ============================================================
@@ -522,13 +559,15 @@ func get_force_multiplier() -> float:
 # Accorde un bouclier. Remplace l'ancien s'il est plus faible.
 # Un bouclier plus faible est ignorÃ© : on ne perd jamais son bouclier
 # parce qu'un sort de soutien a donnÃ© moins que ce qu'on a dÃ©jÃ .
-func add_shield(amount: int) -> void:
+func add_shield(amount: int, source: Unit = null) -> void:
 	if not is_alive or amount <= 0:
 		return
 	if amount <= current_shield:
 		return                           # bouclier actuel dÃ©jÃ  plus fort : ignorÃ©
+	var before := current_shield
 	current_shield = amount
 	EventBus.shield_gained.emit(self, amount)
+	EventBus.shield_applied.emit(self, source, current_shield - before)
 	shield_changed.emit(self)
 	DebugLogger.debug(CAT_STATS,
 		"%s reÃ§oit un bouclier de %d" % [unit_name, amount])
@@ -564,11 +603,21 @@ func take_damage(
 	if not is_alive:
 		return null
 
-	var charged_bonus := _get_charged_damage_bonus(category)
+	var uses_vulnerability := not bool(options.get("skip_vulnerability", false))
+	var uses_outgoing := not bool(options.get("skip_outgoing", false))
+	var charged_bonus := _get_charged_damage_bonus(category) if uses_vulnerability else 0
+	var splash_spec := (
+		_get_charged_vulnerability_splash(category)
+		if uses_vulnerability and not bool(options.get("skip_splash", false))
+		else {}
+	)
+	var outgoing_bonus := 0
+	if attacker is Unit and uses_outgoing:
+		outgoing_bonus = (attacker as Unit)._get_outgoing_damage_bonus(category)
 	# Construit le contexte du coup.
 	var ctx := DamageResolver.HitContext.new()
 	ctx.attacker = attacker
-	ctx.raw_damage = amount + charged_bonus
+	ctx.raw_damage = amount + charged_bonus + outgoing_bonus
 	ctx.category = category
 	ctx.element = element
 	# Options éventuelles (terrain et sorts spéciaux).
@@ -582,7 +631,11 @@ func take_damage(
 	var result := DamageResolver.compute(self, ctx)
 	if result != null and not result.dodged and charged_bonus > 0:
 		_consume_charged_damage_vulnerabilities(category)
+	if result != null and not result.dodged and attacker is Unit and uses_outgoing:
+		(attacker as Unit)._consume_charged_outgoing_damage(category)
 	_apply_damage_result(result, ctx.attacker)
+	if result != null and not result.dodged and not splash_spec.is_empty():
+		_apply_adjacent_vulnerability_splash(splash_spec, attacker)
 	return result
 
 # take_hit : variante explicite quand on a dÃ©jÃ  un HitContext construit
@@ -591,10 +644,15 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	if not is_alive:
 		return null
 	var charged_bonus := _get_charged_damage_bonus(ctx.category)
-	ctx.raw_damage += charged_bonus
+	var outgoing_bonus := 0
+	if ctx.attacker is Unit:
+		outgoing_bonus = (ctx.attacker as Unit)._get_outgoing_damage_bonus(ctx.category)
+	ctx.raw_damage += charged_bonus + outgoing_bonus
 	var result := DamageResolver.compute(self, ctx)
 	if result != null and not result.dodged and charged_bonus > 0:
 		_consume_charged_damage_vulnerabilities(ctx.category)
+	if result != null and not result.dodged and ctx.attacker is Unit:
+		(ctx.attacker as Unit)._consume_charged_outgoing_damage(ctx.category)
 	_apply_damage_result(result, ctx.attacker)
 	return result
 
@@ -611,6 +669,45 @@ func _get_charged_damage_bonus(category: int) -> int:
 	return bonus
 
 
+func _get_charged_vulnerability_splash(category: int) -> Dictionary:
+	var result := {}
+	for entry in active_statuses:
+		var data := entry.get("data") as ChargedDamageVulnerabilityData
+		if data == null \
+				or data.trigger_damage_type != category \
+				or int(entry.get("charges", 0)) <= 0 \
+				or data.adjacent_splash_damage <= 0:
+			continue
+		if data.adjacent_splash_damage > int(result.get("damage", 0)):
+			result = {
+				"damage": data.adjacent_splash_damage,
+				"damage_type": data.adjacent_splash_damage_type,
+				"element": data.adjacent_splash_element,
+			}
+	return result
+
+
+func _apply_adjacent_vulnerability_splash(spec: Dictionary, attacker) -> void:
+	if grid_context == null or grid_pos == Vector2i(-1, -1):
+		return
+	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
+		var adjacent := grid_context.get_unit(grid_pos + direction) as Unit
+		if adjacent == null or adjacent == self or adjacent.team != team:
+			continue
+		adjacent.take_damage(
+			int(spec.get("damage", 0)),
+			attacker,
+			int(spec.get("damage_type", Spell.DamageType.MAGICAL)),
+			int(spec.get("element", Spell.Element.LIGHTNING)),
+			{
+				"skip_vulnerability": true,
+				"skip_outgoing": true,
+				"skip_splash": true,
+			}
+		)
+		return
+
+
 func _consume_charged_damage_vulnerabilities(category: int) -> void:
 	for index in range(active_statuses.size() - 1, -1, -1):
 		var entry: Dictionary = active_statuses[index]
@@ -618,6 +715,39 @@ func _consume_charged_damage_vulnerabilities(category: int) -> void:
 		if data == null \
 				or data.trigger_damage_type != category \
 				or int(entry.get("charges", 0)) <= 0:
+			continue
+		var remaining_charges := int(entry["charges"]) - 1
+		if remaining_charges <= 0:
+			active_statuses.remove_at(index)
+			EventBus.status_expired.emit(self, data.get_effective_status_id())
+		else:
+			active_statuses[index]["charges"] = remaining_charges
+
+
+func _get_outgoing_damage_bonus(category: int) -> int:
+	var bonus := 0
+	for entry in active_statuses:
+		var status := entry.get("data") as StatusData
+		if status != null:
+			bonus += status.outgoing_damage_modifier
+		var charged := entry.get("data") as ChargedOutgoingDamageData
+		if charged == null \
+				or int(entry.get("charges", 0)) <= 0 \
+				or (charged.trigger_damage_type >= 0 \
+				and charged.trigger_damage_type != category):
+			continue
+		bonus += charged.bonus_damage
+	return bonus
+
+
+func _consume_charged_outgoing_damage(category: int) -> void:
+	for index in range(active_statuses.size() - 1, -1, -1):
+		var entry: Dictionary = active_statuses[index]
+		var data := entry.get("data") as ChargedOutgoingDamageData
+		if data == null \
+				or int(entry.get("charges", 0)) <= 0 \
+				or (data.trigger_damage_type >= 0 \
+				and data.trigger_damage_type != category):
 			continue
 		var remaining_charges := int(entry["charges"]) - 1
 		if remaining_charges <= 0:
@@ -670,7 +800,7 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 		hp_changed.emit(self)
 		if current_hp <= 0:
 			current_hp = 0
-			_die()
+			_die(attacker)
 	else:
 		# Tout absorbÃ© : les PV n'ont pas bougÃ©, mais on notifie pour l'UI.
 		hp_changed.emit(self)
@@ -678,7 +808,7 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 	# Data-driven via gain_table[TAKE_DAMAGE] : nul pour Rage/Ombre (0), paie pour
 	# Foi (montÃ©e en puissance) et Nature. result.amount est le coup mitigÃ© (avant
 	# bouclier), donc absorber compte aussi comme "tenir bon". Point unique du flux.
-func heal(amount: int) -> void:
+func heal(amount: int, source: Unit = null) -> void:
 	if not is_alive:
 		return
 	var max_value := max_hp.get_int()
@@ -686,8 +816,10 @@ func heal(amount: int) -> void:
 	current_hp = mini(current_hp + amount, max_value)
 	var real := current_hp - before
 	EventBus.unit_healed.emit(self, real)
+	if real > 0:
+		EventBus.healing_applied.emit(self, source, real)
 	hp_changed.emit(self)
-func _die() -> void:
+func _die(killer: Unit = null) -> void:
 	# Garde d'idempotence : une unitÃ© ne peut mourir qu'UNE fois.
 	# Sans Ã§a, si _die est atteint deux fois (deux sources de dÃ©gÃ¢ts dans le
 	# mÃªme cycle, double appel...), unit_died serait Ã©mis deux fois â†’ log et
@@ -697,6 +829,7 @@ func _die() -> void:
 	is_alive = false
 	# Le CombatLogger Ã©coute unit_died et produit la ligne "est vaincu".
 	EventBus.unit_died.emit(self)
+	EventBus.unit_killed.emit(self, killer)
 	died.emit(self)
 
 # ============================================================

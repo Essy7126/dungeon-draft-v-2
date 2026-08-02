@@ -1,14 +1,420 @@
 [gd_resource type="Resource" script_class="DisciplineData" format=3]
 
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
-[ext_resource type="Resource" path="res://data/characters/elf/disciplines/healer_rank_1.tres" id="3_rank_1"]
-[ext_resource type="Resource" path="res://data/characters/elf/disciplines/healer_rank_2.tres" id="4_rank_2"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="1_bxms6"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="2_mt6tv"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_qkcat"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_62h3m"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_ir640"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="6_giu01"]
+
+[sub_resource type="Resource" id="Resource_lq76j"]
+script = ExtResource("1_bxms6")
+
+[sub_resource type="Resource" id="Resource_dabxk"]
+script = ExtResource("5_ir640")
+effect_type = 6
+target_scope = 1
+amount = 3
+modifier_name = "Sève abondante"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_aodk0"]
+script = ExtResource("3_qkcat")
+excluded_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_seve_abondante"
+display_name = "Sève abondante"
+description = "+3 soins immédiats."
+discipline_id = &"healer"
+rank = 2
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_dabxk")])
+
+[sub_resource type="Resource" id="Resource_h3j7k"]
+script = ExtResource("5_ir640")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Écorce protectrice"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_kt0g3"]
+script = ExtResource("3_qkcat")
+excluded_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_ecorce_protectrice"
+display_name = "Écorce protectrice"
+description = "Ajoute 3 points de bouclier."
+discipline_id = &"healer"
+rank = 2
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_h3j7k")])
+
+[sub_resource type="Resource" id="Resource_eu8t5"]
+script = ExtResource("1_bxms6")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_aodk0"), SubResource("Resource_kt0g3")])
+
+[sub_resource type="Resource" id="Resource_pw13o"]
+script = ExtResource("5_ir640")
+effect_type = 7
+target_scope = 1
+amount = 5
+threshold_ratio = 0.5
+modifier_name = "Sauveteuse"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_nhkv5"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_sauveteuse"
+display_name = "Sauveteuse"
+description = "+5 soins si la cible possède moins de 50 % de ses PV."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_pw13o")])
+
+[sub_resource type="Resource" id="Resource_ebkyn"]
+script = ExtResource("5_ir640")
+effect_type = 14
+target_scope = 1
+amount = 2
+duration = 2
+status_group = &"elf_healer_regeneration"
+status_name = "Régénération"
+modifier_name = "Régénératrice"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_x42p5"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_regeneratrice"
+display_name = "Régénératrice"
+description = "Rend 2 PV à la fin des 2 prochains tours."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_ebkyn")])
+
+[sub_resource type="Resource" id="Resource_5s6c7"]
+script = ExtResource("5_ir640")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Bastion naturel"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_t6312"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_bastion_naturel"
+display_name = "Bastion naturel"
+description = "Ajoute 3 points de bouclier supplémentaires."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_5s6c7")])
+
+[sub_resource type="Resource" id="Resource_fetyi"]
+script = ExtResource("5_ir640")
+effect_type = 10
+target_scope = 1
+amount = 1
+modifier_name = "Garde mobile"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_olmnj"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_garde_mobile"
+display_name = "Garde mobile"
+description = "La cible gagne 1 PM pendant son prochain tour."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_fetyi")])
+
+[sub_resource type="Resource" id="Resource_1n4mc"]
+script = ExtResource("1_bxms6")
+rank = 3
+required_total_xp = 7
+choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_nhkv5"), SubResource("Resource_x42p5"), SubResource("Resource_t6312"), SubResource("Resource_olmnj")])
+
+[sub_resource type="Resource" id="Resource_60458"]
+script = ExtResource("5_ir640")
+effect_type = 7
+target_scope = 1
+amount = 5
+threshold_ratio = 0.35
+modifier_name = "Miracle mineur"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_ux2ku"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_sauveteuse"])
+upgrade_id = &"elf_healer_miracle_mineur"
+display_name = "Miracle mineur"
+description = "+5 soins supplémentaires sous 35 % des PV."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_60458")])
+
+[sub_resource type="Resource" id="Resource_g4fwg"]
+script = ExtResource("5_ir640")
+effect_type = 5
+amount = 2
+modifier_name = "Racines lointaines"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_4vg5l"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_sauveteuse"])
+upgrade_id = &"elf_healer_racines_lointaines"
+display_name = "Racines lointaines"
+description = "+2 portée."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_g4fwg")])
+
+[sub_resource type="Resource" id="Resource_0yh17"]
+script = ExtResource("5_ir640")
+effect_type = 14
+target_scope = 1
+duration = 1
+status_group = &"elf_healer_regeneration"
+status_name = "Régénération"
+status_mode = 1
+modifier_name = "Sève longue"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_q226g"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_regeneratrice"])
+upgrade_id = &"elf_healer_seve_longue"
+display_name = "Sève longue"
+description = "La régénération dure 1 tour supplémentaire."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_0yh17")])
+
+[sub_resource type="Resource" id="Resource_go50l"]
+script = ExtResource("5_ir640")
+effect_type = 14
+target_scope = 1
+amount = 1
+status_group = &"elf_healer_regeneration"
+status_name = "Régénération"
+status_mode = 1
+modifier_name = "Sève riche"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_r3t5u"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_regeneratrice"])
+upgrade_id = &"elf_healer_seve_riche"
+display_name = "Sève riche"
+description = "La régénération rend +1 PV par tour."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_go50l")])
+
+[sub_resource type="Resource" id="Resource_mkjlj"]
+script = ExtResource("5_ir640")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Écorce épaisse"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_yc2yj"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_bastion_naturel"])
+upgrade_id = &"elf_healer_ecorce_epaisse"
+display_name = "Écorce épaisse"
+description = "Ajoute encore 3 points de bouclier."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_mkjlj")])
+
+[sub_resource type="Resource" id="Resource_53l7s"]
+script = ExtResource("5_ir640")
+effect_type = 9
+target_scope = 1
+amount = 3
+modifier_name = "Protection partagée"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_saxhe"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_bastion_naturel"])
+upgrade_id = &"elf_healer_protection_partagee"
+display_name = "Protection partagée"
+description = "L’Elfe reçoit 3 points de bouclier lorsqu’elle protège un allié."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_53l7s")])
+
+[sub_resource type="Resource" id="Resource_obs6g"]
+script = ExtResource("5_ir640")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Élan sylvestre"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_152l3"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_garde_mobile"])
+upgrade_id = &"elf_healer_elan_sylvestre"
+display_name = "Élan sylvestre"
+description = "Le bonus passe à +2 PM pour le prochain tour."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_obs6g")])
+
+[sub_resource type="Resource" id="Resource_51t6w"]
+script = ExtResource("5_ir640")
+effect_type = 24
+target_scope = 1
+amount = 1
+modifier_name = "Purification"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_o63t4"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_garde_mobile"])
+upgrade_id = &"elf_healer_purification"
+display_name = "Purification"
+description = "Retire un Poison, Saignement, Brûlure ou ralentissement."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_51t6w")])
+
+[sub_resource type="Resource" id="Resource_ixisv"]
+script = ExtResource("1_bxms6")
+rank = 4
+required_total_xp = 12
+choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_ux2ku"), SubResource("Resource_4vg5l"), SubResource("Resource_q226g"), SubResource("Resource_r3t5u"), SubResource("Resource_yc2yj"), SubResource("Resource_saxhe"), SubResource("Resource_152l3"), SubResource("Resource_o63t4")])
+
+[sub_resource type="Resource" id="Resource_ausix"]
+script = ExtResource("5_ir640")
+effect_type = 7
+target_scope = 1
+amount = 10
+threshold_ratio = 0.35
+modifier_name = "Miracle sylvestre"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_em3uy"]
+script = ExtResource("5_ir640")
+effect_type = 24
+target_scope = 1
+amount = 1
+modifier_name = "Miracle sylvestre"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_k3jt8"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_miracle_sylvestre"
+display_name = "Miracle sylvestre"
+description = "+10 soins sous 35 % des PV et retire un effet de dégâts sur la durée."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_ausix"), SubResource("Resource_em3uy")])
+
+[sub_resource type="Resource" id="Resource_bxoxi"]
+script = ExtResource("5_ir640")
+effect_type = 25
+target_scope = 1
+ratio = 0.5
+modifier_name = "Floraison"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_vnhd6"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_floraison"
+display_name = "Floraison"
+description = "Les alliés adjacents à la cible reçoivent 50 % du soin principal."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_bxoxi")])
+
+[sub_resource type="Resource" id="Resource_tisms"]
+script = ExtResource("5_ir640")
+effect_type = 8
+target_scope = 1
+amount = 8
+modifier_name = "Écorce vivante"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_f0dal"]
+script = ExtResource("5_ir640")
+effect_type = 9
+target_scope = 1
+amount = 4
+modifier_name = "Écorce vivante"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_23t3h"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_ecorce_vivante"
+display_name = "Écorce vivante"
+description = "Ajoute 8 points de bouclier et l’Elfe en reçoit 4."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_tisms"), SubResource("Resource_f0dal")])
+
+[sub_resource type="Resource" id="Resource_11qde"]
+script = ExtResource("5_ir640")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Élan protecteur"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_8703g"]
+script = ExtResource("5_ir640")
+effect_type = 8
+target_scope = 1
+amount = 6
+modifier_name = "Élan protecteur"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_qc7k8"]
+script = ExtResource("3_qkcat")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_elan_protecteur"
+display_name = "Élan protecteur"
+description = "La cible gagne +2 PM et 6 points de bouclier."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_11qde"), SubResource("Resource_8703g")])
+
+[sub_resource type="Resource" id="Resource_0wjmb"]
+script = ExtResource("1_bxms6")
+rank = 5
+required_total_xp = 18
+choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_k3jt8"), SubResource("Resource_vnhd6"), SubResource("Resource_23t3h"), SubResource("Resource_qc7k8")])
 
 [resource]
-script = ExtResource("1_discipline")
+script = ExtResource("6_giu01")
 discipline_id = &"healer"
 display_name = "Soigneur"
-description = "Maîtrise des soins et de la protection des alliés."
+description = "Maîtrise des soins, de la régénération et de la protection."
 presentation_color = Color(0.3, 0.72, 0.58, 1)
-ranks = Array[ExtResource("2_rank_type")]([ExtResource("3_rank_1"), ExtResource("4_rank_2")])
+ranks = Array[ExtResource("1_bxms6")]([SubResource("Resource_lq76j"), SubResource("Resource_eu8t5"), SubResource("Resource_1n4mc"), SubResource("Resource_ixisv"), SubResource("Resource_0wjmb")])

@@ -135,6 +135,7 @@ func place_unit(unit, pos: Vector2i) -> bool:
 	if _units.has(pos) and _units[pos] != unit:
 		return false
 	_units[pos] = unit
+	unit.grid_context = self
 	unit.grid_pos = pos
 	return true
 
@@ -146,6 +147,7 @@ func remove_unit(unit) -> void:
 		pos = unit.grid_pos
 	if pos != Vector2i(-1, -1):
 		_units.erase(pos)
+	unit.grid_context = null
 	unit.grid_pos = Vector2i(-1, -1)
 
 func relocate_unit(unit, to: Vector2i) -> bool:
@@ -162,6 +164,7 @@ func relocate_unit(unit, to: Vector2i) -> bool:
 	if from != Vector2i(-1, -1):
 		_units.erase(from)
 	_units[to] = unit
+	unit.grid_context = self
 	unit.grid_pos = to
 	return true
 
@@ -172,6 +175,7 @@ func clear_unit(pos: Vector2i) -> void:
 	var unit = _units.get(pos, null)
 	_units.erase(pos)
 	if unit != null and unit.grid_pos == pos:
+		unit.grid_context = null
 		unit.grid_pos = Vector2i(-1, -1)
 
 # DÃ©place une unitÃ© d'une case Ã  une autre dans les donnÃ©es.
@@ -213,4 +217,3 @@ func manhattan(a: Vector2i, b: Vector2i) -> int:
 
 func are_adjacent(a: Vector2i, b: Vector2i) -> bool:
 	return manhattan(a, b) == 1
-

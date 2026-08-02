@@ -6,15 +6,15 @@ const ProgressionScreenScript = preload(
 )
 
 const ELF_PATH := "res://data/units/alliés/elfe.tres"
-const INCANDESCENT_ID := &"elf_mage_incandescent_core"
-const EMBERS_ID := &"elf_mage_persistent_embers"
+const INCANDESCENT_ID := &"elf_mage_cur_incandescent"
+const EMBERS_ID := &"elf_mage_braises_persistantes"
 const NEW_UPGRADES := [
 	[&"archer", &"elf_archer_eagle_eye"],
 	[&"archer", &"elf_archer_repel_arrow"],
-	[&"assassin", &"elf_assassin_backstab"],
-	[&"assassin", &"elf_assassin_venomous_blade"],
-	[&"healer", &"elf_healer_abundant_sap"],
-	[&"healer", &"elf_healer_protective_bark"],
+	[&"assassin", &"elf_assassin_dans_le_dos"],
+	[&"assassin", &"elf_assassin_lame_venimeuse"],
+	[&"healer", &"elf_healer_seve_abondante"],
+	[&"healer", &"elf_healer_ecorce_protectrice"],
 ]
 
 var manager
@@ -304,7 +304,7 @@ func test_cleanup_during_choice_blocks_late_confirmation() -> void:
 	assert_true(progress.get_selected_upgrade_ids().is_empty())
 
 
-func test_duplicate_battle_win_signal_opens_progression_only_once() -> void:
+func test_duplicate_battle_win_never_opens_post_combat_progression() -> void:
 	var state := _prepare_elf()
 	_raise_mage_to_rank_two(state)
 	manager.current_room_index = 0
@@ -317,13 +317,16 @@ func test_duplicate_battle_win_signal_opens_progression_only_once() -> void:
 		func(index): cleared_rooms.append(index)
 	)
 	manager.on_battle_won()
+	assert_push_error("Victoire différée")
+	assert_true(manager.choose_progression_upgrade(&"elf", &"mage", 2, INCANDESCENT_ID))
+	manager.on_battle_won()
 	manager.on_battle_won()
 	assert_eq(
 		requested_scenes.count(GameManagerScript.PROGRESSION_CHOICE_SCREEN_PATH),
-		1
+		0
 	)
 	assert_eq(cleared_rooms, [0])
-	assert_true(manager._awaiting_post_battle_progression)
+	assert_false(manager._awaiting_post_battle_progression)
 
 
 func test_repeated_run_stress_has_no_cumulative_xp_or_modifiers() -> void:

@@ -274,5 +274,5 @@ func test_elf_fireball_remains_distinct_from_the_elemental_mage_fireball() -> vo
 	assert_ne(elf_fireball.resource_path, legacy_fireball.resource_path)
 	assert_eq(elf_fireball.get_effective_spell_id(), &"elf_fireball")
 	assert_eq(legacy_fireball.spell_id, &"mage_fireball")
-	assert_eq(legacy_fireball.discipline_id, &"mage_fire")
+	assert_eq(legacy_fireball.discipline_id, &"mage_pyromancy")
 	assert_true(legacy_fireball in legacy_mage.spells)

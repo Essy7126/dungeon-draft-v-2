@@ -54,9 +54,9 @@ static func describe_node(
 			progress,
 			selected_node_ids,
 			pending_ranks
-		):
+	):
 		result["state"] = SkillTreeVisualState.AVAILABLE
-		result["reason"] = "Choix disponible après le combat."
+		result["reason"] = "Choix disponible au prochain point sûr du combat."
 		return result
 
 	var incompatibility := _branch_incompatibility(
@@ -109,15 +109,15 @@ static func describe_base_rank(
 static func state_label(state: SkillTreeVisualState) -> String:
 	match state:
 		SkillTreeVisualState.SELECTED:
-			return "Acquis"
+			return "ACQUIS"
 		SkillTreeVisualState.AVAILABLE:
-			return "Disponible après le combat"
+			return "DISPONIBLE"
 		SkillTreeVisualState.LOCKED_BY_XP:
-			return "Bloqué par l’XP"
+			return "XP REQUISE"
 		SkillTreeVisualState.LOCKED_BY_BRANCH:
-			return "Branche inaccessible"
+			return "EXCLU"
 		SkillTreeVisualState.FUTURE:
-			return "Futur compatible"
+			return "VERROUILLÉ"
 	return "État inconnu"
 
 
