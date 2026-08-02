@@ -2,15 +2,19 @@
 
 [ext_resource type="Script" uid="uid://coox5sq37keko" path="res://battle/battle.gd" id="1_battle"]
 [ext_resource type="PackedScene" path="res://battle/iso/mountain_room_01_background.tscn" id="2_background"]
-[ext_resource type="Script" uid="uid://coglln4uya5g3" path="res://battle/iso/iso_grid_view.gd" id="3_grid"]
+[ext_resource type="Script" uid="uid://c7bivm2b0l20g" path="res://battle/iso/iso_grid_view_test.gd" id="3_grid"]
 [ext_resource type="PackedScene" uid="uid://i5c6lt5m6q0w" path="res://debug/DebugOverlay.tscn" id="4_debug"]
 [ext_resource type="Script" uid="uid://b7j325rx638ux" path="res://battle/floating_text_spawner.gd" id="5_text"]
 [ext_resource type="Script" uid="uid://pm1sjpja3a5s" path="res://battle/impact_juice.gd" id="6_impact"]
 [ext_resource type="AudioStream" uid="uid://ccb7eepjta8nh" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="7_music"]
 [ext_resource type="TileSet" uid="uid://by7jccj4xyx5i" path="res://data/rooms/tile_set_iso_terrain.tres" id="8_terrain_tileset"]
 [ext_resource type="TileSet" uid="uid://c5e41kal2h1sr" path="res://data/rooms/tile_set_iso_decor.tres" id="9_decor_tileset"]
-[ext_resource type="PackedScene" path="res://ui/Particles/lumiere_diffuse.tscn" id="10_lumiere"]
-[ext_resource type="PackedScene" path="res://ui/Particles/brume_vallee.tscn" id="11_brume"]
+[ext_resource type="Script" uid="uid://wu4mg01h0llh" path="res://battle/iso/iso_layer_follow_terrain.gd" id="12_follow"]
+[ext_resource type="Material" uid="uid://byo7lp5500o34" path="res://battle/iso/golden_hour_light.tres" id="13_ghlt"]
+[ext_resource type="Script" uid="uid://6m1wpk64cdko" path="res://battle/iso/golden_hour_light.gd" id="14_ghctl"]
+[ext_resource type="Script" uid="uid://cr3pqxon5iq5j" path="res://battle/iso/sky_light_rays.gd" id="15_skyr"]
+[ext_resource type="Material" path="res://battle/iso/sky_light_rays.tres" id="16_skym"]
+[ext_resource type="PackedScene" path="res://ui/Particles/brume_vivante.tscn" id="17_brumeviv"]
 
 [node name="Battle" type="Node2D" unique_id=600240518]
 texture_filter = 2
@@ -19,6 +23,7 @@ grid_cols = 34
 grid_rows = 30
 standalone_preview_without_room = true
 temporary_iso_placeholders = true
+iso_gameplay_light = ExtResource("13_ghlt")
 hide_terrain_layer_after_import = true
 terrain_unpainted_defaults_to_wall = true
 
@@ -27,6 +32,7 @@ terrain_unpainted_defaults_to_wall = true
 [node name="IsoGridView" type="Node2D" parent="." unique_id=1504659854 groups=["battle_grid_view"]]
 scale = Vector2(1.5, 1.5)
 script = ExtResource("3_grid")
+terrain_layer_path = NodePath("../TerrainLayer")
 draw_base_cells = false
 draw_cell_centers = false
 draw_map_bounds = false
@@ -40,17 +46,16 @@ tile_set = ExtResource("8_terrain_tileset")
 
 [node name="TerrainEffectLayer" type="Node2D" parent="." unique_id=828111028]
 
-[node name="LumiereDiffuse" parent="TerrainEffectLayer" unique_id=348477397 instance=ExtResource("10_lumiere")]
-offset_left = -575.4
-offset_top = 47.6
-offset_right = 766.8
-offset_bottom = 796.4
-couleur = Color(1.1004806, 0.937268, 0.44333524, 0.4)
-
-[node name="BrumeValleeDroite" parent="TerrainEffectLayer" unique_id=1718493407 instance=ExtResource("11_brume")]
+[node name="BrumeVivante" parent="TerrainEffectLayer" unique_id=1718493407 instance=ExtResource("17_brumeviv")]
 polygon = PackedVector2Array(457, 557, 623, 556, 766, 559, 766.8, 796.4, 535, 796, 535, 781, 539, 758, 541, 733, 545, 721, 542, 712, 515, 690, 444, 641, 438, 642, 413, 627, 384, 605, 389, 559)
-vitesse = 0.04
-etirement_vertical = 1.0
+etirement_vertical = 0.5
+turbulence = 1.1400000000000001
+vitesse = 0.11
+derive = 0.16
+densite = 1.05
+seuil_bas = 0.3
+degrade = 0.5
+marge_bord = 25.0
 
 [node name="YSortedWorld" type="Node2D" parent="." unique_id=148614310]
 y_sort_enabled = true
@@ -60,12 +65,32 @@ scale = Vector2(1.5, 1.5)
 y_sort_enabled = true
 tile_map_data = PackedByteArray("AAAKAAAAAAAAAAAAAAAIABIAAAAAAAAAABA=")
 tile_set = ExtResource("9_decor_tileset")
+script = ExtResource("12_follow")
+terrain_layer_path = NodePath("../../TerrainLayer")
 
 [node name="ForegroundLayer" type="Node2D" parent="." unique_id=1519276990]
 z_index = 20
 
 [node name="VFXLayer" type="Node2D" parent="." unique_id=871559240]
 z_index = 50
+
+[node name="GoldenHourLight" type="Node" parent="."]
+script = ExtResource("14_ghctl")
+light_material = ExtResource("13_ghlt")
+
+[node name="SkyRays" type="CanvasLayer" parent="."]
+layer = 2
+script = ExtResource("15_skyr")
+rays_material = ExtResource("16_skym")
+background_sprite_path = NodePath("../MountainBackground/MountainSprite")
+
+[node name="RaysRect" type="ColorRect" parent="SkyRays"]
+material = ExtResource("16_skym")
+offset_left = -586.48
+offset_top = 153.48001
+offset_right = 542.48
+offset_bottom = 788.52
+mouse_filter = 2
 
 [node name="DebugOverlay" parent="." unique_id=1888636913 instance=ExtResource("4_debug")]
 

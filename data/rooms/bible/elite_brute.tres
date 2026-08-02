@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="RoomData" format=3]
+[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://dslrxka7pli44"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
-[ext_resource type="PackedScene" path="res://data/rooms/maps/battle_salle2.tscn" id="3_battle"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
+[ext_resource type="PackedScene" uid="uid://dfe0tghqlccuo" path="res://data/rooms/maps/battle_salle2.tscn" id="3_battle"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="10_melee"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="11_ranged"]
 

@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" uid="uid://bswvgl5vv66do" path="res://asset/Background/crete sommet montagne.png" id="1_crete"]
+
+[node name="CreteSommetMontagneBackground" type="Node2D"]
+z_index = -100
+
+[node name="MountainSprite" type="Sprite2D" parent="."]
+texture_filter = 2
+scale = Vector2(0.43, 0.43)
+texture = ExtResource("1_crete")

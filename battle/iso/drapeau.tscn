@@ -17,7 +17,7 @@ shader_parameter/zone_hampe = 0.58
 [node name="Drapeau" type="Sprite2D" unique_id=1043173712]
 texture_filter = 2
 material = SubResource("ShaderMaterial_drapeau")
-position = Vector2(-2.7919996, 0)
+position = Vector2(-3.791999, 0)
 scale = Vector2(0.14348386, 0.11318051)
 texture = ExtResource("1_drapeau")
 offset = Vector2(0, -349)
