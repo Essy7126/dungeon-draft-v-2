@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" format=3 uid="uid://biexu246v2jcs"]
 
-[ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/elf_hunter_emblem.png" id="2_emblem"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="3_banner"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r09_c01.png" id="4_precise"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r08_c02.png" id="5_sneak"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c03.png" id="6_fire"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c03.png" id="7_heal"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c04.png" id="8_attack"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png" id="9_slot"]
-[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/portrait_frame.png" id="10_portrait"]
+[ext_resource type="Script" uid="uid://b56xspqybs0nk" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
+[ext_resource type="Texture2D" uid="uid://j11qaddomwpy" path="res://asset/ui/character_hud/generated/elf_hunter_emblem.png" id="2_emblem"]
+[ext_resource type="Texture2D" uid="uid://drpyoeq4grwoh" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="3_banner"]
+[ext_resource type="Texture2D" uid="uid://b4e2mgvhyuthh" path="res://asset/ui/character_hud/generated/spell_icon_r09_c01.png" id="4_precise"]
+[ext_resource type="Texture2D" uid="uid://ct5jad08bx75v" path="res://asset/ui/character_hud/generated/spell_icon_r08_c02.png" id="5_sneak"]
+[ext_resource type="Texture2D" uid="uid://b443g0vajsu86" path="res://asset/ui/character_hud/generated/spell_icon_r02_c03.png" id="6_fire"]
+[ext_resource type="Texture2D" uid="uid://d220yi21j32e8" path="res://asset/ui/character_hud/generated/spell_icon_r01_c03.png" id="7_heal"]
+[ext_resource type="Texture2D" uid="uid://b85sw8tc46des" path="res://asset/ui/character_hud/generated/spell_icon_r01_c04.png" id="8_attack"]
+[ext_resource type="Texture2D" uid="uid://cxox10uoegrxj" path="res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png" id="9_slot"]
+[ext_resource type="Texture2D" uid="uid://dbpyow5iyafro" path="res://asset/ui/recraft_hud_v1/processed/portrait_frame.png" id="10_portrait"]
 
 [resource]
 script = ExtResource("1_theme")
@@ -17,8 +17,8 @@ character_id = &"elf"
 display_name = "Elfe"
 discipline_name = "Hunter"
 discipline_emblem_texture = ExtResource("2_emblem")
-turn_banner_texture = ExtResource("3_banner")
 portrait_frame_texture = ExtResource("10_portrait")
+turn_banner_texture = ExtResource("3_banner")
 spell_slot_frame_texture = ExtResource("9_slot")
 primary_color = Color(0.18, 0.34, 0.22, 1)
 secondary_color = Color(0.46, 0.36, 0.23, 1)

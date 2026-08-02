@@ -1,8 +1,8 @@
 class_name HubNavigationGridNode
 extends Node
 
-## Adaptateur de scene : les marqueurs restent des enfants Node, tandis que le
-## modele HubNavigationGrid conserve une API pure incluant get_path().
+## Adaptateur de scene conserve pour la grille de debug et les marqueurs.
+## HubNavigationGrid n'est plus l'autorite du trajet visuel du joueur.
 
 @export var grid_size := Vector2i(20, 20)
 @export var tile_size := Vector2(128.0, 64.0)

@@ -33,6 +33,8 @@ const STATE_NAMES := [
 
 @onready var world_root: Node2D = $"../WorldRoot"
 @onready var grid_overlay: HubGridOverlay = $"../WorldRoot/GridOverlay"
+@onready var navigation_region: HubNavigationRegion2D = \
+	$"../WorldRoot/NavigationRegion2D"
 @onready var player: Node2D = $"../WorldRoot/SortableWorld/Player"
 @onready var archivist: HubArchivist = $"../WorldRoot/SortableWorld/Archivist"
 @onready var navigation_grid_node: HubNavigationGridNode = $"../NavigationGrid"
@@ -56,6 +58,7 @@ var navigation_grid: HubNavigationGrid = null
 
 
 func _ready() -> void:
+	navigation_region.rebuild()
 	navigation_grid_node.rebuild()
 	navigation_grid = navigation_grid_node.model
 	grid_overlay.setup(navigation_grid)
@@ -63,12 +66,12 @@ func _ready() -> void:
 	grid_overlay.set_technical_markers(markers)
 	for marker in markers:
 		marker.position = navigation_grid.cell_to_world(marker.cell)
+	_configure_archivist_navigation_points()
 	_apply_debug_state()
-	var spawn_cell := _get_marker_cell(&"PlayerSpawn")
-	movement.setup(player, navigation_grid, spawn_cell)
-	archivist.position = navigation_grid.cell_to_world(archivist.occupied_cell)
+	var spawn_world_position := _get_marker_world_position(&"PlayerSpawn")
+	movement.setup(player, navigation_region, spawn_world_position)
 	if not navigation_grid.occupy(archivist.occupied_cell, archivist):
-		push_error("StartHub: cellule Archiviste invalide ou deja occupee.")
+		push_error("StartHub: metadonnee de cellule Archiviste invalide.")
 	_connect_signals()
 	_update_counts()
 	_fit_camera()
@@ -103,7 +106,7 @@ func request_primary_click_at_screen(screen_position: Vector2) -> bool:
 func request_primary_click_at_world(world_position: Vector2) -> bool:
 	if archivist.is_click_proxy_world_point(world_position):
 		return request_interaction(archivist) != null
-	return request_ground_move(navigation_grid.world_to_cell(world_position))
+	return request_ground_move(world_position)
 
 
 func is_debug_enabled() -> bool:
@@ -115,13 +118,13 @@ func set_debug_enabled(enabled: bool) -> void:
 	_apply_debug_state()
 
 
-func request_ground_move(cell: Vector2i) -> bool:
+func request_ground_move(world_position: Vector2) -> bool:
 	if _state not in [HubState.IDLE, HubState.MOVING, HubState.APPROACHING_INTERACTION]:
 		return false
 	_cancel_active_intent()
 	_intent_sequence += 1
 	_set_state(HubState.MOVING)
-	if not movement.request_move(cell):
+	if not movement.request_move(world_position):
 		_set_state(HubState.IDLE)
 		return false
 	return true
@@ -136,7 +139,7 @@ func request_interaction(target: Interactable) -> InteractionIntent:
 	var intent := InteractionIntent.new(_intent_sequence, target)
 	_active_intent = intent
 	var resolution := interaction_resolver.resolve(
-		player, target, navigation_grid, intent
+		player, target, navigation_region, intent
 	)
 	if resolution.is_empty():
 		intent.cancel()
@@ -145,7 +148,7 @@ func request_interaction(target: Interactable) -> InteractionIntent:
 		return null
 	_set_state(HubState.APPROACHING_INTERACTION)
 	if not movement.request_move(intent.destination, intent):
-		navigation_grid.release(intent.destination, intent)
+		navigation_region.release_world_position(intent.destination, intent)
 		intent.cancel()
 		_active_intent = null
 		_set_state(HubState.IDLE)
@@ -179,13 +182,17 @@ func _connect_signals() -> void:
 	archivist.interaction_activated.connect(_on_archivist_interaction_activated)
 	movement.movement_completed.connect(_on_movement_completed)
 	movement.movement_failed.connect(_on_movement_failed)
+	movement.movement_direction_changed.connect(
+		_on_movement_direction_changed
+	)
+	movement.path_changed.connect(navigation_region.set_debug_path)
 	archivist_panel.trade_requested.connect(_on_trade_requested)
 	archivist_panel.run_requested.connect(_on_run_requested)
 	archivist_panel.closed.connect(_on_archivist_panel_closed)
 	trade_panel.closed.connect(_on_trade_panel_closed)
 
 
-func _on_movement_completed(_destination: Vector2i) -> void:
+func _on_movement_completed(_destination: Vector2) -> void:
 	if _state == HubState.MOVING:
 		_set_state(HubState.IDLE)
 		return
@@ -195,21 +202,23 @@ func _on_movement_completed(_destination: Vector2i) -> void:
 	if intent == null:
 		_set_state(HubState.IDLE)
 		return
-	navigation_grid.release(intent.destination, intent)
+	navigation_region.release_world_position(intent.destination, intent)
 	var target := intent.get_target()
 	if target == null or not target.can_interact(player) \
-		or movement.current_cell != intent.destination:
+		or player.global_position.distance_to(intent.destination) \
+		> movement.arrival_tolerance + 0.5:
 		_cancel_active_intent()
 		_set_state(HubState.IDLE)
 		return
-	var target_cell := target.get_occupied_cell()
-	if navigation_grid.world_to_cell(target.position) != target_cell \
-		or _manhattan(movement.current_cell, target_cell) != 1:
+	var target_world_position := target.get_occupied_world_position()
+	if player.global_position.distance_to(target_world_position) \
+		> target.get_max_interaction_distance():
 		_cancel_active_intent()
 		_set_state(HubState.IDLE)
 		return
-	if player.has_method("set_facing"):
-		player.set_facing(target_cell - movement.current_cell)
+	_orient_player_to_world_direction(
+		target_world_position - player.global_position
+	)
 	_set_state(HubState.INTERACTING)
 	target.interact(player)
 	if _state == HubState.INTERACTING:
@@ -217,7 +226,7 @@ func _on_movement_completed(_destination: Vector2i) -> void:
 		_set_state(HubState.IDLE)
 
 
-func _on_movement_failed(_destination: Vector2i) -> void:
+func _on_movement_failed(_destination: Vector2) -> void:
 	if _state in [HubState.MOVING, HubState.APPROACHING_INTERACTION]:
 		_cancel_active_intent()
 		_set_state(HubState.IDLE)
@@ -309,8 +318,10 @@ func _open_intro_cinematic(scene_path: String) -> bool:
 func _cancel_active_intent() -> void:
 	if _active_intent == null:
 		return
-	if _active_intent.destination != HubNavigationGrid.INVALID_CELL:
-		navigation_grid.release(_active_intent.destination, _active_intent)
+	if _active_intent.has_destination():
+		navigation_region.release_world_position(
+			_active_intent.destination, _active_intent
+		)
 	_active_intent.cancel()
 	_active_intent = null
 
@@ -338,6 +349,30 @@ func _get_marker_cell(marker_name: StringName) -> Vector2i:
 		push_error("StartHub: marqueur %s introuvable." % marker_name)
 		return Vector2i.ZERO
 	return marker.cell
+
+
+func _get_marker_world_position(marker_name: StringName) -> Vector2:
+	var marker := navigation_grid_node.get_node_or_null(
+		NodePath(String(marker_name))
+	) as HubTechnicalMarker
+	if marker == null:
+		push_error("StartHub: marqueur %s introuvable." % marker_name)
+		return Vector2.ZERO
+	return marker.global_position
+
+
+func _configure_archivist_navigation_points() -> void:
+	var approaches := PackedVector2Array()
+	for marker_name in [
+		&"ArchivistApproachNorthWest",
+		&"ArchivistApproachNorthEast",
+		&"ArchivistApproachSouthEast",
+		&"ArchivistApproachSouthWest",
+	]:
+		approaches.append(_get_marker_world_position(marker_name))
+	archivist.configure_navigation_points(
+		_get_marker_world_position(&"ArchivistCell"), approaches
+	)
 
 
 func _fit_camera() -> void:
@@ -388,9 +423,28 @@ func _apply_debug_state() -> void:
 		grid_overlay.set_debug_visible(debug_enabled)
 	if is_instance_valid(debug_panel):
 		debug_panel.visible = debug_enabled
+	if is_instance_valid(navigation_region):
+		navigation_region.set_debug_visible(debug_enabled)
 	for marker in _collect_markers():
 		marker.visible = debug_enabled
 
+func _on_movement_direction_changed(world_direction: Vector2) -> void:
+	_orient_player_to_world_direction(world_direction)
 
-func _manhattan(a: Vector2i, b: Vector2i) -> int:
-	return absi(a.x - b.x) + absi(a.y - b.y)
+
+func _orient_player_to_world_direction(world_direction: Vector2) -> void:
+	if world_direction.is_zero_approx():
+		return
+	var character_pivot := player.get_node_or_null(
+		"CharacterViewport/CharacterWorld/CharacterPivot"
+	) as Node3D
+	if character_pivot == null:
+		return
+	var continuous_grid_direction := Vector2(
+		world_direction.x / 64.0 + world_direction.y / 32.0,
+		world_direction.y / 32.0 - world_direction.x / 64.0
+	)
+	character_pivot.rotation_degrees.y = rad_to_deg(atan2(
+		continuous_grid_direction.x,
+		continuous_grid_direction.y
+	))

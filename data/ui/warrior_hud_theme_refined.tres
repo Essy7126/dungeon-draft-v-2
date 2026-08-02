@@ -1,22 +1,21 @@
-[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=20 format=3]
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" format=3 uid="uid://ylu122sl1k47"]
 
-[ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r04_c02.png" id="2_badge"]
-[ext_resource type="Texture2D" path="res://asset/personnage/alliés/495.png" id="3_portrait"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="4_banner"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="5_shove"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r09_c04.png" id="6_hook"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="7_shoulder"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r03_c01.png" id="8_shockwave"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r05_c04.png" id="9_mark"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="10_execution"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="11_stomp"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="12_corrupt_ground"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r04_c02.png" id="13_attack"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="14_inventory"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_map.png" id="15_map"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_skills.png" id="16_skills"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/move_action_icon.svg" id="17_move"]
+[ext_resource type="Script" uid="uid://b56xspqybs0nk" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
+[ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="3_portrait"]
+[ext_resource type="Texture2D" uid="uid://drpyoeq4grwoh" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="4_banner"]
+[ext_resource type="Texture2D" uid="uid://ddxdc1sss0ghh" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="5_shove"]
+[ext_resource type="Texture2D" uid="uid://djftddfahypq0" path="res://asset/ui/character_hud/generated/spell_icon_r09_c04.png" id="6_hook"]
+[ext_resource type="Texture2D" uid="uid://3x280qssvstq" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="7_shoulder"]
+[ext_resource type="Texture2D" uid="uid://c0fwyi0jfwiwe" path="res://asset/ui/character_hud/generated/spell_icon_r03_c01.png" id="8_shockwave"]
+[ext_resource type="Texture2D" uid="uid://bgo1wtcgdb2sc" path="res://asset/ui/character_hud/generated/spell_icon_r05_c04.png" id="9_mark"]
+[ext_resource type="Texture2D" uid="uid://yew33q17ambp" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="10_execution"]
+[ext_resource type="Texture2D" uid="uid://dyvy32pjjepak" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="11_stomp"]
+[ext_resource type="Texture2D" uid="uid://dr571owpatp3u" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="12_corrupt_ground"]
+[ext_resource type="Texture2D" uid="uid://dmofbfjxx5c2d" path="res://asset/ui/character_hud/generated/spell_icon_r04_c02.png" id="13_attack"]
+[ext_resource type="Texture2D" uid="uid://bcrswtltewnvb" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="14_inventory"]
+[ext_resource type="Texture2D" uid="uid://dugwyvrmxyt6a" path="res://asset/ui/character_hud/refined/utility_map.png" id="15_map"]
+[ext_resource type="Texture2D" uid="uid://vvc82kxnv4qj" path="res://asset/ui/character_hud/refined/utility_skills.png" id="16_skills"]
+[ext_resource type="Texture2D" uid="uid://cbuf75odcjkse" path="res://asset/ui/character_hud/refined/move_action_icon.svg" id="17_move"]
 
 [resource]
 script = ExtResource("1_theme")
@@ -24,7 +23,7 @@ character_id = &"warrior"
 display_name = "Guerrier"
 discipline_name = "Briseur"
 default_discipline_id = &"warrior_breaker"
-discipline_emblem_texture = ExtResource("2_badge")
+discipline_emblem_texture = ExtResource("13_attack")
 portrait_texture = ExtResource("3_portrait")
 turn_banner_texture = ExtResource("4_banner")
 move_action_icon = ExtResource("17_move")
@@ -37,12 +36,12 @@ secondary_color = Color(0.65, 0.28, 0.15, 1)
 text_color = Color(0.98, 0.86, 0.75, 1)
 spell_icon_mapping = {
 &"basic_attack": ExtResource("13_attack"),
-&"warrior_shove": ExtResource("5_shove"),
-&"warrior_shoulder_charge": ExtResource("7_shoulder"),
-&"warrior_hook": ExtResource("6_hook"),
+&"warrior_corrupted_ground": ExtResource("12_corrupt_ground"),
 &"warrior_execution": ExtResource("10_execution"),
-&"warrior_war_mark": ExtResource("9_mark"),
+&"warrior_hook": ExtResource("6_hook"),
 &"warrior_shockwave": ExtResource("8_shockwave"),
+&"warrior_shoulder_charge": ExtResource("7_shoulder"),
+&"warrior_shove": ExtResource("5_shove"),
 &"warrior_stomp": ExtResource("11_stomp"),
-&"warrior_corrupted_ground": ExtResource("12_corrupt_ground")
+&"warrior_war_mark": ExtResource("9_mark")
 }

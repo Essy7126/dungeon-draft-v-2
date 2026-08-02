@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="DisciplineData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://r7kch7i00kw4"]
 
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank_type"]
 [ext_resource type="Resource" path="res://data/characters/warrior/disciplines/breaker_rank_1.tres" id="3_rank_1"]
-[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/breaker_rank_2.tres" id="4_rank_2"]
+[ext_resource type="Resource" uid="uid://b1gxqpeha2g2y" path="res://data/characters/warrior/disciplines/breaker_rank_2.tres" id="4_rank_2"]
 
 [resource]
 script = ExtResource("1_discipline")

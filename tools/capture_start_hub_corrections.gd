@@ -52,7 +52,7 @@ func _capture() -> void:
 		return
 
 	controller.movement.movement_speed = 50.0
-	if not controller.request_ground_move(Vector2i(10, 10)):
+	if not controller.request_ground_move(Vector2(1024.0, 1280.0)):
 		_fail("le chemin diagonal de capture est refuse")
 		return
 	await _settle(30)

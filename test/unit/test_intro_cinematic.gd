@@ -2,6 +2,7 @@ extends GutTest
 
 const CINEMATIC_SCENE := preload("res://cinematics/intro/intro_cinematic.tscn")
 const RunManagerSpyScript := preload("res://test/unit/helpers/intro_run_manager_spy.gd")
+const MUSIC_PATH := "res://cinematics/intro/audio/The Heart of Dawn.mp3"
 
 const EXPECTED_REGIONS := [
 	Rect2(0, 0, 554, 311),
@@ -44,6 +45,11 @@ func test_scene_has_required_tree_and_audio_buses() -> void:
 	assert_eq(cinematic.voice_player.bus, &"Voice")
 	assert_eq(cinematic.music_player.bus, &"Music")
 	assert_eq(cinematic.sfx_player.bus, &"SFX")
+	assert_eq(cinematic.music_path, MUSIC_PATH)
+	assert_almost_eq(cinematic.music_volume_db, -18.0, 0.001)
+	assert_almost_eq(cinematic.music_fade_in_duration, 1.5, 0.001)
+	assert_almost_eq(cinematic.music_fade_out_duration, 1.0, 0.001)
+	assert_almost_eq(cinematic.music_player.volume_db, -40.0, 0.001)
 	assert_gte(AudioServer.get_bus_index(&"Voice"), 0)
 	assert_gte(AudioServer.get_bus_index(&"Music"), 0)
 	assert_gte(AudioServer.get_bus_index(&"SFX"), 0)
@@ -60,6 +66,157 @@ func test_storyboard_and_narration_keep_their_real_source_properties() -> void:
 	assert_eq(storyboard.get_size(), Vector2(1672.0, 941.0))
 	assert_not_null(narration)
 	assert_almost_eq(narration.get_length(), 94.46, 0.06)
+	assert_true(ResourceLoader.exists(MUSIC_PATH), "le chemin MP3 avec espace est importé")
+	var music := load(MUSIC_PATH) as AudioStream
+	assert_not_null(music)
+	assert_true(music is AudioStreamMP3)
+	assert_gt(music.get_length(), narration.get_length())
+
+
+func test_music_and_voice_start_once_on_separate_players_and_buses() -> void:
+	cinematic.music_fade_in_duration = 0.0
+	cinematic._begin_playback()
+	await wait_process_frames(2)
+	assert_true(cinematic.voice_player.playing)
+	assert_true(cinematic.music_player.playing)
+	assert_ne(cinematic.voice_player.stream, cinematic.music_player.stream)
+	assert_eq(cinematic.voice_player.bus, &"Voice")
+	assert_eq(cinematic.music_player.bus, &"Music")
+	assert_eq(cinematic.music_player.stream.resource_path, MUSIC_PATH)
+	assert_almost_eq(cinematic.music_player.volume_db, -18.0, 0.001)
+	var stream := cinematic.music_player.stream
+	cinematic.music_player.volume_db = -21.0
+	cinematic._load_and_play_optional_music()
+	assert_eq(cinematic.music_player.stream, stream)
+	assert_almost_eq(
+		cinematic.music_player.volume_db,
+		-21.0,
+		0.001,
+		"un second appel ne redémarre ni ne recalibre la musique",
+	)
+
+
+func test_music_fade_in_is_local_and_preserves_player_bus_settings() -> void:
+	var music_bus := AudioServer.get_bus_index(&"Music")
+	var voice_bus := AudioServer.get_bus_index(&"Voice")
+	var original_music_db := AudioServer.get_bus_volume_db(music_bus)
+	var original_voice_db := AudioServer.get_bus_volume_db(voice_bus)
+	AudioServer.set_bus_volume_db(music_bus, -7.0)
+	AudioServer.set_bus_volume_db(voice_bus, -3.0)
+	cinematic.music_volume_db = -22.0
+	cinematic.music_fade_in_duration = 0.0
+	cinematic._begin_playback()
+	await wait_process_frames(2)
+	assert_almost_eq(cinematic.music_player.volume_db, -22.0, 0.001)
+	assert_almost_eq(AudioServer.get_bus_volume_db(music_bus), -7.0, 0.001)
+	assert_almost_eq(AudioServer.get_bus_volume_db(voice_bus), -3.0, 0.001)
+	AudioServer.set_bus_volume_db(music_bus, original_music_db)
+	AudioServer.set_bus_volume_db(voice_bus, original_voice_db)
+
+
+func test_music_fade_in_reaches_exported_local_target() -> void:
+	cinematic.music_fade_in_duration = 0.05
+	cinematic._begin_playback()
+	assert_true(cinematic.music_player.playing)
+	assert_almost_eq(cinematic.music_player.volume_db, -40.0, 0.01)
+	await wait_seconds(0.1)
+	assert_almost_eq(cinematic.music_player.volume_db, -18.0, 0.05)
+
+
+func test_nine_plan_changes_never_restart_or_cut_music() -> void:
+	cinematic.music_fade_in_duration = 0.0
+	cinematic._begin_playback()
+	await wait_process_frames(2)
+	var stream := cinematic.music_player.stream
+	cinematic.music_player.volume_db = -19.5
+	for start_time in [0.0, 13.0, 25.0, 34.0, 42.0, 51.0, 59.0, 67.0, 84.0]:
+		cinematic.synchronize_to_time(start_time)
+		assert_true(cinematic.music_player.playing)
+		assert_eq(cinematic.music_player.stream, stream)
+		assert_almost_eq(cinematic.music_player.volume_db, -19.5, 0.001)
+
+
+func test_natural_voice_finish_fades_and_stops_music_before_run_start() -> void:
+	var spy := RunManagerSpyScript.new()
+	add_child_autofree(spy)
+	cinematic.run_manager_override = spy
+	cinematic.music_fade_in_duration = 0.0
+	cinematic.music_fade_out_duration = 0.0
+	cinematic.exit_fade_duration = 0.0
+	cinematic._begin_playback()
+	await wait_process_frames(2)
+	assert_true(cinematic.music_player.playing)
+	cinematic.voice_player.finished.emit()
+	await wait_process_frames(3)
+	assert_false(cinematic.music_player.playing)
+	assert_false(cinematic.voice_player.playing)
+	assert_eq(spy.start_call_count, 1)
+
+
+func test_skip_immediate_uses_guard_and_stops_music_once() -> void:
+	var spy := RunManagerSpyScript.new()
+	add_child_autofree(spy)
+	cinematic.run_manager_override = spy
+	cinematic.music_fade_out_duration = 0.0
+	cinematic.exit_fade_duration = 0.0
+	cinematic._begin_playback()
+	assert_true(cinematic.music_player.playing)
+	cinematic.skip_button.pressed.emit()
+	cinematic.skip_button.pressed.emit()
+	await wait_process_frames(3)
+	assert_false(cinematic.music_player.playing)
+	assert_true(cinematic.is_exit_requested())
+	assert_eq(spy.start_call_count, 1)
+
+
+func test_skip_during_music_fade_in_replaces_it_with_same_exit_fade() -> void:
+	var spy := RunManagerSpyScript.new()
+	add_child_autofree(spy)
+	cinematic.run_manager_override = spy
+	cinematic.music_fade_in_duration = 1.5
+	cinematic.music_fade_out_duration = 0.05
+	cinematic.exit_fade_duration = 0.0
+	cinematic._begin_playback()
+	await wait_process_frames(2)
+	assert_true(cinematic.music_player.playing)
+	assert_not_null(cinematic._music_fade_tween)
+	assert_true(cinematic._music_fade_tween.is_running())
+	cinematic.request_skip()
+	await wait_seconds(0.1)
+	assert_false(cinematic.music_player.playing)
+	assert_almost_eq(cinematic.music_player.volume_db, -40.0, 0.01)
+	assert_eq(spy.start_call_count, 1)
+
+
+func test_missing_and_invalid_music_warn_without_blocking_cinematic() -> void:
+	cinematic.music_path = "res://cinematics/intro/audio/missing_music.mp3"
+	cinematic._begin_playback()
+	await wait_process_frames(2)
+	assert_push_warning("musique absente")
+	assert_false(cinematic.music_player.playing)
+	assert_true(cinematic.voice_player.playing)
+
+	var invalid := CINEMATIC_SCENE.instantiate() as IntroCinematic
+	invalid.autoplay = false
+	invalid.music_path = "res://data/runs/first_run.tres"
+	add_child_autofree(invalid)
+	await wait_process_frames(2)
+	invalid._begin_playback()
+	await wait_process_frames(2)
+	assert_push_warning("musique illisible")
+	assert_false(invalid.music_player.playing)
+	assert_true(invalid.voice_player.playing)
+
+
+func test_destroying_cinematic_destroys_its_playing_music_player() -> void:
+	cinematic.music_fade_in_duration = 0.0
+	cinematic._begin_playback()
+	await wait_process_frames(2)
+	assert_true(cinematic.music_player.playing)
+	var music_player_ref: WeakRef = weakref(cinematic.music_player)
+	cinematic.queue_free()
+	await wait_process_frames(2)
+	assert_null(music_player_ref.get_ref())
 
 
 func test_nine_atlas_regions_exclude_the_separator_lines() -> void:

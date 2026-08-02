@@ -18,9 +18,15 @@ func _run() -> void:
 	var cinematic := CINEMATIC_SCENE.instantiate() as IntroCinematic
 	cinematic.autoplay = false
 	cinematic.exit_fade_duration = 0.0
+	cinematic.music_fade_in_duration = 0.0
+	cinematic.music_fade_out_duration = 0.0
 	get_tree().root.add_child(cinematic)
 	get_tree().current_scene = cinematic
 	await get_tree().process_frame
+	cinematic._begin_playback()
+	await get_tree().process_frame
+	var music_player_ref: WeakRef = weakref(cinematic.music_player)
+	_check(cinematic.music_player.playing, "La musique ne demarre pas avant le skip.")
 
 	cinematic.request_skip()
 	cinematic.request_skip()
@@ -34,6 +40,7 @@ func _run() -> void:
 		== ["Elfe", "Mage", "Guerrier"],
 		"Le trio réel après changement de scène est incorrect."
 	)
+	_check(music_player_ref.get_ref() == null, "MusicPlayer survit au changement de scene.")
 	_check(
 		_scene_requests == ["res://ui/Transitionsalle.tscn"],
 		"Le changement de scène a été demandé plusieurs fois : %s" % _scene_requests

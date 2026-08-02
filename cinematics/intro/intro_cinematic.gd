@@ -7,8 +7,7 @@ signal cinematic_failed(reason: String)
 
 const CINEMATIC_DURATION := 94.46
 const CROSSFADE_DURATION := 0.9
-const MUSIC_FADE_START_TIME := 90.5
-const MUSIC_FADE_TARGET_DB := -60.0
+const MUSIC_SILENCE_DB := -40.0
 const MAX_KEN_BURNS_ZOOM := 1.04
 const MAX_KEN_BURNS_TRAVEL_AT_1080P := 7.0
 
@@ -76,7 +75,8 @@ const KEN_BURNS_DIRECTIONS := [
 ]
 @export_file("*.mp3") var narration_path := \
 	"res://cinematics/intro/audio/intro_narration.mp3"
-@export_file("*.tres") var music_path := ""
+@export_file("*.mp3") var music_path := \
+	"res://cinematics/intro/audio/The Heart of Dawn.mp3"
 @export_file("*.tres") var skip_sfx_path := ""
 @export_file("*.tres") var run_data_path := "res://data/runs/first_run.tres"
 @export var hero_source_paths: Array[String] = [
@@ -89,7 +89,9 @@ const KEN_BURNS_DIRECTIONS := [
 @export var autoplay := true
 @export_range(0.0, 3.0, 0.05) var opening_fade_duration := 0.8
 @export_range(0.0, 3.0, 0.05) var exit_fade_duration := 0.8
-@export_range(-40.0, 6.0, 0.5) var music_base_volume_db := -8.0
+@export_range(-40.0, 0.0, 0.5) var music_volume_db := -18.0
+@export_range(0.0, 5.0, 0.1) var music_fade_in_duration := 1.5
+@export_range(0.0, 5.0, 0.1) var music_fade_out_duration := 1.0
 
 @onready var illustration_frame: PanelContainer = $IllustrationFrame
 @onready var image_a: TextureRect = $IllustrationFrame/ImageA
@@ -114,6 +116,8 @@ var _voice_is_clock := false
 var _exit_requested := false
 var run_start_committed := false
 var _opening_tween: Tween = null
+var _music_fade_tween: Tween = null
+var _music_start_requested := false
 
 
 func _ready() -> void:
@@ -141,9 +145,16 @@ func _process(_delta: float) -> void:
 		return
 	var cinematic_time := _sample_narration_clock()
 	synchronize_to_time(cinematic_time)
-	_update_music_fade(cinematic_time)
 	if not _voice_is_clock and cinematic_time >= CINEMATIC_DURATION:
 		finish_cinematic()
+
+
+func _exit_tree() -> void:
+	_kill_music_fade()
+	if is_instance_valid(voice_player):
+		voice_player.stop()
+	if is_instance_valid(music_player):
+		music_player.stop()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -188,14 +199,43 @@ func _load_and_play_narration() -> void:
 
 
 func _load_and_play_optional_music() -> void:
-	if music_path.is_empty() or not ResourceLoader.exists(music_path):
+	if _music_start_requested:
+		return
+	_music_start_requested = true
+	if music_path.is_empty():
+		push_warning("Cinématique d’introduction : chemin de musique vide.")
+		return
+	if not ResourceLoader.exists(music_path):
+		push_warning(
+			"Cinématique d’introduction : musique absente : %s" % music_path
+		)
 		return
 	var stream := load(music_path) as AudioStream
 	if stream == null:
+		push_warning(
+			"Cinématique d’introduction : musique illisible : %s" % music_path
+		)
 		return
 	music_player.stream = stream
-	music_player.volume_db = music_base_volume_db
+	music_player.bus = &"Music"
+	music_player.volume_db = MUSIC_SILENCE_DB
 	music_player.play()
+	if not music_player.playing:
+		push_warning(
+			"Cinématique d’introduction : la musique n’a pas pu démarrer : %s"
+			% music_path
+		)
+		return
+	if music_fade_in_duration <= 0.0:
+		music_player.volume_db = music_volume_db
+		return
+	_music_fade_tween = create_tween()
+	_music_fade_tween.tween_property(
+		music_player,
+		"volume_db",
+		music_volume_db,
+		music_fade_in_duration
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func _sample_narration_clock() -> float:
@@ -346,22 +386,6 @@ func _update_responsive_layout() -> void:
 		image.pivot_offset = image.size * 0.5
 
 
-func _update_music_fade(time_seconds: float) -> void:
-	if not music_player.playing or time_seconds < MUSIC_FADE_START_TIME:
-		return
-	var progress := clampf(
-		(time_seconds - MUSIC_FADE_START_TIME)
-		/ maxf(0.001, CINEMATIC_DURATION - MUSIC_FADE_START_TIME),
-		0.0,
-		1.0
-	)
-	music_player.volume_db = lerpf(
-		music_base_volume_db,
-		MUSIC_FADE_TARGET_DB,
-		progress
-	)
-
-
 func _is_skip_input(event: InputEvent) -> bool:
 	if event is InputEventKey:
 		return event.pressed and not event.echo and event.keycode in [
@@ -405,6 +429,7 @@ func _begin_exit(skipped: bool) -> void:
 	exit_started.emit(skipped)
 	if _opening_tween != null:
 		_opening_tween.kill()
+	_kill_music_fade()
 
 	var fade := create_tween().set_parallel(true)
 	fade.tween_property(
@@ -417,20 +442,26 @@ func _begin_exit(skipped: bool) -> void:
 		fade.tween_property(
 			voice_player,
 			"volume_db",
-			MUSIC_FADE_TARGET_DB,
+			MUSIC_SILENCE_DB,
 			exit_fade_duration
 		)
 	if music_player.playing:
 		fade.tween_property(
 			music_player,
 			"volume_db",
-			MUSIC_FADE_TARGET_DB,
-			exit_fade_duration
+			MUSIC_SILENCE_DB,
+			music_fade_out_duration
 		)
 	await fade.finished
 	voice_player.stop()
 	music_player.stop()
 	_complete_intro_and_start_run()
+
+
+func _kill_music_fade() -> void:
+	if _music_fade_tween != null and _music_fade_tween.is_valid():
+		_music_fade_tween.kill()
+	_music_fade_tween = null
 
 
 func _play_optional_skip_sfx() -> void:

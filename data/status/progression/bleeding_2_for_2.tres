@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="StatusData" format=3]
+[gd_resource type="Resource" script_class="StatusData" format=3 uid="uid://837t350blido"]
 
-[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+[ext_resource type="Script" uid="uid://sr3n54wflcuj" path="res://data/status/status_data.gd" id="1_status"]
 
 [resource]
 script = ExtResource("1_status")
@@ -9,9 +9,5 @@ status_name = "Saignement"
 description = "Subit 2 dégâts à la fin de chacun de ses deux prochains tours."
 color = Color(0.75, 0.05, 0.04, 1)
 damage_per_turn = 2
-damage_type = 1
-element = 0
-ignores_defense = true
-can_be_dodged = false
 damage_timing = 1
 duration = 2

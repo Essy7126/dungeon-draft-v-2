@@ -12,7 +12,8 @@ signal interaction_activated(actor: Node)
 ]
 @export var data: LanternboundArchivistData = null
 @export var interaction_enabled := true
-@export_range(0.1, 1.0, 0.01) var render_display_scale := 0.37
+@export_range(0.1, 1.0, 0.01) var render_display_scale := 0.60
+@export_range(40.0, 160.0, 1.0) var max_interaction_distance := 82.0
 ## Yaw fixe calibre pour que l'avant reel du GLB vise ArchivistLookTarget.
 ## Le SubViewport conserve ce cap : aucune cellule d'approche ne le modifie.
 @export_range(-180.0, 180.0, 0.1) var facing_yaw_degrees := 55.0
@@ -27,6 +28,7 @@ signal interaction_activated(actor: Node)
 @onready var click_collision: CollisionShape2D = $ClickArea/CollisionShape2D
 
 var _hovered := false
+var _approach_world_positions := PackedVector2Array()
 
 
 func _ready() -> void:
@@ -47,23 +49,35 @@ func _exit_tree() -> void:
 		character_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 
 
-func get_interaction_cells(
+func configure_navigation_points(
+		occupied_world_position: Vector2,
+		approach_world_positions: PackedVector2Array
+	) -> void:
+	global_position = occupied_world_position
+	_approach_world_positions = approach_world_positions.duplicate()
+
+
+func get_interaction_positions(
 		_actor: Node,
-		navigation_grid: HubNavigationGrid
-	) -> Array[Vector2i]:
-	var result: Array[Vector2i] = []
-	for cell in approach_cells:
-		if navigation_grid.is_valid(cell):
-			result.append(cell)
-	return result
+		_navigation_region: HubNavigationRegion2D
+	) -> PackedVector2Array:
+	return _approach_world_positions.duplicate()
 
 
 func can_interact(actor: Node) -> bool:
 	return interaction_enabled and super.can_interact(actor)
 
 
-func get_occupied_cell() -> Vector2i:
-	return occupied_cell
+func get_occupied_world_position() -> Vector2:
+	return global_position
+
+
+func get_max_interaction_distance() -> float:
+	return max_interaction_distance
+
+
+func get_approach_world_positions() -> PackedVector2Array:
+	return _approach_world_positions.duplicate()
 
 
 func interact(actor: Node) -> void:

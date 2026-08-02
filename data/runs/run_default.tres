@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RunData" format=3 uid="uid://chmh0lgqdfigh"]
+
+[ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/runs/run_data.gd" id="1_run"]
+[ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room_type"]
+[ext_resource type="Resource" path="res://data/rooms/bible/le_gue.tres" id="100_room"]
+[ext_resource type="Resource" path="res://data/rooms/bible/la_forge.tres" id="101_room"]
+[ext_resource type="Resource" path="res://data/rooms/bible/elite_brute.tres" id="102_room"]
+[ext_resource type="Resource" path="res://data/rooms/bible/catacombes.tres" id="103_room"]
+[ext_resource type="Resource" path="res://data/rooms/bible/boss_meduse.tres" id="104_room"]
+[ext_resource type="Resource" uid="uid://cu75nfsk7bpui" path="res://data/rooms/terrain_2.tres" id="105_room"]
+
+[resource]
+script = ExtResource("1_run")
+run_name = "Bible MVP - 1 acte Meduse"
+rooms = Array[ExtResource("2_room_type")]([ExtResource("100_room"), ExtResource("105_room"), ExtResource("101_room"), ExtResource("102_room"), ExtResource("103_room"), ExtResource("104_room")])

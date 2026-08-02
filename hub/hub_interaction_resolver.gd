@@ -3,47 +3,51 @@ extends Node
 
 
 func resolve(
-		actor: Node,
+		actor: Node2D,
 		target: Interactable,
-		navigation_grid: HubNavigationGrid,
+		navigation_region: HubNavigationRegion2D,
 		intent: InteractionIntent
 	) -> Dictionary:
 	if actor == null or target == null or intent == null \
-		or not target.can_interact(actor):
-		return {}
-	var actor_cell: Vector2i = actor.get_meta(
-		&"hub_current_cell", HubNavigationGrid.INVALID_CELL
-	)
-	if not navigation_grid.is_valid(actor_cell):
+		or navigation_region == null or not target.can_interact(actor):
 		return {}
 
-	var best_cell := HubNavigationGrid.INVALID_CELL
-	var best_path: Array[Vector2i] = []
-	var best_cost := INF
-	for approach_cell in target.get_interaction_cells(actor, navigation_grid):
-		if not navigation_grid.is_walkable(approach_cell, intent):
+	var best_position := HubNavigationRegion2D.INVALID_WORLD_POSITION
+	var best_path := PackedVector2Array()
+	var best_distance := INF
+	for approach_position in target.get_interaction_positions(
+			actor, navigation_region
+		):
+		if not navigation_region.is_world_position_navigable(approach_position) \
+			or navigation_region.is_world_position_reserved(
+				approach_position, intent
+			):
 			continue
-		var path := navigation_grid.get_path(actor_cell, approach_cell, intent)
+		var path := navigation_region.get_world_path(
+			actor.global_position, approach_position
+		)
 		if path.is_empty():
 			continue
-		var path_cost := navigation_grid.get_path_cost(path)
-		if best_path.is_empty() or path_cost < best_cost \
-			or (is_equal_approx(path_cost, best_cost) \
-			and _cell_before(approach_cell, best_cell)):
-			best_cell = approach_cell
+		var path_distance := navigation_region.get_path_length(path)
+		if best_path.is_empty() or path_distance < best_distance \
+			or (is_equal_approx(path_distance, best_distance) \
+			and _position_before(approach_position, best_position)):
+			best_position = approach_position
 			best_path = path
-			best_cost = path_cost
+			best_distance = path_distance
 
-	if best_path.is_empty() or not navigation_grid.reserve(best_cell, intent):
+	if best_path.is_empty() or not navigation_region.reserve_world_position(
+			best_position, intent
+		):
 		return {}
-	intent.destination = best_cell
+	intent.destination = best_position
 	return {
-		"cell": best_cell,
+		"position": best_position,
 		"path": best_path,
-		"distance": best_cost,
+		"distance": best_distance,
 	}
 
 
-func _cell_before(a: Vector2i, b: Vector2i) -> bool:
-	return b == HubNavigationGrid.INVALID_CELL or a.y < b.y \
-		or (a.y == b.y and a.x < b.x)
+func _position_before(a: Vector2, b: Vector2) -> bool:
+	return not b.is_finite() or a.y < b.y \
+		or (is_equal_approx(a.y, b.y) and a.x < b.x)

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://dlstrq4sb5sfa"]
+
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="2_hkqbb"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/spells/gobelin/hurlement_drainant.tres" id="3_spell"]
+[ext_resource type="Texture2D" path="res://asset/Orc.png" id="4_sprite"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hurleur"]
+atlas = ExtResource("4_sprite")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hurleur"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hurleur")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("1_unit")
+unit_name = "Hurleur gobelin"
+description = "Draine PA/Ferveur: menace economique prioritaire."
+team = 1
+max_hp = 55
+initiative = 8
+attack_power = 6
+sprite_frames = SubResource("SpriteFrames_hurleur")
+spells = Array[ExtResource("2_spell_type")]([ExtResource("3_spell")])
+ai_behavior = 1

@@ -79,6 +79,10 @@ grow_horizontal = 2
 grow_vertical = 2
 texture_filter = 2
 script = ExtResource("1_script")
+music_path = "res://cinematics/intro/audio/The Heart of Dawn.mp3"
+music_volume_db = -18.0
+music_fade_in_duration = 1.5
+music_fade_out_duration = 1.0
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -194,7 +198,7 @@ text = "Passer"
 bus = &"Voice"
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
-volume_db = -8.0
+volume_db = -40.0
 bus = &"Music"
 
 [node name="SfxPlayer" type="AudioStreamPlayer" parent="."]

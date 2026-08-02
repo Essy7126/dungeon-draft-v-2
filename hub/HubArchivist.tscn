@@ -13,13 +13,13 @@ ambient_light_energy = 0.72
 reflected_light_source = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape_click"]
-size = Vector2(160, 188)
+size = Vector2(250, 300)
 
 [node name="HubArchivist" type="Node2D"]
 script = ExtResource("1_archivist")
 data = ExtResource("3_data")
 facing_yaw_degrees = 55.0
-render_display_scale = 0.37
+render_display_scale = 0.6
 
 [node name="GroundShadow" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-34, 0, -24, -7, 0, -10, 24, -7, 34, 0, 24, 7, 0, 10, -24, 7)
@@ -69,7 +69,7 @@ far = 50.0
 position = Vector3(0, 0.950803, 0)
 
 [node name="ClickArea" type="Area2D" parent="."]
-position = Vector2(10, -92)
+position = Vector2(14, -145)
 collision_layer = 1
 collision_mask = 0
 input_pickable = true

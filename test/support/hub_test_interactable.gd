@@ -1,25 +1,15 @@
 extends Interactable
 
-var occupied_cell := Vector2i(8, 8)
-var approaches: Array[Vector2i] = []
-var enabled := true
-var interaction_count := 0
+var occupied_world_position := Vector2(1000.0, 1200.0)
+var approaches := PackedVector2Array()
 
 
-func get_interaction_cells(
+func get_interaction_positions(
 		_actor: Node,
-		_navigation_grid: HubNavigationGrid
-	) -> Array[Vector2i]:
+		_navigation_region: HubNavigationRegion2D
+	) -> PackedVector2Array:
 	return approaches.duplicate()
 
 
-func get_occupied_cell() -> Vector2i:
-	return occupied_cell
-
-
-func can_interact(actor: Node) -> bool:
-	return enabled and super.can_interact(actor)
-
-
-func interact(_actor: Node) -> void:
-	interaction_count += 1
+func get_occupied_world_position() -> Vector2:
+	return occupied_world_position

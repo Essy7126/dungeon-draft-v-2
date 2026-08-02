@@ -3,16 +3,16 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="5_sprite"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/bourrade.tres" id="10_spell"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/marque_de_guerre.tres" id="16_marque"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/execution_de_guerre.tres" id="17_execution"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/pietinement.tres" id="18_pietinement"]
+[ext_resource type="Resource" uid="uid://8ed4v0ixh7mb" path="res://data/spells/Guerrier/bourrade.tres" id="10_spell"]
+[ext_resource type="Resource" uid="uid://j4y5orjvipvg" path="res://data/spells/Guerrier/marque_de_guerre.tres" id="16_marque"]
+[ext_resource type="Resource" uid="uid://cyd85aonm0boo" path="res://data/spells/Guerrier/execution_de_guerre.tres" id="17_execution"]
+[ext_resource type="Resource" uid="uid://b2k5qbmvvnne8" path="res://data/spells/Guerrier/pietinement.tres" id="18_pietinement"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorIsoUnitView.tscn" id="20_combat_visual"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorVisual3D.tscn" id="21_preview_visual"]
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="22_discipline_type"]
-[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/breaker.tres" id="23_breaker"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="22_discipline_type"]
+[ext_resource type="Resource" uid="uid://r7kch7i00kw4" path="res://data/characters/warrior/disciplines/breaker.tres" id="23_breaker"]
 [ext_resource type="Resource" path="res://data/characters/warrior/disciplines/executioner.tres" id="24_executioner"]
-[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/ravager.tres" id="25_ravager"]
+[ext_resource type="Resource" uid="uid://brvtwx03devox" path="res://data/characters/warrior/disciplines/ravager.tres" id="25_ravager"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]
 animations = [{
@@ -40,6 +40,5 @@ role = "Contrôleur de mêlée"
 presentation_summary = "Brise les lignes ennemies avec poussées, collisions, Marque et zones de ronces."
 progression_summary = "Trois disciplines : Briseur, Bourreau et Saccageur."
 presentation_badge = "Troisième héros de la première run"
-active_spell_slots = 4
-spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("16_marque"), ExtResource("17_execution"), ExtResource("18_pietinement")])
 disciplines = Array[ExtResource("22_discipline_type")]([ExtResource("23_breaker"), ExtResource("24_executioner"), ExtResource("25_ravager")])
+spells = Array[ExtResource("2_spell_type")]([ExtResource("10_spell"), ExtResource("16_marque"), ExtResource("17_execution"), ExtResource("18_pietinement")])

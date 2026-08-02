@@ -56,11 +56,26 @@ func test_obstacles_calibres_et_marqueurs_praticables() -> void:
 	await get_tree().process_frame
 	var grid_node: HubNavigationGridNode = hub.get_node("NavigationGrid")
 	var grid: HubNavigationGrid = grid_node.model
+	var navigation_region: HubNavigationRegion2D = hub.get_node(
+		"WorldRoot/NavigationRegion2D"
+	)
 	assert_true(grid.is_blocked(Vector2i(0, 0)), "mur/zone hors sol")
 	assert_true(grid.is_blocked(Vector2i(2, 8)), "table strategique")
 	assert_true(grid.is_blocked(Vector2i(8, 2)), "comptoir")
 	assert_true(grid.is_blocked(Vector2i(11, 19)), "cristal gauche")
 	assert_true(grid.is_blocked(Vector2i(19, 11)), "cristal droit")
+	for blocked_world_position in [
+		Vector2(100.0, 500.0),
+		Vector2(560.0, 950.0),
+		Vector2(1450.0, 950.0),
+		Vector2(500.0, 1800.0),
+		Vector2(1550.0, 1800.0),
+		Vector2(640.0, 1152.0),
+	]:
+		assert_false(
+			navigation_region.is_world_position_navigable(blocked_world_position),
+			"obstacle monde exclu : %s" % blocked_world_position,
+		)
 	for marker_name in [
 		"PlayerSpawn",
 		"MerchantApproach",
@@ -69,6 +84,10 @@ func test_obstacles_calibres_et_marqueurs_praticables() -> void:
 	]:
 		var marker: HubTechnicalMarker = grid_node.get_node(marker_name)
 		assert_true(grid.is_walkable(marker.cell), "%s doit rester praticable" % marker_name)
+		assert_true(
+			navigation_region.is_world_position_navigable(marker.global_position),
+			"%s doit etre dans le polygone navigable" % marker_name,
+		)
 
 
 func test_scene_respecte_la_hierarchie_et_reutilise_visuel_elfe() -> void:
@@ -78,6 +97,7 @@ func test_scene_respecte_la_hierarchie_et_reutilise_visuel_elfe() -> void:
 	assert_not_null(hub.get_node("HubController"))
 	assert_not_null(hub.get_node("WorldRoot/Background"))
 	assert_not_null(hub.get_node("WorldRoot/GridOverlay"))
+	assert_not_null(hub.get_node("WorldRoot/NavigationRegion2D"))
 	assert_not_null(hub.get_node("WorldRoot/SortableWorld/Player"))
 	assert_not_null(hub.get_node("WorldRoot/Foreground"))
 	assert_not_null(hub.get_node("NavigationGrid"))
@@ -86,8 +106,8 @@ func test_scene_respecte_la_hierarchie_et_reutilise_visuel_elfe() -> void:
 	var player := hub.get_node("WorldRoot/SortableWorld/Player")
 	assert_eq(player.scene_file_path, "res://characters/elf/ElfIsoUnitView.tscn")
 	assert_true(player is ElfIsoUnitView)
-	assert_almost_eq(player.render_display_scale, 0.275, 0.0001)
-	assert_eq(player.render_sprite.scale, Vector2(0.275, 0.275))
+	assert_almost_eq(player.render_display_scale, 0.47, 0.0001)
+	assert_eq(player.render_sprite.scale, Vector2(0.47, 0.47))
 	assert_not_null(player.get_node("CharacterViewport/CharacterWorld/CharacterPivot/ElfVisual3D"))
 	var archivist: HubArchivist = hub.get_node("WorldRoot/SortableWorld/Archivist")
 	assert_eq(archivist.occupied_cell, Vector2i(5, 11))
@@ -97,13 +117,14 @@ func test_scene_respecte_la_hierarchie_et_reutilise_visuel_elfe() -> void:
 	])
 	assert_eq(archivist.get_model_scale(), Vector3.ONE)
 	assert_eq(archivist.model.position, Vector3(0.0, 0.950803, 0.0))
-	assert_almost_eq(archivist.render_display_scale, 0.37, 0.0001)
-	assert_eq(archivist.render_sprite.scale, Vector2(0.37, 0.37))
+	assert_almost_eq(archivist.render_display_scale, 0.60, 0.0001)
+	assert_eq(archivist.render_sprite.scale, Vector2(0.60, 0.60))
 	assert_eq(archivist.click_area.collision_layer, 1)
 	assert_eq(archivist.click_area.collision_mask, 0)
 	var click_shape := archivist.click_collision.shape as RectangleShape2D
 	assert_not_null(click_shape)
-	assert_eq(click_shape.size, Vector2(160.0, 188.0))
+	assert_eq(click_shape.size, Vector2(250.0, 300.0))
+	assert_eq(archivist.click_area.position, Vector2(14.0, -145.0))
 	assert_almost_eq(archivist.get_facing_yaw_degrees(), 55.0, 0.001)
 	var background: Sprite2D = hub.get_node("WorldRoot/Background")
 	assert_eq(background.texture.get_size(), Vector2(2048.0, 2048.0))
@@ -115,10 +136,14 @@ func test_debug_est_masque_par_defaut_et_f1_est_le_seul_toggle() -> void:
 	await get_tree().process_frame
 	var controller: StartHubController = hub.get_node("HubController")
 	var overlay: HubGridOverlay = hub.get_node("WorldRoot/GridOverlay")
+	var navigation_region: HubNavigationRegion2D = hub.get_node(
+		"WorldRoot/NavigationRegion2D"
+	)
 	var panel: Control = hub.get_node("HubUI/DebugPanel")
 	assert_false(controller.is_debug_enabled())
 	assert_false(overlay.visible)
 	assert_false(overlay.debug_visible)
+	assert_false(navigation_region.debug_visible)
 	assert_false(panel.visible)
 	assert_eq(panel.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 	for marker in hub.get_node("NavigationGrid").get_children():
@@ -133,10 +158,12 @@ func test_debug_est_masque_par_defaut_et_f1_est_le_seul_toggle() -> void:
 	assert_true(controller.is_debug_enabled())
 	assert_true(overlay.visible)
 	assert_true(overlay.debug_visible)
+	assert_true(navigation_region.debug_visible)
 	assert_true(panel.visible)
 	controller._unhandled_input(f1)
 	assert_false(controller.is_debug_enabled())
 	assert_false(overlay.visible)
+	assert_false(navigation_region.debug_visible)
 	assert_false(panel.visible)
 
 
@@ -150,6 +177,22 @@ func test_coordonnees_des_quatre_marqueurs() -> void:
 	assert_eq(grid_node.get_node("StrategyTableApproach").cell, Vector2i(5, 10))
 	assert_eq(grid_node.get_node("DungeonPortalApproach").cell, Vector2i(2, 2))
 	assert_eq(grid_node.get_node("ArchivistCell").cell, Vector2i(5, 11))
+	var approach_cells := [
+		Vector2i(4, 11), Vector2i(5, 10), Vector2i(6, 11), Vector2i(5, 12),
+	]
+	var approach_names := [
+		"ArchivistApproachNorthWest",
+		"ArchivistApproachNorthEast",
+		"ArchivistApproachSouthEast",
+		"ArchivistApproachSouthWest",
+	]
+	var approach_positions := PackedVector2Array()
+	for index in range(approach_names.size()):
+		var marker: HubTechnicalMarker = grid_node.get_node(approach_names[index])
+		assert_eq(marker.cell, approach_cells[index])
+		approach_positions.append(marker.global_position)
+	var archivist: HubArchivist = hub.get_node("WorldRoot/SortableWorld/Archivist")
+	assert_eq(archivist.get_approach_world_positions(), approach_positions)
 	assert_eq(grid_node.get_node("ArchivistLookTarget").cell, Vector2i(18, 18))
 	assert_eq(
 		grid_node.get_node("ArchivistLookTarget").position,

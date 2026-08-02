@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TerrainEffectData" format=3]
+[gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://d32p2g1tak3qb"]
 
 [ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
 
@@ -11,5 +11,4 @@ trigger = 1
 damage = 6
 dangerous_for_ai = true
 ai_danger_weight = 1.5
-duration = 3
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

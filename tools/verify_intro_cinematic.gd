@@ -3,6 +3,7 @@ extends Node
 const CINEMATIC_PATH := "res://cinematics/intro/intro_cinematic.tscn"
 const STORYBOARD_PATH := "res://cinematics/intro/source/intro_storyboard.png"
 const NARRATION_PATH := "res://cinematics/intro/audio/intro_narration.mp3"
+const MUSIC_PATH := "res://cinematics/intro/audio/The Heart of Dawn.mp3"
 const RUN_PATH := "res://data/runs/first_run.tres"
 const SPY_SCRIPT := preload("res://test/unit/helpers/intro_run_manager_spy.gd")
 const GAME_MANAGER_SCRIPT := preload("res://core/game_manager.gd")
@@ -79,6 +80,14 @@ func _verify_tree_and_buses(cinematic: IntroCinematic) -> void:
 
 
 func _verify_sources(cinematic: IntroCinematic) -> void:
+	_check(cinematic.music_path == MUSIC_PATH, "Source musicale configuree incorrecte.")
+	_check(absf(cinematic.music_volume_db + 18.0) <= 0.001, "Volume musique local != -18 dB.")
+	_check(absf(cinematic.music_fade_in_duration - 1.5) <= 0.001, "Fondu musical entrant != 1,5 s.")
+	_check(absf(cinematic.music_fade_out_duration - 1.0) <= 0.001, "Fondu musical sortant != 1 s.")
+	var music := load(MUSIC_PATH) as AudioStream
+	_check(music != null, "Musique d'introduction absente ou invalide.")
+	if music != null:
+		_check(music.get_length() > 94.46, "La musique se termine avant la narration.")
 	var storyboard := load(STORYBOARD_PATH) as Texture2D
 	_check(storyboard != null, "Planche source absente.")
 	if storyboard != null:

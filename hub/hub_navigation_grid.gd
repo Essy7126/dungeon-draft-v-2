@@ -1,8 +1,9 @@
 class_name HubNavigationGrid
 extends RefCounted
 
-## Autorite spatiale du hub. Cette grille reste independante du combat :
-## aucun tour, PA, PM, sort ou GridData n'entre dans son contrat.
+## Modele technique conserve pour le debug 20 x 20 et les metadonnees de
+## placement. Le deplacement jouable du hub est autorise par
+## HubNavigationRegion2D, sans lien avec le combat.
 
 const IsoProjectionScript = preload("res://battle/iso/iso_projection.gd")
 const INVALID_CELL := Vector2i(-1, -1)

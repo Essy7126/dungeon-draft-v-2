@@ -18,7 +18,22 @@ func start(hub: Node) -> void:
 	var panel_ref: WeakRef = weakref(controller.archivist_panel)
 	var trade_ref: WeakRef = weakref(controller.trade_panel)
 	_check(not GameManager.run_active, "Une run est active a l'entree du hub.")
-	_check(controller.request_interaction(controller.archivist) != null, "Interaction refusee.")
+	# Le verifier peut etre attache avant le _ready complet de la scene. Le
+	# NavigationServer publie la region lors d'un tick physique ulterieur :
+	# attendre un chemin reel evite de confondre cette latence avec un refus.
+	var interaction_intent: InteractionIntent = null
+	for _frame in range(60):
+		var approaches := controller.archivist.get_approach_world_positions()
+		if approaches.size() == 4 \
+			and controller.navigation_region.navigation_polygon != null \
+			and not controller.navigation_region.get_world_path(
+				controller.player.global_position, approaches[0]
+			).is_empty():
+			interaction_intent = controller.request_interaction(controller.archivist)
+			if interaction_intent != null:
+				break
+		await get_tree().physics_frame
+	_check(interaction_intent != null, "Interaction refusee.")
 	for _frame in range(160):
 		await get_tree().process_frame
 		if controller.archivist_panel.visible:
@@ -46,6 +61,9 @@ func start(hub: Node) -> void:
 		return
 	_check(intro.scene_file_path == INTRO_PATH, "Mauvaise scene d'introduction.")
 	intro.exit_fade_duration = 0.0
+	intro.music_fade_out_duration = 0.0
+	var music_player_ref: WeakRef = weakref(intro.music_player)
+	_check(intro.music_player.playing, "La musique d'introduction ne joue pas.")
 	intro.request_skip()
 	intro.finish_cinematic()
 	for _frame in range(30):
@@ -54,6 +72,7 @@ func start(hub: Node) -> void:
 			and get_tree().current_scene.scene_file_path == ROOM_TRANSITION_PATH:
 			break
 	_check(GameManager.run_active, "Le skip ne demarre pas la run.")
+	_check(music_player_ref.get_ref() == null, "MusicPlayer survit a la cinematique.")
 	print("START_HUB_INTRO_FLOW_VERIFY: run=%s" % GameManager.run_active)
 	_check(GameManager.current_room_index == 0, "La premiere salle n'est pas selectionnee.")
 	_check(_run_scene_requests == [ROOM_TRANSITION_PATH], "La run a ete lancee plusieurs fois.")
