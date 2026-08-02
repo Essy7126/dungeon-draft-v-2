@@ -1,6 +1,18 @@
-[gd_resource type="ShaderMaterial" format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://od4e4ssdv73n"]
 
-[ext_resource type="Shader" path="res://asset/shaders/environment/rayons_lumiere.gdshader" id="1_rays"]
+[ext_resource type="Shader" uid="uid://balrv7m0hnplt" path="res://asset/shaders/environment/rayons_lumiere.gdshader" id="1_rays"]
 
 [resource]
 shader = ExtResource("1_rays")
+shader_parameter/angle = 0.75
+shader_parameter/position = 0.5
+shader_parameter/spread = 0.5
+shader_parameter/cutoff = 0.05
+shader_parameter/falloff = 0.4
+shader_parameter/edge_fade = 0.15
+shader_parameter/speed = 0.5
+shader_parameter/ray1_density = 12.0
+shader_parameter/ray2_density = 30.0
+shader_parameter/ray2_intensity = 0.35
+shader_parameter/color = Color(1, 0.92, 0.7, 0.2)
+shader_parameter/seed = -10.5

@@ -7,8 +7,9 @@
 [ext_resource type="Resource" path="res://data/rooms/bible/la_forge.tres" id="4_forge"]
 [ext_resource type="Resource" path="res://data/rooms/bible/elite_brute.tres" id="5_elite"]
 [ext_resource type="Resource" uid="uid://cl8530hnljphx" path="res://data/rooms/terrain_2.tres" id="6_terrain_2"]
+[ext_resource type="Resource" path="res://data/rooms/bible/la_rune.tres" id="7_rune"]
 
 [resource]
 script = ExtResource("1_run")
 run_name = "Trio fixe — prototype"
-rooms = Array[ExtResource("2_room_type")]([ExtResource("3_gue"), ExtResource("6_terrain_2"), ExtResource("4_forge"), ExtResource("5_elite")])
+rooms = Array[ExtResource("2_room_type")]([ExtResource("3_gue"), ExtResource("6_terrain_2"), ExtResource("4_forge"), ExtResource("7_rune"), ExtResource("5_elite")])

@@ -9,7 +9,6 @@
 [ext_resource type="Resource" path="res://data/rooms/bible/catacombes.tres" id="103_room"]
 [ext_resource type="Resource" uid="uid://d4kr6rqr4285h" path="res://data/rooms/bible/boss_meduse.tres" id="104_room"]
 [ext_resource type="Resource" uid="uid://cl8530hnljphx" path="res://data/rooms/terrain_2.tres" id="105_room"]
-[ext_resource type="Resource" path="res://data/rooms/bible/la_rune.tres" id="106_room"]
 [ext_resource type="Resource" uid="uid://b5m7ajllc5vya" path="res://data/rewards/célérité.tres" id="200_reward"]
 [ext_resource type="Resource" uid="uid://dtgax72gn0y6c" path="res://data/rewards/force.tres" id="201_reward"]
 [ext_resource type="Resource" uid="uid://bhcacs4nst0e6" path="res://data/rewards/repos_equipe.tres" id="202_reward"]
@@ -102,7 +101,7 @@
 [resource]
 script = ExtResource("1_run")
 run_name = "Bible MVP - 1 acte Meduse"
-rooms = Array[ExtResource("2_room_type")]([ExtResource("100_room"), ExtResource("105_room"), ExtResource("101_room"), ExtResource("106_room"), ExtResource("102_room"), ExtResource("103_room"), ExtResource("104_room")])
+rooms = Array[ExtResource("2_room_type")]([ExtResource("100_room"), ExtResource("105_room"), ExtResource("101_room"), ExtResource("102_room"), ExtResource("103_room"), ExtResource("104_room")])
 reward_pool = Array[ExtResource("3_reward_type")]([ExtResource("200_reward"), ExtResource("201_reward"), ExtResource("202_reward"), ExtResource("203_reward"), ExtResource("204_reward"), ExtResource("205_reward"), ExtResource("206_reward"), ExtResource("207_reward"), ExtResource("208_reward"), ExtResource("209_reward"), ExtResource("210_reward"), ExtResource("211_reward"), ExtResource("212_reward"), ExtResource("213_reward"), ExtResource("214_reward"), ExtResource("215_reward"), ExtResource("216_reward"), ExtResource("217_reward"), ExtResource("218_reward"), ExtResource("219_reward"), ExtResource("220_reward"), ExtResource("221_reward"), ExtResource("222_reward"), ExtResource("223_reward"), ExtResource("224_reward"), ExtResource("225_reward"), ExtResource("226_reward"), ExtResource("227_reward"), ExtResource("228_reward"), ExtResource("229_reward"), ExtResource("230_reward"), ExtResource("231_reward"), ExtResource("232_reward")])
 relic_pool = Array[Resource]([ExtResource("400_relic"), ExtResource("401_relic"), ExtResource("402_relic"), ExtResource("403_relic"), ExtResource("404_relic"), ExtResource("405_relic"), ExtResource("406_relic"), ExtResource("407_relic"), ExtResource("408_relic"), ExtResource("409_relic"), ExtResource("410_relic"), ExtResource("411_relic"), ExtResource("412_relic"), ExtResource("413_relic"), ExtResource("414_relic"), ExtResource("415_relic"), ExtResource("416_relic"), ExtResource("417_relic"), ExtResource("418_relic"), ExtResource("419_relic")])
 equipment_pool = Array[Resource]([ExtResource("500_equipment"), ExtResource("501_equipment"), ExtResource("502_equipment"), ExtResource("503_equipment"), ExtResource("504_equipment"), ExtResource("505_equipment"), ExtResource("506_equipment"), ExtResource("507_equipment"), ExtResource("508_equipment"), ExtResource("509_equipment"), ExtResource("510_equipment"), ExtResource("511_equipment"), ExtResource("512_equipment"), ExtResource("513_equipment"), ExtResource("514_equipment"), ExtResource("515_equipment")])
