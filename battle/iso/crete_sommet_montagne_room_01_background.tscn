@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" uid="uid://ckxqutk4ot5xa" path="res://asset/Background/chemin.png" id="1_chemin"]
+
+[node name="CheminBackground" type="Node2D"]
+z_index = -100
+
+[node name="MountainSprite" type="Sprite2D" parent="."]
+texture_filter = 2
+scale = Vector2(0.354, 0.354)
+texture = ExtResource("1_chemin")
