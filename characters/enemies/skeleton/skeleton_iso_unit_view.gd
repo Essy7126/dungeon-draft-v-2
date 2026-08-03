@@ -28,11 +28,14 @@ func play_basic_attack() -> bool:
 
 
 func play_spell_action(spell: Spell = null) -> bool:
-	if combat_style != SkeletonVisual3D.CombatStyle.RANGED:
-		return false
 	var visual := get_skeleton_visual()
 	if visual == null:
 		return false
+	if combat_style == SkeletonVisual3D.CombatStyle.MELEE:
+		return _play_cast_action(
+			SkeletonVisual3D.ANIM_MELEE,
+			Callable(visual, "play_basic_attack")
+		)
 	return _play_cast_action(
 		SkeletonVisual3D.ANIM_RANGED,
 		func() -> bool: return visual.play_spell_action(spell)

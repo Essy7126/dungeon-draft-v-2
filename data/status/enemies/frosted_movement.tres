@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"frosted_movement"
+status_name = "Mouvement givre"
+description = "-1 PM lors de la prochaine activation."
+color = Color(0.45, 0.85, 1, 1)
+mp_reduction = 1
+duration = 1
+

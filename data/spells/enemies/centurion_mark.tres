@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/status/enemies/centurion_mark.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"centurion_mark"
+spell_name = "Marque du centurion"
+visual_action = 1
+description = "Designe une cible pendant deux activations completes."
+ap_cost = 2
+minimum_range = 1
+spell_range = 6
+needs_line_of_sight = true
+cooldown_activations = 2
+applied_status = ExtResource("2_status")
+status_source_scoped = true
+replaces_same_source_status = true

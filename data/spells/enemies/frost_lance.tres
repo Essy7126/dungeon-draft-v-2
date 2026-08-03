@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/status/enemies/frosted_movement.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"frost_lance"
+spell_name = "Lance de givre"
+visual_action = 2
+description = "22 degats magiques de glace et -1 PM a la prochaine activation."
+ap_cost = 3
+minimum_range = 2
+spell_range = 6
+needs_line_of_sight = true
+once_per_activation = true
+damage = 22
+damage_type = 1
+element = 2
+applied_status = ExtResource("2_status")

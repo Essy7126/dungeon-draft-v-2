@@ -21,6 +21,14 @@ func _init(grid: GridData, pathfinder: Pathfinder, spell_caster: SpellCaster) ->
 	_spell_caster = spell_caster
 
 func decide(enemy: Unit, all_units: Array) -> Array:
+	if enemy.ai_profile != null:
+		match enemy.ai_profile.strategy:
+			EnemyAIProfile.Strategy.FORMATION_MELEE:
+				return _decide_formation_melee(enemy, all_units)
+			EnemyAIProfile.Strategy.GUARDIAN_CHIEF:
+				return _decide_guardian_chief(enemy, all_units)
+			EnemyAIProfile.Strategy.RANGED_COMMANDER:
+				return _decide_ranged_commander(enemy, all_units)
 	match enemy.ai_behavior:
 		BEHAVIOR_MELEE:
 			return _decide_melee(enemy, all_units)
@@ -289,18 +297,8 @@ func _path_to_target_edge(enemy: Unit, target: Unit) -> Array:
 func _weighted_pick(candidates: Array) -> Dictionary:
 	if candidates.is_empty():
 		return {}
-	if candidates.size() == 1:
-		return candidates[0]
-	var lowest := float(candidates[candidates.size() - 1]["score"])
-	var total := 0.0
-	for c in candidates:
-		total += maxf(1.0, float(c["score"]) - lowest + 1.0)
-	var roll := randf() * total
-	var cursor := 0.0
-	for c in candidates:
-		cursor += maxf(1.0, float(c["score"]) - lowest + 1.0)
-		if roll <= cursor:
-			return c
+	# L'IA tactique doit etre reproductible : les candidats sont deja tries par
+	# score, et leurs helpers appliquent un departage stable.
 	return candidates[0]
 
 func _find_approach_cell(enemy: Unit, target: Unit) -> Vector2i:
@@ -358,3 +356,439 @@ func _path_danger_score(path: Array) -> float:
 			if effect != null and effect.dangerous_for_ai:
 				score += effect.ai_danger_weight
 	return score
+
+
+func _stable_units(units: Array) -> Array:
+	var result := units.duplicate()
+	result.sort_custom(func(a: Unit, b: Unit) -> bool:
+		return a.get_runtime_stable_id() < b.get_runtime_stable_id()
+	)
+	return result
+
+
+func _living_opponents(enemy: Unit, all_units: Array) -> Array:
+	return _stable_units(all_units.filter(func(value):
+		var unit := value as Unit
+		return unit != null and unit.is_alive and unit.team != enemy.team
+	))
+
+
+func _living_allies_with_role(enemy: Unit, all_units: Array, role_id: StringName) -> Array:
+	return _stable_units(all_units.filter(func(value):
+		var unit := value as Unit
+		return unit != null \
+			and unit.is_alive \
+			and unit.team == enemy.team \
+			and unit.tactical_role_id == role_id
+	))
+
+
+func _direct_damage_spells(enemy: Unit) -> Array:
+	return enemy.spells.filter(func(value):
+		var spell := value as Spell
+		return spell != null \
+			and spell.delayed_resolution == Spell.DelayedResolution.NONE \
+			and spell.deals_damage() \
+			and spell.can_target_enemy
+	)
+
+
+func _delayed_strike_spell(enemy: Unit) -> Spell:
+	for value in enemy.spells:
+		var spell := value as Spell
+		if spell != null \
+				and spell.delayed_resolution == Spell.DelayedResolution.STRIKE_AND_PUSH:
+			return spell
+	return null
+
+
+func _summon_spell(enemy: Unit, summon_type: StringName) -> Spell:
+	for value in enemy.spells:
+		var spell := value as Spell
+		if spell != null and spell.is_summon() and spell.summon_type == summon_type:
+			return spell
+	return null
+
+
+func _mark_spell(enemy: Unit) -> Spell:
+	var mark_id := enemy.ai_profile.marked_status_id
+	for value in enemy.spells:
+		var spell := value as Spell
+		if spell != null and spell.applied_status != null \
+				and spell.applied_status.get_effective_status_id() == mark_id:
+			return spell
+	return null
+
+
+func _magic_armor_spell(enemy: Unit) -> Spell:
+	for value in enemy.spells:
+		var spell := value as Spell
+		if spell != null and spell.applied_status != null \
+				and spell.applied_status.stat_modifiers.has(&"resist_magique"):
+			return spell
+	return null
+
+
+func _marked_target(enemy: Unit, all_units: Array, source: Unit) -> Unit:
+	if source == null or enemy.ai_profile == null:
+		return null
+	for value in _living_opponents(enemy, all_units):
+		var target := value as Unit
+		if target.has_status(enemy.ai_profile.marked_status_id, source):
+			return target
+	return null
+
+
+func _adjacent_opponents(enemy: Unit, all_units: Array) -> Array:
+	return _living_opponents(enemy, all_units).filter(func(value):
+		return _grid.are_adjacent(enemy.grid_pos, (value as Unit).grid_pos)
+	)
+
+
+func _expected_spell_damage(enemy: Unit, spell: Spell, target: Unit) -> int:
+	var raw := spell.damage
+	var has_bonus := target.has_status(spell.bonus_damage_status_id)
+	if spell.bonus_requires_linked_status_source:
+		has_bonus = enemy.target_has_linked_source_status(
+			target,
+			spell.bonus_damage_status_id
+		)
+	if has_bonus:
+		raw += spell.bonus_damage_if_marked
+	var context := DamageResolver.HitContext.new()
+	context.attacker = enemy
+	context.raw_damage = raw
+	context.category = spell.damage_type
+	context.element = spell.element
+	context.cannot_be_dodged = true
+	return DamageResolver.compute(target, context).amount
+
+
+func _cast_action(enemy: Unit, spell: Spell, target_cell: Vector2i) -> Dictionary:
+	if spell != null and _spell_caster.can_cast(enemy, spell, target_cell):
+		return {"type": "cast", "spell": spell, "cell": target_cell}
+	return {}
+
+
+func _living_neighbor_count(cell: Vector2i, moving_unit: Unit) -> int:
+	var count := 0
+	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
+		var occupant := _grid.get_unit(cell + direction) as Unit
+		if occupant != null and occupant != moving_unit and occupant.is_alive:
+			count += 1
+	return count
+
+
+func _path_distance_to_target_edge(cell: Vector2i, target: Unit, mover: Unit) -> int:
+	if _grid.are_adjacent(cell, target.grid_pos):
+		return 0
+	var best := 999999
+	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
+		var edge: Vector2i = target.grid_pos + direction
+		if edge != cell and not _grid.is_walkable(edge):
+			continue
+		var path := _pathfinder.find_path(cell, edge, mover)
+		if not path.is_empty():
+			best = mini(best, path.size() - 1)
+	return best
+
+
+func _commander_protection_score(cell: Vector2i, enemy: Unit, all_units: Array) -> int:
+	var commander := enemy.linked_commander
+	if commander == null or not commander.is_alive or enemy.ai_profile == null:
+		return -999999
+	var score := -_grid.manhattan(cell, commander.grid_pos) \
+		* enemy.ai_profile.commander_distance_penalty_per_cell
+	for value in _living_opponents(enemy, all_units):
+		var hero := value as Unit
+		var direct := _grid.manhattan(hero.grid_pos, commander.grid_pos)
+		var through := _grid.manhattan(hero.grid_pos, cell) \
+			+ _grid.manhattan(cell, commander.grid_pos)
+		if through == direct:
+			score += enemy.ai_profile.commander_path_block_bonus
+	return score
+
+
+func _movement_toward(
+		enemy: Unit,
+		target: Unit,
+		all_units: Array,
+		prefer_neighbors: bool,
+		protect_commander: bool
+	) -> Array:
+	if target == null or enemy.current_mp <= 0:
+		return []
+	var candidates := _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
+	candidates.append(enemy.grid_pos)
+	var scored: Array = []
+	for cell_value in candidates:
+		var cell: Vector2i = cell_value
+		var distance := _path_distance_to_target_edge(cell, target, enemy)
+		if distance >= 999999:
+			continue
+		scored.append({
+			"cell": cell,
+			"distance": distance,
+			"neighbors": _living_neighbor_count(cell, enemy) if prefer_neighbors else 0,
+			"protection": _commander_protection_score(cell, enemy, all_units) \
+				if protect_commander else 0,
+		})
+	if scored.is_empty():
+		return []
+	scored.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if int(a.distance) != int(b.distance):
+			return int(a.distance) < int(b.distance)
+		if int(a.neighbors) != int(b.neighbors):
+			return int(a.neighbors) > int(b.neighbors)
+		if int(a.protection) != int(b.protection):
+			return int(a.protection) > int(b.protection)
+		var cell_a: Vector2i = a.cell
+		var cell_b: Vector2i = b.cell
+		return cell_a.y < cell_b.y or (cell_a.y == cell_b.y and cell_a.x < cell_b.x)
+	)
+	var destination: Vector2i = scored[0].cell
+	if destination == enemy.grid_pos:
+		return []
+	var path := _pathfinder.find_path(enemy.grid_pos, destination, enemy)
+	return [{"type": "move", "path": path}] if path.size() >= 2 else []
+
+
+func _decide_formation_melee(enemy: Unit, all_units: Array) -> Array:
+	var damage_spells := _direct_damage_spells(enemy)
+	var blade := damage_spells[0] as Spell if not damage_spells.is_empty() else null
+	var adjacent := _adjacent_opponents(enemy, all_units)
+	if blade != null and enemy.can_use_spell(blade):
+		for value in adjacent:
+			var target := value as Unit
+			if _expected_spell_damage(enemy, blade, target) >= target.current_hp:
+				var lethal := _cast_action(enemy, blade, target.grid_pos)
+				if not lethal.is_empty():
+					return [lethal]
+		var marked := _marked_target(enemy, all_units, enemy.linked_commander)
+		if marked != null and adjacent.has(marked):
+			var marked_action := _cast_action(enemy, blade, marked.grid_pos)
+			if not marked_action.is_empty():
+				return [marked_action]
+		adjacent.sort_custom(func(a: Unit, b: Unit) -> bool:
+			if not is_equal_approx(a.get_hp_ratio(), b.get_hp_ratio()):
+				return a.get_hp_ratio() < b.get_hp_ratio()
+			return a.get_runtime_stable_id() < b.get_runtime_stable_id()
+		)
+		if not adjacent.is_empty():
+			var weak_action := _cast_action(enemy, blade, (adjacent[0] as Unit).grid_pos)
+			if not weak_action.is_empty():
+				return [weak_action]
+	var chase := _marked_target(enemy, all_units, enemy.linked_commander)
+	if chase == null:
+		chase = _nearest_accessible_opponent(enemy, all_units)
+	return _movement_toward(enemy, chase, all_units, true, false)
+
+
+func _nearest_accessible_opponent(enemy: Unit, all_units: Array) -> Unit:
+	var candidates: Array = []
+	for value in _living_opponents(enemy, all_units):
+		var target := value as Unit
+		var distance := _path_distance_to_target_edge(enemy.grid_pos, target, enemy)
+		if distance < 999999:
+			candidates.append({"unit": target, "distance": distance})
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if int(a.distance) != int(b.distance):
+			return int(a.distance) < int(b.distance)
+		return (a.unit as Unit).get_runtime_stable_id() \
+			< (b.unit as Unit).get_runtime_stable_id()
+	)
+	return candidates[0].unit as Unit if not candidates.is_empty() else null
+
+
+func _decide_guardian_chief(enemy: Unit, all_units: Array) -> Array:
+	if not enemy.pending_ability.is_empty():
+		return []
+	var sentence := _delayed_strike_spell(enemy)
+	var adjacent := _adjacent_opponents(enemy, all_units)
+	if sentence != null and enemy.can_use_spell(sentence):
+		var marked := _marked_target(enemy, all_units, enemy.linked_commander)
+		if marked != null and adjacent.has(marked):
+			var marked_sentence := _cast_action(enemy, sentence, marked.grid_pos)
+			if not marked_sentence.is_empty():
+				return [marked_sentence]
+		for value in adjacent:
+			var target := value as Unit
+			if target.get_hp_ratio() < enemy.ai_profile.sentence_hp_ratio_threshold:
+				var sentence_action := _cast_action(enemy, sentence, target.grid_pos)
+				if not sentence_action.is_empty():
+					return [sentence_action]
+	var direct := _direct_damage_spells(enemy)
+	var strike := direct[0] as Spell if not direct.is_empty() else null
+	adjacent.sort_custom(func(a: Unit, b: Unit) -> bool:
+		if a.current_hp != b.current_hp:
+			return a.current_hp < b.current_hp
+		return a.get_runtime_stable_id() < b.get_runtime_stable_id()
+	)
+	if strike != null and not adjacent.is_empty():
+		var strike_action := _cast_action(enemy, strike, (adjacent[0] as Unit).grid_pos)
+		if not strike_action.is_empty():
+			return [strike_action]
+	var chase := _marked_target(enemy, all_units, enemy.linked_commander)
+	if chase == null:
+		chase = _nearest_accessible_opponent(enemy, all_units)
+	return _movement_toward(enemy, chase, all_units, false, true)
+
+
+func _best_summon_cell(enemy: Unit, spell: Spell, all_units: Array) -> Vector2i:
+	var cells := _spell_caster.get_targetable_cells(enemy, spell)
+	var heroes := _living_opponents(enemy, all_units)
+	cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		var safety_a := 999999
+		var safety_b := 999999
+		for value in heroes:
+			var hero := value as Unit
+			safety_a = mini(safety_a, _grid.manhattan(a, hero.grid_pos))
+			safety_b = mini(safety_b, _grid.manhattan(b, hero.grid_pos))
+		if safety_a != safety_b:
+			return safety_a > safety_b
+		return a.y < b.y or (a.y == b.y and a.x < b.x)
+	)
+	for cell_value in cells:
+		var cell: Vector2i = cell_value
+		if _spell_caster.can_cast(enemy, spell, cell):
+			return cell
+	return Vector2i(-1, -1)
+
+
+func _mark_target_score(enemy: Unit, hero: Unit, normals: Array) -> Dictionary:
+	var path_sum := 0
+	for value in normals:
+		var normal := value as Unit
+		var distance := _path_distance_to_target_edge(normal.grid_pos, hero, normal)
+		path_sum += distance if distance < 999999 else 100000
+	return {
+		"unit": hero,
+		"path_sum": path_sum,
+		"hp_ratio": hero.get_hp_ratio(),
+		"commander_distance": _grid.manhattan(enemy.grid_pos, hero.grid_pos),
+	}
+
+
+func _best_mark_target(enemy: Unit, spell: Spell, all_units: Array) -> Unit:
+	var targetable := _spell_caster.get_targetable_cells(enemy, spell)
+	var normals := _living_allies_with_role(
+		enemy,
+		all_units,
+		enemy.ai_profile.normal_role_id
+	)
+	var scored: Array = []
+	for value in _living_opponents(enemy, all_units):
+		var hero := value as Unit
+		if targetable.has(hero.grid_pos):
+			scored.append(_mark_target_score(enemy, hero, normals))
+	scored.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if int(a.path_sum) != int(b.path_sum):
+			return int(a.path_sum) < int(b.path_sum)
+		if not is_equal_approx(float(a.hp_ratio), float(b.hp_ratio)):
+			return float(a.hp_ratio) < float(b.hp_ratio)
+		if int(a.commander_distance) != int(b.commander_distance):
+			return int(a.commander_distance) < int(b.commander_distance)
+		return (a.unit as Unit).get_runtime_stable_id() \
+			< (b.unit as Unit).get_runtime_stable_id()
+	)
+	return scored[0].unit as Unit if not scored.is_empty() else null
+
+
+func _best_aegis_target(enemy: Unit, spell: Spell, all_units: Array) -> Unit:
+	var status_id := spell.applied_status.get_effective_status_id()
+	var targetable := _spell_caster.get_targetable_cells(enemy, spell)
+	for value in _living_allies_with_role(enemy, all_units, enemy.ai_profile.chief_role_id):
+		var chief := value as Unit
+		if targetable.has(chief.grid_pos) and not chief.has_status(status_id):
+			return chief
+	var normals := _living_allies_with_role(enemy, all_units, enemy.ai_profile.normal_role_id)
+	normals.sort_custom(func(a: Unit, b: Unit) -> bool:
+		var neighbors_a := _living_neighbor_count(a.grid_pos, a)
+		var neighbors_b := _living_neighbor_count(b.grid_pos, b)
+		if neighbors_a != neighbors_b:
+			return neighbors_a > neighbors_b
+		return a.get_runtime_stable_id() < b.get_runtime_stable_id()
+	)
+	for value in normals:
+		var normal := value as Unit
+		if targetable.has(normal.grid_pos) and not normal.has_status(status_id):
+			return normal
+	return null
+
+
+func _commander_reposition(enemy: Unit, all_units: Array) -> Array:
+	var heroes := _living_opponents(enemy, all_units)
+	if heroes.is_empty() or enemy.current_mp <= 0:
+		return []
+	var cells := _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
+	cells.append(enemy.grid_pos)
+	var scored: Array = []
+	for cell_value in cells:
+		var cell: Vector2i = cell_value
+		var nearest := 999999
+		for value in heroes:
+			nearest = mini(nearest, _grid.manhattan(cell, (value as Unit).grid_pos))
+		var unsafe := enemy.ai_profile.avoid_hero_adjacency and nearest <= 1
+		var range_penalty := 0
+		if nearest < enemy.ai_profile.ideal_minimum_range:
+			range_penalty = enemy.ai_profile.ideal_minimum_range - nearest
+		elif nearest > enemy.ai_profile.ideal_maximum_range:
+			range_penalty = nearest - enemy.ai_profile.ideal_maximum_range
+		scored.append({"cell": cell, "unsafe": unsafe, "penalty": range_penalty})
+	scored.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if bool(a.unsafe) != bool(b.unsafe):
+			return not bool(a.unsafe)
+		if int(a.penalty) != int(b.penalty):
+			return int(a.penalty) < int(b.penalty)
+		var cell_a: Vector2i = a.cell
+		var cell_b: Vector2i = b.cell
+		return cell_a.y < cell_b.y or (cell_a.y == cell_b.y and cell_a.x < cell_b.x)
+	)
+	var destination: Vector2i = scored[0].cell
+	if destination == enemy.grid_pos:
+		return []
+	var path := _pathfinder.find_path(enemy.grid_pos, destination, enemy)
+	return [{"type": "move", "path": path}] if path.size() >= 2 else []
+
+
+func _decide_ranged_commander(enemy: Unit, all_units: Array) -> Array:
+	if not enemy.pending_ability.is_empty():
+		return []
+	var chief_summon := _summon_spell(enemy, &"chief")
+	if chief_summon != null \
+			and enemy.current_hp <= enemy.ai_profile.commander_emergency_hp \
+			and enemy.can_use_spell(chief_summon):
+		var chief_cell := _best_summon_cell(enemy, chief_summon, all_units)
+		if chief_cell != Vector2i(-1, -1):
+			return [{"type": "cast", "spell": chief_summon, "cell": chief_cell}]
+	var normals := _living_allies_with_role(enemy, all_units, enemy.ai_profile.normal_role_id)
+	var normal_summon := _summon_spell(enemy, &"normal")
+	if normals.size() < enemy.ai_profile.summon_when_normals_below \
+			and normal_summon != null and enemy.can_use_spell(normal_summon):
+		var normal_cell := _best_summon_cell(enemy, normal_summon, all_units)
+		if normal_cell != Vector2i(-1, -1):
+			return [{"type": "cast", "spell": normal_summon, "cell": normal_cell}]
+	var marked := _marked_target(enemy, all_units, enemy)
+	var mark := _mark_spell(enemy)
+	if marked == null and mark != null and enemy.can_use_spell(mark):
+		var mark_target := _best_mark_target(enemy, mark, all_units)
+		if mark_target != null:
+			return [{"type": "cast", "spell": mark, "cell": mark_target.grid_pos}]
+	var aegis := _magic_armor_spell(enemy)
+	if aegis != null and enemy.can_use_spell(aegis):
+		var aegis_target := _best_aegis_target(enemy, aegis, all_units)
+		if aegis_target != null:
+			return [{"type": "cast", "spell": aegis, "cell": aegis_target.grid_pos}]
+	var direct := _direct_damage_spells(enemy)
+	var frost_lance := direct[0] as Spell if not direct.is_empty() else null
+	if frost_lance != null:
+		if marked != null:
+			var marked_lance := _cast_action(enemy, frost_lance, marked.grid_pos)
+			if not marked_lance.is_empty():
+				return [marked_lance]
+		var nearest := _nearest_accessible_opponent(enemy, all_units)
+		if nearest != null:
+			var lance := _cast_action(enemy, frost_lance, nearest.grid_pos)
+			if not lance.is_empty():
+				return [lance]
+	return _commander_reposition(enemy, all_units)

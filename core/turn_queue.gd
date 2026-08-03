@@ -100,6 +100,9 @@ func advance() -> void:
 		# Unité vivante trouvée → c'est son tour.
 		var unit = _order[_current_index]
 		if unit.is_alive:
+			for participant in _order:
+				if participant != null and participant.has_method("on_actor_activation_started"):
+					participant.on_actor_activation_started(unit)
 			unit.start_turn()       # Recharge PA/PM, vieillit les buffs
 			turn_started.emit(unit)
 			return

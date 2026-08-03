@@ -35,7 +35,7 @@ const POST_COMBAT_SCREEN_PATH := "res://ui/post_combat/PostCombatScreen.tscn"
 const PERSISTENT_RUN_UI_SCENE := preload("res://ui/run/PersistentRunUI.tscn")
 const PersistentRunUIScript := preload("res://ui/run/persistent_run_ui.gd")
 const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
-	"res://data/items/catalogs/first_run_item_catalog.tres"
+	"res://data/items/catalogs/default_item_catalog.tres"
 )
 const INVENTORY_CAPACITY := 24
 const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 1

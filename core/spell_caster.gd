@@ -30,6 +30,8 @@ func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 				continue
 			if _grid.manhattan(caster.grid_pos, pos) > effective_range:
 				continue
+			if _grid.manhattan(caster.grid_pos, pos) < spell.minimum_range:
+				continue
 			if spell.line_from_caster and not _is_cardinal_line_target(caster.grid_pos, pos):
 				continue
 			if spell.needs_line_of_sight and not _pathfinder.has_line_of_sight(caster.grid_pos, pos):
@@ -144,6 +146,9 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 	}
 	if cells <= 0 or target == null:
 		return result
+	cells = target.reduce_forced_movement(cells)
+	if cells <= 0:
+		return result
 	var raw_dir := target.grid_pos - caster.grid_pos
 	var dir: Vector2i
 	if abs(raw_dir.x) >= abs(raw_dir.y):
@@ -236,6 +241,9 @@ func _pull_unit(caster: Unit, target: Unit, cells: int, journal: Array = []) -> 
 	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false }
 	if cells <= 0 or target == null:
 		return result
+	cells = target.reduce_forced_movement(cells)
+	if cells <= 0:
+		return result
 	var raw_dir := caster.grid_pos - target.grid_pos
 	var dir: Vector2i
 	if abs(raw_dir.x) >= abs(raw_dir.y):
@@ -311,7 +319,159 @@ func _has_status(unit: Unit, status_id: StringName) -> bool:
 func can_afford(caster: Unit, spell: Spell) -> bool:
 	if caster == null or spell == null:
 		return false
-	return caster.can_afford_spell_resources(spell)
+	return caster.can_use_spell(spell)
+
+
+func can_cast(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
+	return caster != null \
+		and spell != null \
+		and caster.can_use_spell(spell) \
+		and is_valid_target(caster, spell, cell) \
+		and _special_condition_failure(caster, spell) == &""
+
+
+func _special_condition_failure(caster: Unit, spell: Spell) -> StringName:
+	if not spell.is_delayed():
+		return &""
+	if not caster.pending_ability.is_empty():
+		return &"pending_ability"
+	if not spell.is_summon():
+		return &""
+	if spell.summon_unit_data == null:
+		return &"summon_data"
+	if spell.condition_hp_at_or_below >= 0 \
+			and caster.current_hp > spell.condition_hp_at_or_below:
+		return &"hp_condition"
+	if spell.summon_max_living_team > 0 \
+			and _grid.count_living_in_team(caster.team) >= spell.summon_max_living_team:
+		return &"team_limit"
+	if spell.requires_absent_unit_id != &"" and (
+		_grid.has_living_unit_id(caster.team, spell.requires_absent_unit_id)
+		or _grid.has_pending_summon_unit_id(caster.team, spell.requires_absent_unit_id)
+	):
+		return &"required_unit_present"
+	return &""
+
+
+func _prepare_delayed_resolution(ctx: CastContext) -> void:
+	var caster: Unit = ctx.caster
+	var spell: Spell = ctx.spell
+	caster.pending_ability = {
+		"spell": spell,
+		"cell": ctx.cell,
+		"target": ctx.primary_target,
+		"prepared_activation": caster.activation_index,
+		"source_ability_id": spell.get_effective_spell_id(),
+	}
+	ctx.report["telegraphed"] = true
+	ctx.report["delayed"] = true
+	var payload := {
+		"cell": ctx.cell,
+		"target": ctx.primary_target,
+		"label": spell.telegraph_label,
+		"color": spell.telegraph_color,
+		"resolution": spell.delayed_resolution,
+	}
+	EventBus.ability_telegraphed.emit(caster, spell, payload)
+	if spell.is_summon():
+		EventBus.summon_telegraphed.emit(caster, spell, ctx.cell)
+
+
+func resolve_pending_activation(
+		caster: Unit,
+		all_units: Array = [],
+		turn_queue = null,
+		on_spawn: Callable = Callable()
+	) -> Dictionary:
+	var result := {
+		"had_pending": false,
+		"resolved": false,
+		"blocked": false,
+		"consume_activation": false,
+		"summoned_unit": null,
+		"reason": &"",
+	}
+	if caster == null or caster.pending_ability.is_empty():
+		return result
+	result["had_pending"] = true
+	var pending := caster.pending_ability.duplicate()
+	caster.pending_ability.clear()
+	EventBus.telegraph_cleared.emit(caster)
+	var spell := pending.get("spell") as Spell
+	var cell: Vector2i = pending.get("cell", Vector2i(-1, -1))
+	if spell == null or not caster.is_alive:
+		result["blocked"] = true
+		result["reason"] = &"caster_dead"
+		EventBus.pending_ability_cancelled.emit(caster, pending, result["reason"])
+		return result
+	if spell.delayed_resolution == Spell.DelayedResolution.STRIKE_AND_PUSH:
+		result["consume_activation"] = spell.consumes_activation_on_resolution
+		caster.activation_consumed = bool(result["consume_activation"])
+		if caster.activation_consumed:
+			caster.current_ap = 0
+			caster.current_mp = 0
+			EventBus.ap_changed.emit(caster, caster.current_ap, caster.max_ap.get_int())
+		var target := pending.get("target") as Unit
+		if target == null or not target.is_alive \
+				or not _grid.are_adjacent(caster.grid_pos, target.grid_pos):
+			result["blocked"] = true
+			result["reason"] = &"target_not_adjacent"
+			EventBus.pending_ability_blocked.emit(caster, spell, result["reason"])
+			return result
+		target.take_damage(spell.damage, caster, spell.damage_type, spell.element)
+		if target.is_alive and spell.push_distance > 0:
+			_push_unit(caster, target, spell.push_distance)
+		result["resolved"] = true
+		EventBus.pending_ability_resolved.emit(caster, spell, result)
+		return result
+	if spell.delayed_resolution != Spell.DelayedResolution.SUMMON:
+		result["blocked"] = true
+		result["reason"] = &"unsupported_resolution"
+		return result
+	var failure := &""
+	if not _grid.is_valid(cell) or not _grid.is_walkable(cell) or _grid.has_unit(cell):
+		failure = &"cell_blocked"
+	elif spell.summon_max_living_team > 0 \
+			and _grid.count_living_in_team(caster.team) >= spell.summon_max_living_team:
+		failure = &"team_limit"
+	elif spell.requires_absent_unit_id != &"" \
+			and _grid.has_living_unit_id(caster.team, spell.requires_absent_unit_id):
+		failure = &"required_unit_present"
+	if failure != &"":
+		result["blocked"] = true
+		result["reason"] = failure
+		EventBus.pending_ability_blocked.emit(caster, spell, failure)
+		EventBus.summon_blocked.emit(caster, spell, cell, failure)
+		return result
+	var summoned := Unit.from_data(spell.summon_unit_data)
+	if spell.summon_starting_hp > 0:
+		summoned.current_hp = mini(spell.summon_starting_hp, summoned.max_hp.get_int())
+	for spell_id_value in spell.summon_initial_cooldowns:
+		summoned.set_initial_spell_cooldown(
+			StringName(spell_id_value),
+			int(spell.summon_initial_cooldowns[spell_id_value])
+		)
+	if not _grid.place_unit(summoned, cell):
+		result["blocked"] = true
+		result["reason"] = &"placement_failed"
+		EventBus.summon_blocked.emit(caster, spell, cell, result["reason"])
+		return result
+	if not all_units.has(summoned):
+		all_units.append(summoned)
+	if turn_queue != null and turn_queue.has_method("add_unit"):
+		turn_queue.add_unit(summoned)
+	if on_spawn.is_valid():
+		on_spawn.call(summoned)
+	result["resolved"] = true
+	result["summoned_unit"] = summoned
+	EventBus.summon_resolved.emit(
+		caster,
+		summoned,
+		cell,
+		spell.get_effective_spell_id()
+	)
+	EventBus.pending_ability_resolved.emit(caster, spell, result)
+	return result
 
 # ============================================================
 # LE PIPELINE DE CAST
@@ -338,14 +498,28 @@ func begin_cast(
 		ctx.failed = true
 		ctx.report = _failed_report(caster, spell, cell, "arguments")
 		return ctx
+	if not caster.can_afford_spell_resources(spell):
+		ctx.failed = true
+		ctx.report = _failed_report(caster, spell, cell, "pa")
+		return ctx
+	if not caster.can_use_spell(spell):
+		ctx.failed = true
+		ctx.report = _failed_report(caster, spell, cell, "availability")
+		return ctx
 	if not is_valid_target(caster, spell, cell):
 		ctx.failed = true
 		ctx.report = _failed_report(caster, spell, cell, "target")
+		return ctx
+	var special_reason := _special_condition_failure(caster, spell)
+	if special_reason != &"":
+		ctx.failed = true
+		ctx.report = _failed_report(caster, spell, cell, String(special_reason))
 		return ctx
 	ctx.modifiers = _gather_modifiers(caster, spell)
 
 	if not _resolve_costs(ctx):
 		return ctx
+	caster.mark_spell_used(spell)
 	_run_hook(ctx, "on_costs_resolved")
 	ctx.costs_committed = true
 	return ctx
@@ -361,6 +535,10 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 	ctx.resolved = true
 
 	_resolve_targets(ctx)
+	if ctx.spell.is_delayed():
+		_prepare_delayed_resolution(ctx)
+		EventBus.spell_cast.emit(ctx.caster, ctx.spell, ctx.report)
+		return ctx.report
 	_run_hook(ctx, "on_area_resolved")
 	_run_hook(ctx, "on_targets_resolved")
 	_run_hook(ctx, "on_targets_finalized")
@@ -453,8 +631,13 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 	var cell_bonus := int(ctx.damage_bonus_by_cell.get(target_cell, 0))
 	if spell.deals_damage() or cell_bonus != 0:
 		var base_dmg := spell.damage + cell_bonus
-		if spell.bonus_damage_if_marked > 0 \
-				and _has_status(target, spell.bonus_damage_status_id):
+		var has_bonus_status := _has_status(target, spell.bonus_damage_status_id)
+		if spell.bonus_requires_linked_status_source:
+			has_bonus_status = caster.target_has_linked_source_status(
+				target,
+				spell.bonus_damage_status_id
+			)
+		if spell.bonus_damage_if_marked > 0 and has_bonus_status:
 			base_dmg += spell.bonus_damage_if_marked
 		var damage_result = target.take_damage(base_dmg, caster, spell.damage_type, spell.element, { "bonus_crit_chance": spell.crit_chance })
 		if damage_result != null:
@@ -479,7 +662,19 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 			report["healed_units"].append(target)
 		affected = true
 	if spell.applied_status != null:
-		target.apply_status(spell.applied_status)
+		if spell.replaces_same_source_status:
+			for unit_value in _grid.get_units():
+				var existing_unit := unit_value as Unit
+				if existing_unit != null:
+					existing_unit.remove_status(
+						spell.applied_status.get_effective_status_id(),
+						caster,
+						true
+					)
+		target.apply_status(
+			spell.applied_status,
+			caster if spell.status_source_scoped else null
+		)
 		affected = true
 	for extra_status_value in ctx.additional_statuses_by_unit.get(target, []):
 		var extra_status := extra_status_value as StatusData

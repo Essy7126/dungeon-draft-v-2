@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/skeleton_faction/skeleton_faction_combat_simulation.gd" id="1_sim"]
+
+[node name="SkeletonFactionCombatSimulation" type="Node"]
+script = ExtResource("1_sim")
+

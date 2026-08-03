@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/status/enemies/frost_magic_armor.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"frost_aegis"
+spell_name = "Egide de givre"
+visual_action = 1
+description = "+50 resistance magique a un allie pendant une activation complete."
+ap_cost = 3
+minimum_range = 1
+spell_range = 5
+needs_line_of_sight = true
+cooldown_activations = 2
+can_target_enemy = false
+can_target_ally = true
+can_target_self = false
+applied_status = ExtResource("2_status")

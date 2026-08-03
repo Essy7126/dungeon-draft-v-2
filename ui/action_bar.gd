@@ -118,11 +118,13 @@ func _add_spell_button(unit, spell) -> void:
 
 func _get_spell_action_label(unit, spell) -> String:
 	var ap_cost: int = unit.get_spell_ap_cost(spell) if unit != null else spell.ap_cost
+	if unit != null and unit.get_spell_cooldown_remaining(spell) > 0:
+		return "CD %d" % unit.get_spell_cooldown_remaining(spell)
 	return "%d PA" % ap_cost
 
 
 func _can_use_spell(unit, spell) -> bool:
-	return unit != null and spell != null and unit.can_afford_spell_resources(spell)
+	return unit != null and spell != null and unit.can_use_spell(spell)
 
 
 func _refresh_button_states() -> void:

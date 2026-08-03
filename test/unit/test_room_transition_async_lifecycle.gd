@@ -5,7 +5,6 @@ const UnitViewScript = preload("res://battle/unit_view.gd")
 const ProjectileScene = preload(
 	"res://battle/vfx/skeleton_ranged_projectile_vfx.tscn"
 )
-const MELEE_PATH := "res://data/units/ennemie/skeleton_melee.tres"
 const RANGED_PATH := "res://data/units/ennemie/skeleton_ranged.tres"
 
 
@@ -77,8 +76,13 @@ func _make_controlled_view(unit: Unit, parent: Node = self) -> Dictionary:
 
 func _make_runner_fixture(ranged := false) -> Dictionary:
 	var field := Factory.make_battlefield(8, 1)
-	var data_path := RANGED_PATH if ranged else MELEE_PATH
-	var attacker := Unit.from_data(load(data_path) as UnitData)
+	# Le squelette tactique de production n'a plus d'attaque basique : ce test
+	# isole volontairement le cycle async generique avec un attaquant synthetique.
+	var attacker := (
+		Unit.from_data(load(RANGED_PATH) as UnitData)
+		if ranged
+		else Factory.make_unit("Attaquant melee stable", 1)
+	)
 	var target := Factory.make_unit("Cible stable", 0)
 	var target_cell := Vector2i(6, 0) if ranged else Vector2i(1, 0)
 	field.grid.place_unit(attacker, Vector2i(0, 0))

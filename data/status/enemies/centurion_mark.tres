@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"centurion_mark"
+status_name = "Marque du centurion"
+description = "Cible prioritaire des squelettes lies a ce centurion."
+color = Color(0.35, 0.8, 1, 1)
+duration = 2
+unique_per_source = true
+remove_when_source_dies = true
+

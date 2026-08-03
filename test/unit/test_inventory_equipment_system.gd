@@ -1,6 +1,6 @@
 extends GutTest
 
-const CATALOG_PATH := "res://data/items/catalogs/first_run_item_catalog.tres"
+const CATALOG_PATH := "res://data/items/catalogs/default_item_catalog.tres"
 const SAVE_PATH := "user://gut_inventory_equipment_state.json"
 
 

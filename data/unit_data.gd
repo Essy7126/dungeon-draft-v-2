@@ -116,6 +116,20 @@ extends Resource
 @export_range(1, 20, 1) var minimum_range: int = 1
 @export_range(1, 20, 1) var maximum_range: int = 1
 @export var keep_distance: bool = false
+@export var ai_profile: EnemyAIProfile = null
+
+@export_group("Faction tactique")
+@export var faction_id: StringName = &""
+@export var tactical_role_id: StringName = &""
+@export var linked_commander_role_id: StringName = &""
+
+@export_group("Passifs de proximite")
+@export var proximity_armor_source: StringName = &""
+@export var proximity_armor_per_living_neighbor: int = 0
+@export var proximity_armor_max_neighbors: int = 0
+
+@export_group("Resistance au deplacement force")
+@export var first_forced_movement_reduction_per_activation: int = 0
 
 
 func get_effective_unit_id() -> StringName:

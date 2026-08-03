@@ -1,15 +1,14 @@
-[gd_resource type="Resource" script_class="PaintedMapVisualData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="PaintedMapVisualData" format=3 uid="uid://b21rgd0yb0yas"]
 
-[ext_resource type="Script" path="res://data/maps/painted/painted_map_visual_data.gd" id="1_visual"]
+[ext_resource type="Script" uid="uid://deu8yd1flb5rl" path="res://data/maps/painted/painted_map_visual_data.gd" id="1_visual"]
 [ext_resource type="Resource" path="res://data/maps/painted/room_06_space_presentation.tres" id="2_presentation"]
 
 [resource]
 script = ExtResource("1_visual")
 map_id = &"room_06_space"
 debug_name = "Espace - plateforme technologique"
-background_texture_path = "res://asset/map/painted/room_06_space/space_background_source.jpg"
+background_texture_path = "uid://by5yubtu45ukb"
 source_image_size = Vector2i(1376, 768)
-logical_grid_size = Vector2i(14, 14)
 grid_origin = Vector2(693.5, 137)
 axis_x = Vector2(34.825, 17.5)
 axis_y = Vector2(-34.825, 17.5)

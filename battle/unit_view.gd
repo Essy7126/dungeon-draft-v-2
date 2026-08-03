@@ -48,6 +48,7 @@ func setup(p_unit: Unit) -> void:
 	EventBus.status_applied.connect(_on_status_changed)
 	EventBus.status_refreshed.connect(_on_status_changed)
 	EventBus.status_expired.connect(_on_status_expired)
+	EventBus.status_removed.connect(_on_status_removed)
 	_update_all_bars()
 	_update_status_icons()
 
@@ -145,6 +146,7 @@ func _disconnect_runtime_signals() -> void:
 		[EventBus.status_applied, _on_status_changed],
 		[EventBus.status_refreshed, _on_status_changed],
 		[EventBus.status_expired, _on_status_expired],
+		[EventBus.status_removed, _on_status_removed],
 	]
 	for connection in event_connections:
 		if connection[0].is_connected(connection[1]):
@@ -659,6 +661,11 @@ func _on_status_changed(u: Unit, _status_data) -> void:
 		_update_status_icons()
 
 func _on_status_expired(u: Unit, _status_id: StringName) -> void:
+	if u == unit:
+		_update_status_icons()
+
+
+func _on_status_removed(u: Unit, _status_id: StringName, _source) -> void:
 	if u == unit:
 		_update_status_icons()
 
