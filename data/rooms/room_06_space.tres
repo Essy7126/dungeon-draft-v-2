@@ -1,9 +1,8 @@
-[gd_resource type="Resource" script_class="RoomData" load_steps=10 format=3]
+[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://e6cuet2bahjb"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
-[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="PackedScene" path="res://data/rooms/maps/painted_battle.tscn" id="3_battle"]
-[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="4_melee"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="5_ranged"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_chief.tres" id="6_chief"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_snow_centurion.tres" id="7_centurion"]
