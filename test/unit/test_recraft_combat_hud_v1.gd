@@ -1,7 +1,7 @@
 extends GutTest
 
 const HUD_SCENE := "res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn"
-const FIRST_ROOM_SCENE := "res://data/rooms/maps/battle_salle1_iso.tscn"
+const FIRST_ROOM_SCENE := "res://data/rooms/maps/painted_battle.tscn"
 const PROCESSED_DIR := "res://asset/ui/recraft_hud_v1/processed"
 const PARTY := [
 	"res://data/units/alliés/elfe.tres",

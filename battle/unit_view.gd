@@ -23,6 +23,11 @@ var _lifecycle_generation := 0
 var _closing := false
 var _active_release_callables: Array[Callable] = []
 var _active_death_callables: Array[Callable] = []
+var _painted_presentation: BattlePresentationProfile = null
+var _painted_family_profile: UnitVisualProfile = null
+var _painted_optional_base_scale := Vector2.ONE
+var _painted_visual_scale := 1.0
+var _painted_readability_enabled := false
 
 func setup(p_unit: Unit) -> void:
 	unit = p_unit
@@ -180,6 +185,7 @@ func _instantiate_optional_visual() -> void:
 		candidate.queue_free()
 		return
 	_optional_visual = candidate as Node2D
+	_painted_optional_base_scale = _optional_visual.scale
 	add_child(_optional_visual)
 	_optional_visual.add_to_group("optional_unit_visuals")
 	if is_instance_valid(_sprite):
@@ -194,6 +200,70 @@ func has_optional_visual() -> bool:
 
 func get_optional_visual() -> Node2D:
 	return _optional_visual if is_instance_valid(_optional_visual) else null
+
+
+## Ne touche qu'au rendu enfant. La position, l'echelle historique et l'ordre
+## Y-sort de la racine UnitView restent strictement inchanges.
+func apply_painted_presentation(
+		profile: BattlePresentationProfile,
+		apply_visual_scale: bool = true,
+		apply_readability: bool = true
+	) -> void:
+	_painted_presentation = profile
+	_painted_family_profile = (
+		profile.profile_for_unit(unit.unit_id)
+		if profile != null and unit != null else null
+	)
+	_painted_visual_scale = (
+		profile.final_visual_scale(unit.unit_id)
+		if apply_visual_scale and profile != null and unit != null else 1.0
+	)
+	_painted_readability_enabled = apply_readability and profile != null
+	if is_instance_valid(_optional_visual):
+		_optional_visual.scale = _painted_optional_base_scale * _painted_visual_scale
+		_apply_optional_readability()
+	for child in get_children():
+		if child.is_in_group("iso_ground_shadow"):
+			# Le polygone est conserve pour le contour de selection, mais la grande
+			# dalle sombre est remplacee par l'ellipse courte du personnage.
+			child.visible = not _painted_readability_enabled
+	queue_redraw()
+
+
+func get_painted_visual_scale() -> float:
+	return _painted_visual_scale
+
+
+func get_logical_foot_position() -> Vector2:
+	return Vector2.ZERO
+
+
+func _apply_optional_readability() -> void:
+	if not is_instance_valid(_optional_visual) \
+			or not _optional_visual.has_method("set_painted_readability"):
+		return
+	var outline_color := Color.TRANSPARENT
+	var shadow_scale := 1.0
+	var shadow_opacity := 0.28
+	if _painted_presentation != null:
+		outline_color = (
+			_painted_presentation.active_outline_color
+			if _is_active else (
+				_painted_presentation.ally_outline_color
+				if unit.team == 0 else _painted_presentation.enemy_outline_color
+			)
+		)
+	if _painted_family_profile != null:
+		shadow_scale = _painted_family_profile.contact_shadow_scale
+		shadow_opacity = _painted_family_profile.contact_shadow_opacity
+	_optional_visual.set_painted_readability(
+		_painted_readability_enabled and _painted_presentation.outlines_enabled,
+		outline_color,
+		_painted_presentation.outline_width_px if _painted_presentation != null else 0.0,
+		_painted_presentation.contact_shadows_enabled if _painted_presentation != null else false,
+		shadow_scale,
+		shadow_opacity
+	)
 
 func get_cast_effect_origin_global() -> Vector2:
 	if is_instance_valid(_optional_visual) \
@@ -429,6 +499,7 @@ func _update_status_icons() -> void:
 
 func set_active(active: bool) -> void:
 	_is_active = active
+	_apply_optional_readability()
 	queue_redraw()
 
 ## Applique un materiau lumiere (golden hour) aux visuels du perso pour qu'il se

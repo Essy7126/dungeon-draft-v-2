@@ -1,48 +1,31 @@
-# Mountain Pass Blockout
+# Mountain Pass — logique conservée, blueprint 2D 16:9
 
-## Objectif
+## Statut
 
-Ce blockout est le squelette technique et visuel de `mountain_pass_blockout_test`, une salle de combat 2D isométrique représentant un ancien col enneigé. Il sert simultanément de RoomData jouable, de référence géométrique pour une future peinture, de modèle de calibration et de démonstration de l’alignement grille/décor/pathfinding/overlays/unités.
+Le layout tactique `mountain_pass_blockout` reste le blockout jouable autoritaire. Sa représentation de validation artistique est désormais un blueprint 2D isométrique plein écran de 1920×1080. Le blueprint n’est jamais utilisé pour déduire collisions, terrain, déploiements ou pathfinding.
 
-Ce n’est pas une map artistique finale. Aucun asset enneigé généré précédemment, aucune 3D et aucune perspective ne sont utilisés.
+La scène de combat de production `data/rooms/maps/mountain_pass_blockout_battle.tscn` et son renderer historique `battle/iso/mountain_pass_blockout_view.gd` n’ont pas été modifiés. Tant que la référence artistique n’est pas validée, le nouveau renderer n’est utilisé que par le laboratoire et les exporteurs.
 
-## Constat d’architecture
+## Chemins réellement utilisés
 
-- `GridData` demeure l’autorité logique des types, occupations et propriétés de cellules.
-- `Pathfinder` conserve `AStarGrid2D`, la distance de Manhattan et quatre voisins orthogonaux.
-- `TerrainEffects` et le `CellType.ICE` existants sont réutilisés. ICE est traversable ; aucune glissade spéculative n’est ajoutée.
-- `RoomData` fournit les zones de déploiement. La sous-classe dédiée les dérive des symboles A/E de l’unique layout.
-- `Battle` continue de créer GridData, Pathfinder, TerrainEffects, SpellCaster et les overlays. L’adaptateur local ne spécialise que l’import initial.
-- La vue dédiée expose la même façade `grid_to_local`, `local_to_grid`, `highlight` et `cell_clicked` que les autres grilles.
-- Les unités restent ancrées par les pieds au centre de cellule dans `YSortedWorld`, dont le tri Y est activé.
-- `Camera2D` cadre le canvas technique complet de 2048×2048.
+- Layout autoritaire : `data/maps/mountain_pass_blockout.tres`
+- Adaptateur de ressource : `data/maps/mountain_pass_blockout_data.gd`
+- RoomData : `data/rooms/mountain_pass_blockout_test.tres`
+- Adaptateur RoomData : `data/rooms/mountain_pass_blockout_room_data.gd`
+- Scène de combat laissée intacte : `data/rooms/maps/mountain_pass_blockout_battle.tscn`
+- Renderer historique du diorama : `battle/iso/mountain_pass_blockout_view.gd`
+- Nouveau renderer blueprint : `battle/iso/mountain_pass_blueprint_view.gd`
+- Laboratoire adapté : `battle/iso/mountain_pass_blockout_lab.tscn`
+- Contrôleur du laboratoire : `battle/iso/mountain_pass_blockout_lab.gd`
+- Exporteur Godot : `tools/export_mountain_pass_blockout.gd`
+- Exporteur PowerShell déterministe : `tools/export_mountain_pass_blockout.ps1`
+- Bootstrap de combat historique : `tools/MountainPassBlockoutDebug.tscn`
+- Tests logiques historiques : `test/unit/test_mountain_pass_blockout.gd`
+- Tests visuels 16:9 : `test/unit/test_mountain_pass_blueprint.gd`
+- Anciennes captures : `artifacts/maps/mountain_pass_blockout/`
+- Nouvelles captures : `artifacts/maps/mountain_pass_blueprint/`
 
-Le contrat ISO historique de `IsoGridView` utilise 64×32. Il n’a pas été modifié globalement. Cette map possède sa calibration isolée : 128×64 natif et 96×48 à l’échelle d’export 0,75.
-
-## Projection et cadrage
-
-- Projection : dimétrique 2:1, orthographique, sans convergence.
-- Cellule native : `128 × 64 px`.
-- Échelle d’aperçu/export : `0,75`.
-- Cellule affichée : `96 × 48 px`.
-- `axis_x = Vector2(48, 24)`.
-- `axis_y = Vector2(-48, 24)`.
-- `grid_origin = Vector2(1024, 650)`.
-- Canvas : `2048 × 2048 px`.
-- Bounds logiques 14×14 : position `(352, 626)`, taille `1344 × 672`.
-- Bounds réels de plateforme : position `(496, 698)`, taille `1056 × 528`.
-- Falaises : profondeur visuelle `58 px`.
-- Obstacles : hauteur `34 px` ; landmark : `50 px`.
-
-Conversion :
-
-```gdscript
-screen_position = grid_origin + cell.x * axis_x + cell.y * axis_y
-```
-
-L’inverse résout les deux axes réguliers, puis arrondit au centre de la cellule. Les 196 centres sont distincts et le round-trip centre → cellule est testé.
-
-## Layout autoritaire
+## Layout autoritaire inchangé
 
 ```text
 XXXX......XXXX
@@ -61,82 +44,131 @@ XX..........XX
 XXXX......XXXX
 ```
 
-Légende : `.` neige praticable, `~` glace praticable, `#` obstacle bloquant, `R` ruine bloquante, `X` absence de plateforme, `A` déploiement allié, `E` déploiement ennemi.
-
-Statistiques exactes :
-
 | Type | Nombre |
 |---|---:|
 | Normal `.` | 133 |
-| Glace `~` | 8 |
+| ICE `~` | 8 |
 | Alliés `A` | 6 |
 | Ennemis `E` | 6 |
 | Obstacles `#` | 7 |
 | Ruine `R` | 4 |
-| Vide `X` | 32 |
+| VOID `X` | 32 |
 | Total | 196 |
 
-Les 153 cellules traversables représentent 78,06 %. Les 11 cellules bloquantes représentent 5,61 %, les 32 vides 16,33 %, soit 21,94 % non traversables.
+Les 153 cellules traversables, les onze cellules bloquantes, la distance minimale de dix pas entre camps et l’absence de goulot obligatoire restent couvertes par les tests historiques. Aucun second moteur de grille n’a été ajouté.
 
-## Terrains, obstacles et déploiements
+## Ancien pipeline visuel identifié
 
-- ICE : `(6,7)`, `(7,7)`, `(8,7)`, `(5,8)`, `(6,8)`, `(7,8)`, `(8,8)`, `(6,9)`.
-- Alliés : `(4,9)`, `(3,10)`, `(4,10)`, `(5,10)`, `(3,11)`, `(4,11)`.
-- Ennemis : `(8,2)`, `(9,2)`, `(10,2)`, `(8,3)`, `(9,3)`, `(10,3)`.
-- Ruine 2×2 : `(9,4)`, `(10,4)`, `(9,5)`, `(10,5)`.
-- Obstacles isolés : `(4,5)`, `(9,8)`, `(10,9)`.
-- Obstacles 1×2 : `(2,6)-(3,6)` et `(8,10)-(9,10)`.
+Le diorama 2048×2048 était dessiné par `MountainPassBlockoutView` puis reproduit dans l’ancien exporteur PowerShell. Les formes responsables de la composition isolée étaient :
 
-La route ancienne est une classification strictement visuelle déclarée dans `road_visual_cells`. Elle relie les secteurs A/E par une bande oblique de trois à quatre cellules et ne modifie aucun type ni coût de déplacement.
+- `_draw_environment_back` / `Back` : frise de montagnes et épaules latérales détachées ;
+- `_draw_cliffs` / `DrawCliffs` : extrusion verticale uniforme le long de la plateforme ;
+- `_draw_obstacles` / `Obstacles` : volumes extrudés au-dessus des empreintes ;
+- `_draw_environment_front` / `Front` : rochers de présentation détachés ;
+- canvas carré, origine `(1024,650)` et panneaux de comparaison carrés.
 
-## Intention tactique et composition
+Ces éléments n’ont pas été supprimés du renderer de production. Ils sont désactivés dans le nouveau pipeline par séparation : le laboratoire et les exporteurs utilisent exclusivement `MountainPassBlueprintView`, et écrivent dans un nouveau dossier. L’ancien dossier reste disponible pour la comparaison gauche/droite.
 
-Le centre reste ouvert pour les zones d’effet, poussées, déplacements de groupe et combats multi-unités. Les obstacles asymétriques et le landmark bas créent des contournements sans fermer une moitié de la map. Le Pathfinder existant mesure une distance minimale de 10 pas entre les zones A et E. Le test d’articulation confirme qu’aucune cellule praticable hors spawn ne coupe à elle seule toutes les routes entre camps.
+## Calibration du blueprint
 
-La surface tactique est sobre : neige, vieille route et glace. Les masses montagneuses, épaules rocheuses et volumes de premier plan portent le biome hors grille. Les falaises ne sont produites que le long des arêtes exposées ; l’indentation gauche reste une absence de plateforme et jamais une crevasse ajoutée dans une cellule traversable.
+- Canvas : `1920×1080`, ratio 16:9.
+- Projection : dimétrique 2:1, sans convergence.
+- Cellule affichée : `96×48 px`.
+- `axis_x = Vector2(48,24)`.
+- `axis_y = Vector2(-48,24)`.
+- `grid_origin = Vector2(960,232)`.
+- Bounds exacts de la grille : position `(288,208)`, taille `1344×672`.
+- Sommet : `y=208` ; bas : `y=880`.
+- Occupation horizontale : `1344 / 1920 = 70 %`.
+- Bounds de scène utile : position `(24,72)`, taille `1872×984`.
 
-## Édition et calibration
+Conversion :
+
+```gdscript
+screen_position = Vector2(960, 232) + cell.x * Vector2(48, 24) + cell.y * Vector2(-48, 24)
+```
+
+Les 196 centres sont uniques et le round-trip centre → cellule est testé. Les axes globaux des autres maps ne changent pas.
+
+## Architecture graphique
+
+`MountainPassBlueprintView.GRAPHIC_CATEGORIES` déclare les douze couches de lecture :
+
+1. `DISTANT_BACKGROUND`
+2. `REAR_MOUNTAINS`
+3. `REAR_CLIFFS`
+4. `NON_PLAYABLE_SNOW`
+5. `WALKABLE_SNOW`
+6. `OLD_ROAD`
+7. `ICE`
+8. `BLOCKED_ROCKS`
+9. `RUIN`
+10. `VOID_RAVINES`
+11. `FRONT_CLIFFS`
+12. `FOREGROUND_OCCLUSION_GUIDE`
+
+Le ciel bleu-gris remplit le canvas. Les montagnes sont des masses de fond continues, séparées par l’ouverture du col. La vieille route entre par le bas-gauche et ressort par le haut-droit. Les 32 cellules VOID restent présentes dans les données, le debug et le masque logique, mais ne possèdent plus de face supérieure dans `reference` ou `clean`. Chaque groupe connecté devient une masse irrégulière de ravin ; chaque arête interne entre plateforme et VOID reçoit une bande de falaise orientée vers le ravin. La grille de référence ne trace que les 164 cellules appartenant à la plateforme.
+
+Les sept `#` sont regroupés depuis leurs composantes logiques en trois volumes bas 1×1 et deux volumes allongés 1×2. Les quatre `R` produisent un seul volume bas couvrant l’empreinte 2×2. Ces six volumes sont dérivés de `obstacle_groups()` et n’ajoutent aucune coordonnée visuelle autoritaire.
+
+Le guide de foreground est un PNG RGBA indépendant. Son premier pixel opaque se situe à `y=895`, sous le bas exact de la grille à `y=880` ; il ne recouvre donc aucune cellule. Il est désactivé par défaut dans le laboratoire.
+
+## Laboratoire
 
 Ouvrir `res://battle/iso/mountain_pass_blockout_lab.tscn`.
 
-- `F1` : référence/debug.
-- `M` : parcourir référence, clean, debug, masque et guide de hauteur.
-- `G` : afficher l’overlay recalculé (coordonnées, centres, origine et axes).
-- L’inspecteur expose origine, preview scale, axes, profondeurs/hauteurs, zoom et offset caméra.
+- Le `Sprite2D` `BlueprintBackground` affiche un PNG exporté comme fond simple.
+- `IsoGridView` est transparent et conserve la façade de projection/clic/highlight.
+- `UnitPreviewLayer`, `OverlayPreviewLayer`, `TerrainEffectLayer` et `VFXLayer` restent séparés.
+- `ForegroundGuide` affiche la couche RGBA optionnelle.
 
-Après une modification de `mountain_pass_blockout.tres`, régénérer les exports :
+Raccourcis :
+
+- `M` : clean, reference, logic, debug ;
+- `G` : grille logique dynamique ;
+- `T` : couleurs des types de terrain ;
+- `F` : guide d’occlusion ;
+- `U` : silhouettes d’unités de calibration.
+
+## Exports
+
+Génération déterministe sans Godot installé :
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\export_mountain_pass_blockout.ps1
 ```
 
-Pour lancer directement la salle avec le trio standard, exécuter `res://tools/MountainPassBlockoutDebug.tscn`. Ce bootstrap de debug ne modifie ni la main scene ni le flux de production.
+Génération depuis Godot avec un renderer graphique (le renderer dummy de
+`--headless` ne peut pas capturer un `SubViewport`) :
 
-## Remplacement par une map peinte
+```powershell
+godot --rendering-method gl_compatibility --audio-driver Dummy --path . -s res://tools/export_mountain_pass_blockout.gd
+```
 
-1. Peindre sur `mountain_pass_blockout_reference.png` sans déplacer la géométrie des losanges, les empreintes ou les arêtes.
-2. Conserver exactement le canvas 2048×2048 et les centres définis par l’origine et les axes.
-3. Importer la peinture comme background dans la vue dédiée, sans en déduire de cellules.
-4. Produire séparément un foreground transparent limité aux bords/coins. Il sert à l’occlusion artistique, jamais aux collisions.
-5. Vérifier dans le laboratoire les centres, contours, spawns, ICE, obstacles et pivots de pieds.
-6. Conserver le masque logique pour les contrôles, mais ne pas l’afficher en production.
+Les deux exporteurs ciblent `artifacts/maps/mountain_pass_blueprint/` et produisent :
 
-La future image peinte n’est jamais autoritaire pour le gameplay. `RoomData` et `GridData` restent les sources de vérité. Le décor doit respecter ce blockout ; aucune collision, marchabilité ou portée ne doit être déduite automatiquement des pixels.
+- `mountain_pass_blueprint_reference.png` : environnement et grille fine, pour Nano Banana ;
+- `mountain_pass_blueprint_clean.png` : même composition sans grille ;
+- `mountain_pass_blueprint_logic.png` : types logiques en aplats et centres ;
+- `mountain_pass_blueprint_foreground_guide.png` : RGBA transparent, occlusions seules ;
+- `mountain_pass_blueprint_debug.png` : coordonnées, centres, origine, axes et bounds ;
+- `mountain_pass_blueprint_comparison.png` : ancien diorama à gauche, blueprint in-game à droite.
 
-## Exports
+Tous font exactement 1920×1080. Aucun personnage, HUD, texte ou effet de combat n’apparaît dans `reference` ou `clean`.
 
-Tous les fichiers sont déterministes et font 2048×2048 :
+## Validation
 
-- `mountain_pass_blockout_reference.png` : Nano Banana, grille fine, sans texte/UI/personnage.
-- `mountain_pass_blockout_clean.png` : même cadrage sans grille.
-- `mountain_pass_blockout_debug.png` : coordonnées, centres, types, spawns, origine, axes et arêtes de falaise.
-- `mountain_pass_blockout_logic_mask.png` : aplats par type logique.
-- `mountain_pass_blockout_height_guide.png` : niveaux de gris par hauteur.
-- `mountain_pass_blockout_comparison.png` : référence, clean et debug côte à côte.
+`test_mountain_pass_blueprint.gd` vérifie : dimensions, projection, cellule 96×48, bounds 1344×672, 196 centres, layout/comptages, douze catégories, six PNG, couleurs du masque, transparence et absence d’intersection du foreground, fond bleu-gris et architecture du laboratoire. Il vérifie aussi que la grille de référence exclut exactement les 32 VOID, que chaque frontière plateforme↔VOID possède une transition ne couvrant pas le centre X et que les volumes obstacles conservent les tailles `[1,1,1,2,2,4]`.
 
-## Limites connues
+Les tests historiques continuent de couvrir GridData, Pathfinder, TerrainEffects, déploiements, projection ISO et autres maps. Toute régression logique doit être corrigée sans modifier le layout ci-dessus.
 
-- Le blockout reste volontairement schématique et n’est pas l’art final.
-- La glace initiale conserve la classification ICE traversable. Elle ne reçoit pas automatiquement un effet temporaire ni une glissade.
-- Les obstacles sont intégrés au background technique ; leurs empreintes logiques, elles, restent dans GridData. Une future occlusion fine pourra les séparer en props Y-sortés sans changer les cellules.
-- Le footprint 96×48 est local à cette map ; le 64×32 historique reste inchangé ailleurs.
+## Limites
+
+- Il s’agit d’un blueprint en aplats, pas de l’art final.
+- Les PNG sont ignorés par `.gitignore` avec le dossier `artifacts/` ; ils doivent être régénérés après un clone.
+- La scène de combat de production conserve volontairement l’ancien renderer tant que la référence artistique n’est pas validée.
+- `tools/MountainPassBlockoutDebug.tscn` lance toujours le combat historique ; le laboratoire blueprint s’ouvre directement depuis sa scène dédiée.
+
+L’image à transmettre à Nano Banana est :
+
+`artifacts/maps/mountain_pass_blueprint/mountain_pass_blueprint_reference.png`

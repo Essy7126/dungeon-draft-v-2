@@ -21,6 +21,11 @@ extends Resource
 @export var particles_scene: PackedScene
 
 @export var battle_scene: PackedScene
+
+# Configuration optionnelle des salles peintes. Les salles historiques gardent
+# ces champs a null et continuent d'utiliser leurs scenes/TileMap existantes.
+@export var grid_layout: RoomGridLayout
+@export var painted_map_visual_data: PaintedMapVisualData
 # Les ennemis présents dans cette salle.
 @export var enemies: Array[UnitData] = []
 

@@ -79,7 +79,7 @@ func start(hub: Node) -> void:
 	_check(GameManager.get_ordered_heroes().map(
 		func(hero): return hero.unit_name
 	) == ["Elfe", "Mage", "Guerrier"], "Composition de depart incorrecte.")
-	_check(GameManager.rooms.size() == 4, "first_run.tres ne contient pas quatre salles.")
+	_check(GameManager.rooms.size() == 6, "first_run.tres ne contient pas six salles.")
 	_finish(scene_callback)
 
 

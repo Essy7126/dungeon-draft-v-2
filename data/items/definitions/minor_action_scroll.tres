@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_definition"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_skills.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_definition")
+item_id = &"minor_action_scroll"
+display_name = "Parchemin d’élan mineur"
+description = "Rend 1 PA au héros sélectionné. Les parchemins identiques s’empilent par trois."
+icon = ExtResource("2_icon")
+rarity = &"common"
+tags = Array[StringName]([&"consumable", &"scroll"])
+category = 4
+stack_limit = 3
+equipment_slot = -1
+use_effect = 2
+use_value = 1.0

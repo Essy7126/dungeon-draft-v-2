@@ -104,6 +104,10 @@ var _foot_pixel := Vector2.ZERO
 var _visual_priority := VisualPriority.IDLE
 var _missing_socket_warning_emitted := false
 var _foot_realign_pending := false
+var _readability_base_shadow_size := Vector2.ZERO
+var _readability_outline_enabled := false
+var _readability_outline_color := Color.TRANSPARENT
+var _readability_outline_width := 1.0
 
 
 func _ready() -> void:
@@ -119,6 +123,7 @@ func _ready() -> void:
 	render_sprite.scale = Vector2.ONE * render_display_scale
 	render_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_update_shadow()
+	_readability_base_shadow_size = shadow_size
 	_connect_visual_signals()
 	_realign_foot_deferred()
 	set_process(true)
@@ -289,6 +294,46 @@ func get_projected_foot_pixel() -> Vector2:
 
 func get_facing_direction() -> Vector2i:
 	return _facing
+
+
+## Presentation locale au billboard. L'origine (0, 0) reste le pied logique ;
+## la taille et l'ombre sont appliquees de facon absolue, donc sans cumul.
+func set_painted_readability(
+		enabled: bool,
+		outline_color: Color,
+		outline_width_px: float,
+		shadow_enabled: bool,
+		shadow_scale: float,
+		shadow_alpha: float
+	) -> void:
+	if _readability_base_shadow_size == Vector2.ZERO:
+		_readability_base_shadow_size = shadow_size
+	shadow_size = _readability_base_shadow_size * shadow_scale
+	shadow_opacity = shadow_alpha if enabled and shadow_enabled else 0.28
+	_readability_outline_enabled = enabled
+	_readability_outline_color = outline_color
+	_readability_outline_width = maxf(outline_width_px, 0.5)
+	render_sprite.material = null
+	queue_redraw()
+
+
+func _draw() -> void:
+	if not _readability_outline_enabled:
+		return
+	# Deux liseres courts encadrent la silhouette sans retraiter les 768x512
+	# pixels du SubViewport. Ils restent derriere le billboard et ne modifient
+	# ni sa texture, ni ses animations, ni son point de pied.
+	var left := PackedVector2Array([
+		Vector2(-10.5, -55.0),
+		Vector2(-15.5, -45.0),
+		Vector2(-17.0, -29.0),
+		Vector2(-13.0, -11.0),
+	])
+	var right := PackedVector2Array()
+	for point in left:
+		right.append(Vector2(-point.x, point.y))
+	draw_polyline(left, _readability_outline_color, _readability_outline_width, true)
+	draw_polyline(right, _readability_outline_color, _readability_outline_width, true)
 
 
 func get_left_hand_effect_origin() -> Vector2:

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RoomGridLayout" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="1_layout"]
+[ext_resource type="Resource" path="res://data/maps/painted/painted_shared_topology.tres" id="2_base"]
+
+[resource]
+script = ExtResource("1_layout")
+layout_id = &"room_01_forest"
+debug_name = "Salle 1 - foret et ruines"
+logical_size = Vector2i(14, 14)
+base_layout = ExtResource("2_base")

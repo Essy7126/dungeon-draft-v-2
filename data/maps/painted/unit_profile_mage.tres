@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="UnitVisualProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+family_id = &"hero_mage"
+unit_ids = Array[StringName]([&"mage"])
+base_visual_scale = 1.76
+minimum_visual_scale = 1.25
+maximum_visual_scale = 1.95
+contact_shadow_scale = 0.96
+contact_shadow_opacity = 0.36

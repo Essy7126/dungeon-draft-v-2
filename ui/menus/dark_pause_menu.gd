@@ -3,10 +3,10 @@ extends CanvasLayer
 
 signal resume_requested
 signal return_to_title_requested(reason: StringName)
+signal equipment_requested
 
 const UNAVAILABLE_ACTIONS := [
 	&"characters",
-	&"equipment",
 	&"compendium",
 	&"options",
 ]
@@ -48,11 +48,12 @@ func _ready() -> void:
 	}
 	_resume_button.configure("REPRENDRE")
 	_characters_button.configure("PERSONNAGES", false)
-	_equipment_button.configure("ÉQUIPEMENTS", false)
+	_equipment_button.configure("ÉQUIPEMENTS", true)
 	_compendium_button.configure("COMPENDIUM", false)
 	_options_button.configure("OPTIONS", false)
 	_abandon_button.configure("ABANDONNER LA RUN")
 	_resume_button.pressed.connect(_request_resume)
+	_equipment_button.pressed.connect(func() -> void: equipment_requested.emit())
 	_close_button.pressed.connect(_request_resume)
 	_abandon_button.pressed.connect(
 		_request_exit_confirmation.bind(&"abandon")

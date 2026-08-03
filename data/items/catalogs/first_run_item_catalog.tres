@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemCatalog" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_catalog.gd" id="1_catalog"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="2_definition"]
+[ext_resource type="Resource" path="res://data/items/definitions/warrior_training_sword.tres" id="3_sword"]
+[ext_resource type="Resource" path="res://data/items/definitions/reinforced_vest.tres" id="4_vest"]
+[ext_resource type="Resource" path="res://data/items/definitions/runic_charm.tres" id="5_charm"]
+[ext_resource type="Resource" path="res://data/items/definitions/minor_healing_potion.tres" id="6_potion"]
+[ext_resource type="Resource" path="res://data/items/definitions/minor_action_scroll.tres" id="7_scroll"]
+
+[resource]
+script = ExtResource("1_catalog")
+definitions = Array[ExtResource("2_definition")]([ExtResource("3_sword"), ExtResource("4_vest"), ExtResource("5_charm"), ExtResource("6_potion"), ExtResource("7_scroll")])

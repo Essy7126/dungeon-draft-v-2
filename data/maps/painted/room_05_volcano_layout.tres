@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RoomGridLayout" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="1_layout"]
+[ext_resource type="Resource" path="res://data/maps/painted/painted_shared_topology.tres" id="2_base"]
+
+[resource]
+script = ExtResource("1_layout")
+layout_id = &"room_05_volcano"
+debug_name = "Salle 5 - volcan"
+logical_size = Vector2i(14, 14)
+base_layout = ExtResource("2_base")
+terrain_cell_type = 3
+terrain_cells = Array[Vector2i]([Vector2i(1, 3), Vector2i(2, 2), Vector2i(2, 3), Vector2i(3, 2), Vector2i(3, 3), Vector2i(5, 7), Vector2i(5, 8), Vector2i(6, 7), Vector2i(6, 8), Vector2i(10, 7), Vector2i(11, 7), Vector2i(10, 8), Vector2i(11, 8), Vector2i(12, 8)])

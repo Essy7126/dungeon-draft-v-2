@@ -339,7 +339,7 @@ func test_donnees_archiviste_preparent_le_trio_reel_dans_game_manager() -> void:
 	assert_eq(GameManager.get_ordered_heroes().map(
 		func(hero: Unit): return String(hero.unit_id)
 	), ["elf", "mage", "warrior"])
-	assert_eq(GameManager.rooms.size(), 4)
+	assert_eq(GameManager.rooms.size(), 6)
 	GameManager.cleanup_run_state()
 
 

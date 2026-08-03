@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RoomGridLayout" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="1_layout"]
+
+[resource]
+script = ExtResource("1_layout")
+layout_id = &"painted_shared_topology"
+debug_name = "Topologie partagee des trois maps peintes"
+logical_size = Vector2i(14, 14)
+layout_rows = PackedStringArray("XXXX......XXXX", "XX..........XX", "X............X", "..............", ".........RR...", "....#....RR...", "..##..........", "..............", "XX.......#....", "XX........#...", "........##....", "X............X", "XX..........XX", "XXXX......XXXX")

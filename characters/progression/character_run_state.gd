@@ -4,6 +4,7 @@ extends RefCounted
 var character_id: StringName = &""
 var unit: Unit = null
 var loadout: SpellLoadoutState = null
+var equipment_loadout: EquipmentLoadout = null
 var disciplines: Array[DisciplineData] = []
 var _discipline_progressions: Dictionary = {} # StringName -> DisciplineProgressState
 
@@ -32,6 +33,10 @@ func initialize(
 	loadout = SpellLoadoutState.new()
 	loadout.changed.connect(sync_loadout_to_unit)
 	loadout.initialize(unit_data.spells, slot_count)
+	equipment_loadout = EquipmentLoadout.new()
+	if not equipment_loadout.initialize(character_id):
+		dispose()
+		return false
 	sync_loadout_to_unit()
 	_sync_progression_modifiers_to_unit()
 	return true
@@ -47,6 +52,9 @@ func dispose() -> void:
 	character_id = &""
 	unit = null
 	loadout = null
+	if equipment_loadout != null:
+		equipment_loadout.clear(false)
+	equipment_loadout = null
 	disciplines.clear()
 	_discipline_progressions.clear()
 

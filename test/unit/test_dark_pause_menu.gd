@@ -152,9 +152,9 @@ func test_menu_contains_exact_labels_and_only_real_actions_enabled() -> void:
 	for action_id in expected:
 		var button := menu.get_action_button(action_id)
 		assert_eq(button.text, expected[action_id], str(action_id))
-	for action_id in [&"characters", &"equipment", &"compendium", &"options"]:
+	for action_id in [&"characters", &"compendium", &"options"]:
 		assert_true(menu.get_action_button(action_id).disabled, str(action_id))
-	for action_id in [&"resume", &"abandon", &"return_to_title"]:
+	for action_id in [&"resume", &"equipment", &"abandon", &"return_to_title"]:
 		assert_false(menu.get_action_button(action_id).disabled, str(action_id))
 
 
@@ -177,7 +177,7 @@ func test_opening_focuses_resume_and_close_requests_resume() -> void:
 	)
 	assert_same(
 		resume.get_node(resume.focus_neighbor_bottom),
-		menu.get_action_button(&"abandon")
+		menu.get_action_button(&"equipment")
 	)
 	assert_same(
 		resume.get_node(resume.focus_neighbor_top),
@@ -189,6 +189,14 @@ func test_opening_focuses_resume_and_close_requests_resume() -> void:
 	)
 	menu.get_close_button().pressed.emit()
 	assert_eq(resume_count[0], 1)
+
+
+func test_equipment_action_emits_request() -> void:
+	var menu := await _spawn_menu()
+	var request_count := [0]
+	menu.equipment_requested.connect(func(): request_count[0] += 1)
+	menu.get_action_button(&"equipment").pressed.emit()
+	assert_eq(request_count[0], 1)
 
 
 func test_dangerous_actions_require_confirmation() -> void:

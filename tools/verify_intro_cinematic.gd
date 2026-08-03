@@ -226,7 +226,7 @@ func _verify_game_manager_contract() -> void:
 	_check(requested_paths == ["res://ui/Transitionsalle.tscn"], "La transition initiale est incorrecte.")
 	_check(
 		manager.get_current_room().battle_scene.resource_path
-		== "res://data/rooms/maps/battle_salle1_iso.tscn",
+		== "res://data/rooms/maps/painted_battle.tscn",
 		"La battle_scene réelle de la première salle est incorrecte."
 	)
 	_check(

@@ -34,6 +34,19 @@ const ROOM_TRANSITION_SCREEN_PATH := "res://ui/Transitionsalle.tscn"
 const POST_COMBAT_SCREEN_PATH := "res://ui/post_combat/PostCombatScreen.tscn"
 const PERSISTENT_RUN_UI_SCENE := preload("res://ui/run/PersistentRunUI.tscn")
 const PersistentRunUIScript := preload("res://ui/run/persistent_run_ui.gd")
+const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
+	"res://data/items/catalogs/first_run_item_catalog.tres"
+)
+const INVENTORY_CAPACITY := 24
+const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 1
+const POST_COMBAT_LOOT_ITEM_ID: StringName = &"minor_healing_potion"
+const STARTING_INVENTORY := [
+	{"item_id": &"warrior_training_sword", "quantity": 1},
+	{"item_id": &"reinforced_vest", "quantity": 1},
+	{"item_id": &"runic_charm", "quantity": 1},
+	{"item_id": &"minor_healing_potion", "quantity": 2},
+	{"item_id": &"minor_action_scroll", "quantity": 1},
+]
 
 # --- État du run (vivant pendant tout le run) ---
 var heroes: Array = []          # Array[Unit] — persistent, HP conservés
@@ -55,6 +68,10 @@ var _last_combat_report: CombatReport = null
 var _post_combat_reward_service := PostCombatRewardService.new()
 var _pending_next_combat_shields: Dictionary = {}
 var _post_combat_transition_pending := false
+var item_catalog: ItemCatalog = null
+var run_inventory: RunInventory = null
+var _equipment_service := EquipmentService.new()
+var _item_use_service := ItemUseService.new()
 
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
@@ -64,6 +81,10 @@ signal discipline_xp_gained(character_id, discipline_id, amount, snapshot)
 signal scene_change_requested(path)
 signal combat_report_ready(report)
 signal post_combat_reward_applied(result)
+signal inventory_changed(snapshot)
+signal equipment_changed(result)
+signal item_granted(result)
+signal item_used(result)
 
 
 func _ready() -> void:
@@ -196,6 +217,8 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_pending_next_combat_shields.clear()
 	_post_combat_transition_pending = false
 	_active_progression_screen_ref = null
+	if not _initialize_inventory_state():
+		push_error("Impossible d'initialiser l'inventaire de run.")
 	_ensure_persistent_run_ui()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 
@@ -204,6 +227,8 @@ func _clear_heroes() -> void:
 	for state_value in character_states.values():
 		var state := state_value as CharacterRunState
 		if state != null:
+			if item_catalog != null:
+				_equipment_service.clear_state_stats(state)
 			state.dispose()
 	for hero in heroes:
 		if hero == null:
@@ -228,9 +253,68 @@ func cleanup_run_state() -> void:
 	run_active = false
 	current_room_index = -1
 	_clear_heroes()
+	_clear_inventory_state()
 	rooms.clear()
 	_active_run_name = ""
 	_last_run_result.clear()
+
+
+func _initialize_inventory_state() -> bool:
+	_clear_inventory_state()
+	item_catalog = DEFAULT_ITEM_CATALOG
+	var validation := item_catalog.validate_catalog()
+	if not validation.get("valid", false):
+		item_catalog = null
+		return false
+	run_inventory = RunInventory.new()
+	if not run_inventory.initialize(item_catalog, INVENTORY_CAPACITY) \
+			or not _equipment_service.initialize(item_catalog) \
+			or not _item_use_service.initialize(item_catalog):
+		_clear_inventory_state()
+		return false
+	_connect_inventory_signal()
+	for entry in STARTING_INVENTORY:
+		var result := run_inventory.try_add(
+			StringName(entry.get("item_id", &"")),
+			int(entry.get("quantity", 1)),
+		)
+		if not result.get("success", false):
+			_clear_inventory_state()
+			return false
+	return true
+
+
+func _clear_inventory_state() -> void:
+	_disconnect_inventory_signal()
+	if run_inventory != null:
+		run_inventory.clear()
+	run_inventory = null
+	item_catalog = null
+
+
+func _connect_inventory_signal() -> void:
+	if run_inventory == null:
+		return
+	var callback := Callable(self, "_on_run_inventory_changed")
+	if not run_inventory.changed.is_connected(callback):
+		run_inventory.changed.connect(callback)
+
+
+func _disconnect_inventory_signal() -> void:
+	if run_inventory == null:
+		return
+	var callback := Callable(self, "_on_run_inventory_changed")
+	if run_inventory.changed.is_connected(callback):
+		run_inventory.changed.disconnect(callback)
+
+
+func _on_run_inventory_changed() -> void:
+	if run_inventory != null:
+		inventory_changed.emit(run_inventory.to_snapshot())
+
+
+func _inventory_failure(code: String, message: String) -> Dictionary:
+	return {"success": false, "error_code": code, "error": message}
 
 
 func _ensure_persistent_run_ui() -> PersistentRunUI:
@@ -289,6 +373,162 @@ func get_run_ui_mode() -> PersistentRunUI.RunUIMode:
 
 func get_character_state(character_id: StringName) -> CharacterRunState:
 	return character_states.get(character_id) as CharacterRunState
+
+
+func get_run_inventory() -> RunInventory:
+	return run_inventory
+
+
+func get_item_catalog() -> ItemCatalog:
+	return item_catalog
+
+
+func grant_item_to_inventory(
+		definition_id: StringName,
+		quantity: int = 1
+	) -> Dictionary:
+	if not run_active or run_inventory == null:
+		return _inventory_failure("RUN_INACTIVE", "Aucune run active.")
+	var result := run_inventory.try_add(definition_id, quantity)
+	if result.get("success", false):
+		item_granted.emit(result.duplicate(true))
+	return result
+
+
+func equip_inventory_item(
+		instance_id: StringName,
+		character_id: StringName,
+		slot: int
+	) -> Dictionary:
+	if not run_active or run_inventory == null:
+		return _inventory_failure("RUN_INACTIVE", "Aucune run active.")
+	var state := get_character_state(character_id)
+	var result := _equipment_service.equip(
+		run_inventory,
+		state,
+		instance_id,
+		slot,
+	)
+	if result.get("success", false):
+		equipment_changed.emit(result.duplicate(true))
+	return result
+
+
+func unequip_inventory_item(
+		character_id: StringName,
+		slot: int
+	) -> Dictionary:
+	if not run_active or run_inventory == null:
+		return _inventory_failure("RUN_INACTIVE", "Aucune run active.")
+	var result := _equipment_service.unequip(
+		run_inventory,
+		get_character_state(character_id),
+		slot,
+	)
+	if result.get("success", false):
+		equipment_changed.emit(result.duplicate(true))
+	return result
+
+
+func use_inventory_item(
+		instance_id: StringName,
+		character_id: StringName
+	) -> Dictionary:
+	if not run_active or run_inventory == null:
+		return _inventory_failure("RUN_INACTIVE", "Aucune run active.")
+	var result := _item_use_service.use_item(
+		run_inventory,
+		get_character_state(character_id),
+		instance_id,
+	)
+	if result.get("success", false):
+		item_used.emit(result.duplicate(true))
+	return result
+
+
+func get_inventory_equipment_snapshot() -> Dictionary:
+	if run_inventory == null:
+		return {}
+	var equipment := {}
+	for state in get_ordered_character_states():
+		if state.equipment_loadout != null:
+			equipment[str(state.character_id)] = state.equipment_loadout.to_snapshot()
+	return {
+		"version": INVENTORY_EQUIPMENT_SNAPSHOT_VERSION,
+		"inventory": run_inventory.to_snapshot(),
+		"equipment": equipment,
+	}
+
+
+func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
+	if not run_active \
+			or item_catalog == null \
+			or int(snapshot.get("version", -1)) != INVENTORY_EQUIPMENT_SNAPSHOT_VERSION:
+		return false
+	var candidate_inventory := RunInventory.new()
+	if not candidate_inventory.initialize(item_catalog, INVENTORY_CAPACITY) \
+			or not candidate_inventory.restore_snapshot(
+				snapshot.get("inventory", {}) as Dictionary
+			):
+		return false
+	var equipment_snapshot := snapshot.get("equipment", {}) as Dictionary
+	var candidate_loadouts: Dictionary = {}
+	var seen_instance_ids := {}
+	for instance in candidate_inventory.get_slots():
+		if instance != null:
+			seen_instance_ids[instance.instance_id] = true
+	for state in get_ordered_character_states():
+		var key := str(state.character_id)
+		if not equipment_snapshot.has(key):
+			return false
+		var candidate := EquipmentLoadout.new()
+		if not candidate.initialize(state.character_id) \
+				or not candidate.restore_snapshot(
+					equipment_snapshot[key] as Dictionary,
+					item_catalog,
+				):
+			return false
+		for instance in candidate.get_equipped_items():
+			if seen_instance_ids.has(instance.instance_id):
+				return false
+			seen_instance_ids[instance.instance_id] = true
+		candidate_loadouts[state.character_id] = candidate
+	for state in get_ordered_character_states():
+		_equipment_service.clear_state_stats(state)
+		state.equipment_loadout = candidate_loadouts[state.character_id]
+	_disconnect_inventory_signal()
+	run_inventory = candidate_inventory
+	_connect_inventory_signal()
+	for state in get_ordered_character_states():
+		if not _equipment_service.rebuild_state(state):
+			return false
+	inventory_changed.emit(run_inventory.to_snapshot())
+	return true
+
+
+func save_inventory_equipment_state(
+		file_path: String = "user://inventory_equipment_v1.json"
+	) -> bool:
+	var snapshot := get_inventory_equipment_snapshot()
+	if snapshot.is_empty():
+		return false
+	var file := FileAccess.open(file_path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(snapshot, "\t"))
+	return true
+
+
+func load_inventory_equipment_state(
+		file_path: String = "user://inventory_equipment_v1.json"
+	) -> bool:
+	if not FileAccess.file_exists(file_path):
+		return false
+	var file := FileAccess.open(file_path, FileAccess.READ)
+	if file == null:
+		return false
+	var parsed = JSON.parse_string(file.get_as_text())
+	return parsed is Dictionary and restore_inventory_equipment_snapshot(parsed)
 
 
 ## Retrouve l'etat par l'identite runtime exacte de l'unite, jamais par son nom.
@@ -582,6 +822,7 @@ func on_battle_won() -> void:
 	_room_outcome_resolved = true
 	_last_combat_report = _finalize_current_combat_report(true)
 	room_cleared.emit(current_room_index)
+	grant_item_to_inventory(POST_COMBAT_LOOT_ITEM_ID, 1)
 	_awaiting_post_battle_progression = false
 	combat_report_ready.emit(_last_combat_report)
 	_request_scene_change(

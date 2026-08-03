@@ -10,10 +10,11 @@ Chaque personnage commence avec 6 PA, 3 PM, quatre sorts et une progression par
 discipline. Les PA et PM reviennent au début du tour ; un cast réussi accorde
 une fois 1 XP à la discipline du sort, y compris pour un sort multi-cible.
 
-La ressource de production `data/runs/first_run.tres` contient actuellement
-quatre salles migrées, dont une salle de boss avec le chef squelette. La cible
-produit en prévoit cinq : la cinquième reste à concevoir et n'est pas simulée
-avec une ancienne salle.
+La ressource de production `data/runs/first_run.tres` contient six salles. La
+forêt peinte ouvre la run, les salles historiques 2 à 4 conservent leur ordre,
+puis viennent la caldeira et la station orbitale finale. Les trois maps peintes
+utilisent le moteur commun `GridData`/`Pathfinder` avec des layouts explicites ;
+aucune collision n'est dérivée de leurs pixels.
 
 ## Lancer les tests
 

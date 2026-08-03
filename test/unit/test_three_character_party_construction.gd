@@ -30,12 +30,12 @@ func _prepare_party() -> Array[CharacterRunState]:
 	return manager.get_ordered_character_states()
 
 
-func test_first_run_has_four_existing_rooms_and_a_skeleton_chief_boss() -> void:
+func test_first_run_has_six_rooms_and_a_skeleton_chief_finale() -> void:
 	var run := _first_run()
 	assert_not_null(run)
 	assert_eq(run.run_name, "Première run")
-	assert_eq(run.rooms.size(), 4)
-	assert_eq(run.rooms[-1].resource_path, "res://data/rooms/first_run_room_04_boss.tres")
+	assert_eq(run.rooms.size(), 6)
+	assert_eq(run.rooms[-1].resource_path, "res://data/rooms/room_06_space.tres")
 	assert_true(run.rooms[-1].enemies.any(
 		func(enemy): return enemy.unit_id == &"skeleton_chief"
 	))

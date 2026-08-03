@@ -12,7 +12,9 @@ const EXPECTED_ROOMS := [
 	"res://data/rooms/first_run_room_01.tres",
 	"res://data/rooms/first_run_room_02.tres",
 	"res://data/rooms/first_run_room_03.tres",
-	"res://data/rooms/first_run_room_04_boss.tres",
+	"res://data/rooms/bible/la_rune.tres",
+	"res://data/rooms/room_05_volcano.tres",
+	"res://data/rooms/room_06_space.tres",
 ]
 
 var manager
@@ -31,7 +33,7 @@ func _prepare() -> Array[CharacterRunState]:
 	assert_true(manager._prepare_preconfigured_run(load(RUN_PATH) as RunData, PARTY))
 	return manager.get_ordered_character_states()
 
-func test_first_run_contains_the_four_migrated_rooms_in_order() -> void:
+func test_first_run_contains_the_six_production_rooms_in_order() -> void:
 	var run := load(RUN_PATH) as RunData
 	assert_not_null(run)
 	assert_eq(run.run_name, "Première run")

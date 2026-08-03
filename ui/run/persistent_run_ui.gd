@@ -16,6 +16,7 @@ enum RunUIMode {
 	%SkillTreeStatusButton
 )
 @onready var skill_tree_screen: SkillTreeScreen = %SkillTreeScreen
+@onready var inventory_screen: InventoryScreen = %InventoryScreen
 @onready var pause_menu: DarkPauseMenu = %DarkPauseMenu
 @onready var evolution_feedback: PanelContainer = %EvolutionFeedback
 @onready var evolution_emblem: TextureRect = %EvolutionEmblem
@@ -27,6 +28,7 @@ enum RunUIMode {
 var _ui_mode: RunUIMode = RunUIMode.TRANSITION
 var _combat_controls_before_skill_tree := false
 var _combat_controls_before_pause := false
+var _combat_controls_before_inventory := false
 var _tree_was_paused_before_menu := false
 var _owns_tree_pause := false
 var _evolution_screen_active := false
@@ -40,6 +42,9 @@ func _ready() -> void:
 	combat_hud.utility_skill_tree_requested.connect(
 		_on_skill_tree_requested
 	)
+	combat_hud.utility_inventory_requested.connect(
+		_on_inventory_requested
+	)
 	skill_tree_screen.screen_closed.connect(
 		_on_skill_tree_screen_closed
 	)
@@ -47,6 +52,9 @@ func _ready() -> void:
 		_on_skill_tree_evolution_resolved
 	)
 	pause_menu.resume_requested.connect(close_pause_menu)
+	pause_menu.equipment_requested.connect(_on_pause_equipment_requested)
+	pause_menu.set_action_available(&"equipment", true)
+	inventory_screen.screen_closed.connect(_on_inventory_screen_closed)
 	pause_menu.return_to_title_requested.connect(
 		_on_pause_return_to_title_requested
 	)
@@ -54,6 +62,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	close_inventory_screen()
 	close_pause_menu()
 
 
@@ -88,6 +97,7 @@ func refresh_from_context() -> void:
 
 func set_ui_mode(mode: RunUIMode) -> void:
 	if mode == RunUIMode.TRANSITION or not GameManager.run_active:
+		close_inventory_screen()
 		close_pause_menu()
 	_ui_mode = mode
 	if (
@@ -131,6 +141,50 @@ func get_pause_menu() -> DarkPauseMenu:
 	return pause_menu
 
 
+func get_inventory_screen() -> InventoryScreen:
+	return inventory_screen
+
+
+func is_inventory_open() -> bool:
+	return is_instance_valid(inventory_screen) and inventory_screen.is_open()
+
+
+func open_inventory_screen(character_id: StringName = &"") -> bool:
+	if not GameManager.run_active \
+			or _ui_mode == RunUIMode.TRANSITION \
+			or is_inventory_open() \
+			or is_pause_menu_open() \
+			or _evolution_screen_active \
+			or (is_instance_valid(skill_tree_screen) and skill_tree_screen.visible):
+		return false
+	var wanted_id := character_id
+	if wanted_id == &"":
+		var states := GameManager.get_ordered_character_states()
+		if states.is_empty():
+			return false
+		wanted_id = states[0].character_id
+	_combat_controls_before_inventory = bool(
+		combat_hud.get("_player_controls_enabled")
+	) if is_instance_valid(combat_hud) else false
+	if is_instance_valid(combat_hud):
+		combat_hud.set_player_controls_enabled(false)
+	if not inventory_screen.open_for_character(wanted_id, GameManager):
+		if is_instance_valid(combat_hud):
+			combat_hud.set_player_controls_enabled(
+				_combat_controls_before_inventory
+			)
+		_combat_controls_before_inventory = false
+		return false
+	return true
+
+
+func close_inventory_screen() -> bool:
+	var was_open := is_inventory_open()
+	if is_instance_valid(inventory_screen):
+		inventory_screen.close_screen()
+	return was_open
+
+
 func is_pause_menu_open() -> bool:
 	return is_instance_valid(pause_menu) and pause_menu.is_open()
 
@@ -140,6 +194,7 @@ func open_pause_menu() -> bool:
 		not GameManager.run_active
 		or _ui_mode == RunUIMode.TRANSITION
 		or is_pause_menu_open()
+		or is_inventory_open()
 		or _evolution_screen_active
 		or (
 			is_instance_valid(skill_tree_screen)
@@ -184,6 +239,10 @@ func close_pause_menu() -> bool:
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("ui_cancel"):
 		return
+	if is_inventory_open():
+		get_viewport().set_input_as_handled()
+		close_inventory_screen()
+		return
 	if is_pause_menu_open():
 		get_viewport().set_input_as_handled()
 		if not pause_menu.dismiss_confirmation():
@@ -204,6 +263,7 @@ func _on_skill_tree_requested(
 	) -> void:
 	if _ui_mode != RunUIMode.COMBAT \
 			or skill_tree_screen.visible \
+			or is_inventory_open() \
 			or _evolution_screen_active:
 		return
 	_combat_controls_before_skill_tree = bool(
@@ -234,11 +294,37 @@ func _on_skill_tree_screen_closed() -> void:
 	_combat_controls_before_skill_tree = false
 
 
+func _on_inventory_requested(character_id: StringName) -> void:
+	open_inventory_screen(character_id)
+
+
+func _on_pause_equipment_requested() -> void:
+	var states := GameManager.get_ordered_character_states()
+	if states.is_empty():
+		return
+	var character_id: StringName = states[0].character_id
+	close_pause_menu()
+	open_inventory_screen(character_id)
+
+
+func _on_inventory_screen_closed() -> void:
+	if (
+		_ui_mode == RunUIMode.COMBAT
+		and is_instance_valid(combat_hud)
+		and is_instance_valid(combat_hud.get_combat_context())
+	):
+		combat_hud.set_player_controls_enabled(
+			_combat_controls_before_inventory
+		)
+	_combat_controls_before_inventory = false
+
+
 func open_evolution_request(request: EvolutionRequest) -> bool:
 	if request == null \
 			or not request.is_valid() \
 			or _ui_mode != RunUIMode.COMBAT \
 			or _evolution_screen_active \
+			or is_inventory_open() \
 			or skill_tree_screen.visible:
 		return false
 	_evolution_screen_active = true

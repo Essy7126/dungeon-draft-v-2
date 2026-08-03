@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://battle/painted/painted_battle.gd" id="1_battle"]
+[ext_resource type="Script" path="res://battle/painted/painted_grid_view.gd" id="2_grid"]
+[ext_resource type="PackedScene" path="res://debug/DebugOverlay.tscn" id="3_debug"]
+[ext_resource type="Script" path="res://battle/floating_text_spawner.gd" id="4_text"]
+[ext_resource type="Script" path="res://battle/impact_juice.gd" id="5_impact"]
+[ext_resource type="AudioStream" path="res://asset/musique/Dungeon Draft_ First Footfalls.mp3" id="6_music"]
+
+[node name="Battle" type="Node2D"]
+texture_filter = 2
+script = ExtResource("1_battle")
+grid_cols = 14
+grid_rows = 14
+temporary_iso_placeholders = true
+iso_unit_view_scale = 0.58
+show_auxiliary_panels = false
+
+[node name="PaintedBackground" type="Node2D" parent="."]
+z_index = -100
+
+[node name="BackgroundSprite" type="Sprite2D" parent="PaintedBackground"]
+texture_filter = 2
+centered = false
+
+[node name="TerrainVisuals" type="Node2D" parent="."]
+z_index = -10
+
+[node name="IsoGridView" type="Node2D" parent="." groups=["battle_grid_view"]]
+script = ExtResource("2_grid")
+
+[node name="TerrainEffectLayer" type="Node2D" parent="."]
+
+[node name="YSortedWorld" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="PaintedForeground" type="Node2D" parent="."]
+z_index = 20
+
+[node name="ForegroundSprite" type="Sprite2D" parent="PaintedForeground"]
+texture_filter = 2
+centered = false
+
+[node name="VFXLayer" type="Node2D" parent="."]
+z_index = 50
+
+[node name="CalibrationDebug" type="Node2D" parent="."]
+z_index = 80
+
+[node name="DebugOverlay" parent="." instance=ExtResource("3_debug")]
+visible = false
+
+[node name="FloatingTextSpawner" type="Node2D" parent="."]
+z_index = 100
+script = ExtResource("4_text")
+
+[node name="ImpactJuice" type="Node" parent="."]
+script = ExtResource("5_impact")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_music")
+autoplay = true
+parameters/looping = true

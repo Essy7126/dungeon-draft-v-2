@@ -1,6 +1,7 @@
 extends "res://ui/action_bar.gd"
 
 signal utility_skill_tree_requested(character_id: StringName, discipline_id: StringName)
+signal utility_inventory_requested(character_id: StringName)
 
 const SPELL_SLOT_SCENE := preload(
 	"res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn"
@@ -145,6 +146,7 @@ func _ready() -> void:
 	_move_btn.pressed.connect(func() -> void: move_pressed.emit())
 	_attack_btn.pressed.connect(func() -> void: attack_pressed.emit())
 	_end_btn.pressed.connect(func() -> void: end_turn_pressed.emit())
+	_inventory_button.pressed.connect(_on_inventory_button_pressed)
 	_skills_button.pressed.connect(_on_skills_button_pressed)
 	var skills_shortcut := Shortcut.new()
 	var skills_key := InputEventKey.new()
@@ -401,6 +403,11 @@ func _refresh_button_states() -> void:
 		return
 	_move_btn.disabled = not _player_controls_enabled
 	_end_btn.disabled = not _player_controls_enabled
+	_inventory_button.disabled = (
+		not _player_controls_enabled
+		or _current_unit == null
+		or not _refined_skin_active()
+	)
 
 	var attack_available: bool = (
 		_current_unit != null
@@ -519,6 +526,7 @@ func _apply_character_theme(unit) -> void:
 		_identity_discipline_label.text = ""
 		_identity_discipline_label.visible = false
 		_utility_dock.visible = false
+		_inventory_button.disabled = true
 		_skills_button.disabled = true
 		_set_refined_depth_visible(false)
 		_set_attack_grouped_with_spells(false)
@@ -578,6 +586,7 @@ func _apply_character_theme(unit) -> void:
 	_skills_button.icon = _active_character_theme.utility_skills_icon
 	_utility_dock.visible = refined
 	_inventory_button.visible = refined and not _compact_layout_active()
+	_inventory_button.disabled = not refined or not _player_controls_enabled
 	_map_button.visible = refined and not _compact_layout_active()
 	_skills_button.visible = refined
 	_set_refined_depth_visible(refined)
@@ -701,6 +710,12 @@ func _on_skills_button_pressed() -> void:
 		StringName(_current_unit.unit_id),
 		_active_character_theme.default_discipline_id
 	)
+
+
+func _on_inventory_button_pressed() -> void:
+	if _current_unit == null or not _player_controls_enabled:
+		return
+	utility_inventory_requested.emit(StringName(_current_unit.unit_id))
 
 
 func _base_chassis_visual_scale(viewport_width: float) -> float:
