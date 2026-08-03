@@ -1,14 +1,13 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dy6vnckasohdj"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_definition"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_modifier"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_definition"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_modifier"]
+[ext_resource type="Texture2D" uid="uid://bcrswtltewnvb" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="3_icon"]
 
 [sub_resource type="Resource" id="Resource_health"]
 script = ExtResource("2_modifier")
 stat_id = &"max_hp"
 value = 10.0
-modifier_type = 0
 
 [resource]
 script = ExtResource("1_definition")
@@ -18,7 +17,5 @@ description = "Un accessoire universel qui augmente les PV maximum de 10."
 icon = ExtResource("3_icon")
 rarity = &"uncommon"
 tags = Array[StringName]([&"accessory", &"runic"])
-category = 2
-stack_limit = 1
 equipment_slot = 2
 stat_modifiers = Array[ExtResource("2_modifier")]([SubResource("Resource_health")])

@@ -121,3 +121,35 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 text = "Retour"
+
+[node name="RoomSelectionView" type="VBoxContainer" parent="Panel/Margin/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="RoomSelectionPrompt" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
+custom_minimum_size = Vector2(420, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Choisis la salle où commencera la run."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="RoomSelector" type="OptionButton" parent="Panel/Margin/Content/RoomSelectionView"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+
+[node name="ConfirmRunButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+text = "Lancer la run"
+
+[node name="RoomBackButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+text = "Retour"

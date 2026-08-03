@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ArenaVisualProfile" format=3 uid="uid://cxdiyykfasg7o"]
+
+[ext_resource type="Script" uid="uid://cyptrlrfd1c03" path="res://data/rooms/arena_visual_profile.gd" id="1_profile"]
+[ext_resource type="Texture2D" uid="uid://5hxq1q5j8ocu" path="res://asset/arena/prototype/dalle_wall.png" id="2_wall"]
+[ext_resource type="Texture2D" uid="uid://by12tcr7nt151" path="res://asset/arena/prototype/dalle_lava.png" id="3_lava"]
+[ext_resource type="Texture2D" uid="uid://d1dg6kldppcyn" path="res://asset/arena/prototype/dalle_ice.png" id="4_ice"]
+[ext_resource type="Texture2D" uid="uid://c41iottxrshvc" path="res://asset/arena/prototype/dalle_shadow.png" id="5_shadow"]
+[ext_resource type="Texture2D" uid="uid://bdc3j6doy7ffb" path="res://asset/arena/prototype/dalle_rune.png" id="6_rune"]
+
+[resource]
+script = ExtResource("1_profile")
+normal_texture = ExtResource("2_wall")
+wall_texture = ExtResource("6_rune")
+hole_texture = ExtResource("5_shadow")
+lava_texture = ExtResource("3_lava")
+ice_texture = ExtResource("4_ice")

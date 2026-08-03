@@ -12,6 +12,10 @@
 extends Node2D
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
+const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
+const ArenaFeatureRendererScript = preload(
+	"res://battle/arena_feature_renderer.gd"
+)
 
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
@@ -90,6 +94,9 @@ var grid_view: Node2D
 var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
+var generated_arena_seed: int = 0
+var _generated_arena_features: Dictionary = {}
+var _arena_feature_renderer: Node = null
 
 # --- Contrôle ---
 var turn_state: TurnState
@@ -152,7 +159,9 @@ func _ready() -> void:
 
 	_setup_logic()
 	_import_terrain_from_tilemap()
+	_generate_arena_layout()
 	_setup_view() 
+	_setup_arena_visuals()
 	EventBus.battle_view_ready.emit(grid_view)
 	_setup_camera()
 	_setup_ui()
@@ -234,6 +243,27 @@ func _cell_type_from_string(type_name: String) -> GridData.CellType:
 		"RUNE":   return GridData.CellType.RUNE
 		_:        return GridData.CellType.NORMAL
 
+
+func _generate_arena_layout() -> void:
+	_generated_arena_features.clear()
+	generated_arena_seed = 0
+	if room_data == null or room_data.arena_generation_profile == null:
+		return
+	var protected_cells: Array[Vector2i] = []
+	protected_cells.append_array(room_data.hero_spawn_zone)
+	protected_cells.append_array(room_data.enemy_spawn_zone)
+	var generation: Dictionary = ArenaGeneratorScript.generate(
+		grid,
+		room_data.arena_generation_profile,
+		protected_cells
+	)
+	generated_arena_seed = int(generation.get("seed", 0))
+	if not bool(generation.get("success", false)):
+		return
+	_generated_arena_features = generation.get("features", {})
+	for cell in _generated_arena_features:
+		grid.set_type(cell, _generated_arena_features[cell])
+
 # ============================================================
 # MISE EN PLACE — VISUEL & CONTRÔLE
 # ============================================================
@@ -251,6 +281,32 @@ func _setup_view() -> void:
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
 	_unit_view_parent = _find_unit_view_parent()
+
+
+func _setup_arena_visuals() -> void:
+	if room_data == null or room_data.arena_visual_profile == null:
+		return
+	var visual_cells := {}
+	for x in range(grid.cols):
+		for y in range(grid.rows):
+			var cell := Vector2i(x, y)
+			if _generated_arena_features.has(cell) \
+					or grid.get_type(cell) == GridData.CellType.NORMAL:
+				visual_cells[cell] = grid.get_type(cell)
+	if visual_cells.is_empty():
+		return
+	var feature_parent: Node2D = (
+		_unit_view_parent if _unit_view_parent != null else grid_view
+	)
+	_arena_feature_renderer = ArenaFeatureRendererScript.new()
+	_arena_feature_renderer.name = "ArenaFeatureRenderer"
+	add_child(_arena_feature_renderer)
+	_arena_feature_renderer.configure(
+		grid_view,
+		feature_parent,
+		room_data.arena_visual_profile
+	)
+	_arena_feature_renderer.render(visual_cells)
 
 func _find_configured_grid_view() -> Node2D:
 	var named_view := get_node_or_null("IsoGridView") as Node2D

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ArenaGenerationProfile" format=3 uid="uid://cpi0aalqqlb61"]
+
+[ext_resource type="Script" uid="uid://mxqw51mma5x3" path="res://data/rooms/arena_generation_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+minimum_obstacle_count = 5
+maximum_obstacle_count = 8
+minimum_feature_distance = 2
+maximum_blocked_cell_ratio = 0.12
+wall_weight = 2
+hole_weight = 1
+lava_weight = 1
+ice_weight = 1
+shadow_weight = 0
+rune_weight = 0
+maximum_generation_attempts = 100

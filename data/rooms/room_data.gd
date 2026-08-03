@@ -14,6 +14,13 @@
 class_name RoomData
 extends Resource
 
+const ArenaGenerationProfileScript = preload(
+	"res://data/rooms/arena_generation_profile.gd"
+)
+const ArenaVisualProfileScript = preload(
+	"res://data/rooms/arena_visual_profile.gd"
+)
+
 @export var room_name: String = "Salle"
 
 @export var background_image: Texture2D
@@ -21,6 +28,11 @@ extends Resource
 @export var particles_scene: PackedScene
 
 @export var battle_scene: PackedScene
+
+## Regles optionnelles de placement procedural propres a cette salle.
+## Si ce champ reste vide, la salle conserve son comportement actuel.
+@export var arena_generation_profile: ArenaGenerationProfileScript
+@export var arena_visual_profile: ArenaVisualProfileScript
 
 # Configuration optionnelle des salles peintes. Les salles historiques gardent
 # ces champs a null et continuent d'utiliser leurs scenes/TileMap existantes.

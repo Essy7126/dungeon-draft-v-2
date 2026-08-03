@@ -39,6 +39,8 @@ func _capture() -> void:
 		get_tree().quit(1)
 		return
 	controller.archivist_panel.get_node("%RunButton").pressed.emit()
+	await get_tree().process_frame
+	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
 	for _frame in range(6):
 		await get_tree().process_frame
 	if opened_cinematic.is_empty():

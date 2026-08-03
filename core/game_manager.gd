@@ -72,6 +72,7 @@ var item_catalog: ItemCatalog = null
 var run_inventory: RunInventory = null
 var _equipment_service := EquipmentService.new()
 var _item_use_service := ItemUseService.new()
+var _next_run_start_room_index := 0
 
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
@@ -119,10 +120,21 @@ func is_progression_service_connected() -> bool:
 func start_run(run_data: RunData) -> void:
 	start_preconfigured_run(run_data, PRODUCTION_HERO_DATA_PATHS)
 
+## Configure une seule fois la salle de depart du prochain lancement de run.
+func configure_next_run_start_room(room_index: int) -> void:
+	_next_run_start_room_index = maxi(0, room_index)
+
+
 ## `hero_sources` accepte des chemins res:// vers des UnitData ou des UnitData.
 func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:
+	var requested_start_room := _next_run_start_room_index
+	_next_run_start_room_index = 0
+	if run_data == null or requested_start_room >= run_data.rooms.size():
+		push_error("Indice de salle de depart invalide : %d" % requested_start_room)
+		return
 	if not _prepare_preconfigured_run(run_data, hero_sources):
 		return
+	current_room_index = requested_start_room - 1
 	_go_to_next_room()
 
 ## Prepare l'etat sans changer de scene. Separe de start_preconfigured_run pour

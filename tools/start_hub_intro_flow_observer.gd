@@ -43,7 +43,8 @@ func start(hub: Node) -> void:
 		_finish(scene_callback)
 		return
 	controller.archivist_panel.get_node("%RunButton").pressed.emit()
-	controller.archivist_panel.get_node("%RunButton").pressed.emit()
+	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
+	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
 
 	var intro: IntroCinematic = null
 	for _frame in range(30):

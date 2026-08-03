@@ -323,7 +323,11 @@ func test_commencer_run_ouvre_intro_sans_demarrer_run_et_une_seule_fois() -> voi
 		captured_paths.append(scene_path)
 		return true
 	controller.archivist_panel.get_node("%RunButton").pressed.emit()
-	controller.archivist_panel.get_node("%RunButton").pressed.emit()
+	assert_eq(calls[0], 0)
+	assert_true(controller.archivist_panel.get_node("%RoomSelectionView").visible)
+	controller.archivist_panel.get_node("%RoomSelector").select(2)
+	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
+	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
 	assert_eq(calls[0], 1)
 	assert_eq(controller.get_state(), StartHubController.HubState.TRANSITIONING)
 	assert_eq(captured_paths, ["res://cinematics/intro/intro_cinematic.tscn"])
@@ -349,6 +353,7 @@ func test_echec_transition_restaure_un_etat_non_bloque() -> void:
 	controller.transition_fade_duration = 0.0
 	controller.cinematic_open_callable = func(_scene_path): return false
 	controller.archivist_panel.get_node("%RunButton").pressed.emit()
+	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
 	assert_push_error("impossible d'ouvrir la cinematique d'introduction")
 	assert_eq(controller.get_state(), StartHubController.HubState.IDLE)
 	assert_false(controller.transition_fade.visible)
