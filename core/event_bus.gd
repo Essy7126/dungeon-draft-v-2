@@ -83,6 +83,7 @@ signal status_refreshed(unit, status_data)
 
 # Un statut a expiré et a été retiré.
 signal status_expired(unit, status_name)
+signal status_removed(unit, status_id, source)
 
 # ============================================================
 # SIGNAUX DE TOUR
@@ -91,6 +92,15 @@ signal status_expired(unit, status_name)
 
 # Le tour d'une unité commence (PA/PM rechargés, statuts à traiter).
 signal turn_started(unit)
+signal ability_telegraphed(caster, spell, payload)
+signal telegraph_cleared(caster)
+signal pending_ability_resolved(caster, spell, payload)
+signal pending_ability_blocked(caster, spell, reason)
+signal pending_ability_cancelled(caster, payload, reason)
+signal summon_telegraphed(caster, spell, target_cell)
+signal summon_resolved(caster, summoned_unit, target_cell, source_ability_id)
+signal summon_blocked(caster, spell, target_cell, reason)
+signal summon_cancelled(caster, spell, target_cell, reason)
 
 # Un nouveau round commence (tous les vivants ont joué une fois). Émis par la
 # TurnQueue. Sert aux systèmes de salle-situation (menace qui s'aggrave par round :

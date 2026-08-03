@@ -393,7 +393,7 @@ func _capture_snow_centurion_sequence(battle: Node, enemies: Array) -> void:
 	if not visual is SnowCenturionIsoUnitView:
 		_fail("Capture Snow: SnowCenturionIsoUnitView absent.")
 		return
-	var heavy_spell := load(SnowCenturionVisual3D.HEAVY_STRIKE_PATH) as Spell
+	var heavy_spell := load("res://data/spells/enemies/frost_lance.tres") as Spell
 	if heavy_spell == null:
 		_fail("Capture Snow: sort HeavyAttack introuvable.")
 		return

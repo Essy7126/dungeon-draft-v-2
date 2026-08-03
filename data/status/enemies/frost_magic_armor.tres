@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"frost_magic_armor"
+status_name = "Egide de givre"
+description = "+50 resistance magique pendant une activation complete."
+color = Color(0.55, 0.9, 1, 1)
+duration = 1
+stat_modifiers = {&"resist_magique": 50.0}
+modifier_source = &"frost_magic_armor"
+

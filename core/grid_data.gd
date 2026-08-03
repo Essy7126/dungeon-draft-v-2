@@ -58,6 +58,9 @@ const PROPERTIES = {
 var _types: Dictionary = {}     # Vector2i -> CellType
 var _units: Dictionary = {}     # Vector2i -> Unit (ou absent si vide)
 var _effects: Dictionary = {}   # Vector2i -> { "name": String, "data": Dictionary }
+var _next_combat_order: int = 0
+
+signal occupancy_changed(reason: StringName, unit, from_pos: Vector2i, to_pos: Vector2i)
 
 # ============================================================
 # CONSTRUCTION
@@ -126,6 +129,92 @@ func has_unit(pos: Vector2i) -> bool:
 func get_unit(pos: Vector2i):
 	return _units.get(pos, null)
 
+
+func get_units() -> Array:
+	var result: Array = []
+	for unit_value in _units.values():
+		if unit_value != null and not result.has(unit_value):
+			result.append(unit_value)
+	return result
+
+
+func count_living_in_team(team: int) -> int:
+	var count := 0
+	for unit_value in get_units():
+		var unit := unit_value as Unit
+		if unit != null and unit.is_alive and unit.team == team:
+			count += 1
+	return count
+
+
+func has_living_unit_id(team: int, unit_id: StringName) -> bool:
+	for unit_value in get_units():
+		var unit := unit_value as Unit
+		if unit != null and unit.is_alive and unit.team == team and unit.unit_id == unit_id:
+			return true
+	return false
+
+
+func has_pending_summon_unit_id(team: int, unit_id: StringName) -> bool:
+	for unit_value in get_units():
+		var unit := unit_value as Unit
+		if unit == null or not unit.is_alive or unit.team != team or unit.pending_ability.is_empty():
+			continue
+		var spell := unit.pending_ability.get("spell") as Spell
+		if spell != null and spell.summon_unit_data != null \
+				and spell.summon_unit_data.get_effective_unit_id() == unit_id:
+			return true
+	return false
+
+
+func _refresh_tactical_links() -> void:
+	var living := get_units().filter(func(value):
+		var unit := value as Unit
+		return unit != null and unit.is_alive
+	)
+	for unit_value in living:
+		var unit := unit_value as Unit
+		if unit.linked_commander_role_id == &"":
+			continue
+		if unit.linked_commander != null and unit.linked_commander.is_alive \
+				and find_unit(unit.linked_commander) != Vector2i(-1, -1):
+			continue
+		var candidates: Array = []
+		for candidate_value in living:
+			var candidate := candidate_value as Unit
+			if candidate == unit or candidate.team != unit.team \
+					or candidate.tactical_role_id != unit.linked_commander_role_id:
+				continue
+			if unit.faction_id != &"" and candidate.faction_id != unit.faction_id:
+				continue
+			candidates.append(candidate)
+		candidates.sort_custom(func(a: Unit, b: Unit) -> bool:
+			var distance_a := manhattan(unit.grid_pos, a.grid_pos)
+			var distance_b := manhattan(unit.grid_pos, b.grid_pos)
+			if distance_a != distance_b:
+				return distance_a < distance_b
+			return a.get_runtime_stable_id() < b.get_runtime_stable_id()
+		)
+		unit.linked_commander = candidates[0] if not candidates.is_empty() else null
+
+
+func refresh_proximity_passives() -> void:
+	_refresh_tactical_links()
+	for unit_value in get_units():
+		var unit := unit_value as Unit
+		if unit != null:
+			unit.refresh_proximity_passive(self)
+
+
+func _after_occupancy_change(
+		reason: StringName,
+		unit,
+		from_pos: Vector2i,
+		to_pos: Vector2i
+	) -> void:
+	refresh_proximity_passives()
+	occupancy_changed.emit(reason, unit, from_pos, to_pos)
+
 func place_unit(unit, pos: Vector2i) -> bool:
 	if unit == null or not is_valid(pos):
 		return false
@@ -135,8 +224,12 @@ func place_unit(unit, pos: Vector2i) -> bool:
 	if _units.has(pos) and _units[pos] != unit:
 		return false
 	_units[pos] = unit
+	if unit.combat_order < 0:
+		unit.combat_order = _next_combat_order
+		_next_combat_order += 1
 	unit.grid_context = self
 	unit.grid_pos = pos
+	_after_occupancy_change(&"placed", unit, previous, pos)
 	return true
 
 func remove_unit(unit) -> void:
@@ -149,6 +242,7 @@ func remove_unit(unit) -> void:
 		_units.erase(pos)
 	unit.grid_context = null
 	unit.grid_pos = Vector2i(-1, -1)
+	_after_occupancy_change(&"removed", unit, pos, Vector2i(-1, -1))
 
 func relocate_unit(unit, to: Vector2i) -> bool:
 	if unit == null or not is_valid(to):
@@ -166,6 +260,7 @@ func relocate_unit(unit, to: Vector2i) -> bool:
 	_units[to] = unit
 	unit.grid_context = self
 	unit.grid_pos = to
+	_after_occupancy_change(&"relocated", unit, from, to)
 	return true
 
 func set_unit(pos: Vector2i, unit) -> void:
@@ -177,6 +272,7 @@ func clear_unit(pos: Vector2i) -> void:
 	if unit != null and unit.grid_pos == pos:
 		unit.grid_context = null
 		unit.grid_pos = Vector2i(-1, -1)
+	_after_occupancy_change(&"cleared", unit, pos, Vector2i(-1, -1))
 
 # DÃ©place une unitÃ© d'une case Ã  une autre dans les donnÃ©es.
 func move_unit(from: Vector2i, to: Vector2i) -> void:
@@ -190,6 +286,17 @@ func find_unit(unit) -> Vector2i:
 		if _units[pos] == unit:
 			return pos
 	return Vector2i(-1, -1)
+
+
+func on_unit_became_dead(dead_unit: Unit) -> void:
+	for unit_value in get_units():
+		var unit := unit_value as Unit
+		if unit == null:
+			continue
+		unit.remove_statuses_from_source(dead_unit)
+		if unit.linked_commander == dead_unit:
+			unit.linked_commander = null
+	refresh_proximity_passives()
 
 # ============================================================
 # EFFETS DE TERRAIN (sorts actifs avec durÃ©e, dÃ©gÃ¢ts, etc.)

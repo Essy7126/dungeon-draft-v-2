@@ -9,7 +9,8 @@ const SnowScene := preload(
 	"res://characters/enemies/skeleton_snow_centurion/SnowCenturionIsoUnitView.tscn"
 )
 const RangedScene := preload("res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn")
-const HeavySpell := preload("res://data/spells/enemies/skeleton_chief_heavy_strike.tres")
+const ChiefHeavySpell := preload("res://data/spells/enemies/scarlet_sentence.tres")
+const SnowHeavySpell := preload("res://data/spells/enemies/frost_lance.tres")
 const RangedSpell := preload("res://data/spells/enemies/skeleton_ranged_shot.tres")
 
 var _elapsed := 0.0
@@ -64,8 +65,8 @@ func _process(delta: float) -> void:
 	)
 	_trigger_once("ranged_attack", 2.35, func(): _ranged.play_spell_action(RangedSpell))
 	_trigger_once("heavy_attacks", 3.95, func():
-		_chiefs[0].play_spell_action(HeavySpell)
-		_snow[0].play_spell_action(HeavySpell)
+		_chiefs[0].play_spell_action(ChiefHeavySpell)
+		_snow[0].play_spell_action(SnowHeavySpell)
 	)
 	_trigger_once("snow_attack", 4.15, func(): _snow[1].play_basic_attack())
 	_trigger_once("hits", 5.85, func():

@@ -13,7 +13,8 @@ const ImportValidationScene := preload(
 )
 const CHIEF_PATH := "res://data/units/ennemie/skeleton_chief.tres"
 const MELEE_PATH := "res://data/units/ennemie/skeleton_melee.tres"
-const HEAVY_PATH := "res://data/spells/enemies/skeleton_chief_heavy_strike.tres"
+const STRIKE_PATH := "res://data/spells/enemies/skeleton_chief_strike.tres"
+const SENTENCE_PATH := "res://data/spells/enemies/scarlet_sentence.tres"
 const ACTIVE_ROOMS := [
 	"res://data/rooms/first_run_room_01.tres",
 	"res://data/rooms/first_run_room_02.tres",
@@ -106,29 +107,28 @@ func test_primary_attack_releases_exactly_once_and_death_overrides_attack() -> v
 
 func test_chief_resource_is_elite_melee_without_hero_economy() -> void:
 	var chief := load(CHIEF_PATH) as UnitData
-	var melee := load(MELEE_PATH) as UnitData
 	assert_eq(chief.unit_id, &"skeleton_chief")
-	assert_eq(chief.unit_name, "Chef squelette")
+	assert_eq(chief.unit_name, "Chef squelette rouge")
 	assert_eq(chief.team, 1)
-	assert_between(float(chief.max_hp) / float(melee.max_hp), 1.6, 2.0)
-	assert_between(float(chief.attack_power) / float(melee.attack_power), 1.20, 1.35)
-	assert_eq(chief.max_ap, 6)
-	assert_eq(chief.max_mp, melee.max_mp)
-	assert_gt(chief.initiative, melee.initiative)
+	assert_eq(chief.max_hp, 220)
+	assert_eq([chief.max_ap, chief.max_mp, chief.initiative], [6, 2, 6])
+	assert_eq([chief.armure, chief.resist_magique], [90.0, 70.0])
+	assert_eq([chief.esquive, chief.crit_chance], [0.0, 0.0])
 	assert_eq([chief.minimum_range, chief.preferred_range, chief.maximum_range], [1, 1, 1])
 	assert_false(chief.keep_distance)
 	assert_eq(chief.ai_behavior, 0)
-	assert_true(chief.basic_attack_enabled)
-	assert_eq(chief.spells.size(), 1)
-	assert_eq(chief.spells[0].resource_path, HEAVY_PATH)
+	assert_false(chief.basic_attack_enabled)
+	assert_eq(chief.spells.size(), 2)
+	assert_eq(chief.spells[0].resource_path, STRIKE_PATH)
+	assert_eq(chief.spells[1].resource_path, SENTENCE_PATH)
 
 
-func test_heavy_strike_is_single_data_driven_physical_melee_spell() -> void:
-	var spell := load(HEAVY_PATH) as Spell
-	assert_eq(spell.spell_id, &"skeleton_chief_heavy_strike")
-	assert_eq(spell.ap_cost, 3)
+func test_chief_strike_is_single_data_driven_physical_melee_spell() -> void:
+	var spell := load(STRIKE_PATH) as Spell
+	assert_eq(spell.spell_id, &"skeleton_chief_strike")
+	assert_eq(spell.ap_cost, 4)
 	assert_eq(spell.spell_range, 1)
-	assert_eq(spell.damage, 24)
+	assert_eq(spell.damage, 32)
 	assert_eq(spell.damage_type, Spell.DamageType.PHYSICAL)
 	assert_eq(spell.element, Spell.Element.NONE)
 	assert_true(spell.can_target_enemy)
@@ -138,7 +138,7 @@ func test_heavy_strike_is_single_data_driven_physical_melee_spell() -> void:
 	assert_null(spell.vfx_scene)
 
 
-func test_generic_melee_ai_moves_then_uses_heavy_strike_without_id_branch() -> void:
+func test_tactical_melee_ai_moves_then_uses_chief_strike_without_id_branch() -> void:
 	var chief_data := load(CHIEF_PATH) as UnitData
 	var field := Factory.make_battlefield(8, 2)
 	var chief := Unit.from_data(chief_data)
@@ -153,13 +153,13 @@ func test_generic_melee_ai_moves_then_uses_heavy_strike_without_id_branch() -> v
 	var adjacent_plan := ai.decide(chief, [chief, target])
 	assert_false(adjacent_plan.is_empty())
 	assert_eq(adjacent_plan[0].type, "cast")
-	assert_eq(adjacent_plan[0].spell.resource_path, HEAVY_PATH)
+	assert_eq(adjacent_plan[0].spell.resource_path, STRIKE_PATH)
 	var ai_source := FileAccess.get_file_as_string("res://core/enemy_ai.gd").to_lower()
 	assert_false("skeleton_chief" in ai_source)
 	assert_false("chef squelette" in ai_source)
 
 
-func test_heavy_strike_applies_damage_exactly_once_through_spell_caster() -> void:
+func test_chief_strike_applies_damage_exactly_once_through_spell_caster() -> void:
 	var field := Factory.make_battlefield(2, 1)
 	var chief := Unit.from_data(load(CHIEF_PATH) as UnitData)
 	var target := Unit.new("Cible", 0, 100)
@@ -168,7 +168,7 @@ func test_heavy_strike_applies_damage_exactly_once_through_spell_caster() -> voi
 	var before := target.current_hp
 	var report := field.caster.cast(chief, chief.spells[0], target.grid_pos)
 	assert_false(report.get("failed", false))
-	assert_eq(before - target.current_hp, 24)
+	assert_eq(before - target.current_hp, 32)
 
 
 func test_chief_rosters_keep_rooms_one_to_three_and_expand_room_four() -> void:

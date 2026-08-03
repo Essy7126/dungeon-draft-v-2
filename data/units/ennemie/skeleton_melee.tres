@@ -1,24 +1,39 @@
-[gd_resource type="Resource" script_class="UnitData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="UnitData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonMeleeIsoUnitView.tscn" id="2_visual"]
+[ext_resource type="Script" path="res://data/spell.gd" id="3_spell_type"]
+[ext_resource type="Resource" path="res://data/spells/enemies/skeleton_bone_blade.tres" id="4_blade"]
+[ext_resource type="Resource" path="res://data/ai/profiles/skeleton_normal_ai.tres" id="5_ai"]
 
 [resource]
 script = ExtResource("1_unit")
 unit_id = &"skeleton_melee"
-unit_name = "Squelette de melee"
-description = "Combattant sans equipement visible qui cherche l'adjacence."
+unit_name = "Squelette"
+description = "Combattant rapide qui poursuit la marque et se renforce en formation."
 team = 1
-max_hp = 75
-initiative = 5
-max_mp = 2
-attack_power = 16
-armure = 8.0
+max_hp = 72
+initiative = 12
+max_ap = 4
+max_mp = 5
+attack_power = 18
+armure = 0.0
+resist_magique = 0.0
+esquive = 0.0
+crit_chance = 0.0
 visual_scene = ExtResource("2_visual")
-basic_attack_enabled = true
+basic_attack_enabled = false
+spells = Array[ExtResource("3_spell_type")]([ExtResource("4_blade")])
 ai_behavior = 0
 combat_style = 0
 preferred_range = 1
 minimum_range = 1
 maximum_range = 1
 keep_distance = false
+ai_profile = ExtResource("5_ai")
+faction_id = &"skeleton_legion"
+tactical_role_id = &"skeleton_normal"
+linked_commander_role_id = &"skeleton_centurion"
+proximity_armor_source = &"formation_macabre"
+proximity_armor_per_living_neighbor = 25
+proximity_armor_max_neighbors = 2

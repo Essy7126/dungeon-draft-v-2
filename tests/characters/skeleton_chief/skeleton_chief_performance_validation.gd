@@ -7,7 +7,7 @@ const WarriorScene := preload("res://characters/warrior/WarriorIsoUnitView.tscn"
 const ChiefScene := preload("res://characters/enemies/skeleton_chief/SkeletonChiefIsoUnitView.tscn")
 const MeleeScene := preload("res://characters/enemies/skeleton/SkeletonMeleeIsoUnitView.tscn")
 const RangedScene := preload("res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn")
-const HeavySpell := preload("res://data/spells/enemies/skeleton_chief_heavy_strike.tres")
+const HeavySpell := preload("res://data/spells/enemies/scarlet_sentence.tres")
 const RangedSpell := preload("res://data/spells/enemies/skeleton_ranged_shot.tres")
 
 var _elapsed := 0.0

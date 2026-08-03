@@ -1,6 +1,7 @@
 extends GutTest
 
 const UNIT_VIEW_SCENE := preload("res://battle/unit_view.tscn")
+const PAINTED_BATTLE_SCRIPT := preload("res://battle/painted/painted_battle.gd")
 const ROOM_PATHS := [
 	"res://data/rooms/first_run_room_01.tres",
 	"res://data/rooms/room_05_volcano.tres",
@@ -187,24 +188,242 @@ func test_exports_de_validation_sont_presents_aux_trois_resolutions() -> void:
 		var directory := "res://artifacts/maps/unit_presence_audit/%s" % (
 			room.painted_map_visual_data.map_id
 		)
+		for resolution in ["720p", "1080p", "1440p"]:
+			for filename in [
+				"final.png",
+				"debug_grid.png",
+				"unit_behind_occluder.png",
+				"unit_side_of_occluder.png",
+				"unit_in_front_of_occluder.png",
+				"several_units_occlusion.png",
+				"movement_overlay.png",
+				"spell_overlay.png",
+				"active_unit.png",
+			]:
+				assert_true(FileAccess.file_exists(
+					"%s/%s/%s" % [directory, resolution, filename]
+				))
 		for filename in [
-			"baseline_720p.png", "baseline.png", "baseline_1440p.png",
-			"final_720p.png", "final.png", "final_1440p.png",
-			"four_way_comparison.png", "resolution_comparison.png",
-			"action_states_comparison.png",
+			"before_after.png",
+			"resolution_comparison.png",
+			"occlusion_off_on.png",
+			"occlusion_scenarios.png",
+			"animation_states.png",
 		]:
-			assert_true(FileAccess.file_exists("%s/%s" % [directory, filename]))
+			assert_true(FileAccess.file_exists(
+				"%s/%s" % [directory, filename]
+			))
+		for filename in [
+			"walk_animation.png",
+			"cast_animation.png",
+			"hit_animation.png",
+		]:
+			assert_true(FileAccess.file_exists(
+				"%s/1080p/%s" % [directory, filename]
+			))
 	assert_true(FileAccess.file_exists(
 		"res://artifacts/maps/unit_presence_audit/unit_family_scale_ladder.png"
 	))
 	assert_true(FileAccess.file_exists(
 		"res://artifacts/maps/unit_presence_audit/validation_summary.json"
 	))
+	for filename in [
+		"all_maps_comparison.png",
+		"all_maps_resolution_comparison.png",
+		"all_maps_occlusion_off_on.png",
+	]:
+		assert_true(FileAccess.file_exists(
+			"res://artifacts/maps/unit_presence_audit/%s" % filename
+		))
+
+
+func test_unite_derriere_la_tour_est_integralement_masquee() -> void:
+	var fixture := _occlusion_fixture(0, [_occlusion_center(0)])
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	battle._update_painted_occlusion()
+	assert_false(views[0].visible)
+	battle.free()
+
+
+func test_unite_devant_la_tour_reste_visible() -> void:
+	var rect := _profile_visual(0).foreground_full_hide_rect
+	var fixture := _occlusion_fixture(0, [Vector2(
+		rect.get_center().x,
+		rect.end.y + 24.0
+	)])
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	battle._update_painted_occlusion()
+	assert_true(views[0].visible)
+	battle.free()
+
+
+func test_unite_laterale_gauche_reste_visible() -> void:
+	var rect := _profile_visual(1).foreground_full_hide_rect
+	var fixture := _occlusion_fixture(1, [Vector2(
+		rect.position.x - 24.0,
+		rect.get_center().y
+	)])
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	battle._update_painted_occlusion()
+	assert_true(views[0].visible)
+	battle.free()
+
+
+func test_unite_laterale_droite_reste_visible() -> void:
+	var rect := _profile_visual(2).foreground_full_hide_rect
+	var fixture := _occlusion_fixture(2, [Vector2(
+		rect.end.x + 24.0,
+		rect.get_center().y
+	)])
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	battle._update_painted_occlusion()
+	assert_true(views[0].visible)
+	battle.free()
+
+
+func test_plusieurs_unites_conservent_des_etats_d_occlusion_independants() -> void:
+	var rect := _profile_visual(0).foreground_full_hide_rect
+	var positions := [
+		rect.get_center(),
+		Vector2(rect.get_center().x, rect.end.y + 20.0),
+		Vector2(rect.position.x - 20.0, rect.get_center().y),
+		Vector2(rect.end.x + 20.0, rect.get_center().y),
+	]
+	var fixture := _occlusion_fixture(0, positions)
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	battle._update_painted_occlusion()
+	assert_eq(
+		views.map(func(view: Node2D) -> bool: return view.visible),
+		[false, true, true, true]
+	)
+	battle.free()
+
+
+func test_changement_d_ordre_y_pendant_deplacement_actualise_la_visibilite() -> void:
+	var rect := _profile_visual(1).foreground_full_hide_rect
+	var fixture := _occlusion_fixture(1, [rect.get_center()])
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	var view: Node2D = views[0]
+	battle._update_painted_occlusion()
+	assert_false(view.visible)
+	view.position.y = rect.end.y + 1.0
+	battle._update_painted_occlusion()
+	assert_true(view.visible)
+	battle.free()
+
+
+func test_entree_et_sortie_laterale_de_la_zone_actualisent_la_visibilite() -> void:
+	var rect := _profile_visual(2).foreground_full_hide_rect
+	var fixture := _occlusion_fixture(2, [Vector2(
+		rect.position.x - 1.0,
+		rect.get_center().y
+	)])
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	var view: Node2D = views[0]
+	battle._update_painted_occlusion()
+	assert_true(view.visible)
+	view.position.x = rect.position.x
+	battle._update_painted_occlusion()
+	assert_false(view.visible)
+	view.position.x = rect.end.x
+	battle._update_painted_occlusion()
+	assert_true(view.visible)
+	battle.free()
+
+
+func test_retrait_d_une_vue_ne_provoque_pas_d_acces_a_un_objet_libere() -> void:
+	var fixture := _occlusion_fixture(0, [_occlusion_center(0)])
+	var battle = fixture[0]
+	var views: Array = fixture[1]
+	var removed: Node2D = views[0]
+	removed.free()
+	battle._update_painted_occlusion()
+	assert_false(is_instance_valid(removed))
+	battle.free()
+
+
+func test_reconstruction_occluder_ne_cumule_jamais_les_masques() -> void:
+	var battle = PAINTED_BATTLE_SCRIPT.new()
+	var world := Node2D.new()
+	world.name = "YSortedWorld"
+	world.y_sort_enabled = true
+	battle.add_child(world)
+	battle.painted_visual_data = _profile_visual(0)
+	var texture: Texture2D = battle.painted_visual_data.load_background_texture()
+	battle._configure_painted_occluder(texture)
+	battle._configure_painted_occluder(texture)
+	assert_eq(_occluders_in(world).size(), 1)
+	battle.free()
+
+
+func test_occluder_et_unites_partagent_un_monde_y_sorte() -> void:
+	var battle = PAINTED_BATTLE_SCRIPT.new()
+	var world := Node2D.new()
+	world.name = "YSortedWorld"
+	world.y_sort_enabled = true
+	battle.add_child(world)
+	battle.painted_visual_data = _profile_visual(1)
+	battle._configure_painted_occluder(
+		battle.painted_visual_data.load_background_texture()
+	)
+	var occluders := _occluders_in(world)
+	assert_true(world.y_sort_enabled)
+	assert_eq(occluders.size(), 1)
+	assert_eq(
+		occluders[0].position.y,
+		battle.painted_visual_data.foreground_occluder_sort_y
+	)
+	battle.free()
+
+
+func test_limites_du_masque_sont_stables_et_non_inclusives_en_sortie() -> void:
+	for index in ROOM_PATHS.size():
+		var visual := _profile_visual(index)
+		var rect := visual.foreground_full_hide_rect
+		assert_true(visual.is_position_fully_occluded(rect.position))
+		assert_false(visual.is_position_fully_occluded(rect.end))
 
 
 func _profile(index: int) -> BattlePresentationProfile:
 	var room := load(ROOM_PATHS[index]) as RoomData
 	return room.painted_map_visual_data.presentation_profile
+
+
+func _profile_visual(index: int) -> PaintedMapVisualData:
+	var room := load(ROOM_PATHS[index]) as RoomData
+	return room.painted_map_visual_data
+
+
+func _occlusion_center(index: int) -> Vector2:
+	return _profile_visual(index).foreground_full_hide_rect.get_center()
+
+
+func _occlusion_fixture(index: int, positions: Array) -> Array:
+	var battle = PAINTED_BATTLE_SCRIPT.new()
+	battle.painted_visual_data = _profile_visual(index)
+	var views: Array[Node2D] = []
+	for view_index in positions.size():
+		var view := Node2D.new()
+		view.position = positions[view_index]
+		battle.add_child(view)
+		views.append(view)
+		battle._unit_views[view_index] = view
+	return [battle, views]
+
+
+func _occluders_in(world: Node2D) -> Array[Node]:
+	var result: Array[Node] = []
+	for child in world.get_children():
+		if child.is_in_group("painted_foreground_occluders"):
+			result.append(child)
+	return result
 
 
 func _fake_view(unit_id: StringName) -> Array:

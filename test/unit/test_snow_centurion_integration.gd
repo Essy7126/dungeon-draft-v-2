@@ -14,7 +14,7 @@ const ImportValidationScene := preload(
 const SNOW_PATH := "res://data/units/ennemie/skeleton_snow_centurion.tres"
 const CHIEF_PATH := "res://data/units/ennemie/skeleton_chief.tres"
 const RANGED_PATH := "res://data/units/ennemie/skeleton_ranged.tres"
-const HEAVY_PATH := "res://data/spells/enemies/skeleton_chief_heavy_strike.tres"
+const FROST_LANCE_PATH := "res://data/spells/enemies/frost_lance.tres"
 const ROOM_FOUR_PATH := "res://data/rooms/first_run_room_04_boss.tres"
 
 
@@ -132,37 +132,41 @@ func test_attack_release_marker_emits_once_at_source_impact() -> void:
 	assert_eq(release_count[0], 1)
 
 
-func test_unit_data_is_an_exact_gameplay_clone_of_the_chief() -> void:
+func test_unit_data_matches_the_tactical_commander_specification() -> void:
 	var snow := load(SNOW_PATH) as UnitData
-	var chief := load(CHIEF_PATH) as UnitData
 	assert_eq(snow.unit_id, &"skeleton_snow_centurion")
-	assert_eq(snow.unit_name, "Centurion squelette des neiges")
-	assert_eq(snow.team, chief.team)
-	for property_name in [
-		&"max_hp", &"initiative", &"max_ap", &"max_mp", &"attack_power", &"armure",
-		&"basic_attack_enabled", &"ai_behavior", &"combat_style", &"preferred_range",
-		&"minimum_range", &"maximum_range", &"keep_distance",
-	]:
-		assert_eq(snow.get(property_name), chief.get(property_name), str(property_name))
-	assert_eq(snow.spells.size(), 1)
-	assert_eq(snow.spells[0].resource_path, HEAVY_PATH)
+	assert_eq(snow.unit_name, "Centurion squelette de glace")
+	assert_eq(snow.team, 1)
+	assert_eq(snow.max_hp, 150)
+	assert_eq([snow.max_ap, snow.max_mp, snow.initiative], [6, 3, 16])
+	assert_eq([snow.armure, snow.resist_magique], [15.0, 80.0])
+	assert_eq([snow.esquive, snow.crit_chance], [0.0, 0.0])
+	assert_eq(snow.resistances[Spell.Element.ICE], 0.5)
+	assert_eq(snow.resistances[Spell.Element.FIRE], -0.25)
+	assert_false(snow.basic_attack_enabled)
+	assert_true(snow.keep_distance)
+	assert_eq([snow.minimum_range, snow.preferred_range, snow.maximum_range], [2, 5, 6])
+	assert_eq(snow.spells.size(), 5)
+	assert_eq(snow.spells.map(func(spell): return spell.spell_id), [
+		&"centurion_mark",
+		&"frost_lance",
+		&"frost_aegis",
+		&"call_bones",
+		&"raise_chief",
+	])
 
 
-func test_generic_melee_ai_uses_existing_heavy_strike_without_id_branch() -> void:
+func test_tactical_ai_prioritizes_missing_normal_reinforcements_without_id_branch() -> void:
 	var field := Factory.make_battlefield(8, 2)
 	var snow := Unit.from_data(load(SNOW_PATH) as UnitData)
 	var target := Unit.new("Cible du Centurion", 0, 100)
 	field.grid.place_unit(snow, Vector2i(0, 0))
 	field.grid.place_unit(target, Vector2i(3, 0))
 	var ai := EnemyAI.new(field.grid, field.pathfinder, field.caster)
-	var approach_plan := ai.decide(snow, [snow, target])
-	assert_false(approach_plan.is_empty())
-	assert_eq(approach_plan[0].type, "move")
-	field.grid.move_unit(Vector2i(0, 0), Vector2i(2, 0))
-	var adjacent_plan := ai.decide(snow, [snow, target])
-	assert_false(adjacent_plan.is_empty())
-	assert_eq(adjacent_plan[0].type, "cast")
-	assert_eq(adjacent_plan[0].spell.resource_path, HEAVY_PATH)
+	var plan := ai.decide(snow, [snow, target])
+	assert_false(plan.is_empty())
+	assert_eq(plan[0].type, "cast")
+	assert_eq(plan[0].spell.spell_id, &"call_bones")
 	var ai_source := FileAccess.get_file_as_string("res://core/enemy_ai.gd").to_lower()
 	assert_false("skeleton_snow_centurion" in ai_source)
 
@@ -208,7 +212,7 @@ func test_grid_clear_keeps_snow_visual_roots_stable_until_scene_cleanup() -> voi
 
 
 func test_scene_removal_cleans_viewport_during_hit_heavy_and_death() -> void:
-	var heavy_spell := load(HEAVY_PATH) as Spell
+	var heavy_spell := load(FROST_LANCE_PATH) as Spell
 	for mode in [&"hit", &"heavy", &"death"]:
 		var owner := Node2D.new()
 		add_child(owner)

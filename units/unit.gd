@@ -21,6 +21,12 @@ var preferred_range: int = 1
 var minimum_range: int = 1
 var maximum_range: int = 1
 var keep_distance: bool = false
+var ai_profile: EnemyAIProfile = null
+var faction_id: StringName = &""
+var tactical_role_id: StringName = &""
+var linked_commander_role_id: StringName = &""
+var linked_commander: Unit = null
+var combat_order: int = -1
 
 # --- Stats max (modifiables) ---
 var max_hp: Stat
@@ -58,6 +64,11 @@ var current_shield: int = 0
 var is_alive: bool = true
 var _grid_pos: Vector2i = Vector2i(-1, -1)
 var grid_context = null
+var proximity_armor_source: StringName = &""
+var proximity_armor_per_living_neighbor: int = 0
+var proximity_armor_max_neighbors: int = 0
+var first_forced_movement_reduction_per_activation: int = 0
+var _forced_movement_reduction_used: bool = false
 # Direction LOGIQUE (pas visuelle) vers laquelle l'unite est orientee. Utilisee
 # par les mecaniques de boss type "durcit de face" (ex: Le Colosse). Mise a
 # jour automatiquement a chaque deplacement reel ; sinon garde sa derniere
@@ -119,6 +130,10 @@ var preview_visual_scene: PackedScene = null
 var basic_attack_enabled: bool = true
 var spells: Array = []
 var _progression_spell_modifiers: Array[SpellModifier] = []
+var activation_index: int = 0
+var activation_consumed: bool = false
+var _ability_states: Dictionary = {}
+var pending_ability: Dictionary = {}
 
 # --- Statuts actifs ---
 # Liste de dictionnaires : { "data": StatusData, "remaining": int }
@@ -187,6 +202,16 @@ static func from_data(data: UnitData) -> Unit:
 	u.minimum_range = data.minimum_range
 	u.maximum_range = data.maximum_range
 	u.keep_distance = data.keep_distance
+	u.ai_profile = data.ai_profile
+	u.faction_id = data.faction_id
+	u.tactical_role_id = data.tactical_role_id
+	u.linked_commander_role_id = data.linked_commander_role_id
+	u.proximity_armor_source = data.proximity_armor_source
+	u.proximity_armor_per_living_neighbor = data.proximity_armor_per_living_neighbor
+	u.proximity_armor_max_neighbors = data.proximity_armor_max_neighbors
+	u.first_forced_movement_reduction_per_activation = (
+		data.first_forced_movement_reduction_per_activation
+	)
 	u.facing_dir = data.facing_dir
 	# Stats dÃ©fensives : on rÃ¨gle la valeur de BASE de chaque Stat.
 	u.armure.base_value = data.armure
@@ -218,6 +243,82 @@ func _on_max_hp_changed() -> void:
 
 func add_spell(spell: Spell) -> void:
 	spells.append(spell)
+	_ensure_ability_state(spell)
+
+
+func _ensure_ability_state(spell: Spell) -> Dictionary:
+	if spell == null:
+		return {}
+	var spell_id := spell.get_effective_spell_id()
+	if not _ability_states.has(spell_id):
+		var initial_ready := 0
+		if spell.initial_cooldown > 0:
+			initial_ready = activation_index + spell.initial_cooldown + 1
+		_ability_states[spell_id] = {
+			"ready_activation": initial_ready,
+			"uses_this_combat": 0,
+			"used_activation": -1,
+		}
+	return _ability_states[spell_id]
+
+
+func can_use_spell(spell: Spell) -> bool:
+	if spell == null or not is_alive or not can_afford_spell_resources(spell):
+		return false
+	var state := _ensure_ability_state(spell)
+	if activation_index < int(state.get("ready_activation", 0)):
+		return false
+	if spell.max_uses_per_combat > 0 \
+			and int(state.get("uses_this_combat", 0)) >= spell.max_uses_per_combat:
+		return false
+	if spell.once_per_activation \
+			and int(state.get("used_activation", -1)) == activation_index:
+		return false
+	return true
+
+
+func mark_spell_used(spell: Spell) -> void:
+	if spell == null:
+		return
+	var state := _ensure_ability_state(spell)
+	state["uses_this_combat"] = int(state.get("uses_this_combat", 0)) + 1
+	state["used_activation"] = activation_index
+	if spell.cooldown_activations > 0:
+		state["ready_activation"] = activation_index + spell.cooldown_activations
+
+
+func get_spell_cooldown_remaining(spell: Spell) -> int:
+	if spell == null:
+		return 0
+	var state := _ensure_ability_state(spell)
+	return maxi(0, int(state.get("ready_activation", 0)) - activation_index)
+
+
+func get_spell_uses(spell: Spell) -> int:
+	if spell == null:
+		return 0
+	return int(_ensure_ability_state(spell).get("uses_this_combat", 0))
+
+
+func set_initial_spell_cooldown(spell_id: StringName, blocked_activations: int) -> void:
+	for spell_value in spells:
+		var spell := spell_value as Spell
+		if spell == null or spell.get_effective_spell_id() != spell_id:
+			continue
+		var state := _ensure_ability_state(spell)
+		state["ready_activation"] = maxi(
+			int(state.get("ready_activation", 0)),
+			activation_index + maxi(0, blocked_activations) + 1
+		)
+
+
+func reset_ability_runtime() -> void:
+	activation_index = 0
+	activation_consumed = false
+	_ability_states.clear()
+	pending_ability.clear()
+	for spell_value in spells:
+		_ensure_ability_state(spell_value as Spell)
 
 
 func set_progression_spell_modifiers(modifiers: Array[SpellModifier]) -> void:
@@ -254,6 +355,54 @@ func get_resistance_value(element: int) -> float:
 		return resistances[element].get_value()
 	return 0.0
 
+
+func get_runtime_stable_id() -> String:
+	if combat_order >= 0:
+		return "%s:%06d" % [String(unit_id), combat_order]
+	return "%s:%020d" % [String(unit_id), get_instance_id()]
+
+
+func target_has_linked_source_status(target: Unit, status_id: StringName) -> bool:
+	return target != null \
+		and linked_commander != null \
+		and linked_commander.is_alive \
+		and target.has_status(status_id, linked_commander)
+
+
+func refresh_proximity_passive(grid: GridData) -> void:
+	var source := String(proximity_armor_source)
+	if source.is_empty():
+		return
+	armure.remove_modifiers_from(source)
+	if not is_alive or grid == null or not grid.is_valid(grid_pos):
+		stats_changed.emit(self)
+		return
+	var living_neighbors := 0
+	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
+		var neighbor := grid.get_unit(grid_pos + direction) as Unit
+		if neighbor != null and neighbor != self and neighbor.is_alive:
+			living_neighbors += 1
+	var counted := mini(living_neighbors, proximity_armor_max_neighbors)
+	if counted > 0:
+		armure.add_modifier(
+			float(counted * proximity_armor_per_living_neighbor),
+			Stat.ModType.FLAT,
+			source
+		)
+	stats_changed.emit(self)
+
+
+func on_actor_activation_started(_actor: Unit) -> void:
+	_forced_movement_reduction_used = false
+
+
+func reduce_forced_movement(cells: int) -> int:
+	if cells <= 0 or first_forced_movement_reduction_per_activation <= 0 \
+			or _forced_movement_reduction_used:
+		return maxi(0, cells)
+	_forced_movement_reduction_used = true
+	return maxi(0, cells - first_forced_movement_reduction_per_activation)
+
 # Liste centralisÃ©e de TOUTES les stats Ã  durÃ©e (hors rÃ©sistances, ajoutÃ©es
 # dynamiquement). Source unique de vÃ©ritÃ© : tout ce qui doit "tick" est ici.
 # Ajouter une stat future = l'ajouter Ã  cette liste, et tick_durations
@@ -274,14 +423,58 @@ func _all_durational_stats() -> Array:
 
 # Applique un statut (StatusData) Ã  l'unitÃ©.
 # Si le statut est dÃ©jÃ  prÃ©sent, on rafraÃ®chit sa durÃ©e (pas de cumul).
-func apply_status(status_data: StatusData) -> void:
+func _status_modifier_key(status_data: StatusData, source: Unit = null) -> String:
+	var key := String(status_data.modifier_source)
+	if key.is_empty():
+		key = String(status_data.get_effective_status_id())
+	if status_data.unique_per_source and source != null:
+		key += ":" + source.get_runtime_stable_id()
+	return key
+
+
+func _status_matches(entry: Dictionary, status_data: StatusData, source: Unit) -> bool:
+	var current_data := entry.get("data") as StatusData
+	if current_data == null \
+			or current_data.get_effective_status_id() != status_data.get_effective_status_id():
+		return false
+	return not status_data.unique_per_source or entry.get("source") == source
+
+
+func _stat_for_status_name(stat_name: StringName) -> Stat:
+	return get(String(stat_name)) as Stat
+
+
+func _apply_status_stat_modifiers(status_data: StatusData, source: Unit) -> void:
+	var modifier_key := _status_modifier_key(status_data, source)
+	for stat_name_value in status_data.stat_modifiers:
+		var stat := _stat_for_status_name(StringName(stat_name_value))
+		if stat == null:
+			continue
+		stat.remove_modifiers_from(modifier_key)
+		stat.add_modifier(
+			float(status_data.stat_modifiers[stat_name_value]),
+			Stat.ModType.FLAT,
+			modifier_key
+		)
+
+
+func _remove_status_stat_modifiers(entry: Dictionary) -> void:
+	var status_data := entry.get("data") as StatusData
+	if status_data == null:
+		return
+	var modifier_key := _status_modifier_key(status_data, entry.get("source") as Unit)
+	for stat_name_value in status_data.stat_modifiers:
+		var stat := _stat_for_status_name(StringName(stat_name_value))
+		if stat != null:
+			stat.remove_modifiers_from(modifier_key)
+
+
+func apply_status(status_data: StatusData, source: Unit = null) -> void:
 	if status_data == null:
 		return
 	# Cherche si ce statut est dÃ©jÃ  actif.
-	var status_id := status_data.get_effective_status_id()
 	for entry in active_statuses:
-		var current_data := entry["data"] as StatusData
-		if current_data != null and current_data.get_effective_status_id() == status_id:
+		if _status_matches(entry, status_data, source):
 			# DÃ©jÃ  prÃ©sent : on rafraÃ®chit la durÃ©e (la plus longue gagne).
 			entry["remaining"] = max(entry["remaining"], status_data.duration)
 			if status_data is ChargedDamageVulnerabilityData:
@@ -311,7 +504,11 @@ func apply_status(status_data: StatusData) -> void:
 			EventBus.status_refreshed.emit(self, status_data)
 			return
 	# Nouveau statut.
-	var new_entry := { "data": status_data, "remaining": status_data.duration }
+	var new_entry := {
+		"data": status_data,
+		"remaining": status_data.duration,
+		"source": source,
+	}
 	if status_data is ChargedDamageVulnerabilityData:
 		new_entry["charges"] = (
 			status_data as ChargedDamageVulnerabilityData
@@ -321,8 +518,62 @@ func apply_status(status_data: StatusData) -> void:
 			status_data as ChargedOutgoingDamageData
 		).max_charges
 	active_statuses.append(new_entry)
+	_apply_status_stat_modifiers(status_data, source)
 	# Le CombatLogger Ã©coute status_applied et produit la ligne de log.
 	EventBus.status_applied.emit(self, status_data)
+
+
+func has_status(status_id: StringName, source: Unit = null) -> bool:
+	for entry in active_statuses:
+		var data := entry.get("data") as StatusData
+		if data != null and data.get_effective_status_id() == status_id \
+				and (source == null or entry.get("source") == source):
+			return true
+	return false
+
+
+func get_status_remaining(status_id: StringName, source: Unit = null) -> int:
+	for entry in active_statuses:
+		var data := entry.get("data") as StatusData
+		if data != null and data.get_effective_status_id() == status_id \
+				and (source == null or entry.get("source") == source):
+			return int(entry.get("remaining", 0))
+	return 0
+
+
+func remove_status(status_id: StringName, source: Unit = null, forced := true) -> int:
+	var removed := 0
+	for index in range(active_statuses.size() - 1, -1, -1):
+		var entry: Dictionary = active_statuses[index]
+		var data := entry.get("data") as StatusData
+		if data == null or data.get_effective_status_id() != status_id:
+			continue
+		if source != null and entry.get("source") != source:
+			continue
+		_remove_status_stat_modifiers(entry)
+		active_statuses.remove_at(index)
+		if forced:
+			EventBus.status_removed.emit(self, status_id, source)
+		else:
+			EventBus.status_expired.emit(self, status_id)
+		removed += 1
+	return removed
+
+
+func remove_statuses_from_source(source: Unit) -> int:
+	if source == null:
+		return 0
+	var removed := 0
+	for index in range(active_statuses.size() - 1, -1, -1):
+		var entry: Dictionary = active_statuses[index]
+		var data := entry.get("data") as StatusData
+		if data == null or not data.remove_when_source_dies or entry.get("source") != source:
+			continue
+		_remove_status_stat_modifiers(entry)
+		active_statuses.remove_at(index)
+		EventBus.status_removed.emit(self, data.get_effective_status_id(), source)
+		removed += 1
+	return removed
 
 # L'unitÃ© a-t-elle un statut qui la fait sauter son tour ?
 func is_stunned() -> bool:
@@ -430,6 +681,7 @@ func tick_statuses() -> void:
 		active_statuses[i]["remaining"] -= 1
 		if active_statuses[i]["remaining"] <= 0:
 			var ended := data.get_effective_status_id()
+			_remove_status_stat_modifiers(active_statuses[i])
 			active_statuses.remove_at(i)
 			# Le CombatLogger Ã©coute status_expired et produit la ligne de log.
 			EventBus.status_expired.emit(self, ended)
@@ -453,6 +705,7 @@ func cleanse_simple_negative_statuses(maximum: int = 1) -> int:
 		):
 			continue
 		var status_id := data.get_effective_status_id()
+		_remove_status_stat_modifiers(active_statuses[index])
 		active_statuses.remove_at(index)
 		EventBus.status_expired.emit(self, status_id)
 		removed += 1
@@ -465,6 +718,8 @@ func cleanse_simple_negative_statuses(maximum: int = 1) -> int:
 # ============================================================
 
 func start_turn() -> void:
+	activation_index += 1
+	activation_consumed = false
 	# Tick TOUTES les stats Ã  durÃ©e d'un coup (dÃ©fenses et rÃ©sistances
 	# comprises). Avant, seules 5 stats Ã©taient tickÃ©es â†’ un buff temporaire
 	# "+20 armure 2 tours" ne expirait jamais. CorrigÃ© : liste centralisÃ©e.
@@ -514,6 +769,7 @@ func spend_ap(amount: int) -> bool:
 # ============================================================
 
 func reset_combat_resources() -> void:
+	reset_ability_runtime()
 	next_turn_ap_modifier = 0
 	next_turn_mp_bonus = 0
 	next_turn_mp_penalty = 0
@@ -827,6 +1083,21 @@ func _die(killer: Unit = null) -> void:
 	if not is_alive:
 		return
 	is_alive = false
+	if not pending_ability.is_empty():
+		var cancelled_pending := pending_ability.duplicate()
+		var cancelled_spell := cancelled_pending.get("spell") as Spell
+		EventBus.pending_ability_cancelled.emit(self, cancelled_pending, &"caster_dead")
+		if cancelled_spell != null and cancelled_spell.is_summon():
+			EventBus.summon_cancelled.emit(
+				self,
+				cancelled_spell,
+				cancelled_pending.get("cell", Vector2i(-1, -1)),
+				&"caster_dead"
+			)
+		EventBus.telegraph_cleared.emit(self)
+		pending_ability.clear()
+	if grid_context != null and grid_context.has_method("on_unit_became_dead"):
+		grid_context.on_unit_became_dead(self)
 	# Le CombatLogger Ã©coute unit_died et produit la ligne "est vaincu".
 	EventBus.unit_died.emit(self)
 	EventBus.unit_killed.emit(self, killer)

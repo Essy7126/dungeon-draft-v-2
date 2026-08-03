@@ -6,6 +6,8 @@ enum AoeShape { SINGLE, CROSS, SQUARE, LINE }
 enum DamageType { PHYSICAL, MAGICAL }
 enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY, EARTH }
 enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
+enum DelayedResolution { NONE, STRIKE_AND_PUSH, SUMMON }
+enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 
 @export var spell_id: StringName = &""
 @export var discipline_id: StringName = &""
@@ -16,6 +18,7 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export var vfx_scene: PackedScene = null
 @export var vfx_placement: VfxPlacement = VfxPlacement.FROM_CASTER_TO_TARGET
 @export var sound_cast: AudioStream = null
+@export var visual_action: VisualAction = VisualAction.DEFAULT
 
 @export_group("Timing")
 @export_range(0.0, 10.0, 0.01) var impact_delay_seconds: float = 0.0
@@ -23,8 +26,17 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export_group("Cout et portee")
 # Cout en Points d'Action (entier). La colonne vertebrale du tour.
 @export var ap_cost: int = 1
+@export var minimum_range: int = 0
 @export var spell_range: int = 3
 @export var needs_line_of_sight: bool = true
+
+@export_group("Disponibilite")
+## Convention : utilise a l'activation N avec 3 -> indisponible N+1/N+2,
+## de nouveau disponible a N+3.
+@export var cooldown_activations: int = 0
+@export var initial_cooldown: int = 0
+@export var max_uses_per_combat: int = 0
+@export var once_per_activation: bool = false
 
 @export_group("Cibles autorisees")
 @export var can_target_enemy: bool = true
@@ -49,6 +61,8 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 
 @export_group("Statut applique")
 @export var applied_status: StatusData = null
+@export var status_source_scoped: bool = false
+@export var replaces_same_source_status: bool = false
 
 @export_group("Mecanique speciale")
 @export var push_distance: int = 0
@@ -67,6 +81,7 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export var shield_grant: int = 0
 @export var bonus_damage_if_marked: int = 0
 @export var bonus_damage_status_id: StringName = &""
+@export var bonus_requires_linked_status_source: bool = false
 @export var forces_taunt: bool = false
 @export var taunt_duration: int = 1
 # Draine des PA a la cible : ampute son budget du PROCHAIN tour (drain du
@@ -75,6 +90,21 @@ enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 @export var teleport_behind_target: bool = false
 @export var heal_bonus_effect_name: String = ""
 @export var heal_bonus_multiplier: float = 1.0
+
+@export_group("Resolution differee")
+@export var delayed_resolution: DelayedResolution = DelayedResolution.NONE
+@export var consumes_activation_on_resolution: bool = false
+@export var telegraph_label: String = "Prochaine activation"
+@export var telegraph_color: Color = Color(0.9, 0.2, 0.2, 0.85)
+
+@export_group("Invocation")
+@export var summon_unit_data: UnitData = null
+@export var summon_type: StringName = &""
+@export var summon_starting_hp: int = 0
+@export var summon_max_living_team: int = 0
+@export var summon_initial_cooldowns: Dictionary = {}
+@export var condition_hp_at_or_below: int = -1
+@export var requires_absent_unit_id: StringName = &""
 
 @export_group("Transformations")
 # Modificateurs attaches au sort en donnee : chaque SpellModifier recoit les
@@ -93,6 +123,15 @@ func has_terrain_effect() -> bool:
 func is_self_only() -> bool:
 	return can_target_self and not can_target_enemy \
 		and not can_target_ally and not can_target_free_cell
+
+
+func is_delayed() -> bool:
+	return delayed_resolution != DelayedResolution.NONE
+
+
+func is_summon() -> bool:
+	return delayed_resolution == DelayedResolution.SUMMON
+
 func get_effective_spell_id() -> StringName:
 	if spell_id != &"":
 		return spell_id

@@ -90,6 +90,7 @@ var grid_view: Node2D
 var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
+var _tactical_telegraphs: TacticalTelegraphLayer = null
 
 # --- Contrôle ---
 var turn_state: TurnState
@@ -527,6 +528,10 @@ func _start_battle() -> void:
 
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
 	EventBus.unit_pushed.connect(_on_unit_pushed)
+	if _tactical_telegraphs == null:
+		_tactical_telegraphs = TacticalTelegraphLayer.new()
+		grid_view.add_child(_tactical_telegraphs)
+		_tactical_telegraphs.setup(grid_view)
 
 	_reset_combat_resources()
 	_launch_combat()
@@ -534,7 +539,7 @@ func _start_battle() -> void:
 
 func _reset_combat_resources() -> void:
 	for unit in units:
-		if unit != null and unit.team == 0 and unit.has_method("reset_combat_resources"):
+		if unit != null and unit.has_method("reset_combat_resources"):
 			unit.reset_combat_resources()
 
 func _launch_combat() -> void:
@@ -579,6 +584,26 @@ func _on_turn_started(unit: Unit) -> void:
 	if not unit.is_alive:
 		unit.tick_statuses()
 		if not _battle_over:
+			turn_queue.advance()
+		return
+
+	# Les resolutions differees arrivent au debut de l'activation, apres les
+	# effets susceptibles de tuer le lanceur. Une Sentence consomme ensuite
+	# toute l'activation ; une invocation laisse le centurion agir normalement.
+	var pending_result := spell_caster.resolve_pending_activation(
+		unit,
+		units,
+		turn_queue,
+		Callable(self, "_on_summoned_unit_spawned")
+	)
+	if bool(pending_result.get("consume_activation", false)):
+		_update_active_highlight(unit)
+		action_bar.update_info(unit)
+		action_bar.build_spell_buttons(unit)
+		unit.tick_statuses()
+		if not await _wait_battle_seconds_safe(0.6, lifecycle_generation):
+			return
+		if not _battle_over and is_instance_valid(turn_queue):
 			turn_queue.advance()
 		return
 
@@ -1230,6 +1255,14 @@ func _on_unit_died(unit: Unit) -> void:
 	grid.clear_unit(unit.grid_pos)
 	turn_queue.on_unit_died(unit)
 	_check_battle_end()
+
+
+func _on_summoned_unit_spawned(unit: Unit) -> void:
+	if unit == null:
+		return
+	if not unit.died.is_connected(_on_unit_died):
+		unit.died.connect(_on_unit_died)
+	_create_unit_view(unit)
 
 func _check_battle_end() -> void:
 	var heroes_alive = turn_queue.count_living_in_team(0)

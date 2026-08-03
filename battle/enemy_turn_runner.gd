@@ -106,7 +106,7 @@ func _execute_cast(
 		generation = _operation_generation
 	if not _can_continue(generation, enemy) or spell == null:
 		return
-	if not enemy.can_afford_spell_resources(spell):
+	if not enemy.can_use_spell(spell):
 		return
 	if not _battle.spell_caster.is_valid_target(enemy, spell, cell):
 		return

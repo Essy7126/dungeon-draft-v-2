@@ -18,8 +18,13 @@ func play_basic_attack() -> bool:
 
 func play_spell_action(spell: Spell = null) -> bool:
 	var visual := get_snow_centurion_visual()
-	if visual == null or not visual.is_heavy_strike(spell):
+	if visual == null:
 		return false
+	if not visual.is_heavy_strike(spell):
+		return _play_cast_action(
+			SnowCenturionVisual3D.ANIM_ATTACK,
+			Callable(visual, "play_basic_attack")
+		)
 	return _play_cast_action(
 		SnowCenturionVisual3D.ANIM_HEAVY_ATTACK,
 		func() -> bool: return visual.play_spell_action(spell)

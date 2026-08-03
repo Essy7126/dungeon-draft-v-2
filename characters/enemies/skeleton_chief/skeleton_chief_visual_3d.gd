@@ -9,7 +9,6 @@ const ANIM_HEAVY_ATTACK: StringName = &"DD_SkeletonChief_HeavyAttack"
 const ANIM_HIT: StringName = &"DD_SkeletonChief_Hit"
 const ANIM_DEATH: StringName = &"DD_SkeletonChief_Death"
 
-const HEAVY_STRIKE_PATH := "res://data/spells/enemies/skeleton_chief_heavy_strike.tres"
 const ATTACK_SPEED := 1.0
 const HEAVY_ATTACK_SPEED := 1.7
 const HIT_SPEED := 1.5
@@ -80,7 +79,7 @@ func is_cast_animation(animation_name: StringName) -> bool:
 
 
 func is_heavy_strike(spell: Spell) -> bool:
-	return spell != null and spell.resource_path == HEAVY_STRIKE_PATH
+	return spell != null and spell.visual_action == Spell.VisualAction.HEAVY
 
 
 func get_calibrated_duration(animation_name: StringName) -> float:

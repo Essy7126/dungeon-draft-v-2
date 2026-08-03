@@ -127,20 +127,22 @@ donc cette classification sans inventer dégâts, glissade ou autre mécanique.
 
 ## Calibration affine
 
-Les trois images ont été mesurées indépendamment. Leur grille peinte coïncide,
-ce qui explique que les trois ressources aboutissent aux mêmes axes :
+Les trois images ont été mesurées indépendamment. Leurs grilles peintes sont
+très proches, mais les axes et origines restent propres à chaque image :
 
 | Map | Origine source | `axis_x` | `axis_y` | Ancres | RMS à 1920×1080 | Max à 1920×1080 | Caméra |
 |---|---|---|---|---:|---:|---:|---|
 | forêt | (688 ; 164,97778) | (34,4 ; 17,066667) | (-34,4 ; 17,066667) | 9 | 0,000014 px | 0,000022 px | offset (0 ; 34), zoom 1,1 |
-| volcan | (688 ; 164,97778) | (34,4 ; 17,066667) | (-34,4 ; 17,066667) | 9 | 0,000014 px | 0,000022 px | offset (0 ; 32), zoom 1,1 |
-| espace | (688 ; 164,97778) | (34,4 ; 17,066667) | (-34,4 ; 17,066667) | 9 | 0,000014 px | 0,000022 px | offset (0 ; 30), zoom 1,1 |
+| volcan | (695 ; 172,5) | (34,65 ; 17,5) | (-34,65 ; 17,5) | 9 | < 0,000001 px | < 0,000001 px | offset (0 ; 32), zoom 1,1 |
+| espace | (693,5 ; 137) | (34,825 ; 17,5) | (-34,825 ; 17,5) | 9 | < 0,000001 px | < 0,000001 px | offset (0 ; 30), zoom 1,1 |
 
-La bounding box logique en pixels source est `(206,4 ; 147,911113 ; 963,2 ;
-477,866676)`. Les erreurs non nulles ci-dessus proviennent uniquement de
-l'arrondi décimal des ressources texte et restent très inférieures aux limites
-de 2 px RMS / 4 px maximum. Les rendus 1280×720, 1920×1080 et 2560×1440
-conservent le ratio, couvrent le viewport et gardent la zone tactique visible.
+Les bounding boxes logiques en pixels source sont respectivement
+`(206,4 ; 147,911113 ; 963,2 ; 477,866676)`,
+`(209,9 ; 155 ; 970,2 ; 490)` et `(205,95 ; 119,5 ; 975,1 ; 490)`.
+Les erreurs non nulles ci-dessus proviennent uniquement de l'arrondi décimal
+des ressources texte et restent très inférieures aux limites de 2 px RMS /
+4 px maximum. Les rendus 1280×720, 1920×1080 et 2560×1440 conservent le ratio,
+couvrent le viewport et gardent la zone tactique visible.
 
 Le laboratoire `painted_map_calibration.tscn` expose l'image, la grille, le
 foreground, les types, spawns, coordonnées, centres, ancres, erreurs, axes et
@@ -154,11 +156,12 @@ sur la même affine pour les clics, déplacements, sorts, spawns et ancrage des
 pieds. La grille technique est transparente en production ; la grille visible
 est celle déjà peinte dans l'image.
 
-Aucun masque foreground propre n'était fourni. Aucun masque approximatif n'a
-donc été inventé : la couche et sa calibration sont prêtes mais laissées vides.
-Conséquence connue : les hauts murs, arbres et éléments de bord ne masquent pas
-encore partiellement les unités qui passeraient derrière eux. Les captures
-`foreground_on_off_1080p.png` documentent explicitement cet état identique.
+Chaque tour dispose désormais d'un polygone texturé qui recopie les pixels du
+background dans `YSortedWorld`, ainsi que d'une zone intérieure de masquage
+intégral. Une unité derrière la structure est masquée ; une unité devant ou sur
+les côtés reste visible. L'occluder est remplacé immédiatement lors d'un reload,
+sans accumulation. Les coordonnées et limites exactes ainsi que les captures
+off/on sont documentées dans `docs/maps/unit_presence_audit.md`.
 
 Les fissures, mousse, racines et détails sont décoratifs. Sur la map spatiale,
 certains sols visibles au-delà de la silhouette logique restent non jouables.
@@ -221,12 +224,13 @@ visuel enfant suit la formule :
 échelle_visuelle_finale = échelle_de_base_de_la_famille × multiplicateur_de_salle
 ```
 
-Les héros utilisent des bases de 1,43 à 1,45, les squelettes standards 1,34 et
-les élites 1,29. Les multiplicateurs de salle sont 1,00 pour la forêt, 1,03 pour
-le volcan et 1,05 pour l'espace, avec plafonds respectifs de 1,50, 1,40 et 1,35
-selon les familles. Les zooms de présentation sont 1,10, 1,12 et 1,15. Une ombre
-de contact et des liserés vectoriels sobres renforcent la lecture sans modifier
-les textures des modèles, les collisions, les spawns ou la grille.
+Les héros utilisent des bases de 1,72 (Elfe), 1,76 (Mage) et 1,88 (Guerrier),
+les squelettes standards 1,60 et les élites 1,50. Les multiplicateurs de salle
+sont 1,05 pour la forêt, 1,08 pour le volcan et 1,10 pour l'espace. Les zooms de
+présentation sont 1,10, 1,12 et 1,15. Les valeurs finales par famille, caps
+compris, figurent dans `docs/maps/unit_presence_audit.md`. Une ombre de contact
+et des liserés vectoriels sobres renforcent la lecture sans modifier les
+textures des modèles, les collisions, les spawns ou la grille.
 
 L'audit `artifacts/maps/unit_presence_audit/` contient les captures avant/après,
 les variantes d'échelle, les trois résolutions, les états d'action et le rapport
@@ -248,14 +252,11 @@ connectivité et les chemins, les terrains neutres, l'absence de création de
 grille dans les adaptateurs de production, la terminaison vers
 `RunResultScreen` et la protection contre une double victoire.
 
-Validation du 3 août 2026 : l'import headless termine avec code 0 ; les exports
-d'intégration et de présence sont lisibles et complets ; les 11 tests ciblés de
-l'intégration et les 8 tests de présence visuelle passent. La suite GUT complète
-compte 481 tests, dont 479 passent. Les deux échecs sont hors du périmètre des
-maps peintes : `test_dark_pause_menu.gd` (styles de thème `null`) et le test
-d'aller-retour fichier de `test_inventory_equipment_system.gd`. L'observateur
-runtime traverse les six salles, contrôle six nettoyages de scène, puis atteint
-`res://ui/RunResultScreen.tscn` avec statut `PASS`. Les messages de certificats
-Windows, UID historique et allocations au quit sont environnementaux ou
-préexistants ; ils ne signalent aucune erreur de chargement de la nouvelle
-intégration.
+Validation du 3 août 2026 : les exports forcés d'intégration et de présence sont
+lisibles et complets. Le test final de présence/occlusion passe 20/20 avec
+257 assertions. Les régressions ciblées passent 120/125 et la suite GUT complète
+486/493 ; aucun des échecs restants ne concerne la présence, le Y-sort,
+l'occlusion, les overlays ou la calibration. Le détail et les journaux faisant
+foi sont consignés dans `docs/maps/unit_presence_audit.md`. Les messages de
+certificats Windows, UID historique et allocations au quit sont
+environnementaux ou préexistants.

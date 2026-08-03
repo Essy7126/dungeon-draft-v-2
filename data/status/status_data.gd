@@ -64,6 +64,15 @@ enum PeriodicTiming {
 @export_group("Durée")
 # Nombre de tours pendant lesquels le statut reste actif.
 @export var duration: int = 3
+## Lorsque vrai, deux sources differentes peuvent porter le meme status_id
+## sans partager leur duree ni leur retrait (ex. deux centurions).
+@export var unique_per_source: bool = false
+@export var remove_when_source_dies: bool = false
+
+@export_group("Modificateurs de statistiques")
+## Dictionnaire { nom_de_stat: bonus_plat }. Ex. {"resist_magique": 50}.
+@export var stat_modifiers: Dictionary = {}
+@export var modifier_source: StringName = &""
 
 # ============================================================
 # MODIFICATEURS DE DÉGÂTS

@@ -150,7 +150,13 @@ func test_enemy_resources_are_generic_and_keep_expected_ranges() -> void:
 	assert_eq(ranged.unit_id, &"skeleton_ranged")
 	assert_eq([melee.minimum_range, melee.maximum_range], [1, 1])
 	assert_false(melee.keep_distance)
-	assert_true(melee.basic_attack_enabled)
+	assert_false(melee.basic_attack_enabled)
+	assert_eq(melee.max_hp, 72)
+	assert_eq([melee.max_ap, melee.max_mp, melee.initiative], [4, 5, 12])
+	assert_eq([melee.armure, melee.resist_magique], [0.0, 0.0])
+	assert_eq(melee.spells.size(), 1)
+	assert_eq(melee.spells[0].spell_id, &"skeleton_bone_blade")
+	assert_eq(melee.spells[0].damage, 18)
 	assert_eq([ranged.minimum_range, ranged.preferred_range, ranged.maximum_range], [3, 6, 6])
 	assert_true(ranged.keep_distance)
 	assert_false(ranged.basic_attack_enabled)
@@ -288,9 +294,9 @@ func test_enemy_runner_resolves_each_skeleton_impact_once_and_waits_recovery() -
 	add_child_autofree(melee_runner)
 	melee_runner.setup(melee_battle)
 	var melee_hp_before := melee_target.current_hp
-	await melee_runner._execute_attack(melee, melee_target)
-	assert_eq(melee_hp_before - melee_target.current_hp, 16)
-	assert_eq(melee_view.attack_prepare_count, 1)
+	await melee_runner._execute_cast(melee, melee.spells[0], melee_target.grid_pos)
+	assert_eq(melee_hp_before - melee_target.current_hp, 18)
+	assert_eq(melee_view.spell_prepare_count, 1)
 	assert_eq(melee_view.recovery_count, 1)
 
 

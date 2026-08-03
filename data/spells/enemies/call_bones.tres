@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="2_unit"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"call_bones"
+spell_name = "Appel des ossements"
+visual_action = 2
+description = "Telegraphie l'arrivee d'un squelette a la prochaine activation."
+ap_cost = 6
+minimum_range = 2
+spell_range = 4
+needs_line_of_sight = false
+cooldown_activations = 3
+max_uses_per_combat = 2
+can_target_enemy = false
+can_target_free_cell = true
+delayed_resolution = 2
+telegraph_label = "Renfort - prochaine activation"
+telegraph_color = Color(0.3, 0.85, 1, 0.85)
+summon_unit_data = ExtResource("2_unit")
+summon_type = &"normal"
+summon_starting_hp = 72
+summon_max_living_team = 6

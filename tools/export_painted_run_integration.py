@@ -7,6 +7,7 @@ background pixels. Pillow is used only to composite validation captures.
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import re
@@ -71,6 +72,40 @@ def vectors(text: str, field: str, integer: bool = True):
     ]
 
 
+def source_file_for_uid(
+    uid: str,
+    search_roots: tuple[Path, ...] | None = None,
+) -> str:
+    """Resolve a Godot UID through text `.import` metadata deterministically."""
+    roots = search_roots or (ROOT / "asset", ROOT / "assets")
+    uid_line = f'uid="{uid}"'
+    for root in roots:
+        if not root.exists():
+            continue
+        for import_path in sorted(root.rglob("*.import")):
+            try:
+                import_text = read(import_path)
+            except (OSError, UnicodeError):
+                continue
+            if uid_line not in import_text:
+                continue
+            return match(
+                import_text,
+                r'source_file\s*=\s*"(res://[^"]+)"',
+                str,
+            )
+    raise ValueError(f"Unable to resolve Godot resource UID: {uid}")
+
+
+def resolve_resource_reference(reference: str) -> Path:
+    if reference.startswith("res://"):
+        return ROOT / reference.removeprefix("res://")
+    if reference.startswith("uid://"):
+        source_file = source_file_for_uid(reference)
+        return ROOT / source_file.removeprefix("res://")
+    raise ValueError(f"Unsupported Godot resource reference: {reference}")
+
+
 def font(size: int, bold: bool = False):
     name = "arialbd.ttf" if bold else "arial.ttf"
     path = Path("C:/Windows/Fonts") / name
@@ -90,6 +125,16 @@ def valid_png(path: Path, expected_size: tuple[int, int]) -> bool:
         return False
 
 
+def should_regenerate(
+    path: Path,
+    expected_size: tuple[int, int],
+    *,
+    force: bool = False,
+) -> bool:
+    """Return whether an export must be rendered, independently of mtimes."""
+    return force or not valid_png(path, expected_size)
+
+
 def save_png(image: Image.Image, target: Path) -> None:
     temporary = target.with_name(target.name + ".tmp")
     image.save(temporary, format="PNG", compress_level=4)
@@ -106,7 +151,11 @@ def parse_resources(config: dict) -> dict:
     visual_text = read(config["visual"])
     room_text = read(config["room"])
     layout_text = read(config["layout"])
-    rel_image = match(visual_text, r'background_texture_path\s*=\s*"res://([^"]+)"', str)
+    image_reference = match(
+        visual_text,
+        r'background_texture_path\s*=\s*"([^"]+)"',
+        str,
+    )
     origin = match(visual_text, r"grid_origin\s*=\s*Vector2\(([-\d.]+),\s*([-\d.]+)\)")
     axis_x = match(visual_text, r"axis_x\s*=\s*Vector2\(([-\d.]+),\s*([-\d.]+)\)")
     axis_y = match(visual_text, r"axis_y\s*=\s*Vector2\(([-\d.]+),\s*([-\d.]+)\)")
@@ -121,7 +170,7 @@ def parse_resources(config: dict) -> dict:
     return {
         **config,
         "rows": rows,
-        "image_path": ROOT / rel_image,
+        "image_path": resolve_resource_reference(image_reference),
         "origin": origin,
         "axis_x": axis_x,
         "axis_y": axis_y,
@@ -300,7 +349,7 @@ def draw_overlay(image: Image.Image, room: dict, spell=False):
         draw.line(poly + [poly[0]], fill=outline, width=max(2, image.width // 700))
 
 
-def save_room_exports(room: dict):
+def save_room_exports(room: dict, *, force: bool = False):
     out = OUTPUT / room["id"]
     out.mkdir(parents=True, exist_ok=True)
     modes = {
@@ -319,7 +368,11 @@ def save_room_exports(room: dict):
     for resolution, mode_names in requested.items():
         for mode in mode_names:
             target = out / f"{mode}_{resolution}.png"
-            if valid_png(target, RESOLUTIONS[resolution]):
+            if not should_regenerate(
+                target,
+                RESOLUTIONS[resolution],
+                force=force,
+            ):
                 continue
             image = background(room, RESOLUTIONS[resolution])
             modes[mode](image)
@@ -328,7 +381,11 @@ def save_room_exports(room: dict):
     # No clean foreground exists: the on/off proof intentionally remains
     # identical and states that no approximate mask was generated.
     foreground_target = out / "foreground_on_off_1080p.png"
-    if valid_png(foreground_target, RESOLUTIONS["1080p"]):
+    if not should_regenerate(
+        foreground_target,
+        RESOLUTIONS["1080p"],
+        force=force,
+    ):
         return
     base = background(room, RESOLUTIONS["1080p"])
     draw_units(base, room)
@@ -424,15 +481,35 @@ def error_report(rooms: list[dict]):
     (OUTPUT / "calibration_error_report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
-def main() -> int:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Export deterministic painted-map calibration boards."
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help=(
+            "rewrite every PNG even when a readable file with the expected "
+            "dimensions already exists"
+        ),
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
     OUTPUT.mkdir(parents=True, exist_ok=True)
     rooms = [parse_resources(config) for config in ROOMS]
     for room in rooms:
-        save_room_exports(room)
+        save_room_exports(room, force=args.force)
     extra_exports(rooms)
     error_report(rooms)
     outputs = list(OUTPUT.rglob("*.png")) + list(OUTPUT.rglob("*.json"))
-    print(f"Painted run integration: {len(outputs)} exports in {OUTPUT}")
+    cache_mode = "forced regeneration" if args.force else "valid-PNG cache"
+    print(
+        f"Painted run integration: {len(outputs)} exports in {OUTPUT} "
+        f"({cache_mode})"
+    )
     return 0
 
 

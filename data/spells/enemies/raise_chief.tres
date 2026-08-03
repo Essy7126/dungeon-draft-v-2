@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_chief.tres" id="2_unit"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"raise_chief"
+spell_name = "Lever le chef"
+visual_action = 2
+description = "Telegraphie l'arrivee d'un chef a 154 PV a la prochaine activation."
+ap_cost = 6
+minimum_range = 2
+spell_range = 3
+needs_line_of_sight = false
+max_uses_per_combat = 1
+can_target_enemy = false
+can_target_free_cell = true
+delayed_resolution = 2
+telegraph_label = "Chef - prochaine activation"
+telegraph_color = Color(0.95, 0.2, 0.15, 0.9)
+summon_unit_data = ExtResource("2_unit")
+summon_type = &"chief"
+summon_starting_hp = 154
+summon_max_living_team = 6
+summon_initial_cooldowns = {&"scarlet_sentence": 1}
+condition_hp_at_or_below = 75
+requires_absent_unit_id = &"skeleton_chief"

@@ -58,7 +58,10 @@ func _configure_painted_occluder(background_texture: Texture2D) -> void:
 	var world := get_node("YSortedWorld") as Node2D
 	for child in world.get_children():
 		if child.is_in_group("painted_foreground_occluders"):
-			child.queue_free()
+			# La reconstruction peut arriver plusieurs fois dans la meme frame
+			# (reload/capture). Retirer immediatement l'ancien masque garantit une
+			# seule instance sans attendre la vidange de queue_free().
+			child.free()
 	var occluder := painted_visual_data.create_foreground_occluder(background_texture)
 	if occluder != null:
 		world.add_child(occluder)
