@@ -31,11 +31,19 @@ enum Phase {
 @onready var reward_overlay: EquipmentRewardOverlay = %EquipmentRewardOverlay
 @onready var room_label: Label = %RoomLabel
 @onready var phase_title: Label = %PhaseTitle
+@onready var contract_label: Label = %ContractLabel
 @onready var victory_panel: Control = %VictoryPanel
 @onready var victory_title: Label = %VictoryTitle
 @onready var decision_panel: Control = %DecisionPanel
 @onready var decision_detail: Label = %DecisionDetail
-@onready var decision_risk: Label = %DecisionRisk
+@onready var party_cards: HBoxContainer = %PartyCards
+@onready var secured_value: Label = %SecuredValue
+@onready var secured_detail: Label = %SecuredDetail
+@onready var at_risk_value: Label = %AtRiskValue
+@onready var at_risk_detail: Label = %AtRiskDetail
+@onready var ultimate_chance: Label = %UltimateChance
+@onready var leave_heal_label: Label = %LeaveHealLabel
+@onready var threat_label: Label = %ThreatLabel
 @onready var stats_panel: Control = %CombatStatsPanel
 @onready var stats_cards: HBoxContainer = %StatsCards
 @onready var progression_panel: Control = %ProgressionPanel
@@ -47,6 +55,7 @@ enum Phase {
 @onready var comparison_label: Label = %ComparisonLabel
 @onready var reward_error: Label = %RewardError
 @onready var status_label: Label = %StatusLabel
+@onready var leave_room_button: Button = %LeaveRoomButton
 @onready var push_wave_button: Button = %PushWaveButton
 @onready var continue_button: Button = %ContinueButton
 
@@ -65,10 +74,12 @@ var _reward_applied := false
 var _transition_requested := false
 var _final_room := false
 var _decision_snapshot: Dictionary = {}
+var _room_completed := false
 
 
 func _ready() -> void:
 	continue_button.pressed.connect(advance_or_skip)
+	leave_room_button.pressed.connect(choose_leave_room)
 	push_wave_button.pressed.connect(choose_continue_room)
 	reward_overlay.selection_changed.connect(_on_overlay_selection_changed)
 	reward_overlay.confirmation_requested.connect(_on_overlay_confirmation_requested)
@@ -79,12 +90,10 @@ func _ready() -> void:
 		return
 	_final_room = GameManager.is_final_room()
 	_decision_snapshot = GameManager.get_post_combat_decision_snapshot()
+	_room_completed = bool(_decision_snapshot.get("room_completed", false))
 	_configure_background()
-	room_label.text = "%s · Vague %d/%d" % [
-		report.room_name,
-		int(_decision_snapshot.get("wave_number", 1)),
-		maxi(1, int(_decision_snapshot.get("wave_count", 1))),
-	]
+	room_label.text = report.room_name
+	_build_decision_party_cards()
 	_build_stat_cards()
 	_build_progression_cards()
 	_build_reward_cards()
@@ -123,7 +132,7 @@ func advance_or_skip() -> void:
 		Phase.COMBAT_STATS:
 			_enter_phase(Phase.PROGRESSION)
 		Phase.PROGRESSION:
-			if _final_room:
+			if _final_room or not _room_completed:
 				_begin_transition()
 			else:
 				_enter_phase(Phase.REWARD_SELECTION)
@@ -141,7 +150,7 @@ func choose_continue_room() -> bool:
 	phase_title.text = "NOUVELLE VAGUE"
 	status_label.text = "La salle se renforce…"
 	push_wave_button.disabled = true
-	continue_button.disabled = true
+	leave_room_button.disabled = true
 	transition_layer.show()
 	transition_layer.modulate.a = 0.0
 	_current_tween = create_tween()
@@ -157,7 +166,7 @@ func choose_continue_room() -> bool:
 	_transition_requested = false
 	transition_layer.hide()
 	push_wave_button.disabled = false
-	continue_button.disabled = false
+	leave_room_button.disabled = _final_room
 	_enter_phase(Phase.ROOM_DECISION)
 	status_label.text = "La nouvelle vague n'a pas pu être chargée."
 	return false
@@ -167,7 +176,11 @@ func choose_leave_room() -> bool:
 	if phase != Phase.ROOM_DECISION or _transition_requested:
 		return false
 	if not GameManager.select_current_room_exit(report.report_id):
-		status_label.text = "Impossible de sécuriser la salle."
+		status_label.text = (
+			"La dernière salle doit être menée jusqu'à son terme."
+			if _final_room
+			else "Impossible de quitter cette salle."
+		)
 		return false
 	_enter_phase(Phase.COMBAT_STATS)
 	return true
@@ -187,6 +200,23 @@ func get_progression_panel_count() -> int:
 
 func get_reward_card_count() -> int:
 	return reward_overlay.get_card_count()
+
+
+func get_decision_visual_snapshot() -> Dictionary:
+	return {
+		"party_card_count": party_cards.get_child_count(),
+		"threat_text": threat_label.text,
+		"secured_text": secured_value.text,
+		"secured_detail_text": secured_detail.text,
+		"reward_text": at_risk_value.text,
+		"reward_detail_text": at_risk_detail.text,
+		"ultimate_chance_text": ultimate_chance.text,
+		"heal_text": leave_heal_label.text,
+		"detail_text": decision_detail.text,
+		"status_text": status_label.text,
+		"leave_button_text": leave_room_button.text,
+		"continue_button_text": push_wave_button.text,
+	}
 
 
 func select_reward_by_id(reward_id: StringName) -> bool:
@@ -305,32 +335,158 @@ func _set_phase_visibility() -> void:
 	stats_panel.visible = phase == Phase.COMBAT_STATS
 	progression_panel.visible = phase == Phase.PROGRESSION
 	rewards_panel.visible = false
-	push_wave_button.visible = phase == Phase.ROOM_DECISION
+	status_label.visible = phase != Phase.ROOM_DECISION
+	continue_button.visible = phase != Phase.ROOM_DECISION
 
 
 func _start_room_decision() -> void:
-	var current_wave := int(_decision_snapshot.get("wave_number", 1))
-	var wave_count := maxi(1, int(_decision_snapshot.get("wave_count", 1)))
-	var reward_multiplier := float(
-		_decision_snapshot.get("reward_multiplier", 1.0)
-	)
 	phase_title.text = "DÉCISION DE SALLE"
-	decision_detail.text = (
-		"Vague %d/%d vaincue · Récompenses cumulées ×%.2f\n"
-		+ "La vague %d sera plus dangereuse."
-	) % [current_wave, wave_count, reward_multiplier, current_wave + 1]
-	decision_risk.text = (
-		"Continuer conserve vos blessures et retarde la progression, "
-		+ "l'équipement et l'utilisation des objets."
+	contract_label.text = ""
+	decision_detail.text = ""
+	_configure_decision_ledger()
+	_configure_threat_presentation()
+	status_label.text = ""
+	push_wave_button.text = "POUSSER PLUS LOIN"
+	push_wave_button.tooltip_text = (
+		"Affronter une nouvelle menace sans accès aux objets, pour améliorer le coffre."
 	)
-	status_label.text = "Quittez maintenant ou poussez votre chance."
-	push_wave_button.text = "CONTINUER LE COMBAT"
 	push_wave_button.disabled = false
-	continue_button.text = (
-		"TERMINER LA RUN" if _final_room else "PASSER À LA SALLE SUIVANTE"
+	leave_room_button.text = (
+		"AUCUNE RETRAITE POSSIBLE"
+		if _final_room else "SÉCURISER ET PARTIR"
 	)
-	continue_button.disabled = false
+	leave_room_button.tooltip_text = (
+		"La dernière salle doit être menée jusqu'à son terme."
+		if _final_room else (
+			"Conserver la progression, accéder à l'équipement et renoncer au coffre de cette salle."
+		)
+	)
+	leave_room_button.disabled = _final_room
 	push_wave_button.grab_focus()
+
+
+func _configure_decision_ledger() -> void:
+	var combat_xp := int(_decision_snapshot.get("secured_combat_xp", 0))
+	var inventory_quantity := int(
+		_decision_snapshot.get("run_inventory_item_quantity", 0)
+	)
+	var item_text := (
+		"1 objet" if inventory_quantity == 1 else "%d objets" % inventory_quantity
+	)
+	secured_value.text = "%d XP · %s" % [combat_xp, item_text]
+	secured_detail.text = "Progression et inventaire déjà acquis."
+	at_risk_value.text = "Coffre de salle"
+	at_risk_detail.text = "Contenu inconnu · perdu si vous quittez maintenant."
+	var ultimate_chance_percent := int(
+		_decision_snapshot.get("ultimate_reward_chance_percent", 10)
+	)
+	var minimum_gain := int(
+		_decision_snapshot.get("ultimate_reward_min_gain_per_wave", 2)
+	)
+	var maximum_gain := int(
+		_decision_snapshot.get("ultimate_reward_max_gain_per_wave", 5)
+	)
+	ultimate_chance.text = (
+		"CHANCE ULTIME : %d %%\n+%d à +%d points par vague réussie" % [
+			ultimate_chance_percent,
+			minimum_gain,
+			maximum_gain,
+		]
+	)
+	leave_heal_label.text = "Progression et équipement"
+
+
+func _configure_threat_presentation() -> void:
+	var health_multiplier := float(
+		_decision_snapshot.get("next_enemy_health_multiplier", 1.0)
+	)
+	var attack_multiplier := float(
+		_decision_snapshot.get("next_enemy_attack_multiplier", 1.0)
+	)
+	var threat_score := maxf(health_multiplier, attack_multiplier)
+	var threat_color := Color(0.96, 0.7, 0.3)
+	if threat_score <= 1.05:
+		threat_label.text = "MENACE MODÉRÉE"
+	elif threat_score <= 1.3:
+		threat_label.text = "MENACE ÉLEVÉE"
+		threat_color = Color(0.94, 0.55, 0.36)
+	else:
+		threat_label.text = "MENACE EXTRÊME"
+		threat_color = Color(0.96, 0.3, 0.26)
+	threat_label.add_theme_color_override("font_color", threat_color)
+
+
+func _build_decision_party_cards() -> void:
+	_clear_container(party_cards)
+	for state in GameManager.get_ordered_character_states():
+		party_cards.add_child(_make_decision_party_card(state))
+
+
+func _make_decision_party_card(state: CharacterRunState) -> Control:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size = Vector2(0, 58)
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 10)
+	var visual := _make_character_visual(state)
+	visual.custom_minimum_size = Vector2(52, 52)
+	row.add_child(visual)
+	var details := VBoxContainer.new()
+	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	details.add_theme_constant_override("separation", 3)
+	row.add_child(details)
+	var unit := state.unit if state != null else null
+	var name_label := Label.new()
+	name_label.text = unit.unit_name.to_upper() if unit != null else "HÉROS INDISPONIBLE"
+	name_label.add_theme_font_size_override("font_size", 14)
+	details.add_child(name_label)
+	var maximum_hp := maxi(1, unit.max_hp.get_int()) if unit != null else 1
+	var current_hp := clampi(unit.current_hp, 0, maximum_hp) if unit != null else 0
+	var hp_line := HBoxContainer.new()
+	details.add_child(hp_line)
+	var hp_bar := ProgressBar.new()
+	hp_bar.custom_minimum_size = Vector2(0, 10)
+	hp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hp_bar.max_value = maximum_hp
+	hp_bar.value = current_hp
+	hp_bar.show_percentage = false
+	hp_line.add_child(hp_bar)
+	var hp_label := Label.new()
+	hp_label.custom_minimum_size = Vector2(82, 0)
+	hp_label.text = "%d / %d PV" % [current_hp, maximum_hp]
+	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	hp_label.add_theme_font_size_override("font_size", 12)
+	hp_line.add_child(hp_label)
+	var condition_label := Label.new()
+	var condition := _get_unit_condition(unit, current_hp, maximum_hp)
+	condition_label.text = condition[0]
+	condition_label.add_theme_color_override("font_color", condition[1])
+	condition_label.add_theme_font_size_override("font_size", 12)
+	details.add_child(condition_label)
+	return row
+
+
+func _get_unit_condition(
+	unit: Unit,
+	current_hp: int,
+	maximum_hp: int
+	) -> Array:
+	if unit == null or not unit.is_alive or current_hp <= 0:
+		return ["À TERRE", Color(0.96, 0.3, 0.26)]
+	var ratio := float(current_hp) / float(maximum_hp)
+	var state_text := "PRÊT"
+	var state_color := Color(0.53, 0.82, 0.56)
+	if ratio <= 0.3:
+		state_text = "ÉTAT CRITIQUE"
+		state_color = Color(0.96, 0.3, 0.26)
+	elif ratio < 0.7:
+		state_text = "BLESSÉ"
+		state_color = Color(0.94, 0.55, 0.36)
+	var details: Array[String] = [state_text]
+	if unit.current_shield > 0:
+		details.append("Bouclier %d" % unit.current_shield)
+	if not unit.active_statuses.is_empty():
+		details.append("%d statut(s)" % unit.active_statuses.size())
+	return [" · ".join(details), state_color]
 
 
 func _start_victory_reveal() -> void:
@@ -390,8 +546,15 @@ func _start_progression_reveal() -> void:
 	phase_title.text = "PROGRESSION DES DISCIPLINES"
 	status_label.text = "Récapitulatif — aucun nouveau choix n’est demandé."
 	continue_button.text = (
-		"TERMINER LA RUN" if _final_room else "VOIR LES RÉCOMPENSES"
+		"TERMINER LA RUN"
+		if _final_room else (
+			"VOIR LA RÉCOMPENSE DE SALLE"
+			if _room_completed
+			else "PASSER À LA SALLE SUIVANTE"
+		)
 	)
+	if not _room_completed:
+		status_label.text = "Salle quittée avant son terme — aucune récompense de salle."
 	continue_button.disabled = false
 	_prepare_progression_initial_values()
 	_animation_active = true
@@ -459,7 +622,9 @@ func _finish_current_animation() -> void:
 
 
 func _begin_transition() -> void:
-	if _transition_requested or (not _final_room and not _reward_applied):
+	if _transition_requested or (
+		_room_completed and not _final_room and not _reward_applied
+	):
 		return
 	_transition_requested = true
 	phase = Phase.TRANSITIONING

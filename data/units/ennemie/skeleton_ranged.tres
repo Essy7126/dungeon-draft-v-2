@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn" id="2_visual"]
 [ext_resource type="Resource" path="res://data/spells/enemies/skeleton_ranged_shot.tres" id="3_spell"]
 [ext_resource type="Script" path="res://data/spell.gd" id="4_spell_type"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonVisual3D.tscn" id="5_preview"]
 
 [resource]
 script = ExtResource("1_unit")
@@ -16,6 +17,7 @@ initiative = 7
 max_mp = 3
 attack_power = 7
 visual_scene = ExtResource("2_visual")
+preview_visual_scene = ExtResource("5_preview")
 basic_attack_enabled = false
 spells = Array[ExtResource("4_spell_type")]([ExtResource("3_spell")])
 ai_behavior = 1

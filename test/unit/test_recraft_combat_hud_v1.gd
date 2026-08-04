@@ -35,6 +35,15 @@ func test_first_room_binds_the_persistent_recraft_hud() -> void:
 	assert_true(battle.action_bar.end_turn_pressed.is_connected(
 		Callable(battle, "_on_end_turn_pressed")
 	))
+	assert_not_null(battle.turn_order_timeline)
+	assert_false(battle.units.is_empty())
+	var inspected_unit := battle.units[0] as Unit
+	battle._on_turn_order_unit_selected(inspected_unit)
+	assert_true(battle.inspect_panel.visible)
+	assert_same(battle.inspect_panel.get("_displayed_unit"), inspected_unit)
+	assert_true(battle.inspect_panel.is_locked())
+	battle.inspect_panel.release_lock()
+	await get_tree().process_frame
 
 func test_hud_builds_four_real_slots_for_every_fixed_hero() -> void:
 	var run := load("res://data/runs/first_run.tres") as RunData

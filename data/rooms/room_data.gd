@@ -43,6 +43,14 @@ const ArenaVisualProfileScript = preload(
 ## Vagues ordonnees jouees dans cette meme arene. Une liste vide conserve le
 ## contrat historique : encounter_definition represente alors l'unique vague.
 @export var waves: Array[RoomWaveData] = []
+@export_range(1, 10, 1) var minimum_wave_count: int = 1
+@export_range(1, 10, 1) var maximum_wave_count: int = 1
+
+@export_group("Récompense ultime")
+@export_range(0, 100, 1) var ultimate_reward_base_chance: int = 10
+@export_range(0, 100, 1) var ultimate_reward_min_gain_per_wave: int = 2
+@export_range(0, 100, 1) var ultimate_reward_max_gain_per_wave: int = 5
+@export_group("")
 # Les ennemis présents dans cette salle.
 @export var enemies: Array[UnitData] = []
 
@@ -57,6 +65,24 @@ func get_wave_count() -> int:
 	if not waves.is_empty():
 		return waves.size()
 	return 1 if encounter_definition != null or not enemies.is_empty() else 0
+
+
+func get_minimum_wave_count() -> int:
+	return clampi(minimum_wave_count, 1, get_wave_count())
+
+
+func get_maximum_wave_count() -> int:
+	return clampi(maximum_wave_count, get_minimum_wave_count(), get_wave_count())
+
+
+func get_ultimate_reward_base_chance() -> int:
+	return clampi(ultimate_reward_base_chance, 0, 100)
+
+
+func get_ultimate_reward_gain_range() -> Vector2i:
+	var minimum := clampi(ultimate_reward_min_gain_per_wave, 0, 100)
+	var maximum := clampi(ultimate_reward_max_gain_per_wave, minimum, 100)
+	return Vector2i(minimum, maximum)
 
 
 func get_wave(wave_index: int) -> RoomWaveData:

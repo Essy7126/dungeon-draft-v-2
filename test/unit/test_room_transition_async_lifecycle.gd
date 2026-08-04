@@ -309,6 +309,8 @@ func test_async_sources_use_guarded_scene_tree_waits() -> void:
 	assert_false("await get_tree().process_frame" in unit_view_source)
 	assert_false("await get_tree().create_timer" in runner_source)
 	assert_true("GameManager.schedule_battle_outcome" in battle_source)
+	assert_false('"VICTOIRE !"' in battle_source)
+	assert_true("func _show_end_screen(victory: bool) -> void:\n\tif victory:\n\t\treturn" in battle_source)
 	var end_section := battle_source.substr(battle_source.find("func _end_battle"))
 	end_section = end_section.substr(0, end_section.find("func _show_end_screen"))
 	assert_false("await " in end_section)

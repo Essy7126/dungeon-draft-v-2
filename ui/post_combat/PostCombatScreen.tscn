@@ -102,10 +102,11 @@ theme_override_font_sizes/font_size = 15
 text = "Salle"
 
 [node name="ContractLabel" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/VictoryHeader/HeaderMargin/Header"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.58, 0.63, 0.64, 1)
 theme_override_font_sizes/font_size = 13
-text = "RAPPORT DE RUN · AUCUN CHOIX D’ARBRE"
+text = "CONTRAT · FIN INCONNUE"
 vertical_alignment = 1
 
 [node name="ContentStack" type="Control" parent="SafeMargin/MainPanel/MainMargin/Main"]
@@ -156,36 +157,179 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DecisionContent" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel"]
-custom_minimum_size = Vector2(720, 0)
+custom_minimum_size = Vector2(980, 0)
 layout_mode = 2
 theme_override_constants/separation = 18
 alignment = 1
 
-[node name="DecisionTitle" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent"]
+[node name="DecisionDetail" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = ""
+
+[node name="RiskLedger" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="SecuredPanel" type="PanelContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger"]
+custom_minimum_size = Vector2(0, 94)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SkillTreeCharacterHeader"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/SecuredPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/SecuredPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Caption" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/SecuredPanel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.53, 0.82, 0.56, 1)
+theme_override_font_sizes/font_size = 14
+text = "BUTIN SÉCURISÉ"
+
+[node name="SecuredValue" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/SecuredPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.92, 0.89, 1)
+theme_override_font_sizes/font_size = 20
+text = "5 XP · 1 objet"
+
+[node name="SecuredDetail" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/SecuredPanel/Margin/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.69, 1)
+theme_override_font_sizes/font_size = 12
+text = "Les gains acquis restent dans la run."
+
+[node name="AtRiskPanel" type="PanelContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger"]
+custom_minimum_size = Vector2(0, 116)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SkillTreeCharacterHeader"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/AtRiskPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/AtRiskPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Caption" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/AtRiskPanel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.55, 0.36, 1)
+theme_override_font_sizes/font_size = 14
+text = "BUTIN À RISQUE"
+
+[node name="AtRiskValue" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/AtRiskPanel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.78, 0.28, 1)
-theme_override_font_sizes/font_size = 34
-text = "POUSSER VOTRE CHANCE ?"
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 20
+text = "Coffre de salle"
 
-[node name="DecisionDetail" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent"]
+[node name="UltimateChance" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/AtRiskPanel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.82, 0.85, 0.83, 1)
-theme_override_font_sizes/font_size = 19
-text = "Une nouvelle vague vous attend dans cette arène."
-horizontal_alignment = 1
-autowrap_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.88, 0.58, 1)
+theme_override_font_sizes/font_size = 15
+text = "10 % · RÉCOMPENSE ULTIME"
 
-[node name="DecisionRisk" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent"]
+[node name="AtRiskDetail" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/RiskLedger/AtRiskPanel/Margin/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.65, 0.48, 1)
+theme_override_font_sizes/font_size = 12
+text = "Quitter maintenant abandonne cette récompense."
+
+[node name="PartyPanel" type="PanelContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent"]
+custom_minimum_size = Vector2(0, 112)
+layout_mode = 2
+theme_type_variation = &"SkillTreeCharacterHeader"
+
+[node name="PartyMargin" type="MarginContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/PartyPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="PartyContent" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/PartyPanel/PartyMargin"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="PartyTitle" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/PartyPanel/PartyMargin/PartyContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.78, 0.36, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 16
+text = "ÉTAT DU GROUPE"
+horizontal_alignment = 1
+
+[node name="PartyCards" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/PartyPanel/PartyMargin/PartyContent"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 32
+
+[node name="ChoiceButtons" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LeaveChoice" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/ChoiceButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="LeaveRoomButton" type="Button" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/ChoiceButtons/LeaveChoice"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SkillTreeCloseButton"
+text = "SÉCURISER ET PARTIR"
+
+[node name="LeaveHealLabel" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/ChoiceButtons/LeaveChoice"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.88, 0.75, 1)
+theme_override_font_sizes/font_size = 14
+text = "Progression et équipement"
+horizontal_alignment = 1
+
+[node name="PushChoice" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/ChoiceButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="PushWaveButton" type="Button" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/ChoiceButtons/PushChoice"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SkillTreeCloseButton"
+text = "POUSSER PLUS LOIN"
+
+[node name="ThreatLabel" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/DecisionPanel/DecisionContent/ChoiceButtons/PushChoice"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.94, 0.55, 0.36, 1)
-theme_override_font_sizes/font_size = 16
-text = "Continuer retarde la progression et l'utilisation des objets."
+theme_override_font_sizes/font_size = 14
+text = "MENACE ÉLEVÉE"
 horizontal_alignment = 1
-autowrap_mode = 2
 
 [node name="CombatStatsPanel" type="MarginContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack"]
 unique_name_in_owner = true
@@ -300,17 +444,9 @@ theme_override_font_sizes/font_size = 14
 text = "Présentation de la victoire"
 vertical_alignment = 1
 
-[node name="PushWaveButton" type="Button" parent="SafeMargin/MainPanel/MainMargin/Main/Footer"]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(250, 48)
-layout_mode = 2
-theme_type_variation = &"SkillTreeCloseButton"
-text = "CONTINUER LE COMBAT"
-
 [node name="ContinueButton" type="Button" parent="SafeMargin/MainPanel/MainMargin/Main/Footer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 48)
+custom_minimum_size = Vector2(355, 72)
 layout_mode = 2
 theme_type_variation = &"SkillTreeCloseButton"
 text = "CONTINUER"

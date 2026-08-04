@@ -9,12 +9,30 @@ var _screen: PostCombatScreen = null
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT_DIR))
 	get_window().size = Vector2i(1920, 1080)
-	_prepare_report()
+	_prepare_report(false)
 	_screen = SCREEN_SCENE.instantiate() as PostCombatScreen
 	add_child(_screen)
 	await _settle()
 	await _advance_to_phase(&"ROOM_DECISION")
 	await _capture("room_wave_decision")
+	for viewport_size in [
+		Vector2i(1280, 720),
+		Vector2i(2560, 1440),
+	]:
+		get_window().size = viewport_size
+		_screen.apply_viewport_size_for_test(viewport_size)
+		await _settle(3)
+		await _capture("room_wave_decision_%dx%d" % [viewport_size.x, viewport_size.y])
+	get_window().size = Vector2i(1920, 1080)
+	_screen.apply_viewport_size_for_test(Vector2(1920, 1080))
+	await _settle()
+	_screen.free()
+	await _settle()
+
+	_prepare_report(true)
+	_screen = SCREEN_SCENE.instantiate() as PostCombatScreen
+	add_child(_screen)
+	await _settle()
 	await _advance_to_phase(&"REWARD_SELECTION")
 	await _capture("equipment_two_cards")
 	var options := GameManager.get_post_combat_reward_options()
@@ -51,7 +69,7 @@ func _ready() -> void:
 	get_tree().quit(0)
 
 
-func _prepare_report() -> void:
+func _prepare_report(at_hidden_room_end: bool) -> void:
 	GameManager.cleanup_run_state()
 	var run := RunData.new()
 	run.run_name = "Capture après-combat"
@@ -61,6 +79,8 @@ func _prepare_report() -> void:
 	]
 	GameManager._prepare_preconfigured_run(run, GameManager.PRODUCTION_HERO_DATA_PATHS)
 	GameManager.current_room_index = 0
+	if at_hidden_room_end:
+		GameManager.current_wave_index = GameManager.get_current_room_wave_count() - 1
 	var states := GameManager.get_ordered_character_states()
 	var elf := states[0].unit as Unit
 	var mage := states[1].unit as Unit
@@ -74,6 +94,8 @@ func _prepare_report() -> void:
 	var enemy := Unit.new("Brute gobeline", 1, 80)
 	enemy.take_damage(34, elf)
 	elf.take_damage(13, enemy)
+	mage.take_damage(42, enemy)
+	warrior.take_damage(25, enemy)
 	elf.heal(8, mage)
 	elf.add_shield(7, warrior)
 	var victim := Unit.new("Éclaireur gobelin", 1, 9)

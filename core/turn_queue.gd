@@ -152,6 +152,20 @@ func get_current_unit():
 func get_living_order() -> Array:
 	return _order.filter(func(u): return u.is_alive)
 
+
+# La file cyclique telle qu'elle doit être lue par l'interface : l'unité active
+# en premier, puis les prochains combattants, et enfin ceux ayant déjà joué.
+func get_upcoming_order() -> Array:
+	var living := get_living_order()
+	if living.is_empty() or _current_index < 0:
+		return living
+	var current_unit = get_current_unit()
+	var active_living_index := living.find(current_unit)
+	if active_living_index < 0:
+		return living
+	return living.slice(active_living_index) + living.slice(0, active_living_index)
+
+
 # Liste ordonnée complète (vivants + morts), pour l'UI si besoin.
 func get_full_order() -> Array:
 	return _order.duplicate()

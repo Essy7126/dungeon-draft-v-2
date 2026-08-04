@@ -12,7 +12,7 @@ extends Resource
 @export var default_seed: int = 1337
 @export_range(1, 180, 1) var target_duration_minutes: int = 30
 @export_range(1, 240, 1) var extended_duration_minutes: int = 45
-@export_range(1, 10, 1) var maximum_waves_per_room: int = 3
+@export_range(1, 10, 1) var maximum_waves_per_room: int = 10
 @export var rooms: Array[RoomData] = []
 
 
@@ -38,6 +38,23 @@ func validation_errors() -> PackedStringArray:
 					room_index + 1,
 					maximum_waves_per_room,
 				]
+			)
+		if room.minimum_wave_count > room.maximum_wave_count:
+			errors.append(
+				"La salle %d a une plage de vagues inversee." % (room_index + 1)
+			)
+		if room.maximum_wave_count > wave_count:
+			errors.append(
+				"La salle %d demande plus de vagues qu'elle ne possede de profils." % (
+					room_index + 1
+				)
+			)
+		if room.ultimate_reward_min_gain_per_wave \
+				> room.ultimate_reward_max_gain_per_wave:
+			errors.append(
+				"La salle %d a une progression de chance inversee." % (
+					room_index + 1
+				)
 			)
 		for wave_index in range(room.waves.size()):
 			var wave := room.waves[wave_index]

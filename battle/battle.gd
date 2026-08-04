@@ -16,6 +16,9 @@ const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
 const ArenaFeatureRendererScript = preload(
 	"res://battle/arena_feature_renderer.gd"
 )
+const TURN_ORDER_TIMELINE_SCENE := preload(
+	"res://ui/combat/turn_order_timeline.tscn"
+)
 
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
@@ -107,6 +110,7 @@ var action_bar: CanvasLayer
 var inspect_panel: CanvasLayer
 var player_combat_log: CanvasLayer
 var keyword_tooltip_layer: CanvasLayer
+var turn_order_timeline: TurnOrderTimeline = null
 var _uses_persistent_action_bar := false
 
 # --- Fin de combat ---
@@ -474,6 +478,10 @@ func _setup_ui() -> void:
 	keyword_tooltip_layer.set_script(load("res://ui/keyword_tooltip_layer.gd"))
 	add_child(keyword_tooltip_layer)
 
+	turn_order_timeline = TURN_ORDER_TIMELINE_SCENE.instantiate()
+	add_child(turn_order_timeline)
+	turn_order_timeline.unit_selected.connect(_on_turn_order_unit_selected)
+
 
 func _connect_local_action_bar_signals() -> void:
 	_connect_action_bar_signal(action_bar.move_pressed, _on_move_pressed)
@@ -668,6 +676,8 @@ func _launch_combat() -> void:
 	turn_queue.setup(units)
 	turn_queue.turn_started.connect(_on_turn_started)
 	turn_queue.round_started.connect(_on_round_started)
+	if is_instance_valid(turn_order_timeline):
+		turn_order_timeline.bind_queue(turn_queue)
 	turn_queue.start()
 
 # ============================================================
@@ -704,8 +714,7 @@ func _on_turn_started(unit: Unit) -> void:
 	# 3. Mort des dégâts (terrain ou poison) en début de tour ?
 	if not unit.is_alive:
 		unit.tick_statuses()
-		if not _battle_over:
-			turn_queue.advance()
+		_end_active_turn_if_dead(unit)
 		return
 
 	# 4. Stun : l'unité saute son tour.
@@ -744,6 +753,23 @@ func get_active_unit():
 	if turn_queue == null:
 		return null
 	return turn_queue.get_current_unit()
+
+
+func _end_active_turn_if_dead(unit: Unit) -> bool:
+	if not is_instance_valid(unit) or unit.is_alive or turn_queue == null:
+		return false
+	if turn_queue.get_current_unit() != unit:
+		return false
+	if _battle_over or _closing:
+		return true
+	_cancel_action_selection_for_active_unit()
+	if is_instance_valid(grid_view):
+		grid_view.clear_highlights()
+	if is_instance_valid(action_bar):
+		action_bar.set_player_controls_enabled(false)
+		action_bar.set_active_mode("")
+	turn_queue.advance()
+	return true
 
 
 func get_pending_evolution_requests() -> Array[Dictionary]:
@@ -847,6 +873,15 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 			inspect_panel.show_cell(cell, grid, terrain_effects, true)
 		return
 	turn_state.on_cell_clicked(cell)
+
+
+func _on_turn_order_unit_selected(unit: Unit) -> void:
+	if not is_instance_valid(unit) or not unit.is_alive or inspect_panel == null:
+		return
+	inspect_panel.visible = true
+	inspect_panel.show_unit(unit, true)
+
+
 func _on_cell_hovered(cell: Vector2i) -> void:
 	if inspect_panel != null:
 		inspect_panel.show_cell(cell, grid, terrain_effects, false)
@@ -911,6 +946,8 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	var lifecycle_generation := _lifecycle_generation
 	await _animate_move(unit, path)
 	if not _is_operation_current(lifecycle_generation):
+		return
+	if _end_active_turn_if_dead(unit):
 		return
 	turn_state.end_animating()
 	action_bar.update_info(unit)
@@ -1024,6 +1061,8 @@ func _on_request_attack(cell: Vector2i) -> void:
 	else:
 		await _animate_attack(unit, target)
 	if not _is_operation_current(lifecycle_generation):
+		return
+	if _end_active_turn_if_dead(unit):
 		return
 	turn_state.end_animating()
 	action_bar.update_info(unit)
@@ -1144,6 +1183,8 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		return
 	if _battle_outcome_waiting:
 		_commit_waiting_battle_outcome()
+		return
+	if _end_active_turn_if_dead(unit):
 		return
 	if turn_state != null:
 		turn_state.begin_player_turn()
@@ -1285,6 +1326,8 @@ func _resume_combat_after_evolutions() -> void:
 		if turn_state != null:
 			turn_state.begin_player_turn()
 		return
+	if _end_active_turn_if_dead(active_unit):
+		return
 	if active_unit.team == 0:
 		turn_state.begin_player_turn()
 		if is_instance_valid(action_bar):
@@ -1327,6 +1370,8 @@ func _begin_battle_shutdown() -> void:
 	if turn_queue != null \
 			and turn_queue.turn_started.is_connected(_on_turn_started):
 		turn_queue.turn_started.disconnect(_on_turn_started)
+	if is_instance_valid(turn_order_timeline):
+		turn_order_timeline.clear_queue()
 	for view in _unit_views.values():
 		if is_instance_valid(view) \
 				and view.has_method("cancel_pending_visual_actions"):
@@ -1410,6 +1455,8 @@ func _end_battle(victory: bool) -> void:
 	GameManager.schedule_battle_outcome(victory, END_SCREEN_DELAY)
 
 func _show_end_screen(victory: bool) -> void:
+	if victory:
+		return
 	var layer = CanvasLayer.new()
 	add_child(layer)
 	var panel = ColorRect.new()
@@ -1418,9 +1465,9 @@ func _show_end_screen(victory: bool) -> void:
 	panel.anchor_bottom = 1.0
 	layer.add_child(panel)
 	var label = Label.new()
-	label.text = "VICTOIRE !" if victory else "DÉFAITE"
+	label.text = "DÉFAITE"
 	label.add_theme_font_size_override("font_size", 64)
-	label.add_theme_color_override("font_color", Color(0.3, 1, 0.4) if victory else Color(1, 0.3, 0.3))
+	label.add_theme_color_override("font_color", Color(1, 0.3, 0.3))
 	label.anchor_left = 0.5
 	label.anchor_top = 0.5
 	label.anchor_right = 0.5
@@ -1430,5 +1477,3 @@ func _show_end_screen(victory: bool) -> void:
 	label.size = Vector2(400, 80)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	layer.add_child(label)
-	print("\n===== COMBAT TERMINÉ : %s =====" % ("VICTOIRE" if victory else "DÉFAITE"))
-	

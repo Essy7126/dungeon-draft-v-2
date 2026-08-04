@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="3_spell_type"]
 [ext_resource type="Resource" path="res://data/spells/enemies/skeleton_bone_blade.tres" id="4_blade"]
 [ext_resource type="Resource" path="res://data/ai/profiles/skeleton_normal_ai.tres" id="5_ai"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonVisual3D.tscn" id="6_preview"]
 
 [resource]
 script = ExtResource("1_unit")
@@ -19,6 +20,7 @@ max_ap = 4
 max_mp = 5
 attack_power = 18
 visual_scene = ExtResource("2_visual")
+preview_visual_scene = ExtResource("6_preview")
 basic_attack_enabled = false
 spells = Array[ExtResource("3_spell_type")]([ExtResource("4_blade")])
 ai_profile = ExtResource("5_ai")

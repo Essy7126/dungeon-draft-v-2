@@ -23,6 +23,74 @@ func record_spell(spell_id: StringName) -> void:
 	spells_cast_by_id[key] = int(spells_cast_by_id.get(key, 0)) + 1
 
 
+func merge_wave_report(wave_report: CharacterCombatReport) -> void:
+	if wave_report == null or wave_report.character_id != character_id:
+		return
+	damage_dealt += wave_report.damage_dealt
+	damage_taken += wave_report.damage_taken
+	healing_done += wave_report.healing_done
+	shield_applied += wave_report.shield_applied
+	kills += wave_report.kills
+	spells_cast_total += wave_report.spells_cast_total
+	cells_moved += wave_report.cells_moved
+	for spell_id in wave_report.spells_cast_by_id:
+		spells_cast_by_id[spell_id] = (
+			int(spells_cast_by_id.get(spell_id, 0))
+			+ int(wave_report.spells_cast_by_id[spell_id])
+		)
+	for discipline_id in wave_report.discipline_xp_before:
+		if not discipline_xp_before.has(discipline_id):
+			discipline_xp_before[discipline_id] = (
+				wave_report.discipline_xp_before[discipline_id]
+			)
+	for discipline_id in wave_report.discipline_xp_after:
+		discipline_xp_after[discipline_id] = (
+			wave_report.discipline_xp_after[discipline_id]
+		)
+	for acquired_node in wave_report.selected_nodes_during_combat:
+		_append_unique_acquired_node(selected_nodes_during_combat, acquired_node)
+	for wave_delta in wave_report.discipline_deltas:
+		if wave_delta == null:
+			continue
+		var cumulative_delta := _get_discipline_delta(wave_delta.discipline_id)
+		if cumulative_delta == null:
+			discipline_deltas.append(wave_delta)
+			continue
+		cumulative_delta.xp_after = wave_delta.xp_after
+		cumulative_delta.rank_after = wave_delta.rank_after
+		cumulative_delta.next_threshold_after = wave_delta.next_threshold_after
+		for reached_rank in wave_delta.reached_ranks:
+			if not cumulative_delta.reached_ranks.has(reached_rank):
+				cumulative_delta.reached_ranks.append(reached_rank)
+		cumulative_delta.reached_ranks.sort()
+		for acquired_node in wave_delta.acquired_nodes:
+			_append_unique_acquired_node(
+				cumulative_delta.acquired_nodes,
+				acquired_node,
+			)
+
+
+func _get_discipline_delta(
+		discipline_id: StringName
+	) -> DisciplineProgressDelta:
+	for delta in discipline_deltas:
+		if delta != null and delta.discipline_id == discipline_id:
+			return delta
+	return null
+
+
+func _append_unique_acquired_node(
+		target: Array[Dictionary],
+		acquired_node: Dictionary
+	) -> void:
+	var upgrade_id := StringName(acquired_node.get("upgrade_id", &""))
+	for existing in target:
+		if upgrade_id != &"" \
+				and StringName(existing.get("upgrade_id", &"")) == upgrade_id:
+			return
+	target.append(acquired_node.duplicate(true))
+
+
 func to_dictionary() -> Dictionary:
 	var deltas: Array[Dictionary] = []
 	for delta in discipline_deltas:

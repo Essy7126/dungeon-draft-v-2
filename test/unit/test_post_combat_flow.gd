@@ -262,6 +262,51 @@ func test_screen_runs_victory_stats_progression_and_displays_two_cards() -> void
 	assert_eq(screen.get_reward_card_count(), 2)
 
 
+func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -> void:
+	GameManager.cleanup_run_state()
+	var run := RunData.new()
+	run.rooms = [
+		load("res://data/rooms/first_run_room_01.tres") as RoomData,
+		load("res://data/rooms/first_run_room_02.tres") as RoomData,
+	]
+	assert_true(GameManager._prepare_preconfigured_run(
+		run,
+		GameManager.PRODUCTION_HERO_DATA_PATHS,
+	))
+	GameManager.current_room_index = 0
+	var states := GameManager.get_ordered_character_states()
+	states[0].unit.current_hp = maxi(1, states[0].unit.max_hp.get_int() / 2)
+	var tracker := CombatReportTracker.new()
+	tracker.begin(states, 0, "Gué forestier")
+	GameManager._last_combat_report = tracker.finalize(states, true)
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	screen.advance_or_skip()
+	screen.advance_or_skip()
+	assert_eq(screen.get_phase_name(), &"ROOM_DECISION")
+	var snapshot := screen.get_decision_visual_snapshot()
+	assert_eq(snapshot["party_card_count"], 3)
+	assert_string_contains(snapshot["threat_text"], "MENACE")
+	assert_string_contains(snapshot["secured_text"], "XP")
+	assert_string_contains(snapshot["secured_text"], "objets")
+	assert_eq(snapshot["reward_text"], "Coffre de salle")
+	assert_string_contains(snapshot["reward_detail_text"], "perdu")
+	assert_string_contains(snapshot["ultimate_chance_text"], "CHANCE ULTIME")
+	assert_string_contains(snapshot["ultimate_chance_text"], "%")
+	assert_string_contains(snapshot["ultimate_chance_text"], "+2 à +5")
+	assert_eq(snapshot["heal_text"], "Progression et équipement")
+	assert_false(str(snapshot["detail_text"]).contains("/"))
+	assert_false(str(snapshot["detail_text"]).contains("Vague"))
+	assert_eq(snapshot["status_text"], "")
+	assert_eq(snapshot["leave_button_text"], "SÉCURISER ET PARTIR")
+	assert_eq(snapshot["continue_button_text"], "POUSSER PLUS LOIN")
+	assert_null(screen.find_child("MysteryRewardDetail", true, false))
+	assert_null(screen.find_child("RewardGrowth", true, false))
+	assert_null(screen.find_child("ThreatDetail", true, false))
+	assert_null(screen.find_child("DecisionRisk", true, false))
+
+
 func test_progression_skip_reaches_exact_final_values_without_choice_ui() -> void:
 	GameManager._last_combat_report = _finalized_global_report_with_progress()
 	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen

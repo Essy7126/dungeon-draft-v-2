@@ -7,6 +7,7 @@
 [ext_resource type="Resource" path="res://data/spells/enemies/skeleton_chief_strike.tres" id="4_strike"]
 [ext_resource type="Resource" path="res://data/spells/enemies/scarlet_sentence.tres" id="5_sentence"]
 [ext_resource type="Resource" path="res://data/ai/profiles/skeleton_chief_ai.tres" id="6_ai"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton_chief/SkeletonChiefVisual3D.tscn" id="7_preview"]
 
 [resource]
 script = ExtResource("1_unit")
@@ -21,6 +22,7 @@ attack_power = 32
 armure = 90.0
 resist_magique = 70.0
 visual_scene = ExtResource("2_visual")
+preview_visual_scene = ExtResource("7_preview")
 basic_attack_enabled = false
 spells = Array[ExtResource("3_spell_type")]([ExtResource("4_strike"), ExtResource("5_sentence")])
 ai_profile = ExtResource("6_ai")

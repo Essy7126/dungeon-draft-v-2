@@ -39,6 +39,8 @@ const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
 )
 const INVENTORY_CAPACITY := 24
 const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 2
+const ULTIMATE_REWARD_PROGRESS_SEED_SALT := 4_865_291
+const ULTIMATE_REWARD_ROLL_SEED_SALT := 7_914_673
 const POST_COMBAT_LOOT_ITEM_ID: StringName = &"minor_healing_potion"
 const STARTING_INVENTORY := [
 	{"item_id": &"warrior_training_sword", "quantity": 1},
@@ -67,6 +69,7 @@ var _battle_outcome_generation := 0
 var _battle_outcome_pending := false
 var _combat_report_tracker := CombatReportTracker.new()
 var _last_combat_report: CombatReport = null
+var _room_combat_report: CombatReport = null
 var _post_combat_background_texture: Texture2D = null
 var _post_combat_reward_service := PostCombatRewardService.new()
 var _equipment_reward_service := FirstRunEquipmentRewardService.new()
@@ -77,7 +80,8 @@ var run_inventory: RunInventory = null
 var _equipment_service := EquipmentService.new()
 var _item_use_service := ItemUseService.new()
 var _next_run_start_room_index := 0
-var _maximum_waves_per_room := 3
+var _maximum_waves_per_room := 10
+var _room_wave_counts := PackedInt32Array()
 var _room_exit_selected := false
 var _cleared_room_emitted := false
 
@@ -228,6 +232,7 @@ func _initialize_run_state(run_data: RunData) -> void:
 	current_room_index = -1
 	current_wave_index = 0
 	_maximum_waves_per_room = maxi(1, run_data.maximum_waves_per_room)
+	_build_hidden_room_wave_counts()
 	run_active = true
 	_active_run_name = run_data.run_name
 	_last_run_result = {}
@@ -237,6 +242,7 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_battle_outcome_pending = false
 	_combat_report_tracker.discard()
 	_last_combat_report = null
+	_room_combat_report = null
 	_post_combat_background_texture = null
 	_post_combat_reward_service.reset()
 	_progression_service.reset_run()
@@ -273,6 +279,7 @@ func cleanup_run_state() -> void:
 	_battle_outcome_pending = false
 	_combat_report_tracker.discard()
 	_last_combat_report = null
+	_room_combat_report = null
 	_post_combat_background_texture = null
 	_post_combat_reward_service.reset()
 	_equipment_reward_service.reset()
@@ -289,7 +296,8 @@ func cleanup_run_state() -> void:
 	_clear_inventory_state()
 	rooms.clear()
 	run_seed = 0
-	_maximum_waves_per_room = 3
+	_maximum_waves_per_room = 10
+	_room_wave_counts.clear()
 	_room_exit_selected = false
 	_cleared_room_emitted = false
 	_active_run_name = ""
@@ -721,6 +729,7 @@ func _close_active_progression_screen() -> void:
 func _go_to_next_room() -> void:
 	unbind_combat_context()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
+	_room_combat_report = null
 	current_room_index += 1
 	current_wave_index = 0
 	_room_exit_selected = false
@@ -774,7 +783,29 @@ func get_current_room_wave_count() -> int:
 	var room := get_current_room()
 	if room == null:
 		return 0
+	if current_room_index >= 0 and current_room_index < _room_wave_counts.size():
+		return _room_wave_counts[current_room_index]
 	return mini(room.get_wave_count(), _maximum_waves_per_room)
+
+
+func _build_hidden_room_wave_counts() -> void:
+	_room_wave_counts.clear()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = run_seed
+	for room_value in rooms:
+		var room := room_value as RoomData
+		if room == null:
+			_room_wave_counts.append(0)
+			continue
+		var available := mini(room.get_wave_count(), _maximum_waves_per_room)
+		var minimum := clampi(room.get_minimum_wave_count(), 1, available)
+		var maximum := clampi(room.get_maximum_wave_count(), minimum, available)
+		_room_wave_counts.append(rng.randi_range(minimum, maximum))
+
+
+func is_current_room_fully_cleared() -> bool:
+	var wave_count := get_current_room_wave_count()
+	return wave_count > 0 and current_wave_index + 1 >= wave_count
 
 
 func can_continue_current_room() -> bool:
@@ -794,7 +825,55 @@ func get_current_room_reward_multiplier() -> float:
 	return total
 
 
+func get_current_room_ultimate_reward_chance() -> int:
+	var room := get_current_room()
+	if room == null:
+		return 0
+	var chance := room.get_ultimate_reward_base_chance()
+	var gain_range := room.get_ultimate_reward_gain_range()
+	var rng := _make_room_reward_rng(ULTIMATE_REWARD_PROGRESS_SEED_SALT)
+	var additional_wave_count := maxi(
+		0,
+		get_current_room_cleared_wave_count() - 1,
+	)
+	for _wave_index in range(additional_wave_count):
+		chance += rng.randi_range(gain_range.x, gain_range.y)
+	return clampi(chance, 0, 100)
+
+
+func get_current_room_cleared_wave_count() -> int:
+	var cleared_count := maxi(0, current_wave_index)
+	if _room_outcome_resolved \
+			and _last_combat_report != null \
+			and _last_combat_report.victory:
+		cleared_count += 1
+	return cleared_count
+
+
+func is_current_room_ultimate_reward_won() -> bool:
+	if not is_current_room_fully_cleared():
+		return false
+	var rng := _make_room_reward_rng(ULTIMATE_REWARD_ROLL_SEED_SALT)
+	return rng.randi_range(1, 100) <= get_current_room_ultimate_reward_chance()
+
+
+func _make_room_reward_rng(seed_salt: int) -> RandomNumberGenerator:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = run_seed + (current_room_index + 1) * 1_000_003 + seed_salt
+	return rng
+
+
 func get_post_combat_decision_snapshot() -> Dictionary:
+	var next_health_multiplier := 1.0
+	var next_attack_multiplier := 1.0
+	var ultimate_gain_range := Vector2i.ZERO
+	var room := get_current_room()
+	if room != null:
+		ultimate_gain_range = room.get_ultimate_reward_gain_range()
+		var next_wave := room.get_wave(current_wave_index + 1)
+		if next_wave != null:
+			next_health_multiplier = next_wave.enemy_health_multiplier
+			next_attack_multiplier = next_wave.enemy_attack_multiplier
 	return {
 		"room_index": current_room_index,
 		"wave_index": current_wave_index,
@@ -802,8 +881,43 @@ func get_post_combat_decision_snapshot() -> Dictionary:
 		"wave_count": get_current_room_wave_count(),
 		"can_continue": can_continue_current_room(),
 		"reward_multiplier": get_current_room_reward_multiplier(),
+		"ultimate_reward_chance_percent": (
+			get_current_room_ultimate_reward_chance()
+		),
+		"ultimate_reward_roll_resolved": is_current_room_fully_cleared(),
+		"ultimate_reward_won": is_current_room_ultimate_reward_won(),
+		"ultimate_reward_min_gain_per_wave": ultimate_gain_range.x,
+		"ultimate_reward_max_gain_per_wave": ultimate_gain_range.y,
 		"room_exit_selected": _room_exit_selected,
+		"room_completed": is_current_room_fully_cleared(),
+		"next_enemy_health_multiplier": next_health_multiplier,
+		"next_enemy_attack_multiplier": next_attack_multiplier,
+		"secured_combat_xp": _get_last_combat_progression_xp(),
+		"run_inventory_item_quantity": _get_run_inventory_item_quantity(),
 	}
+
+
+func _get_last_combat_progression_xp() -> int:
+	if _last_combat_report == null:
+		return 0
+	var total := 0
+	for character in _last_combat_report.character_reports:
+		if character == null:
+			continue
+		for delta in character.discipline_deltas:
+			if delta != null:
+				total += maxi(0, delta.xp_after - delta.xp_before)
+	return total
+
+
+func _get_run_inventory_item_quantity() -> int:
+	if run_inventory == null:
+		return 0
+	var total := 0
+	for instance in run_inventory.get_slots():
+		if instance != null:
+			total += instance.quantity
+	return total
 
 
 func continue_current_room_combat(report_id: StringName) -> bool:
@@ -829,10 +943,13 @@ func continue_current_room_combat(report_id: StringName) -> bool:
 func select_current_room_exit(report_id: StringName) -> bool:
 	if _last_combat_report == null \
 		or _last_combat_report.report_id != report_id \
-		or _post_combat_transition_pending:
+		or _post_combat_transition_pending \
+		or _room_exit_selected \
+		or (is_final_room() and not is_current_room_fully_cleared()):
 		return false
 	_room_exit_selected = true
-	_emit_current_room_cleared_once()
+	if is_current_room_fully_cleared():
+		_emit_current_room_cleared_once()
 	return true
 
 
@@ -863,10 +980,18 @@ func begin_combat_report() -> CombatReport:
 func _finalize_current_combat_report(victory: bool) -> CombatReport:
 	if not _combat_report_tracker.is_active():
 		begin_combat_report()
-	return _combat_report_tracker.finalize(
+	var wave_report := _combat_report_tracker.finalize(
 		get_ordered_character_states(),
 		victory,
 	)
+	if wave_report == null:
+		return null
+	if _room_combat_report == null \
+			or _room_combat_report.room_index != wave_report.room_index:
+		_room_combat_report = wave_report
+	elif not _room_combat_report.merge_wave_report(wave_report):
+		return null
+	return _room_combat_report
 
 
 func get_current_combat_report() -> CombatReport:
@@ -874,6 +999,8 @@ func get_current_combat_report() -> CombatReport:
 
 
 func get_post_combat_reward_options() -> Array[Dictionary]:
+	if not is_current_room_fully_cleared():
+		return []
 	return _equipment_reward_service.build_options(
 		_last_combat_report,
 		get_ordered_character_states(),
@@ -883,7 +1010,7 @@ func get_post_combat_reward_options() -> Array[Dictionary]:
 
 
 func select_post_combat_equipment(item_id: StringName) -> bool:
-	if is_final_room():
+	if is_final_room() or not is_current_room_fully_cleared():
 		return false
 	return _equipment_reward_service.remember_selection(
 		_last_combat_report,
@@ -903,11 +1030,11 @@ func confirm_post_combat_equipment(
 		item_id: StringName,
 		target_character_id: StringName = &""
 	) -> Dictionary:
-	if is_final_room():
+	if is_final_room() or not is_current_room_fully_cleared():
 		return {
 			"success": false,
-			"error_code": "FINAL_ROOM_HAS_NO_REWARD",
-			"error": "La salle finale ne distribue pas d'équipement.",
+			"error_code": "ROOM_REWARD_UNAVAILABLE",
+			"error": "La recompense exige de terminer toutes les vagues de la salle.",
 		}
 	var result := _equipment_reward_service.apply(
 		_last_combat_report,
@@ -1035,7 +1162,7 @@ func complete_post_combat_transition(report_id: StringName) -> bool:
 		or _last_combat_report == null \
 		or _last_combat_report.report_id != report_id:
 		return false
-	if not is_final_room() and (
+	if not is_final_room() and is_current_room_fully_cleared() and (
 		not _last_combat_report.reward_result.get("success", false)
 		or not _equipment_reward_service.has_applied(report_id)
 	):
