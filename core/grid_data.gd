@@ -58,9 +58,11 @@ const PROPERTIES = {
 var _types: Dictionary = {}     # Vector2i -> CellType
 var _units: Dictionary = {}     # Vector2i -> Unit (ou absent si vide)
 var _effects: Dictionary = {}   # Vector2i -> { "name": String, "data": Dictionary }
+var _dynamic_blockers: Dictionary = {} # Vector2i -> Array[Object]
 var _next_combat_order: int = 0
 
 signal occupancy_changed(reason: StringName, unit, from_pos: Vector2i, to_pos: Vector2i)
+signal dynamic_blocker_changed(cell: Vector2i)
 
 # ============================================================
 # CONSTRUCTION
@@ -88,12 +90,14 @@ func get_type(pos: Vector2i) -> CellType:
 	return _types.get(pos, CellType.NORMAL)
 
 # Peut-on marcher sur cette case ? (bon type ET aucune unitÃ© dessus)
-func is_walkable(pos: Vector2i) -> bool:
+func is_walkable(pos: Vector2i, ignore_unit = null) -> bool:
 	if not is_valid(pos):
 		return false
-	if has_unit(pos):
+	if has_unit(pos) and get_unit(pos) != ignore_unit:
 		return false
-	return PROPERTIES[get_type(pos)]["walkable"]
+	if not PROPERTIES[get_type(pos)]["walkable"]:
+		return false
+	return not _is_dynamically_blocked_for(pos, &"blocks_movement")
 
 # Le TYPE de la case autorise-t-il l'interaction (survol/clic/ciblage) ?
 # Contrairement Ã  is_walkable(), ignore l'occupation par une unitÃ© : on doit
@@ -108,7 +112,88 @@ func is_terrain_interactable(pos: Vector2i) -> bool:
 func is_transparent(pos: Vector2i) -> bool:
 	if not is_valid(pos):
 		return false
-	return PROPERTIES[get_type(pos)]["transparent"]
+	if not PROPERTIES[get_type(pos)]["transparent"]:
+		return false
+	return not _is_dynamically_blocked_for(pos, &"blocks_line_of_sight")
+
+
+## Les projectiles disposent de leur propre contrat. Les terrains opaques les
+## bloquent par defaut, puis les objets dynamiques peuvent affiner la regle.
+func is_projectile_passable(pos: Vector2i) -> bool:
+	if not is_valid(pos) or not PROPERTIES[get_type(pos)]["transparent"]:
+		return false
+	return not _is_dynamically_blocked_for(pos, &"blocks_projectiles")
+
+
+## Enregistre des objets temporaires sans ecraser le CellType de base. Cette
+## superposition permet de retirer un mur sans rendre praticable un trou, une
+## lave locale ou un obstacle permanent.
+func register_dynamic_blocker(pos: Vector2i, blocker) -> bool:
+	if not is_valid(pos) or blocker == null or not is_instance_valid(blocker):
+		return false
+	var blockers: Array = _valid_dynamic_blockers(pos)
+	if blockers.has(blocker):
+		return false
+	blockers.append(blocker)
+	_dynamic_blockers[pos] = blockers
+	dynamic_blocker_changed.emit(pos)
+	return true
+
+
+func unregister_dynamic_blocker(pos: Vector2i, blocker) -> bool:
+	if not _dynamic_blockers.has(pos):
+		return false
+	var blockers: Array = _valid_dynamic_blockers(pos)
+	var removed := false
+	if blocker == null:
+		removed = not blockers.is_empty()
+		blockers.clear()
+	else:
+		removed = blockers.has(blocker)
+		if removed:
+			blockers.erase(blocker)
+	if blockers.is_empty():
+		_dynamic_blockers.erase(pos)
+	else:
+		_dynamic_blockers[pos] = blockers
+	if removed:
+		dynamic_blocker_changed.emit(pos)
+	return removed
+
+
+func clear_dynamic_blockers() -> void:
+	var changed_cells := _dynamic_blockers.keys()
+	_dynamic_blockers.clear()
+	for cell in changed_cells:
+		dynamic_blocker_changed.emit(cell)
+
+
+func is_cell_dynamically_blocked(pos: Vector2i) -> bool:
+	return not _valid_dynamic_blockers(pos).is_empty()
+
+
+func get_dynamic_blockers(pos: Vector2i) -> Array:
+	return _valid_dynamic_blockers(pos).duplicate()
+
+
+func _is_dynamically_blocked_for(pos: Vector2i, capability: StringName) -> bool:
+	for blocker in _valid_dynamic_blockers(pos):
+		if blocker.has_method(capability) and bool(blocker.call(capability)):
+			return true
+	return false
+
+
+func _valid_dynamic_blockers(pos: Vector2i) -> Array:
+	var blockers: Array = _dynamic_blockers.get(pos, [])
+	var valid: Array = []
+	for blocker in blockers:
+		if blocker != null and is_instance_valid(blocker):
+			valid.append(blocker)
+	if valid.is_empty():
+		_dynamic_blockers.erase(pos)
+	else:
+		_dynamic_blockers[pos] = valid
+	return valid
 
 # ============================================================
 # MODIFICATION DES TYPES (sorts de terrain, gÃ©nÃ©ration de map)

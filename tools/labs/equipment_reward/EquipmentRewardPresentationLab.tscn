@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://asset/map/painted/room_01_forest/forest_background_v2.webp" id="2_bg"]
+[ext_resource type="PackedScene" path="res://ui/post_combat/EquipmentRewardOverlay.tscn" id="3_overlay"]
+[ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="4_theme"]
+
+[sub_resource type="StyleBoxFlat" id="ToolbarStyle"]
+bg_color = Color(0.025, 0.03, 0.038, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.46, 0.5, 0.52, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="EquipmentRewardPresentationLab" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_theme")
+script = ExtResource("1_script")
+
+[node name="FrozenBattlefield" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="EquipmentRewardOverlay" parent="." instance=ExtResource("3_overlay")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="Toolbar" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 18.0
+offset_top = 10.0
+offset_right = -18.0
+offset_bottom = 80.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("ToolbarStyle")
+
+[node name="StatusLabel" type="Label" parent="Toolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.82, 0.82, 1)
+theme_override_font_sizes/font_size = 12
+text = "Laboratoire de récompenses"
+horizontal_alignment = 1
+vertical_alignment = 1

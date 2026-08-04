@@ -27,8 +27,14 @@ enum UseEffect {
 @export var display_name := "Objet"
 @export_multiline var description := ""
 @export var icon: Texture2D = null
+@export var inventory_icon: Texture2D = null
+@export var card_texture: Texture2D = null
 @export var rarity: StringName = &"common"
 @export var tags: Array[StringName] = []
+
+@export_group("Reward Presentation")
+@export var reward_fx_profile: StringName = &"generic"
+@export var reward_audio_profile: StringName = &"generic"
 
 @export_group("Inventory")
 @export var category: Category = Category.ACCESSORY
@@ -90,3 +96,11 @@ func is_compatible_with(character_id: StringName) -> bool:
 
 func get_stack_limit() -> int:
 	return maxi(1, stack_limit)
+
+
+func get_inventory_icon() -> Texture2D:
+	return inventory_icon if inventory_icon != null else icon
+
+
+func get_reward_card_texture() -> Texture2D:
+	return card_texture if card_texture != null else icon

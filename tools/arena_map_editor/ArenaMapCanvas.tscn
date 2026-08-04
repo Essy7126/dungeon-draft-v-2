@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tools/arena_map_editor/arena_map_canvas.gd" id="1_canvas"]
+[ext_resource type="Script" path="res://battle/iso/iso_grid_view.gd" id="2_grid"]
+
+[node name="ArenaMapCanvas" type="Node2D"]
+script = ExtResource("1_canvas")
+
+[node name="FloorLayer" type="Node2D" parent="."]
+
+[node name="SurfaceLayer" type="Node2D" parent="."]
+z_index = 1
+
+[node name="YSortedWorld" type="Node2D" parent="."]
+y_sort_enabled = true
+z_index = 2
+
+[node name="MarkerLayer" type="Node2D" parent="YSortedWorld"]
+y_sort_enabled = true
+
+[node name="GridDebug" type="Node2D" parent="."]
+z_index = 100
+script = ExtResource("2_grid")
+draw_base_cells = false
+draw_grid_lines = true
+draw_cell_centers = false
+draw_map_bounds = true
+
+[node name="Geometry" type="TileMapLayer" parent="GridDebug"]

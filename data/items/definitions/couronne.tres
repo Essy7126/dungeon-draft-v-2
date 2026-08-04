@@ -20,6 +20,7 @@ item_id = &"couronne"
 display_name = "Couronne"
 description = "+1 PA maximum. Contrepartie : -15 PV maximum."
 icon = ExtResource("3_icon")
+card_texture = ExtResource("3_icon")
 rarity = &"rare"
 tags = Array[StringName]([&"accessory", &"head", &"first_run_equipment_reward"])
 category = 2

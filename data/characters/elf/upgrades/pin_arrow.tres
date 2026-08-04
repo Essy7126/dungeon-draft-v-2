@@ -3,12 +3,14 @@
 [ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_node"]
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/pin_arrow.tres" id="3_modifier"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/felche_clouante.jpg" id="4_card"]
 
 [resource]
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_pin_arrow"
 display_name = "Flèche clouante"
 description = "La perte de mouvement de Flèche entravante passe à 2 PM pendant le prochain tour."
+card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 4
 target_spell_id = &"elf_precise_shot"

@@ -3,12 +3,14 @@
 [ext_resource type="Script" uid="uid://dfwja3hug8lax" path="res://data/characters/skill_tree_node_data.gd" id="1_upgrade"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/eagle_eye.tres" id="3_modifier"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/oeil_aigle.png" id="4_card"]
 
 [resource]
 script = ExtResource("1_upgrade")
 upgrade_id = &"elf_archer_eagle_eye"
 display_name = "Œil d’aigle"
 description = "Tir précis inflige 5 dégâts supplémentaires à une cible située à au moins quatre cases."
+card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 2
 target_spell_id = &"elf_precise_shot"

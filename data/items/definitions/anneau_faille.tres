@@ -21,6 +21,7 @@ item_id = &"anneau_faille"
 display_name = "Anneau de la faille"
 description = "+1 portée maximale aux sorts modifiables. Contrepartie : -10 armure."
 icon = ExtResource("4_icon")
+card_texture = ExtResource("4_icon")
 rarity = &"rare"
 tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
 category = 2

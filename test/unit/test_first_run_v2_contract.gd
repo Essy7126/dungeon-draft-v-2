@@ -223,17 +223,42 @@ func test_all_fourteen_new_item_definitions_are_valid_unique_and_visual() -> voi
 	assert_not_null(catalog)
 	var validation := catalog.validate_catalog()
 	assert_true(validation.get("valid", false), str(validation.get("errors", [])))
-	assert_eq(validation.get("definition_count"), 19)
+	assert_gte(int(validation.get("definition_count", 0)), 19)
 	var seen := {}
 	for item_id in NEW_ITEM_IDS:
 		var definition := catalog.get_definition(item_id)
 		assert_not_null(definition, str(item_id))
 		assert_true(definition.is_valid(), str(item_id))
 		assert_not_null(definition.icon, str(item_id))
+		assert_not_null(definition.card_texture, str(item_id))
 		assert_true(definition.is_equippable(), str(item_id))
 		assert_false(seen.has(definition.item_id), str(item_id))
 		seen[definition.item_id] = true
 	assert_eq(seen.size(), 14)
+
+
+func test_item_definition_directory_auto_populates_the_reward_pool() -> void:
+	var catalog := ItemCatalog.new()
+	catalog.auto_discovery_directories = PackedStringArray([
+		"res://data/items/definitions",
+	])
+	assert_true(catalog.rebuild_index())
+	var expected_reward_ids: Array[StringName] = []
+	for definition in catalog.get_definitions():
+		if definition != null and definition.is_equippable() \
+				and definition.tags.has(FirstRunEquipmentRewardService.POOL_TAG):
+			expected_reward_ids.append(definition.item_id)
+	expected_reward_ids.sort_custom(func(a: StringName, b: StringName) -> bool:
+		return str(a) < str(b)
+	)
+	var service := FirstRunEquipmentRewardService.new()
+	assert_true(service.reset(catalog, 2026))
+	var snapshot := service.snapshot()
+	var actual_reward_ids: Array[StringName] = []
+	for value in snapshot.get("eligible_ids", []) as Array:
+		actual_reward_ids.append(StringName(value))
+	assert_eq(actual_reward_ids, expected_reward_ids)
+	assert_gte(actual_reward_ids.size(), 14)
 
 
 func test_reward_deck_offers_five_distinct_pairs_and_none_for_final_room() -> void:
@@ -266,6 +291,9 @@ func test_reward_deck_offers_five_distinct_pairs_and_none_for_final_room() -> vo
 			equipment,
 		)
 		assert_true(result.get("success", false), str(result))
+		assert_false(result.get("equipped", true), str(result))
+		for state in states:
+			assert_true(state.equipment_loadout.get_equipped_items().is_empty())
 		assert_false(service.apply(
 			report,
 			chosen.get("item_id"),

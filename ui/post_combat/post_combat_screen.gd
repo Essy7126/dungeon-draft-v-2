@@ -26,6 +26,8 @@ enum Phase {
 @onready var background: TextureRect = %Background
 @onready var background_dim: ColorRect = %BackgroundDim
 @onready var transition_layer: ColorRect = %TransitionLayer
+@onready var safe_margin: MarginContainer = %SafeMargin
+@onready var reward_overlay: EquipmentRewardOverlay = %EquipmentRewardOverlay
 @onready var room_label: Label = %RoomLabel
 @onready var phase_title: Label = %PhaseTitle
 @onready var victory_panel: Control = %VictoryPanel
@@ -61,6 +63,9 @@ var _final_room := false
 
 func _ready() -> void:
 	continue_button.pressed.connect(advance_or_skip)
+	reward_overlay.selection_changed.connect(_on_overlay_selection_changed)
+	reward_overlay.confirmation_requested.connect(_on_overlay_confirmation_requested)
+	reward_overlay.confirmation_finished.connect(_on_overlay_confirmation_finished)
 	report = GameManager.get_current_combat_report()
 	if report == null or not report.finalized or not report.victory:
 		_show_fatal_error("Le rapport de victoire est indisponible.")
@@ -75,6 +80,8 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if phase in [Phase.REWARD_SELECTION, Phase.COMPLETED, Phase.TRANSITIONING]:
+		return
 	if event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
 		advance_or_skip()
@@ -117,15 +124,14 @@ func get_progression_panel_count() -> int:
 
 
 func get_reward_card_count() -> int:
-	return reward_cards.get_child_count()
+	return reward_overlay.get_card_count()
 
 
 func select_reward_by_id(reward_id: StringName) -> bool:
 	for option in _reward_options:
 		if StringName(option.get("reward_id", &"")) != reward_id:
 			continue
-		_select_reward(option)
-		return true
+		return reward_overlay.select_item_by_id(reward_id)
 	return false
 
 
@@ -138,7 +144,7 @@ func select_recipient_by_id(character_id: StringName) -> bool:
 	var compatible_ids := option.get("compatible_character_ids", []) as Array
 	if not compatible_ids.has(character_id):
 		return false
-	_select_recipient(character_id)
+	_selected_target_character_id = character_id
 	return true
 
 
@@ -146,37 +152,33 @@ func confirm_selected_reward() -> bool:
 	if phase != Phase.REWARD_SELECTION or _reward_applied:
 		return false
 	if _selected_reward_id == &"":
-		reward_error.text = "Sélectionnez une récompense avant de confirmer."
-		reward_error.show()
+		reward_overlay.resolve_confirmation(false, "Sélectionnez un équipement avant de confirmer.")
 		return false
 	if _selected_target_character_id == &"":
-		reward_error.text = "Sélectionnez un héros compatible avant de confirmer."
-		reward_error.show()
+		var selected_option := _find_reward_option(_selected_reward_id)
+		var compatible_ids := selected_option.get("compatible_character_ids", []) as Array
+		if not compatible_ids.is_empty():
+			_selected_target_character_id = StringName(compatible_ids[0])
+	if _selected_target_character_id == &"":
+		reward_overlay.resolve_confirmation(false, "Aucun héros ne peut utiliser cet équipement.")
 		return false
 	var result := GameManager.confirm_post_combat_equipment(
 		_selected_reward_id,
 		_selected_target_character_id,
 	)
 	if not result.get("success", false):
-		reward_error.text = str(result.get("error", "Application impossible."))
-		reward_error.show()
+		reward_overlay.resolve_confirmation(
+			false,
+			str(result.get("error", "Application impossible.")),
+		)
 		return false
 	_reward_applied = true
-	for button_value in _reward_buttons.values():
-		var button := button_value as Button
-		if button != null:
-			button.disabled = true
-	for button_value in _recipient_buttons.values():
-		var button := button_value as Button
-		if button != null:
-			button.disabled = true
 	phase = Phase.COMPLETED
 	phase_title.text = "RÉCOMPENSE OBTENUE"
 	status_label.text = "La récompense est enregistrée pour la run."
-	continue_button.text = "CONTINUER VERS LA SALLE SUIVANTE"
-	continue_button.disabled = false
+	continue_button.disabled = true
 	reward_error.hide()
-	continue_button.grab_focus()
+	reward_overlay.resolve_confirmation(true)
 	return true
 
 
@@ -202,6 +204,7 @@ func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	position = Vector2.ZERO
 	size = viewport_size
+	reward_overlay.apply_viewport_size_for_test(viewport_size)
 
 
 func _enter_phase(next_phase: Phase) -> void:
@@ -218,18 +221,25 @@ func _enter_phase(next_phase: Phase) -> void:
 		Phase.PROGRESSION:
 			_start_progression_reveal()
 		Phase.REWARD_SELECTION:
-			phase_title.text = "CHOISISSEZ UNE RÉCOMPENSE"
-			status_label.text = "Une seule récompense peut être obtenue."
-			continue_button.text = "CONFIRMER LA RÉCOMPENSE"
-			continue_button.disabled = _selected_reward_id == &""
-			_focus_first_reward()
+			safe_margin.hide()
+			background_dim.hide()
+			if reward_overlay.present(_reward_options, reward_overlay.reduced_motion):
+				var persisted_selection := GameManager.get_selected_post_combat_equipment()
+				if persisted_selection != &"":
+					reward_overlay.select_item_by_id(persisted_selection)
 
 
 func _set_phase_visibility() -> void:
+	safe_margin.visible = phase not in [
+		Phase.REWARD_SELECTION,
+		Phase.COMPLETED,
+		Phase.TRANSITIONING,
+	]
+	reward_overlay.visible = phase in [Phase.REWARD_SELECTION, Phase.COMPLETED]
 	victory_panel.visible = phase == Phase.VICTORY_REVEAL
 	stats_panel.visible = phase == Phase.COMBAT_STATS
 	progression_panel.visible = phase == Phase.PROGRESSION
-	rewards_panel.visible = phase in [Phase.REWARD_SELECTION, Phase.COMPLETED]
+	rewards_panel.visible = false
 
 
 func _start_victory_reveal() -> void:
@@ -389,9 +399,12 @@ func _begin_transition() -> void:
 
 
 func _configure_background() -> void:
+	background.texture = GameManager.get_post_combat_background_texture()
 	var room := GameManager.get_current_room()
-	if room != null:
+	if background.texture == null and room != null:
 		background.texture = room.background_image
+		if background.texture == null and room.painted_map_visual_data != null:
+			background.texture = room.painted_map_visual_data.load_background_texture()
 	background_dim.color = Color(0.015, 0.02, 0.024, 0.82)
 
 
@@ -629,12 +642,36 @@ func _build_reward_cards() -> void:
 	_recipient_buttons.clear()
 	recipient_panel.hide()
 	_reward_options = GameManager.get_post_combat_reward_options()
-	if _final_room:
+	_selected_reward_id = &""
+	_selected_target_character_id = &""
+
+
+func _on_overlay_selection_changed(item_id: StringName) -> void:
+	if phase != Phase.REWARD_SELECTION or _reward_applied:
 		return
-	for option in _reward_options:
-		var button := _make_reward_button(option)
-		reward_cards.add_child(button)
-		_reward_buttons[StringName(option.get("reward_id", &""))] = button
+	if not GameManager.select_post_combat_equipment(item_id):
+		reward_overlay.resolve_confirmation(
+			false,
+			"Cette sélection n’est plus disponible.",
+		)
+		return
+	_selected_reward_id = item_id
+	_selected_target_character_id = &""
+	var option := _find_reward_option(item_id)
+	var compatible_ids := option.get("compatible_character_ids", []) as Array
+	if not compatible_ids.is_empty():
+		_selected_target_character_id = StringName(compatible_ids[0])
+
+
+func _on_overlay_confirmation_requested(item_id: StringName) -> void:
+	if item_id != _selected_reward_id:
+		return
+	confirm_selected_reward()
+
+
+func _on_overlay_confirmation_finished() -> void:
+	if phase == Phase.COMPLETED and _reward_applied:
+		_begin_transition()
 
 
 func _make_reward_button(option: Dictionary) -> Button:
@@ -901,6 +938,8 @@ func _format_stat_deltas(deltas: Dictionary) -> String:
 
 
 func _show_fatal_error(message: String) -> void:
+	safe_margin.show()
+	reward_overlay.hide()
 	phase_title.text = "APRÈS-COMBAT INDISPONIBLE"
 	status_label.text = message
 	continue_button.disabled = true

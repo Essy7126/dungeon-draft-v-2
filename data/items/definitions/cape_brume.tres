@@ -20,6 +20,7 @@ item_id = &"cape_brume"
 display_name = "Cape de brume"
 description = "+1 PM maximum et +8 % esquive."
 icon = ExtResource("3_icon")
+card_texture = ExtResource("3_icon")
 rarity = &"rare"
 tags = Array[StringName]([&"armor", &"cape", &"first_run_equipment_reward"])
 category = 1

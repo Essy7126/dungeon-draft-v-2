@@ -20,6 +20,7 @@ item_id = &"broche"
 display_name = "Broche"
 description = "+25 PV maximum et +10 armure."
 icon = ExtResource("3_icon")
+card_texture = ExtResource("3_icon")
 rarity = &"rare"
 tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
 category = 2

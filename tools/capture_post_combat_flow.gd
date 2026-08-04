@@ -25,14 +25,7 @@ func _ready() -> void:
 		_fail("selection de la carte impossible")
 		return
 	await _settle()
-	await _capture("equipment_recipient_choice")
-	var compatible := selected.get("compatible_character_ids", []) as Array
-	if compatible.is_empty() \
-			or not _screen.select_recipient_by_id(StringName(compatible[0])):
-		_fail("selection du destinataire impossible")
-		return
-	await _settle()
-	await _capture("equipment_comparison")
+	await _capture("equipment_selected")
 
 	for viewport_size in [
 		Vector2i(1280, 720),

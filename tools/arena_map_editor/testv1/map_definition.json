@@ -1,0 +1,1704 @@
+{
+  "cells": [
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 0
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 0
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 0
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 0
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 1
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 1
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "WATER",
+      "wall": "NONE",
+      "x": 2,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "WATER",
+      "wall": "NONE",
+      "x": 3,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "ENEMY_SPAWN",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "ENEMY_SPAWN",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 2
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 3
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 3
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 3
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 3
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 3
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 3
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "DECOR_ANCHOR",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 4
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 4
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "OBJECTIVE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 4
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 5
+    },
+    {
+      "base": "RUNE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 5
+    },
+    {
+      "base": "RUNE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 5
+    },
+    {
+      "base": "LAVA",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "DECOR_ANCHOR",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 5
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 6
+    },
+    {
+      "base": "WATER",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 6
+    },
+    {
+      "base": "ICE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 6
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "ALLY_SPAWN",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "ALLY_SPAWN",
+      "surface": "ICE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "ICE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 7
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 7
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 8
+    },
+    {
+      "base": "RUNE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 8
+    },
+    {
+      "base": "RUNE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 8
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 8
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 8
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 9
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 9
+    },
+    {
+      "base": "RUNE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "FIRE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 9
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 9
+    },
+    {
+      "base": "VOID",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 9
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 10
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 11
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 12
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 13
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 0,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 1,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 2,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 3,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 4,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 5,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 6,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 7,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 8,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 9,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 10,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 11,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 12,
+      "y": 14
+    },
+    {
+      "base": "STONE",
+      "special": "NONE",
+      "surface": "NONE",
+      "wall": "NONE",
+      "x": 13,
+      "y": 14
+    }
+  ],
+  "decor_prompt": "Une terrasse de pierre ancienne intégrée dans une forêt verticale, avec ravins, racines, ruines couvertes de mousse et plusieurs profondeurs de falaise autour de la zone jouable.",
+  "display_name": "Premier_test",
+  "grid_size": [
+    14,
+    15
+  ],
+  "map_id": "test_v1",
+  "map_kind": "reference",
+  "projection": {
+    "layout": "diamond_down",
+    "tile_height": 32,
+    "tile_width": 64
+  },
+  "schema_version": 1,
+  "tags": [
+    "reference",
+    "dynamic_arena",
+    "nano_banana"
+  ],
+  "theme_id": "ancient_forest"
+}

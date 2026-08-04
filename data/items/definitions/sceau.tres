@@ -20,6 +20,7 @@ item_id = &"sceau"
 display_name = "Sceau"
 description = "+20 armure et +20 résistance magique."
 icon = ExtResource("3_icon")
+card_texture = ExtResource("3_icon")
 rarity = &"rare"
 tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
 category = 2

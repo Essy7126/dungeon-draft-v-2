@@ -10,7 +10,6 @@ signal cell_surface_changed(
 	surface: int,
 	walkability_changed: bool
 )
-signal cell_blocking_changed(cell: Vector2i, blocked: bool)
 
 enum Surface {
 	STONE,
@@ -35,7 +34,6 @@ const SURFACE_NAMES := {
 
 var grid: GridData = null
 var _surfaces: Dictionary = {}
-var _blocking_objects: Dictionary = {}
 var _walkability: Dictionary = DEFAULT_WALKABILITY.duplicate()
 
 
@@ -59,7 +57,6 @@ func reset(default_surface: int = Surface.STONE, emit_changes := true) -> void:
 	assert(Surface.values().has(default_surface), "Surface de reset inconnue.")
 	var previous := _surfaces.duplicate()
 	_surfaces.clear()
-	_blocking_objects.clear()
 	for x in range(grid.cols):
 		for y in range(grid.rows):
 			var cell := Vector2i(x, y)
@@ -112,27 +109,9 @@ func is_surface_walkable(surface: int) -> bool:
 
 
 func is_effectively_walkable(cell: Vector2i) -> bool:
-	if grid == null or not grid.is_valid(cell) or has_blocker(cell):
-		return false
-	return is_surface_walkable(get_surface(cell))
-
-
-func set_blocker(cell: Vector2i, blocked: bool) -> bool:
 	if grid == null or not grid.is_valid(cell):
 		return false
-	if has_blocker(cell) == blocked:
-		return false
-	if blocked:
-		_blocking_objects[cell] = true
-	else:
-		_blocking_objects.erase(cell)
-	_apply_cell_to_grid(cell)
-	cell_blocking_changed.emit(cell, blocked)
-	return true
-
-
-func has_blocker(cell: Vector2i) -> bool:
-	return bool(_blocking_objects.get(cell, false))
+	return is_surface_walkable(get_surface(cell)) and grid.is_walkable(cell)
 
 
 func state_count() -> int:
@@ -140,7 +119,7 @@ func state_count() -> int:
 
 
 func _apply_cell_to_grid(cell: Vector2i) -> void:
-	if not is_effectively_walkable(cell):
+	if not is_surface_walkable(get_surface(cell)):
 		grid.set_type(cell, GridData.CellType.WALL)
 		return
 	match get_surface(cell):

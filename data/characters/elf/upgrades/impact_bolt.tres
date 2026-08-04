@@ -3,12 +3,14 @@
 [ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_node"]
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/impact_bolt.tres" id="3_modifier"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/trait_impact.png" id="4_card"]
 
 [resource]
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_impact_bolt"
 display_name = "Trait d’impact"
 description = "Une collision provoquée par la poussée de Tir précis inflige 4 dégâts physiques supplémentaires."
+card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 3
 target_spell_id = &"elf_precise_shot"

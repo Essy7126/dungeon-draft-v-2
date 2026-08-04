@@ -15,6 +15,15 @@ const CAMERA_MARGIN := 0.78
 
 const CellStateScript := preload("res://tools/labs/dynamic_arena/dynamic_cell_state.gd")
 const WallScene := preload("res://tools/labs/dynamic_arena/DynamicWall.tscn")
+const BASE_CONFIG: WallConfig = preload("res://battle/dynamic_terrain/configs/wall_base.tres")
+const FIRE_CONFIG: WallConfig = preload("res://battle/dynamic_terrain/configs/wall_fire.tres")
+const ICE_CONFIG: WallConfig = preload("res://battle/dynamic_terrain/configs/wall_ice.tres")
+
+const WALL_CONFIGS := {
+	DynamicWall.WallVariant.BASE: BASE_CONFIG,
+	DynamicWall.WallVariant.FIRE: FIRE_CONFIG,
+	DynamicWall.WallVariant.ICE: ICE_CONFIG,
+}
 
 const TEXTURE_PATHS := {
 	DynamicCellState.Surface.STONE: "res://tools/labs/dynamic_arena/assets/normalized/stone.png",
@@ -30,33 +39,52 @@ const SURFACE_COLORS := {
 	DynamicCellState.Surface.LAVA: Color("ff6537"),
 }
 
+const WALL_COLORS := {
+	DynamicWall.WallVariant.BASE: Color("d3b69e"),
+	DynamicWall.WallVariant.FIRE: Color("ff6b3b"),
+	DynamicWall.WallVariant.ICE: Color("a8e8ff"),
+}
+
+const SURFACE_ELEMENTS := {
+	DynamicCellState.Surface.WATER: WallInteractionResolver.WATER,
+	DynamicCellState.Surface.ICE: WallInteractionResolver.ICE,
+	DynamicCellState.Surface.LAVA: WallInteractionResolver.FIRE,
+}
+
 @onready var floor_layer: Node2D = $FloorLayer
 @onready var surface_vfx_layer: Node2D = $SurfaceVFXLayer
-@onready var dynamic_object_layer: Node2D = $DynamicObjectLayer
-@onready var unit_layer: Node2D = $UnitLayer
+@onready var y_sorted_world: Node2D = $YSortedWorld
+@onready var dynamic_object_layer: Node2D = $YSortedWorld
+@onready var unit_layer: Node2D = $YSortedWorld
 @onready var grid_view: IsoGridView = $GridDebugLayer
 @onready var camera: Camera2D = $Camera2D
 @onready var path_line: Line2D = $SurfaceVFXLayer/PathLine
 @onready var destination_marker: Line2D = $SurfaceVFXLayer/DestinationMarker
-@onready var unit_marker: Node2D = $UnitLayer/TestUnit
+@onready var unit_marker: Node2D = $YSortedWorld/TestUnit
 
 @onready var selected_state_label: Label = $CanvasLayer/Toolbar/Margin/VBox/SelectedState
 @onready var hovered_label: Label = $CanvasLayer/Toolbar/Margin/VBox/Hovered
 @onready var current_surface_label: Label = $CanvasLayer/Toolbar/Margin/VBox/CurrentSurface
+@onready var wall_status_label: Label = $CanvasLayer/Toolbar/Margin/VBox/WallStatus
 @onready var walkable_label: Label = $CanvasLayer/Toolbar/Margin/VBox/Walkable
+@onready var blocking_label: Label = $CanvasLayer/Toolbar/Margin/VBox/Blocking
 @onready var coordinates_label: Label = $CanvasLayer/Toolbar/Margin/VBox/Coordinates
 @onready var path_length_label: Label = $CanvasLayer/Toolbar/Margin/VBox/PathLength
+@onready var los_label: Label = $CanvasLayer/Toolbar/Margin/VBox/LOS
 @onready var mode_label: Label = $CanvasLayer/Toolbar/Margin/VBox/Mode
 
 var grid: GridData = null
 var pathfinder: Pathfinder = null
+var blocker_service: DynamicBlockerService = null
 var cell_states: DynamicCellState = null
 var start_cell := START_CELL
 var destination_cell := DESTINATION_CELL
 var hovered_cell := INVALID_CELL
 var selected_surface := DynamicCellState.Surface.STONE
+var selected_wall_variant := DynamicWall.WallVariant.BASE
 var current_path: Array = []
 var path_recalculation_count := 0
+var test_unit_hp := 20
 
 var _textures: Dictionary = {}
 var _tile_sprites: Dictionary = {}
@@ -64,6 +92,7 @@ var _walls: Dictionary = {}
 var _grid_debug_visible := true
 var _path_visible := true
 var _unit_moving := false
+var _resetting := false
 
 
 func _ready() -> void:
@@ -76,13 +105,14 @@ func _ready() -> void:
 		DynamicCellState.Surface.LAVA: false,
 	})
 	pathfinder = Pathfinder.new(grid)
+	blocker_service = DynamicBlockerService.new()
+	blocker_service.configure(grid, pathfinder)
 	cell_states.cell_surface_changed.connect(_on_cell_surface_changed)
-	cell_states.cell_blocking_changed.connect(_on_cell_blocking_changed)
+	blocker_service.blocker_registered.connect(_on_dynamic_blocker_changed)
+	blocker_service.blocker_unregistered.connect(_on_dynamic_blocker_changed)
 
 	grid_view.setup(grid)
 	grid_view.set_render_options(false, true, false, true)
-	# Le lab centralise les commandes souris afin que les cases bloquees restent
-	# modifiables. IsoGridView reste la facade unique de conversion et de debug.
 	grid_view.set_process_unhandled_input(false)
 	_load_textures()
 	_build_floor()
@@ -120,7 +150,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			if event.ctrl_pressed:
 				toggle_wall_at(cell)
 			else:
-				selected_surface = cell_states.cycle_surface(cell)
+				selected_surface = cell_states.cycle_surface(cell) \
+					if not has_wall(cell) else selected_surface
+				if has_wall(cell):
+					set_cell_surface(cell, selected_surface)
 				grid_view.set_selected_cell(cell)
 			_update_toolbar()
 			get_viewport().set_input_as_handled()
@@ -139,6 +172,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			_select_surface(DynamicCellState.Surface.ICE, true)
 		KEY_4:
 			_select_surface(DynamicCellState.Surface.LAVA, true)
+		KEY_B:
+			select_wall_variant(DynamicWall.WallVariant.BASE)
+		KEY_F:
+			select_wall_variant(DynamicWall.WallVariant.FIRE)
+		KEY_I:
+			select_wall_variant(DynamicWall.WallVariant.ICE)
+		KEY_DELETE:
+			remove_wall(hovered_cell)
 		KEY_R:
 			reset_lab()
 		KEY_G:
@@ -153,16 +194,22 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func reset_lab() -> void:
-	for wall in _walls.values():
+	_resetting = true
+	for cell in _walls.keys().duplicate():
+		var wall := _walls.get(cell) as DynamicWall
 		if is_instance_valid(wall):
-			wall.queue_free()
+			blocker_service.unregister_dynamic_blocker(cell, wall)
+			wall.free()
 	_walls.clear()
+	grid.clear_dynamic_blockers()
 	cell_states.reset(DynamicCellState.Surface.STONE, false)
 	start_cell = START_CELL
 	destination_cell = DESTINATION_CELL
 	selected_surface = DynamicCellState.Surface.STONE
+	selected_wall_variant = DynamicWall.WallVariant.BASE
 	hovered_cell = INVALID_CELL
 	path_recalculation_count = 0
+	test_unit_hp = 20
 	for cell in _tile_sprites:
 		_update_cell_visual(cell)
 	grid_view.clear_selection()
@@ -170,11 +217,25 @@ func reset_lab() -> void:
 	pathfinder.sync()
 	_place_unit_marker(start_cell)
 	_update_destination_marker()
+	_resetting = false
 	_recalculate_path(false)
 	_update_toolbar()
 
 
 func set_cell_surface(cell: Vector2i, surface: int) -> bool:
+	if not grid.is_valid(cell) or not DynamicCellState.Surface.values().has(surface):
+		return false
+	var wall := get_wall(cell)
+	var element: StringName = SURFACE_ELEMENTS.get(surface, WallInteractionResolver.NONE)
+	if wall != null and element != WallInteractionResolver.NONE:
+		var result := WallInteractionResolver.resolve(wall, element)
+		if bool(result.handled):
+			if result.action == &"steam_to_base":
+				_play_interaction_vfx(cell, "VAPEUR", Color("d9f7ff"))
+			elif result.action == &"thermal_shock" or result.action == &"melt":
+				_play_interaction_vfx(cell, "CHOC", Color("aeeaff"))
+			_update_toolbar()
+			return true
 	return cell_states.set_surface(cell, surface)
 
 
@@ -187,7 +248,7 @@ func is_cell_walkable(cell: Vector2i) -> bool:
 
 
 func set_start_cell(cell: Vector2i) -> bool:
-	if not grid.is_valid(cell):
+	if not grid.is_valid(cell) or has_wall(cell):
 		return false
 	start_cell = cell
 	_place_unit_marker(cell)
@@ -205,27 +266,127 @@ func set_destination(cell: Vector2i) -> bool:
 	return true
 
 
-func toggle_wall_at(cell: Vector2i) -> bool:
-	if not grid.is_valid(cell):
+func select_wall_variant(wall_variant: int) -> bool:
+	if not DynamicWall.WallVariant.values().has(wall_variant):
 		return false
-	if _walls.has(cell):
-		var existing = _walls[cell]
-		_walls.erase(cell)
-		if is_instance_valid(existing):
-			existing.queue_free()
-		cell_states.set_blocker(cell, false)
-		return false
-	var wall := WallScene.instantiate() as DynamicWall
-	wall.setup(cell)
-	wall.position = _cell_position_in(dynamic_object_layer, cell)
-	dynamic_object_layer.add_child(wall)
-	_walls[cell] = wall
-	cell_states.set_blocker(cell, true)
+	selected_wall_variant = wall_variant
+	_update_toolbar()
 	return true
 
 
+func can_place_wall(cell: Vector2i) -> bool:
+	if not grid.is_valid(cell) or has_wall(cell):
+		return false
+	if cell == start_cell or grid.has_unit(cell):
+		return false
+	if cell_states.get_surface(cell) == DynamicCellState.Surface.LAVA:
+		return false
+	return blocker_service.can_register_dynamic_blocker(cell)
+
+
+## Future API Battle : cree un mur avec la configuration transmise et conserve
+## l'unique GridData. Retourne null si le placement est incompatible.
+func spawn_wall(cell: Vector2i, wall_config: WallConfig, source = null) -> DynamicWall:
+	if wall_config == null or not can_place_wall(cell):
+		return null
+	var wall_variant := _variant_for_config(wall_config)
+	if wall_variant < 0:
+		return null
+	var wall := WallScene.instantiate() as DynamicWall
+	wall.source_unit = source
+	wall.setup(cell, wall_variant, wall_config)
+	wall.position = _cell_position_in(y_sorted_world, cell)
+	y_sorted_world.add_child(wall)
+	if not blocker_service.register_dynamic_blocker(cell, wall):
+		wall.free()
+		return null
+	_walls[cell] = wall
+	_update_cell_visual(cell)
+	wall.destroyed.connect(_on_wall_destroyed, CONNECT_ONE_SHOT)
+	wall.hp_changed.connect(_on_wall_status_changed)
+	wall.duration_changed.connect(_on_wall_duration_changed)
+	wall.variant_changed.connect(_on_wall_variant_changed)
+	wall.aura_damage_requested.connect(_on_wall_aura_requested)
+	_update_toolbar()
+	return wall
+
+
+func place_wall(cell: Vector2i, wall_variant: int) -> DynamicWall:
+	var wall_config := WALL_CONFIGS.get(wall_variant) as WallConfig
+	return spawn_wall(cell, wall_config)
+
+
+func toggle_wall_at(cell: Vector2i) -> bool:
+	if not grid.is_valid(cell):
+		return false
+	var existing := get_wall(cell)
+	if existing != null:
+		if existing.variant == selected_wall_variant:
+			remove_wall(cell)
+			return false
+		return transform_wall(cell, selected_wall_variant)
+	return place_wall(cell, selected_wall_variant) != null
+
+
+## Future API Battle : applique les resistances et detruit de facon idempotente.
+func damage_wall(cell: Vector2i, amount: int, element: StringName = &"NONE") -> int:
+	var wall := get_wall(cell)
+	return wall.apply_damage(amount, element) if wall != null else 0
+
+
+## Future API Battle : remplacement atomique, sans retrait du bloqueur.
+func transform_wall(cell: Vector2i, wall_variant: int) -> bool:
+	var wall := get_wall(cell)
+	var wall_config := WALL_CONFIGS.get(wall_variant) as WallConfig
+	if wall == null or wall_config == null:
+		return false
+	var changed := wall.change_variant(wall_variant, wall_config)
+	_update_toolbar()
+	return changed
+
+
+## Future API Battle : retrait exact de l'objet enregistre sur la cellule.
+func remove_wall(cell: Vector2i) -> bool:
+	var wall := get_wall(cell)
+	if wall == null:
+		return false
+	return wall.destroy()
+
+
+func apply_element_to_wall(cell: Vector2i, element: StringName) -> Dictionary:
+	var wall := get_wall(cell)
+	var result := WallInteractionResolver.resolve(wall, element)
+	_update_toolbar()
+	return result
+
+
+func advance_turn() -> void:
+	for wall_value in _walls.values().duplicate():
+		var wall := wall_value as DynamicWall
+		if is_instance_valid(wall):
+			wall.advance_turn()
+	_update_toolbar()
+
+
 func has_wall(cell: Vector2i) -> bool:
-	return _walls.has(cell) and cell_states.has_blocker(cell)
+	return get_wall(cell) != null
+
+
+func get_wall(cell: Vector2i) -> DynamicWall:
+	var wall := _walls.get(cell) as DynamicWall
+	return wall if is_instance_valid(wall) and wall.is_blocking_state() else null
+
+
+func get_wall_count() -> int:
+	return _walls.size()
+
+
+func has_line_of_sight(from: Vector2i, to: Vector2i) -> bool:
+	return blocker_service.has_line_of_sight(from, to)
+
+
+func has_projectile_path(from: Vector2i, to: Vector2i) -> bool:
+	return blocker_service.has_projectile_path(from, to)
 
 
 func get_current_path() -> Array:
@@ -265,7 +426,7 @@ func move_unit_along_current_path() -> void:
 		tween.tween_property(
 			unit_marker,
 			"position",
-			_cell_position_in(unit_layer, travel_path[index]),
+			_cell_position_in(y_sorted_world, travel_path[index]),
 			0.13
 		)
 		await tween.finished
@@ -273,6 +434,16 @@ func move_unit_along_current_path() -> void:
 	_unit_moving = false
 	_recalculate_path()
 	_update_toolbar()
+
+
+func is_unit_visually_behind_wall(unit_cell: Vector2i, wall_cell: Vector2i) -> bool:
+	var delta := grid_view.grid_to_local(unit_cell) - grid_view.grid_to_local(wall_cell)
+	return absf(delta.x) < 28.0 and delta.y < 0.0
+
+
+func is_unit_visually_in_front_of_wall(unit_cell: Vector2i, wall_cell: Vector2i) -> bool:
+	var delta := grid_view.grid_to_local(unit_cell) - grid_view.grid_to_local(wall_cell)
+	return absf(delta.x) < 28.0 and delta.y > 0.0
 
 
 func _select_surface(surface: int, apply_to_hovered: bool) -> void:
@@ -296,10 +467,47 @@ func _on_cell_surface_changed(
 	_update_toolbar()
 
 
-func _on_cell_blocking_changed(_cell: Vector2i, _blocked: bool) -> void:
-	pathfinder.sync()
+func _on_dynamic_blocker_changed(_cell: Vector2i, _blocker) -> void:
+	if _resetting:
+		return
 	_recalculate_path(false)
 	_update_toolbar()
+
+
+func _on_wall_destroyed(wall: DynamicWall) -> void:
+	var wall_cell := wall.get_cell()
+	if _walls.get(wall_cell) == wall:
+		_walls.erase(wall_cell)
+	_update_cell_visual(wall_cell)
+	_update_toolbar()
+	wall.call_deferred("queue_free")
+
+
+func _on_wall_status_changed(_wall: DynamicWall, _hp: int, _max_hp: int) -> void:
+	_update_toolbar()
+
+
+func _on_wall_duration_changed(_wall: DynamicWall, _duration: int) -> void:
+	_update_toolbar()
+
+
+func _on_wall_variant_changed(
+	_wall: DynamicWall,
+	_previous_variant: int,
+	_variant: int
+	) -> void:
+	_update_toolbar()
+
+
+func _on_wall_aura_requested(
+	_wall: DynamicWall,
+	cell: Vector2i,
+	amount: int,
+	_element: StringName
+	) -> void:
+	if grid.manhattan(cell, start_cell) == 1:
+		test_unit_hp = maxi(0, test_unit_hp - amount)
+		_play_interaction_vfx(start_cell, "-%d PV" % amount, Color("ff794f"))
 
 
 func _recalculate_path(synchronize_grid := true) -> void:
@@ -353,6 +561,9 @@ func _update_cell_visual(cell: Vector2i) -> void:
 	var sprite := _tile_sprites.get(cell) as Sprite2D
 	if sprite == null:
 		return
+	# Le mur remplace visuellement la dalle 1x1. La dalle n'est restauree
+	# qu'apres le retrait exact du bloqueur dynamique.
+	sprite.visible = not has_wall(cell)
 	var surface := cell_states.get_surface(cell)
 	sprite.texture = _textures.get(surface) as Texture2D
 	sprite.modulate = Color.WHITE
@@ -363,7 +574,7 @@ func _update_destination_marker() -> void:
 
 
 func _place_unit_marker(cell: Vector2i) -> void:
-	unit_marker.position = _cell_position_in(unit_layer, cell)
+	unit_marker.position = _cell_position_in(y_sorted_world, cell)
 
 
 func _cell_position_in(parent: Node2D, cell: Vector2i) -> Vector2:
@@ -391,32 +602,84 @@ func _fit_camera() -> void:
 	camera.zoom = Vector2(factor, factor)
 
 
+func _play_interaction_vfx(cell: Vector2i, text: String, color: Color) -> void:
+	var label := Label.new()
+	label.text = text
+	label.z_index = 200
+	label.position = _cell_position_in(surface_vfx_layer, cell) + Vector2(-30.0, -72.0)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_font_size_override("font_size", 15)
+	surface_vfx_layer.add_child(label)
+	var tween := create_tween()
+	tween.tween_property(label, "position:y", label.position.y - 16.0, 0.75)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.75)
+	tween.tween_callback(label.queue_free)
+
+
+func _variant_for_config(wall_config: WallConfig) -> int:
+	match wall_config.variant_id:
+		&"base":
+			return DynamicWall.WallVariant.BASE
+		&"fire":
+			return DynamicWall.WallVariant.FIRE
+		&"ice":
+			return DynamicWall.WallVariant.ICE
+	return -1
+
+
+func _wall_variant_name(wall_variant: int) -> String:
+	return str(DynamicWall.VARIANT_NAMES.get(wall_variant, "UNKNOWN"))
+
+
 func _update_toolbar() -> void:
 	if not is_node_ready() or cell_states == null:
 		return
-	selected_state_label.text = "Etat selectionne : %s" % cell_states.surface_name(selected_surface)
+	selected_state_label.text = "Mur [B/F/I] : %s   •   Surface [1-4] : %s" % [
+		_wall_variant_name(selected_wall_variant),
+		cell_states.surface_name(selected_surface),
+	]
 	selected_state_label.add_theme_color_override(
-		"font_color", SURFACE_COLORS.get(selected_surface, Color.WHITE)
+		"font_color", WALL_COLORS.get(selected_wall_variant, Color.WHITE)
 	)
 	if not grid.is_valid(hovered_cell):
 		hovered_label.text = "Cellule survolee : —"
-		current_surface_label.text = "Type actuel : —"
+		current_surface_label.text = "Terrain de base : —"
+		wall_status_label.text = "Mur : —"
 		walkable_label.text = "Praticabilite : —"
+		blocking_label.text = "Blocages M/LOS/P : —"
 		coordinates_label.text = "Coordonnees : —"
 	else:
 		hovered_label.text = "Cellule survolee : (%d, %d)" % [hovered_cell.x, hovered_cell.y]
-		current_surface_label.text = "Type actuel : %s%s" % [
-			cell_states.get_surface_name(hovered_cell),
-			" + MUR" if has_wall(hovered_cell) else "",
-		]
-		var walkable := cell_states.is_effectively_walkable(hovered_cell)
-		walkable_label.text = "Praticabilite : %s" % ("OUI" if walkable else "BLOQUEE")
+		current_surface_label.text = "Terrain de base : %s" % cell_states.get_surface_name(hovered_cell)
+		var wall := get_wall(hovered_cell)
+		if wall == null:
+			wall_status_label.text = "Mur : AUCUN"
+			blocking_label.text = "Blocages M/LOS/P : NON / NON / NON"
+		else:
+			var duration := "∞" if wall.remaining_turns < 0 else str(wall.remaining_turns)
+			wall_status_label.text = "Mur : %s • %d/%d PV • %s tours • %s" % [
+				wall.get_variant_name(), wall.hp, wall.config.max_hp, duration, wall.get_state_name()
+			]
+			blocking_label.text = "Blocages M/LOS/P : %s / %s / %s" % [
+				"OUI" if wall.blocks_movement() else "NON",
+				"OUI" if wall.blocks_line_of_sight() else "NON",
+				"OUI" if wall.blocks_projectiles() else "NON",
+			]
+		var walkable := is_cell_walkable(hovered_cell)
+		walkable_label.text = "Praticabilite effective : %s" % ("OUI" if walkable else "BLOQUEE")
 		walkable_label.add_theme_color_override(
 			"font_color", Color("75f0b3") if walkable else Color("ff6b72")
 		)
 		coordinates_label.text = "Coordonnees : Vector2i(%d, %d)" % [hovered_cell.x, hovered_cell.y]
 	path_length_label.text = "Chemin courant : %d pas (%d cellules)" % [
 		maxi(0, current_path.size() - 1), current_path.size()
+	]
+	var los_clear := blocker_service.has_line_of_sight(start_cell, destination_cell)
+	var projectile_clear := blocker_service.has_projectile_path(start_cell, destination_cell)
+	los_label.text = "LOS : %s   •   Projectile : %s   •   Unite : %d PV" % [
+		"LIBRE" if los_clear else "BLOQUEE",
+		"LIBRE" if projectile_clear else "BLOQUE",
+		test_unit_hp,
 	]
 	mode_label.text = "Grille [G] : %s   |   Chemin [P] : %s   |   Murs : %d" % [
 		"ON" if _grid_debug_visible else "OFF",

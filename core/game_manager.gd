@@ -38,7 +38,7 @@ const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
 	"res://data/items/catalogs/default_item_catalog.tres"
 )
 const INVENTORY_CAPACITY := 24
-const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 1
+const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 2
 const POST_COMBAT_LOOT_ITEM_ID: StringName = &"minor_healing_potion"
 const STARTING_INVENTORY := [
 	{"item_id": &"warrior_training_sword", "quantity": 1},
@@ -66,6 +66,7 @@ var _battle_outcome_generation := 0
 var _battle_outcome_pending := false
 var _combat_report_tracker := CombatReportTracker.new()
 var _last_combat_report: CombatReport = null
+var _post_combat_background_texture: Texture2D = null
 var _post_combat_reward_service := PostCombatRewardService.new()
 var _equipment_reward_service := FirstRunEquipmentRewardService.new()
 var _pending_next_combat_shields: Dictionary = {}
@@ -217,6 +218,7 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_battle_outcome_pending = false
 	_combat_report_tracker.discard()
 	_last_combat_report = null
+	_post_combat_background_texture = null
 	_post_combat_reward_service.reset()
 	_progression_service.reset_run()
 	_pending_next_combat_shields.clear()
@@ -250,6 +252,7 @@ func cleanup_run_state() -> void:
 	_battle_outcome_pending = false
 	_combat_report_tracker.discard()
 	_last_combat_report = null
+	_post_combat_background_texture = null
 	_post_combat_reward_service.reset()
 	_equipment_reward_service.reset()
 	_pending_next_combat_shields.clear()
@@ -466,13 +469,15 @@ func get_inventory_equipment_snapshot() -> Dictionary:
 		"version": INVENTORY_EQUIPMENT_SNAPSHOT_VERSION,
 		"inventory": run_inventory.to_snapshot(),
 		"equipment": equipment,
+		"equipment_reward": _equipment_reward_service.snapshot(),
 	}
 
 
 func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
+	var snapshot_version := int(snapshot.get("version", -1))
 	if not run_active \
 			or item_catalog == null \
-			or int(snapshot.get("version", -1)) != INVENTORY_EQUIPMENT_SNAPSHOT_VERSION:
+			or snapshot_version not in [1, INVENTORY_EQUIPMENT_SNAPSHOT_VERSION]:
 		return false
 	var candidate_inventory := RunInventory.new()
 	if not candidate_inventory.initialize(item_catalog, INVENTORY_CAPACITY) \
@@ -502,6 +507,15 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 				return false
 			seen_instance_ids[instance.instance_id] = true
 		candidate_loadouts[state.character_id] = candidate
+	var candidate_reward_service: FirstRunEquipmentRewardService = null
+	if snapshot_version >= 2:
+		candidate_reward_service = FirstRunEquipmentRewardService.new()
+		if not candidate_reward_service.restore_snapshot(
+				snapshot.get("equipment_reward", {}) as Dictionary,
+				item_catalog,
+				get_ordered_character_states(),
+			):
+			return false
 	for state in get_ordered_character_states():
 		_equipment_service.clear_state_stats(state)
 		state.equipment_loadout = candidate_loadouts[state.character_id]
@@ -511,6 +525,8 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 	for state in get_ordered_character_states():
 		if not _equipment_service.rebuild_state(state):
 			return false
+	if candidate_reward_service != null:
+		_equipment_reward_service = candidate_reward_service
 	inventory_changed.emit(run_inventory.to_snapshot())
 	return true
 
@@ -615,6 +631,19 @@ func get_pending_progression_choices() -> Array[Dictionary]:
 func get_next_pending_progression_choice() -> Dictionary:
 	var pending := get_pending_progression_choices()
 	return pending[0].duplicate(true) if not pending.is_empty() else {}
+
+
+func get_progression_choice_for_request(
+		request: EvolutionRequest
+	) -> Dictionary:
+	if request == null or not request.is_valid():
+		return {}
+	for choice in get_pending_progression_choices():
+		if StringName(choice.get("character_id", &"")) == request.character_id \
+				and StringName(choice.get("discipline_id", &"")) == request.discipline_id \
+				and int(choice.get("rank", 0)) == request.pending_rank:
+			return choice.duplicate(true)
+	return {}
 
 
 func has_pending_progression_choices() -> bool:
@@ -744,9 +773,26 @@ func get_post_combat_reward_options() -> Array[Dictionary]:
 	)
 
 
+func select_post_combat_equipment(item_id: StringName) -> bool:
+	if is_final_room():
+		return false
+	return _equipment_reward_service.remember_selection(
+		_last_combat_report,
+		item_id,
+	)
+
+
+func get_selected_post_combat_equipment() -> StringName:
+	if _last_combat_report == null:
+		return &""
+	return _equipment_reward_service.get_selected_item_id(
+		_last_combat_report.report_id
+	)
+
+
 func confirm_post_combat_equipment(
 		item_id: StringName,
-		target_character_id: StringName
+		target_character_id: StringName = &""
 	) -> Dictionary:
 	if is_final_room():
 		return {
@@ -774,6 +820,10 @@ func is_final_room() -> bool:
 
 func get_equipment_reward_deck_snapshot() -> Dictionary:
 	return _equipment_reward_service.snapshot()
+
+
+func get_post_combat_background_texture() -> Texture2D:
+	return _post_combat_background_texture
 
 
 func get_equipment_reward_comparison(
@@ -934,6 +984,19 @@ func _complete_battle_outcome_after_delay(
 		on_battle_lost()
 
 # Appelé par battle quand le joueur GAGNE le combat.
+func _capture_post_combat_background() -> void:
+	_post_combat_background_texture = null
+	if not is_inside_tree() or get_viewport() == null:
+		return
+	var viewport_texture := get_viewport().get_texture()
+	if viewport_texture == null:
+		return
+	var image := viewport_texture.get_image()
+	if image == null or image.is_empty():
+		return
+	_post_combat_background_texture = ImageTexture.create_from_image(image)
+
+
 func on_battle_won() -> void:
 	if not run_active or _room_outcome_resolved:
 		return
@@ -943,6 +1006,7 @@ func on_battle_won() -> void:
 		)
 		return
 	_room_outcome_resolved = true
+	_capture_post_combat_background()
 	_last_combat_report = _finalize_current_combat_report(true)
 	room_cleared.emit(current_room_index)
 	_awaiting_post_battle_progression = false

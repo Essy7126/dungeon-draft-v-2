@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tools/arena_map_editor/editor_wall_preview.gd" id="1_wall"]
+
+[node name="EditorWallPreview" type="Node2D"]
+script = ExtResource("1_wall")
+
+[node name="ContactShadow" type="Polygon2D" parent="."]
+z_index = -1
+polygon = PackedVector2Array(0, -16, 32, 0, 0, 16, -32, 0)
+color = Color(0.015, 0.02, 0.028, 0.9)
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="VisualRoot"]
+position = Vector2(-34, -90.176)
+scale = Vector2(0.1328125, 0.158)
+centered = false
+texture_filter = 1
+

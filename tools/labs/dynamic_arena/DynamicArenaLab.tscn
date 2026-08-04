@@ -43,29 +43,25 @@ width = 2.5
 default_color = Color(1, 0.76, 0.22, 1)
 joint_mode = 2
 
-[node name="DynamicObjectLayer" type="Node2D" parent="."]
+[node name="YSortedWorld" type="Node2D" parent="."]
 y_sort_enabled = true
 z_index = 120
 
-[node name="UnitLayer" type="Node2D" parent="."]
-y_sort_enabled = true
-z_index = 140
+[node name="TestUnit" type="Node2D" parent="YSortedWorld"]
 
-[node name="TestUnit" type="Node2D" parent="UnitLayer"]
-
-[node name="Shadow" type="Polygon2D" parent="UnitLayer/TestUnit"]
+[node name="Shadow" type="Polygon2D" parent="YSortedWorld/TestUnit"]
 polygon = PackedVector2Array(-17, 0, -9, -5, 10, -5, 18, 0, 10, 5, -9, 5)
 color = Color(0, 0, 0, 0.55)
 
-[node name="Body" type="Polygon2D" parent="UnitLayer/TestUnit"]
+[node name="Body" type="Polygon2D" parent="YSortedWorld/TestUnit"]
 polygon = PackedVector2Array(-12, -3, -14, -29, -8, -45, 0, -53, 8, -45, 14, -29, 12, -3, 0, 2)
 color = Color(0.96, 0.31, 0.22, 1)
 
-[node name="Core" type="Polygon2D" parent="UnitLayer/TestUnit"]
+[node name="Core" type="Polygon2D" parent="YSortedWorld/TestUnit"]
 polygon = PackedVector2Array(-7, -17, -6, -33, 0, -40, 6, -33, 7, -17, 0, -10)
 color = Color(1, 0.82, 0.30, 1)
 
-[node name="FootAnchor" type="Polygon2D" parent="UnitLayer/TestUnit"]
+[node name="FootAnchor" type="Polygon2D" parent="YSortedWorld/TestUnit"]
 polygon = PackedVector2Array(0, -3, 3, 0, 0, 3, -3, 0)
 color = Color(0.77, 0.96, 1, 1)
 
@@ -88,8 +84,8 @@ layer = 100
 [node name="Toolbar" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 16.0
 offset_top = 16.0
-offset_right = 438.0
-offset_bottom = 322.0
+offset_right = 506.0
+offset_bottom = 430.0
 theme_override_styles/panel = SubResource("Style_toolbar")
 
 [node name="Margin" type="MarginContainer" parent="CanvasLayer/Toolbar"]
@@ -122,8 +118,14 @@ text = "Cellule survolee : —"
 [node name="CurrentSurface" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
 text = "Type actuel : —"
 
+[node name="WallStatus" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
+text = "Mur : —"
+
 [node name="Walkable" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
 text = "Praticabilite : —"
+
+[node name="Blocking" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
+text = "Blocages M/LOS/P : —"
 
 [node name="Coordinates" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
 text = "Coordonnees : —"
@@ -131,11 +133,14 @@ text = "Coordonnees : —"
 [node name="PathLength" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
 text = "Chemin courant : —"
 
+[node name="LOS" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
+text = "LOS : —   •   Projectile : —"
+
 [node name="Mode" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
 text = "Grille [G] : ON   |   Chemin [P] : ON   |   Murs : 0"
 theme_override_colors/font_color = Color(0.63, 0.74, 0.83, 1)
 
 [node name="Help" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
-text = "Clic gauche : cycle  •  1/2/3/4 : appliquer\nCtrl + clic : mur  •  clic droit : destination\nR : reset  •  Espace/Entree : deplacer l'unite"
+text = "B/F/I : variante  •  Ctrl+clic : placer/remplacer/retirer\n1/2/3/4 : STONE/WATER/ICE/LAVA  •  Suppr : retirer\nClic droit : destination  •  R/G/P : reset/grille/chemin\nEspace/Entree : deplacer  •  advance_turn() : tour de lab"
 theme_override_colors/font_color = Color(0.80, 0.85, 0.90, 1)
 theme_override_font_sizes/font_size = 13

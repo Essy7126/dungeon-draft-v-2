@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tools/labs/forest_dynamic_grid/static_forest_wall.gd" id="1_wall"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/wall_base.png" id="2_texture"]
+
+[node name="StaticForestWall" type="Node2D"]
+script = ExtResource("1_wall")
+
+[node name="ContactShadow" type="Polygon2D" parent="."]
+z_index = -1
+polygon = PackedVector2Array(0, -17.0667, 34.4, 0, 0, 17.0667, -34.4, 0)
+color = Color(0.018, 0.027, 0.022, 0.88)
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="VisualRoot"]
+position = Vector2(-39.3142, -101.2053)
+scale = Vector2(0.153571, 0.176)
+texture = ExtResource("2_texture")
+centered = false
+texture_filter = 1
+

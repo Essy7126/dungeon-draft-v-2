@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/post_combat/post_combat_screen.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://ui/post_combat/EquipmentRewardOverlay.tscn" id="3_reward_overlay"]
 
 [node name="PostCombatScreen" type="Control"]
 layout_mode = 3
@@ -37,6 +38,7 @@ mouse_filter = 2
 color = Color(0.015, 0.02, 0.024, 0.82)
 
 [node name="SafeMargin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -262,6 +264,11 @@ custom_minimum_size = Vector2(300, 48)
 layout_mode = 2
 theme_type_variation = &"SkillTreeCloseButton"
 text = "CONTINUER"
+
+[node name="EquipmentRewardOverlay" parent="." instance=ExtResource("3_reward_overlay")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
 
 [node name="TransitionLayer" type="ColorRect" parent="."]
 unique_name_in_owner = true

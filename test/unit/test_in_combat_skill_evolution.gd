@@ -74,6 +74,21 @@ func _settle(frames: int = 3) -> void:
 		await get_tree().process_frame
 
 
+func _resolve_first_overlay_choice(run_ui: PersistentRunUI) -> StringName:
+	var overlay := run_ui.get_skill_evolution_overlay()
+	assert_true(overlay.visible)
+	assert_false(run_ui.get_skill_tree_screen().visible)
+	assert_true(get_tree().paused)
+	var available := overlay.get_available_upgrade_ids()
+	assert_eq(available.size(), 2)
+	var selected_id: StringName = available[0]
+	assert_true(overlay.select_upgrade_by_id(selected_id))
+	assert_true(overlay.request_confirmation())
+	await get_tree().create_timer(0.3, true).timeout
+	await _settle(4)
+	return selected_id
+
+
 func _prepare_global_run() -> CharacterRunState:
 	var run := RunData.new()
 	run.run_name = "Evolution en combat"
@@ -232,6 +247,7 @@ func test_safe_point_opens_mandatory_screen_applies_choice_and_resumes() -> void
 	state.add_discipline_xp(discipline.discipline_id, 5)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
+	run_ui.get_skill_evolution_overlay().reduced_motion = true
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
 	var battle = BATTLE_SCRIPT.new()
 	battle.turn_state = TurnState.new()
@@ -240,19 +256,19 @@ func test_safe_point_opens_mandatory_screen_applies_choice_and_resumes() -> void
 	))
 	battle._process_evolution_queue_at_safe_point()
 	await _settle(3)
-	var screen := run_ui.get_skill_tree_screen()
-	assert_true(screen.visible)
-	assert_true(screen.is_evolution_choice_mode())
+	var overlay := run_ui.get_skill_evolution_overlay()
+	assert_true(overlay.visible)
+	assert_false(run_ui.get_skill_tree_screen().visible)
 	assert_eq(battle.get_combat_evolution_state(), &"SKILL_EVOLUTION_UI")
 	assert_true(battle.is_combat_input_locked_for_evolution())
-	screen.close_screen()
-	assert_true(screen.visible)
-	assert_false(screen.inspect_evolution_node(&"__base_rank_1"))
-	var available := screen.get_available_evolution_node_ids()
+	var available := overlay.get_available_upgrade_ids()
 	assert_eq(available.size(), 2)
-	assert_true(screen.confirm_evolution_choice(available[0]))
-	await _settle(2)
-	assert_false(screen.visible)
+	assert_true(overlay.select_upgrade_by_id(available[0]))
+	assert_true(overlay.request_confirmation())
+	await get_tree().create_timer(0.3, true).timeout
+	await _settle(4)
+	assert_false(overlay.visible)
+	assert_false(get_tree().paused)
 	assert_false(battle.is_combat_input_locked_for_evolution())
 	assert_eq(battle.get_combat_evolution_state(), &"")
 	assert_eq(
@@ -283,6 +299,7 @@ func test_two_pending_ranks_are_resolved_r2_then_r3_before_resume() -> void:
 	state.add_discipline_xp(discipline.discipline_id, 12)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
+	run_ui.get_skill_evolution_overlay().reduced_motion = true
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
 	var battle = BATTLE_SCRIPT.new()
 	battle.turn_state = TurnState.new()
@@ -294,22 +311,17 @@ func test_two_pending_ranks_are_resolved_r2_then_r3_before_resume() -> void:
 	))
 	battle._process_evolution_queue_at_safe_point()
 	await _settle(3)
-	var screen := run_ui.get_skill_tree_screen()
-	assert_eq(screen.get_evolution_rank(), 2)
-	var rank_two_choices := screen.get_available_evolution_node_ids()
-	assert_eq(rank_two_choices.size(), 2)
-	assert_true(screen.confirm_evolution_choice(rank_two_choices[0]))
-	await _settle(3)
-	assert_true(screen.visible)
-	assert_eq(screen.get_evolution_rank(), 3)
-	var rank_three_choices := screen.get_available_evolution_node_ids()
+	var overlay := run_ui.get_skill_evolution_overlay()
+	assert_eq(overlay.get_request_id(), battle._evolution_queue.peek().request_id)
+	var rank_two_choice := await _resolve_first_overlay_choice(run_ui)
+	assert_true(overlay.visible)
+	var rank_three_choices := overlay.get_available_upgrade_ids()
 	assert_eq(rank_three_choices.size(), 2)
-	assert_true(screen.confirm_evolution_choice(rank_three_choices[0]))
-	await _settle(2)
+	var rank_three_choice := await _resolve_first_overlay_choice(run_ui)
 	assert_false(battle.is_combat_input_locked_for_evolution())
 	assert_eq(
 		state.get_discipline_progress(discipline.discipline_id).get_selected_upgrade_ids(),
-		[rank_two_choices[0], rank_three_choices[0]],
+		[rank_two_choice, rank_three_choice],
 	)
 	battle.free()
 
@@ -378,6 +390,7 @@ func test_two_characters_are_presented_in_request_creation_order() -> void:
 	states[1].add_discipline_xp(mage_discipline.discipline_id, 5)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
+	run_ui.get_skill_evolution_overlay().reduced_motion = true
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
 	var battle = BATTLE_SCRIPT.new()
 	battle.turn_state = TurnState.new()
@@ -389,15 +402,11 @@ func test_two_characters_are_presented_in_request_creation_order() -> void:
 	)
 	battle._process_evolution_queue_at_safe_point()
 	await _settle(3)
-	var screen := run_ui.get_skill_tree_screen()
-	assert_eq(screen.character_id, states[0].character_id)
-	var elf_choice := screen.get_available_evolution_node_ids()[0]
-	assert_true(screen.confirm_evolution_choice(elf_choice))
-	await _settle(3)
-	assert_eq(screen.character_id, states[1].character_id)
-	var mage_choice := screen.get_available_evolution_node_ids()[0]
-	assert_true(screen.confirm_evolution_choice(mage_choice))
-	await _settle(2)
+	var overlay := run_ui.get_skill_evolution_overlay()
+	assert_eq(overlay.get_request_id(), battle._evolution_queue.peek().request_id)
+	var elf_choice := await _resolve_first_overlay_choice(run_ui)
+	assert_true(overlay.visible)
+	var mage_choice := await _resolve_first_overlay_choice(run_ui)
 	assert_eq(
 		states[0].get_discipline_progress(elf_discipline.discipline_id).get_selected_upgrade_ids(),
 		[elf_choice],
@@ -433,6 +442,7 @@ func test_last_action_choice_is_resolved_before_victory_screen() -> void:
 	state.add_discipline_xp(discipline.discipline_id, 5)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
+	run_ui.get_skill_evolution_overlay().reduced_motion = true
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
 	var battle = BATTLE_SCRIPT.new()
 	battle.turn_state = TurnState.new()
@@ -440,14 +450,13 @@ func test_last_action_choice_is_resolved_before_victory_screen() -> void:
 	battle._request_battle_outcome(true)
 	battle._process_evolution_queue_at_safe_point()
 	await _settle(3)
-	var screen := run_ui.get_skill_tree_screen()
-	assert_true(screen.visible)
+	var overlay := run_ui.get_skill_evolution_overlay()
+	assert_true(overlay.visible)
+	assert_false(run_ui.get_skill_tree_screen().visible)
 	assert_false(battle._battle_over)
-	var choice := screen.get_available_evolution_node_ids()[0]
-	assert_true(screen.confirm_evolution_choice(choice))
-	await _settle(2)
+	var choice := await _resolve_first_overlay_choice(run_ui)
 	assert_true(battle._battle_over)
-	assert_false(screen.visible)
+	assert_false(overlay.visible)
 	assert_true(
 		state.get_discipline_progress(discipline.discipline_id).get_selected_upgrade_ids().has(choice)
 	)
