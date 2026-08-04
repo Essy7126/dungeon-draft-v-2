@@ -14,7 +14,7 @@ script = ExtResource("1_bxms6")
 script = ExtResource("5_ir640")
 effect_type = 6
 target_scope = 1
-amount = 3
+amount = 5
 modifier_name = "Sève abondante"
 target_spell_id = &"elf_sylvan_heal"
 
@@ -23,7 +23,7 @@ script = ExtResource("3_qkcat")
 excluded_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
 upgrade_id = &"elf_healer_seve_abondante"
 display_name = "Sève abondante"
-description = "+3 soins immédiats."
+description = "+5 soins immédiats."
 discipline_id = &"healer"
 rank = 2
 target_spell_id = &"elf_sylvan_heal"
@@ -33,7 +33,7 @@ spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_dabxk")])
 script = ExtResource("5_ir640")
 effect_type = 8
 target_scope = 1
-amount = 3
+amount = 5
 modifier_name = "Écorce protectrice"
 target_spell_id = &"elf_sylvan_heal"
 
@@ -42,7 +42,7 @@ script = ExtResource("3_qkcat")
 excluded_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
 upgrade_id = &"elf_healer_ecorce_protectrice"
 display_name = "Écorce protectrice"
-description = "Ajoute 3 points de bouclier."
+description = "Ajoute 5 points de bouclier."
 discipline_id = &"healer"
 rank = 2
 target_spell_id = &"elf_sylvan_heal"
@@ -51,7 +51,7 @@ spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_h3j7k")])
 [sub_resource type="Resource" id="Resource_eu8t5"]
 script = ExtResource("1_bxms6")
 rank = 2
-required_total_xp = 3
+required_total_xp = 5
 choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_aodk0"), SubResource("Resource_kt0g3")])
 
 [sub_resource type="Resource" id="Resource_pw13o"]
@@ -137,7 +137,7 @@ spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_fetyi")])
 [sub_resource type="Resource" id="Resource_1n4mc"]
 script = ExtResource("1_bxms6")
 rank = 3
-required_total_xp = 7
+required_total_xp = 12
 choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_nhkv5"), SubResource("Resource_x42p5"), SubResource("Resource_t6312"), SubResource("Resource_olmnj")])
 
 [sub_resource type="Resource" id="Resource_60458"]
@@ -301,7 +301,7 @@ spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_51t6w")])
 [sub_resource type="Resource" id="Resource_ixisv"]
 script = ExtResource("1_bxms6")
 rank = 4
-required_total_xp = 12
+required_total_xp = 21
 choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_ux2ku"), SubResource("Resource_4vg5l"), SubResource("Resource_q226g"), SubResource("Resource_r3t5u"), SubResource("Resource_yc2yj"), SubResource("Resource_saxhe"), SubResource("Resource_152l3"), SubResource("Resource_o63t4")])
 
 [sub_resource type="Resource" id="Resource_ausix"]
@@ -408,7 +408,7 @@ spell_modifiers = Array[ExtResource("4_62h3m")]([SubResource("Resource_11qde"), 
 [sub_resource type="Resource" id="Resource_0wjmb"]
 script = ExtResource("1_bxms6")
 rank = 5
-required_total_xp = 18
+required_total_xp = 30
 choices = Array[ExtResource("2_mt6tv")]([SubResource("Resource_k3jt8"), SubResource("Resource_vnhd6"), SubResource("Resource_23t3h"), SubResource("Resource_qc7k8")])
 
 [resource]

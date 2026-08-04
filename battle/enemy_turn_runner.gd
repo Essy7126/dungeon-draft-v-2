@@ -11,9 +11,12 @@
 class_name EnemyTurnRunner
 extends Node
 
+const MAX_ACTION_STEPS := EnemyActionPlan.MAX_STEPS
+
 var _battle = null
 var _closing := false
 var _operation_generation := 0
+var last_action_count := 0
 
 
 func setup(battle) -> void:
@@ -81,8 +84,14 @@ func run(enemy: Unit) -> void:
 	var generation := _operation_generation
 	if not await _wait_seconds_safe(0.3, generation, enemy):
 		return
-	var plan = _battle.enemy_ai.decide(enemy, _battle.units)
-	for action in plan:
+	var plan: EnemyActionPlan = _battle.enemy_ai.build_action_plan(
+		enemy,
+		_battle.units,
+	)
+	last_action_count = 0
+	for action in plan.to_actions():
+		if last_action_count >= MAX_ACTION_STEPS:
+			break
 		if not _can_continue(generation, enemy):
 			return
 		match action["type"]:
@@ -92,6 +101,7 @@ func run(enemy: Unit) -> void:
 				await _execute_attack(enemy, action["target"], generation)
 			"cast":
 				await _execute_cast(enemy, action["spell"], action["cell"], generation)
+		last_action_count += 1
 		if not await _wait_seconds_safe(0.2, generation, enemy):
 			return
 
@@ -159,8 +169,19 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 		generation = _operation_generation
 	if not _can_continue(generation, enemy) or path.size() < 2:
 		return
-	var destination = path[path.size() - 1]
-	var cost = path.size() - 1
+	if path[0] != enemy.grid_pos:
+		return
+	var previous: Vector2i = path[0]
+	for index in range(1, path.size()):
+		var step: Vector2i = path[index]
+		if _battle.grid.manhattan(previous, step) != 1 \
+				or not _battle.grid.is_walkable(step):
+			return
+		previous = step
+	var destination: Vector2i = path[path.size() - 1]
+	var cost := path.size() - 1
+	if cost > enemy.current_mp:
+		return
 	enemy.spend_mp(cost)
 	_battle.grid.move_unit(enemy.grid_pos, destination)
 	enemy.grid_pos = destination

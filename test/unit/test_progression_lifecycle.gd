@@ -58,7 +58,7 @@ func _make_second_elf_data() -> UnitData:
 
 
 func _raise_mage_to_rank_two(state: CharacterRunState) -> void:
-	var result := state.add_discipline_xp(&"mage", 3)
+	var result := state.add_discipline_xp(&"mage", 5)
 	assert_eq(result.get("rank", 0), 2)
 
 
@@ -67,7 +67,8 @@ func _fireball() -> Spell:
 
 
 func _emit_successful_cast(unit: Unit) -> void:
-	EventBus.spell_cast.emit(unit, _fireball(), {})
+	unit.activation_index += 1
+	EventBus.spell_cast.emit(unit, _fireball(), {"effective_cast": true})
 
 
 func _progress_xp(state: CharacterRunState) -> int:
@@ -118,6 +119,7 @@ func test_room_change_and_combat_reset_do_not_multiply_cast_callbacks() -> void:
 	state.unit.reset_combat_resources()
 	manager.current_room_index = 0
 	manager._go_to_next_room()
+	manager.begin_combat_report()
 	_emit_successful_cast(state.unit)
 	assert_eq(_progress_xp(state), 2)
 	assert_eq(_manager_connection_count(), 1)
@@ -181,7 +183,7 @@ func test_return_to_title_clears_each_new_rank_two_modifier() -> void:
 		var state := _prepare_elf()
 		var discipline_id: StringName = upgrade_entry[0]
 		var upgrade_id: StringName = upgrade_entry[1]
-		state.add_discipline_xp(discipline_id, 3)
+		state.add_discipline_xp(discipline_id, 5)
 		assert_true(state.select_upgrade(discipline_id, 2, upgrade_id))
 		var old_unit := state.unit
 		assert_eq(old_unit.get_progression_spell_modifiers().size(), 1)
@@ -332,9 +334,9 @@ func test_duplicate_battle_win_never_opens_post_combat_progression() -> void:
 func test_repeated_run_stress_has_no_cumulative_xp_or_modifiers() -> void:
 	for _cycle in range(5):
 		var state := _prepare_elf()
-		for _cast_index in range(3):
+		for _cast_index in range(5):
 			_emit_successful_cast(state.unit)
-		assert_eq(_progress_xp(state), 3)
+		assert_eq(_progress_xp(state), 5)
 		assert_true(state.select_upgrade(&"mage", 2, INCANDESCENT_ID))
 		state.unit.reset_combat_resources()
 		manager.current_room_index = 0

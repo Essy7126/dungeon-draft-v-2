@@ -156,7 +156,7 @@ func test_unit_data_matches_the_tactical_commander_specification() -> void:
 	])
 
 
-func test_tactical_ai_prioritizes_missing_normal_reinforcements_without_id_branch() -> void:
+func test_tactical_ai_prioritizes_the_global_mark_before_reinforcements() -> void:
 	var field := Factory.make_battlefield(8, 2)
 	var snow := Unit.from_data(load(SNOW_PATH) as UnitData)
 	var target := Unit.new("Cible du Centurion", 0, 100)
@@ -166,7 +166,7 @@ func test_tactical_ai_prioritizes_missing_normal_reinforcements_without_id_branc
 	var plan := ai.decide(snow, [snow, target])
 	assert_false(plan.is_empty())
 	assert_eq(plan[0].type, "cast")
-	assert_eq(plan[0].spell.spell_id, &"call_bones")
+	assert_eq(plan[0].spell.spell_id, &"centurion_mark")
 	var ai_source := FileAccess.get_file_as_string("res://core/enemy_ai.gd").to_lower()
 	assert_false("skeleton_snow_centurion" in ai_source)
 
@@ -175,10 +175,10 @@ func test_room_four_has_exact_requested_roster_and_distinct_valid_spawns() -> vo
 	var room = load(ROOM_FOUR_PATH)
 	assert_not_null(room)
 	var ids: Array = room.enemies.map(func(data): return data.unit_id)
-	assert_eq(ids.size(), 6)
+	assert_eq(ids.size(), 4)
 	assert_eq(ids.count(&"skeleton_chief"), 3)
-	assert_eq(ids.count(&"skeleton_snow_centurion"), 2)
-	assert_eq(ids.count(&"skeleton_ranged"), 1)
+	assert_eq(ids.count(&"skeleton_snow_centurion"), 1)
+	assert_eq(ids.count(&"skeleton_ranged"), 0)
 	assert_eq(room.enemy_spawn_zone.size(), 6)
 	var unique_cells := {}
 	var grid := GridData.new(20, 14)

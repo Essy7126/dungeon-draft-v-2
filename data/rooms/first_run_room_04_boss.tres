@@ -7,11 +7,13 @@
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="11_ranged"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_chief.tres" id="12_chief"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_snow_centurion.tres" id="13_snow"]
+[ext_resource type="Resource" path="res://data/encounters/first_run_room_04_encounter.tres" id="14_encounter"]
 
 [resource]
 script = ExtResource("2_room")
 room_name = "Salle 4 - Centurions squelettes"
 battle_scene = ExtResource("3_battle")
-enemies = Array[ExtResource("1_unit")]([ExtResource("12_chief"), ExtResource("12_chief"), ExtResource("12_chief"), ExtResource("13_snow"), ExtResource("13_snow"), ExtResource("11_ranged")])
+encounter_definition = ExtResource("14_encounter")
+enemies = Array[ExtResource("1_unit")]([ExtResource("12_chief"), ExtResource("12_chief"), ExtResource("12_chief"), ExtResource("13_snow")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(7, 11), Vector2i(6, 13), Vector2i(8, 11), Vector2i(7, 6), Vector2i(5, 9), Vector2i(9, 9)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(17, 7), Vector2i(17, 5), Vector2i(15, 7), Vector2i(15, 5), Vector2i(18, 9), Vector2i(16, 9)])

@@ -38,6 +38,7 @@ enum UseEffect {
 @export var equipment_slot: EquipmentSlot = EquipmentSlot.NONE
 @export var compatible_character_ids: Array[StringName] = []
 @export var stat_modifiers: Array[ItemStatModifierData] = []
+@export var spell_modifiers: Array[SpellModifier] = []
 
 @export_group("Use")
 @export var use_effect: UseEffect = UseEffect.NONE
@@ -65,6 +66,12 @@ func is_valid() -> bool:
 		return use_effect != UseEffect.NONE and use_value > 0.0
 	for modifier in stat_modifiers:
 		if modifier == null or not modifier.is_valid():
+			return false
+	for modifier in spell_modifiers:
+		if modifier == null:
+			return false
+		if modifier is ItemSpellModifierData \
+				and not (modifier as ItemSpellModifierData).is_valid_modifier():
 			return false
 	return true
 

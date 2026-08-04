@@ -45,8 +45,17 @@ func sync(ignore_unit = null) -> void:
 # CALCUL DE CHEMIN  (renommé find_path pour éviter la collision)
 # ============================================================
 
-func find_path(from: Vector2i, to: Vector2i, ignore_unit = null) -> Array:
-	sync(ignore_unit)
+func find_path(
+	from: Vector2i,
+	to: Vector2i,
+	ignore_unit = null,
+	synchronize_grid := true
+	) -> Array:
+	# Le comportement historique reste le defaut. Les outils qui viennent de
+	# synchroniser explicitement le graphe peuvent eviter une seconde passe et
+	# recalculer le chemin sur l'etat courant de l'AStar.
+	if synchronize_grid:
+		sync(ignore_unit)
 	if not _grid.is_valid(from) or not _grid.is_valid(to):
 		return []
 	var path = _astar.get_id_path(from, to)

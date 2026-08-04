@@ -12,7 +12,7 @@ const LEGACY_WARRIOR_PATHS := [
 	"res://data/spells/Guerrier/pietinement.tres",
 ]
 const EXPECTED_TOPOLOGY := {1: 0, 2: 2, 3: 4, 4: 8, 5: 4}
-const EXPECTED_THRESHOLDS := {1: 0, 2: 3, 3: 7, 4: 12, 5: 18}
+const EXPECTED_THRESHOLDS := {1: 0, 2: 5, 3: 12, 4: 21, 5: 30}
 
 
 func test_fixed_production_trio_owns_twelve_complete_trees() -> void:
@@ -80,7 +80,7 @@ func test_every_tree_exposes_exactly_sixteen_valid_final_configurations() -> voi
 			for configuration in configurations:
 				var progress := DisciplineProgressState.new()
 				assert_true(progress.initialize(discipline))
-				progress.add_xp(18)
+				progress.add_xp(30)
 				assert_eq(progress.rank, 5)
 				assert_eq(progress.get_pending_rank_choices(), [2, 3, 4, 5])
 				for rank_index in range(4):
@@ -103,7 +103,7 @@ func test_higher_rank_is_rejected_until_earlier_pending_rank_is_resolved() -> vo
 		for discipline in hero.disciplines:
 			var progress := DisciplineProgressState.new()
 			progress.initialize(discipline)
-			progress.add_xp(18)
+			progress.add_xp(30)
 			var rank_three := discipline.ranks[2].choices[0] as SkillUpgradeData
 			assert_null(progress.select_upgrade(rank_three.upgrade_id, 3), str(discipline.discipline_id))
 
@@ -115,7 +115,7 @@ func test_character_run_state_reconstructs_choices_and_modifiers() -> void:
 		assert_true(original.initialize(Unit.from_data(hero), hero))
 		for discipline in hero.disciplines:
 			var configuration := _final_configurations(discipline)[0] as Array
-			original.add_discipline_xp(discipline.discipline_id, 18)
+			original.add_discipline_xp(discipline.discipline_id, 30)
 			for rank_index in range(4):
 				assert_true(original.select_upgrade(
 					discipline.discipline_id,

@@ -99,7 +99,7 @@ func test_reference_damage_uses_the_central_resolver_rounding() -> void:
 	assert_eq(centurion.take_damage(30, attacker, Spell.DamageType.MAGICAL, Spell.Element.FIRE).amount, 21)
 
 
-func test_bone_blade_uses_only_the_linked_centurion_mark() -> void:
+func test_bone_blade_uses_the_single_living_faction_centurion_mark() -> void:
 	var field := Factory.make_battlefield(8, 4)
 	var skeleton := _unit(NORMAL_PATH)
 	var linked := _unit(CENTURION_PATH)
@@ -115,7 +115,7 @@ func test_bone_blade_uses_only_the_linked_centurion_mark() -> void:
 	target.apply_status(mark, other)
 	var before := target.current_hp
 	field.caster.cast(skeleton, blade, target.grid_pos)
-	assert_eq(before - target.current_hp, 18)
+	assert_eq(before - target.current_hp, 24)
 	skeleton.start_turn()
 	target.remove_status(&"centurion_mark")
 	target.apply_status(mark, linked)

@@ -134,7 +134,7 @@ func test_all_twelve_disciplines_open_their_two_r2_choices_and_sync_modifiers() 
 		var controller := ProgressionController.new(state)
 		for discipline in state.get_disciplines():
 			var progress := state.get_discipline_progress(discipline.discipline_id)
-			assert_eq(progress.add_xp(3), [2], str(discipline.discipline_id))
+			assert_eq(progress.add_xp(5), [2], str(discipline.discipline_id))
 			var screen := _screen()
 			assert_true(screen.open_for_evolution(
 				_request(state, discipline.discipline_id, 2, tested + 1),
@@ -177,7 +177,7 @@ func test_threshold_is_queued_but_ui_waits_for_the_explicit_safe_point() -> void
 	var state := _prepare_global_run()
 	await _settle(1)
 	var discipline := state.get_disciplines()[0] as DisciplineData
-	state.add_discipline_xp(discipline.discipline_id, 2)
+	state.add_discipline_xp(discipline.discipline_id, 4)
 	var battle = BATTLE_SCRIPT.new()
 	battle.turn_state = TurnState.new()
 	battle.units = [state.unit]
@@ -186,7 +186,7 @@ func test_threshold_is_queued_but_ui_waits_for_the_explicit_safe_point() -> void
 	var spell: Spell = state.unit.spells.filter(
 		func(candidate): return candidate.discipline_id == discipline.discipline_id
 	)[0]
-	EventBus.spell_cast.emit(state.unit, spell, {})
+	EventBus.spell_cast.emit(state.unit, spell, {"effective_cast": true})
 	var pending := battle.get_pending_evolution_requests()
 	assert_eq(pending.size(), 1)
 	assert_eq(pending[0]["character_id"], state.character_id)
@@ -214,7 +214,7 @@ func test_failed_cancelled_and_non_threshold_casts_never_open_evolution_ui() -> 
 	EventBus.spell_cast.emit(state.unit, spell, {"failed": true})
 	assert_eq(progress.xp, 0)
 	assert_true(battle.get_pending_evolution_requests().is_empty())
-	EventBus.spell_cast.emit(state.unit, spell, {})
+	EventBus.spell_cast.emit(state.unit, spell, {"effective_cast": true})
 	assert_eq(progress.xp, 1)
 	assert_true(battle.get_pending_evolution_requests().is_empty())
 	battle.turn_state.on_spell_selected(spell)
@@ -229,7 +229,7 @@ func test_safe_point_opens_mandatory_screen_applies_choice_and_resumes() -> void
 	var state := _prepare_global_run()
 	await _settle(1)
 	var discipline := state.get_disciplines()[0] as DisciplineData
-	state.add_discipline_xp(discipline.discipline_id, 3)
+	state.add_discipline_xp(discipline.discipline_id, 5)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
@@ -280,7 +280,7 @@ func test_two_pending_ranks_are_resolved_r2_then_r3_before_resume() -> void:
 	var state := _prepare_global_run()
 	await _settle(1)
 	var discipline := state.get_disciplines()[0] as DisciplineData
-	state.add_discipline_xp(discipline.discipline_id, 7)
+	state.add_discipline_xp(discipline.discipline_id, 12)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
@@ -318,7 +318,7 @@ func test_capstone_r5_is_focused_and_persists_in_snapshot() -> void:
 	var state := _state(HERO_PATHS[1])
 	var discipline := state.get_disciplines()[0] as DisciplineData
 	var progress := state.get_discipline_progress(discipline.discipline_id)
-	progress.add_xp(18)
+	progress.add_xp(30)
 	for rank in [2, 3, 4]:
 		var available := SkillTreeResolver.get_available_nodes(
 			discipline,
@@ -351,9 +351,9 @@ func test_capstone_r5_is_focused_and_persists_in_snapshot() -> void:
 func test_existing_pending_choices_are_queued_in_party_discipline_rank_order() -> void:
 	_prepare_global_run()
 	var states := GameManager.get_ordered_character_states()
-	states[0].add_discipline_xp(states[0].get_disciplines()[0].discipline_id, 7)
-	states[0].add_discipline_xp(states[0].get_disciplines()[1].discipline_id, 3)
-	states[1].add_discipline_xp(states[1].get_disciplines()[0].discipline_id, 3)
+	states[0].add_discipline_xp(states[0].get_disciplines()[0].discipline_id, 12)
+	states[0].add_discipline_xp(states[0].get_disciplines()[1].discipline_id, 5)
+	states[1].add_discipline_xp(states[1].get_disciplines()[0].discipline_id, 5)
 	var battle = BATTLE_SCRIPT.new()
 	battle._enqueue_existing_pending_evolutions()
 	var pending := battle.get_pending_evolution_requests()
@@ -374,8 +374,8 @@ func test_two_characters_are_presented_in_request_creation_order() -> void:
 	var states := GameManager.get_ordered_character_states()
 	var elf_discipline := states[0].get_disciplines()[0] as DisciplineData
 	var mage_discipline := states[1].get_disciplines()[0] as DisciplineData
-	states[0].add_discipline_xp(elf_discipline.discipline_id, 3)
-	states[1].add_discipline_xp(mage_discipline.discipline_id, 3)
+	states[0].add_discipline_xp(elf_discipline.discipline_id, 5)
+	states[1].add_discipline_xp(mage_discipline.discipline_id, 5)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
@@ -430,7 +430,7 @@ func test_last_action_choice_is_resolved_before_victory_screen() -> void:
 	var state := _prepare_global_run()
 	await _settle(1)
 	var discipline := state.get_disciplines()[0] as DisciplineData
-	state.add_discipline_xp(discipline.discipline_id, 3)
+	state.add_discipline_xp(discipline.discipline_id, 5)
 	var run_ui := GameManager.get_persistent_run_ui()
 	run_ui.evolution_feedback_duration = 0.001
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)

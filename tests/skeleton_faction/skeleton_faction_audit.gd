@@ -335,6 +335,18 @@ func _save_capture(file_name: String) -> void:
 
 func _capture_sequence() -> void:
 	await get_tree().create_timer(0.8).timeout
+	if not _capture_normal_move_then_attack():
+		push_error("Capture impossible : le squelette normal n'a pas produit mouvement + attaque.")
+		get_tree().quit(1)
+		return
+	await get_tree().create_timer(0.35).timeout
+	await _save_capture("09_normal_move_then_attack.png")
+	if not _capture_chief_move_then_sentence():
+		push_error("Capture impossible : le chef n'a pas produit mouvement + Sentence.")
+		get_tree().quit(1)
+		return
+	await get_tree().create_timer(0.35).timeout
+	await _save_capture("10_chief_move_then_sentence.png")
 	_load_scenario("A")
 	await get_tree().create_timer(0.5).timeout
 	await _save_capture("01_skeleton_isolated.png")
@@ -361,4 +373,65 @@ func _capture_sequence() -> void:
 	_resolve_centurion()
 	await get_tree().create_timer(0.8).timeout
 	await _save_capture("07_raised_chief.png")
-	get_tree().quit()
+	print("SKELETON_VISUAL_AUDIT=PASS")
+	get_tree().quit(0)
+
+
+func _capture_normal_move_then_attack() -> bool:
+	_reset_battlefield()
+	scenario_label.text = "Activation normale — mouvement puis Lame osseuse"
+	var normal := _enemy(NORMAL, Vector2i(1, 3))
+	var hero := _hero("Cible", Vector2i(5, 3), 260)
+	queue.setup(units)
+	normal.start_turn()
+	var hp_before := hero.current_hp
+	var origin := normal.grid_pos
+	var plan := ai.build_action_plan(normal, units)
+	_execute_plan_for_capture(normal, plan)
+	grid_view.queue_redraw()
+	return normal.grid_pos != origin and hero.current_hp < hp_before
+
+
+func _capture_chief_move_then_sentence() -> bool:
+	_reset_battlefield()
+	scenario_label.text = "Activation chef — mouvement puis préparation de Sentence écarlate"
+	var chief := _enemy(CHIEF, Vector2i(1, 3))
+	var hero := _hero("Cible", Vector2i(4, 3), 260)
+	hero.current_hp = 100
+	queue.setup(units)
+	chief.start_turn()
+	var origin := chief.grid_pos
+	var plan := ai.build_action_plan(chief, units)
+	_execute_plan_for_capture(chief, plan)
+	grid_view.queue_redraw()
+	return chief.grid_pos != origin \
+		and StringName(chief.pending_ability.get("source_ability_id", &"")) \
+			== &"scarlet_sentence"
+
+
+func _execute_plan_for_capture(actor: Unit, plan: EnemyActionPlan) -> void:
+	if actor == null or plan == null:
+		return
+	for action_value in plan.actions:
+		var action := action_value as Dictionary
+		match StringName(action.get("type", &"")):
+			&"move":
+				var path := action.get("path", []) as Array
+				if path.size() >= 2:
+					var steps := mini(actor.current_mp, path.size() - 1)
+					if actor.spend_mp(steps):
+						grid.relocate_unit(actor, path[steps] as Vector2i)
+			&"cast":
+				var spell := action.get("spell") as Spell
+				if spell != null:
+					caster.cast(
+						actor,
+						spell,
+						action.get("cell", Vector2i(-1, -1)) as Vector2i,
+					)
+			&"attack":
+				var target := action.get("target") as Unit
+				if target != null and target.is_alive \
+						and grid.are_adjacent(actor.grid_pos, target.grid_pos) \
+						and actor.spend_ap(actor.get_basic_attack_ap_cost()):
+					target.take_damage(actor.get_attack(), actor, Spell.DamageType.PHYSICAL)

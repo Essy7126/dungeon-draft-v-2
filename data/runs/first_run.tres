@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room_type"]
 [ext_resource type="Resource" path="res://data/rooms/first_run_room_01.tres" id="3_room_01"]
-[ext_resource type="Resource" path="res://data/rooms/first_run_room_02_chemin.tres" id="4_room_02"]
-[ext_resource type="Resource" path="res://data/rooms/first_run_room_02b_plateau.tres" id="4b_room_02b"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_02.tres" id="4_room_02"]
 [ext_resource type="Resource" path="res://data/rooms/first_run_room_03.tres" id="5_room_03"]
-[ext_resource type="Resource" path="res://data/rooms/room_05_volcano.tres" id="6_volcano"]
-[ext_resource type="Resource" path="res://data/rooms/bible/la_rune.tres" id="7_rune"]
-[ext_resource type="Resource" path="res://data/rooms/room_06_space.tres" id="8_space"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_04_boss.tres" id="6_room_04"]
+[ext_resource type="Resource" path="res://data/rooms/room_05_volcano.tres" id="7_room_05"]
+[ext_resource type="Resource" path="res://data/rooms/room_06_space.tres" id="8_room_06"]
 
 [resource]
 script = ExtResource("1_run")
+default_seed = 1337
 run_name = "Première run"
-rooms = Array[ExtResource("2_room_type")]([ExtResource("3_room_01"), ExtResource("4_room_02"), ExtResource("4b_room_02b"), ExtResource("5_room_03"), ExtResource("7_rune"), ExtResource("6_volcano"), ExtResource("8_space")])
+rooms = Array[ExtResource("2_room_type")]([ExtResource("3_room_01"), ExtResource("4_room_02"), ExtResource("5_room_03"), ExtResource("6_room_04"), ExtResource("7_room_05"), ExtResource("8_room_06")])

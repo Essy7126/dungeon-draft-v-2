@@ -60,3 +60,4 @@ var terrain: TerrainEffects = null
 
 # --- Journal des déplacements forcés : { "unit", "from", "to", "collision" } ---
 var movement: Array = []
+var state_before_by_unit: Dictionary = {}

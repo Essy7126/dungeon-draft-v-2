@@ -45,7 +45,8 @@ func _fireball() -> Spell:
 
 
 func _emit_fireball(unit: Unit) -> void:
-	EventBus.spell_cast.emit(unit, _fireball(), {})
+	unit.activation_index += 1
+	EventBus.spell_cast.emit(unit, _fireball(), {"effective_cast": true})
 
 
 func _mage_xp(state: CharacterRunState) -> int:
@@ -67,7 +68,7 @@ func test_three_states_units_loadouts_xp_and_modifiers_persist_between_rooms() -
 	units[0].current_hp = 73
 	units[1].current_hp = 64
 	units[2].current_hp = 55
-	states[0].add_discipline_xp(&"mage", 3)
+	states[0].add_discipline_xp(&"mage", 5)
 	assert_true(states[0].select_upgrade(&"mage", 2, INCANDESCENT_ID))
 	assert_eq(units[0].get_progression_spell_modifiers().size(), 1)
 
@@ -81,7 +82,7 @@ func test_three_states_units_loadouts_xp_and_modifiers_persist_between_rooms() -
 		assert_same(states[index].loadout, loadouts[index])
 		assert_eq(states[index].loadout.get_known_spells(), known_spells[index])
 	assert_eq(units.map(func(unit): return unit.current_hp), [73, 64, 55])
-	assert_eq(_mage_xp(states[0]), 3)
+	assert_eq(_mage_xp(states[0]), 5)
 	assert_eq(units[0].get_progression_spell_modifiers().size(), 1)
 	assert_true(units[1].get_progression_spell_modifiers().is_empty())
 	assert_true(units[2].get_progression_spell_modifiers().is_empty())
@@ -89,7 +90,7 @@ func test_three_states_units_loadouts_xp_and_modifiers_persist_between_rooms() -
 
 func test_three_to_solo_disposes_every_old_state_loadout_and_modifier() -> void:
 	var old_states := _prepare_party()
-	old_states[0].add_discipline_xp(&"mage", 3)
+	old_states[0].add_discipline_xp(&"mage", 5)
 	assert_true(old_states[0].select_upgrade(&"mage", 2, INCANDESCENT_ID))
 	var old_units: Array[Unit] = manager.get_ordered_heroes()
 	var old_loadouts := old_states.map(func(state): return state.loadout)
@@ -112,7 +113,7 @@ func test_three_to_solo_disposes_every_old_state_loadout_and_modifier() -> void:
 func test_solo_to_three_rebuilds_the_full_order_without_old_keys() -> void:
 	var old_solo := _prepare_solo()
 	var old_unit := old_solo.unit
-	old_solo.add_discipline_xp(&"mage", 3)
+	old_solo.add_discipline_xp(&"mage", 5)
 	assert_true(old_solo.select_upgrade(&"mage", 2, INCANDESCENT_ID))
 	var states := _prepare_party()
 	assert_eq(states.map(func(state): return state.unit.unit_name), ["Elfe", "Mage", "Guerrier"])
@@ -160,7 +161,7 @@ func test_cleanup_clears_all_party_state_pending_continuations_and_results() -> 
 	var callbacks: Array = states.map(
 		func(state): return Callable(state, "sync_loadout_to_unit")
 	)
-	states[0].add_discipline_xp(&"mage", 3)
+	states[0].add_discipline_xp(&"mage", 5)
 	assert_true(states[0].select_upgrade(&"mage", 2, INCANDESCENT_ID))
 	manager._awaiting_post_battle_progression = true
 	manager._room_outcome_resolved = true

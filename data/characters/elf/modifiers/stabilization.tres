@@ -6,4 +6,4 @@
 script = ExtResource("1_modifier")
 modifier_name = "Stabilisation"
 target_spell_id = &"elf_precise_shot"
-bonus_damage = 2
+bonus_damage = 5

@@ -73,7 +73,8 @@ func test_vraie_premiere_roomdata_reference_la_nouvelle_foret() -> void:
 	assert_not_null(first_room.painted_map_visual_data)
 	assert_eq(first_room.painted_map_visual_data.background_texture_path, FOREST_TEXTURE)
 	assert_eq(first_room.enemies.map(func(enemy): return enemy.unit_id), [
-		&"skeleton_melee", &"skeleton_melee", &"skeleton_ranged",
+		&"skeleton_melee", &"skeleton_melee",
+		&"skeleton_melee", &"skeleton_melee",
 	])
 	assert_eq(first_room.hero_spawn_zone, [
 		Vector2i(4, 9), Vector2i(3, 10), Vector2i(4, 10),

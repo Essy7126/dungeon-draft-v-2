@@ -53,6 +53,7 @@ var heroes: Array = []          # Array[Unit] — persistent, HP conservés
 var character_states: Dictionary = {} # StringName -> CharacterRunState
 var rooms: Array = []           # Array[RoomData]
 var current_room_index: int = -1
+var run_seed: int = 0
 var run_active: bool = false
 var _active_run_name: String = ""
 var _last_run_result: Dictionary = {}
@@ -66,6 +67,7 @@ var _battle_outcome_pending := false
 var _combat_report_tracker := CombatReportTracker.new()
 var _last_combat_report: CombatReport = null
 var _post_combat_reward_service := PostCombatRewardService.new()
+var _equipment_reward_service := FirstRunEquipmentRewardService.new()
 var _pending_next_combat_shields: Dictionary = {}
 var _post_combat_transition_pending := false
 var item_catalog: ItemCatalog = null
@@ -78,6 +80,7 @@ signal run_won
 signal run_lost
 signal room_cleared(index)
 signal discipline_xp_gained(character_id, discipline_id, amount, snapshot)
+signal discipline_xp_evaluated(snapshot)
 signal scene_change_requested(path)
 signal combat_report_ready(report)
 signal post_combat_reward_applied(result)
@@ -203,6 +206,7 @@ func _dispose_prepared_characters(
 
 func _initialize_run_state(run_data: RunData) -> void:
 	rooms = run_data.rooms.duplicate()
+	run_seed = run_data.default_seed
 	current_room_index = -1
 	run_active = true
 	_active_run_name = run_data.run_name
@@ -214,11 +218,14 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_combat_report_tracker.discard()
 	_last_combat_report = null
 	_post_combat_reward_service.reset()
+	_progression_service.reset_run()
 	_pending_next_combat_shields.clear()
 	_post_combat_transition_pending = false
 	_active_progression_screen_ref = null
 	if not _initialize_inventory_state():
 		push_error("Impossible d'initialiser l'inventaire de run.")
+	elif not _equipment_reward_service.reset(item_catalog, run_seed):
+		push_error("La pioche d'equipements de la premiere run est invalide.")
 	_ensure_persistent_run_ui()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 
@@ -244,6 +251,7 @@ func cleanup_run_state() -> void:
 	_combat_report_tracker.discard()
 	_last_combat_report = null
 	_post_combat_reward_service.reset()
+	_equipment_reward_service.reset()
 	_pending_next_combat_shields.clear()
 	_post_combat_transition_pending = false
 	_release_persistent_run_ui()
@@ -255,6 +263,7 @@ func cleanup_run_state() -> void:
 	_clear_heroes()
 	_clear_inventory_state()
 	rooms.clear()
+	run_seed = 0
 	_active_run_name = ""
 	_last_run_result.clear()
 
@@ -568,7 +577,17 @@ func _on_successful_spell_cast(caster, spell, report: Dictionary) -> void:
 		spell as Spell,
 		report
 	)
-	if result.is_empty():
+	discipline_xp_evaluated.emit(result.duplicate(true))
+	if not result.get("granted", false):
+		DebugLogger.debug(
+			DebugLogger.LogCategory.COMBAT,
+			"XP refusee : %s" % str(result.get("refusal_reason", &"unknown")),
+			{
+				"sort": str(result.get("spell_id", &"")),
+				"activation": int(result.get("activation_index", -1)),
+				"xp_combat": int(result.get("combat_xp", 0)),
+			},
+		)
 		return
 	var character_id: StringName = result["character_id"]
 	var discipline_id: StringName = result["discipline_id"]
@@ -677,6 +696,15 @@ func get_current_room() -> RoomData:
 	return rooms[current_room_index]
 
 
+func get_run_seed() -> int:
+	return run_seed
+
+
+func get_current_encounter_definition() -> EncounterDefinition:
+	var room := get_current_room()
+	return room.encounter_definition if room != null else null
+
+
 # ============================================================
 # RAPPORT ET RÉCOMPENSE D'APRÈS-COMBAT
 # ============================================================
@@ -684,6 +712,7 @@ func get_current_room() -> RoomData:
 func begin_combat_report() -> CombatReport:
 	if _combat_report_tracker.is_active():
 		return _combat_report_tracker.get_report()
+	_progression_service.begin_combat()
 	var room := get_current_room()
 	_post_combat_transition_pending = false
 	return _combat_report_tracker.begin(
@@ -707,10 +736,101 @@ func get_current_combat_report() -> CombatReport:
 
 
 func get_post_combat_reward_options() -> Array[Dictionary]:
-	return _post_combat_reward_service.build_options(
+	return _equipment_reward_service.build_options(
 		_last_combat_report,
 		get_ordered_character_states(),
+		run_inventory,
+		is_final_room(),
 	)
+
+
+func confirm_post_combat_equipment(
+		item_id: StringName,
+		target_character_id: StringName
+	) -> Dictionary:
+	if is_final_room():
+		return {
+			"success": false,
+			"error_code": "FINAL_ROOM_HAS_NO_REWARD",
+			"error": "La salle finale ne distribue pas d'équipement.",
+		}
+	var result := _equipment_reward_service.apply(
+		_last_combat_report,
+		item_id,
+		target_character_id,
+		get_ordered_character_states(),
+		run_inventory,
+		_equipment_service,
+	)
+	if result.get("success", false):
+		_last_combat_report.reward_result = result.duplicate(true)
+		post_combat_reward_applied.emit(result)
+	return result
+
+
+func is_final_room() -> bool:
+	return not rooms.is_empty() and current_room_index == rooms.size() - 1
+
+
+func get_equipment_reward_deck_snapshot() -> Dictionary:
+	return _equipment_reward_service.snapshot()
+
+
+func get_equipment_reward_comparison(
+		item_id: StringName,
+		character_id: StringName
+	) -> Dictionary:
+	var definition := item_catalog.get_definition(item_id) if item_catalog != null else null
+	var state := get_character_state(character_id)
+	if definition == null or state == null or state.equipment_loadout == null:
+		return {}
+	var current_instance := state.equipment_loadout.get_item(
+		definition.equipment_slot
+	)
+	var current_definition: ItemDefinition = null
+	if current_instance != null:
+		current_definition = item_catalog.get_definition(
+			current_instance.definition_id
+		)
+	var next_stats := _item_stat_totals(definition)
+	var current_stats := _item_stat_totals(current_definition)
+	var stat_ids := next_stats.keys()
+	for stat_id in current_stats:
+		if not stat_ids.has(stat_id):
+			stat_ids.append(stat_id)
+	var deltas := {}
+	for stat_id in stat_ids:
+		deltas[stat_id] = float(next_stats.get(stat_id, 0.0)) \
+			- float(current_stats.get(stat_id, 0.0))
+	return {
+		"character_id": character_id,
+		"compatible": definition.is_compatible_with(character_id),
+		"slot": definition.equipment_slot,
+		"item_id": definition.item_id,
+		"item_name": definition.display_name,
+		"current_item_id": (
+			current_definition.item_id if current_definition != null else &""
+		),
+		"current_item_name": (
+			current_definition.display_name if current_definition != null else "Aucun"
+		),
+		"stat_deltas": deltas,
+		"new_description": definition.description,
+		"current_description": (
+			current_definition.description if current_definition != null else ""
+		),
+	}
+
+
+func _item_stat_totals(definition: ItemDefinition) -> Dictionary:
+	var result := {}
+	if definition == null:
+		return result
+	for modifier in definition.stat_modifiers:
+		if modifier != null:
+			result[modifier.stat_id] = float(result.get(modifier.stat_id, 0.0)) \
+				+ modifier.value
+	return result
 
 
 func confirm_post_combat_reward(
@@ -753,9 +873,12 @@ func confirm_post_combat_reward(
 func complete_post_combat_transition(report_id: StringName) -> bool:
 	if _post_combat_transition_pending \
 		or _last_combat_report == null \
-		or _last_combat_report.report_id != report_id \
-		or not _last_combat_report.reward_result.get("success", false) \
-		or not _post_combat_reward_service.has_applied(report_id):
+		or _last_combat_report.report_id != report_id:
+		return false
+	if not is_final_room() and (
+		not _last_combat_report.reward_result.get("success", false)
+		or not _equipment_reward_service.has_applied(report_id)
+	):
 		return false
 	_post_combat_transition_pending = true
 	_go_to_next_room()
@@ -822,7 +945,6 @@ func on_battle_won() -> void:
 	_room_outcome_resolved = true
 	_last_combat_report = _finalize_current_combat_report(true)
 	room_cleared.emit(current_room_index)
-	grant_item_to_inventory(POST_COMBAT_LOOT_ITEM_ID, 1)
 	_awaiting_post_battle_progression = false
 	combat_report_ready.emit(_last_combat_report)
 	_request_scene_change(

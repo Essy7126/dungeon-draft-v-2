@@ -8,7 +8,7 @@
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_stabilization"
 display_name = "Stabilisation"
-description = "Tir précis inflige 2 dégâts supplémentaires sans condition."
+description = "Tir précis inflige 5 dégâts supplémentaires sans condition."
 discipline_id = &"archer"
 rank = 4
 target_spell_id = &"elf_precise_shot"

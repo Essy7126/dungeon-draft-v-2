@@ -8,7 +8,7 @@
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_perfect_sight"
 display_name = "Vue parfaite"
-description = "Tir précis inflige 3 dégâts supplémentaires lorsque la cible se trouve à au moins 6 cases."
+description = "Tir précis inflige 5 dégâts supplémentaires lorsque la cible se trouve à au moins 6 cases."
 discipline_id = &"archer"
 rank = 4
 target_spell_id = &"elf_precise_shot"

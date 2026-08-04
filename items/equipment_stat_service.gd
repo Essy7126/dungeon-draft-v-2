@@ -24,6 +24,7 @@ func apply_item(
 				else Stat.ModType.PERCENT,
 			source,
 		)
+	unit.set_equipment_spell_modifiers(instance.instance_id, definition.spell_modifiers)
 	_clamp_runtime_resources(unit, previous_max_hp)
 	unit.stats_changed.emit(unit)
 	return true
@@ -41,6 +42,7 @@ func remove_item(
 		var stat := _get_stat(unit, modifier.stat_id)
 		if stat != null:
 			stat.remove_modifiers_from(_source(instance, modifier.stat_id))
+	unit.clear_equipment_spell_modifiers(instance.instance_id)
 	_clamp_runtime_resources(unit, previous_max_hp)
 	unit.stats_changed.emit(unit)
 
@@ -117,6 +119,8 @@ func _get_stat(unit: Unit, stat_id: StringName) -> Stat:
 			return unit.crit_multi
 		&"force":
 			return unit.force
+		&"resistance_ice":
+			return unit.get_resistance(Spell.Element.ICE)
 		_:
 			return null
 

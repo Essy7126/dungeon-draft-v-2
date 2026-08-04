@@ -51,12 +51,12 @@ func _prepare_global_run() -> void:
 	assert_true(GameManager._prepare_preconfigured_run(run, heroes))
 
 
-func test_catalog_contains_five_valid_stable_definitions() -> void:
+func test_catalog_contains_nineteen_valid_stable_definitions() -> void:
 	var catalog := _catalog()
 	assert_not_null(catalog)
 	var validation := catalog.validate_catalog()
 	assert_true(validation.get("valid", false), str(validation.get("errors", [])))
-	assert_eq(validation.get("definition_count", 0), 5)
+	assert_eq(validation.get("definition_count", 0), 19)
 	for item_id in [
 		&"warrior_training_sword",
 		&"reinforced_vest",

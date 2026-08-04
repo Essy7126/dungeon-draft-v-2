@@ -206,6 +206,34 @@ size_flags_vertical = 3
 theme_override_constants/separation = 18
 alignment = 1
 
+[node name="RecipientPanel" type="VBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RecipientInstruction" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel/RecipientPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.72, 0.31, 1)
+theme_override_font_sizes/font_size = 15
+text = "Choisissez le héros qui équipera l’objet."
+horizontal_alignment = 1
+
+[node name="RecipientCards" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel/RecipientPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="ComparisonLabel" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel/RecipientPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.8, 0.78, 1)
+theme_override_font_sizes/font_size = 13
+text = "Sélectionnez un héros compatible pour afficher la comparaison."
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="RewardError" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/RewardsPanel"]
 unique_name_in_owner = true
 visible = false

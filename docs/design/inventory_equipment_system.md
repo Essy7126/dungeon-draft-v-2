@@ -11,7 +11,7 @@ La représentation des armes et armures sur les modèles 3D est volontairement h
 | Couche | Fichiers principaux | Responsabilité |
 |---|---|---|
 | Définitions | `data/items/item_definition.gd`, `data/items/item_stat_modifier_data.gd` | Données immuables d’un type d’objet |
-| Catalogue | `data/items/item_catalog.gd`, `data/items/catalogs/first_run_item_catalog.tres` | Index et validation des identifiants stables |
+| Catalogue | `data/items/item_catalog.gd`, `data/items/catalogs/default_item_catalog.tres` | Index et validation des identifiants stables |
 | Runtime | `items/item_instance.gd`, `items/run_inventory.gd`, `items/equipment_loadout.gd` | Instances uniques, piles, 24 cases et trois emplacements par héros |
 | Services | `items/equipment_service.gd`, `items/equipment_stat_service.gd`, `items/item_use_service.gd` | Transactions, modificateurs de statistiques et effets consommables |
 | État de run | `core/game_manager.gd`, `characters/progression/character_run_state.gd` | Propriété, API publique, signaux et snapshots |
@@ -70,7 +70,7 @@ La sauvegarde fournie couvre uniquement l’inventaire et les équipements d’u
 
 1. Créer une ressource `ItemDefinition` dans `data/items/definitions/` avec un `item_id` stable et unique.
 2. Configurer sa catégorie, sa limite de pile et, pour un équipement, son emplacement et ses modificateurs.
-3. Ajouter la ressource à `first_run_item_catalog.tres` ou à un futur catalogue de run.
+3. Ajouter la ressource à `default_item_catalog.tres` ou à un futur catalogue de run.
 4. Étendre `ItemUseService` si l’objet introduit un nouveau type d’effet actif.
 5. Ajouter des tests de catalogue, de transaction, d’effet et de snapshot.
 

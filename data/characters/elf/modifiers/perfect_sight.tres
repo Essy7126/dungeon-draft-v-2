@@ -7,4 +7,4 @@ script = ExtResource("1_modifier")
 modifier_name = "Vue parfaite"
 target_spell_id = &"elf_precise_shot"
 minimum_range = 6
-bonus_damage = 3
+bonus_damage = 5

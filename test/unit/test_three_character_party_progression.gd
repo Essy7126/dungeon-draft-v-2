@@ -67,7 +67,11 @@ func _xp(state: CharacterRunState) -> int:
 
 
 func _emit_cast(state: CharacterRunState) -> void:
-	EventBus.spell_cast.emit(state.unit, state.unit.spells[0], {})
+	EventBus.spell_cast.emit(
+		state.unit,
+		state.unit.spells[0],
+		{"effective_cast": true},
+	)
 
 
 func test_same_discipline_and_spell_ids_remain_independent_by_exact_caster() -> void:
@@ -112,7 +116,11 @@ func test_foreign_instance_with_same_ids_is_ignored() -> void:
 	var foreign_data := _make_hero_data(&"hero_a", "Clone etranger")
 	var foreign_unit := Unit.from_data(foreign_data)
 	assert_null(manager.get_character_state_for_unit(foreign_unit))
-	EventBus.spell_cast.emit(foreign_unit, foreign_unit.spells[0], {})
+	EventBus.spell_cast.emit(
+		foreign_unit,
+		foreign_unit.spells[0],
+		{"effective_cast": true},
+	)
 	assert_eq([_xp(states[0]), _xp(states[1]), _xp(states[2])], [0, 0, 0])
 
 
@@ -122,7 +130,7 @@ func test_removed_caster_cannot_credit_a_new_party() -> void:
 	_emit_cast(old_states[0])
 	assert_eq(_xp(old_states[0]), 1)
 	var fresh_states := _prepare_synthetic_party()
-	EventBus.spell_cast.emit(old_unit, old_unit.spells[0], {})
+	EventBus.spell_cast.emit(old_unit, old_unit.spells[0], {"effective_cast": true})
 	assert_eq(fresh_states.map(func(state): return _xp(state)), [0, 0, 0])
 	_emit_cast(fresh_states[0])
 	assert_eq(fresh_states.map(func(state): return _xp(state)), [1, 0, 0])

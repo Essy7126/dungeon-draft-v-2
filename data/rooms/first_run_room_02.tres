@@ -7,12 +7,14 @@
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="3_melee"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="4_ranged"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_chief.tres" id="5_chief"]
+[ext_resource type="Resource" path="res://data/encounters/first_run_room_02_encounter.tres" id="6_encounter"]
 
 [resource]
 script = ExtResource("2_room")
 room_name = "Salle 2 - Avant-poste montagneux"
 background_image = ExtResource("1_bg")
 battle_scene = ExtResource("1_battle")
-enemies = Array[ExtResource("1_unit")]([ExtResource("5_chief"), ExtResource("3_melee"), ExtResource("4_ranged")])
+encounter_definition = ExtResource("6_encounter")
+enemies = Array[ExtResource("1_unit")]([ExtResource("3_melee"), ExtResource("3_melee"), ExtResource("3_melee"), ExtResource("5_chief")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(10, 19), Vector2i(11, 19), Vector2i(7, 15)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(10, 3), Vector2i(11, 2), Vector2i(12, 0), Vector2i(13, 2)])

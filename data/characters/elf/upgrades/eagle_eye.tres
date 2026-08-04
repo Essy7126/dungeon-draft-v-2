@@ -8,7 +8,7 @@
 script = ExtResource("1_upgrade")
 upgrade_id = &"elf_archer_eagle_eye"
 display_name = "Œil d’aigle"
-description = "Tir précis inflige 3 dégâts supplémentaires à une cible située à au moins quatre cases."
+description = "Tir précis inflige 5 dégâts supplémentaires à une cible située à au moins quatre cases."
 discipline_id = &"archer"
 rank = 2
 target_spell_id = &"elf_precise_shot"
