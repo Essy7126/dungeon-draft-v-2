@@ -514,9 +514,10 @@ func test_synthetic_fixture_uses_future_cumulative_thresholds() -> void:
 func test_successful_cast_still_grants_one_xp_without_energy() -> void:
 	var state := _prepare_manager(_make_tree(), true)
 	var spell: Spell = state.unit.spells[0]
-	EventBus.spell_cast.emit(state.unit, spell, {})
+	EventBus.spell_cast.emit(state.unit, spell, {"effective_cast": true})
 	assert_eq(state.get_discipline_progress(DISCIPLINE_ID).xp, 1)
-	EventBus.spell_cast.emit(state.unit, spell, {})
+	state.unit.activation_index += 1
+	EventBus.spell_cast.emit(state.unit, spell, {"effective_cast": true})
 	assert_eq(state.get_discipline_progress(DISCIPLINE_ID).xp, 2)
 
 

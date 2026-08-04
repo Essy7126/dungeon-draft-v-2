@@ -38,6 +38,7 @@ const ArenaVisualProfileScript = preload(
 # ces champs a null et continuent d'utiliser leurs scenes/TileMap existantes.
 @export var grid_layout: RoomGridLayout
 @export var painted_map_visual_data: PaintedMapVisualData
+@export var encounter_definition: EncounterDefinition
 # Les ennemis présents dans cette salle.
 @export var enemies: Array[UnitData] = []
 

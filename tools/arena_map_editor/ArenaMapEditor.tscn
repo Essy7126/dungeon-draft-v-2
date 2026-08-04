@@ -1,0 +1,259 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://tools/arena_map_editor/arena_map_editor.gd" id="1_editor"]
+[ext_resource type="PackedScene" path="res://tools/arena_map_editor/ArenaMapCanvas.tscn" id="2_canvas"]
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.035, 0.055, 0.083, 0.97)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.39, 0.56, 0.92)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_status"]
+bg_color = Color(0.02, 0.035, 0.052, 0.96)
+border_width_top = 1
+border_color = Color(0.18, 0.39, 0.56, 0.8)
+
+[node name="ArenaMapEditor" type="Node2D"]
+script = ExtResource("1_editor")
+
+[node name="WorldBackground" type="Polygon2D" parent="."]
+z_index = -500
+polygon = PackedVector2Array(-10000, -10000, 10000, -10000, 10000, 10000, -10000, 10000)
+color = Color(0.012, 0.022, 0.035, 1)
+
+[node name="ArenaMapCanvas" parent="." instance=ExtResource("2_canvas")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="LeftPanel" type="PanelContainer" parent="UI"]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 282.0
+offset_bottom = 842.0
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="UI/LeftPanel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="UI/LeftPanel/Margin"]
+theme_override_constants/separation = 7
+
+[node name="Title" type="Label" parent="UI/LeftPanel/Margin/VBox"]
+text = "ARENA MAP EDITOR"
+theme_override_colors/font_color = Color(0.55, 0.87, 1, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="Subtitle" type="Label" parent="UI/LeftPanel/Margin/VBox"]
+text = "Document"
+theme_override_colors/font_color = Color(0.55, 0.66, 0.75, 1)
+
+[node name="MapId" type="LineEdit" parent="UI/LeftPanel/Margin/VBox"]
+placeholder_text = "map_id"
+tooltip_text = "Identifiant stable du fichier et des exports"
+
+[node name="DisplayName" type="LineEdit" parent="UI/LeftPanel/Margin/VBox"]
+placeholder_text = "Nom affiche"
+
+[node name="Kind" type="OptionButton" parent="UI/LeftPanel/Margin/VBox"]
+
+[node name="Theme" type="LineEdit" parent="UI/LeftPanel/Margin/VBox"]
+placeholder_text = "theme : forest, lava, space..."
+
+[node name="SizeRow" type="HBoxContainer" parent="UI/LeftPanel/Margin/VBox"]
+theme_override_constants/separation = 4
+
+[node name="Width" type="SpinBox" parent="UI/LeftPanel/Margin/VBox/SizeRow"]
+custom_minimum_size = Vector2(63, 0)
+min_value = 1.0
+max_value = 256.0
+allow_greater = true
+value = 12.0
+suffix = " L"
+
+[node name="Height" type="SpinBox" parent="UI/LeftPanel/Margin/VBox/SizeRow"]
+custom_minimum_size = Vector2(63, 0)
+min_value = 1.0
+max_value = 256.0
+allow_greater = true
+value = 10.0
+suffix = " H"
+
+[node name="Resize" type="Button" parent="UI/LeftPanel/Margin/VBox/SizeRow"]
+text = "APPLIQUER"
+
+[node name="New" type="Button" parent="UI/LeftPanel/Margin/VBox"]
+text = "NOUVELLE MAP"
+
+[node name="Separator" type="HSeparator" parent="UI/LeftPanel/Margin/VBox"]
+
+[node name="LayerLabel" type="Label" parent="UI/LeftPanel/Margin/VBox"]
+text = "Couche [1–4]"
+theme_override_colors/font_color = Color(0.55, 0.66, 0.75, 1)
+
+[node name="Layer" type="OptionButton" parent="UI/LeftPanel/Margin/VBox"]
+
+[node name="Palette" type="ItemList" parent="UI/LeftPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 285)
+allow_reselect = true
+
+[node name="Fill" type="Button" parent="UI/LeftPanel/Margin/VBox"]
+text = "REMPLIR LA COUCHE [F]"
+
+[node name="Help" type="Label" parent="UI/LeftPanel/Margin/VBox"]
+text = "Clic : peindre\nClic droit : effacer\nAlt + clic : pipette\nMolette : zoom\nClic milieu : déplacer"
+theme_override_colors/font_color = Color(0.68, 0.76, 0.82, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="TopBar" type="PanelContainer" parent="UI"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 294.0
+offset_top = 12.0
+offset_right = -342.0
+offset_bottom = 64.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="UI/TopBar"]
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 7
+
+[node name="Buttons" type="HBoxContainer" parent="UI/TopBar/Margin"]
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="Undo" type="Button" parent="UI/TopBar/Margin/Buttons"]
+text = "ANNULER  Ctrl+Z"
+
+[node name="Redo" type="Button" parent="UI/TopBar/Margin/Buttons"]
+text = "RÉTABLIR  Ctrl+Y"
+
+[node name="Grid" type="Button" parent="UI/TopBar/Margin/Buttons"]
+text = "GRILLE [G]"
+
+[node name="Center" type="Button" parent="UI/TopBar/Margin/Buttons"]
+text = "RECENTRER"
+
+[node name="RightPanel" type="PanelContainer" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -330.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 842.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="UI/RightPanel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="UI/RightPanel/Margin"]
+theme_override_constants/separation = 8
+
+[node name="PromptLabel" type="Label" parent="UI/RightPanel/Margin/VBox"]
+text = "Brief décor / Nano Banana"
+theme_override_colors/font_color = Color(0.55, 0.87, 1, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="DecorPrompt" type="TextEdit" parent="UI/RightPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 170)
+placeholder_text = "Décris le décor à générer autour de l'arène..."
+wrap_mode = 1
+
+[node name="CountsTitle" type="Label" parent="UI/RightPanel/Margin/VBox"]
+text = "Statistiques"
+theme_override_colors/font_color = Color(0.55, 0.66, 0.75, 1)
+
+[node name="Counts" type="Label" parent="UI/RightPanel/Margin/VBox"]
+text = "—"
+
+[node name="InspectorTitle" type="Label" parent="UI/RightPanel/Margin/VBox"]
+text = "Inspecteur"
+theme_override_colors/font_color = Color(0.55, 0.66, 0.75, 1)
+
+[node name="Inspector" type="Label" parent="UI/RightPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 105)
+text = "Cellule\n—"
+
+[node name="Separator" type="HSeparator" parent="UI/RightPanel/Margin/VBox"]
+
+[node name="Actions" type="HBoxContainer" parent="UI/RightPanel/Margin/VBox"]
+theme_override_constants/separation = 5
+
+[node name="Save" type="Button" parent="UI/RightPanel/Margin/VBox/Actions"]
+text = "SAUVER"
+
+[node name="SaveAs" type="Button" parent="UI/RightPanel/Margin/VBox/Actions"]
+text = "SOUS..."
+
+[node name="Open" type="Button" parent="UI/RightPanel/Margin/VBox/Actions"]
+text = "OUVRIR"
+
+[node name="Export" type="Button" parent="UI/RightPanel/Margin/VBox"]
+text = "EXPORTER LE PACK NANO BANANA  Ctrl+E"
+
+[node name="Output" type="Label" parent="UI/RightPanel/Margin/VBox"]
+text = "Sortie\nuser://arena_map_editor/"
+autowrap_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.78, 0.68, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="ExportHelp" type="Label" parent="UI/RightPanel/Margin/VBox"]
+text = "Pack : map_reference.png, map_clean.png, map_logic.png, map_debug.png, map_definition.json et nano_banana_brief.txt"
+autowrap_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.76, 0.82, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="StatusBar" type="PanelContainer" parent="UI"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("Style_status")
+
+[node name="Margin" type="MarginContainer" parent="UI/StatusBar"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 8
+
+[node name="Status" type="Label" parent="UI/StatusBar/Margin"]
+text = "Initialisation..."
+
+[node name="SaveDialog" type="FileDialog" parent="UI"]
+visible = false
+title = "Sauvegarder une Arena Map"
+size = Vector2i(900, 620)
+file_mode = 4
+access = 2
+filters = PackedStringArray("*.json ; Arena Map JSON")
+
+[node name="OpenDialog" type="FileDialog" parent="UI"]
+visible = false
+title = "Ouvrir une Arena Map"
+size = Vector2i(900, 620)
+access = 2
+filters = PackedStringArray("*.json ; Arena Map JSON")

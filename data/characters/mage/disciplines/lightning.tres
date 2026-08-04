@@ -12,7 +12,7 @@ script = ExtResource("1_3p3sc")
 
 [sub_resource type="Resource" id="Resource_odiso"]
 script = ExtResource("5_bcw46")
-amount = 2
+amount = 5
 modifier_name = "Surcharge"
 target_spell_id = &"mage_thunderstorm"
 
@@ -21,7 +21,7 @@ script = ExtResource("3_oeks4")
 excluded_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
 upgrade_id = &"mage_fulguromancy_surcharge"
 display_name = "Surcharge"
-description = "+2 dégâts à toutes les cibles."
+description = "+5 dégâts à toutes les cibles."
 discipline_id = &"mage_fulguromancy"
 rank = 2
 target_spell_id = &"mage_thunderstorm"
@@ -51,7 +51,7 @@ spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_7tckp")])
 [sub_resource type="Resource" id="Resource_rv7lw"]
 script = ExtResource("1_3p3sc")
 rank = 2
-required_total_xp = 3
+required_total_xp = 5
 choices = Array[ExtResource("2_inntv")]([SubResource("Resource_hkno0"), SubResource("Resource_3dlqs")])
 
 [sub_resource type="Resource" id="Resource_6lo71"]
@@ -136,7 +136,7 @@ spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_qs0iu")])
 [sub_resource type="Resource" id="Resource_ow787"]
 script = ExtResource("1_3p3sc")
 rank = 3
-required_total_xp = 7
+required_total_xp = 12
 choices = Array[ExtResource("2_inntv")]([SubResource("Resource_sciyt"), SubResource("Resource_6su5d"), SubResource("Resource_fi72g"), SubResource("Resource_an0xa")])
 
 [sub_resource type="Resource" id="Resource_u0f24"]
@@ -302,7 +302,7 @@ spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_o1fvn")])
 [sub_resource type="Resource" id="Resource_v0arg"]
 script = ExtResource("1_3p3sc")
 rank = 4
-required_total_xp = 12
+required_total_xp = 21
 choices = Array[ExtResource("2_inntv")]([SubResource("Resource_eu3sk"), SubResource("Resource_6wiwj"), SubResource("Resource_dvgc6"), SubResource("Resource_xjc1v"), SubResource("Resource_qfquh"), SubResource("Resource_xgaan"), SubResource("Resource_r18a4"), SubResource("Resource_fs7kf")])
 
 [sub_resource type="Resource" id="Resource_p607g"]
@@ -420,7 +420,7 @@ spell_modifiers = Array[ExtResource("4_ufvum")]([SubResource("Resource_pmqqk")])
 [sub_resource type="Resource" id="Resource_wyqdy"]
 script = ExtResource("1_3p3sc")
 rank = 5
-required_total_xp = 18
+required_total_xp = 30
 choices = Array[ExtResource("2_inntv")]([SubResource("Resource_qkxak"), SubResource("Resource_sk2if"), SubResource("Resource_r7wfe"), SubResource("Resource_kxjub")])
 
 [resource]

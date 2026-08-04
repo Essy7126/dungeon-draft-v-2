@@ -26,6 +26,8 @@ enum Phase {
 @onready var background: TextureRect = %Background
 @onready var background_dim: ColorRect = %BackgroundDim
 @onready var transition_layer: ColorRect = %TransitionLayer
+@onready var safe_margin: MarginContainer = %SafeMargin
+@onready var reward_overlay: EquipmentRewardOverlay = %EquipmentRewardOverlay
 @onready var room_label: Label = %RoomLabel
 @onready var phase_title: Label = %PhaseTitle
 @onready var victory_panel: Control = %VictoryPanel
@@ -36,6 +38,9 @@ enum Phase {
 @onready var progression_cards: HBoxContainer = %ProgressionCards
 @onready var rewards_panel: Control = %RewardsPanel
 @onready var reward_cards: HBoxContainer = %RewardCards
+@onready var recipient_panel: VBoxContainer = %RecipientPanel
+@onready var recipient_cards: HBoxContainer = %RecipientCards
+@onready var comparison_label: Label = %ComparisonLabel
 @onready var reward_error: Label = %RewardError
 @onready var status_label: Label = %StatusLabel
 @onready var continue_button: Button = %ContinueButton
@@ -46,20 +51,26 @@ var _reward_options: Array[Dictionary] = []
 var _selected_reward_id: StringName = &""
 var _selected_target_character_id: StringName = &""
 var _reward_buttons: Dictionary = {}
+var _recipient_buttons: Dictionary = {}
 var _progress_rows: Array[Dictionary] = []
 var _animation_active := false
 var _sequence_generation := 0
 var _current_tween: Tween = null
 var _reward_applied := false
 var _transition_requested := false
+var _final_room := false
 
 
 func _ready() -> void:
 	continue_button.pressed.connect(advance_or_skip)
+	reward_overlay.selection_changed.connect(_on_overlay_selection_changed)
+	reward_overlay.confirmation_requested.connect(_on_overlay_confirmation_requested)
+	reward_overlay.confirmation_finished.connect(_on_overlay_confirmation_finished)
 	report = GameManager.get_current_combat_report()
 	if report == null or not report.finalized or not report.victory:
 		_show_fatal_error("Le rapport de victoire est indisponible.")
 		return
+	_final_room = GameManager.is_final_room()
 	_configure_background()
 	room_label.text = report.room_name
 	_build_stat_cards()
@@ -69,6 +80,8 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if phase in [Phase.REWARD_SELECTION, Phase.COMPLETED, Phase.TRANSITIONING]:
+		return
 	if event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
 		advance_or_skip()
@@ -88,7 +101,10 @@ func advance_or_skip() -> void:
 		Phase.COMBAT_STATS:
 			_enter_phase(Phase.PROGRESSION)
 		Phase.PROGRESSION:
-			_enter_phase(Phase.REWARD_SELECTION)
+			if _final_room:
+				_begin_transition()
+			else:
+				_enter_phase(Phase.REWARD_SELECTION)
 		Phase.REWARD_SELECTION:
 			confirm_selected_reward()
 		Phase.COMPLETED:
@@ -108,45 +124,61 @@ func get_progression_panel_count() -> int:
 
 
 func get_reward_card_count() -> int:
-	return reward_cards.get_child_count()
+	return reward_overlay.get_card_count()
 
 
 func select_reward_by_id(reward_id: StringName) -> bool:
 	for option in _reward_options:
 		if StringName(option.get("reward_id", &"")) != reward_id:
 			continue
-		_select_reward(option)
-		return true
+		return reward_overlay.select_item_by_id(reward_id)
 	return false
+
+
+func select_recipient_by_id(character_id: StringName) -> bool:
+	if _selected_reward_id == &"":
+		return false
+	var option := _find_reward_option(_selected_reward_id)
+	if option.is_empty():
+		return false
+	var compatible_ids := option.get("compatible_character_ids", []) as Array
+	if not compatible_ids.has(character_id):
+		return false
+	_selected_target_character_id = character_id
+	return true
 
 
 func confirm_selected_reward() -> bool:
 	if phase != Phase.REWARD_SELECTION or _reward_applied:
 		return false
 	if _selected_reward_id == &"":
-		reward_error.text = "Sélectionnez une récompense avant de confirmer."
-		reward_error.show()
+		reward_overlay.resolve_confirmation(false, "Sélectionnez un équipement avant de confirmer.")
 		return false
-	var result := GameManager.confirm_post_combat_reward(
+	if _selected_target_character_id == &"":
+		var selected_option := _find_reward_option(_selected_reward_id)
+		var compatible_ids := selected_option.get("compatible_character_ids", []) as Array
+		if not compatible_ids.is_empty():
+			_selected_target_character_id = StringName(compatible_ids[0])
+	if _selected_target_character_id == &"":
+		reward_overlay.resolve_confirmation(false, "Aucun héros ne peut utiliser cet équipement.")
+		return false
+	var result := GameManager.confirm_post_combat_equipment(
 		_selected_reward_id,
 		_selected_target_character_id,
 	)
 	if not result.get("success", false):
-		reward_error.text = str(result.get("error", "Application impossible."))
-		reward_error.show()
+		reward_overlay.resolve_confirmation(
+			false,
+			str(result.get("error", "Application impossible.")),
+		)
 		return false
 	_reward_applied = true
-	for button_value in _reward_buttons.values():
-		var button := button_value as Button
-		if button != null:
-			button.disabled = true
 	phase = Phase.COMPLETED
 	phase_title.text = "RÉCOMPENSE OBTENUE"
 	status_label.text = "La récompense est enregistrée pour la run."
-	continue_button.text = "CONTINUER VERS LA SALLE SUIVANTE"
-	continue_button.disabled = false
+	continue_button.disabled = true
 	reward_error.hide()
-	continue_button.grab_focus()
+	reward_overlay.resolve_confirmation(true)
 	return true
 
 
@@ -172,6 +204,7 @@ func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	position = Vector2.ZERO
 	size = viewport_size
+	reward_overlay.apply_viewport_size_for_test(viewport_size)
 
 
 func _enter_phase(next_phase: Phase) -> void:
@@ -188,18 +221,25 @@ func _enter_phase(next_phase: Phase) -> void:
 		Phase.PROGRESSION:
 			_start_progression_reveal()
 		Phase.REWARD_SELECTION:
-			phase_title.text = "CHOISISSEZ UNE RÉCOMPENSE"
-			status_label.text = "Une seule récompense peut être obtenue."
-			continue_button.text = "CONFIRMER LA RÉCOMPENSE"
-			continue_button.disabled = _selected_reward_id == &""
-			_focus_first_reward()
+			safe_margin.hide()
+			background_dim.hide()
+			if reward_overlay.present(_reward_options, reward_overlay.reduced_motion):
+				var persisted_selection := GameManager.get_selected_post_combat_equipment()
+				if persisted_selection != &"":
+					reward_overlay.select_item_by_id(persisted_selection)
 
 
 func _set_phase_visibility() -> void:
+	safe_margin.visible = phase not in [
+		Phase.REWARD_SELECTION,
+		Phase.COMPLETED,
+		Phase.TRANSITIONING,
+	]
+	reward_overlay.visible = phase in [Phase.REWARD_SELECTION, Phase.COMPLETED]
 	victory_panel.visible = phase == Phase.VICTORY_REVEAL
 	stats_panel.visible = phase == Phase.COMBAT_STATS
 	progression_panel.visible = phase == Phase.PROGRESSION
-	rewards_panel.visible = phase in [Phase.REWARD_SELECTION, Phase.COMPLETED]
+	rewards_panel.visible = false
 
 
 func _start_victory_reveal() -> void:
@@ -258,7 +298,9 @@ func _start_stats_reveal() -> void:
 func _start_progression_reveal() -> void:
 	phase_title.text = "PROGRESSION DES DISCIPLINES"
 	status_label.text = "Récapitulatif — aucun nouveau choix n’est demandé."
-	continue_button.text = "VOIR LES RÉCOMPENSES"
+	continue_button.text = (
+		"TERMINER LA RUN" if _final_room else "VOIR LES RÉCOMPENSES"
+	)
 	continue_button.disabled = false
 	_prepare_progression_initial_values()
 	_animation_active = true
@@ -326,12 +368,16 @@ func _finish_current_animation() -> void:
 
 
 func _begin_transition() -> void:
-	if _transition_requested or not _reward_applied:
+	if _transition_requested or (not _final_room and not _reward_applied):
 		return
 	_transition_requested = true
 	phase = Phase.TRANSITIONING
-	phase_title.text = "VERS LA SALLE SUIVANTE"
-	status_label.text = "Préparation du prochain combat…"
+	phase_title.text = "RUN TERMINÉE" if _final_room else "VERS LA SALLE SUIVANTE"
+	status_label.text = (
+		"Validation de la victoire finale…"
+		if _final_room
+		else "Préparation du prochain combat…"
+	)
 	continue_button.disabled = true
 	transition_layer.show()
 	transition_layer.modulate.a = 0.0
@@ -353,9 +399,12 @@ func _begin_transition() -> void:
 
 
 func _configure_background() -> void:
+	background.texture = GameManager.get_post_combat_background_texture()
 	var room := GameManager.get_current_room()
-	if room != null:
+	if background.texture == null and room != null:
 		background.texture = room.background_image
+		if background.texture == null and room.painted_map_visual_data != null:
+			background.texture = room.painted_map_visual_data.load_background_texture()
 	background_dim.color = Color(0.015, 0.02, 0.024, 0.82)
 
 
@@ -588,24 +637,53 @@ func _progress_bar_max(delta: DisciplineProgressDelta) -> int:
 
 func _build_reward_cards() -> void:
 	_clear_container(reward_cards)
+	_clear_container(recipient_cards)
 	_reward_buttons.clear()
+	_recipient_buttons.clear()
+	recipient_panel.hide()
 	_reward_options = GameManager.get_post_combat_reward_options()
-	for option in _reward_options:
-		var button := _make_reward_button(option)
-		reward_cards.add_child(button)
-		_reward_buttons[StringName(option.get("reward_id", &""))] = button
+	_selected_reward_id = &""
+	_selected_target_character_id = &""
+
+
+func _on_overlay_selection_changed(item_id: StringName) -> void:
+	if phase != Phase.REWARD_SELECTION or _reward_applied:
+		return
+	if not GameManager.select_post_combat_equipment(item_id):
+		reward_overlay.resolve_confirmation(
+			false,
+			"Cette sélection n’est plus disponible.",
+		)
+		return
+	_selected_reward_id = item_id
+	_selected_target_character_id = &""
+	var option := _find_reward_option(item_id)
+	var compatible_ids := option.get("compatible_character_ids", []) as Array
+	if not compatible_ids.is_empty():
+		_selected_target_character_id = StringName(compatible_ids[0])
+
+
+func _on_overlay_confirmation_requested(item_id: StringName) -> void:
+	if item_id != _selected_reward_id:
+		return
+	confirm_selected_reward()
+
+
+func _on_overlay_confirmation_finished() -> void:
+	if phase == Phase.COMPLETED and _reward_applied:
+		_begin_transition()
 
 
 func _make_reward_button(option: Dictionary) -> Button:
-	var reward := option.get("reward") as PostCombatRewardData
+	var definition := option.get("definition") as ItemDefinition
 	var button := Button.new()
 	button.theme_type_variation = &"SkillTreeAcquireButton"
-	button.custom_minimum_size = Vector2(220, 205)
+	button.custom_minimum_size = Vector2(320, 275)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.toggle_mode = true
 	button.clip_contents = true
 	button.text = ""
-	button.tooltip_text = reward.description
+	button.tooltip_text = definition.description if definition != null else ""
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -618,29 +696,42 @@ func _make_reward_button(option: Dictionary) -> Button:
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	margin.add_child(content)
 	var icon := TextureRect.new()
-	icon.custom_minimum_size = Vector2(64, 64)
-	icon.texture = reward.icon
+	icon.custom_minimum_size = Vector2(150, 150)
+	icon.texture = _visible_item_texture(definition.icon) if definition != null else null
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(icon)
 	var title := Label.new()
-	title.text = reward.display_name.to_upper()
+	title.text = definition.display_name.to_upper() if definition != null else "OBJET INVALIDE"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.58))
 	title.add_theme_font_size_override("font_size", 18)
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(title)
+	var category := Label.new()
+	category.text = (
+		"%s · %s" % [
+			_category_display_name(definition.category),
+			EquipmentLoadout.get_slot_display_name(definition.equipment_slot),
+		]
+		if definition != null
+		else ""
+	)
+	category.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	category.add_theme_color_override("font_color", Color(0.64, 0.72, 0.7))
+	category.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(category)
 	var description := Label.new()
-	description.text = reward.description
+	description.text = definition.description if definition != null else ""
 	description.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	description.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(description)
 	var target := Label.new()
-	target.text = "Cible : %s" % str(option.get("target_name", "—"))
+	target.text = "Compatible : %s" % _compatible_hero_names(option)
 	target.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	target.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	target.add_theme_color_override("font_color", Color(0.64, 0.72, 0.7))
@@ -650,13 +741,51 @@ func _make_reward_button(option: Dictionary) -> Button:
 	return button
 
 
+func _visible_item_texture(source: Texture2D) -> Texture2D:
+	if source == null:
+		return null
+	var image := source.get_image()
+	if image == null or image.is_empty():
+		return source
+	var used := _non_black_content_rect(image)
+	if used.size.x <= 0 or used.size.y <= 0 \
+			or used.size == Vector2i(image.get_width(), image.get_height()):
+		return source
+	var cropped := AtlasTexture.new()
+	cropped.atlas = source
+	cropped.region = Rect2(used)
+	return cropped
+
+
+func _non_black_content_rect(image: Image) -> Rect2i:
+	var minimum := Vector2i(image.get_width(), image.get_height())
+	var maximum := Vector2i(-1, -1)
+	for y in image.get_height():
+		for x in image.get_width():
+			var pixel := image.get_pixel(x, y)
+			if pixel.a <= 0.01 or maxf(pixel.r, maxf(pixel.g, pixel.b)) <= 0.025:
+				continue
+			minimum.x = mini(minimum.x, x)
+			minimum.y = mini(minimum.y, y)
+			maximum.x = maxi(maximum.x, x)
+			maximum.y = maxi(maximum.y, y)
+	if maximum.x < minimum.x or maximum.y < minimum.y:
+		return Rect2i()
+	var padding := 8
+	minimum -= Vector2i.ONE * padding
+	maximum += Vector2i.ONE * padding
+	minimum.x = maxi(0, minimum.x)
+	minimum.y = maxi(0, minimum.y)
+	maximum.x = mini(image.get_width() - 1, maximum.x)
+	maximum.y = mini(image.get_height() - 1, maximum.y)
+	return Rect2i(minimum, maximum - minimum + Vector2i.ONE)
+
+
 func _select_reward(option: Dictionary) -> void:
 	if phase != Phase.REWARD_SELECTION or _reward_applied:
 		return
 	_selected_reward_id = StringName(option.get("reward_id", &""))
-	_selected_target_character_id = StringName(
-		option.get("target_character_id", &"")
-	)
+	_selected_target_character_id = &""
 	for reward_id in _reward_buttons:
 		var button := _reward_buttons[reward_id] as Button
 		button.button_pressed = StringName(reward_id) == _selected_reward_id
@@ -665,10 +794,11 @@ func _select_reward(option: Dictionary) -> void:
 			if StringName(reward_id) == _selected_reward_id
 			else Color(0.72, 0.74, 0.74)
 		)
+	_build_recipient_buttons(option)
 	reward_error.hide()
-	status_label.text = "Récompense sélectionnée — confirmez pour l’appliquer."
-	continue_button.disabled = false
-	continue_button.grab_focus()
+	status_label.text = "Objet sélectionné — choisissez maintenant son porteur."
+	continue_button.disabled = true
+	_focus_first_compatible_recipient(option)
 
 
 func _focus_first_reward() -> void:
@@ -683,7 +813,133 @@ func _focus_first_reward() -> void:
 		first_button.grab_focus()
 
 
+func _build_recipient_buttons(option: Dictionary) -> void:
+	_clear_container(recipient_cards)
+	_recipient_buttons.clear()
+	recipient_panel.show()
+	comparison_label.text = "Sélectionnez un héros compatible pour comparer l’emplacement."
+	var compatible_ids := option.get("compatible_character_ids", []) as Array
+	for state in GameManager.get_ordered_character_states():
+		if state == null:
+			continue
+		var button := Button.new()
+		button.theme_type_variation = &"SkillTreeAcquireButton"
+		button.custom_minimum_size = Vector2(210, 72)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.toggle_mode = true
+		button.text = _recipient_button_text(state, compatible_ids.has(state.character_id))
+		button.disabled = not compatible_ids.has(state.character_id)
+		button.pressed.connect(_select_recipient.bind(state.character_id))
+		recipient_cards.add_child(button)
+		_recipient_buttons[state.character_id] = button
+
+
+func _recipient_button_text(state: CharacterRunState, compatible: bool) -> String:
+	var definition := _selected_item_definition()
+	var hero_name := state.unit.unit_name if state.unit != null else str(state.character_id)
+	if not compatible or definition == null:
+		return "%s\nIncompatible" % hero_name
+	var comparison := GameManager.get_equipment_reward_comparison(
+		definition.item_id,
+		state.character_id,
+	)
+	return "%s\nActuel : %s\n%s" % [
+		hero_name,
+		str(comparison.get("current_item_name", "Aucun")),
+		_format_stat_deltas(comparison.get("stat_deltas", {}) as Dictionary),
+	]
+
+
+func _select_recipient(character_id: StringName) -> void:
+	if phase != Phase.REWARD_SELECTION or _reward_applied:
+		return
+	var option := _find_reward_option(_selected_reward_id)
+	if option.is_empty():
+		return
+	var compatible_ids := option.get("compatible_character_ids", []) as Array
+	if not compatible_ids.has(character_id):
+		return
+	_selected_target_character_id = character_id
+	for recipient_id in _recipient_buttons:
+		var button := _recipient_buttons[recipient_id] as Button
+		button.button_pressed = StringName(recipient_id) == character_id
+	var comparison := GameManager.get_equipment_reward_comparison(
+		_selected_reward_id,
+		character_id,
+	)
+	comparison_label.text = "Remplace : %s · Variation exacte : %s\n%s" % [
+		str(comparison.get("current_item_name", "Aucun")),
+		_format_stat_deltas(comparison.get("stat_deltas", {}) as Dictionary),
+		str(comparison.get("new_description", "")),
+	]
+	reward_error.hide()
+	status_label.text = "Porteur sélectionné — confirmez l’équipement."
+	continue_button.disabled = false
+	continue_button.grab_focus()
+
+
+func _focus_first_compatible_recipient(option: Dictionary) -> void:
+	var compatible_ids := option.get("compatible_character_ids", []) as Array
+	for state in GameManager.get_ordered_character_states():
+		if state != null and compatible_ids.has(state.character_id):
+			var button := _recipient_buttons.get(state.character_id) as Button
+			if button != null:
+				button.grab_focus()
+			return
+
+
+func _selected_item_definition() -> ItemDefinition:
+	var option := _find_reward_option(_selected_reward_id)
+	return option.get("definition") as ItemDefinition if not option.is_empty() else null
+
+
+func _find_reward_option(reward_id: StringName) -> Dictionary:
+	for option in _reward_options:
+		if StringName(option.get("reward_id", &"")) == reward_id:
+			return option
+	return {}
+
+
+func _compatible_hero_names(option: Dictionary) -> String:
+	var names: Array[String] = []
+	var compatible_ids := option.get("compatible_character_ids", []) as Array
+	for state in GameManager.get_ordered_character_states():
+		if state != null and compatible_ids.has(state.character_id):
+			names.append(
+				state.unit.unit_name if state.unit != null else str(state.character_id)
+			)
+	return ", ".join(names) if not names.is_empty() else "aucun héros"
+
+
+func _category_display_name(category: int) -> String:
+	match category:
+		ItemDefinition.Category.WEAPON:
+			return "Arme"
+		ItemDefinition.Category.ARMOR:
+			return "Armure"
+		ItemDefinition.Category.ACCESSORY:
+			return "Accessoire"
+		_:
+			return "Objet"
+
+
+func _format_stat_deltas(deltas: Dictionary) -> String:
+	if deltas.is_empty():
+		return "aucune statistique de base"
+	var parts: Array[String] = []
+	var stat_ids := deltas.keys()
+	stat_ids.sort()
+	for stat_id in stat_ids:
+		var value := float(deltas[stat_id])
+		if is_zero_approx(value):
+			continue
+		parts.append("%s %+.0f" % [str(stat_id), value])
+	return ", ".join(parts) if not parts.is_empty() else "aucune variation"
+
+
 func _show_fatal_error(message: String) -> void:
+	safe_margin.show()
+	reward_overlay.hide()
 	phase_title.text = "APRÈS-COMBAT INDISPONIBLE"
 	status_label.text = message
 	continue_button.disabled = true

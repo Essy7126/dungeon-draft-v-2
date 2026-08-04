@@ -9,4 +9,5 @@ class_name RunData
 extends Resource
 
 @export var run_name: String = "Run"
+@export var default_seed: int = 1337
 @export var rooms: Array[RoomData] = []

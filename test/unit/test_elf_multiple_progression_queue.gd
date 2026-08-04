@@ -46,7 +46,7 @@ func _prepare_elf(room_count: int = 2) -> CharacterRunState:
 
 func _raise_all_disciplines(state: CharacterRunState) -> void:
 	for discipline_id in DISCIPLINE_ORDER:
-		var result := state.add_discipline_xp(discipline_id, 3)
+		var result := state.add_discipline_xp(discipline_id, 5)
 		assert_eq(result.get("rank", 0), 2, str(discipline_id))
 
 
@@ -156,8 +156,8 @@ func test_legacy_screen_api_resolves_queue_but_victory_never_opens_it() -> void:
 	assert_eq(manager.current_room_index, 0)
 	assert_eq(requested_scenes, [GameManagerScript.POST_COMBAT_SCREEN_PATH])
 	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
-	assert_true(manager.confirm_post_combat_reward(
-		reward["reward_id"], reward["target_character_id"]
+	assert_true(manager.confirm_post_combat_equipment(
+		reward["item_id"], reward["compatible_character_ids"][0]
 	)["success"])
 	assert_true(manager.complete_post_combat_transition(
 		manager.get_current_combat_report().report_id

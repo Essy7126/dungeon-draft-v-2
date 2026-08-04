@@ -172,22 +172,22 @@ func test_chief_strike_applies_damage_exactly_once_through_spell_caster() -> voi
 
 
 func test_chief_rosters_keep_rooms_one_to_three_and_expand_room_four() -> void:
+	var expected := [
+		{&"skeleton_melee": 4},
+		{&"skeleton_melee": 3, &"skeleton_chief": 1},
+		{&"skeleton_melee": 4, &"skeleton_chief": 2},
+		{&"skeleton_chief": 3, &"skeleton_snow_centurion": 1},
+	]
 	for room_index in ACTIVE_ROOMS.size():
 		var room = load(ACTIVE_ROOMS[room_index])
 		var ids: Array = room.enemies.map(func(data): return data.unit_id)
-		if room_index == 1:
-			assert_eq(room.enemies.size(), 3, ACTIVE_ROOMS[room_index])
-			assert_eq(ids, [&"skeleton_chief", &"skeleton_melee", &"skeleton_ranged"])
-		elif room_index == 3:
-			assert_eq(room.enemies.size(), 6, ACTIVE_ROOMS[room_index])
-			assert_eq(ids.count(&"skeleton_chief"), 3, ACTIVE_ROOMS[room_index])
-			assert_eq(ids.count(&"skeleton_snow_centurion"), 2, ACTIVE_ROOMS[room_index])
-			assert_eq(ids.count(&"skeleton_ranged"), 1, ACTIVE_ROOMS[room_index])
-		else:
-			assert_eq(room.enemies.size(), 3, ACTIVE_ROOMS[room_index])
-			assert_eq(ids.count(&"skeleton_chief"), 0, ACTIVE_ROOMS[room_index])
-			assert_eq(ids.count(&"skeleton_melee"), 2, ACTIVE_ROOMS[room_index])
-			assert_eq(ids.count(&"skeleton_ranged"), 1, ACTIVE_ROOMS[room_index])
+		assert_eq(ids.size(), room.encounter_definition.get_initial_enemy_count())
+		for unit_id in [&"skeleton_melee", &"skeleton_chief", &"skeleton_snow_centurion", &"skeleton_ranged"]:
+			assert_eq(
+				ids.count(unit_id),
+				int((expected[room_index] as Dictionary).get(unit_id, 0)),
+				ACTIVE_ROOMS[room_index],
+			)
 
 
 func test_grid_clear_and_free_keep_visual_root_stable_and_release_viewport() -> void:

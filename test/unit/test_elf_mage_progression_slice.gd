@@ -61,7 +61,7 @@ func _make_fireball_field(hero: Unit, with_targets: bool = false):
 
 
 func _raise_mage_to_rank_two(state: CharacterRunState) -> void:
-	var result := state.add_discipline_xp(&"mage", 3)
+	var result := state.add_discipline_xp(&"mage", 5)
 	assert_eq(result["rank"], 2)
 	assert_eq(result["pending_rank_choices"], [2])
 
@@ -75,20 +75,20 @@ func test_discipline_progress_starts_at_rank_one_without_xp_or_choices() -> void
 	assert_true(progress.get_pending_rank_choices().is_empty())
 
 
-func test_discipline_progress_adds_xp_and_reaches_rank_two_at_three() -> void:
+func test_discipline_progress_adds_xp_and_reaches_rank_two_at_five() -> void:
 	var progress := _make_progress()
-	progress.add_xp(2)
-	assert_eq(progress.xp, 2)
+	progress.add_xp(4)
+	assert_eq(progress.xp, 4)
 	assert_eq(progress.rank, 1)
 	progress.add_xp(1)
-	assert_eq(progress.xp, 3)
+	assert_eq(progress.xp, 5)
 	assert_eq(progress.rank, 2)
 	assert_eq(progress.get_pending_rank_choices(), [2])
 
 
 func test_rank_threshold_and_pending_choice_are_created_only_once() -> void:
 	var progress := _make_progress()
-	assert_eq(progress.add_xp(3), [2])
+	assert_eq(progress.add_xp(5), [2])
 	assert_true(progress.add_xp(2).is_empty())
 	assert_eq(progress.rank, 2)
 	assert_eq(progress.get_pending_rank_choices(), [2])
@@ -96,7 +96,7 @@ func test_rank_threshold_and_pending_choice_are_created_only_once() -> void:
 
 func test_upgrade_selection_is_recorded_and_exclusive_for_the_rank() -> void:
 	var progress := _make_progress()
-	progress.add_xp(3)
+	progress.add_xp(5)
 	assert_not_null(progress.select_upgrade(INCANDESCENT_ID, 2))
 	assert_eq(progress.get_selected_upgrade_ids(), [INCANDESCENT_ID])
 	assert_true(progress.get_pending_rank_choices().is_empty())
@@ -106,7 +106,7 @@ func test_upgrade_selection_is_recorded_and_exclusive_for_the_rank() -> void:
 
 func test_progress_state_returns_defensive_collection_copies() -> void:
 	var progress := _make_progress()
-	progress.add_xp(3)
+	progress.add_xp(5)
 	var pending_copy := progress.get_pending_rank_choices()
 	pending_copy.clear()
 	assert_eq(progress.get_pending_rank_choices(), [2])
@@ -122,7 +122,7 @@ func test_progress_state_returns_defensive_collection_copies() -> void:
 func test_two_discipline_states_are_independent() -> void:
 	var first := _make_progress()
 	var second := _make_progress()
-	first.add_xp(3)
+	first.add_xp(5)
 	first.select_upgrade(INCANDESCENT_ID, 2)
 	assert_eq(first.rank, 2)
 	assert_eq(second.rank, 1)
@@ -134,7 +134,7 @@ func test_mage_rank_two_data_has_exactly_two_expected_choices() -> void:
 	var mage := _mage_data()
 	assert_eq(mage.ranks.size(), 5)
 	assert_eq([mage.ranks[0].rank, mage.ranks[0].required_total_xp], [1, 0])
-	assert_eq([mage.ranks[1].rank, mage.ranks[1].required_total_xp], [2, 3])
+	assert_eq([mage.ranks[1].rank, mage.ranks[1].required_total_xp], [2, 5])
 	assert_eq(
 		mage.ranks[1].choices.map(func(upgrade): return upgrade.upgrade_id),
 		[INCANDESCENT_ID, EMBERS_ID]
@@ -154,14 +154,15 @@ func test_successful_fireball_cast_grants_exactly_one_mage_xp() -> void:
 	assert_eq(state.get_discipline_progress(&"mage").xp, 1)
 
 
-func test_three_successful_fireballs_reach_mage_rank_two() -> void:
+func test_five_successful_fireballs_across_activations_reach_mage_rank_two() -> void:
 	var state := _prepare_elf()
 	var hero := state.unit
-	var battlefield = _make_fireball_field(hero)
-	for _cast_index in range(3):
+	for cast_index in range(5):
+		hero.activation_index = cast_index
+		var battlefield = _make_fireball_field(hero)
 		battlefield.caster.cast(hero, _elf_fireball(), Vector2i(3, 2))
 	var progress := state.get_discipline_progress(&"mage")
-	assert_eq(progress.xp, 3)
+	assert_eq(progress.xp, 5)
 	assert_eq(progress.rank, 2)
 	assert_eq(progress.get_pending_rank_choices(), [2])
 
@@ -250,7 +251,7 @@ func test_xp_rank_and_selection_persist_between_rooms_and_resource_resets() -> v
 	manager.current_room_index = 0
 	manager._go_to_next_room()
 	assert_same(manager.get_character_state(&"elf"), state)
-	assert_eq(state.get_discipline_progress(&"mage").xp, 3)
+	assert_eq(state.get_discipline_progress(&"mage").xp, 5)
 	assert_eq(state.get_discipline_progress(&"mage").rank, 2)
 	assert_eq(
 		state.get_discipline_progress(&"mage").get_selected_upgrade_ids(),
@@ -281,7 +282,7 @@ func test_incandescent_core_adds_three_damage_only_to_the_center_cell() -> void:
 	var center: Unit = battlefield.grid.get_unit(Vector2i(3, 2))
 	var peripheral: Unit = battlefield.grid.get_unit(Vector2i(3, 3))
 	battlefield.caster.cast(state.unit, fireball, Vector2i(3, 2))
-	assert_eq(center.current_hp, 1000 - original_damage - 3)
+	assert_eq(center.current_hp, 1000 - original_damage - 5)
 	assert_eq(peripheral.current_hp, 1000 - original_damage)
 	assert_eq(fireball.damage, original_damage, "la Resource Spell partagée reste immuable")
 
@@ -312,8 +313,9 @@ func test_incandescent_core_does_not_leak_to_another_caster_using_same_spell() -
 	battlefield.grid.place_unit(other, Vector2i(0, 1))
 	var enemy := Unit.new("Cible", 1, 1000)
 	battlefield.grid.place_unit(enemy, Vector2i(3, 1))
-	battlefield.caster.cast(other, _elf_fireball(), Vector2i(3, 1))
-	assert_eq(enemy.current_hp, 600)
+	var fireball := _elf_fireball()
+	battlefield.caster.cast(other, fireball, Vector2i(3, 1))
+	assert_eq(enemy.current_hp, 1000 - fireball.damage)
 
 
 func test_persistent_embers_extends_existing_lava_by_one_turn() -> void:
@@ -403,8 +405,8 @@ func test_victory_never_opens_post_combat_progression() -> void:
 	assert_eq(manager.current_room_index, 0)
 	assert_eq(requested_scenes[-1], GameManagerScript.POST_COMBAT_SCREEN_PATH)
 	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
-	assert_true(manager.confirm_post_combat_reward(
-		reward["reward_id"], reward["target_character_id"]
+	assert_true(manager.confirm_post_combat_equipment(
+		reward["item_id"], reward["compatible_character_ids"][0]
 	)["success"])
 	assert_true(manager.complete_post_combat_transition(
 		manager.get_current_combat_report().report_id
@@ -436,10 +438,7 @@ func test_last_room_requires_in_combat_resolution_before_run_result() -> void:
 	assert_true(manager.choose_progression_upgrade(&"elf", &"mage", 2, INCANDESCENT_ID))
 	manager.on_battle_won()
 	assert_eq(requested_scenes[-1], GameManagerScript.POST_COMBAT_SCREEN_PATH)
-	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
-	assert_true(manager.confirm_post_combat_reward(
-		reward["reward_id"], reward["target_character_id"]
-	)["success"])
+	assert_true(manager.get_post_combat_reward_options().is_empty())
 	assert_true(manager.complete_post_combat_transition(
 		manager.get_current_combat_report().report_id
 	))

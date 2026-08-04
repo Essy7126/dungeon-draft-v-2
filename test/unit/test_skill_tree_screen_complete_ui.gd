@@ -56,7 +56,7 @@ func test_rank_five_displays_all_nineteen_nodes_and_excluded_state() -> void:
 	var state := _state(HERO_PATHS[1])
 	var discipline := state.get_disciplines()[0]
 	var progress := state.get_discipline_progress(discipline.discipline_id)
-	progress.add_xp(18)
+	progress.add_xp(30)
 	var r2a := discipline.ranks[1].choices[0] as SkillTreeNodeData
 	var r3a := discipline.ranks[2].choices[0] as SkillTreeNodeData
 	var r4a := discipline.ranks[3].choices[0] as SkillTreeNodeData
@@ -97,7 +97,7 @@ func test_rank_five_displays_all_nineteen_nodes_and_excluded_state() -> void:
 
 func test_responsive_layout_stays_inside_720p_1080p_and_1440p() -> void:
 	var state := _state(HERO_PATHS[2])
-	state.get_discipline_progress(state.get_disciplines()[0].discipline_id).add_xp(18)
+	state.get_discipline_progress(state.get_disciplines()[0].discipline_id).add_xp(30)
 	var screen := _screen()
 	assert_true(screen.open_for_state(
 		state,

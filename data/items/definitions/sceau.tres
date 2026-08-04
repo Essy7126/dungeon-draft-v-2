@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/sceau.png" id="3_icon"]
+
+[sub_resource type="Resource" id="Stat_armor"]
+script = ExtResource("2_stat")
+stat_id = &"armure"
+value = 20.0
+
+[sub_resource type="Resource" id="Stat_magic"]
+script = ExtResource("2_stat")
+stat_id = &"resist_magique"
+value = 20.0
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"sceau"
+display_name = "Sceau"
+description = "+20 armure et +20 résistance magique."
+icon = ExtResource("3_icon")
+card_texture = ExtResource("3_icon")
+rarity = &"rare"
+tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
+category = 2
+equipment_slot = 2
+stat_modifiers = Array[ItemStatModifierData]([SubResource("Stat_armor"), SubResource("Stat_magic")])

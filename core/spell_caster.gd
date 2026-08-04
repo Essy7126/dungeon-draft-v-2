@@ -8,6 +8,7 @@ const LogDefinitions = preload("res://debug/log_definitions.gd")
 var _grid: GridData
 var _pathfinder: Pathfinder
 var _terrain: TerrainEffects
+var _encounter_runtime_state: EncounterRuntimeState = null
 
 const CAT_SPELL: LogDefinitions.LogCategory = LogDefinitions.LogCategory.SPELL
 
@@ -15,6 +16,10 @@ func _init(grid: GridData, pathfinder: Pathfinder, terrain: TerrainEffects) -> v
 	_grid = grid
 	_pathfinder = pathfinder
 	_terrain = terrain
+
+
+func set_encounter_runtime_state(state: EncounterRuntimeState) -> void:
+	_encounter_runtime_state = state
 
 func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 	var result: Array = []
@@ -339,11 +344,19 @@ func _special_condition_failure(caster: Unit, spell: Spell) -> StringName:
 		return &""
 	if spell.summon_unit_data == null:
 		return &"summon_data"
+	if _encounter_runtime_state != null:
+		var encounter_failure := _encounter_runtime_state.can_prepare_summon(
+			caster,
+			spell,
+			_grid.count_living_in_team(caster.team),
+		)
+		if encounter_failure != &"":
+			return encounter_failure
 	if spell.condition_hp_at_or_below >= 0 \
 			and caster.current_hp > spell.condition_hp_at_or_below:
 		return &"hp_condition"
-	if spell.summon_max_living_team > 0 \
-			and _grid.count_living_in_team(caster.team) >= spell.summon_max_living_team:
+	if _living_summon_cap(spell) > 0 \
+			and _grid.count_living_in_team(caster.team) >= _living_summon_cap(spell):
 		return &"team_limit"
 	if spell.requires_absent_unit_id != &"" and (
 		_grid.has_living_unit_id(caster.team, spell.requires_absent_unit_id)
@@ -356,6 +369,8 @@ func _special_condition_failure(caster: Unit, spell: Spell) -> StringName:
 func _prepare_delayed_resolution(ctx: CastContext) -> void:
 	var caster: Unit = ctx.caster
 	var spell: Spell = ctx.spell
+	if spell.is_summon() and _encounter_runtime_state != null:
+		_encounter_runtime_state.commit_prepared_summon(caster, spell)
 	caster.pending_ability = {
 		"spell": spell,
 		"cell": ctx.cell,
@@ -396,6 +411,8 @@ func resolve_pending_activation(
 	result["had_pending"] = true
 	var pending := caster.pending_ability.duplicate()
 	caster.pending_ability.clear()
+	if _encounter_runtime_state != null:
+		_encounter_runtime_state.clear_pending(caster)
 	EventBus.telegraph_cleared.emit(caster)
 	var spell := pending.get("spell") as Spell
 	var cell: Vector2i = pending.get("cell", Vector2i(-1, -1))
@@ -431,8 +448,8 @@ func resolve_pending_activation(
 	var failure := &""
 	if not _grid.is_valid(cell) or not _grid.is_walkable(cell) or _grid.has_unit(cell):
 		failure = &"cell_blocked"
-	elif spell.summon_max_living_team > 0 \
-			and _grid.count_living_in_team(caster.team) >= spell.summon_max_living_team:
+	elif _living_summon_cap(spell) > 0 \
+			and _grid.count_living_in_team(caster.team) >= _living_summon_cap(spell):
 		failure = &"team_limit"
 	elif spell.requires_absent_unit_id != &"" \
 			and _grid.has_living_unit_id(caster.team, spell.requires_absent_unit_id):
@@ -472,6 +489,34 @@ func resolve_pending_activation(
 	)
 	EventBus.pending_ability_resolved.emit(caster, spell, result)
 	return result
+
+
+func cancel_pending_for_unit(caster: Unit, reason: StringName = &"cancelled") -> void:
+	if caster == null:
+		return
+	if _encounter_runtime_state != null:
+		_encounter_runtime_state.clear_pending(caster)
+	if caster.pending_ability.is_empty():
+		return
+	var pending := caster.pending_ability.duplicate()
+	var spell := pending.get("spell") as Spell
+	caster.pending_ability.clear()
+	EventBus.pending_ability_cancelled.emit(caster, pending, reason)
+	if spell != null and spell.is_summon():
+		EventBus.summon_cancelled.emit(
+			caster,
+			spell,
+			pending.get("cell", Vector2i(-1, -1)),
+			reason,
+		)
+	EventBus.telegraph_cleared.emit(caster)
+
+
+func _living_summon_cap(spell: Spell) -> int:
+	if _encounter_runtime_state != null \
+			and _encounter_runtime_state.definition != null:
+		return _encounter_runtime_state.definition.living_enemy_cap
+	return spell.summon_max_living_team if spell != null else 0
 
 # ============================================================
 # LE PIPELINE DE CAST
@@ -537,6 +582,7 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 	_resolve_targets(ctx)
 	if ctx.spell.is_delayed():
 		_prepare_delayed_resolution(ctx)
+		_finalize_effectiveness(ctx)
 		EventBus.spell_cast.emit(ctx.caster, ctx.spell, ctx.report)
 		return ctx.report
 	_run_hook(ctx, "on_area_resolved")
@@ -552,6 +598,7 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 
 	_log_cast_resolution(ctx)
 	_run_hook(ctx, "on_cast_complete")
+	_finalize_effectiveness(ctx)
 
 	EventBus.spell_cast.emit(ctx.caster, ctx.spell, ctx.report)
 	return ctx.report
@@ -565,6 +612,9 @@ func _gather_modifiers(caster: Unit, spell: Spell) -> Array:
 				mods.append(m)
 	if caster != null:
 		for m in caster.get_progression_spell_modifiers():
+			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
+				mods.append(m)
+		for m in caster.get_equipment_spell_modifiers():
 			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
 				mods.append(m)
 	return mods
@@ -595,10 +645,20 @@ func _resolve_costs(ctx: CastContext) -> bool:
 # cellules de la zone d'effet. Les lectures tactiques (allié adjacent, angle)
 # se font ICI, AVANT tout effet : c'est l'état du terrain au moment du cast.
 func _resolve_targets(ctx: CastContext) -> void:
+	ctx.state_before_by_unit.clear()
+	for unit_value in _grid.get_units():
+		var snapshot_unit := unit_value as Unit
+		if snapshot_unit != null:
+			ctx.state_before_by_unit[snapshot_unit] = _snapshot_unit_effect_state(
+				snapshot_unit
+			)
 	ctx.report = {
 		"caster": ctx.caster, "spell": ctx.spell, "cell": ctx.cell,
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
 		"healing_by_unit": {},
+		"hp_damage_total": 0, "shield_absorbed_total": 0,
+		"healing_total": 0, "shield_increase_total": 0,
+		"status_changed_units": [], "status_change_count": 0,
 		"controlled_enemies": [], "drained_units": [], "terrain_changed": [],
 		"crits": [], "dodges": [], "ally_adjacent_to_caster": _has_ally_adjacent(ctx.caster),
 		"angle_advantage": _has_angle_advantage(ctx.caster, ctx.cell), "pushed": false,
@@ -630,6 +690,8 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 	var affected := false
 	var cell_bonus := int(ctx.damage_bonus_by_cell.get(target_cell, 0))
 	if spell.deals_damage() or cell_bonus != 0:
+		var hp_before_damage: int = target.current_hp
+		var shield_before_damage: int = target.current_shield
 		var base_dmg := spell.damage + cell_bonus
 		var has_bonus_status := _has_status(target, spell.bonus_damage_status_id)
 		if spell.bonus_requires_linked_status_source:
@@ -646,7 +708,12 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 				report["crits"].append(target)
 			if damage_result.dodged:
 				report["dodges"].append(target)
-			elif damage_result.amount > 0 and target.team != caster.team and not report["damaged_enemies"].has(target):
+			var hp_loss := maxi(0, hp_before_damage - target.current_hp)
+			var shield_loss := maxi(0, shield_before_damage - target.current_shield)
+			report["hp_damage_total"] += hp_loss
+			report["shield_absorbed_total"] += shield_loss
+			if hp_loss + shield_loss > 0 and target.team != caster.team \
+					and not report["damaged_enemies"].has(target):
 				report["damaged_enemies"].append(target)
 		affected = true
 	if spell.is_healing():
@@ -658,10 +725,17 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 				heal_amount = maxi(0, int(round(float(heal_amount) * spell.heal_bonus_multiplier)))
 		target.heal(heal_amount, ctx.caster)
 		report["healing_by_unit"][target] = target.current_hp - before_hp
+		report["healing_total"] += maxi(0, target.current_hp - before_hp)
 		if target.current_hp > before_hp and not report["healed_units"].has(target):
 			report["healed_units"].append(target)
 		affected = true
 	if spell.applied_status != null:
+		var status_source := caster if spell.status_source_scoped else null
+		var status_before := _status_state_signature(
+			target,
+			spell.applied_status.get_effective_status_id(),
+			status_source,
+		)
 		if spell.replaces_same_source_status:
 			for unit_value in _grid.get_units():
 				var existing_unit := unit_value as Unit
@@ -673,13 +747,38 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 					)
 		target.apply_status(
 			spell.applied_status,
-			caster if spell.status_source_scoped else null
+			status_source
+		)
+		_register_status_change(
+			report,
+			target,
+			status_before,
+			_status_state_signature(
+				target,
+				spell.applied_status.get_effective_status_id(),
+				status_source,
+			),
 		)
 		affected = true
 	for extra_status_value in ctx.additional_statuses_by_unit.get(target, []):
 		var extra_status := extra_status_value as StatusData
 		if extra_status != null:
+			var extra_before := _status_state_signature(
+				target,
+				extra_status.get_effective_status_id(),
+				null,
+			)
 			target.apply_status(extra_status)
+			_register_status_change(
+				report,
+				target,
+				extra_before,
+				_status_state_signature(
+					target,
+					extra_status.get_effective_status_id(),
+					null,
+				),
+			)
 			affected = true
 	if spell.forces_taunt and target.team != caster.team:
 		target.apply_taunt(caster, spell.taunt_duration)
@@ -687,11 +786,13 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 			report["controlled_enemies"].append(target)
 		affected = true
 	if target.team != caster.team and spell.ap_drain > 0:
+		var before_ap_modifier: int = target.next_turn_ap_modifier
 		if spell.ap_drain > 0:
 			# Drain de PA : ampute le budget du PROCHAIN tour de la cible.
 			target.next_turn_ap_modifier -= spell.ap_drain
 			DebugLogger.debug(CAT_SPELL, "%s draine %d PA a %s (prochain tour)" % [caster.unit_name, spell.ap_drain, target.unit_name])
-		if not report["drained_units"].has(target):
+		if target.next_turn_ap_modifier != before_ap_modifier \
+				and not report["drained_units"].has(target):
 			report["drained_units"].append(target)
 		affected = true
 	var raw_shield := spell.shield_grant \
@@ -699,6 +800,7 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 	if raw_shield > 0 and target.team == caster.team:
 		var before_shield: int = target.current_shield
 		target.add_shield(raw_shield, ctx.caster)
+		report["shield_increase_total"] += maxi(0, target.current_shield - before_shield)
 		if target.current_shield > before_shield and not report["shielded_units"].has(target):
 			report["shielded_units"].append(target)
 		affected = true
@@ -832,6 +934,156 @@ func _resolve_movement(ctx: CastContext) -> void:
 			report["affected_units"].append(push_target)
 
 # --- Étape 5 : journalisation du résultat. ---
+func _status_state_signature(
+		unit: Unit,
+		status_id: StringName,
+		source: Unit
+	) -> Dictionary:
+	if unit == null or status_id == &"":
+		return {}
+	for entry_value in unit.get_active_statuses():
+		var entry := entry_value as Dictionary
+		var data := entry.get("data") as StatusData
+		if data == null or data.get_effective_status_id() != status_id \
+				or (source != null and entry.get("source") != source):
+			continue
+		return {
+			"remaining": int(entry.get("remaining", 0)),
+			"charges": int(entry.get("charges", 0)),
+			"damage_per_turn": data.damage_per_turn,
+			"heal_per_turn": data.heal_per_turn,
+			"mp_reduction": data.mp_reduction,
+			"ap_reduction": data.ap_reduction,
+			"outgoing_damage_modifier": data.outgoing_damage_modifier,
+			"stat_modifiers": data.stat_modifiers.duplicate(true),
+		}
+	return {}
+
+
+func _register_status_change(
+		report: Dictionary,
+		unit: Unit,
+		before: Dictionary,
+		after: Dictionary
+	) -> void:
+	if before == after or after.is_empty():
+		return
+	report["status_change_count"] = int(report.get("status_change_count", 0)) + 1
+	var changed_units: Array = report.get("status_changed_units", [])
+	if unit != null and not changed_units.has(unit):
+		changed_units.append(unit)
+	report["status_changed_units"] = changed_units
+
+
+func _snapshot_unit_effect_state(unit: Unit) -> Dictionary:
+	var statuses: Array[Dictionary] = []
+	for entry_value in unit.get_active_statuses():
+		var entry := entry_value as Dictionary
+		var data := entry.get("data") as StatusData
+		var source := entry.get("source") as Unit
+		if data == null:
+			continue
+		statuses.append({
+			"id": data.get_effective_status_id(),
+			"source": source.get_runtime_stable_id() if source != null else "",
+			"remaining": int(entry.get("remaining", 0)),
+			"charges": int(entry.get("charges", 0)),
+			"damage_per_turn": data.damage_per_turn,
+			"heal_per_turn": data.heal_per_turn,
+			"mp_reduction": data.mp_reduction,
+			"ap_reduction": data.ap_reduction,
+			"outgoing_damage_modifier": data.outgoing_damage_modifier,
+			"stat_modifiers": data.stat_modifiers.duplicate(true),
+		})
+	statuses.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var key_a := "%s:%s" % [str(a.id), str(a.source)]
+		var key_b := "%s:%s" % [str(b.id), str(b.source)]
+		return key_a < key_b
+	)
+	return {
+		"hp": unit.current_hp,
+		"shield": unit.current_shield,
+		"position": unit.grid_pos,
+		"alive": unit.is_alive,
+		"statuses": statuses,
+		"next_turn_ap_modifier": unit.next_turn_ap_modifier,
+		"next_turn_mp_modifier": (
+			unit.next_turn_mp_bonus - unit.next_turn_mp_penalty
+		),
+		"taunt_source": (
+			unit.taunt_source.get_runtime_stable_id()
+			if unit.taunt_source is Unit else ""
+		),
+		"taunt_turns": unit.taunt_turns,
+	}
+
+
+func _finalize_effectiveness(ctx: CastContext) -> void:
+	var report := ctx.report
+	var reasons: Array[StringName] = []
+	if int(report.get("hp_damage_total", 0)) > 0:
+		reasons.append(&"hp_damage")
+	if int(report.get("shield_absorbed_total", 0)) > 0:
+		reasons.append(&"shield_absorbed")
+	if int(report.get("healing_total", 0)) > 0 \
+			or not (report.get("healed_units", []) as Array).is_empty():
+		reasons.append(&"healing")
+	if int(report.get("shield_increase_total", 0)) > 0 \
+			or not (report.get("shielded_units", []) as Array).is_empty():
+		reasons.append(&"shield_increased")
+	if int(report.get("status_change_count", 0)) > 0:
+		reasons.append(&"status_changed")
+	if not (report.get("controlled_enemies", []) as Array).is_empty():
+		reasons.append(&"control")
+	if not (report.get("drained_units", []) as Array).is_empty():
+		reasons.append(&"resource_changed")
+	if not (report.get("terrain_changed", []) as Array).is_empty():
+		reasons.append(&"terrain_changed")
+	if not ctx.movement.is_empty():
+		reasons.append(&"movement")
+	if bool(report.get("telegraphed", false)):
+		reasons.append(&"tactical_state_prepared")
+	for unit_value in ctx.state_before_by_unit:
+		var unit := unit_value as Unit
+		if unit == null:
+			continue
+		var before := ctx.state_before_by_unit[unit] as Dictionary
+		var after := _snapshot_unit_effect_state(unit)
+		if int(after.get("hp", 0)) < int(before.get("hp", 0)) \
+				and not reasons.has(&"hp_damage"):
+			reasons.append(&"hp_damage")
+		elif int(after.get("hp", 0)) > int(before.get("hp", 0)) \
+				and not reasons.has(&"healing"):
+			reasons.append(&"healing")
+		if int(after.get("shield", 0)) < int(before.get("shield", 0)) \
+				and not reasons.has(&"shield_absorbed"):
+			reasons.append(&"shield_absorbed")
+		elif int(after.get("shield", 0)) > int(before.get("shield", 0)) \
+				and not reasons.has(&"shield_increased"):
+			reasons.append(&"shield_increased")
+		if after.get("statuses", []) != before.get("statuses", []) \
+				and not reasons.has(&"status_changed"):
+			reasons.append(&"status_changed")
+		if after.get("position") != before.get("position") \
+				and not reasons.has(&"movement"):
+			reasons.append(&"movement")
+		if (after.get("next_turn_ap_modifier", 0) \
+				!= before.get("next_turn_ap_modifier", 0) \
+				or after.get("next_turn_mp_modifier", 0) \
+				!= before.get("next_turn_mp_modifier", 0)) \
+				and not reasons.has(&"resource_changed"):
+			reasons.append(&"resource_changed")
+		if (after.get("taunt_source", "") != before.get("taunt_source", "") \
+				or after.get("taunt_turns", 0) != before.get("taunt_turns", 0)) \
+				and not reasons.has(&"control"):
+			reasons.append(&"control")
+	report["effect_reasons"] = reasons
+	report["effective_cast"] = not reasons.is_empty()
+	report["did_change_combat_state"] = report["effective_cast"]
+	report["movement_count"] = ctx.movement.size()
+	ctx.report = report
+
+
 func _log_cast_resolution(ctx: CastContext) -> void:
 	var report: Dictionary = ctx.report
 	var spell: Spell = ctx.spell
@@ -845,5 +1097,10 @@ func _failed_report(caster: Unit, spell: Spell, cell: Vector2i, reason: String) 
 		"caster": caster, "spell": spell, "cell": cell, "failed": true, "reason": reason,
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
 		"healing_by_unit": {},
+		"hp_damage_total": 0, "shield_absorbed_total": 0,
+		"healing_total": 0, "shield_increase_total": 0,
+		"status_changed_units": [], "status_change_count": 0,
 		"controlled_enemies": [], "drained_units": [], "terrain_changed": [], "crits": [], "dodges": [],
+		"effective_cast": false, "did_change_combat_state": false,
+		"effect_reasons": [], "movement_count": 0,
 	}

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tools/arena_map_editor/capture_arena_map_editor.gd" id="1_capture"]
+
+[node name="ArenaMapEditorCaptureRunner" type="Node"]
+script = ExtResource("1_capture")

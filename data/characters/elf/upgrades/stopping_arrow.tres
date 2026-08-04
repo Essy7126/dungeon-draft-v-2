@@ -4,12 +4,14 @@
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/stopping_arrow_movement.tres" id="3_movement"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/stopping_arrow_collision.tres" id="4_collision"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/fleche_arret.jpg" id="5_card"]
 
 [resource]
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_stopping_arrow"
 display_name = "Flèche d’arrêt"
 description = "La cible perd 2 PM au prochain tour et subit 4 dégâts si sa poussée rencontre un obstacle, une limite ou une unité."
+card_texture = ExtResource("5_card")
 discipline_id = &"archer"
 rank = 5
 target_spell_id = &"elf_precise_shot"

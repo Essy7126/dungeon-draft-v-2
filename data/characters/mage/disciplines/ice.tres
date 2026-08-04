@@ -30,7 +30,7 @@ spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_vdqhd")])
 
 [sub_resource type="Resource" id="Resource_jtxf6"]
 script = ExtResource("5_ivfuc")
-amount = 3
+amount = 5
 modifier_name = "Gel mordant"
 target_spell_id = &"mage_ice_wall"
 
@@ -39,7 +39,7 @@ script = ExtResource("3_mn88o")
 excluded_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
 upgrade_id = &"mage_cryomancy_gel_mordant"
 display_name = "Gel mordant"
-description = "Inflige 3 dégâts aux ennemis présents lors de la création."
+description = "Inflige 5 dégâts aux ennemis présents lors de la création."
 discipline_id = &"mage_cryomancy"
 rank = 2
 target_spell_id = &"mage_ice_wall"
@@ -48,7 +48,7 @@ spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_jtxf6")])
 [sub_resource type="Resource" id="Resource_rvbww"]
 script = ExtResource("1_2rv50")
 rank = 2
-required_total_xp = 3
+required_total_xp = 5
 choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_aqsd7"), SubResource("Resource_44si5")])
 
 [sub_resource type="Resource" id="Resource_k63xi"]
@@ -134,7 +134,7 @@ spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_mshnu")])
 [sub_resource type="Resource" id="Resource_78g6c"]
 script = ExtResource("1_2rv50")
 rank = 3
-required_total_xp = 7
+required_total_xp = 12
 choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_e4x02"), SubResource("Resource_ib0m5"), SubResource("Resource_n836h"), SubResource("Resource_qmyyn")])
 
 [sub_resource type="Resource" id="Resource_e8hpe"]
@@ -297,7 +297,7 @@ spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_v7chi")])
 [sub_resource type="Resource" id="Resource_11qqs"]
 script = ExtResource("1_2rv50")
 rank = 4
-required_total_xp = 12
+required_total_xp = 21
 choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_wjemf"), SubResource("Resource_s0nyk"), SubResource("Resource_6f558"), SubResource("Resource_y32w0"), SubResource("Resource_3mk34"), SubResource("Resource_piuc8"), SubResource("Resource_a67ar"), SubResource("Resource_mkwd3")])
 
 [sub_resource type="Resource" id="Resource_7kmfk"]
@@ -411,7 +411,7 @@ spell_modifiers = Array[ExtResource("4_h0wlg")]([SubResource("Resource_mfapd"), 
 [sub_resource type="Resource" id="Resource_xod31"]
 script = ExtResource("1_2rv50")
 rank = 5
-required_total_xp = 18
+required_total_xp = 30
 choices = Array[ExtResource("2_fi8q8")]([SubResource("Resource_ekb7c"), SubResource("Resource_ctlk0"), SubResource("Resource_tfoaa"), SubResource("Resource_co4jm")])
 
 [resource]

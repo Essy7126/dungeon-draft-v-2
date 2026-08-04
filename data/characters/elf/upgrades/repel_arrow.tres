@@ -3,12 +3,14 @@
 [ext_resource type="Script" uid="uid://dfwja3hug8lax" path="res://data/characters/skill_tree_node_data.gd" id="1_upgrade"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/repel_arrow.tres" id="3_modifier"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/trait_de_siege.png" id="4_card"]
 
 [resource]
 script = ExtResource("1_upgrade")
 upgrade_id = &"elf_archer_repel_arrow"
 display_name = "Flèche de recul"
 description = "Tir précis repousse sa cible d’exactement une case, si la grille le permet."
+card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 2
 target_spell_id = &"elf_precise_shot"

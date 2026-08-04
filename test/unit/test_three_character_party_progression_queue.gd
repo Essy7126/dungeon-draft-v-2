@@ -164,8 +164,8 @@ func test_legacy_screen_api_keeps_owner_order_without_post_combat_routing() -> v
 	manager.on_battle_won()
 	assert_eq(requested_scenes, [GameManagerScript.POST_COMBAT_SCREEN_PATH])
 	var reward: Dictionary = manager.get_post_combat_reward_options()[0]
-	assert_true(manager.confirm_post_combat_reward(
-		reward["reward_id"], reward["target_character_id"]
+	assert_true(manager.confirm_post_combat_equipment(
+		reward["item_id"], reward["compatible_character_ids"][0]
 	)["success"])
 	assert_true(manager.complete_post_combat_transition(
 		manager.get_current_combat_report().report_id

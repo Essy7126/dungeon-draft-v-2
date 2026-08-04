@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/arc_maudit.png" id="4_icon"]
+
+[sub_resource type="Resource" id="Stat_hp"]
+script = ExtResource("2_stat")
+stat_id = &"max_hp"
+value = -10.0
+
+[sub_resource type="Resource" id="Spell_damage"]
+script = ExtResource("3_spell")
+modifier_name = "Malédiction offensive"
+damage_percent = 0.2
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"arc_maudit"
+display_name = "Arc maudit"
+description = "+20 % de dégâts des sorts offensifs. Contrepartie : -10 PV maximum."
+icon = ExtResource("4_icon")
+card_texture = ExtResource("4_icon")
+reward_fx_profile = &"necrotic"
+rarity = &"rare"
+tags = Array[StringName]([&"weapon", &"first_run_equipment_reward"])
+category = 0
+equipment_slot = 0
+compatible_character_ids = Array[StringName]([&"elf"])
+stat_modifiers = Array[ItemStatModifierData]([SubResource("Stat_hp")])
+spell_modifiers = Array[SpellModifier]([SubResource("Spell_damage")])

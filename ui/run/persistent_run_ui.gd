@@ -22,6 +22,7 @@ enum RunUIMode {
 @onready var evolution_emblem: TextureRect = %EvolutionEmblem
 @onready var evolution_title: Label = %EvolutionTitle
 @onready var evolution_discipline: Label = %EvolutionDiscipline
+@onready var skill_evolution_overlay: SkillEvolutionOverlay = %SkillEvolutionOverlay
 
 @export var evolution_feedback_duration := 0.38
 
@@ -32,6 +33,12 @@ var _combat_controls_before_inventory := false
 var _tree_was_paused_before_menu := false
 var _owns_tree_pause := false
 var _evolution_screen_active := false
+var _tree_was_paused_before_evolution := false
+var _owns_evolution_tree_pause := false
+var _evolution_hud_was_visible := false
+var _active_evolution_request: EvolutionRequest = null
+var _active_evolution_request_id: StringName = &""
+var _active_evolution_upgrade_id: StringName = &""
 
 
 func _ready() -> void:
@@ -51,6 +58,12 @@ func _ready() -> void:
 	skill_tree_screen.evolution_choice_resolved.connect(
 		_on_skill_tree_evolution_resolved
 	)
+	skill_evolution_overlay.confirmation_requested.connect(
+		_on_skill_evolution_confirmation_requested
+	)
+	skill_evolution_overlay.confirmation_finished.connect(
+		_on_skill_evolution_confirmation_finished
+	)
 	pause_menu.resume_requested.connect(close_pause_menu)
 	pause_menu.equipment_requested.connect(_on_pause_equipment_requested)
 	pause_menu.set_action_available(&"equipment", true)
@@ -62,6 +75,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_close_evolution_overlay_for_cleanup()
 	close_inventory_screen()
 	close_pause_menu()
 
@@ -99,6 +113,8 @@ func set_ui_mode(mode: RunUIMode) -> void:
 	if mode == RunUIMode.TRANSITION or not GameManager.run_active:
 		close_inventory_screen()
 		close_pause_menu()
+	if mode != RunUIMode.COMBAT and _evolution_screen_active:
+		_close_evolution_overlay_for_cleanup()
 	_ui_mode = mode
 	if (
 		mode != RunUIMode.COMBAT
@@ -135,6 +151,10 @@ func get_skill_tree_status_button() -> SkillTreeStatusButton:
 
 func get_skill_tree_screen() -> SkillTreeScreen:
 	return skill_tree_screen
+
+
+func get_skill_evolution_overlay() -> SkillEvolutionOverlay:
+	return skill_evolution_overlay
 
 
 func get_pause_menu() -> DarkPauseMenu:
@@ -329,20 +349,32 @@ func open_evolution_request(request: EvolutionRequest) -> bool:
 		return false
 	_evolution_screen_active = true
 	_combat_controls_before_skill_tree = false
+	_active_evolution_request = request
+	_active_evolution_request_id = request.request_id
+	_active_evolution_upgrade_id = &""
 	if is_instance_valid(combat_hud):
 		combat_hud.set_player_controls_enabled(false)
+	_begin_evolution_pause()
 	_show_evolution_feedback(request)
 	var tree := get_tree()
 	if tree == null:
-		_evolution_screen_active = false
+		_close_evolution_overlay_for_cleanup()
 		return false
 	await tree.create_timer(maxf(evolution_feedback_duration, 0.001)).timeout
 	if not is_inside_tree() or _ui_mode != RunUIMode.COMBAT:
-		_evolution_screen_active = false
+		_close_evolution_overlay_for_cleanup()
 		return false
 	evolution_feedback.hide()
-	if not skill_tree_screen.open_for_evolution(request, GameManager):
-		_evolution_screen_active = false
+	var choice := GameManager.get_progression_choice_for_request(request)
+	if choice.is_empty() or (choice.get("choices", []) as Array).size() != 2:
+		_close_evolution_overlay_for_cleanup()
+		return false
+	if not skill_evolution_overlay.present(
+		request,
+		choice,
+		skill_evolution_overlay.reduced_motion,
+		):
+		_close_evolution_overlay_for_cleanup()
 		return false
 	return true
 
@@ -384,9 +416,108 @@ func _on_skill_tree_evolution_resolved(
 		upgrade_id: StringName
 	) -> void:
 	_evolution_screen_active = false
+	_active_evolution_request = null
+	_active_evolution_request_id = &""
+	_active_evolution_upgrade_id = &""
 	if is_instance_valid(evolution_feedback):
 		evolution_feedback.hide()
+	_restore_evolution_pause()
 	evolution_choice_resolved.emit(request_id, upgrade_id)
+
+
+func _on_skill_evolution_confirmation_requested(
+		request_id: StringName,
+		upgrade_id: StringName
+	) -> void:
+	if not _evolution_screen_active \
+			or request_id != _active_evolution_request_id:
+		skill_evolution_overlay.resolve_confirmation(
+			false,
+			"Cette évolution n’est plus active.",
+		)
+		return
+	var choice := GameManager.get_progression_choice_for_request(
+		_active_evolution_request
+	)
+	var upgrade_is_available := false
+	for value in choice.get("choices", []) as Array:
+		var upgrade := value as SkillUpgradeData
+		if upgrade != null and upgrade.upgrade_id == upgrade_id:
+			upgrade_is_available = true
+			break
+	if choice.is_empty() \
+			or StringName(choice.get("character_id", &"")) == &"" \
+			or not upgrade_is_available:
+		skill_evolution_overlay.resolve_confirmation(
+			false,
+			"Ce choix ne correspond plus à la branche active.",
+		)
+		return
+	var accepted := GameManager.choose_progression_upgrade(
+		StringName(choice.get("character_id", &"")),
+		StringName(choice.get("discipline_id", &"")),
+		int(choice.get("rank", 0)),
+		upgrade_id,
+	)
+	if not accepted:
+		skill_evolution_overlay.resolve_confirmation(
+			false,
+			"Les prérequis de cette évolution ne sont plus valides.",
+		)
+		return
+	_active_evolution_upgrade_id = upgrade_id
+	skill_evolution_overlay.resolve_confirmation(true)
+
+
+func _on_skill_evolution_confirmation_finished(
+		request_id: StringName,
+		upgrade_id: StringName
+	) -> void:
+	if not _evolution_screen_active \
+			or request_id != _active_evolution_request_id \
+			or upgrade_id != _active_evolution_upgrade_id:
+		return
+	skill_evolution_overlay.close_overlay()
+	_evolution_screen_active = false
+	_active_evolution_request = null
+	_active_evolution_request_id = &""
+	_active_evolution_upgrade_id = &""
+	_restore_evolution_pause()
+	evolution_choice_resolved.emit(request_id, upgrade_id)
+
+
+func _begin_evolution_pause() -> void:
+	var tree := get_tree()
+	_tree_was_paused_before_evolution = tree.paused if tree != null else false
+	_owns_evolution_tree_pause = tree != null
+	_evolution_hud_was_visible = combat_hud.visible if is_instance_valid(combat_hud) else false
+	if is_instance_valid(combat_hud):
+		combat_hud.hide()
+	if tree != null:
+		tree.paused = true
+
+
+func _restore_evolution_pause() -> void:
+	var tree := get_tree()
+	if _owns_evolution_tree_pause and tree != null:
+		tree.paused = _tree_was_paused_before_evolution
+	_owns_evolution_tree_pause = false
+	_tree_was_paused_before_evolution = false
+	if is_instance_valid(combat_hud):
+		combat_hud.visible = _evolution_hud_was_visible
+	_evolution_hud_was_visible = false
+
+
+func _close_evolution_overlay_for_cleanup() -> void:
+	if is_instance_valid(skill_evolution_overlay):
+		skill_evolution_overlay.close_overlay()
+	if is_instance_valid(evolution_feedback):
+		evolution_feedback.hide()
+	_evolution_screen_active = false
+	_active_evolution_request = null
+	_active_evolution_request_id = &""
+	_active_evolution_upgrade_id = &""
+	_restore_evolution_pause()
 
 
 func _on_pause_return_to_title_requested(_reason: StringName) -> void:

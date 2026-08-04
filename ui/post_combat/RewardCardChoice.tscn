@@ -1,0 +1,205 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://ui/post_combat/reward_card_choice.gd" id="1_script"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcess"]
+emission_shape = 3
+emission_box_extents = Vector3(150, 270, 1)
+direction = Vector3(0, -1, 0)
+spread = 38.0
+gravity = Vector3(0, -4, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 12.0
+scale_min = 1.0
+scale_max = 3.0
+color = Color(0.83, 0.9, 1, 0.34)
+
+[sub_resource type="StyleBoxFlat" id="FallbackStyle"]
+bg_color = Color(0.055, 0.065, 0.078, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.78, 0.64, 0.35, 0.86)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="BadgeStyle"]
+bg_color = Color(0.06, 0.08, 0.09, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.98, 0.79, 0.38, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 12.0
+content_margin_top = 7.0
+content_margin_right = 12.0
+content_margin_bottom = 7.0
+
+[node name="RewardCardChoice" type="Control"]
+custom_minimum_size = Vector2(360, 680)
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+script = ExtResource("1_script")
+
+[node name="FloatingRoot" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VisualRoot" type="Control" parent="FloatingRoot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Particles" type="GPUParticles2D" parent="FloatingRoot/VisualRoot"]
+unique_name_in_owner = true
+emitting = false
+amount = 18
+lifetime = 2.4
+randomness = 0.72
+visibility_rect = Rect2(-230, -390, 460, 780)
+process_material = SubResource("ParticleProcess")
+
+[node name="BackGlow" type="TextureRect" parent="FloatingRoot/VisualRoot"]
+unique_name_in_owner = true
+modulate = Color(1, 0.79, 0.36, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardShadow" type="TextureRect" parent="FloatingRoot/VisualRoot"]
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 0.42)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 18.0
+offset_right = 12.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardTexture" type="TextureRect" parent="FloatingRoot/VisualRoot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Fallback" type="PanelContainer" parent="FloatingRoot/VisualRoot"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("FallbackStyle")
+
+[node name="FallbackMargin" type="MarginContainer" parent="FloatingRoot/VisualRoot/Fallback"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 40
+
+[node name="FallbackContent" type="VBoxContainer" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin"]
+layout_mode = 2
+theme_override_constants/separation = 22
+alignment = 1
+
+[node name="FallbackGlyph" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.69, 0.42, 1)
+theme_override_font_sizes/font_size = 76
+text = "◇"
+horizontal_alignment = 1
+
+[node name="FallbackTitle" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.97, 0.83, 0.55, 1)
+theme_override_font_sizes/font_size = 24
+text = "OBJET INCONNU"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="FallbackDescription" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.78, 0.78, 1)
+theme_override_font_sizes/font_size = 17
+text = "Visuel indisponible"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SelectionBadge" type="Label" parent="FloatingRoot/VisualRoot"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -155.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 52.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(1, 0.88, 0.6, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("BadgeStyle")
+text = "✓ SÉLECTIONNÉ"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Interaction" type="Button" parent="FloatingRoot/VisualRoot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+mouse_default_cursor_shape = 2
+flat = true

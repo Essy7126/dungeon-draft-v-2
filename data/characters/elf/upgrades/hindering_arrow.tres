@@ -3,12 +3,14 @@
 [ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_node"]
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/hindering_arrow.tres" id="3_modifier"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/fleche_entravante.jpg" id="4_card"]
 
 [resource]
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_hindering_arrow"
 display_name = "Flèche entravante"
 description = "La cible perd 1 PM pendant son prochain tour."
+card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 3
 target_spell_id = &"elf_precise_shot"

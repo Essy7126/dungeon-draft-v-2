@@ -12,7 +12,7 @@ const EXPECTED_ROOMS := [
 	"res://data/rooms/first_run_room_01.tres",
 	"res://data/rooms/first_run_room_02.tres",
 	"res://data/rooms/first_run_room_03.tres",
-	"res://data/rooms/bible/la_rune.tres",
+	"res://data/rooms/first_run_room_04_boss.tres",
 	"res://data/rooms/room_05_volcano.tres",
 	"res://data/rooms/room_06_space.tres",
 ]
@@ -58,7 +58,11 @@ func test_fixed_party_has_exact_ids_resources_and_four_spells_each() -> void:
 
 func test_mage_cast_grants_only_matching_discipline_xp() -> void:
 	var mage_state := _prepare()[1]
-	EventBus.spell_cast.emit(mage_state.unit, mage_state.unit.spells[0], {})
+	EventBus.spell_cast.emit(
+		mage_state.unit,
+		mage_state.unit.spells[0],
+		{"effective_cast": true},
+	)
 	assert_eq(mage_state.get_discipline_progress(&"mage_pyromancy").xp, 1)
 	assert_eq(mage_state.get_discipline_progress(&"mage_cryomancy").xp, 0)
 	assert_eq(mage_state.get_discipline_progress(&"mage_fulguromancy").xp, 0)

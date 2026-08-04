@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "map_id": "reference_arena",
+  "display_name": "Arène de référence",
+  "map_kind": "reference",
+  "theme_id": "ancient_forest",
+  "decor_prompt": "Une terrasse de pierre ancienne intégrée dans une forêt verticale, avec ravins, racines, ruines couvertes de mousse et plusieurs profondeurs de falaise autour de la zone jouable.",
+  "tags": ["reference", "dynamic_arena", "nano_banana"],
+  "grid_size": [12, 10],
+  "projection": {
+	"tile_width": 64,
+	"tile_height": 32,
+	"layout": "diamond_down"
+  },
+  "default_base": "STONE",
+  "cells": [
+	{"x": 0, "y": 0, "base": "VOID"},
+	{"x": 1, "y": 0, "base": "VOID"},
+	{"x": 10, "y": 0, "base": "VOID"},
+	{"x": 11, "y": 0, "base": "VOID"},
+	{"x": 0, "y": 1, "base": "VOID"},
+	{"x": 11, "y": 1, "base": "VOID"},
+	{"x": 0, "y": 8, "base": "VOID"},
+	{"x": 11, "y": 8, "base": "VOID"},
+	{"x": 0, "y": 9, "base": "VOID"},
+	{"x": 1, "y": 9, "base": "VOID"},
+	{"x": 10, "y": 9, "base": "VOID"},
+	{"x": 11, "y": 9, "base": "VOID"},
+
+	{"x": 2, "y": 2, "surface": "WATER"},
+	{"x": 3, "y": 2, "surface": "WATER"},
+	{"x": 8, "y": 6, "surface": "FIRE"},
+	{"x": 9, "y": 6, "surface": "FIRE"},
+	{"x": 3, "y": 7, "surface": "ICE"},
+	{"x": 4, "y": 7, "surface": "ICE"},
+
+	{"x": 2, "y": 7, "special": "ALLY_SPAWN"},
+	{"x": 3, "y": 7, "special": "ALLY_SPAWN"},
+	{"x": 8, "y": 2, "special": "ENEMY_SPAWN"},
+	{"x": 9, "y": 2, "special": "ENEMY_SPAWN"},
+	{"x": 6, "y": 4, "special": "OBJECTIVE"},
+	{"x": 1, "y": 4, "special": "DECOR_ANCHOR"},
+	{"x": 10, "y": 5, "special": "DECOR_ANCHOR"},
+
+	{"x": 4, "y": 3, "wall": "BASE"},
+	{"x": 5, "y": 3, "wall": "BASE"},
+	{"x": 6, "y": 3, "wall": "BASE"},
+	{"x": 8, "y": 5, "wall": "FIRE"},
+	{"x": 3, "y": 5, "wall": "ICE"},
+
+	{"x": 5, "y": 5, "base": "RUNE"},
+	{"x": 6, "y": 5, "base": "SHADOW"},
+	{"x": 7, "y": 5, "base": "LAVA"},
+	{"x": 4, "y": 6, "base": "WATER"},
+	{"x": 5, "y": 6, "base": "ICE"}
+  ]
+}

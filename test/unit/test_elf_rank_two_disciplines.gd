@@ -63,7 +63,7 @@ func _raise_and_select(
 		discipline_id: StringName,
 		upgrade_id: StringName
 	) -> void:
-	var result := state.add_discipline_xp(discipline_id, 3)
+	var result := state.add_discipline_xp(discipline_id, 5)
 	assert_eq(result.get("rank", 0), 2)
 	assert_true(state.select_upgrade(discipline_id, 2, upgrade_id))
 
@@ -115,12 +115,12 @@ func test_new_disciplines_reach_rank_two_at_three_xp_once() -> void:
 		var progress := state.get_discipline_progress(discipline_id)
 		assert_eq(progress.rank, 1, str(discipline_id))
 		assert_eq(progress.xp, 0, str(discipline_id))
-		assert_true(progress.add_xp(2).is_empty(), str(discipline_id))
+		assert_true(progress.add_xp(4).is_empty(), str(discipline_id))
 		assert_eq(progress.rank, 1, str(discipline_id))
 		assert_eq(progress.add_xp(1), [2], str(discipline_id))
 		assert_eq(progress.rank, 2, str(discipline_id))
 		assert_eq(progress.get_pending_rank_choices(), [2], str(discipline_id))
-		var later_reached_ranks := progress.add_xp(10)
+		var later_reached_ranks := progress.add_xp(16)
 		assert_eq(later_reached_ranks, [3, 4], str(discipline_id))
 		assert_eq(progress.get_pending_rank_choices(), [2, 3, 4], str(discipline_id))
 
@@ -133,7 +133,7 @@ func test_each_new_rank_has_exactly_two_expected_exclusive_choices() -> void:
 		]
 		assert_eq(discipline.ranks.size(), 5, str(discipline.discipline_id))
 		assert_eq([discipline.ranks[0].rank, discipline.ranks[0].required_total_xp], [1, 0])
-		assert_eq([discipline.ranks[1].rank, discipline.ranks[1].required_total_xp], [2, 3])
+		assert_eq([discipline.ranks[1].rank, discipline.ranks[1].required_total_xp], [2, 5])
 		assert_eq(
 			discipline.ranks[1].choices.map(
 				func(upgrade): return upgrade.upgrade_id
@@ -152,7 +152,7 @@ func test_mage_rank_two_data_matches_the_preview_migration() -> void:
 	var mage := (load(ELF_PATH) as UnitData).disciplines[2] as DisciplineData
 	assert_eq(mage.discipline_id, &"mage")
 	assert_eq(mage.ranks.size(), 5)
-	assert_eq([mage.ranks[1].rank, mage.ranks[1].required_total_xp], [2, 3])
+	assert_eq([mage.ranks[1].rank, mage.ranks[1].required_total_xp], [2, 5])
 	assert_eq(
 		mage.ranks[1].choices.map(func(upgrade): return upgrade.upgrade_id),
 		[INCANDESCENT_ID, EMBERS_ID],
@@ -163,7 +163,7 @@ func test_upgrade_selection_is_exclusive_inside_each_new_discipline() -> void:
 	var state := _prepare_elf()
 	for index in NEW_DISCIPLINE_IDS.size():
 		var discipline_id: StringName = NEW_DISCIPLINE_IDS[index]
-		state.add_discipline_xp(discipline_id, 3)
+		state.add_discipline_xp(discipline_id, 5)
 		assert_true(state.select_upgrade(discipline_id, 2, NEW_UPGRADE_IDS[index][0]))
 		assert_false(state.select_upgrade(discipline_id, 2, NEW_UPGRADE_IDS[index][1]))
 		assert_eq(
@@ -219,22 +219,22 @@ func test_eagle_eye_has_no_bonus_at_manhattan_distance_three() -> void:
 	assert_eq(result["target"].current_hp, 93)
 
 
-func test_eagle_eye_adds_three_at_distance_four() -> void:
+func test_eagle_eye_adds_five_at_distance_four() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"archer", EAGLE_EYE_ID)
 	var result := _make_enemy_cast(
 		state, _elf_spell(0), Vector2i(0, 1), Vector2i(4, 1)
 	)
-	assert_eq(result["target"].current_hp, 90)
+	assert_eq(result["target"].current_hp, 88)
 
 
-func test_eagle_eye_adds_three_beyond_distance_four() -> void:
+func test_eagle_eye_adds_five_beyond_distance_four() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"archer", EAGLE_EYE_ID)
 	var result := _make_enemy_cast(
 		state, _elf_spell(0), Vector2i(0, 0), Vector2i(5, 1)
 	)
-	assert_eq(result["target"].current_hp, 90)
+	assert_eq(result["target"].current_hp, 88)
 
 
 func test_eagle_eye_uses_the_range_system_manhattan_metric() -> void:
@@ -246,7 +246,7 @@ func test_eagle_eye_uses_the_range_system_manhattan_metric() -> void:
 	var battlefield = result["battlefield"]
 	assert_eq(battlefield.grid.manhattan(Vector2i(0, 0), Vector2i(3, 1)), 4)
 	assert_lt(Vector2(3, 1).length(), 4.0)
-	assert_eq(result["target"].current_hp, 90)
+	assert_eq(result["target"].current_hp, 88)
 
 
 func test_eagle_eye_does_not_affect_other_spell_or_caster_or_spell_resource() -> void:
@@ -362,7 +362,7 @@ func test_repel_arrow_does_not_leak_to_another_caster() -> void:
 	assert_eq(target.grid_pos, Vector2i(1, 0))
 
 
-func test_backstab_adds_four_for_all_logical_facings() -> void:
+func test_backstab_adds_five_for_all_logical_facings() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"assassin", BACKSTAB_ID)
 	var target_pos := Vector2i(2, 2)
@@ -375,7 +375,7 @@ func test_backstab_adds_four_for_all_logical_facings() -> void:
 		battlefield.grid.place_unit(target, target_pos)
 		assert_true(target.is_grid_position_behind(state.unit.grid_pos))
 		battlefield.caster.cast(state.unit, _elf_spell(1), target_pos)
-		assert_eq(target.current_hp, 89, str(facing))
+		assert_eq(target.current_hp, 88, str(facing))
 
 
 func test_backstab_has_no_bonus_from_front_or_side() -> void:
@@ -517,7 +517,7 @@ func test_venomous_blade_never_mutates_its_data_driven_modifier() -> void:
 	assert_eq(modifier.amount, original_damage)
 
 
-func test_abundant_sap_adds_three_healing_and_reports_real_amount() -> void:
+func test_abundant_sap_adds_five_healing_and_reports_real_amount() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"healer", ABUNDANT_SAP_ID)
 	var battlefield := Factory.make_battlefield(5, 3)
@@ -534,10 +534,10 @@ func test_abundant_sap_adds_three_healing_and_reports_real_amount() -> void:
 	var original_heal := spell.heal
 	var report: Dictionary = battlefield.caster.cast(state.unit, spell, ally.grid_pos)
 	EventBus.unit_healed.disconnect(callback)
-	assert_eq(ally.current_hp, 60)
-	assert_eq(report["healing_by_unit"].get(ally), 10)
+	assert_eq(ally.current_hp, 62)
+	assert_eq(report["healing_by_unit"].get(ally), 12)
 	assert_true(report["healed_units"].has(ally))
-	assert_eq(healed_events, [10])
+	assert_eq(healed_events, [12])
 	assert_eq(spell.heal, original_heal)
 
 
@@ -618,12 +618,12 @@ func test_protective_bark_applies_shield_after_self_heal() -> void:
 	EventBus.unit_healed.disconnect(heal_callback)
 	EventBus.shield_gained.disconnect(shield_callback)
 	assert_eq(state.unit.current_hp, 57)
-	assert_eq(state.unit.current_shield, 3)
-	assert_eq(event_order, ["heal", "shield:3"])
+	assert_eq(state.unit.current_shield, 5)
+	assert_eq(event_order, ["heal", "shield:5"])
 	assert_true(report["shielded_units"].has(state.unit))
 
 
-func test_protective_bark_applies_three_to_ally_and_replaces_without_stacking() -> void:
+func test_protective_bark_applies_five_to_ally_and_replaces_without_stacking() -> void:
 	var state := _prepare_elf()
 	_raise_and_select(state, &"healer", PROTECTIVE_BARK_ID)
 	var battlefield := Factory.make_battlefield(5, 3)
@@ -633,10 +633,10 @@ func test_protective_bark_applies_three_to_ally_and_replaces_without_stacking() 
 	battlefield.grid.place_unit(state.unit, Vector2i(0, 1))
 	battlefield.grid.place_unit(ally, Vector2i(1, 1))
 	battlefield.caster.cast(state.unit, _elf_spell(3), ally.grid_pos)
-	assert_eq(ally.current_shield, 3)
+	assert_eq(ally.current_shield, 5)
 	state.unit.current_ap = state.unit.max_ap.get_int()
 	battlefield.caster.cast(state.unit, _elf_spell(3), ally.grid_pos)
-	assert_eq(ally.current_shield, 3, "le bouclier remplace et ne se cumule pas")
+	assert_eq(ally.current_shield, 5, "le bouclier remplace et ne se cumule pas")
 	ally.current_shield = 5
 	state.unit.current_ap = state.unit.max_ap.get_int()
 	battlefield.caster.cast(state.unit, _elf_spell(3), ally.grid_pos)

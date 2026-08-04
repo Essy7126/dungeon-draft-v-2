@@ -62,8 +62,8 @@ func test_damage_range_area_terrain_and_ap_cost_run_through_spell_caster() -> vo
 	var report: Dictionary = battlefield.caster.cast(caster, spell, center.grid_pos)
 	assert_false(report.get("failed", false))
 	assert_eq(caster.current_ap, 4)
-	assert_eq(center.current_hp, 88)
-	assert_eq(edge.current_hp, 88)
+	assert_eq(center.current_hp, 85)
+	assert_eq(edge.current_hp, 85)
 	assert_true(report["affected_units"].has(edge))
 	assert_eq(
 		battlefield.grid.get_effect(center.grid_pos)["data"]["duration"],
@@ -98,8 +98,8 @@ func test_heal_shield_mobility_and_cleanse_are_applied_to_the_real_target() -> v
 	battlefield.grid.place_unit(caster, Vector2i(0, 1))
 	battlefield.grid.place_unit(ally, Vector2i(1, 1))
 	var report: Dictionary = battlefield.caster.cast(caster, spell, ally.grid_pos)
-	assert_eq(ally.current_hp, 60)
-	assert_eq(ally.current_shield, 3)
+	assert_eq(ally.current_hp, 62)
+	assert_eq(ally.current_shield, 5)
 	assert_eq(ally.next_turn_mp_bonus, 1)
 	assert_true(ally.get_active_statuses().is_empty())
 	assert_true(report["healed_units"].has(ally))

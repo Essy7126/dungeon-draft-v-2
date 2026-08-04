@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/caillou.png" id="3_icon"]
+
+[sub_resource type="Resource" id="Stat_hp"]
+script = ExtResource("2_stat")
+stat_id = &"max_hp"
+value = 15.0
+
+[sub_resource type="Resource" id="Stat_armor"]
+script = ExtResource("2_stat")
+stat_id = &"armure"
+value = 10.0
+
+[sub_resource type="Resource" id="Stat_magic"]
+script = ExtResource("2_stat")
+stat_id = &"resist_magique"
+value = 10.0
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"caillou"
+display_name = "Caillou"
+description = "+15 PV maximum, +10 armure et +10 résistance magique."
+icon = ExtResource("3_icon")
+card_texture = ExtResource("3_icon")
+reward_fx_profile = &"steel"
+rarity = &"rare"
+tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
+category = 2
+equipment_slot = 2
+stat_modifiers = Array[ItemStatModifierData]([SubResource("Stat_hp"), SubResource("Stat_armor"), SubResource("Stat_magic")])

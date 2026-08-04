@@ -3,12 +3,14 @@
 [ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="1_node"]
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/perfect_sight.tres" id="3_modifier"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/vue_parfaite.jpg" id="4_card"]
 
 [resource]
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_perfect_sight"
 display_name = "Vue parfaite"
-description = "Tir précis inflige 3 dégâts supplémentaires lorsque la cible se trouve à au moins 6 cases."
+description = "Tir précis inflige 5 dégâts supplémentaires lorsque la cible se trouve à au moins 6 cases."
+card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 4
 target_spell_id = &"elf_precise_shot"

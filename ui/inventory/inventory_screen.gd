@@ -194,7 +194,7 @@ func _rebuild_inventory(inventory: RunInventory, catalog: ItemCatalog) -> void:
 				"x%d" % instance.quantity if instance.quantity > 1 else "Objet unique",
 			]
 			button.tooltip_text = definition.description if definition != null else ""
-			button.icon = definition.icon if definition != null else null
+			button.icon = definition.get_inventory_icon() if definition != null else null
 			button.toggle_mode = true
 			button.button_pressed = instance.instance_id == _selected_instance_id
 			button.pressed.connect(_select_inventory_item.bind(instance.instance_id))

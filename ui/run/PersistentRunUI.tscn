@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://ui/run/persistent_run_ui.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn" id="2_hud"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/ui/combat_hud_layout_run_v1_compact.tres" id="6_compact_layout"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="7_skill_tree_theme"]
 [ext_resource type="PackedScene" path="res://ui/inventory/InventoryScreen.tscn" id="8_inventory"]
+[ext_resource type="PackedScene" path="res://ui/progression/evolution/SkillEvolutionOverlay.tscn" id="9_evolution"]
 
 [node name="PersistentRunUI" type="Node"]
 script = ExtResource("1_script")
@@ -105,6 +106,10 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.76, 0.8, 0.84, 1)
 theme_override_font_sizes/font_size = 15
 text = "Personnage · Discipline · Rang 2"
+
+[node name="SkillEvolutionOverlay" parent="OverlayLayer/OverlayRoot" instance=ExtResource("9_evolution")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [node name="SkillTreeScreen" parent="OverlayLayer/OverlayRoot" instance=ExtResource("4_screen")]
 unique_name_in_owner = true

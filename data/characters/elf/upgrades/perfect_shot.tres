@@ -4,12 +4,14 @@
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/perfect_shot_damage.tres" id="3_damage"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/perfect_shot_range.tres" id="4_range"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/tir_parfait.png" id="5_card"]
 
 [resource]
 script = ExtResource("1_node")
 upgrade_id = &"elf_archer_perfect_shot"
 display_name = "Tir parfait"
 description = "Tir précis gagne 1 case de portée et inflige 6 dégâts supplémentaires à partir de 6 cases."
+card_texture = ExtResource("5_card")
 discipline_id = &"archer"
 rank = 5
 target_spell_id = &"elf_precise_shot"

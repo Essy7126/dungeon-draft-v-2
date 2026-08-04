@@ -14,7 +14,7 @@ const EXPECTED_RUN := [
 	"res://data/rooms/first_run_room_01.tres",
 	"res://data/rooms/first_run_room_02.tres",
 	"res://data/rooms/first_run_room_03.tres",
-	"res://data/rooms/bible/la_rune.tres",
+	"res://data/rooms/first_run_room_04_boss.tres",
 	"res://data/rooms/room_05_volcano.tres",
 	"res://data/rooms/room_06_space.tres",
 ]
@@ -94,7 +94,8 @@ func test_chaque_layout_remplit_le_griddata_commun_et_tous_les_spawns_sont_valid
 		assert_eq(layout.blocked_cells().size(), 11, room.room_name)
 		assert_eq(layout.void_cells().size(), 32, room.room_name)
 		assert_gte(room.hero_spawn_zone.size(), 3)
-		assert_gte(room.enemy_spawn_zone.size(), room.enemies.size())
+		assert_false(room.enemy_spawn_zone.is_empty())
+		assert_not_null(room.encounter_definition)
 		for cell in room.hero_spawn_zone + room.enemy_spawn_zone:
 			assert_true(grid.is_valid(cell), "%s %s" % [room.room_name, cell])
 			assert_true(grid.is_terrain_interactable(cell), "%s %s" % [room.room_name, cell])

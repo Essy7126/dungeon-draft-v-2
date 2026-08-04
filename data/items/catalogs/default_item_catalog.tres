@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemCatalog" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="ItemCatalog" load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://data/items/item_catalog.gd" id="1_catalog"]
 [ext_resource type="Script" path="res://data/items/item_definition.gd" id="2_definition"]
@@ -7,7 +7,22 @@
 [ext_resource type="Resource" path="res://data/items/definitions/runic_charm.tres" id="5_charm"]
 [ext_resource type="Resource" path="res://data/items/definitions/minor_healing_potion.tres" id="6_potion"]
 [ext_resource type="Resource" path="res://data/items/definitions/minor_action_scroll.tres" id="7_scroll"]
+[ext_resource type="Resource" path="res://data/items/definitions/anneau_faille.tres" id="8_ring"]
+[ext_resource type="Resource" path="res://data/items/definitions/arc_maudit.tres" id="9_bow"]
+[ext_resource type="Resource" path="res://data/items/definitions/broche.tres" id="10_brooch"]
+[ext_resource type="Resource" path="res://data/items/definitions/caillou.tres" id="11_stone"]
+[ext_resource type="Resource" path="res://data/items/definitions/cape_brume.tres" id="12_cape"]
+[ext_resource type="Resource" path="res://data/items/definitions/collier_sages.tres" id="13_necklace"]
+[ext_resource type="Resource" path="res://data/items/definitions/couronne.tres" id="14_crown"]
+[ext_resource type="Resource" path="res://data/items/definitions/excalibur.tres" id="15_excalibur"]
+[ext_resource type="Resource" path="res://data/items/definitions/hache_executeur.tres" id="16_axe"]
+[ext_resource type="Resource" path="res://data/items/definitions/harnois.tres" id="17_harness"]
+[ext_resource type="Resource" path="res://data/items/definitions/manteau_givre.tres" id="18_coat"]
+[ext_resource type="Resource" path="res://data/items/definitions/matraque_troll.tres" id="19_club"]
+[ext_resource type="Resource" path="res://data/items/definitions/prisme_elementaire.tres" id="20_prism"]
+[ext_resource type="Resource" path="res://data/items/definitions/sceau.tres" id="21_seal"]
 
 [resource]
 script = ExtResource("1_catalog")
-definitions = Array[ExtResource("2_definition")]([ExtResource("3_sword"), ExtResource("4_vest"), ExtResource("5_charm"), ExtResource("6_potion"), ExtResource("7_scroll")])
+auto_discovery_directories = PackedStringArray("res://data/items/definitions")
+definitions = Array[ExtResource("2_definition")]([ExtResource("3_sword"), ExtResource("4_vest"), ExtResource("5_charm"), ExtResource("6_potion"), ExtResource("7_scroll"), ExtResource("8_ring"), ExtResource("9_bow"), ExtResource("10_brooch"), ExtResource("11_stone"), ExtResource("12_cape"), ExtResource("13_necklace"), ExtResource("14_crown"), ExtResource("15_excalibur"), ExtResource("16_axe"), ExtResource("17_harness"), ExtResource("18_coat"), ExtResource("19_club"), ExtResource("20_prism"), ExtResource("21_seal")])

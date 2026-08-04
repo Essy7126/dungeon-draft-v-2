@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SurfaceConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://battle/dynamic_terrain/surface_config.gd" id="1_config"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/ice.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_config")
+surface = 3
+display_name = "ICE"
+texture = ExtResource("2_texture")
+duration_turns = 2
+turn_start_damage = 0
+walkable = true
+movement_cost = 1
+gameplay_flags = {"slippery_visual_only": true}

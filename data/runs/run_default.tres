@@ -3,13 +3,14 @@
 [ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room_type"]
 [ext_resource type="Resource" uid="uid://dr0ykpux3ooaj" path="res://data/rooms/first_run_room_01.tres" id="100_room"]
-[ext_resource type="Resource" path="res://data/rooms/bible/la_forge.tres" id="101_room"]
-[ext_resource type="Resource" path="res://data/rooms/bible/elite_brute.tres" id="102_room"]
-[ext_resource type="Resource" path="res://data/rooms/bible/catacombes.tres" id="103_room"]
-[ext_resource type="Resource" path="res://data/rooms/bible/boss_meduse.tres" id="104_room"]
-[ext_resource type="Resource" uid="uid://cu75nfsk7bpui" path="res://data/rooms/terrain_2.tres" id="105_room"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_02.tres" id="101_room"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_03.tres" id="102_room"]
+[ext_resource type="Resource" path="res://data/rooms/first_run_room_04_boss.tres" id="103_room"]
+[ext_resource type="Resource" path="res://data/rooms/room_05_volcano.tres" id="104_room"]
+[ext_resource type="Resource" path="res://data/rooms/room_06_space.tres" id="105_room"]
 
 [resource]
 script = ExtResource("1_run")
-run_name = "Bible MVP - 1 acte Meduse"
-rooms = Array[ExtResource("2_room_type")]([ExtResource("100_room"), ExtResource("105_room"), ExtResource("101_room"), ExtResource("102_room"), ExtResource("103_room"), ExtResource("104_room")])
+run_name = "Premiere run - Legion squelette"
+default_seed = 1337
+rooms = Array[ExtResource("2_room_type")]([ExtResource("100_room"), ExtResource("101_room"), ExtResource("102_room"), ExtResource("103_room"), ExtResource("104_room"), ExtResource("105_room")])

@@ -36,17 +36,24 @@ func sync(ignore_unit = null) -> void:
 	for x in _grid.cols:
 		for y in _grid.rows:
 			var pos = Vector2i(x, y)
-			var blocked = not GridData.PROPERTIES[_grid.get_type(pos)]["walkable"]
-			if _grid.has_unit(pos) and _grid.get_unit(pos) != ignore_unit:
-				blocked = true
+			var blocked = not _grid.is_walkable(pos, ignore_unit)
 			_astar.set_point_solid(pos, blocked)
 
 # ============================================================
 # CALCUL DE CHEMIN  (renommé find_path pour éviter la collision)
 # ============================================================
 
-func find_path(from: Vector2i, to: Vector2i, ignore_unit = null) -> Array:
-	sync(ignore_unit)
+func find_path(
+	from: Vector2i,
+	to: Vector2i,
+	ignore_unit = null,
+	synchronize_grid := true
+	) -> Array:
+	# Le comportement historique reste le defaut. Les outils qui viennent de
+	# synchroniser explicitement le graphe peuvent eviter une seconde passe et
+	# recalculer le chemin sur l'etat courant de l'AStar.
+	if synchronize_grid:
+		sync(ignore_unit)
 	if not _grid.is_valid(from) or not _grid.is_valid(to):
 		return []
 	var path = _astar.get_id_path(from, to)
@@ -75,9 +82,7 @@ func get_reachable(from: Vector2i, max_steps: int, ignore_unit = null) -> Array:
 				continue
 			if visited.has(neighbor):
 				continue
-			var blocked = not GridData.PROPERTIES[_grid.get_type(neighbor)]["walkable"]
-			if _grid.has_unit(neighbor) and _grid.get_unit(neighbor) != ignore_unit:
-				blocked = true
+			var blocked = not _grid.is_walkable(neighbor, ignore_unit)
 			if blocked:
 				continue
 			visited[neighbor] = cost + 1
@@ -94,6 +99,16 @@ func has_line_of_sight(from: Vector2i, to: Vector2i) -> bool:
 	var line = _bresenham(from, to)
 	for i in range(1, line.size() - 1):
 		if not _grid.is_transparent(line[i]):
+			return false
+	return true
+
+
+func has_projectile_path(from: Vector2i, to: Vector2i) -> bool:
+	if not _grid.is_valid(from) or not _grid.is_valid(to):
+		return false
+	var line = _bresenham(from, to)
+	for i in range(1, line.size() - 1):
+		if not _grid.is_projectile_passable(line[i]):
 			return false
 	return true
 

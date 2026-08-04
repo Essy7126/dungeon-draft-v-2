@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ForestArenaIntegrationConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tools/labs/forest_arena_integration/forest_arena_integration_config.gd" id="1_config"]
+[ext_resource type="Texture2D" path="res://asset/map/painted/room_01_forest/forest_background_v3.png" id="2_background"]
+
+[resource]
+script = ExtResource("1_config")
+background_texture = ExtResource("2_background")
+map_definition_path = "res://tools/arena_map_editor/testv1/map_definition.json"
+source_image_size = Vector2i(1672, 941)
+reference_export_resolution = Vector2i(1920, 1080)
+origin = Vector2(835.90698, 200.463)
+axis_x = Vector2(41.8, 20.73867)
+axis_y = Vector2(-41.8, 20.73867)
+global_scale = 1.0
+background_offset = Vector2(0, 0)
+tile_scale = Vector2(0.3265625, 0.3240417)
+border_thickness = 1
+calibration_cells = Array[Vector2i]([Vector2i(2, 0), Vector2i(9, 0), Vector2i(0, 2), Vector2i(13, 2), Vector2i(7, 7), Vector2i(1, 13), Vector2i(12, 13), Vector2i(2, 14), Vector2i(13, 14)])
+calibration_pixels = Array[Vector2]([Vector2(920, 242), Vector2(1212, 387), Vector2(752, 242), Vector2(1296, 512), Vector2(836, 491), Vector2(334, 491), Vector2(794, 719), Vector2(334, 532), Vector2(794, 760)])
+geometry_match = "GEOMETRY_MATCH_WITH_CALIBRATION"

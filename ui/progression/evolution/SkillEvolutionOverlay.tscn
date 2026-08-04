@@ -1,0 +1,147 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://ui/progression/evolution/skill_evolution_overlay.gd" id="1_script"]
+[ext_resource type="Shader" path="res://ui/post_combat/shaders/post_combat_background.gdshader" id="2_background"]
+[ext_resource type="PackedScene" path="res://ui/progression/evolution/SkillEvolutionCard.tscn" id="3_card"]
+
+[sub_resource type="ShaderMaterial" id="BackgroundMaterial"]
+shader = ExtResource("2_background")
+
+[node name="SkillEvolutionOverlay" type="Control"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_script")
+
+[node name="BackgroundPostProcess" type="ColorRect" parent="."]
+material = SubResource("BackgroundMaterial")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(1, 1, 1, 1)
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 24.0
+offset_bottom = 68.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.82, 0.98, 0.74, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.88)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 34
+text = "CHOISISSEZ UNE ÉVOLUTION"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 68.0
+offset_bottom = 98.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.7, 0.78, 0.72, 1)
+theme_override_font_sizes/font_size = 16
+text = "Elfe · Archer · Niveau 2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CardZone" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 106.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="CardRow" type="HBoxContainer" parent="CardZone"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 96
+alignment = 1
+
+[node name="SkillEvolutionCardA" parent="CardZone/CardRow" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SkillEvolutionCardB" parent="CardZone/CardRow" instance=ExtResource("3_card")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BottomControls" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -144.0
+offset_right = -24.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="ChoiceDetails" type="Label" parent="BottomControls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.9, 0.84, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "Effet de l’évolution"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ConfirmCenter" type="CenterContainer" parent="BottomControls"]
+layout_mode = 2
+
+[node name="ConfirmButton" type="Button" parent="BottomControls/ConfirmCenter"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 44)
+layout_mode = 2
+focus_mode = 2
+disabled = true
+theme_type_variation = &"SkillTreeCloseButton"
+text = "CONFIRMER"
+
+[node name="InputHints" type="Label" parent="BottomControls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.66, 0.72, 0.68, 1)
+theme_override_font_sizes/font_size = 13
+text = "← →  Choisir    ·    Entrée / A  Valider    ·    Échap indisponible"
+horizontal_alignment = 1
+
+[node name="ErrorLabel" type="Label" parent="BottomControls"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.46, 0.38, 1)
+theme_override_font_sizes/font_size = 14
+text = "Évolution impossible"
+horizontal_alignment = 1
+

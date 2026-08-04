@@ -73,6 +73,8 @@ var pathfinder: Pathfinder
 var spell_caster: SpellCaster
 var terrain_effects: TerrainEffects
 var enemy_ai: EnemyAI
+var encounter_runtime_state: EncounterRuntimeState = null
+var encounter_formation_snapshot: Dictionary = {}
 var turn_queue: TurnQueue
 var units: Array = []
 
@@ -180,6 +182,12 @@ func _setup_logic() -> void:
 	pathfinder = Pathfinder.new(grid)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
+	if room_data != null and room_data.encounter_definition != null:
+		encounter_runtime_state = EncounterRuntimeState.new()
+		if not encounter_runtime_state.initialize(room_data.encounter_definition):
+			push_error("EncounterDefinition invalide pour %s." % room_data.room_name)
+			encounter_runtime_state = null
+	spell_caster.set_encounter_runtime_state(encounter_runtime_state)
 	_spell_impact_scheduler = SpellImpactScheduler.new()
 	add_child(_spell_impact_scheduler)
 	_spell_impact_scheduler.impact_due.connect(_on_delayed_spell_impact)
@@ -491,14 +499,41 @@ func _spawn_enemies() -> void:
 		push_warning("Aucune RoomData assignée : pas d'ennemis.")
 		return
 
+	var roster: Array = room_data.enemies
+	var placements: Array = []
+	if room_data.encounter_definition != null:
+		var planner := EncounterFormationPlanner.new(grid, pathfinder)
+		encounter_formation_snapshot = planner.build_plan(
+			room_data.encounter_definition,
+			room_data.hero_spawn_zone,
+			room_data.enemy_spawn_zone,
+			GameManager.get_run_seed(),
+		)
+		if not encounter_formation_snapshot.get("valid", false):
+			push_error("Placement de rencontre impossible (%s) : %s" % [
+				room_data.room_name,
+				str(encounter_formation_snapshot.get("reason", &"unknown")),
+			])
+			return
+		placements = encounter_formation_snapshot.get("placements", [])
+		roster = room_data.encounter_definition.expanded_roster()
 	var available = room_data.enemy_spawn_zone.duplicate()
 	available.shuffle()
 
-	for enemy_data in room_data.enemies:
+	for enemy_index in range(roster.size()):
+		var enemy_data := (
+			(placements[enemy_index] as Dictionary).get("unit_data") as UnitData
+			if enemy_index < placements.size()
+			else roster[enemy_index] as UnitData
+		)
 		if enemy_data == null:
 			push_warning("Un ennemi de la salle est null : ignoré.")
 			continue
-		var spawn_cell = _resolve_spawn_cell(available, enemy_data.unit_name)
+		var spawn_cell: Vector2i = (
+			(placements[enemy_index] as Dictionary).get("cell", Vector2i(-1, -1))
+			if enemy_index < placements.size()
+			else _resolve_spawn_cell(available, enemy_data.unit_name)
+		)
 		if spawn_cell == Vector2i(-1, -1):
 			push_warning("Plus de case libre pour %s." % enemy_data.unit_name)
 			break
@@ -1283,6 +1318,8 @@ func _on_unit_died(unit: Unit) -> void:
 	# Logique de combat uniquement. Le LOG ("est vaincu") est désormais produit
 	# par le CombatLogger, abonné au signal unit_died du bus. battle.gd ne logge
 	# plus la mort : il réagit à ses conséquences sur le terrain et le combat.
+	if spell_caster != null:
+		spell_caster.cancel_pending_for_unit(unit, &"caster_dead")
 	grid.clear_unit(unit.grid_pos)
 	turn_queue.on_unit_died(unit)
 	_check_battle_end()

@@ -130,6 +130,7 @@ var preview_visual_scene: PackedScene = null
 var basic_attack_enabled: bool = true
 var spells: Array = []
 var _progression_spell_modifiers: Array[SpellModifier] = []
+var _equipment_spell_modifiers_by_source: Dictionary = {}
 var activation_index: int = 0
 var activation_consumed: bool = false
 var _ability_states: Dictionary = {}
@@ -335,6 +336,36 @@ func clear_progression_spell_modifiers() -> void:
 func get_progression_spell_modifiers() -> Array[SpellModifier]:
 	return _progression_spell_modifiers.duplicate()
 
+
+func set_equipment_spell_modifiers(
+		source_id: StringName,
+		modifiers: Array[SpellModifier]
+	) -> void:
+	if source_id == &"":
+		return
+	var valid: Array[SpellModifier] = []
+	for modifier in modifiers:
+		if modifier != null and not valid.has(modifier):
+			valid.append(modifier)
+	if valid.is_empty():
+		_equipment_spell_modifiers_by_source.erase(source_id)
+	else:
+		_equipment_spell_modifiers_by_source[source_id] = valid
+
+
+func clear_equipment_spell_modifiers(source_id: StringName) -> void:
+	_equipment_spell_modifiers_by_source.erase(source_id)
+
+
+func get_equipment_spell_modifiers() -> Array[SpellModifier]:
+	var result: Array[SpellModifier] = []
+	for values in _equipment_spell_modifiers_by_source.values():
+		for modifier_value in values:
+			var modifier := modifier_value as SpellModifier
+			if modifier != null and not result.has(modifier):
+				result.append(modifier)
+	return result
+
 # ============================================================
 # ACCÃˆS AUX STATS
 # ============================================================
@@ -363,10 +394,24 @@ func get_runtime_stable_id() -> String:
 
 
 func target_has_linked_source_status(target: Unit, status_id: StringName) -> bool:
-	return target != null \
-		and linked_commander != null \
-		and linked_commander.is_alive \
-		and target.has_status(status_id, linked_commander)
+	if target == null:
+		return false
+	if linked_commander != null and linked_commander.is_alive \
+			and target.has_status(status_id, linked_commander):
+		return true
+	for entry_value in target.get_active_statuses():
+		var entry := entry_value as Dictionary
+		var data := entry.get("data") as StatusData
+		var source := entry.get("source") as Unit
+		if data == null or data.get_effective_status_id() != status_id \
+				or source == null or not source.is_alive or source.team != team:
+			continue
+		if faction_id != &"" and source.faction_id != faction_id:
+			continue
+		if linked_commander_role_id == &"" \
+				or source.tactical_role_id == linked_commander_role_id:
+			return true
+	return false
 
 
 func refresh_proximity_passive(grid: GridData) -> void:

@@ -113,7 +113,7 @@ func _prepare_manager_state() -> CharacterRunState:
 
 
 func _raise_to_five(state: CharacterRunState) -> void:
-	var result := state.add_discipline_xp(ARCHER_ID, 18)
+	var result := state.add_discipline_xp(ARCHER_ID, 30)
 	assert_eq(result.get("rank", 0), 5)
 
 
@@ -228,7 +228,7 @@ func test_archer_tree_has_exact_thresholds_unique_nodes_and_no_diagnostic() -> v
 		discipline.ranks.map(
 			func(rank_data): return rank_data.required_total_xp
 		),
-		[0, 3, 7, 12, 18]
+		[0, 5, 12, 21, 30]
 	)
 	assert_eq(
 		discipline.ranks.map(func(rank_data): return rank_data.choices.size()),
@@ -322,7 +322,7 @@ func test_archer_tree_has_exactly_sixteen_final_configurations() -> void:
 	assert_eq(configurations, 16)
 
 
-func test_eighteen_successful_precise_shots_grant_exact_xp_and_queue_all_ranks() -> void:
+func test_five_successful_precise_shots_grant_combat_cap_and_queue_rank_two() -> void:
 	var state := _prepare_manager_state()
 	var battle := _make_battle(
 		state,
@@ -332,7 +332,8 @@ func test_eighteen_successful_precise_shots_grant_exact_xp_and_queue_all_ranks()
 		3,
 		10000
 	)
-	for expected_xp in range(1, 19):
+	for expected_xp in range(1, 6):
+		state.unit.activation_index = expected_xp
 		var report := _cast_battle(state, battle)
 		assert_false(report.get("failed", false))
 		assert_eq(
@@ -343,8 +344,11 @@ func test_eighteen_successful_precise_shots_grant_exact_xp_and_queue_all_ranks()
 		state.get_discipline_progress(
 			ARCHER_ID
 		).get_pending_rank_choices(),
-		[2, 3, 4, 5]
+		[2]
 	)
+	state.unit.activation_index = 6
+	assert_false(_cast_battle(state, battle).get("failed", false))
+	assert_eq(state.get_discipline_progress(ARCHER_ID).xp, 5)
 	assert_true(
 		_available_ids(state, 3).is_empty(),
 		"le rang 2 doit etre resolu avant le rang 3"
@@ -382,7 +386,7 @@ func test_range_and_damage_bonuses_stack_without_mutating_precise_shot() -> void
 	)
 	var report := _cast_battle(state, battle)
 	assert_false(report.get("failed", false))
-	assert_eq(battle["target"].current_hp, 82)
+	assert_eq(battle["target"].current_hp, 77)
 	assert_eq(spell.spell_range, 7)
 	assert_eq(spell.damage, 7)
 
@@ -586,8 +590,8 @@ func test_transpiercing_bolt_hits_one_aligned_enemy_once_without_extra_xp() -> v
 		primary.grid_pos
 	)
 	assert_false(report.get("failed", false))
-	assert_eq(primary.current_hp, 91)
-	assert_eq(secondary.current_hp, 96)
+	assert_eq(primary.current_hp, 88)
+	assert_eq(secondary.current_hp, 94)
 	assert_eq(
 		state.get_discipline_progress(ARCHER_ID).xp,
 		xp_before + 1
@@ -611,7 +615,7 @@ func test_transpiercing_bolt_stops_at_a_grid_obstacle() -> void:
 	battlefield.grid.set_type(Vector2i(3, 1), GridData.CellType.WALL)
 	battlefield.grid.place_unit(secondary, Vector2i(4, 1))
 	battlefield.caster.cast(state.unit, _precise_shot(), primary.grid_pos)
-	assert_eq(primary.current_hp, 91)
+	assert_eq(primary.current_hp, 88)
 	assert_eq(secondary.current_hp, 100)
 
 

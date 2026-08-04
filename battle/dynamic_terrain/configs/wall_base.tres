@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WallConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://battle/dynamic_terrain/wall_config.gd" id="1_config"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/wall_base.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_config")
+variant_id = &"base"
+max_hp = 30
+duration_turns = 5
+blocks_movement = true
+blocks_line_of_sight = true
+blocks_projectiles = true
+damage_on_adjacent_turn = 0
+damage_element = &"NONE"
+destroyed_surface_result = &"BASE"
+texture = ExtResource("2_texture")

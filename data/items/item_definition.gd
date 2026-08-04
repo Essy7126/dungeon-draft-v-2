@@ -27,8 +27,14 @@ enum UseEffect {
 @export var display_name := "Objet"
 @export_multiline var description := ""
 @export var icon: Texture2D = null
+@export var inventory_icon: Texture2D = null
+@export var card_texture: Texture2D = null
 @export var rarity: StringName = &"common"
 @export var tags: Array[StringName] = []
+
+@export_group("Reward Presentation")
+@export var reward_fx_profile: StringName = &"generic"
+@export var reward_audio_profile: StringName = &"generic"
 
 @export_group("Inventory")
 @export var category: Category = Category.ACCESSORY
@@ -38,6 +44,7 @@ enum UseEffect {
 @export var equipment_slot: EquipmentSlot = EquipmentSlot.NONE
 @export var compatible_character_ids: Array[StringName] = []
 @export var stat_modifiers: Array[ItemStatModifierData] = []
+@export var spell_modifiers: Array[SpellModifier] = []
 
 @export_group("Use")
 @export var use_effect: UseEffect = UseEffect.NONE
@@ -66,6 +73,12 @@ func is_valid() -> bool:
 	for modifier in stat_modifiers:
 		if modifier == null or not modifier.is_valid():
 			return false
+	for modifier in spell_modifiers:
+		if modifier == null:
+			return false
+		if modifier is ItemSpellModifierData \
+				and not (modifier as ItemSpellModifierData).is_valid_modifier():
+			return false
 	return true
 
 
@@ -83,3 +96,11 @@ func is_compatible_with(character_id: StringName) -> bool:
 
 func get_stack_limit() -> int:
 	return maxi(1, stack_limit)
+
+
+func get_inventory_icon() -> Texture2D:
+	return inventory_icon if inventory_icon != null else icon
+
+
+func get_reward_card_texture() -> Texture2D:
+	return card_texture if card_texture != null else icon

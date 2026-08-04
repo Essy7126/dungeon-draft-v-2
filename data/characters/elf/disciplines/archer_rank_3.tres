@@ -10,5 +10,5 @@
 [resource]
 script = ExtResource("1_rank")
 rank = 3
-required_total_xp = 7
+required_total_xp = 12
 choices = Array[ExtResource("2_upgrade_type")]([ExtResource("3_long_range"), ExtResource("4_piercing"), ExtResource("5_hindering"), ExtResource("6_impact")])

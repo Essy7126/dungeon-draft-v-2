@@ -18,6 +18,7 @@ const SUPPORTED_STAT_IDS: Array[StringName] = [
 	&"crit_chance",
 	&"crit_multi",
 	&"force",
+	&"resistance_ice",
 ]
 
 @export var stat_id: StringName = &""

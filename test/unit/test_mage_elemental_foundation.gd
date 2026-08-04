@@ -81,7 +81,7 @@ func test_mage_has_four_ordered_complete_disciplines() -> void:
 		assert_true(discipline.ranks[0].choices.is_empty())
 		var progress := DisciplineProgressState.new()
 		assert_true(progress.initialize(discipline))
-		assert_eq(progress.add_xp(18), [2, 3, 4, 5])
+		assert_eq(progress.add_xp(30), [2, 3, 4, 5])
 		assert_eq(progress.rank, 5)
 		assert_eq(progress.get_pending_rank_choices(), [2, 3, 4, 5])
 
@@ -137,6 +137,10 @@ func test_each_successful_spell_grants_exactly_one_xp_to_its_discipline() -> voi
 	for spell_index in range(4):
 		var battlefield := Factory.make_battlefield(12, 5)
 		battlefield.grid.place_unit(mage.unit, Vector2i(0, 2))
+		battlefield.grid.place_unit(
+			Unit.new("Cible %d" % spell_index, 1, 1000),
+			targets[spell_index],
+		)
 		mage.unit.current_ap = mage.unit.max_ap.get_value()
 		var report: Dictionary = battlefield.caster.cast(
 			mage.unit,
