@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="UnitData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://osnm1677k8q3"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="PackedScene" path="res://characters/enemies/skeleton_chief/SkeletonChiefIsoUnitView.tscn" id="2_visual"]
-[ext_resource type="Script" path="res://data/spell.gd" id="3_spell_type"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="2_yiexj"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="3_spell_type"]
 [ext_resource type="Resource" path="res://data/spells/enemies/skeleton_chief_strike.tres" id="4_strike"]
 [ext_resource type="Resource" path="res://data/spells/enemies/scarlet_sentence.tres" id="5_sentence"]
 [ext_resource type="Resource" path="res://data/ai/profiles/skeleton_chief_ai.tres" id="6_ai"]
@@ -15,22 +16,13 @@ description = "Tank lent qui prepare une Sentence ecarlate esquivable."
 team = 1
 max_hp = 220
 initiative = 6
-max_ap = 6
 max_mp = 2
 attack_power = 32
 armure = 90.0
 resist_magique = 70.0
-esquive = 0.0
-crit_chance = 0.0
 visual_scene = ExtResource("2_visual")
 basic_attack_enabled = false
 spells = Array[ExtResource("3_spell_type")]([ExtResource("4_strike"), ExtResource("5_sentence")])
-ai_behavior = 0
-combat_style = 0
-preferred_range = 1
-minimum_range = 1
-maximum_range = 1
-keep_distance = false
 ai_profile = ExtResource("6_ai")
 faction_id = &"skeleton_legion"
 tactical_role_id = &"skeleton_chief"

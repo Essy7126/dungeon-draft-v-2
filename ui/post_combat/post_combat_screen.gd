@@ -10,6 +10,7 @@ const PRESENTATION_IMPACT_SFX := preload(
 
 enum Phase {
 	VICTORY_REVEAL,
+	ROOM_DECISION,
 	COMBAT_STATS,
 	PROGRESSION,
 	REWARD_SELECTION,
@@ -32,6 +33,9 @@ enum Phase {
 @onready var phase_title: Label = %PhaseTitle
 @onready var victory_panel: Control = %VictoryPanel
 @onready var victory_title: Label = %VictoryTitle
+@onready var decision_panel: Control = %DecisionPanel
+@onready var decision_detail: Label = %DecisionDetail
+@onready var decision_risk: Label = %DecisionRisk
 @onready var stats_panel: Control = %CombatStatsPanel
 @onready var stats_cards: HBoxContainer = %StatsCards
 @onready var progression_panel: Control = %ProgressionPanel
@@ -43,6 +47,7 @@ enum Phase {
 @onready var comparison_label: Label = %ComparisonLabel
 @onready var reward_error: Label = %RewardError
 @onready var status_label: Label = %StatusLabel
+@onready var push_wave_button: Button = %PushWaveButton
 @onready var continue_button: Button = %ContinueButton
 
 var phase: Phase = Phase.VICTORY_REVEAL
@@ -59,10 +64,12 @@ var _current_tween: Tween = null
 var _reward_applied := false
 var _transition_requested := false
 var _final_room := false
+var _decision_snapshot: Dictionary = {}
 
 
 func _ready() -> void:
 	continue_button.pressed.connect(advance_or_skip)
+	push_wave_button.pressed.connect(choose_continue_room)
 	reward_overlay.selection_changed.connect(_on_overlay_selection_changed)
 	reward_overlay.confirmation_requested.connect(_on_overlay_confirmation_requested)
 	reward_overlay.confirmation_finished.connect(_on_overlay_confirmation_finished)
@@ -71,8 +78,13 @@ func _ready() -> void:
 		_show_fatal_error("Le rapport de victoire est indisponible.")
 		return
 	_final_room = GameManager.is_final_room()
+	_decision_snapshot = GameManager.get_post_combat_decision_snapshot()
 	_configure_background()
-	room_label.text = report.room_name
+	room_label.text = "%s · Vague %d/%d" % [
+		report.room_name,
+		int(_decision_snapshot.get("wave_number", 1)),
+		maxi(1, int(_decision_snapshot.get("wave_count", 1))),
+	]
 	_build_stat_cards()
 	_build_progression_cards()
 	_build_reward_cards()
@@ -80,7 +92,12 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if phase in [Phase.REWARD_SELECTION, Phase.COMPLETED, Phase.TRANSITIONING]:
+	if phase in [
+		Phase.ROOM_DECISION,
+		Phase.REWARD_SELECTION,
+		Phase.COMPLETED,
+		Phase.TRANSITIONING,
+	]:
 		return
 	if event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
@@ -97,7 +114,12 @@ func advance_or_skip() -> void:
 		return
 	match phase:
 		Phase.VICTORY_REVEAL:
-			_enter_phase(Phase.COMBAT_STATS)
+			if bool(_decision_snapshot.get("can_continue", false)):
+				_enter_phase(Phase.ROOM_DECISION)
+			else:
+				_enter_phase(Phase.COMBAT_STATS)
+		Phase.ROOM_DECISION:
+			choose_leave_room()
 		Phase.COMBAT_STATS:
 			_enter_phase(Phase.PROGRESSION)
 		Phase.PROGRESSION:
@@ -109,6 +131,46 @@ func advance_or_skip() -> void:
 			confirm_selected_reward()
 		Phase.COMPLETED:
 			_begin_transition()
+
+
+func choose_continue_room() -> bool:
+	if phase != Phase.ROOM_DECISION or _transition_requested:
+		return false
+	_transition_requested = true
+	phase = Phase.TRANSITIONING
+	phase_title.text = "NOUVELLE VAGUE"
+	status_label.text = "La salle se renforce…"
+	push_wave_button.disabled = true
+	continue_button.disabled = true
+	transition_layer.show()
+	transition_layer.modulate.a = 0.0
+	_current_tween = create_tween()
+	_current_tween.tween_property(
+		transition_layer,
+		"modulate:a",
+		1.0,
+		transition_duration,
+	)
+	await _current_tween.finished
+	if GameManager.continue_current_room_combat(report.report_id):
+		return true
+	_transition_requested = false
+	transition_layer.hide()
+	push_wave_button.disabled = false
+	continue_button.disabled = false
+	_enter_phase(Phase.ROOM_DECISION)
+	status_label.text = "La nouvelle vague n'a pas pu être chargée."
+	return false
+
+
+func choose_leave_room() -> bool:
+	if phase != Phase.ROOM_DECISION or _transition_requested:
+		return false
+	if not GameManager.select_current_room_exit(report.report_id):
+		status_label.text = "Impossible de sécuriser la salle."
+		return false
+	_enter_phase(Phase.COMBAT_STATS)
+	return true
 
 
 func get_phase_name() -> StringName:
@@ -216,6 +278,8 @@ func _enter_phase(next_phase: Phase) -> void:
 	match phase:
 		Phase.VICTORY_REVEAL:
 			_start_victory_reveal()
+		Phase.ROOM_DECISION:
+			_start_room_decision()
 		Phase.COMBAT_STATS:
 			_start_stats_reveal()
 		Phase.PROGRESSION:
@@ -237,9 +301,36 @@ func _set_phase_visibility() -> void:
 	]
 	reward_overlay.visible = phase in [Phase.REWARD_SELECTION, Phase.COMPLETED]
 	victory_panel.visible = phase == Phase.VICTORY_REVEAL
+	decision_panel.visible = phase == Phase.ROOM_DECISION
 	stats_panel.visible = phase == Phase.COMBAT_STATS
 	progression_panel.visible = phase == Phase.PROGRESSION
 	rewards_panel.visible = false
+	push_wave_button.visible = phase == Phase.ROOM_DECISION
+
+
+func _start_room_decision() -> void:
+	var current_wave := int(_decision_snapshot.get("wave_number", 1))
+	var wave_count := maxi(1, int(_decision_snapshot.get("wave_count", 1)))
+	var reward_multiplier := float(
+		_decision_snapshot.get("reward_multiplier", 1.0)
+	)
+	phase_title.text = "DÉCISION DE SALLE"
+	decision_detail.text = (
+		"Vague %d/%d vaincue · Récompenses cumulées ×%.2f\n"
+		+ "La vague %d sera plus dangereuse."
+	) % [current_wave, wave_count, reward_multiplier, current_wave + 1]
+	decision_risk.text = (
+		"Continuer conserve vos blessures et retarde la progression, "
+		+ "l'équipement et l'utilisation des objets."
+	)
+	status_label.text = "Quittez maintenant ou poussez votre chance."
+	push_wave_button.text = "CONTINUER LE COMBAT"
+	push_wave_button.disabled = false
+	continue_button.text = (
+		"TERMINER LA RUN" if _final_room else "PASSER À LA SALLE SUIVANTE"
+	)
+	continue_button.disabled = false
+	push_wave_button.grab_focus()
 
 
 func _start_victory_reveal() -> void:

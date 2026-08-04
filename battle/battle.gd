@@ -96,6 +96,7 @@ var grid_view: Node2D
 var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
+var _arena_tile_parent: Node2D = null
 var generated_arena_seed: int = 0
 var _generated_arena_features: Dictionary = {}
 var _arena_feature_renderer: Node = null
@@ -182,9 +183,10 @@ func _setup_logic() -> void:
 	pathfinder = Pathfinder.new(grid)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
-	if room_data != null and room_data.encounter_definition != null:
+	var encounter_definition := GameManager.get_current_encounter_definition()
+	if room_data != null and encounter_definition != null:
 		encounter_runtime_state = EncounterRuntimeState.new()
-		if not encounter_runtime_state.initialize(room_data.encounter_definition):
+		if not encounter_runtime_state.initialize(encounter_definition):
 			push_error("EncounterDefinition invalide pour %s." % room_data.room_name)
 			encounter_runtime_state = null
 	spell_caster.set_encounter_runtime_state(encounter_runtime_state)
@@ -303,9 +305,7 @@ func _setup_arena_visuals() -> void:
 				visual_cells[cell] = grid.get_type(cell)
 	if visual_cells.is_empty():
 		return
-	var feature_parent: Node2D = (
-		_unit_view_parent if _unit_view_parent != null else grid_view
-	)
+	var feature_parent := _find_or_create_arena_tile_parent()
 	_arena_feature_renderer = ArenaFeatureRendererScript.new()
 	_arena_feature_renderer.name = "ArenaFeatureRenderer"
 	add_child(_arena_feature_renderer)
@@ -315,6 +315,20 @@ func _setup_arena_visuals() -> void:
 		room_data.arena_visual_profile
 	)
 	_arena_feature_renderer.render(visual_cells)
+func _find_or_create_arena_tile_parent() -> Node2D:
+	if is_instance_valid(_arena_tile_parent):
+		return _arena_tile_parent
+	_arena_tile_parent = get_node_or_null("ArenaTilesLayer") as Node2D
+	if _arena_tile_parent == null:
+		_arena_tile_parent = Node2D.new()
+		_arena_tile_parent.name = "ArenaTilesLayer"
+		_arena_tile_parent.y_sort_enabled = true
+		add_child(_arena_tile_parent)
+	## Ordre local : fond, dalles, grille tactique, puis YSortedWorld/unites.
+	## La grille et les zones de deploiement restent donc visibles et cliquables.
+	if grid_view.get_parent() == self:
+		move_child(_arena_tile_parent, grid_view.get_index())
+	return _arena_tile_parent
 
 func _find_configured_grid_view() -> Node2D:
 	var named_view := get_node_or_null("IsoGridView") as Node2D
@@ -501,13 +515,14 @@ func _spawn_enemies() -> void:
 
 	var roster: Array = room_data.enemies
 	var placements: Array = []
-	if room_data.encounter_definition != null:
+	var encounter_definition := GameManager.get_current_encounter_definition()
+	if encounter_definition != null:
 		var planner := EncounterFormationPlanner.new(grid, pathfinder)
 		encounter_formation_snapshot = planner.build_plan(
-			room_data.encounter_definition,
+			encounter_definition,
 			room_data.hero_spawn_zone,
 			room_data.enemy_spawn_zone,
-			GameManager.get_run_seed(),
+			GameManager.get_run_seed() + GameManager.get_current_wave_index() * 104729,
 		)
 		if not encounter_formation_snapshot.get("valid", false):
 			push_error("Placement de rencontre impossible (%s) : %s" % [
@@ -516,7 +531,7 @@ func _spawn_enemies() -> void:
 			])
 			return
 		placements = encounter_formation_snapshot.get("placements", [])
-		roster = room_data.encounter_definition.expanded_roster()
+		roster = encounter_definition.expanded_roster()
 	var available = room_data.enemy_spawn_zone.duplicate()
 	available.shuffle()
 
@@ -538,8 +553,28 @@ func _spawn_enemies() -> void:
 			push_warning("Plus de case libre pour %s." % enemy_data.unit_name)
 			break
 		var enemy = Unit.from_data(enemy_data)
+		_apply_current_wave_scaling(enemy)
 		_place(enemy, spawn_cell)
 		units.append(enemy)
+
+
+func _apply_current_wave_scaling(enemy: Unit) -> void:
+	if enemy == null or room_data == null:
+		return
+	var wave := room_data.get_wave(GameManager.get_current_wave_index())
+	if wave == null:
+		return
+	enemy.max_hp.add_modifier(
+		wave.enemy_health_multiplier - 1.0,
+		Stat.ModType.PERCENT,
+		"room_wave_health",
+	)
+	enemy.attack_power.add_modifier(
+		wave.enemy_attack_multiplier - 1.0,
+		Stat.ModType.PERCENT,
+		"room_wave_attack",
+	)
+	enemy.current_hp = enemy.max_hp.get_int()
 
 # Pioche la première case LIBRE d'une liste (et la retire de la liste).
 # "Libre" = valide, marchable, et sans unité dessus.

@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c6u30hgcjsckk"]
+
+[ext_resource type="Script" path="res://battle/iso/arena_prop_preview.gd" id="1_preview"]
+[ext_resource type="Resource" uid="uid://cxdiyykfasg7o" path="res://data/rooms/first_run_room_02b_plateau_visual.tres" id="2_visual"]
+[ext_resource type="PackedScene" uid="uid://di160wkgia8ei" path="res://data/rooms/maps/battle_salle_montagne_plateau.tscn" id="3_terrain"]
+
+[node name="ArenaPropPreview" type="Node2D" unique_id=2029043206]
+script = ExtResource("1_preview")
+visual_profile = ExtResource("2_visual")
+terrain_scene = ExtResource("3_terrain")

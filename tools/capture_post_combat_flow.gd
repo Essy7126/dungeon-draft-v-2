@@ -13,6 +13,8 @@ func _ready() -> void:
 	_screen = SCREEN_SCENE.instantiate() as PostCombatScreen
 	add_child(_screen)
 	await _settle()
+	await _advance_to_phase(&"ROOM_DECISION")
+	await _capture("room_wave_decision")
 	await _advance_to_phase(&"REWARD_SELECTION")
 	await _capture("equipment_two_cards")
 	var options := GameManager.get_post_combat_reward_options()

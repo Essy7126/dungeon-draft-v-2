@@ -1,23 +1,22 @@
-extends SceneTree
+extends Node
 
 const ROOM_PATH := "res://data/rooms/first_run_room_02b_plateau.tres"
 
-
-func _initialize() -> void:
+func _ready() -> void:
 	var room := load(ROOM_PATH) as RoomData
 	if room == null or room.battle_scene == null:
-		quit(1)
+		get_tree().quit(1)
 		return
 	if room.arena_generation_profile == null \
 			or room.arena_visual_profile == null:
-		quit(1)
+		get_tree().quit(1)
 		return
 
 	for test_seed in range(1, 21):
 		if not _verify_seed(room, test_seed):
-			quit(1)
+			get_tree().quit(1)
 			return
-	quit(0)
+	get_tree().quit(0)
 
 
 func _verify_seed(room: RoomData, test_seed: int) -> bool:
@@ -31,7 +30,8 @@ func _verify_seed(room: RoomData, test_seed: int) -> bool:
 	battle._generate_arena_layout()
 	var features: Dictionary = battle._generated_arena_features
 	if features.size() < room.arena_generation_profile.minimum_obstacle_count \
-			or features.size() > room.arena_generation_profile.maximum_obstacle_count:
+			or features.size() \
+					> room.arena_generation_profile.maximum_obstacle_count:
 		battle.free()
 		return false
 
@@ -49,10 +49,9 @@ func _verify_seed(room: RoomData, test_seed: int) -> bool:
 				return false
 
 	battle._setup_view()
-	var feature_parent: Node2D = battle._unit_view_parent
-	var previous_child_count: int = feature_parent.get_child_count()
 	battle._setup_arena_visuals()
-	var rendered_count: int = feature_parent.get_child_count() - previous_child_count
+	var feature_parent: Node2D = battle._arena_tile_parent
+	var rendered_count: int = feature_parent.get_child_count()
 	var expected_rendered_count := 0
 	for x in range(battle.grid.cols):
 		for y in range(battle.grid.rows):
@@ -61,6 +60,9 @@ func _verify_seed(room: RoomData, test_seed: int) -> bool:
 					or battle.grid.get_type(cell) == GridData.CellType.NORMAL:
 				expected_rendered_count += 1
 	var valid: bool = rendered_count == expected_rendered_count
+	if valid:
+		valid = feature_parent.get_index() < battle.grid_view.get_index() \
+			and battle.grid_view.get_index() < battle._unit_view_parent.get_index()
 	if valid:
 		var spawn_cell: Vector2i = room.hero_spawn_zone[0]
 		var spawn_local: Vector2 = battle.grid_view.grid_to_local(spawn_cell)
@@ -71,7 +73,10 @@ func _verify_seed(room: RoomData, test_seed: int) -> bool:
 	return valid
 
 
-func _verify_live_geometry_follow(battle, features: Dictionary) -> bool:
+func _verify_live_geometry_follow(
+		battle,
+		features: Dictionary
+	) -> bool:
 	var first_cell: Vector2i = features.keys()[0]
 	var renderer = battle._arena_feature_renderer
 	var root: Node2D = renderer._feature_roots[first_cell]
@@ -84,7 +89,7 @@ func _verify_live_geometry_follow(battle, features: Dictionary) -> bool:
 	renderer._process(0.0)
 	if sprite.transform.is_equal_approx(previous_transform):
 		return false
-	var expected_center: Vector2 = battle._unit_view_parent.to_local(
+	var expected_center: Vector2 = battle._arena_tile_parent.to_local(
 		battle.grid_view.to_global(battle.grid_view.grid_to_local(first_cell))
 	)
 	return root.position.is_equal_approx(expected_center)

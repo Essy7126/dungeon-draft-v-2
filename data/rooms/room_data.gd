@@ -39,6 +39,10 @@ const ArenaVisualProfileScript = preload(
 @export var grid_layout: RoomGridLayout
 @export var painted_map_visual_data: PaintedMapVisualData
 @export var encounter_definition: EncounterDefinition
+
+## Vagues ordonnees jouees dans cette meme arene. Une liste vide conserve le
+## contrat historique : encounter_definition represente alors l'unique vague.
+@export var waves: Array[RoomWaveData] = []
 # Les ennemis présents dans cette salle.
 @export var enemies: Array[UnitData] = []
 
@@ -47,3 +51,27 @@ const ArenaVisualProfileScript = preload(
 
 # Cases autorisées pour l'apparition des ennemis (placement aléatoire).
 @export var enemy_spawn_zone: Array[Vector2i] = []
+
+
+func get_wave_count() -> int:
+	if not waves.is_empty():
+		return waves.size()
+	return 1 if encounter_definition != null or not enemies.is_empty() else 0
+
+
+func get_wave(wave_index: int) -> RoomWaveData:
+	if wave_index < 0 or wave_index >= waves.size():
+		return null
+	return waves[wave_index]
+
+
+func get_encounter_for_wave(wave_index: int) -> EncounterDefinition:
+	var wave := get_wave(wave_index)
+	if wave != null:
+		return wave.encounter_definition
+	return encounter_definition if wave_index == 0 else null
+
+
+func get_reward_multiplier_for_wave(wave_index: int) -> float:
+	var wave := get_wave(wave_index)
+	return wave.reward_multiplier if wave != null else 1.0

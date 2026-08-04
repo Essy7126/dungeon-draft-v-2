@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="UnitData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://d00jkrnf3andk"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonMeleeIsoUnitView.tscn" id="2_visual"]
-[ext_resource type="Script" path="res://data/spell.gd" id="3_spell_type"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="2_wk6dh"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="3_spell_type"]
 [ext_resource type="Resource" path="res://data/spells/enemies/skeleton_bone_blade.tres" id="4_blade"]
 [ext_resource type="Resource" path="res://data/ai/profiles/skeleton_normal_ai.tres" id="5_ai"]
 
@@ -17,19 +18,9 @@ initiative = 12
 max_ap = 4
 max_mp = 5
 attack_power = 18
-armure = 0.0
-resist_magique = 0.0
-esquive = 0.0
-crit_chance = 0.0
 visual_scene = ExtResource("2_visual")
 basic_attack_enabled = false
 spells = Array[ExtResource("3_spell_type")]([ExtResource("4_blade")])
-ai_behavior = 0
-combat_style = 0
-preferred_range = 1
-minimum_range = 1
-maximum_range = 1
-keep_distance = false
 ai_profile = ExtResource("5_ai")
 faction_id = &"skeleton_legion"
 tactical_role_id = &"skeleton_normal"

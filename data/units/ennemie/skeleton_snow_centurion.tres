@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="UnitData" load_steps=10 format=3]
+[gd_resource type="Resource" script_class="UnitData" format=3 uid="uid://cg4c3de76wnmi"]
 
-[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="2_pcl6l"]
 [ext_resource type="PackedScene" path="res://characters/enemies/skeleton_snow_centurion/SnowCenturionIsoUnitView.tscn" id="2_visual"]
-[ext_resource type="Script" path="res://data/spell.gd" id="3_spell_type"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="3_spell_type"]
 [ext_resource type="Resource" path="res://data/spells/enemies/centurion_mark.tres" id="4_mark"]
 [ext_resource type="Resource" path="res://data/spells/enemies/frost_lance.tres" id="5_lance"]
 [ext_resource type="Resource" path="res://data/spells/enemies/frost_aegis.tres" id="6_aegis"]
@@ -18,14 +19,13 @@ description = "Mage-commandant qui marque, controle les PM, protege et invoque."
 team = 1
 max_hp = 150
 initiative = 16
-max_ap = 6
-max_mp = 3
 attack_power = 0
 armure = 15.0
 resist_magique = 80.0
-esquive = 0.0
-resistances = {1: -0.25, 2: 0.5}
-crit_chance = 0.0
+resistances = {
+1: -0.25,
+2: 0.5
+}
 visual_scene = ExtResource("2_visual")
 basic_attack_enabled = false
 active_spell_slots = 5

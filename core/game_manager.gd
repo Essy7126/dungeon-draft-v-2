@@ -53,6 +53,7 @@ var heroes: Array = []          # Array[Unit] — persistent, HP conservés
 var character_states: Dictionary = {} # StringName -> CharacterRunState
 var rooms: Array = []           # Array[RoomData]
 var current_room_index: int = -1
+var current_wave_index: int = 0
 var run_seed: int = 0
 var run_active: bool = false
 var _active_run_name: String = ""
@@ -76,11 +77,15 @@ var run_inventory: RunInventory = null
 var _equipment_service := EquipmentService.new()
 var _item_use_service := ItemUseService.new()
 var _next_run_start_room_index := 0
+var _maximum_waves_per_room := 3
+var _room_exit_selected := false
+var _cleared_room_emitted := false
 
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
 signal run_lost
 signal room_cleared(index)
+signal wave_cleared(room_index, wave_index, reward_multiplier)
 signal discipline_xp_gained(character_id, discipline_id, amount, snapshot)
 signal discipline_xp_evaluated(snapshot)
 signal scene_change_requested(path)
@@ -221,6 +226,8 @@ func _initialize_run_state(run_data: RunData) -> void:
 	rooms = run_data.rooms.duplicate()
 	run_seed = run_data.default_seed
 	current_room_index = -1
+	current_wave_index = 0
+	_maximum_waves_per_room = maxi(1, run_data.maximum_waves_per_room)
 	run_active = true
 	_active_run_name = run_data.run_name
 	_last_run_result = {}
@@ -235,6 +242,8 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_progression_service.reset_run()
 	_pending_next_combat_shields.clear()
 	_post_combat_transition_pending = false
+	_room_exit_selected = false
+	_cleared_room_emitted = false
 	_active_progression_screen_ref = null
 	if not _initialize_inventory_state():
 		push_error("Impossible d'initialiser l'inventaire de run.")
@@ -275,10 +284,14 @@ func cleanup_run_state() -> void:
 	_room_outcome_resolved = false
 	run_active = false
 	current_room_index = -1
+	current_wave_index = 0
 	_clear_heroes()
 	_clear_inventory_state()
 	rooms.clear()
 	run_seed = 0
+	_maximum_waves_per_room = 3
+	_room_exit_selected = false
+	_cleared_room_emitted = false
 	_active_run_name = ""
 	_last_run_result.clear()
 
@@ -709,6 +722,9 @@ func _go_to_next_room() -> void:
 	unbind_combat_context()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 	current_room_index += 1
+	current_wave_index = 0
+	_room_exit_selected = false
+	_cleared_room_emitted = false
 	# Plus de salle = run gagné.
 	if current_room_index >= rooms.size():
 		_finish_run(true)
@@ -743,7 +759,88 @@ func get_run_seed() -> int:
 
 func get_current_encounter_definition() -> EncounterDefinition:
 	var room := get_current_room()
-	return room.encounter_definition if room != null else null
+	return room.get_encounter_for_wave(current_wave_index) if room != null else null
+
+
+func get_current_wave_index() -> int:
+	return current_wave_index
+
+
+func get_current_wave_number() -> int:
+	return current_wave_index + 1
+
+
+func get_current_room_wave_count() -> int:
+	var room := get_current_room()
+	if room == null:
+		return 0
+	return mini(room.get_wave_count(), _maximum_waves_per_room)
+
+
+func can_continue_current_room() -> bool:
+	return run_active \
+		and _last_combat_report != null \
+		and _last_combat_report.victory \
+		and current_wave_index + 1 < get_current_room_wave_count()
+
+
+func get_current_room_reward_multiplier() -> float:
+	var room := get_current_room()
+	if room == null:
+		return 0.0
+	var total := 0.0
+	for wave_index in range(current_wave_index + 1):
+		total += room.get_reward_multiplier_for_wave(wave_index)
+	return total
+
+
+func get_post_combat_decision_snapshot() -> Dictionary:
+	return {
+		"room_index": current_room_index,
+		"wave_index": current_wave_index,
+		"wave_number": get_current_wave_number(),
+		"wave_count": get_current_room_wave_count(),
+		"can_continue": can_continue_current_room(),
+		"reward_multiplier": get_current_room_reward_multiplier(),
+		"room_exit_selected": _room_exit_selected,
+	}
+
+
+func continue_current_room_combat(report_id: StringName) -> bool:
+	if _post_combat_transition_pending \
+		or _room_exit_selected \
+		or _last_combat_report == null \
+		or _last_combat_report.report_id != report_id \
+		or not can_continue_current_room():
+		return false
+	var room := get_current_room()
+	if room == null or room.battle_scene == null or not is_inside_tree():
+		return false
+	_post_combat_transition_pending = true
+	current_wave_index += 1
+	_room_outcome_resolved = false
+	_room_exit_selected = false
+	unbind_combat_context()
+	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
+	get_tree().change_scene_to_packed.call_deferred(room.battle_scene)
+	return true
+
+
+func select_current_room_exit(report_id: StringName) -> bool:
+	if _last_combat_report == null \
+		or _last_combat_report.report_id != report_id \
+		or _post_combat_transition_pending:
+		return false
+	_room_exit_selected = true
+	_emit_current_room_cleared_once()
+	return true
+
+
+func _emit_current_room_cleared_once() -> void:
+	if _cleared_room_emitted:
+		return
+	_cleared_room_emitted = true
+	room_cleared.emit(current_room_index)
 
 
 # ============================================================
@@ -934,6 +1031,7 @@ func confirm_post_combat_reward(
 
 func complete_post_combat_transition(report_id: StringName) -> bool:
 	if _post_combat_transition_pending \
+		or not _room_exit_selected \
 		or _last_combat_report == null \
 		or _last_combat_report.report_id != report_id:
 		return false
@@ -1018,9 +1116,17 @@ func on_battle_won() -> void:
 		)
 		return
 	_room_outcome_resolved = true
+	_room_exit_selected = false
 	_capture_post_combat_background()
 	_last_combat_report = _finalize_current_combat_report(true)
-	room_cleared.emit(current_room_index)
+	wave_cleared.emit(
+		current_room_index,
+		current_wave_index,
+		get_current_room_reward_multiplier(),
+	)
+	if not can_continue_current_room():
+		_room_exit_selected = true
+		_emit_current_room_cleared_once()
 	_awaiting_post_battle_progression = false
 	combat_report_ready.emit(_last_combat_report)
 	_request_scene_change(

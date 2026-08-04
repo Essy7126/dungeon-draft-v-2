@@ -8,6 +8,29 @@
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="4_ranged"]
 [ext_resource type="Resource" path="res://data/units/ennemie/skeleton_chief.tres" id="5_chief"]
 [ext_resource type="Resource" path="res://data/encounters/first_run_room_02_encounter.tres" id="6_encounter"]
+[ext_resource type="Script" path="res://data/rooms/room_wave_data.gd" id="20_wave"]
+
+[sub_resource type="Resource" id="Resource_wave_1"]
+script = ExtResource("20_wave")
+wave_name = "Vague 1 - Avant-garde"
+encounter_definition = ExtResource("6_encounter")
+reward_multiplier = 1.0
+
+[sub_resource type="Resource" id="Resource_wave_2"]
+script = ExtResource("20_wave")
+wave_name = "Vague 2 - Renforts"
+encounter_definition = ExtResource("6_encounter")
+enemy_health_multiplier = 1.2
+enemy_attack_multiplier = 1.1
+reward_multiplier = 1.5
+
+[sub_resource type="Resource" id="Resource_wave_3"]
+script = ExtResource("20_wave")
+wave_name = "Vague 3 - Elite"
+encounter_definition = ExtResource("6_encounter")
+enemy_health_multiplier = 1.45
+enemy_attack_multiplier = 1.25
+reward_multiplier = 2.25
 
 [resource]
 script = ExtResource("2_room")
@@ -15,6 +38,7 @@ room_name = "Salle 2 - Avant-poste montagneux"
 background_image = ExtResource("1_bg")
 battle_scene = ExtResource("1_battle")
 encounter_definition = ExtResource("6_encounter")
+waves = Array[ExtResource("20_wave")]([SubResource("Resource_wave_1"), SubResource("Resource_wave_2"), SubResource("Resource_wave_3")])
 enemies = Array[ExtResource("1_unit")]([ExtResource("3_melee"), ExtResource("3_melee"), ExtResource("3_melee"), ExtResource("5_chief")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(10, 19), Vector2i(11, 19), Vector2i(7, 15)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(10, 3), Vector2i(11, 2), Vector2i(12, 0), Vector2i(13, 2)])

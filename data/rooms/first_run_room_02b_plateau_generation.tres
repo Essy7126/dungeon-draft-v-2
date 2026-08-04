@@ -4,10 +4,10 @@
 
 [resource]
 script = ExtResource("1_profile")
-minimum_obstacle_count = 5
-maximum_obstacle_count = 8
+minimum_obstacle_count = 2
+maximum_obstacle_count = 4
 minimum_feature_distance = 2
-maximum_blocked_cell_ratio = 0.12
+maximum_blocked_cell_ratio = 0.18
 wall_weight = 2
 hole_weight = 1
 lava_weight = 1

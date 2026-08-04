@@ -111,6 +111,7 @@ static func _build_features(
 		rng: RandomNumberGenerator
 	) -> Dictionary:
 	var features := {}
+	var target_size := features.size() + requested_count
 	var base_walkable_count := 0
 	for x in range(grid.cols):
 		for y in range(grid.rows):
@@ -120,10 +121,15 @@ static func _build_features(
 		float(base_walkable_count) * profile.maximum_blocked_cell_ratio
 	)
 	var blocked_count := 0
+	for existing_type in features.values():
+		if not GridData.PROPERTIES[existing_type]["walkable"]:
+			blocked_count += 1
 
 	for cell in candidates:
-		if features.size() >= requested_count:
+		if features.size() >= target_size:
 			break
+		if features.has(cell):
+			continue
 		if _is_near_existing_feature(
 			cell,
 			features,
