@@ -85,7 +85,7 @@ layer = 100
 offset_left = 16.0
 offset_top = 16.0
 offset_right = 506.0
-offset_bottom = 430.0
+offset_bottom = 510.0
 theme_override_styles/panel = SubResource("Style_toolbar")
 
 [node name="Margin" type="MarginContainer" parent="CanvasLayer/Toolbar"]
@@ -98,7 +98,7 @@ theme_override_constants/margin_bottom = 15
 theme_override_constants/separation = 5
 
 [node name="Title" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
-text = "DYNAMIC ARENA LAB  •  8 × 8"
+text = "DYNAMIC ARENA LAB • ArenaDefinition"
 theme_override_colors/font_color = Color(0.72, 0.92, 1, 1)
 theme_override_font_sizes/font_size = 20
 
@@ -141,6 +141,6 @@ text = "Grille [G] : ON   |   Chemin [P] : ON   |   Murs : 0"
 theme_override_colors/font_color = Color(0.63, 0.74, 0.83, 1)
 
 [node name="Help" type="Label" parent="CanvasLayer/Toolbar/Margin/VBox"]
-text = "B/F/I : variante  •  Ctrl+clic : placer/remplacer/retirer\n1/2/3/4 : STONE/WATER/ICE/LAVA  •  Suppr : retirer\nClic droit : destination  •  R/G/P : reset/grille/chemin\nEspace/Entree : deplacer  •  advance_turn() : tour de lab"
+text = "B/F/I : variante • Ctrl+clic : placer/remplacer/retirer\n1/2/3/4/5 : STONE/WATER/ICE/LAVA/VOID • Suppr : retirer\nClic droit : destination • R/G/P : reset/grille/chemin\nEspace/Entree : deplacer • ArenaDefinition est le document actif"
 theme_override_colors/font_color = Color(0.80, 0.85, 0.90, 1)
 theme_override_font_sizes/font_size = 13

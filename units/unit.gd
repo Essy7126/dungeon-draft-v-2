@@ -139,6 +139,7 @@ var pending_ability: Dictionary = {}
 # --- Statuts actifs ---
 # Liste de dictionnaires : { "data": StatusData, "remaining": int }
 var active_statuses: Array = []
+var _resolved_combat_effects: Dictionary = {}
 
 # --- Signaux ---
 signal died(unit)
@@ -547,6 +548,11 @@ func apply_status(status_data: StatusData, source: Unit = null) -> void:
 			DebugLogger.debug(CAT_STATS, "%s : %s rafraîchi (%d tours)" % [
 				unit_name, status_data.status_name, entry["remaining"]])
 			EventBus.status_refreshed.emit(self, status_data)
+			EventBus.combat_status_refreshed.emit(CombatEventFact.create(
+				&"status_refreshed", self, source, {
+					"status_id": status_data.get_effective_status_id(),
+				}
+			))
 			return
 	# Nouveau statut.
 	var new_entry := {
@@ -566,6 +572,11 @@ func apply_status(status_data: StatusData, source: Unit = null) -> void:
 	_apply_status_stat_modifiers(status_data, source)
 	# Le CombatLogger Ã©coute status_applied et produit la ligne de log.
 	EventBus.status_applied.emit(self, status_data)
+	EventBus.status_added.emit(CombatEventFact.create(
+		&"status_added", self, source, {
+			"status_id": status_data.get_effective_status_id(),
+		}
+	))
 
 
 func has_status(status_id: StringName, source: Unit = null) -> bool:
@@ -601,6 +612,9 @@ func remove_status(status_id: StringName, source: Unit = null, forced := true) -
 			EventBus.status_removed.emit(self, status_id, source)
 		else:
 			EventBus.status_expired.emit(self, status_id)
+			EventBus.combat_status_expired.emit(CombatEventFact.create(
+				&"status_expired", self, source, {"status_id": status_id}
+			))
 		removed += 1
 	return removed
 
@@ -660,6 +674,11 @@ func process_statuses() -> bool:
 				{
 					"ignore_defense": data.ignores_defense,
 					"cannot_be_dodged": not data.can_be_dodged,
+					"is_periodic": true,
+					"status_id": data.get_effective_status_id(),
+					"action_id": StringName("status_%s_%d" % [
+						data.get_effective_status_id(), activation_index,
+					]),
 				}
 			)
 			DebugLogger.info(CAT_STATS, "%s subit %d dÃ©gÃ¢ts de %s" % [
@@ -669,7 +688,13 @@ func process_statuses() -> bool:
 
 		# Soin par tour (rÃ©gÃ©nÃ©ration).
 		if data.heal_per_turn > 0:
-			heal(data.heal_per_turn)
+			heal(data.heal_per_turn, null, {
+				"is_periodic": true,
+				"status_id": data.get_effective_status_id(),
+				"action_id": StringName("status_heal_%s_%d" % [
+					data.get_effective_status_id(), activation_index,
+				]),
+			})
 			DebugLogger.info(CAT_STATS, "%s rÃ©cupÃ¨re %d PV de %s" % [
 				unit_name, data.heal_per_turn, data.status_name], {
 				"PV": current_hp,
@@ -714,6 +739,11 @@ func tick_statuses() -> void:
 				{
 					"ignore_defense": data.ignores_defense,
 					"cannot_be_dodged": not data.can_be_dodged,
+					"is_periodic": true,
+					"status_id": data.get_effective_status_id(),
+					"action_id": StringName("status_%s_%d" % [
+						data.get_effective_status_id(), activation_index,
+					]),
 				}
 			)
 			DebugLogger.info(CAT_STATS, "%s subit %d degats de %s" % [
@@ -730,6 +760,9 @@ func tick_statuses() -> void:
 			active_statuses.remove_at(i)
 			# Le CombatLogger Ã©coute status_expired et produit la ligne de log.
 			EventBus.status_expired.emit(self, ended)
+			EventBus.combat_status_expired.emit(CombatEventFact.create(
+				&"status_expired", self, null, {"status_id": ended}
+			))
 
 # Retourne la liste des statuts actifs (pour l'UI).
 func get_active_statuses() -> Array:
@@ -753,6 +786,9 @@ func cleanse_simple_negative_statuses(maximum: int = 1) -> int:
 		_remove_status_stat_modifiers(active_statuses[index])
 		active_statuses.remove_at(index)
 		EventBus.status_expired.emit(self, status_id)
+		EventBus.combat_status_expired.emit(CombatEventFact.create(
+			&"status_expired", self, null, {"status_id": status_id}
+		))
 		removed += 1
 		if removed >= maximum:
 			break
@@ -860,18 +896,34 @@ func get_force_multiplier() -> float:
 # Accorde un bouclier. Remplace l'ancien s'il est plus faible.
 # Un bouclier plus faible est ignorÃ© : on ne perd jamais son bouclier
 # parce qu'un sort de soutien a donnÃ© moins que ce qu'on a dÃ©jÃ .
-func add_shield(amount: int, source: Unit = null) -> void:
+func add_shield(
+		amount: int,
+		source: Unit = null,
+		options: Dictionary = {}
+	) -> CombatEventFact:
 	if not is_alive or amount <= 0:
-		return
+		return null
+	var effect_key := _combat_effect_key(&"shield", options)
+	if effect_key != &"" and _resolved_combat_effects.has(effect_key):
+		return _resolved_combat_effects[effect_key] as CombatEventFact
 	if amount <= current_shield:
-		return                           # bouclier actuel dÃ©jÃ  plus fort : ignorÃ©
+		return null
 	var before := current_shield
 	current_shield = amount
 	EventBus.shield_gained.emit(self, amount)
-	EventBus.shield_applied.emit(self, source, current_shield - before)
+	var applied := current_shield - before
+	EventBus.shield_applied.emit(self, source, applied)
 	shield_changed.emit(self)
+	var fact := CombatEventFact.create(
+		&"shield_granted", self, source,
+		_combat_fact_metadata(options, {"amount_applied": applied})
+	)
+	EventBus.shield_granted.emit(fact)
+	if effect_key != &"":
+		_resolved_combat_effects[effect_key] = fact
 	DebugLogger.debug(CAT_STATS,
 		"%s reÃ§oit un bouclier de %d" % [unit_name, amount])
+	return fact
 
 # Retire le bouclier complÃ¨tement (fin de tour, sort ennemi...).
 func clear_shield() -> void:
@@ -928,13 +980,26 @@ func take_damage(
 	ctx.force_crit = options.get("force_crit", false)
 	ctx.pen_pct = options.get("pen_pct", 0.0)
 	ctx.pen_flat = options.get("pen_flat", 0.0)
+	ctx.action_id = StringName(options.get("action_id", &""))
+	ctx.cast_id = StringName(options.get("cast_id", &""))
+	ctx.impact_id = StringName(options.get("impact_id", &""))
+	ctx.sequence_index = maxi(0, int(options.get("sequence_index", 0)))
+	ctx.ability_id = StringName(options.get("ability_id", &""))
+	ctx.status_id = StringName(options.get("status_id", &""))
+	ctx.is_periodic = bool(options.get("is_periodic", false))
+
+	var effect_key := _combat_effect_key(&"damage", options)
+	if effect_key != &"" and _resolved_combat_effects.has(effect_key):
+		return _resolved_combat_effects[effect_key] as DamageResolver.DamageResult
 
 	var result := DamageResolver.compute(self, ctx)
 	if result != null and not result.dodged and charged_bonus > 0:
 		_consume_charged_damage_vulnerabilities(category)
 	if result != null and not result.dodged and attacker is Unit and uses_outgoing:
 		(attacker as Unit)._consume_charged_outgoing_damage(category)
-	_apply_damage_result(result, ctx.attacker)
+	_apply_damage_result(result, ctx.attacker, ctx)
+	if effect_key != &"":
+		_resolved_combat_effects[effect_key] = result
 	if result != null and not result.dodged and not splash_spec.is_empty():
 		_apply_adjacent_vulnerability_splash(splash_spec, attacker)
 	return result
@@ -944,6 +1009,11 @@ func take_damage(
 func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	if not is_alive:
 		return null
+	var effect_key := _combat_effect_key(&"damage", {
+		"impact_id": ctx.impact_id,
+	})
+	if effect_key != &"" and _resolved_combat_effects.has(effect_key):
+		return _resolved_combat_effects[effect_key] as DamageResolver.DamageResult
 	var charged_bonus := _get_charged_damage_bonus(ctx.category)
 	var outgoing_bonus := 0
 	if ctx.attacker is Unit:
@@ -954,7 +1024,9 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 		_consume_charged_damage_vulnerabilities(ctx.category)
 	if result != null and not result.dodged and ctx.attacker is Unit:
 		(ctx.attacker as Unit)._consume_charged_outgoing_damage(ctx.category)
-	_apply_damage_result(result, ctx.attacker)
+	_apply_damage_result(result, ctx.attacker, ctx)
+	if effect_key != &"":
+		_resolved_combat_effects[effect_key] = result
 	return result
 
 
@@ -1020,7 +1092,11 @@ func _consume_charged_damage_vulnerabilities(category: int) -> void:
 		var remaining_charges := int(entry["charges"]) - 1
 		if remaining_charges <= 0:
 			active_statuses.remove_at(index)
-			EventBus.status_expired.emit(self, data.get_effective_status_id())
+			var status_id := data.get_effective_status_id()
+			EventBus.status_expired.emit(self, status_id)
+			EventBus.combat_status_expired.emit(CombatEventFact.create(
+				&"status_expired", self, null, {"status_id": status_id}
+			))
 		else:
 			active_statuses[index]["charges"] = remaining_charges
 
@@ -1053,26 +1129,50 @@ func _consume_charged_outgoing_damage(category: int) -> void:
 		var remaining_charges := int(entry["charges"]) - 1
 		if remaining_charges <= 0:
 			active_statuses.remove_at(index)
-			EventBus.status_expired.emit(self, data.get_effective_status_id())
+			var status_id := data.get_effective_status_id()
+			EventBus.status_expired.emit(self, status_id)
+			EventBus.combat_status_expired.emit(CombatEventFact.create(
+				&"status_expired", self, null, {"status_id": status_id}
+			))
 		else:
 			active_statuses[index]["charges"] = remaining_charges
 
 # Applique le rÃ©sultat calculÃ© aux PV, en absorbant d'abord le bouclier.
 # POINT D'Ã‰MISSION UNIQUE du flux de dÃ©gÃ¢ts.
-func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) -> void:
+func _apply_damage_result(
+		result: DamageResolver.DamageResult,
+		attacker = null,
+		ctx: DamageResolver.HitContext = null
+	) -> void:
+	if result == null:
+		return
+	var metadata := _hit_context_metadata(ctx)
 	if result.dodged:
 		EventBus.attack_dodged.emit(self, attacker)
+		EventBus.attack_dodge_resolved.emit(CombatEventFact.create(
+			&"attack_dodged", self, attacker, metadata
+		))
 		hp_changed.emit(self)
 		return
 
 	# --- Absorption par le bouclier ---
 	# Le bouclier prend les dÃ©gÃ¢ts en premier. Si tout est absorbÃ©, les PV ne bougent pas.
 	var damage_to_hp := result.amount
+	var absorbed := 0
 	if current_shield > 0 and damage_to_hp > 0:
-		var absorbed := mini(current_shield, damage_to_hp)
+		absorbed = mini(current_shield, damage_to_hp)
 		current_shield -= absorbed
 		damage_to_hp -= absorbed
 		EventBus.shield_absorbed.emit(self, absorbed)
+		EventBus.shield_absorption_resolved.emit(CombatEventFact.create(
+			&"shield_absorbed", self, attacker,
+			_combat_fact_metadata(metadata, {
+				"amount_absorbed": absorbed,
+				"is_critical": result.is_crit,
+				"damage_type": result.category,
+				"element": result.element,
+			})
+		))
 		if current_shield <= 0:
 			EventBus.shield_broken.emit(self)
 		shield_changed.emit(self)
@@ -1081,15 +1181,22 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 
 	# Annonce la frappe sur le bus (montant aprÃ¨s mitigation armure/rÃ©sist, avant bouclier).
 	# shield_absorbed est émis séparément pour les consommateurs du journal/UI.
-	EventBus.damage_dealt.emit(
-		self, attacker, result.amount, result.category, result.element, result.is_crit)
-	if result.is_crit:
-		EventBus.critical_hit.emit(self, attacker, result.amount)
-
 	# --- Application aux PV ---
+	var health_loss := 0
 	if damage_to_hp > 0:
-		var health_loss := mini(current_hp, damage_to_hp)
+		health_loss = mini(current_hp, damage_to_hp)
 		current_hp -= health_loss
+		var health_fact := CombatEventFact.create(
+			&"hp_damage_taken", self, attacker,
+			_combat_fact_metadata(metadata, {
+				"amount_applied": health_loss,
+				"amount_absorbed": absorbed,
+				"is_critical": result.is_crit,
+				"damage_type": result.category,
+				"element": result.element,
+			})
+		)
+		EventBus.hp_damage_taken.emit(health_fact)
 		EventBus.health_damage_taken.emit(
 			self,
 			attacker,
@@ -1098,28 +1205,103 @@ func _apply_damage_result(result: DamageResolver.DamageResult, attacker = null) 
 			result.element,
 			result.is_crit
 		)
+		if bool(metadata.get("is_periodic", false)):
+			EventBus.status_tick.emit(health_fact)
 		hp_changed.emit(self)
-		if current_hp <= 0:
-			current_hp = 0
-			_die(attacker)
 	else:
 		# Tout absorbÃ© : les PV n'ont pas bougÃ©, mais on notifie pour l'UI.
 		hp_changed.emit(self)
 
+	EventBus.hit_resolved.emit(CombatEventFact.create(
+		&"hit_resolved", self, attacker,
+		_combat_fact_metadata(metadata, {
+			"amount_resolved": result.amount,
+			"amount_applied": health_loss,
+			"amount_absorbed": absorbed,
+			"is_critical": result.is_crit,
+			"damage_type": result.category,
+			"element": result.element,
+		})
+	))
+	# Deprecated compatibility: mitigated hit amount before shield absorption.
+	EventBus.damage_dealt.emit(
+		self, attacker, result.amount, result.category, result.element, result.is_crit)
+	if result.is_crit:
+		EventBus.critical_hit.emit(self, attacker, result.amount)
+	if current_hp <= 0:
+		current_hp = 0
+		_die(attacker)
+
 	# Data-driven via gain_table[TAKE_DAMAGE] : nul pour Rage/Ombre (0), paie pour
 	# Foi (montÃ©e en puissance) et Nature. result.amount est le coup mitigÃ© (avant
 	# bouclier), donc absorber compte aussi comme "tenir bon". Point unique du flux.
-func heal(amount: int, source: Unit = null) -> void:
+func heal(
+		amount: int,
+		source: Unit = null,
+		options: Dictionary = {}
+	) -> CombatEventFact:
 	if not is_alive:
-		return
+		return null
+	var effect_key := _combat_effect_key(&"heal", options)
+	if effect_key != &"" and _resolved_combat_effects.has(effect_key):
+		return _resolved_combat_effects[effect_key] as CombatEventFact
 	var max_value := max_hp.get_int()
 	var before := current_hp
 	current_hp = mini(current_hp + amount, max_value)
 	var real := current_hp - before
+	var fact := CombatEventFact.create(
+		&"heal_received", self, source,
+		_combat_fact_metadata(options, {
+			"amount_applied": real,
+			"overheal": maxi(0, amount - real),
+		})
+	)
+	EventBus.heal_received.emit(fact)
 	EventBus.unit_healed.emit(self, real)
 	if real > 0:
 		EventBus.healing_applied.emit(self, source, real)
 	hp_changed.emit(self)
+	if effect_key != &"":
+		_resolved_combat_effects[effect_key] = fact
+	return fact
+
+
+func _combat_effect_key(effect_type: StringName, metadata: Dictionary) -> StringName:
+	var impact_id := StringName(metadata.get("impact_id", &""))
+	if impact_id == &"":
+		return &""
+	return StringName("%s:%s" % [effect_type, impact_id])
+
+
+func _combat_fact_metadata(base: Dictionary, extra: Dictionary = {}) -> Dictionary:
+	var result := {
+		"action_id": base.get("action_id", &""),
+		"cast_id": base.get("cast_id", &""),
+		"impact_id": base.get("impact_id", &""),
+		"sequence_index": base.get("sequence_index", 0),
+		"ability_id": base.get("ability_id", &""),
+		"status_id": base.get("status_id", &""),
+		"is_periodic": base.get("is_periodic", false),
+	}
+	for key in extra:
+		result[key] = extra[key]
+	return result
+
+
+func _hit_context_metadata(ctx: DamageResolver.HitContext) -> Dictionary:
+	if ctx == null:
+		return {}
+	return {
+		"action_id": ctx.action_id,
+		"cast_id": ctx.cast_id,
+		"impact_id": ctx.impact_id,
+		"sequence_index": ctx.sequence_index,
+		"ability_id": ctx.ability_id,
+		"status_id": ctx.status_id,
+		"is_periodic": ctx.is_periodic,
+	}
+
+
 func _die(killer: Unit = null) -> void:
 	# Garde d'idempotence : une unitÃ© ne peut mourir qu'UNE fois.
 	# Sans Ã§a, si _die est atteint deux fois (deux sources de dÃ©gÃ¢ts dans le

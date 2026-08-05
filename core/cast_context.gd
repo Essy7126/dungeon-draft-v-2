@@ -20,6 +20,8 @@ extends RefCounted
 var caster: Unit = null
 var spell: Spell = null
 var cell: Vector2i = Vector2i.ZERO
+var action_id: StringName = &""
+var cast_id: StringName = &""
 
 # --- Coûts calculés par _resolve_costs ---
 var ap_cost: int = 0

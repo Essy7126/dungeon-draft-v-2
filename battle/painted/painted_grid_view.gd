@@ -143,7 +143,7 @@ func clear_highlights() -> void:
 
 
 func grid_to_local(cell: Vector2i) -> Vector2:
-	return visual_data.cell_to_image(cell) if visual_data != null else Vector2.ZERO
+	return visual_data.cell_to_display(cell) if visual_data != null else Vector2.ZERO
 
 
 func grid_to_world(cell: Vector2i) -> Vector2:
@@ -151,7 +151,7 @@ func grid_to_world(cell: Vector2i) -> Vector2:
 
 
 func local_to_grid(local_position: Vector2) -> Vector2i:
-	return visual_data.image_to_cell(local_position) if visual_data != null else INVALID_CELL
+	return visual_data.display_to_cell(local_position) if visual_data != null else INVALID_CELL
 
 
 func world_to_grid(local_position: Vector2) -> Vector2i:
@@ -159,7 +159,8 @@ func world_to_grid(local_position: Vector2) -> Vector2i:
 
 
 func get_cell_polygon(cell: Vector2i) -> PackedVector2Array:
-	return visual_data.cell_polygon(cell) if visual_data != null else PackedVector2Array()
+	return visual_data.cell_polygon_display(cell) \
+		if visual_data != null else PackedVector2Array()
 
 
 func get_map_bounds() -> Rect2:
@@ -167,7 +168,7 @@ func get_map_bounds() -> Rect2:
 
 
 func get_logical_bounds() -> Rect2:
-	return visual_data.grid_bounds() if visual_data != null else Rect2()
+	return visual_data.grid_bounds_display() if visual_data != null else Rect2()
 
 
 func get_pixel_size() -> Vector2:
@@ -260,14 +261,28 @@ func _draw() -> void:
 
 
 func _draw_calibration() -> void:
-	var origin := visual_data.grid_origin
+	var origin := visual_data.image_native_to_display(visual_data.grid_origin)
 	draw_circle(origin, 5.0, Color.YELLOW)
-	draw_line(origin, origin + visual_data.axis_x * 2.0, Color(0.1, 1.0, 0.95), 3.0)
-	draw_line(origin, origin + visual_data.axis_y * 2.0, Color(1.0, 0.2, 0.9), 3.0)
+	draw_line(
+		origin,
+		visual_data.image_native_to_display(
+			visual_data.grid_origin + visual_data.axis_x * 2.0
+		),
+		Color(0.1, 1.0, 0.95), 3.0
+	)
+	draw_line(
+		origin,
+		visual_data.image_native_to_display(
+			visual_data.grid_origin + visual_data.axis_y * 2.0
+		),
+		Color(1.0, 0.2, 0.9), 3.0
+	)
 	var errors := visual_data.anchor_errors()
 	for index in range(mini(visual_data.calibration_cells.size(), errors.size())):
-		var predicted := visual_data.cell_to_image(visual_data.calibration_cells[index])
-		var measured := visual_data.calibration_pixels[index]
+		var predicted := visual_data.cell_to_display(visual_data.calibration_cells[index])
+		var measured := visual_data.image_native_to_display(
+			visual_data.calibration_pixels[index]
+		)
 		draw_line(predicted, measured, Color.RED, 2.0)
 		draw_circle(measured, 4.0, Color.WHITE)
 		draw_string(

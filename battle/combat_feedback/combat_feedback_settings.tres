@@ -1,0 +1,121 @@
+[gd_resource type="Resource" script_class="CombatFeedbackSettings" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://battle/combat_feedback/combat_feedback_settings.gd" id="1_settings"]
+[ext_resource type="Script" path="res://battle/combat_feedback/combat_feedback_style.gd" id="2_style"]
+
+[sub_resource type="Resource" id="StylePhysical"]
+script = ExtResource("2_style")
+style_id = &"damage_physical"
+event_type = &"hp_damage_taken"
+font_color = Color(1, 0.945, 0.82, 1)
+accent_color = Color(0.93, 0.36, 0.24, 1)
+font_size = 23
+icon_text = "⚔"
+
+[sub_resource type="Resource" id="StyleMagical"]
+script = ExtResource("2_style")
+style_id = &"damage_magical"
+event_type = &"hp_damage_taken"
+font_color = Color(0.8, 0.88, 1, 1)
+accent_color = Color(0.48, 0.56, 1, 1)
+font_size = 23
+icon_text = "✦"
+
+[sub_resource type="Resource" id="StyleCritical"]
+script = ExtResource("2_style")
+style_id = &"damage_critical"
+event_type = &"hp_damage_taken"
+font_color = Color(1, 0.72, 0.22, 1)
+accent_color = Color(1, 0.3, 0.12, 1)
+font_size = 31
+outline_size = 6
+icon_text = "✹"
+label_key = &"COMBAT_FEEDBACK_CRITICAL"
+label_fallback = "CRITIQUE"
+emphasis_scale = 1.28
+
+[sub_resource type="Resource" id="StylePeriodic"]
+script = ExtResource("2_style")
+style_id = &"damage_periodic"
+event_type = &"hp_damage_taken"
+font_color = Color(0.72, 0.9, 0.48, 1)
+accent_color = Color(0.48, 0.7, 0.24, 1)
+font_size = 19
+icon_text = "◉"
+
+[sub_resource type="Resource" id="StyleHealing"]
+script = ExtResource("2_style")
+style_id = &"healing_normal"
+event_type = &"heal_received"
+font_color = Color(0.48, 1, 0.66, 1)
+accent_color = Color(0.24, 0.78, 0.42, 1)
+font_size = 23
+icon_text = "✚"
+
+[sub_resource type="Resource" id="StyleShieldAbsorbed"]
+script = ExtResource("2_style")
+style_id = &"shield_absorbed"
+event_type = &"shield_absorbed"
+font_color = Color(0.72, 0.84, 1, 1)
+accent_color = Color(0.34, 0.58, 0.92, 1)
+font_size = 20
+icon_text = "◆"
+label_key = &"COMBAT_FEEDBACK_SHIELD_ABSORBED"
+label_fallback = "ABSORBÉ"
+
+[sub_resource type="Resource" id="StyleShieldGranted"]
+script = ExtResource("2_style")
+style_id = &"shield_granted"
+event_type = &"shield_granted"
+font_color = Color(0.76, 0.9, 1, 1)
+accent_color = Color(0.38, 0.72, 1, 1)
+font_size = 21
+icon_text = "◇"
+
+[sub_resource type="Resource" id="StyleDodge"]
+script = ExtResource("2_style")
+style_id = &"avoidance_dodge"
+event_type = &"attack_dodged"
+font_color = Color(1, 0.94, 0.62, 1)
+accent_color = Color(0.88, 0.74, 0.28, 1)
+font_size = 20
+icon_text = "↝"
+label_key = &"COMBAT_FEEDBACK_DODGE"
+label_fallback = "ESQUIVE"
+
+[sub_resource type="Resource" id="StyleImmune"]
+script = ExtResource("2_style")
+style_id = &"avoidance_immune"
+event_type = &"attack_immune"
+font_color = Color(0.82, 0.9, 1, 1)
+accent_color = Color(0.48, 0.7, 0.94, 1)
+font_size = 20
+icon_text = "⬡"
+label_key = &"COMBAT_FEEDBACK_IMMUNE"
+label_fallback = "IMMUNISÉ"
+
+[sub_resource type="Resource" id="StyleStatusAdded"]
+script = ExtResource("2_style")
+style_id = &"status_added"
+event_type = &"status_added"
+font_color = Color(0.86, 0.76, 1, 1)
+accent_color = Color(0.56, 0.36, 0.82, 1)
+font_size = 17
+icon_text = "＋"
+label_key = &"COMBAT_FEEDBACK_STATUS_ADDED"
+label_fallback = "STATUT APPLIQUÉ"
+
+[sub_resource type="Resource" id="StyleStatusExpired"]
+script = ExtResource("2_style")
+style_id = &"status_expired"
+event_type = &"status_expired"
+font_color = Color(0.72, 0.72, 0.78, 1)
+accent_color = Color(0.42, 0.42, 0.48, 1)
+font_size = 17
+icon_text = "−"
+label_key = &"COMBAT_FEEDBACK_STATUS_EXPIRED"
+label_fallback = "STATUT EXPIRÉ"
+
+[resource]
+script = ExtResource("1_settings")
+styles = Array[ExtResource("2_style")]([SubResource("StylePhysical"), SubResource("StyleMagical"), SubResource("StyleCritical"), SubResource("StylePeriodic"), SubResource("StyleHealing"), SubResource("StyleShieldAbsorbed"), SubResource("StyleShieldGranted"), SubResource("StyleDodge"), SubResource("StyleImmune"), SubResource("StyleStatusAdded"), SubResource("StyleStatusExpired")])

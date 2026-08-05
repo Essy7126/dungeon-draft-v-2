@@ -12,6 +12,9 @@ const MIN_AXIS_LENGTH := 0.01
 const MIN_SCALE_FACTOR := 0.01
 const MAX_SCALE_FACTOR := 100.0
 const HIT_EPSILON := 0.0001
+const ANCHOR_CONDITION_RATIO_EPSILON := 0.000001
+const QUALITY_EXCELLENT_RMS := 1.0
+const QUALITY_ACCEPTABLE_RMS := 3.0
 
 
 static func determinant(axis_x: Vector2, axis_y: Vector2) -> float:
@@ -329,6 +332,16 @@ static func screen_handle_radius_to_image_radius(
 	return radius / (minimum_scale * absf(zoom))
 
 
+static func calibration_quality(rms_error: float, anchor_count: int) -> StringName:
+	if anchor_count < 3 or not is_finite(rms_error):
+		return &"insufficient"
+	if rms_error <= QUALITY_EXCELLENT_RMS:
+		return &"excellent"
+	if rms_error <= QUALITY_ACCEPTABLE_RMS:
+		return &"acceptable"
+	return &"check"
+
+
 static func view_to_cell(
 		view_position: Vector2,
 		pan: Vector2,
@@ -350,7 +363,11 @@ static func view_to_cell(
 ## Ajustement affine aux moindres carres de position = origine + x*axe_x +
 ## y*axe_y. Trois points non colineaires suffisent ; les points supplementaires
 ## reduisent l'erreur de mesure sans changer le modele runtime.
-static func fit_affine(cells: Array, positions: Array) -> Dictionary:
+static func fit_affine(
+		cells: Array,
+		positions: Array,
+		logical_size := Vector2i.ZERO
+	) -> Dictionary:
 	if cells.size() != positions.size() or cells.size() < 3:
 		return {"ok": false, "error": "Au moins trois correspondances sont requises."}
 	var unique_cells := {}
@@ -368,6 +385,9 @@ static func fit_affine(cells: Array, positions: Array) -> Dictionary:
 			return {"ok": false, "error": "Une correspondance est invalide."}
 		var cell := cells[index] as Vector2i
 		var position := positions[index] as Vector2
+		if logical_size.x > 0 and logical_size.y > 0 \
+				and not is_cell_in_bounds(cell, logical_size):
+			return {"ok": false, "error": "Une ancre se trouve hors de la grille."}
 		if not is_vector_finite(position):
 			return {"ok": false, "error": "Une position d'ancre n'est pas finie."}
 		if unique_cells.has(cell):
@@ -381,6 +401,13 @@ static func fit_affine(cells: Array, positions: Array) -> Dictionary:
 				normal[column][other] += row[column] * row[other]
 		rhs_x += row * position.x
 		rhs_y += row * position.y
+	var condition_ratio := _anchor_condition_ratio(cells)
+	if condition_ratio <= ANCHOR_CONDITION_RATIO_EPSILON:
+		return {
+			"ok": false,
+			"error": "Les ancres sont colineaires ou trop mal reparties.",
+			"condition_ratio": condition_ratio,
+		}
 	var solved_x := _solve_3x3(normal, rhs_x)
 	var solved_y := _solve_3x3(normal, rhs_y)
 	if not bool(solved_x.get("ok", false)) or not bool(solved_y.get("ok", false)):
@@ -410,7 +437,35 @@ static func fit_affine(cells: Array, positions: Array) -> Dictionary:
 		"max_error": maximum_error,
 		"anchor_spread": maximum_cell - minimum_cell,
 		"anchor_count": cells.size(),
+		"condition_ratio": condition_ratio,
 	}
+
+
+static func _anchor_condition_ratio(cells: Array) -> float:
+	if cells.size() < 3:
+		return 0.0
+	var mean := Vector2.ZERO
+	for cell in cells:
+		mean += Vector2(cell)
+	mean /= float(cells.size())
+	var xx := 0.0
+	var xy := 0.0
+	var yy := 0.0
+	for cell in cells:
+		var delta := Vector2(cell) - mean
+		xx += delta.x * delta.x
+		xy += delta.x * delta.y
+		yy += delta.y * delta.y
+	var trace := xx + yy
+	if trace <= 0.0 or not is_finite(trace):
+		return 0.0
+	var discriminant := sqrt(maxf(
+		(xx - yy) * (xx - yy) + 4.0 * xy * xy,
+		0.0
+	))
+	var largest := 0.5 * (trace + discriminant)
+	var smallest := 0.5 * (trace - discriminant)
+	return maxf(smallest, 0.0) / maxf(largest, 0.000000000001)
 
 
 static func _solve_3x3(matrix: Array, rhs: Vector3) -> Dictionary:

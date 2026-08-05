@@ -76,15 +76,15 @@ func test_freeing_mage_iso_disconnects_unit_and_event_bus_signals() -> void:
 	iso.bind_unit(mage)
 	var moved_callback := Callable(iso, "_on_bound_unit_moved")
 	var died_callback := Callable(iso, "_on_bound_unit_died")
-	var damage_callback := Callable(iso, "_on_damage_dealt")
+	var damage_callback := Callable(iso, "_on_hit_resolved")
 	assert_true(mage.moved.is_connected(moved_callback))
 	assert_true(mage.died.is_connected(died_callback))
-	assert_true(EventBus.damage_dealt.is_connected(damage_callback))
+	assert_true(EventBus.hit_resolved.is_connected(damage_callback))
 	remove_child(iso)
 	iso.free()
 	assert_false(mage.moved.is_connected(moved_callback))
 	assert_false(mage.died.is_connected(died_callback))
-	assert_false(EventBus.damage_dealt.is_connected(damage_callback))
+	assert_false(EventBus.hit_resolved.is_connected(damage_callback))
 
 
 func test_freed_mage_visual_cannot_emit_a_late_release() -> void:

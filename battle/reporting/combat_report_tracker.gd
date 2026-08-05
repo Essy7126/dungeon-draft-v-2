@@ -71,8 +71,8 @@ func get_report() -> CombatReport:
 
 
 func _connect_events() -> void:
-	_connect_once(EventBus.damage_dealt, _on_damage_dealt)
 	_connect_once(EventBus.health_damage_taken, _on_health_damage_taken)
+	_connect_once(EventBus.hit_resolved, _on_hit_resolved)
 	_connect_once(EventBus.healing_applied, _on_healing_applied)
 	_connect_once(EventBus.shield_applied, _on_shield_applied)
 	_connect_once(EventBus.unit_killed, _on_unit_killed)
@@ -86,8 +86,8 @@ func _connect_once(signal_value: Signal, callback: Callable) -> void:
 
 func _disconnect_events() -> void:
 	for entry in [
-		[EventBus.damage_dealt, Callable(self, "_on_damage_dealt")],
 		[EventBus.health_damage_taken, Callable(self, "_on_health_damage_taken")],
+		[EventBus.hit_resolved, Callable(self, "_on_hit_resolved")],
 		[EventBus.healing_applied, Callable(self, "_on_healing_applied")],
 		[EventBus.shield_applied, Callable(self, "_on_shield_applied")],
 		[EventBus.unit_killed, Callable(self, "_on_unit_killed")],
@@ -112,22 +112,9 @@ func _character_for_unit(unit: Unit) -> CharacterCombatReport:
 	return _report.get_character_report(character_id) if character_id != &"" else null
 
 
-func _on_damage_dealt(
-		_target: Unit,
-		attacker: Unit,
-		amount: int,
-		_category: int,
-		_element: int,
-		_is_crit: bool
-	) -> void:
-	var character := _character_for_unit(attacker)
-	if character != null:
-		character.damage_dealt += maxi(amount, 0)
-
-
 func _on_health_damage_taken(
 		target: Unit,
-		_attacker: Unit,
+		attacker: Unit,
 		amount: int,
 		_category: int,
 		_element: int,
@@ -136,6 +123,12 @@ func _on_health_damage_taken(
 	var character := _character_for_unit(target)
 	if character != null:
 		character.damage_taken += maxi(amount, 0)
+
+
+func _on_hit_resolved(fact: CombatEventFact) -> void:
+	var source_character := _character_for_unit(fact.source as Unit)
+	if source_character != null:
+		source_character.damage_dealt += fact.amount_resolved
 
 
 func _on_healing_applied(_target: Unit, source: Unit, amount: int) -> void:

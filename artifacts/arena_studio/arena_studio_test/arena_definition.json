@@ -1007,8 +1007,26 @@
       "terrain_id": "normal"
     }
   ],
+  "decorations": [],
   "display_name": "Arene de test",
   "encounter_path": "res://data/encounters/first_run_room_01_encounter.tres",
+  "foreground_full_hide_rect": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "foreground_occluder_polygon": [],
+  "foreground_occluder_sort_y": 0.0,
+  "foreground_offset": [
+    0.0,
+    0.0
+  ],
+  "foreground_path": "",
+  "foreground_scale": [
+    1.0,
+    1.0
+  ],
   "godot_version": "4.7.1-stable (official)",
   "grid_origin": [
     688.0,
@@ -1027,16 +1045,19 @@
     1.0
   ],
   "intentionally_isolated_cells": [],
+  "modular_visual_profile": {},
+  "objectives": [],
   "obstacles": [],
   "presentation_profile_path": "res://data/maps/painted/room_01_forest_presentation.tres",
   "production_notes": "",
   "runtime_entry": "res://data/rooms/maps/painted_battle.tscn",
-  "schema_version": 1,
+  "schema_version": 2,
   "source_image_size": [
     1376,
     768
   ],
   "source_room_path": "",
+  "source_visual_path": "",
   "spawns": [
     {
       "cell": [
@@ -1173,5 +1194,7 @@
       "spawn_id": "auto_enemy_5",
       "unit_id": "encounter_enemy"
     }
-  ]
+  ],
+  "theme_id": "painted_default",
+  "visual_mode": 0
 }

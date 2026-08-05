@@ -13,6 +13,7 @@ static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
 	layout.layout_rows = _build_layout_rows(arena)
 	layout.cell_type_overrides = _build_type_overrides(arena)
 	layout.visual_only_cells = arena.border_cells()
+	layout.objective_cells.assign(arena.objectives.map(func(value): return value.cell))
 	arena.grid_layout = layout
 
 	var visual := PaintedMapVisualData.new()
@@ -26,6 +27,12 @@ static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
 	visual.axis_y = arena.axis_y
 	visual.image_offset = arena.image_offset
 	visual.image_scale = arena.image_scale
+	visual.foreground_texture_path = arena.foreground_path
+	visual.foreground_offset = arena.foreground_offset
+	visual.foreground_scale = arena.foreground_scale
+	visual.foreground_occluder_polygon = arena.foreground_occluder_polygon.duplicate()
+	visual.foreground_occluder_sort_y = arena.foreground_occluder_sort_y
+	visual.foreground_full_hide_rect = arena.foreground_full_hide_rect
 	visual.camera_offset = arena.camera_offset
 	visual.camera_zoom = arena.camera_zoom
 	visual.calibration_cells = arena.calibration_cells.duplicate()
@@ -34,6 +41,11 @@ static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
 		visual.presentation_profile = load(arena.presentation_profile_path) \
 			as BattlePresentationProfile
 	arena.painted_map_visual_data = visual
+	if arena.visual_mode != ArenaDefinition.VisualMode.PAINTED \
+			and arena.modular_visual_profile != null:
+		arena.arena_visual_profile = arena.modular_visual_profile.resolved_tile_visual_profile()
+	else:
+		arena.arena_visual_profile = null
 
 	arena.room_name = arena.display_name
 	arena.hero_spawn_zone = []
@@ -50,9 +62,15 @@ static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
 	# roster importe et laisser painted_battle l'etendre au lancement reel.
 	if arena.encounter_definition != null and not Engine.is_editor_hint():
 		arena.enemies = arena.encounter_definition.expanded_roster()
-	if arena.battle_scene == null and ResourceLoader.exists(
-		ArenaDefinition.DEFAULT_BATTLE_SCENE
-	):
+	var current_scene_path := arena.battle_scene.resource_path \
+		if arena.battle_scene != null else ""
+	if arena.visual_mode == ArenaDefinition.VisualMode.MODULAR \
+			and current_scene_path in ["", ArenaDefinition.DEFAULT_BATTLE_SCENE] \
+			and ResourceLoader.exists(ArenaDefinition.MODULAR_BATTLE_SCENE):
+		arena.battle_scene = load(ArenaDefinition.MODULAR_BATTLE_SCENE) as PackedScene
+	elif arena.visual_mode != ArenaDefinition.VisualMode.MODULAR \
+			and arena.battle_scene == null \
+			and ResourceLoader.exists(ArenaDefinition.DEFAULT_BATTLE_SCENE):
 		arena.battle_scene = load(ArenaDefinition.DEFAULT_BATTLE_SCENE) as PackedScene
 	return true
 
@@ -75,15 +93,18 @@ static func runtime_signature(arena: ArenaDefinition) -> Dictionary:
 	if grid == null:
 		return {}
 	var centers := {}
+	var display_centers := {}
 	var types := {}
 	for y in range(arena.grid_size.y):
 		for x in range(arena.grid_size.x):
 			var cell := Vector2i(x, y)
 			centers["%d,%d" % [x, y]] = arena.painted_map_visual_data.cell_to_image(cell)
+			display_centers["%d,%d" % [x, y]] = arena.painted_map_visual_data.cell_to_display(cell)
 			types["%d,%d" % [x, y]] = grid.get_type(cell)
 	return {
 		"size": arena.grid_size,
 		"centers": centers,
+		"display_centers": display_centers,
 		"types": types,
 		"hero_spawns": arena.hero_spawn_zone.duplicate(),
 		"enemy_spawns": arena.enemy_spawn_zone.duplicate(),
@@ -101,7 +122,7 @@ static func _build_layout_rows(arena: ArenaDefinition) -> PackedStringArray:
 			var obstacle := arena.obstacle_at(cell)
 			if definition == null or not definition.defined or definition.border:
 				row += RoomGridLayout.VOID
-			elif obstacle != null and obstacle.blocks_movement:
+			elif obstacle != null and obstacle.blocks_movement and obstacle.wall_id == &"":
 				row += RoomGridLayout.BLOCKED \
 					if obstacle.blocks_line_of_sight else RoomGridLayout.VOID
 			elif not definition.playable:
@@ -118,7 +139,7 @@ static func _build_type_overrides(arena: ArenaDefinition) -> Dictionary:
 		if definition == null or not definition.defined or definition.border:
 			continue
 		var obstacle := arena.obstacle_at(definition.coordinate)
-		if obstacle != null and obstacle.blocks_movement:
+		if obstacle != null and obstacle.blocks_movement and obstacle.wall_id == &"":
 			overrides[definition.coordinate] = GridData.CellType.WALL \
 				if obstacle.blocks_line_of_sight else GridData.CellType.HOLE
 		elif not definition.playable:

@@ -1,9 +1,36 @@
 {
   "arena_id": "arena_studio_test",
   "errors": 0,
-  "generated_at": "2026-08-05T11:54:28",
-  "information": 1,
+  "generated_at": "2026-08-05T18:56:10",
+  "information": 3,
   "messages": [
+    {
+      "cell": null,
+      "code": "visual_mode",
+      "message": "Mode visuel : PAINTED.",
+      "severity": "info",
+      "subject_id": "",
+      "suggested_fix": "",
+      "technical_details": ""
+    },
+    {
+      "cell": null,
+      "code": "battle_scene",
+      "message": "Scene de bataille : res://data/rooms/maps/painted_battle.tscn.",
+      "severity": "info",
+      "subject_id": "",
+      "suggested_fix": "",
+      "technical_details": ""
+    },
+    {
+      "cell": null,
+      "code": "foreground_missing",
+      "message": "Aucun foreground n'est configure.",
+      "severity": "warning",
+      "subject_id": "",
+      "suggested_fix": "",
+      "technical_details": ""
+    },
     {
       "cell": null,
       "code": "map_summary",
@@ -15,6 +42,7 @@
     }
   ],
   "metrics": {
+    "battle_scene": "res://data/rooms/maps/painted_battle.tscn",
     "border_cells": 32,
     "components": 1,
     "defined_cells": 80,
@@ -23,13 +51,18 @@
       8
     ],
     "minimum_camp_distance": 12,
+    "objectives": 0,
     "obstacles": 0,
     "playable_cells": 48,
+    "props": 0,
     "spawns": 9,
     "terrains": [
       "normal"
-    ]
+    ],
+    "visual_mode": 0,
+    "visual_profile": "painted_default",
+    "walls": []
   },
-  "verdict": "ARENA_VALID",
-  "warnings": 0
+  "verdict": "ARENA_VALID_WITH_WARNINGS",
+  "warnings": 1
 }

@@ -40,7 +40,7 @@ func setup(p_unit: Unit) -> void:
 	unit.stats_changed.connect(_on_stats_changed)
 	EventBus.basic_attack_performed.connect(_on_attack_performed)
 	EventBus.turn_started.connect(_on_any_turn_started)
-	EventBus.damage_dealt.connect(_on_damage_dealt)
+	EventBus.health_damage_taken.connect(_on_damage_dealt)
 	EventBus.unit_healed.connect(_on_unit_healed)
 	EventBus.shield_absorbed.connect(_on_shield_absorbed)
 	EventBus.shield_broken.connect(_on_shield_broken)
@@ -138,7 +138,7 @@ func _disconnect_runtime_signals() -> void:
 	var event_connections := [
 		[EventBus.basic_attack_performed, _on_attack_performed],
 		[EventBus.turn_started, _on_any_turn_started],
-		[EventBus.damage_dealt, _on_damage_dealt],
+		[EventBus.health_damage_taken, _on_damage_dealt],
 		[EventBus.unit_healed, _on_unit_healed],
 		[EventBus.shield_absorbed, _on_shield_absorbed],
 		[EventBus.shield_broken, _on_shield_broken],

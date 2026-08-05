@@ -1,3 +1,4 @@
+@tool
 class_name IsoGridView
 extends Node2D
 

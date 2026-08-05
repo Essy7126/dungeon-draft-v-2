@@ -23,8 +23,8 @@
 # ------------------------------------------------------------
 # POINT D'ÉMISSION UNIQUE :
 #   Un fait n'est émis QUE depuis UN seul endroit, après que le fait est acté.
-#   Ex : damage_dealt est émis depuis Unit._apply_damage_result (une fois les
-#   PV réellement retirés), jamais depuis l'appelant. Zéro doublon garanti.
+#   Les nouveaux signaux `*_resolved` transportent un CombatEventFact émis
+#   après application. Les signaux historiques restent transitoirement présents.
 # ============================================================
 
 extends Node
@@ -34,7 +34,9 @@ extends Node
 # Émis depuis Unit, une fois le fait acté sur les PV.
 # ============================================================
 
-# Des dégâts ont été réellement infligés (après mitigation, PV déjà retirés).
+# DEPRECATED : coup résolu après mitigation, avant absorption du bouclier.
+# Le signal est conservé pour compatibilité ; les nouveaux consommateurs doivent
+# écouter hit_resolved, shield_absorption_resolved ou hp_damage_taken.
 # target   : l'Unit qui a encaissé
 # attacker : l'Unit source, ou null (terrain, poison)
 # amount   : dégâts réels appliqués
@@ -45,6 +47,21 @@ signal damage_dealt(target, attacker, amount, category, element, is_crit)
 
 # Perte reelle de PV apres mitigation et absorption par le bouclier.
 signal health_damage_taken(target, attacker, amount, category, element, is_crit)
+
+# Contrat sémantique V2. Chaque signal transporte exactement un fait déjà
+# appliqué et identifié. CombatEventFact contient les ids action/cast/impact,
+# l'ordre multi-impact et les montants finaux sans demander de recalcul à l'UI.
+signal hit_resolved(fact: CombatEventFact)
+signal shield_absorption_resolved(fact: CombatEventFact)
+signal hp_damage_taken(fact: CombatEventFact)
+signal heal_received(fact: CombatEventFact)
+signal shield_granted(fact: CombatEventFact)
+signal attack_dodge_resolved(fact: CombatEventFact)
+signal attack_immune(fact: CombatEventFact)
+signal status_tick(fact: CombatEventFact)
+signal status_added(fact: CombatEventFact)
+signal combat_status_refreshed(fact: CombatEventFact)
+signal combat_status_expired(fact: CombatEventFact)
 
 # Une attaque a été totalement esquivée (aucun dégât).
 # target   : l'Unit qui a esquivé

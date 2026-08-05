@@ -83,6 +83,29 @@ func test_native_screen_conversion_handles_offset_scale_pan_and_zoom() -> void:
 		GridTransformService.screen_handle_radius_to_image_radius(12.0, scale, zoom),
 		12.0 / (1.5 * 2.75), 0.0001
 	)
+	var visual := PaintedMapVisualData.new()
+	visual.source_image_size = Vector2i(1024, 768)
+	visual.logical_grid_size = Vector2i(14, 14)
+	visual.grid_origin = Vector2(410, 132)
+	visual.axis_x = Vector2(31, 16)
+	visual.axis_y = Vector2(-29, 17)
+	visual.image_offset = offset
+	visual.image_scale = scale
+	var cell := Vector2i(7, 9)
+	var native_center := visual.cell_to_image(cell)
+	assert_almost_eq(
+		visual.cell_to_display(cell), offset + native_center * scale,
+		Vector2(0.0001, 0.0001)
+	)
+	assert_eq(visual.display_to_cell(visual.cell_to_display(cell)), cell)
+	var runtime_view := PaintedGridView.new()
+	runtime_view.visual_data = visual
+	assert_almost_eq(
+		runtime_view.grid_to_local(cell), visual.cell_to_display(cell),
+		Vector2(0.0001, 0.0001)
+	)
+	assert_eq(runtime_view.local_to_grid(runtime_view.grid_to_local(cell)), cell)
+	runtime_view.free()
 
 
 func test_snap_and_mirror_are_deterministic_on_rotated_grid() -> void:
@@ -121,6 +144,15 @@ func test_affine_fit_exact_noisy_duplicate_and_collinear() -> void:
 	var line_cells: Array[Vector2i] = [Vector2i.ZERO, Vector2i.ONE, Vector2i(2, 2)]
 	var line_positions: Array[Vector2] = [Vector2.ZERO, Vector2.ONE, Vector2(2, 2)]
 	assert_false(GridTransformService.fit_affine(line_cells, line_positions).ok)
+	var outside_cells: Array[Vector2i] = [
+		Vector2i.ZERO, Vector2i(8, 0), Vector2i(0, 15),
+	]
+	var outside_positions: Array[Vector2] = [Vector2.ZERO, Vector2.RIGHT, Vector2.DOWN]
+	var outside := GridTransformService.fit_affine(
+		outside_cells, outside_positions, Vector2i(14, 14)
+	)
+	assert_false(outside.ok)
+	assert_string_contains(str(outside.error), "hors de la grille")
 
 
 func test_history_undo_redo_branch_jump_saved_fingerprint_and_limit() -> void:
@@ -178,6 +210,86 @@ func test_arena_sessions_use_working_copies_and_isolated_histories() -> void:
 	assert_true(forest_session.is_dirty())
 
 
+func test_import_and_runtime_bridge_preserve_foreground_and_occlusion() -> void:
+	for arena_id in [&"room_01_forest", &"room_05_volcano", &"room_06_space"]:
+		var arena := ArenaLegacyImporter.import_production(arena_id)
+		assert_not_null(arena)
+		var room := load(arena.source_room_path) as RoomData
+		assert_not_null(room)
+		var source_visual := room.painted_map_visual_data
+		assert_eq(arena.source_visual_path, source_visual.resource_path)
+		assert_eq(arena.foreground_path, source_visual.foreground_texture_path)
+		assert_eq(arena.foreground_offset, source_visual.foreground_offset)
+		assert_eq(arena.foreground_scale, source_visual.foreground_scale)
+		assert_eq(
+			arena.foreground_occluder_polygon,
+			source_visual.foreground_occluder_polygon
+		)
+		assert_eq(
+			arena.foreground_full_hide_rect,
+			source_visual.foreground_full_hide_rect
+		)
+		assert_true(ArenaRuntimeBridge.sync_runtime_resources(arena))
+		assert_eq(
+			arena.painted_map_visual_data.foreground_occluder_polygon,
+			source_visual.foreground_occluder_polygon
+		)
+		assert_eq(
+			arena.painted_map_visual_data.foreground_full_hide_rect,
+			source_visual.foreground_full_hide_rect
+		)
+
+
+func test_production_calibration_save_updates_only_calibration_fields() -> void:
+	var root := "user://dungeon_draft_studio/arena_studio/tests"
+	var path := root.path_join("v11_visual_save_fixture.tres")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(root))
+	var visual := PaintedMapVisualData.new()
+	visual.map_id = &"v11_visual_save_fixture"
+	visual.debug_name = "Unrelated field must survive"
+	visual.background_texture_path = "res://art/backgrounds/forest.png"
+	visual.foreground_texture_path = "res://art/foregrounds/tower.png"
+	visual.foreground_offset = Vector2(17, -9)
+	visual.foreground_scale = Vector2(1.25, 1.25)
+	visual.foreground_occluder_polygon = PackedVector2Array([
+		Vector2(1, 2), Vector2(30, 4), Vector2(12, 40),
+	])
+	visual.foreground_occluder_sort_y = 35.0
+	visual.foreground_full_hide_rect = Rect2(4, 5, 20, 22)
+	visual.camera_offset = Vector2(100, 55)
+	visual.camera_zoom = 1.2
+	visual.grid_origin = Vector2(10, 20)
+	visual.axis_x = Vector2(30, 15)
+	visual.axis_y = Vector2(-30, 15)
+	assert_eq(ResourceSaver.save(visual, path), OK)
+
+	var arena := ArenaDefinition.new()
+	arena.set_identity("Fixture", "v11_visual_save_fixture")
+	arena.grid_origin = Vector2(321.5, 88.25)
+	arena.axis_x = Vector2(42.5, 19.75)
+	arena.axis_y = Vector2(-39.25, 21.5)
+	arena.calibration_cells = [Vector2i.ZERO, Vector2i(8, 0), Vector2i(0, 8)]
+	arena.calibration_pixels = [Vector2(321.5, 88.25), Vector2(661.5, 246.25), Vector2(7.5, 260.25)]
+	assert_eq(ArenaSerializer.save_production_calibration(arena, path), OK)
+	assert_true(ArenaSerializer.production_visual_matches(arena, path))
+	var saved := ResourceLoader.load(
+		path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as PaintedMapVisualData
+	assert_not_null(saved)
+	assert_eq(saved.debug_name, visual.debug_name)
+	assert_eq(saved.background_texture_path, visual.background_texture_path)
+	assert_eq(saved.foreground_texture_path, visual.foreground_texture_path)
+	assert_eq(saved.foreground_offset, visual.foreground_offset)
+	assert_eq(saved.foreground_scale, visual.foreground_scale)
+	assert_eq(saved.foreground_occluder_polygon, visual.foreground_occluder_polygon)
+	assert_eq(saved.foreground_full_hide_rect, visual.foreground_full_hide_rect)
+	assert_eq(saved.camera_offset, visual.camera_offset)
+	assert_eq(saved.camera_zoom, visual.camera_zoom)
+	var absolute := ProjectSettings.globalize_path(path)
+	if FileAccess.file_exists(absolute):
+		DirAccess.remove_absolute(absolute)
+
+
 func test_canvas_transform_gesture_is_one_action_and_escape_restores() -> void:
 	var studio := ArenaStudioMain.new()
 	add_child_autofree(studio)
@@ -212,6 +324,84 @@ func test_canvas_transform_gesture_is_one_action_and_escape_restores() -> void:
 	ArenaSerializer.remove_recovery(studio.arena.arena_id)
 
 
+func test_canvas_display_transform_keyboard_grouping_and_pivot_cancel() -> void:
+	var studio := ArenaStudioMain.new()
+	add_child_autofree(studio)
+	studio._on_tool_selected(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
+	studio.arena.image_offset = Vector2(47, -23)
+	studio.arena.image_scale = Vector2(2, 2)
+	studio.canvas.zoom = 1.5
+	var original_origin := studio.arena.grid_origin
+	var start := studio.canvas._image_native_to_screen(original_origin)
+	assert_true(studio.canvas._begin_transform_handle(
+		ArenaStudioCanvas.TransformHandle.BODY, start, false, true
+	))
+	var motion := InputEventMouseMotion.new()
+	motion.position = start + Vector2(60, -30)
+	studio.canvas._handle_mouse_motion(motion)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.position = motion.position
+	studio.canvas._handle_mouse_button(release)
+	assert_almost_eq(
+		studio.arena.grid_origin, original_origin + Vector2(20, -10),
+		Vector2(0.0001, 0.0001)
+	)
+	assert_eq(studio.edit_session.history.get_current_index(), 1)
+
+	var before_keyboard := studio.arena.grid_origin
+	for key_data in [
+		[KEY_RIGHT, true, false, false],
+		[KEY_RIGHT, true, false, true],
+		[KEY_DOWN, false, true, false],
+	]:
+		var key := InputEventKey.new()
+		key.keycode = key_data[0]
+		key.pressed = true
+		key.ctrl_pressed = key_data[1]
+		key.shift_pressed = key_data[2]
+		key.echo = key_data[3]
+		studio.canvas._handle_key_input(key)
+	assert_true(studio.canvas._commit_keyboard_nudge())
+	assert_almost_eq(
+		studio.arena.grid_origin, before_keyboard + Vector2(20, 0.1),
+		Vector2(0.0001, 0.0001)
+	)
+	assert_eq(studio.edit_session.history.get_current_index(), 2)
+	assert_string_contains(studio.history_undo_name(), "clavier")
+
+	var editor_before := studio.canvas.get_editor_state()
+	var pivot: Vector2 = studio.canvas._transform_handle_screen_positions()[
+		ArenaStudioCanvas.TransformHandle.PIVOT
+	]
+	assert_true(studio.canvas._begin_transform_handle(
+		ArenaStudioCanvas.TransformHandle.PIVOT, pivot
+	))
+	var pivot_motion := InputEventMouseMotion.new()
+	pivot_motion.position = pivot + Vector2(70, -35)
+	studio.canvas._handle_mouse_motion(pivot_motion)
+	assert_ne(studio.canvas.get_editor_state(), editor_before)
+	assert_true(studio.cancel_active_gesture())
+	assert_eq(studio.canvas.get_editor_state(), editor_before)
+	assert_eq(studio.edit_session.history.get_current_index(), 2)
+
+	var before_interrupted := studio.arena.to_snapshot()
+	var body_start := studio.canvas._image_native_to_screen(studio.arena.grid_origin)
+	assert_true(studio.canvas._begin_transform_handle(
+		ArenaStudioCanvas.TransformHandle.BODY, body_start, false, true
+	))
+	var interrupted_motion := InputEventMouseMotion.new()
+	interrupted_motion.position = body_start + Vector2(25, 11)
+	studio.canvas._handle_mouse_motion(interrupted_motion)
+	assert_ne(studio.arena.to_snapshot(), before_interrupted)
+	studio.canvas.set_tool(ArenaStudioCanvas.Tool.SELECT)
+	assert_eq(studio.arena.to_snapshot(), before_interrupted)
+	assert_false(studio.canvas.has_active_gesture())
+	assert_eq(studio.edit_session.history.get_current_index(), 2)
+	ArenaSerializer.remove_recovery(studio.arena.arena_id)
+
+
 func test_shared_toolbar_exposes_contextual_undo_redo_and_history() -> void:
 	var studio := DungeonDraftStudioMain.new()
 	add_child_autofree(studio)
@@ -227,6 +417,12 @@ func test_shared_toolbar_exposes_contextual_undo_redo_and_history() -> void:
 	studio._refresh_history_controls()
 	assert_false(studio.undo_button.disabled)
 	assert_string_contains(studio.undo_button.tooltip_text, "Deplacer la grille")
+	studio._rebuild_history_menu()
+	var popup := studio.history_button.get_popup()
+	var history_text := ""
+	for index in range(popup.item_count):
+		history_text += popup.get_item_text(index) + "\n"
+	assert_string_contains(history_text, "sauvegardee")
 	studio._undo_active()
 	assert_false(studio.redo_button.disabled)
 	assert_string_contains(studio.redo_button.tooltip_text, "Deplacer la grille")
@@ -346,3 +542,13 @@ func test_forest_volcano_space_transform_roundtrip_and_runtime_projection_parity
 		assert_eq(session.working_arena.to_snapshot(), initial)
 		assert_true(session.history.redo())
 		assert_eq(session.working_arena.to_snapshot(), transformed)
+
+
+func test_space_uid_background_is_a_valid_project_resource() -> void:
+	var arena := ArenaLegacyImporter.import_production(&"room_06_space")
+	assert_not_null(arena)
+	assert_true(arena.background_path.begins_with("uid://"))
+	assert_true(ResourceLoader.exists(arena.background_path))
+	var report := ArenaValidator.validate(arena, false)
+	for message in report.messages:
+		assert_ne(message.code, &"absolute_background_path")

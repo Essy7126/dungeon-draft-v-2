@@ -1169,6 +1169,14 @@ func history_document_name() -> String:
 		if session.working_run != null else "Aucune run"
 
 
+func history_is_at_saved_state() -> bool:
+	return session.working_run != null and not session.is_dirty()
+
+
+func history_opening_is_saved() -> bool:
+	return session.working_run != null and not session.source_run_path.is_empty()
+
+
 func _active_undo_redo() -> UndoRedo:
 	if editor_undo_redo == null or _last_history_object == null:
 		return _fallback_undo_redo

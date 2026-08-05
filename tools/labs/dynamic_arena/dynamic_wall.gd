@@ -1,3 +1,4 @@
+@tool
 extends "res://battle/dynamic_terrain/dynamic_wall.gd"
 
 ## Adaptateur du lab : il ne contient que la bibliotheque de configurations de

@@ -3,7 +3,9 @@ class_name ArenaSerializer
 extends RefCounted
 
 const CANONICAL_ROOT := "res://data/arenas"
-const RECOVERY_ROOT := "user://arena_studio/recovery"
+const RECOVERY_ROOT := "user://dungeon_draft_studio/arena_studio/recovery"
+const LEGACY_RECOVERY_ROOT := "user://arena_studio/recovery"
+const PRODUCTION_VISUAL_ROOT := "res://data/maps/painted"
 
 
 static func suggested_path(arena: ArenaDefinition) -> String:
@@ -23,8 +25,6 @@ static func save_canonical(arena: ArenaDefinition, path := "") -> Error:
 	if directory_error != OK:
 		return directory_error
 	var save_error := ResourceSaver.save(arena, path)
-	if save_error == OK:
-		remove_recovery(arena.arena_id)
 	return save_error
 
 
@@ -35,6 +35,69 @@ static func load_canonical(path: String) -> ArenaDefinition:
 	if arena != null:
 		ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return arena
+
+
+static func save_production_calibration(
+		arena: ArenaDefinition,
+		visual_path: String
+	) -> Error:
+	if arena == null or not _is_allowed_visual_path(visual_path):
+		return ERR_INVALID_PARAMETER
+	var visual := ResourceLoader.load(
+		visual_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as PaintedMapVisualData
+	if visual == null or visual.map_id != arena.arena_id:
+		return ERR_INVALID_DATA
+	visual.grid_origin = arena.grid_origin
+	visual.axis_x = arena.axis_x
+	visual.axis_y = arena.axis_y
+	visual.calibration_cells = arena.calibration_cells.duplicate()
+	visual.calibration_pixels = arena.calibration_pixels.duplicate()
+	return ResourceSaver.save(visual, visual_path)
+
+
+static func visual_calibration_fingerprint(path: String) -> String:
+	if not ResourceLoader.exists(path):
+		return ""
+	var visual := ResourceLoader.load(
+		path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as PaintedMapVisualData
+	return JSON.stringify(visual_calibration_snapshot(visual)).sha256_text() \
+		if visual != null else ""
+
+
+static func visual_calibration_snapshot(visual: PaintedMapVisualData) -> Dictionary:
+	if visual == null:
+		return {}
+	return {
+		"map_id": str(visual.map_id),
+		"grid_origin": [visual.grid_origin.x, visual.grid_origin.y],
+		"axis_x": [visual.axis_x.x, visual.axis_x.y],
+		"axis_y": [visual.axis_y.x, visual.axis_y.y],
+		"calibration_cells": visual.calibration_cells.map(
+			func(value): return [value.x, value.y]
+		),
+		"calibration_pixels": visual.calibration_pixels.map(
+			func(value): return [value.x, value.y]
+		),
+	}
+
+
+static func production_visual_matches(arena: ArenaDefinition, path: String) -> bool:
+	if arena == null or not ResourceLoader.exists(path):
+		return false
+	var visual := ResourceLoader.load(
+		path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as PaintedMapVisualData
+	if visual == null:
+		return false
+	var expected := GridTransformSnapshot.from_arena(arena)
+	var actual := GridTransformSnapshot.new(
+		visual.grid_origin, visual.axis_x, visual.axis_y
+	)
+	return expected.is_equal_to(actual) \
+		and visual.calibration_cells == arena.calibration_cells \
+		and visual.calibration_pixels == arena.calibration_pixels
 
 
 static func save_recovery(arena: ArenaDefinition) -> Error:
@@ -71,17 +134,28 @@ static func recovery_path(arena_id: StringName) -> String:
 
 static func recovery_files() -> PackedStringArray:
 	var result := PackedStringArray()
-	var directory := DirAccess.open(RECOVERY_ROOT)
-	if directory == null:
-		return result
-	for file_name in directory.get_files():
-		if file_name.ends_with(".json"):
-			result.append(RECOVERY_ROOT.path_join(file_name))
+	for root in [RECOVERY_ROOT, LEGACY_RECOVERY_ROOT]:
+		var directory := DirAccess.open(root)
+		if directory == null:
+			continue
+		for file_name in directory.get_files():
+			if file_name.ends_with(".json"):
+				result.append(root.path_join(file_name))
 	result.sort()
 	return result
 
 
 static func remove_recovery(arena_id: StringName) -> void:
-	var absolute := ProjectSettings.globalize_path(recovery_path(arena_id))
-	if FileAccess.file_exists(absolute):
-		DirAccess.remove_absolute(absolute)
+	for root in [RECOVERY_ROOT, LEGACY_RECOVERY_ROOT]:
+		var absolute := ProjectSettings.globalize_path(
+			root.path_join(str(arena_id) + ".json")
+		)
+		if FileAccess.file_exists(absolute):
+			DirAccess.remove_absolute(absolute)
+
+
+static func _is_allowed_visual_path(path: String) -> bool:
+	return path.ends_with(".tres") and (
+		path.begins_with(PRODUCTION_VISUAL_ROOT + "/") \
+		or path.begins_with("user://dungeon_draft_studio/arena_studio/tests/")
+	)

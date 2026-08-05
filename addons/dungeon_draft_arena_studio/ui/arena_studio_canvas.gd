@@ -47,6 +47,8 @@ enum BrushShape {
 const INVALID_CELL := GridTransformService.INVALID_CELL
 const ZOOM_MIN := 0.08
 const ZOOM_MAX := 8.0
+const DRAG_THRESHOLD_SCREEN := 2.0
+const KEYBOARD_MERGE_DELAY := 0.32
 const GRID_COLOR := Color(0.57, 0.86, 1.0, 0.62)
 const COLORS := {
 	"playable": Color(0.10, 0.62, 0.42, 0.22),
@@ -74,6 +76,7 @@ var grid_opacity := 1.0
 var calibration_active := false
 var verification_kind := &"path"
 var selected_cells: Array[Vector2i] = []
+var grid_selected := false
 var reachable_cells: Array[Vector2i] = []
 var path_cells: Array[Vector2i] = []
 var line_cells: Array[Vector2i] = []
@@ -90,6 +93,7 @@ var lock_scale := false
 var lock_axis_x := false
 var lock_axis_y := false
 var preserve_axis_length := false
+var preserve_axis_angle := false
 var mirror_axes := false
 var layer_visibility := {
 	"background": true,
@@ -109,6 +113,7 @@ var layer_locks := {
 }
 
 var _texture: Texture2D = null
+var _foreground_texture: Texture2D = null
 var _hovered := INVALID_CELL
 var _panning := false
 var _painting := false
@@ -127,11 +132,20 @@ var _drag_pivot := Vector2.ZERO
 var _drag_start_angle := 0.0
 var _drag_start_distance := 1.0
 var _drag_changed := false
+var _drag_fine := 1.0
+var _drag_use_snap := true
+var _drag_pivot_was_custom := false
+var _drag_previous_custom_pivot := Vector2.ZERO
 var _custom_pivot := Vector2.ZERO
 var _custom_pivot_enabled := false
 var _live_transform_text := ""
 var _anchor_drag_index := -1
 var _selected_anchor_index := -1
+var _space_pan_held := false
+var _keyboard_nudging := false
+var _keyboard_snapshot: GridTransformSnapshot = null
+var _keyboard_delta := Vector2.ZERO
+var _keyboard_timer: Timer = null
 
 
 func _ready() -> void:
@@ -140,12 +154,18 @@ func _ready() -> void:
 	focus_mode = Control.FOCUS_ALL
 	resized.connect(queue_redraw)
 	focus_exited.connect(cancel_active_gesture)
+	_keyboard_timer = Timer.new()
+	_keyboard_timer.one_shot = true
+	_keyboard_timer.wait_time = KEYBOARD_MERGE_DELAY
+	_keyboard_timer.timeout.connect(_commit_keyboard_nudge)
+	add_child(_keyboard_timer)
 
 
 func set_arena(value: ArenaDefinition) -> void:
 	cancel_active_gesture()
 	arena = value
 	_texture = null
+	_foreground_texture = null
 	selected_cells.clear()
 	reachable_cells.clear()
 	path_cells.clear()
@@ -153,6 +173,9 @@ func set_arena(value: ArenaDefinition) -> void:
 	_hovered = INVALID_CELL
 	if arena != null and ResourceLoader.exists(arena.background_path):
 		_texture = load(arena.background_path) as Texture2D
+	if arena != null and ResourceLoader.exists(arena.foreground_path):
+		_foreground_texture = load(arena.foreground_path) as Texture2D
+	grid_selected = active_tool == Tool.TRANSFORM_GRID
 	if arena != null and not _custom_pivot_enabled:
 		_custom_pivot = GridTransformService.logical_grid_center(
 			GridTransformSnapshot.from_arena(arena), arena.grid_size
@@ -165,6 +188,7 @@ func set_tool(value: int) -> void:
 	if value != active_tool:
 		cancel_active_gesture()
 	active_tool = clampi(value, Tool.SELECT, Tool.CALIBRATION_ANCHORS)
+	grid_selected = active_tool == Tool.TRANSFORM_GRID
 	calibration_active = false
 	queue_redraw()
 
@@ -190,6 +214,14 @@ func get_editor_state() -> Dictionary:
 		"angle_snap_degrees": angle_snap_degrees,
 		"scale_snap": scale_snap,
 		"fine_factor": fine_factor,
+		"preserve_axis_length": preserve_axis_length,
+		"preserve_axis_angle": preserve_axis_angle,
+		"mirror_axes": mirror_axes,
+		"lock_translation": lock_translation,
+		"lock_rotation": lock_rotation,
+		"lock_scale": lock_scale,
+		"lock_axis_x": lock_axis_x,
+		"lock_axis_y": lock_axis_y,
 		"layers": layer_visibility.duplicate(true),
 		"layer_locks": layer_locks.duplicate(true),
 		"background_opacity": background_opacity,
@@ -209,6 +241,14 @@ func apply_editor_state(state: Dictionary) -> void:
 	angle_snap_degrees = maxf(float(state.get("angle_snap_degrees", 0.25)), 0.0)
 	scale_snap = maxf(float(state.get("scale_snap", 0.005)), 0.0)
 	fine_factor = clampf(float(state.get("fine_factor", 0.1)), 0.001, 1.0)
+	preserve_axis_length = bool(state.get("preserve_axis_length", false))
+	preserve_axis_angle = bool(state.get("preserve_axis_angle", false))
+	mirror_axes = bool(state.get("mirror_axes", false))
+	lock_translation = bool(state.get("lock_translation", false))
+	lock_rotation = bool(state.get("lock_rotation", false))
+	lock_scale = bool(state.get("lock_scale", false))
+	lock_axis_x = bool(state.get("lock_axis_x", false))
+	lock_axis_y = bool(state.get("lock_axis_y", false))
 	var layers = state.get("layers", {})
 	if layers is Dictionary:
 		for key in layers:
@@ -228,11 +268,18 @@ func is_transforming() -> bool:
 	return _drag_handle != TransformHandle.NONE
 
 
+func has_active_gesture() -> bool:
+	return is_transforming() or _painting or _keyboard_nudging
+
+
 func cancel_active_gesture() -> bool:
-	var had_gesture := _drag_handle != TransformHandle.NONE or _painting
+	var had_gesture := has_active_gesture()
 	if not had_gesture:
 		_panning = false
 		return false
+	if _drag_handle == TransformHandle.PIVOT:
+		_custom_pivot = _drag_previous_custom_pivot
+		_custom_pivot_enabled = _drag_pivot_was_custom
 	if _drag_snapshot != null and arena != null:
 		calibration_preview_requested.emit(
 			_drag_snapshot.origin, _drag_snapshot.axis_x, _drag_snapshot.axis_y
@@ -245,6 +292,11 @@ func cancel_active_gesture() -> bool:
 	_rectangle_start = INVALID_CELL
 	_rectangle_current = INVALID_CELL
 	_painted_this_stroke.clear()
+	_keyboard_nudging = false
+	_keyboard_snapshot = null
+	_keyboard_delta = Vector2.ZERO
+	if _keyboard_timer != null:
+		_keyboard_timer.stop()
 	_live_transform_text = "Geste annule"
 	stroke_cancelled.emit()
 	queue_redraw()
@@ -283,15 +335,17 @@ func recenter_grid() -> void:
 	var image_position := GridTransformService.cell_to_position(
 		center_cell, arena.grid_origin, arena.axis_x, arena.axis_y
 	)
-	pan = size * 0.5 - image_position * zoom
+	pan = size * 0.5 - (arena.image_offset + image_position * arena.image_scale) * zoom
 	queue_redraw()
 
 
 func center_on_cell(cell: Vector2i) -> void:
 	if arena == null or not arena.is_in_bounds(cell):
 		return
-	pan = size * 0.5 - GridTransformService.cell_to_position(
-		cell, arena.grid_origin, arena.axis_x, arena.axis_y
+	pan = size * 0.5 - (
+		arena.image_offset + GridTransformService.cell_to_position(
+			cell, arena.grid_origin, arena.axis_x, arena.axis_y
+		) * arena.image_scale
 	) * zoom
 	selected_cells = [cell]
 	queue_redraw()
@@ -331,6 +385,56 @@ func _gui_input(event: InputEvent) -> void:
 		_handle_mouse_motion(event)
 
 
+func _input(event: InputEvent) -> void:
+	# Un Control ne recoit pas toujours le relachement si le pointeur quitte son
+	# rectangle. Tant qu'un geste est actif, terminer ou annuler via l'input du
+	# viewport evite un etat de drag residuel.
+	if not has_active_gesture() and not _panning:
+		return
+	if event is InputEventKey:
+		var key := event as InputEventKey
+		if key.pressed and key.keycode == KEY_ESCAPE:
+			if cancel_active_gesture():
+				get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton:
+		var mouse := event as InputEventMouseButton
+		if mouse.pressed and mouse.button_index == MOUSE_BUTTON_RIGHT \
+				and has_active_gesture():
+			cancel_active_gesture()
+			get_viewport().set_input_as_handled()
+		elif not mouse.pressed and mouse.button_index in [
+			MOUSE_BUTTON_LEFT, MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_RIGHT,
+		]:
+			var local_event := mouse.duplicate() as InputEventMouseButton
+			local_event.position = get_global_transform_with_canvas().affine_inverse() \
+				* mouse.position
+			_handle_mouse_button(local_event)
+			get_viewport().set_input_as_handled()
+
+
+func _image_native_to_screen(position: Vector2) -> Vector2:
+	return GridTransformService.image_native_to_screen(
+		position, arena.image_offset, arena.image_scale, pan, zoom
+	)
+
+
+func _screen_to_image_native(position: Vector2) -> Vector2:
+	return GridTransformService.screen_to_image_native(
+		position, arena.image_offset, arena.image_scale, pan, zoom
+	)
+
+
+func _screen_delta_to_image_native(delta: Vector2) -> Vector2:
+	return GridTransformService.image_native_delta_from_screen_delta(
+		delta, arena.image_scale, zoom
+	)
+
+
+func _native_stroke_width(screen_pixels := 1.0) -> float:
+	var minimum_scale := minf(absf(arena.image_scale.x), absf(arena.image_scale.y))
+	return screen_pixels / maxf(minimum_scale * absf(zoom), 0.000001)
+
+
 func _handle_mouse_button(event: InputEventMouseButton) -> void:
 	if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed \
 			and is_transforming():
@@ -347,7 +451,8 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		accept_event()
 		return
 	if event.button_index == MOUSE_BUTTON_MIDDLE \
-			or (event.button_index == MOUSE_BUTTON_LEFT and active_tool == Tool.PAN):
+			or (event.button_index == MOUSE_BUTTON_LEFT \
+				and (active_tool == Tool.PAN or _space_pan_held)):
 		_panning = event.pressed
 		accept_event()
 		return
@@ -355,6 +460,8 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		return
 	var cell := _cell_at(event.position)
 	if event.pressed:
+		if _keyboard_nudging:
+			_commit_keyboard_nudge()
 		grab_focus()
 		if calibration_active and event.button_index == MOUSE_BUTTON_LEFT:
 			_add_calibration_point(event.position)
@@ -364,10 +471,20 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 				and _handle_anchor_press(event.position, event.button_index):
 			accept_event()
 			return
-		if event.button_index == MOUSE_BUTTON_LEFT and _try_begin_transform_drag(event.position):
+		if event.button_index == MOUSE_BUTTON_LEFT and _try_begin_transform_drag(
+			event.position, event.shift_pressed, event.ctrl_pressed
+		):
 			accept_event()
 			return
 		if cell == INVALID_CELL:
+			if active_tool == Tool.TRANSFORM_GRID:
+				grid_selected = false
+				queue_redraw()
+			return
+		if _active_data_layer_locked():
+			_live_transform_text = "Calque verrouille"
+			queue_redraw()
+			accept_event()
 			return
 		if active_tool == Tool.VERIFY:
 			verification_cell_requested.emit(cell)
@@ -396,16 +513,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		accept_event()
 	else:
 		if _drag_handle != TransformHandle.NONE:
-			var action_name := _transform_action_name(_drag_handle)
-			_drag_handle = TransformHandle.NONE
-			_drag_snapshot = null
-			_anchor_drag_index = -1
-			if _drag_changed:
-				stroke_finished.emit(action_name)
-			else:
-				stroke_cancelled.emit()
-			_drag_changed = false
-			_live_transform_text = ""
+			_finish_pointer_gesture()
 			accept_event()
 			return
 		if not _painting:
@@ -422,6 +530,38 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		_painted_this_stroke.clear()
 		queue_redraw()
 		accept_event()
+
+
+func _finish_pointer_gesture() -> void:
+	var handle := _drag_handle
+	var action_name := _transform_action_name(handle)
+	var changed := _drag_changed
+	_drag_handle = TransformHandle.NONE
+	_drag_snapshot = null
+	_anchor_drag_index = -1
+	_drag_changed = false
+	_live_transform_text = ""
+	if handle == TransformHandle.PIVOT:
+		queue_redraw()
+		return
+	if changed:
+		stroke_finished.emit(action_name)
+	else:
+		stroke_cancelled.emit()
+
+
+func _active_data_layer_locked() -> bool:
+	var layer := ""
+	match active_tool:
+		Tool.ADD_CELL, Tool.REMOVE_CELL, Tool.BORDER:
+			layer = "gameplay"
+		Tool.OBSTACLE, Tool.TERRAIN:
+			layer = "details"
+		Tool.SPAWN:
+			layer = "spawns"
+		Tool.CALIBRATION_ANCHORS, Tool.TRANSFORM_GRID:
+			layer = "calibration"
+	return not layer.is_empty() and bool(layer_locks.get(layer, false))
 
 
 func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
@@ -449,11 +589,13 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 			queue_redraw()
 		elif brush_shape == BrushShape.BRUSH:
 			_request_cells([cell], false)
+	elif active_tool == Tool.TRANSFORM_GRID:
+		mouse_default_cursor_shape = _cursor_for_handle(_handle_at(event.position))
 
 
 func _add_calibration_point(view_position: Vector2) -> void:
 	_calibration_points.append(
-		GridTransformService.view_to_image(view_position, pan, zoom)
+		_screen_to_image_native(view_position)
 	)
 	if _calibration_points.size() == 3:
 		var origin := _calibration_points[0]
@@ -467,26 +609,60 @@ func _add_calibration_point(view_position: Vector2) -> void:
 	queue_redraw()
 
 
-func _try_begin_transform_drag(view_position: Vector2) -> bool:
+func _try_begin_transform_drag(
+		view_position: Vector2,
+		fine_at_press := false,
+		ctrl_at_press := false
+	) -> bool:
 	if arena == null or bool(layer_locks.get("calibration", false)):
 		return false
 	var allow_legacy_handles := show_technical or active_tool == Tool.SELECT
 	if active_tool != Tool.TRANSFORM_GRID and not allow_legacy_handles:
 		return false
-	var positions := _transform_handle_screen_positions()
-	var priority := [
-		TransformHandle.PIVOT, TransformHandle.ROTATE, TransformHandle.SCALE,
-		TransformHandle.AXIS_X, TransformHandle.AXIS_Y,
-	]
-	for handle in priority:
-		if positions.has(handle) and (positions[handle] as Vector2).distance_to(view_position) <= 13.0:
-			return _begin_transform_handle(handle, view_position)
+	var handle := _handle_at(view_position)
+	if handle != TransformHandle.NONE:
+		grid_selected = true
+		return _begin_transform_handle(
+			handle, view_position, fine_at_press, ctrl_at_press
+		)
 	if active_tool == Tool.TRANSFORM_GRID and _cell_at(view_position) != INVALID_CELL:
-		return _begin_transform_handle(TransformHandle.BODY, view_position)
+		grid_selected = true
+		return _begin_transform_handle(
+			TransformHandle.BODY, view_position, fine_at_press, ctrl_at_press
+		)
 	return false
 
 
-func _begin_transform_handle(handle: int, view_position: Vector2) -> bool:
+func _handle_at(view_position: Vector2) -> int:
+	if not grid_selected:
+		return TransformHandle.NONE
+	var positions := _transform_handle_screen_positions()
+	for handle in [
+		TransformHandle.PIVOT, TransformHandle.ROTATE, TransformHandle.SCALE,
+		TransformHandle.AXIS_X, TransformHandle.AXIS_Y,
+	]:
+		if positions.has(handle) \
+				and (positions[handle] as Vector2).distance_to(view_position) <= 13.0:
+			return handle
+	return TransformHandle.NONE
+
+
+func _cursor_for_handle(handle: int) -> CursorShape:
+	return {
+		TransformHandle.PIVOT: Control.CURSOR_CROSS,
+		TransformHandle.ROTATE: Control.CURSOR_POINTING_HAND,
+		TransformHandle.SCALE: Control.CURSOR_FDIAGSIZE,
+		TransformHandle.AXIS_X: Control.CURSOR_HSIZE,
+		TransformHandle.AXIS_Y: Control.CURSOR_HSIZE,
+	}.get(handle, Control.CURSOR_MOVE if grid_selected else Control.CURSOR_ARROW)
+
+
+func _begin_transform_handle(
+		handle: int,
+		view_position: Vector2,
+		fine_at_press := false,
+		ctrl_at_press := false
+	) -> bool:
 	if handle == TransformHandle.BODY and lock_translation:
 		return false
 	if handle == TransformHandle.AXIS_X and lock_axis_x:
@@ -504,39 +680,54 @@ func _begin_transform_handle(handle: int, view_position: Vector2) -> bool:
 	_drag_axis_y = arena.axis_y
 	_drag_start_screen = view_position
 	_drag_pivot = _current_pivot()
-	var pivot_screen := GridTransformService.image_to_view(_drag_pivot, pan, zoom)
+	_drag_pivot_was_custom = _custom_pivot_enabled
+	_drag_previous_custom_pivot = _custom_pivot
+	_drag_fine = fine_factor if fine_at_press else 1.0
+	_drag_use_snap = snap_enabled != ctrl_at_press
+	var pivot_screen := _image_native_to_screen(_drag_pivot)
 	_drag_start_angle = (view_position - pivot_screen).angle()
 	_drag_start_distance = maxf(view_position.distance_to(pivot_screen), 0.001)
 	_drag_changed = false
 	_live_transform_text = _transform_action_name(handle)
-	stroke_started.emit(_transform_action_name(handle))
+	if handle != TransformHandle.PIVOT:
+		stroke_started.emit(_transform_action_name(handle))
 	return true
 
 
 func _update_transform_drag(event: InputEventMouseMotion) -> void:
 	if _drag_snapshot == null:
 		return
-	var use_snap := snap_enabled != event.ctrl_pressed
-	var fine := fine_factor if event.shift_pressed else 1.0
-	var pointer_image := GridTransformService.view_to_image(event.position, pan, zoom)
+	if event.position.distance_to(_drag_start_screen) < DRAG_THRESHOLD_SCREEN:
+		return
+	var pointer_image := _screen_to_image_native(event.position)
 	var candidate := _drag_snapshot.copy()
 	match _drag_handle:
 		TransformHandle.BODY:
-			var delta := GridTransformService.image_native_delta_from_screen_delta(
-				event.position - _drag_start_screen, Vector2.ONE, zoom
-			) * fine
+			var delta := _screen_delta_to_image_native(
+				event.position - _drag_start_screen
+			) * _drag_fine
 			candidate = GridTransformService.translate(_drag_snapshot, delta)
-			if use_snap:
+			if _drag_use_snap:
 				candidate.origin = GridTransformService.snap_position(candidate.origin, position_snap)
 			_live_transform_text = "Deplacement  %+0.2f, %+0.2f px" % [delta.x, delta.y]
 		TransformHandle.AXIS_X:
 			var target_x := _drag_snapshot.origin \
-				+ (pointer_image - _drag_snapshot.origin) * fine \
-				+ _drag_snapshot.axis_x * (1.0 - fine)
+				+ (pointer_image - _drag_snapshot.origin) * _drag_fine \
+				+ _drag_snapshot.axis_x * (1.0 - _drag_fine)
+			if preserve_axis_angle:
+				var axis_x_direction := _drag_snapshot.axis_x.normalized()
+				var axis_x_length := maxf(
+					(target_x - _drag_snapshot.origin).dot(axis_x_direction),
+					GridTransformService.MIN_AXIS_LENGTH
+				)
+				target_x = _drag_snapshot.origin + axis_x_direction * (
+					_drag_snapshot.axis_x.length() \
+					if preserve_axis_length else axis_x_length
+				)
 			candidate = GridTransformService.transform_axis_x_from_handle(
 				_drag_snapshot, target_x, preserve_axis_length
 			)
-			if use_snap:
+			if _drag_use_snap:
 				candidate.axis_x = GridTransformService.snap_position(candidate.axis_x, 0.1)
 			if mirror_axes:
 				var bisector_x := (_drag_snapshot.axis_x + _drag_snapshot.axis_y).normalized()
@@ -548,12 +739,22 @@ func _update_transform_drag(event: InputEventMouseMotion) -> void:
 			]
 		TransformHandle.AXIS_Y:
 			var target_y := _drag_snapshot.origin \
-				+ (pointer_image - _drag_snapshot.origin) * fine \
-				+ _drag_snapshot.axis_y * (1.0 - fine)
+				+ (pointer_image - _drag_snapshot.origin) * _drag_fine \
+				+ _drag_snapshot.axis_y * (1.0 - _drag_fine)
+			if preserve_axis_angle:
+				var axis_y_direction := _drag_snapshot.axis_y.normalized()
+				var axis_y_length := maxf(
+					(target_y - _drag_snapshot.origin).dot(axis_y_direction),
+					GridTransformService.MIN_AXIS_LENGTH
+				)
+				target_y = _drag_snapshot.origin + axis_y_direction * (
+					_drag_snapshot.axis_y.length() \
+					if preserve_axis_length else axis_y_length
+				)
 			candidate = GridTransformService.transform_axis_y_from_handle(
 				_drag_snapshot, target_y, preserve_axis_length
 			)
-			if use_snap:
+			if _drag_use_snap:
 				candidate.axis_y = GridTransformService.snap_position(candidate.axis_y, 0.1)
 			if mirror_axes:
 				var bisector_y := (_drag_snapshot.axis_x + _drag_snapshot.axis_y).normalized()
@@ -564,17 +765,17 @@ func _update_transform_drag(event: InputEventMouseMotion) -> void:
 				candidate.axis_y.length(), rad_to_deg(candidate.axis_y.angle())
 			]
 		TransformHandle.ROTATE:
-			var pivot_screen := GridTransformService.image_to_view(_drag_pivot, pan, zoom)
-			var angle := ((event.position - pivot_screen).angle() - _drag_start_angle) * fine
-			if use_snap:
+			var pivot_screen := _image_native_to_screen(_drag_pivot)
+			var angle := ((event.position - pivot_screen).angle() - _drag_start_angle) * _drag_fine
+			if _drag_use_snap:
 				angle = GridTransformService.snap_angle(angle, deg_to_rad(angle_snap_degrees))
 			candidate = GridTransformService.rotate_around(_drag_snapshot, _drag_pivot, angle)
 			_live_transform_text = "Rotation  %+0.2f deg" % rad_to_deg(angle)
 		TransformHandle.SCALE:
-			var pivot_screen := GridTransformService.image_to_view(_drag_pivot, pan, zoom)
+			var pivot_screen := _image_native_to_screen(_drag_pivot)
 			var factor := event.position.distance_to(pivot_screen) / _drag_start_distance
-			factor = 1.0 + (factor - 1.0) * fine
-			if use_snap:
+			factor = 1.0 + (factor - 1.0) * _drag_fine
+			if _drag_use_snap:
 				factor = GridTransformService.snap_scale(factor, scale_snap)
 			candidate = GridTransformService.scale_around(_drag_snapshot, _drag_pivot, factor)
 			_live_transform_text = "Echelle  %0.2f %%" % (factor * 100.0)
@@ -637,7 +838,7 @@ func _handle_anchor_press(view_position: Vector2, button_index: int) -> bool:
 	var cells := arena.calibration_cells.duplicate()
 	var pixels := arena.calibration_pixels.duplicate()
 	cells.append(cell)
-	pixels.append(GridTransformService.view_to_image(view_position, pan, zoom))
+	pixels.append(_screen_to_image_native(view_position))
 	anchors_preview_requested.emit(cells, pixels)
 	_selected_anchor_index = cells.size() - 1
 	stroke_finished.emit("Ajouter une ancre de calibration")
@@ -648,7 +849,7 @@ func _update_anchor_drag(view_position: Vector2) -> void:
 	if _anchor_drag_index < 0 or _anchor_drag_index >= arena.calibration_pixels.size():
 		return
 	var pixels := arena.calibration_pixels.duplicate()
-	var next_position := GridTransformService.view_to_image(view_position, pan, zoom)
+	var next_position := _screen_to_image_native(view_position)
 	if not GridTransformService.is_vector_finite(next_position):
 		return
 	_drag_changed = pixels[_anchor_drag_index].distance_to(next_position) > 0.00001
@@ -661,9 +862,7 @@ func _update_anchor_drag(view_position: Vector2) -> void:
 
 func _anchor_at(view_position: Vector2) -> int:
 	for index in range(arena.calibration_pixels.size()):
-		var screen := GridTransformService.image_to_view(
-			arena.calibration_pixels[index], pan, zoom
-		)
+		var screen := _image_native_to_screen(arena.calibration_pixels[index])
 		if screen.distance_to(view_position) <= 11.0:
 			return index
 	return -1
@@ -680,21 +879,27 @@ func _transform_handle_screen_positions() -> Dictionary:
 		return {}
 	var snapshot := GridTransformSnapshot.from_arena(arena)
 	var center := GridTransformService.logical_grid_center(snapshot, arena.grid_size)
-	var center_screen := GridTransformService.image_to_view(center, pan, zoom)
+	var center_screen := _image_native_to_screen(center)
 	var far_corner := snapshot.origin \
 		+ (float(arena.grid_size.x) - 0.5) * snapshot.axis_x \
 		+ (float(arena.grid_size.y) - 0.5) * snapshot.axis_y
 	return {
-		TransformHandle.AXIS_X: GridTransformService.image_to_view(snapshot.origin + snapshot.axis_x, pan, zoom),
-		TransformHandle.AXIS_Y: GridTransformService.image_to_view(snapshot.origin + snapshot.axis_y, pan, zoom),
+		TransformHandle.AXIS_X: _image_native_to_screen(snapshot.origin + snapshot.axis_x),
+		TransformHandle.AXIS_Y: _image_native_to_screen(snapshot.origin + snapshot.axis_y),
 		TransformHandle.ROTATE: center_screen + Vector2(0.0, -62.0),
-		TransformHandle.SCALE: GridTransformService.image_to_view(far_corner, pan, zoom),
-		TransformHandle.PIVOT: GridTransformService.image_to_view(_current_pivot(), pan, zoom),
+		TransformHandle.SCALE: _image_native_to_screen(far_corner),
+		TransformHandle.PIVOT: _image_native_to_screen(_current_pivot()),
 	}
 
 
 func _handle_key_input(event: InputEventKey) -> void:
-	if not event.pressed or event.echo:
+	if event.keycode == KEY_SPACE:
+		_space_pan_held = event.pressed
+		if not event.pressed:
+			_panning = false
+		accept_event()
+		return
+	if not event.pressed:
 		return
 	if event.keycode == KEY_ESCAPE and cancel_active_gesture():
 		accept_event()
@@ -708,19 +913,37 @@ func _handle_key_input(event: InputEventKey) -> void:
 		KEY_UP: direction = Vector2.UP
 		KEY_DOWN: direction = Vector2.DOWN
 		_: return
-	var before := GridTransformSnapshot.from_arena(arena)
-	var amount := fine_factor if event.shift_pressed else 1.0
-	var after := GridTransformService.translate(before, direction * amount)
-	stroke_started.emit("Deplacer la grille au clavier")
+	if not _keyboard_nudging:
+		_keyboard_nudging = true
+		_keyboard_snapshot = GridTransformSnapshot.from_arena(arena)
+		_keyboard_delta = Vector2.ZERO
+		stroke_started.emit("Deplacer la grille au clavier")
+	var amount := 10.0 if event.ctrl_pressed else (
+		fine_factor if event.shift_pressed else 1.0
+	)
+	_keyboard_delta += direction * amount
+	var after := GridTransformService.translate(_keyboard_snapshot, _keyboard_delta)
 	calibration_preview_requested.emit(after.origin, after.axis_x, after.axis_y)
-	stroke_finished.emit("Deplacer la grille au clavier")
+	_keyboard_timer.start()
 	accept_event()
 
 
+func _commit_keyboard_nudge() -> bool:
+	if not _keyboard_nudging:
+		return false
+	_keyboard_nudging = false
+	_keyboard_snapshot = null
+	_keyboard_delta = Vector2.ZERO
+	if _keyboard_timer != null:
+		_keyboard_timer.stop()
+	stroke_finished.emit("Deplacer la grille au clavier")
+	return true
+
+
 func _cell_at(view_position: Vector2) -> Vector2i:
-	return GridTransformService.view_to_cell(
-		view_position, pan, zoom, arena.grid_origin, arena.axis_x, arena.axis_y,
-		arena.grid_size
+	return GridTransformService.position_to_cell(
+		_screen_to_image_native(view_position),
+		arena.grid_origin, arena.axis_x, arena.axis_y, arena.grid_size
 	)
 
 
@@ -789,6 +1012,11 @@ func _draw() -> void:
 			false,
 			Color(1.0, 1.0, 1.0, background_opacity)
 		)
+	draw_set_transform(
+		pan + arena.image_offset * zoom,
+		0.0,
+		arena.image_scale * zoom
+	)
 	if bool(layer_visibility.get("gameplay", true)):
 		_draw_cells()
 	_draw_overlays()
@@ -797,8 +1025,10 @@ func _draw() -> void:
 	if bool(layer_visibility.get("calibration", true)):
 		_draw_saved_grid_comparison()
 		_draw_calibration()
+	if bool(layer_visibility.get("foreground", true)):
+		_draw_foreground_overlay()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	if bool(layer_visibility.get("calibration", true)):
+	if bool(layer_visibility.get("calibration", true)) and grid_selected:
 		_draw_transform_gizmo_screen()
 	_draw_hud()
 
@@ -817,14 +1047,16 @@ func _draw_cells() -> void:
 					color = COLORS.border
 				elif not definition.playable:
 					color = COLORS.non_playable
-				elif arena.obstacle_at(cell) != null:
+				elif bool(layer_visibility.get("details", true)) \
+						and arena.obstacle_at(cell) != null:
 					color = COLORS.blocked
 				draw_colored_polygon(polygon, color)
 			if selected_cells.has(cell):
 				draw_colored_polygon(polygon, COLORS.selected)
 			if show_grid:
 				_draw_outline(
-					polygon, Color(GRID_COLOR, GRID_COLOR.a * grid_opacity), 1.0 / zoom
+					polygon, Color(GRID_COLOR, GRID_COLOR.a * grid_opacity),
+					_native_stroke_width()
 				)
 	if _rectangle_start != INVALID_CELL and _rectangle_current != INVALID_CELL:
 		for cell in _rectangle_cells(_rectangle_start, _rectangle_current):
@@ -840,7 +1072,7 @@ func _draw_cells() -> void:
 				_hovered, arena.grid_origin, arena.axis_x, arena.axis_y
 			),
 			Color.WHITE,
-			2.0 / zoom
+			_native_stroke_width(2.0)
 		)
 
 
@@ -853,7 +1085,7 @@ func _draw_overlays() -> void:
 	for cell in line_cells:
 		draw_colored_polygon(_polygon(cell), line_color)
 	if first_blocker != INVALID_CELL:
-		_draw_outline(_polygon(first_blocker), Color.WHITE, 4.0 / zoom)
+		_draw_outline(_polygon(first_blocker), Color.WHITE, _native_stroke_width(4.0))
 
 
 func _draw_spawns() -> void:
@@ -867,26 +1099,28 @@ func _draw_spawns() -> void:
 		)
 		var color := Color(0.22, 0.68, 1.0, 0.96) if spawn.is_hero() \
 			else Color(1.0, 0.29, 0.20, 0.96)
-		draw_circle(center, 8.0 / sqrt(zoom), color)
+		draw_circle(center, _native_stroke_width(8.0), color)
 		draw_string(
 			ThemeDB.fallback_font, center + Vector2(10, -7) / sqrt(zoom),
 			spawn.display_label(), HORIZONTAL_ALIGNMENT_LEFT, -1,
-			maxi(8, int(11.0 / sqrt(zoom))), Color.WHITE
+			maxi(8, int(11.0 / sqrt(maxf(zoom, 0.001)))), Color.WHITE
 		)
 
 
 func _draw_calibration() -> void:
 	var origin := arena.grid_origin
-	draw_line(origin, origin + arena.axis_x, Color(0.16, 0.95, 0.86, 0.9), 2.0 / zoom)
-	draw_line(origin, origin + arena.axis_y, Color(1.0, 0.30, 0.78, 0.9), 2.0 / zoom)
+	draw_line(origin, origin + arena.axis_x, Color(0.16, 0.95, 0.86, 0.9), _native_stroke_width(2.0))
+	draw_line(origin, origin + arena.axis_y, Color(1.0, 0.30, 0.78, 0.9), _native_stroke_width(2.0))
 	for index in range(mini(arena.calibration_cells.size(), arena.calibration_pixels.size())):
 		var measured: Vector2 = arena.calibration_pixels[index]
 		var predicted := GridTransformService.cell_to_position(
 			arena.calibration_cells[index], arena.grid_origin, arena.axis_x, arena.axis_y
 		)
-		draw_line(predicted, measured, Color(1.0, 0.25, 0.18, 0.9), 2.0 / zoom)
+		draw_line(predicted, measured, Color(1.0, 0.25, 0.18, 0.9), _native_stroke_width(2.0))
 		draw_circle(
-			measured, (6.0 if index == _selected_anchor_index else 4.0) / zoom,
+			measured, _native_stroke_width(
+				6.0 if index == _selected_anchor_index else 4.0
+			),
 			Color(1.0, 0.82, 0.2) if index == _selected_anchor_index else Color.WHITE
 		)
 		if show_technical:
@@ -896,7 +1130,32 @@ func _draw_calibration() -> void:
 				HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(8, int(10.0 / zoom)), Color.WHITE
 			)
 	for point in _calibration_points:
-		draw_circle(point, 6.0 / zoom, Color.WHITE)
+		draw_circle(point, _native_stroke_width(6.0), Color.WHITE)
+
+
+func _draw_foreground_overlay() -> void:
+	if _foreground_texture != null:
+		# Le foreground explicite possede son propre placement dans le meme
+		# repere de scene que l'image affichee.
+		draw_set_transform(pan, 0.0, Vector2.ONE * zoom)
+		draw_texture_rect(
+			_foreground_texture,
+			Rect2(
+				arena.foreground_offset,
+				_foreground_texture.get_size() * arena.foreground_scale
+			),
+			false
+		)
+		draw_set_transform(
+			pan + arena.image_offset * zoom, 0.0, arena.image_scale * zoom
+		)
+	elif _texture != null and arena.foreground_occluder_polygon.size() >= 3:
+		draw_polygon(
+			arena.foreground_occluder_polygon,
+			PackedColorArray(),
+			arena.foreground_occluder_polygon,
+			_texture
+		)
 
 
 func _draw_saved_grid_comparison() -> void:
@@ -917,7 +1176,7 @@ func _draw_snapshot_grid(snapshot: GridTransformSnapshot, color: Color) -> void:
 					Vector2i(x, y), snapshot.origin,
 					snapshot.axis_x, snapshot.axis_y
 				),
-				color, 1.0 / zoom
+				color, _native_stroke_width()
 			)
 
 
@@ -935,7 +1194,7 @@ func _draw_transform_gizmo_screen() -> void:
 	]
 	var outline := PackedVector2Array()
 	for point in corners:
-		outline.append(GridTransformService.image_to_view(point, pan, zoom))
+		outline.append(_image_native_to_screen(point))
 	outline.append(outline[0])
 	draw_polyline(outline, Color(0.35, 0.88, 1.0, 0.9), 2.0, true)
 	var positions := _transform_handle_screen_positions()
@@ -947,8 +1206,8 @@ func _draw_transform_gizmo_screen() -> void:
 		TransformHandle.PIVOT: Color(1.0, 0.85, 0.18),
 	}
 	var labels := {
-		TransformHandle.AXIS_X: "Inclinaison droite",
-		TransformHandle.AXIS_Y: "Inclinaison gauche",
+		TransformHandle.AXIS_X: "Axe droit",
+		TransformHandle.AXIS_Y: "Axe gauche",
 		TransformHandle.ROTATE: "Rotation",
 		TransformHandle.SCALE: "Echelle",
 		TransformHandle.PIVOT: "Pivot",
@@ -967,8 +1226,15 @@ func _draw_transform_gizmo_screen() -> void:
 		else:
 			draw_circle(handle_position, 8.0, color)
 		if show_technical or is_transforming():
+			var label_offset: Vector2 = {
+				TransformHandle.AXIS_X: Vector2(12, -14),
+				TransformHandle.AXIS_Y: Vector2(-76, -14),
+				TransformHandle.ROTATE: Vector2(12, 4),
+				TransformHandle.SCALE: Vector2(12, -8),
+				TransformHandle.PIVOT: Vector2(12, 20),
+			}.get(handle, Vector2(12, -9))
 			draw_string(
-				ThemeDB.fallback_font, handle_position + Vector2(12, -9),
+				ThemeDB.fallback_font, handle_position + label_offset,
 				str(labels.get(handle, "")), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE
 			)
 
@@ -984,8 +1250,10 @@ func _draw_hud() -> void:
 	)
 	if active_tool in [Tool.TRANSFORM_GRID, Tool.CALIBRATION_ANCHORS]:
 		var snap_text := "Aimantation active" if snap_enabled else "Aimantation inactive"
-		var text := _live_transform_text if not _live_transform_text.is_empty() \
+		var idle_text := "Ancres : glissez une mesure  |  clic droit : supprimer  |  Auto-fit dans l'inspecteur" \
+			if active_tool == Tool.CALIBRATION_ANCHORS \
 			else "Glissez la grille ou une poignee  |  Shift : fin  |  Ctrl : inverse %s" % snap_text
+		var text := _live_transform_text if not _live_transform_text.is_empty() else idle_text
 		var width := minf(size.x - 36.0, 720.0)
 		draw_rect(Rect2(18, 18, width, 40), Color(0.02, 0.06, 0.11, 0.90), true)
 		draw_string(
