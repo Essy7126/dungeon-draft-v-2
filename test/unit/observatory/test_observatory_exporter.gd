@@ -43,7 +43,8 @@ func test_export_order_is_stable_and_sorted() -> void:
 	var first := _without_volatile_meta(_snapshot())
 	var second := _without_volatile_meta(_snapshot())
 	assert_eq(JSON.stringify(first), JSON.stringify(second))
-	for collection in ["characters", "disciplines", "spells", "items"]:
+	for collection in ["characters", "disciplines", "spells", "items", "runs", "rooms",
+		"waves", "encounters", "enemies", "enemy_spells", "ai_profiles"]:
 		var ids: Array[String] = []
 		for entity_value in first.get(collection, []) as Array:
 			ids.append(str((entity_value as Dictionary).get("id", "")))
