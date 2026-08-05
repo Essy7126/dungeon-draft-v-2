@@ -2,7 +2,7 @@
 
 ## Autorité et isolation
 
-`ArenaDefinition` v2 est l’unique source de vérité d’une salle. Le canvas, le Dynamic Arena Lab intégré, les vues Logique/Art/Jeu et la production manipulent la même `ArenaEditSession.working_arena`. `GridData`, `DynamicCellState`, les murs instanciés et les nœuds de preview sont des caches reconstruits.
+`ArenaDefinition` v2 est l’unique source de vérité d’une salle. Le canvas, le mode Construction dynamique, les vues Logique/Art/Jeu et la production manipulent la même `ArenaEditSession.working_arena`. Le chemin intégré n’instancie aucun `DynamicArenaLab`; `GridData`, `DynamicCellState`, les murs instanciés et les nœuds de preview sont des caches reconstruits.
 
 Le preview clone le snapshot avant montage. Il ne démarre ni `GameManager`, ni `TurnQueue`, ni run, et ne sauvegarde aucune ressource. Le test direct sérialise une copie sous `user://` puis ouvre la vraie scène de combat.
 

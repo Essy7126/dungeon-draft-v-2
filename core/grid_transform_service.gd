@@ -15,6 +15,14 @@ const HIT_EPSILON := 0.0001
 const ANCHOR_CONDITION_RATIO_EPSILON := 0.000001
 const QUALITY_EXCELLENT_RMS := 1.0
 const QUALITY_ACCEPTABLE_RMS := 3.0
+const MIN_GRID_ANGLE_RADIANS := PI / 18.0 # 10 degres
+const MAX_GRID_ANGLE_RADIANS := 17.0 * PI / 18.0 # 170 degres
+
+enum AngleMode {
+	SYMMETRIC,
+	PRESERVE_X,
+	PRESERVE_Y,
+}
 
 
 static func determinant(axis_x: Vector2, axis_y: Vector2) -> float:
@@ -118,6 +126,101 @@ static func set_axis_y(
 	var result := snapshot.copy()
 	result.axis_y = value
 	return result
+
+
+static func angle_between_axes(axis_x: Vector2, axis_y: Vector2) -> float:
+	if axis_x.length() < MIN_AXIS_LENGTH or axis_y.length() < MIN_AXIS_LENGTH:
+		return 0.0
+	return acos(clampf(axis_x.normalized().dot(axis_y.normalized()), -1.0, 1.0))
+
+
+static func interior_bisector(axis_x: Vector2, axis_y: Vector2) -> Vector2:
+	if axis_x.length() < MIN_AXIS_LENGTH or axis_y.length() < MIN_AXIS_LENGTH:
+		return Vector2.ZERO
+	var value := axis_x.normalized() + axis_y.normalized()
+	return value.normalized() if value.length() >= MIN_AXIS_LENGTH else Vector2.ZERO
+
+
+static func approximate_global_rotation(axis_x: Vector2, axis_y: Vector2) -> float:
+	var bisector := interior_bisector(axis_x, axis_y)
+	return bisector.angle() if bisector != Vector2.ZERO else axis_x.angle()
+
+
+static func angle_from_pointer(
+		snapshot: GridTransformSnapshot,
+		pointer_direction: Vector2,
+		mode: int
+	) -> float:
+	if snapshot == null or pointer_direction.length() < MIN_AXIS_LENGTH:
+		return angle_between_axes(snapshot.axis_x, snapshot.axis_y) \
+			if snapshot != null else 0.0
+	var direction := pointer_direction.normalized()
+	var target := 0.0
+	match mode:
+		AngleMode.PRESERVE_X:
+			target = absf(snapshot.axis_x.normalized().angle_to(direction))
+		AngleMode.PRESERVE_Y:
+			target = absf(direction.angle_to(snapshot.axis_y.normalized()))
+		_:
+			var bisector := interior_bisector(snapshot.axis_x, snapshot.axis_y)
+			if bisector == Vector2.ZERO:
+				return angle_between_axes(snapshot.axis_x, snapshot.axis_y)
+			target = 2.0 * absf(bisector.angle_to(direction))
+	return clampf(target, MIN_GRID_ANGLE_RADIANS, MAX_GRID_ANGLE_RADIANS)
+
+
+static func set_grid_angle(
+		snapshot: GridTransformSnapshot,
+		target_angle: float,
+		mode: int = AngleMode.SYMMETRIC
+	) -> Dictionary:
+	if snapshot == null:
+		return {"ok": false, "error": "La transformation est absente."}
+	var initial_validation := validate_snapshot(snapshot)
+	if not bool(initial_validation.get("ok", false)):
+		return initial_validation
+	if not is_finite(target_angle):
+		return {"ok": false, "error": "L'angle demande n'est pas fini."}
+	var angle := clampf(
+		target_angle, MIN_GRID_ANGLE_RADIANS, MAX_GRID_ANGLE_RADIANS
+	)
+	var orientation := signf(determinant(snapshot.axis_x, snapshot.axis_y))
+	var length_x := snapshot.axis_x.length()
+	var length_y := snapshot.axis_y.length()
+	var direction_x := snapshot.axis_x.normalized()
+	var direction_y := snapshot.axis_y.normalized()
+	match mode:
+		AngleMode.PRESERVE_X:
+			direction_y = direction_x.rotated(orientation * angle)
+		AngleMode.PRESERVE_Y:
+			direction_x = direction_y.rotated(-orientation * angle)
+		_:
+			var bisector := interior_bisector(snapshot.axis_x, snapshot.axis_y)
+			if bisector == Vector2.ZERO:
+				return {
+					"ok": false,
+					"error": "Le bissecteur des axes est degenere.",
+				}
+			var side_x := signf(determinant(bisector, direction_x))
+			if side_x == 0.0:
+				side_x = -orientation
+			direction_x = bisector.rotated(side_x * angle * 0.5)
+			direction_y = bisector.rotated(-side_x * angle * 0.5)
+	var result := snapshot.copy()
+	result.axis_x = direction_x * length_x
+	result.axis_y = direction_y * length_y
+	var validation := validate_snapshot(
+		result, determinant(snapshot.axis_x, snapshot.axis_y)
+	)
+	if not bool(validation.get("ok", false)):
+		return validation
+	return {
+		"ok": true,
+		"snapshot": result,
+		"angle": angle,
+		"clamped": not is_equal_approx(angle, target_angle),
+		"relative_determinant": validation.get("relative_determinant", 0.0),
+	}
 
 
 static func transform_axis_x_from_handle(

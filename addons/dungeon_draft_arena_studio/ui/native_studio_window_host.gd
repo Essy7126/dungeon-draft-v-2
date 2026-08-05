@@ -23,6 +23,7 @@ func _ready() -> void:
 	exclusive = false
 	transient = false
 	close_requested.connect(_on_close_requested)
+	focus_exited.connect(_on_focus_exited)
 	hide()
 
 
@@ -88,5 +89,12 @@ func _update_title() -> void:
 
 
 func _on_close_requested() -> void:
+	if workspace != null:
+		workspace.cancel_active_gesture()
 	hide()
 	reintegrate_requested.emit()
+
+
+func _on_focus_exited() -> void:
+	if workspace != null:
+		workspace.cancel_active_gesture()

@@ -4,6 +4,12 @@ extends Control
 
 signal history_state_changed
 
+enum WorkspaceMode {
+	EDITOR,
+	DYNAMIC_CONSTRUCTION,
+	PREVIEW,
+}
+
 const TEST_RUNNER_SCENE := "res://addons/dungeon_draft_arena_studio/test/arena_studio_test_runner.tscn"
 const TEST_REQUEST := "user://arena_studio/test_request.json"
 const TEST_WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
@@ -46,9 +52,6 @@ var dirty: bool:
 
 var canvas: ArenaStudioCanvas
 var runtime_preview: ArenaRuntimePreview
-var dynamic_lab: DynamicArenaLab
-var dynamic_lab_container: SubViewportContainer
-var dynamic_lab_viewport: SubViewport
 var title_label: Label
 var status_label: Label
 var mode_option: OptionButton
@@ -58,6 +61,13 @@ var shape_option: OptionButton
 var obstacle_option: OptionButton
 var terrain_option: OptionButton
 var spawn_option: OptionButton
+var dynamic_palette: VBoxContainer
+var dynamic_terrain_option: OptionButton
+var dynamic_wall_option: OptionButton
+var dynamic_special_option: OptionButton
+var dynamic_document_label: Label
+var dynamic_width_spin: SpinBox
+var dynamic_height_spin: SpinBox
 var verification_option: OptionButton
 var test_configuration_option: OptionButton
 var inspector_label: Label
@@ -75,6 +85,8 @@ var restore_delete_dialog: ConfirmationDialog
 var _pending_restore_delete_path := ""
 var layer_controls := {}
 var transform_controls := {}
+var transform_panel: VBoxContainer
+var angle_mode_option: OptionButton
 var new_dialog: ConfirmationDialog
 var new_name_edit: LineEdit
 var new_id_edit: LineEdit
@@ -116,6 +128,7 @@ var dynamic_mode_button: Button
 var focus_map_enabled := false
 var workspace_preset := 0
 var preview_view := 0
+var workspace_mode := WorkspaceMode.EDITOR
 var _pre_focus_state := {}
 
 var _fallback_undo := UndoRedo.new()
@@ -273,8 +286,9 @@ func _build_left_panel() -> Control:
 	panel.add_child(box)
 	dynamic_mode_button = Button.new()
 	dynamic_mode_button.text = "DYN"
-	dynamic_mode_button.tooltip_text = "Construction dynamique — outils du Dynamic Arena Lab"
+	dynamic_mode_button.tooltip_text = "Construction dynamique — éditer terrains, murs et spawns sur ce canvas"
 	dynamic_mode_button.custom_minimum_size = Vector2(52, 42)
+	dynamic_mode_button.toggle_mode = true
 	dynamic_mode_button.pressed.connect(show_dynamic_construction)
 	box.add_child(dynamic_mode_button)
 	library_list = ItemList.new()
@@ -348,23 +362,6 @@ func _build_canvas_panel() -> Control:
 	runtime_preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	runtime_preview.hide()
 	view_stack.add_child(runtime_preview)
-	dynamic_lab_container = SubViewportContainer.new()
-	dynamic_lab_container.name = "DynamicLabContainer"
-	dynamic_lab_container.stretch = true
-	dynamic_lab_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	dynamic_lab_container.hide()
-	view_stack.add_child(dynamic_lab_container)
-	dynamic_lab_viewport = SubViewport.new()
-	dynamic_lab_viewport.name = "DynamicLabViewport"
-	dynamic_lab_viewport.size = Vector2i(1280, 720)
-	dynamic_lab_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	dynamic_lab_container.add_child(dynamic_lab_viewport)
-	var lab_scene := load("res://tools/labs/dynamic_arena/DynamicArenaLab.tscn") as PackedScene
-	if lab_scene != null:
-		dynamic_lab = lab_scene.instantiate() as DynamicArenaLab
-		dynamic_lab.name = "IntegratedDynamicArenaLab"
-		dynamic_lab.document_changed.connect(_on_dynamic_lab_document_changed)
-		dynamic_lab_viewport.add_child(dynamic_lab)
 	return box
 
 
@@ -387,6 +384,9 @@ func _build_right_panel() -> Control:
 	box.add_child(terrain_option)
 	box.add_child(spawn_option)
 	box.add_child(verification_option)
+	dynamic_palette = _build_dynamic_palette()
+	dynamic_palette.hide()
+	box.add_child(dynamic_palette)
 	box.add_child(_section_label("Test direct"))
 	box.add_child(test_configuration_option)
 	box.add_child(_section_label("Inspecteur contextuel"))
@@ -439,8 +439,89 @@ func _build_right_panel() -> Control:
 	return panel
 
 
+func _build_dynamic_palette() -> VBoxContainer:
+	var box := VBoxContainer.new()
+	box.name = "DynamicConstructionPalette"
+	box.add_child(_section_label("CONSTRUCTION DYNAMIQUE"))
+	dynamic_document_label = Label.new()
+	dynamic_document_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(dynamic_document_label)
+	var terrain_button := Button.new()
+	terrain_button.text = "Terrain"
+	terrain_button.tooltip_text = "Peindre le terrain — une action Undo par trait"
+	terrain_button.pressed.connect(func(): _select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN))
+	box.add_child(terrain_button)
+	dynamic_terrain_option = OptionButton.new()
+	dynamic_terrain_option.tooltip_text = "Terrain appliqué par le pinceau"
+	for terrain_id in [&"void", &"stone", &"water", &"ice", &"lava"]:
+		var entry := ArenaTerrainRegistry.get_entry(terrain_id)
+		dynamic_terrain_option.add_item(str(entry.get("name", terrain_id)))
+		dynamic_terrain_option.set_item_metadata(dynamic_terrain_option.item_count - 1, terrain_id)
+	dynamic_terrain_option.select(1)
+	dynamic_terrain_option.item_selected.connect(func(_index):
+		_select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN)
+	)
+	box.add_child(dynamic_terrain_option)
+	var wall_button := Button.new()
+	wall_button.text = "Mur"
+	wall_button.tooltip_text = "Placer un vrai WallConfig normal, feu ou glace"
+	wall_button.pressed.connect(func(): _select_dynamic_tool(ArenaStudioCanvas.Tool.OBSTACLE))
+	box.add_child(wall_button)
+	dynamic_wall_option = OptionButton.new()
+	for wall_id in [&"normal", &"fire", &"ice"]:
+		var entry := ArenaWallRegistry.get_entry(wall_id)
+		dynamic_wall_option.add_item(str(entry.get("name", wall_id)))
+		dynamic_wall_option.set_item_metadata(dynamic_wall_option.item_count - 1, wall_id)
+	dynamic_wall_option.add_item("Supprimer le mur")
+	dynamic_wall_option.set_item_metadata(dynamic_wall_option.item_count - 1, &"remove")
+	dynamic_wall_option.item_selected.connect(func(_index):
+		_select_dynamic_tool(ArenaStudioCanvas.Tool.OBSTACLE)
+	)
+	box.add_child(dynamic_wall_option)
+	var special_button := Button.new()
+	special_button.text = "Spawn / objectif / décoration"
+	special_button.tooltip_text = "Placer un élément spécial sur une cellule praticable"
+	special_button.pressed.connect(func(): _select_dynamic_tool(ArenaStudioCanvas.Tool.SPAWN))
+	box.add_child(special_button)
+	dynamic_special_option = OptionButton.new()
+	for entry in [
+		["Spawn héros", &"hero"], ["Spawn ennemi", &"enemy"],
+		["Objectif", &"objective"], ["Décoration", &"decoration"],
+		["Zone d'invocation", &"summon"], ["Supprimer le spécial", &"remove"],
+	]:
+		dynamic_special_option.add_item(entry[0])
+		dynamic_special_option.set_item_metadata(dynamic_special_option.item_count - 1, entry[1])
+	dynamic_special_option.item_selected.connect(func(_index):
+		_select_dynamic_tool(ArenaStudioCanvas.Tool.SPAWN)
+	)
+	box.add_child(dynamic_special_option)
+	box.add_child(_section_label("Document"))
+	var resize_grid := GridContainer.new()
+	resize_grid.columns = 2
+	dynamic_width_spin = SpinBox.new()
+	dynamic_width_spin.prefix = "Largeur  "
+	dynamic_width_spin.min_value = 1
+	dynamic_width_spin.max_value = 64
+	dynamic_width_spin.step = 1
+	resize_grid.add_child(dynamic_width_spin)
+	dynamic_height_spin = SpinBox.new()
+	dynamic_height_spin.prefix = "Hauteur  "
+	dynamic_height_spin.min_value = 1
+	dynamic_height_spin.max_value = 64
+	dynamic_height_spin.step = 1
+	resize_grid.add_child(dynamic_height_spin)
+	box.add_child(resize_grid)
+	var resize_button := Button.new()
+	resize_button.text = "Redimensionner le document"
+	resize_button.tooltip_text = "Redimensionner la working copy active (annulable)"
+	resize_button.pressed.connect(_resize_dynamic_document)
+	box.add_child(resize_button)
+	return box
+
+
 func _build_transform_panel() -> Control:
 	var box := VBoxContainer.new()
+	transform_panel = box
 	box.add_child(_section_label("Transformation de la grille"))
 	var transform_button := Button.new()
 	transform_button.text = "Transformer la grille"
@@ -462,20 +543,29 @@ func _build_transform_panel() -> Control:
 	fine.text = "Shift : precision fine"
 	flags.add_child(fine)
 	var preserve := CheckButton.new()
-	preserve.text = "Longueur des axes"
+	preserve.text = "Conserver la longueur des axes"
 	preserve.toggled.connect(func(value): canvas.preserve_axis_length = value)
 	flags.add_child(preserve)
 	transform_controls["preserve_axis_length"] = preserve
 	var preserve_angle := CheckButton.new()
-	preserve_angle.text = "Angle des axes"
+	preserve_angle.text = "Conserver la direction de l'axe glissé"
 	preserve_angle.toggled.connect(func(value): canvas.preserve_axis_angle = value)
 	flags.add_child(preserve_angle)
 	transform_controls["preserve_axis_angle"] = preserve_angle
 	var symmetry := CheckButton.new()
-	symmetry.text = "Symetrie isometrique"
+	symmetry.text = "Symétrie des axes libres"
 	symmetry.toggled.connect(func(value): canvas.mirror_axes = value)
 	flags.add_child(symmetry)
 	transform_controls["mirror_axes"] = symmetry
+	angle_mode_option = OptionButton.new()
+	angle_mode_option.tooltip_text = "Comportement de la poignée Angle de la grille"
+	for label in ["Symétrique", "Conserver X", "Conserver Y"]:
+		angle_mode_option.add_item(label)
+	angle_mode_option.item_selected.connect(func(index):
+		canvas.set_angle_mode(index)
+		_refresh_transform_inspector()
+	)
+	flags.add_child(angle_mode_option)
 	var keep_size := CheckButton.new()
 	keep_size.text = "Conserver taille globale"
 	keep_size.toggled.connect(func(value): canvas.lock_scale = value)
@@ -493,8 +583,8 @@ func _build_transform_panel() -> Control:
 	for definition in [
 		["Verrouiller position", "lock_translation"],
 		["Verrouiller rotation", "lock_rotation"],
-		["Verrouiller axe droit", "lock_axis_x"],
-		["Verrouiller axe gauche", "lock_axis_y"],
+		["Verrouiller axe X", "lock_axis_x"],
+		["Verrouiller axe Y", "lock_axis_y"],
 	]:
 		var lock := CheckButton.new()
 		lock.text = definition[0]
@@ -520,6 +610,24 @@ func _build_transform_panel() -> Control:
 		snap_spin.value_changed.connect(func(value): canvas.set(property_name, value))
 		snap_values.add_child(snap_spin)
 	box.add_child(snap_values)
+	var pivot_actions := HBoxContainer.new()
+	var center_pivot := Button.new()
+	center_pivot.text = "Centrer pivot"
+	center_pivot.tooltip_text = "Placer le pivot d'éditeur au centre logique — ne modifie pas la map"
+	center_pivot.pressed.connect(func():
+		canvas.center_editor_pivot()
+		_refresh_transform_inspector()
+	)
+	pivot_actions.add_child(center_pivot)
+	var origin_pivot := Button.new()
+	origin_pivot.text = "Pivot sur O"
+	origin_pivot.tooltip_text = "Placer le pivot d'éditeur sur l'origine O — ne rend pas la map dirty"
+	origin_pivot.pressed.connect(func():
+		canvas.place_editor_pivot_on_origin()
+		_refresh_transform_inspector()
+	)
+	pivot_actions.add_child(origin_pivot)
+	box.add_child(pivot_actions)
 	compare_button = CheckButton.new()
 	compare_button.text = "Comparer à la sauvegarde"
 	compare_button.toggled.connect(func(value):
@@ -532,6 +640,7 @@ func _build_transform_panel() -> Control:
 	last_operation_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	last_operation_label.add_theme_color_override("font_color", Color(0.72, 0.84, 0.94))
 	box.add_child(last_operation_label)
+	box.hide()
 	return box
 
 
@@ -893,8 +1002,7 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 	_refresh_calibration_label()
 	_refresh_inspector(GridTransformService.INVALID_CELL)
 	_refresh_restore_points()
-	if dynamic_lab != null:
-		dynamic_lab.bind_session(edit_session, true)
+	_refresh_dynamic_palette()
 	if runtime_preview != null:
 		runtime_preview.set_arena(arena)
 	history_state_changed.emit()
@@ -981,7 +1089,7 @@ func _open_canonical(path: String) -> void:
 func import_latest_lab_transfer() -> bool:
 	var transfers := ArenaLabTransferService.pending_transfers()
 	if transfers.is_empty():
-		_set_status("Aucun nouveau transfert Lab ; ouverture du Lab intégré.")
+		_set_status("Aucun nouveau transfert Lab ; activation de Construction dynamique.")
 		return false
 	var transfer_id := str(transfers[0].get("transfer_id", ""))
 	var loaded := ArenaLabTransferService.load_transfer(transfer_id)
@@ -1334,8 +1442,6 @@ func _run_confirmed_production() -> void:
 	edit_session.mark_saved(str(result.arena_path))
 	canvas.set_arena(arena)
 	canvas.set_saved_transform(edit_session.saved_transform())
-	if dynamic_lab != null:
-		dynamic_lab.bind_session(edit_session, true)
 	if runtime_preview != null:
 		runtime_preview.set_arena(arena)
 	_refresh_all()
@@ -1631,6 +1737,12 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 		return
 	for cell in cells:
 		var changed := false
+		if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION:
+			changed = _apply_dynamic_cell_edit(cell, erase)
+			if changed:
+				_stroke_changed = true
+				_stroke_cell_count += 1
+			continue
 		match canvas.active_tool:
 			ArenaStudioCanvas.Tool.ADD_CELL:
 				changed = ArenaEditingService.set_cell_state(arena, cell, &"remove" if erase else &"add")
@@ -1660,6 +1772,42 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 		edit_session.history.notify_preview_changed()
 	canvas.queue_redraw()
 	_refresh_inspector(cells[-1] if not cells.is_empty() else GridTransformService.INVALID_CELL)
+
+
+func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
+	match canvas.active_tool:
+		ArenaStudioCanvas.Tool.ADD_CELL:
+			return ArenaEditingService.set_cell_state(arena, cell, &"remove" if erase else &"add")
+		ArenaStudioCanvas.Tool.REMOVE_CELL:
+			return ArenaEditingService.set_cell_state(arena, cell, &"add" if erase else &"remove")
+		ArenaStudioCanvas.Tool.TERRAIN:
+			var terrain_id := &"void" if erase else StringName(
+				dynamic_terrain_option.get_selected_metadata()
+			)
+			return ArenaDynamicEditingService.paint_terrain(arena, cell, terrain_id)
+		ArenaStudioCanvas.Tool.OBSTACLE:
+			var wall_id := &"remove" if erase else StringName(
+				dynamic_wall_option.get_selected_metadata()
+			)
+			return ArenaDynamicEditingService.place_wall(arena, cell, wall_id)
+		ArenaStudioCanvas.Tool.SPAWN:
+			var special_id := &"remove" if erase else StringName(
+				dynamic_special_option.get_selected_metadata()
+			)
+			match special_id:
+				&"hero": return ArenaDynamicEditingService.place_spawn(
+					arena, cell, ArenaSpawnDefinition.Kind.HERO_1
+				)
+				&"enemy": return ArenaDynamicEditingService.place_spawn(
+					arena, cell, ArenaSpawnDefinition.Kind.ENEMY
+				)
+				&"summon": return ArenaDynamicEditingService.place_spawn(
+					arena, cell, ArenaSpawnDefinition.Kind.SUMMON_ZONE
+				)
+				&"objective": return ArenaDynamicEditingService.place_objective(arena, cell)
+				&"decoration": return ArenaDynamicEditingService.place_decoration(arena, cell)
+				&"remove": return ArenaDynamicEditingService.remove_special(arena, cell)
+	return false
 
 
 func _on_stroke_finished(action_name: String) -> void:
@@ -1795,8 +1943,6 @@ func _restore_snapshot(snapshot: Dictionary) -> void:
 	edit_session.apply_snapshot(snapshot)
 	arena = edit_session.working_arena
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	if dynamic_lab != null:
-		dynamic_lab.bind_session(edit_session, true)
 	if runtime_preview != null:
 		runtime_preview.set_arena(arena)
 	_refresh_all()
@@ -1821,6 +1967,7 @@ func _refresh_all() -> void:
 	_sync_advanced_values()
 	_refresh_title()
 	_refresh_calibration_label()
+	_refresh_dynamic_palette()
 	_autosave()
 
 
@@ -1844,6 +1991,7 @@ func _on_history_changed() -> void:
 	_refresh_title()
 	_refresh_calibration_label()
 	_refresh_transform_inspector()
+	_refresh_dynamic_palette()
 	history_state_changed.emit()
 
 
@@ -1935,17 +2083,35 @@ func _refresh_calibration_label() -> void:
 func _refresh_transform_inspector() -> void:
 	if arena == null or inspector_label == null:
 		return
-	var axis_angle := absf(rad_to_deg(arena.axis_x.angle_to(arena.axis_y)))
+	var axis_angle := rad_to_deg(GridTransformService.angle_between_axes(
+		arena.axis_x, arena.axis_y
+	))
 	var determinant_value := GridTransformService.determinant(arena.axis_x, arena.axis_y)
 	var relative := GridTransformService.relative_determinant(arena.axis_x, arena.axis_y)
+	var pivot := canvas.current_editor_pivot()
+	var average_scale := 1.0
+	if edit_session != null:
+		var saved := edit_session.saved_transform()
+		average_scale = 0.5 * (
+			arena.axis_x.length() / maxf(saved.axis_x.length(), 0.00001)
+			+ arena.axis_y.length() / maxf(saved.axis_y.length(), 0.00001)
+		)
+	var mode_label: String = ["Symétrique", "Conserver X", "Conserver Y"][canvas.angle_mode]
 	inspector_label.text = (
-		"Grille selectionnee\n"
+		"GRILLE AFFINE SÉLECTIONNÉE\n"
 		+ "Position : %.2f, %.2f px\n" % [arena.grid_origin.x, arena.grid_origin.y]
-		+ "Droite : %.2f px / %.2f deg\n" % [arena.axis_x.length(), rad_to_deg(arena.axis_x.angle())]
-		+ "Gauche : %.2f px / %.2f deg\n" % [arena.axis_y.length(), rad_to_deg(arena.axis_y.angle())]
-		+ "Angle entre axes : %.2f deg\n" % axis_angle
-		+ "Determinant : %.3f / stabilite %.6f" % [determinant_value, relative]
+		+ "Axe X : %.2f px / %.2f deg\n" % [arena.axis_x.length(), rad_to_deg(arena.axis_x.angle())]
+		+ "Axe Y : %.2f px / %.2f deg\n" % [arena.axis_y.length(), rad_to_deg(arena.axis_y.angle())]
+		+ "Rotation globale : %.2f deg\n" % rad_to_deg(
+			GridTransformService.approximate_global_rotation(arena.axis_x, arena.axis_y)
+		)
+		+ "Ouverture : %.2f deg • %s\n" % [axis_angle, mode_label]
+		+ "Échelle moyenne : %.2f %%\n" % (average_scale * 100.0)
+		+ "Pivot : %.2f, %.2f • %s\n" % [pivot.x, pivot.y, canvas.editor_pivot_mode()]
+		+ "Inversibilité : %.6f • det %.3f" % [relative, determinant_value]
 	)
+	if angle_mode_option != null:
+		angle_mode_option.select(canvas.angle_mode)
 
 
 func _describe_transform_operation(
@@ -1999,6 +2165,8 @@ func _update_transform_controls() -> void:
 		var control := transform_controls.get(key) as CheckButton
 		if control != null:
 			control.set_pressed_no_signal(bool(values[key]))
+	if angle_mode_option != null:
+		angle_mode_option.select(canvas.angle_mode)
 
 
 func _save_session_editor_state() -> void:
@@ -2080,17 +2248,38 @@ func _on_library_activated(index: int) -> void:
 
 
 func _on_tool_selected(index: int) -> void:
-	_show_editor_canvas()
+	var dynamic_tool := index in [
+		ArenaStudioCanvas.Tool.ADD_CELL,
+		ArenaStudioCanvas.Tool.REMOVE_CELL,
+		ArenaStudioCanvas.Tool.TERRAIN,
+		ArenaStudioCanvas.Tool.OBSTACLE,
+		ArenaStudioCanvas.Tool.SPAWN,
+	]
+	var preserve_dynamic := workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION and dynamic_tool
+	_show_editor_canvas(preserve_dynamic)
 	canvas.set_tool(index)
+	canvas.set_dynamic_construction_mode(preserve_dynamic)
 	canvas.layer_locks["calibration"] = index not in [
 		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
 		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
 	]
 	_update_layer_controls()
-	obstacle_option.visible = index == ArenaStudioCanvas.Tool.OBSTACLE
-	terrain_option.visible = index == ArenaStudioCanvas.Tool.TERRAIN
-	spawn_option.visible = index == ArenaStudioCanvas.Tool.SPAWN
+	obstacle_option.visible = not preserve_dynamic and index == ArenaStudioCanvas.Tool.OBSTACLE
+	terrain_option.visible = not preserve_dynamic and index == ArenaStudioCanvas.Tool.TERRAIN
+	spawn_option.visible = not preserve_dynamic and index == ArenaStudioCanvas.Tool.SPAWN
 	verification_option.visible = index == ArenaStudioCanvas.Tool.VERIFY
+	if dynamic_palette != null:
+		dynamic_palette.visible = preserve_dynamic
+	if transform_panel != null:
+		transform_panel.visible = index == ArenaStudioCanvas.Tool.TRANSFORM_GRID
+	calibration_label.visible = index in [
+		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
+		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
+	]
+	canvas.layer_visibility["calibration"] = index in [
+		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
+		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
+	]
 	shape_option.visible = index in [
 		ArenaStudioCanvas.Tool.ADD_CELL,
 		ArenaStudioCanvas.Tool.REMOVE_CELL,
@@ -2105,6 +2294,9 @@ func _on_tool_selected(index: int) -> void:
 	elif index == ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
 		_refresh_transform_inspector()
 		_set_status("Ancres : cliquez pour ajouter, glissez pour deplacer, clic droit pour supprimer.")
+	elif preserve_dynamic:
+		_refresh_dynamic_palette()
+		_set_status("Construction dynamique — un seul outil traite le canvas.")
 
 
 func _on_verification_kind_selected(index: int) -> void:
@@ -2298,56 +2490,90 @@ func apply_workspace_preset(index: int) -> void:
 
 func set_preview_view(index: int) -> void:
 	preview_view = clampi(index, ArenaRuntimePreview.ViewMode.LOGIC, ArenaRuntimePreview.ViewMode.GAME)
+	cancel_active_gesture()
+	workspace_mode = WorkspaceMode.PREVIEW
+	canvas.set_dynamic_construction_mode(false)
 	canvas.hide()
-	dynamic_lab_container.hide()
+	if dynamic_palette != null:
+		dynamic_palette.hide()
+	if dynamic_mode_button != null:
+		dynamic_mode_button.set_pressed_no_signal(false)
 	runtime_preview.show()
 	runtime_preview.set_view_mode(preview_view)
 	runtime_preview.set_arena(arena)
 
 
 func show_dynamic_construction() -> void:
-	if dynamic_lab == null or edit_session == null:
-		_set_status("Le Dynamic Arena Lab integre n'est pas disponible.", true)
+	if edit_session == null or arena == null:
+		_set_status("Aucune ArenaDefinition active pour la construction dynamique.", true)
 		return
-	canvas.hide()
+	if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION \
+			and dynamic_mode_button != null and not dynamic_mode_button.button_pressed:
+		_show_editor_canvas(false)
+		_select_tool_and_preset(ArenaStudioCanvas.Tool.SELECT, 0)
+		_set_status("Construction dynamique quittée — document et historique conservés.")
+		return
+	cancel_active_gesture()
+	workspace_mode = WorkspaceMode.DYNAMIC_CONSTRUCTION
+	canvas.show()
 	runtime_preview.hide()
-	dynamic_lab_container.show()
-	dynamic_lab.bind_session(edit_session, true)
-	dynamic_mode_button.button_pressed = true
-	_set_status("Construction dynamique : chaque geste modifie la working copy ArenaDefinition.")
+	canvas.set_dynamic_construction_mode(true)
+	if dynamic_palette != null:
+		dynamic_palette.show()
+	if dynamic_mode_button != null:
+		dynamic_mode_button.set_pressed_no_signal(true)
+	_refresh_dynamic_palette()
+	_select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN)
+	_set_status("Construction dynamique — même canvas, même ArenaEditSession, même historique.")
 
 
-func _show_editor_canvas() -> void:
+func _show_editor_canvas(preserve_dynamic_mode := false) -> void:
 	if canvas == null:
 		return
 	canvas.show()
 	if runtime_preview != null:
 		runtime_preview.hide()
-	if dynamic_lab_container != null:
-		dynamic_lab_container.hide()
-	if dynamic_mode_button != null:
-		dynamic_mode_button.button_pressed = false
+	if not preserve_dynamic_mode:
+		workspace_mode = WorkspaceMode.EDITOR
+		canvas.set_dynamic_construction_mode(false)
+		if dynamic_palette != null:
+			dynamic_palette.hide()
+		if dynamic_mode_button != null:
+			dynamic_mode_button.set_pressed_no_signal(false)
 
 
-func _on_dynamic_lab_document_changed(value: ArenaDefinition, _dirty: bool) -> void:
-	if edit_session == null or value != edit_session.working_arena:
+func _select_dynamic_tool(tool: int) -> void:
+	if workspace_mode != WorkspaceMode.DYNAMIC_CONSTRUCTION:
+		show_dynamic_construction()
 		return
-	arena = value
+	tool_list.select(tool)
+	_on_tool_selected(tool)
+
+
+func _refresh_dynamic_palette() -> void:
+	if dynamic_document_label == null or arena == null:
+		return
+	dynamic_document_label.text = "%s • %d × %d • %s" % [
+		arena.display_name, arena.grid_size.x, arena.grid_size.y,
+		"non enregistrée" if dirty else "enregistrée",
+	]
+	if dynamic_width_spin != null:
+		dynamic_width_spin.set_value_no_signal(arena.grid_size.x)
+	if dynamic_height_spin != null:
+		dynamic_height_spin.set_value_no_signal(arena.grid_size.y)
+
+
+func _resize_dynamic_document() -> void:
+	if arena == null or edit_session == null:
+		return
+	var before := arena.to_snapshot()
+	var requested := Vector2i(int(dynamic_width_spin.value), int(dynamic_height_spin.value))
+	if not ArenaDynamicEditingService.resize_document(arena, requested):
+		return
+	_commit_change("Redimensionner l'arène dynamique", before, arena.to_snapshot())
 	canvas.set_arena(arena)
-	canvas.queue_redraw()
-	validation_report = null
-	_refresh_title()
-	_refresh_inspector(GridTransformService.INVALID_CELL)
-	if runtime_preview != null:
-		runtime_preview.set_arena(arena)
-	history_state_changed.emit()
-
-
-func _resize_dynamic_lab_viewport() -> void:
-	if dynamic_lab_viewport == null or dynamic_lab_container == null:
-		return
-	if dynamic_lab != null:
-		dynamic_lab.call_deferred("_fit_camera")
+	_refresh_dynamic_palette()
+	_refresh_all()
 
 
 func _apply_responsive_layout() -> void:
@@ -2373,6 +2599,8 @@ func get_workspace_state() -> Dictionary:
 		"focus_map": focus_map_enabled,
 		"preset": workspace_preset,
 		"preview_view": preview_view,
+		"workspace_mode": workspace_mode,
+		"active_tool": canvas.active_tool if canvas != null else ArenaStudioCanvas.Tool.SELECT,
 		"left_visible": left_panel.visible if left_panel != null else true,
 		"right_visible": right_panel.visible if right_panel != null else true,
 		"drawer_visible": bottom_drawer_content.visible \
@@ -2393,11 +2621,25 @@ func apply_workspace_state(state: Dictionary) -> void:
 	vertical_split.split_offset = int(state.get("drawer_split", -42))
 	workspace_preset = clampi(int(state.get("preset", 0)), 0, 3)
 	preview_view = clampi(int(state.get("preview_view", 0)), 0, 2)
+	workspace_mode = clampi(
+		int(state.get("workspace_mode", WorkspaceMode.EDITOR)),
+		WorkspaceMode.EDITOR, WorkspaceMode.PREVIEW
+	)
 	left_panel.visible = bool(state.get("left_visible", true))
 	right_panel.visible = bool(state.get("right_visible", true))
 	bottom_drawer_content.visible = bool(state.get("drawer_visible", false))
 	if bool(state.get("focus_map", false)):
 		set_focus_map(true)
+	var restored_tool := clampi(
+		int(state.get("active_tool", ArenaStudioCanvas.Tool.SELECT)),
+		ArenaStudioCanvas.Tool.SELECT, ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS
+	)
+	if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION and edit_session != null:
+		workspace_mode = WorkspaceMode.EDITOR
+		show_dynamic_construction()
+	else:
+		tool_list.select(restored_tool)
+		_on_tool_selected(restored_tool)
 	_apply_responsive_layout()
 
 
