@@ -1,48 +1,47 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://bd4vrerhe6sov"]
 
-[ext_resource type="Script" path="res://battle/modular/modular_battle.gd" id="1_battle"]
-[ext_resource type="Script" path="res://battle/iso/iso_grid_view.gd" id="2_grid"]
-[ext_resource type="PackedScene" path="res://debug/DebugOverlay.tscn" id="3_debug"]
-[ext_resource type="Script" path="res://battle/floating_text_spawner.gd" id="4_text"]
-[ext_resource type="Script" path="res://battle/impact_juice.gd" id="5_impact"]
+[ext_resource type="Script" uid="uid://bivap6op53xbk" path="res://battle/modular/modular_battle.gd" id="1_battle"]
+[ext_resource type="Script" uid="uid://coglln4uya5g3" path="res://battle/iso/iso_grid_view.gd" id="2_grid"]
+[ext_resource type="PackedScene" uid="uid://i5c6lt5m6q0w" path="res://debug/DebugOverlay.tscn" id="3_debug"]
+[ext_resource type="Script" uid="uid://b7j325rx638ux" path="res://battle/floating_text_spawner.gd" id="4_text"]
+[ext_resource type="Script" uid="uid://pm1sjpja3a5s" path="res://battle/impact_juice.gd" id="5_impact"]
 
-[node name="ModularBattle" type="Node2D"]
+[node name="ModularBattle" type="Node2D" unique_id=659963107]
 texture_filter = 2
 script = ExtResource("1_battle")
 grid_cols = 14
-grid_rows = 14
 temporary_iso_placeholders = true
 
-[node name="Backdrop" type="ColorRect" parent="."]
+[node name="Backdrop" type="ColorRect" parent="." unique_id=2072208569]
+z_index = -200
 offset_left = -2048.0
 offset_top = -2048.0
 offset_right = 2048.0
 offset_bottom = 2048.0
 mouse_filter = 2
 color = Color(0.025, 0.039, 0.061, 1)
-z_index = -200
 
-[node name="IsoGridView" type="Node2D" parent="." groups=["battle_grid_view"]]
+[node name="IsoGridView" type="Node2D" parent="." unique_id=1179192920 groups=["battle_grid_view"]]
 script = ExtResource("2_grid")
 
-[node name="Geometry" type="TileMapLayer" parent="IsoGridView"]
+[node name="Geometry" type="TileMapLayer" parent="IsoGridView" unique_id=1100538791]
 
-[node name="TerrainEffectLayer" type="Node2D" parent="."]
+[node name="TerrainEffectLayer" type="Node2D" parent="." unique_id=370781428]
 
-[node name="YSortedWorld" type="Node2D" parent="."]
+[node name="YSortedWorld" type="Node2D" parent="." unique_id=507208850]
 y_sort_enabled = true
 
-[node name="VFXLayer" type="Node2D" parent="."]
+[node name="VFXLayer" type="Node2D" parent="." unique_id=1330196341]
 z_index = 50
 
-[node name="DebugOverlay" parent="." instance=ExtResource("3_debug")]
+[node name="DebugOverlay" parent="." unique_id=632543934 instance=ExtResource("3_debug")]
 visible = false
 
-[node name="FloatingTextSpawner" type="Node2D" parent="."]
+[node name="FloatingTextSpawner" type="Node2D" parent="." unique_id=952603004]
 z_index = 100
 script = ExtResource("4_text")
 
-[node name="ImpactJuice" type="Node" parent="."]
+[node name="ImpactJuice" type="Node" parent="." unique_id=286450591]
 script = ExtResource("5_impact")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=211369764]

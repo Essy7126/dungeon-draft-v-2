@@ -4,11 +4,13 @@ extends EditorPlugin
 # Compatibilite : Arena Studio reste le module historique de ce plugin unique.
 
 const TOOL_MENU_DETACH := "Dungeon Draft Studio : detacher / reintegrer"
+const TOOL_MENU_SKILLS := "Dungeon Draft : ouvrir le Studio des compétences"
 const DETACH_SHORTCUT_SETTING := "dungeon_draft_studio/shortcuts/detach_workspace"
 
 var _main_screen: EmbeddedStudioHost = null
 var _workspace: StudioWorkspace = null
 var _window_host: NativeStudioWindowHost = null
+var _skill_window_host: SkillTreeStudioWindowHost = null
 var _ui_state := {}
 
 
@@ -37,6 +39,7 @@ func _enter_tree() -> void:
 	))
 	_workspace.detach_requested.connect(_toggle_detached)
 	_workspace.reintegrate_requested.connect(_reintegrate_workspace)
+	_workspace.skill_studio_requested.connect(_open_skill_studio)
 	_main_screen.reintegrate_requested.connect(_reintegrate_workspace)
 	_main_screen.focus_window_requested.connect(_focus_window)
 	_main_screen.attach_workspace(_workspace)
@@ -45,6 +48,7 @@ func _enter_tree() -> void:
 	_window_host.reintegrate_requested.connect(_reintegrate_workspace)
 	get_editor_interface().get_base_control().add_child(_window_host)
 	add_tool_menu_item(TOOL_MENU_DETACH, _toggle_detached)
+	add_tool_menu_item(TOOL_MENU_SKILLS, _open_skill_studio)
 	_main_screen.hide()
 	if bool(_ui_state.get("detached", false)):
 		call_deferred("_detach_workspace")
@@ -56,6 +60,14 @@ func _exit_tree() -> void:
 		_workspace.prepare_for_close()
 	_reintegrate_workspace()
 	remove_tool_menu_item(TOOL_MENU_DETACH)
+	remove_tool_menu_item(TOOL_MENU_SKILLS)
+	if is_instance_valid(_skill_window_host):
+		_skill_window_host.close_studio_immediately()
+		var skill_parent := _skill_window_host.get_parent()
+		if skill_parent != null:
+			skill_parent.remove_child(_skill_window_host)
+		_skill_window_host.free()
+	_skill_window_host = null
 	if is_instance_valid(_window_host):
 		var parent := _window_host.get_parent()
 		if parent != null:
@@ -153,6 +165,15 @@ func _focus_window() -> void:
 	if is_instance_valid(_window_host) and _workspace != null \
 			and _workspace.get_parent() == _window_host:
 		_window_host.bring_to_front()
+
+
+func _open_skill_studio() -> void:
+	if not is_instance_valid(_skill_window_host):
+		_skill_window_host = SkillTreeStudioWindowHost.new()
+		_skill_window_host.name = "SkillTreeStudioWindowHost"
+		_skill_window_host.setup(get_editor_interface(), get_undo_redo())
+		get_editor_interface().get_base_control().add_child(_skill_window_host)
+	_skill_window_host.open_studio()
 
 
 func _save_ui_state() -> void:

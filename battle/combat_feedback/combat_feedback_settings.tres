@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="CombatFeedbackSettings" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="CombatFeedbackSettings" format=3 uid="uid://dndunnxe5r2qi"]
 
-[ext_resource type="Script" path="res://battle/combat_feedback/combat_feedback_settings.gd" id="1_settings"]
-[ext_resource type="Script" path="res://battle/combat_feedback/combat_feedback_style.gd" id="2_style"]
+[ext_resource type="Script" uid="uid://5rddt3np31pw" path="res://battle/combat_feedback/combat_feedback_settings.gd" id="1_settings"]
+[ext_resource type="Script" uid="uid://cxca8pc2qpmmm" path="res://battle/combat_feedback/combat_feedback_style.gd" id="2_style"]
 
 [sub_resource type="Resource" id="StylePhysical"]
 script = ExtResource("2_style")
-style_id = &"damage_physical"
-event_type = &"hp_damage_taken"
 font_color = Color(1, 0.945, 0.82, 1)
 accent_color = Color(0.93, 0.36, 0.24, 1)
 font_size = 23
@@ -15,7 +13,6 @@ icon_text = "⚔"
 [sub_resource type="Resource" id="StyleMagical"]
 script = ExtResource("2_style")
 style_id = &"damage_magical"
-event_type = &"hp_damage_taken"
 font_color = Color(0.8, 0.88, 1, 1)
 accent_color = Color(0.48, 0.56, 1, 1)
 font_size = 23
@@ -24,7 +21,6 @@ icon_text = "✦"
 [sub_resource type="Resource" id="StyleCritical"]
 script = ExtResource("2_style")
 style_id = &"damage_critical"
-event_type = &"hp_damage_taken"
 font_color = Color(1, 0.72, 0.22, 1)
 accent_color = Color(1, 0.3, 0.12, 1)
 font_size = 31
@@ -37,7 +33,6 @@ emphasis_scale = 1.28
 [sub_resource type="Resource" id="StylePeriodic"]
 script = ExtResource("2_style")
 style_id = &"damage_periodic"
-event_type = &"hp_damage_taken"
 font_color = Color(0.72, 0.9, 0.48, 1)
 accent_color = Color(0.48, 0.7, 0.24, 1)
 font_size = 19

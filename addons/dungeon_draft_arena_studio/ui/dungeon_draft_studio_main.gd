@@ -4,6 +4,7 @@ extends Control
 
 signal detach_requested
 signal reintegrate_requested
+signal skill_studio_requested
 
 var editor_interface = null
 var editor_undo_redo = null
@@ -23,6 +24,7 @@ var workspace_preset_option: OptionButton
 var preview_view_option: OptionButton
 var focus_map_button: Button
 var detach_button: Button
+var skill_studio_button: Button
 var detached := false
 var _pending_state := {}
 var studio_title_label: Label
@@ -108,6 +110,10 @@ func _build_shared_history_bar() -> Control:
 	lab_transfer_button = _global_button(
 		bar, "Lab", _global_lab_transfer,
 		"Importer le dernier transfert Dynamic Arena Lab vérifié"
+	)
+	skill_studio_button = _global_button(
+		bar, "Compétences", func(): skill_studio_requested.emit(),
+		"Ouvrir le Studio autonome des personnages et compétences"
 	)
 	workspace_preset_option = OptionButton.new()
 	workspace_preset_option.tooltip_text = "Disposition du workspace"
@@ -348,6 +354,8 @@ func _apply_theme_icons() -> void:
 		save_button.icon = get_theme_icon("Save", "EditorIcons")
 	if detach_button != null and has_theme_icon("MakeFloatingOn", "EditorIcons"):
 		detach_button.icon = get_theme_icon("MakeFloatingOn", "EditorIcons")
+	if skill_studio_button != null and has_theme_icon("ScriptCreate", "EditorIcons"):
+		skill_studio_button.icon = get_theme_icon("ScriptCreate", "EditorIcons")
 
 
 func set_detached_state(value: bool) -> void:
@@ -396,6 +404,7 @@ func _apply_toolbar_responsive() -> void:
 	undo_button.custom_minimum_size.x = 34 if compact else 0
 	redo_button.custom_minimum_size.x = 34 if compact else 0
 	history_button.text = "Hist. ▾" if compact else "Historique ▾"
+	skill_studio_button.text = "Comp." if compact else "Compétences"
 	workspace_preset_option.custom_minimum_size.x = 104 if compact else 0
 	preview_view_option.custom_minimum_size.x = 72 if compact else 0
 	detach_button.text = (

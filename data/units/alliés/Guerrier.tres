@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="2_spell_type"]
 [ext_resource type="Texture2D" uid="uid://bvsrevxm8er4l" path="res://asset/personnage/alliés/495.png" id="5_sprite"]
-[ext_resource type="Resource" path="res://data/spells/Guerrier/frappe_lourde.tres" id="10_heavy"]
+[ext_resource type="Resource" uid="uid://0flkpto1jkby" path="res://data/spells/Guerrier/frappe_lourde.tres" id="10_heavy"]
 [ext_resource type="Resource" uid="uid://d2gmr88ea1t1q" path="res://data/spells/Guerrier/charge.tres" id="16_charge"]
 [ext_resource type="Resource" uid="uid://4cpddbesqcxb" path="res://data/spells/Guerrier/tourbillon.tres" id="17_whirlwind"]
 [ext_resource type="Resource" path="res://data/spells/Guerrier/garde.tres" id="18_guard"]
