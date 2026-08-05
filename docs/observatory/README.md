@@ -22,3 +22,9 @@ Ajouter `--fail-on-blocking` pour obtenir le code de sortie `2` lorsqu’un audi
 ## Périmètre V0
 
 Le snapshot inclut le projet, les héros de production, leurs statistiques, sorts et disciplines, le catalogue d’objets, les récompenses génériques déclarées, le pool d’équipements, le contrat et les audits. Runs détaillées, salles, vagues, ennemis, architecture complète et theorycraft avancé restent explicitement reportés.
+
+## Frontend statique V0
+
+Le dossier `observatory/` contient l’interface React/Vite en lecture seule. Elle consomme exclusivement `observatory/public/data/latest.json`, synchronise une copie publique ignorée du schéma pour Ajv et utilise des routes hashées compatibles avec un hébergement statique. Les commandes, filtres, garanties d’accessibilité, limites et principes de sécurité sont documentés dans `observatory/README.md` et `docs/observatory/frontend_v0.md`.
+
+Cette mission ne crée ni backend, ni authentification, ni télémétrie, ni déploiement.
