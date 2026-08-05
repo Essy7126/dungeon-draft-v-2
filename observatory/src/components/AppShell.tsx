@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom';
 
 const navigation = [
   ['Vue globale', '/overview'],
+  ['Run', '/run'],
+  ['Ennemis', '/enemies'],
   ['Personnages', '/characters'],
   ['Sorts', '/spells'],
   ['Disciplines', '/disciplines'],

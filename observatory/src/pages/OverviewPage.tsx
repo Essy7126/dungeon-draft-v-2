@@ -21,6 +21,15 @@ export function OverviewPage() {
         <MetricCard label="Pools" value={summary.reward_pools} />
       </section>
 
+      <section className="metrics-grid" aria-label="Compteurs de la run">
+        <MetricCard label="Runs" value={summary.runs} tone="gold" />
+        <MetricCard label="Salles" value={summary.rooms} />
+        <MetricCard label="Vagues" value={summary.waves} />
+        <MetricCard label="Rencontres" value={summary.encounters} />
+        <MetricCard label="Ennemis" value={summary.enemies} />
+        <MetricCard label="Sorts ennemis" value={summary.enemy_spells} />
+      </section>
+
       <div className="dashboard-grid">
         <Panel title="Santé du contrat" className="dashboard-card">
           <div className="status-list">
