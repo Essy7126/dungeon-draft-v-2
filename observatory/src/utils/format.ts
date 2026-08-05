@@ -18,6 +18,14 @@ export function theoreticalApBudget(maxAp: number, apCost: number): number | nul
   return Math.floor(maxAp / apCost);
 }
 
+export function formatMultiplier(value: number): string {
+  return `×${new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
+}
+
+export function formatPercent(value: number): string {
+  return `${new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 }).format(value)} %`;
+}
+
 export function uniqueSorted(values: readonly string[]): string[] {
   return [...new Set(values.filter(Boolean))].sort((left, right) => left.localeCompare(right, 'fr'));
 }

@@ -17,6 +17,10 @@ import { OverviewPage } from './pages/OverviewPage';
 import { RewardsPage } from './pages/RewardsPage';
 import { SpellDetailPage } from './pages/SpellDetailPage';
 import { SpellsPage } from './pages/SpellsPage';
+import { EnemiesPage } from './pages/EnemiesPage';
+import { EnemyDetailPage } from './pages/EnemyDetailPage';
+import { RoomDetailPage } from './pages/RoomDetailPage';
+import { RunPage } from './pages/RunPage';
 
 type LoadState = { kind: 'loading' } | { kind: 'success'; snapshot: Snapshot } | { kind: 'error'; error: unknown };
 
@@ -42,6 +46,10 @@ export default function App() {
           <Switch>
             <Route exact path="/"><Redirect to="/overview" /></Route>
             <Route exact path="/overview"><OverviewPage /></Route>
+            <Route exact path="/run"><RunPage /></Route>
+            <Route path="/rooms/:roomId"><RoomDetailPage /></Route>
+            <Route exact path="/enemies"><EnemiesPage /></Route>
+            <Route path="/enemies/:enemyId"><EnemyDetailPage /></Route>
             <Route exact path="/characters"><CharactersPage /></Route>
             <Route path="/characters/:characterId"><CharacterDetailPage /></Route>
             <Route exact path="/spells"><SpellsPage /></Route>

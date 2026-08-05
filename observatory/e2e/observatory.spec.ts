@@ -23,10 +23,26 @@ test('navigation principale et aria-current', async ({ page }) => {
   await expect(page).toHaveURL(/#\/characters\/elf$/);
 });
 
+test('navigation de la run à une salle puis aux ennemis', async ({ page }) => {
+  await open(page, 'overview', 'État du jeu exporté');
+  await page.getByRole('link', { name: 'Run', exact: true }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Première run' })).toBeVisible();
+  await page.getByRole('link', { name: /Salle 1 - Gué forestier/ }).first().click();
+  await expect(page).toHaveURL(/#\/rooms\/first_run\.room\.01$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Salle 1 - Gué forestier' })).toBeVisible();
+  await page.getByRole('link', { name: 'Ennemis' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Ennemis' })).toBeVisible();
+  await page.getByRole('link', { name: 'Chef squelette rouge' }).click();
+  await expect(page).toHaveURL(/#\/enemies\/skeleton_chief$/);
+});
+
 test('rechargement d’une route hashée profonde', async ({ page }) => {
   await open(page, 'spells/elf_fireball', 'Boule de feu');
   await page.reload();
   await expect(page.getByRole('heading', { level: 1, name: 'Boule de feu' })).toBeVisible();
+  await open(page, 'enemies/skeleton_chief', 'Chef squelette rouge');
+  await page.reload();
+  await expect(page.getByRole('heading', { level: 1, name: 'Chef squelette rouge' })).toBeVisible();
 });
 
 test('filtres des sorts et des objets', async ({ page }) => {
@@ -38,6 +54,17 @@ test('filtres des sorts et des objets', async ({ page }) => {
   await open(page, 'items', 'Objets');
   await page.getByLabel('Première run uniquement').check();
   await expect(page.locator('.entity-card')).toHaveCount(14);
+});
+
+test('filtres des ennemis', async ({ page }) => {
+  await open(page, 'enemies', 'Ennemis');
+  await page.getByRole('searchbox', { name: 'Recherche' }).fill('centurion');
+  await expect(page.locator('.enemy-card')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Réinitialiser' }).click();
+  await page.getByLabel('Effet').selectOption('summoner');
+  await expect(page.getByRole('link', { name: 'Centurion squelette de glace' })).toBeVisible();
+  await page.getByLabel('Présence').selectOption('summonable');
+  await expect(page.getByText('Aucun ennemi trouvé')).toBeVisible();
 });
 
 test('navigation clavier et lien d’évitement', async ({ page }) => {
@@ -55,6 +82,8 @@ test('aucune requête externe ni res://', async ({ page }) => {
   await open(page, 'overview', 'État du jeu exporté');
   await page.getByRole('link', { name: 'Objets' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Objets' })).toBeVisible();
+  await page.getByRole('link', { name: 'Ennemis' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Ennemis' })).toBeVisible();
   const external = requests.filter((raw) => {
     const url = new URL(raw);
     return url.hostname !== '127.0.0.1' || url.port !== '4173';
@@ -72,7 +101,8 @@ for (const viewport of [
 ]) {
   test(`aucun débordement global à ${viewport.width}×${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    await open(page, 'items', 'Objets');
+    const mobile = viewport.width <= 390;
+    await open(page, mobile ? 'enemies/skeleton_chief' : 'run', mobile ? 'Chef squelette rouge' : 'Première run');
     const sizes = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
     expect(sizes.scroll).toBeLessThanOrEqual(sizes.client);
   });
@@ -83,6 +113,10 @@ for (const target of [
   { route: 'characters', heading: 'Personnages' },
   { route: 'items', heading: 'Objets' },
   { route: 'audit', heading: 'Contrat et audits' },
+  { route: 'run', heading: 'Première run' },
+  { route: 'rooms/first_run.room.01', heading: 'Salle 1 - Gué forestier' },
+  { route: 'enemies', heading: 'Ennemis' },
+  { route: 'enemies/skeleton_chief', heading: 'Chef squelette rouge' },
 ]) {
   test(`aucune violation Axe sérieuse sur ${target.route}`, async ({ page }) => {
     await open(page, target.route, target.heading);
@@ -108,6 +142,22 @@ test('captures de référence', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await open(page, 'audit', 'Contrat et audits');
   await page.screenshot({ path: resolve(screenshotDir, 'audit-1920x1080.png'), fullPage: true });
+
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await open(page, 'run', 'Première run');
+  await page.screenshot({ path: resolve(screenshotDir, 'run-1920x1080.png'), fullPage: true });
+
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await open(page, 'rooms/first_run.room.01', 'Salle 1 - Gué forestier');
+  await page.screenshot({ path: resolve(screenshotDir, 'room-1366x768.png'), fullPage: true });
+
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await open(page, 'enemies', 'Ennemis');
+  await page.screenshot({ path: resolve(screenshotDir, 'enemies-1920x1080.png'), fullPage: true });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, 'enemies/skeleton_chief', 'Chef squelette rouge');
+  await page.screenshot({ path: resolve(screenshotDir, 'enemy-390x844.png'), fullPage: true });
 });
 
 test('capture de l’erreur de données', async ({ page }) => {
