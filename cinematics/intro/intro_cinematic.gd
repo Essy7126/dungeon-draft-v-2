@@ -506,6 +506,11 @@ func _resolve_run_configuration() -> Dictionary:
 		if hero_data == null:
 			return {}
 		hero_sources.append(hero_data)
+	var manager := _get_run_manager()
+	if manager != null and manager.has_method("take_next_run_data"):
+		var selected_run = manager.call("take_next_run_data", run_data)
+		if selected_run is RunData:
+			run_data = selected_run as RunData
 	return {
 		"run_data": run_data,
 		"hero_sources": hero_sources,

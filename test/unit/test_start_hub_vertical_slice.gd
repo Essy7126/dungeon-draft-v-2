@@ -325,6 +325,10 @@ func test_commencer_run_ouvre_intro_sans_demarrer_run_et_une_seule_fois() -> voi
 	controller.archivist_panel.get_node("%RunButton").pressed.emit()
 	assert_eq(calls[0], 0)
 	assert_true(controller.archivist_panel.get_node("%RoomSelectionView").visible)
+	var run_selector: OptionButton = controller.archivist_panel.get_node("%RunSelector")
+	assert_eq(run_selector.item_count, 2)
+	assert_eq(run_selector.get_item_text(0), "Principal")
+	assert_eq(run_selector.get_item_text(1), "Run de test")
 	controller.archivist_panel.get_node("%RoomSelector").select(2)
 	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
 	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
@@ -332,6 +336,29 @@ func test_commencer_run_ouvre_intro_sans_demarrer_run_et_une_seule_fois() -> voi
 	assert_eq(controller.get_state(), StartHubController.HubState.TRANSITIONING)
 	assert_eq(captured_paths, ["res://cinematics/intro/intro_cinematic.tscn"])
 	assert_false(GameManager.run_active)
+	GameManager.clear_next_run_configuration()
+
+
+func test_run_de_test_selectionnee_est_transmise_a_la_cinematique() -> void:
+	var hub := await _make_hub()
+	var controller := await _open_archivist_panel(hub)
+	controller.transition_fade_duration = 0.0
+	controller.cinematic_open_callable = func(_scene_path): return true
+	GameManager.cleanup_run_state()
+	controller.archivist_panel.get_node("%RunButton").pressed.emit()
+	var run_selector: OptionButton = controller.archivist_panel.get_node("%RunSelector")
+	run_selector.select(1)
+	run_selector.item_selected.emit(1)
+	assert_eq(
+		controller.archivist_panel.get_node("%RoomSelector").item_count,
+		4,
+	)
+	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
+	var selected_run := GameManager.take_next_run_data(null)
+	assert_not_null(selected_run)
+	assert_eq(selected_run.resource_path, "res://data/runs/fixed_trio_prototype_run.tres")
+	assert_eq(selected_run.run_name, "Run de test")
+	GameManager.clear_next_run_configuration()
 
 
 func test_donnees_archiviste_preparent_le_trio_reel_dans_game_manager() -> void:
@@ -339,7 +366,21 @@ func test_donnees_archiviste_preparent_le_trio_reel_dans_game_manager() -> void:
 		"res://hub/data/lanternbound_archivist.tres"
 	)
 	GameManager.cleanup_run_state()
-	assert_true(GameManager._prepare_preconfigured_run(data.run_data, data.hero_sources))
+	var available_runs := data.get_available_runs()
+	assert_eq(available_runs.size(), 2)
+	assert_eq(available_runs[0].run_name, "Principal")
+	assert_eq(available_runs[0].rooms.size(), 6)
+	assert_true(
+		available_runs[0].is_valid(), str(available_runs[0].validation_errors())
+	)
+	assert_eq(available_runs[1].run_name, "Run de test")
+	assert_eq(available_runs[1].rooms.size(), 4)
+	assert_true(
+		available_runs[1].is_valid(), str(available_runs[1].validation_errors())
+	)
+	assert_true(GameManager._prepare_preconfigured_run(
+		available_runs[0], data.hero_sources
+	))
 	assert_eq(GameManager.get_ordered_heroes().map(
 		func(hero: Unit): return String(hero.unit_id)
 	), ["elf", "mage", "warrior"])

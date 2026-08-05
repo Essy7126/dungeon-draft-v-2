@@ -1009,7 +1009,7 @@
   ],
   "display_name": "Arene de test",
   "encounter_path": "res://data/encounters/first_run_room_01_encounter.tres",
-  "godot_version": "4.7.1-stable (official)",
+  "godot_version": "4.7-stable (official)",
   "grid_origin": [
     688.0,
     164.0

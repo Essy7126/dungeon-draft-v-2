@@ -33,7 +33,7 @@ func _prepare_party() -> Array[CharacterRunState]:
 func test_first_run_has_six_rooms_and_a_skeleton_chief_finale() -> void:
 	var run := _first_run()
 	assert_not_null(run)
-	assert_eq(run.run_name, "Première run")
+	assert_eq(run.run_name, "Principal")
 	assert_eq(run.rooms.size(), 6)
 	assert_eq(run.rooms[-1].resource_path, "res://data/rooms/room_06_space.tres")
 	assert_true(run.rooms[-1].enemies.any(

@@ -73,6 +73,19 @@ func test_storyboard_and_narration_keep_their_real_source_properties() -> void:
 	assert_gt(music.get_length(), narration.get_length())
 
 
+func test_run_configuree_dans_le_hub_remplace_le_parcours_par_defaut() -> void:
+	var spy := RunManagerSpyScript.new()
+	spy.next_run_data = load(
+		"res://data/runs/fixed_trio_prototype_run.tres"
+	) as RunData
+	add_child_autofree(spy)
+	cinematic.run_manager_override = spy
+	var configuration := cinematic._resolve_run_configuration()
+	assert_false(configuration.is_empty())
+	assert_eq(configuration["run_data"].run_name, "Run de test")
+	assert_null(spy.next_run_data)
+
+
 func test_music_and_voice_start_once_on_separate_players_and_buses() -> void:
 	cinematic.music_fade_in_duration = 0.0
 	cinematic._begin_playback()

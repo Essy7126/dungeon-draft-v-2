@@ -77,6 +77,7 @@ var item_catalog: ItemCatalog = null
 var run_inventory: RunInventory = null
 var _equipment_service := EquipmentService.new()
 var _item_use_service := ItemUseService.new()
+var _next_run_data: RunData = null
 var _next_run_start_room_index := 0
 var _maximum_waves_per_room := 10
 var _room_wave_counts := PackedInt32Array()
@@ -130,6 +131,28 @@ func is_progression_service_connected() -> bool:
 
 func start_run(run_data: RunData) -> void:
 	start_preconfigured_run(run_data, PRODUCTION_HERO_DATA_PATHS)
+
+
+## Conserve le choix du hub pendant la cinematique qui precede le lancement.
+func configure_next_run(run_data: RunData, room_index: int) -> bool:
+	if run_data == null or room_index < 0 or room_index >= run_data.rooms.size():
+		return false
+	_next_run_data = run_data
+	_next_run_start_room_index = room_index
+	return true
+
+
+## Transfere le choix au consommateur suivant, puis libere la reference temporaire.
+func take_next_run_data(default_run_data: RunData) -> RunData:
+	var selected_run := _next_run_data
+	_next_run_data = null
+	return selected_run if selected_run != null else default_run_data
+
+
+func clear_next_run_configuration() -> void:
+	_next_run_data = null
+	_next_run_start_room_index = 0
+
 
 ## Configure une seule fois la salle de depart du prochain lancement de run.
 func configure_next_run_start_room(room_index: int) -> void:
@@ -314,6 +337,7 @@ func cleanup_run_state() -> void:
 	_cleared_room_emitted = false
 	_active_run_name = ""
 	_last_run_result.clear()
+	clear_next_run_configuration()
 
 
 func _initialize_inventory_state() -> bool:

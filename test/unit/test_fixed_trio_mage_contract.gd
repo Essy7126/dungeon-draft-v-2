@@ -36,7 +36,7 @@ func _prepare() -> Array[CharacterRunState]:
 func test_first_run_contains_the_six_production_rooms_in_order() -> void:
 	var run := load(RUN_PATH) as RunData
 	assert_not_null(run)
-	assert_eq(run.run_name, "Première run")
+	assert_eq(run.run_name, "Principal")
 	assert_eq(run.rooms.map(func(room): return room.resource_path), EXPECTED_ROOMS)
 	assert_true(run.rooms.all(func(room): return room != null and room.battle_scene != null))
 

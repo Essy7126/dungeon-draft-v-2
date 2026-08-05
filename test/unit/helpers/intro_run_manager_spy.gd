@@ -3,6 +3,13 @@ extends Node
 var start_call_count := 0
 var received_run_data: RunData = null
 var received_hero_sources: Array = []
+var next_run_data: RunData = null
+
+
+func take_next_run_data(default_run_data: RunData) -> RunData:
+	var selected_run := next_run_data
+	next_run_data = null
+	return selected_run if selected_run != null else default_run_data
 
 
 func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:

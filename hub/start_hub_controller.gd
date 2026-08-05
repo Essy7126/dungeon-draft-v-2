@@ -259,14 +259,13 @@ func _on_archivist_panel_closed() -> void:
 		_set_state(HubState.IDLE)
 
 
-func _on_run_requested(start_room_index: int) -> void:
+func _on_run_requested(run_data: RunData, start_room_index: int) -> void:
 	if _state != HubState.UI_LOCKED or _cinematic_transition_committed:
 		return
-	if archivist.data == null or archivist.data.run_data == null \
-		or start_room_index < 0 \
-		or start_room_index >= archivist.data.run_data.rooms.size():
+	if archivist.data == null \
+			or not archivist.data.get_available_runs().has(run_data) \
+			or not GameManager.configure_next_run(run_data, start_room_index):
 		return
-	GameManager.configure_next_run_start_room(start_room_index)
 	_begin_run_transition()
 
 
@@ -297,7 +296,7 @@ func _begin_run_transition() -> void:
 		% intro_cinematic_scene_path
 	)
 	_cinematic_transition_committed = false
-	GameManager.configure_next_run_start_room(0)
+	GameManager.clear_next_run_configuration()
 	archivist.set_interaction_enabled(true)
 	transition_fade.color.a = 0.0
 	transition_fade.visible = false

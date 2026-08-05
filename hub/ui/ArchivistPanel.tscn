@@ -43,9 +43,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -250.0
-offset_top = -245.0
+offset_top = -295.0
 offset_right = 250.0
-offset_bottom = 245.0
+offset_bottom = 295.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBox_panel")
@@ -129,13 +129,24 @@ layout_mode = 2
 theme_override_constants/separation = 18
 
 [node name="RoomSelectionPrompt" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
-custom_minimum_size = Vector2(420, 80)
+custom_minimum_size = Vector2(420, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
-text = "Choisis la salle où commencera la run."
+text = "Choisis ton parcours."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="RunSelector" type="OptionButton" parent="Panel/Margin/Content/RoomSelectionView"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+
+[node name="RoomSelectionLabel" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Salle de départ"
+horizontal_alignment = 1
 
 [node name="RoomSelector" type="OptionButton" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
