@@ -46,10 +46,9 @@ func reset(catalog: ItemCatalog = null, run_seed: int = 0) -> bool:
 func build_options(
 		report: CombatReport,
 		character_states: Array,
-		inventory: RunInventory,
-		final_room: bool
+		inventory: RunInventory
 	) -> Array[Dictionary]:
-	if final_room or report == null or not report.finalized or not report.victory \
+	if report == null or not report.finalized or not report.victory \
 			or _catalog == null or inventory == null:
 		return []
 	if _options_by_report.has(report.report_id):
@@ -79,8 +78,6 @@ func build_options(
 				second_id = candidate
 				break
 		selected.append(second_id)
-	for item_id in selected:
-		_deck.erase(item_id)
 	# Fallback defensif : il ne produit jamais deux fois le meme ID et filtre
 	# tout objet inutilisable par le trio.
 	if selected.size() < 2:
@@ -89,12 +86,15 @@ func build_options(
 				break
 			var definition := _catalog.get_definition(candidate)
 			if selected.has(candidate) or owned.has(candidate) \
+					or _offered_ids.has(candidate) \
 					or definition == null \
 					or _compatible_character_ids(definition, character_states).is_empty():
 				continue
 			selected.append(candidate)
 	if selected.size() != 2:
 		return []
+	for item_id in selected:
+		_deck.erase(item_id)
 	var options: Array[Dictionary] = []
 	for item_id in selected:
 		if not _offered_ids.has(item_id):

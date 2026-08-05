@@ -261,7 +261,7 @@ func test_item_definition_directory_auto_populates_the_reward_pool() -> void:
 	assert_gte(actual_reward_ids.size(), 14)
 
 
-func test_reward_deck_offers_five_distinct_pairs_and_none_for_final_room() -> void:
+func test_reward_deck_reserves_five_distinct_pairs_for_non_final_rooms() -> void:
 	var catalog := load(CATALOG_PATH) as ItemCatalog
 	var service := FirstRunEquipmentRewardService.new()
 	assert_true(service.reset(catalog, 1337))
@@ -273,7 +273,7 @@ func test_reward_deck_offers_five_distinct_pairs_and_none_for_final_room() -> vo
 	var offered := {}
 	for room_index in 5:
 		var report := _report(room_index)
-		var options := service.build_options(report, states, inventory, false)
+		var options := service.build_options(report, states, inventory)
 		assert_eq(options.size(), 2, "salle %d" % (room_index + 1))
 		assert_ne(options[0].get("item_id"), options[1].get("item_id"))
 		for option in options:
@@ -303,7 +303,6 @@ func test_reward_deck_offers_five_distinct_pairs_and_none_for_final_room() -> vo
 			equipment,
 		).get("success", true))
 	assert_eq(offered.size(), 10)
-	assert_true(service.build_options(_report(5), states, inventory, true).is_empty())
 
 
 func test_xp_requires_real_effect_limits_same_spell_and_caps_combat_at_five() -> void:

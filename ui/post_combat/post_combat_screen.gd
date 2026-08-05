@@ -96,7 +96,6 @@ func _ready() -> void:
 	_build_decision_party_cards()
 	_build_stat_cards()
 	_build_progression_cards()
-	_build_reward_cards()
 	_enter_phase(Phase.VICTORY_REVEAL)
 
 
@@ -132,10 +131,12 @@ func advance_or_skip() -> void:
 		Phase.COMBAT_STATS:
 			_enter_phase(Phase.PROGRESSION)
 		Phase.PROGRESSION:
-			if _final_room or not _room_completed:
+			if _final_room:
 				_begin_transition()
-			else:
+			elif GameManager.can_claim_post_combat_equipment(report.report_id):
 				_enter_phase(Phase.REWARD_SELECTION)
+			else:
+				_show_reward_access_error()
 		Phase.REWARD_SELECTION:
 			confirm_selected_reward()
 		Phase.COMPLETED:
@@ -315,6 +316,7 @@ func _enter_phase(next_phase: Phase) -> void:
 		Phase.PROGRESSION:
 			_start_progression_reveal()
 		Phase.REWARD_SELECTION:
+			_build_reward_cards()
 			safe_margin.hide()
 			background_dim.hide()
 			if reward_overlay.present(_reward_options, reward_overlay.reduced_motion):
@@ -547,14 +549,13 @@ func _start_progression_reveal() -> void:
 	status_label.text = "Récapitulatif — aucun nouveau choix n’est demandé."
 	continue_button.text = (
 		"TERMINER LA RUN"
-		if _final_room else (
-			"VOIR LA RÉCOMPENSE DE SALLE"
-			if _room_completed
-			else "PASSER À LA SALLE SUIVANTE"
-		)
+		if _final_room else "CHOISIR L'ÉQUIPEMENT SÉCURISÉ"
 	)
 	if not _room_completed:
-		status_label.text = "Salle quittée avant son terme — aucune récompense de salle."
+		status_label.text = (
+			"Salle quittée avant son terme — coffre perdu, "
+			+ "équipement sécurisé."
+		)
 	continue_button.disabled = false
 	_prepare_progression_initial_values()
 	_animation_active = true
@@ -622,8 +623,11 @@ func _finish_current_animation() -> void:
 
 
 func _begin_transition() -> void:
-	if _transition_requested or (
-		_room_completed and not _final_room and not _reward_applied
+	if _transition_requested:
+		return
+	if not _final_room and (
+		GameManager.can_claim_post_combat_equipment(report.report_id)
+		or not _reward_applied
 	):
 		return
 	_transition_requested = true
@@ -652,6 +656,15 @@ func _begin_transition() -> void:
 		continue_button.disabled = false
 		reward_error.text = "La transition a été refusée. La récompense reste enregistrée."
 		reward_error.show()
+
+
+func _show_reward_access_error() -> void:
+	status_label.text = (
+		"La sortie est enregistrée, mais l'offre de deux équipements "
+		+ "n'a pas pu être ouverte. La transition reste bloquée."
+	)
+	status_label.add_theme_color_override("font_color", Color(0.94, 0.42, 0.35))
+	continue_button.disabled = true
 
 
 func _configure_background() -> void:

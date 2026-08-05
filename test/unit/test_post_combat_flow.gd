@@ -171,6 +171,9 @@ func test_next_combat_shield_is_stored_max_applied_and_consumed_once() -> void:
 
 func test_reward_options_are_two_deterministic_equipment_cards() -> void:
 	GameManager._last_combat_report = _reward_report(&"options")
+	GameManager._room_exit_selected = true
+	assert_true(GameManager.can_claim_post_combat_equipment(&"options"))
+	assert_false(GameManager.can_claim_post_combat_equipment(&"wrong_report"))
 	var options := GameManager.get_post_combat_reward_options()
 	assert_eq(options.size(), 2)
 	assert_eq(GameManager.get_post_combat_reward_options(), options)
@@ -184,6 +187,7 @@ func test_reward_options_are_two_deterministic_equipment_cards() -> void:
 
 func test_reward_offer_and_applied_state_survive_snapshot_restore() -> void:
 	GameManager._last_combat_report = _reward_report(&"persistent_offer")
+	GameManager._room_exit_selected = true
 	var initial_options := GameManager.get_post_combat_reward_options()
 	var initial_ids := initial_options.map(func(option): return option["item_id"])
 	var selected := initial_options[0] as Dictionary
@@ -198,10 +202,12 @@ func test_reward_offer_and_applied_state_survive_snapshot_restore() -> void:
 		999999,
 	))
 	assert_true(GameManager.restore_inventory_equipment_snapshot(snapshot))
-	var restored_ids := GameManager.get_post_combat_reward_options().map(
-		func(option): return option["item_id"]
-	)
+	var restored_reward_snapshot := GameManager.get_equipment_reward_deck_snapshot()
+	var restored_ids := (
+		restored_reward_snapshot["options_by_report"]["persistent_offer"] as Array
+	).map(func(item_id): return StringName(item_id))
 	assert_eq(restored_ids, initial_ids)
+	assert_false(GameManager.can_claim_post_combat_equipment(&"persistent_offer"))
 	assert_false(GameManager.confirm_post_combat_equipment(
 		selected["item_id"],
 		selected["compatible_character_ids"][0],
@@ -210,6 +216,7 @@ func test_reward_offer_and_applied_state_survive_snapshot_restore() -> void:
 
 func test_unconfirmed_reward_selection_survives_snapshot_restore() -> void:
 	GameManager._last_combat_report = _reward_report(&"persistent_selection")
+	GameManager._room_exit_selected = true
 	var initial_options := GameManager.get_post_combat_reward_options()
 	var selected_id := StringName(initial_options[1]["item_id"])
 	var inventory_count: int = (
@@ -242,6 +249,7 @@ func test_unconfirmed_reward_selection_survives_snapshot_restore() -> void:
 
 func test_screen_runs_victory_stats_progression_and_displays_two_cards() -> void:
 	GameManager._last_combat_report = _finalized_global_report_with_progress()
+	var deck_before := GameManager.get_equipment_reward_deck_snapshot()
 	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
 	add_child_autofree(screen)
 	await get_tree().process_frame
@@ -249,6 +257,7 @@ func test_screen_runs_victory_stats_progression_and_displays_two_cards() -> void
 	assert_eq(screen.get_stat_card_count(), 3)
 	assert_eq(screen.get_progression_panel_count(), 3)
 	assert_eq(screen.get_reward_card_count(), 0)
+	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before)
 	screen.advance_or_skip()
 	assert_eq(screen.get_phase_name(), &"VICTORY_REVEAL")
 	screen.advance_or_skip()
@@ -256,10 +265,17 @@ func test_screen_runs_victory_stats_progression_and_displays_two_cards() -> void
 	screen.advance_or_skip()
 	screen.advance_or_skip()
 	assert_eq(screen.get_phase_name(), &"PROGRESSION")
+	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before)
 	screen.advance_or_skip()
 	screen.advance_or_skip()
 	assert_eq(screen.get_phase_name(), &"REWARD_SELECTION")
 	assert_eq(screen.get_reward_card_count(), 2)
+	var deck_after := GameManager.get_equipment_reward_deck_snapshot()
+	assert_eq((deck_after["offered_ids"] as Array).size(), 2)
+	assert_eq(
+		(deck_after["deck"] as Array).size(),
+		(deck_before["deck"] as Array).size() - 2,
+	)
 
 
 func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -> void:
@@ -279,6 +295,7 @@ func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -
 	var tracker := CombatReportTracker.new()
 	tracker.begin(states, 0, "Gué forestier")
 	GameManager._last_combat_report = tracker.finalize(states, true)
+	var deck_before := GameManager.get_equipment_reward_deck_snapshot()
 	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
 	add_child_autofree(screen)
 	await get_tree().process_frame
@@ -305,6 +322,53 @@ func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -
 	assert_null(screen.find_child("RewardGrowth", true, false))
 	assert_null(screen.find_child("ThreatDetail", true, false))
 	assert_null(screen.find_child("DecisionRisk", true, false))
+	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before)
+	assert_true(GameManager.get_post_combat_reward_options().is_empty())
+	assert_true(screen.choose_leave_room())
+	assert_eq(screen.get_phase_name(), &"COMBAT_STATS")
+	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before)
+	assert_true(GameManager.can_claim_post_combat_equipment(
+		GameManager.get_current_combat_report().report_id
+	))
+	_reach_reward_phase(screen)
+	assert_eq(screen.get_phase_name(), &"REWARD_SELECTION")
+	assert_eq(screen.get_reward_card_count(), 2)
+
+
+func test_push_more_button_never_builds_or_consumes_equipment_offer() -> void:
+	GameManager.cleanup_run_state()
+	var run := RunData.new()
+	run.rooms = [
+		load("res://data/rooms/first_run_room_01.tres") as RoomData,
+		load("res://data/rooms/first_run_room_02.tres") as RoomData,
+	]
+	assert_true(GameManager._prepare_preconfigured_run(
+		run,
+		GameManager.PRODUCTION_HERO_DATA_PATHS,
+	))
+	GameManager.current_room_index = 0
+	var tracker := CombatReportTracker.new()
+	tracker.begin(GameManager.get_ordered_character_states(), 0, "Gué forestier")
+	GameManager._last_combat_report = tracker.finalize(
+		GameManager.get_ordered_character_states(),
+		true,
+	)
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	screen.transition_duration = 60.0
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	screen.advance_or_skip()
+	screen.advance_or_skip()
+	assert_eq(screen.get_phase_name(), &"ROOM_DECISION")
+	var deck_before := GameManager.get_equipment_reward_deck_snapshot()
+	assert_true(GameManager.get_post_combat_reward_options().is_empty())
+	(screen.get_node("%PushWaveButton") as Button).pressed.emit()
+	assert_eq(screen.get_phase_name(), &"TRANSITIONING")
+	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before)
+	assert_eq((deck_before["offered_ids"] as Array).size(), 0)
+	assert_eq((deck_before["discarded_ids"] as Array).size(), 0)
+	screen.queue_free()
+	await get_tree().process_frame
 
 
 func test_progression_skip_reaches_exact_final_values_without_choice_ui() -> void:
@@ -416,6 +480,34 @@ func test_reward_error_blocks_completion_and_stays_controlled() -> void:
 	assert_eq(GameManager.get_run_inventory().get_empty_slot_count(), 0)
 
 
+func test_invalid_two_card_offer_is_visible_blocking_and_transactional() -> void:
+	GameManager._last_combat_report = _finalized_global_report_with_progress()
+	var reward_snapshot := GameManager.get_equipment_reward_deck_snapshot()
+	var eligible_ids := reward_snapshot["eligible_ids"] as Array
+	for index in maxi(0, eligible_ids.size() - 1):
+		var item_id := StringName(eligible_ids[index])
+		if GameManager.run_inventory.contains_definition(item_id):
+			continue
+		assert_true(
+			GameManager.run_inventory.try_add(item_id, 1).get("success", false),
+			str(item_id),
+		)
+	var deck_before_offer := GameManager.get_equipment_reward_deck_snapshot()
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	_reach_reward_phase(screen)
+	assert_eq(screen.get_phase_name(), &"REWARD_SELECTION")
+	assert_eq(screen.get_reward_card_count(), 0)
+	var overlay := screen.get_node("%EquipmentRewardOverlay") as EquipmentRewardOverlay
+	assert_true(overlay.visible)
+	assert_true(overlay.error_label.visible)
+	assert_false(GameManager.complete_post_combat_transition(
+		GameManager.get_current_combat_report().report_id
+	))
+	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before_offer)
+
+
 func test_reward_layout_is_full_screen_without_legacy_panel_at_supported_resolutions() -> void:
 	GameManager._last_combat_report = _finalized_global_report_with_progress()
 	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
@@ -457,7 +549,7 @@ func test_victory_routes_to_post_combat_only_after_report_finalization() -> void
 	manager.free()
 
 
-func test_last_room_skips_reward_and_keeps_existing_run_result() -> void:
+func test_last_room_keeps_existing_no_equipment_rule_and_run_result() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		_run_data(1),
@@ -466,18 +558,45 @@ func test_last_room_skips_reward_and_keeps_existing_run_result() -> void:
 	manager.current_room_index = 0
 	manager.begin_combat_report()
 	manager.on_battle_won()
+	var report_id := manager.get_current_combat_report().report_id
+	assert_false(manager.can_claim_post_combat_equipment(report_id))
 	assert_true(manager.get_post_combat_reward_options().is_empty())
+	assert_false(manager.select_post_combat_equipment(&"any_item"))
+	assert_eq(
+		manager.confirm_post_combat_equipment(&"any_item").get("error_code"),
+		"FINAL_ROOM_HAS_NO_REWARD",
+	)
 	var requested: Array[String] = []
 	manager.scene_change_requested.connect(func(path): requested.append(path))
-	assert_true(manager.complete_post_combat_transition(
-		manager.get_current_combat_report().report_id
-	))
+	assert_true(manager.complete_post_combat_transition(report_id))
 	assert_eq(requested, [manager.RUN_RESULT_SCREEN_PATH])
-	assert_false(manager.complete_post_combat_transition(
-		manager.get_current_combat_report().report_id
-	))
+	assert_false(manager.complete_post_combat_transition(report_id))
 	manager.cleanup_run_state()
 	manager.free()
+
+
+func test_last_room_screen_transitions_without_opening_equipment_overlay() -> void:
+	GameManager.cleanup_run_state()
+	_prepare_global_run(1)
+	GameManager._last_combat_report = _finalized_global_report_with_progress()
+	var deck_before := GameManager.get_equipment_reward_deck_snapshot()
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	screen.transition_duration = 60.0
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	for _index in 8:
+		if screen.get_phase_name() == &"PROGRESSION":
+			break
+		screen.advance_or_skip()
+	assert_eq(screen.get_phase_name(), &"PROGRESSION")
+	screen.advance_or_skip()
+	if screen.get_phase_name() == &"PROGRESSION":
+		screen.advance_or_skip()
+	assert_eq(screen.get_phase_name(), &"TRANSITIONING")
+	assert_eq(screen.get_reward_card_count(), 0)
+	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before)
+	screen.queue_free()
+	await get_tree().process_frame
 
 
 func _prepare_global_run(room_count: int) -> void:
@@ -525,6 +644,7 @@ func _finalized_global_report_with_progress() -> CombatReport:
 		progress.get_selected_upgrade_ids(),
 	)
 	state.select_upgrade(discipline.discipline_id, 2, available[0].upgrade_id)
+	GameManager._room_exit_selected = true
 	return tracker.finalize(states, true)
 
 

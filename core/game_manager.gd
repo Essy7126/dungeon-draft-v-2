@@ -999,18 +999,19 @@ func get_current_combat_report() -> CombatReport:
 
 
 func get_post_combat_reward_options() -> Array[Dictionary]:
-	if not is_current_room_fully_cleared():
+	if _last_combat_report == null \
+			or not can_claim_post_combat_equipment(_last_combat_report.report_id):
 		return []
 	return _equipment_reward_service.build_options(
 		_last_combat_report,
 		get_ordered_character_states(),
 		run_inventory,
-		is_final_room(),
 	)
 
 
 func select_post_combat_equipment(item_id: StringName) -> bool:
-	if is_final_room() or not is_current_room_fully_cleared():
+	if _last_combat_report == null \
+			or not can_claim_post_combat_equipment(_last_combat_report.report_id):
 		return false
 	return _equipment_reward_service.remember_selection(
 		_last_combat_report,
@@ -1030,11 +1031,24 @@ func confirm_post_combat_equipment(
 		item_id: StringName,
 		target_character_id: StringName = &""
 	) -> Dictionary:
-	if is_final_room() or not is_current_room_fully_cleared():
+	var report_id := (
+		_last_combat_report.report_id
+		if _last_combat_report != null else StringName()
+	)
+	if not can_claim_post_combat_equipment(report_id):
+		var final_room := is_final_room()
 		return {
 			"success": false,
-			"error_code": "ROOM_REWARD_UNAVAILABLE",
-			"error": "La recompense exige de terminer toutes les vagues de la salle.",
+			"error_code": (
+				"FINAL_ROOM_HAS_NO_REWARD"
+				if final_room else "ROOM_REWARD_UNAVAILABLE"
+			),
+			"error": (
+				"La salle finale ne distribue pas d'équipement."
+				if final_room else (
+					"Sécurisez la sortie de la salle avant de choisir l'équipement."
+				)
+			),
 		}
 	var result := _equipment_reward_service.apply(
 		_last_combat_report,
@@ -1048,6 +1062,20 @@ func confirm_post_combat_equipment(
 		_last_combat_report.reward_result = result.duplicate(true)
 		post_combat_reward_applied.emit(result)
 	return result
+
+
+func can_claim_post_combat_equipment(report_id: StringName) -> bool:
+	return report_id != &"" \
+		and run_active \
+		and _last_combat_report != null \
+		and _last_combat_report.report_id == report_id \
+		and _last_combat_report.finalized \
+		and _last_combat_report.victory \
+		and not is_final_room() \
+		and _room_exit_selected \
+		and not _post_combat_transition_pending \
+		and not _last_combat_report.reward_result.get("success", false) \
+		and not _equipment_reward_service.has_applied(report_id)
 
 
 func is_final_room() -> bool:
@@ -1162,11 +1190,12 @@ func complete_post_combat_transition(report_id: StringName) -> bool:
 		or _last_combat_report == null \
 		or _last_combat_report.report_id != report_id:
 		return false
-	if not is_final_room() and is_current_room_fully_cleared() and (
-		not _last_combat_report.reward_result.get("success", false)
-		or not _equipment_reward_service.has_applied(report_id)
-	):
-		return false
+	if not is_final_room():
+		if can_claim_post_combat_equipment(report_id):
+			return false
+		if not _last_combat_report.reward_result.get("success", false) \
+				or not _equipment_reward_service.has_applied(report_id):
+			return false
 	_post_combat_transition_pending = true
 	_go_to_next_room()
 	return true

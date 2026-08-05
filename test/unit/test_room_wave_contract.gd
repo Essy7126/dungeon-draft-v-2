@@ -177,7 +177,7 @@ func test_room_report_accumulates_combat_stats_and_xp_across_waves() -> void:
 	manager.free()
 
 
-func test_early_exit_has_no_room_completion_reward() -> void:
+func test_early_exit_loses_room_chest_but_unlocks_secured_equipment() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
 		FIRST_RUN,
@@ -192,15 +192,73 @@ func test_early_exit_has_no_room_completion_reward() -> void:
 	first_unit.current_hp = 40
 	second_unit.current_hp = maxi(1, second_maximum - 5)
 	manager.begin_combat_report()
+	var cleared_rooms: Array[int] = []
+	manager.room_cleared.connect(func(index: int): cleared_rooms.append(index))
 	manager.on_battle_won()
 	var report_id := manager.get_current_combat_report().report_id
 	assert_false(manager.is_current_room_fully_cleared())
+	assert_false(manager.is_current_room_ultimate_reward_won())
+	assert_true(manager.get_post_combat_reward_options().is_empty())
 	assert_true(manager.select_current_room_exit(report_id))
+	assert_eq(cleared_rooms, [])
+	assert_true(manager.can_claim_post_combat_equipment(report_id))
 	assert_eq(first_unit.current_hp, 40)
 	assert_eq(second_unit.current_hp, second_maximum - 5)
 	assert_false(manager.select_current_room_exit(report_id))
 	assert_eq(first_unit.current_hp, 40)
-	assert_true(manager.get_post_combat_reward_options().is_empty())
+	var options := manager.get_post_combat_reward_options()
+	assert_eq(options.size(), 2)
+	assert_false(manager.complete_post_combat_transition(report_id))
+	var empty_slots_before := manager.run_inventory.get_empty_slot_count()
+	var selected := options[0] as Dictionary
+	var reward_result := manager.confirm_post_combat_equipment(
+		selected["item_id"],
+		selected["compatible_character_ids"][0],
+	)
+	assert_true(reward_result.get("success", false))
+	assert_false(reward_result.get("equipped", true))
+	assert_eq(manager.run_inventory.get_empty_slot_count(), empty_slots_before - 1)
+	assert_false(manager.confirm_post_combat_equipment(
+		selected["item_id"],
+		selected["compatible_character_ids"][0],
+	).get("success", true))
+	for state in manager.get_ordered_character_states():
+		assert_true(state.equipment_loadout.get_equipped_items().is_empty())
+	assert_false(manager.is_current_room_fully_cleared())
+	assert_true(manager.complete_post_combat_transition(report_id))
+	manager.cleanup_run_state()
+	manager.free()
+
+
+func test_pushing_multiple_waves_keeps_deck_offers_and_discards_unchanged() -> void:
+	var manager := GAME_MANAGER_SCRIPT.new()
+	assert_true(manager._prepare_preconfigured_run(
+		FIRST_RUN,
+		GameManager.PRODUCTION_HERO_DATA_PATHS,
+	))
+	manager.current_room_index = 0
+	var deck_before := manager.get_equipment_reward_deck_snapshot()
+	for wave_index in 2:
+		manager.current_wave_index = wave_index
+		manager._room_outcome_resolved = false
+		manager._room_exit_selected = false
+		manager.begin_combat_report()
+		manager.on_battle_won()
+		assert_true(manager.can_continue_current_room())
+		assert_true(manager.get_post_combat_reward_options().is_empty())
+		assert_eq(manager.get_equipment_reward_deck_snapshot(), deck_before)
+	var report_id := manager.get_current_combat_report().report_id
+	assert_true(manager.select_current_room_exit(report_id))
+	var options := manager.get_post_combat_reward_options()
+	assert_eq(options.size(), 2)
+	assert_eq(manager.get_post_combat_reward_options(), options)
+	var deck_after := manager.get_equipment_reward_deck_snapshot()
+	assert_eq((deck_after["offered_ids"] as Array).size(), 2)
+	assert_eq((deck_after["discarded_ids"] as Array).size(), 0)
+	assert_eq(
+		(deck_after["deck"] as Array).size(),
+		(deck_before["deck"] as Array).size() - 2,
+	)
 	manager.cleanup_run_state()
 	manager.free()
 
