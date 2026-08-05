@@ -25,8 +25,8 @@ Le snapshot 2.0.0 conserve les domaines V0 et ajoute la run de production, ses s
 
 Les méthodes, identités, agrégats et limites sont détaillés dans `run_data_v1_audit.md` et `run_data_v1.md`.
 
-## Frontend statique V0
+## Frontend statique V0 et V1
 
-Le dossier `observatory/` contient l’interface React/Vite en lecture seule. Elle consomme exclusivement `observatory/public/data/latest.json`, synchronise une copie publique ignorée du schéma pour Ajv et utilise des routes hashées compatibles avec un hébergement statique. Les commandes, filtres, garanties d’accessibilité, limites et principes de sécurité sont documentés dans `observatory/README.md` et `docs/observatory/frontend_v0.md`.
+Le dossier `observatory/` contient l’interface React/Vite en lecture seule. Elle consomme exclusivement `observatory/public/data/latest.json`, synchronise une copie publique ignorée du schéma pour Ajv et utilise des routes hashées compatibles avec un hébergement statique. La V1 ajoute les routes Run, Salle, Ennemis et Ennemi sans modifier les routes V0. Les commandes, filtres, garanties d’accessibilité, limites et principes de sécurité sont documentés dans `observatory/README.md`, `docs/observatory/frontend_v0.md` et `docs/observatory/frontend_v1.md`.
 
 Cette mission ne crée ni backend, ni authentification, ni télémétrie, ni déploiement.

@@ -1,4 +1,4 @@
-import type { Character, ContractCheckStatus, Item, Snapshot, Spell } from '../types';
+import type { AIProfile, Character, ContractCheckStatus, Encounter, Enemy, Item, Room, Snapshot, Spell, Wave } from '../types';
 
 export function normalizeSearch(value: string): string {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr').trim();
@@ -84,4 +84,66 @@ export function contractStatusForCharacter(snapshot: Snapshot, character: Charac
   if (relevant.some((check) => check.status === 'unknown')) return 'unknown';
   if (relevant.every((check) => check.status === 'conform')) return 'conform';
   return 'not_evaluated';
+}
+
+export interface EnemyFilters {
+  search: string;
+  faction: string;
+  role: string;
+  aiStrategy: string;
+  range: '' | 'melee' | 'ranged';
+  reachability: '' | 'initial' | 'summonable';
+  effect: '' | 'summoner' | 'control' | 'support' | 'shield' | 'mark' | 'forced_movement';
+}
+
+export function selectEnemies(enemies: readonly Enemy[], filters: EnemyFilters, profilesById: ReadonlyMap<string, AIProfile> = new Map()): Enemy[] {
+  return sortedByName(enemies.filter((enemy) =>
+    containsSearch([enemy.name, enemy.id, enemy.description, enemy.faction_id, enemy.tactical_role_id, ...enemy.effect_tags], filters.search)
+    && (!filters.faction || enemy.faction_id === filters.faction)
+    && (!filters.role || enemy.tactical_role_id === filters.role)
+    && (!filters.aiStrategy || profilesById.get(enemy.ai_profile_id)?.strategy.name === filters.aiStrategy)
+    && (!filters.range || (filters.range === 'melee' ? enemy.combat_style.name === 'melee' : enemy.combat_style.name !== 'melee'))
+    && (!filters.reachability || (filters.reachability === 'initial' ? enemy.reachability.initial_roster : enemy.reachability.summonable_by_spell_ids.length > 0))
+    && (!filters.effect || enemy.effect_tags.includes(filters.effect))
+  ));
+}
+
+export function orderedRoomsForRun(snapshot: Snapshot, runId: string): Room[] {
+  return snapshot.rooms.filter((room) => room.run_id === runId).sort((left, right) => left.index - right.index || left.id.localeCompare(right.id));
+}
+
+export function orderedWavesForRoom(snapshot: Snapshot, roomId: string): Wave[] {
+  return snapshot.waves.filter((wave) => wave.room_id === roomId).sort((left, right) => left.index - right.index || left.id.localeCompare(right.id));
+}
+
+export function selectedWavesForRoom(snapshot: Snapshot, roomId: string): Wave[] {
+  return orderedWavesForRoom(snapshot, roomId).filter((wave) => wave.is_selected_by_default_seed);
+}
+
+export function encounterForRoom(snapshot: Snapshot, room: Room): Encounter | undefined {
+  return snapshot.encounters.find((encounter) => encounter.id === room.default_encounter_id)
+    ?? snapshot.encounters.find((encounter) => encounter.room_ids.includes(room.id));
+}
+
+export interface RoomComparison {
+  previousRoom: Room;
+  hpDelta: number;
+  attackDelta: number;
+  enemyCountDelta: number;
+  livingCapDelta: number;
+}
+
+export function compareRoomToPrevious(snapshot: Snapshot, room: Room): RoomComparison | null {
+  const previousRoom = orderedRoomsForRun(snapshot, room.run_id).find((entry) => entry.index === room.index - 1);
+  if (!previousRoom) return null;
+  const encounter = encounterForRoom(snapshot, room);
+  const previousEncounter = encounterForRoom(snapshot, previousRoom);
+  if (!encounter || !previousEncounter) return null;
+  return {
+    previousRoom,
+    hpDelta: encounter.base_totals.total_max_hp - previousEncounter.base_totals.total_max_hp,
+    attackDelta: encounter.base_totals.total_attack_power - previousEncounter.base_totals.total_attack_power,
+    enemyCountDelta: encounter.initial_enemy_count - previousEncounter.initial_enemy_count,
+    livingCapDelta: encounter.living_enemy_cap - previousEncounter.living_enemy_cap,
+  };
 }

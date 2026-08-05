@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { contractStatusForCharacter, itemCompatibleWith, normalizeSearch, selectItems, selectSpells, sortedByName, spellEffects } from '../data/selectors';
-import { theoreticalApBudget } from '../utils/format';
+import { compareRoomToPrevious, contractStatusForCharacter, itemCompatibleWith, normalizeSearch, orderedRoomsForRun, selectEnemies, selectItems, selectSpells, selectedWavesForRoom, sortedByName, spellEffects } from '../data/selectors';
+import { formatMultiplier, theoreticalApBudget } from '../utils/format';
 import { snapshotFixture } from './fixture';
 
 describe('sélecteurs déterministes', () => {
@@ -55,5 +55,34 @@ describe('sélecteurs déterministes', () => {
 
   it('mappe la conformité d’un personnage', () => {
     expect(contractStatusForCharacter(snapshotFixture, snapshotFixture.characters[0])).toBe('conform');
+  });
+
+  it('filtre les ennemis par rôle, présence et stratégie IA', () => {
+    const profiles = new Map(snapshotFixture.ai_profiles.map((profile) => [profile.id, profile]));
+    const base = { search: '', faction: '', role: '', aiStrategy: '', range: '' as const, reachability: '' as const, effect: '' as const };
+    expect(selectEnemies(snapshotFixture.enemies, { ...base, role: 'skirmisher' }, profiles)).toHaveLength(1);
+    expect(selectEnemies(snapshotFixture.enemies, { ...base, aiStrategy: 'MELEE_RUSH' }, profiles)).toHaveLength(1);
+    expect(selectEnemies(snapshotFixture.enemies, { ...base, reachability: 'summonable' }, profiles)).toHaveLength(0);
+  });
+
+  it('ordonne les salles et sélectionne les vagues sans mutation', () => {
+    const room = snapshotFixture.rooms[0];
+    const before = JSON.stringify(snapshotFixture);
+    expect(orderedRoomsForRun(snapshotFixture, 'first_run').map((entry) => entry.id)).toEqual([room.id]);
+    expect(selectedWavesForRoom(snapshotFixture, room.id).map((wave) => wave.id)).toEqual(['first_run.room.01.wave.01']);
+    expect(JSON.stringify(snapshotFixture)).toBe(before);
+  });
+
+  it('compare factuellement une salle à la précédente', () => {
+    const room = snapshotFixture.rooms[0];
+    const encounter = snapshotFixture.encounters[0];
+    const nextRoom = { ...room, id: 'first_run.room.02', index: 2, name: 'Salle 2', wave_ids: [], default_encounter_id: 'encounter.room.02' };
+    const nextEncounter = { ...encounter, id: 'encounter.room.02', room_ids: [nextRoom.id], wave_ids: [], initial_enemy_count: 2, living_enemy_cap: 3, base_totals: { ...encounter.base_totals, total_max_hp: 120, total_attack_power: 24 } };
+    const changed = { ...snapshotFixture, rooms: [nextRoom, room], encounters: [encounter, nextEncounter] };
+    expect(compareRoomToPrevious(changed, nextRoom)).toMatchObject({ hpDelta: 40, attackDelta: 8, enemyCountDelta: 1, livingCapDelta: 1 });
+  });
+
+  it('formate les multiplicateurs en français', () => {
+    expect(formatMultiplier(1.45)).toBe('×1,45');
   });
 });
