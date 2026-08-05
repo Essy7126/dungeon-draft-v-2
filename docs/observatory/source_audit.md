@@ -4,27 +4,28 @@ Audit réalisé sur le commit de jeu `1aadd1bd1dec5d1cf108740c0f57e80047d22539`.
 
 ## Parcours de production
 
-`res://ui/party/PartyPresentationScreen.tscn` référence `res://data/runs/first_run.tres`. Son script appelle `GameManager.start_preconfigured_run`, qui construit l’état avec le trio déclaré dans `GameManager.PRODUCTION_HERO_DATA_PATHS`.
+`res://ui/party/PartyPresentationScreen.tscn` référence directement `res://data/runs/first_run.tres`. `party_presentation_screen.gd` transmet cette `RunData` à `GameManager.start_preconfigured_run`, puis `_initialize_run_state` conserve l'ordre de `RunData.rooms` et appelle `RunWaveCountResolver.resolve_counts` avec `default_seed`.
 
-| Domaine | Source | Classement | Preuve |
+| Domaine | Source | Autorité | Stratégie |
 | --- | --- | --- | --- |
-| Première run | `res://data/runs/first_run.tres` | `production_root` | Référence directe de `PartyPresentationScreen.tscn` avant l’appel à `start_preconfigured_run`. |
-| Elfe | `res://data/units/alliés/elfe.tres` | `production_reference` | Membre du trio ordonné utilisé par `GameManager`. |
-| Mage | `res://data/units/alliés/mage.tres` | `production_reference` | Membre du trio ordonné utilisé par `GameManager`. |
-| Guerrier | `res://data/units/alliés/Guerrier.tres` | `production_reference` | Membre du trio ordonné utilisé par `GameManager`. |
-| Sorts | Références `UnitData.spells` | `production_reference` | Traversée depuis les trois `UnitData`, sans découverte de dossier. |
-| Disciplines | Références `UnitData.disciplines` | `production_reference` | Traversée depuis les trois `UnitData`, rangs et choix inclus lorsqu’ils sont déclarés. |
-| Objets | `res://data/items/catalogs/default_item_catalog.tres` | `catalog` | Préchargé par `GameManager.DEFAULT_ITEM_CATALOG`, puis validé à l’initialisation de run. |
-| Récompenses génériques | `res://data/post_combat/post_combat_reward_service.gd` | `static_service_definition` | Trois ressources préchargées par le service instancié et appelé par `GameManager`. |
-| Pool d’équipement | `res://data/post_combat/first_run_equipment_reward_service.gd` | `static_service_definition` | Filtrage du catalogue par `first_run_equipment_reward`, avec deux options requises. |
+| Run | `res://data/runs/first_run.tres` | `production_root` | Alias de manifeste `first_run` ; aucune découverte de dossier. |
+| Salles | `RunData.rooms` | `production_reference` | Ordre du tableau, IDs Observatory `first_run.room.NN`. |
+| Vagues | `RoomData.waves` | `production_reference` | Profils ordonnés ; fallback historique seulement lorsque le tableau est vide. |
+| Rencontres | `RoomWaveData.encounter_definition` | `production_reference` | Déduplication par `resource_path`. |
+| Ennemis | `EncounterDefinition.roster_units` | `production_reference` | Fermeture des rosters initiaux puis de `Spell.summon_unit_data`, profondeur maximale 8. |
+| Sorts ennemis | `UnitData.spells` des ennemis atteignables | `production_reference` | Déduplication par `Spell.get_effective_spell_id()`. |
+| Profils d'IA | `UnitData.ai_profile` | `production_reference` | `profile_id`, sinon chemin de Resource normalisé. |
+| Héros | `GameManager.PRODUCTION_HERO_DATA_PATHS` | `production_reference` | Trio explicite conservé depuis V0. |
+| Objets | `default_item_catalog.tres` | `catalog` | `ItemCatalog.get_definitions()` après validation. |
+| Récompenses | Services post-combat | `static_service_definition` | Préchargements explicites et filtre de tag. |
 
-## Exclusions et découverte
+## Exclusions
 
-- Les autres `.tres` présents dans les dossiers ne sont pas considérés actifs sans référence de production.
-- `fixed_trio_prototype_run.tres`, les laboratoires et les captures sont classés `debug` ou `discovery_only`.
-- Les valeurs calculées au runtime, probabilités sans poids explicite et simulations de combat ne sont pas exportées.
-- Les ressources de salles et ennemis sont atteignables depuis la run, mais leur détail reste reporté dans cette version.
+- Les runs de prototype, debug ou legacy qui ne sont pas référencées par le lancement ne sont pas exportées.
+- Aucun `.tres` n'est déclaré actif à partir de sa seule présence dans un dossier.
+- Aucune scène de combat n'est instanciée et aucun `.tscn` n'est parsé manuellement.
+- Les placements, la formation choisie, les invocations réellement consommées et la composition finale restent des résultats runtime.
 
-## Baseline de non-régression
+## Baseline de non-régression V1
 
-Godot 4.7.1 et GUT 9.7.1 exécutent 653 tests sur le commit de base : 642 réussites et 11 échecs préexistants. Ces échecs concernent huit scripts de captures, d’assets et de présentation ; la fondation ne tente pas de les corriger.
+Godot 4.7.1 et GUT 9.7.1 exécutent 679 tests sur le commit de base : 668 réussites et 11 échecs préexistants dans huit scripts hors Observatory. Les 26 tests Observatory V0 réussissent. Le frontend V0 réussit ses 29 tests Vitest et 17 tests Playwright, avec zéro violation Axe sérieuse et zéro vulnérabilité npm signalée.

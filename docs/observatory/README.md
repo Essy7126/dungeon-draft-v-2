@@ -19,9 +19,11 @@ L’exporteur ne lance aucune scène de gameplay, n’écrit aucune ressource de
 
 Ajouter `--fail-on-blocking` pour obtenir le code de sortie `2` lorsqu’un audit bloquant est produit. Sans cette option, un snapshot structurellement valide est écrit même s’il expose un écart de conception.
 
-## Périmètre V0
+## Périmètre V1
 
-Le snapshot inclut le projet, les héros de production, leurs statistiques, sorts et disciplines, le catalogue d’objets, les récompenses génériques déclarées, le pool d’équipements, le contrat et les audits. Runs détaillées, salles, vagues, ennemis, architecture complète et theorycraft avancé restent explicitement reportés.
+Le snapshot 2.0.0 conserve les domaines V0 et ajoute la run de production, ses salles, ses profils de vagues, les nombres résolus par la seed, les rencontres, les ennemis atteignables, leurs sorts et leurs profils d'IA. Les placements et invocations réellement joués restent runtime-only. L'architecture complète et le theorycraft avancé restent explicitement reportés.
+
+Les méthodes, identités, agrégats et limites sont détaillés dans `run_data_v1_audit.md` et `run_data_v1.md`.
 
 ## Frontend statique V0
 

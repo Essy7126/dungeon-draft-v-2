@@ -1,8 +1,8 @@
 class_name ObservatoryExporter
 extends RefCounted
 
-const SCHEMA_VERSION := "1.0.0"
-const GENERATOR_VERSION := "1.0.0"
+const SCHEMA_VERSION := "2.0.0"
+const GENERATOR_VERSION := "2.0.0"
 const DEFAULT_MANIFEST_PATH := "res://docs/observatory/data_source_manifest.json"
 const DEFAULT_CONTRACT_PATH := "res://docs/observatory/design_contract.json"
 const FIRST_RUN_PATH := "res://data/runs/first_run.tres"
@@ -33,6 +33,8 @@ func build_snapshot(
 		return {"snapshot": {}, "errors": errors, "warnings": warnings}
 
 	var run_data := _load_resource(FIRST_RUN_PATH, "RunData", source_audits) as RunData
+	var run_graph := ObservatoryRunDataExporter.new().export_graph(run_data, FIRST_RUN_PATH)
+	source_audits.append_array(run_graph.get("audits", []) as Array)
 	var characters: Array[Dictionary] = []
 	var character_resources: Array[UnitData] = []
 	for path in HERO_PATHS:
@@ -189,6 +191,13 @@ func build_snapshot(
 		"spells": spells,
 		"items": items,
 		"reward_pools": reward_pools,
+		"runs": run_graph.get("runs", []),
+		"rooms": run_graph.get("rooms", []),
+		"waves": run_graph.get("waves", []),
+		"encounters": run_graph.get("encounters", []),
+		"enemies": run_graph.get("enemies", []),
+		"enemy_spells": run_graph.get("enemy_spells", []),
+		"ai_profiles": run_graph.get("ai_profiles", []),
 		"contract_checks": contract_checks,
 		"audit_results": [],
 	}
@@ -324,6 +333,13 @@ func _build_summary(snapshot: Dictionary) -> Dictionary:
 		"items": (snapshot.get("items", []) as Array).size(),
 		"generic_rewards": reward_count,
 		"reward_pools": (snapshot.get("reward_pools", []) as Array).size(),
+		"runs": (snapshot.get("runs", []) as Array).size(),
+		"rooms": (snapshot.get("rooms", []) as Array).size(),
+		"waves": (snapshot.get("waves", []) as Array).size(),
+		"encounters": (snapshot.get("encounters", []) as Array).size(),
+		"enemies": (snapshot.get("enemies", []) as Array).size(),
+		"enemy_spells": (snapshot.get("enemy_spells", []) as Array).size(),
+		"ai_profiles": (snapshot.get("ai_profiles", []) as Array).size(),
 		"eligible_first_run_equipment": eligible_count,
 		"contract_conform": int(contract_counts["conform"]),
 		"contract_difference": int(contract_counts["difference"]),
