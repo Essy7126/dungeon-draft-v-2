@@ -10,6 +10,7 @@ var presentation_profile: BattlePresentationProfile = null
 var _presentation_camera_enabled := true
 var _presentation_unit_scale_enabled := true
 var _presentation_readability_enabled := true
+var arena_assembly := {}
 
 
 func _ready() -> void:
@@ -28,6 +29,13 @@ func _ready() -> void:
 	grid_rows = painted_grid_layout.logical_size.y
 	_configure_painted_layers()
 	super()
+	var definition := room_data as ArenaDefinition
+	if definition != null and grid != null and pathfinder != null:
+		arena_assembly = ArenaVisualAssembler.assemble(
+			definition, grid, pathfinder, get_node("IsoGridView"),
+			get_node("YSortedWorld"), self,
+			definition.visual_mode == ArenaDefinition.VisualMode.HYBRID
+		)
 
 
 func _configure_painted_layers() -> void:

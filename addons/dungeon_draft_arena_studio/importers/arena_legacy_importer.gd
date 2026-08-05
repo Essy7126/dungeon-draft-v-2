@@ -32,12 +32,19 @@ static func import_room(room_path: String) -> ArenaDefinition:
 	arena.axis_y = visual.axis_y
 	arena.image_offset = visual.image_offset
 	arena.image_scale = visual.image_scale
+	arena.foreground_path = visual.foreground_texture_path
+	arena.foreground_offset = visual.foreground_offset
+	arena.foreground_scale = visual.foreground_scale
+	arena.foreground_occluder_polygon = visual.foreground_occluder_polygon.duplicate()
+	arena.foreground_occluder_sort_y = visual.foreground_occluder_sort_y
+	arena.foreground_full_hide_rect = visual.foreground_full_hide_rect
 	arena.camera_offset = visual.camera_offset
 	arena.camera_zoom = visual.camera_zoom
 	arena.calibration_cells = visual.calibration_cells.duplicate()
 	arena.calibration_pixels = visual.calibration_pixels.duplicate()
 	arena.presentation_profile_path = visual.presentation_profile.resource_path \
 		if visual.presentation_profile != null else ArenaDefinition.DEFAULT_PRESENTATION
+	arena.source_visual_path = visual.resource_path
 	arena.encounter_definition = room.encounter_definition
 	arena.battle_scene = room.battle_scene
 	arena.enemies = room.enemies.duplicate()
@@ -72,6 +79,7 @@ static func copy_template(template: ArenaDefinition, new_name: String) -> ArenaD
 	snapshot["display_name"] = new_name
 	snapshot["arena_id"] = ArenaDefinition.sanitize_id(new_name)
 	snapshot["source_room_path"] = ""
+	snapshot["source_visual_path"] = ""
 	copied.restore_snapshot(snapshot)
 	ArenaRuntimeBridge.sync_runtime_resources(copied)
 	return copied

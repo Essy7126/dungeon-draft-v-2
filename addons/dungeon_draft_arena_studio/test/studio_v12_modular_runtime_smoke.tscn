@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/test/studio_v12_modular_runtime_smoke.gd" id="1"]
+
+[node name="StudioV12ModularRuntimeSmoke" type="Node"]
+script = ExtResource("1")

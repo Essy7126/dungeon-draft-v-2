@@ -137,8 +137,8 @@ func _exit_tree() -> void:
 	set_process(false)
 	_foot_realign_pending = false
 	_disconnect_bound_unit()
-	if EventBus.damage_dealt.is_connected(_on_damage_dealt):
-		EventBus.damage_dealt.disconnect(_on_damage_dealt)
+	if EventBus.hit_resolved.is_connected(_on_hit_resolved):
+		EventBus.hit_resolved.disconnect(_on_hit_resolved)
 	if is_instance_valid(character_viewport):
 		character_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 
@@ -151,8 +151,8 @@ func bind_unit(unit: Unit) -> void:
 	if _unit != null:
 		_unit.moved.connect(_on_bound_unit_moved)
 		_unit.died.connect(_on_bound_unit_died)
-		if not EventBus.damage_dealt.is_connected(_on_damage_dealt):
-			EventBus.damage_dealt.connect(_on_damage_dealt)
+		if not EventBus.hit_resolved.is_connected(_on_hit_resolved):
+			EventBus.hit_resolved.connect(_on_hit_resolved)
 
 
 func _disconnect_bound_unit() -> void:
@@ -416,15 +416,11 @@ func _on_bound_unit_died(unit: Unit) -> void:
 		play_death()
 
 
-func _on_damage_dealt(
-		target,
-		_attacker,
-		amount: int,
-		_category: int,
-		_element: int,
-		_is_crit: bool
-	) -> void:
-	if target == _unit and amount > 0 and _unit != null and _unit.is_alive:
+func _on_hit_resolved(fact: CombatEventFact) -> void:
+	if fact.target == _unit \
+			and fact.amount_resolved > 0 \
+			and _unit != null \
+			and _unit.is_alive:
 		play_hit()
 
 

@@ -6,8 +6,9 @@ extends RoomData
 ## la ressource sauvegardee par Arena Studio est donc directement consommable
 ## par GameManager et painted_battle, sans scene intermediaire generee.
 
-const CURRENT_SCHEMA_VERSION := 1
+const CURRENT_SCHEMA_VERSION := 2
 const DEFAULT_BATTLE_SCENE := "res://data/rooms/maps/painted_battle.tscn"
+const MODULAR_BATTLE_SCENE := "res://data/rooms/maps/modular_battle.tscn"
 const DEFAULT_PRESENTATION := "res://data/maps/painted/room_01_forest_presentation.tres"
 
 enum CampOrientation {
@@ -17,9 +18,19 @@ enum CampOrientation {
 	HERO_TOP_RIGHT,
 }
 
+enum VisualMode {
+	PAINTED,
+	MODULAR,
+	HYBRID,
+}
+
 @export var schema_version := CURRENT_SCHEMA_VERSION
 @export var arena_id: StringName = &"nouvelle_arene"
 @export var display_name := "Nouvelle arene"
+@export_enum("Peinte:0", "Modulaire:1", "Hybride:2")
+var visual_mode: int = VisualMode.PAINTED
+@export var theme_id: StringName = &"painted_default"
+@export var modular_visual_profile: ArenaModularVisualProfile = null
 @export_file("*.png", "*.jpg", "*.jpeg", "*.webp") var background_path := ""
 @export var source_image_size := Vector2i.ZERO
 @export var grid_size := Vector2i(10, 8)
@@ -28,6 +39,12 @@ enum CampOrientation {
 @export var axis_y := Vector2(-48.0, 24.0)
 @export var image_offset := Vector2.ZERO
 @export var image_scale := Vector2.ONE
+@export_file("*.png", "*.jpg", "*.jpeg", "*.webp") var foreground_path := ""
+@export var foreground_offset := Vector2.ZERO
+@export var foreground_scale := Vector2.ONE
+@export var foreground_occluder_polygon := PackedVector2Array()
+@export var foreground_occluder_sort_y := 0.0
+@export var foreground_full_hide_rect := Rect2()
 @export var camera_offset := Vector2.ZERO
 @export_range(0.25, 3.0, 0.01) var camera_zoom := 1.0
 @export_enum("Heros en bas a gauche:0", "Heros en bas a droite:1", "Heros en haut a gauche:2", "Heros en haut a droite:3")
@@ -36,10 +53,13 @@ var camp_orientation: int = CampOrientation.HERO_BOTTOM_LEFT
 @export var cells: Array[ArenaCellDefinition] = []
 @export var obstacles: Array[ArenaObstacleDefinition] = []
 @export var spawns: Array[ArenaSpawnDefinition] = []
+@export var objectives: Array[ArenaObjectiveDefinition] = []
+@export var decorations: Array[ArenaDecorationDefinition] = []
 @export var calibration_cells: Array[Vector2i] = []
 @export var calibration_pixels: Array[Vector2] = []
 @export_file("*.tres") var presentation_profile_path := DEFAULT_PRESENTATION
 @export_file("*.tres") var source_room_path := ""
+@export_file("*.tres") var source_visual_path := ""
 @export var intentionally_isolated_cells: Array[Vector2i] = []
 @export_multiline var production_notes := ""
 
@@ -93,6 +113,12 @@ func erase_cell(cell: Vector2i) -> bool:
 	spawns = spawns.filter(func(spawn):
 		return spawn != null and spawn.cell != cell
 	)
+	objectives = objectives.filter(func(objective):
+		return objective != null and objective.cell != cell
+	)
+	decorations = decorations.filter(func(decoration):
+		return decoration != null and decoration.cell != cell
+	)
 	return true
 
 
@@ -142,6 +168,10 @@ func to_snapshot() -> Dictionary:
 		"schema_version": schema_version,
 		"arena_id": str(arena_id),
 		"display_name": display_name,
+		"visual_mode": visual_mode,
+		"theme_id": str(theme_id),
+		"modular_visual_profile": modular_visual_profile.to_dict() \
+			if modular_visual_profile != null else {},
 		"background_path": background_path,
 		"source_image_size": [source_image_size.x, source_image_size.y],
 		"grid_size": [grid_size.x, grid_size.y],
@@ -150,6 +180,19 @@ func to_snapshot() -> Dictionary:
 		"axis_y": [axis_y.x, axis_y.y],
 		"image_offset": [image_offset.x, image_offset.y],
 		"image_scale": [image_scale.x, image_scale.y],
+		"foreground_path": foreground_path,
+		"foreground_offset": [foreground_offset.x, foreground_offset.y],
+		"foreground_scale": [foreground_scale.x, foreground_scale.y],
+		"foreground_occluder_polygon": Array(foreground_occluder_polygon).map(
+			func(value): return [value.x, value.y]
+		),
+		"foreground_occluder_sort_y": foreground_occluder_sort_y,
+		"foreground_full_hide_rect": [
+			foreground_full_hide_rect.position.x,
+			foreground_full_hide_rect.position.y,
+			foreground_full_hide_rect.size.x,
+			foreground_full_hide_rect.size.y,
+		],
 		"camera_offset": [camera_offset.x, camera_offset.y],
 		"camera_zoom": camera_zoom,
 		"camp_orientation": camp_orientation,
@@ -163,6 +206,12 @@ func to_snapshot() -> Dictionary:
 		"spawns": spawns.filter(func(value): return value != null).map(
 			func(value): return value.to_dict()
 		),
+		"objectives": objectives.filter(func(value): return value != null).map(
+			func(value): return value.to_dict()
+		),
+		"decorations": decorations.filter(func(value): return value != null).map(
+			func(value): return value.to_dict()
+		),
 		"calibration_cells": calibration_cells.map(
 			func(value): return [value.x, value.y]
 		),
@@ -171,6 +220,7 @@ func to_snapshot() -> Dictionary:
 		),
 		"presentation_profile_path": presentation_profile_path,
 		"source_room_path": source_room_path,
+		"source_visual_path": source_visual_path,
 		"encounter_path": encounter_definition.resource_path \
 			if encounter_definition != null else "",
 		"battle_scene_path": battle_scene.resource_path if battle_scene != null else "",
@@ -187,6 +237,14 @@ func restore_snapshot(data: Dictionary) -> bool:
 	schema_version = int(data.get("schema_version", CURRENT_SCHEMA_VERSION))
 	arena_id = StringName(data.get("arena_id", "nouvelle_arene"))
 	display_name = str(data.get("display_name", "Nouvelle arene"))
+	visual_mode = clampi(
+		int(data.get("visual_mode", VisualMode.PAINTED)),
+		VisualMode.PAINTED, VisualMode.HYBRID
+	)
+	theme_id = StringName(data.get("theme_id", "painted_default"))
+	var modular_data = data.get("modular_visual_profile", {})
+	modular_visual_profile = ArenaModularVisualProfile.from_dict(modular_data) \
+		if modular_data is Dictionary and not modular_data.is_empty() else null
 	room_name = display_name
 	background_path = str(data.get("background_path", ""))
 	source_image_size = _vector2i(data.get("source_image_size", [0, 0]))
@@ -196,6 +254,16 @@ func restore_snapshot(data: Dictionary) -> bool:
 	axis_y = _vector2(data.get("axis_y", [-48.0, 24.0]))
 	image_offset = _vector2(data.get("image_offset", [0.0, 0.0]))
 	image_scale = _vector2(data.get("image_scale", [1.0, 1.0]))
+	foreground_path = str(data.get("foreground_path", ""))
+	foreground_offset = _vector2(data.get("foreground_offset", [0.0, 0.0]))
+	foreground_scale = _vector2(data.get("foreground_scale", [1.0, 1.0]))
+	foreground_occluder_polygon = _packed_vector2_array(
+		data.get("foreground_occluder_polygon", [])
+	)
+	foreground_occluder_sort_y = float(data.get("foreground_occluder_sort_y", 0.0))
+	foreground_full_hide_rect = _rect2(
+		data.get("foreground_full_hide_rect", [0.0, 0.0, 0.0, 0.0])
+	)
 	camera_offset = _vector2(data.get("camera_offset", [0.0, 0.0]))
 	camera_zoom = float(data.get("camera_zoom", 1.0))
 	camp_orientation = clampi(
@@ -216,6 +284,14 @@ func restore_snapshot(data: Dictionary) -> bool:
 	for entry in data.get("spawns", []):
 		if entry is Dictionary:
 			spawns.append(ArenaSpawnDefinition.from_dict(entry))
+	objectives.clear()
+	for entry in data.get("objectives", []):
+		if entry is Dictionary:
+			objectives.append(ArenaObjectiveDefinition.from_dict(entry))
+	decorations.clear()
+	for entry in data.get("decorations", []):
+		if entry is Dictionary:
+			decorations.append(ArenaDecorationDefinition.from_dict(entry))
 	calibration_cells.clear()
 	for entry in data.get("calibration_cells", []):
 		calibration_cells.append(_vector2i(entry))
@@ -226,6 +302,7 @@ func restore_snapshot(data: Dictionary) -> bool:
 		"presentation_profile_path", DEFAULT_PRESENTATION
 	))
 	source_room_path = str(data.get("source_room_path", ""))
+	source_visual_path = str(data.get("source_visual_path", ""))
 	var encounter_path := str(data.get("encounter_path", ""))
 	encounter_definition = load(encounter_path) as EncounterDefinition \
 		if ResourceLoader.exists(encounter_path) else null
@@ -269,3 +346,17 @@ static func _vector2(data) -> Vector2:
 static func _vector2i(data) -> Vector2i:
 	return Vector2i(int(data[0]), int(data[1])) \
 		if data is Array and data.size() >= 2 else Vector2i.ZERO
+
+
+static func _packed_vector2_array(data) -> PackedVector2Array:
+	var result := PackedVector2Array()
+	if data is Array:
+		for entry in data:
+			result.append(_vector2(entry))
+	return result
+
+
+static func _rect2(data) -> Rect2:
+	return Rect2(
+		float(data[0]), float(data[1]), float(data[2]), float(data[3])
+	) if data is Array and data.size() >= 4 else Rect2()

@@ -41,6 +41,9 @@ func _capture() -> void:
 	elif mode in ["transform", "translation", "axis_x", "axis_y", "rotation", "scale", "pivot", "fine", "snap", "compare"]:
 		_arena._on_tool_selected(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
 		_arena.tool_list.select(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
+		if mode == "snap":
+			_arena.canvas.snap_enabled = false
+			(_arena.transform_controls["snap_enabled"] as BaseButton).set_pressed_no_signal(false)
 		if mode == "compare":
 			_arena.canvas.show_saved_comparison = true
 			_arena.compare_button.set_pressed_no_signal(true)
@@ -49,6 +52,11 @@ func _capture() -> void:
 	elif mode == "anchors":
 		_arena._on_tool_selected(ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS)
 		_arena.tool_list.select(ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS)
+		_arena.canvas.show_technical = true
+		if not _arena.arena.calibration_pixels.is_empty():
+			_arena.arena.calibration_pixels[0] += Vector2(14, -8)
+			ArenaRuntimeBridge.sync_runtime_resources(_arena.arena)
+			_arena.canvas.queue_redraw()
 	elif mode == "advanced":
 		_arena.mode_option.select(2)
 		_arena._on_mode_selected(2)
@@ -59,6 +67,32 @@ func _capture() -> void:
 		_studio._refresh_history_controls()
 		_studio._rebuild_history_menu()
 		_studio.history_button.show_popup()
+	elif mode == "undo_redo":
+		for delta in [Vector2(6, -2), Vector2(-3, 4)]:
+			var before := _arena.arena.to_snapshot()
+			_arena.arena.grid_origin += delta
+			_arena._commit_change("Deplacer la grille", before, _arena.arena.to_snapshot())
+		_arena.history_undo()
+		_studio._refresh_history_controls()
+	elif mode == "layers":
+		_arena.canvas.set_layer_state("details", false, false)
+		_arena.canvas.set_layer_state("foreground", true, true)
+		_arena._update_layer_controls()
+		_scroll_inspector(700)
+	elif mode == "last_operation":
+		_arena._on_tool_selected(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
+		_arena.tool_list.select(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
+		_begin_visual_gesture("translation")
+		var release := InputEventMouseButton.new()
+		release.button_index = MOUSE_BUTTON_LEFT
+		release.pressed = false
+		release.position = _arena.canvas._drag_start_screen + Vector2(32, -14)
+		_arena.canvas._handle_mouse_button(release)
+		_scroll_inspector(480)
+	elif mode == "validation":
+		_arena.validate_arena()
+		if _arena.validation_list.item_count > 0:
+			_arena.validation_list.select(0)
 	elif mode == "restore":
 		for scroll in _arena.find_children("*", "ScrollContainer", true, false):
 			(scroll as ScrollContainer).scroll_vertical = 10000
@@ -84,37 +118,46 @@ func _begin_visual_gesture(mode: String) -> void:
 	var canvas := _arena.canvas
 	var positions := canvas._transform_handle_screen_positions()
 	var handle := ArenaStudioCanvas.TransformHandle.BODY
-	var start := GridTransformService.image_to_view(
-		_arena.arena.grid_origin, canvas.pan, canvas.zoom
-	)
-	var target := start + Vector2(32, -14)
+	var start := canvas._image_native_to_screen(_arena.arena.grid_origin)
+	var target := start + Vector2(12, -6)
 	match mode:
 		"axis_x":
 			handle = ArenaStudioCanvas.TransformHandle.AXIS_X
 			start = positions[handle]
-			target = start + Vector2(22, -16)
+			target = start + Vector2(6, -3)
 		"axis_y":
 			handle = ArenaStudioCanvas.TransformHandle.AXIS_Y
 			start = positions[handle]
-			target = start + Vector2(-22, -16)
+			target = start + Vector2(-6, -3)
 		"rotation":
 			handle = ArenaStudioCanvas.TransformHandle.ROTATE
 			start = positions[handle]
-			target = start + Vector2(28, 8)
+			target = start + Vector2(10, 4)
 		"scale":
 			handle = ArenaStudioCanvas.TransformHandle.SCALE
 			start = positions[handle]
-			target = start + Vector2(32, 22)
+			target = start + Vector2(12, 8)
 		"pivot":
 			handle = ArenaStudioCanvas.TransformHandle.PIVOT
 			start = positions[handle]
-			target = start + Vector2(45, -24)
-	assert(canvas._begin_transform_handle(handle, start))
+			target = start + Vector2(18, -10)
+	assert(canvas._begin_transform_handle(
+		handle, start, mode == "fine", mode == "snap"
+	))
 	var motion := InputEventMouseMotion.new()
 	motion.position = target
-	motion.shift_pressed = mode == "fine"
-	motion.ctrl_pressed = mode != "snap" and mode == "translation"
 	canvas._handle_mouse_motion(motion)
+	if mode == "fine":
+		canvas._live_transform_text += "  ·  Shift : précision fine"
+	elif mode == "snap":
+		canvas._live_transform_text += "  ·  Ctrl : aimantation temporaire"
+
+
+func _scroll_inspector(value: int) -> void:
+	for scroll in _arena.find_children("*", "ScrollContainer", true, false):
+		var container := scroll as ScrollContainer
+		if container.get_parent() is PanelContainer:
+			container.scroll_vertical = value
 
 
 func _options() -> Dictionary:

@@ -16,6 +16,7 @@ enum Surface {
 	WATER,
 	ICE,
 	LAVA,
+	VOID,
 }
 
 const DEFAULT_WALKABILITY := {
@@ -23,6 +24,7 @@ const DEFAULT_WALKABILITY := {
 	Surface.WATER: true,
 	Surface.ICE: true,
 	Surface.LAVA: false,
+	Surface.VOID: false,
 }
 
 const SURFACE_NAMES := {
@@ -30,6 +32,7 @@ const SURFACE_NAMES := {
 	Surface.WATER: "WATER",
 	Surface.ICE: "ICE",
 	Surface.LAVA: "LAVA",
+	Surface.VOID: "VOID",
 }
 
 var grid: GridData = null
@@ -119,6 +122,9 @@ func state_count() -> int:
 
 
 func _apply_cell_to_grid(cell: Vector2i) -> void:
+	if get_surface(cell) == Surface.VOID:
+		grid.set_type(cell, GridData.CellType.HOLE)
+		return
 	if not is_surface_walkable(get_surface(cell)):
 		grid.set_type(cell, GridData.CellType.WALL)
 		return

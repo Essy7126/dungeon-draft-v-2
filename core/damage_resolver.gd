@@ -64,6 +64,16 @@ class HitContext:
 	var ignore_defense: bool = false           # ignore armure ET résist (dégâts vrais)
 	var cannot_be_dodged: bool = false         # l'esquive ne s'applique pas
 
+	# Corrélation de l'impact. Ces champs ne changent aucun calcul ; ils suivent
+	# le résultat jusque dans CombatEventFact pour l'idempotence et l'affichage.
+	var action_id: StringName = &""
+	var cast_id: StringName = &""
+	var impact_id: StringName = &""
+	var sequence_index: int = 0
+	var ability_id: StringName = &""
+	var status_id: StringName = &""
+	var is_periodic: bool = false
+
 	# Coefficient d'efficacité des dégâts (anti-erreur Dofus). Neutre = 1.0.
 	# Détermine quelle PROPORTION des bonus de dégâts PLATS futurs s'applique.
 	# Un sort lourd (1 gros coup) = 1.0 ; un poison/multi-hit = ex. 0.2, pour

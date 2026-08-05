@@ -44,6 +44,31 @@ func cell_to_image(cell: Vector2i) -> Vector2:
 	return GridTransformService.cell_to_position(cell, grid_origin, axis_x, axis_y)
 
 
+func image_native_to_display(position: Vector2) -> Vector2:
+	return image_offset + position * image_scale
+
+
+func display_to_image_native(position: Vector2) -> Vector2:
+	if absf(image_scale.x) <= 0.000001 or absf(image_scale.y) <= 0.000001:
+		return Vector2(INF, INF)
+	return (position - image_offset) / image_scale
+
+
+func cell_to_display(cell: Vector2i) -> Vector2:
+	return image_native_to_display(cell_to_image(cell))
+
+
+func display_to_cell(display_position: Vector2) -> Vector2i:
+	return image_to_cell(display_to_image_native(display_position))
+
+
+func cell_polygon_display(cell: Vector2i) -> PackedVector2Array:
+	var result := PackedVector2Array()
+	for point in cell_polygon(cell):
+		result.append(image_native_to_display(point))
+	return result
+
+
 func load_background_texture() -> Texture2D:
 	if background_texture != null:
 		return background_texture
@@ -70,10 +95,12 @@ func create_foreground_occluder(background: Texture2D) -> Polygon2D:
 	occluder.name = "ForegroundTowerOccluder"
 	occluder.texture = background
 	occluder.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	occluder.position = Vector2(0.0, foreground_occluder_sort_y)
+	occluder.position = image_native_to_display(
+		Vector2(0.0, foreground_occluder_sort_y)
+	)
 	var local_polygon := PackedVector2Array()
 	for point in foreground_occluder_polygon:
-		local_polygon.append(point - occluder.position)
+		local_polygon.append(image_native_to_display(point) - occluder.position)
 	occluder.polygon = local_polygon
 	occluder.color = Color.WHITE
 	# Les UV restent dans le repere pixel natif de l'image. Le polygone peut etre
@@ -86,7 +113,7 @@ func create_foreground_occluder(background: Texture2D) -> Polygon2D:
 
 func is_position_fully_occluded(image_position: Vector2) -> bool:
 	return foreground_full_hide_rect.has_area() \
-		and foreground_full_hide_rect.has_point(image_position)
+		and foreground_full_hide_rect.has_point(display_to_image_native(image_position))
 
 
 func image_to_cell(image_position: Vector2) -> Vector2i:
@@ -118,6 +145,13 @@ func grid_bounds() -> Rect2:
 				minimum = minimum.min(point)
 				maximum = maximum.max(point)
 	return Rect2(minimum, maximum - minimum)
+
+
+func grid_bounds_display() -> Rect2:
+	var native_bounds := grid_bounds()
+	var first := image_native_to_display(native_bounds.position)
+	var second := image_native_to_display(native_bounds.end)
+	return Rect2(first.min(second), (second - first).abs())
 
 
 func anchor_errors() -> PackedFloat32Array:
@@ -160,6 +194,10 @@ func validation_errors() -> PackedStringArray:
 		errors.append("La resolution declaree ne correspond pas a la texture.")
 	if logical_grid_size.x <= 0 or logical_grid_size.y <= 0:
 		errors.append("logical_grid_size doit etre strictement positif.")
+	if not GridTransformService.is_vector_finite(image_offset) \
+			or not GridTransformService.is_vector_finite(image_scale) \
+			or absf(image_scale.x) <= 0.000001 or absf(image_scale.y) <= 0.000001:
+		errors.append("Le placement de l'image doit etre fini et non nul.")
 	if not GridTransformService.is_invertible(axis_x, axis_y):
 		errors.append("Les axes de calibration ne doivent pas etre colineaires.")
 	if not is_equal_approx(image_scale.x, image_scale.y):

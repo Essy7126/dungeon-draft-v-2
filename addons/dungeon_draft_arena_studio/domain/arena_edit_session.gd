@@ -8,6 +8,7 @@ var working_arena: ArenaDefinition = null
 var source_path := ""
 var saved_snapshot := {}
 var source_fingerprint := ""
+var source_is_visual := false
 var is_new_document := false
 var history := StudioHistoryController.new()
 var editor_state := {
@@ -28,7 +29,12 @@ func open(
 	if source == null:
 		return false
 	source_arena = source
-	source_path = path if not path.is_empty() else source.resource_path
+	source_path = path if not path.is_empty() else (
+		source.source_visual_path if not source.source_visual_path.is_empty() \
+		else source.resource_path
+	)
+	source_is_visual = not source.source_visual_path.is_empty() \
+		and source_path == source.source_visual_path
 	session_key = key if not key.is_empty() else (
 		source_path if not source_path.is_empty() else str(source.arena_id)
 	)
@@ -38,7 +44,8 @@ func open(
 		return false
 	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
 	saved_snapshot = working_arena.to_snapshot().duplicate(true)
-	source_fingerprint = fingerprint(source.to_snapshot())
+	source_fingerprint = ArenaSerializer.visual_calibration_fingerprint(source_path) \
+		if source_is_visual else fingerprint(source.to_snapshot())
 	is_new_document = mark_new
 	history = StudioHistoryController.new()
 	history.configure(
@@ -73,9 +80,13 @@ func current_fingerprint() -> String:
 
 func mark_saved(path: String) -> void:
 	source_path = path
+	source_is_visual = working_arena != null \
+		and not working_arena.source_visual_path.is_empty() \
+		and path == working_arena.source_visual_path
 	is_new_document = false
 	saved_snapshot = working_arena.to_snapshot().duplicate(true)
-	source_fingerprint = fingerprint(saved_snapshot)
+	source_fingerprint = ArenaSerializer.visual_calibration_fingerprint(path) \
+		if source_is_visual else fingerprint(saved_snapshot)
 	history.set_saved_fingerprint(current_fingerprint())
 
 
@@ -90,6 +101,9 @@ func saved_transform() -> GridTransformSnapshot:
 func has_external_conflict() -> bool:
 	if source_path.is_empty() or not ResourceLoader.exists(source_path):
 		return false
+	if source_is_visual:
+		return ArenaSerializer.visual_calibration_fingerprint(source_path) \
+			!= source_fingerprint
 	var disk := ResourceLoader.load(
 		source_path, "", ResourceLoader.CACHE_MODE_IGNORE
 	) as ArenaDefinition

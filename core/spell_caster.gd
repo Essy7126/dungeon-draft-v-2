@@ -9,6 +9,7 @@ var _grid: GridData
 var _pathfinder: Pathfinder
 var _terrain: TerrainEffects
 var _encounter_runtime_state: EncounterRuntimeState = null
+var _cast_sequence := 0
 
 const CAT_SPELL: LogDefinitions.LogCategory = LogDefinitions.LogCategory.SPELL
 
@@ -534,6 +535,9 @@ func begin_cast(
 		cell: Vector2i
 	) -> CastContext:
 	var ctx := CastContext.new()
+	_cast_sequence += 1
+	ctx.cast_id = StringName("cast_%06d" % _cast_sequence)
+	ctx.action_id = ctx.cast_id
 	ctx.caster = caster
 	ctx.spell = spell
 	ctx.cell = cell
@@ -675,15 +679,21 @@ func _resolve_targets(ctx: CastContext) -> void:
 # sort — l'ordre par cellule est préservé (une réaction de terrain peut
 # blesser ; son ordre relatif aux dégâts des cellules suivantes compte). ---
 func _resolve_impacts(ctx: CastContext) -> void:
-	for target_cell in ctx.affected_cells:
+	for sequence_index in ctx.affected_cells.size():
+		var target_cell = ctx.affected_cells[sequence_index]
 		var target = _grid.get_unit(target_cell)
 		if target != null:
-			_resolve_unit_impact(ctx, target, target_cell)
+			_resolve_unit_impact(ctx, target, target_cell, sequence_index)
 		_resolve_cell_terrain(ctx, target_cell)
 
 # Effets directs du sort sur UNE unité touchée : dégâts, soins, statuts,
 # provocation, drains, bouclier. Alimente les listes du rapport.
-func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> void:
+func _resolve_unit_impact(
+		ctx: CastContext,
+		target,
+		target_cell: Vector2i,
+		sequence_index: int = 0
+	) -> void:
 	var caster: Unit = ctx.caster
 	var spell: Spell = ctx.spell
 	var report: Dictionary = ctx.report
@@ -701,7 +711,21 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 			)
 		if spell.bonus_damage_if_marked > 0 and has_bonus_status:
 			base_dmg += spell.bonus_damage_if_marked
-		var damage_result = target.take_damage(base_dmg, caster, spell.damage_type, spell.element, { "bonus_crit_chance": spell.crit_chance })
+		var impact_id := StringName("%s:%03d" % [ctx.cast_id, sequence_index])
+		var damage_result = target.take_damage(
+			base_dmg,
+			caster,
+			spell.damage_type,
+			spell.element,
+			{
+				"bonus_crit_chance": spell.crit_chance,
+				"action_id": ctx.action_id,
+				"cast_id": ctx.cast_id,
+				"impact_id": impact_id,
+				"sequence_index": sequence_index,
+				"ability_id": spell.get_effective_spell_id(),
+			}
+		)
 		if damage_result != null:
 			ctx.damage_result_by_unit[target] = damage_result
 			if damage_result.is_crit:
@@ -723,7 +747,13 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 			var heal_effect := _terrain.get_effect_data(target.grid_pos)
 			if heal_effect != null and heal_effect.effect_name == spell.heal_bonus_effect_name:
 				heal_amount = maxi(0, int(round(float(heal_amount) * spell.heal_bonus_multiplier)))
-		target.heal(heal_amount, ctx.caster)
+		target.heal(heal_amount, ctx.caster, {
+			"action_id": ctx.action_id,
+			"cast_id": ctx.cast_id,
+			"impact_id": StringName("%s:%03d" % [ctx.cast_id, sequence_index]),
+			"sequence_index": sequence_index,
+			"ability_id": spell.get_effective_spell_id(),
+		})
 		report["healing_by_unit"][target] = target.current_hp - before_hp
 		report["healing_total"] += maxi(0, target.current_hp - before_hp)
 		if target.current_hp > before_hp and not report["healed_units"].has(target):
@@ -799,7 +829,13 @@ func _resolve_unit_impact(ctx: CastContext, target, target_cell: Vector2i) -> vo
 		+ int(ctx.additional_shield_by_unit.get(target, 0))
 	if raw_shield > 0 and target.team == caster.team:
 		var before_shield: int = target.current_shield
-		target.add_shield(raw_shield, ctx.caster)
+		target.add_shield(raw_shield, ctx.caster, {
+			"action_id": ctx.action_id,
+			"cast_id": ctx.cast_id,
+			"impact_id": StringName("%s:%03d" % [ctx.cast_id, sequence_index]),
+			"sequence_index": sequence_index,
+			"ability_id": spell.get_effective_spell_id(),
+		})
 		report["shield_increase_total"] += maxi(0, target.current_shield - before_shield)
 		if target.current_shield > before_shield and not report["shielded_units"].has(target):
 			report["shielded_units"].append(target)

@@ -111,3 +111,18 @@ d'historique de l'onglet actif.
 9. toolbar trop large à 1280×720 ;
 10. suites unitaires vertes mais pas de test du vrai `play_custom_scene` ;
 11. leaks ObjectDB/RID déjà présents dans le baseline Encounter Studio.
+
+## Contrat livré en 1.1
+
+La session Arena est désormais l'unique autorité pour la copie de travail,
+l'historique et le marqueur de sauvegarde. Un geste transforme seulement
+`grid_origin`, `axis_x` et `axis_y` de cette copie. La ressource de production
+ne reçoit ces champs et les ancres qu'après validation et clic explicite sur
+Sauvegarder ; les textures, calques, occlusions, réglages caméra, topologie et
+données de gameplay sont conservés depuis la version disque la plus récente.
+
+Le gizmo capture Shift (précision fine) et Ctrl (inversion temporaire du snap)
+au moment de l'appui. Le mouvement est toujours recalculé depuis le snapshot de
+départ. Relâcher termine une action unique ; Échap, clic droit ou interruption
+restaure exactement ce snapshot. Le pivot, le pan, le zoom, la sélection et les
+calques sont des préférences d'éditeur et ne salissent pas la map.

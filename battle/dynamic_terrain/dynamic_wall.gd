@@ -1,3 +1,4 @@
+@tool
 class_name DynamicWall
 extends Node2D
 
