@@ -16,6 +16,7 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	if is_instance_valid(_main_screen):
+		_main_screen.prepare_for_close()
 		var parent := _main_screen.get_parent()
 		if parent != null:
 			parent.remove_child(_main_screen)

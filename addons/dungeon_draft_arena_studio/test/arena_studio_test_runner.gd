@@ -37,11 +37,13 @@ func _ready() -> void:
 		push_error("Arena Studio : l'autoload GameManager est introuvable.")
 		get_tree().quit(3)
 		return
-	game_manager.start_preconfigured_run(run, heroes)
-	# Le bouton de l'editeur promet un test de la map seule : l'etat de run est
-	# construit par GameManager, puis la salle courante entre directement dans
-	# la vraie scene de bataille peinte, sans clic dans l'ecran de transition.
-	game_manager.start_next_battle()
+	var started: bool = game_manager.start_direct_encounter_test(run, heroes)
+	_write_launch_result(request, started, arena)
+	if not started:
+		push_error("Arena Studio : le lancement direct a ete refuse par GameManager.")
+		get_tree().quit(4)
+		return
+	_cleanup_temporary_request(request)
 
 
 func _load_request() -> Dictionary:
@@ -49,3 +51,33 @@ func _load_request() -> Dictionary:
 		return {}
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(REQUEST_PATH))
 	return parsed if parsed is Dictionary else {}
+
+
+func _write_launch_result(request: Dictionary, started: bool, arena: ArenaDefinition) -> void:
+	var result_path := str(request.get("result_path", ""))
+	if result_path.is_empty():
+		return
+	var absolute := ProjectSettings.globalize_path(result_path)
+	DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
+	var file := FileAccess.open(result_path, FileAccess.WRITE)
+	if file != null:
+		file.store_string(JSON.stringify({
+			"ok": started,
+			"arena_id": str(arena.arena_id),
+			"configuration": str(request.get("configuration", "")),
+			"working_copy": true,
+		}, "  "))
+		file.close()
+
+
+func _cleanup_temporary_request(request: Dictionary) -> void:
+	if not bool(request.get("cleanup_on_load", false)):
+		return
+	var arena_path := str(request.get("arena_path", ""))
+	if arena_path.begins_with("user://dungeon_draft_studio/arena_studio/tests/"):
+		var absolute := ProjectSettings.globalize_path(arena_path)
+		if FileAccess.file_exists(absolute):
+			DirAccess.remove_absolute(absolute)
+	var request_absolute := ProjectSettings.globalize_path(REQUEST_PATH)
+	if FileAccess.file_exists(request_absolute):
+		DirAccess.remove_absolute(request_absolute)

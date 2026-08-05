@@ -145,6 +145,17 @@ static func propose_spawns(arena: ArenaDefinition) -> void:
 	for index in range(arena.spawns.size() - 1, -1, -1):
 		if str(arena.spawns[index].spawn_id).begins_with("auto_"):
 			arena.spawns.remove_at(index)
+	# Une map importee possede deja ses positions runtime. Les propositions ne
+	# doivent pas leur superposer un second trio et un second groupe ennemi.
+	var has_heroes := arena.spawns.any(func(spawn):
+		return spawn != null and spawn.is_hero()
+	)
+	var has_enemies := arena.spawns.any(func(spawn):
+		return spawn != null and spawn.is_enemy()
+	)
+	if has_heroes and has_enemies:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
+		return
 	var playable := arena.playable_cells()
 	if playable.size() < 6:
 		return
@@ -186,6 +197,8 @@ static func _add_auto_spawn(
 		unit_id: StringName,
 		index: int
 	) -> void:
+	if not arena.spawns_at(cell).is_empty():
+		return
 	var spawn := ArenaSpawnDefinition.new()
 	spawn.spawn_id = StringName("auto_%s_%d" % ["hero" if kind < 3 else "enemy", index])
 	spawn.kind = kind

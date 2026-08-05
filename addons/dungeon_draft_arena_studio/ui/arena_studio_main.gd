@@ -2,11 +2,16 @@
 class_name ArenaStudioMain
 extends Control
 
+signal history_state_changed
+
 const TEST_RUNNER_SCENE := "res://addons/dungeon_draft_arena_studio/test/arena_studio_test_runner.tscn"
 const TEST_REQUEST := "user://arena_studio/test_request.json"
+const TEST_WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
 const TOOL_LABELS := [
 	"Selection", "Deplacement de vue", "Ajouter une case", "Retirer une case",
 	"Bordure", "Obstacle", "Terrain", "Spawn", "Verification",
+	"Transformer la grille",
+	"Ancres de calibration",
 ]
 const PRODUCTION_LIBRARY := [
 	["Foret — Gue forestier", &"room_01_forest"],
@@ -14,6 +19,12 @@ const PRODUCTION_LIBRARY := [
 	["Espace — Station orbitale", &"room_06_space"],
 ]
 const TEST_CONFIGURATIONS := [
+	["Sans personnages", &"no_characters"],
+	["Trio de heros", &"hero_trio"],
+	["Rencontre reelle", &"real_encounter"],
+	["Test des clics", &"clicks"],
+	["Test des spawns", &"spawns"],
+	["Test de l'occlusion", &"occlusion"],
 	["Deplacement", &"movement"],
 	["Vue", &"view"],
 	["Ligne de vue", &"line_of_sight"],
@@ -25,10 +36,13 @@ const TEST_CONFIGURATIONS := [
 ]
 
 var arena: ArenaDefinition = null
+var edit_session: ArenaEditSession = null
 var validation_report: ArenaValidationReport = null
 var editor_interface = null
 var editor_undo_redo = null
-var dirty := false
+var dirty: bool:
+	get:
+		return edit_session != null and edit_session.is_dirty()
 
 var canvas: ArenaStudioCanvas
 var title_label: Label
@@ -49,6 +63,11 @@ var advanced_values: Array[SpinBox] = []
 var validation_list: ItemList
 var validation_title: Label
 var recovery_button: Button
+var compare_button: CheckButton
+var last_operation_label: Label
+var restore_name_edit: LineEdit
+var restore_points_list: ItemList
+var layer_controls := {}
 var new_dialog: ConfirmationDialog
 var new_name_edit: LineEdit
 var new_id_edit: LineEdit
@@ -61,11 +80,13 @@ var image_dialog: FileDialog
 var open_dialog: FileDialog
 
 var _fallback_undo := UndoRedo.new()
+var _sessions: Dictionary = {}
 var _stroke_before := {}
 var _stroke_changed := false
 var _stroke_cell_count := 0
 var _verification_source := GridTransformService.INVALID_CELL
 var _last_test_log := "Aucun test direct lance depuis cette session."
+var _recovery_timer: Timer
 
 
 func setup(host_editor_interface, undo_manager) -> void:
@@ -78,6 +99,11 @@ func _ready() -> void:
 	_build_interface()
 	_build_dialogs()
 	_connect_canvas()
+	_recovery_timer = Timer.new()
+	_recovery_timer.one_shot = true
+	_recovery_timer.wait_time = 0.4
+	_recovery_timer.timeout.connect(_flush_recovery)
+	add_child(_recovery_timer)
 	_refresh_recovery_button()
 	ensure_initial_arena_loaded()
 
@@ -107,11 +133,16 @@ func _on_initial_filesystem_ready() -> void:
 
 
 func load_production(arena_id: StringName) -> bool:
+	var session_key := "production:%s" % arena_id
+	if _sessions.has(session_key):
+		_activate_session(_sessions[session_key] as ArenaEditSession)
+		_set_status("Session de map reprise avec son historique.")
+		return true
 	var imported := ArenaLegacyImporter.import_production(arena_id)
 	if imported == null:
 		_set_status("Impossible d'ouvrir la map de production demandee.", true)
 		return false
-	_set_arena(imported, false)
+	_set_arena(imported, false, session_key)
 	_set_status("Map de production ouverte sans modifier ses ressources sources.")
 	return true
 
@@ -268,6 +299,7 @@ func _build_right_panel() -> Control:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size.x = 295
 	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	panel.add_child(scroll)
 	var box := VBoxContainer.new()
 	box.custom_minimum_size.x = 270
@@ -282,6 +314,8 @@ func _build_right_panel() -> Control:
 	calibration_label.text = "Alignement a verifier"
 	calibration_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.28))
 	box.add_child(calibration_label)
+	box.add_child(_build_transform_panel())
+	box.add_child(_build_layers_panel())
 	box.add_child(_section_label("Actions"))
 	_add_button(box, "Preparer automatiquement la map", prepare_automatically)
 	_add_button(box, "Placer les heros", func(): _select_tool_and_preset(ArenaStudioCanvas.Tool.SPAWN, 0))
@@ -291,6 +325,7 @@ func _build_right_panel() -> Control:
 	_add_button(box, "Exporter le rapport", export_report)
 	_add_button(box, "Copier le rapport pour Codex", copy_report_for_codex)
 	recovery_button = _add_button(box, "Restaurer la sauvegarde de recuperation", restore_latest_recovery)
+	box.add_child(_build_restore_points_panel())
 	advanced_panel = VBoxContainer.new()
 	advanced_panel.add_child(_section_label("Informations techniques"))
 	var fields := GridContainer.new()
@@ -313,6 +348,159 @@ func _build_right_panel() -> Control:
 	box.add_child(advanced_panel)
 	advanced_panel.visible = false
 	return panel
+
+
+func _build_transform_panel() -> Control:
+	var box := VBoxContainer.new()
+	box.add_child(_section_label("Transformation de la grille"))
+	var transform_button := Button.new()
+	transform_button.text = "Transformer la grille"
+	transform_button.tooltip_text = "Selectionne la calibration sans rendre le fond deplacable."
+	transform_button.pressed.connect(func():
+		_select_tool_and_preset(ArenaStudioCanvas.Tool.TRANSFORM_GRID, 0)
+	)
+	box.add_child(transform_button)
+	var flags := GridContainer.new()
+	flags.columns = 1
+	var snap := CheckButton.new()
+	snap.text = "Aimantation"
+	snap.button_pressed = true
+	snap.tooltip_text = "Ctrl inverse temporairement l'aimantation pendant un geste."
+	snap.toggled.connect(func(value): canvas.snap_enabled = value)
+	flags.add_child(snap)
+	var fine := Label.new()
+	fine.text = "Shift : precision fine"
+	flags.add_child(fine)
+	var preserve := CheckButton.new()
+	preserve.text = "Longueur des axes"
+	preserve.toggled.connect(func(value): canvas.preserve_axis_length = value)
+	flags.add_child(preserve)
+	var symmetry := CheckButton.new()
+	symmetry.text = "Symetrie isometrique"
+	symmetry.toggled.connect(func(value): canvas.mirror_axes = value)
+	flags.add_child(symmetry)
+	var keep_size := CheckButton.new()
+	keep_size.text = "Conserver taille globale"
+	keep_size.toggled.connect(func(value): canvas.lock_scale = value)
+	flags.add_child(keep_size)
+	var independent := CheckButton.new()
+	independent.text = "Axes independants"
+	independent.button_pressed = true
+	independent.toggled.connect(func(value):
+		canvas.mirror_axes = not value
+		symmetry.set_pressed_no_signal(not value)
+	)
+	flags.add_child(independent)
+	box.add_child(flags)
+	var snap_values := GridContainer.new()
+	snap_values.columns = 1
+	for definition in [
+		["Position 1 px", 1.0, 0.1, 20.0, 0.1, "position_snap"],
+		["Angle 0.25 deg", 0.25, 0.05, 45.0, 0.05, "angle_snap_degrees"],
+		["Echelle 0.5 %", 0.005, 0.001, 0.25, 0.001, "scale_snap"],
+	]:
+		var snap_spin := SpinBox.new()
+		snap_spin.prefix = definition[0] + "  "
+		snap_spin.value = definition[1]
+		snap_spin.min_value = definition[2]
+		snap_spin.max_value = definition[3]
+		snap_spin.step = definition[4]
+		var property_name: String = definition[5]
+		snap_spin.value_changed.connect(func(value): canvas.set(property_name, value))
+		snap_values.add_child(snap_spin)
+	box.add_child(snap_values)
+	compare_button = CheckButton.new()
+	compare_button.text = "Comparer a la derniere sauvegarde"
+	compare_button.toggled.connect(func(value):
+		canvas.show_saved_comparison = value
+		canvas.queue_redraw()
+	)
+	box.add_child(compare_button)
+	last_operation_label = Label.new()
+	last_operation_label.text = "Derniere operation : aucune"
+	last_operation_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	last_operation_label.add_theme_color_override("font_color", Color(0.72, 0.84, 0.94))
+	box.add_child(last_operation_label)
+	return box
+
+
+func _build_layers_panel() -> Control:
+	var box := VBoxContainer.new()
+	box.add_child(_section_label("Calques"))
+	var grid := GridContainer.new()
+	grid.columns = 3
+	for heading in ["Visible", "Verrou", "Calque"]:
+		var label := Label.new()
+		label.text = heading
+		grid.add_child(label)
+	var definitions := [
+		["background", "Image de fond", true, true],
+		["calibration", "Calibration de la grille", true, true],
+		["gameplay", "Cellules gameplay", true, false],
+		["details", "Obstacles et terrains", true, false],
+		["spawns", "Spawns", true, false],
+		["foreground", "Foreground et occlusion", true, true],
+	]
+	for definition in definitions:
+		var visible := CheckBox.new()
+		visible.button_pressed = definition[2]
+		var locked := CheckBox.new()
+		locked.button_pressed = definition[3]
+		var label := Label.new()
+		label.text = definition[1]
+		var key: String = definition[0]
+		visible.toggled.connect(func(value):
+			canvas.set_layer_state(key, value, bool(canvas.layer_locks.get(key, false)))
+		)
+		locked.toggled.connect(func(value):
+			canvas.set_layer_state(key, bool(canvas.layer_visibility.get(key, true)), value)
+		)
+		grid.add_child(visible)
+		grid.add_child(locked)
+		grid.add_child(label)
+		layer_controls[key] = {"visible": visible, "locked": locked}
+	box.add_child(grid)
+	var background_opacity := HSlider.new()
+	background_opacity.min_value = 0.1
+	background_opacity.max_value = 1.0
+	background_opacity.step = 0.05
+	background_opacity.value = 1.0
+	background_opacity.tooltip_text = "Opacite du fond (preference d'editeur)"
+	background_opacity.value_changed.connect(func(value):
+		canvas.background_opacity = value
+		canvas.queue_redraw()
+	)
+	box.add_child(background_opacity)
+	var grid_opacity := HSlider.new()
+	grid_opacity.min_value = 0.1
+	grid_opacity.max_value = 1.0
+	grid_opacity.step = 0.05
+	grid_opacity.value = 1.0
+	grid_opacity.tooltip_text = "Opacite de la grille (preference d'editeur)"
+	grid_opacity.value_changed.connect(func(value):
+		canvas.grid_opacity = value
+		canvas.queue_redraw()
+	)
+	box.add_child(grid_opacity)
+	return box
+
+
+func _build_restore_points_panel() -> Control:
+	var box := VBoxContainer.new()
+	box.add_child(_section_label("Points de restauration"))
+	restore_name_edit = LineEdit.new()
+	restore_name_edit.placeholder_text = "Nom du point"
+	box.add_child(restore_name_edit)
+	var buttons := HBoxContainer.new()
+	_add_button(buttons, "Creer", create_restore_point)
+	_add_button(buttons, "Restaurer", restore_selected_point)
+	_add_button(buttons, "Supprimer", delete_selected_restore_point)
+	box.add_child(buttons)
+	restore_points_list = ItemList.new()
+	restore_points_list.custom_minimum_size.y = 72
+	box.add_child(restore_points_list)
+	_add_button(box, "Restaurer la calibration sauvegardee", restore_saved_calibration)
+	return box
 
 
 func _build_validation_panel() -> Control:
@@ -389,17 +577,46 @@ func _connect_canvas() -> void:
 	canvas.stroke_started.connect(_on_stroke_started)
 	canvas.cells_edit_requested.connect(_on_cells_edit_requested)
 	canvas.stroke_finished.connect(_on_stroke_finished)
+	canvas.stroke_cancelled.connect(_on_stroke_cancelled)
 	canvas.calibration_requested.connect(_on_calibration_requested)
 	canvas.calibration_preview_requested.connect(_on_calibration_preview)
+	canvas.anchors_preview_requested.connect(_on_anchors_preview)
 	canvas.hovered_cell_changed.connect(_on_hovered_cell_changed)
 	canvas.verification_cell_requested.connect(_on_verification_cell_requested)
 
 
-func _set_arena(value: ArenaDefinition, mark_dirty: bool) -> void:
-	arena = value
+func _set_arena(value: ArenaDefinition, mark_dirty: bool, key := "") -> void:
+	if value == null:
+		return
+	if canvas != null and canvas.has_method("cancel_active_gesture"):
+		canvas.cancel_active_gesture()
+	var session_key := key if not key.is_empty() else (
+		value.resource_path if not value.resource_path.is_empty() else str(value.arena_id)
+	)
+	var next_session := ArenaEditSession.new()
+	if not next_session.open(value, value.resource_path, mark_dirty, session_key):
+		_set_status("La copie de travail de l'arene n'a pas pu etre creee.", true)
+		return
+	_sessions[session_key] = next_session
+	_activate_session(next_session)
+
+
+func _activate_session(next_session: ArenaEditSession) -> void:
+	_save_session_editor_state()
+	if edit_session != null:
+		if edit_session.history.history_changed.is_connected(_on_history_changed):
+			edit_session.history.history_changed.disconnect(_on_history_changed)
+		if edit_session.history.dirty_state_changed.is_connected(_on_dirty_state_changed):
+			edit_session.history.dirty_state_changed.disconnect(_on_dirty_state_changed)
+	edit_session = next_session
+	arena = edit_session.working_arena
+	_fallback_undo = edit_session.history.undo_redo
+	edit_session.history.history_changed.connect(_on_history_changed)
+	edit_session.history.dirty_state_changed.connect(_on_dirty_state_changed)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	dirty = mark_dirty
 	canvas.set_arena(arena)
+	canvas.set_saved_transform(edit_session.saved_transform())
+	_restore_session_editor_state()
 	_verification_source = GridTransformService.INVALID_CELL
 	validation_report = null
 	validation_list.clear()
@@ -407,6 +624,8 @@ func _set_arena(value: ArenaDefinition, mark_dirty: bool) -> void:
 	_refresh_title()
 	_refresh_calibration_label()
 	_refresh_inspector(GridTransformService.INVALID_CELL)
+	_refresh_restore_points()
+	history_state_changed.emit()
 
 
 func _show_new_dialog() -> void:
@@ -446,7 +665,7 @@ func _create_from_wizard() -> void:
 		var texture := load(imported_path) as Texture2D
 		if texture != null:
 			created.source_image_size = Vector2i(texture.get_size())
-	_set_arena(created, true)
+	_set_arena(created, true, "new:%s:%d" % [requested_id, Time.get_ticks_usec()])
 	start_calibration()
 	_autosave()
 	_set_status("Cliquez trois centres de cases pour aligner la grille.")
@@ -472,22 +691,42 @@ func _import_image(source: String, arena_id: String) -> String:
 
 
 func _open_canonical(path: String) -> void:
+	if _sessions.has(path):
+		_activate_session(_sessions[path] as ArenaEditSession)
+		_set_status("Session reprise : %s" % arena.display_name)
+		return
 	var loaded := ArenaSerializer.load_canonical(path)
 	if loaded == null:
 		_set_status("Cette ressource n'est pas une arene Arena Studio valide.", true)
 		return
-	_set_arena(loaded, false)
+	_set_arena(loaded, false, path)
 	_set_status("Arene ouverte : %s" % loaded.display_name)
 
 
 func save_arena() -> void:
-	if arena == null:
+	if arena == null or edit_session == null:
 		return
-	var path := arena.resource_path if arena.resource_path.begins_with("res://data/arenas/") \
+	if edit_session.has_external_conflict():
+		_set_status("La ressource a change sur disque. Rechargez ou resolvez le conflit avant de sauvegarder.", true)
+		return
+	var path := edit_session.source_path if edit_session.source_path.begins_with("res://data/arenas/") \
 		else ArenaSerializer.suggested_path(arena)
+	if edit_session.source_path.is_empty() and ResourceLoader.exists(path):
+		_set_status(
+			"Sauvegarde refusee : une map canonique utilise deja cet identifiant.", true
+		)
+		return
 	var error := ArenaSerializer.save_canonical(arena, path)
 	if error == OK:
-		dirty = false
+		var verified := ResourceLoader.load(
+			path, "", ResourceLoader.CACHE_MODE_IGNORE
+		) as ArenaDefinition
+		if verified == null or ArenaEditSession.fingerprint(verified.to_snapshot()) \
+				!= ArenaEditSession.fingerprint(arena.to_snapshot()):
+			_set_status("La verification apres sauvegarde a echoue.", true)
+			return
+		edit_session.mark_saved(path)
+		canvas.set_saved_transform(edit_session.saved_transform())
 		_refresh_title()
 		_refresh_recovery_button()
 		_set_status("Map sauvegardee : %s" % path)
@@ -530,6 +769,10 @@ func start_calibration() -> void:
 func fit_multipoint_calibration() -> void:
 	if arena == null:
 		return
+	var old_rms := arena.painted_map_visual_data.calibration_rms() \
+		if arena.painted_map_visual_data != null else INF
+	var old_max := arena.painted_map_visual_data.calibration_max_error() \
+		if arena.painted_map_visual_data != null else INF
 	var fitted := GridTransformService.fit_affine(
 		arena.calibration_cells, arena.calibration_pixels
 	)
@@ -541,13 +784,22 @@ func fit_multipoint_calibration() -> void:
 	arena.axis_x = fitted.axis_x
 	arena.axis_y = fitted.axis_y
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	_commit_change("Ajuster la calibration multipoint", before, arena.to_snapshot())
+	_commit_change(
+		"Ajuster la grille a %d ancres" % arena.calibration_cells.size(),
+		before, arena.to_snapshot()
+	)
 	_refresh_all()
-	_set_status("Calibration multipoint appliquee — erreur RMS %.2f px." % fitted.rms_error)
+	_set_status(
+		"Ajustement applique : RMS %.2f -> %.2f px, erreur max %.2f -> %.2f px." % [
+			old_rms, fitted.rms_error, old_max, fitted.max_error
+		]
+	)
 
 
 func validate_arena() -> ArenaValidationReport:
-	validation_report = ArenaValidator.validate(arena)
+	# La working copy d'une map ouverte porte volontairement le meme identifiant
+	# que sa source. Le conflit de destination est controle au moment de sauver.
+	validation_report = ArenaValidator.validate(arena, false)
 	validation_list.clear()
 	for entry in validation_report.messages:
 		var prefix: String = ["ERREUR", "ATTENTION", "INFO"][entry.severity]
@@ -569,9 +821,22 @@ func test_arena() -> void:
 	var report := validate_arena()
 	if not report.is_valid():
 		return
-	if dirty or arena.resource_path.is_empty():
-		save_arena()
-	if dirty or arena.resource_path.is_empty():
+	var context_id := "%s_%d" % [arena.arena_id, Time.get_ticks_usec()]
+	var context_root := TEST_WORK_ROOT.path_join(context_id)
+	var test_arena_path := context_root.path_join("arena.tres")
+	var test_arena_copy := ArenaDefinition.new()
+	if not test_arena_copy.restore_snapshot(arena.to_snapshot()):
+		_set_status("La copie de travail n'a pas pu etre preparee pour le test.", true)
+		return
+	ArenaRuntimeBridge.sync_runtime_resources(test_arena_copy)
+	var context_absolute := ProjectSettings.globalize_path(context_root)
+	var directory_error := DirAccess.make_dir_recursive_absolute(context_absolute)
+	if directory_error != OK:
+		_set_status("Le contexte temporaire du test n'a pas pu etre cree.", true)
+		return
+	var save_error := ResourceSaver.save(test_arena_copy, test_arena_path)
+	if save_error != OK:
+		_set_status("La working copy du test n'a pas pu etre serialisee : %s" % error_string(save_error), true)
 		return
 	var absolute := ProjectSettings.globalize_path(TEST_REQUEST)
 	DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
@@ -580,18 +845,22 @@ func test_arena() -> void:
 		_set_status("La configuration de test n'a pas pu etre creee.", true)
 		return
 	file.store_string(JSON.stringify({
-		"arena_path": arena.resource_path,
+		"arena_path": test_arena_path,
 		"configuration": str(TEST_CONFIGURATIONS[test_configuration_option.selected][1]),
+		"context_root": context_root,
+		"cleanup_on_load": true,
+		"result_path": context_root.path_join("launch_result.json"),
 		"heroes": [
 			"res://data/units/alliés/elfe.tres",
 			"res://data/units/alliés/mage.tres",
 			"res://data/units/alliés/Guerrier.tres",
 		],
 	}, "  "))
+	file.close()
 	_last_test_log = "Test direct demande pour %s via %s" % [arena.arena_id, TEST_RUNNER_SCENE]
 	if editor_interface != null:
 		editor_interface.play_custom_scene(TEST_RUNNER_SCENE)
-		_set_status("Test direct lance avec le runtime reel. F8 permet de revenir a l'editeur.")
+		_set_status("Working copy lancee dans le combat reel. Aucune sauvegarde de production n'a ete effectuee ; F8 revient a l'editeur.")
 	else:
 		_set_status("Configuration de test direct preparee.")
 
@@ -618,8 +887,100 @@ func restore_latest_recovery() -> void:
 		return
 	var restored := ArenaSerializer.load_recovery(files[files.size() - 1])
 	if restored != null:
-		_set_arena(restored, true)
+		if edit_session != null and arena != null \
+				and restored.arena_id == arena.arena_id:
+			var before := arena.to_snapshot()
+			edit_session.apply_snapshot(restored.to_snapshot())
+			arena = edit_session.working_arena
+			_commit_change(
+				"Restaurer la sauvegarde de recuperation",
+				before,
+				arena.to_snapshot(),
+			)
+			_refresh_all()
+		else:
+			_set_arena(restored, true, "recovery:%s" % restored.arena_id)
 		_set_status("Sauvegarde de recuperation restauree. Utilisez Sauvegarder pour la rendre canonique.")
+
+
+func create_restore_point() -> void:
+	if arena == null or edit_session == null:
+		return
+	var result := ArenaRestorePointService.create_point(
+		arena, restore_name_edit.text, edit_session.source_fingerprint
+	)
+	if not bool(result.get("ok", false)):
+		_set_status("Le point n'a pas pu etre cree : %s" % result.get("error", "erreur"), true)
+		return
+	restore_name_edit.clear()
+	_refresh_restore_points()
+	_set_status("Point de restauration cree : %s" % result.get("name", "Calibration"))
+
+
+func restore_selected_point() -> void:
+	if arena == null or restore_points_list == null or restore_points_list.get_selected_items().is_empty():
+		return
+	var index: int = restore_points_list.get_selected_items()[0]
+	var path := str(restore_points_list.get_item_metadata(index))
+	var result := ArenaRestorePointService.load_point(path, arena.arena_id)
+	if not bool(result.get("ok", false)):
+		_set_status("Restauration refusee : %s" % result.get("error", "erreur"), true)
+		return
+	_apply_transform_snapshot(
+		result.get("snapshot") as GridTransformSnapshot,
+		"Restaurer le point %s" % restore_points_list.get_item_text(index)
+	)
+
+
+func delete_selected_restore_point() -> void:
+	if restore_points_list == null or restore_points_list.get_selected_items().is_empty():
+		return
+	var index: int = restore_points_list.get_selected_items()[0]
+	var path := str(restore_points_list.get_item_metadata(index))
+	var error := ArenaRestorePointService.delete_point(path)
+	if error != OK:
+		_set_status("Le point n'a pas pu etre supprime.", true)
+		return
+	_refresh_restore_points()
+	_set_status("Point de restauration supprime.")
+
+
+func restore_saved_calibration() -> void:
+	if edit_session == null:
+		return
+	_apply_transform_snapshot(
+		edit_session.saved_transform(), "Restaurer la calibration sauvegardee"
+	)
+
+
+func _apply_transform_snapshot(snapshot: GridTransformSnapshot, action_name: String) -> void:
+	if arena == null or snapshot == null:
+		return
+	var validation := GridTransformService.validate_snapshot(snapshot)
+	if not bool(validation.get("ok", false)):
+		_set_status("Calibration refusee : %s" % validation.get("error", "invalide"), true)
+		return
+	var before := arena.to_snapshot()
+	snapshot.apply_to(arena)
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change(action_name, before, arena.to_snapshot())
+	_refresh_all()
+
+
+func _refresh_restore_points() -> void:
+	if restore_points_list == null:
+		return
+	restore_points_list.clear()
+	if arena == null:
+		return
+	for point in ArenaRestorePointService.list_points(arena.arena_id):
+		var created := Time.get_datetime_string_from_unix_time(
+			int(float(point.get("created_unix", 0.0))), true
+		)
+		restore_points_list.add_item("%s  -  %s" % [point.get("name", "Calibration"), created])
+		restore_points_list.set_item_metadata(
+			restore_points_list.item_count - 1, point.get("path", "")
+		)
 
 
 func _on_stroke_started(_action_name: String) -> void:
@@ -660,7 +1021,8 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 			_stroke_changed = true
 			_stroke_cell_count += 1
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	dirty = true
+	if edit_session != null:
+		edit_session.history.notify_preview_changed()
 	canvas.queue_redraw()
 	_refresh_inspector(cells[-1] if not cells.is_empty() else GridTransformService.INVALID_CELL)
 
@@ -672,9 +1034,30 @@ func _on_stroke_finished(action_name: String) -> void:
 	if _stroke_cell_count > 0:
 		final_name = "%s — %d case(s)" % [action_name, _stroke_cell_count]
 	_commit_change(final_name, _stroke_before, arena.to_snapshot())
+	if not _stroke_before.is_empty():
+		last_operation_label.text = _describe_transform_operation(
+			final_name, _stroke_before, arena.to_snapshot()
+		)
 	_stroke_before = {}
 	_stroke_changed = false
 	_refresh_all()
+
+
+func _on_stroke_cancelled() -> void:
+	if edit_session != null and not _stroke_before.is_empty():
+		edit_session.apply_snapshot(_stroke_before)
+		arena = edit_session.working_arena
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_stroke_before = {}
+	_stroke_changed = false
+	_stroke_cell_count = 0
+	if canvas != null:
+		canvas.arena = arena
+		canvas.queue_redraw()
+	_sync_advanced_values()
+	_refresh_title()
+	_refresh_calibration_label()
+	history_state_changed.emit()
 
 
 func _on_calibration_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2) -> void:
@@ -696,13 +1079,32 @@ func _on_calibration_preview(origin: Vector2, axis_x: Vector2, axis_y: Vector2) 
 	arena.grid_origin = origin
 	arena.axis_x = axis_x
 	arena.axis_y = axis_y
-	if arena.calibration_cells.size() == 3:
-		arena.calibration_pixels = [origin, origin + axis_x, origin + axis_y]
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	_stroke_changed = true
-	dirty = true
+	if edit_session != null:
+		edit_session.history.notify_preview_changed()
 	canvas.queue_redraw()
 	_sync_advanced_values()
+	_refresh_transform_inspector()
+
+
+func _on_anchors_preview(cells: Array[Vector2i], pixels: Array[Vector2]) -> void:
+	if arena == null or cells.size() != pixels.size():
+		return
+	var unique := {}
+	for index in range(cells.size()):
+		if not arena.is_in_bounds(cells[index]) or unique.has(cells[index]) \
+				or not GridTransformService.is_vector_finite(pixels[index]):
+			return
+		unique[cells[index]] = true
+	arena.calibration_cells = cells.duplicate()
+	arena.calibration_pixels = pixels.duplicate()
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_stroke_changed = true
+	if edit_session != null:
+		edit_session.history.notify_preview_changed()
+	canvas.queue_redraw()
+	_refresh_calibration_label()
 
 
 func _on_hovered_cell_changed(cell: Vector2i) -> void:
@@ -744,34 +1146,30 @@ func _on_verification_cell_requested(cell: Vector2i) -> void:
 
 
 func _commit_change(action_name: String, before: Dictionary, after: Dictionary) -> void:
-	if before == after:
+	if edit_session == null or before == after:
 		return
-	var manager = editor_undo_redo if editor_undo_redo != null else _fallback_undo
-	manager.create_action(action_name)
-	if manager == _fallback_undo:
-		manager.add_do_method(Callable(self, "_restore_snapshot").bind(after))
-		manager.add_undo_method(Callable(self, "_restore_snapshot").bind(before))
-	else:
-		manager.add_do_method(self, "_restore_snapshot", after)
-		manager.add_undo_method(self, "_restore_snapshot", before)
-	manager.commit_action()
-	dirty = true
+	edit_session.commit(action_name, before, after)
 	_autosave()
 	_refresh_title()
+	history_state_changed.emit()
 
 
 func _restore_snapshot(snapshot: Dictionary) -> void:
-	if arena == null:
-		arena = ArenaDefinition.new()
-	arena.restore_snapshot(snapshot)
+	if edit_session == null:
+		return
+	edit_session.apply_snapshot(snapshot)
+	arena = edit_session.working_arena
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	dirty = true
-	canvas.set_arena(arena)
 	_refresh_all()
 
 
 func _autosave() -> void:
-	if arena != null:
+	if arena != null and _recovery_timer != null:
+		_recovery_timer.start()
+
+
+func _flush_recovery() -> void:
+	if arena != null and dirty:
 		ArenaSerializer.save_recovery(arena)
 	_refresh_recovery_button()
 
@@ -794,17 +1192,155 @@ func _refresh_title() -> void:
 	]
 
 
+func _on_history_changed() -> void:
+	if edit_session == null:
+		return
+	arena = edit_session.working_arena
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	canvas.arena = arena
+	canvas.queue_redraw()
+	_sync_advanced_values()
+	_refresh_title()
+	_refresh_calibration_label()
+	_refresh_transform_inspector()
+	history_state_changed.emit()
+
+
+func _on_dirty_state_changed(_is_dirty: bool) -> void:
+	_refresh_title()
+	history_state_changed.emit()
+
+
+func history_can_undo() -> bool:
+	return edit_session != null and edit_session.history.can_undo()
+
+
+func history_can_redo() -> bool:
+	return edit_session != null and edit_session.history.can_redo()
+
+
+func history_undo() -> bool:
+	return edit_session != null and edit_session.history.undo()
+
+
+func history_redo() -> bool:
+	return edit_session != null and edit_session.history.redo()
+
+
+func history_undo_name() -> String:
+	return edit_session.history.get_undo_action_name() if edit_session != null else ""
+
+
+func history_redo_name() -> String:
+	return edit_session.history.get_redo_action_name() if edit_session != null else ""
+
+
+func history_entries() -> Array[Dictionary]:
+	return edit_session.history.get_history_entries() if edit_session != null else []
+
+
+func history_current_index() -> int:
+	return edit_session.history.get_current_index() if edit_session != null else 0
+
+
+func history_jump_to(index: int) -> bool:
+	if canvas != null and canvas.has_method("is_transforming") \
+			and canvas.is_transforming():
+		return false
+	return edit_session != null and edit_session.history.jump_to(index)
+
+
+func history_document_name() -> String:
+	return arena.display_name if arena != null else "Aucune map"
+
+
+func cancel_active_gesture() -> bool:
+	return canvas != null and canvas.cancel_active_gesture()
+
+
 func _refresh_calibration_label() -> void:
 	if arena == null or arena.calibration_cells.size() < 3:
 		calibration_label.text = "Alignement a verifier"
 		return
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	var error := arena.painted_map_visual_data.calibration_rms()
-	calibration_label.text = "Alignement excellent" if error <= 1.0 \
+	var maximum := arena.painted_map_visual_data.calibration_max_error()
+	calibration_label.text = (
+		"Alignement excellent" if error <= 1.0 \
 		else ("Alignement correct" if error <= 3.0 else "Alignement a verifier")
+	) + "  -  RMS %.2f px / max %.2f px" % [error, maximum]
+
+
+func _refresh_transform_inspector() -> void:
+	if arena == null or inspector_label == null:
+		return
+	var axis_angle := absf(rad_to_deg(arena.axis_x.angle_to(arena.axis_y)))
+	var determinant_value := GridTransformService.determinant(arena.axis_x, arena.axis_y)
+	var relative := GridTransformService.relative_determinant(arena.axis_x, arena.axis_y)
+	inspector_label.text = (
+		"Grille selectionnee\n"
+		+ "Position : %.2f, %.2f px\n" % [arena.grid_origin.x, arena.grid_origin.y]
+		+ "Droite : %.2f px / %.2f deg\n" % [arena.axis_x.length(), rad_to_deg(arena.axis_x.angle())]
+		+ "Gauche : %.2f px / %.2f deg\n" % [arena.axis_y.length(), rad_to_deg(arena.axis_y.angle())]
+		+ "Angle entre axes : %.2f deg\n" % axis_angle
+		+ "Determinant : %.3f / stabilite %.6f" % [determinant_value, relative]
+	)
+
+
+func _describe_transform_operation(
+		action_name: String,
+		before_data: Dictionary,
+		after_data: Dictionary
+	) -> String:
+	var before := GridTransformSnapshot.from_dictionary({
+		"origin": before_data.get("grid_origin", [0.0, 0.0]),
+		"axis_x": before_data.get("axis_x", [0.0, 0.0]),
+		"axis_y": before_data.get("axis_y", [0.0, 0.0]),
+	})
+	var after := GridTransformSnapshot.from_dictionary({
+		"origin": after_data.get("grid_origin", [0.0, 0.0]),
+		"axis_x": after_data.get("axis_x", [0.0, 0.0]),
+		"axis_y": after_data.get("axis_y", [0.0, 0.0]),
+	})
+	var delta := after.origin - before.origin
+	var rotation := rad_to_deg(before.axis_x.angle_to(after.axis_x))
+	var scale := after.axis_x.length() / maxf(before.axis_x.length(), 0.00001)
+	return "Derniere operation : %s\nX %+0.2f px  Y %+0.2f px  Angle %+0.2f deg  Echelle %.2f %%" % [
+		action_name, delta.x, delta.y, rotation, scale * 100.0
+	]
+
+
+func _update_layer_controls() -> void:
+	for key in layer_controls:
+		var controls: Dictionary = layer_controls[key]
+		var locked := controls.get("locked") as CheckBox
+		var visible := controls.get("visible") as CheckBox
+		if locked != null:
+			locked.set_pressed_no_signal(bool(canvas.layer_locks.get(key, false)))
+		if visible != null:
+			visible.set_pressed_no_signal(bool(canvas.layer_visibility.get(key, true)))
+
+
+func _save_session_editor_state() -> void:
+	if edit_session == null or canvas == null:
+		return
+	edit_session.editor_state = canvas.get_editor_state()
+
+
+func _restore_session_editor_state() -> void:
+	if edit_session == null or canvas == null:
+		return
+	canvas.apply_editor_state(edit_session.editor_state)
+	_update_layer_controls()
 
 
 func _refresh_inspector(cell: Vector2i) -> void:
+	if canvas != null and canvas.active_tool in [
+		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
+		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
+	]:
+		_refresh_transform_inspector()
+		return
 	if arena == null or cell == GridTransformService.INVALID_CELL:
 		inspector_label.text = "Survolez une case pour afficher ses proprietes."
 		return
@@ -864,10 +1400,21 @@ func _on_library_activated(index: int) -> void:
 
 func _on_tool_selected(index: int) -> void:
 	canvas.set_tool(index)
+	canvas.layer_locks["calibration"] = index not in [
+		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
+		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
+	]
+	_update_layer_controls()
 	obstacle_option.visible = index == ArenaStudioCanvas.Tool.OBSTACLE
 	terrain_option.visible = index == ArenaStudioCanvas.Tool.TERRAIN
 	spawn_option.visible = index == ArenaStudioCanvas.Tool.SPAWN
 	verification_option.visible = index == ArenaStudioCanvas.Tool.VERIFY
+	if index == ArenaStudioCanvas.Tool.TRANSFORM_GRID:
+		_refresh_transform_inspector()
+		_set_status("Grille selectionnee : glissez son corps ou une poignee. Echap ou clic droit annule le geste.")
+	elif index == ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
+		_refresh_transform_inspector()
+		_set_status("Ancres : cliquez pour ajouter, glissez pour deplacer, clic droit pour supprimer.")
 
 
 func _on_verification_kind_selected(index: int) -> void:

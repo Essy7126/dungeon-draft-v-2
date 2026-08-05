@@ -3,6 +3,7 @@ class_name EncounterStudioMain
 extends Control
 
 signal open_arena_requested
+signal history_state_changed
 
 const FORMATION_LABELS := {
 	&"line": "Ligne",
@@ -286,10 +287,13 @@ func open_run(path: String) -> bool:
 		_set_status("Le fichier selectionne n'est pas une RunData exploitable.", true)
 		return false
 	project_graph = EncounterReferenceGraphService.build_project_graph()
+	_fallback_undo_redo.clear_history()
+	_last_history_object = null
 	_syncing = true
 	seed_spin.value = run.default_seed
 	_syncing = false
 	_refresh_all()
+	history_state_changed.emit()
 	_set_status("Run ouverte en copie de travail : %s" % run.run_name)
 	return true
 
@@ -896,6 +900,7 @@ func _after_change(target: Object) -> void:
 		session.mark_dirty(session.current_room())
 	_prune_unreferenced_new_encounters()
 	call_deferred("_refresh_after_edit")
+	history_state_changed.emit()
 
 
 func _prune_unreferenced_new_encounters() -> void:
@@ -1074,12 +1079,94 @@ func _undo() -> void:
 	var history := _active_undo_redo()
 	if history != null and history.has_undo():
 		history.undo()
+		history_state_changed.emit()
 
 
 func _redo() -> void:
 	var history := _active_undo_redo()
 	if history != null and history.has_redo():
 		history.redo()
+		history_state_changed.emit()
+
+
+func history_can_undo() -> bool:
+	var value := _active_undo_redo()
+	return value != null and value.has_undo()
+
+
+func history_can_redo() -> bool:
+	var value := _active_undo_redo()
+	return value != null and value.has_redo()
+
+
+func history_undo() -> bool:
+	if not history_can_undo():
+		return false
+	_undo()
+	return true
+
+
+func history_redo() -> bool:
+	if not history_can_redo():
+		return false
+	_redo()
+	return true
+
+
+func history_undo_name() -> String:
+	var value := _active_undo_redo()
+	return value.get_current_action_name() \
+		if value != null and value.has_undo() else ""
+
+
+func history_redo_name() -> String:
+	var value := _active_undo_redo()
+	if value == null or not value.has_redo():
+		return ""
+	var index := value.get_current_action() + 1
+	return value.get_action_name(index) \
+		if index >= 0 and index < value.get_history_count() else "Action"
+
+
+func history_entries() -> Array[Dictionary]:
+	var value := _active_undo_redo()
+	var result: Array[Dictionary] = []
+	if value == null:
+		return result
+	var current := value.get_current_action()
+	for index in range(value.get_history_count()):
+		result.append({
+			"index": index + 1,
+			"name": value.get_action_name(index),
+			"applied": index <= current,
+			"current": index == current,
+			"saved": false,
+		})
+	return result
+
+
+func history_current_index() -> int:
+	var value := _active_undo_redo()
+	return value.get_current_action() + 1 if value != null else 0
+
+
+func history_jump_to(index: int) -> bool:
+	var value := _active_undo_redo()
+	if value == null or index < 0 or index > value.get_history_count():
+		return false
+	while value.get_current_action() + 1 > index:
+		if not value.undo():
+			return false
+	while value.get_current_action() + 1 < index:
+		if not value.redo():
+			return false
+	history_state_changed.emit()
+	return true
+
+
+func history_document_name() -> String:
+	return session.working_run.run_name \
+		if session.working_run != null else "Aucune run"
 
 
 func _active_undo_redo() -> UndoRedo:
