@@ -1,0 +1,107 @@
+{
+  "manifest_version": "1.0.0",
+  "source_game_commit": "1aadd1bd1dec5d1cf108740c0f57e80047d22539",
+  "production_roots": [
+    {
+      "domain": "run",
+      "path": "res://data/runs/first_run.tres",
+      "resource_type": "RunData",
+      "authority": "production_root",
+      "identity_field": "run_name",
+      "traversal_strategy": "resource_reference",
+      "include_in_snapshot": false,
+      "evidence": "res://ui/party/PartyPresentationScreen.tscn référence directement cette ressource avant GameManager.start_preconfigured_run.",
+      "notes": "La V0 exporte seulement le nombre de salles et reporte leur détail."
+    },
+    {
+      "domain": "characters",
+      "path": "res://data/units/alliés/elfe.tres",
+      "resource_type": "UnitData",
+      "authority": "production_reference",
+      "identity_field": "unit_id",
+      "traversal_strategy": "explicit_resource",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.PRODUCTION_HERO_DATA_PATHS et PartyPresentationScreen ordonnent le trio de production.",
+      "notes": "Héros de production."
+    },
+    {
+      "domain": "characters",
+      "path": "res://data/units/alliés/mage.tres",
+      "resource_type": "UnitData",
+      "authority": "production_reference",
+      "identity_field": "unit_id",
+      "traversal_strategy": "explicit_resource",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.PRODUCTION_HERO_DATA_PATHS et PartyPresentationScreen ordonnent le trio de production.",
+      "notes": "Héros de production."
+    },
+    {
+      "domain": "characters",
+      "path": "res://data/units/alliés/Guerrier.tres",
+      "resource_type": "UnitData",
+      "authority": "production_reference",
+      "identity_field": "unit_id",
+      "traversal_strategy": "explicit_resource",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.PRODUCTION_HERO_DATA_PATHS et PartyPresentationScreen ordonnent le trio de production.",
+      "notes": "Héros de production."
+    },
+    {
+      "domain": "items",
+      "path": "res://data/items/catalogs/default_item_catalog.tres",
+      "resource_type": "ItemCatalog",
+      "authority": "catalog",
+      "identity_field": "item_id",
+      "traversal_strategy": "catalog_get_definitions",
+      "include_in_snapshot": true,
+      "evidence": "GameManager.DEFAULT_ITEM_CATALOG précharge ce catalogue et l’initialise au démarrage de run.",
+      "notes": "Le catalogue combine références explicites et découverte triée."
+    },
+    {
+      "domain": "rewards",
+      "path": "res://data/post_combat/post_combat_reward_service.gd",
+      "script_class": "PostCombatRewardService",
+      "authority": "static_service_definition",
+      "identity_field": "reward_id",
+      "traversal_strategy": "explicit_preloads",
+      "include_in_snapshot": true,
+      "evidence": "GameManager instancie PostCombatRewardService et appelle build_options/apply.",
+      "notes": "Trois récompenses génériques déclarées par préchargement."
+    },
+    {
+      "domain": "reward_pools",
+      "path": "res://data/post_combat/first_run_equipment_reward_service.gd",
+      "script_class": "FirstRunEquipmentRewardService",
+      "authority": "static_service_definition",
+      "identity_field": "POOL_TAG",
+      "traversal_strategy": "catalog_tag_filter",
+      "include_in_snapshot": true,
+      "evidence": "GameManager instancie le service et le réinitialise avec le catalogue de production.",
+      "notes": "Le pool exige le tag first_run_equipment_reward et au moins deux options."
+    }
+  ],
+  "domains": [
+    {"domain": "project", "authority": "production_root", "include_in_snapshot": true},
+    {"domain": "characters", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "disciplines", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "spells", "authority": "production_reference", "include_in_snapshot": true},
+    {"domain": "items", "authority": "catalog", "include_in_snapshot": true},
+    {"domain": "rewards", "authority": "static_service_definition", "include_in_snapshot": true},
+    {"domain": "reward_pools", "authority": "static_service_definition", "include_in_snapshot": true},
+    {"domain": "contract", "authority": "versioned_contract", "include_in_snapshot": true},
+    {"domain": "audits", "authority": "derived", "include_in_snapshot": true}
+  ],
+  "exclusions": [
+    {"domain": "enemies", "path": "res://data/units/ennemie", "reason": "Ennemis reportés pour la V0."},
+    {"domain": "debug_runs", "path": "res://data/runs/fixed_trio_prototype_run.tres", "reason": "Ressource de prototype non utilisée par le lancement de production."},
+    {"domain": "laboratories", "path": "res://labs", "reason": "Laboratoires et captures exclus du snapshot de production."}
+  ],
+  "deferred_domains": [
+    {"domain": "runs", "status": "deferred", "reason": "Seules l’identité et la taille de la première run sont observées."},
+    {"domain": "rooms", "status": "deferred", "reason": "Le détail des salles n’est pas exporté dans cette fondation."},
+    {"domain": "waves", "status": "deferred", "reason": "Le détail des vagues n’est pas exporté dans cette fondation."},
+    {"domain": "enemies", "status": "deferred", "reason": "Les ennemis de production seront ajoutés dans un export ultérieur."},
+    {"domain": "architecture", "status": "deferred", "reason": "Le graphe complet des scripts et scènes n’est pas inclus."},
+    {"domain": "theorycraft", "status": "deferred", "reason": "Aucune simulation avancée n’est réalisée par la V0."}
+  ]
+}

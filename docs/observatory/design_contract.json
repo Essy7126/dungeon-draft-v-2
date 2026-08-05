@@ -1,0 +1,131 @@
+{
+  "contract_version": "1.0.0",
+  "decisions": [
+    {
+      "key": "party.required_character_ids",
+      "value": ["elf", "mage", "warrior"],
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Le trio constitue la cible de production de la première run."
+    },
+    {
+      "key": "party.size",
+      "value": 3,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "La première run est conçue pour trois héros."
+    },
+    {
+      "key": "combat.base_ap",
+      "value": 6,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Budget de PA de référence d’un héros."
+    },
+    {
+      "key": "combat.base_mp",
+      "value": 3,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Budget de PM de référence d’un héros."
+    },
+    {
+      "key": "combat.starting_active_spell_slots",
+      "value": 4,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Chaque héros commence avec quatre emplacements actifs."
+    },
+    {
+      "key": "progression.discipline_count_per_character",
+      "value": 4,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Chaque héros de production expose quatre disciplines."
+    },
+    {
+      "key": "progression.xp_per_effective_cast",
+      "value": 1,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Un lancement effectif accorde un point d’expérience de discipline."
+    },
+    {
+      "key": "progression.requires_effective_cast",
+      "value": true,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Un lancement sans effet ne doit pas progresser."
+    },
+    {
+      "key": "progression.evolution_timing",
+      "value": "in_combat",
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Les évolutions sont résolues pendant le combat."
+    },
+    {
+      "key": "systems.energy_enabled",
+      "value": false,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "L’énergie n’appartient pas au contrat courant."
+    },
+    {
+      "key": "systems.fervor_enabled",
+      "value": false,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "La ferveur n’appartient pas au contrat courant."
+    },
+    {
+      "key": "systems.awakening_enabled",
+      "value": false,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "L’éveil n’appartient pas au contrat courant."
+    },
+    {
+      "key": "run.first_run_room_count",
+      "value": 6,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "La première run cible six salles."
+    },
+    {
+      "key": "run.health_persists_between_rooms",
+      "value": true,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Les PV persistants structurent la tension de la run."
+    },
+    {
+      "key": "rewards.equipment_rewards_enabled",
+      "value": true,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "La première run propose des équipements après combat."
+    },
+    {
+      "key": "rewards.room_continue_or_secure_decision_enabled",
+      "value": true,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "La décision continuer ou sécuriser appartient à la cible de conception."
+    },
+    {
+      "key": "observatory.mode",
+      "value": "static_versioned_snapshot",
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "Observatory lit un export statique versionné."
+    },
+    {
+      "key": "observatory.realtime_reporting_enabled",
+      "value": false,
+      "status": "validated",
+      "source": "Mission Observatory — reconstruction de la fondation",
+      "rationale": "La V0 n’exécute ni télémétrie ni reporting temps réel."
+    }
+  ]
+}
