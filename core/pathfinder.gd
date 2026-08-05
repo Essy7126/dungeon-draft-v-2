@@ -96,7 +96,7 @@ func get_reachable(from: Vector2i, max_steps: int, ignore_unit = null) -> Array:
 # ============================================================
 
 func has_line_of_sight(from: Vector2i, to: Vector2i) -> bool:
-	var line = _bresenham(from, to)
+	var line = trace_line(from, to)
 	for i in range(1, line.size() - 1):
 		if not _grid.is_transparent(line[i]):
 			return false
@@ -106,11 +106,34 @@ func has_line_of_sight(from: Vector2i, to: Vector2i) -> bool:
 func has_projectile_path(from: Vector2i, to: Vector2i) -> bool:
 	if not _grid.is_valid(from) or not _grid.is_valid(to):
 		return false
-	var line = _bresenham(from, to)
+	var line = trace_line(from, to)
 	for i in range(1, line.size() - 1):
 		if not _grid.is_projectile_passable(line[i]):
 			return false
 	return true
+
+
+## Expose la meme trace Bresenham au runtime, a Arena Studio et aux tests.
+func trace_line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	for cell in _bresenham(from, to):
+		result.append(cell)
+	return result
+
+
+func first_line_blocker(
+		from: Vector2i,
+		to: Vector2i,
+		for_projectile := false
+	) -> Vector2i:
+	var line := trace_line(from, to)
+	for index in range(1, line.size() - 1):
+		var cell := line[index]
+		var passable := _grid.is_projectile_passable(cell) \
+			if for_projectile else _grid.is_transparent(cell)
+		if not passable:
+			return cell
+	return Vector2i(-1, -1)
 
 func _bresenham(from: Vector2i, to: Vector2i) -> Array:
 	var result: Array = []

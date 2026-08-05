@@ -3,17 +3,15 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="PackedScene" uid="uid://y4pkd3k606d1" path="res://data/rooms/maps/battle_salle_montagne_arene.tscn" id="3_battle"]
-[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="10_melee"]
-[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_ranged.tres" id="11_ranged"]
-[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_chief.tres" id="12_chief"]
+[ext_resource type="Resource" uid="uid://d00jkrnf3andk" path="res://data/units/ennemie/skeleton_melee.tres" id="10_melee"]
+[ext_resource type="Resource" uid="uid://osnm1677k8q3" path="res://data/units/ennemie/skeleton_chief.tres" id="12_chief"]
 [ext_resource type="Resource" path="res://data/encounters/first_run_room_03_encounter.tres" id="13_encounter"]
-[ext_resource type="Script" path="res://data/rooms/room_wave_data.gd" id="20_wave"]
+[ext_resource type="Script" uid="uid://b6ltxr34x7xhy" path="res://data/rooms/room_wave_data.gd" id="20_wave"]
 
 [sub_resource type="Resource" id="Resource_wave_1"]
 script = ExtResource("20_wave")
 wave_name = "Vague 1 - Avant-garde"
 encounter_definition = ExtResource("13_encounter")
-reward_multiplier = 1.0
 
 [sub_resource type="Resource" id="Resource_wave_2"]
 script = ExtResource("20_wave")

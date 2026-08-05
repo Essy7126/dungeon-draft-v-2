@@ -155,7 +155,9 @@ func _ready() -> void:
 	room_data = GameManager.get_current_room()
 	if room_data == null:
 		if standalone_preview_without_room:
-			grid = GridData.new(grid_cols, grid_rows)
+			grid = EncounterGridFactory.build_for_battle(
+				null, self, grid_cols, grid_rows
+			)
 			_import_terrain_from_tilemap()
 			_setup_view()
 			EventBus.battle_view_ready.emit(grid_view)
@@ -183,7 +185,9 @@ func _ready() -> void:
 # ============================================================
 
 func _setup_logic() -> void:
-	grid = GridData.new(grid_cols, grid_rows)
+	grid = EncounterGridFactory.build_for_battle(
+		room_data, self, grid_cols, grid_rows
+	)
 	pathfinder = Pathfinder.new(grid)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
@@ -223,54 +227,25 @@ func _setup_logic() -> void:
 # ============================================================
 
 func _import_terrain_from_tilemap() -> void:
-	var layer = get_node_or_null("TerrainLayer")
-	if layer == null:
-		return
+	var layer := get_node_or_null("TerrainLayer")
+	EncounterGridFactory.populate_base_grid(
+		grid,
+		room_data,
+		layer,
+		terrain_unpainted_defaults_to_wall,
+	)
 
-	if terrain_unpainted_defaults_to_wall:
-		for x in grid.cols:
-			for y in grid.rows:
-				grid.set_type(Vector2i(x, y), GridData.CellType.WALL)
-
-	for cell in layer.get_used_cells():
-		var grid_pos = Vector2i(cell.x, cell.y)
-		if not grid.is_valid(grid_pos):
-			continue
-		var tile_data = layer.get_cell_tile_data(cell)
-		if tile_data == null:
-			continue
-		var type_name = tile_data.get_custom_data("cell_type")
-		var cell_type = _cell_type_from_string(type_name)
-		grid.set_type(grid_pos, cell_type)
-
-	if hide_terrain_layer_after_import:
+	if hide_terrain_layer_after_import and layer is CanvasItem:
 		layer.visible = false
 
 func _cell_type_from_string(type_name: String) -> GridData.CellType:
-	match type_name:
-		"NORMAL": return GridData.CellType.NORMAL
-		"WALL":   return GridData.CellType.WALL
-		"HOLE":   return GridData.CellType.HOLE
-		"LAVA":   return GridData.CellType.LAVA
-		"ICE":    return GridData.CellType.ICE
-		"SHADOW": return GridData.CellType.SHADOW
-		"RUNE":   return GridData.CellType.RUNE
-		_:        return GridData.CellType.NORMAL
+	return EncounterGridFactory.cell_type_from_string(type_name)
 
 
 func _generate_arena_layout() -> void:
 	_generated_arena_features.clear()
 	generated_arena_seed = 0
-	if room_data == null or room_data.arena_generation_profile == null:
-		return
-	var protected_cells: Array[Vector2i] = []
-	protected_cells.append_array(room_data.hero_spawn_zone)
-	protected_cells.append_array(room_data.enemy_spawn_zone)
-	var generation: Dictionary = ArenaGeneratorScript.generate(
-		grid,
-		room_data.arena_generation_profile,
-		protected_cells
-	)
+	var generation := EncounterGridFactory.generate_arena_layout(grid, room_data)
 	generated_arena_seed = int(generation.get("seed", 0))
 	if not bool(generation.get("success", false)):
 		return
@@ -530,7 +505,9 @@ func _spawn_enemies() -> void:
 			encounter_definition,
 			room_data.hero_spawn_zone,
 			room_data.enemy_spawn_zone,
-			GameManager.get_run_seed() + GameManager.get_current_wave_index() * 104729,
+			EncounterSeedResolver.effective_seed(
+				GameManager.get_run_seed(), GameManager.get_current_wave_index()
+			),
 		)
 		if not encounter_formation_snapshot.get("valid", false):
 			push_error("Placement de rencontre impossible (%s) : %s" % [

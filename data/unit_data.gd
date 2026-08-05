@@ -1,3 +1,4 @@
+@tool
 # data/unit_data.gd
 # ============================================================
 # UNIT DATA — Définition d'un type d'unité sous forme de Resource.

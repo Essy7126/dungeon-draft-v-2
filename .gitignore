@@ -1,7 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-artifacts/
+artifacts/*
+!artifacts/arena_studio/
+!artifacts/arena_studio/**
 output/
 tests/characters/**/screenshots/
 *.blend1

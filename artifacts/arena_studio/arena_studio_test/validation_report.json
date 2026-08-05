@@ -1,0 +1,35 @@
+{
+  "arena_id": "arena_studio_test",
+  "errors": 0,
+  "generated_at": "2026-08-05T11:54:28",
+  "information": 1,
+  "messages": [
+    {
+      "cell": null,
+      "code": "map_summary",
+      "message": "48 cases jouables, 32 cases de bordure, 0 obstacle(s), 9 spawn(s).",
+      "severity": "info",
+      "subject_id": "",
+      "suggested_fix": "",
+      "technical_details": ""
+    }
+  ],
+  "metrics": {
+    "border_cells": 32,
+    "components": 1,
+    "defined_cells": 80,
+    "dimensions": [
+      10,
+      8
+    ],
+    "minimum_camp_distance": 12,
+    "obstacles": 0,
+    "playable_cells": 48,
+    "spawns": 9,
+    "terrains": [
+      "normal"
+    ]
+  },
+  "verdict": "ARENA_VALID",
+  "warnings": 0
+}

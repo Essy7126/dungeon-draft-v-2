@@ -39,8 +39,6 @@ const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
 )
 const INVENTORY_CAPACITY := 24
 const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 2
-const ULTIMATE_REWARD_PROGRESS_SEED_SALT := 4_865_291
-const ULTIMATE_REWARD_ROLL_SEED_SALT := 7_914_673
 const POST_COMBAT_LOOT_ITEM_ID: StringName = &"minor_healing_potion"
 const STARTING_INVENTORY := [
 	{"item_id": &"warrior_training_sword", "quantity": 1},
@@ -150,6 +148,20 @@ func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:
 	current_room_index = requested_start_room - 1
 	_go_to_next_room()
 
+
+## Pont public reserve aux outils internes : construit le meme etat de run puis
+## lance directement la vraie scene de bataille, sans ecran de transition.
+func start_direct_encounter_test(run_data: RunData, hero_sources: Array) -> bool:
+	if not _prepare_preconfigured_run(run_data, hero_sources):
+		return false
+	if rooms.is_empty() or rooms[0] == null or rooms[0].battle_scene == null:
+		cleanup_run_state()
+		return false
+	current_room_index = 0
+	current_wave_index = 0
+	start_next_battle()
+	return true
+
 ## Prepare l'etat sans changer de scene. Separe de start_preconfigured_run pour
 ## garder la construction testable sans dependre d'une transition graphique.
 func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
@@ -232,7 +244,7 @@ func _initialize_run_state(run_data: RunData) -> void:
 	current_room_index = -1
 	current_wave_index = 0
 	_maximum_waves_per_room = maxi(1, run_data.maximum_waves_per_room)
-	_build_hidden_room_wave_counts()
+	_build_hidden_room_wave_counts(run_data)
 	run_active = true
 	_active_run_name = run_data.run_name
 	_last_run_result = {}
@@ -788,19 +800,8 @@ func get_current_room_wave_count() -> int:
 	return mini(room.get_wave_count(), _maximum_waves_per_room)
 
 
-func _build_hidden_room_wave_counts() -> void:
-	_room_wave_counts.clear()
-	var rng := RandomNumberGenerator.new()
-	rng.seed = run_seed
-	for room_value in rooms:
-		var room := room_value as RoomData
-		if room == null:
-			_room_wave_counts.append(0)
-			continue
-		var available := mini(room.get_wave_count(), _maximum_waves_per_room)
-		var minimum := clampi(room.get_minimum_wave_count(), 1, available)
-		var maximum := clampi(room.get_maximum_wave_count(), minimum, available)
-		_room_wave_counts.append(rng.randi_range(minimum, maximum))
+func _build_hidden_room_wave_counts(run_data: RunData) -> void:
+	_room_wave_counts = RunWaveCountResolver.resolve_counts(run_data, run_seed)
 
 
 func is_current_room_fully_cleared() -> bool:
@@ -817,28 +818,19 @@ func can_continue_current_room() -> bool:
 
 func get_current_room_reward_multiplier() -> float:
 	var room := get_current_room()
-	if room == null:
-		return 0.0
-	var total := 0.0
-	for wave_index in range(current_wave_index + 1):
-		total += room.get_reward_multiplier_for_wave(wave_index)
-	return total
+	return RoomRewardProjectionService.cumulative_reward_multiplier(
+		room, current_wave_index + 1
+	)
 
 
 func get_current_room_ultimate_reward_chance() -> int:
 	var room := get_current_room()
-	if room == null:
-		return 0
-	var chance := room.get_ultimate_reward_base_chance()
-	var gain_range := room.get_ultimate_reward_gain_range()
-	var rng := _make_room_reward_rng(ULTIMATE_REWARD_PROGRESS_SEED_SALT)
-	var additional_wave_count := maxi(
-		0,
-		get_current_room_cleared_wave_count() - 1,
+	return RoomRewardProjectionService.ultimate_chance(
+		room,
+		run_seed,
+		current_room_index,
+		get_current_room_cleared_wave_count(),
 	)
-	for _wave_index in range(additional_wave_count):
-		chance += rng.randi_range(gain_range.x, gain_range.y)
-	return clampi(chance, 0, 100)
 
 
 func get_current_room_cleared_wave_count() -> int:
@@ -851,16 +843,19 @@ func get_current_room_cleared_wave_count() -> int:
 
 
 func is_current_room_ultimate_reward_won() -> bool:
-	if not is_current_room_fully_cleared():
-		return false
-	var rng := _make_room_reward_rng(ULTIMATE_REWARD_ROLL_SEED_SALT)
-	return rng.randi_range(1, 100) <= get_current_room_ultimate_reward_chance()
+	return RoomRewardProjectionService.ultimate_won(
+		get_current_room(),
+		run_seed,
+		current_room_index,
+		get_current_room_cleared_wave_count(),
+		get_current_room_wave_count(),
+	)
 
 
 func _make_room_reward_rng(seed_salt: int) -> RandomNumberGenerator:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = run_seed + (current_room_index + 1) * 1_000_003 + seed_salt
-	return rng
+	return RoomRewardProjectionService.make_room_rng(
+		run_seed, current_room_index, seed_salt
+	)
 
 
 func get_post_combat_decision_snapshot() -> Dictionary:

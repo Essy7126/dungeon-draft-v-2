@@ -1,14 +1,16 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cin4udpeu1i2f"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="2_spell"]
-[ext_resource type="Texture2D" path="res://data/items/catalogs/prisme_elementaire.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="2_spell"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_03nmr"]
+[ext_resource type="Texture2D" uid="uid://dxglthdopw0b4" path="res://data/items/catalogs/prisme_elementaire.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_ygrgb"]
 
 [sub_resource type="Resource" id="Spell_elemental"]
 script = ExtResource("2_spell")
-modifier_name = "Résonance élémentaire"
 damage_percent = 0.18
 require_elemental_damage = true
+modifier_name = "Résonance élémentaire"
 
 [resource]
 script = ExtResource("1_item")
@@ -17,10 +19,10 @@ display_name = "Prisme élémentaire"
 description = "+18 % de dégâts élémentaires."
 icon = ExtResource("3_icon")
 card_texture = ExtResource("3_icon")
-reward_fx_profile = &"arcane"
 rarity = &"rare"
 tags = Array[StringName]([&"weapon", &"focus", &"first_run_equipment_reward"])
+reward_fx_profile = &"arcane"
 category = 0
 equipment_slot = 0
 compatible_character_ids = Array[StringName]([&"mage"])
-spell_modifiers = Array[SpellModifier]([SubResource("Spell_elemental")])
+spell_modifiers = Array[ExtResource("3_03nmr")]([SubResource("Spell_elemental")])

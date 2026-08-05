@@ -1,3 +1,4 @@
+@tool
 # data/room_data.gd
 # ============================================================
 # ROOM DATA — Définition d'une salle (Resource).

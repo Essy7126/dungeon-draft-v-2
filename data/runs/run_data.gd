@@ -1,3 +1,4 @@
+@tool
 # data/run_data.gd
 # ============================================================
 # RUN DATA — Définition d'un run complet.

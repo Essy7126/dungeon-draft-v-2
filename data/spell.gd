@@ -1,3 +1,4 @@
+@tool
 # data/spell.gd
 class_name Spell
 extends Resource

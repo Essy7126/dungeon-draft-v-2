@@ -29,6 +29,9 @@ const ALLOWED_SYMBOLS := ".#XRAE~"
 @export_enum("NONE:-1", "NORMAL:0", "WALL:1", "HOLE:2", "LAVA:3", "ICE:4", "SHADOW:5", "RUNE:6")
 var terrain_cell_type := -1
 @export var terrain_cells: Array[Vector2i] = []
+## Surcharges cellule -> GridData.CellType pour les arenes produites par Arena
+## Studio. Le contrat historique terrain_cell_type/terrain_cells reste intact.
+@export var cell_type_overrides: Dictionary = {}
 @export var objective_cells: Array[Vector2i] = []
 @export var visual_only_cells: Array[Vector2i] = []
 
@@ -52,6 +55,8 @@ func resolved_symbol_at(cell: Vector2i) -> String:
 
 
 func resolved_cell_type(cell: Vector2i) -> GridData.CellType:
+	if cell_type_overrides.has(cell):
+		return int(cell_type_overrides[cell])
 	if terrain_cells.has(cell) and terrain_cell_type >= 0:
 		return terrain_cell_type
 	match symbol_at(cell):
@@ -78,6 +83,9 @@ func apply_to_grid(grid: GridData) -> void:
 	for cell in terrain_cells:
 		if grid.is_valid(cell) and terrain_cell_type >= 0:
 			grid.set_type(cell, terrain_cell_type)
+	for cell_value in cell_type_overrides:
+		if cell_value is Vector2i and grid.is_valid(cell_value):
+			grid.set_type(cell_value, int(cell_type_overrides[cell_value]))
 
 
 func is_in_bounds(cell: Vector2i) -> bool:
@@ -190,6 +198,16 @@ func validation_errors() -> PackedStringArray:
 			errors.append("Cellule de terrain hors grille : %s." % cell)
 		elif symbol_at(cell) in [VOID, BLOCKED, LANDMARK]:
 			errors.append("Terrain special sur une cellule non praticable : %s." % cell)
+	for cell_value in cell_type_overrides:
+		if not cell_value is Vector2i:
+			errors.append("Une cle de surcharge de terrain n'est pas une cellule.")
+			continue
+		var cell := cell_value as Vector2i
+		var value := int(cell_type_overrides[cell])
+		if not is_in_bounds(cell):
+			errors.append("Surcharge de terrain hors grille : %s." % cell)
+		if value < GridData.CellType.NORMAL or value > GridData.CellType.RUNE:
+			errors.append("Type de surcharge inconnu en %s." % cell)
 	return errors
 
 

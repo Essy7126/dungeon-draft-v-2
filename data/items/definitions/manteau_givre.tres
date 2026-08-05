@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://6aj15wmqtyw"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Texture2D" path="res://data/items/catalogs/manteau_givre.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Texture2D" uid="uid://bb3i0wbel52l2" path="res://data/items/catalogs/manteau_givre.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_om77j"]
 
 [sub_resource type="Resource" id="Stat_magic"]
 script = ExtResource("2_stat")
@@ -21,9 +22,9 @@ display_name = "Manteau de givre"
 description = "+35 résistance magique et +25 % résistance glace."
 icon = ExtResource("3_icon")
 card_texture = ExtResource("3_icon")
-reward_fx_profile = &"ice"
 rarity = &"rare"
 tags = Array[StringName]([&"armor", &"cape", &"first_run_equipment_reward"])
+reward_fx_profile = &"ice"
 category = 1
 equipment_slot = 1
-stat_modifiers = Array[ItemStatModifierData]([SubResource("Stat_magic"), SubResource("Stat_ice")])
+stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_magic"), SubResource("Stat_ice")])

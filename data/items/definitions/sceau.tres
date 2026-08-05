@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c8fqjpuscwhqw"]
 
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Texture2D" path="res://data/items/catalogs/sceau.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+[ext_resource type="Texture2D" uid="uid://jv0extymd1dn" path="res://data/items/catalogs/sceau.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_w3gfr"]
 
 [sub_resource type="Resource" id="Stat_armor"]
 script = ExtResource("2_stat")
@@ -23,6 +24,5 @@ icon = ExtResource("3_icon")
 card_texture = ExtResource("3_icon")
 rarity = &"rare"
 tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
-category = 2
 equipment_slot = 2
-stat_modifiers = Array[ItemStatModifierData]([SubResource("Stat_armor"), SubResource("Stat_magic")])
+stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_armor"), SubResource("Stat_magic")])

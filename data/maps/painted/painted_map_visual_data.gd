@@ -41,7 +41,7 @@ extends Resource
 
 
 func cell_to_image(cell: Vector2i) -> Vector2:
-	return grid_origin + float(cell.x) * axis_x + float(cell.y) * axis_y
+	return GridTransformService.cell_to_position(cell, grid_origin, axis_x, axis_y)
 
 
 func load_background_texture() -> Texture2D:
@@ -90,23 +90,14 @@ func is_position_fully_occluded(image_position: Vector2) -> bool:
 
 
 func image_to_cell(image_position: Vector2) -> Vector2i:
-	var local := image_position - grid_origin
-	var determinant := axis_x.x * axis_y.y - axis_y.x * axis_x.y
-	if is_zero_approx(determinant):
-		return Vector2i(-1, -1)
-	var raw_x := (local.x * axis_y.y - axis_y.x * local.y) / determinant
-	var raw_y := (axis_x.x * local.y - local.x * axis_x.y) / determinant
-	return Vector2i(roundi(raw_x), roundi(raw_y))
+	var cell := GridTransformService.position_to_cell(
+		image_position, grid_origin, axis_x, axis_y, logical_grid_size
+	)
+	return Vector2i(-1, -1) if cell == GridTransformService.INVALID_CELL else cell
 
 
 func cell_polygon(cell: Vector2i) -> PackedVector2Array:
-	var center := cell_to_image(cell)
-	return PackedVector2Array([
-		center - 0.5 * axis_x - 0.5 * axis_y,
-		center + 0.5 * axis_x - 0.5 * axis_y,
-		center + 0.5 * axis_x + 0.5 * axis_y,
-		center - 0.5 * axis_x + 0.5 * axis_y,
-	])
+	return GridTransformService.cell_polygon(cell, grid_origin, axis_x, axis_y)
 
 
 func image_rect() -> Rect2:
@@ -169,8 +160,7 @@ func validation_errors() -> PackedStringArray:
 		errors.append("La resolution declaree ne correspond pas a la texture.")
 	if logical_grid_size.x <= 0 or logical_grid_size.y <= 0:
 		errors.append("logical_grid_size doit etre strictement positif.")
-	var determinant := axis_x.x * axis_y.y - axis_y.x * axis_x.y
-	if is_zero_approx(determinant):
+	if not GridTransformService.is_invertible(axis_x, axis_y):
 		errors.append("Les axes de calibration ne doivent pas etre colineaires.")
 	if not is_equal_approx(image_scale.x, image_scale.y):
 		errors.append("Le background ne peut pas recevoir une echelle non uniforme.")
@@ -199,8 +189,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append_array(presentation_profile.validation_errors())
 	if calibration_cells.size() != calibration_pixels.size():
 		errors.append("Les cellules et pixels d'ancres doivent avoir la meme taille.")
-	if calibration_cells.size() < 5:
-		errors.append("Au moins cinq ancres reparties sont requises.")
+	if calibration_cells.size() < 3:
+		errors.append("Au moins trois ancres reparties sont requises.")
 	for cell in calibration_cells:
 		if cell.x < 0 or cell.y < 0 \
 				or cell.x >= logical_grid_size.x or cell.y >= logical_grid_size.y:

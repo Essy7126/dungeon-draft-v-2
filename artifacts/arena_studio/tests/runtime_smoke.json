@@ -1,0 +1,14 @@
+{
+  "configuration": "full_run",
+  "grid_size": [
+    14,
+    14
+  ],
+  "iso_grid_view": true,
+  "ok": true,
+  "pathfinder_ready": true,
+  "room_id": "room_01_forest",
+  "scene": "res://data/rooms/maps/painted_battle.tscn",
+  "script": "res://battle/painted/painted_battle.gd",
+  "y_sorted_world": true
+}
