@@ -3,7 +3,8 @@ extends RefCounted
 
 const REQUIRED_SECTIONS := [
 	"meta", "scope", "summary", "contract", "characters", "disciplines",
-	"spells", "items", "reward_pools", "contract_checks", "audit_results",
+	"spells", "items", "reward_pools", "runs", "rooms", "waves", "encounters",
+	"enemies", "enemy_spells", "ai_profiles", "contract_checks", "audit_results",
 ]
 
 
@@ -29,6 +30,13 @@ static func _validate_summary(snapshot: Dictionary, errors: Array[String]) -> vo
 		"spells": (snapshot.get("spells", []) as Array).size(),
 		"items": (snapshot.get("items", []) as Array).size(),
 		"reward_pools": (snapshot.get("reward_pools", []) as Array).size(),
+		"runs": (snapshot.get("runs", []) as Array).size(),
+		"rooms": (snapshot.get("rooms", []) as Array).size(),
+		"waves": (snapshot.get("waves", []) as Array).size(),
+		"encounters": (snapshot.get("encounters", []) as Array).size(),
+		"enemies": (snapshot.get("enemies", []) as Array).size(),
+		"enemy_spells": (snapshot.get("enemy_spells", []) as Array).size(),
+		"ai_profiles": (snapshot.get("ai_profiles", []) as Array).size(),
 	}
 	for key in expected:
 		if int(summary.get(key, -1)) != int(expected[key]):
