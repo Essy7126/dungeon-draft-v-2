@@ -33,6 +33,7 @@ enum TransformHandle {
 	AXIS_Y,
 	ROTATE,
 	SCALE,
+	ANGLE,
 	PIVOT,
 	ANCHOR,
 }
@@ -95,6 +96,8 @@ var lock_axis_y := false
 var preserve_axis_length := false
 var preserve_axis_angle := false
 var mirror_axes := false
+var angle_mode := GridTransformService.AngleMode.SYMMETRIC
+var dynamic_construction_mode := false
 var layer_visibility := {
 	"background": true,
 	"calibration": true,
@@ -130,6 +133,7 @@ var _saved_transform: GridTransformSnapshot = null
 var _drag_start_screen := Vector2.ZERO
 var _drag_pivot := Vector2.ZERO
 var _drag_start_angle := 0.0
+var _drag_initial_grid_angle := 0.0
 var _drag_start_distance := 1.0
 var _drag_changed := false
 var _drag_fine := 1.0
@@ -146,6 +150,8 @@ var _keyboard_nudging := false
 var _keyboard_snapshot: GridTransformSnapshot = null
 var _keyboard_delta := Vector2.ZERO
 var _keyboard_timer: Timer = null
+var input_router := ArenaInputRouter.new()
+var affine_gizmo: GridAffineGizmo = null
 
 
 func _ready() -> void:
@@ -159,6 +165,10 @@ func _ready() -> void:
 	_keyboard_timer.wait_time = KEYBOARD_MERGE_DELAY
 	_keyboard_timer.timeout.connect(_commit_keyboard_nudge)
 	add_child(_keyboard_timer)
+	affine_gizmo = GridAffineGizmo.new()
+	affine_gizmo.name = "GridAffineGizmo"
+	add_child(affine_gizmo)
+	move_child(affine_gizmo, get_child_count() - 1)
 
 
 func set_arena(value: ArenaDefinition) -> void:
@@ -190,7 +200,31 @@ func set_tool(value: int) -> void:
 	active_tool = clampi(value, Tool.SELECT, Tool.CALIBRATION_ANCHORS)
 	grid_selected = active_tool == Tool.TRANSFORM_GRID
 	calibration_active = false
+	input_router.set_active_tool(active_tool, _input_mode_for_tool(active_tool))
+	if affine_gizmo != null:
+		affine_gizmo.visible = active_tool == Tool.TRANSFORM_GRID
 	queue_redraw()
+
+
+func set_dynamic_construction_mode(value: bool) -> void:
+	dynamic_construction_mode = value
+	if value and active_tool not in [Tool.ADD_CELL, Tool.REMOVE_CELL, Tool.TERRAIN, Tool.OBSTACLE, Tool.SPAWN]:
+		set_tool(Tool.TERRAIN)
+	queue_redraw()
+
+
+func _input_mode_for_tool(tool: int) -> int:
+	return {
+		Tool.PAN: ArenaInputRouter.ArenaInputMode.PAN,
+		Tool.ADD_CELL: ArenaInputRouter.ArenaInputMode.PAINT_CELL,
+		Tool.REMOVE_CELL: ArenaInputRouter.ArenaInputMode.PAINT_CELL,
+		Tool.BORDER: ArenaInputRouter.ArenaInputMode.PAINT_CELL,
+		Tool.OBSTACLE: ArenaInputRouter.ArenaInputMode.PLACE_WALL,
+		Tool.TERRAIN: ArenaInputRouter.ArenaInputMode.PAINT_TERRAIN,
+		Tool.SPAWN: ArenaInputRouter.ArenaInputMode.PLACE_SPAWN,
+		Tool.TRANSFORM_GRID: ArenaInputRouter.ArenaInputMode.TRANSFORM_GRID,
+		Tool.CALIBRATION_ANCHORS: ArenaInputRouter.ArenaInputMode.DRAG_ANCHOR,
+	}.get(tool, ArenaInputRouter.ArenaInputMode.IDLE)
 
 
 func set_saved_transform(snapshot: GridTransformSnapshot) -> void:
@@ -217,6 +251,7 @@ func get_editor_state() -> Dictionary:
 		"preserve_axis_length": preserve_axis_length,
 		"preserve_axis_angle": preserve_axis_angle,
 		"mirror_axes": mirror_axes,
+		"angle_mode": angle_mode,
 		"lock_translation": lock_translation,
 		"lock_rotation": lock_rotation,
 		"lock_scale": lock_scale,
@@ -244,6 +279,11 @@ func apply_editor_state(state: Dictionary) -> void:
 	preserve_axis_length = bool(state.get("preserve_axis_length", false))
 	preserve_axis_angle = bool(state.get("preserve_axis_angle", false))
 	mirror_axes = bool(state.get("mirror_axes", false))
+	angle_mode = clampi(
+		int(state.get("angle_mode", GridTransformService.AngleMode.SYMMETRIC)),
+		GridTransformService.AngleMode.SYMMETRIC,
+		GridTransformService.AngleMode.PRESERVE_Y
+	)
 	lock_translation = bool(state.get("lock_translation", false))
 	lock_rotation = bool(state.get("lock_rotation", false))
 	lock_scale = bool(state.get("lock_scale", false))
@@ -276,6 +316,7 @@ func cancel_active_gesture() -> bool:
 	var had_gesture := has_active_gesture()
 	if not had_gesture:
 		_panning = false
+		input_router.cancel_gesture(_input_mode_for_tool(active_tool))
 		return false
 	if _drag_handle == TransformHandle.PIVOT:
 		_custom_pivot = _drag_previous_custom_pivot
@@ -298,6 +339,9 @@ func cancel_active_gesture() -> bool:
 	if _keyboard_timer != null:
 		_keyboard_timer.stop()
 	_live_transform_text = "Geste annule"
+	input_router.cancel_gesture(_input_mode_for_tool(active_tool))
+	if affine_gizmo != null:
+		affine_gizmo.active_handle = GridAffineGizmo.GridGizmoHandle.NONE
 	stroke_cancelled.emit()
 	queue_redraw()
 	return true
@@ -377,12 +421,25 @@ func clear_overlays() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if arena == null:
 		return
+	if input_router.route_canvas_event(event, self):
+		accept_event()
+
+
+func _route_canvas_input(event: InputEvent) -> bool:
 	if event is InputEventKey:
+		var key := event as InputEventKey
+		var relevant := key.keycode in [KEY_SPACE, KEY_ESCAPE, KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN]
+		if not relevant:
+			return false
 		_handle_key_input(event)
+		return true
 	elif event is InputEventMouseButton:
 		_handle_mouse_button(event)
+		return true
 	elif event is InputEventMouseMotion:
 		_handle_mouse_motion(event)
+		return true
+	return false
 
 
 func _input(event: InputEvent) -> void:
@@ -454,6 +511,10 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 			or (event.button_index == MOUSE_BUTTON_LEFT \
 				and (active_tool == Tool.PAN or _space_pan_held)):
 		_panning = event.pressed
+		if _panning:
+			input_router.begin_gesture(ArenaInputRouter.ArenaInputMode.PAN, "pan")
+		else:
+			input_router.finish_gesture(_input_mode_for_tool(active_tool))
 		accept_event()
 		return
 	if event.button_index not in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
@@ -501,6 +562,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 			accept_event()
 			return
 		_painting = true
+		input_router.begin_gesture(_input_mode_for_tool(active_tool), "active_tool")
 		_painted_this_stroke.clear()
 		stroke_started.emit(_action_name())
 		if brush_shape == BrushShape.RECTANGLE:
@@ -524,6 +586,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 				event.button_index == MOUSE_BUTTON_RIGHT
 			)
 		stroke_finished.emit(_action_name())
+		input_router.finish_gesture(_input_mode_for_tool(active_tool))
 		_painting = false
 		_rectangle_start = INVALID_CELL
 		_rectangle_current = INVALID_CELL
@@ -541,6 +604,9 @@ func _finish_pointer_gesture() -> void:
 	_anchor_drag_index = -1
 	_drag_changed = false
 	_live_transform_text = ""
+	input_router.finish_gesture(_input_mode_for_tool(active_tool))
+	if affine_gizmo != null:
+		affine_gizmo.active_handle = GridAffineGizmo.GridGizmoHandle.NONE
 	if handle == TransformHandle.PIVOT:
 		queue_redraw()
 		return
@@ -590,7 +656,12 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 		elif brush_shape == BrushShape.BRUSH:
 			_request_cells([cell], false)
 	elif active_tool == Tool.TRANSFORM_GRID:
-		mouse_default_cursor_shape = _cursor_for_handle(_handle_at(event.position))
+		var hovered_handle := _handle_at(event.position)
+		mouse_default_cursor_shape = _cursor_for_handle(hovered_handle)
+		if affine_gizmo != null:
+			affine_gizmo.set_hovered_handle(hovered_handle)
+	elif affine_gizmo != null:
+		affine_gizmo.set_hovered_handle(TransformHandle.NONE)
 
 
 func _add_calibration_point(view_position: Vector2) -> void:
@@ -634,17 +705,10 @@ func _try_begin_transform_drag(
 
 
 func _handle_at(view_position: Vector2) -> int:
-	if not grid_selected:
+	if not grid_selected or affine_gizmo == null:
 		return TransformHandle.NONE
-	var positions := _transform_handle_screen_positions()
-	for handle in [
-		TransformHandle.PIVOT, TransformHandle.ROTATE, TransformHandle.SCALE,
-		TransformHandle.AXIS_X, TransformHandle.AXIS_Y,
-	]:
-		if positions.has(handle) \
-				and (positions[handle] as Vector2).distance_to(view_position) <= 13.0:
-			return handle
-	return TransformHandle.NONE
+	_sync_affine_gizmo()
+	return affine_gizmo.hit_test(view_position)
 
 
 func _cursor_for_handle(handle: int) -> CursorShape:
@@ -652,6 +716,7 @@ func _cursor_for_handle(handle: int) -> CursorShape:
 		TransformHandle.PIVOT: Control.CURSOR_CROSS,
 		TransformHandle.ROTATE: Control.CURSOR_POINTING_HAND,
 		TransformHandle.SCALE: Control.CURSOR_FDIAGSIZE,
+		TransformHandle.ANGLE: Control.CURSOR_CROSS,
 		TransformHandle.AXIS_X: Control.CURSOR_HSIZE,
 		TransformHandle.AXIS_Y: Control.CURSOR_HSIZE,
 	}.get(handle, Control.CURSOR_MOVE if grid_selected else Control.CURSOR_ARROW)
@@ -673,6 +738,12 @@ func _begin_transform_handle(
 		return false
 	if handle == TransformHandle.SCALE and lock_scale:
 		return false
+	if handle == TransformHandle.ANGLE and (
+		(angle_mode == GridTransformService.AngleMode.PRESERVE_X and lock_axis_y)
+		or (angle_mode == GridTransformService.AngleMode.PRESERVE_Y and lock_axis_x)
+		or (angle_mode == GridTransformService.AngleMode.SYMMETRIC and lock_axis_x and lock_axis_y)
+	):
+		return false
 	_drag_handle = handle
 	_drag_snapshot = GridTransformSnapshot.from_arena(arena)
 	_drag_origin = arena.grid_origin
@@ -685,10 +756,20 @@ func _begin_transform_handle(
 	_drag_fine = fine_factor if fine_at_press else 1.0
 	_drag_use_snap = snap_enabled != ctrl_at_press
 	var pivot_screen := _image_native_to_screen(_drag_pivot)
-	_drag_start_angle = (view_position - pivot_screen).angle()
+	_drag_start_angle = (
+		(_screen_to_image_native(view_position) - _drag_snapshot.origin).angle()
+		if handle == TransformHandle.ANGLE
+		else (view_position - pivot_screen).angle()
+	)
+	_drag_initial_grid_angle = GridTransformService.angle_between_axes(
+		_drag_snapshot.axis_x, _drag_snapshot.axis_y
+	)
 	_drag_start_distance = maxf(view_position.distance_to(pivot_screen), 0.001)
 	_drag_changed = false
 	_live_transform_text = _transform_action_name(handle)
+	input_router.begin_gesture(ArenaInputRouter.ArenaInputMode.TRANSFORM_GRID, "grid_gizmo")
+	if affine_gizmo != null:
+		affine_gizmo.active_handle = handle
 	if handle != TransformHandle.PIVOT:
 		stroke_started.emit(_transform_action_name(handle))
 	return true
@@ -779,6 +860,26 @@ func _update_transform_drag(event: InputEventMouseMotion) -> void:
 				factor = GridTransformService.snap_scale(factor, scale_snap)
 			candidate = GridTransformService.scale_around(_drag_snapshot, _drag_pivot, factor)
 			_live_transform_text = "Echelle  %0.2f %%" % (factor * 100.0)
+		TransformHandle.ANGLE:
+			var pointer_angle := (pointer_image - _drag_snapshot.origin).angle()
+			var angle_delta := wrapf(pointer_angle - _drag_start_angle, -PI, PI)
+			var sensitivity := 2.0 if angle_mode == GridTransformService.AngleMode.SYMMETRIC else 1.0
+			var target_angle := _drag_initial_grid_angle + angle_delta * sensitivity * _drag_fine
+			if _drag_use_snap:
+				target_angle = GridTransformService.snap_angle(
+					target_angle, deg_to_rad(angle_snap_degrees)
+				)
+			var angle_result := GridTransformService.set_grid_angle(
+				_drag_snapshot, target_angle, angle_mode
+			)
+			if not bool(angle_result.get("ok", false)):
+				_live_transform_text = "Angle refuse : %s" % angle_result.get("error", "invalide")
+				return
+			candidate = angle_result.get("snapshot") as GridTransformSnapshot
+			var mode_label: String = ["Symetrique", "Conserver X", "Conserver Y"][angle_mode]
+			_live_transform_text = "Angle  %0.2f deg  |  %s" % [
+				rad_to_deg(float(angle_result.get("angle", target_angle))), mode_label
+			]
 		TransformHandle.PIVOT:
 			_custom_pivot = pointer_image
 			_custom_pivot_enabled = true
@@ -802,6 +903,7 @@ func _transform_action_name(handle: int) -> String:
 		TransformHandle.AXIS_Y: "Modifier l'inclinaison gauche",
 		TransformHandle.ROTATE: "Faire pivoter la grille",
 		TransformHandle.SCALE: "Redimensionner la grille",
+		TransformHandle.ANGLE: "Modifier l'angle de la grille",
 		TransformHandle.PIVOT: "Deplacer le pivot",
 		TransformHandle.ANCHOR: "Deplacer une ancre de calibration",
 	}.get(handle, "Transformer la grille")
@@ -827,6 +929,7 @@ func _handle_anchor_press(view_position: Vector2, button_index: int) -> bool:
 		_selected_anchor_index = hit
 		_drag_changed = false
 		_live_transform_text = "Deplacer l'ancre %d" % (hit + 1)
+		input_router.begin_gesture(ArenaInputRouter.ArenaInputMode.DRAG_ANCHOR, "calibration_anchor")
 		stroke_started.emit("Deplacer une ancre de calibration")
 		return true
 	var cell := _cell_at(view_position)
@@ -874,22 +977,63 @@ func _current_pivot() -> Vector2:
 	)
 
 
-func _transform_handle_screen_positions() -> Dictionary:
+func current_editor_pivot() -> Vector2:
+	return _current_pivot()
+
+
+func editor_pivot_mode() -> String:
+	return "Personnalise" if _custom_pivot_enabled else "Centre logique"
+
+
+func center_editor_pivot() -> void:
 	if arena == null:
+		return
+	_custom_pivot_enabled = false
+	_custom_pivot = GridTransformService.logical_grid_center(
+		GridTransformSnapshot.from_arena(arena), arena.grid_size
+	)
+	queue_redraw()
+
+
+func place_editor_pivot_on_origin() -> void:
+	if arena == null:
+		return
+	_custom_pivot_enabled = true
+	_custom_pivot = arena.grid_origin
+	queue_redraw()
+
+
+func set_angle_mode(value: int) -> void:
+	angle_mode = clampi(
+		value,
+		GridTransformService.AngleMode.SYMMETRIC,
+		GridTransformService.AngleMode.PRESERVE_Y
+	)
+	queue_redraw()
+
+
+func _transform_handle_screen_positions() -> Dictionary:
+	if arena == null or affine_gizmo == null:
 		return {}
-	var snapshot := GridTransformSnapshot.from_arena(arena)
-	var center := GridTransformService.logical_grid_center(snapshot, arena.grid_size)
-	var center_screen := _image_native_to_screen(center)
-	var far_corner := snapshot.origin \
-		+ (float(arena.grid_size.x) - 0.5) * snapshot.axis_x \
-		+ (float(arena.grid_size.y) - 0.5) * snapshot.axis_y
-	return {
-		TransformHandle.AXIS_X: _image_native_to_screen(snapshot.origin + snapshot.axis_x),
-		TransformHandle.AXIS_Y: _image_native_to_screen(snapshot.origin + snapshot.axis_y),
-		TransformHandle.ROTATE: center_screen + Vector2(0.0, -62.0),
-		TransformHandle.SCALE: _image_native_to_screen(far_corner),
-		TransformHandle.PIVOT: _image_native_to_screen(_current_pivot()),
-	}
+	_sync_affine_gizmo()
+	return affine_gizmo.handle_positions()
+
+
+func _sync_affine_gizmo() -> void:
+	if affine_gizmo == null:
+		return
+	var visible_now := arena != null and active_tool == Tool.TRANSFORM_GRID and grid_selected
+	affine_gizmo.visible = visible_now
+	if not visible_now:
+		return
+	affine_gizmo.configure(
+		GridTransformSnapshot.from_arena(arena), arena.grid_size, _current_pivot(),
+		arena.image_offset, arena.image_scale, pan, zoom, angle_mode,
+		_drag_snapshot if is_transforming() and _drag_handle != TransformHandle.PIVOT else null,
+		_drag_handle,
+		_live_transform_text if not _live_transform_text.is_empty() \
+			else "Gizmo affine : corps = deplacer | X/Y = incliner | violet = angle"
+	)
 
 
 func _handle_key_input(event: InputEventKey) -> void:
@@ -998,6 +1142,8 @@ func _action_name() -> String:
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("111722"), true)
 	if arena == null:
+		if affine_gizmo != null:
+			affine_gizmo.hide()
 		draw_string(
 			ThemeDB.fallback_font, size * 0.5 - Vector2(150, 0),
 			"Ouvrez ou creez une arene", HORIZONTAL_ALIGNMENT_CENTER, 300, 20,
@@ -1017,19 +1163,23 @@ func _draw() -> void:
 		0.0,
 		arena.image_scale * zoom
 	)
+	var transform_mode := active_tool == Tool.TRANSFORM_GRID
+	var anchor_mode := active_tool == Tool.CALIBRATION_ANCHORS or calibration_active
 	if bool(layer_visibility.get("gameplay", true)):
 		_draw_cells()
-	_draw_overlays()
-	if bool(layer_visibility.get("spawns", true)):
+	if not transform_mode and not anchor_mode:
+		_draw_overlays()
+	if bool(layer_visibility.get("spawns", true)) and not transform_mode and not anchor_mode \
+			and (not dynamic_construction_mode or active_tool == Tool.SPAWN):
 		_draw_spawns()
-	if bool(layer_visibility.get("calibration", true)):
-		_draw_saved_grid_comparison()
+	if bool(layer_visibility.get("calibration", true)) and anchor_mode:
 		_draw_calibration()
+	elif transform_mode and show_saved_comparison:
+		_draw_saved_grid_comparison()
 	if bool(layer_visibility.get("foreground", true)):
 		_draw_foreground_overlay()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	if bool(layer_visibility.get("calibration", true)) and grid_selected:
-		_draw_transform_gizmo_screen()
+	_sync_affine_gizmo()
 	_draw_hud()
 
 
@@ -1161,8 +1311,6 @@ func _draw_foreground_overlay() -> void:
 func _draw_saved_grid_comparison() -> void:
 	if arena == null:
 		return
-	if _drag_snapshot != null and _drag_handle != TransformHandle.PIVOT:
-		_draw_snapshot_grid(_drag_snapshot, Color(0.82, 0.90, 1.0, 0.35))
 	if not show_saved_comparison or _saved_transform == null:
 		return
 	_draw_snapshot_grid(_saved_transform, Color(1.0, 0.76, 0.18, 0.42))
@@ -1180,65 +1328,6 @@ func _draw_snapshot_grid(snapshot: GridTransformSnapshot, color: Color) -> void:
 			)
 
 
-func _draw_transform_gizmo_screen() -> void:
-	if arena == null or active_tool != Tool.TRANSFORM_GRID:
-		return
-	var snapshot := GridTransformSnapshot.from_arena(arena)
-	var corners := [
-		snapshot.origin - 0.5 * snapshot.axis_x - 0.5 * snapshot.axis_y,
-		snapshot.origin + (float(arena.grid_size.x) - 0.5) * snapshot.axis_x - 0.5 * snapshot.axis_y,
-		snapshot.origin + (float(arena.grid_size.x) - 0.5) * snapshot.axis_x \
-			+ (float(arena.grid_size.y) - 0.5) * snapshot.axis_y,
-		snapshot.origin - 0.5 * snapshot.axis_x \
-			+ (float(arena.grid_size.y) - 0.5) * snapshot.axis_y,
-	]
-	var outline := PackedVector2Array()
-	for point in corners:
-		outline.append(_image_native_to_screen(point))
-	outline.append(outline[0])
-	draw_polyline(outline, Color(0.35, 0.88, 1.0, 0.9), 2.0, true)
-	var positions := _transform_handle_screen_positions()
-	var colors := {
-		TransformHandle.AXIS_X: Color(0.16, 0.95, 0.86),
-		TransformHandle.AXIS_Y: Color(1.0, 0.30, 0.78),
-		TransformHandle.ROTATE: Color(0.55, 0.80, 1.0),
-		TransformHandle.SCALE: Color(0.35, 1.0, 0.52),
-		TransformHandle.PIVOT: Color(1.0, 0.85, 0.18),
-	}
-	var labels := {
-		TransformHandle.AXIS_X: "Axe droit",
-		TransformHandle.AXIS_Y: "Axe gauche",
-		TransformHandle.ROTATE: "Rotation",
-		TransformHandle.SCALE: "Echelle",
-		TransformHandle.PIVOT: "Pivot",
-	}
-	for handle in positions:
-		var handle_position: Vector2 = positions[handle]
-		var color: Color = colors.get(handle, Color.WHITE)
-		if int(handle) == TransformHandle.ROTATE:
-			draw_arc(handle_position, 10.0, 0.2, TAU - 0.4, 24, color, 3.0, true)
-		elif int(handle) == TransformHandle.SCALE:
-			draw_rect(Rect2(handle_position - Vector2(7, 7), Vector2(14, 14)), color, true)
-		elif int(handle) == TransformHandle.PIVOT:
-			draw_circle(handle_position, 7.0, Color(0.08, 0.11, 0.16))
-			draw_line(handle_position - Vector2(10, 0), handle_position + Vector2(10, 0), color, 2.0)
-			draw_line(handle_position - Vector2(0, 10), handle_position + Vector2(0, 10), color, 2.0)
-		else:
-			draw_circle(handle_position, 8.0, color)
-		if show_technical or is_transforming():
-			var label_offset: Vector2 = {
-				TransformHandle.AXIS_X: Vector2(12, -14),
-				TransformHandle.AXIS_Y: Vector2(-76, -14),
-				TransformHandle.ROTATE: Vector2(12, 4),
-				TransformHandle.SCALE: Vector2(12, -8),
-				TransformHandle.PIVOT: Vector2(12, 20),
-			}.get(handle, Vector2(12, -9))
-			draw_string(
-				ThemeDB.fallback_font, handle_position + label_offset,
-				str(labels.get(handle, "")), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE
-			)
-
-
 func _draw_hud() -> void:
 	var coordinate_text := "Cellule : —"
 	if _hovered != INVALID_CELL:
@@ -1248,11 +1337,9 @@ func _draw_hud() -> void:
 		"%s    Zoom : %d %%" % [coordinate_text, roundi(zoom * 100.0)],
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(0.92, 0.95, 1.0)
 	)
-	if active_tool in [Tool.TRANSFORM_GRID, Tool.CALIBRATION_ANCHORS]:
+	if active_tool == Tool.CALIBRATION_ANCHORS:
 		var snap_text := "Aimantation active" if snap_enabled else "Aimantation inactive"
-		var idle_text := "Ancres : glissez une mesure  |  clic droit : supprimer  |  Auto-fit dans l'inspecteur" \
-			if active_tool == Tool.CALIBRATION_ANCHORS \
-			else "Glissez la grille ou une poignee  |  Shift : fin  |  Ctrl : inverse %s" % snap_text
+		var idle_text := "Ancres : glissez une mesure  |  clic droit : supprimer  |  %s" % snap_text
 		var text := _live_transform_text if not _live_transform_text.is_empty() else idle_text
 		var width := minf(size.x - 36.0, 720.0)
 		draw_rect(Rect2(18, 18, width, 40), Color(0.02, 0.06, 0.11, 0.90), true)

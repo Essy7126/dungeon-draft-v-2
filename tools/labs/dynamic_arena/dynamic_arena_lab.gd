@@ -103,6 +103,7 @@ var destination_cell := DESTINATION_CELL
 var hovered_cell := INVALID_CELL
 var selected_surface := DynamicCellState.Surface.STONE
 var selected_wall_variant := DynamicWall.WallVariant.BASE
+var input_router := ArenaInputRouter.new()
 var current_path: Array = []
 var path_recalculation_count := 0
 var test_unit_hp := 20
@@ -295,13 +296,18 @@ func _draw() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if input_router.route_standalone_event(event, self):
+		get_viewport().set_input_as_handled()
+
+
+func _route_standalone_input(event: InputEvent) -> bool:
 	if event is InputEventMouseMotion:
 		set_hovered_cell(_cell_from_viewport(event.position))
-		return
+		return true
 	if event is InputEventMouseButton and event.pressed:
 		var cell := _cell_from_viewport(event.position)
 		if not grid.is_valid(cell):
-			return
+			return false
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.ctrl_pressed:
 				toggle_wall_at(cell)
@@ -312,13 +318,13 @@ func _unhandled_input(event: InputEvent) -> void:
 					set_cell_surface(cell, selected_surface)
 				grid_view.set_selected_cell(cell)
 			_update_toolbar()
-			get_viewport().set_input_as_handled()
+			return true
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			set_destination(cell)
-			get_viewport().set_input_as_handled()
-		return
+			return true
+		return false
 	if not event is InputEventKey or not event.pressed or event.echo:
-		return
+		return false
 	match event.keycode:
 		KEY_1:
 			_select_surface(DynamicCellState.Surface.STONE, true)
@@ -347,8 +353,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		KEY_ENTER, KEY_SPACE:
 			move_unit_along_current_path()
 		_:
-			return
-	get_viewport().set_input_as_handled()
+			return false
+	return true
 
 
 func reset_lab() -> void:
@@ -1013,55 +1019,26 @@ func _sync_surface_document(cell: Vector2i, surface: int) -> void:
 	if _syncing_document or working_arena == null:
 		return
 	var terrain_id: StringName = SURFACE_TERRAIN_IDS.get(surface, &"stone")
-	var definition := working_arena.get_cell_definition(cell)
-	if definition == null:
-		definition = working_arena.ensure_cell(cell)
-	ArenaTerrainRegistry.configure_cell(definition, terrain_id)
-	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	ArenaDynamicEditingService.paint_terrain(working_arena, cell, terrain_id)
 
 
 func _sync_wall_document(wall: DynamicWall) -> void:
 	if _syncing_document or working_arena == null or wall == null:
 		return
-	var definition := working_arena.obstacle_at(wall.get_cell())
-	if definition == null:
-		definition = ArenaObstacleDefinition.new()
-		definition.obstacle_id = &"wall_%d_%d" % [wall.get_cell().x, wall.get_cell().y]
-		definition.cell = wall.get_cell()
-		working_arena.obstacles.append(definition)
-	definition.wall_id = ArenaWallRegistry.id_for_variant(wall.variant)
-	definition.wall_config = wall.config
-	definition.visual_variant = StringName(wall.get_variant_name().to_lower())
-	definition.blocks_movement = wall.config.blocks_movement
-	definition.blocks_line_of_sight = wall.config.blocks_line_of_sight
-	definition.blocks_projectiles = wall.config.blocks_projectiles
-	definition.blocks_push = true
-	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	var wall_id := ArenaWallRegistry.id_for_variant(wall.variant)
+	ArenaDynamicEditingService.place_wall(working_arena, wall.get_cell(), wall_id)
 
 
 func _remove_wall_from_document(cell: Vector2i) -> void:
 	if _syncing_document or working_arena == null:
 		return
-	working_arena.obstacles = working_arena.obstacles.filter(func(value):
-		return value != null and (value.cell != cell or value.wall_id == &"")
-	)
-	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	ArenaDynamicEditingService.remove_wall(working_arena, cell)
 
 
 func _sync_spawn_document(hero: bool, cell: Vector2i) -> void:
 	if _syncing_document or working_arena == null:
 		return
-	var matches := working_arena.spawns.filter(func(value):
-		return value.is_hero() if hero else value.is_enemy()
-	)
-	var spawn: ArenaSpawnDefinition = matches[0] if not matches.is_empty() else null
-	if spawn == null:
-		spawn = ArenaSpawnDefinition.new()
-		spawn.kind = ArenaSpawnDefinition.Kind.HERO_1 if hero else ArenaSpawnDefinition.Kind.ENEMY
-		spawn.spawn_id = &"lab_hero" if hero else &"lab_enemy"
-		working_arena.spawns.append(spawn)
-	spawn.cell = cell
-	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	ArenaDynamicEditingService.move_or_place_primary_spawn(working_arena, hero, cell)
 
 
 func _add_default_spawns(definition: ArenaDefinition) -> void:

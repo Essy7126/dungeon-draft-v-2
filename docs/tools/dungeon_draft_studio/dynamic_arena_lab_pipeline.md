@@ -2,9 +2,9 @@
 
 ## Document
 
-Le Lab autonome et le Lab intégré éditent une `ArenaDefinition` v2. Une nouvelle carte est MODULAR, dimensionnable de 1 × 1 à 64 × 64 et initialisée avec pierre, profil visuel et spawns de secours. `DynamicCellState`, `GridData`, les murs et le chemin affiché sont reconstruits depuis le document.
+Le Lab autonome et le mode **Construction dynamique** du Studio éditent une `ArenaDefinition` v2. Une nouvelle carte est MODULAR, dimensionnable de 1 × 1 à 64 × 64 et initialisée avec pierre, profil visuel et spawns de secours. `DynamicCellState`, `GridData`, les murs et le chemin affiché sont reconstruits depuis le document.
 
-Les commandes conservent pierre, eau, glace, lave, VOID, murs normal/feu/glace avec leur `WallConfig`, orientation, spawns, objectifs, ancres de décor et mode visuel. Un geste crée une action dans `StudioHistoryController`; le Lab intégré utilise exactement le contrôleur de la session Arena.
+Les commandes conservent pierre, eau, glace, lave, VOID, murs normal/feu/glace avec leur `WallConfig`, orientation, spawns, objectifs, ancres de décor et mode visuel. Un geste crée une action dans `StudioHistoryController`; le mode intégré utilise exactement le contrôleur de la session Arena et n’instancie aucun `DynamicArenaLab`.
 
 ## Sauvegarde et migration
 

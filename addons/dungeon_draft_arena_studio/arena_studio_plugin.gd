@@ -140,6 +140,7 @@ func _detach_workspace() -> void:
 func _reintegrate_workspace() -> void:
 	if not is_instance_valid(_workspace) or not is_instance_valid(_main_screen):
 		return
+	_workspace.cancel_active_gesture()
 	if is_instance_valid(_window_host) and _workspace.get_parent() == _window_host:
 		_ui_state["window"] = _window_host.capture_window_state()
 		_window_host.detach_workspace()
