@@ -133,9 +133,12 @@ function Remove-CreatedWorktree {
     if (-not $target.StartsWith($worktreesRoot.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) {
         throw 'Refus de nettoyer un worktree hors de DeployRoot/worktrees.'
     }
-    try { & $script:GitPath -C $RepositoryRoot worktree remove --force $target 2>&1 | Out-Null }
+    try { & $script:GitPath -c core.longpaths=true -C $RepositoryRoot worktree remove --force $target 2>&1 | Out-Null }
     catch { }
-    if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Recurse -Force }
+    if (Test-Path -LiteralPath $target) {
+        if ($env:OS -eq 'Windows_NT') { [System.IO.Directory]::Delete("\\?\$target", $true) }
+        else { Remove-Item -LiteralPath $target -Recurse -Force }
+    }
     $script:CreatedWorktree = ''
 }
 
