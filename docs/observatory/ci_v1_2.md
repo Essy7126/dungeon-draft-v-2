@@ -6,7 +6,8 @@ réutilisable `.github/workflows/observatory-ci.yml`, également lançable
 manuellement. Cette indirection permet de valider le workflow dans la PR qui
 l’introduit avant qu’il existe sur `main`, avec une seule exécution. Le workflow
 utilise un runner GitHub hébergé `ubuntu-latest`, dispose uniquement de
-`contents: read`, annule les exécutions obsolètes de la même référence et ne
+`contents: read`, déduplique les exécutions d’une même référence et d’un même
+SHA sans laisser un événement retardé préempter un commit plus récent, et ne
 publie rien sur le LAN. Il remplace le GUT brut historique par la baseline
 explicite, sans réduire la couverture de la suite globale.
 

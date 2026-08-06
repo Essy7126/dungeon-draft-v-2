@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: observatory-ci-${{ github.workflow }}-${{ github.ref }}
+  group: observatory-ci-${{ github.workflow }}-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: true
 
 jobs:
