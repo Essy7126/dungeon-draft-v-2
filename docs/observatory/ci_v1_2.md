@@ -1,7 +1,7 @@
 # CI Observatory V1.2
 
 Le workflow d’entrée `.github/workflows/ci.yml`, déjà enregistré sur la branche
-de base, s’exécute pour les pull requests et les pushes. Il appelle le workflow
+de base, s’exécute pour les pull requests, les pushes et les lancements manuels. Il appelle le workflow
 réutilisable `.github/workflows/observatory-ci.yml`, également lançable
 manuellement. Cette indirection permet de valider le workflow dans la PR qui
 l’introduit avant qu’il existe sur `main`, avec une seule exécution. Le workflow
