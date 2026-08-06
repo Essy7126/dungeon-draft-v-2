@@ -20,6 +20,20 @@ $serverTaskName = 'Dungeon Draft Observatory - Server'
 $updateTaskName = 'Dungeon Draft Observatory - Update'
 $firewallName = "Dungeon Draft Observatory LAN $Port"
 
+function Get-NativeVersion {
+    param([string]$Executable, [string[]]$Arguments)
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $output = & $Executable @Arguments 2>&1
+        $code = $LASTEXITCODE
+    } finally { $ErrorActionPreference = $previousPreference }
+    if ($code -ne 0) { throw "Impossible de vérifier $Executable (code $code) : $($output -join "`n")" }
+    $firstLine = @($output | ForEach-Object { [string]$_ } | Where-Object { $_.Trim() }) | Select-Object -First 1
+    if (-not $firstLine) { throw "Version vide pour $Executable." }
+    return $firstLine.Trim()
+}
+
 if ($Branch -ne 'main' -and -not $NoScheduledTasks) {
     throw 'Une branche de preview exige -NoScheduledTasks.'
 }
@@ -34,11 +48,10 @@ $npmPath = Join-Path (Split-Path -Parent $resolvedNode) 'npm.cmd'
 if (-not (Test-Path -LiteralPath $npmPath)) { $npmPath = (Get-Command npm.cmd -ErrorAction Stop).Source }
 if (-not (Test-Path -LiteralPath $GodotPath -PathType Leaf)) { throw 'GodotPath introuvable.' }
 
-$gitVersion = (& $gitPath --version).Trim()
-$nodeVersion = (& $resolvedNode --version).Trim()
-$npmVersion = (& $npmPath --version).Trim()
-$godotVersion = (& $GodotPath --version | Select-Object -First 1).Trim()
-if ($LASTEXITCODE -ne 0) { throw 'Impossible de vérifier les versions de la toolchain.' }
+$gitVersion = Get-NativeVersion -Executable $gitPath -Arguments @('--version')
+$nodeVersion = Get-NativeVersion -Executable $resolvedNode -Arguments @('--version')
+$npmVersion = Get-NativeVersion -Executable $npmPath -Arguments @('--version')
+$godotVersion = Get-NativeVersion -Executable $GodotPath -Arguments @('--version')
 if ($godotVersion -notmatch '^4\.7\.1\.') { throw "Godot 4.7.1 stable requis, reçu $godotVersion." }
 
 if ($Branch -eq 'main' -and -not $NoScheduledTasks) {
