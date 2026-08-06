@@ -10,18 +10,27 @@ func _initialize() -> void:
 func _run() -> void:
 	var output_path := DEFAULT_OUTPUT
 	var fail_on_blocking := false
+	var documentary_mode := false
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--output="):
 			output_path = argument.trim_prefix("--output=")
 		elif argument == "--fail-on-blocking":
 			fail_on_blocking = true
+		elif argument == "--documentary-mode":
+			documentary_mode = true
 	if not output_path.begins_with("res://"):
 		push_error("La sortie Observatory doit utiliser un chemin res://.")
 		quit(1)
 		return
 
 	var exporter := ObservatoryExporter.new()
-	var result := exporter.build_snapshot()
+	var result := exporter.build_snapshot(
+		ObservatoryExporter.DEFAULT_MANIFEST_PATH,
+		ObservatoryExporter.DEFAULT_CONTRACT_PATH,
+		documentary_mode,
+	)
+	for warning in result.get("warnings", []) as Array:
+		push_warning(str(warning))
 	var errors := result.get("errors", []) as Array
 	if not errors.is_empty():
 		for error in errors:

@@ -1,6 +1,11 @@
 {
-  "manifest_version": "2.0.0",
-  "source_game_commit": "1aadd1bd1dec5d1cf108740c0f57e80047d22539",
+  "document_status": "CURRENT",
+  "branch": "feature/observatory-truth-v1-1",
+  "commit_reference": "HEAD contenant ce document ; Git reste l’unique autorité pour meta.source_game_commit",
+  "updated_at_utc": "2026-08-06T10:45:38Z",
+  "validation_method": "Parcours des Resources de production, tests d’export et test de non-substitution du SHA",
+  "manifest_version": "2.1.0",
+  "previous_verified_commit": "1aadd1bd1dec5d1cf108740c0f57e80047d22539",
   "production_roots": [
     {
       "domain": "runs",

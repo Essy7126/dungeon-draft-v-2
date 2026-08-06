@@ -19,6 +19,8 @@ export interface SnapshotMeta {
   source_game_commit: string;
   source_branch: string;
   source_worktree_dirty_before_export: boolean;
+  source_git_available: boolean;
+  source_generated_from_clean_checkout: boolean;
   godot_version: string;
   project_name: string;
   contract_version: string;
@@ -48,10 +50,15 @@ export interface SnapshotSummary {
   runs: number;
   rooms: number;
   waves: number;
+  authored_wave_profiles: number;
+  selected_default_seed_wave_profiles: number;
+  minimum_played_wave_profiles: number;
+  maximum_played_wave_profiles: number;
   encounters: number;
   enemies: number;
   enemy_spells: number;
   ai_profiles: number;
+  runtime_facts: number;
   eligible_first_run_equipment: number;
   contract_conform: number;
   contract_difference: number;
@@ -62,12 +69,29 @@ export interface SnapshotSummary {
   audit_blocking: number;
 }
 
+export type TruthStatus =
+  | 'observed'
+  | 'verified'
+  | 'design_decision'
+  | 'recommendation'
+  | 'non_certified';
+
 export interface ContractDecision {
   key: string;
   value: JsonValue;
   status: 'validated' | 'provisional' | 'unknown' | 'deprecated';
+  truth_status: 'design_decision';
   source: string;
   rationale: string;
+}
+
+export interface RuntimeFact {
+  key: string;
+  value: JsonValue;
+  truth_status: TruthStatus;
+  source_paths: string[];
+  evidence: string;
+  notes: string;
 }
 
 export interface ObservatoryContract {
@@ -82,11 +106,21 @@ export interface Character {
   role: string;
   presentation_summary: string;
   progression_summary: string;
+  presentation_badge: string;
+  team: number;
   max_hp: number;
   max_ap: number;
   max_mp: number;
   initiative: number;
   attack_power: number;
+  force: number;
+  armour: number;
+  magic_resistance: number;
+  dodge: number;
+  resistances: Record<string, number>;
+  critical_chance: number;
+  critical_multiplier: number;
+  basic_attack_enabled: boolean;
   active_spell_slots: number;
   spell_ids: string[];
   discipline_ids: string[];
@@ -106,26 +140,38 @@ export interface Spell {
   range: number;
   needs_line_of_sight: boolean;
   cooldown_activations: number;
+  initial_cooldown: number;
   max_uses_per_combat: number;
+  once_per_activation: boolean;
   can_target_enemy: boolean;
   can_target_ally: boolean;
   can_target_free_cell: boolean;
   can_target_self: boolean;
   aoe_shape: EnumValue;
   aoe_size: number;
+  line_from_caster: boolean;
   damage: number;
   heal: number;
   shield_grant: number;
   damage_type: EnumValue;
   element: EnumValue;
+  critical_chance: number;
   terrain_effect: ResourceReference | null;
   applied_status: ResourceReference | null;
   push_distance: number;
   pull_distance: number;
+  collision_damage: number;
+  cluster_bonus_damage: number;
+  ap_drain: number;
+  teleport_behind_target: boolean;
   delayed_resolution: EnumValue;
   summon: ResourceReference | null;
   summon_type: string;
   modifiers: ResourceReference[];
+  serialization_warnings: string[];
+  icon_path: string;
+  vfx_scene_path: string;
+  sound_path: string;
   source_path: string;
 }
 
@@ -175,14 +221,21 @@ export interface Item {
   tags: string[];
   category: EnumValue;
   equipment_slot: EnumValue;
+  stack_limit: number;
   compatible_character_ids: string[];
   stat_modifiers: ItemStatModifier[];
   spell_modifiers: ResourceReference[];
   use_effect: EnumValue;
+  use_value: number;
   equippable: boolean;
   consumable: boolean;
   valid: boolean;
   pool_ids: string[];
+  reward_fx_profile: string;
+  reward_audio_profile: string;
+  icon_path: string;
+  inventory_icon_path: string;
+  card_texture_path: string;
   source_path: string;
 }
 
@@ -230,6 +283,13 @@ export interface Run {
   maximum_waves_per_room: number;
   room_ids: string[];
   authored_room_count: number;
+  authored_wave_profile_count: number;
+  selected_default_seed_wave_profile_count: number;
+  minimum_played_wave_profile_count: number;
+  maximum_played_wave_profile_count: number;
+  selected_health_multiplier_max: number;
+  selected_attack_multiplier_max: number;
+  selected_reward_multiplier_max: number;
   validation_status: ValidationStatus;
   validation_errors: string[];
 }
@@ -425,11 +485,13 @@ export interface EnemySpell {
   can_target_self: boolean;
   aoe_shape: EnumValue;
   aoe_size: number;
+  line_from_caster: boolean;
   damage: number;
   heal: number;
   shield_grant: number;
   damage_type: EnumValue;
   element: EnumValue;
+  critical_chance: number;
   terrain_effect: ResourceReference | null;
   applied_status: ResourceReference | null;
   push_distance: number;
@@ -437,9 +499,15 @@ export interface EnemySpell {
   collision_damage: number;
   cluster_bonus_damage: number;
   ap_drain: number;
+  teleport_behind_target: boolean;
   delayed_resolution: EnumValue;
   summon: ResourceReference | null;
   summon_type: string;
+  modifiers: ResourceReference[];
+  serialization_warnings: string[];
+  icon_path: string;
+  vfx_scene_path: string;
+  sound_path: string;
   source_path: string;
   referenced_by_enemy_ids: string[];
   summon_enemy_id: string;
@@ -481,6 +549,9 @@ export interface ContractCheck {
   target: JsonValue;
   observed_value: JsonValue;
   status: ContractCheckStatus;
+  truth_status: TruthStatus;
+  affected_entity_type: string;
+  affected_entity_ids: string[];
   evidence: string;
   message: string;
 }
@@ -491,9 +562,13 @@ export interface AuditResult {
   rule_id: string;
   severity: AuditSeverity;
   status: string;
+  truth_status: TruthStatus;
+  suggested_action_truth_status: 'recommendation';
   domain: string;
   entity_type: string;
   entity_id: string;
+  affected_entity_type: string;
+  affected_entity_ids: string[];
   message: string;
   source_path: string;
   evidence: string;
@@ -505,6 +580,7 @@ export interface Snapshot {
   scope: SnapshotScope;
   summary: SnapshotSummary;
   contract: ObservatoryContract;
+  runtime_facts: RuntimeFact[];
   characters: Character[];
   disciplines: Discipline[];
   spells: Spell[];

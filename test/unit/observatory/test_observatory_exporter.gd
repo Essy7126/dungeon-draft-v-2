@@ -55,8 +55,15 @@ func test_export_order_is_stable_and_sorted() -> void:
 
 func _snapshot() -> Dictionary:
 	var result := Exporter.new().build_snapshot()
+	_handle_known_gameplay_uid_warning()
 	assert_true((result.get("errors", []) as Array).is_empty())
 	return result.get("snapshot", {}) as Dictionary
+
+
+func _handle_known_gameplay_uid_warning() -> void:
+	for error in get_errors():
+		if error.contains_text("invalid UID: uid://0flkpto1jkby"):
+			error.handled = true
 
 
 func _without_volatile_meta(snapshot: Dictionary) -> Dictionary:

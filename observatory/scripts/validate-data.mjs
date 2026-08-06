@@ -34,6 +34,14 @@ if (!process.exitCode) {
       console.error(`${error.instancePath || '/'} ${error.message ?? 'invalide'}`);
     }
     process.exitCode = 1;
+  } else if (
+    snapshot.meta?.source_git_available !== true
+    || snapshot.meta?.source_worktree_dirty_before_export !== false
+    || snapshot.meta?.source_generated_from_clean_checkout !== true
+    || !/^[0-9a-f]{40}$/u.test(snapshot.meta?.source_game_commit ?? '')
+  ) {
+    console.error('Snapshot release refusé : provenance Git propre non certifiée.');
+    process.exitCode = 1;
   } else {
     const bytes = Buffer.byteLength(snapshotText, 'utf8');
     console.log(`Snapshot valide : ${bytes} octets.`);

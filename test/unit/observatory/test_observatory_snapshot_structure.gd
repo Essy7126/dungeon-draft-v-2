@@ -14,11 +14,12 @@ func test_snapshot_and_schema_are_parseable_objects() -> void:
 	assert_eq(schema.get("$schema"), "https://json-schema.org/draft/2020-12/schema")
 
 
-func test_snapshot_contract_versions_are_v2() -> void:
+func test_snapshot_contract_versions_are_v2_1() -> void:
 	var meta := (_snapshot().get("meta", {}) as Dictionary)
-	assert_eq(meta.get("schema_version"), "2.0.0")
-	assert_eq(meta.get("generator_version"), "2.0.0")
-	assert_eq(meta.get("manifest_version"), "2.0.0")
+	assert_eq(meta.get("schema_version"), "2.1.0")
+	assert_eq(meta.get("generator_version"), "2.1.0")
+	assert_eq(meta.get("manifest_version"), "2.1.0")
+	assert_true(meta.get("source_git_available", false))
 
 
 func test_snapshot_has_all_required_sections() -> void:
@@ -37,6 +38,55 @@ func test_summary_counts_match_collections() -> void:
 			int(summary.get(collection, -1)),
 			(snapshot.get(collection, []) as Array).size(),
 		)
+	assert_eq(summary.get("runtime_facts"), (snapshot.get("runtime_facts", []) as Array).size())
+	assert_eq(summary.get("authored_wave_profiles"), (snapshot.get("waves", []) as Array).size())
+
+
+func test_runtime_facts_and_xp_contract_are_separated() -> void:
+	var snapshot := _snapshot()
+	var fact_map := _entity_map(snapshot.get("runtime_facts", []) as Array, "key")
+	assert_eq(fact_map["progression.xp_per_effective_cast"].get("value"), 1)
+	assert_eq(fact_map["progression.xp_per_effective_cast"].get("truth_status"), "observed")
+	assert_true(fact_map.has("combat.damage_mitigation_formula"))
+	var decisions := _entity_map(
+		((snapshot.get("contract", {}) as Dictionary).get("decisions", []) as Array),
+		"key",
+	)
+	assert_false(decisions.has("progression.xp_per_effective_cast"))
+	assert_false(decisions.has("progression.requires_effective_cast"))
+	assert_eq(decisions["progression.xp_model"].get("status"), "unknown")
+	assert_eq(decisions["progression.xp_model"].get("truth_status"), "design_decision")
+	assert_eq(decisions["progression.evolution_timing"].get("status"), "validated")
+
+
+func test_wave_profile_summary_is_derived_from_rooms_and_waves() -> void:
+	var snapshot := _snapshot()
+	var summary := snapshot.get("summary", {}) as Dictionary
+	var selected := 0
+	for wave_value in snapshot.get("waves", []) as Array:
+		selected += 1 if bool((wave_value as Dictionary).get("is_selected_by_default_seed")) else 0
+	var minimum := 0
+	var maximum := 0
+	for room_value in snapshot.get("rooms", []) as Array:
+		minimum += int((room_value as Dictionary).get("minimum_wave_count", 0))
+		maximum += int((room_value as Dictionary).get("maximum_wave_count", 0))
+	assert_eq(summary.get("selected_default_seed_wave_profiles"), selected)
+	assert_eq(summary.get("minimum_played_wave_profiles"), minimum)
+	assert_eq(summary.get("maximum_played_wave_profiles"), maximum)
+
+
+func test_audits_keep_raw_occurrences_and_truth_metadata() -> void:
+	var audits := _snapshot().get("audit_results", []) as Array
+	var multiplier_occurrences := audits.filter(func(value: Variant) -> bool:
+		return str((value as Dictionary).get("rule_id", "")) \
+			== "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE"
+	)
+	assert_eq(multiplier_occurrences.size(), 54)
+	for audit_value in audits:
+		var audit := audit_value as Dictionary
+		assert_true(audit.has("truth_status"))
+		assert_eq(audit.get("suggested_action_truth_status"), "recommendation")
+		assert_true(audit.get("affected_entity_ids") is Array)
 
 
 func test_snapshot_contains_no_raw_godot_value_or_absolute_path() -> void:
@@ -86,8 +136,23 @@ func test_run_graph_references_resolve() -> void:
 
 func _snapshot() -> Dictionary:
 	var result := Exporter.new().build_snapshot()
+	_handle_known_gameplay_uid_warning()
 	assert_true((result.get("errors", []) as Array).is_empty())
 	return result.get("snapshot", {}) as Dictionary
+
+
+func _entity_map(values: Array, key_name: String = "id") -> Dictionary:
+	var result := {}
+	for value in values:
+		var entity := value as Dictionary
+		result[str(entity.get(key_name, ""))] = entity
+	return result
+
+
+func _handle_known_gameplay_uid_warning() -> void:
+	for error in get_errors():
+		if error.contains_text("invalid UID: uid://0flkpto1jkby"):
+			error.handled = true
 
 
 func _id_map(entities: Array) -> Dictionary:

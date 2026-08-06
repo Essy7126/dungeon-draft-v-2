@@ -13,6 +13,21 @@ func test_production_run_loads_valid_and_preserves_room_order() -> void:
 	assert_eq(runs.size(), 1)
 	assert_eq((runs[0] as Dictionary).get("id"), "first_run")
 	assert_eq((runs[0] as Dictionary).get("authored_room_count"), run.rooms.size())
+	var exported_run := runs[0] as Dictionary
+	var graph_waves := graph.get("waves", []) as Array
+	assert_eq(exported_run.get("authored_wave_profile_count"), graph_waves.size())
+	var selected_profile_count := 0
+	for wave_value in graph_waves:
+		if bool((wave_value as Dictionary).get("is_selected_by_default_seed", false)):
+			selected_profile_count += 1
+	assert_eq(
+		exported_run.get("selected_default_seed_wave_profile_count"),
+		selected_profile_count,
+	)
+	assert_gte(
+		float(exported_run.get("selected_health_multiplier_max", 0.0)),
+		0.0,
+	)
 	var room_ids := (runs[0] as Dictionary).get("room_ids", []) as Array
 	for index in range(room_ids.size()):
 		assert_eq(room_ids[index], "first_run.room.%02d" % (index + 1))

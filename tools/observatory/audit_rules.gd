@@ -528,13 +528,20 @@ static func _audit(
 		evidence: String,
 		action: String
 	) -> Dictionary:
+	var affected_ids: Array[String] = []
+	if not entity_id.is_empty():
+		affected_ids.append(entity_id)
 	return {
 		"rule_id": rule_id,
 		"severity": severity,
 		"status": "open",
+		"truth_status": "verified",
+		"suggested_action_truth_status": "recommendation",
 		"domain": domain,
 		"entity_type": entity_type,
 		"entity_id": entity_id,
+		"affected_entity_type": entity_type,
+		"affected_entity_ids": affected_ids,
 		"message": message,
 		"source_path": source_path,
 		"evidence": evidence,
