@@ -46,7 +46,24 @@ try {
 if ($knownCommitCode -ne 0 -or $ancestorCode -ne 0) { throw 'Le commit de baseline GUT n’est pas un ancêtre vérifiable de HEAD.' }
 
 $temporaryParent = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [System.IO.Path]::GetTempPath() }
-$testProject = Join-Path $temporaryParent ("DungeonDraftObservatory-GUT-{0}" -f [Guid]::NewGuid().ToString('N'))
+function Remove-VerifiedTemporaryDirectory {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    $fullParent = [System.IO.Path]::GetFullPath($temporaryParent).TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+    $fullPath = [System.IO.Path]::GetFullPath($Path).TrimEnd('\', '/')
+    if (-not $fullPath.StartsWith($fullParent, [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refus de nettoyer un chemin hors du dossier temporaire : $fullPath"
+    }
+    Get-ChildItem -LiteralPath $fullPath -Recurse -Force -ErrorAction Stop | ForEach-Object {
+        if ($_.Attributes -band [System.IO.FileAttributes]::ReadOnly) {
+            $_.Attributes = $_.Attributes -band (-bnot [System.IO.FileAttributes]::ReadOnly)
+        }
+    }
+    if ($env:OS -eq 'Windows_NT') { [System.IO.Directory]::Delete("\\?\$fullPath", $true) }
+    else { Remove-Item -LiteralPath $fullPath -Recurse -Force }
+}
+$runId = [Guid]::NewGuid().ToString('N')
+$testProject = Join-Path $temporaryParent ("DDO-GUT-{0}" -f $runId)
 $worktreeCreated = $false
 $output = @()
 $rawExitCode = -999
@@ -55,7 +72,7 @@ $oldLocalAppData = $env:LOCALAPPDATA
 $oldXdgData = $env:XDG_DATA_HOME
 $oldXdgConfig = $env:XDG_CONFIG_HOME
 $oldXdgCache = $env:XDG_CACHE_HOME
-$profileRoot = Join-Path $OutputDirectory 'godot-profile'
+$profileRoot = Join-Path $temporaryParent ("DDO-GUT-profile-{0}" -f $runId)
 [System.IO.Directory]::CreateDirectory($profileRoot) | Out-Null
 if ($env:OS -eq 'Windows_NT') {
     $env:APPDATA = $profileRoot
@@ -111,10 +128,8 @@ try {
         & $gitPath -c core.longpaths=true -C $project worktree remove --force $testProject 2>&1 | Out-Null
         $ErrorActionPreference = 'Stop'
     }
-    if (Test-Path -LiteralPath $testProject) {
-        if ($env:OS -eq 'Windows_NT') { [System.IO.Directory]::Delete("\\?\$testProject", $true) }
-        else { Remove-Item -LiteralPath $testProject -Recurse -Force }
-    }
+    Remove-VerifiedTemporaryDirectory -Path $testProject
+    Remove-VerifiedTemporaryDirectory -Path $profileRoot
 }
 $stdout = @($importOutput | ForEach-Object { [string]$_ }) + @($output | ForEach-Object { [string]$_ })
 [System.IO.File]::WriteAllLines($stdoutPath, $stdout, (New-Object System.Text.UTF8Encoding($false)))
