@@ -1,4 +1,4 @@
-import type { AIProfile, Character, ContractCheckStatus, Encounter, Enemy, Item, Room, Snapshot, Spell, Wave } from '../types';
+import type { AIProfile, Character, ContractCheckStatus, Encounter, Enemy, EnemySpell, Item, Room, Snapshot, Spell, Wave } from '../types';
 
 export function normalizeSearch(value: string): string {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr').trim();
@@ -76,14 +76,34 @@ export function selectItems(items: readonly Item[], filters: ItemFilters): Item[
 }
 
 export function contractStatusForCharacter(snapshot: Snapshot, character: Character): ContractCheckStatus {
-  const relevant = snapshot.contract_checks.filter((check) =>
-    ['party.required_character_ids', 'combat.base_ap', 'combat.base_mp', 'combat.starting_active_spell_slots', 'progression.discipline_count_per_character'].includes(check.key),
-  );
+  const relevant = snapshot.contract_checks.filter((check) => (
+    ['party.required_character_ids', 'combat.base_ap', 'combat.base_mp', 'combat.starting_active_spell_slots', 'progression.discipline_count_per_character'].includes(check.key)
+    && (check.affected_entity_ids.length === 0 || check.affected_entity_ids.includes(character.id))
+  ));
   if (!relevant.length || !snapshot.characters.some((entry) => entry.id === character.id)) return 'unknown';
   if (relevant.some((check) => check.status === 'difference')) return 'difference';
   if (relevant.some((check) => check.status === 'unknown')) return 'unknown';
   if (relevant.every((check) => check.status === 'conform')) return 'conform';
   return 'not_evaluated';
+}
+
+export type EncounterAbilityStatus = 'active' | 'disabled' | 'conditional' | 'unknown';
+
+export function encounterAbilityStatus(
+  spell: EnemySpell,
+  encounterId: string,
+  disabledAbilityIds: readonly string[] = [],
+): EncounterAbilityStatus {
+  if (!encounterId) return 'unknown';
+  if (
+    disabledAbilityIds.includes(spell.id)
+    || spell.encounter_disabled_in_ids.includes(encounterId)
+  ) return 'disabled';
+  if (!spell.encounter_enabled_in_ids.includes(encounterId)) return 'unknown';
+  if (spell.condition_hp_at_or_below >= 0 || Boolean(spell.requires_absent_unit_id)) {
+    return 'conditional';
+  }
+  return 'active';
 }
 
 export interface EnemyFilters {

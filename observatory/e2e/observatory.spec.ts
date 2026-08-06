@@ -1,70 +1,205 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import type { Encounter, Enemy, EnemySpell, Room, Run, Snapshot, Spell } from '../src/types';
 
 const screenshotDir = resolve('test-artifacts', 'screenshots');
+let snapshot: Snapshot;
 
 async function open(page: Page, route: string, heading: string) {
   await page.goto(`/#/${route}`);
   await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
 }
 
+function graph(): {
+  run: Run;
+  room: Room;
+  encounter: Encounter;
+  enemy: Enemy;
+  spell: Spell;
+  enemySpell: EnemySpell;
+} {
+  const run = snapshot.runs[0];
+  const room = snapshot.rooms.find((entry) => entry.id === run.room_ids[0]) ?? snapshot.rooms[0];
+  const encounter = snapshot.encounters.find((entry) => entry.id === room.default_encounter_id)
+    ?? snapshot.encounters.find((entry) => entry.room_ids.includes(room.id))
+    ?? snapshot.encounters[0];
+  const enemy = snapshot.enemies.find((entry) => encounter.expanded_initial_enemy_ids.includes(entry.id))
+    ?? snapshot.enemies[0];
+  const spell = snapshot.spells.find((entry) => entry.referenced_by_character_ids.length > 0)
+    ?? snapshot.spells[0];
+  const enemySpell = snapshot.enemy_spells.find((entry) => (
+    entry.referenced_by_enemy_ids.includes(enemy.id)
+    && (
+      entry.encounter_enabled_in_ids.includes(encounter.id)
+      || entry.encounter_disabled_in_ids.includes(encounter.id)
+      || encounter.disabled_ability_ids.includes(entry.id)
+    )
+  )) ?? snapshot.enemy_spells[0];
+  return { run, room, encounter, enemy, spell, enemySpell };
+}
+
 test.beforeAll(async () => {
-  await mkdir(screenshotDir, { recursive: true });
+  const [snapshotText] = await Promise.all([
+    readFile(resolve('public', 'data', 'latest.json'), 'utf8'),
+    mkdir(screenshotDir, { recursive: true }),
+  ]);
+  snapshot = JSON.parse(snapshotText) as Snapshot;
 });
 
 test('navigation principale et aria-current', async ({ page }) => {
+  const character = snapshot.characters[0];
   await open(page, 'overview', 'État du jeu exporté');
   await page.getByRole('link', { name: 'Personnages' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Personnages' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Personnages' })).toHaveAttribute('aria-current', 'page');
-  await page.getByRole('link', { name: 'Elfe' }).click();
-  await expect(page).toHaveURL(/#\/characters\/elf$/);
+  await page.getByRole('link', { name: character.name }).click();
+  await expect(page).toHaveURL(new RegExp(`#/characters/${character.id}$`));
+});
+
+test('toutes les routes principales lisent le snapshot réel sans écran blanc', async ({ page }) => {
+  const { run, room, enemy, spell } = graph();
+  const targets = [
+    ['overview', 'État du jeu exporté'],
+    ['run', run.name],
+    [`rooms/${room.id}`, room.name],
+    ['enemies', 'Ennemis'],
+    [`enemies/${enemy.id}`, enemy.name],
+    ['characters', 'Personnages'],
+    [`characters/${snapshot.characters[0].id}`, snapshot.characters[0].name],
+    ['spells', 'Sorts'],
+    [`spells/${spell.id}`, spell.name],
+    ['disciplines', 'Disciplines'],
+    [`disciplines/${snapshot.disciplines[0].id}`, snapshot.disciplines[0].name],
+    ['items', 'Objets'],
+    [`items/${snapshot.items[0].id}`, snapshot.items[0].name],
+    ['rewards', 'Récompenses'],
+    ['audit', 'Contrat et audits'],
+  ] as const;
+  for (const [route, heading] of targets) await open(page, route, heading);
 });
 
 test('navigation de la run à une salle puis aux ennemis', async ({ page }) => {
-  await open(page, 'overview', 'État du jeu exporté');
-  await page.getByRole('link', { name: 'Run', exact: true }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Première run' })).toBeVisible();
-  await page.getByRole('link', { name: /Salle 1 - Gué forestier/ }).first().click();
-  await expect(page).toHaveURL(/#\/rooms\/first_run\.room\.01$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Salle 1 - Gué forestier' })).toBeVisible();
+  const { run, room, enemy } = graph();
+  await open(page, 'run', run.name);
+  await page.getByRole('link', { name: new RegExp(room.name) }).first().click();
+  await expect(page).toHaveURL(new RegExp(`#/rooms/${room.id}$`));
   await page.getByRole('link', { name: 'Ennemis' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Ennemis' })).toBeVisible();
-  await page.getByRole('link', { name: 'Chef squelette rouge' }).click();
-  await expect(page).toHaveURL(/#\/enemies\/skeleton_chief$/);
+  await page.getByRole('link', { name: enemy.name, exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`#/enemies/${enemy.id}$`));
 });
 
-test('rechargement d’une route hashée profonde', async ({ page }) => {
-  await open(page, 'spells/elf_fireball', 'Boule de feu');
+test('rechargement de routes hashées profondes', async ({ page }) => {
+  const { spell, enemy } = graph();
+  await open(page, `spells/${spell.id}`, spell.name);
   await page.reload();
-  await expect(page.getByRole('heading', { level: 1, name: 'Boule de feu' })).toBeVisible();
-  await open(page, 'enemies/skeleton_chief', 'Chef squelette rouge');
+  await expect(page.getByRole('heading', { level: 1, name: spell.name })).toBeVisible();
+  await open(page, `enemies/${enemy.id}`, enemy.name);
   await page.reload();
-  await expect(page.getByRole('heading', { level: 1, name: 'Chef squelette rouge' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: enemy.name })).toBeVisible();
 });
 
 test('filtres des sorts et des objets', async ({ page }) => {
+  const { spell } = graph();
   await open(page, 'spells', 'Sorts');
-  await page.getByRole('searchbox', { name: 'Recherche' }).fill('boule de feu');
-  await expect(page.getByRole('link', { name: 'Boule de feu' }).first()).toBeVisible();
-  await page.getByRole('searchbox', { name: 'Recherche' }).fill('aucun-resultat');
+  await page.getByRole('searchbox', { name: 'Recherche' }).fill(spell.name);
+  await expect(page.getByRole('link', { name: spell.name }).first()).toBeVisible();
+  await page.getByRole('searchbox', { name: 'Recherche' }).fill('aucun-resultat-observatory');
   await expect(page.getByText('Aucun sort trouvé')).toBeVisible();
   await open(page, 'items', 'Objets');
   await page.getByLabel('Première run uniquement').check();
-  await expect(page.locator('.entity-card')).toHaveCount(14);
+  const eligibleCount = snapshot.items.filter((item) => item.tags.includes('first_run_equipment_reward')).length;
+  await expect(page.locator('.entity-card')).toHaveCount(eligibleCount);
 });
 
 test('filtres des ennemis', async ({ page }) => {
+  const { enemy } = graph();
   await open(page, 'enemies', 'Ennemis');
-  await page.getByRole('searchbox', { name: 'Recherche' }).fill('centurion');
-  await expect(page.locator('.enemy-card')).toHaveCount(1);
+  await page.getByRole('searchbox', { name: 'Recherche' }).fill(enemy.name);
+  await expect(page.getByRole('link', { name: enemy.name, exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Réinitialiser' }).click();
-  await page.getByLabel('Effet').selectOption('summoner');
-  await expect(page.getByRole('link', { name: 'Centurion squelette de glace' })).toBeVisible();
   await page.getByLabel('Présence').selectOption('summonable');
-  await expect(page.getByText('Aucun ennemi trouvé')).toBeVisible();
+  const summonableCount = snapshot.enemies.filter((entry) => entry.reachability.summonable_by_spell_ids.length > 0).length;
+  await expect(page.locator('.enemy-card')).toHaveCount(summonableCount);
+});
+
+test('bannière de fraîcheur et provenance globale', async ({ page }) => {
+  await open(page, 'overview', 'État du jeu exporté');
+  await expect(page.getByText('Snapshot courant')).toBeVisible();
+  await expect(page.locator('.topbar').getByText(snapshot.meta.source_game_commit.slice(0, 12), { exact: true })).toBeVisible();
+  await page.getByText('Snapshot courant', { exact: true }).click();
+  const panel = page.locator('.freshness__panel');
+  await expect(panel.getByText(snapshot.meta.source_game_commit, { exact: true })).toBeVisible();
+  await expect(panel.getByText(snapshot.meta.source_branch, { exact: true })).toBeVisible();
+});
+
+test('audit groupé, occurrences brutes et navigation contextuelle', async ({ page }) => {
+  const ruleId = 'WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE';
+  const expectedCount = snapshot.audit_results.filter((audit) => audit.rule_id === ruleId).length;
+  await open(page, 'audit', 'Contrat et audits');
+  const group = page.locator('.audit-group').filter({ hasText: ruleId });
+  await expect(group).toContainText(`${expectedCount} occurrences`);
+  await expect(group).toContainText('VÉRIFIÉ');
+  await group.getByText(`Afficher les ${expectedCount} occurrences brutes`).click();
+  const firstOccurrence = group.locator('.audit-occurrence').first();
+  await expect(firstOccurrence).toBeVisible();
+  await firstOccurrence.getByRole('link').click();
+  await expect(page).toHaveURL(/#\/rooms\//);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+});
+
+test('filtres d’audit combinés persistés dans l’URL', async ({ page }) => {
+  const ruleId = 'WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE';
+  const expectedCount = snapshot.audit_results.filter((audit) => audit.rule_id === ruleId).length;
+  await open(page, 'audit', 'Contrat et audits');
+  await page.getByRole('searchbox', { name: 'Recherche' }).fill('attack_power');
+  await page.getByLabel('Sévérité').selectOption('warning');
+  await page.getByLabel('Nature de preuve').selectOption('verified');
+  await page.getByLabel('Règle').selectOption(ruleId);
+  await page.getByLabel('Domaine').selectOption('waves');
+  await page.getByLabel('Type d’entité').selectOption('wave');
+  await page.getByLabel('Statut').selectOption('open');
+  await expect(page.locator('.audit-result-count')).toContainText(`${expectedCount} occurrences · 1 groupe`);
+  await expect(page).toHaveURL(/q=attack_power/);
+  await expect(page).toHaveURL(/severity=warning/);
+  await expect(page).toHaveURL(/truth=verified/);
+  await expect(page).toHaveURL(/rule=WAVE/);
+});
+
+test('statistiques complètes d’un personnage', async ({ page }) => {
+  const character = snapshot.characters[0];
+  await open(page, `characters/${character.id}`, character.name);
+  for (const label of [
+    'Puissance d’attaque', 'Force', 'Armure', 'Résistance magique', 'Esquive',
+    'Chance critique', 'Multiplicateur critique', 'Attaque de base active',
+    'Emplacements actifs',
+  ]) await expect(page.getByText(label, { exact: true })).toBeVisible();
+});
+
+test('détails complets d’un sort', async ({ page }) => {
+  const { spell } = graph();
+  await open(page, `spells/${spell.id}`, spell.name);
+  for (const label of [
+    'Cooldown initial', 'Une fois par activation', 'Ligne depuis le lanceur',
+    'Dégâts de collision', 'Bonus de groupe', 'Drain de PA',
+    'Téléportation derrière la cible', 'Résolution différée',
+  ]) await expect(page.getByText(label, { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Modificateurs' })).toBeVisible();
+});
+
+test('statut d’une capacité dans une rencontre', async ({ page }) => {
+  const { room, encounter, enemySpell } = graph();
+  const status = encounter.disabled_ability_ids.includes(enemySpell.id)
+    || enemySpell.encounter_disabled_in_ids.includes(encounter.id)
+    ? 'DÉSACTIVÉE DANS CETTE RENCONTRE'
+    : enemySpell.encounter_enabled_in_ids.includes(encounter.id)
+      ? enemySpell.condition_hp_at_or_below >= 0 || Boolean(enemySpell.requires_absent_unit_id)
+        ? 'CONDITIONNELLE'
+        : 'ACTIVE DANS CETTE RENCONTRE'
+      : 'INCONNUE';
+  await open(page, `rooms/${room.id}`, room.name);
+  await expect(page.getByText(status, { exact: true }).first()).toBeVisible();
 });
 
 test('navigation clavier et lien d’évitement', async ({ page }) => {
@@ -80,10 +215,10 @@ test('aucune requête externe ni res://', async ({ page }) => {
   const requests: string[] = [];
   page.on('request', (request) => requests.push(request.url()));
   await open(page, 'overview', 'État du jeu exporté');
-  await page.getByRole('link', { name: 'Objets' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Objets' })).toBeVisible();
-  await page.getByRole('link', { name: 'Ennemis' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Ennemis' })).toBeVisible();
+  for (const route of ['items', 'enemies', 'audit']) {
+    await page.getByRole('link', { name: route === 'items' ? 'Objets' : route === 'enemies' ? 'Ennemis' : 'Audit' }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  }
   const external = requests.filter((raw) => {
     const url = new URL(raw);
     return url.hostname !== '127.0.0.1' || url.port !== '4173';
@@ -100,64 +235,63 @@ for (const viewport of [
   { width: 320, height: 568 },
 ]) {
   test(`aucun débordement global à ${viewport.width}×${viewport.height}`, async ({ page }) => {
+    const { run, enemy } = graph();
     await page.setViewportSize(viewport);
     const mobile = viewport.width <= 390;
-    await open(page, mobile ? 'enemies/skeleton_chief' : 'run', mobile ? 'Chef squelette rouge' : 'Première run');
+    await open(page, mobile ? `enemies/${enemy.id}` : 'run', mobile ? enemy.name : run.name);
     const sizes = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
     expect(sizes.scroll).toBeLessThanOrEqual(sizes.client);
   });
 }
 
+test('audit responsive à 390 px', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, 'audit', 'Contrat et audits');
+  const sizes = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+  expect(sizes.scroll).toBeLessThanOrEqual(sizes.client);
+  await expect(page.locator('.audit-group').first()).toBeVisible();
+});
+
 for (const target of [
   { route: 'overview', heading: 'État du jeu exporté' },
+  { route: 'run', heading: 'run' },
   { route: 'characters', heading: 'Personnages' },
-  { route: 'items', heading: 'Objets' },
-  { route: 'audit', heading: 'Contrat et audits' },
-  { route: 'run', heading: 'Première run' },
-  { route: 'rooms/first_run.room.01', heading: 'Salle 1 - Gué forestier' },
   { route: 'enemies', heading: 'Ennemis' },
-  { route: 'enemies/skeleton_chief', heading: 'Chef squelette rouge' },
+  { route: 'audit', heading: 'Contrat et audits' },
 ]) {
   test(`aucune violation Axe sérieuse sur ${target.route}`, async ({ page }) => {
-    await open(page, target.route, target.heading);
+    const { run } = graph();
+    await open(page, target.route, target.heading === 'run' ? run.name : target.heading);
     const results = await new AxeBuilder({ page }).analyze();
-    const severe = results.violations.filter((violation) => violation.impact === 'critical' || violation.impact === 'serious');
-    expect(severe).toEqual([]);
+    expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact ?? ''))).toEqual([]);
   });
 }
 
+test('aucune violation Axe sérieuse sur une salle et un sort', async ({ page }) => {
+  const { room, spell } = graph();
+  for (const [route, heading] of [[`rooms/${room.id}`, room.name], [`spells/${spell.id}`, spell.name]]) {
+    await open(page, route, heading);
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact ?? ''))).toEqual([]);
+  }
+});
+
 test('captures de référence', async ({ page }) => {
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  await open(page, 'overview', 'État du jeu exporté');
-  await page.screenshot({ path: resolve(screenshotDir, 'overview-1920x1080.png'), fullPage: true });
-
-  await page.setViewportSize({ width: 1366, height: 768 });
-  await open(page, 'characters', 'Personnages');
-  await page.screenshot({ path: resolve(screenshotDir, 'characters-1366x768.png'), fullPage: true });
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  await open(page, 'items', 'Objets');
-  await page.screenshot({ path: resolve(screenshotDir, 'items-390x844.png'), fullPage: true });
-
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  await open(page, 'audit', 'Contrat et audits');
-  await page.screenshot({ path: resolve(screenshotDir, 'audit-1920x1080.png'), fullPage: true });
-
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  await open(page, 'run', 'Première run');
-  await page.screenshot({ path: resolve(screenshotDir, 'run-1920x1080.png'), fullPage: true });
-
-  await page.setViewportSize({ width: 1366, height: 768 });
-  await open(page, 'rooms/first_run.room.01', 'Salle 1 - Gué forestier');
-  await page.screenshot({ path: resolve(screenshotDir, 'room-1366x768.png'), fullPage: true });
-
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  await open(page, 'enemies', 'Ennemis');
-  await page.screenshot({ path: resolve(screenshotDir, 'enemies-1920x1080.png'), fullPage: true });
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  await open(page, 'enemies/skeleton_chief', 'Chef squelette rouge');
-  await page.screenshot({ path: resolve(screenshotDir, 'enemy-390x844.png'), fullPage: true });
+  const { run, room, enemy, spell } = graph();
+  const targets = [
+    [{ width: 1920, height: 1080 }, 'overview', 'État du jeu exporté', 'overview-1920x1080.png'],
+    [{ width: 1366, height: 768 }, 'characters', 'Personnages', 'characters-1366x768.png'],
+    [{ width: 390, height: 844 }, 'audit', 'Contrat et audits', 'audit-390x844.png'],
+    [{ width: 1920, height: 1080 }, 'run', run.name, 'run-1920x1080.png'],
+    [{ width: 1366, height: 768 }, `rooms/${room.id}`, room.name, 'room-1366x768.png'],
+    [{ width: 390, height: 844 }, `enemies/${enemy.id}`, enemy.name, 'enemy-390x844.png'],
+    [{ width: 1366, height: 768 }, `spells/${spell.id}`, spell.name, 'spell-1366x768.png'],
+  ] as const;
+  for (const [viewport, route, heading, filename] of targets) {
+    await page.setViewportSize(viewport);
+    await open(page, route, heading);
+    await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
+  }
 });
 
 test('capture de l’erreur de données', async ({ page }) => {

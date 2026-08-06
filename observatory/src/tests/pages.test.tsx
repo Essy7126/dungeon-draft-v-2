@@ -15,6 +15,7 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { RewardsPage } from '../pages/RewardsPage';
 import { SpellsPage } from '../pages/SpellsPage';
+import { SpellDetailPage } from '../pages/SpellDetailPage';
 import { EnemiesPage } from '../pages/EnemiesPage';
 import { EnemyDetailPage } from '../pages/EnemyDetailPage';
 import { RoomDetailPage } from '../pages/RoomDetailPage';
@@ -31,6 +32,10 @@ describe('pages Observatory', () => {
     expect(screen.getByRole('heading', { name: 'État du jeu exporté' })).toBeInTheDocument();
     expect(screen.getAllByText('0', { selector: 'strong' }).length).toBeGreaterThan(0);
     expect(screen.getByText('Domaines reportés')).toBeInTheDocument();
+    expect(screen.getByText('Profils de vague rédigés')).toBeInTheDocument();
+    expect(screen.getByText('Profils sélectionnés par la seed')).toBeInTheDocument();
+    expect(screen.getByText('progression.xp_per_effective_cast')).toBeInTheDocument();
+    expect(screen.getByText('Décisions de conception')).toBeInTheDocument();
   });
 
   it('affiche les personnages et leurs statistiques', () => {
@@ -74,7 +79,9 @@ describe('pages Observatory', () => {
   it('sépare contrat et résultats d’audit', () => {
     renderPage(<AuditPage />);
     expect(screen.getByRole('table', { name: 'Cibles comparées aux valeurs observées' })).toBeInTheDocument();
-    expect(screen.getByText('CONTRACT.NOT_EVALUATED')).toBeInTheDocument();
+    expect(screen.getAllByText('CONTRACT.NOT_EVALUATED').length).toBeGreaterThan(0);
+    expect(screen.getByText('1 occurrence')).toBeInTheDocument();
+    expect(screen.getAllByText('RECOMMANDATION').length).toBeGreaterThan(0);
   });
 
   it('affiche la page 404 locale', () => {
@@ -95,16 +102,20 @@ describe('pages Observatory', () => {
   it('affiche la run, le roster et les totaux de progression', () => {
     renderPage(<RunPage />);
     expect(screen.getByRole('heading', { name: 'Première run' })).toBeInTheDocument();
-    expect(screen.getByRole('table')).toHaveTextContent('skirmisher');
+    expect(screen.getByRole('table')).toHaveTextContent('Éclaireur');
     expect(screen.getByRole('table')).toHaveTextContent('80');
+    expect(screen.getByText('Multiplicateur PV maximal sélectionné')).toBeInTheDocument();
+    expect(screen.getByText('Multiplicateur de puissance d’attaque maximal sélectionné')).toBeInTheDocument();
+    expect(screen.getByText('Multiplicateur de récompense maximal sélectionné')).toBeInTheDocument();
   });
 
   it('affiche les vagues, le roster et les données runtime de la salle', () => {
     renderPage(<RoomDetailPage />, '/rooms/first_run.room.01', '/rooms/:roomId');
     expect(screen.getByRole('heading', { name: 'Salle 1 - Pont ancien' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Gobelin éclaireur/ })).toBeInTheDocument();
-    expect(screen.getByRole('table')).toHaveTextContent('static base only');
+    expect(screen.getByRole('table')).toHaveTextContent('Base statique uniquement');
     expect(screen.getByText(/choix runtime/)).toBeInTheDocument();
+    expect(screen.getByText('ACTIVE DANS CETTE RENCONTRE')).toBeInTheDocument();
   });
 
   it('filtre les ennemis et expose un état vide', async () => {
@@ -121,6 +132,24 @@ describe('pages Observatory', () => {
     expect(screen.getByText('Assaut de mêlée')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Estoc rouillé' })).toBeInTheDocument();
     expect(screen.getByText(/Aucun audit spécifique/)).toBeInTheDocument();
+  });
+
+  it('distingue la puissance d’attaque et expose toutes les statistiques du personnage', () => {
+    renderPage(<CharacterDetailPage />, '/characters/elf', '/characters/:characterId');
+    expect(screen.getByText('Puissance d’attaque')).toBeInTheDocument();
+    expect(screen.getByText('Attaque de base active')).toBeInTheDocument();
+    expect(screen.getByText('Résistance magique')).toBeInTheDocument();
+    expect(screen.getByText('Multiplicateur critique')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Résistances élémentaires' })).toBeInTheDocument();
+  });
+
+  it('affiche les contraintes et effets complets d’un sort', () => {
+    renderPage(<SpellDetailPage />, '/spells/elf_fireball', '/spells/:spellId');
+    expect(screen.getByText('Cooldown initial')).toBeInTheDocument();
+    expect(screen.getByText('Une fois par activation')).toBeInTheDocument();
+    expect(screen.getByText('Dégâts de collision')).toBeInTheDocument();
+    expect(screen.getByText('Téléportation derrière la cible')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Modificateurs' })).toBeInTheDocument();
   });
 
   it('gère une salle et un ennemi inconnus', () => {
