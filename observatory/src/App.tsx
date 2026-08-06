@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { AppShell } from './components/AppShell';
 import { DataErrorPage, LoadingState } from './components/DataStates';
+import { BuildMetaProvider } from './context/BuildMetaContext';
 import { SnapshotProvider } from './context/SnapshotContext';
+import { loadBuildMeta, type BuildMeta } from './data/buildMeta';
 import { loadSnapshot } from './data/loadSnapshot';
 import type { Snapshot } from './types';
 import { AuditPage } from './pages/AuditPage';
@@ -22,14 +24,17 @@ import { EnemyDetailPage } from './pages/EnemyDetailPage';
 import { RoomDetailPage } from './pages/RoomDetailPage';
 import { RunPage } from './pages/RunPage';
 
-type LoadState = { kind: 'loading' } | { kind: 'success'; snapshot: Snapshot } | { kind: 'error'; error: unknown };
+type LoadState =
+  | { kind: 'loading' }
+  | { kind: 'success'; snapshot: Snapshot; buildMeta: BuildMeta }
+  | { kind: 'error'; error: unknown };
 
 export default function App() {
   const [state, setState] = useState<LoadState>({ kind: 'loading' });
   const reload = useCallback(() => {
     setState({ kind: 'loading' });
-    void loadSnapshot().then(
-      (snapshot) => setState({ kind: 'success', snapshot }),
+    void Promise.all([loadSnapshot(), loadBuildMeta()]).then(
+      ([snapshot, buildMeta]) => setState({ kind: 'success', snapshot, buildMeta }),
       (error: unknown) => setState({ kind: 'error', error }),
     );
   }, []);
@@ -41,29 +46,31 @@ export default function App() {
 
   return (
     <SnapshotProvider value={state.snapshot}>
-      <HashRouter>
-        <AppShell>
-          <Switch>
-            <Route exact path="/"><Redirect to="/overview" /></Route>
-            <Route exact path="/overview"><OverviewPage /></Route>
-            <Route exact path="/run"><RunPage /></Route>
-            <Route path="/rooms/:roomId"><RoomDetailPage /></Route>
-            <Route exact path="/enemies"><EnemiesPage /></Route>
-            <Route path="/enemies/:enemyId"><EnemyDetailPage /></Route>
-            <Route exact path="/characters"><CharactersPage /></Route>
-            <Route path="/characters/:characterId"><CharacterDetailPage /></Route>
-            <Route exact path="/spells"><SpellsPage /></Route>
-            <Route path="/spells/:spellId"><SpellDetailPage /></Route>
-            <Route exact path="/disciplines"><DisciplinesPage /></Route>
-            <Route path="/disciplines/:disciplineId"><DisciplineDetailPage /></Route>
-            <Route exact path="/items"><ItemsPage /></Route>
-            <Route path="/items/:itemId"><ItemDetailPage /></Route>
-            <Route exact path="/rewards"><RewardsPage /></Route>
-            <Route exact path="/audit"><AuditPage /></Route>
-            <Route><NotFoundPage /></Route>
-          </Switch>
-        </AppShell>
-      </HashRouter>
+      <BuildMetaProvider value={state.buildMeta}>
+        <HashRouter>
+          <AppShell>
+            <Switch>
+              <Route exact path="/"><Redirect to="/overview" /></Route>
+              <Route exact path="/overview"><OverviewPage /></Route>
+              <Route exact path="/run"><RunPage /></Route>
+              <Route path="/rooms/:roomId"><RoomDetailPage /></Route>
+              <Route exact path="/enemies"><EnemiesPage /></Route>
+              <Route path="/enemies/:enemyId"><EnemyDetailPage /></Route>
+              <Route exact path="/characters"><CharactersPage /></Route>
+              <Route path="/characters/:characterId"><CharacterDetailPage /></Route>
+              <Route exact path="/spells"><SpellsPage /></Route>
+              <Route path="/spells/:spellId"><SpellDetailPage /></Route>
+              <Route exact path="/disciplines"><DisciplinesPage /></Route>
+              <Route path="/disciplines/:disciplineId"><DisciplineDetailPage /></Route>
+              <Route exact path="/items"><ItemsPage /></Route>
+              <Route path="/items/:itemId"><ItemDetailPage /></Route>
+              <Route exact path="/rewards"><RewardsPage /></Route>
+              <Route exact path="/audit"><AuditPage /></Route>
+              <Route><NotFoundPage /></Route>
+            </Switch>
+          </AppShell>
+        </HashRouter>
+      </BuildMetaProvider>
     </SnapshotProvider>
   );
 }

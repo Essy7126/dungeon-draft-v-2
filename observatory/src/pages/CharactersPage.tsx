@@ -22,8 +22,9 @@ export function CharactersPage() {
                 <div><dt>PA</dt><dd>{character.max_ap}</dd></div>
                 <div><dt>PM</dt><dd>{character.max_mp}</dd></div>
                 <div><dt>INIT.</dt><dd>{character.initiative}</dd></div>
-                <div><dt>ATQ.</dt><dd>{character.attack_power}</dd></div>
+                <div><dt>Puiss. attaque</dt><dd>{character.attack_power}</dd></div>
               </dl>
+              <p className="basic-attack-state">Attaque de base active : <strong>{character.basic_attack_enabled ? 'Oui' : 'Non'}</strong></p>
               <div className="card-footer"><span>{character.spell_ids.length} sorts</span><span>{character.discipline_ids.length} disciplines</span></div>
               <SourceDetails path={character.source_path} />
             </div>

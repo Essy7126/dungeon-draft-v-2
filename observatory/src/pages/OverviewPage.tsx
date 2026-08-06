@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useSnapshot } from '../context/SnapshotContext';
-import { formatDate } from '../utils/format';
-import { MetricCard, PageHeader, Panel, SeverityBadge, StatusBadge } from '../components/Primitives';
+import { formatDate, formatValue } from '../utils/format';
+import { MetricCard, PageHeader, Panel, SeverityBadge, StatusBadge, TruthBadge } from '../components/Primitives';
 
 export function OverviewPage() {
   const snapshot = useSnapshot();
@@ -24,10 +24,19 @@ export function OverviewPage() {
       <section className="metrics-grid" aria-label="Compteurs de la run">
         <MetricCard label="Runs" value={summary.runs} tone="gold" />
         <MetricCard label="Salles" value={summary.rooms} />
-        <MetricCard label="Vagues" value={summary.waves} />
+        <MetricCard label="Profils de vague rédigés" value={summary.authored_wave_profiles} />
+        <MetricCard label="Profils sélectionnés par la seed" value={summary.selected_default_seed_wave_profiles} />
+        <MetricCard label="Minimum de profils joués" value={summary.minimum_played_wave_profiles} />
+        <MetricCard label="Maximum de profils joués" value={summary.maximum_played_wave_profiles} />
+      </section>
+
+      <section className="metrics-grid" aria-label="Compteurs des rencontres">
         <MetricCard label="Rencontres" value={summary.encounters} />
         <MetricCard label="Ennemis" value={summary.enemies} />
         <MetricCard label="Sorts ennemis" value={summary.enemy_spells} />
+        <MetricCard label="Profils IA" value={summary.ai_profiles} />
+        <MetricCard label="Faits runtime" value={summary.runtime_facts} />
+        <MetricCard label="Profils de vague bruts" value={summary.waves} detail="Collection JSON conservée" />
       </section>
 
       <div className="dashboard-grid">
@@ -56,6 +65,27 @@ export function OverviewPage() {
             <div><dt>Godot</dt><dd>{meta.godot_version}</dd></div>
             <div><dt>Branche source</dt><dd><code>{meta.source_branch}</code></dd></div>
           </dl>
+        </Panel>
+      </div>
+
+      <div className="two-column truth-grid">
+        <Panel title="Faits runtime">
+          <div className="truth-list">{snapshot.runtime_facts.map((fact) => (
+            <article key={fact.key}>
+              <header><code>{fact.key}</code><TruthBadge status={fact.truth_status} /></header>
+              <p><strong>{formatValue(fact.value)}</strong> · {fact.notes}</p>
+              <details><summary>Preuve observée</summary><p>{fact.evidence}</p><ul>{fact.source_paths.map((path) => <li key={path}><code>{path}</code></li>)}</ul></details>
+            </article>
+          ))}</div>
+        </Panel>
+        <Panel title="Décisions de conception">
+          <div className="truth-list">{snapshot.contract.decisions.map((decision) => (
+            <article key={decision.key}>
+              <header><code>{decision.key}</code><TruthBadge status={decision.truth_status} /></header>
+              <p><strong>{formatValue(decision.value)}</strong> · statut {decision.status}</p>
+              <details><summary>Source et rationale</summary><p>{decision.source}</p><p>{decision.rationale}</p></details>
+            </article>
+          ))}</div>
         </Panel>
       </div>
 

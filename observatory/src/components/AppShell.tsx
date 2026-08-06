@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
+import { FreshnessIndicator } from './FreshnessIndicator';
 
 const navigation = [
   ['Vue globale', '/overview'],
@@ -23,6 +24,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="eyebrow">Outil de conception</p>
           <p className="brand-title">Dungeon Draft Observatory</p>
         </div>
+        <FreshnessIndicator />
       </header>
       <nav className="sidebar" aria-label="Navigation principale">
         <p className="nav-label">Explorer</p>
@@ -32,10 +34,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {label}
           </NavLink>
         ))}
-        <div className="nav-note">
-          <span className="status-dot status-dot--ok" aria-hidden="true" />
-          Snapshot statique<br />Lecture seule
-        </div>
+        <div className="nav-note">Snapshot statique<br />Lecture seule</div>
       </nav>
       <main id="main-content" className="main-content" tabIndex={-1}>
         {children}

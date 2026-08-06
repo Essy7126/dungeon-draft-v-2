@@ -2,7 +2,7 @@
 
 - Statut : **CURRENT**
 - Branche : `feature/observatory-truth-v1-1`, finalisation sur `feature/observatory-frontend-v1-1`.
-- Commit de référence : schéma et types du commit snapshot V1.1.
+- Commit de référence : schéma et types du commit snapshot V1.1 `b9e5a0161fc88cede9de9bd618298d1531d0b09a`.
 - Date UTC : `2026-08-06T10:45:38Z`
 - Validation : comparaison JSON Schema → TypeScript → composants, tests du snapshot réel et tests de pages.
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compareRoomToPrevious, contractStatusForCharacter, itemCompatibleWith, normalizeSearch, orderedRoomsForRun, selectEnemies, selectItems, selectSpells, selectedWavesForRoom, sortedByName, spellEffects } from '../data/selectors';
+import { compareRoomToPrevious, contractStatusForCharacter, encounterAbilityStatus, itemCompatibleWith, normalizeSearch, orderedRoomsForRun, selectEnemies, selectItems, selectSpells, selectedWavesForRoom, sortedByName, spellEffects } from '../data/selectors';
 import { formatMultiplier, theoreticalApBudget } from '../utils/format';
 import { snapshotFixture } from './fixture';
 
@@ -55,6 +55,32 @@ describe('sélecteurs déterministes', () => {
 
   it('mappe la conformité d’un personnage', () => {
     expect(contractStatusForCharacter(snapshotFixture, snapshotFixture.characters[0])).toBe('conform');
+  });
+
+  it('ne contamine pas les autres personnages avec un écart ciblé', () => {
+    const elf = snapshotFixture.characters[0];
+    const mage = { ...elf, id: 'mage', name: 'Mage' };
+    const targetedDifference = {
+      ...snapshotFixture.contract_checks[0],
+      status: 'difference' as const,
+      affected_entity_type: 'character',
+      affected_entity_ids: ['mage'],
+    };
+    const changed = {
+      ...snapshotFixture,
+      characters: [elf, mage],
+      contract_checks: [snapshotFixture.contract_checks[0], targetedDifference],
+    };
+    expect(contractStatusForCharacter(changed, elf)).toBe('conform');
+    expect(contractStatusForCharacter(changed, mage)).toBe('difference');
+  });
+
+  it('contextualise un sort ennemi depuis la rencontre et ses conditions', () => {
+    const spell = snapshotFixture.enemy_spells[0];
+    expect(encounterAbilityStatus(spell, 'encounter.room.01')).toBe('active');
+    expect(encounterAbilityStatus({ ...spell, condition_hp_at_or_below: 0.5 }, 'encounter.room.01')).toBe('conditional');
+    expect(encounterAbilityStatus(spell, 'encounter.room.01', [spell.id])).toBe('disabled');
+    expect(encounterAbilityStatus(spell, 'encounter.unknown')).toBe('unknown');
   });
 
   it('filtre les ennemis par rôle, présence et stratégie IA', () => {

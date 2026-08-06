@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import type { AuditSeverity, ContractCheckStatus } from '../types';
+import type { AuditSeverity, ContractCheckStatus, TruthStatus } from '../types';
+import { labelTruthStatus } from '../data/translations';
 
 const statusLabels: Record<ContractCheckStatus, string> = {
   conform: 'Conforme',
@@ -20,6 +21,10 @@ const severityLabels: Record<AuditSeverity, string> = {
 
 export function SeverityBadge({ severity }: { severity: AuditSeverity }) {
   return <span className={`badge badge--${severity}`}><span aria-hidden="true">●</span> {severityLabels[severity]}</span>;
+}
+
+export function TruthBadge({ status }: { status: TruthStatus }) {
+  return <span className={`badge badge--truth badge--truth-${status.replaceAll('_', '-')}`}>{labelTruthStatus(status)}</span>;
 }
 
 export function EffectBadge({ children }: { children: ReactNode }) {
@@ -54,7 +59,7 @@ export function EmptyState({ title, children }: { title: string; children: React
 }
 
 export function VisualPlaceholder() {
-  return <div className="visual-placeholder" role="img" aria-label="Visuel non exporté"><span aria-hidden="true">◇</span><p>Visuel non exporté dans la V0</p></div>;
+  return <div className="visual-placeholder" role="img" aria-label="Visuel non exporté"><span aria-hidden="true">◇</span><p>Visuel non exporté dans ce snapshot</p></div>;
 }
 
 export function SourceDetails({ path }: { path: string }) {

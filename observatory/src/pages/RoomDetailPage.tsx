@@ -4,6 +4,14 @@ import { PageHeader, Panel, SourceDetails } from '../components/Primitives';
 import { useSnapshot } from '../context/SnapshotContext';
 import { createSnapshotIndex } from '../data/indexes';
 import { compareRoomToPrevious, encounterForRoom, orderedWavesForRoom } from '../data/selectors';
+import {
+  labelCalculationStatus,
+  labelIdentityStability,
+  labelMapKind,
+  labelMultiplierStatus,
+  labelSourceKind,
+  labelTacticalRole,
+} from '../data/translations';
 import { formatMultiplier, formatPercent } from '../utils/format';
 import { UnknownEntityPage } from './UnknownEntityPage';
 
@@ -24,7 +32,7 @@ export function RoomDetailPage() {
   return (
     <>
       <Link className="back-link" to="/run">← Toute la run</Link>
-      <PageHeader eyebrow={`Salle ${room.index} · ${room.map_kind}`} title={room.name} description={`${room.available_wave_count} profils de vague disponibles, ${room.resolved_default_seed_wave_count ?? 'nombre runtime'} retenus avec la seed ${room.wave_resolution_seed}.`}>
+      <PageHeader eyebrow={`Salle ${room.index} · ${labelMapKind(room.map_kind)}`} title={room.name} description={`${room.available_wave_count} profils de vague disponibles, ${room.resolved_default_seed_wave_count ?? 'nombre runtime'} retenus avec la seed ${room.wave_resolution_seed}.`}>
         <span className="count-chip">{room.grid_width ?? '?'} × {room.grid_height ?? '?'}</span>
       </PageHeader>
 
@@ -33,12 +41,12 @@ export function RoomDetailPage() {
           {encounter ? <>
             <dl className="stats-table">
               <div><dt>Ennemis initiaux</dt><dd>{encounter.initial_enemy_count}</dd></div><div><dt>Plafond vivant</dt><dd>{encounter.living_enemy_cap}</dd></div>
-              <div><dt>PV de base</dt><dd>{encounter.base_totals.total_max_hp}</dd></div><div><dt>Attaque de base</dt><dd>{encounter.base_totals.total_attack_power}</dd></div>
+              <div><dt>PV de base</dt><dd>{encounter.base_totals.total_max_hp}</dd></div><div><dt>Puissance d’attaque</dt><dd>{encounter.base_totals.total_attack_power}</dd></div>
               <div><dt>Budget invocation</dt><dd>{encounter.shared_normal_summon_budget} / {encounter.shared_chief_summon_budget}</dd></div><div><dt>Sorts d’invocation</dt><dd>{encounter.summon_spell_count}</dd></div>
             </dl>
             <ul className="linked-list">{encounter.roster.map((entry) => {
               const enemy = index.enemiesById.get(entry.enemy_id);
-              return <li key={entry.enemy_id}>{enemy ? <Link to={`/enemies/${enemy.id}`}><strong>{enemy.name}</strong><span>×{entry.count} · {enemy.tactical_role_id}</span></Link> : <span className="unknown-ref">Référence inconnue : {entry.enemy_id}</span>}</li>;
+              return <li key={entry.enemy_id}>{enemy ? <Link to={`/enemies/${enemy.id}`}><strong>{enemy.name}</strong><span>×{entry.count} · {labelTacticalRole(enemy.tactical_role_id)}</span></Link> : <span className="unknown-ref">Référence inconnue : {entry.enemy_id}</span>}</li>;
             })}</ul>
           </> : <p className="unknown-ref">Rencontre de référence introuvable.</p>}
         </Panel>
@@ -56,18 +64,18 @@ export function RoomDetailPage() {
         <dl className="comparison-grid"><div><dt>PV initiaux</dt><dd>{signed(comparison.hpDelta)}</dd></div><div><dt>Attaque initiale</dt><dd>{signed(comparison.attackDelta)}</dd></div><div><dt>Ennemis</dt><dd>{signed(comparison.enemyCountDelta)}</dd></div><div><dt>Plafond vivant</dt><dd>{signed(comparison.livingCapDelta)}</dd></div></dl>
       </Panel>}
 
-      <Panel title="Vagues">
+      <Panel title="Profils de vague">
         <div className="table-wrap"><table>
           <caption>Profils disponibles ; « oui » identifie ceux sélectionnés par la seed de production.</caption>
           <thead><tr><th>Vague</th><th>Profil</th><th>Sélection</th><th>Rencontre</th><th>PV</th><th>Attaque</th><th>Récompense</th><th>Totaux théoriques</th><th>Statut</th></tr></thead>
-          <tbody>{waves.map((wave) => <tr key={wave.id}><th scope="row">{wave.index}. {wave.name}</th><td>{wave.is_mandatory_profile ? 'Obligatoire' : wave.is_optional_profile ? 'Optionnel' : 'Hors plage'}</td><td>{wave.is_selected_by_default_seed ? 'Oui' : 'Non'}</td><td><code>{wave.encounter_id}</code></td><td>{formatMultiplier(wave.enemy_health_multiplier)}</td><td>{formatMultiplier(wave.enemy_attack_multiplier)}<small className="cell-note">{wave.attack_multiplier_effect_status.replaceAll('_', ' ')}</small></td><td>{formatMultiplier(wave.reward_multiplier)}</td><td>{wave.scaled_initial_totals.total_max_hp ?? 'runtime'} PV · {wave.scaled_initial_totals.total_attack_power ?? 'runtime'} attaque</td><td>{wave.calculation_status.replaceAll('_', ' ')}</td></tr>)}</tbody>
+          <tbody>{waves.map((wave) => <tr key={wave.id}><th scope="row">{wave.index}. {wave.name}</th><td>{wave.is_mandatory_profile ? 'Obligatoire' : wave.is_optional_profile ? 'Optionnel' : 'Hors plage'}<small className="cell-note">{labelSourceKind(wave.source_kind)} · identité {labelIdentityStability(wave.identity_stability)}</small></td><td>{wave.is_selected_by_default_seed ? 'Oui' : 'Non'}</td><td><code>{wave.encounter_id}</code></td><td>{formatMultiplier(wave.enemy_health_multiplier)}</td><td>{formatMultiplier(wave.enemy_attack_multiplier)}<small className="cell-note">{labelMultiplierStatus(wave.attack_multiplier_effect_status)}</small></td><td>{formatMultiplier(wave.reward_multiplier)}</td><td>{wave.scaled_initial_totals.total_max_hp ?? 'runtime'} PV · {wave.scaled_initial_totals.total_attack_power ?? 'runtime'} puissance d’attaque</td><td>{labelCalculationStatus(wave.calculation_status)}</td></tr>)}</tbody>
         </table></div>
         <details className="technical-details wave-calculations"><summary>Formules, hypothèses et preuves des calculs</summary>
-          <ul className="calculation-list">{waves.map((wave) => <li key={wave.id}><strong>{wave.name}</strong><span>PV de base de la rencontre × {formatMultiplier(wave.enemy_health_multiplier)} ; attack_power de base × {formatMultiplier(wave.enemy_attack_multiplier)}.</span><span>Statut : {wave.calculation_status.replaceAll('_', ' ')}. Preuve : {wave.calculation_evidence}</span><code>{wave.source_path}</code></li>)}</ul>
+          <ul className="calculation-list">{waves.map((wave) => <li key={wave.id}><strong>{wave.name}</strong><span>PV de base de la rencontre × {formatMultiplier(wave.enemy_health_multiplier)} ; puissance d’attaque (<code>attack_power</code>) × {formatMultiplier(wave.enemy_attack_multiplier)}.</span><span>Statut : {labelCalculationStatus(wave.calculation_status)}. Preuve : {wave.calculation_evidence}</span><code>{wave.source_path}</code></li>)}</ul>
         </details>
       </Panel>
 
-      {enemySpells.length > 0 && <Panel title="Capacités ennemies de la rencontre"><div className="enemy-spell-grid">{enemySpells.map((spell) => <EnemySpellCard key={spell.id} spell={spell} />)}</div></Panel>}
+      {enemySpells.length > 0 && <Panel title="Capacités ennemies de la rencontre"><div className="enemy-spell-grid">{enemySpells.map((spell) => <EnemySpellCard key={spell.id} spell={spell} encounterId={encounter?.id} disabledAbilityIds={encounter?.disabled_ability_ids} />)}</div></Panel>}
 
       <details className="technical-details"><summary>Détails techniques et contraintes de placement</summary>
         <dl className="key-values">
