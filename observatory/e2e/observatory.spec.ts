@@ -2,10 +2,12 @@ import { mkdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import type { BuildMeta } from '../src/data/buildMeta';
 import type { Encounter, Enemy, EnemySpell, Room, Run, Snapshot, Spell } from '../src/types';
 
 const screenshotDir = resolve('test-artifacts', 'screenshots');
 let snapshot: Snapshot;
+let buildMeta: BuildMeta;
 
 async function open(page: Page, route: string, heading: string) {
   await page.goto(`/#/${route}`);
@@ -41,11 +43,13 @@ function graph(): {
 }
 
 test.beforeAll(async () => {
-  const [snapshotText] = await Promise.all([
+  const [snapshotText, buildMetaText] = await Promise.all([
     readFile(resolve('public', 'data', 'latest.json'), 'utf8'),
+    readFile(resolve('public', 'generated', 'build_meta.json'), 'utf8'),
     mkdir(screenshotDir, { recursive: true }),
   ]);
   snapshot = JSON.parse(snapshotText) as Snapshot;
+  buildMeta = JSON.parse(buildMetaText) as BuildMeta;
 });
 
 test('navigation principale et aria-current', async ({ page }) => {
@@ -95,7 +99,7 @@ test('sépare la run principale et la run de test', async ({ page }) => {
   await expect(page.getByText('Profils sélectionnés par la seed')).toHaveCount(0);
 
   await open(page, `runs/${testRun.id}`, testRun.name);
-  await expect(page.getByText(/Outil de test/)).toBeVisible();
+  await expect(page.locator('.test-tool-warning')).toContainText('Outil de test');
   await expect(page.getByText('Profils sélectionnés par la seed')).toBeVisible();
   const testRoom = snapshot.rooms.find((room) => room.run_id === testRun.id);
   expect(testRoom).toBeTruthy();
@@ -125,7 +129,7 @@ test('affiche le statut LAN et son dernier échec', async ({ page }) => {
 test('affiche le fallback lorsque le statut LAN est absent', async ({ page }) => {
   await page.route('**/__observatory/status.json', (route) => route.fulfill({ status: 404, body: '' }));
   await open(page, 'overview', 'État du jeu exporté');
-  await expect(page.getByText('Statut LAN indisponible')).toBeVisible();
+  await expect(page.locator('.live-status > summary')).toContainText('Statut LAN indisponible');
 });
 
 test('navigation de la run à une salle puis aux ennemis', async ({ page }) => {
@@ -174,10 +178,11 @@ test('filtres des ennemis', async ({ page }) => {
 
 test('bannière de fraîcheur et provenance globale', async ({ page }) => {
   await open(page, 'overview', 'État du jeu exporté');
-  await expect(page.getByText('Snapshot courant')).toBeVisible();
+  const indicator = page.locator(`.freshness--${buildMeta.freshness_status}`);
+  await expect(indicator.locator('summary')).toBeVisible();
   await expect(page.locator('.topbar').getByText(snapshot.meta.source_game_commit.slice(0, 12), { exact: true })).toBeVisible();
-  await page.getByText('Snapshot courant', { exact: true }).click();
-  const panel = page.locator('.freshness__panel');
+  await indicator.locator('summary').click();
+  const panel = indicator.locator('.freshness__panel');
   await expect(panel.getByText(snapshot.meta.source_game_commit, { exact: true })).toBeVisible();
   await expect(panel.getByText(snapshot.meta.source_branch, { exact: true })).toBeVisible();
 });
