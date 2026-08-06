@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const defaultProjectRoot = resolve(here, '..');
 const OBSERVATORY_PREFIXES = [
+  '.github/workflows/observatory-ci.yml',
   'observatory/',
   'docs/observatory/',
   'tools/observatory/',

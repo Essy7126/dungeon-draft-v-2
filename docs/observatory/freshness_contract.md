@@ -8,7 +8,7 @@
 
 `observatory/scripts/generate-build-meta.mjs` produit localement `public/generated/build_meta.json`, ignoré par Git. Aucune API distante n’est appelée par le navigateur.
 
-Le script compare l’arbre du commit source du snapshot à HEAD puis à `origin/main` lorsqu’il existe. Git retourne les chemins en UTF-8, délimités par NUL, avec `core.quotepath=false`. Les chemins `observatory/**`, `docs/observatory/**`, `tools/observatory/**` et `test/unit/observatory/**` sont exclus du calcul métier. Les autres chemins sont classés par les racines du manifeste et des préfixes explicites.
+Le script compare l’arbre du commit source du snapshot à HEAD puis à `origin/main` lorsqu’il existe. Git retourne les chemins en UTF-8, délimités par NUL, avec `core.quotepath=false`. Les chemins `observatory/**`, `docs/observatory/**`, `tools/observatory/**`, `test/unit/observatory/**` et le workflow dédié `.github/workflows/observatory-ci.yml` sont exclus du calcul métier. Les autres chemins sont classés par les racines du manifeste et des préfixes explicites.
 
 | Statut | Condition |
 |---|---|

@@ -80,8 +80,10 @@ afterEach(async () => {
 describe('generate-build-meta', () => {
   it('reste current lorsque seuls des chemins Observatory diffèrent', async () => {
     const { repository, sourceCommit } = await repositoryFixture();
+    await mkdir(resolve(repository, '.github', 'workflows'), { recursive: true });
     await writeFile(resolve(repository, 'observatory', 'README.md'), 'observatory only\n');
-    git(repository, 'add', 'observatory/README.md');
+    await writeFile(resolve(repository, '.github', 'workflows', 'observatory-ci.yml'), 'name: Observatory\n');
+    git(repository, 'add', 'observatory/README.md', '.github/workflows/observatory-ci.yml');
     git(repository, 'commit', '-m', 'observatory');
 
     const result = await runGenerator(repository, sourceCommit);
