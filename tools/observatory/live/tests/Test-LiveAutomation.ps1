@@ -10,6 +10,7 @@ $updateScript = Join-Path $sourceRoot 'Update-ObservatoryLive.ps1'
 $rollbackScript = Join-Path $sourceRoot 'Rollback-Observatory.ps1'
 $releaseValidator = Join-Path $sourceRoot 'Test-ObservatoryRelease.ps1'
 $startScript = Join-Path $sourceRoot 'Start-ObservatoryLan.ps1'
+$uninstallScript = Join-Path $sourceRoot 'Uninstall-ObservatoryLan.ps1'
 $serverScript = Join-Path $sourceRoot 'observatory-lan-server.mjs'
 $testRoot = Join-Path $TemporaryParent ("DungeonDraftObservatoryV12Tests-é-{0}" -f [Guid]::NewGuid().ToString('N'))
 $deployRoot = Join-Path $testRoot 'déploiement'
@@ -256,6 +257,21 @@ exit /b 0
         $ErrorActionPreference = 'Continue'
         $output = & "$PSHOME\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File $startScript -DeployRoot $emptyRoot 2>&1
         Assert-True ($LASTEXITCODE -ne 0) "Start aurait dû refuser la configuration absente : $output"
+    }
+    Add-Result 'désinstallation compatible avec les chemins longs en lecture seule' {
+        $uninstallRoot = Join-Path $env:LOCALAPPDATA ("Temp\DDO-Uninstall-{0}" -f [Guid]::NewGuid().ToString('N'))
+        $deepPath = $uninstallRoot
+        while ($deepPath.Length -lt 280) {
+            $deepPath = Join-Path $deepPath 'segment-observatory-chemin-long'
+        }
+        $extendedDeepPath = "\\?\$deepPath"
+        [System.IO.Directory]::CreateDirectory($extendedDeepPath) | Out-Null
+        $readOnlyFile = "$extendedDeepPath\fixture.txt"
+        [System.IO.File]::WriteAllText($readOnlyFile, 'fixture', [Text.Encoding]::UTF8)
+        [System.IO.File]::SetAttributes($readOnlyFile, [System.IO.FileAttributes]::ReadOnly)
+        $output = & "$PSHOME\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File $uninstallScript -DeployRoot $uninstallRoot -RemoveData 2>&1
+        Assert-True ($LASTEXITCODE -eq 0) "Désinstallation long path échouée : $($output -join "`n")"
+        Assert-True (-not (Test-Path -LiteralPath $uninstallRoot)) 'Le DeployRoot long path subsiste.'
     }
     Add-Result 'release incomplète et hash altéré refusés' {
         $ErrorActionPreference = 'Continue'

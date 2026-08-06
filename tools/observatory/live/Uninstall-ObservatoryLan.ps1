@@ -7,6 +7,26 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+function Remove-ObservatoryDataTree {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if ($env:OS -ne 'Windows_NT') {
+        Remove-Item -LiteralPath $Path -Recurse -Force
+        return
+    }
+    $extendedPath = "\\?\$Path"
+    foreach ($file in [System.IO.Directory]::EnumerateFiles(
+        $extendedPath,
+        '*',
+        [System.IO.SearchOption]::AllDirectories
+    )) {
+        if ([System.IO.File]::GetAttributes($file) -band [System.IO.FileAttributes]::ReadOnly) {
+            [System.IO.File]::SetAttributes($file, [System.IO.FileAttributes]::Normal)
+        }
+    }
+    [System.IO.Directory]::Delete($extendedPath, $true)
+}
+
 $pidPath = Join-Path $DeployRoot 'state\server.pid'
 if (Test-Path -LiteralPath $pidPath -PathType Leaf) {
     $recordedPid = 0
@@ -48,7 +68,7 @@ if ($RemoveData -and (Test-Path -LiteralPath $DeployRoot)) {
         throw 'Refus de supprimer un DeployRoot hors LOCALAPPDATA.'
     }
     if ($PSCmdlet.ShouldProcess($absolute, 'Supprimer les données Observatory')) {
-        Remove-Item -LiteralPath $absolute -Recurse -Force
+        Remove-ObservatoryDataTree -Path $absolute
     }
 }
 [pscustomobject]@{ status = 'uninstalled'; data_preserved = -not $RemoveData }
