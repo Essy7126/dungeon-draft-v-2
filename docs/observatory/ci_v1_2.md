@@ -2,9 +2,15 @@
 
 Le workflow `.github/workflows/observatory-ci.yml` s’exécute sur un runner
 GitHub hébergé `ubuntu-latest` pour les pull requests vers `main`, les pushes
-sur `main` et les lancements manuels. Il dispose uniquement de
+sur `main` ou `feature/observatory-*`, et les lancements manuels. Le déclencheur
+de feature permet notamment de valider le workflow dans la PR qui l’introduit,
+avant qu’il existe sur la branche de base. Il dispose uniquement de
 `contents: read`, annule les exécutions obsolètes de la même référence et ne
 publie rien sur le LAN.
+
+La CI historique `.github/workflows/ci.yml` ignore les changements exclusivement
+Observatory : elle reste dédiée au jeu, tandis que le workflow V1.2 assume sans
+duplication la validation complète de ce périmètre et sa baseline explicite.
 
 ## Toolchain vérifiée
 
@@ -23,9 +29,10 @@ n’est utilisé.
 
 La CI importe Godot, génère le snapshot, vérifie sa provenance, lance GUT
 Observatory puis la suite complète. `known_gut_failures.json` contient les 15
-échecs historiques constatés sur 849 tests : le wrapper lit JUnit, accepte la
-disparition d’un échec connu et refuse tout nouvel identifiant, rapport absent,
-XML illisible ou liste de tests incomplète.
+identifiants historiques de référence ; sur le `main` réaligné, 14 subsistent
+parmi 855 tests et 1 est résolu. Le wrapper lit JUnit, accepte la disparition
+d’un échec connu et refuse tout nouvel identifiant, rapport absent, XML illisible
+ou liste de tests incomplète.
 
 Après `npm ci` et l’installation de Chromium, `npm run check` exécute Ajv,
 ESLint, TypeScript, Vitest, build, Playwright et Axe. L’artefact regroupe le

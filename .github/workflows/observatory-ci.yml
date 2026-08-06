@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - 'feature/observatory-*'
   workflow_dispatch:
 
 permissions:

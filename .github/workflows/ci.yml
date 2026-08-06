@@ -2,7 +2,21 @@ name: CI
 
 on:
   push:
+    paths-ignore:
+      - 'observatory/**'
+      - 'docs/observatory/**'
+      - 'tools/observatory/**'
+      - 'test/unit/observatory/**'
+      - '.github/workflows/observatory-ci.yml'
+      - '.github/workflows/ci.yml'
   pull_request:
+    paths-ignore:
+      - 'observatory/**'
+      - 'docs/observatory/**'
+      - 'tools/observatory/**'
+      - 'test/unit/observatory/**'
+      - '.github/workflows/observatory-ci.yml'
+      - '.github/workflows/ci.yml'
 
 env:
   GODOT_VERSION: "4.7"
