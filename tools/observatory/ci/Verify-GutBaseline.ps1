@@ -90,7 +90,7 @@ if (-not (Test-Path -LiteralPath $junitPath -PathType Leaf)) {
 
 try { [xml]$junit = Get-Content -LiteralPath $junitPath -Raw -Encoding UTF8 }
 catch { throw "Rapport JUnit GUT illisible : $($_.Exception.Message)" }
-if ($junit.DocumentElement.Name -ne 'testsuites') { throw 'Racine JUnit GUT inattendue.' }
+if ($junit.DocumentElement.LocalName -ne 'testsuites') { throw 'Racine JUnit GUT inattendue.' }
 $cases = @($junit.SelectNodes('//testcase'))
 $declaredTests = 0
 $declaredFailures = 0
