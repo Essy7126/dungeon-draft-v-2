@@ -43,7 +43,7 @@ try {
     & $gitPath -C $project merge-base --is-ancestor $baseline.verified_at_commit HEAD 2>&1 | Out-Null
     $ancestorCode = $LASTEXITCODE
 } finally { $ErrorActionPreference = $previousPreference }
-if ($knownCommitCode -ne 0 -or $ancestorCode -ne 0) { throw 'Le commit de baseline GUT n’est pas un ancêtre vérifiable de HEAD.' }
+if ($knownCommitCode -ne 0 -or $ancestorCode -ne 0) { throw "Le commit de baseline GUT n'est pas un ancêtre vérifiable de HEAD." }
 
 $temporaryParent = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [System.IO.Path]::GetTempPath() }
 function Remove-VerifiedTemporaryDirectory {
@@ -135,7 +135,7 @@ $stdout = @($importOutput | ForEach-Object { [string]$_ }) + @($output | ForEach
 [System.IO.File]::WriteAllLines($stdoutPath, $stdout, (New-Object System.Text.UTF8Encoding($false)))
 [System.IO.File]::WriteAllText($stderrPath, '', (New-Object System.Text.UTF8Encoding($false)))
 if (-not (Test-Path -LiteralPath $junitPath -PathType Leaf)) {
-    throw "GUT n’a produit aucun JUnit exploitable (code natif $rawExitCode)."
+    throw "GUT n'a produit aucun JUnit exploitable (code natif $rawExitCode)."
 }
 
 try { [xml]$junit = Get-Content -LiteralPath $junitPath -Raw -Encoding UTF8 }
@@ -160,7 +160,8 @@ foreach ($case in $cases) {
     if (-not $identifiers.Add($identifier)) { throw "Identifiant de test JUnit dupliqué : $identifier" }
     if ($case.failure -or $case.error -or [string]$case.status -eq 'fail') { [void]$failed.Add($identifier) }
 }
-if ($failed.Count -ne $declaredFailures) { throw 'Le compteur d’échecs JUnit ne correspond pas aux cas en échec.' }
+if ($failed.Count -ne $declaredFailures) { throw "Le compteur d'échecs JUnit ne correspond pas aux cas en échec."
+}
 
 $newFailures = @($failed | Where-Object { $known -notcontains $_ } | Sort-Object)
 $remainingHistorical = @($failed | Where-Object { $known -contains $_ } | Sort-Object)

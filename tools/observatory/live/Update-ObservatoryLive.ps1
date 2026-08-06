@@ -212,7 +212,7 @@ try {
         $snapshot.meta.source_game_commit -ne $script:TargetSha -or
         $snapshot.meta.source_worktree_dirty_before_export -ne $false -or
         $snapshot.meta.source_generated_from_clean_checkout -ne $true
-    ) { throw 'La provenance du snapshot candidate n’est pas certifiée.' }
+    ) { throw "La provenance du snapshot candidate n'est pas certifiée." }
 
     Invoke-Native $GodotPath @(
         '--headless', '--path', $script:CreatedWorktree,
@@ -236,7 +236,7 @@ try {
 
     $distSource = Join-Path $frontendRoot 'dist'
     if (-not (Test-Path -LiteralPath (Join-Path $distSource 'index.html') -PathType Leaf)) {
-        throw 'Le build frontend n’a produit aucun dist valide.'
+        throw "Le build frontend n'a produit aucun dist valide."
     }
     $snapshotInDist = Join-Path $distSource 'data\latest.json'
     $snapshotHash = (Get-FileHash -LiteralPath $snapshotInDist -Algorithm SHA256).Hash.ToLowerInvariant()

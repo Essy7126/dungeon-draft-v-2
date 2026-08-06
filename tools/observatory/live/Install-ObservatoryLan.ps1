@@ -65,7 +65,7 @@ if ($Branch -eq 'main' -and -not $NoScheduledTasks) {
     $installerCommit = (& $gitPath -C $repo rev-parse HEAD).Trim()
     & $gitPath -C $repo merge-base --is-ancestor $installerCommit "$Remote/main"
     if ($LASTEXITCODE -ne 0) {
-        throw 'Installation permanente refusée : le commit V1.2 courant n’est pas fusionné dans origin/main.'
+        throw "Installation permanente refusée : le commit V1.2 courant n'est pas fusionné dans origin/main."
     }
 }
 
@@ -105,7 +105,7 @@ $serverProcess = Start-Process -FilePath 'powershell.exe' -ArgumentList @(
     '-DeployRoot', $DeployRoot
 ) -WindowStyle Hidden -PassThru
 Start-Sleep -Milliseconds 600
-if ($serverProcess.HasExited) { throw "Le serveur LAN n’a pas démarré (code $($serverProcess.ExitCode))." }
+if ($serverProcess.HasExited) { throw "Le serveur LAN n'a pas démarré (code $($serverProcess.ExitCode))." }
 
 $updateCommandArguments = @(
     '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',

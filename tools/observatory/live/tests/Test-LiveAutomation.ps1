@@ -196,7 +196,7 @@ exit /b 0
     }
     Add-Result 'no-op lorsque le SHA est inchangé' {
         $output = Invoke-UpdateChild
-        Assert-True ($output -match 'no_change') 'La seconde exécution n’est pas un no-op.'
+        Assert-True ($output -match 'no_change') "La seconde exécution n'est pas un no-op."
     }
     Add-Result 'verrou concurrent' {
         $lockPath = Join-Path $deployRoot 'locks\update.lock'
@@ -209,8 +209,8 @@ exit /b 0
     Add-Result 'nouvelle release et rétention' {
         Invoke-UpdateChild | Out-Null
         $active = Get-Content -LiteralPath (Join-Path $deployRoot 'state\active.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-        Assert-True ($active.active_sha -eq $secondSha) 'La deuxième release n’est pas active.'
-        Assert-True ((Get-ChildItem -LiteralPath (Join-Path $deployRoot 'releases') -Directory | Where-Object Name -Match '^[0-9a-f]{40}$').Count -le 2) 'La rétention n’est pas bornée.'
+        Assert-True ($active.active_sha -eq $secondSha) "La deuxième release n'est pas active."
+        Assert-True ((Get-ChildItem -LiteralPath (Join-Path $deployRoot 'releases') -Directory | Where-Object Name -Match '^[0-9a-f]{40}$').Count -le 2) "La rétention n'est pas bornée."
     }
 
     $thirdSha = New-FakeCommit 'fixture invalid'
@@ -219,7 +219,7 @@ exit /b 0
         try { Invoke-UpdateChild -ExpectFailure | Out-Null }
         finally { $env:FAKE_NPM_MODE = $null }
         $active = Get-Content -LiteralPath (Join-Path $deployRoot 'state\active.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-        Assert-True ($active.active_sha -eq $secondSha) 'L’échec npm a remplacé la release valide.'
+        Assert-True ($active.active_sha -eq $secondSha) "L'échec npm a remplacé la release valide."
         Assert-True (-not (Test-Path -LiteralPath (Join-Path $deployRoot "releases\$thirdSha"))) 'Une release npm invalide a été publiée.'
     }
     Add-Result 'provenance incorrecte refusée' {
@@ -290,9 +290,9 @@ exit /b 0
         $output = & "$PSHOME\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File $rollbackScript -DeployRoot $deployRoot -TargetSha $secondSha -Port $script:Port 2>&1
         Assert-True ($LASTEXITCODE -eq 0) "Rollback échoué : $($output -join "`n")"
         $active = Get-Content -LiteralPath (Join-Path $deployRoot 'state\active.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-        Assert-True ($active.active_sha -eq $secondSha) 'Le rollback n’a pas activé la release précédente.'
+        Assert-True ($active.active_sha -eq $secondSha) "Le rollback n'a pas activé la release précédente."
     }
-    Add-Result 'refus explicite d’un worktree sale et contrats d’échec' {
+    Add-Result "refus explicite d'un worktree sale et contrats d'échec" {
         $text = Get-Content -LiteralPath $updateScript -Raw -Encoding UTF8
         foreach ($needle in @(
             "status', '--porcelain", 'source_worktree_dirty_before_export',
