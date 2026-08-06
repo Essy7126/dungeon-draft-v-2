@@ -21,7 +21,9 @@ Choisir la vue **Art** pour vérifier sol, murs, décorations et foreground. Cho
 
 ## Convertir une map peinte
 
-Ouvrir la forêt puis Construction dynamique. Choisir la working copy HYBRID recommandée. Le background reste intact ; water/ice/lava apparaissent comme overlays. Undo revient à PAINTED. Sauvegarder sous une nouvelle arène si le résultat doit être conservé.
+Ouvrir la forêt puis Construction dynamique. Choisir **HYBRID — terrains spéciaux** pour laisser la pierre au décor, ou **HYBRID — TOUTES LES DALLES TACTIQUES** pour afficher une vraie dalle `stone.png` sur chaque cellule normale. Le background reste intact dans les deux cas. Le panneau **SOL HYBRIDE** permet de changer ce choix ensuite ; Undo revient au contrat précédent. Sauvegarder sous une nouvelle arène si le résultat doit être conservé.
+
+Lors de **Importer le décor**, choisir également **TOUTES LES DALLES TACTIQUES — pierre incluse** si le sol tactique complet doit rester au-dessus de l'illustration. Une map auparavant MODULAR présélectionne ce choix.
 
 ## Lab autonome et transfert
 
