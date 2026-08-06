@@ -22,7 +22,7 @@ export function RoomDetailPage() {
   const snapshot = useSnapshot();
   const index = createSnapshotIndex(snapshot);
   const room = index.roomsById.get(roomId);
-  if (!room) return <UnknownEntityPage kind="salle" id={roomId} backTo="/run" />;
+  if (!room) return <UnknownEntityPage kind="salle" id={roomId} backTo="/runs" />;
   const waves = orderedWavesForRoom(snapshot, room.id);
   const encounter = encounterForRoom(snapshot, room);
   const comparison = compareRoomToPrevious(snapshot, room);
@@ -31,8 +31,10 @@ export function RoomDetailPage() {
 
   return (
     <>
-      <Link className="back-link" to="/run">← Toute la run</Link>
-      <PageHeader eyebrow={`Salle ${room.index} · ${labelMapKind(room.map_kind)}`} title={room.name} description={`${room.available_wave_count} profils de vague disponibles, ${room.resolved_default_seed_wave_count ?? 'nombre runtime'} retenus avec la seed ${room.wave_resolution_seed}.`}>
+      <Link className="back-link" to={`/runs/${room.run_id}`}>← Toute la run</Link>
+      <PageHeader eyebrow={`Salle ${room.index} · ${labelMapKind(room.map_kind)}`} title={room.name} description={room.flow_mode === 'wave_chain'
+        ? `${room.wave_profile_count} profils de vague disponibles, ${room.resolved_default_seed_wave_count ?? 'nombre runtime'} combats retenus avec la seed ${room.wave_resolution_seed}.`
+        : 'Rencontre unique de production, sans profil de vague ni sélection par seed.'}>
         <span className="count-chip">{room.grid_width ?? '?'} × {room.grid_height ?? '?'}</span>
       </PageHeader>
 
@@ -53,7 +55,7 @@ export function RoomDetailPage() {
         <Panel title="Récompense ultime">
           <dl className="stats-table">
             <div><dt>Chance de base</dt><dd>{formatPercent(room.ultimate_reward_base_chance_percent)}</dd></div>
-            <div><dt>Gain par vague</dt><dd>{room.ultimate_reward_min_gain_per_wave}–{room.ultimate_reward_max_gain_per_wave} points</dd></div>
+            <div><dt>Gain par {room.flow_mode === 'wave_chain' ? 'vague' : 'combat'}</dt><dd>{room.ultimate_reward_min_gain_per_wave}–{room.ultimate_reward_max_gain_per_wave} points</dd></div>
             <div><dt>Cases héros</dt><dd>{room.hero_spawn_cell_count}</dd></div><div><dt>Cases ennemies</dt><dd>{room.enemy_spawn_cell_count}</dd></div>
           </dl>
           <p className="budget-note">Ces valeurs sont les paramètres exportés. Observatory ne calcule aucune probabilité finale non prouvée.</p>
@@ -64,16 +66,16 @@ export function RoomDetailPage() {
         <dl className="comparison-grid"><div><dt>PV initiaux</dt><dd>{signed(comparison.hpDelta)}</dd></div><div><dt>Attaque initiale</dt><dd>{signed(comparison.attackDelta)}</dd></div><div><dt>Ennemis</dt><dd>{signed(comparison.enemyCountDelta)}</dd></div><div><dt>Plafond vivant</dt><dd>{signed(comparison.livingCapDelta)}</dd></div></dl>
       </Panel>}
 
-      <Panel title="Profils de vague">
+      {room.flow_mode === 'wave_chain' ? <Panel title="Profils de vague de test">
         <div className="table-wrap"><table>
-          <caption>Profils disponibles ; « oui » identifie ceux sélectionnés par la seed de production.</caption>
+          <caption>Profils disponibles ; « oui » identifie ceux sélectionnés par la seed de la run de test.</caption>
           <thead><tr><th>Vague</th><th>Profil</th><th>Sélection</th><th>Rencontre</th><th>PV</th><th>Attaque</th><th>Récompense</th><th>Totaux théoriques</th><th>Statut</th></tr></thead>
           <tbody>{waves.map((wave) => <tr key={wave.id}><th scope="row">{wave.index}. {wave.name}</th><td>{wave.is_mandatory_profile ? 'Obligatoire' : wave.is_optional_profile ? 'Optionnel' : 'Hors plage'}<small className="cell-note">{labelSourceKind(wave.source_kind)} · identité {labelIdentityStability(wave.identity_stability)}</small></td><td>{wave.is_selected_by_default_seed ? 'Oui' : 'Non'}</td><td><code>{wave.encounter_id}</code></td><td>{formatMultiplier(wave.enemy_health_multiplier)}</td><td>{formatMultiplier(wave.enemy_attack_multiplier)}<small className="cell-note">{labelMultiplierStatus(wave.attack_multiplier_effect_status)}</small></td><td>{formatMultiplier(wave.reward_multiplier)}</td><td>{wave.scaled_initial_totals.total_max_hp ?? 'runtime'} PV · {wave.scaled_initial_totals.total_attack_power ?? 'runtime'} puissance d’attaque</td><td>{labelCalculationStatus(wave.calculation_status)}</td></tr>)}</tbody>
         </table></div>
         <details className="technical-details wave-calculations"><summary>Formules, hypothèses et preuves des calculs</summary>
           <ul className="calculation-list">{waves.map((wave) => <li key={wave.id}><strong>{wave.name}</strong><span>PV de base de la rencontre × {formatMultiplier(wave.enemy_health_multiplier)} ; puissance d’attaque (<code>attack_power</code>) × {formatMultiplier(wave.enemy_attack_multiplier)}.</span><span>Statut : {labelCalculationStatus(wave.calculation_status)}. Preuve : {wave.calculation_evidence}</span><code>{wave.source_path}</code></li>)}</ul>
         </details>
-      </Panel>
+      </Panel> : null}
 
       {enemySpells.length > 0 && <Panel title="Capacités ennemies de la rencontre"><div className="enemy-spell-grid">{enemySpells.map((spell) => <EnemySpellCard key={spell.id} spell={spell} encounterId={encounter?.id} disabledAbilityIds={encounter?.disabled_ability_ids} />)}</div></Panel>}
 

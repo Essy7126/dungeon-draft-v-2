@@ -20,6 +20,7 @@ import { EnemiesPage } from '../pages/EnemiesPage';
 import { EnemyDetailPage } from '../pages/EnemyDetailPage';
 import { RoomDetailPage } from '../pages/RoomDetailPage';
 import { RunPage } from '../pages/RunPage';
+import { RunsPage } from '../pages/RunsPage';
 import { snapshotFixture } from './fixture';
 
 function renderPage(page: React.ReactNode, path = '/', routePath = '') {
@@ -32,8 +33,8 @@ describe('pages Observatory', () => {
     expect(screen.getByRole('heading', { name: 'État du jeu exporté' })).toBeInTheDocument();
     expect(screen.getAllByText('0', { selector: 'strong' }).length).toBeGreaterThan(0);
     expect(screen.getByText('Domaines reportés')).toBeInTheDocument();
-    expect(screen.getByText('Profils de vague rédigés')).toBeInTheDocument();
-    expect(screen.getByText('Profils sélectionnés par la seed')).toBeInTheDocument();
+    expect(screen.getByText('Profils de vague de test')).toBeInTheDocument();
+    expect(screen.getByText('Profils de test sélectionnés')).toBeInTheDocument();
     expect(screen.getByText('progression.xp_per_effective_cast')).toBeInTheDocument();
     expect(screen.getByText('Décisions de conception')).toBeInTheDocument();
   });
@@ -99,14 +100,68 @@ describe('pages Observatory', () => {
     expect(screen.getByRole('heading', { name: 'Discipline introuvable' })).toBeInTheDocument();
   });
 
-  it('affiche la run, le roster et les totaux de progression', () => {
+  it('affiche la run, le roster et les profils de progression', () => {
     renderPage(<RunPage />);
     expect(screen.getByRole('heading', { name: 'Première run' })).toBeInTheDocument();
-    expect(screen.getByRole('table')).toHaveTextContent('Éclaireur');
-    expect(screen.getByRole('table')).toHaveTextContent('80');
+    expect(screen.getByRole('table')).toHaveTextContent('Gobelin éclaireur');
     expect(screen.getByText('Multiplicateur PV maximal sélectionné')).toBeInTheDocument();
-    expect(screen.getByText('Multiplicateur de puissance d’attaque maximal sélectionné')).toBeInTheDocument();
+    expect(screen.getByText('Multiplicateur d’attaque maximal sélectionné')).toBeInTheDocument();
     expect(screen.getByText('Multiplicateur de récompense maximal sélectionné')).toBeInTheDocument();
+  });
+
+  it('liste les runs avec leur nature, leur mode et leur fraîcheur', () => {
+    renderPage(<RunsPage />);
+    expect(screen.getByRole('heading', { name: 'Runs' })).toBeInTheDocument();
+    expect(screen.getByText(/Production · Chaîne de vagues/)).toBeInTheDocument();
+    expect(screen.getByText('Combats effectifs')).toBeInTheDocument();
+    expect(screen.getByText('Fraîcheur')).toBeInTheDocument();
+  });
+
+  it('masque les profils et la seed pour une run en rencontre unique', () => {
+    const run = {
+      ...snapshotFixture.runs[0],
+      flow_mode: 'single_encounter' as const,
+      maximum_waves_per_room: 1,
+      authored_wave_profile_count: 0,
+      selected_default_seed_wave_profile_count: 0,
+      minimum_played_wave_profile_count: 0,
+      maximum_played_wave_profile_count: 0,
+    };
+    const room = {
+      ...snapshotFixture.rooms[0],
+      flow_mode: 'single_encounter' as const,
+      available_wave_count: 0,
+      wave_profile_count: 0,
+      resolved_default_seed_wave_count: null,
+      wave_resolution_status: 'not_applicable' as const,
+      wave_resolution_method: 'not_applicable',
+      wave_ids: [],
+    };
+    const snapshot = { ...snapshotFixture, runs: [run], rooms: [room], waves: [] };
+    render(
+      <SnapshotProvider value={snapshot}>
+        <MemoryRouter initialEntries={['/runs/first_run']}>
+          <Route path="/runs/:runId"><RunPage /></Route>
+        </MemoryRouter>
+      </SnapshotProvider>,
+    );
+    expect(screen.getByText('Aucun profil de vague.')).toBeInTheDocument();
+    expect(screen.queryByText('Profils sélectionnés par la seed')).not.toBeInTheDocument();
+    expect(screen.queryByText(/seed 1337/)).not.toBeInTheDocument();
+  });
+
+  it('marque clairement une run de test en chaîne de vagues', () => {
+    const run = { ...snapshotFixture.runs[0], run_kind: 'test' as const, is_primary: false };
+    const snapshot = { ...snapshotFixture, runs: [run] };
+    render(
+      <SnapshotProvider value={snapshot}>
+        <MemoryRouter initialEntries={['/runs/first_run']}>
+          <Route path="/runs/:runId"><RunPage /></Route>
+        </MemoryRouter>
+      </SnapshotProvider>,
+    );
+    expect(screen.getByText(/Outil de test — cette run/)).toBeInTheDocument();
+    expect(screen.getByText('Profils sélectionnés par la seed')).toBeInTheDocument();
   });
 
   it('affiche les vagues, le roster et les données runtime de la salle', () => {

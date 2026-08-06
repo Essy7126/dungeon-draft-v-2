@@ -22,6 +22,7 @@ const baseMeta: BuildMeta = {
   snapshot_source_commit: snapshotFixture.meta.source_game_commit,
   comparison_ref: 'HEAD + origin/main',
   non_observatory_changed_paths: [],
+  changed_path_classifications: [],
   freshness_status: 'current',
   generated_at: '2026-08-06T10:00:00Z',
 };
@@ -41,7 +42,7 @@ describe('indicateur global de fraîcheur', () => {
       non_observatory_changed_paths: ['core/game.gd', 'battle/battle.gd'],
     });
     await user.click(screen.getByText('Snapshot en retard'));
-    expect(screen.getByText(/2 fichiers de jeu diffèrent/)).toBeInTheDocument();
+    expect(screen.getByText(/2 chemins hors Observatory modifiés/)).toBeInTheDocument();
     expect(screen.getByText('core/game.gd')).toBeInTheDocument();
   });
 

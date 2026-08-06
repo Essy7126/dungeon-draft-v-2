@@ -14,11 +14,11 @@ func test_snapshot_and_schema_are_parseable_objects() -> void:
 	assert_eq(schema.get("$schema"), "https://json-schema.org/draft/2020-12/schema")
 
 
-func test_snapshot_contract_versions_are_v2_1() -> void:
+func test_snapshot_contract_versions_are_v3() -> void:
 	var meta := (_snapshot().get("meta", {}) as Dictionary)
-	assert_eq(meta.get("schema_version"), "2.1.0")
-	assert_eq(meta.get("generator_version"), "2.1.0")
-	assert_eq(meta.get("manifest_version"), "2.1.0")
+	assert_eq(meta.get("schema_version"), "3.0.0")
+	assert_eq(meta.get("generator_version"), "3.0.0")
+	assert_eq(meta.get("manifest_version"), "3.0.0")
 	assert_true(meta.get("source_git_available", false))
 
 
@@ -68,8 +68,12 @@ func test_wave_profile_summary_is_derived_from_rooms_and_waves() -> void:
 	var minimum := 0
 	var maximum := 0
 	for room_value in snapshot.get("rooms", []) as Array:
-		minimum += int((room_value as Dictionary).get("minimum_wave_count", 0))
-		maximum += int((room_value as Dictionary).get("maximum_wave_count", 0))
+		var room := room_value as Dictionary
+		if str(room.get("flow_mode", "")) != "wave_chain":
+			continue
+		var profile_count := int(room.get("wave_profile_count", 0))
+		minimum += mini(int(room.get("minimum_wave_count", 0)), profile_count)
+		maximum += mini(int(room.get("maximum_wave_count", 0)), profile_count)
 	assert_eq(summary.get("selected_default_seed_wave_profiles"), selected)
 	assert_eq(summary.get("minimum_played_wave_profiles"), minimum)
 	assert_eq(summary.get("maximum_played_wave_profiles"), maximum)
@@ -81,7 +85,10 @@ func test_audits_keep_raw_occurrences_and_truth_metadata() -> void:
 		return str((value as Dictionary).get("rule_id", "")) \
 			== "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE"
 	)
-	assert_eq(multiplier_occurrences.size(), 54)
+	assert_gt(multiplier_occurrences.size(), 0)
+	for occurrence_value in multiplier_occurrences:
+		var occurrence := occurrence_value as Dictionary
+		assert_true(str(occurrence.get("entity_id", "")).begins_with("test_wave_run."))
 	for audit_value in audits:
 		var audit := audit_value as Dictionary
 		assert_true(audit.has("truth_status"))
@@ -109,6 +116,11 @@ func test_primary_character_references_resolve() -> void:
 
 func test_run_graph_references_resolve() -> void:
 	var snapshot := _snapshot()
+	var run_map := _entity_map(snapshot.get("runs", []) as Array)
+	var primary_run_id := str(snapshot.get("primary_run_id", ""))
+	assert_true(run_map.has(primary_run_id))
+	assert_eq((run_map[primary_run_id] as Dictionary).get("run_kind"), "production")
+	assert_true((run_map[primary_run_id] as Dictionary).get("is_primary"))
 	var room_ids := _id_map(snapshot.get("rooms", []) as Array)
 	var wave_ids := _id_map(snapshot.get("waves", []) as Array)
 	var encounter_ids := _id_map(snapshot.get("encounters", []) as Array)

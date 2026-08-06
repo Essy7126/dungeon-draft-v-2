@@ -1,18 +1,42 @@
 {
   "document_status": "CURRENT",
-  "branch": "feature/observatory-truth-v1-1",
+  "branch": "feature/observatory-live-v1-2",
   "commit_reference": "HEAD contenant ce document ; Git reste l’unique autorité pour meta.source_game_commit",
   "updated_at_utc": "2026-08-06T10:45:38Z",
   "validation_method": "Parcours des Resources de production, tests d’export et test de non-substitution du SHA",
-  "manifest_version": "2.1.0",
-  "previous_verified_commit": "1aadd1bd1dec5d1cf108740c0f57e80047d22539",
+  "manifest_version": "3.0.0",
+  "previous_verified_commit": "296f17c7c76626f1d2acd3cc5e650daf356d8ba8",
+  "run_roots": [
+    {
+      "alias": "primary_run",
+      "path": "res://data/runs/first_run.tres",
+      "kind": "production",
+      "is_primary": true,
+      "expected_flow_mode": "single_encounter",
+      "authority": "production_root",
+      "include_in_snapshot": true,
+      "launch_path": "res://ui/party/PartyPresentationScreen.tscn -> GameManager.start_preconfigured_run",
+      "notes": "Run principale SINGLE_ENCOUNTER. Ses six RoomData sont propres au graphe de production."
+    },
+    {
+      "alias": "test_wave_run",
+      "path": "res://data/runs/fixed_trio_prototype_run.tres",
+      "kind": "test",
+      "is_primary": false,
+      "expected_flow_mode": "wave_chain",
+      "authority": "explicit_test_root",
+      "include_in_snapshot": true,
+      "launch_path": "res://hub/data/lanternbound_archivist.tres -> ArchivistPanel -> GameManager.configure_next_run",
+      "notes": "Outil de test WAVE_CHAIN. Ses quatre RoomData et son profil de contenu sont distincts de la production."
+    }
+  ],
   "production_roots": [
     {
       "domain": "runs",
       "path": "res://data/runs/first_run.tres",
       "resource_type": "RunData",
       "authority": "production_root",
-      "identity_field": "manifest_alias:first_run",
+      "identity_field": "manifest_alias:primary_run",
       "traversal_strategy": "ordered_resource_graph",
       "include_in_snapshot": true,
       "evidence": "res://ui/party/PartyPresentationScreen.tscn reference directement cette ressource avant GameManager.start_preconfigured_run.",
@@ -87,8 +111,8 @@
   ],
   "graph_traversal": [
     {"domain": "rooms", "from": "RunData.rooms", "strategy": "ordered_parent_index", "deduplication": "none; order is semantic"},
-    {"domain": "waves", "from": "RoomData.waves or historical fallback", "strategy": "ordered_parent_index", "deduplication": "none; profiles remain distinct"},
-    {"domain": "encounters", "from": "RoomWaveData.encounter_definition", "strategy": "resource_path identity", "deduplication": "by normalized resource_path"},
+    {"domain": "waves", "from": "RoomData.waves for WAVE_CHAIN only", "strategy": "ordered_parent_index", "deduplication": "none; profiles remain distinct; no pseudo-wave for SINGLE_ENCOUNTER"},
+    {"domain": "encounters", "from": "RoomData.encounter_definition for SINGLE_ENCOUNTER; RoomWaveData.encounter_definition with RoomData fallback for WAVE_CHAIN", "strategy": "resource_path identity", "deduplication": "by normalized resource_path"},
     {"domain": "enemies", "from": "EncounterDefinition.roster_units, active RoomData.enemies fallback, Spell.summon_unit_data", "strategy": "recursive closure", "deduplication": "by UnitData.get_effective_unit_id; maximum depth 8"},
     {"domain": "enemy_spells", "from": "reachable UnitData.spells", "strategy": "resource reference", "deduplication": "by Spell.get_effective_spell_id"},
     {"domain": "ai_profiles", "from": "reachable UnitData.ai_profile", "strategy": "resource reference", "deduplication": "by profile_id or resource_path"}
@@ -112,7 +136,6 @@
     {"domain": "audits", "authority": "derived", "include_in_snapshot": true}
   ],
   "exclusions": [
-    {"domain": "debug_runs", "path": "res://data/runs/fixed_trio_prototype_run.tres", "reason": "Ressource de prototype non utilisee par le lancement de production."},
     {"domain": "legacy_runs", "path": "res://data/runs/run_default.tres", "reason": "Ressource non referencee par le parcours de lancement verifie."},
     {"domain": "laboratories", "path": "res://labs", "reason": "Laboratoires et captures exclus du snapshot de production."}
   ],

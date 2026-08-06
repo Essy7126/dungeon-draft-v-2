@@ -8,6 +8,9 @@ export function FreshnessIndicator() {
   const buildMeta = useBuildMeta();
   const { meta } = snapshot;
   const changedPaths = buildMeta.non_observatory_changed_paths;
+  const classifications = new Map(
+    buildMeta.changed_path_classifications.map((entry) => [entry.path, entry.classification]),
+  );
 
   return (
     <details className={`freshness freshness--${buildMeta.freshness_status}`}>
@@ -29,8 +32,8 @@ export function FreshnessIndicator() {
         </dl>
         {buildMeta.freshness_status === 'stale' ? (
           <>
-            <p>{changedPaths.length} fichier{changedPaths.length > 1 ? 's' : ''} de jeu diffère{changedPaths.length > 1 ? 'nt' : ''}. L’effet fonctionnel exige un nouvel export pour être connu.</p>
-            <ul>{changedPaths.slice(0, 5).map((path) => <li key={path}><code>{path}</code></li>)}</ul>
+            <p>{changedPaths.length} chemin{changedPaths.length > 1 ? 's' : ''} hors Observatory modifié{changedPaths.length > 1 ? 's' : ''}. L’effet fonctionnel exige un nouvel export pour être connu.</p>
+            <ul>{changedPaths.slice(0, 5).map((path) => <li key={path}><code>{path}</code><small>{classifications.get(path) ?? 'non_affecting'}</small></li>)}</ul>
           </>
         ) : null}
         {buildMeta.freshness_status === 'diverged' ? <p>Les références Git ne partagent pas de base comparable.</p> : null}

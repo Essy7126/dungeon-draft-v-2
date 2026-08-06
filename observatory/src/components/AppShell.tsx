@@ -4,7 +4,7 @@ import { FreshnessIndicator } from './FreshnessIndicator';
 
 const navigation = [
   ['Vue globale', '/overview'],
-  ['Run', '/run'],
+  ['Runs', '/runs'],
   ['Ennemis', '/enemies'],
   ['Personnages', '/characters'],
   ['Sorts', '/spells'],

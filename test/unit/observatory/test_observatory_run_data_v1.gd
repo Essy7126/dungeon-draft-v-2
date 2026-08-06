@@ -2,39 +2,32 @@ extends GutTest
 
 const Exporter := preload("res://tools/observatory/observatory_run_data_exporter.gd")
 const RUN_PATH := "res://data/runs/first_run.tres"
+const TEST_RUN_PATH := "res://data/runs/fixed_trio_prototype_run.tres"
 
 
 func test_production_run_loads_valid_and_preserves_room_order() -> void:
 	var run := load(RUN_PATH) as RunData
 	assert_not_null(run)
 	assert_true(run.is_valid())
-	var graph := Exporter.new().export_graph(run, RUN_PATH)
+	var graph := _official_graph()
 	var runs := graph.get("runs", []) as Array
-	assert_eq(runs.size(), 1)
-	assert_eq((runs[0] as Dictionary).get("id"), "first_run")
+	assert_eq(runs.size(), 2)
+	assert_eq((runs[0] as Dictionary).get("id"), "primary_run")
 	assert_eq((runs[0] as Dictionary).get("authored_room_count"), run.rooms.size())
 	var exported_run := runs[0] as Dictionary
-	var graph_waves := graph.get("waves", []) as Array
-	assert_eq(exported_run.get("authored_wave_profile_count"), graph_waves.size())
-	var selected_profile_count := 0
-	for wave_value in graph_waves:
-		if bool((wave_value as Dictionary).get("is_selected_by_default_seed", false)):
-			selected_profile_count += 1
-	assert_eq(
-		exported_run.get("selected_default_seed_wave_profile_count"),
-		selected_profile_count,
-	)
-	assert_gte(
-		float(exported_run.get("selected_health_multiplier_max", 0.0)),
-		0.0,
-	)
+	assert_eq(exported_run.get("run_kind"), "production")
+	assert_eq(exported_run.get("flow_mode"), "single_encounter")
+	assert_true(exported_run.get("is_primary"))
+	assert_eq(exported_run.get("effective_combat_count"), run.rooms.size())
+	assert_eq(exported_run.get("authored_wave_profile_count"), 0)
+	assert_eq(exported_run.get("selected_default_seed_wave_profile_count"), 0)
 	var room_ids := (runs[0] as Dictionary).get("room_ids", []) as Array
 	for index in range(room_ids.size()):
-		assert_eq(room_ids[index], "first_run.room.%02d" % (index + 1))
+		assert_eq(room_ids[index], "primary_run.room.%02d" % (index + 1))
 
 
 func test_room_export_covers_painted_and_legacy_resources() -> void:
-	var graph := _production_graph()
+	var graph := _official_graph()
 	var rooms := graph.get("rooms", []) as Array
 	assert_true(rooms.any(func(value: Variant) -> bool:
 		return str((value as Dictionary).get("map_kind")) == "painted"
@@ -44,7 +37,10 @@ func test_room_export_covers_painted_and_legacy_resources() -> void:
 	))
 	for value in rooms:
 		var room := value as Dictionary
-		assert_gt(int(room.get("available_wave_count", 0)), 0)
+		if str(room.get("flow_mode", "")) == "single_encounter":
+			assert_eq(room.get("wave_profile_count"), 0)
+			assert_eq(room.get("resolved_default_seed_wave_count"), null)
+			assert_eq(room.get("wave_resolution_status"), "not_applicable")
 		assert_lte(int(room.get("minimum_wave_count", 0)), int(room.get("maximum_wave_count", 0)))
 		assert_gt(int(room.get("hero_spawn_cell_count", 0)), 0)
 		assert_gt(int(room.get("enemy_spawn_cell_count", 0)), 0)
@@ -52,13 +48,15 @@ func test_room_export_covers_painted_and_legacy_resources() -> void:
 
 
 func test_wave_profiles_are_stable_mandatory_optional_and_scaled() -> void:
-	var graph := _production_graph()
+	var graph := _official_graph()
 	var waves := graph.get("waves", []) as Array
 	var ids: Array[String] = []
 	var mandatory := 0
 	var optional := 0
 	for value in waves:
 		var wave := value as Dictionary
+		assert_eq(wave.get("run_id"), "test_wave_run")
+		assert_eq(wave.get("run_kind"), "test")
 		ids.append(str(wave.get("id", "")))
 		mandatory += 1 if bool(wave.get("is_mandatory_profile", false)) else 0
 		optional += 1 if bool(wave.get("is_optional_profile", false)) else 0
@@ -71,7 +69,7 @@ func test_wave_profiles_are_stable_mandatory_optional_and_scaled() -> void:
 	assert_gt(optional, 0)
 
 
-func test_historical_fallback_is_explicit() -> void:
+func test_single_encounter_does_not_create_a_historical_wave() -> void:
 	var enemy := _enemy("fallback_enemy")
 	var encounter := _encounter(enemy)
 	var room := RoomData.new()
@@ -83,14 +81,20 @@ func test_historical_fallback_is_explicit() -> void:
 	var run := RunData.new()
 	run.rooms = [room]
 	var graph := Exporter.new().export_graph(run, "res://test/run.tres")
-	var wave := (graph.get("waves", []) as Array)[0] as Dictionary
-	assert_eq(wave.get("source_kind"), "historical_fallback")
-	assert_eq(wave.get("enemy_health_multiplier"), 1.0)
-	assert_eq(wave.get("enemy_attack_multiplier"), 1.0)
+	assert_true((graph.get("waves", []) as Array).is_empty())
+	assert_eq((graph.get("encounters", []) as Array).size(), 1)
+	assert_eq(((graph.get("runs", []) as Array)[0] as Dictionary).get(
+		"effective_combat_count"
+	), 1)
 
 
-func test_production_wave_resolver_is_deterministic_bounded_and_non_mutating() -> void:
-	var run := load(RUN_PATH) as RunData
+func test_wave_resolver_is_deterministic_bounded_and_single_flow_returns_one() -> void:
+	var primary := load(RUN_PATH) as RunData
+	var primary_counts := RunWaveCountResolver.resolve_counts(primary, primary.default_seed)
+	assert_eq(primary_counts.size(), primary.rooms.size())
+	for count in primary_counts:
+		assert_eq(count, 1)
+	var run := load(TEST_RUN_PATH) as RunData
 	var original_rooms := run.rooms.duplicate()
 	var first := RunWaveCountResolver.resolve_counts(run, run.default_seed)
 	var second := RunWaveCountResolver.resolve_counts(run, run.default_seed)
@@ -99,7 +103,10 @@ func test_production_wave_resolver_is_deterministic_bounded_and_non_mutating() -
 	for index in range(first.size()):
 		assert_gte(first[index], run.rooms[index].get_minimum_wave_count())
 		assert_lte(first[index], run.rooms[index].get_maximum_wave_count())
-	var graph := Exporter.new().export_graph(run, RUN_PATH)
+	var graph := Exporter.new().export_runs([{
+		"id": "test_wave_run", "path": TEST_RUN_PATH, "run_kind": "test",
+		"is_primary": false, "data": run,
+	}])
 	for index in range((graph.get("rooms", []) as Array).size()):
 		var room := (graph.get("rooms", []) as Array)[index] as Dictionary
 		assert_eq(room.get("resolved_default_seed_wave_count"), first[index])
@@ -107,7 +114,7 @@ func test_production_wave_resolver_is_deterministic_bounded_and_non_mutating() -
 
 
 func test_encounters_use_public_roster_methods_and_exact_base_totals() -> void:
-	var graph := _production_graph()
+	var graph := _official_graph()
 	for value in graph.get("encounters", []) as Array:
 		var encounter := value as Dictionary
 		assert_eq(
@@ -159,6 +166,8 @@ func test_scaled_hp_uses_stat_rounding_per_unit_without_mutating_sources() -> vo
 	var room := _room(encounter)
 	room.waves = [wave]
 	var run := RunData.new()
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
+	run.maximum_waves_per_room = 1
 	run.rooms = [room]
 	var graph := Exporter.new().export_graph(run, "res://test/rounding_run.tres")
 	var totals := ((graph.get("waves", []) as Array)[0] as Dictionary).get(
@@ -170,8 +179,17 @@ func test_scaled_hp_uses_stat_rounding_per_unit_without_mutating_sources() -> vo
 	assert_eq(enemy.attack_power, 3)
 
 
-func _production_graph() -> Dictionary:
-	return Exporter.new().export_graph(load(RUN_PATH) as RunData, RUN_PATH)
+func _official_graph() -> Dictionary:
+	return Exporter.new().export_runs([
+		{
+			"id": "primary_run", "path": RUN_PATH, "run_kind": "production",
+			"is_primary": true, "data": load(RUN_PATH) as RunData,
+		},
+		{
+			"id": "test_wave_run", "path": TEST_RUN_PATH, "run_kind": "test",
+			"is_primary": false, "data": load(TEST_RUN_PATH) as RunData,
+		},
+	])
 
 
 func _enemy(id: String) -> UnitData:

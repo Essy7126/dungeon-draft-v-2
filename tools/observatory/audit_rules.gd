@@ -206,21 +206,82 @@ static func _check_run_data(snapshot: Dictionary, audits: Array[Dictionary]) -> 
 	var encounters := snapshot.get("encounters", []) as Array
 	var enemies := snapshot.get("enemies", []) as Array
 	var enemy_spells := snapshot.get("enemy_spells", []) as Array
-	if runs.is_empty():
+	var primary_run_id := str(snapshot.get("primary_run_id", ""))
+	var primary_runs := runs.filter(func(value: Variant) -> bool:
+		return bool((value as Dictionary).get("is_primary", false))
+	)
+	var primary_matches := primary_runs.filter(func(value: Variant) -> bool:
+		var run := value as Dictionary
+		return str(run.get("id", "")) == primary_run_id \
+			and str(run.get("run_kind", "unknown")) == "production"
+	)
+	if primary_run_id.is_empty() or primary_matches.size() != 1:
 		audits.append(_audit(
-			"RUN.PRODUCTION_ROOT_MISSING", "blocking", "runs", "run", "first_run",
+			"RUN.PRIMARY_RUN_MISSING", "blocking", "runs", "run", primary_run_id,
 			"La run de production ne peut pas etre chargee.",
-			"res://data/runs/first_run.tres", "La collection runs est vide.",
+			"docs/observatory/data_source_manifest.json",
+			"primary_run_id est vide ou ne correspond a aucune run primaire.",
 			"Retablir la racine de production.",
+		))
+	if primary_runs.size() > 1:
+		audits.append(_audit(
+			"RUN.MULTIPLE_PRIMARY_RUNS", "blocking", "runs", "run", primary_run_id,
+			"Plusieurs runs sont classees comme principales.",
+			"docs/observatory/data_source_manifest.json",
+			"Nombre de runs primaires : %d." % primary_runs.size(),
+			"Conserver une seule racine is_primary.",
 		))
 	var seen_room_sources := {}
 	for run_value in runs:
 		var run := run_value as Dictionary
+		var run_id := str(run.get("id", ""))
+		var run_kind := str(run.get("run_kind", "unknown"))
+		var flow_mode := str(run.get("flow_mode", "unknown"))
+		if flow_mode not in ["single_encounter", "wave_chain"]:
+			audits.append(_audit(
+				"RUN.UNKNOWN_FLOW_MODE", "blocking", "runs", "run", run_id,
+				"Le mode de flux de la run est inconnu.", str(run.get("source_path", "")),
+				"flow_mode=%s." % flow_mode, "Classifier le RoomFlowMode source.",
+			))
+		if str(run.get("source_path", "")) \
+				== "res://data/runs/fixed_trio_prototype_run.tres" and run_kind != "test":
+			audits.append(_audit(
+				"RUN.TEST_RUN_NOT_EXPLICITLY_CLASSIFIED", "blocking", "runs", "run", run_id,
+				"La run de test officielle n'est pas explicitement classee test.",
+				str(run.get("source_path", "")), "run_kind=%s." % run_kind,
+				"Corriger la classification dans le manifeste.",
+			))
+		if flow_mode == "single_encounter":
+			if int(run.get("maximum_waves_per_room", 0)) != 1:
+				audits.append(_audit(
+					"RUN.SINGLE_ENCOUNTER_MAXIMUM_NOT_ONE", "blocking", "runs", "run",
+					run_id, "Une run SINGLE_ENCOUNTER doit limiter chaque salle a un combat.",
+					str(run.get("source_path", "")), "maximum_waves_per_room=%s." % run.get(
+						"maximum_waves_per_room"
+					), "Fixer maximum_waves_per_room a 1.",
+				))
+			if int(run.get("authored_wave_profile_count", 0)) > 0:
+				audits.append(_audit(
+					"RUN.SINGLE_ENCOUNTER_CONTAINS_WAVES", "blocking", "runs", "run",
+					run_id, "Une run SINGLE_ENCOUNTER exporte des profils de vague.",
+					str(run.get("source_path", "")), "Profils exportes : %s." % run.get(
+						"authored_wave_profile_count"
+					), "Retirer les profils de la run principale.",
+				))
+		if flow_mode == "wave_chain" and int(run.get("authored_wave_profile_count", 0)) <= 0:
+			audits.append(_audit(
+				"RUN.WAVE_CHAIN_WITHOUT_WAVE_PROFILE", "warning" if run_kind == "test" \
+				else "blocking", "runs", "run", run_id,
+				"Une run WAVE_CHAIN ne contient aucun profil de vague.",
+				str(run.get("source_path", "")), "authored_wave_profile_count=0.",
+				"Declarer les profils de vague attendus.",
+			))
 		if str(run.get("validation_status", "")) != "valid" \
 				or not (run.get("validation_errors", []) as Array).is_empty():
 			audits.append(_audit(
-				"RUN.INVALID", "blocking", "runs", "run", str(run.get("id", "")),
-				"La RunData de production est invalide.", str(run.get("source_path", "")),
+				"RUN.INVALID", "warning" if run_kind == "test" else "blocking",
+				"runs", "run", run_id,
+				"La RunData exportee est invalide.", str(run.get("source_path", "")),
 				"RunData.validation_errors() : %s." % str(run.get("validation_errors", [])),
 				"Corriger la Resource de production.",
 			))
@@ -228,31 +289,70 @@ static func _check_run_data(snapshot: Dictionary, audits: Array[Dictionary]) -> 
 		var room := room_value as Dictionary
 		var room_id := str(room.get("id", ""))
 		var source := str(room.get("source_path", ""))
+		var run_id := str(room.get("run_id", ""))
+		var run_kind := str(room.get("run_kind", "unknown"))
+		var flow_mode := str(room.get("flow_mode", "unknown"))
 		if not source.is_empty() and seen_room_sources.has(source):
-			audits.append(_audit(
-				"RUN.DUPLICATE_ROOM_REFERENCE", "warning", "rooms", "room", room_id,
-				"La meme RoomData apparait plusieurs fois dans la run.", source,
-				"Source deja exportee par %s." % seen_room_sources[source],
-				"Documenter l'intention de repetition.",
-			))
-		seen_room_sources[source] = room_id
+			var previous := seen_room_sources[source] as Dictionary
+			var previous_kind := str(previous.get("run_kind", "unknown"))
+			var crosses_production_test := (
+				(run_kind == "production" and previous_kind == "test")
+				or (run_kind == "test" and previous_kind == "production")
+			)
+			if crosses_production_test:
+				audits.append(_audit(
+					"RUN.PRODUCTION_AND_TEST_SHARE_ROOM_RESOURCE", "blocking", "rooms",
+					"room", room_id,
+					"Une RoomData est partagee entre production et test.", source,
+					"Source deja exportee par %s." % previous.get("room_id", ""),
+					"Creer des ressources de salle distinctes.",
+				))
+			else:
+				audits.append(_audit(
+					"RUN.DUPLICATE_ROOM_REFERENCE", "warning", "rooms", "room", room_id,
+					"La meme RoomData apparait plusieurs fois dans la run.", source,
+					"Source deja exportee par %s." % previous.get("room_id", ""),
+					"Documenter l'intention de repetition.",
+				))
+		seen_room_sources[source] = {
+			"room_id": room_id, "run_id": run_id, "run_kind": run_kind,
+		}
 		if str(room.get("battle_scene_path", "")).is_empty():
 			audits.append(_audit(
 				"ROOM.MISSING_BATTLE_SCENE", "blocking", "rooms", "room", room_id,
 				"Aucune scene de combat n'est declaree.", source,
 				"battle_scene_path est vide.", "Declarer la scene de combat de la salle.",
 			))
-		if int(room.get("available_wave_count", 0)) <= 0:
+		if flow_mode == "single_encounter" and (
+			str(room.get("default_encounter_id", "")).is_empty()
+			and not bool(room.get("uses_encounter_fallback", false))
+		):
 			audits.append(_audit(
-				"ROOM.NO_AVAILABLE_WAVE", "blocking", "rooms", "room", room_id,
-				"La salle ne contient aucune vague disponible.", source,
-				"RoomData.get_wave_count() retourne zero.",
-				"Declarer une vague ou une rencontre historique.",
+				"ROOM.SINGLE_ENCOUNTER_MISSING_ENCOUNTER", "blocking", "rooms", "room",
+				room_id, "La salle SINGLE_ENCOUNTER ne resout aucune rencontre.", source,
+				"default_encounter_id est vide et aucun fallback ennemi n'est actif.",
+				"Declarer RoomData.encounter_definition.",
+			))
+		if flow_mode == "wave_chain" and int(room.get("available_wave_count", 0)) <= 0:
+			audits.append(_audit(
+				"ROOM.WAVE_CHAIN_MISSING_ENCOUNTER", "warning" if run_kind == "test" \
+				else "blocking", "rooms", "room", room_id,
+				"La salle WAVE_CHAIN ne contient aucun profil de rencontre.", source,
+				"available_wave_count=0.", "Declarer une vague et sa rencontre.",
 			))
 		var minimum := int(room.get("minimum_wave_count", 0))
 		var maximum := int(room.get("maximum_wave_count", 0))
 		var available := int(room.get("available_wave_count", 0))
-		if minimum <= 0 or maximum < minimum or maximum > available:
+		if flow_mode == "single_encounter" and (minimum != 1 or maximum != 1):
+			audits.append(_audit(
+				"RUN.SINGLE_ENCOUNTER_ROOM_RANGE_NOT_ONE", "blocking", "rooms", "room",
+				room_id, "La salle SINGLE_ENCOUNTER doit declarer une plage 1-1.", source,
+				"minimum=%d, maximum=%d." % [minimum, maximum],
+				"Fixer la plage de combats a 1-1.",
+			))
+		if flow_mode == "wave_chain" and available > 0 and (
+			minimum <= 0 or maximum < minimum or maximum > available
+		):
 			audits.append(_audit(
 				"ROOM.WAVE_RANGE_INVALID", "blocking", "rooms", "room", room_id,
 				"La plage min/max de vagues est incoherente.", source,
@@ -276,6 +376,18 @@ static func _check_run_data(snapshot: Dictionary, audits: Array[Dictionary]) -> 
 				source, "Le gain minimum depasse le gain maximum.",
 				"Corriger la plage de gain dans RoomData.",
 			))
+	for wave_value in waves:
+		var wave := wave_value as Dictionary
+		if str(wave.get("run_kind", "unknown")) == "production" \
+				or str(wave.get("run_id", "")) == primary_run_id:
+			audits.append(_audit(
+				"WAVE.PRODUCTION_PROFILE_LEAK", "blocking", "waves", "wave",
+				str(wave.get("id", "")),
+				"Un profil de vague a fui dans le graphe de production.",
+				str(wave.get("source_path", "")),
+				"run_id=%s, run_kind=%s." % [wave.get("run_id"), wave.get("run_kind")],
+				"Conserver les RoomWaveData dans les runs WAVE_CHAIN non production.",
+			))
 	_check_waves(waves, audits)
 	_check_encounters(encounters, enemies, enemy_spells, audits)
 	_check_enemies(enemies, enemy_spells, audits)
@@ -288,16 +400,18 @@ static func _check_waves(waves: Array, audits: Array[Dictionary]) -> void:
 		var wave := wave_value as Dictionary
 		var wave_id := str(wave.get("id", ""))
 		var source := str(wave.get("source_path", ""))
+		var severity := "warning" if str(wave.get("run_kind", "unknown")) == "test" \
+			else "blocking"
 		if str(wave.get("validation_status", "")) != "valid":
 			audits.append(_audit(
-				"WAVE.INVALID", "blocking", "waves", "wave", wave_id,
+				"WAVE.INVALID", severity, "waves", "wave", wave_id,
 				"Le profil de vague est invalide.", source,
 				"RoomWaveData.validation_errors() : %s." % str(wave.get("validation_errors", [])),
 				"Corriger la Resource de vague.",
 			))
 		if str(wave.get("encounter_id", "")).is_empty():
 			audits.append(_audit(
-				"WAVE.MISSING_ENCOUNTER", "blocking", "waves", "wave", wave_id,
+				"WAVE.MISSING_ENCOUNTER", severity, "waves", "wave", wave_id,
 				"Aucune rencontre n'est resolue pour la vague.", source,
 				"encounter_id est vide.", "Declarer une EncounterDefinition.",
 			))
@@ -305,7 +419,7 @@ static func _check_waves(waves: Array, audits: Array[Dictionary]) -> void:
 				or float(wave.get("enemy_attack_multiplier", 0.0)) <= 0.0 \
 				or float(wave.get("reward_multiplier", -1.0)) < 0.0:
 			audits.append(_audit(
-				"WAVE.NON_POSITIVE_MULTIPLIER", "blocking", "waves", "wave", wave_id,
+				"WAVE.NON_POSITIVE_MULTIPLIER", severity, "waves", "wave", wave_id,
 				"Un multiplicateur de vague est hors limites.", source,
 				"PV=%s, attack_power=%s, recompense=%s." % [
 					wave.get("enemy_health_multiplier"), wave.get("enemy_attack_multiplier"),

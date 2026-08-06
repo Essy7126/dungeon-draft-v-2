@@ -22,12 +22,12 @@ export function OverviewPage() {
       </section>
 
       <section className="metrics-grid" aria-label="Compteurs de la run">
-        <MetricCard label="Runs" value={summary.runs} tone="gold" />
-        <MetricCard label="Salles" value={summary.rooms} />
-        <MetricCard label="Profils de vague rédigés" value={summary.authored_wave_profiles} />
-        <MetricCard label="Profils sélectionnés par la seed" value={summary.selected_default_seed_wave_profiles} />
-        <MetricCard label="Minimum de profils joués" value={summary.minimum_played_wave_profiles} />
-        <MetricCard label="Maximum de profils joués" value={summary.maximum_played_wave_profiles} />
+        <MetricCard label="Runs de production" value={summary.production_run_count} tone="gold" />
+        <MetricCard label="Runs de test" value={summary.test_run_count} />
+        <MetricCard label="Salles en rencontre unique" value={summary.single_encounter_room_count} />
+        <MetricCard label="Combats effectifs de production" value={summary.production_effective_combat_count} />
+        <MetricCard label="Profils de vague de test" value={summary.test_authored_wave_profile_count} />
+        <MetricCard label="Profils de test sélectionnés" value={summary.test_selected_wave_profile_count} />
       </section>
 
       <section className="metrics-grid" aria-label="Compteurs des rencontres">

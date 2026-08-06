@@ -21,11 +21,25 @@ beforeAll(async () => {
 });
 
 describe('snapshot réel versionné', () => {
-  it('est validé par Ajv et expose la provenance 2.1', () => {
-    expect(snapshot.meta.schema_version).toBe('2.1.0');
+  it('est validé par Ajv et expose la provenance 3.0', () => {
+    expect(snapshot.meta.schema_version).toBe('3.0.0');
     expect(snapshot.meta.source_game_commit).toMatch(/^[0-9a-f]{40}$/u);
     expect(snapshot.meta.source_git_available).toBe(true);
     expect(snapshot.meta.source_worktree_dirty_before_export).toBe(false);
+  });
+
+  it('sépare la production des profils de vague de test', () => {
+    const primary = snapshot.runs.find((run) => run.id === snapshot.primary_run_id);
+    expect(primary).toMatchObject({
+      run_kind: 'production',
+      flow_mode: 'single_encounter',
+      is_primary: true,
+      authored_wave_profile_count: 0,
+      selected_default_seed_wave_profile_count: 0,
+    });
+    expect(snapshot.waves.every((wave) => wave.run_kind === 'test')).toBe(true);
+    expect(snapshot.summary.production_effective_combat_count)
+      .toBe(primary?.effective_combat_count);
   });
 
   it('dérive ses compteurs des collections réelles', () => {

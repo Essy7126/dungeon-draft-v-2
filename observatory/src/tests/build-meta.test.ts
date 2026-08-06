@@ -8,6 +8,10 @@ interface BuildMetaResult {
   snapshot_source_commit: string;
   comparison_ref: string;
   non_observatory_changed_paths: string[];
+  changed_path_classifications: Array<{
+    path: string;
+    classification: 'snapshot_affecting' | 'possibly_affecting' | 'non_affecting' | 'documentation_only';
+  }>;
   freshness_status: 'current' | 'stale' | 'diverged' | 'unknown';
   generated_at: string;
 }
@@ -96,6 +100,25 @@ describe('generate-build-meta', () => {
 
     expect(result.freshness_status).toBe('stale');
     expect(result.non_observatory_changed_paths).toEqual(['core/game.gd']);
+    expect(result.changed_path_classifications).toContainEqual({
+      path: 'core/game.gd',
+      classification: 'snapshot_affecting',
+    });
+  });
+
+  it('préserve les chemins accentués grâce à la sortie Git NUL', async () => {
+    const { repository, sourceCommit } = await repositoryFixture();
+    await writeFile(resolve(repository, 'core', 'énergie.gd'), 'énergie\n', 'utf8');
+    git(repository, 'add', 'core/énergie.gd');
+    git(repository, 'commit', '-m', 'accented path');
+
+    const result = await runGenerator(repository, sourceCommit);
+
+    expect(result.non_observatory_changed_paths).toEqual(['core/énergie.gd']);
+    expect(result.changed_path_classifications[0]).toEqual({
+      path: 'core/énergie.gd',
+      classification: 'snapshot_affecting',
+    });
   });
 
   it('devient unknown lorsque Git est indisponible', async () => {

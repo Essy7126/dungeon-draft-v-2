@@ -2,7 +2,6 @@ class_name ObservatoryRunDataExporter
 extends RefCounted
 
 const MAX_SUMMON_DEPTH := 8
-const RUN_ID := "first_run"
 const STRATEGY_NAMES := [
 	"GENERIC_MELEE",
 	"GENERIC_RANGED",
@@ -32,32 +31,89 @@ var _summon_edges: Array[Dictionary] = []
 var _ai_profile_resources := {}
 var _ai_profile_enemy_ids := {}
 var _audits: Array[Dictionary] = []
-var _run_data: RunData = null
+var _room_resources := {}
 
 
 func export_graph(run_data: RunData, run_path: String) -> Dictionary:
+	return export_runs([{
+		"id": "first_run",
+		"path": run_path,
+		"run_kind": "production",
+		"is_primary": true,
+		"data": run_data,
+	}])
+
+
+func export_runs(run_specs: Array[Dictionary]) -> Dictionary:
 	_reset()
-	_run_data = run_data
-	if run_data == null:
+	if run_specs.is_empty():
 		return {
 			"runs": [], "rooms": [], "waves": [], "encounters": [],
 			"enemies": [], "enemy_spells": [], "ai_profiles": [],
 			"audits": [],
 		}
 
-	var resolved_counts := RunWaveCountResolver.resolve_counts(
-		run_data, run_data.default_seed
-	)
+	var runs: Array[Dictionary] = []
 	var rooms: Array[Dictionary] = []
 	var waves: Array[Dictionary] = []
+	for spec in run_specs:
+		var run_data := spec.get("data") as RunData
+		if run_data == null:
+			continue
+		runs.append(_export_run(spec, run_data, rooms, waves))
+
+	_register_initial_enemies(rooms)
+	_collect_enemy_graph()
+	_propagate_summon_reachability()
+	var encounters := _export_encounters()
+	var enemies := _export_enemies()
+	var enemy_spells := _export_enemy_spells()
+	var ai_profiles := _export_ai_profiles()
+	_apply_wave_calculations(waves, encounters, enemies)
+	_update_run_wave_calculations(runs, waves)
+	return {
+		"runs": runs,
+		"rooms": rooms,
+		"waves": waves,
+		"encounters": encounters,
+		"enemies": enemies,
+		"enemy_spells": enemy_spells,
+		"ai_profiles": ai_profiles,
+		"audits": _audits,
+	}
+
+
+func _export_run(
+		spec: Dictionary,
+		run_data: RunData,
+		rooms: Array[Dictionary],
+		waves: Array[Dictionary]
+	) -> Dictionary:
+	var run_id := str(spec.get("id", "unknown_run"))
+	var run_path := str(spec.get("path", ""))
+	var run_kind := str(spec.get("run_kind", "unknown"))
+	var is_primary := bool(spec.get("is_primary", false))
+	var flow_mode := _flow_mode(run_data)
+	var uses_wave_chain := flow_mode == "wave_chain"
+	var resolved_counts := PackedInt32Array()
+	if uses_wave_chain:
+		resolved_counts = RunWaveCountResolver.resolve_counts(
+			run_data, run_data.default_seed
+		)
 	var run_room_ids: Array[String] = []
 	var seen_room_paths := {}
+	var authored_wave_count := 0
+	var selected_wave_count := 0
+	var minimum_wave_count := 0
+	var maximum_wave_count := 0
+	var effective_combat_count := 0
 	for room_index in range(run_data.rooms.size()):
 		var room := run_data.rooms[room_index]
-		var room_id := _room_id(room_index)
+		var room_id := _room_id(run_id, room_index)
 		run_room_ids.append(room_id)
 		if room == null:
 			continue
+		_room_resources[room_id] = room
 		var room_path := ObservatorySerializer.resource_path(room)
 		if not room_path.is_empty() and seen_room_paths.has(room_path):
 			_audits.append(_audit(
@@ -68,94 +124,77 @@ func export_graph(run_data: RunData, run_path: String) -> Dictionary:
 				], "Documenter l'intention ou utiliser une ressource distincte.",
 			))
 		seen_room_paths[room_path] = room_index + 1
-		var resolved_count := int(resolved_counts[room_index]) \
-			if room_index < resolved_counts.size() else 0
+		var resolved_count: Variant = null
+		if uses_wave_chain:
+			resolved_count = int(resolved_counts[room_index]) \
+				if room_index < resolved_counts.size() else 0
 		var room_wave_ids: Array[String] = []
-		for wave_index in range(room.get_wave_count()):
-			var wave_id := _wave_id(room_index, wave_index)
-			room_wave_ids.append(wave_id)
-			var wave := room.get_wave(wave_index)
-			var encounter := room.get_encounter_for_wave(wave_index)
-			var encounter_id := _encounter_id(encounter, wave_id)
+		var uses_encounter_fallback := uses_wave_chain and room.waves.is_empty() and (
+			room.encounter_definition != null or not room.enemies.is_empty()
+		)
+		if uses_wave_chain:
+			for wave_index in range(room.waves.size()):
+				var wave_id := _wave_id(run_id, room_index, wave_index)
+				room_wave_ids.append(wave_id)
+				var wave := room.get_wave(wave_index)
+				var encounter := room.get_encounter_for_wave(wave_index)
+				uses_encounter_fallback = uses_encounter_fallback or (
+					wave != null and wave.encounter_definition == null and encounter != null
+				)
+				var encounter_id := _encounter_id(encounter, wave_id)
+				if encounter != null:
+					_register_encounter(encounter_id, encounter, room_id, wave_id)
+				waves.append(_export_wave(
+					wave, encounter, encounter_id, run_id, run_kind, room_id, wave_id,
+					wave_index, room.get_minimum_wave_count(), room.get_maximum_wave_count(),
+					int(resolved_count),
+				))
+			authored_wave_count += room_wave_ids.size()
+			selected_wave_count += mini(int(resolved_count), room.waves.size())
+			minimum_wave_count += mini(room.get_minimum_wave_count(), room.waves.size())
+			maximum_wave_count += mini(room.get_maximum_wave_count(), room.waves.size())
+			effective_combat_count += int(resolved_count)
+		else:
+			var encounter := room.encounter_definition
+			var encounter_id := _encounter_id(encounter, "%s.encounter" % room_id)
 			if encounter != null:
-				_register_encounter(encounter_id, encounter, room_id, wave_id)
-			waves.append(_export_wave(
-				wave, encounter, encounter_id, room_id, wave_id, wave_index,
-				room.get_minimum_wave_count(), room.get_maximum_wave_count(),
-				resolved_count,
-			))
+				_register_encounter(encounter_id, encounter, room_id, "")
+			uses_encounter_fallback = encounter == null and not room.enemies.is_empty()
+			if room.battle_scene != null and (encounter != null or not room.enemies.is_empty()):
+				effective_combat_count += 1
 		rooms.append(_export_room(
-			room, room_id, room_index, run_data.default_seed, resolved_count, room_wave_ids
+			room, room_id, room_index, run_id, run_kind, flow_mode,
+			run_data.default_seed, resolved_count, room_wave_ids,
+			uses_encounter_fallback,
 		))
 
-	_register_initial_enemies(rooms)
-	_collect_enemy_graph()
-	_propagate_summon_reachability()
-	var encounters := _export_encounters()
-	var enemies := _export_enemies()
-	var enemy_spells := _export_enemy_spells()
-	var ai_profiles := _export_ai_profiles()
-	_apply_wave_calculations(waves, encounters, enemies)
-	var selected_profile_count := 0
-	var minimum_profile_count := 0
-	var maximum_profile_count := 0
-	var selected_health_multiplier_max := 0.0
-	var selected_attack_multiplier_max := 0.0
-	var selected_reward_multiplier_max := 0.0
-	for room_value in rooms:
-		var exported_room := room_value as Dictionary
-		minimum_profile_count += int(exported_room.get("minimum_wave_count", 0))
-		maximum_profile_count += int(exported_room.get("maximum_wave_count", 0))
-	for wave_value in waves:
-		var exported_wave := wave_value as Dictionary
-		if not bool(exported_wave.get("is_selected_by_default_seed", false)):
-			continue
-		selected_profile_count += 1
-		selected_health_multiplier_max = maxf(
-			selected_health_multiplier_max,
-			float(exported_wave.get("enemy_health_multiplier", 0.0)),
-		)
-		selected_attack_multiplier_max = maxf(
-			selected_attack_multiplier_max,
-			float(exported_wave.get("enemy_attack_multiplier", 0.0)),
-		)
-		selected_reward_multiplier_max = maxf(
-			selected_reward_multiplier_max,
-			float(exported_wave.get("reward_multiplier", 0.0)),
-		)
-
 	var run_errors := _strings(run_data.validation_errors())
-	var runs: Array[Dictionary] = [{
-		"id": RUN_ID,
+	return {
+		"id": run_id,
 		"id_source": "manifest_alias",
 		"identity_stability": "derived",
 		"name": run_data.run_name,
 		"source_path": run_path,
+		"run_kind": run_kind,
+		"flow_mode": flow_mode,
+		"is_primary": is_primary,
 		"default_seed": run_data.default_seed,
 		"target_duration_minutes": run_data.target_duration_minutes,
 		"extended_duration_minutes": run_data.extended_duration_minutes,
 		"maximum_waves_per_room": run_data.maximum_waves_per_room,
 		"room_ids": run_room_ids,
 		"authored_room_count": run_data.rooms.size(),
-		"authored_wave_profile_count": waves.size(),
-		"selected_default_seed_wave_profile_count": selected_profile_count,
-		"minimum_played_wave_profile_count": minimum_profile_count,
-		"maximum_played_wave_profile_count": maximum_profile_count,
-		"selected_health_multiplier_max": selected_health_multiplier_max,
-		"selected_attack_multiplier_max": selected_attack_multiplier_max,
-		"selected_reward_multiplier_max": selected_reward_multiplier_max,
+		"effective_combat_count": effective_combat_count,
+		"authored_wave_profile_count": authored_wave_count,
+		"selected_default_seed_wave_profile_count": selected_wave_count,
+		"minimum_played_wave_profile_count": minimum_wave_count,
+		"maximum_played_wave_profile_count": maximum_wave_count,
+		"selected_health_multiplier_max": 0.0,
+		"selected_attack_multiplier_max": 0.0,
+		"selected_reward_multiplier_max": 0.0,
 		"validation_status": "valid" if run_data.is_valid() else "invalid",
 		"validation_errors": run_errors,
-	}]
-	return {
-		"runs": runs,
-		"rooms": rooms,
-		"waves": waves,
-		"encounters": encounters,
-		"enemies": enemies,
-		"enemy_spells": enemy_spells,
-		"ai_profiles": ai_profiles,
-		"audits": _audits,
+		"truth_status": "observed",
 	}
 
 
@@ -175,17 +214,22 @@ func _reset() -> void:
 	_ai_profile_resources.clear()
 	_ai_profile_enemy_ids.clear()
 	_audits.clear()
-	_run_data = null
+	_room_resources.clear()
 
 
 func _export_room(
 		room: RoomData,
 		room_id: String,
 		room_index: int,
+		run_id: String,
+		run_kind: String,
+		flow_mode: String,
 		default_seed: int,
-		resolved_count: int,
-		wave_ids: Array[String]
+		resolved_count: Variant,
+		wave_ids: Array[String],
+		uses_encounter_fallback: bool
 	) -> Dictionary:
+	var uses_wave_chain := flow_mode == "wave_chain"
 	var map_kind := "unknown"
 	if room.grid_layout != null or room.painted_map_visual_data != null:
 		map_kind = "painted"
@@ -206,11 +250,13 @@ func _export_room(
 	var errors: Array[String] = []
 	if room.battle_scene == null:
 		errors.append("Aucune battle_scene declaree.")
-	if room.get_wave_count() <= 0:
+	if uses_wave_chain and room.get_wave_count() <= 0:
 		errors.append("Aucun profil de vague disponible.")
-	if room.minimum_wave_count > room.maximum_wave_count \
-			or room.maximum_wave_count > room.get_wave_count():
+	if uses_wave_chain and (room.minimum_wave_count > room.maximum_wave_count \
+			or room.maximum_wave_count > room.get_wave_count()):
 		errors.append("Plage min/max de vagues incoherente.")
+	if not uses_wave_chain and room.encounter_definition == null and room.enemies.is_empty():
+		errors.append("Aucune rencontre unique disponible.")
 	if room.ultimate_reward_min_gain_per_wave \
 			> room.ultimate_reward_max_gain_per_wave:
 		errors.append("Progression de recompense ultime inversee.")
@@ -222,7 +268,9 @@ func _export_room(
 		"id": room_id,
 		"id_source": "ordered_parent_index",
 		"identity_stability": "derived",
-		"run_id": RUN_ID,
+		"run_id": run_id,
+		"run_kind": run_kind,
+		"flow_mode": flow_mode,
 		"index": room_index + 1,
 		"name": room.room_name,
 		"source_path": ObservatorySerializer.resource_path(room),
@@ -243,15 +291,22 @@ func _export_room(
 		"grid_width": grid_width,
 		"grid_height": grid_height,
 		"grid_dimensions_status": grid_dimensions_status,
-		"available_wave_count": room.get_wave_count(),
+		"available_wave_count": wave_ids.size(),
+		"wave_profile_count": wave_ids.size(),
+		"effective_combat_count": int(resolved_count) if uses_wave_chain else (
+			1 if errors.is_empty() else 0
+		),
 		"minimum_wave_count": room.get_minimum_wave_count(),
 		"maximum_wave_count": room.get_maximum_wave_count(),
 		"resolved_default_seed_wave_count": resolved_count,
-		"wave_resolution_status": "exact_production_resolver",
-		"wave_resolution_method": "RunWaveCountResolver.resolve_counts",
+		"wave_resolution_status": "exact_production_resolver" if uses_wave_chain \
+			else "not_applicable",
+		"wave_resolution_method": "RunWaveCountResolver.resolve_counts" \
+			if uses_wave_chain else "not_applicable",
 		"wave_resolution_seed": default_seed,
 		"wave_ids": wave_ids,
 		"default_encounter_id": default_encounter_id,
+		"uses_encounter_fallback": uses_encounter_fallback,
 		"hero_spawn_cells": ObservatorySerializer.sanitize(room.hero_spawn_zone),
 		"enemy_spawn_cells": ObservatorySerializer.sanitize(room.enemy_spawn_zone),
 		"hero_spawn_cell_count": room.hero_spawn_zone.size(),
@@ -269,6 +324,8 @@ func _export_wave(
 		wave: RoomWaveData,
 		encounter: EncounterDefinition,
 		encounter_id: String,
+		run_id: String,
+		run_kind: String,
 		room_id: String,
 		wave_id: String,
 		wave_index: int,
@@ -291,6 +348,8 @@ func _export_wave(
 		"id": wave_id,
 		"id_source": "ordered_parent_index",
 		"identity_stability": "derived",
+		"run_id": run_id,
+		"run_kind": run_kind,
 		"room_id": room_id,
 		"index": wave_index + 1,
 		"name": wave.wave_name if wave != null else "Vague historique",
@@ -345,16 +404,17 @@ func _register_initial_enemies(rooms: Array[Dictionary]) -> void:
 		var room_export := room_value as Dictionary
 		if not str(room_export.get("default_encounter_id", "")).is_empty():
 			continue
-		var room_index := int(room_export.get("index", 1)) - 1
-		if _run_data == null or room_index < 0 or room_index >= _run_data.rooms.size():
+		var room_id := str(room_export.get("id", ""))
+		var room := _room_resources.get(room_id) as RoomData
+		if room == null:
 			continue
-		for enemy in _run_data.rooms[room_index].enemies:
+		for enemy in room.enemies:
 			if enemy == null:
 				continue
 			var enemy_id := str(enemy.get_effective_unit_id())
 			_enemy_resources[enemy_id] = enemy
-			_append_unique(_enemy_initial_rooms, enemy_id, str(room_export.get("id", "")))
-			_append_unique(_enemy_reachable_rooms, enemy_id, str(room_export.get("id", "")))
+			_append_unique(_enemy_initial_rooms, enemy_id, room_id)
+			_append_unique(_enemy_reachable_rooms, enemy_id, room_id)
 
 
 func _collect_enemy_graph() -> void:
@@ -769,6 +829,31 @@ func _apply_wave_calculations(
 		)
 
 
+func _update_run_wave_calculations(
+		runs: Array[Dictionary],
+		waves: Array[Dictionary]
+	) -> void:
+	var run_map := _id_map(runs)
+	for wave in waves:
+		if not bool(wave.get("is_selected_by_default_seed", false)):
+			continue
+		var run := run_map.get(str(wave.get("run_id", ""))) as Dictionary
+		if run == null:
+			continue
+		run["selected_health_multiplier_max"] = maxf(
+			float(run.get("selected_health_multiplier_max", 0.0)),
+			float(wave.get("enemy_health_multiplier", 0.0)),
+		)
+		run["selected_attack_multiplier_max"] = maxf(
+			float(run.get("selected_attack_multiplier_max", 0.0)),
+			float(wave.get("enemy_attack_multiplier", 0.0)),
+		)
+		run["selected_reward_multiplier_max"] = maxf(
+			float(run.get("selected_reward_multiplier_max", 0.0)),
+			float(wave.get("reward_multiplier", 0.0)),
+		)
+
+
 func _spell_effect_tags(spell: Spell) -> Array[String]:
 	var tags := {}
 	if spell.damage > 0:
@@ -818,12 +903,22 @@ func _normalized_resource_id(path: String) -> String:
 	return value.replace("/", ".").replace("\\", ".").to_lower()
 
 
-func _room_id(room_index: int) -> String:
-	return "%s.room.%02d" % [RUN_ID, room_index + 1]
+func _flow_mode(run_data: RunData) -> String:
+	if run_data == null:
+		return "unknown"
+	if run_data.room_flow_mode == RunData.RoomFlowMode.SINGLE_ENCOUNTER:
+		return "single_encounter"
+	if run_data.room_flow_mode == RunData.RoomFlowMode.WAVE_CHAIN:
+		return "wave_chain"
+	return "unknown"
 
 
-func _wave_id(room_index: int, wave_index: int) -> String:
-	return "%s.wave.%02d" % [_room_id(room_index), wave_index + 1]
+func _room_id(run_id: String, room_index: int) -> String:
+	return "%s.room.%02d" % [run_id, room_index + 1]
+
+
+func _wave_id(run_id: String, room_index: int, wave_index: int) -> String:
+	return "%s.wave.%02d" % [_room_id(run_id, room_index), wave_index + 1]
 
 
 func _enum_pair(value: int, names: Array[String]) -> Dictionary:

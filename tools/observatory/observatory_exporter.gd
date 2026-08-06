@@ -1,11 +1,10 @@
 class_name ObservatoryExporter
 extends RefCounted
 
-const SCHEMA_VERSION := "2.1.0"
-const GENERATOR_VERSION := "2.1.0"
+const SCHEMA_VERSION := "3.0.0"
+const GENERATOR_VERSION := "3.0.0"
 const DEFAULT_MANIFEST_PATH := "res://docs/observatory/data_source_manifest.json"
 const DEFAULT_CONTRACT_PATH := "res://docs/observatory/design_contract.json"
-const FIRST_RUN_PATH := "res://data/runs/first_run.tres"
 const ITEM_CATALOG_PATH := "res://data/items/catalogs/default_item_catalog.tres"
 const HERO_PATHS := [
 	"res://data/units/alliés/elfe.tres",
@@ -44,9 +43,16 @@ func build_snapshot(
 	if not errors.is_empty():
 		return {"snapshot": {}, "errors": errors, "warnings": warnings}
 
-	var run_data := _load_resource(FIRST_RUN_PATH, "RunData", source_audits) as RunData
-	var run_graph := ObservatoryRunDataExporter.new().export_graph(run_data, FIRST_RUN_PATH)
+	var run_specs := _load_run_specs(manifest, source_audits)
+	var run_graph := ObservatoryRunDataExporter.new().export_runs(run_specs)
 	source_audits.append_array(run_graph.get("audits", []) as Array)
+	var primary_run_id := ""
+	var primary_run_data: RunData = null
+	for spec in run_specs:
+		if bool(spec.get("is_primary", false)):
+			primary_run_id = str(spec.get("id", ""))
+			primary_run_data = spec.get("data") as RunData
+			break
 	var characters: Array[Dictionary] = []
 	var character_resources: Array[UnitData] = []
 	for path in HERO_PATHS:
@@ -185,10 +191,11 @@ func build_snapshot(
 	var contract_checks := _build_contract_checks(
 		contract_document.get("decisions", []) as Array,
 		characters,
-		run_data,
+		primary_run_data,
 		eligible_item_ids,
 	)
 	var snapshot := {
+		"primary_run_id": primary_run_id,
 		"meta": _build_meta(manifest, contract_document, provenance),
 		"scope": _build_scope(manifest),
 		"summary": {},
@@ -554,10 +561,45 @@ func _build_summary(snapshot: Dictionary) -> Dictionary:
 			selected_wave_profiles += 1
 	var minimum_played_profiles := 0
 	var maximum_played_profiles := 0
+	var production_run_count := 0
+	var test_run_count := 0
+	var production_effective_combat_count := 0
+	var test_authored_wave_profile_count := 0
+	var test_selected_wave_profile_count := 0
+	for run_value in snapshot.get("runs", []) as Array:
+		var run := run_value as Dictionary
+		match str(run.get("run_kind", "unknown")):
+			"production":
+				production_run_count += 1
+				production_effective_combat_count += int(
+					run.get("effective_combat_count", 0)
+				)
+			"test":
+				test_run_count += 1
+				test_authored_wave_profile_count += int(
+					run.get("authored_wave_profile_count", 0)
+				)
+				test_selected_wave_profile_count += int(
+					run.get("selected_default_seed_wave_profile_count", 0)
+				)
+	var single_encounter_room_count := 0
+	var wave_chain_room_count := 0
 	for room_value in snapshot.get("rooms", []) as Array:
 		var room := room_value as Dictionary
-		minimum_played_profiles += int(room.get("minimum_wave_count", 0))
-		maximum_played_profiles += int(room.get("maximum_wave_count", 0))
+		if str(room.get("flow_mode", "unknown")) == "single_encounter":
+			single_encounter_room_count += 1
+		else:
+			wave_chain_room_count += 1 if str(
+				room.get("flow_mode", "unknown")
+			) == "wave_chain" else 0
+		if str(room.get("flow_mode", "unknown")) == "wave_chain":
+			var profile_count := int(room.get("wave_profile_count", 0))
+			minimum_played_profiles += mini(
+				int(room.get("minimum_wave_count", 0)), profile_count
+			)
+			maximum_played_profiles += mini(
+				int(room.get("maximum_wave_count", 0)), profile_count
+			)
 	return {
 		"characters": (snapshot.get("characters", []) as Array).size(),
 		"disciplines": (snapshot.get("disciplines", []) as Array).size(),
@@ -572,6 +614,13 @@ func _build_summary(snapshot: Dictionary) -> Dictionary:
 		"selected_default_seed_wave_profiles": selected_wave_profiles,
 		"minimum_played_wave_profiles": minimum_played_profiles,
 		"maximum_played_wave_profiles": maximum_played_profiles,
+		"production_run_count": production_run_count,
+		"test_run_count": test_run_count,
+		"single_encounter_room_count": single_encounter_room_count,
+		"wave_chain_room_count": wave_chain_room_count,
+		"production_effective_combat_count": production_effective_combat_count,
+		"test_authored_wave_profile_count": test_authored_wave_profile_count,
+		"test_selected_wave_profile_count": test_selected_wave_profile_count,
 		"encounters": (snapshot.get("encounters", []) as Array).size(),
 		"enemies": (snapshot.get("enemies", []) as Array).size(),
 		"enemy_spells": (snapshot.get("enemy_spells", []) as Array).size(),
@@ -586,6 +635,27 @@ func _build_summary(snapshot: Dictionary) -> Dictionary:
 		"audit_warning": int(audit_counts["warning"]),
 		"audit_blocking": int(audit_counts["blocking"]),
 	}
+
+
+func _load_run_specs(
+		manifest: Dictionary,
+		source_audits: Array[Dictionary]
+	) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for root_value in manifest.get("run_roots", []) as Array:
+		var root := root_value as Dictionary
+		if not bool(root.get("include_in_snapshot", false)):
+			continue
+		var path := str(root.get("path", ""))
+		var run_data := _load_resource(path, "RunData", source_audits) as RunData
+		result.append({
+			"id": str(root.get("alias", "unknown_run")),
+			"path": path,
+			"run_kind": str(root.get("kind", "unknown")),
+			"is_primary": bool(root.get("is_primary", false)),
+			"data": run_data,
+		})
+	return result
 
 
 func _load_resource(

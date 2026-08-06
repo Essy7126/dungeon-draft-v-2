@@ -11,6 +11,10 @@ const OBSERVATORY_PREFIXES = [
   'tools/observatory/',
   'test/unit/observatory/',
 ];
+const SNAPSHOT_AFFECTING_PREFIXES = [
+  'battle/', 'characters/', 'core/', 'data/', 'hub/', 'traits/', 'ui/', 'units/',
+];
+const POSSIBLY_AFFECTING_PREFIXES = ['addons/', 'asset/', 'audio/', 'cinematics/', 'scenes/'];
 
 function option(name, fallback) {
   const prefix = `--${name}=`;
@@ -38,6 +42,15 @@ function git(repoRoot, args, executable = 'git') {
   ).trim();
 }
 
+function gitBuffer(repoRoot, args, executable = 'git') {
+  const safeRepoRoot = repoRoot.replaceAll('\\', '/');
+  return execFileSync(
+    executable,
+    ['-c', `safe.directory=${safeRepoRoot}`, '--no-optional-locks', '-C', repoRoot, ...args],
+    { encoding: 'buffer', stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true },
+  );
+}
+
 function refExists(repoRoot, ref, executable) {
   try {
     git(repoRoot, ['rev-parse', '--verify', `${ref}^{commit}`], executable);
@@ -56,21 +69,51 @@ function hasMergeBase(repoRoot, first, second, executable) {
 }
 
 function changedPaths(repoRoot, first, second, executable) {
-  const output = git(
+  const output = gitBuffer(
     repoRoot,
-    ['diff', '--name-only', '--no-renames', first, second, '--'],
+    ['-c', 'core.quotepath=false', 'diff', '--name-only', '-z', '--no-renames', first, second, '--'],
     executable,
   );
-  return output ? output.split(/\r?\n/u).map((value) => value.replaceAll('\\', '/')) : [];
+  return output.toString('utf8').split('\0').filter(Boolean)
+    .map((value) => value.replaceAll('\\', '/'));
+}
+
+async function manifestRootPaths(manifestPath) {
+  if (!manifestPath) return new Set();
+  try {
+    const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+    const roots = [
+      ...(Array.isArray(manifest.run_roots) ? manifest.run_roots : []),
+      ...(Array.isArray(manifest.production_roots) ? manifest.production_roots : []),
+    ];
+    return new Set(roots.map((root) => String(root?.path ?? '').replace(/^res:\/\//u, ''))
+      .filter(Boolean));
+  } catch {
+    return new Set();
+  }
+}
+
+function classifyPath(path, roots) {
+  if (path.startsWith('docs/')) return 'documentation_only';
+  if (OBSERVATORY_PREFIXES.some((prefix) => path.startsWith(prefix))) return 'non_affecting';
+  if (roots.has(path) || SNAPSHOT_AFFECTING_PREFIXES.some((prefix) => path.startsWith(prefix))) {
+    return 'snapshot_affecting';
+  }
+  if (path === 'project.godot' || POSSIBLY_AFFECTING_PREFIXES.some((prefix) => path.startsWith(prefix))) {
+    return 'possibly_affecting';
+  }
+  return 'non_affecting';
 }
 
 export async function computeBuildMeta({
   repoRoot,
   snapshotPath,
+  manifestPath,
   gitExecutable = 'git',
 }) {
   const generatedAt = new Date().toISOString();
   let snapshotSourceCommit = 'unknown';
+  const roots = await manifestRootPaths(manifestPath);
   try {
     const snapshot = JSON.parse(await readFile(snapshotPath, 'utf8'));
     snapshotSourceCommit = snapshot?.meta?.source_game_commit ?? 'unknown';
@@ -80,6 +123,7 @@ export async function computeBuildMeta({
       snapshot_source_commit: snapshotSourceCommit,
       comparison_ref: 'none',
       non_observatory_changed_paths: [],
+      changed_path_classifications: [],
       freshness_status: 'unknown',
       generated_at: generatedAt,
     };
@@ -113,11 +157,16 @@ export async function computeBuildMeta({
     const nonObservatoryPaths = [...allPaths]
       .filter((path) => !OBSERVATORY_PREFIXES.some((prefix) => path.startsWith(prefix)))
       .sort();
+    const changedPathClassifications = [...allPaths].sort().map((path) => ({
+      path,
+      classification: classifyPath(path, roots),
+    }));
     return {
       checkout_commit: checkoutCommit,
       snapshot_source_commit: snapshotSourceCommit,
       comparison_ref: comparisonRefs.join(' + '),
       non_observatory_changed_paths: nonObservatoryPaths,
+      changed_path_classifications: changedPathClassifications,
       freshness_status: diverged
         ? 'diverged'
         : nonObservatoryPaths.length > 0
@@ -131,6 +180,7 @@ export async function computeBuildMeta({
       snapshot_source_commit: snapshotSourceCommit,
       comparison_ref: 'none',
       non_observatory_changed_paths: [],
+      changed_path_classifications: [],
       freshness_status: 'unknown',
       generated_at: generatedAt,
     };
@@ -148,9 +198,14 @@ export async function main() {
     'output',
     resolve(projectRoot, 'public', 'generated', 'build_meta.json'),
   );
+  const manifestPath = option(
+    'manifest',
+    resolve(projectRoot, '..', 'docs', 'observatory', 'data_source_manifest.json'),
+  );
   const result = await computeBuildMeta({
     repoRoot,
     snapshotPath,
+    manifestPath,
     gitExecutable: process.env.OBSERVATORY_GIT_EXECUTABLE || 'git',
   });
   await mkdir(dirname(outputPath), { recursive: true });

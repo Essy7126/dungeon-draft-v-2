@@ -1,14 +1,14 @@
 # Contrat de fraîcheur du snapshot
 
 - Statut : **CURRENT**
-- Branche : `feature/observatory-truth-v1-1`
+- Branche : `feature/observatory-live-v1-2`
 - Commit de référence : HEAD contenant ce document ; comparaison locale avec le SHA du snapshot.
 - Date UTC : `2026-08-06T10:45:38Z`
 - Validation : dépôts Git temporaires couvrant `current`, `stale` et `unknown`.
 
 `observatory/scripts/generate-build-meta.mjs` produit localement `public/generated/build_meta.json`, ignoré par Git. Aucune API distante n’est appelée par le navigateur.
 
-Le script compare l’arbre du commit source du snapshot à HEAD puis à `origin/main` lorsqu’il existe. Les chemins `observatory/**`, `docs/observatory/**`, `tools/observatory/**` et `test/unit/observatory/**` sont exclus du calcul métier.
+Le script compare l’arbre du commit source du snapshot à HEAD puis à `origin/main` lorsqu’il existe. Git retourne les chemins en UTF-8, délimités par NUL, avec `core.quotepath=false`. Les chemins `observatory/**`, `docs/observatory/**`, `tools/observatory/**` et `test/unit/observatory/**` sont exclus du calcul métier. Les autres chemins sont classés par les racines du manifeste et des préfixes explicites.
 
 | Statut | Condition |
 |---|---|

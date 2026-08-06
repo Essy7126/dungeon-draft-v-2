@@ -131,7 +131,7 @@ export function auditEntityLink(
     const roomId = index.encountersById.get(entityId)?.room_ids[0];
     return roomId ? `/rooms/${roomId}` : null;
   }
-  if (entityType === 'run' && index.runsById.has(entityId)) return '/run';
+  if (entityType === 'run' && index.runsById.has(entityId)) return `/runs/${entityId}`;
   return null;
 }
 

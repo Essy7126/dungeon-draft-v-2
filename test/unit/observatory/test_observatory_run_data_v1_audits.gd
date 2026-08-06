@@ -5,7 +5,7 @@ const AuditRules := preload("res://tools/observatory/audit_rules.gd")
 
 func test_run_root_invalid_duplicate_and_derived_identity_rules() -> void:
 	var missing := _base_snapshot()
-	assert_has(_rule_ids(AuditRules.run(missing)), "RUN.PRODUCTION_ROOT_MISSING")
+	assert_has(_rule_ids(AuditRules.run(missing)), "RUN.PRIMARY_RUN_MISSING")
 	var snapshot := _base_snapshot()
 	snapshot["runs"] = [_run("invalid")]
 	snapshot["rooms"] = [_room("room_a", "res://same.tres"), _room("room_b", "res://same.tres")]
@@ -26,9 +26,12 @@ func test_all_room_rules_are_distinct() -> void:
 	room["hero_spawn_cell_count"] = 0
 	room["ultimate_reward_min_gain_per_wave"] = 9
 	room["ultimate_reward_max_gain_per_wave"] = 2
-	snapshot["rooms"] = [room]
+	var invalid_range_room := _room("range", "res://range.tres")
+	invalid_range_room["minimum_wave_count"] = 2
+	invalid_range_room["maximum_wave_count"] = 1
+	snapshot["rooms"] = [room, invalid_range_room]
 	var ids := _rule_ids(AuditRules.run(snapshot))
-	for rule_id in ["ROOM.MISSING_BATTLE_SCENE", "ROOM.NO_AVAILABLE_WAVE",
+	for rule_id in ["ROOM.MISSING_BATTLE_SCENE", "ROOM.WAVE_CHAIN_MISSING_ENCOUNTER",
 		"ROOM.WAVE_RANGE_INVALID", "ROOM.SPAWN_ZONE_EMPTY",
 		"ROOM.ULTIMATE_REWARD_RANGE_INVALID"]:
 		assert_has(ids, rule_id)
@@ -111,8 +114,49 @@ func test_summon_missing_unit_is_blocking() -> void:
 	assert_has(_rule_ids(AuditRules.run(snapshot)), "SUMMON.UNKNOWN_UNIT_REFERENCE")
 
 
+func test_v1_2_primary_flow_and_isolation_rules_are_explicit() -> void:
+	var snapshot := _base_snapshot()
+	var primary := _run("valid")
+	primary["maximum_waves_per_room"] = 2
+	primary["authored_wave_profile_count"] = 1
+	var second_primary := _run("valid")
+	second_primary["id"] = "second"
+	var test_run := _run("valid")
+	test_run["id"] = "test_wave_run"
+	test_run["source_path"] = "res://data/runs/fixed_trio_prototype_run.tres"
+	test_run["run_kind"] = "unknown"
+	test_run["flow_mode"] = "wave_chain"
+	test_run["is_primary"] = false
+	test_run["authored_wave_profile_count"] = 0
+	snapshot["runs"] = [primary, second_primary, test_run]
+	var production_room := _room("production", "res://shared_room.tres")
+	production_room["flow_mode"] = "single_encounter"
+	production_room["minimum_wave_count"] = 2
+	production_room["default_encounter_id"] = ""
+	var test_room := _room("test", "res://shared_room.tres")
+	test_room["run_id"] = "test_wave_run"
+	test_room["run_kind"] = "test"
+	snapshot["rooms"] = [production_room, test_room]
+	var leaked_wave := _wave()
+	leaked_wave["run_id"] = "primary_run"
+	leaked_wave["run_kind"] = "production"
+	snapshot["waves"] = [leaked_wave]
+	var ids := _rule_ids(AuditRules.run(snapshot))
+	for rule_id in ["RUN.MULTIPLE_PRIMARY_RUNS",
+		"RUN.SINGLE_ENCOUNTER_MAXIMUM_NOT_ONE",
+		"RUN.SINGLE_ENCOUNTER_CONTAINS_WAVES",
+		"RUN.SINGLE_ENCOUNTER_ROOM_RANGE_NOT_ONE",
+		"RUN.WAVE_CHAIN_WITHOUT_WAVE_PROFILE",
+		"RUN.PRODUCTION_AND_TEST_SHARE_ROOM_RESOURCE",
+		"RUN.TEST_RUN_NOT_EXPLICITLY_CLASSIFIED",
+		"ROOM.SINGLE_ENCOUNTER_MISSING_ENCOUNTER",
+		"WAVE.PRODUCTION_PROFILE_LEAK"]:
+		assert_has(ids, rule_id)
+
+
 func _base_snapshot() -> Dictionary:
 	return {
+		"primary_run_id": "primary_run",
 		"characters": [], "disciplines": [], "spells": [], "items": [],
 		"reward_pools": [], "contract_checks": [], "runs": [], "rooms": [],
 		"waves": [], "encounters": [], "enemies": [], "enemy_spells": [],
@@ -122,8 +166,11 @@ func _base_snapshot() -> Dictionary:
 
 func _run(status: String) -> Dictionary:
 	return {
-		"id": "first_run", "id_source": "manifest_alias",
+		"id": "primary_run", "id_source": "manifest_alias",
 		"identity_stability": "derived", "source_path": "res://run.tres",
+		"run_kind": "production", "flow_mode": "single_encounter",
+		"is_primary": true, "maximum_waves_per_room": 1,
+		"authored_wave_profile_count": 0,
 		"validation_status": status, "validation_errors": [] if status == "valid" else ["x"],
 	}
 
@@ -132,7 +179,9 @@ func _room(id: String, source: String) -> Dictionary:
 	return {
 		"id": id, "id_source": "ordered_parent_index",
 		"identity_stability": "derived", "source_path": source,
+		"run_id": "primary_run", "run_kind": "production", "flow_mode": "wave_chain",
 		"battle_scene_path": "res://battle.tscn", "available_wave_count": 1,
+		"default_encounter_id": "encounter", "uses_encounter_fallback": false,
 		"minimum_wave_count": 1, "maximum_wave_count": 1,
 		"hero_spawn_cell_count": 1, "enemy_spawn_cell_count": 1,
 		"ultimate_reward_min_gain_per_wave": 1,
@@ -144,6 +193,7 @@ func _wave() -> Dictionary:
 	return {
 		"id": "first_run.room.01.wave.01", "id_source": "ordered_parent_index",
 		"identity_stability": "derived", "source_path": "",
+		"run_id": "test_wave_run", "run_kind": "test",
 		"validation_status": "valid", "validation_errors": [],
 		"encounter_id": "encounter", "enemy_health_multiplier": 1.0,
 		"enemy_attack_multiplier": 1.0, "reward_multiplier": 1.0,

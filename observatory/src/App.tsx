@@ -3,7 +3,7 @@ import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { AppShell } from './components/AppShell';
 import { DataErrorPage, LoadingState } from './components/DataStates';
 import { BuildMetaProvider } from './context/BuildMetaContext';
-import { SnapshotProvider } from './context/SnapshotContext';
+import { SnapshotProvider, useSnapshot } from './context/SnapshotContext';
 import { loadBuildMeta, type BuildMeta } from './data/buildMeta';
 import { loadSnapshot } from './data/loadSnapshot';
 import type { Snapshot } from './types';
@@ -23,11 +23,17 @@ import { EnemiesPage } from './pages/EnemiesPage';
 import { EnemyDetailPage } from './pages/EnemyDetailPage';
 import { RoomDetailPage } from './pages/RoomDetailPage';
 import { RunPage } from './pages/RunPage';
+import { RunsPage } from './pages/RunsPage';
 
 type LoadState =
   | { kind: 'loading' }
   | { kind: 'success'; snapshot: Snapshot; buildMeta: BuildMeta }
   | { kind: 'error'; error: unknown };
+
+function PrimaryRunRedirect() {
+  const snapshot = useSnapshot();
+  return <Redirect to={`/runs/${snapshot.primary_run_id}`} />;
+}
 
 export default function App() {
   const [state, setState] = useState<LoadState>({ kind: 'loading' });
@@ -52,7 +58,9 @@ export default function App() {
             <Switch>
               <Route exact path="/"><Redirect to="/overview" /></Route>
               <Route exact path="/overview"><OverviewPage /></Route>
-              <Route exact path="/run"><RunPage /></Route>
+              <Route exact path="/run"><PrimaryRunRedirect /></Route>
+              <Route exact path="/runs"><RunsPage /></Route>
+              <Route path="/runs/:runId"><RunPage /></Route>
               <Route path="/rooms/:roomId"><RoomDetailPage /></Route>
               <Route exact path="/enemies"><EnemiesPage /></Route>
               <Route path="/enemies/:enemyId"><EnemyDetailPage /></Route>

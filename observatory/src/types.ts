@@ -54,6 +54,13 @@ export interface SnapshotSummary {
   selected_default_seed_wave_profiles: number;
   minimum_played_wave_profiles: number;
   maximum_played_wave_profiles: number;
+  production_run_count: number;
+  test_run_count: number;
+  single_encounter_room_count: number;
+  wave_chain_room_count: number;
+  production_effective_combat_count: number;
+  test_authored_wave_profile_count: number;
+  test_selected_wave_profile_count: number;
   encounters: number;
   enemies: number;
   enemy_spells: number;
@@ -277,12 +284,16 @@ export interface Run {
   identity_stability: IdentityStability;
   name: string;
   source_path: string;
+  run_kind: 'production' | 'test' | 'debug' | 'legacy' | 'unknown';
+  flow_mode: 'single_encounter' | 'wave_chain' | 'unknown';
+  is_primary: boolean;
   default_seed: number;
   target_duration_minutes: number;
   extended_duration_minutes: number;
   maximum_waves_per_room: number;
   room_ids: string[];
   authored_room_count: number;
+  effective_combat_count: number;
   authored_wave_profile_count: number;
   selected_default_seed_wave_profile_count: number;
   minimum_played_wave_profile_count: number;
@@ -292,6 +303,7 @@ export interface Run {
   selected_reward_multiplier_max: number;
   validation_status: ValidationStatus;
   validation_errors: string[];
+  truth_status: TruthStatus;
 }
 
 export interface Room {
@@ -299,6 +311,8 @@ export interface Room {
   id_source: IdentitySource;
   identity_stability: IdentityStability;
   run_id: string;
+  run_kind: Run['run_kind'];
+  flow_mode: Run['flow_mode'];
   index: number;
   name: string;
   source_path: string;
@@ -314,14 +328,17 @@ export interface Room {
   grid_height: number | null;
   grid_dimensions_status: 'static_resource' | 'runtime_only';
   available_wave_count: number;
+  wave_profile_count: number;
+  effective_combat_count: number;
   minimum_wave_count: number;
   maximum_wave_count: number;
   resolved_default_seed_wave_count: number | null;
-  wave_resolution_status: 'exact_production_resolver' | 'runtime_only';
+  wave_resolution_status: 'exact_production_resolver' | 'runtime_only' | 'not_applicable';
   wave_resolution_method: string;
   wave_resolution_seed: number;
   wave_ids: string[];
   default_encounter_id: string;
+  uses_encounter_fallback: boolean;
   hero_spawn_cells: Cell[];
   enemy_spawn_cells: Cell[];
   hero_spawn_cell_count: number;
@@ -343,6 +360,8 @@ export interface Wave {
   id: string;
   id_source: IdentitySource;
   identity_stability: IdentityStability;
+  run_id: string;
+  run_kind: Run['run_kind'];
   room_id: string;
   index: number;
   name: string;
@@ -576,6 +595,7 @@ export interface AuditResult {
 }
 
 export interface Snapshot {
+  primary_run_id: string;
   meta: SnapshotMeta;
   scope: SnapshotScope;
   summary: SnapshotSummary;

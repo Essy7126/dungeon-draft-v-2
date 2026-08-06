@@ -1,9 +1,8 @@
-# Dungeon Draft Observatory — frontend V1.1
+# Dungeon Draft Observatory — frontend V1.2
 
 - Statut : **CURRENT**
-- Branche : `feature/observatory-frontend-v1-1`
-- Parent de vérité : `b9e5a0161fc88cede9de9bd618298d1531d0b09a`
-- Snapshot source : `e93a63404369de54b144735d640c1b4b17f0d2b7`
+- Branche : `feature/observatory-live-v1-2`
+- Snapshot : contrat 3.0, provenance Git générée depuis le checkout courant
 
 Application React statique et en lecture seule pour explorer le snapshot de conception de Dungeon Draft. Elle ne contient ni backend, ni authentification, ni télémétrie, ni déploiement.
 
@@ -38,7 +37,7 @@ npm run check               exécute toute la chaîne frontend
 
 L’application utilise `HashRouter` :
 
-- `#/overview`, `#/run` et `#/rooms/:id` ;
+- `#/overview`, `#/runs`, `#/runs/:id`, `#/run` et `#/rooms/:id` ;
 - `#/enemies` et `#/enemies/:id` ;
 - `#/characters` et `#/characters/:id` ;
 - `#/spells` et `#/spells/:id` ;
@@ -46,7 +45,7 @@ L’application utilise `HashRouter` :
 - `#/items` et `#/items/:id` ;
 - `#/rewards` et `#/audit`.
 
-La V1.1 sépare les profils de vague rédigés, sélectionnés et jouables, ainsi que les multiplicateurs PV, `attack_power` et récompense. Les personnages exposent toutes leurs statistiques exportées. Les sorts exposent leurs contraintes, effets, modificateurs et avertissements. Les capacités ennemies sont contextualisées par rencontre.
+La V1.2 sépare la run principale `SINGLE_ENCOUNTER` de la run de test `WAVE_CHAIN`. Les profils, seeds et multiplicateurs restent visibles uniquement sur la chaîne de vagues. Les personnages exposent toutes leurs statistiques exportées. Les sorts exposent leurs contraintes, effets, modificateurs et avertissements. Les capacités ennemies sont contextualisées par rencontre.
 
 La page Audit est groupée par défaut sur `rule_id + severity + truth_status`. Elle conserve les occurrences brutes dans un panneau repliable, propose des filtres combinables conservés dans l’URL et crée uniquement des liens vers des routes existantes.
 
@@ -58,4 +57,4 @@ Les chemins `res://` sont rendus comme texte et ne sont jamais chargés comme UR
 
 ## Limites
 
-Observatory reste un instantané statique. Un statut « en retard » prouve uniquement que des chemins de jeu diffèrent ; il ne prétend pas connaître leur effet fonctionnel avant un nouvel export. Les données temps réel, l’authentification et l’hébergement restent hors périmètre.
+Observatory reste un instantané statique. Un statut « en retard » prouve uniquement que des chemins hors Observatory diffèrent ; il ne prétend pas connaître leur effet fonctionnel avant un nouvel export. L'hébergement LAN V1.2 sert uniquement une release locale validée en lecture seule.
