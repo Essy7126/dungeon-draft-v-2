@@ -1,14 +1,19 @@
 name: Observatory CI
 
 on:
-  workflow_call:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: observatory-ci-${{ github.workflow }}-${{ github.ref }}-${{ github.sha }}
+  group: observatory-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
