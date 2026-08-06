@@ -45,13 +45,11 @@ try {
 } finally { $ErrorActionPreference = $previousPreference }
 if ($knownCommitCode -ne 0 -or $ancestorCode -ne 0) { throw 'Le commit de baseline GUT n’est pas un ancêtre vérifiable de HEAD.' }
 
-$arguments = @(
-    '--headless', '--path', $project,
-    '-s', 'res://addons/gut/gut_cmdln.gd',
-    '-gdir=res://test/unit', '-ginclude_subdirs', '-gprefix=test_',
-    '-gexit', '-gdisable_colors',
-    "-gjunit_xml_file=$($junitPath.Replace('\', '/'))"
-)
+$temporaryParent = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [System.IO.Path]::GetTempPath() }
+$testProject = Join-Path $temporaryParent ("DungeonDraftObservatory-GUT-{0}" -f [Guid]::NewGuid().ToString('N'))
+$worktreeCreated = $false
+$output = @()
+$rawExitCode = -999
 $oldAppData = $env:APPDATA
 $oldLocalAppData = $env:LOCALAPPDATA
 $oldXdgData = $env:XDG_DATA_HOME
@@ -70,18 +68,55 @@ if ($env:OS -eq 'Windows_NT') {
 $watch = [Diagnostics.Stopwatch]::StartNew()
 try {
     $ErrorActionPreference = 'Continue'
+    $worktreeOutput = & $gitPath -c core.longpaths=true -C $project worktree add --detach $testProject HEAD 2>&1
+    $worktreeCode = $LASTEXITCODE
+    $ErrorActionPreference = 'Stop'
+    if ($worktreeCode -ne 0) { throw "Création du worktree GUT impossible : $($worktreeOutput -join "`n")" }
+    $worktreeCreated = $true
+
+    $ErrorActionPreference = 'Continue'
+    $importOutput = & $GodotPath --headless --path $testProject --import --quit 2>&1
+    $importCode = $LASTEXITCODE
+    $ErrorActionPreference = 'Stop'
+    if ($importCode -ne 0) { throw "Import Godot isolé impossible (code $importCode)." }
+    $ErrorActionPreference = 'Continue'
+    $worktreeStatus = & $gitPath -c core.quotepath=false -C $testProject status --porcelain 2>&1
+    $statusCode = $LASTEXITCODE
+    $ErrorActionPreference = 'Stop'
+    if ($statusCode -ne 0 -or ($worktreeStatus -join '').Trim()) {
+        throw "Le worktree GUT isolé est sale après import : $($worktreeStatus -join "`n")"
+    }
+
+    $arguments = @(
+        '--headless', '--path', $testProject,
+        '-s', 'res://addons/gut/gut_cmdln.gd',
+        '-gdir=res://test/unit', '-ginclude_subdirs', '-gprefix=test_',
+        '-gexit', '-gdisable_colors',
+        "-gjunit_xml_file=$($junitPath.Replace('\', '/'))"
+    )
+    $ErrorActionPreference = 'Continue'
     $output = & $GodotPath @arguments 2>&1
     $rawExitCode = $LASTEXITCODE
     $ErrorActionPreference = 'Stop'
 } finally {
     $watch.Stop()
+    $ErrorActionPreference = 'Stop'
     $env:APPDATA = $oldAppData
     $env:LOCALAPPDATA = $oldLocalAppData
     $env:XDG_DATA_HOME = $oldXdgData
     $env:XDG_CONFIG_HOME = $oldXdgConfig
     $env:XDG_CACHE_HOME = $oldXdgCache
+    if ($worktreeCreated) {
+        $ErrorActionPreference = 'Continue'
+        & $gitPath -c core.longpaths=true -C $project worktree remove --force $testProject 2>&1 | Out-Null
+        $ErrorActionPreference = 'Stop'
+    }
+    if (Test-Path -LiteralPath $testProject) {
+        if ($env:OS -eq 'Windows_NT') { [System.IO.Directory]::Delete("\\?\$testProject", $true) }
+        else { Remove-Item -LiteralPath $testProject -Recurse -Force }
+    }
 }
-$stdout = @($output | ForEach-Object { [string]$_ })
+$stdout = @($importOutput | ForEach-Object { [string]$_ }) + @($output | ForEach-Object { [string]$_ })
 [System.IO.File]::WriteAllLines($stdoutPath, $stdout, (New-Object System.Text.UTF8Encoding($false)))
 [System.IO.File]::WriteAllText($stderrPath, '', (New-Object System.Text.UTF8Encoding($false)))
 if (-not (Test-Path -LiteralPath $junitPath -PathType Leaf)) {
