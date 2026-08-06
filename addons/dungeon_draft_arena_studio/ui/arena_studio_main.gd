@@ -19,7 +19,9 @@ const TOOL_LABELS := [
 	"Transformer la grille",
 	"Ancres de calibration",
 ]
-const PRODUCTION_LIBRARY := [
+## Compatibilite de creation uniquement. Le navigateur d'autorite est derive
+## de StudioProjectContext.active_run.rooms.
+const LEGACY_CALIBRATION_TEMPLATES := [
 	["Foret — Gue forestier", &"room_01_forest"],
 	["Volcan — Caldeira", &"room_05_volcano"],
 	["Espace — Station orbitale", &"room_06_space"],
@@ -98,6 +100,9 @@ var new_template_option: OptionButton
 var new_visual_mode_option: OptionButton
 var image_dialog: FileDialog
 var open_dialog: FileDialog
+var art_manifest_dialog: FileDialog
+var art_reimport_dialog: ConfirmationDialog
+var _pending_art_directory := ""
 var production_dialog: ConfirmationDialog
 var production_tabs: TabContainer
 var production_name_edit: LineEdit
@@ -105,6 +110,10 @@ var production_id_edit: LineEdit
 var production_theme_edit: LineEdit
 var production_mode_option: OptionButton
 var production_destination_edit: LineEdit
+var production_run_option: OptionButton
+var production_action_option: OptionButton
+var production_index_spin: SpinBox
+var _production_runs: Array[RunData] = []
 var production_validation_text: RichTextLabel
 var production_preview_text: RichTextLabel
 var production_plan_text: RichTextLabel
@@ -134,6 +143,7 @@ var focus_map_enabled := false
 var workspace_preset := 0
 var preview_view := 0
 var workspace_mode := WorkspaceMode.EDITOR
+var _last_hovered_cell := GridTransformService.INVALID_CELL
 var _pre_focus_state := {}
 
 var _fallback_undo := UndoRedo.new()
@@ -150,11 +160,21 @@ var _painted_logic_only_active := false
 var _pending_lab_arena: ArenaDefinition = null
 var _pending_lab_manifest := {}
 var _pending_lab_transfer_id := ""
+var project_context: StudioProjectContext = null
+var shared_reference_graph: StudioReferenceGraphService = null
+var run_authoring := ArenaRunAuthoringService.new()
 
 
-func setup(host_editor_interface, undo_manager) -> void:
+func setup(
+		host_editor_interface,
+		undo_manager,
+		shared_context: StudioProjectContext = null,
+		reference_graph: StudioReferenceGraphService = null
+	) -> void:
 	editor_interface = host_editor_interface
 	editor_undo_redo = undo_manager
+	project_context = shared_context
+	shared_reference_graph = reference_graph
 
 
 func _ready() -> void:
@@ -173,12 +193,35 @@ func _ready() -> void:
 	add_child(_transfer_poll_timer)
 	_transfer_poll_timer.start()
 	_refresh_recovery_button()
+	if project_context != null:
+		project_context.room_changed.connect(_on_context_room_changed)
+		project_context.run_changed.connect(_on_context_run_changed)
+		project_context.register_transition_handler(
+			&"arena", Callable(self, "_context_save"),
+			Callable(self, "_context_draft"), Callable(self, "_context_discard")
+		)
+		project_context.register_transition_handler(
+			&"arena_run", Callable(self, "_context_run_save"),
+			Callable(self, "_context_run_draft"), Callable(self, "_context_run_discard")
+		)
+		if project_context.active_run != null:
+			run_authoring.open(project_context.active_run, shared_reference_graph)
+		run_authoring.changed.connect(_on_run_authoring_changed)
+	_refresh_run_browser()
 	ensure_initial_arena_loaded()
 	call_deferred("_poll_lab_transfers")
 
 
+func _exit_tree() -> void:
+	if project_context != null:
+		project_context.unregister_transition_handler(&"arena")
+		project_context.unregister_transition_handler(&"arena_run")
+
+
 func ensure_initial_arena_loaded() -> void:
 	if arena != null:
+		return
+	if project_context != null and _open_context_room(project_context.active_room()):
 		return
 	if editor_interface == null:
 		load_production(&"room_01_forest")
@@ -301,8 +344,6 @@ func _build_left_panel() -> Control:
 	dynamic_mode_button.pressed.connect(show_dynamic_construction)
 	box.add_child(dynamic_mode_button)
 	library_list = ItemList.new()
-	for entry in PRODUCTION_LIBRARY:
-		library_list.add_item(entry[0])
 	library_list.item_activated.connect(_on_library_activated)
 	tool_list = ItemList.new()
 	tool_list.custom_minimum_size = Vector2(54, 440)
@@ -387,6 +428,20 @@ func _build_right_panel() -> Control:
 	box.add_child(_section_label("Document et contexte"))
 	library_list.custom_minimum_size.y = 78
 	box.add_child(library_list)
+	var run_actions := HFlowContainer.new()
+	run_actions.add_theme_constant_override("h_separation", 4)
+	box.add_child(run_actions)
+	_add_button(run_actions, "Inserer", func(): _attach_current_arena(true))
+	_add_button(run_actions, "Remplacer", func(): _attach_current_arena(false))
+	_add_button(run_actions, "Dupliquer", _duplicate_run_room)
+	_add_button(run_actions, "Rendre specifique", _make_run_room_specific)
+	_add_button(run_actions, "Monter", func(): _move_run_room(-1))
+	_add_button(run_actions, "Descendre", func(): _move_run_room(1))
+	_add_button(run_actions, "Retirer", _remove_run_room)
+	_add_button(run_actions, "Undo run", func(): run_authoring.undo())
+	_add_button(run_actions, "Redo run", func(): run_authoring.redo())
+	_add_button(run_actions, "Sauver run", _save_run_sequence)
+	_add_button(run_actions, "Recharger run", _reload_run_sequence)
 	box.add_child(_section_label("Pinceau et propriete active"))
 	box.add_child(shape_option)
 	box.add_child(obstacle_option)
@@ -396,6 +451,7 @@ func _build_right_panel() -> Control:
 	dynamic_palette = _build_dynamic_palette()
 	dynamic_palette.hide()
 	box.add_child(dynamic_palette)
+	box.add_child(_build_surface_preview_palette())
 	box.add_child(_section_label("Test direct"))
 	box.add_child(test_configuration_option)
 	box.add_child(_section_label("Inspecteur contextuel"))
@@ -534,6 +590,30 @@ func _build_dynamic_palette() -> VBoxContainer:
 	resize_button.tooltip_text = "Redimensionner la working copy active (annulable)"
 	resize_button.pressed.connect(_resize_dynamic_document)
 	box.add_child(resize_button)
+	return box
+
+
+func _build_surface_preview_palette() -> VBoxContainer:
+	var box := VBoxContainer.new()
+	box.add_child(_section_label("SIMULER UN ÉTAT DE DALLE"))
+	var note := Label.new()
+	note.text = "Vue Jeu · copie runtime uniquement · une cellule actualisée"
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(note)
+	var buttons := HFlowContainer.new()
+	box.add_child(buttons)
+	_add_button(buttons, "Eau · 2 tours", func():
+		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.WATER)
+	)
+	_add_button(buttons, "Glace · 2 tours", func():
+		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.ICE)
+	)
+	_add_button(buttons, "Lave / Feu · 2 tours", func():
+		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.FIRE)
+	)
+	_add_button(buttons, "Retirer", func():
+		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.NONE)
+	)
 	return box
 
 
@@ -868,6 +948,21 @@ func _build_dialogs() -> void:
 	open_dialog.file_selected.connect(_open_canonical)
 	add_child(open_dialog)
 
+	art_manifest_dialog = FileDialog.new()
+	art_manifest_dialog.title = "Importer le manifeste du décor"
+	art_manifest_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	art_manifest_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	art_manifest_dialog.filters = PackedStringArray(["arena_art_manifest.json ; Manifeste Arena Studio 2.0"])
+	art_manifest_dialog.size = Vector2i(960, 680)
+	art_manifest_dialog.file_selected.connect(_prepare_art_reimport)
+	add_child(art_manifest_dialog)
+	art_reimport_dialog = ConfirmationDialog.new()
+	art_reimport_dialog.title = "IMPORTER LE DÉCOR DE L’ARÈNE"
+	art_reimport_dialog.ok_button_text = "Attacher sans recalibrer"
+	art_reimport_dialog.cancel_button_text = "Annuler"
+	art_reimport_dialog.confirmed.connect(_apply_art_reimport)
+	add_child(art_reimport_dialog)
+
 	restore_delete_dialog = ConfirmationDialog.new()
 	restore_delete_dialog.title = "Supprimer le point de restauration"
 	restore_delete_dialog.dialog_text = (
@@ -1001,6 +1096,27 @@ func _build_production_dialog() -> void:
 	production_destination_edit = _labeled_line(
 		identity, "Chemin de destination", ArenaProductionService.DEFAULT_ROOT
 	)
+	identity.add_child(_section_label("RUN CIBLE ET RATTACHEMENT"))
+	production_run_option = OptionButton.new()
+	production_run_option.item_selected.connect(func(_index): _refresh_production_wizard())
+	identity.add_child(production_run_option)
+	production_action_option = OptionButton.new()
+	for entry in [
+		["Produire sans rattacher", ArenaProductionAttachmentService.NONE],
+		["Créer / ajouter à la fin", ArenaProductionAttachmentService.APPEND],
+		["Insérer avant l’index", ArenaProductionAttachmentService.INSERT_BEFORE],
+		["Insérer après l’index", ArenaProductionAttachmentService.INSERT_AFTER],
+		["Remplacer à l’index", ArenaProductionAttachmentService.REPLACE],
+		["Mettre à jour à l’index", ArenaProductionAttachmentService.UPDATE],
+	]:
+		production_action_option.add_item(entry[0])
+		production_action_option.set_item_metadata(
+			production_action_option.item_count - 1, entry[1]
+		)
+	production_action_option.item_selected.connect(func(_index): _refresh_production_wizard())
+	identity.add_child(production_action_option)
+	production_index_spin = _spin(identity, "Index de salle", 0, 0, 999)
+	production_index_spin.value_changed.connect(func(_value): _refresh_production_wizard())
 	var identity_note := Label.new()
 	identity_note.text = "Aucun fichier n'est écrit avant le clic « Produire maintenant »."
 	identity_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1023,6 +1139,7 @@ func _build_production_dialog() -> void:
 	_add_button(preview_buttons, "Art", func(): set_preview_view(ArenaRuntimePreview.ViewMode.ART))
 	_add_button(preview_buttons, "Jeu", func(): set_preview_view(ArenaRuntimePreview.ViewMode.GAME))
 	_add_button(preview_buttons, "Exporter le kit artistique", _export_art_kit_from_wizard)
+	_add_button(preview_buttons, "Importer le décor...", _show_art_reimport_dialog)
 	var plan_tab := VBoxContainer.new()
 	plan_tab.name = "4 — Production"
 	production_tabs.add_child(plan_tab)
@@ -1149,7 +1266,7 @@ func _create_from_wizard() -> void:
 	var requested_id := ArenaDefinition.sanitize_id(new_id_edit.text)
 	var created: ArenaDefinition
 	if new_template_option.selected > 0:
-		var template_id: StringName = PRODUCTION_LIBRARY[new_template_option.selected - 1][1]
+		var template_id: StringName = LEGACY_CALIBRATION_TEMPLATES[new_template_option.selected - 1][1]
 		var template := ArenaLegacyImporter.import_production(template_id)
 		created = ArenaLegacyImporter.copy_template(template, new_name_edit.text)
 		created.arena_id = StringName(requested_id)
@@ -1581,11 +1698,54 @@ func show_production_wizard() -> void:
 	production_theme_edit.text = str(arena.theme_id)
 	production_mode_option.select(arena.visual_mode)
 	production_destination_edit.text = ArenaProductionService.suggested_destination(arena)
+	_refresh_production_targets()
 	production_result_text.text = "[b]EN ATTENTE[/b]\n\nLa production n'a pas encore été confirmée."
 	production_dialog.get_ok_button().show()
 	production_tabs.current_tab = 0
 	_refresh_production_wizard()
 	production_dialog.popup_centered()
+
+
+func _refresh_production_targets() -> void:
+	if production_run_option == null:
+		return
+	var active_path := project_context.active_run.resource_path \
+		if project_context != null and project_context.active_run != null else ""
+	_production_runs.clear()
+	production_run_option.clear()
+	production_run_option.add_item("Aucune run — produire seulement")
+	production_run_option.set_item_tooltip(0, "La production ne modifiera aucune RunData.")
+	var selected := 0
+	for run_data in RunContentCatalogService.discover_runs():
+		if run_data == null or run_data.resource_path.is_empty():
+			continue
+		_production_runs.append(run_data)
+		production_run_option.add_item("%s · %s" % [run_data.run_name, run_data.resource_path.get_file()])
+		production_run_option.set_item_tooltip(
+			production_run_option.item_count - 1, run_data.resource_path
+		)
+		if run_data.resource_path == active_path:
+			selected = production_run_option.item_count - 1
+	production_run_option.select(selected)
+	production_action_option.select(0)
+	production_index_spin.value = float(
+		project_context.active_room_index if project_context != null else 0
+	)
+
+
+func _selected_production_run() -> RunData:
+	if production_run_option == null or production_run_option.selected <= 0:
+		return null
+	var index := production_run_option.selected - 1
+	return _production_runs[index] if index >= 0 and index < _production_runs.size() else null
+
+
+func _selected_production_action() -> StringName:
+	if production_action_option == null or production_action_option.selected < 0:
+		return ArenaProductionAttachmentService.NONE
+	return StringName(production_action_option.get_item_metadata(
+		production_action_option.selected
+	))
 
 
 func _production_candidate() -> ArenaDefinition:
@@ -1624,6 +1784,19 @@ func _refresh_production_wizard() -> void:
 		return
 	var report := production_plan.validation as ArenaValidationReport
 	var visual_report := production_plan.visual_report as ArenaVisualAssemblyReport
+	var target_run := _selected_production_run()
+	var attachment_action := _selected_production_action()
+	var attachment_plan := ArenaProductionAttachmentService.plan(
+		target_run, attachment_action, int(production_index_spin.value),
+		destination.path_join("arena.tres")
+	)
+	if attachment_action != ArenaProductionAttachmentService.NONE and target_run == null:
+		attachment_plan = {
+			"ok": false,
+			"error": "Choisissez une RunData cible ou Produire sans rattacher.",
+		}
+	if target_run != null:
+		production_index_spin.max_value = maxi(0, target_run.rooms.size())
 	var validation_lines := PackedStringArray([
 		"[b]%s[/b]" % report.verdict(),
 		"%d erreur(s), %d avertissement(s), %d information(s)" % [
@@ -1666,8 +1839,27 @@ func _refresh_production_wizard() -> void:
 		plan_lines.append("[color=red]! %s[/color]" % path)
 	if production_plan.conflicts.is_empty():
 		plan_lines.append("Aucun conflit.")
+	plan_lines.append("\n[b]Rattachement à la run[/b]")
+	if attachment_plan.get("ok", false):
+		plan_lines.append("RunData : %s" % attachment_plan.get("run_path", "aucune"))
+		plan_lines.append("Action : %s" % attachment_plan.get("action", &"NONE"))
+		plan_lines.append("Index exact : %d" % int(attachment_plan.get("target_index", -1)))
+		plan_lines.append("Nombre de salles : %d → %d" % [
+			int(attachment_plan.get("before_count", 0)),
+			int(attachment_plan.get("after_count", 0)),
+		])
+		var replaced_path := str(attachment_plan.get("replaced_path", ""))
+		if not replaced_path.is_empty():
+			plan_lines.append("Ancien usage remplacé : %s" % replaced_path)
+	else:
+		plan_lines.append("[color=red]Plan impossible : %s[/color]" % attachment_plan.get("error", "erreur"))
+	var run_conflict := target_run != null and run_authoring.is_dirty() \
+		and run_authoring.source_path == target_run.resource_path
+	if run_conflict:
+		plan_lines.append("[color=red]La run cible a déjà des modifications non sauvegardées.[/color]")
 	production_plan_text.text = "\n".join(plan_lines)
 	production_dialog.get_ok_button().disabled = not bool(production_plan.can_produce) \
+		or not bool(attachment_plan.get("ok", false)) or run_conflict \
 		or (edit_session != null and edit_session.has_external_conflict())
 
 
@@ -1705,6 +1897,24 @@ func _run_confirmed_production() -> void:
 	if produced == null:
 		_show_production_failure("La ressource finale n'a pas pu être rechargée.")
 		return
+	var attachment := ArenaProductionAttachmentService.attach_and_save(
+		str(result.arena_path), _selected_production_run(),
+		_selected_production_action(), int(production_index_spin.value),
+		shared_reference_graph
+	)
+	if not attachment.get("ok", false):
+		production_result_text.text = (
+			"[font_size=24][b][color=orange]SALLE PRODUITE — RATTACHEMENT REFUSÉ[/color][/b][/font_size]\n\n"
+			+ "%s\n\nLa RunData n’a pas été modifiée ; l’ArenaDefinition produite reste disponible dans %s." % [
+				attachment.get("error", "Erreur de rattachement."), result.directory,
+			]
+		)
+		production_tabs.current_tab = 4
+		production_dialog.get_ok_button().hide()
+		production_dialog.popup_centered()
+		_set_status("Salle produite, mais rattachement transactionnel refusé.", true)
+		return
+	result["attachment"] = attachment
 	edit_session.apply_snapshot(produced.to_snapshot())
 	arena = edit_session.working_arena
 	edit_session.commit("Produire la working copy", before, arena.to_snapshot())
@@ -1727,9 +1937,24 @@ func _run_confirmed_production() -> void:
 		]
 		+ "✓ Définition valide\n✓ Grille valide\n✓ Pathfinding valide\n"
 		+ "✓ Spawns valides\n✓ Preview Art valide\n✓ Preview Jeu valide\n"
-		+ "✓ Ressources rechargées\n✓ Test direct disponible\n\n"
+		+ "✓ Ressources rechargées\n✓ Test direct disponible\n"
+		+ ("✓ RunData inchangée — production sans rattachement\n\n" \
+			if attachment.get("action", &"NONE") == ArenaProductionAttachmentService.NONE \
+			else "✓ Rattachée à %s, index %d (%d → %d salles)\n\n" % [
+				attachment.get("run_path", ""), int(attachment.get("target_index", -1)),
+				int(attachment.get("before_count", 0)), int(attachment.get("after_count", 0)),
+			])
 		+ "[b]%s[/b]" % result.directory
 	)
+	if attachment.get("reloaded_run") is RunData and project_context != null \
+			and project_context.active_run != null \
+			and project_context.active_run.resource_path == str(attachment.get("run_path", "")):
+		var reloaded_run := attachment.reloaded_run as RunData
+		run_authoring.open(reloaded_run, shared_reference_graph)
+		project_context.request_selection({
+			"run": reloaded_run,
+			"room_index": int(attachment.get("target_index", 0)),
+		}, &"arena")
 	production_tabs.current_tab = 4
 	production_dialog.get_ok_button().hide()
 	production_dialog.popup_centered()
@@ -1786,6 +2011,59 @@ func _export_art_kit_from_wizard() -> void:
 		_set_status("Kit artistique exporté dans %s" % destination)
 	else:
 		_set_status("Le kit artistique n'a pas pu être exporté : %s" % result.get("error", "erreur"), true)
+
+
+func _show_art_reimport_dialog() -> void:
+	if arena == null:
+		_set_status("Aucune ArenaDefinition n'est ouverte.", true)
+		return
+	art_manifest_dialog.popup_centered()
+
+
+func _prepare_art_reimport(manifest_path: String) -> void:
+	_pending_art_directory = manifest_path.get_base_dir()
+	var inspection := ArenaArtRoundTripService.inspect_reimport(
+		arena, _pending_art_directory
+	)
+	if not inspection.get("ok", false):
+		art_reimport_dialog.title = "IMPORT À VÉRIFIER"
+		art_reimport_dialog.dialog_text = (
+			"%s\n\nCode : %s\nRésolution attendue : %s\nRésolution reçue : %s\n"
+			+ "Fallback conservé : %s\n\nAnnulez pour corriger le fichier, importer une version différente ou utiliser la calibration de secours. Aucune correction ne sera appliquée silencieusement."
+		) % [
+			inspection.get("error", "Décor incompatible."), inspection.get("code", "INCOMPATIBLE"),
+			inspection.get("expected_resolution", "—"), inspection.get("actual_resolution", "—"),
+			inspection.get("fallback", arena.background_path),
+		]
+		art_reimport_dialog.get_ok_button().disabled = true
+		art_reimport_dialog.popup_centered()
+		_set_status("Réimport artistique refusé : %s" % inspection.get("code", "incompatible"), true)
+		return
+	art_reimport_dialog.title = "IMPORTER LE DÉCOR DE L’ARÈNE"
+	art_reimport_dialog.dialog_text = (
+		"AVANT\n%s\n\nAPRÈS\n%s\n\n"
+		+ "Fingerprint, résolution, crop, grille et ancres correspondent. "
+		+ "grid_origin, axis_x et axis_y resteront strictement inchangés ; le décor sera placé sous les dalles tactiques."
+	) % [arena.background_path, inspection.get("source_image", "")]
+	art_reimport_dialog.get_ok_button().disabled = false
+	art_reimport_dialog.popup_centered()
+
+
+func _apply_art_reimport() -> void:
+	if arena == null or _pending_art_directory.is_empty():
+		return
+	var before := arena.to_snapshot().duplicate(true)
+	var destination := "res://data/arenas/art_imports/%s/background.png" % arena.arena_id
+	var result := ArenaArtRoundTripService.apply_reimport(
+		arena, _pending_art_directory, destination
+	)
+	if not result.get("ok", false):
+		_set_status("Le décor n'a pas été importé : %s" % result.get("error", "erreur"), true)
+		return
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change("Réimporter le décor sans recalibrer", before, arena.to_snapshot())
+	_refresh_all()
+	_set_status("Décor réimporté sans recalibration : %s" % destination)
 
 
 func test_arena() -> void:
@@ -2170,6 +2448,7 @@ func _on_anchors_preview(cells: Array[Vector2i], pixels: Array[Vector2]) -> void
 
 
 func _on_hovered_cell_changed(cell: Vector2i) -> void:
+	_last_hovered_cell = cell
 	_refresh_inspector(cell)
 
 
@@ -2277,6 +2556,11 @@ func _on_history_changed() -> void:
 
 
 func _on_dirty_state_changed(_is_dirty: bool) -> void:
+	if project_context != null:
+		project_context.set_dirty(&"arena", dirty, {
+			"document": history_document_name(),
+			"source_path": edit_session.source_path if edit_session != null else "",
+		})
 	_refresh_title()
 	history_state_changed.emit()
 
@@ -2525,7 +2809,206 @@ func _on_mode_selected(index: int) -> void:
 
 
 func _on_library_activated(index: int) -> void:
-	load_production(PRODUCTION_LIBRARY[index][1])
+	if project_context != null:
+		project_context.request_room(index, &"arena")
+	elif index >= 0 and index < LEGACY_CALIBRATION_TEMPLATES.size():
+		load_production(LEGACY_CALIBRATION_TEMPLATES[index][1])
+
+
+func _on_context_run_changed(_run_data: RunData) -> void:
+	if _run_data != null:
+		run_authoring.open(_run_data, shared_reference_graph)
+	_refresh_run_browser()
+
+
+func _on_context_room_changed(_room_index: int, room: RoomData) -> void:
+	_refresh_run_browser()
+	if room != null:
+		_open_context_room(room)
+
+
+func _refresh_run_browser() -> void:
+	if library_list == null:
+		return
+	library_list.clear()
+	if project_context == null or project_context.active_run == null:
+		for entry in LEGACY_CALIBRATION_TEMPLATES:
+			library_list.add_item(entry[0])
+		return
+	var displayed_run := run_authoring.working_run \
+		if run_authoring.working_run != null else project_context.active_run
+	for index in range(displayed_run.rooms.size()):
+		var room := displayed_run.rooms[index]
+		library_list.add_item("%02d  %s" % [
+			index + 1, room.room_name if room != null else "Salle absente",
+		])
+		library_list.set_item_tooltip(
+			index, room.resource_path if room != null else "Reference nulle"
+		)
+	if project_context.active_room_index >= 0 \
+			and project_context.active_room_index < library_list.item_count:
+		library_list.select(project_context.active_room_index)
+
+
+func _open_context_room(room: RoomData) -> bool:
+	if room == null:
+		return false
+	var imported := room as ArenaDefinition
+	if imported == null and not room.resource_path.is_empty():
+		imported = ArenaLegacyImporter.import_room(room.resource_path)
+	if imported == null:
+		_set_status(
+			"La salle %s ne possede pas encore de grille Arena editable." % room.room_name,
+			true
+		)
+		return false
+	var key := "run-room:%s" % room.resource_path
+	if _sessions.has(key):
+		_activate_session(_sessions[key] as ArenaEditSession)
+	else:
+		_set_arena(imported, false, key)
+	_set_status("Salle ouverte depuis la run active : %s" % room.room_name)
+	return true
+
+
+func _context_save() -> Dictionary:
+	save_arena()
+	return {
+		"ok": not dirty,
+		"error": "La sauvegarde Arena n'a pas valide le document." if dirty else "",
+	}
+
+
+func _context_draft() -> Dictionary:
+	_flush_recovery()
+	return {"ok": arena != null}
+
+
+func _context_discard() -> Dictionary:
+	if edit_session == null or edit_session.source_arena == null:
+		return {"ok": false, "error": "Aucune source Arena a recharger."}
+	var source := edit_session.source_arena
+	var source_path := edit_session.source_path
+	var key := edit_session.session_key
+	var replacement := ArenaEditSession.new()
+	if not replacement.open(source, source_path, false, key):
+		return {"ok": false, "error": "La source Arena n'a pas pu etre rechargee."}
+	_sessions[key] = replacement
+	_activate_session(replacement)
+	if project_context != null:
+		project_context.set_dirty(&"arena", false)
+	return {"ok": true}
+
+
+func _on_run_authoring_changed(_report: Dictionary) -> void:
+	if project_context != null:
+		project_context.set_dirty(&"arena_run", run_authoring.is_dirty(), {
+			"run_path": run_authoring.source_path,
+			"room_count": run_authoring.working_run.rooms.size() \
+				if run_authoring.working_run != null else 0,
+		})
+	_refresh_run_browser()
+
+
+func _selected_run_room_index() -> int:
+	var selected := library_list.get_selected_items() if library_list != null else PackedInt32Array()
+	return selected[0] if not selected.is_empty() else (
+		project_context.active_room_index if project_context != null else -1
+	)
+
+
+func _saved_current_arena_room() -> RoomData:
+	if edit_session == null or edit_session.source_path.is_empty() \
+			or not ResourceLoader.exists(edit_session.source_path):
+		return null
+	return ResourceLoader.load(
+		edit_session.source_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as RoomData
+
+
+func _attach_current_arena(insert: bool) -> void:
+	var room := _saved_current_arena_room()
+	if room == null:
+		_set_status("Sauvegardez d'abord l'arene dans res://data avant de l'attacher a la run.", true)
+		return
+	var index := _selected_run_room_index()
+	var result := run_authoring.insert_room(index + 1, room) \
+		if insert else run_authoring.replace_room(index, room)
+	_set_status(
+		"Plan d'attachement prepare a l'index %d." % int(result.get("index", index))
+		if result.get("ok", false) else str(result.get("error", "Attachement refuse.")),
+		not result.get("ok", false)
+	)
+
+
+func _duplicate_run_room() -> void:
+	var result := run_authoring.duplicate_room(_selected_run_room_index())
+	_set_status("Salle dupliquee ; choisissez un chemin avant la sauvegarde." \
+		if result.get("ok", false) else str(result.get("error", "Duplication refusee.")),
+		not result.get("ok", false))
+
+
+func _make_run_room_specific() -> void:
+	var index := _selected_run_room_index()
+	if run_authoring.working_run == null or index < 0 \
+			or index >= run_authoring.working_run.rooms.size():
+		_set_status("Selectionnez une salle a copier.", true)
+		return
+	var room := run_authoring.working_run.rooms[index]
+	var run_id := ArenaDefinition.sanitize_id(run_authoring.working_run.run_name)
+	var room_id := ArenaDefinition.sanitize_id(room.room_name if room != null else "salle")
+	var path := "res://data/arenas/run_specific/%s/%02d_%s.tres" % [
+		run_id, index + 1, room_id,
+	]
+	var result := run_authoring.make_room_run_specific(index, path)
+	_set_status("Copie specifique creee : %s" % path \
+		if result.get("ok", false) else str(result.get("error", "Copie refusee.")),
+		not result.get("ok", false))
+
+
+func _move_run_room(offset: int) -> void:
+	var index := _selected_run_room_index()
+	var result := run_authoring.move_room(index, index + offset)
+	if not result.get("ok", false):
+		_set_status(str(result.get("error", "Deplacement refuse.")), true)
+
+
+func _remove_run_room() -> void:
+	var result := run_authoring.remove_room(_selected_run_room_index())
+	_set_status("Reference retiree ; aucun fichier n'a ete supprime." \
+		if result.get("ok", false) else str(result.get("error", "Retrait refuse.")),
+		not result.get("ok", false))
+
+
+func _save_run_sequence() -> void:
+	var result := run_authoring.save()
+	if result.get("ok", false) and project_context != null:
+		project_context.set_dirty(&"arena_run", false)
+		if shared_reference_graph != null:
+			shared_reference_graph.scan(true)
+	_set_status("Sequence de run sauvegardee et relue." \
+		if result.get("ok", false) else str(result.get("error", "Sauvegarde refusee.")),
+		not result.get("ok", false))
+
+
+func _reload_run_sequence() -> void:
+	var ok := run_authoring.reload()
+	if project_context != null and ok:
+		project_context.set_dirty(&"arena_run", false)
+	_set_status("Sequence rechargee." if ok else "Rechargement de la run impossible.", not ok)
+
+
+func _context_run_save() -> Dictionary:
+	return run_authoring.save()
+
+
+func _context_run_draft() -> Dictionary:
+	return run_authoring.write_draft()
+
+
+func _context_run_discard() -> Dictionary:
+	var ok := run_authoring.reload()
+	return {"ok": ok, "error": "La run n'a pas pu etre rechargee." if not ok else ""}
 
 
 func _on_tool_selected(index: int) -> void:
@@ -2782,6 +3265,36 @@ func set_preview_view(index: int) -> void:
 	runtime_preview.show()
 	runtime_preview.set_view_mode(preview_view)
 	runtime_preview.set_arena(arena)
+
+
+func _simulate_runtime_surface(surface: int) -> void:
+	if arena == null or runtime_preview == null:
+		_set_status("Aucune arène disponible pour la simulation.", true)
+		return
+	var cell := _last_hovered_cell
+	if not arena.is_in_bounds(cell) or arena.get_cell_definition(cell) == null:
+		var playable := arena.playable_cells()
+		cell = playable[0] if not playable.is_empty() else GridTransformService.INVALID_CELL
+	if cell == GridTransformService.INVALID_CELL:
+		_set_status("Aucune cellule praticable à simuler.", true)
+		return
+	if not runtime_preview.visible or runtime_preview.runtime_state == null \
+			or runtime_preview.arena != arena:
+		set_preview_view(ArenaRuntimePreview.ViewMode.GAME)
+		if not runtime_preview.rebuild_now():
+			_set_status("La projection runtime n'a pas pu être construite.", true)
+			return
+	if surface == CellSurfaceState.DynamicSurface.NONE:
+		runtime_preview.clear_runtime_surface(cell)
+		_set_status("Surface temporaire retirée en %s ; sol de base restauré." % cell)
+		return
+	var result := runtime_preview.update_runtime_surface(cell, surface)
+	_set_status(
+		"Surface %s simulée en %s sur la copie runtime ; ArenaDefinition inchangée." % [
+			CellSurfaceState.DynamicSurface.keys()[surface], cell,
+		],
+		not result.get("handled", false)
+	)
 
 
 func show_dynamic_construction() -> void:

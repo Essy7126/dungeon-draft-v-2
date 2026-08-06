@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CharacterProgressionProfile" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_dxlgu"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer.tres" id="2_28ouo"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin.tres" id="3_lfr1a"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/mage.tres" id="4_iexpy"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/healer.tres" id="5_57hmd"]
+[ext_resource type="Script" path="res://data/runs/content/character_progression_profile.gd" id="6_5ml1p"]
+[ext_resource type="Script" path="res://data/spell.gd" id="7_62ulr"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/precise_shot.tres" id="8_onxb4"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/sneak_strike.tres" id="9_hiy53"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/fireball.tres" id="10_s5bjx"]
+[ext_resource type="Resource" path="res://data/characters/elf/spells/sylvan_heal.tres" id="11_783m7"]
+
+[resource]
+script = ExtResource("6_5ml1p")
+character_id = &"elf"
+spells = Array[ExtResource("7_62ulr")]([ExtResource("8_onxb4"), ExtResource("9_hiy53"), ExtResource("10_s5bjx"), ExtResource("11_783m7")])
+disciplines = Array[ExtResource("1_dxlgu")]([ExtResource("2_28ouo"), ExtResource("3_lfr1a"), ExtResource("4_iexpy"), ExtResource("5_57hmd")])

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CharacterProgressionProfile" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_t53vx"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/fire.tres" id="2_kugni"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/ice.tres" id="3_u5uoo"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/lightning.tres" id="4_iswbs"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/earth.tres" id="5_taijt"]
+[ext_resource type="Script" path="res://data/runs/content/character_progression_profile.gd" id="6_1a2e0"]
+[ext_resource type="Script" path="res://data/spell.gd" id="7_sknyp"]
+[ext_resource type="Resource" path="res://data/spells/Mage/boule_de_feu.tres" id="8_qbn2t"]
+[ext_resource type="Resource" path="res://data/spells/mur_de_glace.tres" id="9_s74rn"]
+[ext_resource type="Resource" path="res://data/spells/Mage/tempete_orageuse.tres" id="10_1l14u"]
+[ext_resource type="Resource" path="res://data/spells/Mage/onde_sismique.tres" id="11_786r0"]
+
+[resource]
+script = ExtResource("6_1a2e0")
+character_id = &"mage"
+spells = Array[ExtResource("7_sknyp")]([ExtResource("8_qbn2t"), ExtResource("9_s74rn"), ExtResource("10_1l14u"), ExtResource("11_786r0")])
+disciplines = Array[ExtResource("1_t53vx")]([ExtResource("2_kugni"), ExtResource("3_u5uoo"), ExtResource("4_iswbs"), ExtResource("5_taijt")])

@@ -58,11 +58,21 @@ var _draft_timer: Timer
 var last_draft_report := {}
 var _post_save_action: Callable
 var _pending_search_result := {}
+var project_context: StudioProjectContext = null
+var shared_reference_graph: StudioReferenceGraphService = null
+var context_bar: StudioContextBar = null
 
 
-func setup(host_editor_interface, undo_manager) -> void:
+func setup(
+		host_editor_interface,
+		undo_manager,
+		shared_context: StudioProjectContext = null,
+		reference_graph: StudioReferenceGraphService = null
+	) -> void:
 	editor_interface = host_editor_interface
 	session.setup(undo_manager)
+	project_context = shared_context
+	shared_reference_graph = reference_graph
 
 
 func _ready() -> void:
@@ -78,8 +88,19 @@ func _ready() -> void:
 	_draft_timer.timeout.connect(_autosave_draft)
 	add_child(_draft_timer)
 	_draft_timer.start()
-	heroes = SkillTreeCatalogService.discover_heroes()
+	heroes = _run_hero_catalog() if project_context != null \
+		else SkillTreeCatalogService.discover_heroes()
 	_refresh_catalog()
+	if project_context != null:
+		project_context.hero_changed.connect(_on_context_hero_changed)
+		project_context.run_changed.connect(_on_context_run_changed)
+		project_context.register_transition_handler(
+			&"skills", Callable(self, "_context_save"),
+			Callable(self, "_context_draft"), Callable(self, "_context_discard")
+		)
+		if project_context.active_hero != null:
+			call_deferred("_open_context_hero", project_context.active_hero, true)
+		return
 	var initial_path := str(workspace_state.get("character_path", ""))
 	if not _catalog_contains_path(initial_path) and not heroes.is_empty():
 		initial_path = str(heroes[0].get("path", ""))
@@ -110,6 +131,13 @@ func dispose_document() -> void:
 	if _draft_timer != null:
 		_draft_timer.stop()
 	session.release_document(false)
+	if project_context != null:
+		project_context.set_dirty(&"skills", false)
+
+
+func _exit_tree() -> void:
+	if project_context != null:
+		project_context.unregister_transition_handler(&"skills")
 
 
 func commit_pending_edits() -> void:
@@ -121,8 +149,7 @@ func get_state_snapshot() -> Dictionary:
 	return {
 		"guided": guided,
 		"production_profile": production_profile,
-		"character_path": session.source_unit.resource_path \
-			if session.source_unit != null else "",
+		"character_path": session.canonical_source_path(),
 		"discipline_id": str(session.selected_discipline_id),
 		"window_screen": int(workspace_state.get("window_screen", 0)),
 		"window_position": workspace_state.get("window_position", Vector2i(80, 80)),
@@ -136,6 +163,9 @@ func _build_ui() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_theme_constant_override("separation", 5)
 	add_child(root)
+	context_bar = StudioContextBar.new()
+	context_bar.setup(project_context, shared_reference_graph)
+	root.add_child(context_bar)
 	root.add_child(_build_toolbar())
 	root.add_child(_build_guide_bar())
 	var horizontal := HSplitContainer.new()
@@ -206,28 +236,34 @@ func _build_ui() -> void:
 
 func _build_toolbar() -> Control:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.y = 44
+	panel.custom_minimum_size.y = 72
+	var rows := VBoxContainer.new()
+	rows.add_theme_constant_override("separation", 3)
+	panel.add_child(rows)
+	var identity := HBoxContainer.new()
+	rows.add_child(identity)
 	var bar := HFlowContainer.new()
 	bar.add_theme_constant_override("h_separation", 6)
 	bar.add_theme_constant_override("v_separation", 4)
-	panel.add_child(bar)
+	rows.add_child(bar)
 	var title := Label.new()
 	title.text = "STUDIO DES PERSONNAGES ET COMPÉTENCES"
 	title.add_theme_font_size_override("font_size", 17)
 	title.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
-	bar.add_child(title)
+	identity.add_child(title)
 	document_label = Label.new()
 	document_label.text = "Aucun personnage"
 	document_label.clip_text = true
-	document_label.custom_minimum_size.x = 180
+	document_label.custom_minimum_size.x = 150
 	document_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	bar.add_child(document_label)
+	identity.add_child(document_label)
 	undo_button = _button(bar, "Annuler", "Annuler la dernière modification", _undo)
 	redo_button = _button(bar, "Rétablir", "Rétablir la modification annulée", _redo)
 	_button(bar, "Rechercher", "Recherche globale (Ctrl+F)", func():
 		search_dialog.set_catalog(heroes)
 		search_dialog.open_and_focus()
 	)
+	_button(bar, "Comparer runs", "Comparer ce heros avec la premiere autre run", _compare_with_other_run)
 	_button(bar, "Valider", "Expliquer les problèmes sans modifier les données", _validate)
 	_button(bar, "Tester", "Ouvrir le simulateur de progression", _test)
 	_button(bar, "Prévisualiser", "Comparer le sort via la sandbox runtime réelle", _preview_runtime)
@@ -300,7 +336,7 @@ func _build_dialogs() -> void:
 		if action == "discard":
 			character_dialog.hide()
 			if session.source_unit != null:
-				SkillTreeDraftService.clear_for_source(session.source_unit.resource_path)
+				SkillTreeDraftService.clear_for_source(session.canonical_source_path())
 			_open_character(_pending_character_path)
 	)
 	add_child(character_dialog)
@@ -424,8 +460,14 @@ func _request_character_discipline(path: String, discipline_id: StringName) -> v
 
 func _request_character_path(path: String) -> void:
 	commit_pending_edits()
-	if path.is_empty() or (session.source_unit != null and session.source_unit.resource_path == path):
+	if path.is_empty() or path == _current_catalog_path():
 		return
+	if project_context != null:
+		for hero in RunContentCatalogService.heroes_for_run(project_context.active_run):
+			if hero != null and hero.base_unit_data != null \
+					and hero.base_unit_data.resource_path == path:
+				project_context.request_hero(hero.character_id, &"skills")
+				return
 	if session.is_dirty():
 		_pending_character_path = path
 		character_dialog.dialog_text = "Le personnage actuel contient des modifications non sauvegardées.\n\nChoisissez si vous voulez les sauvegarder, les abandonner ou rester sur ce personnage."
@@ -455,6 +497,36 @@ func _open_character(path: String, initial := false) -> void:
 	_refresh_document()
 	_focus_pending_search_result()
 	_offer_draft(path)
+
+
+func _open_context_hero(hero: RunHeroProfile, initial := false) -> void:
+	if project_context == null or project_context.active_run == null or hero == null:
+		return
+	commit_pending_edits()
+	_save_graph_state()
+	if not session.open_progression(project_context.active_run, hero):
+		_show_status(
+			"Ouverture impossible",
+			"Le profil de progression %s n'est pas exploitable." % hero.character_id
+		)
+		return
+	if initial:
+		var remembered := StringName(workspace_state.get("discipline_id", &""))
+		if remembered != &"":
+			session.select_discipline(remembered)
+	status_label.text = "Profil charge depuis la run active. La vue UnitData est non sauvegardable."
+	_refresh_document()
+	_offer_draft(session.canonical_source_path())
+
+
+func _on_context_hero_changed(hero: RunHeroProfile) -> void:
+	if hero != null:
+		_open_context_hero(hero)
+
+
+func _on_context_run_changed(_run_data: RunData) -> void:
+	heroes = _run_hero_catalog()
+	_refresh_catalog()
 
 
 func _select_discipline(discipline_id: StringName) -> void:
@@ -706,13 +778,23 @@ func _refresh_document() -> void:
 	var summary := SkillTreeEditorValidator.summary(validation_messages)
 	if session.working_unit != null:
 		document_label.text = "%s%s" % [
-			session.working_unit.unit_name,
+			"%s · %s" % [
+				project_context.active_run.run_name if project_context != null \
+					and project_context.active_run != null else "Legacy",
+				session.working_unit.unit_name,
+			],
 			" · MODIFIÉ" if session.is_dirty() else "",
 		]
 		status_label.text = "%d erreur(s) · %d avertissement(s) · %s" % [
 			summary.get("errors", 0), summary.get("warnings", 0),
 			"modifications non sauvegardées" if session.is_dirty() else "document sauvegardé",
 		]
+		if project_context != null:
+			project_context.set_dirty(&"skills", session.is_dirty(), {
+				"profile_path": session.canonical_source_path(),
+				"character_id": str(project_context.active_hero.character_id) \
+					if project_context.active_hero != null else "",
+			})
 	_loading = false
 
 
@@ -730,7 +812,7 @@ func _refresh_catalog() -> void:
 		return
 	catalog.set_catalog(
 		heroes,
-		session.source_unit.resource_path if session.source_unit != null else "",
+		_current_catalog_path(),
 		session.selected_discipline_id,
 		session.is_dirty()
 	)
@@ -889,6 +971,25 @@ func _run_full_analysis() -> void:
 	)
 
 
+func _compare_with_other_run() -> void:
+	if project_context == null or project_context.active_run == null \
+			or project_context.active_hero == null:
+		_show_status("Comparaison impossible", "Aucun contexte run/heros actif.")
+		return
+	var other: RunData = null
+	for run_data in RunContentCatalogService.discover_runs():
+		if run_data != project_context.active_run:
+			other = run_data
+			break
+	if other == null:
+		_show_status("Comparaison impossible", "Aucune autre run n'est disponible.")
+		return
+	var report := SkillTreeRunComparisonService.compare(
+		project_context.active_run, other, project_context.active_hero.character_id
+	)
+	_show_status("Comparaison entre runs", SkillTreeRunComparisonService.format_report(report))
+
+
 func _show_orphans() -> void:
 	if session.working_unit == null:
 		return
@@ -940,7 +1041,8 @@ func _save() -> Dictionary:
 	_save_graph_state()
 	var result := SkillTreeSaveService.save(session, editor_interface)
 	if result.get("ok", false):
-		heroes = SkillTreeCatalogService.discover_heroes()
+		heroes = _run_hero_catalog() if project_context != null \
+			else SkillTreeCatalogService.discover_heroes()
 		_refresh_document()
 		status_label.text = str(result.get("message", "Sauvegarde terminée."))
 	else:
@@ -1083,7 +1185,7 @@ func _catalog_contains_path(path: String) -> bool:
 
 
 func _project_id_collision(kind: String, value: StringName) -> bool:
-	var current_path := session.source_unit.resource_path if session.source_unit != null else ""
+	var current_path := _current_catalog_path()
 	return value != &"" and SkillTreeReferenceIndex.project_id_exists(
 		heroes, kind, value, current_path
 	)
@@ -1092,7 +1194,7 @@ func _project_id_collision(kind: String, value: StringName) -> bool:
 func _open_search_result(result: Dictionary) -> void:
 	var path := str(result.get("character_path", ""))
 	var discipline_id := StringName(result.get("discipline_id", &""))
-	var current_path := session.source_unit.resource_path if session.source_unit != null else ""
+	var current_path := _current_catalog_path()
 	_pending_search_result = result.duplicate(true)
 	if path == current_path:
 		if discipline_id != &"":
@@ -1145,6 +1247,50 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func _autosave_draft() -> void:
 	if session.is_dirty():
 		last_draft_report = SkillTreeDraftService.write_draft(session)
+
+
+func _context_save() -> Dictionary:
+	return _save()
+
+
+func _context_draft() -> Dictionary:
+	last_draft_report = SkillTreeDraftService.write_draft(session)
+	return last_draft_report
+
+
+func _context_discard() -> Dictionary:
+	var ok := session.reopen_from_disk()
+	if ok:
+		_refresh_document()
+	return {"ok": ok, "error": "Le profil canonique n'a pas pu etre recharge." if not ok else ""}
+
+
+func _run_hero_catalog() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if project_context == null or project_context.active_run == null:
+		return result
+	for hero in RunContentCatalogService.heroes_for_run(project_context.active_run):
+		if hero == null or hero.base_unit_data == null or hero.progression_profile == null:
+			continue
+		var view := RunContentCatalogService.as_editable_unit_view(
+			hero.base_unit_data, hero.progression_profile
+		)
+		result.append({
+			"id": hero.character_id,
+			"name": hero.base_unit_data.unit_name,
+			"path": hero.base_unit_data.resource_path,
+			"profile_path": hero.progression_profile.resource_path,
+			"resource": view,
+			"discipline_count": hero.progression_profile.disciplines.size(),
+			"invalid": not hero.validation_errors().is_empty(),
+		})
+	return result
+
+
+func _current_catalog_path() -> String:
+	if session.source_hero_profile != null and session.source_hero_profile.base_unit_data != null:
+		return session.source_hero_profile.base_unit_data.resource_path
+	return session.source_unit.resource_path if session.source_unit != null else ""
 
 
 func _offer_draft(source_path: String) -> void:

@@ -12,6 +12,8 @@ var _workspace: StudioWorkspace = null
 var _window_host: NativeStudioWindowHost = null
 var _skill_window_host: SkillTreeStudioWindowHost = null
 var _ui_state := {}
+var _project_context: StudioProjectContext = null
+var _reference_graph: StudioReferenceGraphService = null
 
 
 func _enter_tree() -> void:
@@ -28,12 +30,23 @@ func _enter_tree() -> void:
 		"hint_string": "Ctrl+Shift+D",
 	})
 	_ui_state = StudioUiStateService.load_state()
+	_project_context = StudioProjectContext.new()
+	var stored_context := _ui_state.get("project_context", {}) as Dictionary
+	if stored_context.is_empty():
+		_project_context.initialize()
+	else:
+		_project_context.restore_snapshot(stored_context)
+	_reference_graph = StudioReferenceGraphService.new()
+	_reference_graph.scan()
 	_main_screen = EmbeddedStudioHost.new()
 	_main_screen.name = "EmbeddedStudioHost"
 	get_editor_interface().get_editor_main_screen().add_child(_main_screen)
 	_workspace = StudioWorkspace.new()
 	_workspace.name = "StudioWorkspace"
-	_workspace.setup(get_editor_interface(), get_undo_redo())
+	_workspace.setup(
+		get_editor_interface(), get_undo_redo(),
+		_project_context, _reference_graph
+	)
 	_workspace.set_detach_shortcut_string(str(
 		editor_settings.get_setting(DETACH_SHORTCUT_SETTING)
 	))
@@ -81,6 +94,8 @@ func _exit_tree() -> void:
 		_main_screen.free()
 	_main_screen = null
 	_workspace = null
+	_project_context = null
+	_reference_graph = null
 
 
 func _has_main_screen() -> bool:
@@ -172,7 +187,10 @@ func _open_skill_studio() -> void:
 	if not is_instance_valid(_skill_window_host):
 		_skill_window_host = SkillTreeStudioWindowHost.new()
 		_skill_window_host.name = "SkillTreeStudioWindowHost"
-		_skill_window_host.setup(get_editor_interface(), get_undo_redo())
+		_skill_window_host.setup(
+			get_editor_interface(), get_undo_redo(),
+			_project_context, _reference_graph
+		)
 		get_editor_interface().get_base_control().add_child(_skill_window_host)
 	_skill_window_host.open_studio()
 
@@ -183,6 +201,8 @@ func _save_ui_state() -> void:
 	_ui_state["detached"] = is_instance_valid(_window_host) \
 		and _workspace.get_parent() == _window_host
 	_ui_state["workspace"] = _workspace.get_state_snapshot()
+	if _project_context != null:
+		_ui_state["project_context"] = _project_context.snapshot()
 	if is_instance_valid(_window_host) and bool(_ui_state["detached"]):
 		_ui_state["window"] = _window_host.capture_window_state()
 	StudioUiStateService.save_state(_ui_state)

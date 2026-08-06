@@ -28,6 +28,8 @@ var _fallback_undo_redo := UndoRedo.new()
 var _last_history_object: Object = null
 var _syncing := false
 var _pending_shared_action: Callable
+var project_context: StudioProjectContext = null
+var shared_reference_graph: StudioReferenceGraphService = null
 
 var title_label: Label
 var status_label: Label
@@ -51,9 +53,16 @@ var shared_dialog: ConfirmationDialog
 var shared_duplicate_button: Button
 
 
-func setup(host_editor_interface, undo_manager) -> void:
+func setup(
+		host_editor_interface,
+		undo_manager,
+		shared_context: StudioProjectContext = null,
+		reference_graph: StudioReferenceGraphService = null
+	) -> void:
 	editor_interface = host_editor_interface
 	editor_undo_redo = undo_manager
+	project_context = shared_context
+	shared_reference_graph = reference_graph
 
 
 func _ready() -> void:
@@ -69,10 +78,19 @@ func _ready() -> void:
 		):
 			filesystem.filesystem_changed.connect(_on_filesystem_changed)
 	call_deferred("_discover_default_run")
+	if project_context != null:
+		project_context.run_changed.connect(_on_shared_run_changed)
+		project_context.room_changed.connect(_on_shared_room_changed)
+		project_context.register_transition_handler(
+			&"encounter", Callable(self, "_context_save"),
+			Callable(self, "_context_draft"), Callable(self, "_context_discard")
+		)
 
 
 func _exit_tree() -> void:
 	analysis_service.cancel()
+	if project_context != null:
+		project_context.unregister_transition_handler(&"encounter")
 	if editor_interface != null:
 		var filesystem = editor_interface.get_resource_filesystem()
 		if filesystem != null and filesystem.filesystem_changed.is_connected(
@@ -269,6 +287,9 @@ func _build_dialogs() -> void:
 
 func _discover_default_run() -> void:
 	enemy_catalog = StudioResourceCatalog.load_enemy_units()
+	if project_context != null and project_context.active_run != null:
+		open_run(project_context.active_run.resource_path)
+		return
 	var paths := StudioResourceCatalog.find_run_paths()
 	if paths.is_empty():
 		_set_status("Aucune RunData detectee dans le projet.", true)
@@ -301,6 +322,10 @@ func open_run(path: String) -> bool:
 func _refresh_all() -> void:
 	if session.working_run == null:
 		return
+	if project_context != null:
+		project_context.set_dirty(&"encounter", session.is_dirty(), {
+			"document": session.source_run_path,
+		})
 	_syncing = true
 	_refresh_run_tree()
 	_refresh_timeline()
@@ -662,6 +687,51 @@ func _save_confirmed() -> void:
 		_refresh_title()
 	else:
 		_set_status("Sauvegarde arretee : %s" % result.get("error", "inconnu"), true)
+	if project_context != null:
+		project_context.set_dirty(&"encounter", session.is_dirty())
+
+
+func _on_shared_run_changed(run_data: RunData) -> void:
+	if run_data != null and run_data.resource_path != session.source_run_path:
+		open_run(run_data.resource_path)
+
+
+func _on_shared_room_changed(room_index: int, _room: RoomData) -> void:
+	if session.working_run != null and room_index >= 0 \
+			and room_index < session.working_run.rooms.size():
+		session.select(room_index, 0)
+		call_deferred("_refresh_all")
+
+
+func _context_save() -> Dictionary:
+	var result := EncounterSaveService.save(session)
+	if result.get("ok", false):
+		_refresh_all()
+	return result
+
+
+func _context_draft() -> Dictionary:
+	if session.working_run == null:
+		return {"ok": false, "error": "Aucune session Encounter active."}
+	var directory := EncounterEditSession.RECOVERY_ROOT.path_join("context_drafts")
+	var absolute := ProjectSettings.globalize_path(directory)
+	if DirAccess.make_dir_recursive_absolute(absolute) != OK:
+		return {"ok": false, "error": "Le dossier de brouillon n'a pas pu etre cree."}
+	var identity := session.source_run_path.sha256_text().left(16)
+	var path := directory.path_join("%s.tres" % identity)
+	var error := ResourceSaver.save(session.working_run, path)
+	return {
+		"ok": error == OK,
+		"path": path,
+		"error": error_string(error) if error != OK else "",
+	}
+
+
+func _context_discard() -> Dictionary:
+	var ok := session.discard()
+	if ok:
+		_refresh_all()
+	return {"ok": ok, "error": "La session Encounter n'a pas pu etre rechargee." if not ok else ""}
 
 
 func _restore_latest_recovery() -> void:

@@ -1,0 +1,1764 @@
+[gd_resource type="Resource" script_class="CharacterProgressionProfile" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_ksbwu"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_gfphr"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="3_ay8u3"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/oeil_aigle.png" id="4_ma5ge"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="5_ekmdk"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="6_3lcq2"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_damage_bonus_at_min_range.gd" id="7_06dkn"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="8_6i78c"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/trait_de_siege.png" id="9_20nta"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_additional_push.gd" id="10_cmdo0"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/longue_portée.jpg" id="11_ctqxe"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_range_bonus.gd" id="12_y18aw"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/tir_perforant.png" id="13_4jagt"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_apply_status.gd" id="14_os85b"]
+[ext_resource type="Script" path="res://data/status/charged_damage_vulnerability_data.gd" id="15_k6c4k"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/fleche_entravante.jpg" id="16_j885n"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_next_turn_movement.gd" id="17_ctelm"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/trait_impact.png" id="18_5e24f"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_collision_damage.gd" id="19_ecesj"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/vue_parfaite.jpg" id="20_rpvqd"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/stabilisation.jpg" id="21_s6kw7"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_central_cell_damage_bonus.gd" id="22_3li5l"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/pointe_barbelée.png" id="23_pgh1n"]
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="24_1a0hx"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/felche_clouante.jpg" id="25_gqlw3"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/recul_tactique.png" id="26_vidcj"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/trait_de_.png" id="27_x62hy"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/tracas.png" id="28_5f1cx"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/tir_parfait.png" id="29_wd64d"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/trait_transperçant.jpg" id="30_khols"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_aligned_secondary_target.gd" id="31_yhlkp"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/fleche_siege.png" id="32_r6upp"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_exact_push_distance.gd" id="33_2yf7q"]
+[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/fleche_arret.jpg" id="34_pydbi"]
+[ext_resource type="Script" path="res://data/runs/content/character_progression_profile.gd" id="35_utspq"]
+[ext_resource type="Script" path="res://data/spell.gd" id="36_4k6jn"]
+[ext_resource type="PackedScene" path="res://asset/sorts/elfe_arc_magique/elf_magic_arrow_projectile.tscn" id="37_3sv7m"]
+[ext_resource type="Texture2D" path="res://asset/icone/boule de feu.png" id="38_22hse"]
+[ext_resource type="AudioStream" path="res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3" id="39_678qu"]
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="40_vlc4q"]
+[ext_resource type="PackedScene" path="res://battle/vfx/boule_de_feu_vfx2.tscn" id="41_ywrlx"]
+
+[sub_resource type="Resource" id="Resource_rrh8n"]
+script = ExtResource("2_gfphr")
+
+[sub_resource type="Resource" id="Resource_65xsj"]
+script = ExtResource("7_06dkn")
+minimum_range = 4
+bonus_damage = 5
+modifier_name = "Œil d’aigle"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_dvijh"]
+script = ExtResource("8_6i78c")
+modifier_name = "Effet de Œil d’aigle"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_1u43y"]
+script = ExtResource("5_ekmdk")
+upgrade_id = &"elf_archer_eagle_eye"
+display_name = "Œil d’aigle"
+description = "Tir précis inflige 5 dégâts supplémentaires à une cible située à au moins quatre cases."
+card_texture = ExtResource("4_ma5ge")
+discipline_id = &"archer"
+rank = 2
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_65xsj"), SubResource("Resource_dvijh")])
+
+[sub_resource type="Resource" id="Resource_xdar1"]
+script = ExtResource("10_cmdo0")
+push_distance = 1
+modifier_name = "Flèche de recul"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_bmuli"]
+script = ExtResource("5_ekmdk")
+upgrade_id = &"elf_archer_repel_arrow"
+display_name = "Flèche de recul"
+description = "Tir précis repousse sa cible d’exactement une case, si la grille le permet."
+card_texture = ExtResource("9_20nta")
+discipline_id = &"archer"
+rank = 2
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_xdar1")])
+
+[sub_resource type="Resource" id="Resource_eknng"]
+script = ExtResource("2_gfphr")
+rank = 2
+required_total_xp = 5
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_1u43y"), SubResource("Resource_bmuli")])
+
+[sub_resource type="Resource" id="Resource_3d3q1"]
+script = ExtResource("12_y18aw")
+range_bonus = 2
+modifier_name = "Longue portée"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_eqqvs"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_eagle_eye"])
+upgrade_id = &"elf_archer_long_range"
+display_name = "Longue portée"
+description = "Tir précis gagne 2 cases de portée."
+card_texture = ExtResource("11_ctqxe")
+discipline_id = &"archer"
+rank = 3
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_3d3q1")])
+
+[sub_resource type="Resource" id="Resource_bhv4h"]
+script = ExtResource("15_k6c4k")
+bonus_damage = 2
+status_id = &"physical_breach"
+status_name = "Brèche physique"
+description = "La prochaine attaque physique reçue inflige 2 dégâts supplémentaires."
+color = Color(0.78, 0.36, 0.18, 1)
+duration = 99
+
+[sub_resource type="Resource" id="Resource_xo1dj"]
+script = ExtResource("14_os85b")
+status = SubResource("Resource_bhv4h")
+modifier_name = "Tir perforant"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_2udau"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_eagle_eye"])
+upgrade_id = &"elf_archer_piercing_shot"
+display_name = "Tir perforant"
+description = "La cible touchée subit 2 dégâts physiques supplémentaires sur la prochaine attaque physique qu’elle reçoit."
+card_texture = ExtResource("13_4jagt")
+discipline_id = &"archer"
+rank = 3
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_xo1dj")])
+
+[sub_resource type="Resource" id="Resource_acvor"]
+script = ExtResource("17_ctelm")
+movement_points = -1
+modifier_name = "Flèche entravante"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_x5k3e"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_repel_arrow"])
+upgrade_id = &"elf_archer_hindering_arrow"
+display_name = "Flèche entravante"
+description = "La cible perd 1 PM pendant son prochain tour."
+card_texture = ExtResource("16_j885n")
+discipline_id = &"archer"
+rank = 3
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_acvor")])
+
+[sub_resource type="Resource" id="Resource_8cmyx"]
+script = ExtResource("19_ecesj")
+bonus_damage = 4
+modifier_name = "Trait d’impact"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_jv1aa"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_repel_arrow"])
+upgrade_id = &"elf_archer_impact_bolt"
+display_name = "Trait d’impact"
+description = "Une collision provoquée par la poussée de Tir précis inflige 4 dégâts physiques supplémentaires."
+card_texture = ExtResource("18_5e24f")
+discipline_id = &"archer"
+rank = 3
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_8cmyx")])
+
+[sub_resource type="Resource" id="Resource_kbg5a"]
+script = ExtResource("2_gfphr")
+rank = 3
+required_total_xp = 12
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_eqqvs"), SubResource("Resource_2udau"), SubResource("Resource_x5k3e"), SubResource("Resource_jv1aa")])
+
+[sub_resource type="Resource" id="Resource_pkr6i"]
+script = ExtResource("7_06dkn")
+minimum_range = 6
+bonus_damage = 5
+modifier_name = "Vue parfaite"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_hyb2f"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_long_range"])
+upgrade_id = &"elf_archer_perfect_sight"
+display_name = "Vue parfaite"
+description = "Tir précis inflige 5 dégâts supplémentaires lorsque la cible se trouve à au moins 6 cases."
+card_texture = ExtResource("20_rpvqd")
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_pkr6i")])
+
+[sub_resource type="Resource" id="Resource_v0rfb"]
+script = ExtResource("22_3li5l")
+bonus_damage = 5
+modifier_name = "Stabilisation"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_ubq4s"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_long_range"])
+upgrade_id = &"elf_archer_stabilization"
+display_name = "Stabilisation"
+description = "Tir précis inflige 5 dégâts supplémentaires sans condition."
+card_texture = ExtResource("21_s6kw7")
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_v0rfb")])
+
+[sub_resource type="Resource" id="Resource_okjw3"]
+script = ExtResource("24_1a0hx")
+status_id = &"elf_bleeding_2_for_2"
+status_name = "Saignement"
+description = "Subit 2 dégâts à la fin de chacun de ses deux prochains tours."
+color = Color(0.75, 0.05, 0.04, 1)
+damage_per_turn = 2
+damage_timing = 1
+duration = 2
+
+[sub_resource type="Resource" id="Resource_xpfko"]
+script = ExtResource("14_os85b")
+status = SubResource("Resource_okjw3")
+modifier_name = "Pointe barbelée"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_rvtpi"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_piercing_shot"])
+upgrade_id = &"elf_archer_barbed_tip"
+display_name = "Pointe barbelée"
+description = "Tir précis applique Saignement : 2 dégâts pendant 2 tours. Une nouvelle application rafraîchit sa durée."
+card_texture = ExtResource("23_pgh1n")
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_xpfko")])
+
+[sub_resource type="Resource" id="Resource_sxcds"]
+script = ExtResource("15_k6c4k")
+max_charges = 2
+bonus_damage = 2
+status_id = &"physical_breach"
+status_name = "Brèche physique"
+description = "Les deux prochaines attaques physiques reçues infligent 2 dégâts supplémentaires."
+color = Color(0.78, 0.36, 0.18, 1)
+duration = 99
+
+[sub_resource type="Resource" id="Resource_i5ckx"]
+script = ExtResource("14_os85b")
+status = SubResource("Resource_sxcds")
+modifier_name = "Brèche ouverte"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_4aubq"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_piercing_shot"])
+upgrade_id = &"elf_archer_open_breach"
+display_name = "Brèche ouverte"
+description = "Le bonus de Tir perforant s’applique aux 2 prochaines attaques physiques reçues."
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_i5ckx")])
+
+[sub_resource type="Resource" id="Resource_sa4ve"]
+script = ExtResource("17_ctelm")
+movement_points = -2
+modifier_name = "Flèche clouante"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_th6pb"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_hindering_arrow"])
+upgrade_id = &"elf_archer_pin_arrow"
+display_name = "Flèche clouante"
+description = "La perte de mouvement de Flèche entravante passe à 2 PM pendant le prochain tour."
+card_texture = ExtResource("25_gqlw3")
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_sa4ve")])
+
+[sub_resource type="Resource" id="Resource_73604"]
+script = ExtResource("17_ctelm")
+recipient = 0
+movement_points = 1
+modifier_name = "Recul tactique"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_0plxt"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_hindering_arrow"])
+upgrade_id = &"elf_archer_tactical_retreat"
+display_name = "Recul tactique"
+description = "Après un Tir précis réussi, l’Elfe gagne 1 PM pendant son prochain tour."
+card_texture = ExtResource("26_vidcj")
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_73604")])
+
+[sub_resource type="Resource" id="Resource_r6que"]
+script = ExtResource("10_cmdo0")
+push_distance = 1
+modifier_name = "Trait de siège"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_5xht6"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_impact_bolt"])
+upgrade_id = &"elf_archer_siege_bolt"
+display_name = "Trait de siège"
+description = "Tir précis gagne 1 case de poussée ; avec Flèche de recul, la poussée totale atteint 2 cases."
+card_texture = ExtResource("27_x62hy")
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_r6que")])
+
+[sub_resource type="Resource" id="Resource_i2nh1"]
+script = ExtResource("19_ecesj")
+bonus_damage = 4
+modifier_name = "Fracas"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_yssoa"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_impact_bolt"])
+upgrade_id = &"elf_archer_shatter"
+display_name = "Fracas"
+description = "Ajoute 4 dégâts de collision ; avec Trait d’impact, le bonus total atteint 8."
+card_texture = ExtResource("28_5f1cx")
+discipline_id = &"archer"
+rank = 4
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_i2nh1")])
+
+[sub_resource type="Resource" id="Resource_i6lgg"]
+script = ExtResource("2_gfphr")
+rank = 4
+required_total_xp = 21
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_hyb2f"), SubResource("Resource_ubq4s"), SubResource("Resource_rvtpi"), SubResource("Resource_4aubq"), SubResource("Resource_th6pb"), SubResource("Resource_0plxt"), SubResource("Resource_5xht6"), SubResource("Resource_yssoa")])
+
+[sub_resource type="Resource" id="Resource_qs84w"]
+script = ExtResource("7_06dkn")
+minimum_range = 6
+bonus_damage = 6
+modifier_name = "Tir parfait — dégâts"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_6mtpe"]
+script = ExtResource("12_y18aw")
+range_bonus = 1
+modifier_name = "Tir parfait — portée"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_iiahc"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_eagle_eye"])
+upgrade_id = &"elf_archer_perfect_shot"
+display_name = "Tir parfait"
+description = "Tir précis gagne 1 case de portée et inflige 6 dégâts supplémentaires à partir de 6 cases."
+card_texture = ExtResource("29_wd64d")
+discipline_id = &"archer"
+rank = 5
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_qs84w"), SubResource("Resource_6mtpe")])
+
+[sub_resource type="Resource" id="Resource_6iamv"]
+script = ExtResource("31_yhlkp")
+modifier_name = "Trait transperçant"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_24ytc"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_eagle_eye"])
+upgrade_id = &"elf_archer_transpiercing_bolt"
+display_name = "Trait transperçant"
+description = "Le premier ennemi aligné derrière la cible principale reçoit 50 % de ses dégâts finaux."
+card_texture = ExtResource("30_khols")
+discipline_id = &"archer"
+rank = 5
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_6iamv")])
+
+[sub_resource type="Resource" id="Resource_16ia8"]
+script = ExtResource("33_2yf7q")
+push_distance = 3
+modifier_name = "Flèche de siège — poussée"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_wbkw2"]
+script = ExtResource("19_ecesj")
+exact_total_damage = 8
+modifier_name = "Flèche de siège — collision"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_hl3as"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_repel_arrow"])
+upgrade_id = &"elf_archer_siege_arrow"
+display_name = "Flèche de siège"
+description = "La poussée totale de Tir précis devient 3 cases et son bonus total de collision devient 8."
+card_texture = ExtResource("32_r6upp")
+discipline_id = &"archer"
+rank = 5
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_16ia8"), SubResource("Resource_wbkw2")])
+
+[sub_resource type="Resource" id="Resource_t1w2l"]
+script = ExtResource("17_ctelm")
+movement_points = -2
+modifier_name = "Flèche d’arrêt — entrave"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_tstfs"]
+script = ExtResource("19_ecesj")
+bonus_damage = 4
+modifier_name = "Flèche d’arrêt — collision"
+target_spell_id = &"elf_precise_shot"
+
+[sub_resource type="Resource" id="Resource_l6vwl"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_archer_repel_arrow"])
+upgrade_id = &"elf_archer_stopping_arrow"
+display_name = "Flèche d’arrêt"
+description = "La cible perd 2 PM au prochain tour et subit 4 dégâts si sa poussée rencontre un obstacle, une limite ou une unité."
+card_texture = ExtResource("34_pydbi")
+discipline_id = &"archer"
+rank = 5
+target_spell_id = &"elf_precise_shot"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_t1w2l"), SubResource("Resource_tstfs")])
+
+[sub_resource type="Resource" id="Resource_jxyim"]
+script = ExtResource("2_gfphr")
+rank = 5
+required_total_xp = 30
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_iiahc"), SubResource("Resource_24ytc"), SubResource("Resource_hl3as"), SubResource("Resource_l6vwl")])
+
+[sub_resource type="Resource" id="Resource_n2m2c"]
+script = ExtResource("1_ksbwu")
+discipline_id = &"archer"
+display_name = "Archer"
+description = "Maîtrise des attaques précises à longue portée."
+presentation_color = Color(0.35, 0.72, 0.32, 1)
+ranks = Array[ExtResource("2_gfphr")]([SubResource("Resource_rrh8n"), SubResource("Resource_eknng"), SubResource("Resource_kbg5a"), SubResource("Resource_i6lgg"), SubResource("Resource_jxyim")])
+
+[sub_resource type="Resource" id="Resource_oqswc"]
+script = ExtResource("2_gfphr")
+
+[sub_resource type="Resource" id="Resource_5pffb"]
+script = ExtResource("8_6i78c")
+effect_type = 3
+amount = 5
+modifier_name = "Dans le dos"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_c4l36"]
+script = ExtResource("5_ekmdk")
+excluded_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_dans_le_dos"
+display_name = "Dans le dos"
+description = "+5 dégâts lors d’une véritable attaque arrière."
+discipline_id = &"assassin"
+rank = 2
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_5pffb")])
+
+[sub_resource type="Resource" id="Resource_deyp1"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+amount = 2
+duration = 2
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+modifier_name = "Lame venimeuse"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_13n1x"]
+script = ExtResource("5_ekmdk")
+excluded_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_lame_venimeuse"
+display_name = "Lame venimeuse"
+description = "Applique Poison : 2 dégâts pendant 2 tours."
+discipline_id = &"assassin"
+rank = 2
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_deyp1")])
+
+[sub_resource type="Resource" id="Resource_6jdkj"]
+script = ExtResource("2_gfphr")
+rank = 2
+required_total_xp = 5
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_c4l36"), SubResource("Resource_13n1x")])
+
+[sub_resource type="Resource" id="Resource_o5bom"]
+script = ExtResource("8_6i78c")
+effect_type = 2
+amount = 4
+effect_group = &"elf_assassin_execution"
+threshold_ratio = 0.4
+modifier_name = "Exécutrice"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_i3xdp"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_executrice"
+display_name = "Exécutrice"
+description = "+4 dégâts contre une cible sous 40 % de ses PV."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_o5bom")])
+
+[sub_resource type="Resource" id="Resource_bkcls"]
+script = ExtResource("8_6i78c")
+effect_type = 11
+amount = 1
+require_backstab = true
+modifier_name = "Repli"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_qlswu"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_repli"
+display_name = "Repli"
+description = "Après une attaque arrière réussie, l’Elfe gagne 1 PM à son prochain tour."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_bkcls")])
+
+[sub_resource type="Resource" id="Resource_eesmk"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+amount = 1
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 1
+modifier_name = "Empoisonneuse"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_slg4y"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_empoisonneuse"
+display_name = "Empoisonneuse"
+description = "Le Poison inflige +1 dégât par tour."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_eesmk")])
+
+[sub_resource type="Resource" id="Resource_w48c6"]
+script = ExtResource("8_6i78c")
+effect_type = 13
+amount = 1
+duration = 1
+status_group = &"elf_assassin_slow"
+status_name = "Entrave"
+modifier_name = "Saboteuse"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_nksgx"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_saboteuse"
+display_name = "Saboteuse"
+description = "La cible perd 1 PM pendant son prochain tour."
+discipline_id = &"assassin"
+rank = 3
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_w48c6")])
+
+[sub_resource type="Resource" id="Resource_6lp7s"]
+script = ExtResource("2_gfphr")
+rank = 3
+required_total_xp = 12
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_i3xdp"), SubResource("Resource_qlswu"), SubResource("Resource_slg4y"), SubResource("Resource_nksgx")])
+
+[sub_resource type="Resource" id="Resource_1qu4p"]
+script = ExtResource("8_6i78c")
+effect_type = 2
+amount = 4
+effect_group = &"elf_assassin_execution"
+threshold_ratio = 0.5
+modifier_name = "Coup fatal"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_4r4g2"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_executrice"])
+upgrade_id = &"elf_assassin_coup_fatal"
+display_name = "Coup fatal"
+description = "Le seuil d’exécution passe à 50 % des PV."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_1qu4p")])
+
+[sub_resource type="Resource" id="Resource_btdkw"]
+script = ExtResource("8_6i78c")
+effect_type = 15
+amount = 3
+duration = 99
+status_group = &"elf_assassin_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Ouverture"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_voe3j"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_executrice"])
+upgrade_id = &"elf_assassin_ouverture"
+display_name = "Ouverture"
+description = "La cible subit +3 dégâts sur la prochaine attaque physique reçue."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_btdkw")])
+
+[sub_resource type="Resource" id="Resource_pkkl8"]
+script = ExtResource("8_6i78c")
+effect_type = 5
+amount = 1
+modifier_name = "Allonge elfique"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_yr5f3"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_repli"])
+upgrade_id = &"elf_assassin_allonge_elfique"
+display_name = "Allonge elfique"
+description = "+1 portée."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_pkkl8")])
+
+[sub_resource type="Resource" id="Resource_ss5m6"]
+script = ExtResource("8_6i78c")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Pas léger"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_7toab"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_repli"])
+upgrade_id = &"elf_assassin_pas_leger"
+display_name = "Pas léger"
+description = "Le bonus de mobilité passe à +2 PM au prochain tour."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_ss5m6")])
+
+[sub_resource type="Resource" id="Resource_7ydjl"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+duration = 1
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 1
+modifier_name = "Toxines persistantes"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_424gc"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_empoisonneuse"])
+upgrade_id = &"elf_assassin_toxines_persistantes"
+display_name = "Toxines persistantes"
+description = "Le Poison dure 1 tour supplémentaire."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_7ydjl")])
+
+[sub_resource type="Resource" id="Resource_c0ha0"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+amount = 3
+duration = 2
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 2
+modifier_name = "Double dose"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_8x4rh"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_empoisonneuse"])
+upgrade_id = &"elf_assassin_double_dose"
+display_name = "Double dose"
+description = "Le Poison inflige 3 dégâts pendant 2 tours."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_c0ha0")])
+
+[sub_resource type="Resource" id="Resource_p5sjp"]
+script = ExtResource("8_6i78c")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"elf_assassin_slow"
+status_name = "Entrave"
+modifier_name = "Tendon tranché"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_waufw"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_saboteuse"])
+upgrade_id = &"elf_assassin_tendon_tranche"
+display_name = "Tendon tranché"
+description = "La perte passe à −2 PM pour le prochain tour."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_p5sjp")])
+
+[sub_resource type="Resource" id="Resource_ku7cb"]
+script = ExtResource("8_6i78c")
+effect_type = 16
+amount = -2
+duration = 1
+status_group = &"elf_assassin_weakened"
+status_name = "Affaiblissement"
+modifier_name = "Affaiblissement"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_ccn26"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_saboteuse"])
+upgrade_id = &"elf_assassin_affaiblissement"
+display_name = "Affaiblissement"
+description = "La cible inflige −2 dégâts pendant son prochain tour."
+discipline_id = &"assassin"
+rank = 4
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_ku7cb")])
+
+[sub_resource type="Resource" id="Resource_nm84g"]
+script = ExtResource("2_gfphr")
+rank = 4
+required_total_xp = 21
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_4r4g2"), SubResource("Resource_voe3j"), SubResource("Resource_yr5f3"), SubResource("Resource_7toab"), SubResource("Resource_424gc"), SubResource("Resource_8x4rh"), SubResource("Resource_waufw"), SubResource("Resource_ccn26")])
+
+[sub_resource type="Resource" id="Resource_o1him"]
+script = ExtResource("8_6i78c")
+effect_type = 4
+amount = 8
+threshold_ratio = 0.35
+modifier_name = "Assassinat"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_eodq3"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_assassinat"
+display_name = "Assassinat"
+description = "+8 dégâts si la cible est dans le dos ou sous 35 % de ses PV."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_o1him")])
+
+[sub_resource type="Resource" id="Resource_v2jey"]
+script = ExtResource("8_6i78c")
+effect_type = 5
+amount = 2
+modifier_name = "Lame fantôme"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_oy2sl"]
+script = ExtResource("8_6i78c")
+amount = 3
+modifier_name = "Lame fantôme"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_f2rox"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_dans_le_dos"])
+upgrade_id = &"elf_assassin_lame_fantome"
+display_name = "Lame fantôme"
+description = "Portée totale de 3 cases et +3 dégâts."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_v2jey"), SubResource("Resource_oy2sl")])
+
+[sub_resource type="Resource" id="Resource_v6qbg"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+amount = 3
+duration = 3
+status_group = &"elf_assassin_poison"
+status_name = "Poison"
+status_mode = 2
+modifier_name = "Venin mortel"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_7wxks"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_venin_mortel"
+display_name = "Venin mortel"
+description = "Poison : 3 dégâts pendant 3 tours."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_v6qbg")])
+
+[sub_resource type="Resource" id="Resource_aiwly"]
+script = ExtResource("8_6i78c")
+effect_type = 15
+amount = 3
+duration = 99
+charges = 2
+status_group = &"elf_assassin_vulnerability"
+status_name = "Vulnérabilité physique"
+status_damage_type = 0
+modifier_name = "Sabotage"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_fh1n8"]
+script = ExtResource("8_6i78c")
+effect_type = 13
+amount = 2
+duration = 1
+status_group = &"elf_assassin_slow"
+status_name = "Entrave"
+modifier_name = "Sabotage"
+target_spell_id = &"elf_sneak_strike"
+
+[sub_resource type="Resource" id="Resource_kdjjg"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_assassin_lame_venimeuse"])
+upgrade_id = &"elf_assassin_sabotage"
+display_name = "Sabotage"
+description = "−2 PM et +3 dégâts reçus sur les 2 prochaines attaques."
+discipline_id = &"assassin"
+rank = 5
+target_spell_id = &"elf_sneak_strike"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_aiwly"), SubResource("Resource_fh1n8")])
+
+[sub_resource type="Resource" id="Resource_3ico3"]
+script = ExtResource("2_gfphr")
+rank = 5
+required_total_xp = 30
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_eodq3"), SubResource("Resource_f2rox"), SubResource("Resource_7wxks"), SubResource("Resource_kdjjg")])
+
+[sub_resource type="Resource" id="Resource_dkudf"]
+script = ExtResource("1_ksbwu")
+discipline_id = &"assassin"
+display_name = "Assassin"
+description = "Maîtrise des frappes rapprochées et opportunistes."
+presentation_color = Color(0.48, 0.3, 0.64, 1)
+ranks = Array[ExtResource("2_gfphr")]([SubResource("Resource_oqswc"), SubResource("Resource_6jdkj"), SubResource("Resource_6lp7s"), SubResource("Resource_nm84g"), SubResource("Resource_3ico3")])
+
+[sub_resource type="Resource" id="Resource_pgr2w"]
+script = ExtResource("2_gfphr")
+
+[sub_resource type="Resource" id="Resource_1aae1"]
+script = ExtResource("8_6i78c")
+effect_type = 1
+amount = 5
+modifier_name = "Cœur incandescent"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_v8or5"]
+script = ExtResource("5_ekmdk")
+excluded_node_ids = Array[StringName]([&"elf_mage_braises_persistantes"])
+upgrade_id = &"elf_mage_cur_incandescent"
+display_name = "Cœur incandescent"
+description = "+5 dégâts sur la cellule centrale."
+discipline_id = &"mage"
+rank = 2
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_1aae1")])
+
+[sub_resource type="Resource" id="Resource_ervh6"]
+script = ExtResource("8_6i78c")
+effect_type = 22
+amount = 1
+modifier_name = "Braises persistantes"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_ohbej"]
+script = ExtResource("5_ekmdk")
+excluded_node_ids = Array[StringName]([&"elf_mage_cur_incandescent"])
+upgrade_id = &"elf_mage_braises_persistantes"
+display_name = "Braises persistantes"
+description = "Le terrain enflammé dure 1 tour supplémentaire."
+discipline_id = &"mage"
+rank = 2
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_ervh6")])
+
+[sub_resource type="Resource" id="Resource_w803s"]
+script = ExtResource("2_gfphr")
+rank = 2
+required_total_xp = 5
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_v8or5"), SubResource("Resource_ohbej")])
+
+[sub_resource type="Resource" id="Resource_hoc0k"]
+script = ExtResource("8_6i78c")
+effect_type = 1
+amount = 3
+modifier_name = "Détonation"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_g1q7g"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_cur_incandescent"])
+upgrade_id = &"elf_mage_detonation"
+display_name = "Détonation"
+description = "+3 dégâts supplémentaires au centre."
+discipline_id = &"mage"
+rank = 3
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_hoc0k")])
+
+[sub_resource type="Resource" id="Resource_3gjqj"]
+script = ExtResource("8_6i78c")
+effect_type = 17
+amount = 1
+modifier_name = "Explosion élargie"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_q2qkf"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_cur_incandescent"])
+upgrade_id = &"elf_mage_explosion_elargie"
+display_name = "Explosion élargie"
+description = "La zone gagne 1 cellule sur ses extrémités cardinales."
+discipline_id = &"mage"
+rank = 3
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_3gjqj")])
+
+[sub_resource type="Resource" id="Resource_ifvvq"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+amount = 2
+duration = 2
+status_group = &"elf_mage_burn"
+status_name = "Burn"
+status_element = 1
+modifier_name = "Incendiaire"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_midsv"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_braises_persistantes"])
+upgrade_id = &"elf_mage_incendiaire"
+display_name = "Incendiaire"
+description = "Applique Brûlure : 2 dégâts pendant 2 tours."
+discipline_id = &"mage"
+rank = 3
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_ifvvq")])
+
+[sub_resource type="Resource" id="Resource_txwjp"]
+script = ExtResource("8_6i78c")
+effect_type = 18
+amount = 1
+modifier_name = "Souffle ardent"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_sggil"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_braises_persistantes"])
+upgrade_id = &"elf_mage_souffle_ardent"
+display_name = "Souffle ardent"
+description = "Repousse les ennemis touchés de 1 case."
+discipline_id = &"mage"
+rank = 3
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_txwjp")])
+
+[sub_resource type="Resource" id="Resource_qyxf4"]
+script = ExtResource("2_gfphr")
+rank = 3
+required_total_xp = 12
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_g1q7g"), SubResource("Resource_q2qkf"), SubResource("Resource_midsv"), SubResource("Resource_sggil")])
+
+[sub_resource type="Resource" id="Resource_3iuwa"]
+script = ExtResource("8_6i78c")
+effect_type = 1
+amount = 4
+modifier_name = "Noyau ardent"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_1i5v1"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_detonation"])
+upgrade_id = &"elf_mage_noyau_ardent"
+display_name = "Noyau ardent"
+description = "+4 dégâts supplémentaires au centre."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_3iuwa")])
+
+[sub_resource type="Resource" id="Resource_sson1"]
+script = ExtResource("8_6i78c")
+effect_type = 5
+amount = 2
+modifier_name = "Portée arcanique"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_k7rj8"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_detonation"])
+upgrade_id = &"elf_mage_portee_arcanique"
+display_name = "Portée arcanique"
+description = "+2 portée."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_sson1")])
+
+[sub_resource type="Resource" id="Resource_3jpjb"]
+script = ExtResource("8_6i78c")
+effect_type = 17
+amount = 1
+modifier_name = "Grande explosion"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_224iu"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_explosion_elargie"])
+upgrade_id = &"elf_mage_grande_explosion"
+display_name = "Grande explosion"
+description = "La zone gagne encore 1 cellule cardinale."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_3jpjb")])
+
+[sub_resource type="Resource" id="Resource_oyokf"]
+script = ExtResource("8_6i78c")
+amount = 2
+modifier_name = "Éclats brûlants"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_fim4n"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_explosion_elargie"])
+upgrade_id = &"elf_mage_eclats_brulants"
+display_name = "Éclats brûlants"
+description = "+2 dégâts à toutes les cibles touchées."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_oyokf")])
+
+[sub_resource type="Resource" id="Resource_owk6g"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+duration = 1
+status_group = &"elf_mage_burn"
+status_name = "Burn"
+status_mode = 1
+status_element = 1
+modifier_name = "Braises longues"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_s0c11"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_incendiaire"])
+upgrade_id = &"elf_mage_braises_longues"
+display_name = "Braises longues"
+description = "La Brûlure dure 1 tour supplémentaire."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_owk6g")])
+
+[sub_resource type="Resource" id="Resource_21pqq"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+amount = 1
+status_group = &"elf_mage_burn"
+status_name = "Burn"
+status_mode = 1
+status_element = 1
+modifier_name = "Feu mordant"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_ufv6a"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_incendiaire"])
+upgrade_id = &"elf_mage_feu_mordant"
+display_name = "Feu mordant"
+description = "La Brûlure inflige +1 dégât par tour."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_21pqq")])
+
+[sub_resource type="Resource" id="Resource_h824w"]
+script = ExtResource("8_6i78c")
+effect_type = 18
+amount = 1
+modifier_name = "Souffle puissant"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_gvaqv"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_souffle_ardent"])
+upgrade_id = &"elf_mage_souffle_puissant"
+display_name = "Souffle puissant"
+description = "+1 case de poussée."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_h824w")])
+
+[sub_resource type="Resource" id="Resource_fsa2n"]
+script = ExtResource("8_6i78c")
+effect_type = 20
+amount = 4
+modifier_name = "Fracas ardent"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_yw3ew"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_souffle_ardent"])
+upgrade_id = &"elf_mage_fracas_ardent"
+display_name = "Fracas ardent"
+description = "Une collision inflige 4 dégâts supplémentaires."
+discipline_id = &"mage"
+rank = 4
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_fsa2n")])
+
+[sub_resource type="Resource" id="Resource_eyc2i"]
+script = ExtResource("2_gfphr")
+rank = 4
+required_total_xp = 21
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_1i5v1"), SubResource("Resource_k7rj8"), SubResource("Resource_224iu"), SubResource("Resource_fim4n"), SubResource("Resource_s0c11"), SubResource("Resource_ufv6a"), SubResource("Resource_gvaqv"), SubResource("Resource_yw3ew")])
+
+[sub_resource type="Resource" id="Resource_cq0nc"]
+script = ExtResource("8_6i78c")
+effect_type = 5
+amount = 2
+modifier_name = "Comète elfique"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_60uhi"]
+script = ExtResource("8_6i78c")
+effect_type = 1
+amount = 8
+modifier_name = "Comète elfique"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_gai1f"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_cur_incandescent"])
+upgrade_id = &"elf_mage_comete_elfique"
+display_name = "Comète elfique"
+description = "+8 dégâts au centre et +2 portée."
+discipline_id = &"mage"
+rank = 5
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_cq0nc"), SubResource("Resource_60uhi")])
+
+[sub_resource type="Resource" id="Resource_8ti3v"]
+script = ExtResource("8_6i78c")
+amount = 3
+modifier_name = "Nova elfique"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_krqfg"]
+script = ExtResource("8_6i78c")
+effect_type = 17
+amount = 1
+modifier_name = "Nova elfique"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_t53qo"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_cur_incandescent"])
+upgrade_id = &"elf_mage_nova_elfique"
+display_name = "Nova elfique"
+description = "+3 dégâts à toutes les cibles et zone agrandie."
+discipline_id = &"mage"
+rank = 5
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_8ti3v"), SubResource("Resource_krqfg")])
+
+[sub_resource type="Resource" id="Resource_v0y45"]
+script = ExtResource("8_6i78c")
+effect_type = 12
+amount = 3
+duration = 3
+status_group = &"elf_mage_burn"
+status_name = "Brûlure"
+status_mode = 2
+status_element = 1
+modifier_name = "Incendie sauvage"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_tcp7p"]
+script = ExtResource("8_6i78c")
+effect_type = 22
+amount = 1
+modifier_name = "Incendie sauvage"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_yv5s8"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_braises_persistantes"])
+upgrade_id = &"elf_mage_incendie_sauvage"
+display_name = "Incendie sauvage"
+description = "Brûlure : 3 dégâts pendant 3 tours et terrain +1 tour."
+discipline_id = &"mage"
+rank = 5
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_v0y45"), SubResource("Resource_tcp7p")])
+
+[sub_resource type="Resource" id="Resource_43fxs"]
+script = ExtResource("8_6i78c")
+effect_type = 19
+amount = 2
+modifier_name = "Onde explosive"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_y0ld6"]
+script = ExtResource("8_6i78c")
+effect_type = 21
+amount = 6
+modifier_name = "Onde explosive"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_4q5xe"]
+script = ExtResource("8_6i78c")
+effect_type = 22
+amount = 1
+modifier_name = "Onde explosive"
+target_spell_id = &"elf_fireball"
+
+[sub_resource type="Resource" id="Resource_lwpgf"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_mage_braises_persistantes"])
+upgrade_id = &"elf_mage_onde_explosive"
+display_name = "Onde explosive"
+description = "Poussée de 2 cases, 6 dégâts de collision et terrain +1 tour."
+discipline_id = &"mage"
+rank = 5
+target_spell_id = &"elf_fireball"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_43fxs"), SubResource("Resource_y0ld6"), SubResource("Resource_4q5xe")])
+
+[sub_resource type="Resource" id="Resource_p4rgl"]
+script = ExtResource("2_gfphr")
+rank = 5
+required_total_xp = 30
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_gai1f"), SubResource("Resource_t53qo"), SubResource("Resource_yv5s8"), SubResource("Resource_lwpgf")])
+
+[sub_resource type="Resource" id="Resource_n8civ"]
+script = ExtResource("1_ksbwu")
+discipline_id = &"mage"
+display_name = "Mage"
+description = "Maîtrise des explosions, du feu persistant et du contrôle de zone."
+presentation_color = Color(0.9, 0.3, 0.18, 1)
+ranks = Array[ExtResource("2_gfphr")]([SubResource("Resource_pgr2w"), SubResource("Resource_w803s"), SubResource("Resource_qyxf4"), SubResource("Resource_eyc2i"), SubResource("Resource_p4rgl")])
+
+[sub_resource type="Resource" id="Resource_ify4t"]
+script = ExtResource("2_gfphr")
+
+[sub_resource type="Resource" id="Resource_3podr"]
+script = ExtResource("8_6i78c")
+effect_type = 6
+target_scope = 1
+amount = 5
+modifier_name = "Sève abondante"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_w5eux"]
+script = ExtResource("5_ekmdk")
+excluded_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_seve_abondante"
+display_name = "Sève abondante"
+description = "+5 soins immédiats."
+discipline_id = &"healer"
+rank = 2
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_3podr")])
+
+[sub_resource type="Resource" id="Resource_k75jl"]
+script = ExtResource("8_6i78c")
+effect_type = 8
+target_scope = 1
+amount = 5
+modifier_name = "Écorce protectrice"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_5s4b8"]
+script = ExtResource("5_ekmdk")
+excluded_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_ecorce_protectrice"
+display_name = "Écorce protectrice"
+description = "Ajoute 5 points de bouclier."
+discipline_id = &"healer"
+rank = 2
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_k75jl")])
+
+[sub_resource type="Resource" id="Resource_4ipvf"]
+script = ExtResource("2_gfphr")
+rank = 2
+required_total_xp = 5
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_w5eux"), SubResource("Resource_5s4b8")])
+
+[sub_resource type="Resource" id="Resource_00lcq"]
+script = ExtResource("8_6i78c")
+effect_type = 7
+target_scope = 1
+amount = 5
+threshold_ratio = 0.5
+modifier_name = "Sauveteuse"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_mmg4a"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_sauveteuse"
+display_name = "Sauveteuse"
+description = "+5 soins si la cible possède moins de 50 % de ses PV."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_00lcq")])
+
+[sub_resource type="Resource" id="Resource_5axsv"]
+script = ExtResource("8_6i78c")
+effect_type = 14
+target_scope = 1
+amount = 2
+duration = 2
+status_group = &"elf_healer_regeneration"
+status_name = "Régénération"
+modifier_name = "Régénératrice"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_jac0l"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_regeneratrice"
+display_name = "Régénératrice"
+description = "Rend 2 PV à la fin des 2 prochains tours."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_5axsv")])
+
+[sub_resource type="Resource" id="Resource_jmhqg"]
+script = ExtResource("8_6i78c")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Bastion naturel"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_dfiyx"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_bastion_naturel"
+display_name = "Bastion naturel"
+description = "Ajoute 3 points de bouclier supplémentaires."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_jmhqg")])
+
+[sub_resource type="Resource" id="Resource_gu53p"]
+script = ExtResource("8_6i78c")
+effect_type = 10
+target_scope = 1
+amount = 1
+modifier_name = "Garde mobile"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_7jkj0"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_garde_mobile"
+display_name = "Garde mobile"
+description = "La cible gagne 1 PM pendant son prochain tour."
+discipline_id = &"healer"
+rank = 3
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_gu53p")])
+
+[sub_resource type="Resource" id="Resource_7bppq"]
+script = ExtResource("2_gfphr")
+rank = 3
+required_total_xp = 12
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_mmg4a"), SubResource("Resource_jac0l"), SubResource("Resource_dfiyx"), SubResource("Resource_7jkj0")])
+
+[sub_resource type="Resource" id="Resource_12c4f"]
+script = ExtResource("8_6i78c")
+effect_type = 7
+target_scope = 1
+amount = 5
+threshold_ratio = 0.35
+modifier_name = "Miracle mineur"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_udg7j"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_sauveteuse"])
+upgrade_id = &"elf_healer_miracle_mineur"
+display_name = "Miracle mineur"
+description = "+5 soins supplémentaires sous 35 % des PV."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_12c4f")])
+
+[sub_resource type="Resource" id="Resource_fvewj"]
+script = ExtResource("8_6i78c")
+effect_type = 5
+amount = 2
+modifier_name = "Racines lointaines"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_temvv"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_sauveteuse"])
+upgrade_id = &"elf_healer_racines_lointaines"
+display_name = "Racines lointaines"
+description = "+2 portée."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_fvewj")])
+
+[sub_resource type="Resource" id="Resource_xmy18"]
+script = ExtResource("8_6i78c")
+effect_type = 14
+target_scope = 1
+duration = 1
+status_group = &"elf_healer_regeneration"
+status_name = "Régénération"
+status_mode = 1
+modifier_name = "Sève longue"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_l5o2f"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_regeneratrice"])
+upgrade_id = &"elf_healer_seve_longue"
+display_name = "Sève longue"
+description = "La régénération dure 1 tour supplémentaire."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_xmy18")])
+
+[sub_resource type="Resource" id="Resource_msouk"]
+script = ExtResource("8_6i78c")
+effect_type = 14
+target_scope = 1
+amount = 1
+status_group = &"elf_healer_regeneration"
+status_name = "Régénération"
+status_mode = 1
+modifier_name = "Sève riche"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_8k4w8"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_regeneratrice"])
+upgrade_id = &"elf_healer_seve_riche"
+display_name = "Sève riche"
+description = "La régénération rend +1 PV par tour."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_msouk")])
+
+[sub_resource type="Resource" id="Resource_oxjpt"]
+script = ExtResource("8_6i78c")
+effect_type = 8
+target_scope = 1
+amount = 3
+modifier_name = "Écorce épaisse"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_7ol8k"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_bastion_naturel"])
+upgrade_id = &"elf_healer_ecorce_epaisse"
+display_name = "Écorce épaisse"
+description = "Ajoute encore 3 points de bouclier."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_oxjpt")])
+
+[sub_resource type="Resource" id="Resource_7wgoe"]
+script = ExtResource("8_6i78c")
+effect_type = 9
+target_scope = 1
+amount = 3
+modifier_name = "Protection partagée"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_41mvj"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_bastion_naturel"])
+upgrade_id = &"elf_healer_protection_partagee"
+display_name = "Protection partagée"
+description = "L’Elfe reçoit 3 points de bouclier lorsqu’elle protège un allié."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_7wgoe")])
+
+[sub_resource type="Resource" id="Resource_n63r2"]
+script = ExtResource("8_6i78c")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Élan sylvestre"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_uske5"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_garde_mobile"])
+upgrade_id = &"elf_healer_elan_sylvestre"
+display_name = "Élan sylvestre"
+description = "Le bonus passe à +2 PM pour le prochain tour."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_n63r2")])
+
+[sub_resource type="Resource" id="Resource_0g012"]
+script = ExtResource("8_6i78c")
+effect_type = 24
+target_scope = 1
+amount = 1
+modifier_name = "Purification"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_ipp2j"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_garde_mobile"])
+upgrade_id = &"elf_healer_purification"
+display_name = "Purification"
+description = "Retire un Poison, Saignement, Brûlure ou ralentissement."
+discipline_id = &"healer"
+rank = 4
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_0g012")])
+
+[sub_resource type="Resource" id="Resource_3l6x5"]
+script = ExtResource("2_gfphr")
+rank = 4
+required_total_xp = 21
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_udg7j"), SubResource("Resource_temvv"), SubResource("Resource_l5o2f"), SubResource("Resource_8k4w8"), SubResource("Resource_7ol8k"), SubResource("Resource_41mvj"), SubResource("Resource_uske5"), SubResource("Resource_ipp2j")])
+
+[sub_resource type="Resource" id="Resource_nafen"]
+script = ExtResource("8_6i78c")
+effect_type = 7
+target_scope = 1
+amount = 10
+threshold_ratio = 0.35
+modifier_name = "Miracle sylvestre"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_53k4a"]
+script = ExtResource("8_6i78c")
+effect_type = 24
+target_scope = 1
+amount = 1
+modifier_name = "Miracle sylvestre"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_xgwox"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_miracle_sylvestre"
+display_name = "Miracle sylvestre"
+description = "+10 soins sous 35 % des PV et retire un effet de dégâts sur la durée."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_nafen"), SubResource("Resource_53k4a")])
+
+[sub_resource type="Resource" id="Resource_f812g"]
+script = ExtResource("8_6i78c")
+effect_type = 25
+target_scope = 1
+ratio = 0.5
+modifier_name = "Floraison"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_vsuvp"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_seve_abondante"])
+upgrade_id = &"elf_healer_floraison"
+display_name = "Floraison"
+description = "Les alliés adjacents à la cible reçoivent 50 % du soin principal."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_f812g")])
+
+[sub_resource type="Resource" id="Resource_qmktt"]
+script = ExtResource("8_6i78c")
+effect_type = 8
+target_scope = 1
+amount = 8
+modifier_name = "Écorce vivante"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_s2nux"]
+script = ExtResource("8_6i78c")
+effect_type = 9
+target_scope = 1
+amount = 4
+modifier_name = "Écorce vivante"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_icumy"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_ecorce_vivante"
+display_name = "Écorce vivante"
+description = "Ajoute 8 points de bouclier et l’Elfe en reçoit 4."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_qmktt"), SubResource("Resource_s2nux")])
+
+[sub_resource type="Resource" id="Resource_4w12q"]
+script = ExtResource("8_6i78c")
+effect_type = 10
+target_scope = 1
+amount = 2
+modifier_name = "Élan protecteur"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_2ylwh"]
+script = ExtResource("8_6i78c")
+effect_type = 8
+target_scope = 1
+amount = 6
+modifier_name = "Élan protecteur"
+target_spell_id = &"elf_sylvan_heal"
+
+[sub_resource type="Resource" id="Resource_kx0kf"]
+script = ExtResource("5_ekmdk")
+prerequisite_node_ids = Array[StringName]([&"elf_healer_ecorce_protectrice"])
+upgrade_id = &"elf_healer_elan_protecteur"
+display_name = "Élan protecteur"
+description = "La cible gagne +2 PM et 6 points de bouclier."
+discipline_id = &"healer"
+rank = 5
+target_spell_id = &"elf_sylvan_heal"
+spell_modifiers = Array[ExtResource("6_3lcq2")]([SubResource("Resource_4w12q"), SubResource("Resource_2ylwh")])
+
+[sub_resource type="Resource" id="Resource_jmwch"]
+script = ExtResource("2_gfphr")
+rank = 5
+required_total_xp = 30
+choices = Array[ExtResource("3_ay8u3")]([SubResource("Resource_xgwox"), SubResource("Resource_vsuvp"), SubResource("Resource_icumy"), SubResource("Resource_kx0kf")])
+
+[sub_resource type="Resource" id="Resource_x2h4m"]
+script = ExtResource("1_ksbwu")
+discipline_id = &"healer"
+display_name = "Soigneur"
+description = "Maîtrise des soins, de la régénération et de la protection."
+presentation_color = Color(0.3, 0.72, 0.58, 1)
+ranks = Array[ExtResource("2_gfphr")]([SubResource("Resource_ify4t"), SubResource("Resource_4ipvf"), SubResource("Resource_7bppq"), SubResource("Resource_3l6x5"), SubResource("Resource_jmwch")])
+
+[sub_resource type="Resource" id="Resource_ss64n"]
+script = ExtResource("36_4k6jn")
+spell_id = &"elf_precise_shot"
+discipline_id = &"archer"
+spell_name = "Tir précis"
+description = "Un tir physique précis à longue portée."
+vfx_scene = ExtResource("37_3sv7m")
+impact_delay_seconds = 1.2
+ap_cost = 2
+spell_range = 7
+damage = 7
+damage_type = 0
+
+[sub_resource type="Resource" id="Resource_juu1i"]
+script = ExtResource("36_4k6jn")
+spell_id = &"elf_sneak_strike"
+discipline_id = &"assassin"
+spell_name = "Frappe sournoise"
+description = "Une frappe physique simple au corps-à-corps."
+ap_cost = 2
+spell_range = 1
+damage = 7
+damage_type = 0
+
+[sub_resource type="Resource" id="Resource_a2ljj"]
+script = ExtResource("40_vlc4q")
+effect_name = "lave"
+description = "Feu au sol: menace les deux camps, evitee par l'IA."
+color = Color(0.8862745, 0.007843138, 0.023529412, 1)
+trigger = 1
+damage = 15
+cell_type = 3
+dangerous_for_ai = true
+ai_danger_weight = 3.0
+metadata/_custom_type_script = "uid://c15pw2f0yrhuh"
+
+[sub_resource type="Resource" id="Resource_0vs4j"]
+script = ExtResource("36_4k6jn")
+spell_id = &"elf_fireball"
+discipline_id = &"mage"
+spell_name = "Boule de feu"
+description = "Projette une boule de feu et embrase la zone ciblée."
+icon = ExtResource("38_22hse")
+vfx_scene = ExtResource("41_ywrlx")
+sound_cast = ExtResource("39_678qu")
+spell_range = 14
+can_target_free_cell = true
+aoe_shape = 1
+aoe_size = 2
+damage = 400
+element = 1
+terrain_effect = SubResource("Resource_a2ljj")
+
+[sub_resource type="Resource" id="Resource_qlfx0"]
+script = ExtResource("36_4k6jn")
+spell_id = &"elf_sylvan_heal"
+discipline_id = &"healer"
+spell_name = "Soin sylvestre"
+description = "Un soin naturel utilisable sur un allié ou sur soi-même."
+ap_cost = 2
+spell_range = 5
+can_target_enemy = false
+can_target_ally = true
+can_target_self = true
+heal = 7
+
+[resource]
+script = ExtResource("35_utspq")
+character_id = &"elf"
+spells = Array[ExtResource("36_4k6jn")]([SubResource("Resource_ss64n"), SubResource("Resource_juu1i"), SubResource("Resource_0vs4j"), SubResource("Resource_qlfx0")])
+disciplines = Array[ExtResource("1_ksbwu")]([SubResource("Resource_n2m2c"), SubResource("Resource_dkudf"), SubResource("Resource_n8civ"), SubResource("Resource_x2h4m")])

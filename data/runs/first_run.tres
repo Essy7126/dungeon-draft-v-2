@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="RunData" format=3]
 
+[ext_resource type="Resource" path="res://data/runs/profiles/main_content_profile.tres" id="1_4p3l1"]
 [ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room_type"]
 [ext_resource type="Resource" path="res://data/rooms/first_run_room_01.tres" id="3_room_01"]
@@ -11,10 +12,11 @@
 
 [resource]
 script = ExtResource("1_run")
+run_name = "Principal"
 default_seed = 1337
 target_duration_minutes = 30
 extended_duration_minutes = 45
 room_flow_mode = 0
 maximum_waves_per_room = 1
-run_name = "Principal"
+content_profile = ExtResource("1_4p3l1")
 rooms = Array[ExtResource("2_room_type")]([ExtResource("3_room_01"), ExtResource("4_room_02"), ExtResource("5_room_03"), ExtResource("6_room_04"), ExtResource("7_room_05"), ExtResource("8_room_06")])

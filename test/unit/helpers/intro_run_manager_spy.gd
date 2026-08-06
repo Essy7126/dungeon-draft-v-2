@@ -4,6 +4,7 @@ var start_call_count := 0
 var received_run_data: RunData = null
 var received_hero_sources: Array = []
 var next_run_data: RunData = null
+var used_run_content_resolver := false
 
 
 func take_next_run_data(default_run_data: RunData) -> RunData:
@@ -16,3 +17,12 @@ func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:
 	start_call_count += 1
 	received_run_data = run_data
 	received_hero_sources = hero_sources.duplicate()
+	used_run_content_resolver = false
+
+
+func start_run(run_data: RunData) -> void:
+	start_call_count += 1
+	received_run_data = run_data
+	var resolution := RunHeroResolver.resolve_runtime_hero_data(run_data, false)
+	received_hero_sources.assign(resolution.heroes)
+	used_run_content_resolver = resolution.is_valid()

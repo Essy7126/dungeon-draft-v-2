@@ -10,8 +10,7 @@ static func build_plan(
 	var plan := SkillTreeSavePlan.new()
 	if session == null or session.working_unit == null:
 		return plan
-	plan.source_character_path = session.source_unit.resource_path \
-		if session.source_unit != null else ""
+	plan.source_character_path = session.canonical_source_path()
 	plan.opening_fingerprint = session.saved_fingerprint
 	plan.working_fingerprint = session.current_fingerprint()
 	var roots := _allowed_roots(options)
@@ -25,7 +24,7 @@ static func build_plan(
 				or source.is_built_in():
 			continue
 		candidates.append(work)
-		var reachable := SkillTreeSaveService._is_reachable(session.working_unit, work)
+		var reachable := session.is_resource_reachable(work)
 		var source_fingerprint := SkillTreeSnapshotService.storage_fingerprint(source)
 		var work_fingerprint := SkillTreeSnapshotService.storage_fingerprint(work)
 		if not reachable:
@@ -64,7 +63,7 @@ static func build_plan(
 		var path := str(session.new_resource_paths[resource_value])
 		if resource == null or path.is_empty():
 			continue
-		var reachable := SkillTreeSaveService._is_reachable(session.working_unit, resource)
+		var reachable := session.is_resource_reachable(resource)
 		if not reachable:
 			var orphan := _entry(
 				resource, null, path,

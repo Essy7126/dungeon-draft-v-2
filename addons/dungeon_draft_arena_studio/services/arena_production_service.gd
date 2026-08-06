@@ -240,7 +240,13 @@ static func _output_names(arena: ArenaDefinition) -> Array[String]:
 		"art_kit/map_reference.png", "art_kit/map_clean.png",
 		"art_kit/map_logic.png", "art_kit/map_grid.png",
 		"art_kit/map_game_preview.png", "art_kit/arena_definition.tres",
-		"art_kit/art_brief.txt", "art_kit/validation_report.json",
+		"art_kit/reference_clean.png", "art_kit/reference_grid.png",
+		"art_kit/reference_coordinates.png", "art_kit/reference_gameplay.png",
+		"art_kit/reference_walls.png", "art_kit/playable_mask.png",
+		"art_kit/void_mask.png", "art_kit/wall_mask.png",
+		"art_kit/foreground_guide.png", "art_kit/depth_guide.png",
+		"art_kit/art_brief.txt", "art_kit/art_brief.md",
+		"art_kit/arena_art_manifest.json", "art_kit/validation_report.json",
 		MANIFEST_FILE,
 	]
 	if arena.modular_visual_profile != null:

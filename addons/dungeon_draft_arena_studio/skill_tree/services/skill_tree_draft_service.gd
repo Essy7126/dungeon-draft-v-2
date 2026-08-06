@@ -10,7 +10,7 @@ static func write_draft(session: SkillTreeEditSession) -> Dictionary:
 	if session == null or session.source_unit == null \
 			or session.working_unit == null or not session.is_dirty():
 		return {"ok": false, "error": "Aucun brouillon modifie a enregistrer."}
-	var source_path := session.source_unit.resource_path
+	var source_path := session.canonical_source_path()
 	var character_root := DRAFT_ROOT.path_join(_source_key(source_path))
 	var stamp := "%d_%d" % [
 		int(Time.get_unix_time_from_system() * 1000000.0),
@@ -50,7 +50,7 @@ static func write_draft(session: SkillTreeEditSession) -> Dictionary:
 	var metadata := {
 		"schema_version": SCHEMA_VERSION,
 		"source_path": source_path,
-		"source_fingerprint": SkillTreeSnapshotService.fingerprint(session.source_unit),
+		"source_fingerprint": SkillTreeSnapshotService.storage_fingerprint(session.canonical_source()),
 		"opening_fingerprint": session.saved_fingerprint,
 		"working_fingerprint": session.current_fingerprint(),
 		"created_at": Time.get_datetime_string_from_system(),
@@ -58,6 +58,10 @@ static func write_draft(session: SkillTreeEditSession) -> Dictionary:
 		"content_path": content_path,
 		"source_keys_by_work_key": source_keys_by_work_key,
 		"new_paths_by_work_key": new_paths_by_work_key,
+		"authority": "CHARACTER_PROGRESSION_PROFILE" if session.is_profile_authoritative() else "UNIT_DATA",
+		"run_path": session.source_run.resource_path if session.source_run != null else "",
+		"character_id": str(session.source_hero_profile.character_id) \
+			if session.source_hero_profile != null else "",
 	}
 	var metadata_path := draft_dir.path_join("draft.json")
 	if not _write_json(metadata_path, metadata):
@@ -113,18 +117,29 @@ static func restore(session: SkillTreeEditSession, metadata: Dictionary) -> Dict
 	if session == null:
 		return {"ok": false, "error": "Session absente."}
 	var source_path := str(metadata.get("source_path", ""))
-	var source := ResourceLoader.load(
-		source_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
-	) as UnitData
 	var draft := load_draft(metadata)
-	if source == null or draft == null:
-		return {"ok": false, "error": "Source ou contenu du brouillon introuvable."}
-	var restored := session.restore_draft(
-		source,
-		draft,
-		metadata.get("source_keys_by_work_key", {}) as Dictionary,
-		metadata.get("new_paths_by_work_key", {}) as Dictionary
-	)
+	if draft == null:
+		return {"ok": false, "error": "Contenu du brouillon introuvable."}
+	var restored := false
+	var source: Resource = null
+	if str(metadata.get("authority", "UNIT_DATA")) == "CHARACTER_PROGRESSION_PROFILE":
+		source = ResourceLoader.load(
+			source_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+		) as CharacterProgressionProfile
+		restored = source != null and session.restore_profile_draft(
+			draft,
+			metadata.get("source_keys_by_work_key", {}) as Dictionary,
+			metadata.get("new_paths_by_work_key", {}) as Dictionary
+		)
+	else:
+		source = ResourceLoader.load(
+			source_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+		) as UnitData
+		restored = source != null and session.restore_draft(
+			source as UnitData, draft,
+			metadata.get("source_keys_by_work_key", {}) as Dictionary,
+			metadata.get("new_paths_by_work_key", {}) as Dictionary
+		)
 	return {"ok": restored, "source": source, "draft": draft, "metadata": metadata}
 
 
@@ -146,17 +161,17 @@ static func compare(metadata: Dictionary) -> Dictionary:
 	var source_path := str(metadata.get("source_path", ""))
 	var source := ResourceLoader.load(
 		source_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
-	) as UnitData
+	) as Resource
 	var draft := load_draft(metadata)
 	if source == null or draft == null:
 		return {"ok": false, "error": "Comparaison impossible."}
 	return {
 		"ok": true,
 		"source_path": source_path,
-		"source_fingerprint": SkillTreeSnapshotService.fingerprint(source),
+		"source_fingerprint": SkillTreeSnapshotService.storage_fingerprint(source),
 		"opening_fingerprint": str(metadata.get("opening_fingerprint", "")),
 		"draft_fingerprint": SkillTreeSnapshotService.fingerprint(draft),
-		"source_changed": SkillTreeSnapshotService.fingerprint(source) \
+		"source_changed": SkillTreeSnapshotService.storage_fingerprint(source) \
 			!= str(metadata.get("source_fingerprint", "")),
 	}
 

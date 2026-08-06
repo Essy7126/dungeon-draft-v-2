@@ -13,6 +13,11 @@ const HISTORY_LIMIT := 256
 var document_history := UndoRedo.new()
 var source_unit: UnitData = null
 var working_unit: UnitData = null
+var source_run: RunData = null
+var source_hero_profile: RunHeroProfile = null
+var source_progression_profile: CharacterProgressionProfile = null
+var working_progression_profile: CharacterProgressionProfile = null
+var unit_view_is_adapter := false
 var source_to_work := {}
 var work_to_source := {}
 var new_resource_paths := {}
@@ -58,6 +63,38 @@ func open(source: UnitData) -> bool:
 	return true
 
 
+func open_progression(run_data: RunData, hero_profile: RunHeroProfile) -> bool:
+	if run_data == null or hero_profile == null \
+			or hero_profile.base_unit_data == null \
+			or hero_profile.progression_profile == null:
+		return false
+	var unit_view := RunContentCatalogService.as_editable_unit_view(
+		hero_profile.base_unit_data, hero_profile.progression_profile
+	)
+	if unit_view == null or not open(unit_view):
+		return false
+	source_run = run_data
+	source_hero_profile = hero_profile
+	source_progression_profile = hero_profile.progression_profile
+	working_progression_profile = source_progression_profile.duplicate(false) \
+		as CharacterProgressionProfile
+	working_progression_profile.set_path_cache(source_progression_profile.resource_path)
+	_sync_profile_from_unit()
+	source_to_work[source_progression_profile] = working_progression_profile
+	work_to_source[working_progression_profile] = source_progression_profile
+	unit_view_is_adapter = true
+	saved_fingerprint = current_fingerprint()
+	last_operation_report = {
+		"operation": "OPEN_RUN_PROGRESSION",
+		"run_path": run_data.resource_path,
+		"character_id": hero_profile.character_id,
+		"profile_path": source_progression_profile.resource_path,
+	}
+	document_changed.emit()
+	history_changed.emit()
+	return true
+
+
 func release_document(emit_change := true) -> void:
 	# clear_history libere les objets conserves par les Callables et les valeurs
 	# d'UndoRedo avant d'abandonner la copie de travail.
@@ -69,6 +106,11 @@ func release_document(emit_change := true) -> void:
 	path_reservations.clear()
 	source_unit = null
 	working_unit = null
+	source_run = null
+	source_hero_profile = null
+	source_progression_profile = null
+	working_progression_profile = null
+	unit_view_is_adapter = false
 	selected_discipline_id = &""
 	selected_subject = null
 	saved_fingerprint = ""
@@ -81,6 +123,19 @@ func release_document(emit_change := true) -> void:
 
 
 func reopen_from_disk() -> bool:
+	if unit_view_is_adapter and source_run != null and source_hero_profile != null \
+			and source_progression_profile != null:
+		var run_path := source_run.resource_path
+		var character_id := source_hero_profile.character_id
+		var reloaded_run := ResourceLoader.load(
+			run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+		) as RunData
+		if reloaded_run == null:
+			return false
+		for hero in RunContentCatalogService.heroes_for_run(reloaded_run):
+			if hero != null and hero.character_id == character_id:
+				return open_progression(reloaded_run, hero)
+		return false
 	if source_unit == null or source_unit.resource_path.is_empty():
 		return false
 	var reloaded := ResourceLoader.load(
@@ -168,8 +223,84 @@ func is_dirty() -> bool:
 
 
 func current_fingerprint() -> String:
+	if unit_view_is_adapter and working_progression_profile != null:
+		_sync_profile_from_unit()
+		return SkillTreeSnapshotService.storage_fingerprint(working_progression_profile)
 	return SkillTreeSnapshotService.fingerprint(working_unit) \
 		if working_unit != null else ""
+
+
+func canonical_source_path() -> String:
+	if source_progression_profile != null:
+		return source_progression_profile.resource_path
+	return source_unit.resource_path if source_unit != null else ""
+
+
+func canonical_source() -> Resource:
+	return source_progression_profile if source_progression_profile != null else source_unit
+
+
+func canonical_working() -> Resource:
+	if working_progression_profile != null:
+		_sync_profile_from_unit()
+		return working_progression_profile
+	return working_unit
+
+
+func is_profile_authoritative() -> bool:
+	return unit_view_is_adapter and source_progression_profile != null
+
+
+func is_resource_reachable(resource: Resource) -> bool:
+	if resource == null:
+		return false
+	if is_profile_authoritative():
+		_sync_profile_from_unit()
+		if resource == working_progression_profile:
+			return true
+	return SkillTreeSaveService._is_reachable(working_unit, resource)
+
+
+func restore_profile_draft(
+		draft: UnitData,
+		source_keys_by_work_key: Dictionary = {},
+		new_paths_by_work_key: Dictionary = {}
+	) -> bool:
+	if source_run == null or source_hero_profile == null \
+			or source_progression_profile == null or draft == null:
+		return false
+	var run_data := source_run
+	var hero := source_hero_profile
+	var profile := source_progression_profile
+	var source_view := RunContentCatalogService.as_editable_unit_view(
+		hero.base_unit_data, profile
+	)
+	if not restore_draft(
+			source_view, draft, source_keys_by_work_key, new_paths_by_work_key
+		):
+		return false
+	source_run = run_data
+	source_hero_profile = hero
+	source_progression_profile = profile
+	working_progression_profile = profile.duplicate(false) as CharacterProgressionProfile
+	working_progression_profile.set_path_cache(profile.resource_path)
+	_sync_profile_from_unit()
+	source_to_work[profile] = working_progression_profile
+	work_to_source[working_progression_profile] = profile
+	unit_view_is_adapter = true
+	saved_fingerprint = SkillTreeSnapshotService.storage_fingerprint(profile)
+	document_changed.emit()
+	return true
+
+
+func _sync_profile_from_unit() -> void:
+	if working_progression_profile == null or working_unit == null:
+		return
+	working_progression_profile.character_id = source_progression_profile.character_id \
+		if source_progression_profile != null else working_unit.get_effective_unit_id()
+	working_progression_profile.active_spell_slots = working_unit.active_spell_slots
+	working_progression_profile.spells.assign(working_unit.spells)
+	working_progression_profile.disciplines.assign(working_unit.disciplines)
 
 
 func mark_saved() -> void:

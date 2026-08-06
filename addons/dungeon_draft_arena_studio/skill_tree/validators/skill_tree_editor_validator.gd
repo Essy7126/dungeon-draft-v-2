@@ -242,8 +242,26 @@ static func _validate_node(
 				"Supprimez l’entrée vide ou choisissez un SpellModifier.",
 				node.upgrade_id, &"spell_modifiers", node.rank
 			))
-		elif modifier is SpellModSkillTreeEffect:
-			_validate_skill_effect(node, modifier, target_spell, messages)
+		else:
+			var descriptor: SkillEffectEditorDescriptor = (
+				SkillEffectEditorRegistry.new().descriptor_for(modifier)
+			)
+			if descriptor == null:
+				messages.append(_error(
+					&"modifier_descriptor_missing", "Descripteur métier manquant",
+					"Le type de modificateur ne peut pas être authoré sans édition technique.",
+					"Ajoutez son descripteur au registre 2.0 avant sauvegarde.",
+					node.upgrade_id, &"spell_modifiers", node.rank
+				))
+			else:
+				for descriptor_error in descriptor.validate(modifier):
+					messages.append(_error(
+						&"modifier_descriptor_invalid", "Effet métier incomplet",
+						descriptor_error, "Corrigez le champ guidé indiqué.",
+						node.upgrade_id, &"spell_modifiers", node.rank
+					))
+			if modifier is SpellModSkillTreeEffect:
+				_validate_skill_effect(node, modifier, target_spell, messages)
 	if node is SkillTreeNodeData:
 		var tree_node := node as SkillTreeNodeData
 		for excluded_id in tree_node.excluded_node_ids:
@@ -469,7 +487,8 @@ static func _validate_project_discipline_ids(
 			continue
 		for hero_entry in project_heroes:
 			var other := hero_entry.get("resource") as UnitData
-			if other == null or other.resource_path == unit.resource_path:
+			if other == null or other.resource_path == unit.resource_path \
+					or other.get_effective_unit_id() == unit.get_effective_unit_id():
 				continue
 			for other_discipline in other.disciplines:
 				if other_discipline != null \

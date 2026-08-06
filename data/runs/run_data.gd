@@ -22,6 +22,7 @@ enum RoomFlowMode {
 	RoomFlowMode.SINGLE_ENCOUNTER
 )
 @export_range(1, 10, 1) var maximum_waves_per_room: int = 1
+@export var content_profile: RunContentProfile = null
 @export var rooms: Array[RoomData] = []
 
 
@@ -45,6 +46,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("La duree etendue doit etre superieure a la duree cible.")
 	if rooms.is_empty():
 		errors.append("La run doit contenir au moins une salle.")
+	if content_profile != null:
+		errors.append_array(content_profile.validation_errors())
 	if is_single_encounter_flow() and maximum_waves_per_room != 1:
 		errors.append(
 			"Une run SINGLE_ENCOUNTER doit limiter les combats par salle a 1."
@@ -125,6 +128,29 @@ func validation_errors() -> PackedStringArray:
 					]
 				)
 	return errors
+
+
+## La validation de contenu reste separee pour que les RunData historiques et
+## les fixtures de flow puissent encore etre chargees pendant la migration.
+func content_validation_errors(require_profile := true) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if content_profile == null:
+		if require_profile:
+			errors.append(
+				"La RunData %s doit etre migree vers un content_profile." % run_name
+			)
+		return errors
+	errors.append_array(content_profile.validation_errors())
+	return errors
+
+
+func validation_warnings() -> PackedStringArray:
+	var warnings := PackedStringArray()
+	if content_profile == null:
+		warnings.append(
+			"RunData legacy sans content_profile : le trio historique sera utilise."
+		)
+	return warnings
 
 
 func is_valid() -> bool:

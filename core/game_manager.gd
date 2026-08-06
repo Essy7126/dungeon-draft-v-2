@@ -131,7 +131,21 @@ func is_progression_service_connected() -> bool:
 # ============================================================
 
 func start_run(run_data: RunData) -> void:
-	start_preconfigured_run(run_data, PRODUCTION_HERO_DATA_PATHS)
+	var resolution := resolve_run_hero_data(run_data)
+	for warning in resolution.warnings:
+		push_warning(warning)
+	if not resolution.is_valid():
+		for error in resolution.errors:
+			push_error("Resolution du contenu de run : %s" % error)
+		return
+	start_preconfigured_run(run_data, resolution.heroes)
+
+
+func resolve_run_hero_data(
+		run_data: RunData,
+		allow_legacy_fallback := true
+	) -> RunHeroResolution:
+	return RunHeroResolver.resolve_runtime_hero_data(run_data, allow_legacy_fallback)
 
 
 ## Conserve le choix du hub pendant la cinematique qui precede le lancement.

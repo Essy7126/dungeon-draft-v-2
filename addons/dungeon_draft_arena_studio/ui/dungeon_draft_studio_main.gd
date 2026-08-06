@@ -30,11 +30,21 @@ var detached := false
 var _pending_state := {}
 var studio_title_label: Label
 var detach_shortcut_text := "Ctrl+Shift+D"
+var project_context: StudioProjectContext = null
+var reference_graph: StudioReferenceGraphService = null
+var context_bar: StudioContextBar = null
 
 
-func setup(host_editor_interface, undo_manager) -> void:
+func setup(
+		host_editor_interface,
+		undo_manager,
+		shared_context: StudioProjectContext = null,
+		shared_reference_graph: StudioReferenceGraphService = null
+	) -> void:
 	editor_interface = host_editor_interface
 	editor_undo_redo = undo_manager
+	project_context = shared_context
+	reference_graph = shared_reference_graph
 
 
 func _ready() -> void:
@@ -44,19 +54,22 @@ func _ready() -> void:
 	root.add_theme_constant_override("separation", 4)
 	add_child(root)
 	root.add_child(_build_shared_history_bar())
+	context_bar = StudioContextBar.new()
+	context_bar.setup(project_context, reference_graph)
+	root.add_child(context_bar)
 	tabs = TabContainer.new()
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(tabs)
 
 	arena_studio = ArenaStudioMain.new()
 	arena_studio.name = "Arenes"
-	arena_studio.setup(editor_interface, editor_undo_redo)
+	arena_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	tabs.add_child(arena_studio)
 	tabs.set_tab_title(tabs.get_tab_count() - 1, "ARENES")
 
 	encounter_studio = EncounterStudioMain.new()
 	encounter_studio.name = "Rencontres"
-	encounter_studio.setup(editor_interface, editor_undo_redo)
+	encounter_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	encounter_studio.open_arena_requested.connect(_open_arena_tab)
 	tabs.add_child(encounter_studio)
 	tabs.set_tab_title(tabs.get_tab_count() - 1, "RENCONTRES")
@@ -76,11 +89,12 @@ func _ready() -> void:
 func _build_shared_history_bar() -> Control:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size.y = 38
-	var bar := HBoxContainer.new()
+	var bar := HFlowContainer.new()
 	bar.add_theme_constant_override("separation", 5)
+	bar.add_theme_constant_override("v_separation", 4)
 	panel.add_child(bar)
 	studio_title_label = Label.new()
-	studio_title_label.text = "DUNGEON DRAFT STUDIO 1.3.1"
+	studio_title_label.text = "DUNGEON DRAFT STUDIO 2.0"
 	studio_title_label.custom_minimum_size.x = 224
 	studio_title_label.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
 	studio_title_label.add_theme_font_size_override("font_size", 16)
@@ -162,6 +176,7 @@ func get_state_snapshot() -> Dictionary:
 			if arena_studio != null and arena_studio.has_method("get_workspace_state") else {},
 		"encounter": encounter_studio.get_state_snapshot() \
 			if encounter_studio != null else {},
+		"project_context": project_context.snapshot() if project_context != null else {},
 	}
 
 
@@ -410,7 +425,7 @@ func _apply_toolbar_responsive() -> void:
 	if studio_title_label == null or detach_button == null:
 		return
 	var compact := size.x < 1500.0
-	studio_title_label.text = "DD STUDIO 1.3.1" if compact else "DUNGEON DRAFT STUDIO 1.3.1"
+	studio_title_label.text = "DD STUDIO 2.0" if compact else "DUNGEON DRAFT STUDIO 2.0"
 	studio_title_label.custom_minimum_size.x = 104 if compact else 224
 	document_label.visible = not compact
 	undo_button.text = "↶" if compact else "Annuler"

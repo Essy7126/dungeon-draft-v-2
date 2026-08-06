@@ -10,6 +10,8 @@ const MINIMUM_SIZE := Vector2i(1280, 720)
 var editor_interface = null
 var editor_undo_redo = null
 var studio: SkillTreeStudioMain = null
+var project_context: StudioProjectContext = null
+var reference_graph: StudioReferenceGraphService = null
 
 
 func _init() -> void:
@@ -17,9 +19,16 @@ func _init() -> void:
 	force_native = true
 
 
-func setup(host_editor_interface, undo_manager) -> void:
+func setup(
+		host_editor_interface,
+		undo_manager,
+		shared_context: StudioProjectContext = null,
+		shared_reference_graph: StudioReferenceGraphService = null
+	) -> void:
 	editor_interface = host_editor_interface
 	editor_undo_redo = undo_manager
+	project_context = shared_context
+	reference_graph = shared_reference_graph
 
 
 func _ready() -> void:
@@ -55,7 +64,7 @@ func close_studio_immediately() -> void:
 func _create_studio() -> void:
 	studio = SkillTreeStudioMain.new()
 	studio.name = "SkillTreeStudioMain"
-	studio.setup(editor_interface, editor_undo_redo)
+	studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	studio.close_confirmed.connect(_finalize_close)
 	add_child(studio)
 	studio.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

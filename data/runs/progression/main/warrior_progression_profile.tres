@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CharacterProgressionProfile" format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_lytr3"]
+[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/breaker.tres" id="2_pgbw5"]
+[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/assault.tres" id="3_jaixc"]
+[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/fury.tres" id="4_ustn2"]
+[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/bulwark.tres" id="5_xki41"]
+[ext_resource type="Script" path="res://data/runs/content/character_progression_profile.gd" id="6_ybllv"]
+[ext_resource type="Script" path="res://data/spell.gd" id="7_1wb18"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/frappe_lourde.tres" id="8_g16ol"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/charge.tres" id="9_d8kil"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/tourbillon.tres" id="10_jw5rm"]
+[ext_resource type="Resource" path="res://data/spells/Guerrier/garde.tres" id="11_jfqc0"]
+
+[resource]
+script = ExtResource("6_ybllv")
+character_id = &"warrior"
+spells = Array[ExtResource("7_1wb18")]([ExtResource("8_g16ol"), ExtResource("9_d8kil"), ExtResource("10_jw5rm"), ExtResource("11_jfqc0")])
+disciplines = Array[ExtResource("1_lytr3")]([ExtResource("2_pgbw5"), ExtResource("3_jaixc"), ExtResource("4_ustn2"), ExtResource("5_xki41")])

@@ -36,6 +36,8 @@ var camera: Camera2D = null
 var grid: GridData = null
 var pathfinder: Pathfinder = null
 var grid_view: PaintedGridView = null
+var runtime_state: ArenaRuntimeState = null
+var dynamic_surface_visuals: DynamicSurfaceVisualAdapter = null
 var assembly := {}
 var _debounce: Timer = null
 var _requested_generation := 0
@@ -93,6 +95,8 @@ func cleanup_preview() -> void:
 	grid_view = null
 	grid = null
 	pathfinder = null
+	runtime_state = null
+	dynamic_surface_visuals = null
 	assembly = {}
 	preview_signature = {}
 
@@ -117,12 +121,12 @@ func _perform_rebuild() -> bool:
 	if arena == null:
 		preview_failed.emit("ArenaDefinition absente.")
 		return false
-	var preview_arena := ArenaDefinition.new()
-	if not preview_arena.restore_snapshot(arena.to_snapshot()):
-		preview_failed.emit("Le schema ArenaDefinition n'est pas supporte.")
+	runtime_state = ArenaRuntimeProjectionService.build(arena)
+	if runtime_state == null or runtime_state.arena_projection == null:
+		preview_failed.emit("La projection runtime ArenaDefinition est impossible.")
 		return false
-	ArenaRuntimeBridge.sync_runtime_resources(preview_arena)
-	grid = ArenaRuntimeBridge.build_grid(preview_arena)
+	var preview_arena := runtime_state.arena_projection
+	grid = runtime_state.grid
 	if grid == null:
 		preview_failed.emit("GridData impossible a construire.")
 		return false
@@ -149,6 +153,12 @@ func _perform_rebuild() -> bool:
 		preview_arena, grid, pathfinder, grid_view, y_sorted_world,
 		world_root, show_dynamic_terrains
 	)
+	dynamic_surface_visuals = DynamicSurfaceVisualAdapter.new()
+	dynamic_surface_visuals.name = "DynamicSurfaceVisualAdapter"
+	world_root.add_child(dynamic_surface_visuals)
+	dynamic_surface_visuals.configure(
+		runtime_state.surface_service, grid_view, y_sorted_world
+	)
 	var assembly_report := assembly.get("report") as ArenaVisualAssemblyReport
 	if assembly_report == null or not assembly_report.valid:
 		preview_failed.emit(
@@ -174,6 +184,16 @@ func _perform_rebuild() -> bool:
 	rebuild_count += 1
 	preview_rebuilt.emit(preview_signature)
 	return assembly_report != null and assembly_report.valid
+
+
+func update_runtime_surface(cell: Vector2i, surface: int, source_unit = null) -> Dictionary:
+	if runtime_state == null:
+		return {"handled": false, "error": "Projection runtime absente."}
+	return runtime_state.update_surface(cell, surface, source_unit)
+
+
+func clear_runtime_surface(cell: Vector2i) -> bool:
+	return runtime_state.clear_surface(cell) if runtime_state != null else false
 
 
 func _build_background(value: ArenaDefinition) -> void:

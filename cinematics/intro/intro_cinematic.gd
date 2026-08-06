@@ -481,15 +481,20 @@ func _complete_intro_and_start_run() -> void:
 	if configuration.is_empty():
 		_fail_and_return("Configuration de la première run indisponible.")
 		return
-	var manager := _get_run_manager()
-	if manager == null or not manager.has_method("start_preconfigured_run"):
-		_fail_and_return("GameManager.start_preconfigured_run() indisponible.")
-		return
-	run_start_committed = true
 	var run_data: RunData = configuration["run_data"]
 	var hero_sources: Array = configuration["hero_sources"]
+	var manager := _get_run_manager()
+	var uses_content_profile := run_data.content_profile != null
+	var start_method := &"start_run" if uses_content_profile else &"start_preconfigured_run"
+	if manager == null or not manager.has_method(start_method):
+		_fail_and_return("GameManager.%s() indisponible." % start_method)
+		return
+	run_start_committed = true
 	run_start_requested.emit(run_data, hero_sources.duplicate())
-	manager.start_preconfigured_run(run_data, hero_sources)
+	if uses_content_profile:
+		manager.call(start_method, run_data)
+	else:
+		manager.call(start_method, run_data, hero_sources)
 
 
 func _resolve_run_configuration() -> Dictionary:
@@ -498,19 +503,22 @@ func _resolve_run_configuration() -> Dictionary:
 	var run_data := load(run_data_path) as RunData
 	if run_data == null:
 		return {}
-	var hero_sources: Array[UnitData] = []
-	for path in hero_source_paths:
-		if not ResourceLoader.exists(path):
-			return {}
-		var hero_data := load(path) as UnitData
-		if hero_data == null:
-			return {}
-		hero_sources.append(hero_data)
 	var manager := _get_run_manager()
 	if manager != null and manager.has_method("take_next_run_data"):
 		var selected_run = manager.call("take_next_run_data", run_data)
 		if selected_run is RunData:
 			run_data = selected_run as RunData
+	var hero_sources: Array[UnitData] = []
+	# Les runs migrees portent leur propre autorite. Les chemins exportes ne
+	# servent plus qu'au fallback des anciennes RunData sans content_profile.
+	if run_data.content_profile == null:
+		for path in hero_source_paths:
+			if not ResourceLoader.exists(path):
+				return {}
+			var hero_data := load(path) as UnitData
+			if hero_data == null:
+				return {}
+			hero_sources.append(hero_data)
 	return {
 		"run_data": run_data,
 		"hero_sources": hero_sources,

@@ -19,11 +19,14 @@ static func summarize_modifier(modifier: SpellModifier) -> String:
 		return "Modificateur manquant."
 	if modifier is SpellModSkillTreeEffect:
 		return _skill_tree_effect(modifier as SpellModSkillTreeEffect)
+	var descriptor := SkillEffectEditorRegistry.new().descriptor_for(modifier)
+	if descriptor != null:
+		return descriptor.sentence(modifier)
 	var name := modifier.modifier_name.strip_edges()
 	if name.is_empty():
 		name = modifier.get_script().get_global_name() \
 			if modifier.get_script() is Script else modifier.get_class()
-	return "%s — effet spécialisé." % name
+	return "%s — descripteur métier manquant." % name
 
 
 static func effect_type_label(effect_type: int) -> String:
@@ -85,7 +88,7 @@ static func effect_type_label(effect_type: int) -> String:
 		SpellModSkillTreeEffect.EffectType.ALLOW_FREE_CELL_TARGET:
 			return "Ciblage d’une case libre"
 		_:
-			return "Effet spécialisé"
+			return "Effet non reconnu (%d)" % effect_type
 
 
 static func _skill_tree_effect(effect: SpellModSkillTreeEffect) -> String:

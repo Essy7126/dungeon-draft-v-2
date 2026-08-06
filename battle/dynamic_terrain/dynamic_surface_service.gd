@@ -25,7 +25,9 @@ func configure(grid_data: GridData, surface_configs: Array[SurfaceConfig]) -> vo
 		for x in range(grid.cols):
 			var cell := Vector2i(x, y)
 			if grid.is_terrain_interactable(cell):
-				_states[cell] = CellSurfaceState.new()
+				var state := CellSurfaceState.new()
+				state.configure_base(grid.get_type(cell))
+				_states[cell] = state
 
 
 func apply_surface_effect(cell: Vector2i, effect: int, source_unit = null) -> Dictionary:
@@ -158,3 +160,9 @@ func get_movement_cost(cell: Vector2i) -> int:
 func state_count() -> int:
 	return _states.size()
 
+
+func state_cells() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for cell in _states:
+		cells.append(cell)
+	return cells

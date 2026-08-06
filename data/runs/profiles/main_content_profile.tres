@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="RunContentProfile" format=3]
+
+[ext_resource type="Script" path="res://data/runs/content/run_hero_profile.gd" id="1_nmoyt"]
+[ext_resource type="Resource" path="res://data/units/alliés/elfe.tres" id="2_c1vpa"]
+[ext_resource type="Resource" path="res://data/runs/progression/main/elf_progression_profile.tres" id="3_fikvi"]
+[ext_resource type="Resource" path="res://data/units/alliés/mage.tres" id="4_0aaqa"]
+[ext_resource type="Resource" path="res://data/runs/progression/main/mage_progression_profile.tres" id="5_m28dg"]
+[ext_resource type="Resource" path="res://data/units/alliés/Guerrier.tres" id="6_jv8q2"]
+[ext_resource type="Resource" path="res://data/runs/progression/main/warrior_progression_profile.tres" id="7_d7qwy"]
+[ext_resource type="Script" path="res://data/runs/content/run_content_profile.gd" id="8_qs62j"]
+
+[sub_resource type="Resource" id="Resource_l1tfg"]
+script = ExtResource("1_nmoyt")
+character_id = &"elf"
+base_unit_data = ExtResource("2_c1vpa")
+progression_profile = ExtResource("3_fikvi")
+
+[sub_resource type="Resource" id="Resource_aa8tm"]
+script = ExtResource("1_nmoyt")
+character_id = &"mage"
+base_unit_data = ExtResource("4_0aaqa")
+progression_profile = ExtResource("5_m28dg")
+
+[sub_resource type="Resource" id="Resource_ee4yo"]
+script = ExtResource("1_nmoyt")
+character_id = &"warrior"
+base_unit_data = ExtResource("6_jv8q2")
+progression_profile = ExtResource("7_d7qwy")
+
+[resource]
+script = ExtResource("8_qs62j")
+profile_id = &"main"
+display_name = "Contenu principal"
+description = "Progressions historiques de production."
+hero_profiles = Array[ExtResource("1_nmoyt")]([SubResource("Resource_l1tfg"), SubResource("Resource_aa8tm"), SubResource("Resource_ee4yo")])

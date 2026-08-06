@@ -13,8 +13,8 @@ signal branch_creation_requested(rank: int)
 signal child_creation_requested(parent: SkillUpgradeData, rank: int)
 
 const ROOT_NAME := &"skill_root"
-const COLUMN_WIDTH := 300.0
-const ROW_HEIGHT := 176.0
+const COLUMN_WIDTH := 340.0
+const ROW_HEIGHT := 196.0
 
 var discipline: DisciplineData = null
 var base_spell: Spell = null
@@ -106,6 +106,8 @@ func display(
 			_add_upgrade_node(node, rank_data.required_total_xp, row)
 			row += 1
 	_add_connections()
+	if _positions_overlap():
+		organize()
 	zoom = clampf(float(graph_state.get("zoom", 1.0)), zoom_min, zoom_max)
 	var wanted_scroll := graph_state.get("scroll_offset", Vector2.ZERO) as Vector2
 	call_deferred("_apply_scroll", wanted_scroll)
@@ -198,7 +200,7 @@ func _add_upgrade_node(
 	var view := GraphNode.new()
 	view.name = graph_name
 	view.title = "RANG %d · %d XP" % [node.rank, required_xp]
-	view.custom_minimum_size = Vector2(252, 138)
+	view.custom_minimum_size = Vector2(282, 152)
 	var saved_position: Variant = _saved_positions.get(str(node.upgrade_id))
 	view.position_offset = saved_position as Vector2 \
 		if saved_position is Vector2 else _automatic_position(node.rank, row)
@@ -216,6 +218,7 @@ func _add_upgrade_node(
 	view.add_child(title)
 	var summary := Label.new()
 	summary.text = SkillTreeEffectSummaryService.summarize_node(node)
+	summary.tooltip_text = summary.text
 	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	summary.custom_minimum_size = Vector2(228, 48)
 	summary.max_lines_visible = 3
@@ -353,6 +356,21 @@ func _rank_from_graph_x(screen_x: float) -> int:
 
 func _automatic_position(rank: int, row: int) -> Vector2:
 	return Vector2(30.0 + float(rank - 1) * COLUMN_WIDTH, 30.0 + row * ROW_HEIGHT)
+
+
+func _positions_overlap() -> bool:
+	var graph_nodes: Array[GraphNode] = []
+	for child in get_children():
+		if child is GraphNode:
+			graph_nodes.append(child)
+	for first_index in range(graph_nodes.size()):
+		var first := graph_nodes[first_index]
+		var first_rect := Rect2(first.position_offset, first.custom_minimum_size).grow(12.0)
+		for second_index in range(first_index + 1, graph_nodes.size()):
+			var second := graph_nodes[second_index]
+			if first_rect.intersects(Rect2(second.position_offset, second.custom_minimum_size)):
+				return true
+	return false
 
 
 func _messages_for(subject_id: StringName) -> Array[SkillTreeValidationMessage]:

@@ -12,6 +12,7 @@ extends Resource
 @export var foreground_texture: Texture2D = null
 @export_file("*.png", "*.jpg", "*.jpeg", "*.webp") var background_texture_path := ""
 @export_file("*.png", "*.jpg", "*.jpeg", "*.webp") var foreground_texture_path := ""
+@export_file("*.png") var occlusion_mask_path := ""
 @export var source_image_size := Vector2i.ZERO
 @export var logical_grid_size := Vector2i(14, 14)
 

@@ -1,0 +1,4691 @@
+{
+	"comparison": {
+		"conflicts": [],
+		"fingerprints": {
+			"main/elf": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
+			"main/mage": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
+			"main/warrior": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6",
+			"test/elf": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
+			"test/mage": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
+			"test/warrior": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6"
+		},
+		"first_run_path": "res://data/runs/first_run.tres",
+		"progression_shared_count": 0,
+		"second_run_path": "res://data/runs/fixed_trio_prototype_run.tres",
+		"shared_base_unit_data": [
+			"res://data/units/alliés/Guerrier.tres",
+			"res://data/units/alliés/elfe.tres",
+			"res://data/units/alliés/mage.tres"
+		],
+		"shared_progression": [],
+		"shared_visual_assets": [
+			"res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3",
+			"res://asset/icone/boule de feu.png",
+			"res://asset/sorts/abre_competences/elfe/felche_clouante.jpg",
+			"res://asset/sorts/abre_competences/elfe/fleche_arret.jpg",
+			"res://asset/sorts/abre_competences/elfe/fleche_entravante.jpg",
+			"res://asset/sorts/abre_competences/elfe/fleche_siege.png",
+			"res://asset/sorts/abre_competences/elfe/longue_portée.jpg",
+			"res://asset/sorts/abre_competences/elfe/oeil_aigle.png",
+			"res://asset/sorts/abre_competences/elfe/pointe_barbelée.png",
+			"res://asset/sorts/abre_competences/elfe/recul_tactique.png",
+			"res://asset/sorts/abre_competences/elfe/stabilisation.jpg",
+			"res://asset/sorts/abre_competences/elfe/tir_parfait.png",
+			"res://asset/sorts/abre_competences/elfe/tir_perforant.png",
+			"res://asset/sorts/abre_competences/elfe/tracas.png",
+			"res://asset/sorts/abre_competences/elfe/trait_de_.png",
+			"res://asset/sorts/abre_competences/elfe/trait_de_siege.png",
+			"res://asset/sorts/abre_competences/elfe/trait_impact.png",
+			"res://asset/sorts/abre_competences/elfe/trait_transperçant.jpg",
+			"res://asset/sorts/abre_competences/elfe/vue_parfaite.jpg",
+			"res://asset/sorts/elfe_arc_magique/elf_magic_arrow_projectile.tscn",
+			"res://asset/sorts/tempete_orageuse/tempete_orageuse_vfx.tscn",
+			"res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png",
+			"res://asset/ui/character_hud/generated/spell_icon_r01_c05.png",
+			"res://asset/ui/character_hud/generated/spell_icon_r02_c02.png",
+			"res://asset/ui/character_hud/generated/spell_icon_r02_c05.png",
+			"res://asset/ui/character_hud/generated/spell_icon_r03_c02.png",
+			"res://battle/vfx/boule_de_feu_vfx2.tscn"
+		],
+		"verdict": "VALID"
+	},
+	"main": {
+		"content_profile_path": "res://data/runs/profiles/main_content_profile.tres",
+		"heroes": [
+			{
+				"base_unit_data_path": "res://data/units/alliés/elfe.tres",
+				"character_id": "elf",
+				"fingerprint": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
+				"progression_profile_path": "res://data/runs/progression/main/elf_progression_profile.tres",
+				"progression_resources": [
+					{
+						"path": "res://data/characters/elf/disciplines/archer.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/archer_rank_1.tres",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/archer_rank_2.tres",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/archer_rank_3.tres",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/archer_rank_4.tres",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/archer_rank_5.tres",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_02uqq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_0doci",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_1ly6t",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_1pa62",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_1yf26",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_33rp0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_3clhr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_3srni",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_6qgk5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_7l14q",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_7s67p",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_bjt6y",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_d4yno",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_de7k5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_dhelu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_egks8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_eoga3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_f5c6o",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_fdsc6",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_fq2ig",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_gxrux",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_h3jov",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_hcxhj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_hdd7f",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_ijvtg",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_j0cmp",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_k6dvu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_kj2fs",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_kk47c",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_kkhr2",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_ltdlv",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_lvomd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_o0srm",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_oqsif",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_pjncq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_qjsbp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_t0hvd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_t5sxw",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_vfwfa",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_vnub8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_vs8xt",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_xssl8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/assassin.tres::Resource_ynu0b",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_0wjmb",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_0yh17",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_11qde",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_152l3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_1n4mc",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_23t3h",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_4vg5l",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_51t6w",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_53l7s",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_5s6c7",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_60458",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_8703g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_aodk0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_ausix",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_bxoxi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_dabxk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_ebkyn",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_em3uy",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_eu8t5",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_f0dal",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_fetyi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_g4fwg",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_go50l",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_h3j7k",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_ixisv",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_k3jt8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_kt0g3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_lq76j",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_mkjlj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_nhkv5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_o63t4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_obs6g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_olmnj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_pw13o",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_q226g",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_qc7k8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_r3t5u",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_saxhe",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_t6312",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_tisms",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_ux2ku",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_vnhd6",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_x42p5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/healer.tres::Resource_yc2yj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_27p0g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_2lr8q",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_4qnlu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_5h1ae",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_87cs7",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_8d0qq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_b3smq",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_bs4rx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_but8i",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_c1er6",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_c33ox",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_c8o8f",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_dgcb5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_h74pn",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_iooox",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_j5gng",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_kohr5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_kvtor",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_lna1t",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_mbr5t",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_n6h10",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_nulxh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_o0nhd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_o5vlc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_p3ax5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_pdh6e",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_pn3p5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_qi6ew",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_qxpc2",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_r5f2o",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_rjtsu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_rwayi",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_s25lj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_s2gj3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_sgf04",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_slegd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_soj6c",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_tl771",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_u5sta",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_vnjxm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_wkj24",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_wow6u",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_xp5y0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_yhvb8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_yj54h",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/disciplines/mage.tres::Resource_yyqk6",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/barbed_tip.tres",
+						"type": "SpellModApplyStatus"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/eagle_eye.tres",
+						"type": "SpellModDamageBonusAtMinRange"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/elf_archer_eagle_eye.tres",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/hindering_arrow.tres",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/impact_bolt.tres",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/long_range.tres",
+						"type": "SpellModRangeBonus"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/open_breach.tres",
+						"type": "SpellModApplyStatus"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/perfect_shot_damage.tres",
+						"type": "SpellModDamageBonusAtMinRange"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/perfect_shot_range.tres",
+						"type": "SpellModRangeBonus"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/perfect_sight.tres",
+						"type": "SpellModDamageBonusAtMinRange"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/piercing_shot.tres",
+						"type": "SpellModApplyStatus"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/pin_arrow.tres",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/repel_arrow.tres",
+						"type": "SpellModAdditionalPush"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/shatter.tres",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/siege_arrow_collision.tres",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/siege_arrow_push.tres",
+						"type": "SpellModExactPushDistance"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/siege_bolt.tres",
+						"type": "SpellModAdditionalPush"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/stabilization.tres",
+						"type": "SpellModCentralCellDamageBonus"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/stopping_arrow_collision.tres",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/stopping_arrow_movement.tres",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/tactical_retreat.tres",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/characters/elf/modifiers/transpiercing_bolt.tres",
+						"type": "SpellModAlignedSecondaryTarget"
+					},
+					{
+						"path": "res://data/characters/elf/spells/fireball.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/characters/elf/spells/precise_shot.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/characters/elf/spells/sneak_strike.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/characters/elf/spells/sylvan_heal.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/barbed_tip.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/eagle_eye.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/hindering_arrow.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/impact_bolt.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/long_range.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/open_breach.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/perfect_shot.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/perfect_sight.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/piercing_shot.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/pin_arrow.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/repel_arrow.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/shatter.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/siege_arrow.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/siege_bolt.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/stabilization.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/stopping_arrow.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/tactical_retreat.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/elf/upgrades/transpiercing_bolt.tres",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/main/elf_progression_profile.tres",
+						"type": "CharacterProgressionProfile"
+					},
+					{
+						"path": "res://data/status/progression/bleeding_2_for_2.tres",
+						"type": "StatusData"
+					},
+					{
+						"path": "res://data/status/progression/physical_breach_1.tres",
+						"type": "ChargedDamageVulnerabilityData"
+					},
+					{
+						"path": "res://data/status/progression/physical_breach_2.tres",
+						"type": "ChargedDamageVulnerabilityData"
+					},
+					{
+						"path": "res://data/terrain/lave.tres",
+						"type": "TerrainEffectData"
+					}
+				]
+			},
+			{
+				"base_unit_data_path": "res://data/units/alliés/mage.tres",
+				"character_id": "mage",
+				"fingerprint": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
+				"progression_profile_path": "res://data/runs/progression/main/mage_progression_profile.tres",
+				"progression_resources": [
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_0yk86",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_1xej1",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_37wx7",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_3r48v",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_4li21",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_4qjet",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_5q8vr",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_6bqtx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_6t37m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_7y6my",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_82e12",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_8pt4e",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_abtr4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_aiox8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_c15e3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_dbbct",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_e0fjg",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_egdnd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_emwxe",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_ex2pe",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_f0sqs",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_frmwp",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_fshxh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_grx0g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_hrjko",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_ksw1x",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_ku1ux",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_le6vx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_lfd3w",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_m554b",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_mlnhy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_msmj0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_n6joj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_nqh5y",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_nypbv",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_o5u7w",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_pywcq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_q82ii",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_rbwx2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_rmhmx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_s3jc0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_s8rq5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_t0yl8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_usts8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_uxrcm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/earth.tres::Resource_xxxig",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_12rba",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_1k3vt",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_1vnxp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_1xo17",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_2i036",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_2i36l",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_2olhb",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_3v25q",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_48u87",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_5ty5a",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_72jwm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_7noku",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_7u085",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_7v38e",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_84npf",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_857jg",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_8w1l0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_8waq0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_8x3eb",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_a73u7",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_b8yhm",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_bqvpu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_emh45",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_eps67",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_fb66m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_fi4nf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_gedfo",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_ha4qi",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_juy8o",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_kdyo7",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_kph7d",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_lg06m",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_lgtcy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_llof4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_pondv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_rqfhi",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_si6jh",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_snlw5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_t6n3c",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_twq8a",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_u0w7m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_uj1li",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_unp5u",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_v2k3u",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_vmwsp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_vp0ry",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/fire.tres::Resource_y5h0i",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_11qqs",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_3mk34",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_44si5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_5vldo",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_6f558",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_75v5g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_78g6c",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_7jdqa",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_7kmfk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_a67ar",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_aqsd7",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_avipj",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_by7h0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_cmq6c",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_co4jm",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_ctlk0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_e4x02",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_e8hpe",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_earj5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_ekb7c",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_i5qn7",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_ib0m5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_jtxf6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_k63xi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_le1at",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_lodt4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_mfapd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_mkwd3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_mshnu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_n836h",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_piuc8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_ptkib",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_qmyyn",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_qpr55",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_rvbww",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_s0nyk",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_tfoaa",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_ulrje",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_ux2me",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_v7chi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_vdqhd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_wjemf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_xod31",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_y32w0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/ice.tres::Resource_ykq0g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_0v83k",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_25hle",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_3dlqs",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_66o4h",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_6lo71",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_6su5d",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_6wiwj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_7tckp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_an0xa",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_bhf0g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_dvgc6",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_ee31r",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_etbh3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_etnce",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_eu3sk",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_fi72g",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_fprhj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_fs7kf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_hkno0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_kawk3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_kxjub",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_o1fvn",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_odiso",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_ow787",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_p607g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_pmqqk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_qfquh",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_qkxak",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_qs0iu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_r18a4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_r7wfe",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_rv7lw",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_s5gle",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_sciyt",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_sk2if",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_t0dra",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_u0f24",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_v0arg",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_vvamv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_vw1lt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_wjas2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_wyqdy",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_xgaan",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_xjc1v",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/mage/disciplines/lightning.tres::Resource_yn1f2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/main/mage_progression_profile.tres",
+						"type": "CharacterProgressionProfile"
+					},
+					{
+						"path": "res://data/spells/Mage/boule_de_feu.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/spells/Mage/onde_sismique.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/spells/Mage/tempete_orageuse.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/spells/mur_de_glace.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/terrain/glace.tres",
+						"type": "TerrainEffectData"
+					},
+					{
+						"path": "res://data/terrain/lave.tres",
+						"type": "TerrainEffectData"
+					}
+				]
+			},
+			{
+				"base_unit_data_path": "res://data/units/alliés/Guerrier.tres",
+				"character_id": "warrior",
+				"fingerprint": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6",
+				"progression_profile_path": "res://data/runs/progression/main/warrior_progression_profile.tres",
+				"progression_resources": [
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_034eo",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_0jvku",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_1yvbh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_310gv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_58dmb",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_62na7",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_68jhr",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_6aylg",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_6mgt1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_77bju",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_7w2aj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_aav8s",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_ah2b0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_c3x6o",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_cnkwd",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_dcs1w",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_dnh3v",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_fqu3g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_fx0w8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_ghm2k",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_grh3e",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_gxdku",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_ipiy1",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_ka6dy",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_ky3hq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_lnei5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_lugf3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_m7y18",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_maim0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_n7w4w",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_ncju3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_nm6rv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_nxn0m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_orosq",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_orqye",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_pookb",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_qcpyj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_r6jr4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_rar1o",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_reqtm",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_tr0fk",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_vfdn0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_wc32n",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_x32by",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_xyiux",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/assault.tres::Resource_yobwo",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_0eiit",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_0l18r",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_0mi2a",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_137ey",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_1oi1p",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_2dumj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_35vxm",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_42k6m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_438wy",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_51n8r",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_7cbst",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_7cs38",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_7da5v",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_7ojm6",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_7sc8e",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_8vq30",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_boi2f",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_cca74",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_cesvq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_d1fj4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_dobsi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_g8rx0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_gadpu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_i0kyu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_jqif5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_kbbmb",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_mo1sc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_mq0ex",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_ni5p2",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_nkbxf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_o02qq",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_p5avy",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_pxrew",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_q11b2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_qvo8o",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_s0a1g",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_sh1nr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_syr1e",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_vch3o",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_x16ql",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_xoi8g",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/breaker.tres::Resource_ycg4e",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_025p0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_0eamp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_0tpg4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_0tswo",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_0wqcn",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_12le2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_1onxh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_2jjtu",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_2ttnj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_3jn5v",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_58te0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_67wbn",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_68dl3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_6v2g7",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_8c44j",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_a4oq4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_btqmc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_by465",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_ekrn1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_fub4o",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_g1lys",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_gfdc7",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_i0dge",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_icfwp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_ix67p",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_j0bnp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_jlego",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_jvr05",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_kpoyf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_lumbx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_mp5ja",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_n4yrk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_nhtgh",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_nsqgc",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_onvh2",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_p2cdp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_p2pxe",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_scb0h",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_tgf1f",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_ulci5",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_vwdl6",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_w1ltv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_xkugv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/bulwark.tres::Resource_ybnk2",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_1lkk4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_1o0ka",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_31w28",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_3ja32",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_4bx3m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_5s6te",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_6x5js",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_813go",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_8ncjc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_8onb1",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_a0drq",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_a0ecs",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_a60u5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_au0ej",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_bl2bt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_bp8p0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_cs1hn",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_dnlkf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_eg2j1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_g2ykf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_h6eqp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_i8udk",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_ibu7m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_jqvq3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_le0yn",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_lge6q",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_lsj5i",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_mjxcf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_nique",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_nmmqe",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_nmnkr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_oly2q",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_pbobj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_pld3y",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_s1bhn",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_s1lq8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_sg4i2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_tvcdj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_u71l0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_uws8i",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_vjfl1",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_x2km0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_xc2w8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/characters/warrior/disciplines/fury.tres::Resource_xxrmw",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/main/warrior_progression_profile.tres",
+						"type": "CharacterProgressionProfile"
+					},
+					{
+						"path": "res://data/spells/Guerrier/charge.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/spells/Guerrier/charge.tres::MoveCasterModifier",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/spells/Guerrier/frappe_lourde.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/spells/Guerrier/garde.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/spells/Guerrier/tourbillon.tres",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/spells/Guerrier/tourbillon.tres::WhirlwindDamageModifier",
+						"type": "SpellModSkillTreeEffect"
+					}
+				]
+			}
+		],
+		"run_path": "res://data/runs/first_run.tres",
+		"verdict": "VALID"
+	},
+	"schema_version": 1,
+	"test": {
+		"content_profile_path": "res://data/runs/profiles/test_content_profile.tres",
+		"heroes": [
+			{
+				"base_unit_data_path": "res://data/units/alliés/elfe.tres",
+				"character_id": "elf",
+				"fingerprint": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
+				"progression_profile_path": "res://data/runs/progression/test/elf_progression_profile.tres",
+				"progression_resources": [
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres",
+						"type": "CharacterProgressionProfile"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_00lcq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_0g012",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_0plxt",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_0vs4j",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_12c4f",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_13n1x",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_16ia8",
+						"type": "SpellModExactPushDistance"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_1aae1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_1i5v1",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_1qu4p",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_1u43y",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_21pqq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_224iu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_24ytc",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_2udau",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_2ylwh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_3d3q1",
+						"type": "SpellModRangeBonus"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_3gjqj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_3ico3",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_3iuwa",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_3jpjb",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_3l6x5",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_3podr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_41mvj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_424gc",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_43fxs",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_4aubq",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_4ipvf",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_4q5xe",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_4r4g2",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_4w12q",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_53k4a",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_5axsv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_5pffb",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_5s4b8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_5xht6",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_60uhi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_65xsj",
+						"type": "SpellModDamageBonusAtMinRange"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_6iamv",
+						"type": "SpellModAlignedSecondaryTarget"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_6jdkj",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_6lp7s",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_6mtpe",
+						"type": "SpellModRangeBonus"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_73604",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7bppq",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7jkj0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7ol8k",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7toab",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7wgoe",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7wxks",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7ydjl",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_8cmyx",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_8k4w8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_8ti3v",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_8x4rh",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_a2ljj",
+						"type": "TerrainEffectData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_acvor",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_aiwly",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_bhv4h",
+						"type": "ChargedDamageVulnerabilityData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_bkcls",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_bmuli",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_btdkw",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_c0ha0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_c4l36",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ccn26",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_cq0nc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_deyp1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_dfiyx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_dkudf",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_dvijh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_eesmk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_eknng",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_eodq3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_eqqvs",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ervh6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_eyc2i",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_f2rox",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_f812g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_fh1n8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_fim4n",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_fsa2n",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_fvewj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_g1q7g",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_gai1f",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_gu53p",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_gvaqv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_h824w",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_hl3as",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_hoc0k",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_hyb2f",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_i2nh1",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_i3xdp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_i5ckx",
+						"type": "SpellModApplyStatus"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_i6lgg",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_icumy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ifvvq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ify4t",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_iiahc",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ipp2j",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_jac0l",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_jmhqg",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_jmwch",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_juu1i",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_jv1aa",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_jxyim",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_k75jl",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_k7rj8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_kbg5a",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_kdjjg",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_krqfg",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ku7cb",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_kx0kf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_l5o2f",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_l6vwl",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_lwpgf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_midsv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_mmg4a",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_msouk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_n2m2c",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_n63r2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_n8civ",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_nafen",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_nksgx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_nm84g",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_o1him",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_o5bom",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ohbej",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_okjw3",
+						"type": "StatusData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_oqswc",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_owk6g",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_oxjpt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_oy2sl",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_oyokf",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_p4rgl",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_p5sjp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_pgr2w",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_pkkl8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_pkr6i",
+						"type": "SpellModDamageBonusAtMinRange"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_q2qkf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_qlfx0",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_qlswu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_qmktt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_qs84w",
+						"type": "SpellModDamageBonusAtMinRange"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_qyxf4",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_r6que",
+						"type": "SpellModAdditionalPush"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_rrh8n",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_rvtpi",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_s0c11",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_s2nux",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_sa4ve",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_sggil",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_slg4y",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ss5m6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ss64n",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_sson1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_sxcds",
+						"type": "ChargedDamageVulnerabilityData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_t1w2l",
+						"type": "SpellModNextTurnMovement"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_t53qo",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_tcp7p",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_temvv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_th6pb",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_tstfs",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_txwjp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ubq4s",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_udg7j",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_ufv6a",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_uske5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_v0rfb",
+						"type": "SpellModCentralCellDamageBonus"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_v0y45",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_v2jey",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_v6qbg",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_v8or5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_voe3j",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_vsuvp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_w48c6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_w5eux",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_w803s",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_waufw",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_wbkw2",
+						"type": "SpellModCollisionDamage"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_x2h4m",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_x5k3e",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_xdar1",
+						"type": "SpellModAdditionalPush"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_xgwox",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_xmy18",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_xo1dj",
+						"type": "SpellModApplyStatus"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_xpfko",
+						"type": "SpellModApplyStatus"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_y0ld6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_yr5f3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_yssoa",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_yv5s8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_yw3ew",
+						"type": "SkillTreeNodeData"
+					}
+				]
+			},
+			{
+				"base_unit_data_path": "res://data/units/alliés/mage.tres",
+				"character_id": "mage",
+				"fingerprint": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
+				"progression_profile_path": "res://data/runs/progression/test/mage_progression_profile.tres",
+				"progression_resources": [
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres",
+						"type": "CharacterProgressionProfile"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_03k5k",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_0d3dk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_0ex4o",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_0h7mr",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_0ykas",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_13k8l",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_141ww",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_1ejmw",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_1nqsl",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_2jqn0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_2trc3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_3443w",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_35f7w",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_36dh5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_3rv8u",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_3xjq5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_3y8yw",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_40f1r",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_4d46h",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_4d6bj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_4qsxt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_4yt0m",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_5bi2v",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_5mjai",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_5pfo7",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_61pan",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_671yr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_6fhvh",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_715vr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_75tsv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_7gusj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_7i33i",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_7i7h0",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_7wesn",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_84sv6",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8bkgf",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8c10l",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8dy0s",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8h7ff",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8mhrw",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8q1x6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8ymkc",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_a1gyt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_amhlr",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ap6sy",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_b0b34",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_bee34",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_blxt3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_bywnj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_cc6rt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ccwwf",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_cgoju",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_cncwy",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ctuo5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_cydld",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e1hep",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e2hye",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e2l5u",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e3v7t",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ed0sf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ef4np",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ekluv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_elnt5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_em3gx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_exn2b",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_f2ahu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_f8bry",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_fjbvw",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_fue1q",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_fvomn",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_g34xy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_gj3al",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_h4pp1",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_h6nho",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_h6xd7",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_hldcm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_hx84j",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_i0t0c",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ieupi",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_igfp2",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_irvdw",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_isln4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_iujp8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_iurxm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ivtv2",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_j0qec",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_j6x8t",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jajqr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jf8qs",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jmtgh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jsdu1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jv4f0",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jvy04",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_k44x6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_kdvkb",
+						"type": "TerrainEffectData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_khvlf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_kjw0d",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_km1gl",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_l0moi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ldi1x",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_le78t",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lhevc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_liygr",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ljfqq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lm5ts",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lscb7",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lwe51",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lyarq",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_m24bi",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_m3ync",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mc0wc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mdtmv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mgi7g",
+						"type": "TerrainEffectData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mgy5y",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mjupj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_msk2l",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mt0ff",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_muk6h",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_n7eid",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_n8kpl",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_nacoj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_nd7se",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_nfr07",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_o1v3u",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_o3wuu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_o54gv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_odv8t",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ojjrg",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_osa4r",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_pfkvr",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ph1px",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_prx8c",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_qspjy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_qvrt5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_r0e3s",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_rc3t8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_rdqys",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_re6sr",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_rhnxt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_roqqp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_rvi8b",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_s163h",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_s6o0r",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_seqc2",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_sloft",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_snwy6",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_t0fxi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_t1888",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_t1hbu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_t2m2o",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_t4ba0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_tgro4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_tlcku",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ts82r",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_tud15",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_twh8s",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u3alx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u3sng",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u640i",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u8uwv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ub2v0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_uoqed",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_upnpp",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_uvwlp",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_uy407",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_v0fw0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_v3e12",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_v3vps",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_vfewt",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_vvomx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_vy4cx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wa5ev",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wfiwh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wfnj2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wo08h",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wu3be",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wv5sr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wyo8u",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_x0box",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xf2bq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xfcsa",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xiy1m",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xr3pa",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xt3wl",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xyrgy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_y1jc5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_y1jou",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_y5qfv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ydtp4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yejo2",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yneqb",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yqm0j",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yu2s3",
+						"type": "SpellModSkillTreeEffect"
+					}
+				]
+			},
+			{
+				"base_unit_data_path": "res://data/units/alliés/Guerrier.tres",
+				"character_id": "warrior",
+				"fingerprint": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6",
+				"progression_profile_path": "res://data/runs/progression/test/warrior_progression_profile.tres",
+				"progression_resources": [
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres",
+						"type": "CharacterProgressionProfile"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_04eif",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_051s1",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_06q2d",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_0ayy5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_0qcdw",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_0t1co",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_1c0o7",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_1dqce",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_1g17n",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_1udru",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_1w2hw",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_1xfk1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_24jxr",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_27j7w",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_27ymk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_28j7h",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_2f0n3",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_2gqww",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_2mcv4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_2ys6i",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_3bsxk",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_3w42u",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_3xgcr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_40nsx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_44go3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_472gu",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_4d3qy",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_4eqm8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_4fapx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_4g1xw",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_4tn1d",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_50w23",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_56gtg",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_5kmcj",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_5s5vo",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_60qvs",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_68hmx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_6w1aq",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_6xg24",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_731kf",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_7r7yr",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_7sont",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_7xbpg",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_822el",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_8b8fh",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_8bjbm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_8bwoi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_8ch1a",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_8mskv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_8yqrj",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_a3y0e",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_a4vln",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_abad5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_aen3v",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ao1jr",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_aom6m",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_aot8l",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_apltc",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_av43c",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_b74om",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_b7o32",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_bf1b4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_bfdhi",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_bhemi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_bq864",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_bqvc3",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_bxeu0",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_c11ay",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_c52ar",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_d31by",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_dfa35",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_do86p",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_dwycd",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_e1w1o",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ekvjc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_eli7a",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_eq2h5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_f64ao",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_f7ud4",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_fc2q2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_fhkt4",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_fmnpa",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_fpnkv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_fx1dm",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_fyvgy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_g4pey",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gexfm",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gne26",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gnuk7",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_go7bv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gqm4a",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gtale",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gwqdt",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gx61v",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_gylbx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_h5wpu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_hjqua",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_hw6gg",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_hxyp1",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_i24bx",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ibma4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ic3k8",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ifsof",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ikr62",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ilcmv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_iujhi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ixcju",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_iytqq",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_j4grc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_j7vtc",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_jr6pn",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_jsf0n",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ju8ti",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_jyokk",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_k05lc",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_k0naj",
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_knh4f",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_kocxg",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_lb2vo",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_lh6ue",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_lqrg0",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_lrnc2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_lxbhm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_mjcsl",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_myumx",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_n5u48",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ncxcl",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ncxsq",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_neul5",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_nfqp0",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_nrq8h",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_nv1nh",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_nw2vy",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_nx742",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_o004s",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_o52u8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_od33p",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_oh1mv",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ok420",
+						"type": "Spell"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_p4e5f",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_p4r1y",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_pf8yx",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ph0f4",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_q13oq",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_q22sp",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_qc57f",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_qcc63",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_qjer3",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_qqs7j",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_qubic",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_r22w0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_rfqbl",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_rj5fs",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_rjb0v",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_rnqfc",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_rpx5j",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_rvme3",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_slypb",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_to4ta",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_tx511",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_txs0d",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_uf3e8",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_ulpuo",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_uudm0",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_uvofq",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_uyr0x",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_v34xl",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_v40s5",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_vee74",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_vhodv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_vigux",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_vjcbu",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_vtsg3",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_vv33x",
+						"type": "DisciplineRankData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_wbgqq",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_wg3bw",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_wrl8d",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_wtpu2",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_x2xsm",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_x65de",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_xp7up",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_xvknw",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_y7smi",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_y8wcb",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_yq5wl",
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/warrior_progression_profile.tres::Resource_yqlvp",
+						"type": "DisciplineRankData"
+					}
+				]
+			}
+		],
+		"run_path": "res://data/runs/fixed_trio_prototype_run.tres",
+		"verdict": "VALID"
+	}
+}

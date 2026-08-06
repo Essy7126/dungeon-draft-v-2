@@ -1,45 +1,63 @@
-# État vérifié du projet
+# État candidat vérifié du projet
 
-> Statut : **NOT CURRENT — validation partielle**
->
-> Les contrats ciblés et le smoke runtime sont verts. Ce document ne porte pas le
-> statut CURRENT tant que la suite complète du dépôt reste rouge.
+> Statut : **WORKTREE_CANDIDATE — DUNGEON DRAFT STUDIO 2.0 WITH WARNINGS**
 
 - Date de vérification : 2026-08-06
 - Branche : `main`
-- HEAD : `94fcdc700cf576a15ee4134d9f3dee680626827a`
+- HEAD : `bf2d6f7a8b6dabf2c8b74c5743852475f7c84e0a`
 - Godot : `4.7.stable.official.5b4e0cb0f`
-- Principale canonique : `res://data/runs/first_run.tres`
-- Run de test canonique : `res://data/runs/fixed_trio_prototype_run.tres`
-- Alias/fixture compatible production : `res://data/runs/run_default.tres`
+- GUT : `9.7.1`
+- Dépôt : `C:\Users\paolo\Documents\dungeon-draft-v-2`
 
-## Contrats observés dans le diff local
+## Contrats actifs
 
-- `first_run.tres` : `SINGLE_ENCOUNTER`, six salles, six combats projetés.
-- `run_default.tres` : `SINGLE_ENCOUNTER`, même liste historique de six salles ;
-  il n’est pas l’autorité lancée par le hub.
-- `fixed_trio_prototype_run.tres` : `WAVE_CHAIN`, quatre salles, deux enveloppes
-  multi-vagues dédiées et une projection théorique de 8 à 22 combats.
-- Aucune `RoomData` n’est partagée entre les deux modes canoniques.
-- Les rapports, snapshots, projections et validateurs exposent le mode explicite.
+- `first_run.tres` reste `SINGLE_ENCOUNTER`, six salles, et référence
+  `main_content_profile.tres`.
+- `fixed_trio_prototype_run.tres` reste `WAVE_CHAIN`, quatre salles, et référence
+  `test_content_profile.tres`.
+- Chaque `RunData` officielle choisit trois `RunHeroProfile` dans l’ordre Elfe,
+  Mage, Guerrier.
+- Les bases `UnitData` sont partagées intentionnellement ; les graphes de
+  progression modifiables sont propres à la run.
+- `GameManager.start_run()` résout le contenu depuis la `RunData` ; les APIs
+  d’injection explicite restent disponibles.
+- Le hub transmet la `RunData` ; la liste globale historique n’est plus
+  l’autorité des runs officielles.
+- Audit officiel : `progression_shared_count = 0`, verdict `VALID`.
 
-## Validation
+## Validation courante
 
-- Import Godot 4.7 : code de sortie 0 ; une erreur de classe dupliquée demeure
-  sous `output/validation-feedback-candidate`, déjà observée avant la migration.
-- Contrat d’isolation/post-combat : 26/26 tests, 240 assertions.
-- Encounter Studio : 15/15 tests, 166 assertions.
-- Smoke graphique réel : PASS ; continuation de vague, chargement de la bataille
-  suivante, rapport à deux segments et retour au mode simple vérifiés.
-- Suite complète : deux passages ont donné 720/734 puis 718/734 pendant des
-  modifications locales concurrentes ; les suites liées à la mission restent à
-  84/84 dans le dernier rapport JUnit. Le dépôt n’est pas déclaré vert.
+- scan Godot : code 0 avec diagnostics historiques ;
+- isolation réciproque : 14/14, 1 493 assertions ;
+- run/trio/GameManager/hub : 117/117, 4 908 assertions ;
+- Arena/Encounter/Studio : 76/76, 3 941 assertions ;
+- suite globale finale : 787/800, 52 044/52 101 assertions ;
+- 13 échecs baseline qualifiés dans
+  `docs/ai/RUN_CONTENT_ISOLATION_VALIDATION.md` ;
+- aucun échec nouveau dans le périmètre de la mission.
 
-Captures :
+Le projet n’est pas globalement vert à cause d’assets/captures absents, de
+contrats Elfe historiques, de textures de pause nulles et d’une comparaison
+flottante. Le worktree ne doit pas être présenté comme `CURRENT` avant
+intégration explicite par l’utilisateur.
 
-- `artifacts/run_flow_isolation_v1/main_single_encounter_post_combat.png`
-- `artifacts/run_flow_isolation_v1/main_single_encounter_reward.png`
-- `artifacts/run_flow_isolation_v1/test_wave_chain_room_decision.png`
+## Studio 2.0 candidat
 
-Non vérifié manuellement : navigation complète depuis le hub avec interaction
-joueur, défaite jouée à la main et recalibrage de durée/attrition.
+- une instance `StudioProjectContext` est partagée entre Arena, Encounter et
+  Skill Tree ;
+- la barre expose run, salle, héros, portée, état, chemins, usages et génération ;
+- Arena édite la séquence réelle de `RunData.rooms`, sans suppression physique ;
+- production et rattachement demandent run, action et index, puis rechargent et
+  vérifient la référence exacte ;
+- le pipeline grid-first exporte un manifeste art v2 et réimporte un décor
+  conforme sans recalibrer ;
+- la projection runtime et les surfaces temporaires ne mutent pas
+  `ArenaDefinition` ;
+- Skill Tree édite le `CharacterProgressionProfile` canonique et conserve le
+  `UnitData` comme adaptateur non sauvegardable ;
+- les 33 types d’effets et 13 classes concrètes cataloguées possèdent un
+  descripteur métier ; aucun fallback « effet spécialisé » n’est affiché.
+
+Preuves 2.0 courantes : 12/12 tests, 423 assertions et six captures inspectées
+en 1280×720 / 1920×1080. Le détail reste candidat dans
+`docs/tools/dungeon_draft_studio/studio_2_0_regression_report.md`.

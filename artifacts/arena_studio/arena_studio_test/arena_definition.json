@@ -1048,6 +1048,7 @@
   "modular_visual_profile": {},
   "objectives": [],
   "obstacles": [],
+  "occlusion_mask_path": "",
   "presentation_profile_path": "res://data/maps/painted/room_01_forest_presentation.tres",
   "production_notes": "",
   "runtime_entry": "res://data/rooms/maps/painted_battle.tscn",

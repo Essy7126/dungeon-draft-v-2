@@ -99,7 +99,7 @@ static func _write_manifest(
 		backup_report: Dictionary
 	) -> void:
 	var manifest := {
-		"character_path": session.source_unit.resource_path,
+		"character_path": session.canonical_source_path(),
 		"saved_paths": saved_paths,
 		"backups": backup_report.get("backups", []),
 		"created_at": Time.get_datetime_string_from_system(),
@@ -151,6 +151,8 @@ static func _priority(resource: Resource) -> int:
 		return 40
 	if resource is DisciplineData:
 		return 50
+	if resource is CharacterProgressionProfile:
+		return 60
 	if resource is UnitData:
 		return 60
 	return 35

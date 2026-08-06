@@ -202,7 +202,12 @@ func _build_node(node: SkillUpgradeData) -> void:
 		var row := HBoxContainer.new()
 		effects.add_child(row)
 		var open := Button.new()
-		open.text = modifier.modifier_name if not modifier.modifier_name.is_empty() else "Effet spécialisé"
+		var descriptor: SkillEffectEditorDescriptor = (
+			SkillEffectEditorRegistry.new().descriptor_for(modifier)
+		)
+		open.text = modifier.modifier_name if not modifier.modifier_name.is_empty() else (
+			descriptor.display_name if descriptor != null else "Effet non decrit"
+		)
 		open.tooltip_text = SkillTreeEffectSummaryService.summarize_modifier(modifier)
 		open.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		open.pressed.connect(func(): subject_requested.emit(modifier))
@@ -352,16 +357,34 @@ func _build_modifier(modifier: SpellModifier) -> void:
 	_add_stable_id(general, modifier, &"target_spell_id", "Identifiant du sort ciblé")
 	_add_line(general, modifier, &"target_spell_name", "Ancien filtre par nom", "Compatibilité historique : laissez vide lorsque l’identifiant stable est renseigné.")
 	_add_info(_box("Effets"), SkillTreeEffectSummaryService.summarize_modifier(modifier))
+	var descriptor: SkillEffectEditorDescriptor = (
+		SkillEffectEditorRegistry.new().descriptor_for(modifier)
+	)
+	if descriptor != null:
+		var contract := _box("Contrat métier")
+		_add_info(contract, descriptor.sentence(modifier))
+		_add_readonly(contract, "Unité", descriptor.unit, "Unité affichée et validée.")
+		_add_readonly(contract, "Cible", descriptor.target, "Portée métier de l'effet.")
+		_add_readonly(contract, "Condition", descriptor.condition, "Condition de déclenchement.")
+		_add_readonly(contract, "Durée", descriptor.duration, "Durée du résultat.")
+		_add_readonly(contract, "Fréquence", descriptor.frequency, "Moment de résolution.")
+		_add_readonly(contract, "Empilement", descriptor.stacking, "Politique de combinaison.")
 	if modifier is SpellModSkillTreeEffect:
 		_build_skill_tree_effect(modifier as SpellModSkillTreeEffect)
 	else:
-		_add_info(general, "Ce modificateur spécialisé conserve son fonctionnement runtime existant.")
+		if descriptor == null:
+			_add_error_box(general, "Ce type n'a pas encore de descripteur métier ; la sauvegarde 2.0 doit le refuser.")
 		_build_generic_advanced(modifier)
 	_add_storage_info(_box("Avancé"), modifier)
 
 
 func _build_skill_tree_effect(effect: SpellModSkillTreeEffect) -> void:
 	var effects := _box("Effets")
+	var descriptor: SkillEffectEditorDescriptor = (
+		SkillEffectEditorRegistry.new().effect_descriptor(effect.effect_type)
+	)
+	if descriptor != null:
+		_add_info(effects, descriptor.sentence(effect))
 	var effect_labels: Array[String] = []
 	for index in range(SpellModSkillTreeEffect.EffectType.size()):
 		effect_labels.append(SkillTreeEffectSummaryService.effect_type_label(index))

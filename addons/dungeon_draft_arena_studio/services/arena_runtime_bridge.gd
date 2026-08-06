@@ -28,6 +28,7 @@ static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
 	visual.image_offset = arena.image_offset
 	visual.image_scale = arena.image_scale
 	visual.foreground_texture_path = arena.foreground_path
+	visual.occlusion_mask_path = arena.occlusion_mask_path
 	visual.foreground_offset = arena.foreground_offset
 	visual.foreground_scale = arena.foreground_scale
 	visual.foreground_occluder_polygon = arena.foreground_occluder_polygon.duplicate()
@@ -76,10 +77,11 @@ static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
 
 
 static func build_grid(arena: ArenaDefinition) -> GridData:
-	if not sync_runtime_resources(arena):
+	var projection := _runtime_projection_copy(arena)
+	if projection == null or not sync_runtime_resources(projection):
 		return null
-	var grid := GridData.new(arena.grid_size.x, arena.grid_size.y)
-	arena.grid_layout.apply_to_grid(grid)
+	var grid := GridData.new(projection.grid_size.x, projection.grid_size.y)
+	projection.grid_layout.apply_to_grid(grid)
 	return grid
 
 
@@ -89,27 +91,38 @@ static func build_pathfinder(arena: ArenaDefinition) -> Pathfinder:
 
 
 static func runtime_signature(arena: ArenaDefinition) -> Dictionary:
-	var grid := build_grid(arena)
-	if grid == null:
+	var projection := _runtime_projection_copy(arena)
+	if projection == null or not sync_runtime_resources(projection):
 		return {}
+	var grid := GridData.new(projection.grid_size.x, projection.grid_size.y)
+	projection.grid_layout.apply_to_grid(grid)
 	var centers := {}
 	var display_centers := {}
 	var types := {}
-	for y in range(arena.grid_size.y):
-		for x in range(arena.grid_size.x):
+	for y in range(projection.grid_size.y):
+		for x in range(projection.grid_size.x):
 			var cell := Vector2i(x, y)
-			centers["%d,%d" % [x, y]] = arena.painted_map_visual_data.cell_to_image(cell)
-			display_centers["%d,%d" % [x, y]] = arena.painted_map_visual_data.cell_to_display(cell)
+			centers["%d,%d" % [x, y]] = projection.painted_map_visual_data.cell_to_image(cell)
+			display_centers["%d,%d" % [x, y]] = projection.painted_map_visual_data.cell_to_display(cell)
 			types["%d,%d" % [x, y]] = grid.get_type(cell)
 	return {
-		"size": arena.grid_size,
+		"size": projection.grid_size,
 		"centers": centers,
 		"display_centers": display_centers,
 		"types": types,
-		"hero_spawns": arena.hero_spawn_zone.duplicate(),
-		"enemy_spawns": arena.enemy_spawn_zone.duplicate(),
-		"battle_scene": arena.battle_scene.resource_path if arena.battle_scene != null else "",
+		"hero_spawns": projection.hero_spawn_zone.duplicate(),
+		"enemy_spawns": projection.enemy_spawn_zone.duplicate(),
+		"battle_scene": projection.battle_scene.resource_path if projection.battle_scene != null else "",
 	}
+
+
+static func _runtime_projection_copy(arena: ArenaDefinition) -> ArenaDefinition:
+	if arena == null:
+		return null
+	var projection := ArenaDefinition.new()
+	if not projection.restore_snapshot(arena.to_snapshot()):
+		return null
+	return projection
 
 
 static func _build_layout_rows(arena: ArenaDefinition) -> PackedStringArray:

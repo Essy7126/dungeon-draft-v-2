@@ -53,10 +53,15 @@ func set_preview(report: Dictionary) -> void:
 	if not report.get("ok", false):
 		_preview_text.text = "[b]Prévisualisation impossible[/b]\n%s" % report.get("error", "Erreur inconnue")
 		return
+	var base_spell := report.get("base_spell", {}) as Dictionary
+	var resulting_spell := report.get("resulting_spell", {}) as Dictionary
 	var lines := PackedStringArray([
-		"[b]SORT DE BASE[/b]  %s" % JSON.stringify(report.get("base_spell", {})),
-		"[b]SORT RÉSULTANT[/b]  %s" % JSON.stringify(report.get("resulting_spell", {})),
-		"[b]TRACE DES MODIFICATEURS[/b]",
+		"[b]RÉSUMÉ JOUEUR[/b]",
+		"Base : %s" % _spell_summary(base_spell),
+		"Résultat : %s" % _spell_summary(resulting_spell),
+		"Simulation déterministe · autorité : %s · aucune progression de run modifiée." % report.get("runtime_authority", "runtime"),
+		"",
+		"[b]EFFETS APPLIQUÉS[/b]",
 	])
 	for trace_value in report.get("trace", []):
 		var trace := trace_value as Dictionary
@@ -64,17 +69,67 @@ func set_preview(report: Dictionary) -> void:
 			trace.get("modifier_name", "Effet"), trace.get("summary", ""),
 			"appliqué" if trace.get("applies", false) else "hors cible",
 		])
-	lines.append("[b]DELTA PAR SCÉNARIO (autorité runtime)[/b]")
+	lines.append("")
+	lines.append("[b]RÉSULTAT PAR SCÉNARIO (autorité runtime)[/b]")
 	for scenario_value in report.get("scenarios", []):
 		var scenario := scenario_value as Dictionary
 		lines.append("• %s : %s" % [
-			(scenario.get("scenario", {}) as Dictionary).get("id", "scenario"),
-			JSON.stringify(scenario.get("delta", {})),
+			_scenario_label((scenario.get("scenario", {}) as Dictionary).get("id", "scenario")),
+			_delta_summary(scenario.get("delta", {}) as Dictionary),
 		])
+	lines.append("")
 	lines.append("[b]AVERTISSEMENTS[/b]")
 	var warnings := report.get("warnings", PackedStringArray()) as PackedStringArray
 	lines.append("Aucun" if warnings.is_empty() else "\n".join(warnings))
 	_preview_text.text = "\n".join(lines)
+
+
+func _spell_summary(facts: Dictionary) -> String:
+	return "%s · %d PA · portée %d–%d · dégâts %d · soin %d · bouclier %d%s" % [
+		facts.get("spell_name", facts.get("spell_id", "Sort")),
+		int(facts.get("ap_cost", 0)),
+		int(facts.get("minimum_range", 0)),
+		int(facts.get("spell_range", 0)),
+		int(facts.get("damage", 0)),
+		int(facts.get("heal", 0)),
+		int(facts.get("shield", 0)),
+		" · case libre autorisée" if facts.get("can_target_free_cell", false) else "",
+	]
+
+
+func _scenario_label(scenario_id: String) -> String:
+	var labels := {
+		"enemy_defense_0": "ennemi sans défense",
+		"enemy_defense_25": "ennemi, défense 25",
+		"enemy_defense_50": "ennemi, défense 50",
+		"enemy_defense_100": "ennemi, défense 100",
+		"ally": "allié",
+		"weakened_enemy": "ennemi affaibli",
+		"backstab": "attaque de dos",
+		"multiple_targets": "cibles multiples",
+		"free_cell": "case libre",
+	}
+	return labels.get(scenario_id, scenario_id)
+
+
+func _delta_summary(delta: Dictionary) -> String:
+	var labels := {
+		"primary_hp_damage": "dégâts principaux",
+		"primary_healing": "soin principal",
+		"primary_shield": "bouclier principal",
+		"secondary_hp_damage": "dégâts secondaires",
+		"affected_unit_count": "unités affectées",
+		"terrain_cell_count": "cases de terrain",
+		"caster_hp_delta": "PV du lanceur",
+		"caster_shield": "bouclier du lanceur",
+		"ap_cost": "coût en PA",
+		"primary_status_count": "statuts principaux",
+	}
+	var parts := PackedStringArray()
+	for key in labels:
+		if delta.has(key) and delta[key] != 0:
+			parts.append("%s %+d" % [labels[key], int(delta[key])])
+	return "aucune différence mesurée" if parts.is_empty() else ", ".join(parts)
 
 
 func set_analysis(report: Dictionary) -> void:

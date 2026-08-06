@@ -40,6 +40,7 @@ var visual_mode: int = VisualMode.PAINTED
 @export var image_offset := Vector2.ZERO
 @export var image_scale := Vector2.ONE
 @export_file("*.png", "*.jpg", "*.jpeg", "*.webp") var foreground_path := ""
+@export_file("*.png") var occlusion_mask_path := ""
 @export var foreground_offset := Vector2.ZERO
 @export var foreground_scale := Vector2.ONE
 @export var foreground_occluder_polygon := PackedVector2Array()
@@ -181,6 +182,7 @@ func to_snapshot() -> Dictionary:
 		"image_offset": [image_offset.x, image_offset.y],
 		"image_scale": [image_scale.x, image_scale.y],
 		"foreground_path": foreground_path,
+		"occlusion_mask_path": occlusion_mask_path,
 		"foreground_offset": [foreground_offset.x, foreground_offset.y],
 		"foreground_scale": [foreground_scale.x, foreground_scale.y],
 		"foreground_occluder_polygon": Array(foreground_occluder_polygon).map(
@@ -255,6 +257,7 @@ func restore_snapshot(data: Dictionary) -> bool:
 	image_offset = _vector2(data.get("image_offset", [0.0, 0.0]))
 	image_scale = _vector2(data.get("image_scale", [1.0, 1.0]))
 	foreground_path = str(data.get("foreground_path", ""))
+	occlusion_mask_path = str(data.get("occlusion_mask_path", ""))
 	foreground_offset = _vector2(data.get("foreground_offset", [0.0, 0.0]))
 	foreground_scale = _vector2(data.get("foreground_scale", [1.0, 1.0]))
 	foreground_occluder_polygon = _packed_vector2_array(

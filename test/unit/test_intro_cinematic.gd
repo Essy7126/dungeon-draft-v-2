@@ -288,6 +288,7 @@ func test_skip_during_crossfade_starts_the_fixed_trio_once() -> void:
 	assert_true(cinematic.has_started_run())
 	assert_true(cinematic.run_start_committed)
 	assert_eq(spy.start_call_count, 1)
+	assert_true(spy.used_run_content_resolver)
 	assert_eq(
 		spy.received_hero_sources.map(func(hero): return hero.unit_name),
 		["Elfe", "Mage", "Guerrier"]
