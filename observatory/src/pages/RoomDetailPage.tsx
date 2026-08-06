@@ -67,7 +67,7 @@ export function RoomDetailPage() {
       </Panel>}
 
       {room.flow_mode === 'wave_chain' ? <Panel title="Profils de vague de test">
-        <div className="table-wrap"><table>
+        <div className="table-wrap" role="region" aria-label="Tableau des profils de vague" tabIndex={0}><table>
           <caption>Profils disponibles ; « oui » identifie ceux sélectionnés par la seed de la run de test.</caption>
           <thead><tr><th>Vague</th><th>Profil</th><th>Sélection</th><th>Rencontre</th><th>PV</th><th>Attaque</th><th>Récompense</th><th>Totaux théoriques</th><th>Statut</th></tr></thead>
           <tbody>{waves.map((wave) => <tr key={wave.id}><th scope="row">{wave.index}. {wave.name}</th><td>{wave.is_mandatory_profile ? 'Obligatoire' : wave.is_optional_profile ? 'Optionnel' : 'Hors plage'}<small className="cell-note">{labelSourceKind(wave.source_kind)} · identité {labelIdentityStability(wave.identity_stability)}</small></td><td>{wave.is_selected_by_default_seed ? 'Oui' : 'Non'}</td><td><code>{wave.encounter_id}</code></td><td>{formatMultiplier(wave.enemy_health_multiplier)}</td><td>{formatMultiplier(wave.enemy_attack_multiplier)}<small className="cell-note">{labelMultiplierStatus(wave.attack_multiplier_effect_status)}</small></td><td>{formatMultiplier(wave.reward_multiplier)}</td><td>{wave.scaled_initial_totals.total_max_hp ?? 'runtime'} PV · {wave.scaled_initial_totals.total_attack_power ?? 'runtime'} puissance d’attaque</td><td>{labelCalculationStatus(wave.calculation_status)}</td></tr>)}</tbody>

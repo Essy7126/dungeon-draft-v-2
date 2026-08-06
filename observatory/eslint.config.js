@@ -15,6 +15,7 @@ export default tseslint.config(
     plugins: { 'jsx-a11y': jsxA11y },
     rules: {
       ...jsxA11y.flatConfigs.recommended.rules,
+      'jsx-a11y/no-noninteractive-tabindex': ['error', { roles: ['region'] }],
       '@typescript-eslint/no-explicit-any': 'error',
       'no-irregular-whitespace': 'off',
     },

@@ -162,7 +162,7 @@ export function AuditPage() {
         <span className="count-chip">{snapshot.contract_checks.length + snapshot.audit_results.length} contrôles bruts</span>
       </PageHeader>
       <Panel title="Contrôles du contrat">
-        <div className="table-wrap">
+        <div className="table-wrap" role="region" aria-label="Tableau des contrôles du contrat" tabIndex={0}>
           <table>
             <caption>Cibles comparées aux valeurs observées</caption>
             <thead><tr><th scope="col">Clé</th><th scope="col">Cible</th><th scope="col">Observé</th><th scope="col">Santé</th><th scope="col">Nature de preuve</th><th scope="col">Entités affectées</th><th scope="col">Preuve</th></tr></thead>

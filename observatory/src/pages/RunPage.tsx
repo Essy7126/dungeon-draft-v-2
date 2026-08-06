@@ -81,7 +81,7 @@ export function RunPage() {
       )}
 
       <Panel title={isWaveChain ? 'Salles et profils de test' : 'Salles et rencontres de production'}>
-        <div className="table-wrap">
+        <div className="table-wrap" role="region" aria-label="Tableau des salles et rencontres" tabIndex={0}>
           <table>
             <caption>
               {isWaveChain
