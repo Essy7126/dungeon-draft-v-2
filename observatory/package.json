@@ -7,6 +7,11 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
+    "generate:build-meta": "node scripts/generate-build-meta.mjs",
+    "predev": "npm run generate:build-meta",
+    "pretest": "npm run generate:build-meta",
+    "prebuild": "npm run generate:build-meta",
+    "pree2e": "npm run generate:build-meta",
     "sync:schema": "node scripts/sync-schema.mjs",
     "validate:data": "node scripts/validate-data.mjs",
     "dev": "npm run sync:schema && vite",

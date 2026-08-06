@@ -96,6 +96,33 @@ func export_graph(run_data: RunData, run_path: String) -> Dictionary:
 	var enemy_spells := _export_enemy_spells()
 	var ai_profiles := _export_ai_profiles()
 	_apply_wave_calculations(waves, encounters, enemies)
+	var selected_profile_count := 0
+	var minimum_profile_count := 0
+	var maximum_profile_count := 0
+	var selected_health_multiplier_max := 0.0
+	var selected_attack_multiplier_max := 0.0
+	var selected_reward_multiplier_max := 0.0
+	for room_value in rooms:
+		var exported_room := room_value as Dictionary
+		minimum_profile_count += int(exported_room.get("minimum_wave_count", 0))
+		maximum_profile_count += int(exported_room.get("maximum_wave_count", 0))
+	for wave_value in waves:
+		var exported_wave := wave_value as Dictionary
+		if not bool(exported_wave.get("is_selected_by_default_seed", false)):
+			continue
+		selected_profile_count += 1
+		selected_health_multiplier_max = maxf(
+			selected_health_multiplier_max,
+			float(exported_wave.get("enemy_health_multiplier", 0.0)),
+		)
+		selected_attack_multiplier_max = maxf(
+			selected_attack_multiplier_max,
+			float(exported_wave.get("enemy_attack_multiplier", 0.0)),
+		)
+		selected_reward_multiplier_max = maxf(
+			selected_reward_multiplier_max,
+			float(exported_wave.get("reward_multiplier", 0.0)),
+		)
 
 	var run_errors := _strings(run_data.validation_errors())
 	var runs: Array[Dictionary] = [{
@@ -110,6 +137,13 @@ func export_graph(run_data: RunData, run_path: String) -> Dictionary:
 		"maximum_waves_per_room": run_data.maximum_waves_per_room,
 		"room_ids": run_room_ids,
 		"authored_room_count": run_data.rooms.size(),
+		"authored_wave_profile_count": waves.size(),
+		"selected_default_seed_wave_profile_count": selected_profile_count,
+		"minimum_played_wave_profile_count": minimum_profile_count,
+		"maximum_played_wave_profile_count": maximum_profile_count,
+		"selected_health_multiplier_max": selected_health_multiplier_max,
+		"selected_attack_multiplier_max": selected_attack_multiplier_max,
+		"selected_reward_multiplier_max": selected_reward_multiplier_max,
 		"validation_status": "valid" if run_data.is_valid() else "invalid",
 		"validation_errors": run_errors,
 	}]
@@ -856,13 +890,20 @@ func _audit(
 		evidence: String,
 		action: String
 	) -> Dictionary:
+	var affected_ids: Array[String] = []
+	if not entity_id.is_empty():
+		affected_ids.append(entity_id)
 	return {
 		"rule_id": rule_id,
 		"severity": severity,
 		"status": "open",
+		"truth_status": "verified",
+		"suggested_action_truth_status": "recommendation",
 		"domain": domain,
 		"entity_type": entity_type,
 		"entity_id": entity_id,
+		"affected_entity_type": entity_type,
+		"affected_entity_ids": affected_ids,
 		"message": message,
 		"source_path": source_path,
 		"evidence": evidence,

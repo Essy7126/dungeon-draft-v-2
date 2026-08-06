@@ -1,6 +1,10 @@
 # Audit des sources de production
 
-Audit réalisé sur le commit de jeu `1aadd1bd1dec5d1cf108740c0f57e80047d22539`.
+- Statut : **CURRENT**
+- Branche : `feature/observatory-truth-v1-1`
+- Commit de référence : HEAD propre utilisé par l’export ; valeur exacte publiée dans `meta.source_game_commit`.
+- Date UTC : `2026-08-06T10:45:38Z`
+- Validation : parcours des références chargées par le jeu, import Godot 4.7.1 et tests d’export V1.1.
 
 ## Parcours de production
 
@@ -26,6 +30,6 @@ Audit réalisé sur le commit de jeu `1aadd1bd1dec5d1cf108740c0f57e80047d22539`.
 - Aucune scène de combat n'est instanciée et aucun `.tscn` n'est parsé manuellement.
 - Les placements, la formation choisie, les invocations réellement consommées et la composition finale restent des résultats runtime.
 
-## Baseline de non-régression V1
+## Baseline de non-régression V1.1
 
-Godot 4.7.1 et GUT 9.7.1 exécutent 679 tests sur le commit de base : 668 réussites et 11 échecs préexistants dans huit scripts hors Observatory. Les 26 tests Observatory V0 réussissent. Le frontend V0 réussit ses 29 tests Vitest et 17 tests Playwright, avec zéro violation Axe sérieuse et zéro vulnérabilité npm signalée.
+Après report de la V1 sur le main courant, Godot 4.7.1 et GUT 9.7.1 exécutent 728 tests : 717 réussites et 11 échecs hors Observatory, pour 50 353 assertions réussies sur 50 516. La suite Observatory isolée expose initialement 11 échecs dus au warning d’UID gameplay préexistant de `frappe_lourde.tres`. Le frontend intégré réussit 40 Vitest et 23 Playwright, avec zéro vulnérabilité npm.

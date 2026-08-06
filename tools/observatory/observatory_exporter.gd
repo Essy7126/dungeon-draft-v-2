@@ -1,8 +1,8 @@
 class_name ObservatoryExporter
 extends RefCounted
 
-const SCHEMA_VERSION := "2.0.0"
-const GENERATOR_VERSION := "2.0.0"
+const SCHEMA_VERSION := "2.1.0"
+const GENERATOR_VERSION := "2.1.0"
 const DEFAULT_MANIFEST_PATH := "res://docs/observatory/data_source_manifest.json"
 const DEFAULT_CONTRACT_PATH := "res://docs/observatory/design_contract.json"
 const FIRST_RUN_PATH := "res://data/runs/first_run.tres"
@@ -19,16 +19,28 @@ const GENERIC_REWARD_PATHS := [
 ]
 const EQUIPMENT_POOL_TAG := "first_run_equipment_reward"
 
+var _git_executable := "git"
+var _git_working_directory := ""
+
 
 func build_snapshot(
 		manifest_path: String = DEFAULT_MANIFEST_PATH,
-		contract_path: String = DEFAULT_CONTRACT_PATH
+		contract_path: String = DEFAULT_CONTRACT_PATH,
+		documentary_mode: bool = false
 	) -> Dictionary:
 	var errors: Array[String] = []
 	var warnings: Array[String] = []
 	var source_audits: Array[Dictionary] = []
 	var manifest := _read_json_object(manifest_path, errors)
 	var contract_document := _read_json_object(contract_path, errors)
+	if manifest.has("source_game_commit"):
+		warnings.append(
+			"Le champ manifeste source_game_commit est obsolète et ignoré au profit de Git."
+		)
+	var provenance := read_git_provenance(documentary_mode)
+	warnings.append_array(provenance.get("warnings", []) as Array)
+	if not bool(provenance.get("source_git_available", false)) and not documentary_mode:
+		errors.append("Git est indisponible : l’export release refuse d’inventer sa provenance.")
 	if not errors.is_empty():
 		return {"snapshot": {}, "errors": errors, "warnings": warnings}
 
@@ -177,15 +189,16 @@ func build_snapshot(
 		eligible_item_ids,
 	)
 	var snapshot := {
-		"meta": _build_meta(manifest, contract_document),
+		"meta": _build_meta(manifest, contract_document, provenance),
 		"scope": _build_scope(manifest),
 		"summary": {},
 		"contract": {
 			"version": str(contract_document.get("contract_version", "")),
-			"decisions": ObservatorySerializer.sanitize(
-				contract_document.get("decisions", [])
+			"decisions": _export_contract_decisions(
+				contract_document.get("decisions", []) as Array
 			),
 		},
+		"runtime_facts": _build_runtime_facts(),
 		"characters": characters,
 		"disciplines": disciplines,
 		"spells": spells,
@@ -209,21 +222,195 @@ func build_snapshot(
 	return {"snapshot": snapshot, "errors": errors, "warnings": warnings}
 
 
-func _build_meta(manifest: Dictionary, contract: Dictionary) -> Dictionary:
+func configure_git_for_tests(executable: String, working_directory: String) -> void:
+	_git_executable = executable
+	_git_working_directory = working_directory
+
+
+func read_git_provenance(documentary_mode: bool = false) -> Dictionary:
+	var head_result := _git_result(["rev-parse", "HEAD"])
+	if int(head_result.get("exit_code", -1)) != 0:
+		return {
+			"source_game_commit": "unknown" if documentary_mode else "",
+			"source_branch": "unknown",
+			"source_worktree_dirty_before_export": false,
+			"source_git_available": false,
+			"source_generated_from_clean_checkout": false,
+			"warnings": ["Git indisponible : provenance non certifiée."],
+		}
+	var branch_result := _git_result(["rev-parse", "--abbrev-ref", "HEAD"])
+	var status_result := _git_result(["status", "--porcelain"])
+	var dirty := int(status_result.get("exit_code", -1)) != 0 \
+		or not str(status_result.get("output", "")).is_empty()
+	return {
+		"source_game_commit": str(head_result.get("output", "")),
+		"source_branch": str(branch_result.get("output", "unknown")),
+		"source_worktree_dirty_before_export": dirty,
+		"source_git_available": true,
+		"source_generated_from_clean_checkout": not dirty,
+		"warnings": [],
+	}
+
+
+func _build_meta(
+		manifest: Dictionary,
+		contract: Dictionary,
+		provenance: Dictionary
+	) -> Dictionary:
 	var version_info := Engine.get_version_info()
 	return {
 		"schema_version": SCHEMA_VERSION,
 		"generator_version": GENERATOR_VERSION,
 		"generated_at_utc": Time.get_datetime_string_from_system(true),
-		"source_game_commit": str(manifest.get("source_game_commit", "")),
-		"source_branch": _git_output(["rev-parse", "--abbrev-ref", "HEAD"]),
-		"source_worktree_dirty_before_export": not _git_output(
-			["status", "--porcelain"]
-		).is_empty(),
+		"source_game_commit": str(provenance.get("source_game_commit", "")),
+		"source_branch": str(provenance.get("source_branch", "unknown")),
+		"source_worktree_dirty_before_export": bool(provenance.get(
+			"source_worktree_dirty_before_export", false
+		)),
+		"source_git_available": bool(provenance.get("source_git_available", false)),
+		"source_generated_from_clean_checkout": bool(provenance.get(
+			"source_generated_from_clean_checkout", false
+		)),
 		"godot_version": str(version_info.get("string", "")),
 		"project_name": str(ProjectSettings.get_setting("application/config/name", "")),
 		"contract_version": str(contract.get("contract_version", "")),
 		"manifest_version": str(manifest.get("manifest_version", "")),
+	}
+
+
+func _export_contract_decisions(decisions: Array) -> Array[Dictionary]:
+	var exported: Array[Dictionary] = []
+	for decision_value in decisions:
+		var decision := ObservatorySerializer.sanitize(decision_value) as Dictionary
+		decision["truth_status"] = "design_decision"
+		exported.append(decision)
+	return exported
+
+
+func _build_runtime_facts() -> Array[Dictionary]:
+	var progression_path := "res://characters/progression/character_progression_service.gd"
+	var progression_source := FileAccess.get_file_as_string(progression_path)
+	var battle_path := "res://battle/battle.gd"
+	var battle_source := FileAccess.get_file_as_string(battle_path)
+	var game_manager_path := "res://core/game_manager.gd"
+	var game_manager_source := FileAccess.get_file_as_string(game_manager_path)
+	var facts: Array[Dictionary] = [
+		_runtime_fact(
+			"progression.xp_per_effective_cast",
+			1 if progression_source.contains(
+				"add_discipline_xp(spell.discipline_id, 1)"
+			) else null,
+			"observed" if progression_source.contains(
+				"add_discipline_xp(spell.discipline_id, 1)"
+			) else "non_certified",
+			[progression_path],
+			"CharacterProgressionService crédite la discipline avec la valeur littérale du runtime.",
+			"Baseline runtime observée ; ce n’est pas une cible de conception.",
+		),
+		_runtime_fact(
+			"progression.requires_effective_cast",
+			progression_source.contains("report.get(\"effective_cast\", false)"),
+			"observed",
+			[progression_path],
+			"grant_cast_xp refuse les rapports sans effective_cast.",
+			"Baseline runtime observée ; ce n’est pas une cible de conception.",
+		),
+		_runtime_fact(
+			"progression.same_spell_once_per_activation",
+			progression_source.contains("same_spell_already_awarded_this_activation"),
+			"observed",
+			[progression_path],
+			"La clé d’attribution combine unité, activation_index et spell_id.",
+			"La restriction porte sur un même sort pendant une même activation.",
+		),
+		_runtime_fact(
+			"progression.cap_per_discipline_per_combat",
+			CharacterProgressionService.MAX_DISCIPLINE_XP_PER_COMBAT,
+			"verified",
+			[progression_path],
+			"Constante runtime lue directement et appliquée avant chaque attribution.",
+			"Plafond indexé par character_id et discipline_id.",
+		),
+		_runtime_fact(
+			"progression.cap_reset_semantics",
+			"begin_combat_clears_combat_xp_and_activation_awards",
+			"observed",
+			[progression_path, game_manager_path],
+			"begin_combat vide les deux dictionnaires ; GameManager l’appelle au début du combat.",
+			"reset_run délègue également à begin_combat.",
+		),
+		_runtime_fact(
+			"progression.evolution_timing",
+			"in_combat",
+			"observed" if battle_source.contains(
+				"_process_evolution_queue_at_safe_point"
+			) else "non_certified",
+			[battle_path, "res://ui/run/persistent_run_ui.gd"],
+			"Battle traite la file d’évolution à un point sûr avant de rendre le contrôle.",
+			"Ce fait runtime concorde avec la décision de conception distincte.",
+		),
+		_runtime_fact(
+			"run.wave_scene_reload_behavior",
+			"same_room_battle_scene_reloaded_between_waves",
+			"observed" if game_manager_source.contains(
+				"current_wave_index += 1"
+			) and game_manager_source.contains(
+				"change_scene_to_packed.call_deferred(room.battle_scene)"
+			) else "non_certified",
+			[game_manager_path],
+			"continue_current_room_combat incrémente la vague puis recharge room.battle_scene.",
+			"La scène est rechargée ; l’état de run persistant reste dans GameManager.",
+		),
+		_runtime_fact(
+			"combat.damage_mitigation_formula",
+			{
+				"non_negative_defense": "defense / (defense + K)",
+				"negative_defense": "defense / (K - defense)",
+				"K": DamageResolver.MITIGATION_K,
+			},
+			"verified",
+			["res://core/damage_resolver.gd"],
+			"Formule publique DamageResolver.mitigation avec constante runtime K.",
+			"Les résistances élémentaires sont appliquées avant la mitigation de catégorie.",
+		),
+		_runtime_fact(
+			"rewards.equipment_offer_timing",
+			"after_victorious_finalized_non_final_room_exit_selection",
+			"observed",
+			[game_manager_path, "res://ui/post_combat/post_combat_screen.gd"],
+			"can_claim_post_combat_equipment exige victoire finalisée, salle non finale et sortie sécurisée.",
+			"Une offre déjà appliquée n’est pas reproposée.",
+		),
+		_runtime_fact(
+			"content.production_classification",
+			null,
+			"non_certified",
+			["res://data"],
+			"Aucun champ explicite DEBUG, PLACEHOLDER, CHEAT ou TOOL n’a été identifié sur les ressources exportées.",
+			"Ne pas déduire une classification depuis les dégâts ou le nom d’une ressource.",
+		),
+	]
+	facts.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return str(a.get("key", "")) < str(b.get("key", ""))
+	)
+	return facts
+
+
+func _runtime_fact(
+		key: String,
+		value: Variant,
+		truth_status: String,
+		source_paths: Array[String],
+		evidence: String,
+		notes: String
+	) -> Dictionary:
+	return {
+		"key": key,
+		"value": ObservatorySerializer.sanitize(value),
+		"truth_status": truth_status,
+		"source_paths": source_paths,
+		"evidence": evidence,
+		"notes": notes,
 	}
 
 
@@ -291,15 +478,24 @@ func _build_contract_checks(
 		var observed_value: Variant = observed.get(key)
 		var status := "not_evaluated"
 		var message := "La source statique actuelle ne permet pas de conclure."
-		if observed.has(key):
+		if str(decision.get("status", "")) == "unknown":
+			status = "unknown"
+			message = "La décision de conception reste explicitement inconnue."
+		elif observed.has(key):
 			status = "conform" if _values_equal(target, observed_value) else "difference"
 			message = "La valeur observée correspond à la cible." if status == "conform" \
 				else "La valeur observée diffère de la cible versionnée."
+		var affected_ids := _affected_entity_ids_for_contract(
+			key, target, characters, status
+		)
 		checks.append({
 			"key": key,
 			"target": ObservatorySerializer.sanitize(target),
 			"observed_value": ObservatorySerializer.sanitize(observed_value),
 			"status": status,
+			"truth_status": "verified" if observed.has(key) else "non_certified",
+			"affected_entity_type": "character" if not affected_ids.is_empty() else "",
+			"affected_entity_ids": affected_ids,
 			"evidence": str(evidence.get(key, "Aucune preuve statique exportée.")),
 			"message": message,
 		})
@@ -307,6 +503,32 @@ func _build_contract_checks(
 		return str(a.get("key", "")) < str(b.get("key", ""))
 	)
 	return checks
+
+
+func _affected_entity_ids_for_contract(
+		key: String,
+		target: Variant,
+		characters: Array[Dictionary],
+		status: String
+	) -> Array[String]:
+	var field_by_key := {
+		"combat.base_ap": "max_ap",
+		"combat.base_mp": "max_mp",
+		"combat.starting_active_spell_slots": "active_spell_slots",
+		"progression.discipline_count_per_character": "discipline_ids",
+	}
+	var result: Array[String] = []
+	if status != "difference" or not field_by_key.has(key):
+		return result
+	var field := str(field_by_key[key])
+	for character in characters:
+		var observed_value: Variant = character.get(field)
+		if observed_value is Array:
+			observed_value = (observed_value as Array).size()
+		if not _values_equal(target, observed_value):
+			result.append(str(character.get("id", "")))
+	result.sort()
+	return result
 
 
 func _build_summary(snapshot: Dictionary) -> Dictionary:
@@ -326,6 +548,16 @@ func _build_summary(snapshot: Dictionary) -> Dictionary:
 		reward_count += (pool.get("rewards", []) as Array).size()
 		if str(pool.get("kind", "")) == "equipment_first_run":
 			eligible_count = (pool.get("item_ids", []) as Array).size()
+	var selected_wave_profiles := 0
+	for wave_value in snapshot.get("waves", []) as Array:
+		if bool((wave_value as Dictionary).get("is_selected_by_default_seed", false)):
+			selected_wave_profiles += 1
+	var minimum_played_profiles := 0
+	var maximum_played_profiles := 0
+	for room_value in snapshot.get("rooms", []) as Array:
+		var room := room_value as Dictionary
+		minimum_played_profiles += int(room.get("minimum_wave_count", 0))
+		maximum_played_profiles += int(room.get("maximum_wave_count", 0))
 	return {
 		"characters": (snapshot.get("characters", []) as Array).size(),
 		"disciplines": (snapshot.get("disciplines", []) as Array).size(),
@@ -336,10 +568,15 @@ func _build_summary(snapshot: Dictionary) -> Dictionary:
 		"runs": (snapshot.get("runs", []) as Array).size(),
 		"rooms": (snapshot.get("rooms", []) as Array).size(),
 		"waves": (snapshot.get("waves", []) as Array).size(),
+		"authored_wave_profiles": (snapshot.get("waves", []) as Array).size(),
+		"selected_default_seed_wave_profiles": selected_wave_profiles,
+		"minimum_played_wave_profiles": minimum_played_profiles,
+		"maximum_played_wave_profiles": maximum_played_profiles,
 		"encounters": (snapshot.get("encounters", []) as Array).size(),
 		"enemies": (snapshot.get("enemies", []) as Array).size(),
 		"enemy_spells": (snapshot.get("enemy_spells", []) as Array).size(),
 		"ai_profiles": (snapshot.get("ai_profiles", []) as Array).size(),
+		"runtime_facts": (snapshot.get("runtime_facts", []) as Array).size(),
 		"eligible_first_run_equipment": eligible_count,
 		"contract_conform": int(contract_counts["conform"]),
 		"contract_difference": int(contract_counts["difference"]),
@@ -388,12 +625,19 @@ func _read_json_object(path: String, errors: Array[String]) -> Dictionary:
 	return parsed as Dictionary
 
 
-func _git_output(arguments: Array[String]) -> String:
+func _git_result(arguments: Array[String]) -> Dictionary:
 	var output: Array = []
-	var executable := "git"
-	var args := PackedStringArray(arguments)
-	var exit_code := OS.execute(executable, args, output, true)
-	return str(output[0]).strip_edges() if exit_code == 0 and not output.is_empty() else ""
+	var args := PackedStringArray(["--no-optional-locks"])
+	var working_directory := _git_working_directory
+	if working_directory.is_empty():
+		working_directory = ProjectSettings.globalize_path("res://")
+	args.append_array(PackedStringArray(["-C", working_directory]))
+	args.append_array(PackedStringArray(arguments))
+	var exit_code := OS.execute(_git_executable, args, output, true)
+	return {
+		"exit_code": exit_code,
+		"output": str(output[0]).strip_edges() if not output.is_empty() else "",
+	}
 
 
 func _uniform_character_value(characters: Array[Dictionary], key: String) -> Variant:
@@ -451,8 +695,15 @@ func _audit(
 		evidence: String,
 		action: String
 	) -> Dictionary:
+	var affected_ids: Array[String] = []
+	if not entity_id.is_empty():
+		affected_ids.append(entity_id)
 	return {"rule_id": rule_id, "severity": severity, "status": "open",
+		"truth_status": "observed",
+		"suggested_action_truth_status": "recommendation",
 		"domain": domain, "entity_type": entity_type, "entity_id": entity_id,
+		"affected_entity_type": entity_type,
+		"affected_entity_ids": affected_ids,
 		"message": message, "source_path": source_path, "evidence": evidence,
 		"suggested_action": action}
 

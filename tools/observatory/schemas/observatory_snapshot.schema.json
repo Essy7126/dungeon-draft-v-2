@@ -9,6 +9,7 @@
     "scope",
     "summary",
     "contract",
+    "runtime_facts",
     "characters",
     "disciplines",
     "spells",
@@ -29,6 +30,10 @@
     "scope": {"$ref": "#/$defs/scope"},
     "summary": {"$ref": "#/$defs/summary"},
     "contract": {"$ref": "#/$defs/contract"},
+    "runtime_facts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/runtimeFact"}
+    },
     "characters": {
       "type": "array",
       "items": {"$ref": "#/$defs/character"}
@@ -80,6 +85,9 @@
         }
       ]
     },
+    "truthStatus": {
+      "enum": ["observed", "verified", "design_decision", "recommendation", "non_certified"]
+    },
     "enumValue": {
       "type": "object",
       "additionalProperties": false,
@@ -108,6 +116,8 @@
         "source_game_commit",
         "source_branch",
         "source_worktree_dirty_before_export",
+        "source_git_available",
+        "source_generated_from_clean_checkout",
         "godot_version",
         "project_name",
         "contract_version",
@@ -117,9 +127,11 @@
         "schema_version": {"type": "string", "minLength": 1},
         "generator_version": {"type": "string", "minLength": 1},
         "generated_at_utc": {"type": "string", "minLength": 1},
-        "source_game_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "source_game_commit": {"type": "string", "pattern": "^([0-9a-f]{40}|unknown)$"},
         "source_branch": {"type": "string", "minLength": 1},
         "source_worktree_dirty_before_export": {"type": "boolean"},
+        "source_git_available": {"type": "boolean"},
+        "source_generated_from_clean_checkout": {"type": "boolean"},
         "godot_version": {"type": "string", "minLength": 1},
         "project_name": {"type": "string", "minLength": 1},
         "contract_version": {"type": "string", "minLength": 1},
@@ -160,10 +172,15 @@
         "runs",
         "rooms",
         "waves",
+        "authored_wave_profiles",
+        "selected_default_seed_wave_profiles",
+        "minimum_played_wave_profiles",
+        "maximum_played_wave_profiles",
         "encounters",
         "enemies",
         "enemy_spells",
         "ai_profiles",
+        "runtime_facts",
         "eligible_first_run_equipment",
         "contract_conform",
         "contract_difference",
@@ -183,10 +200,15 @@
         "runs": {"type": "integer", "minimum": 0},
         "rooms": {"type": "integer", "minimum": 0},
         "waves": {"type": "integer", "minimum": 0},
+        "authored_wave_profiles": {"type": "integer", "minimum": 0},
+        "selected_default_seed_wave_profiles": {"type": "integer", "minimum": 0},
+        "minimum_played_wave_profiles": {"type": "integer", "minimum": 0},
+        "maximum_played_wave_profiles": {"type": "integer", "minimum": 0},
         "encounters": {"type": "integer", "minimum": 0},
         "enemies": {"type": "integer", "minimum": 0},
         "enemy_spells": {"type": "integer", "minimum": 0},
         "ai_profiles": {"type": "integer", "minimum": 0},
+        "runtime_facts": {"type": "integer", "minimum": 0},
         "eligible_first_run_equipment": {"type": "integer", "minimum": 0},
         "contract_conform": {"type": "integer", "minimum": 0},
         "contract_difference": {"type": "integer", "minimum": 0},
@@ -200,11 +222,12 @@
     "contractDecision": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["key", "value", "status", "source", "rationale"],
+      "required": ["key", "value", "status", "truth_status", "source", "rationale"],
       "properties": {
         "key": {"type": "string", "minLength": 1},
         "value": {"$ref": "#/$defs/jsonValue"},
         "status": {"enum": ["validated", "provisional", "unknown", "deprecated"]},
+        "truth_status": {"const": "design_decision"},
         "source": {"type": "string", "minLength": 1},
         "rationale": {"type": "string", "minLength": 1}
       }
@@ -216,6 +239,19 @@
       "properties": {
         "version": {"type": "string", "minLength": 1},
         "decisions": {"type": "array", "items": {"$ref": "#/$defs/contractDecision"}}
+      }
+    },
+    "runtimeFact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "value", "truth_status", "source_paths", "evidence", "notes"],
+      "properties": {
+        "key": {"type": "string", "minLength": 1},
+        "value": {"$ref": "#/$defs/jsonValue"},
+        "truth_status": {"$ref": "#/$defs/truthStatus"},
+        "source_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^res://"}},
+        "evidence": {"type": "string", "minLength": 1},
+        "notes": {"type": "string"}
       }
     },
     "character": {
@@ -475,7 +511,7 @@
     "run": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "id_source", "identity_stability", "name", "source_path", "default_seed", "target_duration_minutes", "extended_duration_minutes", "maximum_waves_per_room", "room_ids", "authored_room_count", "validation_status", "validation_errors"],
+      "required": ["id", "id_source", "identity_stability", "name", "source_path", "default_seed", "target_duration_minutes", "extended_duration_minutes", "maximum_waves_per_room", "room_ids", "authored_room_count", "authored_wave_profile_count", "selected_default_seed_wave_profile_count", "minimum_played_wave_profile_count", "maximum_played_wave_profile_count", "selected_health_multiplier_max", "selected_attack_multiplier_max", "selected_reward_multiplier_max", "validation_status", "validation_errors"],
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "id_source": {"enum": ["explicit", "manifest_alias", "resource_path", "ordered_parent_index"]},
@@ -488,6 +524,13 @@
         "maximum_waves_per_room": {"type": "integer", "minimum": 1},
         "room_ids": {"type": "array", "items": {"type": "string"}},
         "authored_room_count": {"type": "integer", "minimum": 0},
+        "authored_wave_profile_count": {"type": "integer", "minimum": 0},
+        "selected_default_seed_wave_profile_count": {"type": "integer", "minimum": 0},
+        "minimum_played_wave_profile_count": {"type": "integer", "minimum": 0},
+        "maximum_played_wave_profile_count": {"type": "integer", "minimum": 0},
+        "selected_health_multiplier_max": {"type": "number", "minimum": 0},
+        "selected_attack_multiplier_max": {"type": "number", "minimum": 0},
+        "selected_reward_multiplier_max": {"type": "number", "minimum": 0},
         "validation_status": {"enum": ["valid", "invalid"]},
         "validation_errors": {"type": "array", "items": {"type": "string"}}
       }
@@ -696,12 +739,15 @@
     "contractCheck": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["key", "target", "observed_value", "status", "evidence", "message"],
+      "required": ["key", "target", "observed_value", "status", "truth_status", "affected_entity_type", "affected_entity_ids", "evidence", "message"],
       "properties": {
         "key": {"type": "string", "minLength": 1},
         "target": {"$ref": "#/$defs/jsonValue"},
         "observed_value": {"$ref": "#/$defs/jsonValue"},
         "status": {"enum": ["conform", "difference", "unknown", "not_evaluated"]},
+        "truth_status": {"$ref": "#/$defs/truthStatus"},
+        "affected_entity_type": {"type": "string"},
+        "affected_entity_ids": {"type": "array", "items": {"type": "string"}},
         "evidence": {"type": "string"},
         "message": {"type": "string"}
       }
@@ -710,16 +756,20 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "rule_id", "severity", "status", "domain", "entity_type", "entity_id",
+        "rule_id", "severity", "status", "truth_status", "suggested_action_truth_status", "domain", "entity_type", "entity_id", "affected_entity_type", "affected_entity_ids",
         "message", "source_path", "evidence", "suggested_action"
       ],
       "properties": {
         "rule_id": {"type": "string", "minLength": 1},
         "severity": {"enum": ["info", "warning", "blocking"]},
         "status": {"type": "string"},
+        "truth_status": {"$ref": "#/$defs/truthStatus"},
+        "suggested_action_truth_status": {"const": "recommendation"},
         "domain": {"type": "string"},
         "entity_type": {"type": "string"},
         "entity_id": {"type": "string"},
+        "affected_entity_type": {"type": "string"},
+        "affected_entity_ids": {"type": "array", "items": {"type": "string"}},
         "message": {"type": "string"},
         "source_path": {"type": "string"},
         "evidence": {"type": "string"},

@@ -1,5 +1,11 @@
 # Dungeon Draft Observatory
 
+- Statut : **CURRENT**
+- Branche : `feature/observatory-truth-v1-1`
+- Commit de référence : HEAD contenant ce document ; `meta.source_game_commit` publie le SHA Git exact de l’export.
+- Date UTC : `2026-08-06T10:45:38Z`
+- Validation : export propre, GUT Observatory, Ajv et chaîne frontend.
+
 Observatory produit un snapshot JSON statique et versionné des données de production de Dungeon Draft. La fondation charge uniquement des `Resource` explicitement reliées à la première run, puis exporte des données sérialisables, des contrôles du contrat de conception et des audits déterministes.
 
 ## Source de vérité
@@ -21,9 +27,9 @@ Ajouter `--fail-on-blocking` pour obtenir le code de sortie `2` lorsqu’un audi
 
 ## Périmètre V1
 
-Le snapshot 2.0.0 conserve les domaines V0 et ajoute la run de production, ses salles, ses profils de vagues, les nombres résolus par la seed, les rencontres, les ennemis atteignables, leurs sorts et leurs profils d'IA. Les placements et invocations réellement joués restent runtime-only. L'architecture complète et le theorycraft avancé restent explicitement reportés.
+Le snapshot 2.1.0 conserve les domaines V0/V1 et ajoute la provenance Git non substituable, `runtime_facts`, les statuts de vérité, les entités affectées et un résumé explicite des profils de vague. Les placements et invocations réellement joués restent runtime-only.
 
-Les méthodes, identités, agrégats et limites sont détaillés dans `run_data_v1_audit.md` et `run_data_v1.md`.
+Les contrats courants sont détaillés dans `truth_model.md`, `freshness_contract.md`, `stabilization_v1_1.md`, `ui_field_coverage_v1_1.md` et `frontend_v1_1.md`.
 
 ## Frontend statique V0 et V1
 

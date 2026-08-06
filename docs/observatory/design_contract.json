@@ -1,5 +1,10 @@
 {
-  "contract_version": "1.0.0",
+  "document_status": "CURRENT",
+  "branch": "feature/observatory-truth-v1-1",
+  "commit_reference": "HEAD contenant ce document ; le SOURCE_HEAD exact est publié par le snapshot",
+  "updated_at_utc": "2026-08-06T10:45:38Z",
+  "validation_method": "Relecture des décisions explicites V1.1, tests GUT Observatory et validation JSON Schema",
+  "contract_version": "1.1.0",
   "decisions": [
     {
       "key": "party.required_character_ids",
@@ -44,18 +49,11 @@
       "rationale": "Chaque héros de production expose quatre disciplines."
     },
     {
-      "key": "progression.xp_per_effective_cast",
-      "value": 1,
-      "status": "validated",
-      "source": "Mission Observatory — reconstruction de la fondation",
-      "rationale": "Un lancement effectif accorde un point d’expérience de discipline."
-    },
-    {
-      "key": "progression.requires_effective_cast",
-      "value": true,
-      "status": "validated",
-      "source": "Mission Observatory — reconstruction de la fondation",
-      "rationale": "Un lancement sans effet ne doit pas progresser."
+      "key": "progression.xp_model",
+      "value": null,
+      "status": "unknown",
+      "source": "Décision de conception actuelle — modèle XP à revoir",
+      "rationale": "Le comportement courant est une baseline observée. Le modèle final de progression n’est pas encore validé."
     },
     {
       "key": "progression.evolution_timing",
