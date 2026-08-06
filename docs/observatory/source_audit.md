@@ -32,4 +32,4 @@ Le hub référence la run principale `res://data/runs/first_run.tres` et l’out
 
 ## Baseline de non-régression V1.2
 
-La baseline initiale de cette mission sur le `main` vérifié exécute 848 tests GUT : 832 réussites et 16 échecs, dont deux tests Observatory obsolètes corrigés par le contrat V1.2 et quatorze échecs gameplay historiques. Le contrat machine-readable de CI documente uniquement ces derniers et accepte leur disparition, jamais un nouvel échec. Les chiffres finaux autoritaires sont ceux des rapports JUnit et CI attachés au commit V1.2.
+La baseline initiale de cette mission sur le `main` vérifié exécutait 848 tests GUT : 832 réussites et 16 échecs, dont deux tests Observatory obsolètes corrigés par le contrat V1.2. La baseline finale machine-readable exécute 849 tests : 834 réussites et 15 échecs historiques hors Observatory, pour 52 684 assertions réussies sur 52 852. Elle accepte la disparition d’un échec connu, jamais un nouvel identifiant.

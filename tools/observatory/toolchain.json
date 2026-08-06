@@ -1,0 +1,13 @@
+{
+  "godot_version": "4.7.1-stable",
+  "godot_official_download_url": "https://github.com/godotengine/godot/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip",
+  "godot_sha256": "c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27addaa33ba",
+  "godot_binary_name": "Godot_v4.7.1-stable_linux.x86_64",
+  "node_major": 24,
+  "playwright_browser": "chromium",
+  "github_actions": {
+    "checkout_v4": "11d5960a326750d5838078e36cf38b85af677262",
+    "setup_node_v4": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+    "upload_artifact_v4": "ea165f8d65b6e75b540449e92b4886f43607fa02"
+  }
+}
