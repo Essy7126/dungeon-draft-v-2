@@ -18,4 +18,3 @@ build ou d’un état global de debug.
 Cette décision remplace, pour la principale actuelle, l’hypothèse historique de
 trois à dix vagues par salle. Elle ne supprime ni `RoomWaveData`, ni le moteur de
 vagues, ni la run de test.
-

@@ -6,6 +6,7 @@ Ce document décrit le comportement observé dans le checkout local au 5 août 2
 
 ```text
 RunData
+├── room_flow_mode: SINGLE_ENCOUNTER | WAVE_CHAIN
 └── rooms: Array[RoomData]
     ├── battle_scene
     ├── grid_layout / painted_map_visual_data
@@ -20,12 +21,13 @@ Combat
 └── EncounterRuntimeState             (budgets et compteurs consommables)
 ```
 
-La première run de production est `res://data/runs/first_run.tres`. Elle référence six salles et dix définitions de vague par salle. Dans une salle donnée, les dix vagues partagent actuellement la même `EncounterDefinition`; les multiplicateurs appartiennent aux `RoomWaveData`.
+La première run de production est `res://data/runs/first_run.tres`. Elle référence six salles en `SINGLE_ENCOUNTER` : chaque salle utilise sa rencontre de base, sans profil `RoomWaveData`, avec un plafond de 1 combat. La run `res://data/runs/fixed_trio_prototype_run.tres` conserve le mode `WAVE_CHAIN`; ses salles multi-vagues reposent sur des enveloppes dédiées sous `data/rooms/test_waves/` et ne partagent aucune `RoomData` avec la principale.
 
 ## Sélection moderne et fallbacks historiques
 
-- Si `RoomData.waves` n’est pas vide, `RoomData.get_wave(index)` puis `wave.encounter_definition` sont l’unique source moderne. Les champs `room.encounter_definition` et `room.enemies` restent des fallbacks affichés comme historiques et ne sont pas synchronisés artificiellement.
-- Si `waves` est vide, l’index 0 utilise `room.encounter_definition`.
+- En `SINGLE_ENCOUNTER`, la politique de run impose l’index 0 et utilise `room.encounter_definition`; aucun tirage RNG de nombre de vagues n’est effectué et la présence de profils `waves` invalide la run.
+- En `WAVE_CHAIN`, si `RoomData.waves` n’est pas vide, `RoomData.get_wave(index)` puis `wave.encounter_definition` sont la source moderne. Les champs `room.encounter_definition` et `room.enemies` restent des fallbacks historiques et ne sont pas synchronisés artificiellement.
+- En `WAVE_CHAIN`, si `waves` est vide, l’index 0 utilise `room.encounter_definition` pour préserver les anciennes ressources mono-rencontre.
 - Si cette définition est absente, l’ancien roster `room.enemies` reste lisible par le contrat historique.
 - Une migration historique n’est jamais exécutée au chargement. L’assistant crée une vague et une définition dans la copie de travail, conserve les anciens champs, puis attend une sauvegarde confirmée.
 
@@ -80,7 +82,7 @@ Préférences souples :
 
 ## Vagues, transitions et persistance
 
-`RunWaveCountResolver` reproduit la séquence RNG historique de `GameManager` : un seul `RandomNumberGenerator` seedé par la run parcourt les salles dans l’ordre, applique le plafond `RunData.maximum_waves_per_room`, puis tire entre les bornes de chaque salle. Le comportement historique étrange d’une salle vide est conservé : les `clampi` imbriqués peuvent aboutir à un compte de 1; il n’a pas été « corrigé » dans cette mission afin de préserver la parité.
+En `SINGLE_ENCOUNTER`, `RunWaveCountResolver` retourne exactement 1 combat par salle valide, indépendamment de la seed et sans instancier de RNG. En `WAVE_CHAIN`, il reproduit la séquence RNG historique de `GameManager` : un seul `RandomNumberGenerator` seedé par la run parcourt les salles dans l’ordre, applique le plafond `RunData.maximum_waves_per_room`, puis tire entre les bornes de chaque salle. Le fallback historique d’une salle sans profil reste un combat unique.
 
 Chaque affrontement reste un combat distinct qui recharge `battle_scene`. Persistent entre deux combats : seed de run, index de salle/vague, états de personnages, PV/progression, inventaire, récompenses et rapport de salle agrégé selon `GameManager`. Réinitialisés : grille, `Pathfinder`, unités ennemies, `EncounterRuntimeState`, file de tours, surbrillances, terrain local et état visuel de bataille.
 
@@ -96,4 +98,3 @@ Chaque affrontement reste un combat distinct qui recharge `battle_scene`. Persis
 6. Les enfants sont sauvegardés avant les parents, puis rechargés et reliés comme ressources externes.
 7. Un conflit de fingerprint disque bloque la sauvegarde.
 8. Les maps peintes conservent exactement leurs transformations et types de cases.
-

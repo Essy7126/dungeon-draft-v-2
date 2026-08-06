@@ -23,4 +23,3 @@ rapports cumulés afin de tester le moteur historique de vagues.
 La réduction structurelle du nombre de combats de production implique une mesure
 ultérieure de la durée, de la cadence XP et de l’attrition ; ces valeurs ne sont
 pas recalibrées dans `RUN_FLOW_ISOLATION_V1`.
-
