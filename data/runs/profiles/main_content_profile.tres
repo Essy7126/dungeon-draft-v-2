@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="RunContentProfile" format=3]
+[gd_resource type="Resource" script_class="RunContentProfile" format=3 uid="uid://dex56rwuy72y4"]
 
-[ext_resource type="Script" path="res://data/runs/content/run_hero_profile.gd" id="1_nmoyt"]
-[ext_resource type="Resource" path="res://data/units/alliés/elfe.tres" id="2_c1vpa"]
+[ext_resource type="Script" uid="uid://bu1v88xrc87p7" path="res://data/runs/content/run_hero_profile.gd" id="1_nmoyt"]
+[ext_resource type="Resource" uid="uid://dtvaj0f3c5sax" path="res://data/units/alliés/elfe.tres" id="2_c1vpa"]
 [ext_resource type="Resource" path="res://data/runs/progression/main/elf_progression_profile.tres" id="3_fikvi"]
-[ext_resource type="Resource" path="res://data/units/alliés/mage.tres" id="4_0aaqa"]
+[ext_resource type="Resource" uid="uid://dyr45spqln4bn" path="res://data/units/alliés/mage.tres" id="4_0aaqa"]
 [ext_resource type="Resource" path="res://data/runs/progression/main/mage_progression_profile.tres" id="5_m28dg"]
-[ext_resource type="Resource" path="res://data/units/alliés/Guerrier.tres" id="6_jv8q2"]
+[ext_resource type="Resource" uid="uid://bf8f5v5jh1yr4" path="res://data/units/alliés/Guerrier.tres" id="6_jv8q2"]
 [ext_resource type="Resource" path="res://data/runs/progression/main/warrior_progression_profile.tres" id="7_d7qwy"]
-[ext_resource type="Script" path="res://data/runs/content/run_content_profile.gd" id="8_qs62j"]
+[ext_resource type="Script" uid="uid://dxus1cqb251v3" path="res://data/runs/content/run_content_profile.gd" id="8_qs62j"]
 
 [sub_resource type="Resource" id="Resource_l1tfg"]
 script = ExtResource("1_nmoyt")

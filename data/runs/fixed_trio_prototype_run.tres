@@ -1,19 +1,16 @@
-[gd_resource type="Resource" script_class="RunData" format=3]
+[gd_resource type="Resource" script_class="RunData" format=3 uid="uid://bqyivm1eal2wx"]
 
 [ext_resource type="Resource" path="res://data/runs/profiles/test_content_profile.tres" id="1_nro2u"]
-[ext_resource type="Script" path="res://data/runs/run_data.gd" id="1_run"]
-[ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room_type"]
-[ext_resource type="Resource" path="res://data/rooms/test_waves/first_run_room_01_waves.tres" id="3_gue"]
-[ext_resource type="Resource" path="res://data/rooms/test_waves/first_run_room_03_waves.tres" id="4_forge"]
-[ext_resource type="Resource" path="res://data/rooms/terrain_2.tres" id="6_terrain_2"]
-[ext_resource type="Resource" path="res://data/rooms/bible/la_rune.tres" id="7_rune"]
+[ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/runs/run_data.gd" id="1_run"]
+[ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room_type"]
+[ext_resource type="Resource" uid="uid://cwm0r7nq15k2a" path="res://data/rooms/test_waves/first_run_room_01_waves.tres" id="3_gue"]
+[ext_resource type="Resource" uid="uid://cd70yyesrcj" path="res://data/rooms/test_waves/first_run_room_03_waves.tres" id="4_forge"]
+[ext_resource type="Resource" uid="uid://cu75nfsk7bpui" path="res://data/rooms/terrain_2.tres" id="6_terrain_2"]
+[ext_resource type="Resource" uid="uid://buiqsb71lud8" path="res://data/rooms/bible/la_rune.tres" id="7_rune"]
 
 [resource]
 script = ExtResource("1_run")
 run_name = "Run de test"
-default_seed = 1337
-target_duration_minutes = 30
-extended_duration_minutes = 45
 room_flow_mode = 1
 maximum_waves_per_room = 10
 content_profile = ExtResource("1_nro2u")
