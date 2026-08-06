@@ -1,15 +1,17 @@
 {
   "meta": {
-    "schema_version": "2.0.0",
-    "generator_version": "2.0.0",
-    "generated_at_utc": "2026-08-05T18:11:06",
-    "source_game_commit": "1aadd1bd1dec5d1cf108740c0f57e80047d22539",
-    "source_branch": "feature/observatory-run-data-v1",
+    "schema_version": "2.1.0",
+    "generator_version": "2.1.0",
+    "generated_at_utc": "2026-08-06T11:01:54",
+    "source_game_commit": "e93a63404369de54b144735d640c1b4b17f0d2b7",
+    "source_branch": "feature/observatory-truth-v1-1",
     "source_worktree_dirty_before_export": false,
+    "source_git_available": true,
+    "source_generated_from_clean_checkout": true,
     "godot_version": "4.7.1-stable (official)",
     "project_name": "Dungeon Draft v2",
-    "contract_version": "1.0.0",
-    "manifest_version": "2.0.0"
+    "contract_version": "1.1.0",
+    "manifest_version": "2.1.0"
   },
   "scope": {
     "included_domains": [
@@ -70,21 +72,26 @@
     "runs": 1,
     "rooms": 6,
     "waves": 60,
+    "authored_wave_profiles": 60,
+    "selected_default_seed_wave_profiles": 37,
+    "minimum_played_wave_profiles": 18,
+    "maximum_played_wave_profiles": 60,
     "encounters": 6,
     "enemies": 3,
     "enemy_spells": 8,
     "ai_profiles": 3,
+    "runtime_facts": 10,
     "eligible_first_run_equipment": 14,
     "contract_conform": 10,
     "contract_difference": 0,
-    "contract_unknown": 0,
-    "contract_not_evaluated": 8,
-    "audit_info": 75,
+    "contract_unknown": 1,
+    "contract_not_evaluated": 6,
+    "audit_info": 73,
     "audit_warning": 54,
     "audit_blocking": 0
   },
   "contract": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "decisions": [
       {
         "key": "party.required_character_ids",
@@ -95,129 +102,248 @@
           "elf",
           "mage",
           "warrior"
-        ]
+        ],
+        "truth_status": "design_decision"
       },
       {
         "key": "party.size",
         "rationale": "La première run est conçue pour trois héros.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": 3.0
+        "value": 3.0,
+        "truth_status": "design_decision"
       },
       {
         "key": "combat.base_ap",
         "rationale": "Budget de PA de référence d’un héros.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": 6.0
+        "value": 6.0,
+        "truth_status": "design_decision"
       },
       {
         "key": "combat.base_mp",
         "rationale": "Budget de PM de référence d’un héros.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": 3.0
+        "value": 3.0,
+        "truth_status": "design_decision"
       },
       {
         "key": "combat.starting_active_spell_slots",
         "rationale": "Chaque héros commence avec quatre emplacements actifs.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": 4.0
+        "value": 4.0,
+        "truth_status": "design_decision"
       },
       {
         "key": "progression.discipline_count_per_character",
         "rationale": "Chaque héros de production expose quatre disciplines.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": 4.0
+        "value": 4.0,
+        "truth_status": "design_decision"
       },
       {
-        "key": "progression.xp_per_effective_cast",
-        "rationale": "Un lancement effectif accorde un point d’expérience de discipline.",
-        "source": "Mission Observatory — reconstruction de la fondation",
-        "status": "validated",
-        "value": 1.0
-      },
-      {
-        "key": "progression.requires_effective_cast",
-        "rationale": "Un lancement sans effet ne doit pas progresser.",
-        "source": "Mission Observatory — reconstruction de la fondation",
-        "status": "validated",
-        "value": true
+        "key": "progression.xp_model",
+        "rationale": "Le comportement courant est une baseline observée. Le modèle final de progression n’est pas encore validé.",
+        "source": "Décision de conception actuelle — modèle XP à revoir",
+        "status": "unknown",
+        "value": null,
+        "truth_status": "design_decision"
       },
       {
         "key": "progression.evolution_timing",
         "rationale": "Les évolutions sont résolues pendant le combat.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": "in_combat"
+        "value": "in_combat",
+        "truth_status": "design_decision"
       },
       {
         "key": "systems.energy_enabled",
         "rationale": "L’énergie n’appartient pas au contrat courant.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": false
+        "value": false,
+        "truth_status": "design_decision"
       },
       {
         "key": "systems.fervor_enabled",
         "rationale": "La ferveur n’appartient pas au contrat courant.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": false
+        "value": false,
+        "truth_status": "design_decision"
       },
       {
         "key": "systems.awakening_enabled",
         "rationale": "L’éveil n’appartient pas au contrat courant.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": false
+        "value": false,
+        "truth_status": "design_decision"
       },
       {
         "key": "run.first_run_room_count",
         "rationale": "La première run cible six salles.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": 6.0
+        "value": 6.0,
+        "truth_status": "design_decision"
       },
       {
         "key": "run.health_persists_between_rooms",
         "rationale": "Les PV persistants structurent la tension de la run.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": true
+        "value": true,
+        "truth_status": "design_decision"
       },
       {
         "key": "rewards.equipment_rewards_enabled",
         "rationale": "La première run propose des équipements après combat.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": true
+        "value": true,
+        "truth_status": "design_decision"
       },
       {
         "key": "rewards.room_continue_or_secure_decision_enabled",
         "rationale": "La décision continuer ou sécuriser appartient à la cible de conception.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": true
+        "value": true,
+        "truth_status": "design_decision"
       },
       {
         "key": "observatory.mode",
         "rationale": "Observatory lit un export statique versionné.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": "static_versioned_snapshot"
+        "value": "static_versioned_snapshot",
+        "truth_status": "design_decision"
       },
       {
         "key": "observatory.realtime_reporting_enabled",
         "rationale": "La V0 n’exécute ni télémétrie ni reporting temps réel.",
         "source": "Mission Observatory — reconstruction de la fondation",
         "status": "validated",
-        "value": false
+        "value": false,
+        "truth_status": "design_decision"
       }
     ]
   },
+  "runtime_facts": [
+    {
+      "key": "combat.damage_mitigation_formula",
+      "value": {
+        "K": 100.0,
+        "negative_defense": "defense / (K - defense)",
+        "non_negative_defense": "defense / (defense + K)"
+      },
+      "truth_status": "verified",
+      "source_paths": [
+        "res://core/damage_resolver.gd"
+      ],
+      "evidence": "Formule publique DamageResolver.mitigation avec constante runtime K.",
+      "notes": "Les résistances élémentaires sont appliquées avant la mitigation de catégorie."
+    },
+    {
+      "key": "content.production_classification",
+      "value": null,
+      "truth_status": "non_certified",
+      "source_paths": [
+        "res://data"
+      ],
+      "evidence": "Aucun champ explicite DEBUG, PLACEHOLDER, CHEAT ou TOOL n’a été identifié sur les ressources exportées.",
+      "notes": "Ne pas déduire une classification depuis les dégâts ou le nom d’une ressource."
+    },
+    {
+      "key": "progression.cap_per_discipline_per_combat",
+      "value": 5,
+      "truth_status": "verified",
+      "source_paths": [
+        "res://characters/progression/character_progression_service.gd"
+      ],
+      "evidence": "Constante runtime lue directement et appliquée avant chaque attribution.",
+      "notes": "Plafond indexé par character_id et discipline_id."
+    },
+    {
+      "key": "progression.cap_reset_semantics",
+      "value": "begin_combat_clears_combat_xp_and_activation_awards",
+      "truth_status": "observed",
+      "source_paths": [
+        "res://characters/progression/character_progression_service.gd",
+        "res://core/game_manager.gd"
+      ],
+      "evidence": "begin_combat vide les deux dictionnaires ; GameManager l’appelle au début du combat.",
+      "notes": "reset_run délègue également à begin_combat."
+    },
+    {
+      "key": "progression.evolution_timing",
+      "value": "in_combat",
+      "truth_status": "observed",
+      "source_paths": [
+        "res://battle/battle.gd",
+        "res://ui/run/persistent_run_ui.gd"
+      ],
+      "evidence": "Battle traite la file d’évolution à un point sûr avant de rendre le contrôle.",
+      "notes": "Ce fait runtime concorde avec la décision de conception distincte."
+    },
+    {
+      "key": "progression.requires_effective_cast",
+      "value": true,
+      "truth_status": "observed",
+      "source_paths": [
+        "res://characters/progression/character_progression_service.gd"
+      ],
+      "evidence": "grant_cast_xp refuse les rapports sans effective_cast.",
+      "notes": "Baseline runtime observée ; ce n’est pas une cible de conception."
+    },
+    {
+      "key": "progression.same_spell_once_per_activation",
+      "value": true,
+      "truth_status": "observed",
+      "source_paths": [
+        "res://characters/progression/character_progression_service.gd"
+      ],
+      "evidence": "La clé d’attribution combine unité, activation_index et spell_id.",
+      "notes": "La restriction porte sur un même sort pendant une même activation."
+    },
+    {
+      "key": "progression.xp_per_effective_cast",
+      "value": 1,
+      "truth_status": "observed",
+      "source_paths": [
+        "res://characters/progression/character_progression_service.gd"
+      ],
+      "evidence": "CharacterProgressionService crédite la discipline avec la valeur littérale du runtime.",
+      "notes": "Baseline runtime observée ; ce n’est pas une cible de conception."
+    },
+    {
+      "key": "rewards.equipment_offer_timing",
+      "value": "after_victorious_finalized_non_final_room_exit_selection",
+      "truth_status": "observed",
+      "source_paths": [
+        "res://core/game_manager.gd",
+        "res://ui/post_combat/post_combat_screen.gd"
+      ],
+      "evidence": "can_claim_post_combat_equipment exige victoire finalisée, salle non finale et sortie sécurisée.",
+      "notes": "Une offre déjà appliquée n’est pas reproposée."
+    },
+    {
+      "key": "run.wave_scene_reload_behavior",
+      "value": "same_room_battle_scene_reloaded_between_waves",
+      "truth_status": "observed",
+      "source_paths": [
+        "res://core/game_manager.gd"
+      ],
+      "evidence": "continue_current_room_combat incrémente la vague puis recharge room.battle_scene.",
+      "notes": "La scène est rechargée ; l’état de run persistant reste dans GameManager."
+    }
+  ],
   "characters": [
     {
       "id": "elf",
@@ -7417,7 +7543,7 @@
       "id": "first_run",
       "id_source": "manifest_alias",
       "identity_stability": "derived",
-      "name": "Première run",
+      "name": "Principal",
       "source_path": "res://data/runs/first_run.tres",
       "default_seed": 1337,
       "target_duration_minutes": 30,
@@ -7432,6 +7558,13 @@
         "first_run.room.06"
       ],
       "authored_room_count": 6,
+      "authored_wave_profile_count": 60,
+      "selected_default_seed_wave_profile_count": 37,
+      "minimum_played_wave_profile_count": 18,
+      "maximum_played_wave_profile_count": 60,
+      "selected_health_multiplier_max": 3.6,
+      "selected_attack_multiplier_max": 2.6,
+      "selected_reward_multiplier_max": 9.0,
       "validation_status": "valid",
       "validation_errors": []
     }
@@ -11608,6 +11741,9 @@
       "target": 6.0,
       "observed_value": 6,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Champ UnitData.max_ap des héros de production.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11616,6 +11752,9 @@
       "target": 3.0,
       "observed_value": 3,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Champ UnitData.max_mp des héros de production.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11624,6 +11763,9 @@
       "target": 4.0,
       "observed_value": 4,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Champ UnitData.active_spell_slots.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11632,6 +11774,9 @@
       "target": "static_versioned_snapshot",
       "observed_value": "static_versioned_snapshot",
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Architecture de l’exporteur versionné.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11640,6 +11785,9 @@
       "target": false,
       "observed_value": false,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucun mécanisme de reporting temps réel.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11656,6 +11804,9 @@
         "warrior"
       ],
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Manifeste et UnitData du trio de production.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11664,6 +11815,9 @@
       "target": 3.0,
       "observed_value": 3,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Nombre de UnitData chargés depuis les références de production.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11672,6 +11826,9 @@
       "target": 4.0,
       "observed_value": 4,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Références UnitData.disciplines.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11680,30 +11837,31 @@
       "target": "in_combat",
       "observed_value": null,
       "status": "not_evaluated",
+      "truth_status": "non_certified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucune preuve statique exportée.",
       "message": "La source statique actuelle ne permet pas de conclure."
     },
     {
-      "key": "progression.requires_effective_cast",
-      "target": true,
+      "key": "progression.xp_model",
+      "target": null,
       "observed_value": null,
-      "status": "not_evaluated",
+      "status": "unknown",
+      "truth_status": "non_certified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucune preuve statique exportée.",
-      "message": "La source statique actuelle ne permet pas de conclure."
-    },
-    {
-      "key": "progression.xp_per_effective_cast",
-      "target": 1.0,
-      "observed_value": null,
-      "status": "not_evaluated",
-      "evidence": "Aucune preuve statique exportée.",
-      "message": "La source statique actuelle ne permet pas de conclure."
+      "message": "La décision de conception reste explicitement inconnue."
     },
     {
       "key": "rewards.equipment_rewards_enabled",
       "target": true,
       "observed_value": true,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Catalogue filtré par first_run_equipment_reward.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11712,6 +11870,9 @@
       "target": true,
       "observed_value": null,
       "status": "not_evaluated",
+      "truth_status": "non_certified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucune preuve statique exportée.",
       "message": "La source statique actuelle ne permet pas de conclure."
     },
@@ -11720,6 +11881,9 @@
       "target": 6.0,
       "observed_value": 6,
       "status": "conform",
+      "truth_status": "verified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Taille de RunData.rooms dans first_run.tres.",
       "message": "La valeur observée correspond à la cible."
     },
@@ -11728,6 +11892,9 @@
       "target": true,
       "observed_value": null,
       "status": "not_evaluated",
+      "truth_status": "non_certified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucune preuve statique exportée.",
       "message": "La source statique actuelle ne permet pas de conclure."
     },
@@ -11736,6 +11903,9 @@
       "target": false,
       "observed_value": null,
       "status": "not_evaluated",
+      "truth_status": "non_certified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucune preuve statique exportée.",
       "message": "La source statique actuelle ne permet pas de conclure."
     },
@@ -11744,6 +11914,9 @@
       "target": false,
       "observed_value": null,
       "status": "not_evaluated",
+      "truth_status": "non_certified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucune preuve statique exportée.",
       "message": "La source statique actuelle ne permet pas de conclure."
     },
@@ -11752,6 +11925,9 @@
       "target": false,
       "observed_value": null,
       "status": "not_evaluated",
+      "truth_status": "non_certified",
+      "affected_entity_type": "",
+      "affected_entity_ids": [],
       "evidence": "Aucune preuve statique exportée.",
       "message": "La source statique actuelle ne permet pas de conclure."
     }
@@ -11761,9 +11937,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.02"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_2",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11773,9 +11955,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.03"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_3",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11785,9 +11973,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.04"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_4",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11797,9 +11991,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.05"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_5",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11809,9 +12009,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.06"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_6",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11821,9 +12027,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.07"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_7",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11833,9 +12045,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.08"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_8",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11845,9 +12063,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.09"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_9",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11857,9 +12081,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.10"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_10",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11869,9 +12099,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.02"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_2",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11881,9 +12117,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.03"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_3",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11893,9 +12135,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.04"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_4",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11905,9 +12153,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.05"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_5",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11917,9 +12171,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.06"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_6",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11929,9 +12189,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.07"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_7",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11941,9 +12207,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.08"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_8",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11953,9 +12225,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.09"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_9",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11965,9 +12243,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.10"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_10",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11977,9 +12261,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.02"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_2",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -11989,9 +12279,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.03"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_3",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12001,9 +12297,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.04"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_4",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12013,9 +12315,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.05"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_5",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12025,9 +12333,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.06"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_6",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12037,9 +12351,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.07"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_7",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12049,9 +12369,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.08"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_8",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12061,9 +12387,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.09"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_9",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12073,9 +12405,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.10"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_10",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12085,9 +12423,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.02"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_2",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12097,9 +12441,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.03"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_3",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12109,9 +12459,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.04"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_4",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12121,9 +12477,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.05"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_5",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12133,9 +12495,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.06"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_6",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12145,9 +12513,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.07"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_7",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12157,9 +12531,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.08"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_8",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12169,9 +12549,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.09"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_9",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12181,9 +12567,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.10"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_10",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12193,9 +12585,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.02"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_2",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12205,9 +12603,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.03"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_3",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12217,9 +12621,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.04"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_4",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12229,9 +12639,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.05"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_5",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12241,9 +12657,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.06"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_6",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12253,9 +12675,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.07"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_7",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12265,9 +12693,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.08"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_8",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12277,9 +12711,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.09"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_9",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12289,9 +12729,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.10"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_10",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12301,9 +12747,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.02"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_2",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12313,9 +12765,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.03"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_3",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12325,9 +12783,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.04"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_4",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12337,9 +12801,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.05"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_5",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12349,9 +12819,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.06"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_6",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12361,9 +12837,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.07"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_7",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12373,9 +12855,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.08"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_8",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12385,9 +12873,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.09"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_9",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12397,9 +12891,15 @@
       "rule_id": "WAVE.ATTACK_MULTIPLIER_NO_ACTIVE_DAMAGE_SOURCE",
       "severity": "warning",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.10"
+      ],
       "message": "Aucune source de degats active ne lit attack_power dans ce roster.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_10",
       "evidence": "Battle applique le modificateur a Unit.attack_power ; les attaques de base lisent Unit.get_attack(), tandis que SpellCaster lit Spell.damage. Attaque de base active dans le roster : false ; sort de degats present : true.",
@@ -12409,9 +12909,15 @@
       "rule_id": "CONTRACT.NOT_EVALUATED",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "contract",
       "entity_type": "contract_check",
       "entity_id": "progression.evolution_timing",
+      "affected_entity_type": "contract_check",
+      "affected_entity_ids": [
+        "progression.evolution_timing"
+      ],
       "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
       "source_path": "docs/observatory/design_contract.json",
       "evidence": "Aucune preuve statique exportée.",
@@ -12421,33 +12927,15 @@
       "rule_id": "CONTRACT.NOT_EVALUATED",
       "severity": "info",
       "status": "open",
-      "domain": "contract",
-      "entity_type": "contract_check",
-      "entity_id": "progression.requires_effective_cast",
-      "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
-      "source_path": "docs/observatory/design_contract.json",
-      "evidence": "Aucune preuve statique exportée.",
-      "suggested_action": "Ajouter une preuve statique autoritaire avant de conclure."
-    },
-    {
-      "rule_id": "CONTRACT.NOT_EVALUATED",
-      "severity": "info",
-      "status": "open",
-      "domain": "contract",
-      "entity_type": "contract_check",
-      "entity_id": "progression.xp_per_effective_cast",
-      "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
-      "source_path": "docs/observatory/design_contract.json",
-      "evidence": "Aucune preuve statique exportée.",
-      "suggested_action": "Ajouter une preuve statique autoritaire avant de conclure."
-    },
-    {
-      "rule_id": "CONTRACT.NOT_EVALUATED",
-      "severity": "info",
-      "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "contract",
       "entity_type": "contract_check",
       "entity_id": "rewards.room_continue_or_secure_decision_enabled",
+      "affected_entity_type": "contract_check",
+      "affected_entity_ids": [
+        "rewards.room_continue_or_secure_decision_enabled"
+      ],
       "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
       "source_path": "docs/observatory/design_contract.json",
       "evidence": "Aucune preuve statique exportée.",
@@ -12457,9 +12945,15 @@
       "rule_id": "CONTRACT.NOT_EVALUATED",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "contract",
       "entity_type": "contract_check",
       "entity_id": "run.health_persists_between_rooms",
+      "affected_entity_type": "contract_check",
+      "affected_entity_ids": [
+        "run.health_persists_between_rooms"
+      ],
       "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
       "source_path": "docs/observatory/design_contract.json",
       "evidence": "Aucune preuve statique exportée.",
@@ -12469,9 +12963,15 @@
       "rule_id": "CONTRACT.NOT_EVALUATED",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "contract",
       "entity_type": "contract_check",
       "entity_id": "systems.awakening_enabled",
+      "affected_entity_type": "contract_check",
+      "affected_entity_ids": [
+        "systems.awakening_enabled"
+      ],
       "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
       "source_path": "docs/observatory/design_contract.json",
       "evidence": "Aucune preuve statique exportée.",
@@ -12481,9 +12981,15 @@
       "rule_id": "CONTRACT.NOT_EVALUATED",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "contract",
       "entity_type": "contract_check",
       "entity_id": "systems.energy_enabled",
+      "affected_entity_type": "contract_check",
+      "affected_entity_ids": [
+        "systems.energy_enabled"
+      ],
       "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
       "source_path": "docs/observatory/design_contract.json",
       "evidence": "Aucune preuve statique exportée.",
@@ -12493,9 +12999,15 @@
       "rule_id": "CONTRACT.NOT_EVALUATED",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "contract",
       "entity_type": "contract_check",
       "entity_id": "systems.fervor_enabled",
+      "affected_entity_type": "contract_check",
+      "affected_entity_ids": [
+        "systems.fervor_enabled"
+      ],
       "message": "Cette cible du contrat n’est pas évaluée automatiquement.",
       "source_path": "docs/observatory/design_contract.json",
       "evidence": "Aucune preuve statique exportée.",
@@ -12505,9 +13017,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "rooms",
       "entity_type": "room",
       "entity_id": "first_run.room.01",
+      "affected_entity_type": "room",
+      "affected_entity_ids": [
+        "first_run.room.01"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12517,9 +13035,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "rooms",
       "entity_type": "room",
       "entity_id": "first_run.room.02",
+      "affected_entity_type": "room",
+      "affected_entity_ids": [
+        "first_run.room.02"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12529,9 +13053,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "rooms",
       "entity_type": "room",
       "entity_id": "first_run.room.03",
+      "affected_entity_type": "room",
+      "affected_entity_ids": [
+        "first_run.room.03"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12541,9 +13071,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "rooms",
       "entity_type": "room",
       "entity_id": "first_run.room.04",
+      "affected_entity_type": "room",
+      "affected_entity_ids": [
+        "first_run.room.04"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12553,9 +13089,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "rooms",
       "entity_type": "room",
       "entity_id": "first_run.room.05",
+      "affected_entity_type": "room",
+      "affected_entity_ids": [
+        "first_run.room.05"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12565,9 +13107,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "rooms",
       "entity_type": "room",
       "entity_id": "first_run.room.06",
+      "affected_entity_type": "room",
+      "affected_entity_ids": [
+        "first_run.room.06"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12577,9 +13125,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "runs",
       "entity_type": "run",
       "entity_id": "first_run",
+      "affected_entity_type": "run",
+      "affected_entity_ids": [
+        "first_run"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/runs/first_run.tres",
       "evidence": "id_source=manifest_alias ; identity_stability=derived.",
@@ -12589,9 +13143,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.01",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.01"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_1",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12601,9 +13161,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.02"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_2",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12613,9 +13179,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.03"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_3",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12625,9 +13197,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.04"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_4",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12637,9 +13215,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.05"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_5",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12649,9 +13233,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.06"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_6",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12661,9 +13251,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.07"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_7",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12673,9 +13269,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.08"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_8",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12685,9 +13287,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.09"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_9",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12697,9 +13305,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.01.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.01.wave.10"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_01.tres::Resource_wave_10",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12709,9 +13323,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.01",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.01"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_1",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12721,9 +13341,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.02"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_2",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12733,9 +13359,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.03"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_3",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12745,9 +13377,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.04"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_4",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12757,9 +13395,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.05"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_5",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12769,9 +13413,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.06"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_6",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12781,9 +13431,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.07"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_7",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12793,9 +13449,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.08"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_8",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12805,9 +13467,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.09"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_9",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12817,9 +13485,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.02.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.02.wave.10"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_02.tres::Resource_wave_10",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12829,9 +13503,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.01",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.01"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_1",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12841,9 +13521,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.02"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_2",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12853,9 +13539,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.03"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_3",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12865,9 +13557,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.04"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_4",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12877,9 +13575,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.05"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_5",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12889,9 +13593,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.06"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_6",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12901,9 +13611,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.07"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_7",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12913,9 +13629,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.08"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_8",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12925,9 +13647,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.09"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_9",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12937,9 +13665,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.03.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.03.wave.10"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_03.tres::Resource_wave_10",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12949,9 +13683,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.01",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.01"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_1",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12961,9 +13701,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.02"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_2",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12973,9 +13719,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.03"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_3",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12985,9 +13737,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.04"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_4",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -12997,9 +13755,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.05"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_5",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13009,9 +13773,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.06"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_6",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13021,9 +13791,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.07"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_7",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13033,9 +13809,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.08"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_8",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13045,9 +13827,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.09"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_9",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13057,9 +13845,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.04.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.04.wave.10"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/first_run_room_04_boss.tres::Resource_wave_10",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13069,9 +13863,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.01",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.01"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_1",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13081,9 +13881,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.02"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_2",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13093,9 +13899,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.03"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_3",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13105,9 +13917,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.04"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_4",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13117,9 +13935,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.05"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_5",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13129,9 +13953,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.06"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_6",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13141,9 +13971,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.07"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_7",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13153,9 +13989,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.08"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_8",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13165,9 +14007,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.09"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_9",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13177,9 +14025,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.05.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.05.wave.10"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_05_volcano.tres::Resource_wave_10",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13189,9 +14043,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.01",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.01"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_1",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13201,9 +14061,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.02",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.02"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_2",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13213,9 +14079,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.03",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.03"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_3",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13225,9 +14097,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.04",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.04"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_4",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13237,9 +14115,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.05",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.05"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_5",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13249,9 +14133,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.06",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.06"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_6",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13261,9 +14151,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.07",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.07"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_7",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13273,9 +14169,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.08",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.08"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_8",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13285,9 +14187,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.09",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.09"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_9",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
@@ -13297,9 +14205,15 @@
       "rule_id": "IDENTITY.DERIVED_OBSERVATORY_ID",
       "severity": "info",
       "status": "open",
+      "truth_status": "verified",
+      "suggested_action_truth_status": "recommendation",
       "domain": "waves",
       "entity_type": "wave",
       "entity_id": "first_run.room.06.wave.10",
+      "affected_entity_type": "wave",
+      "affected_entity_ids": [
+        "first_run.room.06.wave.10"
+      ],
       "message": "L'identifiant est derive par Observatory et n'existe pas dans le jeu.",
       "source_path": "res://data/rooms/room_06_space.tres::Resource_wave_10",
       "evidence": "id_source=ordered_parent_index ; identity_stability=derived.",
