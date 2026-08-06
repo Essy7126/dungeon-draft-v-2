@@ -164,6 +164,11 @@ describe('pages Observatory', () => {
     expect(screen.getByText('Profils sélectionnés par la seed')).toBeInTheDocument();
   });
 
+  it('rend un état explicite pour une run inconnue', () => {
+    renderPage(<RunPage />, '/runs/inconnue', '/runs/:runId');
+    expect(screen.getByRole('heading', { name: 'Run introuvable' })).toBeInTheDocument();
+  });
+
   it('affiche les vagues, le roster et les données runtime de la salle', () => {
     renderPage(<RoomDetailPage />, '/rooms/first_run.room.01', '/rooms/:roomId');
     expect(screen.getByRole('heading', { name: 'Salle 1 - Pont ancien' })).toBeInTheDocument();

@@ -4,13 +4,15 @@
 - Branche : `feature/observatory-live-v1-2`
 - Snapshot : contrat 3.0, provenance Git générée depuis le checkout courant
 
-Application React statique et en lecture seule pour explorer le snapshot de conception de Dungeon Draft. Elle ne contient ni backend, ni authentification, ni télémétrie, ni déploiement.
+Application React statique et en lecture seule pour explorer le snapshot de conception de Dungeon Draft. Elle ne contient ni backend d’écriture, ni authentification, ni télémétrie.
 
 ## Source, provenance et fraîcheur
 
 La source unique est `public/data/latest.json`. Le schéma autoritaire reste `../tools/observatory/schemas/observatory_snapshot.schema.json` : `npm run sync:schema` en crée une copie publique générée et ignorée par Git.
 
 `scripts/generate-build-meta.mjs` compare localement le commit source du snapshot à `HEAD`, puis à `origin/main` si cette référence existe. Les chemins exclusivement Observatory sont exclus. Le fichier ignoré `public/generated/build_meta.json` alimente l’indicateur global : courant, en retard, divergent ou inconnu. Le navigateur ne contacte aucune API GitHub.
+
+Sur le serveur LAN, `__observatory/status.json` alimente un second indicateur : release active, commit détecté, dernier succès et dernier échec. En preview Vite ou si l’endpoint est absent, le frontend affiche explicitement « statut LAN indisponible » sans bloquer la consultation du snapshot.
 
 Le frontend ne régénère jamais `latest.json`. Pour mettre les données à jour, exécuter l’export Godot depuis un worktree propre à la racine du dépôt :
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FreshnessIndicator } from './FreshnessIndicator';
+import { LiveStatusIndicator } from './LiveStatusIndicator';
 
 const navigation = [
   ['Vue globale', '/overview'],
@@ -24,7 +25,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="eyebrow">Outil de conception</p>
           <p className="brand-title">Dungeon Draft Observatory</p>
         </div>
-        <FreshnessIndicator />
+        <div className="topbar-statuses">
+          <LiveStatusIndicator />
+          <FreshnessIndicator />
+        </div>
       </header>
       <nav className="sidebar" aria-label="Navigation principale">
         <p className="nav-label">Explorer</p>

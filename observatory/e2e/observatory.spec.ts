@@ -20,7 +20,7 @@ function graph(): {
   spell: Spell;
   enemySpell: EnemySpell;
 } {
-  const run = snapshot.runs[0];
+  const run = snapshot.runs.find((entry) => entry.id === snapshot.primary_run_id) ?? snapshot.runs[0];
   const room = snapshot.rooms.find((entry) => entry.id === run.room_ids[0]) ?? snapshot.rooms[0];
   const encounter = snapshot.encounters.find((entry) => entry.id === room.default_encounter_id)
     ?? snapshot.encounters.find((entry) => entry.room_ids.includes(room.id))
@@ -62,7 +62,9 @@ test('toutes les routes principales lisent le snapshot réel sans écran blanc',
   const { run, room, enemy, spell } = graph();
   const targets = [
     ['overview', 'État du jeu exporté'],
+    ['runs', 'Runs'],
     ['run', run.name],
+    [`runs/${run.id}`, run.name],
     [`rooms/${room.id}`, room.name],
     ['enemies', 'Ennemis'],
     [`enemies/${enemy.id}`, enemy.name],
@@ -78,6 +80,52 @@ test('toutes les routes principales lisent le snapshot réel sans écran blanc',
     ['audit', 'Contrat et audits'],
   ] as const;
   for (const [route, heading] of targets) await open(page, route, heading);
+});
+
+test('sépare la run principale et la run de test', async ({ page }) => {
+  const production = snapshot.runs.find((run) => run.run_kind === 'production' && run.is_primary);
+  const testRun = snapshot.runs.find((run) => run.run_kind === 'test');
+  expect(production).toBeTruthy();
+  expect(testRun).toBeTruthy();
+  if (!production || !testRun) return;
+
+  await open(page, 'run', production.name);
+  await expect(page).toHaveURL(new RegExp(`#/runs/${production.id}$`));
+  await expect(page.getByText('Aucun profil de vague.')).toBeVisible();
+  await expect(page.getByText('Profils sélectionnés par la seed')).toHaveCount(0);
+
+  await open(page, `runs/${testRun.id}`, testRun.name);
+  await expect(page.getByText(/Outil de test/)).toBeVisible();
+  await expect(page.getByText('Profils sélectionnés par la seed')).toBeVisible();
+  const testRoom = snapshot.rooms.find((room) => room.run_id === testRun.id);
+  expect(testRoom).toBeTruthy();
+  if (testRoom) await open(page, `rooms/${testRoom.id}`, testRoom.name);
+});
+
+test('affiche le statut LAN et son dernier échec', async ({ page }) => {
+  const production = snapshot.runs.find((run) => run.id === snapshot.primary_run_id) ?? snapshot.runs[0];
+  await page.route('**/__observatory/status.json', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({
+      active_sha: production.source_path ? snapshot.meta.source_game_commit : '',
+      detected_sha: 'f'.repeat(40),
+      last_success_at_utc: '2026-08-06T10:00:00.000Z',
+      last_failure_at_utc: '2026-08-06T10:05:00.000Z',
+      update_status: 'update_failed',
+      message: 'Validation candidate échouée ; release valide conservée.',
+    }),
+  }));
+  await open(page, 'overview', 'État du jeu exporté');
+  await expect(page.getByText('Mise à jour LAN échouée')).toBeVisible();
+  await page.getByText('Mise à jour LAN échouée').click();
+  await expect(page.getByText(/release valide conservée/)).toBeVisible();
+});
+
+test('affiche le fallback lorsque le statut LAN est absent', async ({ page }) => {
+  await page.route('**/__observatory/status.json', (route) => route.fulfill({ status: 404, body: '' }));
+  await open(page, 'overview', 'État du jeu exporté');
+  await expect(page.getByText('Statut LAN indisponible')).toBeVisible();
 });
 
 test('navigation de la run à une salle puis aux ennemis', async ({ page }) => {
@@ -254,6 +302,7 @@ test('audit responsive à 390 px', async ({ page }) => {
 
 for (const target of [
   { route: 'overview', heading: 'État du jeu exporté' },
+  { route: 'runs', heading: 'Runs' },
   { route: 'run', heading: 'run' },
   { route: 'characters', heading: 'Personnages' },
   { route: 'enemies', heading: 'Ennemis' },
@@ -266,6 +315,15 @@ for (const target of [
     expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact ?? ''))).toEqual([]);
   });
 }
+
+test('aucune violation Axe sérieuse sur la run de test', async ({ page }) => {
+  const testRun = snapshot.runs.find((run) => run.run_kind === 'test');
+  expect(testRun).toBeTruthy();
+  if (!testRun) return;
+  await open(page, `runs/${testRun.id}`, testRun.name);
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact ?? ''))).toEqual([]);
+});
 
 test('aucune violation Axe sérieuse sur une salle et un sort', async ({ page }) => {
   const { room, spell } = graph();

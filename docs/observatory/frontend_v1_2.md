@@ -25,3 +25,11 @@ déterministe (`snapshot_affecting`, `possibly_affecting`, `non_affecting` ou
 `documentation_only`) dérivée des racines du manifeste et de préfixes
 explicites. Le libellé utilisateur parle de « chemins hors Observatory
 modifiés » et ne prétend pas déduire leur effet fonctionnel.
+
+## Statut LAN
+
+Le frontend interroge l’endpoint local `__observatory/status.json` toutes les
+30 secondes. Il distingue `current`, `updating`, `update_failed` et `unknown`,
+montre toujours le SHA de la release encore active en cas d’échec, et n’expose
+aucun chemin local. En l’absence d’endpoint (build statique, Vite ou serveur
+indisponible), un fallback explicite reste non bloquant.

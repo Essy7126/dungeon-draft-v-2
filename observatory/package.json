@@ -18,6 +18,7 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:automation:server": "node --test ../tools/observatory/live/tests/observatory-lan-server.test.mjs",
     "test:watch": "vitest",
     "build": "npm run sync:schema && npm run validate:data && vite build",
     "preview": "vite preview",
