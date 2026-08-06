@@ -135,7 +135,8 @@ static func apply_reimport(
 		arena: ArenaDefinition,
 		directory: String,
 		destination_path: String,
-		image_file := "background.png"
+		image_file := "background.png",
+		hybrid_floor_policy := -1
 	) -> Dictionary:
 	var inspection := inspect_reimport(arena, directory, image_file)
 	if not inspection.get("ok", false):
@@ -169,6 +170,15 @@ static func apply_reimport(
 			) == OK:
 			arena.occlusion_mask_path = occlusion_destination
 	arena.visual_mode = ArenaDefinition.VisualMode.HYBRID
+	if arena.modular_visual_profile == null:
+		arena.modular_visual_profile = ArenaModularVisualProfile.new()
+		arena.modular_visual_profile.theme_id = arena.theme_id
+	if hybrid_floor_policy >= ArenaModularVisualProfile.HybridFloorPolicy.NONE:
+		arena.modular_visual_profile.hybrid_floor_policy = clampi(
+			hybrid_floor_policy,
+			ArenaModularVisualProfile.HybridFloorPolicy.NONE,
+			ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
+		)
 	return inspection.merged({"destination_path": destination_path}, true)
 
 

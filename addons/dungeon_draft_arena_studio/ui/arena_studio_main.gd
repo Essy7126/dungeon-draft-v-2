@@ -68,6 +68,8 @@ var dynamic_terrain_option: OptionButton
 var dynamic_wall_option: OptionButton
 var dynamic_special_option: OptionButton
 var dynamic_document_label: Label
+var hybrid_floor_policy_panel: VBoxContainer
+var hybrid_floor_policy_option: OptionButton
 var dynamic_width_spin: SpinBox
 var dynamic_height_spin: SpinBox
 var verification_option: OptionButton
@@ -102,6 +104,7 @@ var image_dialog: FileDialog
 var open_dialog: FileDialog
 var art_manifest_dialog: FileDialog
 var art_reimport_dialog: ConfirmationDialog
+var art_floor_policy_option: OptionButton
 var _pending_art_directory := ""
 var production_dialog: ConfirmationDialog
 var production_tabs: TabContainer
@@ -511,6 +514,23 @@ func _build_dynamic_palette() -> VBoxContainer:
 	dynamic_document_label = Label.new()
 	dynamic_document_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(dynamic_document_label)
+	hybrid_floor_policy_panel = VBoxContainer.new()
+	hybrid_floor_policy_panel.name = "HybridFloorPolicyPanel"
+	hybrid_floor_policy_panel.add_child(_section_label("SOL HYBRIDE"))
+	hybrid_floor_policy_option = OptionButton.new()
+	hybrid_floor_policy_option.name = "HybridFloorPolicyOption"
+	hybrid_floor_policy_option.tooltip_text = (
+		"Choisit quelles dalles tactiques restent au-dessus du décor. "
+		+ "Toutes les dalles tactiques inclut normal/stone avec stone.png."
+	)
+	_populate_hybrid_floor_policy_options(hybrid_floor_policy_option)
+	hybrid_floor_policy_option.item_selected.connect(_on_hybrid_floor_policy_selected)
+	hybrid_floor_policy_panel.add_child(hybrid_floor_policy_option)
+	var floor_help := Label.new()
+	floor_help.text = "Le décor reste en arrière-plan ; cette option ne change pas le gameplay."
+	floor_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hybrid_floor_policy_panel.add_child(floor_help)
+	box.add_child(hybrid_floor_policy_panel)
 	var terrain_button := Button.new()
 	terrain_button.text = "Terrain"
 	terrain_button.tooltip_text = "Peindre le terrain — une action Undo par trait"
@@ -961,6 +981,17 @@ func _build_dialogs() -> void:
 	art_reimport_dialog.ok_button_text = "Attacher sans recalibrer"
 	art_reimport_dialog.cancel_button_text = "Annuler"
 	art_reimport_dialog.confirmed.connect(_apply_art_reimport)
+	var art_policy_box := VBoxContainer.new()
+	art_policy_box.add_child(_section_label("DALLES AU-DESSUS DU DÉCOR"))
+	art_floor_policy_option = OptionButton.new()
+	art_floor_policy_option.name = "ArtFloorPolicyOption"
+	art_floor_policy_option.tooltip_text = (
+		"Toutes les dalles tactiques conserve notamment la pierre normale visible "
+		+ "au-dessus du background importé."
+	)
+	_populate_hybrid_floor_policy_options(art_floor_policy_option)
+	art_policy_box.add_child(art_floor_policy_option)
+	art_reimport_dialog.add_child(art_policy_box)
 	add_child(art_reimport_dialog)
 
 	restore_delete_dialog = ConfirmationDialog.new()
@@ -981,17 +1012,23 @@ func _build_painted_dynamic_dialog() -> void:
 	painted_dynamic_dialog.title = "CONSTRUCTION DYNAMIQUE SUR UNE MAP PEINTE"
 	painted_dynamic_dialog.dialog_text = (
 		"Le background peint représente actuellement le sol principal.\n\n"
-		+ "Créer une working copy HYBRID conserve le fond et affiche seulement "
-		+ "les terrains différents de la pierre. Aucune ressource canonique ne sera écrite."
+		+ "Le choix historique affiche seulement les terrains différents de la pierre.\n"
+		+ "TOUTES LES DALLES TACTIQUES conserve aussi normal/stone avec le vrai asset pierre.\n\n"
+		+ "Aucune ressource canonique ne sera écrite."
 	)
-	painted_dynamic_dialog.ok_button_text = "Créer une working copy HYBRIDE — recommandé"
+	painted_dynamic_dialog.ok_button_text = "HYBRID — terrains spéciaux"
 	painted_dynamic_dialog.cancel_button_text = "Annuler"
+	painted_dynamic_dialog.add_button(
+		"HYBRID — TOUTES LES DALLES TACTIQUES", false, "hybrid_all"
+	)
 	painted_dynamic_dialog.add_button("Créer une copie MODULAIRE", false, "modular")
 	painted_dynamic_dialog.add_button("Modifier uniquement la logique", false, "logic_only")
 	painted_dynamic_dialog.confirmed.connect(_convert_painted_to_hybrid)
 	painted_dynamic_dialog.custom_action.connect(func(action):
 		painted_dynamic_dialog.hide()
-		if action == "modular":
+		if action == "hybrid_all":
+			_convert_painted_to_hybrid_all()
+		elif action == "modular":
 			_convert_painted_to_modular()
 		elif action == "logic_only":
 			_enter_painted_logic_only()
@@ -1034,11 +1071,21 @@ func _convert_painted_to_hybrid() -> void:
 	_convert_painted_working_copy(ArenaDefinition.VisualMode.HYBRID)
 
 
+func _convert_painted_to_hybrid_all() -> void:
+	_convert_painted_working_copy(
+		ArenaDefinition.VisualMode.HYBRID,
+		ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
+	)
+
+
 func _convert_painted_to_modular() -> void:
 	_convert_painted_working_copy(ArenaDefinition.VisualMode.MODULAR)
 
 
-func _convert_painted_working_copy(target_mode: int) -> void:
+func _convert_painted_working_copy(
+		target_mode: int,
+		hybrid_policy := ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+	) -> void:
 	if arena == null or edit_session == null:
 		return
 	var before := arena.to_snapshot().duplicate(true)
@@ -1047,9 +1094,7 @@ func _convert_painted_working_copy(target_mode: int) -> void:
 		arena.modular_visual_profile = ArenaModularVisualProfile.new()
 	arena.modular_visual_profile.theme_id = arena.theme_id
 	arena.modular_visual_profile.base_terrain_id = &"stone"
-	arena.modular_visual_profile.hybrid_floor_policy = (
-		ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
-	)
+	arena.modular_visual_profile.hybrid_floor_policy = hybrid_policy
 	_painted_logic_only_active = false
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	_commit_change(
@@ -1061,12 +1106,89 @@ func _convert_painted_working_copy(target_mode: int) -> void:
 	)
 	canvas.set_arena(arena)
 	_enter_dynamic_construction()
+	if target_mode == ArenaDefinition.VisualMode.HYBRID \
+			and hybrid_policy == ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED:
+		_set_status(
+			"TOUTES LES DALLES TACTIQUES : normal/stone utilisent stone.png au-dessus du décor."
+		)
 
 
 func _enter_painted_logic_only() -> void:
 	_painted_logic_only_active = true
 	canvas.set_painted_logic_only(true)
 	_enter_dynamic_construction()
+
+
+func _populate_hybrid_floor_policy_options(option: OptionButton) -> void:
+	if option == null:
+		return
+	option.clear()
+	for item in [
+		["Décor seul — aucune dalle", ArenaModularVisualProfile.HybridFloorPolicy.NONE],
+		["Terrains spéciaux — pierre masquée", ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS],
+		["TOUTES LES DALLES TACTIQUES — pierre incluse", ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED],
+	]:
+		option.add_item(item[0])
+		option.set_item_metadata(option.item_count - 1, item[1])
+
+
+func _hybrid_floor_policy_option_index(option: OptionButton, policy: int) -> int:
+	if option == null:
+		return -1
+	for index in range(option.item_count):
+		if int(option.get_item_metadata(index)) == policy:
+			return index
+	return -1
+
+
+func _hybrid_floor_policy_display_name(policy: int) -> String:
+	match policy:
+		ArenaModularVisualProfile.HybridFloorPolicy.NONE:
+			return "décor seul"
+		ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS:
+			return "terrains spéciaux — pierre masquée"
+		ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED:
+			return "TOUTES LES DALLES TACTIQUES — pierre incluse"
+	return "politique inconnue"
+
+
+func _on_hybrid_floor_policy_selected(index: int) -> void:
+	if hybrid_floor_policy_option == null or index < 0 \
+			or index >= hybrid_floor_policy_option.item_count:
+		return
+	set_hybrid_floor_policy(int(hybrid_floor_policy_option.get_item_metadata(index)))
+
+
+func set_hybrid_floor_policy(policy: int) -> bool:
+	if arena == null or edit_session == null \
+			or arena.visual_mode != ArenaDefinition.VisualMode.HYBRID:
+		return false
+	policy = clampi(
+		policy,
+		ArenaModularVisualProfile.HybridFloorPolicy.NONE,
+		ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
+	)
+	var before := arena.to_snapshot().duplicate(true)
+	var profile_was_missing := arena.modular_visual_profile == null
+	if arena.modular_visual_profile == null:
+		arena.modular_visual_profile = ArenaModularVisualProfile.new()
+		arena.modular_visual_profile.theme_id = arena.theme_id
+	if not profile_was_missing and arena.modular_visual_profile.hybrid_floor_policy == policy:
+		return true
+	arena.modular_visual_profile.hybrid_floor_policy = policy
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change(
+		"Sol hybride : %s" % _hybrid_floor_policy_display_name(policy),
+		before,
+		arena.to_snapshot()
+	)
+	_refresh_all()
+	var plan := ArenaTerrainRenderPlanService.build(arena)
+	_set_status("Sol hybride : %s • %d dalle(s) tactique(s) rendue(s)." % [
+		_hybrid_floor_policy_display_name(policy),
+		int(plan.expected_terrain_cell_count),
+	])
+	return true
 
 
 func _build_production_dialog() -> void:
@@ -2020,8 +2142,30 @@ func _show_art_reimport_dialog() -> void:
 	art_manifest_dialog.popup_centered()
 
 
+func _prepare_art_floor_policy_choice() -> void:
+	if art_floor_policy_option == null or arena == null:
+		return
+	var policy := ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+	if arena.visual_mode == ArenaDefinition.VisualMode.MODULAR:
+		# Ajouter un décor à une map entièrement modulaire conserve visuellement
+		# le sol existant par défaut, sans changer le défaut historique du profil.
+		policy = ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
+	elif arena.modular_visual_profile != null:
+		policy = arena.modular_visual_profile.hybrid_floor_policy
+	var index := _hybrid_floor_policy_option_index(art_floor_policy_option, policy)
+	if index >= 0:
+		art_floor_policy_option.select(index)
+
+
+func _selected_art_floor_policy() -> int:
+	if art_floor_policy_option == null or art_floor_policy_option.selected < 0:
+		return ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+	return int(art_floor_policy_option.get_selected_metadata())
+
+
 func _prepare_art_reimport(manifest_path: String) -> void:
 	_pending_art_directory = manifest_path.get_base_dir()
+	_prepare_art_floor_policy_choice()
 	var inspection := ArenaArtRoundTripService.inspect_reimport(
 		arena, _pending_art_directory
 	)
@@ -2043,7 +2187,8 @@ func _prepare_art_reimport(manifest_path: String) -> void:
 	art_reimport_dialog.dialog_text = (
 		"AVANT\n%s\n\nAPRÈS\n%s\n\n"
 		+ "Fingerprint, résolution, crop, grille et ancres correspondent. "
-		+ "grid_origin, axis_x et axis_y resteront strictement inchangés ; le décor sera placé sous les dalles tactiques."
+		+ "grid_origin, axis_x et axis_y resteront strictement inchangés ; "
+		+ "le décor sera placé sous les dalles tactiques choisies ci-dessous."
 	) % [arena.background_path, inspection.get("source_image", "")]
 	art_reimport_dialog.get_ok_button().disabled = false
 	art_reimport_dialog.popup_centered()
@@ -2055,7 +2200,11 @@ func _apply_art_reimport() -> void:
 	var before := arena.to_snapshot().duplicate(true)
 	var destination := "res://data/arenas/art_imports/%s/background.png" % arena.arena_id
 	var result := ArenaArtRoundTripService.apply_reimport(
-		arena, _pending_art_directory, destination
+		arena,
+		_pending_art_directory,
+		destination,
+		"background.png",
+		_selected_art_floor_policy()
 	)
 	if not result.get("ok", false):
 		_set_status("Le décor n'a pas été importé : %s" % result.get("error", "erreur"), true)
@@ -2063,7 +2212,12 @@ func _apply_art_reimport() -> void:
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	_commit_change("Réimporter le décor sans recalibrer", before, arena.to_snapshot())
 	_refresh_all()
-	_set_status("Décor réimporté sans recalibration : %s" % destination)
+	_set_status("Décor réimporté sans recalibration : %s • %s." % [
+		destination,
+		_hybrid_floor_policy_display_name(
+			arena.modular_visual_profile.hybrid_floor_policy
+		),
+	])
 
 
 func test_arena() -> void:
@@ -3374,6 +3528,20 @@ func _refresh_dynamic_palette() -> void:
 		mode_name,
 		"non enregistrée" if dirty else "enregistrée",
 	]
+	var hybrid_policy := ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+	if arena.modular_visual_profile != null:
+		hybrid_policy = arena.modular_visual_profile.hybrid_floor_policy
+	if hybrid_floor_policy_panel != null:
+		hybrid_floor_policy_panel.visible = arena.visual_mode == ArenaDefinition.VisualMode.HYBRID
+	if arena.visual_mode == ArenaDefinition.VisualMode.HYBRID:
+		dynamic_document_label.text += "\nSol hybride : %s" % (
+			_hybrid_floor_policy_display_name(hybrid_policy)
+		)
+		var policy_index := _hybrid_floor_policy_option_index(
+			hybrid_floor_policy_option, hybrid_policy
+		)
+		if policy_index >= 0:
+			hybrid_floor_policy_option.select(policy_index)
 	if _painted_logic_only_active:
 		dynamic_document_label.text += (
 			"\nATTENTION : les dalles modulaires ne seront pas rendues ; "
