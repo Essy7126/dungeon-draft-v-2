@@ -11,7 +11,6 @@ const GUIDE_STEPS := [
 ]
 
 var editor_interface = null
-var editor_undo_redo = null
 var session := SkillTreeEditSession.new()
 var heroes: Array[Dictionary] = []
 var validation_messages: Array[SkillTreeValidationMessage] = []
@@ -36,6 +35,10 @@ var status_dialog: AcceptDialog
 var confirm_dialog: ConfirmationDialog
 var character_dialog: ConfirmationDialog
 var close_dialog: ConfirmationDialog
+var draft_dialog: ConfirmationDialog
+var save_plan_dialog: SkillTreeSavePlanDialog
+var search_dialog: SkillTreeGlobalSearchDialog
+var orphan_dialog: SkillTreeOrphanDialog
 var node_dialog: ConfirmationDialog
 var node_name_edit: LineEdit
 var node_rank_spin: SpinBox
@@ -50,11 +53,15 @@ var _pending_confirm_action: Callable
 var _pending_parent_node: SkillUpgradeData = null
 var _pending_branch_rank := 2
 var _loading := false
+var _pending_draft := {}
+var _draft_timer: Timer
+var last_draft_report := {}
+var _post_save_action: Callable
+var _pending_search_result := {}
 
 
 func setup(host_editor_interface, undo_manager) -> void:
 	editor_interface = host_editor_interface
-	editor_undo_redo = undo_manager
 	session.setup(undo_manager)
 
 
@@ -65,6 +72,12 @@ func _ready() -> void:
 	production_profile = bool(workspace_state.get("production_profile", false))
 	_build_ui()
 	_connect_session()
+	_draft_timer = Timer.new()
+	_draft_timer.wait_time = 30.0
+	_draft_timer.one_shot = false
+	_draft_timer.timeout.connect(_autosave_draft)
+	add_child(_draft_timer)
+	_draft_timer.start()
 	heroes = SkillTreeCatalogService.discover_heroes()
 	_refresh_catalog()
 	var initial_path := str(workspace_state.get("character_path", ""))
@@ -75,6 +88,7 @@ func _ready() -> void:
 
 
 func request_close() -> void:
+	commit_pending_edits()
 	if not session.is_dirty():
 		prepare_for_close()
 		close_confirmed.emit()
@@ -84,9 +98,23 @@ func request_close() -> void:
 
 
 func prepare_for_close() -> void:
+	commit_pending_edits()
 	_save_graph_state()
+	if session.is_dirty():
+		last_draft_report = SkillTreeDraftService.write_draft(session)
 	workspace_state = get_state_snapshot()
 	SkillTreeUiStateService.save_state(workspace_state)
+
+
+func dispose_document() -> void:
+	if _draft_timer != null:
+		_draft_timer.stop()
+	session.release_document(false)
+
+
+func commit_pending_edits() -> void:
+	if inspector != null:
+		inspector.commit_pending_edits()
 
 
 func get_state_snapshot() -> Dictionary:
@@ -140,6 +168,7 @@ func _build_ui() -> void:
 	graph.node_creation_requested.connect(_show_node_dialog)
 	graph.nodes_deletion_requested.connect(_confirm_delete_nodes)
 	graph.node_duplication_requested.connect(func(node): session.duplicate_node(node))
+	graph.nodes_duplication_requested.connect(func(nodes): session.duplicate_nodes(nodes))
 	graph.branch_creation_requested.connect(_show_branch_dialog)
 	graph.child_creation_requested.connect(_show_child_node_dialog)
 	graph_box.add_child(graph)
@@ -195,9 +224,16 @@ func _build_toolbar() -> Control:
 	bar.add_child(document_label)
 	undo_button = _button(bar, "Annuler", "Annuler la dernière modification", _undo)
 	redo_button = _button(bar, "Rétablir", "Rétablir la modification annulée", _redo)
+	_button(bar, "Rechercher", "Recherche globale (Ctrl+F)", func():
+		search_dialog.set_catalog(heroes)
+		search_dialog.open_and_focus()
+	)
 	_button(bar, "Valider", "Expliquer les problèmes sans modifier les données", _validate)
 	_button(bar, "Tester", "Ouvrir le simulateur de progression", _test)
-	save_button = _button(bar, "Sauvegarder", "Valider puis enregistrer les vraies Resources", _save)
+	_button(bar, "Prévisualiser", "Comparer le sort via la sandbox runtime réelle", _preview_runtime)
+	_button(bar, "Analyse complète", "Énumérer les chemins et lancer les lints de conception", _run_full_analysis)
+	_button(bar, "Orphelins", "Lister et gérer les Resources devenues inaccessibles", _show_orphans)
+	save_button = _button(bar, "Sauvegarder", "Revoir le plan, puis appliquer la transaction", _request_save_review)
 	guided_toggle = CheckButton.new()
 	guided_toggle.text = "Mode guidé"
 	guided_toggle.button_pressed = guided
@@ -258,13 +294,13 @@ func _build_dialogs() -> void:
 	character_dialog.ok_button_text = "Sauvegarder puis ouvrir"
 	character_dialog.add_button("Abandonner les modifications", true, "discard")
 	character_dialog.confirmed.connect(func():
-		var result := _save()
-		if result.get("ok", false):
-			_open_character(_pending_character_path)
+		_request_save_review(_open_character.bind(_pending_character_path))
 	)
 	character_dialog.custom_action.connect(func(action):
 		if action == "discard":
 			character_dialog.hide()
+			if session.source_unit != null:
+				SkillTreeDraftService.clear_for_source(session.source_unit.resource_path)
 			_open_character(_pending_character_path)
 	)
 	add_child(character_dialog)
@@ -273,10 +309,10 @@ func _build_dialogs() -> void:
 	close_dialog.ok_button_text = "Sauvegarder et fermer"
 	close_dialog.add_button("Fermer sans sauvegarder", true, "discard")
 	close_dialog.confirmed.connect(func():
-		var result := _save()
-		if result.get("ok", false):
+		_request_save_review(func():
 			prepare_for_close()
 			close_confirmed.emit()
+		)
 	)
 	close_dialog.custom_action.connect(func(action):
 		if action == "discard":
@@ -285,6 +321,39 @@ func _build_dialogs() -> void:
 			close_confirmed.emit()
 	)
 	add_child(close_dialog)
+	draft_dialog = ConfirmationDialog.new()
+	draft_dialog.title = "Brouillon récupérable"
+	draft_dialog.ok_button_text = "Restaurer"
+	draft_dialog.add_button("Comparer", true, "compare")
+	draft_dialog.add_button("Abandonner", true, "abandon")
+	draft_dialog.confirmed.connect(_restore_pending_draft)
+	draft_dialog.custom_action.connect(func(action):
+		if action == "compare":
+			var comparison := SkillTreeDraftService.compare(_pending_draft)
+			_show_status(
+				"Comparaison du brouillon",
+				"Source modifiée depuis l'ouverture : %s\nEmpreinte source : %s\nEmpreinte brouillon : %s" % [
+					"oui" if comparison.get("source_changed", false) else "non",
+					comparison.get("source_fingerprint", "inconnue"),
+					comparison.get("draft_fingerprint", "inconnue"),
+				]
+			)
+		elif action == "abandon":
+			SkillTreeDraftService.abandon(_pending_draft)
+			_pending_draft.clear()
+			draft_dialog.hide()
+	)
+	add_child(draft_dialog)
+	save_plan_dialog = SkillTreeSavePlanDialog.new()
+	save_plan_dialog.confirmed.connect(_apply_reviewed_save)
+	save_plan_dialog.navigation_requested.connect(_navigate_to_logical_owner)
+	add_child(save_plan_dialog)
+	search_dialog = SkillTreeGlobalSearchDialog.new()
+	search_dialog.result_requested.connect(_open_search_result)
+	add_child(search_dialog)
+	orphan_dialog = SkillTreeOrphanDialog.new()
+	orphan_dialog.action_requested.connect(_handle_orphan_action)
+	add_child(orphan_dialog)
 	node_dialog = ConfirmationDialog.new()
 	node_dialog.title = "Ajouter une amélioration"
 	node_dialog.ok_button_text = "Créer l’amélioration"
@@ -354,6 +423,7 @@ func _request_character_discipline(path: String, discipline_id: StringName) -> v
 
 
 func _request_character_path(path: String) -> void:
+	commit_pending_edits()
 	if path.is_empty() or (session.source_unit != null and session.source_unit.resource_path == path):
 		return
 	if session.is_dirty():
@@ -365,6 +435,7 @@ func _request_character_path(path: String) -> void:
 
 
 func _open_character(path: String, initial := false) -> void:
+	commit_pending_edits()
 	if not ResourceLoader.exists(path):
 		_show_status("Personnage introuvable", "La Resource n’existe plus : %s" % path)
 		return
@@ -382,9 +453,12 @@ func _open_character(path: String, initial := false) -> void:
 	_pending_open_discipline_id = &""
 	status_label.text = "Personnage chargé. Choisissez une discipline ou modifiez ses caractéristiques."
 	_refresh_document()
+	_focus_pending_search_result()
+	_offer_draft(path)
 
 
 func _select_discipline(discipline_id: StringName) -> void:
+	commit_pending_edits()
 	if session.selected_discipline_id == discipline_id:
 		return
 	_save_graph_state()
@@ -406,6 +480,9 @@ func _change_property(
 	) -> void:
 	if target is DisciplineData and property_name == &"discipline_id":
 		var new_id := StringName(value)
+		if _project_id_collision("discipline", new_id):
+			_show_status("Renommage refusé", "Cet identifiant de discipline existe déjà dans un autre personnage du projet.")
+			return
 		confirm_dialog.dialog_text = "Changer cet identifiant mettra à jour toutes les références connues dans une seule action.\n\nAncien : %s\nNouveau : %s\n\nRapport :\n• 1 discipline\n• %d amélioration(s)\n• %d sort associé\n\nLes sauvegardes de runs existantes peuvent encore utiliser l’ancien identifiant." % [
 			target.discipline_id, new_id, session.all_nodes(target).size(),
 			1 if session.current_spell() != null else 0,
@@ -419,6 +496,9 @@ func _change_property(
 		return
 	if target is SkillUpgradeData and property_name == &"upgrade_id":
 		var new_node_id := StringName(value)
+		if _project_id_collision("node", new_node_id):
+			_show_status("Renommage refusé", "Cet identifiant de nœud existe déjà dans un autre personnage du projet.")
+			return
 		var prerequisite_references := 0
 		var exclusion_references := 0
 		for candidate in session.all_nodes():
@@ -444,6 +524,9 @@ func _change_property(
 		return
 	if target is Spell and property_name == &"spell_id":
 		var new_spell_id := StringName(value)
+		if _project_id_collision("spell", new_spell_id):
+			_show_status("Renommage refusé", "Cet identifiant de sort existe déjà dans un autre personnage du projet.")
+			return
 		confirm_dialog.dialog_text = "Changer cet identifiant mettra à jour toutes les améliorations qui ciblent ce sort.\n\nAncien : %s\nNouveau : %s\n\nUne sauvegarde de run existante peut encore conserver l’ancien identifiant." % [
 			target.get_effective_spell_id(), new_spell_id,
 		]
@@ -454,6 +537,9 @@ func _change_property(
 		confirm_dialog.popup_centered()
 		return
 	if target is UnitData and property_name == &"unit_id":
+		if _project_id_collision("unit", StringName(value)):
+			_show_status("Renommage refusé", "Cet identifiant de personnage existe déjà dans le projet.")
+			return
 		confirm_dialog.dialog_text = "L’identifiant du personnage peut être utilisé par les sauvegardes, les scènes, les tests et les thèmes.\n\nAncien : %s\nNouveau : %s\n\nLe Studio ne peut mettre à jour que les références contenues dans les Resources ouvertes." % [
 			target.get_effective_unit_id(), StringName(value),
 		]
@@ -649,6 +735,8 @@ func _refresh_catalog() -> void:
 		session.is_dirty()
 	)
 	catalog.set_guided(guided)
+	if search_dialog != null:
+		search_dialog.set_catalog(heroes)
 
 
 func _refresh_history() -> void:
@@ -751,6 +839,7 @@ func _focus_diagnostic(message: SkillTreeValidationMessage) -> void:
 
 
 func _validate() -> void:
+	commit_pending_edits()
 	_refresh_document()
 	bottom.current_tab = 0
 	var summary := SkillTreeEditorValidator.summary(validation_messages)
@@ -760,12 +849,94 @@ func _validate() -> void:
 
 
 func _test() -> void:
+	commit_pending_edits()
 	_refresh_document()
 	bottom.select_simulator_tab()
 	status_label.text = "Simulation isolée ouverte. Elle ne modifie aucune run réelle."
 
 
+func _preview_runtime() -> void:
+	commit_pending_edits()
+	var spell := session.current_spell()
+	if spell == null:
+		_show_status("Prévisualisation impossible", "La discipline sélectionnée ne possède pas de sort racine.")
+		return
+	var modifiers: Array[SpellModifier] = []
+	var subject := session.selected_subject
+	if subject is SkillUpgradeData:
+		for modifier in (subject as SkillUpgradeData).spell_modifiers:
+			if modifier != null:
+				modifiers.append(modifier)
+	elif subject is SpellModifier:
+		modifiers.append(subject)
+	var report := SkillTreeRuntimePreviewService.preview(spell, modifiers)
+	bottom.set_preview(report)
+	status_label.text = "Prévisualisation runtime terminée : %d scénario(s), %d modificateur(s)." % [
+		(report.get("scenarios", []) as Array).size(), modifiers.size(),
+	]
+
+
+func _run_full_analysis() -> void:
+	commit_pending_edits()
+	var discipline := session.current_discipline()
+	if discipline == null:
+		return
+	status_label.text = "Analyse complète en cours…"
+	var report := SkillTreeDesignAnalysisService.analyze(discipline)
+	bottom.set_analysis(report)
+	status_label.text = "Analyse complète terminée en %.2f ms." % (
+		float(report.get("duration_usec", 0)) / 1000.0
+	)
+
+
+func _show_orphans() -> void:
+	if session.working_unit == null:
+		return
+	var candidates: Array[Resource] = []
+	for work_value in session.source_to_work.values():
+		var work := work_value as Resource
+		if work != null:
+			candidates.append(work)
+	for resource_value in session.new_resource_paths:
+		var resource := resource_value as Resource
+		if resource != null and not candidates.has(resource):
+			candidates.append(resource)
+	var index := SkillTreeReferenceIndex.new().build(session.working_unit, candidates)
+	orphan_dialog.set_records(index.orphaned_resources())
+	orphan_dialog.popup_centered_ratio(0.78)
+
+
+func _handle_orphan_action(
+		action: StringName, record: Dictionary, confirmation_token: String
+	) -> void:
+	var resource := record.get("resource") as Resource
+	if resource == null:
+		return
+	var candidates: Array[Resource] = []
+	for work_value in session.source_to_work.values():
+		if work_value is Resource:
+			candidates.append(work_value)
+	var index := SkillTreeReferenceIndex.new().build(session.working_unit, candidates)
+	var report := {}
+	match action:
+		&"ADOPT":
+			report = SkillTreeLifecycleService.adopt_discipline(session, resource as DisciplineData)
+		&"ARCHIVE":
+			report = SkillTreeLifecycleService.archive_resource(resource, index)
+		&"DELETE":
+			report = SkillTreeLifecycleService.delete_permanently(
+				resource, index, confirmation_token
+			)
+	if report.get("ok", false):
+		orphan_dialog.hide()
+		_refresh_document()
+		status_label.text = "Opération %s terminée ; une récupération est disponible si un fichier a été retiré." % action
+	else:
+		_show_status("Opération refusée", str(report.get("error", "Erreur inconnue.")))
+
+
 func _save() -> Dictionary:
+	commit_pending_edits()
 	_save_graph_state()
 	var result := SkillTreeSaveService.save(session, editor_interface)
 	if result.get("ok", false):
@@ -779,6 +950,42 @@ func _save() -> Dictionary:
 			bottom.current_tab = 0
 		_show_status("Sauvegarde impossible", str(result.get("error", "Erreur inconnue.")))
 	return result
+
+
+func _request_save_review(post_save_action: Callable = Callable()) -> void:
+	commit_pending_edits()
+	_refresh_document()
+	if SkillTreeEditorValidator.has_errors(validation_messages):
+		bottom.current_tab = 0
+		_show_status("Sauvegarde impossible", "Corrigez les erreurs bloquantes avant de revoir le plan.")
+		return
+	_post_save_action = post_save_action
+	var plan := SkillTreeSaveTransactionService.build_plan(session)
+	if not session.is_dirty():
+		_apply_post_save_action()
+		return
+	save_plan_dialog.set_plan(plan)
+	save_plan_dialog.popup_centered_ratio(0.82)
+
+
+func _apply_reviewed_save() -> void:
+	var result := _save()
+	if result.get("ok", false):
+		_apply_post_save_action()
+
+
+func _apply_post_save_action() -> void:
+	if _post_save_action.is_valid():
+		var action := _post_save_action
+		_post_save_action = Callable()
+		action.call()
+
+
+func _navigate_to_logical_owner(owner: String) -> void:
+	if owner.begins_with("node:"):
+		graph.focus_subject(StringName(owner.trim_prefix("node:")))
+	elif owner.begins_with("discipline:"):
+		session.select_discipline(StringName(owner.trim_prefix("discipline:").get_slice("/", 0)))
 
 
 func _undo() -> void:
@@ -875,21 +1082,87 @@ func _catalog_contains_path(path: String) -> bool:
 	)
 
 
+func _project_id_collision(kind: String, value: StringName) -> bool:
+	var current_path := session.source_unit.resource_path if session.source_unit != null else ""
+	return value != &"" and SkillTreeReferenceIndex.project_id_exists(
+		heroes, kind, value, current_path
+	)
+
+
+func _open_search_result(result: Dictionary) -> void:
+	var path := str(result.get("character_path", ""))
+	var discipline_id := StringName(result.get("discipline_id", &""))
+	var current_path := session.source_unit.resource_path if session.source_unit != null else ""
+	_pending_search_result = result.duplicate(true)
+	if path == current_path:
+		if discipline_id != &"":
+			session.select_discipline(discipline_id)
+		_focus_pending_search_result()
+		return
+	_pending_open_discipline_id = discipline_id
+	_request_character_path(path)
+
+
+func _focus_pending_search_result() -> void:
+	if _pending_search_result.is_empty():
+		return
+	var node_id := StringName(_pending_search_result.get("node_id", &""))
+	var discipline_id := StringName(_pending_search_result.get("discipline_id", &""))
+	if discipline_id != &"" and session.selected_discipline_id != discipline_id:
+		session.select_discipline(discipline_id)
+	if node_id != &"":
+		var node := session.find_node(node_id)
+		if node != null:
+			session.select_subject(node)
+			graph.focus_subject(node_id)
+	_pending_search_result.clear()
+
+
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not visible or not event is InputEventKey:
 		return
 	var key := event as InputEventKey
-	if not key.pressed or key.echo or _text_control_has_focus():
+	if not key.pressed or key.echo:
 		return
-	if key.ctrl_pressed and key.keycode == KEY_S:
+	if key.ctrl_pressed and key.keycode == KEY_F:
+		search_dialog.set_catalog(heroes)
+		search_dialog.open_and_focus()
+		get_viewport().set_input_as_handled()
+	elif key.ctrl_pressed and key.keycode == KEY_S:
+		commit_pending_edits()
 		_save()
 		get_viewport().set_input_as_handled()
-	elif key.ctrl_pressed and key.keycode == KEY_Z and not key.shift_pressed:
+	elif not _text_control_has_focus() and key.ctrl_pressed \
+			and key.keycode == KEY_Z and not key.shift_pressed:
 		_undo()
 		get_viewport().set_input_as_handled()
-	elif key.ctrl_pressed and (key.keycode == KEY_Y or key.keycode == KEY_Z and key.shift_pressed):
+	elif not _text_control_has_focus() and key.ctrl_pressed \
+			and (key.keycode == KEY_Y or key.keycode == KEY_Z and key.shift_pressed):
 		_redo()
 		get_viewport().set_input_as_handled()
+
+
+func _autosave_draft() -> void:
+	if session.is_dirty():
+		last_draft_report = SkillTreeDraftService.write_draft(session)
+
+
+func _offer_draft(source_path: String) -> void:
+	_pending_draft = SkillTreeDraftService.latest_for_source(source_path)
+	if _pending_draft.is_empty():
+		return
+	draft_dialog.dialog_text = "Un brouillon non sauvegardé a été trouvé pour ce personnage.\n\nDate : %s\n\nChoisissez Restaurer, Comparer ou Abandonner. Il ne sera jamais restauré silencieusement." % _pending_draft.get("created_at", "inconnue")
+	draft_dialog.popup_centered()
+
+
+func _restore_pending_draft() -> void:
+	var result := SkillTreeDraftService.restore(session, _pending_draft)
+	if not result.get("ok", false):
+		_show_status("Restauration impossible", str(result.get("error", "Erreur inconnue.")))
+		return
+	_pending_draft.clear()
+	_refresh_document()
+	status_label.text = "Brouillon restauré dans la copie de travail ; aucune source n'a été écrite."
 
 
 func _text_control_has_focus() -> bool:

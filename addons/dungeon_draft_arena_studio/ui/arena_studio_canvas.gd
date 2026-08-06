@@ -117,6 +117,10 @@ var layer_locks := {
 
 var _texture: Texture2D = null
 var _foreground_texture: Texture2D = null
+var _terrain_entries: Dictionary = {}
+var _wall_texture_cache: Dictionary = {}
+var _brush_preview_terrain_id: StringName = &"stone"
+var painted_logic_only := false
 var _hovered := INVALID_CELL
 var _panning := false
 var _painting := false
@@ -185,6 +189,7 @@ func set_arena(value: ArenaDefinition) -> void:
 		_texture = load(arena.background_path) as Texture2D
 	if arena != null and ResourceLoader.exists(arena.foreground_path):
 		_foreground_texture = load(arena.foreground_path) as Texture2D
+	refresh_terrain_plan()
 	grid_selected = active_tool == Tool.TRANSFORM_GRID
 	if arena != null and not _custom_pivot_enabled:
 		_custom_pivot = GridTransformService.logical_grid_center(
@@ -210,6 +215,39 @@ func set_dynamic_construction_mode(value: bool) -> void:
 	dynamic_construction_mode = value
 	if value and active_tool not in [Tool.ADD_CELL, Tool.REMOVE_CELL, Tool.TERRAIN, Tool.OBSTACLE, Tool.SPAWN]:
 		set_tool(Tool.TERRAIN)
+	queue_redraw()
+
+
+func set_painted_logic_only(value: bool) -> void:
+	painted_logic_only = value
+	queue_redraw()
+
+
+func set_brush_preview_terrain(terrain_id: StringName) -> void:
+	_brush_preview_terrain_id = terrain_id
+	queue_redraw()
+
+
+func refresh_terrain_plan() -> void:
+	_terrain_entries.clear()
+	if arena == null:
+		return
+	var plan := ArenaTerrainRenderPlanService.build(arena)
+	for value in plan.entries:
+		var entry := value as Dictionary
+		_terrain_entries[entry.cell] = entry
+	queue_redraw()
+
+
+func update_terrain_cells(cells: Array[Vector2i]) -> void:
+	if arena == null:
+		return
+	for cell in cells:
+		var entry := ArenaTerrainRenderPlanService.entry_for(arena, cell)
+		if str(entry.get("error", "")) == "cell_undefined":
+			_terrain_entries.erase(cell)
+		else:
+			_terrain_entries[cell] = entry
 	queue_redraw()
 
 
@@ -1169,6 +1207,8 @@ func _draw() -> void:
 		_draw_cells()
 	if not transform_mode and not anchor_mode:
 		_draw_overlays()
+		_draw_brush_preview()
+		_draw_wall_visuals()
 	if bool(layer_visibility.get("spawns", true)) and not transform_mode and not anchor_mode \
 			and (not dynamic_construction_mode or active_tool == Tool.SPAWN):
 		_draw_spawns()
@@ -1191,16 +1231,36 @@ func _draw_cells() -> void:
 			var polygon := GridTransformService.cell_polygon(
 				cell, arena.grid_origin, arena.axis_x, arena.axis_y
 			)
+			var render_entry := _terrain_entries.get(cell, {}) as Dictionary
+			var terrain_texture := render_entry.get("texture") as Texture2D
+			if bool(render_entry.get("visible", false)) and terrain_texture != null:
+				draw_polygon(
+					polygon,
+					PackedColorArray([Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE]),
+					ArenaTileProjectionService.polygon_uv(terrain_texture),
+					terrain_texture
+				)
 			if definition != null and definition.defined:
-				var color: Color = COLORS.playable
-				if definition.border:
+				var color: Color = Color.TRANSPARENT
+				if dynamic_construction_mode and painted_logic_only:
+					color = Color(ArenaTerrainRegistry.color_for(definition.terrain_id), 0.38)
+				elif dynamic_construction_mode:
+					# Les vraies textures restent l'information principale. Seules les
+					# bordures sans identité visuelle reçoivent un voile discret ; la
+					# grille et les sélections restent des overlays séparés.
+					if definition.border and not bool(render_entry.get("visible", false)):
+						color = Color(COLORS.border, 0.18)
+				elif definition.border:
 					color = COLORS.border
 				elif not definition.playable:
 					color = COLORS.non_playable
 				elif bool(layer_visibility.get("details", true)) \
 						and arena.obstacle_at(cell) != null:
 					color = COLORS.blocked
-				draw_colored_polygon(polygon, color)
+				else:
+					color = COLORS.playable
+				if color.a > 0.0:
+					draw_colored_polygon(polygon, color)
 			if selected_cells.has(cell):
 				draw_colored_polygon(polygon, COLORS.selected)
 			if show_grid:
@@ -1223,6 +1283,59 @@ func _draw_cells() -> void:
 			),
 			Color.WHITE,
 			_native_stroke_width(2.0)
+		)
+
+
+func _draw_brush_preview() -> void:
+	if not dynamic_construction_mode or active_tool != Tool.TERRAIN \
+			or _hovered == INVALID_CELL:
+		return
+	var polygon := _polygon(_hovered)
+	if _brush_preview_terrain_id == &"void":
+		draw_colored_polygon(polygon, Color(0.02, 0.03, 0.05, 0.62))
+		_draw_outline(polygon, Color(1.0, 0.35, 0.35, 0.95), _native_stroke_width(2.5))
+		return
+	var texture := ArenaTerrainRegistry.texture_for(_brush_preview_terrain_id)
+	if texture == null:
+		return
+	draw_polygon(
+		polygon,
+		PackedColorArray([
+			Color(1, 1, 1, 0.58), Color(1, 1, 1, 0.58),
+			Color(1, 1, 1, 0.58), Color(1, 1, 1, 0.58),
+		]),
+		ArenaTileProjectionService.polygon_uv(texture),
+		texture
+	)
+	_draw_outline(polygon, Color.WHITE, _native_stroke_width(2.0))
+
+
+func _draw_wall_visuals() -> void:
+	if arena == null or not bool(layer_visibility.get("details", true)):
+		return
+	for obstacle in arena.obstacles:
+		if obstacle == null or obstacle.wall_id == &"":
+			continue
+		var entry := ArenaWallRegistry.get_entry(obstacle.wall_id)
+		var path := str(entry.get("visual", ""))
+		if path.is_empty() or not ResourceLoader.exists(path):
+			continue
+		if not _wall_texture_cache.has(path):
+			_wall_texture_cache[path] = load(path) as Texture2D
+		var texture := _wall_texture_cache.get(path) as Texture2D
+		if texture == null:
+			continue
+		var center := GridTransformService.cell_to_position(
+			obstacle.cell, arena.grid_origin, arena.axis_x, arena.axis_y
+		)
+		var width := maxf(arena.axis_x.length(), arena.axis_y.length()) * 1.18
+		var aspect := float(texture.get_height()) / maxf(float(texture.get_width()), 1.0)
+		var wall_size := Vector2(width, width * aspect)
+		var base := center + (arena.axis_x + arena.axis_y) * 0.23
+		draw_texture_rect(
+			texture,
+			Rect2(base - Vector2(wall_size.x * 0.5, wall_size.y), wall_size),
+			false
 		)
 
 

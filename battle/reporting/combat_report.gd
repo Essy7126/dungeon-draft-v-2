@@ -8,6 +8,9 @@ var started_at_msec := 0
 var completed_at_msec := 0
 var victory := false
 var finalized := false
+var room_flow_mode: StringName = &"SINGLE_ENCOUNTER"
+var combat_segments_included := 1
+## Champ historique conserve pour les consommateurs du mode WAVE_CHAIN.
 var waves_included := 1
 var character_reports: Array[CharacterCombatReport] = []
 var reward_result: Dictionary = {}
@@ -32,6 +35,8 @@ func merge_wave_report(wave_report: CombatReport) -> bool:
 	completed_at_msec = wave_report.completed_at_msec
 	victory = wave_report.victory
 	finalized = wave_report.finalized
+	room_flow_mode = wave_report.room_flow_mode
+	combat_segments_included += maxi(1, wave_report.combat_segments_included)
 	waves_included += maxi(1, wave_report.waves_included)
 	for wave_character in wave_report.character_reports:
 		if wave_character == null:
@@ -61,6 +66,9 @@ func to_dictionary() -> Dictionary:
 		"completed_at_msec": completed_at_msec,
 		"victory": victory,
 		"finalized": finalized,
+		"room_flow_mode": room_flow_mode,
+		"uses_wave_chain": room_flow_mode == &"WAVE_CHAIN",
+		"combat_segments_included": combat_segments_included,
 		"waves_included": waves_included,
 		"character_reports": characters,
 		"reward_result": reward_result.duplicate(true),

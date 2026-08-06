@@ -20,6 +20,7 @@ var validate_button: Button
 var test_button: Button
 var produce_button: Button
 var lab_transfer_button: Button
+var lab_menu_button: MenuButton
 var workspace_preset_option: OptionButton
 var preview_view_option: OptionButton
 var focus_map_button: Button
@@ -79,7 +80,7 @@ func _build_shared_history_bar() -> Control:
 	bar.add_theme_constant_override("separation", 5)
 	panel.add_child(bar)
 	studio_title_label = Label.new()
-	studio_title_label.text = "DUNGEON DRAFT STUDIO 1.2.1"
+	studio_title_label.text = "DUNGEON DRAFT STUDIO 1.3.1"
 	studio_title_label.custom_minimum_size.x = 224
 	studio_title_label.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
 	studio_title_label.add_theme_font_size_override("font_size", 16)
@@ -108,9 +109,18 @@ func _build_shared_history_bar() -> Control:
 	test_button = _global_button(bar, "Tester", _global_test, "Tester la working copy")
 	produce_button = _global_button(bar, "Produire", _global_produce, "Produire une salle prete pour la run")
 	lab_transfer_button = _global_button(
-		bar, "Lab", _global_lab_transfer,
-		"Importer le dernier transfert Dynamic Arena Lab vérifié"
+		bar, "Importer du Lab", _global_lab_transfer,
+		"Examiner puis importer un transfert Dynamic Arena Lab vérifié"
 	)
+	lab_menu_button = MenuButton.new()
+	lab_menu_button.text = "Lab ▾"
+	lab_menu_button.tooltip_text = "Actions du Lab autonome"
+	lab_menu_button.get_popup().add_item("Ouvrir le Lab autonome", 0)
+	lab_menu_button.get_popup().id_pressed.connect(func(_id):
+		if arena_studio != null:
+			arena_studio.open_standalone_lab()
+	)
+	bar.add_child(lab_menu_button)
 	skill_studio_button = _global_button(
 		bar, "Compétences", func(): skill_studio_requested.emit(),
 		"Ouvrir le Studio autonome des personnages et compétences"
@@ -242,6 +252,10 @@ func _refresh_history_controls() -> void:
 		preview_view_option.disabled = not arena_active
 	if focus_map_button != null:
 		focus_map_button.disabled = not arena_active
+	if lab_transfer_button != null and arena_studio != null:
+		var transfer_count := arena_studio.pending_lab_transfer_count()
+		lab_transfer_button.text = "Importer du Lab (%d)" % transfer_count \
+			if transfer_count > 0 else "Importer du Lab"
 
 
 func _rebuild_history_menu() -> void:
@@ -396,7 +410,7 @@ func _apply_toolbar_responsive() -> void:
 	if studio_title_label == null or detach_button == null:
 		return
 	var compact := size.x < 1500.0
-	studio_title_label.text = "DD STUDIO 1.2.1" if compact else "DUNGEON DRAFT STUDIO 1.2.1"
+	studio_title_label.text = "DD STUDIO 1.3.1" if compact else "DUNGEON DRAFT STUDIO 1.3.1"
 	studio_title_label.custom_minimum_size.x = 104 if compact else 224
 	document_label.visible = not compact
 	undo_button.text = "↶" if compact else "Annuler"
@@ -405,6 +419,8 @@ func _apply_toolbar_responsive() -> void:
 	redo_button.custom_minimum_size.x = 34 if compact else 0
 	history_button.text = "Hist. ▾" if compact else "Historique ▾"
 	skill_studio_button.text = "Comp." if compact else "Compétences"
+	lab_transfer_button.text = "Import Lab" if compact else lab_transfer_button.text
+	lab_menu_button.text = "Lab" if compact else "Lab ▾"
 	workspace_preset_option.custom_minimum_size.x = 104 if compact else 0
 	preview_view_option.custom_minimum_size.x = 72 if compact else 0
 	detach_button.text = (
@@ -442,8 +458,7 @@ func _global_produce() -> void:
 func _global_lab_transfer() -> void:
 	if arena_studio == null:
 		return
-	arena_studio.import_latest_lab_transfer()
-	arena_studio.show_dynamic_construction()
+	arena_studio.show_lab_import_dialog()
 
 
 func _on_workspace_preset_selected(index: int) -> void:

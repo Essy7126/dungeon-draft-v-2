@@ -9,12 +9,32 @@
 class_name RunData
 extends Resource
 
+enum RoomFlowMode {
+	SINGLE_ENCOUNTER = 0,
+	WAVE_CHAIN = 1,
+}
+
 @export var run_name: String = "Run"
 @export var default_seed: int = 1337
 @export_range(1, 180, 1) var target_duration_minutes: int = 30
 @export_range(1, 240, 1) var extended_duration_minutes: int = 45
-@export_range(1, 10, 1) var maximum_waves_per_room: int = 10
+@export_enum("Single Encounter", "Wave Chain") var room_flow_mode: int = (
+	RoomFlowMode.SINGLE_ENCOUNTER
+)
+@export_range(1, 10, 1) var maximum_waves_per_room: int = 1
 @export var rooms: Array[RoomData] = []
+
+
+func uses_wave_chain() -> bool:
+	return room_flow_mode == RoomFlowMode.WAVE_CHAIN
+
+
+func is_single_encounter_flow() -> bool:
+	return room_flow_mode == RoomFlowMode.SINGLE_ENCOUNTER
+
+
+func get_room_flow_mode_name() -> StringName:
+	return &"WAVE_CHAIN" if uses_wave_chain() else &"SINGLE_ENCOUNTER"
 
 
 func validation_errors() -> PackedStringArray:
@@ -25,12 +45,43 @@ func validation_errors() -> PackedStringArray:
 		errors.append("La duree etendue doit etre superieure a la duree cible.")
 	if rooms.is_empty():
 		errors.append("La run doit contenir au moins une salle.")
+	if is_single_encounter_flow() and maximum_waves_per_room != 1:
+		errors.append(
+			"Une run SINGLE_ENCOUNTER doit limiter les combats par salle a 1."
+		)
 	for room_index in range(rooms.size()):
 		var room := rooms[room_index]
 		if room == null:
 			errors.append("La salle %d est absente." % (room_index + 1))
 			continue
 		var wave_count := room.get_wave_count()
+		if is_single_encounter_flow():
+			if not room.waves.is_empty():
+				errors.append(
+					"La salle %d ne peut pas contenir de profils de vagues en mode SINGLE_ENCOUNTER." % (
+						room_index + 1
+					)
+				)
+			if room.encounter_definition == null and room.enemies.is_empty():
+				errors.append(
+					"La salle %d doit contenir une rencontre de base valide." % (
+						room_index + 1
+					)
+				)
+			elif room.encounter_definition != null \
+					and not room.encounter_definition.is_valid():
+				errors.append(
+					"La rencontre de base de la salle %d est invalide." % (
+						room_index + 1
+					)
+				)
+			if room.minimum_wave_count != 1 or room.maximum_wave_count != 1:
+				errors.append(
+					"La salle %d doit avoir une plage de combats 1-1 en mode SINGLE_ENCOUNTER." % (
+						room_index + 1
+					)
+				)
+			continue
 		if wave_count <= 0:
 			errors.append("La salle %d ne contient aucune vague." % (room_index + 1))
 		elif wave_count > maximum_waves_per_room:

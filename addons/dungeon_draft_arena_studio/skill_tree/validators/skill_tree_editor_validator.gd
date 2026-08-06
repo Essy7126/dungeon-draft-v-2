@@ -2,11 +2,13 @@
 class_name SkillTreeEditorValidator
 extends RefCounted
 
+const DEFAULT_CHARACTERIZATION_PROFILE_PATH := "res://addons/dungeon_draft_arena_studio/skill_tree/profiles/production_2026_08_05.tres"
 
 static func validate_unit(
 		unit: UnitData,
 		production_profile := false,
-		project_heroes: Array[Dictionary] = []
+		project_heroes: Array[Dictionary] = [],
+		allowed_storage_roots := PackedStringArray(["res://data/"])
 	) -> Array[SkillTreeValidationMessage]:
 	var messages: Array[SkillTreeValidationMessage] = []
 	if unit == null:
@@ -17,7 +19,7 @@ static func validate_unit(
 		))
 		return messages
 	_validate_character_stats(unit, messages)
-	_validate_storage_paths(unit, messages, {})
+	_validate_storage_paths(unit, messages, {}, allowed_storage_roots)
 	var discipline_ids := {}
 	var node_ids := {}
 	for discipline in unit.disciplines:
@@ -85,13 +87,17 @@ static func _validate_character_stats(
 static func _validate_storage_paths(
 		resource: Resource,
 		messages: Array[SkillTreeValidationMessage],
-		visited: Dictionary
+		visited: Dictionary,
+		allowed_storage_roots: PackedStringArray
 	) -> void:
 	if resource == null or visited.has(resource.get_instance_id()):
 		return
 	visited[resource.get_instance_id()] = true
+	var allowed_path := resource.resource_path.is_empty()
+	for allowed_root in allowed_storage_roots:
+		allowed_path = allowed_path or resource.resource_path.begins_with(allowed_root)
 	if not resource.resource_path.is_empty() and not resource.is_built_in() \
-			and (not resource.resource_path.begins_with("res://data/") \
+			and (not allowed_path \
 			or resource.resource_path.get_extension().to_lower() not in ["tres", "res"] \
 			or resource.resource_path.contains("..")):
 		messages.append(_error(
@@ -101,21 +107,21 @@ static func _validate_storage_paths(
 		))
 	if resource is UnitData:
 		for spell in resource.spells:
-			_validate_storage_paths(spell, messages, visited)
+			_validate_storage_paths(spell, messages, visited, allowed_storage_roots)
 		for discipline in resource.disciplines:
-			_validate_storage_paths(discipline, messages, visited)
+			_validate_storage_paths(discipline, messages, visited, allowed_storage_roots)
 	elif resource is DisciplineData:
 		for rank_data in resource.ranks:
-			_validate_storage_paths(rank_data, messages, visited)
+			_validate_storage_paths(rank_data, messages, visited, allowed_storage_roots)
 	elif resource is DisciplineRankData:
 		for node in resource.choices:
-			_validate_storage_paths(node, messages, visited)
+			_validate_storage_paths(node, messages, visited, allowed_storage_roots)
 	elif resource is SkillUpgradeData:
 		for modifier in resource.spell_modifiers:
-			_validate_storage_paths(modifier, messages, visited)
+			_validate_storage_paths(modifier, messages, visited, allowed_storage_roots)
 	elif resource is Spell:
 		for modifier in resource.modifiers:
-			_validate_storage_paths(modifier, messages, visited)
+			_validate_storage_paths(modifier, messages, visited, allowed_storage_roots)
 
 
 static func _validate_discipline(
@@ -375,29 +381,47 @@ static func _validate_production_profile(
 		discipline: DisciplineData,
 		messages: Array[SkillTreeValidationMessage]
 	) -> void:
-	var expected_choices := {1: 0, 2: 2, 3: 4, 4: 8, 5: 4}
-	var expected_thresholds := {1: 0, 2: 5, 3: 12, 4: 21, 5: 30}
-	if discipline.ranks.size() != 5:
+	var profile := ResourceLoader.load(
+		DEFAULT_CHARACTERIZATION_PROFILE_PATH,
+		"",
+		ResourceLoader.CACHE_MODE_REUSE
+	) as SkillTreeCharacterizationProfile
+	if profile == null:
 		messages.append(_warning(
-			&"production_rank_count", "Contrat de production : cinq rangs attendus",
+			&"characterization_profile_missing", "Profil de caractérisation absent",
+			"Le contrôle optionnel demandé ne peut pas être chargé.",
+			"Vérifiez la Resource du profil ; les invariants runtime restent actifs.",
+			discipline.discipline_id
+		))
+		return
+	if discipline.ranks.size() != profile.expected_rank_count:
+		messages.append(_warning(
+			&"production_rank_count", "%s : nombre de rangs différent" % profile.display_name,
 			"Cet arbre possède %d rang(s). Il reste techniquement autorisé." % discipline.ranks.size(),
 			"Ignorez cet avertissement si cette topologie est volontaire.", discipline.discipline_id
 		))
 	for rank_data in discipline.ranks:
-		if rank_data == null or not expected_choices.has(rank_data.rank):
+		if rank_data == null or rank_data.rank < 1 \
+				or rank_data.rank > profile.expected_choices.size() \
+				or rank_data.rank > profile.expected_thresholds.size():
 			continue
-		if rank_data.choices.size() != expected_choices[rank_data.rank] \
-				or rank_data.required_total_xp != expected_thresholds[rank_data.rank]:
+		var expected_choice_count := profile.expected_choices[rank_data.rank - 1]
+		var expected_threshold := profile.expected_thresholds[rank_data.rank - 1]
+		if rank_data.choices.size() != expected_choice_count \
+				or rank_data.required_total_xp != expected_threshold:
 			messages.append(_warning(
 				&"production_rank_contract", "Contrat de production différent au rang %d" % rank_data.rank,
-				"Le preset actuel attend %d choix et %d XP cumulés." % [expected_choices[rank_data.rank], expected_thresholds[rank_data.rank]],
+				"Le profil « %s » attend %d choix et %d XP cumulés." % [profile.display_name, expected_choice_count, expected_threshold],
 				"Appliquez le preset uniquement si cet arbre doit suivre le contrat actuel.",
 				discipline.discipline_id, &"required_total_xp", rank_data.rank
 			))
-	if SkillTreePathService.count_final_configurations(discipline) != 16:
+	var enumeration := SkillTreePathService.enumeration_result(discipline)
+	if not bool(enumeration.get("truncated", false)) \
+			and int(enumeration.get("count", 0)) \
+			!= profile.expected_final_configuration_count:
 		messages.append(_warning(
-			&"production_path_count", "Contrat de production : seize chemins attendus",
-			"L’arbre possède %d configuration(s) finale(s)." % SkillTreePathService.count_final_configurations(discipline),
+			&"production_path_count", "%s : nombre de chemins différent" % profile.display_name,
+			"L’arbre possède %d configuration(s) finale(s), contre %d observées par le profil." % [enumeration.get("count", 0), profile.expected_final_configuration_count],
 			"Ce contrôle est facultatif et ne bloque pas une autre topologie.", discipline.discipline_id
 		))
 

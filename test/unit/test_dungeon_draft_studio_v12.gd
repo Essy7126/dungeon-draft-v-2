@@ -83,7 +83,14 @@ func test_runtime_preview_uses_shared_structural_signature_without_game_manager(
 	preview.set_arena(source)
 	assert_true(preview.rebuild_now())
 	await get_tree().process_frame
-	assert_eq(preview.preview_signature, ArenaVisualAssembler.structural_signature(source))
+	assert_eq(
+		preview.preview_signature,
+		ArenaVisualAssembler.actual_visual_signature(preview.assembly)
+	)
+	assert_eq(
+		int(preview.preview_signature.rendered_terrain_node_count),
+		ArenaTerrainRenderPlanService.build(source).expected_terrain_cell_count
+	)
 	assert_true(preview.parity_with_runtime().ok)
 	assert_null(preview.world_root.find_child("GameManager", true, false))
 	assert_not_null(preview.world_root.find_child("SharedGridView", true, false))

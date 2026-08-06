@@ -16,6 +16,12 @@ static func validate_session(
 		))
 		return messages
 	var run := session.working_run
+	messages.append(_message(
+		StudioValidationMessage.Severity.INFO,
+		&"run_flow_mode", "Déroulement de la run",
+		str(run.get_room_flow_mode_name()),
+		{"room_flow_mode": run.get_room_flow_mode_name()}
+	))
 	if run.rooms.is_empty():
 		messages.append(_message(
 			StudioValidationMessage.Severity.ERROR,
@@ -31,7 +37,7 @@ static func validate_session(
 				{"room_index": room_index}
 			))
 			continue
-		_validate_room(messages, room, room_index, test_seed, graph)
+		_validate_room(messages, run, room, room_index, test_seed, graph)
 	var conflict := session.conflict_report()
 	if conflict.get("conflict", false):
 		messages.append(_message(
@@ -63,14 +69,17 @@ static func summary(messages: Array[StudioValidationMessage]) -> Dictionary:
 
 
 static func _validate_room(
-		messages: Array[StudioValidationMessage],
-		room: RoomData,
+	messages: Array[StudioValidationMessage],
+	run: RunData,
+	room: RoomData,
 		room_index: int,
 		test_seed: int,
 		graph: Dictionary
 	) -> void:
 	var context := {"room_index": room_index, "resource_path": room.resource_path}
-	var mode := "Vagues data-driven" if not room.waves.is_empty() \
+	var mode := "Rencontre unique (politique de run)" \
+		if run.is_single_encounter_flow() \
+		else "Vagues data-driven" if not room.waves.is_empty() \
 		else "Rencontre unique historique" if room.encounter_definition != null \
 		else "Liste d'ennemis historique" if not room.enemies.is_empty() \
 		else "Sans rencontre"
@@ -78,6 +87,32 @@ static func _validate_room(
 		StudioValidationMessage.Severity.INFO,
 		&"room_mode", "Mode de la salle", mode, context
 	))
+	if run.is_single_encounter_flow() and not room.waves.is_empty():
+		messages.append(_message(
+			StudioValidationMessage.Severity.ERROR,
+			&"single_flow_wave_profiles", "Profils de vagues interdits",
+			"Une run SINGLE_ENCOUNTER doit utiliser la rencontre de base de la salle.",
+			context
+		))
+	if run.is_single_encounter_flow() and run.maximum_waves_per_room != 1:
+		messages.append(_message(
+			StudioValidationMessage.Severity.ERROR,
+			&"single_flow_wave_cap", "Plafond de combats invalide",
+			"Le plafond d'une run SINGLE_ENCOUNTER doit etre fixe a 1.", context
+		))
+	if run.uses_wave_chain():
+		if room.minimum_wave_count > room.maximum_wave_count:
+			messages.append(_message(
+				StudioValidationMessage.Severity.ERROR,
+				&"wave_range_inverted", "Plage de vagues inversee",
+				"Le minimum ne peut pas depasser le maximum.", context
+			))
+		if room.maximum_wave_count > room.get_wave_count():
+			messages.append(_message(
+				StudioValidationMessage.Severity.ERROR,
+				&"wave_range_exceeds_profiles", "Profils de vagues insuffisants",
+				"Le maximum demande depasse les profils disponibles.", context
+			))
 	var grid := EncounterGridFactory.build_from_room(room)
 	if grid == null:
 		messages.append(_message(

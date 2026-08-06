@@ -281,8 +281,10 @@ func test_screen_runs_victory_stats_progression_and_displays_two_cards() -> void
 func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -> void:
 	GameManager.cleanup_run_state()
 	var run := RunData.new()
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
+	run.maximum_waves_per_room = 10
 	run.rooms = [
-		load("res://data/rooms/first_run_room_01.tres") as RoomData,
+		load("res://data/rooms/test_waves/first_run_room_01_waves.tres") as RoomData,
 		load("res://data/rooms/first_run_room_02.tres") as RoomData,
 	]
 	assert_true(GameManager._prepare_preconfigured_run(
@@ -338,8 +340,10 @@ func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -
 func test_push_more_button_never_builds_or_consumes_equipment_offer() -> void:
 	GameManager.cleanup_run_state()
 	var run := RunData.new()
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
+	run.maximum_waves_per_room = 10
 	run.rooms = [
-		load("res://data/rooms/first_run_room_01.tres") as RoomData,
+		load("res://data/rooms/test_waves/first_run_room_01_waves.tres") as RoomData,
 		load("res://data/rooms/first_run_room_02.tres") as RoomData,
 	]
 	assert_true(GameManager._prepare_preconfigured_run(

@@ -8,6 +8,7 @@ signal prerequisite_removal_requested(child: SkillTreeNodeData, parent_id: Strin
 signal node_creation_requested(rank: int)
 signal nodes_deletion_requested(nodes: Array[SkillUpgradeData])
 signal node_duplication_requested(node: SkillUpgradeData)
+signal nodes_duplication_requested(nodes: Array[SkillUpgradeData])
 signal branch_creation_requested(rank: int)
 signal child_creation_requested(parent: SkillUpgradeData, rank: int)
 
@@ -24,6 +25,12 @@ var _saved_positions := {}
 var _popup: PopupMenu
 var _popup_rank := 2
 var _copied_node_id: StringName = &""
+var _copied_node_ids: Array[StringName] = []
+var _pinned_positions := {}
+var show_exclusions := true
+var _legend: Label
+var last_gesture_cancelled := false
+var _connection_drag_active := false
 
 
 func _ready() -> void:
@@ -31,6 +38,8 @@ func _ready() -> void:
 	minimap_size = Vector2(210, 140)
 	show_zoom_label = true
 	show_arrange_button = false
+	snapping_enabled = true
+	snapping_distance = 16
 	panning_scheme = GraphEdit.SCROLL_PANS
 	right_disconnects = true
 	connection_lines_curvature = 0.35
@@ -38,6 +47,14 @@ func _ready() -> void:
 	connection_request.connect(_on_connection_request)
 	disconnection_request.connect(_on_disconnection_request)
 	connection_to_empty.connect(_on_connection_to_empty)
+	if has_signal("connection_drag_started"):
+		connect("connection_drag_started", func(_node, _port, _is_output):
+			_connection_drag_active = true
+		)
+	if has_signal("connection_drag_ended"):
+		connect("connection_drag_ended", func():
+			_connection_drag_active = false
+		)
 	node_selected.connect(_on_node_selected)
 	delete_nodes_request.connect(_on_delete_nodes_request)
 	copy_nodes_request.connect(_copy_selected_node)
@@ -51,8 +68,19 @@ func _ready() -> void:
 	_popup.add_item("Dupliquer le nœud sélectionné", 3)
 	_popup.add_item("Créer une branche complète…", 4)
 	_popup.add_item("Supprimer la sélection…", 5)
+	_popup.add_separator()
+	_popup.add_item("Aligner verticalement la sélection", 6)
+	_popup.add_item("Distribuer verticalement la sélection", 7)
+	_popup.add_check_item("Afficher les exclusions", 8)
+	_popup.set_item_checked(_popup.get_item_index(8), show_exclusions)
 	_popup.id_pressed.connect(_on_popup_action)
 	add_child(_popup)
+	_legend = Label.new()
+	_legend.text = "Bleu continu : prérequis  ·  Orange pointillé : exclusion  ·  R2 : lien implicite au sort racine"
+	_legend.position = Vector2(12, 12)
+	_legend.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_legend.add_theme_color_override("font_color", Color(0.88, 0.9, 0.94))
+	add_child(_legend)
 
 
 func display(
@@ -65,6 +93,7 @@ func display(
 	base_spell = p_base_spell
 	messages = p_messages
 	_saved_positions = graph_state.get("positions", {}) as Dictionary
+	_pinned_positions = graph_state.get("pinned_positions", {}) as Dictionary
 	_clear_graph()
 	if discipline == null:
 		return
@@ -80,6 +109,7 @@ func display(
 	zoom = clampf(float(graph_state.get("zoom", 1.0)), zoom_min, zoom_max)
 	var wanted_scroll := graph_state.get("scroll_offset", Vector2.ZERO) as Vector2
 	call_deferred("_apply_scroll", wanted_scroll)
+	queue_redraw()
 
 
 func get_graph_state() -> Dictionary:
@@ -93,24 +123,30 @@ func get_graph_state() -> Dictionary:
 		"scroll_offset": scroll_offset,
 		"zoom": zoom,
 		"positions": positions,
+		"pinned_positions": _pinned_positions.duplicate(true),
 	}
 
 
 func organize() -> void:
-	var rows_by_rank := {}
+	var sizes := {}
 	for child in get_children():
-		if not child is GraphNode:
-			continue
-		if child.name == ROOT_NAME:
-			child.position_offset = Vector2(30.0, 120.0)
-			continue
-		var node := resource_by_graph_name.get(child.name) as SkillUpgradeData
-		if node == null:
-			continue
-		var row := int(rows_by_rank.get(node.rank, 0))
-		child.position_offset = _automatic_position(node.rank, row)
-		rows_by_rank[node.rank] = row + 1
+		if child is GraphNode and child.name != ROOT_NAME:
+			var node := resource_by_graph_name.get(child.name) as SkillUpgradeData
+			if node != null:
+				sizes[str(node.upgrade_id)] = child.size
+	var positions := SkillTreeGraphLayoutService.layered_positions(
+		discipline, sizes, _pinned_positions
+	)
+	for child in get_children():
+		if child is GraphNode:
+			if child.name == ROOT_NAME:
+				child.position_offset = Vector2(30.0, 120.0)
+				continue
+			var node := resource_by_graph_name.get(child.name) as SkillUpgradeData
+			if node != null and positions.has(str(node.upgrade_id)):
+				child.position_offset = positions[str(node.upgrade_id)]
 	scroll_offset = Vector2.ZERO
+	queue_redraw()
 
 
 func focus_subject(subject_id: StringName) -> void:
@@ -290,6 +326,14 @@ func _on_popup_action(id: int) -> void:
 		var selected_nodes := _selected_upgrades()
 		if not selected_nodes.is_empty():
 			nodes_deletion_requested.emit(selected_nodes)
+	elif id == 6:
+		_align_selected_vertically()
+	elif id == 7:
+		_distribute_selected_vertically()
+	elif id == 8:
+		show_exclusions = not show_exclusions
+		_popup.set_item_checked(_popup.get_item_index(8), show_exclusions)
+		queue_redraw()
 
 
 func _on_connection_to_empty(
@@ -379,32 +423,56 @@ func _selected_upgrades() -> Array[SkillUpgradeData]:
 
 
 func _copy_selected_node() -> void:
-	var selected := _selected_upgrade()
-	if selected != null:
-		_copied_node_id = selected.upgrade_id
+	_copied_node_ids.clear()
+	for selected in _selected_upgrades():
+		_copied_node_ids.append(selected.upgrade_id)
+	_copied_node_id = _copied_node_ids[0] if not _copied_node_ids.is_empty() else &""
 
 
 func _paste_copied_node() -> void:
-	if _copied_node_id == &"":
+	if _copied_node_ids.is_empty():
 		return
-	var copied := resource_by_graph_name.get(
-		graph_name_by_node_id.get(_copied_node_id, &"")
-	) as SkillUpgradeData
-	if copied != null:
-		node_duplication_requested.emit(copied)
+	var copied: Array[SkillUpgradeData] = []
+	for node_id in _copied_node_ids:
+		var resource := resource_by_graph_name.get(
+			graph_name_by_node_id.get(node_id, &"")
+		) as SkillUpgradeData
+		if resource != null:
+			copied.append(resource)
+	if copied.size() == 1:
+		node_duplication_requested.emit(copied[0])
+	elif not copied.is_empty():
+		nodes_duplication_requested.emit(copied)
 
 
 func _duplicate_selected_node() -> void:
-	var selected := _selected_upgrade()
-	if selected != null:
-		node_duplication_requested.emit(selected)
+	var selected := _selected_upgrades()
+	if selected.size() == 1:
+		node_duplication_requested.emit(selected[0])
+	elif not selected.is_empty():
+		nodes_duplication_requested.emit(selected)
+
+
+func cancel_active_gesture() -> bool:
+	last_gesture_cancelled = true
+	if _connection_drag_active and has_method("force_connection_drag_end"):
+		call("force_connection_drag_end")
+	_connection_drag_active = false
+	queue_redraw()
+	return true
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not visible or not event is InputEventKey:
 		return
 	var key := event as InputEventKey
-	if not key.pressed or key.echo or not key.ctrl_pressed:
+	if not key.pressed or key.echo:
+		return
+	if key.keycode == KEY_ESCAPE:
+		cancel_active_gesture()
+		get_viewport().set_input_as_handled()
+		return
+	if not key.ctrl_pressed:
 		return
 	var selected := _selected_upgrade()
 	if key.keycode == KEY_C and selected != null:
@@ -416,3 +484,73 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	elif key.keycode == KEY_D and selected != null:
 		_duplicate_selected_node()
 		get_viewport().set_input_as_handled()
+
+
+func _draw() -> void:
+	if not show_exclusions or discipline == null:
+		return
+	var drawn := {}
+	for node in _all_nodes():
+		if not node is SkillTreeNodeData:
+			continue
+		var from_name := graph_name_by_node_id.get(node.upgrade_id, &"") as StringName
+		var from_node := get_node_or_null(NodePath(str(from_name))) as GraphNode
+		if from_node == null:
+			continue
+		for excluded_id in node.excluded_node_ids:
+			var pair := [str(node.upgrade_id), str(excluded_id)]
+			pair.sort()
+			var pair_key := "|".join(pair)
+			if drawn.has(pair_key):
+				continue
+			drawn[pair_key] = true
+			var to_name := graph_name_by_node_id.get(excluded_id, &"") as StringName
+			var to_node := get_node_or_null(NodePath(str(to_name))) as GraphNode
+			if to_node == null:
+				continue
+			draw_dashed_line(
+				from_node.position + from_node.size * 0.5,
+				to_node.position + to_node.size * 0.5,
+				Color(1.0, 0.43, 0.18, 0.9), 3.0, 10.0
+			)
+
+
+func _align_selected_vertically() -> void:
+	var selected := _selected_graph_nodes()
+	if selected.size() < 2:
+		return
+	var x := selected[0].position_offset.x
+	for node in selected:
+		node.position_offset.x = x
+		_pin(node)
+	queue_redraw()
+
+
+func _distribute_selected_vertically() -> void:
+	var selected := _selected_graph_nodes()
+	if selected.size() < 3:
+		return
+	selected.sort_custom(func(a: GraphNode, b: GraphNode):
+		return a.position_offset.y < b.position_offset.y
+	)
+	var first_y := selected[0].position_offset.y
+	var last_y := selected[-1].position_offset.y
+	var step := (last_y - first_y) / float(selected.size() - 1)
+	for index in range(selected.size()):
+		selected[index].position_offset.y = first_y + step * index
+		_pin(selected[index])
+	queue_redraw()
+
+
+func _selected_graph_nodes() -> Array[GraphNode]:
+	var result: Array[GraphNode] = []
+	for child in get_children():
+		if child is GraphNode and child.name != ROOT_NAME and child.selected:
+			result.append(child)
+	return result
+
+
+func _pin(graph_node: GraphNode) -> void:
+	var resource := resource_by_graph_name.get(graph_node.name) as SkillUpgradeData
+	if resource != null:
+		_pinned_positions[str(resource.upgrade_id)] = graph_node.position_offset

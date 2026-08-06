@@ -116,8 +116,13 @@ func test_six_encounters_have_exact_compositions_caps_and_shared_budgets() -> vo
 func test_run_default_references_the_six_real_rooms_in_order() -> void:
 	var run := load("res://data/runs/run_default.tres") as RunData
 	assert_not_null(run)
+	assert_true(run.is_single_encounter_flow())
+	assert_eq(run.maximum_waves_per_room, 1)
 	assert_eq(run.rooms.size(), 6)
 	for room_index in 6:
+		assert_true(run.rooms[room_index].waves.is_empty())
+		assert_eq(run.rooms[room_index].minimum_wave_count, 1)
+		assert_eq(run.rooms[room_index].maximum_wave_count, 1)
 		assert_same(run.rooms[room_index].encounter_definition, _encounter(room_index + 1))
 		assert_eq(run.rooms[room_index].enemies.size(), EXPECTED_CAPS[room_index] if room_index < 3 else _encounter(room_index + 1).get_initial_enemy_count())
 

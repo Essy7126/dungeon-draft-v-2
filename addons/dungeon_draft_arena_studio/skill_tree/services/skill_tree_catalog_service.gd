@@ -3,15 +3,20 @@ class_name SkillTreeCatalogService
 extends RefCounted
 
 const HERO_ROOT := "res://data/units/alliés"
+const PLAYABLE_HERO_IDS := [&"elf", &"mage", &"warrior"]
 
 
-static func discover_heroes() -> Array[Dictionary]:
+static func discover_heroes(
+		root := HERO_ROOT,
+		playable_ids: Array = PLAYABLE_HERO_IDS
+	) -> Array[Dictionary]:
 	var heroes: Array[Dictionary] = []
-	for path in _resource_files(HERO_ROOT):
+	for path in _resource_files(root):
 		var resource := ResourceLoader.load(
 			path, "", ResourceLoader.CACHE_MODE_REUSE
 		) as UnitData
-		if resource == null or resource.team != 0 or resource.disciplines.is_empty():
+		if resource == null or resource.team != 0 \
+				or not playable_ids.has(resource.get_effective_unit_id()):
 			continue
 		heroes.append({
 			"id": resource.get_effective_unit_id(),

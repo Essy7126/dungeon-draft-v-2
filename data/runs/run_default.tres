@@ -15,5 +15,6 @@ run_name = "Premiere run - Legion squelette"
 default_seed = 1337
 target_duration_minutes = 30
 extended_duration_minutes = 45
-maximum_waves_per_room = 10
+room_flow_mode = 0
+maximum_waves_per_room = 1
 rooms = Array[ExtResource("2_room_type")]([ExtResource("100_room"), ExtResource("101_room"), ExtResource("102_room"), ExtResource("103_room"), ExtResource("104_room"), ExtResource("105_room")])

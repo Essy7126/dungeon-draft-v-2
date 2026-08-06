@@ -37,6 +37,7 @@ static func copy_run(source: RunData) -> Dictionary:
 	run.default_seed = source.default_seed
 	run.target_duration_minutes = source.target_duration_minutes
 	run.extended_duration_minutes = source.extended_duration_minutes
+	run.room_flow_mode = source.room_flow_mode
 	run.maximum_waves_per_room = source.maximum_waves_per_room
 	for source_room in source.rooms:
 		var room := copy_room(source_room, encounter_copies)

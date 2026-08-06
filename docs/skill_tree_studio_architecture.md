@@ -1,88 +1,111 @@
 # Architecture du Studio des compétences
 
-## Intégration retenue
+Statut : `WORKTREE_CANDIDATE`
+Base : `94fcdc700cf576a15ee4134d9f3dee680626827a` (`main`)
+Vérifié le : 6 août 2026
 
-Le module appartient au plugin unique `dungeon_draft_arena_studio`, mais son interface
-est une fenêtre autonome créée paresseusement. Cette décision remplace la proposition
-initiale d’un troisième onglet après validation du projet : elle protège l’espace de
-travail Arènes/Rencontres et ne charge ni catalogue, ni graphe, ni simulateur tant que
-le Studio des compétences n’est pas ouvert.
+## Frontières
 
-Les deux points d’entrée — menu **Projet > Outils** et bouton **Compétences** — appellent
-le même `SkillTreeStudioWindowHost`. La fermeture libère tout le sous-arbre de Controls.
+Le module vit sous `addons/dungeon_draft_arena_studio/skill_tree/` et reste chargé à la
+demande par `SkillTreeStudioWindowHost`. Les Resources runtime demeurent l’autorité. La
+mission n’a modifié ni `SkillTreeResolver`, ni `SpellCaster`, ni les données de
+production.
 
-## Répartition des responsabilités
+## Document et historique local
 
-- `domain/skill_tree_edit_session.gd` possède la copie de travail, la sélection et les
-  actions atomiques Undo/Redo. Il ne connaît aucun Control.
-- `domain/skill_tree_validation_message.gd` représente un diagnostic français et sa
-  cible navigable.
-- `services/skill_tree_catalog_service.gd` découvre uniquement les héros jouables et
-  leurs Resources.
-- `services/skill_tree_copy_service.gd` duplique le graphe éditable en conservant
-  l’identité des références partagées.
-- `services/skill_tree_snapshot_service.gd` distingue le changement logique du contenu
-  qui appartient physiquement à chaque fichier.
-- `services/skill_tree_path_service.gd` et
-  `services/skill_tree_simulation_service.gd` interrogent `SkillTreeResolver` et
-  `DisciplineProgressState` ; aucune règle de progression n’est recodée dans l’UI.
-- `services/skill_tree_save_service.gd` valide, détecte les conflits, sauvegarde les
-  dépendances, vérifie leur relecture et restaure après échec.
-- `validators/skill_tree_editor_validator.gd` traduit l’autorité runtime et complète
-  ses diagnostics pour l’édition.
-- `ui/` contient uniquement la présentation, les gestes utilisateur et le routage des
-  intentions vers la session ou les services.
+`SkillTreeEditSession` possède une working copy et un `UndoRedo` local limité à 256
+actions. L’ouverture, le rechargement ou la libération d’un document vide explicitement
+l’historique et les tables `source_to_work`, `work_to_source`, nouveaux chemins et
+réservations. Aucun `EditorUndoRedoManager` ne reçoit une action du Studio.
 
-## Working copy et Resources partagées
+La propreté compare l’empreinte courante à l’empreinte sauvegardée : Undo après save
+redevient dirty, Redo jusqu’au snapshot sauvegardé redevient clean. Les opérations
+composées sont atomiques. `commit_pending_edits()` libère le focus des champs et ferme
+les color pickers avant validation, preview, diff, save, navigation ou fermeture.
 
-À l’ouverture, chaque `UnitData`, `Spell`, `DisciplineData`, `DisciplineRankData`,
-`SkillUpgradeData` et `SpellModifier` éditable reçoit une copie. Deux références vers la
-même Resource source pointent vers une seule copie de travail : le partage reste donc
-observable et réversible. Les textures, scènes et autres Resources non éditées restent
-partagées en lecture seule.
+`SkillTreeCopyService` préserve l’identité partagée avec une table source→copie et
+fournit des clés logiques stables (`unit`, `spell`, discipline/rang/nœud/modificateur).
+Ces clés permettent de restaurer un brouillon sur une source fraîche sans la modifier.
 
-Les dictionnaires `source_to_work` et `work_to_source` servent au plan de sauvegarde et
-à la détection des modifications externes. Une Resource choisie depuis le projet est
-elle aussi copiée avant d’être ajoutée au document.
+## Services de sûreté
 
-## Préservation embarqué/externe
+- `SkillTreeDraftService` écrit une version immuable complète plus manifeste sous
+  `user://`; un dossier n’est reconnu valide qu’après relecture.
+- `SkillTreePathReservationService` distingue FREE, réservation de session, disque,
+  cache seul, Resource reconnue, chemin dangereux et conflit de type. Les racines sont
+  injectables pour les tests.
+- `SkillTreeReferenceIndex` indexe Resources, chemins, IDs, références de Resource,
+  prérequis, exclusions, discipline/sort ciblé et partages. Renommage, suppression,
+  lifecycle, orphelins et collisions projet le consultent.
+- `SkillTreeLifecycleService` sépare DETACH_REFERENCE, ADOPT, ARCHIVE et DELETE.
+  Archive et suppression vérifient les références, créent une copie et un manifeste
+  récupérables, puis seulement retirent le fichier.
 
-Une copie externe conserve son `resource_path` dans son cache, sans être enregistrée
-dans le cache global. Une sous-resource embarquée reste sans chemin propre. Le snapshot
-de stockage développe le contenu embarqué, mais représente une dépendance externe par
-son chemin. Ainsi :
+## Plan et transaction
 
-- une discipline monolithique est réécrite lorsque l’un de ses rangs embarqués change ;
-- l’Archer sauvegarde seulement le modificateur, le nœud ou le rang externe concerné ;
-- aucune migration silencieuse n’a lieu entre les deux formats.
+`SkillTreeSavePlan`, `SkillTreeSavePlanEntry`, `SkillTreeSaveConflict` et
+`SkillTreeChangeSet` sont les contrats de revue. Une entrée porte source/cible,
+empreintes, dépendances, propriétaire logique, accessibilité, opération, changements,
+conflit, avertissements, ordre et capacité de rollback. Une Resource inaccessible
+produit DETACH_REFERENCE et ORPHANED et n’est jamais réécrite.
 
-## Undo/Redo et identifiants
+`SkillTreeSaveTransactionService` exécute :
 
-Dans Godot, la session utilise `EditorUndoRedoManager`; les tests utilisent `UndoRedo`.
-Une opération composée déclare toutes ses propriétés avant un unique `commit_action`.
-Le renommage d’une discipline met à jour la discipline, ses nœuds et son sort. Le
-renommage d’un nœud met à jour les prérequis et exclusions connus. Les libellés affichés
-restent indépendants des identifiants.
+1. validation rapide et plan ;
+2. relecture `CACHE_MODE_IGNORE_DEEP` et conflits externes ;
+3. dossier de récupération, manifeste PLANNED et working copy complète ;
+4. staging de toutes les écritures, relecture et empreintes ;
+5. backup des cibles existantes ;
+6. application ordonnée (modifier, nœud, rang, sort, discipline, héros) ;
+7. relecture profonde et comparaison ;
+8. manifeste appliqué, scan filesystem et rechargement complet du document ;
+9. manifeste COMPLETED et suppression du brouillon.
 
-## Sauvegarde transactionnelle
+Toute panne injectée ou réelle après le backup déclenche la restauration byte-for-byte
+et la suppression exclusive des nouveaux fichiers de la tentative. Le rechargement
+final fait partie de la transaction ; aucun `mark_saved()` de secours n’existe.
 
-Le plan ne contient que les Resources modifiées et encore accessibles depuis le
-personnage. Il est trié dans cet ordre : modificateurs, nœuds, rangs, sorts, disciplines,
-personnage. Avant l’écriture :
+## Propriétés et interface
 
-1. la validation technique doit être sans erreur ;
-2. chaque fichier source est relu sans cache et comparé à son état d’ouverture ;
-3. les fichiers existants sont copiés sous `user://` ;
-4. la working copy complète est enregistrée comme récupération.
+`SkillTreePropertyRegistry` classe chaque propriété sérialisée atteignable en EDITABLE,
+READ_ONLY_JUSTIFIED, HIDDEN_JUSTIFIED ou UNSUPPORTED_ERROR, avec label français,
+description, éditeur, contraintes, unité, visibilité et motif. L’audit échoue si une
+propriété n’a pas de contrat. Les listes de Resources vides utilisent leur hint de type,
+pas seulement leur contenu, pour conserver un éditeur ordonné.
 
-Après chaque écriture, la Resource est relue. Un échec restaure les sauvegardes et
-retire uniquement les nouveaux fichiers créés par cette tentative. Une réussite recharge
-le document depuis le disque et demande un rafraîchissement à `EditorFileSystem`.
+Le graphe délègue sa disposition à `SkillTreeGraphLayoutService` : rang horizontal,
+ordre vertical déterministe/barycentrique, taille réelle des cartes et positions
+épinglées. Les exclusions sont dessinées en orange pointillé. La copie multiple appelle
+une opération atomique de session qui remappe seulement les relations internes.
 
-## État d’interface et performances
+`SkillTreeGlobalSearchService` renvoie des résultats document/discipline/nœud. Les
+dialogues de plan, recherche et orphelins ne modifient pas les règles runtime.
 
-La position de fenêtre, le mode guidé, le dernier personnage et les positions du graphe
-sont stockés dans `user://`, séparément des Resources runtime. Les calculs de chemins
-sont bornés à 100 000 par le service général et à 1 000 dans le test interactif. Le
-catalogue ne parcourt que `data/units/alliés`; les Resources ennemies ne sont jamais
-chargées par ce module.
+## Validation et analyses
+
+La validation rapide traduit les invariants de `SkillTreeResolver` et les contraintes
+de stockage. Le profil `production_2026_08_05.tres` contient l’ancien snapshot
+5 rangs / seuils / distributions / 16 chemins ; il est facultatif, daté et associé à la
+base historique.
+
+`SkillTreePathService.enumeration_result()` expose count, limite, troncature, complétude,
+configurations, durée et raison. `reachability_analysis()` cherche des préfixes valides
+indépendamment de l’énumération des feuilles. `SkillTreeDesignAnalysisService` agrège
+accessibilité, dominance prudente avec preuves et capstones numériques consultatives.
+
+## Preview runtime
+
+`SkillTreeRuntimePreviewService` construit une grille, un `Pathfinder`, les effets de
+terrain, des unités temporaires et le vrai `SpellCaster`. Il exécute base et chemin sur
+des scénarios déterministes et sérialise faits, delta, trace et capacité de chaque
+modificateur. Les hooks statiques (portée et cellule libre) sont appelés directement ;
+les autres passent par la sandbox. Un type inconnu est explicitement visible dans la
+trace. Le service déclare et teste `writes_run_progression = false`.
+
+## État personnel et limites
+
+Les brouillons, archives, récupérations, position de fenêtre et layout de graphe vivent
+sous `user://`. Aucun de ces éléments n’est une Resource gameplay. Les analyses longues
+sont explicites, mais restent synchrones : l’interface affiche un état d’activité sans
+encore fournir d’annulation coopérative. Le thème hérite du projet/éditeur ; le runner
+autonome ne peut pas injecter les échelles 125 % et 150 %.

@@ -37,6 +37,8 @@ static func export_report(
 		"godot_version": Engine.get_version_info().get("string", ""),
 		"git": _git_context(),
 		"run_path": session.source_run_path,
+		"room_flow_mode": session.working_run.get_room_flow_mode_name(),
+		"uses_wave_chain": session.working_run.uses_wave_chain(),
 		"room_path": (session.source_for(session.current_room()) as Resource).resource_path \
 			if session.source_for(session.current_room()) != null else "",
 		"wave_path": wave.resource_path if wave != null else "sous-ressource",
@@ -84,6 +86,7 @@ static func _markdown(payload: Dictionary) -> String:
 
 - Verdict : **%s**
 - Run : `%s`
+- Déroulement : `%s`
 - Salle / Affrontement : %d / %d
 - Mode : %s
 - Seed de run : %s
@@ -115,6 +118,7 @@ static func _markdown(payload: Dictionary) -> String:
 """ % [
 		payload.verdict,
 		payload.run_path,
+		payload.room_flow_mode,
 		int(payload.room_index) + 1,
 		int(payload.wave_index) + 1,
 		payload.room_mode,

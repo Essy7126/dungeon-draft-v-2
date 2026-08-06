@@ -2,9 +2,18 @@
 class_name ArenaModularVisualProfile
 extends Resource
 
+enum HybridFloorPolicy {
+	NONE,
+	NON_BASE_TERRAINS,
+	ALL_DEFINED,
+}
+
 @export var theme_id: StringName = &"dynamic_default"
 @export var terrain_ids: Array[StringName] = [&"stone", &"water", &"ice", &"lava"]
 @export var wall_ids: Array[StringName] = [&"normal", &"fire", &"ice"]
+@export_enum("Aucune dalle:0", "Terrains hors base:1", "Toutes les dalles:2")
+var hybrid_floor_policy: int = HybridFloorPolicy.NON_BASE_TERRAINS
+@export var base_terrain_id: StringName = &"stone"
 @export var tile_visual_profile: ArenaVisualProfile = null
 @export var background_texture: Texture2D = null
 @export var foreground_texture: Texture2D = null
@@ -26,6 +35,8 @@ func to_dict() -> Dictionary:
 		"theme_id": str(theme_id),
 		"terrain_ids": Array(terrain_ids).map(func(value): return str(value)),
 		"wall_ids": Array(wall_ids).map(func(value): return str(value)),
+		"hybrid_floor_policy": hybrid_floor_policy,
+		"base_terrain_id": str(base_terrain_id),
 		"tile_visual_profile_path": tile_visual_profile.resource_path \
 			if tile_visual_profile != null else "",
 		"background_texture_path": background_texture.resource_path \
@@ -66,6 +77,12 @@ static func from_dict(data: Dictionary) -> ArenaModularVisualProfile:
 	value.theme_id = StringName(data.get("theme_id", "dynamic_default"))
 	value.terrain_ids.assign(data.get("terrain_ids", []))
 	value.wall_ids.assign(data.get("wall_ids", []))
+	value.hybrid_floor_policy = clampi(
+		int(data.get("hybrid_floor_policy", HybridFloorPolicy.NON_BASE_TERRAINS)),
+		HybridFloorPolicy.NONE,
+		HybridFloorPolicy.ALL_DEFINED
+	)
+	value.base_terrain_id = StringName(data.get("base_terrain_id", "stone"))
 	value.tile_visual_profile = _load_resource(
 		str(data.get("tile_visual_profile_path", "")), "ArenaVisualProfile"
 	) as ArenaVisualProfile

@@ -1,7 +1,7 @@
 extends Control
 
 const OUTPUT_ROOT := "res://artifacts/encounter_studio/captures"
-const RUN_PATH := "res://data/runs/first_run.tres"
+const RUN_PATH := "res://data/runs/fixed_trio_prototype_run.tres"
 
 var studio: EncounterStudioMain
 var resolution := Vector2i(1280, 720)
@@ -48,10 +48,10 @@ func _capture_suite() -> void:
 	await studio.analyze_seeds(100)
 	await _capture("08_analyse_100_seeds")
 
-	studio.session.select(studio.session.working_run.rooms.size() - 1, 9)
+	studio.session.select(0, 9)
 	studio._refresh_all()
 	studio.properties_tabs.current_tab = 0
-	await _capture("09_salle_finale_chefs_centurions")
+	await _capture("09_derniere_vague_salle_test")
 
 	studio.session.current_encounter().forbidden_initial_spawn_cells.append(
 		Vector2i(99, 99)

@@ -1,15 +1,21 @@
 extends GutTest
 
 const GAME_MANAGER_SCRIPT := preload("res://core/game_manager.gd")
-const FIRST_RUN := preload("res://data/runs/run_default.tres")
+const FIRST_RUN := preload("res://data/runs/fixed_trio_prototype_run.tres")
 
 
-func test_first_run_exposes_the_hidden_three_to_ten_wave_contract() -> void:
+func test_wave_run_exposes_the_hidden_three_to_ten_wave_contract() -> void:
 	assert_eq(FIRST_RUN.target_duration_minutes, 30)
 	assert_eq(FIRST_RUN.extended_duration_minutes, 45)
 	assert_eq(FIRST_RUN.maximum_waves_per_room, 10)
+	assert_true(FIRST_RUN.uses_wave_chain())
 	assert_true(FIRST_RUN.is_valid(), str(FIRST_RUN.validation_errors()))
+	var multi_wave_room_count := 0
 	for room in FIRST_RUN.rooms:
+		if room.waves.is_empty():
+			assert_eq(room.get_wave_count(), 1, room.room_name)
+			continue
+		multi_wave_room_count += 1
 		assert_eq(room.get_wave_count(), 10, room.room_name)
 		assert_eq(room.minimum_wave_count, 3, room.room_name)
 		assert_eq(room.maximum_wave_count, 10, room.room_name)
@@ -25,6 +31,7 @@ func test_first_run_exposes_the_hidden_three_to_ten_wave_contract() -> void:
 			room.get_wave(9).reward_multiplier,
 			room.get_wave(8).reward_multiplier,
 		)
+	assert_gte(multi_wave_room_count, 1)
 
 
 func test_legacy_room_keeps_its_single_encounter_contract() -> void:
@@ -78,7 +85,8 @@ func test_same_seed_produces_the_same_hidden_wave_counts() -> void:
 		second_manager.current_room_index = room_index
 		var first_count := first_manager.get_current_room_wave_count()
 		var second_count := second_manager.get_current_room_wave_count()
-		assert_between(first_count, 3, 10)
+		var room: RoomData = FIRST_RUN.rooms[room_index]
+		assert_between(first_count, room.get_minimum_wave_count(), room.get_maximum_wave_count())
 		assert_eq(second_count, first_count)
 	first_manager.cleanup_run_state()
 	second_manager.cleanup_run_state()

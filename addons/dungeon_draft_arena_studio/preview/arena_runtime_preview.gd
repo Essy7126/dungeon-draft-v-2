@@ -100,12 +100,15 @@ func cleanup_preview() -> void:
 func parity_with_runtime() -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
-	var expected := ArenaVisualAssembler.structural_signature(arena)
-	return {
-		"ok": preview_signature == expected,
-		"preview": preview_signature,
-		"runtime": expected,
-	}
+	var expected := ArenaVisualAssembler.expected_visual_signature(arena)
+	var actual := ArenaVisualAssembler.actual_visual_signature(assembly)
+	var comparison := ArenaVisualAssembler.compare_expected_to_actual(expected, actual)
+	var report := assembly.get("report") as ArenaVisualAssemblyReport
+	comparison.ok = bool(comparison.ok) and report != null and report.valid
+	comparison["preview"] = actual
+	comparison["runtime"] = expected
+	comparison["assembly_report"] = report.to_dict() if report != null else {}
+	return comparison
 
 
 func _perform_rebuild() -> bool:
@@ -146,6 +149,14 @@ func _perform_rebuild() -> bool:
 		preview_arena, grid, pathfinder, grid_view, y_sorted_world,
 		world_root, show_dynamic_terrains
 	)
+	var assembly_report := assembly.get("report") as ArenaVisualAssemblyReport
+	if assembly_report == null or not assembly_report.valid:
+		preview_failed.emit(
+			"Assemblage visuel incomplet : %s" % (
+				", ".join(assembly_report.errors) if assembly_report != null \
+				else "rapport absent"
+			)
+		)
 	if not show_dynamic_walls:
 		for wall in assembly.get("walls", []):
 			wall.visible = false
@@ -158,11 +169,11 @@ func _perform_rebuild() -> bool:
 	camera.make_current()
 	_apply_view_options()
 	_fit_camera(preview_arena)
-	preview_signature = ArenaVisualAssembler.structural_signature(preview_arena)
+	preview_signature = ArenaVisualAssembler.actual_visual_signature(assembly)
 	_built_generation = generation
 	rebuild_count += 1
 	preview_rebuilt.emit(preview_signature)
-	return true
+	return assembly_report != null and assembly_report.valid
 
 
 func _build_background(value: ArenaDefinition) -> void:

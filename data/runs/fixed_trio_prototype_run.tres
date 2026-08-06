@@ -2,12 +2,14 @@
 
 [ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room_type"]
-[ext_resource type="Resource" uid="uid://dr0ykpux3ooaj" path="res://data/rooms/first_run_room_01.tres" id="3_gue"]
-[ext_resource type="Resource" uid="uid://c03acckb6btnt" path="res://data/rooms/first_run_room_03.tres" id="4_forge"]
+[ext_resource type="Resource" uid="uid://cwm0r7nq15k2a" path="res://data/rooms/test_waves/first_run_room_01_waves.tres" id="3_gue"]
+[ext_resource type="Resource" uid="uid://d4p8s2v7x0m3b" path="res://data/rooms/test_waves/first_run_room_03_waves.tres" id="4_forge"]
 [ext_resource type="Resource" uid="uid://cu75nfsk7bpui" path="res://data/rooms/terrain_2.tres" id="6_terrain_2"]
 [ext_resource type="Resource" path="res://data/rooms/bible/la_rune.tres" id="7_rune"]
 
 [resource]
 script = ExtResource("1_run")
 run_name = "Run de test"
+room_flow_mode = 1
+maximum_waves_per_room = 10
 rooms = Array[ExtResource("2_room_type")]([ExtResource("3_gue"), ExtResource("6_terrain_2"), ExtResource("4_forge"), ExtResource("7_rune")])

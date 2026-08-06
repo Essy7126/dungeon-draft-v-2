@@ -79,7 +79,8 @@ var _equipment_service := EquipmentService.new()
 var _item_use_service := ItemUseService.new()
 var _next_run_data: RunData = null
 var _next_run_start_room_index := 0
-var _maximum_waves_per_room := 10
+var _active_room_flow_mode: int = RunData.RoomFlowMode.SINGLE_ENCOUNTER
+var _maximum_waves_per_room := 1
 var _room_wave_counts := PackedInt32Array()
 var _room_exit_selected := false
 var _cleared_room_emitted := false
@@ -266,6 +267,7 @@ func _initialize_run_state(run_data: RunData) -> void:
 	run_seed = run_data.default_seed
 	current_room_index = -1
 	current_wave_index = 0
+	_active_room_flow_mode = run_data.room_flow_mode
 	_maximum_waves_per_room = maxi(1, run_data.maximum_waves_per_room)
 	_build_hidden_room_wave_counts(run_data)
 	run_active = true
@@ -331,7 +333,8 @@ func cleanup_run_state() -> void:
 	_clear_inventory_state()
 	rooms.clear()
 	run_seed = 0
-	_maximum_waves_per_room = 10
+	_active_room_flow_mode = RunData.RoomFlowMode.SINGLE_ENCOUNTER
+	_maximum_waves_per_room = 1
 	_room_wave_counts.clear()
 	_room_exit_selected = false
 	_cleared_room_emitted = false
@@ -802,45 +805,82 @@ func get_run_seed() -> int:
 	return run_seed
 
 
+func get_active_room_flow_mode() -> int:
+	return _active_room_flow_mode
+
+
+func get_active_room_flow_mode_name() -> StringName:
+	return (
+		&"WAVE_CHAIN"
+		if is_wave_chain_active()
+		else &"SINGLE_ENCOUNTER"
+	)
+
+
+func is_wave_chain_active() -> bool:
+	return _active_room_flow_mode == RunData.RoomFlowMode.WAVE_CHAIN
+
+
 func get_current_encounter_definition() -> EncounterDefinition:
 	var room := get_current_room()
-	return room.get_encounter_for_wave(current_wave_index) if room != null else null
+	if room == null:
+		return null
+	return room.get_encounter_for_wave(current_wave_index if is_wave_chain_active() else 0)
 
 
 func get_current_wave_index() -> int:
-	return current_wave_index
+	return current_wave_index if is_wave_chain_active() else 0
 
 
 func get_current_wave_number() -> int:
-	return current_wave_index + 1
+	return get_current_wave_index() + 1
 
 
 func get_current_room_wave_count() -> int:
 	var room := get_current_room()
 	if room == null:
 		return 0
+	if not is_wave_chain_active():
+		return 1 if room.get_wave_count() > 0 else 0
 	if current_room_index >= 0 and current_room_index < _room_wave_counts.size():
 		return _room_wave_counts[current_room_index]
 	return mini(room.get_wave_count(), _maximum_waves_per_room)
 
 
 func _build_hidden_room_wave_counts(run_data: RunData) -> void:
+	_room_wave_counts.clear()
+	if run_data == null:
+		return
+	if run_data.is_single_encounter_flow():
+		for room_value in run_data.rooms:
+			var room := room_value as RoomData
+			_room_wave_counts.append(
+				1 if room != null and room.get_wave_count() > 0 else 0
+			)
+		return
 	_room_wave_counts = RunWaveCountResolver.resolve_counts(run_data, run_seed)
 
 
 func is_current_room_fully_cleared() -> bool:
+	if not is_wave_chain_active():
+		return _room_outcome_resolved \
+			and _last_combat_report != null \
+			and _last_combat_report.victory
 	var wave_count := get_current_room_wave_count()
 	return wave_count > 0 and current_wave_index + 1 >= wave_count
 
 
 func can_continue_current_room() -> bool:
-	return run_active \
+	return is_wave_chain_active() \
+		and run_active \
 		and _last_combat_report != null \
 		and _last_combat_report.victory \
 		and current_wave_index + 1 < get_current_room_wave_count()
 
 
 func get_current_room_reward_multiplier() -> float:
+	if not is_wave_chain_active():
+		return 1.0
 	var room := get_current_room()
 	return RoomRewardProjectionService.cumulative_reward_multiplier(
 		room, current_wave_index + 1
@@ -848,6 +888,8 @@ func get_current_room_reward_multiplier() -> float:
 
 
 func get_current_room_ultimate_reward_chance() -> int:
+	if not is_wave_chain_active():
+		return 0
 	var room := get_current_room()
 	return RoomRewardProjectionService.ultimate_chance(
 		room,
@@ -858,6 +900,10 @@ func get_current_room_ultimate_reward_chance() -> int:
 
 
 func get_current_room_cleared_wave_count() -> int:
+	if not is_wave_chain_active():
+		return 1 if _room_outcome_resolved \
+			and _last_combat_report != null \
+			and _last_combat_report.victory else 0
 	var cleared_count := maxi(0, current_wave_index)
 	if _room_outcome_resolved \
 			and _last_combat_report != null \
@@ -867,6 +913,8 @@ func get_current_room_cleared_wave_count() -> int:
 
 
 func is_current_room_ultimate_reward_won() -> bool:
+	if not is_wave_chain_active():
+		return false
 	return RoomRewardProjectionService.ultimate_won(
 		get_current_room(),
 		run_seed,
@@ -887,13 +935,15 @@ func get_post_combat_decision_snapshot() -> Dictionary:
 	var next_attack_multiplier := 1.0
 	var ultimate_gain_range := Vector2i.ZERO
 	var room := get_current_room()
-	if room != null:
+	if room != null and is_wave_chain_active():
 		ultimate_gain_range = room.get_ultimate_reward_gain_range()
 		var next_wave := room.get_wave(current_wave_index + 1)
 		if next_wave != null:
 			next_health_multiplier = next_wave.enemy_health_multiplier
 			next_attack_multiplier = next_wave.enemy_attack_multiplier
 	return {
+		"room_flow_mode": get_active_room_flow_mode_name(),
+		"waves_enabled": is_wave_chain_active(),
 		"room_index": current_room_index,
 		"wave_index": current_wave_index,
 		"wave_number": get_current_wave_number(),
@@ -940,7 +990,8 @@ func _get_run_inventory_item_quantity() -> int:
 
 
 func continue_current_room_combat(report_id: StringName) -> bool:
-	if _post_combat_transition_pending \
+	if not is_wave_chain_active() \
+		or _post_combat_transition_pending \
 		or _room_exit_selected \
 		or _last_combat_report == null \
 		or _last_combat_report.report_id != report_id \
@@ -993,6 +1044,7 @@ func begin_combat_report() -> CombatReport:
 		get_ordered_character_states(),
 		current_room_index,
 		room.room_name if room != null else "Salle %d" % (current_room_index + 1),
+		get_active_room_flow_mode_name(),
 	)
 
 
@@ -1290,6 +1342,8 @@ func on_battle_won() -> void:
 			"Victoire différée : une évolution de compétence reste à résoudre en combat."
 		)
 		return
+	if not is_wave_chain_active():
+		current_wave_index = 0
 	_room_outcome_resolved = true
 	_room_exit_selected = false
 	_capture_post_combat_background()
@@ -1350,6 +1404,7 @@ func _record_run_result(victory: bool) -> void:
 	_last_run_result = {
 		"victory": victory,
 		"run_name": _active_run_name,
+		"room_flow_mode": get_active_room_flow_mode_name(),
 	}
 
 func get_last_run_result() -> Dictionary:

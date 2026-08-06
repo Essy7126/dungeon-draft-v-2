@@ -1,7 +1,7 @@
 extends GutTest
 
-const RUN_PATH := "res://data/runs/first_run.tres"
-const ROOM_PATH := "res://data/rooms/first_run_room_01.tres"
+const RUN_PATH := "res://data/runs/fixed_trio_prototype_run.tres"
+const ROOM_PATH := "res://data/rooms/test_waves/first_run_room_01_waves.tres"
 const USER_FIXTURE_ROOT := "user://dungeon_draft_studio/encounter_studio/gut_fixtures"
 
 
@@ -79,6 +79,7 @@ func test_graphe_references_plusieurs_vagues_salles_et_retrait_sans_fichier() ->
 	shared_wave.encounter_definition = encounter
 	first.waves.append(shared_wave)
 	var run := RunData.new()
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
 	run.rooms = [first, second]
 	var graph := EncounterReferenceGraphService.build_for_run(run, "res://fixture.tres")
 	var summary := EncounterReferenceGraphService.summary_for(encounter, graph)
@@ -351,6 +352,7 @@ func test_migration_historique_explicite_preserve_source_et_comportement() -> vo
 	source_room.encounter_definition = null
 	source_room.enemies = [enemy, enemy]
 	var run := RunData.new()
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
 	run.rooms = [source_room]
 	var session := _session_for_run(run)
 	assert_eq(session.room_mode(), &"legacy_enemies")
@@ -497,6 +499,7 @@ func _small_run() -> RunData:
 	var run := RunData.new()
 	run.run_name = "Run fixture Encounter Studio"
 	run.default_seed = 1337
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
 	run.maximum_waves_per_room = 1
 	run.rooms = [_small_room(_encounter(_unit(&"fixture", &""), 1))]
 	return run
@@ -529,6 +532,7 @@ func _create_user_hierarchy(label: String) -> Dictionary:
 	var run := RunData.new()
 	run.run_name = "Fixture sauvegarde"
 	run.default_seed = 1337
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
 	run.maximum_waves_per_room = 1
 	run.rooms = [ResourceLoader.load(
 		room_path, "", ResourceLoader.CACHE_MODE_IGNORE

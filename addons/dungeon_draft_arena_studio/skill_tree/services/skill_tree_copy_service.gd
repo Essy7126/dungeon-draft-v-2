@@ -17,6 +17,70 @@ static func copy_unit(source: UnitData) -> Dictionary:
 	}
 
 
+static func copy_discipline(source: DisciplineData) -> Dictionary:
+	if source == null:
+		return {}
+	var source_to_work := {}
+	var work_to_source := {}
+	var work := _copy_discipline(source, source_to_work, work_to_source)
+	return {
+		"source": source,
+		"work": work,
+		"source_to_work": source_to_work,
+		"work_to_source": work_to_source,
+	}
+
+
+static func resources_by_key(root: UnitData) -> Dictionary:
+	var result := {}
+	if root == null:
+		return result
+	result["unit"] = root
+	for spell_index in range(root.spells.size()):
+		var spell := root.spells[spell_index]
+		if spell == null:
+			continue
+		var spell_key := "spell:%s" % spell.get_effective_spell_id()
+		result[spell_key] = spell
+		for modifier_index in range(spell.modifiers.size()):
+			var modifier := spell.modifiers[modifier_index]
+			if modifier != null:
+				result["%s/modifier:%d" % [spell_key, modifier_index]] = modifier
+	for discipline_index in range(root.disciplines.size()):
+		var discipline := root.disciplines[discipline_index]
+		if discipline == null:
+			continue
+		var discipline_key := "discipline:%s" % discipline.discipline_id
+		result[discipline_key] = discipline
+		for rank_index in range(discipline.ranks.size()):
+			var rank_data := discipline.ranks[rank_index]
+			if rank_data == null:
+				continue
+			var rank_key := "%s/rank:%d" % [discipline_key, rank_data.rank]
+			result[rank_key] = rank_data
+			for node_index in range(rank_data.choices.size()):
+				var node := rank_data.choices[node_index]
+				if node == null:
+					continue
+				var node_key := "node:%s" % node.upgrade_id
+				result[node_key] = node
+				for modifier_index in range(node.spell_modifiers.size()):
+					var modifier := node.spell_modifiers[modifier_index]
+					if modifier != null:
+						result["%s/modifier:%d" % [node_key, modifier_index]] = modifier
+	return result
+
+
+static func keys_by_resource(root: UnitData) -> Dictionary:
+	var result := {}
+	for key_value in resources_by_key(root):
+		var key := str(key_value)
+		var resource := resources_by_key(root)[key_value] as Resource
+		if resource != null:
+			result[resource] = key
+	return result
+
+
 static func _copy_unit(
 		source: UnitData,
 		source_to_work: Dictionary,

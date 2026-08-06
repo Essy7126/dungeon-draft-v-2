@@ -544,7 +544,7 @@ func _spawn_enemies() -> void:
 
 
 func _apply_current_wave_scaling(enemy: Unit) -> void:
-	if enemy == null or room_data == null:
+	if enemy == null or room_data == null or not GameManager.is_wave_chain_active():
 		return
 	var wave := room_data.get_wave(GameManager.get_current_wave_index())
 	if wave == null:

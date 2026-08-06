@@ -7,6 +7,11 @@ static func resolve_counts(run_data: RunData, run_seed: int) -> PackedInt32Array
 	var result := PackedInt32Array()
 	if run_data == null:
 		return result
+	if run_data.is_single_encounter_flow():
+		for room_value in run_data.rooms:
+			var room := room_value as RoomData
+			result.append(1 if room != null and room.get_wave_count() > 0 else 0)
+		return result
 	var rng := RandomNumberGenerator.new()
 	rng.seed = run_seed
 	var maximum_per_room := maxi(1, run_data.maximum_waves_per_room)

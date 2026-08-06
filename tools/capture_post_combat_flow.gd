@@ -2,6 +2,7 @@ extends Node
 
 const OUTPUT_DIR := "res://artifacts/first_run_v2/captures/post_combat"
 const SCREEN_SCENE := preload("res://ui/post_combat/PostCombatScreen.tscn")
+const WAVE_RUN := preload("res://data/runs/fixed_trio_prototype_run.tres")
 
 var _screen: PostCombatScreen = null
 
@@ -71,13 +72,9 @@ func _ready() -> void:
 
 func _prepare_report(at_hidden_room_end: bool) -> void:
 	GameManager.cleanup_run_state()
-	var run := RunData.new()
-	run.run_name = "Capture après-combat"
-	run.rooms = [
-		load("res://data/rooms/first_run_room_01.tres") as RoomData,
-		load("res://data/rooms/first_run_room_02.tres") as RoomData,
-	]
-	GameManager._prepare_preconfigured_run(run, GameManager.PRODUCTION_HERO_DATA_PATHS)
+	GameManager._prepare_preconfigured_run(
+		WAVE_RUN, GameManager.PRODUCTION_HERO_DATA_PATHS
+	)
 	GameManager.current_room_index = 0
 	if at_hidden_room_end:
 		GameManager.current_wave_index = GameManager.get_current_room_wave_count() - 1

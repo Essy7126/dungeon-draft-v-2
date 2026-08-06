@@ -7,9 +7,26 @@ static func final_configurations(
 		discipline: DisciplineData,
 		limit := 100000
 	) -> Array[Array]:
+	return enumeration_result(discipline, limit).get("configurations", []) as Array[Array]
+
+
+static func enumeration_result(
+		discipline: DisciplineData,
+		limit := 100000,
+		include_configurations := true
+	) -> Dictionary:
+	var started := Time.get_ticks_usec()
 	var result: Array[Array] = []
 	if discipline == null or not SkillTreeResolver.validate_discipline(discipline).is_empty():
-		return result
+		return {
+			"count": 0,
+			"limit": maxi(1, limit),
+			"truncated": false,
+			"complete": true,
+			"configurations": result,
+			"duration_usec": Time.get_ticks_usec() - started,
+			"stop_reason": "INVALID_DISCIPLINE",
+		}
 	var choice_ranks: Array[int] = []
 	var maximum_rank := 1
 	for rank_data in _sorted_ranks(discipline):
@@ -24,11 +41,22 @@ static func final_configurations(
 		choice_ranks.duplicate(),
 		[],
 		result,
-		maxi(1, limit)
+		maxi(1, limit) + 1
 	)
 	if choice_ranks.is_empty():
 		result.append([])
-	return result
+	var truncated := result.size() > maxi(1, limit)
+	if truncated:
+		result.resize(maxi(1, limit))
+	return {
+		"count": result.size(),
+		"limit": maxi(1, limit),
+		"truncated": truncated,
+		"complete": not truncated,
+		"configurations": result if include_configurations else [],
+		"duration_usec": Time.get_ticks_usec() - started,
+		"stop_reason": "LIMIT_REACHED" if truncated else "COMPLETE",
+	}
 
 
 static func count_final_configurations(
@@ -39,13 +67,51 @@ static func count_final_configurations(
 
 
 static func reachable_node_ids(discipline: DisciplineData) -> Array[StringName]:
-	var result: Array[StringName] = []
-	for configuration in final_configurations(discipline):
-		for node_id_value in configuration:
-			var node_id := StringName(node_id_value)
-			if not result.has(node_id):
-				result.append(node_id)
-	return result
+	return reachability_analysis(discipline).get("reachable_node_ids", []) \
+		as Array[StringName]
+
+
+static func reachability_analysis(discipline: DisciplineData) -> Dictionary:
+	var started := Time.get_ticks_usec()
+	var reachable: Array[StringName] = []
+	var blocked: Array[StringName] = []
+	var impossible: Array[StringName] = []
+	var dead_ranks: Array[int] = []
+	if discipline == null or not SkillTreeResolver.validate_discipline(discipline).is_empty():
+		return {
+			"reachable_node_ids": reachable,
+			"blocked_node_ids": blocked,
+			"impossible_node_ids": impossible,
+			"dead_ranks": dead_ranks,
+			"duration_usec": Time.get_ticks_usec() - started,
+			"complete": false,
+		}
+	for rank_data in _sorted_ranks(discipline):
+		if rank_data.choices.is_empty():
+			continue
+		var rank_reachable := false
+		for node in rank_data.choices:
+			if node == null:
+				continue
+			var path := _first_path_to_node(discipline, node)
+			if not path.is_empty():
+				reachable.append(node.upgrade_id)
+				rank_reachable = true
+			elif node is SkillTreeNodeData \
+					and not node.prerequisite_node_ids.is_empty():
+				blocked.append(node.upgrade_id)
+			else:
+				impossible.append(node.upgrade_id)
+		if not rank_reachable:
+			dead_ranks.append(rank_data.rank)
+	return {
+		"reachable_node_ids": reachable,
+		"blocked_node_ids": blocked,
+		"impossible_node_ids": impossible,
+		"dead_ranks": dead_ranks,
+		"duration_usec": Time.get_ticks_usec() - started,
+		"complete": true,
+	}
 
 
 static func statistics(discipline: DisciplineData) -> Dictionary:
@@ -68,8 +134,64 @@ static func statistics(discipline: DisciplineData) -> Dictionary:
 		"prerequisite_count": prerequisite_count,
 		"exclusion_count": exclusion_count,
 		"final_configuration_count": count_final_configurations(discipline),
+		"enumeration": enumeration_result(discipline, 100000, false),
+		"reachability": reachability_analysis(discipline),
 		"thresholds": thresholds,
 	}
+
+
+static func _first_path_to_node(
+		discipline: DisciplineData,
+		target: SkillUpgradeData
+	) -> Array[StringName]:
+	var choice_ranks: Array[int] = []
+	for rank_data in _sorted_ranks(discipline):
+		if rank_data.rank <= target.rank and not rank_data.choices.is_empty():
+			choice_ranks.append(rank_data.rank)
+	var pending := choice_ranks.duplicate()
+	var memo := {}
+	return _search_prefix(
+		discipline, target, choice_ranks, 0, pending, [], memo
+	)
+
+
+static func _search_prefix(
+		discipline: DisciplineData,
+		target: SkillUpgradeData,
+		choice_ranks: Array[int],
+		index: int,
+		pending: Array[int],
+		selected: Array[StringName],
+		memo: Dictionary
+	) -> Array[StringName]:
+	if index >= choice_ranks.size():
+		return selected.duplicate() if selected.has(target.upgrade_id) else []
+	var memo_ids := selected.duplicate()
+	memo_ids.sort()
+	var memo_key := "%d|%s" % [index, ",".join(memo_ids)]
+	if memo.has(memo_key):
+		return []
+	memo[memo_key] = true
+	var rank_number := choice_ranks[index]
+	var candidates := SkillTreeResolver.get_available_nodes(
+		discipline, rank_number, target.rank, pending, selected
+	)
+	if rank_number == target.rank:
+		candidates = candidates.filter(func(node: SkillUpgradeData) -> bool:
+			return node == target
+		)
+	for candidate in candidates:
+		var next_selected := selected.duplicate()
+		next_selected.append(candidate.upgrade_id)
+		var next_pending := pending.duplicate()
+		next_pending.erase(rank_number)
+		var found := _search_prefix(
+			discipline, target, choice_ranks, index + 1,
+			next_pending, next_selected, memo
+		)
+		if not found.is_empty():
+			return found
+	return []
 
 
 static func _enumerate(

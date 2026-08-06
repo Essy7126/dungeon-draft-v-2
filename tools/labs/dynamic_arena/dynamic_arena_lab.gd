@@ -110,6 +110,7 @@ var test_unit_hp := 20
 
 var _textures: Dictionary = {}
 var _tile_sprites: Dictionary = {}
+var _terrain_renderer: ArenaTerrainVisualRenderer = null
 var _walls: Dictionary = {}
 var _grid_debug_visible := true
 var _path_visible := true
@@ -720,38 +721,35 @@ func _load_textures() -> void:
 
 
 func _build_floor() -> void:
-	for child in floor_layer.get_children():
-		child.queue_free()
+	if _terrain_renderer == null:
+		_terrain_renderer = ArenaTerrainVisualRenderer.new()
+		_terrain_renderer.name = "ArenaTerrainVisualRenderer"
+		add_child(_terrain_renderer)
+	else:
+		_terrain_renderer.clear()
 	_tile_sprites.clear()
-	if grid == null:
+	if grid == null or working_arena == null:
 		return
-	for diagonal in range(grid.cols + grid.rows - 1):
-		for x in range(grid.cols):
-			var y := diagonal - x
-			if y < 0 or y >= grid.rows:
-				continue
-			var cell := Vector2i(x, y)
-			var sprite := Sprite2D.new()
-			sprite.name = "Cell_%d_%d" % [x, y]
-			sprite.centered = true
-			sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			sprite.scale = TILE_SCALE
-			sprite.position = _cell_position_in(floor_layer, cell)
-			sprite.z_index = diagonal
-			floor_layer.add_child(sprite)
-			_tile_sprites[cell] = sprite
+	_terrain_renderer.configure(grid_view, floor_layer)
+	var plan := ArenaTerrainRenderPlanService.build(working_arena)
+	_terrain_renderer.render_plan(plan)
+	for entry in plan.render_entries:
+		var cell: Vector2i = entry.cell
+		var root := _terrain_renderer.node_for_cell(cell)
+		if root != null:
+			_tile_sprites[cell] = root.get_node("Visual") as Sprite2D
 
 
 func _update_cell_visual(cell: Vector2i) -> void:
-	var sprite := _tile_sprites.get(cell) as Sprite2D
-	if sprite == null:
+	if _terrain_renderer == null or working_arena == null:
 		return
-	# Le mur remplace visuellement la dalle 1x1. La dalle n'est restauree
-	# qu'apres le retrait exact du bloqueur dynamique.
-	var surface := cell_states.get_surface(cell)
-	sprite.visible = not has_wall(cell) and surface != DynamicCellState.Surface.VOID
-	sprite.texture = _textures.get(surface) as Texture2D
-	sprite.modulate = Color.WHITE
+	var entry := ArenaTerrainRenderPlanService.entry_for(working_arena, cell)
+	_terrain_renderer.update_cells([entry])
+	var root := _terrain_renderer.node_for_cell(cell)
+	if root == null:
+		_tile_sprites.erase(cell)
+	else:
+		_tile_sprites[cell] = root.get_node("Visual") as Sprite2D
 
 
 func _update_destination_marker() -> void:
@@ -996,8 +994,11 @@ func _clear_runtime() -> void:
 	_walls.clear()
 	if grid != null:
 		grid.clear_dynamic_blockers()
-	for child in floor_layer.get_children():
-		child.free()
+	if _terrain_renderer != null:
+		_terrain_renderer.clear()
+	else:
+		for child in floor_layer.get_children():
+			child.free()
 	_tile_sprites.clear()
 
 

@@ -28,11 +28,18 @@ static func project(run: RunData, first_seed: int, seed_count: int) -> Dictionar
 	var theoretical_maximum := 0
 	for room in run.rooms:
 		if room != null:
-			theoretical_minimum += room.get_minimum_wave_count()
-			theoretical_maximum += mini(
-				room.get_maximum_wave_count(), run.maximum_waves_per_room
-			)
+			if run.is_single_encounter_flow():
+				var encounter_count := 1 if room.get_wave_count() > 0 else 0
+				theoretical_minimum += encounter_count
+				theoretical_maximum += encounter_count
+			else:
+				theoretical_minimum += room.get_minimum_wave_count()
+				theoretical_maximum += mini(
+					room.get_maximum_wave_count(), run.maximum_waves_per_room
+				)
 	return {
+		"room_flow_mode": run.get_room_flow_mode_name(),
+		"waves_enabled": run.uses_wave_chain(),
 		"room_count": run.rooms.size(),
 		"seed_count": totals.size(),
 		"theoretical_minimum": theoretical_minimum,

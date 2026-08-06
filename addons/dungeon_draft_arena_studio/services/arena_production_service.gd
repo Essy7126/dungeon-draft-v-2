@@ -2,11 +2,17 @@
 class_name ArenaProductionService
 extends RefCounted
 
-const GENERATED_BY := "dungeon_draft_studio_1_2"
+const GENERATED_BY := "dungeon_draft_studio_1_3_1"
+const COMPATIBLE_GENERATORS := [
+	"dungeon_draft_studio_1_2",
+	"dungeon_draft_studio_1_2_1",
+	"dungeon_draft_studio_1_3_0",
+	GENERATED_BY,
+]
 const DEFAULT_ROOT := "res://data/arenas/produced"
 const RECOVERY_ROOT := "user://dungeon_draft_studio/production_recovery"
 const MANIFEST_FILE := "production_manifest.json"
-const GENERATOR_REVISION := 2
+const GENERATOR_REVISION := 3
 
 
 static func suggested_destination(arena: ArenaDefinition) -> String:
@@ -21,9 +27,10 @@ static func plan(arena: ArenaDefinition, destination := "") -> Dictionary:
 	if not _valid_destination(destination):
 		return {"ok": false, "error": "invalid_destination"}
 	var report := ArenaValidator.validate(arena, false)
+	var visual_report := ArenaVisualAssembler.inspect(arena)
 	var names := _output_names(arena)
 	var old_manifest := _read_json(destination.path_join(MANIFEST_FILE))
-	var owned := str(old_manifest.get("generated_by", "")) == GENERATED_BY
+	var owned := _is_owned_manifest(old_manifest)
 	var expected_hashes: Dictionary = old_manifest.get("files", {}) \
 		if owned and old_manifest.get("files", {}) is Dictionary else {}
 	var creates: Array[String] = []
@@ -55,7 +62,8 @@ static func plan(arena: ArenaDefinition, destination := "") -> Dictionary:
 		"creates": creates,
 		"modifies": modifies,
 		"conflicts": conflicts,
-		"can_produce": report.is_valid() and conflicts.is_empty(),
+		"can_produce": report.is_valid() and visual_report.valid and conflicts.is_empty(),
+		"visual_report": visual_report,
 		"source_fingerprint": ArenaEditSession.fingerprint(arena.to_snapshot()),
 	}
 
@@ -101,6 +109,7 @@ static func produce(
 					"modified": [],
 					"resources_reloaded": true,
 					"direct_test_available": true,
+					"visual_report": ArenaVisualAssembler.inspect(existing),
 					"idempotent_reuse": true,
 				}
 	var recovery := _create_recovery(production_plan)
@@ -140,6 +149,13 @@ static func produce(
 	var final_report := ArenaValidator.validate(reloaded, false)
 	if not final_report.is_valid():
 		return {"ok": false, "error": "produced_validation_failed", "validation": final_report}
+	var final_visual_report := ArenaVisualAssembler.inspect(reloaded)
+	if not final_visual_report.valid:
+		return {
+			"ok": false,
+			"error": "visual_assembly_failed",
+			"visual_report": final_visual_report,
+		}
 	var art_result := ArenaArtKitExporter.export_kit(
 		reloaded, destination.path_join("art_kit"), final_report, provided_images
 	)
@@ -154,6 +170,7 @@ static func produce(
 		"status": "SALLE_PRETE",
 		"source_fingerprint": str(production_plan.source_fingerprint),
 		"produced_fingerprint": produced_fingerprint,
+		"visual_assembly": final_visual_report.to_dict(),
 	}
 	if not _write_json(destination.path_join("validation_report.json"), report_data):
 		return {"ok": false, "error": "validation_write_failed"}
@@ -186,6 +203,7 @@ static func produce(
 		"battle_scene": reloaded.battle_scene.resource_path,
 		"files": hashes,
 		"art_kit": art_result.files,
+		"visual_assembly": final_visual_report.to_dict(),
 	}
 	if not _write_json(destination.path_join(MANIFEST_FILE), manifest):
 		return {"ok": false, "error": "manifest_write_failed"}
@@ -204,6 +222,7 @@ static func produce(
 		"modified": production_plan.modifies,
 		"resources_reloaded": true,
 		"direct_test_available": true,
+		"visual_report": final_visual_report,
 	}
 
 
@@ -283,6 +302,11 @@ static func _create_recovery(production_plan: Dictionary) -> Dictionary:
 static func _valid_destination(path: String) -> bool:
 	return path.begins_with("res://") and not ".." in path \
 		and path != "res://" and not path.ends_with(".tres")
+
+
+static func _is_owned_manifest(manifest: Dictionary) -> bool:
+	return COMPATIBLE_GENERATORS.has(str(manifest.get("generated_by", ""))) \
+		and manifest.get("files", {}) is Dictionary
 
 
 static func _read_json(path: String) -> Dictionary:

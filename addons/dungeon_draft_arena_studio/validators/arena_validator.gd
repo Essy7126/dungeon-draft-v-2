@@ -351,6 +351,16 @@ static func _validate_runtime(
 			ArenaValidationMessage.Severity.ERROR, &"renderer_build_failed",
 			"L'assembleur visuel partage ne peut pas construire la map.")
 		return
+	var visual_report := ArenaVisualAssembler.inspect(arena)
+	if not visual_report.valid:
+		report.add_message(
+			ArenaValidationMessage.Severity.ERROR,
+			&"visual_assembly_incomplete",
+			"Le sol visuel réel est incomplet : %d dalle(s) rendue(s) sur %d attendue(s)." % [
+				visual_report.rendered_terrain_node_count,
+				visual_report.expected_terrain_cell_count,
+			]
+		)
 	var playable := arena.playable_cells()
 	if playable.is_empty():
 		return
@@ -429,6 +439,7 @@ static func _build_metrics(
 		"visual_mode": arena.visual_mode,
 		"visual_profile": str(arena.theme_id),
 		"battle_scene": arena.battle_scene.resource_path if arena.battle_scene != null else "",
+		"visual_assembly": ArenaVisualAssembler.inspect(arena).to_dict(),
 	}
 	report.add_message(
 		ArenaValidationMessage.Severity.INFO, &"map_summary",

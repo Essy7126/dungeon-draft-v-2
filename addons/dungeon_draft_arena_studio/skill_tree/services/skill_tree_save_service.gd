@@ -7,139 +7,19 @@ const RECOVERY_ROOT := "user://dungeon_draft_studio/skill_tree/recovery"
 
 static func save(
 		session: SkillTreeEditSession,
-		editor_interface = null
+		editor_interface = null,
+		options: Dictionary = {}
 	) -> Dictionary:
-	if session == null or session.working_unit == null:
-		return {"ok": false, "error": "Aucun personnage n’est ouvert."}
-	if not session.is_dirty():
-		return {"ok": true, "saved_paths": [], "message": "Aucun changement à sauvegarder."}
-	var validation := SkillTreeEditorValidator.validate_unit(
-		session.working_unit,
-		false,
-		SkillTreeCatalogService.discover_heroes()
+	return SkillTreeSaveTransactionService.save(
+		session, editor_interface, options
 	)
-	if SkillTreeEditorValidator.has_errors(validation):
-		return {
-			"ok": false,
-			"error": "L’arbre contient des erreurs bloquantes.",
-			"validation": validation,
-		}
-	var plan := _save_plan(session)
-	if plan.is_empty():
-		session.mark_saved()
-		return {"ok": true, "saved_paths": [], "message": "Aucun fichier logique n’a changé."}
-	var conflicts := _external_conflicts(session, plan)
-	if not conflicts.is_empty():
-		return {
-			"ok": false,
-			"error": "Un fichier a été modifié en dehors du Skill Studio.",
-			"conflicts": conflicts,
-		}
-	var recovery_dir := _new_recovery_directory()
-	if recovery_dir.is_empty():
-		return {"ok": false, "error": "Impossible de créer le point de récupération."}
-	var backup_report := _backup_existing_files(plan, recovery_dir)
-	if not backup_report.get("ok", false):
-		return backup_report
-	var recovery_resource_path := recovery_dir.path_join("working_character.tres")
-	var recovery_copy := _recovery_copy(session.working_unit)
-	var recovery_error := ResourceSaver.save(recovery_copy, recovery_resource_path) \
-		if recovery_copy != null else ERR_CANT_CREATE
-	if recovery_error != OK:
-		return {
-			"ok": false,
-			"error": "Impossible d’enregistrer la copie de récupération.",
-			"code": recovery_error,
-		}
-	var saved_paths := PackedStringArray()
-	var created_paths := PackedStringArray()
-	for entry in plan:
-		var resource := entry.get("resource") as Resource
-		var path := str(entry.get("path", ""))
-		if resource == null or not _safe_path(path):
-			_restore(backup_report, created_paths)
-			return {"ok": false, "error": "Chemin de sauvegarde non autorisé.", "path": path}
-		var absolute := ProjectSettings.globalize_path(path)
-		var directory_error := DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
-		if directory_error != OK:
-			_restore(backup_report, created_paths)
-			return {"ok": false, "error": "Impossible de créer le dossier.", "path": path}
-		if not FileAccess.file_exists(path):
-			created_paths.append(path)
-		var error := ResourceSaver.save(resource, path)
-		if error != OK:
-			_restore(backup_report, created_paths)
-			return {
-				"ok": false,
-				"error": "Échec de la sauvegarde d’une Resource.",
-				"path": path,
-				"code": error,
-			}
-		var reloaded := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
-		if reloaded == null:
-			_restore(backup_report, created_paths)
-			return {
-				"ok": false,
-				"error": "La Resource sauvegardée ne peut pas être relue.",
-				"path": path,
-			}
-		saved_paths.append(path)
-	_write_manifest(recovery_dir, session, saved_paths, backup_report)
-	if editor_interface != null:
-		var filesystem = editor_interface.get_resource_filesystem()
-		if filesystem != null:
-			filesystem.scan_changes()
-	if not session.reopen_from_disk():
-		session.mark_saved()
-	return {
-		"ok": true,
-		"saved_paths": saved_paths,
-		"recovery_path": recovery_dir,
-		"message": "%d fichier(s) sauvegardé(s)." % saved_paths.size(),
-	}
 
 
 static func _save_plan(session: SkillTreeEditSession) -> Array[Dictionary]:
-	var plan: Array[Dictionary] = []
-	for source_value in session.source_to_work:
-		var source := source_value as Resource
-		var work := session.source_to_work[source_value] as Resource
-		if source == null or work == null or source.resource_path.is_empty() \
-				or source.is_built_in():
-			continue
-		if SkillTreeSnapshotService.storage_fingerprint(source) \
-				== SkillTreeSnapshotService.storage_fingerprint(work):
-			continue
-		plan.append({
-			"resource": work,
-			"source": source,
-			"path": source.resource_path,
-			"priority": _priority(work),
-		})
-	for resource_value in session.new_resource_paths:
-		var resource := resource_value as Resource
-		var path := str(session.new_resource_paths[resource_value])
-		if resource == null or path.is_empty() \
-				or not _is_reachable(session.working_unit, resource):
-			continue
-		if plan.any(func(entry: Dictionary) -> bool:
-			return entry.get("resource") == resource
-		):
-			continue
-		plan.append({
-			"resource": resource,
-			"source": null,
-			"path": path,
-			"priority": _priority(resource),
-		})
-	plan.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		var priority_a := int(a.get("priority", 0))
-		var priority_b := int(b.get("priority", 0))
-		if priority_a == priority_b:
-			return str(a.get("path", "")) < str(b.get("path", ""))
-		return priority_a < priority_b
-	)
-	return plan
+	var result: Array[Dictionary] = []
+	for entry in SkillTreeSaveTransactionService.build_plan(session).writable_entries():
+		result.append(entry.to_dictionary())
+	return result
 
 
 static func _external_conflicts(

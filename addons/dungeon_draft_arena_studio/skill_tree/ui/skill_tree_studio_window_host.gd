@@ -45,6 +45,7 @@ func close_studio_immediately() -> void:
 	if studio != null:
 		studio.prepare_for_close()
 		_store_state()
+		studio.dispose_document()
 		remove_child(studio)
 		studio.queue_free()
 		studio = null
@@ -71,6 +72,7 @@ func _request_close() -> void:
 func _finalize_close() -> void:
 	_store_state()
 	if studio != null:
+		studio.dispose_document()
 		remove_child(studio)
 		studio.queue_free()
 		studio = null

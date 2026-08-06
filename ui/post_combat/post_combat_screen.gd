@@ -122,7 +122,7 @@ func advance_or_skip() -> void:
 		return
 	match phase:
 		Phase.VICTORY_REVEAL:
-			if bool(_decision_snapshot.get("can_continue", false)):
+			if _can_enter_room_decision():
 				_enter_phase(Phase.ROOM_DECISION)
 			else:
 				_enter_phase(Phase.COMBAT_STATS)
@@ -144,7 +144,9 @@ func advance_or_skip() -> void:
 
 
 func choose_continue_room() -> bool:
-	if phase != Phase.ROOM_DECISION or _transition_requested:
+	if phase != Phase.ROOM_DECISION \
+			or _transition_requested \
+			or not _can_enter_room_decision():
 		return false
 	_transition_requested = true
 	phase = Phase.TRANSITIONING
@@ -301,6 +303,8 @@ func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
 
 
 func _enter_phase(next_phase: Phase) -> void:
+	if next_phase == Phase.ROOM_DECISION and not _can_enter_room_decision():
+		next_phase = Phase.COMBAT_STATS
 	_sequence_generation += 1
 	phase = next_phase
 	_animation_active = false
@@ -323,6 +327,11 @@ func _enter_phase(next_phase: Phase) -> void:
 				var persisted_selection := GameManager.get_selected_post_combat_equipment()
 				if persisted_selection != &"":
 					reward_overlay.select_item_by_id(persisted_selection)
+
+
+func _can_enter_room_decision() -> bool:
+	return bool(_decision_snapshot.get("waves_enabled", false)) \
+		and bool(_decision_snapshot.get("can_continue", false))
 
 
 func _set_phase_visibility() -> void:

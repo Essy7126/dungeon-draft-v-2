@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://dfwja3hug8lax" path="res://data/characters/skill_tree_node_data.gd" id="1_upgrade"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Resource" path="res://data/characters/elf/modifiers/eagle_eye.tres" id="3_modifier"]
-[ext_resource type="Texture2D" path="res://asset/sorts/abre_competences/elfe/oeil_aigle.png" id="4_card"]
+[ext_resource type="Texture2D" uid="uid://4qfulb0hn1mj" path="res://asset/sorts/abre_competences/elfe/oeil_aigle.png" id="4_card"]
+[ext_resource type="Resource" uid="uid://bjqj7qp5ftqt7" path="res://data/characters/elf/modifiers/elf_archer_eagle_eye.tres" id="5_l35us"]
 
 [resource]
 script = ExtResource("1_upgrade")
@@ -14,4 +15,4 @@ card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 2
 target_spell_id = &"elf_precise_shot"
-spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])
+spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier"), ExtResource("5_l35us")])

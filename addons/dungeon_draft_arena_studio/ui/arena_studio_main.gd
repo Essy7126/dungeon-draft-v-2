@@ -95,6 +95,7 @@ var new_width_spin: SpinBox
 var new_height_spin: SpinBox
 var new_orientation_option: OptionButton
 var new_template_option: OptionButton
+var new_visual_mode_option: OptionButton
 var image_dialog: FileDialog
 var open_dialog: FileDialog
 var production_dialog: ConfirmationDialog
@@ -109,6 +110,10 @@ var production_preview_text: RichTextLabel
 var production_plan_text: RichTextLabel
 var production_result_text: RichTextLabel
 var migration_dialog: ConfirmationDialog
+var painted_dynamic_dialog: ConfirmationDialog
+var lab_import_dialog: ConfirmationDialog
+var lab_import_summary: RichTextLabel
+var lab_import_thumbnail: TextureRect
 var _pending_migration_arena: ArenaDefinition = null
 var _pending_migration_key := ""
 var _pending_migration_transfer_id := ""
@@ -141,6 +146,10 @@ var _last_test_log := "Aucun test direct lance depuis cette session."
 var _recovery_timer: Timer
 var _transfer_poll_timer: Timer
 var _announced_transfer_id := ""
+var _painted_logic_only_active := false
+var _pending_lab_arena: ArenaDefinition = null
+var _pending_lab_manifest := {}
+var _pending_lab_transfer_id := ""
 
 
 func setup(host_editor_interface, undo_manager) -> void:
@@ -285,7 +294,7 @@ func _build_left_panel() -> Control:
 	box.add_theme_constant_override("separation", 3)
 	panel.add_child(box)
 	dynamic_mode_button = Button.new()
-	dynamic_mode_button.text = "DYN"
+	dynamic_mode_button.text = "▦"
 	dynamic_mode_button.tooltip_text = "Construction dynamique — éditer terrains, murs et spawns sur ce canvas"
 	dynamic_mode_button.custom_minimum_size = Vector2(52, 42)
 	dynamic_mode_button.toggle_mode = true
@@ -455,10 +464,19 @@ func _build_dynamic_palette() -> VBoxContainer:
 	dynamic_terrain_option.tooltip_text = "Terrain appliqué par le pinceau"
 	for terrain_id in [&"void", &"stone", &"water", &"ice", &"lava"]:
 		var entry := ArenaTerrainRegistry.get_entry(terrain_id)
-		dynamic_terrain_option.add_item(str(entry.get("name", terrain_id)))
+		var shortcut := [&"void", &"stone", &"water", &"ice", &"lava"].find(terrain_id) + 1
+		dynamic_terrain_option.add_item("%s • %s • %s • %s • [%d]" % [
+			entry.get("name", terrain_id), terrain_id,
+			"praticable" if bool(entry.get("walkable", false)) else "non praticable",
+			GridData.CellType.keys()[int(entry.get("cell_type", GridData.CellType.NORMAL))],
+			shortcut,
+		])
 		dynamic_terrain_option.set_item_metadata(dynamic_terrain_option.item_count - 1, terrain_id)
 	dynamic_terrain_option.select(1)
 	dynamic_terrain_option.item_selected.connect(func(_index):
+		canvas.set_brush_preview_terrain(StringName(
+			dynamic_terrain_option.get_selected_metadata()
+		))
 		_select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN)
 	)
 	box.add_child(dynamic_terrain_option)
@@ -807,6 +825,11 @@ func _build_dialogs() -> void:
 	)
 	new_image_edit = _labeled_line(wizard, "Image de fond", "")
 	_add_button(wizard, "Choisir ou importer une image...", _show_image_dialog)
+	new_visual_mode_option = OptionButton.new()
+	new_visual_mode_option.tooltip_text = "Le mode modulaire crée immédiatement toutes les dalles."
+	for label in ["Type : Peinte", "Type : Modulaire", "Type : Hybride"]:
+		new_visual_mode_option.add_item(label)
+	wizard.add_child(new_visual_mode_option)
 	var dimensions := HBoxContainer.new()
 	wizard.add_child(dimensions)
 	new_width_spin = _spin(dimensions, "Largeur", 10, 1, 256)
@@ -833,6 +856,8 @@ func _build_dialogs() -> void:
 	image_dialog.size = Vector2i(960, 680)
 	image_dialog.file_selected.connect(func(path): new_image_edit.text = path)
 	add_child(image_dialog)
+	_build_painted_dynamic_dialog()
+	_build_lab_import_dialog()
 
 	open_dialog = FileDialog.new()
 	open_dialog.title = "Ouvrir une ArenaDefinition"
@@ -854,6 +879,99 @@ func _build_dialogs() -> void:
 
 	_build_production_dialog()
 	_build_migration_dialog()
+
+
+func _build_painted_dynamic_dialog() -> void:
+	painted_dynamic_dialog = ConfirmationDialog.new()
+	painted_dynamic_dialog.title = "CONSTRUCTION DYNAMIQUE SUR UNE MAP PEINTE"
+	painted_dynamic_dialog.dialog_text = (
+		"Le background peint représente actuellement le sol principal.\n\n"
+		+ "Créer une working copy HYBRID conserve le fond et affiche seulement "
+		+ "les terrains différents de la pierre. Aucune ressource canonique ne sera écrite."
+	)
+	painted_dynamic_dialog.ok_button_text = "Créer une working copy HYBRIDE — recommandé"
+	painted_dynamic_dialog.cancel_button_text = "Annuler"
+	painted_dynamic_dialog.add_button("Créer une copie MODULAIRE", false, "modular")
+	painted_dynamic_dialog.add_button("Modifier uniquement la logique", false, "logic_only")
+	painted_dynamic_dialog.confirmed.connect(_convert_painted_to_hybrid)
+	painted_dynamic_dialog.custom_action.connect(func(action):
+		painted_dynamic_dialog.hide()
+		if action == "modular":
+			_convert_painted_to_modular()
+		elif action == "logic_only":
+			_enter_painted_logic_only()
+	)
+	add_child(painted_dynamic_dialog)
+
+
+func _build_lab_import_dialog() -> void:
+	lab_import_dialog = ConfirmationDialog.new()
+	lab_import_dialog.title = "MAP REÇUE DU LAB"
+	lab_import_dialog.size = Vector2i(720, 620)
+	lab_import_dialog.ok_button_text = "Ouvrir comme working copy"
+	lab_import_dialog.cancel_button_text = "Annuler"
+	lab_import_dialog.add_button("Importer comme nouvelle arène", false, "import_new")
+	lab_import_dialog.add_button("Supprimer", false, "delete")
+	lab_import_dialog.confirmed.connect(func(): _open_pending_lab_transfer(false))
+	lab_import_dialog.custom_action.connect(func(action):
+		lab_import_dialog.hide()
+		if action == "import_new":
+			_open_pending_lab_transfer(true)
+		elif action == "delete":
+			_delete_pending_lab_transfer()
+	)
+	var content := VBoxContainer.new()
+	lab_import_dialog.add_child(content)
+	lab_import_thumbnail = TextureRect.new()
+	lab_import_thumbnail.custom_minimum_size = Vector2(640, 260)
+	lab_import_thumbnail.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	lab_import_thumbnail.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	content.add_child(lab_import_thumbnail)
+	lab_import_summary = RichTextLabel.new()
+	lab_import_summary.bbcode_enabled = true
+	lab_import_summary.fit_content = true
+	lab_import_summary.custom_minimum_size.y = 220
+	content.add_child(lab_import_summary)
+	add_child(lab_import_dialog)
+
+
+func _convert_painted_to_hybrid() -> void:
+	_convert_painted_working_copy(ArenaDefinition.VisualMode.HYBRID)
+
+
+func _convert_painted_to_modular() -> void:
+	_convert_painted_working_copy(ArenaDefinition.VisualMode.MODULAR)
+
+
+func _convert_painted_working_copy(target_mode: int) -> void:
+	if arena == null or edit_session == null:
+		return
+	var before := arena.to_snapshot().duplicate(true)
+	arena.visual_mode = target_mode
+	if arena.modular_visual_profile == null:
+		arena.modular_visual_profile = ArenaModularVisualProfile.new()
+	arena.modular_visual_profile.theme_id = arena.theme_id
+	arena.modular_visual_profile.base_terrain_id = &"stone"
+	arena.modular_visual_profile.hybrid_floor_policy = (
+		ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+	)
+	_painted_logic_only_active = false
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change(
+		"Créer une working copy %s" % (
+			"HYBRID" if target_mode == ArenaDefinition.VisualMode.HYBRID else "MODULAR"
+		),
+		before,
+		arena.to_snapshot()
+	)
+	canvas.set_arena(arena)
+	_enter_dynamic_construction()
+
+
+func _enter_painted_logic_only() -> void:
+	_painted_logic_only_active = true
+	canvas.set_painted_logic_only(true)
+	_enter_dynamic_construction()
 
 
 func _build_production_dialog() -> void:
@@ -987,11 +1105,13 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 			edit_session.history.dirty_state_changed.disconnect(_on_dirty_state_changed)
 	edit_session = next_session
 	arena = edit_session.working_arena
+	_painted_logic_only_active = false
 	_fallback_undo = edit_session.history.undo_redo
 	edit_session.history.history_changed.connect(_on_history_changed)
 	edit_session.history.dirty_state_changed.connect(_on_dirty_state_changed)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	canvas.set_arena(arena)
+	canvas.set_painted_logic_only(false)
 	canvas.set_saved_transform(edit_session.saved_transform())
 	_restore_session_editor_state()
 	_verification_source = GridTransformService.INVALID_CELL
@@ -1012,6 +1132,8 @@ func _show_new_dialog() -> void:
 	new_name_edit.text = "Nouvelle arene"
 	new_id_edit.text = "nouvelle_arene"
 	new_image_edit.text = ""
+	if new_visual_mode_option != null:
+		new_visual_mode_option.select(ArenaDefinition.VisualMode.PAINTED)
 	new_dialog.popup_centered()
 
 
@@ -1036,6 +1158,23 @@ func _create_from_wizard() -> void:
 		created.set_identity(new_name_edit.text, requested_id)
 		created.grid_size = Vector2i(int(new_width_spin.value), int(new_height_spin.value))
 	created.camp_orientation = new_orientation_option.selected
+	created.visual_mode = new_visual_mode_option.selected \
+		if new_visual_mode_option != null else ArenaDefinition.VisualMode.PAINTED
+	if created.visual_mode in [
+		ArenaDefinition.VisualMode.MODULAR,
+		ArenaDefinition.VisualMode.HYBRID,
+	]:
+		created.theme_id = &"dynamic_default"
+		created.modular_visual_profile = ArenaModularVisualProfile.new()
+		created.modular_visual_profile.theme_id = created.theme_id
+		created.modular_visual_profile.hybrid_floor_policy = (
+			ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+		)
+		for y in range(created.grid_size.y):
+			for x in range(created.grid_size.x):
+				ArenaTerrainRegistry.configure_cell(
+					created.ensure_cell(Vector2i(x, y)), &"stone"
+				)
 	if not new_image_edit.text.strip_edges().is_empty():
 		var imported_path := _import_image(new_image_edit.text, requested_id)
 		if imported_path.is_empty():
@@ -1046,9 +1185,13 @@ func _create_from_wizard() -> void:
 		if texture != null:
 			created.source_image_size = Vector2i(texture.get_size())
 	_set_arena(created, true, "new:%s:%d" % [requested_id, Time.get_ticks_usec()])
-	start_calibration()
 	_autosave()
-	_set_status("Cliquez trois centres de cases pour aligner la grille.")
+	if created.visual_mode == ArenaDefinition.VisualMode.MODULAR:
+		show_dynamic_construction()
+		_set_status("Map modulaire créée : les dalles sont visibles et prêtes à peindre.")
+	else:
+		start_calibration()
+		_set_status("Cliquez trois centres de cases pour aligner la grille.")
 
 
 func _import_image(source: String, arena_id: String) -> String:
@@ -1084,6 +1227,114 @@ func _open_canonical(path: String) -> void:
 		return
 	_set_arena(loaded, false, path)
 	_set_status("Arene ouverte : %s" % loaded.display_name)
+
+
+func pending_lab_transfer_count() -> int:
+	return ArenaLabTransferService.pending_transfers().size()
+
+
+func open_standalone_lab() -> bool:
+	const LAB_SCENE := "res://tools/labs/dynamic_arena/DynamicArenaLab.tscn"
+	if editor_interface == null or not ResourceLoader.exists(LAB_SCENE):
+		_set_status("Ouvrez la scène DynamicArenaLab.tscn pour lancer le Lab autonome.", true)
+		return false
+	editor_interface.open_scene_from_path(LAB_SCENE)
+	editor_interface.play_current_scene()
+	_set_status("Lab autonome lancé dans sa scène dédiée.")
+	return true
+
+
+func show_lab_import_dialog() -> bool:
+	var transfers := ArenaLabTransferService.pending_transfers()
+	if transfers.is_empty():
+		_set_status("Aucun transfert du Lab n'attend d'être importé.")
+		return false
+	_pending_lab_transfer_id = str(transfers[0].get("transfer_id", ""))
+	var loaded := ArenaLabTransferService.load_transfer(_pending_lab_transfer_id)
+	if not bool(loaded.get("ok", false)):
+		_set_status("Transfert Lab corrompu : %s" % loaded.get("error", "erreur"), true)
+		return false
+	_pending_lab_arena = loaded.arena as ArenaDefinition
+	_pending_lab_manifest = (loaded.manifest as Dictionary).duplicate(true)
+	var counts := _pending_lab_manifest.get("terrain_counts", {}) as Dictionary
+	lab_import_summary.text = (
+		"[b]%s[/b]\n\n"
+		+ "Taille : %s\nMode : %s\nTerrains : %s\n"
+		+ "Murs : %d   Spawns : %d   Objectifs : %d\n"
+		+ "Validation : %s\nEmpreinte : %s"
+	) % [
+		_pending_lab_manifest.get("name", _pending_lab_arena.display_name),
+		str(_pending_lab_manifest.get("grid_size", _pending_lab_manifest.get("size", []))),
+		["PAINTED", "MODULAR", "HYBRID"][clampi(
+			int(_pending_lab_manifest.get("visual_mode", _pending_lab_arena.visual_mode)), 0, 2
+		)],
+		JSON.stringify(counts),
+		int(_pending_lab_manifest.get("wall_count", 0)),
+		int(_pending_lab_manifest.get("spawn_count", 0)),
+		int(_pending_lab_manifest.get("objective_count", 0)),
+		str(_pending_lab_manifest.get("validation_verdict", "INCONNU")),
+		str(_pending_lab_manifest.get("arena_fingerprint", "")).left(16),
+	]
+	lab_import_thumbnail.texture = null
+	var thumbnail_path := str(loaded.directory).path_join(
+		str(_pending_lab_manifest.get("thumbnail_path", "thumbnail.png"))
+	)
+	if FileAccess.file_exists(thumbnail_path):
+		var thumbnail := Image.load_from_file(ProjectSettings.globalize_path(thumbnail_path))
+		if thumbnail != null and not thumbnail.is_empty():
+			lab_import_thumbnail.texture = ImageTexture.create_from_image(thumbnail)
+	lab_import_dialog.popup_centered()
+	return true
+
+
+func _open_pending_lab_transfer(as_new: bool) -> void:
+	if _pending_lab_arena == null or _pending_lab_transfer_id.is_empty():
+		return
+	var expected := str(_pending_lab_manifest.get(
+		"arena_fingerprint", _pending_lab_manifest.get("fingerprint", "")
+	))
+	var received := ArenaDefinition.new()
+	if not received.restore_snapshot(_pending_lab_arena.to_snapshot()):
+		_set_status("Le transfert Lab ne peut pas créer de working copy.", true)
+		return
+	if as_new:
+		received.set_identity(
+			_pending_lab_arena.display_name + " (import Lab)",
+			str(_pending_lab_arena.arena_id) + "_lab_import"
+		)
+	_set_arena(
+		received,
+		true,
+		"lab_transfer:%s:%s" % [_pending_lab_transfer_id, "new" if as_new else "working"]
+	)
+	var actual := ArenaEditSession.fingerprint(arena.to_snapshot())
+	if not as_new and actual != expected:
+		_set_status("Import Lab refusé : l'empreinte de la working copy diffère.", true)
+		return
+	ArenaLabTransferService.mark_imported(_pending_lab_transfer_id)
+	_set_status(
+		"Transfert Lab ouvert sans perte : %d terrains, %d murs, %d spawns." % [
+			int(_pending_lab_manifest.get("terrain_count_total", 0)),
+			int(_pending_lab_manifest.get("wall_count", 0)),
+			int(_pending_lab_manifest.get("spawn_count", 0)),
+		]
+	)
+	_pending_lab_arena = null
+	_pending_lab_manifest = {}
+	_pending_lab_transfer_id = ""
+
+
+func _delete_pending_lab_transfer() -> void:
+	if _pending_lab_transfer_id.is_empty():
+		return
+	var transfer_id := _pending_lab_transfer_id
+	if ArenaLabTransferService.delete_transfer(transfer_id):
+		_set_status("Transfert Lab supprimé : %s" % transfer_id)
+	else:
+		_set_status("Le transfert Lab n'a pas pu être supprimé.", true)
+	_pending_lab_arena = null
+	_pending_lab_manifest = {}
+	_pending_lab_transfer_id = ""
 
 
 func import_latest_lab_transfer() -> bool:
@@ -1372,6 +1623,7 @@ func _refresh_production_wizard() -> void:
 		production_dialog.get_ok_button().disabled = true
 		return
 	var report := production_plan.validation as ArenaValidationReport
+	var visual_report := production_plan.visual_report as ArenaVisualAssemblyReport
 	var validation_lines := PackedStringArray([
 		"[b]%s[/b]" % report.verdict(),
 		"%d erreur(s), %d avertissement(s), %d information(s)" % [
@@ -1389,7 +1641,15 @@ func _refresh_production_wizard() -> void:
 		+ "• ArenaVisualAssembler partagé avec painted_battle/modular_battle\n"
 		+ "• UnitView et UnitData réels en vue Jeu\n"
 		+ "• foreground et occlusion réels\n\n"
-		+ "Les trois vues seront capturées en 1280 × 720 lors de la production."
+		+ "Les trois vues seront capturées en 1280 × 720 lors de la production.\n\n"
+		+ "[b]Preuve d'assemblage[/b]\n"
+		+ "%d dalles attendues / %d rendues\n%d murs attendus / %d rendus\n%s" % [
+			visual_report.expected_terrain_cell_count,
+			visual_report.rendered_terrain_node_count,
+			visual_report.expected_wall_count,
+			visual_report.rendered_wall_count,
+			"ASSEMBLAGE VALIDE" if visual_report.valid else "ASSEMBLAGE INCOMPLET",
+		]
 	)
 	var plan_lines := PackedStringArray([
 		"[b]Destination[/b]  %s" % production_plan.destination,
@@ -1428,7 +1688,16 @@ func _run_confirmed_production() -> void:
 		candidate, production_destination_edit.text.strip_edges(), preview_images
 	)
 	if not bool(result.get("ok", false)):
-		_show_production_failure("Production refusée : %s" % result.get("error", "erreur inconnue"))
+		var failed_visual := result.get("visual_report") as ArenaVisualAssemblyReport
+		var visual_details := ""
+		if failed_visual != null:
+			visual_details = "\n%d dalle(s) rendue(s) sur %d attendue(s)." % [
+				failed_visual.rendered_terrain_node_count,
+				failed_visual.expected_terrain_cell_count,
+			]
+		_show_production_failure(
+			"Production refusée : %s%s" % [result.get("error", "erreur inconnue"), visual_details]
+		)
 		return
 	var produced := ResourceLoader.load(
 		str(result.arena_path), "", ResourceLoader.CACHE_MODE_IGNORE
@@ -1445,10 +1714,19 @@ func _run_confirmed_production() -> void:
 	if runtime_preview != null:
 		runtime_preview.set_arena(arena)
 	_refresh_all()
+	var final_visual := result.visual_report as ArenaVisualAssemblyReport
 	production_result_text.text = (
 		"[font_size=28][b][color=green]SALLE PRÊTE[/color][/b][/font_size]\n\n"
+		+ "✓ %d dalles attendues / %d rendues\n" % [
+			final_visual.expected_terrain_cell_count,
+			final_visual.rendered_terrain_node_count,
+		]
+		+ "✓ Terrains : %s\n" % JSON.stringify(final_visual.rendered_by_terrain_id)
+		+ "✓ %d murs attendus / %d rendus\n" % [
+			final_visual.expected_wall_count, final_visual.rendered_wall_count,
+		]
 		+ "✓ Définition valide\n✓ Grille valide\n✓ Pathfinding valide\n"
-		+ "✓ Spawns valides\n✓ Rendu valide\n✓ Preview runtime valide\n"
+		+ "✓ Spawns valides\n✓ Preview Art valide\n✓ Preview Jeu valide\n"
 		+ "✓ Ressources rechargées\n✓ Test direct disponible\n\n"
 		+ "[b]%s[/b]" % result.directory
 	)
@@ -1770,7 +2048,7 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	if edit_session != null:
 		edit_session.history.notify_preview_changed()
-	canvas.queue_redraw()
+	canvas.update_terrain_cells(cells)
 	_refresh_inspector(cells[-1] if not cells.is_empty() else GridTransformService.INVALID_CELL)
 
 
@@ -1836,6 +2114,7 @@ func _on_stroke_cancelled() -> void:
 	_stroke_cell_count = 0
 	if canvas != null:
 		canvas.arena = arena
+		canvas.refresh_terrain_plan()
 		canvas.queue_redraw()
 	_sync_advanced_values()
 	_refresh_title()
@@ -1961,6 +2240,7 @@ func _flush_recovery() -> void:
 
 func _refresh_all() -> void:
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	canvas.refresh_terrain_plan()
 	canvas.queue_redraw()
 	if runtime_preview != null and runtime_preview.visible:
 		runtime_preview.set_arena(arena)
@@ -1986,6 +2266,7 @@ func _on_history_changed() -> void:
 	arena = edit_session.working_arena
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	canvas.arena = arena
+	canvas.refresh_terrain_plan()
 	canvas.queue_redraw()
 	_sync_advanced_values()
 	_refresh_title()
@@ -2513,18 +2794,35 @@ func show_dynamic_construction() -> void:
 		_select_tool_and_preset(ArenaStudioCanvas.Tool.SELECT, 0)
 		_set_status("Construction dynamique quittée — document et historique conservés.")
 		return
+	if arena.visual_mode == ArenaDefinition.VisualMode.PAINTED \
+			and not _painted_logic_only_active:
+		_show_editor_canvas(false)
+		painted_dynamic_dialog.popup_centered()
+		if dynamic_mode_button != null:
+			dynamic_mode_button.set_pressed_no_signal(false)
+		return
+	_enter_dynamic_construction()
+
+
+func _enter_dynamic_construction() -> void:
 	cancel_active_gesture()
 	workspace_mode = WorkspaceMode.DYNAMIC_CONSTRUCTION
 	canvas.show()
 	runtime_preview.hide()
 	canvas.set_dynamic_construction_mode(true)
+	canvas.set_painted_logic_only(_painted_logic_only_active)
+	canvas.refresh_terrain_plan()
 	if dynamic_palette != null:
 		dynamic_palette.show()
 	if dynamic_mode_button != null:
 		dynamic_mode_button.set_pressed_no_signal(true)
 	_refresh_dynamic_palette()
 	_select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN)
-	_set_status("Construction dynamique — même canvas, même ArenaEditSession, même historique.")
+	_set_status(
+		"Édition logique PAINTED : le fond peint fait foi, les couleurs sont des repères." \
+		if _painted_logic_only_active else
+		"Construction dynamique — vraies dalles, même ArenaEditSession et même historique."
+	)
 
 
 func _show_editor_canvas(preserve_dynamic_mode := false) -> void:
@@ -2548,15 +2846,26 @@ func _select_dynamic_tool(tool: int) -> void:
 		return
 	tool_list.select(tool)
 	_on_tool_selected(tool)
+	if tool == ArenaStudioCanvas.Tool.TERRAIN:
+		canvas.set_brush_preview_terrain(StringName(
+			dynamic_terrain_option.get_selected_metadata()
+		))
 
 
 func _refresh_dynamic_palette() -> void:
 	if dynamic_document_label == null or arena == null:
 		return
-	dynamic_document_label.text = "%s • %d × %d • %s" % [
+	var mode_name: String = ["PAINTED", "MODULAR", "HYBRID"][arena.visual_mode]
+	dynamic_document_label.text = "%s • %d × %d • %s • %s" % [
 		arena.display_name, arena.grid_size.x, arena.grid_size.y,
+		mode_name,
 		"non enregistrée" if dirty else "enregistrée",
 	]
+	if _painted_logic_only_active:
+		dynamic_document_label.text += (
+			"\nATTENTION : les dalles modulaires ne seront pas rendues ; "
+			+ "le sol peint fait foi."
+		)
 	if dynamic_width_spin != null:
 		dynamic_width_spin.set_value_no_signal(arena.grid_size.x)
 	if dynamic_height_spin != null:

@@ -15,6 +15,8 @@ var _stats_label: Label
 var _paths_label: Label
 var _xp_curve: SkillTreeXpCurve
 var _path_test_label: Label
+var _preview_text: RichTextLabel
+var _analysis_text: RichTextLabel
 
 
 func _ready() -> void:
@@ -22,6 +24,8 @@ func _ready() -> void:
 	_build_errors_tab()
 	_build_stats_tab()
 	_build_simulator_tab()
+	_build_preview_tab()
+	_build_analysis_tab()
 	_build_help_tab()
 
 
@@ -40,6 +44,70 @@ func set_context(
 
 func select_simulator_tab() -> void:
 	current_tab = 2
+
+
+func set_preview(report: Dictionary) -> void:
+	current_tab = 3
+	if _preview_text == null:
+		return
+	if not report.get("ok", false):
+		_preview_text.text = "[b]Prévisualisation impossible[/b]\n%s" % report.get("error", "Erreur inconnue")
+		return
+	var lines := PackedStringArray([
+		"[b]SORT DE BASE[/b]  %s" % JSON.stringify(report.get("base_spell", {})),
+		"[b]SORT RÉSULTANT[/b]  %s" % JSON.stringify(report.get("resulting_spell", {})),
+		"[b]TRACE DES MODIFICATEURS[/b]",
+	])
+	for trace_value in report.get("trace", []):
+		var trace := trace_value as Dictionary
+		lines.append("• %s — %s [%s]" % [
+			trace.get("modifier_name", "Effet"), trace.get("summary", ""),
+			"appliqué" if trace.get("applies", false) else "hors cible",
+		])
+	lines.append("[b]DELTA PAR SCÉNARIO (autorité runtime)[/b]")
+	for scenario_value in report.get("scenarios", []):
+		var scenario := scenario_value as Dictionary
+		lines.append("• %s : %s" % [
+			(scenario.get("scenario", {}) as Dictionary).get("id", "scenario"),
+			JSON.stringify(scenario.get("delta", {})),
+		])
+	lines.append("[b]AVERTISSEMENTS[/b]")
+	var warnings := report.get("warnings", PackedStringArray()) as PackedStringArray
+	lines.append("Aucun" if warnings.is_empty() else "\n".join(warnings))
+	_preview_text.text = "\n".join(lines)
+
+
+func set_analysis(report: Dictionary) -> void:
+	current_tab = 4
+	if _analysis_text == null:
+		return
+	var enumeration := report.get("enumeration", {}) as Dictionary
+	var reachability := report.get("reachability", {}) as Dictionary
+	var count_text := "au moins %d (limite atteinte)" % enumeration.get("count", 0) \
+		if enumeration.get("truncated", false) else "%d (exact)" % enumeration.get("count", 0)
+	_analysis_text.text = """[b]ANALYSE COMPLÈTE[/b]
+Configurations : %s
+Durée : %.2f ms
+
+[b]ACCESSIBILITÉ INDÉPENDANTE[/b]
+Atteignables : %d
+Bloqués : %s
+Impossibles : %s
+Rangs morts : %s
+
+[b]DOMINANCE PRUDENTE[/b]
+%s
+
+[b]CAPSTONES CONSULTATIVES[/b]
+%s""" % [
+		count_text, float(report.get("duration_usec", 0)) / 1000.0,
+		(reachability.get("reachable_node_ids", []) as Array).size(),
+		str(reachability.get("blocked_node_ids", [])),
+		str(reachability.get("impossible_node_ids", [])),
+		str(reachability.get("dead_ranks", [])),
+		JSON.stringify(report.get("dominance", []), "  "),
+		JSON.stringify(report.get("capstones", []), "  "),
+	]
 
 
 func _build_errors_tab() -> void:
@@ -119,6 +187,24 @@ func _build_simulator_tab() -> void:
 	xp_row.add_child(first_path)
 
 
+func _build_preview_tab() -> void:
+	_preview_text = RichTextLabel.new()
+	_preview_text.name = "Prévisualisation runtime"
+	_preview_text.bbcode_enabled = true
+	_preview_text.fit_content = false
+	_preview_text.text = "Sélectionnez un nœud puis utilisez Prévisualiser."
+	add_child(_preview_text)
+
+
+func _build_analysis_tab() -> void:
+	_analysis_text = RichTextLabel.new()
+	_analysis_text.name = "Analyse complète"
+	_analysis_text.bbcode_enabled = true
+	_analysis_text.fit_content = false
+	_analysis_text.text = "Utilisez Analyse complète pour lancer l’énumération, l’accessibilité, la dominance et les capstones."
+	add_child(_analysis_text)
+
+
 func _build_help_tab() -> void:
 	var help := RichTextLabel.new()
 	help.name = "Aide"
@@ -182,8 +268,11 @@ func _refresh_stats() -> void:
 	var threshold_parts := PackedStringArray()
 	for rank_data in _sorted_ranks():
 		threshold_parts.append("R%d : %d XP" % [rank_data.rank, rank_data.required_total_xp])
-	_paths_label.text = "Courbe d’XP : %s\nConfigurations finales valides : %d" % [
-		"  →  ".join(threshold_parts), stats.get("final_configuration_count", 0),
+	var enumeration := stats.get("enumeration", {}) as Dictionary
+	var count_text := "au moins %d (limite atteinte)" % enumeration.get("count", 0) \
+		if enumeration.get("truncated", false) else "%d (exact)" % enumeration.get("count", 0)
+	_paths_label.text = "Courbe d’XP : %s\nConfigurations finales valides : %s" % [
+		"  →  ".join(threshold_parts), count_text,
 	]
 	_xp_curve.set_discipline(_discipline)
 	_path_test_label.text = ""
@@ -277,11 +366,12 @@ func _select_first_valid_path() -> void:
 func _test_all_paths() -> void:
 	if _discipline == null:
 		return
-	var configurations := SkillTreePathService.final_configurations(_discipline, 1001)
+	var enumeration := SkillTreePathService.enumeration_result(_discipline, 1000)
+	var configurations := enumeration.get("configurations", []) as Array
 	if configurations.is_empty():
 		_path_test_label.text = "Échec : aucun chemin final valide."
 		return
-	var tested := mini(configurations.size(), 1000)
+	var tested := configurations.size()
 	var failures := 0
 	var maximum_xp := _maximum_xp()
 	for index in range(tested):
@@ -299,8 +389,8 @@ func _test_all_paths() -> void:
 		if failures == 0 else
 		"Échec : %d chemin(s) impossible(s) sur %d testé(s)." % [failures, tested]
 	)
-	if configurations.size() > tested:
-		_path_test_label.text += " Contrôle limité aux 1 000 premiers chemins."
+	if enumeration.get("truncated", false):
+		_path_test_label.text += " Contrôle limité aux 1 000 premiers chemins ; le total affiché est au moins 1 000."
 
 
 func _on_error_activated() -> void:

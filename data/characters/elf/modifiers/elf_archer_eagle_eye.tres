@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="SpellModSkillTreeEffect" format=3 uid="uid://bjqj7qp5ftqt7"]
+
+[ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="1_da5a3"]
+
+[resource]
+script = ExtResource("1_da5a3")
+modifier_name = "Effet de Œil d’aigle"
+target_spell_id = &"elf_precise_shot"

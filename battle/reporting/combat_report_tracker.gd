@@ -8,11 +8,17 @@ var _before_snapshots: Dictionary = {}
 var _movement_connections: Array[Dictionary] = []
 
 
-func begin(character_states: Array, room_index: int, room_name: String) -> CombatReport:
+func begin(
+	character_states: Array,
+	room_index: int,
+	room_name: String,
+	room_flow_mode: StringName = &"SINGLE_ENCOUNTER"
+	) -> CombatReport:
 	discard()
 	_report = CombatReport.new()
 	_report.room_index = room_index
 	_report.room_name = room_name if room_name != "" else "Salle %d" % (room_index + 1)
+	_report.room_flow_mode = room_flow_mode
 	_report.report_id = StringName("combat_%03d_%010d" % [
 		maxi(room_index, 0),
 		Time.get_ticks_msec(),

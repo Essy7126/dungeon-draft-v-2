@@ -62,6 +62,22 @@ func set_context(
 	_refresh()
 
 
+func commit_pending_edits() -> void:
+	# Les éditeurs déclenchent leur transaction sur focus_exited/popup_closed.
+	# Libérer le focus inclut donc la valeur visible avant une commande globale.
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	var focused := viewport.gui_get_focus_owner()
+	if focused != null and is_ancestor_of(focused):
+		focused.release_focus()
+	for picker_value in find_children("*", "ColorPickerButton", true, false):
+		var picker := picker_value as ColorPickerButton
+		if picker != null and picker.get_popup() != null \
+				and picker.get_popup().visible:
+			picker.get_popup().hide()
+
+
 func _build_tabs() -> void:
 	for tab_name in TAB_NAMES:
 		var scroll := ScrollContainer.new()
@@ -221,13 +237,18 @@ func _build_node(node: SkillUpgradeData) -> void:
 		effects, "Partager un effet existant",
 		"Choisissez une Resource SpellModifier. Elle restera partagée après sauvegarde, mais sera modifiée sur une copie de travail isolée."
 	)
-	var existing_picker := EditorResourcePicker.new()
-	existing_picker.base_type = "SpellModifier"
-	existing_picker.resource_changed.connect(func(resource: Resource):
-		if resource is SpellModifier:
-			existing_modifier_requested.emit(node, resource)
-	)
-	existing_field.add_child(existing_picker)
+	if Engine.is_editor_hint():
+		var existing_picker := EditorResourcePicker.new()
+		existing_picker.base_type = "SpellModifier"
+		existing_picker.resource_changed.connect(func(resource: Resource):
+			if resource is SpellModifier:
+				existing_modifier_requested.emit(node, resource)
+		)
+		existing_field.add_child(existing_picker)
+	else:
+		var unavailable := Label.new()
+		unavailable.text = "Sélecteur disponible dans l’éditeur Godot."
+		existing_field.add_child(unavailable)
 	var relations := _box("Relations")
 	_add_relation_list(relations, node)
 	var appearance := _box("Apparence")
@@ -311,8 +332,15 @@ func _build_spell(spell: Spell) -> void:
 	_add_integer(advanced, spell, &"summon_max_living_team", "Maximum vivant dans l’équipe", "Limite d’invocations simultanées.", 0, 999)
 	_add_integer(advanced, spell, &"condition_hp_at_or_below", "Condition de PV", "-1 désactive la condition ; sinon le sort exige des PV inférieurs ou égaux.", -1, 99999)
 	_add_stable_id(advanced, spell, &"requires_absent_unit_id", "Unité devant être absente")
-	_add_readonly(advanced, "Recharges initiales des invocations", JSON.stringify(spell.summon_initial_cooldowns), "Dictionnaire conservé tel quel. Utilisez l’Inspecteur Godot pour une édition structurée.")
-	_add_readonly(advanced, "Modificateurs permanents", "%d Resource(s)" % spell.modifiers.size(), "Liste des SpellModifier toujours actifs sur ce sort.")
+	_add_integer_dictionary(
+		advanced, spell, &"summon_initial_cooldowns",
+		"Recharges initiales des invocations",
+		"Associe chaque identifiant de sort invoqué à sa recharge initiale."
+	)
+	_add_ordered_modifier_list(
+		advanced, spell, &"modifiers", "Modificateurs permanents",
+		"Liste ordonnée des SpellModifier toujours actifs sur ce sort."
+	)
 	_add_storage_info(advanced, spell)
 
 
@@ -610,6 +638,14 @@ func _add_resource(
 		label_text: String, base_type: String
 	) -> void:
 	var field := _field(parent, label_text, "Choisissez une Resource %s depuis le projet." % base_type)
+	if not Engine.is_editor_hint():
+		var current := target.get(property_name) as Resource
+		var fallback := Label.new()
+		fallback.text = current.resource_path if current != null and not current.resource_path.is_empty() else "Aucune ressource"
+		fallback.tooltip_text = "Sélecteur disponible dans l’éditeur Godot."
+		field.add_child(fallback)
+		_add_inline_messages(field, property_name)
+		return
 	var picker := EditorResourcePicker.new()
 	picker.base_type = base_type
 	picker.edited_resource = target.get(property_name) as Resource
@@ -619,6 +655,141 @@ func _add_resource(
 	picker.resource_changed.connect(func(resource: Resource):
 		property_change_requested.emit(target, property_name, resource, "Modifier %s" % label_text)
 	)
+
+
+func _add_integer_dictionary(
+		parent: VBoxContainer, target: Object, property_name: StringName,
+		label_text: String, description: String
+	) -> void:
+	var box := _field(parent, label_text, description)
+	var values := target.get(property_name) as Dictionary
+	var keys := values.keys()
+	keys.sort_custom(func(a, b): return str(a).naturalnocasecmp_to(str(b)) < 0)
+	for key_value in keys:
+		var original_key := str(key_value)
+		var row := HBoxContainer.new()
+		box.add_child(row)
+		var key_edit := LineEdit.new()
+		key_edit.text = original_key
+		key_edit.placeholder_text = "Identifiant du sort"
+		key_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(key_edit)
+		var amount := SpinBox.new()
+		amount.min_value = 0
+		amount.max_value = 999
+		amount.value = int(values[key_value])
+		amount.custom_minimum_size.x = 92
+		row.add_child(amount)
+		var remove := Button.new()
+		remove.text = "Retirer"
+		row.add_child(remove)
+		key_edit.focus_exited.connect(func():
+			var next_key := key_edit.text.strip_edges()
+			if not next_key.is_empty() and next_key != original_key:
+				var changed := (target.get(property_name) as Dictionary).duplicate(true)
+				var old_value: Variant = changed.get(original_key, int(amount.value))
+				changed.erase(original_key)
+				changed[next_key] = old_value
+				property_change_requested.emit(target, property_name, changed, "Renommer une recharge d’invocation")
+		)
+		amount.value_changed.connect(func(next_value: float):
+			var changed := (target.get(property_name) as Dictionary).duplicate(true)
+			changed[key_edit.text.strip_edges()] = int(next_value)
+			property_change_requested.emit(target, property_name, changed, "Modifier une recharge d’invocation")
+		)
+		remove.pressed.connect(func():
+			var changed := (target.get(property_name) as Dictionary).duplicate(true)
+			changed.erase(original_key)
+			changed.erase(key_edit.text.strip_edges())
+			property_change_requested.emit(target, property_name, changed, "Retirer une recharge d’invocation")
+		)
+	var add := Button.new()
+	add.text = "+ Ajouter une recharge"
+	add.pressed.connect(func():
+		var changed := (target.get(property_name) as Dictionary).duplicate(true)
+		var suffix := 1
+		var key := "nouveau_sort"
+		while changed.has(key):
+			suffix += 1
+			key = "nouveau_sort_%d" % suffix
+		changed[key] = 0
+		property_change_requested.emit(target, property_name, changed, "Ajouter une recharge d’invocation")
+	)
+	box.add_child(add)
+
+
+func _add_ordered_modifier_list(
+		parent: VBoxContainer, target: Object, property_name: StringName,
+		label_text: String, description: String
+	) -> void:
+	var box := _field(parent, label_text, description)
+	var modifiers := target.get(property_name) as Array
+	for index in range(modifiers.size()):
+		var modifier := modifiers[index] as SpellModifier
+		if modifier == null:
+			continue
+		var row := HBoxContainer.new()
+		box.add_child(row)
+		var open := Button.new()
+		open.text = modifier.modifier_name
+		open.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		open.pressed.connect(func(): subject_requested.emit(modifier))
+		row.add_child(open)
+		for spec in [["↑", -1], ["↓", 1]]:
+			var move := Button.new()
+			move.text = str(spec[0])
+			move.disabled = index + int(spec[1]) < 0 or index + int(spec[1]) >= modifiers.size()
+			move.pressed.connect(func():
+				var changed := (target.get(property_name) as Array).duplicate()
+				var next_index := index + int(spec[1])
+				var value: Variant = changed[index]
+				changed.remove_at(index)
+				changed.insert(next_index, value)
+				property_change_requested.emit(target, property_name, changed, "Réordonner les modificateurs permanents")
+			)
+			row.add_child(move)
+		var duplicate := Button.new()
+		duplicate.text = "Copier"
+		duplicate.pressed.connect(func():
+			var changed := (target.get(property_name) as Array).duplicate()
+			changed.insert(index + 1, modifier.duplicate(true))
+			property_change_requested.emit(target, property_name, changed, "Dupliquer un modificateur permanent")
+		)
+		row.add_child(duplicate)
+		var unique := Button.new()
+		unique.text = "Unique"
+		unique.pressed.connect(func():
+			var changed := (target.get(property_name) as Array).duplicate()
+			changed[index] = modifier.duplicate(true)
+			property_change_requested.emit(target, property_name, changed, "Rendre unique un modificateur permanent")
+		)
+		row.add_child(unique)
+		var remove := Button.new()
+		remove.text = "Retirer"
+		remove.pressed.connect(func():
+			var changed := (target.get(property_name) as Array).duplicate()
+			changed.remove_at(index)
+			property_change_requested.emit(target, property_name, changed, "Retirer un modificateur permanent")
+		)
+		row.add_child(remove)
+	var add_new := Button.new()
+	add_new.text = "+ Créer un effet"
+	add_new.pressed.connect(func():
+		var changed := (target.get(property_name) as Array).duplicate()
+		changed.append(SpellModSkillTreeEffect.new())
+		property_change_requested.emit(target, property_name, changed, "Ajouter un modificateur permanent")
+	)
+	box.add_child(add_new)
+	if Engine.is_editor_hint():
+		var picker := EditorResourcePicker.new()
+		picker.base_type = "SpellModifier"
+		picker.resource_changed.connect(func(resource: Resource):
+			if resource is SpellModifier:
+				var changed := (target.get(property_name) as Array).duplicate()
+				changed.append(resource)
+				property_change_requested.emit(target, property_name, changed, "Partager un modificateur permanent")
+		)
+		box.add_child(picker)
 
 
 func _add_spell_selector(parent: VBoxContainer, node: SkillUpgradeData) -> void:

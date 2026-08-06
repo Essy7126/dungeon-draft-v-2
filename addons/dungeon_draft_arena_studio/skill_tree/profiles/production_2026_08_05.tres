@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SkillTreeCharacterizationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/skill_tree/domain/skill_tree_characterization_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+profile_id = &"production_2026_08_05"
+display_name = "Caractérisation de production du 5 août 2026"
+observed_at = "2026-08-05"
+base_commit = "94fcdc700cf576a15ee4134d9f3dee680626827a"
+expected_rank_count = 5
+expected_thresholds = PackedInt32Array(0, 5, 12, 21, 30)
+expected_choices = PackedInt32Array(0, 2, 4, 8, 4)
+expected_final_configuration_count = 16

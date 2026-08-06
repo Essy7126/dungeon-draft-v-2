@@ -147,7 +147,10 @@ func test_valid_placement_and_all_requested_rejections() -> void:
 	var lab := _new_lab()
 	assert_not_null(lab.place_wall(Vector2i(3, 3), DynamicWall.WallVariant.BASE))
 	assert_true(lab.has_wall(Vector2i(3, 3)))
-	assert_false((lab._tile_sprites[Vector2i(3, 3)] as Sprite2D).visible)
+	assert_true(
+		(lab._tile_sprites[Vector2i(3, 3)] as Sprite2D).visible,
+		"Le mur se superpose a la dalle au lieu de supprimer le sol."
+	)
 	assert_null(lab.place_wall(Vector2i(-1, 0), DynamicWall.WallVariant.BASE))
 	assert_null(lab.place_wall(lab.start_cell, DynamicWall.WallVariant.BASE), "unite")
 	lab.grid.set_type(Vector2i(0, 0), GridData.CellType.HOLE)

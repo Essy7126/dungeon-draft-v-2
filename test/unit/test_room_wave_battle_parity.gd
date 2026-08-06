@@ -1,6 +1,6 @@
 extends GutTest
 
-const FIRST_RUN: RunData = preload("res://data/runs/run_default.tres")
+const FIRST_RUN: RunData = preload("res://data/runs/fixed_trio_prototype_run.tres")
 
 
 func before_each() -> void:

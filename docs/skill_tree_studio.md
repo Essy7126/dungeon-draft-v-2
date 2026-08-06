@@ -1,149 +1,130 @@
 # Studio des personnages et compétences
 
-Le Studio permet de modifier les trois personnages jouables, leurs caractéristiques,
-leurs disciplines, leurs rangs, leurs améliorations et les effets appliqués aux sorts.
-Il utilise directement les mêmes Resources que le jeu.
+Statut : `WORKTREE_CANDIDATE`
+Base : `94fcdc700cf576a15ee4134d9f3dee680626827a`, branche `main`
+Vérifié le : 6 août 2026
 
-## Ouvrir le Studio
+Le Studio édite directement les `UnitData`, sorts, disciplines, rangs, améliorations et
+modificateurs utilisés par le jeu. Toute saisie travaille d’abord sur une copie isolée :
+aucune donnée de production n’est écrite avant la transaction de sauvegarde.
 
-Dans Godot, utilisez l’une de ces deux entrées :
+## Ouvrir et naviguer
 
-- **Projet > Outils > Dungeon Draft : ouvrir le Studio des compétences** ;
-- le bouton **Compétences** de la barre du Dungeon Draft Studio.
+Ouvrez **Projet > Outils > Dungeon Draft : ouvrir le Studio des compétences**, ou le
+bouton **Compétences** du Dungeon Draft Studio. Le catalogue conserve Elfe, Mage et
+Guerrier, y compris si un héros n’a aucune discipline.
 
-Le Studio s’ouvre dans une fenêtre séparée. Il n’est créé qu’à la demande et il est
-libéré à sa fermeture. L’éditeur de cartes et l’éditeur de rencontres continuent donc
-de fonctionner comme avant et ne supportent aucun coût permanent supplémentaire.
+La navigation suit `personnage > discipline > rang > nœud > effet`. **Rechercher** ou
+`Ctrl+F` cherche dans les noms, identifiants, descriptions et résumés d’effets ; un
+double-clic ouvre le document, la discipline et centre le nœud. Le graphe propose sa
+minimap, le cadrage, l’organisation déterministe par rang et des positions personnelles
+stockées sous `user://`.
 
-## Comprendre les mots employés
+## Créer et structurer un arbre
 
-- **Personnage** : le héros et ses valeurs de base, par exemple ses PV ou ses PA.
-- **Sort de base** : la capacité disponible avant toute amélioration.
-- **Discipline** : le chemin de progression associé à un sort de base.
-- **Rang** : une étape atteinte lorsque le personnage possède assez d’XP cumulée.
-- **Amélioration** : un choix proposé au joueur à un rang donné.
-- **Prérequis** : une amélioration qui doit déjà avoir été acquise. Si un choix possède
-  plusieurs prérequis, ils sont tous obligatoires.
-- **Exclusion** : deux améliorations qui ne peuvent pas être acquises ensemble.
-- **Effet** : la transformation concrète appliquée au sort, par exemple davantage de
-  dégâts, une portée différente ou un nouvel état.
+- **+ Nouvelle discipline** crée la discipline, ses rangs et son sort racine en une
+  action annulable. **Dupliquer** produit des Resources indépendantes.
+- **+ Rang**, **− Dernier rang**, **+ Amélioration**, clic droit et l’assistant de
+  branche gèrent la structure sans édition manuelle de `.tres`.
+- Tirer une connexion crée un prérequis ; tirer vers le vide crée un enfant. Les lignes
+  bleues sont des prérequis. Les exclusions sont orange et pointillées, désactivables
+  depuis le menu du graphe.
+- La sélection multiple peut être copiée, collée, dupliquée, alignée, distribuée ou
+  supprimée. Une copie multiple conserve seulement ses relations internes par défaut.
+- Une suppression multiple reconnecte transitivement les descendants et produit un
+  rapport d’impact.
 
-## Quand une modification affecte-t-elle le jeu ?
+Les déplacements de carte et la sélection ne polluent pas l’historique gameplay. Les
+positions épinglées et manuelles sont des préférences, pas des données de combat.
 
-Les champs modifiés dans le Studio agissent d’abord sur une copie de travail isolée.
-Une partie en cours n’est jamais changée pendant la saisie ni pendant la simulation.
+## Modifier les personnages, sorts et effets
 
-Lorsque vous cliquez sur **Sauvegarder**, le Studio valide puis écrit les vraies
-Resources du projet. Les nouvelles valeurs seront utilisées au prochain chargement du
-personnage, donc normalement lors de la prochaine run. Une unité déjà instanciée dans
-une partie conserve les valeurs avec lesquelles elle a été créée.
+Le **Mode guidé** expose les champs métier et leurs conséquences. Le **Mode avancé**
+ajoute identifiants, chemins, stockage, invocation, résolution différée, terrain,
+statuts et opérations destructrices. Changer de mode valide d’abord la saisie visible.
 
-## Parcours recommandé
+L’inspecteur couvre les propriétés sérialisées atteignables : booléens, nombres,
+pourcentages, textes, identifiants, enums, flags, couleurs, vecteurs, Resources,
+tableaux ordonnés et dictionnaires. Les recharges d’invocation ont un éditeur clé/valeur.
+Les modificateurs permanents d’un sort et ceux d’un nœud peuvent être créés, choisis,
+partagés, dupliqués, réordonnés, retirés ou rendus uniques.
 
-1. Choisissez un personnage dans le catalogue de gauche.
-2. Vérifiez ses caractéristiques de base dans l’inspecteur de droite.
-3. Sélectionnez une discipline.
-4. Vérifiez son sort de base et ses seuils d’XP.
-5. Ajoutez ou sélectionnez une amélioration dans le graphe.
-6. Reliez ses prérequis depuis un rang inférieur.
-7. Décrivez ses effets dans l’onglet **Effets**.
-8. Cliquez sur **Valider**, puis corrigez les messages expliqués en bas.
-9. Ouvrez **Tester** pour simuler l’XP et les choix sans toucher à une run.
-10. Cliquez sur **Sauvegarder** lorsque le résultat est prêt.
+Un identifiant stable n’est pas un libellé. Son renommage utilise l’index de références,
+refuse les collisions connues dans le projet, montre l’impact et met à jour les
+références du document. Une ancienne sauvegarde de run peut conserver l’ancien ID.
+`unit_id` reste une opération experte.
 
-Le bouton **Visite guidée** reprend ces notions directement dans l’interface. Le
-**Mode guidé** masque les réglages techniques secondaires et conserve des descriptions
-et exemples à côté des champs importants.
+## Prévisualiser et analyser
 
-## Manipulations courantes
+**Tester** ouvre le simulateur de progression fondé sur `SkillTreeResolver` et
+`DisciplineProgressState`. **Prévisualiser** compare le sort de base et le nœud ou effet
+sélectionné dans une sandbox qui appelle le vrai `SpellCaster`. Le panneau affiche :
 
-### Changer l’XP d’un rang
+- le sort de base et le sort résultant ;
+- le delta par scénario (défenses 0/25/50/100, allié, cible affaiblie, dos, plusieurs
+  cibles et cellule libre) ;
+- la trace des modificateurs, leur résumé et les avertissements ;
+- l’autorité de chaque résultat. La sandbox ne lit ni n’écrit la progression d’une run.
 
-Cliquez sur le badge `R2`, `R3`, etc. au-dessus du graphe, puis modifiez **Seuil total
-d’XP** à droite. La valeur est cumulative : si le rang 2 demande 5 XP et le rang 3 en
-demande 12, le passage entre les deux demande 7 XP supplémentaires. Le bouton
-**Répartir l’XP** régularise la courbe ; **Preset 0/5/12/21/30** restaure les seuils du
-contrat actuel pour une discipline de cinq rangs.
+**Analyse complète** sépare l’énumération bornée, l’accessibilité logique indépendante,
+la dominance prudente et le lint consultatif des capstones. Un total exact est marqué
+`exact`; une limite est affichée comme `au moins N`. Une énumération tronquée n’est
+jamais utilisée pour déclarer un nœud inaccessible.
 
-### Ajouter une amélioration ou une branche
+Le contrôle **Contrat actuel** est un profil de caractérisation facultatif, désactivé
+pour un nouvel arbre. Les valeurs `0/5/12/21/30`, `0/2/4/8/4` et `16` ne sont pas des
+invariants universels.
 
-Utilisez **+ Amélioration** ou le clic droit dans la colonne du rang souhaité. Donnez un
-nom compris par le joueur ; l’identifiant stable est généré séparément et ne changera
-pas lorsque le nom sera corrigé.
+## Valider, revoir et sauvegarder
 
-Pour créer un enfant, tirez le connecteur droit d’un nœud vers le vide : le nouveau
-nœud recevra automatiquement le parent comme prérequis. **Créer une branche complète**
-ajoute une étape dans chaque rang restant et relie toute la suite en une action
-annulable. Une branche peut rester linéaire, se scinder avec plusieurs enfants ou
-fusionner lorsqu’un nœud reçoit plusieurs prérequis.
+**Valider** lance les contrôles rapides. Les erreurs bloquent ; les avertissements
+restent consultatifs. **Sauvegarder** valide d’abord le champ focalisé, puis ouvre
+obligatoirement la vue **Changements** : propriétés avant/après, CREATE/UPDATE,
+détachements, orphelins, collisions, ordre d’écriture et futur point de récupération.
+Les fichiers nécessaires à la cohérence ne sont pas décochables.
 
-### Comprendre les prérequis et exclusions
+La transaction comporte deux phases : staging et relecture complète, puis backups,
+application ordonnée, vérification d’empreinte et rechargement du document. Une collision
+disque, cache ou session n’écrase jamais implicitement un fichier. Tout échec restaure
+les backups, retire seulement les nouveaux fichiers de la tentative, conserve la
+récupération et laisse le document modifié. Un échec du rechargement final est un échec.
 
-Une liaison bleue représente un prérequis. Plusieurs liaisons entrantes signifient
-**ET** : tous les parents doivent avoir été acquis. Un nœud de rang 2 est relié
-implicitement au sort de base.
+Les points de récupération sont sous
+`user://dungeon_draft_studio/skill_tree/recovery/`. Le manifeste indique le statut,
+l’étape fautive, le plan, les backups et la vérification du rollback.
 
-Dans l’onglet **Relations** d’une amélioration, cochez les choix incompatibles. Le
-Studio inscrit automatiquement l’exclusion dans les deux sens. Une exclusion ne
-remplace jamais un prérequis : elle interdit seulement une combinaison.
+## Brouillons et fermeture inattendue
 
-### Associer et régler un sort
+Un document modifié produit périodiquement un brouillon versionné sous
+`user://dungeon_draft_studio/skill_tree/drafts/`, et en produit un avant la fermeture du
+plugin. Au prochain démarrage, le Studio propose explicitement **Restaurer**,
+**Comparer** ou **Abandonner** ; il ne restaure jamais silencieusement. Une sauvegarde
+réussie ou un abandon explicite supprime les brouillons concernés. Si une nouvelle
+écriture échoue, le dernier brouillon valide reste intact.
 
-Sélectionnez la discipline puis **Modifier le sort de base**. Les champs essentiels
-sont classés entre **Sort**, **Effets** et **Apparence**. Le mode Avancé expose aussi la
-zone, le terrain, les statuts, les déplacements forcés, la résolution différée et
-l’invocation. Une nouvelle discipline reçoit automatiquement un sort de base minimal.
+## Retrait, orphelins, archive et suppression
 
-### Créer un effet
+**Supprimer** une discipline depuis le catalogue signifie d’abord **Retirer du
+personnage** : le fichier est conservé et devient éventuellement orphelin. Le bouton
+**Orphelins** liste type, Resource, chemin, dernier propriétaire connu, raison et
+références entrantes.
 
-Sélectionnez une amélioration et ouvrez l’onglet **Effets**. **+ Ajouter un effet** crée
-un `SpellModSkillTreeEffect` générique. Choisissez son type, sa cible et sa quantité ;
-les champs pertinents, comme la durée d’un statut, apparaissent en mode guidé. La phrase
-affichée au-dessus résume le résultat. Plusieurs effets peuvent être réordonnés,
-dupliqués, partagés ou rendus uniques.
+- **Adopter** rattache une discipline compatible après contrôle d’identité.
+- **Archiver** refuse les références entrantes, copie la Resource et un manifeste sous
+  `user://`, puis retire le fichier du projet.
+- **Supprimer définitivement** est avancé, exige le nom ou l’identifiant exact, vérifie
+  les références et crée la même archive récupérable avant retrait.
 
-### Tester un chemin et corriger les erreurs
+## Raccourcis
 
-Le bouton **Tester** ouvre le simulateur. Réglez l’XP, puis cliquez uniquement sur les
-choix marqués **DISPONIBLE**. L’infobulle d’un choix verrouillé explique son motif.
-**Essayer un chemin valide** charge un exemple et **Tester automatiquement tous les
-chemins** rejoue les configurations avec les règles runtime.
+| Raccourci | Action |
+|---|---|
+| `Ctrl+S` | Revoir puis sauvegarder, y compris la valeur du champ focalisé |
+| `Ctrl+Z` / `Ctrl+Y` | Historique du document hors champ texte ; historique local dans le champ texte |
+| `Ctrl+F` | Recherche globale |
+| `Ctrl+C` / `Ctrl+V` / `Ctrl+D` | Copier, coller, dupliquer la sélection du graphe |
+| `Suppr` | Demander la suppression de la sélection |
+| `Échap` | Annuler une connexion ou fermer le dialogue actif |
+| `Tab` / `Maj+Tab` | Parcourir les actions et champs focalisables |
 
-Dans l’onglet inférieur **Erreurs et avertissements**, double-cliquez sur un diagnostic
-pour sélectionner son rang ou son nœud. Une erreur rouge bloque la sauvegarde ; un
-avertissement orange attire l’attention sans interdire un choix volontaire.
-
-## Sécurité de la sauvegarde
-
-La sauvegarde est refusée tant qu’une erreur structurelle existe. Les avertissements
-restent autorisés lorsqu’ils décrivent un choix potentiellement volontaire.
-
-Avant d’écrire, le Studio vérifie aussi que les fichiers n’ont pas été modifiés ailleurs.
-Il construit un point de récupération et sauvegarde les sous-ressources dans l’ordre de
-leurs dépendances. En cas d’échec, les fichiers déjà écrits sont restaurés.
-
-Les identifiants sont des références stables utilisées par le jeu et les sauvegardes de
-runs. Leur renommage demande donc une confirmation et met à jour les références connues
-en une seule action. Une ancienne sauvegarde de run peut néanmoins conserver l’ancien
-identifiant.
-
-### Restaurer une récupération
-
-Chaque sauvegarde crée un dossier sous
-`user://dungeon_draft_studio/skill_tree/recovery/save_<date>/`. Son `manifest.json`
-indique le personnage, les fichiers écrits et les copies `.bak`. La Resource
-`working_character.tres` conserve aussi la copie de travail complète.
-
-En cas d’échec pendant l’écriture, le Studio restaure automatiquement les fichiers
-précédents. Pour une restauration manuelle ultérieure, fermez Godot, consultez le
-manifeste du point choisi, puis replacez chaque `.bak` à l’emplacement `source` indiqué.
-Conservez d’abord une copie des fichiers actuels. Cette opération manuelle n’est utile
-que si vous souhaitez revenir volontairement à une ancienne sauvegarde réussie.
-
-## Profil « Contrat actuel »
-
-Ce contrôle facultatif vérifie la structure de production actuelle : cinq rangs,
-seuils `0 / 5 / 12 / 21 / 30`, répartition `0 / 2 / 4 / 8 / 4` et seize chemins finaux.
-Il sert à maintenir les douze arbres existants. Il peut être désactivé pour concevoir
-une discipline avec une autre structure, sans désactiver les validations indispensables
-au fonctionnement du jeu.
+Chaque raccourci principal possède aussi un bouton ou une entrée de menu visible.

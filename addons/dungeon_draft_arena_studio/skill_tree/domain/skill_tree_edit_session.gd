@@ -6,25 +6,34 @@ signal document_changed
 signal selection_changed(subject)
 signal history_changed
 
-var editor_undo_redo = null
-var fallback_history := UndoRedo.new()
+const HISTORY_LIMIT := 256
+
+## Historique strictement local au document. Le Studio ne doit jamais publier
+## ses actions dans l'historique global de l'editeur Godot.
+var document_history := UndoRedo.new()
 var source_unit: UnitData = null
 var working_unit: UnitData = null
 var source_to_work := {}
 var work_to_source := {}
 var new_resource_paths := {}
+var path_reservations := SkillTreePathReservationService.new()
 var selected_discipline_id: StringName = &""
 var selected_subject: Resource = null
 var saved_fingerprint := ""
+var last_operation_report := {}
 
 
-func setup(undo_manager) -> void:
-	editor_undo_redo = undo_manager
+func setup(_undo_manager = null) -> void:
+	# Signature conservee pour les hotes existants. Le manager fourni par
+	# EditorPlugin est volontairement ignore : l'historique appartient a cette
+	# session et a ce document uniquement.
+	_reset_history()
 
 
 func open(source: UnitData) -> bool:
 	if source == null:
 		return false
+	release_document(false)
 	var copied := SkillTreeCopyService.copy_unit(source)
 	if copied.is_empty():
 		return false
@@ -33,18 +42,42 @@ func open(source: UnitData) -> bool:
 	source_to_work = copied.get("source_to_work", {})
 	work_to_source = copied.get("work_to_source", {})
 	new_resource_paths.clear()
+	path_reservations.clear()
 	selected_discipline_id = (
 		working_unit.disciplines[0].discipline_id
 		if not working_unit.disciplines.is_empty() \
 			and working_unit.disciplines[0] != null else &""
 	)
 	selected_subject = current_discipline()
-	fallback_history = UndoRedo.new()
+	_reset_history()
 	saved_fingerprint = current_fingerprint()
+	last_operation_report.clear()
 	document_changed.emit()
 	selection_changed.emit(selected_subject)
 	history_changed.emit()
 	return true
+
+
+func release_document(emit_change := true) -> void:
+	# clear_history libere les objets conserves par les Callables et les valeurs
+	# d'UndoRedo avant d'abandonner la copie de travail.
+	if document_history != null:
+		document_history.clear_history(false)
+	source_to_work.clear()
+	work_to_source.clear()
+	new_resource_paths.clear()
+	path_reservations.clear()
+	source_unit = null
+	working_unit = null
+	selected_discipline_id = &""
+	selected_subject = null
+	saved_fingerprint = ""
+	last_operation_report.clear()
+	_reset_history()
+	if emit_change:
+		document_changed.emit()
+		selection_changed.emit(null)
+		history_changed.emit()
 
 
 func reopen_from_disk() -> bool:
@@ -54,6 +87,49 @@ func reopen_from_disk() -> bool:
 		source_unit.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE
 	) as UnitData
 	return open(reloaded)
+
+
+func restore_draft(
+		source: UnitData,
+		draft: UnitData,
+		source_keys_by_work_key: Dictionary = {},
+		new_paths_by_work_key: Dictionary = {}
+	) -> bool:
+	if source == null or draft == null:
+		return false
+	release_document(false)
+	var copied := SkillTreeCopyService.copy_unit(draft)
+	if copied.is_empty():
+		return false
+	source_unit = source
+	working_unit = copied.get("work") as UnitData
+	var source_by_key := SkillTreeCopyService.resources_by_key(source)
+	var work_by_key := SkillTreeCopyService.resources_by_key(working_unit)
+	for work_key_value in work_by_key:
+		var work_key := str(work_key_value)
+		var source_key := str(source_keys_by_work_key.get(work_key, work_key))
+		var source_resource := source_by_key.get(source_key) as Resource
+		var work_resource := work_by_key[work_key_value] as Resource
+		if source_resource != null and work_resource != null:
+			source_to_work[source_resource] = work_resource
+			work_to_source[work_resource] = source_resource
+		elif work_resource != null and new_paths_by_work_key.has(work_key):
+			var path := str(new_paths_by_work_key[work_key])
+			new_resource_paths[work_resource] = path
+			work_resource.set_path_cache(path)
+	selected_discipline_id = (
+		working_unit.disciplines[0].discipline_id
+		if not working_unit.disciplines.is_empty() \
+			and working_unit.disciplines[0] != null else &""
+	)
+	selected_subject = current_discipline()
+	_reset_history()
+	saved_fingerprint = SkillTreeSnapshotService.fingerprint(source)
+	last_operation_report = {"operation": "RESTORE_DRAFT"}
+	document_changed.emit()
+	selection_changed.emit(selected_subject)
+	history_changed.emit()
+	return true
 
 
 func current_discipline() -> DisciplineData:
@@ -156,45 +232,42 @@ func rename_discipline_id(new_id: StringName) -> bool:
 	var discipline := current_discipline()
 	if discipline == null or new_id == &"" or new_id == discipline.discipline_id:
 		return false
-	for candidate in working_unit.disciplines:
-		if candidate != null and candidate != discipline and candidate.discipline_id == new_id:
-			return false
+	var reference_index := SkillTreeReferenceIndex.new().build(working_unit)
+	if reference_index.id_exists("discipline", new_id):
+		return false
 	var old_id := discipline.discipline_id
 	var changes: Array[Dictionary] = [_change(discipline, &"discipline_id", new_id)]
-	for node in all_nodes(discipline):
-		changes.append(_change(node, &"discipline_id", new_id))
-	var spell := current_spell()
-	if spell != null:
-		changes.append(_change(spell, &"discipline_id", new_id))
+	for reference in reference_index.incoming_to_id("discipline", old_id):
+		changes.append(_change_for_id_reference(reference, old_id, new_id))
 	var changed := commit_changes(
 		"Renommer l’identifiant %s en %s" % [old_id, new_id], changes
 	)
 	if changed:
 		selected_discipline_id = new_id
+		last_operation_report = reference_index.impact_report("discipline", old_id)
+		last_operation_report["operation"] = "RENAME_DISCIPLINE_ID"
+		last_operation_report["new_id"] = new_id
 	return changed
 
 
 func rename_node_id(node: SkillUpgradeData, new_id: StringName) -> bool:
-	if node == null or new_id == &"" or node.upgrade_id == new_id \
-			or find_node(new_id) != null:
+	if node == null or new_id == &"" or node.upgrade_id == new_id:
+		return false
+	var reference_index := SkillTreeReferenceIndex.new().build(working_unit)
+	if reference_index.id_exists("node", new_id):
 		return false
 	var old_id := node.upgrade_id
 	var changes: Array[Dictionary] = [_change(node, &"upgrade_id", new_id)]
-	for candidate in all_nodes():
-		if not candidate is SkillTreeNodeData or candidate == node:
-			continue
-		var tree_node := candidate as SkillTreeNodeData
-		if tree_node.prerequisite_node_ids.has(old_id):
-			var prerequisites := tree_node.prerequisite_node_ids.duplicate()
-			prerequisites[prerequisites.find(old_id)] = new_id
-			changes.append(_change(tree_node, &"prerequisite_node_ids", prerequisites))
-		if tree_node.excluded_node_ids.has(old_id):
-			var exclusions := tree_node.excluded_node_ids.duplicate()
-			exclusions[exclusions.find(old_id)] = new_id
-			changes.append(_change(tree_node, &"excluded_node_ids", exclusions))
-	return commit_changes(
+	for reference in reference_index.incoming_to_id("node", old_id):
+		changes.append(_change_for_id_reference(reference, old_id, new_id))
+	var changed := commit_changes(
 		"Renommer l’identifiant %s en %s" % [old_id, new_id], changes
 	)
+	if changed:
+		last_operation_report = reference_index.impact_report("node", old_id)
+		last_operation_report["operation"] = "RENAME_NODE_ID"
+		last_operation_report["new_id"] = new_id
+	return changed
 
 
 func rename_spell_id(spell: Spell, new_id: StringName) -> bool:
@@ -203,27 +276,20 @@ func rename_spell_id(spell: Spell, new_id: StringName) -> bool:
 	var old_id := spell.get_effective_spell_id()
 	if old_id == new_id:
 		return false
-	for candidate in working_unit.spells:
-		if candidate != null and candidate != spell \
-				and candidate.get_effective_spell_id() == new_id:
-			return false
+	var reference_index := SkillTreeReferenceIndex.new().build(working_unit)
+	if reference_index.id_exists("spell", new_id):
+		return false
 	var changes: Array[Dictionary] = [_change(spell, &"spell_id", new_id)]
-	for discipline in working_unit.disciplines:
-		for node in all_nodes(discipline):
-			if node.target_spell_id == old_id:
-				changes.append(_change(node, &"target_spell_id", new_id))
-			for modifier in node.spell_modifiers:
-				if modifier != null and modifier.target_spell_id == old_id:
-					changes.append(_change(modifier, &"target_spell_id", new_id))
-	for known_spell in working_unit.spells:
-		if known_spell == null:
-			continue
-		for modifier in known_spell.modifiers:
-			if modifier != null and modifier.target_spell_id == old_id:
-				changes.append(_change(modifier, &"target_spell_id", new_id))
-	return commit_changes(
+	for reference in reference_index.incoming_to_id("spell", old_id):
+		changes.append(_change_for_id_reference(reference, old_id, new_id))
+	var changed := commit_changes(
 		"Renommer le sort %s en %s" % [old_id, new_id], changes
 	)
+	if changed:
+		last_operation_report = reference_index.impact_report("spell", old_id)
+		last_operation_report["operation"] = "RENAME_SPELL_ID"
+		last_operation_report["new_id"] = new_id
+	return changed
 
 
 func change_node_target_spell(
@@ -651,6 +717,72 @@ func duplicate_node(source: SkillUpgradeData) -> SkillUpgradeData:
 	return copy
 
 
+func duplicate_nodes(
+		sources: Array[SkillUpgradeData],
+		preserve_external_relations := false
+	) -> Array[SkillUpgradeData]:
+	var discipline := current_discipline()
+	var created: Array[SkillUpgradeData] = []
+	if discipline == null or sources.is_empty():
+		return created
+	var valid: Array[SkillUpgradeData] = []
+	for source in sources:
+		if source != null and all_nodes(discipline).has(source) and not valid.has(source):
+			valid.append(source)
+	if valid.is_empty():
+		return created
+	var old_to_new_id := {}
+	var reserved_ids: Array[StringName] = []
+	for source in valid:
+		var copy := source.duplicate(true) as SkillUpgradeData
+		var candidate := _unique_node_id(source.display_name + " copie")
+		var suffix := 2
+		while reserved_ids.has(candidate):
+			candidate = StringName("%s_%d" % [candidate, suffix])
+			suffix += 1
+		copy.upgrade_id = candidate
+		copy.display_name = source.display_name + " (copie)"
+		old_to_new_id[source.upgrade_id] = candidate
+		reserved_ids.append(candidate)
+		created.append(copy)
+	for index in range(valid.size()):
+		var source := valid[index]
+		var copy := created[index]
+		if source is SkillTreeNodeData and copy is SkillTreeNodeData:
+			var prerequisites: Array[StringName] = []
+			for prerequisite_id in source.prerequisite_node_ids:
+				if old_to_new_id.has(prerequisite_id):
+					prerequisites.append(StringName(old_to_new_id[prerequisite_id]))
+				elif preserve_external_relations:
+					prerequisites.append(prerequisite_id)
+			copy.prerequisite_node_ids = prerequisites
+			var exclusions: Array[StringName] = []
+			for excluded_id in source.excluded_node_ids:
+				if old_to_new_id.has(excluded_id):
+					exclusions.append(StringName(old_to_new_id[excluded_id]))
+				elif preserve_external_relations:
+					exclusions.append(excluded_id)
+			copy.excluded_node_ids = exclusions
+	var changes: Array[Dictionary] = []
+	for rank_data in discipline.ranks:
+		if rank_data == null:
+			continue
+		var choices: Array[SkillUpgradeData] = rank_data.choices.duplicate()
+		for copy in created:
+			if copy.rank == rank_data.rank:
+				choices.append(copy)
+				if _uses_external_children(discipline):
+					var path := _suggest_child_path("upgrades", str(copy.upgrade_id))
+					new_resource_paths[copy] = path
+					copy.set_path_cache(path)
+		if choices != rank_data.choices:
+			changes.append(_change(rank_data, &"choices", choices))
+	if not commit_changes("Dupliquer %d amélioration(s)" % created.size(), changes):
+		return []
+	select_subject(created[-1])
+	return created
+
+
 func add_linear_branch(display_name: String, start_rank := 2) -> Array[SkillUpgradeData]:
 	var discipline := current_discipline()
 	if discipline == null:
@@ -715,6 +847,9 @@ func remove_nodes(nodes: Array[SkillUpgradeData]) -> bool:
 			removed_by_id[node.upgrade_id] = node
 	if removed_ids.is_empty():
 		return false
+	var descendants: Array[StringName] = []
+	var inherited_by_descendant := {}
+	var removed_exclusions := 0
 	for rank_data in discipline.ranks:
 		if rank_data == null:
 			continue
@@ -732,14 +867,20 @@ func remove_nodes(nodes: Array[SkillUpgradeData]) -> bool:
 		for removed_id in removed_ids:
 			if prerequisites.has(removed_id):
 				prerequisites.erase(removed_id)
-				var deleted_node := removed_by_id.get(removed_id) as SkillTreeNodeData
-				if deleted_node != null:
-					for inherited_id in deleted_node.prerequisite_node_ids:
-						var inherited := find_node(inherited_id)
-						if inherited != null and not removed_ids.has(inherited_id) \
-								and inherited.rank < tree_node.rank \
-								and not prerequisites.has(inherited_id):
-							prerequisites.append(inherited_id)
+				if not descendants.has(tree_node.upgrade_id):
+					descendants.append(tree_node.upgrade_id)
+				for inherited_id in _surviving_prerequisites(
+						removed_id, removed_by_id, removed_ids, tree_node.rank, {}
+					):
+					if not prerequisites.has(inherited_id):
+						prerequisites.append(inherited_id)
+						var inherited_ids: Array = inherited_by_descendant.get(
+							tree_node.upgrade_id, []
+						)
+						inherited_ids.append(inherited_id)
+						inherited_by_descendant[tree_node.upgrade_id] = inherited_ids
+			if exclusions.has(removed_id):
+				removed_exclusions += 1
 			exclusions.erase(removed_id)
 		if prerequisites != tree_node.prerequisite_node_ids:
 			changes.append(_change(tree_node, &"prerequisite_node_ids", prerequisites))
@@ -750,6 +891,14 @@ func remove_nodes(nodes: Array[SkillUpgradeData]) -> bool:
 		changes
 	)
 	if changed:
+		last_operation_report = {
+			"operation": "DELETE_NODES",
+			"removed_node_ids": removed_ids.duplicate(),
+			"affected_descendant_ids": descendants,
+			"inherited_prerequisites": inherited_by_descendant,
+			"removed_exclusion_count": removed_exclusions,
+			"potentially_lost_paths": descendants.size(),
+		}
 		select_subject(discipline)
 	return changed
 
@@ -972,54 +1121,31 @@ func history_undo_name() -> String:
 
 
 func _undo_redo() -> UndoRedo:
-	if editor_undo_redo != null:
-		var history_id: int = editor_undo_redo.get_object_history_id(self)
-		return editor_undo_redo.get_history_undo_redo(history_id)
-	return fallback_history
+	return document_history
 
 
 func _begin_action(action_name: String) -> void:
-	if editor_undo_redo != null:
-		editor_undo_redo.create_action(
-			action_name, UndoRedo.MERGE_DISABLE, self
-		)
-	else:
-		fallback_history.create_action(action_name, UndoRedo.MERGE_DISABLE)
+	document_history.create_action(action_name, UndoRedo.MERGE_DISABLE)
 
 
 func _add_do_property(target: Object, property_name: StringName, value: Variant) -> void:
-	if editor_undo_redo != null:
-		editor_undo_redo.add_do_property(target, property_name, value)
-	else:
-		fallback_history.add_do_property(target, property_name, value)
+	document_history.add_do_property(target, property_name, value)
 
 
 func _add_undo_property(target: Object, property_name: StringName, value: Variant) -> void:
-	if editor_undo_redo != null:
-		editor_undo_redo.add_undo_property(target, property_name, value)
-	else:
-		fallback_history.add_undo_property(target, property_name, value)
+	document_history.add_undo_property(target, property_name, value)
 
 
 func _add_do_method(callable: Callable) -> void:
-	if editor_undo_redo != null:
-		editor_undo_redo.add_do_method(callable)
-	else:
-		fallback_history.add_do_method(callable)
+	document_history.add_do_method(callable)
 
 
 func _add_undo_method(callable: Callable) -> void:
-	if editor_undo_redo != null:
-		editor_undo_redo.add_undo_method(callable)
-	else:
-		fallback_history.add_undo_method(callable)
+	document_history.add_undo_method(callable)
 
 
 func _commit_action() -> void:
-	if editor_undo_redo != null:
-		editor_undo_redo.commit_action()
-	else:
-		fallback_history.commit_action()
+	document_history.commit_action()
 
 
 func _after_history_change() -> void:
@@ -1033,6 +1159,42 @@ func _after_history_change() -> void:
 		selection_changed.emit(selected_subject)
 	document_changed.emit()
 	history_changed.emit()
+
+
+func _reset_history() -> void:
+	if document_history != null:
+		document_history.clear_history(false)
+	document_history = UndoRedo.new()
+	document_history.max_steps = HISTORY_LIMIT
+
+
+func _surviving_prerequisites(
+		removed_id: StringName,
+		removed_by_id: Dictionary,
+		removed_ids: Array[StringName],
+		target_rank: int,
+		visited: Dictionary
+	) -> Array[StringName]:
+	var result: Array[StringName] = []
+	if visited.has(removed_id):
+		return result
+	visited[removed_id] = true
+	var removed := removed_by_id.get(removed_id) as SkillTreeNodeData
+	if removed == null:
+		return result
+	for prerequisite_id in removed.prerequisite_node_ids:
+		if removed_ids.has(prerequisite_id):
+			for ancestor_id in _surviving_prerequisites(
+					prerequisite_id, removed_by_id, removed_ids, target_rank, visited
+				):
+				if not result.has(ancestor_id):
+					result.append(ancestor_id)
+			continue
+		var prerequisite := find_node(prerequisite_id)
+		if prerequisite != null and prerequisite.rank < target_rank \
+				and not result.has(prerequisite_id):
+			result.append(prerequisite_id)
+	return result
 
 
 func _rank_data(
@@ -1085,14 +1247,10 @@ func _suggest_child_path(folder: String, file_stem: String) -> String:
 	var character_root := source_path.get_base_dir().get_base_dir() \
 		if not source_path.is_empty() else "res://data/characters"
 	var candidate := character_root.path_join(folder).path_join(_slug(file_stem) + ".tres")
-	var index := 2
-	while ResourceLoader.exists(candidate) or FileAccess.file_exists(candidate) \
-			or new_resource_paths.values().has(candidate):
-		candidate = character_root.path_join(folder).path_join(
-			"%s_%d.tres" % [_slug(file_stem), index]
-		)
-		index += 1
-	return candidate
+	var unique := path_reservations.generate_unique_path(candidate)
+	if not unique.is_empty():
+		path_reservations.reserve(unique, file_stem)
+	return unique
 
 
 static func _slug(value: String) -> String:
@@ -1113,6 +1271,21 @@ static func _change(target: Object, property_name: StringName, after: Variant) -
 		"before": _copy_value(target.get(property_name)),
 		"after": _copy_value(after),
 	}
+
+
+static func _change_for_id_reference(
+		reference: Dictionary, old_id: StringName, new_id: StringName
+	) -> Dictionary:
+	var owner := reference.get("owner") as Resource
+	var property_name := StringName(reference.get("property", &""))
+	var current: Variant = owner.get(property_name)
+	if current is Array:
+		var replaced := (current as Array).duplicate()
+		for index in range(replaced.size()):
+			if StringName(replaced[index]) == old_id:
+				replaced[index] = new_id
+		return _change(owner, property_name, replaced)
+	return _change(owner, property_name, new_id)
 
 
 static func _copy_value(value: Variant) -> Variant:

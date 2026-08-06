@@ -20,6 +20,8 @@ func test_integrated_lab_is_a_mode_on_the_same_canvas_session_document_and_histo
 	var subviewports_before := studio.find_children("*", "SubViewportContainer", true, false).size()
 	var stroke_connections := canvas.stroke_started.get_connections().size()
 	studio.show_dynamic_construction()
+	if studio.arena.visual_mode == ArenaDefinition.VisualMode.PAINTED:
+		studio._enter_painted_logic_only()
 	assert_eq(studio.workspace_mode, ArenaStudioMain.WorkspaceMode.DYNAMIC_CONSTRUCTION)
 	assert_true(studio.canvas.visible)
 	assert_false(studio.runtime_preview.visible)
@@ -270,6 +272,8 @@ func test_twenty_detach_reintegrate_cycles_keep_the_same_dynamic_workspace_and_r
 	embedded.attach_workspace(workspace)
 	await get_tree().process_frame
 	workspace.arena_studio.show_dynamic_construction()
+	if workspace.arena_studio.arena.visual_mode == ArenaDefinition.VisualMode.PAINTED:
+		workspace.arena_studio._enter_painted_logic_only()
 	workspace.arena_studio.canvas.selected_cells = [Vector2i(2, 2), Vector2i(3, 2)]
 	var workspace_identity := workspace.workspace_instance_id
 	var session_identity := workspace.arena_studio.edit_session.get_instance_id()
