@@ -1,13 +1,7 @@
 name: Observatory CI
 
 on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
-      - 'feature/observatory-*'
+  workflow_call:
   workflow_dispatch:
 
 permissions:

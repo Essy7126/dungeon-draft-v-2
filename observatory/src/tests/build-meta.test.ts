@@ -83,7 +83,8 @@ describe('generate-build-meta', () => {
     await mkdir(resolve(repository, '.github', 'workflows'), { recursive: true });
     await writeFile(resolve(repository, 'observatory', 'README.md'), 'observatory only\n');
     await writeFile(resolve(repository, '.github', 'workflows', 'observatory-ci.yml'), 'name: Observatory\n');
-    git(repository, 'add', 'observatory/README.md', '.github/workflows/observatory-ci.yml');
+    await writeFile(resolve(repository, '.github', 'workflows', 'ci.yml'), 'name: CI\n');
+    git(repository, 'add', 'observatory/README.md', '.github/workflows/observatory-ci.yml', '.github/workflows/ci.yml');
     git(repository, 'commit', '-m', 'observatory');
 
     const result = await runGenerator(repository, sourceCommit);

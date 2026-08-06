@@ -1,16 +1,14 @@
 # CI Observatory V1.2
 
-Le workflow `.github/workflows/observatory-ci.yml` s’exécute sur un runner
-GitHub hébergé `ubuntu-latest` pour les pull requests vers `main`, les pushes
-sur `main` ou `feature/observatory-*`, et les lancements manuels. Le déclencheur
-de feature permet notamment de valider le workflow dans la PR qui l’introduit,
-avant qu’il existe sur la branche de base. Il dispose uniquement de
+Le workflow d’entrée `.github/workflows/ci.yml`, déjà enregistré sur la branche
+de base, s’exécute pour les pull requests et les pushes. Il appelle le workflow
+réutilisable `.github/workflows/observatory-ci.yml`, également lançable
+manuellement. Cette indirection permet de valider le workflow dans la PR qui
+l’introduit avant qu’il existe sur `main`, avec une seule exécution. Le workflow
+utilise un runner GitHub hébergé `ubuntu-latest`, dispose uniquement de
 `contents: read`, annule les exécutions obsolètes de la même référence et ne
-publie rien sur le LAN.
-
-La CI historique `.github/workflows/ci.yml` ignore les changements exclusivement
-Observatory : elle reste dédiée au jeu, tandis que le workflow V1.2 assume sans
-duplication la validation complète de ce périmètre et sa baseline explicite.
+publie rien sur le LAN. Il remplace le GUT brut historique par la baseline
+explicite, sans réduire la couverture de la suite globale.
 
 ## Toolchain vérifiée
 
