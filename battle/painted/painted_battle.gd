@@ -1,5 +1,9 @@
 extends "res://battle/battle.gd"
 
+const ArenaCameraFramingServiceScript = preload(
+	"res://addons/dungeon_draft_arena_studio/services/arena_camera_framing_service.gd"
+)
+
 ## Adaptateur de scene commun aux trois peintures. Il configure le fond et la
 ## projection avant de laisser battle.gd construire exactement un GridData, un
 ## Pathfinder, un TerrainEffects et un DeploymentController.
@@ -31,10 +35,12 @@ func _ready() -> void:
 	super()
 	var definition := room_data as ArenaDefinition
 	if definition != null and grid != null and pathfinder != null:
+		var floor_parent := _find_or_create_arena_tile_parent(false)
 		arena_assembly = ArenaVisualAssembler.assemble(
 			definition, grid, pathfinder, get_node("IsoGridView"),
 			get_node("YSortedWorld"), self,
-			definition.visual_mode == ArenaDefinition.VisualMode.HYBRID
+			definition.visual_mode == ArenaDefinition.VisualMode.HYBRID,
+			floor_parent
 		)
 
 
@@ -110,27 +116,14 @@ func _update_painted_occlusion() -> void:
 func _fit_camera_to_battle() -> void:
 	if camera == null or painted_visual_data == null:
 		return
-	var frame_rect := painted_visual_data.image_rect()
-	if frame_rect.size.x <= 0.0 or frame_rect.size.y <= 0.0:
-		return
-	var profile_offset := Vector2.ZERO
-	var profile_zoom := 1.0
-	if presentation_profile != null and _presentation_camera_enabled:
-		profile_offset = presentation_profile.camera_offset_adjustment
-		profile_zoom = presentation_profile.camera_zoom_multiplier
-	camera.position = (
-		frame_rect.get_center()
-		+ painted_visual_data.camera_offset
-		+ profile_offset
+	var framing := ArenaCameraFramingServiceScript.painted_framing(
+		painted_visual_data, get_viewport_rect().size,
+		presentation_profile if _presentation_camera_enabled else null
 	)
-	var viewport_size := get_viewport_rect().size
-	# Cover uniforme : conserve le ratio de la peinture et evite les bandes
-	# vides. Les offsets ont ete calibres pour garder toute la zone tactique.
-	var zoom_factor := maxf(
-		viewport_size.x / frame_rect.size.x,
-		viewport_size.y / frame_rect.size.y
-	) * painted_visual_data.camera_zoom * profile_zoom
-	camera.zoom = Vector2(zoom_factor, zoom_factor)
+	if not bool(framing.get("ok", false)):
+		return
+	camera.position = framing.position
+	camera.zoom = framing.zoom
 
 
 ## Crochet deterministe pour les captures avant/apres. Le mode normal utilise

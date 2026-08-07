@@ -61,3 +61,20 @@ intégration explicite par l’utilisateur.
 Preuves 2.0 courantes : 12/12 tests, 423 assertions et six captures inspectées
 en 1280×720 / 1920×1080. Le détail reste candidat dans
 `docs/tools/dungeon_draft_studio/studio_2_0_regression_report.md`.
+
+## Item Studio V1 — WORKTREE_CANDIDATE séparé
+
+- Date : 2026-08-07
+- Branche : `main`
+- HEAD de base : `29f307b5ff61822f266bbd2d14636ca8dcea2d95`
+- Statut : **WORKTREE_CANDIDATE — ne modifie pas le statut CURRENT**
+- Tests : Item Studio 30/30, 190 assertions ; smoke PASS ; captures inspectées ;
+  suite globale 836/849, avec les mêmes 13 échecs que la baseline.
+- Non vérifié : revue humaine interactive et activation à un commit intégré.
+
+Le Dungeon Draft Studio possède localement un troisième domaine **OBJETS** relié
+au `StudioProjectContext`, au dirty state, aux générations et à l’historique. Il
+édite le catalogue runtime actuel sur working copy, sauvegarde les brouillons
+hors production, publie par transaction vérifiée et projette les effets via les
+services runtime isolés. RUN_SPECIFIC et les reliques restent explicitement
+différés. Cette section candidate ne promeut pas le worktree en CURRENT.

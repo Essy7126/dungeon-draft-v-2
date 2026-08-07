@@ -18,6 +18,9 @@ const HERO_PATHS := [
 	"res://data/units/alliés/Guerrier.tres",
 ]
 const DEFAULT_ENEMY := "res://data/units/ennemie/skeleton_melee.tres"
+const ArenaCameraFramingServiceScript = preload(
+	"res://addons/dungeon_draft_arena_studio/services/arena_camera_framing_service.gd"
+)
 
 var arena: ArenaDefinition = null
 var view_mode := ViewMode.LOGIC
@@ -135,6 +138,10 @@ func _perform_rebuild() -> bool:
 	world_root.name = "ArenaPreviewWorld"
 	viewport.add_child(world_root)
 	_build_background(preview_arena)
+	var floor_parent := Node2D.new()
+	floor_parent.name = "ArenaTilesLayer"
+	floor_parent.y_sort_enabled = false
+	world_root.add_child(floor_parent)
 	grid_view = PaintedGridView.new()
 	grid_view.name = "SharedGridView"
 	grid_view.configure(
@@ -151,7 +158,7 @@ func _perform_rebuild() -> bool:
 	world_root.add_child(y_sorted_world)
 	assembly = ArenaVisualAssembler.assemble(
 		preview_arena, grid, pathfinder, grid_view, y_sorted_world,
-		world_root, show_dynamic_terrains
+		world_root, show_dynamic_terrains, floor_parent
 	)
 	dynamic_surface_visuals = DynamicSurfaceVisualAdapter.new()
 	dynamic_surface_visuals.name = "DynamicSurfaceVisualAdapter"
@@ -286,6 +293,16 @@ func _apply_view_options() -> void:
 
 func _fit_camera(value: ArenaDefinition) -> void:
 	if camera == null or value.painted_map_visual_data == null:
+		return
+	if value.visual_mode != ArenaDefinition.VisualMode.MODULAR:
+		var framing := ArenaCameraFramingServiceScript.painted_framing(
+			value.painted_map_visual_data,
+			Vector2(viewport.size),
+			value.painted_map_visual_data.presentation_profile
+		)
+		if bool(framing.get("ok", false)):
+			camera.position = framing.position
+			camera.zoom = framing.zoom
 		return
 	var bounds := value.painted_map_visual_data.image_rect()
 	if value.visual_mode == ArenaDefinition.VisualMode.MODULAR or bounds.size == Vector2.ZERO:

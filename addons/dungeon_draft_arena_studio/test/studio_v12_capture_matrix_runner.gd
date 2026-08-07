@@ -71,7 +71,7 @@ func _configure(case_name: String) -> void:
 	match case_name:
 		"03_dedicated_window":
 			studio.set_detached_state(true)
-			studio.detach_button.text = "RÉINTÉGRER"
+			studio.detach_button.text = "RÉINTÉGRER LA FENÊTRE"
 		"04_maximized_window":
 			studio.set_detached_state(true)
 			studio.detach_button.text = "FENÊTRE MAXIMISÉE"
@@ -144,7 +144,7 @@ func _reset_ui() -> void:
 	if arena.production_dialog != null:
 		arena.production_dialog.hide()
 	studio.set_detached_state(false)
-	studio.detach_button.text = "Détacher"
+	studio.detach_button.text = "Détacher la fenêtre"
 	if arena.focus_map_enabled:
 		arena.set_focus_map(false)
 	arena.apply_workspace_preset(0)

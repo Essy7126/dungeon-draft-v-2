@@ -70,7 +70,7 @@ func _configure(case_name: String) -> void:
 		"02_dynamic_detached":
 			arena.show_dynamic_construction()
 			studio.set_detached_state(true)
-			studio.detach_button.text = "RÉINTÉGRER"
+			studio.detach_button.text = "RÉINTÉGRER LA FENÊTRE"
 		"03_dynamic_focus":
 			arena.show_dynamic_construction()
 			arena.set_focus_map(true)
@@ -146,7 +146,7 @@ func _configure(case_name: String) -> void:
 
 func _reset_ui() -> void:
 	studio.set_detached_state(false)
-	studio.detach_button.text = "Détacher"
+	studio.detach_button.text = "Détacher la fenêtre"
 	if arena.focus_map_enabled:
 		arena.set_focus_map(false)
 	arena.workspace_preset = 0

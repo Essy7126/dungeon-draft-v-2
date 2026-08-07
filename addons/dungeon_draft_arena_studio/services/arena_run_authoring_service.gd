@@ -57,7 +57,22 @@ func replace_room(index: int, room: RoomData) -> Dictionary:
 
 
 func update_room(index: int, room: RoomData) -> Dictionary:
-	return replace_room(index, room).merged({"requested_operation": &"UPDATE"}, true)
+	if not _valid_index(index) or room == null:
+		return _failure("Mise à jour hors limites ou salle absente.")
+	var current := working_run.rooms[index]
+	if current == null or current.resource_path.is_empty() \
+			or room.resource_path != current.resource_path:
+		return _failure(
+			"UPDATE conserve la référence canonique ; utilisez REPLACE pour changer de fichier."
+		)
+	return {
+		"ok": true,
+		"operation": &"UPDATE_IN_PLACE",
+		"index": index,
+		"room_path": current.resource_path,
+		"sequence_changed": false,
+		"requires_room_integration_service": true,
+	}
 
 
 func duplicate_room(index: int) -> Dictionary:

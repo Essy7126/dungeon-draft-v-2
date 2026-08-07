@@ -37,6 +37,7 @@ var generations := {
 	&"references": 0,
 	&"arena": 0,
 	&"encounter": 0,
+	&"items": 0,
 	&"skills": 0,
 }
 var persisted_ui := {}

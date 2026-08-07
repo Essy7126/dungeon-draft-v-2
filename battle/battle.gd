@@ -16,6 +16,9 @@ const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
 const ArenaFeatureRendererScript = preload(
 	"res://battle/arena_feature_renderer.gd"
 )
+const ArenaDirectTestConfigurationScript = preload(
+	"res://addons/dungeon_draft_arena_studio/services/arena_direct_test_configuration.gd"
+)
 const TURN_ORDER_TIMELINE_SCENE := preload(
 	"res://ui/combat/turn_order_timeline.tscn"
 )
@@ -103,6 +106,7 @@ var _arena_tile_parent: Node2D = null
 var generated_arena_seed: int = 0
 var _generated_arena_features: Dictionary = {}
 var _arena_feature_renderer: Node = null
+var _direct_test_options := {}
 
 # --- Contrôle ---
 var turn_state: TurnState
@@ -150,6 +154,7 @@ func _wait_battle_seconds_safe(seconds: float, generation: int) -> bool:
 	return _is_operation_current(generation)
 
 func _ready() -> void:
+	_direct_test_options = ArenaDirectTestConfigurationScript.from_tree(get_tree())
 	# La salle vient du run en cours. On la lit AVANT de construire la logique,
 	# pour pouvoir, plus tard, adapter la grille à la salle si besoin.
 	room_data = GameManager.get_current_room()
@@ -170,15 +175,21 @@ func _ready() -> void:
 	_import_terrain_from_tilemap()
 	_generate_arena_layout()
 	_setup_view() 
+	_apply_direct_test_view_options()
 	_setup_arena_visuals()
 	EventBus.battle_view_ready.emit(grid_view)
 	_setup_camera()
-	_setup_ui()
-	_setup_state()
+	if _direct_test_flag("hud_enabled", true):
+		_setup_ui()
+	if _direct_test_flag("combat_enabled", true):
+		_setup_state()
 	# _spawn_units() pose les ennemis puis lance la phase de déploiement.
 	# C'est la fin du déploiement (ou le secours auto) qui appellera
 	# _start_battle() : on ne le lance donc PAS directement ici.
-	_spawn_units()
+	if _direct_test_options.is_empty():
+		_spawn_units()
+	else:
+		_spawn_direct_test_units()
 
 # ============================================================
 # MISE EN PLACE — LOGIQUE
@@ -208,10 +219,11 @@ func _setup_logic() -> void:
 	add_child(_enemy_turn)
 	_enemy_turn.setup(self)
 	# Contrôleur de la phase de déploiement (placement manuel des héros).
-	_deployment = DeploymentController.new()
-	add_child(_deployment)
-	_deployment.setup(self)
-	_deployment.deployment_completed.connect(_start_battle)
+	if _direct_test_flag("deployment_enabled", true):
+		_deployment = DeploymentController.new()
+		add_child(_deployment)
+		_deployment.setup(self)
+		_deployment.deployment_completed.connect(_start_battle)
 	if not GameManager.discipline_xp_gained.is_connected(
 		_on_discipline_xp_gained
 	):
@@ -273,6 +285,10 @@ func _setup_view() -> void:
 
 
 func _setup_arena_visuals() -> void:
+	# ArenaDefinition possede son renderer Studio 2.0 dans l'adaptateur de scene.
+	# Le renderer historique reste reserve aux RoomData procedurales legacy.
+	if room_data is ArenaDefinition:
+		return
 	if room_data == null or room_data.arena_visual_profile == null:
 		return
 	var visual_cells := {}
@@ -294,15 +310,16 @@ func _setup_arena_visuals() -> void:
 		room_data.arena_visual_profile
 	)
 	_arena_feature_renderer.render(visual_cells)
-func _find_or_create_arena_tile_parent() -> Node2D:
+func _find_or_create_arena_tile_parent(y_sorted := true) -> Node2D:
 	if is_instance_valid(_arena_tile_parent):
+		_arena_tile_parent.y_sort_enabled = y_sorted
 		return _arena_tile_parent
 	_arena_tile_parent = get_node_or_null("ArenaTilesLayer") as Node2D
 	if _arena_tile_parent == null:
 		_arena_tile_parent = Node2D.new()
 		_arena_tile_parent.name = "ArenaTilesLayer"
-		_arena_tile_parent.y_sort_enabled = true
 		add_child(_arena_tile_parent)
+	_arena_tile_parent.y_sort_enabled = y_sorted
 	## Ordre local : fond, dalles, grille tactique, puis YSortedWorld/unites.
 	## La grille et les zones de deploiement restent donc visibles et cliquables.
 	if grid_view.get_parent() == self:
@@ -489,6 +506,53 @@ func _spawn_units() -> void:
 	_spawn_enemies()
 	# Les héros, eux, sont placés PAR LE JOUEUR (phase de déploiement).
 	_deployment.start()
+
+
+func _spawn_direct_test_units() -> void:
+	units = []
+	if bool(_direct_test_options.get("spawn_enemies", false)):
+		_spawn_enemies()
+	if not bool(_direct_test_options.get("spawn_heroes", false)):
+		return
+	if bool(_direct_test_options.get("deployment_enabled", false)):
+		if _deployment != null:
+			_deployment.start()
+		return
+	var available := room_data.hero_spawn_zone.duplicate() \
+		if room_data != null else []
+	for hero in GameManager.get_living_heroes():
+		var spawn_cell := _resolve_spawn_cell(available, hero.unit_name)
+		if spawn_cell == Vector2i(-1, -1):
+			break
+		hero.current_ap = hero.max_ap.get_int()
+		hero.current_mp = hero.max_mp.get_int()
+		_place(hero, spawn_cell)
+		units.append(hero)
+
+
+func _direct_test_flag(key: String, production_default: bool) -> bool:
+	return production_default if _direct_test_options.is_empty() \
+		else bool(_direct_test_options.get(key, production_default))
+
+
+func _apply_direct_test_view_options() -> void:
+	if _direct_test_options.is_empty() or grid_view == null:
+		return
+	if grid_view.has_method("set_render_options"):
+		grid_view.set_render_options(
+			bool(_direct_test_options.get("draw_base_cells", false)),
+			bool(_direct_test_options.get("draw_grid_lines", false)),
+			bool(_direct_test_options.get("draw_cell_centers", false)),
+			bool(_direct_test_options.get("draw_map_bounds", false)),
+		)
+	if grid_view.has_method("set_debug_layers"):
+		grid_view.set_debug_layers(
+			bool(_direct_test_options.get("draw_logic_types", false)),
+			bool(_direct_test_options.get("draw_void_cells", false)),
+			bool(_direct_test_options.get("draw_coordinates", false)),
+			bool(_direct_test_options.get("draw_spawns", false)),
+			bool(_direct_test_options.get("draw_calibration", false)),
+		)
 
 # --- Ennemis : viennent du RoomData, placés aléatoirement dans leur zone. ---
 func _spawn_enemies() -> void:

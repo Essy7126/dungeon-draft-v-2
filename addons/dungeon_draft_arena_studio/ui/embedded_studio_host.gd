@@ -58,7 +58,8 @@ func _build_placeholder() -> void:
 	explanation.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(explanation)
 	var reintegrate := Button.new()
-	reintegrate.text = "Reintegrer dans Godot"
+	reintegrate.text = "Réintégrer la fenêtre"
+	reintegrate.tooltip_text = "Réintégrer la fenêtre du Studio dans Godot"
 	reintegrate.pressed.connect(func(): reintegrate_requested.emit())
 	box.add_child(reintegrate)
 	var focus := Button.new()

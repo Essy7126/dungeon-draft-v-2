@@ -12,7 +12,8 @@ static func assemble(
 		grid_view: Node2D,
 		y_sorted_world: Node2D,
 		owner: Node,
-		include_modular_tiles := true
+		include_modular_tiles := true,
+		floor_parent: Node2D = null
 	) -> Dictionary:
 	var result := {
 		"ok": false,
@@ -55,7 +56,9 @@ static func assemble(
 		# cette couche, la classe et les metadonnees exposent le nouveau contrat.
 		renderer.name = "ArenaFeatureRenderer"
 		owner.add_child(renderer)
-		renderer.configure(grid_view, y_sorted_world)
+		renderer.configure(
+			grid_view, floor_parent if floor_parent != null else y_sorted_world
+		)
 		renderer.render_plan(render_plan)
 		result.renderer = renderer
 		var actual := renderer.actual_render_report()

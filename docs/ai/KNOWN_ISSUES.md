@@ -64,3 +64,24 @@
 
 Ces suivis sont des conséquences attendues de la décision de design, pas des
 régressions introduites par la migration.
+
+## Item Studio V1 — limites WORKTREE_CANDIDATE
+
+- Date : 2026-08-07 ; branche `main` ; HEAD de base
+  `29f307b5ff61822f266bbd2d14636ca8dcea2d95`.
+- Statut : **WORKTREE_CANDIDATE**.
+- Tests : Item Studio 30/30 (190 assertions), smoke PASS, captures inspectées ; activation à un
+  commit et revue humaine interactive non vérifiées.
+- Il n’existe aucun runtime de reliques au HEAD. Les chemins historiques
+  `data/relics/**` et `data/equipment/**` ne sont pas importés.
+- Il n’existe aucun catalogue d’objets spécifique par run ; la publication
+  `RUN_SPECIFIC` est bloquée explicitement.
+- Les nouvelles familles déclenchées nécessitant des hooks inédits doivent être
+  implémentées et enregistrées avant d’être éditables.
+- Les effets dépendant d’une grille de bataille sont signalés lorsque la sandbox
+  pure ne peut pas les exécuter intégralement.
+- Le scan d’éditeur rencontre toujours la copie historique
+  `output/validation-feedback-candidate/data/items/item_definition.gd`, qui
+  masque la classe globale. Ce fichier préexistant n’est pas modifié.
+- Les runners graphiques signalent encore des ressources renderer et ObjectDB à
+  la fermeture, sans échec fonctionnel des marqueurs ciblés.

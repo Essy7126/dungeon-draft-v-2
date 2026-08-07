@@ -212,10 +212,14 @@ func test_production_attachment_saves_and_reloads_the_exact_run_index() -> void:
 	), OK)
 	var first := _arena_fixture()
 	first.set_identity("Première", "attachment_first")
+	first.encounter_definition = load(
+		"res://data/encounters/first_run_room_01_encounter.tres"
+	) as EncounterDefinition
 	var first_path := ATTACHMENT_TEST_ROOT.path_join("first.tres")
 	assert_eq(ResourceSaver.save(first, first_path), OK)
 	var produced := _arena_fixture()
 	produced.set_identity("Produite", "attachment_produced")
+	produced.encounter_definition = first.encounter_definition
 	var produced_path := ATTACHMENT_TEST_ROOT.path_join("produced.tres")
 	assert_eq(ResourceSaver.save(produced, produced_path), OK)
 	var run_data := RunData.new()

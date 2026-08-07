@@ -3,6 +3,7 @@ class_name ArenaStudioMain
 extends Control
 
 signal history_state_changed
+signal integrate_room_requested(plan: Dictionary)
 
 enum WorkspaceMode {
 	EDITOR,
@@ -121,6 +122,20 @@ var production_validation_text: RichTextLabel
 var production_preview_text: RichTextLabel
 var production_plan_text: RichTextLabel
 var production_result_text: RichTextLabel
+var destination_panel: PanelContainer
+var destination_run_option: OptionButton
+var destination_action_option: OptionButton
+var destination_room_option: OptionButton
+var destination_summary_label: Label
+var destination_details_text: RichTextLabel
+var destination_integrate_button: Button
+var destination_tour_button: Button
+var integration_replace_dialog: ConfirmationDialog
+var guided_tour: ArenaStudioGuidedTour
+var _destination_runs: Array[RunData] = []
+var _destination_syncing := false
+var _destination_last_plan := {}
+var _integration_running := false
 var migration_dialog: ConfirmationDialog
 var painted_dynamic_dialog: ConfirmationDialog
 var lab_import_dialog: ConfirmationDialog
@@ -197,6 +212,7 @@ func _ready() -> void:
 	_transfer_poll_timer.start()
 	_refresh_recovery_button()
 	if project_context != null:
+		project_context.context_changed.connect(_refresh_destination_panel.bind())
 		project_context.room_changed.connect(_on_context_room_changed)
 		project_context.run_changed.connect(_on_context_run_changed)
 		project_context.register_transition_handler(
@@ -212,6 +228,7 @@ func _ready() -> void:
 		run_authoring.changed.connect(_on_run_authoring_changed)
 	_refresh_run_browser()
 	ensure_initial_arena_loaded()
+	_refresh_destination_panel()
 	call_deferred("_poll_lab_transfers")
 
 
@@ -323,6 +340,8 @@ func _build_top_bar() -> Control:
 	_add_button(bar, "Valider", validate_arena)
 	var test_button := _add_button(bar, "▶ Tester", test_arena)
 	test_button.tooltip_text = "Tester la working copy dans la vraie scène"
+	var tour_button := _add_button(bar, "? Visite guidée", _show_guided_tour)
+	tour_button.tooltip_text = "Créer puis intégrer une salle, sans prérequis Godot"
 	mode_option = OptionButton.new()
 	mode_option.tooltip_text = "Creation masque les informations techniques."
 	for label in ["Création", "Vérification", "Avancé"]:
@@ -421,9 +440,15 @@ func _build_canvas_panel() -> Control:
 func _build_right_panel() -> Control:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size.x = 295
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 4)
+	panel.add_child(outer)
+	destination_panel = _build_destination_panel()
+	outer.add_child(destination_panel)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	panel.add_child(scroll)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outer.add_child(scroll)
 	var box := VBoxContainer.new()
 	box.custom_minimum_size.x = 0
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -505,6 +530,285 @@ func _build_right_panel() -> Control:
 	box.add_child(advanced_panel)
 	advanced_panel.visible = false
 	return panel
+
+
+func _build_destination_panel() -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.name = "RoomDestinationPanel"
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 3)
+	panel.add_child(box)
+	box.add_child(_section_label("DESTINATION DE LA SALLE"))
+	var selectors := GridContainer.new()
+	selectors.columns = 2
+	box.add_child(selectors)
+	selectors.add_child(_plain_label("Run :"))
+	destination_run_option = OptionButton.new()
+	destination_run_option.name = "DestinationRunOption"
+	destination_run_option.item_selected.connect(_on_destination_run_selected)
+	selectors.add_child(destination_run_option)
+	selectors.add_child(_plain_label("Action :"))
+	destination_action_option = OptionButton.new()
+	destination_action_option.name = "DestinationActionOption"
+	for entry in [
+		["Mettre à jour l’arène — recommandé", ArenaProductionAttachmentService.UPDATE],
+		["Créer une nouvelle salle", ArenaProductionAttachmentService.APPEND],
+		["Insérer avant", ArenaProductionAttachmentService.INSERT_BEFORE],
+		["Insérer après", ArenaProductionAttachmentService.INSERT_AFTER],
+		["Remplacer toute la salle — avancé", ArenaProductionAttachmentService.REPLACE],
+		["Produire sans intégrer", ArenaProductionAttachmentService.NONE],
+	]:
+		destination_action_option.add_item(entry[0])
+		destination_action_option.set_item_metadata(
+			destination_action_option.item_count - 1, entry[1]
+		)
+	destination_action_option.item_selected.connect(func(_index): _refresh_destination_panel())
+	selectors.add_child(destination_action_option)
+	selectors.add_child(_plain_label("Salle :"))
+	destination_room_option = OptionButton.new()
+	destination_room_option.name = "DestinationRoomOption"
+	destination_room_option.item_selected.connect(func(_index): _refresh_destination_panel())
+	selectors.add_child(destination_room_option)
+	destination_summary_label = Label.new()
+	destination_summary_label.name = "DestinationSummary"
+	destination_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	destination_summary_label.add_theme_color_override(
+		"font_color", Color(0.72, 0.91, 1.0)
+	)
+	box.add_child(destination_summary_label)
+	destination_details_text = RichTextLabel.new()
+	destination_details_text.name = "DestinationDetails"
+	destination_details_text.bbcode_enabled = true
+	destination_details_text.custom_minimum_size.y = 118
+	destination_details_text.fit_content = false
+	destination_details_text.scroll_active = true
+	box.add_child(destination_details_text)
+	var buttons := HFlowContainer.new()
+	box.add_child(buttons)
+	destination_integrate_button = _add_button(
+		buttons, "Intégrer à la run", _on_integrate_destination_pressed
+	)
+	destination_integrate_button.name = "IntegrateIntoRunButton"
+	destination_tour_button = _add_button(buttons, "Visite guidée", _show_guided_tour)
+	destination_tour_button.tooltip_text = "Commencer la visite à l’étape Destination"
+	return panel
+
+
+func _refresh_destination_panel(_unused = {}) -> void:
+	if destination_run_option == null or destination_action_option == null:
+		return
+	_destination_syncing = true
+	var previous_run_path := ""
+	if destination_run_option.selected >= 0 \
+			and destination_run_option.selected < _destination_runs.size():
+		previous_run_path = _destination_runs[destination_run_option.selected].resource_path
+	if previous_run_path.is_empty() and project_context != null \
+			and project_context.active_run != null:
+		previous_run_path = project_context.active_run.resource_path
+	_destination_runs = RunContentCatalogService.discover_runs()
+	destination_run_option.clear()
+	var selected_run_index := 0
+	for index in range(_destination_runs.size()):
+		var run_data := _destination_runs[index]
+		destination_run_option.add_item("%s — %s" % [
+			ArenaIntegrationService.run_short_label(run_data), run_data.run_name,
+		])
+		destination_run_option.set_item_tooltip(index, run_data.resource_path)
+		if run_data.resource_path == previous_run_path:
+			selected_run_index = index
+	if not _destination_runs.is_empty():
+		destination_run_option.select(selected_run_index)
+	var selected_run := _selected_destination_run()
+	var previous_room_index := destination_room_option.selected
+	if previous_room_index < 0 and project_context != null \
+			and selected_run == project_context.active_run:
+		previous_room_index = project_context.active_room_index
+	destination_room_option.clear()
+	if selected_run != null:
+		for index in range(selected_run.rooms.size()):
+			var room := selected_run.rooms[index]
+			destination_room_option.add_item("%d — %s" % [
+				index + 1, room.room_name if room != null else "Salle absente",
+			])
+			destination_room_option.set_item_tooltip(
+				index, room.resource_path if room != null else "Référence absente"
+			)
+	if destination_room_option.item_count > 0:
+		destination_room_option.select(clampi(
+			previous_room_index, 0, destination_room_option.item_count - 1
+		))
+	_destination_syncing = false
+	var action := _selected_destination_action()
+	destination_room_option.disabled = action in [
+		ArenaProductionAttachmentService.NONE,
+		ArenaProductionAttachmentService.APPEND,
+	]
+	var target_index := _selected_destination_room_index()
+	var candidate := _destination_candidate()
+	_destination_last_plan = ArenaIntegrationService.plan(
+		candidate, selected_run, action, target_index,
+		ArenaProductionService.suggested_destination(candidate), shared_reference_graph
+	) if candidate != null else {"ok": false, "error": "Aucune arène ouverte."}
+	_render_destination_plan(_destination_last_plan)
+
+
+func _render_destination_plan(plan: Dictionary) -> void:
+	if destination_summary_label == null or destination_details_text == null:
+		return
+	var action := _selected_destination_action()
+	var run_data := _selected_destination_run()
+	var run_label := ArenaIntegrationService.run_short_label(run_data)
+	var target_index := int(plan.get("target_index", _selected_destination_room_index()))
+	var room_number := target_index + 1
+	var affected_files := PackedStringArray()
+	for path in plan.get("affected_files", []):
+		affected_files.append(str(path))
+	var result_label := "Production isolée"
+	if action == ArenaProductionAttachmentService.UPDATE:
+		result_label = "%s / Salle %d — gameplay conservé" % [run_label, room_number]
+	elif action == ArenaProductionAttachmentService.REPLACE:
+		result_label = "%s / Salle %d — remplacement complet" % [run_label, room_number]
+	elif action == ArenaProductionAttachmentService.APPEND:
+		result_label = "%s / Nouvelle salle %d" % [run_label, room_number]
+	elif action in [ArenaProductionAttachmentService.INSERT_BEFORE, ArenaProductionAttachmentService.INSERT_AFTER]:
+		result_label = "%s / Salle insérée en position %d" % [run_label, room_number]
+	destination_summary_label.text = "Résultat : %s\nPortée : %s" % [
+		result_label, plan.get("scope", "Unique à cette run"),
+	]
+	var lines := PackedStringArray([
+		"[b]Action prévue[/b] : %s" % plan.get("action_label", "Indisponible"),
+		"[b]RunData[/b] : %s" % plan.get("run_path", ""),
+		"[b]Salle cible[/b] : %s" % plan.get("target_room_path", ""),
+		"[b]ArenaDefinition finale[/b] : %s" % plan.get("new_arena_path", ""),
+		"[b]Partagée[/b] : %s" % ("oui — copie spécifique automatique" if plan.get("shared", false) else "non"),
+		"[b]Index[/b] : %d ; salles %d → %d" % [
+			target_index, int(plan.get("before_count", 0)), int(plan.get("after_count", 0)),
+		],
+		"[b]Fichiers affectés (%d)[/b]" % affected_files.size(),
+	])
+	for path in affected_files:
+		lines.append("• %s" % path)
+	for error in plan.get("run_validation_errors", []):
+		lines.append("[color=red]Bloqué : %s[/color]" % error)
+	var blocking_domains := _blocking_context_domains()
+	if not blocking_domains.is_empty():
+		lines.append("[color=red]Documents à résoudre : %s[/color]" % ", ".join(blocking_domains))
+	if edit_session != null and edit_session.has_external_conflict():
+		lines.append("[color=red]La source Arena a changé sur disque.[/color]")
+	destination_details_text.text = "\n".join(lines)
+	var enabled := bool(plan.get("can_integrate", false)) \
+		and blocking_domains.is_empty() and not _integration_running \
+		and (edit_session == null or not edit_session.has_external_conflict())
+	destination_integrate_button.disabled = not enabled
+	destination_integrate_button.text = _destination_button_text(action, run_label, room_number)
+
+
+func _destination_button_text(action: StringName, run_label: String, room_number: int) -> String:
+	match action:
+		ArenaProductionAttachmentService.NONE:
+			return "Produire sans intégrer"
+		ArenaProductionAttachmentService.UPDATE:
+			return "Intégrer dans %s — Mettre à jour salle %d" % [run_label, room_number]
+		ArenaProductionAttachmentService.REPLACE:
+			return "Intégrer dans %s — Remplacer salle %d" % [run_label, room_number]
+		ArenaProductionAttachmentService.APPEND:
+			return "Intégrer dans %s — Créer salle %d" % [run_label, room_number]
+		ArenaProductionAttachmentService.INSERT_BEFORE:
+			return "Intégrer dans %s — Insérer avant salle %d" % [run_label, room_number]
+		ArenaProductionAttachmentService.INSERT_AFTER:
+			return "Intégrer dans %s — Insérer après salle %d" % [run_label, room_number]
+	return "Intégrer à la run"
+
+
+func _on_destination_run_selected(_index: int) -> void:
+	if not _destination_syncing:
+		destination_room_option.select(0)
+		_refresh_destination_panel()
+
+
+func _selected_destination_run() -> RunData:
+	if destination_run_option == null or destination_run_option.selected < 0 \
+			or destination_run_option.selected >= _destination_runs.size():
+		return null
+	return _destination_runs[destination_run_option.selected]
+
+
+func _selected_destination_action() -> StringName:
+	if destination_action_option == null or destination_action_option.selected < 0:
+		return ArenaProductionAttachmentService.UPDATE
+	return StringName(destination_action_option.get_item_metadata(
+		destination_action_option.selected
+	))
+
+
+func _selected_destination_room_index() -> int:
+	var run_data := _selected_destination_run()
+	if run_data == null:
+		return -1
+	if _selected_destination_action() == ArenaProductionAttachmentService.APPEND:
+		return run_data.rooms.size()
+	return destination_room_option.selected
+
+
+func _destination_candidate() -> ArenaDefinition:
+	if arena == null:
+		return null
+	var candidate := RoomIntegrationFieldPolicy.merge_arena_into_room(arena, arena)
+	if candidate == null:
+		return null
+	ArenaRuntimeBridge.sync_runtime_resources(candidate)
+	return candidate
+
+
+func _blocking_context_domains() -> PackedStringArray:
+	var result := PackedStringArray()
+	if project_context == null:
+		return result
+	for domain_value in project_context.dirty_domains().keys():
+		var domain := StringName(domain_value)
+		if domain != &"arena":
+			result.append(str(domain))
+	return result
+
+
+func _on_integrate_destination_pressed() -> void:
+	_refresh_destination_panel()
+	if not _destination_last_plan.get("can_integrate", false):
+		_set_status("Le plan d’intégration est bloqué ; consultez Destination de la salle.", true)
+		return
+	var action := _selected_destination_action()
+	if action == ArenaProductionAttachmentService.REPLACE:
+		integration_replace_dialog.dialog_text = (
+			"Cette action remplace toute la référence RoomData. L’ancien fichier restera sur disque, "
+			+ "mais les données suivantes ne seront pas reprises :\n\n"
+			+ "\n".join(_destination_last_plan.get("abandoned_gameplay", []))
+			+ "\n\nPréférez « Mettre à jour l’arène » pour conserver le gameplay."
+		)
+		integration_replace_dialog.popup_centered()
+		return
+	_run_destination_integration()
+
+
+func _run_destination_integration() -> void:
+	if _integration_running:
+		return
+	_integration_running = true
+	_refresh_destination_panel()
+	integrate_room_requested.emit(_destination_last_plan.duplicate(true))
+	var candidate := _destination_candidate()
+	var before := arena.to_snapshot().duplicate(true) if arena != null else {}
+	await _perform_room_integration(
+		candidate, before, _selected_destination_run(), _selected_destination_action(),
+		_selected_destination_room_index(), ArenaProductionService.suggested_destination(candidate)
+	)
+	_integration_running = false
+	_refresh_destination_panel()
+
+
+func _show_guided_tour() -> void:
+	if guided_tour != null:
+		guided_tour.start(&"destination" if destination_tour_button != null \
+			and destination_tour_button.has_focus() else &"")
 
 
 func _build_dynamic_palette() -> VBoxContainer:
@@ -1003,6 +1307,15 @@ func _build_dialogs() -> void:
 	restore_delete_dialog.confirmed.connect(_confirm_delete_restore_point)
 	add_child(restore_delete_dialog)
 
+	guided_tour = ArenaStudioGuidedTour.new()
+	add_child(guided_tour)
+	integration_replace_dialog = ConfirmationDialog.new()
+	integration_replace_dialog.title = "REMPLACER TOUTE LA SALLE — MODE AVANCÉ"
+	integration_replace_dialog.ok_button_text = "Remplacer toute la salle"
+	integration_replace_dialog.cancel_button_text = "Conserver la salle"
+	integration_replace_dialog.confirmed.connect(_run_destination_integration)
+	add_child(integration_replace_dialog)
+
 	_build_production_dialog()
 	_build_migration_dialog()
 
@@ -1193,9 +1506,9 @@ func set_hybrid_floor_policy(policy: int) -> bool:
 
 func _build_production_dialog() -> void:
 	production_dialog = ConfirmationDialog.new()
-	production_dialog.title = "PRODUIRE LA SALLE — assistant déterministe"
+	production_dialog.title = "INTÉGRER LA SALLE — production guidée et transactionnelle"
 	production_dialog.size = Vector2i(920, 680)
-	production_dialog.ok_button_text = "Produire maintenant"
+	production_dialog.ok_button_text = "Intégrer à la run"
 	production_dialog.cancel_button_text = "Annuler"
 	production_dialog.confirmed.connect(_production_confirmed)
 	add_child(production_dialog)
@@ -1218,18 +1531,18 @@ func _build_production_dialog() -> void:
 	production_destination_edit = _labeled_line(
 		identity, "Chemin de destination", ArenaProductionService.DEFAULT_ROOT
 	)
-	identity.add_child(_section_label("RUN CIBLE ET RATTACHEMENT"))
+	identity.add_child(_section_label("DESTINATION DE LA SALLE"))
 	production_run_option = OptionButton.new()
 	production_run_option.item_selected.connect(func(_index): _refresh_production_wizard())
 	identity.add_child(production_run_option)
 	production_action_option = OptionButton.new()
 	for entry in [
-		["Produire sans rattacher", ArenaProductionAttachmentService.NONE],
-		["Créer / ajouter à la fin", ArenaProductionAttachmentService.APPEND],
-		["Insérer avant l’index", ArenaProductionAttachmentService.INSERT_BEFORE],
-		["Insérer après l’index", ArenaProductionAttachmentService.INSERT_AFTER],
-		["Remplacer à l’index", ArenaProductionAttachmentService.REPLACE],
-		["Mettre à jour à l’index", ArenaProductionAttachmentService.UPDATE],
+		["Mettre à jour l’arène de cette salle — recommandé", ArenaProductionAttachmentService.UPDATE],
+		["Créer une nouvelle salle", ArenaProductionAttachmentService.APPEND],
+		["Insérer la salle avant", ArenaProductionAttachmentService.INSERT_BEFORE],
+		["Insérer la salle après", ArenaProductionAttachmentService.INSERT_AFTER],
+		["Remplacer toute la salle — avancé", ArenaProductionAttachmentService.REPLACE],
+		["Produire sans intégrer", ArenaProductionAttachmentService.NONE],
 	]:
 		production_action_option.add_item(entry[0])
 		production_action_option.set_item_metadata(
@@ -1240,7 +1553,7 @@ func _build_production_dialog() -> void:
 	production_index_spin = _spin(identity, "Index de salle", 0, 0, 999)
 	production_index_spin.value_changed.connect(func(_value): _refresh_production_wizard())
 	var identity_note := Label.new()
-	identity_note.text = "Aucun fichier n'est écrit avant le clic « Produire maintenant »."
+	identity_note.text = "Aucun fichier n'est écrit avant le clic « Intégrer à la run »."
 	identity_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	identity.add_child(identity_note)
 	var validation_tab := VBoxContainer.new()
@@ -1362,6 +1675,7 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 	_refresh_inspector(GridTransformService.INVALID_CELL)
 	_refresh_restore_points()
 	_refresh_dynamic_palette()
+	_refresh_destination_panel()
 	if runtime_preview != null:
 		runtime_preview.set_arena(arena)
 	history_state_changed.emit()
@@ -1831,8 +2145,11 @@ func show_production_wizard() -> void:
 func _refresh_production_targets() -> void:
 	if production_run_option == null:
 		return
-	var active_path := project_context.active_run.resource_path \
+	var destination_run := _selected_destination_run()
+	var active_path := destination_run.resource_path if destination_run != null else (
+		project_context.active_run.resource_path \
 		if project_context != null and project_context.active_run != null else ""
+	)
 	_production_runs.clear()
 	production_run_option.clear()
 	production_run_option.add_item("Aucune run — produire seulement")
@@ -1849,9 +2166,15 @@ func _refresh_production_targets() -> void:
 		if run_data.resource_path == active_path:
 			selected = production_run_option.item_count - 1
 	production_run_option.select(selected)
-	production_action_option.select(0)
+	var destination_action := _selected_destination_action()
+	for index in range(production_action_option.item_count):
+		if StringName(production_action_option.get_item_metadata(index)) == destination_action:
+			production_action_option.select(index)
+			break
 	production_index_spin.value = float(
-		project_context.active_room_index if project_context != null else 0
+		_selected_destination_room_index() if destination_run != null else (
+			project_context.active_room_index if project_context != null else 0
+		)
 	)
 
 
@@ -1873,8 +2196,8 @@ func _selected_production_action() -> StringName:
 func _production_candidate() -> ArenaDefinition:
 	if arena == null:
 		return null
-	var candidate := ArenaDefinition.new()
-	if not candidate.restore_snapshot(arena.to_snapshot()):
+	var candidate := RoomIntegrationFieldPolicy.merge_arena_into_room(arena, arena)
+	if candidate == null:
 		return null
 	candidate.set_identity(production_name_edit.text, production_id_edit.text)
 	candidate.theme_id = StringName(production_theme_edit.text.strip_edges())
@@ -1898,24 +2221,25 @@ func _refresh_production_wizard() -> void:
 		return
 	var candidate := _production_candidate()
 	var destination := production_destination_edit.text.strip_edges()
-	var production_plan := ArenaProductionService.plan(candidate, destination)
-	if not bool(production_plan.get("ok", false)):
-		production_validation_text.text = "[color=red]Plan impossible : %s[/color]" % production_plan.get("error", "erreur")
+	var target_run := _selected_production_run()
+	var attachment_action := _selected_production_action()
+	var integration_plan := ArenaIntegrationService.plan(
+		candidate, target_run, attachment_action, int(production_index_spin.value),
+		destination, shared_reference_graph
+	)
+	if not bool(integration_plan.get("ok", false)):
+		production_validation_text.text = "[color=red]Plan impossible : %s[/color]" % integration_plan.get("error", "erreur")
 		production_plan_text.text = production_validation_text.text
 		production_dialog.get_ok_button().disabled = true
 		return
+	var production_plan := integration_plan.production as Dictionary
 	var report := production_plan.validation as ArenaValidationReport
 	var visual_report := production_plan.visual_report as ArenaVisualAssemblyReport
-	var target_run := _selected_production_run()
-	var attachment_action := _selected_production_action()
-	var attachment_plan := ArenaProductionAttachmentService.plan(
-		target_run, attachment_action, int(production_index_spin.value),
-		destination.path_join("arena.tres")
-	)
+	var attachment_plan := integration_plan.attachment as Dictionary
 	if attachment_action != ArenaProductionAttachmentService.NONE and target_run == null:
 		attachment_plan = {
 			"ok": false,
-			"error": "Choisissez une RunData cible ou Produire sans rattacher.",
+			"error": "Choisissez une RunData cible ou Produire sans intégrer.",
 		}
 	if target_run != null:
 		production_index_spin.max_value = maxi(0, target_run.rooms.size())
@@ -1929,6 +2253,10 @@ func _refresh_production_wizard() -> void:
 	for entry in report.messages:
 		var color: String = ["red", "orange", "light_blue"][entry.severity]
 		validation_lines.append("[color=%s]• %s[/color]" % [color, entry.message])
+	for run_error in integration_plan.get("run_validation_errors", []):
+		validation_lines.append("[color=red]• Run cible : %s[/color]" % run_error)
+	for unknown in integration_plan.get("field_coverage", {}).get("unknown", []):
+		validation_lines.append("[color=red]• Propriété sans politique : %s[/color]" % unknown)
 	production_validation_text.text = "\n".join(validation_lines)
 	production_preview_text.text = (
 		"[b]Même chaîne que le runtime[/b]\n\n"
@@ -1961,7 +2289,7 @@ func _refresh_production_wizard() -> void:
 		plan_lines.append("[color=red]! %s[/color]" % path)
 	if production_plan.conflicts.is_empty():
 		plan_lines.append("Aucun conflit.")
-	plan_lines.append("\n[b]Rattachement à la run[/b]")
+	plan_lines.append("\n[b]Intégration à la run[/b]")
 	if attachment_plan.get("ok", false):
 		plan_lines.append("RunData : %s" % attachment_plan.get("run_path", "aucune"))
 		plan_lines.append("Action : %s" % attachment_plan.get("action", &"NONE"))
@@ -1972,16 +2300,25 @@ func _refresh_production_wizard() -> void:
 		])
 		var replaced_path := str(attachment_plan.get("replaced_path", ""))
 		if not replaced_path.is_empty():
-			plan_lines.append("Ancien usage remplacé : %s" % replaced_path)
+			plan_lines.append("Salle cible actuelle : %s" % replaced_path)
+		plan_lines.append("ArenaDefinition finale : %s" % attachment_plan.get("integrated_room_path", ""))
+		plan_lines.append("Gameplay conservé : %s" % ("oui" if attachment_plan.get("preserves_gameplay", false) else "non"))
+		plan_lines.append("Salle partagée : %s" % ("oui — copie spécifique" if attachment_plan.get("shared", false) else "non"))
 	else:
 		plan_lines.append("[color=red]Plan impossible : %s[/color]" % attachment_plan.get("error", "erreur"))
 	var run_conflict := target_run != null and run_authoring.is_dirty() \
 		and run_authoring.source_path == target_run.resource_path
 	if run_conflict:
 		plan_lines.append("[color=red]La run cible a déjà des modifications non sauvegardées.[/color]")
+	var blocking_domains := _blocking_context_domains()
+	if not blocking_domains.is_empty():
+		plan_lines.append("[color=red]Documents à résoudre : %s[/color]" % ", ".join(blocking_domains))
 	production_plan_text.text = "\n".join(plan_lines)
-	production_dialog.get_ok_button().disabled = not bool(production_plan.can_produce) \
+	production_dialog.get_ok_button().text = "Produire sans intégrer" \
+		if attachment_action == ArenaProductionAttachmentService.NONE else "Intégrer à la run"
+	production_dialog.get_ok_button().disabled = not bool(integration_plan.can_integrate) \
 		or not bool(attachment_plan.get("ok", false)) or run_conflict \
+		or not blocking_domains.is_empty() \
 		or (edit_session != null and edit_session.has_external_conflict())
 
 
@@ -1992,63 +2329,95 @@ func _production_confirmed() -> void:
 func _run_confirmed_production() -> void:
 	if edit_session == null or arena == null:
 		return
-	if edit_session.has_external_conflict():
-		_show_production_failure("La source a changé sur disque : production bloquée.")
-		return
 	var candidate := _production_candidate()
 	var before := arena.to_snapshot().duplicate(true)
-	var preview_images: Dictionary = await _capture_runtime_preview_images(candidate)
-	var result := ArenaProductionService.produce(
-		candidate, production_destination_edit.text.strip_edges(), preview_images
+	await _perform_room_integration(
+		candidate, before, _selected_production_run(), _selected_production_action(),
+		int(production_index_spin.value), production_destination_edit.text.strip_edges()
 	)
-	if not bool(result.get("ok", false)):
-		var failed_visual := result.get("visual_report") as ArenaVisualAssemblyReport
+
+
+func _perform_room_integration(
+		candidate: ArenaDefinition,
+		before: Dictionary,
+		target_run: RunData,
+		action: StringName,
+		target_index: int,
+		destination: String
+	) -> Dictionary:
+	if candidate == null or edit_session == null:
+		_show_production_failure("La copie de travail ne peut pas être préparée.")
+		return {"ok": false, "error": "candidate_missing"}
+	if edit_session.has_external_conflict():
+		_show_production_failure("La source a changé sur disque : intégration bloquée.")
+		return {"ok": false, "error": "external_conflict"}
+	var blocking_domains := _blocking_context_domains()
+	if not blocking_domains.is_empty():
+		_show_production_failure(
+			"Résolvez d’abord les documents modifiés : %s" % ", ".join(blocking_domains)
+		)
+		return {"ok": false, "error": "dirty_context"}
+	var preview_images: Dictionary = await _capture_runtime_preview_images(candidate)
+	var integration := ArenaIntegrationService.integrate(
+		candidate, target_run, action, target_index, destination,
+		shared_reference_graph, preview_images
+	)
+	if not bool(integration.get("ok", false)):
+		var production := integration.get("production", {}) as Dictionary
+		var failed_visual := production.get("visual_report") as ArenaVisualAssemblyReport
 		var visual_details := ""
 		if failed_visual != null:
 			visual_details = "\n%d dalle(s) rendue(s) sur %d attendue(s)." % [
 				failed_visual.rendered_terrain_node_count,
 				failed_visual.expected_terrain_cell_count,
 			]
-		_show_production_failure(
-			"Production refusée : %s%s" % [result.get("error", "erreur inconnue"), visual_details]
-		)
-		return
-	var produced := ResourceLoader.load(
-		str(result.arena_path), "", ResourceLoader.CACHE_MODE_IGNORE
-	) as ArenaDefinition
-	if produced == null:
+		var message := "%s%s" % [
+			integration.get("error", "erreur inconnue"), visual_details,
+		]
+		if integration.get("status", &"") == &"ROOM_PRODUCED_NOT_INTEGRATED":
+			production_result_text.text = (
+				"[font_size=24][b][color=orange]SALLE PRODUITE — INTÉGRATION REFUSÉE[/color][/b][/font_size]\n\n"
+				+ "%s\n\nLa RunData et la salle canonique ont été restaurées. " % message
+				+ "Le bundle produit reste disponible pour diagnostic."
+			)
+			production_tabs.current_tab = 4
+			production_dialog.get_ok_button().hide()
+			production_dialog.popup_centered()
+			_set_status("Production prête, mais transaction d’intégration refusée.", true)
+		else:
+			_show_production_failure("Intégration refusée : %s" % message)
+		return integration
+	var production := integration.get("production", {}) as Dictionary
+	var attachment := integration.get("attachment", {}) as Dictionary
+	var integrated_room := integration.get("reloaded_room") as ArenaDefinition
+	if integrated_room == null:
+		integrated_room = ResourceLoader.load(
+			str(production.get("arena_path", "")), "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+		) as ArenaDefinition
+	if integrated_room == null:
 		_show_production_failure("La ressource finale n'a pas pu être rechargée.")
-		return
-	var attachment := ArenaProductionAttachmentService.attach_and_save(
-		str(result.arena_path), _selected_production_run(),
-		_selected_production_action(), int(production_index_spin.value),
-		shared_reference_graph
-	)
-	if not attachment.get("ok", false):
-		production_result_text.text = (
-			"[font_size=24][b][color=orange]SALLE PRODUITE — RATTACHEMENT REFUSÉ[/color][/b][/font_size]\n\n"
-			+ "%s\n\nLa RunData n’a pas été modifiée ; l’ArenaDefinition produite reste disponible dans %s." % [
-				attachment.get("error", "Erreur de rattachement."), result.directory,
-			]
-		)
-		production_tabs.current_tab = 4
-		production_dialog.get_ok_button().hide()
-		production_dialog.popup_centered()
-		_set_status("Salle produite, mais rattachement transactionnel refusé.", true)
-		return
-	result["attachment"] = attachment
-	edit_session.apply_snapshot(produced.to_snapshot())
+		return {"ok": false, "error": "integrated_reload_failed"}
+	edit_session.apply_snapshot(integrated_room.to_snapshot())
 	arena = edit_session.working_arena
-	edit_session.commit("Produire la working copy", before, arena.to_snapshot())
-	edit_session.mark_saved(str(result.arena_path))
+	edit_session.commit(
+		"Produire la salle" if action == ArenaProductionAttachmentService.NONE \
+		else "Intégrer la salle à la run",
+		before, arena.to_snapshot()
+	)
+	edit_session.mark_saved(str(integration.get("integrated_room_path", "")))
+	if project_context != null:
+		project_context.set_dirty(&"arena", false)
 	canvas.set_arena(arena)
 	canvas.set_saved_transform(edit_session.saved_transform())
 	if runtime_preview != null:
 		runtime_preview.set_arena(arena)
 	_refresh_all()
-	var final_visual := result.visual_report as ArenaVisualAssemblyReport
+	var final_visual := production.get("visual_report") as ArenaVisualAssemblyReport
+	var produced_only := action == ArenaProductionAttachmentService.NONE
 	production_result_text.text = (
-		"[font_size=28][b][color=green]SALLE PRÊTE[/color][/b][/font_size]\n\n"
+		("[font_size=28][b][color=green]SALLE PRODUITE ET RECHARGÉE[/color][/b][/font_size]\n\n" \
+		if produced_only else \
+		"[font_size=28][b][color=green]SALLE INTÉGRÉE ET RECHARGÉE[/color][/b][/font_size]\n\n")
 		+ "✓ %d dalles attendues / %d rendues\n" % [
 			final_visual.expected_terrain_cell_count,
 			final_visual.rendered_terrain_node_count,
@@ -2060,28 +2429,36 @@ func _run_confirmed_production() -> void:
 		+ "✓ Définition valide\n✓ Grille valide\n✓ Pathfinding valide\n"
 		+ "✓ Spawns valides\n✓ Preview Art valide\n✓ Preview Jeu valide\n"
 		+ "✓ Ressources rechargées\n✓ Test direct disponible\n"
-		+ ("✓ RunData inchangée — production sans rattachement\n\n" \
+		+ ("✓ RunData inchangée — production sans intégrer\n\n" \
 			if attachment.get("action", &"NONE") == ArenaProductionAttachmentService.NONE \
-			else "✓ Rattachée à %s, index %d (%d → %d salles)\n\n" % [
+			else "✓ Intégrée à %s, index %d (%d → %d salles)\n" % [
 				attachment.get("run_path", ""), int(attachment.get("target_index", -1)),
 				int(attachment.get("before_count", 0)), int(attachment.get("after_count", 0)),
-			])
-		+ "[b]%s[/b]" % result.directory
+			] + ("✓ Gameplay de la salle conservé\n" if attachment.get("preserved_gameplay", false) else "")
+			+ ("✓ Copie spécifique créée pour protéger la salle partagée\n" if attachment.get("copy_on_write", false) else "")
+			+ "\n")
+		+ "[b]%s[/b]\nJournal : %s" % [
+			integration.get("integrated_room_path", ""), integration.get("journal_path", ""),
+		]
 	)
-	if attachment.get("reloaded_run") is RunData and project_context != null \
-			and project_context.active_run != null \
-			and project_context.active_run.resource_path == str(attachment.get("run_path", "")):
+	if attachment.get("reloaded_run") is RunData and project_context != null:
 		var reloaded_run := attachment.reloaded_run as RunData
 		run_authoring.open(reloaded_run, shared_reference_graph)
-		project_context.request_selection({
+		var selection := project_context.request_selection({
 			"run": reloaded_run,
 			"room_index": int(attachment.get("target_index", 0)),
 		}, &"arena")
+		if not selection.get("ok", false):
+			production_result_text.text += "\n[color=orange]Salle intégrée, mais sélection en attente : %s[/color]" % selection.get("status", "")
 	production_tabs.current_tab = 4
 	production_dialog.get_ok_button().hide()
 	production_dialog.popup_centered()
-	_set_status("SALLE PRÊTE — ressources produites et rechargées dans %s" % result.directory)
+	_set_status(
+		"SALLE PRODUITE — bundle vérifié, aucune RunData modifiée." if produced_only \
+		else "SALLE INTÉGRÉE — transaction vérifiée et destination sélectionnée."
+	)
 	history_state_changed.emit()
+	return integration
 
 
 func _capture_runtime_preview_images(candidate: ArenaDefinition) -> Dictionary:
@@ -2681,6 +3058,7 @@ func _refresh_all() -> void:
 	_refresh_title()
 	_refresh_calibration_label()
 	_refresh_dynamic_palette()
+	_refresh_destination_panel()
 	_autosave()
 
 
@@ -2706,6 +3084,7 @@ func _on_history_changed() -> void:
 	_refresh_calibration_label()
 	_refresh_transform_inspector()
 	_refresh_dynamic_palette()
+	_refresh_destination_panel()
 	history_state_changed.emit()
 
 
@@ -3302,6 +3681,12 @@ func _section_label(text: String) -> Label:
 	label.text = text
 	label.add_theme_font_size_override("font_size", 15)
 	label.add_theme_color_override("font_color", Color(0.50, 0.82, 0.98))
+	return label
+
+
+func _plain_label(text: String) -> Label:
+	var label := Label.new()
+	label.text = text
 	return label
 
 

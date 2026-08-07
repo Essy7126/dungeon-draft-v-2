@@ -15,7 +15,8 @@ func _ready() -> void:
 	var definition := room_data as ArenaDefinition
 	if definition == null or grid == null or pathfinder == null:
 		return
+	var floor_parent := _find_or_create_arena_tile_parent(false)
 	arena_assembly = ArenaVisualAssembler.assemble(
 		definition, grid, pathfinder, grid_view,
-		_find_unit_view_parent(), self, true
+		_find_unit_view_parent(), self, true, floor_parent
 	)

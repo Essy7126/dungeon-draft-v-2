@@ -13,6 +13,7 @@
 # Les hooks ne sont appelés QUE pour un cast réussi (coûts payés).
 # ============================================================
 
+@tool
 class_name SpellModifier
 extends Resource
 

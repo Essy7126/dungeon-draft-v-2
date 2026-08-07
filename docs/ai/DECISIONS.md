@@ -64,3 +64,25 @@ build ou d’un état global de debug.
 Cette décision remplace, pour la principale actuelle, l’hypothèse historique de
 trois à dix vagues par salle. Elle ne supprime ni `RoomWaveData`, ni le moteur de
 vagues, ni la run de test.
+
+## ITEM_STUDIO_V1 — édition data-driven des objets
+
+- Date : 2026-08-07
+- Branche vérifiée : `main`
+- HEAD de base vérifié : `29f307b5ff61822f266bbd2d14636ca8dcea2d95`
+- Statut : **ADOPTÉE DANS LE DIFF LOCAL — WORKTREE_CANDIDATE**
+- Tests : GUT Item Studio 30/30, 190 assertions ; smoke intégré PASS ; captures réelles inspectées ; suite globale 836/849, sans nouvel échec.
+- Non vérifié : activation à un commit intégré et revue humaine interactive dans Godot.
+
+`ItemDefinition` reste l’autorité actuelle. Le Studio travaille exclusivement
+sur une working copy isolée. DRAFT et SHARED sont supportées ; RUN_SPECIFIC est
+différée tant qu’aucune autorité de catalogue par run n’existe. Les reliques
+runtime restent différées et aucune ancienne ressource n’est promue.
+
+Toute famille d’effet éditable doit être codée, testée et enregistrée par un
+descripteur explicite. Aucun éditeur de script libre, chargement de classe
+arbitraire ou expression dynamique n’est exposé. Cette décision ne modifie aucune
+valeur d’équilibrage, aucun inventaire initial et aucun pool de récompense.
+
+L’activation CURRENT est différée jusqu’à l’intégration explicite du patch et sa
+vérification à un commit.

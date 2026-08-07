@@ -3,7 +3,7 @@ extends EditorPlugin
 
 # Compatibilite : Arena Studio reste le module historique de ce plugin unique.
 
-const TOOL_MENU_DETACH := "Dungeon Draft Studio : detacher / reintegrer"
+const TOOL_MENU_DETACH := "Dungeon Draft Studio : détacher / réintégrer la fenêtre"
 const TOOL_MENU_SKILLS := "Dungeon Draft : ouvrir le Studio des compétences"
 const DETACH_SHORTCUT_SETTING := "dungeon_draft_studio/shortcuts/detach_workspace"
 

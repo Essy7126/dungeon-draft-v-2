@@ -189,9 +189,22 @@ func start_preconfigured_run(run_data: RunData, hero_sources: Array) -> void:
 
 ## Pont public reserve aux outils internes : construit le meme etat de run puis
 ## lance directement la vraie scene de bataille, sans ecran de transition.
-func start_direct_encounter_test(run_data: RunData, hero_sources: Array) -> bool:
-	if not _prepare_preconfigured_run(run_data, hero_sources):
+func start_direct_encounter_test(
+		run_data: RunData,
+		hero_sources: Array,
+		direct_test_options: Dictionary = {}
+	) -> bool:
+	var allow_empty_heroes := bool(direct_test_options.get(
+		"allow_empty_heroes", false
+	))
+	if not _prepare_preconfigured_run(
+		run_data, hero_sources, allow_empty_heroes
+	):
 		return false
+	if not direct_test_options.is_empty():
+		get_tree().set_meta(
+			&"arena_studio_test_options", direct_test_options.duplicate(true)
+		)
 	if rooms.is_empty() or rooms[0] == null or rooms[0].battle_scene == null:
 		cleanup_run_state()
 		return false
@@ -202,11 +215,15 @@ func start_direct_encounter_test(run_data: RunData, hero_sources: Array) -> bool
 
 ## Prepare l'etat sans changer de scene. Separe de start_preconfigured_run pour
 ## garder la construction testable sans dependre d'une transition graphique.
-func _prepare_preconfigured_run(run_data: RunData, hero_sources: Array) -> bool:
+func _prepare_preconfigured_run(
+		run_data: RunData,
+		hero_sources: Array,
+		allow_empty_heroes := false
+	) -> bool:
 	if run_data == null:
 		push_error("Aucun RunData fourni pour le run preconfigure.")
 		return false
-	if hero_sources.is_empty():
+	if hero_sources.is_empty() and not allow_empty_heroes:
 		push_error("Aucun heros fourni pour le run preconfigure.")
 		return false
 

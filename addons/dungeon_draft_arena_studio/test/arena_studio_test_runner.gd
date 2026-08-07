@@ -1,6 +1,9 @@
 extends Node
 
 const REQUEST_PATH := "user://arena_studio/test_request.json"
+const DirectTestConfiguration = preload(
+	"res://addons/dungeon_draft_arena_studio/services/arena_direct_test_configuration.gd"
+)
 const DEFAULT_HEROES := [
 	"res://data/units/alliés/elfe.tres",
 	"res://data/units/alliés/mage.tres",
@@ -24,20 +27,28 @@ func _ready() -> void:
 		return
 	var run := RunData.new()
 	var configuration := StringName(request.get("configuration", "movement"))
+	var test_options := DirectTestConfiguration.resolve(configuration)
 	get_tree().set_meta("arena_studio_test_configuration", configuration)
+	get_tree().set_meta(DirectTestConfiguration.TREE_META, test_options)
 	run.run_name = "Test Arena Studio [%s] — %s" % [configuration, arena.display_name]
 	run.rooms = [arena]
 	run.default_seed = 1337
 	var heroes: Array = request.get("heroes", DEFAULT_HEROES)
+	if not bool(test_options.get("spawn_heroes", false)):
+		heroes = []
 	if heroes.any(func(path): return not ResourceLoader.exists(str(path))):
 		heroes = DEFAULT_HEROES
-	print("ARENA_STUDIO_DIRECT_TEST configuration=%s arena=%s" % [configuration, arena.arena_id])
+	print("ARENA_STUDIO_DIRECT_TEST configuration=%s applied=%s arena=%s" % [
+		configuration, test_options.get("applied_mode", "unknown"), arena.arena_id,
+	])
 	var game_manager := get_node_or_null("/root/GameManager")
 	if game_manager == null:
 		push_error("Arena Studio : l'autoload GameManager est introuvable.")
 		get_tree().quit(3)
 		return
-	var started: bool = game_manager.start_direct_encounter_test(run, heroes)
+	var started: bool = game_manager.start_direct_encounter_test(
+		run, heroes, test_options
+	)
 	_write_launch_result(request, started, arena)
 	if not started:
 		push_error("Arena Studio : le lancement direct a ete refuse par GameManager.")
@@ -65,6 +76,9 @@ func _write_launch_result(request: Dictionary, started: bool, arena: ArenaDefini
 			"ok": started,
 			"arena_id": str(arena.arena_id),
 			"configuration": str(request.get("configuration", "")),
+			"applied_mode": str(get_tree().get_meta(
+				DirectTestConfiguration.TREE_META, {}
+			).get("applied_mode", "")),
 			"working_copy": true,
 		}, "  "))
 		file.close()

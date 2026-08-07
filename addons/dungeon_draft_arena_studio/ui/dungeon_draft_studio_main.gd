@@ -11,6 +11,7 @@ var editor_undo_redo = null
 var tabs: TabContainer
 var arena_studio: ArenaStudioMain
 var encounter_studio: EncounterStudioMain
+var item_studio: ItemStudioMain
 var undo_button: Button
 var redo_button: Button
 var history_button: MenuButton
@@ -73,9 +74,16 @@ func _ready() -> void:
 	encounter_studio.open_arena_requested.connect(_open_arena_tab)
 	tabs.add_child(encounter_studio)
 	tabs.set_tab_title(tabs.get_tab_count() - 1, "RENCONTRES")
+
+	item_studio = ItemStudioMain.new()
+	item_studio.name = "Objets"
+	item_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
+	tabs.add_child(item_studio)
+	tabs.set_tab_title(tabs.get_tab_count() - 1, "OBJETS")
 	tabs.tab_changed.connect(_on_tab_changed)
 	arena_studio.history_state_changed.connect(_refresh_history_controls)
 	encounter_studio.history_state_changed.connect(_refresh_history_controls)
+	item_studio.history_state_changed.connect(_refresh_history_controls)
 
 	if not _pending_state.is_empty():
 		apply_state_snapshot(_pending_state)
@@ -121,7 +129,10 @@ func _build_shared_history_bar() -> Control:
 	save_button = _global_button(bar, "Sauver", _global_save, "Sauvegarder le document actif")
 	validate_button = _global_button(bar, "Valider", _global_validate, "Valider le document actif")
 	test_button = _global_button(bar, "Tester", _global_test, "Tester la working copy")
-	produce_button = _global_button(bar, "Produire", _global_produce, "Produire une salle prete pour la run")
+	produce_button = _global_button(
+		bar, "Intégrer à la run", _global_produce,
+		"Choisir la destination puis produire et intégrer la salle"
+	)
 	lab_transfer_button = _global_button(
 		bar, "Importer du Lab", _global_lab_transfer,
 		"Examiner puis importer un transfert Dynamic Arena Lab vérifié"
@@ -153,8 +164,8 @@ func _build_shared_history_bar() -> Control:
 	bar.add_child(preview_view_option)
 	focus_map_button = _global_button(bar, "Focus", _toggle_focus_map, "Focus Map (Tab)")
 	detach_button = _global_button(
-		bar, "Detacher", func(): detach_requested.emit(),
-		"Ouvrir dans une fenetre (Ctrl+Shift+D)"
+		bar, "Détacher la fenêtre", func(): detach_requested.emit(),
+		"Détacher la fenêtre du Studio (Ctrl+Shift+D)"
 	)
 	return panel
 
@@ -162,6 +173,8 @@ func _build_shared_history_bar() -> Control:
 func ensure_initial_content_loaded() -> void:
 	if arena_studio != null:
 		arena_studio.ensure_initial_arena_loaded()
+	if item_studio != null:
+		item_studio.ensure_initial_content_loaded()
 
 
 func get_state_snapshot() -> Dictionary:
@@ -176,12 +189,14 @@ func get_state_snapshot() -> Dictionary:
 			if arena_studio != null and arena_studio.has_method("get_workspace_state") else {},
 		"encounter": encounter_studio.get_state_snapshot() \
 			if encounter_studio != null else {},
+		"items": item_studio.get_state_snapshot() \
+			if item_studio != null else {},
 		"project_context": project_context.snapshot() if project_context != null else {},
 	}
 
 
 func apply_state_snapshot(state: Dictionary) -> void:
-	if not is_node_ready() or tabs == null or encounter_studio == null:
+	if not is_node_ready() or tabs == null or encounter_studio == null or item_studio == null:
 		_pending_state = state.duplicate(true)
 		return
 	tabs.current_tab = clampi(int(state.get("tab", 0)), 0, tabs.get_tab_count() - 1)
@@ -203,6 +218,9 @@ func apply_state_snapshot(state: Dictionary) -> void:
 	var encounter_state = state.get("encounter", {})
 	if encounter_state is Dictionary:
 		encounter_studio.apply_state_snapshot(encounter_state)
+	var item_state = state.get("items", {})
+	if item_state is Dictionary:
+		item_studio.apply_state_snapshot(item_state)
 	_refresh_history_controls()
 
 
@@ -216,6 +234,8 @@ func prepare_for_close() -> void:
 		arena_studio.cancel_active_gesture()
 	if arena_studio != null and arena_studio.has_method("_flush_recovery"):
 		arena_studio._flush_recovery()
+	if item_studio != null:
+		item_studio.prepare_for_close()
 
 
 func cancel_active_gesture() -> bool:
@@ -225,7 +245,14 @@ func cancel_active_gesture() -> bool:
 func _active_history_provider():
 	if tabs == null:
 		return null
-	return arena_studio if tabs.current_tab == 0 else encounter_studio
+	match tabs.current_tab:
+		0:
+			return arena_studio
+		1:
+			return encounter_studio
+		2:
+			return item_studio
+	return null
 
 
 func _undo_active() -> void:
@@ -246,8 +273,8 @@ func _refresh_history_controls() -> void:
 	if undo_button == null or redo_button == null or history_button == null:
 		return
 	var provider = _active_history_provider()
-	var undo_name := provider.history_undo_name() if provider != null else ""
-	var redo_name := provider.history_redo_name() if provider != null else ""
+	var undo_name: String = provider.history_undo_name() if provider != null else ""
+	var redo_name: String = provider.history_redo_name() if provider != null else ""
 	undo_button.disabled = provider == null or not provider.history_can_undo()
 	redo_button.disabled = provider == null or not provider.history_can_redo()
 	undo_button.tooltip_text = "Annuler : %s" % undo_name \
@@ -288,7 +315,7 @@ func _rebuild_history_menu() -> void:
 	popup.add_item("● Position actuelle — etape %d" % current_index, -2)
 	popup.set_item_disabled(popup.item_count - 1, true)
 	popup.add_separator()
-	var opening_saved := provider.has_method("history_opening_is_saved") \
+	var opening_saved: bool = provider.has_method("history_opening_is_saved") \
 		and provider.history_opening_is_saved()
 	if not opening_saved:
 		opening_saved = current_index == 0 \
@@ -390,10 +417,10 @@ func _apply_theme_icons() -> void:
 func set_detached_state(value: bool) -> void:
 	detached = value
 	if detach_button != null:
-		detach_button.text = "Reintegrer" if detached else "Detacher"
+		detach_button.text = "Réintégrer la fenêtre" if detached else "Détacher la fenêtre"
 		detach_button.tooltip_text = (
-			"Reintegrer dans Godot (Ctrl+Shift+D)" if detached
-			else "Ouvrir dans une fenetre (Ctrl+Shift+D)"
+			"Réintégrer la fenêtre dans Godot (Ctrl+Shift+D)" if detached
+			else "Détacher la fenêtre du Studio (Ctrl+Shift+D)"
 		)
 	_apply_toolbar_responsive()
 
@@ -403,7 +430,8 @@ func set_detach_shortcut_string(value: String) -> void:
 		else "Ctrl+Shift+D"
 	if detach_button != null:
 		detach_button.tooltip_text = "%s (%s)" % [
-			"Réintégrer dans Godot" if detached else "Ouvrir dans une fenêtre",
+			"Réintégrer la fenêtre dans Godot" if detached \
+			else "Détacher la fenêtre du Studio",
 			detach_shortcut_text,
 		]
 
@@ -439,30 +467,36 @@ func _apply_toolbar_responsive() -> void:
 	workspace_preset_option.custom_minimum_size.x = 104 if compact else 0
 	preview_view_option.custom_minimum_size.x = 72 if compact else 0
 	detach_button.text = (
-		("Réint." if compact else "Réintégrer") if detached \
-		else ("Dét." if compact else "Détacher")
+		("Réint. fenêtre" if compact else "Réintégrer la fenêtre") if detached \
+		else ("Dét. fenêtre" if compact else "Détacher la fenêtre")
 	)
 
 
 func _global_save() -> void:
 	if tabs.current_tab == 0:
 		arena_studio.save_arena()
-	elif encounter_studio.has_method("_show_save_dialog"):
+	elif tabs.current_tab == 1 and encounter_studio.has_method("_show_save_dialog"):
 		encounter_studio._show_save_dialog()
+	elif tabs.current_tab == 2:
+		item_studio.save_as_draft()
 
 
 func _global_validate() -> void:
 	if tabs.current_tab == 0:
 		arena_studio.validate_arena()
-	else:
+	elif tabs.current_tab == 1:
 		encounter_studio.validate_session()
+	elif tabs.current_tab == 2:
+		item_studio.validate_document()
 
 
 func _global_test() -> void:
 	if tabs.current_tab == 0:
 		arena_studio.test_arena()
-	else:
+	elif tabs.current_tab == 1:
 		encounter_studio.test_current_encounter()
+	elif tabs.current_tab == 2:
+		item_studio.test_document()
 
 
 func _global_produce() -> void:
