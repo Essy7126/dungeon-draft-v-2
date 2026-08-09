@@ -1,0 +1,240 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://tools/character_capture/character_capture_studio.gd" id="1_studio"]
+
+[sub_resource type="Environment" id="Environment_capture"]
+background_mode = 1
+background_color = Color(0.86, 0.87, 0.89, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.88, 0.9, 0.94, 1)
+ambient_light_energy = 0.45
+reflected_light_source = 2
+tonemap_mode = 0
+
+[sub_resource type="StyleBoxFlat" id="Style_preview"]
+bg_color = Color(0.105, 0.12, 0.145, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.29, 0.34, 0.41, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="Style_controls"]
+bg_color = Color(0.11, 0.125, 0.15, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.29, 0.36, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+
+[node name="CharacterCaptureStudio" type="Node"]
+script = ExtResource("1_studio")
+
+[node name="CaptureViewport" type="SubViewport" parent="."]
+transparent_bg = false
+size = Vector2i(1024, 1024)
+render_target_update_mode = 4
+own_world_3d = true
+msaa_3d = 3
+gui_disable_input = true
+use_taa = false
+
+[node name="CaptureWorld" type="Node3D" parent="CaptureViewport"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="CaptureViewport/CaptureWorld"]
+environment = SubResource("Environment_capture")
+
+[node name="CharacterPivot" type="Node3D" parent="CaptureViewport/CaptureWorld"]
+
+[node name="ModelOffset" type="Node3D" parent="CaptureViewport/CaptureWorld/CharacterPivot"]
+
+[node name="CameraRig" type="Node3D" parent="CaptureViewport/CaptureWorld"]
+
+[node name="Camera3D" type="Camera3D" parent="CaptureViewport/CaptureWorld/CameraRig"]
+position = Vector3(2.44949, 2, 2.44949)
+projection = 1
+current = true
+size = 2.0
+near = 0.05
+far = 20.0
+
+[node name="KeyLight" type="DirectionalLight3D" parent="CaptureViewport/CaptureWorld"]
+rotation_degrees = Vector3(-48, -35, 0)
+light_color = Color(1, 0.965, 0.91, 1)
+light_energy = 0.85
+shadow_enabled = true
+
+[node name="FillLight" type="DirectionalLight3D" parent="CaptureViewport/CaptureWorld"]
+rotation_degrees = Vector3(-24, 140, 0)
+light_color = Color(0.78, 0.86, 1, 1)
+light_energy = 0.25
+shadow_enabled = false
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.055, 0.063, 0.078, 1)
+mouse_filter = 2
+
+[node name="Layout" type="MarginContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Columns" type="HBoxContainer" parent="UI/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="PreviewPanel" type="PanelContainer" parent="UI/Layout/Columns"]
+custom_minimum_size = Vector2(520, 520)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("Style_preview")
+
+[node name="PreviewAspect" type="AspectRatioContainer" parent="UI/Layout/Columns/PreviewPanel"]
+layout_mode = 2
+ratio = 1.0
+stretch_mode = 2
+
+[node name="Preview" type="TextureRect" parent="UI/Layout/Columns/PreviewPanel/PreviewAspect"]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ControlsPanel" type="PanelContainer" parent="UI/Layout/Columns"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("Style_controls")
+
+[node name="Controls" type="VBoxContainer" parent="UI/Layout/Columns/ControlsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.77, 0.36, 1)
+theme_override_font_sizes/font_size = 24
+text = "CHARACTER CAPTURE STUDIO"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.73, 0.82, 1)
+theme_override_font_sizes/font_size = 14
+text = "Référence statique • caméra de production fixe"
+horizontal_alignment = 1
+
+[node name="SeparatorTop" type="HSeparator" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+
+[node name="OrientationLabel" type="Label" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.94, 0.98, 1)
+theme_override_font_sizes/font_size = 18
+text = "Orientation actuelle : SE\nYaw personnage : 0.0°"
+horizontal_alignment = 1
+
+[node name="OrientationButtons" type="GridContainer" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="SE" type="Button" parent="UI/Layout/Columns/ControlsPanel/Controls/OrientationButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "[ SE ]"
+
+[node name="SW" type="Button" parent="UI/Layout/Columns/ControlsPanel/Controls/OrientationButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "[ SW ]"
+
+[node name="NW" type="Button" parent="UI/Layout/Columns/ControlsPanel/Controls/OrientationButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "[ NW ]"
+
+[node name="NE" type="Button" parent="UI/Layout/Columns/ControlsPanel/Controls/OrientationButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "[ NE ]"
+
+[node name="CaptureCurrent" type="Button" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "CAPTURE CURRENT"
+
+[node name="CaptureAll" type="Button" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.12, 0.15, 1)
+theme_override_colors/font_hover_color = Color(0.1, 0.12, 0.15, 1)
+theme_override_colors/font_pressed_color = Color(0.1, 0.12, 0.15, 1)
+theme_override_font_sizes/font_size = 17
+text = "CAPTURE ALL 4"
+
+[node name="TransparentBackground" type="CheckButton" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+text = "Fond transparent"
+
+[node name="SeparatorInfo" type="HSeparator" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+
+[node name="InfoLabel" type="Label" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.69, 0.75, 0.84, 1)
+theme_override_font_sizes/font_size = 13
+text = "Initialisation..."
+autowrap_mode = 2
+
+[node name="StatusLabel" type="Label" parent="UI/Layout/Columns/ControlsPanel/Controls"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.66, 0.84, 0.72, 1)
+text = "Chargement..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
