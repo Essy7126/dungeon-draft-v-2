@@ -16,6 +16,9 @@ var nodes := {}
 var outgoing := {}
 var incoming := {}
 var scanned_at := ""
+var last_duration_ms := 0.0
+var last_memory_delta_bytes := 0
+var last_object_delta := 0
 var _cancel_requested := false
 var _invalid_keys := {}
 
@@ -23,6 +26,9 @@ var _invalid_keys := {}
 func scan(force := false) -> Dictionary:
 	if not force and not nodes.is_empty() and _invalid_keys.is_empty():
 		return report(true, true)
+	var started_usec := Time.get_ticks_usec()
+	var memory_before := int(Performance.get_monitor(Performance.MEMORY_STATIC))
+	var objects_before := int(Performance.get_monitor(Performance.OBJECT_COUNT))
 	_cancel_requested = false
 	scan_started.emit()
 	var next_nodes := {}
@@ -57,6 +63,9 @@ func scan(force := false) -> Dictionary:
 	incoming = next_incoming
 	generation += 1
 	scanned_at = Time.get_datetime_string_from_system(true)
+	last_duration_ms = float(Time.get_ticks_usec() - started_usec) / 1000.0
+	last_memory_delta_bytes = int(Performance.get_monitor(Performance.MEMORY_STATIC)) - memory_before
+	last_object_delta = int(Performance.get_monitor(Performance.OBJECT_COUNT)) - objects_before
 	_invalid_keys.clear()
 	var result := report(true, false)
 	scan_completed.emit(result)
@@ -136,6 +145,11 @@ func report(ok := true, cached := false) -> Dictionary:
 		"edges": edge_count,
 		"invalidated": _invalid_keys.size(),
 		"scanned_at": scanned_at,
+		"duration_ms": last_duration_ms,
+		"under_ui_threshold": last_duration_ms < 250.0,
+		"memory_delta_bytes": last_memory_delta_bytes,
+		"object_delta": last_object_delta,
+		"stable_path_nodes": nodes.keys().filter(func(key): return str(key).begins_with("res://")),
 	}
 
 
@@ -157,7 +171,7 @@ func _record_resource(resource: Resource, kind: StringName, target_nodes: Dictio
 		"path": resource.resource_path,
 		"kind": effective_kind,
 		"class": resource.get_class(),
-		"resource": resource,
+		"resource": weakref(resource),
 	}
 	return key
 
@@ -183,16 +197,44 @@ func _walk_resource(
 		var property_name := StringName(property.get("name", &""))
 		if property_name == &"script":
 			continue
-		var value = resource.get(property_name)
-		if value is Resource:
-			var child_key := _walk_resource(value, &"RESOURCE", target_nodes, target_outgoing, target_incoming, visited)
-			_link(key, child_key, property_name, {}, target_outgoing, target_incoming)
-		elif value is Array:
-			for index in range(value.size()):
-				if value[index] is Resource:
-					var child_key := _walk_resource(value[index], &"RESOURCE", target_nodes, target_outgoing, target_incoming, visited)
-					_link(key, child_key, property_name, {"index": index}, target_outgoing, target_incoming)
+		_walk_variant(
+			key, resource.get(property_name), property_name, {}, target_nodes,
+			target_outgoing, target_incoming, visited
+		)
 	return key
+
+
+func _walk_variant(
+		parent_key: String,
+		value: Variant,
+		relation: StringName,
+		metadata: Dictionary,
+		target_nodes: Dictionary,
+		target_outgoing: Dictionary,
+		target_incoming: Dictionary,
+		visited: Dictionary
+	) -> void:
+	if value is Resource:
+		var child_key := _walk_resource(
+			value, &"RESOURCE", target_nodes, target_outgoing, target_incoming, visited
+		)
+		_link(parent_key, child_key, relation, metadata, target_outgoing, target_incoming)
+	elif value is Array:
+		for index in range(value.size()):
+			var child_metadata := metadata.duplicate(true)
+			child_metadata["index"] = index
+			_walk_variant(
+				parent_key, value[index], relation, child_metadata, target_nodes,
+				target_outgoing, target_incoming, visited
+			)
+	elif value is Dictionary:
+		for dictionary_key in value:
+			var child_metadata := metadata.duplicate(true)
+			child_metadata["dictionary_key"] = str(dictionary_key)
+			_walk_variant(
+				parent_key, value[dictionary_key], relation, child_metadata,
+				target_nodes, target_outgoing, target_incoming, visited
+			)
 
 
 func _link(

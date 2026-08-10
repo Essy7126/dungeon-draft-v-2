@@ -12,7 +12,7 @@ func _ready() -> void:
 func _run() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT))
-	var metrics := {}
+	var metrics := {"studio_product_version": StudioVersion.PRODUCT_VERSION}
 	var succeeded := true
 	for requested_size in SIZES:
 		get_window().size = requested_size

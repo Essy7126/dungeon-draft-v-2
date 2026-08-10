@@ -16,6 +16,8 @@ static func resolve(configuration: StringName) -> Dictionary:
 		"deployment_enabled": false,
 		"combat_enabled": false,
 		"hud_enabled": false,
+		"camera_mode": "STUDIO_MATCH",
+		"comparison_resolution": "RUNTIME_EXACT",
 		"draw_base_cells": false,
 		"draw_grid_lines": false,
 		"draw_cell_centers": false,

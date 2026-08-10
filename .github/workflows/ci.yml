@@ -1,8 +1,9 @@
 name: CI
 
 on:
-  push:
-  pull_request:
+  # Le pipeline bloquant est maintenant godot-validation.yml. Cette definition
+  # historique reste lancable manuellement pour faciliter une comparaison.
+  workflow_dispatch:
 
 env:
   GODOT_VERSION: "4.7"

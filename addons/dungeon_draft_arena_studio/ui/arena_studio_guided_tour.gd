@@ -26,6 +26,16 @@ const PAGES := [
 		"body": "L’arène est la partie tactique et visuelle de la salle : grille, dalles, murs, obstacles, points d’apparition, décor, premier plan et occlusion. Mettre à jour une arène ne doit pas effacer le gameplay de sa salle.",
 	},
 	{
+		"title": "La copie de travail",
+		"target": &"working_copy",
+		"body": "Le Studio édite une copie isolée de l’arène. Annuler, rétablir, Tester et valider utilisent cette copie ; la ressource canonique ne change qu’après votre confirmation explicite dans l’assistant de production.",
+	},
+	{
+		"title": "PAINTED, MODULAR et HYBRID",
+		"target": &"visual_modes",
+		"body": "PAINTED utilise un décor peint. MODULAR construit le sol et les volumes depuis les données. HYBRID combine un fond peint et des dalles tactiques selon une politique explicite. Background reste derrière le jeu ; foreground et occlusion restent devant lorsque le profil le demande.",
+	},
+	{
 		"title": "La grille tactique",
 		"target": &"grid",
 		"body": "La grille découpe l’image en cellules jouables. Recentrer et Adapter à l’image règlent la vue. Calibration en 3 clics aligne la grille sur un décor existant sans déplacer le décor lui-même.",
@@ -56,6 +66,11 @@ const PAGES := [
 		"body": "Logique montre la structure tactique. Art montre le décor et les couches visuelles. Jeu assemble la salle comme le runtime, avec dalles, murs et personnages. Vérifiez toujours les trois vues.",
 	},
 	{
+		"title": "Aperçu rapide ou exact",
+		"target": &"quick_exact",
+		"body": "Rapide privilégie l’itération et signale clairement ses fixtures. Exact utilise la RunData active, les vrais héros, la rencontre et l’assembleur runtime. Le badge indique toujours la fidélité obtenue ; aucun fallback n’est silencieux.",
+	},
+	{
 		"title": "Valider",
 		"target": &"validate",
 		"body": "Valider contrôle la grille, les chemins, les spawns et l’assemblage. Une erreur bloque la production. Un avertissement explique un point à vérifier sans modifier automatiquement votre salle.",
@@ -71,9 +86,34 @@ const PAGES := [
 		"body": "Dans Destination de la salle, choisissez Principale ou Test, l’action et la salle. Mettre à jour l’arène est recommandé : rencontre, vagues et récompenses sont conservées. Remplacer toute la salle est un mode avancé.",
 	},
 	{
+		"title": "Conflit de bundle",
+		"target": &"bundle_conflict",
+		"body": "Un bundle existant est inspecté avant toute écriture : complet, incomplet, référencé, legacy, étranger ou modifié. Un bundle incomplet non référencé peut être archivé puis reconstruit après confirmation. Un bundle référencé bloque cette action.",
+	},
+	{
+		"title": "Mettre à jour ou remplacer",
+		"target": &"update_replace",
+		"body": "Mettre à jour l’arène conserve l’identité de la salle, sa rencontre, ses vagues et ses récompenses. Remplacer toute la salle remplace aussi ces champs et demande une confirmation avancée. L’assistant affiche toujours ce qui sera conservé.",
+	},
+	{
 		"title": "Intégrer à la run",
 		"target": &"integrate",
 		"body": "Lisez le résultat, la portée, les chemins et les fichiers affectés, puis cliquez Intégrer à la run. Le Studio produit, sauvegarde avec recovery, recharge, vérifie l’index exact et sélectionne immédiatement la salle intégrée.",
+	},
+	{
+		"title": "Rollback et récupérations",
+		"target": &"rollback",
+		"body": "Production et intégration forment une transaction. Si un stage, un hash, une sauvegarde ou un rechargement échoue, le Studio restaure la run et le bundle précédents. Productions et récupérations permet d’ouvrir les rapports et de restaurer explicitement une archive.",
+	},
+	{
+		"title": "Réintégrer la fenêtre",
+		"target": &"reintegrate",
+		"body": "Le workspace peut être détaché pour gagner de la place. Le bouton Réintégrer la fenêtre ou le raccourci configuré remet exactement la même instance dans l’éditeur : copie de travail, sélection, zoom et historique sont conservés.",
+	},
+	{
+		"title": "Exercice sandbox",
+		"target": &"sandbox",
+		"body": "L’exercice guidé travaille uniquement sous user://dungeon_draft_studio/tests : petite arène, terrains, murs, spawns, validation, kit artistique, décor fixture, bundle incomplet, archive/reconstruction, RunData fixture, intégration puis rollback. Aucune run officielle n’est modifiée.",
 	},
 ]
 

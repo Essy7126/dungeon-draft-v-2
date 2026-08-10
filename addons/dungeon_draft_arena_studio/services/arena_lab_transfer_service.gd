@@ -56,6 +56,8 @@ static func create_transfer(arena: ArenaDefinition, validation: ArenaValidationR
 	) if arena.modular_visual_profile != null else ""
 	var manifest := {
 		"version": MANIFEST_VERSION,
+		"studio_product_version": StudioVersion.PRODUCT_VERSION,
+		"generated_by": StudioVersion.GENERATED_BY,
 		"schema_version": arena.schema_version,
 		"transfer_id": transfer_id,
 		"date": Time.get_datetime_string_from_system(true),

@@ -15,10 +15,23 @@ const TEST_RUNNER_SCENE := "res://addons/dungeon_draft_arena_studio/test/arena_s
 const TEST_REQUEST := "user://arena_studio/test_request.json"
 const TEST_WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
 const TOOL_LABELS := [
-	"Selection", "Deplacement de vue", "Ajouter une case", "Retirer une case",
-	"Bordure", "Obstacle", "Terrain", "Spawn", "Verification",
+	"Sélection", "Déplacer la vue", "Ajouter des cases", "Retirer des cases",
+	"Bordure", "Murs et obstacles", "Terrains", "Spawns", "Vérification",
 	"Transformer la grille",
-	"Ancres de calibration",
+	"Ancres",
+]
+const TOOL_HELP := [
+	["1", "Sélectionner une cellule", "Annuler la sélection"],
+	["2", "Déplacer la vue", "Annuler le déplacement"],
+	["3", "Ajouter ou peindre", "Annuler le trait"],
+	["4", "Retirer des cellules", "Annuler le trait"],
+	["5", "Peindre la bordure", "Annuler le trait"],
+	["6", "Placer un obstacle", "Retirer l’obstacle"],
+	["7", "Peindre un terrain", "Restaurer le terrain"],
+	["8", "Placer un spawn", "Retirer le spawn"],
+	["9", "Choisir le point de départ", "Effacer la vérification"],
+	["0", "Déplacer la grille ou une poignée", "Annuler le geste"],
+	["A", "Ajouter ou déplacer une ancre", "Supprimer l’ancre"],
 ]
 ## Compatibilite de creation uniquement. Le navigateur d'autorite est derive
 ## de StudioProjectContext.active_run.rooms.
@@ -60,6 +73,7 @@ var status_label: Label
 var mode_option: OptionButton
 var library_list: ItemList
 var tool_list: ItemList
+var active_tool_label: Label
 var shape_option: OptionButton
 var obstacle_option: OptionButton
 var terrain_option: OptionButton
@@ -118,9 +132,11 @@ var production_run_option: OptionButton
 var production_action_option: OptionButton
 var production_index_spin: SpinBox
 var _production_runs: Array[RunData] = []
+var production_summary_text: RichTextLabel
 var production_validation_text: RichTextLabel
 var production_preview_text: RichTextLabel
 var production_plan_text: RichTextLabel
+var production_dashboard_text: RichTextLabel
 var production_result_text: RichTextLabel
 var destination_panel: PanelContainer
 var destination_run_option: OptionButton
@@ -294,7 +310,7 @@ func _build_interface() -> void:
 
 	horizontal_split = HSplitContainer.new()
 	horizontal_split.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	horizontal_split.split_offset = 58
+	horizontal_split.split_offset = 188
 	vertical_split.add_child(horizontal_split)
 	left_panel = _build_left_panel()
 	horizontal_split.add_child(left_panel)
@@ -326,7 +342,7 @@ func _build_top_bar() -> Control:
 	bar.add_theme_constant_override("separation", 6)
 	panel.add_child(bar)
 	title_label = Label.new()
-	title_label.text = "DUNGEON DRAFT ARENA STUDIO"
+	title_label.text = "DUNGEON DRAFT ARENA STUDIO %s" % StudioVersion.PRODUCT_VERSION
 	title_label.add_theme_font_size_override("font_size", 18)
 	title_label.add_theme_color_override("font_color", Color(0.52, 0.88, 1.0))
 	title_label.custom_minimum_size.x = 260
@@ -353,9 +369,9 @@ func _build_top_bar() -> Control:
 
 func _build_left_panel() -> Control:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.x = 56
+	panel.custom_minimum_size.x = 188
 	var box := VBoxContainer.new()
-	box.custom_minimum_size.x = 54
+	box.custom_minimum_size.x = 184
 	box.add_theme_constant_override("separation", 3)
 	panel.add_child(box)
 	dynamic_mode_button = Button.new()
@@ -368,17 +384,24 @@ func _build_left_panel() -> Control:
 	library_list = ItemList.new()
 	library_list.item_activated.connect(_on_library_activated)
 	tool_list = ItemList.new()
-	tool_list.custom_minimum_size = Vector2(54, 440)
+	tool_list.custom_minimum_size = Vector2(184, 360)
 	tool_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	tool_list.fixed_column_width = 50
+	tool_list.fixed_column_width = 180
 	tool_list.same_column_width = true
-	var compact_labels := ["SEL", "PAN", "+CASE", "-CASE", "BORD", "MUR", "SOL", "SPAWN", "CHECK", "GRILLE", "ANCRE"]
 	for index in range(TOOL_LABELS.size()):
-		tool_list.add_item(compact_labels[index])
-		tool_list.set_item_tooltip(index, "%s — raccourci %d" % [TOOL_LABELS[index], index + 1])
+		tool_list.add_item(TOOL_LABELS[index])
+		tool_list.set_item_tooltip(index, "%s — raccourci %s" % [
+			TOOL_LABELS[index], TOOL_HELP[index][0],
+		])
 	tool_list.select(ArenaStudioCanvas.Tool.SELECT)
 	tool_list.item_selected.connect(_on_tool_selected)
 	box.add_child(tool_list)
+	active_tool_label = Label.new()
+	active_tool_label.name = "ActiveToolContract"
+	active_tool_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	active_tool_label.custom_minimum_size.y = 92
+	box.add_child(active_tool_label)
+	_refresh_active_tool_contract(ArenaStudioCanvas.Tool.SELECT)
 	shape_option = OptionButton.new()
 	for label in ["Pinceau continu", "Rectangle", "Remplissage contigu", "Selection multiple"]:
 		shape_option.add_item(label)
@@ -1515,22 +1538,27 @@ func _build_production_dialog() -> void:
 	production_tabs = TabContainer.new()
 	production_tabs.custom_minimum_size = Vector2(880, 570)
 	production_dialog.add_child(production_tabs)
-	var identity := VBoxContainer.new()
-	identity.name = "1 — Identité"
-	production_tabs.add_child(identity)
+	var identity := _production_tab("1 — Identité")
 	identity.add_child(_section_label("ÉTAPE 1 — IDENTITÉ"))
+	production_summary_text = _production_text(150)
+	identity.add_child(production_summary_text)
 	production_name_edit = _labeled_line(identity, "Nom", "Nom visible")
 	production_id_edit = _labeled_line(identity, "Identifiant", "identifiant_stable")
 	production_theme_edit = _labeled_line(identity, "Biome / thème", "dynamic_default")
+	production_name_edit.text_changed.connect(func(_text): call_deferred("_refresh_production_wizard"))
+	production_id_edit.text_changed.connect(func(_text): call_deferred("_refresh_production_wizard"))
+	production_theme_edit.text_changed.connect(func(_text): call_deferred("_refresh_production_wizard"))
 	production_mode_option = OptionButton.new()
 	for label in ["PAINTED", "MODULAR", "HYBRID"]:
 		production_mode_option.add_item(label)
+	production_mode_option.item_selected.connect(func(_index): call_deferred("_refresh_production_wizard"))
 	identity.add_child(Label.new())
 	(identity.get_child(identity.get_child_count() - 1) as Label).text = "Mode visuel"
 	identity.add_child(production_mode_option)
 	production_destination_edit = _labeled_line(
 		identity, "Chemin de destination", ArenaProductionService.DEFAULT_ROOT
 	)
+	production_destination_edit.text_changed.connect(func(_text): call_deferred("_refresh_production_wizard"))
 	identity.add_child(_section_label("DESTINATION DE LA SALLE"))
 	production_run_option = OptionButton.new()
 	production_run_option.item_selected.connect(func(_index): _refresh_production_wizard())
@@ -1556,15 +1584,11 @@ func _build_production_dialog() -> void:
 	identity_note.text = "Aucun fichier n'est écrit avant le clic « Intégrer à la run »."
 	identity_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	identity.add_child(identity_note)
-	var validation_tab := VBoxContainer.new()
-	validation_tab.name = "2 — Validation"
-	production_tabs.add_child(validation_tab)
+	var validation_tab := _production_tab("2 — Validation")
 	validation_tab.add_child(_section_label("ÉTAPE 2 — VALIDATION"))
 	production_validation_text = _production_text()
 	validation_tab.add_child(production_validation_text)
-	var preview_tab := VBoxContainer.new()
-	preview_tab.name = "3 — Aperçu"
-	production_tabs.add_child(preview_tab)
+	var preview_tab := _production_tab("3 — Aperçu")
 	preview_tab.add_child(_section_label("ÉTAPE 3 — APERÇU RUNTIME"))
 	production_preview_text = _production_text()
 	preview_tab.add_child(production_preview_text)
@@ -1575,29 +1599,46 @@ func _build_production_dialog() -> void:
 	_add_button(preview_buttons, "Jeu", func(): set_preview_view(ArenaRuntimePreview.ViewMode.GAME))
 	_add_button(preview_buttons, "Exporter le kit artistique", _export_art_kit_from_wizard)
 	_add_button(preview_buttons, "Importer le décor...", _show_art_reimport_dialog)
-	var plan_tab := VBoxContainer.new()
-	plan_tab.name = "4 — Production"
-	production_tabs.add_child(plan_tab)
+	var plan_tab := _production_tab("4 — Production")
 	plan_tab.add_child(_section_label("ÉTAPE 4 — FICHIERS ET CONFLITS"))
 	production_plan_text = _production_text()
 	plan_tab.add_child(production_plan_text)
 	var refresh_button := _add_button(plan_tab, "Recalculer le plan", _refresh_production_wizard)
 	refresh_button.tooltip_text = "Lecture seule : recalcule créations, modifications et conflits."
-	var result_tab := VBoxContainer.new()
-	result_tab.name = "5 — Résultat"
-	production_tabs.add_child(result_tab)
+	var dashboard_tab := _production_tab("5 — Productions et récupérations")
+	dashboard_tab.add_child(_section_label("PRODUCTIONS ET RÉCUPÉRATIONS"))
+	production_dashboard_text = _production_text()
+	dashboard_tab.add_child(production_dashboard_text)
+	var dashboard_refresh := _add_button(dashboard_tab, "Actualiser l’inventaire", _refresh_production_dashboard)
+	dashboard_refresh.tooltip_text = "Lecture seule : aucune suppression ni archive n'est déclenchée."
+	var sandbox_button := _add_button(dashboard_tab, "Démarrer l’exercice sandbox", _start_guided_sandbox)
+	sandbox_button.tooltip_text = "Crée une arène et une RunData fixture uniquement sous user://dungeon_draft_studio/tests/."
+	var result_tab := _production_tab("6 — Résultat")
 	result_tab.add_child(_section_label("ÉTAPE 5 — RÉSULTAT"))
 	production_result_text = _production_text()
 	result_tab.add_child(production_result_text)
 
 
-func _production_text() -> RichTextLabel:
+func _production_tab(tab_name: String) -> VBoxContainer:
+	var scroll := ScrollContainer.new()
+	scroll.name = tab_name
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	production_tabs.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(content)
+	return content
+
+
+func _production_text(minimum_height := 410) -> RichTextLabel:
 	var value := RichTextLabel.new()
 	value.bbcode_enabled = true
 	value.fit_content = false
 	value.scroll_active = true
 	value.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	value.custom_minimum_size.y = 410
+	value.custom_minimum_size.y = minimum_height
 	return value
 
 
@@ -1677,6 +1718,9 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 	_refresh_dynamic_palette()
 	_refresh_destination_panel()
 	if runtime_preview != null:
+		runtime_preview.set_runtime_context(
+			project_context.active_run if project_context != null else null
+		)
 		runtime_preview.set_arena(arena)
 	history_state_changed.emit()
 
@@ -2227,7 +2271,9 @@ func _refresh_production_wizard() -> void:
 		candidate, target_run, attachment_action, int(production_index_spin.value),
 		destination, shared_reference_graph
 	)
+	_refresh_production_dashboard()
 	if not bool(integration_plan.get("ok", false)):
+		production_summary_text.text = "[b]Vous allez :[/b]\n\n[color=red]Le plan doit être corrigé avant toute écriture.[/color]"
 		production_validation_text.text = "[color=red]Plan impossible : %s[/color]" % integration_plan.get("error", "erreur")
 		production_plan_text.text = production_validation_text.text
 		production_dialog.get_ok_button().disabled = true
@@ -2243,6 +2289,37 @@ func _refresh_production_wizard() -> void:
 		}
 	if target_run != null:
 		production_index_spin.max_value = maxi(0, target_run.rooms.size())
+	var target_index := int(production_index_spin.value)
+	var action_label := _production_action_human(attachment_action)
+	var target_label := target_run.run_name if target_run != null else "aucune run"
+	var preserves_gameplay := bool(attachment_plan.get("preserves_gameplay", false))
+	var existing_inspection := ArenaBundleInspectionService.inspect(
+		str(production_plan.get("destination", destination)), shared_reference_graph
+	)
+	var archive_count := 1 if existing_inspection.get("state", &"") \
+			== ArenaBundleInspectionService.OWNED_INCOMPLETE \
+			and not bool(existing_inspection.get("referenced", false)) else 0
+	var summary_lines := PackedStringArray([
+		"[b]Vous allez :[/b]", "",
+		"• %s%s" % [action_label, " de la salle %d" % (target_index + 1) \
+			if attachment_action != ArenaProductionAttachmentService.NONE else ""],
+		"• %s la rencontre, les vagues et les récompenses" % (
+			"Conserver" if preserves_gameplay else "Remplacer explicitement"
+		),
+		"• %s" % ("Conserver la salle à l’index %d" % (target_index + 1) \
+			if attachment_action == ArenaProductionAttachmentService.UPDATE \
+			else "Appliquer l’action à l’index %d" % (target_index + 1)),
+		"• %s" % ("Créer une copie spécifique à la run %s" % target_label \
+			if bool(attachment_plan.get("shared", false)) else "Cibler la run %s" % target_label),
+		"• Produire 1 bundle runtime",
+		"• %s" % ("Archiver 1 ancienne production incomplète après confirmation" \
+			if archive_count == 1 else "Ne déplacer aucune production existante"),
+	])
+	production_summary_text.text = "\n".join(summary_lines)
+	if project_context != null:
+		project_context.persisted_ui["production_target"] = "%s — %s" % [
+			target_label, action_label,
+		]
 	var validation_lines := PackedStringArray([
 		"[b]%s[/b]" % report.verdict(),
 		"%d erreur(s), %d avertissement(s), %d information(s)" % [
@@ -2315,11 +2392,52 @@ func _refresh_production_wizard() -> void:
 		plan_lines.append("[color=red]Documents à résoudre : %s[/color]" % ", ".join(blocking_domains))
 	production_plan_text.text = "\n".join(plan_lines)
 	production_dialog.get_ok_button().text = "Produire sans intégrer" \
-		if attachment_action == ArenaProductionAttachmentService.NONE else "Intégrer à la run"
+		if attachment_action == ArenaProductionAttachmentService.NONE \
+		else "Intégrer dans %s — %s salle %d" % [
+			target_label, action_label, target_index + 1,
+		]
 	production_dialog.get_ok_button().disabled = not bool(integration_plan.can_integrate) \
 		or not bool(attachment_plan.get("ok", false)) or run_conflict \
 		or not blocking_domains.is_empty() \
 		or (edit_session != null and edit_session.has_external_conflict())
+
+
+func _production_action_human(action: StringName) -> String:
+	match action:
+		ArenaProductionAttachmentService.UPDATE:
+			return "Mettre à jour l’arène"
+		ArenaProductionAttachmentService.REPLACE:
+			return "Remplacer toute la salle"
+		ArenaProductionAttachmentService.INSERT_BEFORE:
+			return "Insérer avant"
+		ArenaProductionAttachmentService.INSERT_AFTER:
+			return "Insérer après"
+		ArenaProductionAttachmentService.APPEND:
+			return "Créer une nouvelle salle"
+		_:
+			return "Produire sans intégrer"
+
+
+func _refresh_production_dashboard() -> void:
+	if production_dashboard_text == null:
+		return
+	var report := ArenaProductionDashboardService.scan(shared_reference_graph)
+	production_dashboard_text.text = ArenaProductionDashboardService.format_human(report)
+
+
+func _start_guided_sandbox() -> void:
+	var created := ArenaGuidedSandboxService.create_fixture()
+	if not created.get("ok", false):
+		_set_status("Exercice sandbox impossible : %s" % created.get("error", "erreur"), true)
+		return
+	var fixture := created.get("arena") as ArenaDefinition
+	if fixture == null:
+		_set_status("L’arène sandbox n’a pas pu être rechargée.", true)
+		return
+	_set_arena(fixture, false, "sandbox:%s" % created.get("root", ""))
+	if guided_tour != null:
+		guided_tour.start(&"sandbox")
+	_set_status("Exercice sandbox prêt sous %s. Aucune run officielle n’a été modifiée." % created.get("root", ""))
 
 
 func _production_confirmed() -> void:
@@ -2601,42 +2719,23 @@ func test_arena() -> void:
 	var report := validate_arena()
 	if not report.is_valid():
 		return
-	var context_id := "%s_%d" % [arena.arena_id, Time.get_ticks_usec()]
-	var context_root := TEST_WORK_ROOT.path_join(context_id)
-	var test_arena_path := context_root.path_join("arena.tres")
-	var test_arena_copy := ArenaDefinition.new()
-	if not test_arena_copy.restore_snapshot(arena.to_snapshot()):
-		_set_status("La copie de travail n'a pas pu etre preparee pour le test.", true)
+	var run_context := (
+		project_context.active_run
+		if project_context != null else null
+	)
+	var preparation := ArenaDirectTestService.prepare(
+		arena,
+		run_context,
+		StringName(TEST_CONFIGURATIONS[test_configuration_option.selected][1])
+	)
+	if not bool(preparation.get("ok", false)):
+		_set_status(
+			"Le test direct n'a pas pu etre prepare : %s" % preparation.get(
+				"error", "erreur inconnue"
+			),
+			true
+		)
 		return
-	ArenaRuntimeBridge.sync_runtime_resources(test_arena_copy)
-	var context_absolute := ProjectSettings.globalize_path(context_root)
-	var directory_error := DirAccess.make_dir_recursive_absolute(context_absolute)
-	if directory_error != OK:
-		_set_status("Le contexte temporaire du test n'a pas pu etre cree.", true)
-		return
-	var save_error := ResourceSaver.save(test_arena_copy, test_arena_path)
-	if save_error != OK:
-		_set_status("La working copy du test n'a pas pu etre serialisee : %s" % error_string(save_error), true)
-		return
-	var absolute := ProjectSettings.globalize_path(TEST_REQUEST)
-	DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
-	var file := FileAccess.open(TEST_REQUEST, FileAccess.WRITE)
-	if file == null:
-		_set_status("La configuration de test n'a pas pu etre creee.", true)
-		return
-	file.store_string(JSON.stringify({
-		"arena_path": test_arena_path,
-		"configuration": str(TEST_CONFIGURATIONS[test_configuration_option.selected][1]),
-		"context_root": context_root,
-		"cleanup_on_load": true,
-		"result_path": context_root.path_join("launch_result.json"),
-		"heroes": [
-			"res://data/units/alliés/elfe.tres",
-			"res://data/units/alliés/mage.tres",
-			"res://data/units/alliés/Guerrier.tres",
-		],
-	}, "  "))
-	file.close()
 	_last_test_log = "Test direct demande pour %s via %s" % [arena.arena_id, TEST_RUNNER_SCENE]
 	if editor_interface != null:
 		editor_interface.play_custom_scene(TEST_RUNNER_SCENE)
@@ -3555,6 +3654,7 @@ func _on_tool_selected(index: int) -> void:
 	var preserve_dynamic := workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION and dynamic_tool
 	_show_editor_canvas(preserve_dynamic)
 	canvas.set_tool(index)
+	_refresh_active_tool_contract(index)
 	canvas.set_dynamic_construction_mode(preserve_dynamic)
 	canvas.layer_locks["calibration"] = index not in [
 		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
@@ -3594,6 +3694,15 @@ func _on_tool_selected(index: int) -> void:
 	elif preserve_dynamic:
 		_refresh_dynamic_palette()
 		_set_status("Construction dynamique — un seul outil traite le canvas.")
+
+
+func _refresh_active_tool_contract(index: int) -> void:
+	if active_tool_label == null or index < 0 or index >= TOOL_LABELS.size():
+		return
+	var help: Array = TOOL_HELP[index]
+	active_tool_label.text = (
+		"OUTIL ACTIF  ◉ %s\nRaccourci : %s\nClic gauche : %s\nClic droit : %s"
+	) % [TOOL_LABELS[index], help[0], help[1], help[2]]
 
 
 func _on_verification_kind_selected(index: int) -> void:
@@ -3802,6 +3911,9 @@ func set_preview_view(index: int) -> void:
 	if dynamic_mode_button != null:
 		dynamic_mode_button.set_pressed_no_signal(false)
 	runtime_preview.show()
+	runtime_preview.set_runtime_context(
+		project_context.active_run if project_context != null else null
+	)
 	runtime_preview.set_view_mode(preview_view)
 	runtime_preview.set_arena(arena)
 
@@ -3959,7 +4071,7 @@ func _apply_responsive_layout() -> void:
 		right_panel.hide()
 		bottom_drawer_content.hide()
 		return
-	left_panel.custom_minimum_size.x = 56
+	left_panel.custom_minimum_size.x = 188
 	right_panel.custom_minimum_size.x = 300 if size.x >= 1500 else 280
 	if size.x < 1180:
 		right_panel.hide()
@@ -3981,7 +4093,7 @@ func get_workspace_state() -> Dictionary:
 		"drawer_visible": bottom_drawer_content.visible \
 			if bottom_drawer_content != null else false,
 		"horizontal_split": horizontal_split.split_offset \
-			if horizontal_split != null else 58,
+			if horizontal_split != null else 188,
 		"right_split": center_and_right_split.split_offset \
 			if center_and_right_split != null else -324,
 		"drawer_split": vertical_split.split_offset if vertical_split != null else -42,

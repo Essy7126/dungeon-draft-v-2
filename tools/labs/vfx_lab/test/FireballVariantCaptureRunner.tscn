@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tools/labs/vfx_lab/test/capture_fireball_variants.gd" id="1_capture"]
+
+[node name="FireballVariantCaptureRunner" type="Node"]
+script = ExtResource("1_capture")

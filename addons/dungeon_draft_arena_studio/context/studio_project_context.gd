@@ -72,12 +72,18 @@ func register_transition_handler(
 		domain: StringName,
 		save_handler: Callable = Callable(),
 		draft_handler: Callable = Callable(),
-		discard_handler: Callable = Callable()
+		discard_handler: Callable = Callable(),
+		prepare_handler: Callable = Callable(),
+		stage_handler: Callable = Callable(),
+		rollback_handler: Callable = Callable()
 	) -> void:
 	_transition_handlers[domain] = {
 		"save": save_handler,
 		"draft": draft_handler,
 		"discard": discard_handler,
+		"prepare": prepare_handler,
+		"stage": stage_handler,
+		"rollback": rollback_handler,
 	}
 
 
@@ -155,37 +161,14 @@ func resolve_pending_transition(action: StringName) -> Dictionary:
 		return cancel_result
 	if action not in [ACTION_SAVE, ACTION_DRAFT, ACTION_DISCARD]:
 		return {"ok": false, "error": "Decision de transition inconnue : %s" % action}
-	var handler_name: String = {
-		ACTION_SAVE: "save",
-		ACTION_DRAFT: "draft",
-		ACTION_DISCARD: "discard",
-	}[action]
-	for domain_value in (_pending_transition.get("dirty_domains", {}) as Dictionary).keys():
-		var domain := StringName(domain_value)
-		var handlers := _transition_handlers.get(domain, {}) as Dictionary
-		var handler := handlers.get(handler_name, Callable()) as Callable
-		if not handler.is_valid():
-			return {
-				"ok": false,
-				"status": &"HANDLER_MISSING",
-				"error": "Le domaine %s ne sait pas executer %s." % [domain, action],
-			}
-		var outcome = handler.call()
-		if outcome is Dictionary and not outcome.get("ok", false):
-			return {
-				"ok": false,
-				"status": &"HANDLER_FAILED",
-				"domain": domain,
-				"error": str(outcome.get("error", "Operation refusee.")),
-			}
-		if outcome is bool and not outcome:
-			return {
-				"ok": false,
-				"status": &"HANDLER_FAILED",
-				"domain": domain,
-				"error": "Le domaine %s a refuse %s." % [domain, action],
-			}
-		_dirty_domains.erase(domain)
+	var dirty_for_transition := _pending_transition.get("dirty_domains", {}) as Dictionary
+	var transaction := StudioContextTransitionTransactionService.execute(
+		action, dirty_for_transition, _transition_handlers
+	)
+	if not transaction.get("ok", false):
+		return transaction
+	for domain_value in dirty_for_transition.keys():
+		_dirty_domains.erase(StringName(domain_value))
 	var resolved := _pending_transition.duplicate(true)
 	var selection := resolved.get("selection", {}) as Dictionary
 	_pending_transition.clear()
@@ -197,6 +180,7 @@ func resolve_pending_transition(action: StringName) -> Dictionary:
 		"action": action,
 		"transition": resolved,
 		"snapshot": snapshot(),
+		"transaction": transaction,
 	}
 	transition_resolved.emit(result)
 	return result

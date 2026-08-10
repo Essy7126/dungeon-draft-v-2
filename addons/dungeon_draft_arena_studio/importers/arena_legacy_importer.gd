@@ -59,6 +59,12 @@ static func import_room(room_path: String) -> ArenaDefinition:
 			definition.playable = bool(
 				GridData.PROPERTIES[definition.cell_type]["walkable"]
 			)
+			if definition.cell_type != GridData.CellType.NORMAL or not definition.playable:
+				definition.production_note = (
+					"Override explicite preserve depuis RoomGridLayout '%s' (%s)." % [
+						layout.layout_id, symbol,
+					]
+				)
 			if symbol in [RoomGridLayout.BLOCKED, RoomGridLayout.LANDMARK]:
 				var obstacle := ArenaObstacleDefinition.new()
 				obstacle.cell = cell
@@ -97,9 +103,11 @@ static func _import_spawn_zone(
 			"legacy_%s_%d" % ["hero" if heroes else "enemy", index]
 		)
 		if heroes:
-			spawn.kind = mini(index, ArenaSpawnDefinition.Kind.HERO_3)
+			spawn.kind = index % 3
 			spawn.unit_id = ArenaEditingService.HERO_IDS[index % 3]
+			spawn.required = index < 3
 		else:
 			spawn.kind = ArenaSpawnDefinition.Kind.ENEMY_GROUP
 			spawn.unit_id = &"encounter_enemy"
+			spawn.group_id = &"legacy_enemy_pool"
 		arena.spawns.append(spawn)

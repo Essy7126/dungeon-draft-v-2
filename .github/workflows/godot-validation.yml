@@ -1,0 +1,169 @@
+name: Godot validation
+
+on:
+  push:
+  pull_request:
+
+env:
+  GODOT_VERSION: "4.7"
+  GODOT: "/home/runner/godot-bin/godot"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  studio-contracts:
+    name: STUDIO-CONTRACTS
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/cache@v4.2.3
+        with:
+          path: ~/godot-bin
+          key: godot-4.7-stable-linux-x86_64
+      - name: Installer Godot 4.7 stable
+        run: |
+          set -euo pipefail
+          if [ ! -x "$GODOT" ]; then
+            file="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+            curl -fsSL -o godot.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${file}.zip"
+            unzip -q godot.zip
+            mkdir -p "$HOME/godot-bin"
+            mv "$file" "$GODOT"
+            chmod +x "$GODOT"
+          fi
+          "$GODOT" --version | grep '^4.7.stable'
+      - name: Scan Godot
+        run: |
+          set -euo pipefail
+          "$GODOT" --headless --path . --import >/dev/null 2>&1 || true
+          "$GODOT" --headless --path . --import 2>&1 | tee import.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          lines = Path("import.log").read_text(encoding="utf-8", errors="replace").splitlines()
+          bad = re.compile(r"SCRIPT ERROR|Parse Error|Failed to load script")
+          known = "res://output/validation-feedback-candidate/data/items/item_definition.gd"
+          unexpected = []
+          for index, line in enumerate(lines):
+              if not bad.search(line):
+                  continue
+              context = "\n".join(lines[max(0, index - 2):min(len(lines), index + 4)])
+              if known not in context:
+                  unexpected.append(context)
+          if unexpected:
+              print("Unexpected Godot import errors:")
+              print("\n---\n".join(unexpected))
+              raise SystemExit(1)
+          print("Godot import contains no unexpected script error.")
+          PY
+      - name: Contrats Studio ciblés
+        run: |
+          set -euo pipefail
+          prefixes=(
+            test_arena_production_hardening_phase1
+            test_arena_art_pipeline_v3
+            test_arena_atomic_production_v2
+            test_room_integration_guided_pipeline
+            test_arena_direct_test_runtime_parity
+            test_arena_runtime_preview_and_direct_test_v2
+            test_arena_stone_floor_visibility
+            test_arena_studio_phase10_11_hardening
+            test_run_content_isolation
+            test_skill_tree_complete_contract
+            test_skill_tree_generic_effects
+            test_skill_tree_resolver
+            test_skill_tree_screen_complete_ui
+            test_skill_tree_studio
+            test_skill_tree_studio_hardening
+            test_fixed_trio_mage_lifecycle
+            test_progression_lifecycle
+            test_three_character_party_lifecycle
+          )
+          for prefix in "${prefixes[@]}"; do
+            "$GODOT" --headless --path . -s res://addons/gut/gut_cmdln.gd \
+              -gdir=res://test/unit -gprefix="$prefix" -gexit
+          done
+
+  baseline-guard:
+    name: BASELINE-GUARD
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/cache@v4.2.3
+        with:
+          path: ~/godot-bin
+          key: godot-4.7-stable-linux-x86_64
+      - name: Installer Godot 4.7 stable
+        run: |
+          set -euo pipefail
+          if [ ! -x "$GODOT" ]; then
+            file="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+            curl -fsSL -o godot.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${file}.zip"
+            unzip -q godot.zip
+            mkdir -p "$HOME/godot-bin"
+            mv "$file" "$GODOT"
+            chmod +x "$GODOT"
+          fi
+      - name: Suite globale avec allowlist exacte
+        run: |
+          set -uo pipefail
+          "$GODOT" --headless --path . -s res://addons/gut/gut_cmdln.gd \
+            -gdir=res://test/unit -ginclude_subdirs -gprefix=test_ -gexit 2>&1 | tee global-gut.log
+          python3 tools/verify_gut_historical_allowlist.py \
+            global-gut.log tools/gut_historical_allowlist.json
+      - uses: actions/upload-artifact@v4.6.2
+        if: always()
+        with:
+          name: global-gut-log
+          path: global-gut.log
+
+  lint:
+    name: LINT
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Diff, version et chemins portables
+        run: |
+          set -euo pipefail
+          git diff --check
+          grep -q 'version="2.0.0"' addons/dungeon_draft_arena_studio/plugin.cfg
+          grep -q 'PRODUCT_VERSION := "2.0.0"' addons/dungeon_draft_arena_studio/studio_version.gd
+          ! grep -RInE 'C:\\Users\\|/home/[^/]+' addons/dungeon_draft_arena_studio test/unit
+          python3 -m json.tool tools/gut_historical_allowlist.json >/dev/null
+          test -z "$(git status --short -- artifacts/arena_studio user 2>/dev/null)"
+
+  visual-smoke:
+    name: VISUAL-SMOKE
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/cache@v4.2.3
+        with:
+          path: ~/godot-bin
+          key: godot-4.7-stable-linux-x86_64
+      - name: Installer Godot 4.7 stable
+        run: |
+          set -euo pipefail
+          if [ ! -x "$GODOT" ]; then
+            file="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+            curl -fsSL -o godot.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${file}.zip"
+            unzip -q godot.zip
+            mkdir -p "$HOME/godot-bin"
+            mv "$file" "$GODOT"
+            chmod +x "$GODOT"
+          fi
+      - name: Smoke runtime direct
+        run: "$GODOT --headless --path . res://addons/dungeon_draft_arena_studio/test/arena_studio_phase9_runtime_smoke.tscn"
+      - uses: actions/upload-artifact@v4.6.2
+        if: always()
+        with:
+          name: visual-smoke-artifacts
+          path: artifacts/
+          if-no-files-found: ignore

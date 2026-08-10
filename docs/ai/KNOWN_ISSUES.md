@@ -85,3 +85,11 @@ régressions introduites par la migration.
   masque la classe globale. Ce fichier préexistant n’est pas modifié.
 - Les runners graphiques signalent encore des ressources renderer et ObjectDB à
   la fermeture, sans échec fonctionnel des marqueurs ciblés.
+# Réserves Arena Studio 2.0 — candidat local 2026-08-10
+
+- La suite globale possède une allowlist de 13 échecs historiques ; aucun nouvel échec n’est accepté.
+- `output/validation-feedback-candidate/data/items/item_definition.gd` masque une classe globale pendant le scan ; anomalie historique hors périmètre.
+- Godot signale des fuites RID/ObjectDB de fermeture déjà observées.
+- `res://data/arenas/produced/room_01_forest/` est un bundle incomplet gelé, non canonique et non utilisable pour Tester.
+- Les 187 fichiers Achilles/VFX/outillage non trackés et 10 suppressions Achilles sont un travail externe à préserver.
+- Deux répétitions globales Windows post-correction responsive ont été instables au niveau du processus (timeout en progression puis sortie native `-1`) sans nouvel échec d’assertion observé. Le dernier global complet conserve exactement les 13 historiques ; les suites UI/visuelles affectées sont vertes séparément.

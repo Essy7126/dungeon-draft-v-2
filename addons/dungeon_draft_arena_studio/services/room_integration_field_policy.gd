@@ -9,6 +9,8 @@ const ARENA_OWNED := &"ARENA_OWNED"
 const GAMEPLAY_OWNED := &"GAMEPLAY_OWNED"
 const IDENTITY_OWNED := &"IDENTITY_OWNED"
 const RUN_OWNED := &"RUN_OWNED"
+const EDITOR_ONLY := &"EDITOR_ONLY"
+const DERIVED_RUNTIME := &"DERIVED_RUNTIME"
 const UNKNOWN := &"UNKNOWN"
 
 const _ARENA_FIELDS := {
@@ -17,10 +19,6 @@ const _ARENA_FIELDS := {
 	&"battle_scene": true,
 	&"arena_generation_profile": true,
 	&"arena_visual_profile": true,
-	&"grid_layout": true,
-	&"painted_map_visual_data": true,
-	&"hero_spawn_zone": true,
-	&"enemy_spawn_zone": true,
 	&"schema_version": true,
 	&"visual_mode": true,
 	&"theme_id": true,
@@ -52,8 +50,6 @@ const _ARENA_FIELDS := {
 	&"calibration_cells": true,
 	&"calibration_pixels": true,
 	&"presentation_profile_path": true,
-	&"source_room_path": true,
-	&"source_visual_path": true,
 	&"intentionally_isolated_cells": true,
 }
 
@@ -76,7 +72,19 @@ const _IDENTITY_FIELDS := {
 	&"room_name": true,
 	&"arena_id": true,
 	&"display_name": true,
+}
+
+const _EDITOR_FIELDS := {
+	&"source_room_path": true,
+	&"source_visual_path": true,
 	&"production_notes": true,
+}
+
+const _DERIVED_RUNTIME_FIELDS := {
+	&"grid_layout": true,
+	&"painted_map_visual_data": true,
+	&"hero_spawn_zone": true,
+	&"enemy_spawn_zone": true,
 }
 
 const RUN_FIELDS := {
@@ -86,7 +94,19 @@ const RUN_FIELDS := {
 }
 
 
-static func classification_for(property_name: StringName) -> StringName:
+static func classification_for(
+		property_name: StringName,
+		owner: Resource = null
+	) -> StringName:
+	# RoomData historique stocke directement ces projections. ArenaDefinition
+	# possede leurs sources canoniques et les reconstruit via le runtime bridge.
+	if owner is ArenaDefinition and property_name in [
+		&"background_image", &"arena_visual_profile",
+	]:
+		return DERIVED_RUNTIME
+	if _DERIVED_RUNTIME_FIELDS.has(property_name):
+		return DERIVED_RUNTIME if owner == null or owner is ArenaDefinition \
+			else ARENA_OWNED
 	if _ARENA_FIELDS.has(property_name):
 		return ARENA_OWNED
 	if _GAMEPLAY_FIELDS.has(property_name):
@@ -95,6 +115,8 @@ static func classification_for(property_name: StringName) -> StringName:
 		return IDENTITY_OWNED
 	if RUN_FIELDS.has(property_name):
 		return RUN_OWNED
+	if _EDITOR_FIELDS.has(property_name):
+		return EDITOR_ONLY
 	return UNKNOWN
 
 
@@ -113,15 +135,35 @@ static func coverage_report(resource: Resource = null) -> Dictionary:
 	var inspected := resource if resource != null else ArenaDefinition.new()
 	var classified := {}
 	var unknown := PackedStringArray()
+	var counts := {
+		str(ARENA_OWNED): 0,
+		str(GAMEPLAY_OWNED): 0,
+		str(IDENTITY_OWNED): 0,
+		str(RUN_OWNED): 0,
+		str(EDITOR_ONLY): 0,
+		str(DERIVED_RUNTIME): 0,
+		str(UNKNOWN): 0,
+	}
 	for property_name in stored_property_names(inspected):
-		var classification := classification_for(property_name)
+		var classification := classification_for(property_name, inspected)
 		classified[str(property_name)] = str(classification)
+		counts[str(classification)] = int(counts.get(str(classification), 0)) + 1
 		if classification == UNKNOWN:
 			unknown.append(str(property_name))
+	var reachable := {}
+	var seen := {}
+	_collect_reachable(inspected, inspected.get_class(), UNKNOWN, seen, reachable)
+	for path in reachable:
+		var classification := StringName(reachable[path])
+		if classification == UNKNOWN and not unknown.has(str(path)):
+			unknown.append(str(path))
 	return {
 		"ok": unknown.is_empty(),
 		"resource_class": inspected.get_class(),
 		"classified": classified,
+		"reachable": reachable,
+		"counts": counts,
+		"stored_properties_inspected": reachable.size(),
 		"unknown": unknown,
 		"run_owned": RUN_FIELDS.duplicate(true),
 	}
@@ -140,11 +182,11 @@ static func merge_arena_into_room(
 	if not merged.restore_snapshot(arena_source.to_snapshot()):
 		return null
 	for property_name in stored_property_names(arena_source):
-		if classification_for(property_name) == ARENA_OWNED \
+		if classification_for(property_name, arena_source) == ARENA_OWNED \
 				and _has_property(merged, property_name):
 			merged.set(property_name, arena_source.get(property_name))
 	for property_name in stored_property_names(target_room):
-		var classification := classification_for(property_name)
+		var classification := classification_for(property_name, target_room)
 		if classification not in [GAMEPLAY_OWNED, IDENTITY_OWNED] \
 				or property_name == &"script":
 			continue
@@ -172,7 +214,7 @@ static func signature(resource: Resource, classification: StringName) -> Diction
 	if resource == null:
 		return result
 	for property_name in stored_property_names(resource):
-		if classification_for(property_name) != classification \
+		if classification_for(property_name, resource) != classification \
 				or property_name == &"script":
 			continue
 		result[str(property_name)] = _stable_value(resource.get(property_name), {})
@@ -262,3 +304,62 @@ static func _stable_value(value: Variant, seen: Dictionary) -> Variant:
 			or value is PackedFloat32Array:
 		return Array(value)
 	return value
+
+
+static func stable_value(value: Variant) -> Variant:
+	return _stable_value(value, {})
+
+
+static func _collect_reachable(
+		resource: Resource,
+		path: String,
+		inherited_classification: StringName,
+		seen: Dictionary,
+		result: Dictionary
+	) -> void:
+	if resource == null:
+		return
+	var instance_id := resource.get_instance_id()
+	if seen.has(instance_id):
+		return
+	seen[instance_id] = true
+	for property_name in stored_property_names(resource):
+		var classification := inherited_classification
+		if classification == UNKNOWN:
+			classification = classification_for(property_name, resource)
+		var property_path := "%s.%s" % [path, property_name]
+		result[property_path] = str(classification)
+		_collect_reachable_value(
+			resource.get(property_name), property_path, classification, seen, result
+		)
+	seen.erase(instance_id)
+
+
+static func _collect_reachable_value(
+		value: Variant,
+		path: String,
+		classification: StringName,
+		seen: Dictionary,
+		result: Dictionary
+	) -> void:
+	if value is Resource:
+		var nested := value as Resource
+		# Les ressources externes sont des references canoniques classees par leur
+		# propriete porteuse. Seules les sous-ressources font partie du snapshot.
+		if nested.resource_path.is_empty() or "::" in nested.resource_path:
+			_collect_reachable(nested, path, classification, seen, result)
+		return
+	if value is Array:
+		for index in range((value as Array).size()):
+			_collect_reachable_value(
+				(value as Array)[index], "%s[%d]" % [path, index],
+				classification, seen, result
+			)
+		return
+	if value is Dictionary:
+		var dictionary := value as Dictionary
+		for key in dictionary:
+			_collect_reachable_value(
+				dictionary[key], "%s[%s]" % [path, str(key)],
+				classification, seen, result
+			)

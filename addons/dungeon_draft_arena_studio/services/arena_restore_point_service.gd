@@ -30,6 +30,8 @@ static func create_point(
 	var transform := GridTransformSnapshot.from_arena(arena)
 	file.store_string(JSON.stringify({
 		"schema_version": SCHEMA_VERSION,
+		"studio_product_version": StudioVersion.PRODUCT_VERSION,
+		"generated_by": StudioVersion.GENERATED_BY,
 		"map_id": str(arena.arena_id),
 		"name": safe_name,
 		"created_unix": timestamp,

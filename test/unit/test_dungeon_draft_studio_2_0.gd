@@ -161,7 +161,7 @@ func test_art_kit_manifest_checksums_geometry_and_reimport_without_recalibration
 	assert_true(exported.files.has(ArenaArtRoundTripService.MANIFEST_FILE))
 	var kit := ArenaArtRoundTripService.validate_kit(ART_TEST_ROOT)
 	assert_true(kit.ok, str(kit.get("errors", [])))
-	assert_eq(int(kit.manifest.schema_version), 2)
+	assert_eq(int(kit.manifest.schema_version), 3)
 	assert_eq(int(kit.manifest.geometry.grid_size[0]), arena.grid_size.x)
 	assert_eq(int(kit.manifest.geometry.grid_size[1]), arena.grid_size.y)
 	assert_eq(float(kit.manifest.geometry.camera_zoom), arena.camera_zoom)
@@ -187,7 +187,9 @@ func test_art_kit_manifest_checksums_geometry_and_reimport_without_recalibration
 	assert_eq(rejected.code, "GEOMETRY_MISMATCH")
 	assert_false(str(rejected.fallback).is_empty())
 	var fingerprint_mismatch := _arena_fixture()
-	fingerprint_mismatch.production_notes = "modification logique après export"
+	# Les notes de production sont editor-only et n'invalident pas un kit v3.
+	# Un champ Arena sémantique, lui, doit invalider le fingerprint.
+	fingerprint_mismatch.theme_id = &"theme_modifie_apres_export"
 	var fingerprint_rejected := ArenaArtRoundTripService.inspect_reimport(
 		fingerprint_mismatch, ART_TEST_ROOT
 	)

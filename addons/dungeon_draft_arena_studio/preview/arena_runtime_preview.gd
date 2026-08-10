@@ -11,13 +11,20 @@ enum ViewMode {
 	GAME,
 }
 
+enum Fidelity {
+	QUICK,
+	EXACT,
+}
+
 const UNIT_VIEW_SCENE := preload("res://battle/unit_view.tscn")
-const HERO_PATHS := [
+## Fixtures exclusivement reservees a l'apercu rapide. Elles ne sont jamais
+## consultees lorsqu'une RunData active a ete resolue.
+const QUICK_FIXTURE_HERO_PATHS := [
 	"res://data/units/alliés/elfe.tres",
 	"res://data/units/alliés/mage.tres",
 	"res://data/units/alliés/Guerrier.tres",
 ]
-const DEFAULT_ENEMY := "res://data/units/ennemie/skeleton_melee.tres"
+const QUICK_FIXTURE_ENEMY := "res://data/units/ennemie/skeleton_melee.tres"
 const ArenaCameraFramingServiceScript = preload(
 	"res://addons/dungeon_draft_arena_studio/services/arena_camera_framing_service.gd"
 )
@@ -32,6 +39,13 @@ var show_lighting := true
 var preview_signature := {}
 var rebuild_count := 0
 var light_update_count := 0
+var fidelity := Fidelity.QUICK
+var fidelity_label := "APERÇU RAPIDE — FIXTURES EXPLICITES"
+var active_run: RunData = null
+var hero_resolution: RunHeroResolution = null
+var resolved_heroes: Array[UnitData] = []
+var resolved_enemies: Array[UnitData] = []
+var exact_context_errors: Array[String] = []
 
 var viewport: SubViewport = null
 var world_root: Node2D = null
@@ -42,6 +56,7 @@ var grid_view: PaintedGridView = null
 var runtime_state: ArenaRuntimeState = null
 var dynamic_surface_visuals: DynamicSurfaceVisualAdapter = null
 var assembly := {}
+var fidelity_badge: Label = null
 var _debounce: Timer = null
 var _requested_generation := 0
 var _built_generation := 0
@@ -56,22 +71,126 @@ func _ready() -> void:
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	viewport.size = Vector2i(maxi(1, int(size.x)), maxi(1, int(size.y)))
 	add_child(viewport)
+	fidelity_badge = Label.new()
+	fidelity_badge.name = "PreviewFidelityBadge"
+	fidelity_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fidelity_badge.position = Vector2(12, 10)
+	fidelity_badge.add_theme_color_override("font_color", Color(1.0, 0.91, 0.55))
+	fidelity_badge.add_theme_color_override(
+		"font_shadow_color", Color(0.0, 0.0, 0.0, 0.9)
+	)
+	fidelity_badge.add_theme_constant_override("shadow_offset_x", 2)
+	fidelity_badge.add_theme_constant_override("shadow_offset_y", 2)
+	add_child(fidelity_badge)
 	_debounce = Timer.new()
 	_debounce.one_shot = true
 	_debounce.wait_time = 0.12
 	_debounce.timeout.connect(_perform_rebuild)
 	add_child(_debounce)
 	resized.connect(_on_resized)
+	_refresh_fidelity_contract()
 
 
 func set_arena(value: ArenaDefinition, heavy := true) -> void:
 	arena = value
+	_refresh_fidelity_contract()
 	request_refresh(heavy)
 
 
 func set_view_mode(value: int) -> void:
 	view_mode = clampi(value, ViewMode.LOGIC, ViewMode.GAME)
+	_refresh_fidelity_contract()
 	request_refresh(true)
+
+
+func set_runtime_context(run_data: RunData) -> void:
+	active_run = run_data
+	_refresh_fidelity_contract()
+	request_refresh(true)
+
+
+func fidelity_report() -> Dictionary:
+	return {
+		"fidelity": "EXACT" if fidelity == Fidelity.EXACT else "QUICK",
+		"label": fidelity_label,
+		"run_path": active_run.resource_path if active_run != null else "",
+		"run_name": active_run.run_name if active_run != null else "",
+		"hero_source": (
+			"RunHeroResolver" if fidelity == Fidelity.EXACT else "explicit_fixture"
+		),
+		"encounter_source": (
+			arena.encounter_definition.resource_path
+			if fidelity == Fidelity.EXACT and arena != null \
+				and arena.encounter_definition != null else "explicit_fixture"
+		),
+		"hero_count": resolved_heroes.size(),
+		"enemy_count": resolved_enemies.size(),
+		"errors": exact_context_errors.duplicate(),
+	}
+
+
+func _refresh_fidelity_contract() -> void:
+	resolved_heroes.clear()
+	resolved_enemies.clear()
+	exact_context_errors.clear()
+	hero_resolution = null
+	if view_mode != ViewMode.GAME:
+		fidelity = Fidelity.QUICK
+		fidelity_label = "APERÇU RAPIDE — %s" % (
+			"LOGIQUE" if view_mode == ViewMode.LOGIC else "ART"
+		)
+		_update_fidelity_badge()
+		return
+	if active_run == null:
+		exact_context_errors.append("Aucune run active.")
+		_set_quick_fixture_contract()
+		return
+	hero_resolution = RunHeroResolver.resolve_runtime_hero_data(active_run, false)
+	if hero_resolution == null or not hero_resolution.is_valid():
+		if hero_resolution != null:
+			for error in hero_resolution.errors:
+				exact_context_errors.append(str(error))
+		else:
+			exact_context_errors.append("Resolution des heros absente.")
+		_set_quick_fixture_contract()
+		return
+	if arena == null or arena.encounter_definition == null \
+			or not arena.encounter_definition.is_valid():
+		exact_context_errors.append(
+			"La rencontre reelle de la working copy est absente ou invalide."
+		)
+		_set_quick_fixture_contract()
+		return
+	resolved_heroes.assign(hero_resolution.heroes)
+	resolved_enemies.assign(arena.encounter_definition.expanded_roster())
+	fidelity = Fidelity.EXACT
+	fidelity_label = "APERÇU RUNTIME EXACT — RUN ACTIVE"
+	_update_fidelity_badge()
+
+
+func _set_quick_fixture_contract() -> void:
+	fidelity = Fidelity.QUICK
+	fidelity_label = "APERÇU RAPIDE — FIXTURES EXPLICITES"
+	for path in QUICK_FIXTURE_HERO_PATHS:
+		var hero := load(path) as UnitData
+		if hero != null:
+			resolved_heroes.append(hero)
+	if ResourceLoader.exists(QUICK_FIXTURE_ENEMY):
+		var enemy := load(QUICK_FIXTURE_ENEMY) as UnitData
+		if enemy != null:
+			resolved_enemies.append(enemy)
+	_update_fidelity_badge()
+
+
+func _update_fidelity_badge() -> void:
+	if fidelity_badge == null:
+		return
+	fidelity_badge.text = fidelity_label
+	fidelity_badge.tooltip_text = (
+		"\n".join(exact_context_errors)
+		if not exact_context_errors.is_empty() else fidelity_label
+	)
+	fidelity_badge.visible = true
 
 
 func request_refresh(heavy := true) -> void:
@@ -241,12 +360,15 @@ func _build_foreground(value: ArenaDefinition, y_sorted_world: Node2D) -> void:
 
 func _build_units(value: ArenaDefinition, parent: Node2D) -> void:
 	var placed := 0
+	var enemy_index := 0
 	for spawn in value.spawns:
 		if spawn == null or placed >= 12 or not grid.is_walkable(spawn.cell):
 			continue
-		var data := _unit_data_for_spawn(spawn)
+		var data := _unit_data_for_spawn(spawn, enemy_index)
 		if data == null:
 			continue
+		if spawn.is_enemy():
+			enemy_index += 1
 		var unit := Unit.from_data(data)
 		unit.grid_pos = spawn.cell
 		# Certaines UnitData récentes portent un visual_scene 3D. UnitView est
@@ -264,13 +386,17 @@ func _build_units(value: ArenaDefinition, parent: Node2D) -> void:
 		placed += 1
 
 
-func _unit_data_for_spawn(spawn: ArenaSpawnDefinition) -> UnitData:
+func _unit_data_for_spawn(spawn: ArenaSpawnDefinition, enemy_index := 0) -> UnitData:
 	if spawn.is_hero():
-		var index := clampi(spawn.kind, 0, HERO_PATHS.size() - 1)
-		return load(HERO_PATHS[index]) as UnitData
+		if resolved_heroes.is_empty():
+			return null
+		var index := clampi(spawn.kind, 0, resolved_heroes.size() - 1)
+		return resolved_heroes[index]
 	if str(spawn.unit_id).begins_with("res://") and ResourceLoader.exists(str(spawn.unit_id)):
 		return load(str(spawn.unit_id)) as UnitData
-	return load(DEFAULT_ENEMY) as UnitData if ResourceLoader.exists(DEFAULT_ENEMY) else null
+	if resolved_enemies.is_empty():
+		return null
+	return resolved_enemies[enemy_index % resolved_enemies.size()]
 
 
 func _apply_view_options() -> void:

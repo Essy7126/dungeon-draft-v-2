@@ -1,0 +1,212 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_00.png" id="1_nn0pl"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_01.png" id="2_tnw1u"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_02.png" id="3_6wfkw"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_03.png" id="4_itpwo"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_04.png" id="5_qomoa"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_05.png" id="6_snd7q"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_06.png" id="7_0e3x5"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_07.png" id="8_6lv5s"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_08.png" id="9_cbmny"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_09.png" id="10_5bm62"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_10.png" id="11_bmf03"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_11.png" id="12_denmk"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_12.png" id="13_ij4bn"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_13.png" id="14_i5r1d"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_14.png" id="15_5cvlh"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_15.png" id="16_7mp6o"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_16.png" id="17_v4s2e"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/attack_17.png" id="18_su2x4"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_00.png" id="19_2521v"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_01.png" id="20_m75ad"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_02.png" id="21_djeya"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_03.png" id="22_yxvg7"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_04.png" id="23_ky1pg"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_05.png" id="24_npksp"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_06.png" id="25_tfhoi"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_07.png" id="26_xhbox"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_08.png" id="27_hlb21"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_09.png" id="28_bghv6"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_10.png" id="29_1bnmp"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_11.png" id="30_8ctaw"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_00.png" id="31_jhxrk"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_01.png" id="32_1s3om"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_02.png" id="33_wwvsm"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_03.png" id="34_xrx64"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_04.png" id="35_d5rdw"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_05.png" id="36_ac1ai"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_06.png" id="37_fhka8"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_07.png" id="38_ck5fv"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_08.png" id="39_quytc"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_09.png" id="40_ts8wi"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_10.png" id="41_t0rhs"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_11.png" id="42_ss6x6"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_12.png" id="43_wdlkg"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_13.png" id="44_bbs5l"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_14.png" id="45_7di0h"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_15.png" id="46_dbhud"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_16.png" id="47_2yuff"]
+[ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/walk_17.png" id="48_xebpl"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_nn0pl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_tnw1u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_6wfkw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_itpwo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qomoa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_snd7q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_0e3x5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_6lv5s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_cbmny")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_5bm62")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_bmf03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_denmk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_ij4bn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_i5r1d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_5cvlh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_7mp6o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_v4s2e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_su2x4")
+}],
+"loop": 0,
+"name": &"attack_SE",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_2521v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_m75ad")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_djeya")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_yxvg7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_ky1pg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_npksp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_tfhoi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_xhbox")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_hlb21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_bghv6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_1bnmp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_8ctaw")
+}],
+"loop": 1,
+"name": &"idle_SE",
+"speed": 9.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("31_jhxrk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_1s3om")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_wwvsm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_xrx64")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_d5rdw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_ac1ai")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37_fhka8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_ck5fv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("39_quytc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_ts8wi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_t0rhs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_ss6x6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_wdlkg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44_bbs5l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_7di0h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_dbhud")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47_2yuff")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_xebpl")
+}],
+"loop": 1,
+"name": &"walk_SE",
+"speed": 10.0
+}]

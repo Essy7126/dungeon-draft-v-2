@@ -135,6 +135,8 @@ static func place_spawn(arena: ArenaDefinition, cell: Vector2i, kind: int) -> bo
 		spawn.unit_id = HERO_IDS[spawn.kind]
 	elif spawn.is_enemy():
 		spawn.unit_id = &"encounter_enemy"
+		if spawn.kind == ArenaSpawnDefinition.Kind.ENEMY_GROUP:
+			spawn.group_id = StringName("group_%d_%d" % [cell.x, cell.y])
 	spawn.cell = cell
 	arena.spawns.append(spawn)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
@@ -204,6 +206,8 @@ static func _add_auto_spawn(
 	spawn.kind = kind
 	spawn.unit_id = unit_id
 	spawn.cell = cell
+	if spawn.kind == ArenaSpawnDefinition.Kind.ENEMY_GROUP:
+		spawn.group_id = StringName("auto_enemy_group_%d" % index)
 	arena.spawns.append(spawn)
 
 

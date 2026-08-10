@@ -2,6 +2,8 @@
 
 Statut : **WORKTREE_CANDIDATE**
 
+Version produit candidate : **2.0.0**. Les chemins techniques sont repliés ; la barre de contexte affiche run, salle, héros, portée, usages, état, erreurs et cible de production. Le tableau **Productions et récupérations** inventorie bundles, archives, backups, transactions, drafts et transferts Lab sans suppression automatique.
+
 ## Arena — recette principale sandbox
 
 1. choisir la run dans la barre partagée ;
@@ -34,3 +36,4 @@ Retirer une salle retire seulement sa référence. Pour isoler une salle partag�
 
 Lors d’un changement de contexte, choisir Sauvegarder, Brouillon, Abandonner ou Annuler. Fermer la fenêtre ou changer de run ne remplace jamais silencieusement une working copy.
 
+Plusieurs documents dirty sont résolus dans une transaction globale : tous les plans sont préparés et stagés avant commit ; un échec restaure l’ensemble et conserve le contexte courant.

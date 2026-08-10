@@ -111,7 +111,10 @@ static func save_recovery(arena: ArenaDefinition) -> Error:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return FileAccess.get_open_error()
-	file.store_string(JSON.stringify(arena.to_snapshot(), "  "))
+	var snapshot := arena.to_snapshot()
+	snapshot["_studio_product_version"] = StudioVersion.PRODUCT_VERSION
+	snapshot["_generated_by"] = StudioVersion.GENERATED_BY
+	file.store_string(JSON.stringify(snapshot, "  "))
 	return OK
 
 

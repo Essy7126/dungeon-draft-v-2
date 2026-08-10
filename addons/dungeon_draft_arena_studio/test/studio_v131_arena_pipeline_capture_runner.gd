@@ -16,7 +16,7 @@ var studio: ArenaStudioMain
 var standalone_lab: DynamicArenaLab
 var fixture: ArenaDefinition
 var transfer_id := ""
-var metrics := {}
+var metrics := {"studio_product_version": StudioVersion.PRODUCT_VERSION}
 
 
 func _ready() -> void:

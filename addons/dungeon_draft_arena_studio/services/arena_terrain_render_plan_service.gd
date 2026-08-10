@@ -5,6 +5,8 @@ extends RefCounted
 ## Autorite pure et deterministe du sol visuel. terrain_id choisit l'image ;
 ## cell_type reste uniquement une information de gameplay jointe au plan.
 
+static var _cache := {}
+
 
 static func build(
 		arena: ArenaDefinition,
@@ -29,6 +31,11 @@ static func build(
 		plan.errors.append("arena_missing")
 		return plan
 	profile = profile if profile != null else arena.modular_visual_profile
+	var cache_key := _cache_key(arena, profile)
+	if _cache.has(cache_key):
+		var cached := (_cache[cache_key] as Dictionary).duplicate(true)
+		cached["cache_hit"] = true
+		return cached
 	plan.visual_mode = arena.visual_mode
 	plan.base_floor_intentionally_painted = (
 		arena.visual_mode == ArenaDefinition.VisualMode.PAINTED
@@ -82,7 +89,26 @@ static func build(
 				entry_error, definition.coordinate.x, definition.coordinate.y,
 			])
 	plan.ok = plan.errors.is_empty()
+	plan["cache_hit"] = false
+	_cache[cache_key] = plan.duplicate(true)
 	return plan
+
+
+static func clear_cache() -> void:
+	_cache.clear()
+
+
+static func cache_size() -> int:
+	return _cache.size()
+
+
+static func _cache_key(arena: ArenaDefinition, profile: ArenaModularVisualProfile) -> String:
+	var profile_signature := "none"
+	if profile != null:
+		var snapshot := profile.to_dict()
+		snapshot.erase("resource_path")
+		profile_signature = JSON.stringify(snapshot, "", true).sha256_text()
+	return "%s:%s" % [ArenaSnapshotService.arena_fingerprint(arena), profile_signature]
 
 
 static func entry_for(

@@ -37,7 +37,6 @@ func _enter_tree() -> void:
 	else:
 		_project_context.restore_snapshot(stored_context)
 	_reference_graph = StudioReferenceGraphService.new()
-	_reference_graph.scan()
 	_main_screen = EmbeddedStudioHost.new()
 	_main_screen.name = "EmbeddedStudioHost"
 	get_editor_interface().get_editor_main_screen().add_child(_main_screen)
@@ -63,8 +62,16 @@ func _enter_tree() -> void:
 	add_tool_menu_item(TOOL_MENU_DETACH, _toggle_detached)
 	add_tool_menu_item(TOOL_MENU_SKILLS, _open_skill_studio)
 	_main_screen.hide()
+	# Le workspace est visible avant l'indexation. Le rapport expose durée,
+	# mémoire, ObjectDB, progression et annulation.
+	call_deferred("_scan_reference_graph")
 	if bool(_ui_state.get("detached", false)):
 		call_deferred("_detach_workspace")
+
+
+func _scan_reference_graph() -> void:
+	if _reference_graph != null:
+		_reference_graph.scan()
 
 
 func _exit_tree() -> void:

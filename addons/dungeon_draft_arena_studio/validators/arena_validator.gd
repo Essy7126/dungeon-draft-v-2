@@ -6,6 +6,8 @@ const DIRECTIONS: Array[Vector2i] = [
 	Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN,
 ]
 
+static var _cache := {}
+
 
 static func validate(arena: ArenaDefinition, check_duplicate_id := true) -> ArenaValidationReport:
 	var report := ArenaValidationReport.new()
@@ -17,15 +19,33 @@ static func validate(arena: ArenaDefinition, check_duplicate_id := true) -> Aren
 			"Aucune map n'est ouverte."
 		)
 		return report
+	var cache_key := ArenaSnapshotService.room_fingerprint(arena)
+	if not check_duplicate_id and _cache.has(cache_key):
+		var cached := (_cache[cache_key] as ArenaValidationReport).duplicate(true) \
+			as ArenaValidationReport
+		cached.set_meta("cache_hit", true)
+		return cached
 	report.arena_id = arena.arena_id
+	var runtime_state := ArenaRuntimeProjectionService.build(arena)
 	_validate_identity(arena, report, check_duplicate_id)
-	_validate_calibration(arena, report)
+	_validate_calibration(arena, report, runtime_state)
 	_validate_cells(arena, report)
 	_validate_visual_resources(arena, report)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	_validate_runtime(arena, report)
-	_build_metrics(arena, report)
+	_validate_field_coverage(report)
+	_validate_runtime(arena, report, runtime_state)
+	_build_metrics(arena, report, runtime_state)
+	report.set_meta("cache_hit", false)
+	if not check_duplicate_id:
+		_cache[cache_key] = report.duplicate(true)
 	return report
+
+
+static func clear_cache() -> void:
+	_cache.clear()
+
+
+static func cache_size() -> int:
+	return _cache.size()
 
 
 static func _validate_identity(
@@ -85,7 +105,8 @@ static func _validate_identity(
 
 static func _validate_calibration(
 		arena: ArenaDefinition,
-		report: ArenaValidationReport
+		report: ArenaValidationReport,
+		runtime_state: ArenaRuntimeState
 	) -> void:
 	if arena.grid_size.x <= 0 or arena.grid_size.y <= 0:
 		report.add_message(
@@ -129,7 +150,7 @@ static func _validate_calibration(
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"calibration_incomplete",
 			"Terminez les trois clics de calibration.")
-	elif arena.painted_map_visual_data != null:
+	elif runtime_state != null and runtime_state.visual_data != null:
 		var unique := {}
 		for cell in arena.calibration_cells:
 			if not arena.is_in_bounds(cell):
@@ -151,12 +172,12 @@ static func _validate_calibration(
 				ArenaValidationMessage.Severity.WARNING, &"anchor_distribution",
 				"Les ancres sont insuffisamment reparties pour un ajustement fiable."
 			)
-		var rms := arena.painted_map_visual_data.calibration_rms()
+		var rms := runtime_state.visual_data.calibration_rms()
 		if rms > GridTransformService.QUALITY_ACCEPTABLE_RMS:
 			report.add_message(
 				ArenaValidationMessage.Severity.WARNING, &"calibration_error",
 				"L'alignement de la grille est a verifier (erreur %.1f px)." % rms)
-		var maximum := arena.painted_map_visual_data.calibration_max_error()
+		var maximum := runtime_state.visual_data.calibration_max_error()
 		if maximum > GridTransformService.QUALITY_ACCEPTABLE_RMS * 2.0:
 			report.add_message(
 				ArenaValidationMessage.Severity.WARNING, &"calibration_max_error",
@@ -195,12 +216,42 @@ static func _validate_cells(
 				ArenaValidationMessage.Severity.ERROR, &"unknown_terrain",
 				"Le terrain '%s' n'existe pas dans le registre partage." % definition.terrain_id,
 				cell)
-		elif definition.defined:
+		else:
 			var terrain_entry := ArenaTerrainRegistry.get_entry(definition.terrain_id)
-			var visual_path := str(terrain_entry.get("visual", ""))
-			if visual_path.is_empty() and arena.visual_mode != ArenaDefinition.VisualMode.PAINTED:
+			var expected_defined := definition.terrain_id != &"void"
+			var expected_playable := bool(terrain_entry.get("walkable", false)) \
+				and not definition.border
+			var expected_type := int(terrain_entry.get("cell_type", GridData.CellType.HOLE))
+			var mismatches: Array[String] = []
+			if definition.defined != expected_defined:
+				mismatches.append("defined")
+			if definition.playable != expected_playable:
+				mismatches.append("playable")
+			if definition.cell_type != expected_type:
+				mismatches.append("cell_type")
+			if definition.terrain_id == &"void" and (definition.defined or definition.playable):
 				report.add_message(
-					ArenaValidationMessage.Severity.WARNING, &"terrain_without_visual",
+					ArenaValidationMessage.Severity.ERROR, &"void_cell_coherence",
+					"Une case void ne peut etre ni definie ni jouable.", cell
+				)
+			elif not mismatches.is_empty():
+				var justified := not definition.production_note.strip_edges().is_empty()
+				report.add_message(
+					ArenaValidationMessage.Severity.WARNING if justified \
+					else ArenaValidationMessage.Severity.ERROR,
+					&"terrain_manual_override" if justified else &"terrain_coherence_mismatch",
+					"L'override de terrain touche %s%s." % [
+						", ".join(mismatches),
+						" et est justifie" if justified else " sans justification",
+					], cell, &"align_cell_with_terrain_registry",
+					definition.production_note
+				)
+			var visual_path := str(terrain_entry.get("visual", ""))
+			if definition.defined and (visual_path.is_empty() \
+					or not ResourceLoader.exists(visual_path)) \
+					and arena.visual_mode != ArenaDefinition.VisualMode.PAINTED:
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"terrain_without_visual",
 					"Le terrain '%s' n'a pas de visuel modulaire." % definition.terrain_id,
 					cell)
 	if arena.playable_cells().is_empty():
@@ -220,14 +271,46 @@ static func _validate_obstacles_and_spawns(
 		report: ArenaValidationReport
 	) -> void:
 	var occupied := {}
-	var hero_count := 0
+	var required_heroes := {
+		ArenaSpawnDefinition.Kind.HERO_1: 0,
+		ArenaSpawnDefinition.Kind.HERO_2: 0,
+		ArenaSpawnDefinition.Kind.HERO_3: 0,
+	}
+	var hero_pool_count := 0
 	var enemy_count := 0
+	var obstacle_cells := {}
+	var obstacle_ids := {}
 	for obstacle in arena.obstacles:
 		if obstacle == null or not arena.is_in_bounds(obstacle.cell):
 			report.add_message(
 				ArenaValidationMessage.Severity.ERROR, &"invalid_obstacle",
 				"Un obstacle se trouve hors de l'arene.")
 			continue
+		if obstacle_cells.has(obstacle.cell):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"duplicate_obstacle_cell",
+				"Deux obstacles occupent la meme cellule.", obstacle.cell
+			)
+		obstacle_cells[obstacle.cell] = true
+		if obstacle.obstacle_id == &"" or obstacle_ids.has(obstacle.obstacle_id):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"duplicate_obstacle_id",
+				"Chaque obstacle doit posseder un identifiant unique.", obstacle.cell
+			)
+		obstacle_ids[obstacle.obstacle_id] = true
+		if not DIRECTIONS.has(obstacle.orientation):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"obstacle_orientation_invalid",
+				"L'orientation de l'obstacle doit etre cardinale.", obstacle.cell
+			)
+		var expected_flags := _obstacle_preset_flags(obstacle.preset)
+		for flag in expected_flags:
+			if bool(obstacle.get(flag)) != bool(expected_flags[flag]):
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"obstacle_preset_flag_mismatch",
+					"Le preset et le flag %s ne sont pas coherents." % flag,
+					obstacle.cell, &"apply_obstacle_preset"
+				)
 		if obstacle.wall_id != &"":
 			if not ArenaWallRegistry.has(obstacle.wall_id):
 				report.add_message(
@@ -240,6 +323,13 @@ static func _validate_obstacles_and_spawns(
 					ArenaValidationMessage.Severity.ERROR, &"wall_config_missing",
 					"La WallConfig du mur '%s' est absente." % obstacle.wall_id,
 					obstacle.cell)
+			elif obstacle.wall_config != null \
+					and ArenaWallRegistry.id_for_config(obstacle.wall_config) != obstacle.wall_id:
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"wall_config_mismatch",
+					"La WallConfig ne correspond pas au wall_id selectionne.",
+					obstacle.cell
+				)
 			var wall_visual := str(ArenaWallRegistry.get_entry(obstacle.wall_id).get("visual", ""))
 			if wall_visual.is_empty() or not ResourceLoader.exists(wall_visual):
 				report.add_message(
@@ -250,9 +340,21 @@ static func _validate_obstacles_and_spawns(
 		if spawn == null:
 			continue
 		if spawn.is_hero():
-			hero_count += 1
+			hero_pool_count += 1
+			if spawn.required:
+				required_heroes[spawn.kind] = int(required_heroes.get(spawn.kind, 0)) + 1
 		elif spawn.is_enemy():
 			enemy_count += 1
+		if not DIRECTIONS.has(spawn.facing):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"spawn_facing_invalid",
+				"L'orientation du spawn doit etre cardinale.", spawn.cell
+			)
+		if spawn.kind == ArenaSpawnDefinition.Kind.ENEMY_GROUP and spawn.group_id == &"":
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"spawn_group_id_missing",
+				"Un spawn de groupe ennemi requiert un group_id.", spawn.cell
+			)
 		var definition := arena.get_cell_definition(spawn.cell)
 		if definition == null or not definition.defined:
 			report.add_message(
@@ -263,7 +365,9 @@ static func _validate_obstacles_and_spawns(
 				ArenaValidationMessage.Severity.ERROR, &"spawn_on_border",
 				"%s est place sur la bordure de securite." % spawn.display_label(),
 				spawn.cell, &"move_spawn_to_nearest_valid")
-		elif not definition.playable or arena.obstacle_at(spawn.cell) != null:
+		elif not definition.playable \
+				or (arena.obstacle_at(spawn.cell) != null \
+					and arena.obstacle_at(spawn.cell).blocks_movement):
 			report.add_message(
 				ArenaValidationMessage.Severity.ERROR, &"spawn_blocked",
 				"%s ne possede pas de position de depart valide." % spawn.display_label(),
@@ -273,26 +377,57 @@ static func _validate_obstacles_and_spawns(
 				ArenaValidationMessage.Severity.ERROR, &"spawn_collision",
 				"Deux unites utilisent la meme position de depart.", spawn.cell)
 		occupied[spawn.cell] = true
-	if hero_count < 3:
+	for kind in required_heroes:
+		if int(required_heroes[kind]) != 1:
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"required_hero_spawn_contract",
+				"Chaque emplacement HERO_1, HERO_2 et HERO_3 doit exister exactement une fois en obligatoire."
+			)
+	if hero_pool_count < 3:
+		report.add_message(
+			ArenaValidationMessage.Severity.ERROR, &"hero_pool_too_small",
+			"Le pool de deploiement heros doit contenir au moins trois cellules.")
+		# Code historique conserve pour les integrations et rapports existants.
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"missing_heroes",
-			"La map ne peut pas etre testee : le trio Elfe, Mage et Guerrier ne dispose pas de trois positions valides.")
+			"La map ne peut pas etre testee : trois positions heros valides sont requises."
+		)
 	if enemy_count == 0:
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"missing_enemies",
 			"Ajoutez au moins une position de depart ennemie.")
 	for objective in arena.objectives:
 		if objective == null or not arena.is_in_bounds(objective.cell):
-			report.add_message(
+				report.add_message(
 				ArenaValidationMessage.Severity.ERROR, &"objective_out_of_bounds",
 				"Un objectif est place hors de l'arene.",
 				objective.cell if objective != null else GridTransformService.INVALID_CELL)
+		elif not ArenaObjectiveRegistry.has(objective.objective_type):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"objective_type_unknown",
+				"Le type d'objectif '%s' n'est pas enregistre." % objective.objective_type,
+				objective.cell
+			)
+		else:
+			var obstacle := arena.obstacle_at(objective.cell)
+			if obstacle != null and obstacle.blocks_movement:
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"objective_obstacle_collision",
+					"Un objectif obligatoire ne peut pas etre masque par un obstacle bloquant.",
+					objective.cell
+				)
 	for decoration in arena.decorations:
 		if decoration == null or not arena.is_in_bounds(decoration.cell):
 			report.add_message(
 				ArenaValidationMessage.Severity.ERROR, &"decoration_out_of_bounds",
 				"Un prop est place hors de l'arene.",
 				decoration.cell if decoration != null else GridTransformService.INVALID_CELL)
+		elif not ArenaDecorationLayerRegistry.has(decoration.layer):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"decoration_layer_unknown",
+				"La couche de decoration '%s' n'est pas enregistree." % decoration.layer,
+				decoration.cell
+			)
 		elif decoration.scene_path.is_empty() or not ResourceLoader.exists(decoration.scene_path):
 			report.add_message(
 				ArenaValidationMessage.Severity.WARNING, &"prop_without_preview",
@@ -304,6 +439,22 @@ static func _validate_visual_resources(
 		arena: ArenaDefinition,
 		report: ArenaValidationReport
 	) -> void:
+	var theme_resolution := ArenaThemeRegistry.resolve(arena)
+	if not bool(theme_resolution.get("ok", false)):
+		report.add_message(
+			ArenaValidationMessage.Severity.WARNING, &"theme_surface_configuration_missing",
+			"Le theme '%s' ne fournit aucune configuration de surface ; aucun fallback silencieux ne sera applique." % arena.theme_id,
+			GridTransformService.INVALID_CELL, &"choose_registered_theme",
+			str(theme_resolution.get("warning", ""))
+		)
+	elif bool(theme_resolution.get("fallback_used", false)):
+		report.add_message(
+			ArenaValidationMessage.Severity.INFO, &"theme_alias_resolved",
+			"L'alias de theme '%s' est resolu explicitement vers '%s'." % [
+				theme_resolution.requested_theme_id,
+				theme_resolution.resolved_theme_id,
+			]
+		)
 	if arena.visual_mode in [ArenaDefinition.VisualMode.MODULAR, ArenaDefinition.VisualMode.HYBRID]:
 		if arena.modular_visual_profile == null:
 			report.add_message(
@@ -331,15 +482,27 @@ static func _validate_visual_resources(
 	if arena.visual_mode != ArenaDefinition.VisualMode.MODULAR \
 			and arena.foreground_path.is_empty():
 		report.add_message(
-			ArenaValidationMessage.Severity.WARNING, &"foreground_missing",
+			ArenaValidationMessage.Severity.INFO, &"foreground_missing",
 			"Aucun foreground n'est configure.")
+
+
+static func _validate_field_coverage(report: ArenaValidationReport) -> void:
+	var coverage := ArenaRuntimeFieldCoverageService.scan()
+	if not bool(coverage.production_gate_valid):
+		report.add_message(
+			ArenaValidationMessage.Severity.ERROR, &"runtime_field_coverage_incomplete",
+			"La couverture des champs runtime contient %d champ(s) inconnu(s) et %d champ(s) gameplay non supporte(s)." % [
+				coverage.unknown.size(), coverage.unsupported_gameplay.size(),
+			]
+		)
 
 
 static func _validate_runtime(
 		arena: ArenaDefinition,
-		report: ArenaValidationReport
+		report: ArenaValidationReport,
+		runtime_state: ArenaRuntimeState
 	) -> void:
-	var grid := ArenaRuntimeBridge.build_grid(arena)
+	var grid := runtime_state.grid if runtime_state != null else null
 	if grid == null:
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"grid_build_failed",
@@ -361,6 +524,7 @@ static func _validate_runtime(
 				visual_report.expected_terrain_cell_count,
 			]
 		)
+	var tactical := ArenaTacticalMetricsService.analyze(arena, runtime_state)
 	var playable := arena.playable_cells()
 	if playable.is_empty():
 		return
@@ -378,60 +542,51 @@ static func _validate_runtime(
 			ArenaValidationMessage.Severity.WARNING, &"isolated_cells",
 			"%d cases jouables sont isolees du reste de l'arene." % isolated.size(),
 			isolated[0], &"select_isolated_cells")
-	var narrow_count := 0
-	for cell in playable:
-		var neighbors := 0
-		for direction in DIRECTIONS:
-			if grid.is_terrain_interactable(cell + direction):
-				neighbors += 1
-		if neighbors <= 1:
-			narrow_count += 1
-	if narrow_count > 0:
+	var topology := tactical.get("topology", {}) as Dictionary
+	var corridor_count := int(topology.get("width_one_corridor_count", 0))
+	var articulation_count := int(topology.get("articulation_point_count", 0))
+	if corridor_count > 0 or articulation_count > 0:
+		var location := GridTransformService.INVALID_CELL
+		var corridor_cells: Array = topology.get("width_one_corridors", [])
+		if not corridor_cells.is_empty():
+			location = corridor_cells[0]
 		report.add_message(
 			ArenaValidationMessage.Severity.WARNING, &"narrow_passages",
-			"%d cases forment des passages tres etroits." % narrow_count)
-	if not arena.hero_spawn_zone.is_empty() and not arena.enemy_spawn_zone.is_empty():
-		var path := pathfinder.find_path(
-			arena.hero_spawn_zone[0], arena.enemy_spawn_zone[0]
+			"%d cellule(s) de corridor et %d articulation(s) tactique(s) sont a verifier." % [
+				corridor_count, articulation_count,
+			], location, &"select_chokepoints")
+	var camps := tactical.get("camps", {}) as Dictionary
+	if int(camps.get("unreachable_pair_count", 0)) > 0:
+		report.add_message(
+			ArenaValidationMessage.Severity.ERROR, &"camps_disconnected",
+			"%d paire(s) heros-ennemi ne disposent d'aucun chemin." % int(
+				camps.unreachable_pair_count
+			)
 		)
-		if path.is_empty():
-			report.add_message(
-				ArenaValidationMessage.Severity.ERROR, &"camps_disconnected",
-				"Les heros ne peuvent pas rejoindre le camp ennemi.")
 
 
 static func _build_metrics(
 		arena: ArenaDefinition,
-		report: ArenaValidationReport
+		report: ArenaValidationReport,
+		runtime_state: ArenaRuntimeState
 	) -> void:
-	var grid := ArenaRuntimeBridge.build_grid(arena)
-	var components := 0
-	var remaining := arena.playable_cells()
-	while not remaining.is_empty() and grid != null:
-		components += 1
-		var start := remaining[0]
-		var connected := Pathfinder.new(grid).get_reachable(
-			start, arena.grid_size.x * arena.grid_size.y
-		)
-		connected.append(start)
-		for cell in connected:
-			remaining.erase(cell)
-	var camp_distance := -1
-	if grid != null and not arena.hero_spawn_zone.is_empty() \
-			and not arena.enemy_spawn_zone.is_empty():
-		var path := Pathfinder.new(grid).find_path(
-			arena.hero_spawn_zone[0], arena.enemy_spawn_zone[0]
-		)
-		camp_distance = maxi(0, path.size() - 1) if not path.is_empty() else -1
+	var tactical := ArenaTacticalMetricsService.analyze(arena, runtime_state)
+	var topology := tactical.get("topology", {}) as Dictionary
+	var camps := tactical.get("camps", {}) as Dictionary
+	var spawn_metrics := tactical.get("spawns", {}) as Dictionary
 	report.metrics = {
 		"dimensions": [arena.grid_size.x, arena.grid_size.y],
 		"defined_cells": arena.defined_cells().size(),
 		"playable_cells": arena.playable_cells().size(),
 		"border_cells": arena.border_cells().size(),
 		"obstacles": arena.obstacles.size(),
-		"components": components,
-		"minimum_camp_distance": camp_distance,
-		"spawns": arena.spawns.size(),
+		"components": int(topology.get("components", 0)),
+		"minimum_camp_distance": int(camps.get("minimum_distance", -1)),
+		"median_camp_distance": float(camps.get("median_distance", -1.0)),
+		"average_camp_distance": float(camps.get("average_distance", -1.0)),
+		"p90_camp_distance": int(camps.get("p90_distance", -1)),
+		"maximum_camp_distance": int(camps.get("maximum_distance", -1)),
+		"spawns": spawn_metrics,
 		"terrains": _terrain_ids(arena),
 		"walls": _wall_ids(arena),
 		"objectives": arena.objectives.size(),
@@ -440,6 +595,8 @@ static func _build_metrics(
 		"visual_profile": str(arena.theme_id),
 		"battle_scene": arena.battle_scene.resource_path if arena.battle_scene != null else "",
 		"visual_assembly": ArenaVisualAssembler.inspect(arena).to_dict(),
+		"tactical": tactical,
+		"runtime_field_coverage": ArenaRuntimeFieldCoverageService.scan(),
 	}
 	report.add_message(
 		ArenaValidationMessage.Severity.INFO, &"map_summary",
@@ -448,6 +605,30 @@ static func _build_metrics(
 			arena.obstacles.size(), arena.spawns.size(),
 		]
 	)
+
+
+static func _obstacle_preset_flags(preset: int) -> Dictionary:
+	match preset:
+		ArenaObstacleDefinition.Preset.LOW_OBSTACLE:
+			return {
+				"blocks_movement": true, "blocks_line_of_sight": false,
+				"blocks_projectiles": false, "blocks_push": true,
+			}
+		ArenaObstacleDefinition.Preset.PASSABLE_DECOR:
+			return {
+				"blocks_movement": false, "blocks_line_of_sight": false,
+				"blocks_projectiles": false, "blocks_push": false,
+			}
+		ArenaObstacleDefinition.Preset.CLIFF:
+			return {
+				"blocks_movement": true, "blocks_line_of_sight": false,
+				"blocks_projectiles": false, "blocks_push": true,
+			}
+		_:
+			return {
+				"blocks_movement": true, "blocks_line_of_sight": true,
+				"blocks_projectiles": true, "blocks_push": true,
+			}
 
 
 static func _terrain_ids(arena: ArenaDefinition) -> Array[String]:

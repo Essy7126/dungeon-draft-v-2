@@ -84,6 +84,22 @@ static func integrate(
 		graph: StudioReferenceGraphService = null,
 		provided_images := {}
 	) -> Dictionary:
+	return integrate_with_options(
+		arena, run_data, action, requested_index, destination, graph,
+		provided_images, {}
+	)
+
+
+static func integrate_with_options(
+		arena: ArenaDefinition,
+		run_data: RunData,
+		action: StringName,
+		requested_index: int,
+		destination := "",
+		graph: StudioReferenceGraphService = null,
+		provided_images := {},
+		options := {}
+	) -> Dictionary:
 	var integration_plan := plan(
 		arena, run_data, action, requested_index, destination, graph
 	)
@@ -97,7 +113,9 @@ static func integrate(
 		}
 	var journal_path := _new_journal_path(arena, run_data)
 	_write_journal(journal_path, _journal_state(&"PLANNED", integration_plan))
-	var production := ArenaProductionService.produce(arena, destination, provided_images)
+	var production := ArenaProductionService.produce_with_options(
+		arena, destination, provided_images, options.get("production_options", {})
+	)
 	if not production.get("ok", false):
 		_write_journal(journal_path, _journal_state(&"PRODUCTION_FAILED", integration_plan, {
 			"error": production.get("error", "production_failed"),
@@ -113,22 +131,42 @@ static func integrate(
 	_write_journal(journal_path, _journal_state(&"PRODUCED", integration_plan, {
 		"arena_path": production.get("arena_path", ""),
 	}))
-	var attachment := ArenaProductionAttachmentService.attach_and_save(
-		str(production.get("arena_path", "")), run_data, action,
-		requested_index, graph
-	)
+	var attachment := {"ok": false, "error": "injected_before_attachment"}
+	if str(options.get("failure_step", "")) != "before_attachment":
+		attachment = ArenaProductionAttachmentService.attach_and_save(
+			str(production.get("arena_path", "")), run_data, action,
+			requested_index, graph
+		)
 	if not attachment.get("ok", false):
+		var production_rollback := _rollback_production(production)
 		_write_journal(journal_path, _journal_state(&"INTEGRATION_FAILED", integration_plan, {
 			"error": attachment.get("error", "integration_failed"),
 			"produced_arena_path": production.get("arena_path", ""),
 		}))
 		return {
 			"ok": false,
-			"status": &"ROOM_PRODUCED_NOT_INTEGRATED",
+			"status": &"INTEGRATION_ROLLED_BACK",
 			"error": attachment.get("error", "L'intégration a échoué."),
 			"plan": integration_plan,
 			"production": production,
 			"attachment": attachment,
+			"production_rollback": production_rollback,
+			"journal_path": journal_path,
+		}
+	if str(options.get("failure_step", "")) == "after_attachment":
+		var attachment_rollback := ArenaProductionAttachmentService.rollback_attachment(
+			attachment
+		)
+		var production_rollback := _rollback_production(production)
+		return {
+			"ok": false,
+			"status": &"INTEGRATION_ROLLED_BACK",
+			"error": "injected_after_attachment",
+			"plan": integration_plan,
+			"production": production,
+			"attachment": attachment,
+			"attachment_rollback": attachment_rollback,
+			"production_rollback": production_rollback,
 			"journal_path": journal_path,
 		}
 	var result := {
@@ -152,7 +190,15 @@ static func integrate(
 		"preserved_gameplay": attachment.get("preserved_gameplay", false),
 		"copy_on_write": attachment.get("copy_on_write", false),
 	}))
+	ArenaProductionTransactionService.finalize(production.get("transaction", {}))
 	return result
+
+
+static func _rollback_production(production: Dictionary) -> Dictionary:
+	var transaction = production.get("transaction", {})
+	if transaction is Dictionary and bool(transaction.get("committed", false)):
+		return ArenaProductionTransactionService.rollback_committed(transaction)
+	return {"ok": true, "restored": false, "reason": "no_new_production_commit"}
 
 
 static func action_label(action: StringName) -> String:

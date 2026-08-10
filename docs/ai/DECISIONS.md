@@ -86,3 +86,11 @@ valeur d’équilibrage, aucun inventaire initial et aucun pool de récompense.
 
 L’activation CURRENT est différée jusqu’à l’intégration explicite du patch et sa
 vérification à un commit.
+# Décisions Arena Studio 2.0 — candidat local 2026-08-10
+
+- `StudioVersion.PRODUCT_VERSION = 2.0.0` est l’autorité produit ; les schémas métier restent indépendants.
+- Tester part exclusivement de `ArenaEditSession.working_arena`, copie une Room complète sous `user://`, puis lance la vraie scène runtime. `res://data/arenas/produced/` est interdit au runner.
+- UPDATE conserve le gameplay ; REPLACE est avancé et explicite.
+- Production et changement de contexte sont transactionnels avec rollback complet.
+- Un bundle incomplet non référencé peut être archivé seulement sur action explicite ; aucune suppression automatique.
+- Le graphe est différé, mesuré et utilise WeakRef quand une Resource mémoire doit rester accessible.

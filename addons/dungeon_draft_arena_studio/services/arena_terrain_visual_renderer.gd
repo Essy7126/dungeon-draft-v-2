@@ -74,13 +74,23 @@ func actual_render_report() -> Dictionary:
 			errors.append("texture_missing:%s" % cell)
 			continue
 		rendered_by[terrain_id] = int(rendered_by.get(terrain_id, 0)) + 1
+		var polygon := _cell_polygon_in_parent(cell)
+		var duplication_count := _duplicate_count(cell)
 		cells["%d,%d" % [cell.x, cell.y]] = {
+			"coordinate": cell,
 			"terrain_id": terrain_id,
 			"cell_type": int(root.get_meta("cell_type", GridData.CellType.HOLE)),
 			"texture_path": sprite.texture.resource_path,
+			"parent": root.get_parent().name if root.get_parent() != null else &"",
+			"parent_role": str(root.get_meta("parent_role", &"arena_tiles_layer")),
+			"renderer_role": str(root.get_meta("renderer_role", &"terrain_floor")),
 			"position": root.position,
 			"transform": sprite.transform,
+			"root_transform": root.transform,
+			"polygon": polygon,
 			"visible": root.visible and sprite.visible,
+			"layer": str(root.get_meta("renderer_layer", &"terrain")),
+			"duplication_count": duplication_count,
 		}
 	return {
 		"rendered_terrain_node_count": cells.size(),
@@ -136,6 +146,8 @@ func _create_or_update(entry: Dictionary) -> void:
 	root.set_meta("terrain_id", entry.terrain_id)
 	root.set_meta("cell_type", int(entry.cell_type))
 	root.set_meta("renderer_layer", entry.visual_layer)
+	root.set_meta("renderer_role", &"terrain_floor")
+	root.set_meta("parent_role", &"arena_tiles_layer")
 	root.visible = true
 	_update_transform(cell, root)
 
@@ -185,3 +197,14 @@ func _signatures_match(first: PackedVector2Array, second: PackedVector2Array) ->
 		if not first[index].is_equal_approx(second[index]):
 			return false
 	return true
+
+
+func _duplicate_count(cell: Vector2i) -> int:
+	if _visual_parent == null:
+		return 0
+	var count := 0
+	for child in _visual_parent.get_children():
+		if child is Node2D and child.get_meta("arena_cell", GridTransformService.INVALID_CELL) == cell \
+				and child.get_meta("renderer_role", &"") == &"terrain_floor":
+			count += 1
+	return count

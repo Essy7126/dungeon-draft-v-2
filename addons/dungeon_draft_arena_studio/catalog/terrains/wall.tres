@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ArenaTerrainDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_terrain_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"wall"
+display_name = "Mur logique"
+cell_type = 1
+walkable = false
+editor_color = Color(0.823529, 0.301961, 0.247059, 1)
+dynamic_catalog = false
+lab_surface = -1

@@ -12,7 +12,7 @@ const CASES := [
 
 var studio: StudioWorkspace
 var arena: ArenaStudioMain
-var metrics := {}
+var metrics := {"studio_product_version": StudioVersion.PRODUCT_VERSION}
 
 
 func _ready() -> void:

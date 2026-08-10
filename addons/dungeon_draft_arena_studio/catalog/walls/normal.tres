@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArenaWallDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_wall_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/wall_base.png" id="2"]
+[ext_resource type="Resource" path="res://battle/dynamic_terrain/configs/wall_base.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"normal"
+display_name = "Mur normal"
+base_texture = ExtResource("2")
+wall_config = ExtResource("3")
+variant = 0
+editor_color = Color(0.827451, 0.713726, 0.619608, 1)

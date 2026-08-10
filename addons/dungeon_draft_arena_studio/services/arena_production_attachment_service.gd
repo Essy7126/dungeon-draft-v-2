@@ -169,6 +169,30 @@ static func attach_and_save(
 	}
 
 
+static func rollback_attachment(attachment: Dictionary) -> Dictionary:
+	if not attachment.get("ok", false):
+		return {"ok": false, "error": "attachment_not_committed"}
+	var run_path := str(attachment.get("run_path", ""))
+	var backup_path := str(attachment.get("backup_path", ""))
+	if not backup_path.is_empty() and FileAccess.file_exists(backup_path):
+		if DirAccess.copy_absolute(
+				ProjectSettings.globalize_path(backup_path),
+				ProjectSettings.globalize_path(run_path)
+			) != OK:
+			return {"ok": false, "error": "run_rollback_failed"}
+	var room_recovery = attachment.get("room_recovery", {})
+	if room_recovery is Dictionary and not room_recovery.is_empty():
+		_rollback_room(
+			room_recovery, str(attachment.get("integrated_room_path", ""))
+		)
+	var reloaded_run := ResourceLoader.load(
+		run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as RunData if not run_path.is_empty() else null
+	if not run_path.is_empty() and reloaded_run == null:
+		return {"ok": false, "error": "run_rollback_reload_failed"}
+	return {"ok": true, "reloaded_run": reloaded_run}
+
+
 static func _update_and_save(
 		produced: ArenaDefinition,
 		canonical_run: RunData,
@@ -290,6 +314,7 @@ static func _update_and_save(
 		"action": UPDATE,
 		"backup_path": save_result.get("backup_path", ""),
 		"room_recovery_path": recovery.get("directory", ""),
+		"room_recovery": recovery,
 		"reloaded_run": verified_run,
 		"reloaded_room": verified_room,
 		"run_saved": bool(attachment_plan.get("copy_on_write", false)),

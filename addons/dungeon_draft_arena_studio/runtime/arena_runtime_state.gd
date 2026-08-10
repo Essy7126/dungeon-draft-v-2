@@ -11,6 +11,7 @@ var visual_data: PaintedMapVisualData = null
 var visual_profile: ArenaVisualProfile = null
 var hero_spawns: Array[Vector2i] = []
 var enemy_spawns: Array[Vector2i] = []
+var surface_resolution := {}
 var surface_service := DynamicSurfaceService.new()
 
 

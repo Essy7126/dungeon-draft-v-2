@@ -9,7 +9,9 @@ var room_option: OptionButton
 var hero_option: OptionButton
 var scope_option: OptionButton
 var state_label: Label
+var human_summary_label: Label
 var details_label: Label
+var details_button: Button
 var transition_dialog: ConfirmationDialog
 var _runs: Array[RunData] = []
 var _syncing := false
@@ -21,7 +23,7 @@ func setup(project_context: StudioProjectContext, graph_service: StudioReference
 
 
 func _ready() -> void:
-	custom_minimum_size.y = 62
+	custom_minimum_size.y = 86
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 2)
 	add_child(rows)
@@ -32,9 +34,9 @@ func _ready() -> void:
 	run_option.item_selected.connect(_on_run_selected)
 	room_option = _labeled_option(bar, "Salle")
 	room_option.item_selected.connect(_on_room_selected)
-	hero_option = _labeled_option(bar, "Heros")
+	hero_option = _labeled_option(bar, "Héros")
 	hero_option.item_selected.connect(_on_hero_selected)
-	scope_option = _labeled_option(bar, "Portee")
+	scope_option = _labeled_option(bar, "Portée")
 	for scope in StudioProjectContext.VALID_SCOPES:
 		scope_option.add_item(_scope_label(scope))
 		scope_option.set_item_metadata(scope_option.item_count - 1, scope)
@@ -44,9 +46,20 @@ func _ready() -> void:
 	state_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	bar.add_child(state_label)
+	human_summary_label = Label.new()
+	human_summary_label.clip_text = true
+	human_summary_label.tooltip_text = "Contexte actif, état et destination de production"
+	rows.add_child(human_summary_label)
+	details_button = Button.new()
+	details_button.text = "Détails techniques ▾"
+	details_button.flat = true
+	details_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	details_button.pressed.connect(_toggle_technical_details)
+	rows.add_child(details_button)
 	details_label = Label.new()
 	details_label.clip_text = true
-	details_label.tooltip_text = "Chemins, usages et generation de l'index"
+	details_label.visible = false
+	details_label.tooltip_text = "Chemins, usages et génération de l'index"
 	rows.add_child(details_label)
 	_build_transition_dialog()
 	if context != null:
@@ -101,7 +114,13 @@ func _refresh(_unused = {}) -> void:
 	var heroes := RunContentCatalogService.heroes_for_run(context.active_run)
 	for index in range(heroes.size()):
 		var hero := heroes[index]
-		hero_option.add_item(str(hero.character_id) if hero != null else "Heros absent")
+		var hero_name := "Héros absent"
+		if hero != null:
+			hero_name = str(hero.character_id)
+			if hero.base_unit_data != null and not hero.base_unit_data.unit_name.strip_edges().is_empty():
+				hero_name = hero.base_unit_data.unit_name
+		hero_option.add_item(hero_name)
+		hero_option.set_item_tooltip(index, str(hero.character_id) if hero != null else "Référence nulle")
 		if hero == context.active_hero:
 			hero_option.select(index)
 	for index in range(scope_option.item_count):
@@ -109,7 +128,7 @@ func _refresh(_unused = {}) -> void:
 			scope_option.select(index)
 			break
 	var dirty := context.dirty_domains()
-	state_label.text = "ETAT : %s" % ("MODIFIE · %s" % ", ".join(dirty.keys()) if not dirty.is_empty() else "SAUVEGARDE")
+	state_label.text = "ÉTAT : %s" % ("MODIFIÉ · %s" % ", ".join(dirty.keys()) if not dirty.is_empty() else "SAUVEGARDÉ")
 	state_label.add_theme_color_override(
 		"font_color", Color(1.0, 0.66, 0.25) if not dirty.is_empty() else Color(0.48, 0.9, 0.62)
 	)
@@ -117,6 +136,23 @@ func _refresh(_unused = {}) -> void:
 	var usage_count := 0
 	if reference_graph != null and context.active_room() != null:
 		usage_count = reference_graph.usages(context.active_room()).size()
+	var error_count := 0
+	for metadata_value in dirty.values():
+		if metadata_value is Dictionary:
+			error_count += int((metadata_value as Dictionary).get("errors", 0))
+	var target := str(context.persisted_ui.get("production_target", "Non définie"))
+	var hero_display := "Aucun héros"
+	if context.active_hero != null:
+		hero_display = str(context.active_hero.character_id)
+		if context.active_hero.base_unit_data != null \
+				and not context.active_hero.base_unit_data.unit_name.strip_edges().is_empty():
+			hero_display = context.active_hero.base_unit_data.unit_name
+	human_summary_label.text = "%s · Salle %d — %s · %s · %s · %d usage(s) · %d erreur(s) · Cible : %s" % [
+		str(snap.get("run_name", "Aucune run")), int(snap.get("room_index", -1)) + 1,
+		str(snap.get("room_name", "Aucune salle")), hero_display,
+		_scope_label(context.edit_scope), usage_count, error_count, target,
+	]
+	human_summary_label.tooltip_text = human_summary_label.text
 	details_label.text = "Run: %s  ·  Salle: %s  ·  Profil: %s  ·  usages: %d  ·  index g%d" % [
 		snap.get("run_path", ""), snap.get("room_path", ""),
 		snap.get("progression_path", ""), usage_count,
@@ -124,6 +160,13 @@ func _refresh(_unused = {}) -> void:
 	]
 	details_label.tooltip_text = details_label.text
 	_syncing = false
+
+
+func _toggle_technical_details() -> void:
+	if details_label == null:
+		return
+	details_label.visible = not details_label.visible
+	details_button.text = "Détails techniques ▴" if details_label.visible else "Détails techniques ▾"
 
 
 func _show_transition(transition: Dictionary) -> void:
@@ -182,8 +225,8 @@ func _labeled_option(parent: Container, label_text: String) -> OptionButton:
 func _scope_label(scope: StringName) -> String:
 	match scope:
 		StudioProjectContext.SCOPE_RUN_SPECIFIC:
-			return "Specifique a la run"
+			return "Spécifique à la run"
 		StudioProjectContext.SCOPE_SHARED:
-			return "Ressource partagee"
+			return "Ressource partagée"
 		_:
-			return "Brouillon isole"
+			return "Brouillon isolé"

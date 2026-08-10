@@ -2,24 +2,32 @@
 class_name ArenaProductionService
 extends RefCounted
 
-const GENERATED_BY := "dungeon_draft_studio_1_3_1"
+## Builds a complete bundle in a caller-owned staging directory. Publication
+## into the canonical destination is exclusively owned by
+## ArenaProductionTransactionService.
+
+const GENERATED_BY := StudioVersion.GENERATED_BY
 const COMPATIBLE_GENERATORS := [
 	"dungeon_draft_studio_1_2",
 	"dungeon_draft_studio_1_2_1",
 	"dungeon_draft_studio_1_3_0",
+	"dungeon_draft_studio_1_3_1",
 	GENERATED_BY,
 ]
 const DEFAULT_ROOT := "res://data/arenas/produced"
-const RECOVERY_ROOT := "user://dungeon_draft_studio/production_recovery"
 const MANIFEST_FILE := "production_manifest.json"
-const GENERATOR_REVISION := 3
+const GENERATOR_REVISION := 4
 
 
 static func suggested_destination(arena: ArenaDefinition) -> String:
 	return DEFAULT_ROOT.path_join(str(arena.arena_id) if arena != null else "nouvelle_arene")
 
 
-static func plan(arena: ArenaDefinition, destination := "") -> Dictionary:
+static func plan(
+		arena: ArenaDefinition,
+		destination := "",
+		graph: StudioReferenceGraphService = null
+	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
 	if destination.is_empty():
@@ -28,9 +36,14 @@ static func plan(arena: ArenaDefinition, destination := "") -> Dictionary:
 		return {"ok": false, "error": "invalid_destination"}
 	var report := ArenaValidator.validate(arena, false)
 	var visual_report := ArenaVisualAssembler.inspect(arena)
-	var names := _output_names(arena)
-	var old_manifest := _read_json(destination.path_join(MANIFEST_FILE))
-	var owned := _is_owned_manifest(old_manifest)
+	var compatibility_outputs := _is_diagnostic_destination(destination)
+	var names := _output_names(arena, compatibility_outputs)
+	var inspection := ArenaBundleInspectionService.inspect(destination, graph)
+	var owned: bool = inspection.state in [
+		ArenaBundleInspectionService.OWNED_COMPLETE,
+		ArenaBundleInspectionService.REFERENCED_COMPLETE,
+	]
+	var old_manifest: Dictionary = inspection.get("manifest", {})
 	var expected_hashes: Dictionary = old_manifest.get("files", {}) \
 		if owned and old_manifest.get("files", {}) is Dictionary else {}
 	var creates: Array[String] = []
@@ -49,12 +62,19 @@ static func plan(arena: ArenaDefinition, destination := "") -> Dictionary:
 			continue
 		if not owned or not expected_hashes.has(name):
 			conflicts.append(path)
-			continue
-		var current_hash := FileAccess.get_sha256(path)
-		if current_hash != str(expected_hashes.get(name, "")):
+		elif FileAccess.get_sha256(path) != str(expected_hashes.get(name, "")):
 			conflicts.append(path)
 		else:
 			modifies.append(path)
+	if inspection.state not in [
+		ArenaBundleInspectionService.EMPTY,
+		ArenaBundleInspectionService.OWNED_COMPLETE,
+		ArenaBundleInspectionService.REFERENCED_COMPLETE,
+	]:
+		for relative_path in inspection.get("files", {}):
+			var conflict_path := destination.path_join(str(relative_path))
+			if not conflicts.has(conflict_path):
+				conflicts.append(conflict_path)
 	return {
 		"ok": true,
 		"destination": destination,
@@ -64,7 +84,11 @@ static func plan(arena: ArenaDefinition, destination := "") -> Dictionary:
 		"conflicts": conflicts,
 		"can_produce": report.is_valid() and visual_report.valid and conflicts.is_empty(),
 		"visual_report": visual_report,
-		"source_fingerprint": ArenaEditSession.fingerprint(arena.to_snapshot()),
+		"source_fingerprint": ArenaSnapshotService.arena_fingerprint(arena),
+		"gameplay_fingerprint": ArenaSnapshotService.gameplay_fingerprint(arena),
+		"bundle_state": inspection.state,
+		"bundle_inspection": inspection,
+		"compatibility_outputs": compatibility_outputs,
 	}
 
 
@@ -73,156 +97,155 @@ static func produce(
 		destination := "",
 		provided_images := {}
 	) -> Dictionary:
-	var production_plan := plan(arena, destination)
-	if not bool(production_plan.get("ok", false)):
-		return production_plan
-	if not bool(production_plan.get("can_produce", false)):
-		return {
-			"ok": false,
-			"error": "validation_or_conflict",
-			"plan": production_plan,
-		}
-	destination = str(production_plan.destination)
-	var existing_manifest := _read_json(destination.path_join(MANIFEST_FILE))
-	if str(existing_manifest.get("generated_by", "")) == GENERATED_BY \
-			and int(existing_manifest.get("generator_revision", 0)) == GENERATOR_REVISION \
-			and str(existing_manifest.get("source_fingerprint", "")) \
-			== str(production_plan.source_fingerprint):
-		var existing_arena_path := destination.path_join("arena.tres")
-		var existing := ResourceLoader.load(
-			existing_arena_path, "", ResourceLoader.CACHE_MODE_IGNORE
-		) as ArenaDefinition
-		if existing != null:
-			var existing_report := ArenaValidator.validate(existing, false)
-			if existing_report.is_valid() and ArenaEditSession.fingerprint(
-					existing.to_snapshot()
-				) == str(existing_manifest.get("produced_fingerprint", "")):
-				return {
-					"ok": true,
-					"status": "SALLE_PRETE",
-					"directory": destination,
-					"arena_path": existing_arena_path,
-					"validation": existing_report,
-					"manifest": existing_manifest,
-					"recovery": {"ok": true, "directory": "", "files": []},
-					"created": [],
-					"modified": [],
-					"resources_reloaded": true,
-					"direct_test_available": true,
-					"visual_report": ArenaVisualAssembler.inspect(existing),
-					"idempotent_reuse": true,
-				}
-	var recovery := _create_recovery(production_plan)
-	if not bool(recovery.get("ok", false)):
-		return {"ok": false, "error": "recovery_failed", "details": recovery}
-	var absolute := ProjectSettings.globalize_path(destination)
-	var directory_error := DirAccess.make_dir_recursive_absolute(absolute)
-	if directory_error != OK:
-		return {"ok": false, "error": error_string(directory_error)}
+	return ArenaProductionTransactionService.produce(
+		arena, destination, provided_images
+	)
+
+
+static func produce_with_options(
+		arena: ArenaDefinition,
+		destination := "",
+		provided_images := {},
+		options := {}
+	) -> Dictionary:
+	return ArenaProductionTransactionService.produce(
+		arena, destination, provided_images, options
+	)
+
+
+static func build_staged_bundle(
+		arena: ArenaDefinition,
+		staging: String,
+		published_destination: String,
+		provided_images := {},
+		options := {}
+	) -> Dictionary:
+	if arena == null or not _valid_destination(staging):
+		return {"ok": false, "error": "invalid_staging"}
+	var compatibility_outputs := bool(options.get(
+		"compatibility_outputs", _is_diagnostic_destination(published_destination)
+	))
+	var failure_step := str(options.get("failure_step", ""))
+	var absolute := ProjectSettings.globalize_path(staging)
+	if DirAccess.make_dir_recursive_absolute(absolute) != OK:
+		return {"ok": false, "error": "staging_create_failed"}
 	var clone := ArenaDefinition.new()
-	if not clone.restore_snapshot(arena.to_snapshot()):
+	if not ArenaSnapshotService.restore(clone, ArenaSnapshotService.capture(arena)):
 		return {"ok": false, "error": "snapshot_restore_failed"}
 	clone.schema_version = ArenaDefinition.CURRENT_SCHEMA_VERSION
 	clone.battle_scene = _battle_scene_for(clone)
 	if clone.battle_scene == null:
 		return {"ok": false, "error": "battle_scene_missing"}
+	var runtime_assets := _write_runtime_assets(
+		clone, staging, published_destination, provided_images
+	)
+	if not runtime_assets.get("ok", false):
+		return runtime_assets
+	if failure_step == "after_runtime_assets":
+		return _injected_failure(failure_step)
 	if clone.modular_visual_profile != null:
-		var profile_path := destination.path_join("modular_visual_profile.tres")
+		var profile_path := staging.path_join("modular_visual_profile.tres")
 		var profile_error := ResourceSaver.save(clone.modular_visual_profile, profile_path)
 		if profile_error != OK:
 			return {"ok": false, "error": error_string(profile_error), "file": profile_path}
 		clone.modular_visual_profile = ResourceLoader.load(
-			profile_path, "", ResourceLoader.CACHE_MODE_IGNORE
+			profile_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 		) as ArenaModularVisualProfile
 		if clone.modular_visual_profile == null:
 			return {"ok": false, "error": "profile_reload_failed"}
+	if failure_step == "after_profile":
+		return _injected_failure(failure_step)
 	ArenaRuntimeBridge.sync_runtime_resources(clone)
-	var arena_path := destination.path_join("arena.tres")
-	var arena_error := ResourceSaver.save(clone, arena_path)
+	var expected_produced_fingerprint := ArenaSnapshotService.arena_fingerprint(clone)
+	var arena_path := staging.path_join("arena.tres")
+	var arena_error := ResourceSaver.save(
+		clone, arena_path, ResourceSaver.FLAG_RELATIVE_PATHS
+	)
 	if arena_error != OK:
 		return {"ok": false, "error": error_string(arena_error), "file": arena_path}
-	var reloaded := ResourceLoader.load(arena_path, "", ResourceLoader.CACHE_MODE_IGNORE) as ArenaDefinition
+	if not _relativize_bundle_references(arena_path, staging):
+		return {"ok": false, "error": "relative_reference_write_failed"}
+	if failure_step == "after_arena":
+		return _injected_failure(failure_step)
+	var reloaded := ResourceLoader.load(
+		arena_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaDefinition
 	if reloaded == null:
 		return {"ok": false, "error": "arena_reload_failed"}
-	ArenaRuntimeBridge.sync_runtime_resources(reloaded)
-	var produced_fingerprint := ArenaEditSession.fingerprint(reloaded.to_snapshot())
+	var produced_fingerprint := ArenaSnapshotService.arena_fingerprint(reloaded)
+	var gameplay_fingerprint := ArenaSnapshotService.gameplay_fingerprint(reloaded)
+	if produced_fingerprint != expected_produced_fingerprint \
+			or gameplay_fingerprint != ArenaSnapshotService.gameplay_fingerprint(arena):
+		return {
+			"ok": false,
+			"error": "staged_fingerprint_mismatch",
+			"expected_arena": expected_produced_fingerprint,
+			"actual_arena": produced_fingerprint,
+		}
 	var final_report := ArenaValidator.validate(reloaded, false)
 	if not final_report.is_valid():
 		return {"ok": false, "error": "produced_validation_failed", "validation": final_report}
 	var final_visual_report := ArenaVisualAssembler.inspect(reloaded)
 	if not final_visual_report.valid:
-		return {
-			"ok": false,
-			"error": "visual_assembly_failed",
-			"visual_report": final_visual_report,
-		}
-	var art_result := ArenaArtKitExporter.export_kit(
-		reloaded, destination.path_join("art_kit"), final_report, provided_images
-	)
-	if not bool(art_result.get("ok", false)):
-		return {"ok": false, "error": "art_kit_failed", "details": art_result}
-	var previews := _write_preview_images(reloaded, destination, provided_images)
-	if not bool(previews.get("ok", false)):
-		return previews
-	var report_data := final_report.to_dict()
-	report_data["generated_at"] = ""
-	report_data["production"] = {
-		"status": "SALLE_PRETE",
-		"source_fingerprint": str(production_plan.source_fingerprint),
-		"produced_fingerprint": produced_fingerprint,
-		"visual_assembly": final_visual_report.to_dict(),
-	}
-	if not _write_json(destination.path_join("validation_report.json"), report_data):
-		return {"ok": false, "error": "validation_write_failed"}
-	var configuration := {
-		"arena_path": arena_path,
-		"battle_scene": reloaded.battle_scene.resource_path,
-		"configuration": "full_run",
-		"heroes": [
-			"res://data/units/alliés/elfe.tres",
-			"res://data/units/alliés/mage.tres",
-			"res://data/units/alliés/Guerrier.tres",
-		],
-	}
-	if not _write_json(destination.path_join("test_configuration.json"), configuration):
-		return {"ok": false, "error": "test_configuration_write_failed"}
+		return {"ok": false, "error": "visual_assembly_failed", "visual_report": final_visual_report}
+	var art_result := {"ok": true, "files": []}
+	if compatibility_outputs:
+		art_result = ArenaArtKitExporter.export_kit(
+			reloaded, staging.path_join("art_kit"), final_report, provided_images
+		)
+		if not art_result.get("ok", false):
+			return {"ok": false, "error": "art_kit_failed", "details": art_result}
+	if failure_step == "after_art":
+		return _injected_failure(failure_step)
+	if compatibility_outputs:
+		var previews := _write_preview_images(reloaded, staging, provided_images)
+		if not previews.get("ok", false):
+			return previews
+		if not _write_compatibility_reports(
+			reloaded, staging, final_report, final_visual_report, produced_fingerprint
+		):
+			return {"ok": false, "error": "compatibility_report_write_failed"}
+	if failure_step == "after_preview":
+		return _injected_failure(failure_step)
+	if failure_step == "before_manifest":
+		return _injected_failure(failure_step)
 	var hashes := {}
-	for name in _output_names(reloaded):
+	for name in _output_names(reloaded, compatibility_outputs):
 		if name == MANIFEST_FILE:
 			continue
-		var path := destination.path_join(name)
+		var path := staging.path_join(name)
 		if FileAccess.file_exists(path):
 			hashes[name] = FileAccess.get_sha256(path)
 	var manifest := {
-		"version": 1,
+		"version": 2,
+		"studio_product_version": StudioVersion.PRODUCT_VERSION,
 		"generator_revision": GENERATOR_REVISION,
 		"generated_by": GENERATED_BY,
 		"arena_id": str(reloaded.arena_id),
-		"source_fingerprint": str(production_plan.source_fingerprint),
+		"source_fingerprint": ArenaSnapshotService.arena_fingerprint(arena),
+		"source_gameplay_fingerprint": ArenaSnapshotService.gameplay_fingerprint(arena),
 		"produced_fingerprint": produced_fingerprint,
+		"produced_gameplay_fingerprint": gameplay_fingerprint,
 		"battle_scene": reloaded.battle_scene.resource_path,
 		"files": hashes,
-		"art_kit": art_result.files,
+		"runtime_bundle": not compatibility_outputs,
+		"art_kit": art_result.get("files", []),
 		"visual_assembly": final_visual_report.to_dict(),
+		"runtime_assets": runtime_assets.get("files", []),
 	}
-	if not _write_json(destination.path_join(MANIFEST_FILE), manifest):
+	if not _write_json(staging.path_join(MANIFEST_FILE), manifest):
 		return {"ok": false, "error": "manifest_write_failed"}
-	var verified := ResourceLoader.load(arena_path, "", ResourceLoader.CACHE_MODE_IGNORE) as ArenaDefinition
-	if verified == null or ArenaEditSession.fingerprint(verified.to_snapshot()) != produced_fingerprint:
-		return {"ok": false, "error": "final_verification_failed"}
 	return {
 		"ok": true,
-		"status": "SALLE_PRETE",
-		"directory": destination,
+		"status": "STAGED",
+		"directory": staging,
 		"arena_path": arena_path,
 		"validation": final_report,
 		"manifest": manifest,
-		"recovery": recovery,
-		"created": production_plan.creates,
-		"modified": production_plan.modifies,
 		"resources_reloaded": true,
 		"direct_test_available": true,
 		"visual_report": final_visual_report,
+		"compatibility_outputs": compatibility_outputs,
 	}
 
 
@@ -233,10 +256,22 @@ static func _battle_scene_for(arena: ArenaDefinition) -> PackedScene:
 	return load(path) as PackedScene if ResourceLoader.exists(path) else null
 
 
-static func _output_names(arena: ArenaDefinition) -> Array[String]:
-	var result: Array[String] = [
-		"arena.tres", "thumbnail.png", "preview_logic.png", "preview_art.png",
-		"preview_game.png", "validation_report.json", "test_configuration.json",
+static func _output_names(
+		arena: ArenaDefinition,
+		compatibility_outputs := false
+	) -> Array[String]:
+	var result: Array[String] = ["arena.tres", MANIFEST_FILE]
+	if arena.modular_visual_profile != null:
+		result.append("modular_visual_profile.tres")
+	for property_name in ["background_path", "foreground_path", "occlusion_mask_path"]:
+		var value := str(arena.get(property_name))
+		if value.contains("/assets/"):
+			result.append("assets/%s" % value.get_file())
+	if not compatibility_outputs:
+		return result
+	result.append_array([
+		"thumbnail.png", "preview_logic.png", "preview_art.png", "preview_game.png",
+		"validation_report.json", "test_configuration.json",
 		"art_kit/map_reference.png", "art_kit/map_clean.png",
 		"art_kit/map_logic.png", "art_kit/map_grid.png",
 		"art_kit/map_game_preview.png", "art_kit/arena_definition.tres",
@@ -245,16 +280,46 @@ static func _output_names(arena: ArenaDefinition) -> Array[String]:
 		"art_kit/reference_walls.png", "art_kit/playable_mask.png",
 		"art_kit/void_mask.png", "art_kit/wall_mask.png",
 		"art_kit/foreground_guide.png", "art_kit/depth_guide.png",
-		"art_kit/art_brief.txt", "art_kit/art_brief.md",
-		"art_kit/arena_art_manifest.json", "art_kit/validation_report.json",
-		MANIFEST_FILE,
-	]
-	if arena.modular_visual_profile != null:
-		result.append("modular_visual_profile.tres")
+		"art_kit/alignment_markers.png", "art_kit/art_brief.txt",
+		"art_kit/art_brief.md", "art_kit/arena_art_manifest.json",
+		"art_kit/validation_report.json",
+	])
 	return result
 
 
-static func _write_preview_images(arena: ArenaDefinition, destination: String, provided: Dictionary) -> Dictionary:
+static func _write_runtime_assets(
+		clone: ArenaDefinition,
+		staging: String,
+		published_destination: String,
+		provided: Dictionary
+	) -> Dictionary:
+	var files := PackedStringArray()
+	var mappings := {
+		"background.png": "background_path",
+		"foreground.png": "foreground_path",
+		"occlusion.png": "occlusion_mask_path",
+	}
+	for file_name in mappings:
+		var supplied = provided.get(file_name)
+		if not supplied is Image or supplied.is_empty():
+			continue
+		var assets := staging.path_join("assets")
+		if DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(assets)) != OK:
+			return {"ok": false, "error": "runtime_assets_directory_failed"}
+		var staged_path := assets.path_join(file_name)
+		var save_error := (supplied as Image).save_png(ProjectSettings.globalize_path(staged_path))
+		if save_error != OK:
+			return {"ok": false, "error": error_string(save_error), "file": staged_path}
+		clone.set(mappings[file_name], published_destination.path_join("assets").path_join(file_name))
+		files.append("assets/%s" % file_name)
+	return {"ok": true, "files": files}
+
+
+static func _write_preview_images(
+		arena: ArenaDefinition,
+		destination: String,
+		provided: Dictionary
+	) -> Dictionary:
 	var fallbacks := {
 		"preview_logic.png": ArenaArtKitExporter._logic_image(arena, false),
 		"preview_art.png": ArenaArtKitExporter._background_image(arena),
@@ -273,46 +338,41 @@ static func _write_preview_images(arena: ArenaDefinition, destination: String, p
 	return {"ok": true}
 
 
-static func _create_recovery(production_plan: Dictionary) -> Dictionary:
-	var files: Array = production_plan.get("modifies", [])
-	if files.is_empty():
-		return {"ok": true, "directory": "", "files": []}
-	var recovery_id := "%s/%d" % [
-		str(production_plan.source_fingerprint).left(16), Time.get_ticks_usec(),
-	]
-	var destination := RECOVERY_ROOT.path_join(recovery_id)
-	var absolute := ProjectSettings.globalize_path(destination)
-	var error := DirAccess.make_dir_recursive_absolute(absolute)
-	if error != OK:
-		return {"ok": false, "error": error_string(error)}
-	var copied: Array[String] = []
-	var production_root := str(production_plan.get("destination", ""))
-	for path_value in files:
-		var path := str(path_value)
-		if not FileAccess.file_exists(path):
-			continue
-		var relative := path.trim_prefix(production_root.trim_suffix("/") + "/")
-		var target := destination.path_join(relative)
-		var target_absolute := ProjectSettings.globalize_path(target)
-		if DirAccess.make_dir_recursive_absolute(target_absolute.get_base_dir()) != OK:
-			return {"ok": false, "error": "recovery_subdirectory_failed", "file": path}
-		error = DirAccess.copy_absolute(
-			ProjectSettings.globalize_path(path), target_absolute
-		)
-		if error != OK:
-			return {"ok": false, "error": error_string(error), "file": path}
-		copied.append(target)
-	return {"ok": true, "directory": destination, "files": copied}
+static func _write_compatibility_reports(
+		arena: ArenaDefinition,
+		destination: String,
+		report: ArenaValidationReport,
+		visual_report: ArenaVisualAssemblyReport,
+		produced_fingerprint: String
+	) -> bool:
+	var report_data := report.to_dict()
+	report_data["generated_at"] = ""
+	report_data["production"] = {
+		"status": "SALLE_PRETE",
+		"produced_fingerprint": produced_fingerprint,
+		"visual_assembly": visual_report.to_dict(),
+	}
+	if not _write_json(destination.path_join("validation_report.json"), report_data):
+		return false
+	return _write_json(destination.path_join("test_configuration.json"), {
+		"arena_path": destination.path_join("arena.tres"),
+		"battle_scene": arena.battle_scene.resource_path,
+		"configuration": "full_run",
+		"heroes": [
+			"res://data/units/alliés/elfe.tres",
+			"res://data/units/alliés/mage.tres",
+			"res://data/units/alliés/Guerrier.tres",
+		],
+	})
 
 
 static func _valid_destination(path: String) -> bool:
-	return path.begins_with("res://") and not ".." in path \
-		and path != "res://" and not path.ends_with(".tres")
+	return not path.is_empty() and not ".." in path and not path.ends_with(".tres") \
+		and (path.begins_with("res://") or path.begins_with("user://"))
 
 
-static func _is_owned_manifest(manifest: Dictionary) -> bool:
-	return COMPATIBLE_GENERATORS.has(str(manifest.get("generated_by", ""))) \
-		and manifest.get("files", {}) is Dictionary
+static func _is_diagnostic_destination(path: String) -> bool:
+	return path.begins_with("res://artifacts/") or path.begins_with("user://artifacts/")
 
 
 static func _read_json(path: String) -> Dictionary:
@@ -329,3 +389,23 @@ static func _write_json(path: String, value: Dictionary) -> bool:
 	file.store_string(JSON.stringify(value, "  "))
 	file.close()
 	return true
+
+
+static func _relativize_bundle_references(arena_path: String, staging: String) -> bool:
+	# ResourceSaver keeps an absolute res:// path when the referenced Resource
+	# already owns one. Make bundle-local references portable before the first
+	# reload; this is still staging-only and therefore cannot expose partial work.
+	var text := FileAccess.get_file_as_string(arena_path)
+	if text.is_empty():
+		return false
+	text = text.replace(staging.trim_suffix("/") + "/", "")
+	var file := FileAccess.open(arena_path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(text)
+	file.close()
+	return true
+
+
+static func _injected_failure(step: String) -> Dictionary:
+	return {"ok": false, "error": "injected_failure", "failure_step": step}

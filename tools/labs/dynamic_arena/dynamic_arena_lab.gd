@@ -24,45 +24,9 @@ const BASE_CONFIG: WallConfig = preload("res://battle/dynamic_terrain/configs/wa
 const FIRE_CONFIG: WallConfig = preload("res://battle/dynamic_terrain/configs/wall_fire.tres")
 const ICE_CONFIG: WallConfig = preload("res://battle/dynamic_terrain/configs/wall_ice.tres")
 
-const WALL_CONFIGS := {
-	DynamicWall.WallVariant.BASE: BASE_CONFIG,
-	DynamicWall.WallVariant.FIRE: FIRE_CONFIG,
-	DynamicWall.WallVariant.ICE: ICE_CONFIG,
-}
-
-const TEXTURE_PATHS := {
-	DynamicCellState.Surface.STONE: "res://tools/labs/dynamic_arena/assets/normalized/stone.png",
-	DynamicCellState.Surface.WATER: "res://tools/labs/dynamic_arena/assets/normalized/water.png",
-	DynamicCellState.Surface.ICE: "res://tools/labs/dynamic_arena/assets/normalized/ice.png",
-	DynamicCellState.Surface.LAVA: "res://tools/labs/dynamic_arena/assets/normalized/lava.png",
-}
-
-const SURFACE_COLORS := {
-	DynamicCellState.Surface.STONE: Color("a8b5c3"),
-	DynamicCellState.Surface.WATER: Color("38c8ed"),
-	DynamicCellState.Surface.ICE: Color("c8f4ff"),
-	DynamicCellState.Surface.LAVA: Color("ff6537"),
-}
-
-const WALL_COLORS := {
-	DynamicWall.WallVariant.BASE: Color("d3b69e"),
-	DynamicWall.WallVariant.FIRE: Color("ff6b3b"),
-	DynamicWall.WallVariant.ICE: Color("a8e8ff"),
-}
-
-const SURFACE_ELEMENTS := {
-	DynamicCellState.Surface.WATER: WallInteractionResolver.WATER,
-	DynamicCellState.Surface.ICE: WallInteractionResolver.ICE,
-	DynamicCellState.Surface.LAVA: WallInteractionResolver.FIRE,
-}
-
-const SURFACE_TERRAIN_IDS := {
-	DynamicCellState.Surface.STONE: &"stone",
-	DynamicCellState.Surface.WATER: &"water",
-	DynamicCellState.Surface.ICE: &"ice",
-	DynamicCellState.Surface.LAVA: &"lava",
-	DynamicCellState.Surface.VOID: &"void",
-}
+# BASE_CONFIG/FIRE_CONFIG/ICE_CONFIG restent des alias API historiques pour les
+# tests du Lab. Les choix effectifs, textures, couleurs et mappings proviennent
+# tous des catalogues partages Arena Studio.
 
 @onready var floor_layer: Node2D = $FloorLayer
 @onready var surface_vfx_layer: Node2D = $SurfaceVFXLayer
@@ -384,7 +348,7 @@ func set_cell_surface(cell: Vector2i, surface: int) -> bool:
 		return false
 	var before := _document_snapshot()
 	var wall := get_wall(cell)
-	var element: StringName = SURFACE_ELEMENTS.get(surface, WallInteractionResolver.NONE)
+	var element := ArenaTerrainRegistry.interaction_element_for_lab_surface(surface)
 	if wall != null and element != WallInteractionResolver.NONE:
 		var result := WallInteractionResolver.resolve(wall, element)
 		if bool(result.handled):
@@ -484,7 +448,8 @@ func spawn_wall(cell: Vector2i, wall_config: WallConfig, source = null) -> Dynam
 
 
 func place_wall(cell: Vector2i, wall_variant: int) -> DynamicWall:
-	var wall_config := WALL_CONFIGS.get(wall_variant) as WallConfig
+	var wall_definition := ArenaCatalogService.wall_for_variant(wall_variant)
+	var wall_config := wall_definition.wall_config if wall_definition != null else null
 	return spawn_wall(cell, wall_config)
 
 
@@ -509,7 +474,8 @@ func damage_wall(cell: Vector2i, amount: int, element: StringName = &"NONE") -> 
 ## Future API Battle : remplacement atomique, sans retrait du bloqueur.
 func transform_wall(cell: Vector2i, wall_variant: int) -> bool:
 	var wall := get_wall(cell)
-	var wall_config := WALL_CONFIGS.get(wall_variant) as WallConfig
+	var wall_definition := ArenaCatalogService.wall_for_variant(wall_variant)
+	var wall_config := wall_definition.wall_config if wall_definition != null else null
 	if wall == null or wall_config == null:
 		return false
 	var before := _document_snapshot()
@@ -713,10 +679,14 @@ func _recalculate_path(synchronize_grid := true) -> void:
 
 
 func _load_textures() -> void:
-	for surface in TEXTURE_PATHS:
-		var texture := load(TEXTURE_PATHS[surface]) as Texture2D
+	for surface in [
+		DynamicCellState.Surface.STONE, DynamicCellState.Surface.WATER,
+		DynamicCellState.Surface.ICE, DynamicCellState.Surface.LAVA,
+	]:
+		var definition := ArenaCatalogService.terrain_for_lab_surface(surface)
+		var texture := definition.base_texture if definition != null else null
 		if texture == null:
-			push_error("Tuile normalisee absente : %s" % str(TEXTURE_PATHS[surface]))
+			push_error("Tuile du catalogue absente pour la surface : %s" % surface)
 		_textures[surface] = texture
 
 
@@ -822,7 +792,7 @@ func _update_toolbar() -> void:
 		cell_states.surface_name(selected_surface),
 	]
 	selected_state_label.add_theme_color_override(
-		"font_color", WALL_COLORS.get(selected_wall_variant, Color.WHITE)
+		"font_color", ArenaWallRegistry.color_for_variant(selected_wall_variant)
 	)
 	if not grid.is_valid(hovered_cell):
 		hovered_label.text = "Cellule survolee : —"
@@ -1003,9 +973,9 @@ func _clear_runtime() -> void:
 
 
 func _surface_for_terrain(terrain_id: StringName, cell_type: int) -> int:
-	for surface in SURFACE_TERRAIN_IDS:
-		if SURFACE_TERRAIN_IDS[surface] == terrain_id:
-			return surface
+	var catalog_surface := ArenaTerrainRegistry.lab_surface_for(terrain_id)
+	if catalog_surface >= 0:
+		return catalog_surface
 	match cell_type:
 		GridData.CellType.ICE:
 			return DynamicCellState.Surface.ICE
@@ -1019,7 +989,7 @@ func _surface_for_terrain(terrain_id: StringName, cell_type: int) -> int:
 func _sync_surface_document(cell: Vector2i, surface: int) -> void:
 	if _syncing_document or working_arena == null:
 		return
-	var terrain_id: StringName = SURFACE_TERRAIN_IDS.get(surface, &"stone")
+	var terrain_id := ArenaTerrainRegistry.terrain_id_for_lab_surface(surface)
 	ArenaDynamicEditingService.paint_terrain(working_arena, cell, terrain_id)
 
 

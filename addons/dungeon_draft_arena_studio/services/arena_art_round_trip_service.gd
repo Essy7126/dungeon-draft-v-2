@@ -3,27 +3,37 @@ class_name ArenaArtRoundTripService
 extends RefCounted
 
 const MANIFEST_FILE := "arena_art_manifest.json"
-const SCHEMA_VERSION := 2
+const SCHEMA_VERSION := 3
+const MINIMUM_SCHEMA_VERSION := 2
 const REQUIRED_IMAGES := [
 	"reference_clean.png", "reference_grid.png", "reference_coordinates.png",
 	"reference_gameplay.png", "reference_walls.png", "playable_mask.png",
 	"void_mask.png", "wall_mask.png", "foreground_guide.png", "depth_guide.png",
 ]
+const V3_REQUIRED_IMAGES := ["alignment_markers.png"]
 
 
 static func validate_kit(directory: String) -> Dictionary:
 	var manifest_path := directory.path_join(MANIFEST_FILE)
 	if not FileAccess.file_exists(manifest_path):
-		return _failure("MANIFEST_MISSING", "Le kit ne contient pas de manifeste 2.0.", directory)
+		return _failure("MANIFEST_MISSING", "Le kit ne contient pas de manifeste artistique.", directory)
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
 	if not parsed is Dictionary:
 		return _failure("MANIFEST_INVALID", "Le manifeste art n'est pas un JSON valide.", directory)
-	var manifest := parsed as Dictionary
-	if int(manifest.get("schema_version", 0)) != SCHEMA_VERSION:
+	var original_schema := int((parsed as Dictionary).get("schema_version", 0))
+	if original_schema < MINIMUM_SCHEMA_VERSION or original_schema > SCHEMA_VERSION:
 		return _failure("SCHEMA_MISMATCH", "Version de manifeste incompatible.", directory)
+	var manifest := migrate_manifest(parsed as Dictionary)
 	var errors := PackedStringArray()
 	var files := manifest.get("files", {}) as Dictionary
-	for file_name in REQUIRED_IMAGES:
+	var required := REQUIRED_IMAGES.duplicate()
+	if original_schema >= 3:
+		required.append_array(V3_REQUIRED_IMAGES)
+	var resolution_contract := ArenaArtResolutionContract.from_dict(
+		manifest.get("resolution_contract", {}) as Dictionary
+	)
+	var expected_size := resolution_contract.reference_export_size
+	for file_name in required:
 		var path := directory.path_join(file_name)
 		if not FileAccess.file_exists(path):
 			errors.append("Fichier absent : %s" % file_name)
@@ -33,14 +43,13 @@ static func validate_kit(directory: String) -> Dictionary:
 		if expected.is_empty() or actual != expected:
 			errors.append("Checksum invalide : %s" % file_name)
 		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-		var expected_size := manifest.get("resolution", []) as Array
-		if image == null or expected_size.size() < 2 \
-				or image.get_size() != Vector2i(int(expected_size[0]), int(expected_size[1])):
+		if image == null or image.get_size() != expected_size:
 			errors.append("Resolution incompatible : %s" % file_name)
 	return {
 		"ok": errors.is_empty(),
 		"errors": errors,
 		"manifest": manifest,
+		"original_schema_version": original_schema,
 		"directory": directory,
 		"fallback": str(manifest.get("fallback_background_path", "")),
 	}
@@ -72,7 +81,9 @@ static func inspect_reimport(
 	var expected_fingerprint := str(manifest.get(
 		"arena_fingerprint", manifest.get("arena_snapshot_sha256", "")
 	))
-	var actual_fingerprint := ArenaEditSession.fingerprint(arena.to_snapshot())
+	var actual_fingerprint := ArenaSnapshotService.arena_fingerprint(arena) \
+		if int(manifest.get("schema_version", 0)) >= 3 \
+		else ArenaEditSession.fingerprint(arena.to_snapshot())
 	if expected_fingerprint.is_empty() or actual_fingerprint != expected_fingerprint:
 		return _failure(
 			"FINGERPRINT_MISMATCH",
@@ -92,8 +103,10 @@ static func inspect_reimport(
 	if not FileAccess.file_exists(source_image):
 		return _failure("ARTWORK_MISSING", "Le background artistique attendu est absent : %s" % image_file, directory, arena.background_path)
 	var artwork := Image.load_from_file(ProjectSettings.globalize_path(source_image))
-	var resolution := manifest.get("resolution", []) as Array
-	var expected_size := _vector2i(resolution)
+	var resolution_contract := ArenaArtResolutionContract.from_dict(
+		manifest.get("resolution_contract", {}) as Dictionary
+	)
+	var expected_size := resolution_contract.reference_export_size
 	if artwork == null or artwork.is_empty() or artwork.get_size() != expected_size:
 		return _failure("RESOLUTION_MISMATCH", "Le decor a ete redimensionne ou recadre.", directory, arena.background_path).merged({
 			"expected_resolution": expected_size,
@@ -101,7 +114,6 @@ static func inspect_reimport(
 		}, true)
 	for optional_name in [
 		str(manifest.get("expected_foreground_filename", "foreground.png")),
-		str(manifest.get("expected_occlusion_filename", "occlusion.png")),
 	]:
 		var optional_path := directory.path_join(optional_name)
 		if not FileAccess.file_exists(optional_path):
@@ -118,7 +130,10 @@ static func inspect_reimport(
 		"ok": true,
 		"source_image": source_image,
 		"foreground_source": directory.path_join(str(manifest.get("expected_foreground_filename", "foreground.png"))),
-		"occlusion_source": directory.path_join(str(manifest.get("expected_occlusion_filename", "occlusion.png"))),
+		"occlusion_source": "",
+		"occlusion_policy": str(manifest.get(
+			"occlusion_policy", "ART_GUIDE_ONLY_FOREGROUND_POLYGON_RUNTIME"
+		)),
 		"calibration": {
 			"grid_origin": arena.grid_origin,
 			"axis_x": arena.axis_x,
@@ -138,48 +153,35 @@ static func apply_reimport(
 		image_file := "background.png",
 		hybrid_floor_policy := -1
 	) -> Dictionary:
-	var inspection := inspect_reimport(arena, directory, image_file)
-	if not inspection.get("ok", false):
-		return inspection
-	if not destination_path.begins_with("res://") or destination_path.contains("..") \
-			or destination_path.get_extension().to_lower() != "png":
-		return _failure("DESTINATION_INVALID", "La destination PNG n'est pas autorisee.", directory, arena.background_path)
-	var absolute := ProjectSettings.globalize_path(destination_path)
-	if DirAccess.make_dir_recursive_absolute(absolute.get_base_dir()) != OK:
-		return _failure("DIRECTORY_FAILED", "Le dossier de destination ne peut pas etre cree.", directory, arena.background_path)
-	var copy_error := DirAccess.copy_absolute(
-		ProjectSettings.globalize_path(str(inspection.get("source_image", ""))), absolute
+	var plan := ArenaArtImportTransaction.prepare(arena, directory, image_file)
+	if not bool(plan.get("ok", false)):
+		return plan
+	# Cette methode est l'API historique d'application : son appel constitue la
+	# confirmation du client. L'UI 2.0 utilise prepare/commit et expose la gate.
+	return ArenaArtImportTransaction.commit(
+		arena, plan, destination_path, true, hybrid_floor_policy
 	)
-	if copy_error != OK:
-		return _failure("COPY_FAILED", error_string(copy_error), directory, arena.background_path)
-	arena.background_path = destination_path
-	var foreground_source := str(inspection.get("foreground_source", ""))
-	if FileAccess.file_exists(foreground_source):
-		var foreground_destination := destination_path.get_base_dir().path_join("foreground.png")
-		if DirAccess.copy_absolute(
-				ProjectSettings.globalize_path(foreground_source),
-				ProjectSettings.globalize_path(foreground_destination)
-			) == OK:
-			arena.foreground_path = foreground_destination
-	var occlusion_source := str(inspection.get("occlusion_source", ""))
-	if FileAccess.file_exists(occlusion_source):
-		var occlusion_destination := destination_path.get_base_dir().path_join("occlusion.png")
-		if DirAccess.copy_absolute(
-				ProjectSettings.globalize_path(occlusion_source),
-				ProjectSettings.globalize_path(occlusion_destination)
-			) == OK:
-			arena.occlusion_mask_path = occlusion_destination
-	arena.visual_mode = ArenaDefinition.VisualMode.HYBRID
-	if arena.modular_visual_profile == null:
-		arena.modular_visual_profile = ArenaModularVisualProfile.new()
-		arena.modular_visual_profile.theme_id = arena.theme_id
-	if hybrid_floor_policy >= ArenaModularVisualProfile.HybridFloorPolicy.NONE:
-		arena.modular_visual_profile.hybrid_floor_policy = clampi(
-			hybrid_floor_policy,
-			ArenaModularVisualProfile.HybridFloorPolicy.NONE,
-			ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
+
+
+static func migrate_manifest(source: Dictionary) -> Dictionary:
+	var manifest := source.duplicate(true)
+	var version := int(manifest.get("schema_version", 0))
+	if version == 2:
+		var resolution := _vector2i(manifest.get("resolution", [1280, 720]))
+		var contract := ArenaArtResolutionContract.new()
+		contract.native_art_size = resolution
+		contract.source_image_size = _vector2i(
+			manifest.get("source_image_size", [resolution.x, resolution.y])
 		)
-	return inspection.merged({"destination_path": destination_path}, true)
+		contract.reference_export_size = resolution
+		manifest["resolution_contract"] = contract.to_dict()
+		manifest["studio_product_version"] = "historical_1_3_1"
+		manifest["gameplay_fingerprint"] = ""
+		manifest["occlusion_policy"] = "ART_GUIDE_ONLY_FOREGROUND_POLYGON_RUNTIME"
+		manifest["original_schema_version"] = 2
+		# Garder schema_version=2 pour choisir l'algorithme de fingerprint
+		# historique pendant le round-trip.
+	return manifest
 
 
 static func _failure(

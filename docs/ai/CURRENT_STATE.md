@@ -78,3 +78,10 @@ au `StudioProjectContext`, au dirty state, aux générations et à l’historiqu
 hors production, publie par transaction vérifiée et projette les effets via les
 services runtime isolés. RUN_SPECIFIC et les reliques restent explicitement
 différés. Cette section candidate ne promeut pas le worktree en CURRENT.
+# Candidat local Arena Studio 2.0 — 2026-08-10
+
+Statut : **WORKTREE_CANDIDATE**, pas CURRENT. Base : `main` à `5b7458becbaae6d16c2989f84fb12b60f3b4eb9c`. Le patch local Arena Studio 2.0.0 est en validation finale ; il n’est ni committé ni poussé. La version poussée et la candidate locale doivent rester distinguées.
+
+Le dossier `res://data/arenas/produced/room_01_forest/` est gelé comme `UNREFERENCED_INCOMPLETE_PRODUCTION_BUNDLE` tant qu’aucune référence n’est démontrée. L’audit gameplay v2.1 est **HISTORIQUE** ; aucune règle de gameplay ne change dans ce patch.
+
+Preuves Arena Studio 2.0 : dernier global complet 889/902 et 54 432/54 489 assertions avec exactement les 13 échecs historiques ; après la correction responsive finale, UX 10/10 (87), pipeline visuel 12/12 (130), responsive 18/18 (980), Studio 2.0 12/12 (423) et captures réelles multi-résolution PASS. Les deux répétitions globales Windows post-correction ont été interrompues au niveau processus sans nouvel échec d’assertion ; voir `docs/tools/dungeon_draft_studio/arena_production_hardening_regression_report.md`.

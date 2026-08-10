@@ -297,6 +297,69 @@ func test_produce_without_integrating_requires_no_run_and_changes_no_run_data() 
 	assert_null(result.reloaded_run)
 
 
+func test_combined_transaction_failure_before_attachment_leaves_run_and_bundle_unchanged() -> void:
+	var directory := ROOT.path_join("atomic_before_attachment")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
+	var target := _gameplay_room(load(MAIN_ROOM_PATH) as RoomData, "Atomic before")
+	var target_path := directory.path_join("room.tres")
+	assert_eq(ResourceSaver.save(target, target_path), OK)
+	var run_data := _run_fixture(
+		ResourceLoader.load(target_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP),
+		RunData.RoomFlowMode.SINGLE_ENCOUNTER, 1, "Atomic Before Run"
+	)
+	var run_path := directory.path_join("run.tres")
+	assert_eq(ResourceSaver.save(run_data, run_path), OK)
+	var run_before := FileAccess.get_sha256(run_path)
+	var room_before := FileAccess.get_sha256(target_path)
+	var production_destination := directory.path_join("production")
+	var result := ArenaIntegrationService.integrate_with_options(
+		_arena_fixture("atomic_before"),
+		ResourceLoader.load(run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP),
+		ArenaProductionAttachmentService.UPDATE, 0, production_destination,
+		null, {}, {"failure_step": "before_attachment"}
+	)
+	assert_false(result.ok, str(result))
+	assert_eq(result.status, &"INTEGRATION_ROLLED_BACK")
+	assert_true(result.production_rollback.ok, str(result.production_rollback))
+	assert_false(DirAccess.dir_exists_absolute(
+		ProjectSettings.globalize_path(production_destination)
+	))
+	assert_eq(FileAccess.get_sha256(run_path), run_before)
+	assert_eq(FileAccess.get_sha256(target_path), room_before)
+
+
+func test_combined_transaction_failure_after_attachment_restores_room_run_and_bundle() -> void:
+	var directory := ROOT.path_join("atomic_after_attachment")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
+	var target := _gameplay_room(load(MAIN_ROOM_PATH) as RoomData, "Atomic after")
+	var target_path := directory.path_join("room.tres")
+	assert_eq(ResourceSaver.save(target, target_path), OK)
+	var run_data := _run_fixture(
+		ResourceLoader.load(target_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP),
+		RunData.RoomFlowMode.SINGLE_ENCOUNTER, 1, "Atomic After Run"
+	)
+	var run_path := directory.path_join("run.tres")
+	assert_eq(ResourceSaver.save(run_data, run_path), OK)
+	var run_before := FileAccess.get_sha256(run_path)
+	var room_before := FileAccess.get_sha256(target_path)
+	var production_destination := directory.path_join("production")
+	var result := ArenaIntegrationService.integrate_with_options(
+		_arena_fixture("atomic_after"),
+		ResourceLoader.load(run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP),
+		ArenaProductionAttachmentService.UPDATE, 0, production_destination,
+		null, {}, {"failure_step": "after_attachment"}
+	)
+	assert_false(result.ok, str(result))
+	assert_eq(result.status, &"INTEGRATION_ROLLED_BACK")
+	assert_true(result.attachment_rollback.ok, str(result.attachment_rollback))
+	assert_true(result.production_rollback.ok, str(result.production_rollback))
+	assert_false(DirAccess.dir_exists_absolute(
+		ProjectSettings.globalize_path(production_destination)
+	))
+	assert_eq(FileAccess.get_sha256(run_path), run_before)
+	assert_eq(FileAccess.get_sha256(target_path), room_before)
+
+
 func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
 	var context := StudioProjectContext.new()
 	assert_true(context.initialize(MAIN_RUN_PATH, &"elf").ok)

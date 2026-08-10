@@ -102,7 +102,7 @@ func _build_shared_history_bar() -> Control:
 	bar.add_theme_constant_override("v_separation", 4)
 	panel.add_child(bar)
 	studio_title_label = Label.new()
-	studio_title_label.text = "DUNGEON DRAFT STUDIO 2.0"
+	studio_title_label.text = StudioVersion.display_name()
 	studio_title_label.custom_minimum_size.x = 224
 	studio_title_label.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
 	studio_title_label.add_theme_font_size_override("font_size", 16)
@@ -453,7 +453,7 @@ func _apply_toolbar_responsive() -> void:
 	if studio_title_label == null or detach_button == null:
 		return
 	var compact := size.x < 1500.0
-	studio_title_label.text = "DD STUDIO 2.0" if compact else "DUNGEON DRAFT STUDIO 2.0"
+	studio_title_label.text = StudioVersion.display_name(compact)
 	studio_title_label.custom_minimum_size.x = 104 if compact else 224
 	document_label.visible = not compact
 	undo_button.text = "↶" if compact else "Annuler"

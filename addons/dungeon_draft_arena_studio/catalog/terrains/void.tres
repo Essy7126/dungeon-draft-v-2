@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ArenaTerrainDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_terrain_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"void"
+display_name = "VOID"
+cell_type = 2
+walkable = false
+editor_color = Color(0.0627451, 0.0901961, 0.133333, 1)
+dynamic_catalog = true
+lab_surface = 4

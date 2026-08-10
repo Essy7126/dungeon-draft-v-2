@@ -1,0 +1,200 @@
+{
+	"animations": {
+		"attack": {
+			"cell_size": [
+				448,
+				672
+			],
+			"retained_frames": 18,
+			"retained_indices": [
+				0,
+				2,
+				4,
+				6,
+				8,
+				10,
+				12,
+				14,
+				16,
+				18,
+				20,
+				22,
+				24,
+				26,
+				28,
+				30,
+				32,
+				34
+			],
+			"source": "res://assets/characters/Achilles/attack.png",
+			"source_audit": {
+				"empty_frames": [],
+				"exact_duplicates": [],
+				"has_alpha": true,
+				"internal_margin_ranges": {
+					"bottom": [
+						42,
+						43
+					],
+					"left": [
+						0,
+						112
+					],
+					"right": [
+						10,
+						65
+					],
+					"top": [
+						0,
+						136
+					]
+				},
+				"opaque_foot_y_range": [
+					628,
+					629
+				]
+			},
+			"source_frames": 36,
+			"source_size": [
+				2688,
+				4032
+			],
+			"uniform_scale": 0.218803418803419
+		},
+		"idle": {
+			"cell_size": [
+				268,
+				612
+			],
+			"retained_frames": 12,
+			"retained_indices": [
+				0,
+				3,
+				6,
+				9,
+				12,
+				15,
+				18,
+				21,
+				24,
+				27,
+				30,
+				33
+			],
+			"source": "res://assets/characters/Achilles/idle.png",
+			"source_audit": {
+				"empty_frames": [],
+				"exact_duplicates": [],
+				"has_alpha": true,
+				"internal_margin_ranges": {
+					"bottom": [
+						8,
+						8
+					],
+					"left": [
+						1,
+						12
+					],
+					"right": [
+						2,
+						17
+					],
+					"top": [
+						1,
+						18
+					]
+				},
+				"opaque_foot_y_range": [
+					603,
+					603
+				]
+			},
+			"source_frames": 36,
+			"source_size": [
+				1608,
+				3672
+			],
+			"uniform_scale": 0.214765100671141
+		},
+		"walk": {
+			"cell_size": [
+				316,
+				696
+			],
+			"retained_frames": 18,
+			"retained_indices": [
+				0,
+				2,
+				4,
+				6,
+				8,
+				10,
+				12,
+				14,
+				16,
+				18,
+				20,
+				22,
+				24,
+				26,
+				28,
+				30,
+				32,
+				34
+			],
+			"source": "res://assets/characters/Achilles/walk.png",
+			"source_audit": {
+				"empty_frames": [],
+				"exact_duplicates": [],
+				"has_alpha": true,
+				"internal_margin_ranges": {
+					"bottom": [
+						1,
+						91
+					],
+					"left": [
+						22,
+						46
+					],
+					"right": [
+						1,
+						25
+					],
+					"top": [
+						8,
+						55
+					]
+				},
+				"opaque_foot_y_range": [
+					604,
+					694
+				]
+			},
+			"source_frames": 36,
+			"source_size": [
+				1896,
+				4176
+			],
+			"uniform_scale": 0.197530864197531
+		}
+	},
+	"grid": [
+		6,
+		6
+	],
+	"normalization": {
+		"godot_node_foot_anchor": [
+			0,
+			0
+		],
+		"output_frame_size": [
+			128,
+			160
+		],
+		"processed_foot_anchor": [
+			64,
+			144
+		],
+		"reference_character_height": 128.0
+	}
+}

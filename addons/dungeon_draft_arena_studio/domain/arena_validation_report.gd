@@ -51,6 +51,13 @@ func is_valid() -> bool:
 
 func verdict() -> String:
 	if not is_valid():
+		return "ARENE INVALIDE — %d ERREUR(S) BLOQUANTE(S)" % error_count()
+	return "ARENE VALIDE — %d POINT(S) A VERIFIER" % warning_count() \
+		if warning_count() > 0 else "ARENE VALIDE"
+
+
+func technical_verdict() -> String:
+	if not is_valid():
 		return "ARENA_INVALID"
 	return "ARENA_VALID_WITH_WARNINGS" if warning_count() > 0 else "ARENA_VALID"
 
@@ -60,6 +67,7 @@ func to_dict() -> Dictionary:
 		"arena_id": str(arena_id),
 		"generated_at": generated_at,
 		"verdict": verdict(),
+		"technical_verdict": technical_verdict(),
 		"metrics": metrics.duplicate(true),
 		"errors": error_count(),
 		"warnings": warning_count(),

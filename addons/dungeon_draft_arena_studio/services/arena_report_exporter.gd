@@ -21,8 +21,11 @@ static func export_report(
 	definition["runtime_entry"] = arena.battle_scene.resource_path \
 		if arena.battle_scene != null else ""
 	definition["godot_version"] = Engine.get_version_info().get("string", "unknown")
+	definition.merge(StudioVersion.metadata("arena_report"), true)
+	var report_data := report.to_dict()
+	report_data.merge(StudioVersion.metadata("arena_validation"), true)
 	var outputs := {
-		"validation_report.json": JSON.stringify(report.to_dict(), "  "),
+		"validation_report.json": JSON.stringify(report_data, "  "),
 		"validation_report.md": report.to_markdown(),
 		"arena_definition.json": JSON.stringify(definition, "  "),
 		"test_log.txt": test_log,
