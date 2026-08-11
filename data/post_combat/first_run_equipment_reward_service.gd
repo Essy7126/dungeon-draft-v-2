@@ -14,7 +14,11 @@ var _applied_report_ids: Dictionary = {}
 var _selected_by_report: Dictionary = {}
 
 
-func reset(catalog: ItemCatalog = null, run_seed: int = 0) -> bool:
+func reset(
+		catalog: ItemCatalog = null,
+		run_seed: int = 0,
+		pool_tag: StringName = POOL_TAG
+	) -> bool:
 	_catalog = catalog
 	_deck.clear()
 	_eligible_ids.clear()
@@ -27,7 +31,7 @@ func reset(catalog: ItemCatalog = null, run_seed: int = 0) -> bool:
 		return false
 	for definition in _catalog.get_definitions():
 		if definition != null and definition.is_equippable() \
-				and definition.tags.has(POOL_TAG):
+				and definition.tags.has(pool_tag):
 			_eligible_ids.append(definition.item_id)
 	_eligible_ids.sort_custom(func(a: StringName, b: StringName) -> bool:
 		return str(a) < str(b)

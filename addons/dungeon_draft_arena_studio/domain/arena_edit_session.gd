@@ -10,6 +10,8 @@ var saved_snapshot := {}
 var source_fingerprint := ""
 var source_is_visual := false
 var is_new_document := false
+var topology_generation := 0
+var topology_hash := ""
 var history := StudioHistoryController.new()
 var editor_state := {
 	"pivot_mode": "center",
@@ -17,6 +19,7 @@ var editor_state := {
 	"snap_enabled": true,
 	"fine_factor": 0.1,
 	"layers": {},
+	"accepted_design_warnings": [],
 }
 
 
@@ -43,6 +46,10 @@ func open(
 		working_arena = null
 		return false
 	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	topology_generation = 0
+	topology_hash = str(
+		ArenaTopologySignatureService.build(working_arena).topology_hash
+	)
 	saved_snapshot = working_arena.to_snapshot().duplicate(true)
 	source_fingerprint = ArenaSerializer.visual_calibration_fingerprint(source_path) \
 		if source_is_visual else fingerprint(source.to_snapshot())
@@ -57,15 +64,23 @@ func open(
 
 
 func apply_snapshot(snapshot: Dictionary) -> void:
+	var before_hash := topology_hash
 	if working_arena == null:
 		working_arena = ArenaDefinition.new()
 	working_arena.restore_snapshot(snapshot)
 	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	_update_topology_generation(before_hash)
 
 
 func commit(action_name: String, before: Dictionary, after: Dictionary) -> bool:
 	var recorded := history.record(action_name, before, after, true)
 	if recorded:
+		var before_topology := ArenaTopologySignatureService.from_snapshot(before)
+		var after_topology := ArenaTopologySignatureService.from_snapshot(after)
+		if before_topology.topology_hash != after_topology.topology_hash:
+			topology_generation += 1
+			topology_hash = str(after_topology.topology_hash)
+		_invalidate_warning_acceptances(fingerprint(after))
 		is_new_document = is_new_document and source_path.is_empty()
 	return recorded
 
@@ -112,3 +127,73 @@ func has_external_conflict() -> bool:
 
 static func fingerprint(snapshot: Dictionary) -> String:
 	return JSON.stringify(snapshot).sha256_text()
+
+
+func topology_invalidation_report() -> Dictionary:
+	return {
+		"topology_generation": topology_generation,
+		"topology_hash": topology_hash,
+		"document_dirty": is_dirty(),
+		"validation_obsolete": is_dirty(),
+		"preview_art_obsolete": is_dirty(),
+		"preview_game_obsolete": is_dirty(),
+		"runtime_test_obsolete": is_dirty(),
+		"integration_certificate_obsolete": is_dirty(),
+		"production_plan_obsolete": is_dirty(),
+	}
+
+
+func accept_design_warning(
+		issue: Dictionary,
+		justification: String
+	) -> Dictionary:
+	var reason := justification.strip_edges()
+	if working_arena == null or reason.is_empty():
+		return {}
+	var record := {
+		"warning_key": ArenaIntegrationGatePolicy.warning_key(issue),
+		"code": str(issue.get("code", "warning")),
+		"cell": issue.get("cell", null),
+		"subject_id": str(issue.get("subject_id", "")),
+		"arena_fingerprint": str(issue.get(
+			"arena_fingerprint", current_fingerprint()
+		)),
+		"justification": reason,
+		"accepted_at": Time.get_datetime_string_from_system(true),
+	}
+	var records: Array = editor_state.get("accepted_design_warnings", [])
+	records = records.filter(func(value):
+		return str((value as Dictionary).get("warning_key", "")) \
+			!= str(record.warning_key) \
+			or str((value as Dictionary).get("arena_fingerprint", "")) \
+			!= str(record.arena_fingerprint)
+	)
+	records.append(record)
+	editor_state["accepted_design_warnings"] = records
+	return record
+
+
+func accepted_design_warnings(for_fingerprint := "") -> Array[Dictionary]:
+	var current := for_fingerprint if not for_fingerprint.is_empty() \
+		else current_fingerprint()
+	var result: Array[Dictionary] = []
+	for value in editor_state.get("accepted_design_warnings", []):
+		var record := value as Dictionary
+		if str(record.get("arena_fingerprint", "")) == current:
+			result.append(record.duplicate(true))
+	return result
+
+
+func _update_topology_generation(before_hash: String) -> void:
+	var current := ArenaTopologySignatureService.build(working_arena)
+	topology_hash = str(current.topology_hash)
+	if not before_hash.is_empty() and before_hash != topology_hash:
+		topology_generation += 1
+	_invalidate_warning_acceptances(current_fingerprint())
+
+
+func _invalidate_warning_acceptances(current: String) -> void:
+	var records: Array = editor_state.get("accepted_design_warnings", [])
+	editor_state["accepted_design_warnings"] = records.filter(func(value):
+		return str((value as Dictionary).get("arena_fingerprint", "")) == current
+	)

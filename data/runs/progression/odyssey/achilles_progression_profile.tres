@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CharacterProgressionProfile" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://data/runs/content/character_progression_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="3_discipline_type"]
+[ext_resource type="Resource" path="res://data/spells/achilles/spear_thrust.tres" id="4_spear"]
+[ext_resource type="Resource" path="res://data/spells/achilles/advance.tres" id="5_advance"]
+[ext_resource type="Resource" path="res://data/spells/achilles/sweep.tres" id="6_sweep"]
+[ext_resource type="Resource" path="res://data/spells/achilles/guard.tres" id="7_guard"]
+[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/spear.tres" id="8_spear_discipline"]
+[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/advance.tres" id="9_advance_discipline"]
+[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/sweep.tres" id="10_sweep_discipline"]
+[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/guard.tres" id="11_guard_discipline"]
+
+[resource]
+script = ExtResource("1_profile")
+character_id = &"achilles"
+active_spell_slots = 4
+spells = Array[ExtResource("2_spell_type")]([ExtResource("4_spear"), ExtResource("5_advance"), ExtResource("6_sweep"), ExtResource("7_guard")])
+disciplines = Array[ExtResource("3_discipline_type")]([ExtResource("8_spear_discipline"), ExtResource("9_advance_discipline"), ExtResource("10_sweep_discipline"), ExtResource("11_guard_discipline")])

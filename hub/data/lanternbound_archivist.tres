@@ -1,14 +1,15 @@
-[gd_resource type="Resource" script_class="LanternboundArchivistData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="LanternboundArchivistData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://hub/lanternbound_archivist_data.gd" id="1_data"]
 [ext_resource type="Script" path="res://data/runs/run_data.gd" id="2_run_type"]
 [ext_resource type="Resource" path="res://data/runs/first_run.tres" id="3_main_run"]
 [ext_resource type="Resource" path="res://data/runs/fixed_trio_prototype_run.tres" id="4_test_run"]
+[ext_resource type="Resource" path="res://data/runs/odyssey.tres" id="5_odyssey_run"]
 
 [resource]
 script = ExtResource("1_data")
 display_name = "Lanternbound Archivist"
 dialogue_text = "Au-delà de cette porte, le chemin change à chaque passage.\nPrépare ton groupe. Lorsque tu seras prêt, je consignerai votre départ."
 trade_prototype_text = "Les registres d'échange sont encore scellés. Ce prototype valide uniquement l'ouverture, la fermeture et le verrouillage du déplacement."
-available_runs = Array[ExtResource("2_run_type")]([ExtResource("3_main_run"), ExtResource("4_test_run")])
+available_runs = Array[ExtResource("2_run_type")]([ExtResource("3_main_run"), ExtResource("4_test_run"), ExtResource("5_odyssey_run")])
 hero_sources = Array[String](["res://data/units/alliés/elfe.tres", "res://data/units/alliés/mage.tres", "res://data/units/alliés/Guerrier.tres"])

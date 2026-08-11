@@ -18,7 +18,7 @@ func _ready() -> void:
 	var request := _load_request()
 	var arena_path := str(request.get("arena_path", ""))
 	var arena := ResourceLoader.load(
-		arena_path, "", ResourceLoader.CACHE_MODE_IGNORE
+		arena_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as ArenaDefinition if ResourceLoader.exists(arena_path) else null
 	if arena == null:
 		push_error("Arena Studio : la ressource de test est introuvable.")
@@ -42,6 +42,13 @@ func _ready() -> void:
 		_cleanup_temporary_request(request)
 		get_tree().quit(5)
 		return
+	if int(request.get("contract_version", 0)) >= 3 \
+			and not bool(provenance.get("topology_hashes_identical", false)):
+		_write_launch_result(request, false, arena, provenance)
+		push_error("Arena Studio : les topologies working/temp/runtime divergent.")
+		_cleanup_temporary_request(request)
+		get_tree().quit(9)
+		return
 	if bool(provenance.get("produced_bundle_loaded", false)):
 		_write_launch_result(request, false, arena, provenance)
 		push_error(
@@ -53,7 +60,7 @@ func _ready() -> void:
 
 	var run_path := str(request.get("run_path", ""))
 	var run := ResourceLoader.load(
-		run_path, "", ResourceLoader.CACHE_MODE_IGNORE
+		run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RunData if not run_path.is_empty() and ResourceLoader.exists(run_path) \
 	else RunData.new()
 	var configuration := StringName(request.get("configuration", "movement"))
@@ -127,8 +134,15 @@ func _ready() -> void:
 func _load_request() -> Dictionary:
 	if not FileAccess.file_exists(REQUEST_PATH):
 		return {}
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(REQUEST_PATH))
-	return parsed if parsed is Dictionary else {}
+	var contents := FileAccess.get_file_as_string(REQUEST_PATH)
+	var request_absolute := ProjectSettings.globalize_path(REQUEST_PATH)
+	if FileAccess.file_exists(request_absolute):
+		DirAccess.remove_absolute(request_absolute)
+	var parsed = JSON.parse_string(contents)
+	if not parsed is Dictionary:
+		return {}
+	(parsed as Dictionary)["request_consumed_once"] = true
+	return parsed
 
 
 func _write_launch_result(
@@ -181,7 +195,11 @@ func _provenance(
 		arena: ArenaDefinition
 	) -> Dictionary:
 	var temporary_fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
+	var temporary_topology := ArenaTopologySignatureService.build(arena)
 	var runtime_state := ArenaRuntimeProjectionService.build(arena)
+	var runtime_topology := ArenaTopologySignatureService.build(
+		runtime_state.arena_projection if runtime_state != null else null
+	)
 	var runtime_fingerprint := (
 		ArenaSnapshotService.arena_fingerprint(runtime_state.arena_projection)
 		if runtime_state != null and runtime_state.arena_projection != null else ""
@@ -193,6 +211,12 @@ func _provenance(
 		"temporary_fingerprint", temporary_fingerprint
 	))
 	var produced_loaded := _depends_on_produced_bundle(arena_path)
+	var working_topology_hash := str(request.get(
+		"working_topology_hash", temporary_topology.topology_hash
+	))
+	var requested_temporary_topology_hash := str(request.get(
+		"temporary_topology_hash", temporary_topology.topology_hash
+	))
 	return {
 		"studio_product_version": str(request.get(
 			"studio_product_version", StudioVersion.PRODUCT_VERSION
@@ -208,6 +232,19 @@ func _provenance(
 			and temporary_fingerprint == requested_temporary
 			and working_fingerprint == runtime_fingerprint
 		),
+		"working_topology_hash": working_topology_hash,
+		"temporary_topology_hash": temporary_topology.topology_hash,
+		"requested_temporary_topology_hash": requested_temporary_topology_hash,
+		"runtime_topology_hash": runtime_topology.topology_hash,
+		"topology_hashes_identical": (
+			working_topology_hash == temporary_topology.topology_hash
+			and temporary_topology.topology_hash \
+				== requested_temporary_topology_hash
+			and working_topology_hash == runtime_topology.topology_hash
+		),
+		"visible_floor_hash": temporary_topology.visible_floor_hash,
+		"generation_id": str(request.get("generation_id", "")),
+		"request_consumed_once": bool(request.get("request_consumed_once", false)),
 		"produced_bundle_loaded": produced_loaded,
 		"camera_mode": str(request.get("camera_mode", "")),
 		"contract_version": int(request.get("contract_version", 0)),

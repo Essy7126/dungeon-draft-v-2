@@ -57,6 +57,12 @@ var current_wave_index: int = 0
 var run_seed: int = 0
 var run_active: bool = false
 var _active_run_name: String = ""
+var _active_run_data: RunData = null
+var _active_economy_profile: RunEconomyProfile = null
+var _equipment_rewards_enabled := true
+var _equipment_reward_pool_tag: StringName = (
+	RunEconomyProfile.DEFAULT_EQUIPMENT_REWARD_POOL_TAG
+)
 var _last_run_result: Dictionary = {}
 var _awaiting_post_battle_progression: bool = false
 var _room_outcome_resolved: bool = false
@@ -303,6 +309,17 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_build_hidden_room_wave_counts(run_data)
 	run_active = true
 	_active_run_name = run_data.run_name
+	_active_run_data = run_data
+	_active_economy_profile = run_data.economy_profile
+	_equipment_rewards_enabled = (
+		_active_economy_profile.equipment_rewards_enabled
+		if _active_economy_profile != null else true
+	)
+	_equipment_reward_pool_tag = (
+		_active_economy_profile.equipment_reward_pool_tag
+		if _active_economy_profile != null
+		else RunEconomyProfile.DEFAULT_EQUIPMENT_REWARD_POOL_TAG
+	)
 	_last_run_result = {}
 	_awaiting_post_battle_progression = false
 	_room_outcome_resolved = false
@@ -319,10 +336,15 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_room_exit_selected = false
 	_cleared_room_emitted = false
 	_active_progression_screen_ref = null
-	if not _initialize_inventory_state():
+	if not _initialize_inventory_state(run_data):
 		push_error("Impossible d'initialiser l'inventaire de run.")
-	elif not _equipment_reward_service.reset(item_catalog, run_seed):
+	elif _equipment_rewards_enabled and not _equipment_reward_service.reset(
+			item_catalog, run_seed, _equipment_reward_pool_tag
+		):
 		push_error("La pioche d'equipements de la premiere run est invalide.")
+	elif not _equipment_rewards_enabled:
+		# Une run sans recompenses ne construit ni ne melange aucune pioche.
+		_equipment_reward_service.reset()
 	_ensure_persistent_run_ui()
 	set_run_ui_mode(PersistentRunUIScript.RunUIMode.TRANSITION)
 
@@ -370,11 +392,17 @@ func cleanup_run_state() -> void:
 	_room_exit_selected = false
 	_cleared_room_emitted = false
 	_active_run_name = ""
+	_active_run_data = null
+	_active_economy_profile = null
+	_equipment_rewards_enabled = true
+	_equipment_reward_pool_tag = (
+		RunEconomyProfile.DEFAULT_EQUIPMENT_REWARD_POOL_TAG
+	)
 	_last_run_result.clear()
 	clear_next_run_configuration()
 
 
-func _initialize_inventory_state() -> bool:
+func _initialize_inventory_state(run_data: RunData = null) -> bool:
 	_clear_inventory_state()
 	item_catalog = DEFAULT_ITEM_CATALOG
 	var validation := item_catalog.validate_catalog()
@@ -388,10 +416,26 @@ func _initialize_inventory_state() -> bool:
 		_clear_inventory_state()
 		return false
 	_connect_inventory_signal()
-	for entry in STARTING_INVENTORY:
+	var starting_items: Array = STARTING_INVENTORY
+	if run_data != null and run_data.economy_profile != null:
+		starting_items = run_data.economy_profile.starting_items
+	for entry_value in starting_items:
+		var item_id := StringName()
+		var quantity := 1
+		if entry_value is RunStartingItemData:
+			var configured := entry_value as RunStartingItemData
+			item_id = configured.item_id
+			quantity = configured.quantity
+		elif entry_value is Dictionary:
+			var legacy_entry := entry_value as Dictionary
+			item_id = StringName(legacy_entry.get("item_id", &""))
+			quantity = int(legacy_entry.get("quantity", 1))
+		else:
+			_clear_inventory_state()
+			return false
 		var result := run_inventory.try_add(
-			StringName(entry.get("item_id", &"")),
-			int(entry.get("quantity", 1)),
+			item_id,
+			quantity,
 		)
 		if not result.get("success", false):
 			_clear_inventory_state()
@@ -496,6 +540,18 @@ func get_run_inventory() -> RunInventory:
 
 func get_item_catalog() -> ItemCatalog:
 	return item_catalog
+
+
+func get_active_run_data() -> RunData:
+	return _active_run_data if run_active else null
+
+
+func get_active_economy_profile() -> RunEconomyProfile:
+	return _active_economy_profile if run_active else null
+
+
+func are_equipment_rewards_enabled() -> bool:
+	return run_active and _equipment_rewards_enabled
 
 
 func grant_item_to_inventory(
@@ -1167,7 +1223,8 @@ func confirm_post_combat_equipment(
 
 
 func can_claim_post_combat_equipment(report_id: StringName) -> bool:
-	return report_id != &"" \
+	return _equipment_rewards_enabled \
+		and report_id != &"" \
 		and run_active \
 		and _last_combat_report != null \
 		and _last_combat_report.report_id == report_id \
@@ -1292,7 +1349,7 @@ func complete_post_combat_transition(report_id: StringName) -> bool:
 		or _last_combat_report == null \
 		or _last_combat_report.report_id != report_id:
 		return false
-	if not is_final_room():
+	if not is_final_room() and _equipment_rewards_enabled:
 		if can_claim_post_combat_equipment(report_id):
 			return false
 		if not _last_combat_report.reward_result.get("success", false) \

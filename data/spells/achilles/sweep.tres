@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"achilles_sweep"
+discipline_id = &"sweep"
+spell_name = "Balayage"
+description = "Prototype L’Odyssée · 3 PA · Frappe la zone adjacente pour 6 dégâts physiques et repousse de 1 case."
+ap_cost = 3
+spell_range = 0
+once_per_activation = true
+can_target_enemy = false
+can_target_self = true
+aoe_shape = 1
+aoe_size = 1
+exclude_caster_from_area_effects = true
+damage = 6
+damage_type = 0
+push_distance = 1
+push_affected_units = true

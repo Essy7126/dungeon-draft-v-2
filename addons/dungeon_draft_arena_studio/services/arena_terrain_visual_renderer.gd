@@ -18,13 +18,23 @@ func configure(grid_view: Node2D, visual_parent: Node2D) -> void:
 
 func render_plan(plan: Dictionary) -> Dictionary:
 	clear()
-	update_cells(plan.get("entries", []))
+	update_cells(plan.get("entries", []), true)
 	return actual_render_report()
 
 
-func update_cells(entries: Array) -> void:
+func update_cells(entries: Array, remove_missing := true) -> void:
 	if _visual_parent == null:
 		return
+	if remove_missing:
+		var next_cells := {}
+		for value in entries:
+			if value is Dictionary:
+				next_cells[(value as Dictionary).get("cell", Vector2i.ZERO)] = true
+		var stale: Array[Vector2i] = []
+		for existing in _entries:
+			if not next_cells.has(existing):
+				stale.append(existing)
+		remove_cells(stale)
 	for value in entries:
 		if not value is Dictionary:
 			continue
@@ -56,6 +66,8 @@ func clear() -> void:
 			(value as Node2D).free()
 	_nodes.clear()
 	_entries.clear()
+	_texture_cache.clear()
+	_last_geometry_signature = PackedVector2Array()
 
 
 func actual_render_report() -> Dictionary:
@@ -75,7 +87,9 @@ func actual_render_report() -> Dictionary:
 			continue
 		rendered_by[terrain_id] = int(rendered_by.get(terrain_id, 0)) + 1
 		var polygon := _cell_polygon_in_parent(cell)
-		var duplication_count := _duplicate_count(cell)
+		var duplication_count := _duplicate_count(
+			cell, StringName(root.get_meta("renderer_role", &"arena_floor"))
+		)
 		cells["%d,%d" % [cell.x, cell.y]] = {
 			"coordinate": cell,
 			"terrain_id": terrain_id,
@@ -83,7 +97,8 @@ func actual_render_report() -> Dictionary:
 			"texture_path": sprite.texture.resource_path,
 			"parent": root.get_parent().name if root.get_parent() != null else &"",
 			"parent_role": str(root.get_meta("parent_role", &"arena_tiles_layer")),
-			"renderer_role": str(root.get_meta("renderer_role", &"terrain_floor")),
+			"renderer_role": str(root.get_meta("renderer_role", &"arena_floor")),
+			"topology_hash": str(root.get_meta("topology_hash", "")),
 			"position": root.position,
 			"transform": sprite.transform,
 			"root_transform": root.transform,
@@ -98,6 +113,8 @@ func actual_render_report() -> Dictionary:
 		"cells": cells,
 		"errors": errors,
 		"valid": errors.is_empty(),
+		"cache_cells": ArenaTopologySignatureService.normalized_keys(_entries.keys()),
+		"texture_cache_size": _texture_cache.size(),
 	}
 
 
@@ -126,7 +143,9 @@ func _create_or_update(entry: Dictionary) -> void:
 	var root := node_for_cell(cell)
 	if root == null:
 		root = Node2D.new()
-		root.name = "ArenaTerrain_%d_%d" % [cell.x, cell.y]
+		root.name = "%s_%d_%d" % [
+			str(entry.get("node_prefix", "ArenaTerrain")), cell.x, cell.y
+		]
 		_visual_parent.add_child(root)
 		_nodes[cell] = root
 		var sprite := Sprite2D.new()
@@ -146,8 +165,18 @@ func _create_or_update(entry: Dictionary) -> void:
 	root.set_meta("terrain_id", entry.terrain_id)
 	root.set_meta("cell_type", int(entry.cell_type))
 	root.set_meta("renderer_layer", entry.visual_layer)
-	root.set_meta("renderer_role", &"terrain_floor")
-	root.set_meta("parent_role", &"arena_tiles_layer")
+	root.set_meta("visual_layer", entry.visual_layer)
+	root.set_meta("renderer_role", StringName(entry.get(
+		"renderer_role", &"arena_floor"
+	)))
+	root.set_meta("parent_role", StringName(entry.get(
+		"parent_role", &"arena_tiles_layer"
+	)))
+	root.set_meta("surface_id", StringName(entry.get("surface_id", &"none")))
+	root.set_meta("visual_terrain_id", StringName(entry.get(
+		"visual_terrain_id", entry.terrain_id
+	)))
+	root.set_meta("topology_hash", str(entry.get("topology_hash", "")))
 	root.visible = true
 	_update_transform(cell, root)
 
@@ -199,12 +228,12 @@ func _signatures_match(first: PackedVector2Array, second: PackedVector2Array) ->
 	return true
 
 
-func _duplicate_count(cell: Vector2i) -> int:
+func _duplicate_count(cell: Vector2i, renderer_role: StringName) -> int:
 	if _visual_parent == null:
 		return 0
 	var count := 0
 	for child in _visual_parent.get_children():
 		if child is Node2D and child.get_meta("arena_cell", GridTransformService.INVALID_CELL) == cell \
-				and child.get_meta("renderer_role", &"") == &"terrain_floor":
+				and child.get_meta("renderer_role", &"") == renderer_role:
 			count += 1
 	return count

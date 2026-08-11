@@ -28,8 +28,24 @@ static func paint_terrain(
 		arena.objectives = arena.objectives.filter(func(value):
 			return value != null and value.cell != cell
 		)
+		arena.decorations = arena.decorations.filter(func(value):
+			return value != null and value.cell != cell
+		)
+		arena.vortex_pairs = arena.vortex_pairs.filter(func(value):
+			return value != null and not value.contains(cell)
+		)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return before_data != definition.to_dict()
+
+
+static func paint_permanent_terrain(
+		arena: ArenaDefinition,
+		cell: Vector2i,
+		terrain_id: StringName
+	) -> bool:
+	if not ArenaPermanentTerrainPaintService.can_paint(arena, terrain_id):
+		return false
+	return paint_terrain(arena, cell, terrain_id)
 
 
 static func place_wall(
@@ -139,10 +155,37 @@ static func place_decoration(arena: ArenaDefinition, cell: Vector2i) -> bool:
 	return true
 
 
+static func place_vortex_pair(
+		arena: ArenaDefinition,
+		entry_cell: Vector2i,
+		exit_cell: Vector2i
+	) -> bool:
+	if not is_valid_vortex_cell(arena, entry_cell) \
+			or not is_valid_vortex_cell(arena, exit_cell) \
+			or entry_cell == exit_cell:
+		return false
+	if arena.vortex_pair_at(entry_cell) != null \
+			or arena.vortex_pair_at(exit_cell) != null:
+		return false
+	var definition := ArenaCatalogService.interactive(&"vortex")
+	if definition == null or not definition.editor_placeable:
+		return false
+	var pair := ArenaVortexPairDefinition.new()
+	pair.pair_id = _next_vortex_pair_id(arena)
+	pair.entry_cell = entry_cell
+	pair.exit_cell = exit_cell
+	pair.traversal_contract = definition.traversal_contract
+	pair.bidirectional = true
+	pair.runtime_enabled = false
+	arena.vortex_pairs.append(pair)
+	return true
+
+
 static func remove_special(arena: ArenaDefinition, cell: Vector2i) -> bool:
 	if arena == null:
 		return false
-	var before := arena.objectives.size() + arena.decorations.size() + arena.spawns.size()
+	var before := arena.objectives.size() + arena.decorations.size() \
+		+ arena.spawns.size() + arena.vortex_pairs.size()
 	arena.objectives = arena.objectives.filter(func(value):
 		return value != null and value.cell != cell
 	)
@@ -152,7 +195,11 @@ static func remove_special(arena: ArenaDefinition, cell: Vector2i) -> bool:
 	arena.spawns = arena.spawns.filter(func(value):
 		return value != null and value.cell != cell
 	)
-	return before != arena.objectives.size() + arena.decorations.size() + arena.spawns.size()
+	arena.vortex_pairs = arena.vortex_pairs.filter(func(value):
+		return value != null and not value.contains(cell)
+	)
+	return before != arena.objectives.size() + arena.decorations.size() \
+		+ arena.spawns.size() + arena.vortex_pairs.size()
 
 
 static func resize_document(arena: ArenaDefinition, requested_size: Vector2i) -> bool:
@@ -177,5 +224,31 @@ static func resize_document(arena: ArenaDefinition, requested_size: Vector2i) ->
 	arena.decorations = arena.decorations.filter(func(value):
 		return value != null and arena.is_in_bounds(value.cell)
 	)
+	arena.vortex_pairs = arena.vortex_pairs.filter(func(value):
+		return value != null and arena.is_in_bounds(value.entry_cell) \
+			and arena.is_in_bounds(value.exit_cell)
+	)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return true
+
+
+static func is_valid_vortex_cell(arena: ArenaDefinition, cell: Vector2i) -> bool:
+	if arena == null or not arena.is_in_bounds(cell):
+		return false
+	var definition := arena.get_cell_definition(cell)
+	if definition == null or not definition.defined or not definition.playable \
+			or definition.border:
+		return false
+	var obstacle := arena.obstacle_at(cell)
+	return obstacle == null or not obstacle.blocks_movement
+
+
+static func _next_vortex_pair_id(arena: ArenaDefinition) -> StringName:
+	var used := {}
+	for pair in arena.vortex_pairs:
+		if pair != null:
+			used[pair.pair_id] = true
+	var index := 1
+	while used.has(StringName("vortex_pair_%03d" % index)):
+		index += 1
+	return StringName("vortex_pair_%03d" % index)

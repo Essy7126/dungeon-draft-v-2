@@ -49,6 +49,9 @@ enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 @export var aoe_shape: AoeShape = AoeShape.SINGLE
 @export var aoe_size: int = 1
 @export var line_from_caster: bool = false
+## Opt-in pour les zones centrees sur le lanceur qui utilisent sa case comme
+## point de ciblage sans devoir lui appliquer les impacts de la zone.
+@export var exclude_caster_from_area_effects: bool = false
 
 @export_group("Effet de combat")
 @export var damage: int = 0

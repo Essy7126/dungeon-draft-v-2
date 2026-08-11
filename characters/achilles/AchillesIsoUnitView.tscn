@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/achilles/achilles_iso_unit_view.gd" id="1_adapter"]
+[ext_resource type="PackedScene" path="res://assets/characters/Achilles/AchillesVisual2D.tscn" id="2_visual"]
+
+[node name="AchillesIsoUnitView" type="Node2D"]
+script = ExtResource("1_adapter")
+
+[node name="AchillesVisual2D" parent="." instance=ExtResource("2_visual")]

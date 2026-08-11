@@ -7,9 +7,20 @@ enum Trigger {
 	PASSIVE,
 }
 
+enum SameSurfacePolicy {
+	IGNORE,
+	REFRESH_DURATION,
+	REPLACE,
+}
+
 @export var effect_name: String = "Effet"
 @export_multiline var description: String = ""
 @export var color: Color = Color(0.5, 0.5, 0.5)
+
+@export_group("Identifiants runtime stables")
+@export var surface_id: StringName = &""
+@export var visual_terrain_id: StringName = &""
+@export var same_surface_policy: SameSurfacePolicy = SameSurfacePolicy.IGNORE
 
 @export_group("Declenchement")
 @export var trigger: Trigger = Trigger.TURN_START

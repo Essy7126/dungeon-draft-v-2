@@ -33,6 +33,7 @@ static func validate(arena: ArenaDefinition, check_duplicate_id := true) -> Aren
 	_validate_visual_resources(arena, report)
 	_validate_field_coverage(report)
 	_validate_runtime(arena, report, runtime_state)
+	_validate_topology_parity(arena, report)
 	_build_metrics(arena, report, runtime_state)
 	report.set_meta("cache_hit", false)
 	if not check_duplicate_id:
@@ -190,6 +191,7 @@ static func _validate_cells(
 		report: ArenaValidationReport
 	) -> void:
 	var seen := {}
+	var verified_overrides: Array[Dictionary] = []
 	for definition in arena.cells:
 		if definition == null:
 			report.add_message(
@@ -236,16 +238,20 @@ static func _validate_cells(
 				)
 			elif not mismatches.is_empty():
 				var justified := not definition.production_note.strip_edges().is_empty()
-				report.add_message(
-					ArenaValidationMessage.Severity.WARNING if justified \
-					else ArenaValidationMessage.Severity.ERROR,
-					&"terrain_manual_override" if justified else &"terrain_coherence_mismatch",
-					"L'override de terrain touche %s%s." % [
-						", ".join(mismatches),
-						" et est justifie" if justified else " sans justification",
-					], cell, &"align_cell_with_terrain_registry",
-					definition.production_note
-				)
+				if justified:
+					verified_overrides.append({
+						"cell": cell,
+						"fields": mismatches.duplicate(),
+						"justification": definition.production_note,
+					})
+				else:
+					report.add_message(
+						ArenaValidationMessage.Severity.ERROR,
+						&"terrain_coherence_mismatch",
+						"L'override de terrain touche %s sans justification." % \
+							", ".join(mismatches),
+						cell, &"align_cell_with_terrain_registry"
+					)
 			var visual_path := str(terrain_entry.get("visual", ""))
 			if definition.defined and (visual_path.is_empty() \
 					or not ResourceLoader.exists(visual_path)) \
@@ -254,6 +260,16 @@ static func _validate_cells(
 					ArenaValidationMessage.Severity.ERROR, &"terrain_without_visual",
 					"Le terrain '%s' n'a pas de visuel modulaire." % definition.terrain_id,
 					cell)
+	if not verified_overrides.is_empty():
+		report.add_message(
+			ArenaValidationMessage.Severity.INFO,
+			&"terrain_overrides_verified",
+			"%d override(s) de terrain verifie(s) et coherents." % \
+				verified_overrides.size(),
+			verified_overrides[0].cell,
+			&"",
+			JSON.stringify(verified_overrides, "  ")
+		)
 	if arena.playable_cells().is_empty():
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"no_playable_cell",
@@ -264,6 +280,7 @@ static func _validate_cells(
 			"La bordure de securite n'a pas encore ete creee.",
 			GridTransformService.INVALID_CELL, &"create_border")
 	_validate_obstacles_and_spawns(arena, report)
+	_validate_vortex_pairs(arena, report)
 
 
 static func _validate_obstacles_and_spawns(
@@ -291,6 +308,8 @@ static func _validate_obstacles_and_spawns(
 				ArenaValidationMessage.Severity.ERROR, &"duplicate_obstacle_cell",
 				"Deux obstacles occupent la meme cellule.", obstacle.cell
 			)
+
+
 		obstacle_cells[obstacle.cell] = true
 		if obstacle.obstacle_id == &"" or obstacle_ids.has(obstacle.obstacle_id):
 			report.add_message(
@@ -435,6 +454,83 @@ static func _validate_obstacles_and_spawns(
 				decoration.cell)
 
 
+static func _validate_vortex_pairs(
+		arena: ArenaDefinition,
+		report: ArenaValidationReport
+	) -> void:
+	if arena.vortex_pairs.is_empty():
+		return
+	var catalog := ArenaCatalogService.interactive(&"vortex")
+	if catalog == null:
+		report.add_message(
+			ArenaValidationMessage.Severity.ERROR, &"vortex_catalog_missing",
+			"La définition de catalogue du vortex est absente."
+		)
+		return
+	var pair_ids := {}
+	var occupied_cells := {}
+	for pair in arena.vortex_pairs:
+		if pair == null:
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"vortex_pair_missing",
+				"Une paire de vortex est vide."
+			)
+			continue
+		if pair.pair_id == &"" or pair_ids.has(pair.pair_id):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"vortex_pair_id_invalid",
+				"Chaque paire de vortex doit posséder un pair_id unique.",
+				pair.entry_cell
+			)
+		pair_ids[pair.pair_id] = true
+		if pair.entry_cell == pair.exit_cell:
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"vortex_endpoints_identical",
+				"L'entrée et la sortie d'un vortex doivent être distinctes.",
+				pair.entry_cell
+			)
+		for cell in [pair.entry_cell, pair.exit_cell]:
+			if not ArenaDynamicEditingService.is_valid_vortex_cell(arena, cell):
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"vortex_endpoint_invalid",
+					"Le vortex doit être sur une dalle définie, praticable, hors bordure et non bloquée.",
+					cell
+				)
+			if occupied_cells.has(cell):
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"vortex_endpoint_reused",
+					"Une cellule ne peut appartenir qu'à une seule paire de vortex.",
+					cell
+				)
+			occupied_cells[cell] = pair.pair_id
+		if pair.traversal_contract != catalog.traversal_contract:
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"vortex_traversal_contract_mismatch",
+				"Le contrat de traversée du vortex ne correspond pas au catalogue.",
+				pair.entry_cell
+			)
+		if pair.runtime_enabled:
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"vortex_runtime_flag_forbidden",
+				"runtime_enabled ne peut pas être activé avant certification du runtime.",
+				pair.entry_cell
+			)
+	report.add_message(
+		ArenaValidationMessage.Severity.ERROR, &"vortex_runtime_uncertified",
+		"Paire(s) de vortex authorée(s), mais téléportation non certifiée par GridData, Pathfinder et l'IA. Production et test direct bloqués.",
+		arena.vortex_pairs[0].entry_cell if arena.vortex_pairs[0] != null \
+			else GridTransformService.INVALID_CELL,
+		&"",
+		JSON.stringify({
+			"pair_count": arena.vortex_pairs.size(),
+			"runtime_supported": catalog.runtime_supported,
+			"pathfinding_certified": catalog.pathfinding_certified,
+			"ai_certified": catalog.ai_certified,
+			"production_placeable": catalog.production_placeable,
+		}, "  ")
+	)
+
+
 static func _validate_visual_resources(
 		arena: ArenaDefinition,
 		report: ArenaValidationReport
@@ -563,6 +659,55 @@ static func _validate_runtime(
 				camps.unreachable_pair_count
 			)
 		)
+
+
+static func _validate_topology_parity(
+		arena: ArenaDefinition,
+		report: ArenaValidationReport
+	) -> void:
+	var topology := ArenaTopologySignatureService.build(arena)
+	var plan := ArenaTerrainRenderPlanService.build(arena)
+	var visual := ArenaVisualAssembler.inspect(arena)
+	var duplicates: Array[String] = []
+	for key in visual.terrain_nodes:
+		if int((visual.terrain_nodes[key] as Dictionary).get("duplication_count", 1)) > 1:
+			duplicates.append(str(key))
+	var parity := ArenaTopologyParityReport.compare_floor_sets(
+		plan.get("expected_floor_cells", []), visual.terrain_nodes.keys(),
+		topology.removed_cells, duplicates
+	)
+	report.add_message(
+		ArenaValidationMessage.Severity.INFO,
+		&"topology_summary",
+		"Topologie : %d cellules definies, %d dalles attendues, %d rendues, %d case(s) retiree(s) rendue(s), %d inattendue(s), %d manquante(s)." % [
+			topology.counts.defined_cells,
+			plan.get("expected_floor_cells", []).size(),
+			visual.terrain_nodes.size(),
+			parity.removed_cells_rendered.size(),
+			parity.unexpected_cells.size(),
+			parity.missing_cells.size(),
+		],
+		GridTransformService.INVALID_CELL,
+		&"",
+		JSON.stringify(parity.to_dict(), "  ")
+	)
+	if parity.valid:
+		return
+	var divergent := []
+	divergent.append_array(parity.removed_cells_rendered)
+	divergent.append_array(parity.unexpected_cells)
+	divergent.append_array(parity.missing_cells)
+	divergent.append_array(parity.duplicate_cells)
+	var location := ArenaTopologySignatureService.key_to_coordinate(str(divergent[0])) \
+		if not divergent.is_empty() else GridTransformService.INVALID_CELL
+	report.add_message(
+		ArenaValidationMessage.Severity.ERROR,
+		&"topology_floor_mismatch",
+		"TOPOLOGIE STUDIO / RUNTIME DIFFERENTE : %d case(s) retiree(s) sont encore rendues." % parity.removed_cells_rendered.size(),
+		location,
+		&"recalculate_topology",
+		JSON.stringify(parity.to_dict(), "  ")
+	)
 
 
 static func _build_metrics(

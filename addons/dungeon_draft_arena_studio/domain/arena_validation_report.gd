@@ -23,6 +23,8 @@ func add_message(
 	entry.cell = cell
 	entry.suggested_fix = suggested_fix
 	entry.technical_details = technical_details
+	entry.blocks_integration = severity == ArenaValidationMessage.Severity.ERROR
+	entry.auto_fix_available = suggested_fix != &""
 	messages.append(entry)
 	return entry
 
@@ -49,6 +51,21 @@ func is_valid() -> bool:
 	return error_count() == 0
 
 
+func blocking_messages() -> Array[ArenaValidationMessage]:
+	return messages.filter(func(entry): return entry.blocks_integration)
+
+
+func blocking_error_count() -> int:
+	return blocking_messages().size()
+
+
+func acknowledgement_messages() -> Array[ArenaValidationMessage]:
+	return messages.filter(func(entry):
+		return entry.severity == ArenaValidationMessage.Severity.WARNING \
+			and not entry.acknowledged
+	)
+
+
 func verdict() -> String:
 	if not is_valid():
 		return "ARENE INVALIDE — %d ERREUR(S) BLOQUANTE(S)" % error_count()
@@ -70,6 +87,7 @@ func to_dict() -> Dictionary:
 		"technical_verdict": technical_verdict(),
 		"metrics": metrics.duplicate(true),
 		"errors": error_count(),
+		"blocking_errors": blocking_error_count(),
 		"warnings": warning_count(),
 		"information": info_count(),
 		"messages": messages.map(func(entry): return entry.to_dict()),

@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="PaintedMapVisualData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="PaintedMapVisualData" format=3 uid="uid://k5ilk335s17w"]
 
-[ext_resource type="Script" path="res://data/maps/painted/painted_map_visual_data.gd" id="1_visual"]
+[ext_resource type="Script" uid="uid://deu8yd1flb5rl" path="res://data/maps/painted/painted_map_visual_data.gd" id="1_visual"]
 [ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_presentation.tres" id="2_presentation"]
 
 [resource]
@@ -9,10 +9,7 @@ map_id = &"room_01_forest"
 debug_name = "Foret - ruines moussues"
 background_texture_path = "res://asset/map/painted/room_01_forest/forest_background_v2.webp"
 source_image_size = Vector2i(1376, 768)
-logical_grid_size = Vector2i(14, 14)
 grid_origin = Vector2(688, 164.97778)
-axis_x = Vector2(34.4, 17.066667)
-axis_y = Vector2(-34.4, 17.066667)
 camera_offset = Vector2(0, 34)
 camera_zoom = 1.1
 presentation_profile = ExtResource("2_presentation")
@@ -20,4 +17,4 @@ foreground_occluder_polygon = PackedVector2Array(805, 423, 806, 385, 820, 380, 8
 foreground_occluder_sort_y = 444.0
 foreground_full_hide_rect = Rect2(795, 240, 135, 204)
 calibration_cells = Array[Vector2i]([Vector2i(4, 0), Vector2i(9, 0), Vector2i(0, 3), Vector2i(13, 3), Vector2i(6, 6), Vector2i(3, 10), Vector2i(10, 10), Vector2i(4, 13), Vector2i(9, 13)])
-calibration_pixels = Array[Vector2]([Vector2(825.6, 233.24444), Vector2(997.6, 318.57778), Vector2(584.8, 216.17778), Vector2(1032, 438.04444), Vector2(688, 369.77778), Vector2(447.2, 386.84444), Vector2(688, 506.31111), Vector2(378.4, 455.11111), Vector2(550.4, 540.44444)])
+calibration_pixels = Array[Vector2]([Vector2(825.6, 233.24445), Vector2(997.6, 318.5778), Vector2(584.8, 216.17778), Vector2(1032, 438.04443), Vector2(688, 369.77777), Vector2(447.2, 386.84445), Vector2(688, 506.3111), Vector2(378.4, 455.1111), Vector2(550.4, 540.44446)])

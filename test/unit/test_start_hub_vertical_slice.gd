@@ -326,9 +326,10 @@ func test_commencer_run_ouvre_intro_sans_demarrer_run_et_une_seule_fois() -> voi
 	assert_eq(calls[0], 0)
 	assert_true(controller.archivist_panel.get_node("%RoomSelectionView").visible)
 	var run_selector: OptionButton = controller.archivist_panel.get_node("%RunSelector")
-	assert_eq(run_selector.item_count, 2)
+	assert_eq(run_selector.item_count, 3)
 	assert_eq(run_selector.get_item_text(0), "Principal")
 	assert_eq(run_selector.get_item_text(1), "Run de test")
+	assert_eq(run_selector.get_item_text(2), "L'Odyssée")
 	controller.archivist_panel.get_node("%RoomSelector").select(2)
 	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
 	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
@@ -367,7 +368,7 @@ func test_donnees_archiviste_preparent_le_trio_reel_dans_game_manager() -> void:
 	)
 	GameManager.cleanup_run_state()
 	var available_runs := data.get_available_runs()
-	assert_eq(available_runs.size(), 2)
+	assert_eq(available_runs.size(), 3)
 	assert_eq(available_runs[0].run_name, "Principal")
 	assert_eq(available_runs[0].rooms.size(), 6)
 	assert_true(
@@ -377,6 +378,11 @@ func test_donnees_archiviste_preparent_le_trio_reel_dans_game_manager() -> void:
 	assert_eq(available_runs[1].rooms.size(), 4)
 	assert_true(
 		available_runs[1].is_valid(), str(available_runs[1].validation_errors())
+	)
+	assert_eq(available_runs[2].run_name, "L'Odyssée")
+	assert_eq(available_runs[2].rooms.size(), 3)
+	assert_true(
+		available_runs[2].is_valid(), str(available_runs[2].validation_errors())
 	)
 	assert_true(GameManager._prepare_preconfigured_run(
 		available_runs[0], data.hero_sources

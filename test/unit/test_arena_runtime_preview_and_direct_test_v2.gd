@@ -64,7 +64,7 @@ func test_direct_test_preparation_proves_working_temp_runtime_identity() -> void
 	if not prepared.get("ok", false):
 		return
 	var request := prepared.request as Dictionary
-	assert_eq(request.contract_version, 2)
+	assert_eq(request.contract_version, 3)
 	assert_true(request.arena_path.begins_with(ArenaDirectTestService.WORK_ROOT + "/"))
 	assert_false(request.arena_path.begins_with("res://data/arenas/produced/"))
 	assert_true(FileAccess.file_exists(request.arena_path))
@@ -74,6 +74,10 @@ func test_direct_test_preparation_proves_working_temp_runtime_identity() -> void
 	assert_eq(request.camera_mode, "STUDIO_MATCH")
 	assert_eq(request.working_fingerprint, request.temporary_fingerprint)
 	assert_eq(request.working_fingerprint, request.runtime_fingerprint)
+	assert_eq(request.working_topology_hash, request.temporary_topology_hash)
+	assert_eq(request.working_topology_hash, request.runtime_topology_hash)
+	assert_true(request.topology_hashes_identical)
+	assert_false(str(request.generation_id).is_empty())
 	var temporary := ResourceLoader.load(
 		request.arena_path, "", ResourceLoader.CACHE_MODE_IGNORE
 	) as ArenaDefinition
@@ -124,14 +128,21 @@ func test_runtime_probe_reports_exact_scene_tree_contract() -> void:
 	)
 	var fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
 	var request := {
+		"contract_version": 3,
 		"configuration": "real_encounter",
 		"working_fingerprint": fingerprint,
 		"temporary_fingerprint": fingerprint,
+		"working_topology_hash": ArenaTopologySignatureService.build(arena).topology_hash,
+		"expected_floor_cells": ArenaTerrainRenderPlanService.build(arena).expected_floor_cells,
+		"removed_cells": ArenaTopologySignatureService.build(arena).removed_cells,
 	}
 	var result := ArenaDirectTestProbe.inspect_runtime_scene(
 		fixture,
 		request,
-		{"produced_bundle_loaded": false}
+		{
+			"produced_bundle_loaded": false,
+			"topology_hashes_identical": true,
+		}
 	)
 	assert_true(result.ok, str(result))
 	assert_true(result.runtime_scene_inspected)
@@ -143,6 +154,10 @@ func test_runtime_probe_reports_exact_scene_tree_contract() -> void:
 	assert_true(result.configuration_consumed)
 	assert_eq(result.camera_mode, "STUDIO_MATCH")
 	assert_true(result.fingerprints_identical)
+	assert_true(result.topology_hashes_identical)
+	assert_true(result.unexpected_cells.is_empty())
+	assert_true(result.missing_cells.is_empty())
+	assert_true(result.removed_cells_rendered.is_empty())
 	assert_false(result.produced_bundle_loaded)
 
 

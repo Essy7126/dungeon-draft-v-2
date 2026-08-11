@@ -22,28 +22,34 @@ static func inspect(
 	if files.is_empty():
 		return _report(directory, EMPTY, files, {}, [], [], [])
 	var manifest_path := directory.path_join(ArenaProductionService.MANIFEST_FILE)
-	var references := _references(directory.path_join("arena.tres"), graph)
+	var primary_resource := "arena_principal.tres" \
+		if files.has("arena_principal.tres") and not files.has("arena.tres") \
+		else "arena.tres"
+	var reference_report := ArenaBundleReferenceService.inspect(
+		directory.path_join(primary_resource), graph
+	)
+	var references: Array = reference_report.get("canonical_references", [])
 	if files.has("arena_principal.tres") and not files.has("arena.tres"):
-		return _report(directory, LEGACY_BUNDLE, files, {}, [], [], references)
+		return _report(directory, LEGACY_BUNDLE, files, {}, [], [], references, [], reference_report)
 	if not FileAccess.file_exists(manifest_path):
 		var structural_owned := files.has("arena.tres")
 		var state := OWNED_INCOMPLETE if structural_owned else FOREIGN_CONTENT
 		if not references.is_empty() and structural_owned:
 			state = REFERENCED_INCOMPLETE
-		return _report(directory, state, files, {}, ["production_manifest.json"], [], references)
+		return _report(directory, state, files, {}, ["production_manifest.json"], [], references, [], reference_report)
 	var parser := JSON.new()
 	if parser.parse(FileAccess.get_file_as_string(manifest_path)) != OK:
-		return _report(directory, CORRUPT_MANIFEST, files, {}, [], [], references)
+		return _report(directory, CORRUPT_MANIFEST, files, {}, [], [], references, [], reference_report)
 	var parsed = parser.data
 	if not parsed is Dictionary:
-		return _report(directory, CORRUPT_MANIFEST, files, {}, [], [], references)
+		return _report(directory, CORRUPT_MANIFEST, files, {}, [], [], references, [], reference_report)
 	var manifest := parsed as Dictionary
 	if not ArenaProductionService.COMPATIBLE_GENERATORS.has(
 			str(manifest.get("generated_by", ""))
 		):
-		return _report(directory, FOREIGN_CONTENT, files, manifest, [], [], references)
+		return _report(directory, FOREIGN_CONTENT, files, manifest, [], [], references, [], reference_report)
 	if not manifest.get("files", {}) is Dictionary:
-		return _report(directory, CORRUPT_MANIFEST, files, manifest, [], [], references)
+		return _report(directory, CORRUPT_MANIFEST, files, manifest, [], [], references, [], reference_report)
 	var expected := manifest.get("files", {}) as Dictionary
 	var missing := PackedStringArray()
 	var dirty := PackedStringArray()
@@ -74,7 +80,10 @@ static func inspect(
 		state = OWNED_DIRTY
 	elif not references.is_empty():
 		state = REFERENCED_COMPLETE
-	return _report(directory, state, files, manifest, missing, dirty, references, foreign)
+	return _report(
+		directory, state, files, manifest, missing, dirty, references, foreign,
+		reference_report
+	)
 
 
 static func _files(directory: String) -> Dictionary:
@@ -98,31 +107,6 @@ static func _collect(root: String, current: String, result: Dictionary) -> void:
 		_collect(root, current.path_join(child), result)
 
 
-static func _references(
-		arena_path: String,
-		graph: StudioReferenceGraphService
-	) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	if graph != null:
-		for usage in graph.usages(arena_path):
-			result.append(usage)
-		if not result.is_empty():
-			return result
-	for run in RunContentCatalogService.discover_runs():
-		if run == null:
-			continue
-		for index in range(run.rooms.size()):
-			var room := run.rooms[index]
-			if room != null and room.resource_path == arena_path:
-				result.append({
-					"run_path": run.resource_path,
-					"run_name": run.run_name,
-					"room_index": index,
-					"room_path": room.resource_path,
-				})
-	return result
-
-
 static func _report(
 		directory: String,
 		state: StringName,
@@ -131,7 +115,8 @@ static func _report(
 		missing: Variant,
 		dirty: Variant,
 		references: Array,
-		foreign: Variant = PackedStringArray()
+		foreign: Variant = PackedStringArray(),
+		reference_report: Dictionary = {}
 	) -> Dictionary:
 	return {
 		"ok": state not in [CORRUPT_MANIFEST, UNKNOWN],
@@ -143,6 +128,8 @@ static func _report(
 		"dirty": dirty,
 		"foreign": foreign,
 		"references": references,
+		"reference_report": reference_report,
 		"referenced": not references.is_empty(),
+		"transaction_active": bool(reference_report.get("busy", false)),
 		"complete": state in [OWNED_COMPLETE, REFERENCED_COMPLETE],
 	}

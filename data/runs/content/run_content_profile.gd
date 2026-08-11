@@ -17,6 +17,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("Le profile_id est absent.")
 	if display_name.strip_edges().is_empty():
 		errors.append("Le nom du profil de contenu est absent.")
+	if hero_profiles.is_empty():
+		errors.append("Le profil de contenu doit contenir au moins un heros.")
 	var seen := {}
 	for index in range(hero_profiles.size()):
 		var hero_profile := hero_profiles[index]

@@ -24,7 +24,7 @@ func test_01_to_06_data_contract_and_undo_restore_terrain_id() -> void:
 	assert_eq(str(arena.get_cell_definition(Vector2i(0, 0)).terrain_id), "water")
 	var void_entry := ArenaTerrainRenderPlanService.entry_for(arena, Vector2i(4, 0))
 	assert_false(void_entry.visible) # 5
-	assert_eq(str(void_entry.skip_reason), "void")
+	assert_eq(str(void_entry.skip_reason), "cell_void")
 
 
 func test_07_to_13_render_plan_policies_and_asset_errors() -> void:

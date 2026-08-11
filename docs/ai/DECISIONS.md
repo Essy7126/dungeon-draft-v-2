@@ -1,5 +1,42 @@
 # Décisions d’architecture
 
+## ACHILLES_ODYSSEY_TEST_RUN_V1 — contenu, économie et isolation
+
+- Date : 2026-08-11
+- Branche observée : `main`
+- HEAD de base : `29bf19719be6988898bdbef4c16f5d5b44d7b2d6`
+- Statut : **WORKTREE_CANDIDATE — activation CURRENT différée**
+
+Une `RunContentProfile` peut désormais définir un nombre arbitraire de héros,
+dans un ordre explicite. Le fallback sans profil reste exactement le trio
+legacy ; les runs principale et de test ne changent pas.
+
+L’économie de départ et les familles de récompenses sont une politique générique
+portée par `RunEconomyProfile`. Les anciennes runs gardent les valeurs par défaut
+historiques. L’Odyssée démarre avec deux potions mineures et un parchemin
+d’action mineur, sans équipement ni récompense d’équipement ; une phase vide est
+sautée et aucun deck principal n’est initialisé ou consommé.
+
+L’Odyssée possède ses `RunData`, profil de contenu, progression, héros, sorts,
+disciplines, ennemis, rencontres et wrappers visuels de salles. Les layouts et
+profils de présentation peints restent partagés en lecture seule. Les règles
+« déplacement sur chemin cardinal libre » et « exclure le lanceur de l’aire »
+sont des options génériques désactivées par défaut, afin de préserver le contenu
+existant.
+
+L’adaptateur visuel d’Achille est un prototype runtime dédié. Il utilise l’art
+fourni pour la direction sud-est et un fallback explicite, déterministe et
+signalé une seule fois pour les autres directions.
+
+L’Odyssée est une troisième run expérimentale parallèle : elle ne remplace ni
+la principale ni la run de test du trio. Elle sert à tester la profondeur d’un
+personnage unique sur trois salles. Achille conserve 6 PA, 3 PM et quatre
+capacités, sans attaque de base générique. Aucun système d’énergie, Ferveur,
+Éveil, rage, combo, coup signature ou intention ennemie télégraphiée n’est
+ajouté. Ses valeurs et celles de ses ennemis sont expérimentales ; toute suite
+au-delà de cette slice dépendra des playtests et métriques. Elfe, Mage et
+Guerrier restent la composition de la principale.
+
 ## DUNGEON_DRAFT_STUDIO_2_0 — contexte, autorités et transactions
 
 - Date : 2026-08-06

@@ -23,6 +23,7 @@ enum RoomFlowMode {
 )
 @export_range(1, 10, 1) var maximum_waves_per_room: int = 1
 @export var content_profile: RunContentProfile = null
+@export var economy_profile: RunEconomyProfile = null
 @export var rooms: Array[RoomData] = []
 
 
@@ -48,6 +49,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("La run doit contenir au moins une salle.")
 	if content_profile != null:
 		errors.append_array(content_profile.validation_errors())
+	if economy_profile != null:
+		errors.append_array(economy_profile.validation_errors())
 	if is_single_encounter_flow() and maximum_waves_per_room != 1:
 		errors.append(
 			"Une run SINGLE_ENCOUNTER doit limiter les combats par salle a 1."
@@ -149,6 +152,10 @@ func validation_warnings() -> PackedStringArray:
 	if content_profile == null:
 		warnings.append(
 			"RunData legacy sans content_profile : le trio historique sera utilise."
+		)
+	if economy_profile == null:
+		warnings.append(
+			"RunData sans economy_profile : l'economie historique sera utilisee."
 		)
 	return warnings
 

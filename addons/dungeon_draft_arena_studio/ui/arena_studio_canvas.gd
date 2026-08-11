@@ -120,6 +120,7 @@ var _foreground_texture: Texture2D = null
 var _terrain_entries: Dictionary = {}
 var _wall_texture_cache: Dictionary = {}
 var _brush_preview_terrain_id: StringName = &"stone"
+var _pending_vortex_cell := INVALID_CELL
 var painted_logic_only := false
 var _hovered := INVALID_CELL
 var _panning := false
@@ -185,6 +186,7 @@ func set_arena(value: ArenaDefinition) -> void:
 	path_cells.clear()
 	line_cells.clear()
 	_hovered = INVALID_CELL
+	_pending_vortex_cell = INVALID_CELL
 	if arena != null and ResourceLoader.exists(arena.background_path):
 		_texture = load(arena.background_path) as Texture2D
 	if arena != null and ResourceLoader.exists(arena.foreground_path):
@@ -225,6 +227,11 @@ func set_painted_logic_only(value: bool) -> void:
 
 func set_brush_preview_terrain(terrain_id: StringName) -> void:
 	_brush_preview_terrain_id = terrain_id
+	queue_redraw()
+
+
+func set_pending_vortex_cell(cell: Vector2i) -> void:
+	_pending_vortex_cell = cell
 	queue_redraw()
 
 
@@ -1209,6 +1216,7 @@ func _draw() -> void:
 		_draw_overlays()
 		_draw_brush_preview()
 		_draw_wall_visuals()
+		_draw_vortex_pairs()
 	if bool(layer_visibility.get("spawns", true)) and not transform_mode and not anchor_mode \
 			and (not dynamic_construction_mode or active_tool == Tool.SPAWN):
 		_draw_spawns()
@@ -1337,6 +1345,57 @@ func _draw_wall_visuals() -> void:
 			Rect2(base - Vector2(wall_size.x * 0.5, wall_size.y), wall_size),
 			false
 		)
+
+
+func _draw_vortex_pairs() -> void:
+	if arena == null or not bool(layer_visibility.get("details", true)):
+		return
+	var catalog := ArenaCatalogService.interactive(&"vortex")
+	var texture := catalog.texture if catalog != null else null
+	for pair in arena.vortex_pairs:
+		if pair == null:
+			continue
+		var entry_center := GridTransformService.cell_to_position(
+			pair.entry_cell, arena.grid_origin, arena.axis_x, arena.axis_y
+		)
+		var exit_center := GridTransformService.cell_to_position(
+			pair.exit_cell, arena.grid_origin, arena.axis_x, arena.axis_y
+		)
+		draw_line(
+			entry_center, exit_center, Color(0.67, 0.34, 1.0, 0.72),
+			_native_stroke_width(2.0), true
+		)
+		_draw_vortex_endpoint(pair.entry_cell, texture, "A")
+		_draw_vortex_endpoint(pair.exit_cell, texture, "B")
+	if _pending_vortex_cell != INVALID_CELL:
+		_draw_outline(
+			_polygon(_pending_vortex_cell), Color(0.86, 0.55, 1.0, 1.0),
+			_native_stroke_width(3.0)
+		)
+
+
+func _draw_vortex_endpoint(
+		cell: Vector2i,
+		texture: Texture2D,
+		label: String
+	) -> void:
+	var polygon := _polygon(cell)
+	if texture != null:
+		draw_polygon(
+			polygon,
+			PackedColorArray([Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE]),
+			ArenaTileProjectionService.polygon_uv(texture), texture
+		)
+	else:
+		draw_colored_polygon(polygon, Color(0.45, 0.18, 0.72, 0.62))
+	var center := GridTransformService.cell_to_position(
+		cell, arena.grid_origin, arena.axis_x, arena.axis_y
+	)
+	draw_string(
+		ThemeDB.fallback_font, center + Vector2(5, -4) / sqrt(maxf(zoom, 0.001)),
+		label, HORIZONTAL_ALIGNMENT_LEFT, -1,
+		maxi(9, int(12.0 / sqrt(maxf(zoom, 0.001)))), Color.WHITE
+	)
 
 
 func _draw_overlays() -> void:

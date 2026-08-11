@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="RunData" format=3 uid="uid://iawlltdveg3d"]
 
-[ext_resource type="Resource" path="res://data/runs/profiles/main_content_profile.tres" id="1_4p3l1"]
+[ext_resource type="Resource" uid="uid://dex56rwuy72y4" path="res://data/runs/profiles/main_content_profile.tres" id="1_4p3l1"]
 [ext_resource type="Script" uid="uid://cc8h5jsj5dk65" path="res://data/runs/run_data.gd" id="1_run"]
 [ext_resource type="Script" uid="uid://clm64nm8ki4yj" path="res://data/rooms/room_data.gd" id="2_room_type"]
-[ext_resource type="Resource" uid="uid://dr0ykpux3ooaj" path="res://data/rooms/first_run_room_01.tres" id="3_room_01"]
+[ext_resource type="Resource" uid="uid://dxrd0sncxqmx4" path="res://data/arenas/produced/room_01_forest/arena_principal.tres" id="3_4p3l1"]
 [ext_resource type="Resource" uid="uid://bnguitmin608i" path="res://data/rooms/first_run_room_02.tres" id="4_room_02"]
 [ext_resource type="Resource" uid="uid://c03acckb6btnt" path="res://data/rooms/first_run_room_03.tres" id="5_room_03"]
 [ext_resource type="Resource" uid="uid://dslrxka7pli44" path="res://data/rooms/first_run_room_04_boss.tres" id="6_room_04"]
@@ -14,4 +14,4 @@
 script = ExtResource("1_run")
 run_name = "Principal"
 content_profile = ExtResource("1_4p3l1")
-rooms = Array[ExtResource("2_room_type")]([ExtResource("3_room_01"), ExtResource("4_room_02"), ExtResource("5_room_03"), ExtResource("6_room_04"), ExtResource("7_room_05"), ExtResource("8_room_06")])
+rooms = Array[ExtResource("2_room_type")]([ExtResource("3_4p3l1"), ExtResource("4_room_02"), ExtResource("5_room_03"), ExtResource("6_room_04"), ExtResource("7_room_05"), ExtResource("8_room_06")])

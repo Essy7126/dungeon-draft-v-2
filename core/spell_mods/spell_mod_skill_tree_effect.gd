@@ -72,6 +72,9 @@ enum StatusMode {
 @export var status_timing: StatusData.PeriodicTiming = StatusData.PeriodicTiming.TURN_START
 @export var require_backstab: bool = false
 @export var require_ally_target: bool = false
+## Politique opt-in pour les charges qui ne doivent jamais franchir une case
+## bloquee. Le comportement historique reste inchange quand elle est false.
+@export var movement_requires_clear_path: bool = false
 
 
 func get_range_bonus(_caster, _spell) -> int:
@@ -574,6 +577,20 @@ func _move_caster_to_target(ctx) -> void:
 			or ctx.grid.has_unit(destination):
 		return
 	var origin: Vector2i = ctx.caster.grid_pos
+	if movement_requires_clear_path:
+		var travel_delta := destination - origin
+		if travel_delta.x != 0 and travel_delta.y != 0:
+			return
+		var travel_direction := Vector2i(
+			signi(travel_delta.x), signi(travel_delta.y)
+		)
+		var cursor := origin + travel_direction
+		while cursor != destination:
+			if not ctx.grid.is_valid(cursor) \
+					or not ctx.grid.is_walkable(cursor) \
+					or ctx.grid.has_unit(cursor):
+				return
+			cursor += travel_direction
 	if ctx.grid.relocate_unit(ctx.caster, destination):
 		ctx.movement.append({
 			"unit": ctx.caster,

@@ -1,143 +1,141 @@
 class_name DynamicSurfaceService
 extends RefCounted
 
-## Couche de surfaces branchee sur l'unique GridData du combat. Elle conserve
-## le type de terrain de base, stocke l'effet dans GridData et expose les API
-## de rendu attendues par les adaptateurs visuels.
+## Façade de compatibilité du Lab et des anciennes previews. Elle ne possède
+## aucun état : toutes les lectures et mutations délèguent au service runtime
+## partagé avec TerrainEffects.
 
 signal surface_changed(cell: Vector2i, previous_surface: int, surface: int)
 signal steam_requested(cell: Vector2i)
+signal surface_reaction(fact: Dictionary)
 
 var grid: GridData = null
 var configs: Dictionary = {}
-var _states: Dictionary = {}
+var runtime_service: TerrainSurfaceRuntimeService = null
 
 
-func configure(grid_data: GridData, surface_configs: Array[SurfaceConfig]) -> void:
+func configure(
+		grid_data: GridData,
+		surface_configs: Array[SurfaceConfig],
+		shared_runtime: TerrainSurfaceRuntimeService = null
+	) -> void:
 	assert(grid_data != null, "DynamicSurfaceService requiert le GridData existant.")
+	_disconnect_runtime()
 	grid = grid_data
 	configs.clear()
 	for config in surface_configs:
 		if config != null:
 			configs[config.surface] = config
-	_states.clear()
-	for y in range(grid.rows):
-		for x in range(grid.cols):
-			var cell := Vector2i(x, y)
-			if grid.is_terrain_interactable(cell):
-				var state := CellSurfaceState.new()
-				state.configure_base(grid.get_type(cell))
-				_states[cell] = state
+	runtime_service = shared_runtime
+	if runtime_service == null:
+		runtime_service = TerrainSurfaceRuntimeService.new(grid)
+		runtime_service.capture_base_state(null, grid)
+	elif runtime_service.grid != grid:
+		runtime_service.configure(grid)
+		runtime_service.capture_base_state(null, grid)
+	runtime_service.surface_changed.connect(_on_runtime_surface_changed)
+	runtime_service.steam_requested.connect(_on_runtime_steam_requested)
+	runtime_service.surface_reaction.connect(_on_runtime_surface_reaction)
 
 
 func apply_surface_effect(cell: Vector2i, effect: int, source_unit = null) -> Dictionary:
-	if not has_state(cell) or not configs.has(effect):
+	var terrain_effect := _compatibility_effect(effect, false)
+	if terrain_effect == null:
 		return {"handled": false, "surface": get_surface(cell), "steam": false}
-	var previous := get_surface(cell)
-	var result := TerrainInteractionResolver.resolve(previous, effect)
-	var next_surface: int = int(result.surface)
-	if next_surface == CellSurfaceState.DynamicSurface.NONE:
-		clear_surface(cell)
-	else:
-		set_surface(cell, next_surface, source_unit)
-	if bool(result.steam):
-		steam_requested.emit(cell)
-	result["handled"] = true
-	result["previous_surface"] = previous
-	return result
+	var placed := runtime_service.place_effect(cell, terrain_effect, source_unit)
+	return {
+		"handled": bool(placed.get("changed", false)) \
+			or bool(placed.get("same", false)),
+		"surface": get_surface(cell),
+		"steam": str(placed.get("reaction", "")) == "steam",
+		"previous_surface": TerrainSurfaceIdResolver.dynamic_surface(
+			StringName((placed.get("terrain_event", {}) as Dictionary).get(
+				"previous_surface", &"none"
+			))
+		),
+		"reaction": placed.get("reaction", ""),
+		"terrain_event": placed.get("terrain_event", {}),
+	}
+
+
+func apply_terrain_effect(
+		cell: Vector2i,
+		effect: TerrainEffectData,
+		source_unit = null,
+		source_spell: Spell = null,
+		duration_override: int = TerrainSurfaceRuntimeService.DURATION_UNSET
+	) -> Dictionary:
+	return runtime_service.place_effect(
+		cell, effect, source_unit, source_spell, duration_override
+	)
 
 
 func set_surface(cell: Vector2i, surface: int, source_unit = null) -> bool:
-	if not has_state(cell) or not configs.has(surface):
+	var terrain_effect := _compatibility_effect(surface, true)
+	if terrain_effect == null:
 		return false
-	var state := get_state(cell)
-	var previous: int = state.dynamic_surface
-	var config := configs[surface] as SurfaceConfig
-	state.configure(surface, config.duration_turns, source_unit, config.gameplay_flags)
-	grid.set_effect(cell, config.display_name, {
-		"duration_turns": state.duration_turns,
-		"source_unit": source_unit,
-		"gameplay_flags": state.gameplay_flags.duplicate(true),
-	})
-	surface_changed.emit(cell, previous, surface)
-	return true
+	return bool(runtime_service.place_effect(
+		cell, terrain_effect, source_unit
+	).get("changed", false))
 
 
 func clear_surface(cell: Vector2i) -> bool:
-	if not has_state(cell):
-		return false
-	var state := get_state(cell)
-	var previous: int = state.dynamic_surface
-	state.clear_dynamic()
-	grid.clear_effect(cell)
-	if previous != CellSurfaceState.DynamicSurface.NONE:
-		surface_changed.emit(cell, previous, CellSurfaceState.DynamicSurface.NONE)
-	return true
+	return runtime_service != null and runtime_service.clear_effect(cell)
 
 
 func refresh_surface_layer() -> void:
-	for cell in _states:
-		var state := get_state(cell)
-		if state.dynamic_surface == CellSurfaceState.DynamicSurface.NONE:
-			grid.clear_effect(cell)
-			continue
-		var config := configs.get(state.dynamic_surface) as SurfaceConfig
-		if config != null:
-			grid.set_effect(cell, config.display_name, {
-				"duration_turns": state.duration_turns,
-				"source_unit": state.source_unit,
-				"gameplay_flags": state.gameplay_flags.duplicate(true),
-			})
+	# L'état et GridData sont synchronisés à chaque mutation par l'autorité
+	# runtime. Cette méthode historique reste volontairement idempotente.
+	pass
 
 
 func advance_turn() -> Array[Vector2i]:
+	var before := active_cells()
+	runtime_service.tick_all_effects()
+	var after := active_cells()
 	var expired: Array[Vector2i] = []
-	for cell in _states:
-		var state := get_state(cell)
-		if not state.is_dynamic():
-			continue
-		state.duration_turns = maxi(0, state.duration_turns - 1)
-		if state.duration_turns == 0:
+	for cell in before:
+		if not after.has(cell):
 			expired.append(cell)
-		else:
-			refresh_cell(cell)
-	for cell in expired:
-		clear_surface(cell)
 	return expired
 
 
-func refresh_cell(cell: Vector2i) -> void:
-	if not has_state(cell):
-		return
-	var state := get_state(cell)
-	if not state.is_dynamic():
-		grid.clear_effect(cell)
-		return
-	var config := configs.get(state.dynamic_surface) as SurfaceConfig
-	if config != null:
-		grid.set_effect(cell, config.display_name, {
-			"duration_turns": state.duration_turns,
-			"source_unit": state.source_unit,
-			"gameplay_flags": state.gameplay_flags.duplicate(true),
-		})
+func refresh_cell(_cell: Vector2i) -> void:
+	# Conservé pour compatibilité ; aucune seconde écriture n'est nécessaire.
+	pass
 
 
 func reset() -> void:
-	for cell in _states:
-		clear_surface(cell)
+	if runtime_service != null:
+		runtime_service.reset()
 
 
 func has_state(cell: Vector2i) -> bool:
-	return _states.has(cell)
+	return runtime_service != null and runtime_service.has_state(cell)
 
 
 func get_state(cell: Vector2i) -> CellSurfaceState:
-	return _states.get(cell) as CellSurfaceState
+	return runtime_service.get_state(cell) if runtime_service != null else null
 
 
 func get_surface(cell: Vector2i) -> int:
-	var state := get_state(cell)
-	return state.dynamic_surface if state != null else CellSurfaceState.DynamicSurface.NONE
+	return runtime_service.get_surface(cell) \
+		if runtime_service != null else CellSurfaceState.DynamicSurface.NONE
+
+
+func get_surface_id(cell: Vector2i) -> StringName:
+	return runtime_service.get_surface_id(cell) \
+		if runtime_service != null else &"none"
+
+
+func get_visual_terrain_id(cell: Vector2i) -> StringName:
+	return runtime_service.get_visual_terrain_id(cell) \
+		if runtime_service != null else &""
+
+
+func get_remaining_duration(cell: Vector2i) -> int:
+	return runtime_service.get_remaining_duration(cell) \
+		if runtime_service != null else 0
 
 
 func get_turn_start_damage(cell: Vector2i) -> int:
@@ -158,11 +156,61 @@ func get_movement_cost(cell: Vector2i) -> int:
 
 
 func state_count() -> int:
-	return _states.size()
+	return runtime_service.state_count() if runtime_service != null else 0
 
 
 func state_cells() -> Array[Vector2i]:
-	var cells: Array[Vector2i] = []
-	for cell in _states:
-		cells.append(cell)
-	return cells
+	return runtime_service.state_cells() \
+		if runtime_service != null else [] as Array[Vector2i]
+
+
+func active_cells() -> Array[Vector2i]:
+	return runtime_service.active_surface_cells() \
+		if runtime_service != null else [] as Array[Vector2i]
+
+
+func _compatibility_effect(surface: int, replace_same: bool) -> TerrainEffectData:
+	var config := configs.get(surface) as SurfaceConfig
+	if config == null or surface == CellSurfaceState.DynamicSurface.NONE:
+		return null
+	var effect := TerrainEffectData.new()
+	effect.effect_name = config.display_name.to_lower()
+	effect.surface_id = TerrainSurfaceIdResolver.surface_id_for_dynamic(surface)
+	effect.visual_terrain_id = TerrainSurfaceIdResolver.visual_id_for_surface(
+		effect.surface_id
+	)
+	effect.duration = config.duration_turns
+	effect.damage = config.turn_start_damage
+	effect.trigger = TerrainEffectData.Trigger.TURN_START
+	effect.same_surface_policy = (
+		TerrainEffectData.SameSurfacePolicy.REPLACE
+		if replace_same else TerrainEffectData.SameSurfacePolicy.IGNORE
+	)
+	return effect
+
+
+func _on_runtime_surface_changed(
+		cell: Vector2i,
+		previous_surface: int,
+		surface: int
+	) -> void:
+	surface_changed.emit(cell, previous_surface, surface)
+
+
+func _on_runtime_steam_requested(cell: Vector2i) -> void:
+	steam_requested.emit(cell)
+
+
+func _on_runtime_surface_reaction(fact: Dictionary) -> void:
+	surface_reaction.emit(fact)
+
+
+func _disconnect_runtime() -> void:
+	if runtime_service == null:
+		return
+	if runtime_service.surface_changed.is_connected(_on_runtime_surface_changed):
+		runtime_service.surface_changed.disconnect(_on_runtime_surface_changed)
+	if runtime_service.steam_requested.is_connected(_on_runtime_steam_requested):
+		runtime_service.steam_requested.disconnect(_on_runtime_steam_requested)
+	if runtime_service.surface_reaction.is_connected(_on_runtime_surface_reaction):
+		runtime_service.surface_reaction.disconnect(_on_runtime_surface_reaction)

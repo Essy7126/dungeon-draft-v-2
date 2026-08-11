@@ -1,5 +1,25 @@
 # Baseline d’équilibrage structurelle
 
+## L’Odyssée — baseline expérimentale, non production
+
+Ces valeurs décrivent le prototype Achille solo et ne remplacent pas la baseline
+de production. La slice contient trois salles, un seul héros et une rencontre
+unique par salle. Achille possède 110 PV, initiative 14, 6 PA, 3 PM et attaque 18,
+sans attaque générique. Ses quatre actions, limitées à une utilisation par
+combat, sont Estoc (2 PA, portée 1–2, 9 dégâts), Avancée (2 PA, ligne 3,
+5 dégâts puis déplacement), Balayage (3 PA, adjacent, 6 dégâts et poussée 1) et
+Garde (2 PA, bouclier 10).
+
+Les trois rencontres sont fixes : deux tirailleurs ; deux tirailleurs et un
+garde ; un champion et un tirailleur. Le tirailleur vaut 45 PV / 10 initiative /
+4 PA / 4 PM / 10 attaque ; le garde 70 / 8 / 4 / 3 / 12 avec 20 armure ; le
+champion 115 / 9 / 4 / 3 / 16 avec 30 armure. La cible de durée reste
+18–25 minutes pour trois rencontres, à mesurer lors de la revue humaine.
+
+L’économie expérimentale accorde deux potions de soin mineures et un parchemin
+d’action mineur au départ, aucun équipement et aucune récompense d’équipement.
+Aucune de ces valeurs n’est transférée automatiquement à la principale.
+
 > Statut : **candidate locale, non promue CURRENT**.
 
 Cette migration ne modifie aucune statistique de héros, d’ennemi, de sort,

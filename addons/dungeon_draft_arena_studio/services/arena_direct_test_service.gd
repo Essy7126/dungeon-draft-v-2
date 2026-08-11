@@ -5,7 +5,7 @@ extends RefCounted
 const REQUEST_PATH := "user://arena_studio/test_request.json"
 const WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
 const LAST_RESULT_PATH := WORK_ROOT + "/last_result.json"
-const CONTRACT_VERSION := 2
+const CONTRACT_VERSION := 3
 const QUICK_FIXTURE_HEROES := [
 	"res://data/units/alliés/elfe.tres",
 	"res://data/units/alliés/mage.tres",
@@ -20,7 +20,19 @@ static func prepare(
 	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
-	var context_id := "%s_%d" % [arena.arena_id, Time.get_ticks_usec()]
+	if not arena.vortex_pairs.is_empty():
+		return {
+			"ok": false,
+			"error": "vortex_runtime_uncertified",
+			"pair_count": arena.vortex_pairs.size(),
+			"production_placeable": false,
+			"produced_bundle_loaded": false,
+		}
+	_consume_previous_request()
+	var generation_id := "%d_%d" % [
+		int(Time.get_unix_time_from_system() * 1000000.0), Time.get_ticks_usec(),
+	]
+	var context_id := "%s_%s" % [arena.arena_id, generation_id]
 	var context_root := WORK_ROOT.path_join(context_id)
 	var context_absolute := ProjectSettings.globalize_path(context_root).simplify_path()
 	var root_absolute := ProjectSettings.globalize_path(WORK_ROOT).simplify_path()
@@ -30,17 +42,24 @@ static func prepare(
 		return {"ok": false, "error": "context_directory_failed"}
 
 	var test_arena := ArenaDefinition.new()
+	var working_topology := ArenaTopologySignatureService.build(arena)
 	if not RoomDataSnapshotService.restore(
 			test_arena, RoomDataSnapshotService.capture(arena)
 		):
 		return _failed(context_root, "working_copy_restore_failed")
+	var restored_topology := ArenaTopologySignatureService.build(test_arena)
+	if working_topology.topology_hash != restored_topology.topology_hash:
+		return _failed(context_root, "snapshot_topology_mismatch", {
+			"working_topology_hash": working_topology.topology_hash,
+			"restored_topology_hash": restored_topology.topology_hash,
+		})
 	if not ArenaRuntimeBridge.sync_runtime_resources(test_arena):
 		return _failed(context_root, "runtime_projection_sync_failed")
 	var arena_path := context_root.path_join("arena.tres")
 	if ResourceSaver.save(test_arena, arena_path) != OK:
 		return _failed(context_root, "working_copy_save_failed")
 	var temporary := ResourceLoader.load(
-		arena_path, "", ResourceLoader.CACHE_MODE_IGNORE
+		arena_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as ArenaDefinition
 	if temporary == null:
 		return _failed(context_root, "temporary_copy_load_failed")
@@ -48,16 +67,30 @@ static func prepare(
 	var working_fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
 	var temporary_fingerprint := ArenaSnapshotService.arena_fingerprint(temporary)
 	var runtime_state := ArenaRuntimeProjectionService.build(temporary)
+	var temporary_topology := ArenaTopologySignatureService.build(temporary)
+	var runtime_topology := ArenaTopologySignatureService.build(
+		runtime_state.arena_projection if runtime_state != null else null
+	)
 	var runtime_fingerprint := (
 		ArenaSnapshotService.arena_fingerprint(runtime_state.arena_projection)
 		if runtime_state != null and runtime_state.arena_projection != null else ""
 	)
 	if working_fingerprint != temporary_fingerprint \
-			or working_fingerprint != runtime_fingerprint:
+			or working_fingerprint != runtime_fingerprint \
+			or working_topology.topology_hash != temporary_topology.topology_hash \
+			or working_topology.topology_hash != runtime_topology.topology_hash:
 		return _failed(context_root, "fingerprint_mismatch", {
 			"working_fingerprint": working_fingerprint,
 			"temporary_fingerprint": temporary_fingerprint,
 			"runtime_fingerprint": runtime_fingerprint,
+			"working_topology_hash": working_topology.topology_hash,
+			"temporary_topology_hash": temporary_topology.topology_hash,
+			"runtime_topology_hash": runtime_topology.topology_hash,
+		})
+	var render_plan := ArenaTerrainRenderPlanService.build(temporary)
+	if not bool(render_plan.get("ok", false)):
+		return _failed(context_root, "render_plan_invalid", {
+			"errors": render_plan.get("errors", []),
 		})
 
 	var run_path := ""
@@ -80,6 +113,9 @@ static func prepare(
 		"run_path": run_path,
 		"configuration": str(configuration),
 		"context_root": context_root,
+		"context_id": context_id,
+		"generation_id": generation_id,
+		"transaction_id": generation_id,
 		"cleanup_on_load": true,
 		"probe_runtime": true,
 		"result_path": LAST_RESULT_PATH,
@@ -87,11 +123,20 @@ static func prepare(
 		"temporary_fingerprint": temporary_fingerprint,
 		"runtime_fingerprint": runtime_fingerprint,
 		"fingerprints_identical": true,
+		"working_topology_hash": working_topology.topology_hash,
+		"temporary_topology_hash": temporary_topology.topology_hash,
+		"runtime_topology_hash": runtime_topology.topology_hash,
+		"topology_hashes_identical": true,
+		"visible_floor_hash": working_topology.visible_floor_hash,
+		"expected_floor_hash": str(render_plan.expected_floor_hash),
+		"expected_floor_cells": render_plan.expected_floor_cells.duplicate(),
+		"removed_cells": working_topology.removed_cells.duplicate(),
 		"camera_mode": "STUDIO_MATCH",
 		"exact_run_content": exact_run_content,
 		"fixture_fallback": not exact_run_content,
 		"heroes": [] if exact_run_content else QUICK_FIXTURE_HEROES,
 		"created_at": Time.get_datetime_string_from_system(true),
+		"created_at_unix_usec": int(Time.get_unix_time_from_system() * 1000000.0),
 	}
 	if not _write_json(REQUEST_PATH, request):
 		return _failed(context_root, "request_write_failed")
@@ -105,6 +150,15 @@ static func prepare(
 		"temporary_fingerprint": temporary_fingerprint,
 		"runtime_fingerprint": runtime_fingerprint,
 		"fingerprints_identical": true,
+		"working_topology_hash": working_topology.topology_hash,
+		"temporary_topology_hash": temporary_topology.topology_hash,
+		"runtime_topology_hash": runtime_topology.topology_hash,
+		"topology_hashes_identical": true,
+		"visible_floor_hash": working_topology.visible_floor_hash,
+		"expected_floor_hash": str(render_plan.expected_floor_hash),
+		"expected_floor_cells": render_plan.expected_floor_cells.duplicate(),
+		"removed_cells": working_topology.removed_cells.duplicate(),
+		"generation_id": generation_id,
 		"produced_bundle_loaded": false,
 	}
 
@@ -166,6 +220,19 @@ static func _write_json(path: String, value: Dictionary) -> bool:
 	file.store_string(JSON.stringify(value, "  "))
 	file.close()
 	return true
+
+
+static func _consume_previous_request() -> void:
+	if not FileAccess.file_exists(REQUEST_PATH):
+		return
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(REQUEST_PATH))
+	if parsed is Dictionary:
+		var context_root := str((parsed as Dictionary).get("context_root", ""))
+		if context_root.begins_with(WORK_ROOT + "/"):
+			cleanup_context(parsed)
+	var request_absolute := ProjectSettings.globalize_path(REQUEST_PATH)
+	if FileAccess.file_exists(request_absolute):
+		DirAccess.remove_absolute(request_absolute)
 
 
 static func _remove_owned_tree(path: String, absolute_root: String) -> void:

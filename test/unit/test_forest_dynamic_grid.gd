@@ -98,7 +98,7 @@ func test_table_centrale_des_interactions_est_complete() -> void:
 	_assert_interaction(none, water, water, false)
 	_assert_interaction(none, ice, ice, false)
 	_assert_interaction(fire, water, none, true)
-	_assert_interaction(fire, ice, water, true)
+	_assert_interaction(fire, ice, water, false)
 	_assert_interaction(water, ice, ice, false)
 	_assert_interaction(ice, fire, water, false)
 	_assert_interaction(water, fire, none, true)

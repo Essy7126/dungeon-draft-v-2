@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ArenaTerrainDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_terrain_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/neutral.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"neutral"
+display_name = "Neutre beige"
+base_texture = ExtResource("2")
+cell_type = 0
+walkable = true
+movement_cost = 1
+editor_color = Color(0.82, 0.76, 0.62, 1)
+dynamic_catalog = true
+lab_surface = -1
+interaction_element = &"NONE"

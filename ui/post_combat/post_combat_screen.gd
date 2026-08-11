@@ -131,7 +131,7 @@ func advance_or_skip() -> void:
 		Phase.COMBAT_STATS:
 			_enter_phase(Phase.PROGRESSION)
 		Phase.PROGRESSION:
-			if _final_room:
+			if _final_room or not GameManager.are_equipment_rewards_enabled():
 				_begin_transition()
 			elif GameManager.can_claim_post_combat_equipment(report.report_id):
 				_enter_phase(Phase.REWARD_SELECTION)
@@ -556,15 +556,26 @@ func _start_stats_reveal() -> void:
 func _start_progression_reveal() -> void:
 	phase_title.text = "PROGRESSION DES DISCIPLINES"
 	status_label.text = "Récapitulatif — aucun nouveau choix n’est demandé."
-	continue_button.text = (
-		"TERMINER LA RUN"
-		if _final_room else "CHOISIR L'ÉQUIPEMENT SÉCURISÉ"
+	var equipment_rewards_enabled := (
+		GameManager.are_equipment_rewards_enabled()
 	)
+	if _final_room:
+		continue_button.text = "TERMINER LA RUN"
+	elif equipment_rewards_enabled:
+		continue_button.text = "CHOISIR L'ÉQUIPEMENT SÉCURISÉ"
+	else:
+		continue_button.text = "PASSER À LA SALLE SUIVANTE"
 	if not _room_completed:
-		status_label.text = (
-			"Salle quittée avant son terme — coffre perdu, "
-			+ "équipement sécurisé."
-		)
+		if equipment_rewards_enabled:
+			status_label.text = (
+				"Salle quittée avant son terme — coffre perdu, "
+				+ "équipement sécurisé."
+			)
+		else:
+			status_label.text = (
+				"Progression conservée — aucune récompense d'équipement "
+				+ "pour cette run."
+			)
 	continue_button.disabled = false
 	_prepare_progression_initial_values()
 	_animation_active = true
@@ -634,7 +645,7 @@ func _finish_current_animation() -> void:
 func _begin_transition() -> void:
 	if _transition_requested:
 		return
-	if not _final_room and (
+	if not _final_room and GameManager.are_equipment_rewards_enabled() and (
 		GameManager.can_claim_post_combat_equipment(report.report_id)
 		or not _reward_applied
 	):

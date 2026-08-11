@@ -205,7 +205,8 @@ static func expected_visual_signature(arena: ArenaDefinition) -> Dictionary:
 			"cell_type": int(entry.cell_type),
 			"texture_path": str(entry.texture_path),
 			"parent_role": "arena_tiles_layer",
-			"renderer_role": "terrain_floor",
+			"renderer_role": "arena_floor",
+			"topology_hash": str(entry.get("topology_hash", "")),
 			"position": center,
 			"transform": ArenaTileProjectionService.sprite_transform(
 				entry.texture, polygon, center
@@ -317,7 +318,7 @@ static func actual_visual_signature(assembly: Dictionary) -> Dictionary:
 			"parent_role": str(decoration.get_meta("parent_role", &"")),
 			"visible": decoration.visible,
 		}
-	return {
+	var signature := {
 		"terrains": terrain_report.get("cells", {}),
 		"walls": walls,
 		"decorations": decorations,
@@ -325,6 +326,20 @@ static func actual_visual_signature(assembly: Dictionary) -> Dictionary:
 		"rendered_wall_count": walls.size(),
 		"errors": terrain_report.get("errors", []),
 	}
+	var plan := assembly.get("render_plan", {}) as Dictionary
+	var topology := plan.get("topology", {}) as Dictionary
+	var floor_parity := ArenaTopologyParityReport.compare_floor_sets(
+		plan.get("expected_floor_cells", []),
+		(terrain_report.get("cells", {}) as Dictionary).keys(),
+		topology.get("removed_cells", [])
+	)
+	signature["topology_hash"] = str(plan.get("topology_hash", ""))
+	signature["expected_floor_hash"] = floor_parity.expected_floor_hash
+	signature["rendered_floor_hash"] = floor_parity.rendered_floor_hash
+	signature["missing_cells"] = floor_parity.missing_cells
+	signature["unexpected_cells"] = floor_parity.unexpected_cells
+	signature["removed_cells_rendered"] = floor_parity.removed_cells_rendered
+	return signature
 
 
 static func compare_expected_to_actual(

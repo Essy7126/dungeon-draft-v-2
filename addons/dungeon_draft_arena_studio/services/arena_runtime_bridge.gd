@@ -99,12 +99,20 @@ static func runtime_signature(arena: ArenaDefinition) -> Dictionary:
 	var centers := {}
 	var display_centers := {}
 	var types := {}
+	var runtime_hole_cells: Array[String] = []
+	var runtime_interactable_cells: Array[String] = []
 	for y in range(projection.grid_size.y):
 		for x in range(projection.grid_size.x):
 			var cell := Vector2i(x, y)
-			centers["%d,%d" % [x, y]] = projection.painted_map_visual_data.cell_to_image(cell)
-			display_centers["%d,%d" % [x, y]] = projection.painted_map_visual_data.cell_to_display(cell)
-			types["%d,%d" % [x, y]] = grid.get_type(cell)
+			var key := ArenaTopologySignatureService.coordinate_key(cell)
+			centers[key] = projection.painted_map_visual_data.cell_to_image(cell)
+			display_centers[key] = projection.painted_map_visual_data.cell_to_display(cell)
+			types[key] = grid.get_type(cell)
+			if grid.get_type(cell) == GridData.CellType.HOLE:
+				runtime_hole_cells.append(key)
+			if grid.is_terrain_interactable(cell):
+				runtime_interactable_cells.append(key)
+	var topology := ArenaTopologySignatureService.build(projection)
 	return {
 		"size": projection.grid_size,
 		"centers": centers,
@@ -113,6 +121,13 @@ static func runtime_signature(arena: ArenaDefinition) -> Dictionary:
 		"hero_spawns": projection.hero_spawn_zone.duplicate(),
 		"enemy_spawns": projection.enemy_spawn_zone.duplicate(),
 		"battle_scene": projection.battle_scene.resource_path if projection.battle_scene != null else "",
+		"defined_cells": topology.defined_cells.duplicate(),
+		"visible_floor_cells": topology.visible_floor_cells.duplicate(),
+		"void_cells": topology.void_cells.duplicate(),
+		"runtime_hole_cells": runtime_hole_cells,
+		"runtime_interactable_cells": runtime_interactable_cells,
+		"topology_hash": topology.topology_hash,
+		"topology": topology,
 	}
 
 
@@ -133,7 +148,8 @@ static func _build_layout_rows(arena: ArenaDefinition) -> PackedStringArray:
 			var cell := Vector2i(x, y)
 			var definition := arena.get_cell_definition(cell)
 			var obstacle := arena.obstacle_at(cell)
-			if definition == null or not definition.defined or definition.border:
+			if ArenaTopologySignatureService.is_void_definition(definition) \
+					or definition.border:
 				row += RoomGridLayout.VOID
 			elif obstacle != null and obstacle.blocks_movement and obstacle.wall_id == &"":
 				row += RoomGridLayout.BLOCKED \
@@ -149,7 +165,8 @@ static func _build_layout_rows(arena: ArenaDefinition) -> PackedStringArray:
 static func _build_type_overrides(arena: ArenaDefinition) -> Dictionary:
 	var overrides := {}
 	for definition in arena.cells:
-		if definition == null or not definition.defined or definition.border:
+		if ArenaTopologySignatureService.is_void_definition(definition) \
+				or definition.border:
 			continue
 		var obstacle := arena.obstacle_at(definition.coordinate)
 		if obstacle != null and obstacle.blocks_movement and obstacle.wall_id == &"":

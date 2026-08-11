@@ -47,6 +47,7 @@ const _ARENA_FIELDS := {
 	&"spawns": true,
 	&"objectives": true,
 	&"decorations": true,
+	&"vortex_pairs": true,
 	&"calibration_cells": true,
 	&"calibration_pixels": true,
 	&"presentation_profile_path": true,

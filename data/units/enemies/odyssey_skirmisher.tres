@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonMeleeIsoUnitView.tscn" id="2_visual"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonVisual3D.tscn" id="3_preview"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"odyssey_skirmisher"
+unit_name = "Myrmidon escarmoucheur"
+description = "Adversaire rapide conçu pour le prototype L'Odyssée."
+team = 1
+max_hp = 45
+initiative = 10
+max_ap = 4
+max_mp = 4
+attack_power = 10
+visual_scene = ExtResource("2_visual")
+preview_visual_scene = ExtResource("3_preview")
+basic_attack_enabled = true
+faction_id = &"odyssey_opposition"
+tactical_role_id = &"odyssey_skirmisher"

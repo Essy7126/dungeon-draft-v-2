@@ -357,3 +357,4 @@ static func _write_report(
 		"details": details,
 	}, true)
 	ArenaProductionService._write_json(directory.path_join("transaction_report.json"), report)
+	ArenaBundleReferenceService.invalidate_transaction_cache()

@@ -103,6 +103,8 @@ var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
 var _arena_tile_parent: Node2D = null
+var arena_dynamic_surface_layer: Node2D = null
+var terrain_surface_visual_adapter: DynamicSurfaceVisualAdapter = null
 var generated_arena_seed: int = 0
 var _generated_arena_features: Dictionary = {}
 var _arena_feature_renderer: Node = null
@@ -174,9 +176,11 @@ func _ready() -> void:
 	_setup_logic()
 	_import_terrain_from_tilemap()
 	_generate_arena_layout()
+	terrain_effects.capture_base_state(room_data, grid)
 	_setup_view() 
 	_apply_direct_test_view_options()
 	_setup_arena_visuals()
+	_setup_dynamic_surface_visuals()
 	EventBus.battle_view_ready.emit(grid_view)
 	_setup_camera()
 	if _direct_test_flag("hud_enabled", true):
@@ -310,6 +314,63 @@ func _setup_arena_visuals() -> void:
 		room_data.arena_visual_profile
 	)
 	_arena_feature_renderer.render(visual_cells)
+
+
+func _setup_dynamic_surface_visuals() -> void:
+	if terrain_effects == null or terrain_effects.runtime_service == null \
+			or grid_view == null:
+		return
+	var floor_parent := _find_or_create_arena_tile_parent(false)
+	arena_dynamic_surface_layer = get_node_or_null(
+		"ArenaDynamicSurfaceLayer"
+	) as Node2D
+	if arena_dynamic_surface_layer == null:
+		arena_dynamic_surface_layer = Node2D.new()
+		arena_dynamic_surface_layer.name = "ArenaDynamicSurfaceLayer"
+		add_child(arena_dynamic_surface_layer)
+	arena_dynamic_surface_layer.y_sort_enabled = false
+	arena_dynamic_surface_layer.set_meta(
+		"visual_layer", &"arena_dynamic_surface"
+	)
+	if floor_parent.get_parent() == self and grid_view.get_parent() == self:
+		move_child(arena_dynamic_surface_layer, grid_view.get_index())
+	terrain_surface_visual_adapter = DynamicSurfaceVisualAdapter.new()
+	terrain_surface_visual_adapter.name = "TerrainSurfaceVisualAdapter"
+	add_child(terrain_surface_visual_adapter)
+	terrain_surface_visual_adapter.configure(
+		terrain_effects.runtime_service,
+		grid_view,
+		arena_dynamic_surface_layer,
+		room_data.theme_id if room_data is ArenaDefinition else &"forest"
+	)
+
+
+func terrain_surface_visual_report() -> Dictionary:
+	var active := terrain_effects.active_surface_cells() \
+		if terrain_effects != null else [] as Array[Vector2i]
+	var rendered := terrain_surface_visual_adapter.rendered_cells() \
+		if terrain_surface_visual_adapter != null else [] as Array[Vector2i]
+	var missing: Array[Vector2i] = []
+	var unexpected: Array[Vector2i] = []
+	for cell in active:
+		if terrain_effects.get_visual_terrain_id(cell) != &"" \
+				and not rendered.has(cell):
+			missing.append(cell)
+	for cell in rendered:
+		if not active.has(cell):
+			unexpected.append(cell)
+	return {
+		"active_cells": active,
+		"rendered_cells": rendered,
+		"missing_cells": missing,
+		"unexpected_cells": unexpected,
+		"duplications": (
+			terrain_surface_visual_adapter.renderer.actual_render_report()
+				.get("rendered_terrain_node_count", 0) - rendered.size()
+			if terrain_surface_visual_adapter != null else 0
+		),
+	}
+
 func _find_or_create_arena_tile_parent(y_sorted := true) -> Node2D:
 	if is_instance_valid(_arena_tile_parent):
 		_arena_tile_parent.y_sort_enabled = y_sorted

@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="VFXProfile" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://vfx/data/vfx_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://vfx/data/vfx_sequence_data.gd" id="2_sequence"]
+[ext_resource type="Script" path="res://vfx/data/vfx_module_data.gd" id="3_module"]
+
+[sub_resource type="Curve" id="Curve_flash"]
+_data = [Vector2(0, 0), 0.0, 4.0, 0, 0, Vector2(0.18, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Resource" id="Module_lightning"]
+script = ExtResource("3_module")
+module_id = &"multi_bolts"
+module_type = &"LightningModule"
+duration = 0.68
+seed_offset = 101
+context_requirements = Array[StringName]([&"origin_world", &"impact_world_points"])
+primary_color = Color(0.5, 0.82, 1, 0.98)
+secondary_color = Color(0.88, 0.96, 1, 0.8)
+intensity = 1.15
+response_curve = SubResource("Curve_flash")
+parameters = {"segments": 13, "jitter": 19.0}
+
+[sub_resource type="Resource" id="Module_impacts"]
+script = ExtResource("3_module")
+module_id = &"individual_impacts"
+module_type = &"ParticleBurstModule"
+start_offset = 0.18
+duration = 0.58
+seed_offset = 209
+context_requirements = Array[StringName]([&"impact_world_points"])
+primary_color = Color(0.72, 0.9, 1, 0.9)
+parameters = {"count": 9}
+
+[sub_resource type="Resource" id="Sequence_play"]
+script = ExtResource("2_sequence")
+sequence_id = &"play"
+display_name = "Multi-target strike"
+modules = Array[ExtResource("3_module")]([SubResource("Module_lightning"), SubResource("Module_impacts")])
+
+[resource]
+script = ExtResource("1_profile")
+schema_version = 1
+profile_id = &"test.lightning.multi_target"
+display_name = "Lightning Multi-target — TEST"
+category = &"SYSTEM_LIGHTNING"
+render_policy = &"SYSTEM_PROCEDURAL"
+art_status = &"TECHNICAL_PLACEHOLDER"
+tags = Array[StringName]([&"lightning", &"multi_target", &"test"])
+sequences = Array[ExtResource("2_sequence")]([SubResource("Sequence_play")])
+exposed_parameters = {"intensity": 1.0, "jitter": 19.0, "seed": 424242}
+context_requirements = Array[StringName]([&"origin_world", &"impact_world_points"])
+maximum_duration = 1.0
+quality_policy = &"SCALABLE"

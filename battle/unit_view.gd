@@ -68,6 +68,10 @@ func cancel_pending_visual_actions() -> void:
 	_optional_visual_action_finished = false
 	_suppress_next_attack_event_visual = false
 	_disconnect_release_callables()
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("cancel_pending_visual_actions") \
+			and (not is_instance_valid(unit) or unit.is_alive):
+		_optional_visual.cancel_pending_visual_actions()
 
 
 func _is_async_context_valid(generation: int) -> bool:

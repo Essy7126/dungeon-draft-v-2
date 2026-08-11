@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ArenaSpatialInteractiveDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_spatial_interactive_definition.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://66hioq3deup0" path="res://tools/labs/dynamic_arena/assets/raw/vortex.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"vortex"
+display_name = "Paire de vortex"
+texture = ExtResource("2")
+traversal_contract = &"enter_cell"
+runtime_supported = false
+pathfinding_certified = false
+ai_certified = false
+editor_placeable = true
+production_placeable = false

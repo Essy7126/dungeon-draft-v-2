@@ -7,12 +7,13 @@ func before_each() -> void:
 
 func test_terrain_catalog_preserves_every_historical_value() -> void:
 	assert_eq(ArenaTerrainRegistry.all_ids(true), [
-		&"ice", &"lava", &"normal", &"stone", &"void", &"water",
+		&"ice", &"lava", &"neutral", &"normal", &"stone", &"void", &"water",
 	])
 	var expected := {
 		&"void": [GridData.CellType.HOLE, false, "", "101722"],
 		&"normal": [GridData.CellType.NORMAL, true, "stone.png", "a8b5c3"],
 		&"stone": [GridData.CellType.NORMAL, true, "stone.png", "a8b5c3"],
+		&"neutral": [GridData.CellType.NORMAL, true, "neutral.png", "d1c29e"],
 		&"water": [GridData.CellType.NORMAL, true, "water.png", "38c8ed"],
 		&"ice": [GridData.CellType.ICE, true, "ice.png", "c8f4ff"],
 		&"lava": [GridData.CellType.WALL, false, "lava.png", "ff6537"],

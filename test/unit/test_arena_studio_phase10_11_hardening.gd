@@ -67,7 +67,8 @@ func test_production_summary_dashboard_and_guided_tour_cover_beginner_contract()
 	)
 	assert_true("Vous allez" in source)
 	assert_true("la rencontre, les vagues et les récompenses" in source)
-	assert_true("Intégrer dans %s — %s salle %d" in source)
+	assert_true("Vérifier et intégrer dans %s — %s salle %d" in source)
+	assert_true("Pourquoi l'intégration est-elle indisponible ?" in source)
 	assert_true("PRODUCTIONS ET RÉCUPÉRATIONS" in source)
 
 
@@ -89,6 +90,7 @@ func test_production_dialog_keeps_actions_visible_at_1200_by_896() -> void:
 	assert_lte(dialog.size.y, 896)
 	assert_true(primary.visible)
 	assert_true(cancel.visible)
+	assert_false(primary.disabled)
 	assert_lte(primary.get_global_rect().end.y, float(dialog.size.y))
 	assert_lte(cancel.get_global_rect().end.y, float(dialog.size.y))
 	dialog.hide()

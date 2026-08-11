@@ -22,6 +22,10 @@ static func build(
 		"render_entries": [],
 		"expected_terrain_cell_count": 0,
 		"expected_by_terrain_id": {},
+		"expected_floor_cells": [],
+		"expected_floor_hash": "",
+		"topology_hash": "",
+		"topology": {},
 		"skipped_cells": [],
 		"skip_reasons": {},
 		"warnings": [],
@@ -30,6 +34,9 @@ static func build(
 	if arena == null:
 		plan.errors.append("arena_missing")
 		return plan
+	var topology := ArenaTopologySignatureService.build(arena)
+	plan.topology = topology
+	plan.topology_hash = topology.topology_hash
 	profile = profile if profile != null else arena.modular_visual_profile
 	var cache_key := _cache_key(arena, profile)
 	if _cache.has(cache_key):
@@ -65,10 +72,13 @@ static func build(
 		if definition == null:
 			plan.errors.append("missing_cell_resource")
 			continue
-		var entry := _entry_for(arena, profile, definition)
+		var entry := _entry_for(arena, profile, definition, topology.topology_hash)
 		plan.entries.append(entry)
 		if bool(entry.visible):
 			plan.render_entries.append(entry)
+			plan.expected_floor_cells.append(
+				ArenaTopologySignatureService.coordinate_key(entry.cell)
+			)
 			plan.expected_terrain_cell_count += 1
 			var terrain_key := str(entry.terrain_id)
 			plan.expected_by_terrain_id[terrain_key] = int(
@@ -88,6 +98,12 @@ static func build(
 			plan.errors.append("%s:%d,%d" % [
 				entry_error, definition.coordinate.x, definition.coordinate.y,
 			])
+	plan.expected_floor_cells = ArenaTopologySignatureService.normalized_keys(
+		plan.expected_floor_cells
+	)
+	plan.expected_floor_hash = ArenaTopologySignatureService.hash_keys(
+		plan.expected_floor_cells
+	)
 	plan.ok = plan.errors.is_empty()
 	plan["cache_hit"] = false
 	_cache[cache_key] = plan.duplicate(true)
@@ -122,7 +138,10 @@ static func entry_for(
 	if definition == null:
 		return _missing_entry(cell, "cell_undefined")
 	profile = profile if profile != null else arena.modular_visual_profile
-	return _entry_for(arena, profile, definition)
+	return _entry_for(
+		arena, profile, definition,
+		str(ArenaTopologySignatureService.build(arena).topology_hash)
+	)
 
 
 static func policy_name(policy: int) -> String:
@@ -136,7 +155,8 @@ static func policy_name(policy: int) -> String:
 static func _entry_for(
 		arena: ArenaDefinition,
 		profile: ArenaModularVisualProfile,
-		definition: ArenaCellDefinition
+		definition: ArenaCellDefinition,
+		topology_hash := ""
 	) -> Dictionary:
 	var terrain_id := definition.terrain_id
 	var entry := {
@@ -144,65 +164,97 @@ static func _entry_for(
 		"terrain_id": terrain_id,
 		"texture": null,
 		"texture_path": "",
+		"resolved_texture_path": "",
 		"cell_type": definition.cell_type,
 		"polygon": GridTransformService.cell_polygon(
 			definition.coordinate, arena.grid_origin, arena.axis_x, arena.axis_y
 		),
 		"visible": false,
 		"skip_reason": &"",
+		"visibility_reason": &"",
+		"source_definition_present": true,
+		"topology_state": &"declared",
+		"topology_hash": topology_hash,
 		"is_border": definition.border,
 		"visual_layer": &"terrain",
 		"error": "",
 	}
 	if not arena.is_in_bounds(definition.coordinate):
 		entry.skip_reason = &"out_of_bounds"
+		entry.visibility_reason = entry.skip_reason
 		entry.error = "cell_out_of_bounds"
 		return entry
+	if ArenaTopologySignatureService.is_void_definition(definition):
+		entry.topology_state = &"void"
+		entry.skip_reason = &"cell_void"
+		entry.visibility_reason = entry.skip_reason
+		return entry
+	if definition.border:
+		entry.topology_state = &"border"
+	elif definition.playable:
+		entry.topology_state = &"playable"
+	else:
+		entry.topology_state = &"blocked_visible"
 	if not ArenaTerrainRegistry.has(terrain_id):
 		entry.skip_reason = &"unknown_terrain"
+		entry.visibility_reason = entry.skip_reason
 		entry.error = "unknown_terrain"
 		return entry
 	var terrain := ArenaTerrainRegistry.get_entry(terrain_id)
 	entry.texture_path = str(terrain.get("visual", ""))
+	entry.resolved_texture_path = entry.texture_path
 	entry.texture = ArenaTerrainRegistry.texture_for(terrain_id)
-	if not definition.defined or terrain_id == &"void":
-		entry.skip_reason = &"void"
-		return entry
+	if entry.texture != null and terrain_id != &"void":
+		var visual_contract := ArenaTileProjectionService.texture_contract(entry.texture)
+		entry["visual_contract"] = visual_contract
+		if not bool(visual_contract.valid):
+			entry.skip_reason = &"invalid_tile_visual_contract"
+			entry.visibility_reason = entry.skip_reason
+			entry.error = "invalid_tile_visual_contract:%s" % terrain_id
+			return entry
 	match arena.visual_mode:
 		ArenaDefinition.VisualMode.PAINTED:
 			entry.skip_reason = &"painted_base_floor"
+			entry.visibility_reason = entry.skip_reason
 			return entry
 		ArenaDefinition.VisualMode.HYBRID:
 			if profile == null:
 				entry.skip_reason = &"profile_missing"
+				entry.visibility_reason = entry.skip_reason
 				entry.error = "modular_profile_missing"
 				return entry
 			match profile.hybrid_floor_policy:
 				ArenaModularVisualProfile.HybridFloorPolicy.NONE:
 					entry.skip_reason = &"hybrid_policy_none"
+					entry.visibility_reason = entry.skip_reason
 					return entry
 				ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS:
 					if terrain_id == profile.base_terrain_id \
 							or (profile.base_terrain_id == &"stone" and terrain_id == &"normal"):
 						entry.skip_reason = &"hybrid_base_terrain"
+						entry.visibility_reason = entry.skip_reason
 						return entry
 				ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED:
 					pass
 				_:
 					entry.skip_reason = &"incompatible_policy"
+					entry.visibility_reason = entry.skip_reason
 					entry.error = "incompatible_policy"
 					return entry
 		ArenaDefinition.VisualMode.MODULAR:
 			pass
 		_:
 			entry.skip_reason = &"incompatible_visual_mode"
+			entry.visibility_reason = entry.skip_reason
 			entry.error = "incompatible_visual_mode"
 			return entry
 	if entry.texture_path.is_empty() or entry.texture == null:
 		entry.skip_reason = &"texture_missing"
+		entry.visibility_reason = entry.skip_reason
 		entry.error = "texture_missing:%s" % terrain_id
 		return entry
 	entry.visible = true
+	entry.visibility_reason = &"rendered"
 	return entry
 
 
@@ -212,10 +264,15 @@ static func _missing_entry(cell: Vector2i, reason: String) -> Dictionary:
 		"terrain_id": &"",
 		"texture": null,
 		"texture_path": "",
+		"resolved_texture_path": "",
 		"cell_type": GridData.CellType.HOLE,
 		"polygon": PackedVector2Array(),
 		"visible": false,
 		"skip_reason": StringName(reason),
+		"visibility_reason": StringName(reason),
+		"source_definition_present": false,
+		"topology_state": &"removed",
+		"topology_hash": "",
 		"is_border": false,
 		"visual_layer": &"terrain",
 		"error": reason,

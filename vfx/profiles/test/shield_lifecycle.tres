@@ -1,0 +1,124 @@
+[gd_resource type="Resource" script_class="VFXProfile" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://vfx/data/vfx_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://vfx/data/vfx_sequence_data.gd" id="2_sequence"]
+[ext_resource type="Script" path="res://vfx/data/vfx_module_data.gd" id="3_module"]
+
+[sub_resource type="Curve" id="Curve_response"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 0, Vector2(0.45, 1), 1.2, 0.0, 0, 0, Vector2(1, 0), -1.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_shield"]
+offsets = PackedFloat32Array(0, 0.65, 1)
+colors = PackedColorArray(0.08, 0.45, 1, 1, 0.22, 0.9, 1, 1, 0.9, 0.98, 1, 1)
+
+[sub_resource type="Resource" id="Module_apply_surface"]
+script = ExtResource("3_module")
+module_id = &"apply_surface"
+module_type = &"ShieldSurfaceModule"
+duration = 0.9
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.08, 0.55, 1, 0.36)
+secondary_color = Color(0.72, 0.96, 1, 0.92)
+intensity = 1.1
+response_curve = SubResource("Curve_response")
+color_gradient = SubResource("Gradient_shield")
+parameters = {"radius": 58.0}
+
+[sub_resource type="Resource" id="Module_apply_burst"]
+script = ExtResource("3_module")
+module_id = &"apply_burst"
+module_type = &"ParticleBurstModule"
+start_offset = 0.08
+duration = 0.5
+seed_offset = 11
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.55, 0.9, 1, 0.9)
+parameters = {"count": 12}
+
+[sub_resource type="Resource" id="Sequence_apply"]
+script = ExtResource("2_sequence")
+sequence_id = &"apply"
+display_name = "Apply"
+modules = Array[ExtResource("3_module")]([SubResource("Module_apply_surface"), SubResource("Module_apply_burst")])
+
+[sub_resource type="Resource" id="Module_hit_surface"]
+script = ExtResource("3_module")
+module_id = &"hit_surface"
+module_type = &"ShieldSurfaceModule"
+duration = 0.55
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.1, 0.62, 1, 0.26)
+secondary_color = Color(0.9, 1, 1, 0.95)
+parameters = {"radius": 56.0}
+
+[sub_resource type="Resource" id="Module_hit_ripple"]
+script = ExtResource("3_module")
+module_id = &"hit_ripple"
+module_type = &"ShieldRippleModule"
+duration = 0.45
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.55, 0.94, 1, 0.92)
+parameters = {"radius": 74.0}
+
+[sub_resource type="Resource" id="Sequence_hit"]
+script = ExtResource("2_sequence")
+sequence_id = &"hit"
+display_name = "Hit"
+modules = Array[ExtResource("3_module")]([SubResource("Module_hit_surface"), SubResource("Module_hit_ripple")])
+
+[sub_resource type="Resource" id="Module_break_ripple"]
+script = ExtResource("3_module")
+module_id = &"break_ripple"
+module_type = &"ShieldRippleModule"
+duration = 0.65
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.75, 0.95, 1, 0.95)
+parameters = {"radius": 96.0}
+
+[sub_resource type="Resource" id="Module_break_burst"]
+script = ExtResource("3_module")
+module_id = &"break_burst"
+module_type = &"ParticleBurstModule"
+duration = 0.7
+seed_offset = 37
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.45, 0.82, 1, 0.92)
+parameters = {"count": 18}
+
+[sub_resource type="Resource" id="Sequence_break"]
+script = ExtResource("2_sequence")
+sequence_id = &"break"
+display_name = "Break"
+modules = Array[ExtResource("3_module")]([SubResource("Module_break_ripple"), SubResource("Module_break_burst")])
+
+[sub_resource type="Resource" id="Module_expire_surface"]
+script = ExtResource("3_module")
+module_id = &"expire_surface"
+module_type = &"ShieldSurfaceModule"
+duration = 0.8
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.12, 0.48, 0.85, 0.25)
+secondary_color = Color(0.62, 0.82, 0.95, 0.6)
+parameters = {"radius": 55.0}
+
+[sub_resource type="Resource" id="Sequence_expire"]
+script = ExtResource("2_sequence")
+sequence_id = &"expire"
+display_name = "Expire"
+modules = Array[ExtResource("3_module")]([SubResource("Module_expire_surface")])
+
+[resource]
+script = ExtResource("1_profile")
+schema_version = 1
+profile_id = &"test.shield.lifecycle"
+display_name = "Shield Lifecycle — TEST"
+category = &"SYSTEM_SHIELD"
+render_policy = &"SYSTEM_PROCEDURAL"
+art_status = &"TECHNICAL_PLACEHOLDER"
+tags = Array[StringName]([&"shield", &"lifecycle", &"test"])
+sequences = Array[ExtResource("2_sequence")]([SubResource("Sequence_apply"), SubResource("Sequence_hit"), SubResource("Sequence_break"), SubResource("Sequence_expire")])
+exposed_parameters = {"intensity": 1.0, "seed": 424242, "shield_color": Color(0.08, 0.55, 1, 1)}
+context_requirements = Array[StringName]([&"target_world"])
+maximum_duration = 1.2
+quality_policy = &"SCALABLE"

@@ -21,6 +21,27 @@ static func archive_unreferenced_incomplete(
 	if inspection.state != ArenaBundleInspectionService.OWNED_INCOMPLETE \
 			or bool(inspection.referenced):
 		return {"ok": false, "error": "bundle_not_archivable", "inspection": inspection}
+	return archive_unreferenced_bundle(
+		directory, reason, graph, &"ARCHIVE_INCOMPLETE"
+	)
+
+
+static func archive_unreferenced_bundle(
+		directory: String,
+		reason: String,
+		graph: StudioReferenceGraphService = null,
+		operation: StringName = &"ARCHIVE"
+	) -> Dictionary:
+	var inspection := inspect(directory, graph)
+	var references := inspection.get("reference_report", {}) as Dictionary
+	if (inspection.get("files", {}) as Dictionary).is_empty():
+		return {"ok": false, "error": "bundle_empty", "inspection": inspection}
+	if bool(references.get("referenced", inspection.get("referenced", false))):
+		return {"ok": false, "error": "bundle_referenced", "inspection": inspection}
+	if bool(references.get("busy", false)):
+		return {"ok": false, "error": "bundle_transaction_active", "inspection": inspection}
+	if not _safe_archive_source(directory):
+		return {"ok": false, "error": "unsafe_archive_source", "inspection": inspection}
 	var archive_id := "%s_%d" % [directory.get_file(), Time.get_ticks_usec()]
 	var archive := ARCHIVE_ROOT.path_join(archive_id)
 	if not _copy_tree(directory, archive):
@@ -33,14 +54,23 @@ static func archive_unreferenced_incomplete(
 	var receipt := {
 		"archive_id": archive_id,
 		"original_destination": directory,
+		"operation": str(operation),
+		"source_state": str(inspection.get("state", &"UNKNOWN")),
 		"reason": reason,
 		"archived_at": Time.get_datetime_string_from_system(true),
 		"files": archived_files,
+		"reference_report": references,
 	}
 	_write_json(archive.path_join("archive_receipt.json"), receipt)
 	if not _remove_tree(directory):
 		return {"ok": false, "error": "destination_release_failed", "archive": archive}
-	return {"ok": true, "archive": archive, "receipt": receipt, "restore_available": true}
+	return {
+		"ok": true,
+		"archive": archive,
+		"receipt": receipt,
+		"restore_available": true,
+		"source_removed_from_project": true,
+	}
 
 
 static func restore_archive(archive: String, destination: String) -> Dictionary:
@@ -81,6 +111,20 @@ static func _same_files(left: Dictionary, right: Dictionary) -> bool:
 				!= str((right[path] as Dictionary).sha256):
 			return false
 	return true
+
+
+static func _safe_archive_source(path: String) -> bool:
+	if path.is_empty() or path in ["res://", "user://"] or ".." in path:
+		return false
+	for protected_root in [
+		ARCHIVE_ROOT,
+		ArenaProductionTransactionService.TRANSACTION_ROOT,
+		"user://dungeon_draft_studio/production_resolutions",
+	]:
+		if path == protected_root or path.begins_with(protected_root.trim_suffix("/") + "/"):
+			return false
+	return path.begins_with(ArenaProductionService.DEFAULT_ROOT.trim_suffix("/") + "/") \
+		or path.begins_with("user://")
 
 
 static func _write_json(path: String, value: Dictionary) -> bool:

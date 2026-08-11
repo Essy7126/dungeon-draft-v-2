@@ -1,0 +1,63 @@
+[gd_resource type="Resource" script_class="VFXProfile" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://vfx/data/vfx_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://vfx/data/vfx_sequence_data.gd" id="2_sequence"]
+[ext_resource type="Script" path="res://vfx/data/vfx_module_data.gd" id="3_module"]
+
+[sub_resource type="Gradient" id="Gradient_path"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(0.15, 0.65, 1, 1, 0.2, 0.95, 0.85, 1, 0.85, 1, 0.95, 1)
+
+[sub_resource type="Resource" id="Module_cells"]
+script = ExtResource("3_module")
+module_id = &"ordered_cells"
+module_type = &"CellOverlayModule"
+duration = 1.25
+context_requirements = Array[StringName]([&"ordered_path_cells", &"path_world_points"])
+primary_color = Color(0.12, 0.78, 0.88, 0.72)
+color_gradient = SubResource("Gradient_path")
+parameters = {"cell_width": 48.0, "cell_height": 24.0}
+
+[sub_resource type="Resource" id="Module_ribbon"]
+script = ExtResource("3_module")
+module_id = &"path_ribbon"
+module_type = &"PathRibbonModule"
+start_offset = 0.04
+duration = 1.15
+context_requirements = Array[StringName]([&"ordered_path_cells", &"path_world_points"])
+primary_color = Color(0.22, 0.95, 0.82, 0.92)
+secondary_color = Color(0.8, 1, 0.95, 0.9)
+intensity = 1.0
+parameters = {"width": 3.5}
+
+[sub_resource type="Resource" id="Module_endpoint"]
+script = ExtResource("3_module")
+module_id = &"endpoint_flash"
+module_type = &"FlashModule"
+start_offset = 0.25
+duration = 0.65
+seed_offset = 17
+context_requirements = Array[StringName]([&"target_world"])
+primary_color = Color(0.6, 1, 0.85, 0.9)
+parameters = {"count": 7}
+
+[sub_resource type="Resource" id="Sequence_play"]
+script = ExtResource("2_sequence")
+sequence_id = &"play"
+display_name = "Player path"
+modules = Array[ExtResource("3_module")]([SubResource("Module_cells"), SubResource("Module_ribbon"), SubResource("Module_endpoint")])
+
+[resource]
+script = ExtResource("1_profile")
+schema_version = 1
+profile_id = &"test.player.path_preview"
+display_name = "Player Path Preview — TEST"
+category = &"PLAYER_CONTROLLED_GRID"
+render_policy = &"SYSTEM_PROCEDURAL"
+art_status = &"TECHNICAL_PLACEHOLDER"
+tags = Array[StringName]([&"player_only", &"ordered_path", &"test"])
+sequences = Array[ExtResource("2_sequence")]([SubResource("Sequence_play")])
+exposed_parameters = {"intensity": 1.0, "path_valid": true, "seed": 424242}
+context_requirements = Array[StringName]([&"ordered_path_cells", &"path_world_points", &"target_world"])
+maximum_duration = 1.5
+quality_policy = &"SCALABLE"

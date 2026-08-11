@@ -226,7 +226,7 @@ func test_profile_driven_fixture_reaches_test_runtime_only() -> void:
 func test_hub_runs_resolve_their_own_profiles() -> void:
 	var hub_data := load(HUB_DATA_PATH) as LanternboundArchivistData
 	assert_not_null(hub_data)
-	assert_eq(hub_data.available_runs.size(), 2)
+	assert_eq(hub_data.available_runs.size(), 3)
 	for available_run in hub_data.available_runs:
 		var result := RunHeroResolver.resolve_runtime_hero_data(available_run, false)
 		assert_true(result.is_valid())
@@ -235,6 +235,8 @@ func test_hub_runs_resolve_their_own_profiles() -> void:
 		hub_data.available_runs[0].content_profile,
 		hub_data.available_runs[1].content_profile,
 	)
+	assert_eq(hub_data.available_runs[2].run_name, "L'Odyssée")
+	assert_eq(hub_data.available_runs[2].content_profile.hero_profiles.size(), 1)
 
 
 func test_explicit_game_manager_injection_remains_prioritary() -> void:

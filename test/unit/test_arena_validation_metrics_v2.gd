@@ -89,7 +89,7 @@ func test_exact_scene_report_and_readiness_certificate_invalidate_on_change() ->
 	assert_eq(visual.duplicate_terrain_node_count, 0)
 	for entry in visual.terrain_nodes.values():
 		assert_eq(entry.parent_role, "arena_tiles_layer")
-		assert_eq(entry.renderer_role, "terrain_floor")
+		assert_eq(entry.renderer_role, "arena_floor")
 		assert_eq(entry.duplication_count, 1)
 		assert_eq((entry.polygon as PackedVector2Array).size(), 4)
 	var certificate := ArenaProductionReadinessService.build(

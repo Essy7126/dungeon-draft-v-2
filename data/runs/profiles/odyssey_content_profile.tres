@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="RunContentProfile" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/runs/content/run_content_profile.gd" id="1_content"]
+[ext_resource type="Script" path="res://data/runs/content/run_hero_profile.gd" id="2_hero"]
+[ext_resource type="Resource" path="res://data/units/allies/achilles.tres" id="3_achilles"]
+[ext_resource type="Resource" path="res://data/runs/progression/odyssey/achilles_progression_profile.tres" id="4_progression"]
+
+[sub_resource type="Resource" id="AchillesHeroProfile"]
+script = ExtResource("2_hero")
+character_id = &"achilles"
+base_unit_data = ExtResource("3_achilles")
+progression_profile = ExtResource("4_progression")
+
+[resource]
+script = ExtResource("1_content")
+profile_id = &"odyssey"
+display_name = "L'Odyssée"
+description = "Prototype solo officiel d'Achille en trois rencontres."
+hero_profiles = Array[ExtResource("2_hero")]([SubResource("AchillesHeroProfile")])

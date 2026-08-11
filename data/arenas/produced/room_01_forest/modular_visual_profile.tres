@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="ArenaModularVisualProfile" format=3 uid="uid://ogq7y82pxxba"]
+[gd_resource type="Resource" script_class="ArenaModularVisualProfile" format=3 uid="uid://b2yqh6j35f65x"]
 
-[ext_resource type="Script" uid="uid://bsl8pk5qm0nic" path="res://addons/dungeon_draft_arena_studio/domain/arena_modular_visual_profile.gd" id="1_bryqp"]
+[ext_resource type="Script" uid="uid://bsl8pk5qm0nic" path="res://addons/dungeon_draft_arena_studio/domain/arena_modular_visual_profile.gd" id="1_qiwfn"]
 
 [resource]
-script = ExtResource("1_bryqp")
+script = ExtResource("1_qiwfn")
 theme_id = &"painted_default"
 hybrid_floor_policy = 2

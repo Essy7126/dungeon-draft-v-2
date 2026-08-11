@@ -12,6 +12,7 @@ var tabs: TabContainer
 var arena_studio: ArenaStudioMain
 var encounter_studio: EncounterStudioMain
 var item_studio: ItemStudioMain
+var vfx_composer: VFXComposer
 var undo_button: Button
 var redo_button: Button
 var history_button: MenuButton
@@ -84,6 +85,12 @@ func _ready() -> void:
 	arena_studio.history_state_changed.connect(_refresh_history_controls)
 	encounter_studio.history_state_changed.connect(_refresh_history_controls)
 	item_studio.history_state_changed.connect(_refresh_history_controls)
+
+	vfx_composer = VFXComposer.new()
+	vfx_composer.name = "VFX"
+	tabs.add_child(vfx_composer)
+	tabs.set_tab_title(tabs.get_tab_count() - 1, "VFX")
+	vfx_composer.history_state_changed.connect(_refresh_history_controls)
 
 	if not _pending_state.is_empty():
 		apply_state_snapshot(_pending_state)
@@ -175,6 +182,8 @@ func ensure_initial_content_loaded() -> void:
 		arena_studio.ensure_initial_arena_loaded()
 	if item_studio != null:
 		item_studio.ensure_initial_content_loaded()
+	if vfx_composer != null:
+		vfx_composer.ensure_initial_content_loaded()
 
 
 func get_state_snapshot() -> Dictionary:
@@ -191,6 +200,8 @@ func get_state_snapshot() -> Dictionary:
 			if encounter_studio != null else {},
 		"items": item_studio.get_state_snapshot() \
 			if item_studio != null else {},
+		"vfx": vfx_composer.get_state_snapshot() \
+			if vfx_composer != null else {},
 		"project_context": project_context.snapshot() if project_context != null else {},
 	}
 
@@ -221,6 +232,9 @@ func apply_state_snapshot(state: Dictionary) -> void:
 	var item_state = state.get("items", {})
 	if item_state is Dictionary:
 		item_studio.apply_state_snapshot(item_state)
+	var vfx_state = state.get("vfx", {})
+	if vfx_state is Dictionary and vfx_composer != null:
+		vfx_composer.apply_state_snapshot(vfx_state)
 	_refresh_history_controls()
 
 
@@ -236,6 +250,8 @@ func prepare_for_close() -> void:
 		arena_studio._flush_recovery()
 	if item_studio != null:
 		item_studio.prepare_for_close()
+	if vfx_composer != null:
+		vfx_composer.prepare_for_close()
 
 
 func cancel_active_gesture() -> bool:
@@ -252,6 +268,8 @@ func _active_history_provider():
 			return encounter_studio
 		2:
 			return item_studio
+		3:
+			return vfx_composer
 	return null
 
 
@@ -479,6 +497,8 @@ func _global_save() -> void:
 		encounter_studio._show_save_dialog()
 	elif tabs.current_tab == 2:
 		item_studio.save_as_draft()
+	elif tabs.current_tab == 3:
+		vfx_composer.save_as_draft()
 
 
 func _global_validate() -> void:
@@ -488,6 +508,8 @@ func _global_validate() -> void:
 		encounter_studio.validate_session()
 	elif tabs.current_tab == 2:
 		item_studio.validate_document()
+	elif tabs.current_tab == 3:
+		vfx_composer.validate_document()
 
 
 func _global_test() -> void:
@@ -497,6 +519,8 @@ func _global_test() -> void:
 		encounter_studio.test_current_encounter()
 	elif tabs.current_tab == 2:
 		item_studio.test_document()
+	elif tabs.current_tab == 3:
+		vfx_composer.test_document()
 
 
 func _global_produce() -> void:

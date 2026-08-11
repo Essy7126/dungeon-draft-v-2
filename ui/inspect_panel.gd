@@ -121,16 +121,30 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 		show_unit(unit, locked)
 		return
 	_title.text = "Case %d, %d" % [cell.x, cell.y]
-	_subtitle.text = _cell_type_name(grid.get_type(cell))
-	_add_section("Case")
-	_add_line("Marchable", "Oui" if grid.is_walkable(cell) else "Non")
-	_add_line("Ligne de vue", "Oui" if grid.is_transparent(cell) else "Non")
+	var base: Dictionary = terrain_effects.get_base_state(cell) \
+		if terrain_effects != null and terrain_effects.has_method("get_base_state") \
+		else {}
+	var base_type := int(base.get("cell_type", grid.get_type(cell)))
+	_subtitle.text = _cell_type_name(base_type)
+	_add_section("Terrain de base")
+	_add_line("Type", _cell_type_name(base_type))
+	if not str(base.get("terrain_id", "")).is_empty():
+		_add_line("Terrain", str(base.terrain_id))
+	_add_line("Marchable", "Oui" if bool(base.get(
+		"walkable", grid.is_walkable(cell)
+	)) else "Non")
+	_add_line("Ligne de vue", "Oui" if bool(base.get(
+		"transparent", grid.is_transparent(cell)
+	)) else "Non")
 	var effect = terrain_effects.get_effect_data(cell) if terrain_effects != null else null
 	if effect == null:
-		_add_paragraph("Aucun effet actif sur cette case.")
+		_add_paragraph("Aucune surface temporaire active. La map reste inchangée.")
 		return
-	_add_section("Effet actif")
+	_add_section("Surface active — temporaire")
 	_add_line("Nom", effect.effect_name)
+	if terrain_effects.has_method("get_surface_id"):
+		_add_line("ID stable", str(terrain_effects.get_surface_id(cell)))
+		_add_line("Texture", str(terrain_effects.get_visual_terrain_id(cell)))
 	if effect.description.strip_edges() != "":
 		_add_paragraph(effect.description)
 	_add_line("Declenchement", _trigger_name(effect.trigger))
@@ -138,9 +152,20 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 		_add_line("Degats", str(effect.damage))
 	if effect.applied_status != null:
 		_add_line("Statut", effect.applied_status.status_name)
-	var stored = grid.get_effect(cell)
-	if stored != null and stored.has("data") and stored["data"].has("duration"):
-		_add_line("Duree", _duration_label(stored["data"]["duration"]))
+	if terrain_effects.has_method("get_remaining_duration"):
+		_add_line(
+			"Durée restante",
+			_duration_round_label(terrain_effects.get_remaining_duration(cell))
+		)
+	if effect.dangerous_for_ai:
+		_add_line("Danger IA", _fmt_float(effect.ai_danger_weight))
+	if terrain_effects.has_method("get_surface_state"):
+		var state := terrain_effects.get_surface_state(cell) as CellSurfaceState
+		if state != null and state.source_spell != null:
+			_add_line("Source", state.source_spell.spell_name)
+		if state != null and state.source_unit != null:
+			_add_line("Lanceur", str(state.source_unit.unit_name))
+	_add_paragraph("Surface de combat temporaire : ArenaDefinition n'est pas modifiée.")
 func show_spell_preview(caster, spell: Spell, cell: Vector2i, grid: GridData, spell_caster: SpellCaster) -> void:
 	if _locked:
 		return
@@ -353,6 +378,10 @@ func _fmt_float(value: float) -> String:
 
 func _duration_label(value: int) -> String:
 	return "permanent" if value < 0 else "%d tour(s)" % value
+
+
+func _duration_round_label(value: int) -> String:
+	return "permanente" if value < 0 else "%d round(s)" % value
 
 func _trigger_name(trigger: int) -> String:
 	match trigger:

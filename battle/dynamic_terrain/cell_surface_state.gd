@@ -26,14 +26,26 @@ enum DynamicSurface {
 var base_surface: BaseSurface = BaseSurface.NORMAL
 var base_cell_type: int = GridData.CellType.NORMAL
 var base_terrain_id: StringName = &"normal"
+var base_walkable := true
+var base_transparent := true
 var dynamic_surface: DynamicSurface = DynamicSurface.NONE
 var duration_turns := 0
+var remaining_duration := 0
+var active_effect: TerrainEffectData = null
+var surface_id: StringName = &"none"
+var visual_terrain_id: StringName = &""
 var source_unit = null
+var source_spell: Spell = null
 var gameplay_flags: Dictionary = {}
 
 
 func configure_base(cell_type: int, has_obstacle := false) -> void:
 	base_cell_type = cell_type
+	var properties: Dictionary = GridData.PROPERTIES.get(
+		cell_type, {"walkable": false, "transparent": false}
+	)
+	base_walkable = bool(properties.get("walkable", false)) and not has_obstacle
+	base_transparent = bool(properties.get("transparent", false))
 	if has_obstacle:
 		base_surface = BaseSurface.OBSTACLE
 		return
@@ -76,20 +88,37 @@ func configure(
 		surface: DynamicSurface,
 		duration: int,
 		source,
-		flags: Dictionary
+		flags: Dictionary,
+		effect: TerrainEffectData = null,
+		stable_surface_id: StringName = &"none",
+		visual_id: StringName = &"",
+		spell: Spell = null
 	) -> void:
 	dynamic_surface = surface
-	duration_turns = maxi(0, duration)
+	set_remaining_duration(duration)
 	source_unit = source
+	source_spell = spell
+	active_effect = effect
+	surface_id = stable_surface_id
+	visual_terrain_id = visual_id
 	gameplay_flags = flags.duplicate(true)
+
+
+func set_remaining_duration(value: int) -> void:
+	remaining_duration = value
+	duration_turns = value
 
 
 func clear_dynamic() -> void:
 	dynamic_surface = DynamicSurface.NONE
-	duration_turns = 0
+	set_remaining_duration(0)
+	active_effect = null
+	surface_id = &"none"
+	visual_terrain_id = &""
 	source_unit = null
+	source_spell = null
 	gameplay_flags.clear()
 
 
 func is_dynamic() -> bool:
-	return dynamic_surface != DynamicSurface.NONE
+	return surface_id != &"none"

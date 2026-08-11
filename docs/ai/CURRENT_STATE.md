@@ -1,5 +1,26 @@
 # État candidat vérifié du projet
 
+## L’Odyssée — Achille solo (WORKTREE_CANDIDATE, 2026-08-11)
+
+- Dépôt : `C:\Users\paolo\Documents\dungeon-draft-v-2`.
+- Branche observée : `main` ; HEAD de base :
+  `29bf19719be6988898bdbef4c16f5d5b44d7b2d6`.
+- Une troisième run officielle, **L’Odyssée**, est disponible après la
+  principale et la run de test. Elle contient Achille seul et exactement trois
+  salles `SINGLE_ENCOUNTER`, sans vague.
+- Le contenu suit la chaîne `RunData -> RunContentProfile -> RunHeroProfile ->
+  CharacterProgressionProfile`. Les profils existants principal/test conservent
+  leurs empreintes et leur trio historique.
+- Validation ciblée finale : 19/19 tests, 277 assertions. Suite globale : 935/949
+  tests, 55 117/55 175 assertions. Les 13 échecs historiques restent présents ;
+  le quatorzième concerne la signature structurelle Studio v12 modifiée par le
+  travail Arena/VFX concurrent, hors périmètre Odyssey.
+- Runner graphique réel : PASS à 1920×1080 et 1280×720 ; hub, trois combats,
+  déploiement, HUD Achille, ancres, post-combat et résultat vérifiés. Quatorze
+  captures ont été inspectées.
+- Une partie humaine non forcée de la première salle reste requise. Ce candidat
+  ne promeut pas le worktree en `CURRENT`.
+
 > Statut : **WORKTREE_CANDIDATE — DUNGEON DRAFT STUDIO 2.0 WITH WARNINGS**
 
 - Date de vérification : 2026-08-06

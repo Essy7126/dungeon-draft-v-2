@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="PaintedMapVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/painted_map_visual_data.gd" id="1_visual"]
+[ext_resource type="Resource" path="res://data/maps/painted/room_05_volcano_presentation.tres" id="2_presentation"]
+
+[resource]
+script = ExtResource("1_visual")
+map_id = &"odyssey_room_02"
+debug_name = "L'Odyssée - Caldeira"
+background_texture_path = "res://asset/map/painted/room_05_volcano/volcano_background_v2.jpg"
+source_image_size = Vector2i(1376, 768)
+logical_grid_size = Vector2i(14, 14)
+grid_origin = Vector2(695, 172.5)
+axis_x = Vector2(34.65, 17.5)
+axis_y = Vector2(-34.65, 17.5)
+camera_offset = Vector2(0, 32)
+camera_zoom = 1.1
+presentation_profile = ExtResource("2_presentation")
+foreground_occluder_polygon = PackedVector2Array(805, 418, 806, 344, 820, 340, 821, 287, 842, 280, 844, 260, 865, 251, 883, 267, 899, 267, 903, 299, 925, 307, 929, 345, 945, 350, 944, 419, 923, 425, 918, 443, 850, 452, 825, 439)
+foreground_occluder_sort_y = 448.0
+foreground_full_hide_rect = Rect2(790, 205, 140, 243)
+calibration_cells = Array[Vector2i]([Vector2i(4, 0), Vector2i(9, 0), Vector2i(0, 3), Vector2i(13, 3), Vector2i(6, 6), Vector2i(3, 10), Vector2i(10, 10), Vector2i(4, 13), Vector2i(9, 13)])
+calibration_pixels = Array[Vector2]([Vector2(833.6, 242.5), Vector2(1006.85, 330), Vector2(591.05, 225), Vector2(1041.5, 452.5), Vector2(695, 382.5), Vector2(452.45, 400), Vector2(695, 522.5), Vector2(383.15, 470), Vector2(556.4, 557.5)])

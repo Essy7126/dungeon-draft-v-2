@@ -46,6 +46,30 @@ func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 		(vfx as Node2D).global_position = target_position
 	return vfx
 
+
+# Additive data-driven entry point. The legacy Spell.vfx_scene path above is
+# intentionally unchanged; callers must provide gameplay-resolved positions.
+func play_profile(
+		profile: VFXProfile,
+		context: VFXExecutionContext,
+		sequence_id: StringName = &"play",
+		parent_override: Node = null
+	) -> VFXRuntimeInstance:
+	if profile == null or context == null:
+		return null
+	var parent := parent_override
+	if parent == null:
+		parent = context.get_target_layer()
+	if parent == null:
+		parent = _vfx_parent()
+	if parent == null or not is_instance_valid(parent) or not parent.is_inside_tree():
+		return null
+	var result := VFXProfileRunner.play(profile, context, sequence_id, parent)
+	if not bool(result.get("ok", false)):
+		push_warning("VFXProfile ignoré sans impact gameplay : %s" % result.get("errors", []))
+		return null
+	return result.get("instance") as VFXRuntimeInstance
+
 func _caster_effect_origin(caster: Unit) -> Vector2:
 	if is_instance_valid(_battle_view) and _battle_view.is_inside_tree():
 		var tree := _battle_view.get_tree()

@@ -375,12 +375,39 @@ func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
 	assert_eq(shell.produce_button.text, "Intégrer à la run")
 	var studio := shell.arena_studio
 	assert_not_null(studio.destination_panel)
+	assert_true(studio.destination_resolve_button.visible)
+	assert_true(studio.destination_details_text.text.contains(
+		"Dossier de production déjà présent"
+	))
+	studio.show_production_wizard()
+	assert_true(studio.production_resolution_text.text.contains("Fichiers présents (2)"))
+	assert_true((studio.production_resolution_buttons[
+		ArenaBundleResolutionService.VERSION_ALONGSIDE
+	] as Button).visible)
+	assert_false((studio.production_resolution_buttons[
+		ArenaBundleResolutionService.VERSION_ALONGSIDE
+	] as Button).disabled)
+	studio.production_dialog.hide()
+	# Isolate the UI policy from the deliberately frozen, incomplete
+	# room_01_forest production bundle present in the repository.
+	studio.arena.arena_id = &"room_integration_ui_fixture"
+	studio._refresh_destination_panel()
 	assert_false(studio.destination_panel.get_parent() is ScrollContainer)
 	assert_eq(
 		StringName(studio.destination_action_option.get_selected_metadata()),
 		ArenaProductionAttachmentService.UPDATE
 	)
-	assert_true(studio.destination_integrate_button.text.contains("Intégrer dans Principale"))
+	assert_true(studio.destination_integrate_button.text.contains(
+		"Vérifier et intégrer dans Principale"
+	))
+	assert_false(
+		studio.destination_integrate_button.disabled,
+		studio._gate_blocking_text(studio._destination_last_plan)
+	)
+	assert_true(studio.destination_integrate_button.text.contains("avertissement"))
+	assert_true(studio.destination_details_text.text.contains(
+		"Pourquoi l'intégration est-elle indisponible ?"
+	) or studio.destination_details_text.text.contains("ARÈNE PRÊTE À INTÉGRER"))
 	assert_true(studio.destination_summary_label.text.contains("gameplay conservé"))
 	assert_true(studio.destination_details_text.text.contains("ArenaDefinition finale"))
 	var targets := PackedStringArray()

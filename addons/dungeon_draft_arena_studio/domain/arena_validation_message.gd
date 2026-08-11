@@ -16,6 +16,9 @@ enum Severity {
 @export var suggested_fix: StringName = &""
 @export_multiline var technical_details := ""
 @export_multiline var why := ""
+@export var blocks_integration := false
+@export var acknowledged := false
+@export var auto_fix_available := false
 
 
 func to_dict() -> Dictionary:
@@ -30,17 +33,18 @@ func to_dict() -> Dictionary:
 		"suggested_fix": str(suggested_fix),
 		"can_localize": cell != GridTransformService.INVALID_CELL,
 		"can_fix": suggested_fix != &"",
+		"blocks_integration": blocks_integration,
+		"acknowledged": acknowledged,
+		"auto_fix_available": auto_fix_available,
 		"why": why if not why.is_empty() else message,
 		"technical_details": technical_details,
 	}
 
 
 func category_name() -> String:
-	return [
-		"ERREUR BLOQUANTE",
-		"AVERTISSEMENT A VERIFIER",
-		"INFORMATION",
-	][severity]
+	if blocks_integration:
+		return "ERREUR BLOQUANTE"
+	return ["ERREUR", "AVERTISSEMENT A VERIFIER", "INFORMATION"][severity]
 
 
 func human_title() -> String:

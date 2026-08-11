@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="PaintedMapVisualData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/painted_map_visual_data.gd" id="1_visual"]
+[ext_resource type="Resource" path="res://data/maps/painted/room_06_space_presentation.tres" id="2_presentation"]
+
+[resource]
+script = ExtResource("1_visual")
+map_id = &"odyssey_room_03"
+debug_name = "L'Odyssée - Arène finale"
+background_texture_path = "uid://by5yubtu45ukb"
+source_image_size = Vector2i(1376, 768)
+logical_grid_size = Vector2i(14, 14)
+grid_origin = Vector2(693.5, 137)
+axis_x = Vector2(34.825, 17.5)
+axis_y = Vector2(-34.825, 17.5)
+camera_offset = Vector2(0, 30)
+camera_zoom = 1.1
+presentation_profile = ExtResource("2_presentation")
+foreground_occluder_polygon = PackedVector2Array(802, 403, 803, 335, 821, 330, 823, 297, 841, 292, 844, 270, 862, 265, 878, 284, 893, 282, 898, 312, 916, 317, 920, 395, 903, 404, 899, 427, 845, 437, 821, 421)
+foreground_occluder_sort_y = 433.0
+foreground_full_hide_rect = Rect2(790, 210, 140, 223)
+calibration_cells = Array[Vector2i]([Vector2i(4, 0), Vector2i(9, 0), Vector2i(0, 3), Vector2i(13, 3), Vector2i(6, 6), Vector2i(3, 10), Vector2i(10, 10), Vector2i(4, 13), Vector2i(9, 13)])
+calibration_pixels = Array[Vector2]([Vector2(832.8, 207), Vector2(1006.925, 294.5), Vector2(589.025, 189.5), Vector2(1041.75, 417), Vector2(693.5, 347), Vector2(449.725, 364.5), Vector2(693.5, 487), Vector2(380.075, 434.5), Vector2(554.2, 522)])

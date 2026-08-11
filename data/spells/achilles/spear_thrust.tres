@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"achilles_spear_thrust"
+discipline_id = &"spear"
+spell_name = "Frappe de lance"
+description = "Prototype L’Odyssée · 2 PA · Portée 1–2 · 9 dégâts physiques."
+ap_cost = 2
+minimum_range = 1
+spell_range = 2
+once_per_activation = true
+damage = 9
+damage_type = 0

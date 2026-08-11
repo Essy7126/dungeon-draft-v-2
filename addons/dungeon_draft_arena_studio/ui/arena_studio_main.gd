@@ -14,6 +14,9 @@ enum WorkspaceMode {
 const TEST_RUNNER_SCENE := "res://addons/dungeon_draft_arena_studio/test/arena_studio_test_runner.tscn"
 const TEST_REQUEST := "user://arena_studio/test_request.json"
 const TEST_WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
+const TERRAIN_SIM_FIREBALL := "res://data/spells/Mage/boule_de_feu.tres"
+const TERRAIN_SIM_ICE_WALL := "res://data/spells/mur_de_glace.tres"
+const TERRAIN_SIM_WATER := "res://data/terrain/eau.tres"
 const TOOL_LABELS := [
 	"Sélection", "Déplacer la vue", "Ajouter des cases", "Retirer des cases",
 	"Bordure", "Murs et obstacles", "Terrains", "Spawns", "Vérification",
@@ -80,6 +83,7 @@ var terrain_option: OptionButton
 var spawn_option: OptionButton
 var dynamic_palette: VBoxContainer
 var dynamic_terrain_option: OptionButton
+var dynamic_base_terrain_option: OptionButton
 var dynamic_wall_option: OptionButton
 var dynamic_special_option: OptionButton
 var dynamic_document_label: Label
@@ -102,6 +106,7 @@ var restore_name_edit: LineEdit
 var restore_points_list: ItemList
 var restore_delete_dialog: ConfirmationDialog
 var _pending_restore_delete_path := ""
+var _pending_vortex_cell := GridTransformService.INVALID_CELL
 var layer_controls := {}
 var transform_controls := {}
 var transform_panel: VBoxContainer
@@ -136,6 +141,8 @@ var production_summary_text: RichTextLabel
 var production_validation_text: RichTextLabel
 var production_preview_text: RichTextLabel
 var production_plan_text: RichTextLabel
+var production_resolution_text: RichTextLabel
+var production_resolution_buttons := {}
 var production_dashboard_text: RichTextLabel
 var production_result_text: RichTextLabel
 var destination_panel: PanelContainer
@@ -145,13 +152,23 @@ var destination_room_option: OptionButton
 var destination_summary_label: Label
 var destination_details_text: RichTextLabel
 var destination_integrate_button: Button
+var destination_resolve_button: Button
 var destination_tour_button: Button
 var integration_replace_dialog: ConfirmationDialog
+var integration_warning_dialog: ConfirmationDialog
+var integration_warning_text: RichTextLabel
+var integration_warning_justification: LineEdit
 var guided_tour: ArenaStudioGuidedTour
 var _destination_runs: Array[RunData] = []
 var _destination_syncing := false
 var _destination_last_plan := {}
+var _production_last_plan := {}
+var bundle_resolution_dialog: ConfirmationDialog
+var bundle_resolution_confirmation_text: RichTextLabel
+var _pending_bundle_resolution_action: StringName = &""
 var _integration_running := false
+var _pending_integration_warning_flow: StringName = &""
+var _pending_integration_warnings: Array[Dictionary] = []
 var migration_dialog: ConfirmationDialog
 var painted_dynamic_dialog: ConfirmationDialog
 var lab_import_dialog: ConfirmationDialog
@@ -410,8 +427,12 @@ func _build_left_panel() -> Control:
 	for label in ["Mur complet", "Obstacle bas", "Decor traversable", "Falaise"]:
 		obstacle_option.add_item(label)
 	terrain_option = OptionButton.new()
-	for label in ["Normal", "Mur", "Trou", "Lave", "Glace", "Ombre", "Rune"]:
-		terrain_option.add_item(label)
+	terrain_option.tooltip_text = "Sols permanents autorisés par le document courant"
+	terrain_option.item_selected.connect(func(_index):
+		canvas.set_brush_preview_terrain(StringName(
+			terrain_option.get_selected_metadata()
+		))
+	)
 	spawn_option = OptionButton.new()
 	for label in ["Heros 1 — Elfe", "Heros 2 — Mage", "Heros 3 — Guerrier", "Ennemi", "Groupe ennemi", "Zone d'invocation"]:
 		spawn_option.add_item(label)
@@ -612,6 +633,11 @@ func _build_destination_panel() -> PanelContainer:
 		buttons, "Intégrer à la run", _on_integrate_destination_pressed
 	)
 	destination_integrate_button.name = "IntegrateIntoRunButton"
+	destination_resolve_button = _add_button(
+		buttons, "Résoudre les fichiers présents…", _open_destination_bundle_resolver
+	)
+	destination_resolve_button.name = "ResolveDestinationBundleButton"
+	destination_resolve_button.visible = false
 	destination_tour_button = _add_button(buttons, "Visite guidée", _show_guided_tour)
 	destination_tour_button.tooltip_text = "Commencer la visite à l’étape Destination"
 	return panel
@@ -670,7 +696,8 @@ func _refresh_destination_panel(_unused = {}) -> void:
 	var candidate := _destination_candidate()
 	_destination_last_plan = ArenaIntegrationService.plan(
 		candidate, selected_run, action, target_index,
-		ArenaProductionService.suggested_destination(candidate), shared_reference_graph
+		ArenaProductionService.suggested_destination(candidate), shared_reference_graph,
+		_integration_gate_options(candidate, selected_run)
 	) if candidate != null else {"ok": false, "error": "Aucune arène ouverte."}
 	_render_destination_plan(_destination_last_plan)
 
@@ -711,36 +738,81 @@ func _render_destination_plan(plan: Dictionary) -> void:
 	])
 	for path in affected_files:
 		lines.append("• %s" % path)
-	for error in plan.get("run_validation_errors", []):
-		lines.append("[color=red]Bloqué : %s[/color]" % error)
-	var blocking_domains := _blocking_context_domains()
-	if not blocking_domains.is_empty():
-		lines.append("[color=red]Documents à résoudre : %s[/color]" % ", ".join(blocking_domains))
-	if edit_session != null and edit_session.has_external_conflict():
-		lines.append("[color=red]La source Arena a changé sur disque.[/color]")
+	var gate := plan.get("gate_report", {}) as Dictionary
+	var resolution := plan.get("bundle_resolution", {}) as Dictionary
+	var blockers: Array = gate.get("blocking_errors", [])
+	var warnings: Array = gate.get("acknowledgement_warnings", [])
+	var unacknowledged := int(gate.get("unacknowledged_warning_count", 0))
+	lines.append("")
+	if blockers.is_empty():
+		lines.append("[color=green][b]ARÈNE PRÊTE À INTÉGRER[/b][/color]")
+		lines.append("✓ Vérifications automatiques terminées")
+	else:
+		lines.append("[color=red][b]Pourquoi l'intégration est-elle indisponible ?[/b][/color]")
+		for issue in blockers:
+			lines.append("[color=red]✕ %s[/color]" % (issue as Dictionary).get(
+				"message", (issue as Dictionary).get("code", "Blocage technique")
+			))
+	if not warnings.is_empty():
+		lines.append("")
+		lines.append("[color=orange][b]%d avertissement(s) de conception — %d à confirmer[/b][/color]" % [
+			warnings.size(), unacknowledged,
+		])
+		for issue in warnings:
+			var accepted := bool((issue as Dictionary).get("acknowledged", false))
+			lines.append("[color=%s]• %s%s[/color]" % [
+				"green" if accepted else "orange",
+				(issue as Dictionary).get("message", "Avertissement"),
+				" — choix accepté" if accepted else "",
+			])
+	if bool(resolution.get("required", false)):
+		lines.append("")
+		lines.append("[color=orange][b]Dossier de production déjà présent[/b][/color]")
+		lines.append(str(resolution.get("explanation", "État à examiner.")))
+		lines.append("Action recommandée : [b]%s[/b]" % resolution.get(
+			"recommended_label", "Examiner les fichiers"
+		))
+	lines.append("")
+	lines.append("[color=light_blue]%d information(s)[/color]" % (
+		gate.get("information", []) as Array
+	).size())
 	destination_details_text.text = "\n".join(lines)
-	var enabled := bool(plan.get("can_integrate", false)) \
-		and blocking_domains.is_empty() and not _integration_running \
-		and (edit_session == null or not edit_session.has_external_conflict())
+	var enabled := blockers.is_empty() and not _integration_running
 	destination_integrate_button.disabled = not enabled
-	destination_integrate_button.text = _destination_button_text(action, run_label, room_number)
+	destination_integrate_button.text = _destination_button_text(
+		action, run_label, room_number
+	) + (" — %d avertissement(s)" % unacknowledged if unacknowledged > 0 else "")
+	destination_integrate_button.tooltip_text = "\n".join(blockers.map(func(value):
+		return str((value as Dictionary).get("message", "Blocage technique"))
+	)) if not blockers.is_empty() else "Lancer les vérifications automatiques puis intégrer."
+	if destination_resolve_button != null:
+		destination_resolve_button.visible = bool(resolution.get("required", false))
+		destination_resolve_button.tooltip_text = str(resolution.get(
+			"explanation", "Examiner et résoudre le dossier existant."
+		))
 
 
 func _destination_button_text(action: StringName, run_label: String, room_number: int) -> String:
 	match action:
 		ArenaProductionAttachmentService.NONE:
-			return "Produire sans intégrer"
+			return "Vérifier et produire sans intégrer"
 		ArenaProductionAttachmentService.UPDATE:
-			return "Intégrer dans %s — Mettre à jour salle %d" % [run_label, room_number]
+			return "Vérifier et intégrer dans %s — Mettre à jour salle %d" % [run_label, room_number]
 		ArenaProductionAttachmentService.REPLACE:
-			return "Intégrer dans %s — Remplacer salle %d" % [run_label, room_number]
+			return "Vérifier et intégrer dans %s — Remplacer salle %d" % [run_label, room_number]
 		ArenaProductionAttachmentService.APPEND:
-			return "Intégrer dans %s — Créer salle %d" % [run_label, room_number]
+			return "Vérifier et intégrer dans %s — Créer salle %d" % [run_label, room_number]
 		ArenaProductionAttachmentService.INSERT_BEFORE:
-			return "Intégrer dans %s — Insérer avant salle %d" % [run_label, room_number]
+			return "Vérifier et intégrer dans %s — Insérer avant salle %d" % [run_label, room_number]
 		ArenaProductionAttachmentService.INSERT_AFTER:
-			return "Intégrer dans %s — Insérer après salle %d" % [run_label, room_number]
-	return "Intégrer à la run"
+			return "Vérifier et intégrer dans %s — Insérer après salle %d" % [run_label, room_number]
+	return "Vérifier et intégrer à la run"
+
+
+func _open_destination_bundle_resolver() -> void:
+	show_production_wizard()
+	if production_tabs != null:
+		production_tabs.current_tab = 3
 
 
 func _on_destination_run_selected(_index: int) -> void:
@@ -794,11 +866,67 @@ func _blocking_context_domains() -> PackedStringArray:
 	return result
 
 
+func _integration_gate_options(
+		candidate: ArenaDefinition,
+		target_run: RunData = null
+	) -> Dictionary:
+	var fingerprint := ArenaSnapshotService.arena_fingerprint(candidate) \
+		if candidate != null else ""
+	var manual_result := ArenaDirectTestService.load_last_result()
+	var manual_performed := not manual_result.is_empty() \
+		and bool(manual_result.get("ok", false)) \
+		and str(manual_result.get("working_fingerprint", "")) == fingerprint
+	var run_conflict := target_run != null and run_authoring != null \
+		and run_authoring.is_dirty() \
+		and run_authoring.source_path == target_run.resource_path
+	return {
+		"validation_profile": ArenaIntegrationGatePolicy.Profile.PRODUCTION,
+		"accepted_warnings": edit_session.accepted_design_warnings(fingerprint) \
+			if edit_session != null else [],
+		"manual_test_performed": manual_performed,
+		"art_alignment_confirmed": false,
+		"external_source_conflict": edit_session != null \
+			and edit_session.has_external_conflict(),
+		"run_conflict": run_conflict,
+		"unrelated_dirty_domains": Array(_blocking_context_domains()),
+	}
+
+
+func _unacknowledged_gate_warnings(plan: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var gate := plan.get("gate_report", {}) as Dictionary
+	for value in gate.get("acknowledgement_warnings", []):
+		var issue := value as Dictionary
+		if not bool(issue.get("acknowledged", false)):
+			result.append(issue.duplicate(true))
+	return result
+
+
+func _gate_blocking_text(plan: Dictionary) -> String:
+	var gate := plan.get("gate_report", {}) as Dictionary
+	var messages := PackedStringArray()
+	for value in gate.get("blocking_errors", []):
+		messages.append(str((value as Dictionary).get(
+			"message", (value as Dictionary).get("code", "Blocage technique")
+		)))
+	return "\n".join(messages)
+
+
 func _on_integrate_destination_pressed() -> void:
 	_refresh_destination_panel()
 	if not _destination_last_plan.get("can_integrate", false):
-		_set_status("Le plan d’intégration est bloqué ; consultez Destination de la salle.", true)
+		_set_status("Intégration impossible : %s" % _gate_blocking_text(
+			_destination_last_plan
+		), true)
 		return
+	var warnings := _unacknowledged_gate_warnings(_destination_last_plan)
+	if not warnings.is_empty():
+		_show_integration_warning_confirmation(warnings, &"destination")
+		return
+	_continue_destination_integration()
+
+
+func _continue_destination_integration() -> void:
 	var action := _selected_destination_action()
 	if action == ArenaProductionAttachmentService.REPLACE:
 		integration_replace_dialog.dialog_text = (
@@ -810,6 +938,47 @@ func _on_integrate_destination_pressed() -> void:
 		integration_replace_dialog.popup_centered()
 		return
 	_run_destination_integration()
+
+
+func _show_integration_warning_confirmation(
+		warnings: Array[Dictionary],
+		flow: StringName
+	) -> void:
+	_pending_integration_warning_flow = flow
+	_pending_integration_warnings = warnings.duplicate(true)
+	var lines := PackedStringArray([
+		"[b]%d point(s) de conception sont à vérifier.[/b]" % warnings.size(),
+		"",
+	])
+	for issue in warnings:
+		lines.append("• %s" % issue.get("message", issue.get("code", "Avertissement")))
+	lines.append("")
+	lines.append("Ces points ne sont pas des erreurs techniques. Donnez une justification liée à cette version de l'arène.")
+	integration_warning_text.text = "\n".join(lines)
+	integration_warning_justification.text = ""
+	integration_warning_dialog.popup_centered()
+
+
+func _on_integration_warnings_confirmed() -> void:
+	var justification := integration_warning_justification.text.strip_edges()
+	if justification.is_empty():
+		_set_status("Une justification est requise pour accepter ce choix de design.", true)
+		call_deferred("_reopen_integration_warning_dialog")
+		return
+	if edit_session != null:
+		for issue in _pending_integration_warnings:
+			edit_session.accept_design_warning(issue, justification)
+	var flow := _pending_integration_warning_flow
+	_pending_integration_warning_flow = &""
+	_pending_integration_warnings.clear()
+	if flow == &"production":
+		call_deferred("_run_confirmed_production")
+	else:
+		call_deferred("_continue_destination_integration")
+
+
+func _reopen_integration_warning_dialog() -> void:
+	integration_warning_dialog.popup_centered()
 
 
 func _run_destination_integration() -> void:
@@ -865,17 +1034,6 @@ func _build_dynamic_palette() -> VBoxContainer:
 	box.add_child(terrain_button)
 	dynamic_terrain_option = OptionButton.new()
 	dynamic_terrain_option.tooltip_text = "Terrain appliqué par le pinceau"
-	for terrain_id in [&"void", &"stone", &"water", &"ice", &"lava"]:
-		var entry := ArenaTerrainRegistry.get_entry(terrain_id)
-		var shortcut := [&"void", &"stone", &"water", &"ice", &"lava"].find(terrain_id) + 1
-		dynamic_terrain_option.add_item("%s • %s • %s • %s • [%d]" % [
-			entry.get("name", terrain_id), terrain_id,
-			"praticable" if bool(entry.get("walkable", false)) else "non praticable",
-			GridData.CellType.keys()[int(entry.get("cell_type", GridData.CellType.NORMAL))],
-			shortcut,
-		])
-		dynamic_terrain_option.set_item_metadata(dynamic_terrain_option.item_count - 1, terrain_id)
-	dynamic_terrain_option.select(1)
 	dynamic_terrain_option.item_selected.connect(func(_index):
 		canvas.set_brush_preview_terrain(StringName(
 			dynamic_terrain_option.get_selected_metadata()
@@ -883,6 +1041,18 @@ func _build_dynamic_palette() -> VBoxContainer:
 		_select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN)
 	)
 	box.add_child(dynamic_terrain_option)
+	var base_label := Label.new()
+	base_label.text = "Sol de base modulaire / hybride"
+	box.add_child(base_label)
+	dynamic_base_terrain_option = OptionButton.new()
+	for terrain_id in [&"stone", &"neutral"]:
+		var entry := ArenaTerrainRegistry.get_entry(terrain_id)
+		dynamic_base_terrain_option.add_item(str(entry.get("name", terrain_id)))
+		dynamic_base_terrain_option.set_item_metadata(
+			dynamic_base_terrain_option.item_count - 1, terrain_id
+		)
+	dynamic_base_terrain_option.item_selected.connect(_on_dynamic_base_terrain_selected)
+	box.add_child(dynamic_base_terrain_option)
 	var wall_button := Button.new()
 	wall_button.text = "Mur"
 	wall_button.tooltip_text = "Placer un vrai WallConfig normal, feu ou glace"
@@ -908,11 +1078,13 @@ func _build_dynamic_palette() -> VBoxContainer:
 	for entry in [
 		["Spawn héros", &"hero"], ["Spawn ennemi", &"enemy"],
 		["Objectif", &"objective"], ["Décoration", &"decoration"],
+		["Paire de vortex (authoring uniquement)", &"vortex_pair"],
 		["Zone d'invocation", &"summon"], ["Supprimer le spécial", &"remove"],
 	]:
 		dynamic_special_option.add_item(entry[0])
 		dynamic_special_option.set_item_metadata(dynamic_special_option.item_count - 1, entry[1])
 	dynamic_special_option.item_selected.connect(func(_index):
+		_clear_pending_vortex()
 		_select_dynamic_tool(ArenaStudioCanvas.Tool.SPAWN)
 	)
 	box.add_child(dynamic_special_option)
@@ -942,24 +1114,36 @@ func _build_dynamic_palette() -> VBoxContainer:
 
 func _build_surface_preview_palette() -> VBoxContainer:
 	var box := VBoxContainer.new()
-	box.add_child(_section_label("SIMULER UN ÉTAT DE DALLE"))
+	box.add_child(_section_label("SIMULER UN SORT DE TERRAIN"))
 	var note := Label.new()
-	note.text = "Vue Jeu · copie runtime uniquement · une cellule actualisée"
+	note.text = (
+		"Vue Jeu · vraie Spell et vraie durée · copie runtime uniquement\n"
+		+ "Boule de feu : croix rayon 2 · lave 3 tours · 15 dégâts à l'entrée"
+	)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(note)
 	var buttons := HFlowContainer.new()
 	box.add_child(buttons)
-	_add_button(buttons, "Eau · 2 tours", func():
-		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.WATER)
+	_add_button(buttons, "Appliquer · Boule de feu", func():
+		_simulate_runtime_terrain_spell(TERRAIN_SIM_FIREBALL)
 	)
-	_add_button(buttons, "Glace · 2 tours", func():
-		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.ICE)
+	_add_button(buttons, "Appliquer · Mur de glace", func():
+		_simulate_runtime_terrain_spell(TERRAIN_SIM_ICE_WALL)
 	)
-	_add_button(buttons, "Lave / Feu · 2 tours", func():
-		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.FIRE)
+	_add_button(buttons, "Appliquer · Eau (fixture)", func():
+		_simulate_runtime_water_fixture()
 	)
-	_add_button(buttons, "Retirer", func():
-		_simulate_runtime_surface(CellSurfaceState.DynamicSurface.NONE)
+	_add_button(buttons, "Avancer d'un tick", func():
+		_advance_runtime_terrain_tick()
+	)
+	_add_button(buttons, "Déplacer une fixture", func():
+		_move_runtime_terrain_fixture()
+	)
+	_add_button(buttons, "Effacer les surfaces", func():
+		_clear_runtime_terrain_surfaces()
+	)
+	_add_button(buttons, "Réinitialiser", func():
+		_reset_runtime_terrain_simulation()
 	)
 	return box
 
@@ -1338,6 +1522,26 @@ func _build_dialogs() -> void:
 	integration_replace_dialog.cancel_button_text = "Conserver la salle"
 	integration_replace_dialog.confirmed.connect(_run_destination_integration)
 	add_child(integration_replace_dialog)
+	integration_warning_dialog = ConfirmationDialog.new()
+	integration_warning_dialog.title = "AVERTISSEMENTS DE CONCEPTION"
+	integration_warning_dialog.ok_button_text = "Accepter ce choix et continuer"
+	integration_warning_dialog.cancel_button_text = "Annuler"
+	integration_warning_dialog.size = Vector2i(720, 460)
+	integration_warning_dialog.confirmed.connect(_on_integration_warnings_confirmed)
+	add_child(integration_warning_dialog)
+	var warning_box := VBoxContainer.new()
+	warning_box.custom_minimum_size = Vector2(680, 340)
+	integration_warning_dialog.add_child(warning_box)
+	integration_warning_text = RichTextLabel.new()
+	integration_warning_text.bbcode_enabled = true
+	integration_warning_text.fit_content = false
+	integration_warning_text.custom_minimum_size.y = 260
+	warning_box.add_child(integration_warning_text)
+	integration_warning_justification = LineEdit.new()
+	integration_warning_justification.placeholder_text = (
+		"Justification du choix de design pour cette version de l'arene"
+	)
+	warning_box.add_child(integration_warning_justification)
 
 	_build_production_dialog()
 	_build_migration_dialog()
@@ -1495,6 +1699,35 @@ func _on_hybrid_floor_policy_selected(index: int) -> void:
 	set_hybrid_floor_policy(int(hybrid_floor_policy_option.get_item_metadata(index)))
 
 
+func _on_dynamic_base_terrain_selected(index: int) -> void:
+	if dynamic_base_terrain_option == null or index < 0 \
+			or index >= dynamic_base_terrain_option.item_count:
+		return
+	set_dynamic_base_terrain(StringName(
+		dynamic_base_terrain_option.get_item_metadata(index)
+	))
+
+
+func set_dynamic_base_terrain(terrain_id: StringName) -> bool:
+	if arena == null or edit_session == null \
+			or arena.visual_mode == ArenaDefinition.VisualMode.PAINTED \
+			or terrain_id not in [&"stone", &"neutral"]:
+		return false
+	var before := arena.to_snapshot().duplicate(true)
+	if arena.modular_visual_profile == null:
+		arena.modular_visual_profile = ArenaModularVisualProfile.new()
+		arena.modular_visual_profile.theme_id = arena.theme_id
+	if arena.modular_visual_profile.base_terrain_id == terrain_id:
+		return true
+	arena.modular_visual_profile.base_terrain_id = terrain_id
+	if not arena.modular_visual_profile.terrain_ids.has(terrain_id):
+		arena.modular_visual_profile.terrain_ids.append(terrain_id)
+	ArenaTerrainRenderPlanService.clear_cache()
+	_commit_change("Choisir le sol de base %s" % terrain_id, before, arena.to_snapshot())
+	_refresh_all()
+	return true
+
+
 func set_hybrid_floor_policy(policy: int) -> bool:
 	if arena == null or edit_session == null \
 			or arena.visual_mode != ArenaDefinition.VisualMode.HYBRID:
@@ -1603,6 +1836,26 @@ func _build_production_dialog() -> void:
 	plan_tab.add_child(_section_label("ÉTAPE 4 — FICHIERS ET CONFLITS"))
 	production_plan_text = _production_text()
 	plan_tab.add_child(production_plan_text)
+	production_resolution_text = _production_text(190)
+	plan_tab.add_child(production_resolution_text)
+	var resolution_actions := HFlowContainer.new()
+	resolution_actions.name = "BundleResolutionActions"
+	plan_tab.add_child(resolution_actions)
+	for entry in [
+		["Reprendre", ArenaBundleResolutionService.RESUME_INTERRUPTED],
+		["Archiver puis reconstruire", ArenaBundleResolutionService.ARCHIVE_AND_REBUILD],
+		["Nouvelle version à côté", ArenaBundleResolutionService.VERSION_ALONGSIDE],
+		["Retirer du projet", ArenaBundleResolutionService.REMOVE_FROM_PROJECT],
+		["Examiner les fichiers", ArenaBundleResolutionService.EXAMINE_FILES],
+	]:
+		var action_id := StringName(entry[1])
+		var action_button := _add_button(
+			resolution_actions, str(entry[0]),
+			_on_bundle_resolution_action.bind(action_id)
+		)
+		action_button.name = "BundleResolution%sButton" % str(action_id).to_pascal_case()
+		action_button.visible = false
+		production_resolution_buttons[action_id] = action_button
 	var refresh_button := _add_button(plan_tab, "Recalculer le plan", _refresh_production_wizard)
 	refresh_button.tooltip_text = "Lecture seule : recalcule créations, modifications et conflits."
 	var dashboard_tab := _production_tab("5 — Productions et récupérations")
@@ -1617,6 +1870,14 @@ func _build_production_dialog() -> void:
 	result_tab.add_child(_section_label("ÉTAPE 5 — RÉSULTAT"))
 	production_result_text = _production_text()
 	result_tab.add_child(production_result_text)
+	bundle_resolution_dialog = ConfirmationDialog.new()
+	bundle_resolution_dialog.title = "Résoudre le dossier de production"
+	bundle_resolution_dialog.ok_button_text = "Confirmer l’action"
+	bundle_resolution_dialog.cancel_button_text = "Annuler"
+	bundle_resolution_dialog.confirmed.connect(_confirm_bundle_resolution_action)
+	add_child(bundle_resolution_dialog)
+	bundle_resolution_confirmation_text = _production_text(260)
+	bundle_resolution_dialog.add_child(bundle_resolution_confirmation_text)
 
 
 func _production_tab(tab_name: String) -> VBoxContainer:
@@ -1704,6 +1965,7 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 	edit_session.history.dirty_state_changed.connect(_on_dirty_state_changed)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	canvas.set_arena(arena)
+	_clear_pending_vortex()
 	canvas.set_painted_logic_only(false)
 	canvas.set_saved_transform(edit_session.saved_transform())
 	_restore_session_editor_state()
@@ -2269,8 +2531,10 @@ func _refresh_production_wizard() -> void:
 	var attachment_action := _selected_production_action()
 	var integration_plan := ArenaIntegrationService.plan(
 		candidate, target_run, attachment_action, int(production_index_spin.value),
-		destination, shared_reference_graph
+		destination, shared_reference_graph,
+		_integration_gate_options(candidate, target_run)
 	)
+	_production_last_plan = integration_plan
 	_refresh_production_dashboard()
 	if not bool(integration_plan.get("ok", false)):
 		production_summary_text.text = "[b]Vous allez :[/b]\n\n[color=red]Le plan doit être corrigé avant toute écriture.[/color]"
@@ -2279,6 +2543,7 @@ func _refresh_production_wizard() -> void:
 		production_dialog.get_ok_button().disabled = true
 		return
 	var production_plan := integration_plan.production as Dictionary
+	var bundle_resolution := production_plan.get("bundle_resolution", {}) as Dictionary
 	var report := production_plan.validation as ArenaValidationReport
 	var visual_report := production_plan.visual_report as ArenaVisualAssemblyReport
 	var attachment_plan := integration_plan.attachment as Dictionary
@@ -2320,20 +2585,30 @@ func _refresh_production_wizard() -> void:
 		project_context.persisted_ui["production_target"] = "%s — %s" % [
 			target_label, action_label,
 		]
+	var gate := integration_plan.get("gate_report", {}) as Dictionary
+	var gate_blockers: Array = gate.get("blocking_errors", [])
+	var gate_warnings: Array = gate.get("acknowledgement_warnings", [])
 	var validation_lines := PackedStringArray([
-		"[b]%s[/b]" % report.verdict(),
-		"%d erreur(s), %d avertissement(s), %d information(s)" % [
-			report.error_count(), report.warning_count(), report.info_count(),
+		"[b]%s[/b]" % gate.get("summary", report.verdict()),
+		"%d erreur(s) bloquante(s), %d avertissement(s), %d information(s)" % [
+			gate_blockers.size(), gate_warnings.size(),
+			(gate.get("information", []) as Array).size(),
 		],
 		"",
 	])
-	for entry in report.messages:
-		var color: String = ["red", "orange", "light_blue"][entry.severity]
-		validation_lines.append("[color=%s]• %s[/color]" % [color, entry.message])
-	for run_error in integration_plan.get("run_validation_errors", []):
-		validation_lines.append("[color=red]• Run cible : %s[/color]" % run_error)
-	for unknown in integration_plan.get("field_coverage", {}).get("unknown", []):
-		validation_lines.append("[color=red]• Propriété sans politique : %s[/color]" % unknown)
+	if not gate_blockers.is_empty():
+		validation_lines.append("[color=red][b]Pourquoi l'intégration est-elle indisponible ?[/b][/color]")
+		for issue in gate_blockers:
+			validation_lines.append("[color=red]✕ %s[/color]" % (issue as Dictionary).get("message", "Blocage technique"))
+	for issue in gate_warnings:
+		var accepted := bool((issue as Dictionary).get("acknowledged", false))
+		validation_lines.append("[color=%s]• %s%s[/color]" % [
+			"green" if accepted else "orange",
+			(issue as Dictionary).get("message", "Avertissement"),
+			" — choix accepté" if accepted else "",
+		])
+	if gate_blockers.is_empty():
+		validation_lines.append("[color=green]✓ Le smoke runtime automatique et les contrôles techniques ont réussi.[/color]")
 	production_validation_text.text = "\n".join(validation_lines)
 	production_preview_text.text = (
 		"[b]Même chaîne que le runtime[/b]\n\n"
@@ -2389,17 +2664,18 @@ func _refresh_production_wizard() -> void:
 		plan_lines.append("[color=red]La run cible a déjà des modifications non sauvegardées.[/color]")
 	var blocking_domains := _blocking_context_domains()
 	if not blocking_domains.is_empty():
-		plan_lines.append("[color=red]Documents à résoudre : %s[/color]" % ", ".join(blocking_domains))
+		plan_lines.append("[color=light_blue]Documents hors transaction conservés : %s[/color]" % ", ".join(blocking_domains))
 	production_plan_text.text = "\n".join(plan_lines)
-	production_dialog.get_ok_button().text = "Produire sans intégrer" \
+	_render_bundle_resolution(bundle_resolution)
+	var unacknowledged := int(gate.get("unacknowledged_warning_count", 0))
+	production_dialog.get_ok_button().text = "Vérifier et produire sans intégrer" \
 		if attachment_action == ArenaProductionAttachmentService.NONE \
-		else "Intégrer dans %s — %s salle %d" % [
+		else "Vérifier et intégrer dans %s — %s salle %d" % [
 			target_label, action_label, target_index + 1,
 		]
-	production_dialog.get_ok_button().disabled = not bool(integration_plan.can_integrate) \
-		or not bool(attachment_plan.get("ok", false)) or run_conflict \
-		or not blocking_domains.is_empty() \
-		or (edit_session != null and edit_session.has_external_conflict())
+	if unacknowledged > 0:
+		production_dialog.get_ok_button().text += " — %d avertissement(s)" % unacknowledged
+	production_dialog.get_ok_button().disabled = not gate_blockers.is_empty()
 
 
 func _production_action_human(action: StringName) -> String:
@@ -2416,6 +2692,130 @@ func _production_action_human(action: StringName) -> String:
 			return "Créer une nouvelle salle"
 		_:
 			return "Produire sans intégrer"
+
+
+func _render_bundle_resolution(resolution: Dictionary) -> void:
+	if production_resolution_text == null:
+		return
+	var lines := PackedStringArray([
+		"[b]RÉSOLUTION DU DOSSIER EXISTANT[/b]",
+		str(resolution.get("state_label", "Destination non inspectée")),
+		str(resolution.get("explanation", "Aucune information.")),
+	])
+	var files := resolution.get("files", []) as Array
+	if not files.is_empty():
+		lines.append("")
+		lines.append("[b]Fichiers présents (%d)[/b]" % files.size())
+		for value in files:
+			var file := value as Dictionary
+			lines.append("• %s — %d octets — SHA-256 %s…" % [
+				file.get("path", ""), int(file.get("size", 0)),
+				str(file.get("sha256", "")).left(16),
+			])
+	var references := resolution.get("references", {}) as Dictionary
+	var canonical := references.get("canonical_references", []) as Array
+	if canonical.is_empty():
+		lines.append("✓ Aucune run ni Resource ne référence arena.tres.")
+	else:
+		lines.append("[color=red][b]%d référence(s) canonique(s)[/b][/color]" % canonical.size())
+		for value in canonical:
+			var usage := value as Dictionary
+			lines.append("• %s — %s%s" % [
+				usage.get("from", ""), usage.get("relation", "RESOURCE"),
+				" — salle %d" % int(usage.get("room_number", 0)) \
+					if int(usage.get("room_number", 0)) > 0 else "",
+			])
+	if bool(resolution.get("required", false)):
+		lines.append("")
+		lines.append("Action recommandée : [b]%s[/b]" % resolution.get(
+			"recommended_label", "Examiner les fichiers"
+		))
+	else:
+		lines.append("[color=green]Aucune résolution préalable n'est requise.[/color]")
+	production_resolution_text.text = "\n".join(lines)
+	for action_id in production_resolution_buttons:
+		var button := production_resolution_buttons[action_id] as Button
+		var action_plan := _bundle_resolution_action(resolution, StringName(action_id))
+		button.visible = bool(resolution.get("required", false)) \
+			and not action_plan.is_empty()
+		button.disabled = not bool(action_plan.get("enabled", false))
+		button.tooltip_text = str(action_plan.get("reason", "Action indisponible."))
+
+
+func _bundle_resolution_action(
+		resolution: Dictionary,
+		action: StringName
+	) -> Dictionary:
+	for value in resolution.get("actions", []):
+		var candidate := value as Dictionary
+		if StringName(candidate.get("id", &"")) == action:
+			return candidate
+	return {}
+
+
+func _on_bundle_resolution_action(action: StringName) -> void:
+	var candidate := _production_candidate()
+	var destination := production_destination_edit.text.strip_edges()
+	var resolution := (_production_last_plan.get("production", {}) as Dictionary).get(
+		"bundle_resolution", {}
+	) as Dictionary
+	var action_plan := _bundle_resolution_action(resolution, action)
+	if action_plan.is_empty() or not bool(action_plan.get("enabled", false)):
+		_set_status("Cette action de résolution n'est pas disponible.", true)
+		return
+	if action == ArenaBundleResolutionService.VERSION_ALONGSIDE:
+		var version := ArenaBundleResolutionService.execute(
+			action, candidate, destination, shared_reference_graph
+		)
+		if not bool(version.get("ok", false)):
+			_set_status("Le nouveau chemin versionné ne peut pas être choisi.", true)
+			return
+		production_destination_edit.text = str(version.get("destination", destination))
+		_set_status("Nouvelle version choisie : %s. Le dossier existant reste inchangé." % production_destination_edit.text)
+		_refresh_production_wizard()
+		return
+	if action == ArenaBundleResolutionService.EXAMINE_FILES:
+		var examination := ArenaBundleResolutionService.execute(
+			action, candidate, destination, shared_reference_graph
+		)
+		if bool(examination.get("ok", false)):
+			OS.shell_show_in_file_manager(str(examination.get("absolute_path", "")), true)
+			_set_status("Dossier ouvert en lecture : %s" % destination)
+		return
+	_pending_bundle_resolution_action = action
+	var lines := PackedStringArray([
+		"[b]%s[/b]" % action_plan.get("label", "Résoudre le bundle"),
+		str(action_plan.get("reason", "")),
+		"",
+		"Destination : %s" % destination,
+		"Fichiers concernés : %d" % (resolution.get("files", []) as Array).size(),
+		"Références canoniques : %d" % int((resolution.get("references", {}) as Dictionary).get("canonical_count", 0)),
+		"",
+		"Cette action est explicite et sera vérifiée par SHA-256. Annuler ne modifie rien.",
+	])
+	bundle_resolution_confirmation_text.text = "\n".join(lines)
+	bundle_resolution_dialog.popup_centered(Vector2i(720, 420))
+
+
+func _confirm_bundle_resolution_action() -> void:
+	if _pending_bundle_resolution_action.is_empty():
+		return
+	var action := _pending_bundle_resolution_action
+	_pending_bundle_resolution_action = &""
+	var destination := production_destination_edit.text.strip_edges()
+	var result := ArenaBundleResolutionService.execute(
+		action, _production_candidate(), destination, shared_reference_graph,
+		"Action confirmée dans Arena Studio : %s" % action
+	)
+	if not bool(result.get("ok", false)):
+		_set_status("Résolution refusée : %s" % result.get("error", "échec de vérification"), true)
+		_refresh_production_wizard()
+		return
+	if action == ArenaBundleResolutionService.RESUME_INTERRUPTED:
+		_set_status("Production interrompue reprise et manifeste vérifié. Le plan est recalculé.")
+	else:
+		_set_status("Ancien bundle archivé sous %s. Le plan est recalculé." % result.get("archive", "user://"))
+	_refresh_production_wizard()
 
 
 func _refresh_production_dashboard() -> void:
@@ -2441,7 +2841,21 @@ func _start_guided_sandbox() -> void:
 
 
 func _production_confirmed() -> void:
-	call_deferred("_run_confirmed_production")
+	call_deferred("_request_confirmed_production")
+
+
+func _request_confirmed_production() -> void:
+	_refresh_production_wizard()
+	if not bool(_production_last_plan.get("can_integrate", false)):
+		_show_production_failure("Intégration impossible : %s" % _gate_blocking_text(
+			_production_last_plan
+		))
+		return
+	var warnings := _unacknowledged_gate_warnings(_production_last_plan)
+	if not warnings.is_empty():
+		_show_integration_warning_confirmation(warnings, &"production")
+		return
+	_run_confirmed_production()
 
 
 func _run_confirmed_production() -> void:
@@ -2469,16 +2883,20 @@ func _perform_room_integration(
 	if edit_session.has_external_conflict():
 		_show_production_failure("La source a changé sur disque : intégration bloquée.")
 		return {"ok": false, "error": "external_conflict"}
-	var blocking_domains := _blocking_context_domains()
-	if not blocking_domains.is_empty():
-		_show_production_failure(
-			"Résolvez d’abord les documents modifiés : %s" % ", ".join(blocking_domains)
-		)
-		return {"ok": false, "error": "dirty_context"}
-	var preview_images: Dictionary = await _capture_runtime_preview_images(candidate)
-	var integration := ArenaIntegrationService.integrate(
+	var gate_options := _integration_gate_options(candidate, target_run)
+	var final_plan := ArenaIntegrationService.plan(
 		candidate, target_run, action, target_index, destination,
-		shared_reference_graph, preview_images
+		shared_reference_graph, gate_options
+	)
+	if not bool(final_plan.get("can_integrate", false)):
+		_show_production_failure("Intégration impossible : %s" % _gate_blocking_text(
+			final_plan
+		))
+		return {"ok": false, "error": "integration_gate_blocked", "plan": final_plan}
+	var preview_images: Dictionary = await _capture_runtime_preview_images(candidate)
+	var integration := ArenaIntegrationService.integrate_with_options(
+		candidate, target_run, action, target_index, destination,
+		shared_reference_graph, preview_images, {"gate_options": gate_options}
 	)
 	if not bool(integration.get("ok", false)):
 		var production := integration.get("production", {}) as Dictionary
@@ -2940,8 +3358,12 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 				changed = ArenaEditingService.clear_obstacle(arena, cell) if erase \
 					else ArenaEditingService.set_obstacle(arena, cell, obstacle_option.selected)
 			ArenaStudioCanvas.Tool.TERRAIN:
-				changed = ArenaEditingService.set_terrain(
-					arena, cell, GridData.CellType.NORMAL if erase else terrain_option.selected
+				changed = ArenaDynamicEditingService.paint_terrain(
+					arena, cell, &"void"
+				) if erase else ArenaDynamicEditingService.paint_permanent_terrain(
+					arena, cell, StringName(
+						terrain_option.get_selected_metadata()
+					)
 				)
 			ArenaStudioCanvas.Tool.SPAWN:
 				if erase:
@@ -2967,10 +3389,11 @@ func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
 		ArenaStudioCanvas.Tool.REMOVE_CELL:
 			return ArenaEditingService.set_cell_state(arena, cell, &"add" if erase else &"remove")
 		ArenaStudioCanvas.Tool.TERRAIN:
-			var terrain_id := &"void" if erase else StringName(
-				dynamic_terrain_option.get_selected_metadata()
+			if erase:
+				return ArenaDynamicEditingService.paint_terrain(arena, cell, &"void")
+			return ArenaDynamicEditingService.paint_permanent_terrain(
+				arena, cell, StringName(dynamic_terrain_option.get_selected_metadata())
 			)
-			return ArenaDynamicEditingService.paint_terrain(arena, cell, terrain_id)
 		ArenaStudioCanvas.Tool.OBSTACLE:
 			var wall_id := &"remove" if erase else StringName(
 				dynamic_wall_option.get_selected_metadata()
@@ -2992,12 +3415,47 @@ func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
 				)
 				&"objective": return ArenaDynamicEditingService.place_objective(arena, cell)
 				&"decoration": return ArenaDynamicEditingService.place_decoration(arena, cell)
-				&"remove": return ArenaDynamicEditingService.remove_special(arena, cell)
+				&"vortex_pair": return _place_vortex_endpoint(cell)
+				&"remove":
+					_clear_pending_vortex()
+					return ArenaDynamicEditingService.remove_special(arena, cell)
 	return false
 
 
+func _place_vortex_endpoint(cell: Vector2i) -> bool:
+	if not ArenaDynamicEditingService.is_valid_vortex_cell(arena, cell):
+		_set_status(
+			"Vortex refusé : choisissez une dalle définie, praticable, hors bordure et non bloquée.",
+			true
+		)
+		return false
+	if _pending_vortex_cell == GridTransformService.INVALID_CELL:
+		_pending_vortex_cell = cell
+		canvas.set_pending_vortex_cell(cell)
+		_set_status("Entrée du vortex choisie en (%d, %d). Choisissez sa sortie." % [cell.x, cell.y])
+		return false
+	var entry := _pending_vortex_cell
+	var changed := ArenaDynamicEditingService.place_vortex_pair(arena, entry, cell)
+	if changed:
+		_clear_pending_vortex()
+		_set_status("Paire de vortex créée en authoring. Production et test direct restent bloqués.")
+	else:
+		_set_status("Paire refusée : cellules distinctes et libres requises.", true)
+	return changed
+
+
+func _clear_pending_vortex() -> void:
+	_pending_vortex_cell = GridTransformService.INVALID_CELL
+	if canvas != null:
+		canvas.set_pending_vortex_cell(_pending_vortex_cell)
+
+
 func _on_stroke_finished(action_name: String) -> void:
-	if arena == null or not _stroke_changed and _stroke_before.is_empty():
+	if arena == null:
+		return
+	if not _stroke_changed:
+		_stroke_before = {}
+		_stroke_cell_count = 0
 		return
 	var final_name := action_name
 	if _stroke_cell_count > 0:
@@ -3644,6 +4102,8 @@ func _context_run_discard() -> Dictionary:
 
 
 func _on_tool_selected(index: int) -> void:
+	if index != ArenaStudioCanvas.Tool.SPAWN:
+		_clear_pending_vortex()
 	var dynamic_tool := index in [
 		ArenaStudioCanvas.Tool.ADD_CELL,
 		ArenaStudioCanvas.Tool.REMOVE_CELL,
@@ -3944,8 +4404,131 @@ func _simulate_runtime_surface(surface: int) -> void:
 		"Surface %s simulée en %s sur la copie runtime ; ArenaDefinition inchangée." % [
 			CellSurfaceState.DynamicSurface.keys()[surface], cell,
 		],
-		not result.get("handled", false)
+		 not result.get("handled", false)
 	)
+
+
+func _simulate_runtime_terrain_spell(resource_path: String) -> void:
+	if not _ensure_runtime_terrain_preview():
+		return
+	var spell := load(resource_path) as Spell
+	if spell == null or spell.terrain_effect == null:
+		_set_status("Le sort de terrain est introuvable : %s" % resource_path, true)
+		return
+	var cell := _runtime_terrain_target_cell()
+	if cell == GridTransformService.INVALID_CELL:
+		_set_status("Aucune cellule praticable à simuler.", true)
+		return
+	var result := runtime_preview.simulate_terrain_spell(spell, cell)
+	var trigger_name: String = str(
+		TerrainEffectData.Trigger.keys()[spell.terrain_effect.trigger]
+	)
+	_set_status(
+		(
+			"%s · source %s (%s) · cible %s · zone %d · modifiées %d · "
+			+ "surface %s/%s · durée %d · déclenchement %s · dégâts terrain %d · "
+			+ "ArenaDefinition inchangée."
+		) % [
+			spell.spell_name,
+			str(result.get("source_name", "fixture")),
+			str(result.get("source_contract", "explicit_fixture")),
+			cell,
+			(result.get("requested_cells", []) as Array).size(),
+			(result.get("terrain_changed", []) as Array).size(),
+			str(result.get("surface_id", &"none")),
+			str(result.get("visual_terrain_id", &"")),
+			int(result.get("duration", 0)),
+			trigger_name,
+			int(result.get("terrain_damage", 0)),
+		],
+		not bool(result.get("handled", false))
+	)
+
+
+func _simulate_runtime_water_fixture() -> void:
+	var effect := load(TERRAIN_SIM_WATER) as TerrainEffectData
+	if effect == null:
+		_set_status("La fixture eau réelle est introuvable.", true)
+		return
+	var spell := Spell.new()
+	spell.spell_id = &"studio_water_terrain_fixture"
+	spell.spell_name = "Fixture eau (aucun sort de production)"
+	spell.can_target_free_cell = true
+	spell.aoe_shape = Spell.AoeShape.SINGLE
+	spell.aoe_size = 0
+	spell.terrain_effect = effect
+	if not _ensure_runtime_terrain_preview():
+		return
+	var cell := _runtime_terrain_target_cell()
+	var result := runtime_preview.simulate_terrain_spell(spell, cell)
+	_set_status(
+		"Eau temporaire · cible %s · durée %d issue de eau.tres · surface water/water · ArenaDefinition inchangée." % [
+			cell, int(result.get("duration", 0)),
+		],
+		not bool(result.get("handled", false))
+	)
+
+
+func _advance_runtime_terrain_tick() -> void:
+	if not _ensure_runtime_terrain_preview():
+		return
+	runtime_preview.advance_runtime_surface_tick()
+	var active := runtime_preview.runtime_state.terrain_effects.runtime_service \
+		.active_surface_cells()
+	_set_status("Tick terrain avancé · %d surface(s) runtime active(s)." % active.size())
+
+
+func _move_runtime_terrain_fixture() -> void:
+	if not _ensure_runtime_terrain_preview():
+		return
+	var cell := _runtime_terrain_target_cell()
+	var report := runtime_preview.simulate_fixture_enter_surface(cell)
+	_set_status(
+		"Fixture déplacée en %s · dégâts d'entrée reçus : %d." % [
+			cell, int(report.get("damage_received", 0)),
+		],
+		not bool(report.get("handled", false))
+	)
+
+
+func _clear_runtime_terrain_surfaces() -> void:
+	if not _ensure_runtime_terrain_preview():
+		return
+	runtime_preview.clear_all_runtime_surfaces()
+	_set_status("Toutes les surfaces temporaires sont retirées ; sols de base restaurés.")
+
+
+func _reset_runtime_terrain_simulation() -> void:
+	if not _ensure_runtime_terrain_preview():
+		return
+	var rebuilt := runtime_preview.rebuild_now()
+	_set_status(
+		"Simulation terrain réinitialisée depuis la working copy inchangée.",
+		not rebuilt
+	)
+
+
+func _ensure_runtime_terrain_preview() -> bool:
+	if arena == null or runtime_preview == null:
+		_set_status("Aucune arène disponible pour la simulation.", true)
+		return false
+	if not runtime_preview.visible or runtime_preview.runtime_state == null \
+			or runtime_preview.arena != arena:
+		set_preview_view(ArenaRuntimePreview.ViewMode.GAME)
+		if not runtime_preview.rebuild_now():
+			_set_status("La projection runtime n'a pas pu être construite.", true)
+			return false
+	return true
+
+
+func _runtime_terrain_target_cell() -> Vector2i:
+	var cell := _last_hovered_cell
+	if arena != null and arena.is_in_bounds(cell) \
+			and arena.get_cell_definition(cell) != null:
+		return cell
+	var playable := arena.playable_cells() if arena != null else []
+	return playable[0] if not playable.is_empty() \
+		else GridTransformService.INVALID_CELL
 
 
 func show_dynamic_construction() -> void:
@@ -4011,12 +4594,13 @@ func _select_dynamic_tool(tool: int) -> void:
 	tool_list.select(tool)
 	_on_tool_selected(tool)
 	if tool == ArenaStudioCanvas.Tool.TERRAIN:
-		canvas.set_brush_preview_terrain(StringName(
-			dynamic_terrain_option.get_selected_metadata()
-		))
+		canvas.set_brush_preview_terrain(
+			_selected_enabled_terrain_id(dynamic_terrain_option)
+		)
 
 
 func _refresh_dynamic_palette() -> void:
+	_refresh_permanent_terrain_options()
 	if dynamic_document_label == null or arena == null:
 		return
 	var mode_name: String = ["PAINTED", "MODULAR", "HYBRID"][arena.visual_mode]
@@ -4028,6 +4612,14 @@ func _refresh_dynamic_palette() -> void:
 	var hybrid_policy := ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
 	if arena.modular_visual_profile != null:
 		hybrid_policy = arena.modular_visual_profile.hybrid_floor_policy
+	if dynamic_base_terrain_option != null:
+		dynamic_base_terrain_option.visible = arena.visual_mode != ArenaDefinition.VisualMode.PAINTED
+		var base_id := arena.modular_visual_profile.base_terrain_id \
+			if arena.modular_visual_profile != null else &"stone"
+		for index in range(dynamic_base_terrain_option.item_count):
+			if StringName(dynamic_base_terrain_option.get_item_metadata(index)) == base_id:
+				dynamic_base_terrain_option.select(index)
+				break
 	if hybrid_floor_policy_panel != null:
 		hybrid_floor_policy_panel.visible = arena.visual_mode == ArenaDefinition.VisualMode.HYBRID
 	if arena.visual_mode == ArenaDefinition.VisualMode.HYBRID:
@@ -4048,6 +4640,60 @@ func _refresh_dynamic_palette() -> void:
 		dynamic_width_spin.set_value_no_signal(arena.grid_size.x)
 	if dynamic_height_spin != null:
 		dynamic_height_spin.set_value_no_signal(arena.grid_size.y)
+
+
+func _refresh_permanent_terrain_options() -> void:
+	var entries := ArenaPermanentTerrainPaintService \
+		.get_paintable_permanent_terrains(arena, true)
+	for option_value in [terrain_option, dynamic_terrain_option]:
+		var option := option_value as OptionButton
+		if option == null:
+			continue
+		var preferred := _selected_terrain_id(option)
+		option.clear()
+		var preferred_index := -1
+		var first_enabled := -1
+		for entry in entries:
+			var terrain_id := StringName(entry.stable_id)
+			var enabled := bool(entry.enabled)
+			var state := (
+				"praticable" if bool(entry.walkable) else "non praticable"
+			) if enabled else "INACTIF — %s" % str(entry.reason)
+			option.add_item("%s • %s • %s" % [
+				entry.display_name, terrain_id, state,
+			])
+			var index := option.item_count - 1
+			option.set_item_metadata(index, terrain_id)
+			option.set_item_disabled(index, not enabled)
+			option.set_item_tooltip(index, str(entry.reason))
+			if enabled and first_enabled < 0:
+				first_enabled = index
+			if enabled and terrain_id == preferred:
+				preferred_index = index
+		var selected_index := preferred_index \
+			if preferred_index >= 0 else first_enabled
+		if selected_index < 0 and option.item_count > 0:
+			selected_index = 0
+		if selected_index >= 0:
+			option.select(selected_index)
+	if canvas != null:
+		canvas.set_brush_preview_terrain(_selected_enabled_terrain_id(
+			dynamic_terrain_option if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION \
+			else terrain_option
+		))
+
+
+func _selected_terrain_id(option: OptionButton) -> StringName:
+	if option == null or option.selected < 0 or option.selected >= option.item_count:
+		return &"stone"
+	return StringName(option.get_item_metadata(option.selected))
+
+
+func _selected_enabled_terrain_id(option: OptionButton) -> StringName:
+	if option == null or option.selected < 0 or option.selected >= option.item_count \
+			or option.is_item_disabled(option.selected):
+		return &""
+	return StringName(option.get_item_metadata(option.selected))
 
 
 func _resize_dynamic_document() -> void:

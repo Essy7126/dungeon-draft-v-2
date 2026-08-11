@@ -1,7 +1,6 @@
 class_name RunHeroResolver
 extends RefCounted
 
-const EXPECTED_CHARACTER_IDS: Array[StringName] = [&"elf", &"mage", &"warrior"]
 const LEGACY_HERO_PATHS := [
 	"res://data/units/alliés/elfe.tres",
 	"res://data/units/alliés/mage.tres",
@@ -35,22 +34,10 @@ static func resolve_runtime_hero_data(
 
 	var content := run_data.content_profile
 	result.errors.append_array(content.validation_errors())
-	if content.hero_profiles.size() != EXPECTED_CHARACTER_IDS.size():
-		result.errors.append(
-			"Le profil %s doit contenir exactement trois heros." % content.profile_id
-		)
+	if not result.errors.is_empty():
 		return result
-	for index in range(EXPECTED_CHARACTER_IDS.size()):
-		var expected_id := EXPECTED_CHARACTER_IDS[index]
-		var hero_profile := content.hero_profiles[index]
+	for hero_profile in content.hero_profiles:
 		if hero_profile == null:
-			continue
-		if hero_profile.character_id != expected_id:
-			result.errors.append(
-				"Ordre de heros invalide a l'index %d : %s attendu, %s recu." % [
-					index, expected_id, hero_profile.character_id,
-				]
-			)
 			continue
 		if not hero_profile.validation_errors().is_empty():
 			continue

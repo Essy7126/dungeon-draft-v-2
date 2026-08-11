@@ -5,6 +5,7 @@ const REFINED_THEMES: Array[CharacterHUDThemeData] = [
 	preload("res://data/ui/elf_hud_theme_refined.tres"),
 	preload("res://data/ui/mage_hud_theme_refined.tres"),
 	preload("res://data/ui/warrior_hud_theme_refined.tres"),
+	preload("res://data/ui/achilles_hud_theme_refined.tres"),
 ]
 
 

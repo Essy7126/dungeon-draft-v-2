@@ -55,11 +55,14 @@ var pathfinder: Pathfinder = null
 var grid_view: PaintedGridView = null
 var runtime_state: ArenaRuntimeState = null
 var dynamic_surface_visuals: DynamicSurfaceVisualAdapter = null
+var dynamic_surface_layer: Node2D = null
 var assembly := {}
 var fidelity_badge: Label = null
 var _debounce: Timer = null
 var _requested_generation := 0
 var _built_generation := 0
+var _observed_arena_fingerprint := ""
+var _fingerprint_poll_elapsed := 0.0
 
 
 func _ready() -> void:
@@ -93,8 +96,24 @@ func _ready() -> void:
 
 func set_arena(value: ArenaDefinition, heavy := true) -> void:
 	arena = value
+	_observed_arena_fingerprint = ArenaSnapshotService.arena_fingerprint(arena) \
+		if arena != null else ""
 	_refresh_fidelity_contract()
 	request_refresh(heavy)
+
+
+func _process(delta: float) -> void:
+	if arena == null:
+		return
+	_fingerprint_poll_elapsed += delta
+	if _fingerprint_poll_elapsed < 0.15:
+		return
+	_fingerprint_poll_elapsed = 0.0
+	var current := ArenaSnapshotService.arena_fingerprint(arena)
+	if current == _observed_arena_fingerprint:
+		return
+	_observed_arena_fingerprint = current
+	request_refresh(true)
 
 
 func set_view_mode(value: int) -> void:
@@ -219,6 +238,7 @@ func cleanup_preview() -> void:
 	pathfinder = null
 	runtime_state = null
 	dynamic_surface_visuals = null
+	dynamic_surface_layer = null
 	assembly = {}
 	preview_signature = {}
 
@@ -261,6 +281,13 @@ func _perform_rebuild() -> bool:
 	floor_parent.name = "ArenaTilesLayer"
 	floor_parent.y_sort_enabled = false
 	world_root.add_child(floor_parent)
+	dynamic_surface_layer = Node2D.new()
+	dynamic_surface_layer.name = "ArenaDynamicSurfaceLayer"
+	dynamic_surface_layer.y_sort_enabled = false
+	dynamic_surface_layer.set_meta(
+		"visual_layer", &"arena_dynamic_surface"
+	)
+	world_root.add_child(dynamic_surface_layer)
 	grid_view = PaintedGridView.new()
 	grid_view.name = "SharedGridView"
 	grid_view.configure(
@@ -283,7 +310,10 @@ func _perform_rebuild() -> bool:
 	dynamic_surface_visuals.name = "DynamicSurfaceVisualAdapter"
 	world_root.add_child(dynamic_surface_visuals)
 	dynamic_surface_visuals.configure(
-		runtime_state.surface_service, grid_view, y_sorted_world
+		runtime_state.terrain_effects.runtime_service,
+		grid_view,
+		dynamic_surface_layer,
+		preview_arena.theme_id
 	)
 	var assembly_report := assembly.get("report") as ArenaVisualAssemblyReport
 	if assembly_report == null or not assembly_report.valid:
@@ -306,6 +336,19 @@ func _perform_rebuild() -> bool:
 	_apply_view_options()
 	_fit_camera(preview_arena)
 	preview_signature = ArenaVisualAssembler.actual_visual_signature(assembly)
+	var topology := ArenaTopologySignatureService.build(preview_arena)
+	var plan := ArenaTerrainRenderPlanService.build(preview_arena)
+	var rendered_cells := (preview_signature.get("terrains", {}) as Dictionary).keys()
+	var floor_parity := ArenaTopologyParityReport.compare_floor_sets(
+		plan.get("expected_floor_cells", []), rendered_cells,
+		topology.removed_cells
+	)
+	preview_signature["topology_hash"] = topology.topology_hash
+	preview_signature["expected_floor_hash"] = floor_parity.expected_floor_hash
+	preview_signature["rendered_floor_hash"] = floor_parity.rendered_floor_hash
+	preview_signature["missing_cells"] = floor_parity.missing_cells
+	preview_signature["unexpected_cells"] = floor_parity.unexpected_cells
+	preview_signature["removed_cells_rendered"] = floor_parity.removed_cells_rendered
 	_built_generation = generation
 	rebuild_count += 1
 	preview_rebuilt.emit(preview_signature)
@@ -320,6 +363,137 @@ func update_runtime_surface(cell: Vector2i, surface: int, source_unit = null) ->
 
 func clear_runtime_surface(cell: Vector2i) -> bool:
 	return runtime_state.clear_surface(cell) if runtime_state != null else false
+
+
+func apply_runtime_terrain_effect(
+		cell: Vector2i,
+		effect: TerrainEffectData,
+		source_unit = null,
+		source_spell: Spell = null,
+		duration_override: int = TerrainSurfaceRuntimeService.DURATION_UNSET
+	) -> Dictionary:
+	if runtime_state == null:
+		return {"changed": false, "reason": "runtime_state_missing"}
+	return runtime_state.apply_terrain_effect(
+		cell, effect, source_unit, source_spell, duration_override
+	)
+
+
+func advance_runtime_surface_tick() -> void:
+	if runtime_state != null:
+		runtime_state.advance_surface_tick()
+
+
+func clear_all_runtime_surfaces() -> void:
+	if runtime_state != null and runtime_state.terrain_effects != null:
+		runtime_state.terrain_effects.reset()
+
+
+## Simule uniquement la composante terrain d'un vrai sort. La Spell, sa
+## geometrie, son TerrainEffectData, le resolver et l'adaptateur visuel sont
+## ceux du runtime de combat. Les couts, degats directs et unites de la working
+## copy ne sont volontairement pas executes dans cet outil d'inspection.
+func simulate_terrain_spell(
+		spell: Spell,
+		target: Vector2i,
+		source_data: UnitData = null
+	) -> Dictionary:
+	if runtime_state == null or grid == null or pathfinder == null:
+		return {"handled": false, "error": "runtime_state_missing"}
+	if spell == null or spell.terrain_effect == null:
+		return {"handled": false, "error": "terrain_spell_missing"}
+	var source := _simulation_source_unit(spell, source_data)
+	var caster := SpellCaster.new(grid, pathfinder, runtime_state.terrain_effects)
+	var requested_cells: Array[Vector2i] = []
+	requested_cells.assign(caster.get_aoe_cells(spell, target, source.grid_pos))
+	var changed_cells: Array[Vector2i] = []
+	var events: Array[Dictionary] = []
+	var rejected: Array[Dictionary] = []
+	for cell in requested_cells:
+		var result := apply_runtime_terrain_effect(
+			cell, spell.terrain_effect, source, spell
+		)
+		if bool(result.get("changed", false)):
+			changed_cells.append(cell)
+			var event := result.get("terrain_event", {}) as Dictionary
+			if not event.is_empty():
+				events.append(event)
+		else:
+			rejected.append({
+				"cell": cell,
+				"reason": str(result.get("reason", "unchanged")),
+			})
+	var ids := TerrainSurfaceIdResolver.resolve(spell.terrain_effect)
+	return {
+		"handled": true,
+		"spell_id": spell.get_effective_spell_id(),
+		"spell_name": spell.spell_name,
+		"source_unit_id": source.unit_id,
+		"source_name": source.unit_name,
+		"source_contract": (
+			"run_active" if fidelity == Fidelity.EXACT else "explicit_fixture"
+		),
+		"target": target,
+		"requested_cells": requested_cells,
+		"terrain_changed": changed_cells,
+		"terrain_events": events,
+		"rejected": rejected,
+		"surface_id": ids.surface_id,
+		"visual_terrain_id": ids.visual_terrain_id,
+		"duration": spell.terrain_effect.duration,
+		"trigger": spell.terrain_effect.trigger,
+		"terrain_damage": spell.terrain_effect.damage,
+		"direct_damage": spell.damage,
+		"active_surface_cells": (
+			runtime_state.terrain_effects.runtime_service.active_surface_cells()
+		),
+	}
+
+
+func simulate_fixture_enter_surface(cell: Vector2i) -> Dictionary:
+	if runtime_state == null or runtime_state.terrain_effects == null:
+		return {"handled": false, "error": "runtime_state_missing"}
+	var source := _simulation_source_unit(null, null)
+	source.grid_pos = cell
+	var hp_before := source.current_hp
+	runtime_state.terrain_effects.on_enter_cell(source, cell)
+	return {
+		"handled": true,
+		"cell": cell,
+		"unit_name": source.unit_name,
+		"hp_before": hp_before,
+		"hp_after": source.current_hp,
+		"damage_received": maxi(0, hp_before - source.current_hp),
+	}
+
+
+func _simulation_source_unit(spell: Spell, source_data: UnitData) -> Unit:
+	var resolved_data := source_data
+	if resolved_data == null and spell != null:
+		for hero in resolved_heroes:
+			if hero == null:
+				continue
+			for known_spell in hero.spells:
+				if known_spell != null and known_spell.get_effective_spell_id() \
+						== spell.get_effective_spell_id():
+					resolved_data = hero
+					break
+			if resolved_data != null:
+				break
+	if resolved_data == null and not resolved_heroes.is_empty():
+		resolved_data = resolved_heroes[0]
+	var source := Unit.from_data(resolved_data) \
+		if resolved_data != null else Unit.new("Fixture terrain")
+	var origin := Vector2i(-1, -1)
+	for spawn_cell in runtime_state.hero_spawns:
+		if grid.is_terrain_interactable(spawn_cell):
+			origin = spawn_cell
+			break
+	if origin == Vector2i(-1, -1):
+		var candidates := runtime_state.terrain_effects.runtime_service.state_cells()
+		origin = candidates[0] if not candidates.is_empty() else Vector2i.ZERO
+	source.grid_pos = origin
+	return source
 
 
 func _build_background(value: ArenaDefinition) -> void:

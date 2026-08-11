@@ -682,7 +682,10 @@ func _resolve_impacts(ctx: CastContext) -> void:
 	for sequence_index in ctx.affected_cells.size():
 		var target_cell = ctx.affected_cells[sequence_index]
 		var target = _grid.get_unit(target_cell)
-		if target != null:
+		if target != null and not (
+				ctx.spell.exclude_caster_from_area_effects
+				and target == ctx.caster
+			):
 			_resolve_unit_impact(ctx, target, target_cell, sequence_index)
 		_resolve_cell_terrain(ctx, target_cell)
 

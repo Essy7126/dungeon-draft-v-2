@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"achilles_guard"
+discipline_id = &"guard"
+spell_name = "Garde d’airain"
+description = "Prototype L’Odyssée · 2 PA · Confère 10 points de bouclier à Achille."
+ap_cost = 2
+spell_range = 0
+once_per_activation = true
+can_target_enemy = false
+can_target_self = true
+shield_grant = 10

@@ -1,8 +1,8 @@
 extends SceneTree
 
-## Normaliseur deterministe des quatre sources du laboratoire.
+## Normaliseur deterministe des sources de dalles permanentes du laboratoire.
 ## Une seule intersection de bounding boxes, une seule transformation et un
-## masque commun sont appliques aux quatre images.
+## masque commun sont appliques a toutes les images.
 
 const RAW_DIR := "res://tools/labs/dynamic_arena/assets/raw"
 const NORMALIZED_DIR := "res://tools/labs/dynamic_arena/assets/normalized"
@@ -15,6 +15,11 @@ const SOURCE_SPECS := [
 		"name": "stone",
 		"raw": RAW_DIR + "/stone.png",
 		"fallback": "res://tools/labs/dynamic_arena/assets/dalle_base.png",
+	},
+	{
+		"name": "neutral",
+		"raw": RAW_DIR + "/neutre.png",
+		"fallback": "",
 	},
 	{
 		"name": "lava",
@@ -96,7 +101,7 @@ func _ensure_raw_source(spec: Dictionary) -> String:
 	if FileAccess.file_exists(raw_path):
 		return raw_path
 	var fallback_path := str(spec["fallback"])
-	if not FileAccess.file_exists(fallback_path):
+	if fallback_path.is_empty() or not FileAccess.file_exists(fallback_path):
 		return ""
 	var copy_error := DirAccess.copy_absolute(
 		ProjectSettings.globalize_path(fallback_path),
@@ -169,11 +174,14 @@ func _inside_diamond(x: int, y: int) -> bool:
 
 
 func _save_comparison(sources: Array[Image], normalized: Array[Image]) -> int:
-	const CANVAS_SIZE := Vector2i(1200, 640)
 	const PANEL_SIZE := Vector2i(272, 560)
-	var canvas := Image.create(CANVAS_SIZE.x, CANVAS_SIZE.y, false, Image.FORMAT_RGBA8)
+	var canvas_size := Vector2i(24 + SOURCE_SPECS.size() * 292, 640)
+	var canvas := Image.create(canvas_size.x, canvas_size.y, false, Image.FORMAT_RGBA8)
 	canvas.fill(Color("101722"))
-	var accents := [Color("98a8b8"), Color("ff6437"), Color("a9eaff"), Color("39bde3")]
+	var accents := [
+		Color("98a8b8"), Color("d8c8a8"), Color("ff6437"),
+		Color("a9eaff"), Color("39bde3"),
+	]
 	for index in range(SOURCE_SPECS.size()):
 		var panel_position := Vector2i(24 + index * 292, 40)
 		canvas.fill_rect(Rect2i(panel_position, PANEL_SIZE), Color("1d2938"))
@@ -195,5 +203,5 @@ func _save_comparison(sources: Array[Image], normalized: Array[Image]) -> int:
 	if error != OK:
 		push_error("Echec de la planche comparative : %s" % error_string(error))
 		return 1
-	print("COMPARISON %s %dx%d" % [COMPARISON_PATH, CANVAS_SIZE.x, CANVAS_SIZE.y])
+	print("COMPARISON %s %dx%d" % [COMPARISON_PATH, canvas_size.x, canvas_size.y])
 	return 0

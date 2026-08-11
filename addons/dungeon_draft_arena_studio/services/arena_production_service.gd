@@ -36,9 +36,13 @@ static func plan(
 		return {"ok": false, "error": "invalid_destination"}
 	var report := ArenaValidator.validate(arena, false)
 	var visual_report := ArenaVisualAssembler.inspect(arena)
+	var automatic_smoke := ArenaAutomaticRuntimeSmokeService.run(arena)
 	var compatibility_outputs := _is_diagnostic_destination(destination)
 	var names := _output_names(arena, compatibility_outputs)
 	var inspection := ArenaBundleInspectionService.inspect(destination, graph)
+	var bundle_resolution := ArenaBundleResolutionService.plan(
+		arena, destination, inspection, graph
+	)
 	var owned: bool = inspection.state in [
 		ArenaBundleInspectionService.OWNED_COMPLETE,
 		ArenaBundleInspectionService.REFERENCED_COMPLETE,
@@ -75,6 +79,33 @@ static func plan(
 			var conflict_path := destination.path_join(str(relative_path))
 			if not conflicts.has(conflict_path):
 				conflicts.append(conflict_path)
+	var topology_parity := {
+		"valid": bool(automatic_smoke.get("topology_hashes_identical", false)) \
+			and str(automatic_smoke.get("expected_floor_hash", "")) \
+				== str(automatic_smoke.get("rendered_floor_hash", "")) \
+			and (automatic_smoke.get("missing_cells", []) as Array).is_empty() \
+			and (automatic_smoke.get("unexpected_cells", []) as Array).is_empty() \
+			and (automatic_smoke.get("removed_cells_rendered", []) as Array).is_empty() \
+			and (automatic_smoke.get("duplicate_cells", []) as Array).is_empty(),
+		"canonical_topology_hash": automatic_smoke.get("working_topology_hash", ""),
+		"temporary_topology_hash": automatic_smoke.get("temporary_topology_hash", ""),
+		"runtime_topology_hash": automatic_smoke.get("runtime_topology_hash", ""),
+		"expected_floor_hash": automatic_smoke.get("expected_floor_hash", ""),
+		"rendered_floor_hash": automatic_smoke.get("rendered_floor_hash", ""),
+		"missing_cells": automatic_smoke.get("missing_cells", []),
+		"unexpected_cells": automatic_smoke.get("unexpected_cells", []),
+		"removed_cells_rendered": automatic_smoke.get("removed_cells_rendered", []),
+		"duplicate_cells": automatic_smoke.get("duplicate_cells", []),
+	}
+	var gate_report := ArenaIntegrationGatePolicy.evaluate(
+		report, topology_parity, visual_report, automatic_smoke, inspection,
+		ArenaIntegrationGatePolicy.Profile.PRODUCTION, {
+			"arena_fingerprint": ArenaSnapshotService.arena_fingerprint(arena),
+			"manual_test_performed": false,
+			"art_alignment_confirmed": true,
+			"destination_conflicts": conflicts,
+		}
+	)
 	return {
 		"ok": true,
 		"destination": destination,
@@ -82,12 +113,16 @@ static func plan(
 		"creates": creates,
 		"modifies": modifies,
 		"conflicts": conflicts,
-		"can_produce": report.is_valid() and visual_report.valid and conflicts.is_empty(),
+		"can_produce": bool(gate_report.ready_to_integrate) and conflicts.is_empty(),
 		"visual_report": visual_report,
+		"automatic_runtime_smoke": automatic_smoke,
+		"topology_parity": topology_parity,
+		"gate_report": gate_report,
 		"source_fingerprint": ArenaSnapshotService.arena_fingerprint(arena),
 		"gameplay_fingerprint": ArenaSnapshotService.gameplay_fingerprint(arena),
 		"bundle_state": inspection.state,
 		"bundle_inspection": inspection,
+		"bundle_resolution": bundle_resolution,
 		"compatibility_outputs": compatibility_outputs,
 	}
 

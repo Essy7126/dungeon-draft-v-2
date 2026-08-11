@@ -15,9 +15,10 @@ static func plan(
 		action: StringName,
 		requested_index: int,
 		destination := "",
-		graph: StudioReferenceGraphService = null
+		graph: StudioReferenceGraphService = null,
+		gate_options: Dictionary = {}
 	) -> Dictionary:
-	var production := ArenaProductionService.plan(arena, destination)
+	var production := ArenaProductionService.plan(arena, destination, graph)
 	if not production.get("ok", false):
 		return {"ok": false, "error": production.get("error", "Plan de production impossible.")}
 	var produced_path := str(production.get("destination", "")).path_join("arena.tres")
@@ -42,11 +43,32 @@ static func plan(
 	for path in attachment.get("affected_files", []):
 		if not affected_files.has(str(path)):
 			affected_files.append(str(path))
-	var can_integrate := bool(production.get("can_produce", false)) \
-		and bool(attachment.get("ok", false)) \
-		and bool(field_coverage.get("ok", false)) \
-		and bool(target_coverage.get("ok", false)) \
-		and run_errors.is_empty()
+	var policy_options := gate_options.duplicate(true)
+	policy_options["arena_fingerprint"] = ArenaSnapshotService.arena_fingerprint(arena)
+	policy_options["attachment_ok"] = bool(attachment.get("ok", false))
+	policy_options["attachment_error"] = str(attachment.get("error", ""))
+	policy_options["field_coverage_ok"] = bool(field_coverage.get("ok", false))
+	policy_options["target_coverage_ok"] = bool(target_coverage.get("ok", false))
+	policy_options["run_validation_errors"] = run_errors
+	policy_options["destination_conflicts"] = production.get("conflicts", [])
+	policy_options["gameplay_preservation_required"] = action \
+		== ArenaProductionAttachmentService.UPDATE
+	policy_options["gameplay_preserved"] = action \
+		!= ArenaProductionAttachmentService.UPDATE \
+		or bool(attachment.get("preserves_gameplay", false))
+	policy_options["rollback_available"] = bool(attachment.get("ok", false))
+	var gate_report := ArenaIntegrationGatePolicy.evaluate(
+		production.get("validation") as ArenaValidationReport,
+		production.get("topology_parity", {}),
+		production.get("visual_report") as ArenaVisualAssemblyReport,
+		production.get("automatic_runtime_smoke", {}),
+		production.get("bundle_inspection", {}),
+		int(gate_options.get(
+			"validation_profile", ArenaIntegrationGatePolicy.Profile.PRODUCTION
+		)),
+		policy_options
+	)
+	var can_integrate := bool(gate_report.ready_to_integrate)
 	return {
 		"ok": true,
 		"can_integrate": can_integrate,
@@ -55,6 +77,8 @@ static func plan(
 		"field_coverage": field_coverage,
 		"target_coverage": target_coverage,
 		"run_validation_errors": run_errors,
+		"gate_report": gate_report,
+		"bundle_resolution": production.get("bundle_resolution", {}),
 		"action": action,
 		"action_label": action_label(action),
 		"run_path": run_data.resource_path if run_data != null else "",
@@ -101,7 +125,8 @@ static func integrate_with_options(
 		options := {}
 	) -> Dictionary:
 	var integration_plan := plan(
-		arena, run_data, action, requested_index, destination, graph
+		arena, run_data, action, requested_index, destination, graph,
+		options.get("gate_options", {})
 	)
 	if not integration_plan.get("ok", false) \
 			or not integration_plan.get("can_integrate", false):
@@ -113,8 +138,12 @@ static func integrate_with_options(
 		}
 	var journal_path := _new_journal_path(arena, run_data)
 	_write_journal(journal_path, _journal_state(&"PLANNED", integration_plan))
+	var production_options := (options.get(
+		"production_options", {}
+	) as Dictionary).duplicate(true)
+	production_options["reference_graph"] = graph
 	var production := ArenaProductionService.produce_with_options(
-		arena, destination, provided_images, options.get("production_options", {})
+		arena, destination, provided_images, production_options
 	)
 	if not production.get("ok", false):
 		_write_journal(journal_path, _journal_state(&"PRODUCTION_FAILED", integration_plan, {

@@ -217,7 +217,10 @@ func _draw() -> void:
 			var cell := Vector2i(x, y)
 			var polygon := get_cell_polygon(cell)
 			var cell_type := grid.get_type(cell)
-			if draw_base_cells or draw_logic_types:
+			# Une cellule HOLE peut recevoir un contour de diagnostic, jamais un
+			# remplissage qui ressemble a une dalle tactique.
+			if (draw_base_cells or draw_logic_types) \
+					and cell_type != GridData.CellType.HOLE:
 				draw_colored_polygon(polygon, TYPE_COLORS[cell_type])
 			if _highlights.has(cell):
 				draw_colored_polygon(polygon, _highlights[cell])
@@ -258,6 +261,28 @@ func _draw() -> void:
 		draw_rect(get_logical_bounds(), Color(0.25, 1.0, 0.75, 0.95), false, 2.0)
 	if draw_calibration:
 		_draw_calibration()
+
+
+func diagnostic_fill_cells() -> Array[String]:
+	var result: Array[String] = []
+	if grid == null or not (draw_base_cells or draw_logic_types):
+		return result
+	for y in range(grid.rows):
+		for x in range(grid.cols):
+			var cell := Vector2i(x, y)
+			if grid.get_type(cell) != GridData.CellType.HOLE:
+				result.append(ArenaTopologySignatureService.coordinate_key(cell))
+	return result
+
+
+func render_option_report() -> Dictionary:
+	return {
+		"draw_base_cells": draw_base_cells,
+		"draw_logic_types": draw_logic_types,
+		"draw_void_cells": draw_void_cells,
+		"draw_grid_lines": draw_grid_lines,
+		"filled_cells": diagnostic_fill_cells(),
+	}
 
 
 func _draw_calibration() -> void:

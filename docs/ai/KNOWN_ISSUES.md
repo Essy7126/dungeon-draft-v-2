@@ -1,5 +1,32 @@
 # Problèmes connus et suivis
 
+## L’Odyssée — limites du candidat Achille solo
+
+- Seule une source visuelle sud-est explicite est disponible pour Achille. Les
+  autres directions utilisent un fallback volontaire avec avertissement unique ;
+  les quatre capacités partagent provisoirement l’animation d’attaque. La mort
+  utilise un fade simple et non une animation finale.
+- Les ennemis réutilisent des squelettes visuels existants et les trois salles
+  partagent leurs layouts et profils de présentation peints avec le catalogue
+  canonique. Les wrappers visuels, rencontres et progressions restent propres à
+  L’Odyssée.
+- Le runner graphique forcé est PASS et ses quatorze captures ont été inspectées,
+  mais aucune partie humaine non forcée de la salle 1 n’a été effectuée. Le HUD
+  1280×720 est lisible mais proche du bord inférieur et doit être revu en jeu.
+- Les runners graphiques peuvent encore signaler des ressources renderer ou
+  `ObjectDB` à la fermeture ; le rapport fonctionnel et le code de sortie restent
+  PASS/0.
+- La suite globale est à 935/949, contre 13 échecs historiques documentés. Le
+  quatorzième concerne `test_dungeon_draft_studio_v12` et la parité de signature
+  structurelle affectée par le travail Arena/VFX concurrent ; aucun fichier
+  Odyssey n’est impliqué.
+- La cible de durée 18–25 minutes n’a pas été validée par un playtest humain. Le
+  statut reste `WORKTREE_CANDIDATE`.
+- La progression comporte quatre disciplines minimales et aucun arbre final ;
+  les récompenses d’équipement sont volontairement désactivées pour cette slice.
+- Ce candidat ne formule aucun verdict en faveur d’un remplacement du trio :
+  L’Odyssée demeure un laboratoire expérimental parallèle.
+
 État vérifié le 2026-08-06 sur `main`, HEAD
 `bf2d6f7a8b6dabf2c8b74c5743852475f7c84e0a`, Godot 4.7, GUT 9.7.1.
 

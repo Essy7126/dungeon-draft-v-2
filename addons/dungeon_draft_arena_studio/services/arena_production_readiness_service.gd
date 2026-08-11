@@ -14,6 +14,9 @@ static func build(
 	certificate.run_path = str(options.get("run_path", ""))
 	certificate.room_index = int(options.get("room_index", -1))
 	certificate.action = StringName(options.get("action", "NONE"))
+	certificate.validation_profile = int(options.get(
+		"validation_profile", ArenaIntegrationGatePolicy.Profile.PRODUCTION
+	))
 	if arena == null:
 		certificate.validation_errors.append("arena_missing")
 		certificate.recompute_ready()
@@ -21,6 +24,8 @@ static func build(
 	certificate.arena_fingerprint = ArenaSnapshotService.arena_fingerprint(arena)
 	certificate.gameplay_fingerprint = ArenaSnapshotService.gameplay_fingerprint(arena)
 	var render_plan := ArenaTerrainRenderPlanService.build(arena)
+	var canonical_topology := ArenaTopologySignatureService.build(arena)
+	certificate.canonical_topology_hash = canonical_topology.topology_hash
 	certificate.render_plan_fingerprint = ArenaEditSession.fingerprint(
 		_stable_render_plan(render_plan)
 	)
@@ -42,8 +47,25 @@ static func build(
 	certificate.expected_walls = visual.expected_wall_count
 	certificate.rendered_walls = visual.rendered_wall_count
 	certificate.duplicate_tiles = int(options.get("duplicate_tiles", 0))
+	var rendered_floor_cells := visual.terrain_nodes.keys()
+	var duplicates: Array[String] = []
+	for key in visual.terrain_nodes:
+		if int((visual.terrain_nodes[key] as Dictionary).get("duplication_count", 1)) > 1:
+			duplicates.append(str(key))
+	var floor_parity := ArenaTopologyParityReport.compare_floor_sets(
+		render_plan.get("expected_floor_cells", []), rendered_floor_cells,
+		canonical_topology.removed_cells, duplicates
+	)
+	certificate.expected_floor_hash = floor_parity.expected_floor_hash
+	certificate.rendered_floor_hash = floor_parity.rendered_floor_hash
+	certificate.removed_cells_rendered.assign(floor_parity.removed_cells_rendered)
+	certificate.unexpected_cells.assign(floor_parity.unexpected_cells)
+	certificate.missing_cells.assign(floor_parity.missing_cells)
 	var runtime_state := ArenaRuntimeProjectionService.build(arena)
 	var parity := ArenaRuntimeProjectionService.parity_report(arena, runtime_state)
+	certificate.runtime_topology_hash = str(parity.get(
+		"runtime_topology_hash", ""
+	))
 	var tactical := ArenaTacticalMetricsService.analyze(arena, runtime_state)
 	var camps := tactical.get("camps", {}) as Dictionary
 	var spawn_metrics := tactical.get("spawns", {}) as Dictionary
@@ -62,6 +84,15 @@ static func build(
 	certificate.preview_game_valid = bool(options.get(
 		"preview_game_valid", parity.get("ok", false)
 	))
+	var automatic_smoke = options.get("automatic_runtime_smoke", {})
+	if not automatic_smoke is Dictionary or (automatic_smoke as Dictionary).is_empty():
+		automatic_smoke = ArenaAutomaticRuntimeSmokeService.run(arena)
+	var automatic_smoke_result := automatic_smoke as Dictionary \
+		if automatic_smoke is Dictionary else {}
+	certificate.automatic_runtime_smoke_result = automatic_smoke_result.duplicate(true)
+	certificate.automatic_runtime_smoke_valid = bool(
+		automatic_smoke_result.get("ok", false)
+	)
 	var runtime_result = options.get(
 		"runtime_test_result", ArenaDirectTestService.load_last_result()
 	)
@@ -71,10 +102,36 @@ static func build(
 		and str(current_runtime_result.get("working_fingerprint", "")) \
 			== certificate.arena_fingerprint \
 		and bool(current_runtime_result.get("fingerprints_identical", false))
+	var runtime_topology_matches := runtime_result_matches \
+		and bool(current_runtime_result.get("topology_hashes_identical", false)) \
+		and str(current_runtime_result.get("working_topology_hash", "")) \
+			== certificate.canonical_topology_hash
+	if runtime_topology_matches:
+		certificate.temporary_topology_hash = str(current_runtime_result.get(
+			"temporary_topology_hash", ""
+		))
+		certificate.runtime_topology_hash = str(current_runtime_result.get(
+			"runtime_topology_hash", ""
+		))
+	elif certificate.automatic_runtime_smoke_valid:
+		certificate.temporary_topology_hash = str(automatic_smoke_result.get(
+			"temporary_topology_hash", ""
+		))
+		certificate.runtime_topology_hash = str(automatic_smoke_result.get(
+			"runtime_topology_hash", ""
+		))
+	else:
+		certificate.temporary_topology_hash = ""
+	certificate.topology_gate_valid = floor_parity.valid \
+		and certificate.canonical_topology_hash \
+			== certificate.temporary_topology_hash \
+		and certificate.canonical_topology_hash \
+			== certificate.runtime_topology_hash
+	certificate.manual_test_performed = bool(options.get(
+		"manual_test_performed", runtime_result_matches
+	))
 	certificate.runtime_test_valid = bool(options.get(
-		"runtime_test_valid",
-		bool(current_runtime_result.get("ok", false)) \
-			if runtime_result_matches else parity.get("ok", false)
+		"runtime_test_valid", certificate.automatic_runtime_smoke_valid
 	))
 	if runtime_result_matches:
 		certificate.runtime_test_result_path = ArenaDirectTestService.LAST_RESULT_PATH

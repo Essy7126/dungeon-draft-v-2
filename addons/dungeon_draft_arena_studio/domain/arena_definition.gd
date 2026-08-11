@@ -56,6 +56,7 @@ var camp_orientation: int = CampOrientation.HERO_BOTTOM_LEFT
 @export var spawns: Array[ArenaSpawnDefinition] = []
 @export var objectives: Array[ArenaObjectiveDefinition] = []
 @export var decorations: Array[ArenaDecorationDefinition] = []
+@export var vortex_pairs: Array[ArenaVortexPairDefinition] = []
 @export var calibration_cells: Array[Vector2i] = []
 @export var calibration_pixels: Array[Vector2] = []
 @export_file("*.tres") var presentation_profile_path := DEFAULT_PRESENTATION
@@ -120,6 +121,9 @@ func erase_cell(cell: Vector2i) -> bool:
 	decorations = decorations.filter(func(decoration):
 		return decoration != null and decoration.cell != cell
 	)
+	vortex_pairs = vortex_pairs.filter(func(pair):
+		return pair != null and not pair.contains(cell)
+	)
 	return true
 
 
@@ -129,6 +133,12 @@ func defined_cells() -> Array[Vector2i]:
 		if definition != null and definition.defined:
 			result.append(definition.coordinate)
 	return result
+
+
+func visible_floor_cells() -> Array[Vector2i]:
+	return ArenaTopologySignatureService.cells_from_keys(
+		ArenaTopologySignatureService.build(self).visible_floor_cells
+	)
 
 
 func playable_cells() -> Array[Vector2i]:
@@ -162,6 +172,13 @@ func spawns_at(cell: Vector2i) -> Array[ArenaSpawnDefinition]:
 		if spawn != null and spawn.cell == cell:
 			result.append(spawn)
 	return result
+
+
+func vortex_pair_at(cell: Vector2i) -> ArenaVortexPairDefinition:
+	for pair in vortex_pairs:
+		if pair != null and pair.contains(cell):
+			return pair
+	return null
 
 
 func to_snapshot() -> Dictionary:
@@ -212,6 +229,9 @@ func to_snapshot() -> Dictionary:
 			func(value): return value.to_dict()
 		),
 		"decorations": decorations.filter(func(value): return value != null).map(
+			func(value): return value.to_dict()
+		),
+		"vortex_pairs": vortex_pairs.filter(func(value): return value != null).map(
 			func(value): return value.to_dict()
 		),
 		"calibration_cells": calibration_cells.map(
@@ -295,6 +315,10 @@ func restore_snapshot(data: Dictionary) -> bool:
 	for entry in data.get("decorations", []):
 		if entry is Dictionary:
 			decorations.append(ArenaDecorationDefinition.from_dict(entry))
+	vortex_pairs.clear()
+	for entry in data.get("vortex_pairs", []):
+		if entry is Dictionary:
+			vortex_pairs.append(ArenaVortexPairDefinition.from_dict(entry))
 	calibration_cells.clear()
 	for entry in data.get("calibration_cells", []):
 		calibration_cells.append(_vector2i(entry))

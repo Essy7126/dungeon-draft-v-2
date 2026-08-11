@@ -29,6 +29,7 @@ const GAMEPLAY_FIELDS := {
 	"ArenaDefinition.obstacles": true,
 	"ArenaDefinition.spawns": true,
 	"ArenaDefinition.objectives": true,
+	"ArenaDefinition.vortex_pairs": true,
 	"ArenaDefinition.encounter_definition": true,
 	"ArenaCellDefinition.defined": true,
 	"ArenaCellDefinition.playable": true,
@@ -47,6 +48,11 @@ const GAMEPLAY_FIELDS := {
 	"ArenaObjectiveDefinition.objective_type": true,
 	"ArenaObjectiveDefinition.required": true,
 	"ArenaDecorationDefinition.gameplay_preset": true,
+	"ArenaVortexPairDefinition.entry_cell": true,
+	"ArenaVortexPairDefinition.exit_cell": true,
+	"ArenaVortexPairDefinition.traversal_contract": true,
+	"ArenaVortexPairDefinition.bidirectional": true,
+	"ArenaVortexPairDefinition.runtime_enabled": true,
 }
 
 const RULES := {
@@ -101,6 +107,8 @@ const RULES := {
 		"spawns": Classification.RUNTIME_CONSUMED,
 		"objectives": Classification.RUNTIME_CONSUMED,
 		"decorations": Classification.RUNTIME_CONSUMED,
+		# Stocké pour l'authoring, mais explicitement sans consommateur runtime.
+		"vortex_pairs": Classification.FUTURE_EXPLICIT,
 		"calibration_cells": Classification.EDITOR_ONLY,
 		"calibration_pixels": Classification.EDITOR_ONLY,
 		"presentation_profile_path": Classification.RUNTIME_CONSUMED,
@@ -159,6 +167,15 @@ const RULES := {
 		"y_sort": Classification.RUNTIME_CONSUMED,
 		"gameplay_preset": Classification.FUTURE_EXPLICIT,
 	},
+	"ArenaVortexPairDefinition": {
+		"schema_version": Classification.MANIFEST_ONLY,
+		"pair_id": Classification.MANIFEST_ONLY,
+		"entry_cell": Classification.FUTURE_EXPLICIT,
+		"exit_cell": Classification.FUTURE_EXPLICIT,
+		"traversal_contract": Classification.FUTURE_EXPLICIT,
+		"bidirectional": Classification.FUTURE_EXPLICIT,
+		"runtime_enabled": Classification.FUTURE_EXPLICIT,
+	},
 	"ArenaModularVisualProfile": {
 		"theme_id": Classification.RUNTIME_CONSUMED,
 		"terrain_ids": Classification.RUNTIME_CONSUMED,
@@ -186,6 +203,7 @@ static func scan() -> Dictionary:
 	_scan_resource("ArenaSpawnDefinition", ArenaSpawnDefinition.new(), entries)
 	_scan_resource("ArenaObjectiveDefinition", ArenaObjectiveDefinition.new(), entries)
 	_scan_resource("ArenaDecorationDefinition", ArenaDecorationDefinition.new(), entries)
+	_scan_resource("ArenaVortexPairDefinition", ArenaVortexPairDefinition.new(), entries)
 	_scan_resource("ArenaModularVisualProfile", ArenaModularVisualProfile.new(), entries)
 	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return str(a.key) < str(b.key)

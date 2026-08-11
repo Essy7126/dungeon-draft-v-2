@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="PackedScene" path="res://characters/achilles/AchillesIsoUnitView.tscn" id="2_visual"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"achilles"
+unit_name = "Achille"
+description = "Châssis expérimental solo de L’Odyssée."
+max_hp = 110
+initiative = 14
+max_ap = 6
+max_mp = 3
+attack_power = 18
+visual_scene = ExtResource("2_visual")
+role = "Hoplite expérimental"
+presentation_summary = "Vertical slice solo de trois salles."
+progression_summary = "Quatre disciplines minimales, sans évolution obligatoire."
+presentation_badge = "EXPÉRIMENTAL — L’Odyssée"
+basic_attack_enabled = false
+active_spell_slots = 4

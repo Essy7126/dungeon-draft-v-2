@@ -5,6 +5,53 @@ extends RefCounted
 ## Projection affine de l'empreinte losange normalisee d'une texture vers le
 ## polygone reel d'une cellule. Le meme calcul sert a tous les renderers Node2D.
 
+const NORMALIZED_TILE_SIZE := Vector2i(256, 128)
+
+
+static func texture_contract(texture: Texture2D) -> Dictionary:
+	var result := {
+		"valid": false,
+		"size": Vector2i.ZERO,
+		"alpha_bounds": Rect2i(),
+		"expected_size": NORMALIZED_TILE_SIZE,
+		"expected_alpha_bounds": Rect2i(Vector2i.ZERO, NORMALIZED_TILE_SIZE),
+		"reason": "texture_missing",
+	}
+	if texture == null:
+		return result
+	result.size = Vector2i(texture.get_size())
+	if result.size != NORMALIZED_TILE_SIZE:
+		result.reason = "size_mismatch"
+		return result
+	var image := texture.get_image()
+	if image == null or image.is_empty():
+		result.reason = "image_unreadable"
+		return result
+	var bounds := _alpha_bounds(image)
+	result.alpha_bounds = bounds
+	if bounds != Rect2i(Vector2i.ZERO, NORMALIZED_TILE_SIZE):
+		result.reason = "alpha_bounds_mismatch"
+		return result
+	result.valid = true
+	result.reason = "normalized_diamond"
+	return result
+
+
+static func _alpha_bounds(image: Image) -> Rect2i:
+	var minimum := Vector2i(image.get_width(), image.get_height())
+	var maximum := Vector2i(-1, -1)
+	for y in range(image.get_height()):
+		for x in range(image.get_width()):
+			if image.get_pixel(x, y).a <= 1.0 / 255.0:
+				continue
+			minimum.x = mini(minimum.x, x)
+			minimum.y = mini(minimum.y, y)
+			maximum.x = maxi(maximum.x, x)
+			maximum.y = maxi(maximum.y, y)
+	if maximum.x < minimum.x or maximum.y < minimum.y:
+		return Rect2i()
+	return Rect2i(minimum, maximum - minimum + Vector2i.ONE)
+
 
 static func sprite_transform(
 		texture: Texture2D,
