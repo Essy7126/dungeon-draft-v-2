@@ -52,8 +52,8 @@ func test_catalogs_keep_permanent_surface_reaction_and_spatial_families_separate
 	var vortex := ArenaCatalogService.interactive(&"vortex")
 	assert_not_null(vortex)
 	assert_true(vortex.editor_placeable)
-	assert_false(vortex.runtime_supported)
-	assert_false(vortex.is_production_certified())
+	assert_true(vortex.runtime_supported)
+	assert_true(vortex.is_production_certified())
 
 
 func test_neutral_is_paintable_and_available_as_a_base_terrain() -> void:
@@ -109,34 +109,35 @@ func test_neutral_keeps_exact_identity_through_direct_test_copy_and_render_plan(
 	assert_true(ArenaDirectTestService.cleanup_context(request))
 
 
-func test_coverage_matrix_reports_only_observed_gameplay() -> void:
+func test_coverage_matrix_reports_complete_data_driven_gameplay() -> void:
 	var report := ArenaTileGameplayCoverageService.build()
-	assert_eq((report.entries as Array).size(), 8)
+	assert_eq((report.entries as Array).size(), 9)
+	assert_true((report.unsupported_runtime_ids as Array).is_empty())
 	var neutral := ArenaTileGameplayCoverageService.entry(&"neutral")
 	assert_eq(neutral.category, "permanent_terrain")
 	assert_true(neutral.runtime_supported)
 	assert_true(neutral.production_placeable)
 	var steam := ArenaTileGameplayCoverageService.entry(&"steam")
-	assert_eq(steam.category, "temporary_surface")
+	assert_eq(steam.category, "permanent_terrain")
 	assert_eq(steam.duration, 2)
 	assert_eq(steam.damage, 0)
 	assert_eq(steam.visual_terrain_id, "steam")
 	var electric := ArenaTileGameplayCoverageService.entry(&"electrified_water")
-	assert_eq(electric.category, "visual_reaction")
+	assert_eq(electric.category, "permanent_terrain")
 	assert_eq(electric.damage, TerrainSurfaceRuntimeService.REACTION_DAMAGE)
-	assert_eq(electric.duration, 0)
-	assert_false(electric.runtime_supported)
+	assert_eq(electric.duration, -1)
+	assert_true(electric.runtime_supported)
 	assert_true(electric.visual_event_supported)
-	assert_false(electric.canonical_producer_present)
+	assert_true(electric.canonical_producer_present)
 	var poison := ArenaTileGameplayCoverageService.entry(&"poison")
-	assert_false(poison.runtime_supported)
-	assert_eq(poison.canonical_resource, "")
-	assert_false(ResourceLoader.exists("res://data/terrain/poison.tres"))
+	assert_true(poison.runtime_supported)
+	assert_eq(poison.runtime_surface_resource, "res://data/terrain/poison.tres")
+	assert_true(ResourceLoader.exists("res://data/terrain/poison.tres"))
 	var lava := ArenaTileGameplayCoverageService.entry(&"lava")
-	assert_eq(lava.cell_type, GridData.CellType.WALL)
+	assert_eq(lava.cell_type, GridData.CellType.LAVA)
 	assert_eq(lava.runtime_surface_cell_type, GridData.CellType.LAVA)
-	assert_false(lava.runtime_supported)
-	assert_false(lava.production_placeable)
+	assert_true(lava.runtime_supported)
+	assert_true(lava.production_placeable)
 
 
 func test_steam_reaction_uses_canonical_duration_and_visual_without_mutation() -> void:
@@ -156,7 +157,7 @@ func test_steam_reaction_uses_canonical_duration_and_visual_without_mutation() -
 	assert_true(steam_resource.blocks_vision)
 	var visual := TerrainSurfaceVisualResolver.resolve(&"steam")
 	assert_true(visual.ok)
-	assert_true(str((visual.texture as Texture2D).resource_path).ends_with("vapeur.png"))
+	assert_true(str((visual.texture as Texture2D).resource_path).ends_with("normalized/steam.png"))
 	assert_eq(fingerprint, RoomDataSnapshotService.room_fingerprint(_arena_fixture()))
 
 
@@ -214,32 +215,35 @@ func test_shock_event_uses_electrified_visual_for_one_rendered_frame() -> void:
 	assert_eq(reaction_node.get_meta("renderer_role"), &"surface_reaction")
 	assert_eq(reaction_node.get_meta("visual_terrain_id"), &"electrified_water")
 	var render_report := adapter.renderer.actual_render_report()
-	assert_true(str(render_report.cells["2,2"].texture_path).ends_with("électrique.png"))
+	assert_true(str(render_report.cells["2,2"].texture_path).ends_with(
+		"normalized/electrified_water.png"
+	))
 	await wait_process_frames(3)
 	assert_null(adapter.node_for_cell(cell))
 
 
-func test_vortex_pair_round_trip_is_authorable_but_runtime_and_production_blocked() -> void:
+func test_vortex_pair_round_trip_is_authorable_and_runtime_certified() -> void:
 	var arena := _arena_fixture()
 	assert_true(ArenaDynamicEditingService.place_vortex_pair(
 		arena, Vector2i(1, 1), Vector2i(3, 3)
 	))
 	assert_eq(arena.vortex_pairs.size(), 1)
 	assert_eq(arena.vortex_pairs[0].pair_id, &"vortex_pair_001")
-	assert_false(arena.vortex_pairs[0].runtime_enabled)
+	assert_true(arena.vortex_pairs[0].runtime_enabled)
 	var restored := ArenaDefinition.new()
 	assert_true(restored.restore_snapshot(arena.to_snapshot()))
 	assert_eq(restored.vortex_pairs.size(), 1)
 	assert_eq(restored.vortex_pairs[0].entry_cell, Vector2i(1, 1))
 	assert_eq(restored.vortex_pairs[0].exit_cell, Vector2i(3, 3))
 	var report := ArenaValidator.validate(arena, false)
-	assert_true(report.messages.any(func(value):
+	assert_false(report.messages.any(func(value):
 		return value.code == &"vortex_runtime_uncertified"
 	))
 	var direct := ArenaDirectTestService.prepare(arena, null, &"terrains")
-	assert_false(direct.ok)
-	assert_eq(direct.error, "vortex_runtime_uncertified")
+	assert_true(direct.ok, str(direct))
 	assert_false(direct.produced_bundle_loaded)
+	if bool(direct.get("ok", false)):
+		assert_true(ArenaDirectTestService.cleanup_context(direct.request))
 	assert_true(ArenaDynamicEditingService.remove_special(arena, Vector2i(1, 1)))
 	assert_true(arena.vortex_pairs.is_empty())
 
@@ -249,7 +253,7 @@ func test_new_stored_fields_are_explicitly_classified() -> void:
 	assert_true(runtime_coverage.production_gate_valid, str(runtime_coverage.unknown))
 	assert_true((runtime_coverage.entries as Array).any(func(value):
 		return value.key == "ArenaDefinition.vortex_pairs" \
-			and value.classification == "FUTURE_EXPLICIT"
+			and value.classification == "RUNTIME_CONSUMED"
 	))
 	var integration_coverage := RoomIntegrationFieldPolicy.coverage_report(
 		ArenaDefinition.new()

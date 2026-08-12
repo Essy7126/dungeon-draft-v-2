@@ -74,8 +74,20 @@ func on_turn_start(unit: Unit) -> void:
 	runtime_service.on_turn_start(unit)
 
 
-func on_enter_cell(unit: Unit, cell: Vector2i) -> void:
-	runtime_service.on_enter_cell(unit, cell)
+func on_enter_cell(unit: Unit, cell: Vector2i) -> Dictionary:
+	return runtime_service.on_enter_cell(unit, cell)
+
+
+func begin_unit_resolution(unit: Unit, reason: StringName = &"movement") -> StringName:
+	return runtime_service.begin_unit_resolution(unit, reason)
+
+
+func end_unit_resolution(unit: Unit) -> void:
+	runtime_service.end_unit_resolution(unit)
+
+
+func consume_last_entry_result(unit: Unit) -> Dictionary:
+	return runtime_service.consume_last_entry_result(unit)
 
 
 func tick_all_effects() -> void:

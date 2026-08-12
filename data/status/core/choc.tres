@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"shock"
+status_name = "Choc"
+description = "La prochaine activation est sautée une fois lorsque le Choc survient hors activation."
+color = Color(0.28, 0.82, 1, 1)
+skips_turn = true
+duration = 1
+unique_per_source = false

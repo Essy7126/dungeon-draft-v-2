@@ -1007,6 +1007,7 @@
       "terrain_id": "normal"
     }
   ],
+  "context": "arena_report",
   "decorations": [],
   "display_name": "Arene de test",
   "encounter_path": "res://data/encounters/first_run_room_01_encounter.tres",
@@ -1027,7 +1028,9 @@
     1.0,
     1.0
   ],
-  "godot_version": "4.7-stable (official)",
+  "generated_at": "2026-08-12T14:15:29",
+  "generated_by": "dungeon_draft_studio_2_0_0",
+  "godot_version": "4.7.1-stable (official)",
   "grid_origin": [
     688.0,
     164.0
@@ -1052,7 +1055,7 @@
   "presentation_profile_path": "res://data/maps/painted/room_01_forest_presentation.tres",
   "production_notes": "",
   "runtime_entry": "res://data/rooms/maps/painted_battle.tscn",
-  "schema_version": 2,
+  "schema_version": 3,
   "source_image_size": [
     1376,
     768
@@ -1114,7 +1117,7 @@
         -1,
         0
       ],
-      "group_id": "",
+      "group_id": "auto_enemy_group_0",
       "kind": 4,
       "required": true,
       "spawn_id": "auto_enemy_0",
@@ -1129,7 +1132,7 @@
         -1,
         0
       ],
-      "group_id": "",
+      "group_id": "auto_enemy_group_1",
       "kind": 4,
       "required": true,
       "spawn_id": "auto_enemy_1",
@@ -1144,7 +1147,7 @@
         -1,
         0
       ],
-      "group_id": "",
+      "group_id": "auto_enemy_group_2",
       "kind": 4,
       "required": true,
       "spawn_id": "auto_enemy_2",
@@ -1159,7 +1162,7 @@
         -1,
         0
       ],
-      "group_id": "",
+      "group_id": "auto_enemy_group_3",
       "kind": 4,
       "required": true,
       "spawn_id": "auto_enemy_3",
@@ -1174,7 +1177,7 @@
         -1,
         0
       ],
-      "group_id": "",
+      "group_id": "auto_enemy_group_4",
       "kind": 4,
       "required": true,
       "spawn_id": "auto_enemy_4",
@@ -1189,13 +1192,17 @@
         -1,
         0
       ],
-      "group_id": "",
+      "group_id": "auto_enemy_group_5",
       "kind": 4,
       "required": true,
       "spawn_id": "auto_enemy_5",
       "unit_id": "encounter_enemy"
     }
   ],
+  "status": "WORKTREE_CANDIDATE",
+  "studio_product_version": "2.0.0",
   "theme_id": "painted_default",
-  "visual_mode": 0
+  "visual_mode": 0,
+  "vortex_networks": [],
+  "vortex_pairs": []
 }

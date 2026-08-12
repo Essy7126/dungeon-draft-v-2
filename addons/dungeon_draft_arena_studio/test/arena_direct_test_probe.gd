@@ -221,7 +221,8 @@ static func _nodes_named(root: Node, wanted_name: StringName) -> Array[Node]:
 
 static func _terrain_renderers(root: Node) -> Array[Node]:
 	var result: Array[Node] = []
-	if root is ArenaTerrainVisualRenderer:
+	if root is ArenaTerrainVisualRenderer \
+			and StringName(root.get_meta("renderer_role", &"arena_floor")) == &"arena_floor":
 		result.append(root)
 	for child in root.get_children():
 		result.append_array(_terrain_renderers(child))

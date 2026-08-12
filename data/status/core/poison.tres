@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"poison"
+status_name = "Poison"
+description = "Subit 4 dégâts magiques au début du tour pendant 3 activations."
+color = Color(0.42, 0.78, 0.18, 1)
+damage_per_turn = 4
+damage_timing = 0
+damage_type = 1
+element = 0
+ignores_defense = true
+can_be_dodged = false
+duration = 3

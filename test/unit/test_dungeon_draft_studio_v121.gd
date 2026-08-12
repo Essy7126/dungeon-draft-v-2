@@ -62,7 +62,10 @@ func test_dynamic_paint_wall_spawn_and_objective_use_one_canonical_history() -> 
 	var cell := Vector2i(4, 4)
 	var opening := ArenaEditSession.fingerprint(session.working_arena.to_snapshot())
 	var initial_entries := session.history.get_history_entries().size()
-	studio.dynamic_terrain_option.select(3) # glace
+	for option_index in range(studio.dynamic_terrain_option.item_count):
+		if str(studio.dynamic_terrain_option.get_item_metadata(option_index)) == "ice":
+			studio.dynamic_terrain_option.select(option_index)
+			break
 	studio._select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN)
 	studio._on_stroke_started("Peindre la glace")
 	studio._on_cells_edit_requested([cell], false)

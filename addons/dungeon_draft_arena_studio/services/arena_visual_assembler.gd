@@ -20,6 +20,8 @@ static func assemble(
 	var result := {
 		"ok": false,
 		"renderer": null,
+		"interactive_renderer": null,
+		"interactive_parent": null,
 		"blocker_service": null,
 		"walls": [],
 		"decorations": [],
@@ -65,6 +67,7 @@ static func assemble(
 		# Nom historique conserve pour les smoke tests et les outils qui cherchaient
 		# cette couche, la classe et les metadonnees exposent le nouveau contrat.
 		renderer.name = "ArenaFeatureRenderer"
+		renderer.set_meta("renderer_role", &"arena_floor")
 		owner.add_child(renderer)
 		renderer.configure(grid_view, resolved_floor_parent)
 		renderer.render_plan(render_plan)
@@ -78,6 +81,48 @@ static func assemble(
 				0, int(terrain_entry.get("duplication_count", 1)) - 1
 			)
 		report.errors.append_array(actual.errors)
+	var vortex_catalog := ArenaCatalogService.interactive(&"vortex")
+	if vortex_catalog != null and vortex_catalog.texture != null \
+			and (not arena.vortex_pairs.is_empty() or not arena.vortex_networks.is_empty()):
+		var interactive_parent := Node2D.new()
+		interactive_parent.name = "ArenaInteractivesLayer"
+		interactive_parent.y_sort_enabled = false
+		interactive_parent.set_meta("visual_layer", &"arena_spatial_interactive")
+		owner.add_child(interactive_parent)
+		result.interactive_parent = interactive_parent
+		var interactive_entries: Array[Dictionary] = []
+		var interactive_cells := {}
+		for network in arena.vortex_networks:
+			if network == null or not network.enabled:
+				continue
+			for endpoint in network.unique_cells():
+				interactive_cells[endpoint] = true
+		for pair in arena.vortex_pairs:
+			if pair == null:
+				continue
+			for endpoint in [pair.entry_cell, pair.exit_cell]:
+				interactive_cells[endpoint] = true
+		for endpoint in interactive_cells:
+				interactive_entries.append({
+					"cell": endpoint,
+					"terrain_id": &"vortex",
+					"texture": vortex_catalog.texture,
+					"texture_path": vortex_catalog.texture.resource_path,
+					"cell_type": grid.get_type(endpoint),
+					"visible": true,
+					"visual_layer": &"spatial_interactive",
+					"renderer_role": &"arena_interactive",
+					"parent_role": &"arena_interactives_layer",
+					"node_prefix": "ArenaVortex",
+					"topology_hash": str(render_plan.topology_hash),
+				})
+		var interactive_renderer := ArenaTerrainVisualRenderer.new()
+		interactive_renderer.name = "ArenaInteractiveRenderer"
+		interactive_renderer.set_meta("renderer_role", &"arena_interactive")
+		owner.add_child(interactive_renderer)
+		interactive_renderer.configure(grid_view, interactive_parent)
+		interactive_renderer.render_plan({"entries": interactive_entries})
+		result.interactive_renderer = interactive_renderer
 	var blocker_service := DynamicBlockerService.new()
 	blocker_service.configure(grid, pathfinder)
 	result.blocker_service = blocker_service

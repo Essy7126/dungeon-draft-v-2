@@ -31,6 +31,35 @@ static func migrate_snapshot(snapshot: Dictionary) -> Dictionary:
 		migrated["decorations"] = migrated.get("decorations", [])
 		migrated["objectives"] = migrated.get("objectives", [])
 		version = 2
+	if version == 2:
+		var networks: Array = migrated.get("vortex_networks", []).duplicate(true)
+		if networks.is_empty():
+			var index := 1
+			for pair in migrated.get("vortex_pairs", []):
+				if not pair is Dictionary:
+					continue
+				var pair_id := str(pair.get("pair_id", "")).strip_edges()
+				var network_id := pair_id if not pair_id.is_empty() \
+					else "vortex_network_%03d" % index
+				networks.append({
+					"network_id": network_id,
+					"display_name": "Vortex migré %s" % network_id,
+					"cells": [
+						pair.get("entry_cell", [0, 0]),
+						pair.get("exit_cell", [1, 1]),
+					],
+					"enabled": bool(pair.get("runtime_enabled", true)),
+					"allowed_teams": 3,
+					"editor_color": ArenaVortexNetworkService.color_for_id(
+						StringName(network_id)
+					).to_html(true),
+					"single_vortex_effect_id": "void_impulse",
+					"random_destination": false,
+					"production_notes": "Migré automatiquement depuis vortex_pairs.",
+				})
+				index += 1
+		migrated["vortex_networks"] = networks
+		version = 3
 	migrated["schema_version"] = version
 	return {
 		"ok": true,

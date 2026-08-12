@@ -58,6 +58,10 @@ const PROPERTIES = {
 var _types: Dictionary = {}     # Vector2i -> CellType
 var _units: Dictionary = {}     # Vector2i -> Unit (ou absent si vide)
 var _effects: Dictionary = {}   # Vector2i -> { "name": String, "data": Dictionary }
+var _terrain_properties: Dictionary = {} # Vector2i -> data-driven permanent overrides
+var _surface_properties: Dictionary = {} # Vector2i -> temporary surface overrides
+var _vortex_links: Dictionary = {} # Vector2i -> paired destination
+var _vortex_network_by_cell: Dictionary = {}
 var _dynamic_blockers: Dictionary = {} # Vector2i -> Array[Object]
 var _next_combat_order: int = 0
 
@@ -95,7 +99,7 @@ func is_walkable(pos: Vector2i, ignore_unit = null) -> bool:
 		return false
 	if has_unit(pos) and get_unit(pos) != ignore_unit:
 		return false
-	if not PROPERTIES[get_type(pos)]["walkable"]:
+	if not get_terrain_properties(pos)["walkable"]:
 		return false
 	return not _is_dynamically_blocked_for(pos, &"blocks_movement")
 
@@ -106,13 +110,13 @@ func is_walkable(pos: Vector2i, ignore_unit = null) -> bool:
 func is_terrain_interactable(pos: Vector2i) -> bool:
 	if not is_valid(pos):
 		return false
-	return PROPERTIES[get_type(pos)]["walkable"]
+	return bool(get_terrain_properties(pos)["walkable"])
 
 # La case laisse-t-elle passer la ligne de vue ?
 func is_transparent(pos: Vector2i) -> bool:
 	if not is_valid(pos):
 		return false
-	if not PROPERTIES[get_type(pos)]["transparent"]:
+	if not get_terrain_properties(pos)["transparent"]:
 		return false
 	return not _is_dynamically_blocked_for(pos, &"blocks_line_of_sight")
 
@@ -120,9 +124,169 @@ func is_transparent(pos: Vector2i) -> bool:
 ## Les projectiles disposent de leur propre contrat. Les terrains opaques les
 ## bloquent par defaut, puis les objets dynamiques peuvent affiner la regle.
 func is_projectile_passable(pos: Vector2i) -> bool:
-	if not is_valid(pos) or not PROPERTIES[get_type(pos)]["transparent"]:
+	if not is_valid(pos) or not get_terrain_properties(pos)["projectile_passable"]:
 		return false
 	return not _is_dynamically_blocked_for(pos, &"blocks_projectiles")
+
+
+func set_terrain_properties(pos: Vector2i, properties: Dictionary) -> void:
+	if not is_valid(pos):
+		return
+	var defaults: Dictionary = PROPERTIES.get(
+		get_type(pos), {"walkable": false, "transparent": false}
+	)
+	_terrain_properties[pos] = {
+		"walkable": bool(properties.get("walkable", defaults.get("walkable", false))),
+		"transparent": bool(properties.get("transparent", defaults.get("transparent", false))),
+		"projectile_passable": bool(properties.get(
+			"projectile_passable", defaults.get("transparent", false)
+		)),
+		"movement_cost": maxi(1, int(properties.get("movement_cost", 1))),
+		"terrain_id": StringName(properties.get("terrain_id", &"")),
+		"ai_danger_weight": maxf(0.0, float(properties.get("ai_danger_weight", 0.0))),
+	}
+
+
+func clear_terrain_properties(pos: Vector2i) -> void:
+	_terrain_properties.erase(pos)
+
+
+func set_surface_properties(pos: Vector2i, properties: Dictionary) -> void:
+	if not is_valid(pos):
+		return
+	if properties.is_empty():
+		_surface_properties.erase(pos)
+		return
+	_surface_properties[pos] = properties.duplicate(true)
+
+
+func clear_surface_properties(pos: Vector2i) -> void:
+	_surface_properties.erase(pos)
+
+
+func get_terrain_properties(pos: Vector2i) -> Dictionary:
+	var defaults: Dictionary = PROPERTIES.get(
+		get_type(pos), {"walkable": false, "transparent": false}
+	)
+	var result := {
+		"walkable": bool(defaults.get("walkable", false)),
+		"transparent": bool(defaults.get("transparent", false)),
+		"projectile_passable": bool(defaults.get("transparent", false)),
+		"movement_cost": 1,
+		"terrain_id": &"",
+		"ai_danger_weight": 0.0,
+	}
+	if _terrain_properties.has(pos):
+		result.merge(_terrain_properties[pos] as Dictionary, true)
+	if _surface_properties.has(pos):
+		result.merge(_surface_properties[pos] as Dictionary, true)
+	return result
+
+
+func get_movement_cost(pos: Vector2i) -> int:
+	return maxi(1, int(get_terrain_properties(pos).get("movement_cost", 1)))
+
+
+func set_vortex_link(entry: Vector2i, destination: Vector2i) -> bool:
+	if not is_valid(entry) or not is_valid(destination) or entry == destination:
+		return false
+	_vortex_links[entry] = destination
+	return true
+
+
+func clear_vortex_links() -> void:
+	_vortex_links.clear()
+
+
+func clear_vortex_networks() -> void:
+	_vortex_network_by_cell.clear()
+
+
+func set_vortex_network(
+		network_id: StringName,
+		cells: Array[Vector2i],
+		allowed_teams := 3,
+		enabled := true
+	) -> bool:
+	var unique: Array[Vector2i] = []
+	for cell in cells:
+		if is_valid(cell) and not unique.has(cell):
+			unique.append(cell)
+	if network_id == &"" or unique.is_empty():
+		return false
+	var data := {
+		"network_id": network_id,
+		"cells": unique,
+		"allowed_teams": allowed_teams,
+		"enabled": enabled,
+	}
+	for cell in unique:
+		_vortex_network_by_cell[cell] = data
+	if enabled and unique.size() == 2:
+		_vortex_links[unique[0]] = unique[1]
+		_vortex_links[unique[1]] = unique[0]
+	return true
+
+
+func get_vortex_network(entry: Vector2i) -> Dictionary:
+	return (_vortex_network_by_cell.get(entry, {}) as Dictionary).duplicate(true)
+
+
+func get_vortex_network_cells(entry: Vector2i) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	for cell in get_vortex_network(entry).get("cells", []):
+		if cell is Vector2i:
+			result.append(cell)
+	return result
+
+
+func get_vortex_destination(entry: Vector2i) -> Vector2i:
+	return _vortex_links.get(entry, Vector2i(-1, -1)) as Vector2i
+
+
+func has_vortex(entry: Vector2i) -> bool:
+	return _vortex_links.has(entry) or _vortex_network_by_cell.has(entry)
+
+
+func valid_vortex_destinations(entry: Vector2i, ignore_unit = null) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	var network := get_vortex_network(entry)
+	if network.is_empty() or not bool(network.get("enabled", false)):
+		return result
+	if ignore_unit is Unit:
+		var team_bit := 1 << clampi((ignore_unit as Unit).team, 0, 1)
+		if int(network.get("allowed_teams", 3)) & team_bit == 0:
+			return result
+	for destination in network.get("cells", []):
+		if not destination is Vector2i or destination == entry:
+			continue
+		if not is_valid(destination) or get_type(destination) in [
+			CellType.HOLE, CellType.WALL,
+		] or not is_walkable(destination):
+			continue
+		var occupant = get_unit(destination)
+		if occupant != null and occupant != ignore_unit:
+			continue
+		result.append(destination)
+	return result
+
+
+func can_unit_use_vortex_network(entry: Vector2i, unit: Unit) -> bool:
+	var network := get_vortex_network(entry)
+	if network.is_empty() or not bool(network.get("enabled", false)):
+		return false
+	if unit == null:
+		return true
+	return int(network.get("allowed_teams", 3)) & (1 << clampi(unit.team, 0, 1)) != 0
+
+
+func vortex_links() -> Dictionary:
+	return _vortex_links.duplicate(true)
+
+
+func can_traverse_vortex(entry: Vector2i, ignore_unit = null) -> bool:
+	var destination := get_vortex_destination(entry)
+	return destination != Vector2i(-1, -1) and is_walkable(destination, ignore_unit)
 
 
 ## Enregistre des objets temporaires sans ecraser le CellType de base. Cette

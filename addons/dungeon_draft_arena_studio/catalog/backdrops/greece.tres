@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ArenaBackdropSourceDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_backdrop_source_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_id = &"greece"
+display_name = "Grèce — Agora antique"
+background_path = "res://asset/map/painted/greece/greece.png"
+source_image_size = Vector2i(1254, 1254)
+grid_size = Vector2i(14, 14)
+grid_origin = Vector2(626.5, 303.0)
+axis_x = Vector2(43.15, 22.15)
+axis_y = Vector2(-43.15, 22.15)
+camera_offset = Vector2(0, 10)
+camera_zoom = 0.92
+theme_id = &"greece"
+calibration_available = true
+foreground_available = false

@@ -39,18 +39,20 @@ func record(
 		return false
 	if _current_index < _entries.size():
 		_entries.resize(_current_index)
+	var stored_before := before.duplicate(true)
+	var stored_after := after.duplicate(true)
 	undo_redo.create_action(action_name, UndoRedo.MERGE_DISABLE)
 	undo_redo.add_do_method(
-		Callable(self, "_apply_snapshot").bind(after.duplicate(true), 1)
+		Callable(self, "_apply_snapshot").bind(stored_after, 1)
 	)
 	undo_redo.add_undo_method(
-		Callable(self, "_apply_snapshot").bind(before.duplicate(true), -1)
+		Callable(self, "_apply_snapshot").bind(stored_before, -1)
 	)
 	undo_redo.commit_action(not already_applied)
 	_entries.append({
 		"name": action_name,
-		"before": before.duplicate(true),
-		"after": after.duplicate(true),
+		"before": stored_before,
+		"after": stored_after,
 		"before_fingerprint": _fingerprint(before),
 		"after_fingerprint": _fingerprint(after),
 	})

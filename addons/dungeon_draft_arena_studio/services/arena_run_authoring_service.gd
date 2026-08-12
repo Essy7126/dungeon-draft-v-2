@@ -260,6 +260,15 @@ func is_dirty() -> bool:
 	return working_run != null and fingerprint() != saved_fingerprint
 
 
+func snapshot() -> Array:
+	return _snapshot_rooms()
+
+
+func restore_snapshot(snapshot_value: Array) -> Dictionary:
+	_restore_rooms(snapshot_value)
+	return {"ok": working_run != null}
+
+
 func fingerprint() -> String:
 	return JSON.stringify(_room_paths(working_run.rooms if working_run != null else [])).sha256_text()
 

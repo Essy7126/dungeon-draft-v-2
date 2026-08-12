@@ -515,7 +515,11 @@ func _remove_status_stat_modifiers(entry: Dictionary) -> void:
 			stat.remove_modifiers_from(modifier_key)
 
 
-func apply_status(status_data: StatusData, source: Unit = null) -> void:
+func apply_status(
+		status_data: StatusData,
+		source: Unit = null,
+		metadata: Dictionary = {}
+	) -> void:
 	if status_data == null:
 		return
 	# Cherche si ce statut est dÃ©jÃ  actif.
@@ -523,6 +527,8 @@ func apply_status(status_data: StatusData, source: Unit = null) -> void:
 		if _status_matches(entry, status_data, source):
 			# DÃ©jÃ  prÃ©sent : on rafraÃ®chit la durÃ©e (la plus longue gagne).
 			entry["remaining"] = max(entry["remaining"], status_data.duration)
+			if not metadata.is_empty():
+				entry["metadata"] = metadata.duplicate(true)
 			if status_data is ChargedDamageVulnerabilityData:
 				var charged := status_data as ChargedDamageVulnerabilityData
 				var current_charged_data := (
@@ -559,6 +565,7 @@ func apply_status(status_data: StatusData, source: Unit = null) -> void:
 		"data": status_data,
 		"remaining": status_data.duration,
 		"source": source,
+		"metadata": metadata.duplicate(true),
 	}
 	if status_data is ChargedDamageVulnerabilityData:
 		new_entry["charges"] = (
@@ -681,7 +688,7 @@ func process_statuses() -> bool:
 					]),
 				}
 			)
-			DebugLogger.info(CAT_STATS, "%s subit %d dÃ©gÃ¢ts de %s" % [
+			DebugLogger.info(CAT_STATS, "[STATUT] %s subit %d dÃ©gÃ¢ts de %s" % [
 				unit_name, data.damage_per_turn, data.status_name], {
 				"PV_restants": current_hp,
 			})
@@ -725,9 +732,26 @@ func process_statuses() -> bool:
 
 # Fait vieillir les statuts d'un tour, retire les expirÃ©s.
 # (Ã  appeler en FIN de tour de l'unitÃ©)
-func tick_statuses() -> void:
+func tick_statuses(excluded_ids: Array[StringName] = []) -> void:
+	_tick_statuses_filtered([], excluded_ids)
+
+
+func tick_statuses_for_ids(included_ids: Array[StringName]) -> void:
+	_tick_statuses_filtered(included_ids, [])
+
+
+func _tick_statuses_filtered(
+		included_ids: Array[StringName],
+		excluded_ids: Array[StringName]
+	) -> void:
 	for i in range(active_statuses.size() - 1, -1, -1):
 		var data := active_statuses[i]["data"] as StatusData
+		if data == null:
+			continue
+		var status_id := data.get_effective_status_id()
+		if excluded_ids.has(status_id) \
+				or (not included_ids.is_empty() and not included_ids.has(status_id)):
+			continue
 		if data != null \
 				and data.damage_per_turn > 0 \
 				and data.damage_timing == StatusData.PeriodicTiming.TURN_END:
@@ -746,7 +770,7 @@ func tick_statuses() -> void:
 					]),
 				}
 			)
-			DebugLogger.info(CAT_STATS, "%s subit %d degats de %s" % [
+			DebugLogger.info(CAT_STATS, "[STATUT] %s subit %d degats de %s" % [
 				unit_name,
 				data.damage_per_turn,
 				data.status_name,
@@ -755,7 +779,7 @@ func tick_statuses() -> void:
 			})
 		active_statuses[i]["remaining"] -= 1
 		if active_statuses[i]["remaining"] <= 0:
-			var ended := data.get_effective_status_id()
+			var ended := status_id
 			_remove_status_stat_modifiers(active_statuses[i])
 			active_statuses.remove_at(i)
 			# Le CombatLogger Ã©coute status_expired et produit la ligne de log.
@@ -830,6 +854,20 @@ func spend_mp(amount: int) -> bool:
 	current_mp -= amount
 	stats_changed.emit(self)
 	return true
+
+
+func grant_current_activation_mp_bonus(amount: int) -> int:
+	var granted := maxi(0, amount)
+	current_mp += granted
+	stats_changed.emit(self)
+	return granted
+
+
+func consume_current_activation() -> void:
+	activation_consumed = true
+	current_ap = 0
+	current_mp = 0
+	stats_changed.emit(self)
 
 
 func queue_next_turn_mp_modifier(amount: int) -> void:

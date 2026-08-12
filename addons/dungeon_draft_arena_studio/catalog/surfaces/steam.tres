@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ArenaSurfaceVisualDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_surface_visual_definition.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://byoxyrmrdmjo" path="res://tools/labs/dynamic_arena/assets/raw/vapeur.png" id="2"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/steam.png" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -12,7 +12,6 @@ category = 0
 surface_id = &"steam"
 reaction_id = &"steam"
 runtime_supported = true
-editor_placeable = false
-production_placeable = false
+editor_placeable = true
+production_placeable = true
 canonical_resource_path = "res://data/terrain/vapeur.tres"
-

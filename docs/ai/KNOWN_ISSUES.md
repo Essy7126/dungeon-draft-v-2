@@ -1,5 +1,27 @@
 # Problèmes connus et suivis
 
+## Arena authoring — réserves du candidat 2026-08-12
+
+- Le bundle gelé `data/arenas/produced/room_01_forest` possède un UID de profil
+  invalide ; les shards GUT qui interdisent les warnings inattendus le comptent
+  comme échec. La mission ne le réécrit pas.
+- `data/runs/profiles/test_content_profile.tres` comporte aussi des UID
+  historiques résolus par chemin texte.
+- Le renderer headless de Godot 4.7.1 a subi un crash natif avant `_ready` pour
+  le runner de captures. Le renderer Windows D3D12 direct est vert à 88/88.
+- La revue humaine interactive des nouveaux assistants reste à faire ; les
+  captures vérifient néanmoins la lisibilité en 1280x720.
+
+## Catalogue complet des terrains — avertissements candidat
+
+- Le bundle non suivi `data/arenas/produced/room_01_forest` reste gelé et n’est
+  ni une production canonique ni une source de Tester.
+- La baseline globale conserve ses échecs historiques ; aucune carte de
+  production n’est réécrite par ce candidat.
+- Les chiffres Poison sont provisoires et doivent être réévalués par playtest.
+- Les runners Godot peuvent encore rapporter les fuites renderer/ObjectDB et le
+  doublon `output/validation-feedback-candidate/.../ItemDefinition` historiques.
+
 ## L’Odyssée — limites du candidat Achille solo
 
 - Seule une source visuelle sud-est explicite est disponible pour Achille. Les

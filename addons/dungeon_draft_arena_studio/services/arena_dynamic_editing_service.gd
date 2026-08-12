@@ -34,7 +34,48 @@ static func paint_terrain(
 		arena.vortex_pairs = arena.vortex_pairs.filter(func(value):
 			return value != null and not value.contains(cell)
 		)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+		for network in arena.vortex_networks:
+			if network != null:
+				network.cells.erase(cell)
+	var changed := before_data != definition.to_dict()
+	if changed:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
+	return changed
+
+
+static func paint_terrain_local(
+		arena: ArenaDefinition,
+		cell: Vector2i,
+		terrain_id: StringName
+	) -> bool:
+	## Mutation canonique sans reconstruction dérivée. Réservée aux transactions
+	## qui garantissent une synchronisation unique à leur commit.
+	if arena == null or not arena.is_in_bounds(cell) or not ArenaTerrainRegistry.has(terrain_id):
+		return false
+	var before := arena.get_cell_definition(cell)
+	var before_data := before.to_dict() if before != null else {}
+	var definition := before if before != null else arena.ensure_cell(cell)
+	if definition == null or not ArenaTerrainRegistry.configure_cell(definition, terrain_id):
+		return false
+	if terrain_id == &"void":
+		arena.obstacles = arena.obstacles.filter(func(value):
+			return value != null and value.cell != cell
+		)
+		arena.spawns = arena.spawns.filter(func(value):
+			return value != null and value.cell != cell
+		)
+		arena.objectives = arena.objectives.filter(func(value):
+			return value != null and value.cell != cell
+		)
+		arena.decorations = arena.decorations.filter(func(value):
+			return value != null and value.cell != cell
+		)
+		arena.vortex_pairs = arena.vortex_pairs.filter(func(value):
+			return value != null and not value.contains(cell)
+		)
+		for network in arena.vortex_networks:
+			if network != null:
+				network.cells.erase(cell)
 	return before_data != definition.to_dict()
 
 
@@ -46,6 +87,16 @@ static func paint_permanent_terrain(
 	if not ArenaPermanentTerrainPaintService.can_paint(arena, terrain_id):
 		return false
 	return paint_terrain(arena, cell, terrain_id)
+
+
+static func paint_permanent_terrain_local(
+		arena: ArenaDefinition,
+		cell: Vector2i,
+		terrain_id: StringName
+	) -> bool:
+	if not ArenaPermanentTerrainPaintService.can_paint(arena, terrain_id):
+		return false
+	return paint_terrain_local(arena, cell, terrain_id)
 
 
 static func place_wall(
@@ -176,8 +227,9 @@ static func place_vortex_pair(
 	pair.exit_cell = exit_cell
 	pair.traversal_contract = definition.traversal_contract
 	pair.bidirectional = true
-	pair.runtime_enabled = false
+	pair.runtime_enabled = true
 	arena.vortex_pairs.append(pair)
+	ArenaVortexNetworkService.migrate_legacy_pairs(arena)
 	return true
 
 
@@ -198,6 +250,9 @@ static func remove_special(arena: ArenaDefinition, cell: Vector2i) -> bool:
 	arena.vortex_pairs = arena.vortex_pairs.filter(func(value):
 		return value != null and not value.contains(cell)
 	)
+	for network in arena.vortex_networks:
+		if network != null:
+			network.cells.erase(cell)
 	return before != arena.objectives.size() + arena.decorations.size() \
 		+ arena.spawns.size() + arena.vortex_pairs.size()
 
@@ -212,6 +267,7 @@ static func resize_document(arena: ArenaDefinition, requested_size: Vector2i) ->
 	arena.cells = arena.cells.filter(func(value):
 		return value != null and arena.is_in_bounds(value.coordinate)
 	)
+	arena.invalidate_cell_index()
 	arena.obstacles = arena.obstacles.filter(func(value):
 		return value != null and arena.is_in_bounds(value.cell)
 	)
@@ -228,6 +284,9 @@ static func resize_document(arena: ArenaDefinition, requested_size: Vector2i) ->
 		return value != null and arena.is_in_bounds(value.entry_cell) \
 			and arena.is_in_bounds(value.exit_cell)
 	)
+	for network in arena.vortex_networks:
+		if network != null:
+			network.cells = network.cells.filter(func(value): return arena.is_in_bounds(value))
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return true
 

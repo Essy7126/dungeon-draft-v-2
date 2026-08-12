@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+[ext_resource type="Resource" path="res://data/status/core/poison.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_terrain")
+effect_name = "poison"
+description = "Terrain toxique praticable qui empoisonne les unités."
+color = Color(0.42, 0.78, 0.18, 1)
+surface_id = &"poison"
+visual_terrain_id = &"poison"
+trigger = 1
+applied_status = ExtResource("2_status")
+dangerous_for_ai = true
+ai_danger_weight = 2.0
+duration = 3

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="1_status"]
+
+[resource]
+script = ExtResource("1_status")
+status_id = &"frozen"
+status_name = "Gelé"
+description = "Réduit les points de mouvement de 1 pendant une activation."
+color = Color(0.45, 0.85, 1, 1)
+mp_reduction = 1
+duration = 1

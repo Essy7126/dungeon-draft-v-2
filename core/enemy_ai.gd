@@ -357,7 +357,28 @@ func _find_best_ranged_cell(enemy: Unit, target: Unit, max_range: int) -> Vector
 
 func _path_danger_score(path: Array) -> float:
 	var score := 0.0
+	var mover := _grid.get_unit(path[0]) as Unit if not path.is_empty() else null
+	var target_cell := Vector2i(-1, -1)
+	if mover != null:
+		var best_distance := INF
+		for other_value in _grid.get_units():
+			var other := other_value as Unit
+			if other == null or not other.is_alive or other.team == mover.team:
+				continue
+			var distance := mover.grid_pos.distance_to(other.grid_pos)
+			if distance < best_distance:
+				best_distance = distance
+				target_cell = other.grid_pos
 	for cell in path:
+		var network_cells := _grid.get_vortex_network_cells(cell)
+		if network_cells.size() >= 3 and target_cell != Vector2i(-1, -1):
+			var report := ArenaVortexNetworkService.evaluate_for_ai(
+				_grid, cell, target_cell, mover
+			)
+			if not bool(report.get("can_use", false)):
+				score += 1000.0
+			else:
+				score += maxf(0.0, -float(report.get("average_utility", 0.0)))
 		var stored = _grid.get_effect(cell)
 		if stored == null:
 			continue

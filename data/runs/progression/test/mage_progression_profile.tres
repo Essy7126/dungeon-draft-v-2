@@ -1,31 +1,32 @@
-[gd_resource type="Resource" script_class="CharacterProgressionProfile" format=3 uid="uid://bwxps4efrv2uk"]
+[gd_resource type="Resource" script_class="CharacterProgressionProfile" format=3]
 
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_kfgnd"]
-[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_vsicd"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="3_2ajh2"]
-[ext_resource type="Script" uid="uid://dfwja3hug8lax" path="res://data/characters/skill_tree_node_data.gd" id="4_auv0v"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="5_mls4e"]
-[ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="6_wxwpu"]
-[ext_resource type="Script" uid="uid://cpg5mh1aaesav" path="res://data/runs/content/character_progression_profile.gd" id="7_f3yp8"]
-[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="8_433a1"]
-[ext_resource type="Texture2D" uid="uid://dt4yq5ppivne5" path="res://asset/icone/boule de feu.png" id="9_hx2qb"]
-[ext_resource type="AudioStream" uid="uid://fss7jt8nvolg" path="res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3" id="10_l07t6"]
-[ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="11_mpvl0"]
-[ext_resource type="PackedScene" uid="uid://hmp238551qj7" path="res://battle/vfx/boule_de_feu_vfx2.tscn" id="12_a4mm8"]
-[ext_resource type="Texture2D" uid="uid://ciejclsrsoiwq" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="13_lfss7"]
-[ext_resource type="PackedScene" uid="uid://bnbb3vym4gxtq" path="res://asset/sorts/tempete_orageuse/tempete_orageuse_vfx.tscn" id="14_276a7"]
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_vsicd"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_2ajh2"]
+[ext_resource type="Script" path="res://data/characters/skill_upgrade_data.gd" id="3_auv0v"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="4_mls4e"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="5_wxwpu"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="6_f3yp8"]
+[ext_resource type="Script" path="res://data/runs/content/character_progression_profile.gd" id="7_433a1"]
+[ext_resource type="Script" path="res://data/spell.gd" id="8_hx2qb"]
+[ext_resource type="Texture2D" path="res://asset/icone/boule de feu.png" id="9_l07t6"]
+[ext_resource type="AudioStream" path="res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3" id="10_mpvl0"]
+[ext_resource type="Script" path="res://data/status/status_data.gd" id="11_a4mm8"]
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="12_lfss7"]
+[ext_resource type="PackedScene" path="res://battle/vfx/boule_de_feu_vfx2.tscn" id="13_276a7"]
+[ext_resource type="Texture2D" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="14_s163h"]
+[ext_resource type="PackedScene" path="res://asset/sorts/tempete_orageuse/tempete_orageuse_vfx.tscn" id="15_141ww"]
 
-[sub_resource type="Resource" id="Resource_s163h"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_upnpp"]
+script = ExtResource("2_2ajh2")
 
-[sub_resource type="Resource" id="Resource_141ww"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_sloft"]
+script = ExtResource("6_f3yp8")
 amount = 5
 modifier_name = "Conflagration"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_upnpp"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_mjupj"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
 upgrade_id = &"mage_pyromancy_conflagration"
 display_name = "Conflagration"
@@ -33,17 +34,17 @@ description = "+5 dégâts à toutes les cibles touchées."
 discipline_id = &"mage_pyromancy"
 rank = 2
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_141ww")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_sloft")])
 
-[sub_resource type="Resource" id="Resource_sloft"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_xt3wl"]
+script = ExtResource("6_f3yp8")
 effect_type = 22
 amount = 1
 modifier_name = "Brasier durable"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_mjupj"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_mc0wc"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
 upgrade_id = &"mage_pyromancy_brasier_durable"
 display_name = "Brasier durable"
@@ -51,23 +52,23 @@ description = "Le terrain enflammé dure 1 tour supplémentaire."
 discipline_id = &"mage_pyromancy"
 rank = 2
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_sloft")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_xt3wl")])
 
-[sub_resource type="Resource" id="Resource_xt3wl"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_le78t"]
+script = ExtResource("2_2ajh2")
 rank = 2
 required_total_xp = 5
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_upnpp"), SubResource("Resource_mjupj")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_mjupj"), SubResource("Resource_mc0wc")])
 
-[sub_resource type="Resource" id="Resource_mc0wc"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_2trc3"]
+script = ExtResource("6_f3yp8")
 effect_type = 1
 amount = 4
 modifier_name = "Noyau instable"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_le78t"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_nacoj"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
 upgrade_id = &"mage_pyromancy_noyau_instable"
 display_name = "Noyau instable"
@@ -75,17 +76,17 @@ description = "+4 dégâts sur la cellule centrale."
 discipline_id = &"mage_pyromancy"
 rank = 3
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_mc0wc")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_2trc3")])
 
-[sub_resource type="Resource" id="Resource_2trc3"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_a1gyt"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Maître des explosions"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_nacoj"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_fjbvw"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
 upgrade_id = &"mage_pyromancy_maitre_des_explosions"
 display_name = "Maître des explosions"
@@ -93,10 +94,10 @@ description = "La zone gagne 1 cellule sur ses extrémités cardinales."
 discipline_id = &"mage_pyromancy"
 rank = 3
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_2trc3")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_a1gyt")])
 
-[sub_resource type="Resource" id="Resource_a1gyt"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_n7eid"]
+script = ExtResource("6_f3yp8")
 effect_type = 12
 amount = 2
 duration = 2
@@ -106,8 +107,8 @@ status_element = 1
 modifier_name = "Incendiaire"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_fjbvw"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_seqc2"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
 upgrade_id = &"mage_pyromancy_incendiaire"
 display_name = "Incendiaire"
@@ -115,16 +116,16 @@ description = "Applique Brûlure : 2 dégâts pendant 2 tours."
 discipline_id = &"mage_pyromancy"
 rank = 3
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_a1gyt")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_n7eid")])
 
-[sub_resource type="Resource" id="Resource_n7eid"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_8bkgf"]
+script = ExtResource("6_f3yp8")
 amount = 2
 modifier_name = "Sol ardent"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_seqc2"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_em3gx"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
 upgrade_id = &"mage_pyromancy_sol_ardent"
 display_name = "Sol ardent"
@@ -132,23 +133,23 @@ description = "Les ennemis qui commencent leur tour sur le feu subissent +2 dég
 discipline_id = &"mage_pyromancy"
 rank = 3
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_n7eid")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_8bkgf")])
 
-[sub_resource type="Resource" id="Resource_8bkgf"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_lyarq"]
+script = ExtResource("2_2ajh2")
 rank = 3
 required_total_xp = 12
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_le78t"), SubResource("Resource_nacoj"), SubResource("Resource_fjbvw"), SubResource("Resource_seqc2")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_nacoj"), SubResource("Resource_fjbvw"), SubResource("Resource_seqc2"), SubResource("Resource_em3gx")])
 
-[sub_resource type="Resource" id="Resource_em3gx"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_fue1q"]
+script = ExtResource("6_f3yp8")
 effect_type = 1
 amount = 4
 modifier_name = "Détonation intense"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_lyarq"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_xyrgy"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_noyau_instable"])
 upgrade_id = &"mage_pyromancy_detonation_intense"
 display_name = "Détonation intense"
@@ -156,17 +157,17 @@ description = "+4 dégâts supplémentaires au centre."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_em3gx")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_fue1q")])
 
-[sub_resource type="Resource" id="Resource_fue1q"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_ljfqq"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 2
 modifier_name = "Projection lointaine"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_xyrgy"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_f2ahu"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_noyau_instable"])
 upgrade_id = &"mage_pyromancy_projection_lointaine"
 display_name = "Projection lointaine"
@@ -174,17 +175,17 @@ description = "+2 portée."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_fue1q")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_ljfqq")])
 
-[sub_resource type="Resource" id="Resource_ljfqq"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_wyo8u"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Superficie accrue"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_f2ahu"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_4yt0m"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_maitre_des_explosions"])
 upgrade_id = &"mage_pyromancy_superficie_accrue"
 display_name = "Superficie accrue"
@@ -192,16 +193,16 @@ description = "La zone gagne encore 1 cellule cardinale."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_ljfqq")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_wyo8u")])
 
-[sub_resource type="Resource" id="Resource_wyo8u"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_l0moi"]
+script = ExtResource("6_f3yp8")
 amount = 2
 modifier_name = "Chaleur extrême"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_4yt0m"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_u3sng"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_maitre_des_explosions"])
 upgrade_id = &"mage_pyromancy_chaleur_extreme"
 display_name = "Chaleur extrême"
@@ -209,10 +210,10 @@ description = "+2 dégâts à toutes les cibles."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_wyo8u")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_l0moi")])
 
-[sub_resource type="Resource" id="Resource_l0moi"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_cgoju"]
+script = ExtResource("6_f3yp8")
 effect_type = 12
 amount = 1
 status_group = &"mage_pyromancy_burn"
@@ -222,8 +223,8 @@ status_element = 1
 modifier_name = "Feu dévorant"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_u3sng"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_h4pp1"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_incendiaire"])
 upgrade_id = &"mage_pyromancy_feu_devorant"
 display_name = "Feu dévorant"
@@ -231,10 +232,10 @@ description = "La Brûlure inflige +1 dégât par tour."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_l0moi")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_cgoju")])
 
-[sub_resource type="Resource" id="Resource_cgoju"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_cncwy"]
+script = ExtResource("6_f3yp8")
 effect_type = 12
 duration = 1
 status_group = &"mage_pyromancy_burn"
@@ -244,8 +245,8 @@ status_element = 1
 modifier_name = "Braises éternelles"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_h4pp1"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_bee34"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_incendiaire"])
 upgrade_id = &"mage_pyromancy_braises_eternelles"
 display_name = "Braises éternelles"
@@ -253,17 +254,17 @@ description = "La Brûlure dure 1 tour supplémentaire."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_cgoju")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_cncwy")])
 
-[sub_resource type="Resource" id="Resource_cncwy"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_fvomn"]
+script = ExtResource("6_f3yp8")
 effect_type = 22
 amount = 1
 modifier_name = "Terrain persistant"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_bee34"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_kjw0d"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_sol_ardent"])
 upgrade_id = &"mage_pyromancy_terrain_persistant"
 display_name = "Terrain persistant"
@@ -271,17 +272,17 @@ description = "Le terrain dure 1 tour supplémentaire."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_cncwy")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_fvomn")])
 
-[sub_resource type="Resource" id="Resource_fvomn"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_liygr"]
+script = ExtResource("6_f3yp8")
 effect_type = 23
 amount = 2
 modifier_name = "Fournaise"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_kjw0d"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_7gusj"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_sol_ardent"])
 upgrade_id = &"mage_pyromancy_fournaise"
 display_name = "Fournaise"
@@ -289,36 +290,36 @@ description = "Les dégâts supplémentaires du terrain passent à +4."
 discipline_id = &"mage_pyromancy"
 rank = 4
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_fvomn")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_liygr")])
 
-[sub_resource type="Resource" id="Resource_liygr"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_e2l5u"]
+script = ExtResource("2_2ajh2")
 rank = 4
 required_total_xp = 21
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_lyarq"), SubResource("Resource_xyrgy"), SubResource("Resource_f2ahu"), SubResource("Resource_4yt0m"), SubResource("Resource_u3sng"), SubResource("Resource_h4pp1"), SubResource("Resource_bee34"), SubResource("Resource_kjw0d")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_xyrgy"), SubResource("Resource_f2ahu"), SubResource("Resource_4yt0m"), SubResource("Resource_u3sng"), SubResource("Resource_h4pp1"), SubResource("Resource_bee34"), SubResource("Resource_kjw0d"), SubResource("Resource_7gusj")])
 
-[sub_resource type="Resource" id="Resource_7gusj"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_yu2s3"]
+script = ExtResource("6_f3yp8")
 effect_type = 1
 amount = 6
 modifier_name = "Supernova"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_e2l5u"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_iujp8"]
+script = ExtResource("6_f3yp8")
 amount = 3
 modifier_name = "Supernova"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_yu2s3"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_t1hbu"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Supernova"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_iujp8"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_1nqsl"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
 upgrade_id = &"mage_pyromancy_supernova"
 display_name = "Supernova"
@@ -326,23 +327,23 @@ description = "+6 dégâts au centre, +3 dégâts de zone et zone agrandie."
 discipline_id = &"mage_pyromancy"
 rank = 5
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_7gusj"), SubResource("Resource_e2l5u"), SubResource("Resource_yu2s3")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_yu2s3"), SubResource("Resource_iujp8"), SubResource("Resource_t1hbu")])
 
-[sub_resource type="Resource" id="Resource_t1hbu"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_84sv6"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 4
 modifier_name = "Bombardement"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_1nqsl"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_715vr"]
+script = ExtResource("6_f3yp8")
 amount = 4
 modifier_name = "Bombardement"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_84sv6"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_osa4r"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_conflagration"])
 upgrade_id = &"mage_pyromancy_bombardement"
 display_name = "Bombardement"
@@ -350,10 +351,10 @@ description = "+4 portée et +4 dégâts à toutes les cibles."
 discipline_id = &"mage_pyromancy"
 rank = 5
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_t1hbu"), SubResource("Resource_1nqsl")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_84sv6"), SubResource("Resource_715vr")])
 
-[sub_resource type="Resource" id="Resource_715vr"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_ydtp4"]
+script = ExtResource("6_f3yp8")
 effect_type = 12
 amount = 3
 duration = 3
@@ -364,15 +365,15 @@ status_element = 1
 modifier_name = "Enfer"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_osa4r"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_8dy0s"]
+script = ExtResource("6_f3yp8")
 effect_type = 22
 amount = 2
 modifier_name = "Enfer"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_ydtp4"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_lscb7"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
 upgrade_id = &"mage_pyromancy_enfer"
 display_name = "Enfer"
@@ -380,31 +381,31 @@ description = "Brûlure : 3 dégâts pendant 3 tours et terrain +2 tours."
 discipline_id = &"mage_pyromancy"
 rank = 5
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_715vr"), SubResource("Resource_osa4r")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_ydtp4"), SubResource("Resource_8dy0s")])
 
-[sub_resource type="Resource" id="Resource_8dy0s"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_wfnj2"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Mer de flammes"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_lscb7"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_jvy04"]
+script = ExtResource("6_f3yp8")
 effect_type = 22
 amount = 2
 modifier_name = "Mer de flammes"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_wfnj2"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_8ymkc"]
+script = ExtResource("6_f3yp8")
 effect_type = 23
 amount = 3
 modifier_name = "Mer de flammes"
 target_spell_id = &"mage_fireball"
 
-[sub_resource type="Resource" id="Resource_jvy04"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_igfp2"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_pyromancy_brasier_durable"])
 upgrade_id = &"mage_pyromancy_mer_de_flammes"
 display_name = "Mer de flammes"
@@ -412,34 +413,34 @@ description = "Zone de terrain agrandie, durée +2 tours et +3 dégâts au débu
 discipline_id = &"mage_pyromancy"
 rank = 5
 target_spell_id = &"mage_fireball"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_8dy0s"), SubResource("Resource_lscb7"), SubResource("Resource_wfnj2")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_wfnj2"), SubResource("Resource_jvy04"), SubResource("Resource_8ymkc")])
 
-[sub_resource type="Resource" id="Resource_8ymkc"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_5mjai"]
+script = ExtResource("2_2ajh2")
 rank = 5
 required_total_xp = 30
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_iujp8"), SubResource("Resource_84sv6"), SubResource("Resource_ydtp4"), SubResource("Resource_jvy04")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_1nqsl"), SubResource("Resource_osa4r"), SubResource("Resource_lscb7"), SubResource("Resource_igfp2")])
 
-[sub_resource type="Resource" id="Resource_igfp2"]
-script = ExtResource("1_kfgnd")
+[sub_resource type="Resource" id="Resource_n8kpl"]
+script = ExtResource("1_vsicd")
 discipline_id = &"mage_pyromancy"
 display_name = "Pyromancie"
 description = "Maîtrise des dégâts directs, des explosions et du feu persistant."
 presentation_color = Color(0.94, 0.3, 0.12, 1)
-ranks = Array[ExtResource("2_vsicd")]([SubResource("Resource_s163h"), SubResource("Resource_xt3wl"), SubResource("Resource_8bkgf"), SubResource("Resource_liygr"), SubResource("Resource_8ymkc")])
+ranks = Array[ExtResource("2_2ajh2")]([SubResource("Resource_upnpp"), SubResource("Resource_le78t"), SubResource("Resource_lyarq"), SubResource("Resource_e2l5u"), SubResource("Resource_5mjai")])
 
-[sub_resource type="Resource" id="Resource_5mjai"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_0ex4o"]
+script = ExtResource("2_2ajh2")
 
-[sub_resource type="Resource" id="Resource_n8kpl"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_uy407"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Mur étendu"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_0ex4o"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_75tsv"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
 upgrade_id = &"mage_cryomancy_mur_etendu"
 display_name = "Mur étendu"
@@ -447,16 +448,16 @@ description = "Ajoute 1 cellule à chaque extrémité du mur."
 discipline_id = &"mage_cryomancy"
 rank = 2
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_n8kpl")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_uy407")])
 
-[sub_resource type="Resource" id="Resource_uy407"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_5pfo7"]
+script = ExtResource("6_f3yp8")
 amount = 5
 modifier_name = "Gel mordant"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_75tsv"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_bywnj"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
 upgrade_id = &"mage_cryomancy_gel_mordant"
 display_name = "Gel mordant"
@@ -464,23 +465,23 @@ description = "Inflige 5 dégâts aux ennemis présents lors de la création."
 discipline_id = &"mage_cryomancy"
 rank = 2
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_uy407")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_5pfo7")])
 
-[sub_resource type="Resource" id="Resource_5pfo7"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_m24bi"]
+script = ExtResource("2_2ajh2")
 rank = 2
 required_total_xp = 5
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_0ex4o"), SubResource("Resource_75tsv")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_75tsv"), SubResource("Resource_bywnj")])
 
-[sub_resource type="Resource" id="Resource_bywnj"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_exn2b"]
+script = ExtResource("6_f3yp8")
 effect_type = 22
 amount = 1
 modifier_name = "Glace tenace"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_m24bi"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_0h7mr"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
 upgrade_id = &"mage_cryomancy_glace_tenace"
 display_name = "Glace tenace"
@@ -488,18 +489,18 @@ description = "La glace dure 1 tour supplémentaire."
 discipline_id = &"mage_cryomancy"
 rank = 3
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_bywnj")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_exn2b")])
 
-[sub_resource type="Resource" id="Resource_exn2b"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_0d3dk"]
+script = ExtResource("6_f3yp8")
 effect_type = 26
 target_scope = 3
 amount = 3
 modifier_name = "Cristallomancie"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_0h7mr"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_o1v3u"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
 upgrade_id = &"mage_cryomancy_cristallomancie"
 display_name = "Cristallomancie"
@@ -507,10 +508,10 @@ description = "Les alliés présents sur la glace reçoivent 3 boucliers."
 discipline_id = &"mage_cryomancy"
 rank = 3
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_exn2b")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_0d3dk")])
 
-[sub_resource type="Resource" id="Resource_0d3dk"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_36dh5"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 1
 duration = 1
@@ -519,8 +520,8 @@ status_name = "Gel"
 modifier_name = "Geôlier du froid"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_o1v3u"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_lm5ts"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
 upgrade_id = &"mage_cryomancy_geolier_du_froid"
 display_name = "Geôlier du froid"
@@ -528,10 +529,10 @@ description = "Les ennemis touchés perdent 1 PM au prochain tour."
 discipline_id = &"mage_cryomancy"
 rank = 3
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_0d3dk")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_36dh5")])
 
-[sub_resource type="Resource" id="Resource_36dh5"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_re6sr"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 2
 duration = 99
@@ -541,8 +542,8 @@ status_damage_type = 0
 modifier_name = "Cristallisation"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_lm5ts"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ap6sy"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
 upgrade_id = &"mage_cryomancy_cristallisation"
 display_name = "Cristallisation"
@@ -550,23 +551,23 @@ description = "Les ennemis touchés subissent +2 dégâts sur la prochaine attaq
 discipline_id = &"mage_cryomancy"
 rank = 3
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_36dh5")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_re6sr")])
 
-[sub_resource type="Resource" id="Resource_re6sr"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_wo08h"]
+script = ExtResource("2_2ajh2")
 rank = 3
 required_total_xp = 12
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_m24bi"), SubResource("Resource_0h7mr"), SubResource("Resource_o1v3u"), SubResource("Resource_lm5ts")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_0h7mr"), SubResource("Resource_o1v3u"), SubResource("Resource_lm5ts"), SubResource("Resource_ap6sy")])
 
-[sub_resource type="Resource" id="Resource_ap6sy"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_ctuo5"]
+script = ExtResource("6_f3yp8")
 effect_type = 22
 amount = 1
 modifier_name = "Mur durable"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_wo08h"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_h6xd7"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_glace_tenace"])
 upgrade_id = &"mage_cryomancy_mur_durable"
 display_name = "Mur durable"
@@ -574,17 +575,17 @@ description = "La glace dure encore 1 tour supplémentaire."
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_ap6sy")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_ctuo5")])
 
-[sub_resource type="Resource" id="Resource_ctuo5"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_1ejmw"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 2
 modifier_name = "Projection glaciale"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_h6xd7"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_pfkvr"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_glace_tenace"])
 upgrade_id = &"mage_cryomancy_projection_glaciale"
 display_name = "Projection glaciale"
@@ -592,18 +593,18 @@ description = "+2 portée."
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_ctuo5")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_1ejmw")])
 
-[sub_resource type="Resource" id="Resource_1ejmw"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_xf2bq"]
+script = ExtResource("6_f3yp8")
 effect_type = 26
 target_scope = 3
 amount = 3
 modifier_name = "Glace miroir"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_pfkvr"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_o54gv"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallomancie"])
 upgrade_id = &"mage_cryomancy_glace_miroir"
 display_name = "Glace miroir"
@@ -611,18 +612,18 @@ description = "Le bouclier accordé passe à 6."
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_1ejmw")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_xf2bq")])
 
-[sub_resource type="Resource" id="Resource_xf2bq"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_wu3be"]
+script = ExtResource("6_f3yp8")
 effect_type = 27
 target_scope = 3
 amount = 1
 modifier_name = "Passage sûr"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_o54gv"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_m3ync"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallomancie"])
 upgrade_id = &"mage_cryomancy_passage_sur"
 display_name = "Passage sûr"
@@ -630,10 +631,10 @@ description = "Les alliés présents sur la glace gagnent 1 PM au prochain tour.
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_xf2bq")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_wu3be")])
 
-[sub_resource type="Resource" id="Resource_wu3be"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_rc3t8"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 2
 duration = 1
@@ -642,8 +643,8 @@ status_name = "Entrave"
 modifier_name = "Gel profond"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_m3ync"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_v3vps"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_geolier_du_froid"])
 upgrade_id = &"mage_cryomancy_gel_profond"
 display_name = "Gel profond"
@@ -651,16 +652,16 @@ description = "La perte passe à −2 PM."
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_wu3be")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_rc3t8")])
 
-[sub_resource type="Resource" id="Resource_rc3t8"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_nfr07"]
+script = ExtResource("6_f3yp8")
 amount = 2
 modifier_name = "Froid tranchant"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_v3vps"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ed0sf"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_geolier_du_froid"])
 upgrade_id = &"mage_cryomancy_froid_tranchant"
 display_name = "Froid tranchant"
@@ -668,10 +669,10 @@ description = "+2 dégâts lors de la création."
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_rc3t8")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_nfr07")])
 
-[sub_resource type="Resource" id="Resource_nfr07"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_671yr"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 2
 duration = 99
@@ -682,8 +683,8 @@ status_damage_type = 0
 modifier_name = "Fragilité glacée"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_ed0sf"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_msk2l"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallisation"])
 upgrade_id = &"mage_cryomancy_fragilite_glacee"
 display_name = "Fragilité glacée"
@@ -691,10 +692,10 @@ description = "Le bonus s’applique aux 2 prochaines attaques."
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_nfr07")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_671yr")])
 
-[sub_resource type="Resource" id="Resource_671yr"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_8h7ff"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 4
 duration = 99
@@ -704,8 +705,8 @@ status_damage_type = 0
 modifier_name = "Point de rupture"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_msk2l"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_2jqn0"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_cristallisation"])
 upgrade_id = &"mage_cryomancy_point_de_rupture"
 display_name = "Point de rupture"
@@ -713,30 +714,30 @@ description = "Le bonus de dégâts reçus passe à +4."
 discipline_id = &"mage_cryomancy"
 rank = 4
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_671yr")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_8h7ff")])
 
-[sub_resource type="Resource" id="Resource_8h7ff"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_lhevc"]
+script = ExtResource("2_2ajh2")
 rank = 4
 required_total_xp = 21
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_wo08h"), SubResource("Resource_h6xd7"), SubResource("Resource_pfkvr"), SubResource("Resource_o54gv"), SubResource("Resource_m3ync"), SubResource("Resource_v3vps"), SubResource("Resource_ed0sf"), SubResource("Resource_msk2l")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_h6xd7"), SubResource("Resource_pfkvr"), SubResource("Resource_o54gv"), SubResource("Resource_m3ync"), SubResource("Resource_v3vps"), SubResource("Resource_ed0sf"), SubResource("Resource_msk2l"), SubResource("Resource_2jqn0")])
 
-[sub_resource type="Resource" id="Resource_2jqn0"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_uoqed"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 2
 modifier_name = "Forteresse gelée"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_lhevc"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_3rv8u"]
+script = ExtResource("6_f3yp8")
 effect_type = 22
 amount = 2
 modifier_name = "Forteresse gelée"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_uoqed"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_4d6bj"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
 upgrade_id = &"mage_cryomancy_forteresse_gelee"
 display_name = "Forteresse gelée"
@@ -744,26 +745,26 @@ description = "Ajoute 4 cellules au total et +2 tours de durée."
 discipline_id = &"mage_cryomancy"
 rank = 5
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_2jqn0"), SubResource("Resource_lhevc")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_uoqed"), SubResource("Resource_3rv8u")])
 
-[sub_resource type="Resource" id="Resource_3rv8u"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_6fhvh"]
+script = ExtResource("6_f3yp8")
 effect_type = 26
 target_scope = 3
 amount = 8
 modifier_name = "Sanctuaire de glace"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_4d6bj"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_prx8c"]
+script = ExtResource("6_f3yp8")
 effect_type = 27
 target_scope = 3
 amount = 1
 modifier_name = "Sanctuaire de glace"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_6fhvh"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_x0box"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_mur_etendu"])
 upgrade_id = &"mage_cryomancy_sanctuaire_de_glace"
 display_name = "Sanctuaire de glace"
@@ -771,16 +772,16 @@ description = "Les alliés sur la glace reçoivent 8 boucliers et +1 PM."
 discipline_id = &"mage_cryomancy"
 rank = 5
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_3rv8u"), SubResource("Resource_4d6bj")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_6fhvh"), SubResource("Resource_prx8c")])
 
-[sub_resource type="Resource" id="Resource_prx8c"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_mdtmv"]
+script = ExtResource("6_f3yp8")
 amount = 7
 modifier_name = "Hiver brutal"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_x0box"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_h6nho"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 2
 duration = 1
@@ -789,8 +790,8 @@ status_name = "Gel profond"
 modifier_name = "Hiver brutal"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_mdtmv"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_t4ba0"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
 upgrade_id = &"mage_cryomancy_hiver_brutal"
 display_name = "Hiver brutal"
@@ -798,16 +799,16 @@ description = "7 dégâts lors de la création et −2 PM."
 discipline_id = &"mage_cryomancy"
 rank = 5
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_prx8c"), SubResource("Resource_x0box")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_mdtmv"), SubResource("Resource_h6nho")])
 
-[sub_resource type="Resource" id="Resource_h6nho"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_03k5k"]
+script = ExtResource("6_f3yp8")
 amount = 5
 modifier_name = "Prison cristalline"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_t4ba0"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_f8bry"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 4
 duration = 99
@@ -818,8 +819,8 @@ status_damage_type = 0
 modifier_name = "Prison cristalline"
 target_spell_id = &"mage_ice_wall"
 
-[sub_resource type="Resource" id="Resource_03k5k"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_twh8s"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_cryomancy_gel_mordant"])
 upgrade_id = &"mage_cryomancy_prison_cristalline"
 display_name = "Prison cristalline"
@@ -827,33 +828,33 @@ description = "5 dégâts et +4 dégâts reçus sur les 2 prochaines attaques."
 discipline_id = &"mage_cryomancy"
 rank = 5
 target_spell_id = &"mage_ice_wall"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_h6nho"), SubResource("Resource_t4ba0")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_03k5k"), SubResource("Resource_f8bry")])
 
-[sub_resource type="Resource" id="Resource_f8bry"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_t1888"]
+script = ExtResource("2_2ajh2")
 rank = 5
 required_total_xp = 30
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_uoqed"), SubResource("Resource_6fhvh"), SubResource("Resource_mdtmv"), SubResource("Resource_03k5k")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_4d6bj"), SubResource("Resource_x0box"), SubResource("Resource_t4ba0"), SubResource("Resource_twh8s")])
 
-[sub_resource type="Resource" id="Resource_twh8s"]
-script = ExtResource("1_kfgnd")
+[sub_resource type="Resource" id="Resource_uvwlp"]
+script = ExtResource("1_vsicd")
 discipline_id = &"mage_cryomancy"
 display_name = "Cryomancie"
 description = "Maîtrise des obstacles, du ralentissement et du verrouillage spatial."
 presentation_color = Color(0.35, 0.78, 1, 1)
-ranks = Array[ExtResource("2_vsicd")]([SubResource("Resource_5mjai"), SubResource("Resource_5pfo7"), SubResource("Resource_re6sr"), SubResource("Resource_8h7ff"), SubResource("Resource_f8bry")])
+ranks = Array[ExtResource("2_2ajh2")]([SubResource("Resource_0ex4o"), SubResource("Resource_m24bi"), SubResource("Resource_wo08h"), SubResource("Resource_lhevc"), SubResource("Resource_t1888")])
 
-[sub_resource type="Resource" id="Resource_t1888"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_y5qfv"]
+script = ExtResource("2_2ajh2")
 
-[sub_resource type="Resource" id="Resource_uvwlp"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_jmtgh"]
+script = ExtResource("6_f3yp8")
 amount = 5
 modifier_name = "Surcharge"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_y5qfv"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_61pan"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
 upgrade_id = &"mage_fulguromancy_surcharge"
 display_name = "Surcharge"
@@ -861,10 +862,10 @@ description = "+5 dégâts à toutes les cibles."
 discipline_id = &"mage_fulguromancy"
 rank = 2
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_uvwlp")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_jmtgh")])
 
-[sub_resource type="Resource" id="Resource_jmtgh"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_u640i"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 1
 duration = 1
@@ -873,8 +874,8 @@ status_name = "Entrave"
 modifier_name = "Champ statique"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_61pan"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ccwwf"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
 upgrade_id = &"mage_fulguromancy_champ_statique"
 display_name = "Champ statique"
@@ -882,23 +883,23 @@ description = "Les ennemis touchés perdent 1 PM au prochain tour."
 discipline_id = &"mage_fulguromancy"
 rank = 2
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_jmtgh")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_u640i")])
 
-[sub_resource type="Resource" id="Resource_u640i"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_ldi1x"]
+script = ExtResource("2_2ajh2")
 rank = 2
 required_total_xp = 5
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_y5qfv"), SubResource("Resource_61pan")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_61pan"), SubResource("Resource_ccwwf")])
 
-[sub_resource type="Resource" id="Resource_ccwwf"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_v3e12"]
+script = ExtResource("6_f3yp8")
 effect_type = 1
 amount = 4
 modifier_name = "Cœur de l’orage"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_ldi1x"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ojjrg"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
 upgrade_id = &"mage_fulguromancy_cur_de_lorage"
 display_name = "Cœur de l’orage"
@@ -906,17 +907,17 @@ description = "+4 dégâts sur la cellule centrale."
 discipline_id = &"mage_fulguromancy"
 rank = 3
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_ccwwf")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_v3e12")])
 
-[sub_resource type="Resource" id="Resource_v3e12"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_snwy6"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Front orageux"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_ojjrg"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_t2m2o"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
 upgrade_id = &"mage_fulguromancy_front_orageux"
 display_name = "Front orageux"
@@ -924,10 +925,10 @@ description = "La zone gagne 1 cellule sur ses extrémités cardinales."
 discipline_id = &"mage_fulguromancy"
 rank = 3
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_v3e12")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_snwy6")])
 
-[sub_resource type="Resource" id="Resource_snwy6"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_vvomx"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 1
 duration = 2
@@ -936,8 +937,8 @@ status_name = "Paralysie"
 modifier_name = "Paralysie"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_t2m2o"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_khvlf"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
 upgrade_id = &"mage_fulguromancy_paralysie"
 display_name = "Paralysie"
@@ -945,10 +946,10 @@ description = "La perte de PM s’applique pendant 2 tours."
 discipline_id = &"mage_fulguromancy"
 rank = 3
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_snwy6")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_vvomx")])
 
-[sub_resource type="Resource" id="Resource_vvomx"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_jv4f0"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 3
 duration = 99
@@ -958,8 +959,8 @@ status_damage_type = 0
 modifier_name = "Conductivité"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_khvlf"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_40f1r"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
 upgrade_id = &"mage_fulguromancy_conductivite"
 display_name = "Conductivité"
@@ -967,23 +968,23 @@ description = "Chaque cible subit +3 dégâts sur la prochaine attaque reçue."
 discipline_id = &"mage_fulguromancy"
 rank = 3
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_vvomx")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_jv4f0")])
 
-[sub_resource type="Resource" id="Resource_jv4f0"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_y1jou"]
+script = ExtResource("2_2ajh2")
 rank = 3
 required_total_xp = 12
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_ldi1x"), SubResource("Resource_ojjrg"), SubResource("Resource_t2m2o"), SubResource("Resource_khvlf")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_ojjrg"), SubResource("Resource_t2m2o"), SubResource("Resource_khvlf"), SubResource("Resource_40f1r")])
 
-[sub_resource type="Resource" id="Resource_40f1r"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_yneqb"]
+script = ExtResource("6_f3yp8")
 effect_type = 1
 amount = 3
 modifier_name = "Impact central"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_y1jou"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_mgy5y"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_cur_de_lorage"])
 upgrade_id = &"mage_fulguromancy_impact_central"
 display_name = "Impact central"
@@ -991,17 +992,17 @@ description = "+3 dégâts supplémentaires au centre."
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_40f1r")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_yneqb")])
 
-[sub_resource type="Resource" id="Resource_yneqb"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_isln4"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 2
 modifier_name = "Orage lointain"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_mgy5y"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_g34xy"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_cur_de_lorage"])
 upgrade_id = &"mage_fulguromancy_orage_lointain"
 display_name = "Orage lointain"
@@ -1009,17 +1010,17 @@ description = "+2 portée."
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_yneqb")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_isln4")])
 
-[sub_resource type="Resource" id="Resource_isln4"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_tlcku"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Supercellule mineure"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_g34xy"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_j6x8t"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_front_orageux"])
 upgrade_id = &"mage_fulguromancy_supercellule_mineure"
 display_name = "Supercellule mineure"
@@ -1027,16 +1028,16 @@ description = "La zone gagne encore 1 cellule cardinale."
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_isln4")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_tlcku")])
 
-[sub_resource type="Resource" id="Resource_tlcku"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_7wesn"]
+script = ExtResource("6_f3yp8")
 amount = 2
 modifier_name = "Haute tension"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_j6x8t"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ivtv2"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_front_orageux"])
 upgrade_id = &"mage_fulguromancy_haute_tension"
 display_name = "Haute tension"
@@ -1044,10 +1045,10 @@ description = "+2 dégâts à toutes les cibles."
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_tlcku")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_7wesn")])
 
-[sub_resource type="Resource" id="Resource_7wesn"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_blxt3"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 2
 duration = 1
@@ -1056,8 +1057,8 @@ status_name = "Entrave"
 modifier_name = "Entrave majeure"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_ivtv2"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ef4np"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_paralysie"])
 upgrade_id = &"mage_fulguromancy_entrave_majeure"
 display_name = "Entrave majeure"
@@ -1065,10 +1066,10 @@ description = "La perte passe à −2 PM pour le prochain tour."
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_7wesn")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_blxt3")])
 
-[sub_resource type="Resource" id="Resource_blxt3"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_wv5sr"]
+script = ExtResource("6_f3yp8")
 effect_type = 12
 amount = 2
 duration = 1
@@ -1079,8 +1080,8 @@ status_timing = 1
 modifier_name = "Électricité résiduelle"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_ef4np"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_4d46h"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_paralysie"])
 upgrade_id = &"mage_fulguromancy_electricite_residuelle"
 display_name = "Électricité résiduelle"
@@ -1088,10 +1089,10 @@ description = "Inflige 2 dégâts à la fin du prochain tour."
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_blxt3")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_wv5sr")])
 
-[sub_resource type="Resource" id="Resource_wv5sr"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_t0fxi"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 3
 duration = 99
@@ -1102,8 +1103,8 @@ status_damage_type = 0
 modifier_name = "Charge persistante"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_4d46h"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_7i33i"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_conductivite"])
 upgrade_id = &"mage_fulguromancy_charge_persistante"
 display_name = "Charge persistante"
@@ -1111,10 +1112,10 @@ description = "Le bonus s’applique aux 2 prochaines attaques."
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_wv5sr")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_t0fxi")])
 
-[sub_resource type="Resource" id="Resource_t0fxi"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_ph1px"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 secondary_amount = 3
 duration = 99
@@ -1124,8 +1125,8 @@ status_damage_type = 0
 modifier_name = "Arc secondaire"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_7i33i"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_muk6h"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_conductivite"])
 upgrade_id = &"mage_fulguromancy_arc_secondaire"
 display_name = "Arc secondaire"
@@ -1133,29 +1134,29 @@ description = "La première attaque bonus inflige aussi 3 dégâts à un ennemi 
 discipline_id = &"mage_fulguromancy"
 rank = 4
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_t0fxi")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_ph1px")])
 
-[sub_resource type="Resource" id="Resource_ph1px"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_nd7se"]
+script = ExtResource("2_2ajh2")
 rank = 4
 required_total_xp = 21
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_y1jou"), SubResource("Resource_mgy5y"), SubResource("Resource_g34xy"), SubResource("Resource_j6x8t"), SubResource("Resource_ivtv2"), SubResource("Resource_ef4np"), SubResource("Resource_4d46h"), SubResource("Resource_7i33i")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_mgy5y"), SubResource("Resource_g34xy"), SubResource("Resource_j6x8t"), SubResource("Resource_ivtv2"), SubResource("Resource_ef4np"), SubResource("Resource_4d46h"), SubResource("Resource_7i33i"), SubResource("Resource_muk6h")])
 
-[sub_resource type="Resource" id="Resource_muk6h"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_u8uwv"]
+script = ExtResource("6_f3yp8")
 effect_type = 1
 amount = 8
 modifier_name = "Cœur de tonnerre"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_nd7se"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_vfewt"]
+script = ExtResource("6_f3yp8")
 amount = 8
 modifier_name = "Cœur de tonnerre"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_u8uwv"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_u3alx"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
 upgrade_id = &"mage_fulguromancy_cur_de_tonnerre"
 display_name = "Cœur de tonnerre"
@@ -1163,30 +1164,30 @@ description = "+8 dégâts au centre et +3 dégâts à toutes les cibles."
 discipline_id = &"mage_fulguromancy"
 rank = 5
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_muk6h"), SubResource("Resource_nd7se")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_u8uwv"), SubResource("Resource_vfewt")])
 
-[sub_resource type="Resource" id="Resource_vfewt"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_y1jc5"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 2
 modifier_name = "Supercellule"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_u3alx"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_8c10l"]
+script = ExtResource("6_f3yp8")
 effect_type = 17
 amount = 1
 modifier_name = "Supercellule"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_y1jc5"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_8q1x6"]
+script = ExtResource("6_f3yp8")
 amount = 3
 modifier_name = "Supercellule"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_8c10l"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_i0t0c"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_surcharge"])
 upgrade_id = &"mage_fulguromancy_supercellule"
 display_name = "Supercellule"
@@ -1194,10 +1195,10 @@ description = "Zone agrandie, +2 portée et +3 dégâts de zone."
 discipline_id = &"mage_fulguromancy"
 rank = 5
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_vfewt"), SubResource("Resource_u3alx"), SubResource("Resource_y1jc5")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_y1jc5"), SubResource("Resource_8c10l"), SubResource("Resource_8q1x6")])
 
-[sub_resource type="Resource" id="Resource_8q1x6"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_vy4cx"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 2
 duration = 1
@@ -1206,8 +1207,8 @@ status_name = "Paralysie"
 modifier_name = "Paralysie complète"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_i0t0c"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_4qsxt"]
+script = ExtResource("6_f3yp8")
 effect_type = 12
 amount = 3
 duration = 1
@@ -1218,8 +1219,8 @@ status_timing = 1
 modifier_name = "Paralysie complète"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_vy4cx"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_mt0ff"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
 upgrade_id = &"mage_fulguromancy_paralysie_complete"
 display_name = "Paralysie complète"
@@ -1227,10 +1228,10 @@ description = "−2 PM au prochain tour et 3 dégâts différés."
 discipline_id = &"mage_fulguromancy"
 rank = 5
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_8q1x6"), SubResource("Resource_i0t0c")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_vy4cx"), SubResource("Resource_4qsxt")])
 
-[sub_resource type="Resource" id="Resource_4qsxt"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_xfcsa"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 4
 secondary_amount = 3
@@ -1242,8 +1243,8 @@ status_damage_type = 0
 modifier_name = "Orage conducteur"
 target_spell_id = &"mage_thunderstorm"
 
-[sub_resource type="Resource" id="Resource_mt0ff"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_odv8t"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_fulguromancy_champ_statique"])
 upgrade_id = &"mage_fulguromancy_orage_conducteur"
 display_name = "Orage conducteur"
@@ -1251,33 +1252,33 @@ description = "+4 dégâts reçus sur les 2 prochaines attaques et arc secondair
 discipline_id = &"mage_fulguromancy"
 rank = 5
 target_spell_id = &"mage_thunderstorm"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_4qsxt")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_xfcsa")])
 
-[sub_resource type="Resource" id="Resource_xfcsa"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_7i7h0"]
+script = ExtResource("2_2ajh2")
 rank = 5
 required_total_xp = 30
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_u8uwv"), SubResource("Resource_8c10l"), SubResource("Resource_vy4cx"), SubResource("Resource_mt0ff")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_u3alx"), SubResource("Resource_i0t0c"), SubResource("Resource_mt0ff"), SubResource("Resource_odv8t")])
 
-[sub_resource type="Resource" id="Resource_odv8t"]
-script = ExtResource("1_kfgnd")
+[sub_resource type="Resource" id="Resource_xiy1m"]
+script = ExtResource("1_vsicd")
 discipline_id = &"mage_fulguromancy"
 display_name = "Foudromancie"
 description = "Maîtrise des zones électriques, de l'entrave et de la conductivité."
 presentation_color = Color(0.63, 0.48, 1, 1)
-ranks = Array[ExtResource("2_vsicd")]([SubResource("Resource_t1888"), SubResource("Resource_u640i"), SubResource("Resource_jv4f0"), SubResource("Resource_ph1px"), SubResource("Resource_xfcsa")])
+ranks = Array[ExtResource("2_2ajh2")]([SubResource("Resource_y5qfv"), SubResource("Resource_ldi1x"), SubResource("Resource_y1jou"), SubResource("Resource_nd7se"), SubResource("Resource_7i7h0")])
 
-[sub_resource type="Resource" id="Resource_7i7h0"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_8mhrw"]
+script = ExtResource("2_2ajh2")
 
-[sub_resource type="Resource" id="Resource_xiy1m"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_e1hep"]
+script = ExtResource("6_f3yp8")
 amount = 5
 modifier_name = "Onde renforcée"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_8mhrw"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_b0b34"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
 upgrade_id = &"mage_geomancy_onde_renforcee"
 display_name = "Onde renforcée"
@@ -1285,17 +1286,17 @@ description = "+5 dégâts à toutes les cibles de la ligne."
 discipline_id = &"mage_geomancy"
 rank = 2
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_xiy1m")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_e1hep")])
 
-[sub_resource type="Resource" id="Resource_e1hep"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_jf8qs"]
+script = ExtResource("6_f3yp8")
 effect_type = 18
 amount = 1
 modifier_name = "Recul tectonique"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_b0b34"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_irvdw"]
+script = ExtResource("4_mls4e")
 excluded_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
 upgrade_id = &"mage_geomancy_recul_tectonique"
 display_name = "Recul tectonique"
@@ -1303,16 +1304,16 @@ description = "+1 case de poussée."
 discipline_id = &"mage_geomancy"
 rank = 2
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_e1hep")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_jf8qs")])
 
-[sub_resource type="Resource" id="Resource_jf8qs"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_cydld"]
+script = ExtResource("2_2ajh2")
 rank = 2
 required_total_xp = 5
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_8mhrw"), SubResource("Resource_b0b34")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_b0b34"), SubResource("Resource_irvdw")])
 
-[sub_resource type="Resource" id="Resource_irvdw"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_iurxm"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 2
 duration = 99
@@ -1323,8 +1324,8 @@ status_damage_type = 0
 modifier_name = "Fracture"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_cydld"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ub2v0"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
 upgrade_id = &"mage_geomancy_fracture"
 display_name = "Fracture"
@@ -1332,17 +1333,17 @@ description = "Les cibles subissent +2 dégâts sur les 2 prochaines attaques."
 discipline_id = &"mage_geomancy"
 rank = 3
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_irvdw")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_iurxm")])
 
-[sub_resource type="Resource" id="Resource_iurxm"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_ekluv"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 2
 modifier_name = "Faille prolongée"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_ub2v0"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_wa5ev"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
 upgrade_id = &"mage_geomancy_faille_prolongee"
 display_name = "Faille prolongée"
@@ -1350,17 +1351,17 @@ description = "+2 portée."
 discipline_id = &"mage_geomancy"
 rank = 3
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_iurxm")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_ekluv")])
 
-[sub_resource type="Resource" id="Resource_ekluv"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_km1gl"]
+script = ExtResource("6_f3yp8")
 effect_type = 20
 amount = 4
 modifier_name = "Fracasseur"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_wa5ev"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_e3v7t"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
 upgrade_id = &"mage_geomancy_fracasseur"
 display_name = "Fracasseur"
@@ -1368,10 +1369,10 @@ description = "Une collision inflige 4 dégâts supplémentaires."
 discipline_id = &"mage_geomancy"
 rank = 3
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_ekluv")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_km1gl")])
 
-[sub_resource type="Resource" id="Resource_km1gl"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_e2hye"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 1
 duration = 1
@@ -1380,8 +1381,8 @@ status_name = "Entrave"
 modifier_name = "Éboulement"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_e3v7t"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_o3wuu"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
 upgrade_id = &"mage_geomancy_eboulement"
 display_name = "Éboulement"
@@ -1389,16 +1390,16 @@ description = "Les cibles touchées perdent 1 PM au prochain tour."
 discipline_id = &"mage_geomancy"
 rank = 3
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_km1gl")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_e2hye")])
 
-[sub_resource type="Resource" id="Resource_e2hye"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_rdqys"]
+script = ExtResource("2_2ajh2")
 rank = 3
 required_total_xp = 12
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_cydld"), SubResource("Resource_ub2v0"), SubResource("Resource_wa5ev"), SubResource("Resource_e3v7t")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_ub2v0"), SubResource("Resource_wa5ev"), SubResource("Resource_e3v7t"), SubResource("Resource_o3wuu")])
 
-[sub_resource type="Resource" id="Resource_o3wuu"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_elnt5"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 4
 duration = 99
@@ -1409,8 +1410,8 @@ status_damage_type = 0
 modifier_name = "Brèche profonde"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_rdqys"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_r0e3s"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracture"])
 upgrade_id = &"mage_geomancy_breche_profonde"
 display_name = "Brèche profonde"
@@ -1418,10 +1419,10 @@ description = "Le bonus de dégâts reçus passe à +4."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_o3wuu")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_elnt5")])
 
-[sub_resource type="Resource" id="Resource_elnt5"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_cc6rt"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 2
 duration = 99
@@ -1432,8 +1433,8 @@ status_damage_type = 0
 modifier_name = "Fracture durable"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_r0e3s"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_ieupi"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracture"])
 upgrade_id = &"mage_geomancy_fracture_durable"
 display_name = "Fracture durable"
@@ -1441,17 +1442,17 @@ description = "Le bonus s’applique aux 3 prochaines attaques."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_elnt5")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_cc6rt")])
 
-[sub_resource type="Resource" id="Resource_cc6rt"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_ts82r"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 2
 modifier_name = "Portée tellurique"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_ieupi"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_5bi2v"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_faille_prolongee"])
 upgrade_id = &"mage_geomancy_portee_tellurique"
 display_name = "Portée tellurique"
@@ -1459,16 +1460,16 @@ description = "+2 portée supplémentaire."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_cc6rt")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_ts82r")])
 
-[sub_resource type="Resource" id="Resource_ts82r"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_roqqp"]
+script = ExtResource("6_f3yp8")
 amount = 2
 modifier_name = "Secousse puissante"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_5bi2v"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_v0fw0"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_faille_prolongee"])
 upgrade_id = &"mage_geomancy_secousse_puissante"
 display_name = "Secousse puissante"
@@ -1476,17 +1477,17 @@ description = "+2 dégâts supplémentaires."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_ts82r")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_roqqp")])
 
-[sub_resource type="Resource" id="Resource_roqqp"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_jajqr"]
+script = ExtResource("6_f3yp8")
 effect_type = 20
 amount = 4
 modifier_name = "Écrasement"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_v0fw0"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_qvrt5"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracasseur"])
 upgrade_id = &"mage_geomancy_ecrasement"
 display_name = "Écrasement"
@@ -1494,17 +1495,17 @@ description = "+4 dégâts de collision supplémentaires."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_roqqp")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_jajqr")])
 
-[sub_resource type="Resource" id="Resource_jajqr"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_jsdu1"]
+script = ExtResource("6_f3yp8")
 effect_type = 18
 amount = 1
 modifier_name = "Projection"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_qvrt5"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_gj3al"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_fracasseur"])
 upgrade_id = &"mage_geomancy_projection"
 display_name = "Projection"
@@ -1512,10 +1513,10 @@ description = "+1 case de poussée."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_jajqr")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_jsdu1")])
 
-[sub_resource type="Resource" id="Resource_jsdu1"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_wfiwh"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 2
 duration = 1
@@ -1524,8 +1525,8 @@ status_name = "Entrave"
 modifier_name = "Terrain instable"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_gj3al"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_qspjy"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_eboulement"])
 upgrade_id = &"mage_geomancy_terrain_instable"
 display_name = "Terrain instable"
@@ -1533,16 +1534,16 @@ description = "La perte passe à −2 PM."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_jsdu1")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_wfiwh")])
 
-[sub_resource type="Resource" id="Resource_wfiwh"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_3y8yw"]
+script = ExtResource("6_f3yp8")
 amount = 2
 modifier_name = "Secousse"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_qspjy"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_k44x6"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_eboulement"])
 upgrade_id = &"mage_geomancy_secousse"
 display_name = "Secousse"
@@ -1550,22 +1551,22 @@ description = "+2 dégâts directs."
 discipline_id = &"mage_geomancy"
 rank = 4
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_wfiwh")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_3y8yw")])
 
-[sub_resource type="Resource" id="Resource_3y8yw"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_j0qec"]
+script = ExtResource("2_2ajh2")
 rank = 4
 required_total_xp = 21
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_rdqys"), SubResource("Resource_r0e3s"), SubResource("Resource_ieupi"), SubResource("Resource_5bi2v"), SubResource("Resource_v0fw0"), SubResource("Resource_qvrt5"), SubResource("Resource_gj3al"), SubResource("Resource_qspjy")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_r0e3s"), SubResource("Resource_ieupi"), SubResource("Resource_5bi2v"), SubResource("Resource_v0fw0"), SubResource("Resource_qvrt5"), SubResource("Resource_gj3al"), SubResource("Resource_qspjy"), SubResource("Resource_k44x6")])
 
-[sub_resource type="Resource" id="Resource_k44x6"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_s6o0r"]
+script = ExtResource("6_f3yp8")
 amount = 5
 modifier_name = "Cataclysme"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_j0qec"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_0ykas"]
+script = ExtResource("6_f3yp8")
 effect_type = 15
 amount = 4
 duration = 99
@@ -1576,8 +1577,8 @@ status_damage_type = 0
 modifier_name = "Cataclysme"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_s6o0r"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_tgro4"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
 upgrade_id = &"mage_geomancy_cataclysme"
 display_name = "Cataclysme"
@@ -1585,23 +1586,23 @@ description = "+5 dégâts de ligne et +4 dégâts reçus sur les 2 prochaines a
 discipline_id = &"mage_geomancy"
 rank = 5
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_k44x6"), SubResource("Resource_j0qec")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_s6o0r"), SubResource("Resource_0ykas")])
 
-[sub_resource type="Resource" id="Resource_0ykas"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_3443w"]
+script = ExtResource("6_f3yp8")
 effect_type = 5
 amount = 4
 modifier_name = "Faille majeure"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_tgro4"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_rhnxt"]
+script = ExtResource("6_f3yp8")
 amount = 3
 modifier_name = "Faille majeure"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_3443w"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_hldcm"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_onde_renforcee"])
 upgrade_id = &"mage_geomancy_faille_majeure"
 display_name = "Faille majeure"
@@ -1609,24 +1610,24 @@ description = "+4 portée totale supplémentaire et +3 dégâts."
 discipline_id = &"mage_geomancy"
 rank = 5
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_0ykas"), SubResource("Resource_tgro4")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_3443w"), SubResource("Resource_rhnxt")])
 
-[sub_resource type="Resource" id="Resource_rhnxt"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_3xjq5"]
+script = ExtResource("6_f3yp8")
 effect_type = 19
 amount = 3
 modifier_name = "Impact tectonique"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_hldcm"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_hx84j"]
+script = ExtResource("6_f3yp8")
 effect_type = 21
 amount = 8
 modifier_name = "Impact tectonique"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_3xjq5"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_yqm0j"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
 upgrade_id = &"mage_geomancy_impact_tectonique"
 display_name = "Impact tectonique"
@@ -1634,17 +1635,17 @@ description = "Poussée totale de 3 cases et 8 dégâts de collision."
 discipline_id = &"mage_geomancy"
 rank = 5
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_rhnxt"), SubResource("Resource_hldcm")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_3xjq5"), SubResource("Resource_hx84j")])
 
-[sub_resource type="Resource" id="Resource_hx84j"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_35f7w"]
+script = ExtResource("6_f3yp8")
 effect_type = 19
 amount = 2
 modifier_name = "Glissement de terrain"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_yqm0j"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_13k8l"]
+script = ExtResource("6_f3yp8")
 effect_type = 13
 amount = 2
 duration = 1
@@ -1653,14 +1654,14 @@ status_name = "Terrain instable"
 modifier_name = "Glissement de terrain"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_35f7w"]
-script = ExtResource("6_wxwpu")
+[sub_resource type="Resource" id="Resource_lwe51"]
+script = ExtResource("6_f3yp8")
 amount = 3
 modifier_name = "Glissement de terrain"
 target_spell_id = &"mage_seismic_wave"
 
-[sub_resource type="Resource" id="Resource_13k8l"]
-script = ExtResource("4_auv0v")
+[sub_resource type="Resource" id="Resource_amhlr"]
+script = ExtResource("4_mls4e")
 prerequisite_node_ids = Array[StringName]([&"mage_geomancy_recul_tectonique"])
 upgrade_id = &"mage_geomancy_glissement_de_terrain"
 display_name = "Glissement de terrain"
@@ -1668,65 +1669,89 @@ description = "Poussée de 2 cases, −2 PM et +3 dégâts."
 discipline_id = &"mage_geomancy"
 rank = 5
 target_spell_id = &"mage_seismic_wave"
-spell_modifiers = Array[ExtResource("5_mls4e")]([SubResource("Resource_hx84j"), SubResource("Resource_yqm0j"), SubResource("Resource_35f7w")])
+spell_modifiers = Array[ExtResource("5_wxwpu")]([SubResource("Resource_35f7w"), SubResource("Resource_13k8l"), SubResource("Resource_lwe51")])
 
-[sub_resource type="Resource" id="Resource_lwe51"]
-script = ExtResource("2_vsicd")
+[sub_resource type="Resource" id="Resource_kdvkb"]
+script = ExtResource("2_2ajh2")
 rank = 5
 required_total_xp = 30
-choices = Array[ExtResource("3_2ajh2")]([SubResource("Resource_s6o0r"), SubResource("Resource_3443w"), SubResource("Resource_3xjq5"), SubResource("Resource_13k8l")])
+choices = Array[ExtResource("3_auv0v")]([SubResource("Resource_tgro4"), SubResource("Resource_hldcm"), SubResource("Resource_yqm0j"), SubResource("Resource_amhlr")])
 
-[sub_resource type="Resource" id="Resource_amhlr"]
-script = ExtResource("1_kfgnd")
+[sub_resource type="Resource" id="Resource_yejo2"]
+script = ExtResource("1_vsicd")
 discipline_id = &"mage_geomancy"
 display_name = "Géomancie"
 description = "Maîtrise des impacts telluriques, de la poussée et des fractures."
 presentation_color = Color(0.58, 0.4, 0.2, 1)
-ranks = Array[ExtResource("2_vsicd")]([SubResource("Resource_7i7h0"), SubResource("Resource_jf8qs"), SubResource("Resource_e2hye"), SubResource("Resource_3y8yw"), SubResource("Resource_lwe51")])
+ranks = Array[ExtResource("2_2ajh2")]([SubResource("Resource_8mhrw"), SubResource("Resource_cydld"), SubResource("Resource_rdqys"), SubResource("Resource_j0qec"), SubResource("Resource_kdvkb")])
 
-[sub_resource type="Resource" id="Resource_kdvkb"]
-script = ExtResource("11_mpvl0")
+[sub_resource type="Resource" id="Resource_mgi7g"]
+script = ExtResource("11_a4mm8")
+status_id = &"burn"
+status_name = "Brulure"
+description = "Subit des degats au debut de son tour."
+color = Color(1, 0.25, 0.05, 1)
+damage_per_turn = 6
+
+[sub_resource type="Resource" id="Resource_tud15"]
+script = ExtResource("12_lfss7")
 effect_name = "lave"
 description = "Feu au sol: menace les deux camps, evitee par l'IA."
 color = Color(0.8862745, 0.007843138, 0.023529412, 1)
+surface_id = &"fire"
+visual_terrain_id = &"lava"
 trigger = 1
 damage = 15
+element = 1
+applied_status = SubResource("Resource_mgi7g")
 cell_type = 3
 dangerous_for_ai = true
 ai_danger_weight = 3.0
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"
 
-[sub_resource type="Resource" id="Resource_yejo2"]
-script = ExtResource("8_433a1")
+[sub_resource type="Resource" id="Resource_rvi8b"]
+script = ExtResource("8_hx2qb")
 spell_id = &"mage_fireball"
 discipline_id = &"mage_pyromancy"
 spell_name = "Boule de feu"
 description = "Projette une boule de feu et embrase la zone ciblee."
-icon = ExtResource("9_hx2qb")
-vfx_scene = ExtResource("12_a4mm8")
-sound_cast = ExtResource("10_l07t6")
+icon = ExtResource("9_l07t6")
+vfx_scene = ExtResource("13_276a7")
+sound_cast = ExtResource("10_mpvl0")
 spell_range = 14
 can_target_free_cell = true
 aoe_shape = 1
 aoe_size = 2
 damage = 25
 element = 1
-terrain_effect = SubResource("Resource_kdvkb")
+terrain_effect = SubResource("Resource_tud15")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"
 
-[sub_resource type="Resource" id="Resource_mgi7g"]
-script = ExtResource("11_mpvl0")
+[sub_resource type="Resource" id="Resource_xr3pa"]
+script = ExtResource("11_a4mm8")
+status_id = &"frozen"
+status_name = "Gelé"
+description = "Réduit les points de mouvement de 1 pendant une activation."
+color = Color(0.45, 0.85, 1, 1)
+mp_reduction = 1
+duration = 1
+
+[sub_resource type="Resource" id="Resource_ossr5"]
+script = ExtResource("12_lfss7")
 effect_name = "glace"
 description = "Zone glissante et repoussoir d'IA."
 color = Color(0.5, 0.9, 1, 1)
-trigger = 2
+surface_id = &"ice"
+visual_terrain_id = &"ice"
+trigger = 1
+applied_status = SubResource("Resource_xr3pa")
 cell_type = 4
 dangerous_for_ai = true
 ai_danger_weight = 1.5
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"
 
-[sub_resource type="Resource" id="Resource_tud15"]
-script = ExtResource("8_433a1")
+[sub_resource type="Resource" id="Resource_fvxno"]
+script = ExtResource("8_hx2qb")
 spell_id = &"mage_ice_wall"
 discipline_id = &"mage_cryomancy"
 spell_name = "Mur de glace"
@@ -1736,17 +1761,17 @@ can_target_free_cell = true
 aoe_shape = 1
 aoe_size = 3
 element = 2
-terrain_effect = SubResource("Resource_mgi7g")
+terrain_effect = SubResource("Resource_ossr5")
 metadata/_custom_type_script = "uid://bd5080ch70ymn"
 
-[sub_resource type="Resource" id="Resource_rvi8b"]
-script = ExtResource("8_433a1")
+[sub_resource type="Resource" id="Resource_c15fy"]
+script = ExtResource("8_hx2qb")
 spell_id = &"mage_thunderstorm"
 discipline_id = &"mage_fulguromancy"
 spell_name = "Tempête orageuse"
 description = "Déchaîne une tempête électrique sur une zone carrée de 3 × 3. Chaque cible subit un unique impact."
-icon = ExtResource("13_lfss7")
-vfx_scene = ExtResource("14_276a7")
+icon = ExtResource("14_s163h")
+vfx_scene = ExtResource("15_141ww")
 vfx_placement = 1
 impact_delay_seconds = 0.31
 ap_cost = 3
@@ -1756,8 +1781,8 @@ aoe_shape = 2
 damage = 7
 element = 3
 
-[sub_resource type="Resource" id="Resource_xr3pa"]
-script = ExtResource("8_433a1")
+[sub_resource type="Resource" id="Resource_uxfaa"]
+script = ExtResource("8_hx2qb")
 spell_id = &"mage_seismic_wave"
 discipline_id = &"mage_geomancy"
 spell_name = "Onde sismique"
@@ -1773,7 +1798,7 @@ push_distance = 1
 push_affected_units = true
 
 [resource]
-script = ExtResource("7_f3yp8")
+script = ExtResource("7_433a1")
 character_id = &"mage"
-spells = Array[ExtResource("8_433a1")]([SubResource("Resource_yejo2"), SubResource("Resource_tud15"), SubResource("Resource_rvi8b"), SubResource("Resource_xr3pa")])
-disciplines = Array[ExtResource("1_kfgnd")]([SubResource("Resource_igfp2"), SubResource("Resource_twh8s"), SubResource("Resource_odv8t"), SubResource("Resource_amhlr")])
+spells = Array[ExtResource("8_hx2qb")]([SubResource("Resource_rvi8b"), SubResource("Resource_fvxno"), SubResource("Resource_c15fy"), SubResource("Resource_uxfaa")])
+disciplines = Array[ExtResource("1_vsicd")]([SubResource("Resource_n8kpl"), SubResource("Resource_uvwlp"), SubResource("Resource_xiy1m"), SubResource("Resource_yejo2")])

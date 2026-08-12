@@ -13,7 +13,7 @@ const CURRENT_SCHEMA_VERSION := 1
 @export var exit_cell := Vector2i.ONE
 @export var traversal_contract: StringName = &"enter_cell"
 @export var bidirectional := true
-@export var runtime_enabled := false
+@export var runtime_enabled := true
 
 
 func contains(cell: Vector2i) -> bool:
@@ -50,11 +50,10 @@ static func from_dict(data: Dictionary) -> ArenaVortexPairDefinition:
 	result.bidirectional = bool(data.get("bidirectional", true))
 	# Une ancienne ou future donnée ne peut jamais activer implicitement le
 	# runtime tant que cette version ne possède pas de consommateur certifié.
-	result.runtime_enabled = false
+	result.runtime_enabled = bool(data.get("runtime_enabled", true))
 	return result
 
 
 static func _vector2i(value) -> Vector2i:
 	return Vector2i(int(value[0]), int(value[1])) \
 		if value is Array and value.size() >= 2 else Vector2i.ZERO
-

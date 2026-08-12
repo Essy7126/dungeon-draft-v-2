@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ArenaTerrainDefinition" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="ArenaTerrainDefinition" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_terrain_definition.gd" id="1"]
 [ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/ice.png" id="2"]
 [ext_resource type="Resource" path="res://battle/dynamic_terrain/surface_configs/forest_ice.tres" id="3"]
+[ext_resource type="Resource" path="res://data/terrain/glace.tres" id="4"]
 
 [resource]
 script = ExtResource("1")
@@ -11,6 +12,16 @@ display_name = "Glace"
 base_texture = ExtResource("2")
 cell_type = 4
 walkable = true
+transparent = true
+projectile_passable = true
+movement_cost = 1
+unit_effect = ExtResource("4")
+apply_on_enter = true
+apply_on_turn_start = true
+refresh_status_while_standing = true
+ai_danger_weight = 1.5
+editor_placeable = true
+production_placeable = true
 surface_configs = Array[Resource]([ExtResource("3")])
 editor_color = Color(0.784314, 0.956863, 1, 1)
 dynamic_catalog = true

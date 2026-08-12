@@ -2,16 +2,55 @@
 class_name ArenaRuntimeBridge
 extends RefCounted
 
+enum SyncScope { FULL, GRID_TRANSFORM }
 
-static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
+static var _instrumentation_enabled := false
+static var _instrumentation := {}
+
+
+static func begin_instrumentation() -> void:
+	_instrumentation_enabled = true
+	_instrumentation = {
+		"sync_runtime_resources": 0,
+		"grid_data_builds": 0,
+		"pathfinder_builds": 0,
+	}
+
+
+static func end_instrumentation() -> Dictionary:
+	var result := _instrumentation.duplicate(true)
+	_instrumentation_enabled = false
+	return result
+
+
+static func instrumentation_snapshot() -> Dictionary:
+	return _instrumentation.duplicate(true)
+
+
+static func _count_instrumentation(key: StringName) -> void:
+	if _instrumentation_enabled:
+		_instrumentation[key] = int(_instrumentation.get(key, 0)) + 1
+
+
+static func sync_runtime_resources(
+		arena: ArenaDefinition,
+		scope := SyncScope.FULL
+	) -> bool:
+	_count_instrumentation(&"sync_runtime_resources")
 	if arena == null or arena.grid_size.x <= 0 or arena.grid_size.y <= 0:
 		return false
+	if scope == SyncScope.GRID_TRANSFORM and _sync_grid_transform_projection(arena):
+		return true
+	ArenaVortexNetworkService.migrate_legacy_pairs(arena)
 	var layout := RoomGridLayout.new()
 	layout.layout_id = arena.arena_id
 	layout.debug_name = arena.display_name
 	layout.logical_size = arena.grid_size
 	layout.layout_rows = _build_layout_rows(arena)
 	layout.cell_type_overrides = _build_type_overrides(arena)
+	layout.terrain_property_overrides = _build_property_overrides(arena)
+	layout.vortex_links = _build_vortex_links(arena)
+	layout.vortex_networks = _build_vortex_networks(arena)
 	layout.visual_only_cells = arena.border_cells()
 	layout.objective_cells.assign(arena.objectives.map(func(value): return value.cell))
 	arena.grid_layout = layout
@@ -76,7 +115,23 @@ static func sync_runtime_resources(arena: ArenaDefinition) -> bool:
 	return true
 
 
+static func _sync_grid_transform_projection(arena: ArenaDefinition) -> bool:
+	# La topologie, les terrains, spawns et rencontres sont inchangÃ©s. Mettre Ã 
+	# jour la projection spatiale existante suffit et Ã©vite de reconstruire le
+	# RoomGridLayout complet au relÃ¢chement du gizmo.
+	var visual := arena.painted_map_visual_data
+	if visual == null:
+		return false
+	visual.grid_origin = arena.grid_origin
+	visual.axis_x = arena.axis_x
+	visual.axis_y = arena.axis_y
+	visual.calibration_cells = arena.calibration_cells.duplicate()
+	visual.calibration_pixels = arena.calibration_pixels.duplicate()
+	return true
+
+
 static func build_grid(arena: ArenaDefinition) -> GridData:
+	_count_instrumentation(&"grid_data_builds")
 	var projection := _runtime_projection_copy(arena)
 	if projection == null or not sync_runtime_resources(projection):
 		return null
@@ -86,6 +141,7 @@ static func build_grid(arena: ArenaDefinition) -> GridData:
 
 
 static func build_pathfinder(arena: ArenaDefinition) -> Pathfinder:
+	_count_instrumentation(&"pathfinder_builds")
 	var grid := build_grid(arena)
 	return Pathfinder.new(grid) if grid != null else null
 
@@ -177,3 +233,60 @@ static func _build_type_overrides(arena: ArenaDefinition) -> Dictionary:
 		elif definition.cell_type != GridData.CellType.NORMAL:
 			overrides[definition.coordinate] = definition.cell_type
 	return overrides
+
+
+static func _build_property_overrides(arena: ArenaDefinition) -> Dictionary:
+	var overrides := {}
+	for definition in arena.cells:
+		if ArenaTopologySignatureService.is_void_definition(definition) \
+				or definition.border or not definition.playable:
+			continue
+		var terrain := ArenaCatalogService.terrain(definition.terrain_id)
+		if terrain == null:
+			continue
+		var properties := {
+			"terrain_id": terrain.stable_id,
+			"walkable": terrain.walkable,
+			"transparent": terrain.transparent,
+			"projectile_passable": terrain.projectile_passable,
+			"movement_cost": terrain.movement_cost,
+			"ai_danger_weight": terrain.ai_danger_weight,
+		}
+		var obstacle := arena.obstacle_at(definition.coordinate)
+		if obstacle != null:
+			if obstacle.blocks_movement:
+				properties["walkable"] = false
+			if obstacle.blocks_line_of_sight:
+				properties["transparent"] = false
+			if obstacle.blocks_projectiles:
+				properties["projectile_passable"] = false
+		overrides[definition.coordinate] = properties
+	return overrides
+
+
+static func _build_vortex_links(arena: ArenaDefinition) -> Dictionary:
+	var links := {}
+	for pair in arena.vortex_pairs:
+		if pair == null or not pair.runtime_enabled:
+			continue
+		links[pair.entry_cell] = pair.exit_cell
+		if pair.bidirectional:
+			links[pair.exit_cell] = pair.entry_cell
+	return links
+
+
+static func _build_vortex_networks(arena: ArenaDefinition) -> Dictionary:
+	var result := {}
+	for network in arena.vortex_networks:
+		if network == null or not network.enabled:
+			continue
+		var cells := network.unique_cells()
+		var data := {
+			"network_id": network.network_id,
+			"cells": cells,
+			"enabled": network.enabled,
+			"allowed_teams": network.allowed_teams,
+		}
+		for cell in cells:
+			result[cell] = data
+	return result

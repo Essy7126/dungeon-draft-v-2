@@ -22,12 +22,7 @@ static func inspect(
 	if files.is_empty():
 		return _report(directory, EMPTY, files, {}, [], [], [])
 	var manifest_path := directory.path_join(ArenaProductionService.MANIFEST_FILE)
-	var primary_resource := "arena_principal.tres" \
-		if files.has("arena_principal.tres") and not files.has("arena.tres") \
-		else "arena.tres"
-	var reference_report := ArenaBundleReferenceService.inspect(
-		directory.path_join(primary_resource), graph
-	)
+	var reference_report := _inspect_bundle_references(directory, files, graph)
 	var references: Array = reference_report.get("canonical_references", [])
 	if files.has("arena_principal.tres") and not files.has("arena.tres"):
 		return _report(directory, LEGACY_BUNDLE, files, {}, [], [], references, [], reference_report)
@@ -84,6 +79,72 @@ static func inspect(
 		directory, state, files, manifest, missing, dirty, references, foreign,
 		reference_report
 	)
+
+
+static func _inspect_bundle_references(
+		directory: String,
+		files: Dictionary,
+		graph: StudioReferenceGraphService
+	) -> Dictionary:
+	var resource_paths := PackedStringArray()
+	for file_name in ["arena.tres", "arena_principal.tres"]:
+		if files.has(file_name):
+			resource_paths.append(directory.path_join(file_name))
+	var canonical: Array[Dictionary] = []
+	var run_references: Array[Dictionary] = []
+	var transactions: Array[Dictionary] = []
+	var active_transactions: Array[Dictionary] = []
+	var canonical_seen := {}
+	var run_seen := {}
+	var transaction_seen := {}
+	var active_transaction_seen := {}
+	for resource_path in resource_paths:
+		var report := ArenaBundleReferenceService.inspect(resource_path, graph)
+		_append_unique_references(
+			canonical, report.get("canonical_references", []), canonical_seen
+		)
+		_append_unique_references(
+			run_references, report.get("run_references", []), run_seen
+		)
+		_append_unique_references(
+			transactions, report.get("transaction_references", []), transaction_seen
+		)
+		_append_unique_references(
+			active_transactions,
+			report.get("active_transaction_references", []),
+			active_transaction_seen
+		)
+	return {
+		"ok": true,
+		"arena_path": resource_paths[0] if not resource_paths.is_empty() else "",
+		"arena_paths": resource_paths,
+		"canonical_references": canonical,
+		"run_references": run_references,
+		"transaction_references": transactions,
+		"active_transaction_references": active_transactions,
+		"referenced": not canonical.is_empty(),
+		"busy": not active_transactions.is_empty(),
+		"canonical_count": canonical.size(),
+		"transaction_count": transactions.size(),
+	}
+
+
+static func _append_unique_references(
+		target: Array[Dictionary],
+		values: Array,
+		seen: Dictionary
+	) -> void:
+	for value in values:
+		var entry := (value as Dictionary).duplicate(true)
+		var key := "%s|%s|%s|%s|%s" % [
+			entry.get("from", ""), entry.get("to", ""),
+			entry.get("relation", ""), entry.get("room_index", -1),
+			entry.get("transaction_id", ""),
+		]
+		if seen.has(key):
+			continue
+		seen[key] = true
+		target.append(entry)
 
 
 static func _files(directory: String) -> Dictionary:

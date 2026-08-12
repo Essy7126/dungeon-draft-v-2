@@ -32,6 +32,12 @@ var terrain_cell_type := -1
 ## Surcharges cellule -> GridData.CellType pour les arenes produites par Arena
 ## Studio. Le contrat historique terrain_cell_type/terrain_cells reste intact.
 @export var cell_type_overrides: Dictionary = {}
+## Surcharges data-driven cellule -> propriétés du terrain permanent.
+@export var terrain_property_overrides: Dictionary = {}
+## Arêtes spatiales bidirectionnelles cellule -> cellule pour les vortex.
+@export var vortex_links: Dictionary = {}
+## Réseaux cellule -> {network_id, cells, enabled, allowed_teams}.
+@export var vortex_networks: Dictionary = {}
 @export var objective_cells: Array[Vector2i] = []
 @export var visual_only_cells: Array[Vector2i] = []
 
@@ -86,6 +92,33 @@ func apply_to_grid(grid: GridData) -> void:
 	for cell_value in cell_type_overrides:
 		if cell_value is Vector2i and grid.is_valid(cell_value):
 			grid.set_type(cell_value, int(cell_type_overrides[cell_value]))
+	for cell_value in terrain_property_overrides:
+		if cell_value is Vector2i and grid.is_valid(cell_value):
+			grid.set_terrain_properties(
+				cell_value, terrain_property_overrides[cell_value] as Dictionary
+			)
+	grid.clear_vortex_links()
+	grid.clear_vortex_networks()
+	for entry_value in vortex_links:
+		if entry_value is Vector2i and vortex_links[entry_value] is Vector2i:
+			grid.set_vortex_link(entry_value, vortex_links[entry_value])
+	var installed := {}
+	for entry_value in vortex_networks:
+		if not entry_value is Vector2i or not vortex_networks[entry_value] is Dictionary:
+			continue
+		var network_data := vortex_networks[entry_value] as Dictionary
+		var network_id := StringName(network_data.get("network_id", ""))
+		if network_id == &"" or installed.has(network_id):
+			continue
+		installed[network_id] = true
+		var cells: Array[Vector2i] = []
+		for cell in network_data.get("cells", []):
+			if cell is Vector2i:
+				cells.append(cell)
+		grid.set_vortex_network(
+			network_id, cells, int(network_data.get("allowed_teams", 3)),
+			bool(network_data.get("enabled", true))
+		)
 
 
 func is_in_bounds(cell: Vector2i) -> bool:
@@ -208,6 +241,17 @@ func validation_errors() -> PackedStringArray:
 			errors.append("Surcharge de terrain hors grille : %s." % cell)
 		if value < GridData.CellType.NORMAL or value > GridData.CellType.RUNE:
 			errors.append("Type de surcharge inconnu en %s." % cell)
+	for cell_value in terrain_property_overrides:
+		if not cell_value is Vector2i or not is_in_bounds(cell_value):
+			errors.append("Surcharge de propriétés de terrain invalide : %s." % cell_value)
+	for entry_value in vortex_links:
+		if not entry_value is Vector2i or not vortex_links[entry_value] is Vector2i:
+			errors.append("Arête de vortex invalide.")
+			continue
+		var destination := vortex_links[entry_value] as Vector2i
+		if not is_in_bounds(entry_value) or not is_in_bounds(destination) \
+				or entry_value == destination:
+			errors.append("Arête de vortex hors contrat : %s -> %s." % [entry_value, destination])
 	return errors
 
 

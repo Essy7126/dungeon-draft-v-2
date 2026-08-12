@@ -31,8 +31,11 @@ static func execute(
 			"prepare": handlers.get("prepare", Callable()) as Callable,
 			"stage": handlers.get("stage", Callable()) as Callable,
 			"rollback": handlers.get("rollback", Callable()) as Callable,
+			"snapshot_handler": handlers.get("snapshot", Callable()) as Callable,
+			"restore_handler": handlers.get("restore", Callable()) as Callable,
 			"backups": _capture_backups(metadata),
 		}
+		plan["domain_snapshot"] = _call_snapshot(plan.snapshot_handler)
 		var prepared := _call_phase(plan.prepare, action, metadata, plan)
 		if not _outcome_ok(prepared):
 			return _failure(&"PREPARE", domain, _outcome_error(prepared), plans)
@@ -141,7 +144,26 @@ static func _rollback(plans: Array[Dictionary], action: StringName) -> void:
 	reversed.reverse()
 	for plan in reversed:
 		_call_phase(plan.rollback, action, plan.metadata, plan)
+		_call_restore(
+			plan.get("restore_handler", Callable()) as Callable,
+			plan.get("domain_snapshot"),
+			StringName(plan.get("domain", &""))
+		)
 		_restore_backups(plan.get("backups", []) as Array)
+
+
+static func _call_snapshot(callable: Callable) -> Variant:
+	return callable.call() if callable.is_valid() else null
+
+
+static func _call_restore(callable: Callable, snapshot: Variant, domain: StringName) -> Variant:
+	if not callable.is_valid():
+		return {"ok": false, "error": "restore_handler_missing"}
+	if callable.get_argument_count() >= 2:
+		return callable.call(snapshot, domain)
+	if callable.get_argument_count() == 1:
+		return callable.call(snapshot)
+	return callable.call()
 
 
 static func _restore_backups(backups: Array) -> void:

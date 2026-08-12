@@ -17,6 +17,11 @@ func test_project_context_is_run_aware_and_blocks_silent_dirty_replacement() -> 
 	var context := StudioProjectContext.new()
 	assert_true(context.initialize(runs[0].resource_path, &"elf").ok)
 	var opening_path := context.active_run.resource_path
+	context.register_transition_handler(
+		&"test_domain", func(): return {"ok": true},
+		func(): return {"ok": true, "path": "user://draft.tres"},
+		func(): return {"ok": true}
+	)
 	context.set_dirty(&"test_domain", true, {"document": "fixture"})
 	var blocked := context.request_run(runs[1], &"test")
 	assert_false(blocked.ok)
@@ -25,11 +30,6 @@ func test_project_context_is_run_aware_and_blocks_silent_dirty_replacement() -> 
 	assert_true(context.has_pending_transition())
 	assert_true(context.resolve_pending_transition(StudioProjectContext.ACTION_CANCEL).ok)
 	assert_eq(context.active_run.resource_path, opening_path)
-	context.register_transition_handler(
-		&"test_domain", func(): return {"ok": true},
-		func(): return {"ok": true, "path": "user://draft.tres"},
-		func(): return {"ok": true}
-	)
 	context.set_dirty(&"test_domain", true)
 	assert_false(context.request_run(runs[1], &"test").ok)
 	var resolved := context.resolve_pending_transition(StudioProjectContext.ACTION_DRAFT)

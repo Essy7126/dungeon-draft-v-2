@@ -1,5 +1,19 @@
 # Décisions d’architecture
 
+## Arena authoring — candidat local 2026-08-12
+
+- **DÉCISION VALIDÉE — Eau électrifiée** : au plus un Choc par unité, par round
+  et par région électrique. Une entrée volontaire termine l'activation courante
+  sans sauter aussi la suivante ; une entrée forcée hors activation saute la
+  prochaine activation une fois.
+- **DÉCISION VALIDÉE — Vortex** : une cellule accorde Impulsion du vide ; deux
+  cellules se téléportent directement ; trois ou plus sélectionnent une autre
+  destination valide au moyen d'un RNG local déterministe.
+- Les anciennes paires sont migrées, jamais perdues avant conversion vérifiée.
+- Aucun chemin déterministe n'est inventé pour un réseau à sortie aléatoire.
+- Le décor est une transaction visuelle protégée par fingerprint gameplay ;
+  aucun recalage lié aux dimensions n'est silencieux.
+
 ## ACHILLES_ODYSSEY_TEST_RUN_V1 — contenu, économie et isolation
 
 - Date : 2026-08-11

@@ -72,14 +72,20 @@ func apply_snapshot(snapshot: Dictionary) -> void:
 	_update_topology_generation(before_hash)
 
 
-func commit(action_name: String, before: Dictionary, after: Dictionary) -> bool:
+func commit(
+		action_name: String,
+		before: Dictionary,
+		after: Dictionary,
+		topology_unchanged := false
+	) -> bool:
 	var recorded := history.record(action_name, before, after, true)
 	if recorded:
-		var before_topology := ArenaTopologySignatureService.from_snapshot(before)
-		var after_topology := ArenaTopologySignatureService.from_snapshot(after)
-		if before_topology.topology_hash != after_topology.topology_hash:
-			topology_generation += 1
-			topology_hash = str(after_topology.topology_hash)
+		if not topology_unchanged:
+			var before_topology := ArenaTopologySignatureService.from_snapshot(before)
+			var after_topology := ArenaTopologySignatureService.from_snapshot(after)
+			if before_topology.topology_hash != after_topology.topology_hash:
+				topology_generation += 1
+				topology_hash = str(after_topology.topology_hash)
 		_invalidate_warning_acceptances(fingerprint(after))
 		is_new_document = is_new_document and source_path.is_empty()
 	return recorded

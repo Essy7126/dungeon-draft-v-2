@@ -1,0 +1,9 @@
+[0811/235802.208:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x166c001ca600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[0811/235802.242:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x166c001ca600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[0811/235802.279:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x166c001ca600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[0811/235802.298:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x166c001ca600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
+[0812/001659.776:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:488] GPU state invalid after WaitForGetOffsetInRange.
+[0812/001837.018:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x163c03392600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[0812/001837.038:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x163c03392600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[0812/001837.084:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x163c03392600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[0812/001837.128:ERROR:gpu\command_buffer\service\gl_utils.cc:430] [.WebGL-0x163c03392600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)

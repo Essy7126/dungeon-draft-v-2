@@ -174,17 +174,15 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 	var previous: Vector2i = path[0]
 	for index in range(1, path.size()):
 		var step: Vector2i = path[index]
-		if _battle.grid.manhattan(previous, step) != 1 \
-				or not _battle.grid.is_walkable(step):
+		if not _battle.pathfinder.is_vortex_edge(previous, step) \
+				and (_battle.grid.manhattan(previous, step) != 1 \
+				or not _battle.grid.is_walkable(step)):
 			return
 		previous = step
-	var destination: Vector2i = path[path.size() - 1]
-	var cost := path.size() - 1
+	var cost: int = _battle.pathfinder.path_movement_cost(path)
 	if cost > enemy.current_mp:
 		return
 	enemy.spend_mp(cost)
-	_battle.grid.move_unit(enemy.grid_pos, destination)
-	enemy.grid_pos = destination
 	await _battle._animate_move(enemy, path)
 	if not _can_continue(generation, enemy):
 		return

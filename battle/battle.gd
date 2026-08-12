@@ -807,15 +807,14 @@ func _on_turn_started(unit: Unit) -> void:
 	_cancel_action_selection_for_active_unit()
 
 	# 1. Effet de terrain en début de tour (lave, feu...).
-	terrain_effects.on_turn_start(unit)
+	var is_stunned = ArenaTerrainStatusTimingService.resolve_activation_start(
+		unit, terrain_effects
+	)
 	_sync_unit_terrain(unit)
-
-	# 2. Statuts : applique leurs effets (poison, regen, slow, stun).
-	var is_stunned = unit.process_statuses()
 
 	# 3. Mort des dégâts (terrain ou poison) en début de tour ?
 	if not unit.is_alive:
-		unit.tick_statuses()
+		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 		_end_active_turn_if_dead(unit)
 		return
 
@@ -823,7 +822,7 @@ func _on_turn_started(unit: Unit) -> void:
 	if is_stunned:
 		DebugLogger.debug(DebugLogger.LogCategory.TURN, "%s est stun, passe son tour" % unit.unit_name)
 		print("%s est stun et passe son tour." % unit.unit_name)
-		unit.tick_statuses()
+		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 		if not await _wait_battle_seconds_safe(0.6, lifecycle_generation):
 			return
 		if not _battle_over and is_instance_valid(turn_queue):
@@ -842,7 +841,7 @@ func _on_turn_started(unit: Unit) -> void:
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(unit):
 			return
-		unit.tick_statuses()
+		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 		if not _battle_over:
 			turn_queue.advance()
 	else:
@@ -942,7 +941,7 @@ func _on_end_turn_pressed() -> void:
 	grid_view.clear_highlights()
 	var unit = turn_queue.get_current_unit()
 	if unit != null:
-		unit.tick_statuses()
+		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 	turn_queue.advance()
 
 func _refresh_mode_button() -> void:
@@ -1040,10 +1039,8 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	var path = pathfinder.find_path(unit.grid_pos, cell, unit)
 	if path.size() < 2:
 		return
-	if not unit.spend_mp(path.size() - 1):
+	if not unit.spend_mp(pathfinder.path_movement_cost(path)):
 		return
-	grid.move_unit(unit.grid_pos, cell)
-	unit.grid_pos = cell
 	turn_state.begin_animating()
 	var lifecycle_generation := _lifecycle_generation
 	await _animate_move(unit, path)
@@ -1065,10 +1062,14 @@ func _animate_move(unit: Unit, path: Array) -> void:
 	var view = _unit_views.get(unit)
 	if not is_instance_valid(view):
 		return
+	terrain_effects.begin_unit_resolution(unit, &"movement")
 	for i in range(1, path.size()):
 		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.
 		if not unit.is_alive or not is_instance_valid(view):
+			terrain_effects.end_unit_resolution(unit)
 			return
+		if pathfinder.is_vortex_edge(path[i - 1], path[i]):
+			continue
 		var from_pos = grid_cell_to_parent_local(path[i - 1], view.get_parent())
 		var target_pos = grid_cell_to_parent_local(path[i], view.get_parent())
 		if view.has_method("face_grid_direction"):
@@ -1086,12 +1087,24 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		# La vue a pu être libérée pendant l'await.
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(view):
+			terrain_effects.end_unit_resolution(unit)
 			return
-		terrain_effects.on_enter_cell(unit, path[i])
+		if not grid.relocate_unit(unit, path[i]):
+			terrain_effects.end_unit_resolution(unit)
+			return
+		var entry_result := terrain_effects.consume_last_entry_result(unit)
+		if bool(entry_result.get("teleported", false)):
+			var destination := entry_result.get("destination", path[i]) as Vector2i
+			view.position = grid_cell_to_parent_local(destination, view.get_parent())
 		_sync_unit_terrain(unit)
 		# on_enter_cell a pu tuer l'unité (lave) : on stoppe le déplacement.
 		if not unit.is_alive:
+			terrain_effects.end_unit_resolution(unit)
 			return
+		if bool(entry_result.get("end_movement", false)):
+			terrain_effects.end_unit_resolution(unit)
+			return
+	terrain_effects.end_unit_resolution(unit)
 
 # ============================================================
 # INTENTIONS — ATTAQUE
@@ -1492,6 +1505,8 @@ func _on_round_started(number: int) -> void:
 	DebugLogger.set_turn(number)
 	DebugLogger.info(DebugLogger.LogCategory.TURN, "Round %d" % number)
 	print("\n========== ROUND %d ==========" % number)
+	if terrain_effects != null and terrain_effects.runtime_service != null:
+		terrain_effects.runtime_service.configure_resolution_context(0, number)
 	if terrain_effects != null and number > 1:
 		terrain_effects.tick_all_effects()
 		grid_view.queue_redraw()

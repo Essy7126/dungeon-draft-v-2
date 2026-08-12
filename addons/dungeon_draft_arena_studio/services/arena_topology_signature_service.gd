@@ -87,6 +87,12 @@ static func build(arena: ArenaDefinition) -> Dictionary:
 		if pair != null:
 			_add(buckets.vortex_entry_cells, pair.entry_cell)
 			_add(buckets.vortex_exit_cells, pair.exit_cell)
+	for network in arena.vortex_networks:
+		if network == null:
+			continue
+		for cell in network.unique_cells():
+			_add(buckets.vortex_entry_cells, cell)
+			_add(buckets.vortex_exit_cells, cell)
 
 	return _finalize(arena.grid_size, buckets, [])
 

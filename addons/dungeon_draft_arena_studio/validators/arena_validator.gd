@@ -459,6 +459,7 @@ static func _validate_vortex_pairs(
 		report: ArenaValidationReport
 	) -> void:
 	if arena.vortex_pairs.is_empty():
+		_validate_vortex_networks(arena, report)
 		return
 	var catalog := ArenaCatalogService.interactive(&"vortex")
 	if catalog == null:
@@ -509,26 +510,56 @@ static func _validate_vortex_pairs(
 				"Le contrat de traversée du vortex ne correspond pas au catalogue.",
 				pair.entry_cell
 			)
-		if pair.runtime_enabled:
+		if not pair.runtime_enabled:
 			report.add_message(
-				ArenaValidationMessage.Severity.ERROR, &"vortex_runtime_flag_forbidden",
-				"runtime_enabled ne peut pas être activé avant certification du runtime.",
+				ArenaValidationMessage.Severity.ERROR, &"vortex_runtime_disabled",
+				"Une paire de vortex de production doit activer son runtime.",
 				pair.entry_cell
 			)
-	report.add_message(
-		ArenaValidationMessage.Severity.ERROR, &"vortex_runtime_uncertified",
-		"Paire(s) de vortex authorée(s), mais téléportation non certifiée par GridData, Pathfinder et l'IA. Production et test direct bloqués.",
-		arena.vortex_pairs[0].entry_cell if arena.vortex_pairs[0] != null \
-			else GridTransformService.INVALID_CELL,
-		&"",
-		JSON.stringify({
-			"pair_count": arena.vortex_pairs.size(),
-			"runtime_supported": catalog.runtime_supported,
-			"pathfinding_certified": catalog.pathfinding_certified,
-			"ai_certified": catalog.ai_certified,
-			"production_placeable": catalog.production_placeable,
-		}, "  ")
-	)
+	if not catalog.is_production_certified():
+		report.add_message(
+			ArenaValidationMessage.Severity.ERROR, &"vortex_catalog_uncertified",
+			"Le catalogue Vortex doit certifier runtime, Pathfinder, IA et production."
+		)
+	_validate_vortex_networks(arena, report)
+
+
+static func _validate_vortex_networks(
+		arena: ArenaDefinition,
+		report: ArenaValidationReport
+	) -> void:
+	var ids := {}
+	var occupied := {}
+	for network in arena.vortex_networks:
+		if network == null:
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"vortex_network_missing",
+				"Un réseau de vortex est vide."
+			)
+			continue
+		if network.network_id == &"" or ids.has(network.network_id):
+			report.add_message(
+				ArenaValidationMessage.Severity.ERROR, &"vortex_network_id_invalid",
+				"Chaque réseau doit posséder un network_id unique."
+			)
+		ids[network.network_id] = true
+		if network.cells.is_empty():
+			report.add_message(
+				ArenaValidationMessage.Severity.WARNING, &"vortex_network_empty",
+				"Le réseau '%s' ne contient aucune dalle." % network.display_name
+			)
+		for cell in network.unique_cells():
+			if occupied.has(cell):
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"vortex_network_cell_reused",
+					"Une cellule ne peut appartenir qu'à un réseau.", cell
+				)
+			occupied[cell] = network.network_id
+			if not ArenaDynamicEditingService.is_valid_vortex_cell(arena, cell):
+				report.add_message(
+					ArenaValidationMessage.Severity.ERROR, &"vortex_network_cell_invalid",
+					"Le réseau contient une destination invalide.", cell
+				)
 
 
 static func _validate_visual_resources(

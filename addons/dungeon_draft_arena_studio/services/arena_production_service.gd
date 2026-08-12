@@ -336,7 +336,35 @@ static func _write_runtime_assets(
 	}
 	for file_name in mappings:
 		var supplied = provided.get(file_name)
+		var property_name := str(mappings[file_name])
+		var working_path := str(clone.get(property_name))
+		if (not supplied is Image or supplied.is_empty()) \
+				and working_path.begins_with("user://"):
+			if not FileAccess.file_exists(working_path):
+				return {
+					"ok": false,
+					"error": "transient_visual_missing",
+					"property": property_name,
+				}
+			var staged_image := Image.load_from_file(
+				ProjectSettings.globalize_path(working_path)
+			)
+			if staged_image == null or staged_image.is_empty():
+				return {
+					"ok": false,
+					"error": "transient_visual_invalid",
+					"property": property_name,
+				}
+			supplied = staged_image
 		if not supplied is Image or supplied.is_empty():
+			if not working_path.is_empty() \
+					and not working_path.begins_with("res://") \
+					and not working_path.begins_with("uid://"):
+				return {
+					"ok": false,
+					"error": "absolute_visual_path_forbidden",
+					"property": property_name,
+				}
 			continue
 		var assets := staging.path_join("assets")
 		if DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(assets)) != OK:
@@ -345,8 +373,18 @@ static func _write_runtime_assets(
 		var save_error := (supplied as Image).save_png(ProjectSettings.globalize_path(staged_path))
 		if save_error != OK:
 			return {"ok": false, "error": error_string(save_error), "file": staged_path}
-		clone.set(mappings[file_name], published_destination.path_join("assets").path_join(file_name))
+		clone.set(property_name, published_destination.path_join("assets").path_join(file_name))
 		files.append("assets/%s" % file_name)
+	for property_name in mappings.values():
+		var final_path := str(clone.get(property_name))
+		var diagnostic_asset_root := published_destination.path_join("assets") + "/"
+		if final_path.begins_with("user://") \
+				and not final_path.begins_with(diagnostic_asset_root):
+			return {
+				"ok": false,
+				"error": "transient_visual_path_not_materialized",
+				"property": property_name,
+			}
 	return {"ok": true, "files": files}
 
 

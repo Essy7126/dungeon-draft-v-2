@@ -1,47 +1,118 @@
 {
   "arena_id": "arena_studio_test",
+  "blocking_errors": 0,
+  "context": "arena_validation",
   "errors": 0,
-  "generated_at": "2026-08-06T17:30:51",
-  "information": 3,
+  "generated_at": "2026-08-12T14:15:29",
+  "generated_by": "dungeon_draft_studio_2_0_0",
+  "godot_version": "4.7.1-stable (official)",
+  "information": 6,
   "messages": [
     {
+      "acknowledged": false,
+      "auto_fix_available": false,
+      "blocks_integration": false,
+      "can_fix": false,
+      "can_localize": false,
+      "category": "INFORMATION",
       "cell": null,
       "code": "visual_mode",
       "message": "Mode visuel : PAINTED.",
       "severity": "info",
       "subject_id": "",
       "suggested_fix": "",
-      "technical_details": ""
+      "technical_details": "",
+      "title": "Visual Mode",
+      "why": "Mode visuel : PAINTED."
     },
     {
+      "acknowledged": false,
+      "auto_fix_available": false,
+      "blocks_integration": false,
+      "can_fix": false,
+      "can_localize": false,
+      "category": "INFORMATION",
       "cell": null,
       "code": "battle_scene",
       "message": "Scene de bataille : res://data/rooms/maps/painted_battle.tscn.",
       "severity": "info",
       "subject_id": "",
       "suggested_fix": "",
-      "technical_details": ""
+      "technical_details": "",
+      "title": "Battle Scene",
+      "why": "Scene de bataille : res://data/rooms/maps/painted_battle.tscn."
     },
     {
+      "acknowledged": false,
+      "auto_fix_available": false,
+      "blocks_integration": false,
+      "can_fix": false,
+      "can_localize": false,
+      "category": "INFORMATION",
+      "cell": null,
+      "code": "theme_alias_resolved",
+      "message": "L'alias de theme 'painted_default' est resolu explicitement vers 'forest'.",
+      "severity": "info",
+      "subject_id": "",
+      "suggested_fix": "",
+      "technical_details": "",
+      "title": "Theme Alias Resolved",
+      "why": "L'alias de theme 'painted_default' est resolu explicitement vers 'forest'."
+    },
+    {
+      "acknowledged": false,
+      "auto_fix_available": false,
+      "blocks_integration": false,
+      "can_fix": false,
+      "can_localize": false,
+      "category": "INFORMATION",
       "cell": null,
       "code": "foreground_missing",
       "message": "Aucun foreground n'est configure.",
-      "severity": "warning",
+      "severity": "info",
       "subject_id": "",
       "suggested_fix": "",
-      "technical_details": ""
+      "technical_details": "",
+      "title": "Foreground Missing",
+      "why": "Aucun foreground n'est configure."
     },
     {
+      "acknowledged": false,
+      "auto_fix_available": false,
+      "blocks_integration": false,
+      "can_fix": false,
+      "can_localize": false,
+      "category": "INFORMATION",
+      "cell": null,
+      "code": "topology_summary",
+      "message": "Topologie : 80 cellules definies, 0 dalles attendues, 0 rendues, 0 case(s) retiree(s) rendue(s), 0 inattendue(s), 0 manquante(s).",
+      "severity": "info",
+      "subject_id": "",
+      "suggested_fix": "",
+      "technical_details": "{\n  \"canonical_topology_hash\": \"\",\n  \"duplicate_cells\": [],\n  \"errors\": [],\n  \"expected_floor_hash\": \"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\n  \"missing_cells\": [],\n  \"removed_cells_rendered\": [],\n  \"rendered_floor_hash\": \"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\n  \"runtime_topology_hash\": \"\",\n  \"temporary_topology_hash\": \"\",\n  \"unexpected_cells\": [],\n  \"valid\": true\n}",
+      "title": "Topology Summary",
+      "why": "Topologie : 80 cellules definies, 0 dalles attendues, 0 rendues, 0 case(s) retiree(s) rendue(s), 0 inattendue(s), 0 manquante(s)."
+    },
+    {
+      "acknowledged": false,
+      "auto_fix_available": false,
+      "blocks_integration": false,
+      "can_fix": false,
+      "can_localize": false,
+      "category": "INFORMATION",
       "cell": null,
       "code": "map_summary",
       "message": "48 cases jouables, 32 cases de bordure, 0 obstacle(s), 9 spawn(s).",
       "severity": "info",
       "subject_id": "",
       "suggested_fix": "",
-      "technical_details": ""
+      "technical_details": "",
+      "title": "Map Summary",
+      "why": "48 cases jouables, 32 cases de bordure, 0 obstacle(s), 9 spawn(s)."
     }
   ],
   "metrics": {
+    "average_camp_distance": 10.0,
     "battle_scene": "res://data/rooms/maps/painted_battle.tscn",
     "border_cells": 32,
     "components": 1,
@@ -50,17 +121,1219 @@
       10,
       8
     ],
-    "minimum_camp_distance": 12,
+    "maximum_camp_distance": 12,
+    "median_camp_distance": 10.0,
+    "minimum_camp_distance": 9,
     "objectives": 0,
     "obstacles": 0,
+    "p90_camp_distance": 11,
     "playable_cells": 48,
     "props": 0,
-    "spawns": 9,
+    "runtime_field_coverage": {
+      "counts": {
+        "EDITOR_ONLY": 24,
+        "FUTURE_EXPLICIT": 17,
+        "MANIFEST_ONLY": 10,
+        "RUNTIME_CONSUMED": 83,
+        "UNKNOWN": 0,
+        "UNSUPPORTED": 0
+      },
+      "entries": [
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaCellDefinition.border",
+          "property": "border",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaCellDefinition.cell_type",
+          "property": "cell_type",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaCellDefinition.coordinate",
+          "property": "coordinate",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaCellDefinition.defined",
+          "property": "defined",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaCellDefinition.playable",
+          "property": "playable",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaCellDefinition.production_note",
+          "property": "production_note",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaCellDefinition.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaCellDefinition.resource_name",
+          "property": "resource_name",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaCellDefinition.terrain_id",
+          "property": "terrain_id",
+          "type": "ArenaCellDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.cell",
+          "property": "cell",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.decoration_id",
+          "property": "decoration_id",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaDecorationDefinition.gameplay_preset",
+          "property": "gameplay_preset",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.layer",
+          "property": "layer",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.local_offset",
+          "property": "local_offset",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.resource_name",
+          "property": "resource_name",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.rotation_degrees",
+          "property": "rotation_degrees",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.scene_path",
+          "property": "scene_path",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.visual_scale",
+          "property": "visual_scale",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.visual_variant",
+          "property": "visual_variant",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDecorationDefinition.y_sort",
+          "property": "y_sort",
+          "type": "ArenaDecorationDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.arena_generation_profile",
+          "property": "arena_generation_profile",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.arena_id",
+          "property": "arena_id",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.arena_visual_profile",
+          "property": "arena_visual_profile",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.axis_x",
+          "property": "axis_x",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.axis_y",
+          "property": "axis_y",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.background_image",
+          "property": "background_image",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.background_path",
+          "property": "background_path",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.battle_scene",
+          "property": "battle_scene",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.border_thickness",
+          "property": "border_thickness",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.calibration_cells",
+          "property": "calibration_cells",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.calibration_pixels",
+          "property": "calibration_pixels",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.camera_offset",
+          "property": "camera_offset",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.camera_zoom",
+          "property": "camera_zoom",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.camp_orientation",
+          "property": "camp_orientation",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaDefinition.cells",
+          "property": "cells",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.decorations",
+          "property": "decorations",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.display_name",
+          "property": "display_name",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaDefinition.encounter_definition",
+          "property": "encounter_definition",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.enemies",
+          "property": "enemies",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.enemy_spawn_zone",
+          "property": "enemy_spawn_zone",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.foreground_full_hide_rect",
+          "property": "foreground_full_hide_rect",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.foreground_occluder_polygon",
+          "property": "foreground_occluder_polygon",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.foreground_occluder_sort_y",
+          "property": "foreground_occluder_sort_y",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.foreground_offset",
+          "property": "foreground_offset",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.foreground_path",
+          "property": "foreground_path",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.foreground_scale",
+          "property": "foreground_scale",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.grid_layout",
+          "property": "grid_layout",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.grid_origin",
+          "property": "grid_origin",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.grid_size",
+          "property": "grid_size",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.hero_spawn_zone",
+          "property": "hero_spawn_zone",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.image_offset",
+          "property": "image_offset",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.image_scale",
+          "property": "image_scale",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.intentionally_isolated_cells",
+          "property": "intentionally_isolated_cells",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.maximum_wave_count",
+          "property": "maximum_wave_count",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.minimum_wave_count",
+          "property": "minimum_wave_count",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.modular_visual_profile",
+          "property": "modular_visual_profile",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaDefinition.objectives",
+          "property": "objectives",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaDefinition.obstacles",
+          "property": "obstacles",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.occlusion_mask_path",
+          "property": "occlusion_mask_path",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.painted_map_visual_data",
+          "property": "painted_map_visual_data",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.particles_scene",
+          "property": "particles_scene",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.presentation_profile_path",
+          "property": "presentation_profile_path",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.production_notes",
+          "property": "production_notes",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.resource_name",
+          "property": "resource_name",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.room_name",
+          "property": "room_name",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.schema_version",
+          "property": "schema_version",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.source_image_size",
+          "property": "source_image_size",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.source_room_path",
+          "property": "source_room_path",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaDefinition.source_visual_path",
+          "property": "source_visual_path",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaDefinition.spawns",
+          "property": "spawns",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.theme_id",
+          "property": "theme_id",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.ultimate_reward_base_chance",
+          "property": "ultimate_reward_base_chance",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.ultimate_reward_max_gain_per_wave",
+          "property": "ultimate_reward_max_gain_per_wave",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.ultimate_reward_min_gain_per_wave",
+          "property": "ultimate_reward_min_gain_per_wave",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.visual_mode",
+          "property": "visual_mode",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaDefinition.vortex_networks",
+          "property": "vortex_networks",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaDefinition.vortex_pairs",
+          "property": "vortex_pairs",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaDefinition.waves",
+          "property": "waves",
+          "type": "ArenaDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.ambient_color",
+          "property": "ambient_color",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.ambient_energy",
+          "property": "ambient_energy",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.background_texture",
+          "property": "background_texture",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.base_terrain_id",
+          "property": "base_terrain_id",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.camera_offset",
+          "property": "camera_offset",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.camera_zoom",
+          "property": "camera_zoom",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.environment_scene",
+          "property": "environment_scene",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.foreground_texture",
+          "property": "foreground_texture",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.hybrid_floor_policy",
+          "property": "hybrid_floor_policy",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.prop_scenes",
+          "property": "prop_scenes",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.resource_name",
+          "property": "resource_name",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.terrain_ids",
+          "property": "terrain_ids",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.theme_id",
+          "property": "theme_id",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.tile_visual_profile",
+          "property": "tile_visual_profile",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaModularVisualProfile.wall_ids",
+          "property": "wall_ids",
+          "type": "ArenaModularVisualProfile"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaObjectiveDefinition.cell",
+          "property": "cell",
+          "type": "ArenaObjectiveDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaObjectiveDefinition.description",
+          "property": "description",
+          "type": "ArenaObjectiveDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaObjectiveDefinition.objective_id",
+          "property": "objective_id",
+          "type": "ArenaObjectiveDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaObjectiveDefinition.objective_type",
+          "property": "objective_type",
+          "type": "ArenaObjectiveDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaObjectiveDefinition.required",
+          "property": "required",
+          "type": "ArenaObjectiveDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaObjectiveDefinition.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaObjectiveDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaObjectiveDefinition.resource_name",
+          "property": "resource_name",
+          "type": "ArenaObjectiveDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaObstacleDefinition.blocks_line_of_sight",
+          "property": "blocks_line_of_sight",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaObstacleDefinition.blocks_movement",
+          "property": "blocks_movement",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaObstacleDefinition.blocks_projectiles",
+          "property": "blocks_projectiles",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaObstacleDefinition.blocks_push",
+          "property": "blocks_push",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.cell",
+          "property": "cell",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.obstacle_id",
+          "property": "obstacle_id",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.orientation",
+          "property": "orientation",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": true,
+          "key": "ArenaObstacleDefinition.preset",
+          "property": "preset",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.resource_name",
+          "property": "resource_name",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.visual_variant",
+          "property": "visual_variant",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.wall_config",
+          "property": "wall_config",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaObstacleDefinition.wall_id",
+          "property": "wall_id",
+          "type": "ArenaObstacleDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": false,
+          "key": "ArenaSpawnDefinition.cell",
+          "property": "cell",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": false,
+          "key": "ArenaSpawnDefinition.facing",
+          "property": "facing",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaSpawnDefinition.group_id",
+          "property": "group_id",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaSpawnDefinition.kind",
+          "property": "kind",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaSpawnDefinition.required",
+          "property": "required",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaSpawnDefinition.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaSpawnDefinition.resource_name",
+          "property": "resource_name",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaSpawnDefinition.spawn_id",
+          "property": "spawn_id",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "FUTURE_EXPLICIT",
+          "gameplay": true,
+          "key": "ArenaSpawnDefinition.unit_id",
+          "property": "unit_id",
+          "type": "ArenaSpawnDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaVortexPairDefinition.bidirectional",
+          "property": "bidirectional",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaVortexPairDefinition.entry_cell",
+          "property": "entry_cell",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaVortexPairDefinition.exit_cell",
+          "property": "exit_cell",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaVortexPairDefinition.pair_id",
+          "property": "pair_id",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaVortexPairDefinition.resource_local_to_scene",
+          "property": "resource_local_to_scene",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "EDITOR_ONLY",
+          "gameplay": false,
+          "key": "ArenaVortexPairDefinition.resource_name",
+          "property": "resource_name",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaVortexPairDefinition.runtime_enabled",
+          "property": "runtime_enabled",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "MANIFEST_ONLY",
+          "gameplay": false,
+          "key": "ArenaVortexPairDefinition.schema_version",
+          "property": "schema_version",
+          "type": "ArenaVortexPairDefinition"
+        },
+        {
+          "classification": "RUNTIME_CONSUMED",
+          "gameplay": true,
+          "key": "ArenaVortexPairDefinition.traversal_contract",
+          "property": "traversal_contract",
+          "type": "ArenaVortexPairDefinition"
+        }
+      ],
+      "production_gate_valid": true,
+      "unknown": [],
+      "unsupported_gameplay": []
+    },
+    "spawns": {
+      "enemy_groups": 6,
+      "enemy_spawns": 0,
+      "hero_pool": 3,
+      "required_hero_spawns": 3,
+      "summon_zones": 0
+    },
+    "tactical": {
+      "cache_hit": false,
+      "camps": {
+        "average_distance": 10.0,
+        "connected_pair_count": 18,
+        "connected_ratio": 1.0,
+        "enemy_spawn_pool": [
+          "(8, 1)",
+          "(8, 2)",
+          "(7, 1)",
+          "(7, 2)",
+          "(8, 3)",
+          "(6, 1)"
+        ],
+        "first_significant_action_by_hero": {
+          "1,5": 9,
+          "1,6": 10,
+          "2,6": 9
+        },
+        "hero_spawn_pool": [
+          "(1, 6)",
+          "(2, 6)",
+          "(1, 5)"
+        ],
+        "los_pair_count": 18,
+        "los_ratio": 1.0,
+        "maximum_distance": 12,
+        "maximum_positions": {
+          "enemy": "(8, 1)",
+          "hero": "(1, 6)"
+        },
+        "median_distance": 10.0,
+        "minimum_distance": 9,
+        "minimum_positions": {
+          "enemy": "(7, 2)",
+          "hero": "(2, 6)"
+        },
+        "p90_distance": 11,
+        "pair_count": 18,
+        "pairs": [
+          {
+            "distance": 12,
+            "enemy": "(8, 1)",
+            "hero": "(1, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 11,
+            "enemy": "(8, 2)",
+            "hero": "(1, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 11,
+            "enemy": "(7, 1)",
+            "hero": "(1, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 10,
+            "enemy": "(7, 2)",
+            "hero": "(1, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 10,
+            "enemy": "(8, 3)",
+            "hero": "(1, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 10,
+            "enemy": "(6, 1)",
+            "hero": "(1, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 11,
+            "enemy": "(8, 1)",
+            "hero": "(2, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 10,
+            "enemy": "(8, 2)",
+            "hero": "(2, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 10,
+            "enemy": "(7, 1)",
+            "hero": "(2, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 9,
+            "enemy": "(7, 2)",
+            "hero": "(2, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 9,
+            "enemy": "(8, 3)",
+            "hero": "(2, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 9,
+            "enemy": "(6, 1)",
+            "hero": "(2, 6)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 11,
+            "enemy": "(8, 1)",
+            "hero": "(1, 5)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 10,
+            "enemy": "(8, 2)",
+            "hero": "(1, 5)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 10,
+            "enemy": "(7, 1)",
+            "hero": "(1, 5)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 9,
+            "enemy": "(7, 2)",
+            "hero": "(1, 5)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 9,
+            "enemy": "(8, 3)",
+            "hero": "(1, 5)",
+            "line_of_sight": true
+          },
+          {
+            "distance": 9,
+            "enemy": "(6, 1)",
+            "hero": "(1, 5)",
+            "line_of_sight": true
+          }
+        ],
+        "unreachable_pair_count": 0
+      },
+      "collisions_and_chokepoints": {
+        "chokepoints_with_alternative": [],
+        "chokepoints_without_alternative": [],
+        "dominant_cells": [],
+        "exploitable_obstacles": [],
+        "push_collision_positions": [
+          "(1, 1)",
+          "(8, 1)",
+          "(1, 6)",
+          "(8, 6)"
+        ],
+        "route_count_between_camps": 2
+      },
+      "contact": {
+        "first_significant_action_by_hero": {
+          "1,5": 9,
+          "1,6": 10,
+          "2,6": 9
+        },
+        "turns_at_3_pm": 3,
+        "turns_at_5_pm": 2,
+        "turns_with_charge": null
+      },
+      "encounter": {
+        "available": true,
+        "placeable_enemy_count": 4,
+        "pre_hero_activation_budget": "ENCOUNTER_SIMULATION_REQUIRED",
+        "roster_collisions": [],
+        "saturation_zones": [],
+        "spawn_capacity": 6
+      },
+      "ok": true,
+      "ranges": {
+        "average_coverage": 0.0,
+        "coverage_by_spawn": {},
+        "coverage_by_spell": {},
+        "coverage_with_los": 1.0,
+        "coverage_without_los": 1.0,
+        "near_global_ranges": [],
+        "status": "RUN_DATA_REQUIRED",
+        "unreachable_cells": []
+      },
+      "spawns": {
+        "enemy_groups": 6,
+        "enemy_spawns": 0,
+        "hero_pool": 3,
+        "required_hero_spawns": 3,
+        "summon_zones": 0
+      },
+      "topology": {
+        "accessible_cells": 48,
+        "articulation_point_count": 0,
+        "articulation_points": [],
+        "bridge_count": 0,
+        "bridges": [],
+        "component_sizes": [
+          48
+        ],
+        "components": 1,
+        "dead_end_count": 0,
+        "dead_ends": [],
+        "diameter": 12,
+        "distance_distribution": {
+          "1": 82,
+          "10": 20,
+          "11": 8,
+          "12": 2,
+          "2": 138,
+          "3": 170,
+          "4": 180,
+          "5": 170,
+          "6": 142,
+          "7": 106,
+          "8": 70,
+          "9": 40
+        },
+        "enclosable_zones": 0,
+        "intentional_isolated_cells": [],
+        "invalid_intentional_isolated_cells": [],
+        "largest_component_size": 48,
+        "obstacle_density": 0.0,
+        "radius": 7,
+        "unreachable_cells": [],
+        "width_one_corridor_count": 0,
+        "width_one_corridors": []
+      }
+    },
     "terrains": [
       "normal"
     ],
     "visual_assembly": {
       "base_floor_intentionally_painted": true,
+      "decoration_nodes": {},
+      "duplicate_terrain_node_count": 0,
       "errors": [],
       "expected_by_terrain_id": {},
       "expected_decoration_count": 0,
@@ -478,14 +1751,19 @@
           "terrain_id": "normal"
         }
       ],
+      "terrain_nodes": {},
       "valid": true,
       "visual_mode": 0,
+      "wall_nodes": {},
       "warnings": []
     },
     "visual_mode": 0,
     "visual_profile": "painted_default",
     "walls": []
   },
-  "verdict": "ARENA_VALID_WITH_WARNINGS",
-  "warnings": 1
+  "status": "WORKTREE_CANDIDATE",
+  "studio_product_version": "2.0.0",
+  "technical_verdict": "ARENA_VALID",
+  "verdict": "ARENE VALIDE",
+  "warnings": 0
 }

@@ -1,7 +1,8 @@
 extends GutTest
 
 const PERMANENT_IDS: Array[StringName] = [
-	&"stone", &"neutral", &"water", &"ice", &"lava",
+	&"stone", &"neutral", &"water", &"ice", &"lava", &"poison",
+	&"steam", &"electrified_water",
 ]
 const ROUNDTRIP_PATH := (
 	"user://dungeon_draft_studio/tests/permanent_tile_alignment_roundtrip.tres"
@@ -57,8 +58,8 @@ func test_03_neutral_and_stone_textures_are_reloadable() -> void:
 func test_04_catalog_distinguishes_active_and_informational_entries() -> void:
 	var entries := ArenaPermanentTerrainPaintService \
 		.get_paintable_permanent_terrains(_arena_fixture(), true)
-	assert_eq(entries.size(), 6)
-	assert_eq(entries.filter(func(value): return value.enabled).size(), 4)
+	assert_eq(entries.size(), 9)
+	assert_eq(entries.filter(func(value): return value.enabled).size(), 8)
 	var void_entry: Dictionary = entries.filter(func(value):
 		return StringName(value.stable_id) == &"void"
 	)[0]
@@ -148,17 +149,17 @@ func test_13_brush_paints_ice_when_active() -> void:
 	_assert_brush_mutation(&"ice", Vector2i(1, 1))
 
 
-func test_14_non_walkable_lava_is_disabled_until_runtime_parity_exists() -> void:
+func test_14_lava_is_dangerous_walkable_and_paintable() -> void:
 	var arena := _arena_fixture()
 	var paintability := ArenaPermanentTerrainPaintService.paintability(
 		arena, &"lava"
 	)
-	assert_false(paintability.enabled)
-	assert_eq(paintability.reason_code, &"runtime_grid_uncertified")
-	assert_false(ArenaDynamicEditingService.paint_permanent_terrain(
+	assert_true(paintability.enabled)
+	assert_true(paintability.walkable)
+	assert_true(ArenaDynamicEditingService.paint_permanent_terrain(
 		arena, Vector2i(1, 1), &"lava"
 	))
-	assert_eq(arena.get_cell_definition(Vector2i(1, 1)).terrain_id, &"stone")
+	assert_eq(arena.get_cell_definition(Vector2i(1, 1)).terrain_id, &"lava")
 
 
 func test_15_every_active_dropdown_entry_is_effectively_paintable() -> void:
@@ -186,8 +187,10 @@ func test_16_non_paintable_entries_are_disabled_in_both_dropdowns() -> void:
 	studio.arena = _arena_fixture()
 	studio.call("_refresh_permanent_terrain_options")
 	for option in [studio.terrain_option, studio.dynamic_terrain_option]:
-		assert_eq(option.item_count, 6)
+		assert_eq(option.item_count, 12)
 		for index in range(option.item_count):
+			if option.is_item_separator(index):
+				continue
 			var terrain_id := StringName(option.get_item_metadata(index))
 			var paintable := ArenaPermanentTerrainPaintService.can_paint(
 				studio.arena, terrain_id
@@ -441,6 +444,8 @@ func _rendered_terrain_map(report: Dictionary) -> Dictionary:
 
 func _option_has_active_id(option: OptionButton, terrain_id: StringName) -> bool:
 	for index in range(option.item_count):
+		if option.is_item_separator(index):
+			continue
 		if StringName(option.get_item_metadata(index)) == terrain_id:
 			return not option.is_item_disabled(index)
 	return false

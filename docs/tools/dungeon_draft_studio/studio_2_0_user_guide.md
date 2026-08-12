@@ -8,16 +8,18 @@ Version produit candidate : **2.0.0**. Les chemins techniques sont repliés ; la
 
 1. choisir la run dans la barre partagée ;
 2. créer une arène `MODULAR` ou `HYBRID` ;
-3. dessiner les cellules puis peindre pierre, eau, glace, lave et void ;
+3. dessiner les cellules puis choisir dans **Sols sans effet** (Pierre,
+   Neutre) ou **Terrains à effet** (Eau, Glace, Lave, Poison, Vapeur, Eau
+   électrifiée) ; utiliser Retirer/clic droit pour VOID ;
 4. placer murs, spawns et objectif ;
-5. valider et tester la vue Jeu ;
-6. simuler Eau, Glace ou Lave/Feu sur une cellule ;
-7. ouvrir Produire, puis Exporter le kit artistique ;
-8. créer `background.png` à la résolution exacte ;
-9. Importer le décor, revoir avant/après et confirmer ;
-10. produire sans rattacher, ou choisir run/action/index ;
-11. vérifier le compte avant/après et l’index dans le résultat ;
-12. recharger la run.
+5. pour un vortex, choisir **Interactifs > Vortex apparié**, cliquer A puis B ;
+6. valider et tester la vue Jeu ;
+7. simuler une surface temporaire sans modifier le terrain permanent ;
+8. ouvrir Produire, puis Exporter le kit artistique ;
+9. créer `background.png` à la résolution exacte ;
+10. Importer le décor, revoir avant/après et confirmer ;
+11. produire sans rattacher, ou choisir run/action/index ;
+12. vérifier le compte avant/après et l’index dans le résultat, puis recharger.
 
 Retirer une salle retire seulement sa référence. Pour isoler une salle partagée, utiliser Rendre spécifique avant de la modifier.
 

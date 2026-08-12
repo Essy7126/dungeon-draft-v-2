@@ -19,6 +19,9 @@ static func save_canonical(arena: ArenaDefinition, path := "") -> Error:
 		path = suggested_path(arena)
 	if not path.begins_with("res://") or not path.ends_with(".tres"):
 		return ERR_INVALID_PARAMETER
+	var backdrop_error := _materialize_staged_visual_assets(arena)
+	if backdrop_error != OK:
+		return backdrop_error
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	var absolute := ProjectSettings.globalize_path(path)
 	var directory_error := DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
@@ -28,10 +31,54 @@ static func save_canonical(arena: ArenaDefinition, path := "") -> Error:
 	return save_error
 
 
+static func _materialize_staged_visual_assets(arena: ArenaDefinition) -> Error:
+	const STAGING_ROOT := "user://dungeon_draft_studio/backdrop_staging/"
+	var properties := ["background_path", "foreground_path", "occlusion_mask_path"]
+	for property_name in properties:
+		var source_path := str(arena.get(property_name))
+		if source_path.is_empty() or not source_path.begins_with("user://"):
+			continue
+		if not source_path.begins_with(STAGING_ROOT):
+			return ERR_INVALID_PARAMETER
+		if not FileAccess.file_exists(source_path):
+			return ERR_FILE_NOT_FOUND
+	var target_dir := "res://data/arenas/assets/%s" % ArenaDefinition.sanitize_id(
+		str(arena.arena_id)
+	)
+	var absolute_dir := ProjectSettings.globalize_path(target_dir)
+	var directory_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
+	if directory_error != OK:
+		return directory_error
+	for property_name in properties:
+		var source_path := str(arena.get(property_name))
+		if not source_path.begins_with(STAGING_ROOT):
+			continue
+		var file_name := source_path.get_file() if property_name == "background_path" \
+			else "%s_%s" % [property_name.trim_suffix("_path"), source_path.get_file()]
+		var target := target_dir.path_join(file_name)
+		var bytes := FileAccess.get_file_as_bytes(source_path)
+		if bytes.is_empty():
+			return FileAccess.get_open_error()
+		var output := FileAccess.open(target, FileAccess.WRITE)
+		if output == null:
+			return FileAccess.get_open_error()
+		output.store_buffer(bytes)
+		output.close()
+		arena.set(property_name, target)
+	for property_name in properties:
+		if str(arena.get(property_name)).begins_with("user://"):
+			return ERR_INVALID_PARAMETER
+	return OK
+
+
 static func load_canonical(path: String) -> ArenaDefinition:
 	if not ResourceLoader.exists(path):
 		return null
-	var arena := load(path) as ArenaDefinition
+	# Une sauvegarde canonique doit relire les octets qui viennent d'être écrits,
+	# pas une instance de ResourceLoader antérieure à une migration de schéma.
+	var arena := ResourceLoader.load(
+		path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaDefinition
 	if arena != null:
 		ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return arena

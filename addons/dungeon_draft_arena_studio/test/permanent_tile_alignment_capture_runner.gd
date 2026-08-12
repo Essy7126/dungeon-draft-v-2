@@ -1,7 +1,10 @@
 extends Control
 
-const OUTPUT := "res://artifacts/arena_permanent_tile_alignment/captures"
-const SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+const OUTPUT := "res://artifacts/complete_terrain_catalog/captures"
+const SIZES := [
+	Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440),
+	Vector2i(1200, 896),
+]
 const TEST_OPTIONS := {
 	"spawn_enemies": false,
 	"spawn_heroes": false,
@@ -37,25 +40,33 @@ func _run() -> void:
 	for size in SIZES:
 		get_window().size = size
 		await _wait_frames(4)
-		await _capture_canvas_case("01_stone", size, _filled_arena(&"stone"),
-			"STONE — terrain permanent normalisé")
-		await _capture_canvas_case("02_neutral", size, _filled_arena(&"neutral"),
-			"NEUTRAL — même empreinte 256×128 que stone")
-		await _capture_canvas_case("03_stone_neutral_checker", size, _checker_arena(),
-			"DAMIER STONE / NEUTRAL — bords et grille communs")
-		await _capture_canvas_case("04_water_permanent", size, _filled_arena(&"water"),
-			"WATER — terrain permanent peignable")
-		await _capture_canvas_case("05_ice_permanent", size, _filled_arena(&"ice"),
-			"ICE — terrain permanent peignable")
-		await _capture_palette_case("06_lava_disabled", size, &"lava")
-		await _capture_palette_case("07_dropdown_contract", size, &"neutral")
-		await _capture_preview_case("08_preview", size, _mixed_arena(),
+		await _capture_palette_case("01_palette_complete", size, &"water")
+		await _capture_canvas_case("02_each_tile_isolated", size, _mixed_arena(),
+			"NEUF ASSETS — huit sols et vortex A/B, footprint commun")
+		await _capture_canvas_case("03_complete_checkerboard", size, _checker_arena(),
+			"DAMIER COMPLET — une texture de sol par cellule")
+		await _capture_status_case("04_water_wet", size, &"water", &"wet",
+			"EAU — unité Mouillée")
+		await _capture_status_case("05_ice_frozen", size, &"ice", &"frozen",
+			"GLACE — unité Gelée")
+		await _capture_status_case("06_lava_burning", size, &"lava", &"burn",
+			"LAVE — 15 dégâts directs et Brûlure")
+		await _capture_status_case("07_poisoned", size, &"poison", &"poison",
+			"POISON — 4 dégâts/tour pendant 3 activations")
+		await _capture_status_case("08_steam_los", size, &"steam", &"",
+			"VAPEUR — mouvement autorisé, LoS bloquée, projectiles autorisés")
+		await _capture_status_case("09_electrified_water", size,
+			&"electrified_water", &"wet", "EAU ÉLECTRIFIÉE — Mouillé + Choc 20")
+		await _capture_vortex_case("10_vortex_ab", size, false)
+		await _capture_vortex_case("11_vortex_teleport", size, true)
+		await _capture_preview_case("12_preview", size, _mixed_arena(),
 			"PREVIEW — working copy projetée")
 		await _capture_direct_case(size, _mixed_arena())
 		await _capture_runtime_case(size, _mixed_arena())
+		await _capture_save_handler_case(size)
 	_write_report()
 	print("PERMANENT_TILE_CAPTURE_COMPLETE=", JSON.stringify({
-		"ok": _failures.is_empty(),
+		"ok": _failures.is_empty() and _captures.size() == SIZES.size() * 15,
 		"capture_count": _captures.size(),
 		"failures": _failures,
 		"produced_bundle_loaded": false,
@@ -85,6 +96,124 @@ func _capture_canvas_case(
 	await _save_case(case_name, size, arena, {
 		"view": "studio_canvas",
 		"terrain_map": _terrain_map(arena),
+	})
+
+
+func _capture_status_case(
+		case_name: String,
+		size: Vector2i,
+		terrain_id: StringName,
+		expected_status: StringName,
+		title: String
+	) -> void:
+	var arena := _filled_arena(terrain_id)
+	var runtime := ArenaRuntimeProjectionService.build(arena)
+	var unit := Unit.new("Capture %s" % terrain_id, 1, 100)
+	var cell := Vector2i(3, 2)
+	if runtime == null or not runtime.grid.place_unit(unit, cell):
+		_fail("status_runtime_%s_%dx%d" % [terrain_id, size.x, size.y])
+	else:
+		if expected_status != &"" and not _unit_has_status(unit, expected_status):
+			_fail("status_missing_%s_%s" % [terrain_id, expected_status])
+		if terrain_id == &"steam" and (
+				runtime.grid.is_transparent(cell)
+				or not runtime.grid.is_projectile_passable(cell)
+				or not runtime.grid.is_walkable(cell, unit)
+			):
+			_fail("steam_spatial_contract_%dx%d" % [size.x, size.y])
+		if terrain_id == &"electrified_water" and unit.current_hp != 80:
+			_fail("shock_damage_%dx%d:%d" % [size.x, size.y, unit.current_hp])
+	await _capture_canvas_case(case_name, size, arena, title)
+	var metrics := _captures[-1]
+	var status_ids: Array[String] = []
+	for entry in unit.get_active_statuses():
+		var data := entry.get("data") as StatusData
+		if data != null:
+			status_ids.append(str(data.get_effective_status_id()))
+	metrics["unit"] = {
+		"cell": [cell.x, cell.y],
+		"hp": unit.current_hp,
+		"statuses": status_ids,
+	}
+	_captures[-1] = metrics
+
+
+func _capture_vortex_case(case_name: String, size: Vector2i, traverse: bool) -> void:
+	var arena := _mixed_arena()
+	if arena.vortex_pairs.is_empty():
+		ArenaDynamicEditingService.place_vortex_pair(
+			arena, Vector2i(0, 4), Vector2i(6, 4)
+		)
+	var traversal := {}
+	if traverse:
+		var runtime := ArenaRuntimeProjectionService.build(arena)
+		var unit := Unit.new("Capture vortex", 1, 100)
+		var placed := runtime != null and runtime.grid.place_unit(unit, Vector2i(0, 4))
+		traversal = {
+			"placed": placed,
+			"destination": [unit.grid_pos.x, unit.grid_pos.y],
+			"end_movement": runtime.terrain_effects.consume_last_entry_result(unit).get(
+				"end_movement", false
+			) if placed else false,
+		}
+		if not placed or unit.grid_pos != Vector2i(6, 4):
+			_fail("vortex_traversal_%dx%d:%s" % [size.x, size.y, traversal])
+	await _capture_canvas_case(
+		case_name, size, arena,
+		"VORTEX — téléportation A→B et fin du mouvement" if traverse \
+		else "VORTEX APPARIÉ — A/B et liaison sur couche interactive"
+	)
+	var metrics := _captures[-1]
+	metrics["vortex_traversal"] = traversal
+	_captures[-1] = metrics
+
+
+func _capture_save_handler_case(size: Vector2i) -> void:
+	_clear_content()
+	var arena := _mixed_arena()
+	var context := StudioProjectContext.new()
+	var contract := context.register_transition_handler(
+		&"arena", _transition_ok, _transition_ok, _transition_ok,
+		Callable(), Callable(), Callable(), _transition_dirty,
+		_transition_snapshot, _transition_restore
+	)
+	context.set_dirty(&"arena", true, {"arena_path": "user://capture/arena.tres"})
+	var panel := PanelContainer.new()
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(panel)
+	move_child(panel, 0)
+	_content = panel
+	var margin := MarginContainer.new()
+	for side in ["left", "top", "right", "bottom"]:
+		margin.add_theme_constant_override("margin_%s" % side, 96)
+	panel.add_child(margin)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 24)
+	margin.add_child(box)
+	var title := Label.new()
+	title.text = "CHANGEMENT DE SALLE — Arène modifiée"
+	title.add_theme_font_size_override("font_size", 32)
+	box.add_child(title)
+	var details := Label.new()
+	details.text = (
+		"Le domaine humain « Arène » possède SAVE, DISCARD, KEEP_AS_DRAFT, "
+		+ "IS_DIRTY, SNAPSHOT et RESTORE.\nChoisissez une action avant de continuer."
+	)
+	details.add_theme_font_size_override("font_size", 22)
+	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(details)
+	var buttons := HBoxContainer.new()
+	for label in ["Sauvegarder et continuer", "Garder en brouillon", "Abandonner", "Annuler"]:
+		var button := Button.new()
+		button.text = label
+		button.custom_minimum_size = Vector2(260, 64)
+		buttons.add_child(button)
+	box.add_child(buttons)
+	_set_overlay("SAVE HANDLER — Sauvegarder et continuer disponible", arena)
+	await _save_case("15_save_and_continue", size, arena, {
+		"view": "save_transition_dialog",
+		"handler_contract": contract,
+		"human_domain_name": context.human_domain_name(&"arena"),
 	})
 
 
@@ -128,7 +257,7 @@ func _capture_palette_case(
 		var text := "%s  •  %s  •  %s" % [
 			entry.display_name,
 			entry.stable_id,
-			"ACTIF" if enabled else "INACTIF — %s" % entry.reason,
+			"DISPONIBLE" if enabled else "OUTIL RETIRER / CLIC DROIT",
 		]
 		option.add_item(text)
 		var index := option.item_count - 1
@@ -137,7 +266,7 @@ func _capture_palette_case(
 		if StringName(entry.stable_id) == selected_id:
 			selected_index = index
 		var row := Label.new()
-		row.text = ("✓  " if enabled else "⊘  ") + text
+		row.text = ("✓  " if enabled else "↗  ") + text
 		row.add_theme_font_size_override("font_size", 20)
 		row.add_theme_color_override(
 			"font_color", Color("b8f5c8") if enabled else Color("f4b3a8")
@@ -149,12 +278,7 @@ func _capture_palette_case(
 	columns.add_child(preview_canvas)
 	_frame_arena(arena, Vector2i(int(size.x * 0.34), int(size.y * 0.6)))
 	preview_canvas.set_arena(arena)
-	_set_overlay(
-		"LAVA DÉSACTIVÉE — parité GridData non certifiée" \
-		if selected_id == &"lava" else
-		"DROPDOWN — aucune option fantôme active",
-		arena
-	)
+	_set_overlay("PALETTE COMPLÈTE — huit terrains disponibles, VOID topologique", arena)
 	await _save_case(case_name, size, arena, {
 		"view": "terrain_dropdown",
 		"entries": entries.map(func(value): return {
@@ -205,7 +329,7 @@ func _capture_direct_case(size: Vector2i, arena: ArenaDefinition) -> void:
 		ArenaDirectTestService.cleanup_context(request)
 		return
 	await _capture_preview_case(
-		"09_direct_test", size, temporary,
+		"13_direct_test", size, temporary,
 		"TEST DIRECT — working/temp/runtime fingerprints identiques"
 	)
 	if request.working_fingerprint != request.temporary_fingerprint \
@@ -243,7 +367,7 @@ func _capture_runtime_case(size: Vector2i, arena: ArenaDefinition) -> void:
 	if runtime_room == null or runtime_grid == null:
 		_fail("runtime_scene_contract_%dx%d" % [size.x, size.y])
 	_set_overlay("VRAIE BATAILLE MODULAIRE — même ArenaDefinition temporaire", arena)
-	await _save_case("10_runtime_battle", size, arena, {
+	await _save_case("14_runtime_battle", size, arena, {
 		"view": "modular_battle_runtime",
 		"room_fingerprint": ArenaSnapshotService.arena_fingerprint(runtime_room),
 		"working_fingerprint": ArenaSnapshotService.arena_fingerprint(arena),
@@ -290,25 +414,37 @@ func _filled_arena(terrain_id: StringName) -> ArenaDefinition:
 
 func _checker_arena() -> ArenaDefinition:
 	var arena := _arena_fixture()
+	var ids := [
+		&"stone", &"neutral", &"water", &"ice", &"lava", &"poison",
+		&"steam", &"electrified_water",
+	]
 	for definition in arena.cells:
 		if definition != null:
 			ArenaDynamicEditingService.paint_terrain(
 				arena, definition.coordinate,
-				&"neutral" if (definition.coordinate.x + definition.coordinate.y) % 2 == 0 \
-				else &"stone"
+				ids[(definition.coordinate.x + definition.coordinate.y * 3) % ids.size()]
 			)
+	ArenaDynamicEditingService.place_vortex_pair(
+		arena, Vector2i(0, 4), Vector2i(6, 4)
+	)
 	return arena
 
 
 func _mixed_arena() -> ArenaDefinition:
 	var arena := _arena_fixture()
-	var ids := [&"stone", &"neutral", &"water", &"ice"]
+	var ids := [
+		&"stone", &"neutral", &"water", &"ice", &"lava", &"poison",
+		&"steam", &"electrified_water",
+	]
 	for definition in arena.cells:
 		if definition != null:
 			ArenaDynamicEditingService.paint_terrain(
 				arena, definition.coordinate,
 				ids[(definition.coordinate.x + definition.coordinate.y) % ids.size()]
 			)
+	ArenaDynamicEditingService.place_vortex_pair(
+		arena, Vector2i(0, 4), Vector2i(6, 4)
+	)
 	return arena
 
 
@@ -369,7 +505,7 @@ func _build_overlay() -> void:
 
 func _set_overlay(title: String, arena: ArenaDefinition) -> void:
 	_overlay_label.text = (
-		"ARENA PERMANENT TILE ALIGNMENT — WORKTREE CANDIDATE\n%s\n"
+		"ARENA COMPLETE TERRAIN CATALOG — WORKTREE CANDIDATE\n%s\n"
 		+ "Cells=%d • fingerprint=%s"
 	) % [title, arena.cells.size(), ArenaSnapshotService.arena_fingerprint(arena)]
 
@@ -389,8 +525,9 @@ func _write_report() -> void:
 		_fail("capture_report_write_failed")
 		return
 	file.store_string(JSON.stringify({
-		"schema_version": 1,
-		"mission": "ARENA PERMANENT TILE ALIGNMENT AND TERRAIN BRUSH PARITY FIX",
+		"schema_version": 2,
+		"mission": "ARENA COMPLETE TERRAIN CATALOG CHARACTER STATUS EFFECTS AND VORTEX RUNTIME",
+		"expected_capture_count": SIZES.size() * 15,
 		"captures": _captures,
 		"failures": _failures,
 		"produced_bundle_loaded": false,
@@ -401,6 +538,20 @@ func _write_report() -> void:
 func _fail(message: String) -> void:
 	_failures.append(message)
 	push_error(message)
+
+
+func _unit_has_status(unit: Unit, status_id: StringName) -> bool:
+	for entry in unit.get_active_statuses():
+		var data := entry.get("data") as StatusData
+		if data != null and data.get_effective_status_id() == status_id:
+			return true
+	return false
+
+
+func _transition_ok() -> Dictionary: return {"ok": true}
+func _transition_dirty() -> bool: return true
+func _transition_snapshot() -> Dictionary: return {"dirty": true}
+func _transition_restore(_snapshot: Dictionary) -> Dictionary: return {"ok": true}
 
 
 func _wait_frames(count: int) -> void:

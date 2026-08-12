@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ArenaTerrainDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_terrain_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/poison.png" id="2"]
+[ext_resource type="Resource" path="res://data/terrain/poison.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"poison"
+display_name = "Poison"
+base_texture = ExtResource("2")
+cell_type = 0
+walkable = true
+transparent = true
+projectile_passable = true
+movement_cost = 1
+unit_effect = ExtResource("3")
+apply_on_enter = true
+apply_on_turn_start = true
+refresh_status_while_standing = true
+ai_danger_weight = 2.0
+editor_placeable = true
+production_placeable = true
+editor_color = Color(0.42, 0.78, 0.18, 1)
+dynamic_catalog = true
+interaction_element = &"NONE"

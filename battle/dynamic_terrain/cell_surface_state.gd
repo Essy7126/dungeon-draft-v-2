@@ -11,6 +11,9 @@ enum BaseSurface {
 	WATER,
 	ICE,
 	LAVA,
+	POISON,
+	STEAM,
+	ELECTRIFIED_WATER,
 	VOID,
 	WALL,
 	OBSTACLE,
@@ -28,6 +31,13 @@ var base_cell_type: int = GridData.CellType.NORMAL
 var base_terrain_id: StringName = &"normal"
 var base_walkable := true
 var base_transparent := true
+var base_projectile_passable := true
+var base_movement_cost := 1
+var base_effect: TerrainEffectData = null
+var base_apply_on_enter := false
+var base_apply_on_turn_start := false
+var base_refresh_status_while_standing := false
+var base_ai_danger_weight := 0.0
 var dynamic_surface: DynamicSurface = DynamicSurface.NONE
 var duration_turns := 0
 var remaining_duration := 0
@@ -78,10 +88,35 @@ func configure_base_terrain(
 			base_surface = BaseSurface.ICE
 		&"lava":
 			base_surface = BaseSurface.LAVA
+		&"poison":
+			base_surface = BaseSurface.POISON
+		&"steam":
+			base_surface = BaseSurface.STEAM
+		&"electrified_water":
+			base_surface = BaseSurface.ELECTRIFIED_WATER
 		&"void", &"hole":
 			base_surface = BaseSurface.VOID
 		&"wall":
 			base_surface = BaseSurface.WALL
+
+
+func configure_permanent_behavior(
+		definition: ArenaTerrainDefinition,
+		properties: Dictionary
+	) -> void:
+	base_walkable = bool(properties.get("walkable", base_walkable))
+	base_transparent = bool(properties.get("transparent", base_transparent))
+	base_projectile_passable = bool(properties.get(
+		"projectile_passable", base_transparent
+	))
+	base_movement_cost = maxi(1, int(properties.get("movement_cost", 1)))
+	if definition == null:
+		return
+	base_effect = definition.unit_effect
+	base_apply_on_enter = definition.apply_on_enter
+	base_apply_on_turn_start = definition.apply_on_turn_start
+	base_refresh_status_while_standing = definition.refresh_status_while_standing
+	base_ai_danger_weight = definition.ai_danger_weight
 
 
 func configure(

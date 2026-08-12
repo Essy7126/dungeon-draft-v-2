@@ -2,12 +2,12 @@
 	"comparison": {
 		"conflicts": [],
 		"fingerprints": {
-			"main/elf": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
-			"main/mage": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
-			"main/warrior": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6",
-			"test/elf": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
-			"test/mage": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
-			"test/warrior": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6"
+			"main/elf": "b4cacb12744af1a977b8162a437ac9245e4cd97a1254fdebfa2cd0381ef53e83",
+			"main/mage": "9fee222b7fb15a91d966cf611799f16154987b1c7a6c09b80e3881ab2a0b92e4",
+			"main/warrior": "33e505bd44cbe23570beb5f9e5cdc2f71f2a198fdbf791338a7434564cea9a69",
+			"test/elf": "b4cacb12744af1a977b8162a437ac9245e4cd97a1254fdebfa2cd0381ef53e83",
+			"test/mage": "9fee222b7fb15a91d966cf611799f16154987b1c7a6c09b80e3881ab2a0b92e4",
+			"test/warrior": "33e505bd44cbe23570beb5f9e5cdc2f71f2a198fdbf791338a7434564cea9a69"
 		},
 		"first_run_path": "res://data/runs/first_run.tres",
 		"progression_shared_count": 0,
@@ -55,7 +55,7 @@
 			{
 				"base_unit_data_path": "res://data/units/alliés/elfe.tres",
 				"character_id": "elf",
-				"fingerprint": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
+				"fingerprint": "b4cacb12744af1a977b8162a437ac9245e4cd97a1254fdebfa2cd0381ef53e83",
 				"progression_profile_path": "res://data/runs/progression/main/elf_progression_profile.tres",
 				"progression_resources": [
 					{
@@ -807,6 +807,10 @@
 						"type": "CharacterProgressionProfile"
 					},
 					{
+						"path": "res://data/status/core/brulure.tres",
+						"type": "StatusData"
+					},
+					{
 						"path": "res://data/status/progression/bleeding_2_for_2.tres",
 						"type": "StatusData"
 					},
@@ -827,7 +831,7 @@
 			{
 				"base_unit_data_path": "res://data/units/alliés/mage.tres",
 				"character_id": "mage",
-				"fingerprint": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
+				"fingerprint": "9fee222b7fb15a91d966cf611799f16154987b1c7a6c09b80e3881ab2a0b92e4",
 				"progression_profile_path": "res://data/runs/progression/main/mage_progression_profile.tres",
 				"progression_resources": [
 					{
@@ -1599,6 +1603,14 @@
 						"type": "Spell"
 					},
 					{
+						"path": "res://data/status/core/brulure.tres",
+						"type": "StatusData"
+					},
+					{
+						"path": "res://data/status/core/gele.tres",
+						"type": "StatusData"
+					},
+					{
 						"path": "res://data/terrain/glace.tres",
 						"type": "TerrainEffectData"
 					},
@@ -1611,7 +1623,7 @@
 			{
 				"base_unit_data_path": "res://data/units/alliés/Guerrier.tres",
 				"character_id": "warrior",
-				"fingerprint": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6",
+				"fingerprint": "33e505bd44cbe23570beb5f9e5cdc2f71f2a198fdbf791338a7434564cea9a69",
 				"progression_profile_path": "res://data/runs/progression/main/warrior_progression_profile.tres",
 				"progression_resources": [
 					{
@@ -2375,7 +2387,7 @@
 			{
 				"base_unit_data_path": "res://data/units/alliés/elfe.tres",
 				"character_id": "elf",
-				"fingerprint": "6c118ef0534c6d3fb902e829cc0758e4122d589c363cd0dbca845e35aa12a5a1",
+				"fingerprint": "b4cacb12744af1a977b8162a437ac9245e4cd97a1254fdebfa2cd0381ef53e83",
 				"progression_profile_path": "res://data/runs/progression/test/elf_progression_profile.tres",
 				"progression_resources": [
 					{
@@ -2396,7 +2408,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_0vs4j",
-						"type": "Spell"
+						"type": "TerrainEffectData"
 					},
 					{
 						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_12c4f",
@@ -2579,6 +2591,10 @@
 						"type": "SkillTreeNodeData"
 					},
 					{
+						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7y1n2",
+						"type": "Spell"
+					},
+					{
 						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_7ydjl",
 						"type": "SpellModSkillTreeEffect"
 					},
@@ -2600,7 +2616,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_a2ljj",
-						"type": "TerrainEffectData"
+						"type": "StatusData"
 					},
 					{
 						"path": "res://data/runs/progression/test/elf_progression_profile.tres::Resource_acvor",
@@ -3147,7 +3163,7 @@
 			{
 				"base_unit_data_path": "res://data/units/alliés/mage.tres",
 				"character_id": "mage",
-				"fingerprint": "74d907d9bf101fa76de41a45070406c7493f13d5dc1ea010e4afe51df49343a7",
+				"fingerprint": "9fee222b7fb15a91d966cf611799f16154987b1c7a6c09b80e3881ab2a0b92e4",
 				"progression_profile_path": "res://data/runs/progression/test/mage_progression_profile.tres",
 				"progression_resources": [
 					{
@@ -3156,7 +3172,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_03k5k",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_0d3dk",
@@ -3164,7 +3180,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_0ex4o",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_0h7mr",
@@ -3176,10 +3192,6 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_13k8l",
-						"type": "SkillTreeNodeData"
-					},
-					{
-						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_141ww",
 						"type": "SpellModSkillTreeEffect"
 					},
 					{
@@ -3188,11 +3200,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_1nqsl",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_2jqn0",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_2trc3",
@@ -3200,7 +3212,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_3443w",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_35f7w",
@@ -3216,15 +3228,15 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_3xjq5",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_3y8yw",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_40f1r",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_4d46h",
@@ -3232,7 +3244,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_4d6bj",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_4qsxt",
@@ -3252,7 +3264,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_5pfo7",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_61pan",
@@ -3264,7 +3276,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_6fhvh",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_715vr",
@@ -3276,7 +3288,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_7gusj",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_7i33i",
@@ -3292,15 +3304,15 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_84sv6",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8bkgf",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8c10l",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8dy0s",
@@ -3308,11 +3320,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8h7ff",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8mhrw",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8q1x6",
@@ -3320,7 +3332,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_8ymkc",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_a1gyt",
@@ -3328,11 +3340,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_amhlr",
-						"type": "DisciplineData"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ap6sy",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_b0b34",
@@ -3348,7 +3360,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_bywnj",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_c15fy",
+						"type": "Spell"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_cc6rt",
@@ -3356,7 +3372,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ccwwf",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_cgoju",
@@ -3372,7 +3388,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_cydld",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e1hep",
@@ -3380,11 +3396,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e2hye",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e2l5u",
-						"type": "SpellModSkillTreeEffect"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_e3v7t",
@@ -3408,7 +3424,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_em3gx",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_exn2b",
@@ -3420,7 +3436,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_f8bry",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_fjbvw",
@@ -3433,6 +3449,10 @@
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_fvomn",
 						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_fvxno",
+						"type": "Spell"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_g34xy",
@@ -3456,7 +3476,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_hldcm",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_hx84j",
@@ -3464,7 +3484,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_i0t0c",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ieupi",
@@ -3472,11 +3492,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_igfp2",
-						"type": "DisciplineData"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_irvdw",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_isln4",
@@ -3484,7 +3504,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_iujp8",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_iurxm",
@@ -3496,7 +3516,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_j0qec",
-						"type": "SpellModSkillTreeEffect"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_j6x8t",
@@ -3508,7 +3528,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jf8qs",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jmtgh",
@@ -3520,19 +3540,19 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jv4f0",
-						"type": "DisciplineRankData"
-					},
-					{
-						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jvy04",
-						"type": "SkillTreeNodeData"
-					},
-					{
-						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_k44x6",
 						"type": "SpellModSkillTreeEffect"
 					},
 					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_jvy04",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_k44x6",
+						"type": "SkillTreeNodeData"
+					},
+					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_kdvkb",
-						"type": "TerrainEffectData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_khvlf",
@@ -3552,19 +3572,19 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ldi1x",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_le78t",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lhevc",
-						"type": "SpellModSkillTreeEffect"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_liygr",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ljfqq",
@@ -3576,19 +3596,19 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lscb7",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lwe51",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_lyarq",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_m24bi",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_m3ync",
@@ -3596,15 +3616,15 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mc0wc",
-						"type": "SpellModSkillTreeEffect"
-					},
-					{
-						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mdtmv",
 						"type": "SkillTreeNodeData"
 					},
 					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mdtmv",
+						"type": "SpellModSkillTreeEffect"
+					},
+					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mgi7g",
-						"type": "TerrainEffectData"
+						"type": "StatusData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_mgy5y",
@@ -3624,7 +3644,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_muk6h",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_n7eid",
@@ -3632,7 +3652,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_n8kpl",
-						"type": "SpellModSkillTreeEffect"
+						"type": "DisciplineData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_nacoj",
@@ -3640,7 +3660,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_nd7se",
-						"type": "SpellModSkillTreeEffect"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_nfr07",
@@ -3652,7 +3672,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_o3wuu",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_o54gv",
@@ -3660,7 +3680,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_odv8t",
-						"type": "DisciplineData"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ojjrg",
@@ -3668,7 +3688,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_osa4r",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ossr5",
+						"type": "TerrainEffectData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_pfkvr",
@@ -3676,7 +3700,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ph1px",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_prx8c",
@@ -3700,11 +3724,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_rdqys",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_re6sr",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_rhnxt",
@@ -3719,12 +3743,8 @@
 						"type": "Spell"
 					},
 					{
-						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_s163h",
-						"type": "DisciplineRankData"
-					},
-					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_s6o0r",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_seqc2",
@@ -3756,11 +3776,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_t4ba0",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_tgro4",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_tlcku",
@@ -3772,15 +3792,15 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_tud15",
-						"type": "Spell"
+						"type": "TerrainEffectData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_twh8s",
-						"type": "DisciplineData"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u3alx",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u3sng",
@@ -3788,11 +3808,11 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u640i",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_u8uwv",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ub2v0",
@@ -3800,15 +3820,19 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_uoqed",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_upnpp",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_uvwlp",
-						"type": "SpellModSkillTreeEffect"
+						"type": "DisciplineData"
+					},
+					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_uxfaa",
+						"type": "Spell"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_uy407",
@@ -3836,7 +3860,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_vy4cx",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wa5ev",
@@ -3852,7 +3876,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wo08h",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_wu3be",
@@ -3868,7 +3892,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_x0box",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xf2bq",
@@ -3876,19 +3900,19 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xfcsa",
-						"type": "DisciplineRankData"
-					},
-					{
-						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xiy1m",
 						"type": "SpellModSkillTreeEffect"
 					},
 					{
+						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xiy1m",
+						"type": "DisciplineData"
+					},
+					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xr3pa",
-						"type": "Spell"
+						"type": "StatusData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xt3wl",
-						"type": "DisciplineRankData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_xyrgy",
@@ -3900,19 +3924,19 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_y1jou",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_y5qfv",
-						"type": "SkillTreeNodeData"
+						"type": "DisciplineRankData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_ydtp4",
-						"type": "SkillTreeNodeData"
+						"type": "SpellModSkillTreeEffect"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yejo2",
-						"type": "Spell"
+						"type": "DisciplineData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yneqb",
@@ -3920,7 +3944,7 @@
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yqm0j",
-						"type": "SpellModSkillTreeEffect"
+						"type": "SkillTreeNodeData"
 					},
 					{
 						"path": "res://data/runs/progression/test/mage_progression_profile.tres::Resource_yu2s3",
@@ -3931,7 +3955,7 @@
 			{
 				"base_unit_data_path": "res://data/units/alliés/Guerrier.tres",
 				"character_id": "warrior",
-				"fingerprint": "b29560e886e961e43c599430a14c0163ec0910aa3dccb593bd62815c2c21f6a6",
+				"fingerprint": "33e505bd44cbe23570beb5f9e5cdc2f71f2a198fdbf791338a7434564cea9a69",
 				"progression_profile_path": "res://data/runs/progression/test/warrior_progression_profile.tres",
 				"progression_resources": [
 					{

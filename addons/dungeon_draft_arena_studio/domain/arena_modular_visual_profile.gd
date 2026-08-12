@@ -9,7 +9,10 @@ enum HybridFloorPolicy {
 }
 
 @export var theme_id: StringName = &"dynamic_default"
-@export var terrain_ids: Array[StringName] = [&"stone", &"neutral", &"water", &"ice", &"lava"]
+@export var terrain_ids: Array[StringName] = [
+	&"stone", &"neutral", &"water", &"ice", &"lava", &"poison", &"steam",
+	&"electrified_water",
+]
 @export var wall_ids: Array[StringName] = [&"normal", &"fire", &"ice"]
 @export_enum("Aucune dalle:0", "Terrains hors base:1", "Toutes les dalles tactiques:2")
 var hybrid_floor_policy: int = HybridFloorPolicy.NON_BASE_TERRAINS

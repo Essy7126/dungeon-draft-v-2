@@ -107,6 +107,29 @@ var restore_points_list: ItemList
 var restore_delete_dialog: ConfirmationDialog
 var _pending_restore_delete_path := ""
 var _pending_vortex_cell := GridTransformService.INVALID_CELL
+var quick_palette_buttons := {}
+var recent_terrain_label: Label
+var brush_size_option: OptionButton
+var terrain_replace_dialog: ConfirmationDialog
+var terrain_replace_from: OptionButton
+var terrain_replace_to: OptionButton
+var terrain_replace_summary: Label
+var backdrop_dialog: ConfirmationDialog
+var backdrop_source_option: OptionButton
+var backdrop_mode_option: OptionButton
+var backdrop_summary: Label
+var backdrop_compare_slider: HSlider
+var backdrop_compare_value_label: Label
+var backdrop_state_label: Label
+var backdrop_image_dialog: FileDialog
+var _backdrop_sources: Array[ArenaBackdropSourceDefinition] = []
+var backdrop_transaction := ArenaBackdropTransactionService.new()
+var vortex_dialog: ConfirmationDialog
+var vortex_network_option: OptionButton
+var vortex_summary: Label
+var vortex_name_edit: LineEdit
+var _active_vortex_network_id: StringName = &""
+var _recent_terrain_ids: Array[StringName] = []
 var layer_controls := {}
 var transform_controls := {}
 var transform_panel: VBoxContainer
@@ -202,6 +225,8 @@ var _sessions: Dictionary = {}
 var _stroke_before := {}
 var _stroke_changed := false
 var _stroke_cell_count := 0
+var _stroke_transform_commit := false
+var _history_refresh_suppressed := false
 var _verification_source := GridTransformService.INVALID_CELL
 var _last_test_log := "Aucun test direct lance depuis cette session."
 var _recovery_timer: Timer
@@ -214,6 +239,8 @@ var _pending_lab_transfer_id := ""
 var project_context: StudioProjectContext = null
 var shared_reference_graph: StudioReferenceGraphService = null
 var run_authoring := ArenaRunAuthoringService.new()
+var stroke_batch := ArenaStrokeBatchService.new()
+var _last_stroke_result := {}
 
 
 func setup(
@@ -250,11 +277,19 @@ func _ready() -> void:
 		project_context.run_changed.connect(_on_context_run_changed)
 		project_context.register_transition_handler(
 			&"arena", Callable(self, "_context_save"),
-			Callable(self, "_context_draft"), Callable(self, "_context_discard")
+			Callable(self, "_context_draft"), Callable(self, "_context_discard"),
+			Callable(), Callable(), Callable(),
+			Callable(self, "_context_is_dirty"),
+			Callable(self, "_context_snapshot"),
+			Callable(self, "_context_restore")
 		)
 		project_context.register_transition_handler(
 			&"arena_run", Callable(self, "_context_run_save"),
-			Callable(self, "_context_run_draft"), Callable(self, "_context_run_discard")
+			Callable(self, "_context_run_draft"), Callable(self, "_context_run_discard"),
+			Callable(), Callable(), Callable(),
+			Callable(run_authoring, "is_dirty"),
+			Callable(run_authoring, "snapshot"),
+			Callable(run_authoring, "restore_snapshot")
 		)
 		if project_context.active_run != null:
 			run_authoring.open(project_context.active_run, shared_reference_graph)
@@ -455,12 +490,46 @@ func _build_canvas_panel() -> Control:
 	_add_button(navigation, "Recentrer", func(): canvas.recenter_grid())
 	_add_button(navigation, "Adapter a l'image", func(): canvas.fit_to_image())
 	_add_button(navigation, "Calibration en 3 clics", start_calibration)
+	_add_button(navigation, "Décor…", _show_backdrop_dialog)
+	_add_button(navigation, "Vortex…", _show_vortex_dialog)
 	var hint := Label.new()
 	hint.text = "Molette : zoom • Clic milieu : deplacer"
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	navigation.add_child(hint)
 	box.add_child(navigation)
+	var quick_row := HFlowContainer.new()
+	quick_row.name = "QuickTerrainPalette"
+	quick_row.add_theme_constant_override("h_separation", 3)
+	var quick_title := Label.new()
+	quick_title.text = "Terrains :"
+	quick_row.add_child(quick_title)
+	for terrain_id in [
+		&"stone", &"neutral", &"water", &"ice", &"lava", &"poison",
+		&"steam", &"electrified_water",
+	]:
+		var entry := ArenaTerrainRegistry.get_entry(terrain_id)
+		var button := Button.new()
+		button.text = str(entry.get("name", terrain_id))
+		button.tooltip_text = "%s — %s" % [button.text, _terrain_palette_summary(terrain_id)]
+		button.pressed.connect(func(): _select_quick_terrain(terrain_id))
+		quick_palette_buttons[terrain_id] = button
+		quick_row.add_child(button)
+	brush_size_option = OptionButton.new()
+	brush_size_option.tooltip_text = "Taille du pinceau"
+	for size in [1, 2, 3]:
+		brush_size_option.add_item("%d×%d" % [size, size])
+		brush_size_option.set_item_metadata(brush_size_option.item_count - 1, size)
+	brush_size_option.item_selected.connect(func(index):
+		canvas.brush_size = int(brush_size_option.get_item_metadata(index))
+	)
+	quick_row.add_child(brush_size_option)
+	_add_button(quick_row, "Remplacer…", _show_terrain_replace_dialog)
+	recent_terrain_label = Label.new()
+	recent_terrain_label.text = "Récents : —"
+	recent_terrain_label.tooltip_text = "Les trois derniers terrains utilisés"
+	quick_row.add_child(recent_terrain_label)
+	box.add_child(quick_row)
 	view_stack = Control.new()
 	view_stack.name = "ViewStack"
 	view_stack.custom_minimum_size = Vector2(640, 420)
@@ -646,6 +715,9 @@ func _build_destination_panel() -> PanelContainer:
 func _refresh_destination_panel(_unused = {}) -> void:
 	if destination_run_option == null or destination_action_option == null:
 		return
+	if _history_refresh_suppressed:
+		_mark_destination_plan_obsolete()
+		return
 	_destination_syncing = true
 	var previous_run_path := ""
 	if destination_run_option.selected >= 0 \
@@ -790,6 +862,23 @@ func _render_destination_plan(plan: Dictionary) -> void:
 		destination_resolve_button.tooltip_text = str(resolution.get(
 			"explanation", "Examiner et résoudre le dossier existant."
 		))
+
+
+func _mark_destination_plan_obsolete() -> void:
+	_destination_last_plan = {
+		"ok": false,
+		"error": "La calibration a change ; le plan doit etre recalcule.",
+		"obsolete": true,
+	}
+	if destination_summary_label != null:
+		destination_summary_label.text = "Plan d'integration obsolete - calibration modifiee"
+	if destination_details_text != null:
+		destination_details_text.text = (
+			"La copie de travail a change. Ouvrez l'etape Destination pour recalculer "
+			+ "les certificats et la production."
+		)
+	if destination_integrate_button != null:
+		destination_integrate_button.disabled = true
 
 
 func _destination_button_text(action: StringName, run_label: String, room_number: int) -> String:
@@ -1069,6 +1158,7 @@ func _build_dynamic_palette() -> VBoxContainer:
 		_select_dynamic_tool(ArenaStudioCanvas.Tool.OBSTACLE)
 	)
 	box.add_child(dynamic_wall_option)
+	box.add_child(_section_label("INTERACTIFS"))
 	var special_button := Button.new()
 	special_button.text = "Spawn / objectif / décoration"
 	special_button.tooltip_text = "Placer un élément spécial sur une cellule praticable"
@@ -1078,7 +1168,7 @@ func _build_dynamic_palette() -> VBoxContainer:
 	for entry in [
 		["Spawn héros", &"hero"], ["Spawn ennemi", &"enemy"],
 		["Objectif", &"objective"], ["Décoration", &"decoration"],
-		["Paire de vortex (authoring uniquement)", &"vortex_pair"],
+		["Réseau de vortex — 1, 2 ou plusieurs sorties", &"vortex_network"],
 		["Zone d'invocation", &"summon"], ["Supprimer le spécial", &"remove"],
 	]:
 		dynamic_special_option.add_item(entry[0])
@@ -1920,6 +2010,412 @@ func _build_migration_dialog() -> void:
 			_open_pending_migration_read_only()
 	)
 	add_child(migration_dialog)
+	_build_terrain_replace_dialog()
+	_build_backdrop_dialog()
+	_build_vortex_dialog()
+
+
+func _quick_terrain_ids() -> Array[StringName]:
+	return [
+		&"stone", &"neutral", &"water", &"ice", &"lava", &"poison",
+		&"steam", &"electrified_water",
+	]
+
+
+func _build_terrain_replace_dialog() -> void:
+	terrain_replace_dialog = ConfirmationDialog.new()
+	terrain_replace_dialog.title = "Remplacement global de terrain"
+	terrain_replace_dialog.size = Vector2i(620, 300)
+	terrain_replace_dialog.ok_button_text = "Remplacer — une action Undo"
+	terrain_replace_dialog.confirmed.connect(_confirm_terrain_replacement)
+	add_child(terrain_replace_dialog)
+	var box := VBoxContainer.new()
+	terrain_replace_dialog.add_child(box)
+	var row := HBoxContainer.new()
+	box.add_child(row)
+	terrain_replace_from = OptionButton.new()
+	terrain_replace_to = OptionButton.new()
+	for terrain_id in _quick_terrain_ids():
+		var name := str(ArenaTerrainRegistry.get_entry(terrain_id).get("name", terrain_id))
+		terrain_replace_from.add_item(name)
+		terrain_replace_from.set_item_metadata(terrain_replace_from.item_count - 1, terrain_id)
+		terrain_replace_to.add_item(name)
+		terrain_replace_to.set_item_metadata(terrain_replace_to.item_count - 1, terrain_id)
+	row.add_child(terrain_replace_from)
+	var arrow := Label.new()
+	arrow.text = " → "
+	row.add_child(arrow)
+	row.add_child(terrain_replace_to)
+	terrain_replace_summary = Label.new()
+	terrain_replace_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(terrain_replace_summary)
+	terrain_replace_from.item_selected.connect(func(_index): _refresh_terrain_replace_summary())
+	terrain_replace_to.item_selected.connect(func(_index): _refresh_terrain_replace_summary())
+
+
+func _show_terrain_replace_dialog() -> void:
+	if arena == null:
+		return
+	_refresh_terrain_replace_summary()
+	terrain_replace_dialog.popup_centered()
+
+
+func _refresh_terrain_replace_summary() -> void:
+	if arena == null or terrain_replace_summary == null:
+		return
+	var from_id := StringName(terrain_replace_from.get_selected_metadata())
+	var to_id := StringName(terrain_replace_to.get_selected_metadata())
+	var count := ArenaStrokeBatchService.replacement_cells(arena, from_id).size()
+	terrain_replace_summary.text = (
+		"Aperçu : %d cellule(s). %s → %s.\nEffet cible : %s\n"
+		+ "La topologie, les spawns et les vortex restent inchangés."
+	) % [count, from_id, to_id, _terrain_palette_summary(to_id)]
+	terrain_replace_dialog.get_ok_button().disabled = count == 0 or from_id == to_id
+
+
+func _confirm_terrain_replacement() -> void:
+	if arena == null:
+		return
+	var from_id := StringName(terrain_replace_from.get_selected_metadata())
+	var to_id := StringName(terrain_replace_to.get_selected_metadata())
+	var cells := ArenaStrokeBatchService.replacement_cells(arena, from_id)
+	if cells.is_empty() or from_id == to_id:
+		return
+	stroke_batch.begin_stroke(arena)
+	var changed := stroke_batch.apply_terrain_cells(cells, to_id)
+	var result := stroke_batch.finish()
+	if changed.is_empty():
+		return
+	_commit_change(
+		"Remplacer %s par %s — %d case(s)" % [from_id, to_id, changed.size()],
+		result.get("before", {}), result.get("after", {})
+	)
+	canvas.update_terrain_cells(changed)
+	_refresh_all(false)
+	_select_quick_terrain(to_id)
+	_set_status("Remplacement terminé : %d cellule(s), une synchronisation et une action Undo." % changed.size())
+
+
+func _build_backdrop_dialog() -> void:
+	backdrop_dialog = ConfirmationDialog.new()
+	backdrop_dialog.title = "DÉCOR DE L’ARÈNE"
+	backdrop_dialog.size = Vector2i(680, 500)
+	backdrop_dialog.ok_button_text = "Appliquer à la copie de travail"
+	backdrop_dialog.confirmed.connect(_confirm_backdrop_change)
+	backdrop_dialog.canceled.connect(_close_backdrop_preview)
+	backdrop_dialog.close_requested.connect(_close_backdrop_preview)
+	add_child(backdrop_dialog)
+	backdrop_dialog.get_cancel_button().text = "Annuler et fermer"
+	var box := VBoxContainer.new()
+	backdrop_dialog.add_child(box)
+	backdrop_state_label = Label.new()
+	backdrop_state_label.text = "PRÉVISUALISATION — COPIE DE TRAVAIL NON MODIFIÉE"
+	backdrop_state_label.add_theme_color_override("font_color", Color(1.0, 0.83, 0.34))
+	box.add_child(backdrop_state_label)
+	var source_label := Label.new()
+	source_label.text = "Source du décor"
+	box.add_child(source_label)
+	backdrop_source_option = OptionButton.new()
+	backdrop_source_option.item_selected.connect(func(_index): _refresh_backdrop_summary())
+	box.add_child(backdrop_source_option)
+	var mode_label := Label.new()
+	mode_label.text = "Éléments à adopter"
+	box.add_child(mode_label)
+	backdrop_mode_option = OptionButton.new()
+	for entry in [
+		["Fond uniquement", ArenaBackdropTransactionService.CopyMode.BACKGROUND_ONLY],
+		["Décor + calibration + caméra (recommandé)", ArenaBackdropTransactionService.CopyMode.DECOR_CALIBRATION_CAMERA],
+		["Pack visuel complet", ArenaBackdropTransactionService.CopyMode.FULL_VISUAL_PACK],
+	]:
+		backdrop_mode_option.add_item(entry[0])
+		backdrop_mode_option.set_item_metadata(backdrop_mode_option.item_count - 1, entry[1])
+	backdrop_mode_option.select(1)
+	backdrop_mode_option.item_selected.connect(func(_index): _refresh_backdrop_summary())
+	box.add_child(backdrop_mode_option)
+	var actions := HFlowContainer.new()
+	box.add_child(actions)
+	_add_button(actions, "Importer une image…", func(): backdrop_image_dialog.popup_centered())
+	_add_button(actions, "Annuler le dernier changement de décor", _restore_previous_backdrop)
+	var compare_row := HBoxContainer.new()
+	box.add_child(compare_row)
+	var old_label := Label.new()
+	old_label.text = "Ancien"
+	compare_row.add_child(old_label)
+	backdrop_compare_slider = HSlider.new()
+	backdrop_compare_slider.min_value = 0.0
+	backdrop_compare_slider.max_value = 1.0
+	backdrop_compare_slider.step = 0.05
+	backdrop_compare_slider.value = 1.0
+	backdrop_compare_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	backdrop_compare_slider.tooltip_text = "Comparer avant/après par opacité du nouveau fond"
+	backdrop_compare_slider.value_changed.connect(func(value):
+		if canvas != null:
+			canvas.background_opacity = float(value)
+			canvas.queue_redraw()
+		if backdrop_compare_value_label != null:
+			backdrop_compare_value_label.text = "%d %%" % roundi(float(value) * 100.0)
+	)
+	compare_row.add_child(backdrop_compare_slider)
+	var new_label := Label.new()
+	new_label.text = "Nouveau"
+	compare_row.add_child(new_label)
+	backdrop_compare_value_label = Label.new()
+	backdrop_compare_value_label.text = "100 %"
+	backdrop_compare_value_label.custom_minimum_size.x = 54
+	compare_row.add_child(backdrop_compare_value_label)
+	backdrop_summary = Label.new()
+	backdrop_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	backdrop_summary.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(backdrop_summary)
+	backdrop_image_dialog = FileDialog.new()
+	backdrop_image_dialog.title = "Importer une image de fond vers le staging"
+	backdrop_image_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	backdrop_image_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	backdrop_image_dialog.filters = PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp ; Images"])
+	backdrop_image_dialog.file_selected.connect(_stage_external_backdrop)
+	add_child(backdrop_image_dialog)
+
+
+func _show_backdrop_dialog() -> void:
+	if arena == null:
+		return
+	backdrop_state_label.text = "PRÉVISUALISATION — COPIE DE TRAVAIL NON MODIFIÉE"
+	backdrop_compare_slider.value = 1.0
+	_backdrop_sources = ArenaBackdropCatalogService.discover()
+	backdrop_source_option.clear()
+	for index in range(_backdrop_sources.size()):
+		var source := _backdrop_sources[index]
+		backdrop_source_option.add_item(source.display_name)
+		backdrop_source_option.set_item_metadata(index, index)
+		if source.source_id == &"greece":
+			backdrop_source_option.select(index)
+	_refresh_backdrop_summary()
+	backdrop_dialog.popup_centered()
+
+
+func _selected_backdrop_source() -> ArenaBackdropSourceDefinition:
+	if backdrop_source_option == null or backdrop_source_option.selected < 0:
+		return null
+	var index := int(backdrop_source_option.get_selected_metadata())
+	return _backdrop_sources[index] if index >= 0 and index < _backdrop_sources.size() else null
+
+
+func _refresh_backdrop_summary() -> void:
+	var source := _selected_backdrop_source()
+	if arena == null or source == null:
+		backdrop_summary.text = "Aucune source de décor compatible découverte."
+		backdrop_dialog.get_ok_button().disabled = true
+		_close_backdrop_preview()
+		return
+	var mode := int(backdrop_mode_option.get_selected_metadata())
+	var inspection := backdrop_transaction.inspect(arena, source, mode)
+	backdrop_dialog.get_ok_button().disabled = not bool(inspection.get("ok", false))
+	var source_kind := "catalogue Arena Studio"
+	if source.background_path.begins_with("user://dungeon_draft_studio/backdrop_staging/"):
+		source_kind = "import local (staging temporaire)"
+	elif not source.source_run_path.is_empty():
+		source_kind = "RunData"
+	elif not source.source_arena_path.is_empty():
+		source_kind = "ArenaDefinition"
+	var adopts_calibration := mode >= ArenaBackdropTransactionService.CopyMode.DECOR_CALIBRATION_CAMERA \
+		and source.calibration_available
+	var adopts_camera := mode >= ArenaBackdropTransactionService.CopyMode.DECOR_CALIBRATION_CAMERA
+	canvas.set_backdrop_preview(
+		source.background_path,
+		source.source_image_size,
+		source.image_offset if adopts_calibration else arena.image_offset,
+		source.image_scale if adopts_calibration else arena.image_scale
+	)
+	backdrop_summary.text = (
+		"Image : %s\nSource : %s — %s\nAncien fond : %s\nNouveau fond : %s\n"
+		+ "Calibration adoptée : %s\nCaméra adoptée : %s\nTopologie : inchangée\n"
+		+ "Le gameplay, les terrains, spawns, objectifs et vortex seront vérifiés avant application."
+	) % [
+		source.background_path.get_file(), source_kind, source.display_name,
+		arena.source_image_size, source.source_image_size,
+		"oui" if adopts_calibration else "non",
+		"oui" if adopts_camera else "non",
+	]
+	backdrop_summary.tooltip_text = "Chemin technique : %s" % source.background_path
+
+
+func _close_backdrop_preview() -> void:
+	if canvas != null:
+		canvas.clear_backdrop_preview()
+
+
+func _confirm_backdrop_change() -> void:
+	var source := _selected_backdrop_source()
+	if arena == null or source == null:
+		return
+	var mode := int(backdrop_mode_option.get_selected_metadata())
+	var result := backdrop_transaction.apply(arena, source, mode)
+	if not bool(result.get("ok", false)):
+		_set_status("Décor refusé : %s" % result.get("error", "inconnu"), true)
+		return
+	_commit_change("Changer le décor — %s" % source.display_name, result.before, result.after)
+	_close_backdrop_preview()
+	canvas.set_arena(arena)
+	_refresh_all(false)
+	_set_status("APPLIQUÉ À LA COPIE DE TRAVAIL — NON SAUVEGARDÉ. Gameplay inchangé ; Undo/Redo disponible.")
+
+
+func _restore_previous_backdrop() -> void:
+	if arena == null:
+		return
+	var action_name := history_undo_name()
+	if history_can_undo() and "décor" in action_name.to_lower():
+		history_undo()
+		_set_status("Dernier changement de décor annulé via l'historique Arena.")
+	else:
+		_set_status("Aucun changement de décor immédiatement annulable dans l'historique.", true)
+
+
+func _stage_external_backdrop(path: String) -> void:
+	var staged := ArenaBackdropTransactionService.stage_external_image(path)
+	if not bool(staged.get("ok", false)):
+		_set_status("Import du décor refusé : %s" % staged.get("error", "inconnu"), true)
+		return
+	var image := Image.load_from_file(ProjectSettings.globalize_path(str(staged.staged_path)))
+	if image == null or image.is_empty():
+		_set_status("Image de décor illisible après staging.", true)
+		return
+	var source := ArenaBackdropSourceDefinition.from_arena(arena)
+	source.source_id = StringName("external_%s" % str(staged.sha256).left(12))
+	source.display_name = "Image importée — %s" % path.get_file()
+	source.background_path = str(staged.staged_path)
+	source.source_image_size = image.get_size()
+	_backdrop_sources.append(source)
+	backdrop_source_option.add_item(source.display_name)
+	backdrop_source_option.set_item_metadata(backdrop_source_option.item_count - 1, _backdrop_sources.size() - 1)
+	backdrop_source_option.select(backdrop_source_option.item_count - 1)
+	_refresh_backdrop_summary()
+
+
+func _build_vortex_dialog() -> void:
+	vortex_dialog = ConfirmationDialog.new()
+	vortex_dialog.title = "VORTEX — réseaux"
+	vortex_dialog.size = Vector2i(640, 420)
+	vortex_dialog.ok_button_text = "Fermer"
+	add_child(vortex_dialog)
+	var box := VBoxContainer.new()
+	vortex_dialog.add_child(box)
+	vortex_network_option = OptionButton.new()
+	vortex_network_option.item_selected.connect(_on_vortex_network_selected)
+	box.add_child(vortex_network_option)
+	var actions := HFlowContainer.new()
+	box.add_child(actions)
+	_add_button(actions, "Nouveau réseau", _create_vortex_network)
+	_add_button(actions, "Ajouter une dalle", _activate_vortex_network_tool)
+	_add_button(actions, "Retirer : clic droit", _activate_vortex_network_tool)
+	vortex_name_edit = LineEdit.new()
+	vortex_name_edit.placeholder_text = "Nom du réseau"
+	actions.add_child(vortex_name_edit)
+	_add_button(actions, "Renommer", _rename_vortex_network)
+	_add_button(actions, "Supprimer", _delete_vortex_network)
+	vortex_summary = Label.new()
+	vortex_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(vortex_summary)
+
+
+func _show_vortex_dialog() -> void:
+	if arena == null:
+		return
+	ArenaVortexNetworkService.migrate_legacy_pairs(arena)
+	_refresh_vortex_dialog()
+	vortex_dialog.popup_centered()
+
+
+func _refresh_vortex_dialog() -> void:
+	if vortex_network_option == null or arena == null:
+		return
+	vortex_network_option.clear()
+	var selected_index := -1
+	for index in range(arena.vortex_networks.size()):
+		var network := arena.vortex_networks[index]
+		if network == null:
+			continue
+		vortex_network_option.add_item("%s — %d sortie(s)" % [network.display_name, network.unique_cells().size()])
+		vortex_network_option.set_item_metadata(vortex_network_option.item_count - 1, network.network_id)
+		if network.network_id == _active_vortex_network_id:
+			selected_index = vortex_network_option.item_count - 1
+	if selected_index < 0 and vortex_network_option.item_count > 0:
+		selected_index = 0
+	if selected_index >= 0:
+		vortex_network_option.select(selected_index)
+		_active_vortex_network_id = StringName(vortex_network_option.get_item_metadata(selected_index))
+	_refresh_vortex_summary()
+
+
+func _on_vortex_network_selected(index: int) -> void:
+	if index >= 0 and index < vortex_network_option.item_count:
+		_active_vortex_network_id = StringName(vortex_network_option.get_item_metadata(index))
+	_refresh_vortex_summary()
+
+
+func _refresh_vortex_summary() -> void:
+	var network := ArenaVortexNetworkService.network_by_id(arena, _active_vortex_network_id)
+	if network == null:
+		vortex_summary.text = "Aucun réseau. Créez-en un, puis cliquez ses dalles sur le canvas."
+		return
+	var count := network.unique_cells().size()
+	var probability := ""
+	if count >= 3:
+		probability = "\nChaque autre sortie valide : %.1f %% avant filtrage occupation/VOID." % (100.0 / float(count - 1))
+	vortex_summary.text = "%s\nID : %s\n%s%s" % [
+		network.display_name, network.network_id,
+		ArenaVortexNetworkService.behavior_summary(network), probability,
+	]
+	vortex_name_edit.text = network.display_name
+
+
+func _create_vortex_network() -> void:
+	if arena == null:
+		return
+	var before := arena.to_snapshot()
+	var network := ArenaVortexNetworkService.create_network(arena)
+	_active_vortex_network_id = network.network_id
+	_commit_change("Créer un réseau de vortex", before, arena.to_snapshot())
+	_refresh_vortex_dialog()
+	_activate_vortex_network_tool()
+
+
+func _rename_vortex_network() -> void:
+	var network := ArenaVortexNetworkService.network_by_id(arena, _active_vortex_network_id)
+	var name := vortex_name_edit.text.strip_edges()
+	if network == null or name.is_empty() or network.display_name == name:
+		return
+	var before := arena.to_snapshot()
+	network.display_name = name
+	_commit_change("Renommer le réseau de vortex", before, arena.to_snapshot())
+	_refresh_vortex_dialog()
+
+
+func _delete_vortex_network() -> void:
+	if arena == null:
+		return
+	var before := arena.to_snapshot()
+	if not ArenaVortexNetworkService.delete_network(arena, _active_vortex_network_id):
+		return
+	_active_vortex_network_id = &""
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change("Supprimer le réseau de vortex", before, arena.to_snapshot())
+	_refresh_vortex_dialog()
+	canvas.queue_redraw()
+
+
+func _activate_vortex_network_tool() -> void:
+	if arena == null:
+		return
+	if ArenaVortexNetworkService.network_by_id(arena, _active_vortex_network_id) == null:
+		_create_vortex_network()
+		return
+	for index in range(dynamic_special_option.item_count):
+		if StringName(dynamic_special_option.get_item_metadata(index)) == &"vortex_network":
+			dynamic_special_option.select(index)
+			break
+	_select_dynamic_tool(ArenaStudioCanvas.Tool.SPAWN)
+	_set_status("Réseau actif %s : clic ajoute, clic droit retire." % _active_vortex_network_id)
 
 
 func _connect_canvas() -> void:
@@ -1930,8 +2426,10 @@ func _connect_canvas() -> void:
 	canvas.calibration_requested.connect(_on_calibration_requested)
 	canvas.calibration_preview_requested.connect(_on_calibration_preview)
 	canvas.anchors_preview_requested.connect(_on_anchors_preview)
+	canvas.transform_commit_requested.connect(_on_transform_commit_requested)
 	canvas.hovered_cell_changed.connect(_on_hovered_cell_changed)
 	canvas.verification_cell_requested.connect(_on_verification_cell_requested)
+	canvas.terrain_pick_requested.connect(_on_terrain_pick_requested)
 
 
 func _set_arena(value: ArenaDefinition, mark_dirty: bool, key := "") -> void:
@@ -3334,6 +3832,8 @@ func _on_stroke_started(_action_name: String) -> void:
 	_stroke_before = arena.to_snapshot()
 	_stroke_changed = false
 	_stroke_cell_count = 0
+	_stroke_transform_commit = false
+	stroke_batch.begin_stroke(arena)
 
 
 func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
@@ -3358,13 +3858,10 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 				changed = ArenaEditingService.clear_obstacle(arena, cell) if erase \
 					else ArenaEditingService.set_obstacle(arena, cell, obstacle_option.selected)
 			ArenaStudioCanvas.Tool.TERRAIN:
-				changed = ArenaDynamicEditingService.paint_terrain(
-					arena, cell, &"void"
-				) if erase else ArenaDynamicEditingService.paint_permanent_terrain(
-					arena, cell, StringName(
-						terrain_option.get_selected_metadata()
-					)
+				var terrain_id := &"void" if erase else StringName(
+					terrain_option.get_selected_metadata()
 				)
+				changed = not stroke_batch.apply_terrain_cells([cell], terrain_id).is_empty()
 			ArenaStudioCanvas.Tool.SPAWN:
 				if erase:
 					for spawn in arena.spawns_at(cell):
@@ -3375,8 +3872,9 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 		if changed:
 			_stroke_changed = true
 			_stroke_cell_count += 1
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	if edit_session != null:
+	if canvas.active_tool != ArenaStudioCanvas.Tool.TERRAIN:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
+	if edit_session != null and canvas.active_tool != ArenaStudioCanvas.Tool.TERRAIN:
 		edit_session.history.notify_preview_changed()
 	canvas.update_terrain_cells(cells)
 	_refresh_inspector(cells[-1] if not cells.is_empty() else GridTransformService.INVALID_CELL)
@@ -3389,20 +3887,20 @@ func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
 		ArenaStudioCanvas.Tool.REMOVE_CELL:
 			return ArenaEditingService.set_cell_state(arena, cell, &"add" if erase else &"remove")
 		ArenaStudioCanvas.Tool.TERRAIN:
-			if erase:
-				return ArenaDynamicEditingService.paint_terrain(arena, cell, &"void")
-			return ArenaDynamicEditingService.paint_permanent_terrain(
-				arena, cell, StringName(dynamic_terrain_option.get_selected_metadata())
+			var terrain_id := &"void" if erase else StringName(
+				dynamic_terrain_option.get_selected_metadata()
 			)
+			return not stroke_batch.apply_terrain_cells([cell], terrain_id).is_empty()
 		ArenaStudioCanvas.Tool.OBSTACLE:
 			var wall_id := &"remove" if erase else StringName(
 				dynamic_wall_option.get_selected_metadata()
 			)
 			return ArenaDynamicEditingService.place_wall(arena, cell, wall_id)
 		ArenaStudioCanvas.Tool.SPAWN:
-			var special_id := &"remove" if erase else StringName(
-				dynamic_special_option.get_selected_metadata()
-			)
+			var selected_special := StringName(dynamic_special_option.get_selected_metadata())
+			if selected_special == &"vortex_network":
+				return _edit_vortex_network_cell(cell, erase)
+			var special_id := &"remove" if erase else selected_special
 			match special_id:
 				&"hero": return ArenaDynamicEditingService.place_spawn(
 					arena, cell, ArenaSpawnDefinition.Kind.HERO_1
@@ -3415,11 +3913,25 @@ func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
 				)
 				&"objective": return ArenaDynamicEditingService.place_objective(arena, cell)
 				&"decoration": return ArenaDynamicEditingService.place_decoration(arena, cell)
-				&"vortex_pair": return _place_vortex_endpoint(cell)
 				&"remove":
 					_clear_pending_vortex()
 					return ArenaDynamicEditingService.remove_special(arena, cell)
 	return false
+
+
+func _edit_vortex_network_cell(cell: Vector2i, erase: bool) -> bool:
+	var network := ArenaVortexNetworkService.network_by_id(arena, _active_vortex_network_id)
+	if network == null:
+		network = ArenaVortexNetworkService.create_network(arena)
+		_active_vortex_network_id = network.network_id
+	var changed := ArenaVortexNetworkService.remove_cell(
+		arena, network.network_id, cell
+	) if erase else ArenaVortexNetworkService.add_cell(arena, network.network_id, cell)
+	if changed:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
+		_refresh_vortex_dialog()
+		_set_status(ArenaVortexNetworkService.behavior_summary(network))
+	return changed
 
 
 func _place_vortex_endpoint(cell: Vector2i) -> bool:
@@ -3438,7 +3950,7 @@ func _place_vortex_endpoint(cell: Vector2i) -> bool:
 	var changed := ArenaDynamicEditingService.place_vortex_pair(arena, entry, cell)
 	if changed:
 		_clear_pending_vortex()
-		_set_status("Paire de vortex créée en authoring. Production et test direct restent bloqués.")
+		_set_status("Paire de vortex créée : runtime, Pathfinder et IA actifs.")
 	else:
 		_set_status("Paire refusée : cellules distinctes et libres requises.", true)
 	return changed
@@ -3454,30 +3966,47 @@ func _on_stroke_finished(action_name: String) -> void:
 	if arena == null:
 		return
 	if not _stroke_changed:
+		stroke_batch.cancel()
 		_stroke_before = {}
 		_stroke_cell_count = 0
+		_stroke_transform_commit = false
 		return
+	var was_transform_commit := _stroke_transform_commit
+	if was_transform_commit:
+		stroke_batch.cancel()
+		_last_stroke_result = {"changed": true, "kind": "grid_transform"}
+	else:
+		_last_stroke_result = stroke_batch.finish() if stroke_batch.is_active() else {}
 	var final_name := action_name
 	if _stroke_cell_count > 0:
 		final_name = "%s — %d case(s)" % [action_name, _stroke_cell_count]
-	_commit_change(final_name, _stroke_before, arena.to_snapshot())
+	var after_snapshot := _grid_transform_snapshot_after(_stroke_before) \
+		if was_transform_commit else arena.to_snapshot()
+	_history_refresh_suppressed = was_transform_commit
+	_commit_change(final_name, _stroke_before, after_snapshot, was_transform_commit)
+	_history_refresh_suppressed = false
 	if not _stroke_before.is_empty():
 		last_operation_label.text = _describe_transform_operation(
-			final_name, _stroke_before, arena.to_snapshot()
+			final_name, _stroke_before, after_snapshot
 		)
 	_stroke_before = {}
 	_stroke_changed = false
-	_refresh_all()
+	_stroke_transform_commit = false
+	if was_transform_commit:
+		_refresh_after_transform_commit()
+	else:
+		_refresh_all(false)
 
 
 func _on_stroke_cancelled() -> void:
-	if edit_session != null and not _stroke_before.is_empty():
+	if _stroke_changed and edit_session != null and not _stroke_before.is_empty():
 		edit_session.apply_snapshot(_stroke_before)
 		arena = edit_session.working_arena
-		ArenaRuntimeBridge.sync_runtime_resources(arena)
+	stroke_batch.cancel()
 	_stroke_before = {}
 	_stroke_changed = false
 	_stroke_cell_count = 0
+	_stroke_transform_commit = false
 	if canvas != null:
 		canvas.arena = arena
 		canvas.refresh_terrain_plan()
@@ -3504,16 +4033,8 @@ func _on_calibration_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2
 func _on_calibration_preview(origin: Vector2, axis_x: Vector2, axis_y: Vector2) -> void:
 	if not GridTransformService.is_invertible(axis_x, axis_y):
 		return
-	arena.grid_origin = origin
-	arena.axis_x = axis_x
-	arena.axis_y = axis_y
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	_stroke_changed = true
-	if edit_session != null:
-		edit_session.history.notify_preview_changed()
-	canvas.queue_redraw()
-	_sync_advanced_values()
-	_refresh_transform_inspector()
+	# Le canvas possÃ¨de la preview : le contrÃ´leur ne touche jamais la Resource
+	# canonique ni l'historique pendant un geste continu.
 
 
 func _on_anchors_preview(cells: Array[Vector2i], pixels: Array[Vector2]) -> void:
@@ -3525,14 +4046,36 @@ func _on_anchors_preview(cells: Array[Vector2i], pixels: Array[Vector2]) -> void
 				or not GridTransformService.is_vector_finite(pixels[index]):
 			return
 		unique[cells[index]] = true
+	# Validation lÃ©gÃ¨re uniquement ; la mutation est rÃ©servÃ©e au commit final.
+
+
+func _on_transform_commit_requested(
+		snapshot: GridTransformSnapshot,
+		cells: Array[Vector2i],
+		pixels: Array[Vector2]
+	) -> void:
+	if arena == null or snapshot == null or cells.size() != pixels.size():
+		return
+	var validation := GridTransformService.validate_snapshot(
+		snapshot,
+		GridTransformService.determinant(arena.axis_x, arena.axis_y)
+	)
+	if not bool(validation.get("ok", false)):
+		return
+	var unique := {}
+	for index in range(cells.size()):
+		if not arena.is_in_bounds(cells[index]) or unique.has(cells[index]) \
+				or not GridTransformService.is_vector_finite(pixels[index]):
+			return
+		unique[cells[index]] = true
+	snapshot.apply_to(arena)
 	arena.calibration_cells = cells.duplicate()
 	arena.calibration_pixels = pixels.duplicate()
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	ArenaRuntimeBridge.sync_runtime_resources(
+		arena, ArenaRuntimeBridge.SyncScope.GRID_TRANSFORM
+	)
 	_stroke_changed = true
-	if edit_session != null:
-		edit_session.history.notify_preview_changed()
-	canvas.queue_redraw()
-	_refresh_calibration_label()
+	_stroke_transform_commit = true
 
 
 func _on_hovered_cell_changed(cell: Vector2i) -> void:
@@ -3574,13 +4117,32 @@ func _on_verification_cell_requested(cell: Vector2i) -> void:
 	_verification_source = GridTransformService.INVALID_CELL
 
 
-func _commit_change(action_name: String, before: Dictionary, after: Dictionary) -> void:
+func _commit_change(
+		action_name: String,
+		before: Dictionary,
+		after: Dictionary,
+		topology_unchanged := false
+	) -> void:
 	if edit_session == null or before == after:
 		return
-	edit_session.commit(action_name, before, after)
+	edit_session.commit(action_name, before, after, topology_unchanged)
 	_autosave()
 	_refresh_title()
 	history_state_changed.emit()
+
+
+func _grid_transform_snapshot_after(before: Dictionary) -> Dictionary:
+	var after := before.duplicate(false)
+	after["grid_origin"] = [arena.grid_origin.x, arena.grid_origin.y]
+	after["axis_x"] = [arena.axis_x.x, arena.axis_x.y]
+	after["axis_y"] = [arena.axis_y.x, arena.axis_y.y]
+	after["calibration_cells"] = arena.calibration_cells.map(
+		func(value): return [value.x, value.y]
+	)
+	after["calibration_pixels"] = arena.calibration_pixels.map(
+		func(value): return [value.x, value.y]
+	)
+	return after
 
 
 func _restore_snapshot(snapshot: Dictionary) -> void:
@@ -3605,8 +4167,9 @@ func _flush_recovery() -> void:
 	_refresh_recovery_button()
 
 
-func _refresh_all() -> void:
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+func _refresh_all(sync_runtime := true) -> void:
+	if sync_runtime:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
 	canvas.refresh_terrain_plan()
 	canvas.queue_redraw()
 	if runtime_preview != null and runtime_preview.visible:
@@ -3616,6 +4179,18 @@ func _refresh_all() -> void:
 	_refresh_calibration_label()
 	_refresh_dynamic_palette()
 	_refresh_destination_panel()
+	_autosave()
+
+
+func _refresh_after_transform_commit() -> void:
+	canvas.queue_redraw()
+	if runtime_preview != null and runtime_preview.visible:
+		runtime_preview.set_arena(arena)
+	_sync_advanced_values()
+	_refresh_title()
+	_refresh_calibration_label()
+	_refresh_transform_inspector()
+	_mark_destination_plan_obsolete()
 	_autosave()
 
 
@@ -3630,6 +4205,9 @@ func _refresh_title() -> void:
 
 func _on_history_changed() -> void:
 	if edit_session == null:
+		return
+	if _history_refresh_suppressed:
+		history_state_changed.emit()
 		return
 	arena = edit_session.working_arena
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
@@ -3717,14 +4295,24 @@ func cancel_active_gesture() -> bool:
 
 
 func _refresh_calibration_label() -> void:
-	if arena == null or arena.calibration_cells.size() < 3:
+	if arena == null:
+		return
+	var count := mini(arena.calibration_cells.size(), arena.calibration_pixels.size())
+	if count < 3:
 		calibration_label.text = "Alignement a verifier"
 		return
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	var error := arena.painted_map_visual_data.calibration_rms()
-	var maximum := arena.painted_map_visual_data.calibration_max_error()
+	var sum_squared := 0.0
+	var maximum := 0.0
+	for index in range(count):
+		var predicted := GridTransformService.cell_to_position(
+			arena.calibration_cells[index], arena.grid_origin, arena.axis_x, arena.axis_y
+		)
+		var anchor_error := predicted.distance_to(arena.calibration_pixels[index])
+		sum_squared += anchor_error * anchor_error
+		maximum = maxf(maximum, anchor_error)
+	var error := sqrt(sum_squared / float(count))
 	var quality := GridTransformService.calibration_quality(
-		error, arena.calibration_cells.size()
+		error, count
 	)
 	calibration_label.text = {
 		&"excellent": "Alignement excellent",
@@ -3987,6 +4575,24 @@ func _context_discard() -> Dictionary:
 	_activate_session(replacement)
 	if project_context != null:
 		project_context.set_dirty(&"arena", false)
+	return {"ok": true}
+
+
+func _context_is_dirty() -> bool:
+	return dirty
+
+
+func _context_snapshot() -> Dictionary:
+	return edit_session.working_arena.to_snapshot().duplicate(true) \
+		if edit_session != null and edit_session.working_arena != null else {}
+
+
+func _context_restore(snapshot: Dictionary) -> Dictionary:
+	if edit_session == null or snapshot.is_empty():
+		return {"ok": false, "error": "Snapshot Arena absent."}
+	edit_session.apply_snapshot(snapshot)
+	arena = edit_session.working_arena
+	_on_history_changed()
 	return {"ok": true}
 
 
@@ -4655,10 +5261,15 @@ func _refresh_permanent_terrain_options() -> void:
 		var first_enabled := -1
 		for entry in entries:
 			var terrain_id := StringName(entry.stable_id)
+			if terrain_id == &"stone":
+				option.add_separator("SOLS SANS EFFET")
+			elif terrain_id == &"water":
+				option.add_separator("TERRAINS À EFFET")
+			elif terrain_id == &"void":
+				option.add_separator("TOPOLOGIE")
 			var enabled := bool(entry.enabled)
-			var state := (
-				"praticable" if bool(entry.walkable) else "non praticable"
-			) if enabled else "INACTIF — %s" % str(entry.reason)
+			var state := "outil Retirer / clic droit" if terrain_id == &"void" \
+				else (_terrain_palette_summary(terrain_id) if enabled else str(entry.reason))
 			option.add_item("%s • %s • %s" % [
 				entry.display_name, terrain_id, state,
 			])
@@ -4683,17 +5294,68 @@ func _refresh_permanent_terrain_options() -> void:
 		))
 
 
+func _terrain_palette_summary(terrain_id: StringName) -> String:
+	return {
+		&"stone": "praticable • aucun effet",
+		&"neutral": "praticable • aucun effet",
+		&"water": "praticable • applique Mouillé",
+		&"ice": "praticable • applique Gelé",
+		&"lava": "praticable • applique Brûlure",
+		&"poison": "praticable • applique Poison",
+		&"steam": "praticable • bloque la vision",
+		&"electrified_water": "praticable • applique Mouillé et Choc",
+	}.get(terrain_id, "praticable")
+
+
+func _select_quick_terrain(terrain_id: StringName) -> void:
+	var option := dynamic_terrain_option \
+		if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION else terrain_option
+	if option == null:
+		return
+	for index in range(option.item_count):
+		if StringName(option.get_item_metadata(index)) == terrain_id \
+				and not option.is_item_disabled(index):
+			option.select(index)
+			break
+	tool_list.select(ArenaStudioCanvas.Tool.TERRAIN)
+	_on_tool_selected(ArenaStudioCanvas.Tool.TERRAIN)
+	canvas.set_brush_preview_terrain(terrain_id)
+	_recent_terrain_ids.erase(terrain_id)
+	_recent_terrain_ids.push_front(terrain_id)
+	while _recent_terrain_ids.size() > 3:
+		_recent_terrain_ids.pop_back()
+	if recent_terrain_label != null:
+		var recent_names := PackedStringArray()
+		for recent_id in _recent_terrain_ids:
+			recent_names.append(str(
+				ArenaTerrainRegistry.get_entry(recent_id).get("name", recent_id)
+			))
+		recent_terrain_label.text = "Récents : %s" % ", ".join(recent_names)
+	_set_status("Terrain actif : %s — Alt+clic prélève sous le curseur." % terrain_id)
+
+
+func _on_terrain_pick_requested(cell: Vector2i) -> void:
+	if arena == null:
+		return
+	var definition := arena.get_cell_definition(cell)
+	if definition == null or definition.terrain_id == &"":
+		_set_status("Aucun terrain prélevable sur cette cellule.", true)
+		return
+	_select_quick_terrain(definition.terrain_id)
+	_set_status("Terrain prélevé en (%d, %d) : %s." % [cell.x, cell.y, definition.terrain_id])
+
+
 func _selected_terrain_id(option: OptionButton) -> StringName:
 	if option == null or option.selected < 0 or option.selected >= option.item_count:
 		return &"stone"
-	return StringName(option.get_item_metadata(option.selected))
+	return StringName(str(option.get_item_metadata(option.selected)))
 
 
 func _selected_enabled_terrain_id(option: OptionButton) -> StringName:
 	if option == null or option.selected < 0 or option.selected >= option.item_count \
 			or option.is_item_disabled(option.selected):
 		return &""
-	return StringName(option.get_item_metadata(option.selected))
+	return StringName(str(option.get_item_metadata(option.selected)))
 
 
 func _resize_dynamic_document() -> void:

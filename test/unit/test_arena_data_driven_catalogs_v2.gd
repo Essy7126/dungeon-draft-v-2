@@ -5,9 +5,10 @@ func before_each() -> void:
 	ArenaCatalogService.reset_cache()
 
 
-func test_terrain_catalog_preserves_every_historical_value() -> void:
+func test_terrain_catalog_preserves_historical_values_and_complete_active_set() -> void:
 	assert_eq(ArenaTerrainRegistry.all_ids(true), [
-		&"ice", &"lava", &"neutral", &"normal", &"stone", &"void", &"water",
+		&"electrified_water", &"ice", &"lava", &"neutral", &"normal",
+		&"poison", &"steam", &"stone", &"void", &"water",
 	])
 	var expected := {
 		&"void": [GridData.CellType.HOLE, false, "", "101722"],
@@ -16,7 +17,12 @@ func test_terrain_catalog_preserves_every_historical_value() -> void:
 		&"neutral": [GridData.CellType.NORMAL, true, "neutral.png", "d1c29e"],
 		&"water": [GridData.CellType.NORMAL, true, "water.png", "38c8ed"],
 		&"ice": [GridData.CellType.ICE, true, "ice.png", "c8f4ff"],
-		&"lava": [GridData.CellType.WALL, false, "lava.png", "ff6537"],
+		&"lava": [GridData.CellType.LAVA, true, "lava.png", "ff6537"],
+		&"poison": [GridData.CellType.NORMAL, true, "poison.png", "6bc72e"],
+		&"steam": [GridData.CellType.NORMAL, true, "steam.png", "bfbfbf"],
+		&"electrified_water": [
+			GridData.CellType.NORMAL, true, "electrified_water.png", "40bfff",
+		],
 	}
 	for terrain_id in expected:
 		var definition := ArenaTerrainRegistry.definition_for(terrain_id)

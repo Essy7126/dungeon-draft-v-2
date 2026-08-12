@@ -14,7 +14,7 @@ func test_01_to_06_data_contract_and_undo_restore_terrain_id() -> void:
 	assert_eq(arena.get_cell_definition(Vector2i(0, 0)).cell_type, GridData.CellType.NORMAL) # 2
 	assert_eq(arena.get_cell_definition(Vector2i(0, 1)).cell_type, GridData.CellType.NORMAL) # 3
 	assert_eq(str(arena.get_cell_definition(Vector2i(0, 1)).terrain_id), "stone")
-	assert_eq(arena.get_cell_definition(Vector2i(3, 0)).cell_type, GridData.CellType.WALL) # 4
+	assert_eq(arena.get_cell_definition(Vector2i(3, 0)).cell_type, GridData.CellType.LAVA) # 4
 	assert_eq(str(arena.get_cell_definition(Vector2i(3, 0)).terrain_id), "lava")
 	var after := arena.to_snapshot().duplicate(true)
 	assert_true(session.commit("Peindre eau", before, after))

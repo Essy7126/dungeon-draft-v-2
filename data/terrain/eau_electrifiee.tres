@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="TerrainEffectData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+[ext_resource type="Resource" path="res://data/status/core/mouille.tres" id="2_status"]
+
+[resource]
+script = ExtResource("1_terrain")
+effect_name = "eau électrifiée"
+description = "Applique Mouillé et inflige le Choc électrique canonique à l'entrée."
+color = Color(0.25, 0.75, 1, 1)
+surface_id = &"electrified_water"
+visual_terrain_id = &"electrified_water"
+trigger = 1
+damage = 20
+damage_type = 1
+element = 3
+applied_status = ExtResource("2_status")
+dangerous_for_ai = true
+ai_danger_weight = 3.0
+duration = -1

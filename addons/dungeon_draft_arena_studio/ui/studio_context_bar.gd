@@ -170,7 +170,9 @@ func _toggle_technical_details() -> void:
 
 
 func _show_transition(transition: Dictionary) -> void:
-	var domains := (transition.get("dirty_domains", {}) as Dictionary).keys()
+	var domains: Array[String] = []
+	for domain_value in (transition.get("dirty_domains", {}) as Dictionary).keys():
+		domains.append(context.human_domain_name(StringName(domain_value)))
 	transition_dialog.dialog_text = "Le changement de contexte remplacerait une copie de travail modifiee.\n\nDomaines : %s\n\nChoisissez explicitement quoi faire." % ", ".join(domains)
 	transition_dialog.popup_centered()
 

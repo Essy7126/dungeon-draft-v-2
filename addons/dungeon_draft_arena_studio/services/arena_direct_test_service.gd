@@ -20,14 +20,6 @@ static func prepare(
 	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
-	if not arena.vortex_pairs.is_empty():
-		return {
-			"ok": false,
-			"error": "vortex_runtime_uncertified",
-			"pair_count": arena.vortex_pairs.size(),
-			"production_placeable": false,
-			"produced_bundle_loaded": false,
-		}
 	_consume_previous_request()
 	var generation_id := "%d_%d" % [
 		int(Time.get_unix_time_from_system() * 1000000.0), Time.get_ticks_usec(),

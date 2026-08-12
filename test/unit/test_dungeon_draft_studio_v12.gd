@@ -20,7 +20,7 @@ func test_schema_v2_migration_and_shared_registries_are_deterministic() -> void:
 	for wall_id in [&"normal", &"fire", &"ice"]:
 		assert_true(ArenaWallRegistry.has(wall_id), str(wall_id))
 		assert_not_null(ArenaWallRegistry.config_for(wall_id))
-	assert_eq(int(ArenaTerrainRegistry.get_entry(&"lava").cell_type), GridData.CellType.WALL)
+	assert_eq(int(ArenaTerrainRegistry.get_entry(&"lava").cell_type), GridData.CellType.LAVA)
 
 
 func test_dynamic_lab_round_trip_preserves_complete_arena_document() -> void:

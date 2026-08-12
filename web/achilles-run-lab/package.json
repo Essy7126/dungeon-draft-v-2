@@ -1,0 +1,47 @@
+{
+  "name": "dungeon-draft-achilles-run-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
+    "test:e2e": "playwright test",
+    "simulate": "tsx scripts/simulate.ts",
+    "validate:content": "tsx scripts/validate-content.ts",
+    "inspect:achilles": "tsx scripts/inspect-achilles-asset.ts",
+    "verify:core": "npm run typecheck && npm run lint && npm run validate:content && npm run test && npm run build",
+    "verify": "npm run verify:core && npm run test:e2e && npm run simulate -- --runs 100 --seed 12345 --out artifacts/validation/simulation-verify.json"
+  },
+  "dependencies": {
+    "@babylonjs/core": "9.20.0",
+    "@babylonjs/loaders": "9.20.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.1",
+    "@types/node": "26.2.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "6.0.5",
+    "@vitest/coverage-v8": "4.1.10",
+    "eslint": "10.8.1",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "tsx": "4.23.12",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.67.0",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
+  }
+}

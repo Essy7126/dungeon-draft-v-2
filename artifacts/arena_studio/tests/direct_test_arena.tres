@@ -1,784 +1,797 @@
 [gd_resource type="Resource" script_class="ArenaDefinition" format=3]
 
-[ext_resource type="PackedScene" path="res://data/rooms/maps/painted_battle.tscn" id="1_s7gtm"]
-[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_cell_definition.gd" id="2_j3tam"]
-[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_decoration_definition.gd" id="3_bwrcg"]
-[ext_resource type="Resource" path="res://data/encounters/first_run_room_01_encounter.tres" id="4_acbjt"]
-[ext_resource type="Script" path="res://data/unit_data.gd" id="5_kb52d"]
-[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="6_hv3gp"]
-[ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="7_he2q6"]
-[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_objective_definition.gd" id="8_jc0gk"]
-[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_obstacle_definition.gd" id="9_gajan"]
-[ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_presentation.tres" id="10_qm0ph"]
-[ext_resource type="Script" path="res://data/maps/painted/painted_map_visual_data.gd" id="11_osmdi"]
-[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_definition.gd" id="12_y474m"]
-[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_spawn_definition.gd" id="13_hbcf3"]
-[ext_resource type="Script" path="res://data/rooms/room_wave_data.gd" id="14_7dc75"]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/painted_battle.tscn" id="1_bwrcg"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_cell_definition.gd" id="2_acbjt"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_decoration_definition.gd" id="3_kb52d"]
+[ext_resource type="Resource" path="res://data/encounters/first_run_room_01_encounter.tres" id="4_hv3gp"]
+[ext_resource type="Script" path="res://data/unit_data.gd" id="5_he2q6"]
+[ext_resource type="Resource" path="res://data/units/ennemie/skeleton_melee.tres" id="6_jc0gk"]
+[ext_resource type="Script" path="res://data/maps/painted/room_grid_layout.gd" id="7_gajan"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_objective_definition.gd" id="8_qm0ph"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_obstacle_definition.gd" id="9_osmdi"]
+[ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_presentation.tres" id="10_y474m"]
+[ext_resource type="Script" path="res://data/maps/painted/painted_map_visual_data.gd" id="11_hbcf3"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_definition.gd" id="12_7dc75"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_spawn_definition.gd" id="13_wbqyv"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_vortex_network_definition.gd" id="14_atl1d"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_vortex_pair_definition.gd" id="15_n068v"]
+[ext_resource type="Script" path="res://data/rooms/room_wave_data.gd" id="16_45gcd"]
 
-[sub_resource type="Resource" id="Resource_wbqyv"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_mxxho"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 0)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_atl1d"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_q3n44"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 0)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_n068v"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_buoi7"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 0)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_45gcd"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_am0cc"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 0)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_mxxho"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_akpif"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 0)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_q3n44"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ku1cj"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 0)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_buoi7"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_vpgt6"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 1)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_am0cc"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_3klex"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 1)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_akpif"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_1o24h"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 1)
 
-[sub_resource type="Resource" id="Resource_ku1cj"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_n2i4l"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 1)
 
-[sub_resource type="Resource" id="Resource_vpgt6"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_a82yg"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 1)
 
-[sub_resource type="Resource" id="Resource_3klex"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_poc0q"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 1)
 
-[sub_resource type="Resource" id="Resource_1o24h"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_y1fhd"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 1)
 
-[sub_resource type="Resource" id="Resource_n2i4l"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_fp305"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 1)
 
-[sub_resource type="Resource" id="Resource_a82yg"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_v8k36"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 1)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_poc0q"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ku3xd"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 1)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_y1fhd"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_4oni7"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 2)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_fp305"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_x77c8"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 2)
 
-[sub_resource type="Resource" id="Resource_v8k36"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_53yaq"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 2)
 
-[sub_resource type="Resource" id="Resource_ku3xd"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_by2i6"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 2)
 
-[sub_resource type="Resource" id="Resource_4oni7"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_h2sli"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 2)
 
-[sub_resource type="Resource" id="Resource_x77c8"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_e5ykb"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 2)
 
-[sub_resource type="Resource" id="Resource_53yaq"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_rohug"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 2)
 
-[sub_resource type="Resource" id="Resource_by2i6"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_fnhgn"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 2)
 
-[sub_resource type="Resource" id="Resource_h2sli"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_d6kb8"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 2)
 
-[sub_resource type="Resource" id="Resource_e5ykb"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_6kgb3"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 2)
 
-[sub_resource type="Resource" id="Resource_rohug"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_wwve5"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 2)
 
-[sub_resource type="Resource" id="Resource_fnhgn"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_b7krf"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 2)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_d6kb8"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_4rrit"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(0, 3)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_6kgb3"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_jcr2l"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 3)
 
-[sub_resource type="Resource" id="Resource_wwve5"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_djn81"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 3)
 
-[sub_resource type="Resource" id="Resource_b7krf"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_1vwiv"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 3)
 
-[sub_resource type="Resource" id="Resource_4rrit"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_0012q"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 3)
 
-[sub_resource type="Resource" id="Resource_jcr2l"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_0hfad"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 3)
 
-[sub_resource type="Resource" id="Resource_djn81"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_n0qi5"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 3)
 
-[sub_resource type="Resource" id="Resource_1vwiv"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_jx7xr"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 3)
 
-[sub_resource type="Resource" id="Resource_0012q"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ty2pk"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 3)
 
-[sub_resource type="Resource" id="Resource_0hfad"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_yic30"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 3)
 
-[sub_resource type="Resource" id="Resource_n0qi5"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_tmfuc"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 3)
 
-[sub_resource type="Resource" id="Resource_jx7xr"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_lvfwd"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 3)
 
-[sub_resource type="Resource" id="Resource_ty2pk"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_h36if"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 3)
 
-[sub_resource type="Resource" id="Resource_yic30"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ylhn2"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 3)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_tmfuc"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_4u6fs"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(0, 4)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_lvfwd"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_1pvrm"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 4)
 
-[sub_resource type="Resource" id="Resource_h36if"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_bho7p"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 4)
 
-[sub_resource type="Resource" id="Resource_ylhn2"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_qwujj"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 4)
 
-[sub_resource type="Resource" id="Resource_4u6fs"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ba5oe"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 4)
 
-[sub_resource type="Resource" id="Resource_1pvrm"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_vsopf"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 4)
 
-[sub_resource type="Resource" id="Resource_bho7p"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_i2gb2"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 4)
 
-[sub_resource type="Resource" id="Resource_qwujj"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_1haiw"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 4)
 
-[sub_resource type="Resource" id="Resource_ba5oe"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_tlhup"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 4)
 
-[sub_resource type="Resource" id="Resource_vsopf"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_w3qex"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 4)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (R)."
 
-[sub_resource type="Resource" id="Resource_i2gb2"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_rolr1"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 4)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (R)."
 
-[sub_resource type="Resource" id="Resource_1haiw"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_pvpim"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 4)
 
-[sub_resource type="Resource" id="Resource_tlhup"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_4jr1k"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 4)
 
-[sub_resource type="Resource" id="Resource_w3qex"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_wie71"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 4)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_rolr1"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_udire"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(0, 5)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_pvpim"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_klpwc"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 5)
 
-[sub_resource type="Resource" id="Resource_4jr1k"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ymdxt"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 5)
 
-[sub_resource type="Resource" id="Resource_wie71"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_w3b2h"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 5)
 
-[sub_resource type="Resource" id="Resource_udire"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ula4v"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 5)
 playable = false
 cell_type = 1
-
-[sub_resource type="Resource" id="Resource_klpwc"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(5, 5)
-
-[sub_resource type="Resource" id="Resource_ymdxt"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(6, 5)
-
-[sub_resource type="Resource" id="Resource_w3b2h"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(7, 5)
-
-[sub_resource type="Resource" id="Resource_ula4v"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(8, 5)
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (#)."
 
 [sub_resource type="Resource" id="Resource_75kp1"]
-script = ExtResource("2_j3tam")
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(5, 5)
+
+[sub_resource type="Resource" id="Resource_2rskg"]
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(6, 5)
+
+[sub_resource type="Resource" id="Resource_oiira"]
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(7, 5)
+
+[sub_resource type="Resource" id="Resource_8vssd"]
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(8, 5)
+
+[sub_resource type="Resource" id="Resource_kigg6"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 5)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (R)."
 
-[sub_resource type="Resource" id="Resource_2rskg"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_wjrii"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 5)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (R)."
 
-[sub_resource type="Resource" id="Resource_oiira"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_2vp4y"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 5)
 
-[sub_resource type="Resource" id="Resource_8vssd"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ptw6n"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 5)
 
-[sub_resource type="Resource" id="Resource_kigg6"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_kkveh"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 5)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_wjrii"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_3x7w1"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(0, 6)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_2vp4y"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_snm2j"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 6)
 
-[sub_resource type="Resource" id="Resource_ptw6n"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_w5wxi"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 6)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (#)."
 
-[sub_resource type="Resource" id="Resource_kkveh"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_daxvm"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 6)
 playable = false
 cell_type = 1
-
-[sub_resource type="Resource" id="Resource_3x7w1"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(4, 6)
-
-[sub_resource type="Resource" id="Resource_snm2j"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(5, 6)
-
-[sub_resource type="Resource" id="Resource_w5wxi"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(6, 6)
-
-[sub_resource type="Resource" id="Resource_daxvm"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(7, 6)
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (#)."
 
 [sub_resource type="Resource" id="Resource_746ao"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(8, 6)
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(4, 6)
 
 [sub_resource type="Resource" id="Resource_0hd76"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(9, 6)
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(5, 6)
 
 [sub_resource type="Resource" id="Resource_q55y6"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(10, 6)
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(6, 6)
 
 [sub_resource type="Resource" id="Resource_msuco"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(11, 6)
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(7, 6)
 
 [sub_resource type="Resource" id="Resource_uiocy"]
-script = ExtResource("2_j3tam")
-coordinate = Vector2i(12, 6)
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(8, 6)
 
 [sub_resource type="Resource" id="Resource_pk0sx"]
-script = ExtResource("2_j3tam")
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(9, 6)
+
+[sub_resource type="Resource" id="Resource_mko1w"]
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(10, 6)
+
+[sub_resource type="Resource" id="Resource_tbk45"]
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(11, 6)
+
+[sub_resource type="Resource" id="Resource_m6bqn"]
+script = ExtResource("2_acbjt")
+coordinate = Vector2i(12, 6)
+
+[sub_resource type="Resource" id="Resource_essad"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 6)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_mko1w"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_iswho"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(0, 7)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_tbk45"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_c0hij"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 7)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_m6bqn"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_12732"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 7)
 
-[sub_resource type="Resource" id="Resource_essad"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_eukog"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 7)
 
-[sub_resource type="Resource" id="Resource_iswho"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_motnm"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 7)
 
-[sub_resource type="Resource" id="Resource_c0hij"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_6d4rl"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 7)
 
-[sub_resource type="Resource" id="Resource_12732"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_haixd"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 7)
 
-[sub_resource type="Resource" id="Resource_eukog"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_se6dy"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 7)
 
-[sub_resource type="Resource" id="Resource_motnm"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_4t3el"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 7)
 
-[sub_resource type="Resource" id="Resource_6d4rl"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_g2kwa"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 7)
 
-[sub_resource type="Resource" id="Resource_haixd"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_pumsi"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 7)
 
-[sub_resource type="Resource" id="Resource_se6dy"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_6h03f"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 7)
 
-[sub_resource type="Resource" id="Resource_4t3el"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_oevrl"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 7)
 
-[sub_resource type="Resource" id="Resource_g2kwa"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_d6me7"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 7)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_pumsi"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_2pm3r"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 8)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_6h03f"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_858dj"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 8)
 
-[sub_resource type="Resource" id="Resource_oevrl"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_iyymo"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 8)
 
-[sub_resource type="Resource" id="Resource_d6me7"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_mkxki"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 8)
 
-[sub_resource type="Resource" id="Resource_2pm3r"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_jhqv4"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 8)
 
-[sub_resource type="Resource" id="Resource_858dj"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ca3pj"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 8)
 
-[sub_resource type="Resource" id="Resource_iyymo"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_7j06s"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 8)
 
-[sub_resource type="Resource" id="Resource_mkxki"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_te5vn"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 8)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (#)."
 
-[sub_resource type="Resource" id="Resource_jhqv4"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_b8h3m"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 8)
 
-[sub_resource type="Resource" id="Resource_ca3pj"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_tab0u"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 8)
 
-[sub_resource type="Resource" id="Resource_7j06s"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_03bol"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 8)
 
-[sub_resource type="Resource" id="Resource_te5vn"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_7lsug"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 8)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_b8h3m"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_2n7og"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 9)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_tab0u"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_0ibec"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 9)
 
-[sub_resource type="Resource" id="Resource_03bol"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_jcuqa"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 9)
 
-[sub_resource type="Resource" id="Resource_7lsug"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_hkwkk"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 9)
 
-[sub_resource type="Resource" id="Resource_2n7og"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_2suae"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 9)
 
-[sub_resource type="Resource" id="Resource_0ibec"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_onmno"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 9)
 
-[sub_resource type="Resource" id="Resource_jcuqa"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_pqr5i"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 9)
 
-[sub_resource type="Resource" id="Resource_hkwkk"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ymcsu"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 9)
 
-[sub_resource type="Resource" id="Resource_2suae"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_4hfy0"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 9)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (#)."
 
-[sub_resource type="Resource" id="Resource_onmno"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_gaxpr"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 9)
 
-[sub_resource type="Resource" id="Resource_pqr5i"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_h4rkr"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 9)
 
-[sub_resource type="Resource" id="Resource_ymcsu"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_2myxq"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 9)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_4hfy0"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_qkxb5"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(0, 10)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_gaxpr"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_gfuo5"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 10)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_h4rkr"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_u2i3l"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 10)
 
-[sub_resource type="Resource" id="Resource_2myxq"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_u1rdv"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 10)
 
-[sub_resource type="Resource" id="Resource_qkxb5"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_txsbl"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 10)
 
-[sub_resource type="Resource" id="Resource_gfuo5"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_pkth6"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 10)
 
-[sub_resource type="Resource" id="Resource_u2i3l"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_26fva"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 10)
 
-[sub_resource type="Resource" id="Resource_u1rdv"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_yvmlm"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 10)
 
-[sub_resource type="Resource" id="Resource_txsbl"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_nm1yw"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 10)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (#)."
 
-[sub_resource type="Resource" id="Resource_pkth6"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_6bcup"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 10)
 playable = false
 cell_type = 1
+production_note = "Override explicite preserve depuis RoomGridLayout 'room_01_forest' (#)."
 
-[sub_resource type="Resource" id="Resource_26fva"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_m0cin"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 10)
 
-[sub_resource type="Resource" id="Resource_yvmlm"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_1w28a"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 10)
 
-[sub_resource type="Resource" id="Resource_nm1yw"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_y1rkq"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 10)
 
-[sub_resource type="Resource" id="Resource_6bcup"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_i2ftc"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(13, 10)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_m0cin"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_msnmy"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(1, 11)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_1w28a"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_elghd"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 11)
 
-[sub_resource type="Resource" id="Resource_y1rkq"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_737w0"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 11)
 
-[sub_resource type="Resource" id="Resource_i2ftc"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_dcixf"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 11)
 
-[sub_resource type="Resource" id="Resource_msnmy"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_pa3rr"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 11)
 
-[sub_resource type="Resource" id="Resource_elghd"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_u5w1m"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 11)
 
-[sub_resource type="Resource" id="Resource_737w0"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ewxyc"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 11)
 
-[sub_resource type="Resource" id="Resource_dcixf"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_tndst"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 11)
 
-[sub_resource type="Resource" id="Resource_pa3rr"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_6jr03"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 11)
 
-[sub_resource type="Resource" id="Resource_u5w1m"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_3xi6w"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 11)
 
-[sub_resource type="Resource" id="Resource_ewxyc"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_kifk8"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 11)
 
-[sub_resource type="Resource" id="Resource_tndst"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_1ijin"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(12, 11)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_6jr03"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_vdllj"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(2, 12)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_3xi6w"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_k7aw2"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(3, 12)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_kifk8"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_7rtug"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 12)
 
-[sub_resource type="Resource" id="Resource_1ijin"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_loq84"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 12)
 
-[sub_resource type="Resource" id="Resource_vdllj"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_6hy8g"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 12)
 
-[sub_resource type="Resource" id="Resource_k7aw2"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_72qkr"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 12)
 
-[sub_resource type="Resource" id="Resource_7rtug"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_tkoq8"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 12)
 
-[sub_resource type="Resource" id="Resource_loq84"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_o0p7d"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 12)
 
-[sub_resource type="Resource" id="Resource_6hy8g"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ebbhx"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(10, 12)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_72qkr"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_351bj"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(11, 12)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_tkoq8"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_kiq46"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(4, 13)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_o0p7d"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_ulk51"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(5, 13)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_ebbhx"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_2q7ou"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(6, 13)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_351bj"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_1xxim"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(7, 13)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_kiq46"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_nnmmk"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(8, 13)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_ulk51"]
-script = ExtResource("2_j3tam")
+[sub_resource type="Resource" id="Resource_24t4i"]
+script = ExtResource("2_acbjt")
 coordinate = Vector2i(9, 13)
 playable = false
 border = true
 
-[sub_resource type="Resource" id="Resource_2q7ou"]
-script = ExtResource("7_he2q6")
+[sub_resource type="Resource" id="Resource_mlvfj"]
+script = ExtResource("7_gajan")
 layout_id = &"room_01_forest"
 debug_name = "Salle 1 - Gué forestier"
 layout_rows = PackedStringArray("XXXXXXXXXXXXXX", "XXXX......XXXX", "XX..........XX", "X............X", "X........##..X", "X...#....##..X", "X.##.........X", "XX...........X", "XXX......#...X", "XXX.......#..X", "XX......##...X", "XX..........XX", "XXXX......XXXX", "XXXXXXXXXXXXXX")
@@ -795,65 +808,955 @@ Vector2i(10, 4): 1,
 Vector2i(10, 5): 1,
 Vector2i(10, 9): 1
 }
+terrain_property_overrides = {
+Vector2i(1, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(1, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(2, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(3, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(4, 12): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(5, 12): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(6, 12): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(7, 12): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(8, 12): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 1): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(9, 12): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(10, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(10, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(10, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(10, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(10, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(10, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(10, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 2): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(11, 11): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 3): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 4): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 5): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 6): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 7): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 8): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 9): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+},
+Vector2i(12, 10): {
+"ai_danger_weight": 0.0,
+"movement_cost": 1,
+"projectile_passable": true,
+"terrain_id": &"normal",
+"transparent": true,
+"walkable": true
+}
+}
 visual_only_cells = Array[Vector2i]([Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0), Vector2i(2, 1), Vector2i(3, 1), Vector2i(10, 1), Vector2i(11, 1), Vector2i(1, 2), Vector2i(12, 2), Vector2i(0, 3), Vector2i(13, 3), Vector2i(0, 4), Vector2i(13, 4), Vector2i(0, 5), Vector2i(13, 5), Vector2i(0, 6), Vector2i(13, 6), Vector2i(0, 7), Vector2i(1, 7), Vector2i(13, 7), Vector2i(2, 8), Vector2i(13, 8), Vector2i(2, 9), Vector2i(13, 9), Vector2i(0, 10), Vector2i(1, 10), Vector2i(13, 10), Vector2i(1, 11), Vector2i(12, 11), Vector2i(2, 12), Vector2i(3, 12), Vector2i(10, 12), Vector2i(11, 12), Vector2i(4, 13), Vector2i(5, 13), Vector2i(6, 13), Vector2i(7, 13), Vector2i(8, 13), Vector2i(9, 13)])
 
-[sub_resource type="Resource" id="Resource_1xxim"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_ope5v"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_9_4"
 cell = Vector2i(9, 4)
 
-[sub_resource type="Resource" id="Resource_nnmmk"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_v1ixv"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_10_4"
 cell = Vector2i(10, 4)
 
-[sub_resource type="Resource" id="Resource_24t4i"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_oc448"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_4_5"
 cell = Vector2i(4, 5)
 
-[sub_resource type="Resource" id="Resource_mlvfj"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_t4fbo"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_9_5"
 cell = Vector2i(9, 5)
 
-[sub_resource type="Resource" id="Resource_ope5v"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_e58fv"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_10_5"
 cell = Vector2i(10, 5)
 
-[sub_resource type="Resource" id="Resource_v1ixv"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_lf0tk"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_2_6"
 cell = Vector2i(2, 6)
 
-[sub_resource type="Resource" id="Resource_oc448"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_hwyq8"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_3_6"
 cell = Vector2i(3, 6)
 
-[sub_resource type="Resource" id="Resource_t4fbo"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_ublay"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_9_8"
 cell = Vector2i(9, 8)
 
-[sub_resource type="Resource" id="Resource_e58fv"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_eeqdx"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_10_9"
 cell = Vector2i(10, 9)
 
-[sub_resource type="Resource" id="Resource_lf0tk"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_e5w1b"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_8_10"
 cell = Vector2i(8, 10)
 
-[sub_resource type="Resource" id="Resource_hwyq8"]
-script = ExtResource("9_gajan")
+[sub_resource type="Resource" id="Resource_ri3vh"]
+script = ExtResource("9_osmdi")
 obstacle_id = &"legacy_9_10"
 cell = Vector2i(9, 10)
 
-[sub_resource type="Resource" id="Resource_ublay"]
-script = ExtResource("11_osmdi")
+[sub_resource type="Resource" id="Resource_le220"]
+script = ExtResource("11_hbcf3")
 map_id = &"room_01_forest"
 debug_name = "Salle 1 - Gué forestier"
 background_texture_path = "res://asset/map/painted/room_01_forest/forest_background_v2.webp"
@@ -861,99 +1764,108 @@ source_image_size = Vector2i(1376, 768)
 grid_origin = Vector2(688, 164.97778)
 camera_offset = Vector2(0, 34)
 camera_zoom = 1.1
-presentation_profile = ExtResource("10_qm0ph")
+presentation_profile = ExtResource("10_y474m")
 foreground_occluder_polygon = PackedVector2Array(805, 423, 806, 385, 820, 380, 821, 340, 839, 331, 839, 315, 855, 307, 871, 319, 884, 317, 887, 351, 903, 355, 906, 413, 894, 421, 889, 439, 850, 447, 827, 439)
 foreground_occluder_sort_y = 444.0
 foreground_full_hide_rect = Rect2(795, 240, 135, 204)
 calibration_cells = Array[Vector2i]([Vector2i(4, 0), Vector2i(9, 0), Vector2i(0, 3), Vector2i(13, 3), Vector2i(6, 6), Vector2i(3, 10), Vector2i(10, 10), Vector2i(4, 13), Vector2i(9, 13)])
 calibration_pixels = Array[Vector2]([Vector2(825.6, 233.24445), Vector2(997.6, 318.5778), Vector2(584.8, 216.17778), Vector2(1032, 438.04443), Vector2(688, 369.77777), Vector2(447.2, 386.84445), Vector2(688, 506.3111), Vector2(378.4, 455.1111), Vector2(550.4, 540.44446)])
 
-[sub_resource type="Resource" id="Resource_eeqdx"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_maqke"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_hero_0"
 kind = 0
 unit_id = &"elf"
 cell = Vector2i(4, 9)
 
-[sub_resource type="Resource" id="Resource_e5w1b"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_a3y8y"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_hero_1"
 kind = 1
 unit_id = &"mage"
 cell = Vector2i(3, 10)
 
-[sub_resource type="Resource" id="Resource_ri3vh"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_cabtv"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_hero_2"
 kind = 2
 unit_id = &"warrior"
 cell = Vector2i(4, 10)
 
-[sub_resource type="Resource" id="Resource_le220"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_651f1"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_hero_3"
-kind = 2
+kind = 0
 unit_id = &"elf"
 cell = Vector2i(5, 10)
+required = false
 
-[sub_resource type="Resource" id="Resource_maqke"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_vp6s2"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_hero_4"
-kind = 2
+kind = 1
 unit_id = &"mage"
 cell = Vector2i(3, 11)
+required = false
 
-[sub_resource type="Resource" id="Resource_a3y8y"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_0n18i"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_hero_5"
 kind = 2
 unit_id = &"warrior"
 cell = Vector2i(4, 11)
+required = false
 
-[sub_resource type="Resource" id="Resource_cabtv"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_o5t7x"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_enemy_0"
 kind = 4
 unit_id = &"encounter_enemy"
 cell = Vector2i(8, 2)
+group_id = &"legacy_enemy_pool"
 
-[sub_resource type="Resource" id="Resource_651f1"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_q8e6g"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_enemy_1"
 kind = 4
 unit_id = &"encounter_enemy"
 cell = Vector2i(9, 2)
+group_id = &"legacy_enemy_pool"
 
-[sub_resource type="Resource" id="Resource_vp6s2"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_r2h4p"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_enemy_2"
 kind = 4
 unit_id = &"encounter_enemy"
 cell = Vector2i(10, 2)
+group_id = &"legacy_enemy_pool"
 
-[sub_resource type="Resource" id="Resource_0n18i"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_y6upg"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_enemy_3"
 kind = 4
 unit_id = &"encounter_enemy"
 cell = Vector2i(8, 3)
+group_id = &"legacy_enemy_pool"
 
-[sub_resource type="Resource" id="Resource_o5t7x"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_bp0hq"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_enemy_4"
 kind = 4
 unit_id = &"encounter_enemy"
 cell = Vector2i(9, 3)
+group_id = &"legacy_enemy_pool"
 
-[sub_resource type="Resource" id="Resource_q8e6g"]
-script = ExtResource("13_hbcf3")
+[sub_resource type="Resource" id="Resource_xd4p2"]
+script = ExtResource("13_wbqyv")
 spawn_id = &"legacy_enemy_5"
 kind = 4
 unit_id = &"encounter_enemy"
 cell = Vector2i(10, 3)
+group_id = &"legacy_enemy_pool"
 
 [resource]
-script = ExtResource("12_y474m")
+script = ExtResource("12_7dc75")
 arena_id = &"room_01_forest"
 display_name = "Salle 1 - Gué forestier"
 background_path = "res://asset/map/painted/room_01_forest/forest_background_v2.webp"
@@ -967,18 +1879,18 @@ foreground_occluder_sort_y = 444.0
 foreground_full_hide_rect = Rect2(795, 240, 135, 204)
 camera_offset = Vector2(0, 34)
 camera_zoom = 1.1
-cells = Array[ExtResource("2_j3tam")]([SubResource("Resource_wbqyv"), SubResource("Resource_atl1d"), SubResource("Resource_n068v"), SubResource("Resource_45gcd"), SubResource("Resource_mxxho"), SubResource("Resource_q3n44"), SubResource("Resource_buoi7"), SubResource("Resource_am0cc"), SubResource("Resource_akpif"), SubResource("Resource_ku1cj"), SubResource("Resource_vpgt6"), SubResource("Resource_3klex"), SubResource("Resource_1o24h"), SubResource("Resource_n2i4l"), SubResource("Resource_a82yg"), SubResource("Resource_poc0q"), SubResource("Resource_y1fhd"), SubResource("Resource_fp305"), SubResource("Resource_v8k36"), SubResource("Resource_ku3xd"), SubResource("Resource_4oni7"), SubResource("Resource_x77c8"), SubResource("Resource_53yaq"), SubResource("Resource_by2i6"), SubResource("Resource_h2sli"), SubResource("Resource_e5ykb"), SubResource("Resource_rohug"), SubResource("Resource_fnhgn"), SubResource("Resource_d6kb8"), SubResource("Resource_6kgb3"), SubResource("Resource_wwve5"), SubResource("Resource_b7krf"), SubResource("Resource_4rrit"), SubResource("Resource_jcr2l"), SubResource("Resource_djn81"), SubResource("Resource_1vwiv"), SubResource("Resource_0012q"), SubResource("Resource_0hfad"), SubResource("Resource_n0qi5"), SubResource("Resource_jx7xr"), SubResource("Resource_ty2pk"), SubResource("Resource_yic30"), SubResource("Resource_tmfuc"), SubResource("Resource_lvfwd"), SubResource("Resource_h36if"), SubResource("Resource_ylhn2"), SubResource("Resource_4u6fs"), SubResource("Resource_1pvrm"), SubResource("Resource_bho7p"), SubResource("Resource_qwujj"), SubResource("Resource_ba5oe"), SubResource("Resource_vsopf"), SubResource("Resource_i2gb2"), SubResource("Resource_1haiw"), SubResource("Resource_tlhup"), SubResource("Resource_w3qex"), SubResource("Resource_rolr1"), SubResource("Resource_pvpim"), SubResource("Resource_4jr1k"), SubResource("Resource_wie71"), SubResource("Resource_udire"), SubResource("Resource_klpwc"), SubResource("Resource_ymdxt"), SubResource("Resource_w3b2h"), SubResource("Resource_ula4v"), SubResource("Resource_75kp1"), SubResource("Resource_2rskg"), SubResource("Resource_oiira"), SubResource("Resource_8vssd"), SubResource("Resource_kigg6"), SubResource("Resource_wjrii"), SubResource("Resource_2vp4y"), SubResource("Resource_ptw6n"), SubResource("Resource_kkveh"), SubResource("Resource_3x7w1"), SubResource("Resource_snm2j"), SubResource("Resource_w5wxi"), SubResource("Resource_daxvm"), SubResource("Resource_746ao"), SubResource("Resource_0hd76"), SubResource("Resource_q55y6"), SubResource("Resource_msuco"), SubResource("Resource_uiocy"), SubResource("Resource_pk0sx"), SubResource("Resource_mko1w"), SubResource("Resource_tbk45"), SubResource("Resource_m6bqn"), SubResource("Resource_essad"), SubResource("Resource_iswho"), SubResource("Resource_c0hij"), SubResource("Resource_12732"), SubResource("Resource_eukog"), SubResource("Resource_motnm"), SubResource("Resource_6d4rl"), SubResource("Resource_haixd"), SubResource("Resource_se6dy"), SubResource("Resource_4t3el"), SubResource("Resource_g2kwa"), SubResource("Resource_pumsi"), SubResource("Resource_6h03f"), SubResource("Resource_oevrl"), SubResource("Resource_d6me7"), SubResource("Resource_2pm3r"), SubResource("Resource_858dj"), SubResource("Resource_iyymo"), SubResource("Resource_mkxki"), SubResource("Resource_jhqv4"), SubResource("Resource_ca3pj"), SubResource("Resource_7j06s"), SubResource("Resource_te5vn"), SubResource("Resource_b8h3m"), SubResource("Resource_tab0u"), SubResource("Resource_03bol"), SubResource("Resource_7lsug"), SubResource("Resource_2n7og"), SubResource("Resource_0ibec"), SubResource("Resource_jcuqa"), SubResource("Resource_hkwkk"), SubResource("Resource_2suae"), SubResource("Resource_onmno"), SubResource("Resource_pqr5i"), SubResource("Resource_ymcsu"), SubResource("Resource_4hfy0"), SubResource("Resource_gaxpr"), SubResource("Resource_h4rkr"), SubResource("Resource_2myxq"), SubResource("Resource_qkxb5"), SubResource("Resource_gfuo5"), SubResource("Resource_u2i3l"), SubResource("Resource_u1rdv"), SubResource("Resource_txsbl"), SubResource("Resource_pkth6"), SubResource("Resource_26fva"), SubResource("Resource_yvmlm"), SubResource("Resource_nm1yw"), SubResource("Resource_6bcup"), SubResource("Resource_m0cin"), SubResource("Resource_1w28a"), SubResource("Resource_y1rkq"), SubResource("Resource_i2ftc"), SubResource("Resource_msnmy"), SubResource("Resource_elghd"), SubResource("Resource_737w0"), SubResource("Resource_dcixf"), SubResource("Resource_pa3rr"), SubResource("Resource_u5w1m"), SubResource("Resource_ewxyc"), SubResource("Resource_tndst"), SubResource("Resource_6jr03"), SubResource("Resource_3xi6w"), SubResource("Resource_kifk8"), SubResource("Resource_1ijin"), SubResource("Resource_vdllj"), SubResource("Resource_k7aw2"), SubResource("Resource_7rtug"), SubResource("Resource_loq84"), SubResource("Resource_6hy8g"), SubResource("Resource_72qkr"), SubResource("Resource_tkoq8"), SubResource("Resource_o0p7d"), SubResource("Resource_ebbhx"), SubResource("Resource_351bj"), SubResource("Resource_kiq46"), SubResource("Resource_ulk51")])
-obstacles = Array[ExtResource("9_gajan")]([SubResource("Resource_1xxim"), SubResource("Resource_nnmmk"), SubResource("Resource_24t4i"), SubResource("Resource_mlvfj"), SubResource("Resource_ope5v"), SubResource("Resource_v1ixv"), SubResource("Resource_oc448"), SubResource("Resource_t4fbo"), SubResource("Resource_e58fv"), SubResource("Resource_lf0tk"), SubResource("Resource_hwyq8")])
-spawns = Array[ExtResource("13_hbcf3")]([SubResource("Resource_eeqdx"), SubResource("Resource_e5w1b"), SubResource("Resource_ri3vh"), SubResource("Resource_le220"), SubResource("Resource_maqke"), SubResource("Resource_a3y8y"), SubResource("Resource_cabtv"), SubResource("Resource_651f1"), SubResource("Resource_vp6s2"), SubResource("Resource_0n18i"), SubResource("Resource_o5t7x"), SubResource("Resource_q8e6g")])
+cells = Array[ExtResource("2_acbjt")]([SubResource("Resource_mxxho"), SubResource("Resource_q3n44"), SubResource("Resource_buoi7"), SubResource("Resource_am0cc"), SubResource("Resource_akpif"), SubResource("Resource_ku1cj"), SubResource("Resource_vpgt6"), SubResource("Resource_3klex"), SubResource("Resource_1o24h"), SubResource("Resource_n2i4l"), SubResource("Resource_a82yg"), SubResource("Resource_poc0q"), SubResource("Resource_y1fhd"), SubResource("Resource_fp305"), SubResource("Resource_v8k36"), SubResource("Resource_ku3xd"), SubResource("Resource_4oni7"), SubResource("Resource_x77c8"), SubResource("Resource_53yaq"), SubResource("Resource_by2i6"), SubResource("Resource_h2sli"), SubResource("Resource_e5ykb"), SubResource("Resource_rohug"), SubResource("Resource_fnhgn"), SubResource("Resource_d6kb8"), SubResource("Resource_6kgb3"), SubResource("Resource_wwve5"), SubResource("Resource_b7krf"), SubResource("Resource_4rrit"), SubResource("Resource_jcr2l"), SubResource("Resource_djn81"), SubResource("Resource_1vwiv"), SubResource("Resource_0012q"), SubResource("Resource_0hfad"), SubResource("Resource_n0qi5"), SubResource("Resource_jx7xr"), SubResource("Resource_ty2pk"), SubResource("Resource_yic30"), SubResource("Resource_tmfuc"), SubResource("Resource_lvfwd"), SubResource("Resource_h36if"), SubResource("Resource_ylhn2"), SubResource("Resource_4u6fs"), SubResource("Resource_1pvrm"), SubResource("Resource_bho7p"), SubResource("Resource_qwujj"), SubResource("Resource_ba5oe"), SubResource("Resource_vsopf"), SubResource("Resource_i2gb2"), SubResource("Resource_1haiw"), SubResource("Resource_tlhup"), SubResource("Resource_w3qex"), SubResource("Resource_rolr1"), SubResource("Resource_pvpim"), SubResource("Resource_4jr1k"), SubResource("Resource_wie71"), SubResource("Resource_udire"), SubResource("Resource_klpwc"), SubResource("Resource_ymdxt"), SubResource("Resource_w3b2h"), SubResource("Resource_ula4v"), SubResource("Resource_75kp1"), SubResource("Resource_2rskg"), SubResource("Resource_oiira"), SubResource("Resource_8vssd"), SubResource("Resource_kigg6"), SubResource("Resource_wjrii"), SubResource("Resource_2vp4y"), SubResource("Resource_ptw6n"), SubResource("Resource_kkveh"), SubResource("Resource_3x7w1"), SubResource("Resource_snm2j"), SubResource("Resource_w5wxi"), SubResource("Resource_daxvm"), SubResource("Resource_746ao"), SubResource("Resource_0hd76"), SubResource("Resource_q55y6"), SubResource("Resource_msuco"), SubResource("Resource_uiocy"), SubResource("Resource_pk0sx"), SubResource("Resource_mko1w"), SubResource("Resource_tbk45"), SubResource("Resource_m6bqn"), SubResource("Resource_essad"), SubResource("Resource_iswho"), SubResource("Resource_c0hij"), SubResource("Resource_12732"), SubResource("Resource_eukog"), SubResource("Resource_motnm"), SubResource("Resource_6d4rl"), SubResource("Resource_haixd"), SubResource("Resource_se6dy"), SubResource("Resource_4t3el"), SubResource("Resource_g2kwa"), SubResource("Resource_pumsi"), SubResource("Resource_6h03f"), SubResource("Resource_oevrl"), SubResource("Resource_d6me7"), SubResource("Resource_2pm3r"), SubResource("Resource_858dj"), SubResource("Resource_iyymo"), SubResource("Resource_mkxki"), SubResource("Resource_jhqv4"), SubResource("Resource_ca3pj"), SubResource("Resource_7j06s"), SubResource("Resource_te5vn"), SubResource("Resource_b8h3m"), SubResource("Resource_tab0u"), SubResource("Resource_03bol"), SubResource("Resource_7lsug"), SubResource("Resource_2n7og"), SubResource("Resource_0ibec"), SubResource("Resource_jcuqa"), SubResource("Resource_hkwkk"), SubResource("Resource_2suae"), SubResource("Resource_onmno"), SubResource("Resource_pqr5i"), SubResource("Resource_ymcsu"), SubResource("Resource_4hfy0"), SubResource("Resource_gaxpr"), SubResource("Resource_h4rkr"), SubResource("Resource_2myxq"), SubResource("Resource_qkxb5"), SubResource("Resource_gfuo5"), SubResource("Resource_u2i3l"), SubResource("Resource_u1rdv"), SubResource("Resource_txsbl"), SubResource("Resource_pkth6"), SubResource("Resource_26fva"), SubResource("Resource_yvmlm"), SubResource("Resource_nm1yw"), SubResource("Resource_6bcup"), SubResource("Resource_m0cin"), SubResource("Resource_1w28a"), SubResource("Resource_y1rkq"), SubResource("Resource_i2ftc"), SubResource("Resource_msnmy"), SubResource("Resource_elghd"), SubResource("Resource_737w0"), SubResource("Resource_dcixf"), SubResource("Resource_pa3rr"), SubResource("Resource_u5w1m"), SubResource("Resource_ewxyc"), SubResource("Resource_tndst"), SubResource("Resource_6jr03"), SubResource("Resource_3xi6w"), SubResource("Resource_kifk8"), SubResource("Resource_1ijin"), SubResource("Resource_vdllj"), SubResource("Resource_k7aw2"), SubResource("Resource_7rtug"), SubResource("Resource_loq84"), SubResource("Resource_6hy8g"), SubResource("Resource_72qkr"), SubResource("Resource_tkoq8"), SubResource("Resource_o0p7d"), SubResource("Resource_ebbhx"), SubResource("Resource_351bj"), SubResource("Resource_kiq46"), SubResource("Resource_ulk51"), SubResource("Resource_2q7ou"), SubResource("Resource_1xxim"), SubResource("Resource_nnmmk"), SubResource("Resource_24t4i")])
+obstacles = Array[ExtResource("9_osmdi")]([SubResource("Resource_ope5v"), SubResource("Resource_v1ixv"), SubResource("Resource_oc448"), SubResource("Resource_t4fbo"), SubResource("Resource_e58fv"), SubResource("Resource_lf0tk"), SubResource("Resource_hwyq8"), SubResource("Resource_ublay"), SubResource("Resource_eeqdx"), SubResource("Resource_e5w1b"), SubResource("Resource_ri3vh")])
+spawns = Array[ExtResource("13_wbqyv")]([SubResource("Resource_maqke"), SubResource("Resource_a3y8y"), SubResource("Resource_cabtv"), SubResource("Resource_651f1"), SubResource("Resource_vp6s2"), SubResource("Resource_0n18i"), SubResource("Resource_o5t7x"), SubResource("Resource_q8e6g"), SubResource("Resource_r2h4p"), SubResource("Resource_y6upg"), SubResource("Resource_bp0hq"), SubResource("Resource_xd4p2")])
 calibration_cells = Array[Vector2i]([Vector2i(4, 0), Vector2i(9, 0), Vector2i(0, 3), Vector2i(13, 3), Vector2i(6, 6), Vector2i(3, 10), Vector2i(10, 10), Vector2i(4, 13), Vector2i(9, 13)])
 calibration_pixels = Array[Vector2]([Vector2(825.6, 233.24445), Vector2(997.6, 318.5778), Vector2(584.8, 216.17778), Vector2(1032, 438.04443), Vector2(688, 369.77777), Vector2(447.2, 386.84445), Vector2(688, 506.3111), Vector2(378.4, 455.1111), Vector2(550.4, 540.44446)])
 source_room_path = "res://data/rooms/first_run_room_01.tres"
 source_visual_path = "res://data/maps/painted/room_01_forest_visual.tres"
 room_name = "Salle 1 - Gué forestier"
-battle_scene = ExtResource("1_s7gtm")
-grid_layout = SubResource("Resource_2q7ou")
-painted_map_visual_data = SubResource("Resource_ublay")
-encounter_definition = ExtResource("4_acbjt")
-enemies = Array[ExtResource("5_kb52d")]([ExtResource("6_hv3gp"), ExtResource("6_hv3gp"), ExtResource("6_hv3gp"), ExtResource("6_hv3gp")])
+battle_scene = ExtResource("1_bwrcg")
+grid_layout = SubResource("Resource_mlvfj")
+painted_map_visual_data = SubResource("Resource_le220")
+encounter_definition = ExtResource("4_hv3gp")
+enemies = Array[ExtResource("5_he2q6")]([ExtResource("6_jc0gk"), ExtResource("6_jc0gk"), ExtResource("6_jc0gk"), ExtResource("6_jc0gk")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(4, 9), Vector2i(3, 10), Vector2i(4, 10), Vector2i(5, 10), Vector2i(3, 11), Vector2i(4, 11)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(8, 2), Vector2i(9, 2), Vector2i(10, 2), Vector2i(8, 3), Vector2i(9, 3), Vector2i(10, 3)])

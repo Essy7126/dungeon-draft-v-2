@@ -27,6 +27,7 @@ func configure(
 	if renderer == null:
 		renderer = ArenaTerrainVisualRenderer.new()
 		renderer.name = "DynamicSurfaceOverlayRenderer"
+		renderer.set_meta("renderer_role", &"dynamic_surface")
 		add_child(renderer)
 	renderer.configure(grid_view, visual_parent)
 	if surface_service != null:

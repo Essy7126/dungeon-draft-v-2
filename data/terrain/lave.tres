@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="TerrainEffectData" format=3 uid="uid://d135dg0elxcx5"]
+[gd_resource type="Resource" script_class="TerrainEffectData" load_steps=3 format=3 uid="uid://d135dg0elxcx5"]
 
 [ext_resource type="Script" uid="uid://c15pw2f0yrhuh" path="res://data/units/terrain_effect_data.gd" id="1_terrain"]
+[ext_resource type="Resource" path="res://data/status/core/brulure.tres" id="2_status"]
 
 [resource]
 script = ExtResource("1_terrain")
@@ -11,7 +12,10 @@ surface_id = &"fire"
 visual_terrain_id = &"lava"
 trigger = 1
 damage = 15
+element = 1
+applied_status = ExtResource("2_status")
 cell_type = 3
 dangerous_for_ai = true
 ai_danger_weight = 3.0
+duration = 3
 metadata/_custom_type_script = "uid://c15pw2f0yrhuh"

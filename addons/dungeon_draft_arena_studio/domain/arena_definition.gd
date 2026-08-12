@@ -6,7 +6,7 @@ extends RoomData
 ## la ressource sauvegardee par Arena Studio est donc directement consommable
 ## par GameManager et painted_battle, sans scene intermediaire generee.
 
-const CURRENT_SCHEMA_VERSION := 2
+const CURRENT_SCHEMA_VERSION := 3
 const DEFAULT_BATTLE_SCENE := "res://data/rooms/maps/painted_battle.tscn"
 const MODULAR_BATTLE_SCENE := "res://data/rooms/maps/modular_battle.tscn"
 const DEFAULT_PRESENTATION := "res://data/maps/painted/room_01_forest_presentation.tres"
@@ -57,6 +57,7 @@ var camp_orientation: int = CampOrientation.HERO_BOTTOM_LEFT
 @export var objectives: Array[ArenaObjectiveDefinition] = []
 @export var decorations: Array[ArenaDecorationDefinition] = []
 @export var vortex_pairs: Array[ArenaVortexPairDefinition] = []
+@export var vortex_networks: Array[ArenaVortexNetworkDefinition] = []
 @export var calibration_cells: Array[Vector2i] = []
 @export var calibration_pixels: Array[Vector2] = []
 @export_file("*.tres") var presentation_profile_path := DEFAULT_PRESENTATION
@@ -64,6 +65,11 @@ var camp_orientation: int = CampOrientation.HERO_BOTTOM_LEFT
 @export_file("*.tres") var source_visual_path := ""
 @export var intentionally_isolated_cells: Array[Vector2i] = []
 @export_multiline var production_notes := ""
+
+## Index transitoire de lecture. Il n'est ni exporté ni sérialisé et ne remplace
+## jamais `cells` comme source de vérité.
+var _cell_index: Dictionary = {}
+var _cell_index_count := -1
 
 
 func _init() -> void:
@@ -85,10 +91,30 @@ func is_in_bounds(cell: Vector2i) -> bool:
 
 
 func get_cell_definition(cell: Vector2i) -> ArenaCellDefinition:
+	if _cell_index_count != cells.size():
+		rebuild_cell_index()
+	var indexed := _cell_index.get(cell) as ArenaCellDefinition
+	if indexed != null and indexed.coordinate == cell:
+		return indexed
+	# Une Resource peut être modifiée directement par l'inspecteur. Un miss
+	# contrôle ce cas rare et répare l'index sans pénaliser le chemin nominal.
 	for definition in cells:
 		if definition != null and definition.coordinate == cell:
+			rebuild_cell_index()
 			return definition
 	return null
+
+
+func rebuild_cell_index() -> void:
+	_cell_index.clear()
+	for definition in cells:
+		if definition != null:
+			_cell_index[definition.coordinate] = definition
+	_cell_index_count = cells.size()
+
+
+func invalidate_cell_index() -> void:
+	_cell_index_count = -1
 
 
 func ensure_cell(cell: Vector2i) -> ArenaCellDefinition:
@@ -101,6 +127,8 @@ func ensure_cell(cell: Vector2i) -> ArenaCellDefinition:
 	var definition := ArenaCellDefinition.new()
 	definition.coordinate = cell
 	cells.append(definition)
+	_cell_index[cell] = definition
+	_cell_index_count = cells.size()
 	return definition
 
 
@@ -109,6 +137,8 @@ func erase_cell(cell: Vector2i) -> bool:
 	if existing == null:
 		return false
 	cells.erase(existing)
+	_cell_index.erase(cell)
+	_cell_index_count = cells.size()
 	obstacles = obstacles.filter(func(obstacle):
 		return obstacle != null and obstacle.cell != cell
 	)
@@ -124,6 +154,9 @@ func erase_cell(cell: Vector2i) -> bool:
 	vortex_pairs = vortex_pairs.filter(func(pair):
 		return pair != null and not pair.contains(cell)
 	)
+	for network in vortex_networks:
+		if network != null:
+			network.cells.erase(cell)
 	return true
 
 
@@ -181,6 +214,13 @@ func vortex_pair_at(cell: Vector2i) -> ArenaVortexPairDefinition:
 	return null
 
 
+func vortex_network_at(cell: Vector2i) -> ArenaVortexNetworkDefinition:
+	for network in vortex_networks:
+		if network != null and network.enabled and network.contains(cell):
+			return network
+	return null
+
+
 func to_snapshot() -> Dictionary:
 	return {
 		"schema_version": schema_version,
@@ -232,6 +272,9 @@ func to_snapshot() -> Dictionary:
 			func(value): return value.to_dict()
 		),
 		"vortex_pairs": vortex_pairs.filter(func(value): return value != null).map(
+			func(value): return value.to_dict()
+		),
+		"vortex_networks": vortex_networks.filter(func(value): return value != null).map(
 			func(value): return value.to_dict()
 		),
 		"calibration_cells": calibration_cells.map(
@@ -299,6 +342,7 @@ func restore_snapshot(data: Dictionary) -> bool:
 	for entry in data.get("cells", []):
 		if entry is Dictionary:
 			cells.append(ArenaCellDefinition.from_dict(entry))
+	rebuild_cell_index()
 	obstacles.clear()
 	for entry in data.get("obstacles", []):
 		if entry is Dictionary:
@@ -319,6 +363,13 @@ func restore_snapshot(data: Dictionary) -> bool:
 	for entry in data.get("vortex_pairs", []):
 		if entry is Dictionary:
 			vortex_pairs.append(ArenaVortexPairDefinition.from_dict(entry))
+	vortex_networks.clear()
+	for entry in data.get("vortex_networks", []):
+		if entry is Dictionary:
+			vortex_networks.append(ArenaVortexNetworkDefinition.from_dict(entry))
+	if vortex_networks.is_empty() and not vortex_pairs.is_empty():
+		ArenaVortexNetworkService.migrate_legacy_pairs(self)
+	schema_version = CURRENT_SCHEMA_VERSION
 	calibration_cells.clear()
 	for entry in data.get("calibration_cells", []):
 		calibration_cells.append(_vector2i(entry))

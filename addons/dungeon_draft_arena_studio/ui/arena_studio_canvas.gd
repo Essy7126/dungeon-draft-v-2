@@ -9,8 +9,14 @@ signal stroke_cancelled
 signal calibration_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2)
 signal calibration_preview_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2)
 signal anchors_preview_requested(cells: Array[Vector2i], pixels: Array[Vector2])
+signal transform_commit_requested(
+	snapshot: GridTransformSnapshot,
+	cells: Array[Vector2i],
+	pixels: Array[Vector2]
+)
 signal hovered_cell_changed(cell: Vector2i)
 signal verification_cell_requested(cell: Vector2i)
+signal terrain_pick_requested(cell: Vector2i)
 
 enum Tool {
 	SELECT,
@@ -66,6 +72,7 @@ const COLORS := {
 var arena: ArenaDefinition = null
 var active_tool := Tool.SELECT
 var brush_shape := BrushShape.BRUSH
+var brush_size := 1
 var zoom := 1.0
 var pan := Vector2.ZERO
 var show_grid := true
@@ -116,6 +123,8 @@ var layer_locks := {
 }
 
 var _texture: Texture2D = null
+var _backdrop_preview_texture: Texture2D = null
+var _backdrop_preview_rect := Rect2()
 var _foreground_texture: Texture2D = null
 var _terrain_entries: Dictionary = {}
 var _wall_texture_cache: Dictionary = {}
@@ -134,6 +143,7 @@ var _drag_origin := Vector2.ZERO
 var _drag_axis_x := Vector2.ZERO
 var _drag_axis_y := Vector2.ZERO
 var _drag_snapshot: GridTransformSnapshot = null
+var _transform_preview: GridTransformPreviewSession = null
 var _saved_transform: GridTransformSnapshot = null
 var _drag_start_screen := Vector2.ZERO
 var _drag_pivot := Vector2.ZERO
@@ -174,12 +184,20 @@ func _ready() -> void:
 	affine_gizmo.name = "GridAffineGizmo"
 	add_child(affine_gizmo)
 	move_child(affine_gizmo, get_child_count() - 1)
+	set_process(false)
+
+
+func _process(_delta: float) -> void:
+	_flush_pending_transform_preview()
+	if _transform_preview == null or not _transform_preview.pointer_pending:
+		set_process(false)
 
 
 func set_arena(value: ArenaDefinition) -> void:
 	cancel_active_gesture()
 	arena = value
 	_texture = null
+	_backdrop_preview_texture = null
 	_foreground_texture = null
 	selected_cells.clear()
 	reachable_cells.clear()
@@ -187,10 +205,9 @@ func set_arena(value: ArenaDefinition) -> void:
 	line_cells.clear()
 	_hovered = INVALID_CELL
 	_pending_vortex_cell = INVALID_CELL
-	if arena != null and ResourceLoader.exists(arena.background_path):
-		_texture = load(arena.background_path) as Texture2D
-	if arena != null and ResourceLoader.exists(arena.foreground_path):
-		_foreground_texture = load(arena.foreground_path) as Texture2D
+	if arena != null:
+		_texture = _load_texture(arena.background_path)
+		_foreground_texture = _load_texture(arena.foreground_path)
 	refresh_terrain_plan()
 	grid_selected = active_tool == Tool.TRANSFORM_GRID
 	if arena != null and not _custom_pivot_enabled:
@@ -199,6 +216,40 @@ func set_arena(value: ArenaDefinition) -> void:
 		)
 	queue_redraw()
 	call_deferred("fit_to_image")
+
+
+func set_backdrop_preview(
+		path: String,
+		source_size := Vector2i.ZERO,
+		image_offset := Vector2.ZERO,
+		image_scale := Vector2.ONE
+	) -> void:
+	_backdrop_preview_texture = _load_texture(path)
+	var resolved_size := source_size if source_size != Vector2i.ZERO else (
+		Vector2i(_backdrop_preview_texture.get_size()) \
+		if _backdrop_preview_texture != null else Vector2i.ZERO
+	)
+	_backdrop_preview_rect = Rect2(image_offset, Vector2(resolved_size) * image_scale)
+	queue_redraw()
+
+
+func clear_backdrop_preview() -> void:
+	_backdrop_preview_texture = null
+	_backdrop_preview_rect = Rect2()
+	background_opacity = 1.0
+	queue_redraw()
+
+
+func _load_texture(path: String) -> Texture2D:
+	if path.is_empty():
+		return null
+	if ResourceLoader.exists(path):
+		return load(path) as Texture2D
+	if path.begins_with("user://") or path.is_absolute_path():
+		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+		if image != null and not image.is_empty():
+			return ImageTexture.create_from_image(image)
+	return null
 
 
 func set_tool(value: int) -> void:
@@ -366,13 +417,11 @@ func cancel_active_gesture() -> bool:
 	if _drag_handle == TransformHandle.PIVOT:
 		_custom_pivot = _drag_previous_custom_pivot
 		_custom_pivot_enabled = _drag_pivot_was_custom
-	if _drag_snapshot != null and arena != null:
-		calibration_preview_requested.emit(
-			_drag_snapshot.origin, _drag_snapshot.axis_x, _drag_snapshot.axis_y
-		)
 	_drag_handle = TransformHandle.NONE
 	_anchor_drag_index = -1
 	_drag_snapshot = null
+	_transform_preview = null
+	set_process(false)
 	_drag_changed = false
 	_painting = false
 	_rectangle_start = INVALID_CELL
@@ -596,6 +645,11 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 			verification_cell_requested.emit(cell)
 			accept_event()
 			return
+		if active_tool == Tool.TERRAIN and event.button_index == MOUSE_BUTTON_LEFT \
+				and event.alt_pressed:
+			terrain_pick_requested.emit(cell)
+			accept_event()
+			return
 		if active_tool == Tool.SELECT or brush_shape == BrushShape.MULTI_SELECT:
 			if not event.shift_pressed:
 				selected_cells.clear()
@@ -616,7 +670,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		elif brush_shape == BrushShape.FILL:
 			_request_cells(_contiguous_cells(cell), event.button_index == MOUSE_BUTTON_RIGHT)
 		else:
-			_request_cells([cell], event.button_index == MOUSE_BUTTON_RIGHT)
+			_request_cells(_brush_cells(cell), event.button_index == MOUSE_BUTTON_RIGHT)
 		accept_event()
 	else:
 		if _drag_handle != TransformHandle.NONE:
@@ -641,11 +695,16 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 
 
 func _finish_pointer_gesture() -> void:
+	_flush_pending_transform_preview()
 	var handle := _drag_handle
 	var action_name := _transform_action_name(handle)
 	var changed := _drag_changed
+	if changed and handle != TransformHandle.PIVOT:
+		_emit_transform_commit()
 	_drag_handle = TransformHandle.NONE
 	_drag_snapshot = null
+	_transform_preview = null
+	set_process(false)
 	_anchor_drag_index = -1
 	_drag_changed = false
 	_live_transform_text = ""
@@ -682,11 +741,9 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 		accept_event()
 		return
 	if _drag_handle != TransformHandle.NONE:
-		if _drag_handle == TransformHandle.ANCHOR:
-			_update_anchor_drag(event.position)
-		else:
-			_update_transform_drag(event)
-		queue_redraw()
+		if _transform_preview != null:
+			_transform_preview.queue_pointer(event.position)
+			set_process(true)
 		accept_event()
 		return
 	var cell := _cell_at(event.position)
@@ -699,7 +756,7 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 			_rectangle_current = cell
 			queue_redraw()
 		elif brush_shape == BrushShape.BRUSH:
-			_request_cells([cell], false)
+			_request_cells(_brush_cells(cell), false)
 	elif active_tool == Tool.TRANSFORM_GRID:
 		var hovered_handle := _handle_at(event.position)
 		mouse_default_cursor_shape = _cursor_for_handle(hovered_handle)
@@ -790,7 +847,10 @@ func _begin_transform_handle(
 	):
 		return false
 	_drag_handle = handle
-	_drag_snapshot = GridTransformSnapshot.from_arena(arena)
+	if not _begin_transform_preview(handle):
+		_drag_handle = TransformHandle.NONE
+		return false
+	_drag_snapshot = _transform_preview.base_snapshot.copy()
 	_drag_origin = arena.grid_origin
 	_drag_axis_x = arena.axis_x
 	_drag_axis_y = arena.axis_y
@@ -821,16 +881,20 @@ func _begin_transform_handle(
 
 
 func _update_transform_drag(event: InputEventMouseMotion) -> void:
+	_update_transform_drag_position(event.position)
+
+
+func _update_transform_drag_position(view_position: Vector2) -> void:
 	if _drag_snapshot == null:
 		return
-	if event.position.distance_to(_drag_start_screen) < DRAG_THRESHOLD_SCREEN:
+	if view_position.distance_to(_drag_start_screen) < DRAG_THRESHOLD_SCREEN:
 		return
-	var pointer_image := _screen_to_image_native(event.position)
+	var pointer_image := _screen_to_image_native(view_position)
 	var candidate := _drag_snapshot.copy()
 	match _drag_handle:
 		TransformHandle.BODY:
 			var delta := _screen_delta_to_image_native(
-				event.position - _drag_start_screen
+				view_position - _drag_start_screen
 			) * _drag_fine
 			candidate = GridTransformService.translate(_drag_snapshot, delta)
 			if _drag_use_snap:
@@ -892,14 +956,14 @@ func _update_transform_drag(event: InputEventMouseMotion) -> void:
 			]
 		TransformHandle.ROTATE:
 			var pivot_screen := _image_native_to_screen(_drag_pivot)
-			var angle := ((event.position - pivot_screen).angle() - _drag_start_angle) * _drag_fine
+			var angle := ((view_position - pivot_screen).angle() - _drag_start_angle) * _drag_fine
 			if _drag_use_snap:
 				angle = GridTransformService.snap_angle(angle, deg_to_rad(angle_snap_degrees))
 			candidate = GridTransformService.rotate_around(_drag_snapshot, _drag_pivot, angle)
 			_live_transform_text = "Rotation  %+0.2f deg" % rad_to_deg(angle)
 		TransformHandle.SCALE:
 			var pivot_screen := _image_native_to_screen(_drag_pivot)
-			var factor := event.position.distance_to(pivot_screen) / _drag_start_distance
+			var factor := view_position.distance_to(pivot_screen) / _drag_start_distance
 			factor = 1.0 + (factor - 1.0) * _drag_fine
 			if _drag_use_snap:
 				factor = GridTransformService.snap_scale(factor, scale_snap)
@@ -937,8 +1001,70 @@ func _update_transform_drag(event: InputEventMouseMotion) -> void:
 	if not bool(validation.get("ok", false)):
 		_live_transform_text = "Transformation refusee : %s" % validation.get("error", "invalide")
 		return
-	_drag_changed = not candidate.is_equal_to(_drag_snapshot)
+	if _transform_preview == null or not _transform_preview.set_transform(candidate):
+		return
+	_drag_changed = _transform_preview.dirty
 	calibration_preview_requested.emit(candidate.origin, candidate.axis_x, candidate.axis_y)
+
+
+func _begin_transform_preview(handle: int) -> bool:
+	var session := GridTransformPreviewSession.new()
+	if not session.begin(arena, handle):
+		return false
+	_transform_preview = session
+	return true
+
+
+func _flush_pending_transform_preview() -> void:
+	if _transform_preview == null or not _transform_preview.pointer_pending:
+		return
+	var pointer := _transform_preview.consume_pointer()
+	if _drag_handle == TransformHandle.ANCHOR:
+		_update_anchor_drag(pointer)
+	else:
+		_update_transform_drag_position(pointer)
+	queue_redraw()
+
+
+func _emit_transform_commit() -> void:
+	if _transform_preview == null or not _transform_preview.dirty:
+		return
+	transform_commit_requested.emit(
+		_transform_preview.transform(),
+		_transform_preview.anchor_cells(),
+		_transform_preview.anchor_pixels()
+	)
+
+
+func _active_transform_snapshot() -> GridTransformSnapshot:
+	if _transform_preview != null and _transform_preview.preview_snapshot != null:
+		return _transform_preview.preview_snapshot
+	return GridTransformSnapshot.from_arena(arena)
+
+
+func _active_anchor_cells() -> Array[Vector2i]:
+	return _transform_preview.anchor_cells() if _transform_preview != null \
+		else arena.calibration_cells.duplicate()
+
+
+func _active_anchor_pixels() -> Array[Vector2]:
+	return _transform_preview.anchor_pixels() if _transform_preview != null \
+		else arena.calibration_pixels.duplicate()
+
+
+func is_precision_preview_active() -> bool:
+	return _transform_preview != null
+
+
+func precision_preview_metrics() -> Dictionary:
+	var result := _transform_preview.metrics() if _transform_preview != null else {
+		"pointer_events_received": 0,
+		"previews_applied": 0,
+		"coalesced_events": 0,
+		"dirty": false,
+	}
+	result["simplified_rendering"] = is_precision_preview_active()
+	return result
 
 
 func _transform_action_name(handle: int) -> String:
@@ -960,16 +1086,23 @@ func _handle_anchor_press(view_position: Vector2, button_index: int) -> bool:
 		if hit < 0:
 			return false
 		stroke_started.emit("Supprimer une ancre de calibration")
-		var cells := arena.calibration_cells.duplicate()
-		var pixels := arena.calibration_pixels.duplicate()
+		_begin_transform_preview(TransformHandle.ANCHOR)
+		var cells: Array[Vector2i] = arena.calibration_cells.duplicate()
+		var pixels: Array[Vector2] = arena.calibration_pixels.duplicate()
 		cells.remove_at(hit)
 		pixels.remove_at(hit)
+		_transform_preview.set_anchors(cells, pixels)
 		anchors_preview_requested.emit(cells, pixels)
+		_emit_transform_commit()
+		_transform_preview = null
 		stroke_finished.emit("Supprimer une ancre de calibration")
 		_selected_anchor_index = -1
 		return true
 	if hit >= 0:
 		_drag_handle = TransformHandle.ANCHOR
+		if not _begin_transform_preview(TransformHandle.ANCHOR):
+			_drag_handle = TransformHandle.NONE
+			return false
 		_anchor_drag_index = hit
 		_selected_anchor_index = hit
 		_drag_changed = false
@@ -983,34 +1116,43 @@ func _handle_anchor_press(view_position: Vector2, button_index: int) -> bool:
 		queue_redraw()
 		return true
 	stroke_started.emit("Ajouter une ancre de calibration")
-	var cells := arena.calibration_cells.duplicate()
-	var pixels := arena.calibration_pixels.duplicate()
+	_begin_transform_preview(TransformHandle.ANCHOR)
+	var cells: Array[Vector2i] = arena.calibration_cells.duplicate()
+	var pixels: Array[Vector2] = arena.calibration_pixels.duplicate()
 	cells.append(cell)
 	pixels.append(_screen_to_image_native(view_position))
+	_transform_preview.set_anchors(cells, pixels)
 	anchors_preview_requested.emit(cells, pixels)
+	_emit_transform_commit()
+	_transform_preview = null
 	_selected_anchor_index = cells.size() - 1
 	stroke_finished.emit("Ajouter une ancre de calibration")
 	return true
 
 
 func _update_anchor_drag(view_position: Vector2) -> void:
-	if _anchor_drag_index < 0 or _anchor_drag_index >= arena.calibration_pixels.size():
+	if _transform_preview == null:
 		return
-	var pixels := arena.calibration_pixels.duplicate()
+	var pixels := _transform_preview.anchor_pixels()
+	if _anchor_drag_index < 0 or _anchor_drag_index >= pixels.size():
+		return
 	var next_position := _screen_to_image_native(view_position)
 	if not GridTransformService.is_vector_finite(next_position):
 		return
-	_drag_changed = pixels[_anchor_drag_index].distance_to(next_position) > 0.00001
 	pixels[_anchor_drag_index] = next_position
-	anchors_preview_requested.emit(arena.calibration_cells.duplicate(), pixels)
+	var cells := _transform_preview.anchor_cells()
+	_transform_preview.set_anchors(cells, pixels)
+	_drag_changed = _transform_preview.dirty
+	anchors_preview_requested.emit(cells, pixels)
 	_live_transform_text = "Ancre %d  %.2f, %.2f px" % [
 		_anchor_drag_index + 1, next_position.x, next_position.y
 	]
 
 
 func _anchor_at(view_position: Vector2) -> int:
-	for index in range(arena.calibration_pixels.size()):
-		var screen := _image_native_to_screen(arena.calibration_pixels[index])
+	var pixels := _active_anchor_pixels()
+	for index in range(pixels.size()):
+		var screen := _image_native_to_screen(pixels[index])
 		if screen.distance_to(view_position) <= 11.0:
 			return index
 	return -1
@@ -1018,7 +1160,7 @@ func _anchor_at(view_position: Vector2) -> int:
 
 func _current_pivot() -> Vector2:
 	return _custom_pivot if _custom_pivot_enabled else GridTransformService.logical_grid_center(
-		GridTransformSnapshot.from_arena(arena), arena.grid_size
+		_active_transform_snapshot(), arena.grid_size
 	)
 
 
@@ -1071,10 +1213,13 @@ func _sync_affine_gizmo() -> void:
 	affine_gizmo.visible = visible_now
 	if not visible_now:
 		return
+	var active_snapshot := _active_transform_snapshot()
+	var comparison := _transform_preview.base_snapshot \
+		if _transform_preview != null and _drag_handle != TransformHandle.PIVOT else null
 	affine_gizmo.configure(
-		GridTransformSnapshot.from_arena(arena), arena.grid_size, _current_pivot(),
+		active_snapshot, arena.grid_size, _current_pivot(),
 		arena.image_offset, arena.image_scale, pan, zoom, angle_mode,
-		_drag_snapshot if is_transforming() and _drag_handle != TransformHandle.PIVOT else null,
+		comparison,
 		_drag_handle,
 		_live_transform_text if not _live_transform_text.is_empty() \
 			else "Gizmo affine : corps = deplacer | X/Y = incliner | violet = angle"
@@ -1104,7 +1249,8 @@ func _handle_key_input(event: InputEventKey) -> void:
 		_: return
 	if not _keyboard_nudging:
 		_keyboard_nudging = true
-		_keyboard_snapshot = GridTransformSnapshot.from_arena(arena)
+		_begin_transform_preview(TransformHandle.BODY)
+		_keyboard_snapshot = _transform_preview.base_snapshot.copy()
 		_keyboard_delta = Vector2.ZERO
 		stroke_started.emit("Deplacer la grille au clavier")
 	var amount := 10.0 if event.ctrl_pressed else (
@@ -1112,7 +1258,9 @@ func _handle_key_input(event: InputEventKey) -> void:
 	)
 	_keyboard_delta += direction * amount
 	var after := GridTransformService.translate(_keyboard_snapshot, _keyboard_delta)
+	_transform_preview.set_transform(after)
 	calibration_preview_requested.emit(after.origin, after.axis_x, after.axis_y)
+	queue_redraw()
 	_keyboard_timer.start()
 	accept_event()
 
@@ -1120,19 +1268,28 @@ func _handle_key_input(event: InputEventKey) -> void:
 func _commit_keyboard_nudge() -> bool:
 	if not _keyboard_nudging:
 		return false
+	var changed := _transform_preview != null and _transform_preview.dirty
+	if changed:
+		_emit_transform_commit()
 	_keyboard_nudging = false
 	_keyboard_snapshot = null
+	_transform_preview = null
 	_keyboard_delta = Vector2.ZERO
 	if _keyboard_timer != null:
 		_keyboard_timer.stop()
-	stroke_finished.emit("Deplacer la grille au clavier")
+	if changed:
+		stroke_finished.emit("Deplacer la grille au clavier")
+	else:
+		stroke_cancelled.emit()
+	queue_redraw()
 	return true
 
 
 func _cell_at(view_position: Vector2) -> Vector2i:
+	var snapshot := _active_transform_snapshot()
 	return GridTransformService.position_to_cell(
 		_screen_to_image_native(view_position),
-		arena.grid_origin, arena.axis_x, arena.axis_y, arena.grid_size
+		snapshot.origin, snapshot.axis_x, snapshot.axis_y, arena.grid_size
 	)
 
 
@@ -1147,32 +1304,23 @@ func _request_cells(cells: Array[Vector2i], erase: bool) -> void:
 
 
 func _rectangle_cells(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
-	var result: Array[Vector2i] = []
-	for y in range(mini(from.y, to.y), maxi(from.y, to.y) + 1):
-		for x in range(mini(from.x, to.x), maxi(from.x, to.x) + 1):
-			result.append(Vector2i(x, y))
-	return result
+	return ArenaStrokeBatchService.rectangle_cells(from, to)
 
 
 func _contiguous_cells(start: Vector2i) -> Array[Vector2i]:
+	return ArenaStrokeBatchService.contiguous_cells(arena, start)
+
+
+func _brush_cells(center: Vector2i) -> Array[Vector2i]:
 	var result: Array[Vector2i] = []
-	var start_definition := arena.get_cell_definition(start)
-	var start_defined := start_definition != null and start_definition.defined
-	var visited := {start: true}
-	var frontier: Array[Vector2i] = [start]
-	while not frontier.is_empty():
-		var current: Vector2i = frontier.pop_front()
-		result.append(current)
-		for direction in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
-			var neighbor: Vector2i = current + direction
-			if visited.has(neighbor) or not arena.is_in_bounds(neighbor):
-				continue
-			var neighbor_definition := arena.get_cell_definition(neighbor)
-			var neighbor_defined := neighbor_definition != null and neighbor_definition.defined
-			if neighbor_defined != start_defined:
-				continue
-			visited[neighbor] = true
-			frontier.append(neighbor)
+	var size := clampi(brush_size, 1, 3)
+	var start_x := center.x - ((size - 1) / 2)
+	var start_y := center.y - ((size - 1) / 2)
+	for y in range(start_y, start_y + size):
+		for x in range(start_x, start_x + size):
+			var cell := Vector2i(x, y)
+			if arena != null and arena.is_in_bounds(cell):
+				result.append(cell)
 	return result
 
 
@@ -1197,9 +1345,18 @@ func _draw() -> void:
 		return
 	draw_set_transform(pan, 0.0, Vector2.ONE * zoom)
 	if _texture != null and bool(layer_visibility.get("background", true)):
+		var current_alpha := 1.0 - background_opacity \
+			if _backdrop_preview_texture != null else background_opacity
 		draw_texture_rect(
 			_texture,
 			Rect2(arena.image_offset, Vector2(arena.source_image_size) * arena.image_scale),
+			false,
+			Color(1.0, 1.0, 1.0, current_alpha)
+		)
+	if _backdrop_preview_texture != null and bool(layer_visibility.get("background", true)):
+		draw_texture_rect(
+			_backdrop_preview_texture,
+			_backdrop_preview_rect,
 			false,
 			Color(1.0, 1.0, 1.0, background_opacity)
 		)
@@ -1224,7 +1381,7 @@ func _draw() -> void:
 		_draw_calibration()
 	elif transform_mode and show_saved_comparison:
 		_draw_saved_grid_comparison()
-	if bool(layer_visibility.get("foreground", true)):
+	if bool(layer_visibility.get("foreground", true)) and not is_precision_preview_active():
 		_draw_foreground_overlay()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	_sync_affine_gizmo()
@@ -1232,12 +1389,16 @@ func _draw() -> void:
 
 
 func _draw_cells() -> void:
+	var snapshot := _active_transform_snapshot()
+	if is_precision_preview_active():
+		_draw_precision_grid(snapshot)
+		return
 	for y in range(arena.grid_size.y):
 		for x in range(arena.grid_size.x):
 			var cell := Vector2i(x, y)
 			var definition := arena.get_cell_definition(cell)
 			var polygon := GridTransformService.cell_polygon(
-				cell, arena.grid_origin, arena.axis_x, arena.axis_y
+				cell, snapshot.origin, snapshot.axis_x, snapshot.axis_y
 			)
 			var render_entry := _terrain_entries.get(cell, {}) as Dictionary
 			var terrain_texture := render_entry.get("texture") as Texture2D
@@ -1280,18 +1441,32 @@ func _draw_cells() -> void:
 		for cell in _rectangle_cells(_rectangle_start, _rectangle_current):
 			draw_colored_polygon(
 				GridTransformService.cell_polygon(
-					cell, arena.grid_origin, arena.axis_x, arena.axis_y
+					cell, snapshot.origin, snapshot.axis_x, snapshot.axis_y
 				),
 				Color(1.0, 0.75, 0.2, 0.24)
 			)
 	if _hovered != INVALID_CELL:
 		_draw_outline(
 			GridTransformService.cell_polygon(
-				_hovered, arena.grid_origin, arena.axis_x, arena.axis_y
+				_hovered, snapshot.origin, snapshot.axis_x, snapshot.axis_y
 			),
 			Color.WHITE,
 			_native_stroke_width(2.0)
 		)
+
+
+func _draw_precision_grid(snapshot: GridTransformSnapshot) -> void:
+	if snapshot == null:
+		return
+	for y in range(arena.grid_size.y):
+		for x in range(arena.grid_size.x):
+			_draw_outline(
+				GridTransformService.cell_polygon(
+					Vector2i(x, y), snapshot.origin, snapshot.axis_x, snapshot.axis_y
+				),
+				Color(GRID_COLOR, minf(0.86, GRID_COLOR.a + 0.16) * grid_opacity),
+				_native_stroke_width()
+			)
 
 
 func _draw_brush_preview() -> void:
@@ -1352,8 +1527,32 @@ func _draw_vortex_pairs() -> void:
 		return
 	var catalog := ArenaCatalogService.interactive(&"vortex")
 	var texture := catalog.texture if catalog != null else null
+	for network in arena.vortex_networks:
+		if network == null or not network.enabled:
+			continue
+		var cells := network.unique_cells()
+		if cells.size() > 1:
+			var center := Vector2.ZERO
+			for cell in cells:
+				center += GridTransformService.cell_to_position(
+					cell, arena.grid_origin, arena.axis_x, arena.axis_y
+				)
+			center /= float(cells.size())
+			for cell in cells:
+				draw_line(
+					center, GridTransformService.cell_to_position(
+						cell, arena.grid_origin, arena.axis_x, arena.axis_y
+					), network.editor_color, _native_stroke_width(2.0), true
+				)
+		for index in range(cells.size()):
+			_draw_vortex_endpoint(cells[index], texture, "%d" % (index + 1))
 	for pair in arena.vortex_pairs:
 		if pair == null:
+			continue
+		if arena.vortex_networks.any(func(value):
+			return value != null and value.cells.has(pair.entry_cell) \
+				and value.cells.has(pair.exit_cell)
+		):
 			continue
 		var entry_center := GridTransformService.cell_to_position(
 			pair.entry_cell, arena.grid_origin, arena.axis_x, arena.axis_y
@@ -1430,13 +1629,16 @@ func _draw_spawns() -> void:
 
 
 func _draw_calibration() -> void:
-	var origin := arena.grid_origin
-	draw_line(origin, origin + arena.axis_x, Color(0.16, 0.95, 0.86, 0.9), _native_stroke_width(2.0))
-	draw_line(origin, origin + arena.axis_y, Color(1.0, 0.30, 0.78, 0.9), _native_stroke_width(2.0))
-	for index in range(mini(arena.calibration_cells.size(), arena.calibration_pixels.size())):
-		var measured: Vector2 = arena.calibration_pixels[index]
+	var snapshot := _active_transform_snapshot()
+	var cells := _active_anchor_cells()
+	var pixels := _active_anchor_pixels()
+	var origin := snapshot.origin
+	draw_line(origin, origin + snapshot.axis_x, Color(0.16, 0.95, 0.86, 0.9), _native_stroke_width(2.0))
+	draw_line(origin, origin + snapshot.axis_y, Color(1.0, 0.30, 0.78, 0.9), _native_stroke_width(2.0))
+	for index in range(mini(cells.size(), pixels.size())):
+		var measured: Vector2 = pixels[index]
 		var predicted := GridTransformService.cell_to_position(
-			arena.calibration_cells[index], arena.grid_origin, arena.axis_x, arena.axis_y
+			cells[index], snapshot.origin, snapshot.axis_x, snapshot.axis_y
 		)
 		draw_line(predicted, measured, Color(1.0, 0.25, 0.18, 0.9), _native_stroke_width(2.0))
 		draw_circle(
@@ -1533,8 +1735,9 @@ func _draw_hud() -> void:
 
 
 func _polygon(cell: Vector2i) -> PackedVector2Array:
+	var snapshot := _active_transform_snapshot()
 	return GridTransformService.cell_polygon(
-		cell, arena.grid_origin, arena.axis_x, arena.axis_y
+		cell, snapshot.origin, snapshot.axis_x, snapshot.axis_y
 	)
 
 

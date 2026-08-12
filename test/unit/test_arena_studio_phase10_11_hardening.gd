@@ -97,7 +97,7 @@ func test_production_dialog_keeps_actions_visible_at_1200_by_896() -> void:
 	get_window().size = previous_size
 
 
-func test_frozen_produced_bundle_is_read_only_unreferenced_incomplete_in_dashboard() -> void:
+func test_frozen_produced_bundle_is_read_only_referenced_and_conflictual_in_dashboard() -> void:
 	var report := ArenaProductionDashboardService.scan()
 	assert_true(report.ok)
 	assert_true(report.read_only)
@@ -111,9 +111,10 @@ func test_frozen_produced_bundle_is_read_only_unreferenced_incomplete_in_dashboa
 	assert_false(record.is_empty())
 	assert_eq(
 		record.get("category", &""),
-		ArenaProductionDashboardService.UNREFERENCED_INCOMPLETE_PRODUCTION_BUNDLE
+		ArenaBundleInspectionService.OWNED_DIRTY
 	)
-	assert_false(record.get("referenced", true))
+	assert_true(record.get("referenced", false))
+	assert_false((record.get("actions", PackedStringArray()) as PackedStringArray).has("Archiver"))
 
 
 func test_guided_sandbox_creates_only_user_fixture_and_incomplete_bundle() -> void:
@@ -135,11 +136,13 @@ func test_context_transaction_prepares_stages_commits_in_sorted_order_and_rolls_
 	var context := StudioProjectContext.new()
 	assert_true(context.initialize().ok)
 	context.register_transition_handler(
-		&"zeta", _tx_commit.bind("zeta", true), Callable(), Callable(),
+		&"zeta", _tx_commit.bind("zeta", true),
+		_tx_commit.bind("zeta", false), _tx_commit.bind("zeta", false),
 		_tx_prepare.bind("zeta"), _tx_stage.bind("zeta"), _tx_rollback.bind("zeta")
 	)
 	context.register_transition_handler(
-		&"alpha", _tx_commit.bind("alpha", false), Callable(), Callable(),
+		&"alpha", _tx_commit.bind("alpha", false),
+		_tx_commit.bind("alpha", false), _tx_commit.bind("alpha", false),
 		_tx_prepare.bind("alpha"), _tx_stage.bind("alpha"), _tx_rollback.bind("alpha")
 	)
 	context.set_dirty(&"zeta", true)

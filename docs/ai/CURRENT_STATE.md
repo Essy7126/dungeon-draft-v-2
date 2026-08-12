@@ -1,5 +1,26 @@
 # État candidat vérifié du projet
 
+## Arena authoring, décor, timing et réseaux (WORKTREE_CANDIDATE, 2026-08-12)
+
+- Baseline poussée : `main` à `8bd9d455bced1c68acf98843e6f6d4844d4174e8`.
+- Statut : **WORKTREE_CANDIDATE**, jamais CURRENT avant commit et revalidation
+  au même SHA.
+- Batching des traits, palette rapide, transaction de décor, timing des statuts
+  de terrain et réseaux de vortex sont implémentés dans le patch local.
+- Nouvelles suites : 69/69, 216 assertions ; seuils de performance passés ;
+  matrice visuelle 88/88 aux quatre résolutions.
+- `produced/room_01_forest` reste gelé et n'est chargé ni par Tester ni par le
+  catalogue de décors.
+
+## Catalogue complet des terrains (WORKTREE_CANDIDATE, 2026-08-12)
+
+- Baseline locale : `main` à `8bd9d455bced1c68acf98843e6f6d4844d4174e8`.
+- Arena Studio expose Pierre, Neutre, Eau, Glace, Lave, Poison, Vapeur, Eau
+  électrifiée et Vortex apparié ; `VOID` reste topologique.
+- Les effets sont data-driven et communs à Studio, preview, Tester et runtime.
+- Suite dédiée : 64/64 tests, 317 assertions.
+- Statut : **WORKTREE_CANDIDATE** ; aucun commit, stage ou push.
+
 ## L’Odyssée — Achille solo (WORKTREE_CANDIDATE, 2026-08-11)
 
 - Dépôt : `C:\Users\paolo\Documents\dungeon-draft-v-2`.

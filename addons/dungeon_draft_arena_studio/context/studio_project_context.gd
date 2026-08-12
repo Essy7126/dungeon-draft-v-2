@@ -25,6 +25,7 @@ const VALID_SCOPES: Array[StringName] = [
 
 const ACTION_SAVE := &"SAVE"
 const ACTION_DRAFT := &"DRAFT"
+const ACTION_KEEP_AS_DRAFT := ACTION_DRAFT
 const ACTION_DISCARD := &"DISCARD"
 const ACTION_CANCEL := &"CANCEL"
 
@@ -75,8 +76,11 @@ func register_transition_handler(
 		discard_handler: Callable = Callable(),
 		prepare_handler: Callable = Callable(),
 		stage_handler: Callable = Callable(),
-		rollback_handler: Callable = Callable()
-	) -> void:
+		rollback_handler: Callable = Callable(),
+		is_dirty_handler: Callable = Callable(),
+		snapshot_handler: Callable = Callable(),
+		restore_handler: Callable = Callable()
+	) -> Dictionary:
 	_transition_handlers[domain] = {
 		"save": save_handler,
 		"draft": draft_handler,
@@ -84,7 +88,14 @@ func register_transition_handler(
 		"prepare": prepare_handler,
 		"stage": stage_handler,
 		"rollback": rollback_handler,
+		"is_dirty": is_dirty_handler if is_dirty_handler.is_valid() \
+			else Callable(self, "is_dirty").bind(domain),
+		"snapshot": snapshot_handler if snapshot_handler.is_valid() \
+			else Callable(self, "_domain_metadata_snapshot").bind(domain),
+		"restore": restore_handler if restore_handler.is_valid() \
+			else Callable(self, "_restore_domain_metadata_snapshot").bind(domain),
 	}
+	return transition_handler_contract(domain)
 
 
 func unregister_transition_handler(domain: StringName) -> void:
@@ -93,6 +104,10 @@ func unregister_transition_handler(domain: StringName) -> void:
 
 func set_dirty(domain: StringName, dirty: bool, metadata := {}) -> void:
 	if dirty:
+		var contract := transition_handler_contract(domain)
+		if not bool(contract.get("valid", false)):
+			push_error("Domaine modifiable sans handlers complets : %s" % human_domain_name(domain))
+			return
 		_dirty_domains[domain] = metadata.duplicate(true) if metadata is Dictionary else {}
 	else:
 		_dirty_domains.erase(domain)
@@ -106,6 +121,60 @@ func is_dirty(domain: StringName = &"") -> bool:
 
 func dirty_domains() -> Dictionary:
 	return _dirty_domains.duplicate(true)
+
+
+func transition_handler_contract(domain: StringName) -> Dictionary:
+	var handlers := _transition_handlers.get(domain, {}) as Dictionary
+	var missing: Array[String] = []
+	for key in ["save", "draft", "discard", "is_dirty", "snapshot", "restore"]:
+		if not (handlers.get(key, Callable()) as Callable).is_valid():
+			missing.append(key.to_upper())
+	return {
+		"domain": domain,
+		"human_name": human_domain_name(domain),
+		"required": ["SAVE", "KEEP_AS_DRAFT", "DISCARD", "IS_DIRTY", "SNAPSHOT", "RESTORE"],
+		"missing": missing,
+		"valid": missing.is_empty(),
+	}
+
+
+func validate_transition_handlers() -> Dictionary:
+	var domains := {}
+	var invalid: Array[StringName] = []
+	for domain_value in _transition_handlers:
+		var domain := StringName(domain_value)
+		var contract := transition_handler_contract(domain)
+		domains[domain] = contract
+		if not bool(contract.valid):
+			invalid.append(domain)
+	return {"valid": invalid.is_empty(), "invalid_domains": invalid, "domains": domains}
+
+
+func human_domain_name(domain: StringName) -> String:
+	return {
+		&"arena": "Arène",
+		&"arena_run": "Séquence de salles",
+		&"encounter": "Rencontre",
+		&"items": "Objets",
+		&"skills": "Compétences",
+	}.get(domain, str(domain).capitalize())
+
+
+func _domain_metadata_snapshot(domain: StringName) -> Dictionary:
+	return {
+		"dirty": _dirty_domains.has(domain),
+		"metadata": (_dirty_domains.get(domain, {}) as Dictionary).duplicate(true),
+	}
+
+
+func _restore_domain_metadata_snapshot(snapshot: Dictionary, domain: StringName) -> Dictionary:
+	if bool(snapshot.get("dirty", false)):
+		_dirty_domains[domain] = (
+			snapshot.get("metadata", {}) as Dictionary
+		).duplicate(true)
+	else:
+		_dirty_domains.erase(domain)
+	return {"ok": true}
 
 
 func has_pending_transition() -> bool:

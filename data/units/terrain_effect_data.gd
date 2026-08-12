@@ -26,6 +26,10 @@ enum SameSurfacePolicy {
 @export var trigger: Trigger = Trigger.TURN_START
 @export var damage: int = 0
 @export var damage_over_time: bool = false
+@export var damage_type: Spell.DamageType = Spell.DamageType.MAGICAL
+@export var element: Spell.Element = Spell.Element.NONE
+@export var ignores_defense := false
+@export var can_be_dodged := true
 
 @export_group("Statut inflige")
 @export var applied_status: StatusData = null

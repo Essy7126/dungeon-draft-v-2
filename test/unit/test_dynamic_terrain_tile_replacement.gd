@@ -174,7 +174,9 @@ func test_steam_uses_its_catalog_tile_and_expires_to_the_exact_base() -> void:
 	assert_eq(state.terrain_effects.get_visual_terrain_id(cell), &"steam")
 	var visual := TerrainSurfaceVisualResolver.resolve(&"steam")
 	assert_true(visual.ok)
-	assert_true(str((visual.texture as Texture2D).resource_path).ends_with("vapeur.png"))
+	assert_true(str((visual.texture as Texture2D).resource_path).ends_with(
+		"normalized/steam.png"
+	))
 	assert_eq(state.grid.get_type(cell), GridData.CellType.NORMAL)
 	state.advance_surface_tick()
 	assert_eq(state.terrain_effects.get_remaining_duration(cell), 1)

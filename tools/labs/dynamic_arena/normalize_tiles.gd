@@ -7,8 +7,7 @@ extends SceneTree
 const RAW_DIR := "res://tools/labs/dynamic_arena/assets/raw"
 const NORMALIZED_DIR := "res://tools/labs/dynamic_arena/assets/normalized"
 const COMPARISON_PATH := "res://artifacts/labs/dynamic_arena/normalized_tiles.png"
-const OUTPUT_SIZE := Vector2i(256, 128)
-const ALPHA_THRESHOLD := 0.01
+const OUTPUT_SIZE := ArenaTileVisualNormalizationService.OUTPUT_SIZE
 
 const SOURCE_SPECS := [
 	{
@@ -35,6 +34,26 @@ const SOURCE_SPECS := [
 		"name": "water",
 		"raw": RAW_DIR + "/water.png",
 		"fallback": "res://tools/labs/dynamic_arena/assets/dalle_eau.png",
+	},
+	{
+		"name": "poison",
+		"raw": RAW_DIR + "/poison.png",
+		"fallback": "",
+	},
+	{
+		"name": "steam",
+		"raw": RAW_DIR + "/vapeur.png",
+		"fallback": "",
+	},
+	{
+		"name": "electrified_water",
+		"raw": RAW_DIR + "/électrique.png",
+		"fallback": "",
+	},
+	{
+		"name": "vortex",
+		"raw": RAW_DIR + "/vortex.png",
+		"fallback": "",
 	},
 ]
 
@@ -72,7 +91,7 @@ func _normalize_all() -> void:
 
 	var shared_crop := _intersect_bounds(alpha_bounds)
 	if shared_crop.size.x <= 0 or shared_crop.size.y <= 0:
-		push_error("Les quatre sources n'ont pas de zone alpha commune.")
+		push_error("Les neuf sources n'ont pas de zone alpha commune.")
 		quit(1)
 		return
 
@@ -115,62 +134,15 @@ func _ensure_raw_source(spec: Dictionary) -> String:
 
 
 func _alpha_bounds(image: Image) -> Rect2i:
-	var minimum := Vector2i(image.get_width(), image.get_height())
-	var maximum := Vector2i(-1, -1)
-	for y in range(image.get_height()):
-		for x in range(image.get_width()):
-			if image.get_pixel(x, y).a <= ALPHA_THRESHOLD:
-				continue
-			minimum.x = mini(minimum.x, x)
-			minimum.y = mini(minimum.y, y)
-			maximum.x = maxi(maximum.x, x)
-			maximum.y = maxi(maximum.y, y)
-	if maximum.x < minimum.x or maximum.y < minimum.y:
-		return Rect2i()
-	return Rect2i(minimum, maximum - minimum + Vector2i.ONE)
+	return ArenaTileVisualNormalizationService.alpha_bounds(image)
 
 
 func _intersect_bounds(bounds: Array[Rect2i]) -> Rect2i:
-	if bounds.is_empty():
-		return Rect2i()
-	var left := bounds[0].position.x
-	var top := bounds[0].position.y
-	var right := bounds[0].end.x
-	var bottom := bounds[0].end.y
-	for rect in bounds:
-		left = maxi(left, rect.position.x)
-		top = maxi(top, rect.position.y)
-		right = mini(right, rect.end.x)
-		bottom = mini(bottom, rect.end.y)
-	return Rect2i(left, top, maxi(0, right - left), maxi(0, bottom - top))
+	return ArenaTileVisualNormalizationService.intersect_bounds(bounds)
 
 
 func _normalize_image(source: Image, shared_crop: Rect2i) -> Image:
-	var output := source.get_region(shared_crop)
-	output.resize(OUTPUT_SIZE.x, OUTPUT_SIZE.y, Image.INTERPOLATE_LANCZOS)
-	output.convert(Image.FORMAT_RGBA8)
-	for y in range(OUTPUT_SIZE.y):
-		for x in range(OUTPUT_SIZE.x):
-			var color := output.get_pixel(x, y)
-			if _inside_diamond(x, y):
-				# Le masque est l'alpha final : bounding box identique et pas de
-				# frange issue des fonds des images sources.
-				color.a = 1.0
-			else:
-				color = Color(0.0, 0.0, 0.0, 0.0)
-			output.set_pixel(x, y, color)
-	return output
-
-
-func _inside_diamond(x: int, y: int) -> bool:
-	if y <= 64:
-		var left := 128.0 - float(y) * 2.0
-		var right := 128.0 + float(y) * (127.0 / 64.0)
-		return float(x) >= left and float(x) <= right
-	var lower_y := float(y - 64)
-	var left := lower_y * (128.0 / 63.0)
-	var right := 255.0 - lower_y * (127.0 / 63.0)
-	return float(x) >= left and float(x) <= right
+	return ArenaTileVisualNormalizationService.normalize(source, shared_crop)
 
 
 func _save_comparison(sources: Array[Image], normalized: Array[Image]) -> int:
@@ -180,7 +152,8 @@ func _save_comparison(sources: Array[Image], normalized: Array[Image]) -> int:
 	canvas.fill(Color("101722"))
 	var accents := [
 		Color("98a8b8"), Color("d8c8a8"), Color("ff6437"),
-		Color("a9eaff"), Color("39bde3"),
+		Color("a9eaff"), Color("39bde3"), Color("6fc241"),
+		Color("c9c9c9"), Color("48c8ff"), Color("b65cff"),
 	]
 	for index in range(SOURCE_SPECS.size()):
 		var panel_position := Vector2i(24 + index * 292, 40)

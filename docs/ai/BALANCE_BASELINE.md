@@ -1,5 +1,28 @@
 # Baseline d’équilibrage structurelle
 
+## Impulsion du vide et Choc — PROVISIONAL (2026-08-12)
+
+- Impulsion du vide : **+1 PM pendant l'activation courante**, une fois par
+  unité et par round, non cumulable. Valeur provisoire à réévaluer par playtest.
+- Choc d'eau électrifiée : valeur existante de 20 dégâts Foudre conservée ; au
+  maximum un déclenchement par unité/round pour une région électrique.
+- Entrée volontaire : actions courantes consommées, pas de skip automatique de
+  l'activation suivante. Entrée forcée hors activation : prochaine activation
+  sautée une fois.
+
+## Poison de terrain — PROVISIONAL — à rééquilibrer par playtest
+
+- statut `poison`, nom Poison ;
+- 4 dégâts magiques au début du tour ;
+- durée 3 activations ;
+- élément NONE ; défense ignorée ; esquive interdite ;
+- aucun malus PA/PM et aucun blocage de vision ;
+- terrain praticable, coût 1, danger IA 2,0.
+
+L’eau électrifiée réemploie la valeur de Choc existante (20 dégâts Foudre) et
+Mouillé. La lave conserve 15 dégâts directs et ajoute la Resource Brûlure
+existante sans en modifier les valeurs.
+
 ## L’Odyssée — baseline expérimentale, non production
 
 Ces valeurs décrivent le prototype Achille solo et ne remplacent pas la baseline

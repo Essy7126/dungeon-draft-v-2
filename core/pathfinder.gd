@@ -38,6 +38,7 @@ func sync(ignore_unit = null) -> void:
 			var pos = Vector2i(x, y)
 			var blocked = not _grid.is_walkable(pos, ignore_unit)
 			_astar.set_point_solid(pos, blocked)
+			_astar.set_point_weight_scale(pos, float(_grid.get_movement_cost(pos)))
 
 # ============================================================
 # CALCUL DE CHEMIN  (renommé find_path pour éviter la collision)
@@ -56,6 +57,8 @@ func find_path(
 		sync(ignore_unit)
 	if not _grid.is_valid(from) or not _grid.is_valid(to):
 		return []
+	if not _grid.vortex_links().is_empty():
+		return _find_path_with_vortex(from, to, ignore_unit)
 	var path = _astar.get_id_path(from, to)
 	return Array(path)
 
@@ -65,6 +68,8 @@ func find_path(
 
 func get_reachable(from: Vector2i, max_steps: int, ignore_unit = null) -> Array:
 	sync(ignore_unit)
+	if not _grid.vortex_links().is_empty():
+		return _reachable_with_vortex(from, max_steps, ignore_unit)
 
 	var reachable: Array = []
 	var visited: Dictionary = { from: 0 }
@@ -90,6 +95,122 @@ func get_reachable(from: Vector2i, max_steps: int, ignore_unit = null) -> Array:
 			frontier.append(neighbor)
 
 	return reachable
+
+
+func is_vortex_edge(from: Vector2i, to: Vector2i) -> bool:
+	return _grid.get_vortex_destination(from) == to
+
+
+func path_movement_cost(path: Array) -> int:
+	var cost := 0
+	for index in range(1, path.size()):
+		var previous := path[index - 1] as Vector2i
+		var current := path[index] as Vector2i
+		if is_vortex_edge(previous, current):
+			continue
+		cost += _grid.get_movement_cost(current)
+	return cost
+
+
+func _find_path_with_vortex(
+		from: Vector2i,
+		to: Vector2i,
+		ignore_unit
+	) -> Array:
+	var search := _vortex_search(from, -1, ignore_unit, to)
+	if not (search.get("costs", {}) as Dictionary).has(to):
+		return []
+	return _reconstruct_vortex_path(from, to, search.get("previous", {}) as Dictionary)
+
+
+func _reachable_with_vortex(
+		from: Vector2i,
+		max_cost: int,
+		ignore_unit
+	) -> Array:
+	var search := _vortex_search(from, max_cost, ignore_unit)
+	var result: Array = []
+	for cell_value in (search.get("costs", {}) as Dictionary):
+		var cell := cell_value as Vector2i
+		if cell != from:
+			result.append(cell)
+	result.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		return a.y < b.y or (a.y == b.y and a.x < b.x)
+	)
+	return result
+
+
+func _vortex_search(
+		from: Vector2i,
+		max_cost: int,
+		ignore_unit,
+		target := Vector2i(-1, -1)
+	) -> Dictionary:
+	var costs := {from: 0}
+	var previous := {}
+	var frontier: Array[Vector2i] = [from]
+	var terminal_vortex_destinations := {}
+	var directions: Array[Vector2i] = [
+		Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT,
+	]
+	while not frontier.is_empty():
+		frontier.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+			var cost_a := int(costs.get(a, 2147483647))
+			var cost_b := int(costs.get(b, 2147483647))
+			return cost_a < cost_b or (cost_a == cost_b and (
+				a.y < b.y or (a.y == b.y and a.x < b.x)
+			))
+		)
+		var current: Vector2i = frontier.pop_front()
+		if current == target:
+			break
+		if terminal_vortex_destinations.has(current):
+			continue
+		for direction in directions:
+			var entered: Vector2i = current + direction
+			if not _grid.is_walkable(entered, ignore_unit):
+				continue
+			var destination: Vector2i = entered
+			var segment: Array[Vector2i] = [entered]
+			var traversed_vortex := false
+			if _grid.has_vortex(entered):
+				if not _grid.can_traverse_vortex(entered, ignore_unit):
+					continue
+				destination = _grid.get_vortex_destination(entered)
+				segment.append(destination)
+				traversed_vortex = true
+			var next_cost := int(costs[current]) + _grid.get_movement_cost(entered)
+			if max_cost >= 0 and next_cost > max_cost:
+				continue
+			if costs.has(destination) and int(costs[destination]) <= next_cost:
+				continue
+			costs[destination] = next_cost
+			previous[destination] = {"cell": current, "segment": segment}
+			if traversed_vortex:
+				terminal_vortex_destinations[destination] = true
+			else:
+				frontier.append(destination)
+	return {"costs": costs, "previous": previous}
+
+
+func _reconstruct_vortex_path(
+		from: Vector2i,
+		to: Vector2i,
+		previous: Dictionary
+	) -> Array:
+	var segments: Array = []
+	var cursor := to
+	while cursor != from:
+		if not previous.has(cursor):
+			return []
+		var record := previous[cursor] as Dictionary
+		segments.push_front((record.get("segment", []) as Array).duplicate())
+		cursor = record.get("cell", from) as Vector2i
+	var path: Array = [from]
+	for segment_value in segments:
+		for cell_value in segment_value as Array:
+			path.append(cell_value as Vector2i)
+	return path
 
 # ============================================================
 # LIGNE DE VUE (Bresenham)
