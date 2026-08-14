@@ -2,11 +2,11 @@
 
 ## 1. Verdict
 
-`MAIN_INTEGRATION_VALIDATED_NOT_PUSHED`
+`MAIN_INTEGRATION_PUSHED`
 
-La fondation VFX Flipbook V1 est validée techniquement sur le dernier `origin/main` observé, sans régression VFX ou Studio et avec les mêmes 24 identités d'échec globales que la baseline. Au moment de ce commit documentaire, le push n'a pas encore été exécuté. Ce verdict ne constitue pas une approbation artistique : les atlas sont des fixtures synthétiques `TECHNICAL_PLACEHOLDER`.
+La fondation VFX Flipbook V1 est validée techniquement sur le dernier `origin/main` observé, sans régression VFX ou Studio et avec les mêmes 24 identités d'échec globales que la baseline. Le push fast-forward initial a été exécuté et vérifié sur `70c19afe70b94fea126ba37ad4f9df1c3ef00d91`. Ce verdict ne constitue pas une approbation artistique : les atlas sont des fixtures synthétiques `TECHNICAL_PLACEHOLDER`.
 
-Après les validations post-commit, un nouveau fetch et un push `HEAD:main` sans force doivent être exécutés. Le verdict ne pourra devenir `MAIN_INTEGRATION_PUSHED` qu'après preuve distante.
+La présente mise à jour de confirmation est le seul delta postérieur à cette preuve distante. Elle doit être poussée à son tour par fast-forward, sans force, puis vérifiée par égalité de `HEAD`, `origin/main` et `ls-remote`.
 
 ## 2. Vérité Git initiale
 
@@ -254,19 +254,23 @@ La vérité de la mission est consignée dans :
 
 - candidat : `b00b040572a15b4fa0d5e064455fa9a06a353a7c` — `feat(vfx): add flipbook foundation and standalone lab launcher` ;
 - technique intégré : `72a0ed9d1b4e38897620c8e634bca9e77c50f88f` — même message ;
-- documentaire : commit qui porte ce rapport — `docs(vfx): record flipbook foundation integration` ;
-- HEAD pré-push : le commit documentaire, descendant direct de `72a0ed9` et de `afc458d`.
+- documentaire initial : `70c19afe70b94fea126ba37ad4f9df1c3ef00d91` — `docs(vfx): record flipbook foundation integration` ;
+- confirmation du push : commit qui porte cette mise à jour — `docs(vfx): confirm flipbook foundation main push` ;
+- HEAD final : le commit de confirmation, descendant direct de `70c19af`, `72a0ed9` et `afc458d`.
 
-Un fichier ne peut pas embarquer le SHA de son propre commit sans changer ce SHA. La valeur exacte du commit documentaire est donc fournie par la preuve Git de l'handoff.
+Un fichier ne peut pas embarquer le SHA de son propre commit sans changer ce SHA. La valeur exacte du commit de confirmation est donc fournie par la preuve Git de l'handoff.
 
 ## 15. Push
 
 - remote observé avant la gate finale : `afc458ddec20f1753926405f229389214ded6059` ;
 - commande autorisée : `git push origin HEAD:main` ;
 - force : jamais ;
-- condition : nouveau `git fetch origin main`, `origin/main` encore égal à `afc458d`, worktree d'intégration propre, diff propre, `maps` ancêtre, validations post-commit documentaire vertes ;
-- résultat au moment de ce rapport : non exécuté ;
-- preuve attendue après push : `HEAD == origin/main == git ls-remote origin refs/heads/main`, avec `afc458d`, le commit technique et le rapport présents.
+- gate pré-push : `origin/main` encore égal à `afc458d`, worktree propre, diff propre, `maps` et `72a0ed9` ancêtres, validations post-commit vertes ;
+- premier push : code 0, fast-forward `afc458d..70c19af`, aucune force ;
+- première preuve distante : `HEAD == origin/main == git ls-remote origin refs/heads/main == 70c19afe70b94fea126ba37ad4f9df1c3ef00d91` ;
+- contenu prouvé : `afc458d`, `72a0ed9` et `70c19af` tous présents/ancêtres ;
+- mise à jour de confirmation : second fast-forward documentaire requis, puis nouvelle égalité des trois références ;
+- SHA distant final : fourni par la preuve Git de l'handoff, car il est le SHA du commit qui contient cette ligne.
 
 Si la politique distante refuse `HEAD:main`, aucun contournement n'est autorisé : seule la branche d'intégration peut alors être poussée et le verdict devient `MAIN_PUSH_BLOCKED_BY_REMOTE_POLICY`.
 
@@ -293,4 +297,4 @@ Si la politique distante refuse `HEAD:main`, aucun contournement n'est autorisé
 - worktrees Achilles, Run Flow, HUD, Observatory, Studio, Tactical Impact et Validation Feedback préservés ;
 - aucun worktree supprimé, aucune branche supprimée, aucun reset destructif, aucun stash, aucun force push ;
 - logs baseline/final, logs de lanceurs, captures candidates, captures intégrées, jonction au chemin avec espaces et diagnostics incomplets conservés pour audit ;
-- après commit documentaire, le worktree d'intégration doit être propre ; le principal n'est pas nettoyé par cette mission.
+- après commit de confirmation et second push, le worktree d'intégration doit être propre ; le principal n'est pas nettoyé par cette mission.
