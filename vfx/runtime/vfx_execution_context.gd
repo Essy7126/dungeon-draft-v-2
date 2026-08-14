@@ -6,7 +6,7 @@ const SUPPORTED_FIELDS := [
 	&"affected_cells", &"impact_cells", &"origin_world", &"target_world",
 	&"path_world_points", &"impact_world_points", &"impact_timings", &"seed",
 	&"speed_scale", &"quality_tier", &"preview_mode", &"target_layer",
-	&"magnitude", &"path_valid", &"consumer_kind",
+	&"magnitude", &"path_valid", &"consumer_kind", &"cell_visual_size",
 ]
 
 var _values: Dictionary = {}

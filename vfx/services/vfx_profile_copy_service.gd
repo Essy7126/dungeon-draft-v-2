@@ -4,7 +4,7 @@ extends RefCounted
 
 func duplicate_profile(profile: VFXProfile) -> VFXProfile:
 	return VFXProfileSnapshotService.from_dictionary(
-		VFXProfileSnapshotService.to_dictionary(profile)
+		VFXProfileSnapshotService.to_dictionary(profile, true)
 	)
 
 

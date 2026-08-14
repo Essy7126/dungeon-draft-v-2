@@ -37,9 +37,9 @@ func open_profile(profile: VFXProfile) -> bool:
 func record_edit(action_name: String, mutator: Callable) -> bool:
 	if working_copy == null or not mutator.is_valid():
 		return false
-	var before := VFXProfileSnapshotService.to_dictionary(working_copy)
+	var before := VFXProfileSnapshotService.to_dictionary(working_copy, true)
 	mutator.call()
-	var after := VFXProfileSnapshotService.to_dictionary(working_copy)
+	var after := VFXProfileSnapshotService.to_dictionary(working_copy, true)
 	return history.record(action_name, before, after, true)
 
 

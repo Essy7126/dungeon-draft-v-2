@@ -1,0 +1,52 @@
+{
+  "alpha_mode": "STRAIGHT",
+  "art_status": "TECHNICAL_PLACEHOLDER",
+  "asset_id": "synthetic.flipbook.foundation",
+  "blend_mode": "ADD",
+  "columns": 8,
+  "frame_count": 32,
+  "frames_per_second": 30.0,
+  "generator_checksum": "2c6bb5402b1280f4a74ecf17413bc491a392e2144db8355e5ed3a5afac3082e3",
+  "license_status": "INTERNAL_TEST",
+  "loop": false,
+  "nominal_size_in_cells": [
+    1.0,
+    1.0
+  ],
+  "pivot_normalized": [
+    0.5,
+    0.75
+  ],
+  "playback_mode": "FIT_MODULE_DURATION",
+  "rows": 4,
+  "schema_version": 1,
+  "source_tool": "SYNTHETIC_TEST_GENERATOR",
+  "texture_checksums": {
+    "res://vfx/assets/flipbooks/test/variant_a_high.png": "c67a091b10545a9e77b3a21fb02c529f691ef688abc893e68a085d85f219befd",
+    "res://vfx/assets/flipbooks/test/variant_a_low.png": "2c00cc2cad52e1eba3e4547f9516b37481081adea1630a905d92642433ed5546",
+    "res://vfx/assets/flipbooks/test/variant_a_medium.png": "09fc1f968c6bc4627cfec118ffda13517730673f4187c2751c9bad49f598918c",
+    "res://vfx/assets/flipbooks/test/variant_b_high.png": "190cfbd9b034e01964322262f0eecaed964643ac21fc01ab21ecf77652b3ae9b",
+    "res://vfx/assets/flipbooks/test/variant_b_low.png": "2b586b48f21b3e039e092c27a4d1c12d60360d95472151200afd8ddbb6583ba9",
+    "res://vfx/assets/flipbooks/test/variant_b_medium.png": "1cd9b507c9b0463a6728a6c0710b11ddff4a4024c6da9624171988543ea61c99"
+  },
+  "variants": [
+    {
+      "frame_size_high": 64,
+      "frame_size_low": 16,
+      "frame_size_medium": 32,
+      "texture_high": "res://vfx/assets/flipbooks/test/variant_a_high.png",
+      "texture_low": "res://vfx/assets/flipbooks/test/variant_a_low.png",
+      "texture_medium": "res://vfx/assets/flipbooks/test/variant_a_medium.png",
+      "variant_id": "variant_a"
+    },
+    {
+      "frame_size_high": 64,
+      "frame_size_low": 16,
+      "frame_size_medium": 32,
+      "texture_high": "res://vfx/assets/flipbooks/test/variant_b_high.png",
+      "texture_low": "res://vfx/assets/flipbooks/test/variant_b_low.png",
+      "texture_medium": "res://vfx/assets/flipbooks/test/variant_b_medium.png",
+      "variant_id": "variant_b"
+    }
+  ]
+}

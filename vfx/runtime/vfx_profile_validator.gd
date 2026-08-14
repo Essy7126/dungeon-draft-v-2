@@ -49,10 +49,14 @@ static func validate(
 				for requirement in module.context_requirements:
 					if not context.has(requirement):
 						errors.append("%s requiert le contexte %s." % [module.module_id, requirement])
+				_validate_module_context(module, errors, context)
 	return {"ok": errors.is_empty(), "errors": errors, "warnings": warnings}
 
 
-static func _validate_module(module: VFXModuleData, errors: Array[String]) -> void:
+static func _validate_module(
+		module: VFXModuleData,
+		errors: Array[String]
+	) -> void:
 	if module == null:
 		errors.append("Module nul.")
 		return
@@ -64,3 +68,50 @@ static func _validate_module(module: VFXModuleData, errors: Array[String]) -> vo
 		errors.append("Durée invalide pour %s." % module.module_id)
 	if module.start_offset < 0.0:
 		errors.append("Start offset négatif pour %s." % module.module_id)
+	if module is VFXFlipbookModuleData and module.module_type != &"FlipbookModule":
+		errors.append("VFXFlipbookModuleData requiert module_type FlipbookModule.")
+		return
+	if module.module_type != &"FlipbookModule":
+		return
+	if not module is VFXFlipbookModuleData:
+		errors.append("FlipbookModule requiert VFXFlipbookModuleData.")
+		return
+	var flipbook := module as VFXFlipbookModuleData
+	if flipbook.asset == null:
+		errors.append("Asset flipbook absent pour %s." % module.module_id)
+		return
+	errors.append_array(flipbook.asset.validate_structure())
+	if flipbook.anchor not in VFXFlipbookModuleData.SUPPORTED_ANCHORS:
+		errors.append("Ancre flipbook non supportée : %s." % flipbook.anchor)
+	if flipbook.scale_multiplier.x <= 0.0 or flipbook.scale_multiplier.y <= 0.0:
+		errors.append("Échelle flipbook strictement positive requise.")
+	if flipbook.opacity < 0.0 or flipbook.opacity > 1.0:
+		errors.append("Opacité flipbook hors [0, 1].")
+
+
+static func _validate_module_context(
+		module: VFXModuleData,
+		errors: Array[String],
+		context: VFXExecutionContext
+	) -> void:
+	if module.module_type != &"FlipbookModule" or not module is VFXFlipbookModuleData:
+		return
+	var flipbook := module as VFXFlipbookModuleData
+	if flipbook.asset == null:
+		return
+	var selected := flipbook.asset.select_variant(context.get_seed() + flipbook.seed_offset)
+	var texture: Texture2D = flipbook.asset.select_texture(
+		selected, context.get_quality_tier()
+	).get("texture") as Texture2D
+	if texture == null:
+		errors.append("Qualité flipbook demandée non résoluble.")
+	match flipbook.anchor:
+		&"TARGET_WORLD":
+			if not context.has(&"target_world"):
+				errors.append("TARGET_WORLD requiert target_world.")
+		&"ORIGIN_WORLD":
+			if not context.has(&"origin_world"):
+				errors.append("ORIGIN_WORLD requiert origin_world.")
+		&"FIRST_IMPACT_WORLD":
+			if not context.has(&"impact_world_points"):
+				errors.append("FIRST_IMPACT_WORLD requiert impact_world_points.")

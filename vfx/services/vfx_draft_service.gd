@@ -10,6 +10,13 @@ func save_draft(document: VFXStudioDocument) -> Dictionary:
 	var validation := VFXProfileValidator.validate(document.working_copy)
 	if not bool(validation.ok):
 		return {"ok": false, "error": "Draft invalide.", "validation": validation}
+	var snapshot_errors := VFXProfileSnapshotService.validate_durable_snapshot(document.working_copy)
+	if not snapshot_errors.is_empty():
+		return {
+			"ok": false,
+			"error": "Draft non durable.",
+			"snapshot_errors": snapshot_errors,
+		}
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(DRAFT_DIRECTORY))
 	var path := DRAFT_DIRECTORY.path_join("%s.json" % document.working_copy.profile_id)
 	var file := FileAccess.open(path, FileAccess.WRITE)

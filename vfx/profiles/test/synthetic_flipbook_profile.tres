@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="VFXProfile" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://vfx/data/vfx_profile.gd" id="1_profile"]
+[ext_resource type="Script" path="res://vfx/data/vfx_sequence_data.gd" id="2_sequence"]
+[ext_resource type="Script" path="res://vfx/data/vfx_flipbook_module_data.gd" id="3_module"]
+[ext_resource type="Resource" path="res://vfx/profiles/test/synthetic_flipbook_asset.tres" id="4_asset"]
+
+[sub_resource type="Resource" id="Module_flipbook"]
+script = ExtResource("3_module")
+module_id = &"synthetic_burst"
+module_type = &"FlipbookModule"
+duration = 1.0
+anchor = &"TARGET_WORLD"
+seed_offset = 7
+context_requirements = Array[StringName]([&"target_world"])
+asset = ExtResource("4_asset")
+scale_multiplier = Vector2(1, 1)
+rotation_degrees = 0.0
+opacity = 1.0
+color_modulate = Color(1, 1, 1, 1)
+frame_offset = 0
+
+[sub_resource type="Resource" id="Sequence_play"]
+script = ExtResource("2_sequence")
+sequence_id = &"play"
+display_name = "Synthetic Flipbook"
+modules = Array[ExtResource("3_module")]([SubResource("Module_flipbook")])
+
+[resource]
+script = ExtResource("1_profile")
+schema_version = 1
+profile_id = &"test.synthetic.flipbook.foundation"
+display_name = "Synthetic Flipbook Foundation - TEST"
+category = &"SYSTEM_FLIPBOOK"
+render_policy = &"HYBRID_CAPABLE"
+art_status = &"TECHNICAL_PLACEHOLDER"
+tags = Array[StringName]([&"flipbook", &"synthetic", &"test"])
+sequences = Array[ExtResource("2_sequence")]([SubResource("Sequence_play")])
+context_requirements = Array[StringName]([&"target_world"])
+maximum_duration = 1.25
+quality_policy = &"SCALABLE"

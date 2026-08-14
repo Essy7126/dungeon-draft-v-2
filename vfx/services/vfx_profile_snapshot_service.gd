@@ -2,7 +2,7 @@ class_name VFXProfileSnapshotService
 extends RefCounted
 
 
-static func to_dictionary(profile: VFXProfile) -> Dictionary:
+static func to_dictionary(profile: VFXProfile, include_transient_references := false) -> Dictionary:
 	if profile == null:
 		return {}
 	var sequence_values: Array = []
@@ -12,7 +12,7 @@ static func to_dictionary(profile: VFXProfile) -> Dictionary:
 		var module_values: Array = []
 		for module in sequence.modules:
 			if module != null:
-				module_values.append(_module_to_dictionary(module))
+				module_values.append(_module_to_dictionary(module, include_transient_references))
 		sequence_values.append({
 			"sequence_id": str(sequence.sequence_id),
 			"display_name": sequence.display_name,
@@ -68,8 +68,11 @@ static func fingerprint(profile: VFXProfile) -> String:
 	return JSON.stringify(to_dictionary(profile)).sha256_text()
 
 
-static func _module_to_dictionary(module: VFXModuleData) -> Dictionary:
-	return {
+static func _module_to_dictionary(
+		module: VFXModuleData,
+		include_transient_references := false
+	) -> Dictionary:
+	var snapshot := {
 		"module_id": str(module.module_id),
 		"module_type": str(module.module_type),
 		"enabled": module.enabled,
@@ -86,10 +89,30 @@ static func _module_to_dictionary(module: VFXModuleData) -> Dictionary:
 		"gradient": _gradient_snapshot(module.color_gradient),
 		"parameters": _encode_variant(module.parameters),
 	}
+	if module is VFXFlipbookModuleData:
+		var flipbook := module as VFXFlipbookModuleData
+		snapshot["concrete_type"] = "VFXFlipbookModuleData"
+		snapshot["flipbook"] = {
+			"asset_path": flipbook.asset.resource_path if flipbook.asset != null else "",
+			"scale_multiplier": _encode_variant(flipbook.scale_multiplier),
+			"rotation_degrees": flipbook.rotation_degrees,
+			"opacity": flipbook.opacity,
+			"color_modulate": _color_array(flipbook.color_modulate),
+			"frame_offset": flipbook.frame_offset,
+		}
+		if include_transient_references and flipbook.asset != null \
+				and flipbook.asset.resource_path.is_empty():
+			snapshot["flipbook"]["asset_reference"] = flipbook.asset
+	return snapshot
 
 
 static func _module_from_dictionary(snapshot: Dictionary) -> VFXModuleData:
-	var module := VFXModuleData.new()
+	var module: VFXModuleData
+	if str(snapshot.get("concrete_type", "")) == "VFXFlipbookModuleData" \
+			or StringName(snapshot.get("module_type", "")) == &"FlipbookModule":
+		module = VFXFlipbookModuleData.new()
+	else:
+		module = VFXModuleData.new()
 	module.module_id = StringName(snapshot.get("module_id", "module"))
 	module.module_type = StringName(snapshot.get("module_type", ""))
 	module.enabled = bool(snapshot.get("enabled", true))
@@ -105,7 +128,50 @@ static func _module_from_dictionary(snapshot: Dictionary) -> VFXModuleData:
 	module.response_curve = _curve_from(snapshot.get("curve", {}) as Dictionary)
 	module.color_gradient = _gradient_from(snapshot.get("gradient", {}) as Dictionary)
 	module.parameters = _decode_variant(snapshot.get("parameters", {})) as Dictionary
+	if module is VFXFlipbookModuleData:
+		var flipbook := module as VFXFlipbookModuleData
+		var details := snapshot.get("flipbook", {}) as Dictionary
+		var asset_path := str(details.get("asset_path", ""))
+		if not asset_path.is_empty():
+			flipbook.asset = ResourceLoader.load(asset_path) as VFXFlipbookAsset
+		elif details.get("asset_reference") is VFXFlipbookAsset:
+			flipbook.asset = details.get("asset_reference") as VFXFlipbookAsset
+		flipbook.scale_multiplier = _decode_variant(
+			details.get("scale_multiplier", {"__vfx_type": "Vector2", "value": [1.0, 1.0]})
+		) as Vector2
+		flipbook.rotation_degrees = float(details.get("rotation_degrees", 0.0))
+		flipbook.opacity = float(details.get("opacity", 1.0))
+		flipbook.color_modulate = _color_from(details.get("color_modulate", [1, 1, 1, 1]))
+		flipbook.frame_offset = int(details.get("frame_offset", 0))
 	return module
+
+
+static func validate_durable_snapshot(profile: VFXProfile) -> Array[String]:
+	var errors: Array[String] = []
+	if profile == null:
+		return ["VFXProfile absent."]
+	for sequence in profile.sequences:
+		if sequence == null:
+			continue
+		for module in sequence.modules:
+			if module is VFXFlipbookModuleData:
+				var asset := (module as VFXFlipbookModuleData).asset
+				if asset == null or asset.resource_path.is_empty():
+					errors.append(
+						"Asset flipbook persistant requis pour le snapshot durable de %s."
+						% module.module_id
+					)
+				elif not FileAccess.file_exists(asset.resource_path):
+					errors.append(
+						"Chemin asset flipbook persistant introuvable pour %s : %s."
+						% [module.module_id, asset.resource_path]
+					)
+				elif not ResourceLoader.load(asset.resource_path) is VFXFlipbookAsset:
+					errors.append(
+						"Chemin asset flipbook persistant invalide pour %s : %s."
+						% [module.module_id, asset.resource_path]
+					)
+	return errors
 
 
 static func _curve_snapshot(curve: Curve) -> Dictionary:
