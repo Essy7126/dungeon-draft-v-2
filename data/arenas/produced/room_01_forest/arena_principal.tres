@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://b2i0gvw5kv6a1" path="res://data/unit_data.gd" id="10_cqk4a"]
 [ext_resource type="Resource" uid="uid://d00jkrnf3andk" path="res://data/units/ennemie/skeleton_melee.tres" id="11_hn7vs"]
 [ext_resource type="Script" uid="uid://0ep2tgmkc23g" path="res://data/maps/painted/room_grid_layout.gd" id="12_jaie0"]
-[ext_resource type="Resource" uid="uid://ogq7y82pxxba" path="res://data/arenas/produced/room_01_forest/modular_visual_profile.tres" id="13_wweub"]
+[ext_resource type="Resource" uid="uid://b2yqh6j35f65x" path="res://data/arenas/produced/room_01_forest/modular_visual_profile.tres" id="13_wweub"]
 [ext_resource type="Script" uid="uid://ds6vvuouce3hy" path="res://addons/dungeon_draft_arena_studio/domain/arena_objective_definition.gd" id="14_afojt"]
 [ext_resource type="Script" uid="uid://b3xglsc01xcbx" path="res://addons/dungeon_draft_arena_studio/domain/arena_obstacle_definition.gd" id="15_4pl4o"]
 [ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_presentation.tres" id="16_v6pp7"]
@@ -20,6 +20,8 @@
 [ext_resource type="Script" uid="uid://bhc2akh01iig6" path="res://addons/dungeon_draft_arena_studio/domain/arena_definition.gd" id="18_tsxfv"]
 [ext_resource type="Script" uid="uid://ujw4nmd8cv0b" path="res://addons/dungeon_draft_arena_studio/domain/arena_spawn_definition.gd" id="19_fh41s"]
 [ext_resource type="Script" uid="uid://b6ltxr34x7xhy" path="res://data/rooms/room_wave_data.gd" id="20_s6f87"]
+[ext_resource type="Script" uid="uid://cr6dw4rxhjqca" path="res://addons/dungeon_draft_arena_studio/domain/arena_vortex_network_definition.gd" id="20_yh47a"]
+[ext_resource type="Script" uid="uid://bthehul0evbau" path="res://addons/dungeon_draft_arena_studio/domain/arena_vortex_pair_definition.gd" id="21_oamxb"]
 
 [sub_resource type="Resource" id="Resource_0pr7j"]
 script = ExtResource("4_oamxb")

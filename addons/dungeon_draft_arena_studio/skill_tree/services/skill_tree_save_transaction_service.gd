@@ -247,10 +247,6 @@ static func save(
 			"MANIFEST_APPLIED", "Impossible de mettre à jour le manifeste.",
 			plan, recovery_dir, backup_report, created_paths
 		)
-	if editor_interface != null:
-		var filesystem = editor_interface.get_resource_filesystem()
-		if filesystem != null:
-			filesystem.scan_changes()
 	if _injected(options, &"final_reload") or not session.reopen_from_disk():
 		return _rollback_failure(
 			"FINAL_RELOAD", "Le rechargement final du document a échoué.",
@@ -261,6 +257,13 @@ static func save(
 		recovery_dir.path_join("manifest.json"),
 		_manifest(plan, "COMPLETED", saved_paths, backup_report.get("backups", []) as Array)
 	)
+	# EditorFileSystem peut recharger les Resources et les scripts pendant
+	# scan_changes(). L'appel doit donc être différé jusqu'après la fermeture de
+	# la transaction et la réouverture de sa session canonique.
+	if editor_interface != null:
+		var filesystem = editor_interface.get_resource_filesystem()
+		if filesystem != null:
+			filesystem.call_deferred("scan_changes")
 	return {
 		"ok": true,
 		"step": "COMPLETED",
@@ -324,8 +327,16 @@ static func _external_conflicts(
 		var disk := ResourceLoader.load(
 			entry.source_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 		) as Resource
-		if disk == null or SkillTreeSnapshotService.storage_fingerprint(disk) \
-				!= entry.source_fingerprint:
+		var disk_fingerprint := SkillTreeSnapshotService.storage_fingerprint(disk) \
+			if disk != null else ""
+		# Une transaction interrompue après WRITE/VERIFY peut avoir déjà produit
+		# exactement la copie de travail. Ce cas est une reprise idempotente, pas
+		# une modification externe concurrente.
+		if disk != null and disk_fingerprint in [
+			entry.source_fingerprint, entry.working_fingerprint,
+		]:
+			continue
+		if disk == null or disk_fingerprint != entry.source_fingerprint:
 			result.append(SkillTreeSaveConflict.create(
 				SkillTreeSaveConflict.Kind.EXTERNAL_MODIFICATION,
 				entry.source_path,
@@ -345,24 +356,53 @@ static func _stage(
 			ProjectSettings.globalize_path(staging_dir)
 		) != OK:
 		return _failure("STAGING_DIRECTORY", "Impossible de créer le staging.")
+	var stage_paths := {}
+	for index in range(entries.size()):
+		var entry := entries[index]
+		stage_paths[entry.resource] = staging_dir.path_join(
+			"%03d_%s" % [index, entry.target_path.get_file()]
+		)
+	# Les nouvelles Resources se référencent entre elles par leur resource_path.
+	# Pendant le contrôle, tout le graphe doit donc pointer vers le staging et
+	# non vers des fichiers finaux qui n'existent volontairement pas encore.
+	for resource_value in stage_paths:
+		(resource_value as Resource).set_path_cache(str(stage_paths[resource_value]))
+	var staged_fingerprints := {}
+	for resource_value in stage_paths:
+		staged_fingerprints[resource_value] = (
+			SkillTreeSnapshotService.storage_fingerprint(resource_value as Resource)
+		)
+	var report := {"ok": true, "step": "STAGED", "staging_path": staging_dir}
 	for index in range(entries.size()):
 		if _injected(options, StringName("stage_%d" % index)) \
 				or _injected(options, &"stage"):
-			return _failure("STAGE_%d" % index, "Panne injectée pendant le staging.")
+			report = _failure(
+				"STAGE_%d" % index, "Panne injectée pendant le staging."
+			)
+			break
 		var entry := entries[index]
-		var stage_path := staging_dir.path_join(
-			"%03d_%s" % [index, entry.target_path.get_file()]
-		)
+		var stage_path := str(stage_paths[entry.resource])
 		var error := ResourceSaver.save(entry.resource, stage_path)
 		if error != OK:
-			return _failure("STAGE_WRITE_%d" % index, "Impossible d'écrire une Resource stagée.", null, stage_path, error)
+			report = _failure(
+				"STAGE_WRITE_%d" % index,
+				"Impossible d'écrire une Resource stagée.",
+				null, stage_path, error
+			)
+			break
 		var reloaded := ResourceLoader.load(
 			stage_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 		) as Resource
 		if reloaded == null or SkillTreeSnapshotService.storage_fingerprint(reloaded) \
-				!= entry.working_fingerprint:
-			return _failure("STAGE_VERIFY_%d" % index, "Une Resource stagée est invalide.", null, stage_path)
-	return {"ok": true, "step": "STAGED", "staging_path": staging_dir}
+				!= str(staged_fingerprints[entry.resource]):
+			report = _failure(
+				"STAGE_VERIFY_%d" % index,
+				"Une Resource stagée est invalide.", null, stage_path
+			)
+			break
+	for entry in entries:
+		entry.resource.set_path_cache(entry.target_path)
+	return report
 
 
 static func _rollback_failure(

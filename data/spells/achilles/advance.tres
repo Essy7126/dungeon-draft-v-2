@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="Spell" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="Spell" format=3 uid="uid://7d8r125eqye5"]
 
-[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="2_modifier_type"]
-[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="3_modifier"]
+[ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
+[ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="3_modifier"]
 
 [sub_resource type="Resource" id="MoveCasterModifier"]
 script = ExtResource("3_modifier")
 effect_type = 29
+movement_requires_clear_path = true
 modifier_name = "Percée L’Odyssée"
 target_spell_id = &"achilles_advance"
-movement_requires_clear_path = true
 
 [resource]
 script = ExtResource("1_spell")
@@ -19,7 +19,6 @@ spell_name = "Percée"
 description = "Prototype L’Odyssée · 2 PA · Ligne 3 · Avance au contact et inflige 5 dégâts physiques."
 ap_cost = 2
 minimum_range = 1
-spell_range = 3
 once_per_activation = true
 line_from_caster = true
 damage = 5

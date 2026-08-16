@@ -68,16 +68,27 @@ func open_progression(run_data: RunData, hero_profile: RunHeroProfile) -> bool:
 			or hero_profile.base_unit_data == null \
 			or hero_profile.progression_profile == null:
 		return false
+	var canonical_profile := _load_canonical_progression_profile(
+		hero_profile.progression_profile
+	)
+	if canonical_profile == null:
+		return false
 	var unit_view := RunContentCatalogService.as_editable_unit_view(
-		hero_profile.base_unit_data, hero_profile.progression_profile
+		hero_profile.base_unit_data, canonical_profile
 	)
 	if unit_view == null or not open(unit_view):
 		return false
 	source_run = run_data
 	source_hero_profile = hero_profile
-	source_progression_profile = hero_profile.progression_profile
-	working_progression_profile = source_progression_profile.duplicate(false) \
-		as CharacterProgressionProfile
+	# Le contexte partagé peut encore référencer une ancienne copie de travail
+	# laissée dans le cache par une session antérieure. La remplacer localement
+	# par la relecture canonique empêche cette contamination de se propager aux
+	# autres outils sans écrire la RunData.
+	hero_profile.progression_profile = canonical_profile
+	source_progression_profile = canonical_profile
+	working_progression_profile = _copy_progression_profile_shell(
+		source_progression_profile
+	)
 	working_progression_profile.set_path_cache(source_progression_profile.resource_path)
 	_sync_profile_from_unit()
 	source_to_work[source_progression_profile] = working_progression_profile
@@ -282,7 +293,7 @@ func restore_profile_draft(
 	source_run = run_data
 	source_hero_profile = hero
 	source_progression_profile = profile
-	working_progression_profile = profile.duplicate(false) as CharacterProgressionProfile
+	working_progression_profile = _copy_progression_profile_shell(profile)
 	working_progression_profile.set_path_cache(profile.resource_path)
 	_sync_profile_from_unit()
 	source_to_work[profile] = working_progression_profile
@@ -296,11 +307,60 @@ func restore_profile_draft(
 func _sync_profile_from_unit() -> void:
 	if working_progression_profile == null or working_unit == null:
 		return
+	# Une session créée avant le correctif pouvait avoir remplacé en mémoire les
+	# tableaux du profil source. La vue d'ouverture conserve les vraies
+	# sous-Resources canoniques et permet de réparer cet alias sans perdre la
+	# copie de travail courante.
+	var source_is_aliased := source_progression_profile != null and (
+		source_progression_profile.spells.any(
+			func(spell: Spell): return work_to_source.has(spell)
+		) or source_progression_profile.disciplines.any(
+			func(discipline: DisciplineData): return work_to_source.has(discipline)
+		)
+	)
+	if source_is_aliased and source_unit != null:
+		var source_spells: Array[Spell] = []
+		source_spells.assign(source_unit.spells)
+		source_progression_profile.spells = source_spells
+		var source_disciplines: Array[DisciplineData] = []
+		source_disciplines.assign(source_unit.disciplines)
+		source_progression_profile.disciplines = source_disciplines
 	working_progression_profile.character_id = source_progression_profile.character_id \
 		if source_progression_profile != null else working_unit.get_effective_unit_id()
 	working_progression_profile.active_spell_slots = working_unit.active_spell_slots
-	working_progression_profile.spells.assign(working_unit.spells)
-	working_progression_profile.disciplines.assign(working_unit.disciplines)
+	var working_spells: Array[Spell] = []
+	working_spells.assign(working_unit.spells)
+	working_progression_profile.spells = working_spells
+	var working_disciplines: Array[DisciplineData] = []
+	working_disciplines.assign(working_unit.disciplines)
+	working_progression_profile.disciplines = working_disciplines
+
+
+func _copy_progression_profile_shell(
+		source: CharacterProgressionProfile
+	) -> CharacterProgressionProfile:
+	if source == null:
+		return null
+	var copied := source.duplicate(false) as CharacterProgressionProfile
+	var copied_spells: Array[Spell] = []
+	copied_spells.assign(source.spells)
+	copied.spells = copied_spells
+	var copied_disciplines: Array[DisciplineData] = []
+	copied_disciplines.assign(source.disciplines)
+	copied.disciplines = copied_disciplines
+	return copied
+
+
+func _load_canonical_progression_profile(
+		source: CharacterProgressionProfile
+	) -> CharacterProgressionProfile:
+	if source == null:
+		return null
+	if source.resource_path.is_empty() or source.is_built_in():
+		return source
+	return ResourceLoader.load(
+		source.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as CharacterProgressionProfile
 
 
 func mark_saved() -> void:

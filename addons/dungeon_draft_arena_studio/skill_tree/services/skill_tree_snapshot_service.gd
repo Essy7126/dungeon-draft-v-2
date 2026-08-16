@@ -103,8 +103,6 @@ static func _encode_storage(
 				"external_class": resource.get_class(),
 				"external_path": resource.resource_path,
 			}
-		if not _is_editable_resource(resource):
-			return _encode_object(resource, visited)
 		var instance_id := resource.get_instance_id()
 		if visited.has(instance_id):
 			return {"reference": visited[instance_id]}

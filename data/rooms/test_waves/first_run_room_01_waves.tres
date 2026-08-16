@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dtda1idokkgij" path="res://data/rooms/maps/painted_battle.tscn" id="3_battle"]
 [ext_resource type="Resource" uid="uid://d00jkrnf3andk" path="res://data/units/ennemie/skeleton_melee.tres" id="4_melee"]
 [ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_layout.tres" id="6_layout"]
-[ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_visual.tres" id="7_visual"]
+[ext_resource type="Resource" uid="uid://k5ilk335s17w" path="res://data/maps/painted/room_01_forest_visual.tres" id="7_visual"]
 [ext_resource type="Resource" path="res://data/encounters/first_run_room_01_encounter.tres" id="8_encounter"]
 [ext_resource type="Script" uid="uid://b6ltxr34x7xhy" path="res://data/rooms/room_wave_data.gd" id="9_wave"]
 

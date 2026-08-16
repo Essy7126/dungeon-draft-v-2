@@ -23,19 +23,27 @@ Version produit candidate : **2.0.0**. Les chemins techniques sont repliés ; la
 
 Retirer une salle retire seulement sa référence. Pour isoler une salle partagée, utiliser Rendre spécifique avant de la modifier.
 
-## Skill Tree — recette run de test
+## Studio des personnages et compétences
 
-1. choisir run, héros et portée ;
+Le bouton compact **?** ouvre maintenant un tutoriel interactif entièrement manuel : sommaire de 10 chapitres, 104 étapes, ciblage visuel des zones du Studio, explication des 33 effets, paramètres avancés, fonctions de test et catégorie séparée pour les propriétés non éditables.
+
+Le détail exhaustif de chaque réglage et de l’exercice sécurisé est disponible dans [Studio des personnages et compétences — tutoriel complet](skill_tree_guided_tutorial.md).
+
+### Recette run de test
+
+1. choisir run et héros ; Salle n’agit pas sur les compétences et Portée reste un contexte commun ;
 2. sélectionner discipline, rang et nœud ;
 3. modifier l’effet dans le formulaire guidé ;
 4. utiliser Prévisualiser pour le sort avant/après et les scénarios runtime ;
-5. utiliser Comparer runs ;
+5. utiliser Comparer runs puis choisir explicitement la run de référence ;
 6. revoir le plan de sauvegarde ;
 7. confirmer la transaction et vérifier le chemin du profil ;
 8. revenir à la run principale pour confirmer son indépendance.
 
+Pour apprendre sans toucher au jeu, ouvrir **? > 10 · Exercice sandbox**, puis **Démarrer l’exercice sécurisé**. Les fixtures et toutes leurs sauvegardes restent sous `user://dungeon_draft_studio/tests/skill_tree_tutorial/`. Le bouton **↺ Réinitialiser l’exercice** restaure uniquement cette fixture.
+
 ## Documents sales
 
-Lors d’un changement de contexte, choisir Sauvegarder, Brouillon, Abandonner ou Annuler. Fermer la fenêtre ou changer de run ne remplace jamais silencieusement une working copy.
+Lors d’un changement de contexte, choisir Sauvegarder, Brouillon, Abandonner ou Annuler. Sauvegarder ouvre la même revue détaillée que le bouton, `Ctrl+S` et l’étape 10. Fermer la fenêtre ou changer de run ne remplace jamais silencieusement une working copy.
 
 Plusieurs documents dirty sont résolus dans une transaction globale : tous les plans sont préparés et stagés avant commit ; un échec restaure l’ensemble et conserve le contexte courant.
