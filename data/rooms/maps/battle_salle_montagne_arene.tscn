@@ -13,7 +13,7 @@
 [ext_resource type="Material" uid="uid://byo7lp5500o34" path="res://battle/iso/golden_hour_light.tres" id="12_ghlt"]
 [ext_resource type="Script" uid="uid://6m1wpk64cdko" path="res://battle/iso/golden_hour_light.gd" id="13_ghctl"]
 [ext_resource type="Script" uid="uid://cr3pqxon5iq5j" path="res://battle/iso/sky_light_rays.gd" id="14_skyr"]
-[ext_resource type="Material" path="res://battle/iso/sky_light_rays.tres" id="15_skym"]
+[ext_resource type="Material" uid="uid://od4e4ssdv73n" path="res://battle/iso/sky_light_rays.tres" id="15_skym"]
 [ext_resource type="Script" uid="uid://wu4mg01h0llh" path="res://battle/iso/iso_layer_follow_terrain.gd" id="16_follow"]
 [ext_resource type="PackedScene" path="res://ui/Particles/brume_vivante.tscn" id="17_brume"]
 
@@ -22,13 +22,13 @@ tile_shape = 1
 tile_layout = 5
 tile_size = Vector2i(64, 32)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ontrh"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5j8cm"]
 resource_local_to_scene = true
 shader = ExtResource("7_5j8cm")
 shader_parameter/echelle = 0.004
 shader_parameter/etirement_vertical = 0.5
-shader_parameter/turbulence = 1.1400000000000001
-shader_parameter/vitesse = 0.11
+shader_parameter/turbulence = 1.14
+shader_parameter/vitesse = 0.14
 shader_parameter/derive = 0.16
 shader_parameter/montee = 0.12
 shader_parameter/respiration_vitesse = 0.25
@@ -87,11 +87,11 @@ tile_set = ExtResource("4_o7tso")
 [node name="TerrainEffectLayer" type="Node2D" parent="." unique_id=828111028]
 
 [node name="BrumeVivante" parent="TerrainEffectLayer" unique_id=1456360817 instance=ExtResource("17_brume")]
-material = SubResource("ShaderMaterial_ontrh")
+material = SubResource("ShaderMaterial_5j8cm")
 polygon = PackedVector2Array(20, 320, 104, 361, 305, 379, 468, 422, 538, 384, 579, 381, 577, 385, 574, 388, 570, 393, 570, 401, 565.0599, 409.80066, 562, 420, 559, 424, 555, 446, 550, 458, 542, 472, 541, 479, 540, 485, 535, 496, 534, 497, 533.1175, 512.6059, 524, 516, 517, 532, 509, 553, 493, 564, 488, 577, 471, 614, 466, 612, 445, 615, 424, 624, 423, 607, 416, 591, 419, 562, 424, 550, 423, 540, 431, 511, 427, 504, 426, 497, 420, 495, 415, 491, 415, 488, 409, 489, 390, 480, 385, 478, 383, 474, 384, 472, 381, 468, 378, 466, 374.59283, 465.09, 369, 467, 360, 471, 351.54272, 468.16116, 351, 462, 347, 457, 341, 454, 334.119, 452.27972, 330, 455, 327, 456, 296.3634, 446.80902, 296, 441, 293, 438, 288.67612, 437.14655, 283, 439, 280, 442, 266, 438, 264, 433, 255.12732, 431.1122, 249, 435, 247.18152, 429.42163, 246, 426, 240, 424, 234, 426, 233, 428, 217, 423, 204, 422, 200, 419, 179, 413, 177.46648, 413, 175, 415, 166, 413, 165, 414, 134, 407, 124, 406, 111, 404, 100, 404, 98, 401, 94, 400, 91, 402, 85, 402, 84, 400, 81, 397, 79, 396, 76, 398, 74, 401, 70, 395, 65, 393, 55, 393, 48, 382, 32, 378, 26, 384, 24, 390, 14, 387, 14, 386, 12, 385, 11, 386, 7, 385, 4, 385, 3, 386, -2, 388, -6, 388, -9, 387, -13, 384, -14, 383, -18, 381, -20, 381, -24, 384, -31, 382, -39, 382, -45, 380, -49, 378, -51, 378, -55, 379, -69, 377, -72, 376, -74, 375, -75, 374, -76, 373, -78, 370, -78, 367, -79, 365, -83, 358, -88, 351, -94, 334, -92, 323)
 etirement_vertical = 0.5
-turbulence = 1.1400000000000001
-vitesse = 0.11
+turbulence = 1.14
+vitesse = 0.14
 derive = 0.16
 densite = 1.05
 seuil_bas = 0.3

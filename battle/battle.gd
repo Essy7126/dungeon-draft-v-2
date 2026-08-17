@@ -12,6 +12,7 @@
 extends Node2D
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
+const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
 const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
 const ArenaFeatureRendererScript = preload(
 	"res://battle/arena_feature_renderer.gd"
@@ -102,6 +103,7 @@ var grid_view: Node2D
 var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
+var _movement_path_preview = null
 var _arena_tile_parent: Node2D = null
 var arena_dynamic_surface_layer: Node2D = null
 var terrain_surface_visual_adapter: DynamicSurfaceVisualAdapter = null
@@ -286,6 +288,32 @@ func _setup_view() -> void:
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
 	_unit_view_parent = _find_unit_view_parent()
+	_setup_movement_path_preview()
+
+
+func _setup_movement_path_preview() -> void:
+	_movement_path_preview = MovementPathPreviewScript.new()
+	_movement_path_preview.name = "MovementPathPreview"
+	var layer_parent := grid_view.get_parent() as Node2D
+	if layer_parent != null \
+			and _unit_view_parent != grid_view \
+			and _unit_view_parent != null \
+			and _unit_view_parent.get_parent() == layer_parent:
+		layer_parent.add_child(_movement_path_preview)
+		# Les effets de terrain precedents restent sous la fleche ; la couche des
+		# unites et les personnages suivants restent au-dessus.
+		layer_parent.move_child(
+			_movement_path_preview,
+			_unit_view_parent.get_index(),
+		)
+	else:
+		grid_view.add_child(_movement_path_preview)
+	_movement_path_preview.setup(grid_view)
+
+
+func _clear_movement_path_preview() -> void:
+	if is_instance_valid(_movement_path_preview):
+		_movement_path_preview.clear_path()
 
 
 func _setup_arena_visuals() -> void:
@@ -520,6 +548,7 @@ func _setup_ui() -> void:
 	inspect_panel = CanvasLayer.new()
 	inspect_panel.set_script(load("res://ui/inspect_panel.gd"))
 	add_child(inspect_panel)
+	inspect_panel.setup(pathfinder, grid)
 
 	player_combat_log = CanvasLayer.new()
 	player_combat_log.set_script(load("res://ui/player_combat_log.gd"))
@@ -966,6 +995,7 @@ func _on_spell_pressed(spell: Spell) -> void:
 func _on_end_turn_pressed() -> void:
 	if _is_evolution_locked() or _spell_resolution_pending:
 		return
+	_clear_movement_path_preview()
 	grid_view.clear_highlights()
 	var unit = turn_queue.get_current_unit()
 	if unit != null:
@@ -1015,7 +1045,12 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 	if inspect_panel != null:
 		inspect_panel.show_cell(cell, grid, terrain_effects, false)
 	if turn_state == null:
+		_clear_movement_path_preview()
 		return
+	if turn_state.current == TurnState.State.MOVE:
+		_update_movement_path_preview(cell)
+		return
+	_clear_movement_path_preview()
 	if turn_state.current != TurnState.State.TARGET_SPELL:
 		return
 	var spell = turn_state.selected_spell
@@ -1050,11 +1085,31 @@ func _on_request_show_move_range() -> void:
 	var unit = turn_queue.get_current_unit()
 	if unit == null:
 		return
+	_clear_movement_path_preview()
 	grid_view.clear_highlights()
 	grid_view.highlight(pathfinder.get_reachable(unit.grid_pos, unit.current_mp, unit), MOVE_COLOR)
 
 func _on_request_clear_highlights() -> void:
+	_clear_movement_path_preview()
 	grid_view.clear_highlights()
+
+
+func _update_movement_path_preview(cell: Vector2i) -> void:
+	var unit = turn_queue.get_current_unit() if turn_queue != null else null
+	if unit == null \
+			or not unit.is_alive \
+			or not pathfinder.get_reachable(
+				unit.grid_pos, unit.current_mp, unit
+			).has(cell):
+		_clear_movement_path_preview()
+		return
+	var path := pathfinder.find_path(unit.grid_pos, cell, unit)
+	var cost_breakdown := pathfinder.path_cost_breakdown(path, unit)
+	if path.size() < 2 or int(cost_breakdown.get("total", 0)) > unit.current_mp:
+		_clear_movement_path_preview()
+		return
+	_movement_path_preview.set_path(path, cost_breakdown)
+
 
 func _on_request_move_to(cell: Vector2i) -> void:
 	if _closing or _battle_over or _is_evolution_locked():
@@ -1067,7 +1122,7 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	var path = pathfinder.find_path(unit.grid_pos, cell, unit)
 	if path.size() < 2:
 		return
-	if not unit.spend_mp(pathfinder.path_movement_cost(path)):
+	if not unit.spend_mp(pathfinder.path_movement_cost(path, unit)):
 		return
 	turn_state.begin_animating()
 	var lifecycle_generation := _lifecycle_generation
@@ -1141,6 +1196,7 @@ func _animate_move(unit: Unit, path: Array) -> void:
 func _on_request_show_attack_range() -> void:
 	if _is_evolution_locked():
 		return
+	_clear_movement_path_preview()
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
 		turn_state.set_state(TurnState.State.IDLE)
@@ -1237,6 +1293,7 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 func _on_request_show_spell_range(spell: Spell) -> void:
 	if _is_evolution_locked():
 		return
+	_clear_movement_path_preview()
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return

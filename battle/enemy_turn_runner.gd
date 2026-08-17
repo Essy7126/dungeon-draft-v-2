@@ -179,10 +179,11 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 				or not _battle.grid.is_walkable(step)):
 			return
 		previous = step
-	var cost: int = _battle.pathfinder.path_movement_cost(path)
+	var cost: int = _battle.pathfinder.path_movement_cost(path, enemy)
 	if cost > enemy.current_mp:
 		return
-	enemy.spend_mp(cost)
+	if not enemy.spend_mp(cost):
+		return
 	await _battle._animate_move(enemy, path)
 	if not _can_continue(generation, enemy):
 		return

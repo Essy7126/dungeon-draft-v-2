@@ -104,8 +104,12 @@ func _decide_ranged(enemy: Unit, all_units: Array) -> Array:
 	if firing_cell != Vector2i(-1, -1) and firing_cell != enemy.grid_pos:
 		var path = _pathfinder.find_path(enemy.grid_pos, firing_cell, enemy)
 		if path.size() >= 2:
-			plan.append({ "type": "move", "path": path.slice(0, min(path.size(), enemy.current_mp + 1)) })
-			return plan
+			var reachable_path := _pathfinder.trim_path_to_cost(
+				path, enemy.current_mp, enemy
+			)
+			if reachable_path.size() >= 2:
+				plan.append({ "type": "move", "path": reachable_path })
+				return plan
 
 	return _decide_melee(enemy, all_units)
 
@@ -129,7 +133,9 @@ func _decide_healer(enemy: Unit, all_units: Array) -> Array:
 		if approach != Vector2i(-1, -1):
 			var path = _pathfinder.find_path(enemy.grid_pos, approach, enemy)
 			if path.size() > 1:
-				var reachable = path.slice(0, min(path.size(), enemy.current_mp + 1))
+				var reachable = _pathfinder.trim_path_to_cost(
+					path, enemy.current_mp, enemy
+				)
 				if reachable.size() >= 2:
 					plan.append({ "type": "move", "path": reachable })
 		return plan
@@ -215,7 +221,9 @@ func _decide_melee(enemy: Unit, all_units: Array) -> Array:
 	if approach_cell != Vector2i(-1, -1):
 		var path = _pathfinder.find_path(enemy.grid_pos, approach_cell, enemy)
 		if path.size() > 1:
-			var reachable_path = path.slice(0, min(path.size(), enemy.current_mp + 1))
+			var reachable_path = _pathfinder.trim_path_to_cost(
+				path, enemy.current_mp, enemy
+			)
 			if reachable_path.size() >= 2:
 				var final_pos = reachable_path[reachable_path.size() - 1]
 				DebugLogger.info(CAT, "%s -> s'approche de %s (vers %s)" % [enemy.unit_name, target.unit_name, str(final_pos)])
@@ -285,7 +293,9 @@ func _score_target(enemy: Unit, target: Unit) -> float:
 	var path = _path_to_target_edge(enemy, target)
 	var distance_penalty := float(_grid.manhattan(enemy.grid_pos, target.grid_pos)) * 4.0
 	if not path.is_empty():
-		distance_penalty = float(maxi(0, path.size() - 1)) * 5.5 + _path_danger_score(path) * 16.0
+		distance_penalty = float(
+			_pathfinder.path_movement_cost(path, enemy)
+		) * 5.5 + _path_danger_score(path) * 16.0
 	score -= distance_penalty
 	return score
 
@@ -321,7 +331,8 @@ func _find_approach_cell(enemy: Unit, target: Unit) -> Vector2i:
 		var path = _pathfinder.find_path(enemy.grid_pos, cell, enemy)
 		if path.size() < 2:
 			continue
-		var dist = path.size() + int(round(_path_danger_score(path) * 4.0))
+		var dist = _pathfinder.path_movement_cost(path, enemy) \
+			+ int(round(_path_danger_score(path) * 4.0))
 		if dist < best_dist:
 			best_dist = dist
 			best_cell = cell
@@ -547,12 +558,13 @@ func _move_then_cast(
 		if not _can_cast_from(enemy, spell, cell, target):
 			continue
 		var path := _pathfinder.find_path(enemy.grid_pos, cell, enemy)
-		if path.size() < 2 or path.size() - 1 > enemy.current_mp:
+		var movement_cost := _pathfinder.path_movement_cost(path, enemy)
+		if path.size() < 2 or movement_cost > enemy.current_mp:
 			continue
 		scored.append({
 			"cell": cell,
 			"path": path,
-			"cost": path.size() - 1,
+			"cost": movement_cost,
 			"neighbors": _living_neighbor_count(cell, enemy) if prefer_neighbors else 0,
 			"protection": _commander_protection_score(cell, enemy, all_units) \
 				if protect_commander else 0,
@@ -639,7 +651,7 @@ func _path_distance_to_target_edge(cell: Vector2i, target: Unit, mover: Unit) ->
 			continue
 		var path := _pathfinder.find_path(cell, edge, mover)
 		if not path.is_empty():
-			best = mini(best, path.size() - 1)
+			best = mini(best, _pathfinder.path_movement_cost(path, mover))
 	return best
 
 

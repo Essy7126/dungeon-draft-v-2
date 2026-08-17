@@ -1,7 +1,8 @@
 # core/pathfinder.gd
 # ============================================================
-# PATHFINDER — Calcul de chemins et de zones accessibles.
-# Logique pure. S'appuie sur AStarGrid2D (natif Godot 4).
+# PATHFINDER — Calcul pondéré de chemins et de zones accessibles.
+# Logique pure. AStarGrid2D conserve l'instantané des cases bloquées ; la
+# recherche de coût est un Dijkstra déterministe pour gérer les transitions.
 #
 # NOTE : on évite le nom "get_path" car il entre en collision avec
 # une méthode native des Nodes. On utilise "find_path" à la place.
@@ -9,6 +10,12 @@
 
 class_name Pathfinder
 extends RefCounted
+
+enum MovementType {
+	VOLUNTARY,
+	FORCED,
+	TELEPORT,
+}
 
 var _grid: GridData
 var _astar: AStarGrid2D
@@ -48,52 +55,49 @@ func find_path(
 	from: Vector2i,
 	to: Vector2i,
 	ignore_unit = null,
-	synchronize_grid := true
+	synchronize_grid := true,
+	movement_type: MovementType = MovementType.VOLUNTARY
 	) -> Array:
-	# Le comportement historique reste le defaut. Les outils qui viennent de
-	# synchroniser explicitement le graphe peuvent eviter une seconde passe et
-	# recalculer le chemin sur l'etat courant de l'AStar.
 	if synchronize_grid:
 		sync(ignore_unit)
 	if not _grid.is_valid(from) or not _grid.is_valid(to):
 		return []
-	if not _grid.vortex_links().is_empty():
-		return _find_path_with_vortex(from, to, ignore_unit)
-	var path = _astar.get_id_path(from, to)
-	return Array(path)
+	if from == to:
+		return [from]
+	var mover := ignore_unit as Unit
+	var search := _movement_search(from, -1, mover, to, movement_type)
+	if not (search.get("costs", {}) as Dictionary).has(to):
+		return []
+	return _reconstruct_path(from, to, search.get("previous", {}) as Dictionary)
 
 # ============================================================
-# ZONE ACCESSIBLE (BFS)
+# ZONE ACCESSIBLE (COÛT PONDÉRÉ)
 # ============================================================
 
-func get_reachable(from: Vector2i, max_steps: int, ignore_unit = null) -> Array:
+func get_reachable(
+	from: Vector2i,
+	max_cost: int,
+	ignore_unit = null,
+	movement_type: MovementType = MovementType.VOLUNTARY
+	) -> Array:
 	sync(ignore_unit)
-	if not _grid.vortex_links().is_empty():
-		return _reachable_with_vortex(from, max_steps, ignore_unit)
-
+	if not _grid.is_valid(from) or max_cost < 0:
+		return []
+	var search := _movement_search(
+		from,
+		max_cost,
+		ignore_unit as Unit,
+		Vector2i(-1, -1),
+		movement_type,
+	)
 	var reachable: Array = []
-	var visited: Dictionary = { from: 0 }
-	var frontier: Array = [from]
-	var directions = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
-
-	while not frontier.is_empty():
-		var current = frontier.pop_front()
-		var cost = visited[current]
-		if cost >= max_steps:
-			continue
-		for dir in directions:
-			var neighbor = current + dir
-			if not _grid.is_valid(neighbor):
-				continue
-			if visited.has(neighbor):
-				continue
-			var blocked = not _grid.is_walkable(neighbor, ignore_unit)
-			if blocked:
-				continue
-			visited[neighbor] = cost + 1
-			reachable.append(neighbor)
-			frontier.append(neighbor)
-
+	for cell_value in (search.get("costs", {}) as Dictionary):
+		var cell := cell_value as Vector2i
+		if cell != from:
+			reachable.append(cell)
+	reachable.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		return a.y < b.y or (a.y == b.y and a.x < b.x)
+	)
 	return reachable
 
 
@@ -101,50 +105,153 @@ func is_vortex_edge(from: Vector2i, to: Vector2i) -> bool:
 	return _grid.get_vortex_destination(from) == to
 
 
-func path_movement_cost(path: Array) -> int:
-	var cost := 0
-	for index in range(1, path.size()):
-		var previous := path[index - 1] as Vector2i
-		var current := path[index] as Vector2i
-		if is_vortex_edge(previous, current):
+func get_movement_cost(
+		unit: Unit,
+		from_cell: Vector2i,
+		to_cell: Vector2i,
+		movement_type: MovementType = MovementType.VOLUNTARY
+	) -> int:
+	if is_vortex_edge(from_cell, to_cell):
+		return 0
+	var base_cost := _grid.get_movement_cost(to_cell)
+	if movement_type != MovementType.VOLUNTARY:
+		return base_cost
+	return base_cost + get_disengagement_cost(unit, from_cell, to_cell)
+
+
+func get_disengagement_cost(
+		unit: Unit,
+		from_cell: Vector2i,
+		to_cell: Vector2i
+	) -> int:
+	var result := 0
+	for controller in get_controllers_left(unit, from_cell, to_cell):
+		result = maxi(result, controller.get_control_cost())
+	return result
+
+
+func get_engaging_controllers(
+		unit: Unit,
+		cell: Vector2i = Vector2i(-1, -1)
+	) -> Array[Unit]:
+	var result: Array[Unit] = []
+	if unit == null:
+		return result
+	var inspected_cell := unit.grid_pos if cell == Vector2i(-1, -1) else cell
+	for controller_value in _grid.get_units():
+		var controller := controller_value as Unit
+		if controller == null \
+				or not controller.can_exert_control() \
+				or not controller.is_hostile_to(unit):
 			continue
-		cost += _grid.get_movement_cost(current)
-	return cost
-
-
-func _find_path_with_vortex(
-		from: Vector2i,
-		to: Vector2i,
-		ignore_unit
-	) -> Array:
-	var search := _vortex_search(from, -1, ignore_unit, to)
-	if not (search.get("costs", {}) as Dictionary).has(to):
-		return []
-	return _reconstruct_vortex_path(from, to, search.get("previous", {}) as Dictionary)
-
-
-func _reachable_with_vortex(
-		from: Vector2i,
-		max_cost: int,
-		ignore_unit
-	) -> Array:
-	var search := _vortex_search(from, max_cost, ignore_unit)
-	var result: Array = []
-	for cell_value in (search.get("costs", {}) as Dictionary):
-		var cell := cell_value as Vector2i
-		if cell != from:
-			result.append(cell)
-	result.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
-		return a.y < b.y or (a.y == b.y and a.x < b.x)
+		if _grid.are_adjacent(controller.grid_pos, inspected_cell):
+			result.append(controller)
+	result.sort_custom(func(a: Unit, b: Unit) -> bool:
+		return a.get_runtime_stable_id() < b.get_runtime_stable_id()
 	)
 	return result
 
 
-func _vortex_search(
+func get_controllers_left(
+		unit: Unit,
+		from_cell: Vector2i,
+		to_cell: Vector2i
+	) -> Array[Unit]:
+	var result: Array[Unit] = []
+	if unit == null or from_cell == to_cell:
+		return result
+	for controller in get_engaging_controllers(unit, from_cell):
+		if not _grid.are_adjacent(controller.grid_pos, to_cell):
+			result.append(controller)
+	return result
+
+
+func path_movement_cost(
+		path: Array,
+		unit: Unit = null,
+		movement_type: MovementType = MovementType.VOLUNTARY
+	) -> int:
+	return int(path_cost_breakdown(path, unit, movement_type).get("total", 0))
+
+
+func path_cost_breakdown(
+		path: Array,
+		unit: Unit = null,
+		movement_type: MovementType = MovementType.VOLUNTARY
+	) -> Dictionary:
+	var mover := _resolve_path_unit(path, unit)
+	var result := {
+		"total": 0,
+		"base": 0,
+		"disengagement": 0,
+		"disengagement_cells": [] as Array[Vector2i],
+		"steps": [],
+	}
+	for index in range(1, path.size()):
+		var previous := path[index - 1] as Vector2i
+		var current := path[index] as Vector2i
+		var base_cost := 0 if is_vortex_edge(previous, current) \
+			else _grid.get_movement_cost(current)
+		var disengagement_cost := 0
+		if movement_type == MovementType.VOLUNTARY \
+				and not is_vortex_edge(previous, current):
+			disengagement_cost = get_disengagement_cost(
+				mover, previous, current
+			)
+		var transition_cost := base_cost + disengagement_cost
+		result.total = int(result.total) + transition_cost
+		result.base = int(result.base) + base_cost
+		result.disengagement = int(result.disengagement) + disengagement_cost
+		if disengagement_cost > 0:
+			(result.disengagement_cells as Array[Vector2i]).append(previous)
+		(result.steps as Array).append({
+			"from": previous,
+			"to": current,
+			"base": base_cost,
+			"disengagement": disengagement_cost,
+			"total": transition_cost,
+		})
+	return result
+
+
+func trim_path_to_cost(
+		path: Array,
+		max_cost: int,
+		unit: Unit = null,
+		movement_type: MovementType = MovementType.VOLUNTARY
+	) -> Array:
+	if path.is_empty():
+		return []
+	var mover := _resolve_path_unit(path, unit)
+	var result: Array = [path[0]]
+	var spent := 0
+	for index in range(1, path.size()):
+		var previous := path[index - 1] as Vector2i
+		var current := path[index] as Vector2i
+		var transition_cost := get_movement_cost(
+			mover, previous, current, movement_type
+		)
+		if spent + transition_cost > max_cost:
+			break
+		spent += transition_cost
+		result.append(current)
+	return result
+
+
+func _resolve_path_unit(path: Array, explicit_unit: Unit) -> Unit:
+	if explicit_unit != null:
+		return explicit_unit
+	if path.is_empty() or not path[0] is Vector2i:
+		return null
+	return _grid.get_unit(path[0] as Vector2i) as Unit
+
+
+func _movement_search(
 		from: Vector2i,
 		max_cost: int,
-		ignore_unit,
-		target := Vector2i(-1, -1)
+		mover: Unit,
+		target := Vector2i(-1, -1),
+		movement_type: MovementType = MovementType.VOLUNTARY
 	) -> Dictionary:
 	var costs := {from: 0}
 	var previous := {}
@@ -168,18 +275,27 @@ func _vortex_search(
 			continue
 		for direction in directions:
 			var entered: Vector2i = current + direction
-			if not _grid.is_walkable(entered, ignore_unit):
+			if not _grid.is_valid(entered) or _astar.is_point_solid(entered):
 				continue
 			var destination: Vector2i = entered
 			var segment: Array[Vector2i] = [entered]
 			var traversed_vortex := false
 			if _grid.has_vortex(entered):
-				if not _grid.can_traverse_vortex(entered, ignore_unit):
-					continue
-				destination = _grid.get_vortex_destination(entered)
-				segment.append(destination)
-				traversed_vortex = true
-			var next_cost := int(costs[current]) + _grid.get_movement_cost(entered)
+				var network_cells := _grid.get_vortex_network_cells(entered)
+				var linked_destination := _grid.get_vortex_destination(entered)
+				if linked_destination != Vector2i(-1, -1):
+					if (not network_cells.is_empty() \
+							and not _grid.can_unit_use_vortex_network(entered, mover)) \
+							or not _grid.can_traverse_vortex(entered, mover):
+						continue
+					destination = linked_destination
+					segment.append(destination)
+					traversed_vortex = true
+				elif network_cells.size() >= 2:
+					traversed_vortex = true
+			var next_cost := int(costs[current]) + get_movement_cost(
+				mover, current, entered, movement_type
+			)
 			if max_cost >= 0 and next_cost > max_cost:
 				continue
 			if costs.has(destination) and int(costs[destination]) <= next_cost:
@@ -193,7 +309,7 @@ func _vortex_search(
 	return {"costs": costs, "previous": previous}
 
 
-func _reconstruct_vortex_path(
+func _reconstruct_path(
 		from: Vector2i,
 		to: Vector2i,
 		previous: Dictionary

@@ -1,0 +1,443 @@
+DUNGEON DRAFT — FUTURES EVOLUTIONS DU SYSTEME DE CONTROLE / ENGAGEMENT
+=======================================================================
+
+Objectif de ce fichier
+----------------------
+Ce document sert de référence pour un futur audit ChatGPT / Codex du système de Contrôle / Engagement.
+
+La V1 actuelle est considérée comme valide et ne doit pas être modifiée simplement parce que les idées ci-dessous existent.
+
+Les éléments listés ici sont uniquement des évolutions recommandées pour plus tard, à évaluer lorsque :
+- les objets seront plus développés ;
+- les compétences pourront être acquises avec la progression ;
+- les archétypes de personnages seront mieux définis ;
+- le système de combat disposera de suffisamment de contenu pour juger leur intérêt réel.
+
+Ces mécaniques doivent idéalement être introduites par des objets, compétences, talents, passifs, états temporaires ou propriétés propres à certaines unités.
+
+Le but est d'augmenter la profondeur du système sans transformer le Contrôle en une statistique complexe comparable au Tacle / Fuite de DOFUS.
+
+
+==================================================
+1. IGNORER TEMPORAIREMENT LE CONTROLE
+==================================================
+
+Principe recommandé :
+Certaines compétences, objets ou passifs peuvent permettre à une unité d'ignorer un désengagement.
+
+Exemple :
+"Insaisissable"
+La première sortie d'Engagement du tour ne subit aucun surcoût en PM.
+
+Intérêt :
+- valorise les personnages mobiles ;
+- permet à certains archétypes de traverser une ligne de front ;
+- crée une différence de mobilité sans ajouter de statistique "Fuite" ;
+- donne de la valeur à certains objets ou talents.
+
+Recommandation d'équilibrage :
+Eviter une immunité permanente et universelle au Contrôle.
+Privilégier :
+- une fois par tour ;
+- un nombre limité de charges ;
+- une durée temporaire ;
+- une condition précise.
+
+Le Contrôle doit rester pertinent.
+
+
+==================================================
+2. REDUIRE LE COUT DE DESENGAGEMENT
+==================================================
+
+Principe recommandé :
+Une unité peut réduire le surcoût de désengagement sans l'annuler complètement.
+
+Exemple :
+"Mobilité tactique"
+Réduit de 1 PM le coût supplémentaire de désengagement, jusqu'à un minimum de 0.
+
+Intérêt :
+- crée un niveau intermédiaire entre une unité normale et une unité totalement insaisissable ;
+- convient bien aux objets, talents et bonus de progression ;
+- permet de spécialiser progressivement un personnage dans la mobilité.
+
+Garde-fou :
+Ne pas transformer cette mécanique en nouvelle statistique chiffrée à empiler sans limite.
+
+
+==================================================
+3. RENFORCER TEMPORAIREMENT LE CONTROLE
+==================================================
+
+Principe recommandé :
+Une compétence ou un objet peut améliorer temporairement le niveau de Contrôle d'une unité.
+
+Exemple :
+"Poigne"
+Pendant 1 tour :
+CONTROL devient HEAVY_CONTROL.
+
+Autres variantes possibles :
+- activation conditionnelle après une attaque de mêlée ;
+- bonus tant que l'unité n'a pas bougé ;
+- bonus accordé par un objet particulier ;
+- bonus limité à une zone ou une posture.
+
+Intérêt :
+- permet aux tanks et combattants défensifs de choisir quand verrouiller une zone ;
+- crée une décision active au lieu d'un bonus permanent ;
+- donne une fonction intéressante à certains objets défensifs.
+
+Recommandation :
+Eviter de créer de nombreux niveaux supplémentaires.
+NONE / CONTROL / HEAVY_CONTROL reste une structure suffisamment lisible.
+
+
+==================================================
+4. NEUTRALISER TEMPORAIREMENT LE CONTROLE
+==================================================
+
+Principe recommandé :
+Certaines capacités peuvent empêcher momentanément une unité ennemie d'exercer son Contrôle.
+
+Exemples possibles :
+- déséquilibre ;
+- étourdissement ;
+- aveuglement tactique ;
+- état "ne peut pas contrôler" ;
+- compétence spécifique désactivant la zone de contrôle.
+
+Intérêt :
+Permet de résoudre un Engagement autrement qu'en payant simplement le coût en PM.
+
+Cette mécanique peut favoriser :
+- la coopération entre personnages ;
+- les contrôles de foule ;
+- les combos ;
+- la préparation d'un déplacement.
+
+Recommandation technique :
+Continuer à centraliser cette logique via une fonction du type :
+can_exert_control()
+
+Ne pas disperser les exceptions dans le Pathfinder.
+
+
+==================================================
+5. POURSUITE
+==================================================
+
+Principe recommandé :
+Une capacité spéciale de certains personnages peut leur permettre de suivre partiellement un ennemi qui se désengage.
+
+Exemple :
+"Poursuite"
+Une fois par tour, lorsqu'un ennemi quitte ton Engagement par un déplacement volontaire, tu peux avancer d'une case vers la case qu'il vient de quitter.
+
+Important :
+Poursuite n'est PAS une attaque d'opportunité.
+Elle ne doit pas infliger automatiquement de dégâts.
+
+Intérêt :
+- donne une identité forte à certains guerriers, chasseurs ou créatures ;
+- rend la fuite possible sans la rendre totalement sûre ;
+- permet de créer des ennemis oppressants sans simplement augmenter leurs dégâts ;
+- renforce l'importance du positionnement.
+
+Garde-fous recommandés :
+- fréquence limitée, par exemple une fois par tour ;
+- déplacement d'une seule case ;
+- vérifier les collisions et cases accessibles ;
+- ne pas déclencher sur poussée, téléportation ou déplacement forcé ;
+- ne pas généraliser cette règle à toutes les unités.
+
+
+==================================================
+6. FORMES DE CONTROLE DIFFERENTES
+==================================================
+
+La V1 utilise uniquement les quatre cases orthogonales adjacentes.
+
+Cette règle doit rester la norme générale.
+
+Plus tard, certaines unités ou compétences peuvent cependant utiliser des formes de Contrôle différentes.
+
+
+6.1. Controle directionnel
+--------------------------
+Exemple :
+Un lancier en posture de garde contrôle plusieurs cases devant lui.
+
+Utilisations possibles :
+- tenir un couloir ;
+- protéger un allié ;
+- défendre une entrée ;
+- créer une menace directionnelle.
+
+La direction de l'unité peut devenir importante uniquement pour les capacités qui le nécessitent.
+
+
+6.2. Controle étendu
+--------------------
+Certaines unités particulières peuvent exercer leur contrôle au-delà de la case adjacente.
+
+Exemples adaptés :
+- arme très longue ;
+- boss gigantesque ;
+- créature imposante ;
+- posture défensive ;
+- aura ou barrière.
+
+Cette mécanique doit rester exceptionnelle afin que le contrôle normal reste facile à lire.
+
+
+6.3. Controle lié à une compétence
+----------------------------------
+Une unité peut normalement avoir une zone standard puis adopter temporairement une autre forme.
+
+Exemple :
+"Garde du lancier"
+Pendant ce tour, les cases situées devant l'unité sont également considérées comme contrôlées.
+
+Intérêt :
+Le joueur peut modifier temporairement la géométrie du terrain sans ajouter d'obstacles permanents.
+
+
+6.4. Recommandations de lisibilité
+----------------------------------
+Toute zone de Contrôle non standard doit être clairement visible avant que le joueur se déplace.
+
+Le joueur doit pouvoir comprendre :
+- quelles cases sont contrôlées ;
+- quelle unité les contrôle ;
+- quel coût sera appliqué s'il les quitte.
+
+Ne jamais créer des zones de contrôle invisibles ou difficiles à anticiper.
+
+
+==================================================
+7. ENCERCLEMENT AVANCE
+==================================================
+
+Cette mécanique est recommandée uniquement comme piste future et non comme priorité.
+
+Actuellement, plusieurs contrôleurs n'additionnent pas leurs pénalités.
+Cette règle doit être conservée par défaut.
+
+Une évolution possible serait de créer un état distinct :
+"Encerclé"
+
+Exemple de condition :
+Une unité est engagée simultanément par au moins deux ennemis disposés de manière réellement contraignante autour d'elle.
+
+Important :
+L'état Encerclé ne doit PAS simplement signifier :
+"+1 PM supplémentaire par ennemi".
+
+Le but serait de créer un effet tactique spécifique.
+
+Effets envisageables à tester lors d'un futur audit :
+- limitation particulière de certaines options de mobilité ;
+- impossibilité d'utiliser certains bonus de désengagement ;
+- vulnérabilité conditionnelle à certaines compétences ;
+- activation de passifs d'ennemis spécialisés dans l'encerclement.
+
+Recommandation forte :
+Ne pas ajouter cette mécanique tant que l'occupation physique des cases et le système de Contrôle standard suffisent à créer naturellement des situations d'encerclement.
+
+Elle ne doit être développée que si les playtests montrent qu'il manque réellement quelque chose.
+
+
+==================================================
+8. CAPACITES QUI UTILISENT SPECIFIQUEMENT L'ENGAGEMENT
+==================================================
+
+Le système de Contrôle devient particulièrement intéressant lorsque certaines capacités reconnaissent explicitement l'état spatial d'Engagement.
+
+Ce type d'interaction est recommandé pour les objets, compétences et passifs futurs.
+
+
+8.1. Bonus contre une cible engagée
+-----------------------------------
+Exemple :
+Une compétence obtient un effet supplémentaire si la cible est actuellement engagée par le lanceur ou un allié.
+
+Utilisations :
+- coopération entre unités de mêlée ;
+- finition ;
+- compétences de tank ;
+- attaques coordonnées.
+
+
+8.2. Bonus lorsqu'on est soi-même engagé
+-----------------------------------------
+Exemple :
+Une unité défensive gagne un effet lorsqu'au moins un ennemi est engagé avec elle.
+
+Cela peut renforcer l'identité des tanks sans augmenter directement leur Contrôle.
+
+
+8.3. Compétences de repositionnement
+------------------------------------
+Les poussées, attirances, téléportations et échanges de position peuvent devenir des moyens tactiques de résoudre un Engagement.
+
+Cette interaction existe naturellement grâce aux règles actuelles et doit être exploitée dans le futur design des compétences.
+
+Exemple :
+Un mage engagé peut repousser son adversaire avant de se déplacer, évitant ainsi le coût de désengagement.
+
+Cela crée une synergie naturelle entre :
+- mobilité ;
+- placement ;
+- contrôle de foule ;
+- Contrôle / Engagement.
+
+
+8.4. Capacités conditionnelles de désengagement
+-----------------------------------------------
+Exemples :
+- désengagement gratuit après avoir utilisé une compétence précise ;
+- désengagement gratuit après avoir infligé un état ;
+- désengagement gratuit si l'unité termine une attaque ;
+- réduction du coût pendant un tour.
+
+Ces effets doivent rester simples et lisibles.
+
+
+==================================================
+9. OBJETS ET PROGRESSION
+==================================================
+
+Une grande partie des évolutions ci-dessus est particulièrement adaptée à une acquisition progressive.
+
+Sources possibles :
+- armes ;
+- armures ;
+- accessoires ;
+- reliques ;
+- talents ;
+- compétences apprises ;
+- améliorations de classe ;
+- passifs temporaires ;
+- récompenses de progression.
+
+Exemples :
+- Bottes : première sortie d'Engagement du tour à -1 PM de surcoût.
+- Bouclier lourd : CONTROL devient HEAVY_CONTROL tant que le porteur n'a pas bougé.
+- Lance : permet une posture avec zone de Contrôle directionnelle.
+- Talent de chasseur : débloque Poursuite.
+- Talent de mobilité : ignore le premier désengagement de chaque combat ou tour.
+
+Recommandation :
+Eviter les bonus purement numériques empilables.
+Préférer des effets compréhensibles qui changent la manière de jouer.
+
+
+==================================================
+10. PRINCIPES D'EQUILIBRAGE A CONSERVER
+==================================================
+
+Lors d'un futur audit, conserver les principes suivants :
+
+1. Le Contrôle doit créer une contrainte, pas supprimer le tour du joueur.
+
+2. Le système doit rester déterministe.
+
+3. La mobilité forcée doit conserver un rôle important comme outil de résolution.
+
+4. Les objets et compétences doivent créer des exceptions ciblées, pas rendre la règle de base incompréhensible.
+
+5. Les effets les plus puissants doivent être limités :
+   - durée ;
+   - fréquence ;
+   - charge ;
+   - condition ;
+   - coût.
+
+6. Eviter l'empilement excessif de modificateurs.
+
+7. Garder NONE / CONTROL / HEAVY_CONTROL comme structure principale tant qu'un besoin réel de complexité supplémentaire n'est pas démontré.
+
+8. Toute nouvelle forme de Contrôle doit être lisible visuellement.
+
+9. Une capacité interagissant avec l'Engagement doit apporter une nouvelle décision tactique, pas uniquement un bonus numérique.
+
+10. Tester les évolutions une par une afin d'identifier leur impact réel sur :
+    - la mobilité ;
+    - les personnages de mêlée ;
+    - les personnages à distance ;
+    - l'IA ;
+    - les combats en couloir ;
+    - les situations d'encerclement.
+
+
+==================================================
+11. PRIORITES RECOMMANDEES POUR UN FUTUR AUDIT
+==================================================
+
+Ordre recommandé d'évaluation :
+
+PRIORITE 1
+Capacités / objets permettant :
+- d'ignorer ponctuellement le Contrôle ;
+- de réduire le coût de désengagement ;
+- de renforcer temporairement CONTROL en HEAVY_CONTROL.
+
+Ces effets sont simples et exploitent directement le système existant.
+
+
+PRIORITE 2
+Poursuite.
+
+A tester sur quelques personnages seulement avant toute généralisation.
+
+
+PRIORITE 3
+Capacités conditionnelles utilisant l'Engagement.
+
+Exemples :
+- bonus contre une cible engagée ;
+- bonus lorsque plusieurs ennemis sont au contact ;
+- repositionnements facilitant le désengagement.
+
+
+PRIORITE 4
+Formes de Contrôle différentes.
+
+A développer seulement lorsque les archétypes de personnages justifient réellement ces formes particulières.
+
+
+PRIORITE 5
+Encerclement avancé.
+
+Ne développer que si les playtests montrent que l'encerclement naturel actuel manque de profondeur.
+
+
+==================================================
+12. CONSIGNE POUR LE PROCHAIN AUDIT CHATGPT / CODEX
+==================================================
+
+Lors du prochain audit du système de Contrôle / Engagement :
+
+1. Commencer par analyser l'implémentation actuelle et les résultats des playtests.
+
+2. Ne pas considérer automatiquement les idées de ce fichier comme des fonctionnalités à implémenter.
+
+3. Vérifier si le besoin existe réellement avant chaque ajout.
+
+4. Déterminer si l'évolution doit provenir :
+   - d'un objet ;
+   - d'une compétence ;
+   - d'un talent ;
+   - d'un passif ;
+   - d'une propriété d'unité ;
+   - d'un état temporaire.
+
+5. Réutiliser le système de Contrôle existant au lieu de créer un système parallèle.
+
+6. Préserver le calcul centralisé des coûts de déplacement et l'intégration au Pathfinder.
+
+7. Introduire les évolutions progressivement et les tester séparément.
+
+FIN DU DOCUMENT

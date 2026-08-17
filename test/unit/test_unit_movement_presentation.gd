@@ -2,8 +2,11 @@ extends GutTest
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 const UnitViewScript = preload("res://battle/unit_view.gd")
+const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
+const PaintedGridViewScript = preload("res://battle/painted/painted_grid_view.gd")
 const MAGE_ISO_SCENE = preload("res://characters/mage/MageIsoUnitView.tscn")
 const SKELETON_MELEE_DATA = preload("res://data/units/ennemie/skeleton_melee.tres")
+const FOREST_VISUAL = preload("res://data/maps/painted/room_01_forest_visual.tres")
 const FOREST_PRESENTATION = preload(
 	"res://data/maps/painted/room_01_forest_presentation.tres"
 )
@@ -150,6 +153,128 @@ func test_enemy_faces_nearest_hero_after_movement_feedback_ends() -> void:
 	assert_eq(view.end_count, 1)
 	assert_eq(view.faced_directions, [Vector2i.RIGHT, Vector2i(-3, 0)])
 	assert_eq(enemy.facing_dir, Vector2i.LEFT)
+
+
+func test_movement_path_preview_uses_painted_grid_projection() -> void:
+	var grid := GridData.new(5, 4)
+	var grid_view := PaintedGridViewScript.new() as PaintedGridView
+	grid_view.visual_data = FOREST_VISUAL
+	grid_view.setup(grid)
+	add_child_autofree(grid_view)
+	var preview := MovementPathPreviewScript.new() as MovementPathPreview
+	grid_view.add_child(preview)
+	preview.setup(grid_view)
+	var path: Array[Vector2i] = [
+		Vector2i(1, 1),
+		Vector2i(2, 1),
+		Vector2i(2, 2),
+	]
+
+	preview.set_path(path)
+
+	assert_true(preview.visible)
+	assert_eq(preview.get_path_cells(), path)
+	var points := preview.get_path_points()
+	assert_eq(points.size(), path.size())
+	for index in path.size():
+		assert_almost_eq(points[index], grid_view.grid_to_local(path[index]), Vector2(0.01, 0.01))
+	preview.clear_path()
+	assert_false(preview.visible)
+
+
+func test_movement_path_preview_is_between_terrain_effects_and_units() -> void:
+	var battle := MovementBattleFixture.new()
+	add_child_autofree(battle)
+	var grid_view := PaintedGridViewScript.new() as PaintedGridView
+	grid_view.name = "IsoGridView"
+	battle.add_child(grid_view)
+	var terrain_layer := Node2D.new()
+	terrain_layer.name = "TerrainEffectLayer"
+	battle.add_child(terrain_layer)
+	var units_layer := Node2D.new()
+	units_layer.name = "YSortedWorld"
+	battle.add_child(units_layer)
+	battle.grid_view = grid_view
+	battle._unit_view_parent = units_layer
+
+	battle._setup_movement_path_preview()
+
+	var preview = battle._movement_path_preview
+	assert_eq(preview.get_parent(), battle)
+	assert_gt(preview.get_index(), terrain_layer.get_index())
+	assert_lt(preview.get_index(), units_layer.get_index())
+
+
+func test_movement_path_preview_has_regular_white_dots_and_centered_arrow_tip() -> void:
+	var preview := MovementPathPreviewScript.new() as MovementPathPreview
+	add_child_autofree(preview)
+	# Les points intermediaires volontairement irreguliers verifient que le
+	# rythme des pointilles ne redemarre pas a chaque segment du chemin.
+	var points := PackedVector2Array([
+		Vector2(0.0, 0.0),
+		Vector2(17.0, 0.0),
+		Vector2(40.0, 0.0),
+		Vector2(73.0, 0.0),
+	])
+
+	var dots := preview.get_dot_centers(points)
+	assert_eq(dots.size(), 4)
+	assert_almost_eq(dots[0], Vector2(12.0, 0.0), Vector2(0.001, 0.001))
+	for index in range(1, dots.size()):
+		assert_almost_eq(
+			dots[index].distance_to(dots[index - 1]),
+			MovementPathPreviewScript.DOT_SPACING,
+			0.001,
+		)
+	var arrow := preview.get_arrow_points(points)
+	assert_eq(arrow.size(), 3)
+	assert_almost_eq(arrow[1], points[-1], Vector2(0.001, 0.001))
+	assert_almost_eq(MovementPathPreviewScript.ARROW_LENGTH, 14.0 * 0.85, 0.001)
+	assert_almost_eq(MovementPathPreviewScript.ARROW_HALF_WIDTH, 7.0 * 0.85, 0.001)
+	assert_almost_eq(MovementPathPreviewScript.ARROW_CORE_WIDTH, 4.0 * 0.85, 0.001)
+	for color in [
+		MovementPathPreviewScript.PATH_COLOR,
+		MovementPathPreviewScript.ORIGIN_COLOR,
+	]:
+		assert_almost_eq(color.r, 1.0, 0.001)
+		assert_almost_eq(color.g, 1.0, 0.001)
+		assert_almost_eq(color.b, 1.0, 0.001)
+
+
+func test_move_hover_previews_real_path_and_cancel_clears_it() -> void:
+	var battle := MovementBattleFixture.new()
+	add_child_autofree(battle)
+	battle.grid = GridData.new(5, 3)
+	battle.pathfinder = Pathfinder.new(battle.grid)
+	var grid_view := PaintedGridViewScript.new() as PaintedGridView
+	grid_view.visual_data = FOREST_VISUAL
+	grid_view.setup(battle.grid)
+	battle.add_child(grid_view)
+	battle.grid_view = grid_view
+	battle._setup_movement_path_preview()
+	var hero := Unit.new("Heros", 0, 100, 10, 6, 5)
+	var blocker := Unit.new("Obstacle", 1)
+	assert_true(battle.grid.place_unit(hero, Vector2i(0, 1)))
+	assert_true(battle.grid.place_unit(blocker, Vector2i(1, 1)))
+	battle.turn_queue = TurnQueue.new()
+	battle.turn_queue.setup([hero])
+	battle.turn_queue.start()
+	battle._setup_state()
+	battle.turn_state.on_move_button()
+	var destination := Vector2i(2, 1)
+
+	battle._on_cell_hovered(destination)
+
+	var preview = battle._movement_path_preview
+	var expected_path := battle.pathfinder.find_path(hero.grid_pos, destination, hero)
+	assert_true(preview.visible)
+	assert_eq(preview.get_path_cells(), expected_path)
+	assert_eq(preview.get_path_cells()[0], hero.grid_pos)
+	assert_eq(preview.get_path_cells()[-1], destination)
+	assert_false(preview.get_path_cells().has(blocker.grid_pos))
+	battle.turn_state.on_cancel()
+	assert_false(preview.visible)
+	assert_true(preview.get_path_cells().is_empty())
 
 
 func test_single_target_death_faces_the_attacker_before_animation_starts() -> void:

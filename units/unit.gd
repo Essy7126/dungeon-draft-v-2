@@ -27,6 +27,7 @@ var tactical_role_id: StringName = &""
 var linked_commander_role_id: StringName = &""
 var linked_commander: Unit = null
 var combat_order: int = -1
+var control_level: UnitData.ControlLevel = UnitData.ControlLevel.NONE
 
 # --- Stats max (modifiables) ---
 var max_hp: Stat
@@ -212,6 +213,7 @@ static func from_data(data: UnitData) -> Unit:
 	u.faction_id = data.faction_id
 	u.tactical_role_id = data.tactical_role_id
 	u.linked_commander_role_id = data.linked_commander_role_id
+	u.control_level = data.control_level
 	u.proximity_armor_source = data.proximity_armor_source
 	u.proximity_armor_per_living_neighbor = data.proximity_armor_per_living_neighbor
 	u.proximity_armor_max_neighbors = data.proximity_armor_max_neighbors
@@ -396,6 +398,24 @@ func get_runtime_stable_id() -> String:
 	if combat_order >= 0:
 		return "%s:%06d" % [String(unit_id), combat_order]
 	return "%s:%020d" % [String(unit_id), get_instance_id()]
+
+
+func is_hostile_to(other: Unit) -> bool:
+	return other != null and other != self and team != other.team
+
+
+func can_exert_control() -> bool:
+	return is_alive and control_level != UnitData.ControlLevel.NONE
+
+
+func get_control_cost() -> int:
+	match control_level:
+		UnitData.ControlLevel.CONTROL:
+			return 1
+		UnitData.ControlLevel.HEAVY_CONTROL:
+			return 2
+		_:
+			return 0
 
 
 func target_has_linked_source_status(target: Unit, status_id: StringName) -> bool:

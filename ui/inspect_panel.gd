@@ -11,6 +11,8 @@ var _release_button: Button
 var _locked: bool = false
 var _details_expanded: bool = false
 var _displayed_unit = null
+var _pathfinder: Pathfinder = null
+var _grid: GridData = null
 
 func _ready() -> void:
 	_build_ui()
@@ -85,6 +87,30 @@ func release_lock() -> void:
 func is_locked() -> bool:
 	return _locked
 
+
+func setup(pathfinder: Pathfinder, grid: GridData = null) -> void:
+	if _grid != null and _grid.occupancy_changed.is_connected(
+		_on_grid_occupancy_changed
+	):
+		_grid.occupancy_changed.disconnect(_on_grid_occupancy_changed)
+	_pathfinder = pathfinder
+	_grid = grid
+	if _grid != null and not _grid.occupancy_changed.is_connected(
+		_on_grid_occupancy_changed
+	):
+		_grid.occupancy_changed.connect(_on_grid_occupancy_changed)
+
+
+func _on_grid_occupancy_changed(
+		_reason: StringName,
+		_unit,
+		_from_pos: Vector2i,
+		_to_pos: Vector2i
+	) -> void:
+	if _displayed_unit != null and is_instance_valid(_displayed_unit):
+		show_unit(_displayed_unit, _locked)
+
+
 func show_unit(unit, locked: bool = false) -> void:
 	if _locked and not locked:
 		return
@@ -100,6 +126,7 @@ func show_unit(unit, locked: bool = false) -> void:
 	_title.text = unit.unit_name
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
 	_add_resources(unit)
+	_add_engagement(unit)
 	_add_statuses(unit)
 	_add_details_toggle(unit)
 	if _details_expanded:
@@ -219,6 +246,32 @@ func _add_resources(unit) -> void:
 	_add_line("Bouclier", str(unit.current_shield))
 	_add_line("PM", "%d / %d" % [unit.current_mp, unit.max_mp.get_int()])
 	_add_line("PA", "%d / %d" % [unit.current_ap, unit.max_ap.get_int()])
+
+
+func _add_engagement(unit) -> void:
+	if _pathfinder == null:
+		return
+	var controllers := _pathfinder.get_engaging_controllers(unit)
+	if controllers.is_empty():
+		return
+	var names: Array[String] = []
+	var disengagement_cost := 0
+	for controller in controllers:
+		names.append(controller.unit_name)
+		disengagement_cost = maxi(
+			disengagement_cost,
+			controller.get_control_cost(),
+		)
+	_add_section("Engagement")
+	_add_line("Engagé par", ", ".join(names))
+	_add_line(
+		"Sortie du contrôle",
+		"-%d PM supplémentaire%s" % [
+			disengagement_cost,
+			"s" if disengagement_cost > 1 else "",
+		],
+	)
+
 
 func _add_details_toggle(unit) -> void:
 	var btn := Button.new()

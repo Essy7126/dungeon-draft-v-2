@@ -18,6 +18,7 @@ unit_id = &"skeleton_snow_centurion"
 unit_name = "Centurion squelette de glace"
 description = "Mage-commandant qui marque, controle les PM, protege et invoque."
 team = 1
+control_level = 0
 max_hp = 150
 initiative = 16
 attack_power = 0
