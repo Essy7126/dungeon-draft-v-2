@@ -41,6 +41,7 @@ func setup(p_unit: Unit) -> void:
 	EventBus.basic_attack_performed.connect(_on_attack_performed)
 	EventBus.turn_started.connect(_on_any_turn_started)
 	EventBus.health_damage_taken.connect(_on_damage_dealt)
+	EventBus.lethal_hit_resolved.connect(_on_lethal_hit_resolved)
 	EventBus.unit_healed.connect(_on_unit_healed)
 	EventBus.shield_absorbed.connect(_on_shield_absorbed)
 	EventBus.shield_broken.connect(_on_shield_broken)
@@ -143,6 +144,7 @@ func _disconnect_runtime_signals() -> void:
 		[EventBus.basic_attack_performed, _on_attack_performed],
 		[EventBus.turn_started, _on_any_turn_started],
 		[EventBus.health_damage_taken, _on_damage_dealt],
+		[EventBus.lethal_hit_resolved, _on_lethal_hit_resolved],
 		[EventBus.unit_healed, _on_unit_healed],
 		[EventBus.shield_absorbed, _on_shield_absorbed],
 		[EventBus.shield_broken, _on_shield_broken],
@@ -605,6 +607,34 @@ func _play_idle() -> void:
 		return
 	_sprite.play(unit.idle_animation)
 
+
+func begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i) -> void:
+	face_grid_direction(to_cell - from_cell)
+	_play_anim("walk")
+	if not is_instance_valid(_optional_visual):
+		return
+	if _optional_visual.has_method("begin_movement_feedback"):
+		_optional_visual.begin_movement_feedback(from_cell, to_cell)
+	elif _optional_visual.has_method("play_walk"):
+		_optional_visual.play_walk()
+
+
+func end_movement_feedback() -> void:
+	var optional_handles_idle := false
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("cancel_movement_feedback"):
+		_optional_visual.cancel_movement_feedback()
+		optional_handles_idle = true
+	if not is_instance_valid(unit) or not unit.is_alive:
+		return
+	if not optional_handles_idle \
+			and is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("play_idle"):
+		_optional_visual.play_idle()
+	if _sprite != null and unit.sprite_frames != null:
+		_sprite.play(unit.idle_animation)
+
+
 func _on_unit_moved(_from: Vector2i, _to: Vector2i) -> void:
 	_play_anim("walk")
 
@@ -677,6 +707,20 @@ func _on_damage_dealt(target, _attacker, amount: int, _category: int, _element: 
 	if target != unit:
 		return
 	_flash(Color(1.0, 0.35, 0.28), 0.14)
+
+
+func _on_lethal_hit_resolved(
+		target,
+		_attacker,
+		origin_cell: Vector2i
+	) -> void:
+	if target != unit or unit == null:
+		return
+	var direction := origin_cell - unit.grid_pos
+	if direction == Vector2i.ZERO:
+		return
+	unit.facing_dir = unit._snap_to_cardinal(direction)
+	face_grid_direction(direction)
 
 func _on_unit_healed(u: Unit, amount: int) -> void:
 	if u != unit or amount <= 0:

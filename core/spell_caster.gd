@@ -727,6 +727,7 @@ func _resolve_unit_impact(
 				"impact_id": impact_id,
 				"sequence_index": sequence_index,
 				"ability_id": spell.get_effective_spell_id(),
+				"impact_origin_cell": _damage_impact_origin_cell(ctx),
 			}
 		)
 		if damage_result != null:
@@ -845,6 +846,15 @@ func _resolve_unit_impact(
 		affected = true
 	if affected and not report["affected_units"].has(target):
 		report["affected_units"].append(target)
+
+
+func _damage_impact_origin_cell(ctx: CastContext) -> Vector2i:
+	if ctx == null or ctx.caster == null or ctx.spell == null:
+		return Vector2i(-1, -1)
+	if ctx.spell.aoe_shape != Spell.AoeShape.SINGLE \
+			or ctx.affected_cells.size() > 1:
+		return ctx.cell
+	return ctx.caster.grid_pos
 
 # Terrain porté par le sort, posé sur une cellule.
 func _resolve_cell_terrain(ctx: CastContext, target_cell: Vector2i) -> void:

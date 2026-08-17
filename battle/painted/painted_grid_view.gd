@@ -224,9 +224,6 @@ func _draw() -> void:
 				draw_colored_polygon(polygon, TYPE_COLORS[cell_type])
 			if _highlights.has(cell):
 				draw_colored_polygon(polygon, _highlights[cell])
-			var stored_effect = grid.get_effect(cell)
-			if stored_effect != null:
-				draw_colored_polygon(polygon, Color(1.0, 0.8, 0.2, 0.34))
 			if draw_grid_lines and grid.is_terrain_interactable(cell):
 				_draw_polygon_outline(polygon, GRID_LINE_COLOR, 1.0)
 			if draw_void_cells and cell_type == GridData.CellType.HOLE:

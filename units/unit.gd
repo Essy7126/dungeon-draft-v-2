@@ -79,7 +79,11 @@ var grid_pos: Vector2i:
 	set(value):
 		var old := _grid_pos
 		_grid_pos = value
-		if old != Vector2i(-1, -1) and old != value:
+		# La sentinelle hors-grille sert au retrait (notamment a la mort) : ce
+		# n'est pas un deplacement et elle ne doit ni tourner ni animer l'unite.
+		if old != Vector2i(-1, -1) \
+				and value != Vector2i(-1, -1) \
+				and old != value:
 			facing_dir = _snap_to_cardinal(value - old)
 			moved.emit(old, value)
 
@@ -1035,7 +1039,12 @@ func take_damage(
 		_consume_charged_damage_vulnerabilities(category)
 	if result != null and not result.dodged and attacker is Unit and uses_outgoing:
 		(attacker as Unit)._consume_charged_outgoing_damage(category)
-	_apply_damage_result(result, ctx.attacker, ctx)
+	_apply_damage_result(
+		result,
+		ctx.attacker,
+		ctx,
+		_resolve_hit_origin_cell(attacker, options),
+	)
 	if effect_key != &"":
 		_resolved_combat_effects[effect_key] = result
 	if result != null and not result.dodged and not splash_spec.is_empty():
@@ -1062,7 +1071,12 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 		_consume_charged_damage_vulnerabilities(ctx.category)
 	if result != null and not result.dodged and ctx.attacker is Unit:
 		(ctx.attacker as Unit)._consume_charged_outgoing_damage(ctx.category)
-	_apply_damage_result(result, ctx.attacker, ctx)
+	_apply_damage_result(
+		result,
+		ctx.attacker,
+		ctx,
+		_resolve_hit_origin_cell(ctx.attacker, {}),
+	)
 	if effect_key != &"":
 		_resolved_combat_effects[effect_key] = result
 	return result
@@ -1180,7 +1194,8 @@ func _consume_charged_outgoing_damage(category: int) -> void:
 func _apply_damage_result(
 		result: DamageResolver.DamageResult,
 		attacker = null,
-		ctx: DamageResolver.HitContext = null
+		ctx: DamageResolver.HitContext = null,
+		impact_origin_cell: Vector2i = Vector2i(-1, -1)
 	) -> void:
 	if result == null:
 		return
@@ -1224,6 +1239,8 @@ func _apply_damage_result(
 	if damage_to_hp > 0:
 		health_loss = mini(current_hp, damage_to_hp)
 		current_hp -= health_loss
+		if current_hp <= 0 and impact_origin_cell != Vector2i(-1, -1):
+			EventBus.lethal_hit_resolved.emit(self, attacker, impact_origin_cell)
 		var health_fact := CombatEventFact.create(
 			&"hp_damage_taken", self, attacker,
 			_combat_fact_metadata(metadata, {
@@ -1269,6 +1286,15 @@ func _apply_damage_result(
 	if current_hp <= 0:
 		current_hp = 0
 		_die(attacker)
+
+
+func _resolve_hit_origin_cell(attacker, options: Dictionary) -> Vector2i:
+	var configured = options.get("impact_origin_cell", null)
+	if configured is Vector2i:
+		return configured as Vector2i
+	if attacker is Unit:
+		return (attacker as Unit).grid_pos
+	return Vector2i(-1, -1)
 
 	# Data-driven via gain_table[TAKE_DAMAGE] : nul pour Rage/Ombre (0), paie pour
 	# Foi (montÃ©e en puissance) et Nature. result.amount est le coup mitigÃ© (avant

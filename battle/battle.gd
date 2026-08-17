@@ -702,6 +702,8 @@ func _place(unit: Unit, pos: Vector2i) -> void:
 	unit.grid_pos = pos
 	unit.died.connect(_on_unit_died)
 	_create_unit_view(unit)
+	if unit.team == 0:
+		_orient_unit_toward_nearest_opponent(unit)
 
 func _create_unit_view(unit: Unit) -> void:
 	var view = preload("res://battle/unit_view.tscn").instantiate()
@@ -719,6 +721,32 @@ func _create_unit_view(unit: Unit) -> void:
 	if iso_gameplay_light != null and view.has_method("set_light_material"):
 		view.set_light_material(iso_gameplay_light)
 	_unit_views[unit] = view
+
+
+## Oriente ensemble la logique et la vue vers l'adversaire vivant le plus
+## proche. La distance de Manhattan suit les memes axes que les deplacements.
+func _orient_unit_toward_nearest_opponent(unit: Unit) -> void:
+	if unit == null or not unit.is_alive or grid == null \
+			or not grid.is_valid(unit.grid_pos):
+		return
+	var nearest: Unit = null
+	var nearest_distance := 0
+	for candidate_value in units:
+		var candidate := candidate_value as Unit
+		if candidate == null or candidate == unit or not candidate.is_alive \
+				or candidate.team == unit.team or not grid.is_valid(candidate.grid_pos):
+			continue
+		var distance := grid.manhattan(unit.grid_pos, candidate.grid_pos)
+		if nearest == null or distance < nearest_distance:
+			nearest = candidate
+			nearest_distance = distance
+	if nearest == null:
+		return
+	var direction := nearest.grid_pos - unit.grid_pos
+	unit.facing_dir = unit._snap_to_cardinal(direction)
+	var view = _unit_views.get(unit)
+	if is_instance_valid(view) and view.has_method("face_grid_direction"):
+		view.face_grid_direction(direction)
 
 ## Ombre au sol qui suit le skew de la case (perspective). Le perso reste droit.
 func _install_ground_shadow(view: Node2D, cell: Vector2i) -> void:
@@ -1060,14 +1088,14 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		return
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
-	if not is_instance_valid(view):
+	if not is_instance_valid(view) or path.size() < 2:
 		return
+	view.begin_movement_feedback(path[0], path[1])
 	terrain_effects.begin_unit_resolution(unit, &"movement")
 	for i in range(1, path.size()):
 		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.
 		if not unit.is_alive or not is_instance_valid(view):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		if pathfinder.is_vortex_edge(path[i - 1], path[i]):
 			continue
 		var from_pos = grid_cell_to_parent_local(path[i - 1], view.get_parent())
@@ -1087,11 +1115,9 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		# La vue a pu être libérée pendant l'await.
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(view):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		if not grid.relocate_unit(unit, path[i]):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		var entry_result := terrain_effects.consume_last_entry_result(unit)
 		if bool(entry_result.get("teleported", false)):
 			var destination := entry_result.get("destination", path[i]) as Vector2i
@@ -1099,12 +1125,14 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		_sync_unit_terrain(unit)
 		# on_enter_cell a pu tuer l'unité (lave) : on stoppe le déplacement.
 		if not unit.is_alive:
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		if bool(entry_result.get("end_movement", false)):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 	terrain_effects.end_unit_resolution(unit)
+	if is_instance_valid(view):
+		view.end_movement_feedback()
+		if unit.team != 0:
+			_orient_unit_toward_nearest_opponent(unit)
 
 # ============================================================
 # INTENTIONS — ATTAQUE

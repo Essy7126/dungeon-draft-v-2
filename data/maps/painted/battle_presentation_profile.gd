@@ -12,7 +12,7 @@ extends Resource
 
 @export_group("Lisibilite")
 @export var contact_shadows_enabled := true
-@export var outlines_enabled := true
+@export var outlines_enabled := false
 @export_range(0.0, 4.0, 0.1) var outline_width_px := 1.25
 @export var ally_outline_color := Color(0.58, 0.88, 1.0, 0.32)
 @export var enemy_outline_color := Color(1.0, 0.47, 0.29, 0.34)
