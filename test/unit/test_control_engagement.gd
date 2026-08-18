@@ -3,6 +3,8 @@ extends GutTest
 const Factory = preload("res://test/support/factory.gd")
 const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
 const InspectPanelScript = preload("res://ui/inspect_panel.gd")
+const BattleScript = preload("res://battle/battle.gd")
+const GridViewScript = preload("res://battle/grid_view.gd")
 
 
 class GridViewFixture:
@@ -324,6 +326,47 @@ func test_12_insufficient_mp_makes_the_destination_unreachable() -> void:
 	))
 	assert_false(mover.spend_mp(cost))
 	assert_eq(mover.current_mp, 1)
+
+
+func test_engagement_range_keeps_real_cells_green_and_lost_edge_cells_red() -> void:
+	var grid := GridData.new(7, 7)
+	var mover := _place(grid, _unit("Mover", 0), Vector2i(3, 3))
+	var controller := _place(
+		grid,
+		_unit("Controller", 1, UnitData.ControlLevel.CONTROL),
+		Vector2i(3, 2),
+	)
+	var battle = BattleScript.new()
+	battle.pathfinder = Pathfinder.new(grid)
+	var grid_view = GridViewScript.new()
+	grid_view.setup(grid)
+	battle.add_child(grid_view)
+	battle.grid_view = grid_view
+	battle.turn_queue = TurnQueue.new()
+	battle.turn_queue.setup([mover])
+	battle.turn_queue.start()
+	mover.current_mp = 3
+
+	var layers := battle._movement_range_layers(mover)
+	assert_true((layers.reachable as Array).has(Vector2i(5, 3)))
+	assert_false((layers.reachable as Array).has(Vector2i(6, 3)))
+	assert_true((layers.control_limited as Array).has(Vector2i(6, 3)))
+	for cell in layers.control_limited:
+		assert_false((layers.reachable as Array).has(cell))
+
+	battle._on_request_show_move_range()
+	var highlights := grid_view.get("_highlights") as Dictionary
+	assert_eq(highlights.get(Vector2i(5, 3)), BattleScript.MOVE_COLOR)
+	assert_eq(
+		highlights.get(Vector2i(6, 3)),
+		BattleScript.CONTROL_LIMITED_MOVE_COLOR,
+	)
+
+	controller.is_alive = false
+	var released_layers := battle._movement_range_layers(mover)
+	assert_true((released_layers.control_limited as Array).is_empty())
+	assert_true((released_layers.reachable as Array).has(Vector2i(6, 3)))
+	battle.free()
 
 
 func test_13_pathfinding_can_prefer_a_longer_path_without_disengagements() -> void:

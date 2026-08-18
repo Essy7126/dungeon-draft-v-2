@@ -134,6 +134,7 @@ var _deployment: DeploymentController = null
 # --- Salle-situation (optionnel) — instancié seulement si la salle est configurée.
 
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
+const CONTROL_LIMITED_MOVE_COLOR = Color(1.0, 0.42, 0.42, 0.34)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
 const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
 const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
@@ -1079,6 +1080,32 @@ func _unhandled_input(event: InputEvent) -> void:
 # INTENTIONS — DÉPLACEMENT
 # ============================================================
 
+func _movement_range_layers(unit: Unit) -> Dictionary:
+	var reachable: Array = pathfinder.get_reachable(
+		unit.grid_pos,
+		unit.current_mp,
+		unit,
+	)
+	var control_limited: Array[Vector2i] = []
+	if not pathfinder.get_engaging_controllers(unit).is_empty():
+		# Le contexte forcé conserve les coûts du terrain et les obstacles, mais
+		# ignore le désengagement : la différence isole la portée perdue.
+		var without_control: Array = pathfinder.get_reachable(
+			unit.grid_pos,
+			unit.current_mp,
+			unit,
+			Pathfinder.MovementType.FORCED,
+		)
+		for cell_value in without_control:
+			var cell := cell_value as Vector2i
+			if not reachable.has(cell):
+				control_limited.append(cell)
+	return {
+		"reachable": reachable,
+		"control_limited": control_limited,
+	}
+
+
 func _on_request_show_move_range() -> void:
 	if _is_evolution_locked():
 		return
@@ -1087,7 +1114,12 @@ func _on_request_show_move_range() -> void:
 		return
 	_clear_movement_path_preview()
 	grid_view.clear_highlights()
-	grid_view.highlight(pathfinder.get_reachable(unit.grid_pos, unit.current_mp, unit), MOVE_COLOR)
+	var range_layers := _movement_range_layers(unit)
+	grid_view.highlight(
+		range_layers.get("control_limited", []),
+		CONTROL_LIMITED_MOVE_COLOR,
+	)
+	grid_view.highlight(range_layers.get("reachable", []), MOVE_COLOR)
 
 func _on_request_clear_highlights() -> void:
 	_clear_movement_path_preview()

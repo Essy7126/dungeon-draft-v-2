@@ -6,6 +6,10 @@ const LogDefinitions = preload("res://debug/log_definitions.gd")
 var _grid: GridData
 var _pathfinder: Pathfinder
 var _spell_caster: SpellCaster
+var _decision_mover: Unit = null
+var _decision_origin := Vector2i(-1, -1)
+var _decision_movement_map := {}
+var _decision_target_cost_fields := {}
 
 const CAT: LogDefinitions.LogCategory = LogDefinitions.LogCategory.AI
 
@@ -21,6 +25,13 @@ func _init(grid: GridData, pathfinder: Pathfinder, spell_caster: SpellCaster) ->
 	_spell_caster = spell_caster
 
 func decide(enemy: Unit, all_units: Array) -> Array:
+	_begin_decision(enemy)
+	var result := _decide_with_prepared_paths(enemy, all_units)
+	_end_decision()
+	return result
+
+
+func _decide_with_prepared_paths(enemy: Unit, all_units: Array) -> Array:
 	if enemy.ai_profile != null:
 		match enemy.ai_profile.strategy:
 			EnemyAIProfile.Strategy.FORMATION_MELEE:
@@ -50,7 +61,10 @@ func build_action_plan(enemy: Unit, all_units: Array) -> EnemyActionPlan:
 	return result
 
 func default_attack_plan(enemy: Unit, all_units: Array) -> Array:
-	return _decide_melee(enemy, all_units)
+	_begin_decision(enemy)
+	var result := _decide_melee(enemy, all_units)
+	_end_decision()
+	return result
 
 func find_target_cell_for_spell(enemy: Unit, spell: Spell) -> Vector2i:
 	var targetable = _spell_caster.get_targetable_cells(enemy, spell)
@@ -81,6 +95,92 @@ func get_pathfinder() -> Pathfinder:
 func get_spell_caster() -> SpellCaster:
 	return _spell_caster
 
+
+func _begin_decision(enemy: Unit) -> void:
+	_decision_mover = enemy
+	_decision_origin = enemy.grid_pos
+	_decision_movement_map.clear()
+	_decision_target_cost_fields.clear()
+	_pathfinder.sync(enemy)
+
+
+func _end_decision() -> void:
+	_decision_mover = null
+	_decision_origin = Vector2i(-1, -1)
+	_decision_movement_map.clear()
+	_decision_target_cost_fields.clear()
+
+
+func _can_reuse_decision_paths(from: Vector2i, mover: Unit) -> bool:
+	if not _uses_prepared_grid(mover) or from != _decision_origin:
+		return false
+	if _decision_movement_map.is_empty():
+		_decision_movement_map = _pathfinder.build_movement_map(
+			_decision_origin,
+			-1,
+			mover,
+			Pathfinder.MovementType.VOLUNTARY,
+			false,
+		)
+	return not _decision_movement_map.is_empty()
+
+
+func _uses_prepared_grid(mover: Unit) -> bool:
+	return _decision_mover != null and mover == _decision_mover
+
+
+func _find_path(from: Vector2i, to: Vector2i, mover: Unit) -> Array:
+	if _can_reuse_decision_paths(from, mover):
+		return _pathfinder.path_from_movement_map(
+			from,
+			to,
+			_decision_movement_map,
+		)
+	return _pathfinder.find_path(
+		from,
+		to,
+		mover,
+		not _uses_prepared_grid(mover),
+	)
+
+
+func _get_reachable(from: Vector2i, max_cost: int, mover: Unit) -> Array:
+	if _can_reuse_decision_paths(from, mover):
+		return _pathfinder.get_reachable_from_movement_map(
+			from,
+			_decision_movement_map,
+			max_cost,
+		)
+	return _pathfinder.get_reachable(
+		from,
+		max_cost,
+		mover,
+		Pathfinder.MovementType.VOLUNTARY,
+		not _uses_prepared_grid(mover),
+	)
+
+
+func _target_edge_cost_field(target: Unit, mover: Unit) -> Dictionary:
+	if target == null or mover == null:
+		return {}
+	var cache_key := target.get_instance_id()
+	if _uses_prepared_grid(mover) and _decision_target_cost_fields.has(cache_key):
+		return _decision_target_cost_fields[cache_key] as Dictionary
+	var edges: Array[Vector2i] = []
+	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
+		var edge: Vector2i = target.grid_pos + direction
+		if _grid.is_walkable(edge, mover):
+			edges.append(edge)
+	var field := _pathfinder.build_cost_field_to(
+		edges,
+		mover,
+		Pathfinder.MovementType.VOLUNTARY,
+		not _uses_prepared_grid(mover),
+	)
+	if _uses_prepared_grid(mover):
+		_decision_target_cost_fields[cache_key] = field
+	return field
+
 func _decide_ranged(enemy: Unit, all_units: Array) -> Array:
 	var plan: Array = []
 	var target = _choose_target(enemy, all_units)
@@ -102,7 +202,7 @@ func _decide_ranged(enemy: Unit, all_units: Array) -> Array:
 	var range := _best_offensive_range(enemy)
 	var firing_cell := _find_best_ranged_cell(enemy, target, range)
 	if firing_cell != Vector2i(-1, -1) and firing_cell != enemy.grid_pos:
-		var path = _pathfinder.find_path(enemy.grid_pos, firing_cell, enemy)
+		var path = _find_path(enemy.grid_pos, firing_cell, enemy)
 		if path.size() >= 2:
 			var reachable_path := _pathfinder.trim_path_to_cost(
 				path, enemy.current_mp, enemy
@@ -131,7 +231,7 @@ func _decide_healer(enemy: Unit, all_units: Array) -> Array:
 	if wounded != null:
 		var approach = _find_approach_cell(enemy, wounded)
 		if approach != Vector2i(-1, -1):
-			var path = _pathfinder.find_path(enemy.grid_pos, approach, enemy)
+			var path = _find_path(enemy.grid_pos, approach, enemy)
 			if path.size() > 1:
 				var reachable = _pathfinder.trim_path_to_cost(
 					path, enemy.current_mp, enemy
@@ -176,18 +276,18 @@ func _decide_flee(enemy: Unit, all_units: Array) -> Array:
 	var threat = _choose_target(enemy, all_units)
 	if threat == null:
 		return plan
-	var reachable = _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
+	var reachable = _get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
 	var best_cell = enemy.grid_pos
 	var best_score := -999999.0
 	for cell in reachable:
 		var dist := _grid.manhattan(cell, threat.grid_pos)
-		var path = _pathfinder.find_path(enemy.grid_pos, cell, enemy)
+		var path = _find_path(enemy.grid_pos, cell, enemy)
 		var score := float(dist) - _path_danger_score(path) * 4.0
 		if score > best_score:
 			best_score = score
 			best_cell = cell
 	if best_cell != enemy.grid_pos:
-		var path = _pathfinder.find_path(enemy.grid_pos, best_cell, enemy)
+		var path = _find_path(enemy.grid_pos, best_cell, enemy)
 		if path.size() >= 2:
 			DebugLogger.debug(CAT, "%s se replie vers %s" % [enemy.unit_name, str(best_cell)])
 			plan.append({ "type": "move", "path": path })
@@ -219,7 +319,7 @@ func _decide_melee(enemy: Unit, all_units: Array) -> Array:
 
 	var approach_cell = _find_approach_cell(enemy, target)
 	if approach_cell != Vector2i(-1, -1):
-		var path = _pathfinder.find_path(enemy.grid_pos, approach_cell, enemy)
+		var path = _find_path(enemy.grid_pos, approach_cell, enemy)
 		if path.size() > 1:
 			var reachable_path = _pathfinder.trim_path_to_cost(
 				path, enemy.current_mp, enemy
@@ -312,7 +412,7 @@ func _path_to_target_edge(enemy: Unit, target: Unit) -> Array:
 	var approach := _find_approach_cell(enemy, target)
 	if approach == Vector2i(-1, -1):
 		return []
-	return _pathfinder.find_path(enemy.grid_pos, approach, enemy)
+	return _find_path(enemy.grid_pos, approach, enemy)
 
 func _weighted_pick(candidates: Array) -> Dictionary:
 	if candidates.is_empty():
@@ -328,7 +428,7 @@ func _find_approach_cell(enemy: Unit, target: Unit) -> Vector2i:
 		var cell = target.grid_pos + dir
 		if not _grid.is_valid(cell) or not _grid.is_walkable(cell):
 			continue
-		var path = _pathfinder.find_path(enemy.grid_pos, cell, enemy)
+		var path = _find_path(enemy.grid_pos, cell, enemy)
 		if path.size() < 2:
 			continue
 		var dist = _pathfinder.path_movement_cost(path, enemy) \
@@ -348,7 +448,7 @@ func _best_offensive_range(enemy: Unit) -> int:
 	return best
 
 func _find_best_ranged_cell(enemy: Unit, target: Unit, max_range: int) -> Vector2i:
-	var reachable = _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
+	var reachable = _get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
 	var best_cell := Vector2i(-1, -1)
 	var best_score := -999999.0
 	var minimum := clampi(enemy.minimum_range, 1, max_range)
@@ -359,7 +459,7 @@ func _find_best_ranged_cell(enemy: Unit, target: Unit, max_range: int) -> Vector
 			continue
 		if max_range > 1 and not _pathfinder.has_line_of_sight(cell, target.grid_pos):
 			continue
-		var path = _pathfinder.find_path(enemy.grid_pos, cell, enemy)
+		var path = _find_path(enemy.grid_pos, cell, enemy)
 		var score: float = 20.0 - abs(float(dist - desired)) * 3.0 - _path_danger_score(path) * 8.0
 		if score > best_score:
 			best_score = score
@@ -551,13 +651,13 @@ func _move_then_cast(
 		return [{"type": "cast", "spell": spell, "cell": target.grid_pos}]
 	if enemy.current_mp <= 0:
 		return []
-	var cells := _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
+	var cells := _get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
 	var scored: Array = []
 	for cell_value in cells:
 		var cell := cell_value as Vector2i
 		if not _can_cast_from(enemy, spell, cell, target):
 			continue
-		var path := _pathfinder.find_path(enemy.grid_pos, cell, enemy)
+		var path := _find_path(enemy.grid_pos, cell, enemy)
 		var movement_cost := _pathfinder.path_movement_cost(path, enemy)
 		if path.size() < 2 or movement_cost > enemy.current_mp:
 			continue
@@ -644,12 +744,18 @@ func _living_neighbor_count(cell: Vector2i, moving_unit: Unit) -> int:
 func _path_distance_to_target_edge(cell: Vector2i, target: Unit, mover: Unit) -> int:
 	if _grid.are_adjacent(cell, target.grid_pos):
 		return 0
+	var cost_field := _target_edge_cost_field(target, mover)
+	if _grid.vortex_links().is_empty():
+		return int(cost_field.get(cell, 999999))
+	# Le champ inverse ne represente pas encore les aretes dirigees des vortex.
+	# Ces salles conservent le calcul de reference, mais profitent tout de meme
+	# de la file de priorite optimisee dans Pathfinder.
 	var best := 999999
 	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
 		var edge: Vector2i = target.grid_pos + direction
 		if edge != cell and not _grid.is_walkable(edge):
 			continue
-		var path := _pathfinder.find_path(cell, edge, mover)
+		var path := _find_path(cell, edge, mover)
 		if not path.is_empty():
 			best = mini(best, _pathfinder.path_movement_cost(path, mover))
 	return best
@@ -680,7 +786,7 @@ func _movement_toward(
 	) -> Array:
 	if target == null or enemy.current_mp <= 0:
 		return []
-	var candidates := _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
+	var candidates := _get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
 	candidates.append(enemy.grid_pos)
 	var scored: Array = []
 	for cell_value in candidates:
@@ -711,7 +817,7 @@ func _movement_toward(
 	var destination: Vector2i = scored[0].cell
 	if destination == enemy.grid_pos:
 		return []
-	var path := _pathfinder.find_path(enemy.grid_pos, destination, enemy)
+	var path := _find_path(enemy.grid_pos, destination, enemy)
 	return [{"type": "move", "path": path}] if path.size() >= 2 else []
 
 
@@ -934,7 +1040,7 @@ func _commander_reposition(enemy: Unit, all_units: Array) -> Array:
 	var heroes := _living_opponents(enemy, all_units)
 	if heroes.is_empty() or enemy.current_mp <= 0:
 		return []
-	var cells := _pathfinder.get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
+	var cells := _get_reachable(enemy.grid_pos, enemy.current_mp, enemy)
 	cells.append(enemy.grid_pos)
 	var scored: Array = []
 	for cell_value in cells:
@@ -961,7 +1067,7 @@ func _commander_reposition(enemy: Unit, all_units: Array) -> Array:
 	var destination: Vector2i = scored[0].cell
 	if destination == enemy.grid_pos:
 		return []
-	var path := _pathfinder.find_path(enemy.grid_pos, destination, enemy)
+	var path := _find_path(enemy.grid_pos, destination, enemy)
 	return [{"type": "move", "path": path}] if path.size() >= 2 else []
 
 
