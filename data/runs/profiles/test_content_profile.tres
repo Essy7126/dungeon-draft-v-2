@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bu1v88xrc87p7" path="res://data/runs/content/run_hero_profile.gd" id="1_7nd5s"]
 [ext_resource type="Resource" uid="uid://dtvaj0f3c5sax" path="res://data/units/alliés/elfe.tres" id="2_4xhdq"]
-[ext_resource type="Resource" uid="uid://d35rgj8t43fd" path="res://data/runs/progression/test/elf_progression_profile.tres" id="3_qooec"]
+[ext_resource type="Resource" uid="uid://cxwh6mbumgdge" path="res://data/runs/progression/test/elf_progression_profile.tres" id="3_qooec"]
 [ext_resource type="Resource" uid="uid://dyr45spqln4bn" path="res://data/units/alliés/mage.tres" id="4_vu0j8"]
-[ext_resource type="Resource" uid="uid://bwxps4efrv2uk" path="res://data/runs/progression/test/mage_progression_profile.tres" id="5_mlh63"]
+[ext_resource type="Resource" uid="uid://466b4lcgeakc" path="res://data/runs/progression/test/mage_progression_profile.tres" id="5_mlh63"]
 [ext_resource type="Resource" uid="uid://bf8f5v5jh1yr4" path="res://data/units/alliés/Guerrier.tres" id="6_pft6v"]
 [ext_resource type="Resource" uid="uid://ci8fc8acbyl40" path="res://data/runs/progression/test/warrior_progression_profile.tres" id="7_jhemt"]
 [ext_resource type="Script" uid="uid://dxus1cqb251v3" path="res://data/runs/content/run_content_profile.gd" id="8_jqynm"]

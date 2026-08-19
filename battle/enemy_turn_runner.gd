@@ -76,6 +76,16 @@ func _wait_seconds_safe(
 	return _can_continue(generation, enemy, target, require_target)
 
 
+func _wait_process_frame_safe(generation: int, enemy: Unit = null) -> bool:
+	if not _can_continue(generation, enemy):
+		return false
+	var tree := get_tree()
+	if tree == null:
+		return false
+	await tree.process_frame
+	return _can_continue(generation, enemy)
+
+
 # Exécute le tour complet de l'unité ennemie : décision d'IA puis déroulé des
 # actions, en s'interrompant dès que la salle ferme ou que l'unité disparaît.
 func run(enemy: Unit) -> void:
@@ -88,6 +98,10 @@ func run(enemy: Unit) -> void:
 		enemy,
 		_battle.units,
 	)
+	# La planification est synchrone. Reprendre les actions a la frame suivante
+	# empeche son delta CPU d'etre consomme par le premier tween de mouvement.
+	if not await _wait_process_frame_safe(generation, enemy):
+		return
 	last_action_count = 0
 	for action in plan.to_actions():
 		if last_action_count >= MAX_ACTION_STEPS:
@@ -179,10 +193,11 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 				or not _battle.grid.is_walkable(step)):
 			return
 		previous = step
-	var cost: int = _battle.pathfinder.path_movement_cost(path)
+	var cost: int = _battle.pathfinder.path_movement_cost(path, enemy)
 	if cost > enemy.current_mp:
 		return
-	enemy.spend_mp(cost)
+	if not enemy.spend_mp(cost):
+		return
 	await _battle._animate_move(enemy, path)
 	if not _can_continue(generation, enemy):
 		return

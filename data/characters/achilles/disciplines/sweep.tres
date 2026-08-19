@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="DisciplineData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://caor2b1e8dnpb"]
 
-[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
+[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
+[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_voe6j"]
 
 [sub_resource type="Resource" id="Rank1"]
 script = ExtResource("2_rank")
@@ -11,5 +12,5 @@ script = ExtResource("1_discipline")
 discipline_id = &"sweep"
 display_name = "Horizon"
 description = "Prototype L’Odyssée · discipline minimale de Balayage."
-presentation_color = Color(0.46, 0.54, 0.60, 1)
+presentation_color = Color(0.46, 0.54, 0.6, 1)
 ranks = Array[ExtResource("2_rank")]([SubResource("Rank1")])

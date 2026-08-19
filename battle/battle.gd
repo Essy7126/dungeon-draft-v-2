@@ -12,6 +12,7 @@
 extends Node2D
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
+const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
 const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
 const ArenaFeatureRendererScript = preload(
 	"res://battle/arena_feature_renderer.gd"
@@ -102,6 +103,7 @@ var grid_view: Node2D
 var camera: Camera2D
 var _unit_views: Dictionary = {}
 var _unit_view_parent: Node2D = null
+var _movement_path_preview = null
 var _arena_tile_parent: Node2D = null
 var arena_dynamic_surface_layer: Node2D = null
 var terrain_surface_visual_adapter: DynamicSurfaceVisualAdapter = null
@@ -132,6 +134,7 @@ var _deployment: DeploymentController = null
 # --- Salle-situation (optionnel) — instancié seulement si la salle est configurée.
 
 const MOVE_COLOR   = Color(0.3, 0.9, 0.4, 0.35)
+const CONTROL_LIMITED_MOVE_COLOR = Color(1.0, 0.42, 0.42, 0.34)
 const ATTACK_COLOR = Color(0.95, 0.3, 0.3, 0.45)
 const SPELL_COLOR  = Color(0.3, 0.55, 1.0, 0.40)
 const AOE_COLOR    = Color(1.0, 0.5, 0.1, 0.5)
@@ -286,6 +289,32 @@ func _setup_view() -> void:
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
 	_unit_view_parent = _find_unit_view_parent()
+	_setup_movement_path_preview()
+
+
+func _setup_movement_path_preview() -> void:
+	_movement_path_preview = MovementPathPreviewScript.new()
+	_movement_path_preview.name = "MovementPathPreview"
+	var layer_parent := grid_view.get_parent() as Node2D
+	if layer_parent != null \
+			and _unit_view_parent != grid_view \
+			and _unit_view_parent != null \
+			and _unit_view_parent.get_parent() == layer_parent:
+		layer_parent.add_child(_movement_path_preview)
+		# Les effets de terrain precedents restent sous la fleche ; la couche des
+		# unites et les personnages suivants restent au-dessus.
+		layer_parent.move_child(
+			_movement_path_preview,
+			_unit_view_parent.get_index(),
+		)
+	else:
+		grid_view.add_child(_movement_path_preview)
+	_movement_path_preview.setup(grid_view)
+
+
+func _clear_movement_path_preview() -> void:
+	if is_instance_valid(_movement_path_preview):
+		_movement_path_preview.clear_path()
 
 
 func _setup_arena_visuals() -> void:
@@ -520,6 +549,7 @@ func _setup_ui() -> void:
 	inspect_panel = CanvasLayer.new()
 	inspect_panel.set_script(load("res://ui/inspect_panel.gd"))
 	add_child(inspect_panel)
+	inspect_panel.setup(pathfinder, grid)
 
 	player_combat_log = CanvasLayer.new()
 	player_combat_log.set_script(load("res://ui/player_combat_log.gd"))
@@ -702,6 +732,8 @@ func _place(unit: Unit, pos: Vector2i) -> void:
 	unit.grid_pos = pos
 	unit.died.connect(_on_unit_died)
 	_create_unit_view(unit)
+	if unit.team == 0:
+		_orient_unit_toward_nearest_opponent(unit)
 
 func _create_unit_view(unit: Unit) -> void:
 	var view = preload("res://battle/unit_view.tscn").instantiate()
@@ -719,6 +751,32 @@ func _create_unit_view(unit: Unit) -> void:
 	if iso_gameplay_light != null and view.has_method("set_light_material"):
 		view.set_light_material(iso_gameplay_light)
 	_unit_views[unit] = view
+
+
+## Oriente ensemble la logique et la vue vers l'adversaire vivant le plus
+## proche. La distance de Manhattan suit les memes axes que les deplacements.
+func _orient_unit_toward_nearest_opponent(unit: Unit) -> void:
+	if unit == null or not unit.is_alive or grid == null \
+			or not grid.is_valid(unit.grid_pos):
+		return
+	var nearest: Unit = null
+	var nearest_distance := 0
+	for candidate_value in units:
+		var candidate := candidate_value as Unit
+		if candidate == null or candidate == unit or not candidate.is_alive \
+				or candidate.team == unit.team or not grid.is_valid(candidate.grid_pos):
+			continue
+		var distance := grid.manhattan(unit.grid_pos, candidate.grid_pos)
+		if nearest == null or distance < nearest_distance:
+			nearest = candidate
+			nearest_distance = distance
+	if nearest == null:
+		return
+	var direction := nearest.grid_pos - unit.grid_pos
+	unit.facing_dir = unit._snap_to_cardinal(direction)
+	var view = _unit_views.get(unit)
+	if is_instance_valid(view) and view.has_method("face_grid_direction"):
+		view.face_grid_direction(direction)
 
 ## Ombre au sol qui suit le skew de la case (perspective). Le perso reste droit.
 func _install_ground_shadow(view: Node2D, cell: Vector2i) -> void:
@@ -938,6 +996,7 @@ func _on_spell_pressed(spell: Spell) -> void:
 func _on_end_turn_pressed() -> void:
 	if _is_evolution_locked() or _spell_resolution_pending:
 		return
+	_clear_movement_path_preview()
 	grid_view.clear_highlights()
 	var unit = turn_queue.get_current_unit()
 	if unit != null:
@@ -987,7 +1046,12 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 	if inspect_panel != null:
 		inspect_panel.show_cell(cell, grid, terrain_effects, false)
 	if turn_state == null:
+		_clear_movement_path_preview()
 		return
+	if turn_state.current == TurnState.State.MOVE:
+		_update_movement_path_preview(cell)
+		return
+	_clear_movement_path_preview()
 	if turn_state.current != TurnState.State.TARGET_SPELL:
 		return
 	var spell = turn_state.selected_spell
@@ -1016,17 +1080,68 @@ func _unhandled_input(event: InputEvent) -> void:
 # INTENTIONS — DÉPLACEMENT
 # ============================================================
 
+func _movement_range_layers(unit: Unit) -> Dictionary:
+	var reachable: Array = pathfinder.get_reachable(
+		unit.grid_pos,
+		unit.current_mp,
+		unit,
+	)
+	var control_limited: Array[Vector2i] = []
+	if not pathfinder.get_engaging_controllers(unit).is_empty():
+		# Le contexte forcé conserve les coûts du terrain et les obstacles, mais
+		# ignore le désengagement : la différence isole la portée perdue.
+		var without_control: Array = pathfinder.get_reachable(
+			unit.grid_pos,
+			unit.current_mp,
+			unit,
+			Pathfinder.MovementType.FORCED,
+		)
+		for cell_value in without_control:
+			var cell := cell_value as Vector2i
+			if not reachable.has(cell):
+				control_limited.append(cell)
+	return {
+		"reachable": reachable,
+		"control_limited": control_limited,
+	}
+
+
 func _on_request_show_move_range() -> void:
 	if _is_evolution_locked():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null:
 		return
+	_clear_movement_path_preview()
 	grid_view.clear_highlights()
-	grid_view.highlight(pathfinder.get_reachable(unit.grid_pos, unit.current_mp, unit), MOVE_COLOR)
+	var range_layers := _movement_range_layers(unit)
+	grid_view.highlight(
+		range_layers.get("control_limited", []),
+		CONTROL_LIMITED_MOVE_COLOR,
+	)
+	grid_view.highlight(range_layers.get("reachable", []), MOVE_COLOR)
 
 func _on_request_clear_highlights() -> void:
+	_clear_movement_path_preview()
 	grid_view.clear_highlights()
+
+
+func _update_movement_path_preview(cell: Vector2i) -> void:
+	var unit = turn_queue.get_current_unit() if turn_queue != null else null
+	if unit == null \
+			or not unit.is_alive \
+			or not pathfinder.get_reachable(
+				unit.grid_pos, unit.current_mp, unit
+			).has(cell):
+		_clear_movement_path_preview()
+		return
+	var path := pathfinder.find_path(unit.grid_pos, cell, unit)
+	var cost_breakdown := pathfinder.path_cost_breakdown(path, unit)
+	if path.size() < 2 or int(cost_breakdown.get("total", 0)) > unit.current_mp:
+		_clear_movement_path_preview()
+		return
+	_movement_path_preview.set_path(path, cost_breakdown)
+
 
 func _on_request_move_to(cell: Vector2i) -> void:
 	if _closing or _battle_over or _is_evolution_locked():
@@ -1039,7 +1154,7 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	var path = pathfinder.find_path(unit.grid_pos, cell, unit)
 	if path.size() < 2:
 		return
-	if not unit.spend_mp(pathfinder.path_movement_cost(path)):
+	if not unit.spend_mp(pathfinder.path_movement_cost(path, unit)):
 		return
 	turn_state.begin_animating()
 	var lifecycle_generation := _lifecycle_generation
@@ -1060,14 +1175,14 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		return
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
-	if not is_instance_valid(view):
+	if not is_instance_valid(view) or path.size() < 2:
 		return
+	view.begin_movement_feedback(path[0], path[1])
 	terrain_effects.begin_unit_resolution(unit, &"movement")
 	for i in range(1, path.size()):
 		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.
 		if not unit.is_alive or not is_instance_valid(view):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		if pathfinder.is_vortex_edge(path[i - 1], path[i]):
 			continue
 		var from_pos = grid_cell_to_parent_local(path[i - 1], view.get_parent())
@@ -1087,11 +1202,9 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		# La vue a pu être libérée pendant l'await.
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(view):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		if not grid.relocate_unit(unit, path[i]):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		var entry_result := terrain_effects.consume_last_entry_result(unit)
 		if bool(entry_result.get("teleported", false)):
 			var destination := entry_result.get("destination", path[i]) as Vector2i
@@ -1099,12 +1212,14 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		_sync_unit_terrain(unit)
 		# on_enter_cell a pu tuer l'unité (lave) : on stoppe le déplacement.
 		if not unit.is_alive:
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 		if bool(entry_result.get("end_movement", false)):
-			terrain_effects.end_unit_resolution(unit)
-			return
+			break
 	terrain_effects.end_unit_resolution(unit)
+	if is_instance_valid(view):
+		view.end_movement_feedback()
+		if unit.team != 0:
+			_orient_unit_toward_nearest_opponent(unit)
 
 # ============================================================
 # INTENTIONS — ATTAQUE
@@ -1113,6 +1228,7 @@ func _animate_move(unit: Unit, path: Array) -> void:
 func _on_request_show_attack_range() -> void:
 	if _is_evolution_locked():
 		return
+	_clear_movement_path_preview()
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
 		turn_state.set_state(TurnState.State.IDLE)
@@ -1209,6 +1325,7 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 func _on_request_show_spell_range(spell: Spell) -> void:
 	if _is_evolution_locked():
 		return
+	_clear_movement_path_preview()
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return

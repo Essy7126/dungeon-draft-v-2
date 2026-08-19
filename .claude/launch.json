@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-preview",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8934",
+        "--directory",
+        "C:/Users/jerem/AppData/Local/Temp/claude/C--Users-jerem-OneDrive-Bureau-dungeon-draft-v-2/e313cd72-cc36-4d60-8e4c-f1bc0c75d244/scratchpad/design_preview"
+      ],
+      "port": 8934
+    }
+  ]
+}

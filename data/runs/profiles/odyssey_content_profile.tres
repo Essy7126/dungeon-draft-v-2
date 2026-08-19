@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="RunContentProfile" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="RunContentProfile" format=3 uid="uid://dygdueesd7cju"]
 
-[ext_resource type="Script" path="res://data/runs/content/run_content_profile.gd" id="1_content"]
-[ext_resource type="Script" path="res://data/runs/content/run_hero_profile.gd" id="2_hero"]
+[ext_resource type="Script" uid="uid://dxus1cqb251v3" path="res://data/runs/content/run_content_profile.gd" id="1_content"]
+[ext_resource type="Script" uid="uid://bu1v88xrc87p7" path="res://data/runs/content/run_hero_profile.gd" id="2_hero"]
 [ext_resource type="Resource" path="res://data/units/allies/achilles.tres" id="3_achilles"]
 [ext_resource type="Resource" path="res://data/runs/progression/odyssey/achilles_progression_profile.tres" id="4_progression"]
 

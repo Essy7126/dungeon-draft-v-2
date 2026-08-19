@@ -13,6 +13,12 @@
 class_name UnitData
 extends Resource
 
+enum ControlLevel {
+	NONE,
+	CONTROL,
+	HEAVY_CONTROL,
+}
+
 # ============================================================
 # IDENTITÉ
 # ============================================================
@@ -40,6 +46,9 @@ extends Resource
 # Direction logique initiale (facing) au spawn. Sert aux mecaniques directionnelles
 # (ex: boss qui durcit de face). Ecrasee des le premier deplacement reel de l'unite.
 @export var facing_dir: Vector2i = Vector2i(0, 1)
+
+@export_group("Contrôle")
+@export var control_level: ControlLevel = ControlLevel.NONE
 
 # ============================================================
 # DÉFENSE (Couche 1)

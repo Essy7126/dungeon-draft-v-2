@@ -9,6 +9,10 @@ const GUIDE_STEPS := [
 	"5 Rangs et XP", "6 Améliorations", "7 Branches", "8 Effets",
 	"9 Tester", "10 Sauvegarder",
 ]
+const TUTORIAL_SANDBOX_SERVICE_PATH := (
+	"res://addons/dungeon_draft_arena_studio/skill_tree/services/"
+	+ "skill_tree_tutorial_sandbox_service.gd"
+)
 
 var editor_interface = null
 var session := SkillTreeEditSession.new()
@@ -25,6 +29,16 @@ var production_toggle: CheckButton
 var undo_button: Button
 var redo_button: Button
 var save_button: Button
+var search_button: Button
+var compare_button: Button
+var validate_button: Button
+var test_button: Button
+var preview_button: Button
+var analysis_button: Button
+var orphan_button: Button
+var tour_menu_button: MenuButton
+var toolbar_panel: PanelContainer
+var guide_panel: PanelContainer
 var catalog: SkillTreeCatalogPanel
 var graph: SkillTreeStudioGraphEdit
 var inspector: SkillTreeInspectorPanel
@@ -39,6 +53,10 @@ var draft_dialog: ConfirmationDialog
 var save_plan_dialog: SkillTreeSavePlanDialog
 var search_dialog: SkillTreeGlobalSearchDialog
 var orphan_dialog: SkillTreeOrphanDialog
+var compare_dialog: ConfirmationDialog
+var compare_run_option: OptionButton
+var compare_summary_label: Label
+var sandbox_reset_button: Button
 var node_dialog: ConfirmationDialog
 var node_name_edit: LineEdit
 var node_rank_spin: SpinBox
@@ -61,6 +79,12 @@ var _pending_search_result := {}
 var project_context: StudioProjectContext = null
 var shared_reference_graph: StudioReferenceGraphService = null
 var context_bar: StudioContextBar = null
+var _tour_highlight: Panel
+var _tour_highlight_target: Control
+var _tutorial_sandbox_service: Object
+var _review_applies_save := true
+var _context_review_approved := false
+var _context_review_pending := false
 
 
 func setup(
@@ -232,10 +256,12 @@ func _build_ui() -> void:
 	)
 	horizontal.add_child(inspector)
 	_build_dialogs()
+	_build_tour_highlight()
 
 
 func _build_toolbar() -> Control:
-	var panel := PanelContainer.new()
+	toolbar_panel = PanelContainer.new()
+	var panel := toolbar_panel
 	panel.custom_minimum_size.y = 72
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 3)
@@ -259,16 +285,32 @@ func _build_toolbar() -> Control:
 	identity.add_child(document_label)
 	undo_button = _button(bar, "Annuler", "Annuler la dernière modification", _undo)
 	redo_button = _button(bar, "Rétablir", "Rétablir la modification annulée", _redo)
-	_button(bar, "Rechercher", "Recherche globale (Ctrl+F)", func():
+	search_button = _button(bar, "Rechercher", "Recherche globale (Ctrl+F)", func():
 		search_dialog.set_catalog(heroes)
 		search_dialog.open_and_focus()
 	)
-	_button(bar, "Comparer runs", "Comparer ce heros avec la premiere autre run", _compare_with_other_run)
-	_button(bar, "Valider", "Expliquer les problèmes sans modifier les données", _validate)
-	_button(bar, "Tester", "Ouvrir le simulateur de progression", _test)
-	_button(bar, "Prévisualiser", "Comparer le sort via la sandbox runtime réelle", _preview_runtime)
-	_button(bar, "Analyse complète", "Énumérer les chemins et lancer les lints de conception", _run_full_analysis)
-	_button(bar, "Orphelins", "Lister et gérer les Resources devenues inaccessibles", _show_orphans)
+	compare_button = _button(
+		bar, "Comparer runs", "Choisir explicitement la run à comparer",
+		_compare_with_other_run
+	)
+	validate_button = _button(
+		bar, "Valider", "Expliquer les problèmes sans modifier les données", _validate
+	)
+	test_button = _button(
+		bar, "Tester", "Ouvrir le simulateur de progression", _test
+	)
+	preview_button = _button(
+		bar, "Prévisualiser", "Comparer le sort via la sandbox runtime réelle",
+		_preview_runtime
+	)
+	analysis_button = _button(
+		bar, "Analyse complète", "Énumérer les chemins et lancer les lints de conception",
+		_run_full_analysis
+	)
+	orphan_button = _button(
+		bar, "Orphelins", "Lister et gérer les Resources devenues inaccessibles",
+		_show_orphans
+	)
 	save_button = _button(bar, "Sauvegarder", "Revoir le plan, puis appliquer la transaction", _request_save_review)
 	guided_toggle = CheckButton.new()
 	guided_toggle.text = "Mode guidé"
@@ -286,12 +328,28 @@ func _build_toolbar() -> Control:
 		_refresh_document()
 	)
 	bar.add_child(production_toggle)
-	_button(bar, "Visite guidée", "Explique les notions essentielles pas à pas", func(): tour.start())
+	tour_menu_button = MenuButton.new()
+	tour_menu_button.text = "?"
+	tour_menu_button.custom_minimum_size.x = 34
+	tour_menu_button.tooltip_text = "Tutoriel complet ou accès direct à un chapitre"
+	var tutorial_menu := tour_menu_button.get_popup()
+	tutorial_menu.add_item("Parcours complet", 0)
+	tutorial_menu.add_separator()
+	for index in range(SkillTreeGuidedTour.CHAPTERS.size()):
+		var chapter := SkillTreeGuidedTour.CHAPTERS[index] as Array
+		var item_id := index + 1
+		tutorial_menu.add_item(str(chapter[SkillTreeGuidedTour.CHAPTER_TITLE]), item_id)
+		tutorial_menu.set_item_metadata(
+			tutorial_menu.get_item_index(item_id), chapter[SkillTreeGuidedTour.CHAPTER_ID]
+		)
+	tutorial_menu.id_pressed.connect(_open_tutorial_menu_item)
+	bar.add_child(tour_menu_button)
 	return panel
 
 
 func _build_guide_bar() -> Control:
-	var panel := PanelContainer.new()
+	guide_panel = PanelContainer.new()
+	var panel := guide_panel
 	var box := VBoxContainer.new()
 	panel.add_child(box)
 	status_label = Label.new()
@@ -308,11 +366,25 @@ func _build_guide_bar() -> Control:
 		step.tooltip_text = _step_help(index)
 		step.pressed.connect(_activate_step.bind(index))
 		steps.add_child(step)
+	sandbox_reset_button = Button.new()
+	sandbox_reset_button.text = "↺ Réinitialiser l’exercice"
+	sandbox_reset_button.tooltip_text = (
+		"Restaure seulement la fixture initiale possédée par le tutoriel."
+	)
+	sandbox_reset_button.visible = false
+	sandbox_reset_button.pressed.connect(_confirm_restore_tutorial_sandbox)
+	steps.add_child(sandbox_reset_button)
 	return panel
 
 
 func _build_dialogs() -> void:
 	tour = SkillTreeGuidedTour.new()
+	tour.target_requested.connect(_show_tour_target)
+	tour.sandbox_requested.connect(_start_tutorial_sandbox)
+	tour.visibility_changed.connect(func():
+		if not tour.visible:
+			_clear_tour_highlight()
+	)
 	add_child(tour)
 	status_dialog = AcceptDialog.new()
 	status_dialog.title = "Skill Studio"
@@ -382,6 +454,7 @@ func _build_dialogs() -> void:
 	add_child(draft_dialog)
 	save_plan_dialog = SkillTreeSavePlanDialog.new()
 	save_plan_dialog.confirmed.connect(_apply_reviewed_save)
+	save_plan_dialog.canceled.connect(_cancel_save_review)
 	save_plan_dialog.navigation_requested.connect(_navigate_to_logical_owner)
 	add_child(save_plan_dialog)
 	search_dialog = SkillTreeGlobalSearchDialog.new()
@@ -390,6 +463,20 @@ func _build_dialogs() -> void:
 	orphan_dialog = SkillTreeOrphanDialog.new()
 	orphan_dialog.action_requested.connect(_handle_orphan_action)
 	add_child(orphan_dialog)
+	compare_dialog = ConfirmationDialog.new()
+	compare_dialog.title = "Comparer deux runs"
+	compare_dialog.ok_button_text = "Comparer"
+	var compare_box := VBoxContainer.new()
+	compare_box.custom_minimum_size = Vector2(500, 130)
+	compare_dialog.add_child(compare_box)
+	compare_summary_label = Label.new()
+	compare_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	compare_box.add_child(compare_summary_label)
+	compare_run_option = OptionButton.new()
+	compare_run_option.tooltip_text = "Run de référence comparée à la run active."
+	compare_box.add_child(compare_run_option)
+	compare_dialog.confirmed.connect(_compare_selected_run)
+	add_child(compare_dialog)
 	node_dialog = ConfirmationDialog.new()
 	node_dialog.title = "Ajouter une amélioration"
 	node_dialog.ok_button_text = "Créer l’amélioration"
@@ -440,6 +527,344 @@ func _build_dialogs() -> void:
 	branch_box.add_child(branch_name_edit)
 	branch_dialog.confirmed.connect(_create_branch)
 	add_child(branch_dialog)
+
+
+func _build_tour_highlight() -> void:
+	_tour_highlight = Panel.new()
+	_tour_highlight.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_tour_highlight.z_index = 4096
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.18, 0.78, 1.0, 0.08)
+	style.border_color = Color(0.36, 0.86, 1.0, 0.96)
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(8)
+	_tour_highlight.add_theme_stylebox_override("panel", style)
+	add_child(_tour_highlight)
+	_tour_highlight.hide()
+	set_process(false)
+
+
+func _process(_delta: float) -> void:
+	_update_tour_highlight()
+
+
+func _open_tutorial_menu_item(item_id: int) -> void:
+	if item_id == 0:
+		tour.start()
+		return
+	var popup := tour_menu_button.get_popup()
+	var item_index := popup.get_item_index(item_id)
+	if item_index < 0:
+		return
+	var chapter_id := StringName(popup.get_item_metadata(item_index))
+	if chapter_id != &"":
+		tour.start_chapter(chapter_id)
+
+
+func _show_tour_target(target: StringName) -> void:
+	_prepare_tour_subject(target)
+	var control := _tour_control(target)
+	if control == null:
+		_clear_tour_highlight()
+		return
+	_tour_highlight_target = control
+	set_process(true)
+	_update_tour_highlight.call_deferred()
+
+
+func _prepare_tour_subject(target: StringName) -> void:
+	var page_id := tour.current_page_id() if tour != null else &""
+	match target:
+		&"inspector_character":
+			if session.working_unit != null:
+				session.select_subject(session.working_unit)
+		&"inspector_discipline":
+			if session.current_discipline() != null:
+				session.select_subject(session.current_discipline())
+		&"rank_bar":
+			var discipline := session.current_discipline()
+			if discipline != null and not discipline.ranks.is_empty():
+				session.select_subject(discipline.ranks[0])
+		&"inspector_node", &"inspector_relations":
+			var node := _first_tour_node(target == &"inspector_relations")
+			if node != null:
+				session.select_subject(node)
+		&"inspector_spell", &"inspector_spell_appearance", \
+				&"inspector_spell_advanced":
+			if session.current_spell() != null:
+				session.select_subject(session.current_spell())
+		&"inspector_effect", &"inspector_effect_advanced":
+			var modifier := _first_tour_modifier()
+			if modifier != null:
+				session.select_subject(modifier)
+			else:
+				status_label.text = "Ajoutez d’abord un effet pour afficher ses paramètres."
+	if target in [
+		&"inspector_spell_advanced", &"inspector_effect_advanced", &"inspector_advanced",
+	] and guided:
+		_set_guided(false)
+	_select_tour_tab(target, page_id)
+	match target:
+		&"bottom_errors", &"validation":
+			bottom.current_tab = 0
+		&"bottom_statistics":
+			bottom.current_tab = 1
+		&"bottom_simulator":
+			bottom.current_tab = 2
+		&"bottom_preview":
+			bottom.current_tab = 3
+		&"bottom_analysis":
+			bottom.current_tab = 4
+
+
+func _select_tour_tab(target: StringName, page_id: StringName) -> void:
+	if inspector == null or inspector.tabs == null:
+		return
+	var tab_name := "Général"
+	match target:
+		&"inspector_relations":
+			tab_name = "Relations"
+		&"inspector_spell_appearance":
+			tab_name = "Apparence"
+		&"inspector_spell_advanced", &"inspector_effect_advanced", &"inspector_advanced":
+			tab_name = "Avancé"
+		&"inspector_effect":
+			tab_name = "Effets"
+		&"inspector_node":
+			tab_name = "Effets" if page_id in [&"effect_model", &"effect_lifecycle"] \
+				else "Général"
+		&"inspector_discipline":
+			tab_name = "Sort" if page_id == &"base_spell_link" else "Général"
+		&"inspector_spell":
+			if page_id == &"spell_direct_effects":
+				tab_name = "Effets"
+			elif page_id in [&"spell_cost_range", &"spell_availability", &"spell_targets"]:
+				tab_name = "Sort"
+	for index in range(inspector.tabs.get_tab_count()):
+		if inspector.tabs.get_tab_title(index) == tab_name \
+				and not inspector.tabs.is_tab_hidden(index):
+			inspector.tabs.current_tab = index
+			return
+
+
+func _tour_control(target: StringName) -> Control:
+	match target:
+		&"studio_overview":
+			return self
+		&"context_bar":
+			return context_bar
+		&"context_run":
+			return context_bar.run_option if context_bar != null else null
+		&"context_hero":
+			return context_bar.hero_option if context_bar != null else null
+		&"context_room_scope":
+			return context_bar.scope_option if context_bar != null else null
+		&"toolbar":
+			return toolbar_panel
+		&"history":
+			return undo_button
+		&"document_state":
+			return document_label
+		&"mode_toggles":
+			return guided_toggle
+		&"catalog", &"catalog_actions":
+			return catalog
+		&"rank_bar":
+			return rank_bar
+		&"graph":
+			return graph
+		&"inspector_character", &"inspector_discipline", &"inspector_node", \
+				&"inspector_relations", &"inspector_spell", &"inspector_spell_appearance", \
+				&"inspector_spell_advanced", &"inspector_effect", \
+				&"inspector_effect_advanced", &"inspector_advanced":
+			return inspector
+		&"validation":
+			return validate_button
+		&"bottom_errors", &"bottom_statistics", &"bottom_simulator", \
+				&"bottom_preview", &"bottom_analysis":
+			return bottom
+		&"compare_runs":
+			return compare_button
+		&"search":
+			return search_button
+		&"save":
+			return save_button
+		&"orphans":
+			return orphan_button
+		&"sandbox":
+			return tour_menu_button
+		_:
+			return guide_panel
+
+
+func _first_tour_node(require_relations := false) -> SkillUpgradeData:
+	if session.selected_subject is SkillUpgradeData \
+			and (not require_relations or session.selected_subject is SkillTreeNodeData):
+		return session.selected_subject as SkillUpgradeData
+	var discipline := session.current_discipline()
+	if discipline == null:
+		return null
+	for rank_data in discipline.ranks:
+		if rank_data == null:
+			continue
+		for node in rank_data.choices:
+			if node != null and (not require_relations or node is SkillTreeNodeData):
+				return node
+	return null
+
+
+func _first_tour_modifier() -> SpellModifier:
+	if session.selected_subject is SpellModifier:
+		return session.selected_subject as SpellModifier
+	var selected_node := session.selected_subject as SkillUpgradeData
+	if selected_node != null:
+		for modifier in selected_node.spell_modifiers:
+			if modifier != null:
+				return modifier
+	var discipline := session.current_discipline()
+	if discipline != null:
+		for rank_data in discipline.ranks:
+			if rank_data == null:
+				continue
+			for node in rank_data.choices:
+				if node == null:
+					continue
+				for modifier in node.spell_modifiers:
+					if modifier != null:
+						return modifier
+	return null
+
+
+func _update_tour_highlight() -> void:
+	if _tour_highlight == null or _tour_highlight_target == null \
+			or not is_instance_valid(_tour_highlight_target) \
+			or not _tour_highlight_target.is_visible_in_tree():
+		if _tour_highlight != null:
+			_tour_highlight.hide()
+		return
+	var own_rect := get_global_rect()
+	var target_rect := _tour_highlight_target.get_global_rect()
+	_tour_highlight.position = target_rect.position - own_rect.position - Vector2(4, 4)
+	_tour_highlight.size = target_rect.size + Vector2(8, 8)
+	_tour_highlight.show()
+	_tour_highlight.move_to_front()
+
+
+func _clear_tour_highlight() -> void:
+	_tour_highlight_target = null
+	if _tour_highlight != null:
+		_tour_highlight.hide()
+	set_process(false)
+
+
+func _start_tutorial_sandbox() -> void:
+	commit_pending_edits()
+	if session.is_dirty():
+		_request_save_review(_start_tutorial_sandbox)
+		return
+	if not ResourceLoader.exists(TUTORIAL_SANDBOX_SERVICE_PATH):
+		_show_status(
+			"Exercice sandbox en préparation",
+			"Le tutoriel est raccordé. Son service de fixture sécurisé sera ajouté à l’étape suivante."
+		)
+		return
+	var script := ResourceLoader.load(
+		TUTORIAL_SANDBOX_SERVICE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as Script
+	if script == null:
+		_show_status("Exercice indisponible", "Le service sandbox ne peut pas être chargé.")
+		return
+	_tutorial_sandbox_service = script.new()
+	if _tutorial_sandbox_service == null \
+			or not _tutorial_sandbox_service.has_method("start"):
+		_show_status("Exercice indisponible", "Le service sandbox ne respecte pas son contrat.")
+		return
+	var result := _tutorial_sandbox_service.call("start", session)
+	if not result is Dictionary or not bool((result as Dictionary).get("ok", false)):
+		_show_status(
+			"Exercice indisponible",
+			str((result as Dictionary).get("error", "Erreur inconnue.")) \
+				if result is Dictionary else "Réponse sandbox invalide."
+		)
+		return
+	_upsert_tutorial_catalog_entry((result as Dictionary).get("catalog_entry", {}))
+	_refresh_document()
+	status_label.text = str((result as Dictionary).get(
+		"message", "Exercice sandbox chargé ; aucune donnée de production n’est modifiée."
+	))
+	tour.start_chapter(&"sandbox")
+
+
+func _confirm_restore_tutorial_sandbox() -> void:
+	if not _tutorial_sandbox_is_active():
+		return
+	confirm_dialog.dialog_text = (
+		"Restaurer le personnage vide initial de l’exercice ?\n\n"
+		+ "Les modifications sandbox non sauvegardées seront abandonnées. "
+		+ "Aucun fichier de production ne sera touché."
+	)
+	confirm_dialog.ok_button_text = "Restaurer l’exercice"
+	_pending_confirm_action = _restore_tutorial_sandbox
+	confirm_dialog.popup_centered()
+
+
+func _restore_tutorial_sandbox() -> void:
+	var result: Variant = _tutorial_sandbox_service.call("restore_initial", session)
+	if not result is Dictionary or not bool((result as Dictionary).get("ok", false)):
+		_show_status(
+			"Restauration impossible",
+			str((result as Dictionary).get("error", "Erreur inconnue.")) \
+				if result is Dictionary else "Réponse sandbox invalide."
+		)
+		return
+	_upsert_tutorial_catalog_entry((result as Dictionary).get("catalog_entry", {}))
+	_refresh_document()
+	status_label.text = str((result as Dictionary).get(
+		"message", "L’exercice a été réinitialisé."
+	))
+
+
+func _upsert_tutorial_catalog_entry(entry_value: Variant) -> void:
+	if not entry_value is Dictionary:
+		return
+	var entry := entry_value as Dictionary
+	var path := str(entry.get("path", ""))
+	if path.is_empty():
+		return
+	for index in range(heroes.size()):
+		if str(heroes[index].get("path", "")) == path:
+			heroes[index] = entry
+			return
+	heroes.push_front(entry)
+
+
+func _tutorial_sandbox_is_active() -> bool:
+	return _tutorial_sandbox_service != null \
+		and _tutorial_sandbox_service.has_method("is_active") \
+		and bool(_tutorial_sandbox_service.call("is_active", session))
+
+
+func _prepare_tutorial_sandbox_for_save() -> Dictionary:
+	if not _tutorial_sandbox_is_active():
+		return {"ok": true}
+	var result: Variant = _tutorial_sandbox_service.call("prepare_for_save", session)
+	return result as Dictionary if result is Dictionary \
+		else {"ok": false, "error": "Réponse sandbox invalide."}
+
+
+func _save_options() -> Dictionary:
+	if not _tutorial_sandbox_is_active() \
+			or not _tutorial_sandbox_service.has_method("save_options"):
+		return {}
+	var options: Variant = _tutorial_sandbox_service.call("save_options")
+	return options as Dictionary if options is Dictionary else {}
+
+
+func _validation_roots() -> PackedStringArray:
+	var options := _save_options()
+	var roots: Variant = options.get("allowed_roots")
+	return (roots as PackedStringArray).duplicate() \
+		if roots is PackedStringArray else PackedStringArray(["res://data/"])
 
 
 func _connect_session() -> void:
@@ -762,7 +1187,7 @@ func _refresh_document() -> void:
 		return
 	_loading = true
 	validation_messages = SkillTreeEditorValidator.validate_unit(
-		session.working_unit, production_profile, heroes
+		session.working_unit, production_profile, heroes, _validation_roots()
 	) if session.working_unit != null else []
 	_refresh_catalog()
 	_rebuild_rank_bar()
@@ -795,6 +1220,8 @@ func _refresh_document() -> void:
 				"character_id": str(project_context.active_hero.character_id) \
 					if project_context.active_hero != null else "",
 			})
+	if sandbox_reset_button != null:
+		sandbox_reset_button.visible = _tutorial_sandbox_is_active()
 	_loading = false
 
 
@@ -974,20 +1401,45 @@ func _run_full_analysis() -> void:
 func _compare_with_other_run() -> void:
 	if project_context == null or project_context.active_run == null \
 			or project_context.active_hero == null:
-		_show_status("Comparaison impossible", "Aucun contexte run/heros actif.")
+		_show_status("Comparaison impossible", "Aucun contexte run/héros actif.")
 		return
-	var other: RunData = null
+	compare_run_option.clear()
 	for run_data in RunContentCatalogService.discover_runs():
-		if run_data != project_context.active_run:
-			other = run_data
-			break
-	if other == null:
+		if run_data == null or run_data == project_context.active_run:
+			continue
+		compare_run_option.add_item(run_data.run_name)
+		compare_run_option.set_item_metadata(compare_run_option.item_count - 1, run_data)
+		compare_run_option.set_item_tooltip(
+			compare_run_option.item_count - 1, run_data.resource_path
+		)
+	if compare_run_option.item_count == 0:
 		_show_status("Comparaison impossible", "Aucune autre run n'est disponible.")
+		return
+	compare_summary_label.text = "Run active : %s\nHéros : %s\n\nChoisissez la run de référence. La comparaison ne changera pas le contexte." % [
+		project_context.active_run.run_name,
+		project_context.active_hero.base_unit_data.unit_name \
+			if project_context.active_hero.base_unit_data != null \
+			else str(project_context.active_hero.character_id),
+	]
+	compare_run_option.select(0)
+	compare_dialog.popup_centered(Vector2i(560, 260))
+
+
+func _compare_selected_run() -> void:
+	if project_context == null or project_context.active_run == null \
+			or project_context.active_hero == null or compare_run_option.item_count == 0:
+		return
+	var other := compare_run_option.get_selected_metadata() as RunData
+	if other == null:
+		_show_status("Comparaison impossible", "La run de référence est introuvable.")
 		return
 	var report := SkillTreeRunComparisonService.compare(
 		project_context.active_run, other, project_context.active_hero.character_id
 	)
-	_show_status("Comparaison entre runs", SkillTreeRunComparisonService.format_report(report))
+	_show_status(
+		"Comparaison · %s ↔ %s" % [project_context.active_run.run_name, other.run_name],
+		SkillTreeRunComparisonService.format_report(report)
+	)
 
 
 func _show_orphans() -> void:
@@ -1039,10 +1491,36 @@ func _handle_orphan_action(
 func _save() -> Dictionary:
 	commit_pending_edits()
 	_save_graph_state()
-	var result := SkillTreeSaveService.save(session, editor_interface)
+	var sandbox_prepare := _prepare_tutorial_sandbox_for_save()
+	if not bool(sandbox_prepare.get("ok", false)):
+		var preparation_failure := {
+			"ok": false,
+			"step": "SANDBOX_PATHS",
+			"error": str(sandbox_prepare.get("error", "Chemins sandbox invalides.")),
+		}
+		_show_status("Sauvegarde impossible", str(preparation_failure.error))
+		return preparation_failure
+	var sandbox_active := _tutorial_sandbox_is_active()
+	var result := SkillTreeSaveService.save(
+		session, editor_interface, _save_options()
+	)
+	if not result.get("ok", false) \
+			and str(result.get("error", "")).strip_edges().is_empty():
+		result["step"] = str(result.get("step", "INTERRUPTED"))
+		result["error"] = (
+			"La transaction a été interrompue avant de renvoyer son résultat. "
+			+ "Le fichier peut déjà correspondre aux modifications : rouvrez le "
+			+ "document avant de réessayer."
+		)
 	if result.get("ok", false):
-		heroes = _run_hero_catalog() if project_context != null \
-			else SkillTreeCatalogService.discover_heroes()
+		if sandbox_active:
+			_tutorial_sandbox_service.call("configure_session", session)
+			_upsert_tutorial_catalog_entry(
+				_tutorial_sandbox_service.call("catalog_entry", session)
+			)
+		else:
+			heroes = _run_hero_catalog() if project_context != null \
+				else SkillTreeCatalogService.discover_heroes()
 		_refresh_document()
 		status_label.text = str(result.get("message", "Sauvegarde terminée."))
 	else:
@@ -1054,26 +1532,50 @@ func _save() -> Dictionary:
 	return result
 
 
-func _request_save_review(post_save_action: Callable = Callable()) -> void:
+func _request_save_review(
+		post_save_action: Callable = Callable(),
+		apply_save := true
+	) -> void:
 	commit_pending_edits()
+	var sandbox_prepare := _prepare_tutorial_sandbox_for_save()
+	if not bool(sandbox_prepare.get("ok", false)):
+		_show_status(
+			"Sauvegarde impossible",
+			str(sandbox_prepare.get("error", "Chemins sandbox invalides."))
+		)
+		return
 	_refresh_document()
 	if SkillTreeEditorValidator.has_errors(validation_messages):
 		bottom.current_tab = 0
 		_show_status("Sauvegarde impossible", "Corrigez les erreurs bloquantes avant de revoir le plan.")
 		return
 	_post_save_action = post_save_action
-	var plan := SkillTreeSaveTransactionService.build_plan(session)
+	_review_applies_save = apply_save
+	var plan := SkillTreeSaveTransactionService.build_plan(session, _save_options())
 	if not session.is_dirty():
 		_apply_post_save_action()
 		return
+	save_plan_dialog.get_ok_button().text = (
+		"Appliquer la transaction" if apply_save else "Approuver et continuer"
+	)
 	save_plan_dialog.set_plan(plan)
 	save_plan_dialog.popup_centered_ratio(0.82)
 
 
 func _apply_reviewed_save() -> void:
+	if not _review_applies_save:
+		_review_applies_save = true
+		_apply_post_save_action()
+		return
 	var result := _save()
 	if result.get("ok", false):
 		_apply_post_save_action()
+
+
+func _cancel_save_review() -> void:
+	_post_save_action = Callable()
+	_review_applies_save = true
+	_context_review_pending = false
 
 
 func _apply_post_save_action() -> void:
@@ -1136,7 +1638,7 @@ func _activate_step(index: int) -> void:
 		8:
 			_test()
 		9:
-			_save()
+			_request_save_review()
 
 
 func _step_help(index: int) -> String:
@@ -1231,8 +1733,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		search_dialog.open_and_focus()
 		get_viewport().set_input_as_handled()
 	elif key.ctrl_pressed and key.keycode == KEY_S:
-		commit_pending_edits()
-		_save()
+		_request_save_review()
 		get_viewport().set_input_as_handled()
 	elif not _text_control_has_focus() and key.ctrl_pressed \
 			and key.keycode == KEY_Z and not key.shift_pressed:
@@ -1250,7 +1751,28 @@ func _autosave_draft() -> void:
 
 
 func _context_save() -> Dictionary:
-	return _save()
+	if not session.is_dirty():
+		return {"ok": true, "message": "Aucun changement à sauvegarder."}
+	if _context_review_approved:
+		_context_review_approved = false
+		return _save()
+	if not _context_review_pending:
+		_context_review_pending = true
+		_request_context_save_review.call_deferred()
+	return {
+		"ok": false,
+		"step": "REVIEW_REQUIRED",
+		"error": "La revue détaillée de la sauvegarde est requise.",
+	}
+
+
+func _request_context_save_review() -> void:
+	_context_review_pending = false
+	_request_save_review(func():
+		_context_review_approved = true
+		if project_context != null and project_context.has_pending_transition():
+			project_context.resolve_pending_transition(StudioProjectContext.ACTION_SAVE)
+	, false)
 
 
 func _context_draft() -> Dictionary:

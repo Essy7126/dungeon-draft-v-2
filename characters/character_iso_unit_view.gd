@@ -367,18 +367,11 @@ func set_debug_run_for_next_movement(enabled: bool) -> void:
 	_debug_run_for_next_movement = enabled
 
 
-func cancel_movement_feedback() -> void:
-	_movement_active = false
-	_movement_seen_motion = false
-	_movement_stable_time = 0.0
-	_has_parent_sample = false
-	if not _death_locked and _visual_priority == VisualPriority.MOVEMENT:
-		_visual_priority = VisualPriority.IDLE
-		play_idle()
-
-
-func _on_bound_unit_moved(from_cell: Vector2i, to_cell: Vector2i) -> void:
-	if _death_locked:
+## Demarre le retour visuel avant que la racine UnitView ne quitte sa case.
+## Le signal Unit.moved reste un filet de securite pour les autres contextes,
+## mais le combat pilote explicitement ce cycle afin d'eviter une case glissee.
+func begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i) -> void:
+	if _death_locked or from_cell == to_cell:
 		return
 	set_facing(to_cell - from_cell)
 	_movement_active = true
@@ -401,6 +394,25 @@ func _on_bound_unit_moved(from_cell: Vector2i, to_cell: Vector2i) -> void:
 		play_run(playback_speed)
 	else:
 		play_walk(playback_speed)
+
+
+func cancel_movement_feedback() -> void:
+	_movement_active = false
+	_movement_seen_motion = false
+	_movement_stable_time = 0.0
+	_has_parent_sample = false
+	if not _death_locked and _visual_priority == VisualPriority.MOVEMENT:
+		_visual_priority = VisualPriority.IDLE
+		play_idle()
+
+
+func _on_bound_unit_moved(from_cell: Vector2i, to_cell: Vector2i) -> void:
+	if _death_locked:
+		return
+	if _movement_active:
+		set_facing(to_cell - from_cell)
+		return
+	begin_movement_feedback(from_cell, to_cell)
 
 
 func _movement_playback_speed(

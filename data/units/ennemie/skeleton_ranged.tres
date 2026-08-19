@@ -12,6 +12,7 @@ unit_id = &"skeleton_ranged"
 unit_name = "Squelette a distance"
 description = "Combattant sans equipement visible qui garde sa distance et simule un tir."
 team = 1
+control_level = 0
 max_hp = 38
 initiative = 7
 max_mp = 3

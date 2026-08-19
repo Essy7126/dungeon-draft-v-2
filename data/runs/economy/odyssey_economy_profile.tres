@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="RunEconomyProfile" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="RunEconomyProfile" format=3 uid="uid://cgexirlbiwon"]
 
-[ext_resource type="Script" path="res://data/runs/economy/run_economy_profile.gd" id="1_profile"]
-[ext_resource type="Script" path="res://data/runs/economy/run_starting_item_data.gd" id="2_item"]
+[ext_resource type="Script" uid="uid://dpeih0k2iosi8" path="res://data/runs/economy/run_economy_profile.gd" id="1_profile"]
+[ext_resource type="Script" uid="uid://b78r0omrbl31c" path="res://data/runs/economy/run_starting_item_data.gd" id="2_item"]
 
 [sub_resource type="Resource" id="HealingPotions"]
 script = ExtResource("2_item")

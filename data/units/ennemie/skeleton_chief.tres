@@ -15,6 +15,7 @@ unit_id = &"skeleton_chief"
 unit_name = "Chef squelette rouge"
 description = "Tank lent qui prepare une Sentence ecarlate esquivable."
 team = 1
+control_level = 2
 max_hp = 220
 initiative = 6
 max_mp = 2

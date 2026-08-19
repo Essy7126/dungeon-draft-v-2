@@ -14,6 +14,7 @@ unit_id = &"skeleton_melee"
 unit_name = "Squelette"
 description = "Combattant rapide qui poursuit la marque et se renforce en formation."
 team = 1
+control_level = 1
 max_hp = 72
 initiative = 12
 max_ap = 4

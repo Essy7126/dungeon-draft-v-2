@@ -88,6 +88,11 @@ signal healing_applied(unit, source, amount)
 signal unit_died(unit)
 signal unit_killed(unit, killer)
 
+# Un impact vient de rendre la cible mortelle, mais le signal `died` n'a pas
+# encore ete emis. Les vues disposent ainsi de la case a regarder avant de
+# verrouiller et lancer leur animation de deces.
+signal lethal_hit_resolved(target, attacker, origin_cell: Vector2i)
+
 # ============================================================
 # SIGNAUX DE STATUTS
 # ============================================================

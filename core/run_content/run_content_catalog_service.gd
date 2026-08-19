@@ -85,8 +85,12 @@ static func as_editable_unit_view(
 	var view := base_unit_data.duplicate(false) as UnitData
 	view.set_path_cache("")
 	view.active_spell_slots = profile.active_spell_slots
-	view.spells.assign(profile.spells)
-	view.disciplines.assign(profile.disciplines)
+	var view_spells: Array[Spell] = []
+	view_spells.assign(profile.spells)
+	view.spells = view_spells
+	var view_disciplines: Array[DisciplineData] = []
+	view_disciplines.assign(profile.disciplines)
+	view.disciplines = view_disciplines
 	return view
 
 

@@ -27,6 +27,7 @@ var tactical_role_id: StringName = &""
 var linked_commander_role_id: StringName = &""
 var linked_commander: Unit = null
 var combat_order: int = -1
+var control_level: UnitData.ControlLevel = UnitData.ControlLevel.NONE
 
 # --- Stats max (modifiables) ---
 var max_hp: Stat
@@ -79,7 +80,11 @@ var grid_pos: Vector2i:
 	set(value):
 		var old := _grid_pos
 		_grid_pos = value
-		if old != Vector2i(-1, -1) and old != value:
+		# La sentinelle hors-grille sert au retrait (notamment a la mort) : ce
+		# n'est pas un deplacement et elle ne doit ni tourner ni animer l'unite.
+		if old != Vector2i(-1, -1) \
+				and value != Vector2i(-1, -1) \
+				and old != value:
 			facing_dir = _snap_to_cardinal(value - old)
 			moved.emit(old, value)
 
@@ -208,6 +213,7 @@ static func from_data(data: UnitData) -> Unit:
 	u.faction_id = data.faction_id
 	u.tactical_role_id = data.tactical_role_id
 	u.linked_commander_role_id = data.linked_commander_role_id
+	u.control_level = data.control_level
 	u.proximity_armor_source = data.proximity_armor_source
 	u.proximity_armor_per_living_neighbor = data.proximity_armor_per_living_neighbor
 	u.proximity_armor_max_neighbors = data.proximity_armor_max_neighbors
@@ -392,6 +398,24 @@ func get_runtime_stable_id() -> String:
 	if combat_order >= 0:
 		return "%s:%06d" % [String(unit_id), combat_order]
 	return "%s:%020d" % [String(unit_id), get_instance_id()]
+
+
+func is_hostile_to(other: Unit) -> bool:
+	return other != null and other != self and team != other.team
+
+
+func can_exert_control() -> bool:
+	return is_alive and control_level != UnitData.ControlLevel.NONE
+
+
+func get_control_cost() -> int:
+	match control_level:
+		UnitData.ControlLevel.CONTROL:
+			return 1
+		UnitData.ControlLevel.HEAVY_CONTROL:
+			return 2
+		_:
+			return 0
 
 
 func target_has_linked_source_status(target: Unit, status_id: StringName) -> bool:
@@ -1035,7 +1059,12 @@ func take_damage(
 		_consume_charged_damage_vulnerabilities(category)
 	if result != null and not result.dodged and attacker is Unit and uses_outgoing:
 		(attacker as Unit)._consume_charged_outgoing_damage(category)
-	_apply_damage_result(result, ctx.attacker, ctx)
+	_apply_damage_result(
+		result,
+		ctx.attacker,
+		ctx,
+		_resolve_hit_origin_cell(attacker, options),
+	)
 	if effect_key != &"":
 		_resolved_combat_effects[effect_key] = result
 	if result != null and not result.dodged and not splash_spec.is_empty():
@@ -1062,7 +1091,12 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 		_consume_charged_damage_vulnerabilities(ctx.category)
 	if result != null and not result.dodged and ctx.attacker is Unit:
 		(ctx.attacker as Unit)._consume_charged_outgoing_damage(ctx.category)
-	_apply_damage_result(result, ctx.attacker, ctx)
+	_apply_damage_result(
+		result,
+		ctx.attacker,
+		ctx,
+		_resolve_hit_origin_cell(ctx.attacker, {}),
+	)
 	if effect_key != &"":
 		_resolved_combat_effects[effect_key] = result
 	return result
@@ -1180,7 +1214,8 @@ func _consume_charged_outgoing_damage(category: int) -> void:
 func _apply_damage_result(
 		result: DamageResolver.DamageResult,
 		attacker = null,
-		ctx: DamageResolver.HitContext = null
+		ctx: DamageResolver.HitContext = null,
+		impact_origin_cell: Vector2i = Vector2i(-1, -1)
 	) -> void:
 	if result == null:
 		return
@@ -1224,6 +1259,8 @@ func _apply_damage_result(
 	if damage_to_hp > 0:
 		health_loss = mini(current_hp, damage_to_hp)
 		current_hp -= health_loss
+		if current_hp <= 0 and impact_origin_cell != Vector2i(-1, -1):
+			EventBus.lethal_hit_resolved.emit(self, attacker, impact_origin_cell)
 		var health_fact := CombatEventFact.create(
 			&"hp_damage_taken", self, attacker,
 			_combat_fact_metadata(metadata, {
@@ -1269,6 +1306,15 @@ func _apply_damage_result(
 	if current_hp <= 0:
 		current_hp = 0
 		_die(attacker)
+
+
+func _resolve_hit_origin_cell(attacker, options: Dictionary) -> Vector2i:
+	var configured = options.get("impact_origin_cell", null)
+	if configured is Vector2i:
+		return configured as Vector2i
+	if attacker is Unit:
+		return (attacker as Unit).grid_pos
+	return Vector2i(-1, -1)
 
 	# Data-driven via gain_table[TAKE_DAMAGE] : nul pour Rage/Ombre (0), paie pour
 	# Foi (montÃ©e en puissance) et Nature. result.amount est le coup mitigÃ© (avant
