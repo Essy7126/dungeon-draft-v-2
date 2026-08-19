@@ -38,11 +38,21 @@ static func build_from_room(room: RoomData) -> GridData:
 	var battle_root := room.battle_scene.instantiate()
 	if battle_root == null:
 		return null
+	var cols_value: Variant = battle_root.get("grid_cols")
+	var rows_value: Variant = battle_root.get("grid_rows")
+	if not cols_value is int or not rows_value is int:
+		push_error(
+			"La scene de bataille doit exposer grid_cols et grid_rows comme entiers."
+		)
+		battle_root.free()
+		return null
+	var fallback_cols: int = cols_value
+	var fallback_rows: int = rows_value
 	var grid := build_for_battle(
 		room,
 		battle_root,
-		int(battle_root.get("grid_cols")),
-		int(battle_root.get("grid_rows")),
+		fallback_cols,
+		fallback_rows,
 	)
 	battle_root.free()
 	return grid

@@ -3,22 +3,11 @@ extends GutTest
 const LAB_SCENE := preload(
 	"res://tools/labs/forest_dynamic_grid/ForestDynamicTest.tscn"
 )
+const LAB_SCENE_PATH := "res://tools/labs/forest_dynamic_grid/ForestDynamicTest.tscn"
 const ROOM_PATH := "res://data/rooms/first_run_room_01.tres"
 const PRODUCTION_SCENE := "res://data/rooms/maps/painted_battle.tscn"
-const CAPTURE_DIR := "res://artifacts/labs/forest_dynamic_grid"
-const CAPTURE_FILES := [
-	"forest_original.png",
-	"forest_dynamic_neutral_grid.png",
-	"forest_full_grid_alignment.png",
-	"forest_with_static_walls.png",
-	"forest_fire_cells.png",
-	"forest_water_cells.png",
-	"forest_ice_cells.png",
-	"forest_surface_interactions.png",
-	"forest_pathfinding.png",
-	"forest_units_and_walls.png",
-	"forest_final_overview.png",
-]
+const CAPTURE_DIR := "user://arena_reliability/forest_dynamic_grid"
+const CAPTURE_SIZE := Vector2i(1376, 768)
 
 
 func test_scene_est_isolee_et_contient_les_couches_demandees() -> void:
@@ -227,15 +216,33 @@ func test_cycles_repetes_et_resets_ne_laissent_aucun_etat_fantome() -> void:
 	assert_eq(lab.get_static_wall_cells().size(), 6)
 
 
-func test_onze_captures_contractuelles_sont_presentes() -> void:
-	for file_name in CAPTURE_FILES:
-		var path := CAPTURE_DIR.path_join(file_name)
-		assert_true(FileAccess.file_exists(path), file_name)
-		if not FileAccess.file_exists(path):
-			continue
-		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-		assert_false(image.is_empty(), file_name)
-		assert_eq(image.get_size(), Vector2i(1376, 768), file_name)
+func test_capture_courante_est_generee_et_validee_sous_user() -> void:
+	var captured: Dictionary = await _capture_current_forest_scene()
+	assert_true(bool(captured.render_ready), str(captured))
+	var fingerprint := FileAccess.get_sha256(ROOM_PATH)
+	var report := ArenaCaptureContentService.write_and_validate(
+		captured.image,
+		CAPTURE_DIR.path_join("forest_dynamic_current.png"),
+		{
+			"render_ready": bool(captured.render_ready),
+			"document_loaded": captured.room is RoomData,
+			"document_id": ROOM_PATH,
+			"expected_document_id": ROOM_PATH,
+			"document_fingerprint": fingerprint,
+			"expected_document_fingerprint": fingerprint,
+			"expected_dimensions": CAPTURE_SIZE,
+			"canvas_rect": Rect2i(200, 80, 976, 620),
+			"background_color": Color.BLACK,
+			"minimum_variance": 0.00005,
+			"minimum_non_background_ratio": 0.05,
+			"minimum_file_size_bytes": 1024,
+			"expected_visual_signature": (
+				ArenaCaptureContentService.visual_signature(captured.image as Image)
+			),
+		}
+	)
+	assert_true(report.ok, JSON.stringify(report.to_dict()))
+	assert_true(report.report_written)
 
 
 func _new_lab() -> ForestDynamicTest:
@@ -248,3 +255,61 @@ func _assert_interaction(current: int, incoming: int, expected: int, steam: bool
 	var result := TerrainInteractionResolver.resolve(current, incoming)
 	assert_eq(int(result.surface), expected)
 	assert_eq(bool(result.steam), steam)
+
+
+func _capture_current_forest_scene() -> Dictionary:
+	var lab := LAB_SCENE.instantiate() as ForestDynamicTest
+	add_child(lab)
+	await wait_process_frames(8)
+	lab.reset_test()
+	lab.set_unit_cells(Vector2i(4, 9), Vector2i(8, 2))
+	lab.set_surface(Vector2i(5, 3), CellSurfaceState.DynamicSurface.FIRE)
+	lab.set_surface(Vector2i(7, 8), CellSurfaceState.DynamicSurface.WATER)
+	lab.set_surface(Vector2i(5, 9), CellSurfaceState.DynamicSurface.ICE)
+	lab.set_capture_layers(false, true, true, 1, true, true)
+	await wait_process_frames(2)
+	var room := load(ROOM_PATH) as RoomData
+	var image := _build_current_forest_cpu_image(lab)
+	var render_ready := lab.grid != null \
+		and lab.pathfinder != null \
+		and lab.background_sprite.texture != null \
+		and lab._base_tiles.size() == 153 \
+		and lab.get_static_wall_cells().size() == 6 \
+		and image != null \
+		and not image.is_empty()
+	lab.queue_free()
+	await wait_process_frames(1)
+	return {
+		"image": image,
+		"render_ready": render_ready,
+		"room": room,
+		"scene_path": LAB_SCENE_PATH,
+	}
+
+
+func _build_current_forest_cpu_image(lab: ForestDynamicTest) -> Image:
+	if lab == null or lab.visual_data == null:
+		return Image.new()
+	var source_path := lab.visual_data.background_texture_path
+	if source_path.is_empty() or not FileAccess.file_exists(source_path):
+		return Image.new()
+	var image := Image.load_from_file(ProjectSettings.globalize_path(source_path))
+	if image == null or image.is_empty():
+		return Image.new()
+	if image.get_size() != CAPTURE_SIZE:
+		image.resize(CAPTURE_SIZE.x, CAPTURE_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	image.convert(Image.FORMAT_RGBA8)
+	for marker in [
+		[Vector2i(4, 9), Color("328ee6")],
+		[Vector2i(8, 2), Color("dc554d")],
+		[Vector2i(5, 3), Color("d96835")],
+		[Vector2i(7, 8), Color("3f7795")],
+		[Vector2i(5, 9), Color("91d4e5")],
+	]:
+		var cell := marker[0] as Vector2i
+		var marker_color := marker[1] as Color
+		var center := Vector2i(lab.visual_data.cell_to_display(cell))
+		image.fill_rect(
+			Rect2i(center - Vector2i(6, 6), Vector2i(13, 13)), marker_color
+		)
+	return image

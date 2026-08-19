@@ -185,6 +185,13 @@ func test_certificate_does_not_require_manual_previews_or_manual_test() -> void:
 	certificate.preview_game_valid = false
 	certificate.art_alignment_confirmed = false
 	certificate.manual_test_performed = false
+	certificate.readiness_report = ArenaReadinessService.build(null, {
+		"data_report": _passing_readiness_section(&"DATA_VALID"),
+		"visual_report": _passing_readiness_section(&"VISUAL_VALID"),
+		"runtime_scene_report": _passing_runtime_result(),
+		"production_plan": {"ok": true, "can_produce": true},
+		"integration_plan": {"ok": true, "can_integrate": true},
+	})
 	assert_true(certificate.recompute_ready(), str(certificate.to_dict()))
 	assert_true(certificate.blocking_errors.is_empty())
 	assert_true(certificate.acknowledgement_warnings.any(func(value):
@@ -192,6 +199,35 @@ func test_certificate_does_not_require_manual_previews_or_manual_test() -> void:
 	))
 	certificate.unexpected_cells = ["7,7"]
 	assert_false(certificate.recompute_ready())
+
+
+func test_projection_smoke_cannot_replace_real_runtime_scene_gate() -> void:
+	var arena := _arena_fixture("runtime_scene_gate")
+	var inputs := _runtime_inputs(arena)
+	var missing := ArenaIntegrationGatePolicy.evaluate(
+		ArenaValidator.validate(arena, false), inputs.parity, inputs.visual,
+		inputs.smoke, {"state": ArenaBundleInspectionService.EMPTY},
+		ArenaIntegrationGatePolicy.Profile.PRODUCTION, {
+			"requires_runtime_scene": true,
+			"runtime_scene_result": {},
+		}
+	)
+	assert_false(missing.runtime_bootable)
+	assert_true(missing.ready_to_produce)
+	assert_false(missing.ready_to_integrate)
+	assert_true((missing.blocking_errors as Array).any(func(value):
+		return (value as Dictionary).code == "RUNTIME_SCENE_NOT_RUN"
+	))
+	var verified := ArenaIntegrationGatePolicy.evaluate(
+		ArenaValidator.validate(arena, false), inputs.parity, inputs.visual,
+		inputs.smoke, {"state": ArenaBundleInspectionService.EMPTY},
+		ArenaIntegrationGatePolicy.Profile.PRODUCTION, {
+			"requires_runtime_scene": true,
+			"runtime_scene_result": _passing_runtime_result(),
+		}
+	)
+	assert_true(verified.runtime_bootable, str(verified))
+	assert_true(verified.ready_to_integrate, str(verified))
 
 
 func test_integration_plan_exposes_gate_and_ignores_unrelated_dirty_domains() -> void:
@@ -249,6 +285,37 @@ func _runtime_inputs(arena: ArenaDefinition) -> Dictionary:
 			"removed_cells_rendered": smoke.get("removed_cells_rendered", []),
 			"duplicate_cells": smoke.get("duplicate_cells", []),
 		},
+	}
+
+
+func _passing_readiness_section(code: StringName) -> ArenaReadinessSection:
+	var section := ArenaReadinessSection.new()
+	section.state = ArenaReadinessSection.State.PASS
+	section.code = code
+	return section
+
+
+func _passing_runtime_result() -> Dictionary:
+	return {
+		"ok": true,
+		"runtime_scene_inspected": true,
+		"battle_scene_path": "res://battle/painted/painted_battle.tscn",
+		"script_parse_ok": true,
+		"scene_instantiated": true,
+		"runtime_ready": true,
+		"grid_ready": true,
+		"pathfinder_ready": true,
+		"render_ready": true,
+		"spawn_ready": true,
+		"produced_bundle_loaded": false,
+		"working_fingerprint": "same",
+		"temporary_fingerprint": "same",
+		"runtime_fingerprint": "same",
+		"fingerprints_identical": true,
+		"working_topology_hash": "same",
+		"temporary_topology_hash": "same",
+		"runtime_topology_hash": "same",
+		"topology_hashes_identical": true,
 	}
 
 

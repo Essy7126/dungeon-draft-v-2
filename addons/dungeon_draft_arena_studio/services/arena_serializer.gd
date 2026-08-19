@@ -147,7 +147,7 @@ static func production_visual_matches(arena: ArenaDefinition, path: String) -> b
 		and visual.calibration_pixels == arena.calibration_pixels
 
 
-static func save_recovery(arena: ArenaDefinition) -> Error:
+static func save_recovery(arena: ArenaDefinition, context := {}) -> Error:
 	if arena == null:
 		return ERR_INVALID_PARAMETER
 	var path := recovery_path(arena.arena_id)
@@ -161,6 +161,15 @@ static func save_recovery(arena: ArenaDefinition) -> Error:
 	var snapshot := arena.to_snapshot()
 	snapshot["_studio_product_version"] = StudioVersion.PRODUCT_VERSION
 	snapshot["_generated_by"] = StudioVersion.GENERATED_BY
+	var recovery_context := (
+		(context as Dictionary).duplicate(true) if context is Dictionary else {}
+	)
+	recovery_context["domain"] = StringName(recovery_context.get("domain", &"arena"))
+	recovery_context["arena_id"] = str(arena.arena_id)
+	recovery_context["source"] = str(recovery_context.get("source", path))
+	recovery_context["status"] = str(recovery_context.get("status", "RECOVERABLE"))
+	snapshot["_recovery_context"] = recovery_context
+	snapshot["_recovery_saved_at_unix"] = int(Time.get_unix_time_from_system())
 	file.store_string(JSON.stringify(snapshot, "  "))
 	return OK
 

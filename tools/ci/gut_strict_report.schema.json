@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dungeon-draft.local/schemas/gut-strict-report.schema.json",
+  "title": "Dungeon Draft strict GUT report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "suite_id",
+    "verdict",
+    "primary_classification",
+    "failure_codes",
+    "started_at_utc",
+    "duration_ms",
+    "godot",
+    "gut_version",
+    "selection",
+    "counts",
+    "process",
+    "summary",
+    "junit",
+    "expected_failures",
+    "observed_failures",
+    "errors",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "suite_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verdict": {
+      "enum": ["PASS", "PASS_WITH_EXPECTED_FAILURES", "FAIL"]
+    },
+    "primary_classification": {
+      "$ref": "#/$defs/classification"
+    },
+    "failure_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/failure_classification"
+      }
+    },
+    "started_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "godot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version"],
+      "properties": {
+        "path": {"type": ["string", "null"]},
+        "version": {"type": ["string", "null"]}
+      }
+    },
+    "gut_version": {
+      "type": ["string", "null"]
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "directory",
+        "prefix",
+        "suffix",
+        "include_subdirectories",
+        "scripts_discovered",
+        "scripts_expected",
+        "scripts_executed",
+        "scripts_missing"
+      ],
+      "properties": {
+        "directory": {"type": ["string", "null"]},
+        "prefix": {"type": ["string", "null"]},
+        "suffix": {"type": ["string", "null"]},
+        "include_subdirectories": {"type": "boolean"},
+        "scripts_discovered": {"$ref": "#/$defs/string_array"},
+        "scripts_expected": {"$ref": "#/$defs/string_array"},
+        "scripts_executed": {"$ref": "#/$defs/string_array"},
+        "scripts_missing": {"$ref": "#/$defs/string_array"}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "production_scripts_compile_checked",
+        "test_scripts_compile_checked",
+        "tests_expected",
+        "tests_executed",
+        "passing_tests",
+        "failing_tests",
+        "pending_tests",
+        "risky_tests",
+        "skipped_tests",
+        "assertions_passed",
+        "assertions_total",
+        "parse_errors"
+      ],
+      "properties": {
+        "production_scripts_compile_checked": {"type": "integer", "minimum": 0},
+        "test_scripts_compile_checked": {"type": "integer", "minimum": 0},
+        "tests_expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "value"],
+          "properties": {
+            "mode": {"enum": ["minimum", "exact"]},
+            "value": {"type": "integer", "minimum": 1}
+          }
+        },
+        "tests_executed": {"type": "integer", "minimum": 0},
+        "passing_tests": {"type": "integer", "minimum": 0},
+        "failing_tests": {"type": "integer", "minimum": 0},
+        "pending_tests": {"type": "integer", "minimum": 0},
+        "risky_tests": {"type": "integer", "minimum": 0},
+        "skipped_tests": {"type": "integer", "minimum": 0},
+        "assertions_passed": {"type": "integer", "minimum": 0},
+        "assertions_total": {"type": "integer", "minimum": 0},
+        "parse_errors": {"type": "integer", "minimum": 0}
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version_exit_code",
+        "import_started",
+        "import_exit_code",
+        "import_timed_out",
+        "gut_started",
+        "gut_exit_code",
+        "gut_timed_out",
+        "killed",
+        "termination_exit_code"
+      ],
+      "properties": {
+        "version_exit_code": {"type": ["integer", "null"]},
+        "import_started": {"type": "boolean"},
+        "import_exit_code": {"type": ["integer", "null"]},
+        "import_timed_out": {"type": "boolean"},
+        "gut_started": {"type": "boolean"},
+        "gut_exit_code": {"type": ["integer", "null"]},
+        "gut_timed_out": {"type": "boolean"},
+        "killed": {"type": "boolean"},
+        "termination_exit_code": {"type": ["integer", "null"]}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "scripts",
+        "tests",
+        "passing_tests",
+        "failing_tests",
+        "risky_pending",
+        "errors",
+        "warnings",
+        "assertions_passed",
+        "assertions_total"
+      ],
+      "properties": {
+        "present": {"type": "boolean"},
+        "scripts": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "tests": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "passing_tests": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "failing_tests": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "risky_pending": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "errors": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "warnings": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "assertions_passed": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "assertions_total": {"$ref": "#/$defs/nullable_nonnegative_integer"}
+      }
+    },
+    "junit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "present",
+        "bytes",
+        "valid",
+        "tests",
+        "failures",
+        "testcases",
+        "suite_count",
+        "assertion_sum"
+      ],
+      "properties": {
+        "path": {"type": ["string", "null"]},
+        "present": {"type": "boolean"},
+        "bytes": {"type": "integer", "minimum": 0},
+        "valid": {"type": "boolean"},
+        "tests": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "failures": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "testcases": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "suite_count": {"$ref": "#/$defs/nullable_nonnegative_integer"},
+        "assertion_sum": {"$ref": "#/$defs/nullable_nonnegative_integer"}
+      }
+    },
+    "expected_failures": {"$ref": "#/$defs/string_array"},
+    "observed_failures": {"$ref": "#/$defs/string_array"},
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["classification", "code", "message", "source", "line", "text"],
+        "properties": {
+          "classification": {"$ref": "#/$defs/failure_classification"},
+          "code": {"type": "string", "minLength": 1},
+          "message": {"type": "string", "minLength": 1},
+          "source": {"type": ["string", "null"]},
+          "line": {"type": ["integer", "null"], "minimum": 1},
+          "text": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "import_stdout",
+        "import_stderr",
+        "import_engine",
+        "gut_stdout",
+        "gut_stderr",
+        "gut_engine",
+        "junit",
+        "report"
+      ],
+      "properties": {
+        "import_stdout": {"type": ["string", "null"]},
+        "import_stderr": {"type": ["string", "null"]},
+        "import_engine": {"type": ["string", "null"]},
+        "gut_stdout": {"type": ["string", "null"]},
+        "gut_stderr": {"type": ["string", "null"]},
+        "gut_engine": {"type": ["string", "null"]},
+        "junit": {"type": ["string", "null"]},
+        "report": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "$defs": {
+    "classification": {
+      "enum": [
+        "PASS",
+        "PASS_WITH_EXPECTED_FAILURES",
+        "CONFIG_ERROR",
+        "PROCESS_START_ERROR",
+        "IMPORT_TIMEOUT",
+        "GUT_TIMEOUT",
+        "PARSE_ERROR",
+        "GUT_STARTUP_ERROR",
+        "JUNIT_MISSING",
+        "JUNIT_INVALID",
+        "ZERO_TESTS",
+        "SUMMARY_MISSING",
+        "SUITE_MISSING",
+        "UNEXPECTED_ENGINE_ERROR",
+        "EXPECTED_FAILURE_SET_MISMATCH",
+        "TEST_FAILURE"
+      ]
+    },
+    "failure_classification": {
+      "enum": [
+        "CONFIG_ERROR",
+        "PROCESS_START_ERROR",
+        "IMPORT_TIMEOUT",
+        "GUT_TIMEOUT",
+        "PARSE_ERROR",
+        "GUT_STARTUP_ERROR",
+        "JUNIT_MISSING",
+        "JUNIT_INVALID",
+        "ZERO_TESTS",
+        "SUMMARY_MISSING",
+        "SUITE_MISSING",
+        "UNEXPECTED_ENGINE_ERROR",
+        "EXPECTED_FAILURE_SET_MISMATCH",
+        "TEST_FAILURE"
+      ]
+    },
+    "nullable_nonnegative_integer": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "string_array": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

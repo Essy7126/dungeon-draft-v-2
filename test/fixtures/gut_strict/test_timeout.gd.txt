@@ -1,0 +1,7 @@
+extends GutTest
+
+
+func test_fixture_never_completes() -> void:
+	await get_tree().create_timer(3600.0).timeout
+	assert_true(false, "Le watchdog aurait du interrompre ce test.")
+

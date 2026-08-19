@@ -47,28 +47,52 @@ static func plan(
 	var target_room := run_data.rooms[target] as RoomData \
 		if target >= 0 and target < before_count else null
 	var shared := action == UPDATE and _is_shared_room(target_room, graph)
+	var source_from_produced_bundle := (
+		ArenaRunOwnedRoomPathPolicy.is_produced_bundle_resource(arena_path)
+	)
+	var target_from_produced_bundle := target_room != null \
+		and ArenaRunOwnedRoomPathPolicy.is_produced_bundle_resource(
+			target_room.resource_path
+		)
+	var materialize_run_owned := (
+		action == UPDATE and (shared or target_from_produced_bundle)
+	) or (action != UPDATE and source_from_produced_bundle)
+	var copy_on_write := action == UPDATE and materialize_run_owned
 	var integrated_room_path := arena_path
 	if action == UPDATE:
 		if target_room == null or target_room.resource_path.is_empty():
 			return {"ok": false, "error": "La salle cible n'est pas canonique."}
-		integrated_room_path = _run_specific_update_path(arena_path, run_data) \
-			if shared else target_room.resource_path
-		if shared and integrated_room_path.is_empty():
+		integrated_room_path = target_room.resource_path
+	if materialize_run_owned:
+		var destination := ArenaRunOwnedRoomPathPolicy.destination_report(
+			run_data,
+			target,
+			target_room if action == UPDATE else null,
+			arena_path,
+		)
+		integrated_room_path = str(destination.get("path", ""))
+		if not destination.get("ok", false):
 			return {
 				"ok": false,
 				"error": "La copie spécifique à la run n'a pas de chemin sûr.",
 			}
-		if shared and ResourceLoader.exists(integrated_room_path) \
-				and integrated_room_path != target_room.resource_path:
+		var destination_is_current := target_room != null \
+			and action in [UPDATE, REPLACE] \
+			and target_room.resource_path == integrated_room_path
+		if ResourceLoader.exists(integrated_room_path) \
+				and not destination_is_current:
 			return {
 				"ok": false,
 				"error": "Le chemin de copie spécifique existe déjà : %s" % integrated_room_path,
 			}
 	var after_count := before_count if action in [REPLACE, UPDATE] else before_count + 1
+	var run_will_change := action != UPDATE \
+		or target_room == null \
+		or target_room.resource_path != integrated_room_path
 	var affected_files := PackedStringArray()
-	if action == UPDATE:
+	if action == UPDATE or materialize_run_owned:
 		affected_files.append(integrated_room_path)
-		if shared:
+		if run_will_change:
 			affected_files.append(run_data.resource_path)
 	elif action != NONE:
 		affected_files.append(run_data.resource_path)
@@ -83,8 +107,12 @@ static func plan(
 		"after_count": after_count,
 		"integrated_room_path": integrated_room_path,
 		"shared": shared,
-		"copy_on_write": shared,
-		"run_will_change": action != UPDATE or shared,
+		"copy_on_write": copy_on_write,
+		"materialize_run_owned": materialize_run_owned,
+		"source_from_produced_bundle": source_from_produced_bundle,
+		"target_from_produced_bundle": target_from_produced_bundle,
+		"run_owned_root": ArenaRunOwnedRoomPathPolicy.run_owned_root_for(run_data),
+		"run_will_change": run_will_change,
 		"preserves_gameplay": action == UPDATE,
 		"affected_files": affected_files,
 		"replaced_path": run_data.rooms[target].resource_path \
@@ -114,17 +142,32 @@ static func attach_and_save(
 		return {"ok": false, "error": "La RunData cible ne peut pas etre relue.", "plan": attachment_plan}
 	if action == UPDATE:
 		return _update_and_save(produced, canonical_run, attachment_plan, graph)
+	var integrated_path := str(attachment_plan.get(
+		"integrated_room_path", arena_path
+	))
+	var attached_room := produced
+	var materialization := {}
+	if bool(attachment_plan.get("materialize_run_owned", false)):
+		materialization = _materialize_run_owned_room(
+			produced, integrated_path, canonical_run.resource_path
+		)
+		if not materialization.get("ok", false):
+			return materialization.merged({"plan": attachment_plan}, true)
+		attached_room = materialization.get("reloaded_room") as ArenaDefinition
 	var session := ArenaRunAuthoringService.new()
 	if not session.open(canonical_run, graph):
+		_rollback_materialization(materialization, integrated_path)
 		return {"ok": false, "error": "La session de run ne peut pas etre ouverte.", "plan": attachment_plan}
 	var target := int(attachment_plan.target_index)
-	var operation := session.replace_room(target, produced) \
-		if action == REPLACE else session.insert_room(target, produced)
+	var operation := session.replace_room(target, attached_room) \
+		if action == REPLACE else session.insert_room(target, attached_room)
 	if not operation.get("ok", false):
+		_rollback_materialization(materialization, integrated_path)
 		return operation.merged({"plan": attachment_plan}, true)
 	var save_result := session.save()
 	if not save_result.get("ok", false):
 		session.undo()
+		_rollback_materialization(materialization, integrated_path)
 		return {
 			"ok": false,
 			"error": str(save_result.get("error", "Le rattachement n'a pas pu etre sauvegarde.")),
@@ -135,8 +178,9 @@ static func attach_and_save(
 		run_data.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RunData
 	if verified_run == null or target < 0 or target >= verified_run.rooms.size() \
-			or verified_run.rooms[target].resource_path != arena_path:
+			or verified_run.rooms[target].resource_path != integrated_path:
 		_rollback_run(save_result, run_data.resource_path)
+		_rollback_materialization(materialization, integrated_path)
 		return {
 			"ok": false,
 			"error": "La verification du rattachement a l'index exact a echoue.",
@@ -145,6 +189,7 @@ static func attach_and_save(
 	var run_errors := verified_run.validation_errors()
 	if not run_errors.is_empty():
 		_rollback_run(save_result, run_data.resource_path)
+		_rollback_materialization(materialization, integrated_path)
 		return {
 			"ok": false,
 			"error": "L'intégration rendrait la run invalide.",
@@ -163,9 +208,15 @@ static func attach_and_save(
 		"backup_path": save_result.get("backup_path", ""),
 		"reloaded_run": verified_run,
 		"reloaded_room": verified_run.rooms[target],
-		"integrated_room_path": arena_path,
+		"integrated_room_path": integrated_path,
 		"run_saved": true,
 		"preserved_gameplay": false,
+		"copy_on_write": false,
+		"materialized_run_owned": bool(
+			attachment_plan.get("materialize_run_owned", false)
+		),
+		"room_recovery_path": materialization.get("recovery_path", ""),
+		"room_recovery": materialization.get("room_recovery", {}),
 	}
 
 
@@ -223,9 +274,23 @@ static func _update_and_save(
 	if merged == null:
 		return {"ok": false, "error": "La fusion Arena/Gameplay a échoué.", "plan": attachment_plan}
 	var integrated_path := str(attachment_plan.get("integrated_room_path", ""))
+	var materialize_run_owned := bool(
+		attachment_plan.get("materialize_run_owned", false)
+	)
 	if integrated_path.is_empty() or not integrated_path.begins_with("res://data/") \
 			and not integrated_path.begins_with("res://artifacts/"):
 		return {"ok": false, "error": "Le chemin intégré est hors périmètre sûr."}
+	if materialize_run_owned and (
+			not ArenaRunOwnedRoomPathPolicy.is_run_owned_path(
+				integrated_path, canonical_run
+			) or ArenaRunOwnedRoomPathPolicy.is_produced_bundle_resource(
+				integrated_path
+			)
+		):
+		return {
+			"ok": false,
+			"error": "UPDATE ne peut pas matérialiser la salle dans le bundle produit.",
+		}
 	var recovery := _create_room_recovery(integrated_path, canonical_run.resource_path)
 	if not recovery.get("ok", false):
 		return recovery.merged({"plan": attachment_plan}, true)
@@ -317,10 +382,100 @@ static func _update_and_save(
 		"room_recovery": recovery,
 		"reloaded_run": verified_run,
 		"reloaded_room": verified_room,
-		"run_saved": bool(attachment_plan.get("copy_on_write", false)),
+		"run_saved": bool(attachment_plan.get("run_will_change", false)),
 		"preserved_gameplay": true,
 		"copy_on_write": bool(attachment_plan.get("copy_on_write", false)),
+		"materialized_run_owned": materialize_run_owned,
 	}
+
+
+static func _materialize_run_owned_room(
+		source: ArenaDefinition,
+		destination_path: String,
+		run_path: String
+	) -> Dictionary:
+	if source == null:
+		return {"ok": false, "error": "L'arene source est absente."}
+	if not ArenaRunOwnedRoomPathPolicy.is_run_owned_path(destination_path) \
+			or ArenaRunOwnedRoomPathPolicy.is_produced_bundle_resource(
+				destination_path
+			):
+		return {
+			"ok": false,
+			"error": "La destination run-owned est hors perimetre sur.",
+		}
+	var recovery := _create_room_recovery(destination_path, run_path)
+	if not recovery.get("ok", false):
+		return recovery
+	var copied := source.duplicate(true) as ArenaDefinition
+	if copied == null:
+		return {"ok": false, "error": "La copie run-owned a echoue."}
+	copied.set_path_cache("")
+	var arena_fingerprint := ArenaSnapshotService.arena_fingerprint(source)
+	var gameplay_signature := RoomIntegrationFieldPolicy.signature(
+		source, RoomIntegrationFieldPolicy.GAMEPLAY_OWNED
+	)
+	var staging_path := str(recovery.get("directory", "")).path_join(
+		"staged_room.tres"
+	)
+	if ResourceSaver.save(copied, staging_path) != OK:
+		return {
+			"ok": false,
+			"error": "Le staging de la copie run-owned a echoue.",
+		}
+	var staged := ResourceLoader.load(
+		staging_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaDefinition
+	if staged == null \
+			or ArenaSnapshotService.arena_fingerprint(staged) != arena_fingerprint \
+			or RoomIntegrationFieldPolicy.signature(
+				staged, RoomIntegrationFieldPolicy.GAMEPLAY_OWNED
+			) != gameplay_signature:
+		return {
+			"ok": false,
+			"error": "Le staging run-owned ne preserve pas la ressource source.",
+		}
+	staged.set_path_cache("")
+	if DirAccess.make_dir_recursive_absolute(
+			ProjectSettings.globalize_path(destination_path.get_base_dir())
+		) != OK or ResourceSaver.save(staged, destination_path) != OK:
+		_rollback_room(recovery, destination_path)
+		return {
+			"ok": false,
+			"error": "L'ecriture de la copie run-owned a echoue.",
+		}
+	var reloaded := ResourceLoader.load(
+		destination_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaDefinition
+	if reloaded == null \
+			or ArenaSnapshotService.arena_fingerprint(reloaded) != arena_fingerprint \
+			or RoomIntegrationFieldPolicy.signature(
+				reloaded, RoomIntegrationFieldPolicy.GAMEPLAY_OWNED
+			) != gameplay_signature:
+		_rollback_room(recovery, destination_path)
+		return {
+			"ok": false,
+			"error": "La verification de la copie run-owned a echoue.",
+		}
+	return {
+		"ok": true,
+		"reloaded_room": reloaded,
+		"room_recovery": recovery,
+		"recovery_path": recovery.get("directory", ""),
+		"arena_fingerprint": arena_fingerprint,
+		"gameplay_signature": gameplay_signature,
+	}
+
+
+static func _rollback_materialization(
+		materialization: Dictionary,
+		destination_path: String
+	) -> void:
+	if materialization.is_empty():
+		return
+	var recovery = materialization.get("room_recovery", {})
+	if recovery is Dictionary and not recovery.is_empty():
+		_rollback_room(recovery, destination_path)
 
 
 static func _create_room_recovery(room_path: String, run_path: String) -> Dictionary:
@@ -382,10 +537,3 @@ static func _is_shared_room(
 				if usages > 1:
 					return true
 	return false
-
-
-static func _run_specific_update_path(arena_path: String, run_data: RunData) -> String:
-	if arena_path.is_empty() or run_data == null:
-		return ""
-	var run_id := ArenaDefinition.sanitize_id(run_data.run_name)
-	return arena_path.get_base_dir().path_join("arena_%s.tres" % run_id)

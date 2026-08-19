@@ -26,6 +26,8 @@ static func build(
 		"expected_floor_hash": "",
 		"topology_hash": "",
 		"topology": {},
+		"visual_contract_checks": 0,
+		"visual_contract_reuses": 0,
 		"skipped_cells": [],
 		"skip_reasons": {},
 		"warnings": [],
@@ -38,7 +40,7 @@ static func build(
 	plan.topology = topology
 	plan.topology_hash = topology.topology_hash
 	profile = profile if profile != null else arena.modular_visual_profile
-	var cache_key := _cache_key(arena, profile)
+	var cache_key := _cache_key(arena, profile, str(topology.topology_hash))
 	if _cache.has(cache_key):
 		var cached := (_cache[cache_key] as Dictionary).duplicate(true)
 		cached["cache_hit"] = true
@@ -60,6 +62,11 @@ static func build(
 	elif arena.visual_mode == ArenaDefinition.VisualMode.PAINTED:
 		plan.floor_policy = ArenaModularVisualProfile.HybridFloorPolicy.NONE
 	var definitions: Array[ArenaCellDefinition] = arena.cells.duplicate()
+	# Un contrat de texture est immuable pendant une construction de plan. Le
+	# calcul des bornes alpha (256 x 128 pixels) ne doit donc être effectué
+	# qu'une fois par Texture2D distincte, sans cache persistant à invalider.
+	var visual_contract_cache := {}
+	var visual_contract_stats := {"checks": 0, "reuses": 0}
 	definitions.sort_custom(func(a, b):
 		if a == null:
 			return false
@@ -72,7 +79,10 @@ static func build(
 		if definition == null:
 			plan.errors.append("missing_cell_resource")
 			continue
-		var entry := _entry_for(arena, profile, definition, topology.topology_hash)
+		var entry := _entry_for(
+			arena, profile, definition, topology.topology_hash,
+			visual_contract_cache, visual_contract_stats
+		)
 		plan.entries.append(entry)
 		if bool(entry.visible):
 			plan.render_entries.append(entry)
@@ -104,6 +114,8 @@ static func build(
 	plan.expected_floor_hash = ArenaTopologySignatureService.hash_keys(
 		plan.expected_floor_cells
 	)
+	plan.visual_contract_checks = int(visual_contract_stats.checks)
+	plan.visual_contract_reuses = int(visual_contract_stats.reuses)
 	plan.ok = plan.errors.is_empty()
 	plan["cache_hit"] = false
 	_cache[cache_key] = plan.duplicate(true)
@@ -118,13 +130,50 @@ static func cache_size() -> int:
 	return _cache.size()
 
 
-static func _cache_key(arena: ArenaDefinition, profile: ArenaModularVisualProfile) -> String:
+static func _cache_key(
+		arena: ArenaDefinition,
+		profile: ArenaModularVisualProfile,
+		topology_hash: String
+	) -> String:
 	var profile_signature := "none"
 	if profile != null:
 		var snapshot := profile.to_dict()
 		snapshot.erase("resource_path")
 		profile_signature = JSON.stringify(snapshot, "", true).sha256_text()
-	return "%s:%s" % [ArenaSnapshotService.arena_fingerprint(arena), profile_signature]
+	var cells: Array[Dictionary] = []
+	var missing_cell_count := 0
+	for definition in arena.cells:
+		if definition == null:
+			missing_cell_count += 1
+			continue
+		cells.append({
+			"coordinate": [definition.coordinate.x, definition.coordinate.y],
+			"defined": definition.defined,
+			"border": definition.border,
+			"cell_type": definition.cell_type,
+			"terrain_id": str(definition.terrain_id),
+		})
+	cells.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		var left_coordinate := left.coordinate as Array
+		var right_coordinate := right.coordinate as Array
+		if int(left_coordinate[1]) != int(right_coordinate[1]):
+			return int(left_coordinate[1]) < int(right_coordinate[1])
+		if int(left_coordinate[0]) != int(right_coordinate[0]):
+			return int(left_coordinate[0]) < int(right_coordinate[0])
+		return JSON.stringify(left, "", true) < JSON.stringify(right, "", true)
+	)
+	var visual_snapshot := {
+		"visual_mode": arena.visual_mode,
+		"grid_size": [arena.grid_size.x, arena.grid_size.y],
+		"grid_origin": [arena.grid_origin.x, arena.grid_origin.y],
+		"axis_x": [arena.axis_x.x, arena.axis_x.y],
+		"axis_y": [arena.axis_y.x, arena.axis_y.y],
+		"topology_hash": topology_hash,
+		"profile_signature": profile_signature,
+		"missing_cell_count": missing_cell_count,
+		"cells": cells,
+	}
+	return JSON.stringify(visual_snapshot, "", true).sha256_text()
 
 
 static func entry_for(
@@ -140,7 +189,7 @@ static func entry_for(
 	profile = profile if profile != null else arena.modular_visual_profile
 	return _entry_for(
 		arena, profile, definition,
-		str(ArenaTopologySignatureService.build(arena).topology_hash)
+		str(ArenaTopologySignatureService.build(arena).topology_hash), {}, {}
 	)
 
 
@@ -156,7 +205,9 @@ static func _entry_for(
 		arena: ArenaDefinition,
 		profile: ArenaModularVisualProfile,
 		definition: ArenaCellDefinition,
-		topology_hash := ""
+		topology_hash: String,
+		visual_contract_cache: Dictionary,
+		visual_contract_stats: Dictionary
 	) -> Dictionary:
 	var terrain_id := definition.terrain_id
 	var entry := {
@@ -205,7 +256,19 @@ static func _entry_for(
 	entry.resolved_texture_path = entry.texture_path
 	entry.texture = ArenaTerrainRegistry.texture_for(terrain_id)
 	if entry.texture != null and terrain_id != &"void":
-		var visual_contract := ArenaTileProjectionService.texture_contract(entry.texture)
+		var texture := entry.texture as Texture2D
+		var texture_key: int = texture.get_instance_id()
+		var visual_contract := visual_contract_cache.get(texture_key, {}) as Dictionary
+		if visual_contract.is_empty():
+			visual_contract = ArenaTileProjectionService.texture_contract(texture)
+			visual_contract_cache[texture_key] = visual_contract
+			visual_contract_stats["checks"] = int(
+				visual_contract_stats.get("checks", 0)
+			) + 1
+		else:
+			visual_contract_stats["reuses"] = int(
+				visual_contract_stats.get("reuses", 0)
+			) + 1
 		entry["visual_contract"] = visual_contract
 		if not bool(visual_contract.valid):
 			entry.skip_reason = &"invalid_tile_visual_contract"

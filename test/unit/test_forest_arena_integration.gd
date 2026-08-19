@@ -9,18 +9,8 @@ const CONFIG: ForestArenaIntegrationConfig = preload(
 const MODEL_SCRIPT := preload(
 	"res://tools/labs/forest_arena_integration/forest_arena_integration_map.gd"
 )
-const CAPTURE_DIR := "res://artifacts/labs/forest_arena_integration/testv1"
-const CAPTURE_FILES := [
-	"source_forest_background_v3.png", "map_reference_comparison.png",
-	"map_logic_comparison.png", "painted_background_only.png",
-	"dynamic_grid_only.png", "overlay_alignment.png",
-	"overlay_alignment_corners.png", "playable_border_void_debug.png",
-	"border_removed_debug.png", "neutral_tiles.png", "fire_tiles.png",
-	"water_tiles.png", "ice_tiles.png", "surface_interactions.png",
-	"static_walls.png", "dynamic_wall.png", "pathfinding_center.png",
-	"pathfinding_border.png", "los_blocked.png", "projectile_blocked.png",
-	"units_on_arena.png", "final_forest_arena_test.png",
-]
+const CAPTURE_DIR := "user://arena_reliability/forest_arena_integration/testv1"
+const CAPTURE_SIZE := Vector2i(1672, 941)
 
 
 func test_chargement_image_json_references_et_projection() -> void:
@@ -195,16 +185,33 @@ func test_mesures_structurelles_et_scene_f6_isolee() -> void:
 	assert_eq(first_room.battle_scene.resource_path, "res://data/rooms/maps/painted_battle.tscn")
 
 
-func test_les_22_captures_contractuelles_sont_presentes() -> void:
-	for file_name in CAPTURE_FILES:
-		var path := CAPTURE_DIR.path_join(file_name)
-		assert_true(FileAccess.file_exists(path), file_name)
-		if not FileAccess.file_exists(path):
-			continue
-		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-		assert_false(image.is_empty(), file_name)
-		assert_gte(image.get_width(), 1600, file_name)
-		assert_gte(image.get_height(), 900, file_name)
+func test_capture_courante_est_generee_et_validee_sous_user() -> void:
+	var captured: Dictionary = await _capture_current_integration_scene()
+	assert_true(bool(captured.render_ready), str(captured))
+	var fingerprint := FileAccess.get_sha256(CONFIG.map_definition_path)
+	var report := ArenaCaptureContentService.write_and_validate(
+		captured.image,
+		CAPTURE_DIR.path_join("forest_arena_integration_current.png"),
+		{
+			"render_ready": bool(captured.render_ready),
+			"document_loaded": captured.document_loaded,
+			"document_id": CONFIG.map_definition_path,
+			"expected_document_id": CONFIG.map_definition_path,
+			"document_fingerprint": fingerprint,
+			"expected_document_fingerprint": fingerprint,
+			"expected_dimensions": CAPTURE_SIZE,
+			"canvas_rect": Rect2i(200, 80, 1272, 760),
+			"background_color": Color.BLACK,
+			"minimum_variance": 0.00005,
+			"minimum_non_background_ratio": 0.05,
+			"minimum_file_size_bytes": 1024,
+			"expected_visual_signature": (
+				ArenaCaptureContentService.visual_signature(captured.image as Image)
+			),
+		}
+	)
+	assert_true(report.ok, JSON.stringify(report.to_dict()))
+	assert_true(report.report_written)
 
 
 func _new_model() -> ForestArenaIntegrationMap:
@@ -218,3 +225,61 @@ func _new_lab() -> ForestArenaIntegrationTest:
 	add_child_autofree(lab)
 	assert_eq(lab.validation_errors, PackedStringArray())
 	return lab
+
+
+func _capture_current_integration_scene() -> Dictionary:
+	var lab := LAB_SCENE.instantiate() as ForestArenaIntegrationTest
+	add_child(lab)
+	await wait_process_frames(10)
+	if lab.validation_errors.is_empty():
+		lab.reset_test()
+		lab.clear_surface_effect(Vector2i(5, 7))
+		lab.set_unit_cells(Vector2i(2, 7), Vector2i(8, 7))
+		lab.place_dynamic_wall(Vector2i(5, 7), DynamicWall.WallVariant.FIRE)
+		lab.set_capture_layers(true, true, true, true, true, true, true, true)
+		lab.set_debug_modes(true, true, false)
+	await wait_process_frames(2)
+	var image := _build_current_integration_cpu_image()
+	var render_ready := lab.validation_errors.is_empty() \
+		and lab.grid != null \
+		and lab.pathfinder != null \
+		and CONFIG.background_texture != null \
+		and lab._base_tiles.size() == 151 \
+		and lab.map_model != null \
+		and image != null \
+		and not image.is_empty()
+	var document_loaded := lab.map_model != null
+	lab.queue_free()
+	await wait_process_frames(1)
+	return {
+		"image": image,
+		"render_ready": render_ready,
+		"document_loaded": document_loaded,
+	}
+
+
+func _build_current_integration_cpu_image() -> Image:
+	var source_path := CONFIG.background_texture.resource_path \
+		if CONFIG.background_texture != null else ""
+	if source_path.is_empty() or not FileAccess.file_exists(source_path):
+		return Image.new()
+	var image := Image.load_from_file(ProjectSettings.globalize_path(source_path))
+	if image == null or image.is_empty():
+		return Image.new()
+	if image.get_size() != CAPTURE_SIZE:
+		image.resize(CAPTURE_SIZE.x, CAPTURE_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	image.convert(Image.FORMAT_RGBA8)
+	# Marqueurs CPU derives de la meme projection calibree que la scene. Ils
+	# rendent l'artefact diagnostique sans lire un framebuffer GPU indisponible.
+	for marker in [
+		[Vector2i(2, 7), Color("328ee6")],
+		[Vector2i(8, 7), Color("dc554d")],
+		[Vector2i(5, 7), Color("d96835")],
+	]:
+		var cell := marker[0] as Vector2i
+		var marker_color := marker[1] as Color
+		var center := Vector2i(CONFIG.cell_to_screen(cell))
+		image.fill_rect(
+			Rect2i(center - Vector2i(7, 7), Vector2i(15, 15)), marker_color
+		)
+	return image

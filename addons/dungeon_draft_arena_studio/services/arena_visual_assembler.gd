@@ -15,7 +15,9 @@ static func assemble(
 		y_sorted_world: Node2D,
 		owner: Node,
 		include_modular_tiles := true,
-		floor_parent: Node2D = null
+		floor_parent: Node2D = null,
+		prepared_render_plan: Dictionary = {},
+		prepared_visual_data: PaintedMapVisualData = null
 	) -> Dictionary:
 	var result := {
 		"ok": false,
@@ -33,7 +35,9 @@ static func assemble(
 	if arena == null or grid == null or pathfinder == null or grid_view == null \
 			or y_sorted_world == null or owner == null:
 		return result
-	var render_plan := ArenaTerrainRenderPlanService.build(arena)
+	var render_plan := prepared_render_plan \
+		if not prepared_render_plan.is_empty() \
+		else ArenaTerrainRenderPlanService.build(arena)
 	result.render_plan = render_plan
 	var report := ArenaVisualAssemblyReport.new()
 	report.visual_mode = arena.visual_mode
@@ -204,7 +208,9 @@ static func assemble(
 	var exact := actual_visual_signature(result)
 	report.wall_nodes = exact.walls.duplicate(true)
 	report.decoration_nodes = exact.decorations.duplicate(true)
-	var comparison := compare_expected_to_actual(expected_visual_signature(arena), exact)
+	var comparison := compare_expected_to_actual(
+		expected_visual_signature(arena, render_plan, prepared_visual_data), exact
+	)
 	report.errors.append_array(comparison.errors)
 	report.finalize()
 	result.ok = report.valid
@@ -231,10 +237,18 @@ static func structural_signature(arena: ArenaDefinition) -> Dictionary:
 	}
 
 
-static func expected_visual_signature(arena: ArenaDefinition) -> Dictionary:
-	var plan := ArenaTerrainRenderPlanService.build(arena)
-	var runtime_state := ArenaRuntimeProjectionService.build(arena)
-	var visual_data := runtime_state.visual_data if runtime_state != null else null
+static func expected_visual_signature(
+		arena: ArenaDefinition,
+		prepared_render_plan: Dictionary = {},
+		prepared_visual_data: PaintedMapVisualData = null
+	) -> Dictionary:
+	var plan := prepared_render_plan \
+		if not prepared_render_plan.is_empty() \
+		else ArenaTerrainRenderPlanService.build(arena)
+	var visual_data := prepared_visual_data
+	if visual_data == null:
+		var runtime_state := ArenaRuntimeProjectionService.build(arena)
+		visual_data = runtime_state.visual_data if runtime_state != null else null
 	var terrains := {}
 	for entry in plan.render_entries:
 		var polygon: PackedVector2Array = visual_data.cell_polygon_display(entry.cell) \
@@ -454,18 +468,31 @@ static func compare_expected_to_actual(
 	}
 
 
-static func inspect(arena: ArenaDefinition) -> ArenaVisualAssemblyReport:
+static func inspect(
+		arena: ArenaDefinition,
+		prepared_runtime_state: ArenaRuntimeState = null,
+		prepared_render_plan: Dictionary = {}
+	) -> ArenaVisualAssemblyReport:
 	if arena == null:
 		var missing := ArenaVisualAssemblyReport.new()
 		missing.errors.append("arena_missing")
 		missing.finalize()
 		return missing
-	var cache_key := ArenaSnapshotService.arena_fingerprint(arena)
-	if _inspection_cache.has(cache_key):
-		var cached := _report_from_dict(_inspection_cache[cache_key] as Dictionary)
-		cached.set_meta("cache_hit", true)
-		return cached
-	var runtime_state := ArenaRuntimeProjectionService.build(arena)
+	# Une dérivation injectée appartient au snapshot courant de l'appelant : elle
+	# contourne volontairement le cache global pour ne créer aucun faux hit stale.
+	var use_global_cache := (
+		prepared_runtime_state == null and prepared_render_plan.is_empty()
+	)
+	var cache_key := ""
+	if use_global_cache:
+		cache_key = ArenaSnapshotService.arena_fingerprint(arena)
+		if _inspection_cache.has(cache_key):
+			var cached := _report_from_dict(_inspection_cache[cache_key] as Dictionary)
+			cached.set_meta("cache_hit", true)
+			return cached
+	var runtime_state := prepared_runtime_state \
+		if prepared_runtime_state != null \
+		else ArenaRuntimeProjectionService.build(arena)
 	var projection := runtime_state.arena_projection \
 		if runtime_state != null else null
 	var grid := runtime_state.grid if runtime_state != null else null
@@ -493,12 +520,14 @@ static func inspect(arena: ArenaDefinition) -> ArenaVisualAssemblyReport:
 	world.y_sort_enabled = true
 	root.add_child(world)
 	var assembly := assemble(
-		projection, grid, Pathfinder.new(grid), grid_view, world, root, true, floor
+		projection, grid, Pathfinder.new(grid), grid_view, world, root, true, floor,
+		prepared_render_plan, runtime_state.visual_data
 	)
 	var report := assembly.report as ArenaVisualAssemblyReport
 	root.free()
 	report.set_meta("cache_hit", false)
-	_inspection_cache[cache_key] = report.to_dict()
+	if use_global_cache:
+		_inspection_cache[cache_key] = report.to_dict()
 	return report
 
 

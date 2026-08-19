@@ -168,8 +168,11 @@ static func _idempotent_reuse(arena: ArenaDefinition, destination: String) -> Di
 	var existing := ResourceLoader.load(
 		arena_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as ArenaDefinition
+	var expected_logical_fingerprint := str(manifest.get(
+		"logical_arena_fingerprint", manifest.get("produced_fingerprint", "")
+	))
 	if existing == null or ArenaSnapshotService.arena_fingerprint(existing) \
-			!= str(manifest.get("produced_fingerprint", "")):
+			!= expected_logical_fingerprint:
 		return {"ok": false}
 	var report := ArenaValidator.validate(existing, false)
 	if not report.is_valid():
@@ -192,7 +195,15 @@ static func _verify_bundle(directory: String, source: ArenaDefinition) -> Dictio
 	if manifest.is_empty() or str(manifest.get("generated_by", "")) \
 			!= ArenaProductionService.GENERATED_BY:
 		return {"ok": false, "error": "manifest_invalid"}
-	var files = manifest.get("files", {})
+	if int(manifest.get("manifest_schema_version", 0)) \
+			!= ArenaProductionService.MANIFEST_SCHEMA_VERSION \
+			or str(manifest.get("fingerprint_algorithm_id", "")) \
+				!= ArenaProductionService.FINGERPRINT_ALGORITHM_ID \
+			or not bool(manifest.get("complete", false)):
+		return {"ok": false, "error": "manifest_contract_outdated"}
+	var files: Variant = manifest.get(
+		"physical_file_hash", manifest.get("files", {})
+	)
 	if not files is Dictionary:
 		return {"ok": false, "error": "manifest_files_invalid"}
 	for relative_path in files:
@@ -207,11 +218,19 @@ static func _verify_bundle(directory: String, source: ArenaDefinition) -> Dictio
 	if arena == null:
 		return {"ok": false, "error": "arena_reload_failed"}
 	var actual_arena_fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
-	var expected_arena_fingerprint := str(manifest.get("produced_fingerprint", ""))
+	var expected_arena_fingerprint := str(manifest.get(
+		"logical_arena_fingerprint", manifest.get("produced_fingerprint", "")
+	))
 	var actual_source_fingerprint := ArenaSnapshotService.arena_fingerprint(source)
 	var expected_source_fingerprint := str(manifest.get("source_fingerprint", ""))
 	var actual_gameplay_fingerprint := ArenaSnapshotService.gameplay_fingerprint(arena)
-	var expected_gameplay_fingerprint := ArenaSnapshotService.gameplay_fingerprint(source)
+	var expected_gameplay_fingerprint := str(manifest.get(
+		"gameplay_fingerprint",
+		manifest.get(
+			"produced_gameplay_fingerprint",
+			ArenaSnapshotService.gameplay_fingerprint(source)
+		)
+	))
 	if actual_arena_fingerprint != expected_arena_fingerprint \
 			or expected_source_fingerprint != actual_source_fingerprint \
 			or actual_gameplay_fingerprint != expected_gameplay_fingerprint:

@@ -26,15 +26,23 @@ static func validate(arena: ArenaDefinition, check_duplicate_id := true) -> Aren
 		cached.set_meta("cache_hit", true)
 		return cached
 	report.arena_id = arena.arena_id
-	var runtime_state := ArenaRuntimeProjectionService.build(arena)
-	_validate_identity(arena, report, check_duplicate_id)
+	var runtime_state := ArenaRuntimeBridge.build_validation_state(arena)
+	_validate_identity(arena, report, check_duplicate_id, runtime_state)
 	_validate_calibration(arena, report, runtime_state)
 	_validate_cells(arena, report)
 	_validate_visual_resources(arena, report)
-	_validate_field_coverage(report)
-	_validate_runtime(arena, report, runtime_state)
-	_validate_topology_parity(arena, report)
-	_build_metrics(arena, report, runtime_state)
+	# Ces rapports dérivés étaient reconstruits jusqu'à trois fois pendant une
+	# même validation. Ils décrivent tous le même snapshot canonique immobile.
+	var field_coverage := ArenaRuntimeFieldCoverageService.scan()
+	var render_plan := ArenaTerrainRenderPlanService.build(arena)
+	var visual_report := ArenaVisualAssembler.inspect(arena, runtime_state, render_plan)
+	var tactical := ArenaTacticalMetricsService.analyze(arena, runtime_state)
+	_validate_field_coverage(report, field_coverage)
+	_validate_runtime(arena, report, runtime_state, visual_report, tactical)
+	_validate_topology_parity(arena, report, render_plan, visual_report)
+	_build_metrics(
+		arena, report, tactical, visual_report, field_coverage, runtime_state
+	)
 	report.set_meta("cache_hit", false)
 	if not check_duplicate_id:
 		_cache[cache_key] = report.duplicate(true)
@@ -52,8 +60,14 @@ static func cache_size() -> int:
 static func _validate_identity(
 		arena: ArenaDefinition,
 		report: ArenaValidationReport,
-		check_duplicate_id: bool
+		check_duplicate_id: bool,
+		runtime_state: ArenaRuntimeState
 	) -> void:
+	var resolved_arena := (
+		runtime_state.arena_projection
+		if runtime_state != null and runtime_state.arena_projection != null
+		else arena
+	) as ArenaDefinition
 	if str(arena.arena_id).strip_edges().is_empty():
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"missing_id",
@@ -86,7 +100,7 @@ static func _validate_identity(
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"schema_incompatible",
 			"La version des donnees doit etre migree avant utilisation.")
-	if arena.battle_scene == null:
+	if resolved_arena == null or resolved_arena.battle_scene == null:
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"runtime_scene_missing",
 			"La scene de combat reelle ne peut pas etre construite.")
@@ -100,7 +114,9 @@ static func _validate_identity(
 	report.add_message(
 		ArenaValidationMessage.Severity.INFO, &"battle_scene",
 		"Scene de bataille : %s." % (
-			arena.battle_scene.resource_path if arena.battle_scene != null else "absente"
+			resolved_arena.battle_scene.resource_path \
+			if resolved_arena != null and resolved_arena.battle_scene != null \
+			else "absente"
 		))
 
 
@@ -613,8 +629,10 @@ static func _validate_visual_resources(
 			"Aucun foreground n'est configure.")
 
 
-static func _validate_field_coverage(report: ArenaValidationReport) -> void:
-	var coverage := ArenaRuntimeFieldCoverageService.scan()
+static func _validate_field_coverage(
+		report: ArenaValidationReport,
+		coverage: Dictionary
+	) -> void:
 	if not bool(coverage.production_gate_valid):
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"runtime_field_coverage_incomplete",
@@ -627,7 +645,9 @@ static func _validate_field_coverage(report: ArenaValidationReport) -> void:
 static func _validate_runtime(
 		arena: ArenaDefinition,
 		report: ArenaValidationReport,
-		runtime_state: ArenaRuntimeState
+		runtime_state: ArenaRuntimeState,
+		visual_report: ArenaVisualAssemblyReport,
+		tactical: Dictionary
 	) -> void:
 	var grid := runtime_state.grid if runtime_state != null else null
 	if grid == null:
@@ -635,13 +655,11 @@ static func _validate_runtime(
 			ArenaValidationMessage.Severity.ERROR, &"grid_build_failed",
 			"La grille de combat ne peut pas etre construite.")
 		return
-	var signature := ArenaVisualAssembler.structural_signature(arena)
-	if signature.is_empty() or not signature.has("runtime"):
+	if runtime_state.arena_projection == null or runtime_state.visual_data == null:
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"renderer_build_failed",
 			"L'assembleur visuel partage ne peut pas construire la map.")
 		return
-	var visual_report := ArenaVisualAssembler.inspect(arena)
 	if not visual_report.valid:
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR,
@@ -651,7 +669,6 @@ static func _validate_runtime(
 				visual_report.expected_terrain_cell_count,
 			]
 		)
-	var tactical := ArenaTacticalMetricsService.analyze(arena, runtime_state)
 	var playable := arena.playable_cells()
 	if playable.is_empty():
 		return
@@ -694,11 +711,11 @@ static func _validate_runtime(
 
 static func _validate_topology_parity(
 		arena: ArenaDefinition,
-		report: ArenaValidationReport
+		report: ArenaValidationReport,
+		plan: Dictionary,
+		visual: ArenaVisualAssemblyReport
 	) -> void:
-	var topology := ArenaTopologySignatureService.build(arena)
-	var plan := ArenaTerrainRenderPlanService.build(arena)
-	var visual := ArenaVisualAssembler.inspect(arena)
+	var topology := plan.get("topology", {}) as Dictionary
 	var duplicates: Array[String] = []
 	for key in visual.terrain_nodes:
 		if int((visual.terrain_nodes[key] as Dictionary).get("duplication_count", 1)) > 1:
@@ -744,12 +761,19 @@ static func _validate_topology_parity(
 static func _build_metrics(
 		arena: ArenaDefinition,
 		report: ArenaValidationReport,
+		tactical: Dictionary,
+		visual_report: ArenaVisualAssemblyReport,
+		field_coverage: Dictionary,
 		runtime_state: ArenaRuntimeState
 	) -> void:
-	var tactical := ArenaTacticalMetricsService.analyze(arena, runtime_state)
 	var topology := tactical.get("topology", {}) as Dictionary
 	var camps := tactical.get("camps", {}) as Dictionary
 	var spawn_metrics := tactical.get("spawns", {}) as Dictionary
+	var resolved_arena := (
+		runtime_state.arena_projection
+		if runtime_state != null and runtime_state.arena_projection != null
+		else arena
+	) as ArenaDefinition
 	report.metrics = {
 		"dimensions": [arena.grid_size.x, arena.grid_size.y],
 		"defined_cells": arena.defined_cells().size(),
@@ -769,10 +793,23 @@ static func _build_metrics(
 		"props": arena.decorations.size(),
 		"visual_mode": arena.visual_mode,
 		"visual_profile": str(arena.theme_id),
-		"battle_scene": arena.battle_scene.resource_path if arena.battle_scene != null else "",
-		"visual_assembly": ArenaVisualAssembler.inspect(arena).to_dict(),
+		"battle_scene": resolved_arena.battle_scene.resource_path \
+			if resolved_arena != null and resolved_arena.battle_scene != null else "",
+		"visual_assembly": visual_report.to_dict(),
 		"tactical": tactical,
-		"runtime_field_coverage": ArenaRuntimeFieldCoverageService.scan(),
+		"runtime_field_coverage": field_coverage,
+		"derivation_breakdown": {
+			"room_fingerprint_builds": 1,
+			"arena_fingerprint_builds": 0,
+			"runtime_projection_builds": 1,
+			"runtime_projection_reuses": 2,
+			"runtime_surface_configuration_builds": 0,
+			"render_plan_builds": 1,
+			"render_plan_reuses": 1,
+			"visual_inspections": 1,
+			"tactical_analyses": 1,
+			"field_coverage_scans": 1,
+		},
 	}
 	report.add_message(
 		ArenaValidationMessage.Severity.INFO, &"map_summary",

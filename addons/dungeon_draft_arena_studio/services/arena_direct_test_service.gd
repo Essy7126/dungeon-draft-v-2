@@ -5,7 +5,7 @@ extends RefCounted
 const REQUEST_PATH := "user://arena_studio/test_request.json"
 const WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
 const LAST_RESULT_PATH := WORK_ROOT + "/last_result.json"
-const CONTRACT_VERSION := 3
+const CONTRACT_VERSION := 4
 const QUICK_FIXTURE_HEROES := [
 	"res://data/units/alliés/elfe.tres",
 	"res://data/units/alliés/mage.tres",
@@ -16,7 +16,8 @@ const QUICK_FIXTURE_HEROES := [
 static func prepare(
 		arena: ArenaDefinition,
 		active_run: RunData,
-		configuration: StringName
+		configuration: StringName,
+		options: Dictionary = {}
 	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
@@ -84,6 +85,21 @@ static func prepare(
 		return _failed(context_root, "render_plan_invalid", {
 			"errors": render_plan.get("errors", []),
 		})
+	var expected_battle_scene_path := (
+		temporary.battle_scene.resource_path
+		if temporary.battle_scene != null else ""
+	)
+	if expected_battle_scene_path.is_empty() \
+			or not ResourceLoader.exists(expected_battle_scene_path):
+		return _failed(context_root, "battle_scene_missing", {
+			"battle_scene_path": expected_battle_scene_path,
+		})
+	var runtime_probe_key := probe_key(
+		working_fingerprint,
+		working_topology.topology_hash,
+		expected_battle_scene_path,
+		configuration
+	)
 
 	var run_path := ""
 	var exact_run_content := false
@@ -110,6 +126,8 @@ static func prepare(
 		"transaction_id": generation_id,
 		"cleanup_on_load": true,
 		"probe_runtime": true,
+		"probe_only": bool(options.get("probe_only", false)),
+		"quit_after_probe": bool(options.get("quit_after_probe", false)),
 		"result_path": LAST_RESULT_PATH,
 		"working_fingerprint": working_fingerprint,
 		"temporary_fingerprint": temporary_fingerprint,
@@ -123,6 +141,8 @@ static func prepare(
 		"expected_floor_hash": str(render_plan.expected_floor_hash),
 		"expected_floor_cells": render_plan.expected_floor_cells.duplicate(),
 		"removed_cells": working_topology.removed_cells.duplicate(),
+		"expected_battle_scene_path": expected_battle_scene_path,
+		"runtime_probe_key": runtime_probe_key,
 		"camera_mode": "STUDIO_MATCH",
 		"exact_run_content": exact_run_content,
 		"fixture_fallback": not exact_run_content,
@@ -132,6 +152,18 @@ static func prepare(
 	}
 	if not _write_json(REQUEST_PATH, request):
 		return _failed(context_root, "request_write_failed")
+	if not _write_json(LAST_RESULT_PATH, {
+		"ok": false,
+		"probe_pending": true,
+		"runtime_scene_inspected": false,
+		"working_fingerprint": working_fingerprint,
+		"working_topology_hash": working_topology.topology_hash,
+		"expected_battle_scene_path": expected_battle_scene_path,
+		"runtime_probe_key": runtime_probe_key,
+		"generation_id": generation_id,
+		"generated_at": request.created_at,
+	}):
+		return _failed(context_root, "pending_result_write_failed")
 	return {
 		"ok": true,
 		"request": request,
@@ -150,6 +182,8 @@ static func prepare(
 		"expected_floor_hash": str(render_plan.expected_floor_hash),
 		"expected_floor_cells": render_plan.expected_floor_cells.duplicate(),
 		"removed_cells": working_topology.removed_cells.duplicate(),
+		"expected_battle_scene_path": expected_battle_scene_path,
+		"runtime_probe_key": runtime_probe_key,
 		"generation_id": generation_id,
 		"produced_bundle_loaded": false,
 	}
@@ -160,6 +194,60 @@ static func load_last_result() -> Dictionary:
 		return {}
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(LAST_RESULT_PATH))
 	return parsed if parsed is Dictionary else {}
+
+
+static func matching_runtime_result(
+		arena: ArenaDefinition,
+		configuration: StringName = &""
+	) -> Dictionary:
+	if arena == null:
+		return {}
+	var result := load_last_result()
+	if not bool(result.get("ok", false)) \
+			or not bool(result.get("runtime_scene_inspected", false)) \
+			or bool(result.get("probe_pending", false)) \
+			or bool(result.get("produced_bundle_loaded", true)):
+		return {}
+	var battle_scene_path := (
+		arena.battle_scene.resource_path if arena.battle_scene != null else ""
+	)
+	var fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
+	var topology: Dictionary = ArenaTopologySignatureService.build(arena)
+	var topology_hash: String = str(topology.get("topology_hash", ""))
+	var result_configuration := StringName(result.get("configuration", &""))
+	var expected_key := probe_key(
+		fingerprint,
+		topology_hash,
+		battle_scene_path,
+		result_configuration if configuration == &"" else configuration
+	)
+	if str(result.get("working_fingerprint", "")) != fingerprint \
+			or str(result.get("runtime_fingerprint", "")) != fingerprint \
+			or str(result.get("runtime_topology_hash", "")) != topology_hash \
+			or str(result.get("battle_scene_path", result.get("scene_path", ""))) \
+				!= battle_scene_path \
+			or str(result.get("runtime_probe_key", "")) != expected_key:
+		return {}
+	if configuration != &"" and result_configuration != configuration:
+		return {}
+	return result
+
+
+static func probe_key(
+		arena_fingerprint: String,
+		topology_hash: String,
+		battle_scene_path: String,
+		configuration: StringName
+	) -> String:
+	return JSON.stringify({
+		"contract_version": CONTRACT_VERSION,
+		"engine": Engine.get_version_info().get("hash", ""),
+		"studio_product_version": StudioVersion.PRODUCT_VERSION,
+		"arena_fingerprint": arena_fingerprint,
+		"topology_hash": topology_hash,
+		"battle_scene_path": battle_scene_path,
+		"configuration": str(configuration),
+	}, "", true).sha256_text()
 
 
 static func cleanup_context(request: Dictionary) -> bool:

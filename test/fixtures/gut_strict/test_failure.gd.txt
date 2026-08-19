@@ -1,0 +1,6 @@
+extends GutTest
+
+
+func test_fixture_fails() -> void:
+	assert_true(false, "Echec volontaire de la fixture strict runner.")
+

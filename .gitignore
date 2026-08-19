@@ -4,7 +4,8 @@
 artifacts/*
 !artifacts/arena_studio/
 !artifacts/arena_studio/**
-output/
+output/*
+!output/.gdignore
 tests/characters/**/screenshots/
 *.blend1
 

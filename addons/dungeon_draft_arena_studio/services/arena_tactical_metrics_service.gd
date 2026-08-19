@@ -15,11 +15,13 @@ static func analyze(
 	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
-	var cache_key := ArenaSnapshotService.arena_fingerprint(arena)
-	if runtime_state == null and _cache.has(cache_key):
-		var cached := (_cache[cache_key] as Dictionary).duplicate(true)
-		cached["cache_hit"] = true
-		return cached
+	var cache_key := ""
+	if runtime_state == null:
+		cache_key = ArenaSnapshotService.arena_fingerprint(arena)
+		if _cache.has(cache_key):
+			var cached := (_cache[cache_key] as Dictionary).duplicate(true)
+			cached["cache_hit"] = true
+			return cached
 	var state := runtime_state if runtime_state != null \
 		else ArenaRuntimeProjectionService.build(arena)
 	if state == null or state.grid == null:

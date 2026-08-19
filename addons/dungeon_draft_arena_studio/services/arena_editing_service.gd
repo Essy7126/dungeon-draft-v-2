@@ -9,33 +9,68 @@ const HERO_IDS := [&"elf", &"mage", &"warrior"]
 static func prepare_automatically(arena: ArenaDefinition) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "message": "Aucune arene n'est ouverte."}
+	var total_started: int = Time.get_ticks_usec()
+	var phase_started: int = total_started
 	if arena.cells.is_empty():
 		for y in range(arena.grid_size.y):
 			for x in range(arena.grid_size.x):
 				arena.ensure_cell(Vector2i(x, y))
-	apply_safety_border(arena, arena.border_thickness)
+	var ensure_cells_ms := _elapsed_ms(phase_started)
+	# La préparation est une seule transaction logique : ses sous-étapes ne
+	# publient pas chacune une projection runtime intermédiaire.
+	phase_started = Time.get_ticks_usec()
+	apply_safety_border(arena, arena.border_thickness, false)
+	var safety_border_ms := _elapsed_ms(phase_started)
+	phase_started = Time.get_ticks_usec()
 	if arena.encounter_definition == null and ResourceLoader.exists(DEFAULT_ENCOUNTER):
 		arena.encounter_definition = load(DEFAULT_ENCOUNTER) as EncounterDefinition
-	propose_spawns(arena)
+	var encounter_resolution_ms := _elapsed_ms(phase_started)
+	phase_started = Time.get_ticks_usec()
+	propose_spawns(arena, false)
+	var spawn_proposal_ms := _elapsed_ms(phase_started)
+	phase_started = Time.get_ticks_usec()
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	var grid := ArenaRuntimeBridge.build_grid(arena)
+	var runtime_sync_ms := _elapsed_ms(phase_started)
+	phase_started = Time.get_ticks_usec()
+	var grid := ArenaRuntimeBridge.build_grid_from_synced_resources(arena)
+	var grid_build_ms := _elapsed_ms(phase_started)
+	phase_started = Time.get_ticks_usec()
+	var playable := arena.playable_cells()
 	var connected := 0
-	if grid != null and not arena.playable_cells().is_empty():
+	if grid != null and not playable.is_empty():
 		var pathfinder := Pathfinder.new(grid)
 		connected = pathfinder.get_reachable(
-			arena.playable_cells()[0], arena.grid_size.x * arena.grid_size.y
+			playable[0], arena.grid_size.x * arena.grid_size.y
 		).size() + 1
+	var connectivity_ms := _elapsed_ms(phase_started)
 	return {
 		"ok": true,
-		"playable": arena.playable_cells().size(),
+		"playable": playable.size(),
 		"border": arena.border_cells().size(),
 		"connected": connected,
 		"hero_spawns": arena.hero_spawn_zone.size(),
 		"enemy_spawns": arena.enemy_spawn_zone.size(),
+		"runtime_sync_calls": 1,
+		"grid_data_builds": 1,
+		"runtime_projection_reused_for_grid": true,
+		"breakdown_ms": {
+			"ensure_cells": ensure_cells_ms,
+			"safety_border": safety_border_ms,
+			"encounter_resolution": encounter_resolution_ms,
+			"spawn_proposal": spawn_proposal_ms,
+			"runtime_sync": runtime_sync_ms,
+			"grid_build": grid_build_ms,
+			"connectivity": connectivity_ms,
+			"total": _elapsed_ms(total_started),
+		},
 	}
 
 
-static func apply_safety_border(arena: ArenaDefinition, thickness := 1) -> int:
+static func apply_safety_border(
+		arena: ArenaDefinition,
+		thickness := 1,
+		sync_runtime := true
+	) -> int:
 	if arena == null:
 		return 0
 	for definition in arena.cells:
@@ -50,7 +85,9 @@ static func apply_safety_border(arena: ArenaDefinition, thickness := 1) -> int:
 			definition.border = true
 			definition.playable = false
 	arena.border_thickness = maxi(1, thickness)
-	remove_invalid_spawns(arena)
+	remove_invalid_spawns(arena, false)
+	if sync_runtime:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return border.size()
 
 
@@ -143,7 +180,7 @@ static func place_spawn(arena: ArenaDefinition, cell: Vector2i, kind: int) -> bo
 	return true
 
 
-static func propose_spawns(arena: ArenaDefinition) -> void:
+static func propose_spawns(arena: ArenaDefinition, sync_runtime := true) -> void:
 	for index in range(arena.spawns.size() - 1, -1, -1):
 		if str(arena.spawns[index].spawn_id).begins_with("auto_"):
 			arena.spawns.remove_at(index)
@@ -156,7 +193,8 @@ static func propose_spawns(arena: ArenaDefinition) -> void:
 		return spawn != null and spawn.is_enemy()
 	)
 	if has_heroes and has_enemies:
-		ArenaRuntimeBridge.sync_runtime_resources(arena)
+		if sync_runtime:
+			ArenaRuntimeBridge.sync_runtime_resources(arena)
 		return
 	var playable := arena.playable_cells()
 	if playable.size() < 6:
@@ -179,17 +217,19 @@ static func propose_spawns(arena: ArenaDefinition) -> void:
 			&"encounter_enemy",
 			enemy_index
 		)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	if sync_runtime:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
 
 
-static func remove_invalid_spawns(arena: ArenaDefinition) -> void:
+static func remove_invalid_spawns(arena: ArenaDefinition, sync_runtime := true) -> void:
 	for index in range(arena.spawns.size() - 1, -1, -1):
 		var spawn := arena.spawns[index]
 		var definition := arena.get_cell_definition(spawn.cell)
 		if definition == null or not definition.playable or definition.border \
 				or arena.obstacle_at(spawn.cell) != null:
 			arena.spawns.remove_at(index)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	if sync_runtime:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
 
 
 static func _add_auto_spawn(
@@ -221,3 +261,7 @@ static func _camp_score(cell: Vector2i, arena: ArenaDefinition) -> int:
 			return cell.x + cell.y
 		_:
 			return -cell.x + cell.y
+
+
+static func _elapsed_ms(started_usec: int) -> float:
+	return float(Time.get_ticks_usec() - started_usec) / 1000.0

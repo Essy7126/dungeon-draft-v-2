@@ -179,7 +179,9 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 		return false
 	var wanted_id := character_id
 	if wanted_id == &"":
-		var states := GameManager.get_ordered_character_states()
+		var states: Array[CharacterRunState] = (
+			GameManager.get_ordered_character_states()
+		)
 		if states.is_empty():
 			return false
 		wanted_id = states[0].character_id
@@ -319,7 +321,9 @@ func _on_inventory_requested(character_id: StringName) -> void:
 
 
 func _on_pause_equipment_requested() -> void:
-	var states := GameManager.get_ordered_character_states()
+	var states: Array[CharacterRunState] = (
+		GameManager.get_ordered_character_states()
+	)
 	if states.is_empty():
 		return
 	var character_id: StringName = states[0].character_id
@@ -365,7 +369,7 @@ func open_evolution_request(request: EvolutionRequest) -> bool:
 		_close_evolution_overlay_for_cleanup()
 		return false
 	evolution_feedback.hide()
-	var choice := GameManager.get_progression_choice_for_request(request)
+	var choice: Dictionary = GameManager.get_progression_choice_for_request(request)
 	if choice.is_empty() or (choice.get("choices", []) as Array).size() != 2:
 		_close_evolution_overlay_for_cleanup()
 		return false
@@ -384,7 +388,9 @@ func is_evolution_screen_active() -> bool:
 
 
 func _show_evolution_feedback(request: EvolutionRequest) -> void:
-	var character_state := GameManager.get_character_state(request.character_id)
+	var character_state: CharacterRunState = GameManager.get_character_state(
+		request.character_id
+	)
 	var character_name := str(request.character_id)
 	var discipline_name := str(request.discipline_id)
 	var emblem: Texture2D = null
@@ -436,7 +442,7 @@ func _on_skill_evolution_confirmation_requested(
 			"Cette évolution n’est plus active.",
 		)
 		return
-	var choice := GameManager.get_progression_choice_for_request(
+	var choice: Dictionary = GameManager.get_progression_choice_for_request(
 		_active_evolution_request
 	)
 	var upgrade_is_available := false
@@ -453,7 +459,7 @@ func _on_skill_evolution_confirmation_requested(
 			"Ce choix ne correspond plus à la branche active.",
 		)
 		return
-	var accepted := GameManager.choose_progression_upgrade(
+	var accepted: bool = GameManager.choose_progression_upgrade(
 		StringName(choice.get("character_id", &"")),
 		StringName(choice.get("discipline_id", &"")),
 		int(choice.get("rank", 0)),

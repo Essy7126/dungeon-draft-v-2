@@ -30,6 +30,7 @@ var combat_seed := 0
 var round_index := 1
 var _void_impulse_round_by_unit := {}
 var _electrified_trigger_by_unit := {}
+var _electrical_region_resolver := ElectricalTerrainRegionResolver.new()
 
 
 func _init(grid_data: GridData = null) -> void:
@@ -51,11 +52,13 @@ func configure(grid_data: GridData) -> void:
 	_vortex_relocation_guard.clear()
 	_void_impulse_round_by_unit.clear()
 	_electrified_trigger_by_unit.clear()
+	_electrical_region_resolver.reset()
 
 
 func configure_resolution_context(seed_value: int, current_round: int) -> void:
 	combat_seed = seed_value
 	round_index = maxi(1, current_round)
+	_electrical_region_resolver.begin_round(round_index)
 
 
 func capture_base_state(room_data = null, grid_data: GridData = null) -> Dictionary:
@@ -395,9 +398,7 @@ func resolve_unit_entry(
 		applied_effect.surface_id == &"electrified_water" \
 		or applied_terrain_id == &"electrified_water"
 	):
-		var shock_result := _resolve_electrified_shock(
-			unit, token, applied_effect.surface_id
-		)
+		var shock_result := _resolve_electrified_shock(unit, token, cell)
 		for key in shock_result:
 			result[key] = shock_result[key]
 	if not unit.is_alive:
@@ -758,21 +759,42 @@ func _apply_status_only_to_unit(
 func _resolve_electrified_shock(
 		unit: Unit,
 		token: StringName,
-		region_id: StringName
+		cell: Vector2i
 	) -> Dictionary:
+	_electrical_region_resolver.begin_round(round_index)
+	var region := _electrical_region_resolver.resolve_region(
+		cell, _electrified_cells()
+	)
+	var region_id := StringName(region.get("region_id", &""))
+	var lineage_tokens := region.get(
+		"lineage_tokens", PackedStringArray()
+	) as PackedStringArray
 	var result := {
 		"shock_applied": false,
 		"shock_region_id": region_id,
+		"shock_region_lineage": lineage_tokens,
 		"shock_round": round_index,
 	}
-	var unit_key := unit.get_instance_id()
-	var previous := _electrified_trigger_by_unit.get(unit_key, {}) as Dictionary
-	if int(previous.get("round", -1)) == round_index:
+	if not bool(region.get("ok", false)) or lineage_tokens.is_empty():
+		result["reason"] = &"electrical_region_unresolved"
 		result["shock_locked"] = true
 		return result
+	var unit_key := str(unit.unit_id) if unit.unit_id != &"" \
+		else "instance:%d" % unit.get_instance_id()
+	var previous := _electrified_trigger_by_unit.get(unit_key, {}) as Dictionary
+	var consumed := previous.get("regions", {}) as Dictionary
+	if int(previous.get("round", -1)) == round_index:
+		for lineage_token in lineage_tokens:
+			if consumed.has(lineage_token):
+				result["shock_locked"] = true
+				return result
+	else:
+		consumed = {}
+	for lineage_token in lineage_tokens:
+		consumed[lineage_token] = true
 	_electrified_trigger_by_unit[unit_key] = {
 		"round": round_index,
-		"region_id": region_id,
+		"regions": consumed,
 	}
 	result["shock_applied"] = true
 	var voluntary := str(token).begins_with("movement:")
@@ -795,6 +817,21 @@ func _resolve_electrified_shock(
 		round_index, region_id,
 	])
 	return result
+
+
+func _electrified_cells() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for cell in state_cells():
+		var state := get_state(cell)
+		if state == null:
+			continue
+		if state.is_dynamic():
+			if state.surface_id == &"electrified_water" \
+					or state.visual_terrain_id == &"electrified_water":
+				cells.append(cell)
+		elif state.base_terrain_id == &"electrified_water":
+			cells.append(cell)
+	return cells
 
 
 func _on_occupancy_changed(

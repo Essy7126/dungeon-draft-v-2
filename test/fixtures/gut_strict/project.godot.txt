@@ -1,0 +1,12 @@
+; Materialized as project.godot only inside an isolated temporary directory.
+config_version=5
+
+[application]
+
+config/name="Dungeon Draft GUT Strict Fixture"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+

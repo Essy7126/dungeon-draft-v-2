@@ -16,7 +16,9 @@ const COMPATIBLE_GENERATORS := [
 ]
 const DEFAULT_ROOT := "res://data/arenas/produced"
 const MANIFEST_FILE := "production_manifest.json"
-const GENERATOR_REVISION := 4
+const MANIFEST_SCHEMA_VERSION := 3
+const FINGERPRINT_ALGORITHM_ID := "arena_snapshot_canonical_json_sha256_v1"
+const GENERATOR_REVISION := 5
 
 
 static func suggested_destination(arena: ArenaDefinition) -> String:
@@ -26,7 +28,8 @@ static func suggested_destination(arena: ArenaDefinition) -> String:
 static func plan(
 		arena: ArenaDefinition,
 		destination := "",
-		graph: StudioReferenceGraphService = null
+		graph: StudioReferenceGraphService = null,
+		options: Dictionary = {}
 	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
@@ -104,6 +107,8 @@ static func plan(
 			"manual_test_performed": false,
 			"art_alignment_confirmed": true,
 			"destination_conflicts": conflicts,
+			"requires_runtime_scene": false,
+			"runtime_scene_result": options.get("runtime_scene_result", {}),
 		}
 	)
 	return {
@@ -113,7 +118,7 @@ static func plan(
 		"creates": creates,
 		"modifies": modifies,
 		"conflicts": conflicts,
-		"can_produce": bool(gate_report.ready_to_integrate) and conflicts.is_empty(),
+		"can_produce": bool(gate_report.ready_to_produce) and conflicts.is_empty(),
 		"visual_report": visual_report,
 		"automatic_runtime_smoke": automatic_smoke,
 		"topology_parity": topology_parity,
@@ -252,11 +257,19 @@ static func build_staged_bundle(
 		if FileAccess.file_exists(path):
 			hashes[name] = FileAccess.get_sha256(path)
 	var manifest := {
-		"version": 2,
+		"version": MANIFEST_SCHEMA_VERSION,
+		"manifest_schema_version": MANIFEST_SCHEMA_VERSION,
 		"studio_product_version": StudioVersion.PRODUCT_VERSION,
 		"generator_revision": GENERATOR_REVISION,
 		"generated_by": GENERATED_BY,
+		"complete": true,
 		"arena_id": str(reloaded.arena_id),
+		"fingerprint_algorithm_id": FINGERPRINT_ALGORITHM_ID,
+		"physical_file_hash": hashes.duplicate(true),
+		"logical_arena_fingerprint": produced_fingerprint,
+		"gameplay_fingerprint": gameplay_fingerprint,
+		# Compatibility aliases remain readable by older Studio builds. They are
+		# never used to conflate physical integrity with logical identity.
 		"source_fingerprint": ArenaSnapshotService.arena_fingerprint(arena),
 		"source_gameplay_fingerprint": ArenaSnapshotService.gameplay_fingerprint(arena),
 		"produced_fingerprint": produced_fingerprint,

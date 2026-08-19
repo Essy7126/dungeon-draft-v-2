@@ -14,6 +14,7 @@ enum WorkspaceMode {
 const TEST_RUNNER_SCENE := "res://addons/dungeon_draft_arena_studio/test/arena_studio_test_runner.tscn"
 const TEST_REQUEST := "user://arena_studio/test_request.json"
 const TEST_WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
+const GUIDED_PREVIEW_TIMEOUT_MS := 30_000
 const TERRAIN_SIM_FIREBALL := "res://data/spells/Mage/boule_de_feu.tres"
 const TERRAIN_SIM_ICE_WALL := "res://data/spells/mur_de_glace.tres"
 const TERRAIN_SIM_WATER := "res://data/terrain/eau.tres"
@@ -105,6 +106,8 @@ var last_operation_label: Label
 var restore_name_edit: LineEdit
 var restore_points_list: ItemList
 var restore_delete_dialog: ConfirmationDialog
+var recovery_restore_dialog: ConfirmationDialog
+var _pending_recovery_candidate: Dictionary = {}
 var _pending_restore_delete_path := ""
 var _pending_vortex_cell := GridTransformService.INVALID_CELL
 var quick_palette_buttons := {}
@@ -811,11 +814,29 @@ func _render_destination_plan(plan: Dictionary) -> void:
 	for path in affected_files:
 		lines.append("• %s" % path)
 	var gate := plan.get("gate_report", {}) as Dictionary
+	var readiness := plan.get("readiness_report") as ArenaReadinessReport
 	var resolution := plan.get("bundle_resolution", {}) as Dictionary
 	var blockers: Array = gate.get("blocking_errors", [])
 	var warnings: Array = gate.get("acknowledgement_warnings", [])
 	var unacknowledged := int(gate.get("unacknowledged_warning_count", 0))
 	lines.append("")
+	if readiness != null:
+		lines.append("[b]DONNÉES ARENA[/b] : %s — %s" % [
+			readiness.data_report.state_name(), readiness.data_report.summary,
+		])
+		lines.append("[b]RUNTIME[/b] : %s — %s" % [
+			readiness.runtime_scene_report.state_name(),
+			readiness.runtime_scene_report.summary,
+		])
+		lines.append("[b]PRODUCTION[/b] : %s — %s" % [
+			readiness.production_report.state_name(),
+			readiness.production_report.summary,
+		])
+		lines.append("[b]INTÉGRATION[/b] : %s — %s" % [
+			readiness.integration_report.state_name(),
+			readiness.integration_report.summary,
+		])
+		lines.append("")
 	if blockers.is_empty():
 		lines.append("[color=green][b]ARÈNE PRÊTE À INTÉGRER[/b][/color]")
 		lines.append("✓ Vérifications automatiques terminées")
@@ -961,10 +982,8 @@ func _integration_gate_options(
 	) -> Dictionary:
 	var fingerprint := ArenaSnapshotService.arena_fingerprint(candidate) \
 		if candidate != null else ""
-	var manual_result := ArenaDirectTestService.load_last_result()
-	var manual_performed := not manual_result.is_empty() \
-		and bool(manual_result.get("ok", false)) \
-		and str(manual_result.get("working_fingerprint", "")) == fingerprint
+	var manual_result := ArenaDirectTestService.matching_runtime_result(candidate)
+	var manual_performed := not manual_result.is_empty()
 	var run_conflict := target_run != null and run_authoring != null \
 		and run_authoring.is_dirty() \
 		and run_authoring.source_path == target_run.resource_path
@@ -973,6 +992,7 @@ func _integration_gate_options(
 		"accepted_warnings": edit_session.accepted_design_warnings(fingerprint) \
 			if edit_session != null else [],
 		"manual_test_performed": manual_performed,
+		"runtime_scene_result": manual_result,
 		"art_alignment_confirmed": false,
 		"external_source_conflict": edit_session != null \
 			and edit_session.has_external_conflict(),
@@ -1603,6 +1623,13 @@ func _build_dialogs() -> void:
 	restore_delete_dialog.ok_button_text = "Supprimer"
 	restore_delete_dialog.confirmed.connect(_confirm_delete_restore_point)
 	add_child(restore_delete_dialog)
+	recovery_restore_dialog = ConfirmationDialog.new()
+	recovery_restore_dialog.title = "RESTAURER LA RÉCUPÉRATION CONTEXTUELLE"
+	recovery_restore_dialog.ok_button_text = "Restaurer cette récupération"
+	recovery_restore_dialog.cancel_button_text = "Annuler"
+	recovery_restore_dialog.size = Vector2i(720, 460)
+	recovery_restore_dialog.confirmed.connect(_confirm_restore_recovery)
+	add_child(recovery_restore_dialog)
 
 	guided_tour = ArenaStudioGuidedTour.new()
 	add_child(guided_tour)
@@ -2918,12 +2945,14 @@ func validate_arena() -> ArenaValidationReport:
 		validation_list.add_item("%s — %s" % [prefix, entry.message])
 		validation_list.set_item_metadata(validation_list.item_count - 1, entry)
 	validation_title.text = "%s — %d erreur(s), %d avertissement(s)" % [
-		"Map prete" if validation_report.is_valid() else "Map a corriger",
+		"Donnees Arena valides" if validation_report.is_valid() \
+		else "Donnees Arena a corriger",
 		validation_report.error_count(), validation_report.warning_count(),
 	]
 	_set_status(
-		"Map prete." if validation_report.is_valid() \
-		else "La map ne peut pas etre testee : corrigez les erreurs affichees.",
+		"Donnees Arena valides. Le runtime reel reste un controle separe." \
+		if validation_report.is_valid() \
+		else "Les donnees Arena doivent etre corrigees avant le test runtime.",
 		not validation_report.is_valid()
 	)
 	return validation_report
@@ -2970,7 +2999,11 @@ func _refresh_production_targets() -> void:
 		if run_data.resource_path == active_path:
 			selected = production_run_option.item_count - 1
 	production_run_option.select(selected)
-	var destination_action := _selected_destination_action()
+	# "Aucune run" is a complete destination choice, not only a label. Keeping
+	# UPDATE selected with no run made the primary production action appear
+	# disabled even when the production-only gate was green.
+	var destination_action := ArenaProductionAttachmentService.NONE \
+		if selected == 0 else _selected_destination_action()
 	for index in range(production_action_option.item_count):
 		if StringName(production_action_option.get_item_metadata(index)) == destination_action:
 			production_action_option.select(index)
@@ -3084,6 +3117,7 @@ func _refresh_production_wizard() -> void:
 			target_label, action_label,
 		]
 	var gate := integration_plan.get("gate_report", {}) as Dictionary
+	var readiness := integration_plan.get("readiness_report") as ArenaReadinessReport
 	var gate_blockers: Array = gate.get("blocking_errors", [])
 	var gate_warnings: Array = gate.get("acknowledgement_warnings", [])
 	var validation_lines := PackedStringArray([
@@ -3094,6 +3128,12 @@ func _refresh_production_wizard() -> void:
 		],
 		"",
 	])
+	if readiness != null:
+		validation_lines.append("Données Arena : %s" % readiness.data_report.state_name())
+		validation_lines.append("Runtime : %s" % readiness.runtime_scene_report.state_name())
+		validation_lines.append("Production : %s" % readiness.production_report.state_name())
+		validation_lines.append("Intégration : %s" % readiness.integration_report.state_name())
+		validation_lines.append("")
 	if not gate_blockers.is_empty():
 		validation_lines.append("[color=red][b]Pourquoi l'intégration est-elle indisponible ?[/b][/color]")
 		for issue in gate_blockers:
@@ -3106,7 +3146,7 @@ func _refresh_production_wizard() -> void:
 			" — choix accepté" if accepted else "",
 		])
 	if gate_blockers.is_empty():
-		validation_lines.append("[color=green]✓ Le smoke runtime automatique et les contrôles techniques ont réussi.[/color]")
+		validation_lines.append("[color=green]✓ Projection, assemblage et scene runtime reelle verifies.[/color]")
 	production_validation_text.text = "\n".join(validation_lines)
 	production_preview_text.text = (
 		"[b]Même chaîne que le runtime[/b]\n\n"
@@ -3381,20 +3421,109 @@ func _perform_room_integration(
 	if edit_session.has_external_conflict():
 		_show_production_failure("La source a changé sur disque : intégration bloquée.")
 		return {"ok": false, "error": "external_conflict"}
+	var pipeline_files: Array = []
+	if target_run != null and not target_run.resource_path.is_empty():
+		pipeline_files.append(target_run.resource_path)
+	if not destination.is_empty():
+		pipeline_files.append(destination.path_join("arena.tres"))
+	var pipeline_fingerprints := {
+		"working_arena": ArenaSnapshotService.arena_fingerprint(candidate),
+		"working_gameplay": ArenaSnapshotService.gameplay_fingerprint(candidate),
+	}
+	var pipeline_monitor := ArenaGuidedPipelineDiagnosticsService.new({
+		"context": {
+			"arena_id": str(candidate.arena_id),
+			"run_path": target_run.resource_path if target_run != null else "",
+			"action": str(action),
+			"requested_index": target_index,
+			"destination": destination,
+			"source": "ArenaStudioMain",
+		},
+	})
+	pipeline_monitor.begin_step(
+		&"UI_GATE_PLAN", {}, pipeline_files, pipeline_fingerprints,
+		pipeline_monitor.timeout_for(&"UI_GATE_PLAN")
+	)
 	var gate_options := _integration_gate_options(candidate, target_run)
 	var final_plan := ArenaIntegrationService.plan(
 		candidate, target_run, action, target_index, destination,
 		shared_reference_graph, gate_options
 	)
+	var ui_plan_checkpoint := pipeline_monitor.end_step(
+		&"UI_GATE_PLAN",
+		bool(final_plan.get("can_integrate", false)),
+		"integration_gate_blocked" \
+			if not bool(final_plan.get("can_integrate", false)) else "",
+		{"affected_files": final_plan.get("affected_files", [])}
+	)
+	if bool(ui_plan_checkpoint.get("timed_out", false)) \
+			or bool(ui_plan_checkpoint.get("interrupted", false)):
+		_show_production_failure(
+			"Le calcul du plan d'intégration a dépassé son délai. Diagnostic : %s" \
+			% ui_plan_checkpoint.get("diagnostic_dump_path", "")
+		)
+		return {
+			"ok": false,
+			"error": ui_plan_checkpoint.get("error", "ui_gate_plan_timeout"),
+			"plan": final_plan,
+			"pipeline": pipeline_monitor.summary(),
+		}
 	if not bool(final_plan.get("can_integrate", false)):
 		_show_production_failure("Intégration impossible : %s" % _gate_blocking_text(
 			final_plan
 		))
-		return {"ok": false, "error": "integration_gate_blocked", "plan": final_plan}
-	var preview_images: Dictionary = await _capture_runtime_preview_images(candidate)
+		return {
+			"ok": false,
+			"error": "integration_gate_blocked",
+			"plan": final_plan,
+			"pipeline": pipeline_monitor.summary(),
+		}
+	pipeline_monitor.begin_step(
+		&"PREVIEW_CAPTURE", {}, pipeline_files, pipeline_fingerprints,
+		pipeline_monitor.timeout_for(&"PREVIEW_CAPTURE")
+	)
+	var preview_result: Dictionary = await _capture_runtime_preview_images(
+		candidate, pipeline_monitor,
+		pipeline_monitor.timeout_for(&"PREVIEW_CAPTURE")
+	)
+	if not bool(preview_result.get("ok", false)):
+		pipeline_monitor.request_interrupt(
+			str(preview_result.get("error", "preview_capture_failed"))
+		)
+	var preview_checkpoint := pipeline_monitor.end_step(
+		&"PREVIEW_CAPTURE",
+		bool(preview_result.get("ok", false)),
+		str(preview_result.get("error", "preview_capture_failed")) \
+			if not bool(preview_result.get("ok", false)) else "",
+		{
+			"captured_files": (preview_result.get("images", {}) as Dictionary).keys(),
+			"failed_view": preview_result.get("failed_view", ""),
+		}
+	)
+	if not bool(preview_checkpoint.get("ok", false)):
+		if str(preview_checkpoint.get("diagnostic_dump_path", "")).is_empty():
+			pipeline_monitor.dump_diagnostic(
+				str(preview_checkpoint.get("error", "preview_capture_failed")),
+				{"preview_result": preview_result}
+			)
+		_show_production_failure(
+			"La capture de preview n'a pas atteint render_ready. Diagnostic : %s" \
+			% pipeline_monitor.diagnostic_dump_path
+		)
+		return {
+			"ok": false,
+			"error": preview_checkpoint.get("error", "preview_capture_failed"),
+			"plan": final_plan,
+			"preview": preview_result,
+			"pipeline": pipeline_monitor.summary(),
+		}
+	var preview_images: Dictionary = preview_result.get("images", {}) as Dictionary
 	var integration := ArenaIntegrationService.integrate_with_options(
 		candidate, target_run, action, target_index, destination,
-		shared_reference_graph, preview_images, {"gate_options": gate_options}
+		shared_reference_graph, preview_images, {
+			"gate_options": gate_options,
+			"pipeline_monitor": pipeline_monitor,
+		}
 	)
 	if not bool(integration.get("ok", false)):
 		var production := integration.get("production", {}) as Dictionary
@@ -3495,12 +3624,17 @@ func _perform_room_integration(
 	return integration
 
 
-func _capture_runtime_preview_images(candidate: ArenaDefinition) -> Dictionary:
+func _capture_runtime_preview_images(
+		candidate: ArenaDefinition,
+		monitor: ArenaGuidedPipelineDiagnosticsService = null,
+		timeout_ms := GUIDED_PREVIEW_TIMEOUT_MS
+	) -> Dictionary:
 	var images := {}
 	if runtime_preview == null or candidate == null:
-		return images
+		return {"ok": true, "images": images, "render_ready": false}
 	var original_arena := arena
 	var original_view := preview_view
+	var deadline_msec := Time.get_ticks_msec() + maxi(1, timeout_ms)
 	for entry in [
 		["preview_logic.png", ArenaRuntimePreview.ViewMode.LOGIC],
 		["preview_art.png", ArenaRuntimePreview.ViewMode.ART],
@@ -3510,7 +3644,23 @@ func _capture_runtime_preview_images(candidate: ArenaDefinition) -> Dictionary:
 		runtime_preview.set_arena(candidate)
 		runtime_preview.rebuild_now()
 		await get_tree().process_frame
-		await RenderingServer.frame_post_draw
+		if monitor != null:
+			monitor.record_signal(&"SceneTree.process_frame", {"view": str(entry[0])})
+		var remaining_ms := deadline_msec - Time.get_ticks_msec()
+		var frame_result: Dictionary = await _wait_for_preview_frame(
+			maxi(1, remaining_ms), monitor, str(entry[0])
+		)
+		if not bool(frame_result.get("ok", false)) \
+				or Time.get_ticks_msec() >= deadline_msec:
+			_restore_runtime_preview_after_capture(original_arena, original_view)
+			return {
+				"ok": false,
+				"error": "preview_frame_timeout",
+				"failed_view": entry[0],
+				"images": images,
+				"render_ready": false,
+				"frame_result": frame_result,
+			}
 		if runtime_preview.viewport != null:
 			var image := runtime_preview.viewport.get_texture().get_image()
 			if image != null and not image.is_empty():
@@ -3522,9 +3672,55 @@ func _capture_runtime_preview_images(candidate: ArenaDefinition) -> Dictionary:
 	images["map_logic.png"] = images.get("preview_logic.png")
 	images["map_grid.png"] = images.get("preview_logic.png")
 	images["map_game_preview.png"] = images.get("preview_game.png")
+	_restore_runtime_preview_after_capture(original_arena, original_view)
+	return {
+		"ok": true,
+		"images": images,
+		"render_ready": images.has("preview_game.png"),
+	}
+
+
+func _wait_for_preview_frame(
+		timeout_ms: int,
+		monitor: ArenaGuidedPipelineDiagnosticsService,
+		view_name: String
+	) -> Dictionary:
+	var state := {"received": false}
+	var callback := func() -> void:
+		state["received"] = true
+		if monitor != null:
+			monitor.record_signal(
+				&"RenderingServer.frame_post_draw", {"view": view_name}
+			)
+	RenderingServer.frame_post_draw.connect(callback, CONNECT_ONE_SHOT)
+	var started_msec := Time.get_ticks_msec()
+	var deadline_msec := started_msec + maxi(1, timeout_ms)
+	while not bool(state.received) and Time.get_ticks_msec() < deadline_msec:
+		var remaining_seconds := float(
+			deadline_msec - Time.get_ticks_msec()
+		) / 1000.0
+		await get_tree().create_timer(
+			minf(0.05, maxf(0.001, remaining_seconds)), true, false, true
+		).timeout
+	if not bool(state.received) \
+			and RenderingServer.frame_post_draw.is_connected(callback):
+		RenderingServer.frame_post_draw.disconnect(callback)
+	return {
+		"ok": bool(state.received),
+		"signal": "RenderingServer.frame_post_draw",
+		"view": view_name,
+		"duration_ms": Time.get_ticks_msec() - started_msec,
+	}
+
+
+func _restore_runtime_preview_after_capture(
+		original_arena: ArenaDefinition,
+		original_view: int
+	) -> void:
+	if runtime_preview == null:
+		return
 	runtime_preview.set_view_mode(original_view)
 	runtime_preview.set_arena(original_arena)
-	return images
 
 
 func _show_production_failure(message: String) -> void:
@@ -3677,10 +3873,34 @@ func copy_report_for_codex() -> void:
 
 
 func restore_latest_recovery() -> void:
-	var files := ArenaSerializer.recovery_files()
-	if files.is_empty():
+	var selection := ArenaRecoveryContextSelectionService.scan(
+		_recovery_context()
+	)
+	if not bool(selection.get("ok", false)):
+		_set_status(
+			"Aucune récupération compatible avec l’arène et le contexte actifs.",
+			true
+		)
 		return
-	var restored := ArenaSerializer.load_recovery(files[files.size() - 1])
+	_pending_recovery_candidate = (
+		selection.get("selected", {}) as Dictionary
+	).duplicate(true)
+	recovery_restore_dialog.dialog_text = (
+		"Vérifiez la provenance avant restauration. Aucune récupération étrangère "
+		+ "n’est appliquée automatiquement.\n\n"
+		+ ArenaRecoveryContextSelectionService.describe(
+			_pending_recovery_candidate
+		)
+	)
+	recovery_restore_dialog.popup_centered(Vector2i(720, 460))
+
+
+func _confirm_restore_recovery() -> void:
+	if _pending_recovery_candidate.is_empty():
+		return
+	var path := str(_pending_recovery_candidate.get("path", ""))
+	_pending_recovery_candidate.clear()
+	var restored := ArenaSerializer.load_recovery(path)
 	if restored != null:
 		if edit_session != null and arena != null \
 				and restored.arena_id == arena.arena_id:
@@ -3696,6 +3916,8 @@ func restore_latest_recovery() -> void:
 		else:
 			_set_arena(restored, true, "recovery:%s" % restored.arena_id)
 		_set_status("Sauvegarde de recuperation restauree. Utilisez Sauvegarder pour la rendre canonique.")
+	else:
+		_set_status("La récupération sélectionnée est devenue illisible.", true)
 
 
 func create_restore_point() -> void:
@@ -4163,8 +4385,25 @@ func _autosave() -> void:
 
 func _flush_recovery() -> void:
 	if arena != null and dirty:
-		ArenaSerializer.save_recovery(arena)
+		ArenaSerializer.save_recovery(arena, _recovery_context())
 	_refresh_recovery_button()
+
+
+func _recovery_context() -> Dictionary:
+	var context := {
+		"domain": &"arena",
+		"arena_id": str(arena.arena_id) if arena != null else "",
+		"source": edit_session.source_path if edit_session != null else "",
+		"transaction": "arena_autosave",
+		"status": "RECOVERABLE",
+	}
+	if project_context != null:
+		var snapshot := project_context.snapshot()
+		for key in [
+			"run_path", "run_name", "room_path", "room_name", "room_index",
+		]:
+			context[key] = snapshot.get(key)
+	return context
 
 
 func _refresh_all(sync_runtime := true) -> void:
@@ -4801,7 +5040,11 @@ func _on_validation_item_selected(index: int) -> void:
 
 func _refresh_recovery_button() -> void:
 	if recovery_button != null:
-		recovery_button.visible = not ArenaSerializer.recovery_files().is_empty()
+		recovery_button.visible = bool(
+			ArenaRecoveryContextSelectionService.scan(_recovery_context()).get(
+				"ok", false
+			)
+		)
 
 
 func _export_previews(directory: String) -> void:

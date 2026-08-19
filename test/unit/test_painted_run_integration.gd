@@ -5,13 +5,13 @@ const RUN_PATH := "res://data/runs/first_run.tres"
 const RESULT_PATH := "res://ui/RunResultScreen.tscn"
 const POST_COMBAT_PATH := "res://ui/post_combat/PostCombatScreen.tscn"
 const PAINTED_SCENE := "res://data/rooms/maps/painted_battle.tscn"
+const CAPTURE_DIR := "user://arena_reliability/painted_pool"
 const ROOM_PATHS := [
 	"res://data/rooms/first_run_room_01.tres",
 	"res://data/rooms/room_05_volcano.tres",
 	"res://data/rooms/room_06_space.tres",
 ]
-const EXPECTED_RUN := [
-	"res://data/rooms/first_run_room_01.tres",
+const EXPECTED_RUN_TAIL := [
 	"res://data/rooms/first_run_room_02.tres",
 	"res://data/rooms/first_run_room_03.tres",
 	"res://data/rooms/first_run_room_04_boss.tres",
@@ -20,39 +20,93 @@ const EXPECTED_RUN := [
 ]
 const IMAGE_CONTRACTS := [
 	{
-		"source": "res://artifacts/maps/pool_map/map_foret_v2.jpg",
 		"production": "res://asset/map/painted/room_01_forest/forest_background_v2.webp",
+		"output": "map_foret_v2.png",
 		"sha256": "d0b17944c945431ee1bf4e3394055062e8502a08ab7d654b792a2b9b3d6af098",
 	},
 	{
-		"source": "res://artifacts/maps/pool_map/map_lave_v2.jpg",
 		"production": "res://asset/map/painted/room_05_volcano/volcano_background_v2.jpg",
+		"output": "map_lave_v2.png",
 		"sha256": "68053a810ea874f04eb61e1fe9b1ca219e96480ebcb8ddb69599dd00435cf235",
 	},
 	{
-		"source": "res://artifacts/maps/pool_map/map_espace.jpg",
 		"production": "res://asset/map/painted/room_06_space/space_background_source.jpg",
+		"output": "map_espace.png",
 		"sha256": "07a4990b46169a11e2cb31ebc20db710b8dc29fa2591b23e59400a03fcf63629",
 	},
 ]
 
 
-func test_pool_et_copies_de_production_sont_bit_a_bit_identiques() -> void:
+func test_assets_canoniques_generent_les_captures_pool_sous_user() -> void:
 	for contract in IMAGE_CONTRACTS:
-		assert_true(FileAccess.file_exists(contract.source), contract.source)
 		assert_true(FileAccess.file_exists(contract.production), contract.production)
-		assert_eq(FileAccess.get_sha256(contract.source), contract.sha256)
 		assert_eq(FileAccess.get_sha256(contract.production), contract.sha256)
 		var texture := load(contract.production) as Texture2D
 		assert_not_null(texture)
 		assert_eq(texture.get_size(), Vector2(1376, 768))
+		var image := Image.load_from_file(ProjectSettings.globalize_path(
+			contract.production
+		))
+		assert_not_null(image)
+		assert_false(image.is_empty(), contract.production)
+		var fingerprint := FileAccess.get_sha256(contract.production)
+		var report := ArenaCaptureContentService.write_and_validate(
+			image,
+			CAPTURE_DIR.path_join(contract.output),
+			{
+				"render_ready": texture != null and not image.is_empty(),
+				"document_loaded": true,
+				"document_id": contract.production,
+				"expected_document_id": contract.production,
+				"document_fingerprint": fingerprint,
+				"expected_document_fingerprint": contract.sha256,
+				"expected_dimensions": Vector2i(1376, 768),
+				"canvas_rect": Rect2i(0, 0, 1376, 768),
+				"background_color": image.get_pixel(0, 0),
+				"minimum_variance": 0.00005,
+				"minimum_non_background_ratio": 0.01,
+				"minimum_file_size_bytes": 1024,
+				"expected_visual_signature": (
+					ArenaCaptureContentService.visual_signature(image)
+				),
+			}
+		)
+		assert_true(report.ok, JSON.stringify(report.to_dict()))
+		assert_true(report.report_written)
 
 
 func test_run_contient_exactement_six_salles_et_aucune_salle_sept() -> void:
 	var run := load(RUN_PATH) as RunData
 	assert_not_null(run)
 	assert_eq(run.rooms.size(), 6)
-	assert_eq(run.rooms.map(func(room): return room.resource_path), EXPECTED_RUN)
+	var room_paths := run.rooms.map(func(room): return room.resource_path)
+	assert_eq(room_paths.slice(1), EXPECTED_RUN_TAIL)
+	var first_room_path := str(room_paths[0])
+	var first_is_run_owned := ArenaRunOwnedRoomPathPolicy.is_run_owned_path(
+		first_room_path, run
+	)
+	var first_is_produced := (
+		ArenaRunOwnedRoomPathPolicy.is_produced_bundle_resource(first_room_path)
+	)
+	assert_true(
+		first_is_run_owned or first_is_produced,
+		"RUN_ROOM_0_OWNERSHIP_UNCLASSIFIED:%s" % first_room_path
+	)
+	if first_is_produced:
+		# Etat historique explicitement classe : il reste bloquant tant que la
+		# migration officielle gelee n'a pas materialise la copie run-specific.
+		assert_false(
+			first_is_produced,
+			"BLOCKING_DIVERGENCE_RUN_ROOM_0_STILL_IN_PRODUCED:%s" % first_room_path
+		)
+	else:
+		assert_true(first_is_run_owned, first_room_path)
+	var gameplay_reference := load(ROOM_PATHS[0]) as RoomData
+	assert_not_null(gameplay_reference)
+	assert_eq(
+		RoomDataSnapshotService.gameplay_fingerprint(run.rooms[0]),
+		RoomDataSnapshotService.gameplay_fingerprint(gameplay_reference)
+	)
 	assert_eq(run.rooms[0].painted_map_visual_data.map_id, &"room_01_forest")
 	assert_eq(run.rooms[4].painted_map_visual_data.map_id, &"room_05_volcano")
 	assert_eq(run.rooms[5].painted_map_visual_data.map_id, &"room_06_space")

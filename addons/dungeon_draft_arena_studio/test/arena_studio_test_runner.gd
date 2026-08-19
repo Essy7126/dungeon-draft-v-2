@@ -49,6 +49,23 @@ func _ready() -> void:
 		_cleanup_temporary_request(request)
 		get_tree().quit(9)
 		return
+	var expected_battle_scene_path := str(request.get(
+		"expected_battle_scene_path", ""
+	))
+	var actual_battle_scene_path := (
+		arena.battle_scene.resource_path if arena.battle_scene != null else ""
+	)
+	if int(request.get("contract_version", 0)) >= 4 \
+			and (expected_battle_scene_path.is_empty() \
+			or expected_battle_scene_path != actual_battle_scene_path \
+			or not ResourceLoader.exists(actual_battle_scene_path)):
+		provenance["expected_battle_scene_path"] = expected_battle_scene_path
+		provenance["battle_scene_path"] = actual_battle_scene_path
+		_write_launch_result(request, false, arena, provenance)
+		push_error("Arena Studio : la scene de bataille attendue ne correspond pas a la working copy.")
+		_cleanup_temporary_request(request)
+		get_tree().quit(10)
+		return
 	if bool(provenance.get("produced_bundle_loaded", false)):
 		_write_launch_result(request, false, arena, provenance)
 		push_error(
@@ -160,7 +177,11 @@ func _write_launch_result(
 	if file != null:
 		var payload := provenance.duplicate(true)
 		payload.merge({
-			"ok": started,
+			# Un lancement accepte n'est pas encore une preuve runtime. Seul le
+			# probe de la scene reelle peut remplacer ce resultat par PASS.
+			"ok": false,
+			"launch_started": started,
+			"probe_pending": started,
 			"arena_id": str(arena.arena_id),
 			"configuration": str(request.get("configuration", "")),
 			"applied_mode": str(get_tree().get_meta(
@@ -168,6 +189,7 @@ func _write_launch_result(
 			).get("applied_mode", "")),
 			"working_copy": true,
 			"runtime_scene_inspected": false,
+			"error": "" if started else "runtime_launch_refused",
 		}, true)
 		file.store_string(JSON.stringify(payload, "  "))
 		file.close()
@@ -247,6 +269,16 @@ func _provenance(
 		"request_consumed_once": bool(request.get("request_consumed_once", false)),
 		"produced_bundle_loaded": produced_loaded,
 		"camera_mode": str(request.get("camera_mode", "")),
+		"configuration": str(request.get("configuration", "")),
+		"expected_battle_scene_path": str(request.get(
+			"expected_battle_scene_path", ""
+		)),
+		"battle_scene_path": (
+			arena.battle_scene.resource_path if arena.battle_scene != null else ""
+		),
+		"runtime_probe_key": str(request.get("runtime_probe_key", "")),
+		"probe_only": bool(request.get("probe_only", false)),
+		"quit_after_probe": bool(request.get("quit_after_probe", false)),
 		"contract_version": int(request.get("contract_version", 0)),
 		"generated_at": str(request.get("created_at", "")),
 	}

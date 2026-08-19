@@ -201,18 +201,28 @@ func test_fingerprint_caches_hit_and_invalidate_after_semantic_change() -> void:
 	assert_false(first_validation.get_meta("cache_hit"))
 	assert_true(second_validation.get_meta("cache_hit"))
 	ArenaTerrainRegistry.configure_cell(arena.ensure_cell(Vector2i(2, 2)), &"water")
-	assert_false(ArenaTerrainRenderPlanService.build(arena).cache_hit)
-	assert_false(ArenaTacticalMetricsService.analyze(arena).cache_hit)
-	assert_false(ArenaValidator.validate(arena, false).get_meta("cache_hit"))
+	var changed_plan := ArenaTerrainRenderPlanService.build(arena)
+	var changed_metrics := ArenaTacticalMetricsService.analyze(arena)
+	var changed_validation := ArenaValidator.validate(arena, false)
+	assert_false(changed_plan.cache_hit)
+	assert_false(changed_metrics.cache_hit)
+	assert_false(changed_validation.get_meta("cache_hit"))
+	assert_true(changed_validation.metrics.terrains.has("water"))
 
 
 func test_performance_service_emits_threshold_and_cycle_report() -> void:
 	var report := ArenaStudioPerformanceService.benchmark_fixture(Vector2i(4, 4), 2)
 	assert_true(report.ok, str(report))
+	assert_true(report.measurement_valid, str(report))
+	assert_true(report.measurement_only)
+	assert_null(report.slo_pass)
+	assert_eq(report.verdict, "MEASUREMENT_ONLY")
 	assert_eq(report.cycle_count, 2)
 	assert_has(report, "memory_delta_bytes")
 	assert_has(report, "object_delta")
 	assert_has(report, "thresholds_pass")
+	assert_true((report.thresholds_pass as Dictionary).is_empty())
+	assert_has(report, "breakdown")
 	assert_eq(report.camera_probe.position, Vector2(125, -62.5))
 
 

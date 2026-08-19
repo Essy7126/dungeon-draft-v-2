@@ -1,0 +1,6 @@
+extends GutTest
+
+
+func test_fixture_has_a_parse_error() -> void
+	assert_true(true, "Cette ligne ne doit jamais etre executee.")
+

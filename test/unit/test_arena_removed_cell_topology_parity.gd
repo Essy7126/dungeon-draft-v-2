@@ -297,7 +297,12 @@ func test_direct_test_uses_new_generation_and_identical_topology_hashes() -> voi
 	if not first.get("ok", false):
 		return
 	_direct_requests.append(first.request)
-	assert_eq(first.request.contract_version, 3)
+	assert_eq(first.request.contract_version, 4)
+	assert_eq(
+		first.request.expected_battle_scene_path,
+		arena.battle_scene.resource_path
+	)
+	assert_false(str(first.request.runtime_probe_key).is_empty())
 	assert_eq(first.working_topology_hash, first.temporary_topology_hash)
 	assert_eq(first.working_topology_hash, first.runtime_topology_hash)
 	assert_eq(first.expected_floor_hash, ArenaTopologySignatureService.hash_keys(
@@ -351,6 +356,7 @@ func test_production_certificate_topology_gate_blocks_any_set_divergence() -> vo
 	certificate.preview_art_valid = true
 	certificate.preview_game_valid = true
 	certificate.runtime_test_valid = true
+	certificate.automatic_runtime_smoke_valid = true
 	certificate.expected_tiles = 1
 	certificate.rendered_tiles = 1
 	certificate.expected_walls = 0
@@ -366,9 +372,47 @@ func test_production_certificate_topology_gate_blocks_any_set_divergence() -> vo
 	certificate.expected_floor_hash = "floor"
 	certificate.rendered_floor_hash = "floor"
 	certificate.topology_gate_valid = true
+	certificate.readiness_report = ArenaReadinessService.build(null, {
+		"data_report": _passing_readiness_section(&"DATA_VALID"),
+		"visual_report": _passing_readiness_section(&"VISUAL_VALID"),
+		"runtime_scene_report": _passing_runtime_result(),
+		"production_plan": {"ok": true, "can_produce": true},
+		"integration_plan": {"ok": true, "can_integrate": true},
+	})
 	assert_true(certificate.recompute_ready())
 	certificate.unexpected_cells = ["4,4"]
 	assert_false(certificate.recompute_ready())
+
+
+func _passing_readiness_section(code: StringName) -> ArenaReadinessSection:
+	var section := ArenaReadinessSection.new()
+	section.state = ArenaReadinessSection.State.PASS
+	section.code = code
+	return section
+
+
+func _passing_runtime_result() -> Dictionary:
+	return {
+		"ok": true,
+		"runtime_scene_inspected": true,
+		"battle_scene_path": "res://battle/painted/painted_battle.tscn",
+		"script_parse_ok": true,
+		"scene_instantiated": true,
+		"runtime_ready": true,
+		"grid_ready": true,
+		"pathfinder_ready": true,
+		"render_ready": true,
+		"spawn_ready": true,
+		"produced_bundle_loaded": false,
+		"working_fingerprint": "same",
+		"temporary_fingerprint": "same",
+		"runtime_fingerprint": "same",
+		"fingerprints_identical": true,
+		"working_topology_hash": "same",
+		"temporary_topology_hash": "same",
+		"runtime_topology_hash": "same",
+		"topology_hashes_identical": true,
+	}
 
 
 func _empty_modular_arena(size: Vector2i) -> ArenaDefinition:

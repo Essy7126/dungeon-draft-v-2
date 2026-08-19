@@ -98,10 +98,20 @@ static func build(
 	)
 	var current_runtime_result := runtime_result as Dictionary \
 		if runtime_result is Dictionary else {}
+	var expected_battle_scene_path := (
+		arena.battle_scene.resource_path if arena.battle_scene != null else ""
+	)
 	var runtime_result_matches := not current_runtime_result.is_empty() \
+		and bool(current_runtime_result.get("ok", false)) \
+		and bool(current_runtime_result.get("runtime_scene_inspected", false)) \
+		and not bool(current_runtime_result.get("probe_pending", false)) \
+		and not bool(current_runtime_result.get("produced_bundle_loaded", true)) \
 		and str(current_runtime_result.get("working_fingerprint", "")) \
 			== certificate.arena_fingerprint \
-		and bool(current_runtime_result.get("fingerprints_identical", false))
+		and bool(current_runtime_result.get("fingerprints_identical", false)) \
+		and str(current_runtime_result.get(
+			"battle_scene_path", current_runtime_result.get("scene_path", "")
+		)) == expected_battle_scene_path
 	var runtime_topology_matches := runtime_result_matches \
 		and bool(current_runtime_result.get("topology_hashes_identical", false)) \
 		and str(current_runtime_result.get("working_topology_hash", "")) \
@@ -130,9 +140,7 @@ static func build(
 	certificate.manual_test_performed = bool(options.get(
 		"manual_test_performed", runtime_result_matches
 	))
-	certificate.runtime_test_valid = bool(options.get(
-		"runtime_test_valid", certificate.automatic_runtime_smoke_valid
-	))
+	certificate.runtime_test_valid = runtime_result_matches
 	if runtime_result_matches:
 		certificate.runtime_test_result_path = ArenaDirectTestService.LAST_RESULT_PATH
 		certificate.runtime_test_fingerprint = str(
@@ -149,6 +157,29 @@ static func build(
 	var destination := ArenaBundleInspectionService.inspect(target_bundle_path)
 	certificate.destination_conflict_state = StringName(destination.get("state", "UNKNOWN"))
 	certificate.destination_fingerprint = _destination_fingerprint(destination)
+	var destination_safe := certificate.destination_conflict_state \
+		not in ArenaIntegrationGatePolicy.BLOCKING_DESTINATION_STATES
+	var production_ready := certificate.validation_errors.is_empty() \
+		and visual.valid and destination_safe and certificate.coverage_gate_valid
+	var integration_ready := production_ready and runtime_result_matches \
+		and certificate.topology_gate_valid and certificate.pathfinding_valid \
+		and certificate.spawn_contract_valid
+	certificate.readiness_report = ArenaReadinessService.build(arena, {
+		"data_report": validation,
+		"topology_report": floor_parity,
+		"visual_report": visual,
+		"runtime_scene_report": current_runtime_result,
+		"production_plan": {
+			"ok": true,
+			"can_produce": production_ready,
+			"errors": [] if production_ready else ["production_gate_failed"],
+		},
+		"integration_plan": {
+			"ok": true,
+			"can_integrate": integration_ready,
+			"errors": [] if integration_ready else ["integration_gate_failed"],
+		},
+	})
 	certificate.recompute_ready()
 	return certificate
 

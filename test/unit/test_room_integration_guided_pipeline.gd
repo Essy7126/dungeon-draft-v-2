@@ -5,13 +5,24 @@ const MAIN_RUN_PATH := "res://data/runs/first_run.tres"
 const MAIN_ROOM_PATH := "res://data/rooms/first_run_room_01.tres"
 const TEST_ROOM_PATH := "res://data/rooms/test_waves/first_run_room_01_waves.tres"
 
+var _runtime_result_existed_before_suite := false
+var _runtime_result_before_suite := ""
+
 
 func before_all() -> void:
+	_runtime_result_existed_before_suite = FileAccess.file_exists(
+		ArenaDirectTestService.LAST_RESULT_PATH
+	)
+	if _runtime_result_existed_before_suite:
+		_runtime_result_before_suite = FileAccess.get_file_as_string(
+			ArenaDirectTestService.LAST_RESULT_PATH
+		)
 	_remove_tree(ROOT)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(ROOT))
 
 
 func after_all() -> void:
+	_restore_runtime_result_fixture()
 	_remove_tree(ROOT)
 
 
@@ -250,17 +261,21 @@ func test_one_click_service_produces_updates_reloads_and_journals_fixture() -> v
 		run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RunData
 	var arena := _arena_fixture("one_click_arena")
+	var runtime_proof := _fixture_runtime_scene_contract_proof(arena)
 	var production_destination := directory.path_join("production")
 	var plan := ArenaIntegrationService.plan(
 		arena, canonical, ArenaProductionAttachmentService.UPDATE, 0,
-		production_destination
+		production_destination, null,
+		{"runtime_scene_result": runtime_proof}
 	)
 	assert_true(plan.ok, str(plan))
 	assert_true(plan.can_integrate, str(plan.run_validation_errors))
 	assert_true(plan.preserved_gameplay)
-	var result := ArenaIntegrationService.integrate(
+	var result := ArenaIntegrationService.integrate_with_options(
 		arena, canonical, ArenaProductionAttachmentService.UPDATE, 0,
-		production_destination
+		production_destination, null, {}, {
+			"gate_options": {"runtime_scene_result": runtime_proof},
+		}
 	)
 	assert_true(result.ok, str(result))
 	assert_eq(result.status, &"ROOM_INTEGRATED")
@@ -312,11 +327,17 @@ func test_combined_transaction_failure_before_attachment_leaves_run_and_bundle_u
 	var run_before := FileAccess.get_sha256(run_path)
 	var room_before := FileAccess.get_sha256(target_path)
 	var production_destination := directory.path_join("production")
+	var arena := _arena_fixture("atomic_before")
 	var result := ArenaIntegrationService.integrate_with_options(
-		_arena_fixture("atomic_before"),
+		arena,
 		ResourceLoader.load(run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP),
 		ArenaProductionAttachmentService.UPDATE, 0, production_destination,
-		null, {}, {"failure_step": "before_attachment"}
+		null, {}, {
+			"failure_step": "before_attachment",
+			"gate_options": {
+				"runtime_scene_result": _fixture_runtime_scene_contract_proof(arena),
+			},
+		}
 	)
 	assert_false(result.ok, str(result))
 	assert_eq(result.status, &"INTEGRATION_ROLLED_BACK")
@@ -343,11 +364,17 @@ func test_combined_transaction_failure_after_attachment_restores_room_run_and_bu
 	var run_before := FileAccess.get_sha256(run_path)
 	var room_before := FileAccess.get_sha256(target_path)
 	var production_destination := directory.path_join("production")
+	var arena := _arena_fixture("atomic_after")
 	var result := ArenaIntegrationService.integrate_with_options(
-		_arena_fixture("atomic_after"),
+		arena,
 		ResourceLoader.load(run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP),
 		ArenaProductionAttachmentService.UPDATE, 0, production_destination,
-		null, {}, {"failure_step": "after_attachment"}
+		null, {}, {
+			"failure_step": "after_attachment",
+			"gate_options": {
+				"runtime_scene_result": _fixture_runtime_scene_contract_proof(arena),
+			},
+		}
 	)
 	assert_false(result.ok, str(result))
 	assert_eq(result.status, &"INTEGRATION_ROLLED_BACK")
@@ -358,6 +385,181 @@ func test_combined_transaction_failure_after_attachment_restores_room_run_and_bu
 	))
 	assert_eq(FileAccess.get_sha256(run_path), run_before)
 	assert_eq(FileAccess.get_sha256(target_path), room_before)
+
+
+func test_guided_pipeline_emits_structured_events_for_every_step() -> void:
+	var directory := ROOT.path_join("diagnostics_nominal")
+	var destination := directory.path_join("production")
+	var diagnostics_root := directory.path_join("diagnostics")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
+	var result := ArenaIntegrationService.integrate_with_options(
+		_arena_fixture("diagnostics_nominal"),
+		null,
+		ArenaProductionAttachmentService.NONE,
+		-1,
+		destination,
+		null,
+		{},
+		{
+			"pipeline_diagnostics": {
+				"diagnostic_root": diagnostics_root,
+			},
+		}
+	)
+	assert_true(result.ok, str(result))
+	var pipeline: Dictionary = result.pipeline
+	assert_true(FileAccess.file_exists(str(pipeline.event_log_path)))
+	var events: Array = pipeline.events
+	for step in ["PLAN", "JOURNAL", "PRODUCTION", "ATTACHMENT", "FINALIZE"]:
+		var started := _pipeline_event(events, "step_started", step)
+		var completed := _pipeline_event(events, "step_completed", step)
+		assert_false(started.is_empty(), "%s started" % step)
+		assert_false(completed.is_empty(), "%s completed" % step)
+		assert_eq(str(completed.get("error", "")), "", "%s error" % step)
+		for event in [started, completed]:
+			assert_true(event.has("duration_ms"), "%s duration" % step)
+			assert_true(event.get("context") is Dictionary, "%s context" % step)
+			assert_true(event.get("files") is Array, "%s files" % step)
+			assert_true(
+				event.get("fingerprints") is Dictionary,
+				"%s fingerprints" % step
+			)
+			assert_eq(
+				str((event.context as Dictionary).get("action", "")),
+				str(ArenaProductionAttachmentService.NONE),
+				"%s action context" % step
+			)
+	assert_true(str(FileAccess.get_file_as_string(
+		str(pipeline.event_log_path)
+	)).contains("step_completed"))
+
+
+func test_guided_pipeline_watchdog_reports_a_synchronous_overrun() -> void:
+	var directory := ROOT.path_join("diagnostics_watchdog")
+	var monitor := ArenaGuidedPipelineDiagnosticsService.new({
+		"diagnostic_root": directory,
+		"step_timeouts_ms": {"BLOCKING_FIXTURE": 20},
+	})
+	monitor.begin_step(
+		&"BLOCKING_FIXTURE",
+		{"fixture": "synchronous_overrun"},
+		[],
+		{},
+		monitor.timeout_for(&"BLOCKING_FIXTURE")
+	)
+	OS.delay_msec(200)
+	var checkpoint := monitor.end_step(&"BLOCKING_FIXTURE", true)
+	assert_true(checkpoint.timed_out, str(checkpoint))
+	assert_false(str(checkpoint.watchdog_dump_path).is_empty())
+	assert_true(FileAccess.file_exists(str(checkpoint.watchdog_dump_path)))
+	assert_true(FileAccess.file_exists(str(checkpoint.diagnostic_dump_path)))
+	var event_log := FileAccess.get_file_as_string(monitor.event_log_path)
+	assert_true(event_log.contains("pipeline_heartbeat"), event_log)
+	assert_true(event_log.contains("step_timeout_watchdog"), event_log)
+	var failed := _pipeline_event(
+		monitor.events, "step_failed", "BLOCKING_FIXTURE"
+	)
+	assert_true(failed.get("timed_out", false), str(failed))
+
+
+func test_guided_pipeline_timeout_rolls_back_and_writes_diagnostic_dump() -> void:
+	var directory := ROOT.path_join("diagnostics_timeout")
+	var destination := directory.path_join("production")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
+	var fake_time := {"usec": 1_000}
+	var monitor := ArenaGuidedPipelineDiagnosticsService.new({
+		"diagnostic_root": directory.path_join("diagnostics"),
+		"clock_usec": func() -> int: return int(fake_time.usec),
+		"step_timeouts_ms": {"PRODUCTION": 1},
+	})
+	monitor.step_started.connect(func(event: Dictionary) -> void:
+		if str(event.get("step", "")) == "PRODUCTION":
+			fake_time["usec"] = 3_000
+	)
+	var result := ArenaIntegrationService.integrate_with_options(
+		_arena_fixture("diagnostics_timeout"),
+		null,
+		ArenaProductionAttachmentService.NONE,
+		-1,
+		destination,
+		null,
+		{},
+		{"pipeline_monitor": monitor}
+	)
+	assert_false(result.ok, str(result))
+	assert_eq(result.status, &"STEP_TIMEOUT")
+	assert_true(result.production_rollback.ok, str(result.production_rollback))
+	assert_false(DirAccess.dir_exists_absolute(
+		ProjectSettings.globalize_path(destination)
+	))
+	var timeout_journal: Dictionary = JSON.parse_string(
+		FileAccess.get_file_as_string(str(result.journal_path))
+	) as Dictionary
+	assert_eq(str(timeout_journal.get("state", "")), "STEP_TIMEOUT")
+	assert_true(FileAccess.file_exists(str(result.diagnostic_dump_path)))
+	var dump_value: Variant = JSON.parse_string(
+		FileAccess.get_file_as_string(str(result.diagnostic_dump_path))
+	)
+	assert_true(dump_value is Dictionary)
+	var dump := dump_value as Dictionary
+	assert_eq(str(dump.get("step", "")), "PRODUCTION")
+	assert_true((dump.get("git_status", {}) as Dictionary).get("read_only", false))
+	assert_true(dump.get("scene_tree") is Dictionary)
+	assert_true(dump.get("locks") is Array)
+	assert_true(dump.get("transactions") is Array)
+	assert_true(dump.get("staging") is Array)
+	assert_true(dump.get("recovery") is Array)
+	assert_true(dump.get("last_signal_received") is Dictionary)
+	var failed := _pipeline_event(
+		(result.pipeline as Dictionary).events,
+		"step_failed",
+		"PRODUCTION"
+	)
+	assert_true(failed.get("timed_out", false), str(failed))
+
+
+func test_guided_pipeline_interruption_before_attachment_rolls_back_cleanly() -> void:
+	var directory := ROOT.path_join("diagnostics_interruption")
+	var destination := directory.path_join("production")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
+	var monitor := ArenaGuidedPipelineDiagnosticsService.new({
+		"diagnostic_root": directory.path_join("diagnostics"),
+	})
+	monitor.step_completed.connect(func(event: Dictionary) -> void:
+		if str(event.get("step", "")) == "PRODUCTION":
+			monitor.request_interrupt("fixture_requested_interrupt")
+	)
+	var result := ArenaIntegrationService.integrate_with_options(
+		_arena_fixture("diagnostics_interruption"),
+		null,
+		ArenaProductionAttachmentService.NONE,
+		-1,
+		destination,
+		null,
+		{},
+		{"pipeline_monitor": monitor}
+	)
+	assert_false(result.ok, str(result))
+	assert_eq(result.status, &"PIPELINE_INTERRUPTED")
+	assert_eq(str(result.error), "fixture_requested_interrupt")
+	assert_true(result.production_rollback.ok, str(result.production_rollback))
+	assert_false(DirAccess.dir_exists_absolute(
+		ProjectSettings.globalize_path(destination)
+	))
+	var interruption_journal: Dictionary = JSON.parse_string(
+		FileAccess.get_file_as_string(str(result.journal_path))
+	) as Dictionary
+	assert_eq(
+		str(interruption_journal.get("state", "")),
+		"PIPELINE_INTERRUPTED"
+	)
+	assert_true(FileAccess.file_exists(str(result.diagnostic_dump_path)))
+	var failed := _pipeline_event(
+		(result.pipeline as Dictionary).events,
+		"step_failed",
+		"ATTACHMENT"
+	)
+	assert_true(failed.get("interrupted", false), str(failed))
 
 
 func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
@@ -380,7 +582,28 @@ func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
 		"Dossier de production déjà présent"
 	))
 	studio.show_production_wizard()
-	assert_true(studio.production_resolution_text.text.contains("Fichiers présents (2)"))
+	# The wizard has now initialized all candidate fields. This installs an
+	# exact, current unit-fixture contract proof; it is not evidence of an E2E
+	# battle-scene boot.
+	assert_true(_install_fixture_runtime_scene_contract_proof(
+		studio._production_candidate()
+	))
+	studio._refresh_production_wizard()
+	var bundle_resolution := (
+		studio._production_last_plan.get("production", {}) as Dictionary
+	).get("bundle_resolution", {}) as Dictionary
+	var bundle_files := bundle_resolution.get("files", []) as Array
+	assert_gt(bundle_files.size(), 0)
+	assert_true(studio.production_resolution_text.text.contains(
+		"Fichiers présents (%d)" % bundle_files.size()
+	))
+	for expected_name in [
+		"arena.tres",
+		"arena_principal.tres",
+		"modular_visual_profile.tres",
+		"production_manifest.json",
+	]:
+		assert_true(studio.production_resolution_text.text.contains(expected_name))
 	assert_true((studio.production_resolution_buttons[
 		ArenaBundleResolutionService.VERSION_ALONGSIDE
 	] as Button).visible)
@@ -391,6 +614,9 @@ func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
 	# Isolate the UI policy from the deliberately frozen, incomplete
 	# room_01_forest production bundle present in the repository.
 	studio.arena.arena_id = &"room_integration_ui_fixture"
+	assert_true(_install_fixture_runtime_scene_contract_proof(
+		studio._destination_candidate()
+	))
 	studio._refresh_destination_panel()
 	assert_false(studio.destination_panel.get_parent() is ScrollContainer)
 	assert_eq(
@@ -428,6 +654,7 @@ func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
 	shell.set_detached_state(true)
 	assert_true(shell.detach_button.text.begins_with("Réint"))
 	assert_true(shell.detach_button.text.contains("fenêtre"))
+	_restore_runtime_result_fixture()
 
 
 func _arena_fixture(identifier: String) -> ArenaDefinition:
@@ -452,6 +679,88 @@ func _arena_fixture(identifier: String) -> ArenaDefinition:
 	arena.objectives.append(objective)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return arena
+
+
+func _fixture_runtime_scene_contract_proof(arena: ArenaDefinition) -> Dictionary:
+	# Preuve synthétique limitée à cette fixture unitaire : elle vérifie le
+	# contrat du gate avec la scène/fingerprint/topologie courants, sans prétendre
+	# qu'un boot E2E de la scène de bataille a été exécuté par ce test.
+	var fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
+	var topology: Dictionary = ArenaTopologySignatureService.build(arena)
+	var topology_hash := str(topology.get("topology_hash", ""))
+	var visible_floor_hash := str(topology.get("visible_floor_hash", ""))
+	var battle_scene_path := arena.battle_scene.resource_path \
+		if arena != null and arena.battle_scene != null else ""
+	var configuration := &"UNIT_FIXTURE_CONTRACT"
+	return {
+		"ok": true,
+		"proof_kind": "UNIT_FIXTURE_CONTRACT_PROOF",
+		"fixture_only": true,
+		"e2e_boot_performed": false,
+		"runtime_scene_inspected": true,
+		"script_parse_ok": true,
+		"scene_instantiated": true,
+		"runtime_ready": true,
+		"grid_ready": true,
+		"pathfinder_ready": true,
+		"render_ready": true,
+		"spawn_ready": true,
+		"cleanup_ok": true,
+		"produced_bundle_loaded": false,
+		"configuration": str(configuration),
+		"expected_battle_scene_path": battle_scene_path,
+		"battle_scene_path": battle_scene_path,
+		"working_fingerprint": fingerprint,
+		"temporary_fingerprint": fingerprint,
+		"runtime_fingerprint": fingerprint,
+		"fingerprints_identical": true,
+		"working_topology_hash": topology_hash,
+		"temporary_topology_hash": topology_hash,
+		"runtime_topology_hash": topology_hash,
+		"topology_hashes_identical": true,
+		"expected_floor_hash": visible_floor_hash,
+		"rendered_floor_hash": visible_floor_hash,
+		"runtime_probe_key": ArenaDirectTestService.probe_key(
+			fingerprint, topology_hash, battle_scene_path, configuration
+		),
+		"errors": [],
+		"warnings": ["fixture_contract_proof_not_e2e_boot"],
+	}
+
+
+func _install_fixture_runtime_scene_contract_proof(arena: ArenaDefinition) -> bool:
+	if arena == null:
+		return false
+	var absolute_path := ProjectSettings.globalize_path(
+		ArenaDirectTestService.LAST_RESULT_PATH
+	)
+	var directory_error := DirAccess.make_dir_recursive_absolute(
+		absolute_path.get_base_dir()
+	)
+	if directory_error != OK:
+		return false
+	var file := FileAccess.open(absolute_path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(
+		_fixture_runtime_scene_contract_proof(arena), "\t", false
+	))
+	file.close()
+	return true
+
+
+func _restore_runtime_result_fixture() -> void:
+	var absolute_path := ProjectSettings.globalize_path(
+		ArenaDirectTestService.LAST_RESULT_PATH
+	)
+	if _runtime_result_existed_before_suite:
+		DirAccess.make_dir_recursive_absolute(absolute_path.get_base_dir())
+		var file := FileAccess.open(absolute_path, FileAccess.WRITE)
+		if file != null:
+			file.store_string(_runtime_result_before_suite)
+			file.close()
+	elif FileAccess.file_exists(absolute_path):
+		DirAccess.remove_absolute(absolute_path)
 
 
 func _gameplay_room(source: RoomData, name: String) -> RoomData:
@@ -492,6 +801,19 @@ func _shared_graph(room_path: String, run_a_path: String, run_b_path: String) ->
 		{"from": run_b_path, "to": room_path},
 	]
 	return graph
+
+
+func _pipeline_event(
+		events: Array,
+		event_name: String,
+		step: String
+	) -> Dictionary:
+	for value in events:
+		if value is Dictionary \
+				and str(value.get("event", "")) == event_name \
+				and str(value.get("step", "")) == step:
+			return (value as Dictionary).duplicate(true)
+	return {}
 
 
 func _remove_tree(path: String) -> bool:

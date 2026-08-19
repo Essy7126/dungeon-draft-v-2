@@ -50,14 +50,23 @@ extends Resource
 @export var acknowledgement_warnings: Array[Dictionary] = []
 @export var information: Array[Dictionary] = []
 @export var automatic_actions: Array[String] = []
+@export var readiness_report: ArenaReadinessReport = null
+@export var data_valid := false
+@export var runtime_bootable := false
+@export var ready_to_test := false
+@export var ready_to_produce := false
+@export var ready_to_integrate := false
 @export var ready := false
 
 
 func recompute_ready() -> bool:
-	# Compatibilite des certificats anterieurs : runtime_test_valid representait
-	# le smoke local lorsque le runner interactif n'avait pas ete lance.
-	if not automatic_runtime_smoke_valid and runtime_test_valid:
-		automatic_runtime_smoke_valid = true
+	if readiness_report != null:
+		readiness_report.recompute()
+		data_valid = readiness_report.data_valid
+		runtime_bootable = readiness_report.runtime_bootable
+		ready_to_test = readiness_report.ready_to_test
+		ready_to_produce = readiness_report.ready_to_produce
+		ready_to_integrate = readiness_report.ready_to_integrate
 	var gate := ArenaIntegrationGatePolicy.evaluate_certificate(
 		self, validation_profile
 	)
@@ -65,7 +74,7 @@ func recompute_ready() -> bool:
 	acknowledgement_warnings.assign(gate.acknowledgement_warnings)
 	information.assign(gate.information)
 	automatic_actions.assign(gate.automatic_actions)
-	ready = bool(gate.ready_to_integrate)
+	ready = bool(gate.ready_to_integrate) and ready_to_integrate
 	return ready
 
 
@@ -133,5 +142,12 @@ func to_dict() -> Dictionary:
 		"acknowledgement_warnings": acknowledgement_warnings.duplicate(true),
 		"information": information.duplicate(true),
 		"automatic_actions": automatic_actions.duplicate(),
+		"readiness_report": readiness_report.to_dict() \
+			if readiness_report != null else {},
+		"data_valid": data_valid,
+		"runtime_bootable": runtime_bootable,
+		"ready_to_test": ready_to_test,
+		"ready_to_produce": ready_to_produce,
+		"ready_to_integrate": ready_to_integrate,
 		"ready": ready,
 	}

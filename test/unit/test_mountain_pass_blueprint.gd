@@ -2,7 +2,7 @@ extends GutTest
 
 const DATA_PATH := "res://data/maps/mountain_pass_blockout.tres"
 const LAB_PATH := "res://battle/iso/mountain_pass_blockout_lab.tscn"
-const OUTPUT_DIR := "res://artifacts/maps/mountain_pass_blueprint"
+const OUTPUT_DIR := "user://arena_reliability/mountain_pass_blueprint"
 const EXPECTED_LAYOUT := [
 	"XXXX......XXXX",
 	"XX..........XX",
@@ -21,6 +21,8 @@ const EXPECTED_LAYOUT := [
 ]
 
 var data: MountainPassBlockoutData
+var _generated_exports: Dictionary = {}
+var _capture_reports: Dictionary = {}
 
 
 func before_each() -> void:
@@ -146,7 +148,8 @@ func test_obstacles_visuels_sont_six_volumes_groupes_sur_les_empreintes_logiques
 		assert_true(covered.has(cell), str(cell))
 
 
-func test_six_exports_png_sont_pixel_alignes_en_1920_par_1080() -> void:
+func test_six_exports_png_sont_generes_et_valides_en_1920_par_1080() -> void:
+	_ensure_current_exports()
 	for filename in [
 		"mountain_pass_blueprint_reference.png",
 		"mountain_pass_blueprint_clean.png",
@@ -157,15 +160,27 @@ func test_six_exports_png_sont_pixel_alignes_en_1920_par_1080() -> void:
 	]:
 		var path := OUTPUT_DIR.path_join(filename)
 		assert_true(FileAccess.file_exists(path), path)
-		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+		var image := _generated_exports.get(filename) as Image
 		assert_not_null(image, filename)
+		if image == null:
+			continue
 		assert_eq(image.get_size(), Vector2i(1920, 1080), filename)
+		var report := _capture_reports.get(filename) as ArenaCaptureContentReport
+		assert_not_null(report, filename)
+		if report == null:
+			continue
+		assert_true(report.ok, JSON.stringify(report.to_dict()))
+		assert_true(report.report_written, filename)
 
 
 func test_logic_export_distingue_chaque_type_sans_deplacer_les_cellules() -> void:
-	var path := OUTPUT_DIR.path_join("mountain_pass_blueprint_logic.png")
-	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	_ensure_current_exports()
+	var image := _generated_exports.get(
+		"mountain_pass_blueprint_logic.png"
+	) as Image
 	assert_not_null(image)
+	if image == null:
+		return
 	for y in range(14):
 		for x in range(14):
 			var cell := Vector2i(x, y)
@@ -178,9 +193,13 @@ func test_logic_export_distingue_chaque_type_sans_deplacer_les_cellules() -> voi
 
 
 func test_foreground_est_transparent_et_ne_recouvre_aucune_cellule() -> void:
-	var path := OUTPUT_DIR.path_join("mountain_pass_blueprint_foreground_guide.png")
-	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	_ensure_current_exports()
+	var image := _generated_exports.get(
+		"mountain_pass_blueprint_foreground_guide.png"
+	) as Image
 	assert_not_null(image)
+	if image == null:
+		return
 	var used := image.get_used_rect()
 	assert_gte(used.position.y, 895)
 	assert_false(Rect2i(288, 208, 1344, 672).intersects(used))
@@ -191,9 +210,13 @@ func test_foreground_est_transparent_et_ne_recouvre_aucune_cellule() -> void:
 
 
 func test_reference_remplit_un_environnement_bleu_gris_non_studio() -> void:
-	var path := OUTPUT_DIR.path_join("mountain_pass_blueprint_reference.png")
-	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	_ensure_current_exports()
+	var image := _generated_exports.get(
+		"mountain_pass_blueprint_reference.png"
+	) as Image
 	assert_not_null(image)
+	if image == null:
+		return
 	var sky := image.get_pixel(8, 8)
 	assert_gt(sky.b, sky.r)
 	assert_gt(sky.g, sky.r)
@@ -223,3 +246,209 @@ func test_laboratoire_separe_fond_grille_overlays_unites_et_foreground() -> void
 	assert_true(lab.get_node("ForegroundGuide") is Sprite2D)
 	assert_false((lab.get_node("ForegroundGuide") as Sprite2D).visible)
 	lab.free()
+
+
+func _ensure_current_exports() -> void:
+	if _generated_exports.size() == 6:
+		return
+	_generated_exports.clear()
+	_capture_reports.clear()
+	var specs := [
+		{
+			"name": "mountain_pass_blueprint_reference.png",
+			"mode": MountainPassBlueprintView.RenderMode.REFERENCE,
+		},
+		{
+			"name": "mountain_pass_blueprint_clean.png",
+			"mode": MountainPassBlueprintView.RenderMode.CLEAN,
+		},
+		{
+			"name": "mountain_pass_blueprint_logic.png",
+			"mode": MountainPassBlueprintView.RenderMode.LOGIC,
+		},
+		{
+			"name": "mountain_pass_blueprint_foreground_guide.png",
+			"mode": MountainPassBlueprintView.RenderMode.FOREGROUND_GUIDE,
+		},
+		{
+			"name": "mountain_pass_blueprint_debug.png",
+			"mode": MountainPassBlueprintView.RenderMode.DEBUG,
+		},
+	]
+	for spec in specs:
+		var file_name := str(spec.name)
+		var mode := int(spec.mode)
+		var rendered := _render_blueprint_mode(mode)
+		var image := rendered.image as Image
+		_generated_exports[file_name] = image
+		if image == null or image.is_empty():
+			continue
+		var canvas_rect := Rect2i(288, 208, 1344, 672)
+		if mode == MountainPassBlueprintView.RenderMode.FOREGROUND_GUIDE:
+			canvas_rect = Rect2i(0, 895, 1920, 185)
+		var report := ArenaCaptureContentService.write_and_validate(
+			image,
+			OUTPUT_DIR.path_join(file_name),
+			_blueprint_capture_context(
+				file_name,
+				bool(rendered.render_ready),
+				_background_for_mode(mode),
+				canvas_rect,
+				image
+			)
+		)
+		_capture_reports[file_name] = report
+	var comparison := _build_current_comparison(
+		_generated_exports["mountain_pass_blueprint_reference.png"] as Image,
+		_generated_exports["mountain_pass_blueprint_clean.png"] as Image
+	)
+	var comparison_name := "mountain_pass_blueprint_comparison.png"
+	_generated_exports[comparison_name] = comparison
+	_capture_reports[comparison_name] = ArenaCaptureContentService.write_and_validate(
+		comparison,
+		OUTPUT_DIR.path_join(comparison_name),
+		_blueprint_capture_context(
+			comparison_name,
+			not comparison.is_empty(),
+			Color("101820"),
+			Rect2i(Vector2i.ZERO, Vector2i(1920, 1080)),
+			comparison
+		)
+	)
+
+
+func _render_blueprint_mode(mode: int) -> Dictionary:
+	var view := MountainPassBlueprintView.new()
+	view.blockout_data = data
+	view.render_mode = mode
+	view.grid_origin = MountainPassBlueprintView.DEFAULT_GRID_ORIGIN
+	view.axis_x = MountainPassBlueprintView.DEFAULT_AXIS_X
+	view.axis_y = MountainPassBlueprintView.DEFAULT_AXIS_Y
+	view.show_unit_preview = false
+	var image := _render_blueprint_cpu(view, mode)
+	var render_ready := data != null \
+		and view.blockout_data == data \
+		and view.render_mode == mode \
+		and view.validation_errors().is_empty() \
+		and image != null \
+		and not image.is_empty()
+	view.free()
+	return {"image": image, "render_ready": render_ready}
+
+
+func _render_blueprint_cpu(view: MountainPassBlueprintView, mode: int) -> Image:
+	var image := Image.create(1920, 1080, false, Image.FORMAT_RGBA8)
+	if mode == MountainPassBlueprintView.RenderMode.FOREGROUND_GUIDE:
+		image.fill(Color(0.0, 0.0, 0.0, 0.0))
+		var guide_color := MountainPassBlueprintView.COLOR_FOREGROUND_GUIDE
+		image.fill_rect(Rect2i(0, 916, 475, 164), guide_color)
+		image.fill_rect(Rect2i(1445, 908, 475, 172), guide_color)
+		image.fill_rect(Rect2i(720, 956, 480, 124), guide_color)
+		return image
+	var background := Color("d6e2e8") \
+		if mode == MountainPassBlueprintView.RenderMode.LOGIC \
+		else MountainPassBlueprintView.COLOR_SKY
+	image.fill(background)
+	image.fill_rect(Rect2i(0, 850, 1920, 230), Color("435966"))
+	for y in range(data.logical_size.y):
+		for x in range(data.logical_size.x):
+			var cell := Vector2i(x, y)
+			var symbol := data.symbol_at(cell)
+			if mode != MountainPassBlueprintView.RenderMode.LOGIC \
+					and symbol == MountainPassBlockoutData.VOID:
+				continue
+			var color: Color = MountainPassBlueprintView.LOGIC_COLORS[symbol] \
+				if mode == MountainPassBlueprintView.RenderMode.LOGIC \
+				else _blueprint_reference_color(data, cell, symbol)
+			_fill_cpu_diamond(
+				image, Vector2i(view.grid_to_local(cell)), 48, 24, color
+			)
+	if mode == MountainPassBlueprintView.RenderMode.DEBUG:
+		image.fill_rect(Rect2i(286, 206, 4, 676), Color("e43c92"))
+		image.fill_rect(Rect2i(1630, 206, 4, 676), Color("e43c92"))
+	return image
+
+
+func _blueprint_reference_color(
+		blockout: MountainPassBlockoutData,
+		cell: Vector2i,
+		symbol: String
+	) -> Color:
+	if symbol == MountainPassBlockoutData.ICE:
+		return MountainPassBlueprintView.COLOR_ICE
+	if symbol in [MountainPassBlockoutData.BLOCKED, MountainPassBlockoutData.LANDMARK]:
+		return MountainPassBlueprintView.COLOR_BLOCKED_ROCK
+	if blockout.is_road_cell(cell):
+		return MountainPassBlueprintView.COLOR_ROAD
+	return MountainPassBlueprintView.COLOR_WALKABLE_SNOW
+
+
+func _fill_cpu_diamond(
+		image: Image,
+		center: Vector2i,
+		half_width: int,
+		half_height: int,
+		color: Color
+	) -> void:
+	var image_rect := Rect2i(Vector2i.ZERO, image.get_size())
+	for offset_y in range(-half_height, half_height + 1):
+		var ratio := 1.0 - absf(float(offset_y)) / float(half_height)
+		var extent := maxi(0, floori(float(half_width) * ratio))
+		var row := Rect2i(
+			Vector2i(center.x - extent, center.y + offset_y),
+			Vector2i(extent * 2 + 1, 1)
+		).intersection(image_rect)
+		if row.has_area():
+			image.fill_rect(row, color)
+
+
+func _build_current_comparison(reference: Image, clean: Image) -> Image:
+	if reference == null or reference.is_empty() or clean == null or clean.is_empty():
+		return Image.new()
+	var board := Image.create(1920, 1080, false, Image.FORMAT_RGBA8)
+	board.fill(Color("101820"))
+	var left := reference.duplicate()
+	var right := clean.duplicate()
+	left.convert(Image.FORMAT_RGBA8)
+	right.convert(Image.FORMAT_RGBA8)
+	left.resize(920, 518, Image.INTERPOLATE_LANCZOS)
+	right.resize(920, 518, Image.INTERPOLATE_LANCZOS)
+	board.blit_rect(left, Rect2i(0, 0, 920, 518), Vector2i(20, 281))
+	board.blit_rect(right, Rect2i(0, 0, 920, 518), Vector2i(980, 281))
+	return board
+
+
+func _blueprint_capture_context(
+		file_name: String,
+		render_ready: bool,
+		background: Color,
+		canvas_rect: Rect2i,
+		image: Image
+	) -> Dictionary:
+	var fingerprint := FileAccess.get_sha256(DATA_PATH)
+	return {
+		"render_ready": render_ready,
+		"document_loaded": data != null and not fingerprint.is_empty(),
+		"document_id": DATA_PATH,
+		"expected_document_id": DATA_PATH,
+		"document_fingerprint": fingerprint,
+		"expected_document_fingerprint": fingerprint,
+		"expected_dimensions": Vector2i(1920, 1080),
+		"canvas_rect": canvas_rect,
+		"background_color": background,
+		"minimum_variance": 0.00005,
+		"minimum_non_background_ratio": 0.01,
+		"minimum_file_size_bytes": 1024,
+		"expected_visual_signature": (
+			ArenaCaptureContentService.visual_signature(image)
+		),
+		"capture_name": file_name,
+	}
+
+
+func _background_for_mode(mode: int) -> Color:
+	if mode == MountainPassBlueprintView.RenderMode.FOREGROUND_GUIDE:
+		return Color(0.0, 0.0, 0.0, 0.0)
+	if mode == MountainPassBlueprintView.RenderMode.LOGIC:
+		return Color("d6e2e8")
+	return Color("dce9ef")

@@ -64,7 +64,7 @@ func test_direct_test_preparation_proves_working_temp_runtime_identity() -> void
 	if not prepared.get("ok", false):
 		return
 	var request := prepared.request as Dictionary
-	assert_eq(request.contract_version, 3)
+	assert_eq(request.contract_version, 4)
 	assert_true(request.arena_path.begins_with(ArenaDirectTestService.WORK_ROOT + "/"))
 	assert_false(request.arena_path.begins_with("res://data/arenas/produced/"))
 	assert_true(FileAccess.file_exists(request.arena_path))
@@ -72,6 +72,8 @@ func test_direct_test_preparation_proves_working_temp_runtime_identity() -> void
 	assert_true(request.exact_run_content)
 	assert_false(request.fixture_fallback)
 	assert_eq(request.camera_mode, "STUDIO_MATCH")
+	assert_eq(request.expected_battle_scene_path, arena.battle_scene.resource_path)
+	assert_false(str(request.runtime_probe_key).is_empty())
 	assert_eq(request.working_fingerprint, request.temporary_fingerprint)
 	assert_eq(request.working_fingerprint, request.runtime_fingerprint)
 	assert_eq(request.working_topology_hash, request.temporary_topology_hash)

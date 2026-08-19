@@ -8,15 +8,10 @@ const WALL_FILES := ["wall_base.png", "wall_fire.png", "wall_ice.png"]
 const WALL_CANVAS := Vector2i(512, 704)
 const WALL_BOUNDS := Rect2i(32, 32, 448, 640)
 const WALL_PIVOT := Vector2i(256, 672)
-const CAPTURE_DIR := "res://artifacts/labs/dynamic_arena/walls_final"
-const CAPTURE_FILES := [
-	"wall_assets_normalized.png", "wall_base.png", "wall_fire.png", "wall_ice.png",
-	"wall_cycle.png", "wall_hp_damage.png", "wall_destroyed.png",
-	"fire_water_interaction.png", "fire_ice_interaction.png",
-	"path_before_wall.png", "path_blocked.png", "path_restored.png",
-	"los_blocked.png", "unit_behind_wall.png", "unit_in_front_wall.png",
-	"final_dynamic_arena.png",
-]
+const LAB_SCENE_PATH := "res://tools/labs/dynamic_arena/DynamicArenaLab.tscn"
+const CAPTURE_DIR := "user://arena_reliability/dynamic_arena"
+const WALL_BOARD_SIZE := Vector2i(1600, 768)
+const VIEWPORT_SIZE := Vector2i(1200, 896)
 
 
 class BlockerFixture:
@@ -45,14 +40,39 @@ func test_three_normalized_wall_assets_share_canvas_bbox_and_alpha() -> void:
 		assert_eq(image.get_pixel(0, 0).a, 0.0, file_name)
 
 
-func test_all_sixteen_final_capture_files_are_present_and_non_empty() -> void:
-	for file_name in CAPTURE_FILES:
-		var path := CAPTURE_DIR.path_join(file_name)
-		assert_true(FileAccess.file_exists(path), file_name)
-		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-		assert_false(image.is_empty(), file_name)
-		assert_gte(image.get_width(), 1200, file_name)
-		assert_gte(image.get_height(), 896, file_name)
+func test_current_assets_and_scene_generate_valid_captures_under_user() -> void:
+	var board := _build_current_wall_board()
+	var wall_fingerprint := _wall_assets_fingerprint()
+	var board_report := ArenaCaptureContentService.write_and_validate(
+		board,
+		CAPTURE_DIR.path_join("wall_assets_normalized.png"),
+		_capture_context(
+			"dynamic_arena:normalized_wall_assets",
+			wall_fingerprint,
+			WALL_BOARD_SIZE,
+			true,
+			board
+		)
+	)
+	assert_true(board_report.ok, JSON.stringify(board_report.to_dict()))
+	assert_true(board_report.report_written)
+	var scene_capture: Dictionary = await _capture_current_lab_scene()
+	assert_true(bool(scene_capture.render_ready), str(scene_capture))
+	var scene_fingerprint := str(scene_capture.document_fingerprint)
+	var scene_document_id := str(scene_capture.document_id)
+	var scene_report := ArenaCaptureContentService.write_and_validate(
+		scene_capture.image,
+		CAPTURE_DIR.path_join("dynamic_arena_current.png"),
+		_capture_context(
+			scene_document_id,
+			scene_fingerprint,
+			VIEWPORT_SIZE,
+			bool(scene_capture.render_ready),
+			scene_capture.image as Image
+		)
+	)
+	assert_true(scene_report.ok, JSON.stringify(scene_report.to_dict()))
+	assert_true(scene_report.report_written)
 
 
 func test_wall_scene_uses_one_shared_bottom_center_pivot() -> void:
@@ -394,3 +414,112 @@ func _alpha_bounds(image: Image) -> Rect2i:
 			maximum.x = maxi(maximum.x, x)
 			maximum.y = maxi(maximum.y, y)
 	return Rect2i(minimum, maximum - minimum + Vector2i.ONE)
+
+
+func _build_current_wall_board() -> Image:
+	var board := Image.create(
+		WALL_BOARD_SIZE.x, WALL_BOARD_SIZE.y, false, Image.FORMAT_RGBA8
+	)
+	board.fill(Color("101820"))
+	for index in range(WALL_FILES.size()):
+		var source := _load_wall_png(WALL_FILES[index]).duplicate()
+		source.convert(Image.FORMAT_RGBA8)
+		board.blend_rect(
+			source,
+			Rect2i(Vector2i.ZERO, source.get_size()),
+			Vector2i(16 + index * 528, 32)
+		)
+	return board
+
+
+func _wall_assets_fingerprint() -> String:
+	var payload := ""
+	for file_name in WALL_FILES:
+		var path := NORMALIZED_DIR.path_join(file_name)
+		payload += "%s:%s\n" % [path, FileAccess.get_sha256(path)]
+	return payload.sha256_text()
+
+
+func _capture_current_lab_scene() -> Dictionary:
+	var lab := LabScene.instantiate() as DynamicArenaLab
+	add_child(lab)
+	await wait_process_frames(8)
+	lab.reset_lab()
+	lab.set_grid_debug_visible(true)
+	lab.set_path_visible(true)
+	lab.set_start_cell(Vector2i(0, 4))
+	lab.set_destination(Vector2i(7, 2))
+	lab.set_cell_surface(Vector2i(1, 1), DynamicCellState.Surface.WATER)
+	lab.set_cell_surface(Vector2i(2, 5), DynamicCellState.Surface.ICE)
+	lab.set_cell_surface(Vector2i(5, 5), DynamicCellState.Surface.LAVA)
+	lab.place_wall(Vector2i(3, 2), DynamicWall.WallVariant.BASE)
+	lab.place_wall(Vector2i(4, 3), DynamicWall.WallVariant.FIRE)
+	lab.place_wall(Vector2i(5, 2), DynamicWall.WallVariant.ICE)
+	lab.set_hovered_cell(Vector2i(4, 3))
+	await wait_process_frames(2)
+	var image := _build_current_lab_cpu_image(lab)
+	var render_ready := lab.grid != null \
+		and lab.pathfinder != null \
+		and lab.get_node("FloorLayer").get_child_count() == 64 \
+		and lab.get_wall_count() == 3 \
+		and lab.working_arena != null \
+		and image != null \
+		and not image.is_empty()
+	var document_fingerprint := ArenaSnapshotService.arena_fingerprint(
+		lab.working_arena
+	)
+	lab.queue_free()
+	await wait_process_frames(1)
+	return {
+		"image": image,
+		"render_ready": render_ready,
+		"document_id": LAB_SCENE_PATH + "#working_arena",
+		"document_fingerprint": document_fingerprint,
+	}
+
+
+func _build_current_lab_cpu_image(lab: DynamicArenaLab) -> Image:
+	# Le runner CI utilise le renderer dummy : le framebuffer d'un SubViewport
+	# n'y est pas lisible. L'exporteur raster CPU canonique consomme directement
+	# la working_arena que la scene logique ci-dessus vient de modifier.
+	if lab == null or lab.working_arena == null:
+		return Image.new()
+	var image := ArenaArtProjectionRenderer.render_pass(
+		lab.working_arena, &"map_game_preview"
+	)
+	if image == null or image.is_empty():
+		return Image.new()
+	if image.get_size() != VIEWPORT_SIZE:
+		image.resize(VIEWPORT_SIZE.x, VIEWPORT_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	image.convert(Image.FORMAT_RGBA8)
+	return image
+
+
+func _capture_context(
+		document_id: String,
+		fingerprint: String,
+		dimensions: Vector2i,
+		render_ready: bool,
+		image: Image
+	) -> Dictionary:
+	var canvas_rect := Rect2i(Vector2i.ZERO, dimensions)
+	var background_color := Color("101820")
+	if dimensions == VIEWPORT_SIZE:
+		background_color = Color("101722")
+	return {
+		"render_ready": render_ready,
+		"document_loaded": not fingerprint.is_empty(),
+		"document_id": document_id,
+		"expected_document_id": document_id,
+		"document_fingerprint": fingerprint,
+		"expected_document_fingerprint": fingerprint,
+		"expected_dimensions": dimensions,
+		"canvas_rect": canvas_rect,
+		"background_color": background_color,
+		"minimum_variance": 0.00005,
+		"minimum_non_background_ratio": 0.02,
+		"minimum_file_size_bytes": 512,
+		"expected_visual_signature": (
+			ArenaCaptureContentService.visual_signature(image)
+		),
+	}

@@ -1,0 +1,6 @@
+extends GutTest
+
+
+func helper_without_test_prefix() -> void:
+	pass
+

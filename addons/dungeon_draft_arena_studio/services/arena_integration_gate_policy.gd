@@ -57,6 +57,7 @@ static func evaluate(
 	_add_topology_issues(gate, _topology_dict(topology_report), profile)
 	_add_visual_issues(gate, visual_report, profile)
 	_add_smoke_issues(gate, automatic_smoke, profile)
+	_add_runtime_scene_issues(gate, options)
 	_add_destination_issues(gate, destination, profile)
 	gate = apply_context(gate, options)
 	_mark_accepted_warnings(gate, accepted, fingerprint)
@@ -75,6 +76,11 @@ static func evaluate_certificate(
 	if certificate == null:
 		_add_blocker(gate, &"CERTIFICATE_MISSING", "Le certificat de production est absent.", &"certificate")
 		return _finalize(gate)
+	gate.requires_runtime_scene = true
+	if certificate.readiness_report != null \
+			and certificate.readiness_report.runtime_scene_report != null:
+		gate.runtime_scene_report = certificate.readiness_report.runtime_scene_report.to_dict()
+	gate.runtime_bootable = certificate.runtime_bootable
 	gate.automatic_actions.assign([
 		"validation_pure", "topology_parity", "render_parity",
 		"automatic_runtime_smoke", "destination_plan",
@@ -104,6 +110,12 @@ static func evaluate_certificate(
 		_add_blocker(gate, &"SCHEMA_UNSUPPORTED", "Des champs runtime obligatoires ne possedent aucune politique supportee.", &"schema")
 	if not certificate.automatic_runtime_smoke_valid:
 		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le smoke runtime automatique n'a pas reussi.", &"smoke")
+	if not certificate.runtime_bootable:
+		_add_blocker(
+			gate, &"RUNTIME_SCENE_NOT_RUN",
+			"La vraie scene de bataille n'a pas fourni de preuve runtime courante.",
+			&"runtime_scene"
+		)
 	if certificate.destination_conflict_state in BLOCKING_DESTINATION_STATES:
 		_add_blocker(gate, &"DESTINATION_CONFLICT", "La destination est inconnue, incomplete ou contient des fichiers etrangers.", &"destination")
 	if not certificate.preview_logic_valid or not certificate.preview_art_valid \
@@ -178,6 +190,11 @@ static func _empty_gate(profile: int) -> Dictionary:
 		"information": [],
 		"automatic_actions": [],
 		"ready_to_integrate": false,
+		"ready_to_produce": false,
+		"ready_to_test": false,
+		"runtime_bootable": false,
+		"requires_runtime_scene": false,
+		"runtime_scene_report": {},
 		"requires_warning_acknowledgement": false,
 		"unacknowledged_warning_count": 0,
 		"summary": "",
@@ -251,6 +268,40 @@ static func _add_smoke_issues(gate: Dictionary, smoke: Dictionary, profile: int)
 		_add_blocker(gate, &"TOPOLOGY_MISMATCH", "La copie temporaire et le runtime divergent de la working copy.", &"smoke")
 	if (gate.blocking_errors as Array).size() == blocker_count_before:
 		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le smoke runtime automatique a echoue : %s." % ", ".join(errors), &"smoke")
+
+
+static func _add_runtime_scene_issues(
+		gate: Dictionary,
+		options: Dictionary
+	) -> void:
+	var required := bool(options.get("requires_runtime_scene", false))
+	gate.requires_runtime_scene = required
+	var source: Variant = options.get("runtime_scene_result", {})
+	var report := ArenaReadinessService.runtime_scene_section(null, source)
+	gate.runtime_scene_report = report.to_dict()
+	gate.runtime_bootable = report.runtime_contract_satisfied()
+	if gate.runtime_bootable:
+		_add_information(
+			gate, &"RUNTIME_SCENE_BOOTABLE",
+			"La vraie scene de bataille a atteint runtime_ready.",
+			&"runtime_scene"
+		)
+		return
+	if not required:
+		_add_information(
+			gate, &"RUNTIME_SCENE_NOT_REQUIRED_FOR_PRODUCTION",
+			"La production peut etre preparee sans promouvoir le smoke de projection en preuve runtime.",
+			&"runtime_scene"
+		)
+		return
+	var code := &"RUNTIME_SCENE_NOT_RUN" \
+		if report.state == ArenaReadinessSection.State.NOT_RUN \
+		else &"RUNTIME_SCENE_BOOT_FAILED"
+	_add_blocker(
+		gate, code,
+		"La vraie scene de bataille doit etre verifiee avec la working copy courante.",
+		&"runtime_scene"
+	)
 
 
 static func _add_destination_issues(gate: Dictionary, destination: Dictionary, profile: int) -> void:
@@ -373,7 +424,20 @@ static func _finalize(gate: Dictionary) -> Dictionary:
 			unacknowledged += 1
 	gate.unacknowledged_warning_count = unacknowledged
 	gate.requires_warning_acknowledgement = unacknowledged > 0
-	gate.ready_to_integrate = gate.blocking_errors.is_empty()
+	var non_runtime_blocker_count := 0
+	var validation_blocked := false
+	for value in gate.blocking_errors:
+		var source := str((value as Dictionary).get("source", ""))
+		if source != "runtime_scene":
+			non_runtime_blocker_count += 1
+		if source == "validation":
+			validation_blocked = true
+	gate.ready_to_produce = non_runtime_blocker_count == 0
+	gate.ready_to_test = bool(gate.get("runtime_bootable", false)) \
+		and not validation_blocked
+	gate.ready_to_integrate = gate.blocking_errors.is_empty() \
+		and (not bool(gate.get("requires_runtime_scene", false)) \
+			or bool(gate.get("runtime_bootable", false)))
 	gate.summary = "ARÈNE PRÊTE À INTÉGRER" if gate.ready_to_integrate \
 		else "INTÉGRATION IMPOSSIBLE"
 	return gate

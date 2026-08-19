@@ -3,7 +3,10 @@ class_name ArenaBundleInspectionService
 extends RefCounted
 
 const EMPTY := &"EMPTY"
-const OWNED_COMPLETE := &"OWNED_COMPLETE"
+const OWNED_CLEAN := &"OWNED_CLEAN"
+# Compatibility name retained for callers compiled against Studio 2.0. New
+# reports deliberately expose OWNED_CLEAN so the ownership verdict is literal.
+const OWNED_COMPLETE := OWNED_CLEAN
 const OWNED_INCOMPLETE := &"OWNED_INCOMPLETE"
 const OWNED_DIRTY := &"OWNED_DIRTY"
 const REFERENCED_COMPLETE := &"REFERENCED_COMPLETE"
@@ -11,6 +14,7 @@ const REFERENCED_INCOMPLETE := &"REFERENCED_INCOMPLETE"
 const FOREIGN_CONTENT := &"FOREIGN_CONTENT"
 const CORRUPT_MANIFEST := &"CORRUPT_MANIFEST"
 const LEGACY_BUNDLE := &"LEGACY_BUNDLE"
+const LEGACY_LOGICAL_FINGERPRINT := &"LEGACY_LOGICAL_FINGERPRINT"
 const UNKNOWN := &"UNKNOWN"
 
 
@@ -43,9 +47,18 @@ static func inspect(
 			str(manifest.get("generated_by", ""))
 		):
 		return _report(directory, FOREIGN_CONTENT, files, manifest, [], [], references, [], reference_report)
-	if not manifest.get("files", {}) is Dictionary:
+	var schema_version := int(manifest.get(
+		"manifest_schema_version", manifest.get("version", 0)
+	))
+	var physical_hash_value: Variant = manifest.get("physical_file_hash", null)
+	if schema_version >= ArenaProductionService.MANIFEST_SCHEMA_VERSION \
+			and not physical_hash_value is Dictionary:
 		return _report(directory, CORRUPT_MANIFEST, files, manifest, [], [], references, [], reference_report)
-	var expected := manifest.get("files", {}) as Dictionary
+	if not physical_hash_value is Dictionary:
+		physical_hash_value = manifest.get("files", {})
+	if not physical_hash_value is Dictionary:
+		return _report(directory, CORRUPT_MANIFEST, files, manifest, [], [], references, [], reference_report)
+	var expected := physical_hash_value as Dictionary
 	var missing := PackedStringArray()
 	var dirty := PackedStringArray()
 	for relative_path in expected:
@@ -67,18 +80,51 @@ static func inspect(
 			continue
 		if not allowed.has(str(relative_path)):
 			foreign.append(str(relative_path))
-	var complete := missing.is_empty()
-	var state := OWNED_COMPLETE
-	if not complete:
+	var state := OWNED_CLEAN
+	var manifest_complete := bool(manifest.get("complete", false))
+	var current_logical_contract := schema_version \
+			>= ArenaProductionService.MANIFEST_SCHEMA_VERSION \
+		and str(manifest.get("fingerprint_algorithm_id", "")) \
+			== ArenaProductionService.FINGERPRINT_ALGORITHM_ID
+	if current_logical_contract and not manifest_complete:
+		missing.append("manifest:complete")
+	if not missing.is_empty():
 		state = REFERENCED_INCOMPLETE if not references.is_empty() else OWNED_INCOMPLETE
 	elif not dirty.is_empty() or not foreign.is_empty():
 		state = OWNED_DIRTY
-	elif not references.is_empty():
-		state = REFERENCED_COMPLETE
+	elif not current_logical_contract:
+		# A physically intact v1/v2 bundle is neither dirty nor current. It needs
+		# an explicit, backed-up manifest migration before being writable again.
+		state = LEGACY_LOGICAL_FINGERPRINT
+	else:
+		_append_logical_fingerprint_issues(directory, manifest, dirty)
+		if not dirty.is_empty():
+			state = OWNED_DIRTY
+		elif not references.is_empty():
+			state = REFERENCED_COMPLETE
 	return _report(
 		directory, state, files, manifest, missing, dirty, references, foreign,
 		reference_report
 	)
+
+
+static func _append_logical_fingerprint_issues(
+		directory: String,
+		manifest: Dictionary,
+		dirty: PackedStringArray
+	) -> void:
+	var arena := ResourceLoader.load(
+		directory.path_join("arena.tres"), "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaDefinition
+	if arena == null:
+		dirty.append("arena.tres:resource_load")
+		return
+	if ArenaSnapshotService.arena_fingerprint(arena) \
+			!= str(manifest.get("logical_arena_fingerprint", "")):
+		dirty.append("logical_arena_fingerprint")
+	if ArenaSnapshotService.gameplay_fingerprint(arena) \
+			!= str(manifest.get("gameplay_fingerprint", "")):
+		dirty.append("gameplay_fingerprint")
 
 
 static func _inspect_bundle_references(
@@ -177,8 +223,15 @@ static func _report(
 		dirty: Variant,
 		references: Array,
 		foreign: Variant = PackedStringArray(),
-		reference_report: Dictionary = {}
+	reference_report: Dictionary = {}
 	) -> Dictionary:
+	var owned_manifest_state := state in [
+		OWNED_CLEAN, OWNED_INCOMPLETE, OWNED_DIRTY,
+		REFERENCED_COMPLETE, REFERENCED_INCOMPLETE,
+		LEGACY_LOGICAL_FINGERPRINT,
+	]
+	var physical_complete := owned_manifest_state \
+		and _collection_is_empty(missing) and _collection_is_empty(dirty)
 	return {
 		"ok": state not in [CORRUPT_MANIFEST, UNKNOWN],
 		"directory": directory,
@@ -192,5 +245,15 @@ static func _report(
 		"reference_report": reference_report,
 		"referenced": not references.is_empty(),
 		"transaction_active": bool(reference_report.get("busy", false)),
-		"complete": state in [OWNED_COMPLETE, REFERENCED_COMPLETE],
+		"physical_complete": physical_complete,
+		"logical_fingerprint_legacy": state == LEGACY_LOGICAL_FINGERPRINT,
+		"complete": state in [OWNED_CLEAN, REFERENCED_COMPLETE],
 	}
+
+
+static func _collection_is_empty(value: Variant) -> bool:
+	if value is Array:
+		return (value as Array).is_empty()
+	if value is PackedStringArray:
+		return (value as PackedStringArray).is_empty()
+	return false

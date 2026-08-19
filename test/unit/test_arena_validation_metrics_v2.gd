@@ -99,7 +99,9 @@ func test_exact_scene_report_and_readiness_certificate_invalidate_on_change() ->
 			"action": "UPDATE",
 		}
 	)
-	assert_true(certificate.ready, str(certificate.to_dict()))
+	assert_true(certificate.ready_to_produce, str(certificate.to_dict()))
+	assert_false(certificate.runtime_bootable, str(certificate.to_dict()))
+	assert_false(certificate.ready, str(certificate.to_dict()))
 	assert_true(certificate.matches(arena))
 	arena.camera_zoom = 1.1
 	assert_false(certificate.matches(arena))

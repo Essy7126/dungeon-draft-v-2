@@ -1,0 +1,6 @@
+extends GutTest
+
+
+func test_fixture_passes() -> void:
+	assert_true(true, "La fixture valide doit produire un test et une assertion.")
+

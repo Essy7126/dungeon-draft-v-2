@@ -11,6 +11,8 @@
 
 extends Node2D
 
+signal runtime_ready(snapshot: Dictionary)
+
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
 const ArenaGeneratorScript = preload("res://core/arena_generator.gd")
@@ -111,6 +113,8 @@ var generated_arena_seed: int = 0
 var _generated_arena_features: Dictionary = {}
 var _arena_feature_renderer: Node = null
 var _direct_test_options := {}
+var runtime_ready_state := false
+var runtime_ready_snapshot: Dictionary = {}
 
 # --- Contrôle ---
 var turn_state: TurnState
@@ -172,6 +176,7 @@ func _ready() -> void:
 			_setup_view()
 			EventBus.battle_view_ready.emit(grid_view)
 			_setup_camera()
+			_schedule_runtime_ready()
 			return
 		push_error("Aucune salle fournie par le GameManager.")
 		return
@@ -197,6 +202,26 @@ func _ready() -> void:
 		_spawn_units()
 	else:
 		_spawn_direct_test_units()
+	_schedule_runtime_ready()
+
+
+func _schedule_runtime_ready() -> void:
+	# The concrete painted/modular adapter finishes its assembly after super().
+	# Publishing deferred therefore exposes the complete, inspectable SceneTree.
+	call_deferred("_publish_runtime_ready")
+
+
+func _publish_runtime_ready() -> void:
+	if runtime_ready_state or _closing or not is_inside_tree():
+		return
+	runtime_ready_snapshot = {
+		"grid_ready": grid != null,
+		"pathfinder_ready": pathfinder != null,
+		"camera_ready": camera != null,
+		"unit_count": units.size(),
+	}
+	runtime_ready_state = true
+	runtime_ready.emit(runtime_ready_snapshot.duplicate(true))
 
 # ============================================================
 # MISE EN PLACE — LOGIQUE
@@ -209,7 +234,9 @@ func _setup_logic() -> void:
 	pathfinder = Pathfinder.new(grid)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
-	var encounter_definition := GameManager.get_current_encounter_definition()
+	var encounter_definition: EncounterDefinition = (
+		GameManager.get_current_encounter_definition()
+	)
 	if room_data != null and encounter_definition != null:
 		encounter_runtime_state = EncounterRuntimeState.new()
 		if not encounter_runtime_state.initialize(encounter_definition):
@@ -653,7 +680,9 @@ func _spawn_enemies() -> void:
 
 	var roster: Array = room_data.enemies
 	var placements: Array = []
-	var encounter_definition := GameManager.get_current_encounter_definition()
+	var encounter_definition: EncounterDefinition = (
+		GameManager.get_current_encounter_definition()
+	)
 	if encounter_definition != null:
 		var planner := EncounterFormationPlanner.new(grid, pathfinder)
 		encounter_formation_snapshot = planner.build_plan(
@@ -1489,7 +1518,7 @@ func _process_evolution_queue_at_safe_point() -> void:
 		if not _is_request_still_pending(request):
 			_evolution_queue.discard_current()
 			continue
-		var run_ui := GameManager.get_persistent_run_ui()
+		var run_ui: PersistentRunUI = GameManager.get_persistent_run_ui()
 		if run_ui == null:
 			push_error("Évolution en combat impossible : PersistentRunUI indisponible.")
 			break
@@ -1522,10 +1551,14 @@ func _process_evolution_queue_at_safe_point() -> void:
 func _is_request_still_pending(request: EvolutionRequest) -> bool:
 	if request == null:
 		return false
-	var state := GameManager.get_character_state(request.character_id)
+	var state: CharacterRunState = GameManager.get_character_state(
+		request.character_id
+	)
 	if state == null:
 		return false
-	var progress := state.get_discipline_progress(request.discipline_id)
+	var progress: DisciplineProgressState = state.get_discipline_progress(
+		request.discipline_id
+	)
 	return progress != null \
 		and progress.get_pending_rank_choices().has(request.pending_rank)
 

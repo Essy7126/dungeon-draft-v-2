@@ -73,8 +73,11 @@ var _cell_index_count := -1
 
 
 func _init() -> void:
-	if battle_scene == null and ResourceLoader.exists(DEFAULT_BATTLE_SCENE):
-		battle_scene = load(DEFAULT_BATTLE_SCENE) as PackedScene
+	# La scene depend du mode visuel, qui n'est connu qu'apres construction ou
+	# deserialisation. La charger ici ouvrait toujours painted_battle (et son
+	# flux audio) avant de la remplacer aussitot pour une arene modulaire.
+	# ArenaRuntimeBridge la resout au premier sync sans changer la ressource
+	# finalement publiee.
 	room_name = display_name
 
 

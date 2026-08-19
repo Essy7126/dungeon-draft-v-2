@@ -102,6 +102,13 @@ static func sync_runtime_resources(
 	# roster importe et laisser painted_battle l'etendre au lancement reel.
 	if arena.encounter_definition != null and not Engine.is_editor_hint():
 		arena.enemies = arena.encounter_definition.expanded_roster()
+	resolve_battle_scene(arena)
+	return true
+
+
+static func resolve_battle_scene(arena: ArenaDefinition) -> PackedScene:
+	if arena == null:
+		return null
 	var current_scene_path := arena.battle_scene.resource_path \
 		if arena.battle_scene != null else ""
 	if arena.visual_mode == ArenaDefinition.VisualMode.MODULAR \
@@ -112,7 +119,7 @@ static func sync_runtime_resources(
 			and arena.battle_scene == null \
 			and ResourceLoader.exists(ArenaDefinition.DEFAULT_BATTLE_SCENE):
 		arena.battle_scene = load(ArenaDefinition.DEFAULT_BATTLE_SCENE) as PackedScene
-	return true
+	return arena.battle_scene
 
 
 static func _sync_grid_transform_projection(arena: ArenaDefinition) -> bool:
@@ -135,8 +142,42 @@ static func build_grid(arena: ArenaDefinition) -> GridData:
 	var projection := _runtime_projection_copy(arena)
 	if projection == null or not sync_runtime_resources(projection):
 		return null
-	var grid := GridData.new(projection.grid_size.x, projection.grid_size.y)
-	projection.grid_layout.apply_to_grid(grid)
+	return _grid_from_synced_resources(projection)
+
+
+static func build_grid_from_synced_resources(arena: ArenaDefinition) -> GridData:
+	# Chemin sûr pour une transaction qui vient d'appeler
+	# sync_runtime_resources : réutilise exactement le RoomGridLayout publié.
+	_count_instrumentation(&"grid_data_builds")
+	return _grid_from_synced_resources(arena)
+
+
+static func build_validation_state(arena: ArenaDefinition) -> ArenaRuntimeState:
+	# La validation ne lit ni DynamicSurfaceService ni TerrainEffects. Construire
+	# ces sous-systèmes et quatre empreintes de preuve à chaque validation serait
+	# une redérivation sans effet sur son verdict. La projection reste une copie
+	# profonde synchronisée ; la Resource canonique n'est jamais modifiée.
+	_count_instrumentation(&"validation_state_builds")
+	var projection := _runtime_projection_copy(arena)
+	if projection == null or not sync_runtime_resources(projection):
+		return null
+	var state := ArenaRuntimeState.new()
+	state.arena_projection = projection
+	state.layout = projection.grid_layout
+	state.visual_data = projection.painted_map_visual_data
+	state.visual_profile = projection.arena_visual_profile
+	state.hero_spawns.assign(projection.hero_spawn_zone)
+	state.enemy_spawns.assign(projection.enemy_spawn_zone)
+	state.grid = _grid_from_synced_resources(projection)
+	return state if state.grid != null else null
+
+
+static func _grid_from_synced_resources(arena: ArenaDefinition) -> GridData:
+	if arena == null or arena.grid_layout == null \
+			or arena.grid_layout.logical_size != arena.grid_size:
+		return null
+	var grid := GridData.new(arena.grid_size.x, arena.grid_size.y)
+	arena.grid_layout.apply_to_grid(grid)
 	return grid
 
 

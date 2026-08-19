@@ -241,11 +241,17 @@ static func _resume_interrupted(
 			destination.path_join(str(relative_path))
 		)
 	var manifest := {
-		"version": 2,
+		"version": ArenaProductionService.MANIFEST_SCHEMA_VERSION,
+		"manifest_schema_version": ArenaProductionService.MANIFEST_SCHEMA_VERSION,
 		"studio_product_version": StudioVersion.PRODUCT_VERSION,
 		"generator_revision": ArenaProductionService.GENERATOR_REVISION,
 		"generated_by": ArenaProductionService.GENERATED_BY,
+		"complete": true,
 		"arena_id": str(existing.arena_id),
+		"fingerprint_algorithm_id": ArenaProductionService.FINGERPRINT_ALGORITHM_ID,
+		"physical_file_hash": hashes.duplicate(true),
+		"logical_arena_fingerprint": ArenaSnapshotService.arena_fingerprint(existing),
+		"gameplay_fingerprint": ArenaSnapshotService.gameplay_fingerprint(existing),
 		"source_fingerprint": ArenaSnapshotService.arena_fingerprint(arena),
 		"source_gameplay_fingerprint": ArenaSnapshotService.gameplay_fingerprint(arena),
 		"produced_fingerprint": ArenaSnapshotService.arena_fingerprint(existing),
@@ -384,6 +390,7 @@ static func _state_label(state: StringName) -> String:
 		ArenaBundleInspectionService.FOREIGN_CONTENT: "Fichiers sans preuve de propriété Studio",
 		ArenaBundleInspectionService.CORRUPT_MANIFEST: "Manifeste illisible",
 		ArenaBundleInspectionService.LEGACY_BUNDLE: "Ancienne production",
+		ArenaBundleInspectionService.LEGACY_LOGICAL_FINGERPRINT: "Empreinte logique historique",
 	}.get(state, "État de destination inconnu")
 
 
@@ -411,6 +418,8 @@ static func _explanation(
 			return "production_manifest.json existe mais ne peut pas être interprété de façon sûre."
 		ArenaBundleInspectionService.LEGACY_BUNDLE:
 			return "Une ancienne structure de bundle est détectée ; elle doit être conservée ou versionnée explicitement."
+		ArenaBundleInspectionService.LEGACY_LOGICAL_FINGERPRINT:
+			return "Les fichiers correspondent physiquement au manifeste, mais l'algorithme d'empreinte logique est historique. Une migration explicite et sauvegardée du manifeste est requise."
 		ArenaBundleInspectionService.EMPTY:
 			return "La destination est vide et peut être produite."
 	return "%d fichier(s), %d référence(s), %d transaction(s) active(s)." % [file_count, reference_count, transaction_count]

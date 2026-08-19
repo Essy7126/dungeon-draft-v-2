@@ -75,8 +75,10 @@ func _place(grid: GridData, unit: Unit, cell: Vector2i) -> Unit:
 
 func _target_edges(grid: GridData, target: Unit, mover: Unit) -> Array[Vector2i]:
 	var result: Array[Vector2i] = []
-	for direction in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
-		var cell := target.grid_pos + direction
+	for direction: Vector2i in [
+		Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT,
+	]:
+		var cell: Vector2i = target.grid_pos + direction
 		if grid.is_walkable(cell, mover):
 			result.append(cell)
 	return result

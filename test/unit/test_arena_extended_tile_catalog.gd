@@ -1,6 +1,20 @@
 extends GutTest
 
-const INVENTORY_PATH := "res://artifacts/extended_terrain_catalog/asset_inventory.json"
+const INVENTORY_PATH := (
+	"user://arena_reliability/extended_terrain_catalog/asset_inventory.json"
+)
+const RAW_ASSET_DIR := "res://tools/labs/dynamic_arena/assets/raw"
+const RAW_TERRAIN_FILES := [
+	"stone.png", "water.png", "ice.png", "lava.png", "ombre.png",
+	"neutre.png", "poison.png", "vapeur.png", "électrique.png", "vortex.png",
+]
+const ROLE_MAPPING := {
+	"neutral": RAW_ASSET_DIR + "/neutre.png",
+	"poison": RAW_ASSET_DIR + "/poison.png",
+	"steam": RAW_ASSET_DIR + "/vapeur.png",
+	"electrified_water": RAW_ASSET_DIR + "/électrique.png",
+	"vortex": RAW_ASSET_DIR + "/vortex.png",
+}
 const WATER_PATH := "res://data/terrain/eau.tres"
 
 
@@ -10,17 +24,15 @@ func before_each() -> void:
 
 
 func test_asset_inventory_maps_the_five_announced_roles_without_renaming() -> void:
+	var generated := _write_current_asset_inventory()
+	assert_false(generated.is_empty(), "L'inventaire doit etre genere depuis les assets canoniques.")
 	assert_true(FileAccess.file_exists(INVENTORY_PATH))
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(INVENTORY_PATH))
 	assert_true(parsed is Dictionary)
 	assert_eq(parsed.mapping_verdict, "UNAMBIGUOUS_FOR_REQUESTED_FIVE")
-	assert_eq(parsed.role_mapping, {
-		"neutral": "res://tools/labs/dynamic_arena/assets/raw/neutre.png",
-		"poison": "res://tools/labs/dynamic_arena/assets/raw/poison.png",
-		"steam": "res://tools/labs/dynamic_arena/assets/raw/vapeur.png",
-		"electrified_water": "res://tools/labs/dynamic_arena/assets/raw/électrique.png",
-		"vortex": "res://tools/labs/dynamic_arena/assets/raw/vortex.png",
-	})
+	assert_eq(parsed.role_mapping, ROLE_MAPPING)
+	assert_eq(str(parsed.document_fingerprint).length(), 64)
+	assert_eq(parsed.output_path, INVENTORY_PATH)
 	assert_eq((parsed.assets as Array).size(), 10)
 	for asset in parsed.assets:
 		assert_eq(int(asset.width), 1024, asset.name)
@@ -280,3 +292,43 @@ func _arena_fixture() -> ArenaDefinition:
 			)
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return arena
+
+
+func _write_current_asset_inventory() -> Dictionary:
+	var assets: Array[Dictionary] = []
+	var fingerprint_payload := ""
+	for file_name in RAW_TERRAIN_FILES:
+		var resource_path := RAW_ASSET_DIR.path_join(file_name)
+		if not FileAccess.file_exists(resource_path):
+			return {}
+		var image := Image.load_from_file(ProjectSettings.globalize_path(resource_path))
+		if image == null or image.is_empty():
+			return {}
+		var sha256 := FileAccess.get_sha256(resource_path)
+		fingerprint_payload += "%s:%s\n" % [resource_path, sha256]
+		assets.append({
+			"name": file_name,
+			"resource_path": resource_path,
+			"width": image.get_width(),
+			"height": image.get_height(),
+			"has_alpha": image.get_format() == Image.FORMAT_RGBA8,
+			"sha256": sha256,
+		})
+	var inventory := {
+		"mapping_verdict": "UNAMBIGUOUS_FOR_REQUESTED_FIVE",
+		"role_mapping": ROLE_MAPPING.duplicate(true),
+		"assets": assets,
+		"document_fingerprint": fingerprint_payload.sha256_text(),
+		"output_path": INVENTORY_PATH,
+	}
+	var directory_error := DirAccess.make_dir_recursive_absolute(
+		ProjectSettings.globalize_path(INVENTORY_PATH.get_base_dir())
+	)
+	if directory_error != OK:
+		return {}
+	var file := FileAccess.open(INVENTORY_PATH, FileAccess.WRITE)
+	if file == null:
+		return {}
+	file.store_string(JSON.stringify(inventory, "  "))
+	file.close()
+	return inventory
