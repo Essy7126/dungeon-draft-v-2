@@ -3,7 +3,13 @@ class_name ItemStudioDocument
 extends RefCounted
 
 signal changed
+signal refresh_requested(kind: StringName, path: String)
 signal dirty_changed(is_dirty: bool)
+
+const CHANGE_VALUE := &"VALUE"
+const CHANGE_STRUCTURE := &"STRUCTURE"
+const CHANGE_PREVIEW := &"PREVIEW"
+const CHANGE_DOCUMENT := &"DOCUMENT"
 
 const STATUS_SHARED := &"SHARED"
 const STATUS_DRAFT := &"DRAFT"
@@ -19,11 +25,13 @@ var original_fingerprint := ""
 var preview_disabled_effects := {}
 var history := StudioHistoryController.new()
 var copy_service := ItemDeepCopyService.new()
+var _pending_change_kind: StringName = CHANGE_DOCUMENT
+var _pending_change_path := ""
 
 
 func _init() -> void:
 	history.configure(_apply_history_snapshot, current_fingerprint)
-	history.history_changed.connect(func(): changed.emit())
+	history.history_changed.connect(_on_history_changed)
 	history.dirty_state_changed.connect(func(dirty: bool): dirty_changed.emit(dirty))
 
 
@@ -88,27 +96,45 @@ func duplicate_as_new(
 	return true
 
 
-func record_edit(action_name: String, mutator: Callable) -> bool:
+func record_edit(
+		action_name: String,
+		mutator: Callable,
+		change_kind: StringName = CHANGE_VALUE,
+		change_path := "",
+		merge_key := ""
+	) -> bool:
 	if working_copy == null or not mutator.is_valid():
 		return false
 	var before := ItemFingerprintService.semantic_snapshot(working_copy)
 	mutator.call()
 	var after := ItemFingerprintService.semantic_snapshot(working_copy)
-	var recorded := history.record(action_name, before, after, true)
-	if not recorded:
-		changed.emit()
+	_pending_change_kind = change_kind
+	_pending_change_path = change_path
+	var recorded := history.record(action_name, before, after, true, merge_key)
+	_pending_change_kind = CHANGE_DOCUMENT
+	_pending_change_path = ""
 	return recorded
 
 
-func record_snapshot(action_name: String, before: Dictionary) -> bool:
+func record_snapshot(
+		action_name: String,
+		before: Dictionary,
+		change_kind: StringName = CHANGE_VALUE,
+		change_path := ""
+	) -> bool:
 	if working_copy == null:
 		return false
-	return history.record(
+	_pending_change_kind = change_kind
+	_pending_change_path = change_path
+	var recorded := history.record(
 		action_name,
 		before,
 		ItemFingerprintService.semantic_snapshot(working_copy),
 		true,
 	)
+	_pending_change_kind = CHANGE_DOCUMENT
+	_pending_change_path = ""
+	return recorded
 
 
 func discard_changes() -> Dictionary:
@@ -154,7 +180,7 @@ func set_preview_effect_enabled(kind: StringName, index: int, enabled: bool) -> 
 		preview_disabled_effects.erase(key)
 	else:
 		preview_disabled_effects[key] = true
-	changed.emit()
+	_emit_refresh(CHANGE_PREVIEW, "%s:%d" % [kind, index])
 
 
 func is_preview_effect_enabled(kind: StringName, index: int) -> bool:
@@ -175,6 +201,11 @@ func preview_copy() -> ItemDefinition:
 		if is_preview_effect_enabled(&"spell", index):
 			preview_spells.append(result.spell_modifiers[index])
 	result.spell_modifiers = preview_spells
+	var preview_reactive: Array[ItemReactiveEffectData] = []
+	for index in range(result.reactive_effects.size()):
+		if is_preview_effect_enabled(&"reactive", index):
+			preview_reactive.append(result.reactive_effects[index])
+	result.reactive_effects = preview_reactive
 	return result
 
 
@@ -182,7 +213,17 @@ func _apply_history_snapshot(snapshot: Dictionary) -> void:
 	if working_copy == null:
 		return
 	_restore_definition(working_copy, snapshot)
+	_pending_change_kind = CHANGE_DOCUMENT
+	_pending_change_path = ""
+
+
+func _on_history_changed() -> void:
+	_emit_refresh(_pending_change_kind, _pending_change_path)
+
+
+func _emit_refresh(kind: StringName, path: String) -> void:
 	changed.emit()
+	refresh_requested.emit(kind, path)
 
 
 func _restore_definition(definition: ItemDefinition, snapshot: Dictionary) -> void:
@@ -217,6 +258,12 @@ func _restore_definition(definition: ItemDefinition, snapshot: Dictionary) -> vo
 		if restored != null:
 			spells.append(restored)
 	definition.spell_modifiers = spells
+	var reactive: Array[ItemReactiveEffectData] = []
+	for value in snapshot.get("reactive_effects", []) as Array:
+		var restored_effect := _restore_reactive_effect(value as Dictionary)
+		if restored_effect != null:
+			reactive.append(restored_effect)
+	definition.reactive_effects = reactive
 	definition.use_effect = int(snapshot.get("use_effect", ItemDefinition.UseEffect.NONE))
 	definition.use_value = float(snapshot.get("use_value", 0.0))
 
@@ -234,6 +281,32 @@ func _restore_spell_modifier(snapshot: Dictionary) -> SpellModifier:
 			value = StringName(value)
 		modifier.set(property_name, value)
 	return modifier
+
+
+func _restore_reactive_effect(snapshot: Dictionary) -> ItemReactiveEffectData:
+	var properties := snapshot.get("properties", {}) as Dictionary
+	var effect := ItemReactiveEffectData.new()
+	effect.enabled = bool(properties.get("enabled", true))
+	effect.trigger_id = StringName(properties.get("trigger_id", ItemReactiveEffectData.TRIGGER_COMBAT_START))
+	effect.target_id = StringName(properties.get("target_id", ItemReactiveEffectData.TARGET_TRIGGER_HERO))
+	effect.result_id = StringName(properties.get("result_id", ItemReactiveEffectData.RESULT_HEAL_FLAT))
+	effect.value = float(properties.get("value", 1.0))
+	effect.threshold = float(properties.get("threshold", 0.5))
+	effect.frequency_id = StringName(properties.get("frequency_id", ItemReactiveEffectData.FREQUENCY_UNLIMITED))
+	effect.max_activations = int(properties.get("max_activations", 1))
+	effect.recharge_turns = int(properties.get("recharge_turns", 1))
+	var conditions: Array[ItemReactiveConditionData] = []
+	for condition_value in properties.get("conditions", []) as Array:
+		var condition_snapshot := condition_value as Dictionary
+		var condition_properties := condition_snapshot.get("properties", {}) as Dictionary
+		var condition := ItemReactiveConditionData.new()
+		condition.condition_id = StringName(condition_properties.get("condition_id", &"trigger_team"))
+		condition.comparison = StringName(condition_properties.get("comparison", &"equal"))
+		condition.value = float(condition_properties.get("value", 0.0))
+		condition.team = int(condition_properties.get("team", 0))
+		conditions.append(condition)
+	effect.conditions = conditions
+	return effect
 
 
 func _load_texture(path: String) -> Texture2D:

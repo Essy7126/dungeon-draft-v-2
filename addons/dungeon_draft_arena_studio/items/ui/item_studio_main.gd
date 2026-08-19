@@ -4,9 +4,13 @@ extends Control
 
 signal history_state_changed
 
-const CATEGORY_LABELS := ["Arme", "Armure", "Accessoire", "Consommable", "Parchemin"]
+const CATEGORY_LABELS := ["Arme", "Armure", "Accessoire", "Consommable", "Parchemin", "Relique"]
 const SLOT_LABELS := ["Aucun", "Arme", "Armure", "Accessoire"]
 const USE_LABELS := ["Aucun", "Soin fixe", "Restauration de PA fixe"]
+const REFRESH_LIGHT := 1
+const REFRESH_STRUCTURE := 2
+const REFRESH_HEAVY := 4
+const ANALYSIS_DELAY_SECONDS := 0.25
 
 var editor_interface = null
 var editor_undo_redo = null
@@ -62,7 +66,14 @@ var _pending_catalog_entry := {}
 var _pending_save_mode: StringName = &""
 var _updating := false
 var _refresh_queued := false
+var _pending_refresh := 0
 var _text_snapshots := {}
+var _analysis_timer: Timer
+var _cached_validation := {}
+var _cached_analysis := {}
+var _cached_references: Array[String] = []
+var _cached_fingerprint := ""
+var _is_dirty := false
 
 
 func setup(
@@ -81,8 +92,13 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build_interface()
 	_build_dialogs()
-	document.changed.connect(_queue_refresh)
+	document.refresh_requested.connect(_on_document_refresh_requested)
 	document.dirty_changed.connect(_on_dirty_changed)
+	_analysis_timer = Timer.new()
+	_analysis_timer.one_shot = true
+	_analysis_timer.wait_time = ANALYSIS_DELAY_SECONDS
+	_analysis_timer.timeout.connect(_run_heavy_analyses)
+	add_child(_analysis_timer)
 	if project_context != null:
 		project_context.register_transition_handler(
 			&"items", _transition_save, _transition_draft, _transition_discard
@@ -147,7 +163,7 @@ func _build_interface() -> void:
 	analysis_target_option.item_selected.connect(_on_analysis_target_selected)
 	comparison_option = OptionButton.new()
 	comparison_option.tooltip_text = "Comparer avec un objet de même catégorie, emplacement et audience"
-	comparison_option.item_selected.connect(func(_index): _queue_refresh())
+	comparison_option.item_selected.connect(func(_index): _queue_refresh_flags(REFRESH_LIGHT))
 	right.add_child(comparison_option)
 	analysis_panel = ItemAnalysisPanel.new()
 	analysis_panel.custom_minimum_size.y = 500
@@ -209,11 +225,11 @@ func _build_inspector(parent: VBoxContainer) -> void:
 	slot_option = _option(inventory_grid, "Emplacement", SLOT_LABELS)
 	slot_option.item_selected.connect(func(index): _record("Modifier l’emplacement", func(): document.working_copy.equipment_slot = index - 1))
 	stack_spin = _spin(inventory_grid, "Taille de pile", 1.0, 99.0, 1.0)
-	stack_spin.value_changed.connect(func(value): _record("Modifier la pile", func(): document.working_copy.stack_limit = int(value)))
+	stack_spin.value_changed.connect(func(value): _record("Modifier la pile", func(): document.working_copy.stack_limit = int(value), "stack_limit"))
 	use_option = _option(inventory_grid, "Effet d’usage", USE_LABELS)
 	use_option.item_selected.connect(func(index): _record("Modifier l’effet d’usage", func(): document.working_copy.use_effect = index))
 	use_value_spin = _spin(inventory_grid, "Valeur d’usage", 0.0, 9999.0, 1.0)
-	use_value_spin.value_changed.connect(func(value): _record("Modifier la valeur d’usage", func(): document.working_copy.use_value = value))
+	use_value_spin.value_changed.connect(func(value): _record("Modifier la valeur d’usage", func(): document.working_copy.use_value = value, "use_value"))
 	tags_edit = _line(inventory_grid, "Tags", "Tags séparés par des virgules")
 	_bind_text_transaction(tags_edit, "Modifier les tags", func(value): document.working_copy.tags = _parse_string_names(value))
 	var compatibility := HFlowContainer.new()
@@ -239,7 +255,6 @@ func _build_inspector(parent: VBoxContainer) -> void:
 	var effects := _section(parent, "EFFETS RUNTIME")
 	effect_composer = ItemEffectComposer.new()
 	effect_composer.setup(document)
-	effect_composer.effect_changed.connect(_queue_refresh)
 	effects.add_child(effect_composer)
 	var advanced := _section(parent, "INTÉGRATION ET AVANCÉ")
 	path_label = Label.new()
@@ -284,6 +299,7 @@ func ensure_initial_content_loaded() -> void:
 
 
 func _refresh_catalog(selected_path := "") -> void:
+	reference_service.invalidate_cache()
 	var rebuild := catalog.rebuild()
 	if not rebuild.get("ok", false):
 		status_label.text = "Catalogue invalide : %s" % rebuild.get("error", "erreur") if status_label != null else ""
@@ -339,7 +355,7 @@ func _duplicate_document(item_id: StringName, copy_acquisition_tags: bool) -> vo
 
 
 func _apply_template(definition: ItemDefinition, template: int) -> void:
-	definition.category = clampi(template, ItemDefinition.Category.WEAPON, ItemDefinition.Category.SCROLL)
+	definition.category = clampi(template, ItemDefinition.Category.WEAPON, ItemDefinition.Category.RELIC)
 	definition.stack_limit = 1
 	match definition.category:
 		ItemDefinition.Category.WEAPON:
@@ -348,6 +364,16 @@ func _apply_template(definition: ItemDefinition, template: int) -> void:
 			definition.equipment_slot = ItemDefinition.EquipmentSlot.ARMOR
 		ItemDefinition.Category.ACCESSORY:
 			definition.equipment_slot = ItemDefinition.EquipmentSlot.ACCESSORY
+		ItemDefinition.Category.RELIC:
+			definition.equipment_slot = ItemDefinition.EquipmentSlot.NONE
+			definition.stack_limit = 1
+			definition.use_effect = ItemDefinition.UseEffect.NONE
+			definition.compatible_character_ids.clear()
+			var effect := ItemReactiveEffectData.new()
+			effect.trigger_id = ItemReactiveEffectData.TRIGGER_COMBAT_START
+			effect.target_id = ItemReactiveEffectData.TARGET_TRIGGER_HERO
+			effect.result_id = ItemReactiveEffectData.RESULT_HEAL_FLAT
+			definition.reactive_effects = [effect]
 		_:
 			definition.equipment_slot = ItemDefinition.EquipmentSlot.NONE
 			definition.stack_limit = 5
@@ -356,14 +382,23 @@ func _apply_template(definition: ItemDefinition, template: int) -> void:
 
 
 func _on_category_selected(index: int) -> void:
-	_record("Modifier la catégorie", func():
+	if _updating or document.working_copy == null:
+		return
+	document.record_edit("Modifier la catégorie", func():
 		document.working_copy.category = index
 		match index:
 			ItemDefinition.Category.WEAPON: document.working_copy.equipment_slot = ItemDefinition.EquipmentSlot.WEAPON
 			ItemDefinition.Category.ARMOR: document.working_copy.equipment_slot = ItemDefinition.EquipmentSlot.ARMOR
 			ItemDefinition.Category.ACCESSORY: document.working_copy.equipment_slot = ItemDefinition.EquipmentSlot.ACCESSORY
+			ItemDefinition.Category.RELIC:
+				document.working_copy.equipment_slot = ItemDefinition.EquipmentSlot.NONE
+				document.working_copy.stack_limit = 1
+				document.working_copy.use_effect = ItemDefinition.UseEffect.NONE
+				document.working_copy.compatible_character_ids.clear()
+				if document.working_copy.reactive_effects.is_empty():
+					document.working_copy.reactive_effects.append(ItemReactiveEffectData.new())
 			_: document.working_copy.equipment_slot = ItemDefinition.EquipmentSlot.NONE
-	)
+	, ItemStudioDocument.CHANGE_STRUCTURE, "category")
 
 
 func _set_hero_compatibility(hero_id: StringName, enabled: bool) -> void:
@@ -379,28 +414,51 @@ func _on_reward_toggled(enabled: bool) -> void:
 	if _updating or document.working_copy == null:
 		return
 	if not publication_service.set_reward_eligibility(document, enabled):
-		status_label.text = "Seuls les équipements peuvent rejoindre ce pool de récompenses."
-	_queue_refresh()
+		status_label.text = "Seuls les équipements et les reliques peuvent rejoindre ce pool de récompenses."
 
 
-func _record(action: String, mutator: Callable) -> void:
+func _record(action: String, mutator: Callable, merge_key := "") -> void:
 	if _updating or document.working_copy == null:
 		return
-	document.record_edit(action, mutator)
+	document.record_edit(action, mutator, ItemStudioDocument.CHANGE_VALUE, action, merge_key)
 
 
 func _queue_refresh() -> void:
+	_queue_refresh_flags(REFRESH_LIGHT | REFRESH_STRUCTURE | REFRESH_HEAVY)
+
+
+func _on_document_refresh_requested(kind: StringName, _path: String) -> void:
+	match kind:
+		ItemStudioDocument.CHANGE_VALUE, ItemStudioDocument.CHANGE_PREVIEW:
+			_queue_refresh_flags(REFRESH_LIGHT | REFRESH_HEAVY)
+		ItemStudioDocument.CHANGE_STRUCTURE:
+			_queue_refresh_flags(REFRESH_LIGHT | REFRESH_STRUCTURE | REFRESH_HEAVY)
+		_:
+			_queue_refresh_flags(REFRESH_LIGHT | REFRESH_STRUCTURE | REFRESH_HEAVY)
+
+
+func _queue_refresh_flags(flags: int) -> void:
+	_pending_refresh |= flags
 	if _refresh_queued:
 		return
 	_refresh_queued = true
-	call_deferred("_refresh_document_views")
+	call_deferred("_flush_refresh_requests")
 
 
-func _refresh_document_views() -> void:
+func _flush_refresh_requests() -> void:
+	var flags := _pending_refresh
+	_pending_refresh = 0
 	_refresh_queued = false
-	_updating = true
+	_refresh_document_views(bool(flags & REFRESH_STRUCTURE))
+	if flags & REFRESH_HEAVY:
+		_analysis_timer.start()
+
+
+func _refresh_document_views(refresh_structure := false) -> void:
 	var definition := document.working_copy
 	var has_document := definition != null
+	if refresh_structure:
+		_updating = true
 	id_edit.editable = has_document
 	name_edit.editable = has_document
 	description_edit.editable = has_document
@@ -413,7 +471,7 @@ func _refresh_document_views() -> void:
 	rarity_option.disabled = not has_document
 	slot_option.disabled = not has_document
 	use_option.disabled = not has_document
-	if has_document:
+	if has_document and refresh_structure:
 		id_edit.text = str(definition.item_id)
 		id_edit.editable = document.status != ItemStudioDocument.STATUS_SHARED
 		name_edit.text = definition.display_name
@@ -430,7 +488,7 @@ func _refresh_document_views() -> void:
 		for hero_id in hero_checks:
 			(hero_checks[hero_id] as CheckBox).button_pressed = hero_id in definition.compatible_character_ids
 		reward_check.button_pressed = catalog.reward_eligible(definition)
-		reward_check.disabled = not definition.is_equippable()
+		reward_check.disabled = not (definition.is_equippable() or definition.is_relic())
 		path_label.text = "Source : %s\nDestination : %s\nStatut : %s" % [
 			document.source_path if not document.source_path.is_empty() else "nouvelle working copy",
 			document.destination_path if not document.destination_path.is_empty() else "calculée au moment du plan",
@@ -439,32 +497,43 @@ func _refresh_document_views() -> void:
 		starting_inventory_label.text = "Inventaire initial : référence runtime en lecture seule" \
 			if reference_service.readonly_starting_inventory_reference(definition) \
 			else "Inventaire initial : aucune référence observée"
-	else:
+	elif not has_document:
 		path_label.text = "Aucun objet sélectionné."
 		starting_inventory_label.text = ""
 	card_preview.show_definition(definition)
-	if effect_composer != null:
+	if effect_composer != null and refresh_structure:
 		effect_composer.rebuild()
-	_rebuild_spell_analysis_choices(definition)
-	_updating = false
-	var validation := validation_service.validate(definition, catalog, document.destination_path, document.source_path, document.original_item_id if document.status == ItemStudioDocument.STATUS_SHARED else &"")
-	var analysis := balance_service.analyze(document.preview_copy())
-	var references := reference_service.incoming_references(definition)
+	elif effect_composer != null:
+		effect_composer.refresh_summaries()
+	if refresh_structure:
+		_rebuild_spell_analysis_choices(definition)
+		_updating = false
 	var comparison := _current_comparison(definition)
 	var spell_projection := _selected_spell_projection(definition)
 	analysis_panel.show_report(
-		definition, validation, analysis, references,
-		document.current_fingerprint(), comparison, spell_projection,
+		definition, _cached_validation, _cached_analysis, _cached_references,
+		_cached_fingerprint, comparison, spell_projection,
 	)
 	status_label.text = "%s%d erreur(s), %d avertissement(s)" % [
-		"Modifié · " if document.is_dirty() else "",
-		validation.get("errors", 0), validation.get("warnings", 0),
+		"Modifié · " if _is_dirty else "",
+		_cached_validation.get("errors", 0), _cached_validation.get("warnings", 0),
 	]
 	publish_button.disabled = not has_document or (project_context != null and project_context.edit_scope == StudioProjectContext.SCOPE_RUN_SPECIFIC)
 	draft_button.disabled = not has_document
 	reload_button.disabled = not has_document or document.source == null
-	_on_dirty_changed(document.is_dirty())
 	history_state_changed.emit()
+
+
+func _run_heavy_analyses() -> void:
+	var definition := document.working_copy
+	_cached_validation = validation_service.validate_interactive(
+		definition, catalog, document.destination_path, document.source_path,
+		document.original_item_id if document.status == ItemStudioDocument.STATUS_SHARED else &"",
+	)
+	_cached_analysis = balance_service.analyze(document.preview_copy())
+	_cached_references = reference_service.incoming_references(definition)
+	_cached_fingerprint = document.current_fingerprint()
+	_refresh_document_views(false)
 
 
 func validate_document() -> Dictionary:
@@ -473,13 +542,16 @@ func validate_document() -> Dictionary:
 		document.source_path,
 		document.original_item_id if document.status == ItemStudioDocument.STATUS_SHARED else &"",
 	)
-	_queue_refresh()
+	_cached_validation = report
+	_queue_refresh_flags(REFRESH_LIGHT)
 	return report
 
 
 func test_document() -> Dictionary:
-	var report := balance_service.analyze(document.preview_copy())
-	_queue_refresh()
+	var preview := document.preview_copy()
+	var report := ItemRuntimePreviewService.new().preview_relic(preview) \
+		if preview != null and preview.is_relic() else balance_service.analyze(preview)
+	_queue_refresh_flags(REFRESH_LIGHT)
 	return report
 
 
@@ -524,7 +596,7 @@ func _execute_pending_save(_confirmed_plan: ItemSavePlan) -> void:
 			project_context.bump_generation(&"items")
 		_refresh_catalog(str(result.get("path", "")))
 	_pending_save_mode = &""
-	_queue_refresh()
+	_queue_refresh_flags(REFRESH_LIGHT)
 
 
 func _reload_document() -> void:
@@ -542,13 +614,13 @@ func _show_duplication_dialog() -> void:
 func _focus_comparison() -> void:
 	if comparison_option != null:
 		comparison_option.grab_focus()
-	_queue_refresh()
+	_queue_refresh_flags(REFRESH_LIGHT)
 
 
 func _show_references() -> void:
 	var references := reference_service.incoming_references(document.working_copy)
 	status_label.text = "%d référence(s) entrante(s) ; détail dans le panneau d’analyse." % references.size()
-	_queue_refresh()
+	_queue_refresh_flags(REFRESH_LIGHT)
 
 
 func _rebuild_comparison_choices() -> void:
@@ -643,7 +715,7 @@ func _on_analysis_hero_selected(index: int) -> void:
 	var hero := analysis_hero_option.get_item_metadata(index) as Dictionary
 	ui_state.set_value("comparison_hero", str(hero.get("character_id", "")))
 	ui_state.set_value("comparison_spell", "")
-	_queue_refresh()
+	_queue_refresh_flags(REFRESH_LIGHT)
 
 
 func _on_analysis_spell_selected(index: int) -> void:
@@ -651,14 +723,14 @@ func _on_analysis_spell_selected(index: int) -> void:
 		return
 	var spell := analysis_spell_option.get_item_metadata(index) as Dictionary
 	ui_state.set_value("comparison_spell", str(spell.get("spell_id", "")))
-	_queue_refresh()
+	_queue_refresh_flags(REFRESH_LIGHT)
 
 
 func _on_analysis_target_selected(index: int) -> void:
 	if _updating or index < 0:
 		return
 	ui_state.set_value("comparison_target_hp", analysis_target_option.get_item_metadata(index))
-	_queue_refresh()
+	_queue_refresh_flags(REFRESH_LIGHT)
 
 
 func _discard_and_open_pending() -> void:
@@ -680,6 +752,7 @@ func _on_dirty_custom_action(action: StringName) -> void:
 
 
 func _on_dirty_changed(dirty: bool) -> void:
+	_is_dirty = dirty
 	if project_context != null:
 		project_context.set_dirty(&"items", dirty, {
 			"item_id": str(document.working_copy.item_id) if document.working_copy != null else "",

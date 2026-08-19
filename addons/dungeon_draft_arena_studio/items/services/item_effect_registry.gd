@@ -18,6 +18,7 @@ const STAT_LABELS := {
 }
 
 var _descriptors := {}
+var relic_registry := RelicEffectRegistry.new()
 
 
 func _init() -> void:
@@ -89,6 +90,15 @@ func coverage_report(definitions: Array[ItemDefinition]) -> Dictionary:
 		for index in range(definition.spell_modifiers.size()):
 			var resource := definition.spell_modifiers[index]
 			_register_reachable(resource, definition, "spell_modifiers[%d]" % index, reachable, unsupported)
+		for index in range(definition.reactive_effects.size()):
+			var effect := definition.reactive_effects[index]
+			var key := "ItemReactiveEffectData:%s" % (effect.trigger_id if effect != null else &"null")
+			reachable[key] = "relic.reactive"
+			if effect == null or not relic_registry.validate_effect(effect).is_empty():
+				unsupported.append({
+					"class": key, "item_id": str(definition.item_id),
+					"property_path": "reactive_effects[%d]" % index,
+				})
 		if definition.use_effect != ItemDefinition.UseEffect.NONE:
 			var use_descriptor := descriptor_for_use_effect(definition.use_effect)
 			var key := "ItemDefinition.UseEffect.%d" % definition.use_effect
@@ -104,6 +114,12 @@ func coverage_report(definitions: Array[ItemDefinition]) -> Dictionary:
 
 
 func summarize(resource: Resource) -> Dictionary:
+	if resource is ItemReactiveEffectData:
+		return {
+			"supported": relic_registry.validate_effect(resource as ItemReactiveEffectData).is_empty(),
+			"player": relic_registry.summarize(resource as ItemReactiveEffectData),
+			"technical": relic_registry.technical_summary(resource as ItemReactiveEffectData),
+		}
 	var descriptor := descriptor_for_resource(resource)
 	if descriptor == null:
 		return {

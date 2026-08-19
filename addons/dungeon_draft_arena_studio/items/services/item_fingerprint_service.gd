@@ -19,6 +19,9 @@ static func semantic_snapshot(definition: ItemDefinition) -> Dictionary:
 	var spell_snapshots: Array[Dictionary] = []
 	for modifier in definition.spell_modifiers:
 		spell_snapshots.append(_resource_snapshot(modifier))
+	var reactive_snapshots: Array[Dictionary] = []
+	for effect in definition.reactive_effects:
+		reactive_snapshots.append(_resource_snapshot(effect))
 	return {
 		"item_id": str(definition.item_id),
 		"display_name": definition.display_name,
@@ -38,6 +41,7 @@ static func semantic_snapshot(definition: ItemDefinition) -> Dictionary:
 		),
 		"stat_modifiers": stat_snapshots,
 		"spell_modifiers": spell_snapshots,
+		"reactive_effects": reactive_snapshots,
 		"use_effect": int(definition.use_effect),
 		"use_value": definition.use_value,
 	}

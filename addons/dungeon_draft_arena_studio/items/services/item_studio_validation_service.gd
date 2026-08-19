@@ -5,7 +5,20 @@ extends RefCounted
 const VALID_CHARACTER_IDS: Array[StringName] = [&"elf", &"mage", &"warrior"]
 
 var registry := ItemEffectRegistry.new()
+var relic_registry := RelicEffectRegistry.new()
 var copy_service := ItemDeepCopyService.new()
+
+
+func validate_interactive(
+		definition: ItemDefinition,
+		catalog: ItemStudioCatalogService,
+		target_path := "",
+		source_path := "",
+		published_item_id: StringName = &""
+	) -> Dictionary:
+	return _validate_definition(
+		definition, catalog, target_path, source_path, published_item_id, false,
+	)
 
 
 func validate(
@@ -14,6 +27,19 @@ func validate(
 		target_path := "",
 		source_path := "",
 		published_item_id: StringName = &""
+	) -> Dictionary:
+	return _validate_definition(
+		definition, catalog, target_path, source_path, published_item_id, true,
+	)
+
+
+func _validate_definition(
+		definition: ItemDefinition,
+		catalog: ItemStudioCatalogService,
+		target_path: String,
+		source_path: String,
+		published_item_id: StringName,
+		include_catalog_audit: bool
 	) -> Dictionary:
 	var messages: Array[ItemStudioValidationMessage] = []
 	if definition == null:
@@ -36,6 +62,28 @@ func validate(
 		_error(messages, &"CONSUMABLE_WITHOUT_EFFECT", "Un consommable doit posséder un effet d’usage.", "use_effect")
 	if definition.is_consumable() and definition.is_equippable():
 		_error(messages, &"CONSUMABLE_EQUIPPED", "Un consommable ne peut pas être équipé.", "equipment_slot")
+	if definition.is_relic():
+		if definition.stack_limit != 1:
+			_error(messages, &"RELIC_STACKABLE", "Une relique est unique et non empilable.", "stack_limit")
+		if definition.equipment_slot != ItemDefinition.EquipmentSlot.NONE:
+			_error(messages, &"RELIC_EQUIPPABLE", "Une relique ne possède aucun emplacement d’équipement.", "equipment_slot")
+		if definition.use_effect != ItemDefinition.UseEffect.NONE:
+			_error(messages, &"RELIC_USABLE", "Une relique n’est jamais utilisée ni consommée.", "use_effect")
+		if not definition.stat_modifiers.is_empty() or not definition.spell_modifiers.is_empty():
+			_error(messages, &"RELIC_LEGACY_EFFECT", "Une relique doit utiliser uniquement des blocs réactifs.", "reactive_effects")
+		if definition.reactive_effects.is_empty():
+			_error(messages, &"RELIC_WITHOUT_EFFECT", "Une relique doit posséder au moins un bloc d’effet.", "reactive_effects")
+		if not definition.compatible_character_ids.is_empty():
+			_error(messages, &"RELIC_HERO_COMPATIBILITY", "Une relique est un bonus partagé de la run et ne cible aucun héros à l’acquisition.", "compatible_character_ids")
+	for index in range(definition.reactive_effects.size()):
+		var effect := definition.reactive_effects[index]
+		for issue in relic_registry.validate_effect(effect):
+			_error(
+				messages,
+				StringName(issue.get("code", &"REACTIVE_EFFECT_INVALID")),
+				"Effet réactif %d : %s" % [index + 1, issue.get("message", "combinaison invalide")],
+				"reactive_effects[%d]" % index,
+			)
 	for character_id in definition.compatible_character_ids:
 		if character_id not in VALID_CHARACTER_IDS:
 			_error(messages, &"CHARACTER_UNKNOWN", "Héros compatible introuvable : %s." % character_id, "compatible_character_ids")
@@ -75,14 +123,14 @@ func validate(
 	if definition.description.strip_edges().is_empty():
 		_warning(messages, &"DESCRIPTION_EMPTY", "La description joueur est vide.", "description")
 	if definition.compatible_character_ids.is_empty():
-		_info(messages, &"ALL_HEROES", "L’objet est compatible avec les trois héros.")
+		_info(messages, &"ALL_HEROES", "L’objet est compatible avec tous les héros contrôlés.")
 	if definition.tags.has(FirstRunEquipmentRewardService.POOL_TAG) \
 			and definition.compatible_character_ids.any(func(id): return id not in VALID_CHARACTER_IDS):
 		_warning(messages, &"REWARD_WITHOUT_HERO", "L’objet de récompense ne possède aucun héros compatible reconnu.")
 	var debug_text := "%s %s %s" % [definition.display_name, definition.description, " ".join(_strings(definition.tags))]
 	if ["DEBUG", "CHEAT", "PLACEHOLDER"].any(func(marker): return debug_text.to_upper().contains(marker)):
 		_warning(messages, &"DEBUG_VALUE", "Une valeur DEBUG/CHEAT/PLACEHOLDER ne doit pas fonder l’analyse.")
-	if catalog != null:
+	if include_catalog_audit and catalog != null:
 		var audit := copy_service.audit_catalog(catalog.production_definitions())
 		if not audit.get("valid", false):
 			_warning(messages, &"MUTABLE_RESOURCE_SHARED", "Une sous-ressource mutable est partagée entre objets de production.")
@@ -107,6 +155,9 @@ func _validate_category_and_slot(
 	if definition.category in [ItemDefinition.Category.CONSUMABLE, ItemDefinition.Category.SCROLL] \
 			and definition.equipment_slot != ItemDefinition.EquipmentSlot.NONE:
 		_error(messages, &"CATEGORY_SLOT_MISMATCH", "Un consommable ou parchemin ne possède aucun emplacement.", "equipment_slot")
+	if definition.category == ItemDefinition.Category.RELIC \
+			and definition.equipment_slot != ItemDefinition.EquipmentSlot.NONE:
+		_error(messages, &"CATEGORY_SLOT_MISMATCH", "Une relique ne possède aucun emplacement.", "equipment_slot")
 
 
 func _report(messages: Array[ItemStudioValidationMessage]) -> Dictionary:

@@ -66,10 +66,16 @@ func _effect_vector(definition: ItemDefinition) -> Dictionary:
 			result["spell:range"] = float(result.get("spell:range", 0.0)) + item_modifier.range_bonus
 			result["spell:push"] = float(result.get("spell:push", 0.0)) + item_modifier.push_bonus
 			result["spell:support"] = float(result.get("spell:support", 0.0)) + item_modifier.healing_and_shield_percent
+	for effect in definition.reactive_effects:
+		if effect != null:
+			var key := "reactive:%s:%s:%s" % [effect.trigger_id, effect.target_id, effect.result_id]
+			result[key] = float(result.get(key, 0.0)) + effect.value
 	return result
 
 
 func _has_conditional_effect(definition: ItemDefinition) -> bool:
+	if not definition.reactive_effects.is_empty():
+		return true
 	for modifier in definition.spell_modifiers:
 		if modifier is ItemSpellModifierData:
 			var item_modifier := modifier as ItemSpellModifierData
@@ -83,6 +89,11 @@ func _has_conditional_effect(definition: ItemDefinition) -> bool:
 func _has_downside(definition: ItemDefinition) -> bool:
 	return definition.stat_modifiers.any(func(modifier):
 		return modifier != null and modifier.value < 0.0
+	) or definition.reactive_effects.any(func(effect):
+		return effect != null and effect.result_id in [
+			ItemReactiveEffectData.RESULT_PAY_HP_FLAT,
+			ItemReactiveEffectData.RESULT_PAY_HP_PERCENT,
+		]
 	)
 
 

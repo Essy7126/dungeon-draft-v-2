@@ -19,6 +19,11 @@ enum MovementType {
 
 var _grid: GridData
 var _astar: AStarGrid2D
+var voluntary_cost_modifier: Callable
+
+
+func set_voluntary_cost_modifier(modifier: Callable) -> void:
+	voluntary_cost_modifier = modifier
 
 func _init(grid_data: GridData) -> void:
 	_grid = grid_data
@@ -166,7 +171,11 @@ func get_movement_cost(
 	var base_cost := _grid.get_movement_cost(to_cell)
 	if movement_type != MovementType.VOLUNTARY:
 		return base_cost
-	return base_cost + get_disengagement_cost(unit, from_cell, to_cell)
+	return _apply_voluntary_cost_modifier(
+		unit, from_cell, to_cell,
+		base_cost + get_disengagement_cost(unit, from_cell, to_cell),
+		movement_type,
+	)
 
 
 func get_disengagement_cost(
@@ -236,8 +245,10 @@ func path_cost_breakdown(
 	var mover := _resolve_path_unit(path, unit)
 	var result := {
 		"total": 0,
+		"unmodified_total": 0,
 		"base": 0,
 		"disengagement": 0,
+		"relic_discount": 0,
 		"disengagement_cells": [] as Array[Vector2i],
 		"steps": [],
 	}
@@ -252,10 +263,15 @@ func path_cost_breakdown(
 			disengagement_cost = get_disengagement_cost(
 				mover, previous, current
 			)
-		var transition_cost := base_cost + disengagement_cost
+		var unmodified_cost := base_cost + disengagement_cost
+		var transition_cost := _apply_voluntary_cost_modifier(
+			mover, previous, current, unmodified_cost, movement_type
+		)
 		result.total = int(result.total) + transition_cost
+		result.unmodified_total = int(result.unmodified_total) + unmodified_cost
 		result.base = int(result.base) + base_cost
 		result.disengagement = int(result.disengagement) + disengagement_cost
+		result.relic_discount = int(result.relic_discount) + unmodified_cost - transition_cost
 		if disengagement_cost > 0:
 			(result.disengagement_cells as Array[Vector2i]).append(previous)
 		(result.steps as Array).append({
@@ -263,6 +279,7 @@ func path_cost_breakdown(
 			"to": current,
 			"base": base_cost,
 			"disengagement": disengagement_cost,
+			"relic_discount": unmodified_cost - transition_cost,
 			"total": transition_cost,
 		})
 	return result
@@ -462,7 +479,22 @@ func _movement_cost_with_controllers(
 				disengagement_cost,
 				controller.get_control_cost(),
 			)
-	return result + disengagement_cost
+	return _apply_voluntary_cost_modifier(
+		unit, from_cell, to_cell, result + disengagement_cost, movement_type
+	)
+
+
+func _apply_voluntary_cost_modifier(
+		unit: Unit,
+		from_cell: Vector2i,
+		to_cell: Vector2i,
+		cost: int,
+		movement_type: MovementType
+	) -> int:
+	if movement_type != MovementType.VOLUNTARY \
+			or unit == null or not voluntary_cost_modifier.is_valid():
+		return maxi(0, cost)
+	return maxi(0, int(voluntary_cost_modifier.call(unit, from_cell, to_cell, cost)))
 
 
 func _heap_push(heap: Array, cell: Vector2i, cost: int) -> void:

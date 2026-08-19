@@ -115,6 +115,38 @@ func test_history_undo_redo_and_jump_restore_semantic_snapshots() -> void:
 	assert_eq(document.working_copy.display_name, "Fixture")
 
 
+func test_rapid_numeric_edits_merge_into_one_history_action() -> void:
+	var document := ItemStudioDocument.new()
+	assert_true(document.create_new(_weapon(&"merged_numeric_history")))
+	for value in [2.0, 3.0, 4.0, 5.0]:
+		document.record_edit(
+			"Modifier la valeur d’effet",
+			func(): document.working_copy.stat_modifiers[0].value = value,
+			ItemStudioDocument.CHANGE_VALUE,
+			"stat.value",
+			"stat_value_0",
+		)
+	assert_eq(document.history.get_history_entries().size(), 1)
+	assert_eq(document.working_copy.stat_modifiers[0].value, 5.0)
+	assert_true(document.history.undo())
+	assert_eq(document.working_copy.stat_modifiers[0].value, 1.0)
+	assert_true(document.history.redo())
+	assert_eq(document.working_copy.stat_modifiers[0].value, 5.0)
+
+
+func test_document_refresh_classifies_value_and_structure_changes() -> void:
+	var document := ItemStudioDocument.new()
+	assert_true(document.create_new(_weapon(&"refresh_kinds")))
+	var kinds: Array[StringName] = []
+	document.refresh_requested.connect(func(kind: StringName, _path: String): kinds.append(kind))
+	document.record_edit("Valeur", func(): document.working_copy.display_name = "Valeur")
+	document.record_edit(
+		"Structure", func(): document.working_copy.stat_modifiers.append(ItemStatModifierData.new()),
+		ItemStudioDocument.CHANGE_STRUCTURE, "stat_modifiers",
+	)
+	assert_eq(kinds, [ItemStudioDocument.CHANGE_VALUE, ItemStudioDocument.CHANGE_STRUCTURE])
+
+
 func test_item_effect_add_remove_undo_redo_is_one_logical_history_action() -> void:
 	var document := ItemStudioDocument.new()
 	assert_true(document.create_new(_weapon(&"effect_history")))

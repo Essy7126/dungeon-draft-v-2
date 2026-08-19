@@ -8,6 +8,7 @@ enum Category {
 	ACCESSORY,
 	CONSUMABLE,
 	SCROLL,
+	RELIC,
 }
 
 enum EquipmentSlot {
@@ -47,6 +48,9 @@ enum UseEffect {
 @export var stat_modifiers: Array[ItemStatModifierData] = []
 @export var spell_modifiers: Array[SpellModifier] = []
 
+@export_group("Relic")
+@export var reactive_effects: Array[ItemReactiveEffectData] = []
+
 @export_group("Use")
 @export var use_effect: UseEffect = UseEffect.NONE
 @export var use_value := 0.0
@@ -60,6 +64,14 @@ func is_valid() -> bool:
 		return false
 	if category in [Category.CONSUMABLE, Category.SCROLL] \
 			and is_equippable():
+		return false
+	if category == Category.RELIC and (
+			is_equippable() or stack_limit != 1 or reactive_effects.is_empty()
+			or use_effect != UseEffect.NONE
+			or not compatible_character_ids.is_empty()
+			or not stat_modifiers.is_empty()
+			or not spell_modifiers.is_empty()
+		):
 		return false
 	if category == Category.WEAPON and equipment_slot != EquipmentSlot.WEAPON:
 		return false
@@ -80,6 +92,9 @@ func is_valid() -> bool:
 		if modifier is ItemSpellModifierData \
 				and not (modifier as ItemSpellModifierData).is_valid_modifier():
 			return false
+	for effect in reactive_effects:
+		if effect == null or not effect.is_structurally_valid():
+			return false
 	return true
 
 
@@ -89,6 +104,10 @@ func is_equippable() -> bool:
 
 func is_consumable() -> bool:
 	return category in [Category.CONSUMABLE, Category.SCROLL]
+
+
+func is_relic() -> bool:
+	return category == Category.RELIC
 
 
 func is_compatible_with(character_id: StringName) -> bool:

@@ -29,6 +29,10 @@ func duplicate_definition(source: ItemDefinition) -> ItemDefinition:
 	for modifier in source.spell_modifiers:
 		spell_copies.append(_duplicate_resource(modifier) as SpellModifier)
 	copy.spell_modifiers = spell_copies
+	var reactive_copies: Array[ItemReactiveEffectData] = []
+	for effect in source.reactive_effects:
+		reactive_copies.append(_duplicate_resource(effect) as ItemReactiveEffectData)
+	copy.reactive_effects = reactive_copies
 	copy.use_effect = source.use_effect
 	copy.use_value = source.use_value
 	return copy

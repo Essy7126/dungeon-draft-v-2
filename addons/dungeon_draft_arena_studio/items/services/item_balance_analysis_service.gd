@@ -136,6 +136,11 @@ func _project_spell_values(
 func analyze(definition: ItemDefinition) -> Dictionary:
 	if definition == null:
 		return {"ok": false, "error": "Aucun objet à analyser."}
+	if definition.is_relic():
+		var relic_preview := preview_service.preview_relic(definition)
+		relic_preview["breakpoints"] = breakpoints(definition)
+		relic_preview["budget"] = {"status": "ESTIMATION_EXPLORATOIRE", "score": _exploratory_budget(definition)}
+		return relic_preview
 	if Engine.is_editor_hint():
 		return _analyze_editor_projection(definition)
 	var heroes: Array[Dictionary] = []
@@ -257,6 +262,13 @@ func _numeric_delta(before: Dictionary, after: Dictionary) -> Dictionary:
 
 func breakpoints(definition: ItemDefinition) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
+	for effect in definition.reactive_effects:
+		if effect == null:
+			continue
+		if effect.result_id in [ItemReactiveEffectData.RESULT_CURRENT_AP, ItemReactiveEffectData.RESULT_NEXT_TURN_AP]:
+			result.append({"severity": "FORTE", "code": "RELIC_AP_ECONOMY", "message": "Une relique modifie l’économie de PA ; vérifier sa fréquence."})
+		if effect.result_id == ItemReactiveEffectData.RESULT_REDUCE_VOLUNTARY_MOVE_COST:
+			result.append({"severity": "FORTE", "code": "RELIC_MOVEMENT_BREAKPOINT", "message": "La réduction de déplacement peut élargir les cases accessibles."})
 	for modifier in definition.stat_modifiers:
 		if modifier == null:
 			continue
@@ -400,4 +412,8 @@ func _exploratory_budget(definition: ItemDefinition) -> float:
 			var item_modifier := modifier as ItemSpellModifierData
 			score += item_modifier.damage_percent * 100.0 + item_modifier.healing_and_shield_percent * 100.0
 			score += float(item_modifier.range_bonus * 20 + item_modifier.push_bonus * 10)
+	for effect in definition.reactive_effects:
+		if effect != null:
+			var frequency_weight := 1.0 if effect.frequency_id == ItemReactiveEffectData.FREQUENCY_UNLIMITED else 0.65
+			score += absf(effect.value) * frequency_weight * effect.max_activations
 	return score

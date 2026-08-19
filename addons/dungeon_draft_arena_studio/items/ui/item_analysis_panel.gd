@@ -59,6 +59,35 @@ func show_report(
 	for breakpoint_value in analysis.get("breakpoints", []) as Array:
 		var breakpoint_data := breakpoint_value as Dictionary
 		lines.append("[color=#ffbf69]⚠ %s[/color]" % breakpoint_data.get("message", "Breakpoint"))
+	for scenario_value in analysis.get("scenarios", []) as Array:
+		var scenario := scenario_value as Dictionary
+		lines.append("%s Effet %d — %s" % [
+			"✓" if scenario.get("triggered", false) else "–",
+			int(scenario.get("effect_index", 0)) + 1,
+			scenario.get("reason", ""),
+		])
+		var remaining := int(scenario.get("remaining", -1))
+		lines.append("  Scénario %s · déclencheur %s · cible %s" % [
+			scenario.get("scenario_id", &"runtime"),
+			scenario.get("trigger_id", &"inconnu"),
+			_target_text(scenario.get("target")),
+		])
+		lines.append("  Avant %s → après %s · activations %s" % [
+			str(scenario.get("before", {})), str(scenario.get("after", {})),
+			"sans limite" if remaining < 0 else str(remaining),
+		])
+	var frequency_resets := analysis.get("frequency_resets", {}) as Dictionary
+	if not frequency_resets.is_empty():
+		lines.append("  Réinitialisations : action %s · tour %s · round %s · combat %s" % [
+			"OK" if frequency_resets.get(ItemReactiveEffectData.FREQUENCY_ACTION, false) else "ÉCHEC",
+			"OK" if frequency_resets.get(ItemReactiveEffectData.FREQUENCY_TURN, false) else "ÉCHEC",
+			"OK" if frequency_resets.get(ItemReactiveEffectData.FREQUENCY_ROUND, false) else "ÉCHEC",
+			"OK" if frequency_resets.get(ItemReactiveEffectData.FREQUENCY_COMBAT, false) else "ÉCHEC",
+		])
+	if analysis.has("canonical_unchanged"):
+		lines.append("  Définition canonique : %s" % (
+			"inchangée" if analysis.get("canonical_unchanged", false) else "MODIFIÉE"
+		))
 	if not spell_projection.is_empty():
 		lines.append("\n[b]Sort projeté[/b] — %s · %s · cible à %.0f %% PV" % [
 			spell_projection.get("hero_name", "Héros"),
@@ -98,3 +127,14 @@ func show_report(
 		lines.append("• … %d autre(s)" % (references.size() - 8))
 	lines.append("\n[i]Les diagnostics n’ajustent jamais les données automatiquement.[/i]")
 	content.text = "\n".join(lines)
+
+
+func _target_text(value) -> String:
+	if value is Unit:
+		return str((value as Unit).get_runtime_stable_id())
+	if value is Array:
+		var ids: Array[String] = []
+		for entry in value as Array:
+			ids.append(_target_text(entry))
+		return ", ".join(ids)
+	return "—" if value == null else str(value)

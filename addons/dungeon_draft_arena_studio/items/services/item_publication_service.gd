@@ -43,7 +43,8 @@ func publish(
 
 
 func set_reward_eligibility(document: ItemStudioDocument, enabled: bool) -> bool:
-	if document == null or document.working_copy == null or not document.working_copy.is_equippable():
+	if document == null or document.working_copy == null \
+			or not (document.working_copy.is_equippable() or document.working_copy.is_relic()):
 		return false
 	return document.record_edit(
 		"Ajouter aux récompenses" if enabled else "Retirer des récompenses",

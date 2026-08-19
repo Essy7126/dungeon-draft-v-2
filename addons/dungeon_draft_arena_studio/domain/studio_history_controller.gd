@@ -12,6 +12,7 @@ var max_steps := DEFAULT_MAX_STEPS
 var _entries: Array[Dictionary] = []
 var _current_index := 0
 var _saved_fingerprint := ""
+var _base_fingerprint := ""
 var _fingerprint_provider: Callable
 var _snapshot_applier: Callable
 var _last_dirty := false
@@ -32,7 +33,8 @@ func record(
 		action_name: String,
 		before: Dictionary,
 		after: Dictionary,
-		already_applied := true
+		already_applied := true,
+		merge_key := ""
 	) -> bool:
 	if action_name.strip_edges().is_empty() or before == after:
 		_notify_changed()
@@ -41,7 +43,12 @@ func record(
 		_entries.resize(_current_index)
 	var stored_before := before.duplicate(true)
 	var stored_after := after.duplicate(true)
-	undo_redo.create_action(action_name, UndoRedo.MERGE_DISABLE)
+	var can_merge := not merge_key.is_empty() and _current_index == _entries.size() \
+		and not _entries.is_empty() and str(_entries[-1].get("merge_key", "")) == merge_key
+	undo_redo.create_action(
+		action_name,
+		UndoRedo.MERGE_ENDS if can_merge else UndoRedo.MERGE_DISABLE,
+	)
 	undo_redo.add_do_method(
 		Callable(self, "_apply_snapshot").bind(stored_after, 1)
 	)
@@ -49,14 +56,19 @@ func record(
 		Callable(self, "_apply_snapshot").bind(stored_before, -1)
 	)
 	undo_redo.commit_action(not already_applied)
-	_entries.append({
-		"name": action_name,
-		"before": stored_before,
-		"after": stored_after,
-		"before_fingerprint": _fingerprint(before),
-		"after_fingerprint": _fingerprint(after),
-	})
-	_current_index += 1
+	if can_merge:
+		_entries[-1]["after"] = stored_after
+		_entries[-1]["after_fingerprint"] = _fingerprint(after)
+	else:
+		_entries.append({
+			"name": action_name,
+			"before": stored_before,
+			"after": stored_after,
+			"before_fingerprint": _fingerprint(before),
+			"after_fingerprint": _fingerprint(after),
+			"merge_key": merge_key,
+		})
+		_current_index += 1
 	if _entries.size() > max_steps:
 		_entries.pop_front()
 		_current_index = maxi(0, _current_index - 1)
@@ -133,6 +145,8 @@ func jump_to(index: int) -> bool:
 
 func set_saved_fingerprint(value: String) -> void:
 	_saved_fingerprint = value
+	if _entries.is_empty():
+		_base_fingerprint = current_fingerprint()
 	_notify_changed(true)
 
 
@@ -141,8 +155,12 @@ func get_saved_fingerprint() -> String:
 
 
 func is_at_saved_state() -> bool:
-	return not _saved_fingerprint.is_empty() \
-		and current_fingerprint() == _saved_fingerprint
+	if _saved_fingerprint.is_empty():
+		return false
+	var history_fingerprint := _base_fingerprint
+	if _current_index > 0 and _current_index <= _entries.size():
+		history_fingerprint = str(_entries[_current_index - 1].get("after_fingerprint", ""))
+	return history_fingerprint == _saved_fingerprint
 
 
 func current_fingerprint() -> String:

@@ -40,3 +40,10 @@ func show_definition(definition: ItemDefinition) -> void:
 	name_label.text = definition.display_name if definition != null else "Aucun objet"
 	rarity_label.text = str(definition.rarity).to_upper() if definition != null else ""
 	description_label.text = definition.description if definition != null else "Sélectionnez un objet dans le catalogue."
+	if definition != null and definition.is_relic():
+		var summaries: Array[String] = []
+		var registry := RelicEffectRegistry.new()
+		for effect in definition.reactive_effects:
+			if effect != null:
+				summaries.append(registry.summarize(effect))
+		description_label.text += "\n\nACTIVE POUR LA RUN\n" + "\n".join(summaries)

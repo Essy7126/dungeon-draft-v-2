@@ -30,7 +30,7 @@ func reset(
 	if _catalog == null or not _catalog.rebuild_index():
 		return false
 	for definition in _catalog.get_definitions():
-		if definition != null and definition.is_equippable() \
+		if definition != null and (definition.is_equippable() or definition.is_relic()) \
 				and definition.tags.has(pool_tag):
 			_eligible_ids.append(definition.item_id)
 	_eligible_ids.sort_custom(func(a: StringName, b: StringName) -> bool:
@@ -63,7 +63,7 @@ func build_options(
 		var definition := _catalog.get_definition(candidate)
 		if owned.has(candidate) or _offered_ids.has(candidate) \
 				or definition == null \
-				or _compatible_character_ids(definition, character_states).is_empty():
+				or (not definition.is_relic() and _compatible_character_ids(definition, character_states).is_empty()):
 			continue
 		available.append(candidate)
 	var selected: Array[StringName] = []
@@ -92,7 +92,7 @@ func build_options(
 			if selected.has(candidate) or owned.has(candidate) \
 					or _offered_ids.has(candidate) \
 					or definition == null \
-					or _compatible_character_ids(definition, character_states).is_empty():
+					or (not definition.is_relic() and _compatible_character_ids(definition, character_states).is_empty()):
 				continue
 			selected.append(candidate)
 	if selected.size() != 2:
@@ -135,16 +135,18 @@ func apply(
 	):
 		return _failure("REWARD_OPTION_INVALID", "Cet équipement n'est pas proposé.")
 	var definition := _catalog.get_definition(item_id) if _catalog != null else null
+	if definition != null and definition.is_relic():
+		character_id = &""
 	if character_id == &"":
 		var selected_option := options.filter(func(option):
 			return StringName((option as Dictionary).get("item_id", &"")) == item_id
 		)[0] as Dictionary
 		var compatible_ids := selected_option.get("compatible_character_ids", []) as Array
-		if not compatible_ids.is_empty():
+		if definition != null and not definition.is_relic() and not compatible_ids.is_empty():
 			character_id = StringName(compatible_ids[0])
 	var state := _find_state(character_states, character_id)
-	if definition == null or state == null or state.unit == null \
-			or not definition.is_compatible_with(character_id):
+	if definition == null or (not definition.is_relic() and (state == null or state.unit == null)) \
+			or (not definition.is_relic() and not definition.is_compatible_with(character_id)):
 		return _failure("CHARACTER_INCOMPATIBLE", "Ce héros ne peut pas utiliser cet équipement.")
 	if inventory == null:
 		return _failure("EQUIPMENT_STATE_INVALID", "Inventaire indisponible.")
@@ -250,7 +252,7 @@ func restore_snapshot(
 		return false
 	for item_id in eligible:
 		var definition := catalog.get_definition(item_id)
-		if definition == null or not definition.is_equippable() \
+		if definition == null or not (definition.is_equippable() or definition.is_relic()) \
 				or not definition.tags.has(POOL_TAG):
 			return false
 	for item_id in deck + offered + discarded:
@@ -267,7 +269,7 @@ func restore_snapshot(
 		for item_id in ids:
 			var definition := catalog.get_definition(item_id)
 			var compatible := _compatible_character_ids(definition, character_states)
-			if definition == null or compatible.is_empty():
+			if definition == null or (not definition.is_relic() and compatible.is_empty()):
 				return false
 			options.append({
 				"reward_id": item_id,
@@ -340,6 +342,8 @@ func _compatible_character_ids(
 	) -> Array[StringName]:
 	var result: Array[StringName] = []
 	if definition == null:
+		return result
+	if definition.is_relic():
 		return result
 	for value in character_states:
 		var state := value as CharacterRunState

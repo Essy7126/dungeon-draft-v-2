@@ -28,7 +28,7 @@ func _ready() -> void:
 	search_edit.tooltip_text = "Recherche dans le nom, l’identifiant, les tags et le chemin"
 	search_edit.text_changed.connect(func(_value): _refresh())
 	add_child(search_edit)
-	category_filter = _filter(["Toutes catégories", "Arme", "Armure", "Accessoire", "Consommable", "Parchemin"])
+	category_filter = _filter(["Toutes catégories", "Arme", "Armure", "Accessoire", "Consommable", "Parchemin", "Relique"])
 	rarity_filter = _filter(["Toutes raretés", "common", "uncommon", "rare"])
 	slot_filter = _filter(["Tous emplacements", "Aucun", "Arme", "Armure", "Accessoire"])
 	hero_filter = _filter(["Tous les héros", "Elfe", "Mage", "Guerrier", "Universel"])
