@@ -11,6 +11,25 @@ const REFRESH_LIGHT := 1
 const REFRESH_STRUCTURE := 2
 const REFRESH_HEAVY := 4
 const ANALYSIS_DELAY_SECONDS := 0.25
+const ACCENT_COLOR := Color(0.48, 0.86, 1.0)
+const MUTED_COLOR := Color(0.72, 0.77, 0.84)
+const DIRTY_COLOR := Color(1.0, 0.75, 0.41)
+const NARROW_BREAKPOINT := 1080.0
+const SECTION_PRESENTATION := 0
+const SECTION_EQUIPMENT := 1
+const SECTION_EFFECTS := 2
+const SECTION_AVAILABILITY := 3
+const SECTION_ADVANCED := 4
+const STATUS_PILL_COLORS := {
+	&"SHARED": Color(0.36, 0.78, 1.0),
+	&"DRAFT": Color(0.98, 0.72, 0.28),
+	&"NEW": Color(0.68, 0.60, 1.0),
+}
+const STATUS_PILL_LABELS := {
+	&"SHARED": "PRODUCTION",
+	&"DRAFT": "BROUILLON",
+	&"NEW": "NOUVEAU",
+}
 
 var editor_interface = null
 var editor_undo_redo = null
@@ -29,8 +48,14 @@ var ui_state := ItemStudioUiStateService.new()
 
 var catalog_panel: ItemCatalogPanel
 var card_preview: ItemCardPreview
+var card_full_preview: ItemCardPreview
 var analysis_panel: ItemAnalysisPanel
 var effect_composer: ItemEffectComposer
+var splitter: HSplitContainer
+var section_tabs: TabContainer
+var catalog_toggle: Button
+var header_identity_label: Label
+var header_status_label: Label
 var status_label: Label
 var scope_label: Label
 var path_label: Label
@@ -54,8 +79,6 @@ var analysis_hero_option: OptionButton
 var analysis_spell_option: OptionButton
 var analysis_target_option: OptionButton
 var publish_button: Button
-var draft_button: Button
-var reload_button: Button
 var creation_dialog: ItemCreationDialog
 var duplication_dialog: ItemDuplicationDialog
 var save_plan_dialog: ItemSavePlanDialog
@@ -74,6 +97,8 @@ var _cached_analysis := {}
 var _cached_references: Array[String] = []
 var _cached_fingerprint := ""
 var _is_dirty := false
+var _status_message := ""
+var _narrow_layout := false
 
 
 func setup(
@@ -121,104 +146,236 @@ func _exit_tree() -> void:
 func _build_interface() -> void:
 	var root := VBoxContainer.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("separation", 5)
+	root.add_theme_constant_override("separation", 6)
 	add_child(root)
 	root.add_child(_build_action_bar())
-	var splitter := HSplitContainer.new()
+	splitter = HSplitContainer.new()
 	splitter.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	splitter.size_flags_stretch_ratio = 2.5
 	root.add_child(splitter)
 	catalog_panel = ItemCatalogPanel.new()
 	catalog_panel.entry_requested.connect(_on_catalog_entry_requested)
 	catalog_panel.filters_changed.connect(func(_filters): _remember_ui_state())
 	splitter.add_child(catalog_panel)
-	var inspector_scroll := ScrollContainer.new()
-	inspector_scroll.custom_minimum_size.x = 510
-	inspector_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	splitter.add_child(inspector_scroll)
-	var inspector := VBoxContainer.new()
-	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	inspector.add_theme_constant_override("separation", 8)
-	inspector_scroll.add_child(inspector)
-	_build_inspector(inspector)
-	var right_scroll := ScrollContainer.new()
-	right_scroll.custom_minimum_size.x = 330
-	splitter.add_child(right_scroll)
-	var right := VBoxContainer.new()
-	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_scroll.add_child(right)
+	splitter.add_child(_build_editor_column())
+	analysis_panel = ItemAnalysisPanel.new()
+	root.add_child(analysis_panel)
+	_build_analysis_controls()
+	resized.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
+
+
+func _build_editor_column() -> Control:
+	var column := VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.custom_minimum_size.x = 360
+	column.add_theme_constant_override("separation", 8)
+	column.add_child(_build_editor_header())
+	section_tabs = TabContainer.new()
+	section_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	section_tabs.tab_changed.connect(func(_index): _remember_ui_state())
+	column.add_child(section_tabs)
+	_build_presentation_section(_add_section_tab("Présentation"))
+	_build_equipment_section(_add_section_tab("Équipement"))
+	_build_effects_section(_add_section_tab("Effets"))
+	_build_availability_section(_add_section_tab("Disponibilité"))
+	_build_advanced_section(_add_section_tab("Avancé"))
+	return column
+
+
+func _build_editor_header() -> Control:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.137, 0.153, 0.184)
+	style.set_corner_radius_all(6)
+	style.border_width_bottom = 2
+	style.border_color = Color(ACCENT_COLOR.r, ACCENT_COLOR.g, ACCENT_COLOR.b, 0.35)
+	style.set_content_margin_all(12)
+	panel.add_theme_stylebox_override("panel", style)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	panel.add_child(row)
+	catalog_toggle = Button.new()
+	catalog_toggle.text = "☰"
+	catalog_toggle.tooltip_text = "Afficher ou masquer le catalogue"
+	catalog_toggle.visible = false
+	catalog_toggle.pressed.connect(_toggle_catalog)
+	row.add_child(catalog_toggle)
 	card_preview = ItemCardPreview.new()
-	right.add_child(card_preview)
-	var projection_grid := _grid(right)
-	analysis_hero_option = _option(projection_grid, "Héros analysé", [])
+	card_preview.compact = true
+	card_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(card_preview)
+	var meta := VBoxContainer.new()
+	meta.alignment = BoxContainer.ALIGNMENT_CENTER
+	meta.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	meta.size_flags_stretch_ratio = 0.6
+	meta.add_theme_constant_override("separation", 5)
+	row.add_child(meta)
+	header_status_label = Label.new()
+	header_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header_status_label.size_flags_horizontal = Control.SIZE_SHRINK_END
+	header_status_label.add_theme_font_size_override("font_size", 11)
+	meta.add_child(header_status_label)
+	header_identity_label = Label.new()
+	header_identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	header_identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	header_identity_label.clip_text = true
+	header_identity_label.custom_minimum_size.x = 120
+	header_identity_label.add_theme_color_override("font_color", MUTED_COLOR)
+	meta.add_child(header_identity_label)
+	return panel
+
+
+func _add_section_tab(tab_title: String) -> VBoxContainer:
+	var scroll := ScrollContainer.new()
+	scroll.name = tab_title
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	section_tabs.add_child(scroll)
+	section_tabs.set_tab_title(section_tabs.get_tab_count() - 1, tab_title)
+	var margin := MarginContainer.new()
+	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_bottom", 16)
+	scroll.add_child(margin)
+	var box := VBoxContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", 14)
+	margin.add_child(box)
+	return box
+
+
+func _build_analysis_controls() -> void:
+	var host := analysis_panel.controls_container
+	analysis_hero_option = _inline_option(host, "Héros analysé", [])
 	analysis_hero_option.tooltip_text = "Héros compatible utilisé par la projection isolée"
 	analysis_hero_option.item_selected.connect(_on_analysis_hero_selected)
-	analysis_spell_option = _option(projection_grid, "Sort analysé", [])
+	analysis_spell_option = _inline_option(host, "Sort analysé", [])
 	analysis_spell_option.tooltip_text = "Sort réel du loadout de production du héros"
 	analysis_spell_option.item_selected.connect(_on_analysis_spell_selected)
-	analysis_target_option = _option(projection_grid, "Profil cible", [
+	analysis_target_option = _inline_option(host, "Profil cible", [
 		"Saine · 100 % PV", "Blessée · 50 % PV", "Critique · 35 % PV", "Presque vaincue · 1 % PV",
 	])
 	for target_index in analysis_target_option.item_count:
 		analysis_target_option.set_item_metadata(target_index, [1.0, 0.5, 0.35, 0.01][target_index])
 	analysis_target_option.item_selected.connect(_on_analysis_target_selected)
-	comparison_option = OptionButton.new()
+	comparison_option = _inline_option(host, "Comparer avec", [])
 	comparison_option.tooltip_text = "Comparer avec un objet de même catégorie, emplacement et audience"
-	comparison_option.item_selected.connect(func(_index): _queue_refresh_flags(REFRESH_LIGHT))
-	right.add_child(comparison_option)
-	analysis_panel = ItemAnalysisPanel.new()
-	analysis_panel.custom_minimum_size.y = 500
-	right.add_child(analysis_panel)
+	comparison_option.custom_minimum_size.x = 230
+	comparison_option.item_selected.connect(func(_index):
+		analysis_panel.open_section(ItemAnalysisPanel.SECTION_COMPARISON)
+		_queue_refresh_flags(REFRESH_LIGHT)
+	)
+
+
+func _inline_option(parent: Control, label_text: String, values: Array) -> OptionButton:
+	var label := Label.new()
+	label.text = label_text
+	label.add_theme_color_override("font_color", MUTED_COLOR)
+	parent.add_child(label)
+	var option := OptionButton.new()
+	option.clip_text = true
+	option.custom_minimum_size.x = 150
+	for value in values:
+		option.add_item(str(value))
+	parent.add_child(option)
+	return option
+
+
+func open_section(section: int) -> void:
+	if section_tabs == null:
+		return
+	section_tabs.current_tab = clampi(section, 0, section_tabs.get_tab_count() - 1)
+
+
+func _toggle_catalog() -> void:
+	if catalog_panel != null:
+		catalog_panel.visible = not catalog_panel.visible
+
+
+func _apply_responsive_layout() -> void:
+	if catalog_panel == null or catalog_toggle == null:
+		return
+	var narrow := size.x > 0.0 and size.x < NARROW_BREAKPOINT
+	catalog_panel.custom_minimum_size.x = 240 if narrow else 264
+	if narrow == _narrow_layout:
+		return
+	_narrow_layout = narrow
+	catalog_toggle.visible = narrow
+	catalog_panel.visible = not narrow
 
 
 func _build_action_bar() -> Control:
 	var panel := PanelContainer.new()
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_top", 5)
+	margin.add_theme_constant_override("margin_bottom", 5)
+	panel.add_child(margin)
 	var bar := HFlowContainer.new()
-	bar.add_theme_constant_override("separation", 5)
-	panel.add_child(bar)
+	bar.add_theme_constant_override("separation", 6)
+	margin.add_child(bar)
 	_action_button(bar, "Nouveau", func(): creation_dialog.open_dialog(), "Créer une working copy sans écrire sur disque")
 	_action_button(bar, "Dupliquer", _show_duplication_dialog, "Dupliquer vers un brouillon isolé")
-	reload_button = _action_button(bar, "Recharger", _reload_document, "Abandonner explicitement les changements de la working copy")
-	draft_button = _action_button(bar, "Enregistrer en brouillon", save_as_draft, "Écrire sous res://data/items/drafts")
 	publish_button = _action_button(bar, "Publier", publish, "Publier dans un dossier auto-découvert par le catalogue runtime")
-	_action_button(bar, "Valider", validate_document, "Valider sans modifier les données")
-	_action_button(bar, "Tester", test_document, "Exécuter une projection runtime isolée")
-	_action_button(bar, "Comparer", _focus_comparison, "Comparer prudemment des effets compatibles")
-	_action_button(bar, "Références", _show_references, "Afficher les références entrantes observées")
+	bar.add_child(_build_secondary_menu())
 	scope_label = Label.new()
 	scope_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scope_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	scope_label.add_theme_color_override("font_color", MUTED_COLOR)
 	bar.add_child(scope_label)
 	status_label = Label.new()
 	bar.add_child(status_label)
 	return panel
 
 
-func _build_inspector(parent: VBoxContainer) -> void:
-	var title := Label.new()
-	title.text = "ÉDITEUR D’OBJET — WORKING COPY"
-	title.add_theme_font_size_override("font_size", 17)
-	parent.add_child(title)
-	var identity := _section(parent, "IDENTITÉ ET PRÉSENTATION")
+func _build_secondary_menu() -> MenuButton:
+	var menu := MenuButton.new()
+	menu.text = "⋯"
+	menu.tooltip_text = "Actions secondaires de l’objet · Sauver, Valider et Tester restent dans la barre du Studio"
+	menu.custom_minimum_size.x = 34
+	var popup := menu.get_popup()
+	popup.add_item("Recharger depuis le disque", 0)
+	popup.add_item("Comparer avec un autre objet…", 1)
+	popup.add_item("Voir les références entrantes", 2)
+	popup.id_pressed.connect(func(id):
+		match id:
+			0: _reload_document()
+			1: _focus_comparison()
+			2: _show_references()
+	)
+	popup.about_to_popup.connect(func():
+		popup.set_item_disabled(
+			popup.get_item_index(0),
+			document.working_copy == null or document.source == null,
+		)
+	)
+	return menu
+
+
+func _build_presentation_section(parent: VBoxContainer) -> void:
+	var identity := _section(parent, "IDENTITÉ")
 	var identity_grid := _grid(identity)
-	id_edit = _line(identity_grid, "item_id", "Identifiant runtime stable")
-	_bind_text_transaction(id_edit, "Modifier l’identifiant", func(value): document.working_copy.item_id = StringName(value))
 	name_edit = _line(identity_grid, "Nom joueur", "Nom affiché en français")
 	_bind_text_transaction(name_edit, "Modifier le nom", func(value): document.working_copy.display_name = value)
 	rarity_option = _option(identity_grid, "Rareté", ["common", "uncommon", "rare", "epic", "legendary"])
 	rarity_option.item_selected.connect(func(index): _record("Modifier la rareté", func(): document.working_copy.rarity = StringName(rarity_option.get_item_text(index))))
-	fx_edit = _line(identity_grid, "Profil VFX", "Profil de présentation des récompenses")
-	_bind_text_transaction(fx_edit, "Modifier le profil VFX", func(value): document.working_copy.reward_fx_profile = StringName(value))
-	audio_edit = _line(identity_grid, "Profil audio", "Profil audio des récompenses")
-	_bind_text_transaction(audio_edit, "Modifier le profil audio", func(value): document.working_copy.reward_audio_profile = StringName(value))
-	var description_label := Label.new()
-	description_label.text = "Description joueur"
-	identity.add_child(description_label)
+	var description := _section(parent, "DESCRIPTION JOUEUR")
 	description_edit = TextEdit.new()
-	description_edit.custom_minimum_size.y = 80
+	description_edit.custom_minimum_size.y = 110
 	description_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	_bind_text_edit_transaction(description_edit, "Modifier la description", func(value): document.working_copy.description = value)
-	identity.add_child(description_edit)
-	var inventory := _section(parent, "INVENTAIRE, ÉQUIPEMENT ET ACQUISITION")
+	description.add_child(description_edit)
+	var preview := _section(parent, "CARTE DE RÉCOMPENSE")
+	card_full_preview = ItemCardPreview.new()
+	preview.add_child(card_full_preview)
+
+
+func _build_equipment_section(parent: VBoxContainer) -> void:
+	var inventory := _section(parent, "INVENTAIRE ET ÉQUIPEMENT")
 	var inventory_grid := _grid(inventory)
 	category_option = _option(inventory_grid, "Catégorie", CATEGORY_LABELS)
 	category_option.item_selected.connect(_on_category_selected)
@@ -226,16 +383,25 @@ func _build_inspector(parent: VBoxContainer) -> void:
 	slot_option.item_selected.connect(func(index): _record("Modifier l’emplacement", func(): document.working_copy.equipment_slot = index - 1))
 	stack_spin = _spin(inventory_grid, "Taille de pile", 1.0, 99.0, 1.0)
 	stack_spin.value_changed.connect(func(value): _record("Modifier la pile", func(): document.working_copy.stack_limit = int(value), "stack_limit"))
-	use_option = _option(inventory_grid, "Effet d’usage", USE_LABELS)
+	var usage := _section(parent, "USAGE")
+	var usage_grid := _grid(usage)
+	use_option = _option(usage_grid, "Effet d’usage", USE_LABELS)
 	use_option.item_selected.connect(func(index): _record("Modifier l’effet d’usage", func(): document.working_copy.use_effect = index))
-	use_value_spin = _spin(inventory_grid, "Valeur d’usage", 0.0, 9999.0, 1.0)
+	use_value_spin = _spin(usage_grid, "Valeur d’usage", 0.0, 9999.0, 1.0)
 	use_value_spin.value_changed.connect(func(value): _record("Modifier la valeur d’usage", func(): document.working_copy.use_value = value, "use_value"))
-	tags_edit = _line(inventory_grid, "Tags", "Tags séparés par des virgules")
-	_bind_text_transaction(tags_edit, "Modifier les tags", func(value): document.working_copy.tags = _parse_string_names(value))
+
+
+func _build_effects_section(parent: VBoxContainer) -> void:
+	effect_composer = ItemEffectComposer.new()
+	effect_composer.setup(document)
+	effect_composer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(effect_composer)
+
+
+func _build_availability_section(parent: VBoxContainer) -> void:
+	var audience := _section(parent, "HÉROS COMPATIBLES")
 	var compatibility := HFlowContainer.new()
-	var compatibility_label := Label.new()
-	compatibility_label.text = "Compatibilité :"
-	compatibility.add_child(compatibility_label)
+	compatibility.add_theme_constant_override("h_separation", 14)
 	for hero_id in [&"elf", &"mage", &"warrior"]:
 		var check := CheckBox.new()
 		check.text = {&"elf": "Elfe", &"mage": "Mage", &"warrior": "Guerrier"}[hero_id]
@@ -243,27 +409,44 @@ func _build_inspector(parent: VBoxContainer) -> void:
 		check.toggled.connect(func(enabled): _set_hero_compatibility(hero_id, enabled))
 		hero_checks[hero_id] = check
 		compatibility.add_child(check)
-	inventory.add_child(compatibility)
+	audience.add_child(compatibility)
+	var acquisition := _section(parent, "ACQUISITION")
 	reward_check = CheckBox.new()
 	reward_check.text = "Éligible aux récompenses du premier run"
 	reward_check.tooltip_text = "Contrôle explicitement le tag first_run_equipment_reward"
 	reward_check.toggled.connect(_on_reward_toggled)
-	inventory.add_child(reward_check)
+	acquisition.add_child(reward_check)
 	starting_inventory_label = Label.new()
 	starting_inventory_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	inventory.add_child(starting_inventory_label)
-	var effects := _section(parent, "EFFETS RUNTIME")
-	effect_composer = ItemEffectComposer.new()
-	effect_composer.setup(document)
-	effects.add_child(effect_composer)
-	var advanced := _section(parent, "INTÉGRATION ET AVANCÉ")
+	starting_inventory_label.add_theme_color_override("font_color", MUTED_COLOR)
+	acquisition.add_child(starting_inventory_label)
+	var tags := _section(parent, "BALISES")
+	var tags_grid := _grid(tags)
+	tags_edit = _line(tags_grid, "Tags", "Tags séparés par des virgules")
+	_bind_text_transaction(tags_edit, "Modifier les tags", func(value): document.working_copy.tags = _parse_string_names(value))
+
+
+func _build_advanced_section(parent: VBoxContainer) -> void:
+	var identity := _section(parent, "IDENTIFIANT RUNTIME")
+	var identity_grid := _grid(identity)
+	id_edit = _line(identity_grid, "item_id", "Identifiant runtime stable")
+	_bind_text_transaction(id_edit, "Modifier l’identifiant", func(value): document.working_copy.item_id = StringName(value))
+	var profiles := _section(parent, "PROFILS DE PRÉSENTATION")
+	var profiles_grid := _grid(profiles)
+	fx_edit = _line(profiles_grid, "Profil VFX", "Profil de présentation des récompenses")
+	_bind_text_transaction(fx_edit, "Modifier le profil VFX", func(value): document.working_copy.reward_fx_profile = StringName(value))
+	audio_edit = _line(profiles_grid, "Profil audio", "Profil audio des récompenses")
+	_bind_text_transaction(audio_edit, "Modifier le profil audio", func(value): document.working_copy.reward_audio_profile = StringName(value))
+	var integration := _section(parent, "INTÉGRATION")
 	path_label = Label.new()
 	path_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	advanced.add_child(path_label)
+	path_label.add_theme_color_override("font_color", MUTED_COLOR)
+	integration.add_child(path_label)
 	var note := Label.new()
 	note.text = "Les icônes et cartes restent partagées comme assets immuables ; les sous-ressources d’effets sont dupliquées en profondeur. Aucun bouton de suppression n’est exposé en V1."
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	advanced.add_child(note)
+	note.add_theme_color_override("font_color", MUTED_COLOR)
+	integration.add_child(note)
 
 
 func _build_dialogs() -> void:
@@ -302,7 +485,8 @@ func _refresh_catalog(selected_path := "") -> void:
 	reference_service.invalidate_cache()
 	var rebuild := catalog.rebuild()
 	if not rebuild.get("ok", false):
-		status_label.text = "Catalogue invalide : %s" % rebuild.get("error", "erreur") if status_label != null else ""
+		_status_message = "Catalogue invalide : %s" % rebuild.get("error", "erreur")
+		_refresh_status_label(document.working_copy != null)
 		return
 	catalog_panel.set_entries(catalog.entries(true))
 	_rebuild_comparison_choices()
@@ -325,13 +509,14 @@ func _open_catalog_entry(entry: Dictionary) -> void:
 		return
 	document.open_definition(definition, StringName(entry.get("status", ItemStudioDocument.STATUS_SHARED)))
 	_pending_catalog_entry.clear()
+	_status_message = ""
 	_refresh_catalog(definition.resource_path)
 	_queue_refresh()
 
 
 func _create_document(data: Dictionary) -> void:
 	if document.is_dirty():
-		status_label.text = "Enregistrez ou abandonnez la working copy avant de créer un objet."
+		_set_status_message("Enregistrez ou abandonnez la working copy avant de créer un objet.")
 		return
 	var definition := ItemDefinition.new()
 	definition.item_id = StringName(data.get("item_id", &""))
@@ -414,7 +599,7 @@ func _on_reward_toggled(enabled: bool) -> void:
 	if _updating or document.working_copy == null:
 		return
 	if not publication_service.set_reward_eligibility(document, enabled):
-		status_label.text = "Seuls les équipements et les reliques peuvent rejoindre ce pool de récompenses."
+		_set_status_message("Seuls les équipements et les reliques peuvent rejoindre ce pool de récompenses.")
 
 
 func _record(action: String, mutator: Callable, merge_key := "") -> void:
@@ -501,6 +686,8 @@ func _refresh_document_views(refresh_structure := false) -> void:
 		path_label.text = "Aucun objet sélectionné."
 		starting_inventory_label.text = ""
 	card_preview.show_definition(definition)
+	card_full_preview.show_definition(definition)
+	_refresh_header(definition)
 	if effect_composer != null and refresh_structure:
 		effect_composer.rebuild()
 	elif effect_composer != null:
@@ -514,14 +701,55 @@ func _refresh_document_views(refresh_structure := false) -> void:
 		definition, _cached_validation, _cached_analysis, _cached_references,
 		_cached_fingerprint, comparison, spell_projection,
 	)
-	status_label.text = "%s%d erreur(s), %d avertissement(s)" % [
-		"Modifié · " if _is_dirty else "",
-		_cached_validation.get("errors", 0), _cached_validation.get("warnings", 0),
-	]
+	_refresh_status_label(has_document)
 	publish_button.disabled = not has_document or (project_context != null and project_context.edit_scope == StudioProjectContext.SCOPE_RUN_SPECIFIC)
-	draft_button.disabled = not has_document
-	reload_button.disabled = not has_document or document.source == null
 	history_state_changed.emit()
+
+
+func _refresh_header(definition: ItemDefinition) -> void:
+	if header_identity_label == null:
+		return
+	if definition == null:
+		header_identity_label.text = ""
+		header_status_label.text = ""
+		header_status_label.remove_theme_stylebox_override("normal")
+		return
+	header_identity_label.text = "%s · %s" % [
+		definition.item_id,
+		CATEGORY_LABELS[clampi(definition.category, 0, CATEGORY_LABELS.size() - 1)],
+	]
+	var status_text: String = STATUS_PILL_LABELS.get(document.status, str(document.status))
+	var pill_color: Color = STATUS_PILL_COLORS.get(document.status, MUTED_COLOR)
+	if _is_dirty:
+		status_text += " · MODIFIÉ"
+		pill_color = DIRTY_COLOR
+	header_status_label.text = "  %s  " % status_text
+	header_status_label.add_theme_color_override("font_color", pill_color)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(pill_color.r, pill_color.g, pill_color.b, 0.14)
+	style.border_color = Color(pill_color.r, pill_color.g, pill_color.b, 0.55)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(9)
+	style.set_content_margin_all(3)
+	header_status_label.add_theme_stylebox_override("normal", style)
+
+
+func _refresh_status_label(has_document: bool) -> void:
+	if status_label == null:
+		return
+	if not _status_message.is_empty():
+		status_label.text = _status_message
+		status_label.add_theme_color_override("font_color", MUTED_COLOR)
+		return
+	status_label.text = "" if not has_document else ("Modifié" if _is_dirty else "Sauvegardé")
+	status_label.add_theme_color_override(
+		"font_color", DIRTY_COLOR if _is_dirty else MUTED_COLOR
+	)
+
+
+func _set_status_message(message: String) -> void:
+	_status_message = message
+	_queue_refresh_flags(REFRESH_LIGHT)
 
 
 func _run_heavy_analyses() -> void:
@@ -561,7 +789,7 @@ func save_as_draft() -> void:
 
 func publish() -> void:
 	if project_context != null and project_context.edit_scope == StudioProjectContext.SCOPE_RUN_SPECIFIC:
-		status_label.text = "RUN_SPECIFIC est différé : aucune autorité de catalogue par run n’existe."
+		_set_status_message("RUN_SPECIFIC est différé : aucune autorité de catalogue par run n’existe.")
 		return
 	_show_save_plan(&"PUBLISH")
 
@@ -588,9 +816,9 @@ func _execute_pending_save(_confirmed_plan: ItemSavePlan) -> void:
 		var projection := publication_service.eligibility_projection(document, catalog)
 		result = publication_service.publish(document, catalog, bool(projection.get("requires_publication_confirmation", false)))
 	if not result.get("ok", false):
-		status_label.text = "Échec de sauvegarde : %s" % result.get("error", "erreur inconnue")
+		_status_message = "Échec de sauvegarde : %s" % result.get("error", "erreur inconnue")
 	else:
-		status_label.text = "Écriture vérifiée : %s" % result.get("path", "")
+		_status_message = "Écriture vérifiée : %s" % result.get("path", "")
 		if project_context != null:
 			project_context.set_dirty(&"items", false)
 			project_context.bump_generation(&"items")
@@ -612,6 +840,7 @@ func _show_duplication_dialog() -> void:
 
 
 func _focus_comparison() -> void:
+	analysis_panel.open_section(ItemAnalysisPanel.SECTION_COMPARISON)
 	if comparison_option != null:
 		comparison_option.grab_focus()
 	_queue_refresh_flags(REFRESH_LIGHT)
@@ -619,8 +848,8 @@ func _focus_comparison() -> void:
 
 func _show_references() -> void:
 	var references := reference_service.incoming_references(document.working_copy)
-	status_label.text = "%d référence(s) entrante(s) ; détail dans le panneau d’analyse." % references.size()
-	_queue_refresh_flags(REFRESH_LIGHT)
+	analysis_panel.open_section(ItemAnalysisPanel.SECTION_REFERENCES)
+	_set_status_message("%d référence(s) entrante(s) ; détail dans le tiroir d’analyse." % references.size())
 
 
 func _rebuild_comparison_choices() -> void:
@@ -748,7 +977,7 @@ func _on_dirty_custom_action(action: StringName) -> void:
 			project_context.bump_generation(&"items")
 		_open_catalog_entry(_pending_catalog_entry)
 	else:
-		status_label.text = "Brouillon refusé : %s" % result.get("error", "erreur")
+		_set_status_message("Brouillon refusé : %s" % result.get("error", "erreur"))
 
 
 func _on_dirty_changed(dirty: bool) -> void:
@@ -813,6 +1042,7 @@ func apply_state_snapshot(state: Dictionary) -> void:
 		return
 	var filters := state.get("filters", {}) as Dictionary
 	catalog_panel.restore_filters(filters)
+	open_section(int(state.get("section", SECTION_PRESENTATION)))
 	var selected_path := str(state.get("selected_path", ""))
 	if catalog_panel.select_path(selected_path):
 		for entry in catalog.entries(true):
@@ -826,6 +1056,8 @@ func _remember_ui_state() -> void:
 		return
 	ui_state.set_value("selected_path", document.source_path)
 	ui_state.state["filters"] = catalog_panel.snapshot_filters()
+	if section_tabs != null:
+		ui_state.set_value("section", section_tabs.current_tab)
 	ui_state.set_value("scope", str(project_context.edit_scope) if project_context != null else "SHARED")
 	if analysis_hero_option != null and analysis_hero_option.item_count > 0:
 		var hero := analysis_hero_option.get_item_metadata(analysis_hero_option.selected) as Dictionary
@@ -892,15 +1124,20 @@ func cancel_active_gesture() -> bool:
 
 
 func _section(parent: VBoxContainer, label_text: String) -> VBoxContainer:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 5)
-	panel.add_child(content)
+	var box := VBoxContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", 6)
+	parent.add_child(box)
 	var label := Label.new()
 	label.text = label_text
-	label.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
-	content.add_child(label)
+	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_color_override("font_color", ACCENT_COLOR)
+	box.add_child(label)
+	box.add_child(HSeparator.new())
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	box.add_child(content)
 	return content
 
 
@@ -908,6 +1145,8 @@ func _grid(parent: VBoxContainer) -> GridContainer:
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 8)
 	parent.add_child(grid)
 	return grid
 
@@ -924,6 +1163,8 @@ func _line(parent: GridContainer, label_text: String, tooltip := "") -> LineEdit
 func _option(parent: GridContainer, label_text: String, values: Array) -> OptionButton:
 	parent.add_child(_label(label_text))
 	var option := OptionButton.new()
+	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	option.clip_text = true
 	for value in values:
 		option.add_item(str(value))
 	parent.add_child(option)
@@ -936,6 +1177,7 @@ func _spin(parent: GridContainer, label_text: String, minimum: float, maximum: f
 	spin.min_value = minimum
 	spin.max_value = maximum
 	spin.step = step
+	spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(spin)
 	return spin
 
@@ -943,6 +1185,7 @@ func _spin(parent: GridContainer, label_text: String, minimum: float, maximum: f
 func _label(text: String) -> Label:
 	var label := Label.new()
 	label.text = text
+	label.add_theme_color_override("font_color", MUTED_COLOR)
 	return label
 
 
