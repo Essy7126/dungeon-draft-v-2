@@ -128,7 +128,7 @@ Le dossier `res://data/arenas/produced/room_01_forest/` est gelé comme `UNREFER
 
 Preuves Arena Studio 2.0 : dernier global complet 889/902 et 54 432/54 489 assertions avec exactement les 13 échecs historiques ; après la correction responsive finale, UX 10/10 (87), pipeline visuel 12/12 (130), responsive 18/18 (980), Studio 2.0 12/12 (423) et captures réelles multi-résolution PASS. Les deux répétitions globales Windows post-correction ont été interrompues au niveau processus sans nouvel échec d’assertion ; voir `docs/tools/dungeon_draft_studio/arena_production_hardening_regression_report.md`.
 
-## Achille 3D character-only et theorycraft — checkpoint salle II (2026-08-20)
+## Achille 3D character-only et theorycraft — checkpoint historique salle II (2026-08-20)
 
 - Statut : **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
 - Dépôt : `Essy7126/dungeon-draft-v-2` ; branche :
@@ -151,9 +151,8 @@ Preuves Arena Studio 2.0 : dernier global complet 889/902 et 54 432/54 489 asser
 - La preuve runtime est volontairement bornée à la salle II de L’Odyssée. Les
   salles I et III, les transitions normales et l’écran de résultat restent en
   pause derrière la gate humaine ; le smoke trois salles n’a pas été exécuté.
-- Le propriétaire doit répondre A (256), B (384), C (512), ou D (rejeter le
-  `SubViewport` et utiliser des sprites prérendus). 384 est seulement la
-  recommandation technique non décisionnelle issue du benchmark.
+- À ce checkpoint, le choix A/B/C/D était encore en attente. Le propriétaire a
+  ensuite retenu B (384) ; l’état opérationnel corrigé est documenté ci-dessous.
 - Le root motion reste `ROOT_MOTION_UNCLASSIFIED`. Les translations X/Z sont
   neutralisées localement dans la présentation sans réécrire les actions ni la
   hiérarchie source.
@@ -166,25 +165,33 @@ Preuves Arena Studio 2.0 : dernier global complet 889/902 et 54 432/54 489 asser
   `LEGACY_2D_BAKED_WEAPON_PIXELS_OBSERVED`. La conformité globale sans arme est
   donc `BLOCKED_LEGACY_2D_FALLBACK_WEAPON_VISUAL_DIVERGENCE`.
 
-## Achille 3D — promotion runtime Odyssée B/384 (2026-08-20)
+## Achille 3D — correction du binding runtime, gate salle II (2026-08-20)
 
-Cette section remplace l’état opérationnel du checkpoint salle II ci-dessus.
+```text
+previous_report_claimed_3d_runtime = true
+owner_observed_legacy_2d_runtime = true
+claim_was_contradicted = true
+binding_reverified_after_fix = true
+```
 
-- Statut : **CURRENT_ON_LOCAL_INTEGRATION_BRANCH — NOT_MERGED_TO_MAIN**.
-- Décision propriétaire : **B, SubViewport 384 × 384**.
-- Commit d’implémentation :
-  `0d0eeaf96acc35b9cc40fe5c2c1ba52cedd0c852` sur
-  `integration/achilles-3d-character-theorycraft-v1`.
-- Le corps de combat 2D armé n’est plus référencé par l’adaptateur ni par son
-  profil. Le warm-up et les erreurs utilisent un secours invisible garantissant
-  uniquement le contrat d’action.
-- Le runner graphique dédié passe dans les trois salles réelles avec le backend
-  3D actif en 384, sans ancien visuel 2D mis en cache, sans arme ni équipement,
-  avec ombre, portrait d’initiative, déplacement, Garde et nettoyage validés.
-- Le portrait 2D raffiné reste volontairement une icône du HUD/timeline ; il ne
-  remplace jamais le modèle 3D sur la grille.
-- Preuve durable :
-  `C:\Dungeon_Draft_Production\Achilles\Integration\ACHILLES_3D_ODYSSEY_RUNTIME_PROMOTION_V1_20260820`.
-- Bornes : actions déclenchées programmatiquement, transitions de victoire
-  synthétiques, root motion non classifié, GPU non mesuré, diagnostics teardown
-  OpenGL persistants et warning UID Guerrier historique.
+- Cause vérifiée : `WRONG_WORKTREE_OR_PROJECT_LAUNCHED`. L’éditeur du
+  propriétaire ouvrait `main` au HEAD `a54bc6d4c53741bc487807ff79ef292fe0b3c5ec`,
+  où la façade liait encore directement le corps 2D historique.
+- Statut : **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
+- Branche : `fix/achilles-odyssey-runtime-3d-binding-v1` ; base :
+  `7bc3d69c0f434e8038bbb199300a96baae8443a4` ; correctif runtime :
+  `59464dbc200c2168e2757c76c414b6149abebee4` ; tests :
+  `d632004f28a060dccec613fd58247564fea84423`.
+- La vraie salle II affiche le GLB canonique via `VIEWPORT_3D` en 384 : un
+  SubViewport, une caméra, un squelette de 52 os et un mesh visible.
+- Le corps 2D n’est ni instancié, ni visible, ni en traitement pendant le
+  nominal ; aucun fallback n’est déclenché.
+- Le fallback 2D armé reste un mode dégradé paresseux, réservé à une erreur 3D
+  vérifiée et journalisée. Le portrait 2D reste autorisé uniquement dans l’UI.
+- Les 34 tests obligatoires et 35 non-régressions adaptées passent. Aucun
+  gameplay, sort, statistique, arme ou theorycraft n’est modifié.
+- Salles I/III, transitions et résultat : non exécutés, en pause derrière la
+  confirmation propriétaire.
+
+Verdicts : `ACHILLES_3D_ROOM_II_RUNTIME_READY_FOR_OWNER_REVIEW`,
+`LEGACY_2D_BODY_NOT_VISIBLE`, `FALLBACK_NOT_ACTIVE`.

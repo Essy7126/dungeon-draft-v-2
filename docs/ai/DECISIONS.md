@@ -175,25 +175,33 @@ historique doit cependant être conservé et contient des pixels d’épée et d
 bouclier incrustés. Cette divergence héritée bloque toute affirmation globale
 « Achille sans arme » tant qu’une décision dédiée ne l’a pas résolue.
 
-## ACHILLES_3D_ODYSSEY_RUNTIME_PROMOTION_V1 — sélection B/384
+## ACHILLES_3D_ODYSSEY_RUNTIME_BINDING_FIX_V1 — décision amendée
 
 - Date : 2026-08-20
-- Branche : `integration/achilles-3d-character-theorycraft-v1`
-- Commit d’implémentation :
-  `0d0eeaf96acc35b9cc40fe5c2c1ba52cedd0c852`
-- Décision propriétaire : **B — SubViewport 384 × 384**
-- Statut : **CURRENT_ON_LOCAL_INTEGRATION_BRANCH — NOT_MERGED_TO_MAIN**
+- Décision propriétaire conservée : **B — SubViewport 384 × 384**
+- Branche : `fix/achilles-odyssey-runtime-3d-binding-v1`
+- Base : `7bc3d69c0f434e8038bbb199300a96baae8443a4`
+- Correctif runtime : `59464dbc200c2168e2757c76c414b6149abebee4`
+- Statut : **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**
 
-Le corps de combat d’Achille dans L’Odyssée utilise le personnage canonique 3D
-dans les trois salles. L’ancien backend 2D armé n’est plus chargé, ni comme
-première frame, ni comme fallback. Un backend invisible conserve seulement les
-signaux nécessaires au gameplay si le rendu 3D devient indisponible.
+```text
+previous_report_claimed_3d_runtime = true
+owner_observed_legacy_2d_runtime = true
+claim_was_contradicted = true
+binding_reverified_after_fix = true
+```
 
-Le portrait 2D raffiné reste autorisé comme icône HUD, timeline et post-combat ;
-il ne constitue pas le visuel de grille. Aucune arme, aucun build theorycraft et
-aucune modification de statistiques ou de sorts ne sont activés par cette
-décision.
+Le propriétaire lançait un autre checkout, où le corps 2D restait directement
+lié. L’ancienne preuve trois salles est donc retirée comme preuve de promotion
+du runtime réellement observé.
 
-La validation graphique appelle les contrôles de production du Hub et de
-Battle, mais la victoire et les transitions sont avancées synthétiquement. Cette
-preuve n’est donc pas présentée comme trois combats terminés manuellement.
+Le binding nominal demande `VIEWPORT_3D` et le GLB canonique `character-only`,
+sans équipement séparé. Le fallback `LEGACY_2D_ON_VERIFIED_ERROR` est autorisé
+uniquement après une erreur 3D vérifiée ; il est créé paresseusement,
+journalisé et supprimé dès que le backend 3D redevient actif. Il ne doit jamais
+apparaître pendant le warm-up nominal.
+
+Le portrait 2D reste une ressource d’interface. Cette décision ne modifie ni
+gameplay, ni statistiques, ni sorts, ni armes, ni theorycraft. La preuve
+d’acceptation actuelle couvre uniquement la vraie salle II ; salles I/III,
+transitions et résultat restent non vérifiés jusqu’à la confirmation humaine.

@@ -169,23 +169,27 @@ régressions introduites par la migration.
   n’est pas une décision d’activation.
 - Le statut demeure **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
 
-## Achilles 3D — réserves après promotion Odyssée B/384
+## Achilles 3D — réserves après correction du binding salle II
 
-Les deux blocages du checkpoint précédent sont clos sur la branche locale : le
-choix B/384 est explicite et l’ancien fallback 2D armé est devenu inatteignable
-depuis le runtime Odyssée. Ils ne doivent plus être présentés comme actifs pour
-le corps de combat.
+```text
+previous_report_claimed_3d_runtime = true
+owner_observed_legacy_2d_runtime = true
+claim_was_contradicted = true
+binding_reverified_after_fix = true
+```
 
-Restent ouverts :
-
-- la branche n’est ni fusionnée dans `main` ni poussée ;
-- les interactions du runner appellent les vrais handlers programmatiquement,
-  sans certifier une session complète à la souris ni trois victoires jouées ;
-- les transitions/résultat sont synthétiques et clairement étiquetés ;
-- le root motion source reste non classifié et les temps GPU non mesurés ;
-- les diagnostics RID/ObjectDB/resources persistent au teardown OpenGL malgré
-  la libération des `WeakRef` ciblés ;
-- l’UID historique invalide de `Guerrier.tres` garde cinq tests de la suite
-  Odyssée historique en échec inattendu ;
-- le portrait HUD/post-combat d’Achille reste une icône 2D volontaire, distincte
-  du corps de combat désormais exclusivement 3D.
+- `WRONG_WORKTREE_OR_PROJECT_LAUNCHED` : l’éditeur du propriétaire ouvrait
+  encore `main`, où le corps 2D historique restait directement lié.
+- Le correctif existe seulement dans un `WORKTREE_CANDIDATE`; il n’est ni
+  `CURRENT`, ni intégré à `main`, ni `PRODUCTION`.
+- Seule la vraie salle II est revalidée. Salles I/III, transitions, retour et
+  résultat restent non vérifiés.
+- Le fallback 2D armé n’est pas supprimé : il reste un mode dégradé paresseux
+  autorisé uniquement après une erreur 3D vérifiée. Ses pixels d’épée/bouclier
+  restent une divergence connue.
+- Pendant la preuve nominale salle II, le fallback n’est pas actif et l’ancien
+  corps 2D n’est ni instancié, ni visible, ni en traitement.
+- Le portrait HUD/timeline/post-combat reste volontairement 2D et ne constitue
+  pas une régression du corps de grille.
+- Root motion source non classifié, GPU non mesuré et diagnostics de teardown
+  restent hors de la clôture de ce correctif.

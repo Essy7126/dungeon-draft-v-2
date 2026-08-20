@@ -1,81 +1,76 @@
-# Achille — promotion 3D dans L’Odyssée V1
+# Achille — correction du binding runtime 3D dans L’Odyssée V1
 
-## Décision
+## Correction de preuve
 
-Le 20 août 2026, le propriétaire a validé l’option **B : SubViewport 384 × 384**
-et demandé de remplacer le corps de combat 2D d’Achille dans sa run Odyssée.
-Le commit d’implémentation est
-`0d0eeaf96acc35b9cc40fe5c2c1ba52cedd0c852` sur la branche locale
-`integration/achilles-3d-character-theorycraft-v1`.
+```text
+previous_report_claimed_3d_runtime = true
+owner_observed_legacy_2d_runtime = true
+claim_was_contradicted = true
+binding_reverified_after_fix = true
+```
 
-Cette décision promeut le personnage canonique 3D sans arme dans les trois
-salles de L’Odyssée. Elle ne fusionne pas la branche dans `main`, ne pousse
-aucune ref distante et ne sélectionne aucun concept du laboratoire d’arme ou
-de theorycraft.
+Le verdict historique `ACHILLES_3D_ODYSSEY_RUNTIME_PROMOTION_READY_FOR_INTEGRATION_REVIEW`
+était un faux positif. Le propriétaire lançait le checkout principal `main` au
+HEAD `a54bc6d4c53741bc487807ff79ef292fe0b3c5ec`; sa façade
+`AchillesIsoUnitView.tscn` liait encore directement `AchillesVisual2D`.
+L’ancienne preuve exécutait un autre worktree et ne liait pas le `--path`, le
+HEAD et le processus réellement joué.
 
-## Contrat runtime
+Classification : `WRONG_WORKTREE_OR_PROJECT_LAUNCHED`.
 
-- `data/units/allies/achilles.tres` conserve son chemin existant vers
-  `characters/achilles/AchillesIsoUnitView.tscn` ; ni ses statistiques, ni ses
-  sorts, ni sa progression ne sont modifiés.
-- `AchillesIsoUnitView` ne charge comme backend de rendu visible que le
-  `SubViewport` 3D choisi.
-  L’ancien `AchillesVisual2D` armé n’est plus instancié, même pendant le
-  warm-up et même en cas d’échec de chargement.
-- Le secours est `NO_VISUAL_ACTION_CONTRACT` : il reste invisible mais garantit
-  les signaux release/fin exact-once afin d’éviter un soft-lock de combat.
-- Le profil reste strictement `character-only`, avec
-  `equipment_enabled = false` et `weapon_profile = null`.
-- La présentation 3D conserve l’ombre de contact des salles peintes et reçoit
-  les flashes de dégâts, soins et bouclier sans altérer sa teinte de base.
-- La carte d’initiative réutilise le portrait HUD raffiné d’Achille. Ce portrait
-  2D est une icône d’interface volontaire ; ce n’est pas le corps rendu sur la
-  grille. Le HUD et le post-combat peuvent donc encore afficher cette icône.
+## Binding candidat corrigé
 
-## Validation
+- Décision conservée : **B, SubViewport 384 × 384**.
+- Branche locale : `fix/achilles-odyssey-runtime-3d-binding-v1`.
+- Base du correctif : `7bc3d69c0f434e8038bbb199300a96baae8443a4`.
+- Commit runtime : `59464dbc200c2168e2757c76c414b6149abebee4`.
+- Commit de preuve : `d632004f28a060dccec613fd58247564fea84423`.
+- Le profil demande explicitement `VIEWPORT_3D` et charge le GLB canonique
+  `res://assets/characters/Achilles/3d/achilles_rig_v1.glb`.
+- Le fallback `LEGACY_2D_ON_VERIFIED_ERROR` est créé paresseusement seulement
+  après une erreur 3D vérifiée et produit un diagnostic structuré.
+- En fonctionnement nominal, le corps 2D n’est ni instancié, ni visible, ni en
+  traitement. Il n’émet donc aucun signal concurrent.
+- Le portrait 2D HUD, timeline et post-combat reste volontairement une icône
+  d’interface ; ce n’est pas le corps affiché sur la grille.
+- Aucun gameplay, sort, statistique, arme ou build theorycraft n’est modifié.
 
-Le runner graphique dédié
-`test/achilles/achilles_odyssey_3d_runtime_promotion_smoke.tscn` :
+## Validation bornée à la salle II
 
-- sélectionne L’Odyssée par les contrôles du vrai Hub ;
-- charge et déploie les trois vraies scènes `Battle` ;
-- vérifie dans chaque salle : backend 3D actif, résolution 384, un
-  `SubViewport`, un `Skeleton3D`, aucun ancien visuel 2D, aucune arme ou
-  instance d’équipement, ombre lisible et portrait d’initiative non vide ;
-- exécute un déplacement réel puis `Garde d’airain` via les handlers Battle et
-  `SpellCaster` : PM/PA consommés, bouclier appliqué, release et fin une fois ;
-- recrée la vue en salle II sans doublon et vérifie les `WeakRef` de nettoyage ;
-- traverse séparément les états du manager jusqu’au résultat Victoire.
+La vraie `res://data/runs/odyssey.tres`, son héros Achille et la vraie salle II
+ont été rejoués dans le worktree candidat avec Godot 4.7.1, Windows/Forward+.
+La preuve contrôle le chemin projet et le HEAD dérivés par Git, puis observe :
 
-La preuve durable est stockée hors dépôt dans
-`C:\Dungeon_Draft_Production\Achilles\Integration\ACHILLES_3D_ODYSSEY_RUNTIME_PROMOTION_V1_20260820`.
-Le JSON contient les SHA-256 des sept captures 1600 × 1000. Le log graphique
-final ne contient ni `ERROR` ni `SCRIPT ERROR` pendant le runtime.
+- backend demandé et actif : `VIEWPORT_3D` ;
+- un `SubViewport`, une caméra courante, un squelette de 52 os et un mesh
+  visible ;
+- instance issue exactement du GLB canonique ;
+- `ViewportTexture` visible avec fond transparent et ancre pied alignée ;
+- zéro `AnimatedSprite2D`, zéro nœud d’équipement et zéro fallback nominal ;
+- façade gameplay visible et opaque.
 
-Suites ciblées observées avant le gel final :
+Les 34 tests obligatoires du correctif passent, ainsi que les 35 tests de
+non-régression adaptés. Le rapport final du paquet enregistre le HEAD exact de
+la dernière exécution, les commandes, l’arbre runtime, les hashes et les
+captures avant/après.
 
-- secours invisible : 4/4, 39 assertions ;
-- personnage 3D : 5/5, 43 assertions ;
-- SubViewport/adaptateur : 8/8, 60 assertions ;
-- feedback UnitView : 4/4, 41 assertions ;
-- timeline/portrait : 2/2, 20 assertions ;
-- sources et isolation : 12/12, 1 477 assertions ;
-- couverture du mandat : 42 PASS / 7 PENDING bornés, 258 assertions.
+## Verdicts et limites
 
-La suite historique `test_odyssey_achilles_solo_run.gd` conserve 14/19 : les
-cinq échecs sont exclusivement le warning déjà connu sur l’UID invalide de
-`Guerrier.tres`, traité par GUT comme erreur inattendue. Le test de l’adaptateur
-3D et les assertions métier d’Achille passent.
+- `ACHILLES_3D_ROOM_II_RUNTIME_READY_FOR_OWNER_REVIEW`
+- `LEGACY_2D_BODY_NOT_VISIBLE`
+- `FALLBACK_NOT_ACTIVE`
+- `WORKTREE_CANDIDATE`
+- `NOT_CURRENT`
+- `NOT_PRODUCTION`
 
-## Bornes honnêtes
+Les salles I et III, les transitions et l’écran de résultat n’ont pas été
+réexécutés. Ils restent en pause jusqu’à la confirmation exacte du propriétaire :
 
-- La sélection Hub, le déplacement, le ciblage et le sort utilisent les vrais
-  handlers mais sont déclenchés programmatiquement, pas par une souris humaine.
-- Les trois combats ne sont pas joués jusqu’à la défaite réelle des ennemis :
-  la traversée du manager et le résultat final sont explicitement synthétiques.
-- Le root motion source reste `ROOT_MOTION_UNCLASSIFIED` ; X/Z sont neutralisés
-  localement pour la présentation.
-- Les temps GPU restent `NOT_MEASURED`.
-- Godot/OpenGL signale encore au teardown des RID/ObjectDB/resources globaux,
-  alors que les `WeakRef` ciblés Battle, adaptateur et SubViewport sont libérés.
-- Le warning UID historique de `Guerrier.tres` demeure hors de cette promotion.
+```text
+CONTINUE ACHILLES 3D BINDING FIX
+ROOM_II_3D_CONFIRMED
+```
+
+Le root motion source reste non classifié, les temps GPU ne sont pas mesurés et
+Godot signale encore des diagnostics de ressources au teardown. Ces limites ne
+sont pas présentées comme une validation trois salles.
