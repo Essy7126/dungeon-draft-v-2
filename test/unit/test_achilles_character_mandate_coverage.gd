@@ -44,14 +44,10 @@ const EXPECTED_SPELL_HASHES := {
 		"EE532DC126588D2580DD5D14E572C62B6DC58B9D1D96AE41AD35995BEE5887C7"
 	),
 }
-const OWNER_GATE_REASON := (
-	"ODYSSEY_THREE_ROOM_EXTENSION_PAUSED: the owner must choose A/B/C/D "
-	+ "after the Room II review before this operation may run."
-)
-const LEGACY_PIXEL_DIVERGENCE := (
-	"LEGACY_2D_BAKED_WEAPON_PIXELS_OBSERVED; "
-	+ "BLOCKED_LEGACY_2D_FALLBACK_WEAPON_VISUAL_DIVERGENCE: the inherited "
-	+ "fallback visibly contains baked sword-and-shield pixels."
+const MANUAL_FLOW_BOUNDARY := (
+	"OWNER_SELECTED_B_SUBVIEWPORT_384: the dedicated graphical promotion "
+	+ "runner validates production handlers programmatically; this unit test "
+	+ "does not claim physical mouse input or an enemy-defeat playthrough."
 )
 
 
@@ -211,7 +207,7 @@ func test_timeout_prevents_soft_lock() -> void:
 	# Suppress the backend completion so the adapter watchdog is the only
 	# completion path exercised by this test.
 	adapter.viewport_backend.cancel_action()
-	adapter.legacy_backend.cancel_action()
+	adapter.fallback_backend.cancel_action()
 	assert_true(adapter._action_pending)
 	adapter._action_elapsed = AchillesIsoUnitView.ACTION_TIMEOUT_SECONDS - 0.01
 	adapter._process(0.02)
@@ -330,48 +326,53 @@ func test_backend_cleanup_releases_viewport() -> void:
 	assert_null(viewport_ref.get_ref())
 
 
-func test_legacy_2d_fallback_available() -> void:
+func test_no_visual_action_fallback_available() -> void:
 	var profile := _profile()
-	assert_not_null(profile.fallback_2d_scene)
-	var fallback := profile.fallback_2d_scene.instantiate()
-	assert_true(fallback is AchillesLegacy2DBackend)
-	assert_not_null(fallback.get_node_or_null("AchillesVisual2D"))
+	assert_not_null(profile.fallback_backend_scene)
+	var fallback := profile.fallback_backend_scene.instantiate()
+	assert_eq(
+		fallback.get_script(),
+		load("res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd"),
+	)
+	assert_true(fallback.find_children(
+		"*", "CanvasItem", true, false
+	).is_empty())
 	fallback.free()
 
 
 func test_backends_never_visible_together() -> void:
 	var adapter := await _create_ready_adapter()
 	assert_true(adapter.viewport_backend.visible)
-	assert_false(adapter.legacy_backend.visible)
+	assert_false(adapter.fallback_backend.visible)
 	assert_eq(_visible_backend_count(adapter), 1)
-	adapter.force_legacy_2d(&"MANDATE_COVERAGE_FORCED_FALLBACK")
+	adapter.force_safe_fallback(&"MANDATE_COVERAGE_FORCED_FALLBACK")
 	assert_false(adapter.viewport_backend.visible)
-	assert_true(adapter.legacy_backend.visible)
-	assert_eq(_visible_backend_count(adapter), 1)
+	assert_false(adapter.fallback_backend.visible)
+	assert_eq(_visible_backend_count(adapter), 0)
 
 
-func test_legacy_action_before_warmup_defers_viewport_activation() -> void:
+func test_no_visual_action_before_warmup_defers_viewport_activation() -> void:
 	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
 	add_child_autofree(adapter)
-	assert_eq(adapter.get_active_backend_name(), &"Legacy2DBackend")
+	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
 	assert_true(adapter.play_spell_action())
 	assert_true(adapter._action_pending)
 	await wait_process_frames(4)
 	assert_true(adapter.viewport_backend.is_ready_for_render())
 	assert_true(adapter._viewport_activation_deferred)
-	assert_eq(adapter.get_active_backend_name(), &"Legacy2DBackend")
-	assert_true(adapter.legacy_backend.visible)
+	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
+	assert_false(adapter.fallback_backend.visible)
 	assert_false(adapter.viewport_backend.visible)
 	adapter._on_backend_action_finished(&"ACTION_FALLBACK")
 	assert_false(adapter._action_pending)
 	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
-	assert_false(adapter.legacy_backend.visible)
+	assert_false(adapter.fallback_backend.visible)
 	assert_true(adapter.viewport_backend.visible)
-	adapter.force_legacy_2d(&"RACE_TEST_FORCED_FALLBACK")
-	assert_eq(adapter.get_active_backend_name(), &"Legacy2DBackend")
+	adapter.force_safe_fallback(&"RACE_TEST_FORCED_FALLBACK")
+	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
 	assert_true(adapter.play_spell_action())
 	assert_true(adapter._action_pending)
-	assert_eq(adapter.get_active_backend_name(), &"Legacy2DBackend")
+	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
 	adapter.cancel_pending_visual_actions()
 	assert_false(adapter._action_pending)
 
@@ -403,19 +404,19 @@ func test_double_configure_is_rejected_without_duplicate_visual() -> void:
 	)
 
 
-func test_force_legacy_mid_action_replays_without_hidden_3d_action() -> void:
+func test_force_safe_fallback_mid_action_stops_hidden_3d_action() -> void:
 	var adapter := await _create_ready_adapter()
 	var visual := adapter.viewport_backend.get_achilles_visual()
 	assert_true(adapter.play_spell_action())
 	assert_true(visual._action_active)
-	adapter.force_legacy_2d(&"MID_ACTION_REGRESSION_TEST")
-	assert_eq(adapter.get_active_backend_name(), &"Legacy2DBackend")
+	adapter.force_safe_fallback(&"MID_ACTION_REGRESSION_TEST")
+	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
 	assert_false(adapter.viewport_backend.visible)
 	assert_false(visual._action_active)
-	assert_true(adapter.legacy_backend._action_pending)
+	assert_true(adapter.fallback_backend._action_pending)
 	assert_true(adapter._action_pending)
 	adapter.cancel_pending_visual_actions()
-	assert_false(adapter.legacy_backend._action_pending)
+	assert_false(adapter.fallback_backend._action_pending)
 	assert_false(adapter._action_pending)
 
 
@@ -435,7 +436,7 @@ func test_finish_listener_can_start_next_action_without_idle_override() -> void:
 # Odyssey --------------------------------------------------------------------
 
 func test_room_01_spawns_single_achilles() -> void:
-	pending(OWNER_GATE_REASON + " Room I was not launched.")
+	await _assert_room_supports_single_3d_achilles(0)
 
 
 func test_room_02_spawns_single_achilles() -> void:
@@ -468,38 +469,58 @@ func test_room_02_spawns_single_achilles() -> void:
 
 
 func test_room_03_spawns_single_achilles() -> void:
-	pending(OWNER_GATE_REASON + " Room III was not launched.")
+	await _assert_room_supports_single_3d_achilles(2)
 
 
 func test_no_weapon_in_all_rooms() -> void:
-	pending(
-		OWNER_GATE_REASON + " Rooms I/III were not launched. "
-		+ LEGACY_PIXEL_DIVERGENCE
+	var profile := _profile()
+	assert_false(profile.equipment_enabled)
+	assert_null(profile.weapon_profile)
+	for room_value in ODYSSEY_RUN.rooms:
+		var room := room_value as RoomData
+		assert_not_null(room)
+		assert_not_null(room.battle_scene)
+	var adapter_text := FileAccess.get_file_as_string(
+		"res://characters/achilles/AchillesIsoUnitView.tscn"
 	)
+	assert_false(adapter_text.contains("AchillesLegacy2DBackend"))
+	assert_false(adapter_text.contains("AchillesVisual2D"))
 
 
 func test_room_transition_leaves_no_duplicate() -> void:
-	pending(OWNER_GATE_REASON + " Normal room transitions were not executed.")
+	pending(
+		MANUAL_FLOW_BOUNDARY
+		+ " Normal transitions driven by enemy defeat remain outside this unit test."
+	)
 
 
 func test_reload_leaves_no_duplicate() -> void:
 	pending(
-		OWNER_GATE_REASON
+		MANUAL_FLOW_BOUNDARY
 		+ " Normal room reload was NOT_MEASURED; visual-instance reload is not "
 		+ "presented as a normal room reload."
 	)
 
 
 func test_odyssey_normal_entry_path() -> void:
-	pending(OWNER_GATE_REASON + " The normal Odyssey entry path was not launched.")
+	pending(
+		MANUAL_FLOW_BOUNDARY
+		+ " The production Hub path is covered by the graphical runner, not here."
+	)
 
 
 func test_three_room_character_visual_smoke() -> void:
-	pending(OWNER_GATE_REASON + " The three-room runner was not executed.")
+	pending(
+		MANUAL_FLOW_BOUNDARY
+		+ " See achilles_odyssey_3d_runtime_promotion_smoke for graphical evidence."
+	)
 
 
 func test_odyssey_result_screen_reached() -> void:
-	pending(OWNER_GATE_REASON + " The result screen was not reached.")
+	pending(
+		MANUAL_FLOW_BOUNDARY
+		+ " The result UI uses a synthetic recorded victory in the graphical runner."
+	)
 
 
 # Non-regression -------------------------------------------------------------
@@ -569,7 +590,7 @@ func test_grid_position_unchanged() -> void:
 
 func test_selection_unchanged() -> void:
 	pending(
-		OWNER_GATE_REASON
+		MANUAL_FLOW_BOUNDARY
 		+ " Selection/click flow is NOT_MEASURED and was not simulated by a unit test."
 	)
 
@@ -593,23 +614,28 @@ func test_pathfinding_unchanged() -> void:
 
 func test_targeting_unchanged() -> void:
 	pending(
-		OWNER_GATE_REASON
+		MANUAL_FLOW_BOUNDARY
 		+ " Target selection is NOT_MEASURED and was not simulated by a unit test."
 	)
 
 
-# This explicit pending test prevents availability of the legacy fallback from
-# being misreported as pixel-level weaponless compliance.
-func test_legacy_2d_fallback_weaponless_pixels() -> void:
-	var fallback := _profile().fallback_2d_scene.instantiate()
-	var sprite := fallback.get_node_or_null(
-		"AchillesVisual2D/AnimatedSprite2D"
-	) as AnimatedSprite2D
-	assert_not_null(sprite)
-	assert_not_null(sprite.sprite_frames)
-	assert_true(sprite.sprite_frames.get_frame_count(&"idle_SE") > 0)
+# The historical armed sprite remains in the repository as a POC asset, but it
+# must no longer be reachable from the Odyssey runtime adapter or its fallback.
+func test_retired_2d_fallback_is_unreachable_from_runtime() -> void:
+	var fallback := _profile().fallback_backend_scene.instantiate()
+	assert_eq(
+		fallback.get_script(),
+		load("res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd"),
+	)
+	assert_true(fallback.find_children(
+		"*", "AnimatedSprite2D", true, false
+	).is_empty())
+	var adapter_text := FileAccess.get_file_as_string(
+		"res://characters/achilles/AchillesIsoUnitView.tscn"
+	)
+	assert_false(adapter_text.contains("AchillesLegacy2DBackend"))
+	assert_false(adapter_text.contains("AchillesVisual2D"))
 	fallback.free()
-	pending(LEGACY_PIXEL_DIVERGENCE)
 
 
 func _profile() -> AchillesVisualProfile:
@@ -641,8 +667,36 @@ func _create_ready_adapter() -> AchillesIsoUnitView:
 	return adapter
 
 
+func _assert_room_supports_single_3d_achilles(room_index: int) -> void:
+	var resolution = RunHeroResolver.resolve_runtime_hero_data(ODYSSEY_RUN, false)
+	assert_true(resolution.is_valid())
+	assert_eq(resolution.heroes.size(), 1)
+	var room := ODYSSEY_RUN.rooms[room_index] as RoomData
+	assert_not_null(room)
+	assert_not_null(room.battle_scene)
+	var grid := EncounterGridFactory.build_from_room(room)
+	var achilles := Unit.from_data(resolution.heroes[0])
+	var spawn_cell := _first_legal_spawn(room.hero_spawn_zone, grid)
+	assert_ne(spawn_cell, Vector2i(-1, -1))
+	assert_true(grid.place_unit(achilles, spawn_cell))
+	var unit_view = UNIT_VIEW_SCENE.instantiate()
+	add_child_autofree(unit_view)
+	unit_view.setup(achilles)
+	await wait_process_frames(8)
+	var adapter := unit_view.get_optional_visual() as AchillesIsoUnitView
+	assert_not_null(adapter)
+	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
+	assert_eq(
+		adapter.viewport_backend.character_viewport.size,
+		Vector2i(384, 384),
+	)
+	assert_true(adapter.find_children(
+		"*", "AnimatedSprite2D", true, false
+	).is_empty())
+
+
 func _visible_backend_count(adapter: AchillesIsoUnitView) -> int:
-	return int(adapter.legacy_backend.visible) + int(adapter.viewport_backend.visible)
+	return int(adapter.fallback_backend.visible) + int(adapter.viewport_backend.visible)
 
 
 func _first_legal_spawn(cells: Array[Vector2i], grid: GridData) -> Vector2i:

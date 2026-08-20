@@ -180,7 +180,10 @@ func _run() -> void:
 		"equipment_disabled": adapter.visual_profile != null and not adapter.visual_profile.equipment_enabled,
 		"weapon_profile_null": adapter.visual_profile != null and adapter.visual_profile.weapon_profile == null,
 		"viewport_backend_active": adapter.get_active_backend_name() == &"Viewport3DBackend",
-		"legacy_backend_hidden": not adapter.legacy_backend.visible,
+		"no_legacy_2d_loaded": adapter.find_children(
+			"*", "AchillesVisual2D", true, false
+		).is_empty(),
+		"fallback_backend_invisible": not adapter.fallback_backend.visible,
 		"transparent_background_property": backend.character_viewport.transparent_bg,
 		"gameplay_parent_position_before_actions": [gameplay_parent_position.x, gameplay_parent_position.y],
 		"baseline_stats": baseline_stats,
@@ -341,13 +344,13 @@ func _run() -> void:
 	_focus_stage_on(stage, unit_view.position)
 	await _capture("room_ii_after_reload.png")
 
-	adapter.force_legacy_2d(&"ROOM_II_SMOKE_FORCED_FALLBACK")
+	adapter.force_safe_fallback(&"ROOM_II_SMOKE_FORCED_FALLBACK")
 	await _settle(4)
-	_report.checks["forced_fallback_active"] = adapter.get_active_backend_name() == &"Legacy2DBackend"
+	_report.checks["forced_fallback_active"] = adapter.get_active_backend_name() == &"NoVisualFallbackBackend"
 	_report.checks["forced_fallback_never_double_visible"] = (
-		adapter.legacy_backend.visible and not adapter.viewport_backend.visible
+		not adapter.fallback_backend.visible and not adapter.viewport_backend.visible
 	)
-	await _capture("room_ii_forced_legacy_2d.png")
+	await _capture("room_ii_forced_no_visual_fallback.png")
 
 	var viewport_ref: WeakRef = weakref(adapter.viewport_backend.character_viewport)
 	stage.scale = original_stage_scale

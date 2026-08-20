@@ -385,20 +385,22 @@ func test_runtime_visual_adapter_releases_falls_back_and_dies_cleanly() -> void:
 	await wait_process_frames(2)
 	var adapter := view.get_optional_visual() as AchillesIsoUnitView
 	assert_not_null(adapter)
+	await wait_process_frames(4)
+	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
 	assert_eq(adapter.get_default_cast_effect_origin(), Vector2(0.0, -92.0))
 	for direction in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
 		adapter.set_facing(direction)
-	assert_eq(adapter.visual._warned_directions.size(), 4)
-	adapter.set_facing(Vector2i.RIGHT)
-	assert_eq(adapter.visual._warned_directions.size(), 4)
+	assert_eq(adapter.viewport_backend.get_facing_label(), "N")
+	assert_true(adapter.find_children(
+		"*", "AchillesVisual2D", true, false
+	).is_empty())
 	var releases := {"count": 0}
 	adapter.cast_release_reached.connect(func(): releases.count += 1)
 	assert_true(adapter.play_spell_action(_progression().spells[0]))
-	adapter.animated_sprite.frame = AchillesIsoUnitView.RELEASE_FRAME
-	adapter._on_visual_frame_changed()
-	adapter._on_visual_frame_changed()
+	adapter._on_backend_action_release()
+	adapter._on_backend_action_release()
 	assert_eq(releases.count, 1)
-	adapter._on_visual_action_finished(&"attack_SE")
+	adapter._on_backend_action_finished(&"ACTION_FALLBACK")
 	var deaths := {"count": 0}
 	adapter.death_animation_finished.connect(func(): deaths.count += 1)
 	unit.take_damage(999)

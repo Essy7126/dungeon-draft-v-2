@@ -1,14 +1,11 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://characters/achilles/achilles_iso_unit_view.gd" id="1_adapter"]
 [ext_resource type="Resource" path="res://data/visuals/achilles/achilles_character_only_profile.tres" id="2_profile"]
-[ext_resource type="PackedScene" path="res://characters/achilles/3d/AchillesLegacy2DBackend.tscn" id="3_legacy"]
 [ext_resource type="PackedScene" path="res://characters/achilles/3d/AchillesViewport3DBackend.tscn" id="4_viewport"]
 
 [node name="AchillesIsoUnitView" type="Node2D"]
 script = ExtResource("1_adapter")
 visual_profile = ExtResource("2_profile")
-
-[node name="Legacy2DBackend" parent="." instance=ExtResource("3_legacy")]
 
 [node name="Viewport3DBackend" parent="." instance=ExtResource("4_viewport")]

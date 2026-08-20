@@ -105,15 +105,21 @@ func test_adapter_uses_exactly_one_backend_and_can_force_fallback() -> void:
 	await wait_process_frames(3)
 	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
 	assert_true(adapter.viewport_backend.visible)
-	assert_false(adapter.legacy_backend.visible)
-	adapter.force_legacy_2d(&"TEST_FORCED_FALLBACK")
-	assert_eq(adapter.get_active_backend_name(), &"Legacy2DBackend")
-	assert_true(adapter.legacy_backend.visible)
+	assert_false(adapter.fallback_backend.visible)
+	adapter.force_safe_fallback(&"TEST_FORCED_FALLBACK")
+	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
+	assert_false(adapter.fallback_backend.visible)
 	assert_false(adapter.viewport_backend.visible)
+	assert_true(
+		adapter.find_children("*", "AchillesVisual2D", true, false).is_empty()
+	)
 	assert_eq(
 		adapter.get_last_backend_error().get("error_code"),
 		"TEST_FORCED_FALLBACK",
 	)
+	assert_false(bool(
+		adapter.get_last_backend_error().get("legacy_2d_loaded", true)
+	))
 
 
 func test_adapter_preserves_release_and_finished_signals_once() -> void:
@@ -149,9 +155,12 @@ func test_missing_lazy_character_asset_falls_back_without_dual_render() -> void:
 	adapter.visual_profile = profile
 	add_child_autofree(adapter)
 	await wait_process_frames(3)
-	assert_eq(adapter.get_active_backend_name(), &"Legacy2DBackend")
-	assert_true(adapter.legacy_backend.visible)
+	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
+	assert_false(adapter.fallback_backend.visible)
 	assert_false(adapter.viewport_backend.visible)
+	assert_true(
+		adapter.find_children("*", "AnimatedSprite2D", true, false).is_empty()
+	)
 	assert_eq(
 		adapter.get_last_backend_error().get("error_code"),
 		"CHARACTER_ASSET_MISSING",

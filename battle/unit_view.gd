@@ -13,6 +13,8 @@ var _shield_bar: ProgressBar
 var _status_row: HBoxContainer
 var _is_active: bool = false
 var _flash_tween: Tween = null
+var _flash_target: CanvasItem = null
+var _flash_restore_self_modulate := Color.WHITE
 var _optional_visual: Node2D = null
 var _optional_visual_cast_pending := false
 var _optional_visual_cast_generation := 0
@@ -57,6 +59,7 @@ func setup(p_unit: Unit) -> void:
 func _exit_tree() -> void:
 	_closing = true
 	_lifecycle_generation += 1
+	_restore_active_flash()
 	cancel_pending_visual_actions()
 	_disconnect_optional_visual_waits()
 	_disconnect_runtime_signals()
@@ -230,11 +233,17 @@ func apply_painted_presentation(
 	if is_instance_valid(_optional_visual):
 		_optional_visual.scale = _painted_optional_base_scale * _painted_visual_scale
 		_apply_optional_readability()
+	var optional_owns_readability := (
+		_painted_readability_enabled
+		and is_instance_valid(_optional_visual)
+		and _optional_visual.has_method("set_painted_readability")
+	)
 	for child in get_children():
 		if child.is_in_group("iso_ground_shadow"):
 			# Le polygone est conserve pour le contour de selection, mais la grande
-			# dalle sombre est remplacee par l'ellipse courte du personnage.
-			child.visible = not _painted_readability_enabled
+			# dalle sombre n'est remplacee que si le visuel fournit sa propre
+			# lisibilite peinte (contour et ombre de contact).
+			child.visible = not optional_owns_readability
 	queue_redraw()
 
 
@@ -743,13 +752,42 @@ func _on_shield_broken(u: Unit) -> void:
 	_flash(Color(1.0, 0.45, 0.1), 0.25)
 
 func _flash(color: Color, duration: float) -> void:
-	if _sprite == null:
+	_restore_active_flash()
+	var target: CanvasItem = null
+	if is_instance_valid(_optional_visual) \
+			and (not is_instance_valid(_sprite) or not _sprite.visible):
+		target = _optional_visual
+	elif is_instance_valid(_sprite):
+		target = _sprite
+	if target == null:
 		return
-	if _flash_tween != null and _flash_tween.is_valid():
-		_flash_tween.kill()
-	_sprite.modulate = color
+	_flash_target = target
+	_flash_restore_self_modulate = target.self_modulate
+	target.self_modulate = color
 	_flash_tween = create_tween()
-	_flash_tween.tween_property(_sprite, "modulate", Color.WHITE, duration)
+	_flash_tween.tween_property(
+		target,
+		"self_modulate",
+		_flash_restore_self_modulate,
+		maxf(duration, 0.0),
+	)
+	var active_tween := _flash_tween
+	active_tween.finished.connect(func() -> void:
+		if _flash_tween == active_tween:
+			_flash_tween = null
+			_flash_target = null
+	)
+
+
+func _restore_active_flash() -> void:
+	var active_tween := _flash_tween
+	var active_target := _flash_target
+	_flash_tween = null
+	_flash_target = null
+	if active_tween != null and active_tween.is_valid():
+		active_tween.kill()
+	if is_instance_valid(active_target):
+		active_target.self_modulate = _flash_restore_self_modulate
 
 func _show_status_tooltip(status_data: StatusData) -> void:
 	var layer = _tooltip_layer()

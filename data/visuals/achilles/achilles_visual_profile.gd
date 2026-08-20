@@ -2,7 +2,9 @@ class_name AchillesVisualProfile
 extends Resource
 
 const RENDERING_SUBVIEWPORT := &"SUBVIEWPORT"
-const RENDERING_LEGACY_2D := &"LEGACY_2D"
+const FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT := (
+	&"NO_VISUAL_ACTION_CONTRACT"
+)
 const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 	Vector2i(256, 256),
 	Vector2i(384, 384),
@@ -22,7 +24,10 @@ const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 @export_range(0.1, 4.0, 0.01) var character_scale := 1.0
 
 @export var rendering_mode: StringName = RENDERING_SUBVIEWPORT
-@export var fallback_2d_scene: PackedScene
+@export var fallback_policy: StringName = (
+	FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT
+)
+@export var fallback_backend_scene: PackedScene
 
 @export var viewport_size := Vector2i(384, 384)
 @export var camera_transform := Transform3D.IDENTITY
@@ -58,7 +63,7 @@ const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 		"provenance": "OBSERVED_WEAPONLESS_VISUAL_REVIEW",
 	},
 	"DEATH_FALLBACK": {
-		"mode": "LEGACY_FADE",
+		"mode": "ADAPTER_FADE",
 		"provenance": "NO_CLASSIFIED_DEATH_CLIP",
 	},
 }
@@ -72,10 +77,11 @@ func is_character_only_valid() -> bool:
 	return schema_version == 1 \
 		and profile_id != &"" \
 		and character_scene != null \
-		and fallback_2d_scene != null \
+		and fallback_backend_scene != null \
 		and not character_asset_path.is_empty() \
 		and not skeleton_signature.is_empty() \
-		and rendering_mode in [RENDERING_SUBVIEWPORT, RENDERING_LEGACY_2D] \
+		and rendering_mode == RENDERING_SUBVIEWPORT \
+		and fallback_policy == FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT \
 		and not equipment_enabled \
 		and weapon_profile == null
 

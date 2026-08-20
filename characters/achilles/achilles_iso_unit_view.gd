@@ -5,19 +5,20 @@ signal animation_finished(animation_name: StringName)
 signal cast_release_reached
 signal death_animation_finished
 
-const RELEASE_FRAME := 8
 const MOVEMENT_SETTLE_SECONDS := 0.06
 const ACTION_TIMEOUT_SECONDS := 2.0
 const ACTION_FALLBACK := &"ACTION_FALLBACK"
+const DEFAULT_FALLBACK_BACKEND_SCENE := preload(
+	"res://characters/achilles/3d/AchillesNoVisualFallbackBackend.tscn"
+)
+const FALLBACK_BACKEND_SCRIPT := preload(
+	"res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd"
+)
 
 @export var visual_profile: AchillesVisualProfile
 
-@onready var legacy_backend: AchillesLegacy2DBackend = $Legacy2DBackend
 @onready var viewport_backend: AchillesViewport3DBackend = $Viewport3DBackend
-
-# Compatibility aliases retained for the existing Achilles presentation tests.
-@onready var visual: AchillesVisual2D = legacy_backend.visual
-@onready var animated_sprite: AnimatedSprite2D = legacy_backend.animated_sprite
+var fallback_backend = null
 
 var _active_backend: Node2D = null
 var _unit: Unit = null
@@ -36,11 +37,12 @@ var _last_backend_error: Dictionary = {}
 
 
 func _ready() -> void:
-	_connect_backend_signals(legacy_backend)
+	fallback_backend = _create_fallback_backend()
+	_connect_backend_signals(fallback_backend)
 	_connect_backend_signals(viewport_backend)
 	viewport_backend.backend_ready.connect(_on_viewport_backend_ready)
 	viewport_backend.backend_failed.connect(_on_viewport_backend_failed)
-	_activate_legacy_backend()
+	_activate_safe_fallback()
 	var parent_2d := get_parent() as Node2D
 	if parent_2d != null:
 		_last_parent_position = parent_2d.position
@@ -64,8 +66,8 @@ func _exit_tree() -> void:
 	_disconnect_unit()
 	if is_instance_valid(viewport_backend):
 		viewport_backend.shutdown()
-	if is_instance_valid(legacy_backend):
-		legacy_backend.shutdown()
+	if is_instance_valid(fallback_backend):
+		fallback_backend.shutdown()
 
 
 func bind_unit(unit: Unit) -> void:
@@ -82,10 +84,6 @@ func set_facing(direction: Vector2i) -> void:
 		_facing = "E" if direction.x > 0 else "W"
 	else:
 		_facing = "S" if direction.y > 0 else "N"
-	# Keep the historical direction-fallback diagnostics observable even while
-	# the hidden 2D backend is not selected.
-	if _active_backend != legacy_backend and is_instance_valid(visual):
-		visual.play_idle(_facing)
 	if is_instance_valid(_active_backend) \
 			and _active_backend.has_method("set_facing_label"):
 		_active_backend.set_facing_label(_facing)
@@ -122,8 +120,8 @@ func cancel_pending_visual_actions() -> void:
 	_movement_stable_time = 0.0
 	if is_instance_valid(viewport_backend):
 		viewport_backend.cancel_action()
-	if is_instance_valid(legacy_backend):
-		legacy_backend.cancel_action()
+	if is_instance_valid(fallback_backend):
+		fallback_backend.cancel_action()
 	if _death_tween != null and _death_tween.is_valid():
 		_death_tween.kill()
 	_death_tween = null
@@ -154,21 +152,19 @@ func cancel_movement_feedback() -> void:
 
 
 func get_default_cast_effect_origin() -> Vector2:
-	# This point is part of the existing gameplay/VFX presentation contract.
-	# The 3D markers are review metadata and do not move gameplay effects.
-	if is_instance_valid(visual) and is_instance_valid(visual.vfx_anchor):
-		return visual.vfx_anchor.position
+	# Preserve the established gameplay/VFX contract without loading the
+	# retired 2D scene. The 3D marker remains presentation-only metadata.
 	return Vector2(0.0, -92.0)
 
 
-func force_legacy_2d(reason: StringName = &"MANUAL_FALLBACK") -> void:
+func force_safe_fallback(reason: StringName = &"MANUAL_FALLBACK") -> void:
 	var replay_action := _action_pending and _active_backend == viewport_backend
 	if reason != &"":
 		_record_backend_error(reason)
 	if replay_action and is_instance_valid(viewport_backend):
 		viewport_backend.cancel_action()
-	_activate_legacy_backend()
-	if replay_action and not legacy_backend.play_action(_facing):
+	_activate_safe_fallback()
+	if replay_action and not fallback_backend.play_action(_facing):
 		_complete_action_once(ACTION_FALLBACK)
 
 
@@ -179,10 +175,10 @@ func request_subviewport_backend(
 		profile_override if profile_override != null else visual_profile
 	)
 	if selected_profile == null or not selected_profile.is_character_only_valid():
-		force_legacy_2d(&"INVALID_CHARACTER_ONLY_PROFILE")
+		force_safe_fallback(&"INVALID_CHARACTER_ONLY_PROFILE")
 		return false
 	if viewport_backend.is_shutdown():
-		force_legacy_2d(&"SUBVIEWPORT_BACKEND_ALREADY_RELEASED")
+		force_safe_fallback(&"SUBVIEWPORT_BACKEND_ALREADY_RELEASED")
 		return false
 	if viewport_backend.is_ready_for_render():
 		if _action_pending or _movement_active:
@@ -196,7 +192,7 @@ func request_subviewport_backend(
 func get_active_backend_name() -> StringName:
 	if _active_backend == viewport_backend:
 		return &"Viewport3DBackend"
-	return &"Legacy2DBackend"
+	return &"NoVisualFallbackBackend"
 
 
 func get_last_backend_error() -> Dictionary:
@@ -205,9 +201,6 @@ func get_last_backend_error() -> Dictionary:
 
 func _initialize_selected_backend() -> void:
 	if _closing or visual_profile == null:
-		return
-	if visual_profile.rendering_mode == AchillesVisualProfile.RENDERING_LEGACY_2D:
-		_activate_legacy_backend()
 		return
 	request_subviewport_backend()
 
@@ -224,10 +217,10 @@ func _begin_action() -> bool:
 	if started:
 		return true
 	_action_pending = false
-	if _active_backend != legacy_backend:
-		force_legacy_2d(&"SUBVIEWPORT_ACTION_START_FAILED")
+	if _active_backend != fallback_backend:
+		force_safe_fallback(&"SUBVIEWPORT_ACTION_START_FAILED")
 		_action_pending = true
-		started = bool(legacy_backend.play_action(_facing))
+		started = bool(fallback_backend.play_action(_facing))
 	if not started:
 		_action_pending = false
 	return started
@@ -263,19 +256,6 @@ func _complete_action_once(action_name: StringName) -> void:
 	animation_finished.emit(action_name)
 
 
-# Compatibility entry points retained for the existing direct unit tests.
-func _on_visual_frame_changed() -> void:
-	if _closing or not _action_pending or _release_emitted:
-		return
-	if animated_sprite.frame >= RELEASE_FRAME:
-		_release_emitted = true
-		cast_release_reached.emit()
-
-
-func _on_visual_action_finished(_animation_name: StringName) -> void:
-	_complete_action_once(ACTION_FALLBACK)
-
-
 func _on_viewport_backend_ready() -> void:
 	if _closing:
 		return
@@ -288,27 +268,27 @@ func _on_viewport_backend_ready() -> void:
 func _on_viewport_backend_failed(error_code: StringName) -> void:
 	if _closing:
 		return
-	force_legacy_2d(error_code)
+	force_safe_fallback(error_code)
 
 
-func _activate_legacy_backend() -> void:
+func _activate_safe_fallback() -> void:
 	_viewport_activation_deferred = false
 	if is_instance_valid(viewport_backend):
 		viewport_backend.set_backend_active(false)
-	if is_instance_valid(legacy_backend):
-		if _active_backend != legacy_backend:
-			legacy_backend.set_backend_active(false)
-		legacy_backend.set_backend_active(true)
-	_active_backend = legacy_backend
-	if is_instance_valid(legacy_backend):
-		legacy_backend.set_facing_label(_facing)
+	if is_instance_valid(fallback_backend):
+		if _active_backend != fallback_backend:
+			fallback_backend.set_backend_active(false)
+		fallback_backend.set_backend_active(true)
+	_active_backend = fallback_backend
+	if is_instance_valid(fallback_backend):
+		fallback_backend.set_facing_label(_facing)
 
 
 func _activate_viewport_backend() -> void:
 	if not is_instance_valid(viewport_backend) \
 			or not viewport_backend.is_ready_for_render():
 		return
-	legacy_backend.set_backend_active(false)
+	fallback_backend.set_backend_active(false)
 	viewport_backend.set_backend_active(false)
 	viewport_backend.set_backend_active(true)
 	_active_backend = viewport_backend
@@ -331,7 +311,8 @@ func _record_backend_error(error_code: StringName) -> void:
 	_last_backend_error = {
 		"event": "ACHILLES_VISUAL_BACKEND_FALLBACK",
 		"error_code": String(error_code),
-		"fallback": "LEGACY_2D",
+		"fallback": "NO_VISUAL_ACTION_CONTRACT",
+		"legacy_2d_loaded": false,
 		"equipment_enabled": false,
 	}
 	printerr(JSON.stringify(_last_backend_error))
@@ -369,7 +350,7 @@ func _on_bound_unit_died(_dead_unit: Unit) -> void:
 	_release_emitted = false
 	_movement_active = false
 	viewport_backend.cancel_action()
-	legacy_backend.cancel_action()
+	fallback_backend.cancel_action()
 	var death_generation := _generation
 	_death_tween = create_tween()
 	_death_tween.tween_property(self, "modulate:a", 0.0, 0.28)
@@ -386,3 +367,19 @@ func _disconnect_unit() -> void:
 		):
 		_unit.died.disconnect(_on_bound_unit_died)
 	_unit = null
+
+
+func _create_fallback_backend():
+	var scene := DEFAULT_FALLBACK_BACKEND_SCENE
+	if visual_profile != null and visual_profile.fallback_backend_scene != null:
+		scene = visual_profile.fallback_backend_scene
+	var candidate := scene.instantiate()
+	if candidate == null or candidate.get_script() != FALLBACK_BACKEND_SCRIPT:
+		if candidate != null:
+			candidate.free()
+		candidate = DEFAULT_FALLBACK_BACKEND_SCENE.instantiate()
+	var backend := candidate as Node2D
+	backend.name = "NoVisualFallbackBackend"
+	add_child(backend)
+	move_child(backend, 0)
+	return backend

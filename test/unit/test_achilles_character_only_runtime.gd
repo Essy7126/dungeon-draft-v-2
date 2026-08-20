@@ -19,7 +19,11 @@ func test_character_only_profile_schema_and_equipment_absence() -> void:
 	assert_false(profile.equipment_enabled)
 	assert_null(profile.weapon_profile)
 	assert_not_null(profile.character_scene)
-	assert_not_null(profile.fallback_2d_scene)
+	assert_not_null(profile.fallback_backend_scene)
+	assert_eq(
+		profile.fallback_policy,
+		AchillesVisualProfile.FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT,
+	)
 
 
 func test_achilles_3d_visual_has_character_only_structure() -> void:
