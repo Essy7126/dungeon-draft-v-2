@@ -127,3 +127,41 @@ Statut : **WORKTREE_CANDIDATE**, pas CURRENT. Base : `main` à `5b7458becbaae6d1
 Le dossier `res://data/arenas/produced/room_01_forest/` est gelé comme `UNREFERENCED_INCOMPLETE_PRODUCTION_BUNDLE` tant qu’aucune référence n’est démontrée. L’audit gameplay v2.1 est **HISTORIQUE** ; aucune règle de gameplay ne change dans ce patch.
 
 Preuves Arena Studio 2.0 : dernier global complet 889/902 et 54 432/54 489 assertions avec exactement les 13 échecs historiques ; après la correction responsive finale, UX 10/10 (87), pipeline visuel 12/12 (130), responsive 18/18 (980), Studio 2.0 12/12 (423) et captures réelles multi-résolution PASS. Les deux répétitions globales Windows post-correction ont été interrompues au niveau processus sans nouvel échec d’assertion ; voir `docs/tools/dungeon_draft_studio/arena_production_hardening_regression_report.md`.
+
+## Achille 3D character-only et theorycraft — checkpoint salle II (2026-08-20)
+
+- Statut : **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
+- Dépôt : `Essy7126/dungeon-draft-v-2` ; branche :
+  `integration/achilles-3d-character-theorycraft-v1` ; base :
+  `2d99ea4137ba1893e486b3ff1e39a73e66d0a469` ; commit d’implémentation :
+  `98834c07a630ec2ae0dfd8f105f3b3a07d11f856`.
+- Validation ciblée Godot 4.7.1 : personnage 74 tests mécaniques,
+  63 PASS / 11 PENDING derrière la gate, 1 804 assertions ; theorycraft
+  55/55, 1 197 assertions. La suite globale observée reste à 1 275/1 307
+  avec 32 échecs historiques ou hors périmètre ; faute de baseline globale
+  strictement comparable au même périmètre, « zéro nouvel échec » reste
+  `BLOCKED`. L’import termine mais n’est pas qualifié de propre.
+- Le backend canonique 3D est intégré comme présentation `SubViewport`
+  `character-only`, sans instance d’équipement séparée. Le profil vérifié porte
+  `equipment_enabled = false` et `weapon_profile = null`.
+- L’intégration runtime d’armes est différée au laboratoire dédié. Les concepts
+  épée-bouclier et arc du laboratoire de theorycraft restent conceptuels, non
+  chargeables par le runtime et non activés. Aucun build de laboratoire n’est
+  actif.
+- La preuve runtime est volontairement bornée à la salle II de L’Odyssée. Les
+  salles I et III, les transitions normales et l’écran de résultat restent en
+  pause derrière la gate humaine ; le smoke trois salles n’a pas été exécuté.
+- Le propriétaire doit répondre A (256), B (384), C (512), ou D (rejeter le
+  `SubViewport` et utiliser des sprites prérendus). 384 est seulement la
+  recommandation technique non décisionnelle issue du benchmark.
+- Le root motion reste `ROOT_MOTION_UNCLASSIFIED`. Les translations X/Z sont
+  neutralisées localement dans la présentation sans réécrire les actions ni la
+  hiérarchie source.
+- Les temps GPU sont `NOT_MEASURED`. Le second cycle 512 ne montre pas de hausse
+  supplémentaire, mais la rétention/plateau du cache de rendu n’est pas
+  attribuée causalement au seul `SubViewport`. Des warnings de teardown
+  renderer/RID/ObjectDB subsistent à la fermeture.
+- La source 3D canonique et le backend 3D n’exposent aucune arme. En revanche,
+  le fallback 2D hérité contient visiblement des pixels d’épée et de bouclier :
+  `LEGACY_2D_BAKED_WEAPON_PIXELS_OBSERVED`. La conformité globale sans arme est
+  donc `BLOCKED_LEGACY_2D_FALLBACK_WEAPON_VISUAL_DIVERGENCE`.

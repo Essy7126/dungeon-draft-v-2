@@ -142,3 +142,29 @@ régressions introduites par la migration.
 - `res://data/arenas/produced/room_01_forest/` est un bundle incomplet gelé, non canonique et non utilisable pour Tester.
 - Les 187 fichiers Achilles/VFX/outillage non trackés et 10 suppressions Achilles sont un travail externe à préserver.
 - Deux répétitions globales Windows post-correction responsive ont été instables au niveau du processus (timeout en progression puis sortie native `-1`) sans nouvel échec d’assertion observé. Le dernier global complet conserve exactement les 13 historiques ; les suites UI/visuelles affectées sont vertes séparément.
+
+## Achilles 3D character-only / theorycraft — réserves du checkpoint salle II
+
+- **Blocage hérité** : le fallback 2D conservé contient des pixels d’épée et de
+  bouclier déjà incrustés (`LEGACY_2D_BAKED_WEAPON_PIXELS_OBSERVED`). Le backend
+  canonique 3D reste sans équipement séparé, avec `equipment_enabled = false`
+  et `weapon_profile = null`, mais l’exigence visuelle globale sans arme demeure
+  `BLOCKED_LEGACY_2D_FALLBACK_WEAPON_VISUAL_DIVERGENCE`.
+- L’intégration runtime d’une arme n’est pas commencée et reste différée au
+  laboratoire dédié. Les templates épée-bouclier et arc sont des concepts non
+  runtime ; le laboratoire de theorycraft isolé n’active aucun build.
+- Le root motion des actions sources reste `ROOT_MOTION_UNCLASSIFIED`. La
+  neutralisation locale X/Z stabilise la présentation, mais ne constitue pas
+  une classification ou une correction des actions sources.
+- La mesure GPU est `NOT_MEASURED`. La rétention mémoire observée puis stable au
+  second cycle 512 ressemble à un plateau de cache de rendu, sans attribution
+  causale isolée. Les warnings de teardown renderer/RID/ObjectDB restent à
+  surveiller.
+- Seule la salle II a été exercée dans ce checkpoint. Salle I, salle III,
+  transitions normales, retour menu, résultat et smoke complet trois salles
+  restent en pause derrière la gate propriétaire, et ne doivent pas être
+  présentés comme vérifiés.
+- Le choix de présentation reste humain : A = 256, B = 384, C = 512, D = rejet
+  du `SubViewport` pour des sprites prérendus. La recommandation technique 384
+  n’est pas une décision d’activation.
+- Le statut demeure **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
