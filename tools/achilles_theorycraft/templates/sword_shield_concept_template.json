@@ -1,0 +1,33 @@
+{
+  "build_id": "ACHILLES_SWORD_SHIELD_CONCEPT_TEMPLATE",
+  "character_id": "achilles",
+  "design_tags": [
+    "DESIGN_CONCEPT_ONLY",
+    "NOT_RUNTIME_LOADABLE"
+  ],
+  "intentions": [
+    "entree au contact",
+    "orientation",
+    "blocage",
+    "contre",
+    "protection active",
+    "gestion du tempo",
+    "recuperation apres erreur"
+  ],
+  "provenance": {
+    "build_id": {"kind": "DERIVED_EXACT", "calculation": "Isolated concept-template identifier", "sources": []},
+    "character_id": {"kind": "DERIVED_EXACT", "calculation": "Achilles-only lab invariant", "sources": []},
+    "design_tags": {"kind": "DERIVED_EXACT", "calculation": "Non-runtime concept isolation labels", "sources": []},
+    "intentions": {"kind": "DRAFT_DESIGN_INPUT", "source": "Owner-editable theorycraft intentions"},
+    "real_resource_refs": {"kind": "DERIVED_EXACT", "calculation": "Concept templates contain no live Resource references", "sources": []},
+    "status": {"kind": "DRAFT_DESIGN_INPUT", "source": "Concept template remains DRAFT"},
+    "values_policy": {"kind": "DERIVED_EXACT", "calculation": "Concept template intentionally contains no final balance values", "sources": []},
+    "visual_asset_refs": {"kind": "DERIVED_EXACT", "calculation": "Concept template intentionally contains no visual asset references", "sources": []},
+    "weapon_family": {"kind": "DRAFT_DESIGN_INPUT", "source": "Owner-review concept family"}
+  },
+  "real_resource_refs": [],
+  "status": "DRAFT",
+  "values_policy": "NO_FINAL_BALANCE_VALUES",
+  "visual_asset_refs": [],
+  "weapon_family": "SWORD_SHIELD_CONCEPT"
+}

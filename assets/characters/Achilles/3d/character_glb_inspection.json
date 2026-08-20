@@ -1,0 +1,2311 @@
+{
+  "accessors": [
+    {
+      "component_type": 5126,
+      "count": 33469,
+      "index": 0,
+      "max": [
+        0.5851851105690002,
+        0.5420407056808472,
+        0.13916164636611938
+      ],
+      "min": [
+        -0.5809683799743652,
+        -0.6131373643875122,
+        -0.15551720559597015
+      ],
+      "normalized": false,
+      "raw_sha256": "BADE3322C9B7867131AE368C334C12AAF2869EECFC31086F3AB0A3B97121928E",
+      "type": "VEC3"
+    },
+    {
+      "component_type": 5126,
+      "count": 33469,
+      "index": 1,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "558104AA5FAD5D7DE413A858544E7A7E95A0D6CC286A977D99C4D87326C1A4B1",
+      "type": "VEC3"
+    },
+    {
+      "component_type": 5126,
+      "count": 33469,
+      "index": 2,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "B21DFD85FD951C18A7D7959BB7ED2527CDEE84851AD99B78AD42934AA3559180",
+      "type": "VEC2"
+    },
+    {
+      "component_type": 5121,
+      "count": 33469,
+      "index": 3,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "438D0A98685D54D73C81DD6B60EF03E4C8FBE6C4864E07E7182688918508150D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 33469,
+      "index": 4,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "230FAA6E93A3E0B007CD8F5981A6EFEFB0E94952B91153C0DF944CB77AE2F730",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5123,
+      "count": 150000,
+      "index": 5,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "85C592C16B37967B70F07BA76066F3F918AD284F507BEA89BB466202485D186E",
+      "type": "SCALAR"
+    },
+    {
+      "component_type": 5126,
+      "count": 52,
+      "index": 6,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "206551A0840E5A261502B2BC0EF11B518C7CF16242D228E4CFCB59F650F9508B",
+      "type": "MAT4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 7,
+      "max": [
+        1.5666667620340984
+      ],
+      "min": [
+        0
+      ],
+      "normalized": false,
+      "raw_sha256": "B6FA4F26780321C541F65FCFF3FDB88A80D9F39AA45D019A3F4855512034BCE9",
+      "type": "SCALAR"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 8,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "63E82DD4FE89F912847DF1DAC497D751180A365A361C8E5395BE596B1D53D48D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 9,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "B239AEACFF483EB6619479BCF90730BB01B50AC24964D081A1EDFA31A2E517DF",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 10,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "21C5D9D04A1C2CCD5E3CB57CF96655E25EE40CC39FA1CE62CF273F7F96648C6D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 11,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "C96FD2E0F7DF9F41E3E3372E0B42B6FBDF358B5B5EB548C5D701F29AF8C247C6",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 12,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "6611E5F377D552605C8883E0F4BD68AFDC9BC1D8CC5E9B036DF41CBCCE39FFE0",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 13,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "E764BE533B2FEE26026DFF8A987769DA81B00AAB739DF265CB32AC865A377CBA",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 14,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "95120D7EFBE0EE5E6F0E87D04CCE7E0B1E0BE3D24338537FDE9A41AA6E42E732",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 15,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "2065F2FC5D80CAFBC085E451ED5DC455FF9E09B22F2EC5AFBD88493804A1B9F1",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 16,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "780937AB5E3E3C1BB14C8E51EFD632FD0915B22CD4B549AB6DF4E1B4FBB1C17A",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 17,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "64102148B56E42EFEC0B35A861F0828CD0A85561EB0379E96094D5071A2E576D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 18,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F3A4325029B5196B09C8B54AF7F5ACA129CFF9E13A7647953447C74BAE83572D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 19,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "1BF469F19EEFBB459B4E9BC6527C00EEB093898F40E1FD30A56D32D784346FC2",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 20,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "3C9E4F03C7DFF18A3EADAC91ACEC7DA76C8A04F02E86B3C184E3A064F203D96F",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 21,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A46929F045FA8233AD665F54188776C5D4E2417E241527E8CDB96A76E3A64B2D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 22,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "9F266EF0A1A1FBB7F9E3ADE75C883B9B61F9E14AFD873C1DB462E684E43FED50",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 23,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "70313A56E4ED6EB56C2D19F875AD19F5CE6D0C6D57700E4F0191FA43584EA4B4",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 24,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "B48F5377E63D71C123D6547102674ADA4B43922F3C28D7168B4E36C98DBE9895",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 25,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "8702D12270EF6D8FD50D2251C0396792FB08184E7DABB63AE657C939A2737851",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 26,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "B59F2CA901568E36C00A9F7B7F5592D3FB0273F1D1189FB82AFE11E335DF19A2",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 27,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "81FB2B583682BF441BFF2448D468B147CA184AA5CC58B2A9FA12E8615146B003",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 28,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "9F162764E08F2133813802311BA4F3142B430699BF1667EBBDB0F2608A209EDB",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 29,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F89355445B7F0178AEC8C93ABD43FB83A45022382742A15510F5D76575DA5BFB",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 30,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "2896AD23EB0FF293BDD1E03D188E48983997D22E608B18CA7CA671C8CF735A5B",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 31,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "13A69430E113F2982418EA716C1E8268D7D2F34DD8E8D28AEE51A5BF5366D15C",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 32,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "2D3889C411810761F990AB04F3F5F4A5A117D083DC604375AB183633BE1C18F9",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 33,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "783B39E62B354B387583306D637FBC4D3F70E35BD43D6C4019B1530FE8DB684E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 34,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "DDF5D8895106A654A452BF289F109E8461576852DCD427E700AF1B0A4399E0E3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 35,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "906077FF35B5D68F2F1023ED3B207EAB8B63D66A294AF76DD6B5733B206445AE",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 36,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "9546782AE45444BAE97CDFED00EA91003756906578BA4E1AFB614B452B1438EE",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 37,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A392AC6A4787B38795D34131A9FC744A5D668FE378C98D5BF8F53D2A6406974E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 38,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "9356FF80A1FFCE002D9240EB9292B5CA3F0D6D983126F3CBB3CD9BD617433B47",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 39,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "471F49EF3546EBD8EDDA1D7FDC169E3164E6C98731F5A2BB588CCFB1C4F66777",
+      "type": "VEC3"
+    },
+    {
+      "component_type": 5126,
+      "count": 48,
+      "index": 40,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "969F5862D47CE987611C7CB4AD2023CD0469F6011BC9746EE3341F765961F75D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 41,
+      "max": [
+        1.2666667302449544
+      ],
+      "min": [
+        0
+      ],
+      "normalized": false,
+      "raw_sha256": "5F51FF6021964C9A1AC40C78B884DF8CC582EF83E24F5278BB9B7D8779ACF1F2",
+      "type": "SCALAR"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 42,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "286727B5475FFFCA6B50BD598C7D9758D96EC5DC85FC88DE5FE5137499693F1D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 43,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "7C25EA7BC55DF0B1CF2490D89B0F4C24830A8501F78C2BB7A93B404E20411584",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 44,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "EC514A2962C532BC19C0BA53A83F137CE92EF4A527DFC5D415C35BF7FD46E3B5",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 45,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A3F02D189E3188056365236D156AD82AFF04AB581285113814D5E5CAB7030152",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 46,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A006CC9D93C1DF8EF8708C97443AAFE10BADA05C8B8178DF773866D96E2DF3F8",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 47,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "CCA49A2BADF1B2A74AA0EDB99DB028F4E084570584BF22236D3B8CFD22CDABE2",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 48,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F5937A8F0B2DC5CDB31D1D19982AAC65E1823EB2D3CBA1083A4FB7297847F2F9",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 49,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "BA7BF802B2C406E19D739DC4F2F8121797593BB6BB5B0FAA4A7A7735E23B88DB",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 50,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "6CF42ED16BDBEF5DB9C69D00ADB31554CDF0B51DA9B3B8AC98A708CB0AAB6E62",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 51,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "EF287109A870C51AB70A7DF5930F4940040708310CD2DE4567E01C7A8ABDB97B",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 52,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "2E66C6BE71CE9FA2AC289A368CFF89507BFF86B5CB2F0B635D6152519160F8CA",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 53,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "19243F89BF030F1884D9745E83416B270768ACCB0BDC20F92674DBE0CF70E416",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 54,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F503E43BC67088A427A25BB19107E80961FF0D274BE7AE5FBD1AE9657E24FE06",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 55,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "7847193C4E7B145F4F4BCFD28C722F8291BCC910562D687F52B33C2FDA919A9E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 56,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "8E3EEF67043C2726BAB177F7CAC100FA301B08F89E3F721E33E53EA0AD68389F",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 57,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "D33122AA00BE23EF85B6EF0C141C10CB82380ECA52E1BEC50373A5AF21FDF283",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 58,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "9EFEB9A9D9426570070605E87C849C1B1FD5B050AFA6C3FFB19B758B8F8F12C7",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 59,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "0D82DB481F4B526452618BB31127FDBF56C85E533834FE4A6967FFCFD26AAC9E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 60,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "AF4E1B02A503BCCF594A1C71EB353E5A2188F3D68A4A8FEA80C59A3D0B1B3ABE",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 61,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A0B00AF85CB01F5F198C75B95BB082354142B814B87C6BD7E625BD2E6CD678BB",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 62,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "D53F79FA2B910E017C6916F6B7AB25427B51839242AED0009C2A81B4EEDA5ED3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 63,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "E76C7F5DFC7339E8FC7FBA0FC3DE9BF023BD422BC56C464896A99A72F1393BB5",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 64,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "613C13561D8AA254EC1896979E1A14C13511A5C7DE545D338E825879292078E9",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 65,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F26A7EC5526FA23AC8547F0E4AD844934329FBC70DA3FBDBAB0BDD15E56A9343",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 66,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "01AF51A5D38DA9746E2365D54CDD8B8CC9C5482CE2B7ADA8F9992E685295BC11",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 67,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "957807304C1C88B990F047E3D89D81A6CDE7B3D08C8FF3508E5F3ED9BCD03F3C",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 68,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "3D701E48DFA2DDD5B4EE3F886DECC8F2B584C79F8A26CB7F456301B3744596A7",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 69,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "8615304F198BBCCD03E715D522CC17591D69BE184B435F778B2A7D4162D349B0",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 70,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "923816FF0738495E4DDD31B68A624CF6B8BBD81E5BDE5DF6EE25E37ADC597C27",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 71,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F82415A4371EE8B1F4BA4ABEB2E8CAABE47FF2804E49EDB3565ACF18D56F8276",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 72,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "3184EE05650FB457695C8C19A69DFDA23F43E04740040B5E04219F94DB38589E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 73,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "30F2D05FC2326683F3669E5B28035B3C209DFAA865C1934251F4343DFB94138B",
+      "type": "VEC3"
+    },
+    {
+      "component_type": 5126,
+      "count": 39,
+      "index": 74,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "50DB1ECFE97BFAE693C86A31A8BCBF4BC997C319B7DBAAFBC1996491B956AB38",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 75,
+      "max": [
+        4
+      ],
+      "min": [
+        0
+      ],
+      "normalized": false,
+      "raw_sha256": "D969BE1A6F1EE040B87EACE2D602B04BCF75A07CC7E225C0452CCD4B80693D1D",
+      "type": "SCALAR"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 76,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "3BD0560595D30C506CCB804171C34659F2F141E333AEFAC221D4A3DD614D06AE",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 77,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "E9EF3E1B294A53565B318EEB808C1B84E9229BCFB782E92D1BB5211D16C4FDD7",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 78,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "8A7671A99A414830F724BA61648AD5749EE2D7F2B54B01A9900B5AC9780BB53D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 79,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "FA24AC137597F6842938738020B8F29B672AAE72520A3E1683946CF1464977D5",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 80,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "D3B94B2C484F4AFFBFF960D8E2DA1F8876BB2D3CB880DE6CF36E91EDF1F42144",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 81,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "3FF2737F44B03955113318C06F4F44F923671EC2430DC3F747B023B6C7C0E01A",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 82,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "0BE3034CF4AB8270FB44AC9321C2B5AAD9F2926BDB528EBF9A0E669F3583FEC3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 83,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "7B36AD889830B76E298D2A18069A87CD63443275926BF1B1E806CD8B2FE392BB",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 84,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "3834975845FB3E4FA17644AB577B407A9C28EF01E4254B5522CD06355EDAAE3E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 85,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "1C77CFBD02D23CE89689930E72C9B68817B73C2DEAC6C03A0A9A57CD5B6A3BDA",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 86,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "49F709C705197D971CB1AF32A8711631337CA34B0833A1C814F02A308315994B",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 87,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "8BFDCBD59EC428A0C4FB68AD3D95883BB08F65BA0DB730927BBE9B84EA87F40B",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 88,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "103D5157843933656B4D4B8A21337A0531CBE26E0EBBF4A15FBF8E7A0D60DC90",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 89,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "01BF211B84F658CB1335297D78201D9B5EBF63D0C7C49D730F3BB5C66E8B178E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 90,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "4ACDE12341E98D2F881FC86987D74BBB56FC3023715741A6F27D8DB34851EFA5",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 91,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "7DE2ACFB7F3F39633A75D6EA1D403451ECD6D043679500EC24E5737591A53EF3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 92,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "B16D93328920EC952CC6F434E08B73380216EE9F301C6F80B293EFF892EAFF21",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 93,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "497B19BD8D7CB64B2EC698586684FBA2B065EC0544007CEAEE32A3BF4EFD7156",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 94,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "93AA6506C63911BE9885C6BE07A440B5D23271B89674A62C269A090193861A7E",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 95,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F5E732A578F5BDC0AE2257BF535AC45F3CA4EB30CA3738B5B2BDB9C40742403D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 96,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "7F158333DE4816CA67017A3DE3A57318F5D0B5747E026A305163899D120C8274",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 97,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "C9FB74B118B498796DADF89A6030AC9D8386D7F98766751BAC81266415D6C738",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 98,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "92ACCC35AD0D4BC8D02420DD116BBFDAD06976DE6CF9CD794DA03A912AE25EF5",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 99,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "4E14DC19FAC2656C7BAA075872258BBE72B1D91B3E758DF36D63F79ADA6CBDCC",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 100,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "D9FB0802013D20B442373F8DE46A3B94459AD95B29D61C773B6C8A8BAD7A9243",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 101,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "34689B7C79716CE553196D8E6E7C65097AF0B0707BD0D5974AFC2B37D64FA5BB",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 102,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "37465A379B12F24359EB3F2757EDF4997CCEE89AE9D9987E10653C770C86A4BF",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 103,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "58F22A49B7BAFD0726FE1C13197C0A14BDFED8E94FC16F3127E5FD4ADDE8A7D3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 104,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "5A8D8F74FD518C908F2ED7AEB2EEA76A87E99BF94CC67033FE69A4472061D4B3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 105,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A277C2D347C6BA1C7EA4C9573EDCADB088F9A9F36D107C36FD56208FA2DE28FC",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 106,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "6ADBD7D5A29A0F6B97187644F0AAA33989543BF9C54CD5858D27951D12234E05",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 107,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "1B39949A09169C1A39E49E6BA8D282504B37EADC3127640BEFBF0192868DBDD7",
+      "type": "VEC3"
+    },
+    {
+      "component_type": 5126,
+      "count": 97,
+      "index": 108,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "BA059E1C0D8632EF31FD4766C0EEFD7CDA2C55B798F16D0E53EA72AB3BA200A0",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 109,
+      "max": [
+        5.333333333333333
+      ],
+      "min": [
+        0
+      ],
+      "normalized": false,
+      "raw_sha256": "0D8D1FA95B12AEF10448A6BD00D73DFD417CA08E92C91A070F0A805ED3E3AED6",
+      "type": "SCALAR"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 110,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "7A2640C796812F3F33C71B5630ADBBD1CA6EA8831FE954BBB9F6ABCBAB4C173D",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 111,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "353B360647F40B77558F5B2C6AB414B775BDD50C46CC4318324A95A3FA19C56A",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 112,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "C550DC3F6A1EAF4A88FC2A8028713BDE7E3BCC5AF5917FC7C119E1A48C58E647",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 113,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "DAD4B72775F4FA6C08CA2A7045D508AC4033BE7FE85AC7928C4A814CAD5BC1DE",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 114,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "05A8EA94990572B1B24AAAA78FDAE1666706C278D6B1067CAE323CA7F1070C13",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 115,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "D668E686B404197B0F2D53B0324FE6DFBF928AEF55EFA269D1B2C840EA25C898",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 116,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "2E4D4280E0A4D6DF4E33E3D0CCE88A46050B3A193FB6774BEE6D59B037DF480A",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 117,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "01AA43920128EE27ADAF00194FE7EC26B35BF3A039AC6F4D6734B0F5245E427C",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 118,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "B2F3EF294BF618F57CB85637895663E20093EEA28379CD0FB891A172166421CD",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 119,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "40C678C0F653D7CA090DEDE22BB23ECD13BD5C2A95C09A8CA86079A204F00ED8",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 120,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "82ADBFDBD90C9C89459FE3E260DA8B056C4D1A603224176D50F95FA89FAF44B8",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 121,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "D521C38D04BD5DDE637CF3BCCE111B892303BAEB1808E8BC8A7353FC1241281B",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 122,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "0AD5F42F59BAC32D5EA27F6AA9B8D5143A067CC407B7EEB65E3265489A7300FE",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 123,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "710F3AE22BD0A2B7704E0A464AE55D8522C8478FDE24937AE706C4BAAAA5A578",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 124,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "DF58C781AF24F08741419FCABA322B768C5F85A2B8D75F0A7F984B68F0CA5708",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 125,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A7349604256752020795457DC28666FDA533FEF28D9CD8E39FA0803EF68292F3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 126,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "E82A723540A18CEE819428926A122502937CD35D64569A2C7984B2797F2F3C2C",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 127,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "00F685FDB08085B4298FC9702A6417BBDD188ECD94B0A874051346D7FB5C8620",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 128,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "F213A74BBB75871784660472F60BE4BF762B6637AE5CEE1103044323C5B2E310",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 129,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "A91CFCE3D3210A9D9005A9455FD9761B14AD3A12F0EB9846CC2D5573DEF40E18",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 130,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "BC22BD76E11740399CC9758E98ABE7BF76C535F23FFFE8404AEFD94099FDEF2A",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 131,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "C5D4447A94D628053ACD6A4D5BA93A5493DC011FB351B55AF654FF1FB1669C91",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 132,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "512274341E2444D845A912003BA8AF3F4B2ACFEE00A2BBBF1E8C01C28FD8EA26",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 133,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "DF45D29051CE571CEF1F71C14F357A39C6997C2977D87E0C115794FA0D7E6FC3",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 134,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "E16B6BF91CB34884B948E4DF38C10D6174DDD92095BA1851A71D25B46C0F1DF4",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 135,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "61491CC539E814FF11635CB0E05D710A4BD946614AD8F3E74633818353F96C12",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 136,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "688CDF98129A8937267568BBD01EC6EE7F7632DA2633357524E5B01F6755BE45",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 137,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "6FE96EB09FBEA38C9E6CFD5B7B2AD039D52CBF80499978EACED41BE715059FB8",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 138,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "38128F1A49D1DFAE1311DBB839AB07B19024AEB5BE813589351AD1AB410F3894",
+      "type": "VEC4"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 139,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "C7BD8A28A15FA1AEE87B2F149D3DB1A0BD2A63DF883825A84C41A081781BA323",
+      "type": "VEC3"
+    },
+    {
+      "component_type": 5126,
+      "count": 161,
+      "index": 140,
+      "max": null,
+      "min": null,
+      "normalized": false,
+      "raw_sha256": "849A31FB980D94A13545D890E1D74211EA5A5D6738438BFA8A702067FA3B94A2",
+      "type": "VEC4"
+    }
+  ],
+  "animation_count": 4,
+  "animations": [
+    {
+      "channel_count": 33,
+      "duration_seconds": 1.5666667222976685,
+      "end_seconds": 1.5666667222976685,
+      "name": "Anim_0.001",
+      "sampler_count": 33,
+      "start_seconds": 0.0,
+      "targets": [
+        {
+          "node": 0,
+          "node_name": "mixamorig:Head",
+          "path": "rotation"
+        },
+        {
+          "node": 1,
+          "node_name": "mixamorig:Neck",
+          "path": "rotation"
+        },
+        {
+          "node": 4,
+          "node_name": "mixamorig:LeftHandThumb1",
+          "path": "rotation"
+        },
+        {
+          "node": 7,
+          "node_name": "mixamorig:LeftHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 10,
+          "node_name": "mixamorig:LeftHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 13,
+          "node_name": "mixamorig:LeftHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 16,
+          "node_name": "mixamorig:LeftHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 17,
+          "node_name": "mixamorig:LeftHand",
+          "path": "rotation"
+        },
+        {
+          "node": 18,
+          "node_name": "mixamorig:LeftForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 19,
+          "node_name": "mixamorig:LeftArm",
+          "path": "rotation"
+        },
+        {
+          "node": 20,
+          "node_name": "mixamorig:LeftShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 23,
+          "node_name": "mixamorig:RightHandThumb1",
+          "path": "rotation"
+        },
+        {
+          "node": 26,
+          "node_name": "mixamorig:RightHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 29,
+          "node_name": "mixamorig:RightHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 32,
+          "node_name": "mixamorig:RightHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 35,
+          "node_name": "mixamorig:RightHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 36,
+          "node_name": "mixamorig:RightHand",
+          "path": "rotation"
+        },
+        {
+          "node": 37,
+          "node_name": "mixamorig:RightForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 38,
+          "node_name": "mixamorig:RightArm",
+          "path": "rotation"
+        },
+        {
+          "node": 39,
+          "node_name": "mixamorig:RightShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 40,
+          "node_name": "mixamorig:Spine2",
+          "path": "rotation"
+        },
+        {
+          "node": 41,
+          "node_name": "mixamorig:Spine1",
+          "path": "rotation"
+        },
+        {
+          "node": 42,
+          "node_name": "mixamorig:Spine",
+          "path": "rotation"
+        },
+        {
+          "node": 43,
+          "node_name": "mixamorig:LeftToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 44,
+          "node_name": "mixamorig:LeftFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 45,
+          "node_name": "mixamorig:LeftLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 46,
+          "node_name": "mixamorig:LeftUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 47,
+          "node_name": "mixamorig:RightToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 48,
+          "node_name": "mixamorig:RightFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 49,
+          "node_name": "mixamorig:RightLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 50,
+          "node_name": "mixamorig:RightUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "translation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "rotation"
+        }
+      ]
+    },
+    {
+      "channel_count": 33,
+      "duration_seconds": 1.2666667699813843,
+      "end_seconds": 1.2666667699813843,
+      "name": "Anim_0.003",
+      "sampler_count": 33,
+      "start_seconds": 0.0,
+      "targets": [
+        {
+          "node": 0,
+          "node_name": "mixamorig:Head",
+          "path": "rotation"
+        },
+        {
+          "node": 1,
+          "node_name": "mixamorig:Neck",
+          "path": "rotation"
+        },
+        {
+          "node": 4,
+          "node_name": "mixamorig:LeftHandThumb1",
+          "path": "rotation"
+        },
+        {
+          "node": 7,
+          "node_name": "mixamorig:LeftHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 10,
+          "node_name": "mixamorig:LeftHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 13,
+          "node_name": "mixamorig:LeftHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 16,
+          "node_name": "mixamorig:LeftHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 17,
+          "node_name": "mixamorig:LeftHand",
+          "path": "rotation"
+        },
+        {
+          "node": 18,
+          "node_name": "mixamorig:LeftForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 19,
+          "node_name": "mixamorig:LeftArm",
+          "path": "rotation"
+        },
+        {
+          "node": 20,
+          "node_name": "mixamorig:LeftShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 23,
+          "node_name": "mixamorig:RightHandThumb1",
+          "path": "rotation"
+        },
+        {
+          "node": 26,
+          "node_name": "mixamorig:RightHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 29,
+          "node_name": "mixamorig:RightHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 32,
+          "node_name": "mixamorig:RightHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 35,
+          "node_name": "mixamorig:RightHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 36,
+          "node_name": "mixamorig:RightHand",
+          "path": "rotation"
+        },
+        {
+          "node": 37,
+          "node_name": "mixamorig:RightForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 38,
+          "node_name": "mixamorig:RightArm",
+          "path": "rotation"
+        },
+        {
+          "node": 39,
+          "node_name": "mixamorig:RightShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 40,
+          "node_name": "mixamorig:Spine2",
+          "path": "rotation"
+        },
+        {
+          "node": 41,
+          "node_name": "mixamorig:Spine1",
+          "path": "rotation"
+        },
+        {
+          "node": 42,
+          "node_name": "mixamorig:Spine",
+          "path": "rotation"
+        },
+        {
+          "node": 43,
+          "node_name": "mixamorig:LeftToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 44,
+          "node_name": "mixamorig:LeftFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 45,
+          "node_name": "mixamorig:LeftLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 46,
+          "node_name": "mixamorig:LeftUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 47,
+          "node_name": "mixamorig:RightToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 48,
+          "node_name": "mixamorig:RightFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 49,
+          "node_name": "mixamorig:RightLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 50,
+          "node_name": "mixamorig:RightUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "translation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "rotation"
+        }
+      ]
+    },
+    {
+      "channel_count": 33,
+      "duration_seconds": 4.0,
+      "end_seconds": 4.0,
+      "name": "Anim_0.004",
+      "sampler_count": 33,
+      "start_seconds": 0.0,
+      "targets": [
+        {
+          "node": 0,
+          "node_name": "mixamorig:Head",
+          "path": "rotation"
+        },
+        {
+          "node": 1,
+          "node_name": "mixamorig:Neck",
+          "path": "rotation"
+        },
+        {
+          "node": 4,
+          "node_name": "mixamorig:LeftHandThumb1",
+          "path": "rotation"
+        },
+        {
+          "node": 7,
+          "node_name": "mixamorig:LeftHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 10,
+          "node_name": "mixamorig:LeftHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 13,
+          "node_name": "mixamorig:LeftHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 16,
+          "node_name": "mixamorig:LeftHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 17,
+          "node_name": "mixamorig:LeftHand",
+          "path": "rotation"
+        },
+        {
+          "node": 18,
+          "node_name": "mixamorig:LeftForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 19,
+          "node_name": "mixamorig:LeftArm",
+          "path": "rotation"
+        },
+        {
+          "node": 20,
+          "node_name": "mixamorig:LeftShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 23,
+          "node_name": "mixamorig:RightHandThumb1",
+          "path": "rotation"
+        },
+        {
+          "node": 26,
+          "node_name": "mixamorig:RightHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 29,
+          "node_name": "mixamorig:RightHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 32,
+          "node_name": "mixamorig:RightHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 35,
+          "node_name": "mixamorig:RightHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 36,
+          "node_name": "mixamorig:RightHand",
+          "path": "rotation"
+        },
+        {
+          "node": 37,
+          "node_name": "mixamorig:RightForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 38,
+          "node_name": "mixamorig:RightArm",
+          "path": "rotation"
+        },
+        {
+          "node": 39,
+          "node_name": "mixamorig:RightShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 40,
+          "node_name": "mixamorig:Spine2",
+          "path": "rotation"
+        },
+        {
+          "node": 41,
+          "node_name": "mixamorig:Spine1",
+          "path": "rotation"
+        },
+        {
+          "node": 42,
+          "node_name": "mixamorig:Spine",
+          "path": "rotation"
+        },
+        {
+          "node": 43,
+          "node_name": "mixamorig:LeftToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 44,
+          "node_name": "mixamorig:LeftFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 45,
+          "node_name": "mixamorig:LeftLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 46,
+          "node_name": "mixamorig:LeftUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 47,
+          "node_name": "mixamorig:RightToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 48,
+          "node_name": "mixamorig:RightFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 49,
+          "node_name": "mixamorig:RightLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 50,
+          "node_name": "mixamorig:RightUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "translation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "rotation"
+        }
+      ]
+    },
+    {
+      "channel_count": 31,
+      "duration_seconds": 5.333333492279053,
+      "end_seconds": 5.333333492279053,
+      "name": "Anim_0.005",
+      "sampler_count": 31,
+      "start_seconds": 0.0,
+      "targets": [
+        {
+          "node": 0,
+          "node_name": "mixamorig:Head",
+          "path": "rotation"
+        },
+        {
+          "node": 1,
+          "node_name": "mixamorig:Neck",
+          "path": "rotation"
+        },
+        {
+          "node": 7,
+          "node_name": "mixamorig:LeftHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 10,
+          "node_name": "mixamorig:LeftHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 13,
+          "node_name": "mixamorig:LeftHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 16,
+          "node_name": "mixamorig:LeftHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 17,
+          "node_name": "mixamorig:LeftHand",
+          "path": "rotation"
+        },
+        {
+          "node": 18,
+          "node_name": "mixamorig:LeftForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 19,
+          "node_name": "mixamorig:LeftArm",
+          "path": "rotation"
+        },
+        {
+          "node": 20,
+          "node_name": "mixamorig:LeftShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 26,
+          "node_name": "mixamorig:RightHandIndex1",
+          "path": "rotation"
+        },
+        {
+          "node": 29,
+          "node_name": "mixamorig:RightHandMiddle1",
+          "path": "rotation"
+        },
+        {
+          "node": 32,
+          "node_name": "mixamorig:RightHandRing1",
+          "path": "rotation"
+        },
+        {
+          "node": 35,
+          "node_name": "mixamorig:RightHandPinky1",
+          "path": "rotation"
+        },
+        {
+          "node": 36,
+          "node_name": "mixamorig:RightHand",
+          "path": "rotation"
+        },
+        {
+          "node": 37,
+          "node_name": "mixamorig:RightForeArm",
+          "path": "rotation"
+        },
+        {
+          "node": 38,
+          "node_name": "mixamorig:RightArm",
+          "path": "rotation"
+        },
+        {
+          "node": 39,
+          "node_name": "mixamorig:RightShoulder",
+          "path": "rotation"
+        },
+        {
+          "node": 40,
+          "node_name": "mixamorig:Spine2",
+          "path": "rotation"
+        },
+        {
+          "node": 41,
+          "node_name": "mixamorig:Spine1",
+          "path": "rotation"
+        },
+        {
+          "node": 42,
+          "node_name": "mixamorig:Spine",
+          "path": "rotation"
+        },
+        {
+          "node": 43,
+          "node_name": "mixamorig:LeftToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 44,
+          "node_name": "mixamorig:LeftFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 45,
+          "node_name": "mixamorig:LeftLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 46,
+          "node_name": "mixamorig:LeftUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 47,
+          "node_name": "mixamorig:RightToeBase",
+          "path": "rotation"
+        },
+        {
+          "node": 48,
+          "node_name": "mixamorig:RightFoot",
+          "path": "rotation"
+        },
+        {
+          "node": 49,
+          "node_name": "mixamorig:RightLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 50,
+          "node_name": "mixamorig:RightUpLeg",
+          "path": "rotation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "translation"
+        },
+        {
+          "node": 51,
+          "node_name": "mixamorig:Hips",
+          "path": "rotation"
+        }
+      ]
+    }
+  ],
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v5.1.20",
+    "version": "2.0"
+  },
+  "binary_chunk_sha256": "62E701D0B3E24E749D94C8356CC44732E8414B7311D64B2BD4B7E3560559D309",
+  "camera_count": 0,
+  "header": {
+    "chunks": [
+      {
+        "length": 45592,
+        "sha256": "A259C4416933027DD6D1B42706B2F2E654BA224D9E9E12BCA4C1BF3C102AA308",
+        "type": 1313821514
+      },
+      {
+        "length": 16090728,
+        "sha256": "62E701D0B3E24E749D94C8356CC44732E8414B7311D64B2BD4B7E3560559D309",
+        "type": 5130562
+      }
+    ],
+    "declared_length": 16136348,
+    "magic": "glTF",
+    "version": 2
+  },
+  "image_count": 1,
+  "light_extension_present": false,
+  "material_count": 1,
+  "material_names": [
+    "Material.004"
+  ],
+  "mesh_count": 1,
+  "meshes": [
+    {
+      "name": "mesh.003",
+      "primitive_count": 1,
+      "primitives": [
+        {
+          "attributes": {
+            "JOINTS_0": 3,
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2,
+            "WEIGHTS_0": 4
+          },
+          "index_count": 150000,
+          "indices_accessor": 5,
+          "material": 0,
+          "mode": 4,
+          "vertex_count": 33469
+        }
+      ]
+    }
+  ],
+  "node_count": 54,
+  "node_names": [
+    "mixamorig:Head",
+    "mixamorig:Neck",
+    "mixamorig:LeftHandThumb3",
+    "mixamorig:LeftHandThumb2",
+    "mixamorig:LeftHandThumb1",
+    "mixamorig:LeftHandIndex3",
+    "mixamorig:LeftHandIndex2",
+    "mixamorig:LeftHandIndex1",
+    "mixamorig:LeftHandMiddle3",
+    "mixamorig:LeftHandMiddle2",
+    "mixamorig:LeftHandMiddle1",
+    "mixamorig:LeftHandRing3",
+    "mixamorig:LeftHandRing2",
+    "mixamorig:LeftHandRing1",
+    "mixamorig:LeftHandPinky3",
+    "mixamorig:LeftHandPinky2",
+    "mixamorig:LeftHandPinky1",
+    "mixamorig:LeftHand",
+    "mixamorig:LeftForeArm",
+    "mixamorig:LeftArm",
+    "mixamorig:LeftShoulder",
+    "mixamorig:RightHandThumb3",
+    "mixamorig:RightHandThumb2",
+    "mixamorig:RightHandThumb1",
+    "mixamorig:RightHandIndex3",
+    "mixamorig:RightHandIndex2",
+    "mixamorig:RightHandIndex1",
+    "mixamorig:RightHandMiddle3",
+    "mixamorig:RightHandMiddle2",
+    "mixamorig:RightHandMiddle1",
+    "mixamorig:RightHandRing3",
+    "mixamorig:RightHandRing2",
+    "mixamorig:RightHandRing1",
+    "mixamorig:RightHandPinky3",
+    "mixamorig:RightHandPinky2",
+    "mixamorig:RightHandPinky1",
+    "mixamorig:RightHand",
+    "mixamorig:RightForeArm",
+    "mixamorig:RightArm",
+    "mixamorig:RightShoulder",
+    "mixamorig:Spine2",
+    "mixamorig:Spine1",
+    "mixamorig:Spine",
+    "mixamorig:LeftToeBase",
+    "mixamorig:LeftFoot",
+    "mixamorig:LeftLeg",
+    "mixamorig:LeftUpLeg",
+    "mixamorig:RightToeBase",
+    "mixamorig:RightFoot",
+    "mixamorig:RightLeg",
+    "mixamorig:RightUpLeg",
+    "mixamorig:Hips",
+    "mesh.003",
+    "Armature.002"
+  ],
+  "path": "C:\\Dungeon_Draft_Production\\Achilles\\Canonical\\ACHILLES_CANONICAL_SOURCE_V1_20260819_212027\\07_sandbox_export\\achilles_rig_v1_candidate_pass1.glb",
+  "scene_count": 1,
+  "semantic_sha256": "DB269A095A711A79F716BE1F8427DF01E5BC732C7061AB61059007F69D559112",
+  "sha256": "CA162138B9BE6693210619C06BBDABF0FD486E3DC75460A2566CBE140B4A774F",
+  "size_bytes": 16136348,
+  "skin_count": 1,
+  "skins": [
+    {
+      "inverse_bind_matrices_accessor": 6,
+      "joint_count": 52,
+      "joint_names": [
+        "mixamorig:Hips",
+        "mixamorig:Spine",
+        "mixamorig:Spine1",
+        "mixamorig:Spine2",
+        "mixamorig:Neck",
+        "mixamorig:Head",
+        "mixamorig:LeftShoulder",
+        "mixamorig:LeftArm",
+        "mixamorig:LeftForeArm",
+        "mixamorig:LeftHand",
+        "mixamorig:LeftHandThumb1",
+        "mixamorig:LeftHandThumb2",
+        "mixamorig:LeftHandThumb3",
+        "mixamorig:LeftHandIndex1",
+        "mixamorig:LeftHandIndex2",
+        "mixamorig:LeftHandIndex3",
+        "mixamorig:LeftHandMiddle1",
+        "mixamorig:LeftHandMiddle2",
+        "mixamorig:LeftHandMiddle3",
+        "mixamorig:LeftHandRing1",
+        "mixamorig:LeftHandRing2",
+        "mixamorig:LeftHandRing3",
+        "mixamorig:LeftHandPinky1",
+        "mixamorig:LeftHandPinky2",
+        "mixamorig:LeftHandPinky3",
+        "mixamorig:RightShoulder",
+        "mixamorig:RightArm",
+        "mixamorig:RightForeArm",
+        "mixamorig:RightHand",
+        "mixamorig:RightHandThumb1",
+        "mixamorig:RightHandThumb2",
+        "mixamorig:RightHandThumb3",
+        "mixamorig:RightHandIndex1",
+        "mixamorig:RightHandIndex2",
+        "mixamorig:RightHandIndex3",
+        "mixamorig:RightHandMiddle1",
+        "mixamorig:RightHandMiddle2",
+        "mixamorig:RightHandMiddle3",
+        "mixamorig:RightHandRing1",
+        "mixamorig:RightHandRing2",
+        "mixamorig:RightHandRing3",
+        "mixamorig:RightHandPinky1",
+        "mixamorig:RightHandPinky2",
+        "mixamorig:RightHandPinky3",
+        "mixamorig:LeftUpLeg",
+        "mixamorig:LeftLeg",
+        "mixamorig:LeftFoot",
+        "mixamorig:LeftToeBase",
+        "mixamorig:RightUpLeg",
+        "mixamorig:RightLeg",
+        "mixamorig:RightFoot",
+        "mixamorig:RightToeBase"
+      ],
+      "name": "Armature.002",
+      "skeleton_name": null,
+      "skeleton_node": null
+    }
+  ],
+  "texture_count": 1,
+  "weapon_name_matches": []
+}

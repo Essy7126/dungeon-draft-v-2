@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/achilles/3d/achilles_viewport_3d_backend.gd" id="1_backend"]
+
+[sub_resource type="Environment" id="Environment_achilles"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+ambient_light_source = 3
+ambient_light_color = Color(0.78, 0.82, 0.9, 1)
+ambient_light_energy = 0.85
+reflected_light_source = 2
+
+[node name="AchillesViewport3DBackend" type="Node2D"]
+visible = false
+script = ExtResource("1_backend")
+
+[node name="RenderedSprite" type="Sprite2D" parent="."]
+centered = false
+texture_filter = 2
+scale = Vector2(0.25, 0.25)
+
+[node name="AchillesSubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+physics_object_picking = false
+size = Vector2i(384, 384)
+render_target_update_mode = 0
+own_world_3d = true
+msaa_3d = 2
+gui_disable_input = true
+
+[node name="RenderWorld" type="Node3D" parent="AchillesSubViewport"]
+
+[node name="Camera3D" type="Camera3D" parent="AchillesSubViewport/RenderWorld"]
+position = Vector3(3.5, 2.8, 3.5)
+projection = 1
+current = true
+size = 2.6
+near = 0.05
+far = 50.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="AchillesSubViewport/RenderWorld"]
+environment = SubResource("Environment_achilles")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="AchillesSubViewport/RenderWorld"]
+rotation_degrees = Vector3(-52, -38, 0)
+light_color = Color(1, 0.95, 0.86, 1)
+light_energy = 1.4
+shadow_enabled = false

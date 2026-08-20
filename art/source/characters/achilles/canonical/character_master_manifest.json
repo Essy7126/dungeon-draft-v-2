@@ -1,0 +1,143 @@
+{
+  "actions": {
+    "count": 4,
+    "master_hashes_after": {
+      "Anim_0.001": "46A833E6F0242B8B004AE6CF0B9EB440B0CC70A641357CF597B6F0089EBF78D7",
+      "Anim_0.003": "0663B667C5184E8CB4E5FCF837DD4F506CFEDBD76FCF5C2CB2A9FEC5E7A2611E",
+      "Anim_0.004": "122F1FEA491444F20F9DDF0753C29D8FDFB8C49AF222E8EA24C8483679E7B382",
+      "Anim_0.005": "044B390285866F4935735883534BFEC0BC2A21BDE30C219851F50F4654FA313D"
+    },
+    "semantic_mapping": null,
+    "source_actions_modified": false,
+    "source_hashes_before": {
+      "Anim_0.001": "46A833E6F0242B8B004AE6CF0B9EB440B0CC70A641357CF597B6F0089EBF78D7",
+      "Anim_0.003": "0663B667C5184E8CB4E5FCF837DD4F506CFEDBD76FCF5C2CB2A9FEC5E7A2611E",
+      "Anim_0.004": "122F1FEA491444F20F9DDF0753C29D8FDFB8C49AF222E8EA24C8483679E7B382",
+      "Anim_0.005": "044B390285866F4935735883534BFEC0BC2A21BDE30C219851F50F4654FA313D"
+    }
+  },
+  "blender": {
+    "file_saved_version_tuple": [
+      5,
+      1,
+      30
+    ],
+    "inspection_runtime_version": "5.1.2",
+    "post_save_inspection_source_unchanged": true
+  },
+  "created_utc": "2026-08-19T20:08:57.281136Z",
+  "derivation": {
+    "cross_candidate_merge_performed": false,
+    "datablock_counts_after": {
+      "actions": 4,
+      "armatures": 1,
+      "cameras": 0,
+      "collections": 1,
+      "images": 3,
+      "lights": 0,
+      "materials": 1,
+      "meshes": 1,
+      "objects": 2
+    },
+    "datablock_counts_before": {
+      "actions": 5,
+      "armatures": 4,
+      "cameras": 1,
+      "collections": 2,
+      "images": 10,
+      "lights": 1,
+      "materials": 7,
+      "meshes": 11,
+      "objects": 18
+    },
+    "selected_objects": [
+      "Armature.002",
+      "mesh.003"
+    ],
+    "source_unchanged": true,
+    "type": "HISTORICAL_SNAPSHOT_TO_CHARACTER_MASTER"
+  },
+  "excluded": {
+    "camera": true,
+    "details": "all other scene objects, including real sword, source duplicates, cameras, lights and validation meshes",
+    "lights": true,
+    "source_duplicate_rigs_and_meshes": true,
+    "validation_meshes": true,
+    "weapon": true
+  },
+  "hips": {
+    "bone": "mixamorig:Hips",
+    "exact": true,
+    "per_action_master": {
+      "Anim_0.001": "68048711B54FE04CCB864D1715EFBD7777D08CFAFB0A75C7AAACA6190CF5F52D",
+      "Anim_0.003": "933D369AA88D5D2E565605277EFE179312DBE7A9618854A711289483EE6CFDD1",
+      "Anim_0.004": "86D398960D3C04D201A656343FE48EA7B5B7CF40EE30CC2394E765AF0B8B3B80",
+      "Anim_0.005": "807AFF8EDC88615CBF0E4813365F3EB96F41650510EA52BEB74E585644B59812"
+    },
+    "per_action_source": {
+      "Anim_0.001": "68048711B54FE04CCB864D1715EFBD7777D08CFAFB0A75C7AAACA6190CF5F52D",
+      "Anim_0.003": "933D369AA88D5D2E565605277EFE179312DBE7A9618854A711289483EE6CFDD1",
+      "Anim_0.004": "86D398960D3C04D201A656343FE48EA7B5B7CF40EE30CC2394E765AF0B8B3B80",
+      "Anim_0.005": "807AFF8EDC88615CBF0E4813365F3EB96F41650510EA52BEB74E585644B59812"
+    },
+    "policy": "ROOT_MOTION_UNCLASSIFIED"
+  },
+  "materials_and_textures": {
+    "image_count": 3,
+    "images_signature_sha256": "5FDDFB28EC8CA5F113160086BE109CC96AE5E7CAA324FE49C0CEE858F8B2C455",
+    "material_count": 1,
+    "materials_signature_sha256": "A5FBE3A68C1198A32EBCEE7E208B12B0831E4906CB5DA5672A9FE7F18E763A49",
+    "missing_image_count": 0
+  },
+  "mesh_and_skinning": {
+    "component_signatures_after": {
+      "coordinates_sha256": "DA188E1A21BCBC5AF3E401163CA2B371715BBDE24A5C3839C9B10C70ABFB4B97",
+      "shape_key_signature_sha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "skinning_sha256": "D1379E88D255502B0591C2303118D64C4604B18DD88E0F0B0445D82AE08B0CE6",
+      "topology_sha256": "2A636375571A060F667CDD96E9CC4D6850C9FCC55BF3802929211B70F0C876CB",
+      "uv_signature_sha256": "9F6E70AC53EF03992FB76C6AF60401C7E1E6F015F8F4C373EB52C6BBDDE3DBA2"
+    },
+    "component_signatures_before": {
+      "coordinates_sha256": "DA188E1A21BCBC5AF3E401163CA2B371715BBDE24A5C3839C9B10C70ABFB4B97",
+      "shape_key_signature_sha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "skinning_sha256": "D1379E88D255502B0591C2303118D64C4604B18DD88E0F0B0445D82AE08B0CE6",
+      "topology_sha256": "2A636375571A060F667CDD96E9CC4D6850C9FCC55BF3802929211B70F0C876CB",
+      "uv_signature_sha256": "9F6E70AC53EF03992FB76C6AF60401C7E1E6F015F8F4C373EB52C6BBDDE3DBA2"
+    },
+    "exact": true,
+    "mesh_count": 1
+  },
+  "output": {
+    "mtime_ns": 1787168525593425300,
+    "mtime_utc": "2026-08-19T19:42:05.593425Z",
+    "path": "C:\\Dungeon_Draft_Production\\Achilles\\Canonical\\ACHILLES_CANONICAL_SOURCE_V1_20260819_212027\\06_canonical_derivation\\achilles_character_master_candidate.blend",
+    "sha256": "F64F1F78269E3520F1383490D9428E56CC6454E1492B581253B4840E85095D78",
+    "size_bytes": 16189396
+  },
+  "rig": {
+    "armature_count": 1,
+    "bone_count": 52,
+    "expected_hand_bones_present": true,
+    "historical_signature_after": "8ABC3F665C9DEF1E7A855879A590702656FA56CC8B0F475152AC1942B734E512",
+    "historical_signature_before": "8ABC3F665C9DEF1E7A855879A590702656FA56CC8B0F475152AC1942B734E512",
+    "rest_pose_signature_sha256": "705626075561CB5BF62058450CBF1C96515A0F6331FDE51B5CC7E1A1D513E39E"
+  },
+  "schema": "dd.achilles.canonical.character-master-manifest.v1",
+  "source": {
+    "mtime_ns": 1786695298300352400,
+    "mtime_utc": "2026-08-14T08:14:58.300352Z",
+    "path": "C:\\Dungeon_Draft_Production\\Achilles\\Canonical\\ACHILLES_CANONICAL_SOURCE_V1_20260819_212027\\06_canonical_derivation\\achilles_canonical_source_snapshot.blend",
+    "sha256": "96ADBB3ECE86600EAA142561CF241DADD30E9838CC35BF6412540D80B4AE214B",
+    "size_bytes": 116416542
+  },
+  "status": [
+    "NOT_CURRENT",
+    "NOT_PRODUCTION",
+    "NO_GAME_INTEGRATION_PERFORMED"
+  ],
+  "unverified": [
+    "Action gameplay semantics",
+    "root-motion classification",
+    "Godot runtime import"
+  ]
+}

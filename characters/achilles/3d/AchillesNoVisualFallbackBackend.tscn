@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd" id="1_backend"]
+
+[node name="AchillesNoVisualFallbackBackend" type="Node2D"]
+visible = false
+script = ExtResource("1_backend")
