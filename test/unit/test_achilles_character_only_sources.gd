@@ -15,6 +15,9 @@ const GLB_INSPECTION_PATH := (
 const PROFILE_PATH := (
 	"res://data/visuals/achilles/achilles_character_only_profile.tres"
 )
+const FALLBACK_SCENE_PATH := (
+	"res://characters/achilles/3d/AchillesLegacy2DBackend.tscn"
+)
 const EXPECTED_BLEND_SHA := (
 	"F64F1F78269E3520F1383490D9428E56CC6454E1492B581253B4840E85095D78"
 )
@@ -31,10 +34,18 @@ const RUNTIME_TEXT_PATHS := [
 	"res://characters/achilles/AchillesIsoUnitView.tscn",
 	"res://characters/achilles/achilles_iso_unit_view.gd",
 	"res://characters/achilles/3d/Achilles3DVisual.tscn",
-	"res://characters/achilles/3d/AchillesNoVisualFallbackBackend.tscn",
+	"res://characters/achilles/3d/AchillesLegacy2DBackend.tscn",
 	"res://characters/achilles/3d/AchillesViewport3DBackend.tscn",
 	"res://characters/achilles/3d/achilles_3d_visual.gd",
-	"res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd",
+	"res://characters/achilles/3d/achilles_legacy_2d_backend.gd",
+	"res://characters/achilles/3d/achilles_viewport_3d_backend.gd",
+	"res://data/visuals/achilles/achilles_character_only_profile.tres",
+	"res://data/visuals/achilles/achilles_visual_profile.gd",
+]
+const THREE_D_EQUIPMENT_TEXT_PATHS := [
+	"res://characters/achilles/3d/Achilles3DVisual.tscn",
+	"res://characters/achilles/3d/AchillesViewport3DBackend.tscn",
+	"res://characters/achilles/3d/achilles_3d_visual.gd",
 	"res://characters/achilles/3d/achilles_viewport_3d_backend.gd",
 	"res://data/visuals/achilles/achilles_character_only_profile.tres",
 	"res://data/visuals/achilles/achilles_visual_profile.gd",
@@ -51,8 +62,8 @@ func test_divergent_source_not_consumed() -> void:
 	assert_false(_runtime_text().contains("C:\\Blender_AI_Test\\input\\achilles.blend"))
 
 
-func test_sword_source_not_consumed() -> void:
-	var runtime_text := _runtime_text().to_lower()
+func test_3d_runtime_does_not_consume_sword_source() -> void:
+	var runtime_text := _three_d_equipment_text().to_lower()
 	assert_false(runtime_text.contains(SWORD_SOURCE_SHA.to_lower()))
 	assert_false(runtime_text.contains("art/source/weapons"))
 	assert_false(runtime_text.contains("assets/weapons"))
@@ -80,12 +91,36 @@ func test_no_weapon_visual_profile_loaded() -> void:
 	assert_not_null(profile)
 	assert_false(profile.equipment_enabled)
 	assert_null(profile.weapon_profile)
+	assert_eq(profile.rendering_mode, AchillesVisualProfile.RENDERING_VIEWPORT_3D)
+	assert_eq(
+		profile.fallback_policy,
+		AchillesVisualProfile.FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR,
+	)
+
+
+func test_legacy_fallback_is_profile_only_not_a_nominal_scene_child() -> void:
+	var profile := load(PROFILE_PATH) as AchillesVisualProfile
+	assert_not_null(profile.fallback_backend_scene)
+	assert_eq(profile.fallback_backend_scene.resource_path, FALLBACK_SCENE_PATH)
+	var nominal_scene_text := FileAccess.get_file_as_string(
+		"res://characters/achilles/AchillesIsoUnitView.tscn"
+	).to_lower()
+	assert_false("achilleslegacy2dbackend" in nominal_scene_text)
+	assert_false("achillesvisual2d" in nominal_scene_text)
+	var fallback_scene_text := FileAccess.get_file_as_string(
+		FALLBACK_SCENE_PATH
+	).to_lower()
+	assert_true("achillesvisual2d" in fallback_scene_text)
+	assert_true("visible = false" in fallback_scene_text)
+	assert_true("process_mode = 4" in fallback_scene_text)
 
 
 func test_no_weapon_glb_loaded() -> void:
 	var profile := load(PROFILE_PATH) as AchillesVisualProfile
 	assert_eq(profile.character_asset_path, CHARACTER_GLB_PATH)
-	assert_false(_runtime_text().to_lower().contains("assets/weapons"))
+	assert_false(
+		_three_d_equipment_text().to_lower().contains("assets/weapons")
+	)
 
 
 func test_no_weapon_child_under_hand() -> void:
@@ -108,8 +143,8 @@ func test_no_weapon_child_under_hand() -> void:
 	assert_eq(inspection.mesh_count, 1.0)
 
 
-func test_no_sword_texture_loaded() -> void:
-	var runtime_text := _runtime_text().to_lower()
+func test_no_sword_texture_loaded_by_3d_runtime() -> void:
+	var runtime_text := _three_d_equipment_text().to_lower()
 	for line in runtime_text.split("\n"):
 		var names_sword := (
 			"sword" in line or "epee" in line or "épée" in line
@@ -121,10 +156,10 @@ func test_no_sword_texture_loaded() -> void:
 		assert_false(names_sword and names_texture)
 
 
-func test_no_equipment_controller_required() -> void:
+func test_no_equipment_controller_required_by_3d_runtime() -> void:
 	var profile := load(PROFILE_PATH) as AchillesVisualProfile
 	assert_true(profile.is_character_only_valid())
-	assert_false(_runtime_text().contains("EquipmentController"))
+	assert_false(_three_d_equipment_text().contains("EquipmentController"))
 
 
 func test_other_runs_do_not_use_achilles_3d_profile() -> void:
@@ -196,6 +231,13 @@ func _load_json(path: String) -> Dictionary:
 func _runtime_text() -> String:
 	var combined := ""
 	for path in RUNTIME_TEXT_PATHS:
+		combined += FileAccess.get_file_as_string(path) + "\n"
+	return combined
+
+
+func _three_d_equipment_text() -> String:
+	var combined := ""
+	for path in THREE_D_EQUIPMENT_TEXT_PATHS:
 		combined += FileAccess.get_file_as_string(path) + "\n"
 	return combined
 

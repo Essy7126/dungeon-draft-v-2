@@ -9,6 +9,13 @@ const BACKEND_SCENE := preload(
 const ADAPTER_SCENE := preload(
 	"res://characters/achilles/AchillesIsoUnitView.tscn"
 )
+const FALLBACK_SCRIPT := preload(
+	"res://characters/achilles/3d/achilles_legacy_2d_backend.gd"
+)
+const MISSING_CHARACTER_PATH := (
+	"res://assets/characters/Achilles/3d/__backend_test_missing__.glb"
+)
+const RUNTIME_READY_TIMEOUT_MSEC := 10000
 
 
 func test_subviewport_backend_is_transparent_passive_and_textured() -> void:
@@ -99,35 +106,29 @@ func test_backend_action_signals_are_exactly_once() -> void:
 	assert_eq(finished.count, 1)
 
 
-func test_adapter_uses_exactly_one_backend_and_can_force_fallback() -> void:
-	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
-	add_child_autofree(adapter)
-	await wait_process_frames(3)
+func test_adapter_nominal_path_uses_only_viewport_backend() -> void:
+	var adapter := await _create_ready_adapter()
 	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
+	assert_true(adapter.viewport_backend.is_backend_active())
 	assert_true(adapter.viewport_backend.visible)
-	assert_false(adapter.fallback_backend.visible)
-	adapter.force_safe_fallback(&"TEST_FORCED_FALLBACK")
-	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
-	assert_false(adapter.fallback_backend.visible)
-	assert_false(adapter.viewport_backend.visible)
+	assert_null(adapter.fallback_backend)
 	assert_true(
 		adapter.find_children("*", "AchillesVisual2D", true, false).is_empty()
 	)
-	assert_eq(
-		adapter.get_last_backend_error().get("error_code"),
-		"TEST_FORCED_FALLBACK",
+	assert_true(
+		adapter.find_children("*", "AnimatedSprite2D", true, false).is_empty()
 	)
-	assert_false(bool(
-		adapter.get_last_backend_error().get("legacy_2d_loaded", true)
-	))
+	assert_true(adapter.get_last_backend_error().is_empty())
 
 
 func test_adapter_preserves_release_and_finished_signals_once() -> void:
-	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
-	add_child_autofree(adapter)
-	await wait_process_frames(4)
+	var adapter := await _create_ready_adapter()
+	var backend_starts := {"count": 0}
 	var releases := {"count": 0}
 	var finishes := {"count": 0}
+	adapter.viewport_backend.action_started.connect(
+		func(_name: StringName) -> void: backend_starts.count += 1
+	)
 	adapter.cast_release_reached.connect(func() -> void:
 		releases.count += 1
 	)
@@ -137,6 +138,7 @@ func test_adapter_preserves_release_and_finished_signals_once() -> void:
 	assert_true(adapter.play_spell_action())
 	assert_false(adapter.play_spell_action())
 	await get_tree().create_timer(1.5).timeout
+	assert_eq(backend_starts.count, 1)
 	assert_eq(releases.count, 1)
 	assert_eq(finishes.count, 1)
 	await get_tree().create_timer(0.2).timeout
@@ -145,26 +147,66 @@ func test_adapter_preserves_release_and_finished_signals_once() -> void:
 
 
 func test_missing_lazy_character_asset_falls_back_without_dual_render() -> void:
-	var profile := (
-		load(PROFILE_PATH) as AchillesVisualProfile
-	).duplicate(true) as AchillesVisualProfile
-	profile.character_asset_path = (
-		"res://assets/characters/Achilles/3d/missing_character.glb"
-	)
-	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
-	adapter.visual_profile = profile
-	add_child_autofree(adapter)
-	await wait_process_frames(3)
-	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
-	assert_false(adapter.fallback_backend.visible)
+	var adapter := await _create_missing_asset_adapter()
+	assert_eq(adapter.get_active_backend_name(), &"Legacy2DFallbackBackend")
+	assert_not_null(adapter.fallback_backend)
+	assert_eq(adapter.fallback_backend.get_script(), FALLBACK_SCRIPT)
+	assert_true(adapter.fallback_backend.is_backend_active())
+	assert_true(adapter.fallback_backend.visible)
+	assert_true(adapter.fallback_backend.is_visible_in_tree())
+	assert_true(adapter.fallback_backend.can_process())
 	assert_false(adapter.viewport_backend.visible)
-	assert_true(
-		adapter.find_children("*", "AnimatedSprite2D", true, false).is_empty()
+	assert_false(adapter.viewport_backend.is_backend_active())
+	assert_null(adapter.viewport_backend.get_achilles_visual())
+	var legacy_sprites := adapter.find_children(
+		"*", "AnimatedSprite2D", true, false
 	)
+	assert_eq(legacy_sprites.size(), 1)
+	assert_true((legacy_sprites[0] as AnimatedSprite2D).is_visible_in_tree())
 	assert_eq(
 		adapter.get_last_backend_error().get("error_code"),
 		"CHARACTER_ASSET_MISSING",
 	)
+	assert_eq(
+		adapter.get_last_backend_error().get("failed_resource"),
+		MISSING_CHARACTER_PATH,
+	)
+	assert_true(bool(
+		adapter.get_last_backend_error().get("legacy_2d_loaded", false)
+	))
+
+
+func test_verified_fallback_does_not_duplicate_backend_signals() -> void:
+	var adapter := await _create_missing_asset_adapter()
+	var viewport_starts := {"count": 0}
+	var fallback_starts := {"count": 0}
+	var releases := {"count": 0}
+	var finishes := {"count": 0}
+	adapter.viewport_backend.action_started.connect(
+		func(_name: StringName) -> void: viewport_starts.count += 1
+	)
+	adapter.fallback_backend.action_started.connect(
+		func(_name: StringName) -> void: fallback_starts.count += 1
+	)
+	adapter.cast_release_reached.connect(func() -> void: releases.count += 1)
+	adapter.animation_finished.connect(
+		func(_name: StringName) -> void: finishes.count += 1
+	)
+	assert_eq(
+		int(adapter.viewport_backend.is_backend_active())
+		+ int(adapter.fallback_backend.is_backend_active()),
+		1,
+	)
+	assert_true(adapter.play_spell_action())
+	assert_false(adapter.play_spell_action())
+	await get_tree().create_timer(1.7).timeout
+	assert_eq(viewport_starts.count, 0)
+	assert_eq(fallback_starts.count, 1)
+	assert_eq(releases.count, 1)
+	assert_eq(finishes.count, 1)
+	await get_tree().create_timer(0.2).timeout
+	assert_eq(releases.count, 1)
+	assert_eq(finishes.count, 1)
 
 
 func test_backend_cleanup_disables_and_releases_viewport_content() -> void:
@@ -182,3 +224,32 @@ func test_backend_cleanup_disables_and_releases_viewport_content() -> void:
 	)
 	assert_null(backend.rendered_sprite.texture)
 	assert_null(backend.get_achilles_visual())
+
+
+func _create_ready_adapter() -> AchillesIsoUnitView:
+	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
+	assert_not_null(adapter)
+	add_child_autofree(adapter)
+	var deadline := Time.get_ticks_msec() + RUNTIME_READY_TIMEOUT_MSEC
+	while adapter.get_active_backend_name() != &"Viewport3DBackend" \
+			and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
+	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
+	return adapter
+
+
+func _create_missing_asset_adapter() -> AchillesIsoUnitView:
+	var profile := (
+		load(PROFILE_PATH) as AchillesVisualProfile
+	).duplicate(true) as AchillesVisualProfile
+	profile.character_asset_path = MISSING_CHARACTER_PATH
+	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
+	assert_not_null(adapter)
+	adapter.visual_profile = profile
+	add_child_autofree(adapter)
+	var deadline := Time.get_ticks_msec() + RUNTIME_READY_TIMEOUT_MSEC
+	while adapter.get_active_backend_name() != &"Legacy2DFallbackBackend" \
+			and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
+	assert_eq(adapter.get_active_backend_name(), &"Legacy2DFallbackBackend")
+	return adapter

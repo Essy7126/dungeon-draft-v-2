@@ -3,27 +3,36 @@ extends GutTest
 const PROFILE_PATH := (
 	"res://data/visuals/achilles/achilles_character_only_profile.tres"
 )
+const FALLBACK_SCENE_PATH := (
+	"res://characters/achilles/3d/AchillesLegacy2DBackend.tscn"
+)
 const VISUAL_SCENE := preload(
 	"res://characters/achilles/3d/Achilles3DVisual.tscn"
 )
 
 
-func test_character_only_profile_schema_and_equipment_absence() -> void:
+func test_character_only_profile_schema_and_backend_contract() -> void:
 	var profile := load(PROFILE_PATH) as AchillesVisualProfile
 	assert_not_null(profile)
 	assert_true(profile.is_character_only_valid())
 	assert_eq(profile.schema_version, 1)
 	assert_eq(profile.profile_id, &"achilles_character_only_v1")
-	assert_eq(profile.rendering_mode, AchillesVisualProfile.RENDERING_SUBVIEWPORT)
+	assert_eq(profile.rendering_mode, AchillesVisualProfile.RENDERING_VIEWPORT_3D)
 	assert_eq(profile.validated_viewport_size(), Vector2i(384, 384))
-	assert_false(profile.equipment_enabled)
-	assert_null(profile.weapon_profile)
 	assert_not_null(profile.character_scene)
 	assert_not_null(profile.fallback_backend_scene)
+	assert_eq(profile.fallback_backend_scene.resource_path, FALLBACK_SCENE_PATH)
 	assert_eq(
 		profile.fallback_policy,
-		AchillesVisualProfile.FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT,
+		AchillesVisualProfile.FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR,
 	)
+
+
+func test_character_only_profile_has_no_3d_equipment_configuration() -> void:
+	var profile := load(PROFILE_PATH) as AchillesVisualProfile
+	assert_not_null(profile)
+	assert_false(profile.equipment_enabled)
+	assert_null(profile.weapon_profile)
 
 
 func test_achilles_3d_visual_has_character_only_structure() -> void:
@@ -34,8 +43,6 @@ func test_achilles_3d_visual_has_character_only_structure() -> void:
 	assert_not_null(visual.get_node_or_null("Markers/VFXMarker"))
 	assert_not_null(visual.get_node_or_null("Markers/FacingMarker"))
 	assert_not_null(visual.get_node_or_null("Achilles3DVisualController"))
-	assert_null(visual.find_child("EquipmentController", true, false))
-	assert_null(visual.find_child("WeaponAdapterRoot", true, false))
 	visual.free()
 
 
@@ -58,8 +65,19 @@ func test_canonical_character_loads_single_rig_meshes_and_materials() -> void:
 		visual.get_root_motion_policy(),
 		&"ROOT_MOTION_UNCLASSIFIED",
 	)
+
+
+func test_initialized_3d_character_has_no_equipment_nodes() -> void:
+	var visual := VISUAL_SCENE.instantiate() as Achilles3DVisual
+	add_child_autofree(visual)
+	var profile := load(PROFILE_PATH) as AchillesVisualProfile
+	assert_true(visual.initialize_from_profile(profile))
 	assert_null(visual.find_child("EquipmentController", true, false))
 	assert_null(visual.find_child("WeaponAdapterRoot", true, false))
+	assert_true(
+		visual.find_children("*", "BoneAttachment3D", true, false).is_empty()
+	)
+	assert_false(visual._contains_equipment_named_node())
 
 
 func test_action_fallback_releases_and_finishes_once_without_root_motion() -> void:

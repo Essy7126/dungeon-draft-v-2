@@ -4,110 +4,177 @@ const PROFILE_PATH := (
 	"res://data/visuals/achilles/achilles_character_only_profile.tres"
 )
 const FALLBACK_SCENE_PATH := (
-	"res://characters/achilles/3d/AchillesNoVisualFallbackBackend.tscn"
+	"res://characters/achilles/3d/AchillesLegacy2DBackend.tscn"
+)
+const MISSING_CHARACTER_PATH := (
+	"res://assets/characters/Achilles/3d/__fallback_test_missing__.glb"
 )
 const FALLBACK_SCRIPT := preload(
-	"res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd"
+	"res://characters/achilles/3d/achilles_legacy_2d_backend.gd"
 )
+const ADAPTER_SCENE := preload(
+	"res://characters/achilles/AchillesIsoUnitView.tscn"
+)
+const RUNTIME_READY_TIMEOUT_MSEC := 10000
 
 
-func test_profile_is_subviewport_only_with_no_visual_fallback() -> void:
+func test_profile_requests_viewport_3d_with_verified_legacy_fallback() -> void:
 	var profile := load(PROFILE_PATH) as AchillesVisualProfile
 	assert_not_null(profile)
 	assert_true(profile.is_character_only_valid())
 	assert_eq(
 		profile.rendering_mode,
-		AchillesVisualProfile.RENDERING_SUBVIEWPORT,
+		AchillesVisualProfile.RENDERING_VIEWPORT_3D,
 	)
 	assert_eq(
 		profile.fallback_policy,
-		AchillesVisualProfile.FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT,
+		AchillesVisualProfile.FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR,
 	)
 	assert_not_null(profile.fallback_backend_scene)
+	assert_eq(profile.fallback_backend_scene.resource_path, FALLBACK_SCENE_PATH)
 	assert_false(_has_property(profile, &"fallback_2d_scene"))
-	assert_true(_has_property(profile, &"weapon_profile"))
-	assert_false(profile.equipment_enabled)
-	assert_null(profile.weapon_profile)
-	for dependency in ResourceLoader.get_dependencies(PROFILE_PATH):
-		var lowered := String(dependency).to_lower()
-		assert_false("achilleslegacy2dbackend" in lowered)
-		assert_false("achillesvisual2d" in lowered)
+	var legacy_dependency_found := false
+	for dependency: String in ResourceLoader.get_dependencies(PROFILE_PATH):
+		var lowered := dependency.to_lower()
+		legacy_dependency_found = legacy_dependency_found or (
+			"achilleslegacy2dbackend" in lowered
+		)
+		assert_false("achillesnovisualfallbackbackend" in lowered)
+	assert_true(legacy_dependency_found)
 
 
-func test_fallback_scene_has_no_2d_character_or_renderable_pixels() -> void:
+func test_legacy_scene_defaults_to_hidden_and_processing_disabled() -> void:
 	var profile := load(PROFILE_PATH) as AchillesVisualProfile
-	var fallback: Node = profile.fallback_backend_scene.instantiate()
+	var fallback := profile.fallback_backend_scene.instantiate() as Node2D
 	assert_not_null(fallback)
 	add_child_autofree(fallback)
 	await wait_process_frames(1)
 	assert_eq(fallback.get_script(), FALLBACK_SCRIPT)
-	assert_false((fallback as CanvasItem).visible)
+	assert_false(fallback.visible)
+	assert_false(fallback.can_process())
+	assert_false(bool(fallback.call("is_backend_active")))
+
+
+func test_nominal_tree_never_instantiates_legacy_fallback() -> void:
+	var adapter := await _create_ready_adapter()
+	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
+	assert_true(adapter.viewport_backend.is_backend_active())
+	assert_true(adapter.viewport_backend.visible)
+	assert_null(adapter.fallback_backend)
+	assert_true(
+		adapter.find_children("*", "AchillesVisual2D", true, false).is_empty()
+	)
+	assert_true(
+		adapter.find_children("*", "AnimatedSprite2D", true, false).is_empty()
+	)
+	var state := adapter.get_visual_runtime_state()
+	assert_false(bool(state.get("ACHILLES_VISUAL_FALLBACK_ACTIVE", true)))
+	assert_false(bool(state.get("ACHILLES_LEGACY_BODY_VISIBLE", true)))
+	assert_false(bool(state.get("ACHILLES_LEGACY_BODY_PROCESSING", true)))
+
+
+func test_verified_missing_asset_activates_visible_processing_legacy() -> void:
+	var adapter := await _create_missing_asset_adapter()
+	assert_eq(adapter.get_active_backend_name(), &"Legacy2DFallbackBackend")
+	assert_not_null(adapter.fallback_backend)
+	assert_eq(adapter.fallback_backend.get_script(), FALLBACK_SCRIPT)
+	assert_true(adapter.fallback_backend.is_backend_active())
+	assert_true(adapter.fallback_backend.visible)
+	assert_true(adapter.fallback_backend.is_visible_in_tree())
+	assert_true(adapter.fallback_backend.can_process())
+	assert_false(adapter.viewport_backend.is_backend_active())
+	assert_false(adapter.viewport_backend.visible)
+	assert_null(adapter.viewport_backend.get_achilles_visual())
+	var sprites := adapter.find_children(
+		"*", "AnimatedSprite2D", true, false
+	)
+	assert_eq(sprites.size(), 1)
+	assert_true((sprites[0] as AnimatedSprite2D).is_visible_in_tree())
+	assert_true((sprites[0] as AnimatedSprite2D).can_process())
+	var event := adapter.get_last_backend_error()
+	assert_eq(event.get("error_code"), "CHARACTER_ASSET_MISSING")
+	assert_eq(event.get("failed_resource"), MISSING_CHARACTER_PATH)
+	assert_eq(event.get("fallback"), "LEGACY_2D_ON_VERIFIED_ERROR")
+	assert_true(bool(event.get("legacy_2d_loaded", false)))
+	assert_true(bool(event.get("fallback_active", false)))
+
+
+func test_verified_fallback_keeps_one_backend_and_signals_once() -> void:
+	var adapter := await _create_missing_asset_adapter()
+	var fallback_started := {"count": 0}
+	var viewport_started := {"count": 0}
+	var released := {"count": 0}
+	var finished := {"count": 0}
+	adapter.fallback_backend.action_started.connect(
+		func(_name: StringName) -> void: fallback_started.count += 1
+	)
+	adapter.viewport_backend.action_started.connect(
+		func(_name: StringName) -> void: viewport_started.count += 1
+	)
+	adapter.cast_release_reached.connect(func() -> void: released.count += 1)
+	adapter.animation_finished.connect(
+		func(_name: StringName) -> void: finished.count += 1
+	)
 	assert_eq(
-		fallback.find_children("*", "AnimatedSprite2D", true, false).size(),
-		0,
+		int(adapter.viewport_backend.is_backend_active())
+		+ int(adapter.fallback_backend.is_backend_active()),
+		1,
 	)
-	assert_eq(fallback.find_children("*", "Sprite2D", true, false).size(), 0)
-	assert_eq(fallback.find_children("*", "TextureRect", true, false).size(), 0)
-	assert_eq(fallback.find_children("*", "SubViewport", true, false).size(), 0)
-	for dependency in ResourceLoader.get_dependencies(FALLBACK_SCENE_PATH):
-		var lowered := String(dependency).to_lower()
-		assert_false("achillesvisual2d" in lowered)
-		assert_false("legacy2d" in lowered)
-		assert_false("animatedsprite" in lowered)
-
-
-func test_no_visual_fallback_completes_action_exactly_once() -> void:
-	var backend: Node = _create_active_backend()
-	var started := {"count": 0}
-	var released := {"count": 0}
-	var finished := {"count": 0}
-	backend.connect(&"action_started", func(_name: StringName) -> void:
-		started.count += 1
-	)
-	backend.connect(&"action_release_reached", func() -> void:
-		released.count += 1
-	)
-	backend.connect(&"action_finished", func(_name: StringName) -> void:
-		finished.count += 1
-	)
-	assert_true(bool(backend.call("play_action", "SE")))
-	assert_false(bool(backend.call("play_action", "SE")))
-	await get_tree().create_timer(0.7).timeout
-	assert_eq(started.count, 1)
+	assert_true(adapter.play_spell_action())
+	assert_false(adapter.play_spell_action())
+	await get_tree().create_timer(1.7).timeout
+	assert_eq(fallback_started.count, 1)
+	assert_eq(viewport_started.count, 0)
 	assert_eq(released.count, 1)
 	assert_eq(finished.count, 1)
-	assert_false((backend as CanvasItem).visible)
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.2).timeout
 	assert_eq(released.count, 1)
 	assert_eq(finished.count, 1)
 
 
-func test_cancelled_no_visual_action_emits_nothing_late() -> void:
-	var backend: Node = _create_active_backend()
+func test_cancelled_verified_fallback_action_emits_nothing_late() -> void:
+	var adapter := await _create_missing_asset_adapter()
 	var released := {"count": 0}
 	var finished := {"count": 0}
-	backend.connect(&"action_release_reached", func() -> void:
-		released.count += 1
+	adapter.cast_release_reached.connect(func() -> void: released.count += 1)
+	adapter.animation_finished.connect(
+		func(_name: StringName) -> void: finished.count += 1
 	)
-	backend.connect(&"action_finished", func(_name: StringName) -> void:
-		finished.count += 1
-	)
-	assert_true(bool(backend.call("play_action", "N")))
-	backend.call("cancel_action")
-	await get_tree().create_timer(0.7).timeout
+	assert_true(adapter.play_spell_action())
+	adapter.cancel_pending_visual_actions()
+	await get_tree().create_timer(1.7).timeout
 	assert_eq(released.count, 0)
 	assert_eq(finished.count, 0)
-	assert_true(bool(backend.call("play_idle", "N")))
-	assert_true(bool(backend.call("play_move", "N")))
-	assert_false((backend as CanvasItem).visible)
+	assert_true(adapter.play_idle())
 
 
-func _create_active_backend() -> Node:
-	var profile := load(PROFILE_PATH) as AchillesVisualProfile
-	var backend: Node = profile.fallback_backend_scene.instantiate()
-	add_child_autofree(backend)
-	backend.call("set_backend_active", true)
-	return backend
+func _create_ready_adapter() -> AchillesIsoUnitView:
+	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
+	assert_not_null(adapter)
+	add_child_autofree(adapter)
+	var deadline := Time.get_ticks_msec() + RUNTIME_READY_TIMEOUT_MSEC
+	while adapter.get_active_backend_name() != &"Viewport3DBackend" \
+			and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
+	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
+	return adapter
+
+
+func _create_missing_asset_adapter() -> AchillesIsoUnitView:
+	var profile := (
+		load(PROFILE_PATH) as AchillesVisualProfile
+	).duplicate(true) as AchillesVisualProfile
+	profile.character_asset_path = MISSING_CHARACTER_PATH
+	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
+	assert_not_null(adapter)
+	adapter.visual_profile = profile
+	add_child_autofree(adapter)
+	var deadline := Time.get_ticks_msec() + RUNTIME_READY_TIMEOUT_MSEC
+	while adapter.get_active_backend_name() != &"Legacy2DFallbackBackend" \
+			and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
+	assert_eq(adapter.get_active_backend_name(), &"Legacy2DFallbackBackend")
+	return adapter
 
 
 func _has_property(instance: Object, property_name: StringName) -> bool:
