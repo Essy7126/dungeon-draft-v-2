@@ -174,3 +174,26 @@ La source 3D canonique et son backend sont sans arme observée. Le fallback 2D
 historique doit cependant être conservé et contient des pixels d’épée et de
 bouclier incrustés. Cette divergence héritée bloque toute affirmation globale
 « Achille sans arme » tant qu’une décision dédiée ne l’a pas résolue.
+
+## ACHILLES_3D_ODYSSEY_RUNTIME_PROMOTION_V1 — sélection B/384
+
+- Date : 2026-08-20
+- Branche : `integration/achilles-3d-character-theorycraft-v1`
+- Commit d’implémentation :
+  `0d0eeaf96acc35b9cc40fe5c2c1ba52cedd0c852`
+- Décision propriétaire : **B — SubViewport 384 × 384**
+- Statut : **CURRENT_ON_LOCAL_INTEGRATION_BRANCH — NOT_MERGED_TO_MAIN**
+
+Le corps de combat d’Achille dans L’Odyssée utilise le personnage canonique 3D
+dans les trois salles. L’ancien backend 2D armé n’est plus chargé, ni comme
+première frame, ni comme fallback. Un backend invisible conserve seulement les
+signaux nécessaires au gameplay si le rendu 3D devient indisponible.
+
+Le portrait 2D raffiné reste autorisé comme icône HUD, timeline et post-combat ;
+il ne constitue pas le visuel de grille. Aucune arme, aucun build theorycraft et
+aucune modification de statistiques ou de sorts ne sont activés par cette
+décision.
+
+La validation graphique appelle les contrôles de production du Hub et de
+Battle, mais la victoire et les transitions sont avancées synthétiquement. Cette
+preuve n’est donc pas présentée comme trois combats terminés manuellement.

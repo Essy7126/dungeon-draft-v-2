@@ -168,3 +168,24 @@ régressions introduites par la migration.
   du `SubViewport` pour des sprites prérendus. La recommandation technique 384
   n’est pas une décision d’activation.
 - Le statut demeure **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
+
+## Achilles 3D — réserves après promotion Odyssée B/384
+
+Les deux blocages du checkpoint précédent sont clos sur la branche locale : le
+choix B/384 est explicite et l’ancien fallback 2D armé est devenu inatteignable
+depuis le runtime Odyssée. Ils ne doivent plus être présentés comme actifs pour
+le corps de combat.
+
+Restent ouverts :
+
+- la branche n’est ni fusionnée dans `main` ni poussée ;
+- les interactions du runner appellent les vrais handlers programmatiquement,
+  sans certifier une session complète à la souris ni trois victoires jouées ;
+- les transitions/résultat sont synthétiques et clairement étiquetés ;
+- le root motion source reste non classifié et les temps GPU non mesurés ;
+- les diagnostics RID/ObjectDB/resources persistent au teardown OpenGL malgré
+  la libération des `WeakRef` ciblés ;
+- l’UID historique invalide de `Guerrier.tres` garde cinq tests de la suite
+  Odyssée historique en échec inattendu ;
+- le portrait HUD/post-combat d’Achille reste une icône 2D volontaire, distincte
+  du corps de combat désormais exclusivement 3D.

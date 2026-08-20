@@ -165,3 +165,26 @@ Preuves Arena Studio 2.0 : dernier global complet 889/902 et 54 432/54 489 asser
   le fallback 2D hérité contient visiblement des pixels d’épée et de bouclier :
   `LEGACY_2D_BAKED_WEAPON_PIXELS_OBSERVED`. La conformité globale sans arme est
   donc `BLOCKED_LEGACY_2D_FALLBACK_WEAPON_VISUAL_DIVERGENCE`.
+
+## Achille 3D — promotion runtime Odyssée B/384 (2026-08-20)
+
+Cette section remplace l’état opérationnel du checkpoint salle II ci-dessus.
+
+- Statut : **CURRENT_ON_LOCAL_INTEGRATION_BRANCH — NOT_MERGED_TO_MAIN**.
+- Décision propriétaire : **B, SubViewport 384 × 384**.
+- Commit d’implémentation :
+  `0d0eeaf96acc35b9cc40fe5c2c1ba52cedd0c852` sur
+  `integration/achilles-3d-character-theorycraft-v1`.
+- Le corps de combat 2D armé n’est plus référencé par l’adaptateur ni par son
+  profil. Le warm-up et les erreurs utilisent un secours invisible garantissant
+  uniquement le contrat d’action.
+- Le runner graphique dédié passe dans les trois salles réelles avec le backend
+  3D actif en 384, sans ancien visuel 2D mis en cache, sans arme ni équipement,
+  avec ombre, portrait d’initiative, déplacement, Garde et nettoyage validés.
+- Le portrait 2D raffiné reste volontairement une icône du HUD/timeline ; il ne
+  remplace jamais le modèle 3D sur la grille.
+- Preuve durable :
+  `C:\Dungeon_Draft_Production\Achilles\Integration\ACHILLES_3D_ODYSSEY_RUNTIME_PROMOTION_V1_20260820`.
+- Bornes : actions déclenchées programmatiquement, transitions de victoire
+  synthétiques, root motion non classifié, GPU non mesuré, diagnostics teardown
+  OpenGL persistants et warning UID Guerrier historique.
