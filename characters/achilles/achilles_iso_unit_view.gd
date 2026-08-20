@@ -7,62 +7,65 @@ signal death_animation_finished
 
 const RELEASE_FRAME := 8
 const MOVEMENT_SETTLE_SECONDS := 0.06
+const ACTION_TIMEOUT_SECONDS := 2.0
+const ACTION_FALLBACK := &"ACTION_FALLBACK"
 
-@onready var visual: AchillesVisual2D = $AchillesVisual2D
-@onready var animated_sprite: AnimatedSprite2D = (
-	$AchillesVisual2D/AnimatedSprite2D
-)
+@export var visual_profile: AchillesVisualProfile
 
+@onready var legacy_backend: AchillesLegacy2DBackend = $Legacy2DBackend
+@onready var viewport_backend: AchillesViewport3DBackend = $Viewport3DBackend
+
+# Compatibility aliases retained for the existing Achilles presentation tests.
+@onready var visual: AchillesVisual2D = legacy_backend.visual
+@onready var animated_sprite: AnimatedSprite2D = legacy_backend.animated_sprite
+
+var _active_backend: Node2D = null
 var _unit: Unit = null
 var _facing := "SE"
 var _action_pending := false
+var _action_elapsed := 0.0
 var _release_emitted := false
 var _closing := false
 var _generation := 0
 var _last_parent_position := Vector2.ZERO
 var _movement_active := false
 var _movement_stable_time := 0.0
+var _viewport_activation_deferred := false
 var _death_tween: Tween = null
+var _last_backend_error: Dictionary = {}
 
 
 func _ready() -> void:
-	visual.action_finished.connect(_on_visual_action_finished)
-	animated_sprite.frame_changed.connect(_on_visual_frame_changed)
+	_connect_backend_signals(legacy_backend)
+	_connect_backend_signals(viewport_backend)
+	viewport_backend.backend_ready.connect(_on_viewport_backend_ready)
+	viewport_backend.backend_failed.connect(_on_viewport_backend_failed)
+	_activate_legacy_backend()
 	var parent_2d := get_parent() as Node2D
 	if parent_2d != null:
 		_last_parent_position = parent_2d.position
-	play_idle()
+	call_deferred("_initialize_selected_backend")
 
 
 func _process(delta: float) -> void:
-	if _closing or _action_pending or _death_tween != null:
+	if _closing or _death_tween != null:
 		return
-	var parent_2d := get_parent() as Node2D
-	if parent_2d == null:
+	if _action_pending:
+		_action_elapsed += maxf(delta, 0.0)
+		if _action_elapsed >= ACTION_TIMEOUT_SECONDS:
+			_complete_action_once(ACTION_FALLBACK)
 		return
-	var moved := parent_2d.position.distance_squared_to(
-		_last_parent_position
-	) > 0.0001
-	_last_parent_position = parent_2d.position
-	if moved:
-		_movement_stable_time = 0.0
-		if not _movement_active:
-			_movement_active = true
-			visual.play_walk(_facing)
-		return
-	if not _movement_active:
-		return
-	_movement_stable_time += delta
-	if _movement_stable_time >= MOVEMENT_SETTLE_SECONDS:
-		_movement_active = false
-		_movement_stable_time = 0.0
-		visual.play_idle(_facing)
+	_track_parent_movement(delta)
 
 
 func _exit_tree() -> void:
 	_closing = true
 	cancel_pending_visual_actions()
 	_disconnect_unit()
+	if is_instance_valid(viewport_backend):
+		viewport_backend.shutdown()
+	if is_instance_valid(legacy_backend):
+		legacy_backend.shutdown()
 
 
 func bind_unit(unit: Unit) -> void:
@@ -79,27 +82,31 @@ func set_facing(direction: Vector2i) -> void:
 		_facing = "E" if direction.x > 0 else "W"
 	else:
 		_facing = "S" if direction.y > 0 else "N"
-	if not _action_pending and not _movement_active:
+	# Keep the historical direction-fallback diagnostics observable even while
+	# the hidden 2D backend is not selected.
+	if _active_backend != legacy_backend and is_instance_valid(visual):
 		visual.play_idle(_facing)
+	if is_instance_valid(_active_backend) \
+			and _active_backend.has_method("set_facing_label"):
+		_active_backend.set_facing_label(_facing)
 
 
 func play_idle() -> bool:
-	if _closing or _action_pending:
+	if _closing or _action_pending or not is_instance_valid(_active_backend):
 		return false
-	visual.play_idle(_facing)
-	return true
+	return bool(_active_backend.play_idle(_facing))
 
 
 func play_basic_attack() -> bool:
-	return _begin_attack_action()
+	return _begin_action()
 
 
 func play_cast() -> bool:
-	return _begin_attack_action()
+	return _begin_action()
 
 
 func play_spell_action(_spell: Spell = null) -> bool:
-	return _begin_attack_action()
+	return _begin_action()
 
 
 func cancel_spell_action() -> void:
@@ -109,50 +116,249 @@ func cancel_spell_action() -> void:
 func cancel_pending_visual_actions() -> void:
 	_generation += 1
 	_action_pending = false
+	_action_elapsed = 0.0
 	_release_emitted = false
 	_movement_active = false
 	_movement_stable_time = 0.0
+	if is_instance_valid(viewport_backend):
+		viewport_backend.cancel_action()
+	if is_instance_valid(legacy_backend):
+		legacy_backend.cancel_action()
 	if _death_tween != null and _death_tween.is_valid():
 		_death_tween.kill()
 	_death_tween = null
-	if is_instance_valid(visual) and not _closing:
-		visual.play_idle(_facing)
+	if is_instance_valid(_active_backend) and not _closing:
+		_active_backend.play_idle(_facing)
+	_activate_deferred_viewport_if_available()
+
+
+func begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i) -> void:
+	if _closing or _action_pending or from_cell == to_cell:
+		return
+	set_facing(to_cell - from_cell)
+	_movement_active = true
+	_movement_stable_time = 0.0
+	var parent_2d := get_parent() as Node2D
+	if parent_2d != null:
+		_last_parent_position = parent_2d.position
+	if is_instance_valid(_active_backend):
+		_active_backend.play_move(_facing)
+
+
+func cancel_movement_feedback() -> void:
+	_movement_active = false
+	_movement_stable_time = 0.0
+	if not _closing and not _action_pending:
+		play_idle()
+	_activate_deferred_viewport_if_available()
 
 
 func get_default_cast_effect_origin() -> Vector2:
-	if is_instance_valid(visual.vfx_anchor):
+	# This point is part of the existing gameplay/VFX presentation contract.
+	# The 3D markers are review metadata and do not move gameplay effects.
+	if is_instance_valid(visual) and is_instance_valid(visual.vfx_anchor):
 		return visual.vfx_anchor.position
 	return Vector2(0.0, -92.0)
 
 
-func _begin_attack_action() -> bool:
-	if _closing or _action_pending or not is_instance_valid(visual):
+func force_legacy_2d(reason: StringName = &"MANUAL_FALLBACK") -> void:
+	var replay_action := _action_pending and _active_backend == viewport_backend
+	if reason != &"":
+		_record_backend_error(reason)
+	if replay_action and is_instance_valid(viewport_backend):
+		viewport_backend.cancel_action()
+	_activate_legacy_backend()
+	if replay_action and not legacy_backend.play_action(_facing):
+		_complete_action_once(ACTION_FALLBACK)
+
+
+func request_subviewport_backend(
+		profile_override: AchillesVisualProfile = null
+	) -> bool:
+	var selected_profile := (
+		profile_override if profile_override != null else visual_profile
+	)
+	if selected_profile == null or not selected_profile.is_character_only_valid():
+		force_legacy_2d(&"INVALID_CHARACTER_ONLY_PROFILE")
+		return false
+	if viewport_backend.is_shutdown():
+		force_legacy_2d(&"SUBVIEWPORT_BACKEND_ALREADY_RELEASED")
+		return false
+	if viewport_backend.is_ready_for_render():
+		if _action_pending or _movement_active:
+			_viewport_activation_deferred = true
+		else:
+			_activate_viewport_backend()
+		return true
+	return viewport_backend.configure(selected_profile)
+
+
+func get_active_backend_name() -> StringName:
+	if _active_backend == viewport_backend:
+		return &"Viewport3DBackend"
+	return &"Legacy2DBackend"
+
+
+func get_last_backend_error() -> Dictionary:
+	return _last_backend_error.duplicate(true)
+
+
+func _initialize_selected_backend() -> void:
+	if _closing or visual_profile == null:
+		return
+	if visual_profile.rendering_mode == AchillesVisualProfile.RENDERING_LEGACY_2D:
+		_activate_legacy_backend()
+		return
+	request_subviewport_backend()
+
+
+func _begin_action() -> bool:
+	if _closing or _action_pending or not is_instance_valid(_active_backend):
 		return false
 	_generation += 1
 	_action_pending = true
+	_action_elapsed = 0.0
 	_release_emitted = false
 	_movement_active = false
-	visual.play_attack(_facing)
-	return true
+	var started := bool(_active_backend.play_action(_facing))
+	if started:
+		return true
+	_action_pending = false
+	if _active_backend != legacy_backend:
+		force_legacy_2d(&"SUBVIEWPORT_ACTION_START_FAILED")
+		_action_pending = true
+		started = bool(legacy_backend.play_action(_facing))
+	if not started:
+		_action_pending = false
+	return started
 
 
+func _connect_backend_signals(backend: Node) -> void:
+	backend.action_release_reached.connect(_on_backend_action_release)
+	backend.action_finished.connect(_on_backend_action_finished)
+
+
+func _on_backend_action_release() -> void:
+	if _closing or not _action_pending or _release_emitted:
+		return
+	_release_emitted = true
+	cast_release_reached.emit()
+
+
+func _on_backend_action_finished(action_name: StringName) -> void:
+	_complete_action_once(action_name)
+
+
+func _complete_action_once(action_name: StringName) -> void:
+	if _closing or not _action_pending:
+		return
+	if not _release_emitted:
+		_release_emitted = true
+		cast_release_reached.emit()
+	_action_pending = false
+	_action_elapsed = 0.0
+	if is_instance_valid(_active_backend):
+		_active_backend.play_idle(_facing)
+	_activate_deferred_viewport_if_available()
+	animation_finished.emit(action_name)
+
+
+# Compatibility entry points retained for the existing direct unit tests.
 func _on_visual_frame_changed() -> void:
 	if _closing or not _action_pending or _release_emitted:
 		return
-	if animated_sprite.animation == AchillesVisual2D.ATTACK_ANIMATION \
-			and animated_sprite.frame >= RELEASE_FRAME:
+	if animated_sprite.frame >= RELEASE_FRAME:
 		_release_emitted = true
 		cast_release_reached.emit()
 
 
 func _on_visual_action_finished(_animation_name: StringName) -> void:
-	if _closing or not _action_pending:
+	_complete_action_once(ACTION_FALLBACK)
+
+
+func _on_viewport_backend_ready() -> void:
+	if _closing:
 		return
-	_action_pending = false
-	if not _release_emitted:
-		_release_emitted = true
-		cast_release_reached.emit()
-	animation_finished.emit(&"attack_SE")
+	if _action_pending or _movement_active:
+		_viewport_activation_deferred = true
+		return
+	_activate_viewport_backend()
+
+
+func _on_viewport_backend_failed(error_code: StringName) -> void:
+	if _closing:
+		return
+	force_legacy_2d(error_code)
+
+
+func _activate_legacy_backend() -> void:
+	_viewport_activation_deferred = false
+	if is_instance_valid(viewport_backend):
+		viewport_backend.set_backend_active(false)
+	if is_instance_valid(legacy_backend):
+		if _active_backend != legacy_backend:
+			legacy_backend.set_backend_active(false)
+		legacy_backend.set_backend_active(true)
+	_active_backend = legacy_backend
+	if is_instance_valid(legacy_backend):
+		legacy_backend.set_facing_label(_facing)
+
+
+func _activate_viewport_backend() -> void:
+	if not is_instance_valid(viewport_backend) \
+			or not viewport_backend.is_ready_for_render():
+		return
+	legacy_backend.set_backend_active(false)
+	viewport_backend.set_backend_active(false)
+	viewport_backend.set_backend_active(true)
+	_active_backend = viewport_backend
+	viewport_backend.set_facing_label(_facing)
+	_viewport_activation_deferred = false
+
+
+func _activate_deferred_viewport_if_available() -> void:
+	if not _viewport_activation_deferred or _closing \
+			or _action_pending or _movement_active:
+		return
+	if not is_instance_valid(viewport_backend) \
+			or not viewport_backend.is_ready_for_render():
+		_viewport_activation_deferred = false
+		return
+	_activate_viewport_backend()
+
+
+func _record_backend_error(error_code: StringName) -> void:
+	_last_backend_error = {
+		"event": "ACHILLES_VISUAL_BACKEND_FALLBACK",
+		"error_code": String(error_code),
+		"fallback": "LEGACY_2D",
+		"equipment_enabled": false,
+	}
+	printerr(JSON.stringify(_last_backend_error))
+
+
+func _track_parent_movement(delta: float) -> void:
+	var parent_2d := get_parent() as Node2D
+	if parent_2d == null or not is_instance_valid(_active_backend):
+		return
+	var moved := parent_2d.position.distance_squared_to(
+		_last_parent_position
+	) > 0.0001
+	_last_parent_position = parent_2d.position
+	if moved:
+		_movement_stable_time = 0.0
+		if not _movement_active:
+			_movement_active = true
+			_active_backend.play_move(_facing)
+		return
+	if not _movement_active:
+		return
+	_movement_stable_time += delta
+	if _movement_stable_time >= MOVEMENT_SETTLE_SECONDS:
+		_movement_active = false
+		_movement_stable_time = 0.0
+		_active_backend.play_idle(_facing)
+		_activate_deferred_viewport_if_available()
 
 
 func _on_bound_unit_died(_dead_unit: Unit) -> void:
@@ -162,6 +368,8 @@ func _on_bound_unit_died(_dead_unit: Unit) -> void:
 	_action_pending = false
 	_release_emitted = false
 	_movement_active = false
+	viewport_backend.cancel_action()
+	legacy_backend.cancel_action()
 	var death_generation := _generation
 	_death_tween = create_tween()
 	_death_tween.tween_property(self, "modulate:a", 0.0, 0.28)
