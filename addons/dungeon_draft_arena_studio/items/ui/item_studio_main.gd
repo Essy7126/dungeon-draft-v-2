@@ -7,6 +7,8 @@ signal history_state_changed
 const CATEGORY_LABELS := ["Arme", "Armure", "Accessoire", "Consommable", "Parchemin", "Relique"]
 const SLOT_LABELS := ["Aucun", "Arme", "Armure", "Accessoire"]
 const USE_LABELS := ["Aucun", "Soin fixe", "Restauration de PA fixe"]
+const RARITY_VALUES := [&"common", &"uncommon", &"rare", &"epic", &"legendary"]
+const RARITY_LABELS := ["Commun", "Peu commun", "Rare", "Épique", "Légendaire"]
 const REFRESH_LIGHT := 1
 const REFRESH_STRUCTURE := 2
 const REFRESH_HEAVY := 4
@@ -80,12 +82,16 @@ var analysis_spell_option: OptionButton
 var analysis_target_option: OptionButton
 var publish_button: Button
 var creation_dialog: ItemCreationDialog
+var creation_wizard: ItemCreationWizard
+var usage_section: Control
+var hero_section: Control
 var duplication_dialog: ItemDuplicationDialog
 var save_plan_dialog: ItemSavePlanDialog
 var conflict_dialog: ItemConflictDialog
 var dirty_dialog: ConfirmationDialog
 
 var _pending_catalog_entry := {}
+var _field_labels := {}
 var _pending_save_mode: StringName = &""
 var _updating := false
 var _refresh_queued := false
@@ -181,6 +187,14 @@ func _build_editor_column() -> Control:
 	_build_effects_section(_add_section_tab("Effets"))
 	_build_availability_section(_add_section_tab("Disponibilité"))
 	_build_advanced_section(_add_section_tab("Avancé"))
+	creation_wizard = ItemCreationWizard.new()
+	creation_wizard.setup(document, catalog, section_tabs, {
+		ItemCreationWizard.STEP_PRESENTATION: SECTION_PRESENTATION,
+		ItemCreationWizard.STEP_EFFECTS: SECTION_EFFECTS,
+		ItemCreationWizard.STEP_AVAILABILITY: SECTION_AVAILABILITY,
+	})
+	creation_wizard.finished.connect(_queue_refresh)
+	column.add_child(creation_wizard)
 	return column
 
 
@@ -359,10 +373,10 @@ func _build_secondary_menu() -> MenuButton:
 func _build_presentation_section(parent: VBoxContainer) -> void:
 	var identity := _section(parent, "IDENTITÉ")
 	var identity_grid := _grid(identity)
-	name_edit = _line(identity_grid, "Nom joueur", "Nom affiché en français")
+	name_edit = _line(identity_grid, "Nom affiché dans le jeu", "Nom affiché en français")
 	_bind_text_transaction(name_edit, "Modifier le nom", func(value): document.working_copy.display_name = value)
-	rarity_option = _option(identity_grid, "Rareté", ["common", "uncommon", "rare", "epic", "legendary"])
-	rarity_option.item_selected.connect(func(index): _record("Modifier la rareté", func(): document.working_copy.rarity = StringName(rarity_option.get_item_text(index))))
+	rarity_option = _option(identity_grid, "Rareté", RARITY_LABELS, RARITY_VALUES)
+	rarity_option.item_selected.connect(func(index): _record("Modifier la rareté", func(): document.working_copy.rarity = StringName(rarity_option.get_item_metadata(index))))
 	var description := _section(parent, "DESCRIPTION JOUEUR")
 	description_edit = TextEdit.new()
 	description_edit.custom_minimum_size.y = 110
@@ -381,9 +395,14 @@ func _build_equipment_section(parent: VBoxContainer) -> void:
 	category_option.item_selected.connect(_on_category_selected)
 	slot_option = _option(inventory_grid, "Emplacement", SLOT_LABELS)
 	slot_option.item_selected.connect(func(index): _record("Modifier l’emplacement", func(): document.working_copy.equipment_slot = index - 1))
+	# L’emplacement est entièrement déterminé par la catégorie : le champ reste
+	# synchronisé mais n’est jamais montré, toute saisie manuelle ne pourrait
+	# produire qu’une erreur CATEGORY_SLOT_MISMATCH.
+	_set_field_visible(slot_option, false)
 	stack_spin = _spin(inventory_grid, "Taille de pile", 1.0, 99.0, 1.0)
 	stack_spin.value_changed.connect(func(value): _record("Modifier la pile", func(): document.working_copy.stack_limit = int(value), "stack_limit"))
 	var usage := _section(parent, "USAGE")
+	usage_section = usage.get_parent() as Control
 	var usage_grid := _grid(usage)
 	use_option = _option(usage_grid, "Effet d’usage", USE_LABELS)
 	use_option.item_selected.connect(func(index): _record("Modifier l’effet d’usage", func(): document.working_copy.use_effect = index))
@@ -400,6 +419,7 @@ func _build_effects_section(parent: VBoxContainer) -> void:
 
 func _build_availability_section(parent: VBoxContainer) -> void:
 	var audience := _section(parent, "HÉROS COMPATIBLES")
+	hero_section = audience.get_parent() as Control
 	var compatibility := HFlowContainer.new()
 	compatibility.add_theme_constant_override("h_separation", 14)
 	for hero_id in [&"elf", &"mage", &"warrior"]:
@@ -410,9 +430,9 @@ func _build_availability_section(parent: VBoxContainer) -> void:
 		hero_checks[hero_id] = check
 		compatibility.add_child(check)
 	audience.add_child(compatibility)
-	var acquisition := _section(parent, "ACQUISITION")
+	var acquisition := _section(parent, "COMMENT L’OBTENIR")
 	reward_check = CheckBox.new()
-	reward_check.text = "Éligible aux récompenses du premier run"
+	reward_check.text = "Peut apparaître comme récompense en tout début de partie"
 	reward_check.tooltip_text = "Contrôle explicitement le tag first_run_equipment_reward"
 	reward_check.toggled.connect(_on_reward_toggled)
 	acquisition.add_child(reward_check)
@@ -420,24 +440,24 @@ func _build_availability_section(parent: VBoxContainer) -> void:
 	starting_inventory_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	starting_inventory_label.add_theme_color_override("font_color", MUTED_COLOR)
 	acquisition.add_child(starting_inventory_label)
-	var tags := _section(parent, "BALISES")
+	var tags := _section(parent, "ÉTIQUETTES")
 	var tags_grid := _grid(tags)
-	tags_edit = _line(tags_grid, "Tags", "Tags séparés par des virgules")
+	tags_edit = _line(tags_grid, "Étiquettes", "Étiquettes séparées par des virgules")
 	_bind_text_transaction(tags_edit, "Modifier les tags", func(value): document.working_copy.tags = _parse_string_names(value))
 
 
 func _build_advanced_section(parent: VBoxContainer) -> void:
-	var identity := _section(parent, "IDENTIFIANT RUNTIME")
+	var identity := _section(parent, "IDENTIFIANT TECHNIQUE")
 	var identity_grid := _grid(identity)
 	id_edit = _line(identity_grid, "item_id", "Identifiant runtime stable")
 	_bind_text_transaction(id_edit, "Modifier l’identifiant", func(value): document.working_copy.item_id = StringName(value))
-	var profiles := _section(parent, "PROFILS DE PRÉSENTATION")
+	var profiles := _section(parent, "EFFETS VISUELS ET SONORES")
 	var profiles_grid := _grid(profiles)
-	fx_edit = _line(profiles_grid, "Profil VFX", "Profil de présentation des récompenses")
+	fx_edit = _line(profiles_grid, "Effet visuel", "Profil de présentation des récompenses")
 	_bind_text_transaction(fx_edit, "Modifier le profil VFX", func(value): document.working_copy.reward_fx_profile = StringName(value))
-	audio_edit = _line(profiles_grid, "Profil audio", "Profil audio des récompenses")
+	audio_edit = _line(profiles_grid, "Effet sonore", "Profil audio des récompenses")
 	_bind_text_transaction(audio_edit, "Modifier le profil audio", func(value): document.working_copy.reward_audio_profile = StringName(value))
-	var integration := _section(parent, "INTÉGRATION")
+	var integration := _section(parent, "EMPLACEMENT DU FICHIER")
 	path_label = Label.new()
 	path_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	path_label.add_theme_color_override("font_color", MUTED_COLOR)
@@ -527,6 +547,8 @@ func _create_document(data: Dictionary) -> void:
 	_apply_template(definition, int(data.get("template", ItemDefinition.Category.ACCESSORY)))
 	document.create_new(definition)
 	document.destination_path = str(data.get("draft_path", ""))
+	if creation_wizard != null and definition.is_relic():
+		creation_wizard.start()
 	_queue_refresh()
 
 
@@ -662,7 +684,7 @@ func _refresh_document_views(refresh_structure := false) -> void:
 		name_edit.text = definition.display_name
 		description_edit.text = definition.description
 		category_option.select(clampi(definition.category, 0, category_option.item_count - 1))
-		_select_option_text(rarity_option, str(definition.rarity))
+		_select_option_metadata(rarity_option, definition.rarity)
 		slot_option.select(clampi(definition.equipment_slot + 1, 0, slot_option.item_count - 1))
 		stack_spin.value = definition.stack_limit
 		tags_edit.text = ", ".join(_strings(definition.tags))
@@ -673,7 +695,7 @@ func _refresh_document_views(refresh_structure := false) -> void:
 		for hero_id in hero_checks:
 			(hero_checks[hero_id] as CheckBox).button_pressed = hero_id in definition.compatible_character_ids
 		reward_check.button_pressed = catalog.reward_eligible(definition)
-		reward_check.disabled = not (definition.is_equippable() or definition.is_relic())
+		_refresh_field_visibility(definition)
 		path_label.text = "Source : %s\nDestination : %s\nStatut : %s" % [
 			document.source_path if not document.source_path.is_empty() else "nouvelle working copy",
 			document.destination_path if not document.destination_path.is_empty() else "calculée au moment du plan",
@@ -692,6 +714,8 @@ func _refresh_document_views(refresh_structure := false) -> void:
 		effect_composer.rebuild()
 	elif effect_composer != null:
 		effect_composer.refresh_summaries()
+	if creation_wizard != null:
+		creation_wizard.refresh()
 	if refresh_structure:
 		_rebuild_spell_analysis_choices(definition)
 		_updating = false
@@ -1152,33 +1176,43 @@ func _grid(parent: VBoxContainer) -> GridContainer:
 
 
 func _line(parent: GridContainer, label_text: String, tooltip := "") -> LineEdit:
-	parent.add_child(_label(label_text))
+	var label := _label(label_text)
+	parent.add_child(label)
 	var field := LineEdit.new()
 	field.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	field.tooltip_text = tooltip
 	parent.add_child(field)
+	_field_labels[field.get_instance_id()] = label
 	return field
 
 
-func _option(parent: GridContainer, label_text: String, values: Array) -> OptionButton:
-	parent.add_child(_label(label_text))
+func _option(
+		parent: GridContainer, label_text: String, values: Array, stored_values := []
+	) -> OptionButton:
+	var label := _label(label_text)
+	parent.add_child(label)
 	var option := OptionButton.new()
 	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	option.clip_text = true
-	for value in values:
-		option.add_item(str(value))
+	for index in range(values.size()):
+		option.add_item(str(values[index]))
+		if index < stored_values.size():
+			option.set_item_metadata(index, stored_values[index])
 	parent.add_child(option)
+	_field_labels[option.get_instance_id()] = label
 	return option
 
 
 func _spin(parent: GridContainer, label_text: String, minimum: float, maximum: float, step: float) -> SpinBox:
-	parent.add_child(_label(label_text))
+	var label := _label(label_text)
+	parent.add_child(label)
 	var spin := SpinBox.new()
 	spin.min_value = minimum
 	spin.max_value = maximum
 	spin.step = step
 	spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(spin)
+	_field_labels[spin.get_instance_id()] = label
 	return spin
 
 
@@ -1187,6 +1221,32 @@ func _label(text: String) -> Label:
 	label.text = text
 	label.add_theme_color_override("font_color", MUTED_COLOR)
 	return label
+
+
+func _set_field_visible(control: Control, is_visible: bool) -> void:
+	if control == null:
+		return
+	control.visible = is_visible
+	var label := _field_labels.get(control.get_instance_id()) as Label
+	if label != null:
+		label.visible = is_visible
+
+
+func _refresh_field_visibility(definition: ItemDefinition) -> void:
+	if definition == null:
+		return
+	var is_consumable := definition.is_consumable()
+	_set_field_visible(stack_spin, is_consumable)
+	_set_field_visible(use_option, is_consumable)
+	_set_field_visible(
+		use_value_spin,
+		is_consumable and definition.use_effect != ItemDefinition.UseEffect.NONE,
+	)
+	if usage_section != null:
+		usage_section.visible = is_consumable
+	if hero_section != null:
+		hero_section.visible = not definition.is_relic()
+	reward_check.visible = definition.is_equippable() or definition.is_relic()
 
 
 func _action_button(parent: Control, text: String, callback: Callable, tooltip: String) -> Button:
@@ -1230,9 +1290,9 @@ func _finish_text_transaction(field: Control, action: String) -> void:
 	document.record_snapshot(action, before)
 
 
-func _select_option_text(option: OptionButton, value: String) -> void:
+func _select_option_metadata(option: OptionButton, value: StringName) -> void:
 	for index in range(option.item_count):
-		if option.get_item_text(index) == value:
+		if option.get_item_metadata(index) == value:
 			option.select(index)
 			return
 

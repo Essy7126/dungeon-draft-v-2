@@ -13,6 +13,8 @@ const NESTED_BACKGROUND := Color(0.118, 0.133, 0.161)
 const WIDE_BREAKPOINT := 760.0
 const FIELD_WIDTH := 180
 const NUMBER_WIDTH := 110
+const SUMMARY_FONT_SIZE := 16
+const ERROR_FONT_SIZE := 11
 const ACTION_DUPLICATE := 0
 const ACTION_UP := 1
 const ACTION_DOWN := 2
@@ -25,6 +27,8 @@ var copy_service := ItemDeepCopyService.new()
 var add_option: OptionButton
 var _updating_controls := false
 var _summary_labels := {}
+var _summary_accents := {}
+var _field_labels := {}
 var _parameter_grids: Array[GridContainer] = []
 
 
@@ -41,6 +45,8 @@ func setup(p_document: ItemStudioDocument) -> void:
 func rebuild() -> void:
 	_updating_controls = true
 	_summary_labels.clear()
+	_summary_accents.clear()
+	_field_labels.clear()
 	_parameter_grids.clear()
 	for child in get_children():
 		remove_child(child)
@@ -84,9 +90,11 @@ func _refresh_summary(resource: Resource) -> void:
 		return
 	var summary := registry.summarize(resource)
 	label.text = str(summary.get("player", "Effet"))
+	label.tooltip_text = str(summary.get("technical", ""))
+	var accent: Color = _summary_accents.get(resource.get_instance_id(), Color.WHITE)
 	label.add_theme_color_override(
 		"font_color",
-		Color.WHITE if summary.get("supported", true) else ERROR_COLOR,
+		accent if summary.get("supported", true) else ERROR_COLOR,
 	)
 
 
@@ -108,7 +116,7 @@ func _build_header() -> Control:
 	var is_relic := document != null and document.working_copy != null \
 		and document.working_copy.is_relic()
 	if is_relic:
-		add_option.add_item("Bloc réactif")
+		add_option.add_item("Effet")
 		add_option.set_item_metadata(0, &"relic.reactive")
 	else:
 		for descriptor in registry.descriptors():
@@ -185,12 +193,16 @@ func _add_spell_card(index: int, modifier: SpellModifier) -> void:
 		return
 	var item_modifier := modifier as ItemSpellModifierData
 	var fields := _parameter_grid(card)
-	_add_text_field(fields, "ID sort", str(item_modifier.target_spell_id), func(value): item_modifier.target_spell_id = StringName(value))
-	_add_text_field(fields, "Nom sort (legacy)", item_modifier.target_spell_name, func(value): item_modifier.target_spell_name = value)
-	_add_number_field(fields, "Dégâts %", item_modifier.damage_percent * 100.0, 0, 500, 1, func(value): item_modifier.damage_percent = value / 100.0)
+	var spell_id_field := _add_text_field(fields, "ID sort", str(item_modifier.target_spell_id), func(value): item_modifier.target_spell_id = StringName(value))
+	var legacy_field := _add_text_field(fields, "Nom sort (legacy)", item_modifier.target_spell_name, func(value): item_modifier.target_spell_name = value)
+	_set_field_visible(legacy_field, str(item_modifier.target_spell_id).strip_edges().is_empty())
+	spell_id_field.text_changed.connect(func(value): _set_field_visible(legacy_field, value.strip_edges().is_empty()))
+	var damage_field := _add_number_field(fields, "Dégâts %", item_modifier.damage_percent * 100.0, 0, 500, 1, func(value): item_modifier.damage_percent = value / 100.0)
 	_add_damage_type_field(fields, item_modifier)
 	_add_bool_field(fields, "Élémentaire requis", item_modifier.require_elemental_damage, func(value): item_modifier.require_elemental_damage = value)
-	_add_number_field(fields, "Seuil PV cible %", item_modifier.target_hp_at_or_below * 100.0 if item_modifier.target_hp_at_or_below >= 0.0 else -1.0, -1, 100, 1, func(value): item_modifier.target_hp_at_or_below = value / 100.0 if value >= 0.0 else -1.0)
+	var hp_filter_field := _add_number_field(fields, "Seuil PV cible %", item_modifier.target_hp_at_or_below * 100.0 if item_modifier.target_hp_at_or_below >= 0.0 else -1.0, -1, 100, 1, func(value): item_modifier.target_hp_at_or_below = value / 100.0 if value >= 0.0 else -1.0)
+	_set_field_visible(hp_filter_field, item_modifier.damage_percent > 0.0)
+	damage_field.value_changed.connect(func(value): _set_field_visible(hp_filter_field, value > 0.0))
 	_add_number_field(fields, "Portée", item_modifier.range_bonus, 0, 10, 1, func(value): item_modifier.range_bonus = int(value))
 	_add_number_field(fields, "Poussée", item_modifier.push_bonus, 0, 10, 1, func(value): item_modifier.push_bonus = int(value))
 	_add_number_field(fields, "Soin/bouclier %", item_modifier.healing_and_shield_percent * 100.0, 0, 500, 1, func(value): item_modifier.healing_and_shield_percent = value / 100.0)
@@ -198,27 +210,86 @@ func _add_spell_card(index: int, modifier: SpellModifier) -> void:
 
 func _add_reactive_card(index: int, effect: ItemReactiveEffectData) -> void:
 	var card := _begin_card(REACTIVE_ACCENT, "EFFET RÉACTIF", &"reactive", index, effect)
+	var issues := _group_issues(relic_registry.validate_effect(effect))
+	var field_errors := issues.get("fields", {}) as Dictionary
+	var threshold_key := "reactive_threshold_%d" % effect.get_instance_id()
 	var fields := _parameter_grid(card)
-	_add_descriptor_field(fields, "Déclencheur", RelicEffectRegistry.KIND_TRIGGER, effect.trigger_id, effect, func(value): effect.trigger_id = value)
-	_add_descriptor_field(fields, "Cible", RelicEffectRegistry.KIND_TARGET, effect.target_id, effect, func(value): effect.target_id = value)
-	_add_descriptor_field(fields, "Résultat", RelicEffectRegistry.KIND_RESULT, effect.result_id, effect, func(value): effect.result_id = value)
-	_add_descriptor_field(fields, "Fréquence", RelicEffectRegistry.KIND_FREQUENCY, effect.frequency_id, effect, func(value): effect.frequency_id = value)
-	_add_number_field(fields, "Valeur principale", effect.value, -999, 999, 0.01, func(value): effect.value = value)
-	_add_number_field(fields, "Seuil", effect.threshold, 0, 1, 0.01, func(value): effect.threshold = value)
-	_add_number_field(fields, "Activations max.", effect.max_activations, 1, 99, 1, func(value): effect.max_activations = int(value))
-	_add_number_field(fields, "Recharge (tours)", effect.recharge_turns, 1, 99, 1, func(value): effect.recharge_turns = int(value))
-	card.add_child(_build_conditions_block(effect))
-	var issues := relic_registry.validate_effect(effect)
-	if issues.is_empty():
-		return
-	var error := Label.new()
-	error.text = "Invalide : %s" % issues[0].get("message", "combinaison incompatible")
-	error.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	error.add_theme_color_override("font_color", ERROR_COLOR)
-	card.add_child(error)
+	_add_descriptor_field(fields, "Quand ?", "Modifier le déclencheur", RelicEffectRegistry.KIND_TRIGGER, effect.trigger_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_TRIGGER, "")), func(value): effect.trigger_id = value)
+	_add_descriptor_field(fields, "Sur qui ?", "Modifier la cible", RelicEffectRegistry.KIND_TARGET, effect.target_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_TARGET, "")), func(value): effect.target_id = value)
+	_add_descriptor_field(fields, "Qu’est-ce qui se passe ?", "Modifier le résultat", RelicEffectRegistry.KIND_RESULT, effect.result_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_RESULT, "")), func(value): effect.result_id = value)
+	_add_descriptor_field(fields, "Combien de fois ?", "Modifier la fréquence", RelicEffectRegistry.KIND_FREQUENCY, effect.frequency_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_FREQUENCY, "")), func(value): effect.frequency_id = value)
+	_add_reactive_value_field(fields, effect)
+	if relic_registry.trigger_uses_threshold(effect.trigger_id):
+		_add_percent_field(fields, "Niveau (%)", effect.threshold, threshold_key, func(ratio): effect.threshold = ratio)
+	if effect.frequency_id != ItemReactiveEffectData.FREQUENCY_UNLIMITED:
+		_add_number_field(fields, "Nombre de fois maximum", effect.max_activations, 1, 99, 1, func(value): effect.max_activations = int(value))
+	if effect.frequency_id == ItemReactiveEffectData.FREQUENCY_COOLDOWN_TURNS:
+		_add_number_field(fields, "Recharge (tours)", effect.recharge_turns, 1, 99, 1, func(value): effect.recharge_turns = int(value))
+	card.add_child(_build_conditions_block(effect, issues.get("conditions", {}) as Dictionary))
+	for message in issues.get("card", []):
+		var error := Label.new()
+		error.text = "Invalide : %s" % message
+		error.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		error.add_theme_color_override("font_color", ERROR_COLOR)
+		card.add_child(error)
 
 
-func _build_conditions_block(effect: ItemReactiveEffectData) -> Control:
+func _add_reactive_value_field(parent: Control, effect: ItemReactiveEffectData) -> void:
+	var merge_key := "reactive_value_%d" % effect.get_instance_id()
+	match relic_registry.result_value_kind(effect.result_id):
+		RelicEffectRegistry.VALUE_NONE:
+			pass
+		RelicEffectRegistry.VALUE_SIGNED:
+			_add_signed_value_field(parent, "Quantité", effect, merge_key)
+		RelicEffectRegistry.VALUE_PERCENT:
+			_add_percent_field(parent, "Quantité", effect.value, merge_key, func(ratio): effect.value = ratio)
+		_:
+			_add_number_field(parent, "Quantité", effect.value, -999, 999, 0.01, func(value): effect.value = value)
+
+
+func _add_signed_value_field(
+		parent: Control, label_text: String, effect: ItemReactiveEffectData, merge_key: String
+	) -> void:
+	parent.add_child(_field_label(label_text))
+	var cell := _field_cell(parent)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	cell.add_child(row)
+	var direction := ButtonGroup.new()
+	var give := Button.new()
+	give.text = "Donner"
+	give.toggle_mode = true
+	give.button_group = direction
+	give.tooltip_text = "La cible gagne cette quantité"
+	give.button_pressed = effect.value >= 0.0
+	row.add_child(give)
+	var take := Button.new()
+	take.text = "Enlever"
+	take.toggle_mode = true
+	take.button_group = direction
+	take.tooltip_text = "La cible perd cette quantité"
+	take.button_pressed = effect.value < 0.0
+	row.add_child(take)
+	var amount := SpinBox.new()
+	amount.min_value = 0
+	amount.max_value = 999
+	amount.step = 1
+	amount.value = absf(effect.value)
+	amount.custom_minimum_size.x = NUMBER_WIDTH
+	amount.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	row.add_child(amount)
+	var apply := func() -> void:
+		if _updating_controls:
+			return
+		var signed_value: float = amount.value if give.button_pressed else -amount.value
+		document.record_edit("Modifier la quantité", func(): effect.value = signed_value, ItemStudioDocument.CHANGE_VALUE, "reactive.value", merge_key)
+	give.toggled.connect(func(_pressed): apply.call())
+	amount.value_changed.connect(func(_value): apply.call())
+
+
+func _build_conditions_block(
+		effect: ItemReactiveEffectData, condition_errors: Dictionary
+	) -> Control:
 	var panel := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = NESTED_BACKGROUND
@@ -262,7 +333,7 @@ func _build_conditions_block(effect: ItemReactiveEffectData) -> Control:
 		empty.add_theme_color_override("font_color", MUTED_COLOR)
 		box.add_child(empty)
 	for condition_index in range(effect.conditions.size()):
-		_add_condition_row(box, effect, condition_index, effect.conditions[condition_index])
+		_add_condition_row(box, effect, condition_index, effect.conditions[condition_index], str(condition_errors.get(condition_index, "")))
 	return panel
 
 
@@ -305,16 +376,17 @@ func _begin_card(
 	titles.add_child(family_label)
 	var summary_data := registry.summarize(resource)
 	var summary := Label.new()
-	summary.add_theme_font_size_override("font_size", 14)
+	summary.add_theme_font_size_override("font_size", SUMMARY_FONT_SIZE)
 	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	summary.text = str(summary_data.get("player", "Effet"))
 	summary.tooltip_text = str(summary_data.get("technical", ""))
 	summary.add_theme_color_override(
 		"font_color",
-		Color.WHITE if summary_data.get("supported", true) else ERROR_COLOR,
+		accent if summary_data.get("supported", true) else ERROR_COLOR,
 	)
 	titles.add_child(summary)
 	_summary_labels[resource.get_instance_id()] = summary
+	_summary_accents[resource.get_instance_id()] = accent
 	header.add_child(_build_card_menu(kind, index, resource))
 	return card
 
@@ -370,15 +442,59 @@ func _apply_grid_columns() -> void:
 			grid.columns = columns
 
 
+func _group_issues(issues: Array[Dictionary]) -> Dictionary:
+	var by_field := {}
+	var by_condition := {}
+	var card: Array[String] = []
+	for issue in issues:
+		var message := str(issue.get("message", ""))
+		var field := StringName(issue.get("field", &""))
+		var condition_index := int(issue.get("condition_index", -1))
+		if field == RelicEffectRegistry.KIND_CONDITION and condition_index >= 0:
+			by_condition[condition_index] = _joined_message(str(by_condition.get(condition_index, "")), message)
+		elif field == &"":
+			card.append(message)
+		else:
+			by_field[field] = _joined_message(str(by_field.get(field, "")), message)
+	return {"fields": by_field, "conditions": by_condition, "card": card}
+
+
+func _joined_message(existing: String, message: String) -> String:
+	return message if existing.is_empty() else "%s\n%s" % [existing, message]
+
+
+func _field_cell(parent: Control) -> VBoxContainer:
+	var cell := VBoxContainer.new()
+	cell.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	cell.add_theme_constant_override("separation", 2)
+	parent.add_child(cell)
+	return cell
+
+
+func _attach_error(parent: Control, message: String) -> void:
+	if message.is_empty():
+		return
+	var error := Label.new()
+	error.text = message
+	error.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	error.custom_minimum_size.x = FIELD_WIDTH
+	error.add_theme_font_size_override("font_size", ERROR_FONT_SIZE)
+	error.add_theme_color_override("font_color", ERROR_COLOR)
+	parent.add_child(error)
+
+
 func _add_descriptor_field(
 		parent: Control,
 		label_text: String,
+		action_name: String,
 		kind: StringName,
 		current: StringName,
 		effect: ItemReactiveEffectData,
+		error_text: String,
 		setter: Callable
 	) -> void:
 	parent.add_child(_field_label(label_text))
+	var cell := _field_cell(parent)
 	var option := OptionButton.new()
 	option.custom_minimum_size.x = FIELD_WIDTH
 	option.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -388,53 +504,45 @@ func _add_descriptor_field(
 		option.set_item_metadata(option.item_count - 1, descriptor.get("id", &""))
 		if StringName(descriptor.get("id", &"")) == current:
 			option.select(option.item_count - 1)
+			option.tooltip_text = option.get_item_text(option.selected)
 	option.item_selected.connect(func(selected):
 		if _updating_controls:
 			return
-		document.record_edit("Modifier %s" % label_text.to_lower(), func():
+		document.record_edit(action_name, func():
 			setter.call(StringName(option.get_item_metadata(selected)))
-		, ItemStudioDocument.CHANGE_VALUE, "reactive.descriptor")
+		, ItemStudioDocument.CHANGE_STRUCTURE, "reactive.descriptor")
 	)
-	parent.add_child(option)
+	cell.add_child(option)
+	_attach_error(cell, error_text)
 
 
 func _add_condition_row(
 		parent: Control,
 		effect: ItemReactiveEffectData,
 		index: int,
-		condition: ItemReactiveConditionData
+		condition: ItemReactiveConditionData,
+		error_text: String
 	) -> void:
+	var cell := VBoxContainer.new()
+	cell.add_theme_constant_override("separation", 2)
+	parent.add_child(cell)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
-	parent.add_child(row)
+	cell.add_child(row)
 	var label := Label.new()
 	label.text = relic_registry.label(RelicEffectRegistry.KIND_CONDITION, condition.condition_id)
+	label.tooltip_text = label.text
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	label.clip_text = true
 	row.add_child(label)
-	var comparison := OptionButton.new()
-	comparison.custom_minimum_size.x = 58
-	for value in [["=", &"equal"], ["<", &"less"], ["≤", &"less_or_equal"], [">", &"greater"], ["≥", &"greater_or_equal"]]:
-		comparison.add_item(value[0])
-		comparison.set_item_metadata(comparison.item_count - 1, value[1])
-		if condition.comparison == value[1]:
-			comparison.select(comparison.item_count - 1)
-	comparison.item_selected.connect(func(selected):
-		if not _updating_controls:
-			document.record_edit("Modifier une condition", func(): condition.comparison = StringName(comparison.get_item_metadata(selected)), ItemStudioDocument.CHANGE_VALUE, "reactive.condition")
-	)
-	row.add_child(comparison)
-	var value := SpinBox.new()
-	value.min_value = -999
-	value.max_value = 999
-	value.step = 0.01
-	value.value = condition.value
-	value.custom_minimum_size.x = 92
-	value.value_changed.connect(func(new_value):
-		if not _updating_controls:
-			document.record_edit("Modifier une condition", func(): condition.value = new_value, ItemStudioDocument.CHANGE_VALUE, "reactive.condition", "reactive_condition_%d" % condition.get_instance_id())
-	)
-	row.add_child(value)
+	var kind := relic_registry.condition_value_kind(condition.condition_id)
+	if relic_registry.condition_uses_team(condition.condition_id):
+		row.add_child(_condition_team_control(condition))
+	elif kind != RelicEffectRegistry.VALUE_NONE:
+		if relic_registry.condition_uses_comparison(condition.condition_id):
+			row.add_child(_condition_comparison_control(condition))
+		row.add_child(_condition_value_control(condition, kind == RelicEffectRegistry.VALUE_PERCENT))
 	var remove := Button.new()
 	remove.text = "Retirer"
 	remove.tooltip_text = "Retirer cette condition"
@@ -443,13 +551,69 @@ func _add_condition_row(
 			document.record_edit("Retirer une condition", func(): effect.conditions.remove_at(index), ItemStudioDocument.CHANGE_STRUCTURE, "reactive.conditions")
 	)
 	row.add_child(remove)
+	_attach_error(cell, error_text)
+
+
+func _condition_team_control(condition: ItemReactiveConditionData) -> Control:
+	var option := OptionButton.new()
+	option.custom_minimum_size.x = 130
+	option.clip_text = true
+	for team in range(RelicEffectRegistry.TEAM_LABELS.size()):
+		option.add_item(str(RelicEffectRegistry.TEAM_LABELS[team]))
+		option.set_item_metadata(option.item_count - 1, team)
+		if condition.team == team:
+			option.select(option.item_count - 1)
+	option.item_selected.connect(func(selected):
+		if not _updating_controls:
+			document.record_edit("Modifier une condition", func(): condition.team = int(option.get_item_metadata(selected)), ItemStudioDocument.CHANGE_VALUE, "reactive.condition")
+	)
+	return option
+
+
+func _condition_comparison_control(condition: ItemReactiveConditionData) -> Control:
+	var comparison := OptionButton.new()
+	comparison.custom_minimum_size.x = 58
+	for pair in RelicEffectRegistry.COMPARISONS:
+		comparison.add_item(str(pair[0]))
+		comparison.set_item_metadata(comparison.item_count - 1, pair[1])
+		if condition.comparison == StringName(pair[1]):
+			comparison.select(comparison.item_count - 1)
+	comparison.item_selected.connect(func(selected):
+		if not _updating_controls:
+			document.record_edit("Modifier une condition", func(): condition.comparison = StringName(comparison.get_item_metadata(selected)), ItemStudioDocument.CHANGE_VALUE, "reactive.condition")
+	)
+	return comparison
+
+
+func _condition_value_control(condition: ItemReactiveConditionData, is_percent: bool) -> Control:
+	var value := SpinBox.new()
+	if is_percent:
+		value.min_value = 0
+		value.max_value = 100
+		value.step = 1
+		value.suffix = "%"
+		value.value = round(condition.value * 100.0)
+	else:
+		value.min_value = -999
+		value.max_value = 999
+		value.step = 0.01
+		value.value = condition.value
+	value.custom_minimum_size.x = 92
+	value.value_changed.connect(func(new_value):
+		if _updating_controls:
+			return
+		var stored: float = new_value / 100.0 if is_percent else new_value
+		document.record_edit("Modifier une condition", func(): condition.value = stored, ItemStudioDocument.CHANGE_VALUE, "reactive.condition", "reactive_condition_%d" % condition.get_instance_id())
+	)
+	return value
 
 
 func _add_number_field(
 		parent: Control, label_text: String, current: float,
 		minimum: float, maximum: float, step: float, setter: Callable
-	) -> void:
-	parent.add_child(_field_label(label_text))
+	) -> SpinBox:
+	var label := _field_label(label_text)
+	parent.add_child(label)
 	var input := SpinBox.new()
 	input.min_value = minimum
 	input.max_value = maximum
@@ -462,12 +626,39 @@ func _add_number_field(
 			document.record_edit("Modifier un paramètre", func(): setter.call(value), ItemStudioDocument.CHANGE_VALUE, label_text, "number_%d" % input.get_instance_id())
 	)
 	parent.add_child(input)
+	_field_labels[input.get_instance_id()] = label
+	return input
+
+
+func _add_percent_field(
+		parent: Control, label_text: String, current_ratio: float,
+		merge_key: String, setter: Callable
+	) -> SpinBox:
+	var label := _field_label(label_text)
+	parent.add_child(label)
+	var input := SpinBox.new()
+	input.min_value = 0
+	input.max_value = 100
+	input.step = 1
+	input.suffix = "%"
+	input.value = round(current_ratio * 100.0)
+	input.custom_minimum_size.x = NUMBER_WIDTH
+	input.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	input.tooltip_text = "Saisissez un pourcentage entier de 0 à 100"
+	input.value_changed.connect(func(value):
+		if not _updating_controls:
+			document.record_edit("Modifier un paramètre", func(): setter.call(value / 100.0), ItemStudioDocument.CHANGE_VALUE, label_text, merge_key)
+	)
+	parent.add_child(input)
+	_field_labels[input.get_instance_id()] = label
+	return input
 
 
 func _add_text_field(
 		parent: Control, label_text: String, current: String, setter: Callable
-	) -> void:
-	parent.add_child(_field_label(label_text))
+	) -> LineEdit:
+	var label := _field_label(label_text)
+	parent.add_child(label)
 	var input := LineEdit.new()
 	input.text = current
 	input.custom_minimum_size.x = 125
@@ -477,6 +668,8 @@ func _add_text_field(
 			document.record_edit("Modifier un filtre de sort", func(): setter.call(input.text), ItemStudioDocument.CHANGE_VALUE, label_text)
 	)
 	parent.add_child(input)
+	_field_labels[input.get_instance_id()] = label
+	return input
 
 
 func _add_damage_type_field(parent: Control, modifier: ItemSpellModifierData) -> void:
@@ -520,6 +713,15 @@ func _field_label(text: String) -> Label:
 	label.text = text
 	label.add_theme_color_override("font_color", MUTED_COLOR)
 	return label
+
+
+func _set_field_visible(control: Control, is_visible: bool) -> void:
+	if control == null:
+		return
+	control.visible = is_visible
+	var label := _field_labels.get(control.get_instance_id()) as Label
+	if label != null:
+		label.visible = is_visible
 
 
 func _hint(text: String) -> Label:

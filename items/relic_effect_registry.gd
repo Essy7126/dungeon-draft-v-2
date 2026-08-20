@@ -7,6 +7,21 @@ const KIND_TARGET: StringName = &"target"
 const KIND_RESULT: StringName = &"result"
 const KIND_FREQUENCY: StringName = &"frequency"
 
+const VALUE_FLAT: StringName = &"flat"
+const VALUE_PERCENT: StringName = &"percent"
+const VALUE_SIGNED: StringName = &"signed"
+const VALUE_NONE: StringName = &"none"
+
+const TEAM_LABELS := ["Ton équipe", "Les ennemis"]
+
+const COMPARISONS := [
+	["=", &"equal"],
+	["<", &"less"],
+	["≤", &"less_or_equal"],
+	[">", &"greater"],
+	["≥", &"greater_or_equal"],
+]
+
 var _descriptors := {
 	KIND_TRIGGER: {}, KIND_CONDITION: {}, KIND_TARGET: {},
 	KIND_RESULT: {}, KIND_FREQUENCY: {},
@@ -59,7 +74,11 @@ func compatible_descriptors(
 func validate_effect(effect: ItemReactiveEffectData) -> Array[Dictionary]:
 	var errors: Array[Dictionary] = []
 	if effect == null:
-		return [{"code": &"REACTIVE_EFFECT_NULL", "message": "Le bloc d’effet est nul."}]
+		return [{
+			"code": &"REACTIVE_EFFECT_NULL",
+			"field": &"",
+			"message": "Le bloc d’effet est nul.",
+		}]
 	for pair in [
 		[KIND_TRIGGER, effect.trigger_id], [KIND_TARGET, effect.target_id],
 		[KIND_RESULT, effect.result_id], [KIND_FREQUENCY, effect.frequency_id],
@@ -67,16 +86,25 @@ func validate_effect(effect: ItemReactiveEffectData) -> Array[Dictionary]:
 		if descriptor(pair[0], pair[1]).is_empty():
 			errors.append({
 				"code": &"REACTIVE_DESCRIPTOR_UNKNOWN",
+				"field": pair[0],
 				"message": "Le descripteur %s '%s' n’est pas enregistré." % [pair[0], pair[1]],
 			})
-	for condition in effect.conditions:
+	for condition_index in range(effect.conditions.size()):
+		var condition := effect.conditions[condition_index]
 		if condition == null or descriptor(KIND_CONDITION, condition.condition_id).is_empty():
-			errors.append({"code": &"REACTIVE_CONDITION_UNKNOWN", "message": "Une condition n’est pas enregistrée."})
+			errors.append({
+				"code": &"REACTIVE_CONDITION_UNKNOWN",
+				"field": KIND_CONDITION,
+				"condition_index": condition_index,
+				"message": "Une condition n’est pas enregistrée.",
+			})
 		elif not _is_descriptor_compatible(
 				KIND_CONDITION, descriptor(KIND_CONDITION, condition.condition_id), effect
 			):
 			errors.append({
 				"code": &"REACTIVE_CONDITION_INCOMPATIBLE",
+				"field": KIND_CONDITION,
+				"condition_index": condition_index,
 				"message": "La condition '%s' n’est pas produite par ce déclencheur." % label(KIND_CONDITION, condition.condition_id),
 			})
 	if not descriptor(KIND_TARGET, effect.target_id).is_empty() \
@@ -85,6 +113,7 @@ func validate_effect(effect: ItemReactiveEffectData) -> Array[Dictionary]:
 			):
 		errors.append({
 			"code": &"REACTIVE_TARGET_INCOMPATIBLE",
+			"field": KIND_TARGET,
 			"message": "La cible '%s' n’existe pas dans le contexte de ce déclencheur." % label(KIND_TARGET, effect.target_id),
 		})
 	if not descriptor(KIND_RESULT, effect.result_id).is_empty() \
@@ -93,10 +122,15 @@ func validate_effect(effect: ItemReactiveEffectData) -> Array[Dictionary]:
 			):
 		errors.append({
 			"code": &"REACTIVE_RESULT_INCOMPATIBLE",
+			"field": KIND_RESULT,
 			"message": "Le résultat '%s' ne peut pas intercepter ce déclencheur." % label(KIND_RESULT, effect.result_id),
 		})
 	if not effect.is_structurally_valid():
-		errors.append({"code": &"REACTIVE_STRUCTURE_INVALID", "message": "Valeur, seuil ou fréquence invalide."})
+		errors.append({
+			"code": &"REACTIVE_STRUCTURE_INVALID",
+			"field": &"",
+			"message": "Valeur, seuil ou fréquence invalide.",
+		})
 	return errors
 
 
@@ -107,19 +141,14 @@ func label(kind: StringName, descriptor_id: StringName) -> String:
 func summarize(effect: ItemReactiveEffectData) -> String:
 	if effect == null:
 		return "Effet réactif invalide"
-	var condition_labels: Array[String] = []
-	for condition in effect.conditions:
-		if condition != null:
-			condition_labels.append(label(KIND_CONDITION, condition.condition_id))
-	var conditions_text := "toujours" if condition_labels.is_empty() \
-		else "si %s" % ", ".join(condition_labels)
-	return "Quand %s, %s, appliquer %s à %s (%s, max. %d)." % [
-		label(KIND_TRIGGER, effect.trigger_id).to_lower(), conditions_text,
-		label(KIND_RESULT, effect.result_id).to_lower(),
-		label(KIND_TARGET, effect.target_id).to_lower(),
-		label(KIND_FREQUENCY, effect.frequency_id).to_lower(),
-		effect.max_activations,
+	var sentence := "%s → %s → %s" % [
+		_trigger_text(effect), _result_text(effect),
+		label(KIND_TARGET, effect.target_id),
 	]
+	var conditions_text := _conditions_text(effect)
+	if not conditions_text.is_empty():
+		sentence += " · Seulement si : %s" % conditions_text
+	return "%s · %s" % [sentence, _frequency_text(effect)]
 
 
 func technical_summary(effect: ItemReactiveEffectData) -> String:
@@ -153,57 +182,156 @@ func _register_defaults() -> void:
 		[ItemReactiveEffectData.TRIGGER_COMBAT_START, "Début du combat", [&"trigger_hero", &"active_unit"]],
 		[ItemReactiveEffectData.TRIGGER_TURN_START, "Début du tour", [&"trigger_hero", &"active_unit", &"resources"]],
 		[ItemReactiveEffectData.TRIGGER_TURN_END, "Fin du tour", [&"trigger_hero", &"active_unit", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_ACTION_RESOLVED, "Action résolue", [&"trigger_hero", &"active_unit", &"action", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_AP_AFTER_ACTION, "Changement de PA après une action", [&"trigger_hero", &"active_unit", &"action", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_PREPARED, "Préparation d’un déplacement volontaire", [&"trigger_hero", &"active_unit", &"action", &"voluntary", &"distance", &"interceptable", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_RESOLVED, "Résolution d’un déplacement volontaire", [&"trigger_hero", &"active_unit", &"action", &"voluntary", &"distance", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_HP_LOST, "Perte réelle de PV", [&"trigger_hero", &"damage_source", &"hp_loss", &"enemy_source", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_HP_THRESHOLD_CROSSED, "Franchissement d’un seuil de PV", [&"trigger_hero", &"damage_source", &"hp_loss", &"enemy_source", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_UNIT_KILLED, "Élimination attribuée à une unité", [&"trigger_hero", &"killed_unit", &"kill", &"resources"]],
-		[ItemReactiveEffectData.TRIGGER_ADJACENT_ENEMY_TURN_END, "Fin de tour d’un ennemi adjacent", [&"trigger_hero", &"active_unit", &"adjacent_enemy", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_ACTION_RESOLVED, "Une action vient de se terminer", [&"trigger_hero", &"active_unit", &"action", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_AP_AFTER_ACTION, "PA gagnés ou perdus après une action", [&"trigger_hero", &"active_unit", &"action", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_PREPARED, "Avant un déplacement libre (pas une poussée)", [&"trigger_hero", &"active_unit", &"action", &"voluntary", &"distance", &"interceptable", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_RESOLVED, "Après un déplacement libre (pas une poussée)", [&"trigger_hero", &"active_unit", &"action", &"voluntary", &"distance", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_HP_LOST, "Vie perdue après tes protections", [&"trigger_hero", &"damage_source", &"hp_loss", &"enemy_source", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_HP_THRESHOLD_CROSSED, "Ta vie passe sous un certain niveau", [&"trigger_hero", &"damage_source", &"hp_loss", &"enemy_source", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_UNIT_KILLED, "Tu élimines un ennemi", [&"trigger_hero", &"killed_unit", &"kill", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_ADJACENT_ENEMY_TURN_END, "Fin de tour d’un ennemi juste à côté", [&"trigger_hero", &"active_unit", &"adjacent_enemy", &"resources"]],
 	]:
 		register_descriptor(KIND_TRIGGER, {"id": value[0], "label": value[1], "provides": value[2]})
 	for value in [
-		[&"trigger_team", "Équipe du déclencheur", [&"trigger_hero"]],
-		[&"enemy_source_required", "Source ennemie obligatoire", [&"enemy_source"]],
-		[&"real_hp_loss_positive", "Perte réelle de PV supérieure à zéro", [&"hp_loss"]],
-		[&"hp_percent", "Pourcentage de PV comparé au seuil", [&"resources"]],
-		[&"ap", "PA comparés à une valeur", [&"resources"]],
-		[&"mp", "PM comparés à une valeur", [&"resources"]],
-		[&"adjacent_unit", "Unité adjacente", [&"active_unit"]],
-		[&"voluntary_only", "Déplacement volontaire uniquement", [&"voluntary"]],
+		[&"trigger_team", "Seulement pour une équipe précise", [&"trigger_hero"]],
+		[&"enemy_source_required", "L’ennemi doit être à l’origine", [&"enemy_source"]],
+		[&"real_hp_loss_positive", "Il y a vraiment eu une perte de vie", [&"hp_loss"]],
+		[&"hp_percent", "Selon ton pourcentage de vie", [&"resources"]],
+		[&"ap", "Selon le nombre de PA restants", [&"resources"]],
+		[&"mp", "Selon le nombre de PM restants", [&"resources"]],
+		[&"adjacent_unit", "Un ennemi juste à côté", [&"active_unit"]],
+		[&"voluntary_only", "Seulement si c’est un déplacement libre", [&"voluntary"]],
 		[&"minimum_distance", "Distance minimale parcourue", [&"distance"]],
-		[&"kill_by_hero", "Élimination attribuée au héros", [&"kill", &"trigger_hero"]],
-		[&"first_in_frequency", "Première activation dans la fréquence", []],
+		[&"kill_by_hero", "C’est bien toi qui l’as éliminé", [&"kill", &"trigger_hero"]],
+		[&"first_in_frequency", "Seulement au tout premier déclenchement", []],
 	]:
 		register_descriptor(KIND_CONDITION, {"id": value[0], "label": value[1], "requires": value[2]})
 	for value in [
-		[ItemReactiveEffectData.TARGET_TRIGGER_HERO, "Héros déclencheur", [&"trigger_hero"]],
-		[ItemReactiveEffectData.TARGET_DAMAGE_SOURCE, "Source ennemie des dégâts", [&"damage_source"]],
-		[ItemReactiveEffectData.TARGET_KILLED_UNIT, "Unité éliminée", [&"killed_unit"]],
-		[ItemReactiveEffectData.TARGET_ACTIVE_UNIT, "Unité active", [&"active_unit"]],
-		[ItemReactiveEffectData.TARGET_ALL_CONTROLLED_HEROES, "Tous les héros contrôlés", [&"trigger_hero"]],
+		[ItemReactiveEffectData.TARGET_TRIGGER_HERO, "Le héros concerné", [&"trigger_hero"]],
+		[ItemReactiveEffectData.TARGET_DAMAGE_SOURCE, "L’ennemi qui a attaqué", [&"damage_source"]],
+		[ItemReactiveEffectData.TARGET_KILLED_UNIT, "L’ennemi éliminé", [&"killed_unit"]],
+		[ItemReactiveEffectData.TARGET_ACTIVE_UNIT, "Le héros qui joue en ce moment", [&"active_unit"]],
+		[ItemReactiveEffectData.TARGET_ALL_CONTROLLED_HEROES, "Toute ton équipe", [&"trigger_hero"]],
 	]:
 		register_descriptor(KIND_TARGET, {"id": value[0], "label": value[1], "requires": value[2]})
 	for value in [
-		[ItemReactiveEffectData.RESULT_CURRENT_AP, "Rendre ou retirer des PA ce tour", []],
-		[ItemReactiveEffectData.RESULT_NEXT_TURN_AP, "Bonus ou malus de PA au prochain tour", []],
-		[ItemReactiveEffectData.RESULT_CURRENT_MP, "Rendre ou retirer des PM ce tour", []],
-		[ItemReactiveEffectData.RESULT_NEXT_TURN_MP, "Bonus ou malus de PM au prochain tour", []],
-		[ItemReactiveEffectData.RESULT_HEAL_FLAT, "Soigner une valeur fixe", []],
-		[ItemReactiveEffectData.RESULT_HEAL_MAX_HP_PERCENT, "Soigner selon les PV maximum", []],
-		[ItemReactiveEffectData.RESULT_PAY_HP_FLAT, "Payer un coût fixe en PV sans mourir", []],
-		[ItemReactiveEffectData.RESULT_PAY_HP_PERCENT, "Payer un coût proportionnel en PV sans mourir", []],
-		[ItemReactiveEffectData.RESULT_REDUCE_VOLUNTARY_MOVE_COST, "Réduire le coût du déplacement volontaire", [&"voluntary", &"interceptable"]],
-		[ItemReactiveEffectData.RESULT_CANCEL_IN_PROGRESS, "Annuler proprement l’effet en cours", [&"interceptable"]],
+		[ItemReactiveEffectData.RESULT_CURRENT_AP, "Donner ou enlever des PA ce tour", []],
+		[ItemReactiveEffectData.RESULT_NEXT_TURN_AP, "Donner ou enlever des PA au tour suivant", []],
+		[ItemReactiveEffectData.RESULT_CURRENT_MP, "Donner ou enlever des PM ce tour", []],
+		[ItemReactiveEffectData.RESULT_NEXT_TURN_MP, "Donner ou enlever des PM au tour suivant", []],
+		[ItemReactiveEffectData.RESULT_HEAL_FLAT, "Soigner un nombre de PV fixe", []],
+		[ItemReactiveEffectData.RESULT_HEAL_MAX_HP_PERCENT, "Soigner un pourcentage de ta vie maximum", []],
+		[ItemReactiveEffectData.RESULT_PAY_HP_FLAT, "Perdre un nombre de PV fixe (sans jamais mourir)", []],
+		[ItemReactiveEffectData.RESULT_PAY_HP_PERCENT, "Perdre un pourcentage de ta vie (sans jamais mourir)", []],
+		[ItemReactiveEffectData.RESULT_REDUCE_VOLUNTARY_MOVE_COST, "Rendre un déplacement libre moins cher", [&"voluntary", &"interceptable"]],
+		[ItemReactiveEffectData.RESULT_CANCEL_IN_PROGRESS, "Bloquer l’action avant qu’elle se produise", [&"interceptable"]],
 	]:
 		register_descriptor(KIND_RESULT, {"id": value[0], "label": value[1], "requires": value[2]})
 	for value in [
 		[ItemReactiveEffectData.FREQUENCY_UNLIMITED, "Sans limite"],
 		[ItemReactiveEffectData.FREQUENCY_ACTION, "Une fois par action"],
 		[ItemReactiveEffectData.FREQUENCY_TURN, "Une fois par tour"],
-		[ItemReactiveEffectData.FREQUENCY_ROUND, "Une fois par round"],
+		[ItemReactiveEffectData.FREQUENCY_ROUND, "Une fois par manche"],
 		[ItemReactiveEffectData.FREQUENCY_COMBAT, "Une fois par combat"],
 		[ItemReactiveEffectData.FREQUENCY_COOLDOWN_TURNS, "Recharge après plusieurs tours"],
 	]:
 		register_descriptor(KIND_FREQUENCY, {"id": value[0], "label": value[1]})
+
+
+func result_value_kind(result_id: StringName) -> StringName:
+	match result_id:
+		ItemReactiveEffectData.RESULT_HEAL_MAX_HP_PERCENT, ItemReactiveEffectData.RESULT_PAY_HP_PERCENT:
+			return VALUE_PERCENT
+		ItemReactiveEffectData.RESULT_CURRENT_AP, ItemReactiveEffectData.RESULT_NEXT_TURN_AP, ItemReactiveEffectData.RESULT_CURRENT_MP, ItemReactiveEffectData.RESULT_NEXT_TURN_MP:
+			return VALUE_SIGNED
+		ItemReactiveEffectData.RESULT_CANCEL_IN_PROGRESS:
+			return VALUE_NONE
+	return VALUE_FLAT
+
+
+func condition_value_kind(condition_id: StringName) -> StringName:
+	match condition_id:
+		&"hp_percent":
+			return VALUE_PERCENT
+		&"ap", &"mp", &"minimum_distance":
+			return VALUE_FLAT
+	return VALUE_NONE
+
+
+func condition_uses_comparison(condition_id: StringName) -> bool:
+	return condition_id in [&"hp_percent", &"ap", &"mp"]
+
+
+func condition_uses_team(condition_id: StringName) -> bool:
+	return condition_id == &"trigger_team"
+
+
+func team_label(team: int) -> String:
+	return str(TEAM_LABELS[clampi(team, 0, TEAM_LABELS.size() - 1)])
+
+
+func trigger_uses_threshold(trigger_id: StringName) -> bool:
+	return trigger_id == ItemReactiveEffectData.TRIGGER_HP_THRESHOLD_CROSSED
+
+
+func comparison_symbol(comparison: StringName) -> String:
+	for pair in COMPARISONS:
+		if StringName(pair[1]) == comparison:
+			return str(pair[0])
+	return "="
+
+
+func percent_text(ratio: float) -> String:
+	return "%d %%" % int(round(ratio * 100.0))
+
+
+func _trigger_text(effect: ItemReactiveEffectData) -> String:
+	var text := label(KIND_TRIGGER, effect.trigger_id)
+	if trigger_uses_threshold(effect.trigger_id):
+		return "%s (%s)" % [text, percent_text(effect.threshold)]
+	return text
+
+
+func _result_text(effect: ItemReactiveEffectData) -> String:
+	var text := label(KIND_RESULT, effect.result_id)
+	match result_value_kind(effect.result_id):
+		VALUE_NONE:
+			return text
+		VALUE_PERCENT:
+			return "%s (%s)" % [text, percent_text(effect.value)]
+		VALUE_SIGNED:
+			return "%s (%+d)" % [text, int(round(effect.value))]
+	return "%s (%d)" % [text, int(round(effect.value))]
+
+
+func _conditions_text(effect: ItemReactiveEffectData) -> String:
+	var parts: Array[String] = []
+	for condition in effect.conditions:
+		if condition != null:
+			parts.append(_condition_text(condition))
+	return ", ".join(parts)
+
+
+func _condition_text(condition: ItemReactiveConditionData) -> String:
+	var text := label(KIND_CONDITION, condition.condition_id)
+	if condition_uses_team(condition.condition_id):
+		return "%s (%s)" % [text, team_label(condition.team)]
+	var kind := condition_value_kind(condition.condition_id)
+	if kind == VALUE_NONE:
+		return text
+	var value_text := percent_text(condition.value) if kind == VALUE_PERCENT \
+		else str(int(round(condition.value)))
+	if not condition_uses_comparison(condition.condition_id):
+		return "%s (%s)" % [text, value_text]
+	return "%s %s %s" % [text, comparison_symbol(condition.comparison), value_text]
+
+
+func _frequency_text(effect: ItemReactiveEffectData) -> String:
+	var text := label(KIND_FREQUENCY, effect.frequency_id)
+	if effect.frequency_id == ItemReactiveEffectData.FREQUENCY_UNLIMITED:
+		return text
+	if effect.frequency_id == ItemReactiveEffectData.FREQUENCY_COOLDOWN_TURNS:
+		text += " (%d tours)" % effect.recharge_turns
+	if effect.max_activations > 1:
+		text += ", %d fois maximum" % effect.max_activations
+	return text

@@ -19,7 +19,7 @@ func setup(p_catalog: ItemStudioCatalogService) -> void:
 
 func _ready() -> void:
 	title = "Nouvel objet"
-	ok_button_text = "Créer la working copy"
+	ok_button_text = "Créer l’objet"
 	min_size = Vector2i(520, 360)
 	max_size = Vector2i(560, 460)
 	var root := VBoxContainer.new()
@@ -35,7 +35,7 @@ func _ready() -> void:
 	name_edit.placeholder_text = "Nom français de l’objet"
 	name_edit.text_changed.connect(_update_proposal)
 	root.add_child(name_edit)
-	root.add_child(_label("3. item_id proposé"))
+	root.add_child(_label("3. Identifiant technique (rempli automatiquement)"))
 	id_edit = LineEdit.new()
 	root.add_child(id_edit)
 	root.add_child(_label("4. Compatibilité"))
