@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://data/visuals/achilles/achilles_visual_profile.gd" id="1_profile"]
 [ext_resource type="PackedScene" path="res://characters/achilles/3d/Achilles3DVisual.tscn" id="2_character"]
-[ext_resource type="PackedScene" path="res://characters/achilles/3d/AchillesNoVisualFallbackBackend.tscn" id="3_fallback"]
+[ext_resource type="PackedScene" path="res://characters/achilles/3d/AchillesLegacy2DBackend.tscn" id="3_fallback"]
 
 [resource]
 script = ExtResource("1_profile")
@@ -12,8 +12,8 @@ character_scene = ExtResource("2_character")
 character_asset_path = "res://assets/characters/Achilles/3d/achilles_rig_v1.glb"
 skeleton_signature = "6CC796EE5D708EE1A7F884C028C457CA535A4D7B572A189B36DFE5EBAD62D65D"
 character_scale = 1.0
-rendering_mode = &"SUBVIEWPORT"
-fallback_policy = &"NO_VISUAL_ACTION_CONTRACT"
+rendering_mode = &"VIEWPORT_3D"
+fallback_policy = &"LEGACY_2D_ON_VERIFIED_ERROR"
 fallback_backend_scene = ExtResource("3_fallback")
 viewport_size = Vector2i(384, 384)
 camera_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.8, 3.5)

@@ -1,9 +1,10 @@
 class_name AchillesVisualProfile
 extends Resource
 
-const RENDERING_SUBVIEWPORT := &"SUBVIEWPORT"
-const FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT := (
-	&"NO_VISUAL_ACTION_CONTRACT"
+const RENDERING_VIEWPORT_3D := &"VIEWPORT_3D"
+const RENDERING_SUBVIEWPORT := RENDERING_VIEWPORT_3D
+const FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR := (
+	&"LEGACY_2D_ON_VERIFIED_ERROR"
 )
 const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 	Vector2i(256, 256),
@@ -23,9 +24,9 @@ const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 )
 @export_range(0.1, 4.0, 0.01) var character_scale := 1.0
 
-@export var rendering_mode: StringName = RENDERING_SUBVIEWPORT
+@export var rendering_mode: StringName = RENDERING_VIEWPORT_3D
 @export var fallback_policy: StringName = (
-	FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT
+	FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR
 )
 @export var fallback_backend_scene: PackedScene
 
@@ -80,8 +81,8 @@ func is_character_only_valid() -> bool:
 		and fallback_backend_scene != null \
 		and not character_asset_path.is_empty() \
 		and not skeleton_signature.is_empty() \
-		and rendering_mode == RENDERING_SUBVIEWPORT \
-		and fallback_policy == FALLBACK_POLICY_NO_VISUAL_ACTION_CONTRACT \
+		and rendering_mode == RENDERING_VIEWPORT_3D \
+		and fallback_policy == FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR \
 		and not equipment_enabled \
 		and weapon_profile == null
 

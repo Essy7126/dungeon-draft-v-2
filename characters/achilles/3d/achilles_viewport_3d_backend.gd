@@ -31,9 +31,14 @@ func _ready() -> void:
 	set_process_input(false)
 	set_process_unhandled_input(false)
 	set_process_unhandled_key_input(false)
-	character_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	rendered_sprite.texture = character_viewport.get_texture()
-	rendered_sprite.centered = false
+	if is_instance_valid(character_viewport):
+		character_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	if is_instance_valid(rendered_sprite):
+		rendered_sprite.texture = (
+			character_viewport.get_texture()
+			if is_instance_valid(character_viewport) else null
+		)
+		rendered_sprite.centered = false
 
 
 func _exit_tree() -> void:
@@ -43,8 +48,21 @@ func _exit_tree() -> void:
 func configure(profile: AchillesVisualProfile) -> bool:
 	if _shutdown:
 		return false
+	_last_error_code = &""
 	if is_instance_valid(_visual) or _ready_for_render:
 		_last_error_code = &"SUBVIEWPORT_BACKEND_ALREADY_CONFIGURED"
+		return false
+	if not is_instance_valid(character_viewport):
+		_fail_backend(&"SUBVIEWPORT_MISSING")
+		return false
+	if not is_instance_valid(camera):
+		_fail_backend(&"SUBVIEWPORT_CAMERA_MISSING")
+		return false
+	if not is_instance_valid(render_world):
+		_fail_backend(&"SUBVIEWPORT_RENDER_WORLD_MISSING")
+		return false
+	if not is_instance_valid(rendered_sprite):
+		_fail_backend(&"RENDERED_SPRITE_MISSING")
 		return false
 	_profile = profile
 	if _profile == null or not _profile.is_character_only_valid():
@@ -75,9 +93,11 @@ func configure(profile: AchillesVisualProfile) -> bool:
 func set_backend_active(active: bool) -> void:
 	_active = active and _ready_for_render and not _shutdown
 	visible = _active
-	character_viewport.render_target_update_mode = (
-		SubViewport.UPDATE_ALWAYS if _active else SubViewport.UPDATE_DISABLED
-	)
+	if is_instance_valid(character_viewport):
+		character_viewport.render_target_update_mode = (
+			SubViewport.UPDATE_ALWAYS
+			if _active else SubViewport.UPDATE_DISABLED
+		)
 	if _active:
 		_realign_foot_deferred()
 
@@ -88,6 +108,16 @@ func is_backend_active() -> bool:
 
 func is_ready_for_render() -> bool:
 	return _ready_for_render
+
+
+func has_valid_render_output() -> bool:
+	if not _ready_for_render or not is_instance_valid(character_viewport) \
+			or not is_instance_valid(rendered_sprite):
+		return false
+	var texture: Texture2D = character_viewport.get_texture()
+	if texture == null or rendered_sprite.texture != texture:
+		return false
+	return _viewport_contains_visible_pixels()
 
 
 func set_facing_label(direction: String) -> void:
@@ -118,6 +148,8 @@ func cancel_action() -> void:
 
 
 func set_viewport_resolution(resolution: int) -> bool:
+	if not is_instance_valid(character_viewport):
+		return false
 	var requested := Vector2i(resolution, resolution)
 	if requested not in AchillesVisualProfile.SUPPORTED_VIEWPORT_SIZES:
 		return false
@@ -147,6 +179,10 @@ func get_achilles_visual() -> Achilles3DVisual:
 
 func get_last_error_code() -> StringName:
 	return _last_error_code
+
+
+func get_configured_profile() -> AchillesVisualProfile:
+	return _profile
 
 
 func shutdown() -> void:
@@ -213,10 +249,29 @@ func _complete_warmup_after_frames(generation: int) -> void:
 		if _shutdown or generation != _warmup_generation \
 				or not is_instance_valid(_visual):
 			return
+	if not _viewport_contains_visible_pixels():
+		_fail_backend(&"SUBVIEWPORT_RENDER_EMPTY")
+		return
 	_ready_for_render = true
 	character_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	_realign_foot_deferred()
 	backend_ready.emit()
+
+
+func _viewport_contains_visible_pixels() -> bool:
+	if not is_instance_valid(character_viewport):
+		return false
+	var texture: Texture2D = character_viewport.get_texture()
+	if texture == null:
+		return false
+	var image: Image = texture.get_image()
+	if image == null or image.is_empty():
+		return false
+	for y in range(0, image.get_height(), 4):
+		for x in range(0, image.get_width(), 4):
+			if image.get_pixel(x, y).a > 0.02:
+				return true
+	return false
 
 
 func _on_visual_setup_failed(error_code: StringName) -> void:
@@ -268,4 +323,5 @@ func _fail_backend(error_code: StringName) -> void:
 			_visual.get_parent().remove_child(_visual)
 		_visual.queue_free()
 	_visual = null
+	_profile = null
 	backend_failed.emit(error_code)

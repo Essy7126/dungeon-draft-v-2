@@ -8,11 +8,12 @@ signal death_animation_finished
 const MOVEMENT_SETTLE_SECONDS := 0.06
 const ACTION_TIMEOUT_SECONDS := 2.0
 const ACTION_FALLBACK := &"ACTION_FALLBACK"
+const REQUESTED_BACKEND := &"VIEWPORT_3D"
 const DEFAULT_FALLBACK_BACKEND_SCENE := preload(
-	"res://characters/achilles/3d/AchillesNoVisualFallbackBackend.tscn"
+	"res://characters/achilles/3d/AchillesLegacy2DBackend.tscn"
 )
 const FALLBACK_BACKEND_SCRIPT := preload(
-	"res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd"
+	"res://characters/achilles/3d/achilles_legacy_2d_backend.gd"
 )
 
 @export var visual_profile: AchillesVisualProfile
@@ -32,17 +33,20 @@ var _last_parent_position := Vector2.ZERO
 var _movement_active := false
 var _movement_stable_time := 0.0
 var _viewport_activation_deferred := false
+var _queued_action_for_backend := false
 var _death_tween: Tween = null
 var _last_backend_error: Dictionary = {}
+var _selected_profile: AchillesVisualProfile = null
+var _runtime_diagnostics_enabled := false
+var _runtime_room_id := ""
+var _runtime_commit := ""
 
 
 func _ready() -> void:
-	fallback_backend = _create_fallback_backend()
-	_connect_backend_signals(fallback_backend)
 	_connect_backend_signals(viewport_backend)
 	viewport_backend.backend_ready.connect(_on_viewport_backend_ready)
 	viewport_backend.backend_failed.connect(_on_viewport_backend_failed)
-	_activate_safe_fallback()
+	viewport_backend.set_backend_active(false)
 	var parent_2d := get_parent() as Node2D
 	if parent_2d != null:
 		_last_parent_position = parent_2d.position
@@ -55,7 +59,12 @@ func _process(delta: float) -> void:
 	if _action_pending:
 		_action_elapsed += maxf(delta, 0.0)
 		if _action_elapsed >= ACTION_TIMEOUT_SECONDS:
-			_complete_action_once(ACTION_FALLBACK)
+			if _queued_action_for_backend:
+				force_safe_fallback(&"SUBVIEWPORT_WARMUP_TIMEOUT")
+			else:
+				if is_instance_valid(_active_backend):
+					_active_backend.cancel_action()
+				_complete_action_once(ACTION_FALLBACK)
 		return
 	_track_parent_movement(delta)
 
@@ -116,6 +125,7 @@ func cancel_pending_visual_actions() -> void:
 	_action_pending = false
 	_action_elapsed = 0.0
 	_release_emitted = false
+	_queued_action_for_backend = false
 	_movement_active = false
 	_movement_stable_time = 0.0
 	if is_instance_valid(viewport_backend):
@@ -158,14 +168,32 @@ func get_default_cast_effect_origin() -> Vector2:
 
 
 func force_safe_fallback(reason: StringName = &"MANUAL_FALLBACK") -> void:
-	var replay_action := _action_pending and _active_backend == viewport_backend
+	var fallback_was_active: bool = (
+		is_instance_valid(fallback_backend)
+		and _active_backend == fallback_backend
+		and fallback_backend.is_backend_active()
+	)
+	var replay_action: bool = _action_pending and not fallback_was_active
+	if is_instance_valid(viewport_backend):
+		viewport_backend.cancel_action()
+	if fallback_was_active:
+		if reason != &"":
+			_record_backend_error(reason)
+		return
+	if not _activate_safe_fallback():
+		if reason != &"":
+			_record_backend_error(reason)
+		if replay_action:
+			_queued_action_for_backend = false
+			_complete_action_once(ACTION_FALLBACK)
+		return
 	if reason != &"":
 		_record_backend_error(reason)
-	if replay_action and is_instance_valid(viewport_backend):
-		viewport_backend.cancel_action()
-	_activate_safe_fallback()
-	if replay_action and not fallback_backend.play_action(_facing):
-		_complete_action_once(ACTION_FALLBACK)
+	if replay_action:
+		_queued_action_for_backend = false
+		_action_elapsed = 0.0
+		if not fallback_backend.play_action(_facing):
+			_complete_action_once(ACTION_FALLBACK)
 
 
 func request_subviewport_backend(
@@ -174,71 +202,165 @@ func request_subviewport_backend(
 	var selected_profile := (
 		profile_override if profile_override != null else visual_profile
 	)
-	if selected_profile == null or not selected_profile.is_character_only_valid():
-		force_safe_fallback(&"INVALID_CHARACTER_ONLY_PROFILE")
-		return false
 	if viewport_backend.is_shutdown():
+		_selected_profile = selected_profile
 		force_safe_fallback(&"SUBVIEWPORT_BACKEND_ALREADY_RELEASED")
 		return false
-	if viewport_backend.is_ready_for_render():
-		if _action_pending or _movement_active:
+	var configured_profile := viewport_backend.get_configured_profile()
+	if configured_profile != null:
+		if selected_profile != configured_profile:
+			printerr(JSON.stringify({
+				"event": "ACHILLES_VISUAL_BACKEND_REQUEST_REJECTED",
+				"reason": "SUBVIEWPORT_PROFILE_SWITCH_UNSUPPORTED",
+				"requested_backend": String(REQUESTED_BACKEND),
+				"room_id": _runtime_room_id,
+				"commit": _runtime_commit,
+			}))
+			return false
+		_selected_profile = configured_profile
+		if not viewport_backend.is_ready_for_render():
+			return true
+		if (_action_pending and not _queued_action_for_backend) \
+				or (_movement_active and _active_backend == fallback_backend):
 			_viewport_activation_deferred = true
 		else:
 			_activate_viewport_backend()
 		return true
+	_selected_profile = selected_profile
+	if selected_profile == null or not selected_profile.is_character_only_valid():
+		force_safe_fallback(&"INVALID_CHARACTER_ONLY_PROFILE")
+		return false
 	return viewport_backend.configure(selected_profile)
 
 
 func get_active_backend_name() -> StringName:
 	if _active_backend == viewport_backend:
 		return &"Viewport3DBackend"
-	return &"NoVisualFallbackBackend"
+	if is_instance_valid(fallback_backend) and _active_backend == fallback_backend:
+		return &"Legacy2DFallbackBackend"
+	return &"Initializing"
 
 
 func get_last_backend_error() -> Dictionary:
 	return _last_backend_error.duplicate(true)
 
 
+func configure_runtime_diagnostics(
+		enabled: bool,
+		room_id: String = "",
+		commit: String = ""
+	) -> void:
+	_runtime_diagnostics_enabled = enabled
+	_runtime_room_id = room_id
+	_runtime_commit = commit
+	if not _last_backend_error.is_empty():
+		_last_backend_error["room_id"] = _runtime_room_id
+		_last_backend_error["commit"] = _runtime_commit
+		printerr(JSON.stringify(_last_backend_error))
+	_emit_runtime_state(&"ACHILLES_VISUAL_RUNTIME_DIAGNOSTICS_CONFIGURED")
+
+
+func get_visual_runtime_state() -> Dictionary:
+	var character_scene_path := ""
+	var evidence_profile := _selected_profile \
+		if _selected_profile != null else visual_profile
+	if evidence_profile != null and evidence_profile.character_scene != null:
+		character_scene_path = evidence_profile.character_scene.resource_path
+	var skeleton_path := ""
+	var skeletons := viewport_backend.find_children(
+		"*", "Skeleton3D", true, false
+	)
+	if not skeletons.is_empty():
+		skeleton_path = String(skeletons[0].get_path())
+	var viewport_texture_valid := false
+	if is_instance_valid(viewport_backend):
+		viewport_texture_valid = viewport_backend.has_valid_render_output()
+	var legacy_visible := false
+	var legacy_processing := false
+	if is_instance_valid(fallback_backend):
+		legacy_visible = fallback_backend.visible \
+			and fallback_backend.is_visible_in_tree()
+		legacy_processing = fallback_backend.can_process()
+	return {
+		"event": "ACHILLES_VISUAL_RUNTIME_STATE",
+		"ACHILLES_VISUAL_BACKEND_REQUESTED": String(REQUESTED_BACKEND),
+		"ACHILLES_VISUAL_BACKEND_ACTIVE": _normalized_active_backend(),
+		"ACHILLES_VISUAL_FALLBACK_ACTIVE": (
+			is_instance_valid(fallback_backend)
+			and _active_backend == fallback_backend
+			and fallback_backend.is_backend_active()
+		),
+		"ACHILLES_CHARACTER_SCENE_PATH": character_scene_path,
+		"ACHILLES_SKELETON_PATH": skeleton_path,
+		"ACHILLES_SUBVIEWPORT_PATH": String(
+			viewport_backend.character_viewport.get_path()
+			if is_instance_valid(viewport_backend.character_viewport) else ""
+		),
+		"ACHILLES_VIEWPORT_TEXTURE_VALID": viewport_texture_valid,
+		"ACHILLES_LEGACY_BODY_VISIBLE": legacy_visible,
+		"ACHILLES_LEGACY_BODY_PROCESSING": legacy_processing,
+		"ACHILLES_ROOM_ID": _runtime_room_id,
+		"commit": _runtime_commit,
+	}
+
+
 func _initialize_selected_backend() -> void:
-	if _closing or visual_profile == null:
+	if _closing:
+		return
+	if visual_profile == null:
+		_selected_profile = null
+		force_safe_fallback(&"INVALID_CHARACTER_ONLY_PROFILE")
 		return
 	request_subviewport_backend()
 
 
 func _begin_action() -> bool:
-	if _closing or _action_pending or not is_instance_valid(_active_backend):
+	if _closing or _action_pending:
 		return false
 	_generation += 1
 	_action_pending = true
 	_action_elapsed = 0.0
 	_release_emitted = false
 	_movement_active = false
+	if not is_instance_valid(_active_backend):
+		_queued_action_for_backend = true
+		return true
 	var started := bool(_active_backend.play_action(_facing))
 	if started:
 		return true
-	_action_pending = false
 	if _active_backend != fallback_backend:
 		force_safe_fallback(&"SUBVIEWPORT_ACTION_START_FAILED")
-		_action_pending = true
-		started = bool(fallback_backend.play_action(_facing))
-	if not started:
-		_action_pending = false
-	return started
+		return _action_pending
+	_action_pending = false
+	_action_elapsed = 0.0
+	return false
 
 
 func _connect_backend_signals(backend: Node) -> void:
-	backend.action_release_reached.connect(_on_backend_action_release)
-	backend.action_finished.connect(_on_backend_action_finished)
+	if not is_instance_valid(backend):
+		return
+	backend.action_release_reached.connect(
+		_on_backend_action_release.bind(backend)
+	)
+	backend.action_finished.connect(
+		_on_backend_action_finished.bind(backend)
+	)
 
 
-func _on_backend_action_release() -> void:
-	if _closing or not _action_pending or _release_emitted:
+func _on_backend_action_release(source_backend: Node) -> void:
+	if _closing or source_backend != _active_backend \
+			or not _action_pending or _release_emitted:
 		return
 	_release_emitted = true
 	cast_release_reached.emit()
 
 
-func _on_backend_action_finished(action_name: StringName) -> void:
+func _on_backend_action_finished(
+		action_name: StringName,
+		source_backend: Node
+	) -> void:
+	if source_backend != _active_backend:
+		return
 	_complete_action_once(action_name)
 
 
@@ -250,6 +372,7 @@ func _complete_action_once(action_name: StringName) -> void:
 		cast_release_reached.emit()
 	_action_pending = false
 	_action_elapsed = 0.0
+	_queued_action_for_backend = false
 	if is_instance_valid(_active_backend):
 		_active_backend.play_idle(_facing)
 	_activate_deferred_viewport_if_available()
@@ -259,10 +382,20 @@ func _complete_action_once(action_name: StringName) -> void:
 func _on_viewport_backend_ready() -> void:
 	if _closing:
 		return
-	if _action_pending or _movement_active:
+	if _action_pending and not _queued_action_for_backend:
 		_viewport_activation_deferred = true
 		return
 	_activate_viewport_backend()
+	if _queued_action_for_backend:
+		_queued_action_for_backend = false
+		_action_elapsed = 0.0
+		if not viewport_backend.play_action(_facing):
+			force_safe_fallback(&"SUBVIEWPORT_ACTION_START_FAILED")
+	elif _movement_active:
+		viewport_backend.play_move(_facing)
+	else:
+		viewport_backend.play_idle(_facing)
+	_emit_runtime_state(&"ACHILLES_VISUAL_BACKEND_READY")
 
 
 func _on_viewport_backend_failed(error_code: StringName) -> void:
@@ -271,24 +404,31 @@ func _on_viewport_backend_failed(error_code: StringName) -> void:
 	force_safe_fallback(error_code)
 
 
-func _activate_safe_fallback() -> void:
+func _activate_safe_fallback() -> bool:
 	_viewport_activation_deferred = false
 	if is_instance_valid(viewport_backend):
 		viewport_backend.set_backend_active(false)
-	if is_instance_valid(fallback_backend):
-		if _active_backend != fallback_backend:
-			fallback_backend.set_backend_active(false)
-		fallback_backend.set_backend_active(true)
+	if not _ensure_fallback_backend():
+		_active_backend = null
+		return false
+	if _active_backend != fallback_backend:
+		fallback_backend.set_backend_active(false)
+	fallback_backend.set_backend_active(true)
 	_active_backend = fallback_backend
-	if is_instance_valid(fallback_backend):
-		fallback_backend.set_facing_label(_facing)
+	fallback_backend.set_facing_label(_facing)
+	_emit_runtime_state(&"ACHILLES_VISUAL_FALLBACK_ACTIVE")
+	return true
 
 
 func _activate_viewport_backend() -> void:
 	if not is_instance_valid(viewport_backend) \
 			or not viewport_backend.is_ready_for_render():
 		return
-	fallback_backend.set_backend_active(false)
+	if is_instance_valid(fallback_backend):
+		fallback_backend.set_backend_active(false)
+		fallback_backend.shutdown()
+		fallback_backend.queue_free()
+		fallback_backend = null
 	viewport_backend.set_backend_active(false)
 	viewport_backend.set_backend_active(true)
 	_active_backend = viewport_backend
@@ -309,10 +449,20 @@ func _activate_deferred_viewport_if_available() -> void:
 
 func _record_backend_error(error_code: StringName) -> void:
 	_last_backend_error = {
-		"event": "ACHILLES_VISUAL_BACKEND_FALLBACK",
+		"event": "ACHILLES_VISUAL_FALLBACK_ACTIVATED",
+		"reason": String(error_code),
 		"error_code": String(error_code),
-		"fallback": "NO_VISUAL_ACTION_CONTRACT",
-		"legacy_2d_loaded": false,
+		"requested_backend": String(REQUESTED_BACKEND),
+		"failed_resource": _failed_resource_for(error_code),
+		"room_id": _runtime_room_id,
+		"commit": _runtime_commit,
+		"fallback": "LEGACY_2D_ON_VERIFIED_ERROR",
+		"legacy_2d_loaded": is_instance_valid(fallback_backend),
+		"fallback_active": (
+			is_instance_valid(fallback_backend)
+			and _active_backend == fallback_backend
+			and fallback_backend.is_backend_active()
+		),
 		"equipment_enabled": false,
 	}
 	printerr(JSON.stringify(_last_backend_error))
@@ -347,10 +497,13 @@ func _on_bound_unit_died(_dead_unit: Unit) -> void:
 		return
 	_generation += 1
 	_action_pending = false
+	_action_elapsed = 0.0
 	_release_emitted = false
+	_queued_action_for_backend = false
 	_movement_active = false
 	viewport_backend.cancel_action()
-	fallback_backend.cancel_action()
+	if is_instance_valid(fallback_backend):
+		fallback_backend.cancel_action()
 	var death_generation := _generation
 	_death_tween = create_tween()
 	_death_tween.tween_property(self, "modulate:a", 0.0, 0.28)
@@ -369,17 +522,96 @@ func _disconnect_unit() -> void:
 	_unit = null
 
 
-func _create_fallback_backend():
+func _ensure_fallback_backend() -> bool:
+	if is_instance_valid(fallback_backend):
+		return true
 	var scene := DEFAULT_FALLBACK_BACKEND_SCENE
-	if visual_profile != null and visual_profile.fallback_backend_scene != null:
-		scene = visual_profile.fallback_backend_scene
+	var fallback_profile := _selected_profile \
+		if _selected_profile != null else visual_profile
+	if fallback_profile != null \
+			and fallback_profile.fallback_backend_scene != null:
+		scene = fallback_profile.fallback_backend_scene
 	var candidate := scene.instantiate()
 	if candidate == null or candidate.get_script() != FALLBACK_BACKEND_SCRIPT:
 		if candidate != null:
 			candidate.free()
-		candidate = DEFAULT_FALLBACK_BACKEND_SCENE.instantiate()
+		printerr(JSON.stringify({
+			"event": "ACHILLES_VISUAL_FALLBACK_ACTIVATION_FAILED",
+			"reason": "LEGACY_FALLBACK_SCENE_INVALID",
+			"requested_backend": String(REQUESTED_BACKEND),
+			"room_id": _runtime_room_id,
+			"commit": _runtime_commit,
+		}))
+		return false
 	var backend := candidate as Node2D
-	backend.name = "NoVisualFallbackBackend"
+	backend.name = "Legacy2DFallbackBackend"
+	backend.visible = false
+	backend.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(backend)
 	move_child(backend, 0)
-	return backend
+	fallback_backend = backend
+	_connect_backend_signals(fallback_backend)
+	fallback_backend.set_backend_active(false)
+	return true
+
+
+func _normalized_active_backend() -> String:
+	if _active_backend == viewport_backend and viewport_backend.is_backend_active():
+		return "VIEWPORT_3D"
+	if is_instance_valid(fallback_backend) \
+			and _active_backend == fallback_backend \
+			and fallback_backend.is_backend_active():
+		return "LEGACY_2D"
+	return "INITIALIZING"
+
+
+func _failed_resource_for(error_code: StringName) -> String:
+	var evidence_profile := _selected_profile \
+		if _selected_profile != null else visual_profile
+	if error_code in [
+		&"CHARACTER_VISUAL_SCENE_MISSING",
+		&"CHARACTER_VISUAL_SCENE_INVALID",
+	]:
+		if evidence_profile != null \
+				and evidence_profile.character_scene != null:
+			return evidence_profile.character_scene.resource_path
+		return "res://characters/achilles/3d/Achilles3DVisual.tscn"
+	if error_code in [
+		&"CHARACTER_ASSET_MISSING",
+		&"CHARACTER_ASSET_IMPORT_FAILED",
+		&"CHARACTER_ASSET_ROOT_NOT_3D",
+		&"SKELETON_COUNT_MISMATCH",
+		&"SKELETON_BONE_COUNT_MISMATCH",
+		&"ANIMATION_PLAYER_MISSING",
+		&"CHARACTER_MESH_MISSING",
+		&"CHARACTER_MATERIAL_MISSING",
+		&"SKELETON_SIGNATURE_MISMATCH",
+		&"HIPS_BONE_MISSING",
+		&"SOURCE_ACTION_SET_MISMATCH",
+		&"EMBEDDED_EQUIPMENT_NODE_DETECTED",
+	]:
+		if evidence_profile != null:
+			return evidence_profile.character_asset_path
+	if error_code in [
+		&"SUBVIEWPORT_MISSING",
+		&"SUBVIEWPORT_CAMERA_MISSING",
+		&"SUBVIEWPORT_RENDER_WORLD_MISSING",
+		&"RENDERED_SPRITE_MISSING",
+		&"SUBVIEWPORT_TEXTURE_MISSING",
+		&"SUBVIEWPORT_TEXTURE_INVALID",
+		&"SUBVIEWPORT_RENDER_EMPTY",
+		&"SUBVIEWPORT_WARMUP_UNAVAILABLE",
+		&"SUBVIEWPORT_WARMUP_TIMEOUT",
+		&"SUBVIEWPORT_BACKEND_ALREADY_RELEASED",
+		&"SUBVIEWPORT_ACTION_START_FAILED",
+	]:
+		return "res://characters/achilles/3d/AchillesViewport3DBackend.tscn"
+	return evidence_profile.resource_path if evidence_profile != null else ""
+
+
+func _emit_runtime_state(event_name: StringName) -> void:
+	if not _runtime_diagnostics_enabled:
+		return
+	var state := get_visual_runtime_state()
+	state.event = String(event_name)
+	print(JSON.stringify(state))

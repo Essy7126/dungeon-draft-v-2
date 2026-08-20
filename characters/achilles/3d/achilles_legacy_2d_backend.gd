@@ -13,7 +13,7 @@ const ACTION_FALLBACK := &"ACTION_FALLBACK"
 	$AchillesVisual2D/AnimatedSprite2D
 )
 
-var _active := true
+var _active := false
 var _action_pending := false
 var _release_emitted := false
 
@@ -33,11 +33,14 @@ func set_backend_active(active: bool) -> void:
 		cancel_action()
 	_active = active
 	visible = active
+	process_mode = (
+		Node.PROCESS_MODE_INHERIT if active else Node.PROCESS_MODE_DISABLED
+	)
 	_apply_active_state()
 
 
 func is_backend_active() -> bool:
-	return _active and visible
+	return _active and visible and is_visible_in_tree() and can_process()
 
 
 func set_facing_label(direction: String) -> void:
@@ -86,6 +89,7 @@ func shutdown() -> void:
 	cancel_action()
 	_active = false
 	visible = false
+	process_mode = Node.PROCESS_MODE_DISABLED
 	if is_instance_valid(animated_sprite):
 		animated_sprite.stop()
 
