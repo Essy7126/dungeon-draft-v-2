@@ -180,8 +180,11 @@ binding_reverified_after_fix = true
 
 - `WRONG_WORKTREE_OR_PROJECT_LAUNCHED` : l’éditeur du propriétaire ouvrait
   encore `main`, où le corps 2D historique restait directement lié.
-- Le correctif existe seulement dans un `WORKTREE_CANDIDATE`; il n’est ni
-  `CURRENT`, ni intégré à `main`, ni `PRODUCTION`.
+- Le correctif a été publié sur `origin/main` au commit d’intégration
+  `e0b42eb75f2de46d3daa08b8ac30ae1cc354d3da`. Le checkout principal encore
+  ouvert dans l’éditeur reste sur son ancien HEAD tant qu’il n’est pas fermé
+  puis synchronisé ; la revue humaine de la salle II reste requise et le
+  résultat n’est pas qualifié `PRODUCTION`.
 - Seule la vraie salle II est revalidée. Salles I/III, transitions, retour et
   résultat restent non vérifiés.
 - Le fallback 2D armé n’est pas supprimé : il reste un mode dégradé paresseux

@@ -182,7 +182,8 @@ bouclier incrustés. Cette divergence héritée bloque toute affirmation globale
 - Branche : `fix/achilles-odyssey-runtime-3d-binding-v1`
 - Base : `7bc3d69c0f434e8038bbb199300a96baae8443a4`
 - Correctif runtime : `59464dbc200c2168e2757c76c414b6149abebee4`
-- Statut : **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**
+- Statut post-publication : **PUBLISHED_ON_ORIGIN_MAIN — OWNER_REVIEW_PENDING — NOT_PRODUCTION**
+- Commit d’intégration publié : `e0b42eb75f2de46d3daa08b8ac30ae1cc354d3da`
 
 ```text
 previous_report_claimed_3d_runtime = true

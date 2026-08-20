@@ -177,7 +177,8 @@ binding_reverified_after_fix = true
 - Cause vérifiée : `WRONG_WORKTREE_OR_PROJECT_LAUNCHED`. L’éditeur du
   propriétaire ouvrait `main` au HEAD `a54bc6d4c53741bc487807ff79ef292fe0b3c5ec`,
   où la façade liait encore directement le corps 2D historique.
-- Statut : **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
+- Statut post-publication : **PUBLISHED_ON_ORIGIN_MAIN — OWNER_REVIEW_PENDING — NOT_PRODUCTION**.
+- Commit d’intégration publié : `e0b42eb75f2de46d3daa08b8ac30ae1cc354d3da`.
 - Branche : `fix/achilles-odyssey-runtime-3d-binding-v1` ; base :
   `7bc3d69c0f434e8038bbb199300a96baae8443a4` ; correctif runtime :
   `59464dbc200c2168e2757c76c414b6149abebee4` ; tests :

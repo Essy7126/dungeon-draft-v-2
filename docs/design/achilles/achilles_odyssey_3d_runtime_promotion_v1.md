@@ -25,6 +25,8 @@ Classification : `WRONG_WORKTREE_OR_PROJECT_LAUNCHED`.
 - Base du correctif : `7bc3d69c0f434e8038bbb199300a96baae8443a4`.
 - Commit runtime : `59464dbc200c2168e2757c76c414b6149abebee4`.
 - Commit de preuve : `d632004f28a060dccec613fd58247564fea84423`.
+- Commit d’intégration publié sur `origin/main` :
+  `e0b42eb75f2de46d3daa08b8ac30ae1cc354d3da`.
 - Le profil demande explicitement `VIEWPORT_3D` et charge le GLB canonique
   `res://assets/characters/Achilles/3d/achilles_rig_v1.glb`.
 - Le fallback `LEGACY_2D_ON_VERIFIED_ERROR` est créé paresseusement seulement
@@ -59,8 +61,8 @@ captures avant/après.
 - `ACHILLES_3D_ROOM_II_RUNTIME_READY_FOR_OWNER_REVIEW`
 - `LEGACY_2D_BODY_NOT_VISIBLE`
 - `FALLBACK_NOT_ACTIVE`
-- `WORKTREE_CANDIDATE`
-- `NOT_CURRENT`
+- `PUBLISHED_ON_ORIGIN_MAIN`
+- `OWNER_REVIEW_REQUIRED`
 - `NOT_PRODUCTION`
 
 Les salles I et III, les transitions et l’écran de résultat n’ont pas été
