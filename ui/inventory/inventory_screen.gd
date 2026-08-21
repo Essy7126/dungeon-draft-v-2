@@ -24,6 +24,7 @@ var _hero_ids: Array[StringName] = []
 var _selected_character_id: StringName = &""
 var _selected_instance_id: StringName = &""
 var _selected_equipment_slot := ItemDefinition.EquipmentSlot.NONE
+var _test_viewport_size := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -88,11 +89,30 @@ func _exit_tree() -> void:
 func _apply_responsive_layout() -> void:
 	if not is_node_ready() or _panel == null:
 		return
-	var viewport_size := get_viewport_rect().size
+	var viewport_size := (
+		_test_viewport_size
+		if _test_viewport_size != Vector2.ZERO
+		else get_viewport_rect().size
+	)
 	_panel.custom_minimum_size = Vector2(
 		minf(1120.0, maxf(960.0, viewport_size.x - 48.0)),
 		minf(760.0, maxf(600.0, viewport_size.y - 40.0)),
 	)
+	_inventory_grid.columns = 3 if viewport_size.x < 1500.0 else 4
+
+
+func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
+	_test_viewport_size = viewport_size
+	size = viewport_size
+	_apply_responsive_layout()
+
+
+func get_layout_snapshot() -> Dictionary:
+	return {
+		"screen_rect": get_global_rect(),
+		"panel_minimum_size": _panel.custom_minimum_size,
+		"inventory_columns": _inventory_grid.columns,
+	}
 
 
 func _connect_manager() -> void:
@@ -191,10 +211,14 @@ func _rebuild_inventory(inventory: RunInventory, catalog: ItemCatalog) -> void:
 			var definition := catalog.get_definition(instance.definition_id)
 			button.text = "%s\n%s" % [
 				definition.display_name if definition != null else str(instance.definition_id),
-				"x%d" % instance.quantity if instance.quantity > 1 else "Objet unique",
+				("Relique active" if definition != null and definition.is_relic() \
+				else ("x%d" % instance.quantity if instance.quantity > 1 else "Objet unique")),
 			]
 			button.tooltip_text = definition.description if definition != null else ""
 			button.icon = definition.get_inventory_icon() if definition != null else null
+			if definition != null and definition.is_relic():
+				button.self_modulate = Color(0.88, 0.72, 1.0)
+				button.tooltip_text = "%s\nACTIVE POUR LA RUN" % definition.description
 			button.toggle_mode = true
 			button.button_pressed = instance.instance_id == _selected_instance_id
 			button.pressed.connect(_select_inventory_item.bind(instance.instance_id))
@@ -265,6 +289,10 @@ func _refresh_details(
 		and instance != null
 	)
 	_unequip_button.disabled = not _unequip_button.visible
+	if definition != null and definition.is_relic():
+		_equip_button.hide()
+		_use_button.hide()
+		_unequip_button.hide()
 
 
 func _select_inventory_item(instance_id: StringName) -> void:
@@ -340,6 +368,13 @@ func _on_unequip_pressed() -> void:
 func _modifier_text(definition: ItemDefinition) -> String:
 	if definition == null:
 		return ""
+	if definition.is_relic():
+		var registry := RelicEffectRegistry.new()
+		var lines: Array[String] = ["ACTIVE POUR LA RUN", "Effets réactifs :"]
+		for effect in definition.reactive_effects:
+			if effect != null:
+				lines.append("• %s" % registry.summarize(effect))
+		return "\n".join(lines)
 	if definition.is_consumable():
 		match definition.use_effect:
 			ItemDefinition.UseEffect.HEAL_FLAT:

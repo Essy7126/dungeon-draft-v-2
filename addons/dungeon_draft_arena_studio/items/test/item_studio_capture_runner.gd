@@ -92,6 +92,10 @@ func _open_item(studio: ItemStudioMain, item_id: StringName) -> void:
 
 func _configure_case(studio: ItemStudioMain, mode: StringName) -> void:
 	match mode:
+		&"spell", &"stat":
+			studio.open_section(ItemStudioMain.SECTION_EFFECTS)
+		&"consumable":
+			studio.open_section(ItemStudioMain.SECTION_EQUIPMENT)
 		&"creation":
 			studio.creation_dialog.open_dialog()
 		&"publication":

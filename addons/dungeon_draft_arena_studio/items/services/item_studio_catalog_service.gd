@@ -95,7 +95,7 @@ func has_item_id(item_id: StringName, excluded_path := "") -> bool:
 
 
 func reward_eligible(definition: ItemDefinition) -> bool:
-	return definition != null and definition.is_equippable() \
+	return definition != null and (definition.is_equippable() or definition.is_relic()) \
 		and definition.tags.has(FirstRunEquipmentRewardService.POOL_TAG)
 
 

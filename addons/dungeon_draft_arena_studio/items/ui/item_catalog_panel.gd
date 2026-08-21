@@ -5,6 +5,25 @@ extends VBoxContainer
 signal entry_requested(entry: Dictionary)
 signal filters_changed(filters: Dictionary)
 
+const ACCENT_COLOR := Color(0.48, 0.86, 1.0)
+const MUTED_COLOR := Color(0.72, 0.77, 0.84)
+const BADGE_SIZE := 12
+const NEUTRAL_BADGE := Color(0.38, 0.44, 0.52)
+const REWARD_BADGE := Color(0.36, 0.78, 1.0)
+const STATUS_BADGES := {
+	&"DRAFT": Color(0.98, 0.72, 0.28),
+	&"INVALID": Color(1.0, 0.42, 0.36),
+	&"LEGACY": Color(0.62, 0.66, 0.74),
+}
+const STATUS_LABELS := {
+	&"SHARED": "Production",
+	&"DRAFT": "Brouillon",
+	&"LEGACY": "Legacy",
+	&"INVALID": "Invalide",
+}
+
+static var _badge_textures := {}
+
 var search_edit: LineEdit
 var category_filter: OptionButton
 var rarity_filter: OptionButton
@@ -14,32 +33,41 @@ var reward_filter: OptionButton
 var status_filter: OptionButton
 var sort_option: OptionButton
 var item_list: ItemList
+var count_label: Label
+var filters_fold: FoldableContainer
 var _entries: Array[Dictionary] = []
 
 
 func _ready() -> void:
-	custom_minimum_size.x = 250
-	var title := Label.new()
-	title.text = "CATALOGUE DES OBJETS"
-	title.add_theme_font_size_override("font_size", 16)
-	add_child(title)
+	custom_minimum_size.x = 264
+	add_theme_constant_override("separation", 0)
+	var margin := MarginContainer.new()
+	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_bottom", 8)
+	add_child(margin)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	margin.add_child(content)
+	content.add_child(_build_header())
 	search_edit = LineEdit.new()
 	search_edit.placeholder_text = "Nom, item_id ou tag…"
 	search_edit.tooltip_text = "Recherche dans le nom, l’identifiant, les tags et le chemin"
+	search_edit.clear_button_enabled = true
 	search_edit.text_changed.connect(func(_value): _refresh())
-	add_child(search_edit)
-	category_filter = _filter(["Toutes catégories", "Arme", "Armure", "Accessoire", "Consommable", "Parchemin"])
-	rarity_filter = _filter(["Toutes raretés", "common", "uncommon", "rare"])
-	slot_filter = _filter(["Tous emplacements", "Aucun", "Arme", "Armure", "Accessoire"])
-	hero_filter = _filter(["Tous les héros", "Elfe", "Mage", "Guerrier", "Universel"])
-	reward_filter = _filter(["Récompenses : toutes", "Éligibles", "Non éligibles"])
-	status_filter = _filter(["Tous statuts", "Production", "Brouillon", "Legacy", "Invalide"])
-	sort_option = _filter(["Tri : nom", "Tri : item_id", "Tri : rareté", "Tri : catégorie", "Tri : chemin"])
+	content.add_child(search_edit)
+	content.add_child(_build_filters())
 	item_list = ItemList.new()
 	item_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	item_list.custom_minimum_size.y = 260
 	item_list.select_mode = ItemList.SELECT_SINGLE
+	item_list.fixed_icon_size = Vector2i(BADGE_SIZE, BADGE_SIZE)
+	item_list.add_theme_constant_override("v_separation", 7)
+	item_list.add_theme_constant_override("icon_margin", 6)
 	item_list.item_selected.connect(_on_item_selected)
-	add_child(item_list)
+	content.add_child(item_list)
 
 
 func set_entries(entries: Array[Dictionary]) -> void:
@@ -85,13 +113,70 @@ func select_path(path: String) -> bool:
 	return false
 
 
-func _filter(labels: Array[String]) -> OptionButton:
+func _build_header() -> Control:
+	var header := HBoxContainer.new()
+	var title := Label.new()
+	title.text = "CATALOGUE"
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", ACCENT_COLOR)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title)
+	count_label = Label.new()
+	count_label.add_theme_color_override("font_color", MUTED_COLOR)
+	count_label.tooltip_text = "Objets affichés sur objets connus du catalogue"
+	header.add_child(count_label)
+	return header
+
+
+func _build_filters() -> Control:
+	filters_fold = FoldableContainer.new()
+	filters_fold.title = "Filtres"
+	filters_fold.folded = true
+	filters_fold.tooltip_text = "Afficher ou masquer les filtres du catalogue"
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 8)
+	margin.add_theme_constant_override("margin_right", 8)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_bottom", 8)
+	filters_fold.add_child(margin)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 5)
+	margin.add_child(box)
+	category_filter = _filter(box, ["Toutes catégories", "Arme", "Armure", "Accessoire", "Consommable", "Parchemin", "Relique"])
+	rarity_filter = _filter(box, ["Toutes raretés", "common", "uncommon", "rare"])
+	slot_filter = _filter(box, ["Tous emplacements", "Aucun", "Arme", "Armure", "Accessoire"])
+	hero_filter = _filter(box, ["Tous les héros", "Elfe", "Mage", "Guerrier", "Universel"])
+	reward_filter = _filter(box, ["Récompenses : toutes", "Éligibles", "Non éligibles"])
+	status_filter = _filter(box, ["Tous statuts", "Production", "Brouillon", "Legacy", "Invalide"])
+	box.add_child(HSeparator.new())
+	sort_option = _filter(box, ["Tri : nom", "Tri : item_id", "Tri : rareté", "Tri : catégorie", "Tri : chemin"])
+	var reset := Button.new()
+	reset.text = "Réinitialiser les filtres"
+	reset.tooltip_text = "Rétablir la recherche, les filtres et le tri par défaut"
+	reset.pressed.connect(_reset_filters)
+	box.add_child(reset)
+	return filters_fold
+
+
+func _filter(parent: Control, labels: Array[String]) -> OptionButton:
 	var option := OptionButton.new()
 	for label in labels:
 		option.add_item(label)
+	option.fit_to_longest_item = false
+	option.clip_text = true
 	option.item_selected.connect(func(_index): _refresh())
-	add_child(option)
+	parent.add_child(option)
 	return option
+
+
+func _reset_filters() -> void:
+	search_edit.text = ""
+	for option in [
+		category_filter, rarity_filter, slot_filter,
+		hero_filter, reward_filter, status_filter, sort_option,
+	]:
+		(option as OptionButton).select(0)
+	_refresh()
 
 
 func _refresh() -> void:
@@ -104,19 +189,73 @@ func _refresh() -> void:
 			filtered.append(entry)
 	_sort_entries(filtered)
 	for entry in filtered:
-		var badge := ""
-		if StringName(entry.get("status", &"")) == ItemStudioCatalogService.DRAFT_STATUS:
-			badge = " [BROUILLON]"
-		elif StringName(entry.get("status", &"")) == ItemStudioCatalogService.INVALID_STATUS:
-			badge = " [ERREUR]"
-		elif bool(entry.get("reward_eligible", false)):
-			badge = " [RÉCOMPENSE]"
-		var index := item_list.add_item("%s%s\n%s" % [
-			entry.get("display_name", "Objet"), badge, entry.get("item_id", "")
-		])
+		var index := item_list.add_item(str(entry.get("display_name", "Objet")))
+		item_list.set_item_icon(index, _badge_texture(_badge_color(entry)))
 		item_list.set_item_metadata(index, entry)
-		item_list.set_item_tooltip(index, str(entry.get("path", "")))
+		item_list.set_item_tooltip(index, _entry_tooltip(entry))
+	_refresh_counters(filtered.size())
 	filters_changed.emit(snapshot_filters())
+
+
+func _refresh_counters(visible_count: int) -> void:
+	if count_label != null:
+		count_label.text = "%d objet%s" % [visible_count, "s" if visible_count > 1 else ""] \
+			if visible_count == _entries.size() \
+			else "%d / %d" % [visible_count, _entries.size()]
+	if filters_fold == null:
+		return
+	var active := _active_filter_count()
+	filters_fold.title = "Filtres" if active == 0 else "Filtres (%d)" % active
+
+
+func _active_filter_count() -> int:
+	var active := 0
+	for option in [
+		category_filter, rarity_filter, slot_filter,
+		hero_filter, reward_filter, status_filter,
+	]:
+		if option != null and (option as OptionButton).selected > 0:
+			active += 1
+	return active
+
+
+func _badge_color(entry: Dictionary) -> Color:
+	var status := StringName(entry.get("status", &""))
+	if STATUS_BADGES.has(status):
+		return STATUS_BADGES[status]
+	if bool(entry.get("reward_eligible", false)):
+		return REWARD_BADGE
+	return NEUTRAL_BADGE
+
+
+func _entry_tooltip(entry: Dictionary) -> String:
+	var status := StringName(entry.get("status", &""))
+	var lines: Array[String] = []
+	lines.append("%s · %s" % [entry.get("display_name", "Objet"), entry.get("item_id", "")])
+	lines.append("Statut : %s%s" % [
+		STATUS_LABELS.get(status, str(status)),
+		" · éligible aux récompenses" if bool(entry.get("reward_eligible", false)) else "",
+	])
+	lines.append(str(entry.get("path", "")))
+	return "\n".join(lines)
+
+
+static func _badge_texture(color: Color) -> ImageTexture:
+	var key := color.to_html(false)
+	if _badge_textures.has(key):
+		return _badge_textures[key]
+	var image := Image.create_empty(BADGE_SIZE, BADGE_SIZE, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0.0, 0.0, 0.0, 0.0))
+	var center := (BADGE_SIZE - 1) * 0.5
+	var radius := BADGE_SIZE * 0.5 - 1.0
+	for y in BADGE_SIZE:
+		for x in BADGE_SIZE:
+			var coverage := clampf(radius - Vector2(x - center, y - center).length() + 0.5, 0.0, 1.0)
+			if coverage > 0.0:
+				image.set_pixel(x, y, Color(color.r, color.g, color.b, coverage))
+	var texture := ImageTexture.create_from_image(image)
+	_badge_textures[key] = texture
+	return texture
 
 
 func _matches(entry: Dictionary) -> bool:

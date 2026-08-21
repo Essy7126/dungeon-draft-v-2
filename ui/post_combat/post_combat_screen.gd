@@ -251,6 +251,22 @@ func confirm_selected_reward() -> bool:
 		return false
 	if _selected_target_character_id == &"":
 		var selected_option := _find_reward_option(_selected_reward_id)
+		var selected_definition := selected_option.get("definition") as ItemDefinition
+		if selected_definition != null and selected_definition.is_relic():
+			var relic_result := GameManager.confirm_post_combat_equipment(
+				_selected_reward_id, &""
+			)
+			if not relic_result.get("success", false):
+				reward_overlay.resolve_confirmation(false, str(relic_result.get("error", "Acquisition impossible.")))
+				return false
+			_reward_applied = true
+			phase = Phase.COMPLETED
+			phase_title.text = "RELIQUE OBTENUE"
+			status_label.text = "La relique est active pour toute la run."
+			continue_button.disabled = true
+			reward_error.hide()
+			reward_overlay.resolve_confirmation(true)
+			return true
 		var compatible_ids := selected_option.get("compatible_character_ids", []) as Array
 		if not compatible_ids.is_empty():
 			_selected_target_character_id = StringName(compatible_ids[0])
@@ -1001,12 +1017,15 @@ func _make_reward_button(option: Dictionary) -> Button:
 	content.add_child(title)
 	var category := Label.new()
 	category.text = (
-		"%s · %s" % [
-			_category_display_name(definition.category),
-			EquipmentLoadout.get_slot_display_name(definition.equipment_slot),
-		]
-		if definition != null
-		else ""
+		"Relique · Sac partagé"
+		if definition != null and definition.is_relic()
+		else (
+			"%s · %s" % [
+				_category_display_name(definition.category),
+				EquipmentLoadout.get_slot_display_name(definition.equipment_slot),
+			]
+			if definition != null else ""
+		)
 	)
 	category.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	category.add_theme_color_override("font_color", Color(0.64, 0.72, 0.7))
@@ -1075,6 +1094,7 @@ func _select_reward(option: Dictionary) -> void:
 		return
 	_selected_reward_id = StringName(option.get("reward_id", &""))
 	_selected_target_character_id = &""
+	var definition := option.get("definition") as ItemDefinition
 	for reward_id in _reward_buttons:
 		var button := _reward_buttons[reward_id] as Button
 		button.button_pressed = StringName(reward_id) == _selected_reward_id
@@ -1083,11 +1103,20 @@ func _select_reward(option: Dictionary) -> void:
 			if StringName(reward_id) == _selected_reward_id
 			else Color(0.72, 0.74, 0.74)
 		)
-	_build_recipient_buttons(option)
+	if definition != null and definition.is_relic():
+		recipient_panel.hide()
+		comparison_label.text = "Bonus partagé · activation automatique dès l’acquisition."
+	else:
+		_build_recipient_buttons(option)
 	reward_error.hide()
-	status_label.text = "Objet sélectionné — choisissez maintenant son porteur."
-	continue_button.disabled = true
-	_focus_first_compatible_recipient(option)
+	if definition != null and definition.is_relic():
+		status_label.text = "Relique sélectionnée — confirmez son ajout au Sac partagé."
+		continue_button.disabled = false
+		continue_button.grab_focus()
+	else:
+		status_label.text = "Objet sélectionné — choisissez maintenant son porteur."
+		continue_button.disabled = true
+		_focus_first_compatible_recipient(option)
 
 
 func _focus_first_reward() -> void:
@@ -1190,6 +1219,9 @@ func _find_reward_option(reward_id: StringName) -> Dictionary:
 
 
 func _compatible_hero_names(option: Dictionary) -> String:
+	var definition := option.get("definition") as ItemDefinition
+	if definition != null and definition.is_relic():
+		return "bonus partagé de la run"
 	var names: Array[String] = []
 	var compatible_ids := option.get("compatible_character_ids", []) as Array
 	for state in GameManager.get_ordered_character_states():
@@ -1208,6 +1240,8 @@ func _category_display_name(category: int) -> String:
 			return "Armure"
 		ItemDefinition.Category.ACCESSORY:
 			return "Accessoire"
+		ItemDefinition.Category.RELIC:
+			return "Relique"
 		_:
 			return "Objet"
 

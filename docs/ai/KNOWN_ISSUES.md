@@ -142,3 +142,57 @@ régressions introduites par la migration.
 - `res://data/arenas/produced/room_01_forest/` est un bundle incomplet gelé, non canonique et non utilisable pour Tester.
 - Les 187 fichiers Achilles/VFX/outillage non trackés et 10 suppressions Achilles sont un travail externe à préserver.
 - Deux répétitions globales Windows post-correction responsive ont été instables au niveau du processus (timeout en progression puis sortie native `-1`) sans nouvel échec d’assertion observé. Le dernier global complet conserve exactement les 13 historiques ; les suites UI/visuelles affectées sont vertes séparément.
+
+## Achilles 3D character-only / theorycraft — réserves du checkpoint salle II
+
+- **Blocage hérité** : le fallback 2D conservé contient des pixels d’épée et de
+  bouclier déjà incrustés (`LEGACY_2D_BAKED_WEAPON_PIXELS_OBSERVED`). Le backend
+  canonique 3D reste sans équipement séparé, avec `equipment_enabled = false`
+  et `weapon_profile = null`, mais l’exigence visuelle globale sans arme demeure
+  `BLOCKED_LEGACY_2D_FALLBACK_WEAPON_VISUAL_DIVERGENCE`.
+- L’intégration runtime d’une arme n’est pas commencée et reste différée au
+  laboratoire dédié. Les templates épée-bouclier et arc sont des concepts non
+  runtime ; le laboratoire de theorycraft isolé n’active aucun build.
+- Le root motion des actions sources reste `ROOT_MOTION_UNCLASSIFIED`. La
+  neutralisation locale X/Z stabilise la présentation, mais ne constitue pas
+  une classification ou une correction des actions sources.
+- La mesure GPU est `NOT_MEASURED`. La rétention mémoire observée puis stable au
+  second cycle 512 ressemble à un plateau de cache de rendu, sans attribution
+  causale isolée. Les warnings de teardown renderer/RID/ObjectDB restent à
+  surveiller.
+- Seule la salle II a été exercée dans ce checkpoint. Salle I, salle III,
+  transitions normales, retour menu, résultat et smoke complet trois salles
+  restent en pause derrière la gate propriétaire, et ne doivent pas être
+  présentés comme vérifiés.
+- Le choix de présentation reste humain : A = 256, B = 384, C = 512, D = rejet
+  du `SubViewport` pour des sprites prérendus. La recommandation technique 384
+  n’est pas une décision d’activation.
+- Le statut demeure **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
+
+## Achilles 3D — réserves après correction du binding salle II
+
+```text
+previous_report_claimed_3d_runtime = true
+owner_observed_legacy_2d_runtime = true
+claim_was_contradicted = true
+binding_reverified_after_fix = true
+```
+
+- `WRONG_WORKTREE_OR_PROJECT_LAUNCHED` : l’éditeur du propriétaire ouvrait
+  encore `main`, où le corps 2D historique restait directement lié.
+- Le correctif a été publié sur `origin/main` au commit d’intégration
+  `e0b42eb75f2de46d3daa08b8ac30ae1cc354d3da`. Le checkout principal encore
+  ouvert dans l’éditeur reste sur son ancien HEAD tant qu’il n’est pas fermé
+  puis synchronisé ; la revue humaine de la salle II reste requise et le
+  résultat n’est pas qualifié `PRODUCTION`.
+- Seule la vraie salle II est revalidée. Salles I/III, transitions, retour et
+  résultat restent non vérifiés.
+- Le fallback 2D armé n’est pas supprimé : il reste un mode dégradé paresseux
+  autorisé uniquement après une erreur 3D vérifiée. Ses pixels d’épée/bouclier
+  restent une divergence connue.
+- Pendant la preuve nominale salle II, le fallback n’est pas actif et l’ancien
+  corps 2D n’est ni instancié, ni visible, ni en traitement.
+- Le portrait HUD/timeline/post-combat reste volontairement 2D et ne constitue
+  pas une régression du corps de grille.
+- Root motion source non classifié, GPU non mesuré et diagnostics de teardown
+  restent hors de la clôture de ce correctif.

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://test/achilles/achilles_odyssey_3d_runtime_promotion_smoke.gd" id="1_runner"]
+
+[node name="AchillesOdyssey3DRuntimePromotionSmoke" type="Node"]
+script = ExtResource("1_runner")

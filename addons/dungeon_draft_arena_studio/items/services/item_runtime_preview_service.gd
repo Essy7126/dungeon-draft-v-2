@@ -3,6 +3,124 @@ class_name ItemRuntimePreviewService
 extends RefCounted
 
 
+func preview_relic(definition: ItemDefinition) -> Dictionary:
+	if definition == null or not definition.is_relic():
+		return {"ok": false, "error": "La définition n’est pas une relique."}
+	var canonical_fingerprint := ItemFingerprintService.semantic_fingerprint(definition)
+	var isolated := ItemDeepCopyService.new().duplicate_definition(definition)
+	var catalog := _catalog_with(isolated)
+	var inventory := RunInventory.new()
+	if catalog == null or not inventory.initialize(catalog, 4):
+		return {"ok": false, "error": "Catalogue isolé invalide."}
+	var added := inventory.try_add(isolated.item_id, 1)
+	if not added.get("success", false):
+		return {"ok": false, "error": "Relique temporaire impossible à acquérir."}
+	var hero := Unit.new("Héros de test", 0, 100, 10, 6, 3, 20)
+	hero.unit_id = &"relic_preview_hero"
+	hero.grid_pos = Vector2i(1, 1)
+	var enemy := Unit.new("Ennemi de test", 1, 100, 5, 6, 3, 10)
+	enemy.unit_id = &"relic_preview_enemy"
+	enemy.grid_pos = Vector2i(2, 1)
+	var service := RelicRuntimeService.new()
+	var evaluations: Array[Dictionary] = []
+	service.effect_evaluated.connect(func(report: Dictionary): evaluations.append(report.duplicate(true)))
+	if not service.initialize(inventory, catalog, [hero]):
+		return {"ok": false, "error": "Service de reliques isolé invalide."}
+	service.begin_combat([hero, enemy])
+	var scenarios: Array[Dictionary] = [
+		{"id": &"turn_start", "trigger": ItemReactiveEffectData.TRIGGER_TURN_START, "context": {"trigger_hero": hero, "active_unit": hero}},
+		{"id": &"turn_end", "trigger": ItemReactiveEffectData.TRIGGER_TURN_END, "context": {"trigger_hero": hero, "active_unit": hero}},
+		{"id": &"action_resolved", "trigger": ItemReactiveEffectData.TRIGGER_ACTION_RESOLVED, "context": {"trigger_hero": hero, "active_unit": hero, "action_id": &"preview_action"}},
+		{"id": &"ap_after_action", "trigger": ItemReactiveEffectData.TRIGGER_AP_AFTER_ACTION, "context": {"trigger_hero": hero, "active_unit": hero, "action_id": &"preview_action", "ap_before": 6, "ap_after": 4}},
+		{"id": &"move_prepared", "trigger": ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_PREPARED, "context": {"trigger_hero": hero, "active_unit": hero, "action_id": &"preview_move", "voluntary": true, "distance": 3, "interceptable": true}},
+		{"id": &"move_resolved", "trigger": ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_RESOLVED, "context": {"trigger_hero": hero, "active_unit": hero, "action_id": &"preview_move", "voluntary": true, "distance": 3}},
+		{"id": &"enemy_damage", "trigger": ItemReactiveEffectData.TRIGGER_HP_LOST, "context": {"trigger_hero": hero, "active_unit": hero, "damage_source": enemy, "enemy_source": true, "hp_loss": 20, "action_id": &"preview_hit"}},
+		{"id": &"terrain_damage", "trigger": ItemReactiveEffectData.TRIGGER_HP_LOST, "context": {"trigger_hero": hero, "active_unit": hero, "damage_source": null, "enemy_source": false, "hp_loss": 10, "action_id": &"preview_terrain"}},
+		{"id": &"hp_threshold", "trigger": ItemReactiveEffectData.TRIGGER_HP_THRESHOLD_CROSSED, "context": {"trigger_hero": hero, "active_unit": hero, "damage_source": enemy, "enemy_source": true, "hp_loss": 30, "hp_before_ratio": 0.7, "hp_after_ratio": 0.4}},
+		{"id": &"unit_killed", "trigger": ItemReactiveEffectData.TRIGGER_UNIT_KILLED, "context": {"trigger_hero": hero, "active_unit": hero, "killer": hero, "killed_unit": enemy}},
+		{"id": &"adjacent_enemy_turn_end", "trigger": ItemReactiveEffectData.TRIGGER_ADJACENT_ENEMY_TURN_END, "context": {"eligible_heroes": [hero], "active_unit": enemy}},
+	]
+	for scenario in scenarios:
+		var context := (scenario.get("context", {}) as Dictionary).duplicate(false)
+		context["scenario_id"] = scenario.get("id", &"")
+		if scenario.get("id") in [&"enemy_damage", &"terrain_damage", &"hp_threshold"]:
+			hero.current_hp = 40
+		service.process_trigger(StringName(scenario.get("trigger", &"")), context)
+	var move_cost := service.modify_voluntary_transition_cost(hero, Vector2i(1, 1), Vector2i(2, 1), 2)
+	service.end_combat()
+	service.dispose()
+	var frequency_resets := _preview_frequency_resets()
+	return {
+		"ok": true,
+		"scenarios": evaluations,
+		"movement_transition_before": 2,
+		"movement_transition_after": move_cost,
+		"frequency_resets": frequency_resets,
+		"frequency_reset_confirmed": frequency_resets.values().all(func(value): return bool(value)),
+		"canonical_unchanged": canonical_fingerprint == ItemFingerprintService.semantic_fingerprint(definition),
+		"runtime_service": "RelicRuntimeService",
+	}
+
+
+func _preview_frequency_resets() -> Dictionary:
+	var result := {}
+	for frequency in [
+		ItemReactiveEffectData.FREQUENCY_ACTION,
+		ItemReactiveEffectData.FREQUENCY_TURN,
+		ItemReactiveEffectData.FREQUENCY_ROUND,
+		ItemReactiveEffectData.FREQUENCY_COMBAT,
+	]:
+		result[frequency] = _preview_one_frequency_reset(frequency)
+	return result
+
+
+func _preview_one_frequency_reset(frequency: StringName) -> bool:
+	var definition := ItemDefinition.new()
+	definition.item_id = StringName("preview_frequency_%s" % frequency)
+	definition.display_name = "Sonde de fréquence"
+	definition.category = ItemDefinition.Category.RELIC
+	definition.stack_limit = 1
+	var effect := ItemReactiveEffectData.new()
+	effect.trigger_id = ItemReactiveEffectData.TRIGGER_ACTION_RESOLVED
+	effect.target_id = ItemReactiveEffectData.TARGET_TRIGGER_HERO
+	effect.result_id = ItemReactiveEffectData.RESULT_CURRENT_AP
+	effect.value = 1.0
+	effect.frequency_id = frequency
+	definition.reactive_effects = [effect]
+	var catalog := _catalog_with(definition)
+	var inventory := RunInventory.new()
+	if catalog == null or not inventory.initialize(catalog, 1) \
+			or not inventory.try_add(definition.item_id).get("success", false):
+		return false
+	var hero := Unit.new("Sonde", 0, 100, 10, 6, 3, 20)
+	hero.unit_id = StringName("preview_frequency_hero_%s" % frequency)
+	var service := RelicRuntimeService.new()
+	if not service.initialize(inventory, catalog, [hero]):
+		return false
+	service.begin_combat([hero])
+	if frequency == ItemReactiveEffectData.FREQUENCY_TURN:
+		EventBus.turn_started.emit(hero)
+	elif frequency == ItemReactiveEffectData.FREQUENCY_ROUND:
+		EventBus.round_started.emit(1)
+	var first_context := {"trigger_hero": hero, "active_unit": hero, "action_id": &"frequency_action_a"}
+	service.process_trigger(ItemReactiveEffectData.TRIGGER_ACTION_RESOLVED, first_context)
+	service.process_trigger(ItemReactiveEffectData.TRIGGER_ACTION_RESOLVED, first_context)
+	var after_block := hero.current_ap
+	if frequency == ItemReactiveEffectData.FREQUENCY_ACTION:
+		first_context["action_id"] = &"frequency_action_b"
+	elif frequency == ItemReactiveEffectData.FREQUENCY_TURN:
+		EventBus.turn_started.emit(hero)
+	elif frequency == ItemReactiveEffectData.FREQUENCY_ROUND:
+		EventBus.round_started.emit(2)
+	else:
+		service.end_combat()
+		service.begin_combat([hero])
+	service.process_trigger(ItemReactiveEffectData.TRIGGER_ACTION_RESOLVED, first_context)
+	var reset_applied := hero.current_ap == after_block + 1
+	service.dispose()
+	return reset_applied
+
+
 func preview_equipment(unit_data: UnitData, definition: ItemDefinition) -> Dictionary:
 	if unit_data == null or definition == null or not definition.is_equippable():
 		return {"ok": false, "error": "Équipement ou héros incompatible avec la prévisualisation."}

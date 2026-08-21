@@ -164,7 +164,13 @@ func _execute_cast(
 			return
 	if not _can_continue(generation, enemy, target, target != null):
 		return
-	_battle.spell_caster.resolve_cast(context)
+	var report: Dictionary = _battle.spell_caster.resolve_cast(context)
+	EventBus.ap_after_action_changed.emit(
+		enemy, context.ap_before, enemy.current_ap, context.action_id
+	)
+	EventBus.action_resolved.emit(
+		enemy, context.action_id, &"spell", report.duplicate(false)
+	)
 	if not _can_continue(generation, enemy):
 		return
 	if is_instance_valid(_battle.grid_view):
@@ -193,14 +199,26 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 				or not _battle.grid.is_walkable(step)):
 			return
 		previous = step
-	var cost: int = _battle.pathfinder.path_movement_cost(path, enemy)
+	var breakdown: Dictionary = _battle.pathfinder.path_cost_breakdown(path, enemy)
+	var cost := int(breakdown.get("total", 0))
+	var base_cost := int(breakdown.get("unmodified_total", cost))
+	var action_id: StringName = _battle._next_action_id(&"enemy_move")
 	if cost > enemy.current_mp:
 		return
+	EventBus.voluntary_movement_prepared.emit(
+		enemy, path.duplicate(), base_cost, cost, action_id
+	)
 	if not enemy.spend_mp(cost):
 		return
 	await _battle._animate_move(enemy, path)
 	if not _can_continue(generation, enemy):
 		return
+	EventBus.voluntary_movement_resolved.emit(
+		enemy, path.duplicate(), cost, action_id
+	)
+	EventBus.action_resolved.emit(enemy, action_id, &"voluntary_movement", {
+		"distance": maxi(0, path.size() - 1), "paid_mp": cost,
+	})
 
 
 func _execute_attack(
@@ -224,6 +242,8 @@ func _execute_attack(
 			return
 		has_action_visual = view.has_method("has_optional_visual") \
 			and view.has_optional_visual()
+	var action_id: StringName = _battle._next_action_id(&"enemy_basic_attack")
+	var ap_before := enemy.current_ap
 	if not _can_continue(generation, enemy, target, true) \
 			or not enemy.spend_ap(enemy.get_basic_attack_ap_cost()):
 		return
@@ -231,7 +251,8 @@ func _execute_attack(
 		enemy.get_attack(),
 		enemy,
 		Spell.DamageType.PHYSICAL,
-		Spell.Element.NONE
+		Spell.Element.NONE,
+		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id)}
 	)
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(enemy, target)
@@ -246,3 +267,5 @@ func _execute_attack(
 		await _battle._animate_attack(enemy, target)
 		if not _can_continue(generation, enemy):
 			return
+	EventBus.ap_after_action_changed.emit(enemy, ap_before, enemy.current_ap, action_id)
+	EventBus.action_resolved.emit(enemy, action_id, &"basic_attack", {"target": target})

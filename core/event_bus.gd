@@ -88,6 +88,10 @@ signal healing_applied(unit, source, amount)
 signal unit_died(unit)
 signal unit_killed(unit, killer)
 
+# Coût volontaire auto-infligé. Ce fait est distinct des dégâts et ne peut
+# donc jamais être interprété comme une attaque ennemie par les reliques.
+signal health_cost_paid(unit, amount: int, metadata: Dictionary)
+
 # Un impact vient de rendre la cible mortelle, mais le signal `died` n'a pas
 # encore ete emis. Les vues disposent ainsi de la case a regarder avant de
 # verrouiller et lancer leur animation de deces.
@@ -114,6 +118,15 @@ signal status_removed(unit, status_id, source)
 
 # Le tour d'une unité commence (PA/PM rechargés, statuts à traiter).
 signal turn_started(unit)
+signal turn_ended(unit, reason: StringName)
+signal combat_started(units: Array, grid: GridData)
+signal combat_ended(victory: bool)
+signal action_resolved(actor, action_id: StringName, action_kind: StringName, metadata: Dictionary)
+signal ap_after_action_changed(unit, before: int, after: int, action_id: StringName)
+signal voluntary_movement_prepared(
+	unit, path: Array, base_cost: int, effective_cost: int, action_id: StringName
+)
+signal voluntary_movement_resolved(unit, path: Array, paid_cost: int, action_id: StringName)
 signal ability_telegraphed(caster, spell, payload)
 signal telegraph_cleared(caster)
 signal pending_ability_resolved(caster, spell, payload)

@@ -25,6 +25,7 @@ var cast_id: StringName = &""
 
 # --- Coûts calculés par _resolve_costs ---
 var ap_cost: int = 0
+var ap_before: int = 0
 
 # --- État de résolution ---
 var report: Dictionary = {}

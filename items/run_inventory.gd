@@ -63,6 +63,8 @@ func can_accept(definition_id: StringName, quantity: int = 1) -> bool:
 	var definition := _definition(definition_id)
 	if definition == null or quantity <= 0:
 		return false
+	if definition.is_relic() and (quantity != 1 or contains_definition(definition_id)):
+		return false
 	var remaining := quantity
 	if definition.get_stack_limit() > 1:
 		for instance in _slots:
@@ -80,6 +82,8 @@ func try_add(definition_id: StringName, quantity: int = 1) -> Dictionary:
 		return _failure("ITEM_DEFINITION_UNKNOWN", "Objet inconnu.")
 	if quantity <= 0:
 		return _failure("QUANTITY_INVALID", "Quantité invalide.")
+	if definition.is_relic() and contains_definition(definition_id):
+		return _failure("RELIC_ALREADY_OWNED", "Cette relique unique est déjà possédée.")
 	if not can_accept(definition_id, quantity):
 		return _failure("INVENTORY_FULL", "L’inventaire est plein.")
 	var remaining := quantity
@@ -137,6 +141,10 @@ func try_insert_instance(
 	if not _is_instance_valid_for_catalog(instance):
 		return false
 	if find_slot(instance.instance_id) >= 0:
+		return false
+	var definition := _definition(instance.definition_id)
+	if definition != null and definition.is_relic() \
+			and contains_definition(instance.definition_id):
 		return false
 	var slot_index := preferred_slot
 	if slot_index < 0 or slot_index >= _slots.size() or _slots[slot_index] != null:
@@ -199,6 +207,7 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 	var restored: Array[ItemInstance] = []
 	restored.resize(capacity)
 	var seen_ids := {}
+	var seen_relic_definitions := {}
 	for slot_index in range(saved_slots.size()):
 		var value = saved_slots[slot_index]
 		if value == null:
@@ -208,6 +217,11 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		var instance := ItemInstance.from_snapshot(value as Dictionary, _catalog)
 		if instance == null or seen_ids.has(instance.instance_id):
 			return false
+		var definition := _definition(instance.definition_id)
+		if definition != null and definition.is_relic():
+			if seen_relic_definitions.has(instance.definition_id):
+				return false
+			seen_relic_definitions[instance.definition_id] = true
 		seen_ids[instance.instance_id] = true
 		restored[slot_index] = instance
 	_slots = restored

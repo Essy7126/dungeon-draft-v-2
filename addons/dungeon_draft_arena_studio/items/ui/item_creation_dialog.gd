@@ -19,7 +19,7 @@ func setup(p_catalog: ItemStudioCatalogService) -> void:
 
 func _ready() -> void:
 	title = "Nouvel objet"
-	ok_button_text = "Créer la working copy"
+	ok_button_text = "Créer l’objet"
 	min_size = Vector2i(520, 360)
 	max_size = Vector2i(560, 460)
 	var root := VBoxContainer.new()
@@ -27,7 +27,7 @@ func _ready() -> void:
 	add_child(root)
 	root.add_child(_label("1. Modèle"))
 	template_option = OptionButton.new()
-	for label in ["Arme", "Armure", "Accessoire", "Consommable", "Parchemin"]:
+	for label in ["Arme", "Armure", "Accessoire", "Consommable", "Parchemin", "Relique"]:
 		template_option.add_item(label)
 	root.add_child(template_option)
 	root.add_child(_label("2. Nom"))
@@ -35,7 +35,7 @@ func _ready() -> void:
 	name_edit.placeholder_text = "Nom français de l’objet"
 	name_edit.text_changed.connect(_update_proposal)
 	root.add_child(name_edit)
-	root.add_child(_label("3. item_id proposé"))
+	root.add_child(_label("3. Identifiant technique (rempli automatiquement)"))
 	id_edit = LineEdit.new()
 	root.add_child(id_edit)
 	root.add_child(_label("4. Compatibilité"))
@@ -43,6 +43,7 @@ func _ready() -> void:
 	for label in ["Tous", "Elfe", "Mage", "Guerrier"]:
 		compatibility_option.add_item(label)
 	root.add_child(compatibility_option)
+	template_option.item_selected.connect(_on_template_selected)
 	path_label = Label.new()
 	path_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(path_label)
@@ -52,7 +53,20 @@ func _ready() -> void:
 func open_dialog() -> void:
 	name_edit.text = "Nouvel objet"
 	_update_proposal(name_edit.text)
+	_on_template_selected(template_option.selected)
 	popup_centered(Vector2i(520, 420))
+
+
+func _on_template_selected(index: int) -> void:
+	var is_relic := index == ItemDefinition.Category.RELIC
+	compatibility_option.disabled = is_relic
+	if is_relic:
+		compatibility_option.select(0)
+	compatibility_option.tooltip_text = (
+		"Les reliques sont des bonus partagés et ne demandent aucun héros cible."
+		if is_relic
+		else "Limite éventuellement l’objet à un héros."
+	)
 
 
 func _update_proposal(value: String) -> void:
@@ -67,7 +81,7 @@ func _confirm() -> void:
 	if item_id == &"" or name_edit.text.strip_edges().is_empty():
 		return
 	var compatible: Array[StringName] = []
-	if compatibility_option.selected > 0:
+	if template_option.selected != ItemDefinition.Category.RELIC and compatibility_option.selected > 0:
 		compatible.append([&"elf", &"mage", &"warrior"][compatibility_option.selected - 1])
 	create_requested.emit({
 		"template": template_option.selected,

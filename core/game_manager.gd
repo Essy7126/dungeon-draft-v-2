@@ -83,6 +83,7 @@ var item_catalog: ItemCatalog = null
 var run_inventory: RunInventory = null
 var _equipment_service := EquipmentService.new()
 var _item_use_service := ItemUseService.new()
+var _relic_runtime_service := RelicRuntimeService.new()
 var _next_run_data: RunData = null
 var _next_run_start_room_index := 0
 var _active_room_flow_mode: int = RunData.RoomFlowMode.SINGLE_ENCOUNTER
@@ -440,10 +441,11 @@ func _initialize_inventory_state(run_data: RunData = null) -> bool:
 		if not result.get("success", false):
 			_clear_inventory_state()
 			return false
-	return true
+	return _relic_runtime_service.initialize(run_inventory, item_catalog, heroes)
 
 
 func _clear_inventory_state() -> void:
+	_relic_runtime_service.dispose()
 	_disconnect_inventory_signal()
 	if run_inventory != null:
 		run_inventory.clear()
@@ -540,6 +542,10 @@ func get_run_inventory() -> RunInventory:
 
 func get_item_catalog() -> ItemCatalog:
 	return item_catalog
+
+
+func get_relic_runtime_service() -> RelicRuntimeService:
+	return _relic_runtime_service
 
 
 func get_active_run_data() -> RunData:
@@ -686,6 +692,8 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 			return false
 	if candidate_reward_service != null:
 		_equipment_reward_service = candidate_reward_service
+	if not _relic_runtime_service.initialize(run_inventory, item_catalog, heroes):
+		return false
 	inventory_changed.emit(run_inventory.to_snapshot())
 	return true
 

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/achilles/3d/achilles_legacy_2d_backend.gd" id="1_backend"]
+[ext_resource type="PackedScene" path="res://assets/characters/Achilles/AchillesVisual2D.tscn" id="2_visual"]
+
+[node name="AchillesLegacy2DBackend" type="Node2D"]
+process_mode = 4
+visible = false
+script = ExtResource("1_backend")
+
+[node name="AchillesVisual2D" parent="." instance=ExtResource("2_visual")]

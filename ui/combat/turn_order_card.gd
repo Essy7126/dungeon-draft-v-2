@@ -54,7 +54,12 @@ func _configure_portrait() -> void:
 
 
 func _get_fallback_texture() -> Texture2D:
-	if unit == null or unit.sprite_frames == null:
+	if unit == null:
+		return null
+	var hud_theme := CharacterHUDThemeCatalog.resolve_refined(unit)
+	if hud_theme != null and hud_theme.portrait_texture != null:
+		return hud_theme.portrait_texture
+	if unit.sprite_frames == null:
 		return null
 	var animation := StringName(unit.idle_animation)
 	if not unit.sprite_frames.has_animation(animation):

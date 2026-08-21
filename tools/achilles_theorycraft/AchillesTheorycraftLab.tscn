@@ -1,0 +1,164 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tools/achilles_theorycraft/achilles_theorycraft_lab.gd" id="1_lab"]
+
+[node name="AchillesTheorycraftLab" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lab")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.045, 0.07, 1)
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RootVBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/RootVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Margin/RootVBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Achilles Theorycraft Lab - isolated design review"
+
+[node name="RefreshButton" type="Button" parent="Margin/RootVBox/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Refresh live snapshot"
+
+[node name="ExportButton" type="Button" parent="Margin/RootVBox/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Export deterministic review"
+
+[node name="StatusLabel" type="Label" parent="Margin/RootVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Loading authoritative Odyssey Resources..."
+
+[node name="Selectors" type="HBoxContainer" parent="Margin/RootVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LabelA" type="Label" parent="Margin/RootVBox/Selectors"]
+layout_mode = 2
+text = "A"
+
+[node name="BuildA" type="OptionButton" parent="Margin/RootVBox/Selectors"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabelB" type="Label" parent="Margin/RootVBox/Selectors"]
+layout_mode = 2
+text = "B"
+
+[node name="BuildB" type="OptionButton" parent="Margin/RootVBox/Selectors"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabelC" type="Label" parent="Margin/RootVBox/Selectors"]
+layout_mode = 2
+text = "C"
+
+[node name="BuildC" type="OptionButton" parent="Margin/RootVBox/Selectors"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContextLabel" type="Label" parent="Margin/RootVBox/Selectors"]
+layout_mode = 2
+text = "Context"
+
+[node name="ContextSelector" type="OptionButton" parent="Margin/RootVBox/Selectors"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainSplit" type="HSplitContainer" parent="Margin/RootVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 380
+
+[node name="SnapshotPanel" type="VBoxContainer" parent="Margin/RootVBox/MainSplit"]
+layout_mode = 2
+
+[node name="SnapshotTitle" type="Label" parent="Margin/RootVBox/MainSplit/SnapshotPanel"]
+layout_mode = 2
+text = "Snapshot / provenance"
+
+[node name="SnapshotView" type="TextEdit" parent="Margin/RootVBox/MainSplit/SnapshotPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+size_flags_vertical = 3
+editable = false
+wrap_mode = 0
+
+[node name="Analysis" type="VBoxContainer" parent="Margin/RootVBox/MainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Tabs" type="TabContainer" parent="Margin/RootVBox/MainSplit/Analysis"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EconomyView" type="TextEdit" parent="Margin/RootVBox/MainSplit/Analysis/Tabs"]
+unique_name_in_owner = true
+layout_mode = 2
+editable = false
+wrap_mode = 0
+
+[node name="DeltasView" type="TextEdit" parent="Margin/RootVBox/MainSplit/Analysis/Tabs"]
+unique_name_in_owner = true
+layout_mode = 2
+editable = false
+wrap_mode = 0
+
+[node name="AlertsView" type="TextEdit" parent="Margin/RootVBox/MainSplit/Analysis/Tabs"]
+unique_name_in_owner = true
+layout_mode = 2
+editable = false
+wrap_mode = 0
+
+[node name="DraftLabel" type="Label" parent="Margin/RootVBox/MainSplit/Analysis"]
+layout_mode = 2
+text = "Draft JSON (DRAFT + isolation tags required)"
+
+[node name="DraftEditor" type="TextEdit" parent="Margin/RootVBox/MainSplit/Analysis"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+wrap_mode = 0
+
+[node name="ApplyDraftButton" type="Button" parent="Margin/RootVBox/MainSplit/Analysis"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Apply and save draft under user://theorycraft/achilles"

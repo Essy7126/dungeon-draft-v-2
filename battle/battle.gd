@@ -96,6 +96,8 @@ var _evolution_processing := false
 var _evolution_request_counter := 0
 var _trigger_sequence := 0
 var _active_trigger_sequence := 0
+var _action_sequence := 0
+var _turn_end_committed := false
 var _battle_outcome_waiting := false
 var _waiting_outcome_victory := false
 var _turn_start_deferred_for_evolution := false
@@ -232,6 +234,11 @@ func _setup_logic() -> void:
 		room_data, self, grid_cols, grid_rows
 	)
 	pathfinder = Pathfinder.new(grid)
+	var relic_service := GameManager.get_relic_runtime_service()
+	if relic_service != null:
+		pathfinder.set_voluntary_cost_modifier(
+			Callable(relic_service, "modify_voluntary_transition_cost")
+		)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
 	var encounter_definition: EncounterDefinition = (
@@ -867,6 +874,7 @@ func _launch_combat() -> void:
 	turn_queue.round_started.connect(_on_round_started)
 	if is_instance_valid(turn_order_timeline):
 		turn_order_timeline.bind_queue(turn_queue)
+	EventBus.combat_started.emit(units.duplicate(), grid)
 	turn_queue.start()
 
 # ============================================================
@@ -888,6 +896,7 @@ func _on_turn_started(unit: Unit) -> void:
 		_process_evolution_queue_at_safe_point.call_deferred()
 		return
 	var lifecycle_generation := _lifecycle_generation
+	_turn_end_committed = false
 
 	# Un ciblage appartient exclusivement au personnage qui l'a ouvert. Il est
 	# annule avant de remplacer le HUD, y compris lors d'un passage allie -> allie.
@@ -901,19 +910,16 @@ func _on_turn_started(unit: Unit) -> void:
 
 	# 3. Mort des dégâts (terrain ou poison) en début de tour ?
 	if not unit.is_alive:
-		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 		_end_active_turn_if_dead(unit)
 		return
 
 	# 4. Stun : l'unité saute son tour.
 	if is_stunned:
 		DebugLogger.debug(DebugLogger.LogCategory.TURN, "%s est stun, passe son tour" % unit.unit_name)
-		print("%s est stun et passe son tour." % unit.unit_name)
-		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 		if not await _wait_battle_seconds_safe(0.6, lifecycle_generation):
 			return
 		if not _battle_over and is_instance_valid(turn_queue):
-			turn_queue.advance()
+			_finish_active_turn(&"stunned")
 		return
 
 	# 5. Déroulement normal.
@@ -928,9 +934,8 @@ func _on_turn_started(unit: Unit) -> void:
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(unit):
 			return
-		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 		if not _battle_over:
-			turn_queue.advance()
+			_finish_active_turn(&"enemy_completed")
 	else:
 		turn_state.begin_player_turn()
 		action_bar.set_player_controls_enabled(true)
@@ -956,6 +961,19 @@ func _end_active_turn_if_dead(unit: Unit) -> bool:
 	if is_instance_valid(action_bar):
 		action_bar.set_player_controls_enabled(false)
 		action_bar.set_active_mode("")
+	_finish_active_turn(&"dead")
+	return true
+
+
+func _finish_active_turn(reason: StringName) -> bool:
+	if _turn_end_committed or turn_queue == null or _battle_over or _closing:
+		return false
+	var unit := turn_queue.get_current_unit() as Unit
+	if unit == null:
+		return false
+	_turn_end_committed = true
+	ArenaTerrainStatusTimingService.resolve_activation_end(unit)
+	EventBus.turn_ended.emit(unit, reason)
 	turn_queue.advance()
 	return true
 
@@ -1027,10 +1045,7 @@ func _on_end_turn_pressed() -> void:
 		return
 	_clear_movement_path_preview()
 	grid_view.clear_highlights()
-	var unit = turn_queue.get_current_unit()
-	if unit != null:
-		ArenaTerrainStatusTimingService.resolve_activation_end(unit)
-	turn_queue.advance()
+	_finish_active_turn(&"player_requested")
 
 func _refresh_mode_button() -> void:
 	match turn_state.current:
@@ -1061,6 +1076,21 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 		if inspect_panel != null:
 			inspect_panel.show_cell(cell, grid, terrain_effects, true)
 		return
+	if turn_state.current == TurnState.State.MOVE:
+		var active_unit = turn_queue.get_current_unit() if turn_queue != null else null
+		var reachable_cells: Array = []
+		if active_unit != null:
+			reachable_cells = pathfinder.get_reachable(
+				active_unit.grid_pos,
+				active_unit.current_mp,
+				active_unit,
+			)
+		if not reachable_cells.has(cell):
+			turn_state.on_cancel()
+			_refresh_mode_button()
+			if inspect_panel != null:
+				inspect_panel.show_cell(cell, grid, terrain_effects, true)
+			return
 	turn_state.on_cell_clicked(cell)
 
 
@@ -1183,7 +1213,28 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	var path = pathfinder.find_path(unit.grid_pos, cell, unit)
 	if path.size() < 2:
 		return
-	if not unit.spend_mp(pathfinder.path_movement_cost(path, unit)):
+	var cost_breakdown := pathfinder.path_cost_breakdown(path, unit)
+	var paid_cost := int(cost_breakdown.get("total", 0))
+	var base_cost := int(cost_breakdown.get("unmodified_total", paid_cost))
+	var action_id := _next_action_id(&"move")
+	var relic_service := GameManager.get_relic_runtime_service()
+	if relic_service != null and relic_service.try_intercept(
+			unit,
+			ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_PREPARED,
+			{
+				"path": path.duplicate(), "distance": maxi(0, path.size() - 1),
+				"voluntary": true, "base_cost": base_cost,
+				"effective_cost": paid_cost, "action_id": action_id,
+			}
+		):
+		turn_state.on_cancel()
+		_clear_movement_path_preview()
+		grid_view.clear_highlights()
+		return
+	EventBus.voluntary_movement_prepared.emit(
+		unit, path.duplicate(), base_cost, paid_cost, action_id
+	)
+	if not unit.spend_mp(paid_cost):
 		return
 	turn_state.begin_animating()
 	var lifecycle_generation := _lifecycle_generation
@@ -1192,6 +1243,12 @@ func _on_request_move_to(cell: Vector2i) -> void:
 		return
 	if _end_active_turn_if_dead(unit):
 		return
+	EventBus.voluntary_movement_resolved.emit(
+		unit, path.duplicate(), paid_cost, action_id
+	)
+	EventBus.action_resolved.emit(unit, action_id, &"voluntary_movement", {
+		"distance": maxi(0, path.size() - 1), "paid_mp": paid_cost,
+	})
 	turn_state.end_animating()
 	action_bar.update_info(unit)
 
@@ -1303,6 +1360,8 @@ func _on_request_attack(cell: Vector2i) -> void:
 			return
 		has_action_visual = view.has_method("has_optional_visual") \
 			and view.has_optional_visual()
+	var action_id := _next_action_id(&"basic_attack")
+	var ap_before: int = unit.current_ap
 	if not unit.spend_ap(ap_cost):
 		turn_state.end_animating()
 		return
@@ -1310,7 +1369,8 @@ func _on_request_attack(cell: Vector2i) -> void:
 		unit.get_attack(),
 		unit,
 		Spell.DamageType.PHYSICAL,
-		Spell.Element.NONE)
+		Spell.Element.NONE,
+		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id)})
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(unit, target)
 	if not _is_operation_current(lifecycle_generation):
@@ -1324,6 +1384,8 @@ func _on_request_attack(cell: Vector2i) -> void:
 		return
 	if _end_active_turn_if_dead(unit):
 		return
+	EventBus.ap_after_action_changed.emit(unit, ap_before, unit.current_ap, action_id)
+	EventBus.action_resolved.emit(unit, action_id, &"basic_attack", {"target": target})
 	turn_state.end_animating()
 	action_bar.update_info(unit)
 
@@ -1438,6 +1500,13 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 	if is_instance_valid(action_bar):
 		action_bar.update_info(unit)
 		action_bar.set_active_mode("")
+	var action_id := StringName(report.get("action_id", &""))
+	if action_id != &"":
+		EventBus.ap_after_action_changed.emit(
+			unit, int(report.get("ap_before", unit.current_ap)),
+			int(report.get("ap_after", unit.current_ap)), action_id
+		)
+		EventBus.action_resolved.emit(unit, action_id, &"spell", report.duplicate(false))
 	_spell_resolution_pending = false
 	if _evolution_queue.has_pending():
 		await _process_evolution_queue_at_safe_point()
@@ -1654,7 +1723,6 @@ func _begin_battle_shutdown() -> void:
 func _on_round_started(number: int) -> void:
 	DebugLogger.set_turn(number)
 	DebugLogger.info(DebugLogger.LogCategory.TURN, "Round %d" % number)
-	print("\n========== ROUND %d ==========" % number)
 	if terrain_effects != null and terrain_effects.runtime_service != null:
 		terrain_effects.runtime_service.configure_resolution_context(0, number)
 	if terrain_effects != null and number > 1:
@@ -1710,6 +1778,7 @@ func _end_battle(victory: bool) -> void:
 		_waiting_outcome_victory = victory
 		return
 	_battle_over = true
+	EventBus.combat_ended.emit(victory)
 	_begin_battle_shutdown()
 	if is_instance_valid(grid_view):
 		grid_view.clear_highlights()
@@ -1720,6 +1789,11 @@ func _end_battle(victory: bool) -> void:
 	# Le délai est possédé par le GameManager persistant. La Battle peut donc
 	# quitter l'arbre sans qu'une coroutine locale ne tente de reprendre.
 	GameManager.schedule_battle_outcome(victory, END_SCREEN_DELAY)
+
+
+func _next_action_id(kind: StringName) -> StringName:
+	_action_sequence += 1
+	return StringName("%s_%06d" % [kind, _action_sequence])
 
 func _show_end_screen(victory: bool) -> void:
 	if victory:

@@ -543,6 +543,7 @@ func begin_cast(
 	ctx.cell = cell
 	ctx.grid = _grid
 	ctx.terrain = _terrain
+	ctx.ap_before = caster.current_ap if caster != null else 0
 	if caster == null or spell == null:
 		ctx.failed = true
 		ctx.report = _failed_report(caster, spell, cell, "arguments")
@@ -658,6 +659,8 @@ func _resolve_targets(ctx: CastContext) -> void:
 			)
 	ctx.report = {
 		"caster": ctx.caster, "spell": ctx.spell, "cell": ctx.cell,
+		"action_id": ctx.action_id, "ap_before": ctx.ap_before,
+		"ap_after": ctx.caster.current_ap,
 		"affected_units": [], "damaged_enemies": [], "healed_units": [], "shielded_units": [],
 		"healing_by_unit": {},
 		"hp_damage_total": 0, "shield_absorbed_total": 0,

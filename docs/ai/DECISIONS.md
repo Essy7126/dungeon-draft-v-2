@@ -145,3 +145,64 @@ vérification à un commit.
 - Production et changement de contexte sont transactionnels avec rollback complet.
 - Un bundle incomplet non référencé peut être archivé seulement sur action explicite ; aucune suppression automatique.
 - Le graphe est différé, mesuré et utilise WeakRef quand une Resource mémoire doit rester accessible.
+
+## ACHILLES_3D_CHARACTER_AND_THEORYCRAFT_FOUNDATION_V1 — frontière du candidat
+
+- Date : 2026-08-20
+- Branche : `integration/achilles-3d-character-theorycraft-v1`
+- Statut : **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**
+
+Le backend canonique 3D d’Achille est strictement `character-only`. Il n’instancie
+aucun équipement séparé et son profil accepte explicitement
+`equipment_enabled = false` et `weapon_profile = null`. L’intégration runtime
+d’une arme reste différée à un laboratoire dédié ; elle ne fait pas partie de
+ce candidat.
+
+Le laboratoire `tools/achilles_theorycraft` est isolé du runtime de production.
+Il compare des concepts sans muter les Resources sources et n’active aucun
+build. Les templates épée-bouclier et arc sont
+`DESIGN_CONCEPT_ONLY`/non runtime : ils ne constituent ni assets d’équipement,
+ni choix jouables, ni promesse d’intégration.
+
+La validation visuelle s’arrête à la salle II réelle de L’Odyssée. L’extension
+aux salles I et III, aux transitions et au résultat reste en pause jusqu’à la
+décision humaine obligatoire : A = 256, B = 384, C = 512, D = rejet du
+`SubViewport` au profit de sprites prérendus. La préférence technique 384 est
+une recommandation non décisionnelle et ne remplace pas ce choix.
+
+La source 3D canonique et son backend sont sans arme observée. Le fallback 2D
+historique doit cependant être conservé et contient des pixels d’épée et de
+bouclier incrustés. Cette divergence héritée bloque toute affirmation globale
+« Achille sans arme » tant qu’une décision dédiée ne l’a pas résolue.
+
+## ACHILLES_3D_ODYSSEY_RUNTIME_BINDING_FIX_V1 — décision amendée
+
+- Date : 2026-08-20
+- Décision propriétaire conservée : **B — SubViewport 384 × 384**
+- Branche : `fix/achilles-odyssey-runtime-3d-binding-v1`
+- Base : `7bc3d69c0f434e8038bbb199300a96baae8443a4`
+- Correctif runtime : `59464dbc200c2168e2757c76c414b6149abebee4`
+- Statut post-publication : **PUBLISHED_ON_ORIGIN_MAIN — OWNER_REVIEW_PENDING — NOT_PRODUCTION**
+- Commit d’intégration publié : `e0b42eb75f2de46d3daa08b8ac30ae1cc354d3da`
+
+```text
+previous_report_claimed_3d_runtime = true
+owner_observed_legacy_2d_runtime = true
+claim_was_contradicted = true
+binding_reverified_after_fix = true
+```
+
+Le propriétaire lançait un autre checkout, où le corps 2D restait directement
+lié. L’ancienne preuve trois salles est donc retirée comme preuve de promotion
+du runtime réellement observé.
+
+Le binding nominal demande `VIEWPORT_3D` et le GLB canonique `character-only`,
+sans équipement séparé. Le fallback `LEGACY_2D_ON_VERIFIED_ERROR` est autorisé
+uniquement après une erreur 3D vérifiée ; il est créé paresseusement,
+journalisé et supprimé dès que le backend 3D redevient actif. Il ne doit jamais
+apparaître pendant le warm-up nominal.
+
+Le portrait 2D reste une ressource d’interface. Cette décision ne modifie ni
+gameplay, ni statistiques, ni sorts, ni armes, ni theorycraft. La preuve
+d’acceptation actuelle couvre uniquement la vraie salle II ; salles I/III,
+transitions et résultat restent non vérifiés jusqu’à la confirmation humaine.
