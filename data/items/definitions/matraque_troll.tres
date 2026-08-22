@@ -1,30 +1,30 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bry7kshi1mnnl"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Texture2D" uid="uid://drqquytypajl8" path="res://data/items/catalogs/matraque_troll.png" id="1_1bqfe"]
-[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_qqqo5"]
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_oum56"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_behi8"]
-[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="5_tcucl"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="6_8cqih"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/matraque_troll.png" id="1_tyh8t"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_d081u"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_3a1e5"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_s0p7v"]
+[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="5_6bnum"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="6_nu2vt"]
 
-[sub_resource type="Resource" id="Resource_22li6"]
-script = ExtResource("5_tcucl")
+[sub_resource type="Resource" id="Resource_etwgy"]
+script = ExtResource("5_6bnum")
 damage_percent = 0.1
 damage_type_filter = 0
 push_bonus = 1
 modifier_name = "Impact du troll"
 
 [resource]
-script = ExtResource("3_oum56")
+script = ExtResource("3_3a1e5")
 item_id = &"matraque_troll"
 display_name = "Matraque du troll"
 description = "+10 % de dégâts physiques et +1 case aux poussées produites par les sorts."
-icon = ExtResource("1_1bqfe")
-card_texture = ExtResource("1_1bqfe")
+icon = ExtResource("1_tyh8t")
+card_texture = ExtResource("1_tyh8t")
 rarity = &"rare"
-tags = Array[StringName]([&"weapon", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"weapon"])
 reward_fx_profile = &"nature"
 category = 0
 equipment_slot = 0
 compatible_character_ids = Array[StringName]([&"warrior"])
-spell_modifiers = Array[ExtResource("4_behi8")]([SubResource("Resource_22li6")])
+spell_modifiers = Array[ExtResource("4_s0p7v")]([SubResource("Resource_etwgy")])

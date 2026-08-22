@@ -392,7 +392,7 @@ func _apply_result(
 				changed = changed or before_hp != target.current_hp
 			ItemReactiveEffectData.RESULT_HEAL_MAX_HP_PERCENT:
 				var before_hp := target.current_hp
-				target.heal(maxi(0, int(round(target.max_hp.get_int() * effect.value))), hero, _result_metadata(instance, effect_index))
+				target.heal(maxi(0, int(ceil(target.max_hp.get_int() * effect.value))), hero, _result_metadata(instance, effect_index))
 				changed = changed or before_hp != target.current_hp
 			ItemReactiveEffectData.RESULT_PAY_HP_FLAT, ItemReactiveEffectData.RESULT_PAY_HP_PERCENT:
 				var cost := maxi(0, amount) if effect.result_id == ItemReactiveEffectData.RESULT_PAY_HP_FLAT \

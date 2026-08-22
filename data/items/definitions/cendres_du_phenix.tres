@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_v8ash"]
+[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="2_pbyy5"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_48b47"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_e33ch"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_sjxk1"]
+
+[sub_resource type="Resource" id="Resource_fpu7s"]
+script = ExtResource("2_pbyy5")
+condition_id = &"enemy_source_required"
+
+[sub_resource type="Resource" id="Resource_8w5s4"]
+script = ExtResource("2_pbyy5")
+condition_id = &"real_hp_loss_positive"
+
+[sub_resource type="Resource" id="Resource_ow65d"]
+script = ExtResource("1_v8ash")
+trigger_id = &"hp_threshold_crossed"
+conditions = Array[ExtResource("2_pbyy5")]([SubResource("Resource_fpu7s"), SubResource("Resource_8w5s4")])
+result_id = &"heal_max_hp_percent"
+value = 0.15
+threshold = 0.3
+frequency_id = &"per_combat"
+
+[resource]
+script = ExtResource("3_48b47")
+item_id = &"cendres_du_phenix"
+display_name = "Cendres du Phénix"
+description = "Une fois par combat, si une perte de PV ennemie te fait passer à 30 % de tes PV maximum ou moins sans te tuer, tu récupères immédiatement 15 % de tes PV maximum, arrondis au supérieur."
+tags = Array[StringName]([&"first_run_equipment_reward"])
+category = 5
+reactive_effects = Array[ExtResource("1_v8ash")]([SubResource("Resource_ow65d")])

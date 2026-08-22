@@ -1,31 +1,32 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bkaieh35rlklj"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_5rrsu"]
-[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
-[ext_resource type="Texture2D" uid="uid://bkalvi4v0mfl1" path="res://data/items/catalogs/collier_sages.png" id="4_icon"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/collier_sages.png" id="1_y07mb"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_8apdc"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_y0k6f"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_qyprs"]
+[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="5_grxbo"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="6_w6jwo"]
 
-[sub_resource type="Resource" id="Spell_support"]
-script = ExtResource("3_spell")
+[sub_resource type="Resource" id="Resource_xl81j"]
+script = ExtResource("5_grxbo")
 healing_and_shield_percent = 0.15
 modifier_name = "Sagesse protectrice"
 
-[sub_resource type="Resource" id="Stat_magic"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_hx3rw"]
+script = ExtResource("6_w6jwo")
 stat_id = &"resist_magique"
 value = 25.0
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_y0k6f")
 item_id = &"collier_sages"
 display_name = "Collier des sages"
 description = "+25 résistance magique et +15 % puissance des soins et boucliers."
-icon = ExtResource("4_icon")
-card_texture = ExtResource("4_icon")
+icon = ExtResource("1_y07mb")
+card_texture = ExtResource("1_y07mb")
 rarity = &"rare"
-tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"accessory"])
 reward_fx_profile = &"arcane"
 equipment_slot = 2
-stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_magic")])
-spell_modifiers = Array[ExtResource("3_5rrsu")]([SubResource("Spell_support")])
+stat_modifiers = Array[ExtResource("6_w6jwo")]([SubResource("Resource_hx3rw")])
+spell_modifiers = Array[ExtResource("4_qyprs")]([SubResource("Resource_xl81j")])

@@ -1,35 +1,36 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cphn7jxff3jrc"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="2_spell"]
-[ext_resource type="Texture2D" uid="uid://xjuye2bmx20q" path="res://data/items/catalogs/hache_executeur.png" id="3_icon"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_uy8gm"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_fxr26"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/hache_executeur.png" id="1_8owb2"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_loxp1"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_kie1n"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_pmrqm"]
+[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="5_vkdhc"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="6_5mkvs"]
 
-[sub_resource type="Resource" id="Spell_physical"]
-script = ExtResource("2_spell")
+[sub_resource type="Resource" id="Resource_iamco"]
+script = ExtResource("5_vkdhc")
 damage_percent = 0.15
 damage_type_filter = 0
 modifier_name = "Fil de l'exécuteur"
 
-[sub_resource type="Resource" id="Spell_execute"]
-script = ExtResource("2_spell")
+[sub_resource type="Resource" id="Resource_wnfwk"]
+script = ExtResource("5_vkdhc")
 damage_percent = 0.25
 damage_type_filter = 0
 target_hp_at_or_below = 0.35
 modifier_name = "Exécution conditionnelle"
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_kie1n")
 item_id = &"hache_executeur"
 display_name = "Hache de l’exécuteur"
 description = "+15 % de dégâts physiques, puis +25 % contre les cibles à 35 % de PV ou moins."
-icon = ExtResource("3_icon")
-card_texture = ExtResource("3_icon")
+icon = ExtResource("1_8owb2")
+card_texture = ExtResource("1_8owb2")
 rarity = &"rare"
-tags = Array[StringName]([&"weapon", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"weapon"])
 reward_fx_profile = &"steel"
 category = 0
 equipment_slot = 0
 compatible_character_ids = Array[StringName]([&"warrior"])
-spell_modifiers = Array[ExtResource("3_uy8gm")]([SubResource("Spell_physical"), SubResource("Spell_execute")])
+spell_modifiers = Array[ExtResource("4_pmrqm")]([SubResource("Resource_iamco"), SubResource("Resource_wnfwk")])

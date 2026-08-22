@@ -1,33 +1,34 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://biprq5gqulhgj"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_rpxmt"]
-[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="3_spell"]
-[ext_resource type="Texture2D" uid="uid://bsrw7k2ymgg0d" path="res://data/items/catalogs/arc_maudit.png" id="4_icon"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/arc_maudit.png" id="1_kwoel"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_qb17k"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_33576"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_qy3cl"]
+[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="5_122ul"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="6_wsig8"]
 
-[sub_resource type="Resource" id="Spell_damage"]
-script = ExtResource("3_spell")
+[sub_resource type="Resource" id="Resource_h6jju"]
+script = ExtResource("5_122ul")
 damage_percent = 0.2
 modifier_name = "Malédiction offensive"
 
-[sub_resource type="Resource" id="Stat_hp"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_2ik8e"]
+script = ExtResource("6_wsig8")
 stat_id = &"max_hp"
 value = -10.0
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_33576")
 item_id = &"arc_maudit"
 display_name = "Arc maudit"
 description = "+20 % de dégâts des sorts offensifs. Contrepartie : -10 PV maximum."
-icon = ExtResource("4_icon")
-card_texture = ExtResource("4_icon")
+icon = ExtResource("1_kwoel")
+card_texture = ExtResource("1_kwoel")
 rarity = &"rare"
-tags = Array[StringName]([&"weapon", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"weapon"])
 reward_fx_profile = &"necrotic"
 category = 0
 equipment_slot = 0
 compatible_character_ids = Array[StringName]([&"elf"])
-stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_hp")])
-spell_modifiers = Array[ExtResource("3_rpxmt")]([SubResource("Spell_damage")])
+stat_modifiers = Array[ExtResource("6_wsig8")]([SubResource("Resource_2ik8e")])
+spell_modifiers = Array[ExtResource("4_qy3cl")]([SubResource("Resource_h6jju")])

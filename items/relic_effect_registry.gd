@@ -67,8 +67,23 @@ func compatible_descriptors(
 	var result: Array[Dictionary] = []
 	for candidate in descriptors(kind):
 		if _is_descriptor_compatible(kind, candidate, effect):
-			result.append(candidate)
+			result.append(_contextualize_label(kind, candidate, effect))
 	return result
+
+
+# Certains descripteurs partagent un même id technique ('active_unit') mais
+# désignent une unité différente selon le déclencheur : sur
+# adjacent_enemy_turn_end, active_unit est l'ennemi qui vient de terminer son
+# tour, pas le héros. On adapte le libellé affiché pour rester compréhensible
+# sans connaissance technique, sans changer l'id stocké dans la ressource.
+func _contextualize_label(
+		kind: StringName,
+		candidate: Dictionary,
+		effect: ItemReactiveEffectData
+	) -> Dictionary:
+	if effect != null:
+		candidate["label"] = label(kind, StringName(candidate.get("id", &"")), effect.trigger_id)
+	return candidate
 
 
 func validate_effect(effect: ItemReactiveEffectData) -> Array[Dictionary]:
@@ -134,8 +149,12 @@ func validate_effect(effect: ItemReactiveEffectData) -> Array[Dictionary]:
 	return errors
 
 
-func label(kind: StringName, descriptor_id: StringName) -> String:
-	return str(descriptor(kind, descriptor_id).get("label", descriptor_id))
+func label(kind: StringName, descriptor_id: StringName, trigger_id: StringName = &"") -> String:
+	var candidate := descriptor(kind, descriptor_id)
+	if kind == KIND_TARGET and descriptor_id == ItemReactiveEffectData.TARGET_ACTIVE_UNIT \
+			and trigger_id == ItemReactiveEffectData.TRIGGER_ADJACENT_ENEMY_TURN_END:
+		return "L’ennemi concerné"
+	return str(candidate.get("label", descriptor_id))
 
 
 func summarize(effect: ItemReactiveEffectData) -> String:
@@ -143,7 +162,7 @@ func summarize(effect: ItemReactiveEffectData) -> String:
 		return "Effet réactif invalide"
 	var sentence := "%s → %s → %s" % [
 		_trigger_text(effect), _result_text(effect),
-		label(KIND_TARGET, effect.target_id),
+		label(KIND_TARGET, effect.target_id, effect.trigger_id),
 	]
 	var conditions_text := _conditions_text(effect)
 	if not conditions_text.is_empty():

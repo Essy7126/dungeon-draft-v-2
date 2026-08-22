@@ -39,7 +39,20 @@ func publish(
 	document.mark_saved(reloaded, ItemStudioDocument.STATUS_SHARED, reloaded.resource_path)
 	result["catalog_occurrences"] = occurrences
 	result["reward_eligible"] = catalog.reward_eligible(reloaded)
+	result["draft_removed"] = _remove_stale_draft(reloaded, catalog)
 	return result
+
+
+func _remove_stale_draft(published: ItemDefinition, catalog: ItemStudioCatalogService) -> bool:
+	# Une fois publié, l'objet existe en production ; son brouillon éventuel
+	# (même item_id, sous le dossier de brouillons) ne sert plus qu'à provoquer
+	# ITEM_ID_DUPLICATE à la prochaine ouverture. On le retire du disque.
+	var draft_directory := catalog.draft_directory if catalog != null else ItemStudioCatalogService.DRAFT_DIRECTORY
+	var draft_path := path_service.draft_path(published.item_id, draft_directory)
+	if draft_path == published.resource_path or not FileAccess.file_exists(draft_path):
+		return false
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(draft_path))
+	return true
 
 
 func set_reward_eligibility(document: ItemStudioDocument, enabled: bool) -> bool:

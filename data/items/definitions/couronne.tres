@@ -1,28 +1,29 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://drlgcxxwo3dgu"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_1oie1"]
-[ext_resource type="Texture2D" uid="uid://pylmiim3vu26" path="res://data/items/catalogs/couronne.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/couronne.png" id="1_p1ph3"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_hgl6j"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_n7rla"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_gkipq"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_js5md"]
 
-[sub_resource type="Resource" id="Stat_ap"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_4pqju"]
+script = ExtResource("5_js5md")
 stat_id = &"max_ap"
 value = 1.0
 
-[sub_resource type="Resource" id="Stat_hp"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_kesdk"]
+script = ExtResource("5_js5md")
 stat_id = &"max_hp"
 value = -15.0
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_n7rla")
 item_id = &"couronne"
 display_name = "Couronne"
 description = "+1 PA maximum. Contrepartie : -15 PV maximum."
-icon = ExtResource("3_icon")
-card_texture = ExtResource("3_icon")
+icon = ExtResource("1_p1ph3")
+card_texture = ExtResource("1_p1ph3")
 rarity = &"rare"
-tags = Array[StringName]([&"accessory", &"head", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"accessory", &"head"])
 equipment_slot = 2
-stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_ap"), SubResource("Stat_hp")])
+stat_modifiers = Array[ExtResource("5_js5md")]([SubResource("Resource_4pqju"), SubResource("Resource_kesdk")])

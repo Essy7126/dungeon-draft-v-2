@@ -42,8 +42,8 @@ func normalize_item_id(value: String) -> String:
 	return result.trim_prefix("_").trim_suffix("_")
 
 
-func draft_path(item_id: StringName) -> String:
-	return ItemStudioCatalogService.DRAFT_DIRECTORY.path_join("%s.tres" % item_id)
+func draft_path(item_id: StringName, draft_directory := ItemStudioCatalogService.DRAFT_DIRECTORY) -> String:
+	return draft_directory.path_join("%s.tres" % item_id)
 
 
 func shared_path(item_id: StringName, catalog: ItemStudioCatalogService) -> String:

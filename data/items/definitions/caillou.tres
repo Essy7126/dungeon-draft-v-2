@@ -1,34 +1,35 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://r1wpbenjfdir"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_goima"]
-[ext_resource type="Texture2D" uid="uid://bbr11k3e2lkh6" path="res://data/items/catalogs/caillou.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/caillou.png" id="1_58hi2"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_up0an"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_xsjg8"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_35db1"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_24pbo"]
 
-[sub_resource type="Resource" id="Stat_hp"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_qho3k"]
+script = ExtResource("5_24pbo")
 stat_id = &"max_hp"
 value = 15.0
 
-[sub_resource type="Resource" id="Stat_armor"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_gv2kh"]
+script = ExtResource("5_24pbo")
 stat_id = &"armure"
 value = 10.0
 
-[sub_resource type="Resource" id="Stat_magic"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_ghbhn"]
+script = ExtResource("5_24pbo")
 stat_id = &"resist_magique"
 value = 10.0
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_xsjg8")
 item_id = &"caillou"
 display_name = "Caillou"
 description = "+15 PV maximum, +10 armure et +10 résistance magique."
-icon = ExtResource("3_icon")
-card_texture = ExtResource("3_icon")
+icon = ExtResource("1_58hi2")
+card_texture = ExtResource("1_58hi2")
 rarity = &"rare"
-tags = Array[StringName]([&"accessory", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"accessory"])
 reward_fx_profile = &"steel"
 equipment_slot = 2
-stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_hp"), SubResource("Stat_armor"), SubResource("Stat_magic")])
+stat_modifiers = Array[ExtResource("5_24pbo")]([SubResource("Resource_qho3k"), SubResource("Resource_gv2kh"), SubResource("Resource_ghbhn")])

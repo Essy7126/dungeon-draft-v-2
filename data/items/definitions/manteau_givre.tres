@@ -1,30 +1,31 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://6aj15wmqtyw"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Texture2D" uid="uid://bb3i0wbel52l2" path="res://data/items/catalogs/manteau_givre.png" id="3_icon"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_om77j"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/manteau_givre.png" id="1_oyx0c"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_h7lr5"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_w222f"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_pj17y"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_4o6dj"]
 
-[sub_resource type="Resource" id="Stat_magic"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_jixud"]
+script = ExtResource("5_4o6dj")
 stat_id = &"resist_magique"
 value = 35.0
 
-[sub_resource type="Resource" id="Stat_ice"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_cvr0o"]
+script = ExtResource("5_4o6dj")
 stat_id = &"resistance_ice"
 value = 0.25
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_w222f")
 item_id = &"manteau_givre"
 display_name = "Manteau de givre"
 description = "+35 résistance magique et +25 % résistance glace."
-icon = ExtResource("3_icon")
-card_texture = ExtResource("3_icon")
+icon = ExtResource("1_oyx0c")
+card_texture = ExtResource("1_oyx0c")
 rarity = &"rare"
-tags = Array[StringName]([&"armor", &"cape", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"armor", &"cape"])
 reward_fx_profile = &"ice"
 category = 1
 equipment_slot = 1
-stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_magic"), SubResource("Stat_ice")])
+stat_modifiers = Array[ExtResource("5_4o6dj")]([SubResource("Resource_jixud"), SubResource("Resource_cvr0o")])

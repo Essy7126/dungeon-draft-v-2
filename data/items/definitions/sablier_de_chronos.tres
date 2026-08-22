@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_30403"]
+[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="2_45aj1"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_4wj7j"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_g6umx"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_wx7fo"]
+
+[sub_resource type="Resource" id="Resource_chjfs"]
+script = ExtResource("2_45aj1")
+condition_id = &"ap"
+
+[sub_resource type="Resource" id="Resource_1lrmb"]
+script = ExtResource("1_30403")
+trigger_id = &"ap_after_action"
+conditions = Array[ExtResource("2_45aj1")]([SubResource("Resource_chjfs")])
+result_id = &"current_ap"
+frequency_id = &"per_combat"
+
+[resource]
+script = ExtResource("3_4wj7j")
+item_id = &"sablier_de_chronos"
+display_name = "Sablier de Chronos"
+description = "Une fois par combat, si une véritable action te laisse à exactement 0 PA, tu récupères immédiatement 1 PA."
+tags = Array[StringName]([&"first_run_equipment_reward"])
+category = 5
+reactive_effects = Array[ExtResource("1_30403")]([SubResource("Resource_1lrmb")])

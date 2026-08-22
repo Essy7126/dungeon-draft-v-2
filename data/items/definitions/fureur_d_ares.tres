@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_t0j44"]
+[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="2_ol055"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_cq1ek"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_fk6b3"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_tv54f"]
+
+[sub_resource type="Resource" id="Resource_nk3am"]
+script = ExtResource("2_ol055")
+condition_id = &"hp_percent"
+comparison = &"less_or_equal"
+value = 0.4
+
+[sub_resource type="Resource" id="Resource_gejlf"]
+script = ExtResource("1_t0j44")
+trigger_id = &"turn_start"
+conditions = Array[ExtResource("2_ol055")]([SubResource("Resource_nk3am")])
+result_id = &"pay_hp_percent"
+value = 0.05
+frequency_id = &"per_turn"
+
+[sub_resource type="Resource" id="Resource_2jfcn"]
+script = ExtResource("2_ol055")
+condition_id = &"hp_percent"
+comparison = &"less_or_equal"
+value = 0.4
+
+[sub_resource type="Resource" id="Resource_ajqot"]
+script = ExtResource("1_t0j44")
+trigger_id = &"turn_start"
+conditions = Array[ExtResource("2_ol055")]([SubResource("Resource_2jfcn")])
+result_id = &"current_ap"
+frequency_id = &"per_turn"
+
+[resource]
+script = ExtResource("3_cq1ek")
+item_id = &"fureur_d_ares"
+display_name = "Fureur d’Arès"
+description = "Au début de ton tour, si tu es à 40 % de tes PV maximum ou moins, tu perds 5 % de tes PV maximum (tu ne meurs jamais de cette perte, tu gardes au moins 1 PV) et tu gagnes 1 PA temporaire pour ce tour."
+tags = Array[StringName]([&"first_run_equipment_reward"])
+category = 5
+reactive_effects = Array[ExtResource("1_t0j44")]([SubResource("Resource_gejlf"), SubResource("Resource_ajqot")])

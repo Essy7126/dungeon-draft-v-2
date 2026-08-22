@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_mg1m5"]
+[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="2_xpj4d"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_mdsjq"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_25fgd"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_vmulq"]
+
+[sub_resource type="Resource" id="Resource_3x8w8"]
+script = ExtResource("2_xpj4d")
+condition_id = &"voluntary_only"
+
+[sub_resource type="Resource" id="Resource_2fb7d"]
+script = ExtResource("1_mg1m5")
+trigger_id = &"voluntary_move_prepared"
+conditions = Array[ExtResource("2_xpj4d")]([SubResource("Resource_3x8w8")])
+result_id = &"reduce_voluntary_move_cost"
+frequency_id = &"per_turn"
+
+[resource]
+script = ExtResource("3_mdsjq")
+item_id = &"sandales_d_hermes"
+display_name = "Sandales d’Hermès"
+description = "Ton premier déplacement libre de chaque tour coûte 1 PM de moins (minimum 0). Les poussées, téléportations et déplacements forcés ne sont pas concernés."
+tags = Array[StringName]([&"first_run_equipment_reward"])
+category = 5
+reactive_effects = Array[ExtResource("1_mg1m5")]([SubResource("Resource_2fb7d")])

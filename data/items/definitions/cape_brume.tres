@@ -1,29 +1,30 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://b8ydn865w84mv"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_7v4ph"]
-[ext_resource type="Texture2D" uid="uid://bwblqjvjbjso6" path="res://data/items/catalogs/cape_brume.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://data/items/catalogs/cape_brume.png" id="1_fco81"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_6aji2"]
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_8tmuj"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_0gibc"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_nse65"]
 
-[sub_resource type="Resource" id="Stat_mp"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_dtpu1"]
+script = ExtResource("5_nse65")
 stat_id = &"max_mp"
 value = 1.0
 
-[sub_resource type="Resource" id="Stat_dodge"]
-script = ExtResource("2_stat")
+[sub_resource type="Resource" id="Resource_f0ysh"]
+script = ExtResource("5_nse65")
 stat_id = &"esquive"
 value = 0.08
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_8tmuj")
 item_id = &"cape_brume"
 display_name = "Cape de brume"
 description = "+1 PM maximum et +8 % esquive."
-icon = ExtResource("3_icon")
-card_texture = ExtResource("3_icon")
+icon = ExtResource("1_fco81")
+card_texture = ExtResource("1_fco81")
 rarity = &"rare"
-tags = Array[StringName]([&"armor", &"cape", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"armor", &"cape"])
 category = 1
 equipment_slot = 1
-stat_modifiers = Array[ExtResource("2_stat")]([SubResource("Stat_mp"), SubResource("Stat_dodge")])
+stat_modifiers = Array[ExtResource("5_nse65")]([SubResource("Resource_dtpu1"), SubResource("Resource_f0ysh")])
