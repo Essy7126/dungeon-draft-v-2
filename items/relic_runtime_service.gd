@@ -4,6 +4,19 @@ extends RefCounted
 signal active_relics_changed(count: int)
 signal effect_evaluated(report: Dictionary)
 
+# Motifs renvoyés par manual_activation_state() et activate_relic_manually().
+# L'interface s'en sert pour griser un bouton sans avoir à redevenir experte des
+# règles de conditions et de fréquence.
+const MANUAL_REASON_READY: StringName = &"ready"
+const MANUAL_REASON_NOT_IN_COMBAT: StringName = &"not_in_combat"
+const MANUAL_REASON_INVALID_HERO: StringName = &"invalid_hero"
+const MANUAL_REASON_UNKNOWN_ITEM: StringName = &"unknown_item"
+const MANUAL_REASON_NO_MANUAL_EFFECT: StringName = &"no_manual_effect"
+const MANUAL_REASON_CONDITION_NOT_MET: StringName = &"condition_not_met"
+const MANUAL_REASON_FREQUENCY_EXHAUSTED: StringName = &"frequency_exhausted"
+const MANUAL_REASON_BUSY: StringName = &"busy"
+const MANUAL_REASON_NO_EFFECT_APPLIED: StringName = &"no_effect_applied"
+
 var registry := RelicEffectRegistry.new()
 var _inventory: RunInventory = null
 var _catalog: ItemCatalog = null
@@ -135,6 +148,169 @@ func process_trigger(trigger_id: StringName, source_context: Dictionary) -> Arra
 				effect_evaluated.emit(report.duplicate(true))
 	_resolving = false
 	return reports
+
+
+# ============================================================
+# ACTIVATION MANUELLE — le joueur choisit le moment
+# ============================================================
+# process_trigger() balaie tous les reliques et tous les héros concernés par un
+# événement. Une activation manuelle est l'inverse : une seule relique, un seul
+# héros, à la demande. On réutilise donc les mêmes briques privées
+# (_conditions_pass, _frequency_available, _evaluate_effect) sans les dupliquer,
+# pour que les compteurs de fréquence restent partagés avec le chemin
+# automatique.
+
+
+# Liste les reliques que le joueur peut déclencher lui-même, pour alimenter la
+# barre d'objets du combat.
+func manual_activation_entries() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for relic in _active_relics:
+		var definition := relic.definition as ItemDefinition
+		if definition != null and definition.has_manual_activation():
+			result.append({
+				"instance_id": (relic.instance as ItemInstance).instance_id,
+				"definition": definition,
+			})
+	return result
+
+
+# Réponse sans effet de bord : dit à l'interface si le bouton doit être
+# cliquable, et pourquoi il ne l'est pas.
+func manual_activation_state(hero: Unit, instance_id: StringName) -> Dictionary:
+	if not _in_combat:
+		return _manual_state(false, MANUAL_REASON_NOT_IN_COMBAT, "Aucun combat en cours.")
+	if hero == null or hero.team != 0 or not hero.is_alive:
+		return _manual_state(false, MANUAL_REASON_INVALID_HERO, "Aucun héros actif.")
+	var relic := _find_active_relic(instance_id)
+	if relic.is_empty():
+		return _manual_state(false, MANUAL_REASON_UNKNOWN_ITEM, "Cet objet n’est plus dans ton sac.")
+	var context := _manual_context(hero, instance_id, true)
+	var definition := relic.definition as ItemDefinition
+	var instance := relic.instance as ItemInstance
+	var manual_effect_found := false
+	var blocked_by_frequency := false
+	for effect_index in range(definition.reactive_effects.size()):
+		var effect := definition.reactive_effects[effect_index]
+		if effect == null or not effect.enabled or not effect.is_manual_trigger():
+			continue
+		manual_effect_found = true
+		if not registry.validate_effect(effect).is_empty():
+			continue
+		if not _conditions_pass(effect, hero, context, instance, effect_index):
+			continue
+		if not _frequency_available(effect, instance, effect_index, hero, context):
+			blocked_by_frequency = true
+			continue
+		return _manual_state(
+			true,
+			MANUAL_REASON_READY,
+			"Prêt à être utilisé.",
+			_remaining_activations(effect, instance, effect_index, hero, context),
+		)
+	if not manual_effect_found:
+		return _manual_state(
+			false, MANUAL_REASON_NO_MANUAL_EFFECT, "Cet objet ne s’active pas à la main."
+		)
+	if blocked_by_frequency:
+		return _manual_state(
+			false, MANUAL_REASON_FREQUENCY_EXHAUSTED, "Déjà utilisé, il faut attendre.", 0
+		)
+	return _manual_state(
+		false, MANUAL_REASON_CONDITION_NOT_MET, "Les conditions ne sont pas réunies."
+	)
+
+
+# Déclenche pour ce héros tous les effets manuels disponibles de cette relique,
+# exactement comme process_trigger le ferait pour un déclencheur automatique.
+func activate_relic_manually(hero: Unit, instance_id: StringName) -> Dictionary:
+	var reports: Array[Dictionary] = []
+	if _resolving:
+		return _manual_result(false, MANUAL_REASON_BUSY, "Une autre action est en cours.", reports)
+	var state := manual_activation_state(hero, instance_id)
+	if not bool(state.get("available", false)):
+		return _manual_result(
+			false,
+			StringName(state.get("reason", MANUAL_REASON_CONDITION_NOT_MET)),
+			str(state.get("message", "")),
+			reports,
+		)
+	var relic := _find_active_relic(instance_id)
+	var definition := relic.definition as ItemDefinition
+	var instance := relic.instance as ItemInstance
+	_resolving = true
+	_event_serial += 1
+	var context := _manual_context(hero, instance_id, false)
+	var applied := false
+	for effect_index in range(definition.reactive_effects.size()):
+		var effect := definition.reactive_effects[effect_index]
+		if effect == null or not effect.enabled or not effect.is_manual_trigger():
+			continue
+		var report := _evaluate_effect(instance, definition, effect_index, effect, hero, context)
+		reports.append(report)
+		effect_evaluated.emit(report.duplicate(true))
+		applied = applied or bool(report.get("triggered", false))
+	_resolving = false
+	if not applied:
+		return _manual_result(
+			false, MANUAL_REASON_NO_EFFECT_APPLIED, "L’objet n’a rien changé.", reports
+		)
+	return _manual_result(true, MANUAL_REASON_READY, "Objet activé.", reports)
+
+
+func _find_active_relic(instance_id: StringName) -> Dictionary:
+	for relic in _active_relics:
+		var instance := relic.instance as ItemInstance
+		if instance != null and instance.instance_id == instance_id:
+			return relic
+	return {}
+
+
+# L'activation manuelle est sa propre action : chaque clic reçoit son propre
+# action_id, pour qu'une fréquence « une fois par action » ne bloque jamais le
+# clic suivant. La variante « aperçu » sert aux requêtes sans effet de bord.
+func _manual_context(hero: Unit, instance_id: StringName, preview: bool) -> Dictionary:
+	return {
+		"trigger_hero": hero,
+		"active_unit": hero,
+		"trigger_id": ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION,
+		"event_serial": _event_serial,
+		"manual": true,
+		"preview_query": preview,
+		"action_id": StringName(
+			"manual_%s_preview" % instance_id
+			if preview
+			else "manual_%s_%d" % [instance_id, _event_serial]
+		),
+	}
+
+
+func _manual_state(
+		available: bool,
+		reason: StringName,
+		message: String,
+		remaining := -1
+	) -> Dictionary:
+	return {
+		"available": available,
+		"reason": reason,
+		"message": message,
+		"remaining": remaining,
+	}
+
+
+func _manual_result(
+		success: bool,
+		reason: StringName,
+		message: String,
+		reports: Array[Dictionary]
+	) -> Dictionary:
+	return {
+		"success": success,
+		"reason": reason,
+		"message": message,
+		"reports": reports,
+	}
 
 
 func modify_voluntary_transition_cost(

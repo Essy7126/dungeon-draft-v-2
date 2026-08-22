@@ -2,9 +2,13 @@ extends "res://ui/action_bar.gd"
 
 signal utility_skill_tree_requested(character_id: StringName, discipline_id: StringName)
 signal utility_inventory_requested(character_id: StringName)
+signal item_activation_requested(instance_id: StringName)
 
 const SPELL_SLOT_SCENE := preload(
 	"res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.tscn"
+)
+const ITEM_SLOT_SCENE := preload(
+	"res://ui/recraft_hud_v1/components/item_slot/item_slot_view.tscn"
 )
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
 const DEFAULT_CHARACTER_THEME: CharacterHUDThemeData = preload(
@@ -38,6 +42,11 @@ const SPELL_SHORTCUT_KEYS := [
 	KEY_7,
 	KEY_8,
 ]
+# Nombre d'emplacements de la barre d'objets. Les touches 1 à 4 servent aux
+# objets quand cette barre est affichée, et aux sorts sinon.
+const ITEM_SLOT_COUNT := 4
+const BAR_MODE_SPELL := "spell"
+const BAR_MODE_ITEM := "item"
 
 enum RunUIMode {
 	COMBAT,
@@ -76,6 +85,12 @@ enum HudSkinVariant {
 @onready var _spellbar_background: TextureRect = %SpellBarBackground
 @onready var _basic_attack_host: CenterContainer = %BasicAttackHost
 @onready var _spell_slots_center: CenterContainer = %SpellSlotsCenter
+@onready var _item_slots_center: CenterContainer = %ItemSlotsCenter
+@onready var _item_slots_container: HBoxContainer = %ItemSlotsContainer
+@onready var _bar_toggle_anchor: Control = %BarToggleAnchor
+@onready var _bar_toggle: VBoxContainer = %BarToggle
+@onready var _show_spells_button: Button = %ShowSpellsButton
+@onready var _show_items_button: Button = %ShowItemsButton
 @onready var _character_info: VBoxContainer = %CharacterInfo
 @onready var _character_row: HBoxContainer = %CharacterRow
 @onready var _bar_stack: VBoxContainer = %BarStack
@@ -116,6 +131,11 @@ var _ap_badge_home: Node = null
 var _ap_badge_home_index := 0
 var _mp_badge_home: Node = null
 var _mp_badge_home_index := 0
+# Vue choisie par le joueur : sorts ou objets. Volontairement jamais remise à
+# zéro entre deux tours — si le joueur a affiché ses objets, ils restent
+# affichés au tour suivant.
+var _active_bar_mode := BAR_MODE_SPELL
+var _item_buttons: Array = []
 
 
 func _ready() -> void:
@@ -154,8 +174,20 @@ func _ready() -> void:
 	skills_shortcut.events = [skills_key]
 	_skills_button.shortcut = skills_shortcut
 	_skills_button.shortcut_in_tooltip = true
+	_show_spells_button.pressed.connect(
+		func() -> void: _set_active_bar_mode(BAR_MODE_SPELL)
+	)
+	_show_items_button.pressed.connect(
+		func() -> void: _set_active_bar_mode(BAR_MODE_ITEM)
+	)
 	if not EventBus.turn_started.is_connected(_on_event_bus_turn_started):
 		EventBus.turn_started.connect(_on_event_bus_turn_started)
+	var relic_service := _relic_service()
+	if relic_service != null \
+			and not relic_service.active_relics_changed.is_connected(_on_active_relics_changed):
+		relic_service.active_relics_changed.connect(_on_active_relics_changed)
+	_build_item_slots()
+	_apply_bar_mode()
 	_apply_layout_metrics()
 	_refresh_resource_bars(null)
 	_refresh_button_states()
@@ -166,6 +198,10 @@ func _exit_tree() -> void:
 	unbind_combat_context()
 	if EventBus.turn_started.is_connected(_on_event_bus_turn_started):
 		EventBus.turn_started.disconnect(_on_event_bus_turn_started)
+	var relic_service := _relic_service()
+	if relic_service != null \
+			and relic_service.active_relics_changed.is_connected(_on_active_relics_changed):
+		relic_service.active_relics_changed.disconnect(_on_active_relics_changed)
 	if get_viewport().size_changed.is_connected(_apply_layout_metrics):
 		get_viewport().size_changed.disconnect(_apply_layout_metrics)
 
@@ -252,6 +288,9 @@ func _connect_context_actions() -> void:
 	_connect_action_to_context(attack_pressed, &"_on_attack_pressed")
 	_connect_action_to_context(spell_pressed, &"_on_spell_pressed")
 	_connect_action_to_context(end_turn_pressed, &"_on_end_turn_pressed")
+	_connect_action_to_context(
+		item_activation_requested, &"_on_item_activation_requested"
+	)
 
 
 func _disconnect_context_actions() -> void:
@@ -261,6 +300,9 @@ func _disconnect_context_actions() -> void:
 	_disconnect_action_from_context(attack_pressed, &"_on_attack_pressed")
 	_disconnect_action_from_context(spell_pressed, &"_on_spell_pressed")
 	_disconnect_action_from_context(end_turn_pressed, &"_on_end_turn_pressed")
+	_disconnect_action_from_context(
+		item_activation_requested, &"_on_item_activation_requested"
+	)
 
 
 func _connect_action_to_context(action_signal: Signal, method: StringName) -> void:
@@ -299,14 +341,6 @@ func _add_spell_button(unit, spell) -> void:
 		ap_cost,
 		str(_spell_buttons.size() + 1)
 	)
-	var shortcut_index := _spell_buttons.size()
-	if shortcut_index < SPELL_SHORTCUT_KEYS.size():
-		var shortcut_event := InputEventKey.new()
-		shortcut_event.physical_keycode = SPELL_SHORTCUT_KEYS[shortcut_index]
-		var shortcut := Shortcut.new()
-		shortcut.events = [shortcut_event]
-		button.shortcut = shortcut
-		button.shortcut_in_tooltip = true
 	if _active_character_theme != null:
 		button.set_icon_override(
 			_active_character_theme.get_spell_icon_for(spell)
@@ -326,7 +360,149 @@ func _add_spell_button(unit, spell) -> void:
 
 func build_spell_buttons(unit) -> void:
 	super.build_spell_buttons(unit)
+	_refresh_shortcut_bindings()
 	_apply_layout_metrics()
+
+
+# ============================================================
+# BARRE D'OBJETS — activation manuelle
+# ============================================================
+
+func _relic_service() -> RelicRuntimeService:
+	return (
+		GameManager.get_relic_runtime_service()
+		if GameManager.has_method("get_relic_runtime_service")
+		else null
+	)
+
+
+# Les quatre emplacements existent en permanence : ils sont créés une seule
+# fois, puis remplis ou vidés. Ainsi la barre ne change jamais de largeur selon
+# le nombre d'objets possédés.
+func _build_item_slots() -> void:
+	for button_value in _item_buttons:
+		var existing := button_value as Button
+		if is_instance_valid(existing):
+			existing.set_block_signals(true)
+			existing.queue_free()
+	_item_buttons.clear()
+	for slot_index in range(ITEM_SLOT_COUNT):
+		var button := ITEM_SLOT_SCENE.instantiate() as RecraftItemSlotView
+		if button == null:
+			push_error("Impossible d'instancier ItemSlotView.")
+			return
+		_item_slots_container.add_child(button)
+		button.clear_item()
+		button.pressed.connect(
+			func() -> void: _on_item_slot_pressed(button)
+		)
+		_item_buttons.append(button)
+	_refresh_item_slots()
+
+
+# Remplit les emplacements avec les objets que le joueur peut déclencher
+# lui-même, puis délègue au service la question « est-ce utilisable maintenant ».
+func _refresh_item_slots() -> void:
+	if _item_buttons.is_empty():
+		return
+	var relic_service := _relic_service()
+	var entries: Array[Dictionary] = (
+		relic_service.manual_activation_entries()
+		if relic_service != null
+		else [] as Array[Dictionary]
+	)
+	for slot_index in range(_item_buttons.size()):
+		var button := _item_buttons[slot_index] as RecraftItemSlotView
+		if slot_index >= entries.size():
+			button.clear_item()
+			continue
+		var entry := entries[slot_index]
+		button.configure_item(
+			StringName(entry.get("instance_id", &"")),
+			entry.get("definition") as ItemDefinition,
+			str(slot_index + 1)
+		)
+		_apply_spell_button_layout(button)
+	_refresh_item_slot_states()
+	_refresh_shortcut_bindings()
+
+
+func _refresh_item_slot_states() -> void:
+	var relic_service := _relic_service()
+	for button_value in _item_buttons:
+		var button := button_value as RecraftItemSlotView
+		if button.is_empty_slot():
+			continue
+		var state := (
+			relic_service.manual_activation_state(_current_unit, button.instance_id)
+			if relic_service != null
+			else {}
+		)
+		button.apply_availability(state, _player_controls_enabled)
+
+
+func _on_item_slot_pressed(button: RecraftItemSlotView) -> void:
+	if button == null or button.is_empty_slot() or not _player_controls_enabled:
+		return
+	item_activation_requested.emit(button.instance_id)
+
+
+func _on_active_relics_changed(_count: int) -> void:
+	_refresh_item_slots()
+
+
+func _set_active_bar_mode(mode: String) -> void:
+	if _active_bar_mode == mode:
+		return
+	_active_bar_mode = mode
+	_apply_bar_mode()
+
+
+func get_active_bar_mode() -> String:
+	return _active_bar_mode
+
+
+func _apply_bar_mode() -> void:
+	if not is_node_ready():
+		return
+	var items_visible := _active_bar_mode == BAR_MODE_ITEM
+	_spell_slots_center.visible = not items_visible
+	_item_slots_center.visible = items_visible
+	# La flèche de la vue déjà affichée reste enfoncée : le joueur voit d'un
+	# coup d'œil laquelle des deux barres il regarde.
+	_show_spells_button.disabled = not items_visible
+	_show_items_button.disabled = items_visible
+	_refresh_shortcut_bindings()
+	_refresh_item_slot_states()
+
+
+# Les touches 1 à 4 pointent vers la barre réellement affichée. On efface
+# toujours les raccourcis de l'autre barre, sinon les deux répondraient à la
+# même touche.
+func _refresh_shortcut_bindings() -> void:
+	var items_active := _active_bar_mode == BAR_MODE_ITEM
+	for index in range(_spell_buttons.size()):
+		var spell_button := _spell_buttons[index] as Button
+		spell_button.shortcut = (
+			null if items_active else _shortcut_for_index(index)
+		)
+		spell_button.shortcut_in_tooltip = not items_active
+	for index in range(_item_buttons.size()):
+		var item_button := _item_buttons[index] as Button
+		item_button.shortcut = (
+			_shortcut_for_index(index) if items_active else null
+		)
+		item_button.shortcut_in_tooltip = items_active
+
+
+func _shortcut_for_index(index: int) -> Shortcut:
+	if index < 0 or index >= SPELL_SHORTCUT_KEYS.size():
+		return null
+	var shortcut_event := InputEventKey.new()
+	shortcut_event.physical_keycode = SPELL_SHORTCUT_KEYS[index]
+	var shortcut := Shortcut.new()
+	shortcut.events = [shortcut_event]
+	return shortcut
 
 
 func update_info(unit) -> void:
@@ -441,6 +617,8 @@ func _refresh_button_states() -> void:
 			button.set_visual_state(RecraftSpellSlotView.VisualState.SELECTED)
 		else:
 			button.set_visual_state(RecraftSpellSlotView.VisualState.NORMAL)
+
+	_refresh_item_slot_states()
 
 	_sync_primary_button(_move_btn, _active_mode == "move")
 	_sync_primary_button(_attack_btn, _active_mode == "attack")
@@ -929,13 +1107,19 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 	var move_width := roundf((layout_data.move_action_size.x if _clean_skin_active() else 0.0) * calibration_scale)
 	var turn_width := _effective_end_turn_size(viewport_width).x
 	var block_gap := roundf((layout_data.block_separation if _clean_skin_active() else 12.0) * calibration_scale)
+	# Les deux flèches de bascule occupent leur propre bloc de largeur, compté
+	# ici que la barre d'objets soit affichée ou non : « Fin de tour » et le
+	# bouton de compétences sont donc décalés vers la droite en permanence,
+	# jamais seulement à l'ouverture de la barre d'objets.
+	var toggle_width := roundf(METRICS.BAR_TOGGLE_WIDTH * calibration_scale)
 	var total_width := (
 		character_width
 		+ resources_width
 		+ move_width
 		+ ability_width
+		+ toggle_width
 		+ turn_width
-		+ block_gap * (4.0 if _clean_skin_active() else 2.0)
+		+ block_gap * (5.0 if _clean_skin_active() else 3.0)
 	)
 	var content_height := (
 		panel_height - roundf(16.0 * calibration_scale)
@@ -979,6 +1163,11 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 		)
 	)
 	content_left += ability_width + block_gap
+	_set_control_rect(
+		_bar_toggle_anchor,
+		Rect2(content_left, content_top, toggle_width, content_height)
+	)
+	content_left += toggle_width + block_gap
 	var turn_top := content_top
 	var turn_height := content_height
 	if _clean_skin_active() and not _compact_layout_active():
@@ -992,20 +1181,25 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 		_basic_attack_host,
 		Rect2(0.0, 0.0, visual_size, content_height)
 	)
-	_set_control_rect(
-		_spell_slots_center,
-		Rect2(
-			visual_size + slot_gap,
-			0.0,
-			spells_width,
-			content_height
+	# La barre d'objets occupe exactement la même bande que la barre de sorts :
+	# les deux ne sont jamais visibles en même temps, et le bouton d'attaque de
+	# base reste à gauche dans les deux vues.
+	for slots_center in [_spell_slots_center, _item_slots_center]:
+		_set_control_rect(
+			slots_center,
+			Rect2(
+				visual_size + slot_gap,
+				0.0,
+				spells_width,
+				content_height
+			)
 		)
-	)
 	if _clean_skin_active():
 		_basic_attack_host.position.y = 28.0 * calibration_scale
 		_basic_attack_host.size.y = content_height - 36.0 * calibration_scale
-		_spell_slots_center.position.y = 28.0 * calibration_scale
-		_spell_slots_center.size.y = content_height - 36.0 * calibration_scale
+		for slots_center in [_spell_slots_center, _item_slots_center]:
+			slots_center.position.y = 28.0 * calibration_scale
+			slots_center.size.y = content_height - 36.0 * calibration_scale
 		_set_control_rect(
 			_selected_spell_plate,
 			Rect2(
@@ -1035,16 +1229,31 @@ func _restore_neutral_panel_layout() -> void:
 		Vector4(0.5, 1.0, 0.5, 1.0),
 		Vector4(-260.0, -140.0, 260.0, -10.0)
 	)
+	# Sans habillage de personnage, le bloc de fin de tour est collé au bord
+	# droit : on ne peut pas le décaler plus loin. On réserve donc l'espace des
+	# flèches juste à sa gauche, ce qui produit le même résultat — la bascule ne
+	# recouvre jamais « Fin de tour ».
 	_set_anchor_geometry(
 		_turn_anchor,
 		Vector4(1.0, 1.0, 1.0, 1.0),
 		Vector4(-170.0, -140.0, -18.0, -10.0)
 	)
 	_set_anchor_geometry(
-		_spell_slots_center,
-		Vector4(0.0, 0.0, 1.0, 1.0),
-		Vector4.ZERO
+		_bar_toggle_anchor,
+		Vector4(1.0, 1.0, 1.0, 1.0),
+		Vector4(
+			-170.0 - METRICS.BAR_TOGGLE_WIDTH - 8.0,
+			-140.0,
+			-178.0,
+			-10.0
+		)
 	)
+	for slots_center in [_spell_slots_center, _item_slots_center]:
+		_set_anchor_geometry(
+			slots_center,
+			Vector4(0.0, 0.0, 1.0, 1.0),
+			Vector4.ZERO
+		)
 
 
 func _set_control_rect(control: Control, rectangle: Rect2) -> void:
@@ -1252,10 +1461,36 @@ func _apply_layout_metrics() -> void:
 		"separation",
 		int(_effective_spell_gap(viewport_width))
 	)
+	_item_slots_container.add_theme_constant_override(
+		"separation",
+		int(_effective_spell_gap(viewport_width))
+	)
 	for spell_button in _spell_buttons:
 		_apply_spell_button_layout(spell_button)
+	for item_button in _item_buttons:
+		_apply_spell_button_layout(item_button)
+	_apply_bar_toggle_layout(viewport_width)
 	_update_spell_section_geometry()
 	_layout_debug_overlay.set_debug_enabled(show_layout_debug)
+
+
+func _apply_bar_toggle_layout(viewport_width: float) -> void:
+	var toggle_scale := (
+		_chassis_visual_scale(viewport_width)
+		if _official_chassis_active()
+		else _layout_scale
+	)
+	var button_size := METRICS.scaled_vector(
+		METRICS.BAR_TOGGLE_BUTTON_SIZE, toggle_scale
+	)
+	_bar_toggle.add_theme_constant_override(
+		"separation", int(METRICS.scaled(METRICS.BAR_TOGGLE_GAP, toggle_scale))
+	)
+	for toggle_button in [_show_spells_button, _show_items_button]:
+		toggle_button.custom_minimum_size = button_size
+		toggle_button.add_theme_font_size_override(
+			"font_size", METRICS.scaled_font(14, toggle_scale)
+		)
 
 
 func _update_spell_section_geometry() -> void:

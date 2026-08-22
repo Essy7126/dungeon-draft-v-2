@@ -457,6 +457,23 @@ layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 1
 
+[node name="ItemSlotsCenter" type="CenterContainer" parent="Root/HudBand/SpellAnchor/SpellSection"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ItemSlotsContainer" type="HBoxContainer" parent="Root/HudBand/SpellAnchor/SpellSection/ItemSlotsCenter"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
 [node name="SelectedSpellPlate" type="Label" parent="Root/HudBand/SpellAnchor/SpellSection"]
 unique_name_in_owner = true
 visible = false
@@ -474,6 +491,62 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_context_plate")
 text = "Sort sélectionné"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BarToggleAnchor" type="Control" parent="Root/HudBand"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 260.0
+offset_top = -140.0
+offset_right = 294.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="BarToggle" type="VBoxContainer" parent="Root/HudBand/BarToggleAnchor"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="ShowSpellsButton" type="Button" parent="Root/HudBand/BarToggleAnchor/BarToggle"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+tooltip_text = "Voir tes sorts"
+focus_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
+text = "▲"
+
+[node name="ShowItemsButton" type="Button" parent="Root/HudBand/BarToggleAnchor/BarToggle"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+tooltip_text = "Voir tes objets"
+focus_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_utility_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_utility_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_utility_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_utility_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
+text = "▼"
 
 [node name="TurnAnchor" type="Control" parent="Root/HudBand"]
 unique_name_in_owner = true

@@ -71,6 +71,24 @@ func compatible_descriptors(
 	return result
 
 
+func is_manual_trigger_id(trigger_id: StringName) -> bool:
+	return trigger_id == ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION
+
+
+# Le déclenchement manuel n'est pas un « moment » du combat comme les autres :
+# il est choisi par un bouton dédié dans l'éditeur, pas dans la liste des
+# moments automatiques. On le retire donc de cette liste pour ne pas proposer
+# deux chemins différents vers le même réglage.
+func automatic_trigger_descriptors(
+		effect: ItemReactiveEffectData
+	) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for candidate in compatible_descriptors(KIND_TRIGGER, effect):
+		if not is_manual_trigger_id(StringName(candidate.get("id", &""))):
+			result.append(candidate)
+	return result
+
+
 # Certains descripteurs partagent un même id technique ('active_unit') mais
 # désignent une unité différente selon le déclencheur : sur
 # adjacent_enemy_turn_end, active_unit est l'ennemi qui vient de terminer son
@@ -209,6 +227,7 @@ func _register_defaults() -> void:
 		[ItemReactiveEffectData.TRIGGER_HP_THRESHOLD_CROSSED, "Ta vie passe sous un certain niveau", [&"trigger_hero", &"damage_source", &"hp_loss", &"enemy_source", &"resources"]],
 		[ItemReactiveEffectData.TRIGGER_UNIT_KILLED, "Tu élimines un ennemi", [&"trigger_hero", &"killed_unit", &"kill", &"resources"]],
 		[ItemReactiveEffectData.TRIGGER_ADJACENT_ENEMY_TURN_END, "Fin de tour d’un ennemi juste à côté", [&"trigger_hero", &"active_unit", &"adjacent_enemy", &"resources"]],
+		[ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION, "Quand le joueur décide de l’utiliser", [&"trigger_hero", &"active_unit", &"resources"]],
 	]:
 		register_descriptor(KIND_TRIGGER, {"id": value[0], "label": value[1], "provides": value[2]})
 	for value in [

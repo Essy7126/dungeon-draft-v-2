@@ -214,7 +214,9 @@ func _add_reactive_card(index: int, effect: ItemReactiveEffectData) -> void:
 	var field_errors := issues.get("fields", {}) as Dictionary
 	var threshold_key := "reactive_threshold_%d" % effect.get_instance_id()
 	var fields := _parameter_grid(card)
-	_add_descriptor_field(fields, "Quand ?", "Modifier le déclencheur", RelicEffectRegistry.KIND_TRIGGER, effect.trigger_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_TRIGGER, "")), func(value): effect.trigger_id = value)
+	_add_activation_mode_field(fields, effect)
+	if not effect.is_manual_trigger():
+		_add_descriptor_field(fields, "Quand ?", "Modifier le déclencheur", RelicEffectRegistry.KIND_TRIGGER, effect.trigger_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_TRIGGER, "")), func(value): effect.trigger_id = value)
 	_add_descriptor_field(fields, "Sur qui ?", "Modifier la cible", RelicEffectRegistry.KIND_TARGET, effect.target_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_TARGET, "")), func(value): effect.target_id = value)
 	_add_descriptor_field(fields, "Qu’est-ce qui se passe ?", "Modifier le résultat", RelicEffectRegistry.KIND_RESULT, effect.result_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_RESULT, "")), func(value): effect.result_id = value)
 	_add_descriptor_field(fields, "Combien de fois ?", "Modifier la fréquence", RelicEffectRegistry.KIND_FREQUENCY, effect.frequency_id, effect, str(field_errors.get(RelicEffectRegistry.KIND_FREQUENCY, "")), func(value): effect.frequency_id = value)
@@ -232,6 +234,60 @@ func _add_reactive_card(index: int, effect: ItemReactiveEffectData) -> void:
 		error.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		error.add_theme_color_override("font_color", ERROR_COLOR)
 		card.add_child(error)
+
+
+# Premier choix d'un effet réactif, en français simple : est-ce que l'effet part
+# tout seul, ou est-ce que c'est le joueur qui appuie ? Quand le joueur décide,
+# la liste des moments n'a plus de sens et disparaît ; le moment, c'est le clic.
+func _add_activation_mode_field(parent: Control, effect: ItemReactiveEffectData) -> void:
+	parent.add_child(_field_label("Qui déclenche ?"))
+	var cell := _field_cell(parent)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	cell.add_child(row)
+	var mode := ButtonGroup.new()
+	var automatic := Button.new()
+	automatic.text = "Tout seul"
+	automatic.toggle_mode = true
+	automatic.button_group = mode
+	automatic.tooltip_text = "L’effet part tout seul, au moment choisi juste en dessous."
+	automatic.button_pressed = not effect.is_manual_trigger()
+	row.add_child(automatic)
+	var manual := Button.new()
+	manual.text = "Le joueur"
+	manual.toggle_mode = true
+	manual.button_group = mode
+	manual.tooltip_text = "L’objet apparaît dans la barre d’objets pendant le combat : le joueur clique dessus quand il veut."
+	manual.button_pressed = effect.is_manual_trigger()
+	row.add_child(manual)
+	var hint := Label.new()
+	hint.text = (
+		"Le joueur clique sur l’objet quand il le veut."
+		if effect.is_manual_trigger()
+		else "L’effet part tout seul au moment choisi."
+	)
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.custom_minimum_size.x = FIELD_WIDTH
+	hint.add_theme_font_size_override("font_size", ERROR_FONT_SIZE)
+	hint.add_theme_color_override("font_color", MUTED_COLOR)
+	cell.add_child(hint)
+	manual.toggled.connect(func(pressed):
+		if _updating_controls:
+			return
+		# Début du tour offre exactement le même contexte que le déclenchement
+		# manuel (héros concerné, PV, PA, PM) : revenir à l'automatique ne rend
+		# donc jamais invalides les conditions ni la cible déjà réglées.
+		var new_trigger: StringName = (
+			ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION
+			if pressed
+			else ItemReactiveEffectData.TRIGGER_TURN_START
+		)
+		if effect.trigger_id == new_trigger:
+			return
+		document.record_edit("Modifier qui déclenche l’effet", func():
+			effect.trigger_id = new_trigger
+		, ItemStudioDocument.CHANGE_STRUCTURE, "reactive.descriptor")
+	)
 
 
 func _add_reactive_value_field(parent: Control, effect: ItemReactiveEffectData) -> void:
@@ -499,7 +555,14 @@ func _add_descriptor_field(
 	option.custom_minimum_size.x = FIELD_WIDTH
 	option.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	option.clip_text = true
-	for descriptor in relic_registry.compatible_descriptors(kind, effect):
+	# La liste des moments ne propose que les déclenchements automatiques : le
+	# déclenchement à la main se choisit avec les deux boutons juste au-dessus.
+	var candidates := (
+		relic_registry.automatic_trigger_descriptors(effect)
+		if kind == RelicEffectRegistry.KIND_TRIGGER
+		else relic_registry.compatible_descriptors(kind, effect)
+	)
+	for descriptor in candidates:
 		option.add_item(str(descriptor.get("label", descriptor.get("id", &""))))
 		option.set_item_metadata(option.item_count - 1, descriptor.get("id", &""))
 		if StringName(descriptor.get("id", &"")) == current:

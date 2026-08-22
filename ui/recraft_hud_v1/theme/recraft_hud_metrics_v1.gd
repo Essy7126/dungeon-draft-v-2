@@ -35,6 +35,14 @@ const SPELL_PANEL_PADDING := 12.0
 const SPELL_PANEL_HEIGHT := 92.0
 const SPELL_COST_BADGE_SIZE := Vector2(24.0, 18.0)
 
+# Bascule entre la barre de sorts et la barre d'objets : deux flèches empilées.
+# Cette largeur est réservée en permanence dans le calcul de la barre, même
+# quand la barre d'objets est masquée, pour que « Fin de tour » et le bouton de
+# compétences ne bougent jamais d'un tour à l'autre.
+const BAR_TOGGLE_WIDTH := 34.0
+const BAR_TOGGLE_BUTTON_SIZE := Vector2(30.0, 26.0)
+const BAR_TOGGLE_GAP := 4.0
+
 const END_TURN_SIZE := Vector2(136.0, 44.0)
 const TURN_LABEL_GAP := 6.0
 const GROUP_GAP := 24.0

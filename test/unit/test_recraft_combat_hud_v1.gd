@@ -56,6 +56,72 @@ func test_hud_builds_four_real_slots_for_every_fixed_hero() -> void:
 		assert_eq(hud.get("_spell_buttons").size(), 4)
 		assert_eq(hud.get("_current_unit"), hero)
 
+func test_item_bar_reserves_its_space_and_survives_a_turn_change() -> void:
+	var run := load("res://data/runs/first_run.tres") as RunData
+	assert_true(GameManager._prepare_preconfigured_run(run, PARTY))
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	add_child_autofree(hud)
+	await get_tree().process_frame
+	var hero = GameManager.get_ordered_heroes()[0]
+	hud.update_info(hero)
+	hud.build_spell_buttons(hero)
+	assert_eq(hud.get("_item_buttons").size(), 4, "Quatre emplacements d’objets")
+	assert_eq(hud.get_active_bar_mode(), "spell")
+
+	var spell_anchor := hud.get_node("%SpellAnchor") as Control
+	var toggle_anchor := hud.get_node("%BarToggleAnchor") as Control
+	var turn_anchor := hud.get_node("%TurnAnchor") as Control
+	assert_gte(toggle_anchor.offset_left, spell_anchor.offset_right)
+	assert_lte(toggle_anchor.offset_right, turn_anchor.offset_left)
+	var turn_left_with_spells := turn_anchor.offset_left
+
+	hud._set_active_bar_mode("item")
+	await get_tree().process_frame
+	assert_false((hud.get_node("%SpellSlotsCenter") as Control).visible)
+	assert_true((hud.get_node("%ItemSlotsCenter") as Control).visible)
+	assert_true(
+		(hud.get_node("%BasicAttackHost") as Control).visible == hud.get("_attack_grouped_with_spells"),
+		"L’attaque de base ne change pas de visibilité selon la barre affichée",
+	)
+	assert_eq(
+		turn_anchor.offset_left,
+		turn_left_with_spells,
+		"L’espace des flèches est réservé en permanence : « Fin de tour » ne bouge pas",
+	)
+
+	EventBus.turn_started.emit(hero)
+	hud.update_info(hero)
+	hud.build_spell_buttons(hero)
+	assert_eq(
+		hud.get_active_bar_mode(),
+		"item",
+		"La vue choisie par le joueur n’est pas réinitialisée entre les tours",
+	)
+
+
+func test_number_shortcuts_follow_the_displayed_bar() -> void:
+	var run := load("res://data/runs/first_run.tres") as RunData
+	assert_true(GameManager._prepare_preconfigured_run(run, PARTY))
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	add_child_autofree(hud)
+	await get_tree().process_frame
+	var hero = GameManager.get_ordered_heroes()[0]
+	hud.update_info(hero)
+	hud.build_spell_buttons(hero)
+	var spell_button := (hud.get("_spell_buttons") as Array)[0] as Button
+	var item_button := (hud.get("_item_buttons") as Array)[0] as Button
+	assert_not_null(spell_button.shortcut, "En vue sorts, la touche 1 lance le premier sort")
+	assert_null(item_button.shortcut)
+
+	hud._set_active_bar_mode("item")
+	assert_null(spell_button.shortcut, "Les deux barres ne peuvent pas répondre à la même touche")
+	assert_not_null(item_button.shortcut, "En vue objets, la touche 1 vise le premier objet")
+
+	hud._set_active_bar_mode("spell")
+	assert_not_null(spell_button.shortcut)
+	assert_null(item_button.shortcut)
+
+
 func test_hud_switch_disconnects_hp_and_stats_signals() -> void:
 	var first := Unit.from_data(load(PARTY[0]) as UnitData)
 	var second := Unit.from_data(load(PARTY[1]) as UnitData)

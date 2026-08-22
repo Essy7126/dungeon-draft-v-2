@@ -110,6 +110,15 @@ func is_relic() -> bool:
 	return category == Category.RELIC
 
 
+# Sert à savoir si l'objet mérite une place dans la barre d'objets du combat :
+# seuls les objets qu'un joueur peut déclencher lui-même y apparaissent.
+func has_manual_activation() -> bool:
+	for effect in reactive_effects:
+		if effect != null and effect.enabled and effect.is_manual_trigger():
+			return true
+	return false
+
+
 func is_compatible_with(character_id: StringName) -> bool:
 	return compatible_character_ids.is_empty() or character_id in compatible_character_ids
 

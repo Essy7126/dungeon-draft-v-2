@@ -46,6 +46,16 @@ func preview_relic(definition: ItemDefinition) -> Dictionary:
 		if scenario.get("id") in [&"enemy_damage", &"terrain_damage", &"hp_threshold"]:
 			hero.current_hp = 40
 		service.process_trigger(StringName(scenario.get("trigger", &"")), context)
+	# Le déclenchement manuel n'est branché sur aucun événement : rejouer la
+	# liste de scénarios ci-dessus ne le montrerait jamais. On l'exerce donc par
+	# son vrai chemin d'appel, sinon l'aperçu annoncerait « rien ne se passe »
+	# pour tout objet que le joueur active lui-même.
+	var evaluations_before_manual := evaluations.size()
+	for entry in service.manual_activation_entries():
+		hero.current_hp = 40
+		service.activate_relic_manually(hero, StringName(entry.get("instance_id", &"")))
+	for index in range(evaluations_before_manual, evaluations.size()):
+		evaluations[index]["scenario_id"] = ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION
 	var move_cost := service.modify_voluntary_transition_cost(hero, Vector2i(1, 1), Vector2i(2, 1), 2)
 	service.end_combat()
 	service.dispose()

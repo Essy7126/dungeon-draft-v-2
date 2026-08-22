@@ -1,33 +1,33 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://vedh2kqictb"]
 
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_fv5ne"]
-[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="2_m6qdf"]
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_6fgor"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_34b2d"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_u1j7b"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="1_vrghg"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="2_w2vnw"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_g4q7b"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_idlnd"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_5cpyb"]
 
-[sub_resource type="Resource" id="Resource_pirgo"]
-script = ExtResource("2_m6qdf")
+[sub_resource type="Resource" id="Resource_g7do4"]
+script = ExtResource("2_w2vnw")
 condition_id = &"enemy_source_required"
 
-[sub_resource type="Resource" id="Resource_yk6hu"]
-script = ExtResource("2_m6qdf")
+[sub_resource type="Resource" id="Resource_a07nx"]
+script = ExtResource("2_w2vnw")
 condition_id = &"real_hp_loss_positive"
 
-[sub_resource type="Resource" id="Resource_8oj6r"]
-script = ExtResource("1_fv5ne")
+[sub_resource type="Resource" id="Resource_8xpvy"]
+script = ExtResource("1_vrghg")
 trigger_id = &"hp_lost"
-conditions = Array[ExtResource("2_m6qdf")]([SubResource("Resource_pirgo"), SubResource("Resource_yk6hu")])
+conditions = Array[ExtResource("2_w2vnw")]([SubResource("Resource_g7do4"), SubResource("Resource_a07nx")])
 target_id = &"damage_source"
 result_id = &"next_turn_ap"
 value = -1.0
 frequency_id = &"per_combat"
 
 [resource]
-script = ExtResource("3_6fgor")
+script = ExtResource("3_g4q7b")
 item_id = &"chaines_de_promethee"
 display_name = "Chaînes de Prométhée"
-description = "Le premier ennemi qui te fait perdre des PV pendant le combat reçoit un malus de 1 PA au début de son prochain tour. Les dégâts de terrain, auto-infligés, ou entièrement absorbés ne comptent pas."
+description = "Le premier ennemi qui te fait perdre des PV pendant le combat reçoit un malus de 1 PA au début de son prochain tour."
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5
-reactive_effects = Array[ExtResource("1_fv5ne")]([SubResource("Resource_8oj6r")])
+reactive_effects = Array[ExtResource("1_vrghg")]([SubResource("Resource_8xpvy")])

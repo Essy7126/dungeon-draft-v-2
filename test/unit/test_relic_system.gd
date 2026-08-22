@@ -411,6 +411,159 @@ func test_turn_end_fact_is_emitted_once() -> void:
 	battle.free()
 
 
+# ============================================================
+# ACTIVATION MANUELLE
+# ============================================================
+
+func test_manual_trigger_is_registered_but_absent_from_the_automatic_moments() -> void:
+	var registry := RelicEffectRegistry.new()
+	var effect := ItemReactiveEffectData.new()
+	effect.trigger_id = ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION
+	effect.target_id = ItemReactiveEffectData.TARGET_TRIGGER_HERO
+	effect.result_id = ItemReactiveEffectData.RESULT_CURRENT_AP
+	assert_true(effect.is_manual_trigger())
+	assert_true(
+		registry.validate_effect(effect).is_empty(),
+		"Le déclencheur manuel doit être un descripteur enregistré comme les autres",
+	)
+	var automatic := registry.automatic_trigger_descriptors(effect)
+	assert_false(
+		automatic.any(func(value): return value.get("id") == ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION),
+		"La liste des moments automatiques ne doit pas proposer le déclenchement manuel",
+	)
+	assert_true(
+		registry.compatible_descriptors(RelicEffectRegistry.KIND_TRIGGER, effect).any(
+			func(value): return value.get("id") == ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION
+		),
+	)
+
+
+func test_manual_relic_never_fires_on_its_own_and_applies_when_activated() -> void:
+	var relic := _manual_relic(&"manual_ap", ItemReactiveEffectData.RESULT_CURRENT_AP, 1.0)
+	assert_true(relic.is_valid(), "Un déclencheur manuel ne doit rien casser dans is_valid()")
+	assert_true(relic.has_manual_activation())
+	var catalog := _catalog([relic])
+	var inventory := RunInventory.new()
+	inventory.initialize(catalog)
+	inventory.try_add(relic.item_id)
+	var hero := _unit(&"manual_hero", 0)
+	var service := _service(inventory, catalog, [hero])
+	service.begin_combat([hero])
+	service.process_trigger(
+		ItemReactiveEffectData.TRIGGER_TURN_START, {"trigger_hero": hero, "active_unit": hero}
+	)
+	assert_eq(hero.current_ap, 6, "Aucun événement automatique ne doit déclencher un objet manuel")
+	var instance_id := _manual_instance_id(service, relic.item_id)
+	assert_true(bool(service.manual_activation_state(hero, instance_id).get("available", false)))
+	var result := service.activate_relic_manually(hero, instance_id)
+	assert_true(bool(result.get("success", false)), str(result))
+	assert_eq(hero.current_ap, 7)
+
+
+func test_manual_activation_refuses_and_explains_condition_then_frequency() -> void:
+	var relic := _manual_relic(&"manual_conditional", ItemReactiveEffectData.RESULT_CURRENT_AP, 1.0)
+	var condition := ItemReactiveConditionData.new()
+	condition.condition_id = &"hp_percent"
+	condition.comparison = &"less_or_equal"
+	condition.value = 0.4
+	relic.reactive_effects[0].conditions = [condition]
+	var catalog := _catalog([relic])
+	var inventory := RunInventory.new()
+	inventory.initialize(catalog)
+	inventory.try_add(relic.item_id)
+	var hero := _unit(&"conditional_hero", 0)
+	var service := _service(inventory, catalog, [hero])
+	service.begin_combat([hero])
+	var instance_id := _manual_instance_id(service, relic.item_id)
+
+	var blocked := service.activate_relic_manually(hero, instance_id)
+	assert_false(bool(blocked.get("success", true)))
+	assert_eq(blocked.get("reason"), RelicRuntimeService.MANUAL_REASON_CONDITION_NOT_MET)
+	assert_eq(hero.current_ap, 6, "Un refus de condition ne doit rien appliquer")
+
+	hero.current_hp = 40
+	assert_true(bool(service.activate_relic_manually(hero, instance_id).get("success", false)))
+	assert_eq(hero.current_ap, 7)
+
+	var exhausted := service.activate_relic_manually(hero, instance_id)
+	assert_false(bool(exhausted.get("success", true)))
+	assert_eq(exhausted.get("reason"), RelicRuntimeService.MANUAL_REASON_FREQUENCY_EXHAUSTED)
+	assert_eq(hero.current_ap, 7, "La fréquence par tour interdit une seconde activation")
+	var state := service.manual_activation_state(hero, instance_id)
+	assert_false(bool(state.get("available", true)))
+	assert_eq(int(state.get("remaining", -1)), 0)
+
+	EventBus.turn_started.emit(hero)
+	assert_true(
+		bool(service.manual_activation_state(hero, instance_id).get("available", false)),
+		"Le compteur par tour doit se réinitialiser au tour suivant",
+	)
+
+
+func test_manual_activation_targets_one_instance_and_one_hero() -> void:
+	var first_relic := _manual_relic(&"manual_first", ItemReactiveEffectData.RESULT_CURRENT_AP, 1.0)
+	var second_relic := _manual_relic(&"manual_second", ItemReactiveEffectData.RESULT_CURRENT_MP, 1.0)
+	var catalog := _catalog([first_relic, second_relic])
+	var inventory := RunInventory.new()
+	inventory.initialize(catalog)
+	inventory.try_add(first_relic.item_id)
+	inventory.try_add(second_relic.item_id)
+	var hero := _unit(&"activating_hero", 0)
+	var ally := _unit(&"waiting_hero", 0)
+	var service := _service(inventory, catalog, [hero, ally])
+	service.begin_combat([hero, ally])
+	assert_eq(service.manual_activation_entries().size(), 2)
+
+	var first_instance := _manual_instance_id(service, first_relic.item_id)
+	assert_true(bool(service.activate_relic_manually(hero, first_instance).get("success", false)))
+	assert_eq(hero.current_ap, 7)
+	assert_eq(hero.current_mp, 3, "La seconde relique ne doit pas être déclenchée")
+	assert_eq(ally.current_ap, 6, "Un allié porteur du même sac ne doit pas être affecté")
+
+	var unknown := service.activate_relic_manually(hero, &"instance_inexistante")
+	assert_false(bool(unknown.get("success", true)))
+	assert_eq(unknown.get("reason"), RelicRuntimeService.MANUAL_REASON_UNKNOWN_ITEM)
+
+	assert_true(
+		bool(service.activate_relic_manually(ally, first_instance).get("success", false)),
+		"Le compteur de fréquence est tenu par héros, l’allié garde son activation",
+	)
+	assert_eq(ally.current_ap, 7)
+	assert_eq(hero.current_ap, 7)
+
+
+func test_fureur_d_ares_is_now_activated_by_the_player() -> void:
+	var relic := load("res://data/items/definitions/fureur_d_ares.tres") as ItemDefinition
+	assert_not_null(relic)
+	assert_true(relic.is_valid())
+	assert_true(relic.has_manual_activation())
+	for effect in relic.reactive_effects:
+		assert_true(effect.is_manual_trigger(), "Les deux effets passent par le clic du joueur")
+		assert_eq(effect.frequency_id, ItemReactiveEffectData.FREQUENCY_TURN)
+		assert_eq(effect.conditions.size(), 1)
+		assert_eq(effect.conditions[0].condition_id, &"hp_percent")
+		assert_eq(effect.conditions[0].value, 0.4)
+
+
+func _manual_relic(
+		item_id: StringName,
+		result_id: StringName,
+		value := 1.0
+	) -> ItemDefinition:
+	var definition := _relic(
+		item_id, ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION, result_id, value
+	)
+	definition.reactive_effects[0].frequency_id = ItemReactiveEffectData.FREQUENCY_TURN
+	return definition
+
+
+func _manual_instance_id(service: RelicRuntimeService, item_id: StringName) -> StringName:
+	for entry in service.manual_activation_entries():
+		if (entry.get("definition") as ItemDefinition).item_id == item_id:
+			return StringName(entry.get("instance_id", &""))
+	return &""
+
+
 func _relic(
 		item_id: StringName,
 		trigger_id: StringName = ItemReactiveEffectData.TRIGGER_COMBAT_START,

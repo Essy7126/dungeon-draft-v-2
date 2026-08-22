@@ -1040,6 +1040,27 @@ func _on_spell_pressed(spell: Spell) -> void:
 	turn_state.on_spell_selected(spell)
 	_refresh_mode_button()
 
+# Activation d'un objet depuis la barre d'objets du HUD. Le HUD n'applique
+# jamais l'effet lui-même : il demande, et RelicRuntimeService décide. Un refus
+# ici est un cas de course (l'état a changé entre l'affichage et le clic), pas
+# une erreur du joueur.
+func _on_item_activation_requested(instance_id: StringName) -> void:
+	if _is_evolution_locked() or _spell_resolution_pending:
+		return
+	var unit = turn_queue.get_current_unit()
+	if unit == null or unit.team != 0:
+		return
+	var relic_service := GameManager.get_relic_runtime_service()
+	if relic_service == null:
+		return
+	var result := relic_service.activate_relic_manually(unit, instance_id)
+	if not bool(result.get("success", false)):
+		DebugLogger.debug(
+			DebugLogger.LogCategory.COMBAT,
+			"Activation manuelle refusée : %s" % result.get("reason", &"inconnu"),
+			{"instance_id": str(instance_id)}
+		)
+
 func _on_end_turn_pressed() -> void:
 	if _is_evolution_locked() or _spell_resolution_pending:
 		return

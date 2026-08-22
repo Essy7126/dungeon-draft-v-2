@@ -450,6 +450,71 @@ func test_item_id_normalization_and_collision_suffix_are_deterministic() -> void
 	assert_eq(path_service.suggest_item_id("Collision", service), &"collision_2")
 
 
+# Le choix « tout seul » / « le joueur » de l'éditeur d'effets se résume à une
+# écriture de trigger_id. On couvre ici ce que ce bouton produit réellement :
+# aller-retour dans le document avec historique, puis acceptation par la
+# validation du Studio et par l'aperçu runtime.
+func test_manual_activation_choice_round_trips_through_the_document() -> void:
+	var relic := _manual_relic(&"studio_manual_choice")
+	var document := ItemStudioDocument.new()
+	assert_true(document.create_new(relic))
+	assert_true(document.working_copy.reactive_effects[0].is_manual_trigger())
+	assert_true(document.record_edit("Modifier qui déclenche l’effet", func():
+		document.working_copy.reactive_effects[0].trigger_id = \
+			ItemReactiveEffectData.TRIGGER_TURN_START
+	, ItemStudioDocument.CHANGE_STRUCTURE, "reactive.descriptor"))
+	assert_false(document.working_copy.reactive_effects[0].is_manual_trigger())
+	assert_false(document.working_copy.has_manual_activation())
+	assert_true(document.history.undo())
+	assert_true(
+		document.working_copy.reactive_effects[0].is_manual_trigger(),
+		"Annuler doit ramener le déclenchement au clic du joueur",
+	)
+	assert_true(document.working_copy.has_manual_activation())
+
+
+func test_manual_relic_passes_studio_validation_and_runtime_preview() -> void:
+	var relic := _manual_relic(&"studio_manual_valid")
+	var report := ItemStudioValidationService.new().validate_interactive(
+		relic, _fixture_catalog()
+	)
+	assert_true(report.get("valid", false), str(report))
+	assert_false(_has_message(report, &"REACTIVE_DESCRIPTOR_UNKNOWN"))
+	var preview := ItemRuntimePreviewService.new().preview_relic(relic)
+	assert_true(preview.get("ok", false), str(preview))
+	# Sans scénario dédié, un objet manuel s'afficherait « rien ne se passe » :
+	# l'aperçu doit l'exercer par son vrai chemin d'activation.
+	var manual_scenarios := (preview.get("scenarios", []) as Array).filter(func(value):
+		return (value as Dictionary).get("trigger_id") == ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION
+	)
+	assert_false(
+		manual_scenarios.is_empty(),
+		"L’aperçu doit montrer ce que produit le clic du joueur",
+	)
+	assert_true(manual_scenarios.any(func(value):
+		return (value as Dictionary).get("triggered", false)
+	))
+
+
+func _manual_relic(item_id: StringName) -> ItemDefinition:
+	var definition := ItemDefinition.new()
+	definition.item_id = item_id
+	definition.display_name = "Relique manuelle fixture"
+	definition.description = "Fixture de test"
+	definition.category = ItemDefinition.Category.RELIC
+	definition.equipment_slot = ItemDefinition.EquipmentSlot.NONE
+	definition.stack_limit = 1
+	var effect := ItemReactiveEffectData.new()
+	effect.trigger_id = ItemReactiveEffectData.TRIGGER_MANUAL_ACTIVATION
+	effect.target_id = ItemReactiveEffectData.TARGET_TRIGGER_HERO
+	effect.result_id = ItemReactiveEffectData.RESULT_CURRENT_AP
+	effect.value = 1.0
+	effect.frequency_id = ItemReactiveEffectData.FREQUENCY_TURN
+	var effects: Array[ItemReactiveEffectData] = [effect]
+	definition.reactive_effects = effects
+	return definition
+
+
 func _fixture_catalog() -> ItemStudioCatalogService:
 	var service := ItemStudioCatalogService.new()
 	service.configure(CATALOG_PATH, DRAFTS_ROOT)

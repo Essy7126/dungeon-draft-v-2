@@ -13,6 +13,9 @@ const TRIGGER_HP_LOST: StringName = &"hp_lost"
 const TRIGGER_HP_THRESHOLD_CROSSED: StringName = &"hp_threshold_crossed"
 const TRIGGER_UNIT_KILLED: StringName = &"unit_killed"
 const TRIGGER_ADJACENT_ENEMY_TURN_END: StringName = &"adjacent_enemy_turn_end"
+# Seul déclencheur qui n'est branché sur aucun signal d'EventBus : c'est le
+# joueur qui choisit le moment, en cliquant sur l'objet dans la barre de combat.
+const TRIGGER_MANUAL_ACTIVATION: StringName = &"manual_activation"
 
 const TARGET_TRIGGER_HERO: StringName = &"trigger_hero"
 const TARGET_DAMAGE_SOURCE: StringName = &"damage_source"
@@ -48,6 +51,10 @@ const FREQUENCY_COOLDOWN_TURNS: StringName = &"cooldown_turns"
 @export var frequency_id: StringName = FREQUENCY_UNLIMITED
 @export_range(1, 99, 1) var max_activations := 1
 @export_range(1, 99, 1) var recharge_turns := 1
+
+
+func is_manual_trigger() -> bool:
+	return trigger_id == TRIGGER_MANUAL_ACTIVATION
 
 
 func is_structurally_valid() -> bool:
