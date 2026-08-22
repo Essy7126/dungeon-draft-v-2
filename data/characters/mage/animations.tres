@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CharacterAnimationSetData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/characters/character_animation_set_data.gd" id="1_animations"]
+
+[resource]
+script = ExtResource("1_animations")
+animation_names = {
+&"cast": &"DD_Mage_Cast",
+&"death": &"DD_Mage_Death",
+&"hit": &"DD_Mage_Hit",
+&"idle": &"DD_Mage_Idle",
+&"run": &"DD_Mage_Run",
+&"walk": &"DD_Mage_Walk"
+}

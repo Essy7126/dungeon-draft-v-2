@@ -122,6 +122,7 @@ static func _clear_editable_paths(resource: Resource, visited: Dictionary) -> vo
 	visited[resource.get_instance_id()] = true
 	resource.set_path_cache("")
 	if resource is UnitData:
+		_clear_editable_paths(resource.animation_set, visited)
 		for spell in resource.spells:
 			_clear_editable_paths(spell, visited)
 		for discipline in resource.disciplines:
@@ -151,6 +152,9 @@ static func _priority(resource: Resource) -> int:
 		return 40
 	if resource is DisciplineData:
 		return 50
+	# La fiche d'animations s'ecrit avant l'UnitData qui la reference.
+	if resource is CharacterAnimationSetData:
+		return 55
 	if resource is CharacterProgressionProfile:
 		return 60
 	if resource is UnitData:
@@ -164,6 +168,8 @@ static func _is_reachable(root: Resource, searched: Resource) -> bool:
 	if root == searched:
 		return true
 	if root is UnitData:
+		if root.animation_set != null and _is_reachable(root.animation_set, searched):
+			return true
 		for spell in root.spells:
 			if _is_reachable(spell, searched):
 				return true

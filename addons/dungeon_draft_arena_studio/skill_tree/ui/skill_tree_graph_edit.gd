@@ -77,7 +77,12 @@ func _ready() -> void:
 	add_child(_popup)
 	_legend = Label.new()
 	_legend.text = "Bleu continu : prérequis  ·  Orange pointillé : exclusion  ·  R2 : lien implicite au sort racine"
-	_legend.position = Vector2(12, 12)
+	# En haut à gauche, la légende se superposait à la barre de zoom intégrée de
+	# GraphEdit et à la première rangée de nœuds. Elle est ancrée en bas.
+	_legend.set_anchors_and_offsets_preset(
+		Control.PRESET_BOTTOM_LEFT, Control.PRESET_MODE_MINSIZE
+	)
+	_legend.position += Vector2(12, -14)
 	_legend.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_legend.add_theme_color_override("font_color", Color(0.88, 0.9, 0.94))
 	add_child(_legend)

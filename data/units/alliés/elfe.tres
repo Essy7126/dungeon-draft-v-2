@@ -14,6 +14,7 @@
 [ext_resource type="Resource" uid="uid://dkgtp1fjeyiuf" path="res://data/characters/elf/disciplines/assassin.tres" id="10_assassin"]
 [ext_resource type="Resource" uid="uid://cocndd1kqgpax" path="res://data/characters/elf/disciplines/mage.tres" id="11_mage"]
 [ext_resource type="Resource" uid="uid://cudk8c1n1xwn5" path="res://data/characters/elf/disciplines/healer.tres" id="12_healer"]
+[ext_resource type="Resource" path="res://data/characters/elf/animations.tres" id="90_animations"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
 atlas = ExtResource("6_fallback_texture")
@@ -38,6 +39,7 @@ description = "Lanceuse de sorts elfique projetee en 3D dans la salle isometriqu
 sprite_frames = SubResource("SpriteFrames_fallback")
 visual_scene = ExtResource("7_elf_visual")
 preview_visual_scene = ExtResource("7_elf_preview")
+animation_set = ExtResource("90_animations")
 role = "Polyvalente"
 presentation_summary = "Quatre voies complementaires pour adapter ses sorts au combat."
 progression_summary = "4 disciplines"

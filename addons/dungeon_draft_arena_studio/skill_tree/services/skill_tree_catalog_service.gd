@@ -2,36 +2,96 @@
 class_name SkillTreeCatalogService
 extends RefCounted
 
+# Les personnages jouables ne sont plus une liste écrite en dur : tout UnitData
+# d'équipe Joueur trouvé sous l'un de ces dossiers apparaît dans le Studio.
+# Déposer un .tres suffit donc à ajouter un personnage, sans toucher au code.
+# Les deux orthographes du dossier existent réellement dans le dépôt.
+const HERO_ROOTS: Array[String] = [
+	"res://data/units/alliés",
+	"res://data/units/allies",
+]
+const ENEMY_ROOTS: Array[String] = [
+	"res://data/units/ennemie",
+	"res://data/units/enemies",
+]
 const HERO_ROOT := "res://data/units/alliés"
-const PLAYABLE_HERO_IDS := [&"elf", &"mage", &"warrior"]
+const TEAM_PLAYER := 0
+const TEAM_ENEMY := 1
 
 
+## `root` limite la recherche à un seul dossier, `playable_ids` à une liste
+## d'identifiants. Les deux sont vides par défaut : tout est découvert.
 static func discover_heroes(
-		root := HERO_ROOT,
-		playable_ids: Array = PLAYABLE_HERO_IDS
+		root := "",
+		playable_ids: Array = []
 	) -> Array[Dictionary]:
-	var heroes: Array[Dictionary] = []
-	for path in _resource_files(root):
-		var resource := ResourceLoader.load(
-			path, "", ResourceLoader.CACHE_MODE_REUSE
-		) as UnitData
-		if resource == null or resource.team != 0 \
-				or not playable_ids.has(resource.get_effective_unit_id()):
-			continue
-		heroes.append({
-			"id": resource.get_effective_unit_id(),
-			"name": resource.unit_name,
-			"path": path,
-			"resource": resource,
-			"discipline_count": resource.disciplines.size(),
-			"invalid": _hero_has_obvious_error(resource),
-		})
-	heroes.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+	return _discover(HERO_ROOTS, TEAM_PLAYER, root, playable_ids)
+
+
+static func discover_enemies(
+		root := "",
+		playable_ids: Array = []
+	) -> Array[Dictionary]:
+	return _discover(ENEMY_ROOTS, TEAM_ENEMY, root, playable_ids)
+
+
+## Personnages jouables ET ennemis, dans un seul catalogue trié : les héros
+## d'abord, puis les ennemis, chacun par ordre alphabétique.
+static func discover_units() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	result.append_array(discover_heroes())
+	result.append_array(discover_enemies())
+	return result
+
+
+static func _discover(
+		default_roots: Array[String],
+		team: int,
+		root: String,
+		playable_ids: Array
+	) -> Array[Dictionary]:
+	var units: Array[Dictionary] = []
+	var roots: Array[String] = []
+	if root.is_empty():
+		roots.assign(default_roots)
+	else:
+		roots.append(root)
+	var seen_ids := {}
+	for unit_root in roots:
+		for path in _resource_files(unit_root):
+			# Un fichier dont une dépendance a disparu se chargerait en
+			# renvoyant null, mais en inondant la console d'erreurs moteur.
+			# On le repère avant, sans le charger.
+			if not _dependencies_available(path):
+				continue
+			var resource := ResourceLoader.load(
+				path, "", ResourceLoader.CACHE_MODE_REUSE
+			) as UnitData
+			if resource == null or resource.team != team:
+				continue
+			var unit_id := resource.get_effective_unit_id()
+			if not playable_ids.is_empty() and not playable_ids.has(unit_id):
+				continue
+			if seen_ids.has(unit_id):
+				continue
+			seen_ids[unit_id] = true
+			units.append({
+				"id": unit_id,
+				"name": resource.unit_name,
+				"path": path,
+				"resource": resource,
+				"team": resource.team,
+				"is_enemy": resource.team == TEAM_ENEMY,
+				"spell_count": resource.spells.size(),
+				"discipline_count": resource.disciplines.size(),
+				"invalid": _hero_has_obvious_error(resource),
+			})
+	units.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return str(a.get("name", "")).naturalnocasecmp_to(
 			str(b.get("name", ""))
 		) < 0
 	)
-	return heroes
+	return units
 
 
 static func disciplines_for(hero: UnitData) -> Array[Dictionary]:
@@ -78,6 +138,22 @@ static func all_spells(hero: UnitData) -> Array[Spell]:
 		if spell != null:
 			result.append(spell)
 	return result
+
+
+## Vrai si toutes les ressources référencées par ce fichier existent encore.
+## Plusieurs fichiers d'ennemis du dépôt pointent des assets supprimés : ils
+## sont inexploitables et doivent être écartés du catalogue en silence.
+static func _dependencies_available(path: String) -> bool:
+	for dependency in ResourceLoader.get_dependencies(path):
+		var target := ""
+		for part in str(dependency).split("::"):
+			if part.begins_with("res://"):
+				target = part
+		if target.is_empty():
+			continue
+		if not ResourceLoader.exists(target) and not FileAccess.file_exists(target):
+			return false
+	return true
 
 
 static func _hero_has_obvious_error(hero: UnitData) -> bool:

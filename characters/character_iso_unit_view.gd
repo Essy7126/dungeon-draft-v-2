@@ -149,10 +149,20 @@ func bind_unit(unit: Unit) -> void:
 	_disconnect_bound_unit()
 	_unit = unit
 	if _unit != null:
+		_apply_character_animation_set()
 		_unit.moved.connect(_on_bound_unit_moved)
 		_unit.died.connect(_on_bound_unit_died)
 		if not EventBus.hit_resolved.is_connected(_on_hit_resolved):
 			EventBus.hit_resolved.connect(_on_hit_resolved)
+
+
+## La fiche d'animations du personnage, editee dans le Studio, remplace les
+## clips par defaut du script visuel. Sans fiche, rien ne change.
+func _apply_character_animation_set() -> void:
+	if _unit == null or _unit.character_data == null \
+			or not is_instance_valid(character_visual):
+		return
+	character_visual.apply_animation_set(_unit.character_data.animation_set)
 
 
 func _disconnect_bound_unit() -> void:

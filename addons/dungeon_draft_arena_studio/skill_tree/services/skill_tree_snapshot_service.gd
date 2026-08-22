@@ -147,6 +147,7 @@ static func _encode_storage(
 static func _is_editable_resource(resource: Resource) -> bool:
 	return resource is CharacterProgressionProfile \
 		or resource is UnitData \
+		or resource is CharacterAnimationSetData \
 		or resource is DisciplineData \
 		or resource is DisciplineRankData \
 		or resource is SkillUpgradeData \

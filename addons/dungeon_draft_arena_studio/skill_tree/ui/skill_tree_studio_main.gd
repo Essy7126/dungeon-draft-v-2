@@ -9,6 +9,9 @@ const GUIDE_STEPS := [
 	"5 Rangs et XP", "6 Améliorations", "7 Branches", "8 Effets",
 	"9 Tester", "10 Sauvegarder",
 ]
+const SCREEN_CHARACTER: StringName = &"character"
+const SCREEN_SKILLS: StringName = &"skills"
+const SCREEN_ANIMATIONS: StringName = &"animations"
 const TUTORIAL_SANDBOX_SERVICE_PATH := (
 	"res://addons/dungeon_draft_arena_studio/skill_tree/services/"
 	+ "skill_tree_tutorial_sandbox_service.gd"
@@ -39,6 +42,14 @@ var orphan_button: Button
 var tour_menu_button: MenuButton
 var toolbar_panel: PanelContainer
 var guide_panel: PanelContainer
+var screen_panel: PanelContainer
+var skills_screen: Control
+var animation_screen: SkillTreeAnimationScreen
+var character_screen: SkillTreeCharacterScreen
+var character_screen_button: Button
+var skills_screen_button: Button
+var animation_screen_button: Button
+var current_screen: StringName = SCREEN_CHARACTER
 var catalog: SkillTreeCatalogPanel
 var graph: SkillTreeStudioGraphEdit
 var inspector: SkillTreeInspectorPanel
@@ -113,7 +124,7 @@ func _ready() -> void:
 	add_child(_draft_timer)
 	_draft_timer.start()
 	heroes = _run_hero_catalog() if project_context != null \
-		else SkillTreeCatalogService.discover_heroes()
+		else SkillTreeCatalogService.discover_units()
 	_refresh_catalog()
 	if project_context != null:
 		project_context.hero_changed.connect(_on_context_hero_changed)
@@ -126,8 +137,8 @@ func _ready() -> void:
 			call_deferred("_open_context_hero", project_context.active_hero, true)
 		return
 	var initial_path := str(workspace_state.get("character_path", ""))
-	if not _catalog_contains_path(initial_path) and not heroes.is_empty():
-		initial_path = str(heroes[0].get("path", ""))
+	if not _catalog_contains_path(initial_path):
+		initial_path = _default_hero_path()
 	if not initial_path.is_empty():
 		call_deferred("_open_character", initial_path, true)
 
@@ -191,10 +202,12 @@ func _build_ui() -> void:
 	context_bar.setup(project_context, shared_reference_graph)
 	root.add_child(context_bar)
 	root.add_child(_build_toolbar())
+	root.add_child(_build_screen_bar())
 	root.add_child(_build_guide_bar())
 	var horizontal := HSplitContainer.new()
 	horizontal.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	horizontal.split_offset = 280
+	skills_screen = horizontal
 	root.add_child(horizontal)
 	catalog = SkillTreeCatalogPanel.new()
 	catalog.character_requested.connect(_request_character)
@@ -255,8 +268,22 @@ func _build_ui() -> void:
 			editor_interface.inspect_object(resource)
 	)
 	horizontal.add_child(inspector)
+	animation_screen = SkillTreeAnimationScreen.new()
+	animation_screen.name = "AnimationScreen"
+	animation_screen.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	animation_screen.character_change_requested.connect(func():
+		_show_screen(SCREEN_CHARACTER)
+	)
+	animation_screen.clip_change_requested.connect(_change_animation_clip)
+	root.add_child(animation_screen)
+	character_screen = SkillTreeCharacterScreen.new()
+	character_screen.name = "CharacterScreen"
+	character_screen.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	character_screen.character_chosen.connect(_choose_character)
+	root.add_child(character_screen)
 	_build_dialogs()
 	_build_tour_highlight()
+	_show_screen(current_screen)
 
 
 func _build_toolbar() -> Control:
@@ -345,6 +372,129 @@ func _build_toolbar() -> Control:
 	tutorial_menu.id_pressed.connect(_open_tutorial_menu_item)
 	bar.add_child(tour_menu_button)
 	return panel
+
+
+func _build_screen_bar() -> Control:
+	screen_panel = PanelContainer.new()
+	var bar := HBoxContainer.new()
+	bar.add_theme_constant_override("separation", 6)
+	screen_panel.add_child(bar)
+	character_screen_button = _screen_button(
+		bar, "Personnage",
+		"Choisir le personnage sur lequel travailler.",
+		SCREEN_CHARACTER
+	)
+	skills_screen_button = _screen_button(
+		bar, "Compétences",
+		"Disciplines, rangs, améliorations et effets du personnage.",
+		SCREEN_SKILLS
+	)
+	animation_screen_button = _screen_button(
+		bar, "Animations",
+		"Quelle animation joue chaque moment du personnage : repos, marche, mort…",
+		SCREEN_ANIMATIONS
+	)
+	return screen_panel
+
+
+func _screen_button(
+		parent: Control, text: String, tooltip: String, screen: StringName
+	) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.tooltip_text = tooltip
+	button.set_meta("base_tooltip", tooltip)
+	button.toggle_mode = true
+	button.custom_minimum_size = Vector2(170, 34)
+	button.pressed.connect(func(): _show_screen(screen))
+	parent.add_child(button)
+	return button
+
+
+## Un seul écran visible à la fois. Le personnage ouvert ne change pas d'un
+## écran à l'autre, mais chaque écran ne montre que ce qui le concerne : les
+## outils des compétences disparaissent ailleurs, et tant qu'aucun personnage
+## n'est choisi, seul l'écran Personnage est accessible.
+func _show_screen(screen: StringName) -> void:
+	var has_document := session.working_unit != null
+	current_screen = screen
+	if not [SCREEN_CHARACTER, SCREEN_SKILLS, SCREEN_ANIMATIONS].has(current_screen) \
+			or (current_screen != SCREEN_CHARACTER and not has_document):
+		current_screen = SCREEN_CHARACTER
+	var on_character := current_screen == SCREEN_CHARACTER
+	var on_skills := current_screen == SCREEN_SKILLS
+	var on_animations := current_screen == SCREEN_ANIMATIONS
+	_update_screen_buttons()
+	if character_screen != null:
+		character_screen.visible = on_character
+	if skills_screen != null:
+		skills_screen.visible = on_skills
+	if animation_screen != null:
+		animation_screen.visible = on_animations
+	if guide_panel != null:
+		guide_panel.visible = on_skills
+	for button in [
+		search_button, compare_button, validate_button, test_button,
+		preview_button, analysis_button, orphan_button,
+	]:
+		if button != null:
+			button.visible = on_skills
+	if production_toggle != null:
+		production_toggle.visible = on_skills and not guided
+	if animation_screen != null and not on_animations:
+		animation_screen.suspend()
+	if on_animations:
+		_refresh_animation_screen()
+	elif on_character:
+		_refresh_character_screen()
+
+
+## Les écrans de travail restent inaccessibles tant qu'aucun personnage n'est
+## choisi : c'est la garantie qu'on n'ouvre jamais le Studio sur des données
+## qui n'appartiennent à personne.
+func _update_screen_buttons() -> void:
+	var has_document := session.working_unit != null
+	for entry in [
+		[character_screen_button, current_screen == SCREEN_CHARACTER, true],
+		[skills_screen_button, current_screen == SCREEN_SKILLS, has_document],
+		[animation_screen_button, current_screen == SCREEN_ANIMATIONS, has_document],
+	]:
+		var button := entry[0] as Button
+		if button == null:
+			continue
+		button.button_pressed = bool(entry[1])
+		button.disabled = not bool(entry[2])
+		button.tooltip_text = "Choisissez d’abord un personnage." if button.disabled \
+			else str(button.get_meta("base_tooltip", ""))
+
+
+func _choose_character(path: String) -> void:
+	_request_character(path)
+	_show_screen(SCREEN_SKILLS)
+
+
+func _refresh_character_screen() -> void:
+	if character_screen == null or not character_screen.visible:
+		return
+	character_screen.set_catalog(heroes, _current_catalog_path())
+
+
+func _refresh_animation_screen() -> void:
+	# Écran caché : inutile d'instancier le modèle 3D et de le faire tourner.
+	# Il se reconstruira à l'affichage, avec l'état à jour.
+	if animation_screen == null or not animation_screen.visible:
+		return
+	animation_screen.set_catalog(heroes, _current_catalog_path())
+	animation_screen.set_guided(guided)
+	animation_screen.set_document(session.working_unit, _current_catalog_path())
+
+
+func _change_animation_clip(
+		action_id: StringName, clip_name: StringName, event_label: String
+	) -> void:
+	if session.working_unit == null:
+		return
+	session.set_animation_clip(action_id, clip_name, event_label)
 
 
 func _build_guide_bar() -> Control:
@@ -562,6 +712,9 @@ func _open_tutorial_menu_item(item_id: int) -> void:
 
 
 func _show_tour_target(target: StringName) -> void:
+	# Le tutoriel décrit l'écran Compétences : on y revient avant de pointer un
+	# élément, sinon la mise en évidence viserait un panneau masqué.
+	_show_screen(SCREEN_SKILLS)
 	_prepare_tour_subject(target)
 	var control := _tour_control(target)
 	if control == null:
@@ -891,7 +1044,15 @@ func _request_character_path(path: String) -> void:
 		for hero in RunContentCatalogService.heroes_for_run(project_context.active_run):
 			if hero != null and hero.base_unit_data != null \
 					and hero.base_unit_data.resource_path == path:
-				project_context.request_hero(hero.character_id, &"skills")
+				if project_context.active_hero == hero:
+					# Le contexte partagé désigne déjà ce héros : c'est le cas
+					# après un détour par un personnage hors partie, qui laisse
+					# le contexte inchangé. Demander le héros ne produirait
+					# alors aucun changement et le Studio resterait bloqué sur
+					# le personnage précédent — on rouvre donc directement.
+					_open_context_hero(hero)
+				else:
+					project_context.request_hero(hero.character_id, &"skills")
 				return
 	if session.is_dirty():
 		_pending_character_path = path
@@ -1222,6 +1383,9 @@ func _refresh_document() -> void:
 			})
 	if sandbox_reset_button != null:
 		sandbox_reset_button.visible = _tutorial_sandbox_is_active()
+	_update_screen_buttons()
+	_refresh_animation_screen()
+	_refresh_character_screen()
 	_loading = false
 
 
@@ -1520,7 +1684,7 @@ func _save() -> Dictionary:
 			)
 		else:
 			heroes = _run_hero_catalog() if project_context != null \
-				else SkillTreeCatalogService.discover_heroes()
+				else SkillTreeCatalogService.discover_units()
 		_refresh_document()
 		status_label.text = str(result.get("message", "Sauvegarde terminée."))
 	else:
@@ -1604,9 +1768,10 @@ func _redo() -> void:
 
 func _set_guided(value: bool) -> void:
 	guided = value
-	production_toggle.visible = not guided
+	production_toggle.visible = not guided and current_screen == SCREEN_SKILLS
 	_refresh_inspector()
 	_refresh_catalog()
+	_refresh_animation_screen()
 	status_label.text = "Mode guidé actif : les explications et exemples sont visibles." \
 		if guided else "Mode avancé actif : tous les paramètres techniques sont accessibles."
 
@@ -1680,6 +1845,17 @@ func _maximum_rank() -> int:
 	return result
 
 
+## Personnage préchargé quand aucun n'a encore été ouvert. On préfère un
+## personnage déjà pourvu de disciplines : un châssis expérimental encore vide
+## donnerait un écran Compétences désert au premier lancement.
+func _default_hero_path() -> String:
+	for entry in heroes:
+		if not bool(entry.get("is_enemy", false)) \
+				and int(entry.get("discipline_count", 0)) > 0:
+			return str(entry.get("path", ""))
+	return str(heroes[0].get("path", "")) if not heroes.is_empty() else ""
+
+
 func _catalog_contains_path(path: String) -> bool:
 	return not path.is_empty() and heroes.any(func(entry: Dictionary) -> bool:
 		return str(entry.get("path", "")) == path
@@ -1694,6 +1870,9 @@ func _project_id_collision(kind: String, value: StringName) -> bool:
 
 
 func _open_search_result(result: Dictionary) -> void:
+	# Un résultat de recherche désigne toujours un élément de l'écran
+	# Compétences : on l'affiche pour que la sélection reste visible.
+	_show_screen(SCREEN_SKILLS)
 	var path := str(result.get("character_path", ""))
 	var discipline_id := StringName(result.get("discipline_id", &""))
 	var current_path := _current_catalog_path()
@@ -1806,6 +1985,21 @@ func _run_hero_catalog() -> Array[Dictionary]:
 			"discipline_count": hero.progression_profile.disciplines.size(),
 			"invalid": not hero.validation_errors().is_empty(),
 		})
+	# Un personnage absent de la partie en cours reste modifiable : on l'ajoute
+	# depuis le disque, sans profil de progression. Sans cela, la liste du
+	# Studio serait limitée à l'équipe de la partie active.
+	var in_run := {}
+	for entry in result:
+		in_run[StringName(entry.get("id", &""))] = true
+	for entry in SkillTreeCatalogService.discover_units():
+		if in_run.has(StringName(entry.get("id", &""))):
+			continue
+		var outside := entry.duplicate()
+		outside["outside_run"] = true
+		result.append(outside)
+	result.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return str(a.get("name", "")).naturalnocasecmp_to(str(b.get("name", ""))) < 0
+	)
 	return result
 
 

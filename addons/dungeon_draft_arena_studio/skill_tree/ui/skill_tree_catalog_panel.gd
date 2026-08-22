@@ -24,25 +24,25 @@ func _ready() -> void:
 	custom_minimum_size.x = 270
 	add_theme_constant_override("separation", 7)
 	var title := Label.new()
-	title.text = "1 · CATALOGUE"
+	title.text = "1 · DISCIPLINES"
 	title.add_theme_font_size_override("font_size", 17)
 	title.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
 	add_child(title)
 	help_label = Label.new()
-	help_label.text = "Choisissez d’abord un personnage, puis l’une de ses disciplines."
+	help_label.text = "Choisissez la discipline à modifier. Le personnage se change depuis l’écran Personnage."
 	help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	help_label.add_theme_color_override("font_color", Color(0.72, 0.77, 0.84))
 	add_child(help_label)
 	search_edit = LineEdit.new()
-	search_edit.placeholder_text = "Rechercher un personnage ou une discipline…"
+	search_edit.placeholder_text = "Rechercher une discipline…"
 	search_edit.tooltip_text = "Filtre le catalogue sans modifier les Resources."
 	search_edit.text_changed.connect(func(_value): _rebuild())
 	add_child(search_edit)
 	filter_option = OptionButton.new()
-	filter_option.add_item("Toutes les ressources")
-	filter_option.add_item("Ressources invalides")
+	filter_option.add_item("Toutes les disciplines")
+	filter_option.add_item("Disciplines à corriger")
 	filter_option.add_item("Document modifié")
-	filter_option.tooltip_text = "Affiche tout le catalogue ou seulement les éléments à vérifier."
+	filter_option.tooltip_text = "Affiche toutes les disciplines ou seulement celles à vérifier."
 	filter_option.item_selected.connect(func(_index): _rebuild())
 	add_child(filter_option)
 	tree = Tree.new()
@@ -103,6 +103,11 @@ func _rebuild() -> void:
 		var hero := hero_entry.get("resource") as UnitData
 		if hero == null or not _passes_filter(hero_entry, hero):
 			continue
+		# Le personnage se choisit sur l'écran d'accueil : ce panneau ne montre
+		# donc que celui qui est ouvert. Afficher les disciplines des autres
+		# noierait le travail en cours sous des données sans rapport.
+		if str(hero_entry.get("path", "")) != _current_character_path:
+			continue
 		var discipline_rows := SkillTreeCatalogService.disciplines_for(hero)
 		var hero_matches := query.is_empty() \
 			or hero.unit_name.to_lower().contains(query) \
@@ -119,6 +124,14 @@ func _rebuild() -> void:
 		hero_item.set_tooltip_text(0, "Personnage — %d discipline(s)" % hero.disciplines.size())
 		hero_item.set_metadata(0, {"kind": "hero", "path": hero_entry.get("path", "")})
 		hero_item.set_collapsed(false)
+		if visible_disciplines.is_empty():
+			var empty_item := tree.create_item(hero_item)
+			empty_item.set_text(0, "Aucune discipline")
+			empty_item.set_tooltip_text(
+				0, "Utilisez « + Nouvelle discipline » pour en créer une."
+			)
+			empty_item.set_selectable(0, false)
+			empty_item.set_custom_color(0, Color(0.72, 0.77, 0.84))
 		for discipline_entry in visible_disciplines:
 			var discipline_item := tree.create_item(hero_item)
 			var discipline_id := StringName(discipline_entry.get("id", &""))

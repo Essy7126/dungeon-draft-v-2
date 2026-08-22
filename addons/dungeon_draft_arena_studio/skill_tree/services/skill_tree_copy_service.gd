@@ -36,6 +36,8 @@ static func resources_by_key(root: UnitData) -> Dictionary:
 	if root == null:
 		return result
 	result["unit"] = root
+	if root.animation_set != null:
+		result["animations"] = root.animation_set
 	for spell_index in range(root.spells.size()):
 		var spell := root.spells[spell_index]
 		if spell == null:
@@ -105,6 +107,24 @@ static func _copy_unit(
 			if spell != null else null
 		)
 	work.spells = spells
+	work.animation_set = _copy_animation_set(
+		source.animation_set, source_to_work, work_to_source
+	)
+	return work
+
+
+static func _copy_animation_set(
+		source: CharacterAnimationSetData,
+		source_to_work: Dictionary,
+		work_to_source: Dictionary
+	) -> CharacterAnimationSetData:
+	if source == null:
+		return null
+	var existing := source_to_work.get(source) as CharacterAnimationSetData
+	if existing != null:
+		return existing
+	var work := source.duplicate(true) as CharacterAnimationSetData
+	_register(source, work, source_to_work, work_to_source)
 	return work
 
 

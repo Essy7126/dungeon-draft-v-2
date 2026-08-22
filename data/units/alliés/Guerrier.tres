@@ -14,6 +14,7 @@
 [ext_resource type="Resource" uid="uid://0ulosbvctw75" path="res://data/characters/warrior/disciplines/assault.tres" id="24_assault"]
 [ext_resource type="Resource" uid="uid://io1jxobadgaq" path="res://data/characters/warrior/disciplines/fury.tres" id="25_fury"]
 [ext_resource type="Resource" uid="uid://68f0tvsim4nb" path="res://data/characters/warrior/disciplines/bulwark.tres" id="26_bulwark"]
+[ext_resource type="Resource" path="res://data/characters/warrior/animations.tres" id="90_animations"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]
 animations = [{
@@ -36,6 +37,7 @@ sprite_frames = SubResource("SpriteFrames_main")
 sprite_scale = 0.1
 visual_scene = ExtResource("20_combat_visual")
 preview_visual_scene = ExtResource("21_preview_visual")
+animation_set = ExtResource("90_animations")
 role = "Combattant de mêlée"
 presentation_summary = "Frappe, charge, contrôle les groupes et protège ses alliés."
 progression_summary = "Quatre disciplines : Brutalité, Assaut, Furie et Rempart."

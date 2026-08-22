@@ -14,6 +14,7 @@
 [ext_resource type="Resource" uid="uid://clhr1umue7rku" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
 [ext_resource type="Resource" uid="uid://buwjhk5vnq6c2" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
 [ext_resource type="Resource" uid="uid://bifd0rgsaork4" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
+[ext_resource type="Resource" path="res://data/characters/mage/animations.tres" id="90_animations"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]
 atlas = ExtResource("5_fallback_texture")
@@ -38,6 +39,7 @@ description = "Lanceur de sorts pur projete en 3D dans la salle isometrique."
 sprite_frames = SubResource("SpriteFrames_fallback")
 visual_scene = ExtResource("6_combat_visual")
 preview_visual_scene = ExtResource("7_preview_visual")
+animation_set = ExtResource("90_animations")
 role = "Mage de combat élémentaire"
 presentation_summary = "Combine feu, glace, foudre et terre pour contrôler le champ de bataille."
 progression_summary = "Quatre disciplines élémentaires au rang 1"

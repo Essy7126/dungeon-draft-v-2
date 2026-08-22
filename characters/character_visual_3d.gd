@@ -17,6 +17,21 @@ const ACTION_CAST_END := &"cast_end"
 const ACTION_HIT := &"hit"
 const ACTION_DEATH := &"death"
 
+# Ordre d'affichage de reference des evenements d'animation. Le Studio des
+# personnages s'en sert pour construire son ecran ; cette liste reste donc
+# l'autorite unique sur les evenements existants.
+const ACTION_ORDER: Array[StringName] = [
+	ACTION_IDLE,
+	ACTION_WALK,
+	ACTION_RUN,
+	ACTION_CAST,
+	ACTION_CAST_START,
+	ACTION_CAST_HOLD,
+	ACTION_CAST_END,
+	ACTION_HIT,
+	ACTION_DEATH,
+]
+
 @export var model_root_path := NodePath("ModelPivot/CharacterModel")
 @export var animation_idle: StringName = &""
 @export var animation_walk: StringName = &""
@@ -285,6 +300,54 @@ func get_animation_name_for_action(action: StringName) -> StringName:
 		ACTION_DEATH:
 			return animation_death
 	return &""
+
+
+func set_animation_name_for_action(action: StringName, animation_name: StringName) -> bool:
+	match action:
+		ACTION_IDLE:
+			animation_idle = animation_name
+		ACTION_WALK:
+			animation_walk = animation_name
+		ACTION_RUN:
+			animation_run = animation_name
+		ACTION_CAST:
+			animation_cast = animation_name
+		ACTION_CAST_START:
+			animation_cast_start = animation_name
+		ACTION_CAST_HOLD:
+			animation_cast_hold = animation_name
+		ACTION_CAST_END:
+			animation_cast_end = animation_name
+		ACTION_HIT:
+			animation_hit = animation_name
+		ACTION_DEATH:
+			animation_death = animation_name
+		_:
+			return false
+	return true
+
+
+## Applique la fiche d'animations d'un personnage par-dessus les clips inscrits
+## par defaut dans le script visuel. Une entree vide ou absente laisse le clip
+## par defaut en place : un personnage sans fiche garde donc exactement le
+## comportement d'origine.
+func apply_animation_set(animation_set: CharacterAnimationSetData) -> bool:
+	if animation_set == null:
+		return false
+	var previous_idle := animation_idle
+	var changed := false
+	for action in ACTION_ORDER:
+		var animation_name := animation_set.get_animation_name(action)
+		if animation_name == &"" or animation_name == get_animation_name_for_action(action):
+			continue
+		if set_animation_name_for_action(action, animation_name):
+			changed = true
+	# Le repos est deja lance par _ready() : le rejouer n'est utile que si la
+	# fiche vient d'en changer le clip, et jamais par-dessus une autre animation.
+	if changed and animation_idle != previous_idle and not _death_locked \
+			and (not is_animation_playing() or get_current_animation() == previous_idle):
+		play_idle(0.0)
+	return changed
 
 
 func get_animation_length_for_action(action: StringName) -> float:

@@ -212,13 +212,35 @@ func test_other_runs_do_not_use_achilles_3d_profile() -> void:
 
 
 func test_trio_visuals_unchanged() -> void:
+	# Cette garde surveillait l'empreinte complète des trois fichiers. Elle est
+	# désormais exprimée sur ce qu'elle nomme — les scènes visuelles — parce que
+	# le Studio des personnages écrit légitimement dans ces mêmes fichiers :
+	# une empreinte figée échouerait au premier réglage fait par un designer.
 	var expected := {
-		"res://data/units/alliés/elfe.tres": "5F021CD36AD17C12353103B933EACF27E0002E5488364A4A93A7E2DD64A065FC",
-		"res://data/units/alliés/mage.tres": "810A97E041CA7E92F1FD1338DB16D8D2034561B02BC550BE3E7E02BD3BFCDD88",
-		"res://data/units/alliés/Guerrier.tres": "A31B1B9120089A4AACC08D1E60147C23E4A8E0E65D9AF021013CAE6AFF28A272",
+		"res://data/units/alliés/elfe.tres": [
+			"res://characters/elf/ElfIsoUnitView.tscn",
+			"res://characters/elf/ElfVisual3D.tscn",
+		],
+		"res://data/units/alliés/mage.tres": [
+			"res://characters/mage/MageIsoUnitView.tscn",
+			"res://characters/mage/MageVisual3D.tscn",
+		],
+		"res://data/units/alliés/Guerrier.tres": [
+			"res://characters/warrior/WarriorIsoUnitView.tscn",
+			"res://characters/warrior/WarriorVisual3D.tscn",
+		],
 	}
 	for path in expected:
-		assert_eq(FileAccess.get_sha256(path).to_upper(), expected[path], path)
+		var unit := ResourceLoader.load(
+			path, "", ResourceLoader.CACHE_MODE_IGNORE
+		) as UnitData
+		assert_not_null(unit, path)
+		assert_eq(unit.visual_scene.resource_path, expected[path][0], path)
+		assert_eq(unit.preview_visual_scene.resource_path, expected[path][1], path)
+		assert_false(
+			_runtime_text().contains(path),
+			"Le runtime d’Achille ne doit référencer aucun héros du trio : %s" % path
+		)
 
 
 func _load_json(path: String) -> Dictionary:

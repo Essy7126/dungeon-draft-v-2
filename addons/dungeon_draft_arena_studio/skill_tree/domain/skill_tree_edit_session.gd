@@ -236,9 +236,27 @@ func is_dirty() -> bool:
 func current_fingerprint() -> String:
 	if unit_view_is_adapter and working_progression_profile != null:
 		_sync_profile_from_unit()
-		return SkillTreeSnapshotService.storage_fingerprint(working_progression_profile)
+		# La fiche d'animations appartient au personnage, pas au profil de
+		# progression. Sans elle, changer une animation depuis une partie
+		# ouverte passerait pour un document non modifié, et le bouton
+		# Sauvegarder resterait grisé alors que le fichier doit être réécrit.
+		return _adapter_fingerprint(
+			working_progression_profile,
+			working_unit.animation_set if working_unit != null else null
+		)
 	return SkillTreeSnapshotService.fingerprint(working_unit) \
 		if working_unit != null else ""
+
+
+func _adapter_fingerprint(
+		profile: CharacterProgressionProfile,
+		animation_set: CharacterAnimationSetData
+	) -> String:
+	return "%s|%s" % [
+		SkillTreeSnapshotService.storage_fingerprint(profile),
+		SkillTreeSnapshotService.storage_fingerprint(animation_set) \
+			if animation_set != null else "aucune",
+	]
 
 
 func canonical_source_path() -> String:
@@ -299,7 +317,9 @@ func restore_profile_draft(
 	source_to_work[profile] = working_progression_profile
 	work_to_source[working_progression_profile] = profile
 	unit_view_is_adapter = true
-	saved_fingerprint = SkillTreeSnapshotService.storage_fingerprint(profile)
+	saved_fingerprint = _adapter_fingerprint(
+		profile, source_unit.animation_set if source_unit != null else null
+	)
 	document_changed.emit()
 	return true
 
@@ -1268,6 +1288,46 @@ func move_modifier(
 	return change_property(
 		node, &"spell_modifiers", modifiers, "Réordonner les effets"
 	)
+
+
+## Regle le clip joue par un evenement d'animation du personnage ouvert.
+## La fiche d'animations est creee au premier reglage si le personnage n'en a
+## pas encore : elle rejoint alors le plan de sauvegarde comme nouveau fichier.
+func set_animation_clip(
+		action_id: StringName,
+		clip_name: StringName,
+		event_label: String
+	) -> bool:
+	if working_unit == null or action_id == &"":
+		return false
+	var animation_set := working_unit.animation_set
+	if animation_set != null:
+		return change_property(
+			animation_set,
+			&"animation_names",
+			animation_set.names_with(action_id, clip_name),
+			"Modifier l’animation « %s »" % event_label
+		)
+	if clip_name == &"":
+		return false
+	animation_set = CharacterAnimationSetData.new()
+	animation_set.animation_names = {action_id: clip_name}
+	var path := "res://data/characters/%s/animations.tres" % _slug(
+		str(working_unit.get_effective_unit_id())
+	)
+	new_resource_paths[animation_set] = path
+	animation_set.set_path_cache(path)
+	if not commit_changes(
+			"Créer la fiche d’animations et régler « %s »" % event_label,
+			[_change(working_unit, &"animation_set", animation_set)]
+		):
+		new_resource_paths.erase(animation_set)
+		return false
+	return true
+
+
+func current_animation_set() -> CharacterAnimationSetData:
+	return working_unit.animation_set if working_unit != null else null
 
 
 func all_nodes(discipline: DisciplineData = null) -> Array[SkillUpgradeData]:

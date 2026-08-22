@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CharacterAnimationSetData" format=3 uid="uid://kyjummlyr4ip"]
+
+[ext_resource type="Script" uid="uid://cisbvc12gvafg" path="res://data/characters/character_animation_set_data.gd" id="1_7bksu"]
+
+[resource]
+script = ExtResource("1_7bksu")
+animation_names = {
+&"cast": &"DD_SnowCenturion_Attack",
+&"cast_hold": &"DD_SnowCenturion_Idle",
+&"cast_start": &"DD_SnowCenturion_Idle",
+&"death": &"DD_SnowCenturion_Death",
+&"hit": &"DD_SnowCenturion_Hit",
+&"run": &"DD_SnowCenturion_Run",
+&"walk": &"DD_SnowCenturion_Walk"
+}

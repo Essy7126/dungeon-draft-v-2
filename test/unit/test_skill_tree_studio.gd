@@ -9,13 +9,34 @@ func _handle_known_production_uid_warning() -> void:
 			tracked_error.handled = true
 
 
-func test_catalog_discovers_only_the_three_playable_characters() -> void:
+func test_catalog_discovers_playable_characters_without_a_hard_coded_list() -> void:
+	# Ajouter un personnage ne doit plus demander de modifier le code : tout
+	# UnitData d'équipe Joueur déposé dans un dossier d'alliés est découvert.
 	var heroes := SkillTreeCatalogService.discover_heroes()
 	_handle_known_production_uid_warning()
-	assert_eq(heroes.size(), 3)
 	var ids := heroes.map(func(entry: Dictionary): return str(entry.get("id", "")))
-	ids.sort()
-	assert_eq(ids, ["elf", "mage", "warrior"])
+	for expected in ["achilles", "elf", "mage", "warrior"]:
+		assert_has(ids, expected)
+	assert_eq(ids.size(), heroes.size())
+	for entry in heroes:
+		assert_eq((entry.get("resource") as UnitData).team, 0, str(entry.get("id", "")))
+
+
+func test_catalog_also_exposes_enemies_as_editable_units() -> void:
+	var enemies := SkillTreeCatalogService.discover_enemies()
+	_handle_known_production_uid_warning()
+	assert_false(enemies.is_empty(), "aucun ennemi découvert")
+	var ids := enemies.map(func(entry: Dictionary): return str(entry.get("id", "")))
+	assert_has(ids, "skeleton_melee")
+	for entry in enemies:
+		assert_eq((entry.get("resource") as UnitData).team, 1, str(entry.get("id", "")))
+		assert_true(bool(entry.get("is_enemy", false)), str(entry.get("id", "")))
+	var units := SkillTreeCatalogService.discover_units()
+	assert_eq(units.size(), SkillTreeCatalogService.discover_heroes().size() + enemies.size())
+	var teams := {}
+	for entry in units:
+		teams[int(entry.get("team", -1))] = true
+	assert_true(teams.has(0) and teams.has(1), "le catalogue mélange jouables et ennemis")
 
 
 func test_working_copy_is_isolated_dirty_and_undoable() -> void:
@@ -202,7 +223,7 @@ func test_interface_builds_and_loads_a_real_character() -> void:
 	for _frame in range(12):
 		await get_tree().process_frame
 	_handle_known_production_uid_warning()
-	assert_eq(studio.heroes.size(), 3)
+	assert_true(studio.heroes.size() >= 3, "catalogue : %d personnage(s)" % studio.heroes.size())
 	assert_not_null(studio.session.working_unit)
 	assert_not_null(studio.session.current_discipline())
 	assert_not_null(studio.catalog)
