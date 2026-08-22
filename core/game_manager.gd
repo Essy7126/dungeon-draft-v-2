@@ -302,7 +302,7 @@ func _dispose_prepared_characters(
 
 func _initialize_run_state(run_data: RunData) -> void:
 	rooms = run_data.rooms.duplicate()
-	run_seed = run_data.default_seed
+	run_seed = _resolve_run_seed(run_data)
 	current_room_index = -1
 	current_wave_index = 0
 	_active_room_flow_mode = run_data.room_flow_mode
@@ -898,6 +898,19 @@ func get_current_room() -> RoomData:
 
 func get_run_seed() -> int:
 	return run_seed
+
+
+# La graine gouverne le mélange de la pioche de récompenses (donc les reliques
+# proposées après chaque victoire) et le placement des ennemis. Tant qu'elle
+# venait telle quelle de la ressource, toutes les parties rejouaient le même
+# tirage : on en tire donc une nouvelle à chaque partie, sauf pour les runs de
+# test qui ont justement besoin de reproduire la même situation.
+func _resolve_run_seed(run_data: RunData) -> int:
+	if run_data == null or not run_data.randomize_seed_each_run:
+		return run_data.default_seed if run_data != null else 0
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	return int(rng.randi())
 
 
 func get_active_room_flow_mode() -> int:

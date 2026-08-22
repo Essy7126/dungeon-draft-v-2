@@ -55,6 +55,9 @@ static func prepare_and_launch(
 	var run := RunData.new()
 	run.run_name = "Test Encounter Studio — %s" % room.room_name
 	run.default_seed = run_seed
+	# Tester une rencontre n'a de sens que si elle se rejoue à l'identique : ce
+	# run de test garde donc la graine demandée au lieu d'en tirer une nouvelle.
+	run.randomize_seed_each_run = false
 	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
 	run.maximum_waves_per_room = 1
 	run.rooms = [ResourceLoader.load(

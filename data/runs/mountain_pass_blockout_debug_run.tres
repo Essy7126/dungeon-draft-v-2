@@ -7,4 +7,5 @@
 [resource]
 script = ExtResource("1_run")
 run_name = "Debug - Mountain Pass Blockout"
+randomize_seed_each_run = false
 rooms = Array[ExtResource("2_room_type")]([ExtResource("3_room")])

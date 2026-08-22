@@ -146,6 +146,68 @@ func test_each_relic_passes_studio_validation_and_effect_coverage() -> void:
 	assert_true(coverage.get("valid", false), str(coverage.get("unsupported", [])))
 
 
+# ============================================================
+# VARIÉTÉ D'UNE PARTIE À L'AUTRE
+# ============================================================
+
+func test_two_seeds_offer_different_relics_in_the_first_room() -> void:
+	var first_pairs := {}
+	for run_seed in [1337, 2026, 7, 424242, 99, 5150]:
+		first_pairs[_first_room_pair(run_seed)] = true
+	assert_gt(
+		first_pairs.size(),
+		1,
+		"Deux graines différentes doivent proposer des reliques différentes",
+	)
+
+
+func test_the_same_seed_still_replays_the_same_offers() -> void:
+	assert_eq(
+		_first_room_pair(1337),
+		_first_room_pair(1337),
+		"Une graine fixée reste rejouable à l’identique, pour reproduire un bug",
+	)
+
+
+func test_a_run_draws_a_new_seed_unless_it_is_pinned() -> void:
+	var run := RunData.new()
+	assert_true(
+		run.randomize_seed_each_run,
+		"Par défaut une partie doit varier d’une fois à l’autre",
+	)
+	run.rooms = [load("res://data/rooms/first_run_room_02.tres") as RoomData]
+	var seeds := {}
+	for attempt in 6:
+		assert_true(GameManager._prepare_preconfigured_run(run, HERO_PATHS))
+		seeds[GameManager.get_run_seed()] = true
+		GameManager.cleanup_run_state()
+	assert_gt(seeds.size(), 1, "Chaque partie doit tirer sa propre graine")
+
+	run.randomize_seed_each_run = false
+	run.default_seed = 1337
+	var pinned := {}
+	for attempt in 3:
+		assert_true(GameManager._prepare_preconfigured_run(run, HERO_PATHS))
+		pinned[GameManager.get_run_seed()] = true
+		GameManager.cleanup_run_state()
+	assert_eq(pinned.keys(), [1337], "Un run épinglé garde exactement sa graine")
+
+
+func _first_room_pair(run_seed: int) -> String:
+	var service := FirstRunEquipmentRewardService.new()
+	var catalog := _catalog()
+	assert_true(service.reset(catalog, run_seed))
+	var inventory := RunInventory.new()
+	assert_true(inventory.initialize(catalog, 24))
+	var options := service.build_options(_report(0), _make_states(), inventory)
+	assert_eq(options.size(), 2, "graine %d" % run_seed)
+	var ids: Array[String] = []
+	for option in options:
+		ids.append(str((option as Dictionary).get("item_id", &"")))
+	ids.sort()
+	return "|".join(ids)
+
+
 func _catalog() -> ItemCatalog:
 	var catalog := ResourceLoader.load(
 		CATALOG_PATH, "", ResourceLoader.CACHE_MODE_IGNORE

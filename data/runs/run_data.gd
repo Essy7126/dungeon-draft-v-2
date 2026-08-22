@@ -15,7 +15,14 @@ enum RoomFlowMode {
 }
 
 @export var run_name: String = "Run"
+## Graine de repli, utilisée seulement quand le tirage aléatoire est désactivé
+## ci-dessous. Deux parties lancées avec la même graine proposent exactement les
+## mêmes reliques et placent les ennemis de la même façon.
 @export var default_seed: int = 1337
+## Activé : chaque nouvelle partie tire sa propre graine, donc les reliques
+## proposées changent d'une partie à l'autre. À désactiver uniquement pour un
+## run de test ou de débogage qu'on veut rejouer à l'identique.
+@export var randomize_seed_each_run: bool = true
 @export_range(1, 180, 1) var target_duration_minutes: int = 30
 @export_range(1, 240, 1) var extended_duration_minutes: int = 45
 @export_enum("Single Encounter", "Wave Chain") var room_flow_mode: int = (
