@@ -112,7 +112,7 @@ static func plan(
 		"action": action,
 		"action_label": action_label(action),
 		"run_path": run_data.resource_path if run_data != null else "",
-		"run_name": run_data.run_name if run_data != null else "Aucune run",
+		"run_name": run_data.run_name if run_data != null else "Aucune partie",
 		"target_room_path": target_room.resource_path if target_room != null else "",
 		"target_room_name": target_room.room_name if target_room != null else "",
 		"target_index": int(attachment.get("target_index", -1)),
@@ -120,8 +120,8 @@ static func plan(
 		"after_count": int(attachment.get("after_count", 0)),
 		"new_arena_path": str(attachment.get("integrated_room_path", produced_path)),
 		"shared": bool(attachment.get("shared", false)),
-		"scope": "Copie unique à cette run" if bool(attachment.get("copy_on_write", false)) \
-			else "Unique à cette run",
+		"scope": "Copie unique à cette partie" if bool(attachment.get("copy_on_write", false)) \
+			else "Unique à cette partie",
 		"affected_files": affected_files,
 		"preserved_gameplay": action == ArenaProductionAttachmentService.UPDATE,
 		"abandoned_gameplay": RoomIntegrationFieldPolicy.gameplay_summary(target_room) \
@@ -760,7 +760,7 @@ static func action_label(action: StringName) -> String:
 
 static func run_short_label(run_data: RunData) -> String:
 	if run_data == null:
-		return "Aucune run"
+		return "Aucune partie"
 	if run_data.resource_path.ends_with("/first_run.tres"):
 		return "Principale"
 	if run_data.resource_path.ends_with("/fixed_trio_prototype_run.tres"):
@@ -777,7 +777,7 @@ static func _simulated_run_errors(
 	if action == ArenaProductionAttachmentService.NONE:
 		return PackedStringArray()
 	if arena == null or run_data == null:
-		return PackedStringArray(["La destination ne contient pas de run valide."])
+		return PackedStringArray(["La destination ne contient pas de partie valide."])
 	var simulated := run_data.duplicate(false) as RunData
 	simulated.set_path_cache("")
 	var rooms: Array[RoomData] = []
@@ -789,7 +789,7 @@ static func _simulated_run_errors(
 			arena, rooms[target_index]
 		)
 		if merged == null:
-			return PackedStringArray(["La politique de champs refuse la fusion UPDATE."])
+			return PackedStringArray(["La politique de champs refuse la fusion « Mettre à jour »."])
 		rooms[target_index] = merged
 	elif action == ArenaProductionAttachmentService.REPLACE:
 		if target_index < 0 or target_index >= rooms.size():

@@ -261,7 +261,8 @@ func test_justified_terrain_overrides_are_aggregated_as_one_information() -> voi
 	)
 	assert_eq(aggregated.size(), 1)
 	assert_eq(aggregated[0].severity, ArenaValidationMessage.Severity.INFO)
-	assert_true("2 override(s)" in aggregated[0].message)
+	var verified_details: Array = JSON.parse_string(aggregated[0].technical_details)
+	assert_eq(verified_details.size(), 2)
 	assert_false(report.messages.any(func(value):
 		return value.code == &"terrain_manual_override"
 	))

@@ -15,7 +15,7 @@ enum Preset {
 @export var wall_config: WallConfig = null
 @export var visual_variant: StringName = &""
 @export var orientation := Vector2i.DOWN
-@export_enum("Mur complet:0", "Obstacle bas:1", "Decor traversable:2", "Falaise:3")
+@export_enum("Mur complet:0", "Obstacle bas:1", "Décor traversable:2", "Falaise:3")
 var preset: int = Preset.FULL_WALL
 @export var blocks_movement := true
 @export var blocks_line_of_sight := true

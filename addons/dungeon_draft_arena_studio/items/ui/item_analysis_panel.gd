@@ -3,6 +3,7 @@ class_name ItemAnalysisPanel
 extends VBoxContainer
 
 signal expanded_changed(expanded: bool)
+signal message_activated(property_path: String, code: String)
 
 const ACCENT_COLOR := Color(0.48, 0.86, 1.0)
 const MUTED_COLOR := Color(0.72, 0.77, 0.84)
@@ -23,6 +24,7 @@ var result_text: RichTextLabel
 var warning_box: VBoxContainer
 var reference_box: VBoxContainer
 var comparison_text: RichTextLabel
+var navigation_resolver := Callable()
 
 var _expanded := false
 var _definition: ItemDefinition = null
@@ -138,7 +140,7 @@ func _build_body() -> Control:
 	box.add_child(controls_container)
 	tabs = TabContainer.new()
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	tabs.custom_minimum_size.y = 190
+	tabs.custom_minimum_size.y = 60
 	box.add_child(tabs)
 	result_text = _add_text_tab("Résultat", "Projection runtime isolée du sort et de l’objet")
 	warning_box = _add_list_tab("Avertissements", "Messages de validation, erreurs d’abord")
@@ -178,7 +180,11 @@ func _apply_expanded() -> void:
 		body.visible = _expanded
 	if toggle_button != null:
 		toggle_button.text = "Fermer ▾" if _expanded else "Ouvrir ▴"
-	size_flags_vertical = Control.SIZE_EXPAND_FILL if _expanded else Control.SIZE_SHRINK_BEGIN
+	# Étendu, le panneau partage la hauteur du VSplitContainer parent : c'est la
+	# poignée native du split qui le redimensionne. Replié, il ne réclame que la
+	# hauteur de sa barre.
+	size_flags_vertical = Control.SIZE_EXPAND_FILL if _expanded else Control.SIZE_SHRINK_END
+	custom_minimum_size.y = 0.0
 
 
 func _render() -> void:
@@ -316,22 +322,39 @@ func _render_warnings() -> void:
 			"Aucun message de validation." if _definition != null else "Aucun objet sélectionné."
 		))
 	for value in messages:
-		var message := value as Dictionary
-		var severity := int(message.get("severity", 0))
-		var marker := "•"
-		var color := MUTED_COLOR
-		if severity == ItemStudioValidationMessage.Severity.ERROR:
-			marker = "✖"
-			color = ERROR_COLOR
-		elif severity == ItemStudioValidationMessage.Severity.WARNING:
-			marker = "⚠"
-			color = WARNING_COLOR
-		var label := Label.new()
-		label.text = "%s  %s" % [marker, message.get("message", "")]
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		label.add_theme_color_override("font_color", color)
-		warning_box.add_child(label)
+		warning_box.add_child(_build_message_row(value as Dictionary))
 	_set_tab_counter(SECTION_WARNINGS, "Avertissements", messages.size())
+
+
+func _build_message_row(message: Dictionary) -> Control:
+	var severity := int(message.get("severity", 0))
+	var marker := "•"
+	var color := MUTED_COLOR
+	if severity == ItemStudioValidationMessage.Severity.ERROR:
+		marker = "✖"
+		color = ERROR_COLOR
+	elif severity == ItemStudioValidationMessage.Severity.WARNING:
+		marker = "⚠"
+		color = WARNING_COLOR
+	var label := Label.new()
+	label.text = "%s  %s" % [marker, message.get("message", "")]
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_color_override("font_color", color)
+	var property_path := str(message.get("property_path", ""))
+	var code := str(message.get("code", ""))
+	if not navigation_resolver.is_valid() or not bool(navigation_resolver.call(property_path, code)):
+		return label
+	label.text = "%s  ›" % label.text
+	label.mouse_filter = Control.MOUSE_FILTER_STOP
+	label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	label.tooltip_text = "Cliquez pour ouvrir le champ concerné"
+	label.gui_input.connect(func(event):
+		if event is InputEventMouseButton \
+				and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
+				and (event as InputEventMouseButton).pressed:
+			message_activated.emit(property_path, code)
+	)
+	return label
 
 
 func _render_references() -> void:

@@ -205,9 +205,9 @@ func _analyze_editor_projection(definition: ItemDefinition) -> Dictionary:
 		"heroes": heroes,
 		"breakpoints": diagnostic_breakpoints,
 		"assumptions": [
-			"Dans l’éditeur, les UnitData runtime non-tool sont lus comme Resources exportées.",
+			"Dans l’éditeur, les unités du jeu non marquées @tool sont lues comme des ressources exportées.",
 			"La parité apply/remove et ItemUseService est exécutée par le smoke et GUT hors editor_hint.",
-			"Aucune Resource canonique ni run active n’est mutée.",
+			"Aucune ressource canonique ni partie active n’est modifiée.",
 		],
 		"budget": {"status": "ESTIMATION_EXPLORATOIRE", "score": _exploratory_budget(definition)},
 	}

@@ -43,7 +43,7 @@ func start(session: SkillTreeEditSession) -> Dictionary:
 		"ok": true,
 		"message": (
 			"Exercice sécurisé chargé. Créez une discipline et son sort, puis "
-			+ "suivez le chapitre 10. Toutes les écritures restent sous user://."
+			+ "suivez le chapitre 10. Toutes les écritures restent dans la sauvegarde locale."
 		),
 		"source_path": source_path,
 		"initial_path": initial_path,

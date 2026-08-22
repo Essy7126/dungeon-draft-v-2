@@ -7,7 +7,7 @@ static func preview(room: RoomData, actual_room_index: int) -> Dictionary:
 	if room == null:
 		return {"available": false, "reason": "Salle absente."}
 	if not room.waves.is_empty():
-		return {"available": false, "reason": "La salle utilise deja des vagues."}
+		return {"available": false, "reason": "La salle utilise déjà des vagues."}
 	if room.encounter_definition != null:
 		return {
 			"available": true,

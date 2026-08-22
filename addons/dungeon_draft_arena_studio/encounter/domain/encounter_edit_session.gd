@@ -168,7 +168,7 @@ func room_mode(room: RoomData = null) -> StringName:
 
 func room_mode_label(room: RoomData = null) -> String:
 	match room_mode(room):
-		&"data_driven": return "Vagues data-driven"
+		&"data_driven": return "Vagues configurables"
 		&"legacy_encounter": return "Rencontre unique historique"
 		&"legacy_enemies": return "Liste d'ennemis historique"
 	return "Salle sans rencontre"

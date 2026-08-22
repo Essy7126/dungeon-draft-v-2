@@ -17,7 +17,7 @@ var _logical_rect := Rect2()
 
 func _ready() -> void:
 	mouse_default_cursor_shape = Control.CURSOR_CROSS
-	tooltip_text = "Cliquez une case pour l'ajouter ou la retirer des cases interdites au deploiement ennemi."
+	tooltip_text = "Cliquez une case pour l'ajouter ou la retirer des cases interdites au déploiement ennemi."
 	resized.connect(queue_redraw)
 
 
@@ -34,7 +34,7 @@ func set_context(value: RoomData, result: Dictionary) -> void:
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0.025, 0.035, 0.05), true)
 	if room == null or grid == null:
-		_draw_centered_message("Selectionnez une salle et generez un placement.")
+		_draw_centered_message("Sélectionnez une salle et générez un placement.")
 		return
 	_configure_projection()
 	var visual := room.painted_map_visual_data
@@ -201,7 +201,7 @@ func _draw_centered_message(message: String) -> void:
 
 
 func _draw_legend() -> void:
-	var text := "Bleu : zone alliee  •  Orange : zone ennemie preferee  •  Rouge : interdit  •  Vert : placement"
+	var text := "Bleu : zone alliée  •  Orange : zone ennemie préférée  •  Rouge : interdit  •  Vert : placement"
 	draw_rect(Rect2(8, size.y - 30, minf(size.x - 16, 760), 24), Color(0.02, 0.03, 0.05, 0.88), true)
 	draw_string(ThemeDB.fallback_font, Vector2(16, size.y - 13), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.9, 0.93, 0.96))
 

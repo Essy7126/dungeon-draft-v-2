@@ -3,9 +3,9 @@
   "blocking_errors": 0,
   "context": "arena_validation",
   "errors": 0,
-  "generated_at": "2026-08-12T14:15:29",
+  "generated_at": "2026-08-22T10:30:29",
   "generated_by": "dungeon_draft_studio_2_0_0",
-  "godot_version": "4.7.1-stable (official)",
+  "godot_version": "4.7-stable (official)",
   "information": 6,
   "messages": [
     {
@@ -34,13 +34,13 @@
       "category": "INFORMATION",
       "cell": null,
       "code": "battle_scene",
-      "message": "Scene de bataille : res://data/rooms/maps/painted_battle.tscn.",
+      "message": "Scène de bataille : res://data/rooms/maps/painted_battle.tscn.",
       "severity": "info",
       "subject_id": "",
       "suggested_fix": "",
       "technical_details": "",
       "title": "Battle Scene",
-      "why": "Scene de bataille : res://data/rooms/maps/painted_battle.tscn."
+      "why": "Scène de bataille : res://data/rooms/maps/painted_battle.tscn."
     },
     {
       "acknowledged": false,
@@ -85,13 +85,13 @@
       "category": "INFORMATION",
       "cell": null,
       "code": "topology_summary",
-      "message": "Topologie : 80 cellules definies, 0 dalles attendues, 0 rendues, 0 case(s) retiree(s) rendue(s), 0 inattendue(s), 0 manquante(s).",
+      "message": "Topologie : 80 cellules definies, 0 dalles attendues, 0 rendues, 0 case(s) retirée(s) rendue(s), 0 inattendue(s), 0 manquante(s).",
       "severity": "info",
       "subject_id": "",
       "suggested_fix": "",
       "technical_details": "{\n  \"canonical_topology_hash\": \"\",\n  \"duplicate_cells\": [],\n  \"errors\": [],\n  \"expected_floor_hash\": \"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\n  \"missing_cells\": [],\n  \"removed_cells_rendered\": [],\n  \"rendered_floor_hash\": \"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\n  \"runtime_topology_hash\": \"\",\n  \"temporary_topology_hash\": \"\",\n  \"unexpected_cells\": [],\n  \"valid\": true\n}",
       "title": "Topology Summary",
-      "why": "Topologie : 80 cellules definies, 0 dalles attendues, 0 rendues, 0 case(s) retiree(s) rendue(s), 0 inattendue(s), 0 manquante(s)."
+      "why": "Topologie : 80 cellules definies, 0 dalles attendues, 0 rendues, 0 case(s) retirée(s) rendue(s), 0 inattendue(s), 0 manquante(s)."
     },
     {
       "acknowledged": false,
@@ -117,6 +117,18 @@
     "border_cells": 32,
     "components": 1,
     "defined_cells": 80,
+    "derivation_breakdown": {
+      "arena_fingerprint_builds": 0,
+      "field_coverage_scans": 1,
+      "render_plan_builds": 1,
+      "render_plan_reuses": 1,
+      "room_fingerprint_builds": 1,
+      "runtime_projection_builds": 1,
+      "runtime_projection_reuses": 2,
+      "runtime_surface_configuration_builds": 0,
+      "tactical_analyses": 1,
+      "visual_inspections": 1
+    },
     "dimensions": [
       10,
       8

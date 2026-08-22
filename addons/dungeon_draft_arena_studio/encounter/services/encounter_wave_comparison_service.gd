@@ -74,9 +74,9 @@ static func compare(previous: Dictionary, current: Dictionary) -> Dictionary:
 	var warnings := PackedStringArray()
 	if previous.get("roles", {}) == current.get("roles", {}) \
 			and previous.get("enemy_count", 0) == current.get("enemy_count", 0):
-		warnings.append("La composition est identique a l'affrontement precedent.")
+		warnings.append("La composition est identique à l'affrontement précédent.")
 	if float(current.get("reward_multiplier", 0.0)) < float(previous.get("reward_multiplier", 0.0)) \
 			and float(current.get("total_base_hp_after_multiplier", 0.0)) \
 			> float(previous.get("total_base_hp_after_multiplier", 0.0)):
-		warnings.append("La recompense baisse alors que les PV bruts augmentent.")
+		warnings.append("La récompense baisse alors que les PV bruts augmentent.")
 	return {"changes": changes, "warnings": warnings}

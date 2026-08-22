@@ -1,28 +1,29 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cin4udpeu1i2f"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://b55vivebym0u0"]
 
-[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="2_spell"]
-[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_03nmr"]
-[ext_resource type="Texture2D" uid="uid://dxglthdopw0b4" path="res://data/items/catalogs/prisme_elementaire.png" id="3_icon"]
-[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_ygrgb"]
+[ext_resource type="Texture2D" uid="uid://dxglthdopw0b4" path="res://data/items/catalogs/prisme_elementaire.png" id="1_mncmp"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_5gfvm"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_rj34i"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_1ux48"]
+[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="5_evja1"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="6_0wv20"]
 
-[sub_resource type="Resource" id="Spell_elemental"]
-script = ExtResource("2_spell")
+[sub_resource type="Resource" id="Resource_16r32"]
+script = ExtResource("5_evja1")
 damage_percent = 0.18
 require_elemental_damage = true
 modifier_name = "Résonance élémentaire"
 
 [resource]
-script = ExtResource("1_item")
+script = ExtResource("3_rj34i")
 item_id = &"prisme_elementaire"
 display_name = "Prisme élémentaire"
 description = "+18 % de dégâts élémentaires."
-icon = ExtResource("3_icon")
-card_texture = ExtResource("3_icon")
+icon = ExtResource("1_mncmp")
+card_texture = ExtResource("1_mncmp")
 rarity = &"rare"
-tags = Array[StringName]([&"weapon", &"focus", &"first_run_equipment_reward"])
+tags = Array[StringName]([&"weapon", &"focus"])
 reward_fx_profile = &"arcane"
 category = 0
 equipment_slot = 0
 compatible_character_ids = Array[StringName]([&"mage"])
-spell_modifiers = Array[ExtResource("3_03nmr")]([SubResource("Spell_elemental")])
+spell_modifiers = Array[ExtResource("4_1ux48")]([SubResource("Resource_16r32")])

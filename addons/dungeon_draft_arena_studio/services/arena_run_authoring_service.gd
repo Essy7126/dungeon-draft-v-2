@@ -36,7 +36,7 @@ func open(run_data: RunData, graph: StudioReferenceGraphService = null) -> bool:
 
 func insert_room(index: int, room: RoomData) -> Dictionary:
 	if working_run == null or room == null:
-		return _failure("Salle ou run absente.")
+		return _failure("Salle ou partie absente.")
 	var target := clampi(index, 0, working_run.rooms.size())
 	var rooms: Array[RoomData] = working_run.rooms.duplicate()
 	rooms.insert(target, room)
@@ -96,7 +96,7 @@ func duplicate_room(index: int) -> Dictionary:
 
 func move_room(from_index: int, to_index: int) -> Dictionary:
 	if not _valid_index(from_index) or working_run.rooms.is_empty():
-		return _failure("Deplacement hors limites.")
+		return _failure("Déplacement hors limites.")
 	var target := clampi(to_index, 0, working_run.rooms.size() - 1)
 	var rooms: Array[RoomData] = working_run.rooms.duplicate()
 	var room := rooms.pop_at(from_index) as RoomData
@@ -120,9 +120,9 @@ func remove_room(index: int) -> Dictionary:
 
 func make_room_run_specific(index: int, destination_path: String) -> Dictionary:
 	if not _valid_index(index):
-		return _failure("Copie specifique hors limites.")
+		return _failure("Copie spécifique hors limites.")
 	if not _safe_resource_path(destination_path) or ResourceLoader.exists(destination_path):
-		return _failure("Le chemin de copie est invalide ou deja utilise.")
+		return _failure("Le chemin de copie est invalide ou déjà utilise.")
 	var source := working_run.rooms[index]
 	if source == null:
 		return _failure("La salle source est absente.")
@@ -132,15 +132,15 @@ func make_room_run_specific(index: int, destination_path: String) -> Dictionary:
 		ProjectSettings.globalize_path(destination_path.get_base_dir())
 	)
 	if directory_error != OK:
-		return _failure("Le dossier cible ne peut pas etre cree.")
+		return _failure("Le dossier cible ne peut pas être créé.")
 	var save_error := ResourceSaver.save(copied, destination_path)
 	if save_error != OK:
-		return _failure("La copie specifique ne peut pas etre enregistree.")
+		return _failure("La copie spécifique ne peut pas être enregistree.")
 	var reloaded := ResourceLoader.load(
 		destination_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RoomData
 	if reloaded == null:
-		return _failure("La copie specifique ne peut pas etre relue.")
+		return _failure("La copie spécifique ne peut pas être relue.")
 	var result := replace_room(index, reloaded)
 	result["operation"] = &"COPY_ON_WRITE"
 	result["created_path"] = destination_path
@@ -191,42 +191,42 @@ func build_save_plan() -> Dictionary:
 func save() -> Dictionary:
 	var plan := build_save_plan()
 	if not plan.get("ok", false):
-		return _failure("La run ne possede pas de chemin canonique.")
+		return _failure("La partie ne possède pas de chemin canonique.")
 	if not is_dirty():
 		return {"ok": true, "saved_paths": [], "plan": plan}
 	for room in working_run.rooms:
 		if room == null:
-			return _failure("La sequence contient une salle absente.")
+			return _failure("La séquence contient une salle absente.")
 		if room.resource_path.is_empty():
 			return _failure(
-				"Une salle sans chemin externe doit recevoir une copie specifique avant sauvegarde."
+				"Une salle sans chemin externe doit recevoir une copie spécifique avant sauvegarde."
 			)
 	var recovery := RECOVERY_ROOT.path_join(
 		"save_%d_%d" % [int(Time.get_unix_time_from_system() * 1000000.0), Time.get_ticks_usec()]
 	)
 	if DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(recovery)) != OK:
-		return _failure("Le point de recuperation ne peut pas etre cree.")
+		return _failure("Le point de récupération ne peut pas être créé.")
 	var backup := recovery.path_join(source_path.get_file() + ".bak")
 	if DirAccess.copy_absolute(
 			ProjectSettings.globalize_path(source_path), ProjectSettings.globalize_path(backup)
 		) != OK:
-		return _failure("La run canonique ne peut pas etre sauvegardee avant ecriture.")
+		return _failure("La partie canonique ne peut pas être sauvegardée avant écriture.")
 	var staging := recovery.path_join("staged_run.tres")
 	var staged_run := ResourceLoader.load(
 		staging, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RunData if ResourceSaver.save(working_run, staging) == OK else null
 	if staged_run == null:
-		return _failure("Le staging de la run a echoue.")
+		return _failure("La préparation de la partie a échoué.")
 	var error := ResourceSaver.save(working_run, source_path)
 	if error != OK:
 		DirAccess.copy_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(source_path))
-		return _failure("L'ecriture de la run a echoue.")
+		return _failure("L'écriture de la partie a échoué.")
 	var reloaded := ResourceLoader.load(
 		source_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RunData
 	if reloaded == null or _room_paths(reloaded.rooms) != plan.get("after", []):
 		DirAccess.copy_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(source_path))
-		return _failure("La verification de la sequence sauvegardee a echoue.")
+		return _failure("La vérification de la séquence sauvegardée a échoué.")
 	open(reloaded, reference_graph)
 	if reference_graph != null:
 		reference_graph.invalidate(source_path)
@@ -241,10 +241,10 @@ func save() -> Dictionary:
 
 func write_draft() -> Dictionary:
 	if working_run == null or not is_dirty():
-		return _failure("Aucune sequence de run modifiee a conserver.")
+		return _failure("Aucune séquence de partie modifiée à conserver.")
 	var directory := "user://dungeon_draft_studio/arena_run_authoring/drafts"
 	if DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory)) != OK:
-		return _failure("Le dossier de brouillon ne peut pas etre cree.")
+		return _failure("Le dossier de brouillon ne peut pas être créé.")
 	var identity := source_path.sha256_text().left(20)
 	var path := directory.path_join("%s.tres" % identity)
 	var error := ResourceSaver.save(working_run, path)

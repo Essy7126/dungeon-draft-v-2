@@ -60,6 +60,10 @@ func current_step() -> int:
 	return _step
 
 
+func current_section() -> int:
+	return int(_sections.get(_step, -1))
+
+
 func start() -> void:
 	if document == null or document.working_copy == null or not document.working_copy.is_relic():
 		return

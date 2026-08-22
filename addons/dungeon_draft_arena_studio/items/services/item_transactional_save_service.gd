@@ -21,7 +21,7 @@ func build_plan(
 		plan.conflicts.append(ItemSaveConflict.new().configure(&"DOCUMENT_MISSING", "Aucun objet à sauvegarder."))
 		return plan
 	if target_status == StudioProjectContext.SCOPE_RUN_SPECIFIC:
-		plan.conflicts.append(ItemSaveConflict.new().configure(&"RUN_SPECIFIC_UNSUPPORTED", "RUN_SPECIFIC est différé : aucune autorité de catalogue par run n’existe."))
+		plan.conflicts.append(ItemSaveConflict.new().configure(&"RUN_SPECIFIC_UNSUPPORTED", "La portée « propre à une partie » est différée : aucun catalogue par partie n’existe."))
 		return plan
 	var validation := validation_service.validate(
 		document.working_copy, catalog, target_path, document.source_path,
@@ -66,7 +66,7 @@ func execute(plan: ItemSavePlan, document: ItemStudioDocument) -> Dictionary:
 	var expected_fingerprint := document.current_fingerprint()
 	var save_candidate := ItemDeepCopyService.new().duplicate_definition(document.working_copy)
 	if save_candidate == null:
-		return {"ok": false, "error": "La working copy ne peut pas être dupliquée pour l’écriture."}
+		return {"ok": false, "error": "La version en cours ne peut pas être dupliquée pour l’écriture."}
 	var save_error := ResourceSaver.save(save_candidate, temporary_path)
 	if save_error != OK:
 		return {"ok": false, "error": "ResourceSaver a refusé l’écriture : %s" % save_error}
@@ -90,13 +90,26 @@ func execute(plan: ItemSavePlan, document: ItemStudioDocument) -> Dictionary:
 	if replace_error != OK:
 		_restore_backup(target_path, backup_path, target_existed)
 		return {"ok": false, "error": "Remplacement transactionnel impossible : %s" % replace_error}
+	# Deux relectures, chacune pour une raison distincte :
+	# - CACHE_MODE_REPLACE rend l'instance partagée du chemin, celle que le
+	#   catalogue et les documents ouverts référencent déjà ;
+	# - CACHE_MODE_IGNORE rend le contenu réel du fichier.
+	# Elles peuvent diverger : ResourceSaver omet du .tres toute propriété égale
+	# à son défaut (un tags vidé ne produit aucune ligne « tags = »), et
+	# CACHE_MODE_REPLACE n'assigne que ce qui est présent dans le fichier — la
+	# valeur précédente survivrait donc à toute remise à zéro.
 	var reloaded := ResourceLoader.load(target_path, "", ResourceLoader.CACHE_MODE_REPLACE) as ItemDefinition
+	var written := ResourceLoader.load(target_path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	# La vérification porte sur `written` : lui seul reflète le fichier.
 	var verified := not force_failure_after_write and reloaded != null \
-		and reloaded.is_valid() \
-		and ItemFingerprintService.semantic_fingerprint(reloaded) == expected_fingerprint
+		and written != null \
+		and written.is_valid() \
+		and ItemFingerprintService.semantic_fingerprint(written) == expected_fingerprint
 	if not verified:
 		_restore_backup(target_path, backup_path, target_existed)
+		_resync_shared_instance(target_path)
 		return {"ok": false, "error": "Vérification post-écriture échouée ; restauration effectuée."}
+	_adopt_stored_properties(reloaded, written)
 	if target_existed:
 		_remove_temporary(backup_path)
 	return {
@@ -106,6 +119,35 @@ func execute(plan: ItemSavePlan, document: ItemStudioDocument) -> Dictionary:
 		"fingerprint": expected_fingerprint,
 		"plan": plan.to_snapshot(),
 	}
+
+
+static func _resync_shared_instance(target_path: String) -> void:
+	# La relecture CACHE_MODE_REPLACE a lieu avant la vérification : en cas de
+	# refus, l'instance partagée porte encore le contenu rejeté alors que le
+	# fichier vient d'être restauré. On la réaligne sur le fichier.
+	if not FileAccess.file_exists(target_path):
+		return
+	var cached := ResourceLoader.load(target_path, "", ResourceLoader.CACHE_MODE_REPLACE)
+	var restored := ResourceLoader.load(target_path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	if cached != null and restored != null:
+		_adopt_stored_properties(cached, restored)
+
+
+static func _adopt_stored_properties(target: Resource, source: Resource) -> void:
+	# Recopie sur l'instance partagée tout ce que le fichier définit, y compris
+	# les propriétés qu'il omet parce qu'elles sont revenues à leur défaut : elles
+	# valent alors ce défaut sur `source`, ce qui est exactement l'état voulu.
+	# On écrit sur l'instance existante plutôt que d'en publier une neuve pour que
+	# les références déjà distribuées (catalogue, document ouvert) suivent.
+	if target == source:
+		return
+	for property_value in source.get_property_list():
+		var property := property_value as Dictionary
+		var property_name := str(property.get("name", ""))
+		if property_name in ["resource_local_to_scene", "resource_name", "resource_path", "script"] \
+				or not (int(property.get("usage", 0)) & PROPERTY_USAGE_STORAGE):
+			continue
+		target.set(property_name, source.get(property_name))
 
 
 func _restore_backup(target_path: String, backup_path: String, target_existed: bool) -> void:

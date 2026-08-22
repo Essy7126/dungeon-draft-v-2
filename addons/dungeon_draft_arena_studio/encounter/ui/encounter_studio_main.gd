@@ -10,8 +10,8 @@ const FORMATION_LABELS := {
 	&"double_line": "Double ligne",
 	&"left_flank": "Flanc gauche",
 	&"right_flank": "Flanc droit",
-	&"chief_forward": "Chefs en premiere ligne",
-	&"centurion_rear": "Centurions a l'arriere",
+	&"chief_forward": "Chefs en première ligne",
+	&"centurion_rear": "Centurions à l'arrière",
 	&"split": "Deux groupes",
 }
 
@@ -142,12 +142,12 @@ func _build_toolbar() -> Control:
 	title_label.add_theme_font_size_override("font_size", 18)
 	title_label.add_theme_color_override("font_color", Color(0.5, 0.88, 1.0))
 	bar.add_child(title_label)
-	_add_button(bar, "Ouvrir une run", _show_open_dialog, "folder")
+	_add_button(bar, "Ouvrir une partie", _show_open_dialog, "folder")
 	_add_button(bar, "Sauvegarder", _show_save_dialog, "save")
 	_add_button(bar, "Annuler", _undo, "undo")
-	_add_button(bar, "Retablir", _redo, "redo")
+	_add_button(bar, "Rétablir", _redo, "redo")
 	_add_button(bar, "Valider", validate_session, "validate")
-	_add_button(bar, "Generer un placement", generate_preview, "preview")
+	_add_button(bar, "Générer un placement", generate_preview, "preview")
 	_add_button(bar, "▶ Tester", test_current_encounter, "test")
 	_add_button(bar, "Rapport", export_report, "report")
 	return panel
@@ -158,14 +158,14 @@ func _build_run_panel() -> Control:
 	panel.custom_minimum_size.x = 220
 	var box := VBoxContainer.new()
 	panel.add_child(box)
-	box.add_child(_section("RUN / SALLES"))
+	box.add_child(_section("PARTIE / SALLES"))
 	run_tree = Tree.new()
 	run_tree.hide_root = false
 	run_tree.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	run_tree.item_selected.connect(_on_tree_selected)
 	box.add_child(run_tree)
-	_add_button(box, "Convertir en vagues data-driven", _migrate_current_room)
-	_add_button(box, "Restaurer la derniere recuperation", _restore_latest_recovery)
+	_add_button(box, "Convertir en vagues configurables", _migrate_current_room)
+	_add_button(box, "Restaurer la dernière récupération", _restore_latest_recovery)
 	return panel
 
 
@@ -174,9 +174,9 @@ func _build_center_panel() -> Control:
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var preview_toolbar := HBoxContainer.new()
-	preview_toolbar.add_child(_section("PREVISUALISATION MAP"))
+	preview_toolbar.add_child(_section("APERÇU DE LA CARTE"))
 	var seed_label := Label.new()
-	seed_label.text = "Seed de run"
+	seed_label.text = "Valeur de départ de la partie"
 	preview_toolbar.add_child(seed_label)
 	seed_spin = SpinBox.new()
 	seed_spin.min_value = -2_147_483_648
@@ -188,14 +188,14 @@ func _build_center_panel() -> Control:
 		if not _syncing: generate_preview()
 	)
 	preview_toolbar.add_child(seed_spin)
-	_add_button(preview_toolbar, "Ouvrir dans Arena Studio", func(): open_arena_requested.emit())
+	_add_button(preview_toolbar, "Ouvrir dans le Studio d'arène", func(): open_arena_requested.emit())
 	box.add_child(preview_toolbar)
 	map_preview = EncounterMapPreview.new()
 	map_preview.custom_minimum_size = Vector2(430, 310)
 	map_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(map_preview)
-	box.add_child(_section("TIMELINE DES AFFRONTEMENTS"))
+	box.add_child(_section("CHRONOLOGIE DES AFFRONTEMENTS"))
 	var timeline_scroll := ScrollContainer.new()
 	timeline_scroll.custom_minimum_size.y = 78
 	timeline_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
@@ -226,9 +226,16 @@ func _build_properties_panel() -> Control:
 	var analysis_page := VBoxContainer.new()
 	analysis_page.name = "Analyse"
 	var presets := HBoxContainer.new()
-	_add_button(presets, "10 seeds", func(): analyze_seeds(10))
-	_add_button(presets, "100 seeds", func(): analyze_seeds(100))
-	_add_button(presets, "1 000 seeds", func(): analyze_seeds(1000))
+	var presets_label := Label.new()
+	presets_label.text = "Analyser sur"
+	presets_label.tooltip_text = "Nombre de valeurs de départ testées"
+	presets.add_child(presets_label)
+	var preset_10 := _add_button(presets, "10", func(): analyze_seeds(10))
+	preset_10.tooltip_text = "Analyser 10 valeurs de départ"
+	var preset_100 := _add_button(presets, "100", func(): analyze_seeds(100))
+	preset_100.tooltip_text = "Analyser 100 valeurs de départ"
+	var preset_1000 := _add_button(presets, "1 000", func(): analyze_seeds(1000))
+	preset_1000.tooltip_text = "Analyser 1 000 valeurs de départ"
 	_add_button(presets, "Annuler", func(): analysis_service.cancel())
 	analysis_page.add_child(presets)
 	analysis_progress = ProgressBar.new()
@@ -241,6 +248,7 @@ func _build_properties_panel() -> Control:
 	analysis_page.add_child(analysis_text)
 	properties_tabs.add_child(analysis_page)
 	advanced_text = _rich_page("Avance")
+	properties_tabs.set_tab_title(properties_tabs.get_tab_count() - 1, "Avancé")
 	return panel
 
 
@@ -259,23 +267,23 @@ func _build_validation_panel() -> Control:
 
 func _build_dialogs() -> void:
 	open_dialog = FileDialog.new()
-	open_dialog.title = "Ouvrir une RunData"
+	open_dialog.title = "Ouvrir une configuration de partie"
 	open_dialog.access = FileDialog.ACCESS_RESOURCES
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-	open_dialog.filters = PackedStringArray(["*.tres, *.res ; RunData"])
+	open_dialog.filters = PackedStringArray(["*.tres, *.res ; Configuration de partie"])
 	open_dialog.current_dir = "res://data/runs"
 	open_dialog.file_selected.connect(open_run)
 	add_child(open_dialog)
 
 	save_dialog = ConfirmationDialog.new()
-	save_dialog.title = "Sauvegarde sure de la session"
-	save_dialog.ok_button_text = "Sauvegarder les fichiers listes"
+	save_dialog.title = "Sauvegarde sûre de la session"
+	save_dialog.ok_button_text = "Sauvegarder les fichiers listés"
 	save_dialog.confirmed.connect(_save_confirmed)
 	add_child(save_dialog)
 
 	shared_dialog = ConfirmationDialog.new()
-	shared_dialog.title = "Rencontre partagee"
-	shared_dialog.ok_button_text = "Modifier la rencontre partagee"
+	shared_dialog.title = "Rencontre partagée"
+	shared_dialog.ok_button_text = "Modifier la rencontre partagée"
 	shared_dialog.cancel_button_text = "Annuler"
 	shared_duplicate_button = shared_dialog.add_button(
 		"Dupliquer pour cet affrontement", true, "duplicate"
@@ -292,7 +300,7 @@ func _discover_default_run() -> void:
 		return
 	var paths := StudioResourceCatalog.find_run_paths()
 	if paths.is_empty():
-		_set_status("Aucune RunData detectee dans le projet.", true)
+		_set_status("Aucune configuration de partie trouvée dans le projet.", true)
 		return
 	var selected := paths[0]
 	for path in paths:
@@ -305,7 +313,7 @@ func _discover_default_run() -> void:
 func open_run(path: String) -> bool:
 	var run := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_REUSE) as RunData
 	if run == null or not session.open(run, path):
-		_set_status("Le fichier selectionne n'est pas une RunData exploitable.", true)
+		_set_status("Le fichier sélectionné n'est pas une configuration de partie valide.", true)
 		return false
 	project_graph = EncounterReferenceGraphService.build_project_graph()
 	_fallback_undo_redo.clear_history()
@@ -315,7 +323,7 @@ func open_run(path: String) -> bool:
 	_syncing = false
 	_refresh_all()
 	history_state_changed.emit()
-	_set_status("Run ouverte en copie de travail : %s" % run.run_name)
+	_set_status("Partie ouverte en version en cours : %s" % run.run_name)
 	return true
 
 
@@ -355,8 +363,8 @@ func _refresh_run_tree() -> void:
 		if room == null:
 			item.set_text(0, "%d. Salle absente" % (index + 1))
 		else:
-			var map_type := "Map peinte" if room.painted_map_visual_data != null \
-				else "Map scene"
+			var map_type := "Carte peinte" if room.painted_map_visual_data != null \
+				else "Carte de scène"
 			item.set_text(0, "%d. %s\n%s • %s • %d [%d–%d]" % [
 				index + 1, room.room_name, map_type, session.room_mode_label(room),
 				room.get_wave_count(), room.minimum_wave_count, room.maximum_wave_count,
@@ -385,7 +393,7 @@ func _refresh_timeline() -> void:
 			index + 1,
 			name,
 			encounter.get_initial_enemy_count() if encounter != null else room.enemies.size(),
-			" • PARTAGEE" if _usage_count(encounter) > 1 else "",
+			" • PARTAGÉE" if _usage_count(encounter) > 1 else "",
 		]
 		button.tooltip_text = _wave_tooltip(wave, encounter)
 		button.pressed.connect(func():
@@ -415,11 +423,11 @@ func _refresh_composition() -> void:
 		_add_float_spin(composition_box, "Attaque ennemie ×", wave.enemy_attack_multiplier, 0.1, 5.0, func(value):
 			_set_property(wave, &"enemy_attack_multiplier", value, "Modifier le multiplicateur d'attaque")
 		)
-		_add_float_spin(composition_box, "Recompense ×", wave.reward_multiplier, 0.0, 10.0, func(value):
-			_set_property(wave, &"reward_multiplier", value, "Modifier le multiplicateur de recompense")
+		_add_float_spin(composition_box, "Récompense ×", wave.reward_multiplier, 0.0, 10.0, func(value):
+			_set_property(wave, &"reward_multiplier", value, "Modifier le multiplicateur de récompense")
 		)
 	if encounter == null:
-		composition_box.add_child(_wrapped_label("Aucune EncounterDefinition pour cet affrontement."))
+		composition_box.add_child(_wrapped_label("Aucun contenu défini pour cet affrontement."))
 		return
 	var usage := _usage_summary(encounter)
 	var shared := _wrapped_label(
@@ -435,9 +443,9 @@ func _refresh_composition() -> void:
 	composition_box.add_child(_section("Composition ennemie"))
 	for index in range(encounter.roster_units.size()):
 		_add_roster_row(encounter, index)
-	composition_box.add_child(_section("Catalogue des UnitData ennemies"))
+	composition_box.add_child(_section("Catalogue des ennemis"))
 	catalog_search = LineEdit.new()
-	catalog_search.placeholder_text = "Rechercher par nom, faction ou role"
+	catalog_search.placeholder_text = "Rechercher par nom, faction ou rôle"
 	catalog_search.text_changed.connect(_filter_catalog)
 	composition_box.add_child(catalog_search)
 	catalog_list = ItemList.new()
@@ -445,8 +453,8 @@ func _refresh_composition() -> void:
 	catalog_list.item_activated.connect(_on_catalog_activated)
 	composition_box.add_child(catalog_list)
 	_filter_catalog("")
-	composition_box.add_child(_section("Presence et invocations"))
-	_add_int_spin(composition_box, "Plafond vivant simultane", encounter.living_enemy_cap, 0, 99, func(value):
+	composition_box.add_child(_section("Présence et invocations"))
+	_add_int_spin(composition_box, "Plafond vivant simultané", encounter.living_enemy_cap, 0, 99, func(value):
 		_edit_encounter_property(&"living_enemy_cap", value, "Modifier le plafond vivant")
 	)
 	_add_int_spin(composition_box, "Budget total — invocations normales", encounter.shared_normal_summon_budget, 0, 99, func(value):
@@ -456,7 +464,7 @@ func _refresh_composition() -> void:
 		_edit_encounter_property(&"shared_chief_summon_budget", value, "Modifier le budget de chef")
 	)
 	composition_box.add_child(_wrapped_label(
-		"Ennemis initiaux : %d • Total theorique apparu : %d" % [
+		"Ennemis initiaux : %d • Total théorique apparu : %d" % [
 			encounter.get_initial_enemy_count(),
 			encounter.get_initial_enemy_count() + encounter.shared_normal_summon_budget \
 				+ encounter.shared_chief_summon_budget,
@@ -470,11 +478,11 @@ func _refresh_placement() -> void:
 	var encounter := session.current_encounter()
 	if encounter == null:
 		return
-	placement_box.add_child(_section("Formations autorisees"))
+	placement_box.add_child(_section("Formations autorisées"))
 	for formation_id in EncounterDefinition.FORMATION_IDS:
 		var checkbox := CheckBox.new()
 		checkbox.text = FORMATION_LABELS.get(formation_id, str(formation_id))
-		checkbox.tooltip_text = "Identifiant runtime : %s" % formation_id
+		checkbox.tooltip_text = "Identifiant technique : %s" % formation_id
 		checkbox.button_pressed = encounter.formation_profiles.has(formation_id)
 		checkbox.toggled.connect(func(enabled): _toggle_formation(formation_id, enabled))
 		placement_box.add_child(checkbox)
@@ -484,7 +492,7 @@ func _refresh_placement() -> void:
 	_add_int_spin(placement_box, "Voisins libres requis autour des invocateurs", encounter.summon_free_neighbor_requirement, 0, 8, func(value):
 		_edit_encounter_property(&"summon_free_neighbor_requirement", value, "Modifier les voisins libres requis")
 	)
-	placement_box.add_child(_section("Distances a la zone de deploiement alliee"))
+	placement_box.add_child(_section("Distances à la zone de déploiement alliée"))
 	var roles := {}
 	for role in encounter.minimum_path_distance_by_role:
 		roles[role] = true
@@ -499,14 +507,14 @@ func _refresh_placement() -> void:
 		_add_int_spin(placement_box, "Distance minimale obligatoire", int(encounter.minimum_path_distance_by_role.get(role, 0)), 0, 99, func(value):
 			_set_role_distance(true, role, value)
 		)
-		_add_int_spin(placement_box, "Distance maximale souhaitee", int(encounter.maximum_path_distance_by_role.get(role, 0)), 0, 99, func(value):
+		_add_int_spin(placement_box, "Distance maximale souhaitée", int(encounter.maximum_path_distance_by_role.get(role, 0)), 0, 99, func(value):
 			_set_role_distance(false, role, value)
 		)
 	placement_box.add_child(_wrapped_label(
-		"ZONE ENNEMIE PREFEREE : le planificateur privilegie ces cellules, mais peut utiliser d'autres cases praticables lorsque les contraintes de formation l'exigent."
+		"ZONE ENNEMIE PRÉFÉRÉE : le planificateur privilégie ces cellules, mais peut utiliser d'autres cases praticables lorsque les contraintes de formation l'exigent."
 	))
 	placement_box.add_child(_wrapped_label(
-		"CASES INTERDITES AU DEPLOIEMENT ENNEMI : exclusions strictes. Cliquez directement sur la map pour les modifier."
+		"CASES INTERDITES AU DÉPLOIEMENT ENNEMI : exclusions strictes. Cliquez directement sur la carte pour les modifier."
 	))
 
 
@@ -530,7 +538,7 @@ func _refresh_progression() -> void:
 	var projection := EncounterRunProjectionService.project(
 		session.working_run, int(seed_spin.value), 100
 	)
-	progression_text.text = "[b]METRIQUES STRUCTURELLES — pas de score de difficulte[/b]\n\n%s\n\n[b]Evolution[/b]\n%s\n\n[b]Projection de run (100 seeds)[/b]\n%s" % [
+	progression_text.text = "[b]MESURES STRUCTURELLES — pas de note de difficulté[/b]\n\n%s\n\n[b]Évolution[/b]\n%s\n\n[b]Projection de la partie (100 valeurs de départ)[/b]\n%s" % [
 		JSON.stringify(current, "  "),
 		JSON.stringify(comparison, "  "),
 		JSON.stringify(projection, "  "),
@@ -542,11 +550,11 @@ func _refresh_advanced() -> void:
 		return
 	var encounter := session.current_encounter()
 	var source := session.source_encounter()
-	advanced_text.text = "[b]Informations techniques[/b]\n\nRun : %s\nSalle : %s\nRencontre : %s\nroom_index : %s\nallowed_spawn_groups : %s\n\n[b]Usages[/b]\n%s\n\n[i]allowed_spawn_groups n'est pas consomme par le runtime actuel.[/i]" % [
+	advanced_text.text = "[b]Informations techniques — utile seulement au débogage[/b]\n\nPartie : %s\nSalle : %s\nRencontre : %s\nNuméro de salle visé : %s\nGroupes d'apparition autorisés : %s\n\n[b]Utilisée par[/b]\n%s\n\n[i]Les groupes d'apparition autorisés ne sont pas encore lus par le jeu.[/i]" % [
 		session.source_run_path,
 		(session.source_for(session.current_room()) as Resource).resource_path \
-			if session.source_for(session.current_room()) != null else "copie de travail",
-		source.resource_path if source != null else str(session.new_resource_paths.get(encounter, "copie de travail")),
+			if session.source_for(session.current_room()) != null else "version en cours",
+		source.resource_path if source != null else str(session.new_resource_paths.get(encounter, "version en cours")),
 		encounter.room_index if encounter != null else "—",
 		str(encounter.allowed_spawn_groups) if encounter != null else "—",
 		JSON.stringify(_usage_summary(encounter), "  ") if encounter != null else "—",
@@ -566,7 +574,7 @@ func generate_preview() -> Dictionary:
 	)
 	map_preview.set_context(room, preview_result)
 	_set_status(
-		"Placement %s • seed effective %d • formation %s" % [
+		"Placement %s • valeur de départ effective %d • formation %s" % [
 			"valide" if preview_result.get("valid", false) else "impossible",
 			int(preview_result.get("effective_seed", 0)),
 			str(preview_result.get("formation_id", preview_result.get("reason", &""))),
@@ -623,7 +631,7 @@ func test_current_encounter() -> Dictionary:
 		session, editor_interface, int(seed_spin.value)
 	)
 	_set_status(
-		"Test direct lance dans le vrai runtime." if result.get("ok", false) \
+		"Test direct lancé dans le vrai jeu." if result.get("ok", false) \
 		else "Test direct impossible : %s" % result.get("error", "inconnu"),
 		not result.get("ok", false),
 	)
@@ -637,7 +645,7 @@ func export_report() -> Dictionary:
 	)
 	if result.get("ok", false):
 		DisplayServer.clipboard_set(str(result.get("markdown", "")))
-		_set_status("Rapport Markdown et JSON exporte ; Markdown copie dans le presse-papiers.")
+		_set_status("Rapport Markdown et JSON exporté ; le Markdown est copié dans le presse-papiers.")
 	else:
 		_set_status("Export impossible : %s" % result.get("error", "inconnu"), true)
 	return result
@@ -671,10 +679,10 @@ func _show_open_dialog() -> void:
 
 func _show_save_dialog() -> void:
 	if not session.is_dirty():
-		_set_status("Aucun changement a sauvegarder.")
+		_set_status("Aucun changement à sauvegarder.")
 		return
 	var paths := session.affected_paths()
-	save_dialog.dialog_text = "FICHIERS MODIFIES / CREES\n\n%s\n\nUne recuperation sera creee sous user:// avant toute ecriture." % "\n".join(paths)
+	save_dialog.dialog_text = "FICHIERS MODIFIÉS / CRÉÉS\n\n%s\n\nUne sauvegarde de récupération sera créée en local avant toute écriture." % "\n".join(paths)
 	save_dialog.popup_centered(Vector2i(720, 430))
 
 
@@ -683,10 +691,10 @@ func _save_confirmed() -> void:
 	if result.get("ok", false):
 		if editor_interface != null:
 			editor_interface.get_resource_filesystem().scan()
-		_set_status("Sauvegarde verifiee : %d fichier(s)." % (result.get("saved_paths", []) as Array).size())
+		_set_status("Sauvegarde vérifiée : %d fichier(s)." % (result.get("saved_paths", []) as Array).size())
 		_refresh_title()
 	else:
-		_set_status("Sauvegarde arretee : %s" % result.get("error", "inconnu"), true)
+		_set_status("Sauvegarde arrêtée : %s" % result.get("error", "inconnu"), true)
 	if project_context != null:
 		project_context.set_dirty(&"encounter", session.is_dirty())
 
@@ -712,11 +720,11 @@ func _context_save() -> Dictionary:
 
 func _context_draft() -> Dictionary:
 	if session.working_run == null:
-		return {"ok": false, "error": "Aucune session Encounter active."}
+		return {"ok": false, "error": "Aucune session de rencontre active."}
 	var directory := EncounterEditSession.RECOVERY_ROOT.path_join("context_drafts")
 	var absolute := ProjectSettings.globalize_path(directory)
 	if DirAccess.make_dir_recursive_absolute(absolute) != OK:
-		return {"ok": false, "error": "Le dossier de brouillon n'a pas pu etre cree."}
+		return {"ok": false, "error": "Le dossier de brouillon n'a pas pu être créé."}
 	var identity := session.source_run_path.sha256_text().left(16)
 	var path := directory.path_join("%s.tres" % identity)
 	var error := ResourceSaver.save(session.working_run, path)
@@ -731,7 +739,7 @@ func _context_discard() -> Dictionary:
 	var ok := session.discard()
 	if ok:
 		_refresh_all()
-	return {"ok": ok, "error": "La session Encounter n'a pas pu etre rechargee." if not ok else ""}
+	return {"ok": ok, "error": "La session de rencontre n'a pas pu être rechargée." if not ok else ""}
 
 
 func _restore_latest_recovery() -> void:
@@ -739,7 +747,7 @@ func _restore_latest_recovery() -> void:
 	if result.get("ok", false):
 		_refresh_all()
 		_set_status(
-			"Session restauree depuis %s. Verifiez puis sauvegardez pour confirmer." \
+			"Session restaurée depuis %s. Vérifiez puis sauvegardez pour confirmer." \
 			% result.get("recovery_path", "")
 		)
 	else:
@@ -779,7 +787,7 @@ func _add_roster_row(encounter: EncounterDefinition, index: int) -> void:
 	card.add_theme_constant_override("separation", 2)
 	var unit := encounter.roster_units[index]
 	var label := Label.new()
-	label.text = unit.unit_name if unit != null else "UnitData absente"
+	label.text = unit.unit_name if unit != null else "Ennemi introuvable"
 	label.tooltip_text = "%s • %s • %s" % [
 		unit.resource_path if unit != null else "",
 		unit.faction_id if unit != null else &"",
@@ -813,13 +821,13 @@ func _filter_catalog(query: String) -> void:
 			continue
 		var index := catalog_list.add_item("%s — %s • %s • PV %d • PA %d • PM %d • %d sort(s)%s" % [
 			unit.unit_name,
-			str(unit.faction_id) if unit.faction_id != &"" else "Faction non renseignee",
-			str(unit.tactical_role_id) if unit.tactical_role_id != &"" else "Role generique",
+			str(unit.faction_id) if unit.faction_id != &"" else "Faction non renseignée",
+			str(unit.tactical_role_id) if unit.tactical_role_id != &"" else "Rôle générique",
 			unit.max_hp, unit.max_ap, unit.max_mp, unit.spells.size(),
 			" • INVOCATION" if unit.spells.any(func(spell): return spell != null and spell.is_summon()) else "",
 		])
 		catalog_list.set_item_metadata(index, unit.resource_path)
-		catalog_list.set_item_tooltip(index, "Double-cliquez pour ajouter a la composition.")
+		catalog_list.set_item_tooltip(index, "Double-cliquez pour ajouter à la composition.")
 
 
 func _on_catalog_activated(index: int) -> void:
@@ -858,7 +866,7 @@ func _change_quantity(index: int, value: int) -> void:
 	_ensure_editable(func():
 		var counts := encounter.roster_counts.duplicate()
 		counts[index] = maxi(1, value)
-		_set_property(encounter, &"roster_counts", counts, "Modifier une quantite")
+		_set_property(encounter, &"roster_counts", counts, "Modifier une quantité")
 	)
 
 
@@ -871,12 +879,12 @@ func _remove_roster_index(index: int) -> void:
 		var counts := encounter.roster_counts.duplicate()
 		units.remove_at(index)
 		if index < counts.size(): counts.remove_at(index)
-		_set_properties(encounter, {&"roster_units": units, &"roster_counts": counts}, "Retirer une unite")
+		_set_properties(encounter, {&"roster_units": units, &"roster_counts": counts}, "Retirer une unité")
 	)
 
 
 func _refresh_disabled_abilities(encounter: EncounterDefinition) -> void:
-	composition_box.add_child(_section("Capacites desactivees"))
+	composition_box.add_child(_section("Capacités désactivées"))
 	var abilities := {}
 	for unit in encounter.roster_units:
 		if unit == null: continue
@@ -898,7 +906,7 @@ func _toggle_disabled_ability(ability_id: StringName, disabled: bool) -> void:
 		var values: Array[StringName] = encounter.disabled_ability_ids.duplicate()
 		if disabled and not values.has(ability_id): values.append(ability_id)
 		elif not disabled: values.erase(ability_id)
-		_set_property(encounter, &"disabled_ability_ids", values, "Modifier les capacites desactivees")
+		_set_property(encounter, &"disabled_ability_ids", values, "Modifier les capacités désactivées")
 	)
 
 
@@ -921,7 +929,7 @@ func _set_role_distance(minimum: bool, role: StringName, value: int) -> void:
 			else &"maximum_path_distance_by_role"
 		var values: Dictionary = encounter.get(property).duplicate(true)
 		values[role] = value
-		_set_property(encounter, property, values, "Modifier une distance par role")
+		_set_property(encounter, property, values, "Modifier une distance par rôle")
 	)
 
 
@@ -1012,7 +1020,7 @@ func _ensure_editable(action: Callable) -> void:
 		action.call()
 		return
 	_pending_shared_action = action
-	shared_dialog.dialog_text = "Cette EncounterDefinition est utilisee par %d affrontements dans %d salles.\n\nModifier la rencontre partagee affectera tous ses usages.\n\nAction recommandee : DUPLIQUER POUR CET AFFRONTEMENT." % [usage.usage_count, usage.room_count]
+	shared_dialog.dialog_text = "Cette rencontre est utilisée par %d affrontements dans %d salles.\n\nModifier la rencontre partagée affectera tous ses usages.\n\nAction recommandée : DUPLIQUER POUR CET AFFRONTEMENT." % [usage.usage_count, usage.room_count]
 	shared_dialog.popup_centered(Vector2i(650, 360))
 	shared_duplicate_button.grab_focus.call_deferred()
 
@@ -1050,7 +1058,7 @@ func _duplicate_encounter_for_usage() -> void:
 		session.mark_dirty(room)
 	else:
 		_set_property(room, &"encounter_definition", copy, "Dupliquer la rencontre pour cette salle")
-	_set_status("Copie independante creee en session ; l'original reste intact.")
+	_set_status("Copie indépendante créée en session ; l'original reste intact.")
 
 
 func _add_wave() -> void:
@@ -1062,7 +1070,7 @@ func _add_wave() -> void:
 	if not waves.is_empty():
 		var previous := waves.back()
 		wave = EncounterCopyService.copy_wave(previous)
-		wave.wave_name = "Affrontement %d — copie independante" % (waves.size() + 1)
+		wave.wave_name = "Affrontement %d — copie indépendante" % (waves.size() + 1)
 		wave.encounter_definition = EncounterCopyService.copy_encounter(previous.encounter_definition)
 	else:
 		wave.encounter_definition = EncounterCopyService.copy_encounter(room.encounter_definition) \
@@ -1106,7 +1114,7 @@ func _move_wave(offset: int) -> void:
 	var wave := waves[session.selected_wave_index]
 	waves.remove_at(session.selected_wave_index)
 	waves.insert(target, wave)
-	_set_property(room, &"waves", waves, "Reordonner les affrontements")
+	_set_property(room, &"waves", waves, "Réordonner les affrontements")
 	session.selected_wave_index = target
 
 
@@ -1123,7 +1131,7 @@ func _migrate_current_room() -> void:
 			session.new_resource_paths[encounter] = EncounterCopyService.suggested_path(room, 0)
 		session.mark_dirty(room)
 		_refresh_all()
-		_set_status("Migration appliquee uniquement a la copie de travail. Sauvegardez pour confirmer.")
+		_set_status("Migration appliquée uniquement à la version en cours. Sauvegardez pour confirmer.")
 
 
 func _on_validation_activated(index: int) -> void:
@@ -1135,7 +1143,7 @@ func _on_validation_activated(index: int) -> void:
 		&"fit_living_cap":
 			_edit_encounter_property(&"living_enemy_cap", session.current_encounter().get_initial_enemy_count(), "Ajuster le plafond vivant")
 		&"use_actual_room_index":
-			_edit_encounter_property(&"room_index", session.selected_room_index + 1, "Utiliser l'index reel de la salle")
+			_edit_encounter_property(&"room_index", session.selected_room_index + 1, "Utiliser le numéro réel de la salle")
 		&"deduplicate_forbidden":
 			var encounter := session.current_encounter()
 			var unique: Array[Vector2i] = []
@@ -1236,7 +1244,7 @@ func history_jump_to(index: int) -> bool:
 
 func history_document_name() -> String:
 	return session.working_run.run_name \
-		if session.working_run != null else "Aucune run"
+		if session.working_run != null else "Aucune partie"
 
 
 func history_is_at_saved_state() -> bool:
@@ -1285,20 +1293,20 @@ func _usage_count(encounter: EncounterDefinition) -> int:
 
 
 func _wave_tooltip(wave: RoomWaveData, encounter: EncounterDefinition) -> String:
-	return "%s\nPV ×%.2f • Attaque ×%.2f • Recompense ×%.2f\n%s" % [
+	return "%s\nPV ×%.2f • Attaque ×%.2f • Récompense ×%.2f\n%s" % [
 		"%d ennemi(s)" % encounter.get_initial_enemy_count() if encounter != null else "Rencontre absente",
 		wave.enemy_health_multiplier if wave != null else 1.0,
 		wave.enemy_attack_multiplier if wave != null else 1.0,
 		wave.reward_multiplier if wave != null else 1.0,
-		"Rencontre partagee" if _usage_count(encounter) > 1 else "Rencontre unique",
+		"Rencontre partagée" if _usage_count(encounter) > 1 else "Rencontre unique",
 	]
 
 
 func _format_analysis(report: Dictionary) -> String:
 	if report.is_empty(): return "Aucune analyse."
-	return "[b]%d seeds analysees[/b] • succes %.1f %% • %d echec(s)%s\n\nFormations : %s\nFormations jamais retenues : %s\nTentatives moyennes : %.2f\nDistances min / moy / max : %s / %s / %s\nDans la zone preferee : %.1f %%\n\nRaisons d'echec : %s\nSeeds problematiques : %s" % [
+	return "[b]%d valeurs de départ analysées[/b] • succès %.1f %% • %d échec(s)%s\n\nFormations : %s\nFormations jamais retenues : %s\nTentatives moyennes : %.2f\nDistances min / moy / max : %s / %s / %s\nDans la zone préférée : %.1f %%\n\nRaisons d'échec : %s\nValeurs de départ problématiques : %s" % [
 		report.completed, report.success_rate_percent, report.failures,
-		" • ANNULEE" if report.cancelled else "",
+		" • ANNULÉE" if report.cancelled else "",
 		JSON.stringify(report.formations), JSON.stringify(report.formations_never_selected),
 		report.average_attempts, str(report.distance_minimum), str(report.distance_average), str(report.distance_maximum),
 		report.preferred_percent, JSON.stringify(report.failure_reasons), JSON.stringify(report.problem_seeds),
@@ -1307,7 +1315,7 @@ func _format_analysis(report: Dictionary) -> String:
 
 func _refresh_title() -> void:
 	if title_label == null: return
-	title_label.text = "STUDIO DE RENCONTRES%s" % (" • MODIFIE" if session.is_dirty() else "")
+	title_label.text = "STUDIO DE RENCONTRES%s" % (" • MODIFIÉ" if session.is_dirty() else "")
 
 
 func _set_status(message: String, error := false) -> void:

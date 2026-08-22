@@ -59,7 +59,7 @@ func set_preview(report: Dictionary) -> void:
 		"[b]RÉSUMÉ JOUEUR[/b]",
 		"Base : %s" % _spell_summary(base_spell),
 		"Résultat : %s" % _spell_summary(resulting_spell),
-		"Simulation déterministe · autorité : %s · aucune progression de run modifiée." % report.get("runtime_authority", "runtime"),
+		"Simulation déterministe · autorité : %s · aucune progression de partie modifiée." % report.get("runtime_authority", "runtime"),
 		"",
 		"[b]EFFETS APPLIQUÉS[/b]",
 	])

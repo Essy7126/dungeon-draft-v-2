@@ -14,7 +14,7 @@ func _ready() -> void:
 	studio.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	await get_tree().process_frame
 	await get_tree().process_frame
-	if studio.tabs.get_tab_count() != 3 or studio.tabs.get_tab_title(2) != "OBJETS":
+	if studio.tabs.get_tab_count() != 4 or studio.tabs.get_child(2).name != StringName("Objets"):
 		_fail("L’onglet OBJETS n’est pas la troisième autorité du Studio.")
 		return
 	studio.tabs.current_tab = 2

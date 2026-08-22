@@ -91,9 +91,9 @@ static func evaluate_certificate(
 	if not certificate.topology_gate_valid \
 			or certificate.canonical_topology_hash != certificate.temporary_topology_hash \
 			or certificate.canonical_topology_hash != certificate.runtime_topology_hash:
-		_add_blocker(gate, &"TOPOLOGY_MISMATCH", "La working copy, la copie temporaire et le runtime n'utilisent pas la meme topologie.", &"topology")
+		_add_blocker(gate, &"TOPOLOGY_MISMATCH", "La version en cours, la copie temporaire et le jeu réel n'utilisent pas la même topologie.", &"topology")
 	if not certificate.removed_cells_rendered.is_empty():
-		_add_blocker(gate, &"REMOVED_CELL_RENDERED", "%d case(s) retiree(s) sont encore rendues." % certificate.removed_cells_rendered.size(), &"render")
+		_add_blocker(gate, &"REMOVED_CELL_RENDERED", "%d case(s) retirée(s) sont encore rendues." % certificate.removed_cells_rendered.size(), &"render")
 	if certificate.expected_floor_hash != certificate.rendered_floor_hash \
 			or not certificate.unexpected_cells.is_empty() \
 			or not certificate.missing_cells.is_empty() \
@@ -101,26 +101,26 @@ static func evaluate_certificate(
 		_add_blocker(gate, &"MISSING_OR_DUPLICATE_TILES", "Les ensembles exacts de dalles attendues et rendues divergent.", &"render")
 	if certificate.expected_tiles != certificate.rendered_tiles \
 			or certificate.expected_walls != certificate.rendered_walls:
-		_add_blocker(gate, &"MISSING_OR_DUPLICATE_TILES", "Le rendu runtime est incomplet ou duplique.", &"render")
+		_add_blocker(gate, &"MISSING_OR_DUPLICATE_TILES", "Le rendu dans le jeu est incomplet ou dupliqué.", &"render")
 	if not certificate.pathfinding_valid:
 		_add_blocker(gate, &"GRID_BUILD_FAILED", "GridData ou Pathfinder ne garantissent pas les chemins obligatoires.", &"runtime")
 	if not certificate.spawn_contract_valid:
 		_add_blocker(gate, &"REQUIRED_SPAWN_INVALID", "Un spawn obligatoire est absent ou invalide.", &"runtime")
 	if not certificate.coverage_gate_valid:
-		_add_blocker(gate, &"SCHEMA_UNSUPPORTED", "Des champs runtime obligatoires ne possedent aucune politique supportee.", &"schema")
+		_add_blocker(gate, &"SCHEMA_UNSUPPORTED", "Des champs obligatoires du jeu ne possèdent aucune politique prise en charge.", &"schema")
 	if not certificate.automatic_runtime_smoke_valid:
-		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le smoke runtime automatique n'a pas reussi.", &"smoke")
+		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le test de fumée automatique n'a pas réussi.", &"smoke")
 	if not certificate.runtime_bootable:
 		_add_blocker(
 			gate, &"RUNTIME_SCENE_NOT_RUN",
-			"La vraie scene de bataille n'a pas fourni de preuve runtime courante.",
+			"La vraie scène de bataille n'a pas fourni de preuve runtime courante.",
 			&"runtime_scene"
 		)
 	if certificate.destination_conflict_state in BLOCKING_DESTINATION_STATES:
-		_add_blocker(gate, &"DESTINATION_CONFLICT", "La destination est inconnue, incomplete ou contient des fichiers etrangers.", &"destination")
+		_add_blocker(gate, &"DESTINATION_CONFLICT", "La destination est inconnue, incomplète ou contient des fichiers étrangers.", &"destination")
 	if not certificate.preview_logic_valid or not certificate.preview_art_valid \
 			or not certificate.preview_game_valid:
-		_add_information(gate, &"PREVIEW_NOT_VISITED", "Une ou plusieurs vues manuelles n'ont pas ete ouvertes ; elles ne bloquent pas l'integration.", &"preview")
+		_add_information(gate, &"PREVIEW_NOT_VISITED", "Une ou plusieurs vues manuelles n'ont pas ete ouvertes ; elles ne bloquent pas l'intégration.", &"preview")
 	if not certificate.art_alignment_confirmed:
 		_add_warning(gate, &"ART_ALIGNMENT_UNCONFIRMED", "L'alignement artistique n'a pas ete confirme manuellement.", &"art")
 	if not certificate.manual_test_performed:
@@ -138,7 +138,7 @@ static func apply_context(gate: Dictionary, options: Dictionary) -> Dictionary:
 	if bool(options.get("external_source_conflict", false)):
 		_add_blocker(result, &"EXTERNAL_SOURCE_CONFLICT", "La salle a change sur disque depuis son ouverture.", &"source")
 	if bool(options.get("run_conflict", false)):
-		_add_blocker(result, &"EXTERNAL_SOURCE_CONFLICT", "La RunData cible contient des modifications concurrentes non sauvegardees.", &"run")
+		_add_blocker(result, &"EXTERNAL_SOURCE_CONFLICT", "La partie ciblée contient des modifications concurrentes non sauvegardées.", &"run")
 	var destination_conflicts: Array = options.get("destination_conflicts", [])
 	if not destination_conflicts.is_empty():
 		_add_blocker(result, &"DESTINATION_CONFLICT", "%d fichier(s) de destination ne sont pas attribues au Studio." % destination_conflicts.size(), &"destination")
@@ -148,19 +148,19 @@ static func apply_context(gate: Dictionary, options: Dictionary) -> Dictionary:
 		_add_blocker(result, &"RUN_ISOLATION_VIOLATION", str(error), &"run")
 	if not bool(options.get("field_coverage_ok", true)) \
 			or not bool(options.get("target_coverage_ok", true)):
-		_add_blocker(result, &"SCHEMA_UNSUPPORTED", "Une propriete de salle ne possede aucune politique d'integration.", &"schema")
+		_add_blocker(result, &"SCHEMA_UNSUPPORTED", "Une propriété de salle ne possède aucune politique d'intégration.", &"schema")
 	if not bool(options.get("gameplay_preserved", true)) \
 			and bool(options.get("gameplay_preservation_required", false)):
-		_add_blocker(result, &"ROOM_GAMEPLAY_DRIFT", "Cette mise a jour modifierait rencontre, vagues ou recompenses.", &"gameplay")
+		_add_blocker(result, &"ROOM_GAMEPLAY_DRIFT", "Cette mise a jour modifierait rencontre, vagues ou récompenses.", &"gameplay")
 	if not bool(options.get("rollback_available", true)):
-		_add_blocker(result, &"ROLLBACK_UNAVAILABLE", "La transaction ne possede aucun rollback verifiable.", &"transaction")
+		_add_blocker(result, &"ROLLBACK_UNAVAILABLE", "La transaction ne possède aucun rollback verifiable.", &"transaction")
 	var dirty_domains: Array = options.get("unrelated_dirty_domains", [])
 	if not dirty_domains.is_empty():
 		_add_information(result, &"UNRELATED_DOCUMENTS_DIRTY", "D'autres documents restent modifies mais sont hors de cette transaction : %s." % ", ".join(dirty_domains), &"workspace")
 	if not bool(options.get("manual_test_performed", false)) \
 			and int(result.get("profile", Profile.PRODUCTION)) != Profile.DRAFT \
 			and not _has_issue(result.acknowledgement_warnings, &"MANUAL_TEST_NOT_PERFORMED"):
-		_add_warning(result, &"MANUAL_TEST_NOT_PERFORMED", "Cette version n'a pas ete testee manuellement. Le smoke runtime automatique doit toutefois reussir.", &"manual_test")
+		_add_warning(result, &"MANUAL_TEST_NOT_PERFORMED", "Cette version n'a pas été testée manuellement. Le test de fumée automatique doit toutefois réussir.", &"manual_test")
 	if not bool(options.get("art_alignment_confirmed", true)) \
 			and not _has_issue(result.acknowledgement_warnings, &"ART_ALIGNMENT_UNCONFIRMED"):
 		_add_warning(result, &"ART_ALIGNMENT_UNCONFIRMED", "L'alignement artistique reste a juger visuellement.", &"art")
@@ -218,9 +218,9 @@ static func _add_topology_issues(gate: Dictionary, parity: Dictionary, profile: 
 	var unexpected: Array = parity.get("unexpected_cells", [])
 	var duplicates: Array = parity.get("duplicate_cells", [])
 	if not removed.is_empty():
-		_add_blocker(gate, &"REMOVED_CELL_RENDERED", "%d case(s) retiree(s) sont encore rendues." % removed.size(), &"topology", removed)
+		_add_blocker(gate, &"REMOVED_CELL_RENDERED", "%d case(s) retirée(s) sont encore rendues." % removed.size(), &"topology", removed)
 	if not missing.is_empty() or not unexpected.is_empty() or not duplicates.is_empty():
-		_add_blocker(gate, &"MISSING_OR_DUPLICATE_TILES", "Dalles manquantes : %d ; inattendues : %d ; dupliquees : %d." % [missing.size(), unexpected.size(), duplicates.size()], &"render", missing + unexpected + duplicates)
+		_add_blocker(gate, &"MISSING_OR_DUPLICATE_TILES", "Dalles manquantes : %d ; inattendues : %d ; dupliquées : %d." % [missing.size(), unexpected.size(), duplicates.size()], &"render", missing + unexpected + duplicates)
 	if not bool(parity.get("valid", false)) and removed.is_empty() \
 			and missing.is_empty() and unexpected.is_empty() and duplicates.is_empty():
 		_add_blocker(gate, &"TOPOLOGY_MISMATCH", "Les hashes ou ensembles topologiques divergent.", &"topology")
@@ -249,25 +249,25 @@ static func _add_smoke_issues(gate: Dictionary, smoke: Dictionary, profile: int)
 	if profile == Profile.DRAFT:
 		return
 	if smoke.is_empty():
-		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le smoke runtime automatique est absent.", &"smoke")
+		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le test de fumée automatique est absent.", &"smoke")
 		return
 	if bool(smoke.get("ok", false)):
-		_add_information(gate, &"AUTOMATIC_RUNTIME_SMOKE_OK", "Le smoke runtime automatique a reussi.", &"smoke")
+		_add_information(gate, &"AUTOMATIC_RUNTIME_SMOKE_OK", "Le test de fumée automatique a réussi.", &"smoke")
 		return
 	var blocker_count_before := (gate.blocking_errors as Array).size()
 	var errors: Array = smoke.get("errors", [])
 	if errors.any(func(value): return str(value).contains("grid_build") or str(value).contains("pathfinder")):
-		_add_blocker(gate, &"GRID_BUILD_FAILED", "GridData ou Pathfinder ne peuvent pas etre construits.", &"smoke")
+		_add_blocker(gate, &"GRID_BUILD_FAILED", "GridData ou Pathfinder ne peuvent pas être construits.", &"smoke")
 	if not (smoke.get("required_spawn_errors", []) as Array).is_empty():
 		_add_blocker(gate, &"REQUIRED_SPAWN_INVALID", "Un spawn obligatoire est invalide dans la copie runtime.", &"smoke")
 	if not (smoke.get("required_objective_errors", []) as Array).is_empty():
 		_add_blocker(gate, &"REQUIRED_OBJECTIVE_INVALID", "Un objectif obligatoire est invalide dans la copie runtime.", &"smoke")
 	if not bool(smoke.get("fingerprints_identical", false)):
-		_add_blocker(gate, &"SAVE_OR_RELOAD_FAILED", "La copie temporaire rechargee differe de la working copy.", &"smoke")
+		_add_blocker(gate, &"SAVE_OR_RELOAD_FAILED", "La copie temporaire rechargée diffère de la version en cours.", &"smoke")
 	if not bool(smoke.get("topology_hashes_identical", false)):
-		_add_blocker(gate, &"TOPOLOGY_MISMATCH", "La copie temporaire et le runtime divergent de la working copy.", &"smoke")
+		_add_blocker(gate, &"TOPOLOGY_MISMATCH", "La copie temporaire et le jeu réel divergent de la version en cours.", &"smoke")
 	if (gate.blocking_errors as Array).size() == blocker_count_before:
-		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le smoke runtime automatique a echoue : %s." % ", ".join(errors), &"smoke")
+		_add_blocker(gate, &"AUTOMATIC_RUNTIME_SMOKE_FAILED", "Le test de fumée automatique a échoué : %s." % ", ".join(errors), &"smoke")
 
 
 static func _add_runtime_scene_issues(
@@ -283,14 +283,14 @@ static func _add_runtime_scene_issues(
 	if gate.runtime_bootable:
 		_add_information(
 			gate, &"RUNTIME_SCENE_BOOTABLE",
-			"La vraie scene de bataille a atteint runtime_ready.",
+			"La vraie scène de bataille a atteint runtime_ready.",
 			&"runtime_scene"
 		)
 		return
 	if not required:
 		_add_information(
 			gate, &"RUNTIME_SCENE_NOT_REQUIRED_FOR_PRODUCTION",
-			"La production peut etre preparee sans promouvoir le smoke de projection en preuve runtime.",
+			"La production peut être préparée sans promouvoir le smoke de projection en preuve runtime.",
 			&"runtime_scene"
 		)
 		return
@@ -299,7 +299,7 @@ static func _add_runtime_scene_issues(
 		else &"RUNTIME_SCENE_BOOT_FAILED"
 	_add_blocker(
 		gate, code,
-		"La vraie scene de bataille doit etre verifiee avec la working copy courante.",
+		"La vraie scène de bataille doit être vérifiée avec la version en cours.",
 		&"runtime_scene"
 	)
 
@@ -312,9 +312,9 @@ static func _add_destination_issues(gate: Dictionary, destination: Dictionary, p
 		return
 	var state := StringName(destination.get("state", &"UNKNOWN"))
 	if state in BLOCKING_DESTINATION_STATES:
-		_add_blocker(gate, &"DESTINATION_CONFLICT", "Etat de destination bloquant : %s." % state, &"destination")
+		_add_blocker(gate, &"DESTINATION_CONFLICT", "État de destination bloquant : %s." % state, &"destination")
 	else:
-		_add_information(gate, &"DESTINATION_VERIFIED", "Destination verifiee : %s." % state, &"destination")
+		_add_information(gate, &"DESTINATION_VERIFIED", "Destination vérifiée : %s." % state, &"destination")
 
 
 static func _promote_strict_warnings(gate: Dictionary, codes: Variant) -> void:

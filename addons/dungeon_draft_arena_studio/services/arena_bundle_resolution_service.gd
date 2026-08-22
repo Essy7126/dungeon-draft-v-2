@@ -39,12 +39,12 @@ static func plan(
 		actions.append(_action(
 			RESUME_INTERRUPTED, "Reprendre la production interrompue",
 			bool(resume.get("ok", false)), true,
-			str(resume.get("reason", "Le bundle ne peut pas être repris sans preuve suffisante."))
+			str(resume.get("reason", "Le dossier de production ne peut pas être repris sans preuve suffisante."))
 		))
 		actions.append(_action(
 			ARCHIVE_AND_REBUILD, "Archiver puis reconstruire",
 			unreferenced and idle, true,
-			"Disponible uniquement lorsque ni Resource, ni run, ni transaction active ne référence le bundle."
+			"Disponible uniquement lorsque ni ressource, ni partie, ni transaction active ne référence le dossier de production."
 		))
 		actions.append(_action(
 			VERSION_ALONGSIDE, "Créer une nouvelle version à côté",
@@ -54,7 +54,7 @@ static func plan(
 		actions.append(_action(
 			REMOVE_FROM_PROJECT, "Retirer les anciens fichiers du projet",
 			unreferenced and idle, true,
-			"Retire le dossier de res:// après copie vérifiée dans une archive récupérable sous user://."
+			"Retire le dossier du projet après copie vérifiée dans une archive récupérable en local."
 		))
 		actions.append(_action(
 			EXAMINE_FILES, "Examiner les fichiers", true, false,
@@ -142,11 +142,11 @@ static func _resume_assessment(
 	if StringName(inspection.get("state", &"")) != ArenaBundleInspectionService.OWNED_INCOMPLETE:
 		return {"ok": false, "reason": "L'état n'est pas une production structurelle incomplète."}
 	if bool(references.get("referenced", false)):
-		return {"ok": false, "reason": "Une Resource ou une run référence déjà arena.tres."}
+		return {"ok": false, "reason": "Une ressource ou une partie référence déjà arena.tres."}
 	if bool(references.get("busy", false)):
 		return {"ok": false, "reason": "Une transaction de production est encore active."}
 	if arena == null:
-		return {"ok": false, "reason": "La working copy est absente."}
+		return {"ok": false, "reason": "La version en cours est absente."}
 	var allowed := {}
 	for name in ArenaProductionService._output_names(arena, false):
 		allowed[name] = true
@@ -170,7 +170,7 @@ static func _resume_assessment(
 	if existing.arena_id != arena.arena_id:
 		return {
 			"ok": false,
-			"reason": "L'identifiant existant (%s) diffère de la working copy (%s)." % [
+			"reason": "L'identifiant existant (%s) diffère de la version en cours (%s)." % [
 				existing.arena_id, arena.arena_id,
 			],
 		}
@@ -186,7 +186,7 @@ static func _resume_assessment(
 	var validation := ArenaValidator.validate(existing, false)
 	var visual := ArenaVisualAssembler.inspect(existing)
 	if not validation.is_valid() or not visual.valid:
-		return {"ok": false, "reason": "Le bundle existant ne passe pas la validation et le rendu runtime."}
+		return {"ok": false, "reason": "Le dossier de production existant ne passe pas la validation ni le rendu dans le jeu."}
 	return {
 		"ok": true,
 		"reason": "Identité, fingerprint, validation, rendu et absence de références sont vérifiés.",
@@ -406,7 +406,7 @@ static func _explanation(
 		ArenaBundleInspectionService.OWNED_INCOMPLETE:
 			return "%d fichier(s) structuraux sont présents, mais aucun production_manifest.json reconnu ne prouve leur propriété. Références : %d ; transactions actives : %d." % [file_count, reference_count, transaction_count]
 		ArenaBundleInspectionService.REFERENCED_INCOMPLETE:
-			return "Le bundle est incomplet et déjà utilisé par %d Resource(s) ou run(s). Aucun déplacement n'est sûr." % reference_count
+			return "Le dossier de production est incomplet et déjà utilisé par %d ressource(s) ou partie(s). Aucun déplacement n'est sûr." % reference_count
 		ArenaBundleInspectionService.OWNED_DIRTY:
 			return "Le manifeste est reconnu, mais des hashes ou fichiers étrangers divergent. L'écrasement reste protégé."
 		ArenaBundleInspectionService.FOREIGN_CONTENT:
@@ -417,7 +417,7 @@ static func _explanation(
 		ArenaBundleInspectionService.CORRUPT_MANIFEST:
 			return "production_manifest.json existe mais ne peut pas être interprété de façon sûre."
 		ArenaBundleInspectionService.LEGACY_BUNDLE:
-			return "Une ancienne structure de bundle est détectée ; elle doit être conservée ou versionnée explicitement."
+			return "Une ancienne structure de dossier de production est détectée ; elle doit être conservée ou versionnée explicitement."
 		ArenaBundleInspectionService.LEGACY_LOGICAL_FINGERPRINT:
 			return "Les fichiers correspondent physiquement au manifeste, mais l'algorithme d'empreinte logique est historique. Une migration explicite et sauvegardée du manifeste est requise."
 		ArenaBundleInspectionService.EMPTY:

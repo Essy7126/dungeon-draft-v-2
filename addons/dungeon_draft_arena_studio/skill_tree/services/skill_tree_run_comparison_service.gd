@@ -11,7 +11,7 @@ static func compare(
 	var left := RunContentCatalogService.progression_profile_for(left_run, character_id)
 	var right := RunContentCatalogService.progression_profile_for(right_run, character_id)
 	if left == null or right == null:
-		return {"ok": false, "error": "Profil absent dans l'une des runs."}
+		return {"ok": false, "error": "Profil absent dans l'une des parties."}
 	var left_snapshot := _profile_snapshot(left)
 	var right_snapshot := _profile_snapshot(right)
 	var differences: Array[Dictionary] = []
@@ -37,10 +37,10 @@ static func format_report(report: Dictionary) -> String:
 	var lines := PackedStringArray([
 		"COMPARAISON DE PROGRESSION",
 		"%s  ↔  %s" % [report.get("left_run", ""), report.get("right_run", "")],
-		"Heros : %s" % report.get("character_id", ""),
+		"Héros : %s" % report.get("character_id", ""),
 		"Profil gauche : %s" % report.get("left_profile_path", ""),
 		"Profil droit : %s" % report.get("right_profile_path", ""),
-		"Ressource partagee : %s" % ("oui" if report.get("same_profile", false) else "non"),
+		"Ressource partagée : %s" % ("oui" if report.get("same_profile", false) else "non"),
 		"",
 	])
 	var differences := report.get("differences", []) as Array

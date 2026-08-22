@@ -13,7 +13,7 @@ static func create_point(
 		source_fingerprint := ""
 	) -> Dictionary:
 	if arena == null:
-		return {"ok": false, "error": "Aucune map ouverte."}
+		return {"ok": false, "error": "Aucune carte ouverte."}
 	var safe_name := name.strip_edges()
 	if safe_name.is_empty():
 		safe_name = "Calibration %s" % Time.get_datetime_string_from_system(false, true)
@@ -66,7 +66,7 @@ static func load_point(path: String, expected_arena_id: StringName) -> Dictionar
 	if int(data.get("schema_version", 0)) != SCHEMA_VERSION:
 		return {"ok": false, "error": "Version de point incompatible."}
 	if str(data.get("map_id", "")) != str(expected_arena_id):
-		return {"ok": false, "error": "Ce point appartient a une autre map."}
+		return {"ok": false, "error": "Ce point appartient à une autre carte."}
 	var transform_data = data.get("transform", {})
 	if not transform_data is Dictionary:
 		return {"ok": false, "error": "La calibration du point est absente."}

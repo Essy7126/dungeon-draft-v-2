@@ -26,7 +26,7 @@ enum VisualMode {
 
 @export var schema_version := CURRENT_SCHEMA_VERSION
 @export var arena_id: StringName = &"nouvelle_arene"
-@export var display_name := "Nouvelle arene"
+@export var display_name := "Nouvelle arène"
 @export_enum("Peinte:0", "Modulaire:1", "Hybride:2")
 var visual_mode: int = VisualMode.PAINTED
 @export var theme_id: StringName = &"painted_default"
@@ -48,7 +48,7 @@ var visual_mode: int = VisualMode.PAINTED
 @export var foreground_full_hide_rect := Rect2()
 @export var camera_offset := Vector2.ZERO
 @export_range(0.25, 3.0, 0.01) var camera_zoom := 1.0
-@export_enum("Heros en bas a gauche:0", "Heros en bas a droite:1", "Heros en haut a gauche:2", "Heros en haut a droite:3")
+@export_enum("Héros en bas a gauche:0", "Héros en bas a droite:1", "Héros en haut a gauche:2", "Héros en haut a droite:3")
 var camp_orientation: int = CampOrientation.HERO_BOTTOM_LEFT
 @export var border_thickness := 1
 @export var cells: Array[ArenaCellDefinition] = []
@@ -304,7 +304,7 @@ func restore_snapshot(data: Dictionary) -> bool:
 		return false
 	schema_version = int(data.get("schema_version", CURRENT_SCHEMA_VERSION))
 	arena_id = StringName(data.get("arena_id", "nouvelle_arene"))
-	display_name = str(data.get("display_name", "Nouvelle arene"))
+	display_name = str(data.get("display_name", "Nouvelle arène"))
 	visual_mode = clampi(
 		int(data.get("visual_mode", VisualMode.PAINTED)),
 		VisualMode.PAINTED, VisualMode.HYBRID

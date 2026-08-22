@@ -20,7 +20,7 @@ static func write_draft(session: SkillTreeEditSession) -> Dictionary:
 	var absolute_dir := ProjectSettings.globalize_path(draft_dir)
 	var directory_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
 	if directory_error != OK:
-		return {"ok": false, "error": "Impossible de creer le dossier du brouillon.", "code": directory_error}
+		return {"ok": false, "error": "Impossible de créer le dossier du brouillon.", "code": directory_error}
 	var content_path := draft_dir.path_join("working_character.tres")
 	var recovery_copy := SkillTreeSaveService._recovery_copy(session.working_unit)
 	var save_error := ResourceSaver.save(recovery_copy, content_path) \
@@ -31,7 +31,7 @@ static func write_draft(session: SkillTreeEditSession) -> Dictionary:
 		content_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as UnitData
 	if reloaded == null:
-		return {"ok": false, "error": "Le brouillon ecrit ne peut pas etre relu."}
+		return {"ok": false, "error": "Le brouillon écrit ne peut pas être relu."}
 	var work_keys := SkillTreeCopyService.keys_by_resource(session.working_unit)
 	var source_keys := SkillTreeCopyService.keys_by_resource(session.source_unit)
 	var source_keys_by_work_key := {}

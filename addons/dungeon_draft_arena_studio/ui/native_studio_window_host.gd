@@ -81,7 +81,7 @@ func apply_window_state(state: Dictionary) -> void:
 
 
 func _update_title() -> void:
-	var document_name := "Nouvelle arene"
+	var document_name := "Nouvelle arène"
 	if workspace != null and workspace.arena_studio != null \
 			and workspace.arena_studio.arena != null:
 		document_name = workspace.arena_studio.arena.display_name

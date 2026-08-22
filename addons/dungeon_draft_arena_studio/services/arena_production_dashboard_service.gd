@@ -100,7 +100,7 @@ static func _auxiliary_record(kind: StringName, directory: String) -> Dictionary
 		&"ARCHIVE": "Archive restaurable",
 		&"BACKUP": "Backup / transaction",
 		&"DRAFT": "Brouillon",
-		&"LAB_TRANSFER": "Transfert Lab",
+		&"LAB_TRANSFER": "Transfert du laboratoire",
 		&"RECOVERY": "Récupération d'intégration",
 	}.get(kind, "Récupération")
 	if kind == &"BACKUP" and FileAccess.file_exists(transaction_report):

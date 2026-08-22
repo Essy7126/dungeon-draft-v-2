@@ -67,7 +67,7 @@ func _ready() -> void:
 	arena_studio.name = "Arenes"
 	arena_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	tabs.add_child(arena_studio)
-	tabs.set_tab_title(tabs.get_tab_count() - 1, "ARENES")
+	tabs.set_tab_title(tabs.get_tab_count() - 1, "ARÈNES")
 
 	encounter_studio = EncounterStudioMain.new()
 	encounter_studio.name = "Rencontres"
@@ -89,7 +89,7 @@ func _ready() -> void:
 	vfx_composer = VFXComposer.new()
 	vfx_composer.name = "VFX"
 	tabs.add_child(vfx_composer)
-	tabs.set_tab_title(tabs.get_tab_count() - 1, "VFX")
+	tabs.set_tab_title(tabs.get_tab_count() - 1, "EFFETS VISUELS")
 	vfx_composer.history_state_changed.connect(_refresh_history_controls)
 
 	if not _pending_state.is_empty():
@@ -115,7 +115,7 @@ func _build_shared_history_bar() -> Control:
 	studio_title_label.add_theme_font_size_override("font_size", 16)
 	bar.add_child(studio_title_label)
 	document_label = Label.new()
-	document_label.text = "Aucune arene"
+	document_label.text = "Aucune arène"
 	document_label.custom_minimum_size.x = 135
 	document_label.clip_text = true
 	document_label.tooltip_text = "Document actif"
@@ -135,19 +135,19 @@ func _build_shared_history_bar() -> Control:
 	bar.add_child(history_button)
 	save_button = _global_button(bar, "Sauver", _global_save, "Sauvegarder le document actif")
 	validate_button = _global_button(bar, "Valider", _global_validate, "Valider le document actif")
-	test_button = _global_button(bar, "Tester", _global_test, "Tester la working copy")
+	test_button = _global_button(bar, "Tester", _global_test, "Tester la version en cours")
 	produce_button = _global_button(
-		bar, "Intégrer à la run", _global_produce,
+		bar, "Intégrer à la partie", _global_produce,
 		"Choisir la destination puis produire et intégrer la salle"
 	)
 	lab_transfer_button = _global_button(
-		bar, "Importer du Lab", _global_lab_transfer,
-		"Examiner puis importer un transfert Dynamic Arena Lab vérifié"
+		bar, "Importer depuis le laboratoire", _global_lab_transfer,
+		"Examiner puis importer un transfert vérifié venant du laboratoire d'arènes"
 	)
 	lab_menu_button = MenuButton.new()
-	lab_menu_button.text = "Lab ▾"
-	lab_menu_button.tooltip_text = "Actions du Lab autonome"
-	lab_menu_button.get_popup().add_item("Ouvrir le Lab autonome", 0)
+	lab_menu_button.text = "Laboratoire ▾"
+	lab_menu_button.tooltip_text = "Actions du laboratoire autonome"
+	lab_menu_button.get_popup().add_item("Ouvrir le laboratoire autonome", 0)
 	lab_menu_button.get_popup().id_pressed.connect(func(_id):
 		if arena_studio != null:
 			arena_studio.open_standalone_lab()
@@ -158,8 +158,8 @@ func _build_shared_history_bar() -> Control:
 		"Ouvrir le Studio autonome des personnages et compétences"
 	)
 	workspace_preset_option = OptionButton.new()
-	workspace_preset_option.tooltip_text = "Disposition du workspace"
-	for preset in ["Construction", "Calibration", "Gameplay", "Apercu final"]:
+	workspace_preset_option.tooltip_text = "Disposition de l'espace de travail"
+	for preset in ["Construction", "Calibration", "Gameplay", "Aperçu final"]:
 		workspace_preset_option.add_item(preset)
 	workspace_preset_option.item_selected.connect(_on_workspace_preset_selected)
 	bar.add_child(workspace_preset_option)
@@ -169,7 +169,10 @@ func _build_shared_history_bar() -> Control:
 		preview_view_option.add_item(preview_view)
 	preview_view_option.item_selected.connect(_on_preview_view_selected)
 	bar.add_child(preview_view_option)
-	focus_map_button = _global_button(bar, "Focus", _toggle_focus_map, "Focus Map (Tab)")
+	focus_map_button = _global_button(
+		bar, "Agrandir", _toggle_focus_map,
+		"Agrandir la carte en plein panneau (Tab)"
+	)
 	detach_button = _global_button(
 		bar, "Détacher la fenêtre", func(): detach_requested.emit(),
 		"Détacher la fenêtre du Studio (Ctrl+Shift+D)"
@@ -314,8 +317,8 @@ func _refresh_history_controls() -> void:
 		focus_map_button.disabled = not arena_active
 	if lab_transfer_button != null and arena_studio != null:
 		var transfer_count := arena_studio.pending_lab_transfer_count()
-		lab_transfer_button.text = "Importer du Lab (%d)" % transfer_count \
-			if transfer_count > 0 else "Importer du Lab"
+		lab_transfer_button.text = "Importer depuis le laboratoire (%d)" % transfer_count \
+			if transfer_count > 0 else "Importer depuis le laboratoire"
 
 
 func _rebuild_history_menu() -> void:
@@ -330,7 +333,7 @@ func _rebuild_history_menu() -> void:
 	popup.set_item_disabled(0, true)
 	popup.add_separator()
 	var current_index: int = provider.history_current_index()
-	popup.add_item("● Position actuelle — etape %d" % current_index, -2)
+	popup.add_item("● Position actuelle — étape %d" % current_index, -2)
 	popup.set_item_disabled(popup.item_count - 1, true)
 	popup.add_separator()
 	var opening_saved: bool = provider.has_method("history_opening_is_saved") \
@@ -341,7 +344,7 @@ func _rebuild_history_menu() -> void:
 			and provider.history_is_at_saved_state()
 	popup.add_item(
 		("● " if current_index == 0 else "  ") + "Ouverture du document" \
-		+ ("  ✓ sauvegardee" if opening_saved else ""), 0
+		+ ("  ✓ sauvegardée" if opening_saved else ""), 0
 	)
 	for entry_value in provider.history_entries():
 		var entry := entry_value as Dictionary
@@ -479,9 +482,9 @@ func _apply_toolbar_responsive() -> void:
 	undo_button.custom_minimum_size.x = 34 if compact else 0
 	redo_button.custom_minimum_size.x = 34 if compact else 0
 	history_button.text = "Hist. ▾" if compact else "Historique ▾"
-	skill_studio_button.text = "Comp." if compact else "Compétences"
-	lab_transfer_button.text = "Import Lab" if compact else lab_transfer_button.text
-	lab_menu_button.text = "Lab" if compact else "Lab ▾"
+	skill_studio_button.text = "Compét." if compact else "Compétences"
+	lab_transfer_button.text = "Import labo" if compact else lab_transfer_button.text
+	lab_menu_button.text = "Labo" if compact else "Laboratoire ▾"
 	workspace_preset_option.custom_minimum_size.x = 104 if compact else 0
 	preview_view_option.custom_minimum_size.x = 72 if compact else 0
 	detach_button.text = (
@@ -550,7 +553,7 @@ func _toggle_focus_map() -> void:
 	var focused: bool = arena_studio.toggle_focus_map()
 	if focus_map_button != null:
 		focus_map_button.button_pressed = focused
-		focus_map_button.text = "Restaurer" if focused else "Focus"
+		focus_map_button.text = "Restaurer" if focused else "Agrandir"
 
 
 func _global_button(

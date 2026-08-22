@@ -54,7 +54,7 @@ func _build_placeholder() -> void:
 	title.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
 	box.add_child(title)
 	var explanation := Label.new()
-	explanation.text = "La session, la selection et l'historique restent actifs."
+	explanation.text = "La session, la sélection et l'historique restent actifs."
 	explanation.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(explanation)
 	var reintegrate := Button.new()
@@ -63,7 +63,7 @@ func _build_placeholder() -> void:
 	reintegrate.pressed.connect(func(): reintegrate_requested.emit())
 	box.add_child(reintegrate)
 	var focus := Button.new()
-	focus.text = "Mettre la fenetre au premier plan"
+	focus.text = "Mettre la fenêtre au premier plan"
 	focus.pressed.connect(func(): focus_window_requested.emit())
 	box.add_child(focus)
 	placeholder.hide()

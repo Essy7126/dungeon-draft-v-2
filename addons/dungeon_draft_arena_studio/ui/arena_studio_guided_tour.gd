@@ -8,17 +8,17 @@ const PAGES := [
 	{
 		"title": "Bienvenue dans Arena Studio",
 		"target": &"welcome",
-		"body": "Cette visite construit une salle jouable sans ouvrir de fichier technique. Arena Studio garde une copie de travail : rien n’est écrit dans le jeu avant une confirmation explicite.",
+		"body": "Cette visite construit une salle jouable sans ouvrir de fichier technique. Le Studio garde une version en cours : rien n’est écrit dans le jeu avant une confirmation explicite.",
 	},
 	{
-		"title": "Une run",
+		"title": "Une partie",
 		"target": &"run",
-		"body": "Une run est la suite ordonnée des salles traversées pendant une partie. La run Principale joue une rencontre par salle. La run de Test peut enchaîner plusieurs vagues dans une même salle.",
+		"body": "Une partie est la suite ordonnée des salles traversées du début à la fin. La partie Principale joue une rencontre par salle. La partie de Test peut enchaîner plusieurs vagues dans une même salle.",
 	},
 	{
 		"title": "Une salle",
 		"target": &"room",
-		"body": "Une salle est le conteneur gameplay placé dans la run. Elle possède une identité, une rencontre ou des vagues, des récompenses, une scène et une arène. Son numéro correspond à sa position dans la run.",
+		"body": "Une salle est le conteneur gameplay placé dans la partie. Elle possède une identité, une rencontre ou des vagues, des récompenses, une scène et une arène. Son numéro correspond à sa position dans la partie.",
 	},
 	{
 		"title": "Une arène",
@@ -26,7 +26,7 @@ const PAGES := [
 		"body": "L’arène est la partie tactique et visuelle de la salle : grille, dalles, murs, obstacles, points d’apparition, décor, premier plan et occlusion. Mettre à jour une arène ne doit pas effacer le gameplay de sa salle.",
 	},
 	{
-		"title": "La copie de travail",
+		"title": "La version en cours",
 		"target": &"working_copy",
 		"body": "Le Studio édite une copie isolée de l’arène. Annuler, rétablir, Tester et valider utilisent cette copie ; la ressource canonique ne change qu’après votre confirmation explicite dans l’assistant de production.",
 	},
@@ -68,7 +68,7 @@ const PAGES := [
 	{
 		"title": "Aperçu rapide ou exact",
 		"target": &"quick_exact",
-		"body": "Rapide privilégie l’itération et signale clairement ses fixtures. Exact utilise la RunData active, les vrais héros, la rencontre et l’assembleur runtime. Le badge indique toujours la fidélité obtenue ; aucun fallback n’est silencieux.",
+		"body": "Rapide privilégie l’itération et signale clairement ses exemples. Exact utilise la partie active, les vrais héros, la rencontre et l’assemblage réel du jeu. Le badge indique toujours la fidélité obtenue ; aucune solution de secours n’est silencieuse.",
 	},
 	{
 		"title": "Valider",
@@ -78,7 +78,7 @@ const PAGES := [
 	{
 		"title": "Tester",
 		"target": &"test",
-		"body": "Tester lance la copie de travail dans la vraie scène de combat. La salle canonique n’est pas modifiée. Revenez au Studio pour corriger, annuler ou rétablir vos changements.",
+		"body": "Tester lance la version en cours dans la vraie scène de combat. La salle canonique n’est pas modifiée. Revenez au Studio pour corriger, annuler ou rétablir vos changements.",
 	},
 	{
 		"title": "Choisir la destination",
@@ -86,9 +86,9 @@ const PAGES := [
 		"body": "Dans Destination de la salle, choisissez Principale ou Test, l’action et la salle. Mettre à jour l’arène est recommandé : rencontre, vagues et récompenses sont conservées. Remplacer toute la salle est un mode avancé.",
 	},
 	{
-		"title": "Conflit de bundle",
+		"title": "Conflit de dossier de production",
 		"target": &"bundle_conflict",
-		"body": "Un bundle existant est inspecté avant toute écriture : complet, incomplet, référencé, legacy, étranger ou modifié. Un bundle incomplet non référencé peut être archivé puis reconstruit après confirmation. Un bundle référencé bloque cette action.",
+		"body": "Un dossier de production existant est inspecté avant toute écriture : complet, incomplet, référencé, hérité d'une ancienne version, étranger ou modifié. Un dossier incomplet non référencé peut être archivé puis reconstruit après confirmation. Un dossier référencé bloque cette action.",
 	},
 	{
 		"title": "Mettre à jour ou remplacer",
@@ -96,24 +96,24 @@ const PAGES := [
 		"body": "Mettre à jour l’arène conserve l’identité de la salle, sa rencontre, ses vagues et ses récompenses. Remplacer toute la salle remplace aussi ces champs et demande une confirmation avancée. L’assistant affiche toujours ce qui sera conservé.",
 	},
 	{
-		"title": "Intégrer à la run",
+		"title": "Intégrer à la partie",
 		"target": &"integrate",
-		"body": "Lisez le résultat, la portée, les chemins et les fichiers affectés, puis cliquez Intégrer à la run. Le Studio produit, sauvegarde avec recovery, recharge, vérifie l’index exact et sélectionne immédiatement la salle intégrée.",
+		"body": "Lisez le résultat, la portée, les chemins et les fichiers affectés, puis cliquez Intégrer à la partie. Le Studio produit, sauvegarde une copie de récupération, recharge, vérifie l’index exact et sélectionne immédiatement la salle intégrée.",
 	},
 	{
-		"title": "Rollback et récupérations",
+		"title": "Retour arrière et récupérations",
 		"target": &"rollback",
-		"body": "Production et intégration forment une transaction. Si un stage, un hash, une sauvegarde ou un rechargement échoue, le Studio restaure la run et le bundle précédents. Productions et récupérations permet d’ouvrir les rapports et de restaurer explicitement une archive.",
+		"body": "Production et intégration forment une transaction. Si une préparation, une empreinte, une sauvegarde ou un rechargement échoue, le Studio restaure la partie et le dossier de production précédents. Productions et récupérations permet d’ouvrir les rapports et de restaurer explicitement une archive.",
 	},
 	{
 		"title": "Réintégrer la fenêtre",
 		"target": &"reintegrate",
-		"body": "Le workspace peut être détaché pour gagner de la place. Le bouton Réintégrer la fenêtre ou le raccourci configuré remet exactement la même instance dans l’éditeur : copie de travail, sélection, zoom et historique sont conservés.",
+		"body": "L’espace de travail peut être détaché pour gagner de la place. Le bouton Réintégrer la fenêtre ou le raccourci configuré remet exactement la même instance dans l’éditeur : version en cours, sélection, zoom et historique sont conservés.",
 	},
 	{
-		"title": "Exercice sandbox",
+		"title": "Exercice d’entraînement",
 		"target": &"sandbox",
-		"body": "L’exercice guidé travaille uniquement sous user://dungeon_draft_studio/tests : petite arène, terrains, murs, spawns, validation, kit artistique, décor fixture, bundle incomplet, archive/reconstruction, RunData fixture, intégration puis rollback. Aucune run officielle n’est modifiée.",
+		"body": "L’exercice guidé travaille uniquement dans la sauvegarde locale du Studio : petite arène, terrains, murs, spawns, validation, kit artistique, décor d’exemple, dossier de production incomplet, archive et reconstruction, partie d’essai, intégration puis retour arrière. Aucune partie officielle n’est modifiée.",
 	},
 ]
 

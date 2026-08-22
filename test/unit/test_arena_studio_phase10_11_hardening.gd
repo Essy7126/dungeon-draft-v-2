@@ -46,7 +46,7 @@ func test_context_bar_is_human_first_and_technical_details_are_collapsed() -> vo
 	var bar := StudioContextBar.new()
 	add_child_autofree(bar)
 	await get_tree().process_frame
-	assert_eq(bar._scope_label(StudioProjectContext.SCOPE_RUN_SPECIFIC), "Spécifique à la run")
+	assert_eq(bar._scope_label(StudioProjectContext.SCOPE_RUN_SPECIFIC), "Spécifique à la partie")
 	assert_not_null(bar.human_summary_label)
 	assert_not_null(bar.details_button)
 	assert_false(bar.details_label.visible)

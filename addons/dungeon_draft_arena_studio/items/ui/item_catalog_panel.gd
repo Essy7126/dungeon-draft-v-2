@@ -4,12 +4,28 @@ extends VBoxContainer
 
 signal entry_requested(entry: Dictionary)
 signal filters_changed(filters: Dictionary)
+signal reward_bulk_apply_requested(changes: Array[Dictionary])
 
 const ACCENT_COLOR := Color(0.48, 0.86, 1.0)
 const MUTED_COLOR := Color(0.72, 0.77, 0.84)
 const BADGE_SIZE := 12
 const NEUTRAL_BADGE := Color(0.38, 0.44, 0.52)
 const REWARD_BADGE := Color(0.36, 0.78, 1.0)
+const PENDING_BACKGROUND := Color(1.0, 0.75, 0.41, 0.16)
+const NO_BACKGROUND := Color(0.0, 0.0, 0.0, 0.0)
+# ItemList n'a pas d'élément cochable natif (cette API appartient à PopupMenu) :
+# l'unique icône de ligne devient une texture composite [case][pastille], et le
+# clic ne bascule que dans la bande de gauche. Voir _on_item_list_gui_input.
+const CHECK_SIZE := 12
+const ICON_GAP := 4
+const ROW_ICON_WIDTH := CHECK_SIZE + ICON_GAP + BADGE_SIZE
+const CHECK_NONE := 0
+const CHECK_OFF := 1
+const CHECK_ON := 2
+const CHECK_ON_COLOR := Color(0.36, 0.78, 1.0)
+const CHECK_OFF_COLOR := Color(0.55, 0.60, 0.68)
+const PENDING_COLOR := Color(1.0, 0.75, 0.41)
+const REWARD_COLUMN_TOOLTIP := "Un objet coché peut apparaître comme récompense en début de partie. Décoché, il reste dans le catalogue mais n’est jamais tiré — rien n’est supprimé."
 const STATUS_BADGES := {
 	&"DRAFT": Color(0.98, 0.72, 0.28),
 	&"INVALID": Color(1.0, 0.42, 0.36),
@@ -35,7 +51,14 @@ var sort_option: OptionButton
 var item_list: ItemList
 var count_label: Label
 var filters_fold: FoldableContainer
+var reward_header: Label
+var apply_bar: HBoxContainer
+var apply_button: Button
+var cancel_button: Button
 var _entries: Array[Dictionary] = []
+# Chemin de ressource -> état de récompense voulu, tant qu'il diffère du fichier.
+# Une entrée disparaît d'elle-même dès que le disque rattrape l'intention.
+var _pending_rewards := {}
 
 
 func _ready() -> void:
@@ -59,19 +82,30 @@ func _ready() -> void:
 	search_edit.text_changed.connect(func(_value): _refresh())
 	content.add_child(search_edit)
 	content.add_child(_build_filters())
+	content.add_child(_build_reward_column_header())
 	item_list = ItemList.new()
 	item_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	item_list.custom_minimum_size.y = 260
+	# Plancher volontairement bas : c’est lui qui limite jusqu’où la poignée du
+	# VSplitContainer peut agrandir le panneau d’analyse. La liste s’étend déjà
+	# d’elle-même (SIZE_EXPAND_FILL) dès qu’il y a de la place.
+	item_list.custom_minimum_size.y = 120
 	item_list.select_mode = ItemList.SELECT_SINGLE
-	item_list.fixed_icon_size = Vector2i(BADGE_SIZE, BADGE_SIZE)
+	item_list.fixed_icon_size = Vector2i(ROW_ICON_WIDTH, BADGE_SIZE)
 	item_list.add_theme_constant_override("v_separation", 7)
 	item_list.add_theme_constant_override("icon_margin", 6)
 	item_list.item_selected.connect(_on_item_selected)
+	# Le signal gui_input est émis avant que l'ItemList ne traite l'événement
+	# lui-même : c'est le seul point où l'on peut intercepter un clic sur la case
+	# à cocher et l'empêcher de sélectionner la ligne (donc d'ouvrir l'objet).
+	item_list.gui_input.connect(_on_item_list_gui_input)
 	content.add_child(item_list)
+	content.add_child(_build_apply_bar())
+	_refresh_pending_indicators()
 
 
 func set_entries(entries: Array[Dictionary]) -> void:
 	_entries = entries.duplicate(false)
+	_reconcile_pending_rewards()
 	_refresh()
 
 
@@ -113,6 +147,31 @@ func select_path(path: String) -> bool:
 	return false
 
 
+func pending_reward_changes() -> Array[Dictionary]:
+	# On parcourt _entries et non les lignes affichées : une case cochée puis
+	# masquée par un filtre reste un changement en attente à part entière.
+	var changes: Array[Dictionary] = []
+	for entry in _entries:
+		var path := str(entry.get("path", ""))
+		if not _pending_rewards.has(path):
+			continue
+		changes.append({
+			"path": path,
+			"enabled": bool(_pending_rewards[path]),
+			"definition": entry.get("definition"),
+			"status": StringName(entry.get("status", &"")),
+			"display_name": str(entry.get("display_name", "Objet")),
+		})
+	return changes
+
+
+func clear_pending_rewards() -> void:
+	if _pending_rewards.is_empty():
+		return
+	_pending_rewards.clear()
+	_refresh()
+
+
 func _build_header() -> Control:
 	var header := HBoxContainer.new()
 	var title := Label.new()
@@ -126,6 +185,40 @@ func _build_header() -> Control:
 	count_label.tooltip_text = "Objets affichés sur objets connus du catalogue"
 	header.add_child(count_label)
 	return header
+
+
+func _build_reward_column_header() -> Control:
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 6)
+	reward_header = Label.new()
+	reward_header.text = "Récompense ?"
+	reward_header.add_theme_font_size_override("font_size", 11)
+	reward_header.add_theme_color_override("font_color", MUTED_COLOR)
+	reward_header.tooltip_text = REWARD_COLUMN_TOOLTIP
+	# Un Label ignore la souris par défaut : sans ce filtre, son info-bulle ne
+	# s'afficherait jamais. clip_text évite qu'il impose sa largeur au panneau.
+	reward_header.mouse_filter = Control.MOUSE_FILTER_STOP
+	reward_header.clip_text = true
+	reward_header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(reward_header)
+	return header
+
+
+func _build_apply_bar() -> Control:
+	apply_bar = HBoxContainer.new()
+	apply_bar.add_theme_constant_override("separation", 6)
+	apply_button = Button.new()
+	apply_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	apply_button.clip_text = true
+	apply_button.tooltip_text = "Écrire le tag de récompense dans le fichier de chaque objet modifié"
+	apply_button.pressed.connect(_emit_bulk_apply)
+	apply_bar.add_child(apply_button)
+	cancel_button = Button.new()
+	cancel_button.text = "Annuler"
+	cancel_button.tooltip_text = "Oublier les cases modifiées et revenir à l’état des fichiers"
+	cancel_button.pressed.connect(clear_pending_rewards)
+	apply_bar.add_child(cancel_button)
+	return apply_bar
 
 
 func _build_filters() -> Control:
@@ -146,7 +239,7 @@ func _build_filters() -> Control:
 	rarity_filter = _filter(box, ["Toutes raretés", "common", "uncommon", "rare"])
 	slot_filter = _filter(box, ["Tous emplacements", "Aucun", "Arme", "Armure", "Accessoire"])
 	hero_filter = _filter(box, ["Tous les héros", "Elfe", "Mage", "Guerrier", "Universel"])
-	reward_filter = _filter(box, ["Récompenses : toutes", "Éligibles", "Non éligibles"])
+	reward_filter = _filter(box, ["Récompense : tous", "Oui", "Non"])
 	status_filter = _filter(box, ["Tous statuts", "Production", "Brouillon", "Legacy", "Invalide"])
 	box.add_child(HSeparator.new())
 	sort_option = _filter(box, ["Tri : nom", "Tri : item_id", "Tri : rareté", "Tri : catégorie", "Tri : chemin"])
@@ -190,10 +283,15 @@ func _refresh() -> void:
 	_sort_entries(filtered)
 	for entry in filtered:
 		var index := item_list.add_item(str(entry.get("display_name", "Objet")))
-		item_list.set_item_icon(index, _badge_texture(_badge_color(entry)))
+		item_list.set_item_icon(index, _row_icon_for(entry))
 		item_list.set_item_metadata(index, entry)
 		item_list.set_item_tooltip(index, _entry_tooltip(entry))
+		item_list.set_item_custom_bg_color(
+			index,
+			PENDING_BACKGROUND if _pending_rewards.has(str(entry.get("path", ""))) else NO_BACKGROUND,
+		)
 	_refresh_counters(filtered.size())
+	_refresh_pending_indicators()
 	filters_changed.emit(snapshot_filters())
 
 
@@ -208,6 +306,14 @@ func _refresh_counters(visible_count: int) -> void:
 	filters_fold.title = "Filtres" if active == 0 else "Filtres (%d)" % active
 
 
+func _refresh_pending_indicators() -> void:
+	if apply_bar == null:
+		return
+	var count := _pending_rewards.size()
+	apply_bar.visible = count > 0
+	apply_button.text = "Appliquer à %d objet%s" % [count, "s" if count > 1 else ""]
+
+
 func _active_filter_count() -> int:
 	var active := 0
 	for option in [
@@ -217,6 +323,94 @@ func _active_filter_count() -> int:
 		if option != null and (option as OptionButton).selected > 0:
 			active += 1
 	return active
+
+
+func _is_reward_capable(entry: Dictionary) -> bool:
+	var definition := entry.get("definition") as ItemDefinition
+	return definition != null and (definition.is_equippable() or definition.is_relic())
+
+
+func _reward_state(entry: Dictionary) -> bool:
+	var path := str(entry.get("path", ""))
+	if _pending_rewards.has(path):
+		return bool(_pending_rewards[path])
+	return bool(entry.get("reward_eligible", false))
+
+
+func _reconcile_pending_rewards() -> void:
+	# Après une écriture réussie le catalogue relu porte déjà l'état voulu : le
+	# changement en attente s'efface tout seul. Celui d'un objet resté en
+	# mémoire (document ouvert, non sauvegardé) survit, ce qui est exact.
+	if _pending_rewards.is_empty():
+		return
+	var known := {}
+	for entry in _entries:
+		known[str(entry.get("path", ""))] = bool(entry.get("reward_eligible", false))
+	for path in _pending_rewards.keys():
+		if not known.has(path) or bool(_pending_rewards[path]) == bool(known[path]):
+			_pending_rewards.erase(path)
+
+
+func _toggle_reward(index: int) -> void:
+	var entry := item_list.get_item_metadata(index) as Dictionary
+	if entry.is_empty() or not _is_reward_capable(entry):
+		return
+	var path := str(entry.get("path", ""))
+	if path.is_empty():
+		return
+	var desired := not _reward_state(entry)
+	if desired == bool(entry.get("reward_eligible", false)):
+		_pending_rewards.erase(path)
+	else:
+		_pending_rewards[path] = desired
+	item_list.set_item_icon(index, _row_icon_for(entry))
+	item_list.set_item_custom_bg_color(
+		index,
+		PENDING_BACKGROUND if _pending_rewards.has(path) else NO_BACKGROUND,
+	)
+	item_list.set_item_tooltip(index, _entry_tooltip(entry))
+	_refresh_pending_indicators()
+
+
+func _emit_bulk_apply() -> void:
+	var changes := pending_reward_changes()
+	if changes.is_empty():
+		return
+	reward_bulk_apply_requested.emit(changes)
+
+
+func _on_item_list_gui_input(event: InputEvent) -> void:
+	var mouse_event := event as InputEventMouseButton
+	if mouse_event == null or not mouse_event.pressed \
+			or mouse_event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	var index := item_list.get_item_at_position(mouse_event.position, true)
+	if index < 0:
+		return
+	var entry := item_list.get_item_metadata(index) as Dictionary
+	# Seuls les équipements et les reliques peuvent rejoindre le pool : ailleurs
+	# la ligne ne dessine pas de case, donc le clic doit rester une ouverture.
+	if entry.is_empty() or not _is_reward_capable(entry):
+		return
+	if not _is_inside_checkbox(index, mouse_event.position):
+		return
+	_toggle_reward(index)
+	# Consommer l'événement empêche l'ItemList de sélectionner la ligne, donc
+	# d'émettre item_selected, donc d'ouvrir l'objet dans l'éditeur.
+	item_list.accept_event()
+
+
+func _is_inside_checkbox(index: int, position: Vector2) -> bool:
+	var rect := item_list.get_item_rect(index, false)
+	return position.x >= rect.position.x \
+		and position.x <= rect.position.x + _checkbox_zone_width()
+
+
+func _checkbox_zone_width() -> float:
+	# Bande cliquable : la marge d'icône, la case, et la moitié de l'écart qui la
+	# sépare de la pastille de statut. Le texte commence bien après.
+	return float(item_list.get_theme_constant(&"icon_margin", &"ItemList")) \
+		+ float(CHECK_SIZE) + float(ICON_GAP) * 0.5
 
 
 func _badge_color(entry: Dictionary) -> Color:
@@ -236,26 +430,62 @@ func _entry_tooltip(entry: Dictionary) -> String:
 		STATUS_LABELS.get(status, str(status)),
 		" · éligible aux récompenses" if bool(entry.get("reward_eligible", false)) else "",
 	])
-	lines.append(str(entry.get("path", "")))
+	var path := str(entry.get("path", ""))
+	if _pending_rewards.has(path):
+		lines.append("Récompense : %s — en attente d’application" % [
+			"à cocher" if bool(_pending_rewards[path]) else "à décocher",
+		])
+	lines.append(path)
 	return "\n".join(lines)
 
 
-static func _badge_texture(color: Color) -> ImageTexture:
-	var key := color.to_html(false)
+func _row_icon_for(entry: Dictionary) -> ImageTexture:
+	var state := CHECK_NONE
+	var color := CHECK_OFF_COLOR
+	if _is_reward_capable(entry):
+		var checked := _reward_state(entry)
+		state = CHECK_ON if checked else CHECK_OFF
+		if _pending_rewards.has(str(entry.get("path", ""))):
+			color = PENDING_COLOR
+		else:
+			color = CHECK_ON_COLOR if checked else CHECK_OFF_COLOR
+	return _row_icon(state, color, _badge_color(entry))
+
+
+static func _row_icon(check_state: int, check_color: Color, badge_color: Color) -> ImageTexture:
+	var key := "%d|%s|%s" % [check_state, check_color.to_html(true), badge_color.to_html(true)]
 	if _badge_textures.has(key):
 		return _badge_textures[key]
-	var image := Image.create_empty(BADGE_SIZE, BADGE_SIZE, false, Image.FORMAT_RGBA8)
+	var image := Image.create_empty(ROW_ICON_WIDTH, BADGE_SIZE, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0.0, 0.0, 0.0, 0.0))
+	_paint_checkbox(image, check_state, check_color)
+	_paint_badge(image, CHECK_SIZE + ICON_GAP, badge_color)
+	var texture := ImageTexture.create_from_image(image)
+	_badge_textures[key] = texture
+	return texture
+
+
+static func _paint_checkbox(image: Image, check_state: int, color: Color) -> void:
+	if check_state == CHECK_NONE:
+		return
+	for y in CHECK_SIZE:
+		for x in CHECK_SIZE:
+			var on_border := x == 0 or y == 0 or x == CHECK_SIZE - 1 or y == CHECK_SIZE - 1
+			var on_fill := check_state == CHECK_ON \
+				and x >= 3 and x <= CHECK_SIZE - 4 \
+				and y >= 3 and y <= CHECK_SIZE - 4
+			if on_border or on_fill:
+				image.set_pixel(x, y, color)
+
+
+static func _paint_badge(image: Image, offset_x: int, color: Color) -> void:
 	var center := (BADGE_SIZE - 1) * 0.5
 	var radius := BADGE_SIZE * 0.5 - 1.0
 	for y in BADGE_SIZE:
 		for x in BADGE_SIZE:
 			var coverage := clampf(radius - Vector2(x - center, y - center).length() + 0.5, 0.0, 1.0)
 			if coverage > 0.0:
-				image.set_pixel(x, y, Color(color.r, color.g, color.b, coverage))
-	var texture := ImageTexture.create_from_image(image)
-	_badge_textures[key] = texture
-	return texture
+				image.set_pixel(offset_x + x, y, Color(color.r, color.g, color.b, coverage))
 
 
 func _matches(entry: Dictionary) -> bool:

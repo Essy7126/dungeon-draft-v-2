@@ -423,7 +423,7 @@ func test_shared_toolbar_exposes_contextual_undo_redo_and_history() -> void:
 	var history_text := ""
 	for index in range(popup.item_count):
 		history_text += popup.get_item_text(index) + "\n"
-	assert_string_contains(history_text, "sauvegardee")
+	assert_string_contains(history_text, "sauvegardée")
 	studio._undo_active()
 	assert_false(studio.redo_button.disabled)
 	assert_string_contains(studio.redo_button.tooltip_text, "Deplacer la grille")

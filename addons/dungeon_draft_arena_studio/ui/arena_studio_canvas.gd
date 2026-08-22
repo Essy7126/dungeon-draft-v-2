@@ -899,7 +899,7 @@ func _update_transform_drag_position(view_position: Vector2) -> void:
 			candidate = GridTransformService.translate(_drag_snapshot, delta)
 			if _drag_use_snap:
 				candidate.origin = GridTransformService.snap_position(candidate.origin, position_snap)
-			_live_transform_text = "Deplacement  %+0.2f, %+0.2f px" % [delta.x, delta.y]
+			_live_transform_text = "Déplacement  %+0.2f, %+0.2f px" % [delta.x, delta.y]
 		TransformHandle.AXIS_X:
 			var target_x := _drag_snapshot.origin \
 				+ (pointer_image - _drag_snapshot.origin) * _drag_fine \
@@ -968,7 +968,7 @@ func _update_transform_drag_position(view_position: Vector2) -> void:
 			if _drag_use_snap:
 				factor = GridTransformService.snap_scale(factor, scale_snap)
 			candidate = GridTransformService.scale_around(_drag_snapshot, _drag_pivot, factor)
-			_live_transform_text = "Echelle  %0.2f %%" % (factor * 100.0)
+			_live_transform_text = "Échelle  %0.2f %%" % (factor * 100.0)
 		TransformHandle.ANGLE:
 			var pointer_angle := (pointer_image - _drag_snapshot.origin).angle()
 			var angle_delta := wrapf(pointer_angle - _drag_start_angle, -PI, PI)
@@ -982,7 +982,7 @@ func _update_transform_drag_position(view_position: Vector2) -> void:
 				_drag_snapshot, target_angle, angle_mode
 			)
 			if not bool(angle_result.get("ok", false)):
-				_live_transform_text = "Angle refuse : %s" % angle_result.get("error", "invalide")
+				_live_transform_text = "Angle refusé : %s" % angle_result.get("error", "invalide")
 				return
 			candidate = angle_result.get("snapshot") as GridTransformSnapshot
 			var mode_label: String = ["Symetrique", "Conserver X", "Conserver Y"][angle_mode]
@@ -999,7 +999,7 @@ func _update_transform_drag_position(view_position: Vector2) -> void:
 		candidate, GridTransformService.determinant(_drag_snapshot.axis_x, _drag_snapshot.axis_y)
 	)
 	if not bool(validation.get("ok", false)):
-		_live_transform_text = "Transformation refusee : %s" % validation.get("error", "invalide")
+		_live_transform_text = "Transformation refusée : %s" % validation.get("error", "invalide")
 		return
 	if _transform_preview == null or not _transform_preview.set_transform(candidate):
 		return
@@ -1112,7 +1112,7 @@ func _handle_anchor_press(view_position: Vector2, button_index: int) -> bool:
 		return true
 	var cell := _cell_at(view_position)
 	if cell == INVALID_CELL or arena.calibration_cells.has(cell):
-		_live_transform_text = "Ancre refusee : cellule invalide ou deja utilisee"
+		_live_transform_text = "Ancre refusée : cellule invalide ou déjà utilisée"
 		queue_redraw()
 		return true
 	stroke_started.emit("Ajouter une ancre de calibration")
@@ -1222,7 +1222,7 @@ func _sync_affine_gizmo() -> void:
 		comparison,
 		_drag_handle,
 		_live_transform_text if not _live_transform_text.is_empty() \
-			else "Gizmo affine : corps = deplacer | X/Y = incliner | violet = angle"
+			else "Gizmo affine : corps = déplacer | X/Y = incliner | violet = angle"
 	)
 
 
@@ -1328,7 +1328,7 @@ func _action_name() -> String:
 	return [
 		"Selectionner des cases", "Deplacer la vue", "Ajouter des cases",
 		"Retirer des cases", "Definir une bordure", "Peindre des obstacles",
-		"Peindre un terrain", "Placer des spawns", "Verifier la map",
+		"Peindre un terrain", "Placer des spawns", "Vérifier la carte",
 	][active_tool]
 
 
@@ -1339,7 +1339,7 @@ func _draw() -> void:
 			affine_gizmo.hide()
 		draw_string(
 			ThemeDB.fallback_font, size * 0.5 - Vector2(150, 0),
-			"Ouvrez ou creez une arene", HORIZONTAL_ALIGNMENT_CENTER, 300, 20,
+			"Ouvrez ou creez une arène", HORIZONTAL_ALIGNMENT_CENTER, 300, 20,
 			Color(0.75, 0.82, 0.9)
 		)
 		return
@@ -1723,7 +1723,7 @@ func _draw_hud() -> void:
 		)
 	if calibration_active:
 		var instructions: String = [
-			"1/3 — Cliquez le centre d'une case de reference",
+			"1/3 — Cliquez le centre d'une case de référence",
 			"2/3 — Cliquez la voisine en bas a droite",
 			"3/3 — Cliquez la voisine en bas a gauche",
 		][_calibration_points.size()]

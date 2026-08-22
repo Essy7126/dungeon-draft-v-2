@@ -30,7 +30,7 @@ func _ready() -> void:
 	var bar := HBoxContainer.new()
 	bar.add_theme_constant_override("separation", 6)
 	rows.add_child(bar)
-	run_option = _labeled_option(bar, "Run")
+	run_option = _labeled_option(bar, "Partie")
 	run_option.item_selected.connect(_on_run_selected)
 	room_option = _labeled_option(bar, "Salle")
 	room_option.item_selected.connect(_on_room_selected)
@@ -70,7 +70,7 @@ func _ready() -> void:
 
 func _build_transition_dialog() -> void:
 	transition_dialog = ConfirmationDialog.new()
-	transition_dialog.title = "Modifications non sauvegardees"
+	transition_dialog.title = "Modifications non sauvegardées"
 	transition_dialog.ok_button_text = "Sauvegarder et continuer"
 	transition_dialog.add_button("Garder comme brouillon", false, "draft")
 	transition_dialog.add_button("Abandonner", true, "discard")
@@ -107,7 +107,7 @@ func _refresh(_unused = {}) -> void:
 		for index in range(context.active_run.rooms.size()):
 			var room := context.active_run.rooms[index]
 			room_option.add_item("%02d  %s" % [index + 1, room.room_name if room != null else "Salle absente"])
-			room_option.set_item_tooltip(index, room.resource_path if room != null else "Reference nulle")
+			room_option.set_item_tooltip(index, room.resource_path if room != null else "Référence nulle")
 		if context.active_room_index >= 0:
 			room_option.select(context.active_room_index)
 	hero_option.clear()
@@ -148,12 +148,12 @@ func _refresh(_unused = {}) -> void:
 				and not context.active_hero.base_unit_data.unit_name.strip_edges().is_empty():
 			hero_display = context.active_hero.base_unit_data.unit_name
 	human_summary_label.text = "%s · Salle %d — %s · %s · %s · %d usage(s) · %d erreur(s) · Cible : %s" % [
-		str(snap.get("run_name", "Aucune run")), int(snap.get("room_index", -1)) + 1,
+		str(snap.get("run_name", "Aucune partie")), int(snap.get("room_index", -1)) + 1,
 		str(snap.get("room_name", "Aucune salle")), hero_display,
 		_scope_label(context.edit_scope), usage_count, error_count, target,
 	]
 	human_summary_label.tooltip_text = human_summary_label.text
-	details_label.text = "Run: %s  ·  Salle: %s  ·  Profil: %s  ·  usages: %d  ·  index g%d" % [
+	details_label.text = "Partie : %s  ·  Salle : %s  ·  Profil : %s  ·  usages : %d  ·  index g%d" % [
 		snap.get("run_path", ""), snap.get("room_path", ""),
 		snap.get("progression_path", ""), usage_count,
 		reference_graph.generation if reference_graph != null else 0,
@@ -173,7 +173,7 @@ func _show_transition(transition: Dictionary) -> void:
 	var domains: Array[String] = []
 	for domain_value in (transition.get("dirty_domains", {}) as Dictionary).keys():
 		domains.append(context.human_domain_name(StringName(domain_value)))
-	transition_dialog.dialog_text = "Le changement de contexte remplacerait une copie de travail modifiee.\n\nDomaines : %s\n\nChoisissez explicitement quoi faire." % ", ".join(domains)
+	transition_dialog.dialog_text = "Le changement de contexte remplacerait une version en cours modifiée.\n\nDomaines : %s\n\nChoisissez explicitement quoi faire." % ", ".join(domains)
 	transition_dialog.popup_centered()
 
 
@@ -227,7 +227,7 @@ func _labeled_option(parent: Container, label_text: String) -> OptionButton:
 func _scope_label(scope: StringName) -> String:
 	match scope:
 		StudioProjectContext.SCOPE_RUN_SPECIFIC:
-			return "Spécifique à la run"
+			return "Spécifique à la partie"
 		StudioProjectContext.SCOPE_SHARED:
 			return "Ressource partagée"
 		_:

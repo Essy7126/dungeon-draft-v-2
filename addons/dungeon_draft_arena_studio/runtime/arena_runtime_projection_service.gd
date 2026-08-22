@@ -45,7 +45,7 @@ static func build(arena: ArenaDefinition, configs: Array[SurfaceConfig] = []) ->
 
 static func parity_report(arena: ArenaDefinition, state: ArenaRuntimeState) -> Dictionary:
 	if arena == null or state == null or state.grid == null:
-		return {"ok": false, "error": "Projection incomplete."}
+		return {"ok": false, "error": "Projection incomplète."}
 	var mismatches: Array[Dictionary] = []
 	var runtime_hole_cells: Array[String] = []
 	var runtime_interactable_cells: Array[String] = []

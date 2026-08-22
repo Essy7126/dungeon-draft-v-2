@@ -40,26 +40,30 @@ const TOOL_HELP := [
 ## Compatibilite de creation uniquement. Le navigateur d'autorite est derive
 ## de StudioProjectContext.active_run.rooms.
 const LEGACY_CALIBRATION_TEMPLATES := [
-	["Foret — Gue forestier", &"room_01_forest"],
+	["Forêt — Gué forestier", &"room_01_forest"],
 	["Volcan — Caldeira", &"room_05_volcano"],
 	["Espace — Station orbitale", &"room_06_space"],
 ]
 const TEST_CONFIGURATIONS := [
 	["Sans personnages", &"no_characters"],
-	["Trio de heros", &"hero_trio"],
-	["Rencontre reelle", &"real_encounter"],
+	["Trio de héros", &"hero_trio"],
+	["Rencontre réelle", &"real_encounter"],
 	["Test des clics", &"clicks"],
 	["Test des spawns", &"spawns"],
 	["Test de l'occlusion", &"occlusion"],
-	["Deplacement", &"movement"],
+	["Déplacement", &"movement"],
 	["Vue", &"view"],
 	["Ligne de vue", &"line_of_sight"],
 	["Obstacles", &"obstacles"],
 	["Terrains", &"terrains"],
 	["Spawns", &"spawns"],
-	["Y-sort / occlusion", &"y_sort"],
-	["Partie complete", &"full_run"],
+	["Superposition / occlusion", &"y_sort"],
+	["Partie complète", &"full_run"],
 ]
+
+## Libelle affiche de chaque mode visuel. L'index suit strictement
+## ArenaDefinition.VisualMode : PAINTED, MODULAR, HYBRID.
+const VISUAL_MODE_LABELS := ["Peinte", "Modulaire", "Hybride"]
 
 var arena: ArenaDefinition = null
 var edit_session: ArenaEditSession = null
@@ -231,7 +235,7 @@ var _stroke_cell_count := 0
 var _stroke_transform_commit := false
 var _history_refresh_suppressed := false
 var _verification_source := GridTransformService.INVALID_CELL
-var _last_test_log := "Aucun test direct lance depuis cette session."
+var _last_test_log := "Aucun test direct lancé depuis cette session."
 var _recovery_timer: Timer
 var _transfer_poll_timer: Timer
 var _announced_transfer_id := ""
@@ -339,14 +343,14 @@ func load_production(arena_id: StringName) -> bool:
 	var session_key := "production:%s" % arena_id
 	if _sessions.has(session_key):
 		_activate_session(_sessions[session_key] as ArenaEditSession)
-		_set_status("Session de map reprise avec son historique.")
+		_set_status("Session de carte reprise avec son historique.")
 		return true
 	var imported := ArenaLegacyImporter.import_production(arena_id)
 	if imported == null:
-		_set_status("Impossible d'ouvrir la map de production demandee.", true)
+		_set_status("Impossible d'ouvrir la carte de production demandée.", true)
 		return false
 	_set_arena(imported, false, session_key)
-	_set_status("Map de production ouverte sans modifier ses ressources sources.")
+	_set_status("Carte de production ouverte sans modifier ses ressources sources.")
 	return true
 
 
@@ -407,14 +411,14 @@ func _build_top_bar() -> Control:
 	_add_button(bar, "Ouvrir", _show_open_dialog)
 	_add_button(bar, "Sauvegarder", save_arena)
 	var prepare_button := _add_button(bar, "Préparer", prepare_automatically)
-	prepare_button.tooltip_text = "Préparer automatiquement la map"
+	prepare_button.tooltip_text = "Préparer automatiquement la carte"
 	_add_button(bar, "Valider", validate_arena)
 	var test_button := _add_button(bar, "▶ Tester", test_arena)
-	test_button.tooltip_text = "Tester la working copy dans la vraie scène"
+	test_button.tooltip_text = "Tester la version en cours dans la vraie scène"
 	var tour_button := _add_button(bar, "? Visite guidée", _show_guided_tour)
 	tour_button.tooltip_text = "Créer puis intégrer une salle, sans prérequis Godot"
 	mode_option = OptionButton.new()
-	mode_option.tooltip_text = "Creation masque les informations techniques."
+	mode_option.tooltip_text = "Création masque les informations techniques."
 	for label in ["Création", "Vérification", "Avancé"]:
 		mode_option.add_item(label)
 	mode_option.item_selected.connect(_on_mode_selected)
@@ -458,11 +462,11 @@ func _build_left_panel() -> Control:
 	box.add_child(active_tool_label)
 	_refresh_active_tool_contract(ArenaStudioCanvas.Tool.SELECT)
 	shape_option = OptionButton.new()
-	for label in ["Pinceau continu", "Rectangle", "Remplissage contigu", "Selection multiple"]:
+	for label in ["Pinceau continu", "Rectangle", "Remplissage contigu", "Sélection multiple"]:
 		shape_option.add_item(label)
 	shape_option.item_selected.connect(func(index): canvas.brush_shape = index)
 	obstacle_option = OptionButton.new()
-	for label in ["Mur complet", "Obstacle bas", "Decor traversable", "Falaise"]:
+	for label in ["Mur complet", "Obstacle bas", "Décor traversable", "Falaise"]:
 		obstacle_option.add_item(label)
 	terrain_option = OptionButton.new()
 	terrain_option.tooltip_text = "Sols permanents autorisés par le document courant"
@@ -472,10 +476,10 @@ func _build_left_panel() -> Control:
 		))
 	)
 	spawn_option = OptionButton.new()
-	for label in ["Heros 1 — Elfe", "Heros 2 — Mage", "Heros 3 — Guerrier", "Ennemi", "Groupe ennemi", "Zone d'invocation"]:
+	for label in ["Héros 1 — Elfe", "Héros 2 — Mage", "Héros 3 — Guerrier", "Ennemi", "Groupe ennemi", "Zone d'invocation"]:
 		spawn_option.add_item(label)
 	verification_option = OptionButton.new()
-	verification_option.add_item("Verifier les deplacements")
+	verification_option.add_item("Vérifier les déplacements")
 	verification_option.add_item("Tester une ligne de vue")
 	verification_option.item_selected.connect(_on_verification_kind_selected)
 	test_configuration_option = OptionButton.new()
@@ -491,12 +495,12 @@ func _build_canvas_panel() -> Control:
 	var navigation := HBoxContainer.new()
 	canvas_navigation = navigation
 	_add_button(navigation, "Recentrer", func(): canvas.recenter_grid())
-	_add_button(navigation, "Adapter a l'image", func(): canvas.fit_to_image())
+	_add_button(navigation, "Adapter à l'image", func(): canvas.fit_to_image())
 	_add_button(navigation, "Calibration en 3 clics", start_calibration)
 	_add_button(navigation, "Décor…", _show_backdrop_dialog)
 	_add_button(navigation, "Vortex…", _show_vortex_dialog)
 	var hint := Label.new()
-	hint.text = "Molette : zoom • Clic milieu : deplacer"
+	hint.text = "Molette : zoom • Clic milieu : déplacer"
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	navigation.add_child(hint)
@@ -575,18 +579,18 @@ func _build_right_panel() -> Control:
 	var run_actions := HFlowContainer.new()
 	run_actions.add_theme_constant_override("h_separation", 4)
 	box.add_child(run_actions)
-	_add_button(run_actions, "Inserer", func(): _attach_current_arena(true))
+	_add_button(run_actions, "Insérer", func(): _attach_current_arena(true))
 	_add_button(run_actions, "Remplacer", func(): _attach_current_arena(false))
 	_add_button(run_actions, "Dupliquer", _duplicate_run_room)
-	_add_button(run_actions, "Rendre specifique", _make_run_room_specific)
+	_add_button(run_actions, "Rendre spécifique", _make_run_room_specific)
 	_add_button(run_actions, "Monter", func(): _move_run_room(-1))
 	_add_button(run_actions, "Descendre", func(): _move_run_room(1))
 	_add_button(run_actions, "Retirer", _remove_run_room)
-	_add_button(run_actions, "Undo run", func(): run_authoring.undo())
-	_add_button(run_actions, "Redo run", func(): run_authoring.redo())
-	_add_button(run_actions, "Sauver run", _save_run_sequence)
-	_add_button(run_actions, "Recharger run", _reload_run_sequence)
-	box.add_child(_section_label("Pinceau et propriete active"))
+	_add_button(run_actions, "Annuler (partie)", func(): run_authoring.undo())
+	_add_button(run_actions, "Rétablir (partie)", func(): run_authoring.redo())
+	_add_button(run_actions, "Sauver la partie", _save_run_sequence)
+	_add_button(run_actions, "Recharger la partie", _reload_run_sequence)
+	box.add_child(_section_label("Pinceau et propriété active"))
 	box.add_child(shape_option)
 	box.add_child(obstacle_option)
 	box.add_child(terrain_option)
@@ -606,7 +610,7 @@ func _build_right_panel() -> Control:
 	inspector_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.add_child(inspector_label)
 	calibration_label = Label.new()
-	calibration_label.text = "Alignement a verifier"
+	calibration_label.text = "Alignement à vérifier"
 	calibration_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	calibration_label.custom_minimum_size.y = 40
 	calibration_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.28))
@@ -614,14 +618,14 @@ func _build_right_panel() -> Control:
 	box.add_child(_build_transform_panel())
 	box.add_child(_build_layers_panel())
 	box.add_child(_section_label("Actions"))
-	_add_button(box, "Preparer automatiquement la map", prepare_automatically)
-	_add_button(box, "Placer les heros", func(): _select_tool_and_preset(ArenaStudioCanvas.Tool.SPAWN, 0))
+	_add_button(box, "Préparer automatiquement la carte", prepare_automatically)
+	_add_button(box, "Placer les héros", func(): _select_tool_and_preset(ArenaStudioCanvas.Tool.SPAWN, 0))
 	_add_button(box, "Placer les ennemis", func(): _select_tool_and_preset(ArenaStudioCanvas.Tool.SPAWN, 4))
-	_add_button(box, "Verifier les deplacements", func(): _select_verification(0))
+	_add_button(box, "Vérifier les déplacements", func(): _select_verification(0))
 	_add_button(box, "Tester une ligne de vue", func(): _select_verification(1))
 	_add_button(box, "Exporter le rapport", export_report)
 	_add_button(box, "Copier le rapport pour Codex", copy_report_for_codex)
-	recovery_button = _add_button(box, "Restaurer le recovery", restore_latest_recovery)
+	recovery_button = _add_button(box, "Restaurer la récupération", restore_latest_recovery)
 	recovery_button.tooltip_text = "Restaurer la sauvegarde automatique de récupération"
 	box.add_child(_build_restore_points_panel())
 	advanced_panel = VBoxContainer.new()
@@ -658,7 +662,7 @@ func _build_destination_panel() -> PanelContainer:
 	var selectors := GridContainer.new()
 	selectors.columns = 2
 	box.add_child(selectors)
-	selectors.add_child(_plain_label("Run :"))
+	selectors.add_child(_plain_label("Partie :"))
 	destination_run_option = OptionButton.new()
 	destination_run_option.name = "DestinationRunOption"
 	destination_run_option.item_selected.connect(_on_destination_run_selected)
@@ -702,7 +706,7 @@ func _build_destination_panel() -> PanelContainer:
 	var buttons := HFlowContainer.new()
 	box.add_child(buttons)
 	destination_integrate_button = _add_button(
-		buttons, "Intégrer à la run", _on_integrate_destination_pressed
+		buttons, "Intégrer à la partie", _on_integrate_destination_pressed
 	)
 	destination_integrate_button.name = "IntegrateIntoRunButton"
 	destination_resolve_button = _add_button(
@@ -798,13 +802,13 @@ func _render_destination_plan(plan: Dictionary) -> void:
 	elif action in [ArenaProductionAttachmentService.INSERT_BEFORE, ArenaProductionAttachmentService.INSERT_AFTER]:
 		result_label = "%s / Salle insérée en position %d" % [run_label, room_number]
 	destination_summary_label.text = "Résultat : %s\nPortée : %s" % [
-		result_label, plan.get("scope", "Unique à cette run"),
+		result_label, plan.get("scope", "Unique à cette partie"),
 	]
 	var lines := PackedStringArray([
 		"[b]Action prévue[/b] : %s" % plan.get("action_label", "Indisponible"),
-		"[b]RunData[/b] : %s" % plan.get("run_path", ""),
+		"[b]Partie[/b] : %s" % plan.get("run_path", ""),
 		"[b]Salle cible[/b] : %s" % plan.get("target_room_path", ""),
-		"[b]ArenaDefinition finale[/b] : %s" % plan.get("new_arena_path", ""),
+		"[b]Arène finale[/b] : %s" % plan.get("new_arena_path", ""),
 		"[b]Partagée[/b] : %s" % ("oui — copie spécifique automatique" if plan.get("shared", false) else "non"),
 		"[b]Index[/b] : %d ; salles %d → %d" % [
 			target_index, int(plan.get("before_count", 0)), int(plan.get("after_count", 0)),
@@ -824,7 +828,7 @@ func _render_destination_plan(plan: Dictionary) -> void:
 		lines.append("[b]DONNÉES ARENA[/b] : %s — %s" % [
 			readiness.data_report.state_name(), readiness.data_report.summary,
 		])
-		lines.append("[b]RUNTIME[/b] : %s — %s" % [
+		lines.append("[b]JEU RÉEL[/b] : %s — %s" % [
 			readiness.runtime_scene_report.state_name(),
 			readiness.runtime_scene_report.summary,
 		])
@@ -888,14 +892,14 @@ func _render_destination_plan(plan: Dictionary) -> void:
 func _mark_destination_plan_obsolete() -> void:
 	_destination_last_plan = {
 		"ok": false,
-		"error": "La calibration a change ; le plan doit etre recalcule.",
+		"error": "La calibration a changé ; le plan doit être recalculé.",
 		"obsolete": true,
 	}
 	if destination_summary_label != null:
-		destination_summary_label.text = "Plan d'integration obsolete - calibration modifiee"
+		destination_summary_label.text = "Plan d'intégration obsolète — calibration modifiée"
 	if destination_details_text != null:
 		destination_details_text.text = (
-			"La copie de travail a change. Ouvrez l'etape Destination pour recalculer "
+			"La version en cours a changé. Ouvrez l'étape Destination pour recalculer"
 			+ "les certificats et la production."
 		)
 	if destination_integrate_button != null:
@@ -916,7 +920,7 @@ func _destination_button_text(action: StringName, run_label: String, room_number
 			return "Vérifier et intégrer dans %s — Insérer avant salle %d" % [run_label, room_number]
 		ArenaProductionAttachmentService.INSERT_AFTER:
 			return "Vérifier et intégrer dans %s — Insérer après salle %d" % [run_label, room_number]
-	return "Vérifier et intégrer à la run"
+	return "Vérifier et intégrer à la partie"
 
 
 func _open_destination_bundle_resolver() -> void:
@@ -1039,7 +1043,7 @@ func _continue_destination_integration() -> void:
 	var action := _selected_destination_action()
 	if action == ArenaProductionAttachmentService.REPLACE:
 		integration_replace_dialog.dialog_text = (
-			"Cette action remplace toute la référence RoomData. L’ancien fichier restera sur disque, "
+			"Cette action remplace toute la référence de la salle. L’ancien fichier restera sur disque, "
 			+ "mais les données suivantes ne seront pas reprises :\n\n"
 			+ "\n".join(_destination_last_plan.get("abandoned_gameplay", []))
 			+ "\n\nPréférez « Mettre à jour l’arène » pour conserver le gameplay."
@@ -1071,7 +1075,7 @@ func _show_integration_warning_confirmation(
 func _on_integration_warnings_confirmed() -> void:
 	var justification := integration_warning_justification.text.strip_edges()
 	if justification.is_empty():
-		_set_status("Une justification est requise pour accepter ce choix de design.", true)
+		_set_status("Une justification est requise pour accepter ce choix de conception.", true)
 		call_deferred("_reopen_integration_warning_dialog")
 		return
 	if edit_session != null:
@@ -1138,7 +1142,7 @@ func _build_dynamic_palette() -> VBoxContainer:
 	box.add_child(hybrid_floor_policy_panel)
 	var terrain_button := Button.new()
 	terrain_button.text = "Terrain"
-	terrain_button.tooltip_text = "Peindre le terrain — une action Undo par trait"
+	terrain_button.tooltip_text = "Peindre le terrain — une action annulable par trait"
 	terrain_button.pressed.connect(func(): _select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN))
 	box.add_child(terrain_button)
 	dynamic_terrain_option = OptionButton.new()
@@ -1164,7 +1168,7 @@ func _build_dynamic_palette() -> VBoxContainer:
 	box.add_child(dynamic_base_terrain_option)
 	var wall_button := Button.new()
 	wall_button.text = "Mur"
-	wall_button.tooltip_text = "Placer un vrai WallConfig normal, feu ou glace"
+	wall_button.tooltip_text = "Placer un vrai mur normal, de feu ou de glace"
 	wall_button.pressed.connect(func(): _select_dynamic_tool(ArenaStudioCanvas.Tool.OBSTACLE))
 	box.add_child(wall_button)
 	dynamic_wall_option = OptionButton.new()
@@ -1216,7 +1220,7 @@ func _build_dynamic_palette() -> VBoxContainer:
 	box.add_child(resize_grid)
 	var resize_button := Button.new()
 	resize_button.text = "Redimensionner le document"
-	resize_button.tooltip_text = "Redimensionner la working copy active (annulable)"
+	resize_button.tooltip_text = "Redimensionner la version en cours (annulable)"
 	resize_button.pressed.connect(_resize_dynamic_document)
 	box.add_child(resize_button)
 	return box
@@ -1227,7 +1231,7 @@ func _build_surface_preview_palette() -> VBoxContainer:
 	box.add_child(_section_label("SIMULER UN SORT DE TERRAIN"))
 	var note := Label.new()
 	note.text = (
-		"Vue Jeu · vraie Spell et vraie durée · copie runtime uniquement\n"
+		"Vue Jeu · vrai sort et vraie durée · copie de test uniquement\n"
 		+ "Boule de feu : croix rayon 2 · lave 3 tours · 15 dégâts à l'entrée"
 	)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1240,13 +1244,13 @@ func _build_surface_preview_palette() -> VBoxContainer:
 	_add_button(buttons, "Appliquer · Mur de glace", func():
 		_simulate_runtime_terrain_spell(TERRAIN_SIM_ICE_WALL)
 	)
-	_add_button(buttons, "Appliquer · Eau (fixture)", func():
+	_add_button(buttons, "Appliquer · Eau (exemple)", func():
 		_simulate_runtime_water_fixture()
 	)
-	_add_button(buttons, "Avancer d'un tick", func():
+	_add_button(buttons, "Avancer d'un tour", func():
 		_advance_runtime_terrain_tick()
 	)
-	_add_button(buttons, "Déplacer une fixture", func():
+	_add_button(buttons, "Déplacer l’exemple", func():
 		_move_runtime_terrain_fixture()
 	)
 	_add_button(buttons, "Effacer les surfaces", func():
@@ -1264,7 +1268,7 @@ func _build_transform_panel() -> Control:
 	box.add_child(_section_label("Transformation de la grille"))
 	var transform_button := Button.new()
 	transform_button.text = "Transformer la grille"
-	transform_button.tooltip_text = "Selectionne la calibration sans rendre le fond deplacable."
+	transform_button.tooltip_text = "Sélectionne la calibration sans rendre le fond déplaçable."
 	transform_button.pressed.connect(func():
 		_select_tool_and_preset(ArenaStudioCanvas.Tool.TRANSFORM_GRID, 0)
 	)
@@ -1337,7 +1341,7 @@ func _build_transform_panel() -> Control:
 	for definition in [
 		["Position 1 px", 1.0, 0.1, 20.0, 0.1, "position_snap"],
 		["Angle 0.25 deg", 0.25, 0.05, 45.0, 0.05, "angle_snap_degrees"],
-		["Echelle 0.5 %", 0.005, 0.001, 0.25, 0.001, "scale_snap"],
+		["Échelle 0.5 %", 0.005, 0.001, 0.25, 0.001, "scale_snap"],
 	]:
 		var snap_spin := SpinBox.new()
 		snap_spin.prefix = definition[0] + "  "
@@ -1352,7 +1356,7 @@ func _build_transform_panel() -> Control:
 	var pivot_actions := HBoxContainer.new()
 	var center_pivot := Button.new()
 	center_pivot.text = "Centrer pivot"
-	center_pivot.tooltip_text = "Placer le pivot d'éditeur au centre logique — ne modifie pas la map"
+	center_pivot.tooltip_text = "Placer le pivot d'éditeur au centre logique — ne modifie pas la carte"
 	center_pivot.pressed.connect(func():
 		canvas.center_editor_pivot()
 		_refresh_transform_inspector()
@@ -1360,7 +1364,7 @@ func _build_transform_panel() -> Control:
 	pivot_actions.add_child(center_pivot)
 	var origin_pivot := Button.new()
 	origin_pivot.text = "Pivot sur O"
-	origin_pivot.tooltip_text = "Placer le pivot d'éditeur sur l'origine O — ne rend pas la map dirty"
+	origin_pivot.tooltip_text = "Placer le pivot d'éditeur sur l'origine O — ne marque pas la carte comme modifiée"
 	origin_pivot.pressed.connect(func():
 		canvas.place_editor_pivot_on_origin()
 		_refresh_transform_inspector()
@@ -1375,7 +1379,7 @@ func _build_transform_panel() -> Control:
 	)
 	box.add_child(compare_button)
 	last_operation_label = Label.new()
-	last_operation_label.text = "Derniere operation : aucune"
+	last_operation_label.text = "Dernière opération : aucune"
 	last_operation_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	last_operation_label.add_theme_color_override("font_color", Color(0.72, 0.84, 0.94))
 	box.add_child(last_operation_label)
@@ -1424,7 +1428,7 @@ func _build_layers_panel() -> Control:
 	background_opacity.max_value = 1.0
 	background_opacity.step = 0.05
 	background_opacity.value = 1.0
-	background_opacity.tooltip_text = "Opacite du fond (preference d'editeur)"
+	background_opacity.tooltip_text = "Opacité du fond (préférence d'éditeur)"
 	background_opacity.value_changed.connect(func(value):
 		canvas.background_opacity = value
 		canvas.queue_redraw()
@@ -1435,7 +1439,7 @@ func _build_layers_panel() -> Control:
 	grid_opacity.max_value = 1.0
 	grid_opacity.step = 0.05
 	grid_opacity.value = 1.0
-	grid_opacity.tooltip_text = "Opacite de la grille (preference d'editeur)"
+	grid_opacity.tooltip_text = "Opacité de la grille (préférence d'éditeur)"
 	grid_opacity.value_changed.connect(func(value):
 		canvas.grid_opacity = value
 		canvas.queue_redraw()
@@ -1452,7 +1456,7 @@ func _build_restore_points_panel() -> Control:
 	box.add_child(restore_name_edit)
 	var buttons := GridContainer.new()
 	buttons.columns = 2
-	_add_button(buttons, "Creer", create_restore_point)
+	_add_button(buttons, "Créer", create_restore_point)
 	_add_button(buttons, "Restaurer", restore_selected_point)
 	_add_button(buttons, "Renommer", rename_selected_restore_point)
 	_add_button(buttons, "Supprimer", delete_selected_restore_point)
@@ -1461,12 +1465,12 @@ func _build_restore_points_panel() -> Control:
 	restore_points_list.custom_minimum_size.y = 72
 	box.add_child(restore_points_list)
 	var reset_menu := MenuButton.new()
-	reset_menu.text = "Reinitialiser ▾"
+	reset_menu.text = "Réinitialiser ▾"
 	for definition in [
-		["Restaurer la calibration sauvegardee", 0],
-		["Reinitialiser seulement la position", 1],
-		["Reinitialiser seulement les axes", 2],
-		["Reinitialiser la rotation vers la sauvegarde", 3],
+		["Restaurer la calibration sauvegardée", 0],
+		["Réinitialiser seulement la position", 1],
+		["Réinitialiser seulement les axes", 2],
+		["Réinitialiser la rotation vers la sauvegarde", 3],
 	]:
 		reset_menu.get_popup().add_item(definition[0], definition[1])
 	reset_menu.get_popup().id_pressed.connect(_on_reset_requested)
@@ -1480,7 +1484,7 @@ func _build_validation_panel() -> Control:
 	var box := VBoxContainer.new()
 	panel.add_child(box)
 	validation_title = Label.new()
-	validation_title.text = "Validation — cliquez un message pour localiser le probleme"
+	validation_title.text = "Validation — cliquez un message pour localiser le problème"
 	validation_title.add_theme_font_size_override("font_size", 15)
 	box.add_child(validation_title)
 	validation_list = ItemList.new()
@@ -1515,7 +1519,7 @@ func _build_bottom_drawer() -> VBoxContainer:
 	tabs.add_child(history)
 	var report := RichTextLabel.new()
 	report.name = "Rapport"
-	report.text = "Validez ou produisez la salle pour generer un rapport."
+	report.text = "Validez ou produisez la salle pour générer un rapport."
 	tabs.add_child(report)
 	var console := RichTextLabel.new()
 	console.name = "Console de test"
@@ -1523,7 +1527,7 @@ func _build_bottom_drawer() -> VBoxContainer:
 	tabs.add_child(console)
 	var analysis := RichTextLabel.new()
 	analysis.name = "Analyse"
-	analysis.text = "Pathfinding, LOS et parite preview/runtime."
+	analysis.text = "Déplacements, ligne de vue et cohérence aperçu / jeu réel."
 	tabs.add_child(analysis)
 	tabs.hide()
 	return drawer
@@ -1531,21 +1535,21 @@ func _build_bottom_drawer() -> VBoxContainer:
 
 func _build_dialogs() -> void:
 	new_dialog = ConfirmationDialog.new()
-	new_dialog.title = "Nouvelle arene — informations et point de depart"
+	new_dialog.title = "Nouvelle arène — informations et point de départ"
 	new_dialog.size = Vector2i(720, 590)
 	new_dialog.ok_button_text = "Continuer vers la calibration"
 	new_dialog.confirmed.connect(_create_from_wizard)
 	add_child(new_dialog)
 	var wizard := VBoxContainer.new()
 	new_dialog.add_child(wizard)
-	wizard.add_child(_section_label("Etape 1 — Informations"))
-	new_name_edit = _labeled_line(wizard, "Nom visible", "Nouvelle arene")
+	wizard.add_child(_section_label("Étape 1 — Informations"))
+	new_name_edit = _labeled_line(wizard, "Nom visible", "Nouvelle arène")
 	new_id_edit = _labeled_line(wizard, "Identifiant propose", "nouvelle_arene")
 	new_name_edit.text_changed.connect(func(value):
 		new_id_edit.text = ArenaDefinition.sanitize_id(value)
 	)
 	new_image_edit = _labeled_line(wizard, "Image de fond", "")
-	_add_button(wizard, "Choisir ou importer une image...", _show_image_dialog)
+	_add_button(wizard, "Choisir ou importer une image…", _show_image_dialog)
 	new_visual_mode_option = OptionButton.new()
 	new_visual_mode_option.tooltip_text = "Le mode modulaire crée immédiatement toutes les dalles."
 	for label in ["Type : Peinte", "Type : Modulaire", "Type : Hybride"]:
@@ -1556,16 +1560,16 @@ func _build_dialogs() -> void:
 	new_width_spin = _spin(dimensions, "Largeur", 10, 1, 256)
 	new_height_spin = _spin(dimensions, "Hauteur", 8, 1, 256)
 	new_orientation_option = OptionButton.new()
-	for label in ["Heros en bas a gauche", "Heros en bas a droite", "Heros en haut a gauche", "Heros en haut a droite"]:
+	for label in ["Héros en bas à gauche", "Héros en bas à droite", "Héros en haut à gauche", "Héros en haut à droite"]:
 		new_orientation_option.add_item(label)
 	wizard.add_child(new_orientation_option)
-	wizard.add_child(_section_label("Etape 2 — Point de depart"))
+	wizard.add_child(_section_label("Étape 2 — Point de départ"))
 	new_template_option = OptionButton.new()
-	for label in ["Partir d'une map vide", "Copier la calibration de la foret", "Copier la calibration du volcan", "Copier la calibration de l'espace"]:
+	for label in ["Partir d'une carte vide", "Copier la calibration de la forêt", "Copier la calibration du volcan", "Copier la calibration de l'espace"]:
 		new_template_option.add_item(label)
 	wizard.add_child(new_template_option)
 	var step3 := Label.new()
-	step3.text = "Etape 3 — Trois clics sur l'image\n1. Case de reference  2. Voisine bas-droite  3. Voisine bas-gauche"
+	step3.text = "Étape 3 — Trois clics sur l'image\n1. Case de référence  2. Voisine bas-droite  3. Voisine bas-gauche"
 	step3.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	wizard.add_child(step3)
 
@@ -1581,10 +1585,10 @@ func _build_dialogs() -> void:
 	_build_lab_import_dialog()
 
 	open_dialog = FileDialog.new()
-	open_dialog.title = "Ouvrir une ArenaDefinition"
+	open_dialog.title = "Ouvrir une arène"
 	open_dialog.access = FileDialog.ACCESS_RESOURCES
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-	open_dialog.filters = PackedStringArray(["*.tres ; Arena Studio"])
+	open_dialog.filters = PackedStringArray(["*.tres ; Arène du Studio"])
 	open_dialog.current_dir = ArenaSerializer.CANONICAL_ROOT
 	open_dialog.file_selected.connect(_open_canonical)
 	add_child(open_dialog)
@@ -1608,7 +1612,7 @@ func _build_dialogs() -> void:
 	art_floor_policy_option.name = "ArtFloorPolicyOption"
 	art_floor_policy_option.tooltip_text = (
 		"Toutes les dalles tactiques conserve notamment la pierre normale visible "
-		+ "au-dessus du background importé."
+		+ "au-dessus du fond importé."
 	)
 	_populate_hybrid_floor_policy_options(art_floor_policy_option)
 	art_policy_box.add_child(art_floor_policy_option)
@@ -1618,7 +1622,7 @@ func _build_dialogs() -> void:
 	restore_delete_dialog = ConfirmationDialog.new()
 	restore_delete_dialog.title = "Supprimer le point de restauration"
 	restore_delete_dialog.dialog_text = (
-		"Ce point sera supprime de user://. La map et son historique ne seront pas modifies."
+		"Ce point sera supprimé de la sauvegarde locale. La carte et son historique ne seront pas modifiés."
 	)
 	restore_delete_dialog.ok_button_text = "Supprimer"
 	restore_delete_dialog.confirmed.connect(_confirm_delete_restore_point)
@@ -1656,7 +1660,7 @@ func _build_dialogs() -> void:
 	warning_box.add_child(integration_warning_text)
 	integration_warning_justification = LineEdit.new()
 	integration_warning_justification.placeholder_text = (
-		"Justification du choix de design pour cette version de l'arene"
+		"Justification du choix de conception pour cette version de l'arène"
 	)
 	warning_box.add_child(integration_warning_justification)
 
@@ -1666,19 +1670,19 @@ func _build_dialogs() -> void:
 
 func _build_painted_dynamic_dialog() -> void:
 	painted_dynamic_dialog = ConfirmationDialog.new()
-	painted_dynamic_dialog.title = "CONSTRUCTION DYNAMIQUE SUR UNE MAP PEINTE"
+	painted_dynamic_dialog.title = "CONSTRUCTION DYNAMIQUE SUR UNE CARTE PEINTE"
 	painted_dynamic_dialog.dialog_text = (
-		"Le background peint représente actuellement le sol principal.\n\n"
+		"Le fond peint représente actuellement le sol principal.\n\n"
 		+ "Le choix historique affiche seulement les terrains différents de la pierre.\n"
 		+ "TOUTES LES DALLES TACTIQUES conserve aussi normal/stone avec le vrai asset pierre.\n\n"
 		+ "Aucune ressource canonique ne sera écrite."
 	)
-	painted_dynamic_dialog.ok_button_text = "HYBRID — terrains spéciaux"
+	painted_dynamic_dialog.ok_button_text = "Hybride — terrains spéciaux"
 	painted_dynamic_dialog.cancel_button_text = "Annuler"
 	painted_dynamic_dialog.add_button(
-		"HYBRID — TOUTES LES DALLES TACTIQUES", false, "hybrid_all"
+		"Hybride — TOUTES LES DALLES TACTIQUES", false, "hybrid_all"
 	)
-	painted_dynamic_dialog.add_button("Créer une copie MODULAIRE", false, "modular")
+	painted_dynamic_dialog.add_button("Créer une copie modulaire", false, "modular")
 	painted_dynamic_dialog.add_button("Modifier uniquement la logique", false, "logic_only")
 	painted_dynamic_dialog.confirmed.connect(_convert_painted_to_hybrid)
 	painted_dynamic_dialog.custom_action.connect(func(action):
@@ -1695,9 +1699,9 @@ func _build_painted_dynamic_dialog() -> void:
 
 func _build_lab_import_dialog() -> void:
 	lab_import_dialog = ConfirmationDialog.new()
-	lab_import_dialog.title = "MAP REÇUE DU LAB"
+	lab_import_dialog.title = "CARTE REÇUE DU LABORATOIRE"
 	lab_import_dialog.size = Vector2i(720, 620)
-	lab_import_dialog.ok_button_text = "Ouvrir comme working copy"
+	lab_import_dialog.ok_button_text = "Ouvrir comme version en cours"
 	lab_import_dialog.cancel_button_text = "Annuler"
 	lab_import_dialog.add_button("Importer comme nouvelle arène", false, "import_new")
 	lab_import_dialog.add_button("Supprimer", false, "delete")
@@ -1755,8 +1759,8 @@ func _convert_painted_working_copy(
 	_painted_logic_only_active = false
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	_commit_change(
-		"Créer une working copy %s" % (
-			"HYBRID" if target_mode == ArenaDefinition.VisualMode.HYBRID else "MODULAR"
+		"Créer une version en cours %s" % (
+			"hybride" if target_mode == ArenaDefinition.VisualMode.HYBRID else "modulaire"
 		),
 		before,
 		arena.to_snapshot()
@@ -1881,7 +1885,7 @@ func _build_production_dialog() -> void:
 	production_dialog = ConfirmationDialog.new()
 	production_dialog.title = "INTÉGRER LA SALLE — production guidée et transactionnelle"
 	production_dialog.size = Vector2i(920, 680)
-	production_dialog.ok_button_text = "Intégrer à la run"
+	production_dialog.ok_button_text = "Intégrer à la partie"
 	production_dialog.cancel_button_text = "Annuler"
 	production_dialog.confirmed.connect(_production_confirmed)
 	add_child(production_dialog)
@@ -1899,7 +1903,7 @@ func _build_production_dialog() -> void:
 	production_id_edit.text_changed.connect(func(_text): call_deferred("_refresh_production_wizard"))
 	production_theme_edit.text_changed.connect(func(_text): call_deferred("_refresh_production_wizard"))
 	production_mode_option = OptionButton.new()
-	for label in ["PAINTED", "MODULAR", "HYBRID"]:
+	for label in VISUAL_MODE_LABELS:
 		production_mode_option.add_item(label)
 	production_mode_option.item_selected.connect(func(_index): call_deferred("_refresh_production_wizard"))
 	identity.add_child(Label.new())
@@ -1931,7 +1935,7 @@ func _build_production_dialog() -> void:
 	production_index_spin = _spin(identity, "Index de salle", 0, 0, 999)
 	production_index_spin.value_changed.connect(func(_value): _refresh_production_wizard())
 	var identity_note := Label.new()
-	identity_note.text = "Aucun fichier n'est écrit avant le clic « Intégrer à la run »."
+	identity_note.text = "Aucun fichier n'est écrit avant le clic « Intégrer à la partie »."
 	identity_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	identity.add_child(identity_note)
 	var validation_tab := _production_tab("2 — Validation")
@@ -1939,7 +1943,7 @@ func _build_production_dialog() -> void:
 	production_validation_text = _production_text()
 	validation_tab.add_child(production_validation_text)
 	var preview_tab := _production_tab("3 — Aperçu")
-	preview_tab.add_child(_section_label("ÉTAPE 3 — APERÇU RUNTIME"))
+	preview_tab.add_child(_section_label("ÉTAPE 3 — APERÇU DU JEU RÉEL"))
 	production_preview_text = _production_text()
 	preview_tab.add_child(production_preview_text)
 	var preview_buttons := HBoxContainer.new()
@@ -1981,8 +1985,8 @@ func _build_production_dialog() -> void:
 	dashboard_tab.add_child(production_dashboard_text)
 	var dashboard_refresh := _add_button(dashboard_tab, "Actualiser l’inventaire", _refresh_production_dashboard)
 	dashboard_refresh.tooltip_text = "Lecture seule : aucune suppression ni archive n'est déclenchée."
-	var sandbox_button := _add_button(dashboard_tab, "Démarrer l’exercice sandbox", _start_guided_sandbox)
-	sandbox_button.tooltip_text = "Crée une arène et une RunData fixture uniquement sous user://dungeon_draft_studio/tests/."
+	var sandbox_button := _add_button(dashboard_tab, "Démarrer l’exercice d’entraînement", _start_guided_sandbox)
+	sandbox_button.tooltip_text = "Crée une arène et une partie d'essai uniquement dans la sauvegarde locale du Studio."
 	var result_tab := _production_tab("6 — Résultat")
 	result_tab.add_child(_section_label("ÉTAPE 5 — RÉSULTAT"))
 	production_result_text = _production_text()
@@ -2022,13 +2026,13 @@ func _production_text(minimum_height := 410) -> RichTextLabel:
 
 func _build_migration_dialog() -> void:
 	migration_dialog = ConfirmationDialog.new()
-	migration_dialog.title = "Migration ArenaDefinition requise"
+	migration_dialog.title = "Migration de l'arène requise"
 	migration_dialog.dialog_text = (
 		"Ce document utilise un ancien schéma.\n\n"
-		+ "Migrer crée une working copy v2 et une action annulable. "
+		+ "Migrer crée une version en cours v2 et une action annulable. "
 		+ "Ouvrir en lecture seule conserve exactement les données anciennes."
 	)
-	migration_dialog.ok_button_text = "Migrer la working copy"
+	migration_dialog.ok_button_text = "Migrer la version en cours"
 	migration_dialog.cancel_button_text = "Annuler"
 	migration_dialog.add_button("Ouvrir en lecture seule", false, "read_only")
 	migration_dialog.confirmed.connect(_confirm_pending_migration)
@@ -2053,7 +2057,7 @@ func _build_terrain_replace_dialog() -> void:
 	terrain_replace_dialog = ConfirmationDialog.new()
 	terrain_replace_dialog.title = "Remplacement global de terrain"
 	terrain_replace_dialog.size = Vector2i(620, 300)
-	terrain_replace_dialog.ok_button_text = "Remplacer — une action Undo"
+	terrain_replace_dialog.ok_button_text = "Remplacer — une action annulable"
 	terrain_replace_dialog.confirmed.connect(_confirm_terrain_replacement)
 	add_child(terrain_replace_dialog)
 	var box := VBoxContainer.new()
@@ -2120,14 +2124,14 @@ func _confirm_terrain_replacement() -> void:
 	canvas.update_terrain_cells(changed)
 	_refresh_all(false)
 	_select_quick_terrain(to_id)
-	_set_status("Remplacement terminé : %d cellule(s), une synchronisation et une action Undo." % changed.size())
+	_set_status("Remplacement terminé : %d cellule(s), une synchronisation et une action annulable." % changed.size())
 
 
 func _build_backdrop_dialog() -> void:
 	backdrop_dialog = ConfirmationDialog.new()
 	backdrop_dialog.title = "DÉCOR DE L’ARÈNE"
 	backdrop_dialog.size = Vector2i(680, 500)
-	backdrop_dialog.ok_button_text = "Appliquer à la copie de travail"
+	backdrop_dialog.ok_button_text = "Appliquer à la version en cours"
 	backdrop_dialog.confirmed.connect(_confirm_backdrop_change)
 	backdrop_dialog.canceled.connect(_close_backdrop_preview)
 	backdrop_dialog.close_requested.connect(_close_backdrop_preview)
@@ -2136,7 +2140,7 @@ func _build_backdrop_dialog() -> void:
 	var box := VBoxContainer.new()
 	backdrop_dialog.add_child(box)
 	backdrop_state_label = Label.new()
-	backdrop_state_label.text = "PRÉVISUALISATION — COPIE DE TRAVAIL NON MODIFIÉE"
+	backdrop_state_label.text = "APERÇU — VERSION EN COURS NON MODIFIÉE"
 	backdrop_state_label.add_theme_color_override("font_color", Color(1.0, 0.83, 0.34))
 	box.add_child(backdrop_state_label)
 	var source_label := Label.new()
@@ -2195,7 +2199,7 @@ func _build_backdrop_dialog() -> void:
 	backdrop_summary.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(backdrop_summary)
 	backdrop_image_dialog = FileDialog.new()
-	backdrop_image_dialog.title = "Importer une image de fond vers le staging"
+	backdrop_image_dialog.title = "Importer une image de fond dans la zone de préparation"
 	backdrop_image_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	backdrop_image_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	backdrop_image_dialog.filters = PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp ; Images"])
@@ -2206,7 +2210,7 @@ func _build_backdrop_dialog() -> void:
 func _show_backdrop_dialog() -> void:
 	if arena == null:
 		return
-	backdrop_state_label.text = "PRÉVISUALISATION — COPIE DE TRAVAIL NON MODIFIÉE"
+	backdrop_state_label.text = "APERÇU — VERSION EN COURS NON MODIFIÉE"
 	backdrop_compare_slider.value = 1.0
 	_backdrop_sources = ArenaBackdropCatalogService.discover()
 	backdrop_source_option.clear()
@@ -2239,11 +2243,11 @@ func _refresh_backdrop_summary() -> void:
 	backdrop_dialog.get_ok_button().disabled = not bool(inspection.get("ok", false))
 	var source_kind := "catalogue Arena Studio"
 	if source.background_path.begins_with("user://dungeon_draft_studio/backdrop_staging/"):
-		source_kind = "import local (staging temporaire)"
+		source_kind = "import local (zone de préparation temporaire)"
 	elif not source.source_run_path.is_empty():
-		source_kind = "RunData"
+		source_kind = "une autre partie"
 	elif not source.source_arena_path.is_empty():
-		source_kind = "ArenaDefinition"
+		source_kind = "une autre arène"
 	var adopts_calibration := mode >= ArenaBackdropTransactionService.CopyMode.DECOR_CALIBRATION_CAMERA \
 		and source.calibration_available
 	var adopts_camera := mode >= ArenaBackdropTransactionService.CopyMode.DECOR_CALIBRATION_CAMERA
@@ -2284,7 +2288,7 @@ func _confirm_backdrop_change() -> void:
 	_close_backdrop_preview()
 	canvas.set_arena(arena)
 	_refresh_all(false)
-	_set_status("APPLIQUÉ À LA COPIE DE TRAVAIL — NON SAUVEGARDÉ. Gameplay inchangé ; Undo/Redo disponible.")
+	_set_status("APPLIQUÉ À LA VERSION EN COURS — NON SAUVEGARDÉ. Gameplay inchangé ; Annuler/Rétablir disponible.")
 
 
 func _restore_previous_backdrop() -> void:
@@ -2305,7 +2309,7 @@ func _stage_external_backdrop(path: String) -> void:
 		return
 	var image := Image.load_from_file(ProjectSettings.globalize_path(str(staged.staged_path)))
 	if image == null or image.is_empty():
-		_set_status("Image de décor illisible après staging.", true)
+		_set_status("Image de décor illisible après préparation.", true)
 		return
 	var source := ArenaBackdropSourceDefinition.from_arena(arena)
 	source.source_id = StringName("external_%s" % str(staged.sha256).left(12))
@@ -2469,7 +2473,7 @@ func _set_arena(value: ArenaDefinition, mark_dirty: bool, key := "") -> void:
 	)
 	var next_session := ArenaEditSession.new()
 	if not next_session.open(value, value.resource_path, mark_dirty, session_key):
-		_set_status("La copie de travail de l'arene n'a pas pu etre creee.", true)
+		_set_status("La version en cours de l'arène n'a pas pu être créée.", true)
 		return
 	_sessions[session_key] = next_session
 	_activate_session(next_session)
@@ -2513,7 +2517,7 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 
 
 func _show_new_dialog() -> void:
-	new_name_edit.text = "Nouvelle arene"
+	new_name_edit.text = "Nouvelle arène"
 	new_id_edit.text = "nouvelle_arene"
 	new_image_edit.text = ""
 	if new_visual_mode_option != null:
@@ -2562,7 +2566,7 @@ func _create_from_wizard() -> void:
 	if not new_image_edit.text.strip_edges().is_empty():
 		var imported_path := _import_image(new_image_edit.text, requested_id)
 		if imported_path.is_empty():
-			_set_status("L'image n'a pas pu etre importee dans le projet.", true)
+			_set_status("L'image n'a pas pu être importée dans le projet.", true)
 			return
 		created.background_path = imported_path
 		var texture := load(imported_path) as Texture2D
@@ -2572,7 +2576,7 @@ func _create_from_wizard() -> void:
 	_autosave()
 	if created.visual_mode == ArenaDefinition.VisualMode.MODULAR:
 		show_dynamic_construction()
-		_set_status("Map modulaire créée : les dalles sont visibles et prêtes à peindre.")
+		_set_status("Carte modulaire créée : les dalles sont visibles et prêtes à peindre.")
 	else:
 		start_calibration()
 		_set_status("Cliquez trois centres de cases pour aligner la grille.")
@@ -2604,13 +2608,13 @@ func _open_canonical(path: String) -> void:
 		return
 	var loaded := ArenaSerializer.load_canonical(path)
 	if loaded == null:
-		_set_status("Cette ressource n'est pas une arene Arena Studio valide.", true)
+		_set_status("Cette ressource n'est pas une arène valide du Studio.", true)
 		return
 	if loaded.schema_version < ArenaDefinition.CURRENT_SCHEMA_VERSION:
 		_prompt_migration(loaded, path)
 		return
 	_set_arena(loaded, false, path)
-	_set_status("Arene ouverte : %s" % loaded.display_name)
+	_set_status("Arène ouverte : %s" % loaded.display_name)
 
 
 func pending_lab_transfer_count() -> int:
@@ -2620,23 +2624,23 @@ func pending_lab_transfer_count() -> int:
 func open_standalone_lab() -> bool:
 	const LAB_SCENE := "res://tools/labs/dynamic_arena/DynamicArenaLab.tscn"
 	if editor_interface == null or not ResourceLoader.exists(LAB_SCENE):
-		_set_status("Ouvrez la scène DynamicArenaLab.tscn pour lancer le Lab autonome.", true)
+		_set_status("Ouvrez la scène DynamicArenaLab.tscn pour lancer le laboratoire autonome.", true)
 		return false
 	editor_interface.open_scene_from_path(LAB_SCENE)
 	editor_interface.play_current_scene()
-	_set_status("Lab autonome lancé dans sa scène dédiée.")
+	_set_status("Laboratoire autonome lancé dans sa scène dédiée.")
 	return true
 
 
 func show_lab_import_dialog() -> bool:
 	var transfers := ArenaLabTransferService.pending_transfers()
 	if transfers.is_empty():
-		_set_status("Aucun transfert du Lab n'attend d'être importé.")
+		_set_status("Aucun transfert du laboratoire n'attend d'être importé.")
 		return false
 	_pending_lab_transfer_id = str(transfers[0].get("transfer_id", ""))
 	var loaded := ArenaLabTransferService.load_transfer(_pending_lab_transfer_id)
 	if not bool(loaded.get("ok", false)):
-		_set_status("Transfert Lab corrompu : %s" % loaded.get("error", "erreur"), true)
+		_set_status("Transfert du laboratoire corrompu : %s" % loaded.get("error", "erreur"), true)
 		return false
 	_pending_lab_arena = loaded.arena as ArenaDefinition
 	_pending_lab_manifest = (loaded.manifest as Dictionary).duplicate(true)
@@ -2649,7 +2653,7 @@ func show_lab_import_dialog() -> bool:
 	) % [
 		_pending_lab_manifest.get("name", _pending_lab_arena.display_name),
 		str(_pending_lab_manifest.get("grid_size", _pending_lab_manifest.get("size", []))),
-		["PAINTED", "MODULAR", "HYBRID"][clampi(
+		VISUAL_MODE_LABELS[clampi(
 			int(_pending_lab_manifest.get("visual_mode", _pending_lab_arena.visual_mode)), 0, 2
 		)],
 		JSON.stringify(counts),
@@ -2679,11 +2683,11 @@ func _open_pending_lab_transfer(as_new: bool) -> void:
 	))
 	var received := ArenaDefinition.new()
 	if not received.restore_snapshot(_pending_lab_arena.to_snapshot()):
-		_set_status("Le transfert Lab ne peut pas créer de working copy.", true)
+		_set_status("Le transfert du laboratoire ne peut pas créer de version en cours.", true)
 		return
 	if as_new:
 		received.set_identity(
-			_pending_lab_arena.display_name + " (import Lab)",
+			_pending_lab_arena.display_name + " (import laboratoire)",
 			str(_pending_lab_arena.arena_id) + "_lab_import"
 		)
 	_set_arena(
@@ -2693,11 +2697,11 @@ func _open_pending_lab_transfer(as_new: bool) -> void:
 	)
 	var actual := ArenaEditSession.fingerprint(arena.to_snapshot())
 	if not as_new and actual != expected:
-		_set_status("Import Lab refusé : l'empreinte de la working copy diffère.", true)
+		_set_status("Import du laboratoire refusé : l'empreinte de la version en cours diffère.", true)
 		return
 	ArenaLabTransferService.mark_imported(_pending_lab_transfer_id)
 	_set_status(
-		"Transfert Lab ouvert sans perte : %d terrains, %d murs, %d spawns." % [
+		"Transfert du laboratoire ouvert sans perte : %d terrains, %d murs, %d spawns." % [
 			int(_pending_lab_manifest.get("terrain_count_total", 0)),
 			int(_pending_lab_manifest.get("wall_count", 0)),
 			int(_pending_lab_manifest.get("spawn_count", 0)),
@@ -2713,9 +2717,9 @@ func _delete_pending_lab_transfer() -> void:
 		return
 	var transfer_id := _pending_lab_transfer_id
 	if ArenaLabTransferService.delete_transfer(transfer_id):
-		_set_status("Transfert Lab supprimé : %s" % transfer_id)
+		_set_status("Transfert du laboratoire supprimé : %s" % transfer_id)
 	else:
-		_set_status("Le transfert Lab n'a pas pu être supprimé.", true)
+		_set_status("Le transfert du laboratoire n'a pas pu être supprimé.", true)
 	_pending_lab_arena = null
 	_pending_lab_manifest = {}
 	_pending_lab_transfer_id = ""
@@ -2724,16 +2728,16 @@ func _delete_pending_lab_transfer() -> void:
 func import_latest_lab_transfer() -> bool:
 	var transfers := ArenaLabTransferService.pending_transfers()
 	if transfers.is_empty():
-		_set_status("Aucun nouveau transfert Lab ; activation de Construction dynamique.")
+		_set_status("Aucun nouveau transfert du laboratoire ; activation de Construction dynamique.")
 		return false
 	var transfer_id := str(transfers[0].get("transfer_id", ""))
 	var loaded := ArenaLabTransferService.load_transfer(transfer_id)
 	if not bool(loaded.get("ok", false)):
-		_set_status("Transfert Lab corrompu : %s" % loaded.get("error", "erreur"), true)
+		_set_status("Transfert du laboratoire corrompu : %s" % loaded.get("error", "erreur"), true)
 		return true
 	var transferred := loaded.arena as ArenaDefinition
 	if transferred == null:
-		_set_status("Le transfert Lab ne contient aucune ArenaDefinition.", true)
+		_set_status("Le transfert du laboratoire ne contient aucune arène.", true)
 		return true
 	if transferred.schema_version < ArenaDefinition.CURRENT_SCHEMA_VERSION:
 		_pending_migration_transfer_id = transfer_id
@@ -2742,7 +2746,7 @@ func import_latest_lab_transfer() -> bool:
 	_set_arena(transferred, true, "lab_transfer:%s" % transfer_id)
 	ArenaLabTransferService.mark_imported(transfer_id)
 	_set_status(
-		"Transfert Lab importé et vérifié : %s (%d × %d)." % [
+		"Transfert du laboratoire importé et vérifié : %s (%d × %d)." % [
 			transferred.display_name, transferred.grid_size.x, transferred.grid_size.y,
 		]
 	)
@@ -2759,7 +2763,7 @@ func _poll_lab_transfers() -> void:
 		return
 	_announced_transfer_id = latest_id
 	_set_status(
-		"Transfert Dynamic Arena Lab détecté : cliquez sur « Lab » pour l'importer."
+		"Transfert du laboratoire détecté : cliquez sur « Laboratoire » pour l'importer."
 	)
 
 
@@ -2769,7 +2773,7 @@ func _prompt_migration(value: ArenaDefinition, key: String) -> void:
 	if migration_dialog != null:
 		migration_dialog.dialog_text = (
 			"Le document '%s' utilise le schéma v%d.\n\n"
-			+ "Migrer crée une working copy v%d et une action annulable. "
+			+ "Migrer crée une version en cours v%d et une action annulable. "
 			+ "Ouvrir en lecture seule ne modifie jamais la ressource source."
 		) % [value.display_name, value.schema_version, ArenaDefinition.CURRENT_SCHEMA_VERSION]
 		migration_dialog.popup_centered()
@@ -2792,14 +2796,14 @@ func _confirm_pending_migration() -> void:
 	edit_session.apply_snapshot(result.snapshot)
 	arena = edit_session.working_arena
 	edit_session.commit(
-		"Migrer ArenaDefinition v%d vers v%d" % [result.from_version, result.to_version],
+		"Migrer l'arène v%d vers v%d" % [result.from_version, result.to_version],
 		before, arena.to_snapshot()
 	)
 	canvas.set_arena(arena)
 	_refresh_all()
 	if not _pending_migration_transfer_id.is_empty():
 		ArenaLabTransferService.mark_imported(_pending_migration_transfer_id)
-	_set_status("Migration v2 appliquée à la working copy ; la source reste inchangée.")
+	_set_status("Migration v2 appliquée à la version en cours ; la source reste inchangée.")
 	_clear_pending_migration()
 
 
@@ -2823,10 +2827,10 @@ func save_arena() -> void:
 		return
 	var report := validate_arena()
 	if not report.is_valid():
-		_set_status("Sauvegarde refusee : corrigez les erreurs de validation.", true)
+		_set_status("Sauvegarde refusée : corrigez les erreurs de validation.", true)
 		return
 	if edit_session.has_external_conflict():
-		_set_status("La ressource a change sur disque. Rechargez ou resolvez le conflit avant de sauvegarder.", true)
+		_set_status("La ressource a changé sur disque. Rechargez ou résolvez le conflit avant de sauvegarder.", true)
 		return
 	var writes_production_visual := edit_session.source_is_visual \
 		and not arena.source_visual_path.is_empty()
@@ -2838,13 +2842,13 @@ func save_arena() -> void:
 	if not writes_production_visual and edit_session.source_path.is_empty() \
 			and ResourceLoader.exists(path):
 		_set_status(
-			"Sauvegarde refusee : une map canonique utilise deja cet identifiant.", true
+			"Sauvegarde refusée : une carte canonique utilise déjà cet identifiant.", true
 		)
 		return
 	var recovery_error := ArenaSerializer.save_recovery(arena)
 	if recovery_error != OK:
 		_set_status(
-			"Sauvegarde refusee : la copie de recuperation n'a pas pu etre creee.",
+			"Sauvegarde refusée : la copie de récupération n'a pas pu être créée.",
 			true
 		)
 		return
@@ -2861,16 +2865,16 @@ func save_arena() -> void:
 				and ArenaEditSession.fingerprint(verified.to_snapshot()) \
 				== ArenaEditSession.fingerprint(arena.to_snapshot())
 		if not verified_ok:
-			_set_status("La verification apres sauvegarde a echoue.", true)
+			_set_status("La vérification après sauvegarde a échoué.", true)
 			return
 		edit_session.mark_saved(path)
 		ArenaSerializer.remove_recovery(arena.arena_id)
 		canvas.set_saved_transform(edit_session.saved_transform())
 		_refresh_title()
 		_refresh_recovery_button()
-		_set_status("Map sauvegardee sans reecrire sa topologie : %s" % path)
+		_set_status("Carte sauvegardée sans réécrire sa topologie : %s" % path)
 	else:
-		_set_status("La map n'a pas pu etre sauvegardee : %s" % error_string(error), true)
+		_set_status("La carte n'a pas pu être sauvegardée : %s" % error_string(error), true)
 
 
 func prepare_automatically() -> void:
@@ -2878,10 +2882,10 @@ func prepare_automatically() -> void:
 		return
 	var before := arena.to_snapshot()
 	var result := ArenaEditingService.prepare_automatically(arena)
-	_commit_change("Preparer automatiquement la map", before, arena.to_snapshot())
+	_commit_change("Préparer automatiquement la carte", before, arena.to_snapshot())
 	_refresh_all()
 	_set_status(
-		"Preparation terminee — %d cases jouables, %d bordures, %d cases accessibles. Verifiez les spawns proposes." % [
+		"Préparation terminée — %d cases jouables, %d bordures, %d cases accessibles. Vérifiez les spawns proposés." % [
 			result.get("playable", 0), result.get("border", 0), result.get("connected", 0),
 		]
 	)
@@ -2892,9 +2896,9 @@ func create_safety_border() -> void:
 		return
 	var before := arena.to_snapshot()
 	var count := ArenaEditingService.apply_safety_border(arena, arena.border_thickness)
-	_commit_change("Creer la bordure de securite", before, arena.to_snapshot())
+	_commit_change("Créer la bordure de sécurité", before, arena.to_snapshot())
 	_refresh_all()
-	_set_status("Bordure de securite creee : %d cases conservees visuellement et exclues du gameplay." % count)
+	_set_status("Bordure de sécurité créée : %d cases conservées visuellement et exclues du gameplay." % count)
 
 
 func start_calibration() -> void:
@@ -2902,7 +2906,7 @@ func start_calibration() -> void:
 		_set_status("Ajoutez d'abord une image de fond.", true)
 		return
 	canvas.begin_three_click_calibration()
-	_set_status("Calibration : cliquez la reference, puis ses voisines bas-droite et bas-gauche.")
+	_set_status("Calibration : cliquez la référence, puis ses voisines bas-droite et bas-gauche.")
 
 
 func fit_multipoint_calibration() -> void:
@@ -2924,12 +2928,12 @@ func fit_multipoint_calibration() -> void:
 	arena.axis_y = fitted.axis_y
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	_commit_change(
-		"Ajuster la grille a %d ancres" % arena.calibration_cells.size(),
+		"Ajuster la grille à %d ancres" % arena.calibration_cells.size(),
 		before, arena.to_snapshot()
 	)
 	_refresh_all()
 	_set_status(
-		"Ajustement applique : RMS %.2f -> %.2f px, erreur max %.2f -> %.2f px." % [
+		"Ajustement appliqué : RMS %.2f → %.2f px, erreur max %.2f → %.2f px." % [
 			old_rms, fitted.rms_error, old_max, fitted.max_error
 		]
 	)
@@ -2945,14 +2949,14 @@ func validate_arena() -> ArenaValidationReport:
 		validation_list.add_item("%s — %s" % [prefix, entry.message])
 		validation_list.set_item_metadata(validation_list.item_count - 1, entry)
 	validation_title.text = "%s — %d erreur(s), %d avertissement(s)" % [
-		"Donnees Arena valides" if validation_report.is_valid() \
-		else "Donnees Arena a corriger",
+		"Données Arena valides" if validation_report.is_valid() \
+		else "Données Arena à corriger",
 		validation_report.error_count(), validation_report.warning_count(),
 	]
 	_set_status(
-		"Donnees Arena valides. Le runtime reel reste un controle separe." \
+		"Données Arena valides. Le jeu réel reste un contrôle séparé." \
 		if validation_report.is_valid() \
-		else "Les donnees Arena doivent etre corrigees avant le test runtime.",
+		else "Les données Arena doivent être corrigées avant le test dans le jeu réel.",
 		not validation_report.is_valid()
 	)
 	return validation_report
@@ -2960,7 +2964,7 @@ func validate_arena() -> ArenaValidationReport:
 
 func show_production_wizard() -> void:
 	if arena == null or production_dialog == null:
-		_set_status("Aucune ArenaDefinition n'est ouverte.", true)
+		_set_status("Aucune arène n'est ouverte.", true)
 		return
 	production_name_edit.text = arena.display_name
 	production_id_edit.text = str(arena.arena_id)
@@ -2985,8 +2989,8 @@ func _refresh_production_targets() -> void:
 	)
 	_production_runs.clear()
 	production_run_option.clear()
-	production_run_option.add_item("Aucune run — produire seulement")
-	production_run_option.set_item_tooltip(0, "La production ne modifiera aucune RunData.")
+	production_run_option.add_item("Aucune partie — produire seulement")
+	production_run_option.set_item_tooltip(0, "La production ne modifiera aucune partie.")
 	var selected := 0
 	for run_data in RunContentCatalogService.discover_runs():
 		if run_data == null or run_data.resource_path.is_empty():
@@ -2999,7 +3003,7 @@ func _refresh_production_targets() -> void:
 		if run_data.resource_path == active_path:
 			selected = production_run_option.item_count - 1
 	production_run_option.select(selected)
-	# "Aucune run" is a complete destination choice, not only a label. Keeping
+	# "Aucune partie" is a complete destination choice, not only a label. Keeping
 	# UPDATE selected with no run made the primary production action appear
 	# disabled even when the production-only gate was green.
 	var destination_action := ArenaProductionAttachmentService.NONE \
@@ -3081,13 +3085,13 @@ func _refresh_production_wizard() -> void:
 	if attachment_action != ArenaProductionAttachmentService.NONE and target_run == null:
 		attachment_plan = {
 			"ok": false,
-			"error": "Choisissez une RunData cible ou Produire sans intégrer.",
+			"error": "Choisissez une partie cible ou Produire sans intégrer.",
 		}
 	if target_run != null:
 		production_index_spin.max_value = maxi(0, target_run.rooms.size())
 	var target_index := int(production_index_spin.value)
 	var action_label := _production_action_human(attachment_action)
-	var target_label := target_run.run_name if target_run != null else "aucune run"
+	var target_label := target_run.run_name if target_run != null else "aucune partie"
 	var preserves_gameplay := bool(attachment_plan.get("preserves_gameplay", false))
 	var existing_inspection := ArenaBundleInspectionService.inspect(
 		str(production_plan.get("destination", destination)), shared_reference_graph
@@ -3105,9 +3109,9 @@ func _refresh_production_wizard() -> void:
 		"• %s" % ("Conserver la salle à l’index %d" % (target_index + 1) \
 			if attachment_action == ArenaProductionAttachmentService.UPDATE \
 			else "Appliquer l’action à l’index %d" % (target_index + 1)),
-		"• %s" % ("Créer une copie spécifique à la run %s" % target_label \
-			if bool(attachment_plan.get("shared", false)) else "Cibler la run %s" % target_label),
-		"• Produire 1 bundle runtime",
+		"• %s" % ("Créer une copie spécifique à la partie %s" % target_label \
+			if bool(attachment_plan.get("shared", false)) else "Cibler la partie %s" % target_label),
+		"• Produire 1 dossier de salle prêt pour le jeu",
 		"• %s" % ("Archiver 1 ancienne production incomplète après confirmation" \
 			if archive_count == 1 else "Ne déplacer aucune production existante"),
 	])
@@ -3130,7 +3134,7 @@ func _refresh_production_wizard() -> void:
 	])
 	if readiness != null:
 		validation_lines.append("Données Arena : %s" % readiness.data_report.state_name())
-		validation_lines.append("Runtime : %s" % readiness.runtime_scene_report.state_name())
+		validation_lines.append("Jeu réel : %s" % readiness.runtime_scene_report.state_name())
 		validation_lines.append("Production : %s" % readiness.production_report.state_name())
 		validation_lines.append("Intégration : %s" % readiness.integration_report.state_name())
 		validation_lines.append("")
@@ -3146,14 +3150,14 @@ func _refresh_production_wizard() -> void:
 			" — choix accepté" if accepted else "",
 		])
 	if gate_blockers.is_empty():
-		validation_lines.append("[color=green]✓ Projection, assemblage et scene runtime reelle verifies.[/color]")
+		validation_lines.append("[color=green]✓ Projection, assemblage et vraie scène de jeu vérifiés.[/color]")
 	production_validation_text.text = "\n".join(validation_lines)
 	production_preview_text.text = (
-		"[b]Même chaîne que le runtime[/b]\n\n"
-		+ "• ArenaRuntimeBridge → GridData → Pathfinder\n"
-		+ "• ArenaVisualAssembler partagé avec painted_battle/modular_battle\n"
-		+ "• UnitView et UnitData réels en vue Jeu\n"
-		+ "• foreground et occlusion réels\n\n"
+		"[b]Même chaîne que le jeu réel[/b]\n\n"
+		+ "• Grille logique et calcul des déplacements identiques au jeu\n"
+		+ "• Assemblage visuel partagé avec les combats peints et modulaires\n"
+		+ "• Personnages et statistiques réels en vue Jeu\n"
+		+ "• Premier plan et occlusion réels\n\n"
 		+ "Les trois vues seront capturées en 1280 × 720 lors de la production.\n\n"
 		+ "[b]Preuve d'assemblage[/b]\n"
 		+ "%d dalles attendues / %d rendues\n%d murs attendus / %d rendus\n%s" % [
@@ -3179,9 +3183,9 @@ func _refresh_production_wizard() -> void:
 		plan_lines.append("[color=red]! %s[/color]" % path)
 	if production_plan.conflicts.is_empty():
 		plan_lines.append("Aucun conflit.")
-	plan_lines.append("\n[b]Intégration à la run[/b]")
+	plan_lines.append("\n[b]Intégration à la partie[/b]")
 	if attachment_plan.get("ok", false):
-		plan_lines.append("RunData : %s" % attachment_plan.get("run_path", "aucune"))
+		plan_lines.append("Partie : %s" % attachment_plan.get("run_path", "aucune"))
 		plan_lines.append("Action : %s" % attachment_plan.get("action", &"NONE"))
 		plan_lines.append("Index exact : %d" % int(attachment_plan.get("target_index", -1)))
 		plan_lines.append("Nombre de salles : %d → %d" % [
@@ -3191,7 +3195,7 @@ func _refresh_production_wizard() -> void:
 		var replaced_path := str(attachment_plan.get("replaced_path", ""))
 		if not replaced_path.is_empty():
 			plan_lines.append("Salle cible actuelle : %s" % replaced_path)
-		plan_lines.append("ArenaDefinition finale : %s" % attachment_plan.get("integrated_room_path", ""))
+		plan_lines.append("Arène finale : %s" % attachment_plan.get("integrated_room_path", ""))
 		plan_lines.append("Gameplay conservé : %s" % ("oui" if attachment_plan.get("preserves_gameplay", false) else "non"))
 		plan_lines.append("Salle partagée : %s" % ("oui — copie spécifique" if attachment_plan.get("shared", false) else "non"))
 	else:
@@ -3199,7 +3203,7 @@ func _refresh_production_wizard() -> void:
 	var run_conflict := target_run != null and run_authoring.is_dirty() \
 		and run_authoring.source_path == target_run.resource_path
 	if run_conflict:
-		plan_lines.append("[color=red]La run cible a déjà des modifications non sauvegardées.[/color]")
+		plan_lines.append("[color=red]La partie ciblée a déjà des modifications non sauvegardées.[/color]")
 	var blocking_domains := _blocking_context_domains()
 	if not blocking_domains.is_empty():
 		plan_lines.append("[color=light_blue]Documents hors transaction conservés : %s[/color]" % ", ".join(blocking_domains))
@@ -3253,7 +3257,7 @@ func _render_bundle_resolution(resolution: Dictionary) -> void:
 	var references := resolution.get("references", {}) as Dictionary
 	var canonical := references.get("canonical_references", []) as Array
 	if canonical.is_empty():
-		lines.append("✓ Aucune run ni Resource ne référence arena.tres.")
+		lines.append("✓ Aucune partie ni ressource ne référence arena.tres.")
 	else:
 		lines.append("[color=red][b]%d référence(s) canonique(s)[/b][/color]" % canonical.size())
 		for value in canonical:
@@ -3322,7 +3326,7 @@ func _on_bundle_resolution_action(action: StringName) -> void:
 		return
 	_pending_bundle_resolution_action = action
 	var lines := PackedStringArray([
-		"[b]%s[/b]" % action_plan.get("label", "Résoudre le bundle"),
+		"[b]%s[/b]" % action_plan.get("label", "Résoudre le dossier de production"),
 		str(action_plan.get("reason", "")),
 		"",
 		"Destination : %s" % destination,
@@ -3352,7 +3356,7 @@ func _confirm_bundle_resolution_action() -> void:
 	if action == ArenaBundleResolutionService.RESUME_INTERRUPTED:
 		_set_status("Production interrompue reprise et manifeste vérifié. Le plan est recalculé.")
 	else:
-		_set_status("Ancien bundle archivé sous %s. Le plan est recalculé." % result.get("archive", "user://"))
+		_set_status("Ancien dossier de production archivé sous %s. Le plan est recalculé." % result.get("archive", "user://"))
 	_refresh_production_wizard()
 
 
@@ -3366,16 +3370,16 @@ func _refresh_production_dashboard() -> void:
 func _start_guided_sandbox() -> void:
 	var created := ArenaGuidedSandboxService.create_fixture()
 	if not created.get("ok", false):
-		_set_status("Exercice sandbox impossible : %s" % created.get("error", "erreur"), true)
+		_set_status("Exercice d’entraînement impossible : %s" % created.get("error", "erreur"), true)
 		return
 	var fixture := created.get("arena") as ArenaDefinition
 	if fixture == null:
-		_set_status("L’arène sandbox n’a pas pu être rechargée.", true)
+		_set_status("L’arène d’entraînement n’a pas pu être rechargée.", true)
 		return
 	_set_arena(fixture, false, "sandbox:%s" % created.get("root", ""))
 	if guided_tour != null:
 		guided_tour.start(&"sandbox")
-	_set_status("Exercice sandbox prêt sous %s. Aucune run officielle n’a été modifiée." % created.get("root", ""))
+	_set_status("Exercice d’entraînement prêt sous %s. Aucune partie officielle n’a été modifiée." % created.get("root", ""))
 
 
 func _production_confirmed() -> void:
@@ -3416,7 +3420,7 @@ func _perform_room_integration(
 		destination: String
 	) -> Dictionary:
 	if candidate == null or edit_session == null:
-		_show_production_failure("La copie de travail ne peut pas être préparée.")
+		_show_production_failure("La version en cours ne peut pas être préparée.")
 		return {"ok": false, "error": "candidate_missing"}
 	if edit_session.has_external_conflict():
 		_show_production_failure("La source a changé sur disque : intégration bloquée.")
@@ -3507,7 +3511,7 @@ func _perform_room_integration(
 				{"preview_result": preview_result}
 			)
 		_show_production_failure(
-			"La capture de preview n'a pas atteint render_ready. Diagnostic : %s" \
+			"L'aperçu n'a pas pu être capturé : le rendu n'a jamais été déclaré prêt. Diagnostic : %s" \
 			% pipeline_monitor.diagnostic_dump_path
 		)
 		return {
@@ -3540,8 +3544,8 @@ func _perform_room_integration(
 		if integration.get("status", &"") == &"ROOM_PRODUCED_NOT_INTEGRATED":
 			production_result_text.text = (
 				"[font_size=24][b][color=orange]SALLE PRODUITE — INTÉGRATION REFUSÉE[/color][/b][/font_size]\n\n"
-				+ "%s\n\nLa RunData et la salle canonique ont été restaurées. " % message
-				+ "Le bundle produit reste disponible pour diagnostic."
+				+ "%s\n\nLa partie et la salle canonique ont été restaurées. " % message
+				+ "Le dossier produit reste disponible pour diagnostic."
 			)
 			production_tabs.current_tab = 4
 			production_dialog.get_ok_button().hide()
@@ -3564,7 +3568,7 @@ func _perform_room_integration(
 	arena = edit_session.working_arena
 	edit_session.commit(
 		"Produire la salle" if action == ArenaProductionAttachmentService.NONE \
-		else "Intégrer la salle à la run",
+		else "Intégrer la salle à la partie",
 		before, arena.to_snapshot()
 	)
 	edit_session.mark_saved(str(integration.get("integrated_room_path", "")))
@@ -3589,10 +3593,10 @@ func _perform_room_integration(
 		+ "✓ %d murs attendus / %d rendus\n" % [
 			final_visual.expected_wall_count, final_visual.rendered_wall_count,
 		]
-		+ "✓ Définition valide\n✓ Grille valide\n✓ Pathfinding valide\n"
-		+ "✓ Spawns valides\n✓ Preview Art valide\n✓ Preview Jeu valide\n"
+		+ "✓ Définition valide\n✓ Grille valide\n✓ Déplacements valides\n"
+		+ "✓ Spawns valides\n✓ Aperçu Art valide\n✓ Aperçu Jeu valide\n"
 		+ "✓ Ressources rechargées\n✓ Test direct disponible\n"
-		+ ("✓ RunData inchangée — production sans intégrer\n\n" \
+		+ ("✓ Partie inchangée — production sans intégrer\n\n" \
 			if attachment.get("action", &"NONE") == ArenaProductionAttachmentService.NONE \
 			else "✓ Intégrée à %s, index %d (%d → %d salles)\n" % [
 				attachment.get("run_path", ""), int(attachment.get("target_index", -1)),
@@ -3617,7 +3621,7 @@ func _perform_room_integration(
 	production_dialog.get_ok_button().hide()
 	production_dialog.popup_centered()
 	_set_status(
-		"SALLE PRODUITE — bundle vérifié, aucune RunData modifiée." if produced_only \
+		"SALLE PRODUITE — dossier vérifié, aucune partie modifiée." if produced_only \
 		else "SALLE INTÉGRÉE — transaction vérifiée et destination sélectionnée."
 	)
 	history_state_changed.emit()
@@ -3744,7 +3748,7 @@ func _export_art_kit_from_wizard() -> void:
 
 func _show_art_reimport_dialog() -> void:
 	if arena == null:
-		_set_status("Aucune ArenaDefinition n'est ouverte.", true)
+		_set_status("Aucune arène n'est ouverte.", true)
 		return
 	art_manifest_dialog.popup_centered()
 
@@ -3780,7 +3784,7 @@ func _prepare_art_reimport(manifest_path: String) -> void:
 		art_reimport_dialog.title = "IMPORT À VÉRIFIER"
 		art_reimport_dialog.dialog_text = (
 			"%s\n\nCode : %s\nRésolution attendue : %s\nRésolution reçue : %s\n"
-			+ "Fallback conservé : %s\n\nAnnulez pour corriger le fichier, importer une version différente ou utiliser la calibration de secours. Aucune correction ne sera appliquée silencieusement."
+			+ "Calibration de secours conservée : %s\n\nAnnulez pour corriger le fichier, importer une version différente ou utiliser la calibration de secours. Aucune correction ne sera appliquée silencieusement."
 		) % [
 			inspection.get("error", "Décor incompatible."), inspection.get("code", "INCOMPATIBLE"),
 			inspection.get("expected_resolution", "—"), inspection.get("actual_resolution", "—"),
@@ -3793,7 +3797,7 @@ func _prepare_art_reimport(manifest_path: String) -> void:
 	art_reimport_dialog.title = "IMPORTER LE DÉCOR DE L’ARÈNE"
 	art_reimport_dialog.dialog_text = (
 		"AVANT\n%s\n\nAPRÈS\n%s\n\n"
-		+ "Fingerprint, résolution, crop, grille et ancres correspondent. "
+		+ "Empreinte, résolution, recadrage, grille et ancres correspondent. "
 		+ "grid_origin, axis_x et axis_y resteront strictement inchangés ; "
 		+ "le décor sera placé sous les dalles tactiques choisies ci-dessous."
 	) % [arena.background_path, inspection.get("source_image", "")]
@@ -3842,34 +3846,34 @@ func test_arena() -> void:
 	)
 	if not bool(preparation.get("ok", false)):
 		_set_status(
-			"Le test direct n'a pas pu etre prepare : %s" % preparation.get(
+			"Le test direct n'a pas pu être préparé : %s" % preparation.get(
 				"error", "erreur inconnue"
 			),
 			true
 		)
 		return
-	_last_test_log = "Test direct demande pour %s via %s" % [arena.arena_id, TEST_RUNNER_SCENE]
+	_last_test_log = "Test direct demandé pour %s via %s" % [arena.arena_id, TEST_RUNNER_SCENE]
 	if editor_interface != null:
 		editor_interface.play_custom_scene(TEST_RUNNER_SCENE)
-		_set_status("Working copy lancee dans le combat reel. Aucune sauvegarde de production n'a ete effectuee ; F8 revient a l'editeur.")
+		_set_status("Version en cours lancée dans le combat réel. Aucune sauvegarde de production n'a été effectuée ; F8 revient à l'éditeur.")
 	else:
-		_set_status("Configuration de test direct preparee.")
+		_set_status("Configuration de test direct préparée.")
 
 
 func export_report() -> void:
 	var report := validation_report if validation_report != null else validate_arena()
 	var result := ArenaReportExporter.export_report(arena, report, _last_test_log)
 	if not bool(result.get("ok", false)):
-		_set_status("Echec de l'export : %s" % result.get("error", "erreur"), true)
+		_set_status("Échec de l'export : %s" % result.get("error", "erreur"), true)
 		return
 	await _export_previews(str(result.directory))
-	_set_status("Rapport et apercus exportes dans %s" % result.directory)
+	_set_status("Rapport et aperçus exportés dans %s" % result.directory)
 
 
 func copy_report_for_codex() -> void:
 	var report := validation_report if validation_report != null else validate_arena()
 	ArenaReportExporter.copy_for_codex(report)
-	_set_status("Le rapport de validation a ete copie dans le presse-papiers.")
+	_set_status("Le rapport de validation a été copié dans le presse-papiers.")
 
 
 func restore_latest_recovery() -> void:
@@ -3908,14 +3912,14 @@ func _confirm_restore_recovery() -> void:
 			edit_session.apply_snapshot(restored.to_snapshot())
 			arena = edit_session.working_arena
 			_commit_change(
-				"Restaurer la sauvegarde de recuperation",
+				"Restaurer la sauvegarde de récupération",
 				before,
 				arena.to_snapshot(),
 			)
 			_refresh_all()
 		else:
 			_set_arena(restored, true, "recovery:%s" % restored.arena_id)
-		_set_status("Sauvegarde de recuperation restauree. Utilisez Sauvegarder pour la rendre canonique.")
+		_set_status("Sauvegarde de récupération restaurée. Utilisez Sauvegarder pour la rendre canonique.")
 	else:
 		_set_status("La récupération sélectionnée est devenue illisible.", true)
 
@@ -3927,11 +3931,11 @@ func create_restore_point() -> void:
 		arena, restore_name_edit.text, edit_session.source_fingerprint
 	)
 	if not bool(result.get("ok", false)):
-		_set_status("Le point n'a pas pu etre cree : %s" % result.get("error", "erreur"), true)
+		_set_status("Le point n'a pas pu être créé : %s" % result.get("error", "erreur"), true)
 		return
 	restore_name_edit.clear()
 	_refresh_restore_points()
-	_set_status("Point de restauration cree : %s" % result.get("name", "Calibration"))
+	_set_status("Point de restauration créé : %s" % result.get("name", "Calibration"))
 
 
 func restore_selected_point() -> void:
@@ -3941,7 +3945,7 @@ func restore_selected_point() -> void:
 	var path := str(restore_points_list.get_item_metadata(index))
 	var result := ArenaRestorePointService.load_point(path, arena.arena_id)
 	if not bool(result.get("ok", false)):
-		_set_status("Restauration refusee : %s" % result.get("error", "erreur"), true)
+		_set_status("Restauration refusée : %s" % result.get("error", "erreur"), true)
 		return
 	_apply_transform_snapshot(
 		result.get("snapshot") as GridTransformSnapshot,
@@ -3959,11 +3963,11 @@ func rename_selected_restore_point() -> void:
 	var path := str(restore_points_list.get_item_metadata(index))
 	var error := ArenaRestorePointService.rename_point(path, restore_name_edit.text)
 	if error != OK:
-		_set_status("Le point n'a pas pu etre renomme.", true)
+		_set_status("Le point n'a pas pu être renommé.", true)
 		return
 	restore_name_edit.clear()
 	_refresh_restore_points()
-	_set_status("Point de restauration renomme.")
+	_set_status("Point de restauration renommé.")
 
 
 func delete_selected_restore_point() -> void:
@@ -3980,17 +3984,17 @@ func _confirm_delete_restore_point() -> void:
 	var error := ArenaRestorePointService.delete_point(_pending_restore_delete_path)
 	_pending_restore_delete_path = ""
 	if error != OK:
-		_set_status("Le point n'a pas pu etre supprime.", true)
+		_set_status("Le point n'a pas pu être supprimé.", true)
 		return
 	_refresh_restore_points()
-	_set_status("Point de restauration supprime.")
+	_set_status("Point de restauration supprimé.")
 
 
 func restore_saved_calibration() -> void:
 	if edit_session == null:
 		return
 	_apply_transform_snapshot(
-		edit_session.saved_transform(), "Restaurer la calibration sauvegardee"
+		edit_session.saved_transform(), "Restaurer la calibration sauvegardée"
 	)
 
 
@@ -4001,20 +4005,20 @@ func _on_reset_requested(id: int) -> void:
 	var saved := edit_session.saved_transform()
 	match id:
 		0:
-			_apply_transform_snapshot(saved, "Restaurer la calibration sauvegardee")
+			_apply_transform_snapshot(saved, "Restaurer la calibration sauvegardée")
 		1:
 			current.origin = saved.origin
-			_apply_transform_snapshot(current, "Reinitialiser la position sauvegardee")
+			_apply_transform_snapshot(current, "Réinitialiser la position sauvegardée")
 		2:
 			current.axis_x = saved.axis_x
 			current.axis_y = saved.axis_y
-			_apply_transform_snapshot(current, "Reinitialiser les axes sauvegardes")
+			_apply_transform_snapshot(current, "Réinitialiser les axes sauvegardés")
 		3:
 			var pivot := GridTransformService.logical_grid_center(current, arena.grid_size)
 			var angle := current.axis_x.angle_to(saved.axis_x)
 			_apply_transform_snapshot(
 				GridTransformService.rotate_around(current, pivot, angle),
-				"Reinitialiser la rotation vers la sauvegarde"
+				"Réinitialiser la rotation vers la sauvegarde"
 			)
 
 
@@ -4023,7 +4027,7 @@ func _apply_transform_snapshot(snapshot: GridTransformSnapshot, action_name: Str
 		return
 	var validation := GridTransformService.validate_snapshot(snapshot)
 	if not bool(validation.get("ok", false)):
-		_set_status("Calibration refusee : %s" % validation.get("error", "invalide"), true)
+		_set_status("Calibration refusée : %s" % validation.get("error", "invalide"), true)
 		return
 	var before := arena.to_snapshot()
 	snapshot.apply_to(arena)
@@ -4172,7 +4176,7 @@ func _place_vortex_endpoint(cell: Vector2i) -> bool:
 	var changed := ArenaDynamicEditingService.place_vortex_pair(arena, entry, cell)
 	if changed:
 		_clear_pending_vortex()
-		_set_status("Paire de vortex créée : runtime, Pathfinder et IA actifs.")
+		_set_status("Paire de vortex créée : jeu réel, déplacements et IA actifs.")
 	else:
 		_set_status("Paire refusée : cellules distinctes et libres requises.", true)
 	return changed
@@ -4249,7 +4253,7 @@ func _on_calibration_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	_commit_change("Calibrer la grille en trois clics", before, arena.to_snapshot())
 	_refresh_all()
-	_set_status("Grille calibree. Utilisez les trois poignees colorees pour l'ajuster visuellement.")
+	_set_status("Grille calibree. Utilisez les trois poignées colorees pour l'ajuster visuellement.")
 
 
 func _on_calibration_preview(origin: Vector2, axis_x: Vector2, axis_y: Vector2) -> void:
@@ -4333,7 +4337,7 @@ func _on_verification_cell_requested(cell: Vector2i) -> void:
 		var blocked := blocker != Vector2i(-1, -1)
 		canvas.set_verification_overlay([], [], line, blocked, blocker if blocked else GridTransformService.INVALID_CELL)
 		_set_status(
-			"Ligne de vue bloquee — premier obstacle en (%d, %d), regle : bloque les projectiles." % [blocker.x, blocker.y]
+			"Ligne de vue bloquée — premier obstacle en (%d, %d), regle : bloque les projectiles." % [blocker.x, blocker.y]
 			if blocked else "Ligne de vue libre."
 		)
 	_verification_source = GridTransformService.INVALID_CELL
@@ -4437,8 +4441,8 @@ func _refresh_title() -> void:
 	if title_label == null:
 		return
 	title_label.text = "ARÈNES — %s%s" % [
-		arena.display_name if arena != null else "Aucune map",
-		" • non enregistree" if dirty else "",
+		arena.display_name if arena != null else "Aucune carte",
+		" • non enregistrée" if dirty else "",
 	]
 
 
@@ -4526,7 +4530,7 @@ func history_opening_is_saved() -> bool:
 
 
 func history_document_name() -> String:
-	return arena.display_name if arena != null else "Aucune map"
+	return arena.display_name if arena != null else "Aucune carte"
 
 
 func cancel_active_gesture() -> bool:
@@ -4538,7 +4542,7 @@ func _refresh_calibration_label() -> void:
 		return
 	var count := mini(arena.calibration_cells.size(), arena.calibration_pixels.size())
 	if count < 3:
-		calibration_label.text = "Alignement a verifier"
+		calibration_label.text = "Alignement à vérifier"
 		return
 	var sum_squared := 0.0
 	var maximum := 0.0
@@ -4556,9 +4560,9 @@ func _refresh_calibration_label() -> void:
 	calibration_label.text = {
 		&"excellent": "Alignement excellent",
 		&"acceptable": "Alignement correct",
-		&"check": "Alignement a verifier",
+		&"check": "Alignement à vérifier",
 		&"insufficient": "Calibration insuffisante",
-	}.get(quality, "Alignement a verifier") \
+	}.get(quality, "Alignement à vérifier") \
 		+ "  -  RMS %.2f px / max %.2f px" % [error, maximum]
 
 
@@ -4614,7 +4618,7 @@ func _describe_transform_operation(
 	var delta := after.origin - before.origin
 	var rotation := rad_to_deg(before.axis_x.angle_to(after.axis_x))
 	var scale := after.axis_x.length() / maxf(before.axis_x.length(), 0.00001)
-	return "Derniere operation : %s\nX %+0.2f px  Y %+0.2f px  Angle %+0.2f deg  Echelle %.2f %%" % [
+	return "Dernière opération : %s\nX %+0.2f px  Y %+0.2f px  Angle %+0.2f°  Échelle %.2f %%" % [
 		action_name, delta.x, delta.y, rotation, scale * 100.0
 	]
 
@@ -4677,13 +4681,13 @@ func _refresh_inspector(cell: Vector2i) -> void:
 		return
 	var definition := arena.get_cell_definition(cell)
 	if definition == null:
-		inspector_label.text = "Cellule (%d, %d)\nNon definie" % [cell.x, cell.y]
+		inspector_label.text = "Cellule (%d, %d)\nNon définie" % [cell.x, cell.y]
 		return
 	var state := "Bordure" if definition.border else ("Jouable" if definition.playable else "Non jouable")
 	var obstacle := arena.obstacle_at(cell)
 	inspector_label.text = "Cellule (%d, %d)\n%s\nTerrain : %s\nObstacle : %s\nSpawns : %d" % [
 		cell.x, cell.y, state, str(definition.terrain_id),
-		"aucun" if obstacle == null else ["Mur complet", "Obstacle bas", "Decor traversable", "Falaise"][obstacle.preset],
+		"aucun" if obstacle == null else ["Mur complet", "Obstacle bas", "Décor traversable", "Falaise"][obstacle.preset],
 		arena.spawns_at(cell).size(),
 	]
 
@@ -4703,14 +4707,14 @@ func _apply_advanced_values() -> void:
 	var next_axis_x := Vector2(advanced_values[2].value, advanced_values[3].value)
 	var next_axis_y := Vector2(advanced_values[4].value, advanced_values[5].value)
 	if not GridTransformService.is_invertible(next_axis_x, next_axis_y):
-		_set_status("Les axes saisis sont colineaires : la modification est refusee.", true)
+		_set_status("Les axes saisis sont colinéaires : la modification est refusée.", true)
 		return
 	var before := arena.to_snapshot()
 	arena.grid_origin = next_origin
 	arena.axis_x = next_axis_x
 	arena.axis_y = next_axis_y
 	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	_commit_change("Modifier la calibration avancee", before, arena.to_snapshot())
+	_commit_change("Modifier la calibration avancée", before, arena.to_snapshot())
 	_refresh_all()
 
 
@@ -4760,7 +4764,7 @@ func _refresh_run_browser() -> void:
 			index + 1, room.room_name if room != null else "Salle absente",
 		])
 		library_list.set_item_tooltip(
-			index, room.resource_path if room != null else "Reference nulle"
+			index, room.resource_path if room != null else "Référence nulle"
 		)
 	if project_context.active_room_index >= 0 \
 			and project_context.active_room_index < library_list.item_count:
@@ -4775,7 +4779,7 @@ func _open_context_room(room: RoomData) -> bool:
 		imported = ArenaLegacyImporter.import_room(room.resource_path)
 	if imported == null:
 		_set_status(
-			"La salle %s ne possede pas encore de grille Arena editable." % room.room_name,
+			"La salle %s ne possède pas encore de grille Arena modifiable." % room.room_name,
 			true
 		)
 		return false
@@ -4784,7 +4788,7 @@ func _open_context_room(room: RoomData) -> bool:
 		_activate_session(_sessions[key] as ArenaEditSession)
 	else:
 		_set_arena(imported, false, key)
-	_set_status("Salle ouverte depuis la run active : %s" % room.room_name)
+	_set_status("Salle ouverte depuis la partie active : %s" % room.room_name)
 	return true
 
 
@@ -4792,7 +4796,7 @@ func _context_save() -> Dictionary:
 	save_arena()
 	return {
 		"ok": not dirty,
-		"error": "La sauvegarde Arena n'a pas valide le document." if dirty else "",
+		"error": "La sauvegarde Arena n'a pas validé le document." if dirty else "",
 	}
 
 
@@ -4803,13 +4807,13 @@ func _context_draft() -> Dictionary:
 
 func _context_discard() -> Dictionary:
 	if edit_session == null or edit_session.source_arena == null:
-		return {"ok": false, "error": "Aucune source Arena a recharger."}
+		return {"ok": false, "error": "Aucune source Arena à recharger."}
 	var source := edit_session.source_arena
 	var source_path := edit_session.source_path
 	var key := edit_session.session_key
 	var replacement := ArenaEditSession.new()
 	if not replacement.open(source, source_path, false, key):
-		return {"ok": false, "error": "La source Arena n'a pas pu etre rechargee."}
+		return {"ok": false, "error": "La source Arena n'a pas pu être rechargée."}
 	_sessions[key] = replacement
 	_activate_session(replacement)
 	if project_context != null:
@@ -4828,7 +4832,7 @@ func _context_snapshot() -> Dictionary:
 
 func _context_restore(snapshot: Dictionary) -> Dictionary:
 	if edit_session == null or snapshot.is_empty():
-		return {"ok": false, "error": "Snapshot Arena absent."}
+		return {"ok": false, "error": "Instantané Arena absent."}
 	edit_session.apply_snapshot(snapshot)
 	arena = edit_session.working_arena
 	_on_history_changed()
@@ -4864,22 +4868,22 @@ func _saved_current_arena_room() -> RoomData:
 func _attach_current_arena(insert: bool) -> void:
 	var room := _saved_current_arena_room()
 	if room == null:
-		_set_status("Sauvegardez d'abord l'arene dans res://data avant de l'attacher a la run.", true)
+		_set_status("Sauvegardez d'abord l'arène dans res://data avant de l'attacher à la partie.", true)
 		return
 	var index := _selected_run_room_index()
 	var result := run_authoring.insert_room(index + 1, room) \
 		if insert else run_authoring.replace_room(index, room)
 	_set_status(
-		"Plan d'attachement prepare a l'index %d." % int(result.get("index", index))
-		if result.get("ok", false) else str(result.get("error", "Attachement refuse.")),
+		"Plan d'attachement préparé à l'index %d." % int(result.get("index", index))
+		if result.get("ok", false) else str(result.get("error", "Attachement refusé.")),
 		not result.get("ok", false)
 	)
 
 
 func _duplicate_run_room() -> void:
 	var result := run_authoring.duplicate_room(_selected_run_room_index())
-	_set_status("Salle dupliquee ; choisissez un chemin avant la sauvegarde." \
-		if result.get("ok", false) else str(result.get("error", "Duplication refusee.")),
+	_set_status("Salle dupliquée ; choisissez un chemin avant la sauvegarde." \
+		if result.get("ok", false) else str(result.get("error", "Duplication refusée.")),
 		not result.get("ok", false))
 
 
@@ -4887,7 +4891,7 @@ func _make_run_room_specific() -> void:
 	var index := _selected_run_room_index()
 	if run_authoring.working_run == null or index < 0 \
 			or index >= run_authoring.working_run.rooms.size():
-		_set_status("Selectionnez une salle a copier.", true)
+		_set_status("Sélectionnez une salle à copier.", true)
 		return
 	var room := run_authoring.working_run.rooms[index]
 	var run_id := ArenaDefinition.sanitize_id(run_authoring.working_run.run_name)
@@ -4896,8 +4900,8 @@ func _make_run_room_specific() -> void:
 		run_id, index + 1, room_id,
 	]
 	var result := run_authoring.make_room_run_specific(index, path)
-	_set_status("Copie specifique creee : %s" % path \
-		if result.get("ok", false) else str(result.get("error", "Copie refusee.")),
+	_set_status("Copie spécifique créée : %s" % path \
+		if result.get("ok", false) else str(result.get("error", "Copie refusée.")),
 		not result.get("ok", false))
 
 
@@ -4905,13 +4909,13 @@ func _move_run_room(offset: int) -> void:
 	var index := _selected_run_room_index()
 	var result := run_authoring.move_room(index, index + offset)
 	if not result.get("ok", false):
-		_set_status(str(result.get("error", "Deplacement refuse.")), true)
+		_set_status(str(result.get("error", "Déplacement refusé.")), true)
 
 
 func _remove_run_room() -> void:
 	var result := run_authoring.remove_room(_selected_run_room_index())
-	_set_status("Reference retiree ; aucun fichier n'a ete supprime." \
-		if result.get("ok", false) else str(result.get("error", "Retrait refuse.")),
+	_set_status("Référence retirée ; aucun fichier n'a été supprimé." \
+		if result.get("ok", false) else str(result.get("error", "Retrait refusé.")),
 		not result.get("ok", false))
 
 
@@ -4921,8 +4925,8 @@ func _save_run_sequence() -> void:
 		project_context.set_dirty(&"arena_run", false)
 		if shared_reference_graph != null:
 			shared_reference_graph.scan(true)
-	_set_status("Sequence de run sauvegardee et relue." \
-		if result.get("ok", false) else str(result.get("error", "Sauvegarde refusee.")),
+	_set_status("Séquence de partie sauvegardée et relue." \
+		if result.get("ok", false) else str(result.get("error", "Sauvegarde refusée.")),
 		not result.get("ok", false))
 
 
@@ -4930,7 +4934,7 @@ func _reload_run_sequence() -> void:
 	var ok := run_authoring.reload()
 	if project_context != null and ok:
 		project_context.set_dirty(&"arena_run", false)
-	_set_status("Sequence rechargee." if ok else "Rechargement de la run impossible.", not ok)
+	_set_status("Séquence rechargée." if ok else "Rechargement de la partie impossible.", not ok)
 
 
 func _context_run_save() -> Dictionary:
@@ -4943,7 +4947,7 @@ func _context_run_draft() -> Dictionary:
 
 func _context_run_discard() -> Dictionary:
 	var ok := run_authoring.reload()
-	return {"ok": ok, "error": "La run n'a pas pu etre rechargee." if not ok else ""}
+	return {"ok": ok, "error": "La partie n'a pas pu être rechargée." if not ok else ""}
 
 
 func _on_tool_selected(index: int) -> void:
@@ -4992,10 +4996,10 @@ func _on_tool_selected(index: int) -> void:
 	]
 	if index == ArenaStudioCanvas.Tool.TRANSFORM_GRID:
 		_refresh_transform_inspector()
-		_set_status("Grille selectionnee : glissez son corps ou une poignee. Echap ou clic droit annule le geste.")
+		_set_status("Grille sélectionnée : glissez son corps ou une poignée. Échap ou clic droit annule le geste.")
 	elif index == ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
 		_refresh_transform_inspector()
-		_set_status("Ancres : cliquez pour ajouter, glissez pour deplacer, clic droit pour supprimer.")
+		_set_status("Ancres : cliquez pour ajouter, glissez pour déplacer, clic droit pour supprimer.")
 	elif preserve_dynamic:
 		_refresh_dynamic_palette()
 		_set_status("Construction dynamique — un seul outil traite le canvas.")
@@ -5242,7 +5246,7 @@ func _simulate_runtime_surface(surface: int) -> void:
 			or runtime_preview.arena != arena:
 		set_preview_view(ArenaRuntimePreview.ViewMode.GAME)
 		if not runtime_preview.rebuild_now():
-			_set_status("La projection runtime n'a pas pu être construite.", true)
+			_set_status("La projection vers le jeu réel n'a pas pu être construite.", true)
 			return
 	if surface == CellSurfaceState.DynamicSurface.NONE:
 		runtime_preview.clear_runtime_surface(cell)
@@ -5250,7 +5254,7 @@ func _simulate_runtime_surface(surface: int) -> void:
 		return
 	var result := runtime_preview.update_runtime_surface(cell, surface)
 	_set_status(
-		"Surface %s simulée en %s sur la copie runtime ; ArenaDefinition inchangée." % [
+		"Surface %s simulée en %s sur la copie du jeu ; arène inchangée." % [
 			CellSurfaceState.DynamicSurface.keys()[surface], cell,
 		],
 		 not result.get("handled", false)
@@ -5276,7 +5280,7 @@ func _simulate_runtime_terrain_spell(resource_path: String) -> void:
 		(
 			"%s · source %s (%s) · cible %s · zone %d · modifiées %d · "
 			+ "surface %s/%s · durée %d · déclenchement %s · dégâts terrain %d · "
-			+ "ArenaDefinition inchangée."
+			+ "Arène inchangée."
 		) % [
 			spell.spell_name,
 			str(result.get("source_name", "fixture")),
@@ -5297,11 +5301,11 @@ func _simulate_runtime_terrain_spell(resource_path: String) -> void:
 func _simulate_runtime_water_fixture() -> void:
 	var effect := load(TERRAIN_SIM_WATER) as TerrainEffectData
 	if effect == null:
-		_set_status("La fixture eau réelle est introuvable.", true)
+		_set_status("L’exemple d’eau réel est introuvable.", true)
 		return
 	var spell := Spell.new()
 	spell.spell_id = &"studio_water_terrain_fixture"
-	spell.spell_name = "Fixture eau (aucun sort de production)"
+	spell.spell_name = "Exemple d’eau (aucun sort de production)"
 	spell.can_target_free_cell = true
 	spell.aoe_shape = Spell.AoeShape.SINGLE
 	spell.aoe_size = 0
@@ -5311,7 +5315,7 @@ func _simulate_runtime_water_fixture() -> void:
 	var cell := _runtime_terrain_target_cell()
 	var result := runtime_preview.simulate_terrain_spell(spell, cell)
 	_set_status(
-		"Eau temporaire · cible %s · durée %d issue de eau.tres · surface water/water · ArenaDefinition inchangée." % [
+		"Eau temporaire · cible %s · durée %d issue de eau.tres · surface water/water · arène inchangée." % [
 			cell, int(result.get("duration", 0)),
 		],
 		not bool(result.get("handled", false))
@@ -5324,7 +5328,7 @@ func _advance_runtime_terrain_tick() -> void:
 	runtime_preview.advance_runtime_surface_tick()
 	var active := runtime_preview.runtime_state.terrain_effects.runtime_service \
 		.active_surface_cells()
-	_set_status("Tick terrain avancé · %d surface(s) runtime active(s)." % active.size())
+	_set_status("Tour de terrain avancé · %d surface(s) active(s) dans le jeu." % active.size())
 
 
 func _move_runtime_terrain_fixture() -> void:
@@ -5333,7 +5337,7 @@ func _move_runtime_terrain_fixture() -> void:
 	var cell := _runtime_terrain_target_cell()
 	var report := runtime_preview.simulate_fixture_enter_surface(cell)
 	_set_status(
-		"Fixture déplacée en %s · dégâts d'entrée reçus : %d." % [
+		"Exemple déplacé en %s · dégâts d'entrée reçus : %d." % [
 			cell, int(report.get("damage_received", 0)),
 		],
 		not bool(report.get("handled", false))
@@ -5352,7 +5356,7 @@ func _reset_runtime_terrain_simulation() -> void:
 		return
 	var rebuilt := runtime_preview.rebuild_now()
 	_set_status(
-		"Simulation terrain réinitialisée depuis la working copy inchangée.",
+		"Simulation terrain réinitialisée depuis la version en cours inchangée.",
 		not rebuilt
 	)
 
@@ -5365,7 +5369,7 @@ func _ensure_runtime_terrain_preview() -> bool:
 			or runtime_preview.arena != arena:
 		set_preview_view(ArenaRuntimePreview.ViewMode.GAME)
 		if not runtime_preview.rebuild_now():
-			_set_status("La projection runtime n'a pas pu être construite.", true)
+			_set_status("La projection vers le jeu réel n'a pas pu être construite.", true)
 			return false
 	return true
 
@@ -5382,7 +5386,7 @@ func _runtime_terrain_target_cell() -> Vector2i:
 
 func show_dynamic_construction() -> void:
 	if edit_session == null or arena == null:
-		_set_status("Aucune ArenaDefinition active pour la construction dynamique.", true)
+		_set_status("Aucune arène active pour la construction dynamique.", true)
 		return
 	if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION \
 			and dynamic_mode_button != null and not dynamic_mode_button.button_pressed:
@@ -5415,9 +5419,9 @@ func _enter_dynamic_construction() -> void:
 	_refresh_dynamic_palette()
 	_select_dynamic_tool(ArenaStudioCanvas.Tool.TERRAIN)
 	_set_status(
-		"Édition logique PAINTED : le fond peint fait foi, les couleurs sont des repères." \
+		"Édition logique d'une carte peinte : le fond peint fait foi, les couleurs sont des repères." \
 		if _painted_logic_only_active else
-		"Construction dynamique — vraies dalles, même ArenaEditSession et même historique."
+		"Construction dynamique — vraies dalles, même session d'édition et même historique."
 	)
 
 
@@ -5452,7 +5456,7 @@ func _refresh_dynamic_palette() -> void:
 	_refresh_permanent_terrain_options()
 	if dynamic_document_label == null or arena == null:
 		return
-	var mode_name: String = ["PAINTED", "MODULAR", "HYBRID"][arena.visual_mode]
+	var mode_name: String = VISUAL_MODE_LABELS[arena.visual_mode]
 	dynamic_document_label.text = "%s • %d × %d • %s • %s" % [
 		arena.display_name, arena.grid_size.x, arena.grid_size.y,
 		mode_name,

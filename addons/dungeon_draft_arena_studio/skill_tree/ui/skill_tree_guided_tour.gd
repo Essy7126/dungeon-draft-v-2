@@ -60,16 +60,16 @@ const CHAPTERS := [
 	[&"start", "1 · Bien démarrer", [
 		[&"welcome", "Bienvenue dans le Studio", &"studio_overview", "Le Studio modifie les données de progression sans ouvrir manuellement les fichiers .tres. Vous travaillez sur une [b]copie isolée[/b] : les vraies Resources ne changent qu’après une sauvegarde confirmée."],
 		[&"workspace", "Les quatre zones de travail", &"studio_overview", "[b]En haut[/b] : contexte et commandes. [b]À gauche[/b] : catalogue. [b]Au centre[/b] : rangs, graphe et contrôles. [b]À droite[/b] : propriétés. Le panneau inférieur rassemble validation, statistiques, simulation, prévisualisation, analyse et aide."],
-		[&"context_run", "Choisir la run", &"context_run", "Une run peut avoir son propre profil de progression. Changer de run recharge donc les compétences du héros dans cette run, après résolution explicite des modifications en cours."],
+		[&"context_run", "Choisir la partie", &"context_run", "Une partie peut avoir son propre profil de progression. Changer de partie recharge donc les compétences du héros dans cette partie, après résolution explicite des modifications en cours."],
 		[&"context_hero", "Choisir le héros", &"context_hero", "Le héros détermine le personnage de base et le profil de progression édité. Catalogue et graphe se synchronisent avec lui."],
-		[&"context_room_scope", "Salle et portée dans cet écran", &"context_room_scope", "La barre est commune à tous les modules. [b]Salle[/b] n’agit actuellement sur aucune compétence. [b]Portée[/b] affiche le contexte commun, mais la sauvegarde reste attachée au profil run/héros. Le tutoriel ne leur invente donc aucun effet."],
+		[&"context_room_scope", "Salle et portée dans cet écran", &"context_room_scope", "La barre est commune à tous les modules. [b]Salle[/b] n’agit actuellement sur aucune compétence. [b]Portée[/b] affiche le contexte commun, mais la sauvegarde reste attachée au profil partie/héros. Le tutoriel ne leur invente donc aucun effet."],
 		[&"guided_advanced", "Mode guidé et mode avancé", &"mode_toggles", "Le [b]Mode guidé[/b] montre explications, exemples et champs essentiels, et masque l’onglet Avancé. Désactivez-le pour voir les réglages techniques. Ce choix ne modifie jamais les données."],
 		[&"undo_redo", "Annuler et rétablir", &"history", "Chaque modification rejoint l’historique de la copie. [b]Ctrl+Z[/b] annule ; [b]Ctrl+Y[/b] ou [b]Ctrl+Maj+Z[/b] rétablit."],
 		[&"shortcuts", "Raccourcis utiles", &"toolbar", "[b]Ctrl+F[/b] recherche ; [b]Ctrl+S[/b] revoit puis sauvegarde ; [b]Ctrl+Z/Y[/b] gère l’historique. Dans le graphe, [b]Ctrl+C/V/D[/b] copie, colle ou duplique, et [b]Échap[/b] annule une liaison en cours."],
 	]],
 	[&"character", "2 · Personnage", [
 		[&"character_catalog", "Trouver un personnage", &"catalog", "Recherchez par nom ou identifiant. Les filtres [b]Ressources invalides[/b] et [b]Document modifié[/b] isolent ce qui demande votre attention. Cliquez un héros pour ouvrir ses propriétés."],
-		[&"character_identity", "Identité", &"inspector_character", "[b]Nom affiché[/b] est visible par le joueur. [b]Description[/b] résume le style. [b]Identifiant stable[/b] relie sauvegardes et Resources : ne le changez pas pour renommer."],
+		[&"character_identity", "Identité", &"inspector_character", "[b]Nom affiché[/b] est visible par le joueur. [b]Description[/b] résume le style. [b]Identifiant stable[/b] relie sauvegardés et Resources : ne le changez pas pour renommer."],
 		[&"character_resources", "PV, PA, PM et initiative", &"inspector_character", "[b]PV maximum[/b] : dégâts supportés. [b]PA maximum[/b] : budget d’actions. [b]PM maximum[/b] : déplacement. [b]Initiative[/b] : ordre de jeu."],
 		[&"character_power", "Attaque et force", &"inspector_character", "[b]Puissance d’attaque[/b] fournit une base aux calculs qui la consultent. [b]Force de déplacement[/b] intervient dans la puissance et la résistance aux poussées et attractions."],
 		[&"character_defense", "Défenses", &"inspector_character", "[b]Armure[/b] réduit le physique avec rendement décroissant. [b]Résistance magique[/b] réduit le magique. [b]Esquive[/b] est un ratio : 0,15 signifie 15 %."],
@@ -80,7 +80,7 @@ const CHAPTERS := [
 	[&"discipline", "3 · Discipline et XP", [
 		[&"discipline_concept", "Comprendre une discipline", &"catalog", "Une discipline est un chemin de progression lié à un sort de base. Ses rangs proposent des améliorations lorsque l’XP cumulée atteint leurs seuils."],
 		[&"discipline_lifecycle", "Créer, dupliquer, renommer, retirer", &"catalog_actions", "[b]Nouvelle[/b] crée cinq rangs 0/5/12/21/30. [b]Dupliquer[/b] produit une copie indépendante. [b]Renommer[/b] préserve l’identifiant. [b]Supprimer[/b] détache après annonce des conséquences."],
-		[&"discipline_settings", "Paramètres de discipline", &"inspector_discipline", "[b]Nom et description[/b] présentent la promesse de jeu. [b]Identifiant stable[/b] relie sort et sauvegardes. [b]Couleur[/b] et [b]icône[/b] assurent la reconnaissance visuelle."],
+		[&"discipline_settings", "Paramètres de discipline", &"inspector_discipline", "[b]Nom et description[/b] présentent la promesse de jeu. [b]Identifiant stable[/b] relie sort et sauvegardés. [b]Couleur[/b] et [b]icône[/b] assurent la reconnaissance visuelle."],
 		[&"base_spell_link", "Associer le sort racine", &"inspector_discipline", "Le champ [b]Discipline associée[/b] du sort doit contenir l’identifiant de la discipline. Sans correspondance, le Studio propose de choisir un sort existant."],
 		[&"rank_threshold", "Seuil total d’XP", &"rank_bar", "Le seuil est [b]cumulé[/b] : passer de 5 XP au rang 2 à 12 XP au rang 3 coûte 7 XP supplémentaires. Le Studio affiche aussi cette différence et le nombre de choix."],
 		[&"rank_tools", "Outils de rang", &"rank_bar", "[b]+ Rang[/b] ajoute après le dernier. [b]− Dernier rang[/b] annonce les nœuds retirés. [b]Preset[/b] applique 0/5/12/21/30. [b]Répartir l’XP[/b] espace les seuils jusqu’au dernier."],
@@ -92,7 +92,7 @@ const CHAPTERS := [
 		[&"branch_create", "Créer une branche complète", &"graph", "L’assistant ajoute un nœud dans chaque rang restant et les relie. Toute la branche forme une seule action annulable."],
 		[&"prerequisites", "Prérequis", &"graph", "Tirez une liaison d’un rang inférieur vers un rang supérieur. Plusieurs entrées signifient que [b]toutes[/b] sont obligatoires : ET, jamais OU."],
 		[&"exclusions", "Exclusions", &"inspector_relations", "Une exclusion interdit deux choix dans le même chemin. Cochez les incompatibilités dans Relations ; le Studio écrit la relation dans les deux sens."],
-		[&"node_settings", "Paramètres d’une amélioration", &"inspector_node", "[b]Nom et description[/b] expliquent le choix. [b]Identifiant[/b] sert aux sauvegardes. [b]Rang[/b] déplace sans renommer. [b]Sort ciblé[/b] reçoit les effets. [b]Icône[/b] et [b]carte[/b] règlent la présentation."],
+		[&"node_settings", "Paramètres d’une amélioration", &"inspector_node", "[b]Nom et description[/b] expliquent le choix. [b]Identifiant[/b] sert aux sauvegardés. [b]Rang[/b] déplace sans renommer. [b]Sort ciblé[/b] reçoit les effets. [b]Icône[/b] et [b]carte[/b] règlent la présentation."],
 		[&"graph_bulk_tools", "Disposition et sélection", &"graph", "Le menu contextuel duplique, supprime, aligne ou répartit. [b]Organiser[/b] replace sans changer le gameplay. Un déplacement manuel épingle la position."],
 		[&"graph_copy_paste", "Copier et dupliquer", &"graph", "[b]Ctrl+C[/b] mémorise la sélection, [b]Ctrl+V[/b] crée des copies et [b]Ctrl+D[/b] duplique directement. Les nouvelles Resources sont indépendantes."],
 	]],
@@ -125,11 +125,11 @@ const CHAPTERS := [
 		[&"path_statistics", "Statistiques et chemins", &"bottom_statistics", "Compte rangs, choix et relations, dessine l’XP et dénombre les configurations. [b]Tester tous les chemins[/b] rejoue jusqu’à 1 000 configurations avec les règles runtime."],
 		[&"runtime_preview", "Prévisualisation runtime", &"bottom_preview", "Le vrai SpellCaster compare base et résultat dans neuf scénarios : défenses 0/25/50/100, allié, ennemi affaibli, dos, cibles multiples et case libre. La sandbox est déterministe et n’écrit rien."],
 		[&"full_analysis", "Analyse complète", &"bottom_analysis", "Énumère les chemins, cherche nœuds inaccessibles et rangs morts, détecte la dominance et examine les choix finaux. Elle aide la conception sans prédire une victoire."],
-		[&"compare_runs", "Comparer deux runs", &"compare_runs", "Choisissez la run de référence dans le sélecteur. Le rapport compare le profil du héros actif sans changer le contexte ni sauvegarder."],
+		[&"compare_runs", "Comparer deux parties", &"compare_runs", "Choisissez la partie de référence dans le sélecteur. Le rapport compare le profil du héros actif sans changer le contexte ni sauvegarder."],
 		[&"global_search", "Recherche globale", &"search", "[b]Ctrl+F[/b] cherche noms, identifiants, descriptions et résumés d’effets. Activez un résultat pour ouvrir son personnage, sa discipline et son nœud."],
 	]],
 	[&"safety", "8 · Sauvegarde sûre", [
-		[&"working_copy", "Copie de travail", &"document_state", "Toutes les modifications restent dans une copie profonde. Tester, prévisualiser, analyser, annuler et rétablir utilisent cette copie ; le badge MODIFIÉ signale son écart avec la source."],
+		[&"working_copy", "Version en cours", &"document_state", "Toutes les modifications restent dans une copie profonde. Tester, prévisualiser, analyser, annuler et rétablir utilisent cette copie ; le badge MODIFIÉ signale son écart avec la source."],
 		[&"drafts", "Brouillons récupérables", &"document_state", "Tant que le document est modifié, un brouillon est écrit toutes les 30 secondes. À l’ouverture : Restaurer, Comparer ou Abandonner. Restaurer ne sauvegarde pas encore la source."],
 		[&"context_transition", "Changer de contexte", &"context_bar", "Avant de remplacer une copie modifiée : [b]Sauvegarder, Garder comme brouillon, Abandonner[/b] ou [b]Annuler[/b]. Plusieurs domaines sont traités comme une transaction globale."],
 		[&"save_review", "Revoir la sauvegarde", &"save", "Sauvegarder et Ctrl+S ouvrent la même revue : opération, fichier, propriétaire, état et différences. Activez une ligne pour revenir à son propriétaire. Erreurs et conflits bloquent."],
@@ -222,7 +222,7 @@ func _ready() -> void:
 	page_actions.add_child(_target_button)
 	_action_button = Button.new()
 	_action_button.text = "Démarrer l’exercice sécurisé"
-	_action_button.tooltip_text = "Crée uniquement une fixture possédée sous user://."
+	_action_button.tooltip_text = "Crée uniquement un exemple appartenant à la sauvegarde locale."
 	_action_button.pressed.connect(func(): sandbox_requested.emit())
 	page_actions.add_child(_action_button)
 	var footer := HBoxContainer.new()

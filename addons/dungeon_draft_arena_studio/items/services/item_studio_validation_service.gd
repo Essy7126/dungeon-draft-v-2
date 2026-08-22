@@ -74,7 +74,7 @@ func _validate_definition(
 		if definition.reactive_effects.is_empty():
 			_error(messages, &"RELIC_WITHOUT_EFFECT", "Une relique doit posséder au moins un bloc d’effet.", "reactive_effects")
 		if not definition.compatible_character_ids.is_empty():
-			_error(messages, &"RELIC_HERO_COMPATIBILITY", "Une relique est un bonus partagé de la run et ne cible aucun héros à l’acquisition.", "compatible_character_ids")
+			_error(messages, &"RELIC_HERO_COMPATIBILITY", "Une relique est un bonus partagé de la partie et ne cible aucun héros à l’acquisition.", "compatible_character_ids")
 	for index in range(definition.reactive_effects.size()):
 		var effect := definition.reactive_effects[index]
 		for issue in relic_registry.validate_effect(effect):

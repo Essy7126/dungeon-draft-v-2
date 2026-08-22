@@ -31,7 +31,7 @@ static func plan(
 			"after_count": run_data.rooms.size() if run_data != null else 0,
 		}
 	if run_data == null or run_data.resource_path.is_empty():
-		return {"ok": false, "error": "La run cible n'est pas canonique."}
+		return {"ok": false, "error": "La partie ciblée n'est pas canonique."}
 	var before_count := run_data.rooms.size()
 	var target := requested_index
 	match action:
@@ -74,7 +74,7 @@ static func plan(
 		if not destination.get("ok", false):
 			return {
 				"ok": false,
-				"error": "La copie spécifique à la run n'a pas de chemin sûr.",
+				"error": "La copie spécifique à la partie n'a pas de chemin sûr.",
 			}
 		var destination_is_current := target_room != null \
 			and action in [UPDATE, REPLACE] \
@@ -134,12 +134,12 @@ static func attach_and_save(
 		arena_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as ArenaDefinition
 	if produced == null:
-		return {"ok": false, "error": "L'ArenaDefinition produite ne peut pas etre relue.", "plan": attachment_plan}
+		return {"ok": false, "error": "L'ArenaDefinition produite ne peut pas être relue.", "plan": attachment_plan}
 	var canonical_run := ResourceLoader.load(
 		run_data.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RunData
 	if canonical_run == null:
-		return {"ok": false, "error": "La RunData cible ne peut pas etre relue.", "plan": attachment_plan}
+		return {"ok": false, "error": "La partie ciblée ne peut pas être relue.", "plan": attachment_plan}
 	if action == UPDATE:
 		return _update_and_save(produced, canonical_run, attachment_plan, graph)
 	var integrated_path := str(attachment_plan.get(
@@ -157,7 +157,7 @@ static func attach_and_save(
 	var session := ArenaRunAuthoringService.new()
 	if not session.open(canonical_run, graph):
 		_rollback_materialization(materialization, integrated_path)
-		return {"ok": false, "error": "La session de run ne peut pas etre ouverte.", "plan": attachment_plan}
+		return {"ok": false, "error": "La session de partie ne peut pas être ouverte.", "plan": attachment_plan}
 	var target := int(attachment_plan.target_index)
 	var operation := session.replace_room(target, attached_room) \
 		if action == REPLACE else session.insert_room(target, attached_room)
@@ -170,7 +170,7 @@ static func attach_and_save(
 		_rollback_materialization(materialization, integrated_path)
 		return {
 			"ok": false,
-			"error": str(save_result.get("error", "Le rattachement n'a pas pu etre sauvegarde.")),
+			"error": str(save_result.get("error", "Le rattachement n'a pas pu être sauvegarde.")),
 			"plan": attachment_plan,
 			"operation": operation,
 		}
@@ -183,7 +183,7 @@ static func attach_and_save(
 		_rollback_materialization(materialization, integrated_path)
 		return {
 			"ok": false,
-			"error": "La verification du rattachement a l'index exact a echoue.",
+			"error": "La vérification du rattachement à l'index exact a échoué.",
 			"plan": attachment_plan,
 		}
 	var run_errors := verified_run.validation_errors()
@@ -192,7 +192,7 @@ static func attach_and_save(
 		_rollback_materialization(materialization, integrated_path)
 		return {
 			"ok": false,
-			"error": "L'intégration rendrait la run invalide.",
+			"error": "L'intégration rendrait la partie invalide.",
 			"validation_errors": run_errors,
 			"plan": attachment_plan,
 		}
@@ -289,7 +289,7 @@ static func _update_and_save(
 		):
 		return {
 			"ok": false,
-			"error": "UPDATE ne peut pas matérialiser la salle dans le bundle produit.",
+			"error": "L'action « Mettre à jour » ne peut pas matérialiser la salle dans le dossier produit.",
 		}
 	var recovery := _create_room_recovery(integrated_path, canonical_run.resource_path)
 	if not recovery.get("ok", false):
@@ -336,7 +336,7 @@ static func _update_and_save(
 		var session := ArenaRunAuthoringService.new()
 		if not session.open(canonical_run, graph):
 			_rollback_room(recovery, integrated_path)
-			return {"ok": false, "error": "La session de run ne peut pas être ouverte."}
+			return {"ok": false, "error": "La session de partie ne peut pas être ouverte."}
 		var operation := session.replace_room(target, integrated)
 		if not operation.get("ok", false):
 			_rollback_room(recovery, integrated_path)
@@ -361,7 +361,7 @@ static func _update_and_save(
 		_rollback_room(recovery, integrated_path)
 		return {
 			"ok": false,
-			"error": "Les invariants gameplay de la run ne sont pas préservés.",
+			"error": "Les invariants gameplay de la partie ne sont pas préservés.",
 		}
 	if graph != null:
 		graph.invalidate(canonical_run.resource_path)
@@ -395,21 +395,21 @@ static func _materialize_run_owned_room(
 		run_path: String
 	) -> Dictionary:
 	if source == null:
-		return {"ok": false, "error": "L'arene source est absente."}
+		return {"ok": false, "error": "L'arène source est absente."}
 	if not ArenaRunOwnedRoomPathPolicy.is_run_owned_path(destination_path) \
 			or ArenaRunOwnedRoomPathPolicy.is_produced_bundle_resource(
 				destination_path
 			):
 		return {
 			"ok": false,
-			"error": "La destination run-owned est hors perimetre sur.",
+			"error": "La destination propre à la partie est hors du périmètre sûr.",
 		}
 	var recovery := _create_room_recovery(destination_path, run_path)
 	if not recovery.get("ok", false):
 		return recovery
 	var copied := source.duplicate(true) as ArenaDefinition
 	if copied == null:
-		return {"ok": false, "error": "La copie run-owned a echoue."}
+		return {"ok": false, "error": "La copie propre à la partie a échoué."}
 	copied.set_path_cache("")
 	var arena_fingerprint := ArenaSnapshotService.arena_fingerprint(source)
 	var gameplay_signature := RoomIntegrationFieldPolicy.signature(
@@ -421,7 +421,7 @@ static func _materialize_run_owned_room(
 	if ResourceSaver.save(copied, staging_path) != OK:
 		return {
 			"ok": false,
-			"error": "Le staging de la copie run-owned a echoue.",
+			"error": "La préparation de la copie propre à la partie a échoué.",
 		}
 	var staged := ResourceLoader.load(
 		staging_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
@@ -433,7 +433,7 @@ static func _materialize_run_owned_room(
 			) != gameplay_signature:
 		return {
 			"ok": false,
-			"error": "Le staging run-owned ne preserve pas la ressource source.",
+			"error": "La préparation propre à la partie ne préserve pas la ressource source.",
 		}
 	staged.set_path_cache("")
 	if DirAccess.make_dir_recursive_absolute(
@@ -442,7 +442,7 @@ static func _materialize_run_owned_room(
 		_rollback_room(recovery, destination_path)
 		return {
 			"ok": false,
-			"error": "L'ecriture de la copie run-owned a echoue.",
+			"error": "L'écriture de la copie propre à la partie a échoué.",
 		}
 	var reloaded := ResourceLoader.load(
 		destination_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
@@ -455,7 +455,7 @@ static func _materialize_run_owned_room(
 		_rollback_room(recovery, destination_path)
 		return {
 			"ok": false,
-			"error": "La verification de la copie run-owned a echoue.",
+			"error": "La vérification de la copie propre à la partie a échoué.",
 		}
 	return {
 		"ok": true,

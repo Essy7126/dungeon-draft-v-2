@@ -170,11 +170,11 @@ static func save(
 	if not _injected(options, &"working_copy") and recovery_copy != null:
 		recovery_error = ResourceSaver.save(recovery_copy, recovery_path)
 	if recovery_error != OK:
-		return _failure("WORKING_COPY", "Impossible d'enregistrer la copie de travail complète.", plan, recovery_dir, recovery_error)
+		return _failure("WORKING_COPY", "Impossible d'enregistrer la version en cours complète.", plan, recovery_dir, recovery_error)
 	if ResourceLoader.load(
 			recovery_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 		) as UnitData == null:
-		return _failure("WORKING_COPY_RELOAD", "La copie de travail de récupération est illisible.", plan, recovery_dir)
+		return _failure("WORKING_COPY_RELOAD", "La version en cours de récupération est illisible.", plan, recovery_dir)
 	var stage_report := _stage(writable, recovery_dir, options)
 	if not stage_report.get("ok", false):
 		stage_report["plan"] = plan

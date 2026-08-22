@@ -44,10 +44,10 @@ func validation_errors() -> PackedStringArray:
 		thumbnail_size, runtime_reference_viewport,
 	]:
 		if entry.x <= 0 or entry.y <= 0:
-			errors.append("Chaque resolution doit etre strictement positive.")
+			errors.append("Chaque résolution doit être strictement positive.")
 			break
 	if scaling_policy != &"NATIVE_NO_RESAMPLE":
-		errors.append("Le kit natif ne peut pas etre redimensionne silencieusement.")
+		errors.append("Le kit natif ne peut pas être redimensionné silencieusement.")
 	if crop_policy not in [&"NONE", &"EXPLICIT_SAFE_CROP"]:
 		errors.append("Politique de recadrage inconnue.")
 	return errors

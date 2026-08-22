@@ -37,7 +37,7 @@ static func generate(
 			"order": index,
 			"unit_data": unit,
 			"unit_path": unit.resource_path if unit != null else "",
-			"unit_name": unit.unit_name if unit != null else "Unite absente",
+			"unit_name": unit.unit_name if unit != null else "Unité absente",
 			"role": unit.tactical_role_id if unit != null else &"",
 			"cell": cell,
 			"distance_to_ally_deployment": distance,

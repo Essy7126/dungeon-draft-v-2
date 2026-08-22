@@ -3,19 +3,19 @@ class_name SkillEffectEditorRegistry
 extends RefCounted
 
 const MODIFIER_CLASSES := {
-	"SpellModTerrainOnAffectedCells": ["Terrain sur zone", "cases", "cases affectees", "selon le terrain", "duree du terrain", "a la resolution du terrain", "remplacement par cellule"],
-	"SpellModRangeBonus": ["Portee supplementaire", "cases", "lanceur", "toujours", "permanent pour le cast", "au calcul de portee", "cumul additif"],
+	"SpellModTerrainOnAffectedCells": ["Terrain sur zone", "cases", "cases affectees", "selon le terrain", "durée du terrain", "a la résolution du terrain", "remplacement par cellule"],
+	"SpellModRangeBonus": ["Portée supplementaire", "cases", "lanceur", "toujours", "permanent pour le cast", "au calcul de portée", "cumul additif"],
 	"SpellModNextTurnMovement": ["PM au prochain tour", "PM", "cible", "si la cible est valide", "prochain tour", "fin du cast", "cumul additif"],
-	"SpellModHealBonus": ["Soin supplementaire", "PV", "allies affectes", "toujours", "instantane", "resolution des cibles", "cumul additif"],
-	"SpellModExactPushDistance": ["Distance de poussee exacte", "cases", "ennemis affectes", "si poussable", "instantane", "resolution du mouvement", "remplacement"],
-	"SpellModDamageBonusAtMinRange": ["Degats a portee minimale", "degats", "ennemi principal", "portee minimale", "instantane", "resolution des cibles", "cumul additif"],
-	"SpellModCollisionDamage": ["Degats de collision", "degats", "victime de collision", "collision reelle", "instantane", "resolution du mouvement", "maximum exact ou cumul"],
-	"SpellModCentralCellDamageBonus": ["Degats cellule centrale", "degats", "cible centrale", "cellule centrale touchee", "instantane", "resolution des cibles", "cumul additif"],
-	"SpellModBackstabDamageBonus": ["Degats de dos", "degats", "ennemi principal", "attaque dans le dos", "instantane", "resolution des cibles", "cumul additif"],
+	"SpellModHealBonus": ["Soin supplementaire", "PV", "alliés affectes", "toujours", "instantane", "résolution des cibles", "cumul additif"],
+	"SpellModExactPushDistance": ["Distance de poussee exacte", "cases", "ennemis affectes", "si poussable", "instantane", "résolution du mouvement", "remplacement"],
+	"SpellModDamageBonusAtMinRange": ["Dégâts a portée minimale", "degats", "ennemi principal", "portée minimale", "instantane", "résolution des cibles", "cumul additif"],
+	"SpellModCollisionDamage": ["Dégâts de collision", "degats", "victime de collision", "collision réelle", "instantane", "résolution du mouvement", "maximum exact ou cumul"],
+	"SpellModCentralCellDamageBonus": ["Dégâts cellule centrale", "degats", "cible centrale", "cellule centrale touchee", "instantane", "résolution des cibles", "cumul additif"],
+	"SpellModBackstabDamageBonus": ["Dégâts de dos", "degats", "ennemi principal", "attaque dans le dos", "instantane", "résolution des cibles", "cumul additif"],
 	"SpellModApplyStatus": ["Application de statut", "valeur de statut", "cibles affectees", "cible valide", "tours", "finalisation des cibles", "politique du statut"],
-	"SpellModAlignedSecondaryTarget": ["Cible secondaire alignee", "cases", "ennemi secondaire", "alignement valide", "instantane", "resolution des cibles", "une cible unique"],
-	"SpellModAdditionalShield": ["Bouclier supplementaire", "bouclier", "allies affectes", "toujours", "instantane", "resolution des degats", "cumul additif"],
-	"SpellModAdditionalPush": ["Poussee supplementaire", "cases", "ennemis affectes", "si poussable", "instantane", "resolution du mouvement", "cumul additif"],
+	"SpellModAlignedSecondaryTarget": ["Cible secondaire alignee", "cases", "ennemi secondaire", "alignement valide", "instantane", "résolution des cibles", "une cible unique"],
+	"SpellModAdditionalShield": ["Bouclier supplementaire", "bouclier", "alliés affectes", "toujours", "instantane", "résolution des dégâts", "cumul additif"],
+	"SpellModAdditionalPush": ["Poussee supplementaire", "cases", "ennemis affectes", "si poussable", "instantane", "résolution du mouvement", "cumul additif"],
 }
 
 var _effects := {}
@@ -105,17 +105,17 @@ func _configure_effect(descriptor: SkillEffectEditorDescriptor, effect_type: int
 	var movement_effects := [10, 11, 18, 27]
 	if effect_type in damage_effects:
 		descriptor.unit = "degats"
-		descriptor.target = "ennemis selon la portee choisie"
+		descriptor.target = "ennemis selon la portée choisie"
 	elif effect_type in heal_effects:
 		descriptor.unit = "PV"
-		descriptor.target = "allies selon la portee choisie"
+		descriptor.target = "alliés selon la portée choisie"
 	elif effect_type in shield_effects:
 		descriptor.unit = "bouclier"
-		descriptor.target = "allies selon la portee choisie"
+		descriptor.target = "alliés selon la portée choisie"
 	elif effect_type in movement_effects:
 		descriptor.unit = "PM ou cases"
 	elif effect_type == SpellModSkillTreeEffect.EffectType.RANGE:
-		descriptor.unit = "cases de portee"
+		descriptor.unit = "cases de portée"
 	elif effect_type == SpellModSkillTreeEffect.EffectType.AREA_CARDINAL:
 		descriptor.unit = "couches cardinales"
 	elif effect_type in [
@@ -130,7 +130,7 @@ func _configure_effect(descriptor: SkillEffectEditorDescriptor, effect_type: int
 		descriptor.frequency = "selon status_timing"
 		descriptor.stacking = "status_mode BASE / DELTA / OVERRIDE"
 		descriptor.fields.append_array([
-			{"property": &"duration", "label": "Duree"},
+			{"property": &"duration", "label": "Durée"},
 			{"property": &"status_name", "label": "Nom du statut"},
 			{"property": &"status_group", "label": "Groupe stable"},
 			{"property": &"status_mode", "label": "Empilement"},
@@ -143,11 +143,11 @@ func _configure_effect(descriptor: SkillEffectEditorDescriptor, effect_type: int
 		descriptor.condition = "attaque dans le dos"
 	if effect_type == SpellModSkillTreeEffect.EffectType.ADJACENT_HEAL_RATIO:
 		descriptor.unit = "ratio du soin principal"
-		descriptor.target = "allies adjacents"
+		descriptor.target = "alliés adjacents"
 		descriptor.fields.append({"property": &"ratio", "label": "Ratio partage"})
 	if effect_type == SpellModSkillTreeEffect.EffectType.CLEANSE:
 		descriptor.unit = "statuts retires"
-		descriptor.target = "allies selon la portee choisie"
+		descriptor.target = "alliés selon la portée choisie"
 	if effect_type == SpellModSkillTreeEffect.EffectType.MOVE_CASTER_TO_TARGET:
 		descriptor.target = "lanceur vers la cible"
 		descriptor.condition = "destination libre et alignement valide"

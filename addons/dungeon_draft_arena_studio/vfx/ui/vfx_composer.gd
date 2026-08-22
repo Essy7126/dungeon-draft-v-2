@@ -9,7 +9,20 @@ const PROFILE_PATHS := [
 	"res://vfx/profiles/test/lightning_multi_target.tres",
 	"res://vfx/profiles/test/player_path_preview.tres",
 ]
-const SCENARIOS := ["Shield", "Cible unique", "Multi-cible", "Chemin court", "Chemin long"]
+const SCENARIOS := ["Bouclier", "Cible unique", "Multi-cible", "Chemin court", "Chemin long"]
+
+## Étiquette lisible de chaque type de module technique. La clé reste
+## l'identifiant interne consommé par VFXModuleRegistry : seul l'affichage change.
+const MODULE_TYPE_LABELS := {
+	&"ShieldSurfaceModule": "Surface de bouclier",
+	&"ShieldRippleModule": "Onde de bouclier",
+	&"LightningModule": "Éclair",
+	&"PathRibbonModule": "Ruban de trajet",
+	&"CellOverlayModule": "Surbrillance de case",
+	&"ParticleBurstModule": "Gerbe de particules",
+	&"FlashModule": "Flash lumineux",
+	&"FlipbookModule": "Feuille d'animation",
+}
 
 var document := VFXStudioDocument.new()
 var draft_service := VFXDraftService.new()
@@ -50,7 +63,7 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 6)
 	add_child(root)
 	var header := Label.new()
-	header.text = "VFX COMPOSER — vertical slice technique — aucun ART_APPROVED automatique"
+	header.text = "COMPOSITEUR D'EFFETS VISUELS — version technique — la validation artistique reste manuelle"
 	header.add_theme_color_override("font_color", Color("77d9ff"))
 	header.add_theme_font_size_override("font_size", 16)
 	root.add_child(header)
@@ -61,7 +74,7 @@ func _build_ui() -> void:
 	_build_preview_panel(split)
 	_build_blackboard_panel(split)
 	status_label = Label.new()
-	status_label.text = "Initialisation du catalogue VFX…"
+	status_label.text = "Initialisation du catalogue des effets visuels…"
 	status_label.add_theme_color_override("font_color", Color("a8c8d9"))
 	root.add_child(status_label)
 
@@ -70,7 +83,7 @@ func _build_catalogue_panel(parent: Node) -> void:
 	var panel := VBoxContainer.new()
 	panel.custom_minimum_size.x = 230
 	parent.add_child(panel)
-	panel.add_child(_label("CATALOGUE VFXProfile"))
+	panel.add_child(_label("CATALOGUE DES EFFETS VISUELS"))
 	catalogue = ItemList.new()
 	catalogue.custom_minimum_size.y = 150
 	catalogue.item_selected.connect(_on_profile_selected)
@@ -80,7 +93,7 @@ func _build_catalogue_panel(parent: Node) -> void:
 	sequence_list.custom_minimum_size.y = 115
 	sequence_list.item_selected.connect(_on_sequence_selected)
 	panel.add_child(sequence_list)
-	panel.add_child(_label("Contexte de preview"))
+	panel.add_child(_label("Contexte d'aperçu"))
 	scenario_option = OptionButton.new()
 	for scenario in SCENARIOS:
 		scenario_option.add_item(scenario)
@@ -88,11 +101,11 @@ func _build_catalogue_panel(parent: Node) -> void:
 	panel.add_child(scenario_option)
 	var actions := HFlowContainer.new()
 	panel.add_child(actions)
-	_button(actions, "Play", play_preview)
-	_button(actions, "Clear", clear_preview)
-	_button(actions, "Replay", play_preview)
-	_button(actions, "Draft", save_as_draft)
-	_button(actions, "Reload", reload_draft)
+	_button(actions, "Lire", play_preview)
+	_button(actions, "Effacer", clear_preview)
+	_button(actions, "Rejouer", play_preview)
+	_button(actions, "Brouillon", save_as_draft)
+	_button(actions, "Recharger", reload_draft)
 	_button(actions, "Valider", validate_document)
 
 
@@ -102,14 +115,14 @@ func _build_preview_panel(parent: Node) -> void:
 	parent.add_child(panel)
 	var preview_header := HFlowContainer.new()
 	panel.add_child(preview_header)
-	preview_header.add_child(_label("PREVIEW — runner partagé"))
+	preview_header.add_child(_label("APERÇU — session partagée"))
 	for value in [0.25, 0.5, 1.0]:
 		_button(preview_header, "%sx" % value, func():
 			seed_spin.set_meta(&"speed_scale", value)
 			play_preview()
 		)
 	quality_option = OptionButton.new()
-	for label in ["LOW", "MEDIUM", "HIGH"]:
+	for label in ["Faible", "Moyenne", "Élevée"]:
 		quality_option.add_item(label)
 	quality_option.select(2)
 	quality_option.item_selected.connect(func(_index): play_preview())
@@ -123,7 +136,7 @@ func _build_preview_panel(parent: Node) -> void:
 	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel.add_child(stage)
-	panel.add_child(_label("TIMELINE — chevauchement start/durée"))
+	panel.add_child(_label("CHRONOLOGIE — chevauchement départ/durée"))
 	timeline_label = RichTextLabel.new()
 	timeline_label.bbcode_enabled = true
 	timeline_label.fit_content = true
@@ -145,17 +158,17 @@ func _build_blackboard_panel(parent: Node) -> void:
 	panel.add_child(module_list)
 	var module_actions := HFlowContainer.new()
 	panel.add_child(module_actions)
-	_button(module_actions, "+ FlashModule", _add_flash_module)
-	panel.add_child(_label("BLACKBOARD"))
+	_button(module_actions, "+ Module Flash", _add_flash_module)
+	panel.add_child(_label("PARAMÈTRES PARTAGÉS"))
 	primary_color = _color_field(panel, "Couleur primaire", _edit_primary_color)
 	secondary_color = _color_field(panel, "Couleur secondaire", _edit_secondary_color)
 	gradient_start = _color_field(panel, "Gradient début", func(color): _edit_gradient(0, color))
 	gradient_end = _color_field(panel, "Gradient fin", func(color): _edit_gradient(1, color))
 	duration_spin = _spin_field(panel, "Durée", 0.01, 10.0, 0.01, _edit_duration)
-	offset_spin = _spin_field(panel, "Start offset", 0.0, 10.0, 0.01, _edit_offset)
+	offset_spin = _spin_field(panel, "Décalage de départ", 0.0, 10.0, 0.01, _edit_offset)
 	intensity_spin = _spin_field(panel, "Intensité", 0.0, 4.0, 0.01, _edit_intensity)
 	curve_mid_spin = _spin_field(panel, "Courbe — valeur médiane", 0.0, 1.0, 0.01, _edit_curve_mid)
-	seed_spin = _spin_field(panel, "Seed preview", 0.0, 999999.0, 1.0, func(_value): play_preview())
+	seed_spin = _spin_field(panel, "Valeur de départ (aperçu)", 0.0, 999999.0, 1.0, func(_value): play_preview())
 	seed_spin.value = 424242
 	seed_spin.set_meta(&"speed_scale", 1.0)
 
@@ -204,7 +217,10 @@ func _refresh_all() -> void:
 	_refreshing = true
 	sequence_list.clear()
 	for sequence in document.working_copy.sequences:
-		sequence_list.add_item("%s  [%s]" % [sequence.display_name, sequence.sequence_id])
+		var sequence_index := sequence_list.add_item(sequence.display_name)
+		sequence_list.set_item_tooltip(
+			sequence_index, "Identifiant technique : %s" % sequence.sequence_id
+		)
 	_selected_sequence = clampi(_selected_sequence, 0, maxi(document.working_copy.sequences.size() - 1, 0))
 	if sequence_list.item_count > 0:
 		sequence_list.select(_selected_sequence)
@@ -221,7 +237,12 @@ func _refresh_module_list() -> void:
 	if sequence == null:
 		return
 	for module in sequence.modules:
-		module_list.add_item("%s\n%s" % [module.module_id, module.module_type])
+		var module_index := module_list.add_item(
+			"%d. %s" % [module_list.item_count + 1, _module_type_label(module)]
+		)
+		module_list.set_item_tooltip(
+			module_index, "Identifiant technique : %s" % module.module_id
+		)
 	_selected_module = clampi(_selected_module, 0, maxi(sequence.modules.size() - 1, 0))
 	if module_list.item_count > 0:
 		module_list.select(_selected_module)
@@ -253,8 +274,8 @@ func _refresh_timeline() -> void:
 	for module in sequence.modules:
 		var lead := "·".repeat(int(module.start_offset * 20.0))
 		var body := "█".repeat(maxi(1, int(module.duration * 20.0)))
-		lines.append("[color=#8edfff]%-20s[/color] %s%s  %.2f→%.2fs" % [
-			module.module_id, lead, body, module.start_offset, module.end_time(),
+		lines.append("[color=#8edfff]%-22s[/color] %s%s  %.2f→%.2fs" % [
+			_module_type_label(module), lead, body, module.start_offset, module.end_time(),
 		])
 	timeline_label.text = "\n".join(lines)
 
@@ -268,11 +289,13 @@ func play_preview() -> void:
 		document.working_copy, context, _current_sequence().sequence_id, stage, true
 	)
 	if not bool(result.ok):
-		_set_status("Preview refusée : %s" % result.errors, true)
+		_set_status("Aperçu refusé : %s" % result.errors, true)
 		return
 	current_instance = result.instance as VFXRuntimeInstance
-	_set_status("Preview — %s — seed %d — fingerprint %s" % [
-		document.working_copy.profile_id, int(seed_spin.value), document.current_fingerprint().left(12),
+	_set_status("Aperçu — %s — valeur de départ %d — empreinte %s" % [
+		document.working_copy.display_name,
+		int(seed_spin.value),
+		document.current_fingerprint().left(12),
 	])
 
 
@@ -288,11 +311,24 @@ func clear_preview() -> void:
 
 
 func validate_document() -> void:
-	var result := VFXProfileValidator.validate(document.working_copy, _preview_context(), _current_sequence().sequence_id)
-	_set_status(
-		"Validation OK — TECHNICAL_PLACEHOLDER" if bool(result.ok) else "Validation : %s" % result.errors,
-		not bool(result.ok),
+	var sequence := _current_sequence()
+	var result := VFXProfileValidator.validate(
+		document.working_copy, _preview_context(),
+		sequence.sequence_id if sequence != null else &""
 	)
+	if not bool(result.ok):
+		_set_status("Validation échouée : %s" % ", ".join(
+			PackedStringArray(result.errors)
+		), true)
+		return
+	var message := "Validation réussie — séquence « %s », %d module(s) vérifié(s)." % [
+		sequence.display_name if sequence != null else "aucune",
+		sequence.modules.size() if sequence != null else 0,
+	]
+	var warnings := PackedStringArray(result.get("warnings", []))
+	if not warnings.is_empty():
+		message += " À surveiller : %s" % ", ".join(warnings)
+	_set_status(message)
 
 
 func test_document() -> void:
@@ -302,7 +338,7 @@ func test_document() -> void:
 
 func save_as_draft() -> void:
 	var result := draft_service.save_draft(document)
-	_set_status("Draft sauvé : %s" % result.get("path", "") if bool(result.ok) else str(result.error), not bool(result.ok))
+	_set_status("Brouillon sauvegardé : %s" % result.get("path", "") if bool(result.ok) else str(result.error), not bool(result.ok))
 
 
 func reload_draft() -> void:
@@ -313,7 +349,7 @@ func reload_draft() -> void:
 		_set_status(str(result.error), true)
 		return
 	document.open_profile(result.profile as VFXProfile)
-	_set_status("Draft rechargé depuis user://.")
+	_set_status("Brouillon rechargé depuis la sauvegarde locale.")
 	play_preview()
 
 
@@ -354,7 +390,7 @@ func _add_flash_module() -> void:
 	var sequence := _current_sequence()
 	if sequence == null:
 		return
-	document.record_edit("Ajouter FlashModule", func():
+	document.record_edit("Ajouter un module Flash", func():
 		var module := VFXModuleData.new()
 		module.module_id = StringName("flash_%d" % sequence.modules.size())
 		module.module_type = &"FlashModule"
@@ -382,7 +418,7 @@ func _edit_duration(value: float) -> void:
 
 
 func _edit_offset(value: float) -> void:
-	_edit_module("Start offset", func(module): module.start_offset = value)
+	_edit_module("Décalage de départ", func(module): module.start_offset = value)
 
 
 func _edit_intensity(value: float) -> void:
@@ -419,6 +455,12 @@ func _edit_module(action_name: String, mutator: Callable) -> void:
 	play_preview()
 
 
+func _module_type_label(module: VFXModuleData) -> String:
+	if module == null:
+		return "Module inconnu"
+	return str(MODULE_TYPE_LABELS.get(module.module_type, module.module_type))
+
+
 func _current_sequence() -> VFXSequenceData:
 	if document.working_copy == null or document.working_copy.sequences.is_empty():
 		return null
@@ -441,7 +483,7 @@ func history_redo_name() -> String: return document.history.get_redo_action_name
 func history_entries() -> Array[Dictionary]: return document.history.get_history_entries()
 func history_current_index() -> int: return document.history.get_current_index()
 func history_jump_to(index: int) -> bool: return document.history.jump_to(index)
-func history_document_name() -> String: return document.working_copy.display_name if document.working_copy != null else "Aucun VFXProfile"
+func history_document_name() -> String: return document.working_copy.display_name if document.working_copy != null else "Aucun effet visuel"
 func history_opening_is_saved() -> bool: return document.history.get_current_index() == 0 and document.history.is_at_saved_state()
 func history_is_at_saved_state() -> bool: return document.history.is_at_saved_state()
 func ensure_initial_content_loaded() -> void:

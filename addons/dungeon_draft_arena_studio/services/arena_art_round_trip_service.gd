@@ -44,7 +44,7 @@ static func validate_kit(directory: String) -> Dictionary:
 			errors.append("Checksum invalide : %s" % file_name)
 		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
 		if image == null or image.get_size() != expected_size:
-			errors.append("Resolution incompatible : %s" % file_name)
+			errors.append("Résolution incompatible : %s" % file_name)
 	return {
 		"ok": errors.is_empty(),
 		"errors": errors,
@@ -67,7 +67,7 @@ static func inspect_reimport(
 		return validation
 	var manifest := validation.get("manifest", {}) as Dictionary
 	if str(manifest.get("arena_id", "")) != str(arena.arena_id):
-		return _failure("ARENA_ID_MISMATCH", "Le kit appartient a une autre arene.", directory, arena.background_path)
+		return _failure("ARENA_ID_MISMATCH", "Le kit appartient a une autre arène.", directory, arena.background_path)
 	var geometry := manifest.get("geometry", {}) as Dictionary
 	if _vector2i(geometry.get("grid_size", [])) != arena.grid_size \
 			or not _vector2(geometry.get("grid_origin", [])).is_equal_approx(arena.grid_origin) \
@@ -77,7 +77,7 @@ static func inspect_reimport(
 			or not _vector2(geometry.get("image_scale", [])).is_equal_approx(arena.image_scale) \
 			or not _vector2(geometry.get("camera_offset", [])).is_equal_approx(arena.camera_offset) \
 			or not is_equal_approx(float(geometry.get("camera_zoom", -1.0)), arena.camera_zoom):
-		return _failure("GEOMETRY_MISMATCH", "La geometrie du kit ne correspond plus a l'arene.", directory, arena.background_path)
+		return _failure("GEOMETRY_MISMATCH", "La géométrie du kit ne correspond plus a l'arène.", directory, arena.background_path)
 	var expected_fingerprint := str(manifest.get(
 		"arena_fingerprint", manifest.get("arena_snapshot_sha256", "")
 	))
@@ -87,7 +87,7 @@ static func inspect_reimport(
 	if expected_fingerprint.is_empty() or actual_fingerprint != expected_fingerprint:
 		return _failure(
 			"FINGERPRINT_MISMATCH",
-			"L'arene a change depuis l'export du kit artistique.",
+			"L'arène a change depuis l'export du kit artistique.",
 			directory, arena.background_path
 		).merged({
 			"expected_fingerprint": expected_fingerprint,
@@ -108,7 +108,7 @@ static func inspect_reimport(
 	)
 	var expected_size := resolution_contract.reference_export_size
 	if artwork == null or artwork.is_empty() or artwork.get_size() != expected_size:
-		return _failure("RESOLUTION_MISMATCH", "Le decor a ete redimensionne ou recadre.", directory, arena.background_path).merged({
+		return _failure("RESOLUTION_MISMATCH", "Le décor a été redimensionné ou recadré.", directory, arena.background_path).merged({
 			"expected_resolution": expected_size,
 			"actual_resolution": artwork.get_size() if artwork != null else Vector2i.ZERO,
 		}, true)
@@ -123,7 +123,7 @@ static func inspect_reimport(
 				or optional_image.get_size() != expected_size:
 			return _failure(
 				"LAYER_RESOLUTION_MISMATCH",
-				"La couche optionnelle %s n'a pas la resolution du manifeste." % optional_name,
+				"La couche optionnelle %s n'a pas la résolution du manifeste." % optional_name,
 				directory, arena.background_path
 			)
 	return {

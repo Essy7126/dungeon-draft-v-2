@@ -16,7 +16,7 @@ static func inspect(snapshot: Dictionary) -> Dictionary:
 static func migrate_snapshot(snapshot: Dictionary) -> Dictionary:
 	var status := inspect(snapshot)
 	if not bool(status.supported):
-		return {"ok": false, "error": "Version de schema future non supportee."}
+		return {"ok": false, "error": "Version de schéma future non supportee."}
 	var migrated := snapshot.duplicate(true)
 	var version := int(status.from_version)
 	if version == 0:

@@ -52,7 +52,7 @@ var _transition_serial := 0
 func initialize(preferred_run_path := "", preferred_character_id := &"") -> Dictionary:
 	var runs := RunContentCatalogService.discover_runs()
 	if runs.is_empty():
-		return {"ok": false, "error": "Aucune RunData detectee."}
+		return {"ok": false, "error": "Aucune configuration de partie trouvée."}
 	var selected := runs[0]
 	for run_data in runs:
 		if run_data != null and run_data.resource_path == preferred_run_path:
@@ -285,7 +285,7 @@ func snapshot() -> Dictionary:
 	var room := active_room()
 	return {
 		"run_path": active_run.resource_path if active_run != null else "",
-		"run_name": active_run.run_name if active_run != null else "Aucune run",
+		"run_name": active_run.run_name if active_run != null else "Aucune partie",
 		"room_index": active_room_index,
 		"room_path": room.resource_path if room != null else "",
 		"room_name": room.room_name if room != null else "Aucune salle",
@@ -339,13 +339,13 @@ func _normalized_selection(selection: Dictionary) -> Dictionary:
 func _validate_selection(selection: Dictionary) -> Dictionary:
 	var run_data := selection.get("run") as RunData
 	if run_data == null:
-		return {"ok": false, "error": "La selection ne contient aucune RunData."}
+		return {"ok": false, "error": "La sélection ne contient aucune configuration de partie."}
 	var room_index := int(selection.get("room_index", -1))
 	if room_index < -1 or room_index >= run_data.rooms.size():
 		return {"ok": false, "error": "Index de salle hors limites : %d." % room_index}
 	var scope := StringName(selection.get("scope", SCOPE_RUN_SPECIFIC))
 	if scope not in VALID_SCOPES:
-		return {"ok": false, "error": "Portee d'edition inconnue : %s." % scope}
+		return {"ok": false, "error": "Portée d'édition inconnue : %s." % scope}
 	return {"ok": true}
 
 

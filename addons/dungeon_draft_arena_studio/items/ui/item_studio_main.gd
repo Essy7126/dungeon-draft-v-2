@@ -17,6 +17,7 @@ const ACCENT_COLOR := Color(0.48, 0.86, 1.0)
 const MUTED_COLOR := Color(0.72, 0.77, 0.84)
 const DIRTY_COLOR := Color(1.0, 0.75, 0.41)
 const NARROW_BREAKPOINT := 1080.0
+const COLLAPSED_SPLIT_OFFSET := 100000
 const SECTION_PRESENTATION := 0
 const SECTION_EQUIPMENT := 1
 const SECTION_EFFECTS := 2
@@ -54,6 +55,8 @@ var card_full_preview: ItemCardPreview
 var analysis_panel: ItemAnalysisPanel
 var effect_composer: ItemEffectComposer
 var splitter: HSplitContainer
+var analysis_split: VSplitContainer
+var _analysis_split_offset := 0
 var section_tabs: TabContainer
 var catalog_toggle: Button
 var header_identity_label: Label
@@ -67,6 +70,9 @@ var name_edit: LineEdit
 var description_edit: TextEdit
 var category_option: OptionButton
 var rarity_option: OptionButton
+var icon_picker: Control
+var inventory_icon_picker: Control
+var card_picker: Control
 var slot_option: OptionButton
 var stack_spin: SpinBox
 var tags_edit: LineEdit
@@ -155,20 +161,49 @@ func _build_interface() -> void:
 	root.add_theme_constant_override("separation", 6)
 	add_child(root)
 	root.add_child(_build_action_bar())
+	# L'éditeur et le panneau d'analyse se partagent une hauteur fixe : la poignée
+	# du VSplitContainer prend de la place à l'un pour la donner à l'autre, au lieu
+	# d'allonger le total et de déborder hors de la fenêtre.
+	analysis_split = VSplitContainer.new()
+	analysis_split.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	analysis_split.dragged.connect(_on_analysis_split_dragged)
+	root.add_child(analysis_split)
 	splitter = HSplitContainer.new()
 	splitter.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	splitter.size_flags_stretch_ratio = 2.5
-	root.add_child(splitter)
+	analysis_split.add_child(splitter)
 	catalog_panel = ItemCatalogPanel.new()
 	catalog_panel.entry_requested.connect(_on_catalog_entry_requested)
 	catalog_panel.filters_changed.connect(func(_filters): _remember_ui_state())
+	catalog_panel.reward_bulk_apply_requested.connect(_on_reward_bulk_apply_requested)
 	splitter.add_child(catalog_panel)
 	splitter.add_child(_build_editor_column())
 	analysis_panel = ItemAnalysisPanel.new()
-	root.add_child(analysis_panel)
+	analysis_panel.navigation_resolver = func(path, code): return int(_navigation_target(path, code).get("section", -1)) >= 0
+	analysis_panel.message_activated.connect(_on_analysis_message_activated)
+	analysis_panel.expanded_changed.connect(_on_analysis_expanded_changed)
+	analysis_split.add_child(analysis_panel)
 	_build_analysis_controls()
+	_on_analysis_expanded_changed(analysis_panel.is_expanded())
 	resized.connect(_apply_responsive_layout)
 	_apply_responsive_layout()
+
+
+func _on_analysis_expanded_changed(expanded: bool) -> void:
+	if analysis_split == null:
+		return
+	# Replié, on pousse le séparateur au maximum vers le bas : le panneau retombe
+	# sur sa hauteur minimale (sa barre). La position choisie par l'utilisateur est
+	# conservée à part et restaurée à la réouverture.
+	analysis_split.split_offset = _analysis_split_offset if expanded else COLLAPSED_SPLIT_OFFSET
+	_remember_ui_state()
+
+
+func _on_analysis_split_dragged(offset: int) -> void:
+	if analysis_panel == null or not analysis_panel.is_expanded():
+		return
+	_analysis_split_offset = offset
+	_remember_ui_state()
 
 
 func _build_editor_column() -> Control:
@@ -304,6 +339,89 @@ func open_section(section: int) -> void:
 	section_tabs.current_tab = clampi(section, 0, section_tabs.get_tab_count() - 1)
 
 
+func _on_analysis_message_activated(property_path: String, code: String) -> void:
+	var target := _navigation_target(property_path, code)
+	var section := int(target.get("section", -1))
+	if section < 0:
+		return
+	if creation_wizard != null and creation_wizard.is_active() \
+			and creation_wizard.current_section() != section:
+		_set_status_message("Terminez l’étape en cours de l’assistant pour corriger ce point.")
+		return
+	open_section(section)
+	var control := target.get("control") as Control
+	if control != null:
+		_focus_control(control)
+	var note := str(target.get("note", ""))
+	if not note.is_empty():
+		_set_status_message(note)
+
+
+func _focus_control(control: Control) -> void:
+	# Un frame d'attente : le TabContainer et la ScrollContainer viennent de changer
+	# d'onglet, leur mise en page n'est pas encore recalculée.
+	await get_tree().process_frame
+	if not is_instance_valid(control) or not control.is_visible_in_tree():
+		return
+	var scroll := _ancestor_scroll(control)
+	if scroll != null:
+		scroll.ensure_control_visible(control)
+	if control.focus_mode != Control.FOCUS_NONE:
+		control.grab_focus()
+	_flash_control(control)
+
+
+func _ancestor_scroll(control: Control) -> ScrollContainer:
+	var node := control.get_parent()
+	while node != null:
+		if node is ScrollContainer:
+			return node as ScrollContainer
+		node = node.get_parent()
+	return null
+
+
+func _flash_control(control: Control) -> void:
+	var tween := create_tween()
+	tween.tween_property(control, "modulate", ACCENT_COLOR, 0.12)
+	tween.tween_property(control, "modulate", Color.WHITE, 0.5)
+
+
+func _navigation_target(property_path: String, code: String) -> Dictionary:
+	if property_path.begins_with("reactive_effects") \
+			or property_path.begins_with("stat_modifiers") \
+			or property_path.begins_with("spell_modifiers"):
+		return {"section": SECTION_EFFECTS}
+	match property_path:
+		"display_name":
+			return {"section": SECTION_PRESENTATION, "control": name_edit}
+		"description":
+			return {"section": SECTION_PRESENTATION, "control": description_edit}
+		"icon":
+			return {"section": SECTION_PRESENTATION, "control": icon_picker}
+		"inventory_icon":
+			return {"section": SECTION_PRESENTATION, "control": inventory_icon_picker}
+		"card_texture":
+			return {"section": SECTION_PRESENTATION, "control": card_picker}
+		"item_id":
+			return {"section": SECTION_ADVANCED, "control": id_edit}
+		"stack_limit":
+			return {"section": SECTION_EQUIPMENT, "control": stack_spin}
+		"use_effect":
+			return {"section": SECTION_EQUIPMENT, "control": use_option}
+		"equipment_slot":
+			return {
+				"section": SECTION_EQUIPMENT, "control": category_option,
+				"note": "L’emplacement découle de la catégorie : corrigez la catégorie.",
+			}
+		"compatible_character_ids":
+			return {"section": SECTION_AVAILABILITY}
+		"tags":
+			return {"section": SECTION_AVAILABILITY, "control": tags_edit}
+	if code in ["PATH_COLLISION", "ITEM_ID_DUPLICATE", "PUBLISHED_ID_IMMUTABLE"]:
+		return {"section": SECTION_ADVANCED, "control": id_edit}
+	return {"section": -1}
+
+
 func _toggle_catalog() -> void:
 	if catalog_panel != null:
 		catalog_panel.visible = not catalog_panel.visible
@@ -332,7 +450,7 @@ func _build_action_bar() -> Control:
 	var bar := HFlowContainer.new()
 	bar.add_theme_constant_override("separation", 6)
 	margin.add_child(bar)
-	_action_button(bar, "Nouveau", func(): creation_dialog.open_dialog(), "Créer une working copy sans écrire sur disque")
+	_action_button(bar, "Nouveau", func(): creation_dialog.open_dialog(), "Créer une version en cours sans écrire sur disque")
 	_action_button(bar, "Dupliquer", _show_duplication_dialog, "Dupliquer vers un brouillon isolé")
 	publish_button = _action_button(bar, "Publier", publish, "Publier dans un dossier auto-découvert par le catalogue runtime")
 	bar.add_child(_build_secondary_menu())
@@ -383,9 +501,50 @@ func _build_presentation_section(parent: VBoxContainer) -> void:
 	description_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	_bind_text_edit_transaction(description_edit, "Modifier la description", func(value): document.working_copy.description = value)
 	description.add_child(description_edit)
+	var visuals := _section(parent, "IMAGES")
+	var visuals_grid := _grid(visuals)
+	icon_picker = _texture_field(visuals_grid, "Icône", &"icon", "Image principale : sert d’icône d’inventaire et de carte de récompense tant qu’aucune autre image n’est fournie.")
+	inventory_icon_picker = _texture_field(visuals_grid, "Icône d’inventaire", &"inventory_icon", "Facultatif : remplace l’icône principale dans l’inventaire uniquement.")
+	card_picker = _texture_field(visuals_grid, "Carte de récompense", &"card_texture", "Facultatif : remplace l’icône principale sur l’écran de récompense.")
 	var preview := _section(parent, "CARTE DE RÉCOMPENSE")
 	card_full_preview = ItemCardPreview.new()
 	preview.add_child(card_full_preview)
+
+
+func _texture_field(
+		parent: GridContainer, label_text: String, property: StringName, tooltip: String
+	) -> Control:
+	var label := _label(label_text)
+	label.tooltip_text = tooltip
+	parent.add_child(label)
+	if not Engine.is_editor_hint():
+		var fallback := Label.new()
+		fallback.text = "Sélecteur disponible dans l’éditeur Godot."
+		fallback.add_theme_color_override("font_color", MUTED_COLOR)
+		parent.add_child(fallback)
+		_field_labels[fallback.get_instance_id()] = label
+		return fallback
+	var picker := EditorResourcePicker.new()
+	picker.base_type = "Texture2D"
+	picker.tooltip_text = tooltip
+	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	picker.resource_changed.connect(func(resource: Resource):
+		if _updating or document.working_copy == null:
+			return
+		if document.working_copy.get(property) == resource:
+			return
+		_record("Modifier %s" % label_text.to_lower(), func(): document.working_copy.set(property, resource))
+	)
+	parent.add_child(picker)
+	_field_labels[picker.get_instance_id()] = label
+	return picker
+
+
+func _sync_texture_field(picker: Control, texture: Texture2D) -> void:
+	if picker == null or not Engine.is_editor_hint():
+		return
+	if picker is EditorResourcePicker:
+		(picker as EditorResourcePicker).edited_resource = texture
 
 
 func _build_equipment_section(parent: VBoxContainer) -> void:
@@ -432,8 +591,8 @@ func _build_availability_section(parent: VBoxContainer) -> void:
 	audience.add_child(compatibility)
 	var acquisition := _section(parent, "COMMENT L’OBTENIR")
 	reward_check = CheckBox.new()
-	reward_check.text = "Peut apparaître comme récompense en tout début de partie"
-	reward_check.tooltip_text = "Contrôle explicitement le tag first_run_equipment_reward"
+	reward_check.text = "Peut apparaître comme récompense en début de partie"
+	reward_check.tooltip_text = "Même réglage que la colonne « Récompense ? » du catalogue : contrôle explicitement le tag first_run_equipment_reward"
 	reward_check.toggled.connect(_on_reward_toggled)
 	acquisition.add_child(reward_check)
 	starting_inventory_label = Label.new()
@@ -485,7 +644,7 @@ func _build_dialogs() -> void:
 	add_child(conflict_dialog)
 	dirty_dialog = ConfirmationDialog.new()
 	dirty_dialog.title = "Changements non enregistrés"
-	dirty_dialog.dialog_text = "La working copy contient des changements. Choisissez explicitement quoi en faire avant d’ouvrir un autre objet."
+	dirty_dialog.dialog_text = "La version en cours contient des changements. Choisissez explicitement quoi en faire avant d’ouvrir un autre objet."
 	dirty_dialog.ok_button_text = "Ignorer et ouvrir"
 	dirty_dialog.cancel_button_text = "Annuler"
 	dirty_dialog.add_button("Enregistrer en brouillon", true, "save_draft")
@@ -530,13 +689,17 @@ func _open_catalog_entry(entry: Dictionary) -> void:
 	document.open_definition(definition, StringName(entry.get("status", ItemStudioDocument.STATUS_SHARED)))
 	_pending_catalog_entry.clear()
 	_status_message = ""
-	_refresh_catalog(definition.resource_path)
+	# Sélectionner un autre objet ne modifie rien sur le disque : on se contente de
+	# surligner la ligne. Passer par _refresh_catalog() relirait tout le catalogue
+	# avec CACHE_MODE_IGNORE et invaliderait le cache de références, ce qui relance
+	# une caractérisation complète du projet à chaque changement d'objet.
+	catalog_panel.select_path(definition.resource_path)
 	_queue_refresh()
 
 
 func _create_document(data: Dictionary) -> void:
 	if document.is_dirty():
-		_set_status_message("Enregistrez ou abandonnez la working copy avant de créer un objet.")
+		_set_status_message("Enregistrez ou abandonnez la version en cours avant de créer un objet.")
 		return
 	var definition := ItemDefinition.new()
 	definition.item_id = StringName(data.get("item_id", &""))
@@ -624,6 +787,76 @@ func _on_reward_toggled(enabled: bool) -> void:
 		_set_status_message("Seuls les équipements et les reliques peuvent rejoindre ce pool de récompenses.")
 
 
+func _on_reward_bulk_apply_requested(changes: Array[Dictionary]) -> void:
+	var written := 0
+	var deferred := 0
+	var failures: Array[String] = []
+	for change in changes:
+		var label := str(change.get("display_name", "Objet"))
+		var enabled := bool(change.get("enabled", false))
+		if str(change.get("path", "")) == document.source_path and document.working_copy != null:
+			# L'objet ouvert porte peut-être d'autres modifications non
+			# enregistrées : on ne réécrit pas son fichier dans son dos. Le
+			# changement rejoint son historique, exactement comme la case de
+			# l'onglet Disponibilité, et partira à la prochaine sauvegarde.
+			if publication_service.set_reward_eligibility(document, enabled):
+				deferred += 1
+			else:
+				failures.append(label)
+			continue
+		var result := _write_reward_eligibility(
+			change.get("definition") as ItemDefinition,
+			StringName(change.get("status", ItemStudioDocument.STATUS_SHARED)),
+			enabled,
+		)
+		if result.get("ok", false):
+			written += 1
+		else:
+			failures.append("%s (%s)" % [label, result.get("error", "erreur")])
+	_refresh_catalog(document.source_path)
+	_queue_refresh_flags(REFRESH_LIGHT)
+	_set_status_message(_bulk_reward_message(written, deferred, failures))
+
+
+func _write_reward_eligibility(
+		definition: ItemDefinition,
+		status: StringName,
+		enabled: bool
+	) -> Dictionary:
+	if definition == null:
+		return {"ok": false, "error": "définition introuvable"}
+	# Document jetable : le même chemin d'édition que l'objet ouvert, donc la
+	# même validation et la même écriture transactionnelle vérifiée.
+	var staged := ItemStudioDocument.new()
+	if not staged.open_definition(definition, status):
+		return {"ok": false, "error": "ouverture impossible"}
+	if not publication_service.set_reward_eligibility(staged, enabled):
+		return {"ok": false, "error": "ni équipement ni relique"}
+	# Un brouillon reste un brouillon : le publier le promouvrait en production.
+	if status != ItemStudioDocument.STATUS_SHARED:
+		return draft_service.save_draft(staged, catalog)
+	return publication_service.publish(staged, catalog, true)
+
+
+func _bulk_reward_message(written: int, deferred: int, failures: Array[String]) -> String:
+	var parts: Array[String] = []
+	if written > 0:
+		parts.append("%d fichier%s écrit%s" % [written, _plural(written), _plural(written)])
+	if deferred > 0:
+		parts.append("%d en attente de sauvegarde (objet ouvert)" % deferred)
+	if not failures.is_empty():
+		parts.append("%d refusé%s : %s" % [
+			failures.size(), _plural(failures.size()), ", ".join(failures),
+		])
+	if parts.is_empty():
+		return "Récompenses : aucun changement appliqué."
+	return "Récompenses : %s." % " · ".join(parts)
+
+
+func _plural(count: int) -> String:
+	return "s" if count > 1 else ""
+
+
 func _record(action: String, mutator: Callable, merge_key := "") -> void:
 	if _updating or document.working_copy == null:
 		return
@@ -683,6 +916,9 @@ func _refresh_document_views(refresh_structure := false) -> void:
 		id_edit.editable = document.status != ItemStudioDocument.STATUS_SHARED
 		name_edit.text = definition.display_name
 		description_edit.text = definition.description
+		_sync_texture_field(icon_picker, definition.icon)
+		_sync_texture_field(inventory_icon_picker, definition.inventory_icon)
+		_sync_texture_field(card_picker, definition.card_texture)
 		category_option.select(clampi(definition.category, 0, category_option.item_count - 1))
 		_select_option_metadata(rarity_option, definition.rarity)
 		slot_option.select(clampi(definition.equipment_slot + 1, 0, slot_option.item_count - 1))
@@ -697,7 +933,7 @@ func _refresh_document_views(refresh_structure := false) -> void:
 		reward_check.button_pressed = catalog.reward_eligible(definition)
 		_refresh_field_visibility(definition)
 		path_label.text = "Source : %s\nDestination : %s\nStatut : %s" % [
-			document.source_path if not document.source_path.is_empty() else "nouvelle working copy",
+			document.source_path if not document.source_path.is_empty() else "nouvelle version en cours",
 			document.destination_path if not document.destination_path.is_empty() else "calculée au moment du plan",
 			document.status,
 		]
@@ -813,7 +1049,7 @@ func save_as_draft() -> void:
 
 func publish() -> void:
 	if project_context != null and project_context.edit_scope == StudioProjectContext.SCOPE_RUN_SPECIFIC:
-		_set_status_message("RUN_SPECIFIC est différé : aucune autorité de catalogue par run n’existe.")
+		_set_status_message("La portée « propre à une partie » est différée : aucun catalogue par partie n’existe.")
 		return
 	_show_save_plan(&"PUBLISH")
 
@@ -999,6 +1235,7 @@ func _on_dirty_custom_action(action: StringName) -> void:
 		if project_context != null:
 			project_context.set_dirty(&"items", false)
 			project_context.bump_generation(&"items")
+		_refresh_catalog()
 		_open_catalog_entry(_pending_catalog_entry)
 	else:
 		_set_status_message("Brouillon refusé : %s" % result.get("error", "erreur"))
@@ -1020,9 +1257,9 @@ func _on_scope_changed(scope: StringName) -> void:
 		return
 	scope_label.text = "Portée : %s" % scope
 	if scope == StudioProjectContext.SCOPE_RUN_SPECIFIC:
-		scope_label.tooltip_text = "Différé : aucune autorité de catalogue d’objets propre à une run n’existe au HEAD."
+		scope_label.tooltip_text = "Différé : aucun catalogue d’objets propre à une partie n’existe pour le moment."
 	else:
-		scope_label.tooltip_text = "SHARED publie ; DRAFT conserve hors catalogue de production."
+		scope_label.tooltip_text = "« Partagé » publie ; « Brouillon » conserve hors catalogue de production."
 	_queue_refresh()
 
 
@@ -1067,6 +1304,11 @@ func apply_state_snapshot(state: Dictionary) -> void:
 	var filters := state.get("filters", {}) as Dictionary
 	catalog_panel.restore_filters(filters)
 	open_section(int(state.get("section", SECTION_PRESENTATION)))
+	if analysis_panel != null:
+		analysis_panel.set_expanded(bool(state.get("analysis_expanded", analysis_panel.is_expanded())))
+	_analysis_split_offset = int(state.get("analysis_split", _analysis_split_offset))
+	if analysis_split != null and analysis_panel != null and analysis_panel.is_expanded():
+		analysis_split.split_offset = _analysis_split_offset
 	var selected_path := str(state.get("selected_path", ""))
 	if catalog_panel.select_path(selected_path):
 		for entry in catalog.entries(true):
@@ -1082,6 +1324,9 @@ func _remember_ui_state() -> void:
 	ui_state.state["filters"] = catalog_panel.snapshot_filters()
 	if section_tabs != null:
 		ui_state.set_value("section", section_tabs.current_tab)
+	ui_state.set_value("analysis_split", _analysis_split_offset)
+	if analysis_panel != null:
+		ui_state.set_value("analysis_expanded", analysis_panel.is_expanded())
 	ui_state.set_value("scope", str(project_context.edit_scope) if project_context != null else "SHARED")
 	if analysis_hero_option != null and analysis_hero_option.item_count > 0:
 		var hero := analysis_hero_option.get_item_metadata(analysis_hero_option.selected) as Dictionary

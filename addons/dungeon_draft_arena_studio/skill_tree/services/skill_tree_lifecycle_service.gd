@@ -34,7 +34,7 @@ static func adopt_discipline(
 	var copied := SkillTreeCopyService.copy_discipline(source)
 	var work := copied.get("work") as DisciplineData
 	if work == null:
-		return {"ok": false, "operation": "ADOPT", "error": "Copie de travail impossible."}
+		return {"ok": false, "operation": "ADOPT", "error": "Version en cours impossible à créer."}
 	var disciplines: Array[DisciplineData] = session.working_unit.disciplines.duplicate()
 	disciplines.append(work)
 	if not session.change_property(

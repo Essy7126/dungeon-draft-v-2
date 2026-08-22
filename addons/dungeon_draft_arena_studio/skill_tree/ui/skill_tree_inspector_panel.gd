@@ -183,7 +183,7 @@ func _build_rank(rank_data: DisciplineRankData) -> void:
 
 func _build_node(node: SkillUpgradeData) -> void:
 	title_label.text = "AMÉLIORATION · %s" % node.display_name.to_upper()
-	help_label.text = "Une amélioration est un choix définitif pendant la run. Son identifiant reste stable même si son nom affiché change."
+	help_label.text = "Une amélioration est un choix définitif pendant la partie. Son identifiant reste stable même si son nom affiché change."
 	var general := _box("Général")
 	_add_line(general, node, &"display_name", "Nom affiché", "Nom compris par le joueur.", "Exemple : Flèches brûlantes")
 	_add_multiline(general, node, &"description", "Description", "Décrivez précisément le résultat obtenu.")
@@ -240,7 +240,7 @@ func _build_node(node: SkillUpgradeData) -> void:
 	_add_action_button(effects, "+ Ajouter un effet", func(): add_modifier_requested.emit(node))
 	var existing_field := _field(
 		effects, "Partager un effet existant",
-		"Choisissez une Resource SpellModifier. Elle restera partagée après sauvegarde, mais sera modifiée sur une copie de travail isolée."
+		"Choisissez un modificateur de sort. Il restera partagé après sauvegarde, mais sera modifié sur une version en cours isolée."
 	)
 	if Engine.is_editor_hint():
 		var existing_picker := EditorResourcePicker.new()
@@ -901,7 +901,7 @@ func _add_stable_id(
 	) -> void:
 	_add_line(
 		parent, target, property_name, label_text,
-		"Identifiant technique utilisé par les sauvegardes et les références. Ne le changez pas simplement pour renommer l’élément.",
+		"Identifiant technique utilisé par les sauvegardés et les références. Ne le changez pas simplement pour renommer l’élément.",
 		"Utilisez des lettres minuscules, chiffres et tirets bas."
 	)
 

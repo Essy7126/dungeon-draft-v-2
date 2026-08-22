@@ -88,10 +88,10 @@ static func export_kit(
 	brief.append_array([
 		"",
 		"CONTRAINTES ROUND-TRIP",
-		"- Ne pas recadrer ni modifier la resolution.",
-		"- Ne pas modifier la perspective ou deplacer la plateforme.",
+		"- Ne pas recadrer ni modifier la résolution.",
+		"- Ne pas modifier la perspective ou déplacer la plateforme.",
 		"- Respecter les murs, zones jouables et la lisibilite tactique.",
-		"- Livrer background.png et, si necessaire, foreground.png.",
+		"- Livrer background.png et, si nécessaire, foreground.png.",
 		"- Le masque d'occlusion est un guide artistique ; le runtime utilise le foreground et son polygone.",
 	])
 	var brief_text := "\n".join(brief)

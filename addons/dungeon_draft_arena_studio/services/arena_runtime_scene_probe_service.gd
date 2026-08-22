@@ -33,7 +33,7 @@ static func inspect(
 	if scene == null:
 		_add_diagnostic(
 			errors, &"SCENE_NOT_INSTANTIATED", &"scene",
-			"La scene de combat n'a pas ete instanciee."
+			"La scène de combat n'a pas ete instanciee."
 		)
 		result.merge({
 			"ok": false,
@@ -199,28 +199,28 @@ static func inspect(
 	if not script_parse_ok:
 		_add_diagnostic(
 			errors, &"SCRIPT_PARSE_FAILED", &"script",
-			"Le script de la scene runtime n'est pas instanciable."
+			"Le script de la scène runtime n'est pas instanciable."
 		)
 	if not scene_exact:
 		_add_diagnostic(
 			errors, &"BATTLE_SCENE_MISMATCH", &"scene",
-			"La scene runtime chargee n'est pas celle declaree par l'arene.",
+			"La scène runtime chargee n'est pas celle declaree par l'arène.",
 			{"expected": expected_scene_path, "actual": actual_scene_path}
 		)
 	if strict_runtime_contract and not runtime_ready:
 		_add_diagnostic(
 			errors, &"RUNTIME_NOT_READY", &"runtime",
-			"La scene n'a pas publie son etat runtime_ready differe."
+			"La scène n'a pas publié son état de disponibilité différé."
 		)
 	if not grid_ready:
 		_add_diagnostic(
 			errors, &"GRID_NOT_READY", &"grid",
-			"GridData n'est pas disponible dans la scene runtime."
+			"GridData n'est pas disponible dans la scène runtime."
 		)
 	if strict_runtime_contract and not pathfinder_ready:
 		_add_diagnostic(
 			errors, &"PATHFINDER_NOT_READY", &"pathfinder",
-			"Pathfinder n'est pas disponible dans la scene runtime."
+			"Pathfinder n'est pas disponible dans la scène runtime."
 		)
 	if not render_ready:
 		_add_diagnostic(
@@ -236,13 +236,13 @@ static func inspect(
 	if strict_runtime_contract and not spawn_ready:
 		_add_diagnostic(
 			errors, &"SPAWN_NOT_READY", &"spawn",
-			"Les personnages demandes ne sont pas prets dans la scene runtime.",
+			"Les personnages demandes ne sont pas prets dans la scène runtime.",
 			spawn_report
 		)
 	if produced_bundle_loaded:
 		_add_diagnostic(
 			errors, &"PRODUCED_BUNDLE_LOADED", &"provenance",
-			"Le probe runtime a detecte une dependance au bundle produced."
+			"La sonde de jeu a détecté une dépendance au dossier de production figé."
 		)
 
 	var legacy_contract_valid := render_ready and configuration_consumed \

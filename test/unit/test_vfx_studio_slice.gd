@@ -277,7 +277,7 @@ func test_dungeon_draft_studio_registers_vfx_as_fourth_shared_domain() -> void:
 	studio.set_deferred("size", Vector2(1500, 850))
 	await get_tree().process_frame
 	assert_eq(studio.tabs.get_tab_count(), 4)
-	assert_eq(studio.tabs.get_tab_title(3), "VFX")
+	assert_eq(studio.tabs.get_child(3).name, StringName("VFX"))
 	assert_not_null(studio.vfx_composer)
 	studio.tabs.current_tab = 3
 	assert_same(studio._active_history_provider(), studio.vfx_composer)

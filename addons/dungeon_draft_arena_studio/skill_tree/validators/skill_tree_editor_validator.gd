@@ -14,7 +14,7 @@ static func validate_unit(
 	if unit == null:
 		messages.append(_error(
 			&"unit_missing", "Personnage introuvable",
-			"Le Studio ne peut pas travailler sans Resource UnitData.",
+			"Le Studio ne peut pas travailler sans une unité de référence.",
 			"Choisissez un personnage dans le catalogue."
 		))
 		return messages
@@ -78,7 +78,7 @@ static func _validate_character_stats(
 	if unit.get_effective_unit_id() == &"unit_data:unassigned":
 		messages.append(_error(
 			&"unit_id_empty", "Identifiant du personnage manquant",
-			"Les sauvegardes ont besoin d’un identifiant stable pour reconnaître le personnage.",
+			"Les sauvegardés ont besoin d’un identifiant stable pour reconnaître le personnage.",
 			"Renseignez un identifiant court, par exemple « warrior ».",
 			&"", &"unit_id"
 		))
@@ -360,7 +360,7 @@ static func _validate_shared_modifiers(
 						var owner := first_owner[modifier] as SkillUpgradeData
 						messages.append(_warning(
 							&"shared_modifier", "Effet partagé entre plusieurs améliorations",
-							"Modifier cet effet changera aussi « %s » dans la copie de travail." % owner.display_name,
+							"Modifier cet effet changera aussi « %s » dans la version en cours." % owner.display_name,
 							"Utilisez « Unique » pour séparer les deux effets.",
 							node.upgrade_id, &"spell_modifiers", node.rank
 						))

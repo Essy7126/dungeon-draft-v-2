@@ -290,7 +290,7 @@ func _build_toolbar() -> Control:
 		search_dialog.open_and_focus()
 	)
 	compare_button = _button(
-		bar, "Comparer runs", "Choisir explicitement la run à comparer",
+		bar, "Comparer parties", "Choisir explicitement la partie à comparer",
 		_compare_with_other_run
 	)
 	validate_button = _button(
@@ -464,7 +464,7 @@ func _build_dialogs() -> void:
 	orphan_dialog.action_requested.connect(_handle_orphan_action)
 	add_child(orphan_dialog)
 	compare_dialog = ConfirmationDialog.new()
-	compare_dialog.title = "Comparer deux runs"
+	compare_dialog.title = "Comparer deux parties"
 	compare_dialog.ok_button_text = "Comparer"
 	var compare_box := VBoxContainer.new()
 	compare_box.custom_minimum_size = Vector2(500, 130)
@@ -473,7 +473,7 @@ func _build_dialogs() -> void:
 	compare_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	compare_box.add_child(compare_summary_label)
 	compare_run_option = OptionButton.new()
-	compare_run_option.tooltip_text = "Run de référence comparée à la run active."
+	compare_run_option.tooltip_text = "Partie de référence comparée à la partie active."
 	compare_box.add_child(compare_run_option)
 	compare_dialog.confirmed.connect(_compare_selected_run)
 	add_child(compare_dialog)
@@ -909,7 +909,7 @@ func _open_character(path: String, initial := false) -> void:
 	_save_graph_state()
 	var unit := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as UnitData
 	if unit == null or not session.open(unit):
-		_show_status("Ouverture impossible", "Le fichier choisi n’est pas un UnitData valide.")
+		_show_status("Ouverture impossible", "Le fichier choisi n’est pas une unité valide.")
 		return
 	if initial:
 		var remembered := StringName(workspace_state.get("discipline_id", &""))
@@ -939,7 +939,7 @@ func _open_context_hero(hero: RunHeroProfile, initial := false) -> void:
 		var remembered := StringName(workspace_state.get("discipline_id", &""))
 		if remembered != &"":
 			session.select_discipline(remembered)
-	status_label.text = "Profil charge depuis la run active. La vue UnitData est non sauvegardable."
+	status_label.text = "Profil chargé depuis la partie active. La vue de l’unité n’est pas sauvegardable."
 	_refresh_document()
 	_offer_draft(session.canonical_source_path())
 
@@ -980,7 +980,7 @@ func _change_property(
 		if _project_id_collision("discipline", new_id):
 			_show_status("Renommage refusé", "Cet identifiant de discipline existe déjà dans un autre personnage du projet.")
 			return
-		confirm_dialog.dialog_text = "Changer cet identifiant mettra à jour toutes les références connues dans une seule action.\n\nAncien : %s\nNouveau : %s\n\nRapport :\n• 1 discipline\n• %d amélioration(s)\n• %d sort associé\n\nLes sauvegardes de runs existantes peuvent encore utiliser l’ancien identifiant." % [
+		confirm_dialog.dialog_text = "Changer cet identifiant mettra à jour toutes les références connues dans une seule action.\n\nAncien : %s\nNouveau : %s\n\nRapport :\n• 1 discipline\n• %d amélioration(s)\n• %d sort associé\n\nLes sauvegardes de parties existantes peuvent encore utiliser l’ancien identifiant." % [
 			target.discipline_id, new_id, session.all_nodes(target).size(),
 			1 if session.current_spell() != null else 0,
 		]
@@ -1024,7 +1024,7 @@ func _change_property(
 		if _project_id_collision("spell", new_spell_id):
 			_show_status("Renommage refusé", "Cet identifiant de sort existe déjà dans un autre personnage du projet.")
 			return
-		confirm_dialog.dialog_text = "Changer cet identifiant mettra à jour toutes les améliorations qui ciblent ce sort.\n\nAncien : %s\nNouveau : %s\n\nUne sauvegarde de run existante peut encore conserver l’ancien identifiant." % [
+		confirm_dialog.dialog_text = "Changer cet identifiant mettra à jour toutes les améliorations qui ciblent ce sort.\n\nAncien : %s\nNouveau : %s\n\nUne sauvegarde de partie existante peut encore conserver l’ancien identifiant." % [
 			target.get_effective_spell_id(), new_spell_id,
 		]
 		confirm_dialog.ok_button_text = "Mettre à jour les références"
@@ -1037,7 +1037,7 @@ func _change_property(
 		if _project_id_collision("unit", StringName(value)):
 			_show_status("Renommage refusé", "Cet identifiant de personnage existe déjà dans le projet.")
 			return
-		confirm_dialog.dialog_text = "L’identifiant du personnage peut être utilisé par les sauvegardes, les scènes, les tests et les thèmes.\n\nAncien : %s\nNouveau : %s\n\nLe Studio ne peut mettre à jour que les références contenues dans les Resources ouvertes." % [
+		confirm_dialog.dialog_text = "L’identifiant du personnage peut être utilisé par les sauvegardés, les scènes, les tests et les thèmes.\n\nAncien : %s\nNouveau : %s\n\nLe Studio ne peut mettre à jour que les références contenues dans les Resources ouvertes." % [
 			target.get_effective_unit_id(), StringName(value),
 		]
 		confirm_dialog.ok_button_text = "Changer malgré l’avertissement"
@@ -1361,7 +1361,7 @@ func _test() -> void:
 	commit_pending_edits()
 	_refresh_document()
 	bottom.select_simulator_tab()
-	status_label.text = "Simulation isolée ouverte. Elle ne modifie aucune run réelle."
+	status_label.text = "Simulation isolée ouverte. Elle ne modifie aucune partie réelle."
 
 
 func _preview_runtime() -> void:
@@ -1401,7 +1401,7 @@ func _run_full_analysis() -> void:
 func _compare_with_other_run() -> void:
 	if project_context == null or project_context.active_run == null \
 			or project_context.active_hero == null:
-		_show_status("Comparaison impossible", "Aucun contexte run/héros actif.")
+		_show_status("Comparaison impossible", "Aucun contexte partie/héros actif.")
 		return
 	compare_run_option.clear()
 	for run_data in RunContentCatalogService.discover_runs():
@@ -1413,9 +1413,9 @@ func _compare_with_other_run() -> void:
 			compare_run_option.item_count - 1, run_data.resource_path
 		)
 	if compare_run_option.item_count == 0:
-		_show_status("Comparaison impossible", "Aucune autre run n'est disponible.")
+		_show_status("Comparaison impossible", "Aucune autre partie n'est disponible.")
 		return
-	compare_summary_label.text = "Run active : %s\nHéros : %s\n\nChoisissez la run de référence. La comparaison ne changera pas le contexte." % [
+	compare_summary_label.text = "Partie active : %s\nHéros : %s\n\nChoisissez la partie de référence. La comparaison ne changera pas le contexte." % [
 		project_context.active_run.run_name,
 		project_context.active_hero.base_unit_data.unit_name \
 			if project_context.active_hero.base_unit_data != null \
@@ -1431,7 +1431,7 @@ func _compare_selected_run() -> void:
 		return
 	var other := compare_run_option.get_selected_metadata() as RunData
 	if other == null:
-		_show_status("Comparaison impossible", "La run de référence est introuvable.")
+		_show_status("Comparaison impossible", "La partie de référence est introuvable.")
 		return
 	var report := SkillTreeRunComparisonService.compare(
 		project_context.active_run, other, project_context.active_hero.character_id
@@ -1784,7 +1784,7 @@ func _context_discard() -> Dictionary:
 	var ok := session.reopen_from_disk()
 	if ok:
 		_refresh_document()
-	return {"ok": ok, "error": "Le profil canonique n'a pas pu etre recharge." if not ok else ""}
+	return {"ok": ok, "error": "Le profil canonique n'a pas pu être recharge." if not ok else ""}
 
 
 func _run_hero_catalog() -> Array[Dictionary]:
@@ -1830,7 +1830,7 @@ func _restore_pending_draft() -> void:
 		return
 	_pending_draft.clear()
 	_refresh_document()
-	status_label.text = "Brouillon restauré dans la copie de travail ; aucune source n'a été écrite."
+	status_label.text = "Brouillon restauré dans la version en cours ; aucune source n'a été écrite."
 
 
 func _text_control_has_focus() -> bool:

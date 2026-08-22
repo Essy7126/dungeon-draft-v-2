@@ -8,7 +8,7 @@ const HERO_IDS := [&"elf", &"mage", &"warrior"]
 
 static func prepare_automatically(arena: ArenaDefinition) -> Dictionary:
 	if arena == null:
-		return {"ok": false, "message": "Aucune arene n'est ouverte."}
+		return {"ok": false, "message": "Aucune arène n'est ouverte."}
 	var total_started: int = Time.get_ticks_usec()
 	var phase_started: int = total_started
 	if arena.cells.is_empty():

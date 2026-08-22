@@ -23,7 +23,7 @@ static func prepare(
 	if DirAccess.make_dir_recursive_absolute(
 			ProjectSettings.globalize_path(staging)
 		) != OK:
-		return _failure("STAGING_FAILED", "Le staging d'import ne peut pas etre cree.")
+		return _failure("STAGING_FAILED", "La zone de préparation d'import ne peut pas être créée.")
 	var staged := {}
 	var sources := {
 		"background": str(inspection.get("source_image", "")),
@@ -45,7 +45,7 @@ static func prepare(
 		var target_hash := FileAccess.get_sha256(target)
 		if source_hash != target_hash:
 			_remove_tree(transaction_root)
-			return _failure("STAGING_CHECKSUM_FAILED", "Le staging differe de la source.")
+			return _failure("STAGING_CHECKSUM_FAILED", "La zone de préparation diffère de la source.")
 		staged[role] = {
 			"source": source,
 			"path": target,
@@ -83,7 +83,7 @@ static func commit(
 		).merged({"plan": plan}, true)
 	if ArenaSnapshotService.arena_fingerprint(arena) \
 			!= str(plan.get("arena_fingerprint", "")):
-		return _failure("SOURCE_CHANGED", "L'arene a change depuis l'inspection.")
+		return _failure("SOURCE_CHANGED", "L'arène a change depuis l'inspection.")
 	if not _valid_destination(destination_path):
 		return _failure("DESTINATION_INVALID", "La destination PNG n'est pas autorisee.")
 	var snapshot := ArenaSnapshotService.capture(arena)

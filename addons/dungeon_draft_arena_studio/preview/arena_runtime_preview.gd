@@ -161,7 +161,7 @@ func _refresh_fidelity_contract() -> void:
 		_update_fidelity_badge()
 		return
 	if active_run == null:
-		exact_context_errors.append("Aucune run active.")
+		exact_context_errors.append("Aucune partie active.")
 		_set_quick_fixture_contract()
 		return
 	hero_resolution = RunHeroResolver.resolve_runtime_hero_data(active_run, false)
@@ -170,13 +170,13 @@ func _refresh_fidelity_contract() -> void:
 			for error in hero_resolution.errors:
 				exact_context_errors.append(str(error))
 		else:
-			exact_context_errors.append("Resolution des heros absente.")
+			exact_context_errors.append("Résolution des héros absente.")
 		_set_quick_fixture_contract()
 		return
 	if arena == null or arena.encounter_definition == null \
 			or not arena.encounter_definition.is_valid():
 		exact_context_errors.append(
-			"La rencontre reelle de la working copy est absente ou invalide."
+			"La rencontre réelle de la version en cours est absente ou invalide."
 		)
 		_set_quick_fixture_contract()
 		return

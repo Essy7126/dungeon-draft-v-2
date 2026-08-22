@@ -16,9 +16,9 @@ static func recipe() -> Array[Dictionary]:
 		{"step": 4, "id": &"VALIDATE", "label": "Valider"},
 		{"step": 5, "id": &"EXPORT_ART", "label": "Exporter un kit artistique"},
 		{"step": 6, "id": &"IMPORT_FIXTURE", "label": "Importer un décor fixture"},
-		{"step": 7, "id": &"INCOMPLETE", "label": "Simuler un bundle incomplet"},
+		{"step": 7, "id": &"INCOMPLETE", "label": "Simuler un dossier de production incomplet"},
 		{"step": 8, "id": &"ARCHIVE_REBUILD", "label": "Archiver et reconstruire"},
-		{"step": 9, "id": &"INTEGRATE", "label": "Intégrer dans la RunData fixture"},
+		{"step": 9, "id": &"INTEGRATE", "label": "Intégrer dans la partie d'essai"},
 		{"step": 10, "id": &"ROLLBACK", "label": "Annuler l’intégration"},
 	]
 

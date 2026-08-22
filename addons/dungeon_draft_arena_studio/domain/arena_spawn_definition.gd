@@ -12,7 +12,7 @@ enum Kind {
 }
 
 @export var spawn_id: StringName = &"spawn"
-@export_enum("Heros 1:0", "Heros 2:1", "Heros 3:2", "Ennemi:3", "Groupe ennemi:4", "Zone d'invocation:5")
+@export_enum("Héros 1:0", "Héros 2:1", "Héros 3:2", "Ennemi:3", "Groupe ennemi:4", "Zone d'invocation:5")
 var kind: int = Kind.ENEMY
 @export var unit_id: StringName = &""
 @export var cell := Vector2i.ZERO
@@ -31,7 +31,7 @@ func is_enemy() -> bool:
 
 func display_label() -> String:
 	return [
-		"Heros 1", "Heros 2", "Heros 3", "Ennemi", "Groupe ennemi",
+		"Héros 1", "Héros 2", "Héros 3", "Ennemi", "Groupe ennemi",
 		"Zone d'invocation",
 	][kind]
 

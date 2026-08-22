@@ -50,7 +50,7 @@ static func data_section(value: Variant) -> ArenaReadinessSection:
 	if not value is ArenaValidationReport:
 		return _outcome(
 			section, ArenaReadinessSection.State.NOT_RUN, &"DATA_NOT_RUN",
-			"La validation des donnees Arena n'a pas ete executee."
+			"La validation des données Arena n'a pas ete executee."
 		)
 	var validation: ArenaValidationReport = value as ArenaValidationReport
 	for message in validation.messages:
@@ -66,17 +66,17 @@ static func data_section(value: Variant) -> ArenaReadinessSection:
 	if not validation.is_valid():
 		return _outcome(
 			section, ArenaReadinessSection.State.FAIL, &"DATA_INVALID",
-			"Les donnees Arena contiennent des erreurs bloquantes."
+			"Les données Arena contiennent des erreurs bloquantes."
 		)
 	if not section.warnings.is_empty():
 		return _outcome(
 			section, ArenaReadinessSection.State.PASS_WITH_WARNINGS,
 			&"DATA_VALID_WITH_WARNINGS",
-			"Les donnees Arena sont valides avec des avertissements de conception."
+			"Les données Arena sont valides avec des avertissements de conception."
 		)
 	return _outcome(
 		section, ArenaReadinessSection.State.PASS, &"DATA_VALID",
-		"Les donnees Arena sont valides."
+		"Les données Arena sont valides."
 	)
 
 
@@ -125,7 +125,7 @@ static func visual_section(value: Variant) -> ArenaReadinessSection:
 	if payload.is_empty():
 		return _outcome(
 			section, ArenaReadinessSection.State.NOT_RUN, &"VISUAL_NOT_RUN",
-			"La verification du rendu Arena n'a pas ete executee."
+			"La vérification du rendu Arena n'a pas ete executee."
 		)
 	section.details = payload.duplicate(true)
 	section.errors = _strings(payload.get("errors", []))
@@ -152,7 +152,7 @@ static func runtime_scene_section(
 	if not value is Dictionary or (value as Dictionary).is_empty():
 		_outcome(
 			report, ArenaReadinessSection.State.NOT_RUN, &"RUNTIME_NOT_RUN",
-			"La vraie scene de bataille n'a pas ete verifiee."
+			"La vraie scène de bataille n'a pas ete vérifiée."
 		)
 		return report
 	var payload: Dictionary = (value as Dictionary).duplicate(true)
@@ -202,20 +202,20 @@ static func runtime_scene_section(
 	if bool(payload.get("blocked", false)) or state_text == "BLOCKED":
 		_outcome(
 			report, ArenaReadinessSection.State.BLOCKED, &"RUNTIME_BLOCKED",
-			"La verification de la vraie scene est bloquee."
+			"La vérification de la vraie scène est bloquée."
 		)
 		return report
 	if bool(payload.get("ok", false)) and report.diagnostics_ready() \
 			and report.errors.is_empty():
 		_passed_outcome(
 			report, &"RUNTIME_BOOTABLE",
-			"La vraie scene de bataille compile et atteint runtime_ready."
+			"La vraie scène de bataille compile et atteint runtime_ready."
 		)
 		return report
 	_append_runtime_contract_errors(report)
 	_outcome(
 		report, ArenaReadinessSection.State.FAIL, &"RUNTIME_BOOT_FAILED",
-		"La vraie scene de bataille ne satisfait pas le contrat runtime."
+		"La vraie scène de bataille ne satisfait pas le contrat runtime."
 	)
 	return report
 
@@ -223,7 +223,7 @@ static func runtime_scene_section(
 static func production_section(value: Variant) -> ArenaReadinessSection:
 	return _plan_section(
 		value, "can_produce", "ready_to_produce", &"PRODUCTION_READY",
-		&"PRODUCTION_NOT_READY", "Le bundle peut etre produit.",
+		&"PRODUCTION_NOT_READY", "Le dossier de production peut être produit.",
 		"Le plan de production n'est pas valide."
 	)
 
@@ -231,8 +231,8 @@ static func production_section(value: Variant) -> ArenaReadinessSection:
 static func integration_section(value: Variant) -> ArenaReadinessSection:
 	return _plan_section(
 		value, "can_integrate", "ready_to_integrate", &"INTEGRATION_READY",
-		&"INTEGRATION_NOT_READY", "L'integration est sure.",
-		"Le plan d'integration n'est pas valide."
+		&"INTEGRATION_NOT_READY", "L'intégration est sure.",
+		"Le plan d'intégration n'est pas valide."
 	)
 
 

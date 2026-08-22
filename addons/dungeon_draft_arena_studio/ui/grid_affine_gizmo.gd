@@ -238,7 +238,7 @@ func _draw_handle(handle: int, position: Vector2) -> void:
 			draw_string(ThemeDB.fallback_font, position + Vector2(13, 5), "Rotation", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
 		GridGizmoHandle.SCALE:
 			draw_rect(Rect2(position - Vector2.ONE * radius, Vector2.ONE * radius * 2.0), color, true)
-			draw_string(ThemeDB.fallback_font, position + Vector2(13, -8), "Echelle", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
+			draw_string(ThemeDB.fallback_font, position + Vector2(13, -8), "Échelle", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
 		GridGizmoHandle.ANGLE:
 			draw_circle(position, radius, color)
 			draw_circle(position, maxf(2.0, radius - 4.0), Color(0.10, 0.06, 0.16))
