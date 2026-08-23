@@ -156,8 +156,8 @@ func bind_unit(unit: Unit) -> void:
 			EventBus.hit_resolved.connect(_on_hit_resolved)
 
 
-## La fiche d'animations du personnage, editee dans le Studio, remplace les
-## clips par defaut du script visuel. Sans fiche, rien ne change.
+## La fiche d'animations du personnage, editee dans le Studio, surcharge la
+## fiche canonique du visuel. Sans surcharge, rien ne change.
 func _apply_character_animation_set() -> void:
 	if _unit == null or _unit.character_data == null \
 			or not is_instance_valid(character_visual):

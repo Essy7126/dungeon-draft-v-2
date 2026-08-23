@@ -7,13 +7,18 @@ Date : 2026-08-06
 
 ## État porté
 
-- `active_run`, `active_room_index`, `active_hero` ;
+- `active_run`, `active_room_index`, `active_hero`, `active_character` ;
 - portée `RUN_SPECIFIC`, `SHARED` ou `DRAFT` ;
 - domaines sales et métadonnées associées ;
 - générations `context`, `references`, `arena`, `encounter`, `skills` ;
 - état UI persistant.
 
 La barre `StudioContextBar` affiche le même état dans le shell et la fenêtre Skills : run, salle, héros, portée, état sauvegardé/modifié, chemins, usages et génération de l’index.
+
+`active_character` est le personnage effectivement ouvert. S’il appartient à la
+partie active, `active_hero` porte son profil de run. Pour un ennemi ou un
+personnage global, `active_hero` vaut explicitement `null` et la barre indique
+« hors partie » : le Studio ne conserve jamais silencieusement le héros précédent.
 
 ## Transition d’un document sale
 
@@ -29,4 +34,3 @@ Un handler absent ou en échec bloque la transition. Le test `test_project_conte
 ## Persistance
 
 Le plugin persiste le snapshot de contexte dans son état de layout. La restauration redécouvre les runs, puis sélectionne le chemin et le héros demandés ; elle ne sérialise jamais les Resources métier dans l’état UI.
-

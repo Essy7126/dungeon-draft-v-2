@@ -351,6 +351,7 @@ func _capture_runtime_case(size: Vector2i, arena: ArenaDefinition) -> void:
 	_clear_content()
 	var run := RunData.new()
 	run.run_name = "Permanent tile capture runtime"
+	run.randomize_seed_each_run = false
 	run.rooms = [arena]
 	if not GameManager._prepare_preconfigured_run(run, [], true):
 		_fail("runtime_prepare_%dx%d" % [size.x, size.y])

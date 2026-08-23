@@ -138,6 +138,18 @@ func test_game_manager_allows_empty_roster_only_for_direct_visual_test() -> void
 	GameManager.cleanup_run_state()
 
 
+func test_transient_studio_run_always_pins_its_seed() -> void:
+	var source := RunData.new()
+	source.default_seed = 424242
+	source.randomize_seed_each_run = true
+	var transient := ArenaDirectTestService._transient_run(
+		source, _hybrid_working_copy()
+	)
+	assert_eq(transient.default_seed, 424242)
+	assert_false(transient.randomize_seed_each_run)
+	assert_true(source.randomize_seed_each_run, "le run de production reste inchangé")
+
+
 func _hybrid_working_copy() -> ArenaDefinition:
 	var source := load(FOREST_PATH) as ArenaDefinition
 	if source == null:

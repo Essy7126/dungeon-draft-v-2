@@ -127,14 +127,16 @@ func _ready() -> void:
 		else SkillTreeCatalogService.discover_units()
 	_refresh_catalog()
 	if project_context != null:
-		project_context.hero_changed.connect(_on_context_hero_changed)
+		project_context.character_changed.connect(_on_context_character_changed)
 		project_context.run_changed.connect(_on_context_run_changed)
 		project_context.register_transition_handler(
 			&"skills", Callable(self, "_context_save"),
 			Callable(self, "_context_draft"), Callable(self, "_context_discard")
 		)
-		if project_context.active_hero != null:
-			call_deferred("_open_context_hero", project_context.active_hero, true)
+		if project_context.active_character != null:
+			call_deferred(
+				"_open_context_character", project_context.active_character, true
+			)
 		return
 	var initial_path := str(workspace_state.get("character_path", ""))
 	if not _catalog_contains_path(initial_path):
@@ -1041,19 +1043,13 @@ func _request_character_path(path: String) -> void:
 	if path.is_empty() or path == _current_catalog_path():
 		return
 	if project_context != null:
-		for hero in RunContentCatalogService.heroes_for_run(project_context.active_run):
-			if hero != null and hero.base_unit_data != null \
-					and hero.base_unit_data.resource_path == path:
-				if project_context.active_hero == hero:
-					# Le contexte partagé désigne déjà ce héros : c'est le cas
-					# après un détour par un personnage hors partie, qui laisse
-					# le contexte inchangé. Demander le héros ne produirait
-					# alors aucun changement et le Studio resterait bloqué sur
-					# le personnage précédent — on rouvre donc directement.
-					_open_context_hero(hero)
-				else:
-					project_context.request_hero(hero.character_id, &"skills")
-				return
+		var requested := project_context.request_character(path, &"skills")
+		if not requested.get("ok", false) \
+				and requested.get("status", &"") != &"REQUIRES_DECISION":
+			_show_status(
+				"Changement impossible", str(requested.get("error", "Erreur inconnue."))
+			)
+		return
 	if session.is_dirty():
 		_pending_character_path = path
 		character_dialog.dialog_text = "Le personnage actuel contient des modifications non sauvegardées.\n\nChoisissez si vous voulez les sauvegarder, les abandonner ou rester sur ce personnage."
@@ -1105,9 +1101,20 @@ func _open_context_hero(hero: RunHeroProfile, initial := false) -> void:
 	_offer_draft(session.canonical_source_path())
 
 
-func _on_context_hero_changed(hero: RunHeroProfile) -> void:
-	if hero != null:
-		_open_context_hero(hero)
+func _open_context_character(character: UnitData, initial := false) -> void:
+	if project_context == null or character == null:
+		return
+	var hero := project_context.active_hero
+	if hero != null and hero.base_unit_data != null \
+			and hero.base_unit_data.resource_path == character.resource_path:
+		_open_context_hero(hero, initial)
+		return
+	_open_character(character.resource_path, initial)
+
+
+func _on_context_character_changed(character: UnitData) -> void:
+	if character != null:
+		_open_context_character(character)
 
 
 func _on_context_run_changed(_run_data: RunData) -> void:
@@ -1378,8 +1385,7 @@ func _refresh_document() -> void:
 		if project_context != null:
 			project_context.set_dirty(&"skills", session.is_dirty(), {
 				"profile_path": session.canonical_source_path(),
-				"character_id": str(project_context.active_hero.character_id) \
-					if project_context.active_hero != null else "",
+				"character_id": str(session.working_unit.get_effective_unit_id()),
 			})
 	if sandbox_reset_button != null:
 		sandbox_reset_button.visible = _tutorial_sandbox_is_active()

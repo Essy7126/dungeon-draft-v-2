@@ -1,5 +1,22 @@
 # État candidat vérifié du projet
 
+## Cohérence architecture Studio, animations et objets (WORKTREE_CANDIDATE, 2026-08-23)
+
+- Base locale : `main` à `77799ec945071bf91b1bc4996da2b3bd7b6a81e1`.
+- `CharacterAnimationSetData` est l’unique table événement → clip ; les visuels
+  de production référencent la même Resource au lieu de recopier ses valeurs.
+- Une session Skills ouverte depuis un run sauvegarde le profil de progression
+  et, si nécessaire, le `UnitData` canonique qui rattache une nouvelle fiche
+  d’animations. L’adaptateur temporaire reste non sauvegardable.
+- `StudioProjectContext.active_character` représente aussi les personnages hors
+  partie ; `active_hero` vaut alors `null`, sans sélection implicite divergente.
+- Les runners Arena/Encounter Studio épinglent leurs seeds et les copies de
+  `RunData` conservent le réglage de randomisation ainsi que les profils hors domaine.
+- Les 27 objets de production, dont les 8 reliques, sont caractérisés par un
+  artefact versionné. `RelicEffectRegistry` décrit les effets et
+  `RelicRuntimeService` reste l’unique exécuteur.
+- Statut : **WORKTREE_CANDIDATE** jusqu’au commit et à la validation interactive.
+
 ## Arena authoring, décor, timing et réseaux (WORKTREE_CANDIDATE, 2026-08-12)
 
 - Baseline poussée : `main` à `8bd9d455bced1c68acf98843e6f6d4844d4174e8`.

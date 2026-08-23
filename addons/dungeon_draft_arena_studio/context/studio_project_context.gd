@@ -10,6 +10,7 @@ signal context_changed(snapshot: Dictionary)
 signal run_changed(run_data: RunData)
 signal room_changed(room_index: int, room: RoomData)
 signal hero_changed(hero: RunHeroProfile)
+signal character_changed(character: UnitData)
 signal scope_changed(scope: StringName)
 signal dirty_state_changed(dirty_domains: Dictionary)
 signal transition_requested(transition: Dictionary)
@@ -32,6 +33,10 @@ const ACTION_CANCEL := &"CANCEL"
 var active_run: RunData = null
 var active_room_index := -1
 var active_hero: RunHeroProfile = null
+## Personnage effectivement ouvert par les outils. Il correspond au heros du
+## run lorsqu'il en fait partie, mais peut aussi designer un ennemi ou un
+## personnage global ; active_hero vaut alors null sans ambiguite.
+var active_character: UnitData = null
 var edit_scope: StringName = SCOPE_RUN_SPECIFIC
 var generations := {
 	&"context": 0,
@@ -64,6 +69,7 @@ func initialize(preferred_run_path := "", preferred_character_id := &"") -> Dict
 	if active_hero == null:
 		var heroes := RunContentCatalogService.heroes_for_run(selected)
 		active_hero = heroes[0] if not heroes.is_empty() else null
+	active_character = active_hero.base_unit_data if active_hero != null else null
 	_bump(&"context")
 	_emit_all()
 	return {"ok": true, "snapshot": snapshot()}
@@ -267,6 +273,13 @@ func request_hero(character_id: StringName, requester_domain := &"") -> Dictiona
 	return request_selection({"character_id": character_id}, requester_domain)
 
 
+func request_character(character_path: String, requester_domain := &"") -> Dictionary:
+	var character := _load_character(character_path)
+	if character == null:
+		return {"ok": false, "error": "Personnage introuvable : %s" % character_path}
+	return request_selection({"character": character}, requester_domain)
+
+
 func request_scope(scope: StringName, requester_domain := &"") -> Dictionary:
 	return request_selection({"scope": scope}, requester_domain)
 
@@ -289,7 +302,10 @@ func snapshot() -> Dictionary:
 		"room_index": active_room_index,
 		"room_path": room.resource_path if room != null else "",
 		"room_name": room.room_name if room != null else "Aucune salle",
-		"character_id": str(active_hero.character_id) if active_hero != null else "",
+		"character_id": str(active_character.get_effective_unit_id()) \
+			if active_character != null else "",
+		"character_path": active_character.resource_path \
+			if active_character != null else "",
 		"hero_path": active_hero.resource_path if active_hero != null else "",
 		"progression_path": active_hero.progression_profile.resource_path \
 			if active_hero != null and active_hero.progression_profile != null else "",
@@ -312,6 +328,11 @@ func restore_snapshot(state: Dictionary) -> Dictionary:
 		"room_index": int(state.get("room_index", active_room_index)),
 		"scope": StringName(state.get("scope", SCOPE_RUN_SPECIFIC)),
 	}
+	var character_path := str(state.get("character_path", ""))
+	if not character_path.is_empty():
+		var character := _load_character(character_path)
+		if character != null:
+			selection["character"] = character
 	return request_selection(selection)
 
 
@@ -320,18 +341,27 @@ func _normalized_selection(selection: Dictionary) -> Dictionary:
 	var room_index := int(selection.get("room_index", active_room_index))
 	if selection.has("run") and not selection.has("room_index"):
 		room_index = 0 if run_data != null and not run_data.rooms.is_empty() else -1
-	var character_id := StringName(selection.get(
-		"character_id",
-		active_hero.character_id if active_hero != null else &""
-	))
-	var hero := _find_hero(run_data, character_id)
-	if hero == null:
-		var heroes := RunContentCatalogService.heroes_for_run(run_data)
-		hero = heroes[0] if not heroes.is_empty() else null
+	var hero := active_hero
+	var character := active_character
+	if selection.has("character"):
+		character = selection.get("character") as UnitData
+		hero = _find_hero_for_character(run_data, character)
+	elif selection.has("character_id") or selection.has("run"):
+		var fallback_id := active_character.get_effective_unit_id() \
+			if active_character != null else &""
+		var character_id := StringName(selection.get("character_id", fallback_id))
+		hero = _find_hero(run_data, character_id)
+		if hero == null:
+			var heroes := RunContentCatalogService.heroes_for_run(run_data)
+			hero = heroes[0] if not heroes.is_empty() else null
+		character = hero.base_unit_data if hero != null else null
+	elif character == null and hero != null:
+		character = hero.base_unit_data
 	return {
 		"run": run_data,
 		"room_index": room_index,
 		"hero": hero,
+		"character": character,
 		"scope": StringName(selection.get("scope", edit_scope)),
 	}
 
@@ -353,6 +383,7 @@ func _selection_matches(selection: Dictionary) -> bool:
 	return selection.get("run") == active_run \
 		and int(selection.get("room_index", -1)) == active_room_index \
 		and selection.get("hero") == active_hero \
+		and selection.get("character") == active_character \
 		and StringName(selection.get("scope", &"")) == edit_scope
 
 
@@ -360,10 +391,12 @@ func _apply_selection(selection: Dictionary) -> void:
 	var previous_run := active_run
 	var previous_room := active_room_index
 	var previous_hero := active_hero
+	var previous_character := active_character
 	var previous_scope := edit_scope
 	active_run = selection.get("run") as RunData
 	active_room_index = int(selection.get("room_index", -1))
 	active_hero = selection.get("hero") as RunHeroProfile
+	active_character = selection.get("character") as UnitData
 	edit_scope = StringName(selection.get("scope", SCOPE_RUN_SPECIFIC))
 	_bump(&"context")
 	if previous_run != active_run:
@@ -372,6 +405,8 @@ func _apply_selection(selection: Dictionary) -> void:
 		room_changed.emit(active_room_index, active_room())
 	if previous_hero != active_hero:
 		hero_changed.emit(active_hero)
+	if previous_character != active_character:
+		character_changed.emit(active_character)
 	if previous_scope != edit_scope:
 		scope_changed.emit(edit_scope)
 	context_changed.emit(snapshot())
@@ -381,6 +416,7 @@ func _emit_all() -> void:
 	run_changed.emit(active_run)
 	room_changed.emit(active_room_index, active_room())
 	hero_changed.emit(active_hero)
+	character_changed.emit(active_character)
 	scope_changed.emit(edit_scope)
 	dirty_state_changed.emit(dirty_domains())
 	context_changed.emit(snapshot())
@@ -392,6 +428,31 @@ func _find_hero(run_data: RunData, character_id: StringName) -> RunHeroProfile:
 		if hero != null and (character_id == &"" or hero.character_id == character_id):
 			return hero
 	return null
+
+
+func _find_hero_for_character(
+		run_data: RunData,
+		character: UnitData
+	) -> RunHeroProfile:
+	if character == null:
+		return null
+	for hero in RunContentCatalogService.heroes_for_run(run_data):
+		if hero == null or hero.base_unit_data == null:
+			continue
+		if hero.base_unit_data == character or (
+				not character.resource_path.is_empty()
+				and hero.base_unit_data.resource_path == character.resource_path
+			):
+			return hero
+	return null
+
+
+func _load_character(path: String) -> UnitData:
+	if path.is_empty() or not ResourceLoader.exists(path):
+		return null
+	return ResourceLoader.load(
+		path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as UnitData
 
 
 func _bump(domain: StringName) -> int:

@@ -17,6 +17,11 @@ var source_run: RunData = null
 var source_hero_profile: RunHeroProfile = null
 var source_progression_profile: CharacterProgressionProfile = null
 var working_progression_profile: CharacterProgressionProfile = null
+## Autorite du personnage pour les donnees hors progression (notamment les
+## animations). Dans une session de run, working_unit reste un adaptateur non
+## sauvegardable tandis que cette paire porte la vraie mise a jour UnitData.
+var source_character_unit: UnitData = null
+var working_character_unit: UnitData = null
 var unit_view_is_adapter := false
 var source_to_work := {}
 var work_to_source := {}
@@ -68,13 +73,14 @@ func open_progression(run_data: RunData, hero_profile: RunHeroProfile) -> bool:
 			or hero_profile.base_unit_data == null \
 			or hero_profile.progression_profile == null:
 		return false
+	var canonical_character := _load_canonical_unit(hero_profile.base_unit_data)
 	var canonical_profile := _load_canonical_progression_profile(
 		hero_profile.progression_profile
 	)
-	if canonical_profile == null:
+	if canonical_character == null or canonical_profile == null:
 		return false
 	var unit_view := RunContentCatalogService.as_editable_unit_view(
-		hero_profile.base_unit_data, canonical_profile
+		canonical_character, canonical_profile
 	)
 	if unit_view == null or not open(unit_view):
 		return false
@@ -84,6 +90,7 @@ func open_progression(run_data: RunData, hero_profile: RunHeroProfile) -> bool:
 	# laissée dans le cache par une session antérieure. La remplacer localement
 	# par la relecture canonique empêche cette contamination de se propager aux
 	# autres outils sans écrire la RunData.
+	hero_profile.base_unit_data = canonical_character
 	hero_profile.progression_profile = canonical_profile
 	source_progression_profile = canonical_profile
 	working_progression_profile = _copy_progression_profile_shell(
@@ -93,6 +100,9 @@ func open_progression(run_data: RunData, hero_profile: RunHeroProfile) -> bool:
 	_sync_profile_from_unit()
 	source_to_work[source_progression_profile] = working_progression_profile
 	work_to_source[working_progression_profile] = source_progression_profile
+	if not _configure_character_authority(canonical_character):
+		release_document(false)
+		return false
 	unit_view_is_adapter = true
 	saved_fingerprint = current_fingerprint()
 	last_operation_report = {
@@ -121,6 +131,8 @@ func release_document(emit_change := true) -> void:
 	source_hero_profile = null
 	source_progression_profile = null
 	working_progression_profile = null
+	source_character_unit = null
+	working_character_unit = null
 	unit_view_is_adapter = false
 	selected_discipline_id = &""
 	selected_subject = null
@@ -287,7 +299,8 @@ func is_resource_reachable(resource: Resource) -> bool:
 		_sync_profile_from_unit()
 		if resource == working_progression_profile:
 			return true
-	return SkillTreeSaveService._is_reachable(working_unit, resource)
+	return SkillTreeSaveService._is_reachable(working_unit, resource) \
+		or SkillTreeSaveService._is_reachable(working_character_unit, resource)
 
 
 func restore_profile_draft(
@@ -301,8 +314,13 @@ func restore_profile_draft(
 	var run_data := source_run
 	var hero := source_hero_profile
 	var profile := source_progression_profile
+	var character := source_character_unit
+	if character == null:
+		character = _load_canonical_unit(hero.base_unit_data)
+	if character == null:
+		return false
 	var source_view := RunContentCatalogService.as_editable_unit_view(
-		hero.base_unit_data, profile
+		character, profile
 	)
 	if not restore_draft(
 			source_view, draft, source_keys_by_work_key, new_paths_by_work_key
@@ -316,6 +334,9 @@ func restore_profile_draft(
 	_sync_profile_from_unit()
 	source_to_work[profile] = working_progression_profile
 	work_to_source[working_progression_profile] = profile
+	if not _configure_character_authority(character):
+		release_document(false)
+		return false
 	unit_view_is_adapter = true
 	saved_fingerprint = _adapter_fingerprint(
 		profile, source_unit.animation_set if source_unit != null else null
@@ -381,6 +402,33 @@ func _load_canonical_progression_profile(
 	return ResourceLoader.load(
 		source.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as CharacterProgressionProfile
+
+
+func _load_canonical_unit(source: UnitData) -> UnitData:
+	if source == null:
+		return null
+	if source.resource_path.is_empty() or source.is_built_in():
+		return source
+	return ResourceLoader.load(
+		source.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as UnitData
+
+
+func _configure_character_authority(source: UnitData) -> bool:
+	if source == null or working_unit == null:
+		return false
+	source_character_unit = source
+	working_character_unit = source.duplicate(false) as UnitData
+	if working_character_unit == null:
+		return false
+	if not source.resource_path.is_empty() and not source.is_built_in():
+		working_character_unit.set_path_cache(source.resource_path)
+	# Ne jamais recopier les tableaux de progression de l'adaptateur dans le
+	# UnitData canonique. Seule l'autorite d'animations est partagee.
+	working_character_unit.animation_set = working_unit.animation_set
+	source_to_work[source_character_unit] = working_character_unit
+	work_to_source[working_character_unit] = source_character_unit
+	return true
 
 
 func mark_saved() -> void:
@@ -1317,9 +1365,16 @@ func set_animation_clip(
 	)
 	new_resource_paths[animation_set] = path
 	animation_set.set_path_cache(path)
+	var changes: Array[Dictionary] = [
+		_change(working_unit, &"animation_set", animation_set),
+	]
+	if working_character_unit != null and working_character_unit != working_unit:
+		changes.append(_change(
+			working_character_unit, &"animation_set", animation_set
+		))
 	if not commit_changes(
 			"Créer la fiche d’animations et régler « %s »" % event_label,
-			[_change(working_unit, &"animation_set", animation_set)]
+			changes
 		):
 		new_resource_paths.erase(animation_set)
 		return false

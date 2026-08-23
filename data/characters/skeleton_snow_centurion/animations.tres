@@ -10,6 +10,7 @@ animation_names = {
 &"cast_start": &"DD_SnowCenturion_Idle",
 &"death": &"DD_SnowCenturion_Death",
 &"hit": &"DD_SnowCenturion_Hit",
+&"idle": &"DD_SnowCenturion_Idle",
 &"run": &"DD_SnowCenturion_Run",
 &"walk": &"DD_SnowCenturion_Walk"
 }

@@ -1,11 +1,11 @@
 # Studio des objets et effets — guide utilisateur V1
 
-- Date : 2026-08-07
+- Date : 2026-08-23
 - Branche : `main`
-- HEAD de base : `29f307b5ff61822f266bbd2d14636ca8dcea2d95`
+- HEAD de base : `77799ec945071bf91b1bc4996da2b3bd7b6a81e1`
 - Statut : **WORKTREE_CANDIDATE — non promu CURRENT**
 - Tests exécutés : GUT Item Studio 30/30 (190 assertions) ; smoke intégré PASS ; captures réelles inspectées en 1280×720 et 1920×1080.
-- Non vérifié à ce stade du document : validation humaine dans l’éditeur Godot interactif ; aucun runtime de reliques.
+- Non vérifié à ce stade du document : validation humaine dans l’éditeur Godot interactif.
 
 ## Ouvrir le Studio
 
@@ -110,8 +110,10 @@ existants, ni l’inventaire initial, ni les récompenses de salles.
 ## Limites réelles de la V1
 
 - `RUN_SPECIFIC` est différé faute de catalogue par run.
-- Aucun runtime de reliques n’est activé ; les ressources historiques ne sont ni
-  importées, ni présentées comme fonctionnelles.
+- Les reliques actives restent des `ItemDefinition`. `RelicEffectRegistry`
+  décrit leurs effets et `RelicRuntimeService` est leur unique exécuteur,
+  y compris pour l’activation manuelle. L’ancien format `RelicDefinition`
+  n’est ni importé ni utilisé comme seconde autorité.
 - Une nouvelle famille d’effet doit être codée, testée et enregistrée avant
   d’apparaître dans le compositeur.
 - Les effets nécessitant une grille de bataille sont signalés ; la projection

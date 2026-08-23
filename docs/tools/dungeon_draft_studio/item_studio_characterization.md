@@ -1,12 +1,11 @@
 # Item Studio V1 — rapport de caractérisation
 
-- Date : 2026-08-07
+- Date : 2026-08-23
 - Branche : `main`
-- HEAD de base : `29f307b5ff61822f266bbd2d14636ca8dcea2d95`
+- HEAD de base : `77799ec945071bf91b1bc4996da2b3bd7b6a81e1`
 - Statut : **WORKTREE_CANDIDATE**
 - Artefact : `artifacts/item_studio/characterization.json`
-- Tests exécutés : runner de caractérisation PASS ; GUT inventaire 10/10 ; GUT Item Studio 30/30.
-- Non vérifié : anciennes familles de reliques absentes du HEAD ; aucune migration legacy tentée.
+- Tests exécutés : runner de caractérisation valide ; GUT Item Studio et reliques ciblés.
 
 ## Autorités observées
 
@@ -16,10 +15,12 @@ explicites et auto-découvre `res://data/items/definitions`. La collecte conserv
 l’ordre explicite, trie les chemins découverts, déduplique les chemins déjà
 explicites, puis refuse les doublons d’`item_id` au rebuild.
 
-Au HEAD de base, 19 définitions valides sont résolues. Ce nombre est observé dans
+Au HEAD de base, 27 définitions valides sont résolues. Ce nombre est observé dans
 l’artefact ; ni le service ni l’interface ne le codent en dur. Les catégories
-réelles sont arme, armure, accessoire, consommable et parchemin. Quatorze
-équipements portent le tag autoritatif `first_run_equipment_reward`.
+réelles sont arme, armure, accessoire, consommable, parchemin et relique. Les
+huit reliques de la première partie portent le tag autoritatif
+`first_run_equipment_reward` ; les équipements historiques n’appartiennent plus
+à ce pool.
 
 Les identifiants d’inventaire initial observés sont `warrior_training_sword`,
 `reinforced_vest`, `runic_charm`, `minor_healing_potion` et
@@ -30,8 +31,8 @@ Les identifiants d’inventaire initial observés sont `warrior_training_sword`,
 La caractérisation indexe `ItemDefinition`, `ItemCatalog`,
 `ItemStatModifierData`, `ItemSpellModifierData`, `ItemInstance`, `RunInventory`,
 `EquipmentLoadout`, `EquipmentService`, `EquipmentStatService`, `ItemUseService`,
-`FirstRunEquipmentRewardService`, `InventoryScreen` et
-`EquipmentRewardOverlay`.
+`ItemReactiveEffectData`, `RelicEffectRegistry`, `RelicRuntimeService`,
+`FirstRunEquipmentRewardService`, `InventoryScreen` et `EquipmentRewardOverlay`.
 
 Les tests existants caractérisent empilement atomique, snapshot/restauration,
 équipement, remplacement, déséquipement, application/retrait des statistiques,
@@ -40,7 +41,8 @@ soin, restauration de PA, sauvegarde et accès UI depuis HUD/pause.
 ## Effets et sous-ressources mutables
 
 Les effets atteignables sont `ItemStatModifierData` fixe/pourcentage,
-`ItemSpellModifierData`, `HEAL_FLAT` et `RESTORE_AP_FLAT`. Le descripteur de sort
+`ItemSpellModifierData`, `HEAL_FLAT`, `RESTORE_AP_FLAT` et les déclencheurs
+réactifs/manuels de `ItemReactiveEffectData`. Le descripteur de sort
 couvre les filtres hérités, dégâts, type, élément, seuil de PV, portée, poussée,
 soin et bouclier. Le registre possède cinq descripteurs explicites et sa
 couverture est valide.
@@ -52,13 +54,14 @@ partageables.
 ## Brouillons, legacy et références
 
 `res://data/items/drafts` n’est pas auto-découvert. Les chemins
-`data/equipment/**` et `data/relics/**` n’existent comme aucune autorité runtime
-au HEAD : ils sont **HISTORIQUE**. Aucun `RelicDefinition` runtime n’est présent.
+`data/equipment/**` et l’ancien format `data/relics/**` sont **HISTORIQUE**.
+Il n’existe pas de seconde autorité `RelicDefinition` : les reliques actives sont
+des `ItemDefinition` exécutées par `RelicRuntimeService`.
 
 Les références entrantes sont recherchées dans les `.gd`, `.tres` et `.tscn`, en
 excluant `.godot`, les artefacts, `output` et GUT. L’artefact fournit la liste par
 `item_id`, chaque empreinte et l’empreinte agrégée du catalogue :
-`522e33ce7d1ded06819ab260cd37632c04f963cee2063cd19cd6cb07e16af277`.
+`dd0cf8b05e550b97924319b92d65378c7f0450c53bb0d4b5630a2e3a537883e3`.
 
 ## Divergences documentaires
 

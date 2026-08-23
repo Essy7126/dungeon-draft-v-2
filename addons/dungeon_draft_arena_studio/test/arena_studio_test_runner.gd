@@ -90,6 +90,9 @@ func _ready() -> void:
 	run.rooms = [arena]
 	if run.default_seed == 0:
 		run.default_seed = 1337
+	# Defense en profondeur : meme une requete ancienne ou fabriquee a la main
+	# reste deterministe une fois entree dans le runner de test.
+	run.randomize_seed_each_run = false
 
 	var heroes: Array = []
 	if bool(request.get("exact_run_content", false)):

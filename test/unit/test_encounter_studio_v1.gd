@@ -58,6 +58,18 @@ func test_copie_rencontre_independante_et_un_seul_usage_modifie() -> void:
 	)
 	assert_true(suggested.begins_with("res://test/fixtures/encounter_studio/"))
 
+
+func test_copie_run_preserve_seed_et_profils_hors_domaine_rencontre() -> void:
+	var source := _small_run()
+	source.randomize_seed_each_run = false
+	source.content_profile = RunContentProfile.new()
+	source.economy_profile = RunEconomyProfile.new()
+	var copied := EncounterCopyService.copy_run(source).get("run") as RunData
+	assert_not_null(copied)
+	assert_false(copied.randomize_seed_each_run)
+	assert_same(copied.content_profile, source.content_profile)
+	assert_same(copied.economy_profile, source.economy_profile)
+
 	var session := _production_session()
 	var shared := session.current_encounter()
 	assert_eq(session.current_room().get_encounter_for_wave(1), shared)

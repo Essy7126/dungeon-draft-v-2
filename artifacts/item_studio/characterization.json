@@ -1,0 +1,1330 @@
+{
+  "branch": "main",
+  "catalogs": [
+    {
+      "auto_discovery_directories": [
+        "res://data/items/definitions"
+      ],
+      "deduplication": "resource_path for explicit + discovered; item_id rejected by rebuild_index",
+      "deterministic_order": "explicit order, then discovered paths sorted",
+      "explicit_definition_count": 19,
+      "path": "res://data/items/catalogs/default_item_catalog.tres"
+    }
+  ],
+  "commit": "77799ec945071bf91b1bc4996da2b3bd7b6a81e1",
+  "date": "2026-08-23T09:12:30",
+  "definition_count": 27,
+  "definitions": [
+    {
+      "category": 2,
+      "compatible_character_ids": [],
+      "display_name": "Anneau de la faille",
+      "equipment_slot": 2,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "anneau_faille",
+      "path": "res://data/items/definitions/anneau_faille.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "da93024ee28d28797036b1bf323361bef570d8b69e3a35e23971ea88700ed832",
+      "spell_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.0,
+            "damage_type_filter": -1,
+            "healing_and_shield_percent": 0.0,
+            "modifier_name": "Portée de la faille",
+            "push_bonus": 0,
+            "range_bonus": 1,
+            "require_elemental_damage": false,
+            "target_hp_at_or_below": -1.0,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        }
+      ],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "armure",
+            "value": -10.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "accessory"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 0,
+      "compatible_character_ids": [
+        "elf"
+      ],
+      "display_name": "Arc maudit",
+      "equipment_slot": 0,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_equipment_reward_presentation.gd",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "arc_maudit",
+      "path": "res://data/items/definitions/arc_maudit.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "99e948e415c657b8eb09ffb0b8b199ed5c1a95b5e1797d99672bb9a104debc5d",
+      "spell_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.2,
+            "damage_type_filter": -1,
+            "healing_and_shield_percent": 0.0,
+            "modifier_name": "Malédiction offensive",
+            "push_bonus": 0,
+            "range_bonus": 0,
+            "require_elemental_damage": false,
+            "target_hp_at_or_below": -1.0,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        }
+      ],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_hp",
+            "value": -10.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "weapon"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 2,
+      "compatible_character_ids": [],
+      "display_name": "Broche",
+      "equipment_slot": 2,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "broche",
+      "path": "res://data/items/definitions/broche.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "81c55ae6efb9f36537dd03231966b5a16f0033116f02f8ff84dde25ea8512776",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_hp",
+            "value": 25.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "armure",
+            "value": 10.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "accessory"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 2,
+      "compatible_character_ids": [],
+      "display_name": "Caillou",
+      "equipment_slot": 2,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "caillou",
+      "path": "res://data/items/definitions/caillou.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "9fc3c02343b14a05b83ccc5ff302c79649bc36624758845485e96d8f4b21883d",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_hp",
+            "value": 15.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "armure",
+            "value": 10.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "resist_magique",
+            "value": 10.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "accessory"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 1,
+      "compatible_character_ids": [],
+      "display_name": "Cape de brume",
+      "equipment_slot": 1,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "cape_brume",
+      "path": "res://data/items/definitions/cape_brume.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "5d08386d42949b9afa4fa413773e85efa09f1e3ccdb92f123e8a0611dbc75233",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_mp",
+            "value": 1.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "esquive",
+            "value": 0.08
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "armor",
+        "cape"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Cendres du Phénix",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd"
+      ],
+      "item_id": "cendres_du_phenix",
+      "path": "res://data/items/definitions/cendres_du_phenix.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "d00011d0fea33cb2aed9869a692582603c7e702d0df7ec2fff1b7716471f0655",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Chaînes de Prométhée",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd"
+      ],
+      "item_id": "chaines_de_promethee",
+      "path": "res://data/items/definitions/chaines_de_promethee.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "304ecdb1d4138a80f41c90810371b6b05dcb83382fbd9c35048f03f3c655cf72",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 2,
+      "compatible_character_ids": [],
+      "display_name": "Collier des sages",
+      "equipment_slot": 2,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "collier_sages",
+      "path": "res://data/items/definitions/collier_sages.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "ff47eef13e0f0b205af717ac89f17ac53136bc05ab3d4382db62107d238efe0c",
+      "spell_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.0,
+            "damage_type_filter": -1,
+            "healing_and_shield_percent": 0.15,
+            "modifier_name": "Sagesse protectrice",
+            "push_bonus": 0,
+            "range_bonus": 0,
+            "require_elemental_damage": false,
+            "target_hp_at_or_below": -1.0,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        }
+      ],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "resist_magique",
+            "value": 25.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "accessory"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 2,
+      "compatible_character_ids": [],
+      "display_name": "Couronne",
+      "equipment_slot": 2,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_forest_arena_integration.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd",
+        "res://tools/labs/forest_arena_integration/capture_forest_arena_integration.gd",
+        "res://tools/labs/forest_arena_integration/forest_arena_integration_config.gd"
+      ],
+      "item_id": "couronne",
+      "path": "res://data/items/definitions/couronne.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "b27dd0fe8dbd37791d0a4cbadd7779655c4a9ba22d01ca835517f4c1fdf5bb33",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_ap",
+            "value": 1.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_hp",
+            "value": -15.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "accessory",
+        "head"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Croc de Cerbère",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd"
+      ],
+      "item_id": "croc_de_cerbere",
+      "path": "res://data/items/definitions/croc_de_cerbere.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "90a98094b457af79661df6a2da1d93f12f0488d35e6ee789f0fb0c50b7f8b101",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 0,
+      "compatible_character_ids": [
+        "warrior"
+      ],
+      "display_name": "Excalibur",
+      "equipment_slot": 0,
+      "incoming_references": [
+        "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_equipment_reward_presentation.gd",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "excalibur",
+      "path": "res://data/items/definitions/excalibur.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "a422222aa97e11bef43ac02f3d5487a8fe700b5ac8e40fabbfd810ffa9247b5c",
+      "spell_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.15,
+            "damage_type_filter": 0,
+            "healing_and_shield_percent": 0.0,
+            "modifier_name": "Tranchant royal",
+            "push_bonus": 0,
+            "range_bonus": 0,
+            "require_elemental_damage": false,
+            "target_hp_at_or_below": -1.0,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        }
+      ],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "armure",
+            "value": 20.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "weapon"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Fureur d’Arès",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://test/unit/test_relic_system.gd"
+      ],
+      "item_id": "fureur_d_ares",
+      "path": "res://data/items/definitions/fureur_d_ares.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "42c5dd85f734a9918acd91de15aa8cc753c2057f30f876e453d65c8a483cb02b",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 0,
+      "compatible_character_ids": [
+        "warrior"
+      ],
+      "display_name": "Hache de l’exécuteur",
+      "equipment_slot": 0,
+      "incoming_references": [
+        "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+        "res://addons/dungeon_draft_arena_studio/items/test/item_studio_smoke_runner.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_item_studio_v1.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "hache_executeur",
+      "path": "res://data/items/definitions/hache_executeur.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "cb0e9483b474d468b611f10fc499400ba00ae28a5fcc8f9d907e00fe3ef734d2",
+      "spell_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.15,
+            "damage_type_filter": 0,
+            "healing_and_shield_percent": 0.0,
+            "modifier_name": "Fil de l'exécuteur",
+            "push_bonus": 0,
+            "range_bonus": 0,
+            "require_elemental_damage": false,
+            "target_hp_at_or_below": -1.0,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.25,
+            "damage_type_filter": 0,
+            "healing_and_shield_percent": 0.0,
+            "modifier_name": "Exécution conditionnelle",
+            "push_bonus": 0,
+            "range_bonus": 0,
+            "require_elemental_damage": false,
+            "target_hp_at_or_below": 0.35,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        }
+      ],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "weapon"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 1,
+      "compatible_character_ids": [
+        "warrior"
+      ],
+      "display_name": "Harnois",
+      "equipment_slot": 1,
+      "incoming_references": [
+        "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "harnois",
+      "path": "res://data/items/definitions/harnois.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "f77ca593bf38abda4604e1961bab3a7ca18105debadbb7fe223211b7b9e65808",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_hp",
+            "value": 40.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "armure",
+            "value": 40.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "armor"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Lyre d’Orphée",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd"
+      ],
+      "item_id": "lyre_d_orphee",
+      "path": "res://data/items/definitions/lyre_d_orphee.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "472ca9f8d15382931e45364c63a7670b5b0d30bb3e3ef280647442f850e7f585",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 1,
+      "compatible_character_ids": [],
+      "display_name": "Manteau de givre",
+      "equipment_slot": 1,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "manteau_givre",
+      "path": "res://data/items/definitions/manteau_givre.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "5af70fac9034cbfc088870febc2751415ed87adee24a67624cd37c9afa62b83d",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "resist_magique",
+            "value": 35.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "resistance_ice",
+            "value": 0.25
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "armor",
+        "cape"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 0,
+      "compatible_character_ids": [
+        "warrior"
+      ],
+      "display_name": "Matraque du troll",
+      "equipment_slot": 0,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "matraque_troll",
+      "path": "res://data/items/definitions/matraque_troll.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "6dc762eed1fd26293c473089c1b72baed8a1604e70ac1ed5a3aba65a49219294",
+      "spell_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.1,
+            "damage_type_filter": 0,
+            "healing_and_shield_percent": 0.0,
+            "modifier_name": "Impact du troll",
+            "push_bonus": 1,
+            "range_bonus": 0,
+            "require_elemental_damage": false,
+            "target_hp_at_or_below": -1.0,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        }
+      ],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "weapon"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 4,
+      "compatible_character_ids": [],
+      "display_name": "Parchemin d’élan mineur",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://core/game_manager.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://data/runs/economy/odyssey_economy_profile.tres",
+        "res://test/unit/test_achilles_theorycraft_foundation.gd",
+        "res://test/unit/test_inventory_equipment_system.gd",
+        "res://test/unit/test_odyssey_achilles_solo_run.gd"
+      ],
+      "item_id": "minor_action_scroll",
+      "path": "res://data/items/definitions/minor_action_scroll.tres",
+      "rarity": "common",
+      "reward_eligible": false,
+      "semantic_fingerprint": "747dcc511580fb792b587af5c83564aeed1e069c2313f6c2ae96ee41ce9f5010",
+      "spell_modifiers": [],
+      "starting_inventory": true,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "consumable",
+        "scroll"
+      ],
+      "use_effect": 2,
+      "use_value": 1.0
+    },
+    {
+      "category": 3,
+      "compatible_character_ids": [],
+      "display_name": "Potion de soin mineure",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+        "res://core/game_manager.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://data/runs/economy/odyssey_economy_profile.tres",
+        "res://test/unit/test_achilles_theorycraft_foundation.gd",
+        "res://test/unit/test_inventory_equipment_system.gd",
+        "res://test/unit/test_item_studio_v1.gd",
+        "res://test/unit/test_odyssey_achilles_solo_run.gd"
+      ],
+      "item_id": "minor_healing_potion",
+      "path": "res://data/items/definitions/minor_healing_potion.tres",
+      "rarity": "common",
+      "reward_eligible": false,
+      "semantic_fingerprint": "f140eaa2516db8dd0583d2b03965ff7b5dc6ee0a224d22051be900d2b757833d",
+      "spell_modifiers": [],
+      "starting_inventory": true,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "consumable",
+        "potion"
+      ],
+      "use_effect": 1,
+      "use_value": 25.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Plume de Niké",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd"
+      ],
+      "item_id": "plume_de_nike",
+      "path": "res://data/items/definitions/plume_de_nike.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "492be8e52a2e3b0011162e1f7829a2d53e097a015e933766dd717671484bc741",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 0,
+      "compatible_character_ids": [
+        "mage"
+      ],
+      "display_name": "Prisme élémentaire",
+      "equipment_slot": 0,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+      ],
+      "item_id": "prisme_elementaire",
+      "path": "res://data/items/definitions/prisme_elementaire.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "dd61d77bd8e9ac01a876ff4ba5b3ae64e1b372d507abaeeb9512560a1887e8e5",
+      "spell_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "damage_percent": 0.18,
+            "damage_type_filter": -1,
+            "healing_and_shield_percent": 0.0,
+            "modifier_name": "Résonance élémentaire",
+            "push_bonus": 0,
+            "range_bonus": 0,
+            "require_elemental_damage": true,
+            "target_hp_at_or_below": -1.0,
+            "target_spell_id": "",
+            "target_spell_name": ""
+          },
+          "script_path": "res://data/items/item_spell_modifier_data.gd"
+        }
+      ],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "weapon",
+        "focus"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 1,
+      "compatible_character_ids": [],
+      "display_name": "Plastron renforcé",
+      "equipment_slot": 1,
+      "incoming_references": [
+        "res://core/game_manager.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_inventory_equipment_system.gd"
+      ],
+      "item_id": "reinforced_vest",
+      "path": "res://data/items/definitions/reinforced_vest.tres",
+      "rarity": "common",
+      "reward_eligible": false,
+      "semantic_fingerprint": "6b31aa8f91a63b13a818943a3e611fe14b3f5b70e44306be26177d4c385601b6",
+      "spell_modifiers": [],
+      "starting_inventory": true,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "armure",
+            "value": 5.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "armor"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 2,
+      "compatible_character_ids": [],
+      "display_name": "Charme runique",
+      "equipment_slot": 2,
+      "incoming_references": [
+        "res://core/game_manager.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_inventory_equipment_system.gd"
+      ],
+      "item_id": "runic_charm",
+      "path": "res://data/items/definitions/runic_charm.tres",
+      "rarity": "uncommon",
+      "reward_eligible": false,
+      "semantic_fingerprint": "51ec81f86e3b9fc007ecd1cf9b2124d384cf0ad1e84dc8871cad4214cbf32b8f",
+      "spell_modifiers": [],
+      "starting_inventory": true,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "max_hp",
+            "value": 10.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "accessory",
+        "runic"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Sablier de Chronos",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd"
+      ],
+      "item_id": "sablier_de_chronos",
+      "path": "res://data/items/definitions/sablier_de_chronos.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "b011daace26e3fd96108a2a74b63e9934ebee6a093f3f55966e458d9de4495ee",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 5,
+      "compatible_character_ids": [],
+      "display_name": "Sandales d’Hermès",
+      "equipment_slot": -1,
+      "incoming_references": [
+        "res://test/unit/test_relic_first_run_reward_pool.gd"
+      ],
+      "item_id": "sandales_d_hermes",
+      "path": "res://data/items/definitions/sandales_d_hermes.tres",
+      "rarity": "common",
+      "reward_eligible": true,
+      "semantic_fingerprint": "b0d1a6ed58411e256621cae56af84998e6b83879225602bfffe230b9777224d4",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [],
+      "status": "SHARED",
+      "tags": [
+        "first_run_equipment_reward"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 2,
+      "compatible_character_ids": [],
+      "display_name": "Sceau",
+      "equipment_slot": 2,
+      "incoming_references": [
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_first_run_v2_contract.gd",
+        "res://test/unit/test_relic_first_run_reward_pool.gd",
+        "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd",
+        "res://ui/Particles/lumiere_diffuse.gd"
+      ],
+      "item_id": "sceau",
+      "path": "res://data/items/definitions/sceau.tres",
+      "rarity": "rare",
+      "reward_eligible": false,
+      "semantic_fingerprint": "17799529d41f4fd2029c342ed3bbd27300c22c14fda6175464b36ff895d6b937",
+      "spell_modifiers": [],
+      "starting_inventory": false,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "armure",
+            "value": 20.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        },
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "resist_magique",
+            "value": 20.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "accessory"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    },
+    {
+      "category": 0,
+      "compatible_character_ids": [
+        "warrior"
+      ],
+      "display_name": "Épée d’entraînement",
+      "equipment_slot": 0,
+      "incoming_references": [
+        "res://core/game_manager.gd",
+        "res://data/items/catalogs/default_item_catalog.tres",
+        "res://test/unit/test_inventory_equipment_system.gd",
+        "res://test/unit/test_item_studio_v1.gd",
+        "res://test/unit/test_post_combat_flow.gd"
+      ],
+      "item_id": "warrior_training_sword",
+      "path": "res://data/items/definitions/warrior_training_sword.tres",
+      "rarity": "common",
+      "reward_eligible": false,
+      "semantic_fingerprint": "6d650a5221dfadca71da998b6eea8d69bcdf0605500a928edd67789e06bac235",
+      "spell_modifiers": [],
+      "starting_inventory": true,
+      "stat_modifiers": [
+        {
+          "class": "Resource",
+          "properties": {
+            "modifier_type": 0,
+            "stat_id": "attack_power",
+            "value": 3.0
+          },
+          "script_path": "res://data/items/item_stat_modifier_data.gd"
+        }
+      ],
+      "status": "SHARED",
+      "tags": [
+        "weapon",
+        "one_handed"
+      ],
+      "use_effect": 0,
+      "use_value": 0.0
+    }
+  ],
+  "draft_directory": "res://data/items/drafts",
+  "draft_is_auto_discovered": false,
+  "effect_classes": {
+    "descriptor_count": 5,
+    "reachable_classes": {
+      "ItemDefinition.UseEffect.1": "use.heal_flat",
+      "ItemDefinition.UseEffect.2": "use.restore_ap_flat",
+      "ItemReactiveEffectData:adjacent_enemy_turn_end": "relic.reactive",
+      "ItemReactiveEffectData:ap_after_action": "relic.reactive",
+      "ItemReactiveEffectData:hp_lost": "relic.reactive",
+      "ItemReactiveEffectData:hp_threshold_crossed": "relic.reactive",
+      "ItemReactiveEffectData:manual_activation": "relic.reactive",
+      "ItemReactiveEffectData:unit_killed": "relic.reactive",
+      "ItemReactiveEffectData:voluntary_move_prepared": "relic.reactive",
+      "item_spell_modifier_data": "spell.item_modifier",
+      "item_stat_modifier_data": "stat.flat"
+    },
+    "unsupported": [],
+    "valid": true
+  },
+  "errors": [],
+  "godot_version": "4.7.1-stable (official)",
+  "legacy_resources": [
+    {
+      "evidence": "Absent du HEAD; suppression qualifiée par docs/audits/project_cleanup/candidate_deletions.md",
+      "path": "res://data/equipment/**",
+      "runtime_usage": false,
+      "status": "HISTORIQUE"
+    },
+    {
+      "evidence": "Ancien format RelicDefinition absent ; les reliques actives utilisent ItemDefinition et RelicRuntimeService",
+      "path": "res://data/relics/**",
+      "runtime_usage": false,
+      "status": "HISTORIQUE"
+    }
+  ],
+  "mutable_sharing": {
+    "shared_mutable": [],
+    "valid": true
+  },
+  "production_catalog_fingerprint": "dd0cf8b05e550b97924319b92d65378c7f0450c53bb0d4b5630a2e3a537883e3",
+  "references": {
+    "anneau_faille": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "arc_maudit": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_equipment_reward_presentation.gd",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "broche": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "caillou": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "cape_brume": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "cendres_du_phenix": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd"
+    ],
+    "chaines_de_promethee": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd"
+    ],
+    "collier_sages": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "couronne": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_forest_arena_integration.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd",
+      "res://tools/labs/forest_arena_integration/capture_forest_arena_integration.gd",
+      "res://tools/labs/forest_arena_integration/forest_arena_integration_config.gd"
+    ],
+    "croc_de_cerbere": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd"
+    ],
+    "excalibur": [
+      "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_equipment_reward_presentation.gd",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "fureur_d_ares": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://test/unit/test_relic_system.gd"
+    ],
+    "hache_executeur": [
+      "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+      "res://addons/dungeon_draft_arena_studio/items/test/item_studio_smoke_runner.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_item_studio_v1.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "harnois": [
+      "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "lyre_d_orphee": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd"
+    ],
+    "manteau_givre": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "matraque_troll": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "minor_action_scroll": [
+      "res://core/game_manager.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://data/runs/economy/odyssey_economy_profile.tres",
+      "res://test/unit/test_achilles_theorycraft_foundation.gd",
+      "res://test/unit/test_inventory_equipment_system.gd",
+      "res://test/unit/test_odyssey_achilles_solo_run.gd"
+    ],
+    "minor_healing_potion": [
+      "res://addons/dungeon_draft_arena_studio/items/test/item_studio_capture_runner.gd",
+      "res://core/game_manager.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://data/runs/economy/odyssey_economy_profile.tres",
+      "res://test/unit/test_achilles_theorycraft_foundation.gd",
+      "res://test/unit/test_inventory_equipment_system.gd",
+      "res://test/unit/test_item_studio_v1.gd",
+      "res://test/unit/test_odyssey_achilles_solo_run.gd"
+    ],
+    "plume_de_nike": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd"
+    ],
+    "prisme_elementaire": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd"
+    ],
+    "reinforced_vest": [
+      "res://core/game_manager.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_inventory_equipment_system.gd"
+    ],
+    "runic_charm": [
+      "res://core/game_manager.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_inventory_equipment_system.gd"
+    ],
+    "sablier_de_chronos": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd"
+    ],
+    "sandales_d_hermes": [
+      "res://test/unit/test_relic_first_run_reward_pool.gd"
+    ],
+    "sceau": [
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_first_run_v2_contract.gd",
+      "res://test/unit/test_relic_first_run_reward_pool.gd",
+      "res://tools/labs/equipment_reward/equipment_reward_presentation_lab.gd",
+      "res://ui/Particles/lumiere_diffuse.gd"
+    ],
+    "warrior_training_sword": [
+      "res://core/game_manager.gd",
+      "res://data/items/catalogs/default_item_catalog.tres",
+      "res://test/unit/test_inventory_equipment_system.gd",
+      "res://test/unit/test_item_studio_v1.gd",
+      "res://test/unit/test_post_combat_flow.gd"
+    ]
+  },
+  "reward_tag": "first_run_equipment_reward",
+  "runtime_authorities": {
+    "EquipmentLoadout": "res://items/equipment_loadout.gd",
+    "EquipmentRewardOverlay": "res://ui/post_combat/equipment_reward_overlay.gd",
+    "EquipmentService": "res://items/equipment_service.gd",
+    "EquipmentStatService": "res://items/equipment_stat_service.gd",
+    "FirstRunEquipmentRewardService": "res://data/post_combat/first_run_equipment_reward_service.gd",
+    "InventoryScreen": "res://ui/inventory/inventory_screen.gd",
+    "ItemCatalog": "res://data/items/item_catalog.gd",
+    "ItemDefinition": "res://data/items/item_definition.gd",
+    "ItemInstance": "res://items/item_instance.gd",
+    "ItemReactiveEffectData": "res://data/items/item_reactive_effect_data.gd",
+    "ItemSpellModifierData": "res://data/items/item_spell_modifier_data.gd",
+    "ItemStatModifierData": "res://data/items/item_stat_modifier_data.gd",
+    "ItemUseService": "res://items/item_use_service.gd",
+    "RelicEffectRegistry": "res://items/relic_effect_registry.gd",
+    "RelicRuntimeService": "res://items/relic_runtime_service.gd",
+    "RunInventory": "res://items/run_inventory.gd"
+  },
+  "schema_version": 1,
+  "semantic_fingerprints": {
+    "res://data/items/definitions/anneau_faille.tres": "da93024ee28d28797036b1bf323361bef570d8b69e3a35e23971ea88700ed832",
+    "res://data/items/definitions/arc_maudit.tres": "99e948e415c657b8eb09ffb0b8b199ed5c1a95b5e1797d99672bb9a104debc5d",
+    "res://data/items/definitions/broche.tres": "81c55ae6efb9f36537dd03231966b5a16f0033116f02f8ff84dde25ea8512776",
+    "res://data/items/definitions/caillou.tres": "9fc3c02343b14a05b83ccc5ff302c79649bc36624758845485e96d8f4b21883d",
+    "res://data/items/definitions/cape_brume.tres": "5d08386d42949b9afa4fa413773e85efa09f1e3ccdb92f123e8a0611dbc75233",
+    "res://data/items/definitions/cendres_du_phenix.tres": "d00011d0fea33cb2aed9869a692582603c7e702d0df7ec2fff1b7716471f0655",
+    "res://data/items/definitions/chaines_de_promethee.tres": "304ecdb1d4138a80f41c90810371b6b05dcb83382fbd9c35048f03f3c655cf72",
+    "res://data/items/definitions/collier_sages.tres": "ff47eef13e0f0b205af717ac89f17ac53136bc05ab3d4382db62107d238efe0c",
+    "res://data/items/definitions/couronne.tres": "b27dd0fe8dbd37791d0a4cbadd7779655c4a9ba22d01ca835517f4c1fdf5bb33",
+    "res://data/items/definitions/croc_de_cerbere.tres": "90a98094b457af79661df6a2da1d93f12f0488d35e6ee789f0fb0c50b7f8b101",
+    "res://data/items/definitions/excalibur.tres": "a422222aa97e11bef43ac02f3d5487a8fe700b5ac8e40fabbfd810ffa9247b5c",
+    "res://data/items/definitions/fureur_d_ares.tres": "42c5dd85f734a9918acd91de15aa8cc753c2057f30f876e453d65c8a483cb02b",
+    "res://data/items/definitions/hache_executeur.tres": "cb0e9483b474d468b611f10fc499400ba00ae28a5fcc8f9d907e00fe3ef734d2",
+    "res://data/items/definitions/harnois.tres": "f77ca593bf38abda4604e1961bab3a7ca18105debadbb7fe223211b7b9e65808",
+    "res://data/items/definitions/lyre_d_orphee.tres": "472ca9f8d15382931e45364c63a7670b5b0d30bb3e3ef280647442f850e7f585",
+    "res://data/items/definitions/manteau_givre.tres": "5af70fac9034cbfc088870febc2751415ed87adee24a67624cd37c9afa62b83d",
+    "res://data/items/definitions/matraque_troll.tres": "6dc762eed1fd26293c473089c1b72baed8a1604e70ac1ed5a3aba65a49219294",
+    "res://data/items/definitions/minor_action_scroll.tres": "747dcc511580fb792b587af5c83564aeed1e069c2313f6c2ae96ee41ce9f5010",
+    "res://data/items/definitions/minor_healing_potion.tres": "f140eaa2516db8dd0583d2b03965ff7b5dc6ee0a224d22051be900d2b757833d",
+    "res://data/items/definitions/plume_de_nike.tres": "492be8e52a2e3b0011162e1f7829a2d53e097a015e933766dd717671484bc741",
+    "res://data/items/definitions/prisme_elementaire.tres": "dd61d77bd8e9ac01a876ff4ba5b3ae64e1b372d507abaeeb9512560a1887e8e5",
+    "res://data/items/definitions/reinforced_vest.tres": "6b31aa8f91a63b13a818943a3e611fe14b3f5b70e44306be26177d4c385601b6",
+    "res://data/items/definitions/runic_charm.tres": "51ec81f86e3b9fc007ecd1cf9b2124d384cf0ad1e84dc8871cad4214cbf32b8f",
+    "res://data/items/definitions/sablier_de_chronos.tres": "b011daace26e3fd96108a2a74b63e9934ebee6a093f3f55966e458d9de4495ee",
+    "res://data/items/definitions/sandales_d_hermes.tres": "b0d1a6ed58411e256621cae56af84998e6b83879225602bfffe230b9777224d4",
+    "res://data/items/definitions/sceau.tres": "17799529d41f4fd2029c342ed3bbd27300c22c14fda6175464b36ff895d6b937",
+    "res://data/items/definitions/warrior_training_sword.tres": "6d650a5221dfadca71da998b6eea8d69bcdf0605500a928edd67789e06bac235"
+  },
+  "valid": true,
+  "warnings": []
+}

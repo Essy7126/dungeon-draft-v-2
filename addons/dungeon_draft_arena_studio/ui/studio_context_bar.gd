@@ -34,7 +34,7 @@ func _ready() -> void:
 	run_option.item_selected.connect(_on_run_selected)
 	room_option = _labeled_option(bar, "Salle")
 	room_option.item_selected.connect(_on_room_selected)
-	hero_option = _labeled_option(bar, "Héros")
+	hero_option = _labeled_option(bar, "Personnage")
 	hero_option.item_selected.connect(_on_hero_selected)
 	scope_option = _labeled_option(bar, "Portée")
 	for scope in StudioProjectContext.VALID_SCOPES:
@@ -123,6 +123,14 @@ func _refresh(_unused = {}) -> void:
 		hero_option.set_item_tooltip(index, str(hero.character_id) if hero != null else "Référence nulle")
 		if hero == context.active_hero:
 			hero_option.select(index)
+	if context.active_hero == null and context.active_character != null:
+		var outside_index := hero_option.item_count
+		hero_option.add_item("%s (hors partie)" % context.active_character.unit_name)
+		hero_option.set_item_tooltip(
+			outside_index, context.active_character.resource_path
+		)
+		hero_option.set_item_disabled(outside_index, true)
+		hero_option.select(outside_index)
 	for index in range(scope_option.item_count):
 		if StringName(scope_option.get_item_metadata(index)) == context.edit_scope:
 			scope_option.select(index)
@@ -141,21 +149,20 @@ func _refresh(_unused = {}) -> void:
 		if metadata_value is Dictionary:
 			error_count += int((metadata_value as Dictionary).get("errors", 0))
 	var target := str(context.persisted_ui.get("production_target", "Non définie"))
-	var hero_display := "Aucun héros"
-	if context.active_hero != null:
-		hero_display = str(context.active_hero.character_id)
-		if context.active_hero.base_unit_data != null \
-				and not context.active_hero.base_unit_data.unit_name.strip_edges().is_empty():
-			hero_display = context.active_hero.base_unit_data.unit_name
+	var hero_display := "Aucun personnage"
+	if context.active_character != null:
+		hero_display = context.active_character.unit_name
+		if context.active_hero == null:
+			hero_display += " (hors partie)"
 	human_summary_label.text = "%s · Salle %d — %s · %s · %s · %d usage(s) · %d erreur(s) · Cible : %s" % [
 		str(snap.get("run_name", "Aucune partie")), int(snap.get("room_index", -1)) + 1,
 		str(snap.get("room_name", "Aucune salle")), hero_display,
 		_scope_label(context.edit_scope), usage_count, error_count, target,
 	]
 	human_summary_label.tooltip_text = human_summary_label.text
-	details_label.text = "Partie : %s  ·  Salle : %s  ·  Profil : %s  ·  usages : %d  ·  index g%d" % [
+	details_label.text = "Partie : %s  ·  Salle : %s  ·  Personnage : %s  ·  Profil : %s  ·  usages : %d  ·  index g%d" % [
 		snap.get("run_path", ""), snap.get("room_path", ""),
-		snap.get("progression_path", ""), usage_count,
+		snap.get("character_path", ""), snap.get("progression_path", ""), usage_count,
 		reference_graph.generation if reference_graph != null else 0,
 	]
 	details_label.tooltip_text = details_label.text
