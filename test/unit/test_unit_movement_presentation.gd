@@ -50,9 +50,13 @@ class FullPathMovementVisual:
 	extends Node2D
 
 	var received_path: Array = []
+	var segment_duration_seconds := 0.4
 
 	func begin_path_movement_feedback(path: Array) -> void:
 		received_path = path.duplicate()
+
+	func get_movement_segment_duration(_path: Array) -> float:
+		return segment_duration_seconds
 
 
 class FullPathUnitViewFixture:
@@ -116,6 +120,13 @@ func test_legacy_two_argument_move_feedback_starts_before_motion_and_ends_on_arr
 	battle._unit_views[unit] = view
 	assert_true(grid.place_unit(unit, Vector2i.ZERO))
 	assert_false(view.has_method("begin_path_movement_feedback"))
+	assert_almost_eq(
+		battle._movement_segment_duration_for(
+			view, [Vector2i.ZERO, Vector2i.RIGHT]
+		),
+		MovementTiming.MOVE_SEGMENT_DURATION,
+		0.0001,
+	)
 
 	battle._animate_move(unit, [Vector2i.ZERO, Vector2i.RIGHT])
 
@@ -154,7 +165,15 @@ func test_full_path_is_forwarded_from_battle_to_optional_visual() -> void:
 	battle._animate_move(unit, path)
 
 	assert_eq(view.visual_spy.received_path, path)
-	await wait_seconds(MovementTiming.duration_for_segments(path.size() - 1) + 0.1)
+	assert_almost_eq(view.get_movement_segment_duration(path), 0.4, 0.0001)
+	assert_almost_eq(
+		battle._movement_segment_duration_for(view, path),
+		0.4,
+		0.0001,
+	)
+	await wait_seconds(
+		view.get_movement_segment_duration(path) * (path.size() - 1) + 0.1
+	)
 	assert_eq(unit.grid_pos, Vector2i(3, 0))
 
 

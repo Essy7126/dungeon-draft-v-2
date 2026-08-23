@@ -61,8 +61,8 @@ const BATTLE_UNIT_VIEW_SCALE := 0.58
 # vertically. Normalizing the real UnitView hierarchy to that cell keeps this
 # regression independent from desktop DPI and window stretch settings.
 const REFERENCE_ODYSSEY_CELL_DEPTH_PIXELS := 74.0
-const ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS := 59.0
-const ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS := 73.0
+const ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS := 72.0
+const ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS := 90.0
 
 
 func test_achilles_has_a_valid_painted_presence_profile() -> void:
@@ -117,7 +117,7 @@ func test_v3_direct_profile_keeps_tactical_camera_and_exact_animation_pool() -> 
 	)
 	assert_eq(profile.viewport_size, Vector2i(384, 384))
 	assert_almost_eq(profile.orthographic_size, 2.6, 0.0001)
-	assert_almost_eq(profile.render_display_size, 78.0, 0.0001)
+	assert_almost_eq(profile.render_display_size, 96.0, 0.0001)
 	assert_eq(profile.character_framing_offset, Vector3(0.0, 0.35, 0.0))
 	assert_almost_eq(profile.character_scale, 1.0, 0.0001)
 	var actual_clips: Array[StringName] = profile.required_action_names.duplicate()
@@ -301,13 +301,13 @@ func test_real_battle_unit_views_match_reference_cell_and_skeleton() -> void:
 		achilles_height_pixels,
 		ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS,
 		ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS,
-		"Achilles occupies 59-73 px at the accepted Odyssey cell framing.",
+		"Achilles occupies 72-90 px in the normalized UnitView reference.",
 	)
 	assert_between(
 		achilles_to_cell,
-		0.79,
-		0.99,
-		"Achilles stays below one painted cell-depth at rest.",
+		0.95,
+		1.25,
+		"Achilles remains close to one painted cell-depth at rest.",
 	)
 	assert_between(
 		skeleton_to_cell,
@@ -317,8 +317,8 @@ func test_real_battle_unit_views_match_reference_cell_and_skeleton() -> void:
 	)
 	assert_between(
 		achilles_to_skeleton,
-		0.85,
-		1.35,
+		1.05,
+		1.50,
 		"Achilles and the production skeleton share a readable combat scale.",
 	)
 	assert_lte(
@@ -334,7 +334,7 @@ func test_real_battle_unit_views_match_reference_cell_and_skeleton() -> void:
 	# This explicit counterfactual reconstructs the rejected screenshot setup:
 	# the old 125 px billboard and the former painted x1.974 were both active.
 	var obsolete_height_pixels := (
-		achilles_height_pixels * (125.0 / 78.0) * (1.974 / 1.05)
+		achilles_height_pixels * (125.0 / 96.0) * (1.974 / 1.05)
 	)
 	assert_gt(obsolete_height_pixels, ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS)
 

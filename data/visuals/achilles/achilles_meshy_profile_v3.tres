@@ -22,7 +22,7 @@ fallback_backend_scene = ExtResource("3_fallback")
 viewport_size = Vector2i(384, 384)
 camera_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.8, 3.5)
 orthographic_size = 2.6
-render_display_size = 78.0
+render_display_size = 96.0
 character_framing_offset = Vector3(0, 0.35, 0)
 directional_yaw_map = {
 "E": 90.0,
@@ -79,6 +79,8 @@ animation_profile = {
 }
 }
 run_min_path_cells = 6
+walk_segment_duration_seconds = 0.4
+run_segment_duration_seconds = 0.2
 clip_runtime = {
 "Alert": {"blend_time": 0.15, "release_normalized": 0.5, "role": "alert", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
 "Archery_Shot_3": {"blend_time": 0.08, "release_normalized": 0.72, "role": "ranged_release", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
@@ -97,7 +99,7 @@ clip_runtime = {
 "Sword_Judgment": {"blend_time": 0.1, "release_normalized": 0.7, "role": "ultimate", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.25},
 "Sword_Parry_Backward_2": {"blend_time": 0.06, "release_normalized": 0.42, "role": "guard_parry", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.0},
 "Triple_Combo_Attack": {"blend_time": 0.08, "release_normalized": 0.68, "role": "combo_three", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.25},
-"Walking": {"blend_time": 0.12, "release_normalized": 0.5, "role": "walk", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"Walking": {"blend_time": 0.12, "release_normalized": 0.5, "role": "walk", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 0.75},
 "mage_soell_cast_7": {"blend_time": 0.1, "release_normalized": 0.62, "role": "spell_cast", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.1},
 "run_fast_3_inplace": {"blend_time": 0.1, "release_normalized": 0.5, "role": "run_fast", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0}
 }

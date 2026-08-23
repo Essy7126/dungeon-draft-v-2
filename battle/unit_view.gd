@@ -2,6 +2,7 @@
 extends Node2D
 
 const Glossary = preload("res://ui/combat_glossary.gd")
+const MovementTiming = preload("res://characters/character_movement_timing.gd")
 
 const UNIT_SIZE = 48
 
@@ -627,6 +628,19 @@ func begin_path_movement_feedback(path: Array) -> void:
 
 func begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i) -> void:
 	_begin_movement_feedback(from_cell, to_cell, [])
+
+
+func get_movement_segment_duration(path: Array) -> float:
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("get_movement_segment_duration"):
+		var custom_duration: Variant = _optional_visual.call(
+			"get_movement_segment_duration", path.duplicate()
+		)
+		if custom_duration is float or custom_duration is int:
+			var duration := float(custom_duration)
+			if duration > 0.0:
+				return clampf(duration, 0.05, 1.0)
+	return MovementTiming.MOVE_SEGMENT_DURATION
 
 
 func _begin_movement_feedback(

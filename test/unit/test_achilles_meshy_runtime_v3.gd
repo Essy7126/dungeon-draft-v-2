@@ -28,6 +28,15 @@ func test_v3_is_the_direct_meshy_model_with_all_native_actions() -> void:
 	assert_eq(profile.expected_bone_count, 24)
 	assert_eq(profile.root_motion_bone_names, [&"Hips"] as Array[StringName])
 	assert_eq(profile.required_action_names, EXPECTED_ACTIONS)
+	assert_almost_eq(profile.render_display_size, 96.0, 0.0001)
+	assert_eq(profile.run_min_path_cells, 6)
+	assert_almost_eq(profile.walk_segment_duration_seconds, 0.4, 0.0001)
+	assert_almost_eq(profile.run_segment_duration_seconds, 0.2, 0.0001)
+	assert_almost_eq(
+		float(profile.runtime_for_clip(&"Walking").speed_scale),
+		0.75,
+		0.0001,
+	)
 	assert_eq(
 		profile.skeleton_signature_mode,
 		AchillesVisualProfile.SKELETON_SIGNATURE_MODE_EXACT_BONE_NAMES,
@@ -73,11 +82,15 @@ func test_short_paths_walk_and_six_cells_run() -> void:
 	var context := await _ready_runtime()
 	var adapter := context.adapter as AchillesIsoUnitView
 	var player := (context.visual as Achilles3DVisual).get_animation_player()
-	adapter.begin_path_movement_feedback(_straight_path(5))
+	var walk_path := _straight_path(5)
+	var run_path := _straight_path(6)
+	assert_almost_eq(adapter.get_movement_segment_duration(walk_path), 0.4, 0.0001)
+	assert_almost_eq(adapter.get_movement_segment_duration(run_path), 0.2, 0.0001)
+	adapter.begin_path_movement_feedback(walk_path)
 	await wait_process_frames(1)
 	assert_eq(StringName(player.current_animation), &"Walking")
 	adapter.cancel_movement_feedback()
-	adapter.begin_path_movement_feedback(_straight_path(6))
+	adapter.begin_path_movement_feedback(run_path)
 	await wait_process_frames(1)
 	assert_eq(StringName(player.current_animation), &"run_fast_3_inplace")
 	adapter.cancel_movement_feedback()

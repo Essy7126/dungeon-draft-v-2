@@ -1288,6 +1288,7 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		view.begin_path_movement_feedback(path.duplicate())
 	else:
 		view.begin_movement_feedback(path[0], path[1])
+	var segment_duration := _movement_segment_duration_for(view, path)
 	terrain_effects.begin_unit_resolution(unit, &"movement")
 	for i in range(1, path.size()):
 		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.
@@ -1306,7 +1307,7 @@ func _animate_move(unit: Unit, path: Array) -> void:
 			view,
 			"position",
 			target_pos,
-			MovementTiming.MOVE_SEGMENT_DURATION
+			segment_duration
 		)
 		await tween.finished
 		# La vue a pu être libérée pendant l'await.
@@ -1330,6 +1331,19 @@ func _animate_move(unit: Unit, path: Array) -> void:
 		view.end_movement_feedback()
 		if unit.team != 0:
 			_orient_unit_toward_nearest_opponent(unit)
+
+
+func _movement_segment_duration_for(view, path: Array) -> float:
+	if is_instance_valid(view) \
+			and view.has_method("get_movement_segment_duration"):
+		var custom_duration: Variant = view.call(
+			"get_movement_segment_duration", path.duplicate()
+		)
+		if custom_duration is float or custom_duration is int:
+			var duration := float(custom_duration)
+			if duration > 0.0:
+				return clampf(duration, 0.05, 1.0)
+	return MovementTiming.MOVE_SEGMENT_DURATION
 
 # ============================================================
 # INTENTIONS — ATTAQUE

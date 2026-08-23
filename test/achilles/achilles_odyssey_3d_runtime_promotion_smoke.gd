@@ -540,6 +540,10 @@ func _inspect_runtime_visual(
 			profile != null
 			and profile.character_asset_path == V3_PREVIEW_PATH
 		),
+		"runtime_v3_display_size_is_96": (
+			profile != null
+			and is_equal_approx(profile.render_display_size, 96.0)
+		),
 		"runtime_v3_profile_requires_24_bones": (
 			profile != null and profile.expected_bone_count == 24
 		),
@@ -616,8 +620,8 @@ func _inspect_runtime_visual(
 			displayed_character_height > 1.0
 		),
 		"character_matches_tactical_height_band": (
-			displayed_character_height >= 50.0
-			and displayed_character_height <= 90.0
+			displayed_character_height >= 58.0
+			and displayed_character_height <= 78.0
 		),
 	}
 
