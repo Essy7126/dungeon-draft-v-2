@@ -46,6 +46,26 @@ class MovementBattleFixture:
 		_unit_views[unit] = view
 
 
+class FullPathMovementVisual:
+	extends Node2D
+
+	var received_path: Array = []
+
+	func begin_path_movement_feedback(path: Array) -> void:
+		received_path = path.duplicate()
+
+
+class FullPathUnitViewFixture:
+	extends UnitViewScript
+
+	var visual_spy: FullPathMovementVisual = null
+
+	func _instantiate_optional_visual() -> void:
+		visual_spy = FullPathMovementVisual.new()
+		_optional_visual = visual_spy
+		add_child(visual_spy)
+
+
 class DeathVisualSpy:
 	extends Node2D
 
@@ -83,7 +103,7 @@ func test_painted_presentation_hides_character_outlines_by_default() -> void:
 	assert_false(FOREST_PRESENTATION.outlines_enabled)
 
 
-func test_move_feedback_starts_before_motion_and_ends_on_arrival() -> void:
+func test_legacy_two_argument_move_feedback_starts_before_motion_and_ends_on_arrival() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)
 	var grid := GridData.new(3, 1)
@@ -95,6 +115,7 @@ func test_move_feedback_starts_before_motion_and_ends_on_arrival() -> void:
 	battle.terrain_effects = TerrainEffects.new(grid)
 	battle._unit_views[unit] = view
 	assert_true(grid.place_unit(unit, Vector2i.ZERO))
+	assert_false(view.has_method("begin_path_movement_feedback"))
 
 	battle._animate_move(unit, [Vector2i.ZERO, Vector2i.RIGHT])
 
@@ -108,6 +129,33 @@ func test_move_feedback_starts_before_motion_and_ends_on_arrival() -> void:
 	assert_eq(unit.grid_pos, Vector2i.RIGHT)
 	assert_eq(view.position, Vector2(64.0, 0.0))
 	assert_eq(view.end_count, 1)
+
+
+func test_full_path_is_forwarded_from_battle_to_optional_visual() -> void:
+	var battle := MovementBattleFixture.new()
+	add_child_autofree(battle)
+	var grid := GridData.new(4, 1)
+	var unit := Unit.new("Test chemin complet")
+	var view := FullPathUnitViewFixture.new()
+	battle.add_child(view)
+	view.setup(unit)
+	battle.grid = grid
+	battle.pathfinder = Pathfinder.new(grid)
+	battle.terrain_effects = TerrainEffects.new(grid)
+	battle._unit_views[unit] = view
+	assert_true(grid.place_unit(unit, Vector2i.ZERO))
+	var path := [
+		Vector2i.ZERO,
+		Vector2i.RIGHT,
+		Vector2i(2, 0),
+		Vector2i(3, 0),
+	]
+
+	battle._animate_move(unit, path)
+
+	assert_eq(view.visual_spy.received_path, path)
+	await wait_seconds(MovementTiming.duration_for_segments(path.size() - 1) + 0.1)
+	assert_eq(unit.grid_pos, Vector2i(3, 0))
 
 
 func test_hero_faces_nearest_enemy_as_soon_as_placed() -> void:

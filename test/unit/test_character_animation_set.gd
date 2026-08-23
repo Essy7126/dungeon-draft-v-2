@@ -51,6 +51,27 @@ func test_action_id_is_a_free_name_not_a_closed_list() -> void:
 	)
 
 
+func test_cast_action_id_helper_is_stable_and_reversible() -> void:
+	var action_id := CharacterAnimationSetData.cast_action_id_for_spell_id(
+		&"achilles_guard"
+	)
+	assert_eq(action_id, &"cast:achilles_guard")
+	assert_true(CharacterAnimationSetData.is_cast_action_id(action_id))
+	assert_eq(
+		CharacterAnimationSetData.spell_id_from_cast_action_id(action_id),
+		&"achilles_guard"
+	)
+	assert_eq(
+		CharacterAnimationSetData.cast_action_id_for_spell_id(&""),
+		&""
+	)
+	assert_false(CharacterAnimationSetData.is_cast_action_id(&"cast:"))
+	assert_eq(
+		CharacterAnimationSetData.spell_id_from_cast_action_id(&"cast"),
+		&""
+	)
+
+
 func test_names_with_never_mutates_the_stored_dictionary() -> void:
 	# L'historique d'annulation du Studio dépend de cette copie.
 	var animation_set := CharacterAnimationSetData.new()
@@ -189,6 +210,119 @@ func test_preview_applies_the_unit_animation_set_to_a_running_visual() -> void:
 # Le Studio : édition, annulation, sauvegarde
 # ============================================================
 
+func test_animation_screen_lists_known_spells_and_orphaned_cast_mappings() -> void:
+	var unit := (load(MAGE_PATH) as UnitData).duplicate(true) as UnitData
+	unit.unit_name = "Mage animations dynamiques"
+	var guard := Spell.new()
+	guard.spell_id = &"achilles_guard"
+	guard.spell_name = "Garde d'airain"
+	var duplicate_guard := Spell.new()
+	duplicate_guard.spell_id = &"achilles_guard"
+	duplicate_guard.spell_name = "Doublon ignore"
+	var sweep := Spell.new()
+	sweep.spell_id = &"achilles_sweep"
+	sweep.spell_name = "Balayage"
+	var spells: Array[Spell] = [guard, duplicate_guard, sweep]
+	unit.spells = spells
+	var guard_action := CharacterAnimationSetData.cast_action_id_for_spell_id(
+		guard.spell_id
+	)
+	var sweep_action := CharacterAnimationSetData.cast_action_id_for_spell_id(
+		sweep.spell_id
+	)
+	var orphan_alpha := &"cast:ancien_alpha"
+	var orphan_zeta := &"cast:ancien_zeta"
+	var animation_set := CharacterAnimationSetData.new()
+	animation_set.animation_names = {
+		guard_action: &"DD_Mage_Run",
+		orphan_zeta: &"DD_Mage_Idle",
+		orphan_alpha: &"DD_Mage_Walk",
+	}
+	unit.animation_set = animation_set
+	var screen := SkillTreeAnimationScreen.new()
+	add_child_autofree(screen)
+	await wait_process_frames(2)
+
+	screen.set_document(unit, MAGE_PATH)
+
+	for index in CharacterVisual3D.ACTION_ORDER.size():
+		assert_eq(
+			screen._event_actions[index],
+			CharacterVisual3D.ACTION_ORDER[index]
+		)
+	var expected_dynamic: Array[StringName] = [
+		guard_action,
+		sweep_action,
+		orphan_alpha,
+		orphan_zeta,
+	]
+	assert_eq(
+		screen._event_actions.slice(CharacterVisual3D.ACTION_ORDER.size()),
+		expected_dynamic
+	)
+	assert_eq(
+		screen.event_list.item_count,
+		CharacterVisual3D.ACTION_ORDER.size() + expected_dynamic.size()
+	)
+	assert_true(screen._rows.has(guard_action))
+	assert_true(screen._rows.has(orphan_alpha))
+	assert_string_contains(screen._label_for(guard_action), "Garde d'airain")
+	assert_string_contains(screen._label_for(orphan_alpha), "non repertorie")
+	var orphan_row := screen._rows[orphan_alpha] as Dictionary
+	var orphan_option := orphan_row.get("option") as OptionButton
+	assert_eq(
+		StringName(orphan_option.get_item_metadata(orphan_option.selected)),
+		&"DD_Mage_Walk"
+	)
+	var guard_row := screen._rows[guard_action] as Dictionary
+	var guard_option := guard_row.get("option") as OptionButton
+	animation_set.set_animation_name(guard_action, &"DD_Mage_Walk")
+	screen.set_document(unit, MAGE_PATH)
+	await wait_process_frames(1)
+	assert_same(
+		(screen._rows[guard_action] as Dictionary).get("option"),
+		guard_option,
+		"une simple modification conserve les listes deroulantes existantes"
+	)
+	assert_eq(
+		StringName(guard_option.get_item_metadata(guard_option.selected)),
+		&"DD_Mage_Walk"
+	)
+
+	animation_set.set_animation_name(orphan_alpha, &"")
+	screen.set_document(unit, MAGE_PATH)
+	assert_false(screen._event_actions.has(orphan_alpha))
+	assert_true(screen._event_actions.has(orphan_zeta))
+	await wait_process_frames(2)
+
+
+func test_studio_spell_specific_mapping_is_undoable() -> void:
+	var source := ResourceLoader.load(
+		MAGE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as UnitData
+	var session := SkillTreeEditSession.new()
+	assert_true(session.open(source))
+	_handle_known_production_uid_warning()
+	var action_id := CharacterAnimationSetData.cast_action_id_for_spell_id(
+		&"mage_test_spell"
+	)
+	assert_eq(session.working_unit.animation_set.get_animation_name(action_id), &"")
+	assert_true(session.set_animation_clip(
+		action_id,
+		&"DD_Mage_Run",
+		"Sort - Test"
+	))
+	assert_eq(
+		session.working_unit.animation_set.get_animation_name(action_id),
+		&"DD_Mage_Run"
+	)
+	assert_true(session.is_dirty())
+	assert_true(session.history_undo())
+	assert_eq(session.working_unit.animation_set.get_animation_name(action_id), &"")
+	assert_false(session.is_dirty())
+	session.release_document(false)
+
+
 func test_studio_isolates_the_set_and_records_an_undoable_change() -> void:
 	var source := ResourceLoader.load(
 		MAGE_PATH, "", ResourceLoader.CACHE_MODE_IGNORE
@@ -248,7 +382,7 @@ func test_reference_index_and_property_audit_include_the_animation_set() -> void
 	))
 
 
-func test_run_session_plans_new_set_and_canonical_base_unit_together() -> void:
+func test_run_session_edits_the_existing_achilles_animation_pool() -> void:
 	var run_data: RunData = null
 	var hero: RunHeroProfile = null
 	for candidate in RunContentCatalogService.discover_runs():
@@ -261,7 +395,11 @@ func test_run_session_plans_new_set_and_canonical_base_unit_together() -> void:
 			break
 	assert_not_null(run_data)
 	assert_not_null(hero)
-	assert_null(hero.base_unit_data.animation_set)
+	assert_not_null(hero.base_unit_data.animation_set)
+	assert_eq(
+		hero.base_unit_data.animation_set.resource_path,
+		"res://data/characters/achilles/animations.tres"
+	)
 	var session := SkillTreeEditSession.new()
 	assert_true(session.open_progression(run_data, hero))
 	assert_true(session.set_animation_clip(&"idle", &"Achilles_Idle", "Repos"))
@@ -276,7 +414,10 @@ func test_run_session_plans_new_set_and_canonical_base_unit_together() -> void:
 		planned_paths.append(entry.target_path)
 		if entry.resource is UnitData:
 			canonical_unit_update = entry.target_path == hero.base_unit_data.resource_path
-	assert_true(canonical_unit_update, "le UnitData canonique rattache la nouvelle fiche")
+	assert_false(
+		canonical_unit_update,
+		"le UnitData canonique reference deja le pool et ne doit pas etre reecrit"
+	)
 	assert_true(Array(planned_paths).has(
 		"res://data/characters/achilles/animations.tres"
 	))
@@ -302,11 +443,11 @@ func test_enemies_go_through_the_same_animation_pipeline() -> void:
 	assert_false(preview.get_available_clips().is_empty())
 	var session := SkillTreeEditSession.new()
 	assert_true(session.open(enemy))
-	assert_true(session.set_animation_clip(&"walk", &"DD_Skeleton_Walk", "Marche"))
+	assert_true(session.set_animation_clip(&"walk", &"DD_Skeleton_Run", "Marche"))
 	assert_true(session.is_dirty(), "modifier un ennemi doit activer la sauvegarde")
 	assert_eq(
 		session.working_unit.animation_set.get_animation_name(&"walk"),
-		&"DD_Skeleton_Walk"
+		&"DD_Skeleton_Run"
 	)
 	session.release_document(false)
 

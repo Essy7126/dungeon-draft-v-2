@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "manifest_id": "achilles_animation_pool_v2",
+  "status": "STRUCTURAL_PROTOTYPE_INTEGRATED",
+  "generated_date": "2026-08-23",
+  "assets": {
+    "canonical_v1": {
+      "path": "res://assets/characters/Achilles/3d/achilles_rig_v1.glb",
+      "bytes": 16136348,
+      "sha256": "CA162138B9BE6693210619C06BBDABF0FD486E3DC75460A2566CBE140B4A774F",
+      "immutable": true
+    },
+    "animation_pool_v2": {
+      "path": "res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb",
+      "bytes": 17718288,
+      "sha256": "A2657FCE4C9B1C2B3AC424929B27D1E64B7C770FF090B0D462166FFB51B8E16E"
+    },
+    "extracted_texture_v2": {
+      "path": "res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2_texture_20250901.png",
+      "bytes": 13870004,
+      "sha256": "6B0473E514AD1E7041BDA10A4530175C313B5D214DACBF164185A8D7631D5387",
+      "identical_to_v1_extracted_texture": true
+    },
+    "meshy_animation_source": {
+      "filename": "Meshy_AI_Meshy_Merged_Animations (4).glb",
+      "audit_path": "C:/Users/paolo/Downloads/Meshy_AI_Meshy_Merged_Animations (4).glb",
+      "bytes": 9191236,
+      "sha256": "21DAD4EE17146F3A1430A684C7EFD14544701100307C233D4E5B27812EF58770",
+      "bundled_in_repository": false
+    }
+  },
+  "rig": {
+    "canonical_bone_count": 52,
+    "skeleton_signature_sha256": "6CC796EE5D708EE1A7F884C028C457CA535A4D7B572A189B36DFE5EBAD62D65D",
+    "source_bone_count": 24,
+    "mapped_source_bone_count": 22,
+    "canonical_rest_finger_bone_count": 30,
+    "root_translation_scale": 0.675795458
+  },
+  "animation_counts": {
+    "total": 24,
+    "canonical_native": 4,
+    "meshy_retargeted": 20
+  },
+  "canonical_native_clips": [
+    "Anim_0.001",
+    "Anim_0.003",
+    "Anim_0.004",
+    "Anim_0.005"
+  ],
+  "retargeted_clips": [
+    {
+      "source": "Alert",
+      "exported": "achilles_v2__Alert",
+      "duration_seconds": 4.0,
+      "role": "alert",
+      "review_status": "POOL_READY_UNASSIGNED"
+    },
+    {
+      "source": "Archery_Shot_3",
+      "exported": "achilles_v2__Archery_Shot_3",
+      "duration_seconds": 0.7,
+      "role": "ranged_release",
+      "review_status": "NEEDS_BOW_CONTACT_REVIEW"
+    },
+    {
+      "source": "Basic_Jump",
+      "exported": "achilles_v2__Basic_Jump",
+      "duration_seconds": 5.9,
+      "role": "jump",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW"
+    },
+    {
+      "source": "Charged_Spell_Cast",
+      "exported": "achilles_v2__Charged_Spell_Cast",
+      "duration_seconds": 2.666667,
+      "role": "charged_spell",
+      "review_status": "POOL_READY_UNASSIGNED"
+    },
+    {
+      "source": "Charged_Upward_Slash",
+      "exported": "achilles_v2__Charged_Upward_Slash",
+      "duration_seconds": 3.2,
+      "role": "heavy_attack",
+      "review_status": "NEEDS_WEAPON_CONTACT_REVIEW"
+    },
+    {
+      "source": "Chest_Pound_Taunt",
+      "exported": "achilles_v2__Chest_Pound_Taunt",
+      "duration_seconds": 4.833333,
+      "role": "taunt_buff",
+      "review_status": "POOL_READY_UNASSIGNED"
+    },
+    {
+      "source": "Double_Combo_Attack",
+      "exported": "achilles_v2__Double_Combo_Attack",
+      "duration_seconds": 2.833333,
+      "role": "combo_two",
+      "review_status": "NEEDS_ROOT_AND_WEAPON_REVIEW"
+    },
+    {
+      "source": "Draw_and_Shoot_from_Back_2",
+      "exported": "achilles_v2__Draw_and_Shoot_from_Back_2",
+      "duration_seconds": 5.0,
+      "role": "bow_draw_release",
+      "review_status": "NEEDS_BOW_CONTACT_REVIEW"
+    },
+    {
+      "source": "Electrocution_Reaction",
+      "exported": "achilles_v2__Electrocution_Reaction",
+      "duration_seconds": 4.666667,
+      "role": "status_reaction",
+      "review_status": "POOL_READY_UNASSIGNED"
+    },
+    {
+      "source": "Hit_Reaction_1",
+      "exported": "achilles_v2__Hit_Reaction_1",
+      "duration_seconds": 1.233333,
+      "role": "hit",
+      "review_status": "POOL_READY_ASSIGNED"
+    },
+    {
+      "source": "Idle_11",
+      "exported": "achilles_v2__Idle_11",
+      "duration_seconds": 1.9,
+      "role": "alternate_idle",
+      "review_status": "NEEDS_ARM_POSE_POLISH"
+    },
+    {
+      "source": "Left_Slash",
+      "exported": "achilles_v2__Left_Slash",
+      "duration_seconds": 3.166667,
+      "role": "slash",
+      "review_status": "NEEDS_WEAPON_CONTACT_REVIEW"
+    },
+    {
+      "source": "mage_soell_cast_7",
+      "exported": "achilles_v2__mage_soell_cast_7",
+      "duration_seconds": 2.7,
+      "role": "spell_cast",
+      "review_status": "POOL_READY_ASSIGNED"
+    },
+    {
+      "source": "run_fast_3_inplace",
+      "exported": "achilles_v2__run_fast_3_inplace",
+      "duration_seconds": 0.766667,
+      "role": "run_fast",
+      "review_status": "POOL_READY_ASSIGNED"
+    },
+    {
+      "source": "Running",
+      "exported": "achilles_v2__Running",
+      "duration_seconds": 0.633333,
+      "role": "alternate_run",
+      "review_status": "POOL_READY_UNASSIGNED"
+    },
+    {
+      "source": "Simple_Kick",
+      "exported": "achilles_v2__Simple_Kick",
+      "duration_seconds": 2.333333,
+      "role": "kick",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW"
+    },
+    {
+      "source": "Sword_Judgment",
+      "exported": "achilles_v2__Sword_Judgment",
+      "duration_seconds": 4.366667,
+      "role": "ultimate",
+      "review_status": "NEEDS_ROOT_AND_WEAPON_REVIEW"
+    },
+    {
+      "source": "Sword_Parry_Backward_2",
+      "exported": "achilles_v2__Sword_Parry_Backward_2",
+      "duration_seconds": 0.566667,
+      "role": "guard_parry",
+      "review_status": "NEEDS_WEAPON_CONTACT_REVIEW"
+    },
+    {
+      "source": "Triple_Combo_Attack",
+      "exported": "achilles_v2__Triple_Combo_Attack",
+      "duration_seconds": 4.333333,
+      "role": "combo_three",
+      "review_status": "NEEDS_ROOT_AND_WEAPON_REVIEW"
+    },
+    {
+      "source": "Walking",
+      "exported": "achilles_v2__Walking",
+      "duration_seconds": 1.033333,
+      "role": "walk",
+      "review_status": "POOL_READY_ASSIGNED"
+    }
+  ],
+  "runtime_bindings": {
+    "idle": "Anim_0.004",
+    "walk": "achilles_v2__Walking",
+    "run": "achilles_v2__run_fast_3_inplace",
+    "hit": "achilles_v2__Hit_Reaction_1",
+    "generic_cast": "achilles_v2__mage_soell_cast_7",
+    "spells": {
+      "achilles_advance": "achilles_v2__run_fast_3_inplace",
+      "achilles_guard": "achilles_v2__Sword_Parry_Backward_2",
+      "achilles_spear_thrust": "achilles_v2__Left_Slash",
+      "achilles_sweep": "achilles_v2__Charged_Upward_Slash"
+    },
+    "hit_event_wired": true,
+    "advance_visual_cell_sync_wired": true
+  },
+  "movement_policy": {
+    "distance_unit": "traversed_grid_cells",
+    "walk_min_cells": 1,
+    "walk_max_cells": 5,
+    "run_min_cells": 6,
+    "configurable_profile_field": "run_min_path_cells",
+    "current_achilles_max_mp": 3,
+    "current_run_reachability_note": "The 6+ automatic run threshold needs a movement bonus or a future rule while max_mp remains 3."
+  },
+  "quality": {
+    "level": "STRUCTURAL_RETARGET_PROTOTYPE",
+    "no_death_clip": true,
+    "death_fallback": "ADAPTER_FADE",
+    "mapped_actions_finite": true,
+    "root_delta_error_below": 0.00001,
+    "root_heavy_clips": [
+      "achilles_v2__Basic_Jump",
+      "achilles_v2__Double_Combo_Attack",
+      "achilles_v2__Simple_Kick",
+      "achilles_v2__Sword_Judgment",
+      "achilles_v2__Triple_Combo_Attack"
+    ],
+    "full_xyz_neutralization_additional_clip": "achilles_v2__Sword_Parry_Backward_2",
+    "finger_policy": "The 30 canonical-only finger bones stay in canonical rest pose and need authored hand poses for precise contacts.",
+    "remaining_review": [
+      "reference-pose arm and hand polish",
+      "foot sliding and loop seams",
+      "sword and bow contact alignment",
+      "weapon grip and finger posing",
+      "clip-by-clip root-motion policy"
+    ]
+  },
+  "reproduction": {
+    "blender_version_validated": "5.1.2",
+    "script": "tools/blender/achilles_animation_pool/retarget_all_actions.py",
+    "output_must_be_isolated": true,
+    "never_overwrite": [
+      "canonical_v1",
+      "meshy_animation_source"
+    ]
+  }
+}

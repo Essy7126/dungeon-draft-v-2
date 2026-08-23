@@ -598,6 +598,10 @@ func _move_caster_to_target(ctx) -> void:
 			"to": destination,
 			"collision": false,
 		})
+		# The grid remains authoritative. This presentation event keeps the
+		# UnitView aligned with the resolved cell, just like native teleports
+		# and forced movement handled by SpellCaster.
+		EventBus.unit_pushed.emit(ctx.caster, origin, destination, false)
 
 
 func _apply_adjacent_shield(ctx) -> void:

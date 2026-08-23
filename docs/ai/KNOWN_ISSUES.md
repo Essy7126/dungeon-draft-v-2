@@ -24,10 +24,14 @@
 
 ## L’Odyssée — limites du candidat Achille solo
 
-- Seule une source visuelle sud-est explicite est disponible pour Achille. Les
-  autres directions utilisent un fallback volontaire avec avertissement unique ;
-  les quatre capacités partagent provisoirement l’animation d’attaque. La mort
-  utilise un fade simple et non une animation finale.
+- Le corps 3D tourne désormais sur quatre orientations et un pool de 24 clips
+  (20 Meshy retargetés + 4 natifs). Les quatre capacités ont des affectations
+  distinctes, mais les contacts d'arme, les mains, certains appuis et les
+  coutures de boucle restent à polir artistiquement.
+- Le seuil automatique actuel est 1–5 cases = marche, 6+ = course rapide.
+  Achille n'a que 3 PM de base : la course ne se déclenche donc normalement
+  qu'avec un bonus ou une future règle. La source ne fournit aucune animation
+  de mort ; le fondu simple reste le fallback.
 - Les ennemis réutilisent des squelettes visuels existants et les trois salles
   partagent leurs layouts et profils de présentation peints avec le catalogue
   canonique. Les wrappers visuels, rencontres et progressions restent propres à

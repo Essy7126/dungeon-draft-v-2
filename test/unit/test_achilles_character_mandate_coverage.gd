@@ -1,7 +1,7 @@
 extends GutTest
 
 const PROFILE_PATH := (
-	"res://data/visuals/achilles/achilles_character_only_profile.tres"
+	"res://data/visuals/achilles/achilles_character_only_profile_v2.tres"
 )
 const VISUAL_SCENE := preload(
 	"res://characters/achilles/3d/Achilles3DVisual.tscn"
@@ -20,9 +20,6 @@ const PROGRESSION_PATH := (
 )
 const ECONOMY_PATH := (
 	"res://data/runs/economy/odyssey_economy_profile.tres"
-)
-const EXPECTED_UNIT_SHA := (
-	"88B80F80A8F4FA3E48818FD6DCA73ED3C47FEB41DD7A9798717B30842755F62A"
 )
 const EXPECTED_PROGRESSION_SHA := (
 	"A1F2C8B77263D8519065D6CED424FFD4B450E79CD76A70A2EFB50D55BAA75AC1"
@@ -113,7 +110,7 @@ func test_character_only_profile_schema() -> void:
 	var profile := _profile()
 	assert_not_null(profile)
 	assert_eq(profile.schema_version, 1)
-	assert_eq(profile.profile_id, &"achilles_character_only_v1")
+	assert_eq(profile.profile_id, &"achilles_character_animation_pool_v2")
 	assert_true(profile.is_character_only_valid())
 
 
@@ -147,8 +144,11 @@ func test_idle_or_stable_pose_available() -> void:
 func test_move_has_explicit_clip_or_fallback() -> void:
 	var visual := _create_visual()
 	assert_true(visual.play_move())
-	assert_eq(visual.get_active_semantic(), &"MOVE")
-	assert_eq(_profile().animation_profile.MOVE.godot_name, "Anim_0_005")
+	assert_eq(visual.get_active_semantic(), &"WALK")
+	assert_eq(
+		_profile().animation_profile.WALK.godot_name,
+		"achilles_v2__Walking",
+	)
 
 
 func test_action_has_explicit_clip_or_fallback() -> void:
@@ -157,15 +157,15 @@ func test_action_has_explicit_clip_or_fallback() -> void:
 	assert_eq(visual.get_active_semantic(), &"ACTION_FALLBACK")
 	assert_eq(
 		_profile().animation_profile.ACTION_FALLBACK.godot_name,
-		"Anim_0_003",
+		"achilles_v2__mage_soell_cast_7",
 	)
 
 
 func test_unclassified_action_not_silently_named() -> void:
 	var profile := _profile()
 	var action_entry := profile.animation_profile.ACTION_FALLBACK as Dictionary
-	assert_eq(action_entry.mode, "SOURCE_CLIP_GENERIC_ACTION")
-	assert_eq(action_entry.source_name, "Anim_0.003")
+	assert_eq(action_entry.mode, "ANIMATION_POOL_GENERIC_ACTION")
+	assert_eq(action_entry.source_name, "mage_soell_cast_7")
 	assert_false(action_entry.has("weapon_semantic"))
 	assert_eq(_create_visual().get_root_motion_policy(), &"ROOT_MOTION_UNCLASSIFIED")
 
@@ -207,14 +207,15 @@ func test_timeout_prevents_soft_lock() -> void:
 	# Suppress the backend completion so the adapter watchdog is the only
 	# completion path exercised by this test.
 	adapter.viewport_backend.cancel_action()
-	adapter.fallback_backend.cancel_action()
+	if is_instance_valid(adapter.fallback_backend):
+		adapter.fallback_backend.cancel_action()
 	assert_true(adapter._action_pending)
-	adapter._action_elapsed = AchillesIsoUnitView.ACTION_TIMEOUT_SECONDS - 0.01
+	adapter._action_elapsed = adapter._action_timeout_seconds - 0.01
 	adapter._process(0.02)
 	assert_false(adapter._action_pending)
 	assert_eq(releases.count, 1)
 	assert_eq(finishes.count, 1)
-	assert_eq(finishes.name, &"ACTION_FALLBACK")
+	assert_eq(finishes.name, &"cast")
 	adapter._process(AchillesIsoUnitView.ACTION_TIMEOUT_SECONDS * 2.0)
 	assert_eq(releases.count, 1)
 	assert_eq(finishes.count, 1)
@@ -238,7 +239,7 @@ func test_root_motion_does_not_move_gameplay_parent() -> void:
 	assert_true(hips_index >= 0)
 	var move_hips := visual.get_skeleton().get_bone_pose_position(hips_index)
 	assert_almost_eq(move_hips.x, visual._active_clip_hips_origin.x, 0.001)
-	assert_almost_eq(move_hips.z, visual._active_clip_hips_origin.y, 0.001)
+	assert_almost_eq(move_hips.z, visual._active_clip_hips_origin.z, 0.001)
 	assert_eq(visual._model_root.transform, visual._model_local_transform)
 	assert_eq(gameplay_parent.transform, before)
 	assert_true(visual.play_action())
@@ -246,7 +247,7 @@ func test_root_motion_does_not_move_gameplay_parent() -> void:
 	visual._process(0.4)
 	var action_hips := visual.get_skeleton().get_bone_pose_position(hips_index)
 	assert_almost_eq(action_hips.x, visual._active_clip_hips_origin.x, 0.001)
-	assert_almost_eq(action_hips.z, visual._active_clip_hips_origin.y, 0.001)
+	assert_almost_eq(action_hips.z, visual._active_clip_hips_origin.z, 0.001)
 	assert_eq(visual._model_root.transform, visual._model_local_transform)
 	assert_eq(gameplay_parent.transform, before)
 
@@ -326,53 +327,55 @@ func test_backend_cleanup_releases_viewport() -> void:
 	assert_null(viewport_ref.get_ref())
 
 
-func test_no_visual_action_fallback_available() -> void:
+func test_verified_legacy_action_fallback_available() -> void:
 	var profile := _profile()
 	assert_not_null(profile.fallback_backend_scene)
 	var fallback := profile.fallback_backend_scene.instantiate()
 	assert_eq(
 		fallback.get_script(),
-		load("res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd"),
+		load("res://characters/achilles/3d/achilles_legacy_2d_backend.gd"),
 	)
-	assert_true(fallback.find_children(
-		"*", "CanvasItem", true, false
-	).is_empty())
+	assert_false(fallback.visible)
+	assert_eq(fallback.process_mode, Node.PROCESS_MODE_DISABLED)
+	assert_eq(fallback.find_children(
+		"*", "AnimatedSprite2D", true, false
+	).size(), 1)
 	fallback.free()
 
 
 func test_backends_never_visible_together() -> void:
 	var adapter := await _create_ready_adapter()
 	assert_true(adapter.viewport_backend.visible)
-	assert_false(adapter.fallback_backend.visible)
+	assert_false(is_instance_valid(adapter.fallback_backend))
 	assert_eq(_visible_backend_count(adapter), 1)
 	adapter.force_safe_fallback(&"MANDATE_COVERAGE_FORCED_FALLBACK")
 	assert_false(adapter.viewport_backend.visible)
-	assert_false(adapter.fallback_backend.visible)
-	assert_eq(_visible_backend_count(adapter), 0)
+	assert_true(adapter.fallback_backend.visible)
+	assert_eq(_visible_backend_count(adapter), 1)
 
 
-func test_no_visual_action_before_warmup_defers_viewport_activation() -> void:
+func test_action_before_warmup_queues_until_viewport_is_ready() -> void:
 	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
 	add_child_autofree(adapter)
-	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
+	assert_eq(adapter.get_active_backend_name(), &"Initializing")
 	assert_true(adapter.play_spell_action())
 	assert_true(adapter._action_pending)
-	await wait_process_frames(4)
+	await wait_process_frames(8)
 	assert_true(adapter.viewport_backend.is_ready_for_render())
-	assert_true(adapter._viewport_activation_deferred)
-	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
-	assert_false(adapter.fallback_backend.visible)
-	assert_false(adapter.viewport_backend.visible)
-	adapter._on_backend_action_finished(&"ACTION_FALLBACK")
+	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
+	assert_true(adapter.viewport_backend.visible)
+	assert_false(is_instance_valid(adapter.fallback_backend))
+	adapter._on_backend_action_finished(
+		&"ACTION_FALLBACK", adapter.viewport_backend
+	)
 	assert_false(adapter._action_pending)
 	assert_eq(adapter.get_active_backend_name(), &"Viewport3DBackend")
-	assert_false(adapter.fallback_backend.visible)
 	assert_true(adapter.viewport_backend.visible)
 	adapter.force_safe_fallback(&"RACE_TEST_FORCED_FALLBACK")
-	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
+	assert_eq(adapter.get_active_backend_name(), &"Legacy2DFallbackBackend")
 	assert_true(adapter.play_spell_action())
 	assert_true(adapter._action_pending)
-	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
+	assert_eq(adapter.get_active_backend_name(), &"Legacy2DFallbackBackend")
 	adapter.cancel_pending_visual_actions()
 	assert_false(adapter._action_pending)
 
@@ -410,7 +413,7 @@ func test_force_safe_fallback_mid_action_stops_hidden_3d_action() -> void:
 	assert_true(adapter.play_spell_action())
 	assert_true(visual._action_active)
 	adapter.force_safe_fallback(&"MID_ACTION_REGRESSION_TEST")
-	assert_eq(adapter.get_active_backend_name(), &"NoVisualFallbackBackend")
+	assert_eq(adapter.get_active_backend_name(), &"Legacy2DFallbackBackend")
 	assert_false(adapter.viewport_backend.visible)
 	assert_false(visual._action_active)
 	assert_true(adapter.fallback_backend._action_pending)
@@ -483,6 +486,8 @@ func test_no_weapon_in_all_rooms() -> void:
 	var adapter_text := FileAccess.get_file_as_string(
 		"res://characters/achilles/AchillesIsoUnitView.tscn"
 	)
+	# The nominal scene only contains the weaponless 3D backend. The historical
+	# armed 2D body is loaded lazily only after a verified rendering failure.
 	assert_false(adapter_text.contains("AchillesLegacy2DBackend"))
 	assert_false(adapter_text.contains("AchillesVisual2D"))
 
@@ -526,7 +531,6 @@ func test_odyssey_result_screen_reached() -> void:
 # Non-regression -------------------------------------------------------------
 
 func test_achilles_stats_unchanged() -> void:
-	assert_eq(FileAccess.get_sha256(ACHILLES_UNIT_PATH).to_upper(), EXPECTED_UNIT_SHA)
 	var unit_data := load(ACHILLES_UNIT_PATH) as UnitData
 	assert_not_null(unit_data)
 	assert_eq(unit_data.unit_id, &"achilles")
@@ -537,6 +541,14 @@ func test_achilles_stats_unchanged() -> void:
 	assert_eq(unit_data.attack_power, 18)
 	assert_false(unit_data.basic_attack_enabled)
 	assert_eq(unit_data.active_spell_slots, 4)
+	assert_eq(
+		unit_data.preview_visual_scene.resource_path,
+		"res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb",
+	)
+	assert_eq(
+		unit_data.animation_set.resource_path,
+		"res://data/characters/achilles/animations.tres",
+	)
 
 
 func test_achilles_spell_resources_unchanged() -> void:
@@ -619,17 +631,19 @@ func test_targeting_unchanged() -> void:
 	)
 
 
-# The historical armed sprite remains in the repository as a POC asset, but it
-# must no longer be reachable from the Odyssey runtime adapter or its fallback.
-func test_retired_2d_fallback_is_unreachable_from_runtime() -> void:
+# The historical body is kept only as a lazy safety net. It must never be
+# instantiated during a healthy V2 warm-up, but remains reachable after a
+# verified 3D error so a failed renderer cannot soft-lock combat.
+func test_legacy_2d_fallback_is_lazy_and_absent_from_nominal_runtime() -> void:
 	var fallback := _profile().fallback_backend_scene.instantiate()
 	assert_eq(
 		fallback.get_script(),
-		load("res://characters/achilles/3d/achilles_no_visual_fallback_backend.gd"),
+		load("res://characters/achilles/3d/achilles_legacy_2d_backend.gd"),
 	)
-	assert_true(fallback.find_children(
+	assert_eq(fallback.find_children(
 		"*", "AnimatedSprite2D", true, false
-	).is_empty())
+	).size(), 1)
+	assert_false(fallback.visible)
 	var adapter_text := FileAccess.get_file_as_string(
 		"res://characters/achilles/AchillesIsoUnitView.tscn"
 	)
@@ -696,7 +710,9 @@ func _assert_room_supports_single_3d_achilles(room_index: int) -> void:
 
 
 func _visible_backend_count(adapter: AchillesIsoUnitView) -> int:
-	return int(adapter.fallback_backend.visible) + int(adapter.viewport_backend.visible)
+	var fallback_visible: bool = is_instance_valid(adapter.fallback_backend) \
+		and adapter.fallback_backend.visible
+	return int(fallback_visible) + int(adapter.viewport_backend.visible)
 
 
 func _first_legal_spawn(cells: Array[Vector2i], grid: GridData) -> Vector2i:

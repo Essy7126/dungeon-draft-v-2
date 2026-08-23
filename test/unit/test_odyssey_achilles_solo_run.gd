@@ -281,10 +281,32 @@ func test_advance_moves_to_contact_and_never_crosses_wall_or_unit() -> void:
 	var target := Unit.new("Cible", 1, 100)
 	open_field.grid.place_unit(achilles, Vector2i(0, 0))
 	open_field.grid.place_unit(target, Vector2i(3, 0))
+	var visual_sync := {
+		"count": 0,
+		"unit": null,
+		"from": Vector2i(-1, -1),
+		"to": Vector2i(-1, -1),
+	}
+	var capture_visual_sync := func(
+			moved_unit: Unit,
+			from_cell: Vector2i,
+			to_cell: Vector2i,
+			_collision: bool
+		) -> void:
+		visual_sync.count += 1
+		visual_sync.unit = moved_unit
+		visual_sync.from = from_cell
+		visual_sync.to = to_cell
+	EventBus.unit_pushed.connect(capture_visual_sync)
 	var report := open_field.caster.cast(achilles, advance, target.grid_pos)
+	EventBus.unit_pushed.disconnect(capture_visual_sync)
 	assert_false(report.get("failed", false), str(report))
 	assert_eq(target.current_hp, 95)
 	assert_eq(achilles.grid_pos, Vector2i(2, 0))
+	assert_eq(visual_sync.count, 1)
+	assert_same(visual_sync.unit, achilles)
+	assert_eq(visual_sync.from, Vector2i(0, 0))
+	assert_eq(visual_sync.to, Vector2i(2, 0))
 
 	var wall_field := Factory.make_battlefield(5, 1)
 	var wall_achilles := _runtime_unit()
@@ -397,10 +419,12 @@ func test_runtime_visual_adapter_releases_falls_back_and_dies_cleanly() -> void:
 	var releases := {"count": 0}
 	adapter.cast_release_reached.connect(func(): releases.count += 1)
 	assert_true(adapter.play_spell_action(_progression().spells[0]))
-	adapter._on_backend_action_release()
-	adapter._on_backend_action_release()
+	adapter._on_backend_action_release(adapter.viewport_backend)
+	adapter._on_backend_action_release(adapter.viewport_backend)
 	assert_eq(releases.count, 1)
-	adapter._on_backend_action_finished(&"ACTION_FALLBACK")
+	adapter._on_backend_action_finished(
+		&"ACTION_FALLBACK", adapter.viewport_backend
+	)
 	var deaths := {"count": 0}
 	adapter.death_animation_finished.connect(func(): deaths.count += 1)
 	unit.take_damage(999)
@@ -537,7 +561,17 @@ func test_odyssey_never_mutates_or_consumes_the_main_reward_deck() -> void:
 		main, main_resolution.heroes
 	))
 	var after := manager.get_equipment_reward_deck_snapshot()
-	assert_eq(after, before)
+	# Le run principal randomise volontairement sa graine a chaque lancement :
+	# l'ordre de la pioche peut donc changer, mais jamais son contenu ni son etat.
+	var normalized_before := before.duplicate(true)
+	var normalized_after := after.duplicate(true)
+	var before_deck := normalized_before.get("deck", []) as Array
+	var after_deck := normalized_after.get("deck", []) as Array
+	before_deck.sort()
+	after_deck.sort()
+	normalized_before["deck"] = before_deck
+	normalized_after["deck"] = after_deck
+	assert_eq(normalized_after, normalized_before)
 	manager.cleanup_run_state()
 	manager.free()
 

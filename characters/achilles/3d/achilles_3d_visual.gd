@@ -10,7 +10,6 @@ signal action_finished(action_name: StringName)
 const ACTION_FALLBACK := &"ACTION_FALLBACK"
 const ROOT_MOTION_POLICY := &"ROOT_MOTION_UNCLASSIFIED"
 const EXPECTED_BONE_COUNT := 52
-const ACTION_RELEASE_NORMALIZED := 0.5
 const ACTION_TIMEOUT_MARGIN_SECONDS := 0.75
 const FALLBACK_RELEASE_SECONDS := 0.18
 const FALLBACK_FINISH_SECONDS := 0.45
@@ -33,7 +32,7 @@ var _animation_player: AnimationPlayer = null
 var _mesh_instances: Array[MeshInstance3D] = []
 var _model_local_transform := Transform3D.IDENTITY
 var _hips_bone_index := -1
-var _active_clip_hips_origin := Vector2.ZERO
+var _active_clip_hips_origin := Vector3.ZERO
 var _active_clip: StringName = &""
 var _active_semantic: StringName = &""
 var _initialized := false
@@ -106,41 +105,107 @@ func initialize_from_profile(profile: AchillesVisualProfile) -> bool:
 	return true
 
 
-func play_idle() -> bool:
+func play_idle(clip_override: StringName = &"") -> bool:
 	if not _initialized:
 		return false
 	cancel_action()
-	return _play_semantic_clip(&"IDLE")
+	return _play_semantic_clip(&"IDLE", clip_override)
 
 
-func play_move() -> bool:
+func play_move(clip_override: StringName = &"") -> bool:
+	return play_walk(clip_override)
+
+
+func play_walk(clip_override: StringName = &"") -> bool:
 	if not _initialized:
 		return false
 	cancel_action()
-	return _play_semantic_clip(&"MOVE")
+	var semantic := &"WALK" if _clip_for_semantic(&"WALK") != &"" else &"MOVE"
+	return _play_semantic_clip(semantic, clip_override)
 
 
-func play_action() -> bool:
+func play_run(clip_override: StringName = &"") -> bool:
+	if not _initialized:
+		return false
+	cancel_action()
+	var semantic := &"RUN" if _clip_for_semantic(&"RUN") != &"" else &"MOVE"
+	return _play_semantic_clip(semantic, clip_override)
+
+
+func play_action(
+		action_id: StringName = ACTION_FALLBACK,
+		clip_override: StringName = &""
+	) -> bool:
 	if not _initialized or _action_active:
 		return false
 	_action_active = true
 	_action_release_emitted = false
 	_action_finished_emitted = false
 	_action_elapsed = 0.0
-	var action_clip := _clip_for_semantic(ACTION_FALLBACK)
+	_active_semantic = action_id if action_id != &"" else ACTION_FALLBACK
+	var action_clip := _resolved_action_clip(clip_override)
 	var animation: Animation = null
 	if _animation_player != null and _animation_player.has_animation(action_clip):
 		animation = _animation_player.get_animation(action_clip)
 	if animation != null:
-		_action_release_seconds = animation.length * ACTION_RELEASE_NORMALIZED
-		_action_finish_seconds = animation.length + ACTION_TIMEOUT_MARGIN_SECONDS
-		_play_clip(action_clip, ACTION_FALLBACK)
+		var runtime := _profile.runtime_for_clip(action_clip)
+		var speed_scale := float(runtime.get("speed_scale", 1.0))
+		var effective_duration := animation.length / maxf(speed_scale, 0.05)
+		_action_release_seconds = effective_duration * float(
+			runtime.get("release_normalized", 0.5)
+		)
+		_action_finish_seconds = (
+			effective_duration + ACTION_TIMEOUT_MARGIN_SECONDS
+		)
+		_play_clip(
+			action_clip,
+			_active_semantic,
+			speed_scale,
+			float(runtime.get("blend_time", 0.12)),
+			true
+		)
 	else:
 		_action_release_seconds = FALLBACK_RELEASE_SECONDS
 		_action_finish_seconds = FALLBACK_FINISH_SECONDS
 		_hold_stable_pose()
-	action_started.emit(ACTION_FALLBACK)
+		_active_semantic = action_id if action_id != &"" else ACTION_FALLBACK
+	action_started.emit(_active_semantic)
 	return true
+
+
+func play_hit(clip_override: StringName = &"") -> bool:
+	if not _initialized or _action_active:
+		return false
+	var clip := clip_override
+	if _animation_player == null or clip == &"" \
+			or not _animation_player.has_animation(clip):
+		clip = _clip_for_semantic(&"HIT")
+	if clip == &"" or not _animation_player.has_animation(clip):
+		return false
+	var runtime := _profile.runtime_for_clip(clip)
+	return _play_clip(
+		clip,
+		&"HIT",
+		float(runtime.get("speed_scale", 1.0)),
+		float(runtime.get("blend_time", 0.08)),
+		true
+	)
+
+
+func get_action_watchdog_seconds(
+		_clip_action_id: StringName = ACTION_FALLBACK,
+		clip_override: StringName = &""
+	) -> float:
+	var action_clip := _resolved_action_clip(clip_override)
+	if _animation_player == null or not _animation_player.has_animation(action_clip):
+		return FALLBACK_FINISH_SECONDS + ACTION_TIMEOUT_MARGIN_SECONDS
+	var animation := _animation_player.get_animation(action_clip)
+	if animation == null:
+		return FALLBACK_FINISH_SECONDS + ACTION_TIMEOUT_MARGIN_SECONDS
+	var runtime := _profile.runtime_for_clip(action_clip)
+	var speed_scale := float(runtime.get("speed_scale", 1.0))
+	return animation.length / maxf(speed_scale, 0.05) \
+		+ ACTION_TIMEOUT_MARGIN_SECONDS + 0.25
 
 
 func cancel_action() -> void:
@@ -178,6 +243,17 @@ func get_source_action_names() -> Array[StringName]:
 	for animation_name in _animation_player.get_animation_list():
 		var normalized := StringName(animation_name)
 		if normalized in EXPECTED_ACTIONS:
+			result.append(normalized)
+	return result
+
+
+func get_all_source_action_names() -> Array[StringName]:
+	var result: Array[StringName] = []
+	if _animation_player == null:
+		return result
+	for animation_name in _animation_player.get_animation_list():
+		var normalized := StringName(animation_name)
+		if normalized != &"RESET":
 			result.append(normalized)
 	return result
 
@@ -257,9 +333,11 @@ func _discover_and_validate_character() -> bool:
 	if _hips_bone_index < 0:
 		_fail_setup(&"HIPS_BONE_MISSING")
 		return false
-	if get_source_action_names().size() != EXPECTED_ACTIONS.size():
-		_fail_setup(&"SOURCE_ACTION_SET_MISMATCH")
-		return false
+	var available_actions := get_all_source_action_names()
+	for expected_action in EXPECTED_ACTIONS:
+		if expected_action not in available_actions:
+			_fail_setup(&"SOURCE_ACTION_SET_MISMATCH")
+			return false
 	if _contains_equipment_named_node():
 		_fail_setup(&"EMBEDDED_EQUIPMENT_NODE_DETECTED")
 		return false
@@ -298,7 +376,11 @@ func _neutralize_hips_xz() -> void:
 		return
 	var pose_position := _skeleton.get_bone_pose_position(_hips_bone_index)
 	pose_position.x = _active_clip_hips_origin.x
-	pose_position.z = _active_clip_hips_origin.y
+	pose_position.z = _active_clip_hips_origin.z
+	var runtime := _profile.runtime_for_clip(_active_clip)
+	if String(runtime.get("root_motion_policy", "")) \
+			== "LOCAL_XYZ_NEUTRALIZED":
+		pose_position.y = _active_clip_hips_origin.y
 	_skeleton.set_bone_pose_position(_hips_bone_index, pose_position)
 
 
@@ -309,38 +391,79 @@ func _clip_for_semantic(semantic: StringName) -> StringName:
 	return StringName(entry.get("godot_name", ""))
 
 
-func _play_semantic_clip(semantic: StringName) -> bool:
-	var clip := _clip_for_semantic(semantic)
+func _resolved_action_clip(clip_override: StringName) -> StringName:
+	if _animation_player != null and clip_override != &"" \
+			and _animation_player.has_animation(clip_override):
+		return clip_override
+	return _clip_for_semantic(ACTION_FALLBACK)
+
+
+func _play_semantic_clip(
+		semantic: StringName,
+		clip_override: StringName = &""
+	) -> bool:
+	var clip := clip_override
+	if _animation_player == null or clip == &"" \
+			or not _animation_player.has_animation(clip):
+		clip = _clip_for_semantic(semantic)
 	if clip == &"":
 		_hold_stable_pose()
 		return true
-	return _play_clip(clip, semantic)
+	var runtime := _profile.runtime_for_clip(clip)
+	return _play_clip(
+		clip,
+		semantic,
+		float(runtime.get("speed_scale", 1.0)),
+		float(runtime.get("blend_time", 0.12))
+	)
 
 
-func _play_clip(clip: StringName, semantic: StringName) -> bool:
+func _play_clip(
+		clip: StringName,
+		semantic: StringName,
+		speed_scale := 1.0,
+		blend_time := 0.12,
+		restart := false
+	) -> bool:
 	if _animation_player == null or not _animation_player.has_animation(clip):
 		return false
-	if _active_clip == clip and _animation_player.is_playing():
+	if not restart and _active_clip == clip \
+			and _animation_player.is_playing():
 		_active_semantic = semantic
 		return true
-	_animation_player.play(clip)
+	_animation_player.play(
+		clip,
+		maxf(blend_time, 0.0),
+		maxf(speed_scale, 0.05)
+	)
 	_animation_player.seek(0.0, true)
 	_active_clip = clip
 	_active_semantic = semantic
 	if _hips_bone_index >= 0:
-		var hips_position := _skeleton.get_bone_pose_position(_hips_bone_index)
-		_active_clip_hips_origin = Vector2(hips_position.x, hips_position.z)
+		_active_clip_hips_origin = _skeleton.get_bone_pose_position(
+			_hips_bone_index
+		)
 	_neutralize_hips_xz()
 	return true
 
 
 func _on_animation_player_finished(animation_name: StringName) -> void:
-	if _action_active and animation_name == _clip_for_semantic(ACTION_FALLBACK):
+	if _action_active and animation_name == _active_clip:
 		_finish_action_once()
 		return
 	if not _action_active and animation_name == _active_clip \
-			and _active_semantic in [&"IDLE", &"MOVE"]:
-		_play_clip(animation_name, _active_semantic)
+			and _active_semantic == &"HIT":
+		_play_semantic_clip(&"IDLE")
+		return
+	if not _action_active and animation_name == _active_clip \
+			and _active_semantic in [&"IDLE", &"MOVE", &"WALK", &"RUN"]:
+		var runtime := _profile.runtime_for_clip(animation_name)
+		_play_clip(
+			animation_name,
+			_active_semantic,
+			float(runtime.get("speed_scale", 1.0)),
+			0.0
+		)
 
 
 func _finish_action_once() -> void:
@@ -351,8 +474,9 @@ func _finish_action_once() -> void:
 		action_release_reached.emit()
 	_action_finished_emitted = true
 	_action_active = false
+	var completed_action := _active_semantic
 	_play_semantic_clip(&"IDLE")
-	action_finished.emit(ACTION_FALLBACK)
+	action_finished.emit(completed_action)
 
 
 func _cleanup_partial_model() -> void:

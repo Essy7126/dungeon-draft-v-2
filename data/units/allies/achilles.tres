@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="UnitData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="UnitData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="PackedScene" path="res://characters/achilles/AchillesIsoUnitView.tscn" id="2_visual"]
+[ext_resource type="PackedScene" path="res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb" id="3_preview"]
+[ext_resource type="Resource" path="res://data/characters/achilles/animations.tres" id="4_animations"]
 
 [resource]
 script = ExtResource("1_unit")
@@ -14,6 +16,8 @@ max_ap = 6
 max_mp = 3
 attack_power = 18
 visual_scene = ExtResource("2_visual")
+preview_visual_scene = ExtResource("3_preview")
+animation_set = ExtResource("4_animations")
 role = "Hoplite expérimental"
 presentation_summary = "Vertical slice solo de trois salles."
 progression_summary = "Quatre disciplines minimales, sans évolution obligatoire."

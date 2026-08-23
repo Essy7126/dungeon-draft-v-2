@@ -130,16 +130,42 @@ func get_facing_label() -> String:
 	return _facing
 
 
-func play_idle(_direction := "S") -> bool:
-	return is_instance_valid(_visual) and _visual.play_idle()
+func play_idle(_direction := "S", clip_override: StringName = &"") -> bool:
+	return is_instance_valid(_visual) and _visual.play_idle(clip_override)
 
 
-func play_move(_direction := "S") -> bool:
-	return is_instance_valid(_visual) and _visual.play_move()
+func play_move(_direction := "S", clip_override: StringName = &"") -> bool:
+	return play_walk(_direction, clip_override)
 
 
-func play_action(_direction := "S") -> bool:
-	return is_instance_valid(_visual) and _visual.play_action()
+func play_walk(_direction := "S", clip_override: StringName = &"") -> bool:
+	return is_instance_valid(_visual) and _visual.play_walk(clip_override)
+
+
+func play_run(_direction := "S", clip_override: StringName = &"") -> bool:
+	return is_instance_valid(_visual) and _visual.play_run(clip_override)
+
+
+func play_hit(_direction := "S", clip_override: StringName = &"") -> bool:
+	return is_instance_valid(_visual) and _visual.play_hit(clip_override)
+
+
+func play_action(
+		_direction := "S",
+		action_id: StringName = &"ACTION_FALLBACK",
+		clip_override: StringName = &""
+	) -> bool:
+	return is_instance_valid(_visual) \
+		and _visual.play_action(action_id, clip_override)
+
+
+func get_action_watchdog_seconds(
+		action_id: StringName,
+		clip_override: StringName = &""
+	) -> float:
+	if not is_instance_valid(_visual):
+		return 2.0
+	return _visual.get_action_watchdog_seconds(action_id, clip_override)
 
 
 func cancel_action() -> void:

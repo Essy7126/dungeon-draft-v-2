@@ -69,6 +69,15 @@ const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 	},
 }
 
+# Presentation-only locomotion rule. The combat path remains authoritative;
+# this value merely decides which in-place loop is shown for that path.
+@export_range(1, 99, 1) var run_min_path_cells := 6
+
+# Per-clip playback calibration for animation-rich assets. Keys are animation
+# names from the GLB. Unknown clips deliberately receive safe defaults so a
+# newly imported clip can be previewed before it is artistically calibrated.
+@export var clip_runtime: Dictionary = {}
+
 # Deliberately generic: this slice never loads or types an equipment resource.
 @export var equipment_enabled := false
 @export var weapon_profile: Resource = null
@@ -95,3 +104,29 @@ func validated_viewport_size() -> Vector2i:
 
 func yaw_for_direction(direction: String) -> float:
 	return float(directional_yaw_map.get(direction.to_upper(), 0.0))
+
+
+func runtime_for_clip(clip_name: StringName) -> Dictionary:
+	var defaults := {
+		"speed_scale": 1.0,
+		"release_normalized": 0.5,
+		"blend_time": 0.12,
+		"root_motion_policy": "LOCAL_XZ_NEUTRALIZED",
+	}
+	if clip_name == &"":
+		return defaults
+	var stored: Variant = clip_runtime.get(String(clip_name), {})
+	if not stored is Dictionary:
+		return defaults
+	var result := defaults.duplicate(true)
+	result.merge(stored as Dictionary, true)
+	result["speed_scale"] = clampf(
+		float(result.get("speed_scale", 1.0)), 0.05, 8.0
+	)
+	result["release_normalized"] = clampf(
+		float(result.get("release_normalized", 0.5)), 0.05, 0.95
+	)
+	result["blend_time"] = clampf(
+		float(result.get("blend_time", 0.12)), 0.0, 1.0
+	)
+	return result

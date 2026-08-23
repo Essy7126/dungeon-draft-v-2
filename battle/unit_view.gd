@@ -617,12 +617,31 @@ func _play_idle() -> void:
 	_sprite.play(unit.idle_animation)
 
 
+func begin_path_movement_feedback(path: Array) -> void:
+	if path.size() < 2:
+		return
+	var from_cell: Vector2i = path[0]
+	var to_cell: Vector2i = path[1]
+	_begin_movement_feedback(from_cell, to_cell, path)
+
+
 func begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i) -> void:
+	_begin_movement_feedback(from_cell, to_cell, [])
+
+
+func _begin_movement_feedback(
+		from_cell: Vector2i,
+		to_cell: Vector2i,
+		path: Array
+	) -> void:
 	face_grid_direction(to_cell - from_cell)
 	_play_anim("walk")
 	if not is_instance_valid(_optional_visual):
 		return
-	if _optional_visual.has_method("begin_movement_feedback"):
+	if not path.is_empty() \
+			and _optional_visual.has_method("begin_path_movement_feedback"):
+		_optional_visual.begin_path_movement_feedback(path.duplicate())
+	elif _optional_visual.has_method("begin_movement_feedback"):
 		_optional_visual.begin_movement_feedback(from_cell, to_cell)
 	elif _optional_visual.has_method("play_walk"):
 		_optional_visual.play_walk()

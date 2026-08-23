@@ -137,7 +137,12 @@ func test_adapter_preserves_release_and_finished_signals_once() -> void:
 	)
 	assert_true(adapter.play_spell_action())
 	assert_false(adapter.play_spell_action())
-	await get_tree().create_timer(1.5).timeout
+	# The V2 pool can deliberately map a longer authored clip. Wait for the
+	# adapter's real completion contract instead of assuming the old 1.5 s V1
+	# fallback duration.
+	var deadline := Time.get_ticks_msec() + 7000
+	while finishes.count == 0 and Time.get_ticks_msec() < deadline:
+		await wait_process_frames(1)
 	assert_eq(backend_starts.count, 1)
 	assert_eq(releases.count, 1)
 	assert_eq(finishes.count, 1)

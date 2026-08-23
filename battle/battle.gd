@@ -1284,7 +1284,10 @@ func _animate_move(unit: Unit, path: Array) -> void:
 	var view = _unit_views.get(unit)
 	if not is_instance_valid(view) or path.size() < 2:
 		return
-	view.begin_movement_feedback(path[0], path[1])
+	if view.has_method("begin_path_movement_feedback"):
+		view.begin_path_movement_feedback(path.duplicate())
+	else:
+		view.begin_movement_feedback(path[0], path[1])
 	terrain_effects.begin_unit_resolution(unit, &"movement")
 	for i in range(1, path.size()):
 		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.

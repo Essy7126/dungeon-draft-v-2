@@ -1,5 +1,27 @@
 # État candidat vérifié du projet
 
+## Achille — pool d'animations V2 (WORKTREE_CANDIDATE, 2026-08-23)
+
+- La V1 canonique reste immuable. Le candidat V2 conserve son rig de 52 os et
+  ses 4 clips natifs, puis ajoute les 20 animations Meshy retargetées.
+- `CharacterAnimationSetData` porte les affectations d'Achille : repos, marche,
+  course, impact, lancement générique et une clé `cast:<spell_id>` pour chacun
+  de ses quatre sorts. Le Character Animation Studio expose ces lignes et les
+  24 clips importés.
+- La longueur réelle du chemin choisit la locomotion : 1–5 cases = marche,
+  6+ = course rapide. Le seuil est configurable dans le profil visuel ; avec
+  les 3 PM actuels d'Achille, la course automatique exige encore un bonus de
+  déplacement ou une future règle.
+- `Percée` resynchronise la vue avec sa cellule de grille résolue. Le clip reste
+  in-place et ne devient jamais l'autorité du gameplay.
+- Les 20 clips sont structurellement utilisables, mais certains demandent une
+  passe artistique sur les bras, mains, pieds, boucles et contacts d'arme. La
+  source ne contient aucune animation de mort ; le fondu reste actif.
+- Contrat, hashes, clips et limites :
+  `docs/design/achilles/achilles_animation_pool_v2.md`.
+- Statut : **WORKTREE_CANDIDATE — STRUCTURAL_PROTOTYPE_INTEGRATED** jusqu'au
+  commit, au push et à une revue visuelle humaine en jeu.
+
 ## Cohérence architecture Studio, animations et objets (WORKTREE_CANDIDATE, 2026-08-23)
 
 - Base locale : `main` à `77799ec945071bf91b1bc4996da2b3bd7b6a81e1`.

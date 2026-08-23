@@ -14,11 +14,35 @@
 class_name CharacterAnimationSetData
 extends Resource
 
+const CAST_ACTION_PREFIX := "cast:"
+
 # Identifiant d'événement → nom du clip.
 # La clé reste une StringName libre plutôt qu'un enum fermé aux neuf
 # événements actuels : une granularité plus fine (une animation par sort)
 # pourra s'ajouter plus tard sans migrer les fiches existantes.
 @export var animation_names: Dictionary = {}
+
+
+## Construit l'identifiant stable d'une animation propre a un sort.
+## Le mapping reste porte par le personnage : un meme sort peut donc utiliser
+## des clips differents selon le modele qui le lance.
+static func cast_action_id_for_spell_id(spell_id: StringName) -> StringName:
+	var normalized_id := str(spell_id).strip_edges()
+	if normalized_id.is_empty():
+		return &""
+	return StringName(CAST_ACTION_PREFIX + normalized_id)
+
+
+static func is_cast_action_id(action_id: StringName) -> bool:
+	var normalized_action := str(action_id)
+	return normalized_action.begins_with(CAST_ACTION_PREFIX) \
+		and normalized_action.length() > CAST_ACTION_PREFIX.length()
+
+
+static func spell_id_from_cast_action_id(action_id: StringName) -> StringName:
+	if not is_cast_action_id(action_id):
+		return &""
+	return StringName(str(action_id).trim_prefix(CAST_ACTION_PREFIX))
 
 
 func get_animation_name(action_id: StringName) -> StringName:

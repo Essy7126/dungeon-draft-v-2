@@ -23,14 +23,19 @@ var fallback_backend = null
 
 var _active_backend: Node2D = null
 var _unit: Unit = null
+var _animation_set: CharacterAnimationSetData = null
 var _facing := "SE"
 var _action_pending := false
 var _action_elapsed := 0.0
+var _action_timeout_seconds := ACTION_TIMEOUT_SECONDS
+var _pending_action_id: StringName = ACTION_FALLBACK
+var _pending_action_clip: StringName = &""
 var _release_emitted := false
 var _closing := false
 var _generation := 0
 var _last_parent_position := Vector2.ZERO
 var _movement_active := false
+var _movement_action_id: StringName = &"walk"
 var _movement_stable_time := 0.0
 var _viewport_activation_deferred := false
 var _queued_action_for_backend := false
@@ -58,7 +63,7 @@ func _process(delta: float) -> void:
 		return
 	if _action_pending:
 		_action_elapsed += maxf(delta, 0.0)
-		if _action_elapsed >= ACTION_TIMEOUT_SECONDS:
+		if _action_elapsed >= _action_timeout_seconds:
 			if _queued_action_for_backend:
 				force_safe_fallback(&"SUBVIEWPORT_WARMUP_TIMEOUT")
 			else:
@@ -82,8 +87,18 @@ func _exit_tree() -> void:
 func bind_unit(unit: Unit) -> void:
 	_disconnect_unit()
 	_unit = unit
+	_animation_set = (
+		_unit.character_data.animation_set
+		if _unit != null and _unit.character_data != null else null
+	)
 	if _unit != null and not _unit.died.is_connected(_on_bound_unit_died):
 		_unit.died.connect(_on_bound_unit_died)
+	if _unit != null and not EventBus.hit_resolved.is_connected(
+			_on_hit_resolved
+		):
+		EventBus.hit_resolved.connect(_on_hit_resolved)
+	if is_instance_valid(_active_backend) and not _action_pending:
+		_play_active_idle()
 
 
 func set_facing(direction: Vector2i) -> void:
@@ -101,19 +116,33 @@ func set_facing(direction: Vector2i) -> void:
 func play_idle() -> bool:
 	if _closing or _action_pending or not is_instance_valid(_active_backend):
 		return false
-	return bool(_active_backend.play_idle(_facing))
+	return _play_active_idle()
 
 
 func play_basic_attack() -> bool:
-	return _begin_action()
+	return _begin_action(&"cast")
 
 
 func play_cast() -> bool:
-	return _begin_action()
+	return _begin_action(&"cast")
 
 
-func play_spell_action(_spell: Spell = null) -> bool:
-	return _begin_action()
+func play_spell_action(spell: Spell = null) -> bool:
+	var action_id := &"cast"
+	if spell != null:
+		var spell_action_id := CharacterAnimationSetData.cast_action_id_for_spell_id(
+			spell.get_effective_spell_id()
+		)
+		if spell_action_id != &"":
+			action_id = spell_action_id
+	return _begin_action(action_id)
+
+
+func play_hit() -> bool:
+	if _closing or _action_pending or _movement_active \
+			or _active_backend != viewport_backend:
+		return false
+	return bool(viewport_backend.play_hit(_facing, _clip_for_action(&"hit")))
 
 
 func cancel_spell_action() -> void:
@@ -124,6 +153,9 @@ func cancel_pending_visual_actions() -> void:
 	_generation += 1
 	_action_pending = false
 	_action_elapsed = 0.0
+	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
+	_pending_action_id = ACTION_FALLBACK
+	_pending_action_clip = &""
 	_release_emitted = false
 	_queued_action_for_backend = false
 	_movement_active = false
@@ -136,21 +168,43 @@ func cancel_pending_visual_actions() -> void:
 		_death_tween.kill()
 	_death_tween = null
 	if is_instance_valid(_active_backend) and not _closing:
-		_active_backend.play_idle(_facing)
+		_play_active_idle()
 	_activate_deferred_viewport_if_available()
 
 
 func begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i) -> void:
+	_begin_movement_feedback(from_cell, to_cell, &"walk")
+
+
+func begin_path_movement_feedback(path: Array) -> void:
+	if path.size() < 2 or not path[0] is Vector2i or not path[1] is Vector2i:
+		return
+	var step_count := maxi(1, path.size() - 1)
+	var run_threshold := (
+		_selected_profile.run_min_path_cells
+		if _selected_profile != null
+		else visual_profile.run_min_path_cells if visual_profile != null else 6
+	)
+	var action_id := &"run" if step_count >= run_threshold else &"walk"
+	_begin_movement_feedback(path[0] as Vector2i, path[1] as Vector2i, action_id)
+
+
+func _begin_movement_feedback(
+		from_cell: Vector2i,
+		to_cell: Vector2i,
+		action_id: StringName
+	) -> void:
 	if _closing or _action_pending or from_cell == to_cell:
 		return
 	set_facing(to_cell - from_cell)
 	_movement_active = true
+	_movement_action_id = action_id if action_id in [&"walk", &"run"] else &"walk"
 	_movement_stable_time = 0.0
 	var parent_2d := get_parent() as Node2D
 	if parent_2d != null:
 		_last_parent_position = parent_2d.position
 	if is_instance_valid(_active_backend):
-		_active_backend.play_move(_facing)
+		_play_active_movement()
 
 
 func cancel_movement_feedback() -> void:
@@ -314,18 +368,21 @@ func _initialize_selected_backend() -> void:
 	request_subviewport_backend()
 
 
-func _begin_action() -> bool:
+func _begin_action(action_id: StringName = ACTION_FALLBACK) -> bool:
 	if _closing or _action_pending:
 		return false
 	_generation += 1
 	_action_pending = true
 	_action_elapsed = 0.0
+	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
+	_pending_action_id = action_id if action_id != &"" else ACTION_FALLBACK
+	_pending_action_clip = _clip_for_action(_pending_action_id)
 	_release_emitted = false
 	_movement_active = false
 	if not is_instance_valid(_active_backend):
 		_queued_action_for_backend = true
 		return true
-	var started := bool(_active_backend.play_action(_facing))
+	var started := _play_active_action()
 	if started:
 		return true
 	if _active_backend != fallback_backend:
@@ -333,6 +390,8 @@ func _begin_action() -> bool:
 		return _action_pending
 	_action_pending = false
 	_action_elapsed = 0.0
+	_pending_action_id = ACTION_FALLBACK
+	_pending_action_clip = &""
 	return false
 
 
@@ -370,13 +429,19 @@ func _complete_action_once(action_name: StringName) -> void:
 	if not _release_emitted:
 		_release_emitted = true
 		cast_release_reached.emit()
+	var completed_action := (
+		_pending_action_id if _pending_action_id != &"" else action_name
+	)
 	_action_pending = false
 	_action_elapsed = 0.0
+	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
+	_pending_action_id = ACTION_FALLBACK
+	_pending_action_clip = &""
 	_queued_action_for_backend = false
 	if is_instance_valid(_active_backend):
-		_active_backend.play_idle(_facing)
+		_play_active_idle()
 	_activate_deferred_viewport_if_available()
-	animation_finished.emit(action_name)
+	animation_finished.emit(completed_action)
 
 
 func _on_viewport_backend_ready() -> void:
@@ -389,12 +454,12 @@ func _on_viewport_backend_ready() -> void:
 	if _queued_action_for_backend:
 		_queued_action_for_backend = false
 		_action_elapsed = 0.0
-		if not viewport_backend.play_action(_facing):
+		if not _play_active_action():
 			force_safe_fallback(&"SUBVIEWPORT_ACTION_START_FAILED")
 	elif _movement_active:
-		viewport_backend.play_move(_facing)
+		_play_active_movement()
 	else:
-		viewport_backend.play_idle(_facing)
+		_play_active_idle()
 	_emit_runtime_state(&"ACHILLES_VISUAL_BACKEND_READY")
 
 
@@ -480,7 +545,8 @@ func _track_parent_movement(delta: float) -> void:
 		_movement_stable_time = 0.0
 		if not _movement_active:
 			_movement_active = true
-			_active_backend.play_move(_facing)
+			_movement_action_id = &"walk"
+			_play_active_movement()
 		return
 	if not _movement_active:
 		return
@@ -488,7 +554,7 @@ func _track_parent_movement(delta: float) -> void:
 	if _movement_stable_time >= MOVEMENT_SETTLE_SECONDS:
 		_movement_active = false
 		_movement_stable_time = 0.0
-		_active_backend.play_idle(_facing)
+		_play_active_idle()
 		_activate_deferred_viewport_if_available()
 
 
@@ -498,6 +564,9 @@ func _on_bound_unit_died(_dead_unit: Unit) -> void:
 	_generation += 1
 	_action_pending = false
 	_action_elapsed = 0.0
+	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
+	_pending_action_id = ACTION_FALLBACK
+	_pending_action_clip = &""
 	_release_emitted = false
 	_queued_action_for_backend = false
 	_movement_active = false
@@ -514,12 +583,68 @@ func _on_bound_unit_died(_dead_unit: Unit) -> void:
 	, CONNECT_ONE_SHOT)
 
 
+func _on_hit_resolved(fact: CombatEventFact) -> void:
+	if fact == null or fact.target != _unit or fact.amount_resolved <= 0 \
+			or _unit == null or not _unit.is_alive:
+		return
+	play_hit()
+
+
 func _disconnect_unit() -> void:
 	if is_instance_valid(_unit) and _unit.died.is_connected(
 			_on_bound_unit_died
 		):
 		_unit.died.disconnect(_on_bound_unit_died)
+	if EventBus.hit_resolved.is_connected(_on_hit_resolved):
+		EventBus.hit_resolved.disconnect(_on_hit_resolved)
 	_unit = null
+	_animation_set = null
+
+
+func _clip_for_action(action_id: StringName) -> StringName:
+	if _animation_set == null:
+		return &""
+	var exact := _animation_set.get_animation_name(action_id)
+	if exact != &"":
+		return exact
+	if String(action_id).begins_with("cast:"):
+		return _animation_set.get_animation_name(&"cast")
+	return &""
+
+
+func _play_active_idle() -> bool:
+	if not is_instance_valid(_active_backend):
+		return false
+	if _active_backend == viewport_backend:
+		return bool(viewport_backend.play_idle(
+			_facing, _clip_for_action(&"idle")
+		))
+	return bool(_active_backend.play_idle(_facing))
+
+
+func _play_active_movement() -> bool:
+	if not is_instance_valid(_active_backend):
+		return false
+	if _active_backend == viewport_backend:
+		var clip := _clip_for_action(_movement_action_id)
+		if _movement_action_id == &"run":
+			return bool(viewport_backend.play_run(_facing, clip))
+		return bool(viewport_backend.play_walk(_facing, clip))
+	return bool(_active_backend.play_move(_facing))
+
+
+func _play_active_action() -> bool:
+	if not is_instance_valid(_active_backend):
+		return false
+	if _active_backend == viewport_backend:
+		_action_timeout_seconds = viewport_backend.get_action_watchdog_seconds(
+			_pending_action_id, _pending_action_clip
+		)
+		return bool(viewport_backend.play_action(
+			_facing, _pending_action_id, _pending_action_clip
+		))
+	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
+	return bool(_active_backend.play_action(_facing))
 
 
 func _ensure_fallback_backend() -> bool:

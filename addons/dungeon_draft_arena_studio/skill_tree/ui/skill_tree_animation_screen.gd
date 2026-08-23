@@ -68,6 +68,8 @@ var _heroes: Array[Dictionary] = []
 var _current_path := ""
 var _guided := true
 var _selected_event := 0
+var _event_actions: Array[StringName] = []
+var _spell_event_labels: Dictionary = {}
 var _rows := {}
 var _available_clips: Array[StringName] = []
 var _applying := false
@@ -82,6 +84,7 @@ func _ready() -> void:
 	add_child(content)
 	content.add_child(_build_events())
 	content.add_child(_build_preview())
+	_refresh_event_actions()
 	_rebuild_event_list()
 	_rebuild_character_list()
 	_select_event(_selected_event, false)
@@ -109,11 +112,18 @@ func set_document(unit: UnitData, current_path: String) -> void:
 		# ne pas relancer l'aperçu à chaque modification ou annulation. L'appel
 		# est différé parce qu'il peut venir du signal d'une liste déroulante
 		# qu'il reconstruit.
+		var actions_changed := _refresh_event_actions()
 		_rebuild_character_list()
-		_sync_values.call_deferred()
+		if actions_changed:
+			_rebuild_event_list()
+			_rebuild_rows()
+		else:
+			_sync_values.call_deferred()
 		return
 	_unit = unit
+	_refresh_event_actions()
 	_rebuild_character_list()
+	_rebuild_event_list()
 	_rebuild_rows()
 
 
@@ -252,9 +262,70 @@ func _rebuild_character_list() -> void:
 	character_label.text = _unit.unit_name if _unit != null else "Aucun personnage"
 
 
+## Les neuf evenements communs restent en tete. Les sorts connus suivent dans
+## l'ordre de la fiche, puis les anciens mappings de sorts absents du document
+## restent visibles afin de pouvoir les corriger ou les supprimer.
+func _refresh_event_actions() -> bool:
+	var next_actions: Array[StringName] = []
+	var next_spell_labels: Dictionary = {}
+	for action in CharacterVisual3D.ACTION_ORDER:
+		next_actions.append(action)
+	if _unit != null:
+		for spell in _unit.spells:
+			if spell == null:
+				continue
+			var spell_id := spell.get_effective_spell_id()
+			var action_id := CharacterAnimationSetData.cast_action_id_for_spell_id(
+				spell_id
+			)
+			if action_id == &"" or next_actions.has(action_id):
+				continue
+			next_actions.append(action_id)
+			var display_name := spell.spell_name.strip_edges()
+			if display_name.is_empty():
+				display_name = str(spell_id)
+			next_spell_labels[action_id] = "Sort - %s" % display_name
+		var orphan_actions: Array[StringName] = []
+		if _unit.animation_set != null:
+			for stored_action in _unit.animation_set.configured_action_ids():
+				if CharacterAnimationSetData.is_cast_action_id(stored_action) \
+						and not next_actions.has(stored_action):
+					orphan_actions.append(stored_action)
+		orphan_actions.sort_custom(func(a: StringName, b: StringName) -> bool:
+			return str(a).naturalnocasecmp_to(str(b)) < 0
+		)
+		for orphan_action in orphan_actions:
+			next_actions.append(orphan_action)
+			next_spell_labels[orphan_action] = "Sort - %s (non repertorie)" % (
+				CharacterAnimationSetData.spell_id_from_cast_action_id(orphan_action)
+			)
+	var changed := next_actions.size() != _event_actions.size()
+	if not changed:
+		for index in next_actions.size():
+			if next_actions[index] != _event_actions[index]:
+				changed = true
+				break
+	if not changed:
+		changed = next_spell_labels.size() != _spell_event_labels.size()
+	if not changed:
+		for action_id in next_spell_labels:
+			if not _spell_event_labels.has(action_id) \
+					or _spell_event_labels[action_id] != next_spell_labels[action_id]:
+				changed = true
+				break
+	_event_actions = next_actions
+	_spell_event_labels = next_spell_labels
+	_selected_event = clampi(
+		_selected_event,
+		0,
+		maxi(0, _event_actions.size() - 1)
+	)
+	return changed
+
+
 func _rebuild_event_list() -> void:
 	event_list.clear()
-	for action in CharacterVisual3D.ACTION_ORDER:
+	for action in _event_actions:
 		event_list.add_item(_label_for(action))
 	if event_list.item_count > 0:
 		event_list.select(clampi(_selected_event, 0, event_list.item_count - 1))
@@ -285,7 +356,7 @@ func _rebuild_rows() -> void:
 			_update_caption()
 			_update_play_button()
 			return
-	for action in CharacterVisual3D.ACTION_ORDER:
+	for action in _event_actions:
 		_rows[action] = _build_row(action)
 	_select_event(_selected_event, false)
 	_sync_values()
@@ -327,7 +398,7 @@ func _build_row(action: StringName) -> Dictionary:
 	title.add_theme_font_size_override("font_size", 15)
 	box.add_child(title)
 	var help := Label.new()
-	help.text = str(EVENT_HELP.get(action, ""))
+	help.text = _help_for(action)
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	help.add_theme_color_override("font_color", MUTED_COLOR)
 	help.visible = _guided
@@ -417,7 +488,7 @@ func _on_clip_selected(item_index: int, action: StringName, option: OptionButton
 
 
 func _select_event(index: int, play: bool) -> void:
-	_selected_event = clampi(index, 0, maxi(0, CharacterVisual3D.ACTION_ORDER.size() - 1))
+	_selected_event = clampi(index, 0, maxi(0, _event_actions.size() - 1))
 	if event_list.item_count > _selected_event:
 		event_list.select(_selected_event)
 	var action := _action_at(_selected_event)
@@ -458,15 +529,29 @@ func _update_play_button() -> void:
 
 
 func _action_at(index: int) -> StringName:
-	var actions := CharacterVisual3D.ACTION_ORDER
-	if actions.is_empty():
+	if _event_actions.is_empty():
 		return &""
-	return actions[clampi(index, 0, actions.size() - 1)]
+	return _event_actions[clampi(index, 0, _event_actions.size() - 1)]
 
 
 func _index_of(action: StringName) -> int:
-	return CharacterVisual3D.ACTION_ORDER.find(action)
+	return _event_actions.find(action)
 
 
 func _label_for(action: StringName) -> String:
+	if _spell_event_labels.has(action):
+		return str(_spell_event_labels[action])
+	if CharacterAnimationSetData.is_cast_action_id(action):
+		return "Sort - %s" % CharacterAnimationSetData.spell_id_from_cast_action_id(
+			action
+		)
 	return str(EVENT_LABELS.get(action, str(action)))
+
+
+func _help_for(action: StringName) -> String:
+	if CharacterAnimationSetData.is_cast_action_id(action):
+		return (
+			"Animation propre a ce sort. Sans choix, le personnage utilise "
+			+ "l'animation Attaque ou sort."
+		)
+	return str(EVENT_HELP.get(action, ""))
