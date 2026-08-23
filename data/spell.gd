@@ -11,6 +11,12 @@ enum DelayedResolution { NONE, STRIKE_AND_PUSH, SUMMON }
 enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 
 @export var spell_id: StringName = &""
+## Arbre de competences apporte par ce sort. Cette reference est l'unique
+## source de verite de l'appartenance d'un arbre a un personnage : un UnitData
+## ne maintient pas une seconde liste en parallele.
+@export var skill_tree: DisciplineData = null
+## Champ de lecture legacy uniquement. Le runtime de progression ne l'utilise
+## plus ; il reste serialisable le temps de convertir les anciennes Resources.
 @export var discipline_id: StringName = &""
 @export var spell_name: String = "Sort sans nom"
 @export_multiline var description: String = ""
@@ -142,3 +148,11 @@ func get_effective_spell_id() -> StringName:
 	if resource_path != "":
 		return StringName(resource_path)
 	return &"spell:unassigned"
+
+
+func has_skill_tree() -> bool:
+	return skill_tree != null
+
+
+func get_skill_tree_id() -> StringName:
+	return skill_tree.discipline_id if skill_tree != null else &""

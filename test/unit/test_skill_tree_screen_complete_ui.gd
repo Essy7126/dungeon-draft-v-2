@@ -45,7 +45,7 @@ func test_every_hero_exposes_four_spell_backed_tabs_and_progressive_reveal() -> 
 			var base := screen.get_graph().get_node_view(&"__base_rank_1")
 			assert_not_null(base)
 			var expected_spell := state.unit.spells.filter(
-				func(spell): return spell.discipline_id == discipline.discipline_id
+				func(spell): return spell.skill_tree == discipline
 			)[0] as Spell
 			assert_eq(base.get_display_name(), expected_spell.spell_name)
 		screen.queue_free()

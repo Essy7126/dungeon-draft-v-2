@@ -43,5 +43,4 @@ animation_set = ExtResource("90_animations")
 role = "Polyvalente"
 presentation_summary = "Quatre voies complementaires pour adapter ses sorts au combat."
 progression_summary = "4 disciplines"
-disciplines = Array[ExtResource("8_discipline_type")]([ExtResource("9_archer"), ExtResource("10_assassin"), ExtResource("11_mage"), ExtResource("12_healer")])
 spells = Array[ExtResource("2_spell")]([ExtResource("3_precise"), ExtResource("4_sneak"), ExtResource("5_fireball"), ExtResource("6_heal")])

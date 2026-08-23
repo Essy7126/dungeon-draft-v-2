@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="2_icon"]
+[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/breaker.tres" id="3_tree"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"warrior_heavy_strike"
-discipline_id = &"warrior_breaker"
+skill_tree = ExtResource("3_tree")
 spell_name = "Frappe lourde"
 description = "2 PA · Portée 1 · 8 dégâts physiques."
 icon = ExtResource("2_icon")

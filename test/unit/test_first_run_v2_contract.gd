@@ -333,7 +333,7 @@ func test_xp_requires_real_effect_limits_same_spell_and_caps_combat_at_five() ->
 	var capped := service.grant_cast_xp(states, state.unit, spell, {"effective_cast": true})
 	assert_false(capped.get("granted", true))
 	assert_eq(capped.get("refusal_reason"), &"combat_cap_reached")
-	assert_eq(service.get_combat_xp(state.character_id, spell.discipline_id), 5)
+	assert_eq(service.get_combat_xp(state.character_id, spell.spell_id), 5)
 
 
 func test_specialized_progression_reaches_ranks_only_on_rooms_1_3_5_6() -> void:
@@ -349,7 +349,7 @@ func test_specialized_progression_reaches_ranks_only_on_rooms_1_3_5_6() -> void:
 			assert_true(service.grant_cast_xp(
 				states, state.unit, spell, {"effective_cast": true}
 			).get("granted", false))
-		ranks.append(state.get_discipline_progress(spell.discipline_id).rank)
+		ranks.append(state.get_spell_progress(spell.spell_id).rank)
 	assert_eq(ranks, [2, 2, 3, 3, 4, 5])
 
 

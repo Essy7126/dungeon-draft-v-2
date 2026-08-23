@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="2_icon"]
+[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/guard.tres" id="3_tree"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"achilles_guard"
-discipline_id = &"guard"
+skill_tree = ExtResource("3_tree")
 spell_name = "Garde d’airain"
 description = "2 PA · Consolide la garde d’Achille et lui confère 10 points de bouclier."
 icon = ExtResource("2_icon")

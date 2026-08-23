@@ -17,4 +17,3 @@ script = ExtResource("1_profile")
 character_id = &"achilles"
 active_spell_slots = 4
 spells = Array[ExtResource("2_spell_type")]([ExtResource("4_spear"), ExtResource("5_advance"), ExtResource("6_sweep"), ExtResource("7_guard")])
-disciplines = Array[ExtResource("3_discipline_type")]([ExtResource("8_spear_discipline"), ExtResource("9_advance_discipline"), ExtResource("10_sweep_discipline"), ExtResource("11_guard_discipline")])

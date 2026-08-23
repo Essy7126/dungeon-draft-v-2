@@ -52,7 +52,10 @@ func merge_wave_report(wave_report: CharacterCombatReport) -> void:
 	for wave_delta in wave_report.discipline_deltas:
 		if wave_delta == null:
 			continue
-		var cumulative_delta := _get_discipline_delta(wave_delta.discipline_id)
+		var cumulative_delta := _get_progression_delta(
+			wave_delta.spell_id,
+			wave_delta.discipline_id,
+		)
 		if cumulative_delta == null:
 			discipline_deltas.append(wave_delta)
 			continue
@@ -70,11 +73,16 @@ func merge_wave_report(wave_report: CharacterCombatReport) -> void:
 			)
 
 
-func _get_discipline_delta(
+func _get_progression_delta(
+		spell_id: StringName,
 		discipline_id: StringName
 	) -> DisciplineProgressDelta:
 	for delta in discipline_deltas:
-		if delta != null and delta.discipline_id == discipline_id:
+		if delta == null:
+			continue
+		if spell_id != &"" and delta.spell_id == spell_id:
+			return delta
+		if spell_id == &"" and delta.discipline_id == discipline_id:
 			return delta
 	return null
 

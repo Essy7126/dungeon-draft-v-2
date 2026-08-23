@@ -104,7 +104,10 @@ func test_four_production_spells_and_disciplines_keep_their_combat_contract() ->
 	assert_not_null(progression)
 	assert_eq(progression.active_spell_slots, 4)
 	assert_eq(_spell_ids(progression.spells), EXPECTED_SPELL_IDS)
-	assert_eq(_discipline_ids(progression.disciplines), EXPECTED_DISCIPLINE_IDS)
+	assert_eq(
+		progression.spells.map(func(spell): return spell.get_skill_tree_id()),
+		EXPECTED_DISCIPLINE_IDS,
+	)
 
 	var spear := progression.spells[0]
 	assert_eq(

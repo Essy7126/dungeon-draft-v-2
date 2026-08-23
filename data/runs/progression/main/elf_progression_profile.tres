@@ -16,4 +16,3 @@
 script = ExtResource("6_5ml1p")
 character_id = &"elf"
 spells = Array[ExtResource("7_62ulr")]([ExtResource("8_onxb4"), ExtResource("9_hiy53"), ExtResource("10_s5bjx"), ExtResource("11_783m7")])
-disciplines = Array[ExtResource("1_dxlgu")]([ExtResource("2_28ouo"), ExtResource("3_lfr1a"), ExtResource("4_iexpy"), ExtResource("5_57hmd")])

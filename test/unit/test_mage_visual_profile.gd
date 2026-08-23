@@ -189,7 +189,7 @@ func test_mage_unit_data_uses_profile_and_disables_basic_attack() -> void:
 	assert_eq(data.spells.size(), 4)
 	assert_true(data.spells.any(func(spell): return spell.damage > 0))
 	assert_eq(
-		data.spells.map(func(spell): return spell.discipline_id),
+		data.spells.map(func(spell): return spell.get_skill_tree_id()),
 		[&"mage_pyromancy", &"mage_cryomancy", &"mage_fulguromancy", &"mage_geomancy"],
 	)
 	assert_true(data.spells.all(func(spell): return spell.get_effective_spell_id() != &""))

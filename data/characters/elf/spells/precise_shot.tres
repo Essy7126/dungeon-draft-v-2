@@ -4,11 +4,12 @@
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
 [ext_resource type="PackedScene" uid="uid://cet65tb6e0w4d" path="res://asset/sorts/elfe_arc_magique/elf_magic_arrow_projectile.tscn" id="2_vfx"]
 [ext_resource type="Texture2D" uid="uid://b2pttu15n5a30" path="res://asset/ui/character_hud/refined/spells/precise_shot.png" id="3_icon"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/archer.tres" id="4_tree"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"elf_precise_shot"
-discipline_id = &"archer"
+skill_tree = ExtResource("4_tree")
 spell_name = "Tir précis"
 description = "Un tir physique précis à longue portée."
 icon = ExtResource("3_icon")

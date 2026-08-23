@@ -61,9 +61,14 @@ static func _profile_snapshot(profile: CharacterProgressionProfile) -> Dictionar
 		if spell != null:
 			spells[str(spell.get_effective_spell_id())] = SkillTreeSnapshotService.storage_fingerprint(spell)
 	var disciplines := {}
-	for discipline in profile.disciplines:
+	var seen_trees := {}
+	for spell in profile.spells:
+		var discipline := spell.skill_tree if spell != null else null
 		if discipline == null:
 			continue
+		if seen_trees.has(discipline.discipline_id):
+			continue
+		seen_trees[discipline.discipline_id] = true
 		var ranks := []
 		for rank_data in discipline.ranks:
 			if rank_data == null:

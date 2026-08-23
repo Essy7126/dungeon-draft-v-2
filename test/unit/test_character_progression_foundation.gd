@@ -138,8 +138,9 @@ func test_character_state_owns_id_disciplines_loadout_and_syncs_unit_spells() ->
 	var discipline := DisciplineData.new()
 	discipline.discipline_id = &"open_discipline"
 	var first := _make_spell(&"one")
+	first.skill_tree = discipline
 	var replacement := _make_spell(&"replacement")
-	var data := _make_unit_data(&"hero_state", [first], [discipline])
+	var data := _make_unit_data(&"hero_state", [first])
 	var unit := Unit.from_data(data)
 	var state := CharacterRunState.new()
 
@@ -216,7 +217,7 @@ func test_elf_resource_defines_exactly_four_disciplines_and_four_ordered_spells(
 		ELF_SPELL_IDS,
 	)
 	assert_eq(
-		data.spells.map(func(current_spell): return current_spell.discipline_id),
+		data.spells.map(func(current_spell): return current_spell.skill_tree.discipline_id),
 		ELF_DISCIPLINE_IDS,
 	)
 	assert_eq(
@@ -274,5 +275,5 @@ func test_elf_fireball_remains_distinct_from_the_elemental_mage_fireball() -> vo
 	assert_ne(elf_fireball.resource_path, legacy_fireball.resource_path)
 	assert_eq(elf_fireball.get_effective_spell_id(), &"elf_fireball")
 	assert_eq(legacy_fireball.spell_id, &"mage_fireball")
-	assert_eq(legacy_fireball.discipline_id, &"mage_pyromancy")
+	assert_eq(legacy_fireball.get_skill_tree_id(), &"mage_pyromancy")
 	assert_true(legacy_fireball in legacy_mage.spells)

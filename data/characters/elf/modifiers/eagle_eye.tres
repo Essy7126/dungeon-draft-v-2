@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_modifier")
 modifier_name = "Œil d’aigle"
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 minimum_range = 4
 bonus_damage = 5

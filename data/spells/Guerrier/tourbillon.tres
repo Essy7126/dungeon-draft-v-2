@@ -4,17 +4,18 @@
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_boijo"]
 [ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="2_modifier"]
 [ext_resource type="Texture2D" uid="uid://dyvy32pjjepak" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="3_icon"]
+[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/fury.tres" id="4_tree"]
 
 [sub_resource type="Resource" id="WhirlwindDamageModifier"]
 script = ExtResource("2_modifier")
 amount = 5
 modifier_name = "Dégâts de base du Tourbillon"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"warrior_whirlwind"
-discipline_id = &"warrior_fury"
+skill_tree = ExtResource("4_tree")
 spell_name = "Tourbillon"
 description = "3 PA · Frappe tous les ennemis adjacents pour 5 dégâts."
 icon = ExtResource("3_icon")

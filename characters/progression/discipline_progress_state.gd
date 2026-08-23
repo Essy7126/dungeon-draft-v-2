@@ -1,11 +1,17 @@
 class_name DisciplineProgressState
 extends RefCounted
 
-var discipline_id: StringName = &""
+## Le nom de classe reste provisoirement compatible avec les consommateurs
+## historiques, mais l'identite de cet etat est desormais celle du sort.
+var spell_id: StringName = &""
 var xp: int = 0
 var rank: int = 1
 
-var _discipline_data: DisciplineData = null
+var discipline_id: StringName:
+	get:
+		return spell_id
+
+var _skill_tree: DisciplineData = null
 var _selected_upgrade_ids: Array[StringName] = []
 var _pending_rank_choices: Array[int] = []
 
@@ -18,11 +24,14 @@ var pending_rank_choices: Array[int]:
 		return _pending_rank_choices.duplicate()
 
 
-func initialize(discipline_data: DisciplineData) -> bool:
-	if discipline_data == null or discipline_data.discipline_id == &"":
+func initialize(skill_tree: DisciplineData, owner_spell_id: StringName = &"") -> bool:
+	if owner_spell_id == &"" and skill_tree != null:
+		owner_spell_id = skill_tree.discipline_id
+	if skill_tree == null or skill_tree.discipline_id == &"" \
+			or owner_spell_id == &"" or owner_spell_id == &"spell:unassigned":
 		return false
-	_discipline_data = discipline_data
-	discipline_id = discipline_data.discipline_id
+	_skill_tree = skill_tree
+	spell_id = owner_spell_id
 	xp = 0
 	rank = 1
 	_selected_upgrade_ids.clear()
@@ -30,12 +39,15 @@ func initialize(discipline_data: DisciplineData) -> bool:
 	return true
 
 
+func get_skill_tree() -> DisciplineData:
+	return _skill_tree
+
+
 func add_xp(amount: int) -> Array[int]:
 	var reached_ranks: Array[int] = []
-	if amount <= 0 or _discipline_data == null:
+	if amount <= 0 or _skill_tree == null:
 		return reached_ranks
 	xp += amount
-
 	for rank_data in _get_sorted_rank_data():
 		if rank_data.rank <= rank:
 			continue
@@ -51,7 +63,7 @@ func add_xp(amount: int) -> Array[int]:
 
 
 func select_upgrade(upgrade_id: StringName, choice_rank: int = -1) -> SkillUpgradeData:
-	if upgrade_id == &"" or _discipline_data == null:
+	if upgrade_id == &"" or _skill_tree == null:
 		return null
 	var rank_to_resolve := choice_rank
 	if rank_to_resolve < 1:
@@ -59,12 +71,8 @@ func select_upgrade(upgrade_id: StringName, choice_rank: int = -1) -> SkillUpgra
 			return null
 		rank_to_resolve = _pending_rank_choices[0]
 	var decision := SkillTreeResolver.evaluate_selection(
-		_discipline_data,
-		rank_to_resolve,
-		upgrade_id,
-		rank,
-		get_pending_rank_choices(),
-		get_selected_upgrade_ids()
+		_skill_tree, rank_to_resolve, upgrade_id, rank,
+		get_pending_rank_choices(), get_selected_upgrade_ids()
 	)
 	if not decision.get("allowed", false):
 		return null
@@ -85,9 +93,9 @@ func get_pending_rank_choices() -> Array[int]:
 
 
 func get_rank_data(wanted_rank: int) -> DisciplineRankData:
-	if _discipline_data == null:
+	if _skill_tree == null:
 		return null
-	for rank_data in _discipline_data.ranks:
+	for rank_data in _skill_tree.ranks:
 		if rank_data != null and rank_data.rank == wanted_rank:
 			return rank_data
 	return null
@@ -102,7 +110,7 @@ func get_next_rank_data() -> DisciplineRankData:
 
 func get_selected_upgrades() -> Array[SkillUpgradeData]:
 	var selected: Array[SkillUpgradeData] = []
-	if _discipline_data == null:
+	if _skill_tree == null:
 		return selected
 	for rank_data in _get_sorted_rank_data():
 		for upgrade in rank_data.choices:
@@ -114,7 +122,7 @@ func get_selected_upgrades() -> Array[SkillUpgradeData]:
 func get_snapshot() -> Dictionary:
 	var next_rank_data := get_next_rank_data()
 	return {
-		"discipline_id": discipline_id,
+		"spell_id": spell_id,
 		"xp": xp,
 		"rank": rank,
 		"selected_upgrade_ids": get_selected_upgrade_ids(),
@@ -124,13 +132,16 @@ func get_snapshot() -> Dictionary:
 
 
 func restore_snapshot(snapshot: Dictionary) -> bool:
-	if _discipline_data == null \
-			or StringName(snapshot.get("discipline_id", &"")) != discipline_id:
+	if _skill_tree == null or StringName(snapshot.get("spell_id", &"")) != spell_id:
 		return false
 	var wanted_xp := maxi(0, int(snapshot.get("xp", 0)))
+	var wanted_rank := int(snapshot.get("rank", 1))
 	var wanted_selected: Array[StringName] = []
 	for value in snapshot.get("selected_upgrade_ids", []):
 		wanted_selected.append(StringName(value))
+	var wanted_pending: Array[int] = []
+	for value in snapshot.get("pending_rank_choices", []):
+		wanted_pending.append(int(value))
 	xp = 0
 	rank = 1
 	_selected_upgrade_ids.clear()
@@ -148,7 +159,9 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
 		if selected_for_rank != &"" \
 				and select_upgrade(selected_for_rank, rank_data.rank) == null:
 			return false
-	return get_selected_upgrade_ids() == wanted_selected
+	return rank == wanted_rank \
+		and get_selected_upgrade_ids() == wanted_selected \
+		and get_pending_rank_choices() == wanted_pending
 
 
 func _has_selected_upgrade_for_rank(wanted_rank: int) -> bool:
@@ -163,8 +176,8 @@ func _has_selected_upgrade_for_rank(wanted_rank: int) -> bool:
 
 func _get_sorted_rank_data() -> Array[DisciplineRankData]:
 	var sorted: Array[DisciplineRankData] = []
-	if _discipline_data != null:
-		for rank_data in _discipline_data.ranks:
+	if _skill_tree != null:
+		for rank_data in _skill_tree.ranks:
 			if rank_data != null:
 				sorted.append(rank_data)
 	sorted.sort_custom(func(a: DisciplineRankData, b: DisciplineRankData): return a.rank < b.rank)

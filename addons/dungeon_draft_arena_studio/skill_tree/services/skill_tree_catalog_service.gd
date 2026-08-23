@@ -15,6 +15,10 @@ const ENEMY_ROOTS: Array[String] = [
 	"res://data/units/enemies",
 ]
 const HERO_ROOT := "res://data/units/alliés"
+# Les deux emplacements légitimes d'un sort : le dossier partagé du projet et
+# le sous-dossier spells/ d'un personnage. Aucun des deux n'est un brouillon.
+const SHARED_SPELL_ROOT := "res://data/spells"
+const CHARACTER_ROOT := "res://data/characters"
 const TEAM_PLAYER := 0
 const TEAM_ENEMY := 1
 
@@ -127,7 +131,7 @@ static func disciplines_for(hero: UnitData) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	if hero == null:
 		return result
-	for discipline in hero.disciplines:
+	for discipline in hero.get_skill_trees():
 		if discipline == null:
 			result.append({
 				"id": &"",
@@ -154,7 +158,7 @@ static func spell_for_discipline(
 	if hero == null or discipline_id == &"":
 		return null
 	for spell in hero.spells:
-		if spell != null and spell.discipline_id == discipline_id:
+		if spell != null and spell.get_skill_tree_id() == discipline_id:
 			return spell
 	return null
 
@@ -189,7 +193,7 @@ static func _hero_has_obvious_error(hero: UnitData) -> bool:
 	if hero.get_effective_unit_id() == &"unit_data:unassigned":
 		return true
 	var seen := {}
-	for discipline in hero.disciplines:
+	for discipline in hero.get_skill_trees():
 		if discipline == null or discipline.discipline_id == &"" \
 				or seen.has(discipline.discipline_id):
 			return true
@@ -215,3 +219,43 @@ static func _append_resource_files(path: String, result: PackedStringArray) -> v
 		if directory_name.begins_with("."):
 			continue
 		_append_resource_files(path.path_join(directory_name), result)
+
+
+## Tous les sorts du projet, quel que soit leur proprietaire : le dossier
+## partage et le dossier spells/ de chaque personnage. Contrairement a
+## all_spells(hero), cette liste ne depend d'aucun personnage ouvert — c'est
+## elle qui alimente le selecteur « Ajouter un sort existant ».
+static func all_project_spells() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var roots := PackedStringArray([SHARED_SPELL_ROOT])
+	var characters := DirAccess.open(CHARACTER_ROOT)
+	if characters != null:
+		for directory_name in characters.get_directories():
+			if directory_name.begins_with("."):
+				continue
+			roots.append(
+				CHARACTER_ROOT.path_join(directory_name).path_join("spells")
+			)
+	var seen_paths := {}
+	for root in roots:
+		for path in _resource_files(root):
+			if seen_paths.has(path) or not _dependencies_available(path):
+				continue
+			var spell := ResourceLoader.load(
+				path, "", ResourceLoader.CACHE_MODE_REUSE
+			) as Spell
+			if spell == null:
+				continue
+			seen_paths[path] = true
+			result.append({
+				"spell": spell,
+				"path": path,
+				"spell_id": spell.get_effective_spell_id(),
+				"spell_name": spell.spell_name,
+			})
+	result.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return str(a.get("spell_name", "")).naturalnocasecmp_to(
+			str(b.get("spell_name", ""))
+		) < 0
+	)
+	return result

@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_da5a3")
 modifier_name = "Effet de Œil d’aigle"
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""

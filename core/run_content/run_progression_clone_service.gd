@@ -20,7 +20,6 @@ static func clone_from_unit(
 	source.character_id = base_unit_data.get_effective_unit_id()
 	source.active_spell_slots = base_unit_data.active_spell_slots
 	source.spells.assign(base_unit_data.spells)
-	source.disciplines.assign(base_unit_data.disciplines)
 	return clone_profile(source, run_id, destination_path)
 
 
@@ -41,8 +40,6 @@ static func clone_profile(
 	var inventoried := {}
 	for spell in source.spells:
 		_inventory_value(spell, inventoried, result.resources, result.allowed_shared_resources)
-	for discipline in source.disciplines:
-		_inventory_value(discipline, inventoried, result.resources, result.allowed_shared_resources)
 
 	# Passe 2 : creation des clones, sans raccorder leurs relations.
 	for resource in result.resources:
@@ -69,8 +66,6 @@ static func clone_profile(
 	profile.active_spell_slots = source.active_spell_slots
 	for spell in source.spells:
 		profile.spells.append(result.source_to_clone.get(spell) as Spell)
-	for discipline in source.disciplines:
-		profile.disciplines.append(result.source_to_clone.get(discipline) as DisciplineData)
 	result.profile = profile
 	result.errors.append_array(profile.validation_errors())
 	result.manifest = _build_manifest(source, result, run_id, destination_path)
@@ -134,8 +129,6 @@ static func progression_resources(profile: CharacterProgressionProfile) -> Array
 	var allowed: Array[Resource] = []
 	for spell in profile.spells:
 		_inventory_value(spell, inventoried, resources, allowed)
-	for discipline in profile.disciplines:
-		_inventory_value(discipline, inventoried, resources, allowed)
 	return resources
 
 
@@ -147,8 +140,6 @@ static func shared_assets(profile: CharacterProgressionProfile) -> Array[Resourc
 	var mutable: Array[Resource] = []
 	for spell in profile.spells:
 		_inventory_value(spell, inventoried, mutable, resources)
-	for discipline in profile.disciplines:
-		_inventory_value(discipline, inventoried, mutable, resources)
 	return resources
 
 

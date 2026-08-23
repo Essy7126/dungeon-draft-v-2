@@ -186,7 +186,7 @@ func test_return_to_title_clears_each_new_rank_two_modifier() -> void:
 		state.add_discipline_xp(discipline_id, 5)
 		assert_true(state.select_upgrade(discipline_id, 2, upgrade_id))
 		var old_unit := state.unit
-		assert_eq(old_unit.get_progression_spell_modifiers().size(), 1)
+		assert_false(old_unit.get_progression_spell_modifiers().is_empty())
 		manager.return_to_title()
 		assert_true(manager.character_states.is_empty())
 		assert_true(manager.heroes.is_empty())

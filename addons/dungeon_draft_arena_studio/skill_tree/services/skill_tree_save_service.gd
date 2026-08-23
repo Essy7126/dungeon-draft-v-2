@@ -108,8 +108,6 @@ static func _clear_editable_paths(resource: Resource, visited: Dictionary) -> vo
 		_clear_editable_paths(resource.animation_set, visited)
 		for spell in resource.spells:
 			_clear_editable_paths(spell, visited)
-		for discipline in resource.disciplines:
-			_clear_editable_paths(discipline, visited)
 	elif resource is DisciplineData:
 		for rank_data in resource.ranks:
 			_clear_editable_paths(rank_data, visited)
@@ -120,6 +118,7 @@ static func _clear_editable_paths(resource: Resource, visited: Dictionary) -> vo
 		for modifier in resource.spell_modifiers:
 			_clear_editable_paths(modifier, visited)
 	elif resource is Spell:
+		_clear_editable_paths(resource.skill_tree, visited)
 		for modifier in resource.modifiers:
 			_clear_editable_paths(modifier, visited)
 
@@ -156,9 +155,6 @@ static func _is_reachable(root: Resource, searched: Resource) -> bool:
 		for spell in root.spells:
 			if _is_reachable(spell, searched):
 				return true
-		for discipline in root.disciplines:
-			if _is_reachable(discipline, searched):
-				return true
 	elif root is DisciplineData:
 		for rank_data in root.ranks:
 			if _is_reachable(rank_data, searched):
@@ -172,6 +168,8 @@ static func _is_reachable(root: Resource, searched: Resource) -> bool:
 			if _is_reachable(modifier, searched):
 				return true
 	elif root is Spell:
+		if _is_reachable(root.skill_tree, searched):
+			return true
 		for modifier in root.modifiers:
 			if _is_reachable(modifier, searched):
 				return true

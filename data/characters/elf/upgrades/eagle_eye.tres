@@ -14,5 +14,5 @@ description = "Tir précis inflige 5 dégâts supplémentaires à une cible situ
 card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 2
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier"), ExtResource("5_l35us")])

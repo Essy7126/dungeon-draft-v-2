@@ -5,11 +5,12 @@
 [ext_resource type="Resource" path="res://data/terrain/lave.tres" id="3_lava"]
 [ext_resource type="AudioStream" path="res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3" id="4_audio"]
 [ext_resource type="PackedScene" uid="uid://hmp238551qj7" path="res://battle/vfx/boule_de_feu_vfx2.tscn" id="5_vfx"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/mage.tres" id="6_tree"]
 
 [resource]
 script = ExtResource("2_spell")
 spell_id = &"elf_fireball"
-discipline_id = &"mage"
+skill_tree = ExtResource("6_tree")
 spell_name = "Boule de feu"
 description = "Projette une boule de feu et embrase la zone ciblée."
 icon = ExtResource("1_icon")

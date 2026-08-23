@@ -40,7 +40,7 @@ func _ready() -> void:
 	add_child(search_edit)
 	filter_option = OptionButton.new()
 	filter_option.add_item("Toutes les disciplines")
-	filter_option.add_item("Disciplines à corriger")
+	filter_option.add_item("Arbres à corriger")
 	filter_option.add_item("Document modifié")
 	filter_option.tooltip_text = "Affiche toutes les disciplines ou seulement celles à vérifier."
 	filter_option.item_selected.connect(func(_index): _rebuild())

@@ -6,7 +6,6 @@
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"warrior_shockwave"
-discipline_id = &"warrior_breaker"
 spell_name = "Onde de choc"
 description = "Repousse de deux cases tous les ennemis adjacents. Les collisions infligent 8 degats et le souffle gagne 5 degats par ennemi adjacent. Cout : 4 PA. Cible : soi."
 ap_cost = 4

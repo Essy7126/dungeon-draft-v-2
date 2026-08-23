@@ -4,18 +4,19 @@
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="2_icon"]
 [ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="3_modifier"]
+[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/advance.tres" id="4_tree"]
 
 [sub_resource type="Resource" id="MoveCasterModifier"]
 script = ExtResource("3_modifier")
 effect_type = 29
 movement_requires_clear_path = true
 modifier_name = "Percée L’Odyssée"
-target_spell_id = &"achilles_advance"
+target_spell_id = &""
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"achilles_advance"
-discipline_id = &"advance"
+skill_tree = ExtResource("4_tree")
 spell_name = "Percée"
 description = "2 PA · Portée 1–3 en ligne · Avance au contact et inflige 5 dégâts physiques."
 icon = ExtResource("2_icon")

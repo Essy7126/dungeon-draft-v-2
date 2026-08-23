@@ -119,7 +119,7 @@ func _make_unit_data(
 	if with_spell:
 		var spell := Spell.new()
 		spell.spell_id = &"synthetic_spell"
-		spell.discipline_id = DISCIPLINE_ID
+		spell.skill_tree = discipline
 		spell.spell_name = "Sort synthetique"
 		data.spells.assign([spell])
 	return data
@@ -128,7 +128,7 @@ func _make_unit_data(
 func _make_character_state(
 		discipline: DisciplineData
 	) -> CharacterRunState:
-	var data := _make_unit_data(discipline)
+	var data := _make_unit_data(discipline, true)
 	var state := CharacterRunState.new()
 	assert_true(state.initialize(Unit.from_data(data), data))
 	return state
@@ -144,7 +144,7 @@ func _make_run(room_count: int = 2) -> RunData:
 
 func _prepare_manager(
 		discipline: DisciplineData,
-		with_spell: bool = false
+		with_spell: bool = true
 	) -> CharacterRunState:
 	manager = GameManagerScript.new()
 	manager._ready()
@@ -550,7 +550,7 @@ func test_conditional_selections_persist_between_rooms_and_reset_on_new_run() ->
 
 	assert_true(manager._prepare_preconfigured_run(
 		_make_run(),
-		[_make_unit_data(discipline)]
+		[_make_unit_data(discipline, true)]
 	))
 	var fresh: CharacterRunState = manager.get_character_state(
 		&"synthetic_hero"

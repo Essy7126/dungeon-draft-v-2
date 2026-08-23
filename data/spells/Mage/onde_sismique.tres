@@ -3,11 +3,12 @@
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="1_masjc"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
 [ext_resource type="Texture2D" uid="uid://dr571owpatp3u" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="2_icon"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/earth.tres" id="3_tree"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"mage_seismic_wave"
-discipline_id = &"mage_geomancy"
+skill_tree = ExtResource("3_tree")
 spell_name = "Onde sismique"
 description = "Propage une onde tellurique en ligne et repousse d'une case les ennemis touchés."
 icon = ExtResource("2_icon")

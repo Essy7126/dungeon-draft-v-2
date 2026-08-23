@@ -65,7 +65,8 @@ func build(unit: UnitData, candidates: Array[Resource] = []) -> SkillTreeReferen
 		_register_reference(unit, &"spells", spell, "RESOURCE")
 		_register_resource(spell, "spell")
 		_register_id("spell", spell.get_effective_spell_id(), spell)
-		_register_id_reference(spell, &"discipline_id", "discipline", spell.discipline_id)
+		if spell.skill_tree != null:
+			_register_reference(spell, &"skill_tree", spell.skill_tree, "RESOURCE")
 		for modifier in spell.modifiers:
 			if modifier == null:
 				continue
@@ -74,7 +75,6 @@ func build(unit: UnitData, candidates: Array[Resource] = []) -> SkillTreeReferen
 	for discipline in unit.disciplines:
 		if discipline == null:
 			continue
-		_register_reference(unit, &"disciplines", discipline, "RESOURCE")
 		_register_resource(discipline, "discipline")
 		_register_id("discipline", discipline.discipline_id, discipline)
 		for rank_data in discipline.ranks:

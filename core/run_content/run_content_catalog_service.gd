@@ -168,9 +168,6 @@ static func as_editable_unit_view(
 	var view_spells: Array[Spell] = []
 	view_spells.assign(profile.spells)
 	view.spells = view_spells
-	var view_disciplines: Array[DisciplineData] = []
-	view_disciplines.assign(profile.disciplines)
-	view.disciplines = view_disciplines
 	return view
 
 

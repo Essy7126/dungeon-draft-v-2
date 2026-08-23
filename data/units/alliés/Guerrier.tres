@@ -42,5 +42,4 @@ role = "Combattant de mêlée"
 presentation_summary = "Frappe, charge, contrôle les groupes et protège ses alliés."
 progression_summary = "Quatre disciplines : Brutalité, Assaut, Furie et Rempart."
 presentation_badge = "Troisième héros de la première run"
-disciplines = Array[ExtResource("22_discipline_type")]([ExtResource("23_breaker"), ExtResource("24_assault"), ExtResource("25_fury"), ExtResource("26_bulwark")])
 spells = Array[ExtResource("2_spell_type")]([ExtResource("10_heavy"), ExtResource("16_charge"), ExtResource("17_whirlwind"), ExtResource("18_guard")])

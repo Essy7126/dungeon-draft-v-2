@@ -49,11 +49,17 @@ func _request(
 		rank: int,
 		sequence: int = 1
 	) -> EvolutionRequest:
+	var source_spell_id: StringName = &""
+	for spell in state.unit.spells:
+		if spell != null and spell.skill_tree != null \
+				and spell.skill_tree.discipline_id == discipline_id:
+			source_spell_id = spell.get_effective_spell_id()
+			break
 	return EvolutionRequest.create(
 		state.character_id,
 		discipline_id,
 		rank,
-		&"test_spell",
+		source_spell_id,
 		sequence,
 		StringName("test_%s_%s_%d" % [
 			state.character_id,
@@ -116,7 +122,7 @@ func test_evolution_request_queue_is_fifo_and_deduplicated_by_rank() -> void:
 		"character_id": &"elf",
 		"discipline_id": &"archer",
 		"pending_rank": 2,
-		"source_spell_id": &"test_spell",
+		"source_spell_id": &"elf_precise_shot",
 		"trigger_sequence": 4,
 		"request_id": first.request_id,
 	})
@@ -171,7 +177,7 @@ func test_all_twelve_disciplines_open_their_two_r2_choices_and_sync_modifiers() 
 			assert_false(screen.visible)
 			assert_true(progress.get_selected_upgrade_ids().has(selected_id))
 			var base_spell: Spell = state.unit.spells.filter(
-				func(spell): return spell.discipline_id == discipline.discipline_id
+				func(spell): return spell.skill_tree == discipline
 			)[0]
 			var grid := GridData.new(4, 4)
 			var caster := SpellCaster.new(
@@ -199,7 +205,7 @@ func test_threshold_is_queued_but_ui_waits_for_the_explicit_safe_point() -> void
 	battle._active_trigger_sequence = 42
 	GameManager.discipline_xp_gained.connect(battle._on_discipline_xp_gained)
 	var spell: Spell = state.unit.spells.filter(
-		func(candidate): return candidate.discipline_id == discipline.discipline_id
+		func(candidate): return candidate.skill_tree == discipline
 	)[0]
 	EventBus.spell_cast.emit(state.unit, spell, {"effective_cast": true})
 	var pending := battle.get_pending_evolution_requests()
@@ -220,7 +226,7 @@ func test_failed_cancelled_and_non_threshold_casts_never_open_evolution_ui() -> 
 	var discipline := state.get_disciplines()[0] as DisciplineData
 	var progress := state.get_discipline_progress(discipline.discipline_id)
 	var spell: Spell = state.unit.spells.filter(
-		func(candidate): return candidate.discipline_id == discipline.discipline_id
+		func(candidate): return candidate.skill_tree == discipline
 	)[0]
 	var battle = BATTLE_SCRIPT.new()
 	battle.turn_state = TurnState.new()

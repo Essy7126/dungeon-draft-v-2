@@ -461,7 +461,7 @@ func _on_skill_evolution_confirmation_requested(
 		return
 	var accepted: bool = GameManager.choose_progression_upgrade(
 		StringName(choice.get("character_id", &"")),
-		StringName(choice.get("discipline_id", &"")),
+		StringName(choice.get("spell_id", choice.get("discipline_id", &""))),
 		int(choice.get("rank", 0)),
 		upgrade_id,
 	)

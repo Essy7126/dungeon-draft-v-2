@@ -38,7 +38,7 @@ const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
 	"res://data/items/catalogs/default_item_catalog.tres"
 )
 const INVENTORY_CAPACITY := 24
-const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 2
+const INVENTORY_EQUIPMENT_SNAPSHOT_VERSION := 3
 const POST_COMBAT_LOOT_ITEM_ID: StringName = &"minor_healing_potion"
 const STARTING_INVENTORY := [
 	{"item_id": &"warrior_training_sword", "quantity": 1},
@@ -627,14 +627,17 @@ func get_inventory_equipment_snapshot() -> Dictionary:
 	if run_inventory == null:
 		return {}
 	var equipment := {}
+	var progression := {}
 	for state in get_ordered_character_states():
 		if state.equipment_loadout != null:
 			equipment[str(state.character_id)] = state.equipment_loadout.to_snapshot()
+		progression[str(state.character_id)] = state.get_progression_snapshot()
 	return {
 		"version": INVENTORY_EQUIPMENT_SNAPSHOT_VERSION,
 		"inventory": run_inventory.to_snapshot(),
 		"equipment": equipment,
 		"equipment_reward": _equipment_reward_service.snapshot(),
+		"progression": progression,
 	}
 
 
@@ -642,7 +645,10 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 	var snapshot_version := int(snapshot.get("version", -1))
 	if not run_active \
 			or item_catalog == null \
-			or snapshot_version not in [1, INVENTORY_EQUIPMENT_SNAPSHOT_VERSION]:
+			or snapshot_version not in [1, 2, INVENTORY_EQUIPMENT_SNAPSHOT_VERSION]:
+		return false
+	var progression_snapshot := snapshot.get("progression", {}) as Dictionary
+	if snapshot_version >= 3 and not _preflight_progression_restore(progression_snapshot):
 		return false
 	var candidate_inventory := RunInventory.new()
 	if not candidate_inventory.initialize(item_catalog, INVENTORY_CAPACITY) \
@@ -694,8 +700,34 @@ func restore_inventory_equipment_snapshot(snapshot: Dictionary) -> bool:
 		_equipment_reward_service = candidate_reward_service
 	if not _relic_runtime_service.initialize(run_inventory, item_catalog, heroes):
 		return false
+	if snapshot_version >= 3:
+		for state in get_ordered_character_states():
+			if not state.restore_progression_snapshot(
+					progression_snapshot[str(state.character_id)] as Dictionary
+				):
+				return false
 	inventory_changed.emit(run_inventory.to_snapshot())
 	return true
+
+
+func _preflight_progression_restore(progression_snapshot: Dictionary) -> bool:
+	var originals := {}
+	var attempted: Array[CharacterRunState] = []
+	var valid := true
+	for state in get_ordered_character_states():
+		var key := str(state.character_id)
+		originals[key] = state.get_progression_snapshot()
+		if not progression_snapshot.has(key) \
+				or not state.restore_progression_snapshot(
+					progression_snapshot[key] as Dictionary
+				):
+			valid = false
+			break
+		attempted.append(state)
+	# The validation pass must have no observable effect.
+	for state in attempted:
+		state.restore_progression_snapshot(originals[str(state.character_id)] as Dictionary)
+	return valid
 
 
 func save_inventory_equipment_state(
@@ -773,7 +805,7 @@ func _on_successful_spell_cast(caster, spell, report: Dictionary) -> void:
 		)
 		return
 	var character_id: StringName = result["character_id"]
-	var discipline_id: StringName = result["discipline_id"]
+	var discipline_id := StringName(result.get("tree_id", &""))
 	var amount: int = result["gained_xp"]
 	discipline_xp_gained.emit(character_id, discipline_id, amount, result.duplicate(true))
 	DebugLogger.info(
@@ -808,6 +840,8 @@ func get_progression_choice_for_request(
 	for choice in get_pending_progression_choices():
 		if StringName(choice.get("character_id", &"")) == request.character_id \
 				and StringName(choice.get("discipline_id", &"")) == request.discipline_id \
+				and (request.source_spell_id == &"" \
+					or StringName(choice.get("spell_id", &"")) == request.source_spell_id) \
 				and int(choice.get("rank", 0)) == request.pending_rank:
 			return choice.duplicate(true)
 	return {}

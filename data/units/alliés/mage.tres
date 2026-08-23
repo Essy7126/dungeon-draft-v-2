@@ -43,6 +43,5 @@ animation_set = ExtResource("90_animations")
 role = "Mage de combat élémentaire"
 presentation_summary = "Combine feu, glace, foudre et terre pour contrôler le champ de bataille."
 progression_summary = "Quatre disciplines élémentaires au rang 1"
-disciplines = Array[ExtResource("8_discipline_type")]([ExtResource("9_fire"), ExtResource("10_ice"), ExtResource("11_lightning"), ExtResource("12_earth")])
 basic_attack_enabled = false
 spells = Array[ExtResource("2_spell")]([ExtResource("3_fireball"), ExtResource("4_ice_wall"), ExtResource("5_thunderstorm"), ExtResource("6_seismic_wave")])

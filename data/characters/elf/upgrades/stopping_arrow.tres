@@ -14,6 +14,6 @@ description = "La cible perd 2 PM au prochain tour et subit 4 dégâts si sa pou
 card_texture = ExtResource("5_card")
 discipline_id = &"archer"
 rank = 5
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_movement"), ExtResource("4_collision")])
 prerequisite_node_ids = Array[StringName]([&"elf_archer_repel_arrow"])
