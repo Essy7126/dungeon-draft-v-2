@@ -14,6 +14,7 @@ static func load_state() -> Dictionary:
 		"production_profile": bool(config.get_value("workspace", "production_profile", false)),
 		"character_path": str(config.get_value("workspace", "character_path", "")),
 		"discipline_id": str(config.get_value("workspace", "discipline_id", "")),
+		"analysis_split": int(config.get_value("workspace", "analysis_split", 0)),
 		"window_screen": int(config.get_value("window", "screen", 0)),
 		"window_position": config.get_value("window", "position", Vector2i(80, 80)),
 		"window_size": config.get_value("window", "size", Vector2i(1660, 940)),
@@ -31,6 +32,7 @@ static func save_state(state: Dictionary) -> bool:
 	)
 	config.set_value("workspace", "character_path", str(state.get("character_path", "")))
 	config.set_value("workspace", "discipline_id", str(state.get("discipline_id", "")))
+	config.set_value("workspace", "analysis_split", int(state.get("analysis_split", 0)))
 	config.set_value("window", "screen", int(state.get("window_screen", 0)))
 	config.set_value(
 		"window", "position", state.get("window_position", Vector2i(80, 80))
@@ -85,6 +87,7 @@ static func default_state() -> Dictionary:
 		"production_profile": false,
 		"character_path": "",
 		"discipline_id": "",
+		"analysis_split": 0,
 		"window_screen": 0,
 		"window_position": Vector2i(80, 80),
 		"window_size": Vector2i(1660, 940),

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CharacterAnimationSetData" format=3 uid="uid://msc8dphjrmlj"]
+
+[ext_resource type="Script" uid="uid://cisbvc12gvafg" path="res://data/characters/character_animation_set_data.gd" id="1_lf1jk"]
+
+[resource]
+script = ExtResource("1_lf1jk")
+animation_names = {
+&"cast": &"DD_Skeleton_MeleeAttack",
+&"cast_end": &"DD_Skeleton_Idle",
+&"cast_start": &"DD_Skeleton_RangedAttack",
+&"death": &"DD_Skeleton_Death",
+&"hit": &"DD_Skeleton_Hit",
+&"idle": &"DD_Skeleton_Idle",
+&"run": &"DD_Skeleton_Run",
+&"walk": &"DD_Skeleton_Walk"
+}

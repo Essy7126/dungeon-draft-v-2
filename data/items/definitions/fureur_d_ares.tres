@@ -1,43 +1,45 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c2ydtg5o52ckb"]
 
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_t0j44"]
-[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="2_ol055"]
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_cq1ek"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_fk6b3"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_tv54f"]
+[ext_resource type="Texture2D" uid="uid://do40uj7voqbij" path="res://addons/meshy-godot-plugin/Meshy_Icon_36.png" id="1_hton6"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_5tb72"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_rgajr"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="4_km3qs"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="5_nsl0h"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="6_xcgfb"]
 
-[sub_resource type="Resource" id="Resource_nk3am"]
-script = ExtResource("2_ol055")
+[sub_resource type="Resource" id="Resource_6yejd"]
+script = ExtResource("3_rgajr")
 condition_id = &"hp_percent"
 comparison = &"less_or_equal"
 value = 0.4
 
-[sub_resource type="Resource" id="Resource_gejlf"]
-script = ExtResource("1_t0j44")
+[sub_resource type="Resource" id="Resource_gjygn"]
+script = ExtResource("2_5tb72")
 trigger_id = &"manual_activation"
-conditions = Array[ExtResource("2_ol055")]([SubResource("Resource_nk3am")])
+conditions = Array[ExtResource("3_rgajr")]([SubResource("Resource_6yejd")])
 result_id = &"pay_hp_percent"
 value = 0.05
 frequency_id = &"per_turn"
 
-[sub_resource type="Resource" id="Resource_2jfcn"]
-script = ExtResource("2_ol055")
+[sub_resource type="Resource" id="Resource_odvkw"]
+script = ExtResource("3_rgajr")
 condition_id = &"hp_percent"
 comparison = &"less_or_equal"
 value = 0.4
 
-[sub_resource type="Resource" id="Resource_ajqot"]
-script = ExtResource("1_t0j44")
+[sub_resource type="Resource" id="Resource_ibsix"]
+script = ExtResource("2_5tb72")
 trigger_id = &"manual_activation"
-conditions = Array[ExtResource("2_ol055")]([SubResource("Resource_2jfcn")])
+conditions = Array[ExtResource("3_rgajr")]([SubResource("Resource_odvkw")])
 result_id = &"current_ap"
 frequency_id = &"per_turn"
 
 [resource]
-script = ExtResource("3_cq1ek")
+script = ExtResource("4_km3qs")
 item_id = &"fureur_d_ares"
 display_name = "Fureur d’Arès"
 description = "Tu choisis le moment : une fois par tour, si tu es à 40 % de tes PV maximum ou moins, clique sur l’objet pour perdre 5 % de tes PV maximum (tu ne meurs jamais de cette perte, tu gardes au moins 1 PV) et gagner 1 PA pour ce tour."
+inventory_icon = ExtResource("1_hton6")
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5
-reactive_effects = Array[ExtResource("1_t0j44")]([SubResource("Resource_gejlf"), SubResource("Resource_ajqot")])
+reactive_effects = Array[ExtResource("2_5tb72")]([SubResource("Resource_gjygn"), SubResource("Resource_ibsix")])

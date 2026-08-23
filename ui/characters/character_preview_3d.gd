@@ -102,6 +102,18 @@ func configure(source) -> void:
 	fallback_panel.visible = false
 
 
+## Coupe ou relance le rendu du petit monde 3D. Un aperçu qu'on ne regarde pas
+## continuerait sinon à se dessiner à chaque image : coûteux partout, et
+## particulièrement dans une fenêtre d'éditeur, qui n'est pas un jeu.
+func set_preview_active(active: bool) -> void:
+	if not is_instance_valid(preview_viewport):
+		return
+	preview_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if active \
+		else SubViewport.UPDATE_DISABLED
+	if not active:
+		stop_clip()
+
+
 func clear_preview() -> void:
 	_editor_player = null
 	set_process(false)

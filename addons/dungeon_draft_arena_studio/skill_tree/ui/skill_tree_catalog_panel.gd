@@ -48,7 +48,9 @@ func _ready() -> void:
 	tree = Tree.new()
 	tree.hide_root = true
 	tree.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	tree.custom_minimum_size.y = 300
+	# Plancher volontairement bas : l'arbre s'étire déjà pour occuper la place
+	# disponible, et un minimum élevé empêcherait de remonter le tiroir d'analyse.
+	tree.custom_minimum_size.y = 60
 	tree.item_selected.connect(_on_item_selected)
 	add_child(tree)
 	var create_button := Button.new()

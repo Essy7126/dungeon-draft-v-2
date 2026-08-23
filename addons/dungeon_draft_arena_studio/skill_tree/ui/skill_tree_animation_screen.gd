@@ -85,6 +85,9 @@ func _ready() -> void:
 	_rebuild_event_list()
 	_rebuild_character_list()
 	_select_event(_selected_event, false)
+	# Rien ne doit se dessiner tant que cet écran n'est pas affiché : le Studio
+	# vit dans une fenêtre d'éditeur, pas dans une boucle de jeu.
+	preview.set_preview_active(false)
 
 
 # ============================================================
@@ -114,11 +117,17 @@ func set_document(unit: UnitData, current_path: String) -> void:
 	_rebuild_rows()
 
 
-## Appelée quand l'écran cesse d'être affiché : rien ne doit continuer à
-## tourner dans l'aperçu pendant qu'on travaille ailleurs.
+## Appelée quand l'écran cesse d'être affiché : ni animation ni rendu 3D ne
+## doivent continuer pendant qu'on travaille ailleurs.
 func suspend() -> void:
 	if preview != null:
-		preview.stop_clip()
+		preview.set_preview_active(false)
+
+
+## Appelée quand l'écran redevient visible.
+func resume() -> void:
+	if preview != null:
+		preview.set_preview_active(true)
 
 
 func set_guided(value: bool) -> void:

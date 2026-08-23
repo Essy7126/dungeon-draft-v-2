@@ -9,6 +9,10 @@ const GUIDE_STEPS := [
 	"5 Rangs et XP", "6 Améliorations", "7 Branches", "8 Effets",
 	"9 Tester", "10 Sauvegarder",
 ]
+# Replié, on pousse la poignée au maximum vers le bas : le tiroir retombe sur
+# la hauteur de sa seule barre.
+const COLLAPSED_SPLIT_OFFSET := 100000
+const DEFAULT_ANALYSIS_SPLIT_OFFSET := -80
 const SCREEN_CHARACTER: StringName = &"character"
 const SCREEN_SKILLS: StringName = &"skills"
 const SCREEN_ANIMATIONS: StringName = &"animations"
@@ -54,6 +58,10 @@ var catalog: SkillTreeCatalogPanel
 var graph: SkillTreeStudioGraphEdit
 var inspector: SkillTreeInspectorPanel
 var bottom: SkillTreeBottomPanel
+var analysis_drawer: SkillTreeAnalysisDrawer
+var analysis_split: VSplitContainer
+var screens_box: VBoxContainer
+var _analysis_split_offset := DEFAULT_ANALYSIS_SPLIT_OFFSET
 var rank_bar: HFlowContainer
 var tour: SkillTreeGuidedTour
 var status_dialog: AcceptDialog
@@ -115,6 +123,10 @@ func _ready() -> void:
 	workspace_state = SkillTreeUiStateService.load_state()
 	guided = bool(workspace_state.get("guided", true))
 	production_profile = bool(workspace_state.get("production_profile", false))
+	# Hauteur du tiroir choisie à la poignée lors d'une session précédente.
+	var stored_split := int(workspace_state.get("analysis_split", 0))
+	if stored_split != 0:
+		_analysis_split_offset = stored_split
 	_build_ui()
 	_connect_session()
 	_draft_timer = Timer.new()
@@ -186,6 +198,7 @@ func get_state_snapshot() -> Dictionary:
 		"production_profile": production_profile,
 		"character_path": session.canonical_source_path(),
 		"discipline_id": str(session.selected_discipline_id),
+		"analysis_split": _analysis_split_offset,
 		"window_screen": int(workspace_state.get("window_screen", 0)),
 		"window_position": workspace_state.get("window_position", Vector2i(80, 80)),
 		"window_size": workspace_state.get("window_size", Vector2i(1660, 940)),
@@ -204,11 +217,21 @@ func _build_ui() -> void:
 	root.add_child(_build_toolbar())
 	root.add_child(_build_screen_bar())
 	root.add_child(_build_guide_bar())
+	# Les écrans et le tiroir se partagent la hauteur restante via une poignée
+	# native : c'est elle qui permet de remonter le tiroir aussi haut qu'on veut.
+	analysis_split = VSplitContainer.new()
+	analysis_split.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	analysis_split.dragged.connect(_on_analysis_split_dragged)
+	root.add_child(analysis_split)
+	screens_box = VBoxContainer.new()
+	screens_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	screens_box.size_flags_stretch_ratio = 3.0
+	analysis_split.add_child(screens_box)
 	var horizontal := HSplitContainer.new()
 	horizontal.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	horizontal.split_offset = 280
 	skills_screen = horizontal
-	root.add_child(horizontal)
+	screens_box.add_child(horizontal)
 	catalog = SkillTreeCatalogPanel.new()
 	catalog.character_requested.connect(_request_character)
 	catalog.discipline_requested.connect(_select_discipline)
@@ -218,12 +241,9 @@ func _build_ui() -> void:
 	catalog.rename_discipline_requested.connect(_rename_discipline_display)
 	catalog.delete_discipline_requested.connect(_confirm_detach_discipline)
 	horizontal.add_child(catalog)
-	var center_split := VSplitContainer.new()
-	center_split.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	center_split.split_offset = 610
-	horizontal.add_child(center_split)
 	var graph_box := VBoxContainer.new()
-	center_split.add_child(graph_box)
+	graph_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	horizontal.add_child(graph_box)
 	rank_bar = HFlowContainer.new()
 	rank_bar.add_theme_constant_override("h_separation", 5)
 	graph_box.add_child(rank_bar)
@@ -242,7 +262,6 @@ func _build_ui() -> void:
 	bottom = SkillTreeBottomPanel.new()
 	bottom.diagnostic_selected.connect(_focus_diagnostic)
 	bottom.simulated_node_selected.connect(func(node_id): graph.focus_subject(node_id))
-	center_split.add_child(bottom)
 	inspector = SkillTreeInspectorPanel.new()
 	inspector.property_change_requested.connect(_change_property)
 	inspector.subject_requested.connect(_select_subject)
@@ -275,12 +294,24 @@ func _build_ui() -> void:
 		_show_screen(SCREEN_CHARACTER)
 	)
 	animation_screen.clip_change_requested.connect(_change_animation_clip)
-	root.add_child(animation_screen)
+	screens_box.add_child(animation_screen)
 	character_screen = SkillTreeCharacterScreen.new()
 	character_screen.name = "CharacterScreen"
 	character_screen.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	character_screen.character_chosen.connect(_choose_character)
-	root.add_child(character_screen)
+	screens_box.add_child(character_screen)
+	analysis_drawer = SkillTreeAnalysisDrawer.new()
+	analysis_drawer.name = "AnalysisDrawer"
+	analysis_drawer.expanded_changed.connect(_on_analysis_expanded_changed)
+	analysis_split.add_child(analysis_drawer)
+	analysis_drawer.attach_body(bottom)
+	# Toute action qui amène l'utilisateur sur un onglet du tiroir (Valider,
+	# Tester, Prévisualiser, Analyse, clic sur un diagnostic…) doit le déplier.
+	bottom.tab_changed.connect(func(_index): analysis_drawer.open())
+	# La ligne d'état rejoint la barre du tiroir : un seul endroit, tout en bas,
+	# où lire ce que le Studio a à dire, au lieu de deux zones concurrentes.
+	status_label = analysis_drawer.summary_label
+	_on_analysis_expanded_changed(analysis_drawer.is_expanded())
 	_build_dialogs()
 	_build_tour_highlight()
 	_show_screen(current_screen)
@@ -433,6 +464,10 @@ func _show_screen(screen: StringName) -> void:
 		animation_screen.visible = on_animations
 	if guide_panel != null:
 		guide_panel.visible = on_skills
+	# Le tiroir ne parle que des compétences : il disparaît ailleurs plutôt que
+	# d'occuper une ligne pour rien.
+	if analysis_drawer != null:
+		analysis_drawer.visible = on_skills
 	for button in [
 		search_button, compare_button, validate_button, test_button,
 		preview_button, analysis_button, orphan_button,
@@ -444,6 +479,7 @@ func _show_screen(screen: StringName) -> void:
 	if animation_screen != null and not on_animations:
 		animation_screen.suspend()
 	if on_animations:
+		animation_screen.resume()
 		_refresh_animation_screen()
 	elif on_character:
 		_refresh_character_screen()
@@ -479,6 +515,22 @@ func _refresh_character_screen() -> void:
 	character_screen.set_catalog(heroes, _current_catalog_path())
 
 
+## Replié, la poignée est poussée à fond vers le bas : le tiroir retombe sur sa
+## barre. La hauteur choisie par l'utilisateur est conservée à part et restaurée
+## telle quelle à la réouverture.
+func _on_analysis_expanded_changed(expanded: bool) -> void:
+	if analysis_split == null:
+		return
+	analysis_split.split_offset = _analysis_split_offset if expanded \
+		else COLLAPSED_SPLIT_OFFSET
+
+
+func _on_analysis_split_dragged(offset: int) -> void:
+	if analysis_drawer == null or not analysis_drawer.is_expanded():
+		return
+	_analysis_split_offset = offset
+
+
 func _refresh_animation_screen() -> void:
 	# Écran caché : inutile d'instancier le modèle 3D et de le faire tourner.
 	# Il se reconstruira à l'affichage, avec l'état à jour.
@@ -502,10 +554,7 @@ func _build_guide_bar() -> Control:
 	var panel := guide_panel
 	var box := VBoxContainer.new()
 	panel.add_child(box)
-	status_label = Label.new()
-	status_label.text = "Commencez par choisir un personnage."
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(status_label)
+	# La ligne d'état vit dans la barre du tiroir d'analyse, tout en bas.
 	var steps := HFlowContainer.new()
 	steps.add_theme_constant_override("h_separation", 4)
 	box.add_child(steps)
@@ -1515,6 +1564,9 @@ func _validate() -> void:
 	commit_pending_edits()
 	_refresh_document()
 	bottom.current_tab = 0
+	# Régler l'onglet sur sa valeur actuelle n'émet aucun signal : on déplie
+	# explicitement, sinon le résultat demandé resterait caché.
+	analysis_drawer.open()
 	var summary := SkillTreeEditorValidator.summary(validation_messages)
 	status_label.text = "Validation terminée : %d erreur(s), %d avertissement(s)." % [
 		summary.get("errors", 0), summary.get("warnings", 0),
@@ -1525,6 +1577,7 @@ func _test() -> void:
 	commit_pending_edits()
 	_refresh_document()
 	bottom.select_simulator_tab()
+	analysis_drawer.open()
 	status_label.text = "Simulation isolée ouverte. Elle ne modifie aucune partie réelle."
 
 
@@ -1544,6 +1597,7 @@ func _preview_runtime() -> void:
 		modifiers.append(subject)
 	var report := SkillTreeRuntimePreviewService.preview(spell, modifiers)
 	bottom.set_preview(report)
+	analysis_drawer.open()
 	status_label.text = "Prévisualisation runtime terminée : %d scénario(s), %d modificateur(s)." % [
 		(report.get("scenarios", []) as Array).size(), modifiers.size(),
 	]
@@ -1557,6 +1611,7 @@ func _run_full_analysis() -> void:
 	status_label.text = "Analyse complète en cours…"
 	var report := SkillTreeDesignAnalysisService.analyze(discipline)
 	bottom.set_analysis(report)
+	analysis_drawer.open()
 	status_label.text = "Analyse complète terminée en %.2f ms." % (
 		float(report.get("duration_usec", 0)) / 1000.0
 	)

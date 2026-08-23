@@ -225,6 +225,13 @@ func test_interface_builds_and_loads_a_real_character() -> void:
 	_handle_known_production_uid_warning()
 	assert_true(studio.heroes.size() >= 3, "catalogue : %d personnage(s)" % studio.heroes.size())
 	assert_not_null(studio.session.working_unit)
+	# Le Studio rouvre le dernier personnage utilisé, qui dépend de l'état
+	# enregistré dans user://. On en choisit un explicitement pour que le test
+	# ne dépende pas de la machine sur laquelle il tourne.
+	studio._choose_character(ELF_PATH)
+	for _frame in range(8):
+		await get_tree().process_frame
+	assert_eq(studio.session.working_unit.get_effective_unit_id(), &"elf")
 	assert_not_null(studio.session.current_discipline())
 	assert_not_null(studio.catalog)
 	assert_not_null(studio.graph)
