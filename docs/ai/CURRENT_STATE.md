@@ -15,18 +15,21 @@
   la course conserve une traversée vive de 0,20 s. La grille reste l’autorité
   du déplacement.
 - Le billboard V3 utilise une taille d'affichage de 96 avec une caméra
-  orthographique 2,6. Le profil peint est revenu à une base de 1,0, bornée
-  entre 1,0 et 1,15. Les
-  échelles finales sont 1,05 / 1,08 / 1,10 pour la forêt, le volcan et
-  l’espace ; elles remplacent l’ancien calibrage 1,974 / 2,0 / 2,0.
+	orthographique 2,6. Le profil peint emploie une base de 1,72, bornée entre
+	1,50 et 1,90. Les échelles finales sont 1,806 / 1,8576 / 1,892 pour la forêt,
+	le volcan et l’espace : Achille est ainsi calibré dans l'enveloppe réelle de
+	l'Elfe, du Mage et du Guerrier. Les identifiants réels des ennemis Odyssée
+	sont désormais reliés à leurs profils peints et leurs billboards compensent
+	le cadrage natif plus petit afin de partager la même hauteur rendue.
 - Le modèle Meshy ne contient aucun équipement. Le corps de grille et l’aperçu
   3D utilisent la V3 ; le portrait du HUD reste l’illustration 2D historique.
-- Validation actuelle : tests ciblés taille/locomotion 23/23 (350 assertions),
+- Validation actuelle : tests ciblés proportions/V3/locomotion/Odyssée 35/35
+  (855 assertions),
   Studio 19/19 (208 assertions) et binding SHA-exact 34/34 (643 assertions).
-  Le full-flow graphique des trois salles passe sur le commit d'implémentation
-  `37c6f5f846fa` avec 13 captures. Les hauteurs observées sont
-  65,1 / 66,2 / 68,2 px, contre 51–55 px avant la correction et environ 130 px
-  dans la capture surdimensionnée. La revue visuelle conclut **GO**.
+  La comparaison graphique instancie réellement les trois héros et les trois
+  familles ennemies de production : Achille reste dans la bande du trio et les
+  ennemis restent à ±5 % de sa hauteur rendue. Le full-flow post-calibrage doit
+  être rescellé sur le prochain commit propre.
 
 ## Achille — pool d’animations Meshy V3 (WORKTREE_CANDIDATE, 2026-08-23)
 

@@ -12,6 +12,11 @@ const TRIO_DATA_PATHS := [
 	"res://data/units/alliés/mage.tres",
 	"res://data/units/alliés/Guerrier.tres",
 ]
+const ODYSSEY_ENEMY_DATA_PATHS := [
+	"res://data/units/enemies/odyssey_skirmisher.tres",
+	"res://data/units/enemies/odyssey_guard.tres",
+	"res://data/units/enemies/odyssey_champion.tres",
+]
 const FOREST_VISUAL_PATH := (
 	"res://data/maps/painted/odyssey/room_01_visual.tres"
 )
@@ -28,9 +33,9 @@ const ROOM_PROFILE_PATHS := {
 	"space": "res://data/maps/painted/room_06_space_presentation.tres",
 }
 const EXPECTED_ROOM_SCALES := {
-	"forest": 1.89,
-	"volcano": 1.944,
-	"space": 1.98,
+	"forest": 1.806,
+	"volcano": 1.8576,
+	"space": 1.892,
 }
 const MESHY_CLIP_NAMES: Array[StringName] = [
 	&"Alert",
@@ -63,8 +68,8 @@ const BATTLE_UNIT_VIEW_SCALE := 0.58
 # vertically. Normalizing the real UnitView hierarchy to that cell keeps this
 # regression independent from desktop DPI and window stretch settings.
 const REFERENCE_ODYSSEY_CELL_DEPTH_PIXELS := 74.0
-const ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS := 125.0
-const ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS := 170.0
+const ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS := 115.0
+const ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS := 155.0
 
 
 func test_achilles_has_a_valid_painted_presence_profile() -> void:
@@ -74,9 +79,9 @@ func test_achilles_has_a_valid_painted_presence_profile() -> void:
 		return
 	assert_true(profile.matches(&"achilles"))
 	assert_eq(profile.family_id, &"hero_achilles")
-	assert_almost_eq(profile.base_visual_scale, 1.8, 0.0001)
-	assert_almost_eq(profile.minimum_visual_scale, 1.6, 0.0001)
-	assert_almost_eq(profile.maximum_visual_scale, 2.0, 0.0001)
+	assert_almost_eq(profile.base_visual_scale, 1.72, 0.0001)
+	assert_almost_eq(profile.minimum_visual_scale, 1.5, 0.0001)
+	assert_almost_eq(profile.maximum_visual_scale, 1.9, 0.0001)
 	assert_true(profile.validation_errors().is_empty())
 
 
@@ -253,6 +258,24 @@ func test_real_battle_unit_views_match_the_three_production_heroes() -> void:
 			return
 		trio_views.append(trio_view)
 		trio_visuals.append(trio_visual)
+	var enemy_views: Array[Node2D] = []
+	var enemy_visuals: Array[CharacterIsoUnitView] = []
+	for data_path in ODYSSEY_ENEMY_DATA_PATHS:
+		var enemy_view := _create_unit_view(
+			data_path,
+			map_visual.presentation_profile,
+			battle_unit_scale,
+		)
+		if enemy_view == null:
+			return
+		var enemy_visual := (
+			enemy_view.call("get_optional_visual") as CharacterIsoUnitView
+		)
+		assert_not_null(enemy_visual, data_path)
+		if enemy_visual == null:
+			return
+		enemy_views.append(enemy_view)
+		enemy_visuals.append(enemy_visual)
 	if achilles_view == null:
 		return
 	var achilles := (
@@ -277,12 +300,16 @@ func test_real_battle_unit_views_match_the_three_production_heroes() -> void:
 		trio_visual.character_viewport.render_target_update_mode = (
 			SubViewport.UPDATE_ONCE
 		)
+	for enemy_visual in enemy_visuals:
+		enemy_visual.character_viewport.render_target_update_mode = (
+			SubViewport.UPDATE_ONCE
+		)
 	await wait_process_frames(1)
 	await RenderingServer.frame_post_draw
 
 	assert_almost_eq(
 		float(achilles_view.call("get_painted_visual_scale")),
-		1.89,
+		1.806,
 		0.0001,
 	)
 	var achilles_measure := _unit_view_measure(achilles_view, achilles)
@@ -294,6 +321,12 @@ func test_real_battle_unit_views_match_the_three_production_heroes() -> void:
 		if not measure.visible:
 			return
 		trio_measures.append(measure)
+	var enemy_measures: Array[Dictionary] = []
+	for index in enemy_views.size():
+		var measure := _unit_view_measure(enemy_views[index], enemy_visuals[index])
+		if not measure.visible:
+			return
+		enemy_measures.append(measure)
 
 	var cell_depth := _vertical_span(
 		map_visual.cell_polygon_display(Vector2i.ZERO)
@@ -349,8 +382,26 @@ func test_real_battle_unit_views_match_the_three_production_heroes() -> void:
 			0.05,
 			"Production trio hero %d remains on the UnitView origin." % index,
 		)
+	for index in enemy_measures.size():
+		var enemy_to_achilles := (
+			float(enemy_measures[index].world_height)
+			/ maxf(float(achilles_measure.world_height), 0.001)
+		)
+		assert_between(
+			enemy_to_achilles,
+			0.95,
+			1.05,
+			"Odyssey enemy %d shares Achilles' rendered-height band (%.3f)." % [
+				index, enemy_to_achilles,
+			],
+		)
+		assert_lte(
+			float(enemy_measures[index].foot_anchor_error),
+			0.05,
+			"Odyssey enemy %d remains on the UnitView origin." % index,
+		)
 	# The previous 1.0 base is now explicitly rejected by the real trio target.
-	var previous_small_height_pixels := achilles_height_pixels / 1.8
+	var previous_small_height_pixels := achilles_height_pixels / 1.72
 	assert_lt(previous_small_height_pixels, ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS)
 
 

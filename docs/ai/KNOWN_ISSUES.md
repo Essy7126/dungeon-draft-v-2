@@ -46,11 +46,13 @@
   de conserver la grille comme autorité. Les 13 captures finales valident le
   cadrage général ; une future passe artistique pourra encore polir les appuis
   et les transitions.
-- Validation actuelle : tests ciblés taille/locomotion 23/23 (350 assertions),
+- Validation actuelle : tests ciblés proportions/V3/locomotion/Odyssée 35/35
+  (855 assertions),
   Studio 19/19 (208 assertions) et binding SHA-exact 34/34 (643 assertions).
-  Le full-flow trois salles et ses 13 captures passent sur `37c6f5f846fa` ;
-  les hauteurs réelles sont 65,1 / 66,2 / 68,2 px et la revue des proportions,
-  du repos et des quatre poses d'action conclut GO.
+  La comparaison graphique relie les vrais identifiants Odyssée aux profils
+  ennemis et maintient les trois familles à ±5 % de la hauteur rendue
+  d'Achille. Le full-flow post-calibrage doit encore être rescellé sur le
+  prochain commit propre.
 - Les runners graphiques peuvent encore signaler des ressources renderer ou
   `ObjectDB` à la fermeture, après le marqueur PASS et avec un code de sortie
   nul. Cette dette de teardown n'est pas attribuée au gameplay Meshy.

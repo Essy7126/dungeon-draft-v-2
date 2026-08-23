@@ -84,17 +84,19 @@ animation non affectée n’est pas supprimée du GLB.
 
 Le profil `res://data/maps/painted/unit_profile_achilles.tres` impose :
 
-- base : 1,0 ;
-- minimum : 1,0 ;
-- maximum : 1,15 ;
-- forêt : 1,05 ;
-- volcan : 1,08 ;
-- espace : 1,10.
+- base : 1,72 ;
+- minimum : 1,50 ;
+- maximum : 1,90 ;
+- forêt : 1,806 ;
+- volcan : 1,8576 ;
+- espace : 1,892.
 
 Le profil V3 conserve une caméra orthographique 2,6 et emploie un billboard de
-96 pixels avant la mise à l'échelle peinte. Ce calibrage remplace les valeurs
-V2 1,974 / 2,0 / 2,0, qui rendaient Achille
-nettement trop grand par rapport aux cases et aux autres personnages.
+96 pixels avant la mise à l'échelle peinte. Le calibrage est comparé aux vraies
+UnitView de l'Elfe, du Mage et du Guerrier. Les vrais identifiants ennemis de
+L'Odyssée sont aussi reliés aux profils peints ; les billboards standard et
+champion compensent leurs cadrages natifs afin de rester à ±5 % de la hauteur
+rendue d'Achille.
 
 ## Root motion et autorité de la grille
 
@@ -117,10 +119,11 @@ de hanche important.
 
 ## Validation
 
-- Tests ciblés taille/locomotion : 23/23 tests, 350 assertions.
+- Tests ciblés proportions/V3/locomotion/Odyssée : 35/35 tests,
+  855 assertions.
 - Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
-- Full-flow graphique final : **PASS**, 3/3 salles et 13/13 captures.
-- Inspection finale des captures : **GO** ; hauteurs 65,1 / 66,2 / 68,2 px.
+- Full-flow graphique post-calibrage : à rejouer sur le prochain commit propre.
 
-La V3 et son recalibrage sont visuellement validés.
+La V3, sa cadence et ses proportions unitaires sont validées ; la dernière
+revue des trois salles reste à resceller.

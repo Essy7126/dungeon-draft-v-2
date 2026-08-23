@@ -59,14 +59,17 @@ func test_formule_finale_est_par_famille_fois_salle_avec_caps_explicites() -> vo
 	assert_almost_eq(forest.final_visual_scale(&"elf"), 1.806, 0.0001)
 	assert_almost_eq(forest.final_visual_scale(&"mage"), 1.848, 0.0001)
 	assert_almost_eq(forest.final_visual_scale(&"warrior"), 1.974, 0.0001)
-	assert_almost_eq(forest.final_visual_scale(&"skeleton_melee"), 1.68, 0.0001)
+	assert_almost_eq(forest.final_visual_scale(&"skeleton_melee"), 1.806, 0.0001)
+	assert_almost_eq(forest.final_visual_scale(&"odyssey_skirmisher"), 1.806, 0.0001)
+	assert_almost_eq(forest.final_visual_scale(&"odyssey_guard"), 1.806, 0.0001)
 	assert_almost_eq(volcano.final_visual_scale(&"elf"), 1.8576, 0.0001)
-	assert_almost_eq(volcano.final_visual_scale(&"skeleton_chief"), 1.62, 0.0001)
+	assert_almost_eq(volcano.final_visual_scale(&"skeleton_chief"), 1.8576, 0.0001)
+	assert_almost_eq(volcano.final_visual_scale(&"odyssey_champion"), 1.8576, 0.0001)
 	assert_almost_eq(space.final_visual_scale(&"elf"), 1.892, 0.0001)
 	assert_almost_eq(space.final_visual_scale(&"mage"), 1.936, 0.0001)
 	assert_almost_eq(space.final_visual_scale(&"warrior"), 2.0, 0.0001)
-	assert_almost_eq(space.final_visual_scale(&"skeleton_melee"), 1.76, 0.0001)
-	assert_almost_eq(space.final_visual_scale(&"skeleton_chief"), 1.65, 0.0001)
+	assert_almost_eq(space.final_visual_scale(&"skeleton_melee"), 1.892, 0.0001)
+	assert_almost_eq(space.final_visual_scale(&"skeleton_chief"), 1.892, 0.0001)
 
 
 func test_echelles_familles_appliquent_le_second_palier_de_lisibilite() -> void:
@@ -77,11 +80,11 @@ func test_echelles_familles_appliquent_le_second_palier_de_lisibilite() -> void:
 		assert_lte(family.final_visual_scale(profile.global_unit_scale_multiplier), 2.0)
 	for unit_id in [&"skeleton_melee", &"skeleton_ranged"]:
 		var family := profile.profile_for_unit(unit_id)
-		assert_gte(family.final_visual_scale(profile.global_unit_scale_multiplier), 1.70)
-		assert_lte(family.final_visual_scale(profile.global_unit_scale_multiplier), 1.80)
+		assert_gte(family.final_visual_scale(profile.global_unit_scale_multiplier), 1.89)
+		assert_lte(family.final_visual_scale(profile.global_unit_scale_multiplier), 1.90)
 	var elite := profile.profile_for_unit(&"skeleton_chief")
-	assert_gte(elite.final_visual_scale(profile.global_unit_scale_multiplier), 1.60)
-	assert_lte(elite.final_visual_scale(profile.global_unit_scale_multiplier), 1.70)
+	assert_gte(elite.final_visual_scale(profile.global_unit_scale_multiplier), 1.89)
+	assert_lte(elite.final_visual_scale(profile.global_unit_scale_multiplier), 1.90)
 
 
 func test_application_est_absolue_et_ne_deplace_jamais_le_pied_logique() -> void:

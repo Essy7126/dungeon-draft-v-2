@@ -224,13 +224,16 @@ visuel enfant suit la formule :
 échelle_visuelle_finale = échelle_de_base_de_la_famille × multiplicateur_de_salle
 ```
 
-Les héros utilisent des bases de 1,72 (Elfe), 1,76 (Mage) et 1,88 (Guerrier),
-les squelettes standards 1,60 et les élites 1,50. Les multiplicateurs de salle
-sont 1,05 pour la forêt, 1,08 pour le volcan et 1,10 pour l'espace. Les zooms de
-présentation sont 1,10, 1,12 et 1,15. Les valeurs finales par famille, caps
-compris, figurent dans `docs/maps/unit_presence_audit.md`. Une ombre de contact
-et des liserés vectoriels sobres renforcent la lecture sans modifier les
-textures des modèles, les collisions, les spawns ou la grille.
+Les héros utilisent des bases de 1,72 (Elfe et Achille), 1,76 (Mage) et 1,88
+(Guerrier). Les squelettes standards et élites utilisent désormais eux aussi
+une base de 1,72. Les identifiants réels des trois ennemis de L'Odyssée sont
+explicitement rattachés à ces profils, et leurs billboards compensent leur
+cadrage natif afin de partager la hauteur rendue d'Achille. Les multiplicateurs
+de salle sont 1,05 pour la forêt, 1,08 pour le volcan et 1,10 pour l'espace.
+Les zooms de présentation sont 1,10, 1,12 et 1,15. Les valeurs finales par
+famille, caps compris, figurent dans `docs/maps/unit_presence_audit.md`. Une
+ombre de contact et des liserés vectoriels sobres renforcent la lecture sans
+modifier les textures des modèles, les collisions, les spawns ou la grille.
 
 L'audit `artifacts/maps/unit_presence_audit/` contient les captures avant/après,
 les variantes d'échelle, les trois résolutions, les états d'action et le rapport

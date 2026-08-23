@@ -47,11 +47,14 @@ la cellule de grille résolue.
 ## Présentation et dimensions
 
 - Le profil V3 emploie `render_display_size = 96.0` avec une caméra
-  orthographique 2,6. Le profil peint emploie `base_visual_scale = 1.0`, un
-  minimum de 1,0 et un maximum de 1,15.
-- Les trois présentations produisent des échelles finales de 1,05 dans la
-  forêt, 1,08 dans le volcan et 1,10 dans l’espace.
-- Ces valeurs remplacent le calibrage V2 1,974 / 2,0 / 2,0, trop grand en jeu.
+	orthographique 2,6. Le profil peint emploie `base_visual_scale = 1.72`, un
+	minimum de 1,5 et un maximum de 1,9.
+- Les trois présentations produisent des échelles finales de 1,806 dans la
+	forêt, 1,8576 dans le volcan et 1,892 dans l’espace.
+- Ces valeurs sont calibrées sur les trois héros de production (Elfe, Mage et
+	Guerrier). Les identifiants `odyssey_skirmisher`, `odyssey_guard` et
+	`odyssey_champion` sont reliés aux profils peints ; leurs scènes compensent
+	leur cadrage natif afin de rester à ±5 % de la hauteur rendue d'Achille.
 - Le corps de grille et l’aperçu 3D utilisent la V3. Le portrait du HUD reste
   l’illustration 2D historique.
 
@@ -67,12 +70,12 @@ la cellule de grille résolue.
 
 ## Validation actuelle
 
-- Tests ciblés taille/locomotion : 23/23 tests, 350 assertions.
+- Tests ciblés proportions/V3/locomotion/Odyssée : 35/35 tests,
+  855 assertions.
 - Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
-- Full-flow graphique final : **PASS**, 3/3 salles et 13/13 captures.
-- Revue des captures : **GO**. Hauteurs mesurées : 65,1 px dans la forêt,
-  66,2 px dans le volcan et 68,2 px dans l'espace.
+- Full-flow graphique post-calibrage : **À REJOUER SUR LE PROCHAIN COMMIT
+  PROPRE**.
 - `Idle_11` reste actif après une boucle complète ; `Walking` est sélectionné
   jusqu'à 5 cases et `run_fast_3_inplace` à partir de 6 cases.
 
