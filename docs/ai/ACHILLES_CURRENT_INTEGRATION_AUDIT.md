@@ -1,7 +1,7 @@
 # Achille — audit d’intégration Odyssée
 
 Date : 2026-08-23
-Statut : **WORKTREE_CANDIDATE — VALIDATION_GRAPHIQUE_PENDING**
+Statut : **WORKTREE_CANDIDATE — VISUAL_VALIDATION_PASS — PUBLICATION_PENDING**
 
 ## Verdict
 
@@ -11,8 +11,9 @@ modèle Meshy direct. Le même asset fournit un mesh skinné, un rig de 24 os et
 quatre capacités d’Achille ne changent pas.
 
 Les contrôles ciblés et de régression sont verts. Le full-flow graphique final
-n’a toutefois pas encore été exécuté : ce document ne qualifie donc pas encore
-la V3 de validation visuelle finale ni de production publiée.
+des trois salles passe sur le commit d'implémentation `8bd5f73ef711`, avec 13
+captures inspectées. La V3 est validée visuellement comme candidat ; elle ne
+sera qualifiée de publiée qu'après intégration sur `origin/main`.
 
 ## Source et contrat 3D
 
@@ -69,19 +70,18 @@ la cellule de grille résolue.
 - Suite dédiée au runtime Meshy V3 : 4/4 tests, 38 assertions.
 - Calibration réelle : 5/5 tests, 218 assertions.
 - Régression élargie : 79/79 tests, 2 532 assertions.
-- Full-flow graphique final : **NON EXÉCUTÉ**.
-- Revue des captures, proportions dans les trois cartes, repos, marche/course
-  et quatre sorts en conditions réelles : **PENDING**.
+- Binding SHA-exact : 34/34 tests, 643 assertions.
+- Full-flow graphique final : **PASS**, 3/3 salles et 13/13 captures.
+- Revue des captures : **GO**. Hauteurs mesurées : 51,4 px dans la forêt,
+  54,4 px dans le volcan et 54,7 px dans l'espace.
+- `Idle_11` reste actif après une boucle complète ; `Walking` est sélectionné
+  jusqu'à 5 cases et `run_fast_3_inplace` à partir de 6 cases.
 
-## Limites à fermer avant promotion
+## Limites restantes
 
-- Exécuter le full-flow graphique V3 dans les trois salles et inspecter ses
-  captures.
-- Confirmer visuellement l’échelle 1,05 / 1,08 / 1,10, l’ancrage aux pieds et
-  le cadrage des animations les plus amples.
-- Vérifier que `Idle_11` ne ressemble plus à une attaque répétée et que
-  `Walking` est bien sélectionnée pour les déplacements ordinaires.
 - Juger les appuis, transitions et clips à forte translation après
-  neutralisation locale.
+  neutralisation locale lors d'une future revue vidéo.
 - Conserver le fondu de mort et le portrait 2D tant que la source Meshy ne
   fournit pas de remplacements dédiés.
+- Améliorer ultérieurement l'éclairage ou la teinte de sélection : le modèle
+  paraît sombre/bleuté, sans que cela n'affecte sa lisibilité tactique.

@@ -42,15 +42,22 @@
 - Le corps de grille et l’aperçu 3D utilisent la V3. Le portrait du HUD reste
   l’illustration 2D historique ; il n’est pas un rendu animé du GLB.
 - Les clips avec forte translation de hanche sont neutralisés localement afin
-  de conserver la grille comme autorité. Une revue humaine doit encore juger
-  les appuis, les transitions et le cadrage de chaque action.
+  de conserver la grille comme autorité. Les 13 captures finales valident le
+  cadrage général ; une future passe artistique pourra encore polir les appuis
+  et les transitions.
 - Validation actuelle : suite V3 4/4 (38 assertions), calibration 5/5
-  (218 assertions) et régression élargie 79/79 (2 532 assertions). Le
-  full-flow graphique final et ses captures n’ont pas
-  encore été exécutés ; aucune conformité visuelle finale ne doit être
-  revendiquée avant cette étape.
+  (218 assertions), régression élargie 79/79 (2 532 assertions) et binding
+  SHA-exact 34/34 (643 assertions). Le full-flow trois salles et ses 13
+  captures passent sur `8bd5f73ef711`; la revue des proportions, du repos et
+  des quatre poses d'action conclut GO.
 - Les runners graphiques peuvent encore signaler des ressources renderer ou
-  `ObjectDB` à la fermeture. Ce point sera réévalué avec le full-flow V3.
+  `ObjectDB` à la fermeture, après le marqueur PASS et avec un code de sortie
+  nul. Cette dette de teardown n'est pas attribuée au gameplay Meshy.
+- Lorsqu'il est sélectionné, le modèle Meshy apparaît sombre/bleuté et ses
+  détails de matière sont peu perceptibles. C'est la prochaine priorité
+  cosmétique, devant toute nouvelle modification d'échelle.
+- Les captures fixes prouvent le choix `Walking` / `run_fast_3_inplace`, mais
+  ne remplacent pas une revue vidéo de la cadence de déplacement.
 - `Percée` conserve la grille comme autorité et se recale sur la case finale ;
   sa transition visuelle entre les deux cases reste sans tween de finition.
 - La cible de durée 18–25 minutes et une partie humaine non forcée n’ont pas
@@ -59,7 +66,7 @@
   leurs contenus historiques restent inchangés.
 
 État du candidat vérifié le 2026-08-23 avec Godot 4.7.1 et GUT 9.7.1 ;
-validation graphique finale en attente.
+validation graphique finale : PASS / GO, publication encore en attente.
 
 ## Run content isolation
 

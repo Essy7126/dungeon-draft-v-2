@@ -20,9 +20,11 @@
 - Le modèle Meshy ne contient aucun équipement. Le corps de grille et l’aperçu
   3D utilisent la V3 ; le portrait du HUD reste l’illustration 2D historique.
 - Validation actuelle : nouvelle suite V3 4/4 (38 assertions), calibration
-  5/5 (218 assertions) et régression élargie 79/79 (2 532 assertions). Le
-  full-flow graphique final n’a pas encore été
-  exécuté : le statut reste **VALIDATION_GRAPHIQUE_PENDING**.
+  5/5 (218 assertions), régression élargie 79/79 (2 532 assertions) et binding
+  SHA-exact 34/34 (643 assertions). Le full-flow graphique des trois salles
+  passe sur le commit d'implémentation `8bd5f73ef711` avec 13 captures. Les
+  hauteurs observées sont 51,4 / 54,4 / 54,7 px, contre environ 130 px dans la
+  capture ayant révélé le défaut. La revue visuelle conclut **GO**.
 
 ## Achille — pool d’animations Meshy V3 (WORKTREE_CANDIDATE, 2026-08-23)
 

@@ -112,16 +112,17 @@ de hanche important.
 - Le modèle Meshy n’embarque aucun équipement. Les contacts d’épée, de bouclier
   ou d’arc restent une future passe de sockets et d’équipement.
 - Le portrait du grand HUD reste l’illustration 2D historique.
-- La qualité des appuis, transitions, cadrages et silhouettes doit encore être
-  revue en conditions réelles dans chacune des trois cartes.
+- Les cadrages et silhouettes ont été revus dans les trois cartes. Les appuis
+  et transitions pourront encore bénéficier d'une passe vidéo dédiée.
 
 ## Validation
 
 - Suite dédiée V3 : 4/4 tests, 38 assertions.
 - Calibration réelle : 5/5 tests, 218 assertions.
 - Régression élargie : 79/79 tests, 2 532 assertions.
-- Full-flow graphique final : **NON EXÉCUTÉ**.
-- Inspection finale des captures : **PENDING**.
+- Binding SHA-exact : 34/34 tests, 643 assertions.
+- Full-flow graphique final : **PASS**, 3/3 salles et 13/13 captures.
+- Inspection finale des captures : **GO** ; hauteurs 51,4 / 54,4 / 54,7 px.
 
-La V3 ne doit pas être présentée comme visuellement validée ni publiée tant que
-le full-flow final et sa revue graphique ne sont pas terminés.
+La V3 est visuellement validée comme candidat. La qualification publiée reste
+conditionnée à son intégration sur `origin/main`.
