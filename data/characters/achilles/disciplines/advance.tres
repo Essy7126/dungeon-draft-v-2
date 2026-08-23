@@ -11,6 +11,6 @@ script = ExtResource("2_rank")
 script = ExtResource("1_discipline")
 discipline_id = &"advance"
 display_name = "Élan"
-description = "Prototype L’Odyssée · discipline minimale de Percée."
+description = "Maîtrise des percées en ligne et du repositionnement offensif."
 presentation_color = Color(0.75, 0.38, 0.18, 1)
 ranks = Array[ExtResource("2_rank")]([SubResource("Rank1")])

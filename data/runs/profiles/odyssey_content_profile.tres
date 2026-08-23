@@ -15,5 +15,5 @@ progression_profile = ExtResource("4_progression")
 script = ExtResource("1_content")
 profile_id = &"odyssey"
 display_name = "L'Odyssée"
-description = "Prototype solo officiel d'Achille en trois rencontres."
+description = "Run solo officielle d’Achille, composée de trois rencontres."
 hero_profiles = Array[ExtResource("2_hero")]([SubResource("AchillesHeroProfile")])

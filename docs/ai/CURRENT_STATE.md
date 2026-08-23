@@ -1,6 +1,26 @@
-# État candidat vérifié du projet
+# État courant vérifié du projet
 
-## Achille — pool d'animations V2 (WORKTREE_CANDIDATE, 2026-08-23)
+## Achille — intégration Odyssée (PRODUCTION_RUNTIME, 2026-08-23)
+
+- Le routage canonique `RunData -> RunContentProfile -> RunHeroProfile ->
+  CharacterProgressionProfile` instancie exactement un Achille dans chacune des
+  trois salles de L’Odyssée, avec son visuel V2, son pool d’animations, ses
+  quatre sorts et son HUD raffiné.
+- Les libellés joueur « Prototype », « EXPÉRIMENTAL » et « vertical slice » ont
+  été retirés des données d’Achille. Cette promotion éditoriale ne modifie
+  aucune statistique, aucun coût, aucune portée et aucun effet de gameplay.
+- Le contrat reste : 110 PV, 14 initiative, 6 PA, 3 PM, 18 puissance, puis
+  Frappe de lance, Percée, Balayage et Garde d’airain immédiatement disponibles.
+- La présentation est calibrée sur l’enveloppe du trio historique dans les
+  trois cartes peintes : échelle finale 1,974 / 2,0 / 2,0. L’ancrage aux pieds
+  est contrôlé sur la présentation de référence et la marge de cadrage sur les
+  20 clips Meshy.
+- Le runtime est **PRODUCTION_RUNTIME**. Les contrôles dédiés couvrent les trois
+  salles, les quatre sorts, la marche/course, l’impact, la mort, le rechargement
+  visuel et le résultat. Le retarget des mains, pieds, boucles et contacts
+  d’arme reste à polir ; la source ne fournit toujours aucun clip de mort.
+
+## Achille — pool d'animations V2 (PRODUCTION_RUNTIME, 2026-08-23)
 
 - La V1 canonique reste immuable. Le candidat V2 conserve son rig de 52 os et
   ses 4 clips natifs, puis ajoute les 20 animations Meshy retargetées.
@@ -19,8 +39,8 @@
   source ne contient aucune animation de mort ; le fondu reste actif.
 - Contrat, hashes, clips et limites :
   `docs/design/achilles/achilles_animation_pool_v2.md`.
-- Statut : **WORKTREE_CANDIDATE — STRUCTURAL_PROTOTYPE_INTEGRATED** jusqu'au
-  commit, au push et à une revue visuelle humaine en jeu.
+- Statut runtime : **PRODUCTION_RUNTIME**. Le retarget demeure
+  **ARTISTIC_POLISH_REQUIRED** jusqu’à la revue visuelle humaine en jeu.
 
 ## Cohérence architecture Studio, animations et objets (WORKTREE_CANDIDATE, 2026-08-23)
 
@@ -60,7 +80,11 @@
 - Suite dédiée : 64/64 tests, 317 assertions.
 - Statut : **WORKTREE_CANDIDATE** ; aucun commit, stage ou push.
 
-## L’Odyssée — Achille solo (WORKTREE_CANDIDATE, 2026-08-11)
+## Historique — création initiale de L’Odyssée (checkpoint du 2026-08-11)
+
+> Cette section conserve la provenance du premier candidat. Son statut et ses
+> chiffres ont été remplacés par l’état `PRODUCTION_RUNTIME` du 2026-08-23 en
+> tête de document.
 
 - Dépôt : `C:\Users\paolo\Documents\dungeon-draft-v-2`.
 - Branche observée : `main` ; HEAD de base :

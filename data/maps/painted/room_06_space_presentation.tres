@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BattlePresentationProfile" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="BattlePresentationProfile" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://data/maps/painted/battle_presentation_profile.gd" id="1_profile"]
 [ext_resource type="Resource" path="res://data/maps/painted/unit_profile_elf.tres" id="2_elf"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_standard.tres" id="5_standard"]
 [ext_resource type="Resource" path="res://data/maps/painted/unit_profile_skeleton_elite.tres" id="6_elite"]
 [ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="7_unit_profile"]
+[ext_resource type="Resource" path="res://data/maps/painted/unit_profile_achilles.tres" id="8_achilles"]
 
 [resource]
 script = ExtResource("1_profile")
@@ -14,6 +15,6 @@ profile_id = &"room_06_space_presence"
 camera_zoom_multiplier = 1.15
 camera_offset_adjustment = Vector2(0, 12)
 global_unit_scale_multiplier = 1.1
-unit_profiles = Array[ExtResource("7_unit_profile")]([ExtResource("2_elf"), ExtResource("3_mage"), ExtResource("4_warrior"), ExtResource("5_standard"), ExtResource("6_elite")])
+unit_profiles = Array[ExtResource("7_unit_profile")]([ExtResource("2_elf"), ExtResource("3_mage"), ExtResource("4_warrior"), ExtResource("8_achilles"), ExtResource("5_standard"), ExtResource("6_elite")])
 ally_outline_color = Color(0.42, 0.88, 1, 0.4)
 enemy_outline_color = Color(1, 0.5, 0.31, 0.4)

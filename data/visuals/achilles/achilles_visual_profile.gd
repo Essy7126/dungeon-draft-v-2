@@ -33,6 +33,8 @@ const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 @export var viewport_size := Vector2i(384, 384)
 @export var camera_transform := Transform3D.IDENTITY
 @export_range(0.25, 16.0, 0.01) var orthographic_size := 2.6
+@export_range(32.0, 192.0, 0.5) var render_display_size := 96.0
+@export var character_framing_offset := Vector3.ZERO
 
 @export var directional_yaw_map: Dictionary = {
 	"N": 180.0,
@@ -92,6 +94,8 @@ func is_character_only_valid() -> bool:
 		and not skeleton_signature.is_empty() \
 		and rendering_mode == RENDERING_VIEWPORT_3D \
 		and fallback_policy == FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR \
+		and render_display_size >= 32.0 \
+		and render_display_size <= 192.0 \
 		and not equipment_enabled \
 		and weapon_profile == null
 

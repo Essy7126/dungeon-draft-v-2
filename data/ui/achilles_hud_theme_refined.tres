@@ -16,7 +16,7 @@
 script = ExtResource("1_theme")
 character_id = &"achilles"
 display_name = "Achille"
-discipline_name = "Lance · EXPÉRIMENTAL"
+discipline_name = "Lance · L’ODYSSÉE"
 default_discipline_id = &"spear"
 discipline_emblem_texture = ExtResource("4_spear")
 portrait_texture = ExtResource("2_portrait")

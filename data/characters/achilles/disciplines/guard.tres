@@ -11,6 +11,6 @@ script = ExtResource("2_rank")
 script = ExtResource("1_discipline")
 discipline_id = &"guard"
 display_name = "Airain"
-description = "Prototype L’Odyssée · discipline minimale de Garde d’airain."
+description = "Maîtrise de la garde et de la protection personnelle."
 presentation_color = Color(0.62, 0.43, 0.2, 1)
 ranks = Array[ExtResource("2_rank")]([SubResource("Rank1")])

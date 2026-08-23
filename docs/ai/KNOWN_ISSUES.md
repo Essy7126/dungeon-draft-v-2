@@ -22,12 +22,18 @@
 - Les runners Godot peuvent encore rapporter les fuites renderer/ObjectDB et le
   doublon `output/validation-feedback-candidate/.../ItemDefinition` historiques.
 
-## L’Odyssée — limites du candidat Achille solo
+## L’Odyssée — limites après promotion d’Achille
+
+- Le contenu joueur et le routage d’Achille sont en **PRODUCTION_RUNTIME** sans
+  changement de valeurs gameplay. Les trois salles et les quatre sorts sont
+  couverts par le smoke graphique dédié.
 
 - Le corps 3D tourne désormais sur quatre orientations et un pool de 24 clips
   (20 Meshy retargetés + 4 natifs). Les quatre capacités ont des affectations
   distinctes, mais les contacts d'arme, les mains, certains appuis et les
   coutures de boucle restent à polir artistiquement.
+- Le corps de grille et l’aperçu 3D utilisent la V2. Le portrait du HUD reste
+  l’illustration 2D historique ; il n’est pas un rendu animé du GLB.
 - Le seuil automatique actuel est 1–5 cases = marche, 6+ = course rapide.
   Achille n'a que 3 PM de base : la course ne se déclenche donc normalement
   qu'avec un bonus ou une future règle. La source ne fournit aucune animation
@@ -36,25 +42,30 @@
   partagent leurs layouts et profils de présentation peints avec le catalogue
   canonique. Les wrappers visuels, rencontres et progressions restent propres à
   L’Odyssée.
-- Le runner graphique forcé est PASS et ses quatorze captures ont été inspectées,
+- Le runner graphique forcé est PASS et ses treize captures ont été inspectées,
   mais aucune partie humaine non forcée de la salle 1 n’a été effectuée. Le HUD
-  1280×720 est lisible mais proche du bord inférieur et doit être revu en jeu.
+  du smoke 1600×1000 est lisible ; les résolutions plus basses doivent encore
+  être revues lors d’un playtest humain.
 - Les runners graphiques peuvent encore signaler des ressources renderer ou
   `ObjectDB` à la fermeture ; le rapport fonctionnel et le code de sortie restent
   PASS/0.
-- La suite globale est à 935/949, contre 13 échecs historiques documentés. Le
-  quatorzième concerne `test_dungeon_draft_studio_v12` et la parité de signature
-  structurelle affectée par le travail Arena/VFX concurrent ; aucun fichier
-  Odyssey n’est impliqué.
+- Le fallback 2D paresseux réservé aux erreurs 3D vérifiées conserve les pixels
+  historiques d’épée et de bouclier. Il n’est pas instancié dans le parcours
+  nominal V2, dont le corps 3D reste sans équipement.
+- Le root motion source reste non classifié ; la neutralisation locale X/Z
+  maintient la grille comme autorité sans réécrire les clips importés.
 - La cible de durée 18–25 minutes n’a pas été validée par un playtest humain. Le
-  statut reste `WORKTREE_CANDIDATE`.
-- La progression comporte quatre disciplines minimales et aucun arbre final ;
-  les récompenses d’équipement sont volontairement désactivées pour cette slice.
-- Ce candidat ne formule aucun verdict en faveur d’un remplacement du trio :
-  L’Odyssée demeure un laboratoire expérimental parallèle.
+  smoke automatise les handlers de production mais ne remplace pas ce playtest.
+- `Percée` résout correctement la grille et resynchronise la vue sur la case
+  finale ; la transition visuelle entre les deux cases reste instantanée et
+  pourra recevoir un tween de finition.
+- La progression comporte quatre disciplines de combat immédiatement
+  disponibles. Chacune reste limitée au rang initial et n’ouvre pas encore
+  d’arbre d’évolution ; les récompenses d’équipement restent désactivées.
+- La promotion concerne L’Odyssée, run solo officielle. Les runs au trio et
+  leurs contenus historiques restent inchangés.
 
-État vérifié le 2026-08-06 sur `main`, HEAD
-`bf2d6f7a8b6dabf2c8b74c5743852475f7c84e0a`, Godot 4.7, GUT 9.7.1.
+État revalidé le 2026-08-23 avec Godot 4.7.1 et GUT 9.7.1.
 
 ## Run content isolation
 
@@ -146,57 +157,3 @@ régressions introduites par la migration.
 - `res://data/arenas/produced/room_01_forest/` est un bundle incomplet gelé, non canonique et non utilisable pour Tester.
 - Les 187 fichiers Achilles/VFX/outillage non trackés et 10 suppressions Achilles sont un travail externe à préserver.
 - Deux répétitions globales Windows post-correction responsive ont été instables au niveau du processus (timeout en progression puis sortie native `-1`) sans nouvel échec d’assertion observé. Le dernier global complet conserve exactement les 13 historiques ; les suites UI/visuelles affectées sont vertes séparément.
-
-## Achilles 3D character-only / theorycraft — réserves du checkpoint salle II
-
-- **Blocage hérité** : le fallback 2D conservé contient des pixels d’épée et de
-  bouclier déjà incrustés (`LEGACY_2D_BAKED_WEAPON_PIXELS_OBSERVED`). Le backend
-  canonique 3D reste sans équipement séparé, avec `equipment_enabled = false`
-  et `weapon_profile = null`, mais l’exigence visuelle globale sans arme demeure
-  `BLOCKED_LEGACY_2D_FALLBACK_WEAPON_VISUAL_DIVERGENCE`.
-- L’intégration runtime d’une arme n’est pas commencée et reste différée au
-  laboratoire dédié. Les templates épée-bouclier et arc sont des concepts non
-  runtime ; le laboratoire de theorycraft isolé n’active aucun build.
-- Le root motion des actions sources reste `ROOT_MOTION_UNCLASSIFIED`. La
-  neutralisation locale X/Z stabilise la présentation, mais ne constitue pas
-  une classification ou une correction des actions sources.
-- La mesure GPU est `NOT_MEASURED`. La rétention mémoire observée puis stable au
-  second cycle 512 ressemble à un plateau de cache de rendu, sans attribution
-  causale isolée. Les warnings de teardown renderer/RID/ObjectDB restent à
-  surveiller.
-- Seule la salle II a été exercée dans ce checkpoint. Salle I, salle III,
-  transitions normales, retour menu, résultat et smoke complet trois salles
-  restent en pause derrière la gate propriétaire, et ne doivent pas être
-  présentés comme vérifiés.
-- Le choix de présentation reste humain : A = 256, B = 384, C = 512, D = rejet
-  du `SubViewport` pour des sprites prérendus. La recommandation technique 384
-  n’est pas une décision d’activation.
-- Le statut demeure **WORKTREE_CANDIDATE — NOT_CURRENT — NOT_PRODUCTION**.
-
-## Achilles 3D — réserves après correction du binding salle II
-
-```text
-previous_report_claimed_3d_runtime = true
-owner_observed_legacy_2d_runtime = true
-claim_was_contradicted = true
-binding_reverified_after_fix = true
-```
-
-- `WRONG_WORKTREE_OR_PROJECT_LAUNCHED` : l’éditeur du propriétaire ouvrait
-  encore `main`, où le corps 2D historique restait directement lié.
-- Le correctif a été publié sur `origin/main` au commit d’intégration
-  `e0b42eb75f2de46d3daa08b8ac30ae1cc354d3da`. Le checkout principal encore
-  ouvert dans l’éditeur reste sur son ancien HEAD tant qu’il n’est pas fermé
-  puis synchronisé ; la revue humaine de la salle II reste requise et le
-  résultat n’est pas qualifié `PRODUCTION`.
-- Seule la vraie salle II est revalidée. Salles I/III, transitions, retour et
-  résultat restent non vérifiés.
-- Le fallback 2D armé n’est pas supprimé : il reste un mode dégradé paresseux
-  autorisé uniquement après une erreur 3D vérifiée. Ses pixels d’épée/bouclier
-  restent une divergence connue.
-- Pendant la preuve nominale salle II, le fallback n’est pas actif et l’ancien
-  corps 2D n’est ni instancié, ni visible, ni en traitement.
-- Le portrait HUD/timeline/post-combat reste volontairement 2D et ne constitue
-  pas une régression du corps de grille.
-- Root motion source non classifié, GPU non mesuré et diagnostics de teardown
-  restent hors de la clôture de ce correctif.

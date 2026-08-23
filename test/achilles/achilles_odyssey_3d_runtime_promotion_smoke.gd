@@ -7,25 +7,36 @@ const GAME_MANAGER_SCRIPT = preload("res://core/game_manager.gd")
 const WINDOW_SIZE := Vector2i(1600, 1000)
 const BACKEND_DEADLINE_MSEC := 8000
 const ACTION_DEADLINE_MSEC := 10000
-const LEGACY_BACKEND_PATH := (
-	"res://characters/achilles/3d/AchillesLegacy2DBackend.tscn"
+const EXPECTED_WALK_CLIP := &"achilles_v2__Walking"
+const EXPECTED_RUN_CLIP := &"achilles_v2__run_fast_3_inplace"
+const EXPECTED_HIT_CLIP := &"achilles_v2__Hit_Reaction_1"
+const ANIMATION_SET_PATH := "res://data/characters/achilles/animations.tres"
+const V2_PREVIEW_PATH := (
+	"res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb"
 )
-const LEGACY_VISUAL_PATH := (
-	"res://assets/characters/Achilles/AchillesVisual2D.tscn"
-)
+const EXPECTED_SPELL_CLIPS := {
+	&"achilles_spear_thrust": &"achilles_v2__Left_Slash",
+	&"achilles_advance": &"achilles_v2__run_fast_3_inplace",
+	&"achilles_sweep": &"achilles_v2__Charged_Upward_Slash",
+	&"achilles_guard": &"achilles_v2__Sword_Parry_Backward_2",
+}
 
 var _artifact_dir := ""
 var _capture_dir := ""
 var _report := {
-	"schema": "dd.achilles.odyssey-3d-runtime-promotion-smoke.v1",
+	"schema": "dd.achilles.odyssey-3d-runtime-promotion-smoke.v2",
 	"status": "FAIL",
 	"run_path": "res://data/runs/odyssey.tres",
 	"evidence_head": "",
+	"runtime_provenance": {},
+	"final_runtime_provenance": {},
 	"scope": {
-		"owner_selection": "B_SUBVIEWPORT_384_APPROVED_2026-08-20",
+		"presentation_profile": "SUBVIEWPORT_384_PRODUCTION_PROFILE",
 		"hub_selection": "PRODUCTION_HUB_CONTROLS_CALLED_PROGRAMMATICALLY",
 		"battle_scenes": "THREE_PRODUCTION_ROOM_BATTLE_SCENES",
-		"player_actions": "PRODUCTION_BATTLE_UI_HANDLERS_CALLED_PROGRAMMATICALLY",
+		"player_actions": "MOVE_PLUS_FOUR_PRODUCTION_SPELL_HANDLERS_CALLED_PROGRAMMATICALLY",
+		"movement_threshold": "REAL_SHORT_MOVE_PLUS_FIVE_WALK_SIX_RUN_PRESENTATION_PROBES",
+		"damage_and_death": "REAL_UNIT_DAMAGE_AND_LETHAL_DAMAGE_IN_PRODUCTION_BATTLE",
 		"transitions": "FORCED_MANAGER_STATE_ADVANCE_WITHOUT_ENEMY_DEFEAT_SIMULATION",
 		"physical_manual_input": false,
 	},
@@ -33,6 +44,7 @@ var _report := {
 	"runtime_contract": {},
 	"rooms": [],
 	"player_action_probe": {},
+	"death_probe": {},
 	"visual_reload_probe": {},
 	"forced_transitions": {},
 	"result_screen": {},
@@ -55,6 +67,42 @@ func _run() -> void:
 		return
 	if not _is_full_git_sha(_report.evidence_head):
 		_fail("A full 40-character --evidence-head is required.")
+		_finish()
+		return
+	var project_path := ProjectSettings.globalize_path("res://").trim_suffix("/")
+	var git_root := _derive_git_value(
+		project_path, PackedStringArray(["rev-parse", "--show-toplevel"])
+	)
+	var actual_head := _derive_git_value(
+		project_path, PackedStringArray(["rev-parse", "HEAD"])
+	).to_lower()
+	var git_status := _derive_git_value(
+		project_path,
+		PackedStringArray(["status", "--porcelain", "--untracked-files=all"]),
+	)
+	var version_info := Engine.get_version_info()
+	_report.runtime_provenance = {
+		"project_path": project_path,
+		"git_root": git_root,
+		"actual_head": actual_head,
+		"worktree_clean": git_status.is_empty(),
+		"git_status": git_status,
+		"godot_version": Engine.get_version_info().get("string", ""),
+	}
+	if _normalize_path(git_root) != _normalize_path(project_path):
+		_fail("The launched project is not the resolved Git worktree root.")
+	if actual_head != _report.evidence_head.to_lower():
+		_fail("The launched Git HEAD does not match --evidence-head.")
+	if not git_status.is_empty():
+		_fail("The launched Git worktree is dirty; evidence is not SHA-exact.")
+	if (
+		int(version_info.get("major", 0)) != 4
+		or int(version_info.get("minor", 0)) != 7
+		or int(version_info.get("patch", 0)) != 1
+		or String(version_info.get("status", "")) != "stable"
+	):
+		_fail("The runtime must use Godot 4.7.1 stable.")
+	if not _report.failures.is_empty():
 		_finish()
 		return
 	_capture_dir = _artifact_dir.path_join("captures")
@@ -80,6 +128,11 @@ func _run() -> void:
 		_finish()
 		return
 	var hero_data := resolution.heroes[0] as UnitData
+	var spell_ids: Array[StringName] = []
+	for spell_value in hero_data.spells:
+		var spell := spell_value as Spell
+		if spell != null:
+			spell_ids.append(spell.get_effective_spell_id())
 	var runtime_contract := {
 		"selected_run_is_real_odyssey": selected_run == RUN,
 		"unit_id": String(hero_data.get_effective_unit_id()),
@@ -94,6 +147,20 @@ func _run() -> void:
 			== "res://characters/achilles/AchillesIsoUnitView.tscn"
 		),
 		"basic_attack_disabled": not hero_data.basic_attack_enabled,
+		"v2_preview_selected": (
+			hero_data.preview_visual_scene != null
+			and hero_data.preview_visual_scene.resource_path == V2_PREVIEW_PATH
+		),
+		"animation_pool_selected": (
+			hero_data.animation_set != null
+			and hero_data.animation_set.resource_path == ANIMATION_SET_PATH
+		),
+		"four_expected_spells": spell_ids == [
+			&"achilles_spear_thrust",
+			&"achilles_advance",
+			&"achilles_sweep",
+			&"achilles_guard",
+		],
 	}
 	runtime_contract["passed"] = _all_boolean_checks_pass(runtime_contract)
 	_report.runtime_contract = runtime_contract
@@ -111,14 +178,17 @@ func _run() -> void:
 	await _exercise_three_real_rooms(selected_run)
 	await _exercise_forced_transitions_and_result(resolution.heroes)
 	_report.global_checks = {
-		"legacy_backend_scene_never_cached": not ResourceLoader.has_cached(
-			LEGACY_BACKEND_PATH
-		),
-		"legacy_achilles_visual_never_cached": not ResourceLoader.has_cached(
-			LEGACY_VISUAL_PATH
-		),
 		"three_real_rooms_loaded": _report.rooms.size() == 3,
 		"all_room_checks_passed": _all_room_records_pass(),
+		"all_four_spells_exercised": (
+			_report.player_action_probe.get("spells", []).size() == 4
+		),
+		"real_hit_feedback_passed": bool(
+			_report.player_action_probe.get("hit", {}).get("passed", false)
+		),
+		"real_death_feedback_passed": bool(
+			_report.death_probe.get("passed", false)
+		),
 	}
 	for check_name in _report.global_checks:
 		if not bool(_report.global_checks[check_name]):
@@ -252,8 +322,11 @@ func _exercise_three_real_rooms(run_data: RunData) -> void:
 		room_record.initiative_portrait = _inspect_initiative_portrait(
 			battle, hero
 		)
-		if not bool(room_record.initiative_portrait.get("non_empty", false)):
-			_fail("Room %d Achilles initiative portrait is empty." % (room_index + 1))
+		if not _all_boolean_checks_pass(room_record.initiative_portrait):
+			_fail(
+				"Room %d Achilles initiative portrait is not the live V2 preview."
+				% (room_index + 1)
+			)
 		for check_name in room_record.checks:
 			if room_record.checks[check_name] is bool \
 					and not bool(room_record.checks[check_name]):
@@ -297,6 +370,31 @@ func _exercise_three_real_rooms(run_data: RunData) -> void:
 			await _release_battle(battle, room_record)
 			_report.rooms.append(room_record)
 			continue
+		if room_index == 2:
+			_report.death_probe = await _exercise_real_death_feedback(
+				battle, hero, unit_view, adapter, enemies
+			)
+			if not bool(_report.death_probe.get("passed", false)):
+				_fail("The production Achilles death feedback probe failed.")
+			var defeated_battle_ref: WeakRef = weakref(battle)
+			battle.queue_free()
+			await _settle(10)
+			# Cancels the production delayed defeat navigation after the fade has
+			# been observed, so this isolated runner remains owner of its scene.
+			GameManager.cleanup_run_state()
+			room_record.cleanup = {
+				"battle_released": defeated_battle_ref.get_ref() == null,
+			}
+			room_record.passed = (
+				_all_boolean_checks_pass(room_record.checks)
+				and _all_boolean_checks_pass(room_record.initiative_portrait)
+				and bool(_report.death_probe.get("passed", false))
+				and _all_boolean_checks_pass(room_record.cleanup)
+			)
+			if not room_record.passed:
+				_fail("Room 3 did not pass its complete death/cleanup audit.")
+			_report.rooms.append(room_record)
+			continue
 
 		var adapter_ref: WeakRef = weakref(adapter)
 		var viewport_ref: WeakRef = weakref(
@@ -312,7 +410,7 @@ func _exercise_three_real_rooms(run_data: RunData) -> void:
 		}
 		room_record.passed = (
 			_all_boolean_checks_pass(room_record.checks)
-			and bool(room_record.initiative_portrait.get("non_empty", false))
+			and _all_boolean_checks_pass(room_record.initiative_portrait)
 			and _all_boolean_checks_pass(room_record.cleanup)
 		)
 		if not room_record.passed:
@@ -340,6 +438,18 @@ func _inspect_runtime_visual(
 		footprint_size = shadow.get_footprint().size()
 	var viewport_image := backend.character_viewport.get_texture().get_image()
 	var opaque_samples := _count_opaque_samples(viewport_image)
+	var opaque_bounds := _opaque_bounds(viewport_image)
+	var painted_visual_scale := (
+		float(unit_view.get_painted_visual_scale())
+		if unit_view.has_method("get_painted_visual_scale")
+		else absf(adapter.scale.y)
+	)
+	var adapter_canvas_scale := absf(adapter.scale.y)
+	var displayed_character_height := (
+		float(opaque_bounds.size.y)
+		* absf(backend.rendered_sprite.scale.y)
+		* adapter_canvas_scale
+	)
 	return {
 		"real_room_data_bound": battle.room_data == room,
 		"real_encounter_enemy_count": (
@@ -376,10 +486,10 @@ func _inspect_runtime_visual(
 		"zero_legacy_backend_in_adapter": adapter.find_children(
 			"*", "AchillesLegacy2DBackend", true, false
 		).is_empty(),
-		"safe_fallback_is_invisible": (
-			adapter.fallback_backend != null
-			and not adapter.fallback_backend.visible
-		),
+		# The verified-error fallback resource is part of the profile dependency
+		# graph, so cache presence is not a nominal-runtime signal. The production
+		# contract is that no fallback instance exists while Viewport3D is healthy.
+		"nominal_fallback_not_instantiated": adapter.fallback_backend == null,
 		"zero_weapon_or_equipment_named_nodes": forbidden_nodes.is_empty(),
 		"equipment_disabled_in_profile": (
 			adapter.visual_profile != null
@@ -392,11 +502,17 @@ func _inspect_runtime_visual(
 			and footprint_size >= 3
 		),
 		"unit_view_visible": unit_view.visible,
-		"legacy_backend_resource_not_cached": not ResourceLoader.has_cached(
-			LEGACY_BACKEND_PATH
+		"painted_visual_scale": painted_visual_scale,
+		"adapter_canvas_scale": adapter_canvas_scale,
+		"painted_scale_matches_three_hero_reference_band": (
+			painted_visual_scale >= 1.8 and painted_visual_scale <= 2.0
 		),
-		"legacy_visual_resource_not_cached": not ResourceLoader.has_cached(
-			LEGACY_VISUAL_PATH
+		"adapter_received_painted_scale": is_equal_approx(
+			adapter_canvas_scale, painted_visual_scale
+		),
+		"displayed_character_height_px": displayed_character_height,
+		"character_has_nonzero_projected_height": (
+			displayed_character_height > 1.0
 		),
 	}
 
@@ -409,24 +525,38 @@ func _inspect_initiative_portrait(battle, hero: Unit) -> Dictionary:
 	var card := cards.get(hero) as TurnOrderCard
 	if card == null:
 		return {"available": false, "non_empty": false, "mode": "MISSING"}
-	var fallback_non_empty := (
-		card.fallback_portrait.visible
-		and card.fallback_portrait.texture != null
-		and card.fallback_portrait.texture.get_width() > 0
-		and card.fallback_portrait.texture.get_height() > 0
-	)
+	var fallback_hidden := not card.fallback_portrait.visible
+	var preview_visual := card.preview.get_visual_instance()
 	var preview_non_empty := (
 		card.preview.visible
-		and card.preview.get_visual_instance() != null
+		and preview_visual != null
 		and card.preview.preview_viewport.get_texture() != null
 	)
+	var preview_pixels := 0
+	if preview_non_empty:
+		preview_pixels = _count_opaque_samples(
+			card.preview.preview_viewport.get_texture().get_image()
+		)
+	var pool_clips_present := false
+	if preview_visual != null:
+		var players := preview_visual.find_children(
+			"*", "AnimationPlayer", true, false
+		)
+		if not players.is_empty():
+			var player := players[0] as AnimationPlayer
+			pool_clips_present = (
+				player.has_animation(EXPECTED_WALK_CLIP)
+				and player.has_animation(EXPECTED_RUN_CLIP)
+				and player.has_animation(EXPECTED_HIT_CLIP)
+			)
 	return {
 		"available": true,
 		"card_count": timeline.get_card_count(),
-		"fallback_texture_non_empty": fallback_non_empty,
+		"fallback_portrait_hidden": fallback_hidden,
 		"preview_non_empty": preview_non_empty,
-		"mode": "FALLBACK_PORTRAIT" if fallback_non_empty else "3D_PREVIEW",
-		"non_empty": fallback_non_empty or preview_non_empty,
+		"preview_contains_visible_pixels": preview_pixels > 0,
+		"v2_pool_clips_present_in_preview": pool_clips_present,
+		"mode": "3D_PREVIEW" if preview_non_empty else "MISSING",
 	}
 
 
@@ -441,7 +571,8 @@ func _exercise_real_player_actions(
 		"physical_manual_input": false,
 		"bounded_wait_for_real_achilles_turn": true,
 		"movement": {},
-		"spell": {},
+		"spells": [],
+		"hit": {},
 		"passed": false,
 	}
 	var active_turn_ready := await _wait_for_achilles_turn(battle, hero)
@@ -455,6 +586,7 @@ func _exercise_real_player_actions(
 	var view_position_before: Vector2 = unit_view.position
 	var move_mode_entered := false
 	var move_feedback_observed := false
+	var move_clip_observed: StringName = &""
 	if active_before == hero and destination != move_from:
 		battle._on_move_pressed()
 		move_mode_entered = battle.turn_state.current == TurnState.State.MOVE
@@ -462,8 +594,13 @@ func _exercise_real_player_actions(
 		await _settle(1)
 		var visual_3d := adapter.viewport_backend.get_achilles_visual()
 		move_feedback_observed = (
-			visual_3d != null and visual_3d.get_active_semantic() == &"MOVE"
+			visual_3d != null
+			and visual_3d.get_active_semantic() == &"WALK"
 		)
+		if visual_3d != null and visual_3d.get_animation_player() != null:
+			move_clip_observed = StringName(
+				visual_3d.get_animation_player().current_animation
+			)
 		var move_deadline := Time.get_ticks_msec() + ACTION_DEADLINE_MSEC
 		while hero.grid_pos != destination \
 				and Time.get_ticks_msec() < move_deadline:
@@ -477,70 +614,411 @@ func _exercise_real_player_actions(
 		"from": [move_from.x, move_from.y],
 		"to": [destination.x, destination.y],
 		"mode_entered": move_mode_entered,
-		"feedback_move_semantic_observed": move_feedback_observed,
+		"feedback_walk_semantic_observed": move_feedback_observed,
+		"production_move_uses_walk_clip": move_clip_observed == EXPECTED_WALK_CLIP,
 		"cell_changed": hero.grid_pos == destination and destination != move_from,
 		"mp_spent": hero.current_mp < mp_before,
 		"unit_view_moved": unit_view.position != view_position_before,
 		"returned_to_idle": battle.turn_state.current == TurnState.State.IDLE,
 	}
+	var visual_3d := adapter.viewport_backend.get_achilles_visual()
+	var animation_player := (
+		visual_3d.get_animation_player() if visual_3d != null else null
+	)
+	adapter.begin_path_movement_feedback(_straight_path(5))
+	movement["five_cell_path_selects_walk"] = (
+		adapter._movement_action_id == &"walk"
+		and visual_3d != null
+		and visual_3d.get_active_semantic() == &"WALK"
+		and animation_player != null
+		and StringName(animation_player.current_animation) == EXPECTED_WALK_CLIP
+	)
+	adapter.cancel_movement_feedback()
+	adapter.begin_path_movement_feedback(_straight_path(6))
+	movement["six_cell_path_selects_run"] = (
+		adapter._movement_action_id == &"run"
+		and visual_3d != null
+		and visual_3d.get_active_semantic() == &"RUN"
+		and animation_player != null
+		and StringName(animation_player.current_animation) == EXPECTED_RUN_CLIP
+	)
+	movement["six_cell_run_scope"] = (
+		"PRESENTATION_THRESHOLD_PROBE_MAX_MP_REMAINS_THREE"
+	)
+	adapter.cancel_movement_feedback()
 	movement["passed"] = _all_boolean_checks_pass(movement)
 	record.movement = movement
 
-	var guard_spell := _find_spell(hero, &"achilles_guard")
-	var signal_counts := {"release": 0, "finish": 0}
-	adapter.cast_release_reached.connect(func() -> void:
-		signal_counts.release += 1
+	var enemies: Array = battle.units.filter(func(value):
+		return value != null and (value as Unit).team == 1
 	)
-	adapter.animation_finished.connect(func(_name: StringName) -> void:
-		signal_counts.finish += 1
+	var all_spells_passed := true
+	for spell_id: StringName in [
+		&"achilles_spear_thrust",
+		&"achilles_advance",
+		&"achilles_sweep",
+		&"achilles_guard",
+	]:
+		var spell_record := await _exercise_real_spell_handler(
+			battle, hero, unit_view, adapter, enemies, spell_id
+		)
+		record.spells.append(spell_record)
+		if not bool(spell_record.get("passed", false)):
+			all_spells_passed = false
+			_fail("Production spell handler failed for %s." % spell_id)
+
+	record.hit = await _exercise_real_hit_feedback(
+		hero, adapter, enemies
 	)
+	record.passed = (
+		movement.passed
+		and record.spells.size() == 4
+		and all_spells_passed
+		and bool(record.hit.get("passed", false))
+	)
+	return record
+
+
+func _exercise_real_spell_handler(
+		battle,
+		hero: Unit,
+		unit_view,
+		adapter: AchillesIsoUnitView,
+		enemies: Array,
+		spell_id: StringName
+	) -> Dictionary:
+	var spell := _find_spell(hero, spell_id)
+	var expected_clip := StringName(EXPECTED_SPELL_CLIPS.get(spell_id, &""))
+	var record := {
+		"spell_id": String(spell_id),
+		"expected_clip": String(expected_clip),
+		"target": [-1, -1],
+		"release_count": 0,
+		"finish_count": 0,
+		"started_count": 0,
+		"passed": false,
+	}
+	if spell == null or expected_clip == &"":
+		return record
+	# Each spell gets a fresh production activation budget. This does not alter
+	# RunData: it emulates four successive Achilles turns inside one real room.
+	hero.start_turn()
+	if battle.turn_state != null:
+		battle.turn_state.begin_player_turn()
+	if battle.action_bar != null:
+		battle.action_bar.set_player_controls_enabled(true)
+		battle.action_bar.update_info(hero)
+	var banner_hidden_before_cast := await _wait_for_turn_intro_banner_hidden(
+		battle
+	)
+	var controls_enabled_before_cast := (
+		battle.action_bar != null
+		and bool(battle.action_bar.get("_player_controls_enabled"))
+	)
+	var target := _prepare_spell_target(
+		battle, hero, spell, enemies
+	)
+	record.target = [target.x, target.y]
+	var targetables: Array = battle.spell_caster.get_targetable_cells(
+		hero, spell
+	)
+	var can_cast_before: bool = (
+		target != Vector2i(-1, -1)
+		and targetables.has(target)
+		and battle.spell_caster.can_cast(hero, spell, target)
+	)
+	var action_id := CharacterAnimationSetData.cast_action_id_for_spell_id(
+		spell_id
+	)
+	var signal_state := {
+		"started": 0,
+		"release": 0,
+		"finish": 0,
+		"started_action": &"",
+		"finished_actions": [],
+		"clip": &"",
+	}
+	var on_started := func(started_action: StringName) -> void:
+		signal_state.started += 1
+		signal_state.started_action = started_action
+		var visual := adapter.viewport_backend.get_achilles_visual()
+		if visual != null and visual.get_animation_player() != null:
+			signal_state.clip = StringName(
+				visual.get_animation_player().current_animation
+			)
+	var on_release := func() -> void:
+		signal_state.release += 1
+	var on_finish := func(finished_action: StringName) -> void:
+		signal_state.finish += 1
+		signal_state.finished_actions.append(finished_action)
+	adapter.viewport_backend.action_started.connect(on_started)
+	adapter.cast_release_reached.connect(on_release)
+	adapter.animation_finished.connect(on_finish)
 	var ap_before := hero.current_ap
 	var shield_before := hero.current_shield
-	var valid_before: bool = (
-		guard_spell != null
-		and battle.spell_caster.can_cast(hero, guard_spell, hero.grid_pos)
-	)
-	var spell_mode_entered := false
-	if valid_before:
-		battle._on_spell_pressed(guard_spell)
-		spell_mode_entered = (
+	var hero_cell_before := hero.grid_pos
+	var unit_view_position_before: Vector2 = unit_view.position
+	var enemy_state_before := _unit_combat_snapshots(enemies)
+	var target_mode_entered := false
+	if can_cast_before:
+		battle._on_spell_pressed(spell)
+		target_mode_entered = (
 			battle.turn_state.current == TurnState.State.TARGET_SPELL
 		)
-		battle._on_cell_clicked(hero.grid_pos)
-		var spell_deadline := Time.get_ticks_msec() + ACTION_DEADLINE_MSEC
-		while (battle.get("_spell_resolution_pending") \
-				or signal_counts.finish < 1) \
-				and Time.get_ticks_msec() < spell_deadline:
+		battle._on_cell_clicked(target)
+		await _capture("room_01_%s_action.png" % String(spell_id))
+		var deadline := Time.get_ticks_msec() + ACTION_DEADLINE_MSEC
+		while (bool(battle.get("_spell_resolution_pending")) \
+				or int(signal_state.finish) < 1) \
+				and Time.get_ticks_msec() < deadline:
 			await get_tree().process_frame
-		await _settle(6)
-	var spell_record := {
-		"spell_id": (
-			String(guard_spell.get_effective_spell_id())
-			if guard_spell != null else ""
-		),
+		await _settle(3)
+	if adapter.viewport_backend.action_started.is_connected(on_started):
+		adapter.viewport_backend.action_started.disconnect(on_started)
+	if adapter.cast_release_reached.is_connected(on_release):
+		adapter.cast_release_reached.disconnect(on_release)
+	if adapter.animation_finished.is_connected(on_finish):
+		adapter.animation_finished.disconnect(on_finish)
+	var effect_changed := (
+		hero.current_shield != shield_before
+		or hero.grid_pos != hero_cell_before
+		or _unit_combat_snapshots(enemies) != enemy_state_before
+	)
+	var is_advance := spell_id == &"achilles_advance"
+	var expected_view_position: Vector2 = battle.grid_cell_to_parent_local(
+		hero.grid_pos, unit_view.get_parent()
+	)
+	record.merge({
 		"uses_real_spell_caster": battle.spell_caster != null,
-		"valid_self_target_before_cast": valid_before,
-		"target_mode_entered": spell_mode_entered,
-		"release_count": signal_counts.release,
-		"finish_count": signal_counts.finish,
-		"release_exactly_once": signal_counts.release == 1,
-		"finish_exactly_once": signal_counts.finish == 1,
-		"ap_cost_applied": (
-			guard_spell != null
-			and hero.current_ap == ap_before - guard_spell.ap_cost
+		"turn_intro_banner_hidden_before_cast": banner_hidden_before_cast,
+		"player_controls_enabled_before_cast": controls_enabled_before_cast,
+		"target_listed_by_spell_caster": targetables.has(target),
+		"can_cast_before": can_cast_before,
+		"target_mode_entered": target_mode_entered,
+		"started_count": int(signal_state.started),
+		"release_count": int(signal_state.release),
+		"finish_count": int(signal_state.finish),
+		"started_exactly_once": int(signal_state.started) == 1,
+		"release_exactly_once": int(signal_state.release) == 1,
+		"finish_exactly_once": int(signal_state.finish) == 1,
+		"exact_action_id_started": (
+			StringName(signal_state.started_action) == action_id
 		),
-		"shield_effect_applied": hero.current_shield > shield_before,
-		"resolution_not_pending": not battle.get("_spell_resolution_pending"),
-		"returned_to_idle": battle.turn_state.current == TurnState.State.IDLE,
+		"exact_action_id_finished": (
+			signal_state.finished_actions == [action_id]
+		),
+		"exact_mapped_clip_played": (
+			StringName(signal_state.clip) == expected_clip
+		),
+		"ap_cost_applied": hero.current_ap == ap_before - spell.ap_cost,
+		"combat_effect_applied": effect_changed,
+		"advance_grid_position_changed": (
+			not is_advance or hero.grid_pos != hero_cell_before
+		),
+		"advance_unit_view_position_changed": (
+			not is_advance or unit_view.position != unit_view_position_before
+		),
+		"advance_unit_view_matches_resolved_grid_cell": (
+			not is_advance
+			or unit_view.position.is_equal_approx(expected_view_position)
+		),
+		"resolution_not_pending": not bool(
+			battle.get("_spell_resolution_pending")
+		),
+		"returned_to_idle": (
+			battle.turn_state.current == TurnState.State.IDLE
+		),
 		"viewport_backend_still_active": (
 			adapter.get_active_backend_name() == &"Viewport3DBackend"
+			and adapter.fallback_backend == null
+		),
+	}, true)
+	record.passed = _all_boolean_checks_pass(record, [
+		"passed",
+	])
+	return record
+
+
+func _prepare_spell_target(
+		battle,
+		hero: Unit,
+		spell: Spell,
+		enemies: Array
+	) -> Vector2i:
+	if spell == null:
+		return Vector2i(-1, -1)
+	if spell.is_self_only():
+		if spell.get_effective_spell_id() == &"achilles_sweep":
+			_relocate_enemy_for_targeting(
+				battle, hero, spell, enemies, [1]
+			)
+		return hero.grid_pos
+	if spell.get_effective_spell_id() == &"achilles_advance":
+		return _relocate_enemy_for_targeting(
+			battle, hero, spell, enemies, [2, 3, 1]
+		)
+	for target_value in battle.spell_caster.get_targetable_cells(hero, spell):
+		var target := target_value as Vector2i
+		var occupant = battle.grid.get_unit(target)
+		if occupant != null and occupant.team != hero.team:
+			return target
+	var preferred_distances: Array[int] = [1, 2]
+	return _relocate_enemy_for_targeting(
+		battle, hero, spell, enemies, preferred_distances
+	)
+
+
+func _relocate_enemy_for_targeting(
+		battle,
+		hero: Unit,
+		spell: Spell,
+		enemies: Array,
+		preferred_distances: Array[int]
+	) -> Vector2i:
+	var enemy: Unit = null
+	for enemy_value in enemies:
+		var candidate_enemy := enemy_value as Unit
+		if candidate_enemy != null and candidate_enemy.is_alive:
+			enemy = candidate_enemy
+			break
+	if enemy == null:
+		return Vector2i(-1, -1)
+	for distance in preferred_distances:
+		for direction in [
+			Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT, Vector2i.UP,
+		]:
+			var cell: Vector2i = hero.grid_pos + direction * distance
+			if not battle.grid.is_valid(cell) \
+					or not battle.grid.is_walkable(cell) \
+					or battle.grid.has_unit(cell):
+				continue
+			var old_cell := enemy.grid_pos
+			if not battle.grid.relocate_unit(enemy, cell):
+				continue
+			var views := battle.get("_unit_views") as Dictionary
+			var enemy_view = views.get(enemy)
+			if enemy_view != null:
+				enemy_view.position = battle.grid_cell_to_parent_local(
+					cell, enemy_view.get_parent()
+				)
+			if spell.is_self_only() \
+					or battle.spell_caster.is_valid_target(hero, spell, cell):
+				return cell
+			battle.grid.relocate_unit(enemy, old_cell)
+	return Vector2i(-1, -1)
+
+
+func _unit_combat_snapshots(units: Array) -> Array:
+	var result: Array = []
+	for unit_value in units:
+		var unit := unit_value as Unit
+		if unit == null:
+			continue
+		result.append({
+			"id": String(unit.unit_id),
+			"hp": unit.current_hp,
+			"cell": [unit.grid_pos.x, unit.grid_pos.y],
+			"alive": unit.is_alive,
+		})
+	return result
+
+
+func _exercise_real_hit_feedback(
+		hero: Unit,
+		adapter: AchillesIsoUnitView,
+		enemies: Array
+	) -> Dictionary:
+	var attacker: Unit = enemies[0] as Unit if not enemies.is_empty() else null
+	var visual := adapter.viewport_backend.get_achilles_visual()
+	var player := visual.get_animation_player() if visual != null else null
+	var counters := {"release": 0, "finish": 0}
+	var on_release := func() -> void: counters.release += 1
+	var on_finish := func(_action: StringName) -> void: counters.finish += 1
+	adapter.cast_release_reached.connect(on_release)
+	adapter.animation_finished.connect(on_finish)
+	hero.current_shield = 0
+	var hp_before := hero.current_hp
+	hero.take_damage(
+		4, attacker, Spell.DamageType.PHYSICAL, Spell.Element.NONE,
+		{"cannot_be_dodged": true, "ignore_defense": true}
+	)
+	var hit_started := (
+		visual != null
+		and visual.get_active_semantic() == &"HIT"
+		and player != null
+		and StringName(player.current_animation) == EXPECTED_HIT_CLIP
+	)
+	await _capture("room_01_achilles_hit.png")
+	var deadline := Time.get_ticks_msec() + ACTION_DEADLINE_MSEC
+	while visual != null and visual.get_active_semantic() == &"HIT" \
+			and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	if adapter.cast_release_reached.is_connected(on_release):
+		adapter.cast_release_reached.disconnect(on_release)
+	if adapter.animation_finished.is_connected(on_finish):
+		adapter.animation_finished.disconnect(on_finish)
+	var record := {
+		"hp_damage_applied": hero.current_hp == hp_before - 4,
+		"hit_semantic_and_clip_started": hit_started,
+		"returned_to_idle": (
+			visual != null and visual.get_active_semantic() == &"IDLE"
+		),
+		"cast_release_not_emitted": counters.release == 0,
+		"cast_finish_not_emitted": counters.finish == 0,
+		"viewport_backend_still_active": (
+			adapter.get_active_backend_name() == &"Viewport3DBackend"
+			and adapter.fallback_backend == null
 		),
 	}
-	spell_record["passed"] = _all_boolean_checks_pass(spell_record, [
-		"spell_id", "release_count", "finish_count",
-	])
-	record.spell = spell_record
-	record.passed = movement.passed and spell_record.passed
+	record["passed"] = _all_boolean_checks_pass(record)
+	return record
+
+
+func _exercise_real_death_feedback(
+		battle,
+		hero: Unit,
+		unit_view,
+		adapter: AchillesIsoUnitView,
+		enemies: Array
+	) -> Dictionary:
+	var attacker: Unit = enemies[0] as Unit if not enemies.is_empty() else null
+	var signal_state := {"death": 0}
+	var on_death_finished := func() -> void: signal_state.death += 1
+	adapter.death_animation_finished.connect(on_death_finished)
+	var unit_view_ref: WeakRef = weakref(unit_view)
+	var adapter_ref: WeakRef = weakref(adapter)
+	var viewport_ref: WeakRef = weakref(
+		adapter.viewport_backend.character_viewport
+	)
+	var backend_nominal_before := (
+		adapter.get_active_backend_name() == &"Viewport3DBackend"
+		and adapter.fallback_backend == null
+	)
+	hero.current_shield = 0
+	hero.take_damage(
+		hero.current_hp + 9999,
+		attacker,
+		Spell.DamageType.PHYSICAL,
+		Spell.Element.NONE,
+		{"cannot_be_dodged": true, "ignore_defense": true}
+	)
+	await _capture("room_03_achilles_death.png")
+	var deadline := Time.get_ticks_msec() + ACTION_DEADLINE_MSEC
+	while (int(signal_state.death) < 1 or unit_view_ref.get_ref() != null) \
+			and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	await _settle(3)
+	var record := {
+		"scope": "REAL_ROOM_UNIT_DEATH_WITH_ADAPTER_FADE_FALLBACK",
+		"viewport_backend_nominal_before_death": backend_nominal_before,
+		"hero_is_dead": not hero.is_alive and hero.current_hp == 0,
+		"death_signal_exactly_once": int(signal_state.death) == 1,
+		"battle_registered_defeat": bool(battle.get("_battle_over")),
+		"unit_view_released": unit_view_ref.get_ref() == null,
+		"adapter_released": adapter_ref.get_ref() == null,
+		"subviewport_released": viewport_ref.get_ref() == null,
+	}
+	record["passed"] = _all_boolean_checks_pass(record)
 	return record
 
 
@@ -771,6 +1249,13 @@ func _nearest_reachable_destination(
 	return origin
 
 
+func _straight_path(step_count: int) -> Array:
+	var path: Array = []
+	for x in range(step_count + 1):
+		path.append(Vector2i(x, 0))
+	return path
+
+
 func _find_spell(hero: Unit, spell_id: StringName) -> Spell:
 	for spell_value in hero.spells:
 		var spell := spell_value as Spell
@@ -817,6 +1302,24 @@ func _count_opaque_samples(image: Image) -> int:
 			if image.get_pixel(x, y).a > 0.02:
 				count += 1
 	return count
+
+
+func _opaque_bounds(image: Image) -> Rect2i:
+	if image == null or image.is_empty():
+		return Rect2i()
+	var minimum := Vector2i(image.get_width(), image.get_height())
+	var maximum := Vector2i(-1, -1)
+	for y in range(image.get_height()):
+		for x in range(image.get_width()):
+			if image.get_pixel(x, y).a <= 0.02:
+				continue
+			minimum.x = mini(minimum.x, x)
+			minimum.y = mini(minimum.y, y)
+			maximum.x = maxi(maximum.x, x)
+			maximum.y = maxi(maximum.y, y)
+	if maximum.x < minimum.x or maximum.y < minimum.y:
+		return Rect2i()
+	return Rect2i(minimum, maximum - minimum + Vector2i.ONE)
 
 
 func _all_boolean_checks_pass(
@@ -889,6 +1392,52 @@ func _is_full_git_sha(value: String) -> bool:
 	return true
 
 
+func _derive_git_value(
+	project_path: String,
+	arguments: PackedStringArray
+	) -> String:
+	var output: Array = []
+	var git_arguments := PackedStringArray(["-C", project_path])
+	git_arguments.append_array(arguments)
+	var exit_code := OS.execute("git", git_arguments, output, true)
+	if exit_code != 0 or output.is_empty():
+		return ""
+	return "\n".join(PackedStringArray(output)).strip_edges()
+
+
+func _normalize_path(value: String) -> String:
+	return value.replace("\\", "/").trim_suffix("/").to_lower()
+
+
+func _revalidate_runtime_provenance() -> void:
+	if not _is_full_git_sha(_report.evidence_head):
+		return
+	var project_path := ProjectSettings.globalize_path("res://").trim_suffix("/")
+	var git_root := _derive_git_value(
+		project_path, PackedStringArray(["rev-parse", "--show-toplevel"])
+	)
+	var actual_head := _derive_git_value(
+		project_path, PackedStringArray(["rev-parse", "HEAD"])
+	).to_lower()
+	var git_status := _derive_git_value(
+		project_path,
+		PackedStringArray(["status", "--porcelain", "--untracked-files=all"]),
+	)
+	_report.final_runtime_provenance = {
+		"project_path": project_path,
+		"git_root": git_root,
+		"actual_head": actual_head,
+		"worktree_clean": git_status.is_empty(),
+		"git_status": git_status,
+	}
+	if _normalize_path(git_root) != _normalize_path(project_path):
+		_fail("Final Git root no longer matches the launched project.")
+	if actual_head != _report.evidence_head.to_lower():
+		_fail("Git HEAD changed while the runtime smoke was executing.")
+	if not git_status.is_empty():
+		_fail("The worktree changed while the runtime smoke was executing.")
+
+
 func _fail(message: String) -> void:
 	if not _report.failures.has(message):
 		_report.failures.append(message)
@@ -896,6 +1445,7 @@ func _fail(message: String) -> void:
 
 
 func _finish() -> void:
+	_revalidate_runtime_provenance()
 	_report.status = "PASS" if _report.failures.is_empty() else "FAIL"
 	if not _artifact_dir.is_empty() and _artifact_dir.is_absolute_path():
 		var report_path := _artifact_dir.path_join(

@@ -11,6 +11,6 @@ script = ExtResource("2_rank")
 script = ExtResource("1_discipline")
 discipline_id = &"sweep"
 display_name = "Horizon"
-description = "Prototype L’Odyssée · discipline minimale de Balayage."
+description = "Maîtrise des frappes circulaires et du contrôle des ennemis proches."
 presentation_color = Color(0.46, 0.54, 0.6, 1)
 ranks = Array[ExtResource("2_rank")]([SubResource("Rank1")])

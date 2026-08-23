@@ -83,7 +83,7 @@ func test_achilles_profile_chain_and_chassis_are_exact() -> void:
 	assert_eq(_discipline_ids(progression.disciplines), DISCIPLINE_IDS)
 
 
-func test_achilles_spells_and_minimal_disciplines_match_contract() -> void:
+func test_achilles_spells_and_initial_disciplines_match_contract() -> void:
 	var progression := _progression()
 	var spells := progression.spells
 	assert_eq([spells[0].ap_cost, spells[0].minimum_range, spells[0].spell_range], [2, 1, 2])
@@ -103,7 +103,11 @@ func test_achilles_spells_and_minimal_disciplines_match_contract() -> void:
 	assert_true(spells[3].is_self_only())
 	for spell in spells:
 		assert_true(spell.once_per_activation, spell.resource_path)
-		assert_true(spell.description.contains("Prototype L"), spell.resource_path)
+		assert_false(spell.description.strip_edges().is_empty(), spell.resource_path)
+		assert_false(
+			spell.description.to_lower().contains("prototype"),
+			spell.resource_path,
+		)
 	for discipline in progression.disciplines:
 		assert_eq(discipline.ranks.size(), 1, discipline.resource_path)
 		assert_eq(discipline.ranks[0].rank, 1, discipline.resource_path)

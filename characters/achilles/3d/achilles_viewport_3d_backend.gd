@@ -7,7 +7,6 @@ signal action_started(action_name: StringName)
 signal action_release_reached
 signal action_finished(action_name: StringName)
 
-const RENDER_DISPLAY_SIZE := 96.0
 const WARMUP_FRAME_COUNT := 2
 
 @onready var rendered_sprite: Sprite2D = $RenderedSprite
@@ -81,6 +80,7 @@ func configure(profile: AchillesVisualProfile) -> bool:
 	_visual = candidate as Achilles3DVisual
 	_visual.name = "Achilles3DVisual"
 	render_world.add_child(_visual)
+	_visual.position = _profile.character_framing_offset
 	_visual.setup_completed.connect(_on_visual_setup_completed, CONNECT_ONE_SHOT)
 	_visual.setup_failed.connect(_on_visual_setup_failed, CONNECT_ONE_SHOT)
 	_visual.action_started.connect(_on_visual_action_started)
@@ -247,7 +247,10 @@ func _apply_profile_configuration() -> void:
 
 func _update_render_scale() -> void:
 	var longest_side := maxi(character_viewport.size.x, character_viewport.size.y)
-	var display_scale := RENDER_DISPLAY_SIZE / float(maxi(longest_side, 1))
+	var display_size := (
+		_profile.render_display_size if _profile != null else 96.0
+	)
+	var display_scale := display_size / float(maxi(longest_side, 1))
 	rendered_sprite.scale = Vector2.ONE * display_scale
 
 
