@@ -1,0 +1,317 @@
+{
+  "animation_counts": {
+    "direct_meshy": 20,
+    "retargeted": 0,
+    "total": 20
+  },
+  "assets": {
+    "animation_pool_v3": {
+      "bytes": 9191356,
+      "path": "res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb",
+      "sha256": "95F634EF49B04F8A01FC4B13D223F75DC3B2C7AA01CB2319194D078BF1D02FEE"
+    },
+    "meshy_animation_source": {
+      "bundled_in_repository": false,
+      "bytes": 9191236,
+      "filename": "Meshy_AI_Meshy_Merged_Animations (4).glb",
+      "immutable": true,
+      "sha256": "21DAD4EE17146F3A1430A684C7EFD14544701100307C233D4E5B27812EF58770"
+    }
+  },
+  "cleanup": {
+    "exported_objects": [
+      "Armature",
+      "char1"
+    ],
+    "raw_glb_camera_count": 0,
+    "raw_glb_light_count": 0,
+    "raw_glb_node_names": [
+      "LeftToeBase",
+      "LeftFoot",
+      "LeftLeg",
+      "LeftUpLeg",
+      "RightToeBase",
+      "RightFoot",
+      "RightLeg",
+      "RightUpLeg",
+      "LeftHand",
+      "LeftForeArm",
+      "LeftArm",
+      "LeftShoulder",
+      "RightHand",
+      "RightForeArm",
+      "RightArm",
+      "RightShoulder",
+      "head_end",
+      "headfront",
+      "Head",
+      "neck",
+      "Spine",
+      "Spine01",
+      "Spine02",
+      "Hips",
+      "char1",
+      "Armature"
+    ],
+    "removed_source_objects": [
+      {
+        "name": "Icosphere",
+        "type": "MESH"
+      }
+    ]
+  },
+  "clips": [
+    {
+      "duration_seconds": 4.0,
+      "loop_candidate": true,
+      "name": "Alert",
+      "review_status": "POOL_READY_UNASSIGNED",
+      "role": "alert",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 0.7,
+      "loop_candidate": false,
+      "name": "Archery_Shot_3",
+      "review_status": "NEEDS_EQUIPMENT_CONTACT_REVIEW",
+      "role": "ranged_release",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 5.9,
+      "loop_candidate": false,
+      "name": "Basic_Jump",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW",
+      "role": "jump",
+      "root_motion_review_required": true
+    },
+    {
+      "duration_seconds": 2.666667,
+      "loop_candidate": false,
+      "name": "Charged_Spell_Cast",
+      "review_status": "POOL_READY_UNASSIGNED",
+      "role": "charged_spell",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 3.2,
+      "loop_candidate": false,
+      "name": "Charged_Upward_Slash",
+      "review_status": "NEEDS_EQUIPMENT_CONTACT_REVIEW",
+      "role": "heavy_attack",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 4.833333,
+      "loop_candidate": false,
+      "name": "Chest_Pound_Taunt",
+      "review_status": "POOL_READY_UNASSIGNED",
+      "role": "taunt_buff",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 2.833333,
+      "loop_candidate": false,
+      "name": "Double_Combo_Attack",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW",
+      "role": "combo_two",
+      "root_motion_review_required": true
+    },
+    {
+      "duration_seconds": 5.0,
+      "loop_candidate": false,
+      "name": "Draw_and_Shoot_from_Back_2",
+      "review_status": "NEEDS_EQUIPMENT_CONTACT_REVIEW",
+      "role": "bow_draw_release",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 4.666667,
+      "loop_candidate": false,
+      "name": "Electrocution_Reaction",
+      "review_status": "POOL_READY_UNASSIGNED",
+      "role": "status_reaction",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 1.233333,
+      "loop_candidate": false,
+      "name": "Hit_Reaction_1",
+      "review_status": "POOL_READY_ASSIGNED",
+      "role": "hit",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 1.9,
+      "loop_candidate": true,
+      "name": "Idle_11",
+      "review_status": "POOL_READY_ASSIGNED",
+      "role": "idle",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 3.166667,
+      "loop_candidate": false,
+      "name": "Left_Slash",
+      "review_status": "NEEDS_EQUIPMENT_CONTACT_REVIEW",
+      "role": "slash",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 2.7,
+      "loop_candidate": false,
+      "name": "mage_soell_cast_7",
+      "review_status": "POOL_READY_UNASSIGNED",
+      "role": "spell_cast",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 0.766667,
+      "loop_candidate": true,
+      "name": "run_fast_3_inplace",
+      "review_status": "POOL_READY_ASSIGNED",
+      "role": "run_fast",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 0.633333,
+      "loop_candidate": true,
+      "name": "Running",
+      "review_status": "POOL_READY_UNASSIGNED",
+      "role": "alternate_run",
+      "root_motion_review_required": false
+    },
+    {
+      "duration_seconds": 2.333333,
+      "loop_candidate": false,
+      "name": "Simple_Kick",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW",
+      "role": "kick",
+      "root_motion_review_required": true
+    },
+    {
+      "duration_seconds": 4.366667,
+      "loop_candidate": false,
+      "name": "Sword_Judgment",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW",
+      "role": "ultimate",
+      "root_motion_review_required": true
+    },
+    {
+      "duration_seconds": 0.566667,
+      "loop_candidate": false,
+      "name": "Sword_Parry_Backward_2",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW",
+      "role": "guard_parry",
+      "root_motion_review_required": true
+    },
+    {
+      "duration_seconds": 4.333333,
+      "loop_candidate": false,
+      "name": "Triple_Combo_Attack",
+      "review_status": "NEEDS_ROOT_MOTION_REVIEW",
+      "role": "combo_three",
+      "root_motion_review_required": true
+    },
+    {
+      "duration_seconds": 1.033333,
+      "loop_candidate": true,
+      "name": "Walking",
+      "review_status": "POOL_READY_ASSIGNED",
+      "role": "walk",
+      "root_motion_review_required": false
+    }
+  ],
+  "generated_date": "2026-08-23",
+  "manifest_id": "achilles_meshy_animation_pool_v3",
+  "model": {
+    "armature_object": "Armature",
+    "embedded_equipment": false,
+    "material_count": 1,
+    "mesh_count": 1,
+    "mesh_object": "char1",
+    "polygons": 49998,
+    "retargeted": false,
+    "source_type": "DIRECT_MESHY_SKIN",
+    "texture_count": 1,
+    "texture_size": [
+      2048,
+      2048
+    ],
+    "uv_layers": [
+      "UVMap"
+    ],
+    "vertices": 34847
+  },
+  "quality": {
+    "all_actions_finite": true,
+    "all_actions_have_24_bone_loc_quat_scale_tracks": true,
+    "all_actions_share_exact_rig": true,
+    "blender_reimport_status": "PASS",
+    "death_fallback": "ADAPTER_FADE",
+    "equipment_contact_note": "The direct Meshy mesh has no sword, shield or bow; equipment contacts remain a later socket/equipment pass.",
+    "no_death_clip": true,
+    "root_heavy_clips": [
+      "Basic_Jump",
+      "Double_Combo_Attack",
+      "Simple_Kick",
+      "Sword_Judgment",
+      "Sword_Parry_Backward_2",
+      "Triple_Combo_Attack"
+    ]
+  },
+  "recommended_runtime_bindings": {
+    "alternate_run": "Running",
+    "generic_cast": "mage_soell_cast_7",
+    "hit": "Hit_Reaction_1",
+    "idle": "Idle_11",
+    "run": "run_fast_3_inplace",
+    "walk": "Walking"
+  },
+  "reproduction": {
+    "blender_version_validated": "5.1.2",
+    "exports_only": [
+      "Armature",
+      "char1"
+    ],
+    "never_overwrite": [
+      "achilles_rig_v1.glb",
+      "achilles_rig_animation_pool_v2.glb"
+    ],
+    "script": "tools/blender/achilles_meshy_v3/build_achilles_meshy_v3.py",
+    "source_sha256_required": "21DAD4EE17146F3A1430A684C7EFD14544701100307C233D4E5B27812EF58770"
+  },
+  "rig": {
+    "bone_count": 24,
+    "bones": [
+      "Hips",
+      "LeftUpLeg",
+      "LeftLeg",
+      "LeftFoot",
+      "LeftToeBase",
+      "RightUpLeg",
+      "RightLeg",
+      "RightFoot",
+      "RightToeBase",
+      "Spine02",
+      "Spine01",
+      "Spine",
+      "LeftShoulder",
+      "LeftArm",
+      "LeftForeArm",
+      "LeftHand",
+      "RightShoulder",
+      "RightArm",
+      "RightForeArm",
+      "RightHand",
+      "neck",
+      "Head",
+      "head_end",
+      "headfront"
+    ],
+    "hips_bone": "Hips",
+    "skeleton_signature_sha256": "4613F7AC6E50AD1CE49A98EC2F1CEA05DC99FEA8B9D877B614FB0240DBF75CFE"
+  },
+  "schema_version": 1,
+  "status": "DIRECT_MESHY_POOL_VALIDATED"
+}

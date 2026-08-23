@@ -7,24 +7,40 @@ const GAME_MANAGER_SCRIPT = preload("res://core/game_manager.gd")
 const WINDOW_SIZE := Vector2i(1600, 1000)
 const BACKEND_DEADLINE_MSEC := 8000
 const ACTION_DEADLINE_MSEC := 10000
-const EXPECTED_WALK_CLIP := &"achilles_v2__Walking"
-const EXPECTED_RUN_CLIP := &"achilles_v2__run_fast_3_inplace"
-const EXPECTED_HIT_CLIP := &"achilles_v2__Hit_Reaction_1"
-const ANIMATION_SET_PATH := "res://data/characters/achilles/animations.tres"
-const V2_PREVIEW_PATH := (
-	"res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb"
+const IDLE_LOOP_SETTLE_MARGIN_SECONDS := 0.25
+const EXPECTED_IDLE_CLIP := &"Idle_11"
+const EXPECTED_WALK_CLIP := &"Walking"
+const EXPECTED_RUN_CLIP := &"run_fast_3_inplace"
+const EXPECTED_HIT_CLIP := &"Hit_Reaction_1"
+const V3_PROFILE_PATH := (
+	"res://data/visuals/achilles/achilles_meshy_profile_v3.tres"
+)
+const ANIMATION_SET_PATH := (
+	"res://data/characters/achilles/animations_meshy_v3.tres"
+)
+const V3_PREVIEW_PATH := (
+	"res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb"
 )
 const EXPECTED_SPELL_CLIPS := {
-	&"achilles_spear_thrust": &"achilles_v2__Left_Slash",
-	&"achilles_advance": &"achilles_v2__run_fast_3_inplace",
-	&"achilles_sweep": &"achilles_v2__Charged_Upward_Slash",
-	&"achilles_guard": &"achilles_v2__Sword_Parry_Backward_2",
+	&"achilles_spear_thrust": &"Left_Slash",
+	&"achilles_advance": &"run_fast_3_inplace",
+	&"achilles_sweep": &"Charged_Upward_Slash",
+	&"achilles_guard": &"Sword_Parry_Backward_2",
 }
+const EXPECTED_MESHY_ACTIONS: Array[StringName] = [
+	&"Alert", &"Archery_Shot_3", &"Basic_Jump", &"Charged_Spell_Cast",
+	&"Charged_Upward_Slash", &"Chest_Pound_Taunt",
+	&"Double_Combo_Attack", &"Draw_and_Shoot_from_Back_2",
+	&"Electrocution_Reaction", &"Hit_Reaction_1", &"Idle_11",
+	&"Left_Slash", &"mage_soell_cast_7", &"run_fast_3_inplace",
+	&"Running", &"Simple_Kick", &"Sword_Judgment",
+	&"Sword_Parry_Backward_2", &"Triple_Combo_Attack", &"Walking",
+]
 
 var _artifact_dir := ""
 var _capture_dir := ""
 var _report := {
-	"schema": "dd.achilles.odyssey-3d-runtime-promotion-smoke.v2",
+	"schema": "dd.achilles.odyssey-3d-runtime-promotion-smoke.v3",
 	"status": "FAIL",
 	"run_path": "res://data/runs/odyssey.tres",
 	"evidence_head": "",
@@ -147,9 +163,9 @@ func _run() -> void:
 			== "res://characters/achilles/AchillesIsoUnitView.tscn"
 		),
 		"basic_attack_disabled": not hero_data.basic_attack_enabled,
-		"v2_preview_selected": (
+		"v3_preview_selected": (
 			hero_data.preview_visual_scene != null
-			and hero_data.preview_visual_scene.resource_path == V2_PREVIEW_PATH
+			and hero_data.preview_visual_scene.resource_path == V3_PREVIEW_PATH
 		),
 		"animation_pool_selected": (
 			hero_data.animation_set != null
@@ -316,7 +332,7 @@ func _exercise_three_real_rooms(run_data: RunData) -> void:
 		var heroes: Array = battle.units.filter(func(value):
 			return value != null and (value as Unit).team == 0
 		)
-		room_record.checks = _inspect_runtime_visual(
+		room_record.checks = await _inspect_runtime_visual(
 			battle, room, hero, unit_view, adapter, heroes, enemies
 		)
 		room_record.initiative_portrait = _inspect_initiative_portrait(
@@ -324,7 +340,7 @@ func _exercise_three_real_rooms(run_data: RunData) -> void:
 		)
 		if not _all_boolean_checks_pass(room_record.initiative_portrait):
 			_fail(
-				"Room %d Achilles initiative portrait is not the live V2 preview."
+				"Room %d Achilles initiative portrait is not the live V3 preview."
 				% (room_index + 1)
 			)
 		for check_name in room_record.checks:
@@ -429,8 +445,60 @@ func _inspect_runtime_visual(
 	) -> Dictionary:
 	var backend := adapter.viewport_backend
 	var visual_3d := backend.get_achilles_visual()
+	var profile := adapter.visual_profile
 	var subviewports := adapter.find_children("*", "SubViewport", true, false)
 	var skeletons := adapter.find_children("*", "Skeleton3D", true, false)
+	var runtime_skeleton := (
+		visual_3d.get_skeleton() as Skeleton3D
+		if visual_3d != null else null
+	)
+	var animation_player := (
+		visual_3d.get_animation_player() as AnimationPlayer
+		if visual_3d != null else null
+	)
+	var runtime_actions: Array[StringName] = []
+	if visual_3d != null:
+		runtime_actions = visual_3d.get_all_source_action_names()
+	runtime_actions.sort()
+	var expected_actions := EXPECTED_MESHY_ACTIONS.duplicate()
+	expected_actions.sort()
+
+	# Wait for the production player turn so no enemy feedback can interrupt the
+	# idle loop probe. The adapter is then asked to enter its normal bound idle.
+	var idle_turn_ready := await _wait_for_achilles_turn(battle, hero)
+	var idle_play_started := idle_turn_ready and adapter.play_idle()
+	await _settle(2)
+	var idle_started_as_meshy_idle := (
+		idle_play_started
+		and visual_3d != null
+		and visual_3d.get_active_semantic() == &"IDLE"
+		and animation_player != null
+		and StringName(animation_player.current_animation) == EXPECTED_IDLE_CLIP
+	)
+	var idle_loop_wait_seconds := 0.0
+	if idle_started_as_meshy_idle:
+		var idle_animation := animation_player.get_animation(EXPECTED_IDLE_CLIP)
+		if idle_animation != null:
+			var idle_speed := 1.0
+			if profile != null:
+				idle_speed = float(
+					profile.runtime_for_clip(EXPECTED_IDLE_CLIP).get(
+						"speed_scale", 1.0
+					)
+				)
+			idle_loop_wait_seconds = (
+				idle_animation.length / maxf(idle_speed, 0.05)
+				+ IDLE_LOOP_SETTLE_MARGIN_SECONDS
+			)
+			await get_tree().create_timer(idle_loop_wait_seconds).timeout
+	var idle_remains_meshy_idle := (
+		idle_loop_wait_seconds > IDLE_LOOP_SETTLE_MARGIN_SECONDS
+		and visual_3d != null
+		and visual_3d.get_active_semantic() == &"IDLE"
+		and animation_player != null
+		and StringName(animation_player.current_animation) == EXPECTED_IDLE_CLIP
+	)
+
 	var forbidden_nodes := _forbidden_equipment_nodes(adapter)
 	var shadow := _find_descendant_in_group(unit_view, &"iso_ground_shadow")
 	var footprint_size := 0
@@ -463,10 +531,43 @@ func _inspect_runtime_visual(
 			adapter.get_active_backend_name() == &"Viewport3DBackend"
 			and backend.is_backend_active()
 		),
+		"runtime_v3_profile_selected": (
+			profile != null
+			and profile.resource_path == V3_PROFILE_PATH
+			and profile.profile_id == &"achilles_meshy_animation_pool_v3"
+		),
+		"runtime_v3_asset_selected": (
+			profile != null
+			and profile.character_asset_path == V3_PREVIEW_PATH
+		),
+		"runtime_v3_profile_requires_24_bones": (
+			profile != null and profile.expected_bone_count == 24
+		),
+		"runtime_v3_skeleton_has_24_bones": (
+			runtime_skeleton != null
+			and runtime_skeleton.get_bone_count() == 24
+		),
+		"runtime_v3_signature_matches_profile": (
+			profile != null
+			and visual_3d != null
+			and visual_3d.get_runtime_skeleton_signature()
+			== profile.skeleton_signature.to_upper()
+		),
+		"runtime_has_exact_20_meshy_actions": (
+			runtime_actions.size() == 20
+			and runtime_actions == expected_actions
+		),
+		"idle_player_turn_reached": idle_turn_ready,
+		"idle_play_request_succeeded": idle_play_started,
+		"idle_started_as_meshy_idle_11": idle_started_as_meshy_idle,
+		"idle_loop_wait_seconds": idle_loop_wait_seconds,
+		"idle_remains_meshy_idle_11_after_complete_loop": (
+			idle_remains_meshy_idle
+		),
 		"viewport_exactly_384": (
 			backend.character_viewport.size == Vector2i(384, 384)
-			and adapter.visual_profile != null
-			and adapter.visual_profile.viewport_size == Vector2i(384, 384)
+			and profile != null
+			and profile.viewport_size == Vector2i(384, 384)
 		),
 		"single_subviewport_in_achilles": subviewports.size() == 1,
 		"single_skeleton_in_achilles": skeletons.size() == 1,
@@ -504,8 +605,8 @@ func _inspect_runtime_visual(
 		"unit_view_visible": unit_view.visible,
 		"painted_visual_scale": painted_visual_scale,
 		"adapter_canvas_scale": adapter_canvas_scale,
-		"painted_scale_matches_three_hero_reference_band": (
-			painted_visual_scale >= 1.8 and painted_visual_scale <= 2.0
+		"painted_scale_matches_true_tactical_reference_band": (
+			painted_visual_scale >= 1.0 and painted_visual_scale <= 1.15
 		),
 		"adapter_received_painted_scale": is_equal_approx(
 			adapter_canvas_scale, painted_visual_scale
@@ -513,6 +614,10 @@ func _inspect_runtime_visual(
 		"displayed_character_height_px": displayed_character_height,
 		"character_has_nonzero_projected_height": (
 			displayed_character_height > 1.0
+		),
+		"character_matches_tactical_height_band": (
+			displayed_character_height >= 50.0
+			and displayed_character_height <= 90.0
 		),
 	}
 
@@ -555,7 +660,7 @@ func _inspect_initiative_portrait(battle, hero: Unit) -> Dictionary:
 		"fallback_portrait_hidden": fallback_hidden,
 		"preview_non_empty": preview_non_empty,
 		"preview_contains_visible_pixels": preview_pixels > 0,
-		"v2_pool_clips_present_in_preview": pool_clips_present,
+		"v3_pool_clips_present_in_preview": pool_clips_present,
 		"mode": "3D_PREVIEW" if preview_non_empty else "MISSING",
 	}
 

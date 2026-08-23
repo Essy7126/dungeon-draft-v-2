@@ -9,16 +9,9 @@ signal action_finished(action_name: StringName)
 
 const ACTION_FALLBACK := &"ACTION_FALLBACK"
 const ROOT_MOTION_POLICY := &"ROOT_MOTION_UNCLASSIFIED"
-const EXPECTED_BONE_COUNT := 52
 const ACTION_TIMEOUT_MARGIN_SECONDS := 0.75
 const FALLBACK_RELEASE_SECONDS := 0.18
 const FALLBACK_FINISH_SECONDS := 0.45
-const EXPECTED_ACTIONS: Array[StringName] = [
-	&"Anim_0_001",
-	&"Anim_0_003",
-	&"Anim_0_004",
-	&"Anim_0_005",
-]
 
 @onready var character_asset: Node3D = $CharacterAsset
 @onready var foot_marker: Marker3D = $Markers/FootMarker
@@ -238,11 +231,11 @@ func get_mesh_instances() -> Array[MeshInstance3D]:
 
 func get_source_action_names() -> Array[StringName]:
 	var result: Array[StringName] = []
-	if _animation_player == null:
+	if _animation_player == null or _profile == null:
 		return result
 	for animation_name in _animation_player.get_animation_list():
 		var normalized := StringName(animation_name)
-		if normalized in EXPECTED_ACTIONS:
+		if normalized in _profile.required_action_names:
 			result.append(normalized)
 	return result
 
@@ -261,10 +254,18 @@ func get_all_source_action_names() -> Array[StringName]:
 func get_runtime_skeleton_signature() -> String:
 	if _skeleton == null:
 		return ""
+	var signature_mode := (
+		AchillesVisualProfile.SKELETON_SIGNATURE_MODE_LEGACY_MIXAMO_NORMALIZED
+	)
+	if _profile != null:
+		signature_mode = _profile.skeleton_signature_mode
+	var uses_legacy_mixamo_names := signature_mode == (
+		AchillesVisualProfile.SKELETON_SIGNATURE_MODE_LEGACY_MIXAMO_NORMALIZED
+	)
 	var bone_names: Array[String] = []
 	for bone_index in range(_skeleton.get_bone_count()):
 		var bone_name := String(_skeleton.get_bone_name(bone_index))
-		if bone_name.begins_with("mixamorig_"):
+		if uses_legacy_mixamo_names and bone_name.begins_with("mixamorig_"):
 			bone_name = "mixamorig:" + bone_name.trim_prefix("mixamorig_")
 		bone_names.append(bone_name)
 	return JSON.stringify(bone_names).sha256_text().to_upper()
@@ -300,7 +301,8 @@ func _discover_and_validate_character() -> bool:
 		_fail_setup(&"SKELETON_COUNT_MISMATCH")
 		return false
 	_skeleton = skeleton_nodes[0] as Skeleton3D
-	if _skeleton == null or _skeleton.get_bone_count() != EXPECTED_BONE_COUNT:
+	if _skeleton == null \
+			or _skeleton.get_bone_count() != _profile.expected_bone_count:
 		_fail_setup(&"SKELETON_BONE_COUNT_MISMATCH")
 		return false
 	var players := _model_root.find_children(
@@ -327,14 +329,12 @@ func _discover_and_validate_character() -> bool:
 	if get_runtime_skeleton_signature() != _profile.skeleton_signature.to_upper():
 		_fail_setup(&"SKELETON_SIGNATURE_MISMATCH")
 		return false
-	_hips_bone_index = _skeleton.find_bone("mixamorig_Hips")
-	if _hips_bone_index < 0:
-		_hips_bone_index = _skeleton.find_bone("mixamorig:Hips")
+	_hips_bone_index = _find_root_motion_bone_index()
 	if _hips_bone_index < 0:
 		_fail_setup(&"HIPS_BONE_MISSING")
 		return false
 	var available_actions := get_all_source_action_names()
-	for expected_action in EXPECTED_ACTIONS:
+	for expected_action: StringName in _profile.required_action_names:
 		if expected_action not in available_actions:
 			_fail_setup(&"SOURCE_ACTION_SET_MISMATCH")
 			return false
@@ -342,6 +342,16 @@ func _discover_and_validate_character() -> bool:
 		_fail_setup(&"EMBEDDED_EQUIPMENT_NODE_DETECTED")
 		return false
 	return true
+
+
+func _find_root_motion_bone_index() -> int:
+	if _skeleton == null or _profile == null:
+		return -1
+	for bone_name: StringName in _profile.root_motion_bone_names:
+		var bone_index := _skeleton.find_bone(String(bone_name))
+		if bone_index >= 0:
+			return bone_index
+	return -1
 
 
 func _contains_equipment_named_node() -> bool:

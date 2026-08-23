@@ -1,0 +1,715 @@
+{
+  "blender_version": "5.1.2",
+  "inspection_id": "achilles_meshy_animation_pool_v3_reimport",
+  "output": {
+    "bytes": 9191356,
+    "path": "res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb",
+    "sha256": "95F634EF49B04F8A01FC4B13D223F75DC3B2C7AA01CB2319194D078BF1D02FEE"
+  },
+  "raw_glb": {
+    "animation_count": 20,
+    "animation_names": [
+      "Alert",
+      "Archery_Shot_3",
+      "Basic_Jump",
+      "Charged_Spell_Cast",
+      "Charged_Upward_Slash",
+      "Chest_Pound_Taunt",
+      "Double_Combo_Attack",
+      "Draw_and_Shoot_from_Back_2",
+      "Electrocution_Reaction",
+      "Hit_Reaction_1",
+      "Idle_11",
+      "Left_Slash",
+      "mage_soell_cast_7",
+      "run_fast_3_inplace",
+      "Running",
+      "Simple_Kick",
+      "Sword_Judgment",
+      "Sword_Parry_Backward_2",
+      "Triple_Combo_Attack",
+      "Walking"
+    ],
+    "asset": {
+      "generator": "Khronos glTF Blender I/O v5.1.20",
+      "version": "2.0"
+    },
+    "camera_count": 0,
+    "declared_bytes": 9191356,
+    "extensions_used": [
+      "KHR_materials_specular"
+    ],
+    "image_count": 1,
+    "light_count": 0,
+    "material_count": 1,
+    "mesh_count": 1,
+    "mesh_names": [
+      "char1"
+    ],
+    "node_count": 26,
+    "node_names": [
+      "LeftToeBase",
+      "LeftFoot",
+      "LeftLeg",
+      "LeftUpLeg",
+      "RightToeBase",
+      "RightFoot",
+      "RightLeg",
+      "RightUpLeg",
+      "LeftHand",
+      "LeftForeArm",
+      "LeftArm",
+      "LeftShoulder",
+      "RightHand",
+      "RightForeArm",
+      "RightArm",
+      "RightShoulder",
+      "head_end",
+      "headfront",
+      "Head",
+      "neck",
+      "Spine",
+      "Spine01",
+      "Spine02",
+      "Hips",
+      "char1",
+      "Armature"
+    ],
+    "scene_count": 1,
+    "skin_count": 1,
+    "skin_joint_count": 24,
+    "texture_count": 2
+  },
+  "reimport": {
+    "animation_count": 20,
+    "animations": [
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 4.0,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          96.0
+        ],
+        "hips_location_delta_raw": [
+          -1e-06,
+          1e-07,
+          1.2e-06
+        ],
+        "hips_location_delta_raw_length": 1.6e-06,
+        "keyframe_count": 11309,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": true,
+        "missing_bones": [],
+        "name": "Alert",
+        "role": "alert",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 0.7,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          16.799999
+        ],
+        "hips_location_delta_raw": [
+          -1.5751655,
+          -3.6196949,
+          2.0094705
+        ],
+        "hips_location_delta_raw_length": 4.4295947,
+        "keyframe_count": 2300,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Archery_Shot_3",
+        "role": "ranged_release",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 5.9,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          141.600006
+        ],
+        "hips_location_delta_raw": [
+          4.584327,
+          29.0443878,
+          126.7758433
+        ],
+        "hips_location_delta_raw_length": 130.141104,
+        "keyframe_count": 18432,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Basic_Jump",
+        "role": "jump",
+        "root_motion_review_required": true,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 2.666667,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          64.0
+        ],
+        "hips_location_delta_raw": [
+          -0.0826068,
+          0.3000793,
+          -0.0558624
+        ],
+        "hips_location_delta_raw_length": 0.3162153,
+        "keyframe_count": 8301,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Charged_Spell_Cast",
+        "role": "charged_spell",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 3.2,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          76.800003
+        ],
+        "hips_location_delta_raw": [
+          0.0561242,
+          0.0652852,
+          0.0318885
+        ],
+        "hips_location_delta_raw_length": 0.0918094,
+        "keyframe_count": 9885,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Charged_Upward_Slash",
+        "role": "heavy_attack",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 4.833333,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          116.0
+        ],
+        "hips_location_delta_raw": [
+          -0.0186744,
+          0.2834127,
+          0.1090921
+        ],
+        "hips_location_delta_raw_length": 0.3042574,
+        "keyframe_count": 14736,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Chest_Pound_Taunt",
+        "role": "taunt_buff",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 2.833333,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          68.0
+        ],
+        "hips_location_delta_raw": [
+          4.8805459,
+          31.0636185,
+          134.4465621
+        ],
+        "hips_location_delta_raw_length": 138.0747847,
+        "keyframe_count": 8124,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Double_Combo_Attack",
+        "role": "combo_two",
+        "root_motion_review_required": true,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 5.0,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          120.0
+        ],
+        "hips_location_delta_raw": [
+          -5.3e-06,
+          -6.3e-06,
+          8e-06
+        ],
+        "hips_location_delta_raw_length": 1.15e-05,
+        "keyframe_count": 14039,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Draw_and_Shoot_from_Back_2",
+        "role": "bow_draw_release",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 4.666667,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          112.0
+        ],
+        "hips_location_delta_raw": [
+          0.3774414,
+          -2.7896142,
+          -7.8633676
+        ],
+        "hips_location_delta_raw_length": 8.3520631,
+        "keyframe_count": 14241,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Electrocution_Reaction",
+        "role": "status_reaction",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 1.233333,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          29.6
+        ],
+        "hips_location_delta_raw": [
+          -0.0358148,
+          -0.0608757,
+          0.0204286
+        ],
+        "hips_location_delta_raw_length": 0.0735246,
+        "keyframe_count": 3756,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Hit_Reaction_1",
+        "role": "hit",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 1.9,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          45.599998
+        ],
+        "hips_location_delta_raw": [
+          0.0078843,
+          -0.0203233,
+          -0.0342493
+        ],
+        "hips_location_delta_raw_length": 0.0405982,
+        "keyframe_count": 5576,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": true,
+        "missing_bones": [],
+        "name": "Idle_11",
+        "role": "idle",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 3.166667,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          76.0
+        ],
+        "hips_location_delta_raw": [
+          -0.0418181,
+          0.1548877,
+          -0.092142
+        ],
+        "hips_location_delta_raw_length": 0.1850111,
+        "keyframe_count": 9786,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Left_Slash",
+        "role": "slash",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 2.7,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          64.800003
+        ],
+        "hips_location_delta_raw": [
+          0.0261967,
+          -0.0064988,
+          0.0197661
+        ],
+        "hips_location_delta_raw_length": 0.0334545,
+        "keyframe_count": 7760,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "mage_soell_cast_7",
+        "role": "spell_cast",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 0.766667,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          18.4
+        ],
+        "hips_location_delta_raw": [
+          0.0843433,
+          -0.8628635,
+          0.3244267
+        ],
+        "hips_location_delta_raw_length": 0.9256889,
+        "keyframe_count": 2482,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": true,
+        "missing_bones": [],
+        "name": "run_fast_3_inplace",
+        "role": "run_fast",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 0.633333,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          15.2
+        ],
+        "hips_location_delta_raw": [
+          1.3e-06,
+          8.1e-06,
+          0.0
+        ],
+        "hips_location_delta_raw_length": 8.2e-06,
+        "keyframe_count": 2190,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": true,
+        "missing_bones": [],
+        "name": "Running",
+        "role": "alternate_run",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 2.333333,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          56.0
+        ],
+        "hips_location_delta_raw": [
+          7.1422054,
+          45.677032,
+          198.5808055
+        ],
+        "hips_location_delta_raw_length": 203.8914875,
+        "keyframe_count": 6966,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Simple_Kick",
+        "role": "kick",
+        "root_motion_review_required": true,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 4.366667,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          104.800003
+        ],
+        "hips_location_delta_raw": [
+          -25.3546824,
+          24.7051408,
+          112.3233819
+        ],
+        "hips_location_delta_raw_length": 117.7698859,
+        "keyframe_count": 13740,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Sword_Judgment",
+        "role": "ultimate",
+        "root_motion_review_required": true,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 0.566667,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          13.6
+        ],
+        "hips_location_delta_raw": [
+          -2.5180035,
+          -2.8512568,
+          24.3108408
+        ],
+        "hips_location_delta_raw_length": 24.6066452,
+        "keyframe_count": 1936,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Sword_Parry_Backward_2",
+        "role": "guard_parry",
+        "root_motion_review_required": true,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 4.333333,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          104.0
+        ],
+        "hips_location_delta_raw": [
+          28.0888839,
+          37.8739982,
+          164.1531856
+        ],
+        "hips_location_delta_raw_length": 170.7913741,
+        "keyframe_count": 13251,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": false,
+        "missing_bones": [],
+        "name": "Triple_Combo_Attack",
+        "role": "combo_three",
+        "root_motion_review_required": true,
+        "unanimated_bones": []
+      },
+      {
+        "animated_bone_count": 24,
+        "direct_paths": [],
+        "duration_seconds": 1.033333,
+        "fcurve_count": 240,
+        "frame_range": [
+          0.0,
+          24.799999
+        ],
+        "hips_location_delta_raw": [
+          1.7e-06,
+          -7.5e-06,
+          7e-07
+        ],
+        "hips_location_delta_raw_length": 7.8e-06,
+        "keyframe_count": 3330,
+        "location_quaternion_scale_on_every_bone": true,
+        "loop_candidate": true,
+        "missing_bones": [],
+        "name": "Walking",
+        "role": "walk",
+        "root_motion_review_required": false,
+        "unanimated_bones": []
+      }
+    ],
+    "armature_object": "Armature",
+    "armature_scale": [
+      0.01,
+      0.01,
+      0.01
+    ],
+    "blender_import_helper_objects": [
+      "Icosphere"
+    ],
+    "bone_count": 24,
+    "bones": [
+      "Hips",
+      "LeftUpLeg",
+      "LeftLeg",
+      "LeftFoot",
+      "LeftToeBase",
+      "RightUpLeg",
+      "RightLeg",
+      "RightFoot",
+      "RightToeBase",
+      "Spine02",
+      "Spine01",
+      "Spine",
+      "LeftShoulder",
+      "LeftArm",
+      "LeftForeArm",
+      "LeftHand",
+      "RightShoulder",
+      "RightArm",
+      "RightForeArm",
+      "RightHand",
+      "neck",
+      "Head",
+      "head_end",
+      "headfront"
+    ],
+    "camera_count": 0,
+    "fps": 24.0,
+    "light_count": 0,
+    "mesh": {
+      "edges": 83778,
+      "loops": 149994,
+      "materials": [
+        "Material_1"
+      ],
+      "polygons": 49998,
+      "uv_layers": [
+        "UVMap"
+      ],
+      "vertex_groups": [
+        "Hips",
+        "LeftUpLeg",
+        "LeftLeg",
+        "LeftFoot",
+        "LeftToeBase",
+        "RightUpLeg",
+        "RightLeg",
+        "RightFoot",
+        "RightToeBase",
+        "Spine02",
+        "Spine01",
+        "Spine",
+        "LeftShoulder",
+        "LeftArm",
+        "LeftForeArm",
+        "LeftHand",
+        "RightShoulder",
+        "RightArm",
+        "RightForeArm",
+        "RightHand",
+        "neck",
+        "Head",
+        "head_end",
+        "headfront"
+      ],
+      "vertices": 34847
+    },
+    "mesh_object": "char1",
+    "mesh_parent": "Armature",
+    "mesh_world_dimensions": [
+      1.069427,
+      0.519938,
+      1.680439
+    ],
+    "object_count": 2,
+    "object_names": [
+      "Armature",
+      "char1"
+    ],
+    "skeleton_signature_sha256": "4613F7AC6E50AD1CE49A98EC2F1CEA05DC99FEA8B9D877B614FB0240DBF75CFE",
+    "textures": [
+      {
+        "colorspace": "sRGB",
+        "name": "texture_0",
+        "packed": true,
+        "size": [
+          2048,
+          2048
+        ]
+      }
+    ]
+  },
+  "removed_source_objects": [
+    {
+      "name": "Icosphere",
+      "type": "MESH"
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "bytes": 9191236,
+    "filename": "Meshy_AI_Meshy_Merged_Animations (4).glb",
+    "sha256": "21DAD4EE17146F3A1430A684C7EFD14544701100307C233D4E5B27812EF58770",
+    "source_scene_objects": [
+      {
+        "name": "Armature",
+        "parent": null,
+        "type": "ARMATURE"
+      },
+      {
+        "name": "Icosphere",
+        "parent": null,
+        "type": "MESH"
+      },
+      {
+        "name": "char1",
+        "parent": "Armature",
+        "type": "MESH"
+      }
+    ]
+  },
+  "status": "PASS",
+  "validation": {
+    "durations_preserved": true,
+    "exactly_one_armature": true,
+    "exactly_one_embedded_texture": true,
+    "exactly_one_material": true,
+    "exactly_one_skinned_mesh": true,
+    "exactly_twenty_actions": true,
+    "fcurve_counts_preserved": true,
+    "frame_ranges_preserved": true,
+    "keyframe_counts_preserved": true,
+    "retarget_used": false,
+    "source_immutable_hash_preserved": true,
+    "zero_cameras": true,
+    "zero_helper_meshes": true,
+    "zero_lights": true
+  }
+}

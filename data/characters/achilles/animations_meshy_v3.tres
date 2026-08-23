@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterAnimationSetData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/characters/character_animation_set_data.gd" id="1_animation_set"]
+
+[resource]
+script = ExtResource("1_animation_set")
+animation_names = {
+&"cast": &"mage_soell_cast_7",
+&"cast:achilles_advance": &"run_fast_3_inplace",
+&"cast:achilles_guard": &"Sword_Parry_Backward_2",
+&"cast:achilles_spear_thrust": &"Left_Slash",
+&"cast:achilles_sweep": &"Charged_Upward_Slash",
+&"hit": &"Hit_Reaction_1",
+&"idle": &"Idle_11",
+&"run": &"run_fast_3_inplace",
+&"walk": &"Walking"
+}

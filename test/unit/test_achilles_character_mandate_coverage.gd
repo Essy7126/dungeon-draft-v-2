@@ -543,11 +543,11 @@ func test_achilles_stats_unchanged() -> void:
 	assert_eq(unit_data.active_spell_slots, 4)
 	assert_eq(
 		unit_data.preview_visual_scene.resource_path,
-		"res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb",
+		"res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb",
 	)
 	assert_eq(
 		unit_data.animation_set.resource_path,
-		"res://data/characters/achilles/animations.tres",
+		"res://data/characters/achilles/animations_meshy_v3.tres",
 	)
 
 

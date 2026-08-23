@@ -6,7 +6,7 @@ const ACHILLES_VISUAL_PATH := (
 	"res://characters/achilles/AchillesIsoUnitView.tscn"
 )
 const ACHILLES_PREVIEW_PATH := (
-	"res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb"
+	"res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb"
 )
 const EXPECTED_SPELL_IDS: Array[StringName] = [
 	&"achilles_spear_thrust",
@@ -73,7 +73,7 @@ func test_odyssey_routes_one_production_achilles_through_all_three_rooms() -> vo
 		assert_not_null(room.encounter_definition, room.resource_path)
 
 
-func test_achilles_production_chassis_keeps_gameplay_values_and_v2_visuals() -> void:
+func test_achilles_production_chassis_keeps_gameplay_values_and_v3_visuals() -> void:
 	var data := load(ACHILLES_DATA_PATH) as UnitData
 	assert_not_null(data)
 	assert_eq(data.get_effective_unit_id(), &"achilles")

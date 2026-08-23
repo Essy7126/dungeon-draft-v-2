@@ -6,10 +6,18 @@ const RENDERING_SUBVIEWPORT := RENDERING_VIEWPORT_3D
 const FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR := (
 	&"LEGACY_2D_ON_VERIFIED_ERROR"
 )
+const SKELETON_SIGNATURE_MODE_LEGACY_MIXAMO_NORMALIZED := (
+	&"LEGACY_MIXAMO_NORMALIZED"
+)
+const SKELETON_SIGNATURE_MODE_EXACT_BONE_NAMES := &"EXACT_BONE_NAMES"
 const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 	Vector2i(256, 256),
 	Vector2i(384, 384),
 	Vector2i(512, 512),
+]
+const SUPPORTED_SKELETON_SIGNATURE_MODES: Array[StringName] = [
+	SKELETON_SIGNATURE_MODE_LEGACY_MIXAMO_NORMALIZED,
+	SKELETON_SIGNATURE_MODE_EXACT_BONE_NAMES,
 ]
 
 @export var schema_version := 1
@@ -21,6 +29,20 @@ const SUPPORTED_VIEWPORT_SIZES: Array[Vector2i] = [
 )
 @export var skeleton_signature := (
 	"6CC796EE5D708EE1A7F884C028C457CA535A4D7B572A189B36DFE5EBAD62D65D"
+)
+@export_range(1, 512, 1) var expected_bone_count := 52
+@export var root_motion_bone_names: Array[StringName] = [
+	&"mixamorig_Hips",
+	&"mixamorig:Hips",
+]
+@export var required_action_names: Array[StringName] = [
+	&"Anim_0_001",
+	&"Anim_0_003",
+	&"Anim_0_004",
+	&"Anim_0_005",
+]
+@export var skeleton_signature_mode := (
+	SKELETON_SIGNATURE_MODE_LEGACY_MIXAMO_NORMALIZED
 )
 @export_range(0.1, 4.0, 0.01) var character_scale := 1.0
 
@@ -92,12 +114,30 @@ func is_character_only_valid() -> bool:
 		and fallback_backend_scene != null \
 		and not character_asset_path.is_empty() \
 		and not skeleton_signature.is_empty() \
+		and _rig_contract_is_valid() \
 		and rendering_mode == RENDERING_VIEWPORT_3D \
 		and fallback_policy == FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR \
 		and render_display_size >= 32.0 \
 		and render_display_size <= 192.0 \
 		and not equipment_enabled \
 		and weapon_profile == null
+
+
+func _rig_contract_is_valid() -> bool:
+	if expected_bone_count <= 0 \
+			or root_motion_bone_names.is_empty() \
+			or required_action_names.is_empty() \
+			or not SUPPORTED_SKELETON_SIGNATURE_MODES.has(
+				skeleton_signature_mode
+			):
+		return false
+	for bone_name: StringName in root_motion_bone_names:
+		if bone_name == &"":
+			return false
+	for action_name: StringName in required_action_names:
+		if action_name == &"":
+			return false
+	return true
 
 
 func validated_viewport_size() -> Vector2i:

@@ -205,15 +205,21 @@ func _run() -> void:
 	var original_stage_position: Vector2 = stage.position
 	_focus_stage_on(stage, unit_view.position)
 	var review_player: AnimationPlayer = visual_3d.get_animation_player()
-	if review_player != null:
-		review_player.play(&"Anim_0_004")
-		review_player.seek(1.0, true)
+	var review_action := StringName(
+		adapter.visual_profile.animation_profile.IDLE.get("godot_name", "")
+	)
+	var review_sample_seconds := 0.0
+	if review_player != null and review_player.has_animation(review_action):
+		var review_animation := review_player.get_animation(review_action)
+		review_sample_seconds = review_animation.length * 0.5
+		review_player.play(review_action)
+		review_player.seek(review_sample_seconds, true)
 		review_player.advance(0.0)
 		review_player.speed_scale = 0.0
 	_report["resolution_review_pose"] = {
-		"source_action": "Anim_0.004",
-		"godot_action": "Anim_0_004",
-		"sample_seconds": 1.0,
+		"source_action": String(review_action),
+		"godot_action": String(review_action),
+		"sample_seconds": review_sample_seconds,
 		"fixed_across_resolutions": true,
 	}
 	for viewport_resolution in RESOLUTIONS:

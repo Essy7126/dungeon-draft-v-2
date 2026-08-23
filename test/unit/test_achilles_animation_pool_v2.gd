@@ -279,7 +279,11 @@ func _profile() -> AchillesVisualProfile:
 
 
 func _base_unit_data() -> UnitData:
-	return load(UNIT_DATA_PATH) as UnitData
+	var unit_data := (
+		load(UNIT_DATA_PATH) as UnitData
+	).duplicate(true) as UnitData
+	unit_data.animation_set = load(ANIMATION_SET_PATH) as CharacterAnimationSetData
+	return unit_data
 
 
 func _create_initialized_visual() -> Achilles3DVisual:
@@ -296,6 +300,7 @@ func _create_ready_adapter(
 	) -> AchillesIsoUnitView:
 	var adapter := ADAPTER_SCENE.instantiate() as AchillesIsoUnitView
 	assert_not_null(adapter)
+	adapter.visual_profile = _profile()
 	add_child_autofree(adapter)
 	if unit_data != null:
 		adapter.bind_unit(Unit.from_data(unit_data))

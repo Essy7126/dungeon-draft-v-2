@@ -22,50 +22,44 @@
 - Les runners Godot peuvent encore rapporter les fuites renderer/ObjectDB et le
   doublon `output/validation-feedback-candidate/.../ItemDefinition` historiques.
 
-## L’Odyssée — limites après promotion d’Achille
+## L’Odyssée — limites du candidat Meshy V3
 
-- Le contenu joueur et le routage d’Achille sont en **PRODUCTION_RUNTIME** sans
-  changement de valeurs gameplay. Les trois salles et les quatre sorts sont
-  couverts par le smoke graphique dédié.
-
-- Le corps 3D tourne désormais sur quatre orientations et un pool de 24 clips
-  (20 Meshy retargetés + 4 natifs). Les quatre capacités ont des affectations
-  distinctes, mais les contacts d'arme, les mains, certains appuis et les
-  coutures de boucle restent à polir artistiquement.
-- Le corps de grille et l’aperçu 3D utilisent la V2. Le portrait du HUD reste
+- Le candidat courant utilise directement le modèle Meshy, son rig de 24 os et
+  ses 20 animations natives. Aucun clip n’est retargeté et les V1/V2 restent
+  conservées uniquement comme assets historiques.
+- Le repos est explicitement lié à `Idle_11`, la marche à `Walking` et la
+  course rapide à `run_fast_3_inplace`. Le seuil reste 1–5 cases = marche et
+  6+ = course ; avec 3 PM de base, la course automatique demande normalement
+  un bonus de déplacement ou une future règle.
+- Le profil peint utilise une base et un minimum de 1,0, avec un maximum de
+  1,15. Les valeurs finales attendues sont 1,05 / 1,08 / 1,10 dans les trois
+  cartes ; l’ancien calibrage proche de 2,0 n’est plus courant.
+- Les quatre capacités possèdent des affectations distinctes dans le pool V3.
+  Les clips d’action conçus autour d’une arme restent cependant sans contact
+  d’équipement : le modèle Meshy n’embarque ni arme, ni bouclier, ni arc.
+- La source ne fournit aucune animation de mort. Le fondu de l’adaptateur reste
+  le rendu de mort prévu.
+- Le corps de grille et l’aperçu 3D utilisent la V3. Le portrait du HUD reste
   l’illustration 2D historique ; il n’est pas un rendu animé du GLB.
-- Le seuil automatique actuel est 1–5 cases = marche, 6+ = course rapide.
-  Achille n'a que 3 PM de base : la course ne se déclenche donc normalement
-  qu'avec un bonus ou une future règle. La source ne fournit aucune animation
-  de mort ; le fondu simple reste le fallback.
-- Les ennemis réutilisent des squelettes visuels existants et les trois salles
-  partagent leurs layouts et profils de présentation peints avec le catalogue
-  canonique. Les wrappers visuels, rencontres et progressions restent propres à
-  L’Odyssée.
-- Le runner graphique forcé est PASS et ses treize captures ont été inspectées,
-  mais aucune partie humaine non forcée de la salle 1 n’a été effectuée. Le HUD
-  du smoke 1600×1000 est lisible ; les résolutions plus basses doivent encore
-  être revues lors d’un playtest humain.
+- Les clips avec forte translation de hanche sont neutralisés localement afin
+  de conserver la grille comme autorité. Une revue humaine doit encore juger
+  les appuis, les transitions et le cadrage de chaque action.
+- Validation actuelle : suite V3 4/4 (38 assertions), calibration 5/5
+  (218 assertions) et régression élargie 79/79 (2 532 assertions). Le
+  full-flow graphique final et ses captures n’ont pas
+  encore été exécutés ; aucune conformité visuelle finale ne doit être
+  revendiquée avant cette étape.
 - Les runners graphiques peuvent encore signaler des ressources renderer ou
-  `ObjectDB` à la fermeture ; le rapport fonctionnel et le code de sortie restent
-  PASS/0.
-- Le fallback 2D paresseux réservé aux erreurs 3D vérifiées conserve les pixels
-  historiques d’épée et de bouclier. Il n’est pas instancié dans le parcours
-  nominal V2, dont le corps 3D reste sans équipement.
-- Le root motion source reste non classifié ; la neutralisation locale X/Z
-  maintient la grille comme autorité sans réécrire les clips importés.
-- La cible de durée 18–25 minutes n’a pas été validée par un playtest humain. Le
-  smoke automatise les handlers de production mais ne remplace pas ce playtest.
-- `Percée` résout correctement la grille et resynchronise la vue sur la case
-  finale ; la transition visuelle entre les deux cases reste instantanée et
-  pourra recevoir un tween de finition.
-- La progression comporte quatre disciplines de combat immédiatement
-  disponibles. Chacune reste limitée au rang initial et n’ouvre pas encore
-  d’arbre d’évolution ; les récompenses d’équipement restent désactivées.
-- La promotion concerne L’Odyssée, run solo officielle. Les runs au trio et
+  `ObjectDB` à la fermeture. Ce point sera réévalué avec le full-flow V3.
+- `Percée` conserve la grille comme autorité et se recale sur la case finale ;
+  sa transition visuelle entre les deux cases reste sans tween de finition.
+- La cible de durée 18–25 minutes et une partie humaine non forcée n’ont pas
+  encore été validées. Les récompenses d’équipement restent désactivées.
+- La modification concerne L’Odyssée, run solo officielle. Les runs au trio et
   leurs contenus historiques restent inchangés.
 
-État revalidé le 2026-08-23 avec Godot 4.7.1 et GUT 9.7.1.
+État du candidat vérifié le 2026-08-23 avec Godot 4.7.1 et GUT 9.7.1 ;
+validation graphique finale en attente.
 
 ## Run content isolation
 

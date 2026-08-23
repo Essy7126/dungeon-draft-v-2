@@ -1,46 +1,45 @@
 # État courant vérifié du projet
 
-## Achille — intégration Odyssée (PRODUCTION_RUNTIME, 2026-08-23)
+## Achille — intégration Meshy directe dans L’Odyssée (WORKTREE_CANDIDATE, 2026-08-23)
 
-- Le routage canonique `RunData -> RunContentProfile -> RunHeroProfile ->
-  CharacterProgressionProfile` instancie exactement un Achille dans chacune des
-  trois salles de L’Odyssée, avec son visuel V2, son pool d’animations, ses
-  quatre sorts et son HUD raffiné.
-- Les libellés joueur « Prototype », « EXPÉRIMENTAL » et « vertical slice » ont
-  été retirés des données d’Achille. Cette promotion éditoriale ne modifie
-  aucune statistique, aucun coût, aucune portée et aucun effet de gameplay.
-- Le contrat reste : 110 PV, 14 initiative, 6 PA, 3 PM, 18 puissance, puis
-  Frappe de lance, Percée, Balayage et Garde d’airain immédiatement disponibles.
-- La présentation est calibrée sur l’enveloppe du trio historique dans les
-  trois cartes peintes : échelle finale 1,974 / 2,0 / 2,0. L’ancrage aux pieds
-  est contrôlé sur la présentation de référence et la marge de cadrage sur les
-  20 clips Meshy.
-- Le runtime est **PRODUCTION_RUNTIME**. Les contrôles dédiés couvrent les trois
-  salles, les quatre sorts, la marche/course, l’impact, la mort, le rechargement
-  visuel et le résultat. Le retarget des mains, pieds, boucles et contacts
-  d’arme reste à polir ; la source ne fournit toujours aucun clip de mort.
+- Le candidat V3 remplace le corps canonique animé par retarget par le modèle
+  Meshy direct : un mesh skinné, son rig Meshy de 24 os et ses 20 animations
+  natives sont chargés ensemble dans les trois salles de L’Odyssée.
+- Le routage `RunData -> RunContentProfile -> RunHeroProfile ->
+  CharacterProgressionProfile` reste inchangé, comme les statistiques et les
+  quatre capacités d’Achille : Frappe de lance, Percée, Balayage et Garde
+  d’airain.
+- Le repos utilise `Idle_11`, les déplacements de 1 à 5 cases utilisent
+  `Walking`, et les chemins de 6 cases ou plus utilisent
+  `run_fast_3_inplace`. La grille reste l’autorité du déplacement.
+- Le billboard V3 utilise une taille d'affichage de 78 avec une caméra
+  orthographique 2,6. Le profil peint est revenu à une base de 1,0, bornée
+  entre 1,0 et 1,15. Les
+  échelles finales sont 1,05 / 1,08 / 1,10 pour la forêt, le volcan et
+  l’espace ; elles remplacent l’ancien calibrage 1,974 / 2,0 / 2,0.
+- Le modèle Meshy ne contient aucun équipement. Le corps de grille et l’aperçu
+  3D utilisent la V3 ; le portrait du HUD reste l’illustration 2D historique.
+- Validation actuelle : nouvelle suite V3 4/4 (38 assertions), calibration
+  5/5 (218 assertions) et régression élargie 79/79 (2 532 assertions). Le
+  full-flow graphique final n’a pas encore été
+  exécuté : le statut reste **VALIDATION_GRAPHIQUE_PENDING**.
 
-## Achille — pool d'animations V2 (PRODUCTION_RUNTIME, 2026-08-23)
+## Achille — pool d’animations Meshy V3 (WORKTREE_CANDIDATE, 2026-08-23)
 
-- La V1 canonique reste immuable. Le candidat V2 conserve son rig de 52 os et
-  ses 4 clips natifs, puis ajoute les 20 animations Meshy retargetées.
-- `CharacterAnimationSetData` porte les affectations d'Achille : repos, marche,
-  course, impact, lancement générique et une clé `cast:<spell_id>` pour chacun
-  de ses quatre sorts. Le Character Animation Studio expose ces lignes et les
-  24 clips importés.
-- La longueur réelle du chemin choisit la locomotion : 1–5 cases = marche,
-  6+ = course rapide. Le seuil est configurable dans le profil visuel ; avec
-  les 3 PM actuels d'Achille, la course automatique exige encore un bonus de
-  déplacement ou une future règle.
-- `Percée` resynchronise la vue avec sa cellule de grille résolue. Le clip reste
-  in-place et ne devient jamais l'autorité du gameplay.
-- Les 20 clips sont structurellement utilisables, mais certains demandent une
-  passe artistique sur les bras, mains, pieds, boucles et contacts d'arme. La
-  source ne contient aucune animation de mort ; le fondu reste actif.
-- Contrat, hashes, clips et limites :
-  `docs/design/achilles/achilles_animation_pool_v2.md`.
-- Statut runtime : **PRODUCTION_RUNTIME**. Le retarget demeure
-  **ARTISTIC_POLISH_REQUIRED** jusqu’à la revue visuelle humaine en jeu.
+- L’asset `achilles_meshy_animation_pool_v3.glb` contient exactement 20 clips
+  Meshy natifs sur le même rig de 24 os. Aucun retarget n’est utilisé.
+- Son SHA-256 est
+  `95F634EF49B04F8A01FC4B13D223F75DC3B2C7AA01CB2319194D078BF1D02FEE`.
+- `CharacterAnimationSetData` porte le repos, la marche, la course, l’impact,
+  le lancement générique et une clé `cast:<spell_id>` distincte pour chacune
+  des quatre capacités.
+- La source ne contient aucune animation de mort : le fondu de l’adaptateur
+  reste le rendu prévu. Les clips impliquant une arme restent disponibles dans
+  le pool, mais le modèle n’embarque ni arme, ni bouclier, ni arc.
+- Les assets V1 et V2 sont conservés sans modification comme historiques ; la
+  V3 est le seul candidat courant.
+- Contrat, hash, inventaire et limites :
+  `docs/design/achilles/achilles_meshy_animation_pool_v3.md`.
 
 ## Cohérence architecture Studio, animations et objets (WORKTREE_CANDIDATE, 2026-08-23)
 

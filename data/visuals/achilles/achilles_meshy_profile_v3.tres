@@ -1,0 +1,105 @@
+[gd_resource type="Resource" script_class="AchillesVisualProfile" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/visuals/achilles/achilles_visual_profile.gd" id="1_profile"]
+[ext_resource type="PackedScene" path="res://characters/achilles/3d/Achilles3DVisual.tscn" id="2_character"]
+[ext_resource type="PackedScene" path="res://characters/achilles/3d/AchillesLegacy2DBackend.tscn" id="3_fallback"]
+
+[resource]
+script = ExtResource("1_profile")
+schema_version = 1
+profile_id = &"achilles_meshy_animation_pool_v3"
+character_scene = ExtResource("2_character")
+character_asset_path = "res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb"
+skeleton_signature = "4613F7AC6E50AD1CE49A98EC2F1CEA05DC99FEA8B9D877B614FB0240DBF75CFE"
+expected_bone_count = 24
+skeleton_signature_mode = &"EXACT_BONE_NAMES"
+root_motion_bone_names = Array[StringName]([&"Hips"])
+required_action_names = Array[StringName]([&"Alert", &"Archery_Shot_3", &"Basic_Jump", &"Charged_Spell_Cast", &"Charged_Upward_Slash", &"Chest_Pound_Taunt", &"Double_Combo_Attack", &"Draw_and_Shoot_from_Back_2", &"Electrocution_Reaction", &"Hit_Reaction_1", &"Idle_11", &"Left_Slash", &"mage_soell_cast_7", &"run_fast_3_inplace", &"Running", &"Simple_Kick", &"Sword_Judgment", &"Sword_Parry_Backward_2", &"Triple_Combo_Attack", &"Walking"])
+character_scale = 1.0
+rendering_mode = &"VIEWPORT_3D"
+fallback_policy = &"LEGACY_2D_ON_VERIFIED_ERROR"
+fallback_backend_scene = ExtResource("3_fallback")
+viewport_size = Vector2i(384, 384)
+camera_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.8, 3.5)
+orthographic_size = 2.6
+render_display_size = 78.0
+character_framing_offset = Vector3(0, 0.35, 0)
+directional_yaw_map = {
+"E": 90.0,
+"N": 180.0,
+"S": 0.0,
+"W": -90.0
+}
+animation_profile = {
+"ACTION_FALLBACK": {
+"godot_name": "mage_soell_cast_7",
+"mode": "MESHY_NATIVE_CLIP",
+"provenance": "MESHY_MERGED_ANIMATIONS_DIRECT_V3",
+"root_motion": "LOCAL_XZ_NEUTRALIZED",
+"source_name": "mage_soell_cast_7"
+},
+"DEATH_FALLBACK": {
+"mode": "ADAPTER_FADE",
+"provenance": "NO_DEATH_CLIP_IN_SOURCE_POOL"
+},
+"HIT": {
+"godot_name": "Hit_Reaction_1",
+"mode": "MESHY_NATIVE_CLIP",
+"provenance": "MESHY_MERGED_ANIMATIONS_DIRECT_V3",
+"root_motion": "LOCAL_XZ_NEUTRALIZED",
+"source_name": "Hit_Reaction_1"
+},
+"IDLE": {
+"godot_name": "Idle_11",
+"mode": "MESHY_NATIVE_CLIP",
+"provenance": "MESHY_MERGED_ANIMATIONS_DIRECT_V3",
+"root_motion": "LOCAL_XZ_NEUTRALIZED",
+"source_name": "Idle_11"
+},
+"MOVE": {
+"godot_name": "Walking",
+"mode": "MESHY_NATIVE_CLIP",
+"provenance": "MESHY_MERGED_ANIMATIONS_DIRECT_V3",
+"root_motion": "LOCAL_XZ_NEUTRALIZED",
+"source_name": "Walking"
+},
+"RUN": {
+"godot_name": "run_fast_3_inplace",
+"mode": "MESHY_NATIVE_CLIP",
+"provenance": "MESHY_MERGED_ANIMATIONS_DIRECT_V3",
+"root_motion": "LOCAL_XZ_NEUTRALIZED",
+"source_name": "run_fast_3_inplace"
+},
+"WALK": {
+"godot_name": "Walking",
+"mode": "MESHY_NATIVE_CLIP",
+"provenance": "MESHY_MERGED_ANIMATIONS_DIRECT_V3",
+"root_motion": "LOCAL_XZ_NEUTRALIZED",
+"source_name": "Walking"
+}
+}
+run_min_path_cells = 6
+clip_runtime = {
+"Alert": {"blend_time": 0.15, "release_normalized": 0.5, "role": "alert", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"Archery_Shot_3": {"blend_time": 0.08, "release_normalized": 0.72, "role": "ranged_release", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"Basic_Jump": {"blend_time": 0.12, "release_normalized": 0.58, "role": "jump", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.2},
+"Charged_Spell_Cast": {"blend_time": 0.12, "release_normalized": 0.68, "role": "charged_spell", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"Charged_Upward_Slash": {"blend_time": 0.1, "release_normalized": 0.62, "role": "heavy_attack", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.15},
+"Chest_Pound_Taunt": {"blend_time": 0.15, "release_normalized": 0.55, "role": "taunt_buff", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.1},
+"Double_Combo_Attack": {"blend_time": 0.08, "release_normalized": 0.62, "role": "combo_two", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.1},
+"Draw_and_Shoot_from_Back_2": {"blend_time": 0.1, "release_normalized": 0.72, "role": "bow_draw_release", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.25},
+"Electrocution_Reaction": {"blend_time": 0.08, "release_normalized": 0.5, "role": "status_reaction", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.2},
+"Hit_Reaction_1": {"blend_time": 0.06, "release_normalized": 0.45, "role": "hit", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"Idle_11": {"blend_time": 0.18, "release_normalized": 0.5, "role": "idle", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"Left_Slash": {"blend_time": 0.08, "release_normalized": 0.58, "role": "slash", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.15},
+"Running": {"blend_time": 0.1, "release_normalized": 0.5, "role": "alternate_run", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"Simple_Kick": {"blend_time": 0.08, "release_normalized": 0.55, "role": "kick", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.1},
+"Sword_Judgment": {"blend_time": 0.1, "release_normalized": 0.7, "role": "ultimate", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.25},
+"Sword_Parry_Backward_2": {"blend_time": 0.06, "release_normalized": 0.42, "role": "guard_parry", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.0},
+"Triple_Combo_Attack": {"blend_time": 0.08, "release_normalized": 0.68, "role": "combo_three", "root_motion_policy": "LOCAL_XYZ_NEUTRALIZED", "speed_scale": 1.25},
+"Walking": {"blend_time": 0.12, "release_normalized": 0.5, "role": "walk", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0},
+"mage_soell_cast_7": {"blend_time": 0.1, "release_normalized": 0.62, "role": "spell_cast", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.1},
+"run_fast_3_inplace": {"blend_time": 0.1, "release_normalized": 0.5, "role": "run_fast", "root_motion_policy": "LOCAL_XZ_NEUTRALIZED", "speed_scale": 1.0}
+}
+equipment_enabled = false
+weapon_profile = null

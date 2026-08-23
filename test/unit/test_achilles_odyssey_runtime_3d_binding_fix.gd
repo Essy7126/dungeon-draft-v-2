@@ -9,14 +9,14 @@ const BACKEND_PATH := (
 )
 const VISUAL_PATH := "res://characters/achilles/3d/Achilles3DVisual.tscn"
 const PROFILE_PATH := (
-	"res://data/visuals/achilles/achilles_character_only_profile_v2.tres"
+	"res://data/visuals/achilles/achilles_meshy_profile_v3.tres"
 )
 const HUD_THEME_PATH := "res://data/ui/achilles_hud_theme_refined.tres"
 const PORTRAIT_PATH := (
 	"res://assets/characters/Achilles/processed/idle_00.png"
 )
 const GLB_INSPECTION_PATH := (
-	"res://assets/characters/Achilles/3d/character_glb_inspection.json"
+	"res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3_inspection.json"
 )
 const MISSING_CHARACTER_PATH := (
 	"res://assets/characters/Achilles/3d/__binding_fix_missing__.glb"
@@ -170,7 +170,7 @@ func test_skeleton_is_present() -> void:
 	var skeletons := visual.find_children("*", "Skeleton3D", true, false)
 	assert_eq(skeletons.size(), 1)
 	assert_not_null(visual.get_skeleton())
-	assert_eq(visual.get_skeleton().get_bone_count(), 52)
+	assert_eq(visual.get_skeleton().get_bone_count(), 24)
 
 
 func test_character_mesh_is_visible() -> void:
@@ -398,7 +398,10 @@ func test_no_weapon_asset_loaded() -> void:
 		]:
 			assert_false(token in lowered, dependency_path)
 	var inspection := _load_json(GLB_INSPECTION_PATH)
-	assert_eq(inspection.get("weapon_name_matches", []), [])
+	assert_eq(inspection.raw_glb.camera_count, 0)
+	assert_eq(inspection.raw_glb.light_count, 0)
+	assert_eq(inspection.raw_glb.mesh_count, 1)
+	assert_eq(inspection.reimport.object_names, ["Armature", "char1"])
 	var visual := adapter.viewport_backend.get_achilles_visual()
 	assert_not_null(visual)
 	assert_false(visual._contains_equipment_named_node())
@@ -416,8 +419,8 @@ func test_no_equipment_controller_instantiated() -> void:
 func test_no_weapon_child_under_hand() -> void:
 	var visual := _create_initialized_visual()
 	var skeleton := visual.get_skeleton()
-	assert_true(skeleton.find_bone("mixamorig_LeftHand") >= 0)
-	assert_true(skeleton.find_bone("mixamorig_RightHand") >= 0)
+	assert_true(skeleton.find_bone("LeftHand") >= 0)
+	assert_true(skeleton.find_bone("RightHand") >= 0)
 	assert_true(visual.find_children(
 		"*", "BoneAttachment3D", true, false
 	).is_empty())
@@ -517,7 +520,7 @@ func test_targeting_unchanged() -> void:
 
 
 func test_achilles_stats_unchanged() -> void:
-	# Presentation references intentionally evolved to V2; gameplay values are
+	# Presentation references intentionally evolved to V3; gameplay values are
 	# still the protected contract.
 	var data := load(ACHILLES_UNIT_PATH) as UnitData
 	assert_eq(data.max_hp, 110)
@@ -530,12 +533,12 @@ func test_achilles_stats_unchanged() -> void:
 	assert_not_null(data.animation_set)
 	assert_eq(
 		data.animation_set.resource_path,
-		"res://data/characters/achilles/animations.tres"
+		"res://data/characters/achilles/animations_meshy_v3.tres"
 	)
 	assert_not_null(data.preview_visual_scene)
 	assert_eq(
 		data.preview_visual_scene.resource_path,
-		"res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2.glb"
+		"res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb"
 	)
 
 
