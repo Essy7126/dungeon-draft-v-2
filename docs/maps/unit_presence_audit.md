@@ -45,9 +45,9 @@ La racine `UnitView`, sa scale 0,58 et le pied logique ne changent pas.
 | Elfe | 1,72 | 1,806 | 1,8576 | 1,892 |
 | Mage | 1,76 | 1,848 | 1,9008 | 1,936 |
 | Guerrier | 1,88 | 1,974 | 2,0 (cap) | 2,0 (cap) |
-| Achille | 1,72 | 1,806 | 1,8576 | 1,892 |
-| Squelettes standards | 1,72 | 1,806 | 1,8576 | 1,892 |
-| Squelettes élites | 1,72 | 1,806 | 1,8576 | 1,892 |
+| Achille | 1,58 | 1,659 | 1,7064 | 1,738 |
+| Squelettes standards | 1,58 | 1,659 | 1,7064 | 1,738 |
+| Squelettes élites | 1,58 | 1,659 | 1,7064 | 1,738 |
 
 Les identifiants runtime `odyssey_skirmisher`, `odyssey_guard` et
 `odyssey_champion` sont explicitement rattachés à ces familles. Les billboards

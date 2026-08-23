@@ -84,12 +84,12 @@ animation non affectée n’est pas supprimée du GLB.
 
 Le profil `res://data/maps/painted/unit_profile_achilles.tres` impose :
 
-- base : 1,72 ;
+- base : 1,58 ;
 - minimum : 1,50 ;
 - maximum : 1,90 ;
-- forêt : 1,806 ;
-- volcan : 1,8576 ;
-- espace : 1,892.
+- forêt : 1,659 ;
+- volcan : 1,7064 ;
+- espace : 1,738.
 
 Le profil V3 conserve une caméra orthographique 2,6 et emploie un billboard de
 96 pixels avant la mise à l'échelle peinte. Le calibrage est comparé aux vraies
@@ -123,8 +123,8 @@ de hanche important.
   1 102 assertions.
 - Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
-- Full-flow graphique post-calibrage : **PASS**, 3/3 salles et 13 captures sur
-  `d165b8023d08` ; hauteurs 111,97 / 111,92 / 117,30 px.
+- Full-flow graphique post-calibrage : **PASS**, 3/3 salles et 13 captures ;
+  hauteurs 102,86 / 104,94 / 107,76 px.
 
 La V3, sa cadence et ses proportions Achille/ennemis sont validées dans les
 trois salles.
