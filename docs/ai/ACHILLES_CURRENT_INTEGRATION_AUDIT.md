@@ -1,7 +1,7 @@
 # Achille — audit d’intégration Odyssée
 
 Date : 2026-08-23
-Statut : **WORKTREE_CANDIDATE — VISUAL_VALIDATION_PASS — PUBLICATION_PENDING**
+Statut : **CURRENT — VISUAL_VALIDATION_PASS**
 
 ## Verdict
 
@@ -11,9 +11,8 @@ modèle Meshy direct. Le même asset fournit un mesh skinné, un rig de 24 os et
 quatre capacités d’Achille ne changent pas.
 
 Les contrôles ciblés et de régression sont verts. Le full-flow graphique final
-des trois salles passe sur le commit d'implémentation `8bd5f73ef711`, avec 13
-captures inspectées. La V3 est validée visuellement comme candidat ; elle ne
-sera qualifiée de publiée qu'après intégration sur `origin/main`.
+des trois salles passe sur le commit d'implémentation `37c6f5f846fa`, avec 13
+captures inspectées. La V3 et son recalibrage sont validés visuellement.
 
 ## Source et contrat 3D
 
@@ -31,8 +30,9 @@ sera qualifiée de publiée qu'après intégration sur `origin/main`.
 ## Repos, locomotion et actions
 
 - Repos : `Idle_11` en boucle.
-- Marche : `Walking` pour un chemin de 1 à 5 cases.
-- Course : `run_fast_3_inplace` à partir de 6 cases.
+- Marche : `Walking` pour un chemin de 1 à 5 cases, vitesse de clip 75 % et
+  durée visuelle de 0,40 s par case.
+- Course : `run_fast_3_inplace` à partir de 6 cases, 0,20 s par case.
 - Impact : `Hit_Reaction_1`.
 - Lancement générique : `mage_soell_cast_7`.
 - Frappe de lance : `Left_Slash`.
@@ -46,7 +46,7 @@ la cellule de grille résolue.
 
 ## Présentation et dimensions
 
-- Le profil V3 emploie `render_display_size = 78.0` avec une caméra
+- Le profil V3 emploie `render_display_size = 96.0` avec une caméra
   orthographique 2,6. Le profil peint emploie `base_visual_scale = 1.0`, un
   minimum de 1,0 et un maximum de 1,15.
 - Les trois présentations produisent des échelles finales de 1,05 dans la
@@ -67,13 +67,12 @@ la cellule de grille résolue.
 
 ## Validation actuelle
 
-- Suite dédiée au runtime Meshy V3 : 4/4 tests, 38 assertions.
-- Calibration réelle : 5/5 tests, 218 assertions.
-- Régression élargie : 79/79 tests, 2 532 assertions.
+- Tests ciblés taille/locomotion : 23/23 tests, 350 assertions.
+- Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
 - Full-flow graphique final : **PASS**, 3/3 salles et 13/13 captures.
-- Revue des captures : **GO**. Hauteurs mesurées : 51,4 px dans la forêt,
-  54,4 px dans le volcan et 54,7 px dans l'espace.
+- Revue des captures : **GO**. Hauteurs mesurées : 65,1 px dans la forêt,
+  66,2 px dans le volcan et 68,2 px dans l'espace.
 - `Idle_11` reste actif après une boucle complète ; `Walking` est sélectionné
   jusqu'à 5 cases et `run_fast_3_inplace` à partir de 6 cases.
 
