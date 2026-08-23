@@ -75,7 +75,7 @@ la cellule de grille résolue.
 - Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
 - Full-flow graphique post-calibrage : **PASS**, 3/3 salles et 13/13 captures
-  sur `d387e4a87d95`.
+  sur `d165b8023d08`.
 - Hauteurs d'Achille mesurées : 111,97 px dans la forêt, 111,92 px dans le
   volcan et 117,30 px dans l'espace. Les trois familles ennemies restent à
   ±5 % dans la régression de proportions.

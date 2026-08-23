@@ -29,7 +29,7 @@
   La comparaison graphique instancie réellement les trois héros et les trois
   familles ennemies de production : Achille reste dans la bande du trio et les
   ennemis restent à ±5 % de sa hauteur rendue. Le full-flow trois salles passe
-  sur `d387e4a87d95` avec 13 captures ; Achille mesure
+  sur `d165b8023d08` avec 13 captures ; Achille mesure
   111,97 / 111,92 / 117,30 px dans les salles I / II / III.
 
 ## Achille — pool d’animations Meshy V3 (WORKTREE_CANDIDATE, 2026-08-23)

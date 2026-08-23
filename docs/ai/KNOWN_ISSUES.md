@@ -51,7 +51,7 @@
   Studio 19/19 (208 assertions) et binding SHA-exact 34/34 (643 assertions).
   La comparaison graphique relie les vrais identifiants Odyssée aux profils
   ennemis et maintient les trois familles à ±5 % de la hauteur rendue
-  d'Achille. Le full-flow post-calibrage passe sur `d387e4a87d95` avec
+  d'Achille. Le full-flow post-calibrage passe sur `d165b8023d08` avec
   13 captures ; Achille mesure 111,97 / 111,92 / 117,30 px.
 - Les runners graphiques peuvent encore signaler des ressources renderer ou
   `ObjectDB` à la fermeture, après le marqueur PASS et avec un code de sortie

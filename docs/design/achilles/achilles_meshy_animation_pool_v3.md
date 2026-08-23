@@ -124,7 +124,7 @@ de hanche important.
 - Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
 - Full-flow graphique post-calibrage : **PASS**, 3/3 salles et 13 captures sur
-  `d387e4a87d95` ; hauteurs 111,97 / 111,92 / 117,30 px.
+  `d165b8023d08` ; hauteurs 111,97 / 111,92 / 117,30 px.
 
 La V3, sa cadence et ses proportions Achille/ennemis sont validées dans les
 trois salles.
