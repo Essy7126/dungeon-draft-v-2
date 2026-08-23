@@ -173,7 +173,11 @@ func clear_selection() -> void:
 	queue_redraw()
 
 
-func highlight(cells: Array, color: Color) -> void:
+func highlight(
+	cells: Array,
+	color: Color,
+	_marker: StringName = &""
+	) -> void:
 	if grid == null:
 		return
 	for cell in cells:

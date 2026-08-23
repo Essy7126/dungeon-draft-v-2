@@ -75,6 +75,7 @@ var _combat_report_tracker := CombatReportTracker.new()
 var _last_combat_report: CombatReport = null
 var _room_combat_report: CombatReport = null
 var _post_combat_background_texture: Texture2D = null
+var _post_combat_background_captured_for_outcome := false
 var _post_combat_reward_service := PostCombatRewardService.new()
 var _equipment_reward_service := FirstRunEquipmentRewardService.new()
 var _pending_next_combat_shields: Dictionary = {}
@@ -91,6 +92,7 @@ var _maximum_waves_per_room := 1
 var _room_wave_counts := PackedInt32Array()
 var _room_exit_selected := false
 var _cleared_room_emitted := false
+var _reduced_motion_enabled := false
 
 # --- Signaux (pour que l'UI réagisse sans couplage direct) ---
 signal run_won
@@ -106,6 +108,7 @@ signal inventory_changed(snapshot)
 signal equipment_changed(result)
 signal item_granted(result)
 signal item_used(result)
+signal reduced_motion_changed(enabled: bool)
 
 
 func _ready() -> void:
@@ -330,6 +333,7 @@ func _initialize_run_state(run_data: RunData) -> void:
 	_last_combat_report = null
 	_room_combat_report = null
 	_post_combat_background_texture = null
+	_post_combat_background_captured_for_outcome = false
 	_post_combat_reward_service.reset()
 	_progression_service.reset_run()
 	_pending_next_combat_shields.clear()
@@ -372,6 +376,7 @@ func cleanup_run_state() -> void:
 	_last_combat_report = null
 	_room_combat_report = null
 	_post_combat_background_texture = null
+	_post_combat_background_captured_for_outcome = false
 	_post_combat_reward_service.reset()
 	_equipment_reward_service.reset()
 	_pending_next_combat_shields.clear()
@@ -486,6 +491,7 @@ func _ensure_persistent_run_ui() -> PersistentRunUI:
 		push_error("Impossible d'instancier l'interface persistante de run.")
 		return null
 	add_child(_persistent_run_ui)
+	_persistent_run_ui.set_reduced_motion(_reduced_motion_enabled)
 	return _persistent_run_ui
 
 
@@ -506,6 +512,19 @@ func has_persistent_run_ui() -> bool:
 
 func get_persistent_run_ui() -> PersistentRunUI:
 	return _persistent_run_ui if is_instance_valid(_persistent_run_ui) else null
+
+
+func set_reduced_motion_enabled(enabled: bool) -> void:
+	if _reduced_motion_enabled == enabled:
+		return
+	_reduced_motion_enabled = enabled
+	if is_instance_valid(_persistent_run_ui):
+		_persistent_run_ui.set_reduced_motion(enabled)
+	reduced_motion_changed.emit(enabled)
+
+
+func is_reduced_motion_enabled() -> bool:
+	return _reduced_motion_enabled
 
 
 func bind_combat_context(context: Node) -> CanvasLayer:
@@ -1148,6 +1167,8 @@ func begin_combat_report() -> CombatReport:
 	_progression_service.begin_combat()
 	var room := get_current_room()
 	_post_combat_transition_pending = false
+	_post_combat_background_texture = null
+	_post_combat_background_captured_for_outcome = false
 	return _combat_report_tracker.begin(
 		get_ordered_character_states(),
 		current_room_index,
@@ -1268,6 +1289,17 @@ func get_equipment_reward_deck_snapshot() -> Dictionary:
 
 func get_post_combat_background_texture() -> Texture2D:
 	return _post_combat_background_texture
+
+
+func get_battle_outcome_transition_snapshot() -> Dictionary:
+	return {
+		"outcome_pending": _battle_outcome_pending,
+		"outcome_generation": _battle_outcome_generation,
+		"room_outcome_resolved": _room_outcome_resolved,
+		"background_captured": _post_combat_background_captured_for_outcome,
+		"background_ready": _post_combat_background_texture != null,
+		"post_combat_transition_pending": _post_combat_transition_pending,
+	}
 
 
 func get_equipment_reward_comparison(
@@ -1430,17 +1462,27 @@ func _complete_battle_outcome_after_delay(
 		on_battle_lost()
 
 # Appelé par battle quand le joueur GAGNE le combat.
-func _capture_post_combat_background() -> void:
+func capture_battle_outcome_background() -> bool:
+	if _post_combat_background_captured_for_outcome:
+		return _post_combat_background_texture != null
+	if not run_active:
+		return false
+	_post_combat_background_captured_for_outcome = _capture_post_combat_background()
+	return _post_combat_background_captured_for_outcome
+
+
+func _capture_post_combat_background() -> bool:
 	_post_combat_background_texture = null
 	if not is_inside_tree() or get_viewport() == null:
-		return
+		return false
 	var viewport_texture := get_viewport().get_texture()
 	if viewport_texture == null:
-		return
+		return false
 	var image := viewport_texture.get_image()
 	if image == null or image.is_empty():
-		return
+		return false
 	_post_combat_background_texture = ImageTexture.create_from_image(image)
+	return _post_combat_background_texture != null
 
 
 func on_battle_won() -> void:
@@ -1455,7 +1497,7 @@ func on_battle_won() -> void:
 		current_wave_index = 0
 	_room_outcome_resolved = true
 	_room_exit_selected = false
-	_capture_post_combat_background()
+	capture_battle_outcome_background()
 	_last_combat_report = _finalize_current_combat_report(true)
 	wave_cleared.emit(
 		current_room_index,

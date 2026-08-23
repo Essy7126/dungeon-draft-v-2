@@ -48,6 +48,7 @@ class RunnerBattleSpy extends Node:
 	var grid_view := Node2D.new()
 	var _unit_views := {}
 	var _battle_over := false
+	var _action_sequence := 0
 
 	func _init() -> void:
 		add_child(grid_view)
@@ -61,6 +62,10 @@ class RunnerBattleSpy extends Node:
 		var tree := get_tree()
 		if tree != null:
 			await tree.process_frame
+
+	func _next_action_id(kind: StringName) -> StringName:
+		_action_sequence += 1
+		return StringName("%s_%06d" % [kind, _action_sequence])
 
 
 func _make_controlled_view(unit: Unit, parent: Node = self) -> Dictionary:
@@ -310,7 +315,9 @@ func test_async_sources_use_guarded_scene_tree_waits() -> void:
 	assert_false("await get_tree().create_timer" in runner_source)
 	assert_true("GameManager.schedule_battle_outcome" in battle_source)
 	assert_false('"VICTOIRE !"' in battle_source)
-	assert_true("func _show_end_screen(victory: bool) -> void:\n\tif victory:\n\t\treturn" in battle_source)
+	assert_true("func _queue_local_battle_outcome_presentation" in battle_source)
+	assert_true("RenderingServer.frame_post_draw.connect" in battle_source)
+	assert_true("func _show_end_screen(victory: bool) -> void:" in battle_source)
 	var end_section := battle_source.substr(battle_source.find("func _end_battle"))
 	end_section = end_section.substr(0, end_section.find("func _show_end_screen"))
 	assert_false("await " in end_section)

@@ -140,6 +140,7 @@ var _item_buttons: Array = []
 var _presentation_snapshot: Dictionary = {}
 var _last_feedback_text := ""
 var _feedback_tween: Tween = null
+var _reduced_motion := false
 
 
 func _ready() -> void:
@@ -167,16 +168,20 @@ func _ready() -> void:
 	if not get_viewport().size_changed.is_connected(_apply_layout_metrics):
 		get_viewport().size_changed.connect(_apply_layout_metrics)
 	_move_btn.tooltip_text = "Déplacer — choisissez une case accessible (coût en PM)."
+	_move_btn.shortcut = _shortcut_for_key(KEY_M)
+	_move_btn.shortcut_in_tooltip = true
+	_attack_btn.shortcut = _shortcut_for_key(KEY_A)
+	_attack_btn.shortcut_in_tooltip = true
+	_end_btn.shortcut = _shortcut_for_key(KEY_F)
+	_end_btn.shortcut_in_tooltip = true
 	_move_btn.pressed.connect(func() -> void: move_pressed.emit())
 	_attack_btn.pressed.connect(func() -> void: attack_pressed.emit())
 	_end_btn.pressed.connect(func() -> void: end_turn_pressed.emit())
 	_inventory_button.pressed.connect(_on_inventory_button_pressed)
+	_inventory_button.shortcut = _shortcut_for_key(KEY_I)
+	_inventory_button.shortcut_in_tooltip = true
 	_skills_button.pressed.connect(_on_skills_button_pressed)
-	var skills_shortcut := Shortcut.new()
-	var skills_key := InputEventKey.new()
-	skills_key.physical_keycode = KEY_K
-	skills_shortcut.events = [skills_key]
-	_skills_button.shortcut = skills_shortcut
+	_skills_button.shortcut = _shortcut_for_key(KEY_K)
 	_skills_button.shortcut_in_tooltip = true
 	_show_spells_button.pressed.connect(
 		func() -> void: _set_active_bar_mode(BAR_MODE_SPELL)
@@ -656,6 +661,15 @@ func set_active_mode(mode: String, active_spell = null) -> void:
 	_refresh_button_states()
 
 
+func set_player_controls_enabled(enabled: bool) -> void:
+	super.set_player_controls_enabled(enabled)
+	if not enabled or _ui_mode != RunUIMode.COMBAT or not is_node_ready():
+		return
+	var focus_owner := get_viewport().gui_get_focus_owner()
+	if focus_owner == null:
+		_move_btn.grab_focus.call_deferred()
+
+
 func apply_presentation_snapshot(snapshot: Dictionary) -> void:
 	_presentation_snapshot = snapshot.duplicate(true)
 	set_player_controls_enabled(
@@ -723,6 +737,12 @@ func show_context_feedback(
 	)
 	_context_feedback.modulate.a = 0.0
 	_context_feedback.show()
+	if _reduced_motion:
+		_context_feedback.modulate.a = 1.0
+		_feedback_tween = create_tween()
+		_feedback_tween.tween_interval(1.15)
+		_feedback_tween.tween_callback(_context_feedback.hide)
+		return
 	_feedback_tween = create_tween()
 	_feedback_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_feedback_tween.tween_property(_context_feedback, "modulate:a", 1.0, 0.12)
@@ -756,6 +776,16 @@ func get_active_character_theme() -> CharacterHUDThemeData:
 
 func get_turn_intro_banner() -> CharacterTurnIntroBanner:
 	return _turn_intro_banner
+
+
+func set_reduced_motion(enabled: bool) -> void:
+	_reduced_motion = enabled
+	if is_instance_valid(_turn_intro_banner):
+		_turn_intro_banner.set_reduced_motion(enabled)
+
+
+func is_reduced_motion_enabled() -> bool:
+	return _reduced_motion
 
 
 func _resolve_character_theme(unit) -> CharacterHUDThemeData:

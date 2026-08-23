@@ -75,9 +75,12 @@ var _transition_requested := false
 var _final_room := false
 var _decision_snapshot: Dictionary = {}
 var _room_completed := false
+var _reduced_motion := false
 
 
 func _ready() -> void:
+	_reduced_motion = GameManager.is_reduced_motion_enabled()
+	reward_overlay.set_reduced_motion(_reduced_motion)
 	continue_button.pressed.connect(advance_or_skip)
 	leave_room_button.pressed.connect(choose_leave_room)
 	push_wave_button.pressed.connect(choose_continue_room)
@@ -161,7 +164,7 @@ func choose_continue_room() -> bool:
 		transition_layer,
 		"modulate:a",
 		1.0,
-		transition_duration,
+		_motion_duration(transition_duration),
 	)
 	await _current_tween.finished
 	if GameManager.continue_current_room_combat(report.report_id):
@@ -525,6 +528,12 @@ func _start_victory_reveal() -> void:
 	victory_title.scale = Vector2(0.82, 0.82)
 	victory_title.pivot_offset = victory_title.size * 0.5
 	AudioManager.play_sfx(PRESENTATION_IMPACT_SFX, -5.0)
+	if _reduced_motion:
+		victory_title.modulate.a = 1.0
+		victory_title.scale = Vector2.ONE
+		_animation_active = false
+		continue_button.grab_focus.call_deferred()
+		return
 	_animation_active = true
 	_current_tween = create_tween().set_parallel(true)
 	_current_tween.tween_property(
@@ -553,6 +562,11 @@ func _start_stats_reveal() -> void:
 	continue_button.text = "VOIR LA PROGRESSION"
 	continue_button.disabled = false
 	stats_cards.modulate.a = 0.0
+	if _reduced_motion:
+		stats_cards.modulate.a = 1.0
+		_animation_active = false
+		continue_button.grab_focus.call_deferred()
+		return
 	_animation_active = true
 	_current_tween = create_tween()
 	_current_tween.tween_property(
@@ -594,6 +608,12 @@ func _start_progression_reveal() -> void:
 			)
 	continue_button.disabled = false
 	_prepare_progression_initial_values()
+	if _reduced_motion:
+		for row in _progress_rows:
+			_set_progress_row_final(row)
+		_animation_active = false
+		continue_button.grab_focus.call_deferred()
+		return
 	_animation_active = true
 	_animate_progression(_sequence_generation)
 
@@ -682,7 +702,7 @@ func _begin_transition() -> void:
 		transition_layer,
 		"modulate:a",
 		1.0,
-		transition_duration,
+		_motion_duration(transition_duration),
 	)
 	await _current_tween.finished
 	if not GameManager.complete_post_combat_transition(report.report_id):
@@ -692,6 +712,10 @@ func _begin_transition() -> void:
 		continue_button.disabled = false
 		reward_error.text = "La transition a été refusée. La récompense reste enregistrée."
 		reward_error.show()
+
+
+func _motion_duration(duration: float) -> float:
+	return minf(duration, 0.05) if _reduced_motion else duration
 
 
 func _show_reward_access_error() -> void:

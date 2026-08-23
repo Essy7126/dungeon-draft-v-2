@@ -7,6 +7,7 @@ const MODAL_INVENTORY: StringName = &"inventory"
 const MODAL_PAUSE: StringName = &"pause"
 const MODAL_SKILL_TREE: StringName = &"skill_tree"
 const MODAL_EVOLUTION: StringName = &"evolution"
+const COMBAT_HUD_PORT := preload("res://ui/combat/combat_hud_port.gd")
 
 enum RunUIMode {
 	COMBAT,
@@ -45,10 +46,12 @@ var _active_evolution_request: EvolutionRequest = null
 var _active_evolution_request_id: StringName = &""
 var _active_evolution_upgrade_id: StringName = &""
 var _modal_coordinator := CombatModalCoordinator.new()
+var _hud_port = null
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_hud_port = COMBAT_HUD_PORT.new(combat_hud)
 	_modal_coordinator.active_modal_changed.connect(
 		_on_active_modal_changed
 	)
@@ -80,6 +83,10 @@ func _ready() -> void:
 	pause_menu.return_to_title_requested.connect(
 		_on_pause_return_to_title_requested
 	)
+	pause_menu.reduced_motion_changed.connect(
+		_on_reduced_motion_changed
+	)
+	set_reduced_motion(GameManager.is_reduced_motion_enabled())
 	set_ui_mode(_ui_mode)
 
 
@@ -88,13 +95,16 @@ func _exit_tree() -> void:
 	close_inventory_screen()
 	close_pause_menu()
 	_modal_coordinator.clear()
+	if _hud_port != null:
+		_hud_port.detach()
+		_hud_port = null
 
 
 func bind_combat_context(context: Node) -> CanvasLayer:
 	if context == null:
 		unbind_combat_context()
 		return null
-	combat_hud.bind_combat_context(context)
+	_hud_port.bind_context(context)
 	set_ui_mode(RunUIMode.COMBAT)
 	skill_tree_status_button.refresh_from_state()
 	return combat_hud
@@ -105,18 +115,50 @@ func unbind_combat_context(expected_context: Node = null) -> void:
 		return
 	if (
 		expected_context != null
-		and combat_hud.get_combat_context() != expected_context
+		and _hud_port.get_bound_context() != expected_context
 	):
 		return
-	combat_hud.unbind_combat_context()
+	_hud_port.unbind_context()
 	set_ui_mode(RunUIMode.TRANSITION)
 
 
 func refresh_from_context() -> void:
-	if is_instance_valid(combat_hud):
-		combat_hud.refresh_from_context()
+	if _hud_port != null:
+		_hud_port.refresh_from_context()
 	if is_instance_valid(skill_tree_status_button):
 		skill_tree_status_button.refresh_from_state()
+
+
+func get_combat_hud_lifecycle_snapshot() -> Dictionary:
+	if _hud_port == null:
+		return {
+			"hud_attached": false,
+			"contract_valid": false,
+			"intent_connection_count": 0,
+			"connected_context_id": 0,
+			"bound_context_id": 0,
+			"ui_mode": _ui_mode,
+		}
+	var snapshot: Dictionary = _hud_port.get_lifecycle_snapshot()
+	snapshot["ui_mode"] = _ui_mode
+	return snapshot
+
+
+func set_reduced_motion(enabled: bool) -> void:
+	if _hud_port != null:
+		_hud_port.set_reduced_motion(enabled)
+		var context = _hud_port.get_bound_context()
+		if is_instance_valid(context) and context.has_method("set_reduced_motion"):
+			context.set_reduced_motion(enabled)
+	if is_instance_valid(skill_evolution_overlay):
+		skill_evolution_overlay.reduced_motion = enabled
+	if is_instance_valid(pause_menu):
+		pause_menu.set_reduced_motion(enabled)
+
+
+func _on_reduced_motion_changed(enabled: bool) -> void:
+	set_reduced_motion(enabled)
+	GameManager.set_reduced_motion_enabled(enabled)
 
 
 func set_ui_mode(mode: RunUIMode) -> void:
@@ -135,8 +177,8 @@ func set_ui_mode(mode: RunUIMode) -> void:
 		_evolution_screen_active = false
 	if is_instance_valid(evolution_feedback) and mode != RunUIMode.COMBAT:
 		evolution_feedback.hide()
-	if is_instance_valid(combat_hud):
-		combat_hud.set_ui_mode(mode)
+	if _hud_port != null:
+		_hud_port.set_ui_mode(mode)
 	if is_instance_valid(contextual_ui_layer):
 		contextual_ui_layer.visible = mode == RunUIMode.NON_COMBAT
 	if is_instance_valid(overlay_layer):
@@ -199,8 +241,8 @@ func _on_active_modal_changed(
 	) -> void:
 	var blocked := current != &""
 	var context = (
-		combat_hud.get_combat_context()
-		if is_instance_valid(combat_hud)
+		_hud_port.get_bound_context()
+		if _hud_port != null
 		else null
 	)
 	if is_instance_valid(context) and context.has_method(
@@ -222,9 +264,9 @@ func _set_tooltips_modal_blocked(blocked: bool) -> void:
 
 
 func _combat_context_allows_run_modal() -> bool:
-	if not is_instance_valid(combat_hud):
+	if _hud_port == null:
 		return true
-	var context = combat_hud.get_combat_context()
+	var context = _hud_port.get_bound_context()
 	if not is_instance_valid(context) \
 			or not context.has_method("get_combat_presentation_snapshot"):
 		return true
@@ -249,9 +291,9 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 		or (is_instance_valid(skill_tree_screen) and skill_tree_screen.visible) \
 		or not _combat_context_allows_run_modal():
 		return false
-	_combat_controls_before_inventory = bool(
-		combat_hud.get("_player_controls_enabled")
-	) if is_instance_valid(combat_hud) else false
+	_combat_controls_before_inventory = (
+		_hud_port.are_controls_enabled() if _hud_port != null else false
+	)
 	if not _claim_modal(MODAL_INVENTORY):
 		_combat_controls_before_inventory = false
 		return false
@@ -264,13 +306,11 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 			_release_modal(MODAL_INVENTORY)
 			return false
 		wanted_id = states[0].character_id
-	if is_instance_valid(combat_hud):
-		combat_hud.set_player_controls_enabled(false)
+	if _hud_port != null:
+		_hud_port.set_controls_enabled(false)
 	if not inventory_screen.open_for_character(wanted_id, GameManager):
-		if is_instance_valid(combat_hud):
-			combat_hud.set_player_controls_enabled(
-				_combat_controls_before_inventory
-			)
+		if _hud_port != null:
+			_hud_port.set_controls_enabled(_combat_controls_before_inventory)
 		_combat_controls_before_inventory = false
 		_release_modal(MODAL_INVENTORY)
 		return false
@@ -302,16 +342,16 @@ func open_pause_menu() -> bool:
 		or not _combat_context_allows_run_modal()
 	):
 		return false
-	_combat_controls_before_pause = bool(
-		combat_hud.get("_player_controls_enabled")
-	) if is_instance_valid(combat_hud) else false
+	_combat_controls_before_pause = (
+		_hud_port.are_controls_enabled() if _hud_port != null else false
+	)
 	if not _claim_modal(MODAL_PAUSE):
 		_combat_controls_before_pause = false
 		return false
 	_tree_was_paused_before_menu = get_tree().paused
 	_owns_tree_pause = true
-	if is_instance_valid(combat_hud):
-		combat_hud.set_player_controls_enabled(false)
+	if _hud_port != null:
+		_hud_port.set_controls_enabled(false)
 	pause_menu.open_menu()
 	get_tree().paused = true
 	return true
@@ -329,12 +369,10 @@ func close_pause_menu() -> bool:
 	if (
 		was_open
 		and _ui_mode == RunUIMode.COMBAT
-		and is_instance_valid(combat_hud)
-		and is_instance_valid(combat_hud.get_combat_context())
+		and _hud_port != null
+		and is_instance_valid(_hud_port.get_bound_context())
 	):
-		combat_hud.set_player_controls_enabled(
-			_combat_controls_before_pause
-		)
+		_hud_port.set_controls_enabled(_combat_controls_before_pause)
 	_combat_controls_before_pause = false
 	_release_modal(MODAL_PAUSE)
 	return was_open
@@ -358,8 +396,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	):
 		return
 	var context = (
-		combat_hud.get_combat_context()
-		if is_instance_valid(combat_hud)
+		_hud_port.get_bound_context()
+		if _hud_port != null
 		else null
 	)
 	if is_instance_valid(context) \
@@ -386,21 +424,17 @@ func _on_skill_tree_requested(
 		or _evolution_screen_active \
 		or not _combat_context_allows_run_modal():
 		return
-	_combat_controls_before_skill_tree = bool(
-		combat_hud.get("_player_controls_enabled")
-	)
+	_combat_controls_before_skill_tree = _hud_port.are_controls_enabled()
 	if not _claim_modal(MODAL_SKILL_TREE):
 		_combat_controls_before_skill_tree = false
 		return
-	combat_hud.set_player_controls_enabled(false)
+	_hud_port.set_controls_enabled(false)
 	if not skill_tree_screen.open_for_character(
 			character_id,
 			GameManager,
 			discipline_id
 		):
-		combat_hud.set_player_controls_enabled(
-			_combat_controls_before_skill_tree
-		)
+		_hud_port.set_controls_enabled(_combat_controls_before_skill_tree)
 		_release_modal(MODAL_SKILL_TREE)
 
 
@@ -409,12 +443,10 @@ func _on_skill_tree_screen_closed() -> void:
 		return
 	if (
 		_ui_mode == RunUIMode.COMBAT
-		and is_instance_valid(combat_hud)
-		and is_instance_valid(combat_hud.get_combat_context())
+		and _hud_port != null
+		and is_instance_valid(_hud_port.get_bound_context())
 	):
-		combat_hud.set_player_controls_enabled(
-			_combat_controls_before_skill_tree
-		)
+		_hud_port.set_controls_enabled(_combat_controls_before_skill_tree)
 	_combat_controls_before_skill_tree = false
 	_release_modal(MODAL_SKILL_TREE)
 
@@ -437,12 +469,10 @@ func _on_pause_equipment_requested() -> void:
 func _on_inventory_screen_closed() -> void:
 	if (
 		_ui_mode == RunUIMode.COMBAT
-		and is_instance_valid(combat_hud)
-		and is_instance_valid(combat_hud.get_combat_context())
+		and _hud_port != null
+		and is_instance_valid(_hud_port.get_bound_context())
 	):
-		combat_hud.set_player_controls_enabled(
-			_combat_controls_before_inventory
-		)
+		_hud_port.set_controls_enabled(_combat_controls_before_inventory)
 	_combat_controls_before_inventory = false
 	_release_modal(MODAL_INVENTORY)
 
@@ -463,15 +493,20 @@ func open_evolution_request(request: EvolutionRequest) -> bool:
 	_active_evolution_request = request
 	_active_evolution_request_id = request.request_id
 	_active_evolution_upgrade_id = &""
-	if is_instance_valid(combat_hud):
-		combat_hud.set_player_controls_enabled(false)
+	if _hud_port != null:
+		_hud_port.set_controls_enabled(false)
 	_begin_evolution_pause()
 	_show_evolution_feedback(request)
 	var tree := get_tree()
 	if tree == null:
 		_close_evolution_overlay_for_cleanup()
 		return false
-	await tree.create_timer(maxf(evolution_feedback_duration, 0.001)).timeout
+	var feedback_duration := (
+		0.05
+		if GameManager.is_reduced_motion_enabled()
+		else evolution_feedback_duration
+	)
+	await tree.create_timer(maxf(feedback_duration, 0.001)).timeout
 	if not is_inside_tree() or _ui_mode != RunUIMode.COMBAT:
 		_close_evolution_overlay_for_cleanup()
 		return false

@@ -18,6 +18,7 @@ var _active_tween: Tween
 var _rest_position := Vector2.ZERO
 var _last_unit_id := StringName()
 var _last_presented_frame := -1
+var _reduced_motion := false
 
 
 func _ready() -> void:
@@ -101,10 +102,18 @@ func _present_unit(
 	if _active_tween != null and _active_tween.is_valid():
 		_active_tween.kill()
 	_apply_responsive_layout()
-	presentation.position = _rest_position + Vector2(0.0, -28.0)
-	presentation.modulate.a = 0.0
+	presentation.position = (
+		_rest_position
+		if _reduced_motion
+		else _rest_position + Vector2(0.0, -28.0)
+	)
+	presentation.modulate.a = 1.0 if _reduced_motion else 0.0
 	visible = true
 	_active_tween = create_tween()
+	if _reduced_motion:
+		_active_tween.tween_interval(0.72)
+		_active_tween.tween_callback(_finish_presentation)
+		return true
 	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_active_tween.tween_property(
 		presentation, "modulate:a", 1.0, ENTER_DURATION
@@ -134,7 +143,23 @@ func hide_immediately() -> void:
 
 
 func total_animation_duration() -> float:
-	return ENTER_DURATION + HOLD_DURATION + EXIT_DURATION
+	return 0.72 if _reduced_motion else ENTER_DURATION + HOLD_DURATION + EXIT_DURATION
+
+
+func set_reduced_motion(enabled: bool) -> void:
+	_reduced_motion = enabled
+	if enabled and visible:
+		if _active_tween != null and _active_tween.is_valid():
+			_active_tween.kill()
+		presentation.position = _rest_position
+		presentation.modulate.a = 1.0
+		_active_tween = create_tween()
+		_active_tween.tween_interval(0.72)
+		_active_tween.tween_callback(_finish_presentation)
+
+
+func is_reduced_motion_enabled() -> bool:
+	return _reduced_motion
 
 
 func get_presentation_size() -> Vector2:
