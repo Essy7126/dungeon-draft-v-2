@@ -1,6 +1,9 @@
 class_name ElfVisual3D
 extends CharacterVisual3D
 
+const DEFAULT_ANIMATION_SET: CharacterAnimationSetData = preload(
+	"res://data/characters/elf/animations.tres"
+)
 const ANIM_IDLE: StringName = &"Elf_Idle"
 const ANIM_WALK: StringName = &"Elf_Walk"
 const ANIM_RUN: StringName = &"Elf_Run"
@@ -35,15 +38,7 @@ var bow_shot_release_normalized_time := 0.60
 
 func _init() -> void:
 	model_root_path = NodePath("ModelPivot/ElfModel")
-	animation_idle = ANIM_IDLE
-	animation_walk = ANIM_WALK
-	animation_run = ANIM_RUN
-	animation_cast = ANIM_CAST_FULL
-	animation_cast_start = ANIM_CAST_START
-	animation_cast_hold = ANIM_CAST_HOLD
-	animation_cast_end = ANIM_CAST_END
-	animation_hit = ANIM_HIT
-	animation_death = ANIM_DEATH
+	default_animation_set = DEFAULT_ANIMATION_SET
 	cast_release_time_seconds = -1.0
 	cast_release_normalized_time = 0.32
 	left_mount_node_name = &"WeaponMountLeft"

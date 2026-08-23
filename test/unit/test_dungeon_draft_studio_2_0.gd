@@ -50,6 +50,27 @@ func test_context_snapshot_contains_run_room_hero_scope_paths_and_generations() 
 	assert_gt(int((snapshot.generations as Dictionary).get(&"context", 0)), 0)
 
 
+func test_context_is_the_authority_for_a_character_outside_the_active_run() -> void:
+	var context := StudioProjectContext.new()
+	assert_true(context.initialize("", &"mage").ok)
+	var outside_path := "res://data/units/ennemie/skeleton_melee.tres"
+	var changed_to: Array[UnitData] = []
+	context.character_changed.connect(func(character: UnitData):
+		changed_to.append(character)
+	)
+	var selected := context.request_character(outside_path, &"skills")
+	assert_true(selected.ok, str(selected))
+	assert_not_null(context.active_character)
+	assert_eq(context.active_character.resource_path, outside_path)
+	assert_null(context.active_hero, "un personnage hors partie ne prétend pas être le héros du run")
+	assert_eq(str(context.snapshot().character_path), outside_path)
+	assert_eq(changed_to[-1], context.active_character)
+	var back_to_run := context.request_hero(&"mage", &"context_bar")
+	assert_true(back_to_run.ok, str(back_to_run))
+	assert_not_null(context.active_hero)
+	assert_eq(context.active_character, context.active_hero.base_unit_data)
+
+
 func test_reference_graph_indexes_cross_domain_usages_and_cache_generation() -> void:
 	var graph := StudioReferenceGraphService.new()
 	var first := graph.scan(true)

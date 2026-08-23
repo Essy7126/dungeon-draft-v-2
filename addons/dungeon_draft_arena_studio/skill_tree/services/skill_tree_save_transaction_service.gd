@@ -252,6 +252,16 @@ static func save(
 			"FINAL_RELOAD", "Le rechargement final du document a échoué.",
 			plan, recovery_dir, backup_report, created_paths
 		)
+	if session.current_fingerprint() != plan.working_fingerprint:
+		var final_verification := _rollback_failure(
+			"FINAL_VERIFY",
+			"Le document canonique relu ne correspond pas au document sauvegarde.",
+			plan, recovery_dir, backup_report, created_paths
+		)
+		# Le rollback a restaure les fichiers d'origine : la session ne doit pas
+		# conserver en memoire la version incoherente qui vient d'etre relue.
+		session.reopen_from_disk()
+		return final_verification
 	SkillTreeDraftService.clear_for_source(plan.source_character_path)
 	_write_json(
 		recovery_dir.path_join("manifest.json"),

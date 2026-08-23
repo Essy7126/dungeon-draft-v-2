@@ -1,6 +1,9 @@
 class_name SnowCenturionVisual3D
 extends CharacterVisual3D
 
+const DEFAULT_ANIMATION_SET: CharacterAnimationSetData = preload(
+	"res://data/characters/skeleton_snow_centurion/animations.tres"
+)
 const ANIM_IDLE: StringName = &"DD_SnowCenturion_Idle"
 const ANIM_WALK: StringName = &"DD_SnowCenturion_Walk"
 const ANIM_RUN: StringName = &"DD_SnowCenturion_Run"
@@ -29,12 +32,7 @@ const IMPORTED_ANIMATIONS: Array[StringName] = [
 
 func _init() -> void:
 	model_root_path = NodePath("ModelPivot/SnowCenturionModel")
-	animation_idle = ANIM_IDLE
-	animation_walk = ANIM_WALK
-	animation_run = ANIM_RUN
-	animation_cast = ANIM_ATTACK
-	animation_hit = ANIM_HIT
-	animation_death = ANIM_DEATH
+	default_animation_set = DEFAULT_ANIMATION_SET
 	left_mount_node_name = &"EffectOriginLeft"
 	right_mount_node_name = &"EffectOriginRight"
 	cast_release_time_seconds = -1.0

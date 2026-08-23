@@ -1,6 +1,9 @@
 class_name MageVisual3D
 extends CharacterVisual3D
 
+const DEFAULT_ANIMATION_SET: CharacterAnimationSetData = preload(
+	"res://data/characters/mage/animations.tres"
+)
 const ANIM_IDLE: StringName = &"DD_Mage_Idle"
 const ANIM_WALK: StringName = &"DD_Mage_Walk"
 const ANIM_RUN: StringName = &"DD_Mage_Run"
@@ -21,12 +24,7 @@ const IMPORTED_ANIMATIONS: Array[StringName] = [
 
 func _init() -> void:
 	model_root_path = NodePath("ModelPivot/MageModel")
-	animation_idle = ANIM_IDLE
-	animation_walk = ANIM_WALK
-	animation_run = ANIM_RUN
-	animation_cast = ANIM_CAST
-	animation_hit = ANIM_HIT
-	animation_death = ANIM_DEATH
+	default_animation_set = DEFAULT_ANIMATION_SET
 	cast_release_time_seconds = CAST_RELEASE_TIME
 	left_mount_node_name = &"CastSupportMount"
 	right_mount_node_name = &"ProjectileMount"

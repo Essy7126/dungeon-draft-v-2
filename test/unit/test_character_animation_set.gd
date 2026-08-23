@@ -1,8 +1,8 @@
 extends GutTest
 
-# Contrat de la fiche d'animations : elle déplace l'information de la où elle
-# était (les constantes des scripts visuels) vers un fichier éditable, SANS
-# changer ce que le joueur voit.
+# Contrat de la fiche d'animations : la Resource est l'autorité de la table
+# événement -> clip. Les scripts visuels ne font que la référencer et gardent
+# leurs constantes de clips pour leurs comportements spécialisés.
 
 const MAGE_PATH := "res://data/units/alliés/mage.tres"
 const WARRIOR_PATH := "res://data/units/alliés/Guerrier.tres"
@@ -64,7 +64,7 @@ func test_names_with_never_mutates_the_stored_dictionary() -> void:
 # Le repli : sans fiche, rien ne change
 # ============================================================
 
-func test_missing_set_or_entry_keeps_the_scripted_default() -> void:
+func test_missing_override_or_entry_keeps_the_resource_backed_default() -> void:
 	var visual := (load(HEROES[MAGE_PATH]) as PackedScene).instantiate() as CharacterVisual3D
 	add_child_autofree(visual)
 	var before := visual.animation_idle
@@ -94,12 +94,17 @@ func test_every_declared_event_can_be_read_and_written_by_id() -> void:
 # La migration des trois héros : aucun changement visible en jeu
 # ============================================================
 
-func test_the_three_heroes_carry_a_set_matching_their_scripted_clips() -> void:
+func test_the_three_heroes_share_their_set_with_the_visual_default() -> void:
 	for unit_path in HEROES:
 		var unit := load(unit_path) as UnitData
 		assert_not_null(unit.animation_set, "fiche présente : %s" % unit_path)
 		var visual := (load(HEROES[unit_path]) as PackedScene).instantiate() as CharacterVisual3D
 		add_child_autofree(visual)
+		assert_same(
+			visual.default_animation_set,
+			unit.animation_set,
+			"la scène et UnitData référencent une seule autorité : %s" % unit_path
+		)
 		var defaults := {}
 		for action in CharacterVisual3D.ACTION_ORDER:
 			defaults[action] = visual.get_animation_name_for_action(action)
@@ -223,6 +228,58 @@ func test_studio_plans_to_write_the_set_file() -> void:
 		Array(planned).has("res://data/characters/mage/animations.tres"),
 		"la fiche figure au plan de sauvegarde : %s" % str(planned)
 	)
+	session.release_document(false)
+
+
+func test_reference_index_and_property_audit_include_the_animation_set() -> void:
+	var unit := load(MAGE_PATH) as UnitData
+	var index := SkillTreeReferenceIndex.new().build(unit)
+	assert_true(index.resources.has(unit.animation_set))
+	assert_true(index.incoming_to_resource(unit.animation_set).any(
+		func(reference: Dictionary):
+			return reference.get("owner") == unit \
+				and reference.get("property") == &"animation_set"
+	))
+	var audit := SkillTreePropertyRegistry.audit(unit)
+	assert_true((audit.get("editable", []) as Array).any(
+		func(record: Dictionary):
+			return record.get("resource") == unit.animation_set \
+				and record.get("property") == &"animation_names"
+	))
+
+
+func test_run_session_plans_new_set_and_canonical_base_unit_together() -> void:
+	var run_data: RunData = null
+	var hero: RunHeroProfile = null
+	for candidate in RunContentCatalogService.discover_runs():
+		for candidate_hero in RunContentCatalogService.heroes_for_run(candidate):
+			if candidate_hero != null and candidate_hero.character_id == &"achilles":
+				run_data = candidate
+				hero = candidate_hero
+				break
+		if hero != null:
+			break
+	assert_not_null(run_data)
+	assert_not_null(hero)
+	assert_null(hero.base_unit_data.animation_set)
+	var session := SkillTreeEditSession.new()
+	assert_true(session.open_progression(run_data, hero))
+	assert_true(session.set_animation_clip(&"idle", &"Achilles_Idle", "Repos"))
+	assert_same(
+		session.working_character_unit.animation_set,
+		session.working_unit.animation_set
+	)
+	var plan := SkillTreeSaveTransactionService.build_plan(session)
+	var planned_paths := PackedStringArray()
+	var canonical_unit_update := false
+	for entry in plan.writable_entries():
+		planned_paths.append(entry.target_path)
+		if entry.resource is UnitData:
+			canonical_unit_update = entry.target_path == hero.base_unit_data.resource_path
+	assert_true(canonical_unit_update, "le UnitData canonique rattache la nouvelle fiche")
+	assert_true(Array(planned_paths).has(
+		"res://data/characters/achilles/animations.tres"
+	))
 	session.release_document(false)
 
 

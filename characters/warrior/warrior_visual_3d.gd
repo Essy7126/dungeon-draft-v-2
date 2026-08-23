@@ -1,6 +1,9 @@
 class_name WarriorVisual3D
 extends CharacterVisual3D
 
+const DEFAULT_ANIMATION_SET: CharacterAnimationSetData = preload(
+	"res://data/characters/warrior/animations.tres"
+)
 const ANIM_IDLE: StringName = &"DD_Warrior_Idle"
 const ANIM_WALK: StringName = &"DD_Warrior_Walk"
 const ANIM_RUN: StringName = &"DD_Warrior_Run"
@@ -70,12 +73,7 @@ const SPELL_ID_BY_RESOURCE_PATH := {
 
 func _init() -> void:
 	model_root_path = NodePath("ModelPivot/WarriorModel")
-	animation_idle = ANIM_IDLE
-	animation_walk = ANIM_WALK
-	animation_run = ANIM_RUN
-	animation_cast = ANIM_ATTACK
-	animation_hit = ANIM_HIT
-	animation_death = ANIM_DEATH
+	default_animation_set = DEFAULT_ANIMATION_SET
 	cast_release_time_seconds = -1.0
 	cast_release_normalized_time = IMPACT_BY_ANIMATION[ANIM_ATTACK]
 	left_mount_node_name = &"WeaponMountLeft"

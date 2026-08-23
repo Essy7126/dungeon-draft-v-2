@@ -46,6 +46,7 @@ static func create_fixture() -> Dictionary:
 	var run := RunData.new()
 	run.run_name = "Sandbox Arena Studio"
 	run.default_seed = 20200
+	run.randomize_seed_each_run = false
 	run.content_profile = source_run.content_profile
 	run.room_flow_mode = source_run.room_flow_mode
 	run.maximum_waves_per_room = source_run.maximum_waves_per_room

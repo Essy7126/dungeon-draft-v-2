@@ -1,8 +1,8 @@
 # Architecture du Studio des compétences
 
 Statut : `WORKTREE_CANDIDATE`
-Base : `94fcdc700cf576a15ee4134d9f3dee680626827a` (`main`)
-Vérifié le : 6 août 2026
+Base : `77799ec945071bf91b1bc4996da2b3bd7b6a81e1` (`main`)
+Vérifié le : 23 août 2026
 
 ## Frontières
 
@@ -27,6 +27,17 @@ les color pickers avant validation, preview, diff, save, navigation ou fermeture
 fournit des clés logiques stables (`unit`, `spell`, discipline/rang/nœud/modificateur).
 Ces clés permettent de restaurer un brouillon sur une source fraîche sans la modifier.
 
+Dans une session ouverte depuis un run, les compétences et sorts appartiennent
+au `CharacterProgressionProfile`, tandis que l’apparence et
+`CharacterAnimationSetData` appartiennent au `UnitData` de base. La session garde
+deux working copies explicites et les réunit dans un seul plan transactionnel ;
+l’adaptateur `UnitData` du profil n’est jamais sauvegardé.
+
+La table événement → clip n’est déclarée qu’une fois dans
+`CharacterAnimationSetData`. Les scripts visuels référencent cette même Resource
+comme fiche par défaut et conservent seulement leurs constantes spécialisées de
+lecture, d’impact ou de sort.
+
 ## Services de sûreté
 
 - `SkillTreeDraftService` écrit une version immuable complète plus manifeste sous
@@ -34,7 +45,7 @@ Ces clés permettent de restaurer un brouillon sur une source fraîche sans la m
 - `SkillTreePathReservationService` distingue FREE, réservation de session, disque,
   cache seul, Resource reconnue, chemin dangereux et conflit de type. Les racines sont
   injectables pour les tests.
-- `SkillTreeReferenceIndex` indexe Resources, chemins, IDs, références de Resource,
+- `SkillTreeReferenceIndex` indexe Resources, chemins, IDs, fiche d’animations, références de Resource,
   prérequis, exclusions, discipline/sort ciblé et partages. Renommage, suppression,
   lifecycle, orphelins et collisions projet le consultent.
 - `SkillTreeLifecycleService` sépare DETACH_REFERENCE, ADOPT, ARCHIVE et DELETE.
@@ -56,9 +67,9 @@ produit DETACH_REFERENCE et ORPHANED et n’est jamais réécrite.
 3. dossier de récupération, manifeste PLANNED et working copy complète ;
 4. staging de toutes les écritures, relecture et empreintes ;
 5. backup des cibles existantes ;
-6. application ordonnée (modifier, nœud, rang, sort, discipline, héros) ;
+6. application ordonnée (modifier, nœud, rang, sort, discipline, animations, profil/personnage) ;
 7. relecture profonde et comparaison ;
-8. manifeste appliqué, scan filesystem et rechargement complet du document ;
+8. manifeste appliqué, rechargement complet et comparaison de l’empreinte finale ;
 9. manifeste COMPLETED et suppression du brouillon.
 
 Toute panne injectée ou réelle après le backup déclenche la restauration byte-for-byte

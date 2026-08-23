@@ -7,9 +7,8 @@
 #
 # S'édite depuis le Studio des personnages, écran « Animations ».
 #
-# Une entrée absente ou vide signifie « rien de choisi » : le
-# personnage conserve alors le clip inscrit par défaut dans son
-# script visuel. Une fiche vide ne change donc STRICTEMENT rien.
+# Une entrée absente ou vide signifie « rien de choisi » : une surcharge
+# conserve alors le clip de la fiche canonique du visuel.
 # ============================================================
 
 class_name CharacterAnimationSetData

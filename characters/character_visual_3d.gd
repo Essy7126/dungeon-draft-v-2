@@ -33,6 +33,10 @@ const ACTION_ORDER: Array[StringName] = [
 ]
 
 @export var model_root_path := NodePath("ModelPivot/CharacterModel")
+## Fiche canonique livree avec le visuel. Les scripts specialises ne recopient
+## plus les neuf associations evenement -> clip : ils referencent cette
+## Resource unique, egalement exposee par UnitData au Studio.
+@export var default_animation_set: CharacterAnimationSetData = null
 @export var animation_idle: StringName = &""
 @export var animation_walk: StringName = &""
 @export var animation_run: StringName = &""
@@ -71,6 +75,10 @@ var _death_locked := false
 
 
 func _ready() -> void:
+	# Appliquer les valeurs de donnees avant de decouvrir le lecteur et de lancer
+	# le repos garantit qu'un visuel instancie seul utilise la meme autorite que
+	# le personnage ouvert dans le Studio.
+	apply_animation_set(default_animation_set, false)
 	_discover_nodes()
 	_setup_profile_sockets()
 	_discover_mounts()
@@ -327,11 +335,12 @@ func set_animation_name_for_action(action: StringName, animation_name: StringNam
 	return true
 
 
-## Applique la fiche d'animations d'un personnage par-dessus les clips inscrits
-## par defaut dans le script visuel. Une entree vide ou absente laisse le clip
-## par defaut en place : un personnage sans fiche garde donc exactement le
-## comportement d'origine.
-func apply_animation_set(animation_set: CharacterAnimationSetData) -> bool:
+## Applique une fiche d'animations par-dessus la fiche canonique du visuel.
+## Une entree vide ou absente laisse le clip effectif en place.
+func apply_animation_set(
+		animation_set: CharacterAnimationSetData,
+		replay_idle := true
+	) -> bool:
 	if animation_set == null:
 		return false
 	var previous_idle := animation_idle
@@ -344,7 +353,7 @@ func apply_animation_set(animation_set: CharacterAnimationSetData) -> bool:
 			changed = true
 	# Le repos est deja lance par _ready() : le rejouer n'est utile que si la
 	# fiche vient d'en changer le clip, et jamais par-dessus une autre animation.
-	if changed and animation_idle != previous_idle and not _death_locked \
+	if replay_idle and changed and animation_idle != previous_idle and not _death_locked \
 			and (not is_animation_playing() or get_current_animation() == previous_idle):
 		play_idle(0.0)
 	return changed

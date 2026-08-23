@@ -270,6 +270,9 @@ static func _transient_run(source: RunData, room: ArenaDefinition) -> RunData:
 	var run := RunData.new()
 	run.run_name = "Test Arena Studio — %s" % source.run_name
 	run.default_seed = source.default_seed
+	# Un test direct doit rejouer exactement la graine choisie, meme si le run
+	# de production randomise normalement ses nouvelles parties.
+	run.randomize_seed_each_run = false
 	run.target_duration_minutes = source.target_duration_minutes
 	run.extended_duration_minutes = source.extended_duration_minutes
 	run.room_flow_mode = source.room_flow_mode

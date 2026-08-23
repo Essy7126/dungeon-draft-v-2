@@ -35,10 +35,15 @@ static func copy_run(source: RunData) -> Dictionary:
 	var run := RunData.new()
 	run.run_name = source.run_name
 	run.default_seed = source.default_seed
+	run.randomize_seed_each_run = source.randomize_seed_each_run
 	run.target_duration_minutes = source.target_duration_minutes
 	run.extended_duration_minutes = source.extended_duration_minutes
 	run.room_flow_mode = source.room_flow_mode
 	run.maximum_waves_per_room = source.maximum_waves_per_room
+	# Ces profils ne sont pas edites par Encounter Studio, mais font partie du
+	# document RunData et doivent survivre a son round-trip.
+	run.content_profile = source.content_profile
+	run.economy_profile = source.economy_profile
 	for source_room in source.rooms:
 		var room := copy_room(source_room, encounter_copies)
 		run.rooms.append(room)

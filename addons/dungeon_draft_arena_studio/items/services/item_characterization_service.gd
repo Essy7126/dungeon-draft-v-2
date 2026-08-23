@@ -17,6 +17,9 @@ const RUNTIME_AUTHORITIES := {
 	"EquipmentService": "res://items/equipment_service.gd",
 	"EquipmentStatService": "res://items/equipment_stat_service.gd",
 	"ItemUseService": "res://items/item_use_service.gd",
+	"ItemReactiveEffectData": "res://data/items/item_reactive_effect_data.gd",
+	"RelicEffectRegistry": "res://items/relic_effect_registry.gd",
+	"RelicRuntimeService": "res://items/relic_runtime_service.gd",
 	"FirstRunEquipmentRewardService": "res://data/post_combat/first_run_equipment_reward_service.gd",
 	"InventoryScreen": "res://ui/inventory/inventory_screen.gd",
 	"EquipmentRewardOverlay": "res://ui/post_combat/equipment_reward_overlay.gd",
@@ -198,7 +201,7 @@ func _legacy_resources() -> Array[Dictionary]:
 			"path": "res://data/relics/**",
 			"status": "HISTORIQUE",
 			"runtime_usage": false,
-			"evidence": "Absent du HEAD; aucun runtime RelicDefinition actif",
+			"evidence": "Ancien format RelicDefinition absent ; les reliques actives utilisent ItemDefinition et RelicRuntimeService",
 		},
 	]
 

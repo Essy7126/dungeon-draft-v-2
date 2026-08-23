@@ -94,7 +94,7 @@ enum ControlLevel {
 @export var preview_visual_scene: PackedScene = null
 # Fiche d'animations optionnelle : quel clip du modele 3D joue chaque evenement
 # (Repos, Marche, Course, Attaque ou sort, Degat recu, Mort...).
-# Laissee vide, le personnage garde les clips par defaut de son script visuel.
+# Laissee vide, le personnage garde la fiche canonique de son visuel.
 @export var animation_set: CharacterAnimationSetData = null
 
 @export_group("Presentation")

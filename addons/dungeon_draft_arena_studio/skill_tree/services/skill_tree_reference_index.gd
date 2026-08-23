@@ -42,6 +42,9 @@ func build(unit: UnitData, candidates: Array[Resource] = []) -> SkillTreeReferen
 		return self
 	_register_resource(unit, "unit")
 	_register_id("unit", unit.get_effective_unit_id(), unit)
+	if unit.animation_set != null:
+		_register_reference(unit, &"animation_set", unit.animation_set, "RESOURCE")
+		_register_resource(unit.animation_set, "animations")
 	for spell in unit.spells:
 		if spell == null:
 			continue
