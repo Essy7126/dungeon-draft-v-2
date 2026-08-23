@@ -172,9 +172,9 @@ func _apply_content_layout() -> void:
 		action_icon.offset_bottom = _compact_icon_size * 0.5 - 5.0
 		label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 		label.offset_left = 4.0
-		label.offset_top = -20.0
+		label.offset_top = -24.0
 		label.offset_right = -4.0
-		label.offset_bottom = -2.0
+		label.offset_bottom = -6.0
 		return
 	var icon_size := minf(
 		22.0,

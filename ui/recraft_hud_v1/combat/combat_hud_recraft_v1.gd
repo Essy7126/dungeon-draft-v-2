@@ -105,6 +105,7 @@ enum HudSkinVariant {
 @onready var _layout_debug_overlay: Control = %LayoutDebugOverlay
 @onready var _turn_intro_banner: CharacterTurnIntroBanner = %TurnIntroBanner
 @onready var _selected_spell_plate: Label = %SelectedSpellPlate
+@onready var _context_feedback: Label = %ContextFeedback
 @onready var _utility_dock: HBoxContainer = %UtilityDock
 @onready var _inventory_button: Button = %InventoryButton
 @onready var _map_button: Button = %MapButton
@@ -136,6 +137,9 @@ var _mp_badge_home_index := 0
 # affichés au tour suivant.
 var _active_bar_mode := BAR_MODE_SPELL
 var _item_buttons: Array = []
+var _presentation_snapshot: Dictionary = {}
+var _last_feedback_text := ""
+var _feedback_tween: Tween = null
 
 
 func _ready() -> void:
@@ -629,11 +633,16 @@ func set_active_mode(mode: String, active_spell = null) -> void:
 	_active_mode = mode
 	_active_spell = active_spell
 	_selected_spell_plate.visible = (
-		mode == "move" or (mode == "spell" and active_spell != null)
+		mode in ["move", "attack"] \
+		or (mode == "spell" and active_spell != null)
 	)
 	if mode == "move":
 		_selected_spell_plate.text = (
 			"Déplacer  ·  Choisissez une case  ·  Échap pour annuler"
+		)
+	elif mode == "attack":
+		_selected_spell_plate.text = (
+			"Attaquer  ·  Choisissez un ennemi adjacent  ·  Échap pour annuler"
 		)
 	elif active_spell != null and _current_unit != null:
 		_selected_spell_plate.text = (
@@ -645,6 +654,91 @@ func set_active_mode(mode: String, active_spell = null) -> void:
 	if _current_unit != null:
 		_refresh_resource_bars(_current_unit)
 	_refresh_button_states()
+
+
+func apply_presentation_snapshot(snapshot: Dictionary) -> void:
+	_presentation_snapshot = snapshot.duplicate(true)
+	set_player_controls_enabled(
+		bool(snapshot.get("controls_enabled", false))
+	)
+	var ownership := StringName(snapshot.get("ownership", &"system"))
+	var phase := StringName(snapshot.get("phase_name", &"UNKNOWN"))
+	match ownership:
+		&"player":
+			_turn_label.text = "VOTRE TOUR"
+			_end_btn.set_label("Fin de tour")
+		&"enemy":
+			_turn_label.text = "TOUR ADVERSE"
+			_end_btn.set_label("Tour adverse")
+		_:
+			_turn_label.text = (
+				"RÉSOLUTION"
+				if phase == &"RESOLVING_ACTION"
+				else "COMBAT TERMINÉ" if phase == &"BATTLE_ENDING" else "COMBAT"
+			)
+			_end_btn.set_label(
+				"Résolution…"
+				if phase == &"RESOLVING_ACTION"
+				else "Combat terminé" if phase == &"BATTLE_ENDING" else "Indisponible"
+			)
+	var focus_active := bool(snapshot.get("focus_active", false))
+	_character_section.modulate.a = 0.78 if focus_active else 1.0
+	_turn_section.modulate.a = 0.72 if focus_active else 1.0
+	_utility_dock.modulate.a = 0.32 if focus_active else 1.0
+	_spell_section.modulate.a = (
+		0.78 if phase == &"RESOLVING_ACTION" else 1.0
+	)
+	var feedback := str(snapshot.get("feedback_text", ""))
+	if feedback.is_empty():
+		_hide_context_feedback()
+	elif feedback != _last_feedback_text:
+		show_context_feedback(
+			feedback,
+			StringName(snapshot.get("feedback_kind", &"info"))
+		)
+	_last_feedback_text = feedback
+
+
+func get_presentation_snapshot() -> Dictionary:
+	return _presentation_snapshot.duplicate(true)
+
+
+func show_context_feedback(
+		message: String,
+		kind: StringName = &"warning"
+	) -> void:
+	if not is_instance_valid(_context_feedback) \
+			or message.strip_edges().is_empty():
+		return
+	if _feedback_tween != null and _feedback_tween.is_valid():
+		_feedback_tween.kill()
+	_context_feedback.text = message
+	_context_feedback.add_theme_color_override(
+		"font_color",
+		Color(1.0, 0.46, 0.4)
+		if kind == &"error"
+		else Color(1.0, 0.86, 0.48)
+		if kind == &"warning"
+		else Color(0.67, 0.88, 1.0)
+	)
+	_context_feedback.modulate.a = 0.0
+	_context_feedback.show()
+	_feedback_tween = create_tween()
+	_feedback_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_feedback_tween.tween_property(_context_feedback, "modulate:a", 1.0, 0.12)
+	_feedback_tween.tween_interval(1.15)
+	_feedback_tween.set_ease(Tween.EASE_IN)
+	_feedback_tween.tween_property(_context_feedback, "modulate:a", 0.0, 0.22)
+	_feedback_tween.tween_callback(_context_feedback.hide)
+
+
+func _hide_context_feedback() -> void:
+	if _feedback_tween != null and _feedback_tween.is_valid():
+		_feedback_tween.kill()
+	_feedback_tween = null
+	if is_instance_valid(_context_feedback):
+		_context_feedback.hide()
+		_context_feedback.modulate.a = 0.0
 
 
 func _apply_base_button_modulates() -> void:
@@ -781,7 +875,6 @@ func _on_event_bus_turn_started(unit) -> void:
 		_ui_mode != RunUIMode.COMBAT
 		or not is_instance_valid(_combat_context)
 		or unit == null
-		or unit.team != 0
 	):
 		return
 	var active_unit = null
@@ -795,6 +888,9 @@ func _on_event_bus_turn_started(unit) -> void:
 		):
 			active_unit = context_turn_queue.get_current_unit()
 	if active_unit != null and active_unit != unit:
+		return
+	if unit.team == 1:
+		_turn_intro_banner.present_enemy(unit)
 		return
 	var theme := _resolve_character_theme(unit)
 	if theme != null:

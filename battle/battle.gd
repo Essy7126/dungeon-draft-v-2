@@ -25,6 +25,18 @@ const ArenaDirectTestConfigurationScript = preload(
 const TURN_ORDER_TIMELINE_SCENE := preload(
 	"res://ui/combat/turn_order_timeline.tscn"
 )
+const COMBAT_PRESENTATION_STATE := preload(
+	"res://battle/combat_presentation_state.gd"
+)
+const COMBAT_OUTCOME_OVERLAY := preload(
+	"res://ui/combat/combat_outcome_overlay.gd"
+)
+const END_TURN_CONFIRMATION := preload(
+	"res://ui/combat/end_turn_confirmation.gd"
+)
+const COMBAT_TARGET_FEEDBACK := preload(
+	"res://battle/combat_target_feedback.gd"
+)
 
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
@@ -125,7 +137,13 @@ var inspect_panel: CanvasLayer
 var player_combat_log: CanvasLayer
 var keyword_tooltip_layer: CanvasLayer
 var turn_order_timeline: TurnOrderTimeline = null
+var presentation_state: CombatPresentationState = null
 var _uses_persistent_action_bar := false
+var _presentation_feedback_generation := 0
+var _outcome_overlay: CombatOutcomeOverlay = null
+var _end_turn_confirmation: EndTurnConfirmation = null
+var _skip_end_turn_confirmation := false
+var _target_feedback = null
 
 # --- Fin de combat ---
 var _battle_over: bool = false
@@ -241,6 +259,9 @@ func _setup_logic() -> void:
 		)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
+	_target_feedback = COMBAT_TARGET_FEEDBACK.new(
+		grid, pathfinder, spell_caster
+	)
 	var encounter_definition: EncounterDefinition = (
 		GameManager.get_current_encounter_definition()
 	)
@@ -613,6 +634,12 @@ func _connect_action_bar_signal(action_signal: Signal, callback: Callable) -> vo
 
 func _setup_state() -> void:
 	turn_state = TurnState.new()
+	presentation_state = COMBAT_PRESENTATION_STATE.new()
+	presentation_state.set_lock(&"battle_not_started", true)
+	presentation_state.snapshot_changed.connect(
+		_on_presentation_snapshot_changed
+	)
+	turn_state.state_changed.connect(_on_turn_state_changed)
 	turn_state.request_show_move_range.connect(_on_request_show_move_range)
 	turn_state.request_show_attack_range.connect(_on_request_show_attack_range)
 	turn_state.request_show_spell_range.connect(_on_request_show_spell_range)
@@ -620,6 +647,128 @@ func _setup_state() -> void:
 	turn_state.request_move_to.connect(_on_request_move_to)
 	turn_state.request_attack.connect(_on_request_attack)
 	turn_state.request_cast_spell.connect(_on_request_cast_spell)
+	_on_presentation_snapshot_changed(presentation_state.get_snapshot())
+
+
+func get_combat_presentation_snapshot() -> Dictionary:
+	return (
+		presentation_state.get_snapshot()
+		if presentation_state != null
+		else {}
+	)
+
+
+func is_action_selection_active() -> bool:
+	return turn_state != null and turn_state.current in [
+		TurnState.State.MOVE,
+		TurnState.State.TARGET_MELEE,
+		TurnState.State.TARGET_SPELL,
+	]
+
+
+func cancel_active_selection() -> bool:
+	if not is_action_selection_active():
+		return false
+	turn_state.on_cancel()
+	if is_instance_valid(action_bar):
+		action_bar.set_active_mode("")
+	if is_instance_valid(inspect_panel) and inspect_panel.has_method(
+		"release_transient_preview"
+	):
+		inspect_panel.release_transient_preview()
+	return true
+
+
+func set_external_interaction_lock(source: StringName, locked: bool) -> void:
+	if presentation_state == null or source == &"":
+		return
+	if locked:
+		cancel_active_selection()
+	presentation_state.set_lock(StringName("external:%s" % source), locked)
+
+
+func _can_accept_player_intent() -> bool:
+	return presentation_state == null \
+		or presentation_state.can_accept_player_intent()
+
+
+func _on_turn_state_changed(
+		_previous: TurnState.State,
+		current: TurnState.State
+	) -> void:
+	if presentation_state == null:
+		return
+	match current:
+		TurnState.State.IDLE:
+			presentation_state.begin_player_turn()
+		TurnState.State.MOVE:
+			presentation_state.begin_targeting(&"move")
+		TurnState.State.TARGET_MELEE:
+			presentation_state.begin_targeting(&"attack")
+		TurnState.State.TARGET_SPELL:
+			presentation_state.begin_targeting(&"spell")
+		TurnState.State.ENEMY_TURN:
+			presentation_state.begin_enemy_turn()
+		TurnState.State.ANIMATING:
+			if presentation_state.get_phase() \
+					!= CombatPresentationState.Phase.RESOLVING_ACTION:
+				presentation_state.begin_resolution(&"action")
+		TurnState.State.SKILL_EVOLUTION_PENDING, \
+		TurnState.State.SKILL_EVOLUTION_UI:
+			presentation_state.begin_modal()
+
+
+func _on_presentation_snapshot_changed(snapshot: Dictionary) -> void:
+	if is_instance_valid(action_bar):
+		if action_bar.has_method("apply_presentation_snapshot"):
+			action_bar.apply_presentation_snapshot(snapshot)
+		else:
+			action_bar.set_player_controls_enabled(
+				bool(snapshot.get("controls_enabled", false))
+			)
+	var focus_active := bool(snapshot.get("focus_active", false))
+	if is_instance_valid(player_combat_log) and player_combat_log.has_method(
+		"set_tactical_focus"
+	):
+		player_combat_log.set_tactical_focus(focus_active)
+	if is_instance_valid(turn_order_timeline) and turn_order_timeline.has_method(
+		"set_tactical_focus"
+	):
+		turn_order_timeline.set_tactical_focus(focus_active)
+
+
+func _begin_action_resolution(kind: StringName) -> void:
+	if presentation_state != null:
+		presentation_state.begin_resolution(kind)
+	turn_state.begin_animating()
+
+
+func _show_intent_feedback(
+		message: String,
+		kind: StringName = &"warning"
+	) -> void:
+	if message.strip_edges().is_empty():
+		return
+	_presentation_feedback_generation += 1
+	var generation := _presentation_feedback_generation
+	if presentation_state != null:
+		presentation_state.set_feedback(message, kind)
+	if is_instance_valid(action_bar) and action_bar.has_method(
+		"show_context_feedback"
+	):
+		action_bar.show_context_feedback(message, kind)
+	_clear_intent_feedback_later(generation)
+
+
+func _clear_intent_feedback_later(generation: int) -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+	await tree.create_timer(1.6).timeout
+	if generation != _presentation_feedback_generation \
+		or presentation_state == null:
+		return
+	presentation_state.clear_feedback()
 
 # ============================================================
 # SPAWN DES UNITÉS
@@ -897,6 +1046,8 @@ func _on_turn_started(unit: Unit) -> void:
 		return
 	var lifecycle_generation := _lifecycle_generation
 	_turn_end_committed = false
+	if presentation_state != null:
+		presentation_state.set_lock(&"battle_not_started", false)
 
 	# Un ciblage appartient exclusivement au personnage qui l'a ouvert. Il est
 	# annule avant de remplacer le HUD, y compris lors d'un passage allie -> allie.
@@ -1020,13 +1171,13 @@ func _update_active_highlight(active_unit: Unit) -> void:
 # ============================================================
 
 func _on_move_pressed() -> void:
-	if _is_evolution_locked():
+	if _is_evolution_locked() or not _can_accept_player_intent():
 		return
 	turn_state.on_move_button()
 	_refresh_mode_button()
 
 func _on_attack_pressed() -> void:
-	if _is_evolution_locked():
+	if _is_evolution_locked() or not _can_accept_player_intent():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
@@ -1035,7 +1186,7 @@ func _on_attack_pressed() -> void:
 	_refresh_mode_button()
 
 func _on_spell_pressed(spell: Spell) -> void:
-	if _is_evolution_locked():
+	if _is_evolution_locked() or not _can_accept_player_intent():
 		return
 	turn_state.on_spell_selected(spell)
 	_refresh_mode_button()
@@ -1045,7 +1196,9 @@ func _on_spell_pressed(spell: Spell) -> void:
 # ici est un cas de course (l'état a changé entre l'affichage et le clic), pas
 # une erreur du joueur.
 func _on_item_activation_requested(instance_id: StringName) -> void:
-	if _is_evolution_locked() or _spell_resolution_pending:
+	if _is_evolution_locked() \
+			or _spell_resolution_pending \
+			or not _can_accept_player_intent():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or unit.team != 0:
@@ -1062,11 +1215,63 @@ func _on_item_activation_requested(instance_id: StringName) -> void:
 		)
 
 func _on_end_turn_pressed() -> void:
-	if _is_evolution_locked() or _spell_resolution_pending:
+	if _is_evolution_locked() \
+			or _spell_resolution_pending \
+			or not _can_accept_player_intent():
 		return
+	var unit := get_active_unit() as Unit
+	if unit != null \
+			and not _skip_end_turn_confirmation \
+			and (unit.current_ap > 0 or unit.current_mp > 0):
+		_show_end_turn_confirmation(unit)
+		return
+	_commit_player_end_turn()
+
+
+func _commit_player_end_turn() -> void:
 	_clear_movement_path_preview()
 	grid_view.clear_highlights()
 	_finish_active_turn(&"player_requested")
+
+
+func _show_end_turn_confirmation(unit: Unit) -> void:
+	cancel_active_selection()
+	if not is_instance_valid(_end_turn_confirmation):
+		_end_turn_confirmation = END_TURN_CONFIRMATION.new()
+		add_child(_end_turn_confirmation)
+		_end_turn_confirmation.confirmed.connect(
+			_on_end_turn_confirmation_confirmed
+		)
+		_end_turn_confirmation.cancelled.connect(
+			_on_end_turn_confirmation_cancelled
+		)
+	if presentation_state != null:
+		presentation_state.begin_modal()
+		presentation_state.set_lock(&"end_turn_confirmation", true)
+	_end_turn_confirmation.present(unit)
+
+
+func _on_end_turn_confirmation_confirmed(skip_future: bool) -> void:
+	_skip_end_turn_confirmation = _skip_end_turn_confirmation or skip_future
+	if presentation_state != null:
+		presentation_state.set_lock(&"end_turn_confirmation", false)
+	_commit_player_end_turn()
+
+
+func _on_end_turn_confirmation_cancelled() -> void:
+	if presentation_state != null:
+		presentation_state.set_lock(&"end_turn_confirmation", false)
+	if turn_state != null:
+		turn_state.begin_player_turn()
+	if presentation_state != null:
+		# TurnState peut deja etre IDLE : dans ce cas aucun signal de transition
+		# n'est emis, il faut donc restaurer explicitement la phase joueur.
+		presentation_state.begin_player_turn()
+
+
+func dismiss_top_combat_modal() -> bool:
+	return is_instance_valid(_end_turn_confirmation) \
+		and _end_turn_confirmation.dismiss()
 
 func _refresh_mode_button() -> void:
 	match turn_state.current:
@@ -1107,11 +1312,12 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 				active_unit,
 			)
 		if not reachable_cells.has(cell):
-			turn_state.on_cancel()
-			_refresh_mode_button()
+			_show_intent_feedback(_movement_rejection_reason(active_unit, cell))
 			if inspect_panel != null:
 				inspect_panel.show_cell(cell, grid, terrain_effects, true)
 			return
+	if not _can_accept_player_intent():
+		return
 	turn_state.on_cell_clicked(cell)
 
 
@@ -1149,12 +1355,18 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if _is_evolution_locked():
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
-		if turn_state == null:
-			return
-		turn_state.on_cancel()
-		if action_bar != null:
-			action_bar.set_active_mode("")
+	var cancel_requested := event.is_action_pressed("ui_cancel")
+	if event is InputEventMouseButton:
+		cancel_requested = cancel_requested or (
+			event.pressed and event.button_index == MOUSE_BUTTON_RIGHT
+		)
+	if not cancel_requested:
+		return
+	if dismiss_top_combat_modal():
+		get_viewport().set_input_as_handled()
+		return
+	if cancel_active_selection():
+		get_viewport().set_input_as_handled()
 
 # ============================================================
 # INTENTIONS — DÉPLACEMENT
@@ -1184,6 +1396,14 @@ func _movement_range_layers(unit: Unit) -> Dictionary:
 		"reachable": reachable,
 		"control_limited": control_limited,
 	}
+
+
+func _movement_rejection_reason(unit: Unit, cell: Vector2i) -> String:
+	return (
+		_target_feedback.movement_rejection_reason(unit, cell)
+		if _target_feedback != null
+		else "Cette case n'est pas accessible."
+	)
 
 
 func _on_request_show_move_range() -> void:
@@ -1224,15 +1444,20 @@ func _update_movement_path_preview(cell: Vector2i) -> void:
 
 
 func _on_request_move_to(cell: Vector2i) -> void:
-	if _closing or _battle_over or _is_evolution_locked():
+	if _closing \
+			or _battle_over \
+			or _is_evolution_locked() \
+			or not _can_accept_player_intent():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null:
 		return
 	if not pathfinder.get_reachable(unit.grid_pos, unit.current_mp, unit).has(cell):
+		_show_intent_feedback(_movement_rejection_reason(unit, cell))
 		return
 	var path = pathfinder.find_path(unit.grid_pos, cell, unit)
 	if path.size() < 2:
+		_show_intent_feedback("Choisissez une autre case que la position actuelle.")
 		return
 	var cost_breakdown := pathfinder.path_cost_breakdown(path, unit)
 	var paid_cost := int(cost_breakdown.get("total", 0))
@@ -1256,8 +1481,9 @@ func _on_request_move_to(cell: Vector2i) -> void:
 		unit, path.duplicate(), base_cost, paid_cost, action_id
 	)
 	if not unit.spend_mp(paid_cost):
+		_show_intent_feedback("PM insuffisants pour ce déplacement.")
 		return
-	turn_state.begin_animating()
+	_begin_action_resolution(&"move")
 	var lifecycle_generation := _lifecycle_generation
 	await _animate_move(unit, path)
 	if not _is_operation_current(lifecycle_generation):
@@ -1372,17 +1598,24 @@ func _get_attackable_cells(unit: Unit) -> Array:
 	return result
 
 func _on_request_attack(cell: Vector2i) -> void:
-	if _closing or _battle_over or _is_evolution_locked():
+	if _closing \
+			or _battle_over \
+			or _is_evolution_locked() \
+			or not _can_accept_player_intent():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
 		turn_state.set_state(TurnState.State.IDLE)
 		return
 	if not _get_attackable_cells(unit).has(cell):
+		_show_intent_feedback("Choisissez un ennemi adjacent.")
 		return
 	# Une seule economie pour tout le monde : l'attaque de base coute 1 PA.
 	var ap_cost: int = unit.get_basic_attack_ap_cost()
 	if unit.current_ap < ap_cost:
+		_show_intent_feedback(
+			"PA insuffisants (%d / %d)." % [unit.current_ap, ap_cost]
+		)
 		return
 	var target = grid.get_unit(cell)
 	if target == null:
@@ -1390,7 +1623,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 	var view = _unit_views.get(unit)
 	var has_action_visual := false
 	var lifecycle_generation := _lifecycle_generation
-	turn_state.begin_animating()
+	_begin_action_resolution(&"basic_attack")
 	if is_instance_valid(view) and view.has_method("prepare_basic_attack_visual"):
 		var visual_ready: bool = await view.prepare_basic_attack_visual(cell)
 		if not visual_ready or not _is_operation_current(lifecycle_generation):
@@ -1403,6 +1636,10 @@ func _on_request_attack(cell: Vector2i) -> void:
 	if not unit.spend_ap(ap_cost):
 		turn_state.end_animating()
 		return
+	if not has_action_visual:
+		await _animate_attack_to_impact(unit, target)
+		if not _is_operation_current(lifecycle_generation):
+			return
 	var result = target.take_damage(
 		unit.get_attack(),
 		unit,
@@ -1417,7 +1654,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 			and view.has_method("wait_for_action_visual_finished"):
 		await view.wait_for_action_visual_finished()
 	else:
-		await _animate_attack(unit, target)
+		await _animate_attack_recovery(unit)
 	if not _is_operation_current(lifecycle_generation):
 		return
 	if _end_active_turn_if_dead(unit):
@@ -1429,6 +1666,11 @@ func _on_request_attack(cell: Vector2i) -> void:
 
 # Animation d'attaque BLINDÉE (accès .get() + vérif de validité).
 func _animate_attack(unit: Unit, target: Unit) -> void:
+	await _animate_attack_to_impact(unit, target)
+	await _animate_attack_recovery(unit)
+
+
+func _animate_attack_to_impact(unit: Unit, target: Unit) -> void:
 	if _closing or _battle_over:
 		return
 	var lifecycle_generation := _lifecycle_generation
@@ -1442,6 +1684,20 @@ func _animate_attack(unit: Unit, target: Unit) -> void:
 	var bump = start.lerp(toward, 0.4)
 	var tween = create_tween()
 	tween.tween_property(view, "position", bump, 0.1)
+	await tween.finished
+	if not _is_operation_current(lifecycle_generation):
+		return
+
+
+func _animate_attack_recovery(unit: Unit) -> void:
+	if _closing or _battle_over:
+		return
+	var lifecycle_generation := _lifecycle_generation
+	var view = _unit_views.get(unit)
+	if not is_instance_valid(view):
+		return
+	var start = grid_cell_to_parent_local(unit.grid_pos, view.get_parent())
+	var tween = create_tween()
 	tween.tween_property(view, "position", start, 0.1)
 	await tween.finished
 	if not _is_operation_current(lifecycle_generation):
@@ -1461,21 +1717,35 @@ func _on_request_show_spell_range(spell: Spell) -> void:
 	grid_view.clear_highlights()
 	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
 
+
+func _spell_target_rejection_reason(
+		unit: Unit,
+		spell: Spell,
+		cell: Vector2i
+	) -> String:
+	return (
+		_target_feedback.spell_rejection_reason(unit, spell, cell)
+		if _target_feedback != null
+		else "Cible incompatible avec cette capacité."
+	)
+
 func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	if _spell_resolution_pending \
 			or _closing \
 			or _battle_over \
-			or _is_evolution_locked():
+			or _is_evolution_locked() \
+			or not _can_accept_player_intent():
 		return
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
 	if not spell_caster.is_valid_target(unit, spell, cell):
+		_show_intent_feedback(_spell_target_rejection_reason(unit, spell, cell))
 		return
 	_spell_resolution_pending = true
 	_trigger_sequence += 1
 	_active_trigger_sequence = _trigger_sequence
-	turn_state.begin_animating()
+	_begin_action_resolution(&"spell")
 	action_bar.set_player_controls_enabled(false)
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
@@ -1816,6 +2086,8 @@ func _end_battle(victory: bool) -> void:
 		_waiting_outcome_victory = victory
 		return
 	_battle_over = true
+	if presentation_state != null:
+		presentation_state.begin_battle_ending()
 	EventBus.combat_ended.emit(victory)
 	_begin_battle_shutdown()
 	if is_instance_valid(grid_view):
@@ -1834,25 +2106,11 @@ func _next_action_id(kind: StringName) -> StringName:
 	return StringName("%s_%06d" % [kind, _action_sequence])
 
 func _show_end_screen(victory: bool) -> void:
-	if victory:
-		return
-	var layer = CanvasLayer.new()
-	add_child(layer)
-	var panel = ColorRect.new()
-	panel.color = Color(0, 0, 0, 0.7)
-	panel.anchor_right = 1.0
-	panel.anchor_bottom = 1.0
-	layer.add_child(panel)
-	var label = Label.new()
-	label.text = "DÉFAITE"
-	label.add_theme_font_size_override("font_size", 64)
-	label.add_theme_color_override("font_color", Color(1, 0.3, 0.3))
-	label.anchor_left = 0.5
-	label.anchor_top = 0.5
-	label.anchor_right = 0.5
-	label.anchor_bottom = 0.5
-	label.offset_left = -200
-	label.offset_top = -40
-	label.size = Vector2(400, 80)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	layer.add_child(label)
+	if is_instance_valid(keyword_tooltip_layer) \
+			and keyword_tooltip_layer.has_method("set_modal_blocked"):
+		keyword_tooltip_layer.set_modal_blocked(true)
+	if is_instance_valid(_outcome_overlay):
+		_outcome_overlay.queue_free()
+	_outcome_overlay = COMBAT_OUTCOME_OVERLAY.new()
+	add_child(_outcome_overlay)
+	_outcome_overlay.present(victory)

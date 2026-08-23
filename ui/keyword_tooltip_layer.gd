@@ -7,6 +7,7 @@ var _panel: PanelContainer
 var _label: RichTextLabel
 var _pinned: bool = false
 var _hide_queued: bool = false
+var _modal_blocked: bool = false
 
 func _ready() -> void:
 	layer = 120
@@ -47,12 +48,17 @@ func show_text(title: String, body: String, global_pos: Vector2, pin: bool = fal
 	show_bbcode(bbcode, global_pos, pin)
 
 func show_bbcode(bbcode: String, global_pos: Vector2, pin: bool = false) -> void:
+	if _modal_blocked:
+		return
 	_pinned = pin
 	_hide_queued = false
 	_panel.visible = false
 	_label.text = bbcode
 	_panel.visible = true
 	await get_tree().process_frame
+	if _modal_blocked:
+		hide_all()
+		return
 	_panel.size = _panel.get_combined_minimum_size()
 	_place(global_pos)
 
@@ -69,6 +75,16 @@ func hide_all() -> void:
 	_hide_queued = false
 	_panel.visible = false
 
+
+func set_modal_blocked(blocked: bool) -> void:
+	_modal_blocked = blocked
+	if blocked:
+		hide_all()
+
+
+func is_modal_blocked() -> bool:
+	return _modal_blocked
+
 func _place(global_pos: Vector2) -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	var desired := global_pos + Vector2(18, 18)
@@ -84,6 +100,8 @@ func _place(global_pos: Vector2) -> void:
 	_panel.position = desired
 
 func _input(event: InputEvent) -> void:
+	if _modal_blocked:
+		return
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_RIGHT and _panel.visible:
 			_pinned = not _pinned

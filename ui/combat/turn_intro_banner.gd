@@ -34,10 +34,25 @@ func _exit_tree() -> void:
 
 
 func present(unit, theme: CharacterHUDThemeData) -> bool:
-	if unit == null or theme == null or theme.turn_banner_texture == null:
+	return _present_unit(unit, theme, false)
+
+
+func present_enemy(unit) -> bool:
+	return _present_unit(unit, null, true)
+
+
+func _present_unit(
+		unit,
+		theme: CharacterHUDThemeData,
+		enemy: bool
+	) -> bool:
+	if unit == null \
+			or (not enemy and (theme == null or theme.turn_banner_texture == null)):
 		return false
 	var frame := Engine.get_process_frames()
-	var unit_id := StringName(unit.unit_id)
+	var unit_id := StringName(
+		"enemy:%s" % unit.unit_id if enemy else str(unit.unit_id)
+	)
 	if (
 		unit_id == _last_unit_id
 		and (frame == _last_presented_frame or visible)
@@ -47,28 +62,41 @@ func present(unit, theme: CharacterHUDThemeData) -> bool:
 	_last_presented_frame = frame
 	presentation_count += 1
 
-	banner_texture.texture = theme.turn_banner_texture
-	if theme.portrait_texture != null:
+	banner_texture.texture = null if enemy else theme.turn_banner_texture
+	if not enemy and theme.portrait_texture != null:
 		portrait_view.set_portrait(theme.portrait_texture, unit.unit_name)
 	else:
 		portrait_view.set_character_data(unit.character_data)
 	portrait_view.set_discipline_emblem(
-		theme.discipline_emblem_texture,
+		null if enemy else theme.discipline_emblem_texture,
 		Color.WHITE
 	)
 	portrait_view.set_active(true)
-	turn_label.text = _turn_title(String(unit.unit_name))
+	turn_label.text = (
+		"AU TOUR DE L'ADVERSAIRE"
+		if enemy
+		else _turn_title(String(unit.unit_name))
+	)
 	character_name_label.text = (
-		theme.display_name
+		String(unit.unit_name).to_upper()
+		if enemy
+		else theme.display_name
 		if not theme.display_name.is_empty()
 		else String(unit.unit_name)
 	)
 	var discipline_parts: Array[String] = []
-	if not theme.discipline_name.is_empty():
+	if enemy:
+		discipline_parts.append("ACTION EN COURS")
+	elif not theme.discipline_name.is_empty():
 		discipline_parts.append(theme.discipline_name)
 	discipline_label.text = " · ".join(discipline_parts)
+	var text_color := (
+		Color(1.0, 0.56, 0.86)
+		if enemy
+		else theme.text_color
+	)
 	for label in [turn_label, character_name_label, discipline_label]:
-		label.add_theme_color_override("font_color", theme.text_color)
+		label.add_theme_color_override("font_color", text_color)
 
 	if _active_tween != null and _active_tween.is_valid():
 		_active_tween.kill()
