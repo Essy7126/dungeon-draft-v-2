@@ -2,6 +2,8 @@ class_name DisciplineProgressDelta
 extends RefCounted
 
 var character_id: StringName = &""
+var spell_id: StringName = &""
+var spell_name := ""
 var discipline_id: StringName = &""
 var display_name := ""
 var icon: Texture2D = null
@@ -24,6 +26,8 @@ func has_progress() -> bool:
 func to_dictionary() -> Dictionary:
 	return {
 		"character_id": character_id,
+		"spell_id": spell_id,
+		"spell_name": spell_name,
 		"discipline_id": discipline_id,
 		"display_name": display_name,
 		"icon": icon,

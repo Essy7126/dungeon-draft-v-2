@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_modifier")
 modifier_name = "Flèche d’arrêt — entrave"
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 recipient = 1
 movement_points = -2

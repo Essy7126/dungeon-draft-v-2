@@ -53,7 +53,7 @@ static func _search_unit(
 				spell.spell_name, spell.get_effective_spell_id(), spell.description,
 			],
 			"character_path": hero_path,
-			"discipline_id": spell.discipline_id,
+			"discipline_id": spell.get_skill_tree_id(),
 			"node_id": &"",
 		}, variant), limit)
 	for discipline in unit.disciplines:

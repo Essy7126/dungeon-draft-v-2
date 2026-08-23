@@ -58,7 +58,12 @@ func _make_hero(
 	var data := UnitData.new()
 	data.unit_id = character_id
 	data.unit_name = display_name
-	data.disciplines = disciplines
+	for discipline in disciplines:
+		var spell := Spell.new()
+		spell.spell_id = StringName("%s_%s_spell" % [character_id, discipline.discipline_id])
+		spell.spell_name = discipline.display_name
+		spell.skill_tree = discipline
+		data.spells.append(spell)
 	return data
 
 

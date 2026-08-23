@@ -11,7 +11,7 @@ func _spell() -> Spell:
 func test_resource_matches_the_locked_seismic_wave_contract() -> void:
 	var spell := _spell()
 	assert_eq(spell.spell_id, &"mage_seismic_wave")
-	assert_eq(spell.discipline_id, &"mage_geomancy")
+	assert_eq(spell.get_skill_tree_id(), &"mage_geomancy")
 	assert_eq(spell.spell_name, "Onde sismique")
 	assert_eq([spell.ap_cost, spell.spell_range, spell.damage], [2, 3, 6])
 	assert_true(spell.needs_line_of_sight)

@@ -135,6 +135,7 @@ var preview_visual_scene: PackedScene = null
 var basic_attack_enabled: bool = true
 var spells: Array = []
 var _progression_spell_modifiers: Array[SpellModifier] = []
+var _progression_spell_modifiers_by_spell: Dictionary = {}
 var _equipment_spell_modifiers_by_source: Dictionary = {}
 var activation_index: int = 0
 var activation_consumed: bool = false
@@ -331,6 +332,7 @@ func reset_ability_runtime() -> void:
 
 func set_progression_spell_modifiers(modifiers: Array[SpellModifier]) -> void:
 	_progression_spell_modifiers.clear()
+	_progression_spell_modifiers_by_spell.clear()
 	for modifier in modifiers:
 		if modifier != null and not _progression_spell_modifiers.has(modifier):
 			_progression_spell_modifiers.append(modifier)
@@ -338,10 +340,33 @@ func set_progression_spell_modifiers(modifiers: Array[SpellModifier]) -> void:
 
 func clear_progression_spell_modifiers() -> void:
 	_progression_spell_modifiers.clear()
+	_progression_spell_modifiers_by_spell.clear()
 
 
 func get_progression_spell_modifiers() -> Array[SpellModifier]:
 	return _progression_spell_modifiers.duplicate()
+
+
+func set_progression_spell_modifiers_by_spell(modifiers_by_spell: Dictionary) -> void:
+	_progression_spell_modifiers.clear()
+	_progression_spell_modifiers_by_spell.clear()
+	for spell_id_value in modifiers_by_spell:
+		var spell_id := StringName(spell_id_value)
+		if spell_id == &"":
+			continue
+		var valid: Array[SpellModifier] = []
+		for modifier in modifiers_by_spell[spell_id_value]:
+			if modifier != null and not valid.has(modifier):
+				valid.append(modifier)
+				if not _progression_spell_modifiers.has(modifier):
+					_progression_spell_modifiers.append(modifier)
+		_progression_spell_modifiers_by_spell[spell_id] = valid
+
+
+func get_progression_spell_modifiers_for(spell_id: StringName) -> Array[SpellModifier]:
+	var result: Array[SpellModifier] = []
+	result.assign(_progression_spell_modifiers_by_spell.get(spell_id, []))
+	return result
 
 
 func set_equipment_spell_modifiers(

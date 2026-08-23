@@ -16,6 +16,21 @@ func _make_unit_data(character_id: StringName) -> UnitData:
 	data.unit_name = str(character_id).capitalize()
 	data.attack_power = 20
 	data.max_hp = 100
+	var rank_one := DisciplineRankData.new()
+	rank_one.rank = 1
+	rank_one.required_total_xp = 0
+	var rank_two := DisciplineRankData.new()
+	rank_two.rank = 2
+	rank_two.required_total_xp = 5
+	var tree := DisciplineData.new()
+	tree.discipline_id = StringName("%s_tree" % character_id)
+	tree.display_name = "%s progression" % data.unit_name
+	tree.ranks = [rank_one, rank_two]
+	var spell := Spell.new()
+	spell.spell_id = StringName("%s_spell" % character_id)
+	spell.spell_name = "%s spell" % data.unit_name
+	spell.skill_tree = tree
+	data.spells = [spell]
 	return data
 
 
@@ -223,6 +238,8 @@ func test_game_manager_owns_starting_inventory_and_restores_equipment_snapshot()
 
 func test_inventory_and_equipment_save_file_round_trip() -> void:
 	_prepare_global_run()
+	var warrior_state := GameManager.get_character_state(&"warrior")
+	assert_eq(warrior_state.add_spell_xp(&"warrior_spell", 4).get("xp", -1), 4)
 	var sword := _find_instance(
 		GameManager.get_run_inventory(),
 		&"warrior_training_sword",
@@ -234,6 +251,7 @@ func test_inventory_and_equipment_save_file_round_trip() -> void:
 		ItemDefinition.EquipmentSlot.WEAPON,
 	).get("success", false))
 	assert_true(GameManager.save_inventory_equipment_state(SAVE_PATH))
+	assert_eq(warrior_state.add_spell_xp(&"warrior_spell", 1).get("rank", -1), 2)
 	assert_true(GameManager.unequip_inventory_item(
 		&"warrior",
 		ItemDefinition.EquipmentSlot.WEAPON,
@@ -241,6 +259,8 @@ func test_inventory_and_equipment_save_file_round_trip() -> void:
 	assert_true(GameManager.load_inventory_equipment_state(SAVE_PATH))
 	var restored_state := GameManager.get_character_state(&"warrior")
 	assert_eq(restored_state.unit.attack_power.get_int(), 23)
+	assert_eq(restored_state.get_spell_progress(&"warrior_spell").xp, 4)
+	assert_eq(restored_state.get_spell_progress(&"warrior_spell").rank, 1)
 	assert_not_null(restored_state.equipment_loadout.get_item(
 		ItemDefinition.EquipmentSlot.WEAPON
 	))

@@ -131,11 +131,13 @@ func open_for_evolution(
 	if character_state == null:
 		return false
 	var progress := character_state.get_discipline_progress(
-		request.discipline_id
+		request.source_spell_id if request.source_spell_id != &"" \
+		else request.discipline_id
 	)
 	if progress == null \
-			or not progress.get_pending_rank_choices().has(request.pending_rank):
+		or not progress.get_pending_rank_choices().has(request.pending_rank):
 		return false
+	current_discipline_id = progress.get_skill_tree().discipline_id
 	_evolution_mode = true
 	_evolution_rank = request.pending_rank
 	_evolution_request_id = request.request_id
@@ -318,7 +320,8 @@ func confirm_evolution_choice(node_id: StringName = &"") -> bool:
 		return false
 	var accepted: bool = progression_controller.choose_progression_upgrade(
 		character_id,
-		current_discipline_id,
+		_evolution_source_spell_id \
+		if _evolution_source_spell_id != &"" else current_discipline_id,
 		_evolution_rank,
 		wanted_id
 	)
@@ -832,7 +835,7 @@ func _base_spell_for_discipline(
 	if character_state == null or character_state.unit == null or discipline == null:
 		return null
 	for spell in character_state.unit.spells:
-		if spell != null and spell.discipline_id == discipline.discipline_id:
+		if spell != null and spell.skill_tree == discipline:
 			return spell as Spell
 	return null
 

@@ -29,7 +29,7 @@ static func resolve_runtime_hero_data(
 			if legacy == null:
 				result.errors.append("UnitData legacy introuvable : %s" % path)
 				continue
-			result.heroes.append(_runtime_copy(legacy, legacy.spells, legacy.disciplines, legacy.active_spell_slots))
+			result.heroes.append(_runtime_copy(legacy, legacy.spells, legacy.active_spell_slots))
 		return result
 
 	var content := run_data.content_profile
@@ -47,7 +47,6 @@ static func resolve_runtime_hero_data(
 			_runtime_copy(
 				hero_profile.base_unit_data,
 				progression.spells,
-				progression.disciplines,
 				progression.active_spell_slots,
 			)
 		)
@@ -60,16 +59,12 @@ static func resolve_runtime_hero_data(
 static func _runtime_copy(
 		base: UnitData,
 		spells_source: Array[Spell],
-		disciplines_source: Array[DisciplineData],
 		active_spell_slots: int
 	) -> UnitData:
 	var runtime := base.duplicate(false) as UnitData
 	runtime.set_path_cache("")
 	var spells: Array[Spell] = []
 	spells.assign(spells_source)
-	var disciplines: Array[DisciplineData] = []
-	disciplines.assign(disciplines_source)
 	runtime.spells = spells
-	runtime.disciplines = disciplines
 	runtime.active_spell_slots = active_spell_slots
 	return runtime

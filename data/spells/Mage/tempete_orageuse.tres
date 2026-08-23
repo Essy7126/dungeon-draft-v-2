@@ -4,11 +4,12 @@
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_du8a3"]
 [ext_resource type="Texture2D" uid="uid://ciejclsrsoiwq" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="2_icon"]
 [ext_resource type="PackedScene" uid="uid://bnbb3vym4gxtq" path="res://asset/sorts/tempete_orageuse/tempete_orageuse_vfx.tscn" id="3_vfx"]
+[ext_resource type="Resource" path="res://data/characters/mage/disciplines/lightning.tres" id="4_tree"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"mage_thunderstorm"
-discipline_id = &"mage_fulguromancy"
+skill_tree = ExtResource("4_tree")
 spell_name = "Tempête orageuse"
 description = "Déchaîne une tempête électrique sur une zone carrée de 3 × 3. Chaque cible subit un unique impact."
 icon = ExtResource("2_icon")

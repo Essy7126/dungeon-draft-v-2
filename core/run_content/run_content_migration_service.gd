@@ -225,7 +225,6 @@ static func _profile_from_base(base: UnitData) -> CharacterProgressionProfile:
 	profile.character_id = base.get_effective_unit_id()
 	profile.active_spell_slots = base.active_spell_slots
 	profile.spells.assign(base.spells)
-	profile.disciplines.assign(base.disciplines)
 	return profile
 
 

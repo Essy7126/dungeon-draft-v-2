@@ -27,11 +27,11 @@ func _make_discipline() -> DisciplineData:
 	return discipline
 
 
-func _make_spell() -> Spell:
+func _make_spell(tree: DisciplineData) -> Spell:
 	var spell := Spell.new()
 	spell.spell_id = SHARED_SPELL_ID
 	spell.spell_name = "Sort partage"
-	spell.discipline_id = SHARED_DISCIPLINE_ID
+	spell.skill_tree = tree
 	return spell
 
 
@@ -39,8 +39,8 @@ func _make_hero_data(character_id: StringName, display_name: String) -> UnitData
 	var data := UnitData.new()
 	data.unit_id = character_id
 	data.unit_name = display_name
-	data.disciplines = [_make_discipline()]
-	data.spells = [_make_spell()]
+	var tree := _make_discipline()
+	data.spells = [_make_spell(tree)]
 	return data
 
 

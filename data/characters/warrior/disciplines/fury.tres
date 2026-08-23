@@ -14,7 +14,7 @@ script = ExtResource("1_g7nlc")
 script = ExtResource("5_ya6mr")
 amount = 5
 modifier_name = "Lames lourdes"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_cs1hn"]
 script = ExtResource("3_ewwhb")
@@ -24,7 +24,7 @@ display_name = "Lames lourdes"
 description = "+5 dégâts à toutes les cibles."
 discipline_id = &"warrior_fury"
 rank = 2
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_a0ecs")])
 
 [sub_resource type="Resource" id="Resource_pld3y"]
@@ -32,7 +32,7 @@ script = ExtResource("5_ya6mr")
 effect_type = 18
 amount = 1
 modifier_name = "Cercle de force"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_pbobj"]
 script = ExtResource("3_ewwhb")
@@ -42,7 +42,7 @@ display_name = "Cercle de force"
 description = "Repousse chaque ennemi touché de 1 case."
 discipline_id = &"warrior_fury"
 rank = 2
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_pld3y")])
 
 [sub_resource type="Resource" id="Resource_s1bhn"]
@@ -55,7 +55,7 @@ choices = Array[ExtResource("2_nc1lj")]([SubResource("Resource_cs1hn"), SubResou
 script = ExtResource("5_ya6mr")
 amount = 2
 modifier_name = "Ravageur"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_i8udk"]
 script = ExtResource("3_ewwhb")
@@ -65,7 +65,7 @@ display_name = "Ravageur"
 description = "+2 dégâts supplémentaires à toutes les cibles."
 discipline_id = &"warrior_fury"
 rank = 3
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_nmnkr")])
 
 [sub_resource type="Resource" id="Resource_au0ej"]
@@ -77,7 +77,7 @@ status_group = &"warrior_fury_bleeding"
 status_name = "Bleeding"
 status_damage_type = 0
 modifier_name = "Faucheur"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_h6eqp"]
 script = ExtResource("3_ewwhb")
@@ -87,7 +87,7 @@ display_name = "Faucheur"
 description = "Applique Saignement : 2 dégâts pendant 2 tours."
 discipline_id = &"warrior_fury"
 rank = 3
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_au0ej")])
 
 [sub_resource type="Resource" id="Resource_6x5js"]
@@ -98,7 +98,7 @@ duration = 1
 status_group = &"warrior_fury_slow"
 status_name = "Entrave"
 modifier_name = "Contrôleur"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_5s6te"]
 script = ExtResource("3_ewwhb")
@@ -108,7 +108,7 @@ display_name = "Contrôleur"
 description = "Les ennemis touchés perdent 1 PM au prochain tour."
 discipline_id = &"warrior_fury"
 rank = 3
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_6x5js")])
 
 [sub_resource type="Resource" id="Resource_oly2q"]
@@ -116,7 +116,7 @@ script = ExtResource("5_ya6mr")
 effect_type = 18
 amount = 1
 modifier_name = "Projection circulaire"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_8onb1"]
 script = ExtResource("3_ewwhb")
@@ -126,7 +126,7 @@ display_name = "Projection circulaire"
 description = "+1 case de poussée."
 discipline_id = &"warrior_fury"
 rank = 3
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_oly2q")])
 
 [sub_resource type="Resource" id="Resource_lsj5i"]
@@ -139,7 +139,7 @@ choices = Array[ExtResource("2_nc1lj")]([SubResource("Resource_i8udk"), SubResou
 script = ExtResource("5_ya6mr")
 amount = 2
 modifier_name = "Tourbillon renforcé"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_x2km0"]
 script = ExtResource("3_ewwhb")
@@ -149,7 +149,7 @@ display_name = "Tourbillon renforcé"
 description = "+2 dégâts supplémentaires."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_3ja32")])
 
 [sub_resource type="Resource" id="Resource_sg4i2"]
@@ -157,7 +157,7 @@ script = ExtResource("5_ya6mr")
 effect_type = 17
 amount = 1
 modifier_name = "Cercle élargi"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_813go"]
 script = ExtResource("3_ewwhb")
@@ -167,7 +167,7 @@ display_name = "Cercle élargi"
 description = "Ajoute les cases situées à 2 cases cardinales du Guerrier."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_sg4i2")])
 
 [sub_resource type="Resource" id="Resource_xc2w8"]
@@ -179,7 +179,7 @@ status_name = "Bleeding"
 status_mode = 1
 status_damage_type = 0
 modifier_name = "Lames dentelées"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_jqvq3"]
 script = ExtResource("3_ewwhb")
@@ -189,7 +189,7 @@ display_name = "Lames dentelées"
 description = "Le Saignement inflige +1 dégât par tour."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_xc2w8")])
 
 [sub_resource type="Resource" id="Resource_nique"]
@@ -201,7 +201,7 @@ status_name = "Bleeding"
 status_mode = 1
 status_damage_type = 0
 modifier_name = "Moisson longue"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_mjxcf"]
 script = ExtResource("3_ewwhb")
@@ -211,7 +211,7 @@ display_name = "Moisson longue"
 description = "Le Saignement dure 1 tour supplémentaire."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_nique")])
 
 [sub_resource type="Resource" id="Resource_4bx3m"]
@@ -222,7 +222,7 @@ duration = 1
 status_group = &"warrior_fury_slow"
 status_name = "Entrave"
 modifier_name = "Fauchage"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_uws8i"]
 script = ExtResource("3_ewwhb")
@@ -232,14 +232,14 @@ display_name = "Fauchage"
 description = "La perte passe à −2 PM."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_4bx3m")])
 
 [sub_resource type="Resource" id="Resource_ibu7m"]
 script = ExtResource("5_ya6mr")
 amount = 2
 modifier_name = "Balayage lourd"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_vjfl1"]
 script = ExtResource("3_ewwhb")
@@ -249,7 +249,7 @@ display_name = "Balayage lourd"
 description = "+2 dégâts directs."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_ibu7m")])
 
 [sub_resource type="Resource" id="Resource_1lkk4"]
@@ -257,7 +257,7 @@ script = ExtResource("5_ya6mr")
 effect_type = 18
 amount = 1
 modifier_name = "Onde circulaire"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_dnlkf"]
 script = ExtResource("3_ewwhb")
@@ -267,7 +267,7 @@ display_name = "Onde circulaire"
 description = "+1 case de poussée."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_1lkk4")])
 
 [sub_resource type="Resource" id="Resource_8ncjc"]
@@ -275,7 +275,7 @@ script = ExtResource("5_ya6mr")
 effect_type = 20
 amount = 4
 modifier_name = "Fracas circulaire"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_lge6q"]
 script = ExtResource("3_ewwhb")
@@ -285,7 +285,7 @@ display_name = "Fracas circulaire"
 description = "Une collision inflige 4 dégâts supplémentaires."
 discipline_id = &"warrior_fury"
 rank = 4
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_8ncjc")])
 
 [sub_resource type="Resource" id="Resource_1o0ka"]
@@ -298,14 +298,14 @@ choices = Array[ExtResource("2_nc1lj")]([SubResource("Resource_x2km0"), SubResou
 script = ExtResource("5_ya6mr")
 amount = 5
 modifier_name = "Tempête d’acier"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_xxrmw"]
 script = ExtResource("5_ya6mr")
 effect_type = 17
 amount = 1
 modifier_name = "Tempête d’acier"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_g2ykf"]
 script = ExtResource("3_ewwhb")
@@ -315,7 +315,7 @@ display_name = "Tempête d’acier"
 description = "+5 dégâts à toutes les cibles et zone élargie."
 discipline_id = &"warrior_fury"
 rank = 5
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_eg2j1"), SubResource("Resource_xxrmw")])
 
 [sub_resource type="Resource" id="Resource_bl2bt"]
@@ -328,7 +328,7 @@ status_name = "Saignement"
 status_mode = 2
 status_damage_type = 0
 modifier_name = "Moissonneur"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_u71l0"]
 script = ExtResource("3_ewwhb")
@@ -338,7 +338,7 @@ display_name = "Moissonneur"
 description = "Saignement : 3 dégâts pendant 3 tours."
 discipline_id = &"warrior_fury"
 rank = 5
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_bl2bt")])
 
 [sub_resource type="Resource" id="Resource_tvcdj"]
@@ -349,13 +349,13 @@ duration = 1
 status_group = &"warrior_fury_slow"
 status_name = "Fauchage"
 modifier_name = "Balayage total"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_bp8p0"]
 script = ExtResource("5_ya6mr")
 amount = 3
 modifier_name = "Balayage total"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_s1lq8"]
 script = ExtResource("3_ewwhb")
@@ -365,7 +365,7 @@ display_name = "Balayage total"
 description = "−2 PM et +3 dégâts à toutes les cibles."
 discipline_id = &"warrior_fury"
 rank = 5
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_tvcdj"), SubResource("Resource_bp8p0")])
 
 [sub_resource type="Resource" id="Resource_nmmqe"]
@@ -373,14 +373,14 @@ script = ExtResource("5_ya6mr")
 effect_type = 19
 amount = 3
 modifier_name = "Onde de choc"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_a60u5"]
 script = ExtResource("5_ya6mr")
 effect_type = 21
 amount = 6
 modifier_name = "Onde de choc"
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_le0yn"]
 script = ExtResource("3_ewwhb")
@@ -390,7 +390,7 @@ display_name = "Onde de choc"
 description = "Poussée totale de 3 cases et 6 dégâts de collision."
 discipline_id = &"warrior_fury"
 rank = 5
-target_spell_id = &"warrior_whirlwind"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_pd8kc")]([SubResource("Resource_nmmqe"), SubResource("Resource_a60u5")])
 
 [sub_resource type="Resource" id="Resource_a0drq"]

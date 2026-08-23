@@ -13,6 +13,6 @@ description = "Tir précis applique Saignement : 2 dégâts pendant 2 tours. Une
 card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 4
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])
 prerequisite_node_ids = Array[StringName]([&"elf_archer_piercing_shot"])

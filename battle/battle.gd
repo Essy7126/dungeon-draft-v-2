@@ -1888,7 +1888,7 @@ func _enqueue_existing_pending_evolutions() -> void:
 			StringName(choice.get("character_id", &"")),
 			StringName(choice.get("discipline_id", &"")),
 			int(choice.get("rank", 0)),
-			&"",
+			StringName(choice.get("spell_id", &"")),
 			0,
 		)
 

@@ -53,11 +53,9 @@ func _unit(rank_count := 4, choices_per_rank := 2) -> UnitData:
 	unit.unit_id = &"fixture_hero"
 	unit.unit_name = "Fixture Hero"
 	var discipline := _discipline(rank_count, choices_per_rank)
-	var disciplines: Array[DisciplineData] = [discipline]
-	unit.disciplines = disciplines
 	var spell := Spell.new()
 	spell.spell_id = &"fixture_spell"
-	spell.discipline_id = discipline.discipline_id
+	spell.skill_tree = discipline
 	spell.spell_name = "Fixture Spell"
 	spell.damage = 10
 	var spells: Array[Spell] = [spell]
@@ -202,8 +200,7 @@ func test_removed_external_resource_is_excluded_from_save_plan() -> void:
 	var external_discipline := ResourceLoader.load(
 		discipline_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as DisciplineData
-	var external_disciplines: Array[DisciplineData] = [external_discipline]
-	unit.disciplines = external_disciplines
+	unit.spells[0].skill_tree = external_discipline
 	var source := _save_fixture(unit, "removed_external")
 	var session := SkillTreeEditSession.new()
 	assert_true(session.open(source))

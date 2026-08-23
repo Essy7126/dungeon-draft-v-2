@@ -103,7 +103,7 @@ func test_mage_loadout_has_exactly_four_known_and_equipped_spells_in_order() -> 
 	)
 	assert_eq(
 		mage.loadout.get_equipped_spells().map(
-			func(spell): return spell.discipline_id
+			func(spell): return spell.get_skill_tree_id()
 		),
 		DISCIPLINE_IDS,
 	)

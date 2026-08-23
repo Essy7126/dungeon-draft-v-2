@@ -305,6 +305,7 @@ func get_progression_visual_snapshot() -> Array[Dictionary]:
 		var delta := row.get("delta") as DisciplineProgressDelta
 		result.append({
 			"character_id": delta.character_id,
+			"spell_id": delta.spell_id,
 			"discipline_id": delta.discipline_id,
 			"value": bar.value,
 			"xp_after": delta.xp_after,
@@ -584,7 +585,7 @@ func _start_stats_reveal() -> void:
 
 
 func _start_progression_reveal() -> void:
-	phase_title.text = "PROGRESSION DES DISCIPLINES"
+	phase_title.text = "PROGRESSION DES SORTS"
 	status_label.text = "Récapitulatif — aucun nouveau choix n’est demandé."
 	var equipment_rewards_enabled := (
 		GameManager.are_equipment_rewards_enabled()

@@ -144,7 +144,7 @@ func test_each_new_rank_has_exactly_two_expected_exclusive_choices() -> void:
 			discipline.ranks[1].choices.map(
 				func(upgrade): return upgrade.target_spell_id
 			),
-			TARGET_SPELL_IDS[index],
+			[&"", &""],
 		)
 
 
@@ -680,13 +680,18 @@ func test_cross_discipline_choices_install_independent_targeted_modifiers() -> v
 	_raise_and_select(state, &"assassin", VENOMOUS_BLADE_ID)
 	_raise_and_select(state, &"healer", PROTECTIVE_BARK_ID)
 	_raise_and_select(state, &"mage", INCANDESCENT_ID)
-	var target_ids := state.unit.get_progression_spell_modifiers().map(
-		func(modifier): return modifier.target_spell_id
-	)
-	assert_eq(target_ids.size(), 4)
-	assert_true(target_ids.has(&"elf_precise_shot"))
-	assert_true(target_ids.has(&"elf_sneak_strike"))
-	assert_true(target_ids.has(&"elf_sylvan_heal"))
-	assert_true(target_ids.has(&"elf_fireball"))
+	var modifiers_by_spell := state.get_active_progression_spell_modifiers_by_spell()
+	assert_eq(modifiers_by_spell.size(), 4)
+	assert_true(modifiers_by_spell.has(&"elf_precise_shot"))
+	assert_true(modifiers_by_spell.has(&"elf_sneak_strike"))
+	assert_true(modifiers_by_spell.has(&"elf_sylvan_heal"))
+	assert_true(modifiers_by_spell.has(&"elf_fireball"))
+	assert_true(modifiers_by_spell.values().all(
+		func(modifiers): return not modifiers.is_empty()
+	))
 	state._sync_progression_modifiers_to_unit()
-	assert_eq(state.unit.get_progression_spell_modifiers().size(), 4)
+	for spell_id in modifiers_by_spell:
+		assert_eq(
+			state.unit.get_progression_spell_modifiers_for(spell_id),
+			modifiers_by_spell[spell_id],
+		)

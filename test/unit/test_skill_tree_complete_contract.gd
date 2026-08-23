@@ -36,7 +36,8 @@ func test_fixed_production_trio_owns_twelve_complete_trees() -> void:
 			assert_not_null(spell)
 			assert_false(spell_ids.has(spell.spell_id), str(spell.spell_id))
 			spell_ids.append(spell.spell_id)
-			hero_discipline_ids.append(spell.discipline_id)
+			assert_not_null(spell.skill_tree)
+			hero_discipline_ids.append(spell.skill_tree.discipline_id)
 		assert_eq(_unique(hero_discipline_ids).size(), 4, path)
 		for discipline in hero.disciplines:
 			tree_count += 1
@@ -63,7 +64,10 @@ func test_fixed_production_trio_owns_twelve_complete_trees() -> void:
 					assert_false(node.display_name.strip_edges().is_empty())
 					assert_false(node.description.strip_edges().is_empty())
 					assert_eq(node.discipline_id, discipline.discipline_id)
-					assert_true(spell_ids.has(node.target_spell_id), str(node.target_spell_id))
+					assert_eq(node.target_spell_id, &"", str(node.upgrade_id))
+					assert_true(node.spell_modifiers.all(
+						func(modifier): return modifier.target_spell_id == &""
+					))
 					assert_false(node.spell_modifiers.is_empty(), str(node.upgrade_id))
 	assert_eq(character_ids, [&"elf", &"mage", &"warrior"])
 	assert_eq(tree_count, 12)

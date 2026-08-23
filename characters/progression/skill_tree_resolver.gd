@@ -249,7 +249,8 @@ static func validate_discipline(
 			else:
 				nodes_by_id[choice.upgrade_id] = choice
 				node_ranks[choice.upgrade_id] = rank_data.rank
-			if choice.discipline_id != discipline.discipline_id:
+			if choice.discipline_id != &"" \
+					and choice.discipline_id != discipline.discipline_id:
 				_append_diagnostic(
 					diagnostics,
 					"DISCIPLINE_MISMATCH: %s declares %s instead of %s" % [

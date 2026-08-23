@@ -616,7 +616,9 @@ func _gather_modifiers(caster: Unit, spell: Spell) -> Array:
 			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
 				mods.append(m)
 	if caster != null:
-		for m in caster.get_progression_spell_modifiers():
+		for m in caster.get_progression_spell_modifiers_for(
+				spell.get_effective_spell_id()
+			):
 			if m is SpellModifier and m.applies_to(spell) and not mods.has(m):
 				mods.append(m)
 		for m in caster.get_equipment_spell_modifiers():

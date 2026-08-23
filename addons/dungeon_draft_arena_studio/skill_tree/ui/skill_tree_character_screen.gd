@@ -12,6 +12,9 @@ signal property_change_requested(
 signal team_change_requested(unit: UnitData, team: int)
 signal spell_edit_requested(spell: Spell)
 signal spell_tree_requested(discipline_id: StringName)
+signal spell_creation_requested
+signal existing_spell_requested(spell: Spell)
+signal spell_detach_requested(spell: Spell)
 
 const TAB_NAMES := [
 	"Identité", "Combat", "Défenses", "Sorts", "Pilotage", "Présentation", "Avancé",
@@ -64,6 +67,13 @@ var _messages: Array[SkillTreeValidationMessage] = []
 var _guided := true
 var _selected_spell: Spell = null
 var _editing_spell: Spell = null
+## Sorts partagés créés dans la session en cours : ils n'appartiennent encore à
+## aucun personnage, mais doivent rester visibles pour pouvoir être rattachés.
+var _standalone_spells: Array[Spell] = []
+var picker_dialog: AcceptDialog
+var picker_filter: LineEdit
+var picker_list: ItemList
+var _picker_entries: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -76,6 +86,7 @@ func _ready() -> void:
 	content.add_child(_build_sheet())
 	content.add_child(_build_summary())
 	add_child(content)
+	_build_spell_picker()
 	_rebuild_catalog()
 	_refresh_sheet()
 
@@ -86,16 +97,20 @@ func set_catalog(heroes: Array[Dictionary], current_path: String) -> void:
 	_rebuild_catalog()
 
 
+## `standalone` liste les sorts partagés créés dans la session : ils ne figurent
+## dans aucune liste de personnage, et disparaîtraient de l'écran sans cela.
 func set_document(
 		unit: UnitData,
 		current_path: String,
 		messages: Array[SkillTreeValidationMessage],
-		guided: bool
+		guided: bool,
+		standalone: Array[Spell] = []
 	) -> void:
 	_unit = unit
 	_current_path = current_path
 	_messages = messages
 	_guided = guided
+	_standalone_spells = standalone.duplicate()
 	if _selected_spell == null or unit == null or not unit.spells.has(_selected_spell):
 		_selected_spell = null
 		_editing_spell = null
@@ -335,8 +350,25 @@ func _build_spells() -> void:
 	_add_bool(box, &"basic_attack_enabled", "Attaque de base disponible")
 	_add_number(box, &"active_spell_slots", "Emplacements de sorts actifs", "int", 1.0, 12.0, 1.0)
 	box.add_child(_section("SORTS CONNUS"))
+	# Seul endroit du Studio où l'on crée, référence et retire un sort. La liste
+	# est générique : elle vaut pour un héros comme pour un ennemi, qu'il ait ou
+	# non des disciplines.
+	var actions := HFlowContainer.new()
+	actions.add_theme_constant_override("h_separation", 6)
+	box.add_child(actions)
+	var create := Button.new()
+	create.text = "+ Nouveau sort"
+	create.tooltip_text = "Créer un sort à partir d’un modèle de départ."
+	create.pressed.connect(func() -> void: spell_creation_requested.emit())
+	actions.add_child(create)
+	var attach := Button.new()
+	attach.text = "+ Ajouter un sort existant"
+	attach.tooltip_text = "Référencer un sort déjà écrit ailleurs dans le projet, sans en faire de copie."
+	attach.pressed.connect(_open_spell_picker)
+	actions.add_child(attach)
 	if _unit.spells.is_empty():
 		box.add_child(_info("Aucun sort n’est associé à ce personnage."))
+	var owner_counts := _spell_owner_counts()
 	for spell in _unit.spells:
 		if spell == null:
 			box.add_child(_warning("Une entrée de sort est vide."))
@@ -353,10 +385,196 @@ func _build_spells() -> void:
 			_refresh_sheet.call_deferred()
 		)
 		box.add_child(select)
+		_add_spell_badges(box, spell, owner_counts)
 	if _selected_spell != null:
 		_add_spell_actions(box, _selected_spell)
 		if _editing_spell == _selected_spell:
 			_build_spell_editor(box, _selected_spell)
+	if _standalone_spells.is_empty():
+		return
+	box.add_child(HSeparator.new())
+	box.add_child(_section("SORTS PARTAGÉS CRÉÉS DANS CETTE SESSION"))
+	box.add_child(_info(
+		"Ces sorts n’appartiennent encore à aucun personnage. Ils seront écrits dans le dossier partagé à la prochaine sauvegarde ; ajoutez-les ici si ce personnage doit pouvoir les lancer."
+	))
+	for spell in _standalone_spells:
+		if spell == null:
+			continue
+		var row := HBoxContainer.new()
+		box.add_child(row)
+		var label := Label.new()
+		label.text = spell.spell_name
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.clip_text = true
+		row.add_child(label)
+		var adopt := Button.new()
+		adopt.text = "Ajouter à ce personnage"
+		adopt.tooltip_text = "Référence le même fichier : aucune copie n’est créée."
+		adopt.pressed.connect(func() -> void: existing_spell_requested.emit(spell))
+		row.add_child(adopt)
+
+
+## Pastilles de sécurité : elles préviennent avant de modifier un sort dont
+## dépend autre chose. Les effets s'appuient sur les méthodes déjà portées par
+## Spell plutôt que sur une relecture des champs bruts.
+func _add_spell_badges(
+		parent: VBoxContainer, spell: Spell, owner_counts: Dictionary
+	) -> void:
+	var labels := PackedStringArray()
+	if spell.deals_damage():
+		labels.append("Dégâts")
+	if spell.is_healing():
+		labels.append("Soin")
+	if spell.has_terrain_effect():
+		labels.append("Terrain")
+	if spell.applied_status != null:
+		labels.append("Statut")
+	if spell.is_summon():
+		labels.append("Invocation")
+	var discipline := _base_spell_discipline(spell)
+	if discipline != null:
+		labels.append("Arbre — %s" % discipline.display_name)
+	var owners := int(owner_counts.get(spell.resource_path, 0))
+	if owners > 1:
+		labels.append("Partagé · %d personnages" % owners)
+	if spell.resource_path.begins_with(
+			SpellIdPathService.SHARED_SPELL_DIRECTORY + "/"
+		):
+		labels.append("Dossier partagé")
+	if labels.is_empty():
+		return
+	var badges := HFlowContainer.new()
+	badges.add_theme_constant_override("h_separation", 4)
+	badges.add_theme_constant_override("v_separation", 3)
+	parent.add_child(badges)
+	for text in labels:
+		badges.add_child(_badge(str(text)))
+
+
+## Combien de personnages du projet référencent chaque fichier de sort.
+## SkillTreeReferenceIndex.shared_resources() ne répond pas à cette question :
+## son index est construit personnage par personnage, donc un sort référencé une
+## seule fois par le personnage ouvert n'y apparaît jamais, même si trois autres
+## personnages l'utilisent. Le catalogue est déjà chargé : aucune relecture disque.
+func _spell_owner_counts() -> Dictionary:
+	var counts := {}
+	for entry in _heroes:
+		var unit := entry.get("resource") as UnitData
+		if unit == null:
+			continue
+		var seen := {}
+		for spell in unit.spells:
+			if spell == null or spell.resource_path.is_empty() \
+					or seen.has(spell.resource_path):
+				continue
+			seen[spell.resource_path] = true
+			counts[spell.resource_path] = int(
+				counts.get(spell.resource_path, 0)
+			) + 1
+	return counts
+
+
+func _base_spell_discipline(spell: Spell) -> DisciplineData:
+	return spell.skill_tree if spell != null else null
+
+
+func _build_spell_picker() -> void:
+	picker_dialog = AcceptDialog.new()
+	picker_dialog.title = "Ajouter un sort existant"
+	picker_dialog.ok_button_text = "Ajouter au personnage"
+	picker_dialog.min_size = Vector2i(520, 420)
+	# Sans plafond, la liste et le libellé en retour à la ligne automatique
+	# gonflent la hauteur demandée et poussent le bouton hors de l'écran.
+	picker_dialog.max_size = Vector2i(600, 620)
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(480, 360)
+	picker_dialog.add_child(box)
+	box.add_child(_info(
+		"Le sort choisi est référencé tel quel : le même fichier servira aux deux personnages, et une modification profitera à tous."
+	))
+	picker_filter = LineEdit.new()
+	picker_filter.placeholder_text = "Rechercher un sort…"
+	picker_filter.text_changed.connect(func(_value: String) -> void: _rebuild_spell_picker())
+	box.add_child(picker_filter)
+	picker_list = ItemList.new()
+	picker_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# ItemList avale les retours à la ligne hors ICON_MODE_TOP : l'identifiant et
+	# le chemin passent par l'info-bulle, jamais par une deuxième ligne.
+	box.add_child(picker_list)
+	picker_dialog.confirmed.connect(_confirm_spell_picker)
+	add_child(picker_dialog)
+
+
+func _open_spell_picker() -> void:
+	if _unit == null or picker_dialog == null:
+		return
+	var known := {}
+	for spell in _unit.spells:
+		if spell != null:
+			known[str(spell.get_effective_spell_id())] = true
+	_picker_entries.clear()
+	for entry in SkillTreeCatalogService.all_project_spells():
+		if known.has(str(entry.get("spell_id", &""))):
+			continue
+		_picker_entries.append(entry)
+	picker_filter.text = ""
+	_rebuild_spell_picker()
+	picker_dialog.popup_centered(Vector2i(560, 460))
+
+
+func _rebuild_spell_picker() -> void:
+	if picker_list == null:
+		return
+	picker_list.clear()
+	var query := picker_filter.text.strip_edges().to_lower() if picker_filter != null else ""
+	for entry in _picker_entries:
+		var display_name := str(entry.get("spell_name", ""))
+		var spell_id := str(entry.get("spell_id", ""))
+		if not query.is_empty() and not display_name.to_lower().contains(query) \
+				and not spell_id.to_lower().contains(query):
+			continue
+		var index := picker_list.add_item(display_name)
+		picker_list.set_item_metadata(index, entry)
+		picker_list.set_item_tooltip(
+			index, "%s\n%s" % [spell_id, str(entry.get("path", ""))]
+		)
+	if picker_list.item_count > 0:
+		picker_list.select(0)
+	else:
+		picker_list.add_item("Aucun sort disponible")
+		picker_list.set_item_disabled(0, true)
+
+
+func _confirm_spell_picker() -> void:
+	if picker_list == null:
+		return
+	var selected := picker_list.get_selected_items()
+	if selected.is_empty():
+		return
+	var metadata = picker_list.get_item_metadata(selected[0])
+	if not metadata is Dictionary:
+		return
+	var spell := (metadata as Dictionary).get("spell") as Spell
+	if spell != null:
+		existing_spell_requested.emit(spell)
+
+
+func _badge(text: String) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 12)
+	label.add_theme_color_override("font_color", MUTED)
+	# Sans SHRINK, la pastille peindrait toute la cellule du conteneur.
+	label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.18, 0.22, 0.28, 1.0)
+	style.set_corner_radius_all(4)
+	style.content_margin_left = 6.0
+	style.content_margin_right = 6.0
+	style.content_margin_top = 2.0
+	style.content_margin_bottom = 2.0
+	label.add_theme_stylebox_override("normal", style)
+	return label
 
 
 func _add_spell_actions(parent: VBoxContainer, spell: Spell) -> void:
@@ -372,6 +590,11 @@ func _add_spell_actions(parent: VBoxContainer, spell: Spell) -> void:
 		_refresh_sheet.call_deferred()
 	)
 	actions.add_child(edit)
+	var remove := Button.new()
+	remove.text = "Retirer de ce personnage"
+	remove.tooltip_text = "Retire le sort et l’accès à son arbre pour ce personnage. Les fichiers restent sur le disque, et les autres personnages ne changent pas."
+	remove.pressed.connect(func() -> void: spell_detach_requested.emit(spell))
+	actions.add_child(remove)
 	var discipline := _discipline_for_spell(spell)
 	if discipline == null:
 		parent.add_child(_info("Aucun arbre de progression associé à ce sort."))
@@ -388,7 +611,7 @@ func _build_spell_editor(parent: VBoxContainer, spell: Spell) -> void:
 	_add_target_line(parent, spell, &"spell_name", "Nom du sort")
 	_add_target_multiline(parent, spell, &"description", "Description")
 	_add_target_line(parent, spell, &"spell_id", "Identifiant stable du sort")
-	_add_target_line(parent, spell, &"discipline_id", "Discipline associée")
+	_add_target_resource(parent, spell, &"skill_tree", "Arbre de progression", "DisciplineData")
 	parent.add_child(_section("COÛT ET PORTÉE"))
 	_add_target_number(parent, spell, &"ap_cost", "Coût en PA", "int", 0.0, 99.0, 1.0)
 	_add_target_number(parent, spell, &"minimum_range", "Portée minimale", "int", 0.0, 99.0, 1.0)
@@ -766,12 +989,7 @@ func _emit_target_change(
 
 
 func _discipline_for_spell(spell: Spell) -> DisciplineData:
-	if spell == null or _unit == null or spell.discipline_id == &"":
-		return null
-	for discipline in _unit.disciplines:
-		if discipline != null and discipline.discipline_id == spell.discipline_id:
-			return discipline
-	return null
+	return spell.skill_tree if spell != null and _unit != null else null
 
 
 func _spell_summary(spell: Spell) -> String:

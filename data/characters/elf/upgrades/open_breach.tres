@@ -11,6 +11,6 @@ display_name = "Brèche ouverte"
 description = "Le bonus de Tir perforant s’applique aux 2 prochaines attaques physiques reçues."
 discipline_id = &"archer"
 rank = 4
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])
 prerequisite_node_ids = Array[StringName]([&"elf_archer_piercing_shot"])

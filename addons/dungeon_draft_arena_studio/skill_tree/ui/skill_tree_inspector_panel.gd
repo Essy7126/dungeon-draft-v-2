@@ -264,12 +264,19 @@ func _build_node(node: SkillUpgradeData) -> void:
 
 func _build_spell(spell: Spell) -> void:
 	title_label.text = "SORT · %s" % spell.spell_name.to_upper()
-	help_label.text = "Le sort de base est la racine de la discipline. Les améliorations appliquent leurs modificateurs à son identifiant stable."
+	# Tous les sorts ne possèdent pas un arbre : un ennemi peut n'en avoir
+	# aucune, et un sort partagé peut servir à plusieurs personnages. L'aide ne
+	# parle donc de la racine d'un arbre que lorsque c'en est vraiment une.
+	help_label.text = (
+		"Ce sort possède son arbre de progression. Les améliorations sans cible explicite s’appliquent à ce sort."
+		if _is_base_spell_of_current_unit(spell)
+		else "Ce sort est une Resource autonome : il peut être utilisé par plusieurs personnages sans être dupliqué."
+	)
 	var general := _box("Général")
 	_add_line(general, spell, &"spell_name", "Nom du sort", "Nom visible pendant le combat.")
 	_add_multiline(general, spell, &"description", "Description", "Explique ce que fait le sort sans vocabulaire technique.")
 	_add_stable_id(general, spell, &"spell_id", "Identifiant stable du sort")
-	_add_stable_id(general, spell, &"discipline_id", "Discipline associée")
+	_add_resource(general, spell, &"skill_tree", "Arbre de progression", "DisciplineData")
 	var sort_box := _box("Sort")
 	_add_integer(sort_box, spell, &"ap_cost", "Coût en PA", "Points d’action consommés lors d’un lancement réussi.", 0, 99)
 	_add_integer(sort_box, spell, &"minimum_range", "Portée minimale", "Distance minimale autorisée.", 0, 99)
@@ -885,7 +892,7 @@ func _add_base_spell_selector(
 			continue
 		option.add_item(spell.spell_name)
 		option.set_item_metadata(option.item_count - 1, spell)
-		if spell.discipline_id == discipline.discipline_id:
+		if spell.skill_tree == discipline:
 			option.select(option.item_count - 1)
 	field.add_child(option)
 	option.item_selected.connect(func(index: int):
@@ -893,8 +900,8 @@ func _add_base_spell_selector(
 		if selected_spell != null:
 			property_change_requested.emit(
 				selected_spell,
-				&"discipline_id",
-				discipline.discipline_id,
+				&"skill_tree",
+				discipline,
 				"Associer %s à %s" % [selected_spell.spell_name, discipline.display_name]
 			)
 	)
@@ -1045,3 +1052,9 @@ func _update_tab_visibility() -> void:
 		var tab_name := tabs.get_tab_title(index)
 		var box := _box(tab_name)
 		tabs.set_tab_hidden(index, box.get_child_count() == 0 or (_guided and tab_name == "Avancé"))
+
+
+## Vrai si ce sort est le sort de base d'une des disciplines du personnage
+## ouvert. C'est la seule situation où un sort est la racine d'un arbre.
+func _is_base_spell_of_current_unit(spell: Spell) -> bool:
+	return spell != null and _unit != null and spell.skill_tree != null

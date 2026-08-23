@@ -8,8 +8,16 @@ signal history_changed
 
 const HISTORY_LIMIT := 256
 const PROGRESSION_UNIT_PROPERTIES: Array[StringName] = [
-	&"active_spell_slots", &"spells", &"disciplines",
+	&"active_spell_slots", &"spells",
 ]
+## Modeles de depart proposes par la popup de creation d'un sort. Ils vivent au
+## niveau du Studio uniquement : aucune sous-classe de Spell, aucun champ ajoute
+## a data/spell.gd, et aucun verrouillage une fois la fiche ouverte.
+const SPELL_TEMPLATE_SIMPLE_ATTACK: StringName = &"simple_attack"
+const SPELL_TEMPLATE_HEAL: StringName = &"heal"
+const SPELL_TEMPLATE_PUSH_AREA: StringName = &"push_area"
+const SPELL_TEMPLATE_STATUS: StringName = &"status"
+const SPELL_TEMPLATE_SUMMON: StringName = &"summon"
 
 ## Historique strictement local au document. Le Studio ne doit jamais publier
 ## ses actions dans l'historique global de l'editeur Godot.
@@ -29,6 +37,10 @@ var unit_view_is_adapter := false
 var source_to_work := {}
 var work_to_source := {}
 var new_resource_paths := {}
+## Sorts crees comme partages : ils n'appartiennent a aucune liste du
+## personnage ouvert. Sans cette trace, le document paraitrait propre et le plan
+## de sauvegarde les declarerait « non rattaches », donc ne les ecrirait jamais.
+var standalone_spells: Array[Spell] = []
 var path_reservations := SkillTreePathReservationService.new()
 var selected_discipline_id: StringName = &""
 var selected_subject: Resource = null
@@ -55,6 +67,7 @@ func open(source: UnitData) -> bool:
 	source_to_work = copied.get("source_to_work", {})
 	work_to_source = copied.get("work_to_source", {})
 	new_resource_paths.clear()
+	standalone_spells.clear()
 	path_reservations.clear()
 	selected_discipline_id = (
 		working_unit.disciplines[0].discipline_id
@@ -127,6 +140,7 @@ func release_document(emit_change := true) -> void:
 	source_to_work.clear()
 	work_to_source.clear()
 	new_resource_paths.clear()
+	standalone_spells.clear()
 	path_reservations.clear()
 	source_unit = null
 	working_unit = null
@@ -245,7 +259,13 @@ func select_subject(subject: Resource) -> void:
 
 
 func is_dirty() -> bool:
-	return working_unit != null and current_fingerprint() != saved_fingerprint
+	if working_unit == null:
+		return false
+	# Un sort cree comme partage ne change aucun champ du personnage : sans ce
+	# second motif, le document se dirait propre et la sauvegarde refuserait
+	# d'ecrire son nouveau fichier.
+	return current_fingerprint() != saved_fingerprint \
+		or not standalone_spells.is_empty()
 
 
 func current_fingerprint() -> String:
@@ -297,6 +317,12 @@ func is_profile_authoritative() -> bool:
 func is_resource_reachable(resource: Resource) -> bool:
 	if resource == null:
 		return false
+	# Un sort partage n'est atteignable depuis aucune liste du personnage. Il
+	# n'est pourtant pas detache : il vient d'etre cree et attend son ecriture.
+	# Le test de type precede volontairement le has() : sur un Array[Spell],
+	# chercher une Resource d'un autre type declenche une erreur du moteur.
+	if resource is Spell and standalone_spells.has(resource):
+		return true
 	if is_profile_authoritative():
 		_sync_profile_from_unit()
 		if resource == working_progression_profile:
@@ -357,26 +383,18 @@ func _sync_profile_from_unit() -> void:
 	var source_is_aliased := source_progression_profile != null and (
 		source_progression_profile.spells.any(
 			func(spell: Spell): return work_to_source.has(spell)
-		) or source_progression_profile.disciplines.any(
-			func(discipline: DisciplineData): return work_to_source.has(discipline)
 		)
 	)
 	if source_is_aliased and source_unit != null:
 		var source_spells: Array[Spell] = []
 		source_spells.assign(source_unit.spells)
 		source_progression_profile.spells = source_spells
-		var source_disciplines: Array[DisciplineData] = []
-		source_disciplines.assign(source_unit.disciplines)
-		source_progression_profile.disciplines = source_disciplines
 	working_progression_profile.character_id = source_progression_profile.character_id \
 		if source_progression_profile != null else working_unit.get_effective_unit_id()
 	working_progression_profile.active_spell_slots = working_unit.active_spell_slots
 	var working_spells: Array[Spell] = []
 	working_spells.assign(working_unit.spells)
 	working_progression_profile.spells = working_spells
-	var working_disciplines: Array[DisciplineData] = []
-	working_disciplines.assign(working_unit.disciplines)
-	working_progression_profile.disciplines = working_disciplines
 
 
 func _copy_progression_profile_shell(
@@ -388,9 +406,6 @@ func _copy_progression_profile_shell(
 	var copied_spells: Array[Spell] = []
 	copied_spells.assign(source.spells)
 	copied.spells = copied_spells
-	var copied_disciplines: Array[DisciplineData] = []
-	copied_disciplines.assign(source.disciplines)
-	copied.disciplines = copied_disciplines
 	return copied
 
 
@@ -736,7 +751,7 @@ func add_discipline(display_name: String, discipline_id: StringName) -> Discipli
 	spell.spell_id = StringName("%s_%s_base_spell" % [
 		_slug(str(working_unit.get_effective_unit_id())), _slug(str(discipline_id)),
 	])
-	spell.discipline_id = discipline_id
+	spell.skill_tree = discipline
 	spell.spell_name = "Sort de base — %s" % discipline.display_name
 	spell.description = "Décrivez l’action disponible avant les améliorations."
 	var spell_path := "res://data/characters/%s/spells/%s.tres" % [
@@ -744,12 +759,9 @@ func add_discipline(display_name: String, discipline_id: StringName) -> Discipli
 	]
 	new_resource_paths[spell] = spell_path
 	spell.set_path_cache(spell_path)
-	var disciplines: Array[DisciplineData] = working_unit.disciplines.duplicate()
-	disciplines.append(discipline)
 	var spells: Array[Spell] = working_unit.spells.duplicate()
 	spells.append(spell)
-	if not commit_changes("Créer la discipline %s et son sort" % discipline.display_name, [
-		_change(working_unit, &"disciplines", disciplines),
+	if not commit_changes("Créer l'arbre %s et son sort" % discipline.display_name, [
 		_change(working_unit, &"spells", spells),
 	]):
 		new_resource_paths.erase(discipline)
@@ -758,6 +770,142 @@ func add_discipline(display_name: String, discipline_id: StringName) -> Discipli
 	selected_discipline_id = discipline.discipline_id
 	select_subject(discipline)
 	return discipline
+
+
+## Cree un Spell autonome et le range selon le contexte de creation. L'attache a
+## un personnage est une consequence de ce contexte, jamais une propriete
+## exclusive du sort : un sort cree « pour ce personnage » pourra etre reference
+## plus tard par un autre sans etre duplique.
+##
+## `heroes` est le catalogue du projet. Vide, la verification d'unicite se limite
+## au personnage ouvert et aux sorts deja crees dans cette session.
+func create_spell(
+		template: StringName,
+		display_name: String,
+		attach_to_character: bool,
+		heroes: Array[Dictionary] = []
+	) -> Spell:
+	if working_unit == null:
+		return null
+	var spell := Spell.new()
+	var trimmed := display_name.strip_edges()
+	spell.spell_name = trimmed if not trimmed.is_empty() else "Nouveau sort"
+	spell.description = "Decrivez ce que fait ce sort, sans vocabulaire technique."
+	_apply_spell_template(spell, template)
+	var path_service := SpellIdPathService.new()
+	spell.spell_id = path_service.suggest_spell_id(
+		spell.spell_name, heroes, canonical_source_path(), known_spell_ids()
+	)
+	var path := path_service.character_draft_path(working_unit, spell.spell_id) \
+		if attach_to_character else path_service.shared_draft_path(spell.spell_id)
+	path = path_reservations.generate_unique_path(path, "Spell")
+	if path.is_empty():
+		return null
+	new_resource_paths[spell] = path
+	spell.set_path_cache(path)
+	if attach_to_character:
+		var spells: Array[Spell] = working_unit.spells.duplicate()
+		spells.append(spell)
+		if not commit_changes("Creer le sort %s" % spell.spell_name, [
+			_change(working_unit, &"spells", spells),
+		]):
+			new_resource_paths.erase(spell)
+			return null
+	else:
+		standalone_spells.append(spell)
+	path_reservations.reserve(path, spell, "Spell")
+	select_subject(spell)
+	return spell
+
+
+## Ajoute une reference vers un Spell deja ecrit ailleurs dans le projet. La
+## Resource n'est jamais recopiee sur le disque : le meme fichier .tres sert aux
+## deux personnages, et une correction profite a tous ceux qui le referencent.
+func attach_existing_spell(spell: Spell) -> bool:
+	if working_unit == null or spell == null:
+		return false
+	var target_id := spell.get_effective_spell_id()
+	for candidate in working_unit.spells:
+		if candidate != null and candidate.get_effective_spell_id() == target_id:
+			return false
+	# Le sort choisi vient du disque, et le Studio n'edite jamais une Resource
+	# source. On lui associe donc une copie de travail qui garde son chemin.
+	var work := spell
+	if not standalone_spells.has(spell) and not work_to_source.has(spell):
+		work = SkillTreeCopyService.copy_spell(
+			spell, source_to_work, work_to_source
+		)
+	if work == null:
+		return false
+	var spells: Array[Spell] = working_unit.spells.duplicate()
+	spells.append(work)
+	if not commit_changes("Ajouter le sort %s" % work.spell_name, [
+		_change(working_unit, &"spells", spells),
+	]):
+		return false
+	standalone_spells.erase(spell)
+	select_subject(work)
+	return true
+
+
+## Retire uniquement la reference. Le fichier .tres n'est jamais supprime, et
+## les autres personnages qui le referencent ne changent pas.
+##
+func detach_spell(spell: Spell) -> bool:
+	if working_unit == null or spell == null:
+		return false
+	var spells: Array[Spell] = working_unit.spells.duplicate()
+	var index := spells.find(spell)
+	if index < 0:
+		return false
+	spells.remove_at(index)
+	if not commit_changes("Retirer le sort %s" % spell.spell_name, [
+		_change(working_unit, &"spells", spells),
+	]):
+		return false
+	if selected_subject == spell:
+		select_subject(working_unit)
+	return true
+
+
+## Discipline dont ce sort est la racine, ou null. C'est ce lien qui interdit le
+## retrait : sans sort de base, l'arbre de la discipline n'a plus de depart.
+func base_spell_discipline(spell: Spell) -> DisciplineData:
+	return spell.skill_tree if working_unit != null and spell != null else null
+
+
+## Identifiants deja pris dans le document en cours, disque compris ou non : le
+## disque ne connait pas encore les sorts crees pendant cette session.
+func known_spell_ids() -> Array:
+	var result: Array = []
+	if working_unit != null:
+		for spell in working_unit.spells:
+			if spell != null:
+				result.append(spell.get_effective_spell_id())
+	for spell in standalone_spells:
+		if spell != null:
+			result.append(spell.get_effective_spell_id())
+	return result
+
+
+## Un modele n'initialise que des champs sans ambiguite de conception. Aucune
+## valeur d'equilibrage — degats, cout, portee — n'est devinee : ce sont des
+## decisions d'auteur, pas des valeurs par defaut d'un assistant. Aucun de ces
+## prereglages ne verrouille ni ne masque les autres groupes ensuite.
+static func _apply_spell_template(spell: Spell, template: StringName) -> void:
+	match template:
+		SPELL_TEMPLATE_SIMPLE_ATTACK:
+			spell.can_target_enemy = true
+		SPELL_TEMPLATE_HEAL:
+			spell.can_target_ally = true
+			spell.can_target_self = true
+			spell.can_target_enemy = false
+		SPELL_TEMPLATE_SUMMON:
+			spell.delayed_resolution = Spell.DelayedResolution.SUMMON
+		_:
+			# Poussee / Zone et Statut n'imposent rien : ils orientent seulement
+			# l'onglet sur lequel la fiche s'ouvre.
+			pass
 
 
 func duplicate_current_discipline() -> DisciplineData:
@@ -787,7 +935,7 @@ func duplicate_current_discipline() -> DisciplineData:
 			_slug(str(working_unit.get_effective_unit_id())), _slug(candidate),
 		])
 		new_spell.spell_id = new_spell_id
-		new_spell.discipline_id = copy.discipline_id
+		new_spell.skill_tree = copy
 		new_spell.spell_name = "%s — copie" % source_spell.spell_name
 		var permanent_modifiers: Array[SpellModifier] = []
 		for modifier in source_spell.modifiers:
@@ -830,14 +978,14 @@ func duplicate_current_discipline() -> DisciplineData:
 			id_map[source_node.upgrade_id] = copied_node.upgrade_id
 			copied_node.discipline_id = copy.discipline_id
 			if new_spell != null and source_node.target_spell_id == source_spell.get_effective_spell_id():
-				copied_node.target_spell_id = new_spell_id
+				copied_node.target_spell_id = &""
 			var copied_modifiers: Array[SpellModifier] = []
 			for source_modifier in source_node.spell_modifiers:
 				var copied_modifier := source_modifier.duplicate(true) as SpellModifier \
 					if source_modifier != null else null
 				if copied_modifier != null and source_spell != null \
 						and copied_modifier.target_spell_id == source_spell.get_effective_spell_id():
-					copied_modifier.target_spell_id = new_spell_id
+					copied_modifier.target_spell_id = &""
 				copied_modifiers.append(copied_modifier)
 				if copied_modifier != null and source_modifier != null \
 						and not source_modifier.resource_path.is_empty() \
@@ -877,13 +1025,10 @@ func duplicate_current_discipline() -> DisciplineData:
 				tree_node.excluded_node_ids[index] = StringName(
 					id_map.get(tree_node.excluded_node_ids[index], tree_node.excluded_node_ids[index])
 				)
-	var disciplines: Array[DisciplineData] = working_unit.disciplines.duplicate()
-	disciplines.append(copy)
 	var spells: Array[Spell] = working_unit.spells.duplicate()
 	if new_spell != null:
 		spells.append(new_spell)
-	if not commit_changes("Dupliquer la discipline %s et son sort" % source.display_name, [
-		_change(working_unit, &"disciplines", disciplines),
+	if not commit_changes("Dupliquer l'arbre %s et son sort" % source.display_name, [
 		_change(working_unit, &"spells", spells),
 	]):
 		return null
@@ -896,23 +1041,21 @@ func detach_current_discipline() -> bool:
 	var discipline := current_discipline()
 	if discipline == null or working_unit == null:
 		return false
-	var disciplines: Array[DisciplineData] = working_unit.disciplines.duplicate()
-	disciplines.erase(discipline)
 	var spells: Array[Spell] = []
 	for spell in working_unit.spells:
-		if spell != null and spell.discipline_id != discipline.discipline_id:
+		if spell != null and spell.skill_tree != discipline:
 			spells.append(spell)
 	var changed := commit_changes(
-		"Retirer la discipline %s et son sort du personnage" % discipline.display_name,
+		"Retirer le sort et l'arbre %s du personnage" % discipline.display_name,
 		[
-			_change(working_unit, &"disciplines", disciplines),
 			_change(working_unit, &"spells", spells),
 		]
 	)
 	if changed:
+		var remaining := working_unit.get_skill_trees()
 		selected_discipline_id = (
-			disciplines[0].discipline_id
-			if not disciplines.is_empty() and disciplines[0] != null else &""
+			remaining[0].discipline_id
+			if not remaining.is_empty() and remaining[0] != null else &""
 		)
 		select_subject(current_discipline())
 	return changed
@@ -935,7 +1078,7 @@ func add_node(
 	node.discipline_id = discipline.discipline_id
 	node.rank = rank_number
 	var spell := current_spell()
-	node.target_spell_id = spell.get_effective_spell_id() if spell != null else &""
+	node.target_spell_id = &""
 	if parent != null and parent.rank < rank_number:
 		node.prerequisite_node_ids.append(parent.upgrade_id)
 	if _uses_external_children(discipline):
@@ -1083,7 +1226,7 @@ func add_linear_branch(display_name: String, start_rank := 2) -> Array[SkillUpgr
 		node.discipline_id = discipline.discipline_id
 		node.rank = rank_data.rank
 		var spell := current_spell()
-		node.target_spell_id = spell.get_effective_spell_id() if spell != null else &""
+		node.target_spell_id = &""
 		if previous != null:
 			node.prerequisite_node_ids.append(previous.upgrade_id)
 		if _uses_external_children(discipline):

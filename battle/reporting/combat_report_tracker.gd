@@ -172,21 +172,22 @@ func _on_unit_moved(from_pos: Vector2i, to_pos: Vector2i, unit: Unit) -> void:
 
 
 func _capture_progression_snapshot(state: CharacterRunState) -> Dictionary:
-	var disciplines := {}
-	for discipline in state.get_disciplines():
-		if discipline == null:
+	var spell_progressions := {}
+	for spell in state.get_spells_with_skill_trees():
+		if spell == null:
 			continue
-		var progress := state.get_discipline_progress(discipline.discipline_id)
+		var spell_id := spell.get_effective_spell_id()
+		var progress := state.get_spell_progress(spell_id)
 		if progress == null:
 			continue
-		disciplines[str(discipline.discipline_id)] = {
+		spell_progressions[str(spell_id)] = {
 			"xp": progress.xp,
 			"rank": progress.rank,
 			"selected_upgrade_ids": progress.get_selected_upgrade_ids(),
 		}
 	return {
 		"character_id": state.character_id,
-		"disciplines": disciplines,
+		"spell_progressions": spell_progressions,
 	}
 
 
@@ -195,17 +196,21 @@ func _finalize_character_progression(state: CharacterRunState) -> void:
 	if character == null:
 		return
 	var before := _before_snapshots.get(state.character_id, {}) as Dictionary
-	var before_disciplines := before.get("disciplines", {}) as Dictionary
-	for discipline in state.get_disciplines():
-		if discipline == null:
+	var before_progressions := before.get("spell_progressions", {}) as Dictionary
+	for spell in state.get_spells_with_skill_trees():
+		if spell == null or spell.skill_tree == null:
 			continue
-		var progress := state.get_discipline_progress(discipline.discipline_id)
+		var spell_id := spell.get_effective_spell_id()
+		var discipline := spell.skill_tree
+		var progress := state.get_spell_progress(spell_id)
 		if progress == null:
 			continue
-		var key := str(discipline.discipline_id)
-		var before_entry := before_disciplines.get(key, {}) as Dictionary
+		var key := str(spell_id)
+		var before_entry := before_progressions.get(key, {}) as Dictionary
 		var delta := DisciplineProgressDelta.new()
 		delta.character_id = state.character_id
+		delta.spell_id = spell_id
+		delta.spell_name = spell.spell_name
 		delta.discipline_id = discipline.discipline_id
 		delta.display_name = discipline.display_name
 		delta.icon = discipline.icon

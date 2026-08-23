@@ -28,7 +28,9 @@ static func create(
 
 
 func get_deduplication_key() -> String:
-	return "%s:%s:%d" % [character_id, discipline_id, pending_rank]
+	return "%s:%s:%s:%d" % [
+		character_id, discipline_id, source_spell_id, pending_rank,
+	]
 
 
 func is_valid() -> bool:

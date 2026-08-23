@@ -20,6 +20,7 @@ static func validate_unit(
 		return messages
 	_validate_character_stats(unit, messages)
 	_validate_storage_paths(unit, messages, {}, allowed_storage_roots)
+	_validate_spell_ownership(unit, messages)
 	var discipline_ids := {}
 	var node_ids := {}
 	for discipline in unit.disciplines:
@@ -108,8 +109,6 @@ static func _validate_storage_paths(
 	if resource is UnitData:
 		for spell in resource.spells:
 			_validate_storage_paths(spell, messages, visited, allowed_storage_roots)
-		for discipline in resource.disciplines:
-			_validate_storage_paths(discipline, messages, visited, allowed_storage_roots)
 	elif resource is DisciplineData:
 		for rank_data in resource.ranks:
 			_validate_storage_paths(rank_data, messages, visited, allowed_storage_roots)
@@ -120,6 +119,7 @@ static func _validate_storage_paths(
 		for modifier in resource.spell_modifiers:
 			_validate_storage_paths(modifier, messages, visited, allowed_storage_roots)
 	elif resource is Spell:
+		_validate_storage_paths(resource.skill_tree, messages, visited, allowed_storage_roots)
 		for modifier in resource.modifiers:
 			_validate_storage_paths(modifier, messages, visited, allowed_storage_roots)
 
@@ -215,14 +215,16 @@ static func _validate_node(
 			"Le joueur ne saura pas ce que cette amélioration change.",
 			"Décrivez l’effet avec une phrase simple.", node.upgrade_id, &"description", node.rank
 		))
-	var target_spell := _find_spell(unit, node.target_spell_id)
+	var target_spell := SkillTreeCatalogService.spell_for_discipline(
+		unit, discipline.discipline_id
+	) if node.target_spell_id == &"" else _find_spell(unit, node.target_spell_id)
 	if target_spell == null:
 		messages.append(_error(
 			&"target_spell_missing", "Sort ciblé introuvable",
 			"L’amélioration « %s » cible un sort inexistant : « %s »." % [node.display_name, node.target_spell_id],
 			"Choisissez un sort du personnage.", node.upgrade_id, &"target_spell_id", node.rank
 		))
-	elif target_spell.discipline_id != discipline.discipline_id:
+	elif target_spell.skill_tree != discipline:
 		messages.append(_warning(
 			&"target_spell_other_discipline", "Sort d’une autre discipline",
 			"Cette amélioration transforme un sort associé à une autre discipline.",
@@ -508,6 +510,47 @@ static func _find_spell(unit: UnitData, spell_id: StringName) -> Spell:
 		if spell != null and spell.get_effective_spell_id() == spell_id:
 			return spell
 	return null
+
+
+static func _validate_spell_ownership(
+		unit: UnitData,
+		messages: Array[SkillTreeValidationMessage]
+	) -> void:
+	var spell_ids := {}
+	var tree_owners := {}
+	for spell in unit.spells:
+		if spell == null:
+			continue
+		var spell_id := spell.get_effective_spell_id()
+		if spell_id == &"spell:unassigned":
+			messages.append(_error(
+				&"spell_id_missing", "Identifiant de sort manquant",
+				"Un sort doit posseder un spell_id stable avant d'etre sauvegarde.",
+				"Renseignez un identifiant unique.", &"", &"spell_id"
+			))
+		elif spell_ids.has(spell_id):
+			messages.append(_error(
+				&"spell_id_duplicate", "Identifiant de sort duplique",
+				"Deux sorts utilisent « %s »." % spell_id,
+				"Attribuez un identifiant unique.", spell_id, &"spell_id"
+			))
+		spell_ids[spell_id] = true
+		if spell.skill_tree == null:
+			continue
+		var tree_id := spell.skill_tree.discipline_id
+		if tree_id == &"":
+			messages.append(_error(
+				&"tree_id_missing", "Identifiant d'arbre manquant",
+				"Le sort « %s » reference un arbre sans identifiant." % spell.spell_name,
+				"Renseignez l'identifiant stable de l'arbre.", spell_id, &"skill_tree"
+			))
+		elif tree_owners.has(tree_id) and tree_owners[tree_id] != spell_id:
+			messages.append(_error(
+				&"tree_owner_duplicate", "Arbre associe a plusieurs sorts",
+				"L'arbre « %s » appartient deja au sort « %s »." % [tree_id, tree_owners[tree_id]],
+				"Dupliquez l'arbre pour le second sort.", spell_id, &"skill_tree"
+			))
+		tree_owners[tree_id] = spell_id
 
 
 static func _find_node(

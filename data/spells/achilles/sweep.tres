@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="2_icon"]
+[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/sweep.tres" id="3_tree"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"achilles_sweep"
-discipline_id = &"sweep"
+skill_tree = ExtResource("3_tree")
 spell_name = "Balayage"
 description = "3 PA · Frappe les cases adjacentes, inflige 6 dégâts physiques et repousse les ennemis de 1 case."
 icon = ExtResource("2_icon")

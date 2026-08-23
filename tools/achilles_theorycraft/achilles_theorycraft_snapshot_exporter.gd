@@ -43,7 +43,7 @@ func build_snapshot() -> Dictionary:
 		"repository": repository,
 		"achilles": _unit_snapshot(hero, hero_profile),
 		"capabilities": _spells_snapshot(progression.spells),
-		"disciplines": _disciplines_snapshot(progression.disciplines),
+		"disciplines": _disciplines_snapshot(progression.get_skill_trees()),
 		"odyssey": _run_snapshot(run),
 		"enemies": _enemies_snapshot(run),
 		"maps": _maps_snapshot(run),
@@ -69,7 +69,7 @@ func build_snapshot() -> Dictionary:
 				[progression.resource_path],
 			),
 			"disciplines": AchillesTheorycraftProvenance.derived(
-				"Ordered live DisciplineData Resources from the resolved Achilles progression profile",
+				"Ordered live skill trees owned by the resolved Achilles Spell Resources",
 				[progression.resource_path],
 			),
 			"odyssey": AchillesTheorycraftProvenance.observed(ODYSSEY_PATH),
@@ -306,7 +306,7 @@ func _spell_snapshot(spell: Spell) -> Dictionary:
 		"once_per_activation": spell.once_per_activation,
 		"max_uses_per_combat": spell.max_uses_per_combat,
 		"cooldown_activations": spell.cooldown_activations,
-		"discipline": str(spell.discipline_id),
+		"discipline": str(spell.get_skill_tree_id()),
 		"tags": null,
 		"_provenance": {},
 	}

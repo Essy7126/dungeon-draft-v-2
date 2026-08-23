@@ -24,39 +24,11 @@ static func adopt_discipline(
 		session: SkillTreeEditSession,
 		source: DisciplineData
 	) -> Dictionary:
-	if session == null or session.working_unit == null or source == null:
-		return {"ok": false, "operation": "ADOPT", "error": "Session ou discipline absente."}
-	if source.discipline_id == &"":
-		return {"ok": false, "operation": "ADOPT", "error": "Identifiant de discipline absent."}
-	for discipline in session.working_unit.disciplines:
-		if discipline != null and discipline.discipline_id == source.discipline_id:
-			return {"ok": false, "operation": "ADOPT", "error": "Identifiant déjà rattaché."}
-	var copied := SkillTreeCopyService.copy_discipline(source)
-	var work := copied.get("work") as DisciplineData
-	if work == null:
-		return {"ok": false, "operation": "ADOPT", "error": "Version en cours impossible à créer."}
-	var disciplines: Array[DisciplineData] = session.working_unit.disciplines.duplicate()
-	disciplines.append(work)
-	if not session.change_property(
-			session.working_unit, &"disciplines", disciplines,
-			"Adopter la discipline %s" % source.display_name
-		):
-		return {"ok": false, "operation": "ADOPT", "error": "Adoption non appliquée."}
-	for source_value in copied.get("source_to_work", {}):
-		var source_resource := source_value as Resource
-		var work_resource := copied.source_to_work[source_value] as Resource
-		session.source_to_work[source_resource] = work_resource
-		session.work_to_source[work_resource] = source_resource
-	session.select_discipline(work.discipline_id)
 	return {
-		"ok": true,
+		"ok": false,
 		"operation": "ADOPT",
-		"resource": work,
-		"source": source,
-		"consequences": {
-			"discipline_count_delta": 1,
-			"source_path": source.resource_path,
-		},
+		"resource": source,
+		"error": "Un arbre ne peut plus être rattaché seul. Créez ou rattachez le sort propriétaire, puis choisissez cet arbre.",
 	}
 
 

@@ -15,7 +15,7 @@ script = ExtResource("5_08ev8")
 effect_type = 5
 amount = 1
 modifier_name = "Élan prolongé"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_orqye"]
 script = ExtResource("3_itcqj")
@@ -25,14 +25,14 @@ display_name = "Élan prolongé"
 description = "+1 portée."
 discipline_id = &"warrior_assault"
 rank = 2
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_vfdn0")])
 
 [sub_resource type="Resource" id="Resource_xyiux"]
 script = ExtResource("5_08ev8")
 amount = 5
 modifier_name = "Impact puissant"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_7w2aj"]
 script = ExtResource("3_itcqj")
@@ -42,7 +42,7 @@ display_name = "Impact puissant"
 description = "+5 dégâts à la cible atteinte."
 discipline_id = &"warrior_assault"
 rank = 2
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_xyiux")])
 
 [sub_resource type="Resource" id="Resource_rar1o"]
@@ -55,7 +55,7 @@ choices = Array[ExtResource("2_nkk5d")]([SubResource("Resource_orqye"), SubResou
 script = ExtResource("5_08ev8")
 effect_type = 30
 modifier_name = "Intercepteur"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_fx0w8"]
 script = ExtResource("3_itcqj")
@@ -65,7 +65,7 @@ display_name = "Intercepteur"
 description = "La Charge peut cibler une case libre et servir uniquement de déplacement."
 discipline_id = &"warrior_assault"
 rank = 3
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_dnh3v")])
 
 [sub_resource type="Resource" id="Resource_maim0"]
@@ -73,7 +73,7 @@ script = ExtResource("5_08ev8")
 effect_type = 32
 amount = 3
 modifier_name = "Armure d’élan"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_reqtm"]
 script = ExtResource("3_itcqj")
@@ -83,7 +83,7 @@ display_name = "Armure d’élan"
 description = "Après une Charge réussie, le Guerrier gagne 3 boucliers."
 discipline_id = &"warrior_assault"
 rank = 3
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_maim0")])
 
 [sub_resource type="Resource" id="Resource_1yvbh"]
@@ -91,7 +91,7 @@ script = ExtResource("5_08ev8")
 effect_type = 18
 amount = 1
 modifier_name = "Bélier"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_77bju"]
 script = ExtResource("3_itcqj")
@@ -101,7 +101,7 @@ display_name = "Bélier"
 description = "Repousse la cible de 1 case."
 discipline_id = &"warrior_assault"
 rank = 3
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_1yvbh")])
 
 [sub_resource type="Resource" id="Resource_m7y18"]
@@ -109,7 +109,7 @@ script = ExtResource("5_08ev8")
 effect_type = 20
 amount = 4
 modifier_name = "Percuteur"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_6aylg"]
 script = ExtResource("3_itcqj")
@@ -119,7 +119,7 @@ display_name = "Percuteur"
 description = "Une collision inflige 4 dégâts supplémentaires."
 discipline_id = &"warrior_assault"
 rank = 3
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_m7y18")])
 
 [sub_resource type="Resource" id="Resource_68jhr"]
@@ -133,7 +133,7 @@ script = ExtResource("5_08ev8")
 effect_type = 5
 amount = 1
 modifier_name = "Course longue"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_cnkwd"]
 script = ExtResource("3_itcqj")
@@ -143,7 +143,7 @@ display_name = "Course longue"
 description = "+1 portée supplémentaire."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_n7w4w")])
 
 [sub_resource type="Resource" id="Resource_nxn0m"]
@@ -152,7 +152,7 @@ effect_type = 11
 target_scope = 1
 amount = 1
 modifier_name = "Repositionnement"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_ipiy1"]
 script = ExtResource("3_itcqj")
@@ -162,7 +162,7 @@ display_name = "Repositionnement"
 description = "Le Guerrier gagne 1 PM à son prochain tour."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_nxn0m")])
 
 [sub_resource type="Resource" id="Resource_dcs1w"]
@@ -170,7 +170,7 @@ script = ExtResource("5_08ev8")
 effect_type = 32
 amount = 3
 modifier_name = "Avant-garde"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_c3x6o"]
 script = ExtResource("3_itcqj")
@@ -180,7 +180,7 @@ display_name = "Avant-garde"
 description = "Le bouclier gagné passe à 6."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_dcs1w")])
 
 [sub_resource type="Resource" id="Resource_fqu3g"]
@@ -188,7 +188,7 @@ script = ExtResource("5_08ev8")
 effect_type = 31
 amount = 3
 modifier_name = "Protection mobile"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_grh3e"]
 script = ExtResource("3_itcqj")
@@ -198,7 +198,7 @@ display_name = "Protection mobile"
 description = "Un allié adjacent au point d’arrivée reçoit 3 boucliers."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_fqu3g")])
 
 [sub_resource type="Resource" id="Resource_ky3hq"]
@@ -206,7 +206,7 @@ script = ExtResource("5_08ev8")
 effect_type = 18
 amount = 1
 modifier_name = "Projection"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_wc32n"]
 script = ExtResource("3_itcqj")
@@ -216,14 +216,14 @@ display_name = "Projection"
 description = "+1 case de poussée."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_ky3hq")])
 
 [sub_resource type="Resource" id="Resource_ka6dy"]
 script = ExtResource("5_08ev8")
 amount = 2
 modifier_name = "Impact lourd"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_ncju3"]
 script = ExtResource("3_itcqj")
@@ -233,7 +233,7 @@ display_name = "Impact lourd"
 description = "+2 dégâts directs."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_ka6dy")])
 
 [sub_resource type="Resource" id="Resource_gxdku"]
@@ -241,7 +241,7 @@ script = ExtResource("5_08ev8")
 effect_type = 20
 amount = 4
 modifier_name = "Collision brutale"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_034eo"]
 script = ExtResource("3_itcqj")
@@ -251,7 +251,7 @@ display_name = "Collision brutale"
 description = "+4 dégâts de collision supplémentaires."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_gxdku")])
 
 [sub_resource type="Resource" id="Resource_qcpyj"]
@@ -263,7 +263,7 @@ status_group = &"warrior_assault_bleeding"
 status_name = "Bleeding"
 status_damage_type = 0
 modifier_name = "Plaie d’impact"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_orosq"]
 script = ExtResource("3_itcqj")
@@ -273,7 +273,7 @@ display_name = "Plaie d’impact"
 description = "Applique Saignement : 2 dégâts pendant 2 tours."
 discipline_id = &"warrior_assault"
 rank = 4
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_qcpyj")])
 
 [sub_resource type="Resource" id="Resource_58dmb"]
@@ -286,21 +286,21 @@ choices = Array[ExtResource("2_nkk5d")]([SubResource("Resource_cnkwd"), SubResou
 script = ExtResource("5_08ev8")
 effect_type = 30
 modifier_name = "Charge tactique"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_yobwo"]
 script = ExtResource("5_08ev8")
 effect_type = 5
 amount = 2
 modifier_name = "Charge tactique"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_aav8s"]
 script = ExtResource("5_08ev8")
 effect_type = 11
 amount = 1
 modifier_name = "Charge tactique"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_ah2b0"]
 script = ExtResource("3_itcqj")
@@ -310,7 +310,7 @@ display_name = "Charge tactique"
 description = "Peut cibler une case libre, +2 portée et +1 PM au prochain tour."
 discipline_id = &"warrior_assault"
 rank = 5
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_nm6rv"), SubResource("Resource_yobwo"), SubResource("Resource_aav8s")])
 
 [sub_resource type="Resource" id="Resource_x32by"]
@@ -318,14 +318,14 @@ script = ExtResource("5_08ev8")
 effect_type = 5
 amount = 2
 modifier_name = "Avant-garde suprême"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_6mgt1"]
 script = ExtResource("5_08ev8")
 effect_type = 32
 amount = 7
 modifier_name = "Avant-garde suprême"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_r6jr4"]
 script = ExtResource("3_itcqj")
@@ -335,7 +335,7 @@ display_name = "Avant-garde suprême"
 description = "+2 portée et 7 boucliers après la Charge."
 discipline_id = &"warrior_assault"
 rank = 5
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_x32by"), SubResource("Resource_6mgt1")])
 
 [sub_resource type="Resource" id="Resource_lnei5"]
@@ -343,13 +343,13 @@ script = ExtResource("5_08ev8")
 effect_type = 19
 amount = 3
 modifier_name = "Bélier de guerre"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_ghm2k"]
 script = ExtResource("5_08ev8")
 amount = 3
 modifier_name = "Bélier de guerre"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_310gv"]
 script = ExtResource("3_itcqj")
@@ -359,21 +359,21 @@ display_name = "Bélier de guerre"
 description = "Poussée totale de 3 cases et +3 dégâts directs."
 discipline_id = &"warrior_assault"
 rank = 5
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_lnei5"), SubResource("Resource_ghm2k")])
 
 [sub_resource type="Resource" id="Resource_lugf3"]
 script = ExtResource("5_08ev8")
 amount = 6
 modifier_name = "Impact dévastateur"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_pookb"]
 script = ExtResource("5_08ev8")
 effect_type = 21
 amount = 8
 modifier_name = "Impact dévastateur"
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_62na7"]
 script = ExtResource("3_itcqj")
@@ -383,7 +383,7 @@ display_name = "Impact dévastateur"
 description = "+6 dégâts directs et 8 dégâts de collision."
 discipline_id = &"warrior_assault"
 rank = 5
-target_spell_id = &"warrior_charge"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q8qop")]([SubResource("Resource_lugf3"), SubResource("Resource_pookb")])
 
 [sub_resource type="Resource" id="Resource_0jvku"]

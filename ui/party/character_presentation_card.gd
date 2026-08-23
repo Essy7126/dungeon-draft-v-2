@@ -31,12 +31,12 @@ func configure(data: UnitData) -> void:
 		data.spells.size(),
 		"" if data.spells.size() == 1 else "s",
 	]
-	var discipline_names: Array[String] = []
-	for discipline in data.disciplines:
-		if discipline != null:
-			discipline_names.append(discipline.display_name)
-	if not discipline_names.is_empty():
-		disciplines_label.text = "Disciplines : %s" % ", ".join(discipline_names)
+	var tree_names: Array[String] = []
+	for tree in data.get_skill_trees():
+		if tree != null:
+			tree_names.append(tree.display_name)
+	if not tree_names.is_empty():
+		disciplines_label.text = "Arbres de compétences : %s" % ", ".join(tree_names)
 	else:
 		disciplines_label.text = data.progression_summary
 	badge_label.text = data.presentation_badge

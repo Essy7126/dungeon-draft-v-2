@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
 [ext_resource type="Texture2D" uid="uid://b6vm8gsjd2hy1" path="res://asset/ui/character_hud/refined/spells/sneak_strike.png" id="2_icon"]
+[ext_resource type="Resource" path="res://data/characters/elf/disciplines/assassin.tres" id="3_tree"]
 
 [resource]
 script = ExtResource("1_spell")
 spell_id = &"elf_sneak_strike"
-discipline_id = &"assassin"
+skill_tree = ExtResource("3_tree")
 spell_name = "Frappe sournoise"
 description = "Une frappe physique simple au corps-à-corps."
 icon = ExtResource("2_icon")

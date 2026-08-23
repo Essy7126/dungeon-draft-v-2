@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_modifier")
 modifier_name = "Tir parfait — portée"
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 range_bonus = 1

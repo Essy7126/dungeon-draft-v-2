@@ -51,6 +51,7 @@ var screen_panel: PanelContainer
 var skills_screen: Control
 var animation_screen: SkillTreeAnimationScreen
 var character_screen: SkillTreeCharacterScreen
+var spell_creation_dialog: SpellCreationDialog
 var character_screen_button: Button
 var skills_screen_button: Button
 var animation_screen_button: Button
@@ -325,6 +326,9 @@ func _build_ui() -> void:
 	character_screen.team_change_requested.connect(_request_team_change)
 	character_screen.spell_edit_requested.connect(_select_subject)
 	character_screen.spell_tree_requested.connect(_open_spell_tree)
+	character_screen.spell_creation_requested.connect(_show_spell_creation_dialog)
+	character_screen.existing_spell_requested.connect(_attach_existing_spell)
+	character_screen.spell_detach_requested.connect(_confirm_detach_spell)
 	screens_box.add_child(character_screen)
 	analysis_drawer = SkillTreeAnalysisDrawer.new()
 	analysis_drawer.name = "AnalysisDrawer"
@@ -339,6 +343,9 @@ func _build_ui() -> void:
 	status_label = analysis_drawer.summary_label
 	_on_analysis_expanded_changed(analysis_drawer.is_expanded())
 	_build_dialogs()
+	spell_creation_dialog = SpellCreationDialog.new()
+	spell_creation_dialog.spell_creation_requested.connect(_create_spell)
+	add_child(spell_creation_dialog)
 	_build_tour_highlight()
 	_show_screen(current_screen)
 
@@ -545,7 +552,8 @@ func _refresh_character_screen() -> void:
 		return
 	character_screen.set_catalog(heroes, _current_catalog_path())
 	character_screen.set_document(
-		session.working_unit, _current_catalog_path(), validation_messages, guided
+		session.working_unit, _current_catalog_path(), validation_messages, guided,
+		session.standalone_spells
 	)
 
 
@@ -613,6 +621,71 @@ func _refresh_animation_screen() -> void:
 	animation_screen.set_catalog(heroes, _current_catalog_path())
 	animation_screen.set_guided(guided)
 	animation_screen.set_document(session.working_unit, _current_catalog_path())
+
+
+func _show_spell_creation_dialog() -> void:
+	if session.working_unit == null or spell_creation_dialog == null:
+		return
+	commit_pending_edits()
+	spell_creation_dialog.setup(
+		heroes, session.working_unit, session.known_spell_ids()
+	)
+	spell_creation_dialog.open_dialog()
+
+
+func _create_spell(data: Dictionary) -> void:
+	var spell := session.create_spell(
+		StringName(data.get("template", SkillTreeEditSession.SPELL_TEMPLATE_SIMPLE_ATTACK)),
+		str(data.get("display_name", "")),
+		bool(data.get("attach_to_character", true)),
+		heroes
+	)
+	if spell == null:
+		_show_status(
+			"Création impossible",
+			"Le sort n’a pas pu être créé. Vérifiez qu’un personnage est ouvert et que l’emplacement du fichier reste libre."
+		)
+		return
+	_show_screen(SCREEN_CHARACTER)
+	session.select_subject(spell)
+	_refresh_document()
+	# On atterrit directement sur la fiche du nouveau sort, ouverte en édition,
+	# dans l'onglet Sorts du personnage : aucune étape supplémentaire imposée.
+	if character_screen != null:
+		character_screen.select_spell(spell, true)
+
+
+func _attach_existing_spell(spell: Spell) -> void:
+	if spell == null:
+		return
+	commit_pending_edits()
+	if not session.attach_existing_spell(spell):
+		_show_status(
+			"Ajout impossible",
+			"Ce personnage connaît déjà un sort portant cet identifiant stable."
+		)
+		return
+	_refresh_document()
+	if character_screen != null:
+		character_screen.select_spell(session.selected_subject as Spell)
+
+
+func _confirm_detach_spell(spell: Spell) -> void:
+	if spell == null or session.working_unit == null:
+		return
+	confirm_dialog.dialog_text = "Retirer « %s » de %s ?\n\nLe sort et son arbre ne seront plus disponibles pour ce personnage. Leurs fichiers restent sur le disque, et les autres personnages qui les utilisent ne changent pas." % [
+		spell.spell_name, session.working_unit.unit_name,
+	]
+	confirm_dialog.ok_button_text = "Retirer le sort"
+	_pending_confirm_action = func() -> void:
+		if not session.detach_spell(spell):
+			_show_status(
+				"Retrait impossible",
+				"Ce sort ne fait plus partie de la liste du personnage."
+			)
+			return
+		_refresh_document()
+	confirm_dialog.popup_centered()
 
 
 func _change_animation_clip(
@@ -2341,7 +2414,7 @@ func _run_hero_catalog() -> Array[Dictionary]:
 			"profile_authorities": authorities,
 			"resource": view,
 			"spell_count": hero.progression_profile.spells.size(),
-			"discipline_count": hero.progression_profile.disciplines.size(),
+			"discipline_count": _skill_tree_count(hero.progression_profile.spells),
 			"invalid": not hero.validation_errors().is_empty(),
 		})
 	# Un personnage absent de la partie en cours reste modifiable : on l'ajoute
@@ -2360,6 +2433,14 @@ func _run_hero_catalog() -> Array[Dictionary]:
 		return str(a.get("name", "")).naturalnocasecmp_to(str(b.get("name", ""))) < 0
 	)
 	return result
+
+
+func _skill_tree_count(spells: Array[Spell]) -> int:
+	var seen := {}
+	for spell in spells:
+		if spell != null and spell.skill_tree != null:
+			seen[spell.skill_tree.get_instance_id()] = true
+	return seen.size()
 
 
 func _current_catalog_path() -> String:

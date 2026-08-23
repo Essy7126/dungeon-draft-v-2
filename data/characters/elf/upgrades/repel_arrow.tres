@@ -13,5 +13,5 @@ description = "Tir précis repousse sa cible d’exactement une case, si la gril
 card_texture = ExtResource("4_card")
 discipline_id = &"archer"
 rank = 2
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 spell_modifiers = Array[ExtResource("2_modifier_type")]([ExtResource("3_modifier")])

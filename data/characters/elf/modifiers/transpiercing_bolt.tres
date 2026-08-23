@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_modifier")
 modifier_name = "Trait transperçant"
-target_spell_id = &"elf_precise_shot"
+target_spell_id = &""
 damage_ratio = 0.5

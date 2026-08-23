@@ -48,8 +48,9 @@ static func resources_by_key(root: UnitData) -> Dictionary:
 			var modifier := spell.modifiers[modifier_index]
 			if modifier != null:
 				result["%s/modifier:%d" % [spell_key, modifier_index]] = modifier
-	for discipline_index in range(root.disciplines.size()):
-		var discipline := root.disciplines[discipline_index]
+	var trees := root.get_skill_trees()
+	for discipline_index in range(trees.size()):
+		var discipline := trees[discipline_index]
 		if discipline == null:
 			continue
 		var discipline_key := "discipline:%s" % discipline.discipline_id
@@ -93,13 +94,6 @@ static func _copy_unit(
 		return existing
 	var work := source.duplicate(false) as UnitData
 	_register(source, work, source_to_work, work_to_source)
-	var disciplines: Array[DisciplineData] = []
-	for discipline in source.disciplines:
-		disciplines.append(
-			_copy_discipline(discipline, source_to_work, work_to_source)
-			if discipline != null else null
-		)
-	work.disciplines = disciplines
 	var spells: Array[Spell] = []
 	for spell in source.spells:
 		spells.append(
@@ -205,6 +199,9 @@ static func _copy_spell(
 		return existing
 	var work := source.duplicate(false) as Spell
 	_register(source, work, source_to_work, work_to_source)
+	work.skill_tree = _copy_discipline(
+		source.skill_tree, source_to_work, work_to_source
+	) if source.skill_tree != null else null
 	var modifiers: Array[SpellModifier] = []
 	for modifier in source.modifiers:
 		modifiers.append(
@@ -242,3 +239,17 @@ static func _register(
 	# set_path_cache n'enregistre pas la copie dans le cache global. Il indique
 	# seulement au ResourceSaver que cette Resource doit rester externe.
 	work.set_path_cache(source.resource_path)
+
+
+## Copie de travail d'un Spell deja ecrit ailleurs dans le projet, pour qu'un
+## second personnage puisse le referencer sans que le Studio edite la Resource
+## d'origine. Le chemin est conserve par _register : sur le disque il n'existe
+## toujours qu'un seul fichier, partage par tous ceux qui le referencent.
+static func copy_spell(
+		source: Spell,
+		source_to_work: Dictionary,
+		work_to_source: Dictionary
+	) -> Spell:
+	if source == null:
+		return null
+	return _copy_spell(source, source_to_work, work_to_source)

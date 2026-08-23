@@ -31,9 +31,17 @@ func _node_modifiers(tree_path: String, node_ids: Array[StringName]) -> Array[Sp
 	return result
 
 
+func _install_modifiers(
+		unit: Unit,
+		spell_id: StringName,
+		modifiers: Array[SpellModifier]
+	) -> void:
+	unit.set_progression_spell_modifiers_by_spell({spell_id: modifiers})
+
+
 func test_damage_range_area_terrain_and_ap_cost_run_through_spell_caster() -> void:
 	var caster := Factory.make_unit("Mage", 0)
-	caster.set_progression_spell_modifiers(_node_modifiers(FIRE_TREE, [
+	_install_modifiers(caster, &"mage_fireball", _node_modifiers(FIRE_TREE, [
 		&"mage_pyromancy_conflagration",
 		&"mage_pyromancy_maitre_des_explosions",
 		&"mage_pyromancy_projection_lointaine",
@@ -73,7 +81,7 @@ func test_damage_range_area_terrain_and_ap_cost_run_through_spell_caster() -> vo
 
 func test_heal_shield_mobility_and_cleanse_are_applied_to_the_real_target() -> void:
 	var caster := Factory.make_unit("Elfe", 0)
-	caster.set_progression_spell_modifiers(_node_modifiers(ELF_HEALER_TREE, [
+	_install_modifiers(caster, &"elf_sylvan_heal", _node_modifiers(ELF_HEALER_TREE, [
 		&"elf_healer_seve_abondante",
 		&"elf_healer_ecorce_protectrice",
 		&"elf_healer_garde_mobile",
@@ -108,7 +116,7 @@ func test_heal_shield_mobility_and_cleanse_are_applied_to_the_real_target() -> v
 
 func test_dot_and_outgoing_damage_reduction_have_runtime_effects() -> void:
 	var elf := Factory.make_unit("Elfe", 0)
-	elf.set_progression_spell_modifiers(_node_modifiers(ELF_ASSASSIN_TREE, [
+	_install_modifiers(elf, &"elf_sneak_strike", _node_modifiers(ELF_ASSASSIN_TREE, [
 		&"elf_assassin_lame_venimeuse",
 		&"elf_assassin_affaiblissement",
 	]))
@@ -132,7 +140,7 @@ func test_dot_and_outgoing_damage_reduction_have_runtime_effects() -> void:
 
 func test_conductivity_arc_splashes_once_to_an_adjacent_enemy() -> void:
 	var mage := Factory.make_unit("Mage", 0)
-	mage.set_progression_spell_modifiers(_node_modifiers(LIGHTNING_TREE, [
+	_install_modifiers(mage, &"mage_thunderstorm", _node_modifiers(LIGHTNING_TREE, [
 		&"mage_fulguromancy_conductivite",
 		&"mage_fulguromancy_arc_secondaire",
 	]))
@@ -160,7 +168,7 @@ func test_conductivity_arc_splashes_once_to_an_adjacent_enemy() -> void:
 
 func test_push_and_collision_override_are_resolved_after_the_spell_hit() -> void:
 	var mage := Factory.make_unit("Mage", 0)
-	mage.set_progression_spell_modifiers(_node_modifiers(EARTH_TREE, [
+	_install_modifiers(mage, &"mage_seismic_wave", _node_modifiers(EARTH_TREE, [
 		&"mage_geomancy_impact_tectonique",
 	]))
 	var wave := Factory.make_spell({
@@ -182,7 +190,7 @@ func test_push_and_collision_override_are_resolved_after_the_spell_hit() -> void
 
 func test_interceptor_enables_free_targeting_and_charge_movement() -> void:
 	var warrior := Factory.make_unit("Guerrier", 0)
-	warrior.set_progression_spell_modifiers(_node_modifiers(WARRIOR_ASSAULT_TREE, [
+	_install_modifiers(warrior, &"warrior_charge", _node_modifiers(WARRIOR_ASSAULT_TREE, [
 		&"warrior_assault_intercepteur",
 	]))
 	var charge := load("res://data/spells/Guerrier/charge.tres") as Spell
@@ -197,7 +205,7 @@ func test_interceptor_enables_free_targeting_and_charge_movement() -> void:
 
 func test_attack_order_buffs_exactly_the_next_attack() -> void:
 	var warrior := Factory.make_unit("Guerrier", 0)
-	warrior.set_progression_spell_modifiers(_node_modifiers(WARRIOR_BULWARK_TREE, [
+	_install_modifiers(warrior, &"warrior_guard", _node_modifiers(WARRIOR_BULWARK_TREE, [
 		&"warrior_bulwark_ordre_dassaut",
 		&"warrior_bulwark_commandement",
 	]))
@@ -217,7 +225,7 @@ func test_attack_order_buffs_exactly_the_next_attack() -> void:
 
 func test_execution_threshold_upgrade_replaces_instead_of_stacking() -> void:
 	var warrior := Factory.make_unit("Guerrier", 0)
-	warrior.set_progression_spell_modifiers(_node_modifiers(WARRIOR_BREAKER_TREE, [
+	_install_modifiers(warrior, &"warrior_heavy_strike", _node_modifiers(WARRIOR_BREAKER_TREE, [
 		&"warrior_breaker_executeur",
 		&"warrior_breaker_coup_fatal",
 	]))

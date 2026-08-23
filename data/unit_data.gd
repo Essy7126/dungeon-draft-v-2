@@ -107,8 +107,16 @@ enum ControlLevel {
 # SORTS
 # ============================================================
 
-@export_group("Progression")
-@export var disciplines: Array[DisciplineData] = []
+## Adaptateur non exporte pour les anciens tests et Resources charges en
+## memoire. Les donnees officielles ne le serialisent plus. Des qu'un sort
+## porte un arbre, get_skill_trees() reste la seule vue autoritative.
+var _legacy_disciplines: Array[DisciplineData] = []
+var disciplines: Array[DisciplineData]:
+	get:
+		var derived := get_skill_trees()
+		return derived if not derived.is_empty() else _legacy_disciplines.duplicate()
+	set(value):
+		_legacy_disciplines.assign(value)
 
 @export_group("Sorts")
 @export var basic_attack_enabled: bool = true
@@ -152,3 +160,12 @@ func get_effective_unit_id() -> StringName:
 	if resource_path != "":
 		return StringName(resource_path)
 	return &"unit_data:unassigned"
+
+
+func get_skill_trees() -> Array[DisciplineData]:
+	var trees: Array[DisciplineData] = []
+	for spell in spells:
+		if spell != null and spell.skill_tree != null \
+				and not trees.has(spell.skill_tree):
+			trees.append(spell.skill_tree)
+	return trees
