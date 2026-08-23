@@ -610,7 +610,7 @@ func _inspect_runtime_visual(
 		"painted_visual_scale": painted_visual_scale,
 		"adapter_canvas_scale": adapter_canvas_scale,
 		"painted_scale_matches_true_tactical_reference_band": (
-			painted_visual_scale >= 1.0 and painted_visual_scale <= 1.15
+			painted_visual_scale >= 1.8 and painted_visual_scale <= 2.0
 		),
 		"adapter_received_painted_scale": is_equal_approx(
 			adapter_canvas_scale, painted_visual_scale
@@ -620,8 +620,8 @@ func _inspect_runtime_visual(
 			displayed_character_height > 1.0
 		),
 		"character_matches_tactical_height_band": (
-			displayed_character_height >= 58.0
-			and displayed_character_height <= 78.0
+			displayed_character_height >= 105.0
+			and displayed_character_height <= 150.0
 		),
 	}
 

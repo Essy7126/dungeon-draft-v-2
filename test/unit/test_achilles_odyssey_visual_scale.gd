@@ -7,9 +7,11 @@ const ACHILLES_V3_VISUAL_PROFILE_PATH := (
 	"res://data/visuals/achilles/achilles_meshy_profile_v3.tres"
 )
 const ACHILLES_DATA_PATH := "res://data/units/allies/achilles.tres"
-const SKELETON_DATA_PATH := (
-	"res://data/units/enemies/odyssey_skirmisher.tres"
-)
+const TRIO_DATA_PATHS := [
+	"res://data/units/alliés/elfe.tres",
+	"res://data/units/alliés/mage.tres",
+	"res://data/units/alliés/Guerrier.tres",
+]
 const FOREST_VISUAL_PATH := (
 	"res://data/maps/painted/odyssey/room_01_visual.tres"
 )
@@ -26,9 +28,9 @@ const ROOM_PROFILE_PATHS := {
 	"space": "res://data/maps/painted/room_06_space_presentation.tres",
 }
 const EXPECTED_ROOM_SCALES := {
-	"forest": 1.05,
-	"volcano": 1.08,
-	"space": 1.10,
+	"forest": 1.89,
+	"volcano": 1.944,
+	"space": 1.98,
 }
 const MESHY_CLIP_NAMES: Array[StringName] = [
 	&"Alert",
@@ -61,8 +63,8 @@ const BATTLE_UNIT_VIEW_SCALE := 0.58
 # vertically. Normalizing the real UnitView hierarchy to that cell keeps this
 # regression independent from desktop DPI and window stretch settings.
 const REFERENCE_ODYSSEY_CELL_DEPTH_PIXELS := 74.0
-const ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS := 72.0
-const ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS := 90.0
+const ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS := 125.0
+const ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS := 170.0
 
 
 func test_achilles_has_a_valid_painted_presence_profile() -> void:
@@ -72,9 +74,9 @@ func test_achilles_has_a_valid_painted_presence_profile() -> void:
 		return
 	assert_true(profile.matches(&"achilles"))
 	assert_eq(profile.family_id, &"hero_achilles")
-	assert_almost_eq(profile.base_visual_scale, 1.0, 0.0001)
-	assert_almost_eq(profile.minimum_visual_scale, 1.0, 0.0001)
-	assert_almost_eq(profile.maximum_visual_scale, 1.15, 0.0001)
+	assert_almost_eq(profile.base_visual_scale, 1.8, 0.0001)
+	assert_almost_eq(profile.minimum_visual_scale, 1.6, 0.0001)
+	assert_almost_eq(profile.maximum_visual_scale, 2.0, 0.0001)
 	assert_true(profile.validation_errors().is_empty())
 
 
@@ -94,11 +96,17 @@ func test_all_three_odyssey_presentations_register_calibrated_achilles() -> void
 			0.0001,
 			room_id,
 		)
-		assert_lte(final_scale, 1.15, "%s remains inside the V3 envelope" % room_id)
-		assert_lt(
+		var trio_scales := [
+			profile.final_visual_scale(&"elf"),
+			profile.final_visual_scale(&"mage"),
+			profile.final_visual_scale(&"warrior"),
+		]
+		trio_scales.sort()
+		assert_between(
 			final_scale,
-			1.974,
-			"%s cannot restore the obsolete double scale" % room_id,
+			float(trio_scales[0]),
+			float(trio_scales[-1]),
+			"%s Achilles stays inside the real trio scale envelope" % room_id,
 		)
 		assert_true(profile.validation_errors().is_empty(), room_id)
 
@@ -204,7 +212,7 @@ func test_all_twenty_meshy_clips_keep_safe_viewport_margins() -> void:
 	player.speed_scale = 1.0
 
 
-func test_real_battle_unit_views_match_reference_cell_and_skeleton() -> void:
+func test_real_battle_unit_views_match_the_three_production_heroes() -> void:
 	var map_visual := load(FOREST_VISUAL_PATH) as PaintedMapVisualData
 	assert_not_null(map_visual)
 	if map_visual == null or map_visual.presentation_profile == null:
@@ -227,22 +235,31 @@ func test_real_battle_unit_views_match_reference_cell_and_skeleton() -> void:
 		map_visual.presentation_profile,
 		battle_unit_scale,
 	)
-	var skeleton_view := _create_unit_view(
-		SKELETON_DATA_PATH,
-		map_visual.presentation_profile,
-		battle_unit_scale,
-	)
-	if achilles_view == null or skeleton_view == null:
+	var trio_views: Array[Node2D] = []
+	var trio_visuals: Array[CharacterIsoUnitView] = []
+	for data_path in TRIO_DATA_PATHS:
+		var trio_view := _create_unit_view(
+			data_path,
+			map_visual.presentation_profile,
+			battle_unit_scale,
+		)
+		if trio_view == null:
+			return
+		var trio_visual := (
+			trio_view.call("get_optional_visual") as CharacterIsoUnitView
+		)
+		assert_not_null(trio_visual, data_path)
+		if trio_visual == null:
+			return
+		trio_views.append(trio_view)
+		trio_visuals.append(trio_visual)
+	if achilles_view == null:
 		return
 	var achilles := (
 		achilles_view.call("get_optional_visual") as AchillesIsoUnitView
 	)
-	var skeleton := (
-		skeleton_view.call("get_optional_visual") as CharacterIsoUnitView
-	)
 	assert_not_null(achilles)
-	assert_not_null(skeleton)
-	if achilles == null or skeleton == null:
+	if achilles == null:
 		return
 
 	var deadline := Time.get_ticks_msec() + READY_TIMEOUT_MSEC
@@ -256,24 +273,27 @@ func test_real_battle_unit_views_match_reference_cell_and_skeleton() -> void:
 	achilles.viewport_backend.character_viewport.render_target_update_mode = (
 		SubViewport.UPDATE_ONCE
 	)
-	skeleton.character_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	for trio_visual in trio_visuals:
+		trio_visual.character_viewport.render_target_update_mode = (
+			SubViewport.UPDATE_ONCE
+		)
 	await wait_process_frames(1)
 	await RenderingServer.frame_post_draw
 
 	assert_almost_eq(
 		float(achilles_view.call("get_painted_visual_scale")),
-		1.05,
-		0.0001,
-	)
-	assert_almost_eq(
-		float(skeleton_view.call("get_painted_visual_scale")),
-		1.0,
+		1.89,
 		0.0001,
 	)
 	var achilles_measure := _unit_view_measure(achilles_view, achilles)
-	var skeleton_measure := _unit_view_measure(skeleton_view, skeleton)
-	if not achilles_measure.visible or not skeleton_measure.visible:
+	if not achilles_measure.visible:
 		return
+	var trio_measures: Array[Dictionary] = []
+	for index in trio_views.size():
+		var measure := _unit_view_measure(trio_views[index], trio_visuals[index])
+		if not measure.visible:
+			return
+		trio_measures.append(measure)
 
 	var cell_depth := _vertical_span(
 		map_visual.cell_polygon_display(Vector2i.ZERO)
@@ -287,56 +307,51 @@ func test_real_battle_unit_views_match_reference_cell_and_skeleton() -> void:
 	var achilles_height_pixels := (
 		float(achilles_measure.world_height) * reference_pixel_scale
 	)
-	var skeleton_height_pixels := (
-		float(skeleton_measure.world_height) * reference_pixel_scale
-	)
 	var achilles_to_cell := float(achilles_measure.world_height) / cell_depth
-	var skeleton_to_cell := float(skeleton_measure.world_height) / cell_depth
-	var achilles_to_skeleton := (
-		float(achilles_measure.world_height)
-		/ maxf(float(skeleton_measure.world_height), 0.001)
+	var trio_heights: Array[float] = []
+	for measure in trio_measures:
+		trio_heights.append(float(measure.world_height))
+	trio_heights.sort()
+	var trio_median_height := trio_heights[1]
+	var achilles_to_trio_median := (
+		float(achilles_measure.world_height) / maxf(trio_median_height, 0.001)
 	)
 
 	assert_between(
 		achilles_height_pixels,
 		ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS,
 		ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS,
-		"Achilles occupies 72-90 px in the normalized UnitView reference.",
+		"Achilles occupies the same hero-scale band as the production trio.",
 	)
 	assert_between(
 		achilles_to_cell,
-		0.95,
-		1.25,
-		"Achilles remains close to one painted cell-depth at rest.",
+		1.6,
+		2.3,
+		"A production-scale hero spans roughly two painted cell-depths.",
 	)
 	assert_between(
-		skeleton_to_cell,
-		0.65,
-		1.05,
-		"The real skeleton remains a stable cell-relative reference.",
-	)
-	assert_between(
-		achilles_to_skeleton,
-		1.05,
-		1.50,
-		"Achilles and the production skeleton share a readable combat scale.",
+		achilles_to_trio_median,
+		0.85,
+		1.20,
+		(
+			"Achilles stays within the natural rendered-height spread around "
+			+ "Elf, Mage and Warrior (ratio %.3f)."
+		) % achilles_to_trio_median,
 	)
 	assert_lte(
 		float(achilles_measure.foot_anchor_error),
 		0.05,
 		"Achilles' projected feet remain on the UnitView origin.",
 	)
-	assert_lte(
-		float(skeleton_measure.foot_anchor_error),
-		0.05,
-		"The skeleton reference remains on the UnitView origin.",
-	)
-	# This explicit counterfactual reconstructs the rejected screenshot setup:
-	# the old 125 px billboard and the former painted x1.974 were both active.
-	var obsolete_height_pixels := (
-		achilles_height_pixels * (125.0 / 96.0) * (1.974 / 1.05)
-	)
-	assert_gt(obsolete_height_pixels, ACHILLES_MAXIMUM_REFERENCE_HEIGHT_PIXELS)
+	for index in trio_measures.size():
+		assert_lte(
+			float(trio_measures[index].foot_anchor_error),
+			0.05,
+			"Production trio hero %d remains on the UnitView origin." % index,
+		)
+	# The previous 1.0 base is now explicitly rejected by the real trio target.
+	var previous_small_height_pixels := achilles_height_pixels / 1.8
+	assert_lt(previous_small_height_pixels, ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS)
 
 
 func _create_unit_view(
