@@ -33,9 +33,9 @@ const ROOM_PROFILE_PATHS := {
 	"space": "res://data/maps/painted/room_06_space_presentation.tres",
 }
 const EXPECTED_ROOM_SCALES := {
-	"forest": 1.806,
-	"volcano": 1.8576,
-	"space": 1.892,
+	"forest": 1.659,
+	"volcano": 1.7064,
+	"space": 1.738,
 }
 const MESHY_CLIP_NAMES: Array[StringName] = [
 	&"Alert",
@@ -79,7 +79,7 @@ func test_achilles_has_a_valid_painted_presence_profile() -> void:
 		return
 	assert_true(profile.matches(&"achilles"))
 	assert_eq(profile.family_id, &"hero_achilles")
-	assert_almost_eq(profile.base_visual_scale, 1.72, 0.0001)
+	assert_almost_eq(profile.base_visual_scale, 1.58, 0.0001)
 	assert_almost_eq(profile.minimum_visual_scale, 1.5, 0.0001)
 	assert_almost_eq(profile.maximum_visual_scale, 1.9, 0.0001)
 	assert_true(profile.validation_errors().is_empty())
@@ -107,11 +107,13 @@ func test_all_three_odyssey_presentations_register_calibrated_achilles() -> void
 			profile.final_visual_scale(&"warrior"),
 		]
 		trio_scales.sort()
-		assert_between(
+		# The Meshy and skeleton billboards have different native framing from
+		# the trio. Numeric profile scales are therefore not a visual-height
+		# proxy; the real UnitView render comparison below is authoritative.
+		assert_lt(
 			final_scale,
 			float(trio_scales[0]),
-			float(trio_scales[-1]),
-			"%s Achilles stays inside the real trio scale envelope" % room_id,
+			"%s keeps the intentionally reduced tactical scalar" % room_id,
 		)
 		assert_true(profile.validation_errors().is_empty(), room_id)
 
@@ -309,7 +311,7 @@ func test_real_battle_unit_views_match_the_three_production_heroes() -> void:
 
 	assert_almost_eq(
 		float(achilles_view.call("get_painted_visual_scale")),
-		1.806,
+		1.659,
 		0.0001,
 	)
 	var achilles_measure := _unit_view_measure(achilles_view, achilles)
@@ -401,7 +403,7 @@ func test_real_battle_unit_views_match_the_three_production_heroes() -> void:
 			"Odyssey enemy %d remains on the UnitView origin." % index,
 		)
 	# The previous 1.0 base is now explicitly rejected by the real trio target.
-	var previous_small_height_pixels := achilles_height_pixels / 1.72
+	var previous_small_height_pixels := achilles_height_pixels / 1.58
 	assert_lt(previous_small_height_pixels, ACHILLES_MINIMUM_REFERENCE_HEIGHT_PIXELS)
 
 

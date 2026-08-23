@@ -6,7 +6,7 @@
 script = ExtResource("1")
 family_id = &"hero_achilles"
 unit_ids = Array[StringName]([&"achilles"])
-base_visual_scale = 1.72
+base_visual_scale = 1.58
 minimum_visual_scale = 1.5
 maximum_visual_scale = 1.9
 contact_shadow_scale = 1.04
