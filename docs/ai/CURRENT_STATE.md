@@ -23,13 +23,14 @@
 	le cadrage natif plus petit afin de partager la même hauteur rendue.
 - Le modèle Meshy ne contient aucun équipement. Le corps de grille et l’aperçu
   3D utilisent la V3 ; le portrait du HUD reste l’illustration 2D historique.
-- Validation actuelle : tests ciblés proportions/V3/locomotion/Odyssée 35/35
-  (855 assertions),
+- Validation actuelle : tests ciblés proportions/V3/locomotion/Odyssée et
+  squelettes 61/61 (1 102 assertions),
   Studio 19/19 (208 assertions) et binding SHA-exact 34/34 (643 assertions).
   La comparaison graphique instancie réellement les trois héros et les trois
   familles ennemies de production : Achille reste dans la bande du trio et les
-  ennemis restent à ±5 % de sa hauteur rendue. Le full-flow post-calibrage doit
-  être rescellé sur le prochain commit propre.
+  ennemis restent à ±5 % de sa hauteur rendue. Le full-flow trois salles passe
+  sur `d387e4a87d95` avec 13 captures ; Achille mesure
+  111,97 / 111,92 / 117,30 px dans les salles I / II / III.
 
 ## Achille — pool d’animations Meshy V3 (WORKTREE_CANDIDATE, 2026-08-23)
 

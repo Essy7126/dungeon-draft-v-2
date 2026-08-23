@@ -70,12 +70,15 @@ la cellule de grille résolue.
 
 ## Validation actuelle
 
-- Tests ciblés proportions/V3/locomotion/Odyssée : 35/35 tests,
-  855 assertions.
+- Tests ciblés proportions/V3/locomotion/Odyssée et squelettes : 61/61 tests,
+  1 102 assertions.
 - Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
-- Full-flow graphique post-calibrage : **À REJOUER SUR LE PROCHAIN COMMIT
-  PROPRE**.
+- Full-flow graphique post-calibrage : **PASS**, 3/3 salles et 13/13 captures
+  sur `d387e4a87d95`.
+- Hauteurs d'Achille mesurées : 111,97 px dans la forêt, 111,92 px dans le
+  volcan et 117,30 px dans l'espace. Les trois familles ennemies restent à
+  ±5 % dans la régression de proportions.
 - `Idle_11` reste actif après une boucle complète ; `Walking` est sélectionné
   jusqu'à 5 cases et `run_fast_3_inplace` à partir de 6 cases.
 

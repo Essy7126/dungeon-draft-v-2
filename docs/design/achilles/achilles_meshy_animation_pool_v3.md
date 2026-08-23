@@ -119,11 +119,12 @@ de hanche important.
 
 ## Validation
 
-- Tests ciblés proportions/V3/locomotion/Odyssée : 35/35 tests,
-  855 assertions.
+- Tests ciblés proportions/V3/locomotion/Odyssée et squelettes : 61/61 tests,
+  1 102 assertions.
 - Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
-- Full-flow graphique post-calibrage : à rejouer sur le prochain commit propre.
+- Full-flow graphique post-calibrage : **PASS**, 3/3 salles et 13 captures sur
+  `d387e4a87d95` ; hauteurs 111,97 / 111,92 / 117,30 px.
 
-La V3, sa cadence et ses proportions unitaires sont validées ; la dernière
-revue des trois salles reste à resceller.
+La V3, sa cadence et ses proportions Achille/ennemis sont validées dans les
+trois salles.
