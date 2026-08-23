@@ -9,6 +9,7 @@ const MOVEMENT_SETTLE_SECONDS := 0.06
 const ACTION_TIMEOUT_SECONDS := 2.0
 const ACTION_FALLBACK := &"ACTION_FALLBACK"
 const REQUESTED_BACKEND := &"VIEWPORT_3D"
+const MovementTiming = preload("res://characters/character_movement_timing.gd")
 const DEFAULT_FALLBACK_BACKEND_SCENE := preload(
 	"res://characters/achilles/3d/AchillesLegacy2DBackend.tscn"
 )
@@ -187,6 +188,17 @@ func begin_path_movement_feedback(path: Array) -> void:
 	)
 	var action_id := &"run" if step_count >= run_threshold else &"walk"
 	_begin_movement_feedback(path[0] as Vector2i, path[1] as Vector2i, action_id)
+
+
+func get_movement_segment_duration(path: Array) -> float:
+	var profile := _selected_profile \
+		if _selected_profile != null else visual_profile
+	if profile == null:
+		return MovementTiming.MOVE_SEGMENT_DURATION
+	var step_count := maxi(1, path.size() - 1)
+	if step_count >= profile.run_min_path_cells:
+		return profile.run_segment_duration_seconds
+	return profile.walk_segment_duration_seconds
 
 
 func _begin_movement_feedback(

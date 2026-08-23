@@ -15,7 +15,7 @@ reflected_light_source = 2
 script = ExtResource("1_controller")
 camera_orthographic_size = 2.6
 camera_look_at_height = 0.85
-render_display_scale = 0.1387747
+render_display_scale = 0.1858209
 character_scale = 1.1
 
 [node name="GroundShadow" type="Polygon2D" parent="."]
@@ -24,7 +24,7 @@ color = Color(0.02, 0.025, 0.03, 0.28)
 [node name="RenderSprite" type="Sprite2D" parent="."]
 centered = false
 texture_filter = 2
-scale = Vector2(0.1387747, 0.1387747)
+scale = Vector2(0.1858209, 0.1858209)
 
 [node name="CharacterViewport" type="SubViewport" parent="."]
 transparent_bg = true

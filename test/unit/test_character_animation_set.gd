@@ -398,11 +398,11 @@ func test_run_session_edits_the_existing_achilles_animation_pool() -> void:
 	assert_not_null(hero.base_unit_data.animation_set)
 	assert_eq(
 		hero.base_unit_data.animation_set.resource_path,
-		"res://data/characters/achilles/animations.tres"
+		"res://data/characters/achilles/animations_meshy_v3.tres"
 	)
 	var session := SkillTreeEditSession.new()
 	assert_true(session.open_progression(run_data, hero))
-	assert_true(session.set_animation_clip(&"idle", &"Achilles_Idle", "Repos"))
+	assert_true(session.set_animation_clip(&"idle", &"Alert", "Repos"))
 	assert_same(
 		session.working_character_unit.animation_set,
 		session.working_unit.animation_set
@@ -419,7 +419,7 @@ func test_run_session_edits_the_existing_achilles_animation_pool() -> void:
 		"le UnitData canonique reference deja le pool et ne doit pas etre reecrit"
 	)
 	assert_true(Array(planned_paths).has(
-		"res://data/characters/achilles/animations.tres"
+		"res://data/characters/achilles/animations_meshy_v3.tres"
 	))
 	session.release_document(false)
 

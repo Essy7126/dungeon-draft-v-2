@@ -46,7 +46,12 @@ func get_spell_icon(capability_id: StringName) -> Texture2D:
 
 
 func get_spell_icon_for(spell) -> Texture2D:
-	return get_spell_icon(_get_spell_id(spell))
+	var theme_override := get_spell_icon(_get_spell_id(spell))
+	if theme_override != null:
+		return theme_override
+	if spell != null:
+		return spell.icon as Texture2D
+	return null
 
 
 func get_spell_frame(capability_id: StringName) -> Texture2D:

@@ -1,7 +1,7 @@
 # Achille — modèle et pool d’animations Meshy V3
 
 Date : 2026-08-23
-Statut : **WORKTREE_CANDIDATE — VALIDATION_GRAPHIQUE_PENDING**
+Statut : **CURRENT — VALIDATION_GRAPHIQUE_PASS**
 
 ## Objectif
 
@@ -38,8 +38,8 @@ squelette :
 | Événement | Clip V3 |
 |---|---|
 | Repos | `Idle_11` |
-| Marche, chemin de 1 à 5 cases | `Walking` |
-| Course, chemin de 6 cases ou plus | `run_fast_3_inplace` |
+| Marche, chemin de 1 à 5 cases | `Walking` à 75 %, 0,40 s par case |
+| Course, chemin de 6 cases ou plus | `run_fast_3_inplace`, 0,20 s par case |
 | Impact | `Hit_Reaction_1` |
 | Lancement générique | `mage_soell_cast_7` |
 | Frappe de lance | `Left_Slash` |
@@ -84,17 +84,19 @@ animation non affectée n’est pas supprimée du GLB.
 
 Le profil `res://data/maps/painted/unit_profile_achilles.tres` impose :
 
-- base : 1,0 ;
-- minimum : 1,0 ;
-- maximum : 1,15 ;
-- forêt : 1,05 ;
-- volcan : 1,08 ;
-- espace : 1,10.
+- base : 1,72 ;
+- minimum : 1,50 ;
+- maximum : 1,90 ;
+- forêt : 1,806 ;
+- volcan : 1,8576 ;
+- espace : 1,892.
 
 Le profil V3 conserve une caméra orthographique 2,6 et emploie un billboard de
-78 pixels avant la mise à l'échelle peinte. Ce calibrage remplace les valeurs
-V2 1,974 / 2,0 / 2,0, qui rendaient Achille
-nettement trop grand par rapport aux cases et aux autres personnages.
+96 pixels avant la mise à l'échelle peinte. Le calibrage est comparé aux vraies
+UnitView de l'Elfe, du Mage et du Guerrier. Les vrais identifiants ennemis de
+L'Odyssée sont aussi reliés aux profils peints ; les billboards standard et
+champion compensent leurs cadrages natifs afin de rester à ±5 % de la hauteur
+rendue d'Achille.
 
 ## Root motion et autorité de la grille
 
@@ -117,12 +119,12 @@ de hanche important.
 
 ## Validation
 
-- Suite dédiée V3 : 4/4 tests, 38 assertions.
-- Calibration réelle : 5/5 tests, 218 assertions.
-- Régression élargie : 79/79 tests, 2 532 assertions.
+- Tests ciblés proportions/V3/locomotion/Odyssée et squelettes : 61/61 tests,
+  1 102 assertions.
+- Studio d'animations : 19/19 tests, 208 assertions.
 - Binding SHA-exact : 34/34 tests, 643 assertions.
-- Full-flow graphique final : **PASS**, 3/3 salles et 13/13 captures.
-- Inspection finale des captures : **GO** ; hauteurs 51,4 / 54,4 / 54,7 px.
+- Full-flow graphique post-calibrage : **PASS**, 3/3 salles et 13 captures sur
+  `d165b8023d08` ; hauteurs 111,97 / 111,92 / 117,30 px.
 
-La V3 est visuellement validée comme candidat. La qualification publiée reste
-conditionnée à son intégration sur `origin/main`.
+La V3, sa cadence et ses proportions Achille/ennemis sont validées dans les
+trois salles.

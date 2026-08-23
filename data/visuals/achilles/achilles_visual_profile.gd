@@ -97,6 +97,11 @@ const SUPPORTED_SKELETON_SIGNATURE_MODES: Array[StringName] = [
 # this value merely decides which in-place loop is shown for that path.
 @export_range(1, 99, 1) var run_min_path_cells := 6
 
+# Presentation timing only. The grid/path resolution remains authoritative;
+# these values control how long the rendered UnitView takes to cross one cell.
+@export_range(0.05, 1.0, 0.01) var walk_segment_duration_seconds := 0.24
+@export_range(0.05, 1.0, 0.01) var run_segment_duration_seconds := 0.24
+
 # Per-clip playback calibration for animation-rich assets. Keys are animation
 # names from the GLB. Unknown clips deliberately receive safe defaults so a
 # newly imported clip can be previewed before it is artistically calibrated.
@@ -119,6 +124,10 @@ func is_character_only_valid() -> bool:
 		and fallback_policy == FALLBACK_POLICY_LEGACY_2D_ON_VERIFIED_ERROR \
 		and render_display_size >= 32.0 \
 		and render_display_size <= 192.0 \
+		and walk_segment_duration_seconds >= 0.05 \
+		and walk_segment_duration_seconds <= 1.0 \
+		and run_segment_duration_seconds >= 0.05 \
+		and run_segment_duration_seconds <= 1.0 \
 		and not equipment_enabled \
 		and weapon_profile == null
 

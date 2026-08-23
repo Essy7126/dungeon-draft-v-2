@@ -28,16 +28,16 @@ const EXPECTED_PROJECT_PATH_ENV := "ACHILLES_FIX_EXPECTED_PROJECT_PATH"
 const EXPECTED_HEAD_ENV := "ACHILLES_FIX_EXPECTED_HEAD"
 const EXPECTED_SPELL_HASHES := {
 	"res://data/spells/achilles/spear_thrust.tres": (
-		"B7C6D5210896F45FD31A8BD35CC55F062EB2439E7C840637E101430BC4FB00E9"
+		"52BF6F30C075AD0BFA858FF04F241612252BBCCB95B00690B2E0661913E2C639"
 	),
 	"res://data/spells/achilles/advance.tres": (
-		"D430346A878A60E66523495ED50D88075E1F7B4B276EEE006EB171EC5CF9DD90"
+		"A91B51C1458A200E501EBDBA5225574CFB9E8B91EEF9F6B7C7229593C5F06499"
 	),
 	"res://data/spells/achilles/sweep.tres": (
-		"CEEA56DA4162A40D2E1A7E2A3ED227B0E56EB2F7BD3FDA226699482723CFD1C5"
+		"2E972BDE437F09329ACDE434AFA1E6881F5BAAC70F5B67FCD0B30A9DE739C6E5"
 	),
 	"res://data/spells/achilles/guard.tres": (
-		"60232181EFEF11F8AE76338BFEF978067898910EF35916867DBCF9F6BF35FEFF"
+		"319AB5C5A280B012CE1606207E4F3D91C8487F92FBC4998FB84931F6DE9DB058"
 	),
 }
 const RUNTIME_DEPENDENCY_ROOTS: Array[String] = [
@@ -544,8 +544,8 @@ func test_achilles_stats_unchanged() -> void:
 
 func test_spells_unchanged() -> void:
 	# Le nom historique reste un critère du mandat binding-fix. Les hashes
-	# verrouillent désormais la copie joueur promue ; le contrat de production
-	# séparé protège explicitement toutes les valeurs de gameplay.
+	# verrouillent la copie promue avec les icônes HUD ajoutées sur main ; le
+	# contrat de production séparé protège toutes les valeurs de gameplay.
 	for path_value: Variant in EXPECTED_SPELL_HASHES:
 		var path := String(path_value)
 		assert_eq(

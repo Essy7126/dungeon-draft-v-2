@@ -141,9 +141,20 @@ func _refresh(_unused = {}) -> void:
 		"font_color", Color(1.0, 0.66, 0.25) if not dirty.is_empty() else Color(0.48, 0.9, 0.62)
 	)
 	var snap := context.snapshot()
+	var opened_resource: Resource = context.active_character
+	var authority_label := "Fiche générale"
+	var usage_label := "usage(s) de la fiche générale"
+	var opened_scope_label := "Ressource partagée"
+	if context.active_authority \
+			== RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE \
+			and context.active_hero != null:
+		opened_resource = context.active_hero.progression_profile
+		authority_label = "Profil de progression"
+		usage_label = "usage(s) du profil"
+		opened_scope_label = _scope_label(context.edit_scope)
 	var usage_count := 0
-	if reference_graph != null and context.active_room() != null:
-		usage_count = reference_graph.usages(context.active_room()).size()
+	if reference_graph != null and opened_resource != null:
+		usage_count = reference_graph.usages(opened_resource).size()
 	var error_count := 0
 	for metadata_value in dirty.values():
 		if metadata_value is Dictionary:
@@ -154,15 +165,15 @@ func _refresh(_unused = {}) -> void:
 		hero_display = context.active_character.unit_name
 		if context.active_hero == null:
 			hero_display += " (hors partie)"
-	human_summary_label.text = "%s · Salle %d — %s · %s · %s · %d usage(s) · %d erreur(s) · Cible : %s" % [
-		str(snap.get("run_name", "Aucune partie")), int(snap.get("room_index", -1)) + 1,
-		str(snap.get("room_name", "Aucune salle")), hero_display,
-		_scope_label(context.edit_scope), usage_count, error_count, target,
+	human_summary_label.text = "%s · %s · %s · %s · %d %s · %d erreur(s) · Cible : %s" % [
+		str(snap.get("run_name", "Aucune partie")), hero_display,
+		authority_label, opened_scope_label, usage_count, usage_label,
+		error_count, target,
 	]
 	human_summary_label.tooltip_text = human_summary_label.text
-	details_label.text = "Partie : %s  ·  Salle : %s  ·  Personnage : %s  ·  Profil : %s  ·  usages : %d  ·  index g%d" % [
-		snap.get("run_path", ""), snap.get("room_path", ""),
-		snap.get("character_path", ""), snap.get("progression_path", ""), usage_count,
+	details_label.text = "Partie : %s  ·  Autorité : %s  ·  UnitData : %s  ·  Profil : %s  ·  %s : %d  ·  index g%d" % [
+		snap.get("run_path", ""), authority_label, snap.get("character_path", ""),
+		snap.get("progression_path", ""), usage_label, usage_count,
 		reference_graph.generation if reference_graph != null else 0,
 	]
 	details_label.tooltip_text = details_label.text

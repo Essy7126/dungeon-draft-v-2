@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="1_rv1ov"]
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_s2kpe"]
 [ext_resource type="Resource" uid="uid://b6utveihynose" path="res://data/terrain/glace.tres" id="2_wlyno"]
+[ext_resource type="Texture2D" uid="uid://bjnkgnw1phwoc" path="res://asset/ui/character_hud/generated/spell_icon_r08_c01.png" id="3_icon"]
 
 [resource]
 script = ExtResource("1_s2kpe")
@@ -10,6 +11,7 @@ spell_id = &"mage_ice_wall"
 discipline_id = &"mage_cryomancy"
 spell_name = "Mur de glace"
 description = "Lecture joueur: Cout 1 PA. Portee 6. Cible: case libre. Effets: pose ou modifie un terrain."
+icon = ExtResource("3_icon")
 spell_range = 6
 can_target_free_cell = true
 aoe_shape = 1

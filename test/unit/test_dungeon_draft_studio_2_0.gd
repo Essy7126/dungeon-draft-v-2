@@ -293,6 +293,173 @@ func test_skill_session_uses_progression_profile_as_canonical_document_and_never
 	session.release_document(false)
 
 
+func test_principal_catalog_selection_resolves_achilles_unique_odyssey_profile() -> void:
+	var context := StudioProjectContext.new()
+	assert_true(context.initialize("res://data/runs/first_run.tres", &"mage").ok)
+	assert_eq(context.active_run.run_name, "Principal")
+	var studio := SkillTreeStudioMain.new()
+	studio.setup(null, null, context)
+	add_child_autofree(studio)
+	for _frame in range(12):
+		await get_tree().process_frame
+	studio._choose_character("res://data/units/allies/achilles.tres")
+	for _frame in range(4):
+		await get_tree().process_frame
+	assert_eq(context.active_run.run_name, "L'Odyssée")
+	assert_eq(
+		context.active_authority,
+		RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE
+	)
+	assert_true(studio.session.is_profile_authoritative())
+	assert_eq(
+		studio.session.canonical_source_path(),
+		"res://data/runs/progression/odyssey/achilles_progression_profile.tres"
+	)
+	assert_eq(studio.session.working_unit.spells.size(), 4)
+	assert_eq(studio.session.working_unit.disciplines.size(), 4)
+	var spell_names := PackedStringArray()
+	var spell_ids := PackedStringArray()
+	for spell in studio.session.working_unit.spells:
+		spell_names.append(spell.spell_name)
+		spell_ids.append(str(spell.get_effective_spell_id()))
+	assert_eq(Array(spell_names), [
+		"Frappe de lance", "Percée", "Balayage", "Garde d’airain",
+	])
+	assert_eq(Array(spell_ids), [
+		"achilles_spear_thrust", "achilles_advance", "achilles_sweep",
+		"achilles_guard",
+	])
+	var search := SkillTreeGlobalSearchService.search(
+		studio.heroes, "achilles_spear_thrust"
+	)
+	assert_true(search.any(func(entry: Dictionary) -> bool:
+		return entry.get("kind") == "spell" \
+			and entry.get("profile_path") \
+			== studio.session.canonical_source_path()
+	))
+	var index := SkillTreeReferenceIndex.new().build(studio.session.working_unit)
+	for spell_id in spell_ids:
+		assert_true(index.id_exists("spell", StringName(spell_id)), spell_id)
+	studio.animation_screen.set_document(
+		studio.session.working_unit, "res://data/units/allies/achilles.tres"
+	)
+	studio.animation_screen._refresh_event_actions()
+	for expected_label in [
+		"Sort - Frappe de lance", "Sort - Percée", "Sort - Balayage",
+		"Sort - Garde d’airain",
+	]:
+		assert_true(studio.animation_screen._spell_event_labels.values().has(
+			expected_label
+		), expected_label)
+	var plan := SkillTreeSaveTransactionService.build_plan(studio.session)
+	for entry in plan.writable_entries():
+		assert_ne(entry.resource, studio.session.source_unit)
+		assert_ne(entry.resource, studio.session.working_unit)
+	studio.context_bar._refresh()
+	assert_true(studio.context_bar.human_summary_label.text.contains(
+		"Profil de progression"
+	))
+	assert_true(studio.context_bar.details_label.text.contains(
+		studio.session.canonical_source_path()
+	))
+	var chassis := ResourceLoader.load(
+		"res://data/units/allies/achilles.tres", "",
+		ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as UnitData
+	assert_not_null(chassis)
+	assert_true(chassis.spells.is_empty())
+	assert_true(chassis.disciplines.is_empty())
+	studio.dispose_document()
+
+
+func test_profile_session_routes_chassis_fields_and_area_exclusion_without_saving_adapter() -> void:
+	var odyssey := ResourceLoader.load(
+		"res://data/runs/odyssey.tres", "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as RunData
+	var hero := _hero(odyssey, &"achilles")
+	var session := SkillTreeEditSession.new()
+	assert_true(session.open_progression(odyssey, hero))
+	var original_hp := session.working_unit.max_hp
+	assert_true(session.change_property(
+		session.working_unit, &"max_hp", original_hp + 1, "Modifier les PV"
+	))
+	assert_eq(session.working_character_unit.max_hp, original_hp + 1)
+	assert_true(session.history_undo())
+	assert_eq(session.working_character_unit.max_hp, original_hp)
+	assert_true(session.history_redo())
+	var sweep: Spell = null
+	for spell in session.working_unit.spells:
+		if spell != null and spell.get_effective_spell_id() == &"achilles_sweep":
+			sweep = spell
+			break
+	assert_not_null(sweep)
+	assert_true(sweep.exclude_caster_from_area_effects)
+	assert_true(session.change_property(
+		sweep, &"exclude_caster_from_area_effects", false,
+		"Exclure le lanceur des effets de zone"
+	))
+	assert_false(sweep.exclude_caster_from_area_effects)
+	assert_true(session.history_undo())
+	assert_true(sweep.exclude_caster_from_area_effects)
+	assert_true(session.history_redo())
+	assert_false(sweep.exclude_caster_from_area_effects)
+	assert_true(session.change_property(
+		session.working_unit, &"active_spell_slots", 3,
+		"Modifier les emplacements de sorts"
+	))
+	var plan := SkillTreeSaveTransactionService.build_plan(session)
+	var has_profile := false
+	var has_chassis := false
+	var has_sweep := false
+	for entry in plan.writable_entries():
+		assert_ne(entry.resource, session.working_unit)
+		if entry.resource is CharacterProgressionProfile:
+			has_profile = true
+		elif entry.resource is UnitData:
+			has_chassis = true
+		elif entry.resource is Spell and entry.target_path.ends_with("/sweep.tres"):
+			has_sweep = true
+	assert_true(has_profile)
+	assert_true(has_chassis)
+	assert_true(has_sweep)
+	assert_true(session.working_character_unit.spells.is_empty())
+	assert_true(session.working_character_unit.disciplines.is_empty())
+	session.release_document(false)
+
+
+func test_multiple_outside_profiles_require_a_choice_and_enemy_without_profile_opens_raw() -> void:
+	var context := StudioProjectContext.new()
+	assert_true(context.initialize("res://data/runs/odyssey.tres", &"achilles").ok)
+	var studio := SkillTreeStudioMain.new()
+	studio.setup(null, null, context)
+	add_child_autofree(studio)
+	for _frame in range(12):
+		await get_tree().process_frame
+	var elf_path := "res://data/units/alliés/elfe.tres"
+	var elf_entry := studio._catalog_entry_for_path(elf_path)
+	assert_gt((elf_entry.get("profile_authorities", []) as Array).size(), 1)
+	var opening_profile := studio.session.canonical_source_path()
+	studio._choose_character(elf_path)
+	assert_true(studio.authority_dialog.visible)
+	assert_eq(studio.session.canonical_source_path(), opening_profile)
+	assert_eq(context.active_character.get_effective_unit_id(), &"achilles")
+	studio.authority_dialog.hide()
+	var enemy_path := "res://data/units/ennemie/skeleton_melee.tres"
+	var enemy_entry := studio._catalog_entry_for_path(enemy_path)
+	assert_true((enemy_entry.get("profile_authorities", []) as Array).is_empty())
+	studio._choose_character(enemy_path)
+	for _frame in range(2):
+		await get_tree().process_frame
+	assert_false(studio.session.is_profile_authoritative())
+	assert_eq(studio.session.source_unit.resource_path, enemy_path)
+	assert_null(context.active_hero)
+	assert_eq(
+		context.active_authority,
+		RunContentCatalogService.AUTHORITY_GLOBAL_UNIT
+	)
+	studio.dispose_document()
+
+
 func test_skill_profile_transaction_writes_canonical_profile_and_reloads_run() -> void:
 	_remove_tree(SKILL_SAVE_TEST_ROOT)
 	assert_eq(DirAccess.make_dir_recursive_absolute(

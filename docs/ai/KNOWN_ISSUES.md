@@ -30,7 +30,8 @@
 - Le repos est explicitement lié à `Idle_11`, la marche à `Walking` et la
   course rapide à `run_fast_3_inplace`. Le seuil reste 1–5 cases = marche et
   6+ = course ; avec 3 PM de base, la course automatique demande normalement
-  un bonus de déplacement ou une future règle.
+  un bonus de déplacement ou une future règle. La marche est ralentie à 75 %
+  et 0,40 s par case ; la course garde 0,20 s par case.
 - Le profil peint utilise une base et un minimum de 1,0, avec un maximum de
   1,15. Les valeurs finales attendues sont 1,05 / 1,08 / 1,10 dans les trois
   cartes ; l’ancien calibrage proche de 2,0 n’est plus courant.
@@ -45,19 +46,22 @@
   de conserver la grille comme autorité. Les 13 captures finales valident le
   cadrage général ; une future passe artistique pourra encore polir les appuis
   et les transitions.
-- Validation actuelle : suite V3 4/4 (38 assertions), calibration 5/5
-  (218 assertions), régression élargie 79/79 (2 532 assertions) et binding
-  SHA-exact 34/34 (643 assertions). Le full-flow trois salles et ses 13
-  captures passent sur `8bd5f73ef711`; la revue des proportions, du repos et
-  des quatre poses d'action conclut GO.
+- Validation actuelle : tests ciblés proportions/V3/locomotion/Odyssée et
+  squelettes 61/61 (1 102 assertions),
+  Studio 19/19 (208 assertions) et binding SHA-exact 34/34 (643 assertions).
+  La comparaison graphique relie les vrais identifiants Odyssée aux profils
+  ennemis et maintient les trois familles à ±5 % de la hauteur rendue
+  d'Achille. Le full-flow post-calibrage passe sur `d165b8023d08` avec
+  13 captures ; Achille mesure 111,97 / 111,92 / 117,30 px.
 - Les runners graphiques peuvent encore signaler des ressources renderer ou
   `ObjectDB` à la fermeture, après le marqueur PASS et avec un code de sortie
   nul. Cette dette de teardown n'est pas attribuée au gameplay Meshy.
 - Lorsqu'il est sélectionné, le modèle Meshy apparaît sombre/bleuté et ses
   détails de matière sont peu perceptibles. C'est la prochaine priorité
-  cosmétique, devant toute nouvelle modification d'échelle.
+  cosmétique.
 - Les captures fixes prouvent le choix `Walking` / `run_fast_3_inplace`, mais
-  ne remplacent pas une revue vidéo de la cadence de déplacement.
+  une future revue vidéo restera utile pour affiner la cadence au-delà du
+  réglage actuel validé mécaniquement.
 - `Percée` conserve la grille comme autorité et se recale sur la case finale ;
   sa transition visuelle entre les deux cases reste sans tween de finition.
 - La cible de durée 18–25 minutes et une partie humaine non forcée n’ont pas
@@ -65,8 +69,8 @@
 - La modification concerne L’Odyssée, run solo officielle. Les runs au trio et
   leurs contenus historiques restent inchangés.
 
-État du candidat vérifié le 2026-08-23 avec Godot 4.7.1 et GUT 9.7.1 ;
-validation graphique finale : PASS / GO, publication encore en attente.
+État courant vérifié le 2026-08-23 avec Godot 4.7.1 et GUT 9.7.1 ;
+validation graphique finale : PASS / GO.
 
 ## Run content isolation
 

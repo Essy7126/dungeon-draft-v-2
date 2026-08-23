@@ -22,23 +22,6 @@ static func _save_plan(session: SkillTreeEditSession) -> Array[Dictionary]:
 	return result
 
 
-static func _external_conflicts(
-		session: SkillTreeEditSession,
-		plan: Array[Dictionary]
-	) -> PackedStringArray:
-	var conflicts := PackedStringArray()
-	for entry in plan:
-		var source := entry.get("source") as Resource
-		var path := str(entry.get("path", ""))
-		if source == null or not ResourceLoader.exists(path):
-			continue
-		var disk := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as Resource
-		if disk == null or SkillTreeSnapshotService.storage_fingerprint(disk) \
-				!= SkillTreeSnapshotService.storage_fingerprint(source):
-			conflicts.append(path)
-	return conflicts
-
-
 static func _new_recovery_directory() -> String:
 	var stamp := "%d_%d" % [
 		int(Time.get_unix_time_from_system() * 1000000.0),

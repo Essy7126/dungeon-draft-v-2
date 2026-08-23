@@ -5,9 +5,9 @@
 [resource]
 script = ExtResource("1")
 family_id = &"skeleton_standard"
-unit_ids = Array[StringName]([&"skeleton_melee", &"skeleton_ranged"])
-base_visual_scale = 1.6
-minimum_visual_scale = 1.2
-maximum_visual_scale = 1.8
+unit_ids = Array[StringName]([&"skeleton_melee", &"skeleton_ranged", &"odyssey_skirmisher", &"odyssey_guard"])
+base_visual_scale = 1.72
+minimum_visual_scale = 1.5
+maximum_visual_scale = 1.9
 contact_shadow_scale = 0.95
 contact_shadow_opacity = 0.36

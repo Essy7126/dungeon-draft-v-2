@@ -561,3 +561,38 @@ func _create_user_hierarchy(label: String) -> Dictionary:
 		"room_path": room_path,
 		"run_path": run_path,
 	}
+
+
+## Regression : la relecture canonique de fin de transaction doit ignorer le
+## cache jusqu'aux dependances externes de la RunData (salle, rencontre).
+## Sinon la salle/rencontre revient dans sa version en cache apres la
+## sauvegarde, et la session continue d'editer des donnees perimees alors
+## que le fichier ecrit sur disque est correct.
+func test_external_room_and_encounter_changes_survive_final_reopen() -> void:
+	var fixture := _create_user_hierarchy("cache_reload")
+	# Precharge le cache global de Godot avec les versions "avant" de la salle
+	# et de la rencontre : c'est la condition exacte du bug reproduit.
+	var cached_room := ResourceLoader.load(fixture.room_path) as RoomData
+	var cached_encounter := ResourceLoader.load(fixture.encounter_path) as EncounterDefinition
+	assert_not_null(cached_room)
+	assert_not_null(cached_encounter)
+	var source_run := ResourceLoader.load(
+		fixture.run_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as RunData
+	var session := EncounterEditSession.new()
+	assert_true(session.open(source_run, fixture.run_path))
+	var encounter := session.current_encounter()
+	var new_cap := encounter.living_enemy_cap + 5
+	encounter.living_enemy_cap = new_cap
+	session.mark_dirty(encounter)
+	session.mark_dirty(session.current_room())
+	var result := EncounterSaveService.save(session)
+	assert_true(result.ok, str(result))
+	assert_eq(
+		session.current_encounter().living_enemy_cap, new_cap,
+		"la session reouverte doit refleter la nouvelle valeur, pas celle en cache"
+	)
+	var reloaded := ResourceLoader.load(
+		fixture.encounter_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as EncounterDefinition
+	assert_eq(reloaded.living_enemy_cap, new_cap)

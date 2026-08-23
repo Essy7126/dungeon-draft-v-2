@@ -75,17 +75,46 @@ static func _discover(
 			if seen_ids.has(unit_id):
 				continue
 			seen_ids[unit_id] = true
-			units.append({
+			var authorities := RunContentCatalogService.progression_authorities_for_unit(
+				resource
+			)
+			var editorial_resource := resource
+			var selected_authority := RunContentCatalogService.global_unit_authority(
+				resource
+			)
+			if authorities.size() == 1:
+				selected_authority = authorities[0]
+				editorial_resource = RunContentCatalogService.as_editable_unit_view(
+					resource,
+					selected_authority.get("progression_profile") \
+						as CharacterProgressionProfile
+				)
+			var entry := {
 				"id": unit_id,
 				"name": resource.unit_name,
 				"path": path,
-				"resource": resource,
+				"resource": editorial_resource,
+				"unit_resource": resource,
 				"team": resource.team,
 				"is_enemy": resource.team == TEAM_ENEMY,
-				"spell_count": resource.spells.size(),
-				"discipline_count": resource.disciplines.size(),
-				"invalid": _hero_has_obvious_error(resource),
-			})
+				"spell_count": editorial_resource.spells.size(),
+				"discipline_count": editorial_resource.disciplines.size(),
+				"invalid": _hero_has_obvious_error(editorial_resource),
+				"authority": selected_authority.get(
+					"authority", RunContentCatalogService.AUTHORITY_GLOBAL_UNIT
+				),
+				"profile_authorities": authorities,
+				"authority_options": authorities.duplicate(),
+			}
+			(entry["authority_options"] as Array).append(
+				RunContentCatalogService.global_unit_authority(resource)
+			)
+			for key in [
+				"run", "run_path", "run_name", "hero_profile", "hero_path",
+				"progression_profile", "profile_path",
+			]:
+				entry[key] = selected_authority.get(key)
+			units.append(entry)
 	units.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return str(a.get("name", "")).naturalnocasecmp_to(
 			str(b.get("name", ""))
