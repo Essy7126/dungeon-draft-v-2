@@ -7,6 +7,9 @@ signal selection_changed(subject)
 signal history_changed
 
 const HISTORY_LIMIT := 256
+const PROGRESSION_UNIT_PROPERTIES: Array[StringName] = [
+	&"active_spell_slots", &"spells", &"disciplines",
+]
 
 ## Historique strictement local au document. Le Studio ne doit jamais publier
 ## ses actions dans l'historique global de l'editeur Godot.
@@ -162,7 +165,7 @@ func reopen_from_disk() -> bool:
 	if source_unit == null or source_unit.resource_path.is_empty():
 		return false
 	var reloaded := ResourceLoader.load(
-		source_unit.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE
+		source_unit.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as UnitData
 	return open(reloaded)
 
@@ -248,13 +251,12 @@ func is_dirty() -> bool:
 func current_fingerprint() -> String:
 	if unit_view_is_adapter and working_progression_profile != null:
 		_sync_profile_from_unit()
-		# La fiche d'animations appartient au personnage, pas au profil de
-		# progression. Sans elle, changer une animation depuis une partie
-		# ouverte passerait pour un document non modifié, et le bouton
-		# Sauvegarder resterait grisé alors que le fichier doit être réécrit.
+		# Les champs communs et la fiche d'animations appartiennent au personnage,
+		# pas au profil. Leur vraie copie de travail participe donc aussi à
+		# l'empreinte du document éditorial.
 		return _adapter_fingerprint(
 			working_progression_profile,
-			working_unit.animation_set if working_unit != null else null
+			working_character_unit
 		)
 	return SkillTreeSnapshotService.fingerprint(working_unit) \
 		if working_unit != null else ""
@@ -262,12 +264,12 @@ func current_fingerprint() -> String:
 
 func _adapter_fingerprint(
 		profile: CharacterProgressionProfile,
-		animation_set: CharacterAnimationSetData
+		character: UnitData
 	) -> String:
 	return "%s|%s" % [
 		SkillTreeSnapshotService.storage_fingerprint(profile),
-		SkillTreeSnapshotService.storage_fingerprint(animation_set) \
-			if animation_set != null else "aucune",
+		SkillTreeSnapshotService.storage_fingerprint(character) \
+			if character != null else "aucun_chassis",
 	]
 
 
@@ -339,7 +341,7 @@ func restore_profile_draft(
 		return false
 	unit_view_is_adapter = true
 	saved_fingerprint = _adapter_fingerprint(
-		profile, source_unit.animation_set if source_unit != null else null
+		profile, working_character_unit
 	)
 	document_changed.emit()
 	return true
@@ -424,7 +426,8 @@ func _configure_character_authority(source: UnitData) -> bool:
 	if not source.resource_path.is_empty() and not source.is_built_in():
 		working_character_unit.set_path_cache(source.resource_path)
 	# Ne jamais recopier les tableaux de progression de l'adaptateur dans le
-	# UnitData canonique. Seule l'autorite d'animations est partagee.
+	# UnitData canonique. Les champs communs seront routés individuellement par
+	# change_property ; l'animation est la seule sous-Resource initialement liée.
 	working_character_unit.animation_set = working_unit.animation_set
 	source_to_work[source_character_unit] = working_character_unit
 	work_to_source[working_character_unit] = source_character_unit
@@ -448,12 +451,21 @@ func change_property(
 	var before: Variant = target.get(property_name)
 	if before == value:
 		return false
-	return commit_changes(action_name, [{
+	var changes: Array[Dictionary] = [{
 		"target": target,
 		"property": property_name,
 		"before": _copy_value(before),
 		"after": _copy_value(value),
-	}])
+	}]
+	# La vue UnitData d'une progression est un adaptateur d'edition. Les champs
+	# du chassis doivent donc rejoindre, dans la meme action UndoRedo, la vraie
+	# copie de travail sauvegardable du UnitData canonique. Les trois champs de
+	# progression restent exclusivement routes vers CharacterProgressionProfile.
+	if unit_view_is_adapter and target == working_unit \
+			and working_character_unit != null \
+			and property_name not in PROGRESSION_UNIT_PROPERTIES:
+		changes.append(_change(working_character_unit, property_name, value))
+	return commit_changes(action_name, changes)
 
 
 func commit_changes(action_name: String, changes: Array[Dictionary]) -> bool:

@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d3pnrcrtjjwex"
-path="res://.godot/imported/achilles_rig_animation_pool_v2_texture_20250901.png-5715165d1a72d79ea2a7f370292f8f56.ctex"
+path.s3tc="res://.godot/imported/achilles_rig_animation_pool_v2_texture_20250901.png-5715165d1a72d79ea2a7f370292f8f56.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "02490160175ea71e1898f6039daca3e2"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/characters/Achilles/3d/achilles_rig_animation_pool_v2_texture_20250901.png"
-dest_files=["res://.godot/imported/achilles_rig_animation_pool_v2_texture_20250901.png-5715165d1a72d79ea2a7f370292f8f56.ctex"]
+dest_files=["res://.godot/imported/achilles_rig_animation_pool_v2_texture_20250901.png-5715165d1a72d79ea2a7f370292f8f56.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

@@ -89,7 +89,7 @@ static func save(session: EncounterEditSession) -> Dictionary:
 	var selected_room := session.selected_room_index
 	var selected_wave := session.selected_wave_index
 	var reopened := ResourceLoader.load(
-		session.source_run_path, "", ResourceLoader.CACHE_MODE_IGNORE
+		session.source_run_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
 	) as RunData if not session.source_run_path.is_empty() else null
 	if reopened != null and session.open(reopened, session.source_run_path):
 		session.select(selected_room, selected_wave)

@@ -25,6 +25,7 @@ const LABELS_FR := {
 	&"spell_modifiers": "Effets de progression",
 	&"modifiers": "Modificateurs permanents",
 	&"summon_initial_cooldowns": "Recharges initiales de l'invocation",
+	&"exclude_caster_from_area_effects": "Exclure le lanceur des effets de zone",
 	&"resistances": "Résistances élémentaires",
 	&"prerequisite_node_ids": "Prérequis",
 	&"excluded_node_ids": "Exclusions",

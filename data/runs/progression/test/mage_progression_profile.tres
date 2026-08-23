@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" uid="uid://hmp238551qj7" path="res://battle/vfx/boule_de_feu_vfx2.tscn" id="13_276a7"]
 [ext_resource type="Texture2D" uid="uid://ciejclsrsoiwq" path="res://asset/sorts/tempete_orageuse/tex_storm_lightning_cluster.png.png" id="14_s163h"]
 [ext_resource type="PackedScene" uid="uid://bnbb3vym4gxtq" path="res://asset/sorts/tempete_orageuse/tempete_orageuse_vfx.tscn" id="15_141ww"]
+[ext_resource type="Texture2D" uid="uid://bjnkgnw1phwoc" path="res://asset/ui/character_hud/generated/spell_icon_r08_c01.png" id="16_ice"]
+[ext_resource type="Texture2D" uid="uid://dr571owpatp3u" path="res://asset/ui/character_hud/generated/spell_icon_r06_c01.png" id="17_earth"]
 
 [sub_resource type="Resource" id="Resource_upnpp"]
 script = ExtResource("2_2ajh2")
@@ -1756,6 +1758,7 @@ spell_id = &"mage_ice_wall"
 discipline_id = &"mage_cryomancy"
 spell_name = "Mur de glace"
 description = "Lecture joueur: Cout 1 PA. Portee 6. Cible: case libre. Effets: pose ou modifie un terrain."
+icon = ExtResource("16_ice")
 spell_range = 6
 can_target_free_cell = true
 aoe_shape = 1
@@ -1787,6 +1790,7 @@ spell_id = &"mage_seismic_wave"
 discipline_id = &"mage_geomancy"
 spell_name = "Onde sismique"
 description = "Propage une onde tellurique en ligne et repousse d'une case les ennemis touchés."
+icon = ExtResource("17_earth")
 ap_cost = 2
 can_target_free_cell = true
 aoe_shape = 3

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Spell" format=3]
 
-[ext_resource type="Texture2D" path="res://asset/icone/boule de feu.png" id="1_icon"]
+[ext_resource type="Texture2D" uid="uid://bkfkjn8b8uiq5" path="res://asset/ui/character_hud/refined/spells/fireball.png" id="1_icon"]
 [ext_resource type="Script" path="res://data/spell.gd" id="2_spell"]
 [ext_resource type="Resource" path="res://data/terrain/lave.tres" id="3_lava"]
 [ext_resource type="AudioStream" path="res://asset/bruitage sort/FIREIgn_Essence prend feu 3 (ID 1342)_LaSonotheque.fr.mp3" id="4_audio"]

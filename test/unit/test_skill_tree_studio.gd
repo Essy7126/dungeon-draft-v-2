@@ -219,7 +219,7 @@ func test_duplicate_external_discipline_is_independent_and_has_its_own_spell() -
 func test_interface_builds_and_loads_a_real_character() -> void:
 	var studio := SkillTreeStudioMain.new()
 	studio.setup(null, null)
-	add_child_autofree(studio)
+	add_child(studio)
 	for _frame in range(12):
 		await get_tree().process_frame
 	_handle_known_production_uid_warning()
@@ -231,7 +231,19 @@ func test_interface_builds_and_loads_a_real_character() -> void:
 	studio._choose_character(ELF_PATH)
 	for _frame in range(8):
 		await get_tree().process_frame
+	# L'elfe possede plusieurs profils officiels : le Studio exige désormais
+	# un choix explicite hors contexte de partie au lieu d'en prendre un au
+	# hasard. Ce test choisit volontairement la première autorité proposée.
+	if studio.authority_dialog.visible:
+		studio._open_selected_authority()
+		studio.authority_dialog.hide()
+		for _frame in range(4):
+			await get_tree().process_frame
 	assert_eq(studio.session.working_unit.get_effective_unit_id(), &"elf")
+	assert_eq(studio.current_screen, studio.SCREEN_CHARACTER)
+	assert_true(studio.character_screen.visible)
+	assert_null(studio.skills_screen_button)
+	assert_eq(studio.character_screen._unit, studio.session.working_unit)
 	assert_not_null(studio.session.current_discipline())
 	assert_not_null(studio.catalog)
 	assert_not_null(studio.graph)
@@ -241,3 +253,76 @@ func test_interface_builds_and_loads_a_real_character() -> void:
 		studio.graph.get_children().filter(func(child): return child is GraphNode).size(),
 		1
 	)
+	var spell := studio.session.current_spell()
+	assert_not_null(spell)
+	studio._open_spell_tree(spell.discipline_id)
+	assert_eq(studio.current_screen, studio.SCREEN_SKILLS)
+	assert_true(studio.skills_screen.visible)
+	assert_false(studio.character_screen.visible)
+	assert_true(studio.return_to_spell_button.visible)
+	studio._return_to_spell()
+	assert_eq(studio.current_screen, studio.SCREEN_CHARACTER)
+	assert_true(studio.character_screen.visible)
+	assert_eq(studio.character_screen._selected_spell, spell)
+	var original_team := studio.session.working_unit.team
+	studio._request_team_change(studio.session.working_unit, 1 - original_team)
+	assert_true(studio._pending_confirm_action.is_valid())
+	studio._pending_confirm_action.call()
+	assert_eq(studio.session.working_unit.team, 1 - original_team)
+	assert_eq(studio.session.source_unit.team, original_team)
+	assert_true(studio.session.history_undo())
+	assert_eq(studio.session.working_unit.team, original_team)
+	for _frame in range(2):
+		await get_tree().process_frame
+	studio.dispose_document()
+	studio.free()
+	for _frame in range(2):
+		await get_tree().process_frame
+
+
+func test_character_sheet_emits_edits_without_mutating_the_working_copy() -> void:
+	var source := ResourceLoader.load(
+		ELF_PATH, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as UnitData
+	assert_not_null(source)
+	var session := SkillTreeEditSession.new()
+	assert_true(session.open(source))
+	var sheet := SkillTreeCharacterScreen.new()
+	add_child(sheet)
+	await get_tree().process_frame
+	sheet.set_document(
+		session.working_unit, ELF_PATH, [], true
+	)
+	var request := {}
+	sheet.property_change_requested.connect(
+		func(target: Object, property_name: StringName, value: Variant, action_name: String):
+			request.merge({
+				"target": target,
+				"property": property_name,
+				"value": value,
+				"action": action_name,
+			}, true)
+	)
+	var before := session.working_unit.max_hp
+	sheet._emit_change(&"max_hp", before + 25, "Modifier PV maximum")
+	assert_eq(session.working_unit.max_hp, before)
+	assert_eq(request.get("target"), session.working_unit)
+	assert_eq(request.get("property"), &"max_hp")
+	assert_eq(request.get("value"), before + 25)
+	assert_true(session.change_property(
+		request.get("target") as Object,
+		StringName(request.get("property", &"")),
+		request.get("value"),
+		str(request.get("action", ""))
+	))
+	assert_eq(session.working_unit.max_hp, before + 25)
+	assert_eq(source.max_hp, before)
+	assert_true(session.history_undo())
+	assert_eq(session.working_unit.max_hp, before)
+	session.release_document(false)
+	sheet.free()
+	request.clear()
+	source = null
+	session = null
+	for _frame in range(2):
+		await get_tree().process_frame

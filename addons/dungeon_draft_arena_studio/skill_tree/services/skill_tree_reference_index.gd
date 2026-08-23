@@ -23,9 +23,23 @@ static func project_id_exists(
 	for hero_entry in heroes:
 		if str(hero_entry.get("path", "")) == excluded_character_path:
 			continue
-		var unit := hero_entry.get("resource") as UnitData
-		if unit != null and SkillTreeReferenceIndex.new().build(unit).id_exists(kind, value):
-			return true
+		var units: Array[UnitData] = []
+		var base := hero_entry.get(
+			"unit_resource", hero_entry.get("resource")
+		) as UnitData
+		for authority_value in hero_entry.get("profile_authorities", []):
+			var authority := authority_value as Dictionary
+			var view := RunContentCatalogService.as_editable_unit_view(
+				base,
+				authority.get("progression_profile") as CharacterProgressionProfile
+			)
+			if view != null:
+				units.append(view)
+		if units.is_empty() and hero_entry.get("resource") is UnitData:
+			units.append(hero_entry.get("resource") as UnitData)
+		for unit in units:
+			if SkillTreeReferenceIndex.new().build(unit).id_exists(kind, value):
+				return true
 	return false
 
 

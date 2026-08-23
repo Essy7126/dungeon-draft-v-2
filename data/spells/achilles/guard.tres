@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="Spell" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_spell")
@@ -8,6 +9,7 @@ spell_id = &"achilles_guard"
 discipline_id = &"guard"
 spell_name = "Garde d’airain"
 description = "2 PA · Consolide la garde d’Achille et lui confère 10 points de bouclier."
+icon = ExtResource("2_icon")
 ap_cost = 2
 spell_range = 0
 once_per_activation = true

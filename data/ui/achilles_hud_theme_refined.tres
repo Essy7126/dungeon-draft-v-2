@@ -1,12 +1,9 @@
-[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
 [ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_00.png" id="2_portrait"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="3_banner"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="4_spear"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="5_advance"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r01_c05.png" id="6_sweep"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r03_c02.png" id="7_guard"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="8_inventory"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_map.png" id="9_map"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_skills.png" id="10_skills"]
@@ -29,9 +26,3 @@ refined_components = true
 primary_color = Color(0.30, 0.22, 0.12, 1)
 secondary_color = Color(0.78, 0.58, 0.24, 1)
 text_color = Color(0.98, 0.90, 0.72, 1)
-spell_icon_mapping = {
-&"achilles_advance": ExtResource("5_advance"),
-&"achilles_guard": ExtResource("7_guard"),
-&"achilles_spear_thrust": ExtResource("4_spear"),
-&"achilles_sweep": ExtResource("6_sweep")
-}

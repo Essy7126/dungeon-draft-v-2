@@ -37,6 +37,10 @@ var active_hero: RunHeroProfile = null
 ## run lorsqu'il en fait partie, mais peut aussi designer un ennemi ou un
 ## personnage global ; active_hero vaut alors null sans ambiguite.
 var active_character: UnitData = null
+## Nature du document editorial ouvert. Elle complete l'identite du personnage :
+## un meme UnitData peut avoir plusieurs progressions de partie, ou etre ouvert
+## volontairement comme chassis global.
+var active_authority: StringName = RunContentCatalogService.AUTHORITY_GLOBAL_UNIT
 var edit_scope: StringName = SCOPE_RUN_SPECIFIC
 var generations := {
 	&"context": 0,
@@ -70,6 +74,8 @@ func initialize(preferred_run_path := "", preferred_character_id := &"") -> Dict
 		var heroes := RunContentCatalogService.heroes_for_run(selected)
 		active_hero = heroes[0] if not heroes.is_empty() else null
 	active_character = active_hero.base_unit_data if active_hero != null else null
+	active_authority = RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE \
+		if active_hero != null else RunContentCatalogService.AUTHORITY_GLOBAL_UNIT
 	_bump(&"context")
 	_emit_all()
 	return {"ok": true, "snapshot": snapshot()}
@@ -280,6 +286,37 @@ func request_character(character_path: String, requester_domain := &"") -> Dicti
 	return request_selection({"character": character}, requester_domain)
 
 
+func request_global_character(
+		character_path: String,
+		requester_domain := &""
+	) -> Dictionary:
+	var character := _load_character(character_path)
+	if character == null:
+		return {"ok": false, "error": "Personnage introuvable : %s" % character_path}
+	return request_selection({
+		"character": character,
+		"authority": RunContentCatalogService.AUTHORITY_GLOBAL_UNIT,
+	}, requester_domain)
+
+
+func request_progression_authority(
+		run_data: RunData,
+		hero: RunHeroProfile,
+		requester_domain := &""
+	) -> Dictionary:
+	if run_data == null or hero == null or hero.base_unit_data == null \
+			or hero.progression_profile == null:
+		return {"ok": false, "error": "Autorite de progression incomplete."}
+	return request_selection({
+		"run": run_data,
+		"room_index": active_room_index if run_data == active_run else (
+			0 if not run_data.rooms.is_empty() else -1
+		),
+		"character_id": hero.character_id,
+		"authority": RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE,
+	}, requester_domain)
+
+
 func request_scope(scope: StringName, requester_domain := &"") -> Dictionary:
 	return request_selection({"scope": scope}, requester_domain)
 
@@ -309,6 +346,7 @@ func snapshot() -> Dictionary:
 		"hero_path": active_hero.resource_path if active_hero != null else "",
 		"progression_path": active_hero.progression_profile.resource_path \
 			if active_hero != null and active_hero.progression_profile != null else "",
+		"authority": active_authority,
 		"scope": edit_scope,
 		"dirty_domains": dirty_domains(),
 		"generations": generations.duplicate(true),
@@ -327,6 +365,9 @@ func restore_snapshot(state: Dictionary) -> Dictionary:
 	var selection := {
 		"room_index": int(state.get("room_index", active_room_index)),
 		"scope": StringName(state.get("scope", SCOPE_RUN_SPECIFIC)),
+		"authority": StringName(state.get(
+			"authority", RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE
+		)),
 	}
 	var character_path := str(state.get("character_path", ""))
 	if not character_path.is_empty():
@@ -343,7 +384,12 @@ func _normalized_selection(selection: Dictionary) -> Dictionary:
 		room_index = 0 if run_data != null and not run_data.rooms.is_empty() else -1
 	var hero := active_hero
 	var character := active_character
-	if selection.has("character"):
+	var authority := StringName(selection.get("authority", active_authority))
+	if selection.has("character") and authority \
+			== RunContentCatalogService.AUTHORITY_GLOBAL_UNIT:
+		character = selection.get("character") as UnitData
+		hero = null
+	elif selection.has("character"):
 		character = selection.get("character") as UnitData
 		hero = _find_hero_for_character(run_data, character)
 	elif selection.has("character_id") or selection.has("run"):
@@ -357,11 +403,16 @@ func _normalized_selection(selection: Dictionary) -> Dictionary:
 		character = hero.base_unit_data if hero != null else null
 	elif character == null and hero != null:
 		character = hero.base_unit_data
+	if hero != null:
+		authority = RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE
+	elif character != null:
+		authority = RunContentCatalogService.AUTHORITY_GLOBAL_UNIT
 	return {
 		"run": run_data,
 		"room_index": room_index,
 		"hero": hero,
 		"character": character,
+		"authority": authority,
 		"scope": StringName(selection.get("scope", edit_scope)),
 	}
 
@@ -376,6 +427,12 @@ func _validate_selection(selection: Dictionary) -> Dictionary:
 	var scope := StringName(selection.get("scope", SCOPE_RUN_SPECIFIC))
 	if scope not in VALID_SCOPES:
 		return {"ok": false, "error": "Portée d'édition inconnue : %s." % scope}
+	var authority := StringName(selection.get("authority", &""))
+	if authority not in [
+		RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE,
+		RunContentCatalogService.AUTHORITY_GLOBAL_UNIT,
+	]:
+		return {"ok": false, "error": "Autorite editoriale inconnue : %s." % authority}
 	return {"ok": true}
 
 
@@ -384,6 +441,7 @@ func _selection_matches(selection: Dictionary) -> bool:
 		and int(selection.get("room_index", -1)) == active_room_index \
 		and selection.get("hero") == active_hero \
 		and selection.get("character") == active_character \
+		and StringName(selection.get("authority", &"")) == active_authority \
 		and StringName(selection.get("scope", &"")) == edit_scope
 
 
@@ -392,11 +450,15 @@ func _apply_selection(selection: Dictionary) -> void:
 	var previous_room := active_room_index
 	var previous_hero := active_hero
 	var previous_character := active_character
+	var previous_authority := active_authority
 	var previous_scope := edit_scope
 	active_run = selection.get("run") as RunData
 	active_room_index = int(selection.get("room_index", -1))
 	active_hero = selection.get("hero") as RunHeroProfile
 	active_character = selection.get("character") as UnitData
+	active_authority = StringName(selection.get(
+		"authority", RunContentCatalogService.AUTHORITY_GLOBAL_UNIT
+	))
 	edit_scope = StringName(selection.get("scope", SCOPE_RUN_SPECIFIC))
 	_bump(&"context")
 	if previous_run != active_run:
@@ -405,7 +467,7 @@ func _apply_selection(selection: Dictionary) -> void:
 		room_changed.emit(active_room_index, active_room())
 	if previous_hero != active_hero:
 		hero_changed.emit(active_hero)
-	if previous_character != active_character:
+	if previous_character != active_character or previous_authority != active_authority:
 		character_changed.emit(active_character)
 	if previous_scope != edit_scope:
 		scope_changed.emit(edit_scope)

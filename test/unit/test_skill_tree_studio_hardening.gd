@@ -354,6 +354,30 @@ func test_every_production_storage_property_has_editor_contract() -> void:
 	assert_gt(int(audit.get("property_count", 0)), 0)
 
 
+func test_every_spell_gameplay_property_is_present_in_the_full_editor() -> void:
+	var editor_source := FileAccess.get_file_as_string(
+		"res://addons/dungeon_draft_arena_studio/skill_tree/ui/skill_tree_inspector_panel.gd"
+	)
+	var spell := Spell.new()
+	var checked := 0
+	for info_value in spell.get_property_list():
+		var info := info_value as Dictionary
+		var property_name := StringName(info.get("name", &""))
+		if property_name in [
+			&"script", &"resource_path", &"resource_name", &"resource_local_to_scene",
+		] or int(info.get("usage", 0)) & PROPERTY_USAGE_STORAGE == 0:
+			continue
+		checked += 1
+		assert_true(
+			editor_source.contains('&"%s"' % property_name),
+			"Propriété Spell absente de l’éditeur complet : %s" % property_name
+		)
+	# Le contrat historique en comptait 62 ; la classe courante en expose 63.
+	# L'important ici est qu'aucune propriété de gameplay sérialisée ne manque.
+	assert_gte(checked, 62)
+	assert_true(editor_source.contains("Exclure le lanceur des effets de zone"))
+
+
 func test_spell_permanent_modifiers_are_editable() -> void:
 	var contract := SkillTreePropertyRegistry.contract_for(Spell.new(), &"modifiers")
 	assert_eq(int(contract.classification), SkillTreePropertyRegistry.Classification.EDITABLE)
@@ -633,3 +657,48 @@ func test_keyboard_focus_path_reaches_all_primary_actions() -> void:
 				matched = button.focus_mode != Control.FOCUS_NONE
 				break
 		assert_true(matched, "Action clavier inaccessible : %s" % label)
+
+
+## Regression : en mode autonome, la relecture canonique de fin de transaction
+## doit ignorer le cache jusqu'aux dependances externes. Sinon la fiche
+## d'animations referencee en ExtResource revient dans sa version en cache,
+## l'empreinte relue diverge et FINAL_VERIFY annule toute la sauvegarde.
+func test_external_animation_set_changes_survive_final_reload() -> void:
+	var animations := CharacterAnimationSetData.new()
+	animations.animation_names = {&"walk": &"Ancienne_Marche", &"run": &"Ancienne_Course"}
+	var animations_path := TEMP_ROOT.path_join("animations_%d.tres" % Time.get_ticks_usec())
+	_files.append(animations_path)
+	assert_eq(ResourceSaver.save(animations, animations_path), OK)
+	# Le cache global de Godot doit retenir l'ancienne fiche pendant toute la
+	# transaction : c'est la condition exacte du bug reproduit dans le Studio.
+	var cached := ResourceLoader.load(animations_path) as CharacterAnimationSetData
+	assert_not_null(cached)
+	var unit := _unit()
+	unit.animation_set = ResourceLoader.load(
+		animations_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as CharacterAnimationSetData
+	var source := _save_fixture(unit, "animation_set_reload")
+	var session := SkillTreeEditSession.new()
+	assert_true(session.open(source))
+	assert_true(session.set_animation_clip(&"walk", &"Nouvelle_Marche", "Marche"))
+	assert_true(session.set_animation_clip(&"run", &"Nouvelle_Course", "Course"))
+	var report := SkillTreeSaveTransactionService.save(session, null, {
+		"allowed_roots": PackedStringArray([TEMP_ROOT + "/"]),
+	})
+	_handle_known_production_uid_warning()
+	assert_true(report.get("ok", false), str(report))
+	assert_eq(str(report.get("step", "")), "COMPLETED")
+	assert_false(session.is_dirty())
+	var reloaded_set := ResourceLoader.load(
+		animations_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as CharacterAnimationSetData
+	assert_not_null(reloaded_set)
+	assert_eq(str(reloaded_set.get_animation_name(&"walk")), "Nouvelle_Marche")
+	assert_eq(str(reloaded_set.get_animation_name(&"run")), "Nouvelle_Course")
+	var reloaded_unit := ResourceLoader.load(
+		source.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as UnitData
+	assert_not_null(reloaded_unit)
+	assert_not_null(reloaded_unit.animation_set)
+	assert_eq(str(reloaded_unit.animation_set.get_animation_name(&"walk")), "Nouvelle_Marche")
+	assert_eq(str(reloaded_unit.animation_set.get_animation_name(&"run")), "Nouvelle_Course")

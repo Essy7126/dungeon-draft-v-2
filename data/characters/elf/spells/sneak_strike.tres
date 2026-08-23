@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="Spell" format=3]
 
 [ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Texture2D" uid="uid://b6vm8gsjd2hy1" path="res://asset/ui/character_hud/refined/spells/sneak_strike.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_spell")
@@ -8,6 +9,7 @@ spell_id = &"elf_sneak_strike"
 discipline_id = &"assassin"
 spell_name = "Frappe sournoise"
 description = "Une frappe physique simple au corps-à-corps."
+icon = ExtResource("2_icon")
 ap_cost = 2
 spell_range = 1
 damage = 7

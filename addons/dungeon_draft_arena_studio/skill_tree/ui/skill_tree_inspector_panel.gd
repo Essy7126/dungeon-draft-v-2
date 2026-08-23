@@ -306,6 +306,11 @@ func _build_spell(spell: Spell) -> void:
 	_add_integer(advanced, spell, &"aoe_size", "Taille de zone", "Taille utilisée avec la forme de zone.", 1, 99)
 	_add_enum(advanced, spell, &"aoe_shape", "Forme de zone", "Disposition des cases affectées.", ["Cible unique", "Croix", "Carré", "Ligne"])
 	_add_bool(advanced, spell, &"line_from_caster", "Ligne depuis le lanceur", "Oriente la zone en ligne à partir du lanceur.")
+	_add_bool(
+		advanced, spell, &"exclude_caster_from_area_effects",
+		"Exclure le lanceur des effets de zone",
+		"N’applique pas les impacts de la zone au lanceur lorsque sa case sert de cible."
+	)
 	_add_section(advanced, "TERRAIN ET STATUT")
 	_add_resource(advanced, spell, &"terrain_effect", "Effet de terrain", "TerrainEffectData")
 	_add_resource(advanced, spell, &"applied_status", "Statut appliqué", "StatusData")

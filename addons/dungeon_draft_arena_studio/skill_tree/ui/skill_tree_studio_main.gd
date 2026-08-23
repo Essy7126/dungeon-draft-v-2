@@ -38,6 +38,7 @@ var redo_button: Button
 var save_button: Button
 var search_button: Button
 var compare_button: Button
+var global_unit_button: Button
 var validate_button: Button
 var test_button: Button
 var preview_button: Button
@@ -63,6 +64,7 @@ var analysis_split: VSplitContainer
 var screens_box: VBoxContainer
 var _analysis_split_offset := DEFAULT_ANALYSIS_SPLIT_OFFSET
 var rank_bar: HFlowContainer
+var return_to_spell_button: Button
 var tour: SkillTreeGuidedTour
 var status_dialog: AcceptDialog
 var confirm_dialog: ConfirmationDialog
@@ -75,6 +77,8 @@ var orphan_dialog: SkillTreeOrphanDialog
 var compare_dialog: ConfirmationDialog
 var compare_run_option: OptionButton
 var compare_summary_label: Label
+var authority_dialog: ConfirmationDialog
+var authority_option: OptionButton
 var sandbox_reset_button: Button
 var node_dialog: ConfirmationDialog
 var node_name_edit: LineEdit
@@ -85,6 +89,7 @@ var discipline_id_edit: LineEdit
 var branch_dialog: ConfirmationDialog
 var branch_name_edit: LineEdit
 var _pending_character_path := ""
+var _pending_authority := {}
 var _pending_open_discipline_id: StringName = &""
 var _pending_confirm_action: Callable
 var _pending_parent_node: SkillUpgradeData = null
@@ -140,6 +145,7 @@ func _ready() -> void:
 	_refresh_catalog()
 	if project_context != null:
 		project_context.character_changed.connect(_on_context_character_changed)
+		project_context.hero_changed.connect(_on_context_hero_changed)
 		project_context.run_changed.connect(_on_context_run_changed)
 		project_context.register_transition_handler(
 			&"skills", Callable(self, "_context_save"),
@@ -192,6 +198,8 @@ func _exit_tree() -> void:
 func commit_pending_edits() -> void:
 	if inspector != null:
 		inspector.commit_pending_edits()
+	if character_screen != null:
+		character_screen.commit_pending_edits()
 
 
 func get_state_snapshot() -> Dictionary:
@@ -246,6 +254,18 @@ func _build_ui() -> void:
 	var graph_box := VBoxContainer.new()
 	graph_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	horizontal.add_child(graph_box)
+	var tree_context_bar := HBoxContainer.new()
+	graph_box.add_child(tree_context_bar)
+	return_to_spell_button = Button.new()
+	return_to_spell_button.text = "Retour au sort"
+	return_to_spell_button.tooltip_text = "Ferme l’arbre contextuel et revient au sort sélectionné dans la fiche."
+	return_to_spell_button.pressed.connect(_return_to_spell)
+	tree_context_bar.add_child(return_to_spell_button)
+	var tree_context_help := Label.new()
+	tree_context_help.text = "Arbre de progression du sort sélectionné"
+	tree_context_help.add_theme_color_override("font_color", Color(0.72, 0.77, 0.84))
+	tree_context_help.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tree_context_bar.add_child(tree_context_help)
 	rank_bar = HFlowContainer.new()
 	rank_bar.add_theme_constant_override("h_separation", 5)
 	graph_box.add_child(rank_bar)
@@ -301,6 +321,10 @@ func _build_ui() -> void:
 	character_screen.name = "CharacterScreen"
 	character_screen.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	character_screen.character_chosen.connect(_choose_character)
+	character_screen.property_change_requested.connect(_change_property)
+	character_screen.team_change_requested.connect(_request_team_change)
+	character_screen.spell_edit_requested.connect(_select_subject)
+	character_screen.spell_tree_requested.connect(_open_spell_tree)
 	screens_box.add_child(character_screen)
 	analysis_drawer = SkillTreeAnalysisDrawer.new()
 	analysis_drawer.name = "AnalysisDrawer"
@@ -352,6 +376,11 @@ func _build_toolbar() -> Control:
 	compare_button = _button(
 		bar, "Comparer parties", "Choisir explicitement la partie à comparer",
 		_compare_with_other_run
+	)
+	global_unit_button = _button(
+		bar, "Ouvrir la fiche générale",
+		"Ouvre volontairement la fiche commune du personnage, sans progression de partie.",
+		_open_current_global_unit
 	)
 	validate_button = _button(
 		bar, "Valider", "Expliquer les problèmes sans modifier les données", _validate
@@ -417,11 +446,9 @@ func _build_screen_bar() -> Control:
 		"Choisir le personnage sur lequel travailler.",
 		SCREEN_CHARACTER
 	)
-	skills_screen_button = _screen_button(
-		bar, "Compétences",
-		"Disciplines, rangs, améliorations et effets du personnage.",
-		SCREEN_SKILLS
-	)
+	# L'arbre de compétences est désormais une vue contextuelle ouverte depuis
+	# un sort. Il ne constitue plus un espace principal du Studio.
+	skills_screen_button = null
 	animation_screen_button = _screen_button(
 		bar, "Animations",
 		"Quelle animation joue chaque moment du personnage : repos, marche, mort…",
@@ -476,6 +503,8 @@ func _show_screen(screen: StringName) -> void:
 	]:
 		if button != null:
 			button.visible = on_skills
+	if global_unit_button != null:
+		global_unit_button.visible = has_document
 	if production_toggle != null:
 		production_toggle.visible = on_skills and not guided
 	if animation_screen != null and not on_animations:
@@ -508,13 +537,56 @@ func _update_screen_buttons() -> void:
 
 func _choose_character(path: String) -> void:
 	_request_character(path)
-	_show_screen(SCREEN_SKILLS)
+	_show_screen(SCREEN_CHARACTER)
 
 
 func _refresh_character_screen() -> void:
 	if character_screen == null or not character_screen.visible:
 		return
 	character_screen.set_catalog(heroes, _current_catalog_path())
+	character_screen.set_document(
+		session.working_unit, _current_catalog_path(), validation_messages, guided
+	)
+
+
+func _request_team_change(unit: UnitData, team: int) -> void:
+	if unit == null or unit != session.working_unit or team == unit.team:
+		return
+	var next_label := "Personnage jouable" if team == 0 else "Ennemi"
+	confirm_dialog.dialog_text = (
+		"Changer l’équipe de « %s » vers « %s » ?\n\n"
+		+ "Le personnage changera de groupe dans le catalogue. "
+		+ "Cette modification reste annulable et ne sera appliquée au fichier "
+		+ "de production qu’après sauvegarde."
+	) % [unit.unit_name, next_label]
+	confirm_dialog.ok_button_text = "Changer l’équipe"
+	_pending_confirm_action = func() -> void:
+		session.change_property(unit, &"team", team, "Changer l’équipe de %s" % unit.unit_name)
+	confirm_dialog.popup_centered()
+
+
+func _open_spell_tree(discipline_id: StringName) -> void:
+	commit_pending_edits()
+	if discipline_id == &"" or not session.select_discipline(discipline_id):
+		_show_status(
+			"Arbre indisponible",
+			"Aucune discipline du personnage ne correspond à ce sort."
+		)
+		return
+	var spell := session.current_spell()
+	if spell != null:
+		session.select_subject(spell)
+		character_screen.select_spell(spell)
+	_refresh_document()
+	_show_screen(SCREEN_SKILLS)
+
+
+func _return_to_spell() -> void:
+	commit_pending_edits()
+	var spell := session.current_spell()
+	if spell != null:
+		character_screen.select_spell(spell)
+	_show_screen(SCREEN_CHARACTER)
 
 
 ## Replié, la poignée est poussée à fond vers le bas : le tiroir retombe sur sa
@@ -603,16 +675,44 @@ func _build_dialogs() -> void:
 	character_dialog.ok_button_text = "Sauvegarder puis ouvrir"
 	character_dialog.add_button("Abandonner les modifications", true, "discard")
 	character_dialog.confirmed.connect(func():
-		_request_save_review(_open_character.bind(_pending_character_path))
+		_request_save_review(func():
+			if not _pending_authority.is_empty():
+				_open_authority(_pending_authority)
+			else:
+				_open_character(_pending_character_path)
+			_pending_authority.clear()
+		)
 	)
 	character_dialog.custom_action.connect(func(action):
 		if action == "discard":
 			character_dialog.hide()
 			if session.source_unit != null:
 				SkillTreeDraftService.clear_for_source(session.canonical_source_path())
-			_open_character(_pending_character_path)
+			if not _pending_authority.is_empty():
+				_open_authority(_pending_authority)
+				_pending_authority.clear()
+			else:
+				_open_character(_pending_character_path)
 	)
 	add_child(character_dialog)
+	authority_dialog = ConfirmationDialog.new()
+	authority_dialog.title = "Choisir l’autorité du personnage"
+	authority_dialog.ok_button_text = "Ouvrir cette autorité"
+	var authority_box := VBoxContainer.new()
+	authority_box.custom_minimum_size = Vector2(680, 130)
+	authority_dialog.add_child(authority_box)
+	var authority_help := Label.new()
+	authority_help.text = (
+		"Ce personnage possède plusieurs progressions hors de la partie active. "
+		+ "Choisissez explicitement la partie et le profil à ouvrir."
+	)
+	authority_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	authority_box.add_child(authority_help)
+	authority_option = OptionButton.new()
+	authority_option.fit_to_longest_item = false
+	authority_box.add_child(authority_option)
+	authority_dialog.confirmed.connect(_open_selected_authority)
+	add_child(authority_dialog)
 	close_dialog = ConfirmationDialog.new()
 	close_dialog.title = "Fermer le Skill Studio"
 	close_dialog.ok_button_text = "Sauvegarder et fermer"
@@ -1089,22 +1189,140 @@ func _request_character_discipline(path: String, discipline_id: StringName) -> v
 
 func _request_character_path(path: String) -> void:
 	commit_pending_edits()
-	if path.is_empty() or path == _current_catalog_path():
+	if path.is_empty():
 		return
+	var entry := _catalog_entry_for_path(path)
+	if entry.is_empty():
+		_open_character(path)
+		return
+	var authorities: Array = entry.get("profile_authorities", [])
+	var active_authority := _authority_for_active_run(authorities)
+	if not active_authority.is_empty():
+		_request_authority(active_authority)
+		return
+	if authorities.size() == 1:
+		_request_authority(authorities[0] as Dictionary)
+		return
+	if authorities.size() > 1:
+		_show_authority_choice(entry)
+		return
+	_request_authority(RunContentCatalogService.global_unit_authority(
+		entry.get("unit_resource", entry.get("resource")) as UnitData
+	))
+
+
+func _catalog_entry_for_path(path: String) -> Dictionary:
+	for entry in heroes:
+		if str(entry.get("path", "")) == path:
+			return entry
+	return {}
+
+
+func _authority_for_active_run(authorities: Array) -> Dictionary:
+	if project_context == null or project_context.active_run == null:
+		return {}
+	for authority_value in authorities:
+		var authority := authority_value as Dictionary
+		if authority.get("run") == project_context.active_run or (
+			str(authority.get("run_path", "")) \
+				== project_context.active_run.resource_path
+		):
+			return authority
+	return {}
+
+
+func _show_authority_choice(entry: Dictionary) -> void:
+	authority_option.clear()
+	for authority_value in entry.get("profile_authorities", []):
+		var authority := authority_value as Dictionary
+		authority_option.add_item("%s — %s" % [
+			authority.get("run_name", "Partie sans nom"),
+			authority.get("profile_path", "Profil sans chemin"),
+		])
+		authority_option.set_item_metadata(
+			authority_option.item_count - 1, authority
+		)
+	var unit := entry.get("unit_resource", entry.get("resource")) as UnitData
+	var global_authority := RunContentCatalogService.global_unit_authority(unit)
+	authority_option.add_item("Ouvrir la fiche générale — %s" % global_authority.unit_path)
+	authority_option.set_item_metadata(
+		authority_option.item_count - 1, global_authority
+	)
+	authority_option.select(0)
+	authority_dialog.popup_centered(Vector2i(720, 240))
+
+
+func _open_selected_authority() -> void:
+	if authority_option.item_count == 0:
+		return
+	var authority := authority_option.get_selected_metadata() as Dictionary
+	_request_authority(authority)
+
+
+func _request_authority(authority: Dictionary) -> void:
+	if authority.is_empty() or _authority_is_open(authority):
+		return
+	var authority_type := StringName(authority.get("authority", &""))
 	if project_context != null:
-		var requested := project_context.request_character(path, &"skills")
+		var requested := {}
+		if authority_type == RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE:
+			requested = project_context.request_progression_authority(
+				authority.get("run") as RunData,
+				authority.get("hero_profile") as RunHeroProfile,
+				&"skills"
+			)
+		else:
+			requested = project_context.request_global_character(
+				str(authority.get("unit_path", "")), &"skills"
+			)
 		if not requested.get("ok", false) \
 				and requested.get("status", &"") != &"REQUIRES_DECISION":
 			_show_status(
 				"Changement impossible", str(requested.get("error", "Erreur inconnue."))
 			)
+		elif requested.get("status", &"") == &"UNCHANGED":
+			_open_authority(authority)
 		return
 	if session.is_dirty():
-		_pending_character_path = path
+		_pending_authority = authority
+		_pending_character_path = str(authority.get("unit_path", ""))
 		character_dialog.dialog_text = "Le personnage actuel contient des modifications non sauvegardées.\n\nChoisissez si vous voulez les sauvegarder, les abandonner ou rester sur ce personnage."
 		character_dialog.popup_centered()
 		return
-	_open_character(path)
+	_open_authority(authority)
+
+
+func _authority_is_open(authority: Dictionary) -> bool:
+	var authority_type := StringName(authority.get("authority", &""))
+	if authority_type == RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE:
+		return session.is_profile_authoritative() \
+			and session.canonical_source_path() == str(authority.get("profile_path", ""))
+	return not session.is_profile_authoritative() \
+		and _current_catalog_path() == str(authority.get("unit_path", ""))
+
+
+func _open_authority(authority: Dictionary, initial := false) -> void:
+	if StringName(authority.get("authority", &"")) \
+			== RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE:
+		_open_profile_authority(
+			authority.get("run") as RunData,
+			authority.get("hero_profile") as RunHeroProfile,
+			initial
+		)
+	else:
+		_open_character(str(authority.get("unit_path", "")), initial)
+
+
+func _open_current_global_unit() -> void:
+	var path := _current_catalog_path()
+	if path.is_empty():
+		return
+	var entry := _catalog_entry_for_path(path)
+	var unit := entry.get("unit_resource") as UnitData
+	if unit == null:
+		unit = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP) \
+			as UnitData
+	_request_authority(RunContentCatalogService.global_unit_authority(unit))
 
 
 func _open_character(path: String, initial := false) -> void:
@@ -1133,9 +1351,23 @@ func _open_character(path: String, initial := false) -> void:
 func _open_context_hero(hero: RunHeroProfile, initial := false) -> void:
 	if project_context == null or project_context.active_run == null or hero == null:
 		return
+	if session.is_profile_authoritative() and hero.progression_profile != null \
+			and session.canonical_source_path() \
+			== hero.progression_profile.resource_path:
+		return
+	_open_profile_authority(project_context.active_run, hero, initial)
+
+
+func _open_profile_authority(
+		run_data: RunData,
+		hero: RunHeroProfile,
+		initial := false
+	) -> void:
+	if run_data == null or hero == null:
+		return
 	commit_pending_edits()
 	_save_graph_state()
-	if not session.open_progression(project_context.active_run, hero):
+	if not session.open_progression(run_data, hero):
 		_show_status(
 			"Ouverture impossible",
 			"Le profil de progression %s n'est pas exploitable." % hero.character_id
@@ -1145,8 +1377,15 @@ func _open_context_hero(hero: RunHeroProfile, initial := false) -> void:
 		var remembered := StringName(workspace_state.get("discipline_id", &""))
 		if remembered != &"":
 			session.select_discipline(remembered)
-	status_label.text = "Profil chargé depuis la partie active. La vue de l’unité n’est pas sauvegardable."
+	elif _pending_open_discipline_id != &"":
+		session.select_discipline(_pending_open_discipline_id)
+	_pending_open_discipline_id = &""
+	status_label.text = (
+		"Profil canonique chargé depuis « %s ». L’adaptateur UnitData reste hors sauvegarde."
+		% run_data.run_name
+	)
 	_refresh_document()
+	_focus_pending_search_result()
 	_offer_draft(session.canonical_source_path())
 
 
@@ -1158,12 +1397,22 @@ func _open_context_character(character: UnitData, initial := false) -> void:
 			and hero.base_unit_data.resource_path == character.resource_path:
 		_open_context_hero(hero, initial)
 		return
+	if not session.is_profile_authoritative() and session.source_unit != null \
+			and session.source_unit.resource_path == character.resource_path:
+		return
 	_open_character(character.resource_path, initial)
 
 
 func _on_context_character_changed(character: UnitData) -> void:
 	if character != null:
 		_open_context_character(character)
+
+
+func _on_context_hero_changed(hero: RunHeroProfile) -> void:
+	if hero != null and project_context != null \
+			and project_context.active_authority \
+			== RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE:
+		_open_context_hero(hero)
 
 
 func _on_context_run_changed(_run_data: RunData) -> void:
@@ -1419,11 +1668,14 @@ func _refresh_document() -> void:
 	_refresh_history()
 	var summary := SkillTreeEditorValidator.summary(validation_messages)
 	if session.working_unit != null:
+		var authority_label := "Profil de progression" \
+			if session.is_profile_authoritative() else "Fiche générale"
 		document_label.text = "%s%s" % [
-			"%s · %s" % [
+			"%s · %s · %s" % [
 				project_context.active_run.run_name if project_context != null \
 					and project_context.active_run != null else "Legacy",
 				session.working_unit.unit_name,
+				authority_label,
 			],
 			" · MODIFIÉ" if session.is_dirty() else "",
 		]
@@ -1438,6 +1690,10 @@ func _refresh_document() -> void:
 			})
 	if sandbox_reset_button != null:
 		sandbox_reset_button.visible = _tutorial_sandbox_is_active()
+	if global_unit_button != null:
+		global_unit_button.visible = session.working_unit != null
+		global_unit_button.disabled = session.working_unit == null \
+			or not session.is_profile_authoritative()
 	_update_screen_buttons()
 	_refresh_animation_screen()
 	_refresh_character_screen()
@@ -1833,6 +2089,7 @@ func _set_guided(value: bool) -> void:
 	_refresh_inspector()
 	_refresh_catalog()
 	_refresh_animation_screen()
+	_refresh_character_screen()
 	status_label.text = "Mode guidé actif : les explications et exemples sont visibles." \
 		if guided else "Mode avancé actif : tous les paramètres techniques sont accessibles."
 
@@ -1936,15 +2193,34 @@ func _open_search_result(result: Dictionary) -> void:
 	_show_screen(SCREEN_SKILLS)
 	var path := str(result.get("character_path", ""))
 	var discipline_id := StringName(result.get("discipline_id", &""))
-	var current_path := _current_catalog_path()
 	_pending_search_result = result.duplicate(true)
-	if path == current_path:
+	var authority := _authority_for_search_result(result)
+	if not authority.is_empty() and not _authority_is_open(authority):
+		_pending_open_discipline_id = discipline_id
+		_request_authority(authority)
+		return
+	if path == _current_catalog_path():
 		if discipline_id != &"":
 			session.select_discipline(discipline_id)
 		_focus_pending_search_result()
 		return
 	_pending_open_discipline_id = discipline_id
 	_request_character_path(path)
+
+
+func _authority_for_search_result(result: Dictionary) -> Dictionary:
+	var entry := _catalog_entry_for_path(str(result.get("character_path", "")))
+	if entry.is_empty():
+		return {}
+	var profile_path := str(result.get("profile_path", ""))
+	if not profile_path.is_empty():
+		for authority_value in entry.get("profile_authorities", []):
+			var authority := authority_value as Dictionary
+			if str(authority.get("profile_path", "")) == profile_path:
+				return authority
+	return RunContentCatalogService.global_unit_authority(
+		entry.get("unit_resource", entry.get("resource")) as UnitData
+	)
 
 
 func _focus_pending_search_result() -> void:
@@ -2037,12 +2313,26 @@ func _run_hero_catalog() -> Array[Dictionary]:
 		var view := RunContentCatalogService.as_editable_unit_view(
 			hero.base_unit_data, hero.progression_profile
 		)
+		var authorities := RunContentCatalogService.progression_authorities_for_unit(
+			hero.base_unit_data
+		)
 		result.append({
 			"id": hero.character_id,
 			"name": hero.base_unit_data.unit_name,
 			"path": hero.base_unit_data.resource_path,
+			"unit_resource": hero.base_unit_data,
+			"unit_path": hero.base_unit_data.resource_path,
 			"profile_path": hero.progression_profile.resource_path,
+			"progression_profile": hero.progression_profile,
+			"hero_profile": hero,
+			"hero_path": hero.resource_path,
+			"run": project_context.active_run,
+			"run_path": project_context.active_run.resource_path,
+			"run_name": project_context.active_run.run_name,
+			"authority": RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE,
+			"profile_authorities": authorities,
 			"resource": view,
+			"spell_count": hero.progression_profile.spells.size(),
 			"discipline_count": hero.progression_profile.disciplines.size(),
 			"invalid": not hero.validation_errors().is_empty(),
 		})
