@@ -259,6 +259,17 @@ func test_interface_builds_and_loads_a_real_character() -> void:
 	assert_eq(studio.current_screen, studio.SCREEN_SKILLS)
 	assert_true(studio.skills_screen.visible)
 	assert_false(studio.character_screen.visible)
+	assert_false(
+		studio.inspector.visible,
+		"L’éditeur du sort ne doit pas être dupliqué à droite de l’arbre."
+	)
+	var tree_nodes := studio.session.all_nodes()
+	assert_false(tree_nodes.is_empty())
+	studio.session.select_subject(tree_nodes[0])
+	assert_true(
+		studio.inspector.visible,
+		"L’inspecteur reste nécessaire pour modifier une amélioration de l’arbre."
+	)
 	assert_true(studio.return_to_spell_button.visible)
 	studio._return_to_spell()
 	assert_eq(studio.current_screen, studio.SCREEN_CHARACTER)

@@ -1703,6 +1703,14 @@ func _refresh_document() -> void:
 func _refresh_inspector() -> void:
 	if inspector == null:
 		return
+	# Le sort possède déjà son éditeur complet derrière « Modifier le sort »
+	# dans la fiche Personnage. Le répéter à droite de l'arbre réduit inutilement
+	# la surface du graphe. L'inspecteur reste disponible pour les disciplines,
+	# rangs, améliorations et effets qui ne disposent pas de cet autre éditeur.
+	inspector.visible = current_screen == SCREEN_SKILLS \
+		and not session.selected_subject is Spell
+	if not inspector.visible:
+		return
 	inspector.set_context(
 		session.working_unit, session.current_discipline(), session.current_spell(),
 		session.selected_subject, validation_messages, guided
