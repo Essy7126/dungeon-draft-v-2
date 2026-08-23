@@ -687,6 +687,31 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_utility_hover")
 unique_name_in_owner = true
 layout_mode = 1
 
+[node name="ContextFeedback" type="Label" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -280.0
+offset_top = -190.0
+offset_right = 280.0
+offset_bottom = -152.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.48, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.015, 0.02, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxFlat_context_plate")
+text = "Cible hors de portée"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="LayoutDebugOverlay" type="Control" parent="Root"]
 unique_name_in_owner = true
 layout_mode = 1

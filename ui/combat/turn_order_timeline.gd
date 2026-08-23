@@ -16,6 +16,7 @@ var _queue: TurnQueue = null
 var _cards: Dictionary = {}
 var _display_order: Array = []
 var _layout_tween: Tween = null
+var _tactical_focus := false
 
 
 func _ready() -> void:
@@ -65,6 +66,16 @@ func is_animating() -> bool:
 func finish_animation_for_test() -> void:
 	if is_animating():
 		_layout_tween.custom_step(scroll_duration + 0.1)
+
+
+func set_tactical_focus(active: bool) -> void:
+	_tactical_focus = active
+	if is_instance_valid(cards_layer):
+		cards_layer.modulate.a = 0.28 if active else 1.0
+
+
+func is_tactical_focus_active() -> bool:
+	return _tactical_focus
 
 
 func _unbind_queue() -> void:

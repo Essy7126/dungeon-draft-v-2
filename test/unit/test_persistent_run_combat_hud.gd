@@ -9,6 +9,9 @@ class FakeCombatContext:
 	var attack_count := 0
 	var spell_count := 0
 	var end_turn_count := 0
+	var selection_active := false
+	var cancel_count := 0
+	var external_locks: Dictionary = {}
 
 	func get_active_unit():
 		return active_unit
@@ -24,6 +27,25 @@ class FakeCombatContext:
 
 	func _on_end_turn_pressed() -> void:
 		end_turn_count += 1
+
+	func cancel_active_selection() -> bool:
+		if not selection_active:
+			return false
+		selection_active = false
+		cancel_count += 1
+		return true
+
+	func dismiss_top_combat_modal() -> bool:
+		return false
+
+	func set_external_interaction_lock(source: StringName, locked: bool) -> void:
+		if locked:
+			external_locks[source] = true
+		else:
+			external_locks.erase(source)
+
+	func get_combat_presentation_snapshot() -> Dictionary:
+		return {"phase_name": &"PLAYER_IDLE"}
 
 func after_each() -> void:
 	GameManager.cleanup_run_state()
@@ -58,3 +80,34 @@ func test_unbind_clears_context_slots_and_combat_visibility() -> void:
 	assert_null(hud.get_combat_context())
 	assert_true(hud.get("_spell_buttons").is_empty())
 	assert_false(hud.visible)
+
+
+func test_ui_cancel_cancels_targeting_before_opening_pause() -> void:
+	var run := load("res://data/runs/first_run.tres") as RunData
+	assert_true(GameManager._prepare_preconfigured_run(
+		run,
+		[
+			"res://data/units/alliés/elfe.tres",
+			"res://data/units/alliés/mage.tres",
+			"res://data/units/alliés/Guerrier.tres",
+		]
+	))
+	var run_ui := GameManager.get_persistent_run_ui()
+	var context := FakeCombatContext.new()
+	context.selection_active = true
+	add_child_autofree(context)
+	run_ui.bind_combat_context(context)
+	var cancel := InputEventAction.new()
+	cancel.action = &"ui_cancel"
+	cancel.pressed = true
+
+	run_ui._unhandled_input(cancel)
+	assert_eq(context.cancel_count, 1)
+	assert_false(context.selection_active)
+	assert_false(run_ui.is_pause_menu_open())
+
+	run_ui._unhandled_input(cancel)
+	assert_true(run_ui.is_pause_menu_open())
+	assert_true(context.external_locks.has(&"run_modal"))
+	run_ui.close_pause_menu()
+	assert_false(context.external_locks.has(&"run_modal"))

@@ -3,6 +3,11 @@ extends Node
 
 signal evolution_choice_resolved(request_id, upgrade_id)
 
+const MODAL_INVENTORY: StringName = &"inventory"
+const MODAL_PAUSE: StringName = &"pause"
+const MODAL_SKILL_TREE: StringName = &"skill_tree"
+const MODAL_EVOLUTION: StringName = &"evolution"
+
 enum RunUIMode {
 	COMBAT,
 	NON_COMBAT,
@@ -39,10 +44,14 @@ var _evolution_hud_was_visible := false
 var _active_evolution_request: EvolutionRequest = null
 var _active_evolution_request_id: StringName = &""
 var _active_evolution_upgrade_id: StringName = &""
+var _modal_coordinator := CombatModalCoordinator.new()
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_modal_coordinator.active_modal_changed.connect(
+		_on_active_modal_changed
+	)
 	skill_tree_status_button.tree_requested.connect(
 		_on_skill_tree_requested
 	)
@@ -78,6 +87,7 @@ func _exit_tree() -> void:
 	_close_evolution_overlay_for_cleanup()
 	close_inventory_screen()
 	close_pause_menu()
+	_modal_coordinator.clear()
 
 
 func bind_combat_context(context: Node) -> CanvasLayer:
@@ -135,6 +145,8 @@ func set_ui_mode(mode: RunUIMode) -> void:
 		# Le UtilityDock REFINED est l’unique point d’accès visuel en combat.
 		# Le composant historique reste disponible pour ses autres consommateurs.
 		skill_tree_status_button.set_context_visible(false)
+	if mode == RunUIMode.TRANSITION:
+		_modal_coordinator.clear()
 
 
 func get_ui_mode() -> RunUIMode:
@@ -165,6 +177,65 @@ func get_inventory_screen() -> InventoryScreen:
 	return inventory_screen
 
 
+func get_active_modal() -> StringName:
+	return _modal_coordinator.get_active_modal()
+
+
+func has_active_modal() -> bool:
+	return _modal_coordinator.has_active_modal()
+
+
+func _claim_modal(modal_id: StringName) -> bool:
+	return _modal_coordinator.try_open(modal_id)
+
+
+func _release_modal(modal_id: StringName) -> void:
+	_modal_coordinator.close(modal_id)
+
+
+func _on_active_modal_changed(
+		_previous: StringName,
+		current: StringName
+	) -> void:
+	var blocked := current != &""
+	var context = (
+		combat_hud.get_combat_context()
+		if is_instance_valid(combat_hud)
+		else null
+	)
+	if is_instance_valid(context) and context.has_method(
+		"set_external_interaction_lock"
+	):
+		context.set_external_interaction_lock(&"run_modal", blocked)
+	_set_tooltips_modal_blocked(blocked)
+
+
+func _set_tooltips_modal_blocked(blocked: bool) -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+	for tooltip in tree.get_nodes_in_group("keyword_tooltip_layer"):
+		if tooltip.has_method("set_modal_blocked"):
+			tooltip.set_modal_blocked(blocked)
+		elif blocked and tooltip.has_method("hide_all"):
+			tooltip.hide_all()
+
+
+func _combat_context_allows_run_modal() -> bool:
+	if not is_instance_valid(combat_hud):
+		return true
+	var context = combat_hud.get_combat_context()
+	if not is_instance_valid(context) \
+			or not context.has_method("get_combat_presentation_snapshot"):
+		return true
+	var snapshot: Dictionary = context.get_combat_presentation_snapshot()
+	return StringName(snapshot.get("phase_name", &"PLAYER_IDLE")) not in [
+		&"RESOLVING_ACTION",
+		&"MODAL",
+		&"BATTLE_ENDING",
+	]
+
+
 func is_inventory_open() -> bool:
 	return is_instance_valid(inventory_screen) and inventory_screen.is_open()
 
@@ -174,8 +245,15 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 			or _ui_mode == RunUIMode.TRANSITION \
 			or is_inventory_open() \
 			or is_pause_menu_open() \
-			or _evolution_screen_active \
-			or (is_instance_valid(skill_tree_screen) and skill_tree_screen.visible):
+		or _evolution_screen_active \
+		or (is_instance_valid(skill_tree_screen) and skill_tree_screen.visible) \
+		or not _combat_context_allows_run_modal():
+		return false
+	_combat_controls_before_inventory = bool(
+		combat_hud.get("_player_controls_enabled")
+	) if is_instance_valid(combat_hud) else false
+	if not _claim_modal(MODAL_INVENTORY):
+		_combat_controls_before_inventory = false
 		return false
 	var wanted_id := character_id
 	if wanted_id == &"":
@@ -183,11 +261,9 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 			GameManager.get_ordered_character_states()
 		)
 		if states.is_empty():
+			_release_modal(MODAL_INVENTORY)
 			return false
 		wanted_id = states[0].character_id
-	_combat_controls_before_inventory = bool(
-		combat_hud.get("_player_controls_enabled")
-	) if is_instance_valid(combat_hud) else false
 	if is_instance_valid(combat_hud):
 		combat_hud.set_player_controls_enabled(false)
 	if not inventory_screen.open_for_character(wanted_id, GameManager):
@@ -196,6 +272,7 @@ func open_inventory_screen(character_id: StringName = &"") -> bool:
 				_combat_controls_before_inventory
 			)
 		_combat_controls_before_inventory = false
+		_release_modal(MODAL_INVENTORY)
 		return false
 	return true
 
@@ -222,13 +299,17 @@ func open_pause_menu() -> bool:
 			is_instance_valid(skill_tree_screen)
 			and skill_tree_screen.visible
 		)
+		or not _combat_context_allows_run_modal()
 	):
 		return false
-	_tree_was_paused_before_menu = get_tree().paused
-	_owns_tree_pause = true
 	_combat_controls_before_pause = bool(
 		combat_hud.get("_player_controls_enabled")
 	) if is_instance_valid(combat_hud) else false
+	if not _claim_modal(MODAL_PAUSE):
+		_combat_controls_before_pause = false
+		return false
+	_tree_was_paused_before_menu = get_tree().paused
+	_owns_tree_pause = true
 	if is_instance_valid(combat_hud):
 		combat_hud.set_player_controls_enabled(false)
 	pause_menu.open_menu()
@@ -255,6 +336,7 @@ func close_pause_menu() -> bool:
 			_combat_controls_before_pause
 		)
 	_combat_controls_before_pause = false
+	_release_modal(MODAL_PAUSE)
 	return was_open
 
 
@@ -275,6 +357,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		and skill_tree_screen.visible
 	):
 		return
+	var context = (
+		combat_hud.get_combat_context()
+		if is_instance_valid(combat_hud)
+		else null
+	)
+	if is_instance_valid(context) \
+			and context.has_method("dismiss_top_combat_modal") \
+			and bool(context.dismiss_top_combat_modal()):
+		get_viewport().set_input_as_handled()
+		return
+	if is_instance_valid(context) \
+			and context.has_method("cancel_active_selection") \
+			and bool(context.cancel_active_selection()):
+		get_viewport().set_input_as_handled()
+		return
 	if open_pause_menu():
 		get_viewport().set_input_as_handled()
 
@@ -285,12 +382,16 @@ func _on_skill_tree_requested(
 	) -> void:
 	if _ui_mode != RunUIMode.COMBAT \
 			or skill_tree_screen.visible \
-			or is_inventory_open() \
-			or _evolution_screen_active:
+		or is_inventory_open() \
+		or _evolution_screen_active \
+		or not _combat_context_allows_run_modal():
 		return
 	_combat_controls_before_skill_tree = bool(
 		combat_hud.get("_player_controls_enabled")
 	)
+	if not _claim_modal(MODAL_SKILL_TREE):
+		_combat_controls_before_skill_tree = false
+		return
 	combat_hud.set_player_controls_enabled(false)
 	if not skill_tree_screen.open_for_character(
 			character_id,
@@ -300,6 +401,7 @@ func _on_skill_tree_requested(
 		combat_hud.set_player_controls_enabled(
 			_combat_controls_before_skill_tree
 		)
+		_release_modal(MODAL_SKILL_TREE)
 
 
 func _on_skill_tree_screen_closed() -> void:
@@ -314,6 +416,7 @@ func _on_skill_tree_screen_closed() -> void:
 			_combat_controls_before_skill_tree
 		)
 	_combat_controls_before_skill_tree = false
+	_release_modal(MODAL_SKILL_TREE)
 
 
 func _on_inventory_requested(character_id: StringName) -> void:
@@ -341,6 +444,7 @@ func _on_inventory_screen_closed() -> void:
 			_combat_controls_before_inventory
 		)
 	_combat_controls_before_inventory = false
+	_release_modal(MODAL_INVENTORY)
 
 
 func open_evolution_request(request: EvolutionRequest) -> bool:
@@ -349,7 +453,10 @@ func open_evolution_request(request: EvolutionRequest) -> bool:
 			or _ui_mode != RunUIMode.COMBAT \
 			or _evolution_screen_active \
 			or is_inventory_open() \
-			or skill_tree_screen.visible:
+		or skill_tree_screen.visible \
+		or is_pause_menu_open():
+		return false
+	if not _claim_modal(MODAL_EVOLUTION):
 		return false
 	_evolution_screen_active = true
 	_combat_controls_before_skill_tree = false
@@ -428,6 +535,7 @@ func _on_skill_tree_evolution_resolved(
 	if is_instance_valid(evolution_feedback):
 		evolution_feedback.hide()
 	_restore_evolution_pause()
+	_release_modal(MODAL_EVOLUTION)
 	evolution_choice_resolved.emit(request_id, upgrade_id)
 
 
@@ -489,6 +597,7 @@ func _on_skill_evolution_confirmation_finished(
 	_active_evolution_request_id = &""
 	_active_evolution_upgrade_id = &""
 	_restore_evolution_pause()
+	_release_modal(MODAL_EVOLUTION)
 	evolution_choice_resolved.emit(request_id, upgrade_id)
 
 
@@ -524,6 +633,7 @@ func _close_evolution_overlay_for_cleanup() -> void:
 	_active_evolution_request_id = &""
 	_active_evolution_upgrade_id = &""
 	_restore_evolution_pause()
+	_release_modal(MODAL_EVOLUTION)
 
 
 func _on_pause_return_to_title_requested(_reason: StringName) -> void:

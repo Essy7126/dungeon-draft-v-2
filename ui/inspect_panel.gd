@@ -16,7 +16,14 @@ var _grid: GridData = null
 
 func _ready() -> void:
 	_build_ui()
+	get_viewport().size_changed.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
 	_show_empty()
+
+
+func _exit_tree() -> void:
+	if get_viewport().size_changed.is_connected(_apply_responsive_layout):
+		get_viewport().size_changed.disconnect(_apply_responsive_layout)
 
 func _build_ui() -> void:
 	_panel = PanelContainer.new()
@@ -78,6 +85,38 @@ func _build_ui() -> void:
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_content.add_theme_constant_override("separation", 7)
 	scroll.add_child(_content)
+
+
+func _apply_responsive_layout() -> void:
+	if not is_instance_valid(_panel):
+		return
+	var viewport_size := get_viewport().get_visible_rect().size
+	var compact := viewport_size.y <= 800.0 or viewport_size.x <= 1366.0
+	var panel_width := clampf(
+		viewport_size.x * (0.22 if compact else 0.19),
+		270.0,
+		326.0,
+	)
+	_panel.offset_left = -panel_width - 10.0
+	_panel.offset_right = -10.0
+	_panel.offset_top = 12.0 if compact else 18.0
+	_panel.offset_bottom = -124.0 if compact else -150.0
+
+
+func get_layout_snapshot() -> Dictionary:
+	return {
+		"panel": Rect2(_panel.position, _panel.size),
+		"locked": _locked,
+		"compact": (
+			get_viewport().get_visible_rect().size.y <= 800.0
+			or get_viewport().get_visible_rect().size.x <= 1366.0
+		),
+	}
+
+
+func release_transient_preview() -> void:
+	if not _locked:
+		_show_empty()
 
 func release_lock() -> void:
 	_locked = false

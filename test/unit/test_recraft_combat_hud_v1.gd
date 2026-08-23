@@ -137,3 +137,34 @@ func test_hud_switch_disconnects_hp_and_stats_signals() -> void:
 	assert_false(first.stats_changed.is_connected(callback))
 	assert_true(second.hp_changed.is_connected(callback))
 	assert_true(second.stats_changed.is_connected(callback))
+
+
+func test_presentation_snapshot_controls_focus_ownership_and_feedback() -> void:
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	add_child_autofree(hud)
+	await get_tree().process_frame
+	hud.apply_presentation_snapshot({
+		"phase_name": &"PLAYER_TARGETING",
+		"ownership": &"player",
+		"controls_enabled": true,
+		"focus_active": true,
+		"feedback_text": "Cible hors de portée.",
+		"feedback_kind": &"warning",
+	})
+	assert_true(bool(hud.get("_player_controls_enabled")))
+	assert_eq((hud.get_node("%TurnLabel") as Label).text, "VOTRE TOUR")
+	assert_lt((hud.get_node("%CharacterSection") as Control).modulate.a, 1.0)
+	assert_true((hud.get_node("%ContextFeedback") as Label).visible)
+
+	hud.apply_presentation_snapshot({
+		"phase_name": &"RESOLVING_ACTION",
+		"ownership": &"system",
+		"controls_enabled": false,
+		"focus_active": false,
+	})
+	assert_false(bool(hud.get("_player_controls_enabled")))
+	assert_eq((hud.get_node("%TurnLabel") as Label).text, "RÉSOLUTION")
+	assert_false(
+		(hud.get_node("%ContextFeedback") as Label).visible,
+		"Un ancien refus de cible ne doit pas survivre a la resolution.",
+	)

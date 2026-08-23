@@ -30,10 +30,14 @@ signal request_clear_highlights
 signal request_move_to(cell)
 signal request_attack(cell)
 signal request_cast_spell(spell, cell)
+signal state_changed(previous: State, current: State)
 
 func set_state(new_state: State) -> void:
+	var previous := current
 	current = new_state
 	_on_enter_state(new_state)
+	if previous != new_state:
+		state_changed.emit(previous, new_state)
 
 func _on_enter_state(state: State) -> void:
 	match state:

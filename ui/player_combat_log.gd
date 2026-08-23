@@ -4,7 +4,11 @@ var _panel: PanelContainer
 var _entries: VBoxContainer
 var _scroll: ScrollContainer
 var _toggle_btn: Button
+var _collapse_btn: Button
 var _detailed: bool = false
+var _expanded: bool = true
+var _layout_initialized := false
+var _tactical_focus := false
 var _dragging: bool = false
 var _drag_offset: Vector2 = Vector2.ZERO
 var _current_round: int = -1
@@ -13,12 +17,21 @@ var _max_entries: int = 90
 func _ready() -> void:
 	layer = 35
 	_build_ui()
+	get_viewport().size_changed.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
 	DebugLogger.log_added.connect(_on_log_added)
+
+
+func _exit_tree() -> void:
+	if get_viewport().size_changed.is_connected(_apply_responsive_layout):
+		get_viewport().size_changed.disconnect(_apply_responsive_layout)
+	if DebugLogger.log_added.is_connected(_on_log_added):
+		DebugLogger.log_added.disconnect(_on_log_added)
 
 func _build_ui() -> void:
 	_panel = PanelContainer.new()
 	_panel.position = Vector2(12, 520)
-	_panel.custom_minimum_size = Vector2(370, 250)
+	_panel.custom_minimum_size = Vector2(340, 250)
 	add_child(_panel)
 
 	var root := VBoxContainer.new()
@@ -43,6 +56,13 @@ func _build_ui() -> void:
 	_toggle_btn.pressed.connect(_toggle_mode)
 	header.add_child(_toggle_btn)
 
+	_collapse_btn = Button.new()
+	_collapse_btn.text = "Fermer"
+	_collapse_btn.custom_minimum_size = Vector2(72, 28)
+	_collapse_btn.tooltip_text = "Replier ou ouvrir l'historique du combat."
+	_collapse_btn.pressed.connect(_toggle_expanded)
+	header.add_child(_collapse_btn)
+
 	_scroll = ScrollContainer.new()
 	_scroll.custom_minimum_size = Vector2(350, 200)
 	_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -52,6 +72,58 @@ func _build_ui() -> void:
 	_entries.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_entries.add_theme_constant_override("separation", 3)
 	_scroll.add_child(_entries)
+
+
+func _toggle_expanded() -> void:
+	_expanded = not _expanded
+	_apply_responsive_layout()
+
+
+func set_tactical_focus(active: bool) -> void:
+	if _tactical_focus == active:
+		return
+	_tactical_focus = active
+	_apply_responsive_layout()
+
+
+func get_layout_snapshot() -> Dictionary:
+	return {
+		"panel": Rect2(_panel.position, _panel.size),
+		"expanded": _expanded and not _tactical_focus,
+		"tactical_focus": _tactical_focus,
+		"scroll_visible": _scroll.visible,
+	}
+
+
+func _apply_responsive_layout() -> void:
+	if not is_instance_valid(_panel) or not is_instance_valid(_scroll):
+		return
+	var viewport_size := get_viewport().get_visible_rect().size
+	var compact := viewport_size.y <= 800.0 or viewport_size.x <= 1366.0
+	if not _layout_initialized:
+		_expanded = not compact
+		_layout_initialized = true
+	var effective_expanded := _expanded and not _tactical_focus
+	var panel_width := clampf(
+		viewport_size.x * (0.25 if compact else 0.22),
+		300.0,
+		370.0,
+	)
+	var panel_height := (
+		clampf(viewport_size.y * 0.25, 180.0, 250.0)
+		if effective_expanded
+		else 44.0
+	)
+	_scroll.visible = effective_expanded
+	_panel.custom_minimum_size = Vector2(panel_width, panel_height)
+	_panel.size = Vector2(panel_width, panel_height)
+	var reserved_bottom := 124.0 if compact else 160.0
+	_panel.position = Vector2(
+		12.0,
+		maxf(12.0, viewport_size.y - reserved_bottom - panel_height - 12.0),
+	)
+	_panel.modulate.a = 0.72 if _tactical_focus else 1.0
+	_collapse_btn.text = "Fermer" if effective_expanded else "Ouvrir"
 
 func _toggle_mode() -> void:
 	_detailed = not _detailed
@@ -170,8 +242,8 @@ func _on_header_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and _dragging:
 		var viewport_size := get_viewport().get_visible_rect().size
 		var pos := get_viewport().get_mouse_position() - _drag_offset
-		pos.x = clampf(pos.x, 0.0, viewport_size.x - 180.0)
-		pos.y = clampf(pos.y, 0.0, viewport_size.y - 90.0)
+		pos.x = clampf(pos.x, 0.0, viewport_size.x - _panel.size.x)
+		pos.y = clampf(pos.y, 0.0, viewport_size.y - _panel.size.y)
 		_panel.position = pos
 
 func _escape_bbcode(text: String) -> String:
