@@ -645,7 +645,7 @@ func test_keyboard_focus_path_reaches_all_primary_actions() -> void:
 	for _frame in range(12):
 		await get_tree().process_frame
 	_handle_known_production_uid_warning()
-	var required := ["Annuler", "Rétablir", "Rechercher", "Valider", "Tester", "Prévisualiser", "Analyse complète", "Sauvegarder"]
+	var required := ["Annuler", "Rétablir", "Rechercher", "Valider", "Tester", "Sauvegarder"]
 	for label in required:
 		var matched := false
 		for child in studio.find_children("*", "Button", true, false):
@@ -654,6 +654,79 @@ func test_keyboard_focus_path_reaches_all_primary_actions() -> void:
 				matched = button.focus_mode != Control.FOCUS_NONE
 				break
 		assert_true(matched, "Action clavier inaccessible : %s" % label)
+	# Prévisualiser, Analyse complète, Comparer et la fiche générale ont quitté
+	# la barre pour le menu Outils : elles doivent y rester atteignables au
+	# clavier, sinon les déplacer reviendrait à les supprimer.
+	assert_not_null(studio.tools_menu_button, "Le menu Outils doit exister")
+	assert_ne(
+		studio.tools_menu_button.focus_mode, Control.FOCUS_NONE,
+		"Le menu Outils doit être atteignable au clavier"
+	)
+	var tools_popup := studio.tools_menu_button.get_popup()
+	var moved_actions := {
+		SkillTreeStudioMain.TOOL_PREVIEW: "Prévisualiser",
+		SkillTreeStudioMain.TOOL_ANALYSIS: "Analyse complète",
+		SkillTreeStudioMain.TOOL_COMPARE: "Comparer deux parties",
+		SkillTreeStudioMain.TOOL_GLOBAL_UNIT: "Ouvrir la fiche générale",
+		SkillTreeStudioMain.TOOL_ORPHANS: "Vérifier les Resources orphelines",
+	}
+	for action_id in moved_actions:
+		assert_true(
+			tools_popup.get_item_index(action_id) >= 0,
+			"Action déplacée introuvable dans le menu Outils : %s" % moved_actions[action_id]
+		)
+
+
+func test_guided_mode_hides_the_optional_five_rank_check() -> void:
+	var studio := SkillTreeStudioMain.new()
+	studio.setup(null, null)
+	add_child_autofree(studio)
+	for _frame in range(4):
+		await get_tree().process_frame
+	studio.current_screen = SkillTreeStudioMain.SCREEN_SKILLS
+	studio._set_guided(true)
+	assert_true(studio.guided_toggle.button_pressed)
+	assert_false(studio.production_toggle.visible)
+	studio._set_guided(false)
+	assert_false(studio.guided_toggle.button_pressed)
+	assert_true(studio.production_toggle.visible)
+
+
+func test_temporary_node_name_receives_keyboard_focus_in_the_inspector() -> void:
+	var studio := SkillTreeStudioMain.new()
+	studio.setup(null, null)
+	add_child_autofree(studio)
+	for _frame in range(4):
+		await get_tree().process_frame
+	var node := SkillTreeNodeData.new()
+	node.upgrade_id = &"temporary_node"
+	node.display_name = "Nouvelle amélioration"
+	node.description = "À renommer."
+	node.rank = 2
+	var unit := UnitData.new()
+	unit.unit_id = &"focus_fixture"
+	var spell := Spell.new()
+	spell.spell_id = &"focus_spell"
+	spell.spell_name = "Sort de test"
+	unit.spells = [spell]
+	studio.session.working_unit = unit
+	studio.session.selected_subject = node
+	studio._show_screen(SkillTreeStudioMain.SCREEN_SKILLS)
+	var messages: Array[SkillTreeValidationMessage] = []
+	studio.inspector.set_context(unit, null, spell, node, messages, true)
+	studio.skills_screen.show()
+	studio.inspector.show()
+	await get_tree().process_frame
+	studio._focus_temporary_node_name()
+	await get_tree().process_frame
+	var focused := get_viewport().gui_get_focus_owner() as LineEdit
+	assert_not_null(focused, "Le champ Nom affiché doit recevoir le clavier")
+	if focused != null:
+		assert_eq(focused.text, "Nouvelle amélioration")
+		assert_eq(
+			StringName(focused.get_meta(&"studio_property_name", &"")),
+			&"display_name"
+		)
 
 
 ## Regression : en mode autonome, la relecture canonique de fin de transaction

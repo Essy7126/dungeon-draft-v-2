@@ -1072,7 +1072,8 @@ func add_node(
 		return null
 	var node := SkillTreeNodeData.new()
 	node.display_name = display_name.strip_edges() \
-		if not display_name.strip_edges().is_empty() else "Nouvelle amélioration"
+		if not display_name.strip_edges().is_empty() \
+		else _unique_display_name(discipline, "Nouvelle amélioration")
 	node.upgrade_id = _unique_node_id(node.display_name)
 	node.description = "Décrivez clairement ce que cette amélioration apporte."
 	node.discipline_id = discipline.discipline_id
@@ -1682,6 +1683,26 @@ func _unique_node_id(display_name: String) -> StringName:
 		candidate = "%s_%d" % [base, suffix]
 		suffix += 1
 	return StringName(candidate)
+
+
+## Nom temporaire lisible mais deja distinct : deux creations rapides sans
+## saisie donnaient auparavant deux « Nouvelle amélioration » identiques a
+## l'ecran, que le validateur ne signalait pas.
+func _unique_display_name(discipline: DisciplineData, base: String) -> String:
+	var taken := {}
+	if discipline != null:
+		for rank_data in discipline.ranks:
+			if rank_data == null:
+				continue
+			for node in rank_data.choices:
+				if node != null:
+					taken[str(node.display_name).strip_edges().to_lower()] = true
+	if not taken.has(base.to_lower()):
+		return base
+	var suffix := 2
+	while taken.has("%s %d" % [base.to_lower(), suffix]):
+		suffix += 1
+	return "%s %d" % [base, suffix]
 
 
 func _uses_external_children(discipline: DisciplineData) -> bool:

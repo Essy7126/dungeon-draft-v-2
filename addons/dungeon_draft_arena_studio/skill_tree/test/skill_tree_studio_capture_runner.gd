@@ -20,7 +20,19 @@ const CASES := [
 	"15_focus_clavier",
 	"16_dialogue_suppression",
 	"17_brouillon_recuperable",
+	"18_effet_cible_fixe",
+	"19_effet_cible_configurable",
+	"20_menu_outils",
+	"21_tiroir_ferme",
+	"22_tiroir_ouvert",
 ]
+## Cas qui documentent volontairement l'écran Personnage : ils ne basculent pas
+## vers l'arbre de compétences.
+const CHARACTER_SCREEN_CASES := ["01_ouverture"]
+## Personnage capturé : l'Elfe possède un arbre complet et sert de référence
+## visuelle. Le héros par défaut du Studio ne convient pas ici, sa copie de
+## travail arrivant sans sort dans ce runner autonome.
+const CAPTURE_CHARACTER := "res://data/units/alliés/elfe.tres"
 
 
 func _ready() -> void:
@@ -48,21 +60,30 @@ func _run() -> void:
 			add_child(studio)
 			for _frame in range(14):
 				await get_tree().process_frame
+			studio._open_character(CAPTURE_CHARACTER)
+			for _frame in range(6):
+				await get_tree().process_frame
+			# Un brouillon laissé par une exécution précédente ouvre sa fenêtre
+			# par-dessus la capture et masquerait l'écran à inspecter.
+			if case_name != "17_brouillon_recuperable":
+				studio.draft_dialog.hide()
+				studio._pending_draft.clear()
 			await _configure_case(studio, case_name)
 			for _frame in range(3):
 				await get_tree().process_frame
 			var capture_key := "%s_%dx%d" % [case_name, requested_size.x, requested_size.y]
-			var capture_metrics := _measure(studio, requested_size)
+			var capture_metrics := _measure(studio, requested_size, case_name)
 			metrics.captures[capture_key] = capture_metrics
 			var image := get_viewport().get_texture().get_image()
 			var path := OUTPUT.path_join(capture_key + ".png")
-			var saved := image != null and not image.is_empty() and image.save_png(
-				ProjectSettings.globalize_path(path)
-			) == OK
+			var saved := false
+			if image != null and not image.is_empty():
+				saved = image.save_png(ProjectSettings.globalize_path(path)) == OK
 			metrics.captures[capture_key].image_path = path
 			metrics.captures[capture_key].image_saved = saved
 			succeeded = succeeded and saved and bool(capture_metrics.get("bounds_ok", false)) \
-				and bool(capture_metrics.get("primary_actions_visible", false))
+				and bool(capture_metrics.get("primary_actions_visible", false)) \
+				and bool(capture_metrics.get("mode_visibility_ok", false))
 			studio.dispose_document()
 			studio.queue_free()
 			await get_tree().process_frame
@@ -80,6 +101,20 @@ func _run() -> void:
 func _configure_case(studio: SkillTreeStudioMain, case_name: String) -> void:
 	var node := studio.session.all_nodes()[0] as SkillUpgradeData \
 		if not studio.session.all_nodes().is_empty() else null
+	# Le Studio ouvre sur l'écran Personnage. Sans bascule explicite, toutes les
+	# captures « compétences » montraient en réalité la fiche du personnage :
+	# graphe, inspecteur, tiroir et barre d'outils restaient masqués.
+	if not CHARACTER_SCREEN_CASES.has(case_name):
+		# Les disciplines viennent des sorts du personnage, pas d'un tableau
+		# `disciplines` : Achille, héros par défaut, en a zéro de ce côté.
+		var discipline_id := studio.session.selected_discipline_id
+		if discipline_id == &"" and studio.session.working_unit != null:
+			for entry in SkillTreeCatalogService.disciplines_for(studio.session.working_unit):
+				if StringName(entry.get("id", &"")) != &"":
+					discipline_id = StringName(entry.get("id"))
+					break
+		studio._open_spell_tree(discipline_id)
+		await get_tree().process_frame
 	match case_name:
 		"02_catalogue_recherche":
 			studio.catalog.search_edit.text = "archer"
@@ -128,10 +163,52 @@ func _configure_case(studio: SkillTreeStudioMain, case_name: String) -> void:
 		"17_brouillon_recuperable":
 			studio.draft_dialog.dialog_text = "Un brouillon non sauvegardé a été trouvé.\n\nChoisissez Restaurer, Comparer ou Abandonner. Il ne sera jamais restauré silencieusement."
 			studio.draft_dialog.popup_centered()
+		"18_effet_cible_fixe":
+			# SHIELD_CASTER protège toujours le lanceur : le champ « Cible de
+			# l'effet » doit être absent, remplacé par la cible réelle.
+			_select_effect(studio, node, SpellModSkillTreeEffect.EffectType.SHIELD_CASTER)
+		"19_effet_cible_configurable":
+			# SHIELD_TARGET consulte réellement target_scope : le champ reste.
+			_select_effect(studio, node, SpellModSkillTreeEffect.EffectType.SHIELD_TARGET)
+		"20_menu_outils":
+			if studio.tools_menu_button != null:
+				studio.tools_menu_button.get_popup().popup_centered()
+		"21_tiroir_ferme":
+			studio.analysis_drawer.set_expanded(false)
+		"22_tiroir_ouvert":
+			studio._validate()
+			studio.analysis_drawer.open()
 	await get_tree().process_frame
 
 
-func _measure(studio: SkillTreeStudioMain, requested_size: Vector2i) -> Dictionary:
+## Sélectionne un effet d'un type donné pour capturer l'inspecteur réel plutôt
+## qu'un état théorique : c'est la seule façon de vérifier visuellement que la
+## visibilité dynamique des champs se voit vraiment à l'écran.
+func _select_effect(
+		studio: SkillTreeStudioMain,
+		node: SkillUpgradeData,
+		effect_type: int
+	) -> void:
+	if node == null:
+		return
+	var effect: SpellModSkillTreeEffect = null
+	for modifier in node.spell_modifiers:
+		if modifier is SpellModSkillTreeEffect:
+			effect = modifier as SpellModSkillTreeEffect
+			break
+	if effect == null:
+		effect = SpellModSkillTreeEffect.new()
+		effect.modifier_name = "Effet de capture"
+		node.spell_modifiers = node.spell_modifiers + [effect]
+	effect.effect_type = effect_type
+	effect.amount = 5
+	studio.session.select_subject(effect)
+	studio.inspector.tabs.current_tab = studio.inspector.TAB_NAMES.find("Effets")
+
+
+func _measure(
+		studio: SkillTreeStudioMain, requested_size: Vector2i, case_name: String
+	) -> Dictionary:
 	var negative_controls := PackedStringArray()
 	var outside_controls := PackedStringArray()
 	var clipped_essential := PackedStringArray()
@@ -151,12 +228,28 @@ func _measure(studio: SkillTreeStudioMain, requested_size: Vector2i) -> Dictiona
 		if control is Label and (control as Label).clip_text \
 				and control.get_combined_minimum_size().x > control.size.x + 1.0:
 			clipped_essential.append(str(control.get_path()))
-	var primary_labels := ["Annuler", "Rétablir", "Rechercher", "Valider", "Tester", "Prévisualiser", "Analyse complète", "Orphelins", "Sauvegarder"]
+	# Prévisualiser, Analyse complète, Comparer, la fiche générale et Orphelins
+	# ont rejoint le menu Outils : la barre ne porte plus que le parcours nominal.
+	var primary_labels := ["Annuler", "Rétablir", "Rechercher", "Valider", "Tester", "Sauvegarder"]
 	var visible_primary := PackedStringArray()
 	for value in studio.find_children("*", "Button", true, false):
 		var button := value as Button
-		if button != null and button.is_visible_in_tree() and primary_labels.has(button.text):
+		if button == null or not button.is_visible_in_tree():
+			continue
+		if primary_labels.has(button.text):
 			visible_primary.append(button.text)
+	var tools_menu_visible := studio.tools_menu_button != null \
+		and studio.tools_menu_button.is_visible_in_tree()
+	# Les actions de la barre n'existent que sur l'écran Compétences : sur la
+	# fiche Personnage, leur absence est le comportement attendu.
+	var on_skills := studio.current_screen == SkillTreeStudioMain.SCREEN_SKILLS
+	var mode_visibility_ok := true
+	if case_name == "13_mode_guide":
+		mode_visibility_ok = studio.guided_toggle.button_pressed \
+			and not studio.production_toggle.is_visible_in_tree()
+	elif case_name == "14_mode_avance":
+		mode_visibility_ok = not studio.guided_toggle.button_pressed \
+			and studio.production_toggle.is_visible_in_tree()
 	var focus := get_viewport().gui_get_focus_owner()
 	var dialog_bounds_ok := true
 	var visible_dialogs := PackedStringArray()
@@ -190,8 +283,12 @@ func _measure(studio: SkillTreeStudioMain, requested_size: Vector2i) -> Dictiona
 		"dialog_bounds_ok": dialog_bounds_ok,
 		"visible_dialogs": visible_dialogs,
 		"graph_minimum_useful": studio.graph.size.x >= 420.0,
-		"primary_actions_visible": visible_primary.size() == primary_labels.size(),
+		"primary_actions_visible": not on_skills \
+			or visible_primary.size() == primary_labels.size(),
 		"visible_primary_actions": visible_primary,
+		"tools_menu_visible": tools_menu_visible,
+		"on_skills_screen": on_skills,
+		"mode_visibility_ok": mode_visibility_ok,
 		"focus_owner": str(focus.get_path()) if focus != null else "",
 		"focus_visible": focus == null or focus.is_visible_in_tree(),
 		"selection_visible": selection_visible,

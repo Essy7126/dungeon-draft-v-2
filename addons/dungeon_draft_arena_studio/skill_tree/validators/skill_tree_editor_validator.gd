@@ -149,6 +149,10 @@ static func _validate_discipline(
 		))
 	var previous_threshold: int = -1
 	var previous_delta: int = -1
+	# Portee discipline : deux ameliorations du meme personnage mais de
+	# disciplines differentes ne se cotoient jamais a l'ecran, donc ne pretent
+	# pas a confusion de la meme facon qu'un doublon dans le meme arbre.
+	var display_names_in_discipline := {}
 	var sorted_ranks := discipline.ranks.duplicate()
 	sorted_ranks.sort_custom(func(a, b):
 		return a != null and (b == null or a.rank < b.rank)
@@ -191,6 +195,20 @@ static func _validate_discipline(
 					"Générez un nouvel identifiant stable.", node.upgrade_id, &"upgrade_id", node.rank
 				))
 			node_ids[node.upgrade_id] = true
+			var normalized_name: String = str(node.display_name).strip_edges().to_lower()
+			if not normalized_name.is_empty():
+				if display_names_in_discipline.has(normalized_name):
+					var previous_rank := int(display_names_in_discipline[normalized_name])
+					messages.append(_warning(
+						&"node_name_duplicate", "Deux améliorations portent le même nom",
+						"« %s » existe déjà au rang %d de cette discipline. Le joueur verra deux choix identiques." % [
+							node.display_name.strip_edges(), previous_rank,
+						],
+						"Donnez un nom différent à l’une des deux. L’identifiant stable ne change pas.",
+						node.upgrade_id, &"display_name", node.rank
+					))
+				else:
+					display_names_in_discipline[normalized_name] = node.rank
 			_validate_node(unit, discipline, node, messages)
 	_validate_reachability(discipline, messages)
 	if production_profile:
@@ -307,7 +325,6 @@ static func _validate_skill_effect(
 		SpellModSkillTreeEffect.EffectType.STATUS_DOT,
 		SpellModSkillTreeEffect.EffectType.STATUS_SLOW,
 		SpellModSkillTreeEffect.EffectType.STATUS_REGEN,
-		SpellModSkillTreeEffect.EffectType.STATUS_VULNERABILITY,
 		SpellModSkillTreeEffect.EffectType.STATUS_OUTGOING_DAMAGE,
 	]:
 		if modifier.duration <= 0:
@@ -316,12 +333,20 @@ static func _validate_skill_effect(
 				"Le statut « %s » ne possède aucun tour actif." % modifier.status_name,
 				"Définissez au moins un tour.", node.upgrade_id, &"duration", node.rank
 			))
+	if modifier.effect_type in [
+		SpellModSkillTreeEffect.EffectType.STATUS_DOT,
+		SpellModSkillTreeEffect.EffectType.STATUS_SLOW,
+		SpellModSkillTreeEffect.EffectType.STATUS_REGEN,
+		SpellModSkillTreeEffect.EffectType.STATUS_VULNERABILITY,
+		SpellModSkillTreeEffect.EffectType.STATUS_OUTGOING_DAMAGE,
+	]:
 		if modifier.status_group == &"":
 			messages.append(_warning(
 				&"status_without_group", "Statut sans groupe stable",
 				"Le runtime ne peut pas fusionner ou remplacer ce statut de façon fiable.",
 				"Renseignez un groupe, par exemple « burning ».", node.upgrade_id, &"status_group", node.rank
 			))
+	_validate_ignored_values(node, modifier, messages)
 	if target_spell != null:
 		var enemy_scope := modifier.target_scope in [
 			SpellModSkillTreeEffect.TargetScope.PRIMARY_ENEMY,
@@ -339,6 +364,74 @@ static func _validate_skill_effect(
 				"Vérifiez la cible de l’effet ou les cibles autorisées du sort.",
 				node.upgrade_id, &"target_scope", node.rank
 			))
+
+
+## Une valeur non nulle sur une propriete que le type d'effet courant ne
+## consulte jamais est conservee telle quelle dans la Resource (aucune donnee
+## n'est effacee), mais l'auteur doit savoir qu'elle ne produira rien. Cas
+## typique : un effet configure en Statut puis rebascule en Degats garde sa
+## duree et son groupe, qui deviennent inertes.
+static func _validate_ignored_values(
+		node: SkillUpgradeData,
+		modifier: SpellModSkillTreeEffect,
+		messages: Array[SkillTreeValidationMessage]
+	) -> void:
+	var descriptor: SkillEffectEditorDescriptor = (
+		SkillEffectEditorRegistry.new().effect_descriptor(modifier.effect_type)
+	)
+	if descriptor == null:
+		return
+	var editable := {}
+	for field in descriptor.fields:
+		editable[StringName(field.get("property", &""))] = true
+	var ignored := PackedStringArray()
+	for spec in [
+		[&"target_scope", "Cible de l’effet", modifier.target_scope != SpellModSkillTreeEffect.TargetScope.AFFECTED_ENEMIES],
+		[&"duration", "Durée", modifier.duration > 0],
+		[&"status_name", "Nom du statut", not modifier.status_name.strip_edges().is_empty()],
+		[&"status_group", "Groupe stable du statut", modifier.status_group != &""],
+		[&"effect_group", "Groupe d’effet", modifier.effect_group != &""],
+		[&"threshold_ratio", "Seuil de PV", modifier.threshold_ratio > 0.0],
+		[&"ratio", "Part du soin", modifier.ratio > 0.0],
+		[&"secondary_amount", "Quantité secondaire", modifier.secondary_amount != 0],
+		[&"charges", "Charges", modifier.charges > 1],
+		[
+			&"status_mode", "Mode d’empilement du statut",
+			modifier.status_mode != SpellModSkillTreeEffect.StatusMode.BASE,
+		],
+		[
+			&"status_damage_type", "Type de dégâts du statut",
+			modifier.status_damage_type != Spell.DamageType.MAGICAL,
+		],
+		[
+			&"status_element", "Élément du statut",
+			modifier.status_element != Spell.Element.NONE,
+		],
+		[
+			&"status_timing", "Moment d’application du statut",
+			modifier.status_timing != StatusData.PeriodicTiming.TURN_START,
+		],
+		[&"require_backstab", "Exiger une attaque dans le dos", modifier.require_backstab],
+		[&"require_ally_target", "Exiger une cible alliée", modifier.require_ally_target],
+		[
+			&"movement_requires_clear_path", "Exiger un chemin dégagé",
+			modifier.movement_requires_clear_path,
+		],
+	]:
+		if bool(spec[2]) and not editable.has(StringName(spec[0])):
+			ignored.append(str(spec[1]))
+	if ignored.is_empty():
+		return
+	messages.append(_warning(
+		&"effect_value_ignored", "Réglage sans effet pour ce type",
+		"« %s » possède une valeur pour %s, mais le type « %s » ne s’en sert pas. La valeur reste enregistrée et ne sera pas perdue." % [
+			modifier.modifier_name,
+			", ".join(ignored),
+			SkillTreeEffectSummaryService.effect_type_label(modifier.effect_type),
+		],
+		"Remettez ces réglages à zéro, ou choisissez un type d’effet qui les utilise.",
+		node.upgrade_id, &"effect_type", node.rank
+	))
 
 
 static func _validate_shared_modifiers(

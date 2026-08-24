@@ -13,7 +13,7 @@ signal unique_modifier_requested(node: SkillUpgradeData, modifier: SpellModifier
 signal move_modifier_requested(node: SkillUpgradeData, modifier: SpellModifier, offset: int)
 signal inspect_in_godot_requested(resource: Resource)
 
-const TAB_NAMES := ["Général", "Sort", "Effets", "Relations", "Apparence", "Avancé"]
+const TAB_NAMES := ["Général", "Sorts", "Effets", "Relations", "Apparence", "Avancé"]
 
 var title_label: Label
 var help_label: Label
@@ -157,7 +157,7 @@ func _build_discipline(discipline: DisciplineData) -> void:
 	var ranks := discipline.ranks.filter(func(value): return value != null)
 	_add_section(general, "PROGRESSION")
 	_add_info(general, "%d rang(s). Cliquez sur un badge de rang dans le graphe pour modifier son seuil d’XP." % ranks.size())
-	var sort_box := _box("Sort")
+	var sort_box := _box("Sorts")
 	if _spell != null:
 		_add_info(sort_box, "Sort associé : %s" % _spell.spell_name)
 		_add_action_button(sort_box, "Modifier le sort de base", func(): subject_requested.emit(_spell))
@@ -189,7 +189,7 @@ func _build_node(node: SkillUpgradeData) -> void:
 	_add_multiline(general, node, &"description", "Description", "Décrivez précisément le résultat obtenu.")
 	_add_stable_id(general, node, &"upgrade_id", "Identifiant stable")
 	_add_node_rank_selector(general, node)
-	var spell_box := _box("Sort")
+	var spell_box := _box("Sorts")
 	_add_spell_selector(spell_box, node)
 	if _spell != null:
 		_add_action_button(spell_box, "Ouvrir le sort de base", func(): subject_requested.emit(_spell))
@@ -277,7 +277,7 @@ func _build_spell(spell: Spell) -> void:
 	_add_multiline(general, spell, &"description", "Description", "Explique ce que fait le sort sans vocabulaire technique.")
 	_add_stable_id(general, spell, &"spell_id", "Identifiant stable du sort")
 	_add_resource(general, spell, &"skill_tree", "Arbre de progression", "DisciplineData")
-	var sort_box := _box("Sort")
+	var sort_box := _box("Sorts")
 	_add_integer(sort_box, spell, &"ap_cost", "Coût en PA", "Points d’action consommés lors d’un lancement réussi.", 0, 99)
 	_add_integer(sort_box, spell, &"minimum_range", "Portée minimale", "Distance minimale autorisée.", 0, 99)
 	_add_integer(sort_box, spell, &"spell_range", "Portée maximale", "Distance maximale autorisée.", 0, 99)
@@ -361,79 +361,197 @@ func _build_spell(spell: Spell) -> void:
 	_add_storage_info(advanced, spell)
 
 
+## Répare l'ancien crash sur _box("Contrat métier") : cet onglet n'a jamais
+## existé dans TAB_NAMES. Au lieu d'ajouter un septième onglet permanent, la
+## phrase courte et le détail du fonctionnement vivent tous deux dans l'onglet
+## Effets — la phrase toujours visible, le détail dans une section repliable
+## "Comment fonctionne cet effet ?" (voir _add_effect_contract_section).
 func _build_modifier(modifier: SpellModifier) -> void:
 	title_label.text = "EFFET · %s" % modifier.modifier_name.to_upper()
-	help_label.text = "Un modificateur transforme le sort ciblé sans changer son fichier de code. Le résumé ci-dessous décrit le résultat attendu."
+	help_label.text = "Un modificateur transforme le sort ciblé sans changer son fichier de code. La phrase ci-dessous décrit le résultat réel."
 	var general := _box("Général")
 	_add_line(general, modifier, &"modifier_name", "Nom de l’effet", "Nom utilisé dans l’éditeur et les rapports.")
 	_add_stable_id(general, modifier, &"target_spell_id", "Identifiant du sort ciblé")
 	_add_line(general, modifier, &"target_spell_name", "Ancien filtre par nom", "Compatibilité historique : laissez vide lorsque l’identifiant stable est renseigné.")
-	_add_info(_box("Effets"), SkillTreeEffectSummaryService.summarize_modifier(modifier))
-	var descriptor: SkillEffectEditorDescriptor = (
-		SkillEffectEditorRegistry.new().descriptor_for(modifier)
-	)
-	if descriptor != null:
-		var contract := _box("Contrat métier")
-		_add_info(contract, descriptor.sentence(modifier))
-		_add_readonly(contract, "Unité", descriptor.unit, "Unité affichée et validée.")
-		_add_readonly(contract, "Cible", descriptor.target, "Portée métier de l'effet.")
-		_add_readonly(contract, "Condition", descriptor.condition, "Condition de déclenchement.")
-		_add_readonly(contract, "Durée", descriptor.duration, "Durée du résultat.")
-		_add_readonly(contract, "Fréquence", descriptor.frequency, "Moment de résolution.")
-		_add_readonly(contract, "Empilement", descriptor.stacking, "Politique de combinaison.")
+	var effects := _box("Effets")
+	_add_info(effects, SkillTreeEffectSummaryService.summarize_modifier(modifier))
+	var registry := SkillEffectEditorRegistry.new()
+	var descriptor: SkillEffectEditorDescriptor = registry.descriptor_for(modifier)
 	if modifier is SpellModSkillTreeEffect:
-		_build_skill_tree_effect(modifier as SpellModSkillTreeEffect)
+		_build_skill_tree_effect(modifier as SpellModSkillTreeEffect, effects, descriptor)
 	else:
 		if descriptor == null:
 			_add_error_box(general, "Ce type n'a pas encore de descripteur métier ; la sauvegarde 2.0 doit le refuser.")
+		else:
+			_add_effect_contract_section(effects, descriptor)
 		_build_generic_advanced(modifier)
 	_add_storage_info(_box("Avancé"), modifier)
 
 
-func _build_skill_tree_effect(effect: SpellModSkillTreeEffect) -> void:
-	var effects := _box("Effets")
-	var descriptor: SkillEffectEditorDescriptor = (
-		SkillEffectEditorRegistry.new().effect_descriptor(effect.effect_type)
+## Les champs affichés viennent uniquement de descriptor.fields, calculé par
+## SkillEffectEditorRegistry à partir de ce que le runtime consulte réellement
+## (voir skill_effect_editor_registry.gd). L'inspecteur ne maintient plus sa
+## propre liste d'index par EffectType : une seule source de vérité.
+func _build_skill_tree_effect(
+		effect: SpellModSkillTreeEffect,
+		effects: VBoxContainer,
+		descriptor: SkillEffectEditorDescriptor
+	) -> void:
+	_add_effect_type_selector(effects, effect)
+	if descriptor == null:
+		_add_error_box(effects, "Ce type n'a pas encore de descripteur métier ; la sauvegarde 2.0 doit le refuser.")
+		return
+	for field in descriptor.fields:
+		var property_name := StringName(field.get("property", &""))
+		if property_name == &"" or property_name == &"effect_type":
+			continue
+		if _guided and not bool(field.get("guided", false)):
+			continue
+		_render_effect_field(effects, effect, property_name, str(field.get("label", property_name)))
+	_add_effect_contract_section(effects, descriptor)
+
+
+## Les ids des entrées sont les valeurs stables de l'énumération : les
+## séparateurs de familles changent seulement la présentation, jamais les
+## données sérialisées ni la correspondance avec le runtime.
+func _add_effect_type_selector(
+		parent: VBoxContainer, effect: SpellModSkillTreeEffect
+	) -> void:
+	var field := _field(
+		parent,
+		"Type d’effet",
+		"Choisit la transformation appliquée au sort. Les effets sont regroupés par rôle."
 	)
-	if descriptor != null:
-		_add_info(effects, descriptor.sentence(effect))
-	var effect_labels: Array[String] = []
-	for index in range(SpellModSkillTreeEffect.EffectType.size()):
-		effect_labels.append(SkillTreeEffectSummaryService.effect_type_label(index))
-	_add_enum(effects, effect, &"effect_type", "Type d’effet", "Choisit la transformation appliquée au sort.", effect_labels)
-	_add_enum(effects, effect, &"target_scope", "Cible de l’effet", "Précise qui reçoit cette transformation.", ["Ennemi principal", "Allié principal", "Ennemis affectés", "Alliés affectés", "Lanceur"])
-	_add_integer(effects, effect, &"amount", "Quantité principale", "Valeur principale : dégâts, soin, cases, bouclier ou PM.", -99999, 99999)
-	if not _guided or effect.effect_type in [
-		SpellModSkillTreeEffect.EffectType.STATUS_DOT,
-		SpellModSkillTreeEffect.EffectType.STATUS_VULNERABILITY,
-	]:
-		_add_integer(effects, effect, &"secondary_amount", "Quantité secondaire", "Valeur complémentaire utilisée par certains effets.", -99999, 99999)
-	if not _guided or effect.effect_type in [
-		SpellModSkillTreeEffect.EffectType.STATUS_DOT,
-		SpellModSkillTreeEffect.EffectType.STATUS_SLOW,
-		SpellModSkillTreeEffect.EffectType.STATUS_REGEN,
-		SpellModSkillTreeEffect.EffectType.STATUS_OUTGOING_DAMAGE,
-	]:
-		_add_integer(effects, effect, &"duration", "Durée", "Nombre de tours pendant lesquels le statut reste actif.", 0, 99)
-		_add_line(effects, effect, &"status_name", "Nom du statut", "Nom visible du statut appliqué.")
-		_add_stable_id(effects, effect, &"status_group", "Groupe stable du statut")
-	if not _guided or effect.effect_type in [
-		SpellModSkillTreeEffect.EffectType.DAMAGE_LOW_HP,
-		SpellModSkillTreeEffect.EffectType.DAMAGE_BACKSTAB_OR_LOW_HP,
-		SpellModSkillTreeEffect.EffectType.HEAL_LOW_HP,
-	]:
-		_add_percent(effects, effect, &"threshold_ratio", "Seuil de PV", "Exemple : 0,30 signifie moins de 30 % des PV.")
-	if not _guided or effect.effect_type == SpellModSkillTreeEffect.EffectType.ADJACENT_HEAL_RATIO:
-		_add_percent(effects, effect, &"ratio", "Part du soin", "Proportion partagée avec les alliés adjacents.", 2.0)
-	var advanced := _box("Avancé")
-	_add_integer(advanced, effect, &"charges", "Charges", "Nombre de déclenchements possibles.", 1, 99)
-	_add_stable_id(advanced, effect, &"effect_group", "Groupe d’effet")
-	_add_enum(advanced, effect, &"status_mode", "Mode du statut", "BASE crée la valeur, DELTA l’ajoute et OVERRIDE la remplace.", ["BASE", "DELTA", "OVERRIDE"])
-	_add_enum(advanced, effect, &"status_damage_type", "Type de dégâts du statut", "Défense utilisée par les dégâts périodiques.", ["Physiques", "Magiques"])
-	_add_enum(advanced, effect, &"status_element", "Élément du statut", "Élément utilisé par les résistances.", ["Aucun", "Feu", "Glace", "Foudre", "Ombre", "Sacré", "Terre"])
-	_add_enum(advanced, effect, &"status_timing", "Moment d’application", "Moment où l’effet périodique est résolu.", ["Début du tour", "Fin du tour"])
-	_add_bool(advanced, effect, &"require_backstab", "Exiger une attaque dans le dos", "Condition supplémentaire de déclenchement.")
-	_add_bool(advanced, effect, &"require_ally_target", "Exiger une cible alliée", "Condition supplémentaire de déclenchement.")
+	var option := OptionButton.new()
+	option.fit_to_longest_item = false
+	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var families := [
+		["Dégâts", [0, 1, 2, 3, 4, 20, 21]],
+		["Soins", [6, 7, 25]],
+		["Boucliers", [8, 9, 26, 31, 32]],
+		["Déplacement", [10, 11, 18, 19, 27, 29]],
+		["Statuts", [12, 13, 14, 15, 16, 24, 28]],
+		["Terrain", [17, 22, 23]],
+		["Portée et ciblage", [5, 30]],
+	]
+	for family in families:
+		option.add_separator(str(family[0]))
+		for effect_type in family[1]:
+			option.add_item(
+				SkillTreeEffectSummaryService.effect_type_label(int(effect_type)),
+				int(effect_type)
+			)
+	var selected_index := option.get_item_index(effect.effect_type)
+	if selected_index >= 0:
+		option.select(selected_index)
+	field.add_child(option)
+	_add_inline_messages(field, &"effect_type")
+	option.item_selected.connect(func(index: int):
+		var selected_type := option.get_item_id(index)
+		if selected_type < 0:
+			return
+		property_change_requested.emit(
+			effect,
+			&"effect_type",
+			selected_type,
+			"Modifier Type d’effet"
+		)
+	)
+
+
+## Un seul champ par propriété reconnue : ajouter une propriété a
+## SkillEffectEditorRegistry suffit a la rendre editable ici, sans dupliquer
+## sa logique de widget ailleurs.
+func _render_effect_field(
+		parent: VBoxContainer, effect: SpellModSkillTreeEffect,
+		property_name: StringName, label_text: String
+	) -> void:
+	match property_name:
+		&"target_scope":
+			_add_enum(parent, effect, property_name, label_text, "Précise qui reçoit cette transformation.", ["Ennemi principal", "Allié principal", "Ennemis affectés", "Alliés affectés", "Lanceur"])
+		&"amount":
+			_add_integer(parent, effect, property_name, label_text, "Valeur principale : dégâts, soin, cases, bouclier ou PM.", -99999, 99999)
+		&"secondary_amount":
+			_add_integer(parent, effect, property_name, label_text, "Valeur complémentaire utilisée par cet effet précis.", -99999, 99999)
+		&"duration":
+			_add_integer(parent, effect, property_name, label_text, "Nombre de tours pendant lesquels le statut reste actif.", 0, 99)
+		&"charges":
+			_add_integer(parent, effect, property_name, label_text, "Nombre de déclenchements possibles avant épuisement.", 1, 99)
+		&"threshold_ratio":
+			_add_percent(parent, effect, property_name, label_text, "Exemple : 0,30 signifie moins de 30 % des PV.")
+		&"ratio":
+			_add_percent(parent, effect, property_name, label_text, "Proportion partagée avec les alliés adjacents.", 2.0)
+		&"status_name":
+			_add_line(parent, effect, property_name, label_text, "Nom visible du statut ou du bonus appliqué.")
+		&"status_group":
+			_add_stable_id(parent, effect, property_name, label_text)
+		&"effect_group":
+			_add_stable_id(parent, effect, property_name, label_text)
+		&"status_mode":
+			_add_enum(parent, effect, property_name, label_text, "BASE crée la valeur, DELTA l’ajoute et OVERRIDE la remplace.", ["BASE", "DELTA", "OVERRIDE"])
+		&"status_damage_type":
+			_add_enum(parent, effect, property_name, label_text, "Défense utilisée par les dégâts.", ["Physiques", "Magiques"])
+		&"status_element":
+			_add_enum(parent, effect, property_name, label_text, "Élément utilisé par les résistances.", ["Aucun", "Feu", "Glace", "Foudre", "Ombre", "Sacré", "Terre"])
+		&"status_timing":
+			_add_enum(parent, effect, property_name, label_text, "Moment où l’effet périodique est résolu.", ["Début du tour", "Fin du tour"])
+		&"require_backstab", &"require_ally_target":
+			_add_bool(parent, effect, property_name, label_text, "Condition supplémentaire de déclenchement.")
+		&"movement_requires_clear_path":
+			_add_bool(
+				parent,
+				effect,
+				property_name,
+				label_text,
+				"Empêche le déplacement si une case intermédiaire est bloquée ou occupée."
+			)
+
+
+## Remplace l'ancien onglet "Contrat métier" (crash) : section repliable et en
+## lecture seule, dans l'onglet Effets. Cinq informations en mode guidé (qui,
+## quand, durée, empilement, plus la phrase déjà affichée au-dessus pour
+## "quoi") ; deux de plus (unité, condition) en mode avancé.
+func _add_effect_contract_section(
+		parent: VBoxContainer, descriptor: SkillEffectEditorDescriptor
+	) -> void:
+	var lines := PackedStringArray([
+		"Qui est affecté : %s" % descriptor.target,
+		"Quand : %s" % descriptor.frequency,
+		"Durée : %s" % descriptor.duration,
+		"Plusieurs exemplaires : %s" % descriptor.stacking,
+	])
+	if not _guided:
+		lines.append("Unité : %s" % descriptor.unit)
+		lines.append("Condition : %s" % descriptor.condition)
+	_add_collapsible(parent, "Comment fonctionne cet effet ?", lines)
+
+
+func _add_collapsible(
+		parent: VBoxContainer, title: String, lines: PackedStringArray
+	) -> void:
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 3)
+	parent.add_child(box)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 4)
+	content.visible = false
+	var toggle := Button.new()
+	toggle.flat = true
+	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	toggle.text = "▸ %s" % title
+	toggle.tooltip_text = "Déplie une explication en lecture seule du comportement réel."
+	toggle.pressed.connect(func():
+		content.visible = not content.visible
+		toggle.text = "%s %s" % ["▾" if content.visible else "▸", title]
+	)
+	box.add_child(toggle)
+	box.add_child(content)
+	for line in lines:
+		var label := Label.new()
+		label.text = line
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.add_theme_color_override("font_color", Color(0.72, 0.77, 0.84))
+		content.add_child(label)
 
 
 func _build_generic_advanced(resource: Resource) -> void:
@@ -524,6 +642,7 @@ func _add_line(
 	) -> void:
 	var field := _field(parent, label_text, description, example)
 	var edit := LineEdit.new()
+	edit.set_meta(&"studio_property_name", property_name)
 	edit.text = str(target.get(property_name))
 	edit.tooltip_text = description
 	field.add_child(edit)
@@ -537,6 +656,23 @@ func _add_line(
 		original = edit.text
 	edit.text_submitted.connect(func(_text): commit.call())
 	edit.focus_exited.connect(commit)
+
+
+## Place le clavier sur un champ après une création guidée. Le contrôle est
+## retrouvé par son identité métier plutôt que par sa position dans l'arbre UI,
+## afin que les futurs regroupements de l'Inspecteur ne cassent pas ce parcours.
+func focus_property(property_name: StringName, select_all := true) -> bool:
+	for value in find_children("*", "LineEdit", true, false):
+		var edit := value as LineEdit
+		if edit == null or StringName(edit.get_meta(&"studio_property_name", &"")) != property_name:
+			continue
+		if not edit.is_visible_in_tree():
+			continue
+		edit.grab_focus()
+		if select_all:
+			edit.select_all()
+		return true
+	return false
 
 
 func _add_multiline(
@@ -839,9 +975,15 @@ func _add_spell_selector(parent: VBoxContainer, node: SkillUpgradeData) -> void:
 		option.set_item_metadata(option.item_count - 1, spell.get_effective_spell_id())
 		if spell.get_effective_spell_id() == node.target_spell_id:
 			selected = option.item_count - 1
-	option.select(selected)
+	if option.item_count > 0:
+		option.select(selected)
+	else:
+		option.disabled = true
+		option.tooltip_text = "Aucun sort n’est disponible pour ce personnage."
 	field.add_child(option)
 	option.item_selected.connect(func(index: int):
+		if index < 0 or index >= option.item_count:
+			return
 		property_change_requested.emit(
 			node, &"target_spell_id", StringName(option.get_item_metadata(index)),
 			"Changer le sort ciblé"

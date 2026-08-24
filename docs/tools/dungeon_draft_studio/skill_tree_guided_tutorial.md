@@ -28,7 +28,8 @@ Chaque page propose **Montrer dans le Studio**. Le Studio sélectionne l’objet
 - **Salle** appartient à la barre commune, mais n’a actuellement aucun effet sur les compétences.
 - **Portée** affiche le contexte commun ; la sauvegarde des compétences reste attachée au profil run/héros.
 - **Mode guidé** montre aides, exemples et champs essentiels.
-- **Mode avancé** affiche les onglets et contrats techniques supplémentaires. Il ne change aucune donnée à lui seul.
+- **Mode avancé** affiche aussi les réglages techniques utiles au type choisi. Il ne change aucune donnée à lui seul.
+- **Comment fonctionne cet effet ?** explique en lecture seule qui est affecté, quand, pendant combien de temps et comment plusieurs exemplaires se combinent.
 - **Annuler/Rétablir** utilisent l’historique local de la copie de travail.
 - **Ctrl+F** ouvre la recherche globale.
 - **Ctrl+S** ouvre la même revue détaillée que le bouton Sauvegarder.
@@ -87,7 +88,7 @@ Une discipline est un chemin de progression lié à un sort racine.
 
 **+ Rang** ajoute un rang après le dernier. **− Dernier rang** annonce les nœuds qui seront retirés. **Preset** applique 0/5/12/21/30. **Répartir l’XP** espace les seuils jusqu’à la valeur du dernier rang.
 
-Le **Contrat actuel**, visible en mode avancé, vérifie facultativement cinq rangs, la topologie 0/2/4/8/4 et seize configurations finales. Une autre topologie reste autorisée et produit des avertissements, pas une modification automatique.
+**Vérifier le modèle 5 rangs**, visible en mode avancé, contrôle facultativement cinq rangs, la topologie 0/2/4/8/4 et seize configurations finales. Une autre topologie reste autorisée et produit des avertissements, pas une modification automatique.
 
 ## 4 · Graphe et améliorations
 
@@ -236,12 +237,14 @@ La liste d’effets permet **Ajouter**, **Partager un effet existant**, **Copier
 27. **Bouclier aux alliés de la zone** — protège tous les alliés dans les cellules résolues.
 28. **PM aux alliés de la zone** — modifie les PM du prochain tour des alliés de la zone.
 29. **Bonus d’attaque** — quantité fixe pour un nombre d’attaques défini par Charges.
-30. **Déplacement du lanceur** — déplace sur la case ciblée ou près de l’unité ; destination libre et alignement sont obligatoires.
+30. **Déplacement du lanceur** — déplace sur la case ciblée ou près de l’unité ; destination libre et alignement sont obligatoires. Le mode avancé peut aussi exiger que toutes les cases intermédiaires soient dégagées.
 31. **Ciblage d’une case libre** — permission booléenne, sans usage de la quantité.
 32. **Bouclier adjacent** — protège les alliés cardinaux autour de la cible, ou du lanceur sans cible.
 33. **Bouclier au lanceur** — protège directement le lanceur après la résolution des dégâts.
 
-Les treize classes historiques reconnues couvrent terrain, portée, PM, soin, poussée exacte, dégâts à portée minimale, collision, dégâts centraux ou de dos, statut, cible alignée, bouclier et poussée. Leur **Contrat métier** expose en lecture l’unité, la cible, la condition, la durée, la fréquence et l’empilement ; leurs valeurs primitives éditables apparaissent en mode avancé.
+Les treize classes historiques reconnues couvrent terrain, portée, PM, soin, poussée exacte, dégâts à portée minimale, collision, dégâts centraux ou de dos, statut, cible alignée, bouclier et poussée. Leur section **Comment fonctionne cet effet ?** expose en lecture l’unité, la cible, la condition, la durée, la fréquence et l’empilement ; leurs valeurs primitives éditables apparaissent en mode avancé.
+
+Le sélecteur regroupe les 33 effets par familles. L’Inspecteur n’affiche que les propriétés réellement utilisées par le type choisi. Une ancienne valeur masquée reste stockée sans être effacée et produit un avertissement lorsqu’elle est devenue sans effet.
 
 ## 7 · Vérifier, tester et comparer
 
@@ -249,9 +252,10 @@ Les treize classes historiques reconnues couvrent terrain, portée, PM, soin, po
 - L’onglet **Erreurs** explique le problème et la correction. Activer une ligne sélectionne son propriétaire logique.
 - **Simuler** applique les règles réelles à un total d’XP et explique les verrouillages de choix.
 - **Statistiques** compte rangs, choix, relations et configurations ; **Tester tous les chemins** rejoue jusqu’à 1 000 configurations.
-- **Prévisualiser** compare le sort avant/après avec le vrai pipeline dans neuf scénarios déterministes, sans écriture.
-- **Analyse complète** recherche chemins, nœuds inaccessibles, rangs morts, dominance et choix finaux.
-- **Comparer runs** ouvre un sélecteur explicite de run de référence, sans changer le contexte.
+- **Outils > Prévisualiser le sort** compare le sort avant/après avec le vrai pipeline dans neuf scénarios déterministes, sans écriture.
+- **Outils > Analyse complète de l’arbre** recherche chemins, nœuds inaccessibles, rangs morts, dominance et choix finaux.
+- **Outils > Comparer deux parties** ouvre un sélecteur explicite de partie de référence, sans changer le contexte.
+- **Outils > Vérifier les Resources orphelines** ouvre les actions de rattachement, archivage ou suppression protégée.
 - **Recherche globale** trouve noms, identifiants, descriptions et résumés d’effets puis ouvre directement le bon objet.
 
 ## 8 · Sauvegarde sûre

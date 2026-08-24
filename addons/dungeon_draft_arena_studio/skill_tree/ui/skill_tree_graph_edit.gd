@@ -205,7 +205,7 @@ func _add_upgrade_node(
 	var view := GraphNode.new()
 	view.name = graph_name
 	view.title = "RANG %d · %d XP" % [node.rank, required_xp]
-	view.custom_minimum_size = Vector2(282, 152)
+	view.custom_minimum_size = Vector2(282, 128)
 	var saved_position: Variant = _saved_positions.get(str(node.upgrade_id))
 	view.position_offset = saved_position as Vector2 \
 		if saved_position is Vector2 else _automatic_position(node.rank, row)
@@ -222,11 +222,11 @@ func _add_upgrade_node(
 	title.clip_text = true
 	view.add_child(title)
 	var summary := Label.new()
-	summary.text = SkillTreeEffectSummaryService.summarize_node(node)
-	summary.tooltip_text = summary.text
+	summary.text = SkillTreeEffectSummaryService.summarize_node_compact(node)
+	summary.tooltip_text = SkillTreeEffectSummaryService.summarize_node(node)
 	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	summary.custom_minimum_size = Vector2(228, 48)
-	summary.max_lines_visible = 3
+	summary.custom_minimum_size = Vector2(228, 36)
+	summary.max_lines_visible = 2
 	summary.add_theme_color_override("font_color", Color(0.78, 0.82, 0.88))
 	view.add_child(summary)
 	if node is SkillTreeNodeData and not node.excluded_node_ids.is_empty():

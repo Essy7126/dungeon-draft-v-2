@@ -10,7 +10,7 @@ var fields: Array[Dictionary] = []
 var unit := "sans unité"
 var target := "selon le sort"
 var condition := "toujours"
-var duration := "instantane"
+var duration := "instantané"
 var frequency := "une fois par résolution"
 var stacking := "cumul additif"
 
@@ -22,6 +22,17 @@ func sentence(modifier: SpellModifier = null) -> String:
 	return "%s%s sur %s ; condition : %s ; durée : %s ; fréquence : %s ; empilement : %s." % [
 		display_name, amount_text, target, condition, duration, frequency, stacking,
 	]
+
+
+## Phrase courte destinée aux endroits où la place manque : nœud du graphe,
+## résumé d'une amélioration, tooltip. La version complète reste disponible
+## dans « Comment fonctionne cet effet ? », qui détaille les six informations
+## séparément plutôt que de les empiler dans une seule ligne illisible.
+func short_sentence(modifier: SpellModifier = null) -> String:
+	var amount_text := ""
+	if modifier != null and _has_property(modifier, &"amount"):
+		amount_text = " %s %s" % [modifier.get(&"amount"), unit]
+	return "%s%s sur %s." % [display_name, amount_text, target]
 
 
 func validate(modifier: SpellModifier) -> PackedStringArray:

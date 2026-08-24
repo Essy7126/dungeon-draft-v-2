@@ -17,6 +17,9 @@ static func compare(
 	var differences: Array[Dictionary] = []
 	_compare_map("sort", left_snapshot.spells, right_snapshot.spells, differences)
 	_compare_map("discipline", left_snapshot.disciplines, right_snapshot.disciplines, differences)
+	_compare_discipline_details(
+		left_snapshot.disciplines, right_snapshot.disciplines, differences
+	)
 	return {
 		"ok": true,
 		"character_id": character_id,
@@ -53,6 +56,106 @@ static func format_report(report: Dictionary) -> String:
 				difference.get("change", "modifie"),
 			])
 	return "\n".join(lines)
+
+
+## Une discipline dont l'empreinte diffère produisait une seule ligne
+## « discipline X : modifie », sans dire quel rang ni quel nœud avait changé.
+## On descend donc d'un cran pour nommer le rang, le nœud et son nombre
+## d'effets, comme le promet la documentation d'authoring run-aware.
+static func _compare_discipline_details(
+		left: Dictionary,
+		right: Dictionary,
+		differences: Array[Dictionary]
+	) -> void:
+	for discipline_id in left:
+		if not right.has(discipline_id):
+			continue
+		var left_ranks := _ranks_by_number((left[discipline_id] as Dictionary).get("ranks", []))
+		var right_ranks := _ranks_by_number((right[discipline_id] as Dictionary).get("ranks", []))
+		var rank_numbers := {}
+		for number in left_ranks:
+			rank_numbers[number] = true
+		for number in right_ranks:
+			rank_numbers[number] = true
+		for number in rank_numbers:
+			if not left_ranks.has(number):
+				differences.append({
+					"kind": "rang", "id": "%s R%d" % [discipline_id, number],
+					"change": "ajoute a droite",
+				})
+				continue
+			if not right_ranks.has(number):
+				differences.append({
+					"kind": "rang", "id": "%s R%d" % [discipline_id, number],
+					"change": "absent a droite",
+				})
+				continue
+			var left_rank := left_ranks[number] as Dictionary
+			var right_rank := right_ranks[number] as Dictionary
+			if int(left_rank.get("xp", 0)) != int(right_rank.get("xp", 0)):
+				differences.append({
+					"kind": "seuil d'XP", "id": "%s R%d" % [discipline_id, number],
+					"change": "%d a gauche, %d a droite" % [
+						int(left_rank.get("xp", 0)), int(right_rank.get("xp", 0)),
+					],
+				})
+			_compare_nodes(
+				str(discipline_id), int(number),
+				_nodes_by_id(left_rank.get("nodes", [])),
+				_nodes_by_id(right_rank.get("nodes", [])),
+				differences
+			)
+
+
+static func _compare_nodes(
+		discipline_id: String,
+		rank_number: int,
+		left: Dictionary,
+		right: Dictionary,
+		differences: Array[Dictionary]
+	) -> void:
+	var node_ids := {}
+	for node_id in left:
+		node_ids[node_id] = true
+	for node_id in right:
+		node_ids[node_id] = true
+	for node_id in node_ids:
+		var label := "%s R%d %s" % [discipline_id, rank_number, node_id]
+		if not left.has(node_id):
+			differences.append({"kind": "noeud", "id": label, "change": "ajoute a droite"})
+		elif not right.has(node_id):
+			differences.append({"kind": "noeud", "id": label, "change": "absent a droite"})
+		else:
+			var left_node := left[node_id] as Dictionary
+			var right_node := right[node_id] as Dictionary
+			var left_effects := int(left_node.get("effects", 0))
+			var right_effects := int(right_node.get("effects", 0))
+			if left_effects != right_effects:
+				differences.append({
+					"kind": "effets", "id": label,
+					"change": "%d a gauche, %d a droite" % [left_effects, right_effects],
+				})
+			elif str(left_node.get("fingerprint", "")) != str(right_node.get("fingerprint", "")):
+				differences.append({
+					"kind": "noeud", "id": label,
+					"change": "reglages differents a effectif d'effets egal",
+				})
+
+
+static func _ranks_by_number(ranks: Array) -> Dictionary:
+	var result := {}
+	for rank_value in ranks:
+		var rank_data := rank_value as Dictionary
+		result[int(rank_data.get("rank", 0))] = rank_data
+	return result
+
+
+static func _nodes_by_id(nodes: Array) -> Dictionary:
+	var result := {}
+	for node_value in nodes:
+		var node_data := node_value as Dictionary
+		result[str(node_data.get("id", ""))] = node_data
+	return result
 
 
 static func _profile_snapshot(profile: CharacterProgressionProfile) -> Dictionary:

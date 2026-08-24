@@ -4,15 +4,15 @@ extends Control
 
 signal close_confirmed
 
-const GUIDE_STEPS := [
-	"1 Personnage", "2 Caractéristiques", "3 Discipline", "4 Sort de base",
-	"5 Rangs et XP", "6 Améliorations", "7 Branches", "8 Effets",
-	"9 Tester", "10 Sauvegarder",
-]
 # Replié, on pousse la poignée au maximum vers le bas : le tiroir retombe sur
 # la hauteur de sa seule barre.
 const COLLAPSED_SPLIT_OFFSET := 100000
 const DEFAULT_ANALYSIS_SPLIT_OFFSET := -80
+const TOOL_PREVIEW := 0
+const TOOL_ANALYSIS := 1
+const TOOL_COMPARE := 2
+const TOOL_GLOBAL_UNIT := 3
+const TOOL_ORPHANS := 4
 const SCREEN_CHARACTER: StringName = &"character"
 const SCREEN_SKILLS: StringName = &"skills"
 const SCREEN_ANIMATIONS: StringName = &"animations"
@@ -37,13 +37,9 @@ var undo_button: Button
 var redo_button: Button
 var save_button: Button
 var search_button: Button
-var compare_button: Button
-var global_unit_button: Button
 var validate_button: Button
 var test_button: Button
-var preview_button: Button
-var analysis_button: Button
-var orphan_button: Button
+var tools_menu_button: MenuButton
 var tour_menu_button: MenuButton
 var toolbar_panel: PanelContainer
 var guide_panel: PanelContainer
@@ -225,6 +221,9 @@ func _build_ui() -> void:
 	context_bar = StudioContextBar.new()
 	context_bar.setup(project_context, shared_reference_graph)
 	root.add_child(context_bar)
+	context_bar.mark_room_unused(
+		"Non utilisée dans cet espace : les compétences sont attachées au personnage, pas à une salle."
+	)
 	root.add_child(_build_toolbar())
 	root.add_child(_build_screen_bar())
 	root.add_child(_build_guide_bar())
@@ -374,20 +373,14 @@ func _build_toolbar() -> Control:
 	document_label.custom_minimum_size.x = 150
 	document_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	identity.add_child(document_label)
+	# Barre allegee : seules les actions du parcours nominal restent visibles.
+	# Les outils occasionnels passent dans le menu Outils, et Orphelins rejoint
+	# le groupe Sauvegarde avec un badge qui n'apparait qu'en cas de besoin.
 	undo_button = _button(bar, "Annuler", "Annuler la dernière modification", _undo)
 	redo_button = _button(bar, "Rétablir", "Rétablir la modification annulée", _redo)
 	search_button = _button(bar, "Rechercher", "Recherche globale (Ctrl+F)", func():
 		search_dialog.set_catalog(heroes)
 		search_dialog.open_and_focus()
-	)
-	compare_button = _button(
-		bar, "Comparer parties", "Choisir explicitement la partie à comparer",
-		_compare_with_other_run
-	)
-	global_unit_button = _button(
-		bar, "Ouvrir la fiche générale",
-		"Ouvre volontairement la fiche commune du personnage, sans progression de partie.",
-		_open_current_global_unit
 	)
 	validate_button = _button(
 		bar, "Valider", "Expliquer les problèmes sans modifier les données", _validate
@@ -395,19 +388,32 @@ func _build_toolbar() -> Control:
 	test_button = _button(
 		bar, "Tester", "Ouvrir le simulateur de progression", _test
 	)
-	preview_button = _button(
-		bar, "Prévisualiser", "Comparer le sort via la sandbox runtime réelle",
-		_preview_runtime
-	)
-	analysis_button = _button(
-		bar, "Analyse complète", "Énumérer les chemins et lancer les lints de conception",
-		_run_full_analysis
-	)
-	orphan_button = _button(
-		bar, "Orphelins", "Lister et gérer les Resources devenues inaccessibles",
-		_show_orphans
-	)
+	tools_menu_button = MenuButton.new()
+	tools_menu_button.text = "Outils"
+	tools_menu_button.tooltip_text = "Prévisualiser, analyser, comparer et ouvrir la fiche générale."
+	var tools_menu := tools_menu_button.get_popup()
+	tools_menu.add_item("Prévisualiser le sort", TOOL_PREVIEW)
+	tools_menu.add_item("Analyse complète de l’arbre", TOOL_ANALYSIS)
+	tools_menu.add_separator()
+	tools_menu.add_item("Comparer deux parties…", TOOL_COMPARE)
+	tools_menu.add_item("Ouvrir la fiche générale du personnage", TOOL_GLOBAL_UNIT)
+	tools_menu.add_separator()
+	tools_menu.add_item("Vérifier les Resources orphelines", TOOL_ORPHANS)
+	tools_menu.id_pressed.connect(_on_tools_menu_selected)
+	bar.add_child(tools_menu_button)
 	save_button = _button(bar, "Sauvegarder", "Revoir le plan, puis appliquer la transaction", _request_save_review)
+	# Action principale : mise en avant explicite plutot qu'un bouton de plus
+	# aligne avec les autres.
+	save_button.add_theme_color_override("font_color", Color(0.1, 0.12, 0.14))
+	save_button.add_theme_color_override("font_hover_color", Color(0.05, 0.06, 0.08))
+	var save_style := StyleBoxFlat.new()
+	save_style.bg_color = Color(0.42, 0.82, 1.0)
+	save_style.set_corner_radius_all(4)
+	save_style.set_content_margin_all(6)
+	save_button.add_theme_stylebox_override("normal", save_style)
+	var save_hover := save_style.duplicate() as StyleBoxFlat
+	save_hover.bg_color = Color(0.56, 0.88, 1.0)
+	save_button.add_theme_stylebox_override("hover", save_hover)
 	guided_toggle = CheckButton.new()
 	guided_toggle.text = "Mode guidé"
 	guided_toggle.button_pressed = guided
@@ -415,10 +421,10 @@ func _build_toolbar() -> Control:
 	guided_toggle.toggled.connect(_set_guided)
 	bar.add_child(guided_toggle)
 	production_toggle = CheckButton.new()
-	production_toggle.text = "Contrat actuel"
+	production_toggle.text = "Vérifier le modèle 5 rangs"
 	production_toggle.button_pressed = production_profile
 	production_toggle.visible = not guided
-	production_toggle.tooltip_text = "Vérifie facultativement le preset 0/2/4/8/4 et les seize chemins."
+	production_toggle.tooltip_text = "Contrôle facultatif : cinq rangs, 0/2/4/8/4 choix et seize chemins finaux. Une autre forme d’arbre reste autorisée."
 	production_toggle.toggled.connect(func(value):
 		production_profile = value
 		_refresh_document()
@@ -498,20 +504,23 @@ func _show_screen(screen: StringName) -> void:
 		skills_screen.visible = on_skills
 	if animation_screen != null:
 		animation_screen.visible = on_animations
+	# La barre ne porte plus que la reprise de l'exercice sandbox : hors exercice
+	# elle n'aurait rien à montrer.
 	if guide_panel != null:
-		guide_panel.visible = on_skills
+		guide_panel.visible = on_skills and _tutorial_sandbox_is_active()
 	# Le tiroir ne parle que des compétences : il disparaît ailleurs plutôt que
 	# d'occuper une ligne pour rien.
 	if analysis_drawer != null:
 		analysis_drawer.visible = on_skills
 	for button in [
-		search_button, compare_button, validate_button, test_button,
-		preview_button, analysis_button, orphan_button,
+		search_button, validate_button, test_button,
 	]:
 		if button != null:
 			button.visible = on_skills
-	if global_unit_button != null:
-		global_unit_button.visible = has_document
+	# Le menu Outils reste accessible dès qu'un personnage est ouvert : il porte
+	# aussi « Ouvrir la fiche générale », qui n'appartient pas aux compétences.
+	if tools_menu_button != null:
+		tools_menu_button.visible = has_document
 	if production_toggle != null:
 		production_toggle.visible = on_skills and not guided
 	if animation_screen != null and not on_animations:
@@ -521,6 +530,7 @@ func _show_screen(screen: StringName) -> void:
 		_refresh_animation_screen()
 	elif on_character:
 		_refresh_character_screen()
+	_refresh_tools_menu()
 
 
 ## Les écrans de travail restent inaccessibles tant qu'aucun personnage n'est
@@ -705,13 +715,6 @@ func _build_guide_bar() -> Control:
 	var steps := HFlowContainer.new()
 	steps.add_theme_constant_override("h_separation", 4)
 	box.add_child(steps)
-	for index in range(GUIDE_STEPS.size()):
-		var step := Button.new()
-		step.text = GUIDE_STEPS[index]
-		step.flat = true
-		step.tooltip_text = _step_help(index)
-		step.pressed.connect(_activate_step.bind(index))
-		steps.add_child(step)
 	sandbox_reset_button = Button.new()
 	sandbox_reset_button.text = "↺ Réinitialiser l’exercice"
 	sandbox_reset_button.tooltip_text = (
@@ -1061,13 +1064,13 @@ func _tour_control(target: StringName) -> Control:
 				&"bottom_preview", &"bottom_analysis":
 			return bottom
 		&"compare_runs":
-			return compare_button
+			return tools_menu_button
 		&"search":
 			return search_button
 		&"save":
 			return save_button
 		&"orphans":
-			return orphan_button
+			return tools_menu_button
 		&"sandbox":
 			return tour_menu_button
 		_:
@@ -1616,6 +1619,7 @@ func _show_child_node_dialog(parent: SkillUpgradeData, rank: int) -> void:
 
 
 func _create_node() -> void:
+	var used_temporary_name := node_name_edit.text.strip_edges().is_empty()
 	var node := session.add_node(
 		int(node_rank_spin.value), node_name_edit.text, _pending_parent_node
 	)
@@ -1623,6 +1627,15 @@ func _create_node() -> void:
 		_show_status("Création impossible", "Le rang choisi n’existe pas ou le document n’est pas prêt.")
 	_pending_parent_node = null
 	node_dialog.dialog_text = ""
+	if node != null and used_temporary_name:
+		call_deferred("_focus_temporary_node_name")
+
+
+func _focus_temporary_node_name() -> void:
+	if inspector == null or not (session.selected_subject is SkillUpgradeData):
+		return
+	inspector.tabs.current_tab = SkillTreeInspectorPanel.TAB_NAMES.find("Général")
+	inspector.focus_property(&"display_name")
 
 
 func _show_branch_dialog(rank: int) -> void:
@@ -1763,14 +1776,96 @@ func _refresh_document() -> void:
 			})
 	if sandbox_reset_button != null:
 		sandbox_reset_button.visible = _tutorial_sandbox_is_active()
-	if global_unit_button != null:
-		global_unit_button.visible = session.working_unit != null
-		global_unit_button.disabled = session.working_unit == null \
-			or not session.is_profile_authoritative()
+	if guide_panel != null:
+		guide_panel.visible = current_screen == SCREEN_SKILLS \
+			and _tutorial_sandbox_is_active()
+	_refresh_tools_menu()
+	_refresh_orphan_badge()
 	_update_screen_buttons()
 	_refresh_animation_screen()
 	_refresh_character_screen()
 	_loading = false
+
+
+func _on_tools_menu_selected(item_id: int) -> void:
+	match item_id:
+		TOOL_PREVIEW:
+			_preview_runtime()
+		TOOL_ANALYSIS:
+			_run_full_analysis()
+		TOOL_COMPARE:
+			_compare_with_other_run()
+		TOOL_GLOBAL_UNIT:
+			_open_current_global_unit()
+		TOOL_ORPHANS:
+			_show_orphans()
+
+
+## Une entree grisee explique pourquoi elle l'est : l'action reste visible et
+## reperable, elle n'est pas retiree du menu selon le contexte.
+func _refresh_tools_menu() -> void:
+	if tools_menu_button == null:
+		return
+	# La visibilité doit être réappliquée ici : _show_screen s'exécute avant que
+	# le premier personnage soit chargé, quand has_document est encore faux.
+	tools_menu_button.visible = session.working_unit != null
+	var menu := tools_menu_button.get_popup()
+	var on_skills := current_screen == SCREEN_SKILLS
+	for spec in [
+		[TOOL_PREVIEW, on_skills, "Ouvrez l’arbre d’un sort pour le prévisualiser."],
+		[TOOL_ANALYSIS, on_skills, "Ouvrez l’arbre d’un sort pour l’analyser."],
+		[TOOL_COMPARE, on_skills, "Ouvrez l’arbre d’un sort pour comparer deux parties."],
+		[
+			TOOL_GLOBAL_UNIT,
+			session.working_unit != null and session.is_profile_authoritative(),
+			"Disponible seulement quand la fiche ouverte vient d’une partie.",
+		],
+		[TOOL_ORPHANS, on_skills, "Ouvrez l’arbre d’un sort pour vérifier ses Resources."],
+	]:
+		var index := menu.get_item_index(int(spec[0]))
+		if index < 0:
+			continue
+		menu.set_item_disabled(index, not bool(spec[1]))
+		menu.set_item_tooltip(index, "" if bool(spec[1]) else str(spec[2]))
+
+
+## Le bouton Orphelins ne s'annonce que lorsqu'une Resource est reellement
+## devenue inaccessible : sinon il reste discret et ne reclame pas l'attention.
+func _refresh_orphan_badge() -> void:
+	if tools_menu_button == null:
+		return
+	var count := _orphan_count()
+	var menu := tools_menu_button.get_popup()
+	var item_index := menu.get_item_index(TOOL_ORPHANS)
+	if item_index < 0:
+		return
+	menu.set_item_text(
+		item_index,
+		"Gérer les Resources orphelines (%d)" % count
+		if count > 0 else "Vérifier les Resources orphelines"
+	)
+	menu.set_item_tooltip(item_index, (
+		"%d Resource(s) ne sont plus atteignables depuis ce personnage." % count
+		if count > 0
+		else "Aucune Resource orpheline détectée ; l’outil reste disponible pour vérifier."
+	))
+
+
+func _orphan_count() -> int:
+	if session.working_unit == null:
+		return 0
+	var candidates: Array[Resource] = []
+	for work_value in session.source_to_work.values():
+		var work := work_value as Resource
+		if work != null:
+			candidates.append(work)
+	for resource_value in session.new_resource_paths:
+		var resource := resource_value as Resource
+		if resource != null and not candidates.has(resource):
+			candidates.append(resource)
+	return SkillTreeReferenceIndex.new().build(
+		session.working_unit, candidates
+	).orphaned_resources().size()
 
 
 func _refresh_inspector() -> void:
@@ -2166,6 +2261,8 @@ func _redo() -> void:
 
 func _set_guided(value: bool) -> void:
 	guided = value
+	if guided_toggle != null and guided_toggle.button_pressed != value:
+		guided_toggle.set_pressed_no_signal(value)
 	production_toggle.visible = not guided and current_screen == SCREEN_SKILLS
 	_refresh_inspector()
 	_refresh_catalog()
@@ -2173,52 +2270,6 @@ func _set_guided(value: bool) -> void:
 	_refresh_character_screen()
 	status_label.text = "Mode guidé actif : les explications et exemples sont visibles." \
 		if guided else "Mode avancé actif : tous les paramètres techniques sont accessibles."
-
-
-func _activate_step(index: int) -> void:
-	status_label.text = _step_help(index)
-	match index:
-		0, 1:
-			session.select_subject(session.working_unit)
-		2:
-			session.select_subject(session.current_discipline())
-		3:
-			session.select_subject(session.current_spell())
-		4:
-			var discipline := session.current_discipline()
-			if discipline != null and not discipline.ranks.is_empty():
-				session.select_subject(discipline.ranks[0])
-		5:
-			_show_node_dialog(2)
-		6:
-			graph.grab_focus()
-		7:
-			var node := session.selected_subject as SkillUpgradeData
-			if node != null:
-				if node.spell_modifiers.is_empty():
-					_add_modifier(node)
-				else:
-					session.select_subject(node.spell_modifiers[0])
-		8:
-			_test()
-		9:
-			_request_save_review()
-
-
-func _step_help(index: int) -> String:
-	var descriptions := [
-		"Choisissez le héros dont vous voulez modifier les données.",
-		"Réglez ses PV, PA, PM, initiative, attaque et défenses de base.",
-		"Choisissez ou créez le chemin de progression associé à un sort.",
-		"Vérifiez le sort racine que les améliorations vont transformer.",
-		"Définissez les seuils d’XP cumulés de chaque rang.",
-		"Ajoutez les choix proposés au joueur.",
-		"Reliez les prérequis. Plusieurs liaisons sont toutes obligatoires.",
-		"Décrivez les transformations du sort avec des modificateurs.",
-		"Essayez l’arbre sans modifier la progression réelle.",
-		"Validez puis enregistrez les vraies Resources avec une récupération.",
-	]
-	return descriptions[clampi(index, 0, descriptions.size() - 1)]
 
 
 func _save_graph_state() -> void:

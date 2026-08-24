@@ -6,6 +6,7 @@ var context: StudioProjectContext = null
 var reference_graph: StudioReferenceGraphService = null
 var run_option: OptionButton
 var room_option: OptionButton
+var room_label: Label
 var hero_option: OptionButton
 var scope_option: OptionButton
 var state_label: Label
@@ -22,6 +23,20 @@ func setup(project_context: StudioProjectContext, graph_service: StudioReference
 	reference_graph = graph_service
 
 
+## La barre reste identique dans tout le Studio, mais un domaine peut annoncer
+## qu'un sélecteur ne le concerne pas. La sélection reste possible et partagée :
+## seule sa mise en avant baisse, avec une explication. Utilisé par Skills, où
+## la salle n'a aucun effet sur les compétences.
+func mark_room_unused(explanation: String) -> void:
+	var muted := Color(0.55, 0.59, 0.65)
+	if room_label != null:
+		room_label.add_theme_color_override("font_color", muted)
+		room_label.tooltip_text = explanation
+	if room_option != null:
+		room_option.modulate = Color(1.0, 1.0, 1.0, 0.55)
+		room_option.tooltip_text = explanation
+
+
 func _ready() -> void:
 	custom_minimum_size.y = 86
 	var rows := VBoxContainer.new()
@@ -33,6 +48,7 @@ func _ready() -> void:
 	run_option = _labeled_option(bar, "Partie")
 	run_option.item_selected.connect(_on_run_selected)
 	room_option = _labeled_option(bar, "Salle")
+	room_label = bar.get_child(bar.get_child_count() - 2) as Label
 	room_option.item_selected.connect(_on_room_selected)
 	hero_option = _labeled_option(bar, "Personnage")
 	hero_option.item_selected.connect(_on_hero_selected)
