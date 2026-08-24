@@ -41,7 +41,15 @@ static func sync_runtime_resources(
 		return false
 	if scope == SyncScope.GRID_TRANSFORM and _sync_grid_transform_projection(arena):
 		return true
+	# Migration de donnees d'auteur : elle concerne le document lui-meme et
+	# reste donc valable pour une working copy.
 	ArenaVortexNetworkService.migrate_legacy_pairs(arena)
+	if arena.authoring_document:
+		# Document d'auteur : cette lecture est strictement non mutante. Tous les
+		# champs de projection, y compris le profil visuel et la scene de combat
+		# resolus, vivent sur la copie runtime. Un changement volontaire de mode
+		# visuel appelle resolve_battle_scene() dans sa propre action d'historique.
+		return true
 	var layout := RoomGridLayout.new()
 	layout.layout_id = arena.arena_id
 	layout.debug_name = arena.display_name
@@ -135,6 +143,16 @@ static func _sync_grid_transform_projection(arena: ArenaDefinition) -> bool:
 	visual.calibration_cells = arena.calibration_cells.duplicate()
 	visual.calibration_pixels = arena.calibration_pixels.duplicate()
 	return true
+
+
+## Copie de projection synchronisee. C'est la seule facon supportee de lire
+## grid_layout, painted_map_visual_data ou les zones de depart derivees a
+## partir d'un document d'auteur.
+static func build_runtime_projection(arena: ArenaDefinition) -> ArenaDefinition:
+	var projection := _runtime_projection_copy(arena)
+	if projection == null or not sync_runtime_resources(projection):
+		return null
+	return projection
 
 
 static func build_grid(arena: ArenaDefinition) -> GridData:

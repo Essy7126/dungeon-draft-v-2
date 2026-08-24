@@ -271,10 +271,18 @@ func test_undo_redo_restaure_exactement_un_trait_groupe() -> void:
 
 
 func test_plugin_interface_modes_outils_activation_et_ancien_editeur_conserve() -> void:
+	# Le mode guidé est persistant entre deux sessions : le test repart donc
+	# explicitement des valeurs par défaut avant de l'observer.
+	TerrainStudioUiStateService.clear_cache()
+	TerrainStudioUiStateService.save_state(TerrainStudioUiStateService.default_state())
 	var studio := ArenaStudioMain.new()
 	add_child_autofree(studio)
 	assert_not_null(studio.canvas)
-	assert_eq(studio.mode_option.item_count, 3)
+	# La refonte Terrain remplace le sélecteur Création / Vérification / Avancé
+	# par un unique interrupteur Mode guidé / Mode avancé.
+	assert_true(bool(TerrainStudioUiStateService.default_state().guided))
+	assert_not_null(studio.guided_toggle)
+	assert_true(studio.is_guided())
 	assert_eq(studio.tool_list.item_count, 11)
 	assert_eq(studio.test_configuration_option.item_count, 14)
 	assert_true(studio.get_node_or_null("ArenaStudioMain") == null)

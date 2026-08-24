@@ -524,6 +524,11 @@ func test_forest_volcano_space_transform_roundtrip_and_runtime_projection_parity
 		assert_true(session.commit(
 			"Regression transform", initial, session.working_arena.to_snapshot()
 		))
+		# La working copy metier ne porte plus painted_map_visual_data : la
+		# parite de projection se verifie sur ArenaEditSession.runtime_projection().
+		assert_null(session.working_arena.painted_map_visual_data)
+		var projection := session.runtime_projection()
+		assert_not_null(projection)
 		for y in range(session.working_arena.grid_size.y):
 			for x in range(session.working_arena.grid_size.x):
 				var cell := Vector2i(x, y)
@@ -532,11 +537,11 @@ func test_forest_volcano_space_transform_roundtrip_and_runtime_projection_parity
 					session.working_arena.axis_x, session.working_arena.axis_y
 				)
 				assert_almost_eq(
-					session.working_arena.painted_map_visual_data.cell_to_image(cell),
+					projection.painted_map_visual_data.cell_to_image(cell),
 					expected, Vector2(0.0001, 0.0001)
 				)
 				assert_eq(
-					session.working_arena.painted_map_visual_data.image_to_cell(expected), cell
+					projection.painted_map_visual_data.image_to_cell(expected), cell
 				)
 		var transformed := session.working_arena.to_snapshot()
 		assert_true(session.history.undo())

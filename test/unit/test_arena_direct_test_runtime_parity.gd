@@ -166,5 +166,6 @@ func _hybrid_working_copy() -> ArenaDefinition:
 	arena.modular_visual_profile.hybrid_floor_policy = (
 		ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
 	)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	return arena
+	# La working copy metier ne porte plus les champs derives : le contrat
+	# runtime se lit desormais sur sa projection.
+	return ArenaRuntimeBridge.build_runtime_projection(arena)

@@ -66,6 +66,13 @@ var camp_orientation: int = CampOrientation.HERO_BOTTOM_LEFT
 @export var intentionally_isolated_cells: Array[Vector2i] = []
 @export_multiline var production_notes := ""
 
+## Marque le document d'auteur edite par le Studio. Il n'est ni exporte, ni
+## serialise, ni recopie par restore_snapshot() : une ArenaDefinition chargee
+## depuis le disque, produite ou construite comme projection runtime vaut
+## toujours false. ArenaRuntimeBridge s'en sert pour ne jamais ecrire les
+## champs derives dans la working copy.
+var authoring_document := false
+
 ## Index transitoire de lecture. Il n'est ni exporté ni sérialisé et ne remplace
 ## jamais `cells` comme source de vérité.
 var _cell_index: Dictionary = {}

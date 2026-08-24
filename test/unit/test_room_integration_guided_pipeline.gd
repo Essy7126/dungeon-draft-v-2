@@ -574,7 +574,7 @@ func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
 	await get_tree().process_frame
 	assert_true(shell.detach_button.text.contains("fenêtre"))
 	assert_true(shell.detach_button.tooltip_text.contains("fenêtre"))
-	assert_eq(shell.produce_button.text, "Intégrer à la run")
+	assert_eq(shell.produce_button.text, "Intégrer à la partie")
 	var studio := shell.arena_studio
 	assert_not_null(studio.destination_panel)
 	assert_true(studio.destination_resolve_button.visible)
@@ -635,7 +635,7 @@ func test_destination_panel_tour_and_window_terms_are_unambiguous() -> void:
 		"Pourquoi l'intégration est-elle indisponible ?"
 	) or studio.destination_details_text.text.contains("ARÈNE PRÊTE À INTÉGRER"))
 	assert_true(studio.destination_summary_label.text.contains("gameplay conservé"))
-	assert_true(studio.destination_details_text.text.contains("ArenaDefinition finale"))
+	assert_true(studio.destination_details_text.text.contains("Terrain final"))
 	var targets := PackedStringArray()
 	var all_text := ""
 	for page in ArenaStudioGuidedTour.PAGES:

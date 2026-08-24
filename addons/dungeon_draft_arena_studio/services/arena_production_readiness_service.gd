@@ -98,8 +98,10 @@ static func build(
 	)
 	var current_runtime_result := runtime_result as Dictionary \
 		if runtime_result is Dictionary else {}
+	var runtime_projection := ArenaRuntimeBridge.build_runtime_projection(arena)
 	var expected_battle_scene_path := (
-		arena.battle_scene.resource_path if arena.battle_scene != null else ""
+		runtime_projection.battle_scene.resource_path
+		if runtime_projection != null and runtime_projection.battle_scene != null else ""
 	)
 	var runtime_result_matches := not current_runtime_result.is_empty() \
 		and bool(current_runtime_result.get("ok", false)) \

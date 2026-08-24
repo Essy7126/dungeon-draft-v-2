@@ -26,12 +26,15 @@ func test_tools_use_full_french_names_and_permanent_contract() -> void:
 	assert_true('version="2.0.0"' in FileAccess.get_file_as_string(
 		"res://addons/dungeon_draft_arena_studio/plugin.cfg"
 	))
+	# Vocabulaire de la refonte Terrain : « Sols » et « Points de départ »
+	# remplacent « Terrains » et « Spawns » dans le parcours nominal.
 	assert_eq(ArenaStudioMain.TOOL_LABELS, [
 		"Sélection", "Déplacer la vue", "Ajouter des cases", "Retirer des cases",
-		"Bordure", "Murs et obstacles", "Terrains", "Spawns", "Vérification",
+		"Bordure", "Murs et obstacles", "Sols", "Points de départ", "Vérification",
 		"Transformer la grille", "Ancres",
 	])
 	assert_eq(ArenaStudioMain.TOOL_HELP.size(), ArenaStudioMain.TOOL_LABELS.size())
+	assert_eq(ArenaStudioMain.TOOL_SHORTCUT_KEYS.size(), ArenaStudioMain.TOOL_LABELS.size())
 	for help in ArenaStudioMain.TOOL_HELP:
 		assert_eq((help as Array).size(), 3)
 	var source := FileAccess.get_file_as_string(

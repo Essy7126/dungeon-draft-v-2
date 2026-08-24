@@ -29,10 +29,17 @@ static func prepare_automatically(arena: ArenaDefinition) -> Dictionary:
 	propose_spawns(arena, false)
 	var spawn_proposal_ms := _elapsed_ms(phase_started)
 	phase_started = Time.get_ticks_usec()
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	# Les Resources de production historiques conservent leur contrat synchronise.
+	# Seule une working copy protegee doit passer par une projection separee.
+	var runtime_projection: ArenaDefinition
+	if arena.authoring_document:
+		runtime_projection = ArenaRuntimeBridge.build_runtime_projection(arena)
+	else:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
+		runtime_projection = arena
 	var runtime_sync_ms := _elapsed_ms(phase_started)
 	phase_started = Time.get_ticks_usec()
-	var grid := ArenaRuntimeBridge.build_grid_from_synced_resources(arena)
+	var grid := ArenaRuntimeBridge.build_grid_from_synced_resources(runtime_projection)
 	var grid_build_ms := _elapsed_ms(phase_started)
 	phase_started = Time.get_ticks_usec()
 	var playable := arena.playable_cells()
@@ -48,8 +55,10 @@ static func prepare_automatically(arena: ArenaDefinition) -> Dictionary:
 		"playable": playable.size(),
 		"border": arena.border_cells().size(),
 		"connected": connected,
-		"hero_spawns": arena.hero_spawn_zone.size(),
-		"enemy_spawns": arena.enemy_spawn_zone.size(),
+		"hero_spawns": runtime_projection.hero_spawn_zone.size() \
+			if runtime_projection != null else 0,
+		"enemy_spawns": runtime_projection.enemy_spawn_zone.size() \
+			if runtime_projection != null else 0,
 		"runtime_sync_calls": 1,
 		"grid_data_builds": 1,
 		"runtime_projection_reused_for_grid": true,

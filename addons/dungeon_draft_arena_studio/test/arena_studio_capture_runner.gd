@@ -1,6 +1,6 @@
 extends Control
 
-var _studio: DungeonDraftStudioMain
+var _studio: StudioWorkspace
 var _arena: ArenaStudioMain
 
 
@@ -16,7 +16,9 @@ func _capture() -> void:
 	)
 	get_window().size = requested_size
 	print("ARENA_STUDIO_CAPTURE_START ", requested_size)
-	_studio = DungeonDraftStudioMain.new()
+	# TERRAIN-16 : les captures doivent montrer l'hôte réel du plugin, celui
+	# qui masque la barre interne historique.
+	_studio = StudioWorkspace.new()
 	_studio.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_studio)
 	for _frame in range(8):
@@ -31,10 +33,11 @@ func _capture() -> void:
 	var preview := ArenaLegacyImporter.import_production(map_ids.get(map_name, &"room_01_forest"))
 	ArenaEditingService.apply_safety_border(preview, 1)
 	_arena._set_arena(preview, false, "capture:%s" % map_name)
+	_arena.show_editor()
 	var mode := str(options.get("mode", "creation"))
 	if mode == "verification":
-		_arena.mode_option.select(1)
-		_arena._on_mode_selected(1)
+		_arena.set_guided(true)
+		_arena.set_current_step(TerrainWorkflowService.Step.VERIFY)
 		_arena._select_verification(0)
 		_arena._on_verification_cell_requested(preview.hero_spawn_zone[0])
 		_arena._on_verification_cell_requested(preview.enemy_spawn_zone[0])
@@ -58,8 +61,7 @@ func _capture() -> void:
 			ArenaRuntimeBridge.sync_runtime_resources(_arena.arena)
 			_arena.canvas.queue_redraw()
 	elif mode == "advanced":
-		_arena.mode_option.select(2)
-		_arena._on_mode_selected(2)
+		_arena.set_guided(false)
 	elif mode == "history":
 		var before := _arena.arena.to_snapshot()
 		_arena.arena.grid_origin += Vector2(6, -2)

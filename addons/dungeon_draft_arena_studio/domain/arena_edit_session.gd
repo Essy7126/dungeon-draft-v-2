@@ -13,6 +13,8 @@ var is_new_document := false
 var topology_generation := 0
 var topology_hash := ""
 var history := StudioHistoryController.new()
+var _runtime_projection: ArenaDefinition = null
+var _runtime_projection_fingerprint := ""
 var editor_state := {
 	"pivot_mode": "center",
 	"custom_pivot": [0.0, 0.0],
@@ -45,7 +47,9 @@ func open(
 	if not working_arena.restore_snapshot(source.to_snapshot()):
 		working_arena = null
 		return false
+	working_arena.authoring_document = true
 	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	_invalidate_runtime_projection()
 	topology_generation = 0
 	topology_hash = str(
 		ArenaTopologySignatureService.build(working_arena).topology_hash
@@ -67,9 +71,38 @@ func apply_snapshot(snapshot: Dictionary) -> void:
 	var before_hash := topology_hash
 	if working_arena == null:
 		working_arena = ArenaDefinition.new()
+	working_arena.authoring_document = false
 	working_arena.restore_snapshot(snapshot)
+	working_arena.authoring_document = true
 	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
+	_invalidate_runtime_projection()
 	_update_topology_generation(before_hash)
+
+
+## Projection runtime de la working copy. Elle est reconstruite uniquement
+## quand l'empreinte du document change ; la working copy metier n'est jamais
+## mutee par cette lecture.
+func runtime_projection() -> ArenaDefinition:
+	if working_arena == null:
+		return null
+	var current := current_fingerprint()
+	if _runtime_projection != null and _runtime_projection_fingerprint == current:
+		return _runtime_projection
+	var projection := ArenaRuntimeBridge.build_runtime_projection(working_arena)
+	if projection == null:
+		return null
+	_runtime_projection = projection
+	_runtime_projection_fingerprint = current
+	return projection
+
+
+func runtime_state() -> ArenaRuntimeState:
+	return ArenaRuntimeProjectionService.build(working_arena)
+
+
+func _invalidate_runtime_projection() -> void:
+	_runtime_projection = null
+	_runtime_projection_fingerprint = ""
 
 
 func commit(
@@ -80,6 +113,7 @@ func commit(
 	) -> bool:
 	var recorded := history.record(action_name, before, after, true)
 	if recorded:
+		_invalidate_runtime_projection()
 		if not topology_unchanged:
 			var before_topology := ArenaTopologySignatureService.from_snapshot(before)
 			var after_topology := ArenaTopologySignatureService.from_snapshot(after)
@@ -106,6 +140,9 @@ func mark_saved(path: String) -> void:
 		and path == working_arena.source_visual_path
 	is_new_document = false
 	saved_snapshot = working_arena.to_snapshot().duplicate(true)
+	var saved_source := ArenaDefinition.new()
+	if saved_source.restore_snapshot(saved_snapshot):
+		source_arena = saved_source
 	source_fingerprint = ArenaSerializer.visual_calibration_fingerprint(path) \
 		if source_is_visual else fingerprint(saved_snapshot)
 	history.set_saved_fingerprint(current_fingerprint())

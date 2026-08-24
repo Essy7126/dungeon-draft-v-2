@@ -31,44 +31,113 @@ static func save_canonical(arena: ArenaDefinition, path := "") -> Error:
 	return save_error
 
 
-static func _materialize_staged_visual_assets(arena: ArenaDefinition) -> Error:
-	const STAGING_ROOT := "user://dungeon_draft_studio/backdrop_staging/"
-	var properties := ["background_path", "foreground_path", "occlusion_mask_path"]
-	for property_name in properties:
+const STAGING_ROOT := "user://dungeon_draft_studio/backdrop_staging/"
+const STAGED_VISUAL_PROPERTIES := [
+	"background_path", "foreground_path", "occlusion_mask_path",
+]
+
+
+## Plan de materialisation, sans aucune ecriture ni mutation. Il permet a la
+## transaction de sauvegarde d'annoncer les fichiers crees avant de toucher au
+## disque, et de savoir quoi supprimer en cas de rollback.
+static func plan_staged_visual_assets(arena: ArenaDefinition) -> Dictionary:
+	if arena == null:
+		return {"ok": false, "error": "no_arena", "mapping": {}, "sources": {}}
+	var target_dir := "res://data/arenas/assets/%s" % ArenaDefinition.sanitize_id(
+		str(arena.arena_id)
+	)
+	var mapping := {}
+	var sources := {}
+	for property_name in STAGED_VISUAL_PROPERTIES:
 		var source_path := str(arena.get(property_name))
 		if source_path.is_empty() or not source_path.begins_with("user://"):
 			continue
 		if not source_path.begins_with(STAGING_ROOT):
-			return ERR_INVALID_PARAMETER
+			return {
+				"ok": false, "error": "unowned_user_path",
+				"property": property_name, "mapping": {}, "sources": {},
+			}
 		if not FileAccess.file_exists(source_path):
-			return ERR_FILE_NOT_FOUND
-	var target_dir := "res://data/arenas/assets/%s" % ArenaDefinition.sanitize_id(
-		str(arena.arena_id)
-	)
-	var absolute_dir := ProjectSettings.globalize_path(target_dir)
-	var directory_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
-	if directory_error != OK:
-		return directory_error
-	for property_name in properties:
-		var source_path := str(arena.get(property_name))
-		if not source_path.begins_with(STAGING_ROOT):
-			continue
+			return {
+				"ok": false, "error": "staged_file_missing",
+				"property": property_name, "mapping": {}, "sources": {},
+			}
 		var file_name := source_path.get_file() if property_name == "background_path" \
 			else "%s_%s" % [property_name.trim_suffix("_path"), source_path.get_file()]
-		var target := target_dir.path_join(file_name)
+		mapping[property_name] = target_dir.path_join(file_name)
+		sources[property_name] = source_path
+	return {
+		"ok": true, "error": "", "mapping": mapping, "sources": sources,
+		"directory": target_dir,
+	}
+
+
+## Copie les images mises en attente. `apply` decide si les nouveaux chemins
+## sont reportes sur `arena` : une transaction preferera materialiser sur une
+## copie de publication et ne toucher au document edite qu'apres verification.
+## En cas d'echec en cours de route, les fichiers deja crees sont supprimes :
+## aucun asset partiel ne subsiste.
+static func materialize_staged_visual_assets(
+		arena: ArenaDefinition,
+		apply := true
+	) -> Dictionary:
+	var plan := plan_staged_visual_assets(arena)
+	if not bool(plan.get("ok", false)):
+		return plan.merged({"created": PackedStringArray()}, true)
+	var mapping := plan.mapping as Dictionary
+	var created := PackedStringArray()
+	if mapping.is_empty():
+		return {"ok": true, "error": "", "mapping": mapping, "created": created}
+	var absolute_dir := ProjectSettings.globalize_path(str(plan.directory))
+	var directory_error := DirAccess.make_dir_recursive_absolute(absolute_dir)
+	if directory_error != OK:
+		return {
+			"ok": false, "error": "directory_failed", "code": directory_error,
+			"mapping": mapping, "created": created,
+		}
+	for property_name in mapping:
+		var source_path := str((plan.sources as Dictionary)[property_name])
+		var target := str(mapping[property_name])
+		var existed := FileAccess.file_exists(ProjectSettings.globalize_path(target))
 		var bytes := FileAccess.get_file_as_bytes(source_path)
-		if bytes.is_empty():
-			return FileAccess.get_open_error()
-		var output := FileAccess.open(target, FileAccess.WRITE)
-		if output == null:
-			return FileAccess.get_open_error()
+		var output := FileAccess.open(target, FileAccess.WRITE) if not bytes.is_empty() else null
+		if bytes.is_empty() or output == null:
+			_remove_created(created)
+			return {
+				"ok": false, "error": "copy_failed", "property": property_name,
+				"mapping": mapping, "created": PackedStringArray(),
+			}
 		output.store_buffer(bytes)
 		output.close()
-		arena.set(property_name, target)
-	for property_name in properties:
-		if str(arena.get(property_name)).begins_with("user://"):
-			return ERR_INVALID_PARAMETER
-	return OK
+		if not existed:
+			created.append(target)
+	if apply:
+		for property_name in mapping:
+			arena.set(property_name, str(mapping[property_name]))
+	return {"ok": true, "error": "", "mapping": mapping, "created": created}
+
+
+static func _remove_created(created: PackedStringArray) -> void:
+	for path in created:
+		var absolute := ProjectSettings.globalize_path(str(path))
+		if FileAccess.file_exists(absolute):
+			DirAccess.remove_absolute(absolute)
+
+
+## Compatibilite : ancienne signature retournant un Error. Elle delegue
+## desormais au chemin non partiel ci-dessus.
+static func _materialize_staged_visual_assets(arena: ArenaDefinition) -> Error:
+	var result := materialize_staged_visual_assets(arena, true)
+	if bool(result.get("ok", false)):
+		return OK
+	match str(result.get("error", "")):
+		"staged_file_missing":
+			return ERR_FILE_NOT_FOUND
+		"directory_failed":
+			return int(result.get("code", ERR_CANT_CREATE)) as Error
+		"copy_failed":
+			return ERR_FILE_CANT_WRITE
+	return ERR_INVALID_PARAMETER
 
 
 static func load_canonical(path: String) -> ArenaDefinition:

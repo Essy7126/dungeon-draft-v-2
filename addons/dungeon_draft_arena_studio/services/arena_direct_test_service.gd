@@ -208,8 +208,10 @@ static func matching_runtime_result(
 			or bool(result.get("probe_pending", false)) \
 			or bool(result.get("produced_bundle_loaded", true)):
 		return {}
+	var projection := ArenaRuntimeBridge.build_runtime_projection(arena)
 	var battle_scene_path := (
-		arena.battle_scene.resource_path if arena.battle_scene != null else ""
+		projection.battle_scene.resource_path
+		if projection != null and projection.battle_scene != null else ""
 	)
 	var fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
 	var topology: Dictionary = ArenaTopologySignatureService.build(arena)

@@ -162,3 +162,35 @@ régressions introduites par la migration.
 - `res://data/arenas/produced/room_01_forest/` est un bundle incomplet gelé, non canonique et non utilisable pour Tester.
 - Les 187 fichiers Achilles/VFX/outillage non trackés et 10 suppressions Achilles sont un travail externe à préserver.
 - Deux répétitions globales Windows post-correction responsive ont été instables au niveau du processus (timeout en progression puis sortie native `-1`) sans nouvel échec d’assertion observé. Le dernier global complet conserve exactement les 13 historiques ; les suites UI/visuelles affectées sont vertes séparément.
+
+## Refonte du Studio Terrain — limites du candidat 2026-08-24
+
+- Statut : **WORKTREE_CANDIDATE**. Aucun commit, aucun stage, aucun push.
+- `ArenaRuntimeBridge.sync_runtime_resources()` est désormais strictement non
+  mutante sur la working copy. `grid_layout`, `painted_map_visual_data`, zones
+  de départ, ennemis, `room_name`, `arena_visual_profile` et `battle_scene`
+  sont résolus sur une projection séparée. La politique conserve cependant
+  l'autorité historique de ces champs pour une `RoomData` et pour une
+  `ArenaDefinition` déjà produite. Seule une `ArenaDefinition` explicitement
+  marquée comme document d'auteur traite ces valeurs comme dérivées.
+- La barre historique interne (`ArenaStudioMain.top_bar`) n'apparaît plus que
+  dans un hôte autonome, en mode avancé et au-dessus de 760 px de haut.
+  `StudioWorkspace` la désactive : c'est l'en-tête Terrain qui porte
+  désormais Accueil, Nouveau terrain, Ouvrir et le mode guidé.
+- À 1280 × 720, ouvrir le tiroir inférieur efface temporairement le guidage
+  contextuel : les deux ne tiennent pas ensemble au-dessus du canvas. La
+  préférence de l'utilisateur n'est pas modifiée et le guidage revient à la
+  fermeture du tiroir.
+- Le rail des étapes, la palette contextuelle et l'inspecteur défilent. Une
+  action peut donc se trouver sous la ligne de flottaison de son panneau ;
+  elle reste atteignable au clavier et à la molette. Les captures vérifient
+  qu'aucune action primaire hors zone défilante ne sort de la fenêtre.
+- La visite guidée de 22 pages est conservée comme aide détaillée, accessible
+  depuis le glossaire. Elle n'est plus le parcours nominal et son contenu
+  emploie encore le vocabulaire technique historique.
+- Quelques messages du validateur conservent des accents manquants hérités
+  (« est place sur la bordure »). Ils sont affichés tels quels dans les cartes
+  de validation ; leur correction touche des chaînes assertées par d'autres
+  tests et n'entre pas dans ce chantier.
+- La revue humaine interactive dans Godot reste à faire. Les captures
+  prouvent la lisibilité et l'absence de débordement, pas le confort réel.

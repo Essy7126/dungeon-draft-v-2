@@ -11,6 +11,13 @@ static func to_arena_snapshot(arena: ArenaDefinition) -> Dictionary:
 	var snapshot := RoomIntegrationFieldPolicy.signature(
 		arena, RoomIntegrationFieldPolicy.ARENA_OWNED
 	)
+	# Ces valeurs sont reconstruites depuis les sources canoniques. Une Resource
+	# rechargée peut donc les porter alors que la working copy les laisse nulles ;
+	# elles ne doivent jamais modifier l'identité logique du document d'auteur.
+	for derived_field in [
+		"background_image", "arena_visual_profile", "battle_scene",
+	]:
+		snapshot.erase(derived_field)
 	# The profile is bundle-local payload. Its semantic identity must not change
 	# merely because staging and publication give it different resource paths.
 	if arena != null and arena.modular_visual_profile != null:

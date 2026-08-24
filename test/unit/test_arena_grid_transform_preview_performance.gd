@@ -23,8 +23,9 @@ func test_500_mouse_events_are_coalesced_without_canonical_mutation() -> void:
 	var session: ArenaEditSession = harness.session
 	canvas.set_tool(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
 	var opening := ArenaEditSession.fingerprint(arena.to_snapshot())
-	var opening_layout := arena.grid_layout
-	var opening_visual := arena.painted_map_visual_data
+	# Nouveau contrat : la working copy metier ne porte aucun champ derive.
+	assert_null(arena.grid_layout)
+	assert_null(arena.painted_map_visual_data)
 	var start := canvas._image_native_to_screen(arena.grid_origin)
 	assert_true(canvas._begin_transform_handle(
 		ArenaStudioCanvas.TransformHandle.BODY, start, false, true
@@ -50,9 +51,11 @@ func test_500_mouse_events_are_coalesced_without_canonical_mutation() -> void:
 	var release := ArenaRuntimeBridge.end_instrumentation()
 	assert_eq(int(release.sync_runtime_resources), 1)
 	assert_eq(session.history.get_current_index(), 1)
-	assert_true(arena.grid_layout == opening_layout)
-	assert_true(arena.painted_map_visual_data == opening_visual)
-	assert_eq(arena.painted_map_visual_data.grid_origin, arena.grid_origin)
+	assert_null(arena.grid_layout)
+	assert_null(arena.painted_map_visual_data)
+	var projection := session.runtime_projection()
+	assert_not_null(projection)
+	assert_eq(projection.painted_map_visual_data.grid_origin, arena.grid_origin)
 	assert_lt(canvas._image_native_to_screen(arena.grid_origin).distance_to(last_position), 0.5)
 	assert_false(canvas.is_precision_preview_active())
 

@@ -206,3 +206,56 @@ Le portrait 2D reste une ressource d’interface. Cette décision ne modifie ni
 gameplay, ni statistiques, ni sorts, ni armes, ni theorycraft. La preuve
 d’acceptation actuelle couvre uniquement la vraie salle II ; salles I/III,
 transitions et résultat restent non vérifiés jusqu’à la confirmation humaine.
+
+## TERRAIN_STUDIO_REFONTE_V1 — parcours, contrats et projection
+
+- Date : 2026-08-24
+- Branche observée : `main`
+- HEAD de base observé : `d566b4480e928c16ce6d5dd924d3e4031fca4bb2`
+- Statut : **WORKTREE_CANDIDATE — activation CURRENT différée**
+- Contrat : `docs/tools/dungeon_draft_studio/terrain_studio_refonte_contract.md`
+
+Le domaine Arena devient l'onglet visible **TERRAINS**, sous-titré
+« Construire la zone tactique d'une salle ». Les noms internes
+`ArenaDefinition`, `ArenaStudioMain` et `ArenaEditSession` restent inchangés :
+seul le vocabulaire utilisateur change, sous l'autorité unique de
+`TerrainVocabulary`.
+
+Le domaine expose un seul niveau de divulgation — `Mode guidé` par défaut et
+`Mode avancé` — et un seul sélecteur d'aperçu — `Structure`, `Décor`,
+`Résultat en jeu`. Les presets de disposition, le laboratoire et les transferts
+redeviennent des préférences avancées et ne constituent plus une navigation
+métier concurrente. Le sélecteur `Création / Vérification / Avancé` disparaît.
+
+Le parcours nominal est un rail de sept étapes porté par
+`TerrainWorkflowService`, un service métier sans dépendance à l'interface.
+Le parcours reste libre. La visite de 22 pages devient une aide consultable ;
+le guidage nominal est contextuel, lié à l'étape ouverte et masquable.
+
+Trois contrats de sortie sont désormais distincts et nommés par leur effet :
+`Enregistrer le brouillon` sous `user://`, `Tester` depuis la working copy sans
+écriture canonique, `Intégrer à la partie` par transaction avec résumé
+obligatoire. `UPDATE` reste l'action recommandée et `REPLACE` reste avancée.
+
+La sauvegarde canonique adopte le même contrat transactionnel que la
+production : plan, conflit externe, récupération, copies de secours, écriture,
+relecture sans cache, vérification d'empreinte et rollback complet. Les images
+mises en attente sont matérialisées sur une copie de publication ; le document
+édité ne reçoit leurs chemins qu'après vérification.
+
+`ArenaRuntimeBridge` n'écrit plus `grid_layout`, `painted_map_visual_data`, les
+zones de départ dérivées, les ennemis dérivés ni `room_name` dans
+`ArenaEditSession.working_arena`. Le document d'auteur est marqué par
+`ArenaDefinition.authoring_document`, non sérialisé, et la projection runtime
+est construite à part.
+
+Pour une `ArenaDefinition` marquée `authoring_document`,
+`arena_visual_profile`, `battle_scene` et les ennemis calculés sont des
+projections `DERIVED_RUNTIME`. La synchronisation ne les écrit jamais dans la
+working copy. Pour une `RoomData` historique ou une `ArenaDefinition` déjà
+produite, la classification précédente est conservée afin que `UPDATE`
+continue de préserver la rencontre, les vagues, les récompenses et les champs
+runtime de la salle cible.
+
+Aucune règle de gameplay, valeur d'équilibrage, rencontre, récompense, vague ou
+IA n'est modifiée.

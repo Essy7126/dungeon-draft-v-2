@@ -102,8 +102,9 @@ static func classification_for(
 	) -> StringName:
 	# RoomData historique stocke directement ces projections. ArenaDefinition
 	# possede leurs sources canoniques et les reconstruit via le runtime bridge.
-	if owner is ArenaDefinition and property_name in [
-		&"background_image", &"arena_visual_profile",
+	if owner is ArenaDefinition and (owner as ArenaDefinition).authoring_document \
+			and property_name in [
+		&"background_image", &"arena_visual_profile", &"battle_scene", &"enemies",
 	]:
 		return DERIVED_RUNTIME
 	if _DERIVED_RUNTIME_FIELDS.has(property_name):

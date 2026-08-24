@@ -266,3 +266,66 @@ binding_reverified_after_fix = true
 
 Verdicts : `ACHILLES_3D_ROOM_II_RUNTIME_READY_FOR_OWNER_REVIEW`,
 `LEGACY_2D_BODY_NOT_VISIBLE`, `FALLBACK_NOT_ACTIVE`.
+
+## Studio Terrain — refonte du parcours (WORKTREE_CANDIDATE, 2026-08-24)
+
+- Base locale : `main` à `d566b4480e928c16ce6d5dd924d3e4031fca4bb2`, arbre propre
+  au départ hormis l'audit non suivi.
+- Godot `4.7.stable.official.5b4e0cb0f`, GUT `9.7.1`.
+- Contrat : `docs/tools/dungeon_draft_studio/terrain_studio_refonte_contract.md`.
+- Statut : **WORKTREE_CANDIDATE** — aucun commit, aucun stage, aucun push,
+  aucune activation `CURRENT`.
+
+L'onglet visible s'appelle `TERRAINS`, sous-titré « Construire la zone tactique
+d'une salle ». Le domaine s'ouvre sur un accueil qui expose « Modifier le
+terrain de la salle active », « Créer un nouveau terrain », « Ouvrir un terrain
+existant », l'exercice d'entraînement, le glossaire et les terrains récents.
+Ces entrées vivent dans un en-tête que `StudioWorkspace` ne masque pas : le
+blocage TERRAIN-01 est levé.
+
+Le parcours nominal est un rail de sept étapes — Départ, Forme, Sols, Obstacles
+et départs, Décor, Vérifier, Tester et intégrer — porté par
+`TerrainWorkflowService`, un service métier sans dépendance à l'interface.
+Chaque étape affiche objectif, état (glyphe + mot, jamais la couleur seule),
+éléments manquants et prochaine action. Le parcours reste libre.
+
+Un seul interrupteur `Mode guidé` / `Mode avancé` et un seul sélecteur d'aperçu
+`Structure` / `Décor` / `Résultat en jeu` remplacent les quatre systèmes de
+modes concurrents. Le passage guidé/avancé conserve session, sélection, zoom et
+historique.
+
+Les trois contrats de sortie sont nommés par leur effet : `Enregistrer le
+brouillon` sous `user://`, `Tester` depuis la working copy, `Intégrer à la
+partie` par transaction avec résumé. La sauvegarde canonique adopte le plan, la
+vérification et le rollback complet de la production.
+`ArenaRuntimeBridge` est strictement non mutante sur la working copy, y compris
+pour `arena_visual_profile`, `battle_scene` et les ennemis calculés. La
+préparation automatique lit désormais une projection séparée et restitue les
+bons comptes de connectivité et de départs. Une sauvegarde canonique réussie
+réapplique l'instantané relu avant de marquer la session propre.
+
+### Validation courante
+
+- Contrat de refonte + scénario novice : **34/34 tests, 828 assertions**.
+- Régressions projection, performance, preview, historique et production :
+  **49/49 tests, 2 513 assertions**.
+- Pipeline historique d'intégration, y compris UPDATE, copie sur écriture,
+  rollback et vocabulaire novice : **14/14 tests, 250 assertions**.
+- Dernière observation globale avant les trois correctifs finaux issus de cette
+  passe : **145 scripts, 1 671 tests, 1 620 passants, 44 échecs,
+  7 risky/pending, 66 907/67 122 assertions, 548,2 s**. Cette mesure a servi à
+  découvrir la frontière d'autorité des salles déjà produites ; toutes les
+  suites affectées ont ensuite été rejouées séparément et sont vertes aux
+  totaux ci-dessus. Elle ne constitue donc pas un total global post-correctif.
+- Baseline prise au même HEAD avant toute modification : **143 scripts,
+  1 637 tests, 1 537 passants, 93 échecs, 7 risky/pending,
+  65 689/66 105 assertions, 919,8 s**.
+- Le projet conserve des échecs globaux historiques hors Studio Terrain. La
+  comparaison d'ensemble précédemment annoncée n'est plus utilisée comme
+  preuve après les correctifs finaux ; les preuves de clôture sont les suites
+  ciblées vertes et les captures réelles.
+- Captures réelles depuis le véritable `StudioWorkspace` :
+  14 images dans `artifacts/terrain_studio/screenshots/`, sept vues
+  (accueil, création, édition guidée, validation avec erreurs, tester et
+  intégrer, mode avancé, focus) en 1280 × 720 et 1920 × 1080, inspectées.
+  Aucune action primaire hors écran dans aucune vue.

@@ -52,7 +52,7 @@ func test_game_preview_labels_fixture_fallback_instead_of_silent_enemy() -> void
 	assert_eq(fidelity.fidelity, "QUICK")
 	assert_eq(fidelity.hero_source, "explicit_fixture")
 	assert_string_contains(fidelity.label, "FIXTURES EXPLICITES")
-	assert_true(fidelity.errors.has("Aucune run active."))
+	assert_true(fidelity.errors.has("Aucune partie active."))
 
 
 func test_direct_test_preparation_proves_working_temp_runtime_identity() -> void:
@@ -179,5 +179,6 @@ func _hybrid_working_copy() -> ArenaDefinition:
 	arena.modular_visual_profile.hybrid_floor_policy = (
 		ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
 	)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	return arena
+	# La working copy metier ne porte plus les champs derives : le contrat
+	# runtime se lit desormais sur sa projection.
+	return ArenaRuntimeBridge.build_runtime_projection(arena)

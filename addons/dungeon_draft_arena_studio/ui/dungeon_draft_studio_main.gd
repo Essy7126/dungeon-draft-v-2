@@ -67,7 +67,10 @@ func _ready() -> void:
 	arena_studio.name = "Arenes"
 	arena_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	tabs.add_child(arena_studio)
-	tabs.set_tab_title(tabs.get_tab_count() - 1, "ARÈNES")
+	# Seul le libelle visible change : ArenaDefinition, ArenaStudioMain et les
+	# contrats techniques conservent leurs noms internes.
+	tabs.set_tab_title(tabs.get_tab_count() - 1, TerrainVocabulary.TAB_TITLE)
+	tabs.set_tab_tooltip(tabs.get_tab_count() - 1, TerrainVocabulary.TAB_SUBTITLE)
 
 	encounter_studio = EncounterStudioMain.new()
 	encounter_studio.name = "Rencontres"
@@ -133,12 +136,23 @@ func _build_shared_history_bar() -> Control:
 	history_button.get_popup().id_pressed.connect(_on_history_entry_pressed)
 	history_button.get_popup().about_to_popup.connect(_rebuild_history_menu)
 	bar.add_child(history_button)
-	save_button = _global_button(bar, "Sauver", _global_save, "Sauvegarder le document actif")
-	validate_button = _global_button(bar, "Valider", _global_validate, "Valider le document actif")
-	test_button = _global_button(bar, "Tester", _global_test, "Tester la version en cours")
+	# Contrat explicite : le brouillon reste local, Tester n'écrit rien, et
+	# seule l'intégration rend le document disponible dans une partie.
+	save_button = _global_button(
+		bar, "Enregistrer le brouillon", _global_save,
+		"Garder le travail en cours dans votre dossier personnel. Aucune partie n'est modifiée."
+	)
+	validate_button = _global_button(
+		bar, "Vérifier", _global_validate,
+		"Contrôler le document actif et lister ce qui reste à corriger"
+	)
+	test_button = _global_button(
+		bar, "Tester", _global_test,
+		"Lancer un vrai combat sur la version en cours, sans rien publier"
+	)
 	produce_button = _global_button(
 		bar, "Intégrer à la partie", _global_produce,
-		"Choisir la destination puis produire et intégrer la salle"
+		"Choisir la salle de destination, lire le résumé, puis publier le terrain"
 	)
 	lab_transfer_button = _global_button(
 		bar, "Importer depuis le laboratoire", _global_lab_transfer,
@@ -309,10 +323,23 @@ func _refresh_history_controls() -> void:
 	var arena_active := tabs != null and tabs.current_tab == 0
 	if produce_button != null:
 		produce_button.disabled = not arena_active
+	# Dispositions, laboratoire et transferts sont des preferences avancees :
+	# ils disparaissent du parcours guide au lieu de concurrencer le rail des
+	# etapes du domaine Terrain.
+	var terrain_guided := arena_active and arena_studio != null \
+		and arena_studio.has_method("is_guided") and arena_studio.is_guided()
 	if workspace_preset_option != null:
 		workspace_preset_option.disabled = not arena_active
+		workspace_preset_option.visible = not terrain_guided
+	if lab_menu_button != null:
+		lab_menu_button.visible = not terrain_guided
+	if lab_transfer_button != null:
+		lab_transfer_button.visible = not terrain_guided
 	if preview_view_option != null:
 		preview_view_option.disabled = not arena_active
+		# Le domaine Terrain porte son propre sélecteur Structure / Décor /
+		# Résultat en jeu : un seul sélecteur d'aperçu doit rester visible.
+		preview_view_option.visible = not arena_active
 	if focus_map_button != null:
 		focus_map_button.disabled = not arena_active
 	if lab_transfer_button != null and arena_studio != null:
@@ -482,6 +509,7 @@ func _apply_toolbar_responsive() -> void:
 	undo_button.custom_minimum_size.x = 34 if compact else 0
 	redo_button.custom_minimum_size.x = 34 if compact else 0
 	history_button.text = "Hist. ▾" if compact else "Historique ▾"
+	save_button.text = "Brouillon" if compact else "Enregistrer le brouillon"
 	skill_studio_button.text = "Compét." if compact else "Compétences"
 	lab_transfer_button.text = "Import labo" if compact else lab_transfer_button.text
 	lab_menu_button.text = "Labo" if compact else "Laboratoire ▾"
@@ -495,7 +523,7 @@ func _apply_toolbar_responsive() -> void:
 
 func _global_save() -> void:
 	if tabs.current_tab == 0:
-		arena_studio.save_arena()
+		arena_studio.save_draft()
 	elif tabs.current_tab == 1 and encounter_studio.has_method("_show_save_dialog"):
 		encounter_studio._show_save_dialog()
 	elif tabs.current_tab == 2:

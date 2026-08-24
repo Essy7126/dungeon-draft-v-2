@@ -34,3 +34,11 @@ Il conserve sa barre de document et son transfert vers le Studio, mais partage
 `ArenaDynamicEditingService` et `ArenaInputRouter`. Le transfert ouvre une
 nouvelle working copy vérifiée, puis le Studio entre dans le mode intégré.
 
+
+## Mise à jour — refonte du Studio Terrain (24/08/2026)
+
+La construction dynamique reste le même mode sur le même canvas, la même
+session et le même historique. Elle devient un réglage avancé : son bouton
+n'apparaît plus en mode guidé, où les étapes `Sols` et `Obstacles et départs`
+couvrent le parcours nominal. Le contrat d'interaction et les invariants du
+routeur d'entrées sont inchangés.

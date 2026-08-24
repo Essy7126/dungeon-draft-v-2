@@ -302,9 +302,10 @@ static func _outcome(
 
 
 static func _battle_scene_path(arena: ArenaDefinition) -> String:
-	if arena == null or arena.battle_scene == null:
+	var projection := ArenaRuntimeBridge.build_runtime_projection(arena)
+	if projection == null or projection.battle_scene == null:
 		return ""
-	return arena.battle_scene.resource_path
+	return projection.battle_scene.resource_path
 
 
 static func _append_runtime_contract_errors(report: ArenaRuntimeSceneReport) -> void:

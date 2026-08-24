@@ -35,3 +35,20 @@ seulement les images externes. `Sauvegarder et continuer` change de salle sans
 perte. L'intégration dans une run reste transactionnelle et rechargée pour
 vérification.
 
+
+## Mise à jour — refonte du Studio Terrain (24/08/2026)
+
+Ce guide décrit encore la palette rapide et le bouton `Sauvegarder` de
+l'ancienne interface. Après la refonte :
+
+- la palette rapide est devenue la **palette visuelle des sols** de l'étape
+  `Sols`, avec aperçu de texture, nom français, pictogramme de danger et
+  comportement en infobulle ;
+- `Sauvegarder` est remplacé par trois contrats distincts —
+  **Enregistrer le brouillon**, **Tester**, **Intégrer à la partie** ;
+- `Décor…` et `Vortex…` vivent dans l'étape `Décor` de l'inspecteur ;
+- les simulations de sorts de terrain sont passées en mode avancé.
+
+Le contenu métier ci-dessus (comportement des terrains, réseaux de vortex,
+timing des statuts) reste exact. Le contrat d'interface fait autorité dans
+`terrain_studio_refonte_contract.md`.
