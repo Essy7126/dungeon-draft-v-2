@@ -175,7 +175,11 @@ func get_pixel_size() -> Vector2:
 	return CANVAS_RECT.size
 
 
-func highlight(cells: Array, color: Color) -> void:
+func highlight(
+	cells: Array,
+	color: Color,
+	_marker: StringName = &""
+	) -> void:
 	for cell in cells:
 		if cell is Vector2i and _is_logical_cell(cell):
 			_highlights[cell] = color

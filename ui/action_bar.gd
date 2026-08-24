@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 const TooltipLayer = preload("res://ui/keyword_tooltip_layer.gd")
+const ACTION_SHORTCUT_KEYS := [KEY_1, KEY_2, KEY_3, KEY_4]
 
 signal move_pressed
 signal attack_pressed
@@ -51,13 +52,17 @@ func _build_ui() -> void:
 	_move_btn = Button.new()
 	_move_btn.text = "Deplacer"
 	_move_btn.custom_minimum_size = Vector2(92, 44)
-	_move_btn.tooltip_text = "Les PM servent au deplacement."
+	_move_btn.tooltip_text = "Déplacer (M) — les PM servent au déplacement."
+	_move_btn.shortcut = _shortcut_for_key(KEY_M)
+	_move_btn.shortcut_in_tooltip = true
 	_move_btn.pressed.connect(func() -> void: move_pressed.emit())
 	_hbox.add_child(_move_btn)
 
 	_attack_btn = Button.new()
 	_attack_btn.text = "Attaquer"
 	_attack_btn.custom_minimum_size = Vector2(92, 44)
+	_attack_btn.shortcut = _shortcut_for_key(KEY_A)
+	_attack_btn.shortcut_in_tooltip = true
 	_attack_btn.pressed.connect(func() -> void: attack_pressed.emit())
 	_hbox.add_child(_attack_btn)
 
@@ -69,6 +74,9 @@ func _build_ui() -> void:
 	_end_btn = Button.new()
 	_end_btn.text = "Fin de tour"
 	_end_btn.custom_minimum_size = Vector2(100, 44)
+	_end_btn.tooltip_text = "Terminer le tour (F)."
+	_end_btn.shortcut = _shortcut_for_key(KEY_F)
+	_end_btn.shortcut_in_tooltip = true
 	_end_btn.pressed.connect(func() -> void: end_turn_pressed.emit())
 	_hbox.add_child(_end_btn)
 
@@ -112,8 +120,20 @@ func _add_spell_button(unit, spell) -> void:
 	button.text = "%s\n%s" % [spell.spell_name, _get_spell_action_label(unit, spell)]
 	button.add_theme_font_size_override("font_size", 9 if spell.icon != null else 10)
 	button.pressed.connect(func() -> void: spell_pressed.emit(spell))
+	var shortcut_index := _spell_buttons.size()
+	if shortcut_index < ACTION_SHORTCUT_KEYS.size():
+		button.shortcut = _shortcut_for_key(ACTION_SHORTCUT_KEYS[shortcut_index])
+		button.shortcut_in_tooltip = true
 	_spell_box.add_child(button)
 	_spell_buttons.append(button)
+
+
+func _shortcut_for_key(keycode: Key) -> Shortcut:
+	var shortcut_event := InputEventKey.new()
+	shortcut_event.physical_keycode = keycode
+	var shortcut := Shortcut.new()
+	shortcut.events = [shortcut_event]
+	return shortcut
 
 
 func _get_spell_action_label(unit, spell) -> String:
@@ -201,6 +221,10 @@ func _ap_pips(current: int, max_value: int) -> String:
 func set_player_controls_enabled(enabled: bool) -> void:
 	_player_controls_enabled = enabled
 	_refresh_button_states()
+
+
+func are_player_controls_enabled() -> bool:
+	return _player_controls_enabled
 
 
 func set_active_mode(mode: String, active_spell = null) -> void:

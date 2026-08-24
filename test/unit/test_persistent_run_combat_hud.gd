@@ -12,6 +12,7 @@ class FakeCombatContext:
 	var selection_active := false
 	var cancel_count := 0
 	var external_locks: Dictionary = {}
+	var reduced_motion := false
 
 	func get_active_unit():
 		return active_unit
@@ -27,6 +28,9 @@ class FakeCombatContext:
 
 	func _on_end_turn_pressed() -> void:
 		end_turn_count += 1
+
+	func _on_item_activation_requested(_instance_id: StringName) -> void:
+		pass
 
 	func cancel_active_selection() -> bool:
 		if not selection_active:
@@ -44,10 +48,14 @@ class FakeCombatContext:
 		else:
 			external_locks.erase(source)
 
+	func set_reduced_motion(enabled: bool) -> void:
+		reduced_motion = enabled
+
 	func get_combat_presentation_snapshot() -> Dictionary:
 		return {"phase_name": &"PLAYER_IDLE"}
 
 func after_each() -> void:
+	GameManager.set_reduced_motion_enabled(false)
 	GameManager.cleanup_run_state()
 
 func test_bind_is_idempotent_and_context_replacement_disconnects_old_room() -> void:
@@ -67,6 +75,38 @@ func test_bind_is_idempotent_and_context_replacement_disconnects_old_room() -> v
 	assert_false(hud.end_turn_pressed.is_connected(Callable(first, "_on_end_turn_pressed")))
 	assert_true(hud.end_turn_pressed.is_connected(Callable(second, "_on_end_turn_pressed")))
 
+
+func test_thirty_two_room_rebind_cycles_keep_exactly_one_context_owner() -> void:
+	var run_ui := RUN_UI_SCENE.instantiate() as PersistentRunUI
+	var first := FakeCombatContext.new()
+	var second := FakeCombatContext.new()
+	add_child_autofree(run_ui)
+	add_child_autofree(first)
+	add_child_autofree(second)
+	await get_tree().process_frame
+	var hud = run_ui.combat_hud
+	var contexts := [first, second]
+
+	for index in 32:
+		var current = contexts[index % contexts.size()]
+		var previous = contexts[(index + 1) % contexts.size()]
+		run_ui.bind_combat_context(current)
+		run_ui.bind_combat_context(current)
+		assert_eq(_action_binding_count(hud, current), 5, "cycle %d" % index)
+		assert_eq(_action_binding_count(hud, previous), 0, "cycle %d" % index)
+		var snapshot := run_ui.get_combat_hud_lifecycle_snapshot()
+		assert_true(snapshot["hud_attached"])
+		assert_true(snapshot["contract_valid"])
+		assert_eq(snapshot["bound_context_id"], current.get_instance_id())
+
+	run_ui.unbind_combat_context()
+	assert_eq(_action_binding_count(hud, first), 0)
+	assert_eq(_action_binding_count(hud, second), 0)
+	var final_snapshot := run_ui.get_combat_hud_lifecycle_snapshot()
+	assert_eq(final_snapshot["bound_context_id"], 0)
+	assert_eq(final_snapshot["intent_connection_count"], 0)
+	assert_false(hud.visible)
+
 func test_unbind_clears_context_slots_and_combat_visibility() -> void:
 	var run_ui := RUN_UI_SCENE.instantiate() as PersistentRunUI
 	var context := FakeCombatContext.new()
@@ -80,6 +120,22 @@ func test_unbind_clears_context_slots_and_combat_visibility() -> void:
 	assert_null(hud.get_combat_context())
 	assert_true(hud.get("_spell_buttons").is_empty())
 	assert_false(hud.visible)
+
+
+func test_pause_accessibility_option_propagates_to_persistent_combat_ui() -> void:
+	var run_ui := RUN_UI_SCENE.instantiate() as PersistentRunUI
+	var context := FakeCombatContext.new()
+	add_child_autofree(run_ui)
+	add_child_autofree(context)
+	await get_tree().process_frame
+	run_ui.bind_combat_context(context)
+	var pause := run_ui.get_pause_menu()
+	pause.get_action_button(&"options").pressed.emit()
+	assert_true(GameManager.is_reduced_motion_enabled())
+	assert_true(pause.is_reduced_motion_enabled())
+	assert_true(run_ui.get_combat_hud().is_reduced_motion_enabled())
+	assert_true(run_ui.get_skill_evolution_overlay().reduced_motion)
+	assert_true(context.reduced_motion)
 
 
 func test_ui_cancel_cancels_targeting_before_opening_pause() -> void:
@@ -111,3 +167,17 @@ func test_ui_cancel_cancels_targeting_before_opening_pause() -> void:
 	assert_true(context.external_locks.has(&"run_modal"))
 	run_ui.close_pause_menu()
 	assert_false(context.external_locks.has(&"run_modal"))
+
+
+func _action_binding_count(hud: CanvasLayer, context: Node) -> int:
+	var count := 0
+	for binding in [
+		[&"move_pressed", &"_on_move_pressed"],
+		[&"attack_pressed", &"_on_attack_pressed"],
+		[&"spell_pressed", &"_on_spell_pressed"],
+		[&"end_turn_pressed", &"_on_end_turn_pressed"],
+		[&"item_activation_requested", &"_on_item_activation_requested"],
+	]:
+		if hud.is_connected(binding[0], Callable(context, binding[1])):
+			count += 1
+	return count

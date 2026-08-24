@@ -10,6 +10,7 @@ const PARTY := [
 ]
 
 func after_each() -> void:
+	GameManager.set_reduced_motion_enabled(false)
 	GameManager.cleanup_run_state()
 
 func test_recraft_components_and_processed_assets_load() -> void:
@@ -32,6 +33,8 @@ func test_first_room_binds_the_persistent_recraft_hud() -> void:
 	assert_not_null(battle.action_bar)
 	assert_eq(battle.action_bar.scene_file_path, HUD_SCENE)
 	assert_same(battle.action_bar, GameManager.get_persistent_run_ui().get_combat_hud())
+	assert_not_null(battle.get("_hud_port"))
+	assert_true(bool(battle.get("_hud_port").audit_contract()["valid"]))
 	assert_true(battle.action_bar.end_turn_pressed.is_connected(
 		Callable(battle, "_on_end_turn_pressed")
 	))
@@ -122,6 +125,22 @@ func test_number_shortcuts_follow_the_displayed_bar() -> void:
 	assert_null(item_button.shortcut)
 
 
+func test_primary_and_utility_actions_have_stable_keyboard_shortcuts() -> void:
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	add_child_autofree(hud)
+	await get_tree().process_frame
+	assert_eq(_shortcut_key(hud.get_node("%MoveButton")), KEY_M)
+	assert_eq(_shortcut_key(hud.get_node("%AttackButton")), KEY_A)
+	assert_eq(_shortcut_key(hud.get_node("%EndTurnButton")), KEY_F)
+	assert_eq(_shortcut_key(hud.get_node("%InventoryButton")), KEY_I)
+	assert_eq(_shortcut_key(hud.get_node("%SkillsButton")), KEY_K)
+
+	hud.set_reduced_motion(true)
+	assert_true(hud.is_reduced_motion_enabled())
+	assert_true(hud.get_turn_intro_banner().is_reduced_motion_enabled())
+	assert_almost_eq(hud.get_turn_intro_banner().total_animation_duration(), 0.72, 0.001)
+
+
 func test_hud_switch_disconnects_hp_and_stats_signals() -> void:
 	var first := Unit.from_data(load(PARTY[0]) as UnitData)
 	var second := Unit.from_data(load(PARTY[1]) as UnitData)
@@ -168,3 +187,10 @@ func test_presentation_snapshot_controls_focus_ownership_and_feedback() -> void:
 		(hud.get_node("%ContextFeedback") as Label).visible,
 		"Un ancien refus de cible ne doit pas survivre a la resolution.",
 	)
+
+
+func _shortcut_key(button: Button) -> Key:
+	if button.shortcut == null or button.shortcut.events.is_empty():
+		return KEY_NONE
+	var event := button.shortcut.events[0] as InputEventKey
+	return event.physical_keycode if event != null else KEY_NONE

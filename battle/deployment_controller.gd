@@ -25,6 +25,10 @@
 class_name DeploymentController
 extends Node
 
+const COMBAT_HIGHLIGHT_MARKER := preload(
+	"res://battle/combat_highlight_marker.gd"
+)
+
 # Émis quand la phase de déploiement est terminée : placement manuel fini,
 # secours auto, ou aucun héros à placer. battle.gd écoute pour lancer le combat.
 signal deployment_completed
@@ -107,7 +111,11 @@ func _highlight_deploy_zone() -> void:
 	for cell in _deploy_zone:
 		if not _battle.grid.has_unit(cell):
 			free_cells.append(cell)
-	_battle.grid_view.highlight(free_cells, _battle.SPELL_COLOR)
+	_battle.grid_view.highlight(
+		free_cells,
+		_battle.SPELL_COLOR,
+		COMBAT_HIGHLIGHT_MARKER.DEPLOYMENT,
+	)
 
 # Appelé par battle.gd quand le joueur clique une case pendant le déploiement.
 func on_cell_clicked(cell: Vector2i) -> void:

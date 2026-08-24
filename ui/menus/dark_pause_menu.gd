@@ -4,11 +4,11 @@ extends CanvasLayer
 signal resume_requested
 signal return_to_title_requested(reason: StringName)
 signal equipment_requested
+signal reduced_motion_changed(enabled: bool)
 
 const UNAVAILABLE_ACTIONS := [
 	&"characters",
 	&"compendium",
-	&"options",
 ]
 
 @onready var _pause_root: Control = %PauseRoot
@@ -33,6 +33,7 @@ var _actions: Dictionary = {}
 var _pending_exit_reason: StringName = &""
 var _open_tween: Tween = null
 var _layout_profile: StringName = &"large"
+var _reduced_motion := false
 
 
 func _ready() -> void:
@@ -50,10 +51,11 @@ func _ready() -> void:
 	_characters_button.configure("PERSONNAGES", false)
 	_equipment_button.configure("ÉQUIPEMENTS", true)
 	_compendium_button.configure("COMPENDIUM", false)
-	_options_button.configure("OPTIONS", false)
+	_options_button.configure("ANIMATIONS : STANDARD")
 	_abandon_button.configure("ABANDONNER LA RUN")
 	_resume_button.pressed.connect(_request_resume)
 	_equipment_button.pressed.connect(func() -> void: equipment_requested.emit())
+	_options_button.pressed.connect(_toggle_reduced_motion)
 	_close_button.pressed.connect(_request_resume)
 	_abandon_button.pressed.connect(
 		_request_exit_confirmation.bind(&"abandon")
@@ -87,6 +89,11 @@ func open_menu() -> void:
 	_update_panel_pivot()
 	if _open_tween != null and _open_tween.is_valid():
 		_open_tween.kill()
+	if _reduced_motion:
+		_pause_root.modulate = Color.WHITE
+		_menu_panel.scale = Vector2.ONE
+		_resume_button.grab_focus.call_deferred()
+		return
 	_open_tween = create_tween().set_parallel(true)
 	_open_tween.set_trans(Tween.TRANS_QUAD)
 	_open_tween.set_ease(Tween.EASE_OUT)
@@ -161,6 +168,34 @@ func get_confirmation_dialog() -> ConfirmationDialog:
 
 func get_layout_profile() -> StringName:
 	return _layout_profile
+
+
+func set_reduced_motion(enabled: bool) -> void:
+	_reduced_motion = enabled
+	if enabled and is_open():
+		if _open_tween != null and _open_tween.is_valid():
+			_open_tween.kill()
+		_open_tween = null
+		_pause_root.modulate = Color.WHITE
+		_menu_panel.scale = Vector2.ONE
+	if is_instance_valid(_options_button):
+		_options_button.configure(
+			"ANIMATIONS : RÉDUITES" if enabled else "ANIMATIONS : STANDARD"
+		)
+		_options_button.tooltip_text = (
+			"Transitions instantanées et mouvements d’interface limités."
+			if enabled
+			else "Activer la réduction des mouvements d’interface."
+		)
+
+
+func is_reduced_motion_enabled() -> bool:
+	return _reduced_motion
+
+
+func _toggle_reduced_motion() -> void:
+	set_reduced_motion(not _reduced_motion)
+	reduced_motion_changed.emit(_reduced_motion)
 
 
 func get_layout_snapshot() -> Dictionary:

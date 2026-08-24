@@ -7,6 +7,7 @@
 extends Node2D
 
 const CELL_SIZE = 64
+const HIGHLIGHT_MARKER := preload("res://battle/combat_highlight_marker.gd")
 
 const TYPE_COLORS = {
 	GridData.CellType.NORMAL : Color(0.16, 0.16, 0.20),
@@ -50,10 +51,18 @@ func get_pixel_size() -> Vector2:
 
 # --- Highlights ---
 
-func highlight(positions: Array, color: Color) -> void:
+func highlight(
+	positions: Array,
+	color: Color,
+	marker: StringName = &""
+	) -> void:
 	for pos in positions:
-		_highlights[pos] = color
+		_highlights[pos] = HIGHLIGHT_MARKER.entry(color, marker)
 	queue_redraw()
+
+
+func get_highlight_snapshot() -> Dictionary:
+	return _highlights.duplicate(true)
 
 func clear_highlights() -> void:
 	_highlights.clear()
@@ -98,7 +107,18 @@ func _draw() -> void:
 
 			# Surbrillances de gameplay : toujours.
 			if _highlights.has(pos):
-				draw_rect(rect, _highlights[pos], true)
+				var highlight_value = _highlights[pos]
+				draw_rect(
+					rect,
+					HIGHLIGHT_MARKER.color_of(highlight_value),
+					true,
+				)
+				HIGHLIGHT_MARKER.draw(
+					self,
+					rect.get_center(),
+					HIGHLIGHT_MARKER.marker_of(highlight_value),
+					CELL_SIZE * 0.32,
+				)
 
 			# Effet de terrain dynamique : toujours, avec couleur propre a l'effet.
 			var stored_effect = grid.get_effect(pos)

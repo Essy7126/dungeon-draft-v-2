@@ -37,6 +37,10 @@ const END_TURN_CONFIRMATION := preload(
 const COMBAT_TARGET_FEEDBACK := preload(
 	"res://battle/combat_target_feedback.gd"
 )
+const COMBAT_HUD_PORT := preload("res://ui/combat/combat_hud_port.gd")
+const COMBAT_HIGHLIGHT_MARKER := preload(
+	"res://battle/combat_highlight_marker.gd"
+)
 
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
@@ -139,6 +143,7 @@ var keyword_tooltip_layer: CanvasLayer
 var turn_order_timeline: TurnOrderTimeline = null
 var presentation_state: CombatPresentationState = null
 var _uses_persistent_action_bar := false
+var _hud_port = null
 var _presentation_feedback_generation := 0
 var _outcome_overlay: CombatOutcomeOverlay = null
 var _end_turn_confirmation: EndTurnConfirmation = null
@@ -213,6 +218,7 @@ func _ready() -> void:
 	_setup_camera()
 	if _direct_test_flag("hud_enabled", true):
 		_setup_ui()
+	_apply_accessibility_preferences()
 	if _direct_test_flag("combat_enabled", true):
 		_setup_state()
 	# _spawn_units() pose les ennemis puis lance la phase de déploiement.
@@ -599,7 +605,12 @@ func _setup_ui() -> void:
 		return
 	if not _uses_persistent_action_bar:
 		add_child(action_bar)
-		_connect_local_action_bar_signals()
+	_hud_port = COMBAT_HUD_PORT.new(action_bar)
+	var hud_contract: Dictionary = _hud_port.audit_contract()
+	if not bool(hud_contract.get("valid", false)):
+		push_error("HUD de combat incompatible : %s" % hud_contract)
+	if not _uses_persistent_action_bar:
+		_hud_port.connect_intents(self)
 
 	inspect_panel = CanvasLayer.new()
 	inspect_panel.set_script(load("res://ui/inspect_panel.gd"))
@@ -621,16 +632,19 @@ func _setup_ui() -> void:
 	turn_order_timeline.unit_selected.connect(_on_turn_order_unit_selected)
 
 
-func _connect_local_action_bar_signals() -> void:
-	_connect_action_bar_signal(action_bar.move_pressed, _on_move_pressed)
-	_connect_action_bar_signal(action_bar.attack_pressed, _on_attack_pressed)
-	_connect_action_bar_signal(action_bar.spell_pressed, _on_spell_pressed)
-	_connect_action_bar_signal(action_bar.end_turn_pressed, _on_end_turn_pressed)
+func _apply_accessibility_preferences() -> void:
+	var reduced_motion := GameManager.is_reduced_motion_enabled()
+	if _hud_port != null:
+		_hud_port.set_reduced_motion(reduced_motion)
+	set_reduced_motion(reduced_motion)
 
 
-func _connect_action_bar_signal(action_signal: Signal, callback: Callable) -> void:
-	if not action_signal.is_connected(callback):
-		action_signal.connect(callback)
+func set_reduced_motion(enabled: bool) -> void:
+	var feedback_controller := get_node_or_null("FloatingTextSpawner")
+	if feedback_controller != null \
+			and feedback_controller.has_method("set_reduced_motion"):
+		feedback_controller.set_reduced_motion(enabled)
+
 
 func _setup_state() -> void:
 	turn_state = TurnState.new()
@@ -670,8 +684,8 @@ func cancel_active_selection() -> bool:
 	if not is_action_selection_active():
 		return false
 	turn_state.on_cancel()
-	if is_instance_valid(action_bar):
-		action_bar.set_active_mode("")
+	if _hud_port != null:
+		_hud_port.set_active_mode("")
 	if is_instance_valid(inspect_panel) and inspect_panel.has_method(
 		"release_transient_preview"
 	):
@@ -719,13 +733,8 @@ func _on_turn_state_changed(
 
 
 func _on_presentation_snapshot_changed(snapshot: Dictionary) -> void:
-	if is_instance_valid(action_bar):
-		if action_bar.has_method("apply_presentation_snapshot"):
-			action_bar.apply_presentation_snapshot(snapshot)
-		else:
-			action_bar.set_player_controls_enabled(
-				bool(snapshot.get("controls_enabled", false))
-			)
+	if _hud_port != null:
+		_hud_port.apply_presentation_snapshot(snapshot)
 	var focus_active := bool(snapshot.get("focus_active", false))
 	if is_instance_valid(player_combat_log) and player_combat_log.has_method(
 		"set_tactical_focus"
@@ -753,10 +762,8 @@ func _show_intent_feedback(
 	var generation := _presentation_feedback_generation
 	if presentation_state != null:
 		presentation_state.set_feedback(message, kind)
-	if is_instance_valid(action_bar) and action_bar.has_method(
-		"show_context_feedback"
-	):
-		action_bar.show_context_feedback(message, kind)
+	if _hud_port != null:
+		_hud_port.show_feedback(message, kind)
 	_clear_intent_feedback_later(generation)
 
 
@@ -1075,12 +1082,12 @@ func _on_turn_started(unit: Unit) -> void:
 
 	# 5. Déroulement normal.
 	_update_active_highlight(unit)
-	action_bar.update_info(unit)
-	action_bar.build_spell_buttons(unit)
+	_hud_port.update_info(unit)
+	_hud_port.build_actions(unit)
 
 	if unit.team == 1:
 		turn_state.begin_enemy_turn()
-		action_bar.set_player_controls_enabled(false)
+		_hud_port.set_controls_enabled(false)
 		await _enemy_turn.run(unit)
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(unit):
@@ -1089,8 +1096,8 @@ func _on_turn_started(unit: Unit) -> void:
 			_finish_active_turn(&"enemy_completed")
 	else:
 		turn_state.begin_player_turn()
-		action_bar.set_player_controls_enabled(true)
-		action_bar.set_active_mode("")
+		_hud_port.set_controls_enabled(true)
+		_hud_port.set_active_mode("")
 
 
 func get_active_unit():
@@ -1109,9 +1116,9 @@ func _end_active_turn_if_dead(unit: Unit) -> bool:
 	_cancel_action_selection_for_active_unit()
 	if is_instance_valid(grid_view):
 		grid_view.clear_highlights()
-	if is_instance_valid(action_bar):
-		action_bar.set_player_controls_enabled(false)
-		action_bar.set_active_mode("")
+	if _hud_port != null:
+		_hud_port.set_controls_enabled(false)
+		_hud_port.set_active_mode("")
 	_finish_active_turn(&"dead")
 	return true
 
@@ -1152,10 +1159,10 @@ func get_combat_evolution_state() -> StringName:
 
 
 func _cancel_action_selection_for_active_unit() -> void:
-	if turn_state == null or action_bar == null:
+	if turn_state == null or _hud_port == null:
 		return
 	turn_state.on_cancel()
-	action_bar.set_active_mode("")
+	_hud_port.set_active_mode("")
 
 func _sync_unit_terrain(_unit: Unit) -> void:
 	pass
@@ -1274,15 +1281,17 @@ func dismiss_top_combat_modal() -> bool:
 		and _end_turn_confirmation.dismiss()
 
 func _refresh_mode_button() -> void:
+	if _hud_port == null:
+		return
 	match turn_state.current:
 		TurnState.State.MOVE:
-			action_bar.set_active_mode("move")
+			_hud_port.set_active_mode("move")
 		TurnState.State.TARGET_MELEE:
-			action_bar.set_active_mode("attack")
+			_hud_port.set_active_mode("attack")
 		TurnState.State.TARGET_SPELL:
-			action_bar.set_active_mode("spell", turn_state.selected_spell)
+			_hud_port.set_active_mode("spell", turn_state.selected_spell)
 		_:
-			action_bar.set_active_mode("")
+			_hud_port.set_active_mode("")
 
 # ============================================================
 # CLICS + ANNULATION
@@ -1346,9 +1355,17 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 		return
 	grid_view.clear_highlights()
 	var targetable = spell_caster.get_targetable_cells(unit, spell)
-	grid_view.highlight(targetable, SPELL_COLOR)
+	grid_view.highlight(
+		targetable,
+		SPELL_COLOR,
+		COMBAT_HIGHLIGHT_MARKER.SPELL,
+	)
 	if targetable.has(cell):
-		grid_view.highlight(spell_caster.get_aoe_cells(spell, cell), AOE_COLOR)
+		grid_view.highlight(
+			spell_caster.get_aoe_cells(spell, cell),
+			AOE_COLOR,
+			COMBAT_HIGHLIGHT_MARKER.AOE,
+		)
 		if inspect_panel != null:
 			inspect_panel.show_spell_preview(unit, spell, cell, grid, spell_caster)
 
@@ -1418,8 +1435,13 @@ func _on_request_show_move_range() -> void:
 	grid_view.highlight(
 		range_layers.get("control_limited", []),
 		CONTROL_LIMITED_MOVE_COLOR,
+		COMBAT_HIGHLIGHT_MARKER.CONTROL_LIMITED,
 	)
-	grid_view.highlight(range_layers.get("reachable", []), MOVE_COLOR)
+	grid_view.highlight(
+		range_layers.get("reachable", []),
+		MOVE_COLOR,
+		COMBAT_HIGHLIGHT_MARKER.MOVE,
+	)
 
 func _on_request_clear_highlights() -> void:
 	_clear_movement_path_preview()
@@ -1497,7 +1519,7 @@ func _on_request_move_to(cell: Vector2i) -> void:
 		"distance": maxi(0, path.size() - 1), "paid_mp": paid_cost,
 	})
 	turn_state.end_animating()
-	action_bar.update_info(unit)
+	_hud_port.update_info(unit)
 
 # Animation de déplacement BLINDÉE contre les objets détruits.
 # Une unité peut mourir en cours de route (lave via on_enter_cell) : on
@@ -1584,7 +1606,11 @@ func _on_request_show_attack_range() -> void:
 		turn_state.set_state(TurnState.State.IDLE)
 		return
 	grid_view.clear_highlights()
-	grid_view.highlight(_get_attackable_cells(unit), ATTACK_COLOR)
+	grid_view.highlight(
+		_get_attackable_cells(unit),
+		ATTACK_COLOR,
+		COMBAT_HIGHLIGHT_MARKER.ATTACK,
+	)
 
 func _get_attackable_cells(unit: Unit) -> Array:
 	var result: Array = []
@@ -1662,7 +1688,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 	EventBus.ap_after_action_changed.emit(unit, ap_before, unit.current_ap, action_id)
 	EventBus.action_resolved.emit(unit, action_id, &"basic_attack", {"target": target})
 	turn_state.end_animating()
-	action_bar.update_info(unit)
+	_hud_port.update_info(unit)
 
 # Animation d'attaque BLINDÉE (accès .get() + vérif de validité).
 func _animate_attack(unit: Unit, target: Unit) -> void:
@@ -1715,7 +1741,11 @@ func _on_request_show_spell_range(spell: Spell) -> void:
 	if unit == null or spell == null:
 		return
 	grid_view.clear_highlights()
-	grid_view.highlight(spell_caster.get_targetable_cells(unit, spell), SPELL_COLOR)
+	grid_view.highlight(
+		spell_caster.get_targetable_cells(unit, spell),
+		SPELL_COLOR,
+		COMBAT_HIGHLIGHT_MARKER.SPELL,
+	)
 
 
 func _spell_target_rejection_reason(
@@ -1746,7 +1776,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	_trigger_sequence += 1
 	_active_trigger_sequence = _trigger_sequence
 	_begin_action_resolution(&"spell")
-	action_bar.set_player_controls_enabled(false)
+	_hud_port.set_controls_enabled(false)
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
@@ -1756,8 +1786,8 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 				_spell_resolution_pending = false
 				if turn_state != null:
 					turn_state.begin_player_turn()
-				if is_instance_valid(action_bar):
-					action_bar.set_player_controls_enabled(true)
+				if _hud_port != null:
+					_hud_port.set_controls_enabled(true)
 				return
 		elif view.has_method("face_grid_direction"):
 			view.face_grid_direction(cell - unit.grid_pos)
@@ -1765,7 +1795,7 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	if context.failed:
 		_spell_resolution_pending = false
 		turn_state.begin_player_turn()
-		action_bar.set_player_controls_enabled(true)
+		_hud_port.set_controls_enabled(true)
 		return
 	if spell.impact_delay_seconds > 0.0:
 		VFXManager.play_spell_vfx(unit, spell, cell)
@@ -1805,9 +1835,9 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 			return
 	if is_instance_valid(grid_view):
 		grid_view.queue_redraw()
-	if is_instance_valid(action_bar):
-		action_bar.update_info(unit)
-		action_bar.set_active_mode("")
+	if _hud_port != null:
+		_hud_port.update_info(unit)
+		_hud_port.set_active_mode("")
 	var action_id := StringName(report.get("action_id", &""))
 	if action_id != &"":
 		EventBus.ap_after_action_changed.emit(
@@ -1826,8 +1856,8 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		return
 	if turn_state != null:
 		turn_state.begin_player_turn()
-	if is_instance_valid(action_bar):
-		action_bar.set_player_controls_enabled(true)
+	if _hud_port != null:
+		_hud_port.set_controls_enabled(true)
 
 
 func _on_discipline_xp_gained(
@@ -1946,9 +1976,9 @@ func _lock_combat_for_evolution(ui_open: bool) -> void:
 			turn_state.begin_skill_evolution_ui()
 		else:
 			turn_state.begin_skill_evolution_pending()
-	if is_instance_valid(action_bar):
-		action_bar.set_player_controls_enabled(false)
-		action_bar.set_active_mode("")
+	if _hud_port != null:
+		_hud_port.set_controls_enabled(false)
+		_hud_port.set_active_mode("")
 	if is_instance_valid(grid_view):
 		grid_view.clear_highlights()
 
@@ -1972,13 +2002,13 @@ func _resume_combat_after_evolutions() -> void:
 		return
 	if active_unit.team == 0:
 		turn_state.begin_player_turn()
-		if is_instance_valid(action_bar):
-			action_bar.set_player_controls_enabled(true)
-			action_bar.update_info(active_unit)
+		if _hud_port != null:
+			_hud_port.set_controls_enabled(true)
+			_hud_port.update_info(active_unit)
 	else:
 		turn_state.begin_enemy_turn()
-		if is_instance_valid(action_bar):
-			action_bar.set_player_controls_enabled(false)
+		if _hud_port != null:
+			_hud_port.set_controls_enabled(false)
 
 
 func _is_evolution_locked() -> bool:
@@ -1996,6 +2026,9 @@ func _exit_tree() -> void:
 	if _uses_persistent_action_bar:
 		GameManager.unbind_combat_context(self)
 	_uses_persistent_action_bar = false
+	if _hud_port != null:
+		_hud_port.detach()
+		_hud_port = null
 	_spell_resolution_pending = false
 	_evolution_processing = false
 	_evolution_queue.clear()
@@ -2092,13 +2125,47 @@ func _end_battle(victory: bool) -> void:
 	_begin_battle_shutdown()
 	if is_instance_valid(grid_view):
 		grid_view.clear_highlights()
-	if is_instance_valid(action_bar):
-		action_bar.set_player_controls_enabled(false)
-	_show_end_screen(victory)
+	if _hud_port != null:
+		_hud_port.set_controls_enabled(false)
+	_prepare_final_battle_frame()
+	_queue_local_battle_outcome_presentation(victory)
 
 	# Le délai est possédé par le GameManager persistant. La Battle peut donc
 	# quitter l'arbre sans qu'une coroutine locale ne tente de reprendre.
-	GameManager.schedule_battle_outcome(victory, END_SCREEN_DELAY)
+	GameManager.schedule_battle_outcome(
+		victory,
+		0.45 if GameManager.is_reduced_motion_enabled() else END_SCREEN_DELAY,
+	)
+
+
+func _prepare_final_battle_frame() -> void:
+	for layer in [
+		action_bar,
+		inspect_panel,
+		player_combat_log,
+		keyword_tooltip_layer,
+		turn_order_timeline,
+	]:
+		if is_instance_valid(layer):
+			layer.visible = false
+	var feedback_controller := get_node_or_null("FloatingTextSpawner")
+	if feedback_controller != null \
+			and feedback_controller.has_method("clear_feedback"):
+		feedback_controller.clear_feedback()
+
+
+func _queue_local_battle_outcome_presentation(victory: bool) -> void:
+	var callback := Callable(self, "_on_final_battle_frame_drawn").bind(victory)
+	if not RenderingServer.frame_post_draw.is_connected(callback):
+		RenderingServer.frame_post_draw.connect(callback, CONNECT_ONE_SHOT)
+
+
+func _on_final_battle_frame_drawn(victory: bool) -> void:
+	if not is_inside_tree() or not _battle_over:
+		return
+	if victory:
+		GameManager.capture_battle_outcome_background()
+	_show_end_screen(victory)
 
 
 func _next_action_id(kind: StringName) -> StringName:
@@ -2113,4 +2180,4 @@ func _show_end_screen(victory: bool) -> void:
 		_outcome_overlay.queue_free()
 	_outcome_overlay = COMBAT_OUTCOME_OVERLAY.new()
 	add_child(_outcome_overlay)
-	_outcome_overlay.present(victory)
+	_outcome_overlay.present(victory, GameManager.is_reduced_motion_enabled())

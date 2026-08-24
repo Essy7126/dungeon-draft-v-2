@@ -40,6 +40,7 @@ class FakeCombatContext:
 
 func after_each() -> void:
 	get_tree().paused = false
+	GameManager.set_reduced_motion_enabled(false)
 	GameManager.cleanup_run_state()
 
 
@@ -145,17 +146,34 @@ func test_menu_contains_exact_labels_and_only_real_actions_enabled() -> void:
 		&"characters": "PERSONNAGES",
 		&"equipment": "ÉQUIPEMENTS",
 		&"compendium": "COMPENDIUM",
-		&"options": "OPTIONS",
+		&"options": "ANIMATIONS : STANDARD",
 		&"abandon": "ABANDONNER LA RUN",
 		&"return_to_title": "RETOUR AU MENU PRINCIPAL",
 	}
 	for action_id in expected:
 		var button := menu.get_action_button(action_id)
 		assert_eq(button.text, expected[action_id], str(action_id))
-	for action_id in [&"characters", &"compendium", &"options"]:
+	for action_id in [&"characters", &"compendium"]:
 		assert_true(menu.get_action_button(action_id).disabled, str(action_id))
-	for action_id in [&"resume", &"equipment", &"abandon", &"return_to_title"]:
+	for action_id in [&"resume", &"equipment", &"options", &"abandon", &"return_to_title"]:
 		assert_false(menu.get_action_button(action_id).disabled, str(action_id))
+
+
+func test_reduced_motion_is_a_keyboard_focusable_immediate_pause_option() -> void:
+	var menu := await _spawn_menu()
+	var changes: Array[bool] = []
+	menu.reduced_motion_changed.connect(
+		func(enabled: bool): changes.append(enabled)
+	)
+	var option := menu.get_action_button(&"options")
+	assert_eq(option.focus_mode, Control.FOCUS_ALL)
+	option.pressed.emit()
+	assert_true(menu.is_reduced_motion_enabled())
+	assert_eq(option.text, "ANIMATIONS : RÉDUITES")
+	assert_eq(changes, [true])
+	menu.open_menu()
+	assert_eq(menu.get("_menu_panel").scale, Vector2.ONE)
+	assert_eq(menu.get("_pause_root").modulate, Color.WHITE)
 
 
 func test_opening_focuses_resume_and_close_requests_resume() -> void:

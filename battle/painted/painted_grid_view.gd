@@ -10,6 +10,7 @@ signal cell_hovered(grid_pos: Vector2i)
 signal cell_clicked(grid_pos: Vector2i)
 
 const INVALID_CELL := Vector2i(-1, -1)
+const HIGHLIGHT_MARKER := preload("res://battle/combat_highlight_marker.gd")
 const GRID_LINE_COLOR := Color(0.72, 0.94, 1.0, 0.42)
 const CENTER_COLOR := Color(1.0, 0.86, 0.2, 0.95)
 const HOVER_FILL_COLOR := Color(0.35, 0.88, 1.0, 0.32)
@@ -128,13 +129,21 @@ func clear_selection() -> void:
 	queue_redraw()
 
 
-func highlight(cells: Array, color: Color) -> void:
+func highlight(
+	cells: Array,
+	color: Color,
+	marker: StringName = &""
+	) -> void:
 	if grid == null:
 		return
 	for cell in cells:
 		if cell is Vector2i and grid.is_terrain_interactable(cell):
-			_highlights[cell] = color
+			_highlights[cell] = HIGHLIGHT_MARKER.entry(color, marker)
 	queue_redraw()
+
+
+func get_highlight_snapshot() -> Dictionary:
+	return _highlights.duplicate(true)
 
 
 func clear_highlights() -> void:
@@ -223,7 +232,21 @@ func _draw() -> void:
 					and cell_type != GridData.CellType.HOLE:
 				draw_colored_polygon(polygon, TYPE_COLORS[cell_type])
 			if _highlights.has(cell):
-				draw_colored_polygon(polygon, _highlights[cell])
+				var highlight_value = _highlights[cell]
+				draw_colored_polygon(
+					polygon,
+					HIGHLIGHT_MARKER.color_of(highlight_value),
+				)
+				var marker_center := grid_to_local(cell)
+				HIGHLIGHT_MARKER.draw(
+					self,
+					marker_center,
+					HIGHLIGHT_MARKER.marker_of(highlight_value),
+					HIGHLIGHT_MARKER.radius_for_polygon(
+						marker_center,
+						polygon,
+					),
+				)
 			if draw_grid_lines and grid.is_terrain_interactable(cell):
 				_draw_polygon_outline(polygon, GRID_LINE_COLOR, 1.0)
 			if draw_void_cells and cell_type == GridData.CellType.HOLE:

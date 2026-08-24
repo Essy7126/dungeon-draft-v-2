@@ -14,6 +14,7 @@ func before_each() -> void:
 
 
 func after_each() -> void:
+	GameManager.set_reduced_motion_enabled(false)
 	GameManager.cleanup_run_state()
 	await get_tree().process_frame
 
@@ -553,6 +554,23 @@ func test_victory_routes_to_post_combat_only_after_report_finalization() -> void
 	manager.free()
 
 
+func test_victory_background_is_frozen_before_result_overlay() -> void:
+	GameManager.begin_combat_report()
+	var battlefield_frame := GradientTexture2D.new()
+	GameManager._post_combat_background_texture = battlefield_frame
+	GameManager._post_combat_background_captured_for_outcome = true
+
+	assert_true(GameManager.capture_battle_outcome_background())
+	assert_same(
+		GameManager.get_post_combat_background_texture(),
+		battlefield_frame,
+		"Un overlay tardif ne doit jamais remplacer le dernier frame de combat.",
+	)
+	var snapshot := GameManager.get_battle_outcome_transition_snapshot()
+	assert_true(snapshot["background_captured"])
+	assert_true(snapshot["background_ready"])
+
+
 func test_last_room_keeps_existing_no_equipment_rule_and_run_result() -> void:
 	var manager := GAME_MANAGER_SCRIPT.new()
 	assert_true(manager._prepare_preconfigured_run(
@@ -601,6 +619,20 @@ func test_last_room_screen_transitions_without_opening_equipment_overlay() -> vo
 	assert_eq(GameManager.get_equipment_reward_deck_snapshot(), deck_before)
 	screen.queue_free()
 	await get_tree().process_frame
+
+
+func test_post_combat_reduced_motion_skips_spatial_reveal_sequences() -> void:
+	GameManager.cleanup_run_state()
+	_prepare_global_run(1)
+	GameManager._last_combat_report = _finalized_global_report_with_progress()
+	GameManager.set_reduced_motion_enabled(true)
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	assert_true(bool(screen.get("_reduced_motion")))
+	assert_false(bool(screen.get("_animation_active")))
+	assert_eq((screen.get_node("%VictoryTitle") as Control).scale, Vector2.ONE)
+	assert_true(screen.get_node("%EquipmentRewardOverlay").reduced_motion)
 
 
 func _prepare_global_run(room_count: int) -> void:

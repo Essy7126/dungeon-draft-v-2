@@ -100,3 +100,34 @@ Captures pivots :
 - Pas de capture dédiée vraie Battle pour cible illégale, move-targeting, enemy-turn isolé ou inventaire pendant vrai ciblage; ces points sont statiques ou fixtures et étiquetés.
 - Pas de mesure profiler attribuable; seulement diagnostics de fermeture.
 - Pas de test clavier/souris end-to-end physique; les runners appellent des handlers production.
+
+## Preuves d'implémentation post-audit
+
+Cette section ne modifie pas le corpus de vérité de l'audit initial. Elle décrit
+les correctifs autorisés ensuite par l'utilisateur, construits sur le HEAD
+`8cea852d18b890567122a29742e25ed19b4b0246` avec un worktree non commité.
+
+| Périmètre | Résultat | Preuve |
+|---|---:|---|
+| Port HUD, raccourcis, réduction de mouvement, cycle de vie, marqueurs | 19/19, 287 assertions | `test_combat_hud_port`, `test_persistent_run_combat_hud`, `test_recraft_combat_hud_v1`, `test_combat_highlight_accessibility` |
+| Flow, présentation et géométrie iso | 38/38, 380 assertions | `test_run_flow_isolation`, `test_combat_presentation_orchestration`, `test_iso_grid_view` |
+| Cycle de vie asynchrone fin d'action / changement de salle | 10/10, 32 assertions | `test_room_transition_async_lifecycle`; double de Battle réaligné sur `_next_action_id` |
+| Frame final / post-combat / mouvement réduit | 21/23, 268/273 assertions | `test_post_combat_flow`; deux divergences de catalogue de récompenses préexistantes |
+| Parcours graphique continu | PASS | `artifacts/combat_flow_validation/report.json` |
+
+Le runner continu emploie les vraies données et scènes First Run, avec un coup
+final injecté et explicitement étiqueté. Il vérifie : HUD lié pendant Battle,
+overlay local, capture propre avant overlay, PostCombatScreen réel, HUD délié,
+transition vers la salle 2, puis libération du HUD après nettoyage.
+
+Captures associées :
+
+- `artifacts/combat_flow_validation/captures/deployment_non_color_markers.png` ;
+- `artifacts/combat_flow_validation/captures/victory_overlay.png` ;
+- `artifacts/combat_flow_validation/captures/post_combat.png` ;
+- `artifacts/combat_flow_validation/captures/room_transition.png`.
+
+La mesure runtime passe de 1 HUD / 4 UnitView pendant Battle à 1 HUD / 0
+UnitView après post-combat, puis 0 HUD / 0 UnitView après `cleanup_run_state`.
+Les avertissements RID/ObjectDB de fermeture persistent, mais ne correspondent
+pas à une rétention de la scène HUD mesurée.
