@@ -1,6 +1,43 @@
 extends GutTest
 
 
+func test_00_composite_placement_finishes_as_one_before_after_transaction() -> void:
+	var arena := _arena()
+	var entry := TerrainPlaceableCatalogService.entry_by_id(
+		arena, &"vortex_portal_two", true
+	)
+	var definition := entry.get("definition") as TerrainPlaceableDefinition
+	assert_not_null(definition)
+	var session := TerrainPlacementSession.new()
+	var before := arena.to_snapshot().duplicate(true)
+	assert_true(session.begin(arena, definition))
+	assert_false(bool(session.add_cell(arena, Vector2i(1, 1)).complete))
+	assert_true(bool(session.add_cell(arena, Vector2i(3, 3)).complete))
+	var transaction := session.finish(arena)
+	assert_true(bool(transaction.ok))
+	assert_eq(transaction.before, before)
+	assert_eq((transaction.after as Dictionary).vortex_networks.size(), 1)
+	assert_eq(arena.vortex_networks[0].unique_cells(), [
+		Vector2i(1, 1), Vector2i(3, 3),
+	])
+
+
+func test_00b_escape_style_cancel_restores_the_exact_initial_snapshot() -> void:
+	var arena := _arena()
+	var entry := TerrainPlaceableCatalogService.entry_by_id(
+		arena, &"vortex_portal_multi", true
+	)
+	var definition := entry.get("definition") as TerrainPlaceableDefinition
+	var before := arena.to_snapshot().duplicate(true)
+	var session := TerrainPlacementSession.new()
+	assert_true(session.begin(arena, definition))
+	assert_true(bool(session.add_cell(arena, Vector2i(1, 1)).changed))
+	assert_true(bool(session.add_cell(arena, Vector2i(3, 3)).changed))
+	assert_true(session.cancel(arena))
+	assert_eq(arena.to_snapshot(), before)
+	assert_false(session.active)
+
+
 func test_01_migration_pair_to_network_preserves_both_cells() -> void:
 	var arena := _arena()
 	assert_true(ArenaDynamicEditingService.place_vortex_pair(
@@ -200,7 +237,7 @@ func test_21_ai_report_has_average_worst_and_no_seed_mutation() -> void:
 
 func test_22_editor_behavior_summary_covers_all_cardinalities() -> void:
 	var network := ArenaVortexNetworkDefinition.new()
-	for expected in ["Aucune", "Impulsion", "directe", "aléatoire"]:
+	for expected in ["Aucune", "impulsion", "deux cases", "plusieurs sorties"]:
 		assert_string_contains(ArenaVortexNetworkService.behavior_summary(network), expected)
 		network.cells.append(Vector2i(network.cells.size(), 0))
 

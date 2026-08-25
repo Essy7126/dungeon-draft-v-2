@@ -1,5 +1,25 @@
 # Décisions d’architecture
 
+## Studio Terrain — création depuis une illustration 2026-08-24
+
+- **DÉCISION VALIDÉE** — l'illustration doit être visible avant de demander la
+  taille de grille afin que l'utilisateur raisonne à partir du décor réel.
+- **DÉCISION VALIDÉE** — l'alignement initial en trois clics est remplacé par
+  taille, position, rotation, échelle et inclinaison, plus des poignées directes.
+- **DÉCISION VALIDÉE** — une création depuis une illustration part d'une grille
+  3 × 3 ; l'écran intermédiaire de dimensions disparaît et les champs de
+  l'inspecteur modifient immédiatement la grille, sans bouton Appliquer.
+- **DÉCISION VALIDÉE** — le réseau de vortex abstrait est remplacé dans
+  l'interface par trois choix explicites : impulsion à une case, portail à deux
+  cases et portail à plusieurs sorties. Ces choix restent disponibles en mode
+  guidé, car ils créent du gameplay et ne sont pas des réglages techniques.
+- **DÉCISION VALIDÉE** — changer simplement l'illustration ouvre directement
+  un fichier image. Copier le décor, la calibration et la caméra d'un autre
+  terrain est une opération avancée distincte et nommée comme telle.
+- **DÉCISION VALIDÉE** — une action ne doit être affichée qu'à un seul endroit
+  dans un même contexte. Le rail explique l'étape ; la palette choisit l'outil ;
+  l'inspecteur porte les réglages et actions contextuelles.
+
 ## Arena authoring — candidat local 2026-08-12
 
 - **DÉCISION VALIDÉE — Eau électrifiée** : au plus un Choc par unité, par round
@@ -259,3 +279,24 @@ runtime de la salle cible.
 
 Aucune règle de gameplay, valeur d'équilibrage, rencontre, récompense, vague ou
 IA n'est modifiée.
+
+## TERRAIN_STUDIO_SPATIAL_AUTHORING_V2 — édition libre data-driven
+
+- Date : 2026-08-25
+- Statut : **WORKTREE_CANDIDATE**
+- Contrat : `docs/tools/dungeon_draft_studio/terrain_studio_refonte_contract.md`
+
+Le rail de sept étapes et ses boutons précédent/continuer quittent le parcours
+nominal. Tous les outils sont visibles simultanément, la checklist reste
+informative, la bibliothèque data-driven rassemble sols, obstacles, départs,
+interactifs et décor, et l'inspecteur décrit la sélection spatiale réelle.
+
+Les gestes de vortex à plusieurs clics sont une seule transaction d'historique
+et `Échap` restaure l'instantané initial. Un sol spécial posé sur un terrain
+peint active automatiquement `HYBRID/NON_BASE` dans le même geste ; les sols
+ordinaires supplémentaires exigent l'activation explicite
+`HYBRID/ALL_DEFINED`.
+
+Les contrats de brouillon, test, intégration, projection runtime et sauvegarde
+transactionnelle ne changent pas. Aucune donnée d'équilibrage ou de production
+officielle n'est modifiée.

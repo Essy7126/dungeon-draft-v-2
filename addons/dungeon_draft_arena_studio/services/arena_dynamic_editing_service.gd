@@ -206,6 +206,72 @@ static func place_decoration(arena: ArenaDefinition, cell: Vector2i) -> bool:
 	return true
 
 
+## Entrée métier de la bibliothèque unifiée. Le descripteur choisit le contrat
+## et le payload ; aucun composant visuel ne traduit lui-même les familles.
+static func apply_placeable(
+		arena: ArenaDefinition,
+		definition: TerrainPlaceableDefinition,
+		cell: Vector2i,
+		erase := false
+	) -> bool:
+	if arena == null or definition == null:
+		return false
+	match definition.placement_kind:
+		TerrainPlaceableDefinition.PlacementKind.PERMANENT_TERRAIN:
+			var terrain_id := StringName(definition.payload.get("terrain_id", &""))
+			if erase:
+				var base_id := arena.modular_visual_profile.base_terrain_id \
+					if arena.modular_visual_profile != null else &"stone"
+				return paint_terrain(arena, cell, base_id)
+			if arena.visual_mode == ArenaDefinition.VisualMode.PAINTED:
+				var paintability := ArenaPermanentTerrainPaintService.paintability(
+					arena, terrain_id
+				)
+				if StringName(paintability.get("reason_code", &"")) \
+						!= &"painted_auto_hybrid":
+					return false
+				var current := arena.get_cell_definition(cell)
+				var inferred_base: StringName = &"stone"
+				if current != null and current.terrain_id != &"":
+					inferred_base = current.terrain_id
+				arena.visual_mode = ArenaDefinition.VisualMode.HYBRID
+				if arena.modular_visual_profile == null:
+					arena.modular_visual_profile = ArenaModularVisualProfile.new()
+				arena.modular_visual_profile.theme_id = arena.theme_id
+				arena.modular_visual_profile.base_terrain_id = inferred_base
+				arena.modular_visual_profile.hybrid_floor_policy = (
+					ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+				)
+			return paint_permanent_terrain(arena, cell, terrain_id)
+		TerrainPlaceableDefinition.PlacementKind.WALL:
+			return place_wall(
+				arena, cell,
+				&"remove" if erase else StringName(definition.payload.get("wall_id", &""))
+			)
+		TerrainPlaceableDefinition.PlacementKind.SPAWN_POINT:
+			if erase:
+				var before := arena.spawns.size()
+				arena.spawns = arena.spawns.filter(func(value):
+					return value != null and value.cell != cell
+				)
+				if before != arena.spawns.size():
+					ArenaRuntimeBridge.sync_runtime_resources(arena)
+					return true
+				return false
+			return place_spawn(
+				arena, cell, int(definition.payload.get("spawn_kind", -1))
+			)
+		TerrainPlaceableDefinition.PlacementKind.DECORATION_MARKER:
+			if erase:
+				var before := arena.decorations.size()
+				arena.decorations = arena.decorations.filter(func(value):
+					return value != null and value.cell != cell
+				)
+				return before != arena.decorations.size()
+			return place_decoration(arena, cell)
+	return false
+
+
 static func place_vortex_pair(
 		arena: ArenaDefinition,
 		entry_cell: Vector2i,

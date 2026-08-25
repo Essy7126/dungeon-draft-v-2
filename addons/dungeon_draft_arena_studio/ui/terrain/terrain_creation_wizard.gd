@@ -2,9 +2,8 @@
 class_name TerrainCreationWizard
 extends PanelContainer
 
-## Assistant de creation d'un terrain. Il remplace le formulaire technique par
-## trois intentions illustrees, puis ne demande que les informations
-## necessaires a l'intention choisie.
+## Création initiale limitée à deux bases visuelles. Le mode HYBRID est une
+## capacité de l'éditeur spatial, pas une troisième méthode de création.
 ##
 ## En mode guide, aucun mode visuel technique, aucun identifiant stable, aucun
 ## chemin et aucun manifeste n'est visible : ces reglages restent disponibles
@@ -20,7 +19,8 @@ const ERROR_COLOR := Color(1.0, 0.47, 0.40)
 const CARD_BACKGROUND := Color(0.137, 0.153, 0.184)
 
 const SCREEN_CHOICE := 0
-const SCREEN_DETAILS := 1
+const SCREEN_IMAGE := 1
+const SCREEN_DETAILS := 2
 
 ## Calibrations reutilisables proposees en mode avance. La liste reste locale
 ## pour eviter une dependance circulaire avec ArenaStudioMain, qui instancie
@@ -32,6 +32,7 @@ const CALIBRATION_TEMPLATES := [
 ]
 
 var choice_screen: VBoxContainer = null
+var image_screen: VBoxContainer = null
 var details_screen: VBoxContainer = null
 var choice_buttons: Array[Button] = []
 var name_edit: LineEdit = null
@@ -41,6 +42,8 @@ var orientation_option: OptionButton = null
 var image_row: HBoxContainer = null
 var image_edit: LineEdit = null
 var image_button: Button = null
+var image_preview: TextureRect = null
+var image_preview_hint: Label = null
 var advanced_box: VBoxContainer = null
 var id_edit: LineEdit = null
 var template_option: OptionButton = null
@@ -83,6 +86,8 @@ func _build() -> void:
 	root.add_child(title)
 	choice_screen = _build_choice_screen()
 	root.add_child(choice_screen)
+	image_screen = _build_image_screen()
+	root.add_child(image_screen)
 	details_screen = _build_details_screen()
 	root.add_child(details_screen)
 	var footer := HFlowContainer.new()
@@ -98,7 +103,7 @@ func _build() -> void:
 	back_button.name = "TerrainWizardBack"
 	back_button.text = "Changer de méthode"
 	back_button.focus_mode = Control.FOCUS_ALL
-	back_button.pressed.connect(func(): _go_to(SCREEN_CHOICE))
+	back_button.pressed.connect(_on_back)
 	footer.add_child(back_button)
 	confirm_button = Button.new()
 	confirm_button.name = "TerrainWizardConfirm"
@@ -119,6 +124,7 @@ func start() -> void:
 	name_edit.text = "Nouveau terrain"
 	id_edit.text = ArenaDefinition.sanitize_id(name_edit.text)
 	image_edit.text = ""
+	image_preview.texture = null
 	width_spin.value = 10
 	height_spin.value = 8
 	orientation_option.select(0)
@@ -137,6 +143,7 @@ func set_advanced(value: bool) -> void:
 func set_image_path(path: String) -> void:
 	_build()
 	image_edit.text = path
+	image_preview.texture = _load_preview_texture(path)
 	_refresh_details()
 
 
@@ -183,6 +190,54 @@ func _build_choice_screen() -> VBoxContainer:
 	return box
 
 
+func _build_image_screen() -> VBoxContainer:
+	var box := VBoxContainer.new()
+	box.name = "TerrainWizardImageScreen"
+	box.add_theme_constant_override("separation", 6)
+	var title := Label.new()
+	title.text = "1 — CHOISIR ET OBSERVER L'ILLUSTRATION"
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", ACCENT)
+	box.add_child(title)
+	var explanation := Label.new()
+	explanation.text = (
+		"Regardez d'abord le décor. Une petite grille 3 × 3 sera créée au centre, "
+		+ "puis vous réglerez immédiatement sa taille et sa forme directement sur l'image."
+	)
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	explanation.add_theme_color_override("font_color", MUTED)
+	box.add_child(explanation)
+	image_preview = TextureRect.new()
+	image_preview.name = "TerrainWizardImagePreview"
+	image_preview.custom_minimum_size = Vector2(480, 270)
+	image_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	image_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	image_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	image_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	box.add_child(image_preview)
+	image_preview_hint = Label.new()
+	image_preview_hint.text = "Aucune illustration choisie."
+	image_preview_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	image_preview_hint.add_theme_color_override("font_color", MUTED)
+	box.add_child(image_preview_hint)
+	image_row = HBoxContainer.new()
+	image_row.name = "TerrainWizardImageRow"
+	box.add_child(image_row)
+	image_edit = LineEdit.new()
+	image_edit.name = "TerrainWizardImage"
+	image_edit.placeholder_text = "Aucune illustration choisie"
+	image_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	image_edit.editable = false
+	image_row.add_child(image_edit)
+	image_button = Button.new()
+	image_button.name = "TerrainWizardChooseImage"
+	image_button.text = "Choisir une illustration…"
+	image_button.focus_mode = Control.FOCUS_ALL
+	image_button.pressed.connect(func(): image_requested.emit())
+	image_row.add_child(image_button)
+	return box
+
+
 func _build_details_screen() -> VBoxContainer:
 	var box := VBoxContainer.new()
 	box.name = "TerrainWizardDetailsScreen"
@@ -219,21 +274,6 @@ func _build_details_screen() -> VBoxContainer:
 	for label in TerrainVocabulary.CAMP_ORIENTATIONS:
 		orientation_option.add_item(label)
 	box.add_child(orientation_option)
-	image_row = HBoxContainer.new()
-	image_row.name = "TerrainWizardImageRow"
-	box.add_child(image_row)
-	image_edit = LineEdit.new()
-	image_edit.name = "TerrainWizardImage"
-	image_edit.placeholder_text = "Aucune illustration choisie"
-	image_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	image_edit.editable = false
-	image_row.add_child(image_edit)
-	image_button = Button.new()
-	image_button.name = "TerrainWizardChooseImage"
-	image_button.text = "Choisir une illustration…"
-	image_button.focus_mode = Control.FOCUS_ALL
-	image_button.pressed.connect(func(): image_requested.emit())
-	image_row.add_child(image_button)
 	advanced_box = VBoxContainer.new()
 	advanced_box.name = "TerrainWizardAdvanced"
 	advanced_box.visible = false
@@ -276,7 +316,11 @@ func _spin(parent: Node, prefix: String, value: float) -> SpinBox:
 
 func _on_choice_pressed(index: int) -> void:
 	_choice = index
-	_go_to(SCREEN_DETAILS)
+	var choice := TerrainVocabulary.creation_choice(_choice)
+	if bool(choice.needs_image):
+		_go_to(SCREEN_IMAGE)
+	else:
+		_emit_creation(choice, 10, 8)
 
 
 func _on_name_changed(value: String) -> void:
@@ -285,13 +329,23 @@ func _on_name_changed(value: String) -> void:
 	_refresh_details()
 
 
+func _on_back() -> void:
+	var choice := TerrainVocabulary.creation_choice(_choice)
+	_go_to(
+		SCREEN_IMAGE
+		if _screen == SCREEN_DETAILS and bool(choice.needs_image)
+		else SCREEN_CHOICE
+	)
+
+
 func _go_to(screen: int) -> void:
 	_screen = screen
 	choice_screen.visible = screen == SCREEN_CHOICE
+	image_screen.visible = screen == SCREEN_IMAGE
 	details_screen.visible = screen == SCREEN_DETAILS
-	back_button.visible = screen == SCREEN_DETAILS
-	confirm_button.visible = screen == SCREEN_DETAILS
-	blocking_label.visible = screen == SCREEN_DETAILS
+	back_button.visible = screen != SCREEN_CHOICE
+	confirm_button.visible = screen != SCREEN_CHOICE
+	blocking_label.visible = screen != SCREEN_CHOICE
 	for index in range(choice_buttons.size()):
 		choice_buttons[index].set_pressed_no_signal(index == _choice)
 	_refresh_details()
@@ -302,17 +356,36 @@ func _refresh_details() -> void:
 		return
 	var choice := TerrainVocabulary.creation_choice(_choice)
 	summary_label.text = "%s — %s" % [choice.display_title, choice.detail]
-	image_row.visible = bool(choice.needs_image)
-	confirm_button.text = str(choice.confirm_label)
-	confirm_button.tooltip_text = (
-		"Créer le terrain puis ouvrir directement l'étape suivante."
+	image_preview_hint.visible = image_preview.texture == null
+	image_preview_hint.text = (
+		"Aperçu indisponible pour ce fichier. Vous pouvez en choisir un autre."
+		if not image_edit.text.is_empty() else "Aucune illustration choisie."
 	)
-	var blocking := _blocking_reason(choice)
+	confirm_button.text = (
+		"Créer une grille 3 × 3 et l'ajuster"
+		if _screen == SCREEN_IMAGE else str(choice.confirm_label)
+	)
+	back_button.text = (
+		"Changer de méthode" if _screen == SCREEN_IMAGE
+		else "Changer de méthode"
+	)
+	confirm_button.tooltip_text = (
+		"Créer le terrain puis régler immédiatement la grille sur l'illustration."
+		if _screen == SCREEN_IMAGE
+		else "Créer le terrain puis ouvrir directement l'ajustement de la grille."
+	)
+	var blocking := _blocking_reason(choice, _screen)
 	blocking_label.text = blocking
 	confirm_button.disabled = not blocking.is_empty()
 
 
-func _blocking_reason(choice: Dictionary) -> String:
+func _blocking_reason(choice: Dictionary, screen := SCREEN_DETAILS) -> String:
+	if screen == SCREEN_IMAGE:
+		if image_edit.text.strip_edges().is_empty():
+			return "Choisissez une illustration pour l'afficher avant de continuer."
+		if image_preview.texture == null:
+			return "Cette illustration ne peut pas être prévisualisée. Choisissez un fichier PNG, JPG ou WEBP valide."
+		return ""
 	if name_edit.text.strip_edges().is_empty():
 		return "Donnez d'abord un nom visible à ce terrain."
 	if bool(choice.needs_image) and image_edit.text.strip_edges().is_empty():
@@ -322,8 +395,15 @@ func _blocking_reason(choice: Dictionary) -> String:
 
 func _on_confirm() -> void:
 	var choice := TerrainVocabulary.creation_choice(_choice)
-	if not _blocking_reason(choice).is_empty():
+	if not _blocking_reason(choice, _screen).is_empty():
 		return
+	if _screen == SCREEN_IMAGE:
+		_emit_creation(choice, 3, 3)
+		return
+	_emit_creation(choice, int(width_spin.value), int(height_spin.value))
+
+
+func _emit_creation(choice: Dictionary, width: int, height: int) -> void:
 	create_confirmed.emit({
 		"visual_mode": int(choice.visual_mode),
 		"display_name": name_edit.text.strip_edges(),
@@ -331,10 +411,21 @@ func _on_confirm() -> void:
 			id_edit.text if _advanced and not id_edit.text.strip_edges().is_empty()
 			else name_edit.text
 		),
-		"width": int(width_spin.value),
-		"height": int(height_spin.value),
+		"width": width,
+		"height": height,
 		"camp_orientation": orientation_option.selected,
 		"image_path": image_edit.text.strip_edges(),
 		"template_index": template_option.selected if _advanced else 0,
 		"needs_image": bool(choice.needs_image),
 	})
+
+
+func _load_preview_texture(path: String) -> Texture2D:
+	if path.strip_edges().is_empty():
+		return null
+	if path.begins_with("res://"):
+		return load(path) as Texture2D
+	var image := Image.new()
+	if image.load(path) != OK or image.is_empty():
+		return null
+	return ImageTexture.create_from_image(image)

@@ -35,6 +35,10 @@ var detach_shortcut_text := "Ctrl+Shift+D"
 var project_context: StudioProjectContext = null
 var reference_graph: StudioReferenceGraphService = null
 var context_bar: StudioContextBar = null
+## Les runners peuvent fournir eux-mêmes leur working copy sans déclencher
+## l'import de production initial. Le comportement des hôtes reste vrai.
+var arena_auto_load_enabled := true
+var arena_production_planning_enabled := true
 
 
 func setup(
@@ -65,6 +69,8 @@ func _ready() -> void:
 
 	arena_studio = ArenaStudioMain.new()
 	arena_studio.name = "Arenes"
+	arena_studio.auto_load_initial_arena = arena_auto_load_enabled
+	arena_studio.production_planning_enabled = arena_production_planning_enabled
 	arena_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	tabs.add_child(arena_studio)
 	# Seul le libelle visible change : ArenaDefinition, ArenaStudioMain et les

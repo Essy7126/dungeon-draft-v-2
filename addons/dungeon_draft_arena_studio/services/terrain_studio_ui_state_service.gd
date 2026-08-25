@@ -2,8 +2,8 @@
 class_name TerrainStudioUiStateService
 extends RefCounted
 
-## Etat d'interface du domaine Terrain : mode guide, etape courante, panneaux,
-## guidage et terrains recemment ouverts. Il est persiste sous user:// et reste
+## État d'interface du domaine Terrain : mode guidé, bibliothèque, checklist,
+## panneaux et terrains récemment ouverts. Il est persisté sous user:// et reste
 ## strictement separe des Resources metier : aucune ArenaDefinition, aucun
 ## RunData et aucun chemin de production n'y est serialise.
 
@@ -24,6 +24,13 @@ static func default_state() -> Dictionary:
 		"inspector_visible": true,
 		"home_seen": false,
 		"preview_view": 0,
+		"checklist_collapsed": true,
+		"library": {
+			"filter": -1,
+			"selected_id": "",
+			"recents": [],
+			"favorites": [],
+		},
 		"recents": [],
 	}
 

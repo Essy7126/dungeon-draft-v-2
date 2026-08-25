@@ -38,7 +38,7 @@ func mark_room_unused(explanation: String) -> void:
 
 
 func _ready() -> void:
-	custom_minimum_size.y = 86
+	custom_minimum_size.y = 56
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 2)
 	add_child(rows)
@@ -71,6 +71,7 @@ func _ready() -> void:
 	details_button.flat = true
 	details_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	details_button.pressed.connect(_toggle_technical_details)
+	details_button.visible = false
 	rows.add_child(details_button)
 	details_label = Label.new()
 	details_label.clip_text = true
@@ -193,6 +194,9 @@ func _refresh(_unused = {}) -> void:
 		reference_graph.generation if reference_graph != null else 0,
 	]
 	details_label.tooltip_text = details_label.text
+	# Les informations techniques restent accessibles au survol sans réserver
+	# une troisième ligne vide dans tous les onglets du Studio.
+	human_summary_label.tooltip_text = "%s\n%s" % [human_summary_label.text, details_label.text]
 	_syncing = false
 
 

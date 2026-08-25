@@ -99,12 +99,12 @@ static func next_network_id(arena: ArenaDefinition) -> StringName:
 
 static func behavior_summary(network: ArenaVortexNetworkDefinition) -> String:
 	if network == null:
-		return "Réseau absent"
+		return "Effet vortex absent"
 	match network.unique_cells().size():
-		0: return "Aucune dalle"
-		1: return "1 cellule → Impulsion du vide (+1 PM)"
-		2: return "2 cellules → Téléportation directe"
-		_: return "%d cellules → Sortie aléatoire déterministe" % network.unique_cells().size()
+		0: return "Aucune case placée"
+		1: return "Case d'impulsion — +1 déplacement une fois par round"
+		2: return "Portail entre deux cases"
+		_: return "Portail à plusieurs sorties — %d cases" % network.unique_cells().size()
 
 
 static func color_for_id(network_id: StringName) -> Color:

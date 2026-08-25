@@ -166,7 +166,7 @@ static func _validate_calibration(
 			or arena.calibration_cells.size() != arena.calibration_pixels.size()):
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"calibration_incomplete",
-			"Terminez les trois clics de calibration.")
+			"Ajustez la grille sur l'illustration, puis confirmez son alignement.")
 	elif runtime_state != null and runtime_state.visual_data != null:
 		var unique := {}
 		for cell in arena.calibration_cells:

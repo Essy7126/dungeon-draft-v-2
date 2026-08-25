@@ -1,0 +1,116 @@
+[gd_resource type="Resource" script_class="TerrainPlaceableCatalog" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/terrain_placeable_catalog.gd" id="1"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/terrain_placeable_definition.gd" id="2"]
+[ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/vortex.png" id="3"]
+
+[sub_resource type="Resource" id="Hero1"]
+script = ExtResource("2")
+stable_id = &"spawn_hero_1"
+display_name = "Départ du héros 1"
+family = 2
+placement_kind = 2
+result_in_game = "Le premier héros commence le combat sur cette case."
+badges = PackedStringArray("Départ", "1 case")
+payload = {"spawn_kind": 0}
+
+[sub_resource type="Resource" id="Hero2"]
+script = ExtResource("2")
+stable_id = &"spawn_hero_2"
+display_name = "Départ du héros 2"
+family = 2
+placement_kind = 2
+result_in_game = "Le deuxième héros commence le combat sur cette case."
+badges = PackedStringArray("Départ", "1 case")
+payload = {"spawn_kind": 1}
+
+[sub_resource type="Resource" id="Hero3"]
+script = ExtResource("2")
+stable_id = &"spawn_hero_3"
+display_name = "Départ du héros 3"
+family = 2
+placement_kind = 2
+result_in_game = "Le troisième héros commence le combat sur cette case."
+badges = PackedStringArray("Départ", "1 case")
+payload = {"spawn_kind": 2}
+
+[sub_resource type="Resource" id="Enemy"]
+script = ExtResource("2")
+stable_id = &"spawn_enemy"
+display_name = "Départ d'un ennemi"
+family = 2
+placement_kind = 2
+result_in_game = "Un ennemi commence le combat sur cette case."
+badges = PackedStringArray("Départ", "1 case")
+payload = {"spawn_kind": 3}
+
+[sub_resource type="Resource" id="EnemyGroup"]
+script = ExtResource("2")
+stable_id = &"spawn_enemy_group"
+display_name = "Départ d'un groupe ennemi"
+family = 2
+placement_kind = 2
+result_in_game = "Le groupe ennemi utilise cette zone de départ."
+badges = PackedStringArray("Départ", "Groupe")
+payload = {"spawn_kind": 4}
+
+[sub_resource type="Resource" id="Summon"]
+script = ExtResource("2")
+stable_id = &"spawn_summon"
+display_name = "Zone d'invocation"
+family = 2
+placement_kind = 2
+result_in_game = "Les invocations autorisées peuvent apparaître sur cette case."
+badges = PackedStringArray("Départ", "Invocation")
+payload = {"spawn_kind": 5}
+
+[sub_resource type="Resource" id="Impulse"]
+script = ExtResource("2")
+stable_id = &"vortex_impulse"
+display_name = "Case d'impulsion"
+family = 3
+placement_kind = 3
+result_in_game = "Accorde +1 déplacement une fois par round."
+badges = PackedStringArray("Effet", "1 case")
+thumbnail = ExtResource("3")
+payload = {"interactive_id": &"vortex"}
+
+[sub_resource type="Resource" id="PortalTwo"]
+script = ExtResource("2")
+stable_id = &"vortex_portal_two"
+display_name = "Portail"
+family = 3
+placement_kind = 4
+result_in_game = "Téléporte directement entre deux cases reliées."
+badges = PackedStringArray("Effet", "2 cases")
+thumbnail = ExtResource("3")
+payload = {"interactive_id": &"vortex"}
+minimum_cells = 2
+maximum_cells = 2
+
+[sub_resource type="Resource" id="PortalMulti"]
+script = ExtResource("2")
+stable_id = &"vortex_portal_multi"
+display_name = "Portail à plusieurs sorties"
+family = 3
+placement_kind = 5
+result_in_game = "Choisit une autre sortie valide parmi les cases reliées."
+badges = PackedStringArray("Effet", "Plusieurs sorties")
+thumbnail = ExtResource("3")
+payload = {"interactive_id": &"vortex"}
+minimum_cells = 3
+maximum_cells = -1
+
+[sub_resource type="Resource" id="Decoration"]
+script = ExtResource("2")
+stable_id = &"decoration_marker"
+display_name = "Repère de décor"
+family = 4
+placement_kind = 6
+result_in_game = "Ajoute un repère visuel traversable sur le terrain."
+badges = PackedStringArray("Décor", "Traversable")
+payload = {"visual_variant": &"marker"}
+
+[resource]
+script = ExtResource("1")
+entries = Array[ExtResource("2")]([SubResource("Hero1"), SubResource("Hero2"), SubResource("Hero3"), SubResource("Enemy"), SubResource("EnemyGroup"), SubResource("Summon"), SubResource("Impulse"), SubResource("PortalTwo"), SubResource("PortalMulti"), SubResource("Decoration")])

@@ -74,6 +74,13 @@ const SECTIONS := [
 		"advanced": true,
 	},
 	{
+		"id": &"vortex",
+		"title": "VORTEX — DÉPLACEMENTS SPÉCIAUX",
+		"steps": [TerrainWorkflowService.Step.CONTENT, TerrainWorkflowService.Step.SCENERY],
+		# Un vortex est un élément de gameplay à placer, pas un réglage technique.
+		"advanced": false,
+	},
+	{
 		"id": &"simulation",
 		"title": "SIMULATIONS TECHNIQUES",
 		"steps": [TerrainWorkflowService.Step.VERIFY],
@@ -193,6 +200,32 @@ func set_context(step: int, guided: bool) -> void:
 			visible_count += 1
 	empty_label.visible = visible_count == 0
 	header_label.text = "INSPECTEUR — %s" % TerrainWorkflowService.step_label(_step)
+
+
+## Contrat nominal de l'éditeur spatial : la visibilité dépend de l'outil ou
+## de l'élément sélectionné, jamais d'une étape du parcours.
+func set_spatial_context(
+		section_ids: Array[StringName],
+		title: String,
+		guided: bool
+	) -> void:
+	_build()
+	_guided = guided
+	var requested := section_ids.duplicate()
+	if not requested.has(&"selection"):
+		requested.push_front(&"selection")
+	var visible_count := 0
+	for section_id in sections:
+		var entry := sections[section_id] as Dictionary
+		var container := entry.container as Control
+		var shown := requested.has(StringName(section_id)) \
+			and (not bool(entry.advanced) or not guided)
+		container.visible = shown and container.get_child_count() > 0
+		if container.visible:
+			visible_count += 1
+	empty_label.visible = visible_count == 0
+	header_label.text = "INSPECTEUR" if title.strip_edges().is_empty() \
+		else "INSPECTEUR — %s" % title
 
 
 func set_drawer_mode(value: bool) -> void:

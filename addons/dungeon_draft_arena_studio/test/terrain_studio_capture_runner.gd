@@ -6,10 +6,10 @@ extends Control
 ##
 ## Usage :
 ##   godot --headless --path . res://addons/dungeon_draft_arena_studio/test/TerrainStudioCaptureRunner.tscn \
-##     -- --width=1280 --height=720 --views=home,creation,edit,validation,finalize,advanced
+##     -- --width=1280 --height=720 --views=home,creation,edit,selection,vortex,validation,advanced
 
 const OUTPUT_ROOT := "res://artifacts/terrain_studio/screenshots"
-const DEFAULT_VIEWS := "home,creation,edit,validation,finalize,advanced"
+const DEFAULT_VIEWS := "home,creation,edit,selection,vortex,validation,advanced,focus"
 
 var _studio: StudioWorkspace
 var _arena: ArenaStudioMain
@@ -25,17 +25,29 @@ func _run() -> void:
 	var options := _options()
 	_size = Vector2i(int(options.get("width", 1280)), int(options.get("height", 720)))
 	get_window().size = _size
+	get_window().content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	get_window().content_scale_aspect = Window.CONTENT_SCALE_ASPECT_IGNORE
+	get_window().content_scale_size = _size
 	print("TERRAIN_STUDIO_CAPTURE_START ", _size)
 	_studio = StudioWorkspace.new()
+	_studio.arena_auto_load_enabled = false
+	_studio.arena_production_planning_enabled = false
 	# Le plugin fournit toujours un contexte projet partagé : sans lui, la
 	# capture montrerait un accueil dégradé qui n'existe pas dans l'usage réel.
 	var context := StudioProjectContext.new()
 	context.initialize()
+	print("TERRAIN_STUDIO_CAPTURE_STAGE context_ready")
+	# Le runner fournit le vrai contexte partagé, mais ouvre lui-même sa fixture
+	# Arena : éviter l'ouverture automatique d'une salle et son smoke de
+	# production asynchrone rend la capture déterministe.
+	context.active_room_index = -1
 	_studio.setup(null, null, context, StudioReferenceGraphService.new())
 	_studio.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_studio)
+	print("TERRAIN_STUDIO_CAPTURE_STAGE workspace_added")
 	for _frame in range(10):
 		await get_tree().process_frame
+	print("TERRAIN_STUDIO_CAPTURE_STAGE workspace_ready")
 	_arena = _studio.arena_studio
 	if _arena == null:
 		push_error("Studio Terrain : ArenaStudioMain introuvable dans le workspace.")
@@ -43,12 +55,14 @@ func _run() -> void:
 		return
 	_studio.tabs.current_tab = 0
 	var arena := ArenaLegacyImporter.import_production(&"room_01_forest")
+	print("TERRAIN_STUDIO_CAPTURE_STAGE arena_imported")
 	if arena == null:
 		push_error("Studio Terrain : la carte de référence n'a pas pu être importée.")
 		get_tree().quit(1)
 		return
 	ArenaEditingService.apply_safety_border(arena, 1)
 	_arena._set_arena(arena, false, "terrain_capture:forest")
+	print("TERRAIN_STUDIO_CAPTURE_STAGE arena_opened")
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT_ROOT))
 	var failures := 0
 	for view in str(options.get("views", DEFAULT_VIEWS)).split(",", false):
@@ -59,6 +73,7 @@ func _run() -> void:
 
 
 func _capture_view(view: String) -> bool:
+	print("TERRAIN_STUDIO_CAPTURE_STAGE view_begin ", view)
 	if view != "focus":
 		_arena.set_focus_map(false)
 	# Le tiroir est fermé par défaut : seule la vue « validation » l'ouvre.
@@ -74,7 +89,24 @@ func _capture_view(view: String) -> bool:
 		"edit":
 			_arena.set_guided(true)
 			_arena.show_editor()
-			_arena.set_current_step(TerrainWorkflowService.Step.FLOORS)
+			_arena._on_tool_selected(ArenaStudioCanvas.Tool.TERRAIN)
+		"selection":
+			_arena.set_guided(true)
+			_arena.show_editor()
+			_arena._on_spatial_selection_requested(Vector2i(2, 2))
+		"grid":
+			_arena.set_guided(true)
+			_arena.show_editor()
+			_arena.set_current_step(TerrainWorkflowService.Step.SCENERY)
+			_arena._start_manual_grid_alignment()
+		"vortex":
+			_arena.set_guided(true)
+			_arena.show_editor()
+			var entry := TerrainPlaceableCatalogService.entry_by_id(
+				_arena.arena, &"vortex_portal_multi", true
+			)
+			if not entry.is_empty():
+				_arena._on_library_placeable_selected(entry)
 		"validation":
 			_arena.set_guided(true)
 			_arena.show_editor()
@@ -85,10 +117,6 @@ func _capture_view(view: String) -> bool:
 			_arena.validate_arena()
 			if not _arena.bottom_drawer_content.visible:
 				_arena._toggle_bottom_drawer()
-		"finalize":
-			_arena.set_guided(true)
-			_arena.show_editor()
-			_arena.set_current_step(TerrainWorkflowService.Step.FINALIZE)
 		"advanced":
 			_arena.set_guided(false)
 			_arena.show_editor()
@@ -102,13 +130,16 @@ func _capture_view(view: String) -> bool:
 			return false
 	for _frame in range(6):
 		await get_tree().process_frame
+	print("TERRAIN_STUDIO_CAPTURE_STAGE view_stable ", view)
 	# La vue est recadrée après stabilisation de la disposition : sinon la
 	# capture montrerait le zoom calculé pour une zone de canvas transitoire.
 	if _arena.canvas != null and _arena.canvas.is_visible_in_tree():
 		_arena.canvas.fit_to_image()
 	for _frame in range(3):
 		await get_tree().process_frame
-	await RenderingServer.frame_post_draw
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+	print("TERRAIN_STUDIO_CAPTURE_STAGE render_ready ", view)
 	_report_layout(view)
 	var path := OUTPUT_ROOT.path_join(
 		"terrain_studio_%s_%dx%d.png" % [view, _size.x, _size.y]
@@ -126,8 +157,8 @@ func _capture_view(view: String) -> bool:
 func _report_layout(view: String) -> void:
 	var blocks := {
 		"header": _arena.header_bar,
-		"guidance": _arena.guidance_panel,
-		"palette": _arena.palette_scroll,
+		"checklist": _arena.checklist_panel,
+		"library": _arena.library_panel,
 		"canvas": _arena.view_stack,
 		"drawer": _arena.bottom_drawer,
 		"status": _arena.status_label,

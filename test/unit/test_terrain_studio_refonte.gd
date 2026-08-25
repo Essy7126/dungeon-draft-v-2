@@ -5,14 +5,21 @@ extends GutTest
 ## Chaque test correspond à un point du cahier des charges validé :
 ## accès Nouveau/Ouvrir dans le vrai StudioWorkspace, mode guidé par défaut et
 ## réellement masquant, conservation de la session au changement de mode, rail
-## d'étapes, raccourcis réellement implémentés, parcours clavier, inspecteur
-## accessible sous 1 180 px, contrats brouillon/test/intégration, test sans
+## d'outils permanent, checklist non bloquante, bibliothèque spatiale,
+## raccourcis réellement implémentés, parcours clavier, inspecteur accessible
+## sous 1 400 px, contrats brouillon/test/intégration, test sans
 ## mutation de source, rollback de sauvegarde, projection runtime non mutante,
 ## transitions dirty, intégration UPDATE, focus/détachement et runner de
 ## captures.
 
 const FOREST_PATH := "res://data/arenas/room_01_forest.tres"
 const CAPTURE_RUNNER := "res://addons/dungeon_draft_arena_studio/test/terrain_studio_capture_runner.gd"
+const GridAlignmentService = preload(
+	"res://addons/dungeon_draft_arena_studio/services/terrain_grid_alignment_service.gd"
+)
+const GridAlignmentPanel = preload(
+	"res://addons/dungeon_draft_arena_studio/ui/terrain/terrain_grid_alignment_panel.gd"
+)
 
 
 func before_each() -> void:
@@ -113,38 +120,32 @@ func test_05_switching_guided_advanced_keeps_session_selection_zoom_and_history(
 	assert_true(session.history.can_undo())
 
 
-# --- 5. Le parcours affiche la bonne étape et le bon état -------------------
+# --- 5. Les outils restent libres et la checklist ne navigue pas ------------
 
-func test_06_workflow_rail_exposes_seven_steps_with_state_and_next_action() -> void:
+func test_06_permanent_tool_rail_and_checklist_replace_the_seven_step_navigation() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.validate_arena()
-	var steps := studio.workflow_steps()
-	assert_eq(steps.size(), TerrainWorkflowService.STEP_COUNT)
-	assert_eq(steps.size(), 7)
-	assert_eq(studio.workflow_rail.buttons.size(), 7)
-	var labels := PackedStringArray()
-	for entry in steps:
-		labels.append(str(entry.label))
-		assert_true(entry.has("goal"))
-		assert_true(entry.has("state"))
-		assert_true(entry.has("missing"))
-		assert_true(entry.has("next_action"))
-		assert_false(str(entry.goal).is_empty())
-		assert_false(str(entry.next_action).is_empty())
-		# Aucun état n'est transmis par la seule couleur.
-		assert_false(str(entry.state_glyph).is_empty())
-		assert_false(str(entry.state_word).is_empty())
-	assert_eq(labels, PackedStringArray([
-		"Départ", "Forme", "Sols", "Obstacles et départs", "Décor",
-		"Vérifier", "Tester et intégrer",
-	]))
-	# Le parcours reste libre : n'importe quelle étape s'ouvre directement.
+	assert_null(studio.workflow_rail)
+	assert_eq(
+		studio.tool_palette.tool_buttons.size(),
+		TerrainToolPalette.TOOL_BUTTONS.size()
+			+ TerrainToolPalette.ADVANCED_TOOL_BUTTONS.size()
+	)
+	for tool in studio.tool_palette.tool_buttons:
+		var button := studio.tool_palette.tool_buttons[tool] as Button
+		assert_false(button.disabled)
+	for entry in TerrainToolPalette.TOOL_BUTTONS:
+		assert_true((studio.tool_palette.tool_buttons[int(entry[0])] as Button).visible)
+	assert_false(studio.tool_palette.advanced_buttons[0].visible)
+	assert_not_null(studio.checklist_panel)
+	assert_eq(studio.checklist_panel._entries.size(), 5)
+	assert_true(studio.checklist_panel.is_collapsed())
+	# La compatibilité avec l'ancien numéro d'étape ne pilote plus les outils.
+	studio._on_tool_selected(ArenaStudioCanvas.Tool.OBSTACLE)
 	studio.set_current_step(TerrainWorkflowService.Step.FINALIZE)
 	assert_eq(studio.current_step, TerrainWorkflowService.Step.FINALIZE)
-	assert_eq(studio.workflow_rail.current_step(), TerrainWorkflowService.Step.FINALIZE)
-	studio.set_current_step(TerrainWorkflowService.Step.SHAPE)
-	assert_eq(studio.current_step, TerrainWorkflowService.Step.SHAPE)
+	assert_eq(studio.canvas.active_tool, ArenaStudioCanvas.Tool.OBSTACLE)
 
 
 func test_07_workflow_states_follow_the_document_content() -> void:
@@ -180,6 +181,7 @@ func test_07_workflow_states_follow_the_document_content() -> void:
 func test_08_every_advertised_tool_shortcut_selects_its_tool() -> void:
 	var studio := _studio()
 	_open_forest(studio)
+	await wait_process_frames(1)
 	studio.set_guided(false)
 	await wait_process_frames(1)
 	assert_eq(ArenaStudioMain.TOOL_SHORTCUT_KEYS.size(), ArenaStudioMain.TOOL_LABELS.size())
@@ -232,15 +234,15 @@ func test_10_all_primary_actions_are_keyboard_reachable() -> void:
 	assert_gt(focused, 5, "Le parcours clavier doit atteindre les actions visibles.")
 
 
-# --- 8. L'inspecteur reste accessible sous 1 180 px ------------------------
+# --- 8. L'inspecteur reste accessible sous 1 400 px ------------------------
 
-func test_11_inspector_stays_reachable_below_1180_px() -> void:
+func test_11_inspector_stays_reachable_below_1400_px() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.show_editor()
 	_size_studio(studio, 1100, 720)
 	await wait_process_frames(1)
-	assert_false(studio.right_panel.visible, "L'inspecteur se replie sous 1 180 px.")
+	assert_false(studio.right_panel.visible, "L'inspecteur se replie sous 1 400 px.")
 	assert_true(
 		studio.inspector_drawer_button.visible,
 		"Un accès de remplacement doit rester visible."
@@ -609,29 +611,159 @@ func test_24_guided_vocabulary_avoids_technical_terms() -> void:
 	assert_eq(TerrainVocabulary.user_term("runtime"), "Résultat en jeu")
 
 
-func test_25_creation_wizard_offers_three_intentions_and_adapts_its_button() -> void:
+func test_25_creation_wizard_offers_two_direct_intentions() -> void:
 	var wizard := TerrainCreationWizard.new()
 	add_child_autofree(wizard)
 	await wait_process_frames(1)
 	wizard.start()
-	assert_eq(wizard.choice_buttons.size(), 3)
+	assert_eq(wizard.choice_buttons.size(), 2)
 	assert_eq(wizard.current_screen(), TerrainCreationWizard.SCREEN_CHOICE)
-	# Avec des tuiles : aucune illustration demandée, bouton « Créer et peindre ».
+	var created_configs: Array[Dictionary] = []
+	wizard.create_confirmed.connect(func(config): created_configs.append(config))
+	# Avec des tuiles : création immédiate d'un terrain 10 × 8 prêt à peindre.
 	wizard._on_choice_pressed(1)
-	assert_eq(wizard.current_screen(), TerrainCreationWizard.SCREEN_DETAILS)
-	assert_false(wizard.image_row.visible)
-	assert_eq(wizard.confirm_button.text, "Créer et peindre")
-	assert_false(wizard.confirm_button.disabled)
-	# Depuis une illustration : le bouton change et l'image devient obligatoire.
+	assert_eq(created_configs.size(), 1)
+	assert_eq(int(created_configs[0].width), 10)
+	assert_eq(int(created_configs[0].height), 8)
+	# Depuis une illustration : l'aperçu crée directement une grille 3 × 3.
 	wizard._on_choice_pressed(0)
-	assert_true(wizard.image_row.visible)
-	assert_eq(wizard.confirm_button.text, "Créer et aligner l'illustration")
+	assert_eq(wizard.current_screen(), TerrainCreationWizard.SCREEN_IMAGE)
+	assert_true(wizard.image_row.is_visible_in_tree())
+	assert_false(wizard.details_screen.visible)
+	assert_eq(wizard.confirm_button.text, "Créer une grille 3 × 3 et l'ajuster")
 	assert_true(wizard.confirm_button.disabled)
 	assert_string_contains(wizard.blocking_label.text, "illustration")
-	# Les réglages techniques n'apparaissent qu'en mode avancé.
-	assert_false(wizard.advanced_box.visible)
-	wizard.set_advanced(true)
-	assert_true(wizard.advanced_box.visible)
+	wizard.set_image_path(
+		"res://asset/map/painted/room_01_forest/forest_background_source.png"
+	)
+	assert_not_null(wizard.image_preview.texture)
+	assert_false(wizard.confirm_button.disabled)
+	wizard._on_confirm()
+	assert_eq(created_configs.size(), 2)
+	assert_eq(int(created_configs[1].width), 3)
+	assert_eq(int(created_configs[1].height), 3)
+	assert_false(wizard.details_screen.visible)
+
+
+func test_25b_grid_alignment_uses_node2d_style_settings_and_round_trips() -> void:
+	var input := {
+		"grid_size": Vector2i(14, 9),
+		"position": Vector2(321.5, 208.25),
+		"rotation_degrees": 12.0,
+		"scale": Vector2(0.95, 1.15),
+		"skew_degrees": -18.0,
+	}
+	var result: Dictionary = GridAlignmentService.snapshot_from_settings(input)
+	assert_true(bool(result.get("ok", false)))
+	var arena := ArenaDefinition.new()
+	arena.grid_size = input.grid_size
+	var snapshot := result.get("snapshot") as GridTransformSnapshot
+	snapshot.apply_to(arena)
+	var resolved: Dictionary = GridAlignmentService.settings_from_arena(arena)
+	assert_almost_eq((resolved.position as Vector2).x, 321.5, 0.001)
+	assert_almost_eq((resolved.position as Vector2).y, 208.25, 0.001)
+	assert_almost_eq(float(resolved.rotation_degrees), 12.0, 0.001)
+	assert_almost_eq((resolved.scale as Vector2).x, 0.95, 0.001)
+	assert_almost_eq((resolved.scale as Vector2).y, 1.15, 0.001)
+	assert_almost_eq(float(resolved.skew_degrees), -18.0, 0.001)
+	var round_trip: Dictionary = GridAlignmentService.snapshot_from_settings(resolved)
+	assert_true(bool(round_trip.get("ok", false)))
+	assert_true(snapshot.is_equal_to(round_trip.get("snapshot"), 0.001))
+
+
+func test_25c_new_illustration_grid_is_centered_and_panel_exposes_all_settings() -> void:
+	var centered: GridTransformSnapshot = GridAlignmentService.centered_snapshot(
+		Vector2i(1280, 720), Vector2i(10, 8)
+	)
+	var grid_center: Vector2 = centered.origin \
+		+ 4.5 * centered.axis_x + 3.5 * centered.axis_y
+	assert_almost_eq(grid_center.x, 640.0, 0.001)
+	assert_almost_eq(grid_center.y, 360.0, 0.001)
+	var panel: VBoxContainer = GridAlignmentPanel.new()
+	add_child_autofree(panel)
+	await wait_process_frames(1)
+	for field in [
+		panel.width_spin, panel.height_spin, panel.position_x_spin,
+		panel.position_y_spin, panel.rotation_spin, panel.scale_x_spin,
+		panel.scale_y_spin, panel.skew_spin,
+	]:
+		assert_not_null(field)
+	assert_null(panel.find_child("TerrainGridApplySettings", true, false))
+	assert_null(panel.find_child("TerrainGridConfirmAlignment", true, false))
+
+
+func test_25d_grid_settings_update_immediately_and_create_one_history_action() -> void:
+	var studio := _studio()
+	studio._set_arena(_valid_arena(), true, "terrain_live_grid_settings")
+	studio.set_current_step(TerrainWorkflowService.Step.SCENERY)
+	await wait_process_frames(1)
+	var history_before := studio.edit_session.history.get_current_index()
+	var origin_before := studio.arena.grid_origin
+	var position_x: SpinBox = studio.grid_alignment_panel.position_x_spin
+	position_x.value = position_x.value + 12.0
+	assert_almost_eq(position_x.value, origin_before.x + 12.0, 0.001)
+	await wait_process_frames(1)
+	assert_almost_eq(studio.arena.grid_origin.x, origin_before.x + 12.0, 0.001)
+	assert_eq(studio.edit_session.history.get_current_index(), history_before)
+	await wait_seconds(0.5)
+	assert_eq(studio.edit_session.history.get_current_index(), history_before + 1)
+	assert_eq(
+		studio.edit_session.history.get_undo_action_name(),
+		"Ajuster la grille sur l'illustration"
+	)
+
+
+func test_25e_guided_workspace_keeps_a_compact_permanent_library() -> void:
+	var studio := _studio()
+	studio._set_arena(_valid_arena(), true, "terrain_compact_scenery")
+	studio.set_guided(true)
+	studio.set_current_step(TerrainWorkflowService.Step.SCENERY)
+	await wait_process_frames(1)
+	assert_not_null(studio.library_panel)
+	assert_lte(studio.library_panel.custom_minimum_size.y, 180.0)
+	assert_false(studio.tool_palette.contract_label.visible)
+	assert_eq(studio.library_panel.filter_buttons.size(), 8)
+	assert_gt(studio.library_panel.cards.get_child_count(), 0)
+
+
+func test_25f_guided_illustration_opens_a_direct_image_chooser() -> void:
+	var studio := _studio()
+	studio._set_arena(_valid_arena(), true, "terrain_direct_illustration")
+	studio.set_guided(true)
+	studio._request_backdrop_change()
+	await wait_process_frames(1)
+	assert_true(studio.guided_backdrop_image_dialog.visible)
+	assert_false(studio.backdrop_dialog.visible)
+	assert_string_contains(studio.guided_backdrop_image_dialog.title, "illustration")
+	studio.guided_backdrop_image_dialog.hide()
+
+
+func test_25g_vortex_choices_are_explicit_and_impulse_finishes_after_one_cell() -> void:
+	var studio := _studio()
+	studio._set_arena(_valid_arena(), true, "terrain_vortex_intents")
+	studio.set_guided(true)
+	studio.set_current_step(TerrainWorkflowService.Step.CONTENT)
+	await wait_process_frames(1)
+	assert_null(studio.workflow_rail)
+	for stable_id in [&"vortex_impulse", &"vortex_portal_two", &"vortex_portal_multi"]:
+		var catalog_entry := TerrainPlaceableCatalogService.entry_by_id(
+			studio.arena, stable_id, true
+		)
+		assert_false(catalog_entry.is_empty())
+		assert_false(str(catalog_entry.tooltip).is_empty())
+	var impulse := TerrainPlaceableCatalogService.entry_by_id(
+		studio.arena, &"vortex_impulse", true
+	)
+	studio._on_library_placeable_selected(impulse)
+	assert_true(studio._placement_session.active)
+	assert_eq(studio.canvas.active_tool, ArenaStudioCanvas.Tool.SPAWN)
+	studio._on_stroke_started("Placer une case d'impulsion")
+	studio._on_cells_edit_requested([Vector2i(2, 2)], false)
+	studio._on_stroke_finished("Placer une case d'impulsion")
+	await wait_process_frames(2)
+	assert_eq(studio.arena.vortex_networks.size(), 1)
+	assert_eq(studio.arena.vortex_networks[0].unique_cells().size(), 1)
+	assert_false(studio._placement_session.active)
 
 
 func test_26_validation_cards_are_actionable_and_auto_fix_is_undoable() -> void:
@@ -680,71 +812,58 @@ func test_27_validation_only_offers_deterministic_and_safe_fixes() -> void:
 	assert_eq(first, second)
 
 
-func test_28_contextual_guidance_replaces_the_twenty_two_page_tour() -> void:
+func test_28_checklist_replaces_step_navigation_without_blocking_the_canvas() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.show_editor()
 	studio.set_current_step(TerrainWorkflowService.Step.FLOORS)
 	await wait_process_frames(1)
-	assert_true(studio.guidance_panel.visible)
-	assert_string_contains(studio.guidance_panel.step_label.text, "Étape 3")
-	assert_string_contains(studio.guidance_panel.step_label.text, "Sols")
-	assert_string_contains(studio.guidance_panel.instruction_label.text, "Clic gauche")
-	assert_eq(studio.guidance_panel.continue_button.text, "Continuer")
-	# Le guidage se masque sans bloquer les outils.
-	studio.set_guidance_visible(false)
-	assert_false(studio.guidance_panel.visible)
+	assert_null(studio.guidance_panel)
+	assert_not_null(studio.checklist_panel)
+	studio.checklist_panel.set_collapsed(false)
+	assert_true(studio.checklist_panel.entries_box.visible)
 	assert_false(studio.canvas.mouse_filter == Control.MOUSE_FILTER_IGNORE)
-	studio.set_guidance_visible(true)
-	assert_true(studio.guidance_panel.visible)
-	# Retour à l'étape précédente.
-	studio._on_guidance_previous()
-	assert_eq(studio.current_step, TerrainWorkflowService.Step.SHAPE)
-	studio._on_guidance_continue()
-	assert_eq(studio.current_step, TerrainWorkflowService.Step.FLOORS)
-	# La visite complète reste consultable comme aide.
+	studio._on_tool_selected(ArenaStudioCanvas.Tool.OBSTACLE)
+	assert_eq(studio.canvas.active_tool, ArenaStudioCanvas.Tool.OBSTACLE)
+	# La visite complète reste consultable comme aide facultative.
 	assert_not_null(studio.guided_tour)
 	assert_gt(ArenaStudioGuidedTour.PAGES.size(), 0)
 
 
-func test_29_floor_palette_separates_permanent_floors_from_temporary_surfaces() -> void:
+func test_29_library_unifies_all_placeable_families_and_keeps_tooltips() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.set_current_step(TerrainWorkflowService.Step.FLOORS)
 	await wait_process_frames(1)
-	assert_not_null(studio.floor_palette)
-	assert_gt(studio.floor_palette.buttons.size(), 3)
-	for terrain_id in studio.floor_palette.buttons:
-		var button := studio.floor_palette.buttons[terrain_id] as Button
-		assert_false(button.tooltip_text.is_empty(), "Chaque sol porte une infobulle.")
-		var definition := ArenaCatalogService.terrain(terrain_id)
-		assert_not_null(definition)
-		assert_string_contains(button.tooltip_text, definition.display_name)
-	assert_string_contains(
-		studio.floor_palette.temporary_label.text, "SURFACES TEMPORAIRES"
-	)
-	assert_string_contains(
-		studio.floor_palette.temporary_label.text, "pendant le combat"
-	)
+	assert_null(studio.floor_palette)
+	assert_not_null(studio.library_panel)
+	var families := {}
+	for entry in studio.library_panel._entries:
+		families[int(entry.family)] = true
+		assert_false(str(entry.tooltip).is_empty())
+	for family in TerrainPlaceableDefinition.Family.values():
+		assert_true(families.has(family), "Chaque famille doit être représentée.")
+	studio.library_panel.search_edit.text = "impulsion"
+	await wait_process_frames(1)
+	assert_not_null(studio.library_panel.find_child("TerrainLibraryCard_vortex_impulse", true, false))
 
 
-func test_30_destination_is_absent_from_construction_and_present_in_finalize() -> void:
+func test_30_validation_test_and_integration_stay_reachable_without_a_finalize_step() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.show_editor()
 	_size_studio(studio, 1600, 900)
 	studio.set_current_step(TerrainWorkflowService.Step.FLOORS)
 	await wait_process_frames(1)
-	assert_false(
-		studio.destination_panel.is_visible_in_tree(),
-		"La destination de salle ne doit pas occuper l'inspecteur pendant la construction."
-	)
+	assert_not_null(studio.header_bar.validation_button)
+	assert_not_null(studio.header_bar.test_button)
+	assert_not_null(studio.header_bar.integrate_button)
+	assert_true(studio.header_bar.validation_button.is_visible_in_tree())
 	studio.set_current_step(TerrainWorkflowService.Step.FINALIZE)
 	await wait_process_frames(1)
-	assert_true(
-		studio.destination_panel.is_visible_in_tree(),
-		"La destination apparaît à l'étape Tester et intégrer."
-	)
+	assert_true(studio.header_bar.validation_button.is_visible_in_tree())
+	assert_true(studio.header_bar.test_button.is_visible_in_tree())
+	assert_true(studio.header_bar.integrate_button.is_visible_in_tree())
 
 
 func test_31_panel_state_is_persisted_outside_business_resources() -> void:
@@ -757,12 +876,15 @@ func test_31_panel_state_is_persisted_outside_business_resources() -> void:
 		)
 	var studio := _studio()
 	_open_forest(studio)
+	await wait_process_frames(1)
 	studio.set_guided(false)
 	studio.set_current_step(TerrainWorkflowService.Step.VERIFY)
 	var snapshot := studio.get_workspace_state()
 	assert_false(bool(snapshot.guided))
 	assert_eq(int(snapshot.step), TerrainWorkflowService.Step.VERIFY)
 	assert_true(snapshot.has("guidance_visible"))
+	assert_true(snapshot.has("checklist_collapsed"))
+	assert_true(snapshot.has("library"))
 
 
 # --- Utilitaires ------------------------------------------------------------

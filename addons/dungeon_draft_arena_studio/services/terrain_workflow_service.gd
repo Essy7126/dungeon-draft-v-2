@@ -2,10 +2,9 @@
 class_name TerrainWorkflowService
 extends RefCounted
 
-## Modele metier du parcours du Studio Terrain. Ce service ne connait aucun
-## noeud d'interface : il transforme une ArenaDefinition, un rapport de
-## validation et quelques drapeaux de session en sept etapes decrites en
-## francais, avec leur etat, ce qui manque et l'action recommandee.
+## Modèle métier de préparation du Studio Terrain. Le format historique en
+## sept étapes reste disponible pour la compatibilité, mais `checklist()` est
+## le contrat nominal : il informe sans piloter la navigation ou les outils.
 
 enum Step {
 	START,
@@ -85,7 +84,7 @@ const STEP_HINTS := [
 	"Clic gauche : ajouter une case · clic droit : retirer une case.",
 	"Choisissez un sol, puis peignez directement sur la grille.\nClic gauche : peindre · clic droit : restaurer.",
 	"Clic gauche : poser l'élément choisi · clic droit : le retirer.",
-	"Importez une illustration, puis alignez la grille dessus.",
+	"Observez l'illustration, puis ajustez et confirmez la grille dessus.",
 	"Cliquez une carte de problème pour voir la case concernée.",
 	"Testez d'abord le combat, puis choisissez la salle de destination.",
 ]
@@ -206,6 +205,34 @@ static func evaluate(
 		entry["state_glyph"] = state_glyph(entry.state)
 		entry["next_action"] = _next_action_text(entry)
 	return steps
+
+
+## Checklist courte et non séquentielle affichée à côté du rail d'outils.
+## Chaque entrée reprend les preuves déjà calculées par le modèle historique,
+## sans créer une seconde logique de préparation.
+static func checklist(
+		arena: ArenaDefinition,
+		report: ArenaValidationReport,
+		context := {}
+	) -> Array[Dictionary]:
+	var steps := evaluate(arena, report, context)
+	var result: Array[Dictionary] = []
+	for definition in [
+		["Forme valide", Step.SHAPE],
+		["Sols définis", Step.FLOORS],
+		["Départs présents", Step.CONTENT],
+		["Décor prêt", Step.SCENERY],
+		["Aucun problème bloquant", Step.VERIFY],
+	]:
+		var source := steps[int(definition[1])] as Dictionary
+		result.append({
+			"label": str(definition[0]),
+			"state": source.get("state", STATE_TODO),
+			"detail": source.get("next_action", ""),
+			"error_count": source.get("error_count", 0),
+			"warning_count": source.get("warning_count", 0),
+		})
+	return result
 
 
 static func recommended_step(steps: Array[Dictionary]) -> int:

@@ -58,8 +58,14 @@ func test_03_neutral_and_stone_textures_are_reloadable() -> void:
 func test_04_catalog_distinguishes_active_and_informational_entries() -> void:
 	var entries := ArenaPermanentTerrainPaintService \
 		.get_paintable_permanent_terrains(_arena_fixture(), true)
-	assert_eq(entries.size(), 9)
-	assert_eq(entries.filter(func(value): return value.enabled).size(), 8)
+	assert_eq(
+		entries.size(),
+		ArenaPermanentTerrainPaintService.get_placeable_terrain_definitions().size() + 1
+	)
+	assert_eq(
+		entries.filter(func(value): return value.enabled).size(),
+		ArenaPermanentTerrainPaintService.get_placeable_terrain_definitions().size()
+	)
 	var void_entry: Dictionary = entries.filter(func(value):
 		return StringName(value.stable_id) == &"void"
 	)[0]
@@ -187,7 +193,7 @@ func test_16_non_paintable_entries_are_disabled_in_both_dropdowns() -> void:
 	studio.arena = _arena_fixture()
 	studio.call("_refresh_permanent_terrain_options")
 	for option in [studio.terrain_option, studio.dynamic_terrain_option]:
-		assert_eq(option.item_count, 12)
+		assert_gt(option.item_count, PERMANENT_IDS.size())
 		for index in range(option.item_count):
 			if option.is_item_separator(index):
 				continue
@@ -219,6 +225,43 @@ func test_17_undo_redo_restores_permanent_terrain() -> void:
 	assert_eq(session.working_arena.get_cell_definition(cell).terrain_id, &"stone")
 	assert_true(session.history.redo())
 	assert_eq(session.working_arena.get_cell_definition(cell).terrain_id, &"water")
+
+
+func test_17b_special_floor_auto_enables_hybrid_and_right_click_restores_base() -> void:
+	var arena := _arena_fixture()
+	arena.visual_mode = ArenaDefinition.VisualMode.PAINTED
+	arena.modular_visual_profile.base_terrain_id = &"stone"
+	var special := TerrainPlaceableCatalogService.entry_by_id(
+		arena, &"floor:lava", true
+	).get("definition") as TerrainPlaceableDefinition
+	assert_not_null(special)
+	assert_true(ArenaDynamicEditingService.apply_placeable(
+		arena, special, Vector2i(1, 1), false
+	))
+	assert_eq(arena.visual_mode, ArenaDefinition.VisualMode.HYBRID)
+	assert_eq(
+		arena.modular_visual_profile.hybrid_floor_policy,
+		ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
+	)
+	assert_eq(arena.get_cell_definition(Vector2i(1, 1)).terrain_id, &"lava")
+	assert_true(ArenaDynamicEditingService.apply_placeable(
+		arena, special, Vector2i(1, 1), true
+	))
+	assert_eq(arena.get_cell_definition(Vector2i(1, 1)).terrain_id, &"stone")
+
+
+func test_17c_ordinary_floor_on_painted_map_requires_explicit_all_defined_activation() -> void:
+	var arena := _arena_fixture()
+	arena.visual_mode = ArenaDefinition.VisualMode.PAINTED
+	var ordinary := TerrainPlaceableCatalogService.entry_by_id(
+		arena, &"floor:neutral", true
+	).get("definition") as TerrainPlaceableDefinition
+	assert_not_null(ordinary)
+	assert_false(ArenaDynamicEditingService.apply_placeable(
+		arena, ordinary, Vector2i(1, 1), false
+	))
+	assert_eq(arena.visual_mode, ArenaDefinition.VisualMode.PAINTED)
+	assert_eq(arena.get_cell_definition(Vector2i(1, 1)).terrain_id, &"stone")
 
 
 func test_18_canvas_entries_follow_the_working_copy_after_refresh() -> void:

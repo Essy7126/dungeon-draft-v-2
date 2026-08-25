@@ -21,6 +21,12 @@ const TERRAIN_SIM_WATER := "res://data/terrain/eau.tres"
 const TerrainHeaderBarComponent = preload(
 	"res://addons/dungeon_draft_arena_studio/ui/terrain/terrain_header_bar.gd"
 )
+const TerrainGridAlignmentPanelComponent = preload(
+	"res://addons/dungeon_draft_arena_studio/ui/terrain/terrain_grid_alignment_panel.gd"
+)
+const TerrainGridAlignmentServiceComponent = preload(
+	"res://addons/dungeon_draft_arena_studio/services/terrain_grid_alignment_service.gd"
+)
 ## Vocabulaire utilisateur des outils. Il suit TerrainVocabulary : « Sols » et
 ## « Points de départ » remplacent « Terrains » et « Spawns » dans tout le
 ## parcours nominal.
@@ -94,12 +100,16 @@ var status_label: Label
 ## --- Refonte Terrain : ecrans, rail, palettes et guidage -------------------
 var screen_stack: Control
 var header_bar: PanelContainer
+var auto_load_initial_arena := true
+var production_planning_enabled := true
 var home_panel: TerrainHomePanel
 var creation_wizard: TerrainCreationWizard
 var editor_screen: Control
 var workflow_rail: TerrainWorkflowRail
 var tool_palette: TerrainToolPalette
 var floor_palette: TerrainFloorPalette
+var checklist_panel: TerrainChecklistPanel
+var library_panel: TerrainLibraryPanel
 var guidance_panel: TerrainGuidancePanel
 var validation_panel: TerrainValidationPanel
 var finalize_panel: TerrainFinalizePanel
@@ -111,6 +121,7 @@ var home_button: Button
 var new_terrain_button: Button
 var open_terrain_button: Button
 var inspector_drawer_button: Button
+var inspector_overlay_host: MarginContainer
 var palette_scroll: ScrollContainer
 var glossary_dialog: AcceptDialog
 
@@ -147,6 +158,8 @@ var verification_option: OptionButton
 var test_configuration_option: OptionButton
 var inspector_label: Label
 var calibration_label: Label
+var grid_alignment_panel: VBoxContainer
+var _grid_alignment_live_before: Dictionary = {}
 var advanced_panel: VBoxContainer
 var advanced_values: Array[SpinBox] = []
 var validation_list: ItemList
@@ -173,6 +186,7 @@ var backdrop_compare_slider: HSlider
 var backdrop_compare_value_label: Label
 var backdrop_state_label: Label
 var backdrop_image_dialog: FileDialog
+var guided_backdrop_image_dialog: FileDialog
 var _backdrop_sources: Array[ArenaBackdropSourceDefinition] = []
 var backdrop_transaction := ArenaBackdropTransactionService.new()
 var vortex_dialog: ConfirmationDialog
@@ -180,7 +194,21 @@ var vortex_network_option: OptionButton
 var vortex_summary: Label
 var vortex_name_edit: LineEdit
 var _active_vortex_network_id: StringName = &""
+enum VortexIntent { NONE, IMPULSE, PORTAL_TWO, PORTAL_MULTI }
+var _active_vortex_intent := VortexIntent.NONE
+var _vortex_edit_active := false
 var _recent_terrain_ids: Array[StringName] = []
+var _active_placeable := {}
+var _selected_spatial := {}
+var _placement_session := TerrainPlacementSession.new()
+var spatial_name_edit: LineEdit = null
+var spatial_cells_label: Label = null
+var spatial_delete_button: Button = null
+var placement_finish_button: Button = null
+var hybrid_all_button: Button = null
+var spatial_enabled_check: CheckBox = null
+var spatial_team_option: OptionButton = null
+var spatial_edit_cells_button: Button = null
 var layer_controls := {}
 var transform_controls := {}
 var transform_panel: VBoxContainer
@@ -362,6 +390,8 @@ func _exit_tree() -> void:
 
 
 func ensure_initial_arena_loaded() -> void:
+	if not auto_load_initial_arena:
+		return
 	if arena != null:
 		return
 	if project_context != null and _open_context_room(project_context.active_room()):
@@ -565,7 +595,7 @@ func _build_top_bar() -> Control:
 	title_label.add_theme_color_override("font_color", Color(0.52, 0.88, 1.0))
 	title_label.custom_minimum_size.x = 260
 	bar.add_child(title_label)
-	var new_button := _add_button(bar, "+ Nouvelle", _show_new_dialog)
+	var new_button := _add_button(bar, "+ Nouvelle", show_creation_wizard)
 	new_button.tooltip_text = "Créer une nouvelle arène"
 	_add_button(bar, "Ouvrir", _show_open_dialog)
 	_add_button(bar, "Sauvegarder", save_arena)
@@ -589,6 +619,9 @@ func _build_header() -> PanelContainer:
 	header.open_requested.connect(_show_open_dialog)
 	header.guided_toggled.connect(set_guided)
 	header.preview_selected.connect(_on_preview_option_selected)
+	header.validation_requested.connect(_open_validation_drawer)
+	header.test_requested.connect(test_arena)
+	header.integrate_requested.connect(_on_integrate_destination_pressed)
 	home_button = header.home_button
 	new_terrain_button = header.new_terrain_button
 	open_terrain_button = header.open_terrain_button
@@ -598,46 +631,43 @@ func _build_header() -> PanelContainer:
 	return header
 
 
-## Le rail des etapes remplace la liste plate d'outils dans la colonne gauche.
+## Rail permanent : les outils ne dépendent plus de l'avancement pédagogique.
 func _build_left_panel() -> Control:
-	workflow_rail = TerrainWorkflowRail.new()
-	workflow_rail.step_selected.connect(set_current_step)
-	workflow_rail.primary_action_requested.connect(_on_step_primary_action)
-	return workflow_rail
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size.x = 172
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var panel := VBoxContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.add_theme_constant_override("separation", 4)
+	scroll.add_child(panel)
+	tool_palette = TerrainToolPalette.new()
+	tool_palette.tool_requested.connect(_select_tool_from_palette)
+	tool_palette.action_requested.connect(_on_palette_action)
+	panel.add_child(tool_palette)
+	tool_palette.set_active_tool(ArenaStudioCanvas.Tool.SELECT)
+	checklist_panel = TerrainChecklistPanel.new()
+	checklist_panel.collapsed_changed.connect(_on_checklist_collapsed_changed)
+	panel.add_child(checklist_panel)
+	active_tool_label = tool_palette.contract_label
+	_refresh_active_tool_contract(ArenaStudioCanvas.Tool.SELECT)
+	return scroll
 
 
 func _build_canvas_panel() -> Control:
 	var box := VBoxContainer.new()
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	guidance_panel = TerrainGuidancePanel.new()
-	guidance_panel.continue_requested.connect(_on_guidance_continue)
-	guidance_panel.previous_requested.connect(_on_guidance_previous)
-	guidance_panel.hidden_requested.connect(func(): set_guidance_visible(false))
-	guidance_panel.glossary_requested.connect(show_glossary)
-	box.add_child(guidance_panel)
-	tool_palette = TerrainToolPalette.new()
-	tool_palette.tool_requested.connect(_select_tool_from_palette)
-	tool_palette.action_requested.connect(_on_palette_action)
-	# La palette est bornée en hauteur et défile : le canvas reste la zone
-	# prioritaire, même en 1280 × 720 et même avec une palette de sols riche.
-	palette_scroll = ScrollContainer.new()
-	palette_scroll.name = "TerrainPaletteScroll"
-	palette_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	palette_scroll.custom_minimum_size.y = 132
-	palette_scroll.size_flags_vertical = Control.SIZE_FILL
-	palette_scroll.add_child(tool_palette)
-	tool_palette.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.add_child(palette_scroll)
-	_populate_tool_palette()
-	# Le contrat « OUTIL ACTIF » vit desormais dans la palette contextuelle :
-	# une seule etiquette, jamais deux sources de verite.
-	active_tool_label = tool_palette.contract_label
-	_refresh_active_tool_contract(ArenaStudioCanvas.Tool.SELECT)
 	var navigation := HBoxContainer.new()
 	canvas_navigation = navigation
-	_add_button(navigation, "Recentrer", func(): canvas.recenter_grid())
-	_add_button(navigation, "Adapter à l'image", func(): canvas.fit_to_image())
+	var center_grid_button := _add_button(
+		navigation, "Centrer la vue sur la grille", func(): canvas.recenter_grid()
+	)
+	center_grid_button.tooltip_text = "Déplace seulement la vue ; la grille ne change pas."
+	var show_image_button := _add_button(
+		navigation, "Voir toute l'illustration", func(): canvas.fit_to_image()
+	)
+	show_image_button.tooltip_text = "Ajuste seulement le zoom pour afficher l'image entière."
 	var hint := Label.new()
 	hint.text = "Molette : zoom • Clic milieu : déplacer"
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -661,6 +691,18 @@ func _build_canvas_panel() -> Control:
 	runtime_preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	runtime_preview.hide()
 	view_stack.add_child(runtime_preview)
+	inspector_overlay_host = MarginContainer.new()
+	inspector_overlay_host.name = "TerrainInspectorOverlayHost"
+	inspector_overlay_host.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
+	inspector_overlay_host.offset_left = -320.0
+	inspector_overlay_host.mouse_filter = Control.MOUSE_FILTER_PASS
+	inspector_overlay_host.visible = false
+	view_stack.add_child(inspector_overlay_host)
+	library_panel = TerrainLibraryPanel.new()
+	library_panel.placeable_selected.connect(_on_library_placeable_selected)
+	library_panel.state_changed.connect(_on_library_state_changed)
+	library_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(library_panel)
 	return box
 
 
@@ -676,9 +718,53 @@ func _build_right_panel() -> Control:
 	inspector_label.name = "TerrainHoveredCellLabel"
 	inspector_label.text = "Survolez une case."
 	inspector_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	inspector_label.custom_minimum_size = Vector2(0, 64)
 	inspector_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector_panel.host_control(&"selection", inspector_label)
+	spatial_name_edit = LineEdit.new()
+	spatial_name_edit.name = "TerrainSpatialName"
+	spatial_name_edit.placeholder_text = "Nom de l'élément"
+	spatial_name_edit.visible = false
+	spatial_name_edit.focus_exited.connect(_rename_selected_spatial)
+	spatial_name_edit.text_submitted.connect(func(_value): _rename_selected_spatial())
+	inspector_panel.host_control(&"selection", spatial_name_edit)
+	spatial_cells_label = Label.new()
+	spatial_cells_label.name = "TerrainSpatialCells"
+	spatial_cells_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	spatial_cells_label.visible = false
+	inspector_panel.host_control(&"selection", spatial_cells_label)
+	spatial_enabled_check = CheckBox.new()
+	spatial_enabled_check.text = "Actif dans le jeu"
+	spatial_enabled_check.visible = false
+	spatial_enabled_check.toggled.connect(_set_selected_vortex_enabled)
+	inspector_panel.host_control(&"selection", spatial_enabled_check)
+	spatial_team_option = OptionButton.new()
+	spatial_team_option.add_item("Héros et ennemis")
+	spatial_team_option.set_item_metadata(0, 3)
+	spatial_team_option.add_item("Héros seulement")
+	spatial_team_option.set_item_metadata(1, 1)
+	spatial_team_option.add_item("Ennemis seulement")
+	spatial_team_option.set_item_metadata(2, 2)
+	spatial_team_option.visible = false
+	spatial_team_option.item_selected.connect(_set_selected_vortex_teams)
+	inspector_panel.host_control(&"selection", spatial_team_option)
+	spatial_edit_cells_button = _inspector_button(
+		"Modifier les cases sur le canvas", _edit_selected_vortex_cells,
+		"Clic gauche ajoute une case ; clic droit la retire."
+	)
+	spatial_edit_cells_button.visible = false
+	inspector_panel.host_control(&"selection", spatial_edit_cells_button)
+	spatial_delete_button = _inspector_button(
+		"Supprimer l'élément", _delete_selected_spatial,
+		"Supprimer l'élément sélectionné. Cette action peut être annulée."
+	)
+	spatial_delete_button.visible = false
+	inspector_panel.host_control(&"selection", spatial_delete_button)
+	placement_finish_button = _inspector_button(
+		"Terminer le placement", _finish_active_placement,
+		"Terminer le portail multiple et créer une seule action Annuler/Rétablir."
+	)
+	placement_finish_button.visible = false
+	inspector_panel.host_control(&"selection", placement_finish_button)
 
 	# Forme
 	inspector_panel.host_control(&"shape", _hint_label(
@@ -698,6 +784,12 @@ func _build_right_panel() -> Control:
 		"Le sol choisi dans la palette est appliqué par le pinceau."
 	))
 	inspector_panel.host_control(&"floors", terrain_option)
+	hybrid_all_button = _inspector_button(
+		"Afficher les dalles sur l'illustration", _enable_all_hybrid_floors,
+		"Conserver l'illustration et afficher toutes les dalles tactiques par-dessus."
+	)
+	hybrid_all_button.visible = false
+	inspector_panel.host_control(&"floors", hybrid_all_button)
 	inspector_panel.host_control(&"floors", _inspector_button(
 		"Remplacer un sol par un autre…", _show_terrain_replace_dialog,
 		"Échanger partout un type de sol contre un autre."
@@ -709,14 +801,6 @@ func _build_right_panel() -> Control:
 	))
 	inspector_panel.host_control(&"content", obstacle_option)
 	inspector_panel.host_control(&"content", spawn_option)
-	inspector_panel.host_control(&"content", _inspector_button(
-		"Placer les héros", func(): _select_tool_and_preset(ArenaStudioCanvas.Tool.SPAWN, 0),
-		"Sélectionner l'outil Points de départ, réglé sur Héros 1."
-	))
-	inspector_panel.host_control(&"content", _inspector_button(
-		"Placer les ennemis", func(): _select_tool_and_preset(ArenaStudioCanvas.Tool.SPAWN, 4),
-		"Sélectionner l'outil Points de départ, réglé sur Groupe ennemi."
-	))
 	dynamic_palette = _build_dynamic_palette()
 	dynamic_palette.hide()
 	inspector_panel.host_control(&"content", dynamic_palette)
@@ -730,17 +814,13 @@ func _build_right_panel() -> Control:
 	calibration_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.28))
 	inspector_panel.host_control(&"scenery", calibration_label)
 	inspector_panel.host_control(&"scenery", _inspector_button(
-		"Choisir l'illustration…", _show_backdrop_dialog,
-		"Importer ou remplacer l'illustration de fond et le premier plan."
+		"Changer l'illustration…", _request_backdrop_change,
+		"Choisir directement un fichier PNG, JPG ou WEBP."
 	))
-	inspector_panel.host_control(&"scenery", _inspector_button(
-		"Aligner la grille en 3 clics", start_calibration,
-		"Cliquer trois centres de cases pour poser la grille sur l'illustration."
-	))
-	inspector_panel.host_control(&"scenery", _inspector_button(
-		"Réseaux de vortex…", _show_vortex_dialog,
-		"Créer ou modifier les passages de téléportation."
-	))
+	grid_alignment_panel = TerrainGridAlignmentPanelComponent.new()
+	grid_alignment_panel.settings_changed.connect(_preview_grid_alignment_settings)
+	grid_alignment_panel.editing_finished.connect(_finish_grid_alignment_edit)
+	inspector_panel.host_control(&"scenery", grid_alignment_panel)
 
 	# Verification
 	inspector_panel.host_control(&"verify", _hint_label(
@@ -785,6 +865,10 @@ func _build_right_panel() -> Control:
 	inspector_panel.host_control(&"calibration", advanced_panel)
 	inspector_panel.host_control(&"calibration", _build_transform_panel())
 	inspector_panel.host_control(&"layers", _build_layers_panel())
+	inspector_panel.host_control(&"layers", _inspector_button(
+		"Copier le décor d'un autre terrain…", _show_backdrop_dialog,
+		"Mode avancé : reprendre aussi, au choix, sa caméra et ses réglages visuels."
+	))
 	inspector_panel.host_control(&"simulation", _build_surface_preview_palette())
 	inspector_panel.host_control(&"simulation", dynamic_mode_button)
 
@@ -849,26 +933,6 @@ func _populate_tool_palette() -> void:
 	floor_palette.brush_size_changed.connect(func(size): canvas.brush_size = size)
 	tool_palette.host_wide_control(TerrainWorkflowService.Step.FLOORS, floor_palette)
 	tool_palette.host_control(TerrainWorkflowService.Step.SHAPE, shape_option)
-	tool_palette.add_action_button(
-		TerrainWorkflowService.Step.START, &"open_home",
-		"Revenir à l'accueil", "Choisir un autre terrain ou en créer un."
-	)
-	tool_palette.add_action_button(
-		TerrainWorkflowService.Step.SCENERY, &"choose_backdrop",
-		"Illustration…", "Choisir l'illustration de fond et le premier plan."
-	)
-	tool_palette.add_action_button(
-		TerrainWorkflowService.Step.SCENERY, &"calibrate",
-		"Aligner en 3 clics", "Poser la grille sur l'illustration."
-	)
-	tool_palette.add_action_button(
-		TerrainWorkflowService.Step.VERIFY, &"validate",
-		"Vérifier le terrain", "Relancer la vérification complète."
-	)
-	tool_palette.add_action_button(
-		TerrainWorkflowService.Step.FINALIZE, &"test",
-		"Tester le combat", "Lancer le vrai combat sur la version en cours."
-	)
 
 
 func _on_palette_action(action: StringName) -> void:
@@ -876,9 +940,9 @@ func _on_palette_action(action: StringName) -> void:
 		&"open_home":
 			show_home()
 		&"choose_backdrop":
-			_show_backdrop_dialog()
-		&"calibrate":
-			start_calibration()
+			_request_backdrop_change()
+		&"adjust_grid":
+			_start_manual_grid_alignment()
 		&"validate":
 			validate_arena()
 		&"test":
@@ -886,8 +950,121 @@ func _on_palette_action(action: StringName) -> void:
 
 
 func _select_tool_from_palette(tool: int) -> void:
+	if _placement_session.active and tool != ArenaStudioCanvas.Tool.SPAWN:
+		if _placement_session.can_finish():
+			_finish_active_placement()
+		else:
+			_cancel_active_placement()
 	tool_list.select(tool)
 	_on_tool_selected(tool)
+
+
+func _on_library_placeable_selected(entry: Dictionary) -> void:
+	if arena == null or entry.is_empty():
+		return
+	if _placement_session.active:
+		_cancel_active_placement()
+	_active_placeable = entry.duplicate(true)
+	var definition := entry.get("definition") as TerrainPlaceableDefinition
+	if definition == null:
+		return
+	canvas.set_placeable_preview(
+		entry.get("thumbnail") as Texture2D,
+		Color(0.48, 0.86, 1.0, 0.48), definition.display_name
+	)
+	match definition.placement_kind:
+		TerrainPlaceableDefinition.PlacementKind.PERMANENT_TERRAIN:
+			var terrain_id := StringName(definition.payload.get("terrain_id", &""))
+			if bool(entry.get("requires_activation", false)):
+				_select_tool_from_palette(ArenaStudioCanvas.Tool.TERRAIN)
+				canvas.set_brush_preview_terrain(terrain_id)
+				_set_status("Activez d'abord l'affichage des dalles dans l'Inspecteur.")
+			else:
+				_select_quick_terrain(terrain_id)
+		TerrainPlaceableDefinition.PlacementKind.WALL:
+			_select_tool_from_palette(ArenaStudioCanvas.Tool.OBSTACLE)
+		TerrainPlaceableDefinition.PlacementKind.SPAWN_POINT, \
+		TerrainPlaceableDefinition.PlacementKind.DECORATION_MARKER:
+			_select_tool_from_palette(ArenaStudioCanvas.Tool.SPAWN)
+		TerrainPlaceableDefinition.PlacementKind.VORTEX_IMPULSE, \
+		TerrainPlaceableDefinition.PlacementKind.VORTEX_PORTAL_TWO, \
+		TerrainPlaceableDefinition.PlacementKind.VORTEX_PORTAL_MULTI:
+			canvas.brush_shape = ArenaStudioCanvas.BrushShape.BRUSH
+			canvas.brush_size = 1
+			_placement_session.begin(arena, definition)
+			_select_tool_from_palette(ArenaStudioCanvas.Tool.SPAWN)
+			_set_status(_placement_session.instruction() + " Échap annule tout le placement.")
+	_refresh_inspector_for_placeable(definition)
+
+
+func _on_library_state_changed(state: Dictionary) -> void:
+	TerrainStudioUiStateService.set_value("library", state)
+
+
+func _on_checklist_collapsed_changed(collapsed: bool) -> void:
+	TerrainStudioUiStateService.set_value("checklist_collapsed", collapsed)
+
+
+func _enable_all_hybrid_floors() -> void:
+	if arena == null or edit_session == null \
+			or arena.visual_mode != ArenaDefinition.VisualMode.PAINTED:
+		return
+	var before := arena.to_snapshot().duplicate(true)
+	arena.visual_mode = ArenaDefinition.VisualMode.HYBRID
+	if arena.modular_visual_profile == null:
+		arena.modular_visual_profile = ArenaModularVisualProfile.new()
+	arena.modular_visual_profile.theme_id = arena.theme_id
+	arena.modular_visual_profile.base_terrain_id = &"stone"
+	arena.modular_visual_profile.hybrid_floor_policy = (
+		ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
+	)
+	_commit_change(
+		"Afficher les dalles sur l'illustration", before, arena.to_snapshot()
+	)
+	var selected_id := StringName(_active_placeable.get("stable_id", &""))
+	_refresh_all()
+	var refreshed := TerrainPlaceableCatalogService.entry_by_id(
+		arena, selected_id, guided
+	)
+	if not refreshed.is_empty():
+		_on_library_placeable_selected(refreshed)
+	_set_status("Les dalles sont visibles sur l'illustration. Cette transition est annulable.")
+
+
+func _refresh_library() -> void:
+	if library_panel == null:
+		return
+	library_panel.set_entries(TerrainPlaceableCatalogService.entries(arena, guided))
+
+
+func _refresh_inspector_for_placeable(definition: TerrainPlaceableDefinition) -> void:
+	if inspector_panel == null or definition == null:
+		return
+	var sections: Array[StringName] = [&"selection"]
+	match definition.family:
+		TerrainPlaceableDefinition.Family.FLOOR:
+			sections.append(&"floors")
+		TerrainPlaceableDefinition.Family.OBSTACLE, TerrainPlaceableDefinition.Family.SPAWN:
+			sections.append(&"content")
+		TerrainPlaceableDefinition.Family.INTERACTIVE:
+			sections.append(&"vortex")
+		TerrainPlaceableDefinition.Family.DECORATION:
+			sections.append(&"scenery")
+	inspector_panel.set_spatial_context(sections, definition.display_name, guided)
+	inspector_label.text = "%s\n%s" % [definition.family_label(), definition.result_in_game]
+	spatial_name_edit.visible = false
+	spatial_cells_label.visible = _placement_session.active
+	spatial_enabled_check.visible = false
+	spatial_team_option.visible = false
+	spatial_edit_cells_button.visible = false
+	spatial_cells_label.text = _placement_session.instruction() \
+		if _placement_session.active else ""
+	spatial_delete_button.visible = false
+	placement_finish_button.visible = _placement_session.active \
+		and definition.maximum_cells < 0
+	placement_finish_button.disabled = not _placement_session.can_finish()
+	hybrid_all_button.visible = definition.family == TerrainPlaceableDefinition.Family.FLOOR \
+		and bool(_active_placeable.get("requires_activation", false))
 
 
 ## --- Ecrans ----------------------------------------------------------------
@@ -990,6 +1167,7 @@ func set_guided(value: bool) -> void:
 	if guided_toggle != null and guided_toggle.button_pressed != value:
 		guided_toggle.set_pressed_no_signal(value)
 	_apply_guided_visibility()
+	_refresh_library()
 	TerrainStudioUiStateService.set_value("guided", guided)
 	# Le shell partage la meme notion de mode : dispositions, laboratoire et
 	# transferts suivent l'interrupteur du domaine Terrain.
@@ -1021,8 +1199,7 @@ func advanced_only_controls() -> Array[Control]:
 
 
 func _apply_guided_visibility() -> void:
-	if inspector_panel != null:
-		inspector_panel.set_context(current_step, guided)
+	_refresh_inspector_context()
 	if tool_palette != null:
 		tool_palette.set_advanced(not guided)
 	if creation_wizard != null:
@@ -1045,23 +1222,24 @@ func _apply_guided_visibility() -> void:
 func _sync_drawer_split() -> void:
 	if vertical_split == null or bottom_drawer_content == null:
 		return
-	vertical_split.split_offset = -220 if bottom_drawer_content.visible else -42
+	if not bottom_drawer_content.visible:
+		vertical_split.split_offset = -42
+	elif size.y < 760.0:
+		vertical_split.split_offset = -140
+	else:
+		vertical_split.split_offset = -220
 
 
 ## --- Parcours --------------------------------------------------------------
 
 func set_current_step(step: int) -> void:
+	# Adaptateur de compatibilité : l'étape mémorisée n'a plus aucun effet sur
+	# l'outil, la bibliothèque ou l'Inspecteur.
 	current_step = clampi(step, 0, TerrainWorkflowService.STEP_COUNT - 1)
 	if workflow_rail != null:
 		workflow_rail.set_current_step(current_step)
-	if tool_palette != null:
-		tool_palette.set_active_step(current_step)
-	if inspector_panel != null:
-		inspector_panel.set_context(current_step, guided)
+	_refresh_inspector_context()
 	TerrainStudioUiStateService.set_value("step", current_step)
-	var default_tool := _default_tool_for_step(current_step)
-	if default_tool >= 0 and canvas != null and canvas.active_tool != default_tool:
-		_select_tool_from_palette(default_tool)
 	_refresh_workflow()
 
 
@@ -1105,7 +1283,7 @@ func _on_step_primary_action(step: int) -> void:
 		TerrainWorkflowService.Step.CONTENT:
 			_select_tool_and_preset(ArenaStudioCanvas.Tool.SPAWN, 0)
 		TerrainWorkflowService.Step.SCENERY:
-			_show_backdrop_dialog()
+			_request_backdrop_change()
 		TerrainWorkflowService.Step.VERIFY:
 			validate_arena()
 		TerrainWorkflowService.Step.FINALIZE:
@@ -1121,8 +1299,6 @@ func readiness() -> String:
 
 
 func _refresh_workflow() -> void:
-	if workflow_rail == null:
-		return
 	_workflow_steps = TerrainWorkflowService.evaluate(arena, validation_report, {
 		"has_report": validation_report != null,
 		"dirty": dirty,
@@ -1134,12 +1310,28 @@ func _refresh_workflow() -> void:
 	_readiness = TerrainWorkflowService.readiness(
 		_workflow_steps, validation_report, integration_available
 	)
-	workflow_rail.set_steps(_workflow_steps, _readiness)
+	if workflow_rail != null:
+		workflow_rail.set_steps(_workflow_steps, _readiness)
+	if checklist_panel != null:
+		checklist_panel.set_entries(TerrainWorkflowService.checklist(
+			arena, validation_report, {
+				"has_report": validation_report != null,
+				"dirty": dirty,
+				"is_new_document": edit_session != null and edit_session.is_new_document,
+				"tested": _tested_once,
+				"integration_label": _integration_label,
+			}
+		))
 	if guidance_panel != null and current_step < _workflow_steps.size():
 		guidance_panel.show_step(current_step, _workflow_steps[current_step])
 		guidance_panel.visible = guidance_visible and not _guidance_hidden_for_drawer
 	if validation_panel != null:
 		validation_panel.set_report(validation_report, _readiness)
+	if header_bar != null and header_bar.has_method("set_validation_status"):
+		header_bar.set_validation_status(
+			validation_report.error_count() if validation_report != null else 0,
+			validation_report.warning_count() if validation_report != null else 0
+		)
 	if finalize_panel != null:
 		finalize_panel.set_readiness(_readiness, _integration_detail())
 	if document_state_label != null:
@@ -1237,6 +1429,10 @@ func _restore_terrain_ui_state() -> void:
 	set_guided(bool(state.get("guided", true)))
 	set_guidance_visible(guidance_visible)
 	set_current_step(int(state.get("step", TerrainWorkflowService.Step.START)))
+	if checklist_panel != null:
+		checklist_panel.set_collapsed(bool(state.get("checklist_collapsed", true)))
+	if library_panel != null:
+		library_panel.apply_state(state.get("library", {}))
 	if preview_option != null:
 		preview_option.select(clampi(int(state.get("preview_view", 0)), 0, 2))
 
@@ -1290,6 +1486,13 @@ func _on_validation_auto_fix(message: ArenaValidationMessage) -> void:
 	_set_status("%s Vous pouvez annuler avec Ctrl+Z." % result.get("message", ""))
 
 
+func _open_validation_drawer() -> void:
+	_update_validation_report(false)
+	if bottom_drawer_content != null:
+		bottom_drawer_content.visible = true
+		_sync_drawer_split()
+
+
 ## --- Raccourcis clavier ----------------------------------------------------
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -1297,6 +1500,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	var key := event as InputEventKey
 	if key == null or not key.pressed or key.echo:
+		return
+	if key.keycode == KEY_ESCAPE and _placement_session.active:
+		_cancel_active_placement()
+		get_viewport().set_input_as_handled()
 		return
 	if key.ctrl_pressed or key.alt_pressed or key.meta_pressed:
 		return
@@ -1340,8 +1547,6 @@ func primary_action_controls() -> Array[Control]:
 	if workflow_rail != null:
 		for button in workflow_rail.buttons:
 			result.append(button as Control)
-		if workflow_rail.primary_button != null:
-			result.append(workflow_rail.primary_button as Control)
 	if guidance_panel != null:
 		for control in [
 			guidance_panel.previous_button, guidance_panel.continue_button,
@@ -1440,6 +1645,13 @@ func _build_destination_panel() -> PanelContainer:
 
 
 func _refresh_destination_panel(_unused = {}) -> void:
+	if not production_planning_enabled:
+		_destination_last_plan = {
+			"ok": false,
+			"error": "Planification de production désactivée pour cette prévisualisation.",
+		}
+		_render_destination_plan(_destination_last_plan)
+		return
 	if destination_run_option == null or destination_action_option == null:
 		return
 	if _history_refresh_suppressed:
@@ -1920,7 +2132,6 @@ func _build_dynamic_palette() -> VBoxContainer:
 	for entry in [
 		["Spawn héros", &"hero"], ["Spawn ennemi", &"enemy"],
 		["Objectif", &"objective"], ["Décoration", &"decoration"],
-		["Réseau de vortex — 1, 2 ou plusieurs sorties", &"vortex_network"],
 		["Zone d'invocation", &"summon"], ["Supprimer le spécial", &"remove"],
 	]:
 		dynamic_special_option.add_item(entry[0])
@@ -2244,8 +2455,13 @@ func _build_bottom_drawer() -> VBoxContainer:
 	drawer.add_child(tabs)
 	bottom_drawer_content = tabs
 	var validation := _build_validation_panel()
-	validation.name = "Validation"
-	tabs.add_child(validation)
+	var validation_scroll := ScrollContainer.new()
+	validation_scroll.name = "Validation"
+	validation_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	validation_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	validation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	validation_scroll.add_child(validation)
+	tabs.add_child(validation_scroll)
 	var history := RichTextLabel.new()
 	history.name = "Historique"
 	history.text = "L'historique actif est accessible depuis la barre globale."
@@ -2270,7 +2486,7 @@ func _build_dialogs() -> void:
 	new_dialog = ConfirmationDialog.new()
 	new_dialog.title = "Nouvelle arène — informations et point de départ"
 	new_dialog.size = Vector2i(720, 590)
-	new_dialog.ok_button_text = "Continuer vers la calibration"
+	new_dialog.ok_button_text = "Créer et ajuster la grille"
 	new_dialog.confirmed.connect(_create_from_wizard)
 	add_child(new_dialog)
 	var wizard := VBoxContainer.new()
@@ -2302,7 +2518,10 @@ func _build_dialogs() -> void:
 		new_template_option.add_item(label)
 	wizard.add_child(new_template_option)
 	var step3 := Label.new()
-	step3.text = "Étape 3 — Trois clics sur l'image\n1. Case de référence  2. Voisine bas-droite  3. Voisine bas-gauche"
+	step3.text = (
+		"Étape 3 — Ajustement visuel\n"
+		+ "Déplacez, tournez, agrandissez ou inclinez la grille directement sur l'image."
+	)
 	step3.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	wizard.add_child(step3)
 
@@ -2967,12 +3186,27 @@ func _build_backdrop_dialog() -> void:
 	backdrop_summary.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(backdrop_summary)
 	backdrop_image_dialog = FileDialog.new()
-	backdrop_image_dialog.title = "Importer une image de fond dans la zone de préparation"
 	backdrop_image_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	backdrop_image_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	backdrop_image_dialog.title = "Importer une image de fond dans la zone de préparation"
 	backdrop_image_dialog.filters = PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp ; Images"])
 	backdrop_image_dialog.file_selected.connect(_stage_external_backdrop)
 	add_child(backdrop_image_dialog)
+	guided_backdrop_image_dialog = FileDialog.new()
+	guided_backdrop_image_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	guided_backdrop_image_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	guided_backdrop_image_dialog.title = "Choisir l'illustration du terrain"
+	guided_backdrop_image_dialog.filters = PackedStringArray([
+		"*.png, *.jpg, *.jpeg, *.webp ; Images"
+	])
+	guided_backdrop_image_dialog.file_selected.connect(_apply_guided_backdrop)
+	add_child(guided_backdrop_image_dialog)
+
+
+func _request_backdrop_change() -> void:
+	if arena == null or guided_backdrop_image_dialog == null:
+		return
+	guided_backdrop_image_dialog.popup_centered()
 
 
 func _show_backdrop_dialog() -> void:
@@ -3091,22 +3325,57 @@ func _stage_external_backdrop(path: String) -> void:
 	_refresh_backdrop_summary()
 
 
+func _apply_guided_backdrop(path: String) -> void:
+	if arena == null:
+		return
+	var staged := ArenaBackdropTransactionService.stage_external_image(path)
+	if not bool(staged.get("ok", false)):
+		_set_status("Illustration refusée : %s" % staged.get("error", "inconnu"), true)
+		return
+	var image := Image.load_from_file(ProjectSettings.globalize_path(str(staged.staged_path)))
+	if image == null or image.is_empty():
+		_set_status("Cette illustration ne peut pas être lue.", true)
+		return
+	var source := ArenaBackdropSourceDefinition.from_arena(arena)
+	source.source_id = StringName("external_%s" % str(staged.sha256).left(12))
+	source.display_name = path.get_file()
+	source.background_path = str(staged.staged_path)
+	source.source_image_size = image.get_size()
+	var result := backdrop_transaction.apply(
+		arena, source, ArenaBackdropTransactionService.CopyMode.BACKGROUND_ONLY
+	)
+	if not bool(result.get("ok", false)):
+		_set_status("Illustration refusée : %s" % result.get("error", "inconnu"), true)
+		return
+	_commit_change("Changer l'illustration — %s" % path.get_file(), result.before, result.after)
+	canvas.set_arena(arena)
+	canvas.fit_to_image()
+	_refresh_all(false)
+	_start_manual_grid_alignment()
+	_set_status("Illustration remplacée. Ajustez maintenant la grille directement dessus.")
+
+
 func _build_vortex_dialog() -> void:
 	vortex_dialog = ConfirmationDialog.new()
-	vortex_dialog.title = "VORTEX — réseaux"
-	vortex_dialog.size = Vector2i(640, 420)
+	vortex_dialog.title = "MODIFIER LES VORTEX DÉJÀ PLACÉS"
+	vortex_dialog.size = Vector2i(680, 430)
 	vortex_dialog.ok_button_text = "Fermer"
 	add_child(vortex_dialog)
 	var box := VBoxContainer.new()
 	vortex_dialog.add_child(box)
+	var explanation := Label.new()
+	explanation.text = (
+		"Choisissez un effet déjà placé pour renommer son groupe, modifier ses cases ou le supprimer."
+	)
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(explanation)
 	vortex_network_option = OptionButton.new()
 	vortex_network_option.item_selected.connect(_on_vortex_network_selected)
 	box.add_child(vortex_network_option)
 	var actions := HFlowContainer.new()
 	box.add_child(actions)
-	_add_button(actions, "Nouveau réseau", _create_vortex_network)
-	_add_button(actions, "Ajouter une dalle", _activate_vortex_network_tool)
-	_add_button(actions, "Retirer : clic droit", _activate_vortex_network_tool)
+	_add_button(actions, "Modifier ses cases sur la grille", _activate_vortex_network_tool)
+	_add_button(actions, "Retirer une case : clic droit", _activate_vortex_network_tool)
 	vortex_name_edit = LineEdit.new()
 	vortex_name_edit.placeholder_text = "Nom du réseau"
 	actions.add_child(vortex_name_edit)
@@ -3115,6 +3384,93 @@ func _build_vortex_dialog() -> void:
 	vortex_summary = Label.new()
 	vortex_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(vortex_summary)
+
+
+func _build_vortex_intent_panel() -> VBoxContainer:
+	var panel := VBoxContainer.new()
+	panel.name = "TerrainVortexIntentPanel"
+	panel.add_theme_constant_override("separation", 5)
+	var intro := Label.new()
+	intro.text = "Choisissez d'abord l'effet voulu :"
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(intro)
+	var impulse := _inspector_button(
+		"Case d'impulsion — +1 déplacement",
+		_start_vortex_intent.bind(VortexIntent.IMPULSE),
+		"Place une seule case. Un personnage y gagne 1 point de déplacement, une fois par round."
+	)
+	impulse.name = "TerrainVortexImpulse"
+	panel.add_child(impulse)
+	var portal_two := _inspector_button(
+		"Portail entre deux cases",
+		_start_vortex_intent.bind(VortexIntent.PORTAL_TWO),
+		"Place une entrée et une sortie. Entrer sur l'une téléporte vers l'autre."
+	)
+	portal_two.name = "TerrainVortexPortalTwo"
+	panel.add_child(portal_two)
+	var portal_multi := _inspector_button(
+		"Portail à plusieurs sorties",
+		_start_vortex_intent.bind(VortexIntent.PORTAL_MULTI),
+		"Place au moins trois cases. Une autre sortie disponible sera choisie."
+	)
+	portal_multi.name = "TerrainVortexPortalMulti"
+	panel.add_child(portal_multi)
+	var manage := _inspector_button(
+		"Modifier les vortex déjà placés…", _show_vortex_dialog,
+		"Renommer, déplacer ou supprimer un effet vortex existant."
+	)
+	manage.name = "TerrainVortexManageExisting"
+	panel.add_child(manage)
+	return panel
+
+
+func _start_vortex_intent(intent: int) -> void:
+	if arena == null:
+		return
+	var before := arena.to_snapshot()
+	var network := ArenaVortexNetworkService.create_network(arena)
+	_active_vortex_network_id = network.network_id
+	_active_vortex_intent = intent
+	match intent:
+		VortexIntent.IMPULSE:
+			network.display_name = "Case d'impulsion"
+		VortexIntent.PORTAL_TWO:
+			network.display_name = "Portail entre deux cases"
+		VortexIntent.PORTAL_MULTI:
+			network.display_name = "Portail à plusieurs sorties"
+	_commit_change("Créer %s" % network.display_name, before, arena.to_snapshot())
+	_refresh_vortex_dialog()
+	_activate_vortex_network_tool()
+	_set_status(_vortex_intent_instruction(network.unique_cells().size()))
+
+
+func _vortex_intent_instruction(count: int) -> String:
+	match _active_vortex_intent:
+		VortexIntent.IMPULSE:
+			return "Case d'impulsion : cliquez la case qui donnera +1 déplacement."
+		VortexIntent.PORTAL_TWO:
+			return "Portail : cliquez la seconde case." if count == 1 \
+				else "Portail : cliquez la première case."
+		VortexIntent.PORTAL_MULTI:
+			if count < 3:
+				return "Portail multiple : placez encore %d case(s)." % (3 - count)
+			return "Portail multiple prêt avec %d cases. Continuez à en ajouter ou choisissez Sélection." % count
+	return "Cliquez gauche pour ajouter une case ; clic droit pour la retirer."
+
+
+func _complete_finite_vortex_intent() -> void:
+	if _active_vortex_intent not in [VortexIntent.IMPULSE, VortexIntent.PORTAL_TWO]:
+		return
+	var network := ArenaVortexNetworkService.network_by_id(arena, _active_vortex_network_id)
+	if network == null:
+		return
+	var required := 1 if _active_vortex_intent == VortexIntent.IMPULSE else 2
+	if network.unique_cells().size() < required:
+		return
+	var completed_name := network.display_name
+	_active_vortex_intent = VortexIntent.NONE
+	_select_tool_from_palette(ArenaStudioCanvas.Tool.SELECT)
+	_set_status("%s prêt. L'effet sera vérifié avant l'intégration." % completed_name)
 
 
 func _show_vortex_dialog() -> void:
@@ -3134,7 +3490,9 @@ func _refresh_vortex_dialog() -> void:
 		var network := arena.vortex_networks[index]
 		if network == null:
 			continue
-		vortex_network_option.add_item("%s — %d sortie(s)" % [network.display_name, network.unique_cells().size()])
+		vortex_network_option.add_item("%s — %s" % [
+			network.display_name, ArenaVortexNetworkService.behavior_summary(network),
+		])
 		vortex_network_option.set_item_metadata(vortex_network_option.item_count - 1, network.network_id)
 		if network.network_id == _active_vortex_network_id:
 			selected_index = vortex_network_option.item_count - 1
@@ -3155,15 +3513,17 @@ func _on_vortex_network_selected(index: int) -> void:
 func _refresh_vortex_summary() -> void:
 	var network := ArenaVortexNetworkService.network_by_id(arena, _active_vortex_network_id)
 	if network == null:
-		vortex_summary.text = "Aucun réseau. Créez-en un, puis cliquez ses dalles sur le canvas."
+		vortex_summary.text = (
+			"Aucun effet placé. Fermez cette fenêtre et choisissez l'un des trois effets proposés."
+		)
 		return
 	var count := network.unique_cells().size()
-	var probability := ""
+	var destination_note := ""
 	if count >= 3:
-		probability = "\nChaque autre sortie valide : %.1f %% avant filtrage occupation/VOID." % (100.0 / float(count - 1))
-	vortex_summary.text = "%s\nID : %s\n%s%s" % [
-		network.display_name, network.network_id,
-		ArenaVortexNetworkService.behavior_summary(network), probability,
+		destination_note = "\nLa destination sera choisie parmi les autres cases disponibles."
+	vortex_summary.text = "%s\n%s%s" % [
+		network.display_name,
+		ArenaVortexNetworkService.behavior_summary(network), destination_note,
 	]
 	vortex_name_edit.text = network.display_name
 
@@ -3171,6 +3531,7 @@ func _refresh_vortex_summary() -> void:
 func _create_vortex_network() -> void:
 	if arena == null:
 		return
+	_active_vortex_intent = VortexIntent.NONE
 	var before := arena.to_snapshot()
 	var network := ArenaVortexNetworkService.create_network(arena)
 	_active_vortex_network_id = network.network_id
@@ -3209,12 +3570,9 @@ func _activate_vortex_network_tool() -> void:
 	if ArenaVortexNetworkService.network_by_id(arena, _active_vortex_network_id) == null:
 		_create_vortex_network()
 		return
-	for index in range(dynamic_special_option.item_count):
-		if StringName(dynamic_special_option.get_item_metadata(index)) == &"vortex_network":
-			dynamic_special_option.select(index)
-			break
-	_select_dynamic_tool(ArenaStudioCanvas.Tool.SPAWN)
-	_set_status("Réseau actif %s : clic ajoute, clic droit retire." % _active_vortex_network_id)
+	_vortex_edit_active = true
+	_select_tool_from_palette(ArenaStudioCanvas.Tool.SPAWN)
+	_set_status("Effet vortex actif : clic gauche ajoute une case, clic droit la retire.")
 
 
 func _connect_canvas() -> void:
@@ -3222,18 +3580,20 @@ func _connect_canvas() -> void:
 	canvas.cells_edit_requested.connect(_on_cells_edit_requested)
 	canvas.stroke_finished.connect(_on_stroke_finished)
 	canvas.stroke_cancelled.connect(_on_stroke_cancelled)
-	canvas.calibration_requested.connect(_on_calibration_requested)
 	canvas.calibration_preview_requested.connect(_on_calibration_preview)
 	canvas.anchors_preview_requested.connect(_on_anchors_preview)
 	canvas.transform_commit_requested.connect(_on_transform_commit_requested)
 	canvas.hovered_cell_changed.connect(_on_hovered_cell_changed)
 	canvas.verification_cell_requested.connect(_on_verification_cell_requested)
 	canvas.terrain_pick_requested.connect(_on_terrain_pick_requested)
+	canvas.placeable_pick_requested.connect(_on_placeable_pick_requested)
+	canvas.spatial_selection_requested.connect(_on_spatial_selection_requested)
 
 
 func _set_arena(value: ArenaDefinition, mark_dirty: bool, key := "") -> void:
 	if value == null:
 		return
+	_finish_grid_alignment_edit()
 	if canvas != null and canvas.has_method("cancel_active_gesture"):
 		canvas.cancel_active_gesture()
 	var session_key := key if not key.is_empty() else (
@@ -3270,6 +3630,8 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 	validation_report = null
 	validation_list.clear()
 	_sync_advanced_values()
+	if grid_alignment_panel != null:
+		grid_alignment_panel.sync_from_arena(arena)
 	_refresh_title()
 	_refresh_calibration_label()
 	_refresh_inspector(GridTransformService.INVALID_CELL)
@@ -3345,14 +3707,19 @@ func _create_from_wizard() -> void:
 		var texture := load(imported_path) as Texture2D
 		if texture != null:
 			created.source_image_size = Vector2i(texture.get_size())
+			TerrainGridAlignmentServiceComponent.centered_snapshot(
+				created.source_image_size, created.grid_size
+			).apply_to(created)
 	_set_arena(created, true, "new:%s:%d" % [requested_id, Time.get_ticks_usec()])
 	_autosave()
 	if created.visual_mode == ArenaDefinition.VisualMode.MODULAR:
 		show_dynamic_construction()
 		_set_status("Carte modulaire créée : les dalles sont visibles et prêtes à peindre.")
 	else:
-		start_calibration()
-		_set_status("Cliquez trois centres de cases pour aligner la grille.")
+		show_editor()
+		set_current_step(TerrainWorkflowService.Step.SCENERY)
+		_start_manual_grid_alignment()
+		_set_status("Illustration visible : ajustez maintenant la grille directement dessus.")
 
 
 ## Creation depuis l'assistant a trois cartes. La configuration recue est deja
@@ -3401,15 +3768,19 @@ func _create_from_wizard_config(config: Dictionary) -> void:
 		var texture := load(imported_path) as Texture2D
 		if texture != null:
 			created.source_image_size = Vector2i(texture.get_size())
+			TerrainGridAlignmentServiceComponent.centered_snapshot(
+				created.source_image_size, created.grid_size
+			).apply_to(created)
 	_set_arena(created, true, "new:%s:%d" % [requested_id, Time.get_ticks_usec()])
 	_autosave()
 	show_editor()
+	if checklist_panel != null and guided:
+		checklist_panel.set_collapsed(false)
 	if bool(config.get("needs_image", false)):
 		set_current_step(TerrainWorkflowService.Step.SCENERY)
-		start_calibration()
-		_set_status(
-			"Terrain créé. Cliquez trois centres de cases pour aligner la grille sur l'illustration."
-		)
+		canvas.fit_to_image()
+		_start_manual_grid_alignment()
+		_set_status("Illustration visible : ajustez la taille, la position, la rotation, l'échelle et l'inclinaison de la grille.")
 	else:
 		set_current_step(TerrainWorkflowService.Step.FLOORS)
 		_set_status("Terrain créé : choisissez un sol et peignez directement sur la grille.")
@@ -3710,12 +4081,50 @@ func create_safety_border() -> void:
 	_set_status("Bordure de sécurité créée : %d cases conservées visuellement et exclues du gameplay." % count)
 
 
-func start_calibration() -> void:
+func _start_manual_grid_alignment() -> void:
 	if arena == null or arena.background_path.is_empty():
-		_set_status("Ajoutez d'abord une image de fond.", true)
+		_set_status("Choisissez d'abord une illustration à afficher sous la grille.", true)
 		return
-	canvas.begin_three_click_calibration()
-	_set_status("Calibration : cliquez la référence, puis ses voisines bas-droite et bas-gauche.")
+	tool_list.select(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
+	_on_tool_selected(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
+	if grid_alignment_panel != null:
+		grid_alignment_panel.sync_from_arena(arena)
+	_set_status("Ajustement actif : glissez la grille ou ses poignées. Les réglages numériques restent disponibles dans l'inspecteur.")
+
+
+func _preview_grid_alignment_settings(settings: Dictionary) -> void:
+	if arena == null or edit_session == null:
+		return
+	var result := TerrainGridAlignmentServiceComponent.snapshot_from_settings(settings)
+	if not bool(result.get("ok", false)):
+		_set_status(str(result.get("error", "Réglages de grille invalides.")), true)
+		return
+	if _grid_alignment_live_before.is_empty():
+		_grid_alignment_live_before = arena.to_snapshot()
+	var requested_size: Vector2i = settings.get("grid_size", arena.grid_size)
+	ArenaDynamicEditingService.resize_document(arena, requested_size)
+	var snapshot := result.get("snapshot") as GridTransformSnapshot
+	snapshot.apply_to(arena)
+	var anchors := TerrainGridAlignmentServiceComponent.confirmation_anchors(snapshot)
+	arena.calibration_cells.assign(anchors.get("cells", []))
+	arena.calibration_pixels.assign(anchors.get("pixels", []))
+	canvas.refresh_terrain_plan()
+	canvas.queue_redraw()
+	_refresh_calibration_label()
+	_set_status("Réglage en direct : la grille suit immédiatement la valeur saisie.")
+
+
+func _finish_grid_alignment_edit() -> void:
+	if arena == null or _grid_alignment_live_before.is_empty():
+		return
+	var before := _grid_alignment_live_before
+	_grid_alignment_live_before = {}
+	ArenaRuntimeBridge.sync_runtime_resources(
+		arena, ArenaRuntimeBridge.SyncScope.GRID_TRANSFORM
+	)
+	_commit_change("Ajuster la grille sur l'illustration", before, arena.to_snapshot())
+	_refresh_all(false)
+	_set_status("Grille mise à jour. Cette modification peut être annulée en une seule action.")
 
 
 func fit_multipoint_calibration() -> void:
@@ -3751,26 +4160,36 @@ func fit_multipoint_calibration() -> void:
 
 
 func validate_arena() -> ArenaValidationReport:
+	return _update_validation_report(true)
+
+
+func _update_validation_report(show_status := false) -> ArenaValidationReport:
+	if arena == null:
+		return null
 	# La working copy d'une map ouverte porte volontairement le meme identifiant
 	# que sa source. Le conflit de destination est controle au moment de sauver.
 	validation_report = ArenaValidator.validate(arena, false)
-	validation_list.clear()
+	if validation_list != null:
+		validation_list.clear()
 	for entry in validation_report.messages:
 		var prefix: String = ["ERREUR", "ATTENTION", "INFO"][entry.severity]
-		validation_list.add_item("%s — %s" % [prefix, entry.message])
-		validation_list.set_item_metadata(validation_list.item_count - 1, entry)
-	validation_title.text = "%s — %d erreur(s), %d avertissement(s)" % [
-		"Données Arena valides" if validation_report.is_valid() \
-		else "Données Arena à corriger",
-		validation_report.error_count(), validation_report.warning_count(),
-	]
+		if validation_list != null:
+			validation_list.add_item("%s — %s" % [prefix, entry.message])
+			validation_list.set_item_metadata(validation_list.item_count - 1, entry)
+	if validation_title != null:
+		validation_title.text = "%s — %d erreur(s), %d avertissement(s)" % [
+			"Données Arena valides" if validation_report.is_valid() \
+			else "Données Arena à corriger",
+			validation_report.error_count(), validation_report.warning_count(),
+		]
 	_refresh_workflow()
-	_set_status(
-		"Données Arena valides. Le jeu réel reste un contrôle séparé." \
-		if validation_report.is_valid() \
-		else "Les données Arena doivent être corrigées avant le test dans le jeu réel.",
-		not validation_report.is_valid()
-	)
+	if show_status:
+		_set_status(
+			"Données Arena valides. Le jeu réel reste un contrôle séparé." \
+			if validation_report.is_valid() \
+			else "Les données Arena doivent être corrigées avant le test dans le jeu réel.",
+			not validation_report.is_valid()
+		)
 	return validation_report
 
 
@@ -4877,6 +5296,11 @@ func _refresh_restore_points() -> void:
 func _on_stroke_started(_action_name: String) -> void:
 	if arena == null:
 		return
+	if _placement_session.active:
+		_stroke_before = {}
+		_stroke_changed = false
+		_stroke_cell_count = 0
+		return
 	_stroke_before = arena.to_snapshot()
 	_stroke_changed = false
 	_stroke_cell_count = 0
@@ -4887,6 +5311,21 @@ func _on_stroke_started(_action_name: String) -> void:
 func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 	if arena == null:
 		return
+	if _placement_session.active:
+		for cell in cells:
+			if erase:
+				_placement_session.remove_cell(arena, cell)
+			else:
+				var result := _placement_session.add_cell(arena, cell)
+				if bool(result.get("complete", false)):
+					call_deferred("_finish_active_placement")
+		canvas.refresh_terrain_plan()
+		canvas.queue_redraw()
+		var active_definition := _active_placeable.get("definition") as TerrainPlaceableDefinition
+		if active_definition != null:
+			_refresh_inspector_for_placeable(active_definition)
+		_set_status(_placement_session.instruction() + " Échap annule tout le placement.")
+		return
 	for cell in cells:
 		var changed := false
 		if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION:
@@ -4895,28 +5334,40 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 				_stroke_changed = true
 				_stroke_cell_count += 1
 			continue
-		match canvas.active_tool:
-			ArenaStudioCanvas.Tool.ADD_CELL:
-				changed = ArenaEditingService.set_cell_state(arena, cell, &"remove" if erase else &"add")
-			ArenaStudioCanvas.Tool.REMOVE_CELL:
-				changed = ArenaEditingService.set_cell_state(arena, cell, &"add" if erase else &"remove")
-			ArenaStudioCanvas.Tool.BORDER:
-				changed = ArenaEditingService.set_cell_state(arena, cell, &"playable" if erase else &"border")
-			ArenaStudioCanvas.Tool.OBSTACLE:
-				changed = ArenaEditingService.clear_obstacle(arena, cell) if erase \
-					else ArenaEditingService.set_obstacle(arena, cell, obstacle_option.selected)
-			ArenaStudioCanvas.Tool.TERRAIN:
-				var terrain_id := &"void" if erase else StringName(
-					terrain_option.get_selected_metadata()
-				)
-				changed = not stroke_batch.apply_terrain_cells([cell], terrain_id).is_empty()
-			ArenaStudioCanvas.Tool.SPAWN:
-				if erase:
-					for spawn in arena.spawns_at(cell):
-						arena.spawns.erase(spawn)
-					changed = true
-				else:
-					changed = ArenaEditingService.place_spawn(arena, cell, spawn_option.selected)
+		var placeable := _active_placeable.get("definition") as TerrainPlaceableDefinition
+		if placeable != null and canvas.active_tool in [
+			ArenaStudioCanvas.Tool.TERRAIN,
+			ArenaStudioCanvas.Tool.OBSTACLE,
+			ArenaStudioCanvas.Tool.SPAWN,
+		]:
+			changed = ArenaDynamicEditingService.apply_placeable(
+				arena, placeable, cell, erase
+			)
+		else:
+			match canvas.active_tool:
+				ArenaStudioCanvas.Tool.ADD_CELL:
+					changed = ArenaEditingService.set_cell_state(arena, cell, &"remove" if erase else &"add")
+				ArenaStudioCanvas.Tool.REMOVE_CELL:
+					changed = ArenaEditingService.set_cell_state(arena, cell, &"add" if erase else &"remove")
+				ArenaStudioCanvas.Tool.BORDER:
+					changed = ArenaEditingService.set_cell_state(arena, cell, &"playable" if erase else &"border")
+				ArenaStudioCanvas.Tool.OBSTACLE:
+					changed = ArenaEditingService.clear_obstacle(arena, cell) if erase \
+						else ArenaEditingService.set_obstacle(arena, cell, obstacle_option.selected)
+				ArenaStudioCanvas.Tool.TERRAIN:
+					var terrain_id := &"void" if erase else StringName(
+						terrain_option.get_selected_metadata()
+					)
+					changed = not stroke_batch.apply_terrain_cells([cell], terrain_id).is_empty()
+				ArenaStudioCanvas.Tool.SPAWN:
+					if _vortex_edit_active:
+						changed = _edit_vortex_network_cell(cell, erase)
+					elif erase:
+						for spawn in arena.spawns_at(cell):
+							arena.spawns.erase(spawn)
+						changed = true
+					else:
+						changed = ArenaEditingService.place_spawn(arena, cell, spawn_option.selected)
 		if changed:
 			_stroke_changed = true
 			_stroke_cell_count += 1
@@ -4945,9 +5396,9 @@ func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
 			)
 			return ArenaDynamicEditingService.place_wall(arena, cell, wall_id)
 		ArenaStudioCanvas.Tool.SPAWN:
-			var selected_special := StringName(dynamic_special_option.get_selected_metadata())
-			if selected_special == &"vortex_network":
+			if _vortex_edit_active:
 				return _edit_vortex_network_cell(cell, erase)
+			var selected_special := StringName(dynamic_special_option.get_selected_metadata())
 			var special_id := &"remove" if erase else selected_special
 			match special_id:
 				&"hero": return ArenaDynamicEditingService.place_spawn(
@@ -4978,7 +5429,17 @@ func _edit_vortex_network_cell(cell: Vector2i, erase: bool) -> bool:
 	if changed:
 		ArenaRuntimeBridge.sync_runtime_resources(arena)
 		_refresh_vortex_dialog()
-		_set_status(ArenaVortexNetworkService.behavior_summary(network))
+		var count := network.unique_cells().size()
+		_set_status(
+			_vortex_intent_instruction(count)
+			if _active_vortex_intent != VortexIntent.NONE
+			else ArenaVortexNetworkService.behavior_summary(network)
+		)
+		if not erase and (
+			(_active_vortex_intent == VortexIntent.IMPULSE and count >= 1)
+			or (_active_vortex_intent == VortexIntent.PORTAL_TWO and count >= 2)
+		):
+			call_deferred("_complete_finite_vortex_intent")
 	return changed
 
 
@@ -5012,6 +5473,11 @@ func _clear_pending_vortex() -> void:
 
 func _on_stroke_finished(action_name: String) -> void:
 	if arena == null:
+		return
+	if _placement_session.active:
+		_stroke_before = {}
+		_stroke_changed = false
+		_stroke_cell_count = 0
 		return
 	if not _stroke_changed:
 		stroke_batch.cancel()
@@ -5047,6 +5513,9 @@ func _on_stroke_finished(action_name: String) -> void:
 
 
 func _on_stroke_cancelled() -> void:
+	if _placement_session.active:
+		_cancel_active_placement()
+		return
 	if _stroke_changed and edit_session != null and not _stroke_before.is_empty():
 		edit_session.apply_snapshot(_stroke_before)
 		arena = edit_session.working_arena
@@ -5065,17 +5534,37 @@ func _on_stroke_cancelled() -> void:
 	history_state_changed.emit()
 
 
-func _on_calibration_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2) -> void:
-	var before := arena.to_snapshot()
-	arena.grid_origin = origin
-	arena.axis_x = axis_x
-	arena.axis_y = axis_y
-	arena.calibration_cells = [Vector2i.ZERO, Vector2i.RIGHT, Vector2i.DOWN]
-	arena.calibration_pixels = [origin, origin + axis_x, origin + axis_y]
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
-	_commit_change("Calibrer la grille en trois clics", before, arena.to_snapshot())
-	_refresh_all()
-	_set_status("Grille calibree. Utilisez les trois poignées colorees pour l'ajuster visuellement.")
+func _finish_active_placement() -> void:
+	if not _placement_session.active or arena == null:
+		return
+	var result := _placement_session.finish(arena)
+	if not bool(result.get("ok", false)):
+		return
+	_commit_change(
+		str(result.get("action_name", "Placer un interactif")),
+		result.get("before", {}), result.get("after", {})
+	)
+	_active_vortex_network_id = StringName(result.get("network_id", &""))
+	var network := ArenaVortexNetworkService.network_by_id(
+		arena, _active_vortex_network_id
+	)
+	_selected_spatial = _spatial_at(network.cells[0]) \
+		if network != null and not network.cells.is_empty() else {}
+	canvas.refresh_terrain_plan()
+	canvas.queue_redraw()
+	_refresh_library()
+	_set_status("Placement terminé — une seule action Annuler/Rétablir a été créée.")
+
+
+func _cancel_active_placement() -> bool:
+	if not _placement_session.active or arena == null:
+		return false
+	var cancelled := _placement_session.cancel(arena)
+	if cancelled:
+		canvas.set_arena(arena)
+		_refresh_library()
+		_set_status("Placement annulé : le terrain a été restauré exactement.")
+	return cancelled
 
 
 func _on_calibration_preview(origin: Vector2, axis_x: Vector2, axis_y: Vector2) -> void:
@@ -5117,8 +5606,13 @@ func _on_transform_commit_requested(
 			return
 		unique[cells[index]] = true
 	snapshot.apply_to(arena)
-	arena.calibration_cells = cells.duplicate()
-	arena.calibration_pixels = pixels.duplicate()
+	if cells.is_empty() and not arena.background_path.is_empty():
+		var anchors := TerrainGridAlignmentServiceComponent.confirmation_anchors(snapshot)
+		arena.calibration_cells.assign(anchors.get("cells", []))
+		arena.calibration_pixels.assign(anchors.get("pixels", []))
+	else:
+		arena.calibration_cells = cells.duplicate()
+		arena.calibration_pixels = pixels.duplicate()
 	ArenaRuntimeBridge.sync_runtime_resources(
 		arena, ArenaRuntimeBridge.SyncScope.GRID_TRANSFORM
 	)
@@ -5243,6 +5737,10 @@ func _refresh_all(sync_runtime := true) -> void:
 	_refresh_title()
 	_refresh_calibration_label()
 	_refresh_dynamic_palette()
+	_refresh_library()
+	_update_validation_report(false)
+	if grid_alignment_panel != null:
+		grid_alignment_panel.sync_from_arena(arena)
 	_refresh_destination_panel()
 	_autosave()
 
@@ -5255,6 +5753,10 @@ func _refresh_after_transform_commit() -> void:
 	_refresh_title()
 	_refresh_calibration_label()
 	_refresh_transform_inspector()
+	_refresh_library()
+	_update_validation_report(false)
+	if grid_alignment_panel != null:
+		grid_alignment_panel.sync_from_arena(arena)
 	_mark_destination_plan_obsolete()
 	_autosave()
 
@@ -5285,6 +5787,10 @@ func _on_history_changed() -> void:
 	_refresh_calibration_label()
 	_refresh_transform_inspector()
 	_refresh_dynamic_palette()
+	_refresh_library()
+	_update_validation_report(false)
+	if grid_alignment_panel != null:
+		grid_alignment_panel.sync_from_arena(arena)
 	_refresh_destination_panel()
 	history_state_changed.emit()
 
@@ -5308,10 +5814,12 @@ func history_can_redo() -> bool:
 
 
 func history_undo() -> bool:
+	_finish_grid_alignment_edit()
 	return edit_session != null and edit_session.history.undo()
 
 
 func history_redo() -> bool:
+	_finish_grid_alignment_edit()
 	return edit_session != null and edit_session.history.redo()
 
 
@@ -5357,6 +5865,8 @@ func history_document_name() -> String:
 
 
 func cancel_active_gesture() -> bool:
+	if _placement_session.active:
+		return _cancel_active_placement()
 	return canvas != null and canvas.cancel_active_gesture()
 
 
@@ -5791,6 +6301,8 @@ func _context_run_discard() -> Dictionary:
 func _on_tool_selected(index: int) -> void:
 	if index != ArenaStudioCanvas.Tool.SPAWN:
 		_clear_pending_vortex()
+		_active_vortex_intent = VortexIntent.NONE
+		_vortex_edit_active = false
 	var dynamic_tool := index in [
 		ArenaStudioCanvas.Tool.ADD_CELL,
 		ArenaStudioCanvas.Tool.REMOVE_CELL,
@@ -5817,19 +6329,9 @@ func _on_tool_selected(index: int) -> void:
 		dynamic_palette.visible = preserve_dynamic
 	if tool_palette != null:
 		tool_palette.set_active_tool(index)
-	var tool_step := _step_for_tool(index)
-	if tool_step >= 0 and tool_step != current_step:
-		current_step = tool_step
-		if workflow_rail != null:
-			workflow_rail.set_current_step(current_step)
-		if tool_palette != null:
-			tool_palette.set_active_step(current_step)
-		if inspector_panel != null:
-			inspector_panel.set_context(current_step, guided)
-		_refresh_workflow()
 	if transform_panel != null:
 		transform_panel.visible = index == ArenaStudioCanvas.Tool.TRANSFORM_GRID
-	calibration_label.visible = index in [
+	calibration_label.visible = not guided and index in [
 		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
 		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
 	]
@@ -5845,6 +6347,13 @@ func _on_tool_selected(index: int) -> void:
 		ArenaStudioCanvas.Tool.TERRAIN,
 		ArenaStudioCanvas.Tool.SPAWN,
 	]
+	if index not in [
+		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
+		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
+	] and inspector_label != null:
+		# Ne jamais conserver les mesures affines d'une étape précédente : elles
+		# sont hors contexte et repoussent les actions utiles dans l'inspecteur.
+		inspector_label.text = "Survolez une case."
 	if index == ArenaStudioCanvas.Tool.TRANSFORM_GRID:
 		_refresh_transform_inspector()
 		_set_status("Grille sélectionnée : glissez son corps ou une poignée. Échap ou clic droit annule le geste.")
@@ -5854,6 +6363,36 @@ func _on_tool_selected(index: int) -> void:
 	elif preserve_dynamic:
 		_refresh_dynamic_palette()
 		_set_status("Construction dynamique — un seul outil traite le canvas.")
+	_refresh_inspector_context()
+
+
+func _refresh_inspector_context() -> void:
+	if inspector_panel == null:
+		return
+	if not _selected_spatial.is_empty():
+		_refresh_selected_spatial_inspector()
+		return
+	var definition := _active_placeable.get("definition") as TerrainPlaceableDefinition
+	if definition != null and canvas.active_tool in [
+		ArenaStudioCanvas.Tool.TERRAIN,
+		ArenaStudioCanvas.Tool.OBSTACLE,
+		ArenaStudioCanvas.Tool.SPAWN,
+	]:
+		_refresh_inspector_for_placeable(definition)
+		return
+	var sections: Array[StringName] = [&"selection"]
+	var title: String = TOOL_LABELS[canvas.active_tool] if canvas != null else ""
+	match canvas.active_tool if canvas != null else ArenaStudioCanvas.Tool.SELECT:
+		ArenaStudioCanvas.Tool.ADD_CELL, ArenaStudioCanvas.Tool.REMOVE_CELL, \
+		ArenaStudioCanvas.Tool.BORDER:
+			sections.append(&"shape")
+		ArenaStudioCanvas.Tool.TRANSFORM_GRID, ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
+			sections.append(&"scenery")
+			sections.append(&"calibration")
+			sections.append(&"layers")
+		ArenaStudioCanvas.Tool.VERIFY:
+			sections.append(&"verify")
+	inspector_panel.set_spatial_context(sections, title, guided)
 
 
 func _refresh_active_tool_contract(index: int) -> void:
@@ -6043,6 +6582,7 @@ func set_focus_map(value: bool) -> void:
 			"navigation": canvas_navigation.visible,
 			"guidance": guidance_panel.visible if guidance_panel != null else false,
 			"palette": palette_scroll.visible if palette_scroll != null else false,
+			"library": library_panel.visible if library_panel != null else false,
 			"header": header_bar.visible if header_bar != null else false,
 			"home": home_panel.visible if home_panel != null else false,
 			"wizard": creation_wizard.visible if creation_wizard != null else false,
@@ -6061,6 +6601,8 @@ func set_focus_map(value: bool) -> void:
 			guidance_panel.hide()
 		if palette_scroll != null:
 			palette_scroll.hide()
+		if library_panel != null:
+			library_panel.hide()
 		if header_bar != null:
 			header_bar.hide()
 	else:
@@ -6072,6 +6614,8 @@ func set_focus_map(value: bool) -> void:
 			guidance_panel.visible = bool(_pre_focus_state.get("guidance", true))
 		if palette_scroll != null:
 			palette_scroll.visible = bool(_pre_focus_state.get("palette", true))
+		if library_panel != null:
+			library_panel.visible = bool(_pre_focus_state.get("library", true))
 		if header_bar != null:
 			header_bar.visible = bool(_pre_focus_state.get("header", true))
 		var restored_home := bool(_pre_focus_state.get("home", false))
@@ -6498,6 +7042,231 @@ func _on_terrain_pick_requested(cell: Vector2i) -> void:
 	_set_status("Terrain prélevé en (%d, %d) : %s." % [cell.x, cell.y, definition.terrain_id])
 
 
+func _on_placeable_pick_requested(cell: Vector2i) -> void:
+	var spatial := _spatial_at(cell)
+	if spatial.is_empty():
+		return
+	var library_id := StringName(spatial.get("library_id", &""))
+	var entry := TerrainPlaceableCatalogService.entry_by_id(arena, library_id, guided)
+	if entry.is_empty():
+		return
+	if library_panel != null:
+		library_panel.select_entry(library_id)
+	_on_library_placeable_selected(entry)
+	_set_status("Élément prélevé : %s." % entry.get("display_name", library_id))
+
+
+func _on_spatial_selection_requested(cell: Vector2i) -> void:
+	_selected_spatial = _spatial_at(cell)
+	_refresh_inspector_context()
+
+
+func _spatial_at(cell: Vector2i) -> Dictionary:
+	if arena == null:
+		return {}
+	var network := arena.vortex_network_at(cell)
+	if network != null:
+		var count := network.unique_cells().size()
+		var placement_kind := TerrainPlaceableDefinition.PlacementKind.VORTEX_IMPULSE
+		if count == 2:
+			placement_kind = TerrainPlaceableDefinition.PlacementKind.VORTEX_PORTAL_TWO
+		elif count >= 3:
+			placement_kind = TerrainPlaceableDefinition.PlacementKind.VORTEX_PORTAL_MULTI
+		return {
+			"kind": &"vortex", "object": network, "cell": cell,
+			"library_id": _library_id_for_placement_kind(placement_kind),
+		}
+	for spawn in arena.spawns_at(cell):
+		return {
+			"kind": &"spawn", "object": spawn, "cell": cell,
+			"library_id": _library_id_for_spawn_kind(spawn.kind),
+		}
+	var obstacle := arena.obstacle_at(cell)
+	if obstacle != null:
+		return {
+			"kind": &"obstacle", "object": obstacle, "cell": cell,
+			"library_id": StringName("wall:%s" % obstacle.wall_id),
+		}
+	for decoration in arena.decorations:
+		if decoration != null and decoration.cell == cell:
+			return {
+				"kind": &"decoration", "object": decoration, "cell": cell,
+				"library_id": &"decoration_marker",
+			}
+	var definition := arena.get_cell_definition(cell)
+	if definition != null and definition.terrain_id != &"":
+		return {
+			"kind": &"floor", "object": definition, "cell": cell,
+			"library_id": StringName("floor:%s" % definition.terrain_id),
+		}
+	return {}
+
+
+func _library_id_for_spawn_kind(kind: int) -> StringName:
+	for entry in TerrainPlaceableCatalogService.entries(arena, guided):
+		var definition := entry.get("definition") as TerrainPlaceableDefinition
+		if definition != null \
+				and definition.placement_kind == TerrainPlaceableDefinition.PlacementKind.SPAWN_POINT \
+				and int(definition.payload.get("spawn_kind", -1)) == kind:
+			return definition.stable_id
+	return &""
+
+
+func _library_id_for_placement_kind(kind: int) -> StringName:
+	for entry in TerrainPlaceableCatalogService.entries(arena, guided):
+		var definition := entry.get("definition") as TerrainPlaceableDefinition
+		if definition != null and definition.placement_kind == kind:
+			return definition.stable_id
+	return &""
+
+
+func _refresh_selected_spatial_inspector() -> void:
+	if _selected_spatial.is_empty() or inspector_panel == null:
+		return
+	var kind := StringName(_selected_spatial.get("kind", &""))
+	var object := _selected_spatial.get("object")
+	var sections: Array[StringName] = [&"selection"]
+	var title := "Élément sélectionné"
+	spatial_name_edit.visible = false
+	spatial_cells_label.visible = true
+	spatial_delete_button.visible = kind != &"floor"
+	placement_finish_button.visible = false
+	spatial_enabled_check.visible = false
+	spatial_team_option.visible = false
+	spatial_edit_cells_button.visible = false
+	match kind:
+		&"vortex":
+			var network := object as ArenaVortexNetworkDefinition
+			sections.append(&"vortex")
+			title = network.display_name
+			spatial_name_edit.visible = true
+			spatial_name_edit.text = network.display_name
+			spatial_enabled_check.visible = true
+			spatial_enabled_check.set_pressed_no_signal(network.enabled)
+			spatial_team_option.visible = true
+			for index in range(spatial_team_option.item_count):
+				if int(spatial_team_option.get_item_metadata(index)) == network.allowed_teams:
+					spatial_team_option.select(index)
+					break
+			spatial_edit_cells_button.visible = true
+			spatial_cells_label.text = "%s\nCases : %s" % [
+				ArenaVortexNetworkService.behavior_summary(network),
+				", ".join(network.unique_cells().map(func(cell): return "(%d, %d)" % [cell.x, cell.y])),
+			]
+		&"spawn":
+			var spawn := object as ArenaSpawnDefinition
+			sections.append(&"content")
+			title = spawn.display_label()
+			spatial_cells_label.text = "Case : (%d, %d)\nDirection : (%d, %d)" % [
+				spawn.cell.x, spawn.cell.y, spawn.facing.x, spawn.facing.y,
+			]
+		&"obstacle":
+			sections.append(&"content")
+			title = "Obstacle"
+			spatial_cells_label.text = "Case : (%d, %d)" % [
+				_selected_spatial.cell.x, _selected_spatial.cell.y,
+			]
+		&"decoration":
+			sections.append(&"scenery")
+			title = "Décor"
+			spatial_cells_label.text = "Case : (%d, %d)" % [
+				_selected_spatial.cell.x, _selected_spatial.cell.y,
+			]
+		&"floor":
+			sections.append(&"floors")
+			title = "Sol"
+			spatial_cells_label.text = "Case : (%d, %d)\nSol : %s" % [
+				_selected_spatial.cell.x, _selected_spatial.cell.y,
+				(object as ArenaCellDefinition).terrain_id,
+			]
+	inspector_label.text = "Sélection directe sur le canvas."
+	inspector_panel.set_spatial_context(sections, title, guided)
+
+
+func _rename_selected_spatial() -> void:
+	if _selected_spatial.get("kind", &"") != &"vortex" or arena == null:
+		return
+	var network := _selected_spatial.get("object") as ArenaVortexNetworkDefinition
+	var next_name := spatial_name_edit.text.strip_edges()
+	if network == null or next_name.is_empty() or network.display_name == next_name:
+		return
+	var before := arena.to_snapshot()
+	network.display_name = next_name
+	_commit_change("Renommer le portail", before, arena.to_snapshot())
+	_refresh_selected_spatial_inspector()
+
+
+func _set_selected_vortex_enabled(value: bool) -> void:
+	if _selected_spatial.get("kind", &"") != &"vortex" or arena == null:
+		return
+	var network := _selected_spatial.get("object") as ArenaVortexNetworkDefinition
+	if network == null or network.enabled == value:
+		return
+	var before := arena.to_snapshot()
+	network.enabled = value
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change("Modifier l'activation du portail", before, arena.to_snapshot())
+	canvas.queue_redraw()
+
+
+func _set_selected_vortex_teams(index: int) -> void:
+	if _selected_spatial.get("kind", &"") != &"vortex" or arena == null \
+			or index < 0 or index >= spatial_team_option.item_count:
+		return
+	var network := _selected_spatial.get("object") as ArenaVortexNetworkDefinition
+	var teams := int(spatial_team_option.get_item_metadata(index))
+	if network == null or network.allowed_teams == teams:
+		return
+	var before := arena.to_snapshot()
+	network.allowed_teams = teams
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change("Choisir qui peut utiliser le portail", before, arena.to_snapshot())
+
+
+func _edit_selected_vortex_cells() -> void:
+	if _selected_spatial.get("kind", &"") != &"vortex":
+		return
+	var network := _selected_spatial.get("object") as ArenaVortexNetworkDefinition
+	if network == null:
+		return
+	_active_vortex_network_id = network.network_id
+	_vortex_edit_active = true
+	_selected_spatial = {}
+	_active_placeable = {}
+	tool_list.select(ArenaStudioCanvas.Tool.SPAWN)
+	_on_tool_selected(ArenaStudioCanvas.Tool.SPAWN)
+	_set_status("Modification du portail : clic gauche ajoute une case, clic droit la retire.")
+
+
+func _delete_selected_spatial() -> void:
+	if arena == null or _selected_spatial.is_empty():
+		return
+	var before := arena.to_snapshot()
+	var kind := StringName(_selected_spatial.get("kind", &""))
+	var object := _selected_spatial.get("object")
+	var changed := false
+	match kind:
+		&"vortex": changed = ArenaVortexNetworkService.delete_network(
+			arena, (object as ArenaVortexNetworkDefinition).network_id
+		)
+		&"spawn":
+			arena.spawns.erase(object)
+			changed = true
+		&"obstacle":
+			arena.obstacles.erase(object)
+			changed = true
+		&"decoration":
+			arena.decorations.erase(object)
+			changed = true
+	if not changed:
+		return
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	_commit_change("Supprimer l'élément sélectionné", before, arena.to_snapshot())
+	_selected_spatial = {}
+	_refresh_all()
+	_refresh_inspector_context()
+
+
 func _selected_terrain_id(option: OptionButton) -> StringName:
 	if option == null or option.selected < 0 or option.selected >= option.item_count:
 		return &"stone"
@@ -6524,7 +7293,7 @@ func _resize_dynamic_document() -> void:
 	_refresh_all()
 
 
-## Sous 1 180 px, l'inspecteur cesse d'occuper une colonne mais reste
+## Sous 1 400 px, l'inspecteur cesse d'occuper une colonne mais reste
 ## atteignable : un bouton permanent l'ouvre en tiroir par-dessus le canvas.
 ## Aucune action essentielle n'est masquee sans acces de remplacement.
 func _apply_responsive_layout() -> void:
@@ -6542,12 +7311,19 @@ func _apply_responsive_layout() -> void:
 		# le mode Focus rendrait moins de place à la carte qu'annoncé.
 		_sync_drawer_split()
 		return
-	left_panel.custom_minimum_size.x = 196
+	left_panel.custom_minimum_size.x = 172
 	right_panel.custom_minimum_size.x = 300 if size.x >= 1500 else 280
-	_compact_layout = size.x < 1180.0
+	_compact_layout = size.x < 1400.0
 	if _compact_layout:
+		if inspector_overlay_host != null and right_panel.get_parent() != inspector_overlay_host:
+			right_panel.reparent(inspector_overlay_host)
+		inspector_overlay_host.visible = _inspector_forced_open
 		right_panel.visible = _inspector_forced_open
 	else:
+		if right_panel.get_parent() != center_and_right_split:
+			right_panel.reparent(center_and_right_split)
+		if inspector_overlay_host != null:
+			inspector_overlay_host.visible = false
 		_inspector_forced_open = false
 		right_panel.show()
 	if inspector_panel != null:
@@ -6561,7 +7337,13 @@ func _apply_responsive_layout() -> void:
 	# repousser le canvas ou le tiroir hors de la fenêtre. Le tiroir reste
 	# fermé par défaut, mais il n'est jamais refermé de force.
 	if palette_scroll != null:
-		palette_scroll.custom_minimum_size.y = 76.0 if size.y < 760.0 else 132.0
+		palette_scroll.custom_minimum_size.y = 58.0 if size.y < 760.0 else 68.0
+	if library_panel != null:
+		library_panel.custom_minimum_size.y = 88.0 if size.y < 760.0 \
+			else (170.0 if size.y >= 900.0 else 142.0)
+		if library_panel.search_edit != null:
+			library_panel.search_edit.visible = size.y >= 760.0
+	_sync_drawer_split()
 	# La barre historique du Studio duplique l'en-tête Terrain et le shell :
 	# sur un écran court elle disparaît, sans qu'aucune action ne soit perdue
 	# (Préparer, Enregistrer et Glossaire vivent aussi dans le parcours).
@@ -6577,6 +7359,8 @@ func get_workspace_state() -> Dictionary:
 		"guided": guided,
 		"step": current_step,
 		"guidance_visible": guidance_visible,
+		"checklist_collapsed": checklist_panel.is_collapsed() if checklist_panel != null else true,
+		"library": library_panel.get_state() if library_panel != null else {},
 		"inspector_drawer_open": _inspector_forced_open,
 		"home_visible": is_home_visible(),
 		"workspace_mode": workspace_mode,

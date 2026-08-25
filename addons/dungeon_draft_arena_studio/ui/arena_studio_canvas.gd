@@ -6,7 +6,6 @@ signal stroke_started(action_name: String)
 signal cells_edit_requested(cells: Array[Vector2i], erase: bool)
 signal stroke_finished(action_name: String)
 signal stroke_cancelled
-signal calibration_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2)
 signal calibration_preview_requested(origin: Vector2, axis_x: Vector2, axis_y: Vector2)
 signal anchors_preview_requested(cells: Array[Vector2i], pixels: Array[Vector2])
 signal transform_commit_requested(
@@ -17,6 +16,8 @@ signal transform_commit_requested(
 signal hovered_cell_changed(cell: Vector2i)
 signal verification_cell_requested(cell: Vector2i)
 signal terrain_pick_requested(cell: Vector2i)
+signal placeable_pick_requested(cell: Vector2i)
+signal spatial_selection_requested(cell: Vector2i)
 
 enum Tool {
 	SELECT,
@@ -81,7 +82,6 @@ var show_technical := false
 var show_saved_comparison := false
 var background_opacity := 1.0
 var grid_opacity := 1.0
-var calibration_active := false
 var verification_kind := &"path"
 var selected_cells: Array[Vector2i] = []
 var grid_selected := false
@@ -129,15 +129,18 @@ var _foreground_texture: Texture2D = null
 var _terrain_entries: Dictionary = {}
 var _wall_texture_cache: Dictionary = {}
 var _brush_preview_terrain_id: StringName = &"stone"
+var _placeable_preview_texture: Texture2D = null
+var _placeable_preview_color := Color(0.48, 0.86, 1.0, 0.48)
+var _placeable_preview_label := ""
 var _pending_vortex_cell := INVALID_CELL
 var painted_logic_only := false
 var _hovered := INVALID_CELL
 var _panning := false
 var _painting := false
+var _painting_erase := false
 var _rectangle_start := INVALID_CELL
 var _rectangle_current := INVALID_CELL
 var _painted_this_stroke := {}
-var _calibration_points: Array[Vector2] = []
 var _drag_handle := -1
 var _drag_origin := Vector2.ZERO
 var _drag_axis_x := Vector2.ZERO
@@ -257,7 +260,6 @@ func set_tool(value: int) -> void:
 		cancel_active_gesture()
 	active_tool = clampi(value, Tool.SELECT, Tool.CALIBRATION_ANCHORS)
 	grid_selected = active_tool == Tool.TRANSFORM_GRID
-	calibration_active = false
 	input_router.set_active_tool(active_tool, _input_mode_for_tool(active_tool))
 	if affine_gizmo != null:
 		affine_gizmo.visible = active_tool == Tool.TRANSFORM_GRID
@@ -278,6 +280,17 @@ func set_painted_logic_only(value: bool) -> void:
 
 func set_brush_preview_terrain(terrain_id: StringName) -> void:
 	_brush_preview_terrain_id = terrain_id
+	queue_redraw()
+
+
+func set_placeable_preview(
+		texture: Texture2D,
+		color := Color(0.48, 0.86, 1.0, 0.48),
+		label := ""
+	) -> void:
+	_placeable_preview_texture = texture
+	_placeable_preview_color = color
+	_placeable_preview_label = label
 	queue_redraw()
 
 
@@ -424,6 +437,7 @@ func cancel_active_gesture() -> bool:
 	set_process(false)
 	_drag_changed = false
 	_painting = false
+	_painting_erase = false
 	_rectangle_start = INVALID_CELL
 	_rectangle_current = INVALID_CELL
 	_painted_this_stroke.clear()
@@ -439,17 +453,6 @@ func cancel_active_gesture() -> bool:
 	stroke_cancelled.emit()
 	queue_redraw()
 	return true
-
-
-func begin_three_click_calibration() -> void:
-	calibration_active = true
-	_calibration_points.clear()
-	active_tool = Tool.SELECT
-	queue_redraw()
-
-
-func calibration_step() -> int:
-	return _calibration_points.size()
 
 
 func fit_to_image() -> void:
@@ -618,10 +621,6 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		if _keyboard_nudging:
 			_commit_keyboard_nudge()
 		grab_focus()
-		if calibration_active and event.button_index == MOUSE_BUTTON_LEFT:
-			_add_calibration_point(event.position)
-			accept_event()
-			return
 		if active_tool == Tool.CALIBRATION_ANCHORS \
 				and _handle_anchor_press(event.position, event.button_index):
 			accept_event()
@@ -645,9 +644,10 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 			verification_cell_requested.emit(cell)
 			accept_event()
 			return
-		if active_tool == Tool.TERRAIN and event.button_index == MOUSE_BUTTON_LEFT \
-				and event.alt_pressed:
-			terrain_pick_requested.emit(cell)
+		if event.button_index == MOUSE_BUTTON_LEFT and event.alt_pressed:
+			placeable_pick_requested.emit(cell)
+			if active_tool == Tool.TERRAIN:
+				terrain_pick_requested.emit(cell)
 			accept_event()
 			return
 		if active_tool == Tool.SELECT or brush_shape == BrushShape.MULTI_SELECT:
@@ -657,10 +657,12 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 				selected_cells.erase(cell)
 			else:
 				selected_cells.append(cell)
+			spatial_selection_requested.emit(cell)
 			queue_redraw()
 			accept_event()
 			return
 		_painting = true
+		_painting_erase = event.button_index == MOUSE_BUTTON_RIGHT
 		input_router.begin_gesture(_input_mode_for_tool(active_tool), "active_tool")
 		_painted_this_stroke.clear()
 		stroke_started.emit(_action_name())
@@ -668,9 +670,9 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 			_rectangle_start = cell
 			_rectangle_current = cell
 		elif brush_shape == BrushShape.FILL:
-			_request_cells(_contiguous_cells(cell), event.button_index == MOUSE_BUTTON_RIGHT)
+			_request_cells(_contiguous_cells(cell), _painting_erase)
 		else:
-			_request_cells(_brush_cells(cell), event.button_index == MOUSE_BUTTON_RIGHT)
+			_request_cells(_brush_cells(cell), _painting_erase)
 		accept_event()
 	else:
 		if _drag_handle != TransformHandle.NONE:
@@ -682,11 +684,12 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 		if brush_shape == BrushShape.RECTANGLE and _rectangle_start != INVALID_CELL:
 			_request_cells(
 				_rectangle_cells(_rectangle_start, _rectangle_current),
-				event.button_index == MOUSE_BUTTON_RIGHT
+				_painting_erase
 			)
 		stroke_finished.emit(_action_name())
 		input_router.finish_gesture(_input_mode_for_tool(active_tool))
 		_painting = false
+		_painting_erase = false
 		_rectangle_start = INVALID_CELL
 		_rectangle_current = INVALID_CELL
 		_painted_this_stroke.clear()
@@ -756,7 +759,7 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 			_rectangle_current = cell
 			queue_redraw()
 		elif brush_shape == BrushShape.BRUSH:
-			_request_cells(_brush_cells(cell), false)
+			_request_cells(_brush_cells(cell), _painting_erase)
 	elif active_tool == Tool.TRANSFORM_GRID:
 		var hovered_handle := _handle_at(event.position)
 		mouse_default_cursor_shape = _cursor_for_handle(hovered_handle)
@@ -764,22 +767,6 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 			affine_gizmo.set_hovered_handle(hovered_handle)
 	elif affine_gizmo != null:
 		affine_gizmo.set_hovered_handle(TransformHandle.NONE)
-
-
-func _add_calibration_point(view_position: Vector2) -> void:
-	_calibration_points.append(
-		_screen_to_image_native(view_position)
-	)
-	if _calibration_points.size() == 3:
-		var origin := _calibration_points[0]
-		var axis_x := _calibration_points[1] - origin
-		var axis_y := _calibration_points[2] - origin
-		if GridTransformService.is_invertible(axis_x, axis_y):
-			calibration_requested.emit(origin, axis_x, axis_y)
-			calibration_active = false
-		else:
-			_calibration_points.clear()
-	queue_redraw()
 
 
 func _try_begin_transform_drag(
@@ -1366,7 +1353,7 @@ func _draw() -> void:
 		arena.image_scale * zoom
 	)
 	var transform_mode := active_tool == Tool.TRANSFORM_GRID
-	var anchor_mode := active_tool == Tool.CALIBRATION_ANCHORS or calibration_active
+	var anchor_mode := active_tool == Tool.CALIBRATION_ANCHORS
 	if bool(layer_visibility.get("gameplay", true)):
 		_draw_cells()
 	if not transform_mode and not anchor_mode:
@@ -1470,27 +1457,37 @@ func _draw_precision_grid(snapshot: GridTransformSnapshot) -> void:
 
 
 func _draw_brush_preview() -> void:
-	if not dynamic_construction_mode or active_tool != Tool.TERRAIN \
+	if active_tool not in [Tool.TERRAIN, Tool.OBSTACLE, Tool.SPAWN] \
 			or _hovered == INVALID_CELL:
 		return
 	var polygon := _polygon(_hovered)
-	if _brush_preview_terrain_id == &"void":
+	if active_tool == Tool.TERRAIN and _brush_preview_terrain_id == &"void":
 		draw_colored_polygon(polygon, Color(0.02, 0.03, 0.05, 0.62))
 		_draw_outline(polygon, Color(1.0, 0.35, 0.35, 0.95), _native_stroke_width(2.5))
 		return
-	var texture := ArenaTerrainRegistry.texture_for(_brush_preview_terrain_id)
-	if texture == null:
-		return
-	draw_polygon(
-		polygon,
-		PackedColorArray([
-			Color(1, 1, 1, 0.58), Color(1, 1, 1, 0.58),
-			Color(1, 1, 1, 0.58), Color(1, 1, 1, 0.58),
-		]),
-		ArenaTileProjectionService.polygon_uv(texture),
-		texture
-	)
+	var texture := ArenaTerrainRegistry.texture_for(_brush_preview_terrain_id) \
+		if active_tool == Tool.TERRAIN else _placeable_preview_texture
+	if texture != null:
+		draw_polygon(
+			polygon,
+			PackedColorArray([
+				Color(1, 1, 1, 0.58), Color(1, 1, 1, 0.58),
+				Color(1, 1, 1, 0.58), Color(1, 1, 1, 0.58),
+			]),
+			ArenaTileProjectionService.polygon_uv(texture),
+			texture
+		)
+	else:
+		draw_colored_polygon(polygon, _placeable_preview_color)
 	_draw_outline(polygon, Color.WHITE, _native_stroke_width(2.0))
+	if not _placeable_preview_label.is_empty() and active_tool != Tool.TERRAIN:
+		var center := GridTransformService.cell_to_position(
+			_hovered, arena.grid_origin, arena.axis_x, arena.axis_y
+		)
+		draw_string(
+			ThemeDB.fallback_font, center + Vector2(4, -4), _placeable_preview_label,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color.WHITE
+		)
 
 
 func _draw_wall_visuals() -> void:
@@ -1653,10 +1650,6 @@ func _draw_calibration() -> void:
 				"%.2f px" % predicted.distance_to(measured),
 				HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(8, int(10.0 / zoom)), Color.WHITE
 			)
-	for point in _calibration_points:
-		draw_circle(point, _native_stroke_width(6.0), Color.WHITE)
-
-
 func _draw_foreground_overlay() -> void:
 	if _foreground_texture != null:
 		# Le foreground explicite possede son propre placement dans le meme
@@ -1721,19 +1714,6 @@ func _draw_hud() -> void:
 			ThemeDB.fallback_font, Vector2(32, 44), text,
 			HORIZONTAL_ALIGNMENT_LEFT, width - 28.0, 14, Color(0.88, 0.95, 1.0)
 		)
-	if calibration_active:
-		var instructions: String = [
-			"1/3 — Cliquez le centre d'une case de référence",
-			"2/3 — Cliquez la voisine en bas a droite",
-			"3/3 — Cliquez la voisine en bas a gauche",
-		][_calibration_points.size()]
-		draw_rect(Rect2(18, 18, minf(size.x - 36, 520), 42), Color(0.02, 0.06, 0.11, 0.92), true)
-		draw_string(
-			ThemeDB.fallback_font, Vector2(34, 45), instructions,
-			HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color(1.0, 0.88, 0.3)
-		)
-
-
 func _polygon(cell: Vector2i) -> PackedVector2Array:
 	var snapshot := _active_transform_snapshot()
 	return GridTransformService.cell_polygon(

@@ -38,7 +38,7 @@ const PAGES := [
 	{
 		"title": "La grille tactique",
 		"target": &"grid",
-		"body": "La grille découpe l’image en cellules jouables. Recentrer et Adapter à l’image règlent la vue. Calibration en 3 clics aligne la grille sur un décor existant sans déplacer le décor lui-même.",
+		"body": "La grille découpe l’image en cellules jouables. Après avoir vu le décor, ajustez sa taille, sa position, sa rotation, son échelle et son inclinaison. Les poignées permettent aussi de la régler directement sur l’image sans déplacer le décor.",
 	},
 	{
 		"title": "Créer les dalles",

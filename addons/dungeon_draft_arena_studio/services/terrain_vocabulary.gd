@@ -22,7 +22,7 @@ const USER_TERMS := {
 	"background": "Illustration de fond",
 	"painted": "Depuis une illustration",
 	"modular": "Avec des tuiles",
-	"hybrid": "Illustration avec tuiles spéciales",
+	"hybrid": "Illustration avec des tuiles superposées",
 }
 
 ## Definition courte de chaque mot du domaine, affichee dans l'aide et dans
@@ -39,17 +39,18 @@ const GLOSSARY := [
 	["Intégrer", "Rendre le terrain disponible dans une salle de la partie."],
 ]
 
-## Les trois intentions de creation proposees a l'entree. L'ordre est celui des
-## cartes affichees ; l'index correspond a ArenaDefinition.VisualMode.
+## Les deux bases visuelles proposées à la création. HYBRID n'est pas une
+## troisième méthode : il apparaît lorsque des tuiles sont superposées à une
+## illustration dans la working copy.
 const CREATION_CHOICES = [
 	{
 		"visual_mode": 0,
 		"title": "Depuis une illustration",
 		"display_title": "Depuis une illustration",
-		"summary": "Importer un décor puis aligner la grille dessus.",
-		"detail": "Le décor est une image peinte. Vous placerez la grille par-dessus en trois clics.",
+		"summary": "Choisir le décor, le voir, puis ajuster la grille dessus.",
+		"detail": "Le décor est une image peinte. Vous pourrez déplacer, tourner, agrandir et incliner la grille directement dessus.",
 		"needs_image": true,
-		"confirm_label": "Créer et aligner l'illustration",
+		"confirm_label": "Créer et ajuster la grille",
 	},
 	{
 		"visual_mode": 1,
@@ -59,15 +60,6 @@ const CREATION_CHOICES = [
 		"detail": "Le Studio dessine le sol pour vous. C'est le choix le plus simple pour un premier terrain.",
 		"needs_image": false,
 		"confirm_label": "Créer et peindre",
-	},
-	{
-		"visual_mode": 2,
-		"title": "Illustration avec tuiles spéciales",
-		"display_title": "Illustration avec tuiles spéciales",
-		"summary": "Combiner un décor peint et des sols interactifs.",
-		"detail": "Le décor reste au fond ; seules les cases spéciales (eau, glace, lave…) sont dessinées par-dessus.",
-		"needs_image": true,
-		"confirm_label": "Créer et aligner l'illustration",
 	},
 ]
 

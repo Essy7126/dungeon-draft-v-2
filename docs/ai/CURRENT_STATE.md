@@ -1,5 +1,35 @@
 # État courant vérifié du projet
 
+## Studio Terrain — retour humain illustration et grille (WORKTREE_CANDIDATE, 2026-08-24)
+
+- **PROUVÉ** — `Depuis une illustration` affiche désormais un grand aperçu du
+  décor avant l'écran qui demande la taille de la grille.
+- **PROUVÉ** — après création, une grille 3 × 3 est centrée sur l'image et son
+  panneau guidé expose taille, position, rotation, échelle X/Y et inclinaison,
+  avec un accès aux poignées de transformation directe. Les champs agissent en
+  direct, sans bouton Appliquer, et l'ancien écran de dimensions est sauté.
+- **PROUVÉ** — la calibration initiale en trois clics a été retirée du canvas,
+  des actions guidées, de l'aide et du message de validation.
+- **PROUVÉ** — la ligne globale `Détails techniques` est entièrement masquée ;
+  ses informations restent disponibles dans l'infobulle du résumé de contexte.
+- **PROUVÉ** — la palette ne répète plus les actions déjà présentes dans
+  l'inspecteur ou l'en-tête. Le rail n'ajoute plus de bouton d'action redondant.
+- **PROUVÉ** — `Changer l'illustration…` ouvre directement le sélecteur de
+  fichiers. La transaction de copie d'un décor, de sa calibration et de sa
+  caméra reste séparée et explicitement avancée.
+- **PROUVÉ** — les vortex sont trois intentions accessibles en mode guidé :
+  `Case d'impulsion — +1 déplacement`, `Portail entre deux cases` et `Portail
+  à plusieurs sorties`. Les deux premiers s'arrêtent automatiquement après le
+  nombre requis de cases ; le comportement runtime reste inchangé.
+- **PROUVÉ** — captures réelles `terrain_studio_grid_1280x720.png` et
+  `terrain_studio_grid_1920x1080.png` inspectées : les huit champs tiennent dans
+  l'inspecteur, sans bouton Appliquer ni bloc affine redondant.
+- **RAPPORTÉ** — la poursuite du test humain est différée par le propriétaire.
+- **PROUVÉ** — validation de cette passe : Studio Terrain **39/39, 797
+  assertions**, vortex **22/22, 81 assertions**, scénario novice **1/1, 86
+  assertions** ; captures grille et vortex inspectées en 1280 × 720 et
+  1920 × 1080, sans action hors écran.
+
 ## Achille — intégration Meshy directe dans L’Odyssée (CURRENT, 2026-08-23)
 
 - Le candidat V3 remplace le corps canonique animé par retarget par le modèle
@@ -329,3 +359,20 @@ réapplique l'instantané relu avant de marquer la session propre.
   (accueil, création, édition guidée, validation avec erreurs, tester et
   intégrer, mode avancé, focus) en 1280 × 720 et 1920 × 1080, inspectées.
   Aucune action primaire hors écran dans aucune vue.
+
+## Studio Terrain — authoring spatial V2 (WORKTREE_CANDIDATE, 2026-08-25)
+
+Le Studio Terrain utilise désormais un rail d'outils permanent, une checklist
+repliable sans navigation, une bibliothèque visuelle filtrable et un
+inspecteur de sélection spatiale. Les sols et murs sont découverts depuis les
+catalogues existants ; départs, vortex et décor proviennent d'une Resource
+placeable dédiée. La création nominale propose seulement « Depuis une
+illustration » et « Avec des tuiles ».
+
+Le placement direct, le prélèvement par `Alt` + clic, l'effacement continu au
+clic droit, les gestes composites de vortex et la transition automatique d'un
+terrain peint vers `HYBRID/NON_BASE` sont implémentés. Les actions Vérifier,
+Tester et Intégrer restent permanentes dans l'en-tête.
+
+Statut de validation et captures : voir le bilan de la tâche ; aucune activation
+`CURRENT`, publication ou modification de gameplay n'est incluse.

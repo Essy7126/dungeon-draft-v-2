@@ -7,6 +7,9 @@ signal create_requested
 signal open_requested
 signal guided_toggled(value: bool)
 signal preview_selected(index: int)
+signal validation_requested
+signal test_requested
+signal integrate_requested
 
 var home_button: Button
 var new_terrain_button: Button
@@ -14,6 +17,9 @@ var open_terrain_button: Button
 var guided_toggle: CheckButton
 var preview_option: OptionButton
 var document_state_label: Label
+var validation_button: Button
+var test_button: Button
+var integrate_button: Button
 
 
 func _init() -> void:
@@ -71,11 +77,41 @@ func _init() -> void:
 	preview_option.item_selected.connect(preview_selected.emit)
 	actions.add_child(preview_option)
 
+	validation_button = _action(
+		actions, "TerrainValidationBadge", "Validation…",
+		"Ouvrir les erreurs et avertissements du terrain"
+	)
+	validation_button.pressed.connect(validation_requested.emit)
+	test_button = _action(
+		actions, "TerrainTestButton", "▶ Tester",
+		"Tester la version en cours sans rien publier"
+	)
+	test_button.pressed.connect(test_requested.emit)
+	integrate_button = _action(
+		actions, "TerrainIntegrateButton", "Intégrer",
+		"Préparer le plan d'intégration dans une salle"
+	)
+	integrate_button.pressed.connect(integrate_requested.emit)
+
 	document_state_label = Label.new()
 	document_state_label.name = "TerrainDocumentState"
 	document_state_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	document_state_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.add_child(document_state_label)
+
+
+func set_validation_status(errors: int, warnings: int) -> void:
+	if validation_button == null:
+		return
+	if errors > 0:
+		validation_button.text = "%d erreur(s)" % errors
+		validation_button.add_theme_color_override("font_color", Color(1.0, 0.47, 0.40))
+	elif warnings > 0:
+		validation_button.text = "%d avertissement(s)" % warnings
+		validation_button.add_theme_color_override("font_color", Color(0.98, 0.78, 0.35))
+	else:
+		validation_button.text = "Terrain valide"
+		validation_button.add_theme_color_override("font_color", Color(0.52, 0.85, 0.56))
 
 
 func _action(

@@ -89,6 +89,9 @@ func _build() -> void:
 	primary_button.name = "TerrainStepPrimaryAction"
 	primary_button.focus_mode = Control.FOCUS_ALL
 	primary_button.pressed.connect(func(): primary_action_requested.emit(_current))
+	# Chaque action du rail existe déjà dans la palette, l'inspecteur ou
+	# l'en-tête. Le rail explique le parcours sans ajouter un bouton en double.
+	primary_button.visible = false
 	box.add_child(primary_button)
 
 

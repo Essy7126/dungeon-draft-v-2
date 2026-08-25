@@ -17,19 +17,19 @@ Les presets sont :
 
 Pour le domaine Terrain, les presets `Construction / Calibration / Gameplay /
 Aperçu final` deviennent une préférence avancée : ils disparaissent du shell en
-mode guidé. La navigation métier est le rail des sept étapes.
+mode guidé. Le rail d'outils reste permanent ; la checklist n'est qu'un état
+informatif et ne pilote ni le canvas ni l'inspecteur.
 
 Règles responsive du domaine :
 
-- sous 1 180 px de large, l'inspecteur se replie et un bouton permanent
+- sous 1 400 px de large, l'inspecteur se replie et un bouton permanent
   `Ouvrir l'inspecteur ▸` l'ouvre en tiroir par-dessus le canvas ;
-- sous 760 px de haut, la palette contextuelle défile dans moins de place, la
-  barre historique interne disparaît, et ouvrir le tiroir inférieur efface
-  temporairement le guidage — sans modifier la préférence de l'utilisateur ;
-- `Tab` (mode Focus) masque aussi l'en-tête Terrain, le guidage et la palette,
+- sous 760 px de haut, la bibliothèque réduit sa hauteur et la barre historique
+  interne disparaît ;
+- `Tab` (mode Focus) masque aussi l'en-tête Terrain et la bibliothèque,
   puis restaure exactement l'écran précédent, y compris l'accueil.
 
-Le rail, la palette contextuelle et l'inspecteur défilent : leur hauteur
+Le rail permanent, la bibliothèque et l'inspecteur défilent : leur hauteur
 minimale ne peut plus repousser le canvas ou le tiroir hors de la fenêtre. Le
 runner `TerrainStudioCaptureRunner` imprime pour chaque vue la ligne
 `TERRAIN_STUDIO_LAYOUT`, qui donne les bornes verticales de chaque bloc, le

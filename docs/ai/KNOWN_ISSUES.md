@@ -1,5 +1,17 @@
 # Problèmes connus et suivis
 
+## Studio Terrain — suites du test humain 2026-08-24
+
+- **PROUVÉ** — les champs de données `random_destination` et
+  `single_vortex_effect_id` ne pilotent pas la branche runtime actuelle, qui
+  choisit le comportement selon le nombre de cases. Ils doivent être clarifiés
+  ou supprimés lors de la décision vortex, pas silencieusement dans cette passe.
+- **RAPPORTÉ** — le propriétaire poursuivra plus tard le test humain des étapes
+  suivant l'ajustement de la grille.
+- **À CONFIRMER** — le confort réel du nouveau choix vortex et du sélecteur
+  direct d'illustration doit encore être confirmé par ce test humain. Les tests
+  automatisés et les captures ne remplacent pas cette validation d'usage.
+
 ## Arena authoring — réserves du candidat 2026-08-12
 
 - Le bundle gelé `data/arenas/produced/room_01_forest` possède un UID de profil
@@ -194,3 +206,15 @@ régressions introduites par la migration.
   tests et n'entre pas dans ce chantier.
 - La revue humaine interactive dans Godot reste à faire. Les captures
   prouvent la lisibilité et l'absence de débordement, pas le confort réel.
+
+## Authoring spatial Terrain V2 — limites du candidat 2026-08-25
+
+- Les anciens composants de rail d'étapes, guidage et palettes contextuelles
+  restent dans le dépôt pour compatibilité, mais ne sont plus instanciés dans le
+  parcours nominal.
+- `set_current_step()` et l'état `step` persistent comme adaptateurs de
+  compatibilité ; ils ne pilotent plus les outils ni les panneaux.
+- La visite historique demeure une aide facultative et peut encore employer le
+  vocabulaire de l'ancien parcours.
+- La revue humaine interactive dans l'éditeur Godot reste distincte des
+  captures automatisées et du smoke headless.
