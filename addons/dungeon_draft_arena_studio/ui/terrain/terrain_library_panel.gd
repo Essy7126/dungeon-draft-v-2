@@ -6,6 +6,7 @@ extends PanelContainer
 ## fournis par TerrainPlaceableCatalogService sans interpréter leur payload.
 
 signal placeable_selected(entry: Dictionary)
+signal card_action_requested(action: StringName, entry: Dictionary)
 signal state_changed(state: Dictionary)
 
 const FILTERS := [
@@ -43,7 +44,7 @@ func _build() -> void:
 		return
 	_built = true
 	name = "TerrainLibraryPanel"
-	custom_minimum_size.y = 142
+	custom_minimum_size.y = 160
 	var root := VBoxContainer.new()
 	root.add_theme_constant_override("separation", 4)
 	add_child(root)
@@ -173,11 +174,12 @@ func _matches(entry: Dictionary, query: String) -> bool:
 
 func _card(entry: Dictionary) -> Control:
 	var stable_id := StringName(entry.get("stable_id", &""))
+	var node_id := str(stable_id).replace(":", "_")
 	var row := HBoxContainer.new()
-	row.custom_minimum_size = Vector2(176, 42)
+	row.custom_minimum_size = Vector2(204, 42)
 	row.add_theme_constant_override("separation", 2)
 	var button := Button.new()
-	button.name = "TerrainLibraryCard_%s" % stable_id
+	button.name = "TerrainLibraryCard_%s" % node_id
 	button.toggle_mode = true
 	button.button_pressed = stable_id == _selected_id
 	button.disabled = not bool(entry.get("enabled", false))
@@ -200,13 +202,28 @@ func _card(entry: Dictionary) -> Control:
 	)
 	row.add_child(button)
 	var favorite := Button.new()
-	favorite.name = "TerrainLibraryFavorite_%s" % stable_id
+	favorite.name = "TerrainLibraryFavorite_%s" % node_id
 	favorite.text = "★" if _favorites.has(stable_id) else "☆"
 	favorite.tooltip_text = "Retirer des favoris" if _favorites.has(stable_id) \
 		else "Ajouter aux favoris"
 	favorite.focus_mode = Control.FOCUS_ALL
 	favorite.pressed.connect(func(): _toggle_favorite(stable_id))
 	row.add_child(favorite)
+	if int(entry.get("family", -1)) == TerrainPlaceableDefinition.Family.FLOOR:
+		var menu := MenuButton.new()
+		menu.name = "TerrainLibraryMenu_%s" % node_id
+		menu.text = "⋮"
+		menu.tooltip_text = "Actions pour ce type de tuile"
+		menu.focus_mode = Control.FOCUS_ALL
+		menu.get_popup().add_item("Modifier ce type de tuile…", 0)
+		menu.get_popup().add_item("Remplacer partout ce sol…", 1)
+		menu.get_popup().id_pressed.connect(func(id: int):
+			card_action_requested.emit(
+				&"edit_terrain_type" if id == 0 else &"replace_terrain",
+				entry
+			)
+		)
+		row.add_child(menu)
 	return row
 
 

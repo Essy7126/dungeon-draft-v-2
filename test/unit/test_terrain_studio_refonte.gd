@@ -43,19 +43,21 @@ func test_01_new_and_open_are_reachable_inside_the_real_workspace() -> void:
 	assert_not_null(terrain)
 	# L'hôte masque la barre interne historique : c'est le constat TERRAIN-01.
 	assert_false(terrain.top_bar.visible)
-	# L'en-tête du domaine, lui, reste visible et porte les deux entrées.
-	assert_true(terrain.header_bar.visible)
-	assert_not_null(terrain.new_terrain_button)
-	assert_not_null(terrain.open_terrain_button)
-	assert_true(terrain.new_terrain_button.is_visible_in_tree())
-	assert_true(terrain.open_terrain_button.is_visible_in_tree())
-	assert_true(terrain.home_button.is_visible_in_tree())
-	# L'accueil expose les mêmes entrées sous forme de cartes.
+	# Le shell compact remplace l'en-tête Terrain dupliqué et garde Accueil
+	# directement visible, sans enfouir la sortie dans un menu.
+	assert_false(terrain.header_bar.visible)
+	assert_not_null(workspace.home_button)
+	assert_true(workspace.home_button.is_visible_in_tree())
+	workspace.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	workspace.size = Vector2(1280, 720)
+	workspace._apply_toolbar_responsive()
+	assert_eq(workspace.home_button.text, "Accueil")
+	assert_true(workspace.home_button.is_visible_in_tree())
+	# L'accueil expose exactement les trois intentions nominales.
 	assert_true(terrain.is_home_visible())
-	assert_not_null(terrain.home_panel.create_card)
 	assert_not_null(terrain.home_panel.open_card)
-	assert_not_null(terrain.home_panel.active_card)
-	assert_not_null(terrain.home_panel.sandbox_button)
+	assert_not_null(terrain.home_panel.image_card)
+	assert_not_null(terrain.home_panel.tiles_card)
 
 
 func test_02_tab_is_named_terrains_with_a_readable_subtitle() -> void:
@@ -66,6 +68,24 @@ func test_02_tab_is_named_terrains_with_a_readable_subtitle() -> void:
 	await wait_process_frames(3)
 	assert_eq(workspace.tabs.get_tab_title(0), "TERRAINS")
 	assert_eq(workspace.tabs.get_tab_tooltip(0), TerrainVocabulary.TAB_SUBTITLE)
+
+
+func test_02b_calibration_model_never_participates_in_the_toolbar_layout() -> void:
+	var workspace := StudioWorkspace.new()
+	add_child_autofree(workspace)
+	await wait_process_frames(3)
+	workspace.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	workspace.size = Vector2(1920, 1080)
+	workspace.arena_studio.set_guided(false)
+	workspace._refresh_history_controls()
+	workspace._apply_toolbar_responsive()
+	assert_false(workspace.workspace_preset_option.visible)
+	assert_eq(workspace.workspace_preset_option.get_parent(), workspace)
+	assert_eq(workspace.domain_buttons[3].text, "Effets visuels")
+	assert_eq(workspace.save_button.text, "Enregistrer le brouillon")
+	assert_eq(workspace.produce_button.text, "Intégrer à la partie")
+	workspace._rebuild_window_menu()
+	assert_eq(workspace.window_menu_button.get_popup().get_item_text(4), "Calibration")
 
 
 # --- 2 et 3. Mode guidé par défaut, et réellement masquant ------------------
@@ -122,25 +142,33 @@ func test_05_switching_guided_advanced_keeps_session_selection_zoom_and_history(
 
 # --- 5. Les outils restent libres et la checklist ne navigue pas ------------
 
-func test_06_permanent_tool_rail_and_checklist_replace_the_seven_step_navigation() -> void:
+func test_06_category_rail_replaces_generic_tools_and_step_navigation() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.validate_arena()
 	assert_null(studio.workflow_rail)
-	assert_eq(
-		studio.tool_palette.tool_buttons.size(),
-		TerrainToolPalette.TOOL_BUTTONS.size()
-			+ TerrainToolPalette.ADVANCED_TOOL_BUTTONS.size()
-	)
+	assert_eq(studio.tool_palette.category_buttons.size(), 4)
+	for category in [
+		TerrainToolPalette.CATEGORY_SELECTION,
+		TerrainToolPalette.CATEGORY_GRID,
+		TerrainToolPalette.CATEGORY_ELEMENTS,
+		TerrainToolPalette.CATEGORY_ILLUSTRATION,
+	]:
+		assert_true(studio.tool_palette.category_buttons.has(category))
 	for tool in studio.tool_palette.tool_buttons:
 		var button := studio.tool_palette.tool_buttons[tool] as Button
 		assert_false(button.disabled)
-	for entry in TerrainToolPalette.TOOL_BUTTONS:
-		assert_true((studio.tool_palette.tool_buttons[int(entry[0])] as Button).visible)
-	assert_false(studio.tool_palette.advanced_buttons[0].visible)
+	var rail_texts := PackedStringArray()
+	for button in studio.tool_palette.find_children("*", "Button", true, false):
+		rail_texts.append((button as Button).text)
+	for forbidden in ["Peindre", "Obstacle", "Placer", "Déplacer la vue"]:
+		assert_false(rail_texts.has(forbidden))
+	assert_false(studio.tool_palette.tool_buttons.has(ArenaStudioCanvas.Tool.PAN))
 	assert_not_null(studio.checklist_panel)
 	assert_eq(studio.checklist_panel._entries.size(), 5)
-	assert_true(studio.checklist_panel.is_collapsed())
+	if studio.bottom_drawer_content.visible:
+		studio._toggle_bottom_drawer()
+	assert_false(studio.checklist_panel.is_visible_in_tree())
 	# La compatibilité avec l'ancien numéro d'étape ne pilote plus les outils.
 	studio._on_tool_selected(ArenaStudioCanvas.Tool.OBSTACLE)
 	studio.set_current_step(TerrainWorkflowService.Step.FINALIZE)
@@ -234,25 +262,33 @@ func test_10_all_primary_actions_are_keyboard_reachable() -> void:
 	assert_gt(focused, 5, "Le parcours clavier doit atteindre les actions visibles.")
 
 
-# --- 8. L'inspecteur reste accessible sous 1 400 px ------------------------
+# --- 8. Les propriétés restent superposées à toutes les résolutions --------
 
-func test_11_inspector_stays_reachable_below_1400_px() -> void:
+func test_11_properties_drawer_never_becomes_a_permanent_column() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.show_editor()
-	_size_studio(studio, 1100, 720)
+	_size_studio(studio, 1280, 720)
 	await wait_process_frames(1)
-	assert_false(studio.right_panel.visible, "L'inspecteur se replie sous 1 400 px.")
-	assert_true(
-		studio.inspector_drawer_button.visible,
-		"Un accès de remplacement doit rester visible."
-	)
+	assert_false(studio.right_panel.visible)
+	assert_eq(studio.right_panel.get_parent(), studio.inspector_overlay_host)
+	assert_eq(studio.inspector_drawer_button.text, "Propriétés")
 	assert_true(studio.inspector_is_reachable())
+	var canvas_width := studio.view_stack.size.x
 	studio.toggle_inspector_drawer()
-	assert_true(studio.right_panel.visible, "Le tiroir doit rouvrir l'inspecteur.")
-	_size_studio(studio, 1600, 900)
+	await wait_process_frames(1)
 	assert_true(studio.right_panel.visible)
-	assert_false(studio.inspector_drawer_button.visible)
+	assert_almost_eq(studio.view_stack.size.x, canvas_width, 0.1)
+	studio.toggle_inspector_drawer()
+	_size_studio(studio, 1920, 1080)
+	await wait_process_frames(1)
+	assert_false(studio.right_panel.visible)
+	assert_eq(studio.right_panel.get_parent(), studio.inspector_overlay_host)
+	assert_true(studio.inspector_drawer_button.visible)
+	var wide_canvas_width := studio.view_stack.size.x
+	studio.toggle_inspector_drawer()
+	await wait_process_frames(1)
+	assert_almost_eq(studio.view_stack.size.x, wide_canvas_width, 0.1)
 
 
 func test_12_no_primary_action_is_offscreen_at_1280_by_720() -> void:
@@ -505,6 +541,38 @@ func test_20_dirty_transitions_keep_the_four_explicit_choices() -> void:
 	assert_true(studio.has_method("_context_draft"))
 	assert_true(studio.has_method("_context_discard"))
 	assert_true(studio.has_method("_context_is_dirty"))
+	var context := StudioProjectContext.new()
+	assert_true(bool(context.initialize().get("ok", false)))
+	var direct := ArenaStudioMain.new()
+	direct.auto_load_initial_arena = false
+	direct.setup(null, null, context, StudioReferenceGraphService.new())
+	add_child_autofree(direct)
+	await wait_process_frames(2)
+	direct._create_with_tiles()
+	var discarded_key := direct.edit_session.session_key
+	assert_true(direct.dirty)
+	direct.request_home()
+	assert_true(context.has_pending_transition())
+	assert_false(direct.is_home_visible())
+	context.resolve_pending_transition(StudioProjectContext.ACTION_CANCEL)
+	assert_false(direct.is_home_visible())
+	assert_not_null(direct.edit_session)
+	direct.request_home()
+	context.resolve_pending_transition(StudioProjectContext.ACTION_DISCARD)
+	assert_true(direct.is_home_visible())
+	assert_null(direct.edit_session)
+	assert_false(direct._sessions.has(discarded_key))
+	direct._create_with_tiles()
+	var draft_key := direct.edit_session.session_key
+	var draft_arena_id := direct.arena.arena_id
+	direct.request_home()
+	context.resolve_pending_transition(StudioProjectContext.ACTION_DRAFT)
+	assert_true(direct.is_home_visible())
+	assert_true(direct._sessions.has(draft_key))
+	assert_true(direct._available_recent_documents().any(func(value):
+		return str((value as Dictionary).get("session_key", "")) == draft_key
+	))
+	ArenaSerializer.remove_recovery(draft_arena_id)
 
 
 # --- 14. L'intégration UPDATE conserve rencontre, vagues et récompenses ----
@@ -611,38 +679,23 @@ func test_24_guided_vocabulary_avoids_technical_terms() -> void:
 	assert_eq(TerrainVocabulary.user_term("runtime"), "Résultat en jeu")
 
 
-func test_25_creation_wizard_offers_two_direct_intentions() -> void:
-	var wizard := TerrainCreationWizard.new()
-	add_child_autofree(wizard)
+func test_25_home_launches_both_creations_without_obsolete_screens() -> void:
+	var studio := _studio()
 	await wait_process_frames(1)
-	wizard.start()
-	assert_eq(wizard.choice_buttons.size(), 2)
-	assert_eq(wizard.current_screen(), TerrainCreationWizard.SCREEN_CHOICE)
-	var created_configs: Array[Dictionary] = []
-	wizard.create_confirmed.connect(func(config): created_configs.append(config))
-	# Avec des tuiles : création immédiate d'un terrain 10 × 8 prêt à peindre.
-	wizard._on_choice_pressed(1)
-	assert_eq(created_configs.size(), 1)
-	assert_eq(int(created_configs[0].width), 10)
-	assert_eq(int(created_configs[0].height), 8)
-	# Depuis une illustration : l'aperçu crée directement une grille 3 × 3.
-	wizard._on_choice_pressed(0)
-	assert_eq(wizard.current_screen(), TerrainCreationWizard.SCREEN_IMAGE)
-	assert_true(wizard.image_row.is_visible_in_tree())
-	assert_false(wizard.details_screen.visible)
-	assert_eq(wizard.confirm_button.text, "Créer une grille 3 × 3 et l'ajuster")
-	assert_true(wizard.confirm_button.disabled)
-	assert_string_contains(wizard.blocking_label.text, "illustration")
-	wizard.set_image_path(
+	assert_false(FileAccess.file_exists(
+		"res://addons/dungeon_draft_arena_studio/ui/terrain/terrain_creation_wizard.gd"
+	))
+	studio._create_with_tiles()
+	assert_true(studio.editor_screen.visible)
+	assert_eq(studio.arena.grid_size, Vector2i(10, 8))
+	assert_eq(studio.arena.visual_mode, ArenaDefinition.VisualMode.MODULAR)
+	studio._create_from_image_path(
 		"res://asset/map/painted/room_01_forest/forest_background_source.png"
 	)
-	assert_not_null(wizard.image_preview.texture)
-	assert_false(wizard.confirm_button.disabled)
-	wizard._on_confirm()
-	assert_eq(created_configs.size(), 2)
-	assert_eq(int(created_configs[1].width), 3)
-	assert_eq(int(created_configs[1].height), 3)
-	assert_false(wizard.details_screen.visible)
+	assert_true(studio.editor_screen.visible)
+	assert_eq(studio.arena.grid_size, Vector2i(3, 3))
+	assert_eq(studio.arena.visual_mode, ArenaDefinition.VisualMode.PAINTED)
+	assert_false(studio.arena.background_path.is_empty())
 
 
 func test_25b_grid_alignment_uses_node2d_style_settings_and_round_trips() -> void:
@@ -713,14 +766,34 @@ func test_25d_grid_settings_update_immediately_and_create_one_history_action() -
 	)
 
 
-func test_25e_guided_workspace_keeps_a_compact_permanent_library() -> void:
+func test_25e_library_is_resizable_tall_enough_and_not_reset_by_responsive_updates() -> void:
+	TerrainStudioUiStateService.set_value("library_height", 236)
 	var studio := _studio()
 	studio._set_arena(_valid_arena(), true, "terrain_compact_scenery")
 	studio.set_guided(true)
 	studio.set_current_step(TerrainWorkflowService.Step.SCENERY)
+	studio.show_editor()
+	_size_studio(studio, 1280, 720)
+	studio._on_palette_action(&"show_elements")
 	await wait_process_frames(1)
 	assert_not_null(studio.library_panel)
-	assert_lte(studio.library_panel.custom_minimum_size.y, 180.0)
+	assert_true(studio.canvas_library_split is VSplitContainer)
+	assert_eq(studio.library_panel.get_parent(), studio.canvas_library_split)
+	assert_eq(studio.view_stack.get_parent(), studio.canvas_library_split)
+	assert_gte(studio.library_panel.custom_minimum_size.y, 160.0)
+	studio.library_panel.show()
+	studio._restore_library_height(236)
+	await wait_process_frames(2)
+	assert_between(int(round(studio.library_panel.size.y)), 220, 260)
+	var chosen_offset := studio.canvas_library_split.split_offsets[0]
+	studio._on_library_split_dragged(chosen_offset)
+	_size_studio(studio, 1280, 720)
+	await wait_process_frames(1)
+	assert_eq(studio.canvas_library_split.split_offsets[0], chosen_offset)
+	_size_studio(studio, 1920, 1080)
+	await wait_process_frames(1)
+	assert_eq(studio.canvas_library_split.split_offsets[0], chosen_offset)
+	assert_between(int(TerrainStudioUiStateService.get_value("library_height", 0)), 220, 260)
 	assert_false(studio.tool_palette.contract_label.visible)
 	assert_eq(studio.library_panel.filter_buttons.size(), 8)
 	assert_gt(studio.library_panel.cards.get_child_count(), 0)
@@ -736,6 +809,32 @@ func test_25f_guided_illustration_opens_a_direct_image_chooser() -> void:
 	assert_false(studio.backdrop_dialog.visible)
 	assert_string_contains(studio.guided_backdrop_image_dialog.title, "illustration")
 	studio.guided_backdrop_image_dialog.hide()
+
+
+func test_25g_grid_owns_transform_and_multipoint_is_advanced_only() -> void:
+	var studio := _studio()
+	studio._set_arena(_valid_arena(), true, "terrain_grid_categories")
+	studio.set_guided(true)
+	await wait_process_frames(1)
+	var palette := studio.tool_palette
+	var transform := palette.tool_buttons[ArenaStudioCanvas.Tool.TRANSFORM_GRID] as Button
+	var multipoint := palette.tool_buttons[ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS] as Button
+	assert_eq(transform.get_parent(), palette.category_panels[TerrainToolPalette.CATEGORY_GRID])
+	assert_eq(multipoint.get_parent(), palette.category_panels[TerrainToolPalette.CATEGORY_GRID])
+	assert_false(multipoint.visible)
+	var illustration := palette.category_panels[TerrainToolPalette.CATEGORY_ILLUSTRATION] as Control
+	var illustration_texts := PackedStringArray()
+	for button in illustration.find_children("*", "Button", true, false):
+		illustration_texts.append((button as Button).text)
+	assert_eq(illustration_texts, PackedStringArray(["Changer l'image"]))
+	studio._on_tool_selected(ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS)
+	assert_ne(studio.canvas.active_tool, ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS)
+	studio.set_guided(false)
+	assert_true(multipoint.visible)
+	studio._on_tool_selected(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
+	assert_eq(studio.inspector_panel.header_label.text, "PROPRIÉTÉS — Grille")
+	assert_false((studio.inspector_panel.sections[&"selection"].container as Control).visible)
+	assert_true((studio.inspector_panel.sections[&"shape"].container as Control).visible)
 
 
 func test_25g_vortex_choices_are_explicit_and_impulse_finishes_after_one_cell() -> void:
@@ -812,7 +911,7 @@ func test_27_validation_only_offers_deterministic_and_safe_fixes() -> void:
 	assert_eq(first, second)
 
 
-func test_28_checklist_replaces_step_navigation_without_blocking_the_canvas() -> void:
+func test_28_checklist_and_problems_only_appear_in_detailed_validation() -> void:
 	var studio := _studio()
 	_open_forest(studio)
 	studio.show_editor()
@@ -820,7 +919,10 @@ func test_28_checklist_replaces_step_navigation_without_blocking_the_canvas() ->
 	await wait_process_frames(1)
 	assert_null(studio.guidance_panel)
 	assert_not_null(studio.checklist_panel)
-	studio.checklist_panel.set_collapsed(false)
+	assert_false(studio.checklist_panel.is_visible_in_tree())
+	studio._open_validation_drawer()
+	await wait_process_frames(1)
+	assert_true(studio.checklist_panel.is_visible_in_tree())
 	assert_true(studio.checklist_panel.entries_box.visible)
 	assert_false(studio.canvas.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	studio._on_tool_selected(ArenaStudioCanvas.Tool.OBSTACLE)
@@ -848,6 +950,77 @@ func test_29_library_unifies_all_placeable_families_and_keeps_tooltips() -> void
 	assert_not_null(studio.library_panel.find_child("TerrainLibraryCard_vortex_impulse", true, false))
 
 
+func test_29b_floor_cards_own_selection_and_compact_actions() -> void:
+	var studio := _studio()
+	_open_forest(studio)
+	await wait_process_frames(1)
+	assert_false(studio.terrain_option.visible)
+	assert_eq(studio.terrain_option.get_parent(), studio)
+	assert_null(studio.inspector_panel.find_child("TerrainFloorOption", true, false))
+	assert_not_null(studio.library_panel.find_child("TerrainLibraryCard_floor_water", true, false))
+	var menu := studio.library_panel.find_child(
+		"TerrainLibraryMenu_floor_water", true, false
+	) as MenuButton
+	assert_not_null(menu)
+	assert_eq(menu.get_popup().get_item_text(0), "Modifier ce type de tuile…")
+	assert_eq(menu.get_popup().get_item_text(1), "Remplacer partout ce sol…")
+
+
+func test_29c_selecting_or_painting_never_opens_properties_automatically() -> void:
+	var studio := _studio()
+	_open_forest(studio)
+	studio.show_editor()
+	studio.set_inspector_drawer_open(false)
+	var water := TerrainPlaceableCatalogService.entry_by_id(studio.arena, &"floor:water", true)
+	studio._on_library_placeable_selected(water)
+	assert_false(studio.right_panel.visible)
+	studio._on_stroke_started("Peindre de l’eau")
+	studio._on_cells_edit_requested([Vector2i(2, 2)], false)
+	studio._on_stroke_finished("Peindre de l’eau")
+	assert_false(studio.right_panel.visible)
+
+
+func test_29d_terrain_type_editor_is_a_cancelable_isolated_working_copy() -> void:
+	var studio := _studio()
+	_open_forest(studio)
+	var water := TerrainPlaceableCatalogService.entry_by_id(studio.arena, &"floor:water", true)
+	var source := ArenaCatalogService.terrain(&"water")
+	var source_walkable := source.walkable
+	studio._on_library_card_action_requested(&"edit_terrain_type", water)
+	assert_true(studio.right_panel.visible)
+	assert_true((studio.inspector_panel.sections[&"tile_type"].container as Control).visible)
+	assert_false((studio.inspector_panel.sections[&"selection"].container as Control).visible)
+	assert_false((studio.inspector_panel.sections[&"shape"].container as Control).visible)
+	assert_not_same(studio._terrain_type_working, source)
+	assert_not_same(studio._terrain_type_working.unit_effect, source.unit_effect)
+	studio.terrain_type_walkable_check.button_pressed = not source_walkable
+	assert_eq(studio._terrain_type_working.walkable, not source_walkable)
+	assert_eq(source.walkable, source_walkable)
+	studio._show_terrain_type_save_choices()
+	assert_true(studio.terrain_type_shared_button.disabled)
+	assert_true(studio.terrain_type_duplicate_button.disabled)
+	assert_string_contains(studio.terrain_type_save_dialog.dialog_text, "ArenaTerrainDefinition")
+	studio.terrain_type_save_dialog.hide()
+	studio._cancel_terrain_type_edit()
+	assert_null(studio._terrain_type_working)
+	assert_eq(source.walkable, source_walkable)
+
+
+func test_29e_editor_status_uses_context_line_without_reserving_bottom_height() -> void:
+	var studio := _studio()
+	_open_forest(studio)
+	await wait_process_frames(1)
+	assert_false(studio.status_label.visible)
+	assert_eq(studio.status_label.get_combined_minimum_size().y, 28.0)
+	studio._set_status("Indication contextuelle")
+	assert_false(studio.status_label.visible)
+	assert_eq(studio.active_tool_label.text, "Indication contextuelle")
+	studio._set_status("Erreur importante", true)
+	assert_true(studio.bottom_drawer_content.visible)
+	assert_true(studio.validation_panel.external_error_label.visible)
+	assert_string_contains(studio.validation_panel.external_error_label.text, "Erreur importante")
+
+
 func test_30_validation_test_and_integration_stay_reachable_without_a_finalize_step() -> void:
 	var studio := _studio()
 	_open_forest(studio)
@@ -869,6 +1042,7 @@ func test_30_validation_test_and_integration_stay_reachable_without_a_finalize_s
 func test_31_panel_state_is_persisted_outside_business_resources() -> void:
 	assert_true(TerrainStudioUiStateService.STATE_PATH.begins_with("user://"))
 	var state := TerrainStudioUiStateService.default_state()
+	assert_false(bool(state.inspector_visible))
 	for key in state:
 		assert_false(
 			state[key] is Resource,
@@ -885,6 +1059,7 @@ func test_31_panel_state_is_persisted_outside_business_resources() -> void:
 	assert_true(snapshot.has("guidance_visible"))
 	assert_true(snapshot.has("checklist_collapsed"))
 	assert_true(snapshot.has("library"))
+	assert_true(snapshot.has("library_height"))
 
 
 # --- Utilitaires ------------------------------------------------------------

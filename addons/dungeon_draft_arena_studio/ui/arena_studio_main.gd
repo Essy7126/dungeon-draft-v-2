@@ -34,7 +34,7 @@ const TOOL_LABELS := [
 	"Sélection", "Déplacer la vue", "Ajouter des cases", "Retirer des cases",
 	"Bordure", "Murs et obstacles", "Sols", "Points de départ", "Vérification",
 	"Transformer la grille",
-	"Ancres",
+	"Calibration multipoint",
 ]
 const TOOL_HELP := [
 	["1", "Sélectionner une cellule", "Annuler la sélection"],
@@ -103,7 +103,6 @@ var header_bar: PanelContainer
 var auto_load_initial_arena := true
 var production_planning_enabled := true
 var home_panel: TerrainHomePanel
-var creation_wizard: TerrainCreationWizard
 var editor_screen: Control
 var workflow_rail: TerrainWorkflowRail
 var tool_palette: TerrainToolPalette
@@ -140,6 +139,10 @@ var _guidance_hidden_for_drawer := false
 var library_list: ItemList
 var tool_list: ItemList
 var active_tool_label: Label
+var canvas_library_split: VSplitContainer
+var _home_transition_token := ""
+var _home_transition_session_key := ""
+var _home_transition_was_new := false
 var shape_option: OptionButton
 var obstacle_option: OptionButton
 var terrain_option: OptionButton
@@ -157,6 +160,7 @@ var dynamic_height_spin: SpinBox
 var verification_option: OptionButton
 var test_configuration_option: OptionButton
 var inspector_label: Label
+var grid_properties_label: Label
 var calibration_label: Label
 var grid_alignment_panel: VBoxContainer
 var _grid_alignment_live_before: Dictionary = {}
@@ -206,6 +210,32 @@ var spatial_cells_label: Label = null
 var spatial_delete_button: Button = null
 var placement_finish_button: Button = null
 var hybrid_all_button: Button = null
+var terrain_type_editor: VBoxContainer = null
+var terrain_type_preview: TextureRect = null
+var terrain_type_base_texture_edit: LineEdit = null
+var terrain_type_overlay_texture_edit: LineEdit = null
+var terrain_type_walkable_check: CheckBox = null
+var terrain_type_transparent_check: CheckBox = null
+var terrain_type_projectile_check: CheckBox = null
+var terrain_type_movement_cost_spin: SpinBox = null
+var terrain_type_apply_enter_check: CheckBox = null
+var terrain_type_apply_turn_check: CheckBox = null
+var terrain_type_refresh_status_check: CheckBox = null
+var terrain_type_trigger_option: OptionButton = null
+var terrain_type_damage_spin: SpinBox = null
+var terrain_type_damage_type_option: OptionButton = null
+var terrain_type_element_option: OptionButton = null
+var terrain_type_status_edit: LineEdit = null
+var terrain_type_duration_spin: SpinBox = null
+var terrain_type_ai_danger_check: CheckBox = null
+var terrain_type_ai_weight_spin: SpinBox = null
+var terrain_type_usages_label: Label = null
+var terrain_type_save_dialog: ConfirmationDialog = null
+var terrain_type_shared_button: Button = null
+var terrain_type_duplicate_button: Button = null
+var _terrain_type_source: ArenaTerrainDefinition = null
+var _terrain_type_working: ArenaTerrainDefinition = null
+var _terrain_type_syncing := false
 var spatial_enabled_check: CheckBox = null
 var spatial_team_option: OptionButton = null
 var spatial_edit_cells_button: Button = null
@@ -362,6 +392,7 @@ func _ready() -> void:
 			Callable(self, "_context_snapshot"),
 			Callable(self, "_context_restore")
 		)
+		project_context.transition_resolved.connect(_on_context_transition_resolved)
 		project_context.register_transition_handler(
 			&"arena_run", Callable(self, "_context_run_save"),
 			Callable(self, "_context_run_draft"), Callable(self, "_context_run_discard"),
@@ -453,20 +484,11 @@ func _build_interface() -> void:
 	screen_stack = root_container
 	home_panel = TerrainHomePanel.new()
 	home_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	home_panel.edit_active_room_requested.connect(_on_home_edit_active_room)
-	home_panel.create_requested.connect(show_creation_wizard)
+	home_panel.create_from_image_requested.connect(_request_create_from_image)
+	home_panel.create_with_tiles_requested.connect(_create_with_tiles)
 	home_panel.open_requested.connect(_show_open_dialog)
-	home_panel.sandbox_requested.connect(_start_guided_sandbox)
 	home_panel.recent_selected.connect(_on_recent_selected)
-	home_panel.glossary_requested.connect(show_glossary)
 	root_container.add_child(home_panel)
-	creation_wizard = TerrainCreationWizard.new()
-	creation_wizard.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	creation_wizard.create_confirmed.connect(_create_from_wizard_config)
-	creation_wizard.cancelled.connect(show_home)
-	creation_wizard.image_requested.connect(_show_image_dialog)
-	creation_wizard.hide()
-	root_container.add_child(creation_wizard)
 	_build_editor_screen()
 
 	status_label = Label.new()
@@ -501,19 +523,19 @@ func _build_editor_screen() -> void:
 	horizontal_split.add_child(center_and_right_split)
 	center_and_right_split.add_child(_build_canvas_panel())
 	right_panel = _build_right_panel()
-	center_and_right_split.add_child(right_panel)
+	inspector_overlay_host.add_child(right_panel)
+	right_panel.hide()
 	bottom_drawer = _build_bottom_drawer()
 	vertical_split.add_child(bottom_drawer)
 	inspector_drawer_button = Button.new()
 	inspector_drawer_button.name = "TerrainInspectorDrawerButton"
-	inspector_drawer_button.text = "Ouvrir l'inspecteur ▸"
+	inspector_drawer_button.text = "Propriétés"
 	inspector_drawer_button.tooltip_text = (
-		"L'inspecteur est replié faute de place : l'ouvrir en tiroir par-dessus le canvas."
+		"Ouvrir les propriétés en tiroir par-dessus le terrain."
 	)
 	inspector_drawer_button.focus_mode = Control.FOCUS_ALL
-	inspector_drawer_button.visible = false
 	inspector_drawer_button.pressed.connect(toggle_inspector_drawer)
-	root_container.add_child(inspector_drawer_button)
+	canvas_navigation.add_child(inspector_drawer_button)
 
 
 ## Controles partages construits une seule fois puis reparentes dans la palette
@@ -550,11 +572,15 @@ func _build_shared_controls() -> void:
 	terrain_option = OptionButton.new()
 	terrain_option.name = "TerrainFloorOption"
 	terrain_option.tooltip_text = "Sols permanents autorisés par le terrain courant"
+	terrain_option.visible = false
 	terrain_option.item_selected.connect(func(_index):
 		canvas.set_brush_preview_terrain(StringName(
 			terrain_option.get_selected_metadata()
 		))
 	)
+	# Modèle interne synchronisé par la bibliothèque ; il ne constitue plus une
+	# seconde interface de sélection et ne participe à aucun Container.
+	add_child(terrain_option)
 	spawn_option = OptionButton.new()
 	spawn_option.name = "TerrainSpawnOption"
 	spawn_option.tooltip_text = "Élément placé par l'outil Points de départ"
@@ -614,8 +640,8 @@ func _build_top_bar() -> Control:
 ## creation, a l'ouverture et au mode guide dans le vrai StudioWorkspace.
 func _build_header() -> PanelContainer:
 	var header: Variant = TerrainHeaderBarComponent.new()
-	header.home_requested.connect(show_home)
-	header.create_requested.connect(show_creation_wizard)
+	header.home_requested.connect(request_home)
+	header.create_requested.connect(request_home)
 	header.open_requested.connect(_show_open_dialog)
 	header.guided_toggled.connect(set_guided)
 	header.preview_selected.connect(_on_preview_option_selected)
@@ -646,11 +672,6 @@ func _build_left_panel() -> Control:
 	tool_palette.action_requested.connect(_on_palette_action)
 	panel.add_child(tool_palette)
 	tool_palette.set_active_tool(ArenaStudioCanvas.Tool.SELECT)
-	checklist_panel = TerrainChecklistPanel.new()
-	checklist_panel.collapsed_changed.connect(_on_checklist_collapsed_changed)
-	panel.add_child(checklist_panel)
-	active_tool_label = tool_palette.contract_label
-	_refresh_active_tool_contract(ArenaStudioCanvas.Tool.SELECT)
 	return scroll
 
 
@@ -668,18 +689,33 @@ func _build_canvas_panel() -> Control:
 		navigation, "Voir toute l'illustration", func(): canvas.fit_to_image()
 	)
 	show_image_button.tooltip_text = "Ajuste seulement le zoom pour afficher l'image entière."
-	var hint := Label.new()
-	hint.text = "Molette : zoom • Clic milieu : déplacer"
-	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	navigation.add_child(hint)
+	hybrid_all_button = _inspector_button(
+		"Afficher les dalles sur l'illustration", _enable_all_hybrid_floors,
+		"Conserver l'illustration et afficher toutes les dalles tactiques par-dessus."
+	)
+	hybrid_all_button.visible = false
+	navigation.add_child(hybrid_all_button)
+	active_tool_label = Label.new()
+	active_tool_label.name = "TerrainCanvasContextHint"
+	active_tool_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	active_tool_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	active_tool_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	navigation.add_child(active_tool_label)
+	_refresh_active_tool_contract(ArenaStudioCanvas.Tool.SELECT)
 	box.add_child(navigation)
+	canvas_library_split = VSplitContainer.new()
+	canvas_library_split.name = "TerrainCanvasLibrarySplit"
+	canvas_library_split.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	canvas_library_split.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	canvas_library_split.split_offsets = PackedInt32Array([0])
+	canvas_library_split.dragged.connect(_on_library_split_dragged)
+	box.add_child(canvas_library_split)
 	view_stack = Control.new()
 	view_stack.name = "ViewStack"
 	view_stack.custom_minimum_size = Vector2(420, 100)
 	view_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	view_stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_child(view_stack)
+	canvas_library_split.add_child(view_stack)
 	canvas = ArenaStudioCanvas.new()
 	canvas.custom_minimum_size = Vector2(420, 100)
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -700,9 +736,13 @@ func _build_canvas_panel() -> Control:
 	view_stack.add_child(inspector_overlay_host)
 	library_panel = TerrainLibraryPanel.new()
 	library_panel.placeable_selected.connect(_on_library_placeable_selected)
+	library_panel.card_action_requested.connect(_on_library_card_action_requested)
 	library_panel.state_changed.connect(_on_library_state_changed)
 	library_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.add_child(library_panel)
+	library_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	library_panel.custom_minimum_size.y = 160.0
+	library_panel.hide()
+	canvas_library_split.add_child(library_panel)
 	return box
 
 
@@ -770,6 +810,11 @@ func _build_right_panel() -> Control:
 	inspector_panel.host_control(&"shape", _hint_label(
 		"Ajoutez ou retirez des cases, puis créez la bordure qui referme la zone."
 	))
+	grid_properties_label = Label.new()
+	grid_properties_label.name = "TerrainGridProperties"
+	grid_properties_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	grid_properties_label.visible = false
+	inspector_panel.host_control(&"shape", grid_properties_label)
 	inspector_panel.host_control(&"shape", _inspector_button(
 		"Préparer automatiquement le terrain", prepare_automatically,
 		"Crée une zone jouable, une bordure et des points de départ proposés."
@@ -779,21 +824,11 @@ func _build_right_panel() -> Control:
 		"Entoure la zone jouable d'une bordure non jouable."
 	))
 
-	# Sols
-	inspector_panel.host_control(&"floors", _hint_label(
-		"Le sol choisi dans la palette est appliqué par le pinceau."
-	))
-	inspector_panel.host_control(&"floors", terrain_option)
-	hybrid_all_button = _inspector_button(
-		"Afficher les dalles sur l'illustration", _enable_all_hybrid_floors,
-		"Conserver l'illustration et afficher toutes les dalles tactiques par-dessus."
-	)
-	hybrid_all_button.visible = false
-	inspector_panel.host_control(&"floors", hybrid_all_button)
-	inspector_panel.host_control(&"floors", _inspector_button(
-		"Remplacer un sol par un autre…", _show_terrain_replace_dialog,
-		"Échanger partout un type de sol contre un autre."
-	))
+	# Le choix du sol et ses actions vivent exclusivement dans la bibliothèque.
+	# L'Inspecteur conserve les propriétés spatiales et l'éditeur explicite d'un
+	# type partagé, sans second sélecteur de pose.
+	terrain_type_editor = _build_terrain_type_editor()
+	inspector_panel.host_control(&"tile_type", terrain_type_editor)
 
 	# Obstacles et points de depart
 	inspector_panel.host_control(&"content", _hint_label(
@@ -812,7 +847,7 @@ func _build_right_panel() -> Control:
 	calibration_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	calibration_label.custom_minimum_size.y = 40
 	calibration_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.28))
-	inspector_panel.host_control(&"scenery", calibration_label)
+	inspector_panel.host_control(&"shape", calibration_label)
 	inspector_panel.host_control(&"scenery", _inspector_button(
 		"Changer l'illustration…", _request_backdrop_change,
 		"Choisir directement un fichier PNG, JPG ou WEBP."
@@ -820,7 +855,7 @@ func _build_right_panel() -> Control:
 	grid_alignment_panel = TerrainGridAlignmentPanelComponent.new()
 	grid_alignment_panel.settings_changed.connect(_preview_grid_alignment_settings)
 	grid_alignment_panel.editing_finished.connect(_finish_grid_alignment_edit)
-	inspector_panel.host_control(&"scenery", grid_alignment_panel)
+	inspector_panel.host_control(&"shape", grid_alignment_panel)
 
 	# Verification
 	inspector_panel.host_control(&"verify", _hint_label(
@@ -861,7 +896,10 @@ func _build_right_panel() -> Control:
 		fields.add_child(spin)
 	advanced_panel.add_child(fields)
 	_add_button(advanced_panel, "Appliquer les valeurs", _apply_advanced_values)
-	_add_button(advanced_panel, "Ajuster avec les ancres multipoints", fit_multipoint_calibration)
+	advanced_panel.add_child(_hint_label(
+		"Les points de repère avancés corrigent précisément l'alignement de la grille sur une illustration lorsque l'ajustement normal ne suffit pas."
+	))
+	_add_button(advanced_panel, "Recalculer depuis les points de repère", fit_multipoint_calibration)
 	inspector_panel.host_control(&"calibration", advanced_panel)
 	inspector_panel.host_control(&"calibration", _build_transform_panel())
 	inspector_panel.host_control(&"layers", _build_layers_panel())
@@ -923,6 +961,153 @@ func _inspector_button(label: String, callback: Callable, tooltip: String) -> Bu
 	return button
 
 
+func _build_terrain_type_editor() -> VBoxContainer:
+	var root := VBoxContainer.new()
+	root.name = "TerrainTypeEditor"
+	root.visible = false
+	root.add_theme_constant_override("separation", 5)
+	var intro := Label.new()
+	intro.text = (
+		"Les changements restent isolés dans une copie de travail jusqu’à une décision explicite."
+	)
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	intro.add_theme_color_override("font_color", Color(0.72, 0.77, 0.84))
+	root.add_child(intro)
+
+	var appearance := _terrain_type_disclosure(root, "Apparence", true)
+	terrain_type_preview = TextureRect.new()
+	terrain_type_preview.custom_minimum_size = Vector2(96, 72)
+	terrain_type_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	terrain_type_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	appearance.add_child(terrain_type_preview)
+	terrain_type_base_texture_edit = _terrain_type_line(
+		appearance, "Texture principale", "res://…"
+	)
+	terrain_type_overlay_texture_edit = _terrain_type_line(
+		appearance, "Texture superposée", "Facultative"
+	)
+
+	var behavior := _terrain_type_disclosure(root, "Comportement", false)
+	terrain_type_walkable_check = _terrain_type_check(behavior, "Praticable")
+	terrain_type_transparent_check = _terrain_type_check(behavior, "Transparent pour la vision")
+	terrain_type_projectile_check = _terrain_type_check(
+		behavior, "Laisse passer les projectiles"
+	)
+	terrain_type_movement_cost_spin = _terrain_type_spin(
+		behavior, "Coût de déplacement", 1.0, 10.0, 1.0
+	)
+
+	var effect := _terrain_type_disclosure(root, "Effet", false)
+	terrain_type_apply_enter_check = _terrain_type_check(effect, "Déclencher à l’entrée")
+	terrain_type_apply_turn_check = _terrain_type_check(effect, "Déclencher au début du tour")
+	terrain_type_refresh_status_check = _terrain_type_check(
+		effect, "Rafraîchir le statut tant que l’unité reste dessus"
+	)
+	terrain_type_trigger_option = _terrain_type_option(
+		effect, "Déclenchement de l’effet", ["Début du tour", "Entrée sur la tuile", "Passif"]
+	)
+	terrain_type_damage_spin = _terrain_type_spin(effect, "Dégâts", 0.0, 100000.0, 1.0)
+	terrain_type_damage_type_option = _terrain_type_option(
+		effect, "Type de dégâts", ["Physiques", "Magiques"]
+	)
+	terrain_type_element_option = _terrain_type_option(
+		effect, "Élément", ["Aucun", "Feu", "Glace", "Foudre", "Ombre", "Sacré", "Terre"]
+	)
+	terrain_type_status_edit = _terrain_type_line(
+		effect, "Statut appliqué", "Chemin d’une Resource StatusData, facultatif"
+	)
+	terrain_type_duration_spin = _terrain_type_spin(effect, "Durée (tours)", 0.0, 999.0, 1.0)
+	terrain_type_ai_danger_check = _terrain_type_check(effect, "Dangereux pour l’IA")
+	terrain_type_ai_weight_spin = _terrain_type_spin(
+		effect, "Poids de danger pour l’IA", 0.0, 100.0, 0.1
+	)
+
+	var usages := _terrain_type_disclosure(root, "Usages", true)
+	terrain_type_usages_label = Label.new()
+	terrain_type_usages_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	usages.add_child(terrain_type_usages_label)
+	var actions := HFlowContainer.new()
+	root.add_child(actions)
+	_add_button(actions, "Enregistrer…", _show_terrain_type_save_choices)
+	_add_button(actions, "Annuler les modifications", _cancel_terrain_type_edit)
+	return root
+
+
+func _terrain_type_disclosure(
+		parent: VBoxContainer,
+		title: String,
+		opened: bool
+	) -> VBoxContainer:
+	var button := Button.new()
+	button.text = ("▾ " if opened else "▸ ") + title
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.focus_mode = Control.FOCUS_ALL
+	parent.add_child(button)
+	var content := VBoxContainer.new()
+	content.visible = opened
+	content.add_theme_constant_override("separation", 3)
+	parent.add_child(content)
+	button.pressed.connect(func():
+		content.visible = not content.visible
+		button.text = ("▾ " if content.visible else "▸ ") + title
+	)
+	return content
+
+
+func _terrain_type_line(parent: VBoxContainer, label_text: String, placeholder: String) -> LineEdit:
+	var label := Label.new()
+	label.text = label_text
+	parent.add_child(label)
+	var edit := LineEdit.new()
+	edit.placeholder_text = placeholder
+	edit.text_changed.connect(func(_value): _sync_terrain_type_working_copy())
+	parent.add_child(edit)
+	return edit
+
+
+func _terrain_type_check(parent: VBoxContainer, label_text: String) -> CheckBox:
+	var check := CheckBox.new()
+	check.text = label_text
+	check.toggled.connect(func(_value): _sync_terrain_type_working_copy())
+	parent.add_child(check)
+	return check
+
+
+func _terrain_type_spin(
+		parent: VBoxContainer,
+		label_text: String,
+		minimum: float,
+		maximum: float,
+		step: float
+	) -> SpinBox:
+	var label := Label.new()
+	label.text = label_text
+	parent.add_child(label)
+	var spin := SpinBox.new()
+	spin.min_value = minimum
+	spin.max_value = maximum
+	spin.step = step
+	spin.value_changed.connect(func(_value): _sync_terrain_type_working_copy())
+	parent.add_child(spin)
+	return spin
+
+
+func _terrain_type_option(
+		parent: VBoxContainer,
+		label_text: String,
+		labels: Array
+	) -> OptionButton:
+	var label := Label.new()
+	label.text = label_text
+	parent.add_child(label)
+	var option := OptionButton.new()
+	for item in labels:
+		option.add_item(str(item))
+	option.item_selected.connect(func(_index): _sync_terrain_type_working_copy())
+	parent.add_child(option)
+	return option
+
+
 # =============================================================================
 # Refonte Terrain — ecrans, parcours, guidage et contrats de sauvegarde
 # =============================================================================
@@ -938,11 +1123,23 @@ func _populate_tool_palette() -> void:
 func _on_palette_action(action: StringName) -> void:
 	match action:
 		&"open_home":
-			show_home()
+			request_home()
 		&"choose_backdrop":
 			_request_backdrop_change()
 		&"adjust_grid":
 			_start_manual_grid_alignment()
+		&"show_elements":
+			library_panel.show()
+			call_deferred("_restore_library_height", int(
+				TerrainStudioUiStateService.get_value("library_height", 240)
+			))
+			_set_status("Choisissez un élément : son comportement s'active automatiquement.")
+		&"show_grid":
+			library_panel.hide()
+			_set_status("Choisissez Ajouter, Retirer ou Tracer la bordure.")
+		&"show_illustration":
+			library_panel.hide()
+			_set_status("Réglez l'image de fond, son ajustement ou ses ancres.")
 		&"validate":
 			validate_arena()
 		&"test":
@@ -978,7 +1175,7 @@ func _on_library_placeable_selected(entry: Dictionary) -> void:
 			if bool(entry.get("requires_activation", false)):
 				_select_tool_from_palette(ArenaStudioCanvas.Tool.TERRAIN)
 				canvas.set_brush_preview_terrain(terrain_id)
-				_set_status("Activez d'abord l'affichage des dalles dans l'Inspecteur.")
+				_set_status("Activez d’abord « Afficher les dalles sur l’illustration » dans la barre du terrain.")
 			else:
 				_select_quick_terrain(terrain_id)
 		TerrainPlaceableDefinition.PlacementKind.WALL:
@@ -997,8 +1194,249 @@ func _on_library_placeable_selected(entry: Dictionary) -> void:
 	_refresh_inspector_for_placeable(definition)
 
 
+func _on_library_card_action_requested(action: StringName, entry: Dictionary) -> void:
+	match action:
+		&"edit_terrain_type":
+			_open_terrain_type_editor(entry)
+		&"replace_terrain":
+			var definition := entry.get("definition") as TerrainPlaceableDefinition
+			if definition == null:
+				return
+			_select_terrain_replace_source(StringName(
+				definition.payload.get("terrain_id", &"")
+			))
+			_show_terrain_replace_dialog()
+
+
+func _open_terrain_type_editor(entry: Dictionary) -> void:
+	var definition := entry.get("definition") as TerrainPlaceableDefinition
+	if definition == null:
+		return
+	var terrain_id := StringName(definition.payload.get("terrain_id", &""))
+	var source := ArenaCatalogService.terrain(terrain_id)
+	if source == null:
+		_set_status("Ce type de tuile n’a pas de définition éditable connue.", true)
+		return
+	_terrain_type_source = source
+	_selected_spatial = {}
+	_terrain_type_working = _clone_terrain_type(source)
+	if _terrain_type_working == null:
+		_set_status("La copie de travail du type de tuile n’a pas pu être créée.", true)
+		return
+	_populate_terrain_type_editor()
+	terrain_type_editor.show()
+	inspector_panel.set_spatial_context(
+		[&"tile_type"], "Type de tuile — %s" % source.display_name, guided
+	)
+	# Seule l'action explicite du menu de carte ouvre le tiroir.
+	set_inspector_drawer_open(true)
+	_set_status("Type « %s » ouvert dans une copie de travail isolée." % source.display_name)
+
+
+func _clone_terrain_type(source: ArenaTerrainDefinition) -> ArenaTerrainDefinition:
+	if source == null:
+		return null
+	var copy := source.duplicate(true) as ArenaTerrainDefinition
+	if copy == null:
+		return null
+	copy.unit_effect = _clone_terrain_effect(source.unit_effect)
+	return copy
+
+
+func _clone_terrain_effect(source: TerrainEffectData) -> TerrainEffectData:
+	var copy := TerrainEffectData.new()
+	if source == null:
+		return copy
+	copy.effect_name = source.effect_name
+	copy.description = source.description
+	copy.color = source.color
+	copy.surface_id = source.surface_id
+	copy.visual_terrain_id = source.visual_terrain_id
+	copy.same_surface_policy = source.same_surface_policy
+	copy.trigger = source.trigger
+	copy.damage = source.damage
+	copy.damage_over_time = source.damage_over_time
+	copy.damage_type = source.damage_type
+	copy.element = source.element
+	copy.ignores_defense = source.ignores_defense
+	copy.can_be_dodged = source.can_be_dodged
+	copy.applied_status = source.applied_status
+	copy.blocks_movement = source.blocks_movement
+	copy.blocks_vision = source.blocks_vision
+	copy.cell_type = source.cell_type
+	copy.dangerous_for_ai = source.dangerous_for_ai
+	copy.ai_danger_weight = source.ai_danger_weight
+	copy.duration = source.duration
+	return copy
+
+
+func _populate_terrain_type_editor() -> void:
+	if _terrain_type_source == null or _terrain_type_working == null:
+		return
+	_terrain_type_syncing = true
+	terrain_type_preview.texture = _terrain_type_working.base_texture
+	terrain_type_base_texture_edit.text = _resource_path(_terrain_type_working.base_texture)
+	terrain_type_overlay_texture_edit.text = _resource_path(_terrain_type_working.overlay_texture)
+	terrain_type_walkable_check.button_pressed = _terrain_type_working.walkable
+	terrain_type_transparent_check.button_pressed = _terrain_type_working.transparent
+	terrain_type_projectile_check.button_pressed = _terrain_type_working.projectile_passable
+	terrain_type_movement_cost_spin.value = _terrain_type_working.movement_cost
+	terrain_type_apply_enter_check.button_pressed = _terrain_type_working.apply_on_enter
+	terrain_type_apply_turn_check.button_pressed = _terrain_type_working.apply_on_turn_start
+	terrain_type_refresh_status_check.button_pressed = _terrain_type_working.refresh_status_while_standing
+	var effect := _terrain_type_working.unit_effect
+	terrain_type_trigger_option.select(effect.trigger)
+	terrain_type_damage_spin.value = effect.damage
+	terrain_type_damage_type_option.select(effect.damage_type)
+	terrain_type_element_option.select(effect.element)
+	terrain_type_status_edit.text = _resource_path(effect.applied_status)
+	terrain_type_duration_spin.value = effect.duration
+	terrain_type_ai_danger_check.button_pressed = effect.dangerous_for_ai
+	terrain_type_ai_weight_spin.value = _terrain_type_working.ai_danger_weight
+	terrain_type_usages_label.text = _terrain_type_usage_text(_terrain_type_source)
+	_terrain_type_syncing = false
+
+
+func _sync_terrain_type_working_copy() -> void:
+	if _terrain_type_syncing or _terrain_type_working == null:
+		return
+	var base_texture := _load_typed_resource(
+		terrain_type_base_texture_edit.text, "Texture2D"
+	) as Texture2D
+	var overlay_texture := _load_typed_resource(
+		terrain_type_overlay_texture_edit.text, "Texture2D"
+	) as Texture2D
+	if terrain_type_base_texture_edit.text.strip_edges().is_empty() or base_texture != null:
+		_terrain_type_working.base_texture = base_texture
+	if terrain_type_overlay_texture_edit.text.strip_edges().is_empty() or overlay_texture != null:
+		_terrain_type_working.overlay_texture = overlay_texture
+	_terrain_type_working.walkable = terrain_type_walkable_check.button_pressed
+	_terrain_type_working.transparent = terrain_type_transparent_check.button_pressed
+	_terrain_type_working.projectile_passable = terrain_type_projectile_check.button_pressed
+	_terrain_type_working.movement_cost = int(terrain_type_movement_cost_spin.value)
+	_terrain_type_working.apply_on_enter = terrain_type_apply_enter_check.button_pressed
+	_terrain_type_working.apply_on_turn_start = terrain_type_apply_turn_check.button_pressed
+	_terrain_type_working.refresh_status_while_standing = terrain_type_refresh_status_check.button_pressed
+	var effect := _terrain_type_working.unit_effect
+	effect.trigger = terrain_type_trigger_option.selected
+	effect.damage = int(terrain_type_damage_spin.value)
+	effect.damage_type = terrain_type_damage_type_option.selected
+	effect.element = terrain_type_element_option.selected
+	var status := _load_typed_resource(terrain_type_status_edit.text, "StatusData") as StatusData
+	if terrain_type_status_edit.text.strip_edges().is_empty() or status != null:
+		effect.applied_status = status
+	effect.duration = int(terrain_type_duration_spin.value)
+	effect.dangerous_for_ai = terrain_type_ai_danger_check.button_pressed
+	effect.ai_danger_weight = terrain_type_ai_weight_spin.value
+	_terrain_type_working.ai_danger_weight = terrain_type_ai_weight_spin.value
+	terrain_type_preview.texture = _terrain_type_working.base_texture
+
+
+func _load_typed_resource(path: String, expected_class: String) -> Resource:
+	var clean := path.strip_edges()
+	if clean.is_empty() or not clean.begins_with("res://") or not ResourceLoader.exists(clean):
+		return null
+	var resource := load(clean)
+	if expected_class == "Texture2D" and resource is Texture2D:
+		return resource
+	if expected_class == "StatusData" and resource is StatusData:
+		return resource
+	return null
+
+
+func _resource_path(resource: Resource) -> String:
+	return resource.resource_path if resource != null else ""
+
+
+func _terrain_type_usage_text(source: ArenaTerrainDefinition) -> String:
+	var current_cells := 0
+	if arena != null:
+		for cell in arena.cells:
+			if cell != null and cell.terrain_id == source.stable_id:
+				current_cells += 1
+	var known_usages: Array[Dictionary] = []
+	if shared_reference_graph != null:
+		known_usages = shared_reference_graph.usages(source)
+	return (
+		"Portée : type partagé du catalogue.\n"
+		+ "Resource : %s\n" % source.resource_path
+		+ "Terrain ouvert : %d case(s).\n" % current_cells
+		+ "Références connues du contexte : %d." % known_usages.size()
+	)
+
+
+func _show_terrain_type_save_choices() -> void:
+	if _terrain_type_source == null or _terrain_type_working == null:
+		return
+	_sync_terrain_type_working_copy()
+	if terrain_type_save_dialog == null:
+		terrain_type_save_dialog = ConfirmationDialog.new()
+		terrain_type_save_dialog.title = "Enregistrer le type de tuile"
+		terrain_type_save_dialog.size = Vector2i(660, 360)
+		terrain_type_save_dialog.ok_button_text = "Modifier le type partagé"
+		terrain_type_save_dialog.get_cancel_button().text = "Annuler"
+		terrain_type_duplicate_button = terrain_type_save_dialog.add_button(
+			"Dupliquer pour créer une variante", true, "duplicate"
+		)
+		add_child(terrain_type_save_dialog)
+		terrain_type_shared_button = terrain_type_save_dialog.get_ok_button()
+	terrain_type_save_dialog.dialog_text = (
+		_terrain_type_usage_text(_terrain_type_source)
+		+ "\n\nEnregistrement bloqué : le mécanisme transactionnel existant vérifie "
+		+ "ArenaDefinition uniquement. Il ne garantit pas encore l’écriture couplée "
+		+ "ArenaTerrainDefinition / TerrainEffectData ni l’enregistrement d’une variante."
+	)
+	terrain_type_shared_button.disabled = true
+	terrain_type_duplicate_button.disabled = true
+	terrain_type_shared_button.tooltip_text = "Écriture sûre non disponible pour ces Resources."
+	terrain_type_duplicate_button.tooltip_text = "Catalogue de variantes transactionnel non disponible."
+	terrain_type_save_dialog.popup_centered()
+
+
+func _cancel_terrain_type_edit() -> void:
+	_terrain_type_source = null
+	_terrain_type_working = null
+	if terrain_type_editor != null:
+		terrain_type_editor.hide()
+	_refresh_inspector_context()
+	set_inspector_drawer_open(false)
+	_set_status("Modifications du type de tuile annulées ; la Resource partagée est inchangée.")
+
+
+func _select_terrain_replace_source(terrain_id: StringName) -> void:
+	if terrain_replace_from == null:
+		return
+	for index in range(terrain_replace_from.item_count):
+		if StringName(terrain_replace_from.get_item_metadata(index)) == terrain_id:
+			terrain_replace_from.select(index)
+			return
+
+
 func _on_library_state_changed(state: Dictionary) -> void:
 	TerrainStudioUiStateService.set_value("library", state)
+
+
+func _on_library_split_dragged(_offset: int) -> void:
+	if library_panel != null and library_panel.visible:
+		TerrainStudioUiStateService.set_value(
+			"library_height", maxi(160, int(round(library_panel.size.y)))
+		)
+
+
+func _restore_library_height(requested_height: int) -> void:
+	if canvas_library_split == null or canvas_library_split.size.y <= 0.0:
+		return
+	var separation := canvas_library_split.get_theme_constant("separation")
+	var content_height := maxi(1, int(round(canvas_library_split.size.y)) - separation)
+	var canvas_minimum := int(ceil(view_stack.get_combined_minimum_size().y)) \
+		if view_stack != null else 100
+	var library_height := clampi(requested_height, 160, maxi(160, content_height - canvas_minimum))
+	# Godot 4.7 définit l'offset depuis la position par défaut calculée entre
+	# deux enfants extensibles. `split_offsets` remplace l'ancien alias
+	# `split_offset`, que le Container peut réinitialiser pendant son tri.
+	canvas_library_split.split_offsets = PackedInt32Array([
+		int(round(content_height * 0.5 - library_height))
+	])
 
 
 func _on_checklist_collapsed_changed(collapsed: bool) -> void:
@@ -1042,8 +1480,6 @@ func _refresh_inspector_for_placeable(definition: TerrainPlaceableDefinition) ->
 		return
 	var sections: Array[StringName] = [&"selection"]
 	match definition.family:
-		TerrainPlaceableDefinition.Family.FLOOR:
-			sections.append(&"floors")
 		TerrainPlaceableDefinition.Family.OBSTACLE, TerrainPlaceableDefinition.Family.SPAWN:
 			sections.append(&"content")
 		TerrainPlaceableDefinition.Family.INTERACTIVE:
@@ -1069,43 +1505,159 @@ func _refresh_inspector_for_placeable(definition: TerrainPlaceableDefinition) ->
 
 ## --- Ecrans ----------------------------------------------------------------
 
+func request_home() -> void:
+	if screen_stack == null:
+		return
+	if is_home_visible():
+		_enter_home()
+		return
+	cancel_active_gesture()
+	if project_context == null or not dirty:
+		_enter_home()
+		return
+	if not project_context.is_dirty(&"arena"):
+		_on_dirty_state_changed(true)
+	_home_transition_session_key = edit_session.session_key if edit_session != null else ""
+	_home_transition_was_new = edit_session != null and edit_session.is_new_document
+	var result := project_context.request_dirty_transition(&"terrain_home", &"arena")
+	if bool(result.get("ok", false)):
+		_enter_home()
+		return
+	var transition := result.get("transition", {}) as Dictionary
+	_home_transition_token = str(transition.get("token", ""))
+
+
 func show_home() -> void:
+	request_home()
+
+
+func _enter_home() -> void:
 	if screen_stack == null:
 		return
 	cancel_active_gesture()
 	home_panel.refresh({
-		"active_room_label": _active_room_label(),
-		"active_room_available": not _active_room_label().is_empty(),
-		"recents": TerrainStudioUiStateService.recents(),
+		"recents": _available_recent_documents(),
 	})
 	home_panel.show()
-	creation_wizard.hide()
 	editor_screen.hide()
+	if status_label != null:
+		status_label.show()
 	if inspector_drawer_button != null:
 		inspector_drawer_button.hide()
 	_set_status("Accueil des terrains — choisissez par quoi commencer.")
 
 
 func show_creation_wizard() -> void:
-	if screen_stack == null:
+	# Adaptateur conservé pour les anciens appelants : l'assistant plein écran
+	# n'appartient plus au parcours et l'accueil porte les deux créations.
+	request_home()
+
+
+func _request_create_from_image() -> void:
+	_show_image_dialog()
+
+
+func _create_from_image_path(path: String) -> void:
+	var suffix := str(Time.get_ticks_usec())
+	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	var source_size := image.get_size() if image != null and not image.is_empty() \
+		else Vector2i.ZERO
+	_create_from_wizard_config({
+		"visual_mode": ArenaDefinition.VisualMode.PAINTED,
+		"display_name": "Nouveau terrain",
+		"arena_id": "nouveau_terrain_%s" % suffix,
+		"width": 3,
+		"height": 3,
+		"camp_orientation": 0,
+		"image_path": path,
+		"source_image_size": source_size,
+		"template_index": 0,
+		"needs_image": true,
+	})
+	if canvas != null and source_size != Vector2i.ZERO:
+		canvas.set_backdrop_preview(path, source_size)
+		canvas.fit_to_image()
+
+
+func _create_with_tiles() -> void:
+	var suffix := str(Time.get_ticks_usec())
+	_create_from_wizard_config({
+		"visual_mode": ArenaDefinition.VisualMode.MODULAR,
+		"display_name": "Nouveau terrain",
+		"arena_id": "nouveau_terrain_%s" % suffix,
+		"width": 10,
+		"height": 8,
+		"camp_orientation": 0,
+		"image_path": "",
+		"template_index": 0,
+		"needs_image": false,
+	})
+
+
+func _on_context_transition_resolved(result: Dictionary) -> void:
+	var transition := result.get("transition", {}) as Dictionary
+	if StringName(transition.get("intent", &"")) != &"terrain_home":
 		return
-	cancel_active_gesture()
-	creation_wizard.start()
-	creation_wizard.set_advanced(not guided)
-	home_panel.hide()
-	creation_wizard.show()
-	editor_screen.hide()
-	if inspector_drawer_button != null:
-		inspector_drawer_button.hide()
-	_set_status("Choisissez comment construire ce terrain.")
+	if not _home_transition_token.is_empty() \
+			and str(transition.get("token", "")) != _home_transition_token:
+		return
+	_home_transition_token = ""
+	if StringName(result.get("status", &"")) == &"CANCELLED":
+		_home_transition_session_key = ""
+		_home_transition_was_new = false
+		return
+	var action := StringName(result.get("action", &""))
+	if action == StudioProjectContext.ACTION_DRAFT:
+		_remember_recent_document(true)
+	if action == StudioProjectContext.ACTION_DISCARD \
+			and _home_transition_was_new:
+		_forget_discarded_new_session(_home_transition_session_key)
+	_home_transition_session_key = ""
+	_home_transition_was_new = false
+	_enter_home()
+
+
+func _available_recent_documents() -> Array:
+	var available: Array = []
+	for value in TerrainStudioUiStateService.recents():
+		var entry := value as Dictionary
+		var key := str(entry.get("session_key", ""))
+		var path := str(entry.get("path", ""))
+		if (not key.is_empty() and _sessions.has(key)) \
+				or (not path.is_empty() and ResourceLoader.exists(path)):
+			available.append(entry)
+	return available
+
+
+func _forget_discarded_new_session(session_key: String) -> void:
+	if session_key.is_empty():
+		return
+	_sessions.erase(session_key)
+	if edit_session == null or edit_session.session_key != session_key:
+		return
+	if edit_session.history.history_changed.is_connected(_on_history_changed):
+		edit_session.history.history_changed.disconnect(_on_history_changed)
+	if edit_session.history.dirty_state_changed.is_connected(_on_dirty_state_changed):
+		edit_session.history.dirty_state_changed.disconnect(_on_dirty_state_changed)
+	edit_session = null
+	arena = null
+	_fallback_undo = null
+	if canvas != null:
+		canvas.set_arena(null)
+	if runtime_preview != null:
+		runtime_preview.set_arena(null)
+	history_state_changed.emit()
 
 
 func show_editor() -> void:
 	if screen_stack == null:
 		return
 	home_panel.hide()
-	creation_wizard.hide()
 	editor_screen.show()
+	# La ligne globale n'appartient pas à l'éditeur : masquée, elle ne réserve
+	# plus aucune hauteur. Les retours brefs utilisent la ligne du canvas.
+	if status_label != null:
+		status_label.hide()
 	_apply_responsive_layout()
 
 
@@ -1199,11 +1751,12 @@ func advanced_only_controls() -> Array[Control]:
 
 
 func _apply_guided_visibility() -> void:
+	if guided and canvas != null \
+			and canvas.active_tool == ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
+		_on_tool_selected(ArenaStudioCanvas.Tool.TRANSFORM_GRID)
 	_refresh_inspector_context()
 	if tool_palette != null:
 		tool_palette.set_advanced(not guided)
-	if creation_wizard != null:
-		creation_wizard.set_advanced(not guided)
 	if canvas != null:
 		canvas.show_technical = not guided
 		canvas.queue_redraw()
@@ -1388,6 +1941,7 @@ func toggle_inspector_drawer() -> void:
 
 func set_inspector_drawer_open(value: bool) -> void:
 	_inspector_forced_open = value
+	TerrainStudioUiStateService.set_value("inspector_visible", value)
 	_apply_responsive_layout()
 
 
@@ -1425,6 +1979,7 @@ func save_draft() -> void:
 
 func _restore_terrain_ui_state() -> void:
 	var state := TerrainStudioUiStateService.load_state()
+	_inspector_forced_open = bool(state.get("inspector_visible", false))
 	guidance_visible = bool(state.get("guidance_visible", true))
 	set_guided(bool(state.get("guided", true)))
 	set_guidance_visible(guidance_visible)
@@ -1433,12 +1988,15 @@ func _restore_terrain_ui_state() -> void:
 		checklist_panel.set_collapsed(bool(state.get("checklist_collapsed", true)))
 	if library_panel != null:
 		library_panel.apply_state(state.get("library", {}))
+	if canvas_library_split != null:
+		call_deferred("_restore_library_height", int(state.get("library_height", 240)))
 	if preview_option != null:
 		preview_option.select(clampi(int(state.get("preview_view", 0)), 0, 2))
 
 
-func _remember_recent_document() -> void:
-	if edit_session == null or arena == null:
+func _remember_recent_document(include_new := false) -> void:
+	if edit_session == null or arena == null \
+			or (edit_session.is_new_document and not include_new):
 		return
 	TerrainStudioUiStateService.remember_recent(
 		"%s (%d × %d)" % [arena.display_name, arena.grid_size.x, arena.grid_size.y],
@@ -1488,6 +2046,8 @@ func _on_validation_auto_fix(message: ArenaValidationMessage) -> void:
 
 func _open_validation_drawer() -> void:
 	_update_validation_report(false)
+	if checklist_panel != null:
+		checklist_panel.set_collapsed(false)
 	if bottom_drawer_content != null:
 		bottom_drawer_content.visible = true
 		_sync_drawer_split()
@@ -2435,7 +2995,13 @@ func _build_validation_panel() -> Control:
 	validation_panel.show_requested.connect(_on_validation_show)
 	validation_panel.select_cell_requested.connect(_on_validation_select)
 	validation_panel.auto_fix_requested.connect(_on_validation_auto_fix)
-	return validation_panel
+	var details := VBoxContainer.new()
+	checklist_panel = TerrainChecklistPanel.new()
+	checklist_panel.set_collapsed(false)
+	checklist_panel.collapsed_changed.connect(_on_checklist_collapsed_changed)
+	details.add_child(checklist_panel)
+	details.add_child(validation_panel)
+	return details
 
 
 func _build_bottom_drawer() -> VBoxContainer:
@@ -2531,11 +3097,7 @@ func _build_dialogs() -> void:
 	image_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	image_dialog.filters = PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp ; Images"])
 	image_dialog.size = Vector2i(960, 680)
-	image_dialog.file_selected.connect(func(path):
-		new_image_edit.text = path
-		if creation_wizard != null:
-			creation_wizard.set_image_path(path)
-	)
+	image_dialog.file_selected.connect(_create_from_image_path)
 	add_child(image_dialog)
 	_build_painted_dynamic_dialog()
 	_build_lab_import_dialog()
@@ -3648,6 +4210,7 @@ func _activate_session(next_session: ArenaEditSession) -> void:
 	_integration_label = ""
 	_remember_recent_document()
 	_refresh_workflow()
+	_on_dirty_state_changed(dirty)
 	history_state_changed.emit()
 
 
@@ -3768,6 +4331,9 @@ func _create_from_wizard_config(config: Dictionary) -> void:
 		var texture := load(imported_path) as Texture2D
 		if texture != null:
 			created.source_image_size = Vector2i(texture.get_size())
+		elif config.has("source_image_size"):
+			created.source_image_size = config.get("source_image_size", Vector2i.ZERO)
+		if created.source_image_size != Vector2i.ZERO:
 			TerrainGridAlignmentServiceComponent.centered_snapshot(
 				created.source_image_size, created.grid_size
 			).apply_to(created)
@@ -5900,7 +6466,7 @@ func _refresh_calibration_label() -> void:
 
 
 func _refresh_transform_inspector() -> void:
-	if arena == null or inspector_label == null:
+	if arena == null or grid_properties_label == null:
 		return
 	# Les mesures affines n'apparaissent que si l'outil concerné est vraiment
 	# actif : sinon elles écrasaient la fiche de la case survolée, y compris en
@@ -5926,8 +6492,8 @@ func _refresh_transform_inspector() -> void:
 			+ arena.axis_y.length() / maxf(saved.axis_y.length(), 0.00001)
 		)
 	var mode_label: String = ["Symétrique", "Conserver X", "Conserver Y"][canvas.angle_mode]
-	inspector_label.text = (
-		"GRILLE AFFINE SÉLECTIONNÉE\n"
+	grid_properties_label.text = (
+		"Position, dimensions et transformation directe\n"
 		+ "Position : %.2f, %.2f px\n" % [arena.grid_origin.x, arena.grid_origin.y]
 		+ "Axe X : %.2f px / %.2f deg\n" % [arena.axis_x.length(), rad_to_deg(arena.axis_x.angle())]
 		+ "Axe Y : %.2f px / %.2f deg\n" % [arena.axis_y.length(), rad_to_deg(arena.axis_y.angle())]
@@ -6299,6 +6865,17 @@ func _context_run_discard() -> Dictionary:
 
 
 func _on_tool_selected(index: int) -> void:
+	if guided and index == ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
+		_set_status("La calibration multipoint est disponible en mode avancé.")
+		return
+	if index in [
+		ArenaStudioCanvas.Tool.ADD_CELL,
+		ArenaStudioCanvas.Tool.REMOVE_CELL,
+		ArenaStudioCanvas.Tool.BORDER,
+		ArenaStudioCanvas.Tool.TRANSFORM_GRID,
+		ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
+	]:
+		_selected_spatial = {}
 	if index != ArenaStudioCanvas.Tool.SPAWN:
 		_clear_pending_vortex()
 		_active_vortex_intent = VortexIntent.NONE
@@ -6329,6 +6906,17 @@ func _on_tool_selected(index: int) -> void:
 		dynamic_palette.visible = preserve_dynamic
 	if tool_palette != null:
 		tool_palette.set_active_tool(index)
+	if library_panel != null:
+		var show_library := index in [
+			ArenaStudioCanvas.Tool.TERRAIN,
+			ArenaStudioCanvas.Tool.OBSTACLE,
+			ArenaStudioCanvas.Tool.SPAWN,
+		]
+		library_panel.visible = show_library
+		if show_library:
+			call_deferred("_restore_library_height", int(
+				TerrainStudioUiStateService.get_value("library_height", 240)
+			))
 	if transform_panel != null:
 		transform_panel.visible = index == ArenaStudioCanvas.Tool.TRANSFORM_GRID
 	calibration_label.visible = not guided and index in [
@@ -6354,12 +6942,17 @@ func _on_tool_selected(index: int) -> void:
 		# Ne jamais conserver les mesures affines d'une étape précédente : elles
 		# sont hors contexte et repoussent les actions utiles dans l'inspecteur.
 		inspector_label.text = "Survolez une case."
+	if grid_properties_label != null:
+		grid_properties_label.visible = index in [
+			ArenaStudioCanvas.Tool.TRANSFORM_GRID,
+			ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS,
+		]
 	if index == ArenaStudioCanvas.Tool.TRANSFORM_GRID:
 		_refresh_transform_inspector()
 		_set_status("Grille sélectionnée : glissez son corps ou une poignée. Échap ou clic droit annule le geste.")
 	elif index == ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
 		_refresh_transform_inspector()
-		_set_status("Ancres : cliquez pour ajouter, glissez pour déplacer, clic droit pour supprimer.")
+		_set_status("Points de repère : cliquez pour ajouter, glissez pour déplacer, clic droit pour supprimer.")
 	elif preserve_dynamic:
 		_refresh_dynamic_palette()
 		_set_status("Construction dynamique — un seul outil traite le canvas.")
@@ -6387,9 +6980,10 @@ func _refresh_inspector_context() -> void:
 		ArenaStudioCanvas.Tool.BORDER:
 			sections.append(&"shape")
 		ArenaStudioCanvas.Tool.TRANSFORM_GRID, ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS:
-			sections.append(&"scenery")
+			sections.clear()
+			sections.append(&"shape")
 			sections.append(&"calibration")
-			sections.append(&"layers")
+			title = "Grille"
 		ArenaStudioCanvas.Tool.VERIFY:
 			sections.append(&"verify")
 	inspector_panel.set_spatial_context(sections, title, guided)
@@ -6399,13 +6993,12 @@ func _refresh_active_tool_contract(index: int) -> void:
 	if index < 0 or index >= TOOL_LABELS.size():
 		return
 	var help: Array = TOOL_HELP[index]
-	var contract := (
-		"OUTIL ACTIF  ◉ %s\nRaccourci : %s\nClic gauche : %s\nClic droit : %s"
-	) % [TOOL_LABELS[index], help[0], help[1], help[2]]
+	var contract := "%s · Clic gauche : %s · Clic droit : %s · Molette : zoom · Clic milieu : déplacer" % [
+		TOOL_LABELS[index], help[1], help[2],
+	]
 	if active_tool_label != null:
 		active_tool_label.text = contract
-	if tool_palette != null:
-		tool_palette.set_contract_text(contract)
+		active_tool_label.tooltip_text = contract
 
 
 func _on_verification_kind_selected(index: int) -> void:
@@ -6482,6 +7075,16 @@ func _set_status(message: String, error := false) -> void:
 	status_label.add_theme_color_override(
 		"font_color", Color(1.0, 0.46, 0.38) if error else Color(0.76, 0.88, 0.96)
 	)
+	var editing := editor_screen != null and editor_screen.visible
+	status_label.visible = not editing
+	if editing and active_tool_label != null:
+		active_tool_label.text = message
+		active_tool_label.add_theme_color_override(
+			"font_color", Color(1.0, 0.46, 0.38) if error else Color(0.76, 0.88, 0.96)
+		)
+	if editing and error and validation_panel != null:
+		validation_panel.show_important_error(message)
+		_open_validation_drawer()
 
 
 func _add_button(parent: Node, label: String, callback: Callable) -> Button:
@@ -6585,13 +7188,11 @@ func set_focus_map(value: bool) -> void:
 			"library": library_panel.visible if library_panel != null else false,
 			"header": header_bar.visible if header_bar != null else false,
 			"home": home_panel.visible if home_panel != null else false,
-			"wizard": creation_wizard.visible if creation_wizard != null else false,
 		}
 		# Agrandir la carte n'a de sens que sur l'écran d'édition : s'il est
 		# fermé, Focus l'ouvre, et le retour rétablit l'écran précédent.
 		if editor_screen != null and not editor_screen.visible:
 			home_panel.hide()
-			creation_wizard.hide()
 			editor_screen.show()
 		left_panel.hide()
 		right_panel.hide()
@@ -6619,10 +7220,8 @@ func set_focus_map(value: bool) -> void:
 		if header_bar != null:
 			header_bar.visible = bool(_pre_focus_state.get("header", true))
 		var restored_home := bool(_pre_focus_state.get("home", false))
-		var restored_wizard := bool(_pre_focus_state.get("wizard", false))
-		if restored_home or restored_wizard:
+		if restored_home:
 			home_panel.visible = restored_home
-			creation_wizard.visible = restored_wizard
 			editor_screen.hide()
 	focus_map_enabled = value
 	_apply_responsive_layout()
@@ -7012,7 +7611,7 @@ func _select_quick_terrain(terrain_id: StringName) -> void:
 	if option == null:
 		return
 	for index in range(option.item_count):
-		if StringName(option.get_item_metadata(index)) == terrain_id \
+		if StringName(str(option.get_item_metadata(index))) == terrain_id \
 				and not option.is_item_disabled(index):
 			option.select(index)
 			break
@@ -7293,9 +7892,8 @@ func _resize_dynamic_document() -> void:
 	_refresh_all()
 
 
-## Sous 1 400 px, l'inspecteur cesse d'occuper une colonne mais reste
-## atteignable : un bouton permanent l'ouvre en tiroir par-dessus le canvas.
-## Aucune action essentielle n'est masquee sans acces de remplacement.
+## L'Inspecteur ne participe jamais à la largeur du workspace. À toutes les
+## résolutions, l'action « Propriétés » l'ouvre dans l'hôte superposé existant.
 func _apply_responsive_layout() -> void:
 	if left_panel == null or right_panel == null:
 		return
@@ -7312,37 +7910,26 @@ func _apply_responsive_layout() -> void:
 		_sync_drawer_split()
 		return
 	left_panel.custom_minimum_size.x = 172
-	right_panel.custom_minimum_size.x = 300 if size.x >= 1500 else 280
-	_compact_layout = size.x < 1400.0
-	if _compact_layout:
-		if inspector_overlay_host != null and right_panel.get_parent() != inspector_overlay_host:
-			right_panel.reparent(inspector_overlay_host)
+	right_panel.custom_minimum_size.x = 320
+	_compact_layout = true
+	if inspector_overlay_host != null and right_panel.get_parent() != inspector_overlay_host:
+		right_panel.reparent(inspector_overlay_host)
+	if inspector_overlay_host != null:
 		inspector_overlay_host.visible = _inspector_forced_open
-		right_panel.visible = _inspector_forced_open
-	else:
-		if right_panel.get_parent() != center_and_right_split:
-			right_panel.reparent(center_and_right_split)
-		if inspector_overlay_host != null:
-			inspector_overlay_host.visible = false
-		_inspector_forced_open = false
-		right_panel.show()
+	right_panel.visible = _inspector_forced_open
 	if inspector_panel != null:
-		inspector_panel.set_drawer_mode(_compact_layout)
+		inspector_panel.set_drawer_mode(true)
 	if inspector_drawer_button != null:
-		inspector_drawer_button.visible = _compact_layout \
-			and editor_screen != null and editor_screen.visible
-		inspector_drawer_button.text = "Fermer l'inspecteur ◂" if _inspector_forced_open \
-			else "Ouvrir l'inspecteur ▸"
+		inspector_drawer_button.visible = editor_screen != null and editor_screen.visible
+		inspector_drawer_button.text = "Fermer les propriétés" if _inspector_forced_open \
+			else "Propriétés"
 	# Sur un écran court, la palette défile dans moins de place plutôt que de
 	# repousser le canvas ou le tiroir hors de la fenêtre. Le tiroir reste
 	# fermé par défaut, mais il n'est jamais refermé de force.
 	if palette_scroll != null:
 		palette_scroll.custom_minimum_size.y = 58.0 if size.y < 760.0 else 68.0
-	if library_panel != null:
-		library_panel.custom_minimum_size.y = 88.0 if size.y < 760.0 \
-			else (170.0 if size.y >= 900.0 else 142.0)
-		if library_panel.search_edit != null:
-			library_panel.search_edit.visible = size.y >= 760.0
+	if library_panel != null and library_panel.search_edit != null:
+		library_panel.search_edit.visible = true
 	_sync_drawer_split()
 	# La barre historique du Studio duplique l'en-tête Terrain et le shell :
 	# sur un écran court elle disparaît, sans qu'aucune action ne soit perdue
@@ -7361,6 +7948,9 @@ func get_workspace_state() -> Dictionary:
 		"guidance_visible": guidance_visible,
 		"checklist_collapsed": checklist_panel.is_collapsed() if checklist_panel != null else true,
 		"library": library_panel.get_state() if library_panel != null else {},
+		"library_height": int(round(library_panel.size.y)) \
+			if library_panel != null and library_panel.size.y > 0.0 \
+			else int(TerrainStudioUiStateService.get_value("library_height", 240)),
 		"inspector_drawer_open": _inspector_forced_open,
 		"home_visible": is_home_visible(),
 		"workspace_mode": workspace_mode,
@@ -7383,6 +7973,11 @@ func apply_workspace_state(state: Dictionary) -> void:
 	horizontal_split.split_offset = int(state.get("horizontal_split", 58))
 	center_and_right_split.split_offset = int(state.get("right_split", -324))
 	vertical_split.split_offset = int(state.get("drawer_split", -42))
+	if canvas_library_split != null:
+		call_deferred("_restore_library_height", int(state.get(
+			"library_height",
+			TerrainStudioUiStateService.get_value("library_height", 240)
+		)))
 	workspace_preset = clampi(int(state.get("preset", 0)), 0, 3)
 	preview_view = clampi(int(state.get("preview_view", 0)), 0, 2)
 	workspace_mode = clampi(

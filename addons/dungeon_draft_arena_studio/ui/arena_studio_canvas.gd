@@ -63,7 +63,7 @@ const COLORS := {
 	"border": Color(0.60, 0.28, 0.86, 0.48),
 	"blocked": Color(0.91, 0.23, 0.18, 0.55),
 	"non_playable": Color(0.18, 0.22, 0.30, 0.58),
-	"selected": Color(1.0, 0.72, 0.18, 0.55),
+	"selected": Color(1.0, 0.82, 0.22, 1.0),
 	"reachable": Color(0.18, 0.68, 1.0, 0.38),
 	"path": Color(1.0, 0.78, 0.12, 0.70),
 	"line_clear": Color(0.25, 1.0, 0.56, 0.68),
@@ -1370,6 +1370,7 @@ func _draw() -> void:
 		_draw_saved_grid_comparison()
 	if bool(layer_visibility.get("foreground", true)) and not is_precision_preview_active():
 		_draw_foreground_overlay()
+	_draw_selected_cells()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	_sync_affine_gizmo()
 	_draw_hud()
@@ -1417,8 +1418,6 @@ func _draw_cells() -> void:
 					color = COLORS.playable
 				if color.a > 0.0:
 					draw_colored_polygon(polygon, color)
-			if selected_cells.has(cell):
-				draw_colored_polygon(polygon, COLORS.selected)
 			if show_grid:
 				_draw_outline(
 					polygon, Color(GRID_COLOR, GRID_COLOR.a * grid_opacity),
@@ -1440,6 +1439,21 @@ func _draw_cells() -> void:
 			Color.WHITE,
 			_native_stroke_width(2.0)
 		)
+
+
+func _draw_selected_cells() -> void:
+	if selected_cells.is_empty() or arena == null:
+		return
+	var snapshot := _active_transform_snapshot()
+	for cell in selected_cells:
+		if not arena.is_in_bounds(cell):
+			continue
+		var polygon := GridTransformService.cell_polygon(
+			cell, snapshot.origin, snapshot.axis_x, snapshot.axis_y
+		)
+		# Dessiné en dernier : le contour reste visible par-dessus un mur, un
+		# terrain texturé ou le foreground, sans modifier leur couleur.
+		_draw_outline(polygon, COLORS.selected, maxf(3.0, _native_stroke_width() * 2.0))
 
 
 func _draw_precision_grid(snapshot: GridTransformSnapshot) -> void:

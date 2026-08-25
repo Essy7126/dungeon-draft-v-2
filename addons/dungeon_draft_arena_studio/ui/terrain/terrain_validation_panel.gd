@@ -30,6 +30,7 @@ var readiness_label: Label = null
 var summary_label: Label = null
 var cards_box: VBoxContainer = null
 var empty_label: Label = null
+var external_error_label: Label = null
 
 var _built := false
 var _show_information := false
@@ -56,6 +57,12 @@ func _build() -> void:
 	summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	summary_label.add_theme_color_override("font_color", MUTED)
 	add_child(summary_label)
+	external_error_label = Label.new()
+	external_error_label.name = "TerrainValidationExternalError"
+	external_error_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	external_error_label.add_theme_color_override("font_color", SEVERITY_COLORS[0])
+	external_error_label.visible = false
+	add_child(external_error_label)
 	var options := HBoxContainer.new()
 	add_child(options)
 	var information_toggle := CheckButton.new()
@@ -104,6 +111,12 @@ func set_report(report: ArenaValidationReport, readiness: String) -> void:
 			report.error_count(), report.warning_count(), report.info_count(),
 		]
 	_rebuild_cards()
+
+
+func show_important_error(message: String) -> void:
+	_build()
+	external_error_label.text = "Bloquant — %s" % message
+	external_error_label.visible = not message.strip_edges().is_empty()
 
 
 func card_count() -> int:

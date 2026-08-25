@@ -6,10 +6,10 @@ extends Control
 ##
 ## Usage :
 ##   godot --headless --path . res://addons/dungeon_draft_arena_studio/test/TerrainStudioCaptureRunner.tscn \
-##     -- --width=1280 --height=720 --views=home,creation,edit,selection,vortex,validation,advanced
+##     -- --width=1280 --height=720 --views=home,edit,selection,vortex,validation,advanced
 
 const OUTPUT_ROOT := "res://artifacts/terrain_studio/screenshots"
-const DEFAULT_VIEWS := "home,creation,edit,selection,vortex,validation,advanced,focus"
+const DEFAULT_VIEWS := "home,edit,selection,properties,tile_type,vortex,validation,advanced,focus"
 
 var _studio: StudioWorkspace
 var _arena: ArenaStudioMain
@@ -74,8 +74,13 @@ func _run() -> void:
 
 func _capture_view(view: String) -> bool:
 	print("TERRAIN_STUDIO_CAPTURE_STAGE view_begin ", view)
+	# Écarter le pointeur des actions : une infobulle transitoire ne fait pas
+	# partie de la disposition à valider.
+	DisplayServer.warp_mouse(Vector2i(_size.x - 8, _size.y - 8))
 	if view != "focus":
 		_arena.set_focus_map(false)
+	if view not in ["properties", "tile_type", "advanced"]:
+		_arena.set_inspector_drawer_open(false)
 	# Le tiroir est fermé par défaut : seule la vue « validation » l'ouvre.
 	if view != "validation" and _arena.bottom_drawer_content.visible:
 		_arena._toggle_bottom_drawer()
@@ -83,9 +88,6 @@ func _capture_view(view: String) -> bool:
 		"home":
 			_arena.set_guided(true)
 			_arena.show_home()
-		"creation":
-			_arena.set_guided(true)
-			_arena.show_creation_wizard()
 		"edit":
 			_arena.set_guided(true)
 			_arena.show_editor()
@@ -93,7 +95,25 @@ func _capture_view(view: String) -> bool:
 		"selection":
 			_arena.set_guided(true)
 			_arena.show_editor()
+			var selected_cell := Vector2i(2, 2)
+			if not _arena.arena.obstacles.is_empty():
+				selected_cell = _arena.arena.obstacles[0].cell
+			_arena.canvas.selected_cells = [selected_cell]
+			_arena.canvas.queue_redraw()
+			_arena._on_spatial_selection_requested(selected_cell)
+		"properties":
+			_arena.set_guided(true)
+			_arena.show_editor()
 			_arena._on_spatial_selection_requested(Vector2i(2, 2))
+			_arena.set_inspector_drawer_open(true)
+		"tile_type":
+			_arena.set_guided(true)
+			_arena.show_editor()
+			var entry := TerrainPlaceableCatalogService.entry_by_id(
+				_arena.arena, &"floor:steam", true
+			)
+			if not entry.is_empty():
+				_arena._on_library_card_action_requested(&"edit_terrain_type", entry)
 		"grid":
 			_arena.set_guided(true)
 			_arena.show_editor()
@@ -121,6 +141,8 @@ func _capture_view(view: String) -> bool:
 			_arena.set_guided(false)
 			_arena.show_editor()
 			_arena.set_current_step(TerrainWorkflowService.Step.SCENERY)
+			_arena._on_tool_selected(ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS)
+			_arena.set_inspector_drawer_open(true)
 		"focus":
 			_arena.set_guided(true)
 			_arena.show_editor()

@@ -16,7 +16,9 @@ var vfx_composer: VFXComposer
 var undo_button: Button
 var redo_button: Button
 var history_button: MenuButton
+var home_button: Button
 var document_label: Label
+var document_state_label: Label
 var save_button: Button
 var validate_button: Button
 var test_button: Button
@@ -28,6 +30,9 @@ var preview_view_option: OptionButton
 var focus_map_button: Button
 var detach_button: Button
 var skill_studio_button: Button
+var guided_toggle: CheckButton
+var window_menu_button: MenuButton
+var domain_buttons: Array[Button] = []
 var detached := false
 var _pending_state := {}
 var studio_title_label: Label
@@ -57,13 +62,14 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var root := VBoxContainer.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("separation", 4)
+	root.add_theme_constant_override("separation", 0)
 	add_child(root)
-	root.add_child(_build_shared_history_bar())
 	context_bar = StudioContextBar.new()
 	context_bar.setup(project_context, reference_graph)
-	root.add_child(context_bar)
+	root.add_child(_build_domain_bar())
+	root.add_child(_build_shared_history_bar())
 	tabs = TabContainer.new()
+	tabs.tabs_visible = false
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(tabs)
 
@@ -73,6 +79,10 @@ func _ready() -> void:
 	arena_studio.production_planning_enabled = arena_production_planning_enabled
 	arena_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	tabs.add_child(arena_studio)
+	# Le shell commun porte désormais les mêmes actions via leurs handlers
+	# existants. La barre Terrain interne reste instanciée comme adaptateur
+	# d'état, mais n'occupe plus une seconde ligne dans l'espace de travail.
+	arena_studio.header_bar.hide()
 	# Seul le libelle visible change : ArenaDefinition, ArenaStudioMain et les
 	# contrats techniques conservent leurs noms internes.
 	tabs.set_tab_title(tabs.get_tab_count() - 1, TerrainVocabulary.TAB_TITLE)
@@ -105,17 +115,19 @@ func _ready() -> void:
 		apply_state_snapshot(_pending_state)
 		_pending_state.clear()
 	_refresh_history_controls()
+	_refresh_domain_buttons()
 	_apply_theme_icons()
 	resized.connect(_apply_toolbar_responsive)
 	call_deferred("_apply_toolbar_responsive")
+	call_deferred("_sync_shell_from_arena")
 
 
-func _build_shared_history_bar() -> Control:
+func _build_domain_bar() -> Control:
 	var panel := PanelContainer.new()
+	panel.name = "StudioDomainBar"
 	panel.custom_minimum_size.y = 38
-	var bar := HFlowContainer.new()
-	bar.add_theme_constant_override("separation", 5)
-	bar.add_theme_constant_override("v_separation", 4)
+	var bar := HBoxContainer.new()
+	bar.add_theme_constant_override("separation", 4)
 	panel.add_child(bar)
 	studio_title_label = Label.new()
 	studio_title_label.text = StudioVersion.display_name()
@@ -123,25 +135,78 @@ func _build_shared_history_bar() -> Control:
 	studio_title_label.add_theme_color_override("font_color", Color(0.48, 0.86, 1.0))
 	studio_title_label.add_theme_font_size_override("font_size", 16)
 	bar.add_child(studio_title_label)
+	for index in range(4):
+		var button := Button.new()
+		button.flat = true
+		button.toggle_mode = true
+		button.text = [TerrainVocabulary.TAB_TITLE, "Rencontres", "Objets", "Effets visuels"][index]
+		button.pressed.connect(_select_domain.bind(index))
+		bar.add_child(button)
+		domain_buttons.append(button)
+	skill_studio_button = Button.new()
+	skill_studio_button.flat = true
+	skill_studio_button.text = "Compétences"
+	skill_studio_button.tooltip_text = "Ouvrir le Studio des personnages et compétences"
+	skill_studio_button.pressed.connect(func(): skill_studio_requested.emit())
+	bar.add_child(skill_studio_button)
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.add_child(spacer)
+	context_bar.size_flags_horizontal = Control.SIZE_SHRINK_END
+	bar.add_child(context_bar)
+	window_menu_button = MenuButton.new()
+	window_menu_button.text = "Fenêtre ▾"
+	window_menu_button.tooltip_text = "Options de fenêtre et outils secondaires"
+	window_menu_button.get_popup().id_pressed.connect(_on_window_menu_pressed)
+	window_menu_button.get_popup().about_to_popup.connect(_rebuild_window_menu)
+	bar.add_child(window_menu_button)
+	return panel
+
+
+func _build_shared_history_bar() -> Control:
+	var panel := PanelContainer.new()
+	panel.name = "StudioDocumentBar"
+	panel.custom_minimum_size.y = 46
+	var bar := HBoxContainer.new()
+	bar.add_theme_constant_override("separation", 5)
+	panel.add_child(bar)
+	home_button = _global_button(
+		bar, "Accueil", _open_terrain_home,
+		"Quitter le terrain courant pour en ouvrir ou en créer un autre"
+	)
+	var document_box := VBoxContainer.new()
+	document_box.custom_minimum_size.x = 168
+	document_box.add_theme_constant_override("separation", 0)
+	bar.add_child(document_box)
 	document_label = Label.new()
 	document_label.text = "Aucune arène"
-	document_label.custom_minimum_size.x = 135
 	document_label.clip_text = true
 	document_label.tooltip_text = "Document actif"
-	bar.add_child(document_label)
+	document_box.add_child(document_label)
+	document_state_label = Label.new()
+	document_state_label.text = "Enregistré"
+	document_state_label.add_theme_font_size_override("font_size", 12)
+	document_box.add_child(document_state_label)
 	undo_button = Button.new()
-	undo_button.text = "↶ Annuler"
+	undo_button.text = "Annuler"
 	undo_button.pressed.connect(_undo_active)
 	bar.add_child(undo_button)
 	redo_button = Button.new()
-	redo_button.text = "↷ Rétablir"
+	redo_button.text = "Rétablir"
 	redo_button.pressed.connect(_redo_active)
 	bar.add_child(redo_button)
 	history_button = MenuButton.new()
 	history_button.text = "Historique ▾"
-	history_button.get_popup().id_pressed.connect(_on_history_entry_pressed)
-	history_button.get_popup().about_to_popup.connect(_rebuild_history_menu)
+	history_button.tooltip_text = "Parcourir l'historique du document"
+	history_button.get_popup().id_pressed.connect(_on_file_entry_pressed)
+	history_button.get_popup().about_to_popup.connect(_rebuild_file_menu)
 	bar.add_child(history_button)
+	guided_toggle = CheckButton.new()
+	guided_toggle.text = "Mode guidé"
+	guided_toggle.button_pressed = true
+	guided_toggle.tooltip_text = "Masquer les réglages techniques et afficher les consignes"
+	guided_toggle.toggled.connect(_on_guided_toggled)
+	bar.add_child(guided_toggle)
 	# Contrat explicite : le brouillon reste local, Tester n'écrit rien, et
 	# seule l'intégration rend le document disponible dans une partie.
 	save_button = _global_button(
@@ -149,9 +214,13 @@ func _build_shared_history_bar() -> Control:
 		"Garder le travail en cours dans votre dossier personnel. Aucune partie n'est modifiée."
 	)
 	validate_button = _global_button(
-		bar, "Vérifier", _global_validate,
-		"Contrôler le document actif et lister ce qui reste à corriger"
+		bar, "Validation…", _global_validate,
+		"Ouvrir les erreurs et avertissements du document actif"
 	)
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.add_child(spacer)
+	bar.move_child(spacer, validate_button.get_index())
 	test_button = _global_button(
 		bar, "Tester", _global_test,
 		"Lancer un vrai combat sur la version en cours, sans rien publier"
@@ -160,43 +229,38 @@ func _build_shared_history_bar() -> Control:
 		bar, "Intégrer à la partie", _global_produce,
 		"Choisir la salle de destination, lire le résumé, puis publier le terrain"
 	)
-	lab_transfer_button = _global_button(
-		bar, "Importer depuis le laboratoire", _global_lab_transfer,
-		"Examiner puis importer un transfert vérifié venant du laboratoire d'arènes"
-	)
-	lab_menu_button = MenuButton.new()
-	lab_menu_button.text = "Laboratoire ▾"
-	lab_menu_button.tooltip_text = "Actions du laboratoire autonome"
-	lab_menu_button.get_popup().add_item("Ouvrir le laboratoire autonome", 0)
-	lab_menu_button.get_popup().id_pressed.connect(func(_id):
-		if arena_studio != null:
-			arena_studio.open_standalone_lab()
-	)
-	bar.add_child(lab_menu_button)
-	skill_studio_button = _global_button(
-		bar, "Compétences", func(): skill_studio_requested.emit(),
-		"Ouvrir le Studio autonome des personnages et compétences"
-	)
 	workspace_preset_option = OptionButton.new()
 	workspace_preset_option.tooltip_text = "Disposition de l'espace de travail"
 	for preset in ["Construction", "Calibration", "Gameplay", "Aperçu final"]:
 		workspace_preset_option.add_item(preset)
 	workspace_preset_option.item_selected.connect(_on_workspace_preset_selected)
-	bar.add_child(workspace_preset_option)
+	workspace_preset_option.visible = false
+	# Modèle d'état interne du menu Fenêtre. Il ne doit jamais être enfant d'un
+	# Container : un rafraîchissement de visibilité ne peut ainsi plus lui faire
+	# réserver toute une ligne dans la barre du Studio.
+	add_child(workspace_preset_option)
 	preview_view_option = OptionButton.new()
-	preview_view_option.tooltip_text = "Vue Logique / Art / Jeu"
-	for preview_view in ["Logique", "Art", "Jeu"]:
+	preview_view_option.tooltip_text = "Vue Structure / Décor / Résultat en jeu"
+	for preview_view in ["Structure", "Décor", "Résultat en jeu"]:
 		preview_view_option.add_item(preview_view)
 	preview_view_option.item_selected.connect(_on_preview_view_selected)
 	bar.add_child(preview_view_option)
 	focus_map_button = _global_button(
-		bar, "Agrandir", _toggle_focus_map,
+		panel, "Agrandir", _toggle_focus_map,
 		"Agrandir la carte en plein panneau (Tab)"
 	)
+	focus_map_button.visible = false
 	detach_button = _global_button(
-		bar, "Détacher la fenêtre", func(): detach_requested.emit(),
+		panel, "Détacher la fenêtre", func(): detach_requested.emit(),
 		"Détacher la fenêtre du Studio (Ctrl+Shift+D)"
 	)
+	detach_button.visible = false
+	bar.move_child(preview_view_option, guided_toggle.get_index() + 1)
+	bar.move_child(spacer, preview_view_option.get_index() + 1)
+	bar.move_child(validate_button, spacer.get_index() + 1)
+	bar.move_child(save_button, validate_button.get_index() + 1)
+	bar.move_child(test_button, save_button.get_index() + 1)
+	bar.move_child(produce_button, test_button.get_index() + 1)
 	return panel
 
 
@@ -327,6 +391,8 @@ func _refresh_history_controls() -> void:
 		document_label.text = provider.history_document_name() if provider != null else "Aucun document"
 		document_label.tooltip_text = document_label.text
 	var arena_active := tabs != null and tabs.current_tab == 0
+	if home_button != null:
+		home_button.visible = arena_active
 	if produce_button != null:
 		produce_button.disabled = not arena_active
 	# Dispositions, laboratoire et transferts sont des preferences avancees :
@@ -336,34 +402,37 @@ func _refresh_history_controls() -> void:
 		and arena_studio.has_method("is_guided") and arena_studio.is_guided()
 	if workspace_preset_option != null:
 		workspace_preset_option.disabled = not arena_active
-		workspace_preset_option.visible = not terrain_guided
+		workspace_preset_option.visible = false
 	if lab_menu_button != null:
 		lab_menu_button.visible = not terrain_guided
 	if lab_transfer_button != null:
 		lab_transfer_button.visible = not terrain_guided
 	if preview_view_option != null:
 		preview_view_option.disabled = not arena_active
-		# Le domaine Terrain porte son propre sélecteur Structure / Décor /
-		# Résultat en jeu : un seul sélecteur d'aperçu doit rester visible.
-		preview_view_option.visible = not arena_active
+		# Le sélecteur partagé remplace désormais celui de l'en-tête Terrain
+		# replié : une seule commande reste visible dans le shell.
+		preview_view_option.visible = arena_active
 	if focus_map_button != null:
 		focus_map_button.disabled = not arena_active
 	if lab_transfer_button != null and arena_studio != null:
 		var transfer_count := arena_studio.pending_lab_transfer_count()
 		lab_transfer_button.text = "Importer depuis le laboratoire (%d)" % transfer_count \
 			if transfer_count > 0 else "Importer depuis le laboratoire"
+	if guided_toggle != null:
+		guided_toggle.disabled = not arena_active
+	_sync_shell_from_arena()
 
 
-func _rebuild_history_menu() -> void:
+func _rebuild_file_menu() -> void:
 	var popup := history_button.get_popup()
 	popup.clear()
 	var provider = _active_history_provider()
 	if provider == null:
 		popup.add_item("Aucun document", -1)
-		popup.set_item_disabled(0, true)
+		popup.set_item_disabled(popup.item_count - 1, true)
 		return
 	popup.add_item(provider.history_document_name(), -1)
-	popup.set_item_disabled(0, true)
+	popup.set_item_disabled(popup.item_count - 1, true)
 	popup.add_separator()
 	var current_index: int = provider.history_current_index()
 	popup.add_item("● Position actuelle — étape %d" % current_index, -2)
@@ -390,7 +459,13 @@ func _rebuild_history_menu() -> void:
 		)
 
 
-func _on_history_entry_pressed(index: int) -> void:
+## Adaptateur de compatibilité : le menu Fichier contient désormais
+## l'historique, mais l'ancien contrat de reconstruction reste callable.
+func _rebuild_history_menu() -> void:
+	_rebuild_file_menu()
+
+
+func _on_file_entry_pressed(index: int) -> void:
 	if index < 0:
 		return
 	var provider = _active_history_provider()
@@ -403,6 +478,58 @@ func _on_tab_changed(_index: int) -> void:
 	if arena_studio != null and arena_studio.has_method("cancel_active_gesture"):
 		arena_studio.cancel_active_gesture()
 	_refresh_history_controls()
+	_refresh_domain_buttons()
+
+
+func _select_domain(index: int) -> void:
+	if tabs != null and index >= 0 and index < tabs.get_tab_count():
+		tabs.current_tab = index
+
+
+func _refresh_domain_buttons() -> void:
+	if tabs == null:
+		return
+	for index in range(domain_buttons.size()):
+		domain_buttons[index].set_pressed_no_signal(index == tabs.current_tab)
+
+
+func _on_guided_toggled(value: bool) -> void:
+	if arena_studio != null:
+		arena_studio.set_guided(value)
+		_refresh_history_controls()
+
+
+func _rebuild_window_menu() -> void:
+	var popup := window_menu_button.get_popup()
+	popup.clear()
+	popup.add_item("Restaurer l'affichage" if focus_map_button != null \
+		and focus_map_button.button_pressed else "Agrandir le terrain", 0)
+	popup.add_item("Réintégrer la fenêtre" if detached else "Détacher la fenêtre", 1)
+	popup.add_separator("Disposition")
+	for index in range(4):
+		popup.add_radio_check_item(["Construction", "Calibration", "Gameplay", "Aperçu final"][index], 10 + index)
+		popup.set_item_checked(popup.item_count - 1, workspace_preset_option != null \
+			and workspace_preset_option.selected == index)
+	popup.add_separator("Laboratoire")
+	popup.add_item("Importer depuis le laboratoire", 20)
+	popup.add_item("Ouvrir le laboratoire autonome", 21)
+
+
+func _on_window_menu_pressed(id: int) -> void:
+	match id:
+		0:
+			_toggle_focus_map()
+		1:
+			detach_requested.emit()
+		20:
+			_global_lab_transfer()
+		21:
+			if arena_studio != null:
+				arena_studio.open_standalone_lab()
+		_:
+			if id >= 10 and id < 14 and workspace_preset_option != null:
+				workspace_preset_option.select(id - 10)
+				_on_workspace_preset_selected(id - 10)
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -508,19 +635,26 @@ func _apply_toolbar_responsive() -> void:
 		return
 	var compact := size.x < 1500.0
 	studio_title_label.text = StudioVersion.display_name(compact)
-	studio_title_label.custom_minimum_size.x = 104 if compact else 224
-	document_label.visible = not compact
+	studio_title_label.custom_minimum_size.x = 82 if compact else 224
+	if document_label != null and document_label.get_parent() != null:
+		document_label.get_parent().custom_minimum_size.x = 132 if compact else 168
 	undo_button.text = "↶" if compact else "Annuler"
 	redo_button.text = "↷" if compact else "Rétablir"
 	undo_button.custom_minimum_size.x = 34 if compact else 0
 	redo_button.custom_minimum_size.x = 34 if compact else 0
-	history_button.text = "Hist. ▾" if compact else "Historique ▾"
+	history_button.text = "Hist." if compact else "Historique ▾"
+	home_button.text = "Accueil"
 	save_button.text = "Brouillon" if compact else "Enregistrer le brouillon"
-	skill_studio_button.text = "Compét." if compact else "Compétences"
-	lab_transfer_button.text = "Import labo" if compact else lab_transfer_button.text
-	lab_menu_button.text = "Labo" if compact else "Laboratoire ▾"
+	produce_button.text = "Intégrer" if compact else "Intégrer à la partie"
+	if domain_buttons.size() >= 4:
+		domain_buttons[3].text = "VFX" if compact else "Effets visuels"
 	workspace_preset_option.custom_minimum_size.x = 104 if compact else 0
-	preview_view_option.custom_minimum_size.x = 72 if compact else 0
+	preview_view_option.custom_minimum_size.x = 94 if compact else 138
+	if window_menu_button != null:
+		window_menu_button.text = "⋮" if compact else "Fenêtre ▾"
+		window_menu_button.custom_minimum_size.x = 34 if compact else 0
+	if context_bar != null:
+		context_bar.set_compact(compact)
 	detach_button.text = (
 		("Réint. fenêtre" if compact else "Réintégrer la fenêtre") if detached \
 		else ("Dét. fenêtre" if compact else "Détacher la fenêtre")
@@ -538,15 +672,48 @@ func _global_save() -> void:
 		vfx_composer.save_as_draft()
 
 
+func _open_terrain_home() -> void:
+	if arena_studio != null:
+		arena_studio.request_home()
+
+
 func _global_validate() -> void:
 	if tabs.current_tab == 0:
-		arena_studio.validate_arena()
+		arena_studio._open_validation_drawer()
 	elif tabs.current_tab == 1:
 		encounter_studio.validate_session()
 	elif tabs.current_tab == 2:
 		item_studio.validate_document()
 	elif tabs.current_tab == 3:
 		vfx_composer.validate_document()
+	_sync_shell_from_arena()
+
+
+func _sync_shell_from_arena() -> void:
+	if arena_studio == null:
+		return
+	if guided_toggle != null:
+		guided_toggle.set_pressed_no_signal(arena_studio.is_guided())
+	if preview_view_option != null and arena_studio.preview_option != null:
+		preview_view_option.select(arena_studio.preview_option.selected)
+	if tabs == null or tabs.current_tab != 0:
+		return
+	if document_state_label != null:
+		document_state_label.text = "Brouillon modifié" if arena_studio.dirty else "Enregistré"
+		document_state_label.add_theme_color_override(
+			"font_color", Color(1.0, 0.66, 0.25) if arena_studio.dirty \
+			else Color(0.48, 0.9, 0.62)
+		)
+	if validate_button != null and arena_studio.header_bar != null:
+		var terrain_validation_button := arena_studio.header_bar.get("validation_button") as Button
+		if terrain_validation_button != null:
+			validate_button.text = terrain_validation_button.text
+			validate_button.remove_theme_color_override("font_color")
+			if terrain_validation_button.has_theme_color_override("font_color"):
+				validate_button.add_theme_color_override(
+					"font_color",
+					terrain_validation_button.get_theme_color("font_color")
+				)
 
 
 func _global_test() -> void:

@@ -13,9 +13,13 @@ var state_label: Label
 var human_summary_label: Label
 var details_label: Label
 var details_button: Button
+var context_button: Button
+var context_popup: PopupPanel
 var transition_dialog: ConfirmationDialog
 var _runs: Array[RunData] = []
 var _syncing := false
+var _compact := false
+var _context_button_full_text := "Contexte"
 
 
 func setup(project_context: StudioProjectContext, graph_service: StudioReferenceGraphService) -> void:
@@ -38,10 +42,20 @@ func mark_room_unused(explanation: String) -> void:
 
 
 func _ready() -> void:
-	custom_minimum_size.y = 56
+	custom_minimum_size.y = 30
+	context_button = Button.new()
+	context_button.text = "Contexte ▾"
+	context_button.tooltip_text = "Partie, salle, personnage, portée, usages et erreurs"
+	context_button.pressed.connect(_toggle_context_popup)
+	add_child(context_button)
+	context_popup = PopupPanel.new()
+	context_popup.name = "StudioContextPopup"
+	context_popup.size = Vector2i(760, 170)
+	add_child(context_popup)
 	var rows := VBoxContainer.new()
+	rows.custom_minimum_size = Vector2(740, 150)
 	rows.add_theme_constant_override("separation", 2)
-	add_child(rows)
+	context_popup.add_child(rows)
 	var bar := HBoxContainer.new()
 	bar.add_theme_constant_override("separation", 6)
 	rows.add_child(bar)
@@ -83,6 +97,30 @@ func _ready() -> void:
 		context.context_changed.connect(_refresh.bind())
 		context.transition_requested.connect(_show_transition)
 	_refresh()
+
+
+func set_compact(value: bool) -> void:
+	_compact = value
+	_refresh_context_button()
+
+
+func _toggle_context_popup() -> void:
+	if context_popup == null:
+		return
+	if context_popup.visible:
+		context_popup.hide()
+		return
+	context_popup.position = Vector2i(
+		int(global_position.x + size.x - context_popup.size.x),
+		int(global_position.y + size.y + 4.0)
+	)
+	context_popup.popup()
+
+
+func _refresh_context_button() -> void:
+	if context_button == null:
+		return
+	context_button.text = "Contexte ▾" if _compact else "%s ▾" % _context_button_full_text
 
 
 func _build_transition_dialog() -> void:
@@ -182,6 +220,18 @@ func _refresh(_unused = {}) -> void:
 		hero_display = context.active_character.unit_name
 		if context.active_hero == null:
 			hero_display += " (hors partie)"
+	var room_display := "Aucune salle"
+	if context.active_run != null and context.active_room_index >= 0 \
+		and context.active_room_index < context.active_run.rooms.size():
+		var active_room: RoomData = context.active_run.rooms[context.active_room_index]
+		room_display = "%02d · %s" % [
+			context.active_room_index + 1,
+			active_room.room_name if active_room != null else "Salle absente",
+		]
+	_context_button_full_text = "%s · %s · %s" % [
+		str(snap.get("run_name", "Aucune partie")), room_display, hero_display,
+	]
+	_refresh_context_button()
 	human_summary_label.text = "%s · %s · %s · %s · %d %s · %d erreur(s) · Cible : %s" % [
 		str(snap.get("run_name", "Aucune partie")), hero_display,
 		authority_label, opened_scope_label, usage_count, usage_label,
@@ -197,6 +247,9 @@ func _refresh(_unused = {}) -> void:
 	# Les informations techniques restent accessibles au survol sans réserver
 	# une troisième ligne vide dans tous les onglets du Studio.
 	human_summary_label.tooltip_text = "%s\n%s" % [human_summary_label.text, details_label.text]
+	context_button.tooltip_text = "%s\n%s\n%s" % [
+		_context_button_full_text, human_summary_label.text, details_label.text,
+	]
 	_syncing = false
 
 
@@ -211,7 +264,12 @@ func _show_transition(transition: Dictionary) -> void:
 	var domains: Array[String] = []
 	for domain_value in (transition.get("dirty_domains", {}) as Dictionary).keys():
 		domains.append(context.human_domain_name(StringName(domain_value)))
-	transition_dialog.dialog_text = "Le changement de contexte remplacerait une version en cours modifiée.\n\nDomaines : %s\n\nChoisissez explicitement quoi faire." % ", ".join(domains)
+	var action_text := "Quitter le terrain courant" \
+		if StringName(transition.get("intent", &"")) == &"terrain_home" \
+		else "Changer de contexte"
+	transition_dialog.dialog_text = "%s remplacerait une version en cours modifiée.\n\nDomaines : %s\n\nChoisissez explicitement quoi faire." % [
+		action_text, ", ".join(domains),
+	]
 	transition_dialog.popup_centered()
 
 

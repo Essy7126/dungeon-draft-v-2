@@ -2,29 +2,23 @@
 class_name TerrainHomePanel
 extends PanelContainer
 
-## Ecran d'accueil du domaine Terrain. C'est le seul point d'entree du
-## parcours : il rend visibles « modifier la salle active », « creer »,
-## « ouvrir », l'exercice d'entrainement et les terrains recents, sans
-## dependre de la barre interne que l'hote masque.
+## Ecran d'accueil du domaine Terrain. Les trois intentions nominales partent
+## d'ici sans assistant plein ecran : ouvrir, creer depuis une illustration ou
+## creer directement avec des tuiles.
 
-signal edit_active_room_requested
-signal create_requested
+signal create_from_image_requested
+signal create_with_tiles_requested
 signal open_requested
-signal sandbox_requested
 signal recent_selected(entry: Dictionary)
-signal glossary_requested
 
 const ACCENT := Color(0.48, 0.86, 1.0)
 const MUTED := Color(0.72, 0.77, 0.84)
 const CARD_BACKGROUND := Color(0.137, 0.153, 0.184)
 
-var active_card: Button = null
-var create_card: Button = null
+var image_card: Button = null
+var tiles_card: Button = null
 var open_card: Button = null
-var sandbox_button: Button = null
-var glossary_button: Button = null
 var recents_list: ItemList = null
-var active_summary: Label = null
 var recents_empty_label: Label = null
 
 var _built := false
@@ -71,25 +65,6 @@ func _build() -> void:
 	intro.add_theme_color_override("font_color", MUTED)
 	root.add_child(intro)
 
-	active_card = _card(
-		root, "TerrainHomeEditActiveRoom",
-		"Modifier le terrain de la salle active",
-		"Reprendre la salle déjà sélectionnée dans la partie en cours."
-	)
-	active_card.pressed.connect(func(): edit_active_room_requested.emit())
-	active_summary = Label.new()
-	active_summary.name = "TerrainHomeActiveSummary"
-	active_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	active_summary.add_theme_color_override("font_color", MUTED)
-	root.add_child(active_summary)
-
-	create_card = _card(
-		root, "TerrainHomeCreate",
-		"Créer un nouveau terrain",
-		"Trois façons de commencer : illustration, tuiles, ou les deux."
-	)
-	create_card.pressed.connect(func(): create_requested.emit())
-
 	open_card = _card(
 		root, "TerrainHomeOpen",
 		"Ouvrir un terrain existant",
@@ -97,24 +72,19 @@ func _build() -> void:
 	)
 	open_card.pressed.connect(func(): open_requested.emit())
 
-	var secondary := HFlowContainer.new()
-	secondary.add_theme_constant_override("h_separation", 8)
-	root.add_child(secondary)
-	sandbox_button = Button.new()
-	sandbox_button.name = "TerrainHomeSandbox"
-	sandbox_button.text = "Faire l'exercice d'entraînement"
-	sandbox_button.tooltip_text = (
-		"Un terrain d'essai complet dans votre dossier personnel. "
-		+ "Aucune partie officielle n'est modifiée."
+	image_card = _card(
+		root, "TerrainHomeCreateFromImage",
+		"Créer depuis une illustration",
+		"Choisir immédiatement une image, puis ajuster une grille 3 × 3 dessus."
 	)
-	sandbox_button.pressed.connect(func(): sandbox_requested.emit())
-	secondary.add_child(sandbox_button)
-	glossary_button = Button.new()
-	glossary_button.name = "TerrainHomeGlossary"
-	glossary_button.text = "Que veulent dire ces mots ?"
-	glossary_button.tooltip_text = "Ouvrir le glossaire du Studio Terrain."
-	glossary_button.pressed.connect(func(): glossary_requested.emit())
-	secondary.add_child(glossary_button)
+	image_card.pressed.connect(func(): create_from_image_requested.emit())
+
+	tiles_card = _card(
+		root, "TerrainHomeCreateWithTiles",
+		"Créer avec des tuiles",
+		"Ouvrir immédiatement un terrain 10 × 8 prêt à peindre."
+	)
+	tiles_card.pressed.connect(func(): create_with_tiles_requested.emit())
 
 	var recents_title := Label.new()
 	recents_title.text = "TERRAINS RÉCEMMENT OUVERTS"
@@ -140,16 +110,6 @@ func _build() -> void:
 
 func refresh(context := {}) -> void:
 	_build()
-	var label := str(context.get("active_room_label", ""))
-	var available := bool(context.get("active_room_available", false))
-	active_card.disabled = not available
-	if available:
-		active_summary.text = "Salle active : %s" % label
-	else:
-		active_summary.text = (
-			"Aucune salle active pour l'instant. Créez un terrain, ouvrez-en un, "
-			+ "ou choisissez une partie dans la barre de contexte au-dessus."
-		)
 	var entries: Array = context.get("recents", [])
 	recents_list.clear()
 	for value in entries:

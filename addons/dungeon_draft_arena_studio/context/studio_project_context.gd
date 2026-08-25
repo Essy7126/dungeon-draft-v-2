@@ -229,6 +229,40 @@ func request_selection(selection: Dictionary, requester_domain := &"") -> Dictio
 	return {"ok": true, "status": &"APPLIED", "snapshot": snapshot()}
 
 
+## Demande une sortie d'ecran ou une autre navigation qui ne change pas la
+## selection projet. Les memes handlers transactionnels et les memes quatre
+## decisions que pour un changement de run/salle restent l'unique autorite.
+func request_dirty_transition(intent: StringName, requester_domain := &"") -> Dictionary:
+	if has_pending_transition():
+		return {
+			"ok": false,
+			"status": &"TRANSITION_PENDING",
+			"transition": pending_transition(),
+		}
+	if _dirty_domains.is_empty():
+		return {
+			"ok": true,
+			"status": &"APPLIED",
+			"intent": intent,
+			"snapshot": snapshot(),
+		}
+	_transition_serial += 1
+	_pending_transition = {
+		"token": "studio-transition-%d" % _transition_serial,
+		"intent": intent,
+		"apply_selection": false,
+		"requester_domain": requester_domain,
+		"dirty_domains": dirty_domains(),
+		"from": snapshot(),
+	}
+	transition_requested.emit(pending_transition())
+	return {
+		"ok": false,
+		"status": &"REQUIRES_DECISION",
+		"transition": pending_transition(),
+	}
+
+
 func resolve_pending_transition(action: StringName) -> Dictionary:
 	if _pending_transition.is_empty():
 		return {"ok": false, "error": "Aucune transition en attente."}
@@ -254,7 +288,8 @@ func resolve_pending_transition(action: StringName) -> Dictionary:
 	var selection := resolved.get("selection", {}) as Dictionary
 	_pending_transition.clear()
 	dirty_state_changed.emit(dirty_domains())
-	_apply_selection(selection)
+	if bool(resolved.get("apply_selection", true)):
+		_apply_selection(selection)
 	var result := {
 		"ok": true,
 		"status": &"APPLIED_AFTER_DECISION",

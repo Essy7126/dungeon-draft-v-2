@@ -28,7 +28,11 @@ func before_each() -> void:
 
 
 func test_novice_builds_paints_fixes_and_reaches_a_testable_terrain() -> void:
+	var context := StudioProjectContext.new()
+	assert_true(bool(context.initialize().get("ok", false)))
 	var studio := ArenaStudioMain.new()
+	studio.auto_load_initial_arena = false
+	studio.setup(null, null, context, StudioReferenceGraphService.new())
 	add_child_autofree(studio)
 	studio.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	studio.size = Vector2(1280, 720)
@@ -36,22 +40,8 @@ func test_novice_builds_paints_fixes_and_reaches_a_testable_terrain() -> void:
 
 	# --- 1. Créer un terrain de 10 × 8 avec des tuiles ----------------------
 	assert_true(studio.is_home_visible(), "Le domaine s'ouvre sur l'accueil.")
-	studio.show_creation_wizard()
-	assert_eq(studio.creation_wizard.current_screen(), TerrainCreationWizard.SCREEN_CHOICE)
-	var tiles_choice := TerrainVocabulary.creation_choice(1)
-	assert_eq(str(tiles_choice.display_title), "Avec des tuiles")
-	assert_false(bool(tiles_choice.needs_image), "Aucune illustration n'est requise.")
-	studio._create_from_wizard_config({
-		"visual_mode": int(tiles_choice.visual_mode),
-		"display_name": "Terrain du novice",
-		"arena_id": "terrain_du_novice",
-		"width": 10,
-		"height": 8,
-		"camp_orientation": 0,
-		"image_path": "",
-		"template_index": 0,
-		"needs_image": bool(tiles_choice.needs_image),
-	})
+	studio._create_with_tiles()
+	studio.arena.set_identity("Terrain du novice", "terrain_du_novice")
 	await wait_process_frames(2)
 	assert_false(studio.is_home_visible(), "La création ouvre directement l'éditeur.")
 	assert_not_null(studio.arena)
@@ -176,12 +166,18 @@ func test_novice_builds_paints_fixes_and_reaches_a_testable_terrain() -> void:
 			"« %s » doit rester dans l'écran à 1280 × 720." % control.name
 		)
 		assert_ne(control.focus_mode, Control.FOCUS_NONE)
-	# Abandonner : revenir à l'accueil ne modifie aucune Resource canonique.
-	studio.show_home()
+	# Abandonner : la transition dirty exige une décision et ne conserve pas le
+	# nouveau terrain dans les sessions de l'accueil.
+	var draft_arena_id := studio.arena.arena_id
+	studio.request_home()
+	assert_true(context.has_pending_transition())
+	assert_false(studio.is_home_visible())
+	context.resolve_pending_transition(StudioProjectContext.ACTION_DISCARD)
 	assert_true(studio.is_home_visible())
+	assert_null(studio.arena)
 	assert_false(ResourceLoader.exists("res://data/arenas/terrain_du_novice.tres"))
-	ArenaDraftSaveService.remove(studio.arena.arena_id)
-	ArenaSerializer.remove_recovery(studio.arena.arena_id)
+	ArenaDraftSaveService.remove(draft_arena_id)
+	ArenaSerializer.remove_recovery(draft_arena_id)
 
 
 func _paint(

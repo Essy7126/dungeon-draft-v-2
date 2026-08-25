@@ -26,15 +26,15 @@ const SECTIONS := [
 		"advanced": false,
 	},
 	{
-		"id": &"shape",
-		"title": "FORME DE LA ZONE",
-		"steps": [TerrainWorkflowService.Step.SHAPE],
+		"id": &"tile_type",
+		"title": "TYPE DE TUILE",
+		"steps": [0, 1, 2, 3, 4, 5, 6],
 		"advanced": false,
 	},
 	{
-		"id": &"floors",
-		"title": "SOL ACTIF",
-		"steps": [TerrainWorkflowService.Step.FLOORS],
+		"id": &"shape",
+		"title": "GRILLE",
+		"steps": [TerrainWorkflowService.Step.SHAPE],
 		"advanced": false,
 	},
 	{
@@ -121,6 +121,7 @@ func _build() -> void:
 		return
 	_built = true
 	name = "TerrainInspectorPanel"
+	clip_contents = true
 	custom_minimum_size.x = 300
 	var outer := VBoxContainer.new()
 	outer.add_theme_constant_override("separation", 4)
@@ -129,7 +130,7 @@ func _build() -> void:
 	outer.add_child(header)
 	header_label = Label.new()
 	header_label.name = "TerrainInspectorTitle"
-	header_label.text = "INSPECTEUR"
+	header_label.text = "PROPRIÉTÉS"
 	header_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header_label.add_theme_font_size_override("font_size", 14)
 	header_label.add_theme_color_override("font_color", ACCENT)
@@ -160,6 +161,8 @@ func _build() -> void:
 		if not title.is_empty():
 			var label := Label.new()
 			label.text = title
+			label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			label.add_theme_font_size_override("font_size", 13)
 			label.add_theme_color_override("font_color", ACCENT)
 			section.add_child(label)
@@ -182,7 +185,18 @@ func host_control(section_id: StringName, control: Control) -> void:
 		return
 	if control.get_parent() != null:
 		control.get_parent().remove_child(control)
+	_prepare_for_narrow_inspector(control)
 	((sections[section_id] as Dictionary).container as Node).add_child(control)
+
+
+func _prepare_for_narrow_inspector(control: Control) -> void:
+	control.custom_minimum_size.x = 0.0
+	control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if control is Label:
+		(control as Label).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	for child in control.get_children():
+		if child is Control:
+			_prepare_for_narrow_inspector(child as Control)
 
 
 func set_context(step: int, guided: bool) -> void:
@@ -199,7 +213,7 @@ func set_context(step: int, guided: bool) -> void:
 		if container.visible:
 			visible_count += 1
 	empty_label.visible = visible_count == 0
-	header_label.text = "INSPECTEUR — %s" % TerrainWorkflowService.step_label(_step)
+	header_label.text = "PROPRIÉTÉS — %s" % TerrainWorkflowService.step_label(_step)
 
 
 ## Contrat nominal de l'éditeur spatial : la visibilité dépend de l'outil ou
@@ -212,8 +226,6 @@ func set_spatial_context(
 	_build()
 	_guided = guided
 	var requested := section_ids.duplicate()
-	if not requested.has(&"selection"):
-		requested.push_front(&"selection")
 	var visible_count := 0
 	for section_id in sections:
 		var entry := sections[section_id] as Dictionary
@@ -224,8 +236,8 @@ func set_spatial_context(
 		if container.visible:
 			visible_count += 1
 	empty_label.visible = visible_count == 0
-	header_label.text = "INSPECTEUR" if title.strip_edges().is_empty() \
-		else "INSPECTEUR — %s" % title
+	header_label.text = "PROPRIÉTÉS" if title.strip_edges().is_empty() \
+		else "PROPRIÉTÉS — %s" % title
 
 
 func set_drawer_mode(value: bool) -> void:
