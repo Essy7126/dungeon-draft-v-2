@@ -5,6 +5,8 @@ extends RefCounted
 static var _inspection_cache := {}
 
 const WALL_SCENE := preload("res://tools/labs/dynamic_arena/DynamicWall.tscn")
+const WALL_REFERENCE_FOOTPRINT := Vector2(64.0, 32.0)
+const PAINTED_UNIT_REFERENCE_FOOTPRINT := Vector2(68.8, 34.133334)
 
 
 static func assemble(
@@ -145,6 +147,9 @@ static func assemble(
 			continue
 		var wall := WALL_SCENE.instantiate() as DynamicWall
 		wall.setup(obstacle.cell, int(entry.variant), config)
+		wall.scale = Vector2.ONE * wall_scale_for_axes(
+			arena.axis_x, arena.axis_y
+		)
 		wall.position = y_sorted_world.to_local(
 			grid_view.to_global(grid_view.grid_to_local(obstacle.cell))
 		)
@@ -215,6 +220,42 @@ static func assemble(
 	report.finalize()
 	result.ok = report.valid
 	return result
+
+
+static func cell_footprint_for_axes(axis_x: Vector2, axis_y: Vector2) -> Vector2:
+	## Bornes du parallelogramme logique dans le repere ecran. Cette mesure
+	## reste valide quand la grille est agrandie, inclinee ou retournee.
+	return Vector2(
+		absf(axis_x.x) + absf(axis_y.x),
+		absf(axis_x.y) + absf(axis_y.y)
+	)
+
+
+static func wall_scale_for_axes(axis_x: Vector2, axis_y: Vector2) -> float:
+	return _uniform_footprint_scale(
+		cell_footprint_for_axes(axis_x, axis_y), WALL_REFERENCE_FOOTPRINT
+	)
+
+
+static func painted_unit_scale_for_axes(axis_x: Vector2, axis_y: Vector2) -> float:
+	return _uniform_footprint_scale(
+		cell_footprint_for_axes(axis_x, axis_y),
+		PAINTED_UNIT_REFERENCE_FOOTPRINT
+	)
+
+
+static func _uniform_footprint_scale(
+		footprint: Vector2,
+		reference: Vector2
+	) -> float:
+	if footprint.x <= 0.0 or footprint.y <= 0.0:
+		return 1.0
+	# Le minimum preserve les proportions du visuel et garantit que son pied ne
+	# deborde pas de la case, meme sur une calibration affine imparfaite.
+	return clampf(minf(
+		footprint.x / reference.x,
+		footprint.y / reference.y
+	), 0.25, 8.0)
 
 
 static func structural_signature(arena: ArenaDefinition) -> Dictionary:

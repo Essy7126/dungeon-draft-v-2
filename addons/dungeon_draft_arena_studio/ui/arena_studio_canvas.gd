@@ -128,6 +128,7 @@ var _backdrop_preview_texture: Texture2D = null
 var _backdrop_preview_rect := Rect2()
 var _foreground_texture: Texture2D = null
 var _terrain_entries: Dictionary = {}
+var _terrain_topology_hash := ""
 var _wall_texture_cache: Dictionary = {}
 var _brush_preview_terrain_id: StringName = &"stone"
 var _placeable_preview_texture: Texture2D = null
@@ -302,9 +303,11 @@ func set_pending_vortex_cell(cell: Vector2i) -> void:
 
 func refresh_terrain_plan() -> void:
 	_terrain_entries.clear()
+	_terrain_topology_hash = ""
 	if arena == null:
 		return
 	var plan := ArenaTerrainRenderPlanService.build(arena)
+	_terrain_topology_hash = str(plan.get("topology_hash", ""))
 	for value in plan.entries:
 		var entry := value as Dictionary
 		_terrain_entries[entry.cell] = entry
@@ -315,7 +318,9 @@ func update_terrain_cells(cells: Array[Vector2i]) -> void:
 	if arena == null:
 		return
 	for cell in cells:
-		var entry := ArenaTerrainRenderPlanService.entry_for(arena, cell)
+		var entry := ArenaTerrainRenderPlanService.entry_for(
+			arena, cell, null, _terrain_topology_hash
+		)
 		if str(entry.get("error", "")) == "cell_undefined":
 			_terrain_entries.erase(cell)
 		else:
@@ -1523,13 +1528,15 @@ func _draw_wall_visuals() -> void:
 		var center := GridTransformService.cell_to_position(
 			obstacle.cell, arena.grid_origin, arena.axis_x, arena.axis_y
 		)
-		var width := maxf(arena.axis_x.length(), arena.axis_y.length()) * 1.18
+		var footprint := ArenaVisualAssembler.cell_footprint_for_axes(
+			arena.axis_x, arena.axis_y
+		)
+		var width := footprint.x
 		var aspect := float(texture.get_height()) / maxf(float(texture.get_width()), 1.0)
 		var wall_size := Vector2(width, width * aspect)
-		var base := center + (arena.axis_x + arena.axis_y) * 0.23
 		draw_texture_rect(
 			texture,
-			Rect2(base - Vector2(wall_size.x * 0.5, wall_size.y), wall_size),
+			Rect2(center - Vector2(wall_size.x * 0.5, wall_size.y), wall_size),
 			false
 		)
 

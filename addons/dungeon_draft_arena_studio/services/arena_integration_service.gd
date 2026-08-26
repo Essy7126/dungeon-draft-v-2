@@ -29,6 +29,7 @@ static func plan(
 	) as Dictionary
 	var production := ArenaProductionService.plan(arena, destination, graph, {
 		"runtime_scene_result": runtime_scene_result,
+		"target_run": run_data,
 	})
 	if not production.get("ok", false):
 		return {"ok": false, "error": production.get("error", "Plan de production impossible.")}

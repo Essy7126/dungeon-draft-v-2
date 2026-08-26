@@ -6,6 +6,7 @@ const MAX_FRAMES := 360
 var request := {}
 var provenance := {}
 var elapsed_frames := 0
+var _completed := false
 
 
 func configure(request_data: Dictionary, provenance_data: Dictionary) -> void:
@@ -49,6 +50,9 @@ static func inspect_runtime_scene(
 
 
 func _finalize(result: Dictionary) -> void:
+	if _completed:
+		return
+	_completed = true
 	var cleanup_required := bool(request.get("cleanup_on_load", false))
 	var cleanup_ok := true
 	if cleanup_required:
@@ -72,9 +76,36 @@ func _finalize(result: Dictionary) -> void:
 	if file != null:
 		file.store_string(JSON.stringify(result, "  "))
 		file.close()
-	var console_result := result.duplicate(true)
-	console_result.erase("visual_report")
-	print("ARENA_STUDIO_RUNTIME_PROBE ", JSON.stringify(console_result))
 	queue_free()
 	if quit_after_probe:
 		get_tree().quit(0 if bool(result.get("ok", false)) and cleanup_ok else 11)
+
+
+func _exit_tree() -> void:
+	if _completed or request.is_empty():
+		return
+	_completed = true
+	var cleanup_required := bool(request.get("cleanup_on_load", false))
+	var cleanup_ok := true
+	if cleanup_required:
+		cleanup_ok = ArenaDirectTestService.cleanup_context(request)
+	var result := provenance.duplicate(true)
+	result.merge({
+		"ok": false,
+		"launch_started": true,
+		"probe_pending": false,
+		"runtime_scene_inspected": false,
+		"runtime_ready": false,
+		"error": "runtime_test_closed",
+		"cleanup_required": cleanup_required,
+		"cleanup_ok": cleanup_ok,
+	}, true)
+	var result_path := str(request.get(
+		"result_path", ArenaDirectTestService.LAST_RESULT_PATH
+	))
+	var absolute := ProjectSettings.globalize_path(result_path)
+	DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
+	var file := FileAccess.open(result_path, FileAccess.WRITE)
+	if file != null:
+		file.store_string(JSON.stringify(result, "  "))
+		file.close()

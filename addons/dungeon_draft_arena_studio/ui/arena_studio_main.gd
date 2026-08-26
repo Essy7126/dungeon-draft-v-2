@@ -192,6 +192,10 @@ var backdrop_compare_value_label: Label
 var backdrop_state_label: Label
 var backdrop_image_dialog: FileDialog
 var guided_backdrop_image_dialog: FileDialog
+var modular_backdrop_choice_dialog: ConfirmationDialog
+var modular_backdrop_choice_option: OptionButton
+var modular_backdrop_choice_summary: Label
+var _pending_backdrop_source: ArenaBackdropSourceDefinition = null
 var _backdrop_sources: Array[ArenaBackdropSourceDefinition] = []
 var backdrop_transaction := ArenaBackdropTransactionService.new()
 var vortex_dialog: ConfirmationDialog
@@ -285,6 +289,8 @@ var production_resolution_text: RichTextLabel
 var production_resolution_buttons := {}
 var production_dashboard_text: RichTextLabel
 var production_result_text: RichTextLabel
+var test_configuration_dialog: ConfirmationDialog
+var test_configuration_summary: Label
 var destination_panel: PanelContainer
 var destination_run_option: OptionButton
 var destination_action_option: OptionButton
@@ -604,8 +610,15 @@ func _build_shared_controls() -> void:
 	verification_option.item_selected.connect(_on_verification_kind_selected)
 	test_configuration_option = OptionButton.new()
 	test_configuration_option.name = "TerrainTestConfigurationOption"
-	for configuration in TEST_CONFIGURATIONS:
+	for index in range(TEST_CONFIGURATIONS.size()):
+		var configuration = TEST_CONFIGURATIONS[index]
 		test_configuration_option.add_item(configuration[0])
+		test_configuration_option.set_item_metadata(index, configuration[1])
+		if configuration[1] == &"real_encounter":
+			test_configuration_option.select(index)
+	test_configuration_option.item_selected.connect(
+		func(_index): _refresh_test_configuration_summary()
+	)
 	dynamic_mode_button = Button.new()
 	dynamic_mode_button.name = "TerrainDynamicConstructionButton"
 	dynamic_mode_button.text = "Construction dynamique"
@@ -655,7 +668,7 @@ func _build_header() -> PanelContainer:
 	header.preview_selected.connect(_on_preview_option_selected)
 	header.validation_requested.connect(_open_validation_drawer)
 	header.test_requested.connect(test_arena)
-	header.integrate_requested.connect(_on_integrate_destination_pressed)
+	header.integrate_requested.connect(show_production_wizard)
 	home_button = header.home_button
 	new_terrain_button = header.new_terrain_button
 	open_terrain_button = header.open_terrain_button
@@ -878,13 +891,20 @@ func _build_right_panel() -> Control:
 
 	# Etape finale
 	finalize_panel = TerrainFinalizePanel.new()
+	finalize_panel._build()
 	finalize_panel.draft_requested.connect(save_draft)
 	finalize_panel.test_requested.connect(test_arena)
-	finalize_panel.integrate_requested.connect(_on_integrate_destination_pressed)
+	finalize_panel.integrate_requested.connect(show_production_wizard)
 	destination_panel = _build_destination_panel()
-	finalize_panel.host_test_control(test_configuration_option)
-	finalize_panel.host_destination_control(destination_panel)
-	inspector_panel.host_control(&"finalize", finalize_panel)
+	# Compatibilité de contrat uniquement : ces anciens contrôles ne vivent plus
+	# dans l'Inspecteur contextuel. Les actions nominales sont l'en-tête permanent
+	# et les boîtes de dialogue accessibles aux deux résolutions.
+	var legacy_contract_host := VBoxContainer.new()
+	legacy_contract_host.name = "TerrainLegacyContractHost"
+	legacy_contract_host.visible = false
+	add_child(legacy_contract_host)
+	legacy_contract_host.add_child(finalize_panel)
+	legacy_contract_host.add_child(destination_panel)
 
 	# --- Sections avancees -------------------------------------------------
 	advanced_panel = VBoxContainer.new()
@@ -2305,7 +2325,10 @@ func _refresh_destination_panel(_unused = {}) -> void:
 	_destination_last_plan = ArenaIntegrationService.plan(
 		candidate, selected_run, action, target_index,
 		ArenaProductionService.suggested_destination(candidate), shared_reference_graph,
-		_integration_gate_options(candidate, selected_run)
+		_integration_gate_options(
+			candidate, selected_run, _selected_destination_action(),
+			_selected_destination_room_index()
+		)
 	) if candidate != null else {"ok": false, "error": "Aucune arène ouverte."}
 	_render_destination_plan(_destination_last_plan)
 
@@ -2519,11 +2542,19 @@ func _blocking_context_domains() -> PackedStringArray:
 
 func _integration_gate_options(
 		candidate: ArenaDefinition,
-		target_run: RunData = null
+		target_run: RunData = null,
+		action: StringName = ArenaProductionAttachmentService.NONE,
+		target_index: int = -1
 	) -> Dictionary:
-	var fingerprint := ArenaSnapshotService.arena_fingerprint(candidate) \
+	var proof_candidate := candidate
+	var proof_result := ArenaDirectTestService.build_candidate(
+		candidate, target_run, action, target_index
+	) if candidate != null else {}
+	if bool(proof_result.get("ok", false)):
+		proof_candidate = proof_result.get("candidate") as ArenaDefinition
+	var fingerprint := ArenaSnapshotService.arena_fingerprint(proof_candidate) \
 		if candidate != null else ""
-	var manual_result := ArenaDirectTestService.matching_runtime_result(candidate)
+	var manual_result := ArenaDirectTestService.matching_runtime_result(proof_candidate)
 	var manual_performed := not manual_result.is_empty()
 	var run_conflict := target_run != null and run_authoring != null \
 		and run_authoring.is_dirty() \
@@ -3252,8 +3283,82 @@ func _build_dialogs() -> void:
 		"Justification du choix de conception pour cette version de l'arène"
 	)
 	warning_box.add_child(integration_warning_justification)
+	_build_test_configuration_dialog()
+	_build_modular_backdrop_choice_dialog()
 
 	_build_production_dialog()
+
+
+func _build_test_configuration_dialog() -> void:
+	test_configuration_dialog = ConfirmationDialog.new()
+	test_configuration_dialog.name = "TerrainTestConfigurationDialog"
+	test_configuration_dialog.title = "CHOISIR LA CONFIGURATION DU COMBAT"
+	test_configuration_dialog.ok_button_text = "Lancer ce test"
+	test_configuration_dialog.cancel_button_text = "Annuler"
+	test_configuration_dialog.size = Vector2i(620, 360)
+	test_configuration_dialog.confirmed.connect(_launch_selected_test_configuration)
+	add_child(test_configuration_dialog)
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(580, 250)
+	test_configuration_dialog.add_child(box)
+	var instruction := Label.new()
+	instruction.text = "Choisissez ce que le combat doit charger. Rien ne sera publié."
+	instruction.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(instruction)
+	if test_configuration_option.get_parent() != null:
+		test_configuration_option.get_parent().remove_child(test_configuration_option)
+	box.add_child(test_configuration_option)
+	test_configuration_summary = Label.new()
+	test_configuration_summary.name = "TerrainTestConfigurationSummary"
+	test_configuration_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(test_configuration_summary)
+	test_configuration_dialog.min_size = Vector2i(620, 360)
+	test_configuration_dialog.max_size = Vector2i(620, 360)
+	test_configuration_dialog.size = Vector2i(620, 360)
+	_refresh_test_configuration_summary()
+
+
+func _build_modular_backdrop_choice_dialog() -> void:
+	modular_backdrop_choice_dialog = ConfirmationDialog.new()
+	modular_backdrop_choice_dialog.name = "TerrainModularBackdropChoiceDialog"
+	modular_backdrop_choice_dialog.title = "ILLUSTRATION AJOUTÉE À UN TERRAIN MODULAIRE"
+	modular_backdrop_choice_dialog.ok_button_text = "Appliquer ce choix"
+	modular_backdrop_choice_dialog.cancel_button_text = "Annuler"
+	modular_backdrop_choice_dialog.size = Vector2i(720, 410)
+	modular_backdrop_choice_dialog.confirmed.connect(_confirm_modular_backdrop_choice)
+	add_child(modular_backdrop_choice_dialog)
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(680, 300)
+	modular_backdrop_choice_dialog.add_child(box)
+	var explanation := Label.new()
+	explanation.text = (
+		"Le combat modulaire n'affiche pas l'illustration. Choisissez explicitement "
+		+ "comment elle doit apparaître dans le jeu."
+	)
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(explanation)
+	modular_backdrop_choice_option = OptionButton.new()
+	for entry in [
+		["Hybride — illustration et éléments tactiques — recommandé", ArenaDefinition.VisualMode.HYBRID],
+		["Peinte — illustration seule pour le sol principal", ArenaDefinition.VisualMode.PAINTED],
+		["Conserver Modulaire — illustration visible uniquement comme référence d’édition", ArenaDefinition.VisualMode.MODULAR],
+	]:
+		modular_backdrop_choice_option.add_item(entry[0])
+		modular_backdrop_choice_option.set_item_metadata(
+			modular_backdrop_choice_option.item_count - 1, entry[1]
+		)
+	modular_backdrop_choice_option.select(0)
+	modular_backdrop_choice_option.item_selected.connect(
+		func(_index): _refresh_modular_backdrop_choice_summary()
+	)
+	box.add_child(modular_backdrop_choice_option)
+	modular_backdrop_choice_summary = Label.new()
+	modular_backdrop_choice_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(modular_backdrop_choice_summary)
+	modular_backdrop_choice_dialog.min_size = Vector2i(720, 410)
+	modular_backdrop_choice_dialog.max_size = Vector2i(720, 410)
+	modular_backdrop_choice_dialog.size = Vector2i(720, 410)
+	_refresh_modular_backdrop_choice_summary()
 	_build_migration_dialog()
 
 
@@ -3493,7 +3598,10 @@ func _build_production_dialog() -> void:
 	production_mode_option = OptionButton.new()
 	for label in VISUAL_MODE_LABELS:
 		production_mode_option.add_item(label)
-	production_mode_option.item_selected.connect(func(_index): call_deferred("_refresh_production_wizard"))
+	production_mode_option.disabled = true
+	production_mode_option.tooltip_text = (
+		"Lecture seule : changez le mode dans la version en cours avant de tester."
+	)
 	identity.add_child(Label.new())
 	(identity.get_child(identity.get_child_count() - 1) as Label).text = "Mode visuel"
 	identity.add_child(production_mode_option)
@@ -3911,15 +4019,93 @@ func _confirm_backdrop_change() -> void:
 	if arena == null or source == null:
 		return
 	var mode := int(backdrop_mode_option.get_selected_metadata())
-	var result := backdrop_transaction.apply(arena, source, mode)
+	if arena.visual_mode == ArenaDefinition.VisualMode.MODULAR:
+		_pending_backdrop_source = source
+		_pending_backdrop_source.set_meta("copy_mode", mode)
+		modular_backdrop_choice_option.select(0)
+		_refresh_modular_backdrop_choice_summary()
+		modular_backdrop_choice_dialog.popup_centered(Vector2i(720, 410))
+		return
+	_apply_backdrop_choice(source, mode, arena.visual_mode)
+
+
+func _apply_backdrop_choice(
+		source: ArenaBackdropSourceDefinition,
+		copy_mode: int,
+		visual_mode: int
+	) -> bool:
+	if arena == null or source == null:
+		return false
+	var before := arena.to_snapshot().duplicate(true)
+	var result := backdrop_transaction.apply(arena, source, copy_mode)
 	if not bool(result.get("ok", false)):
 		_set_status("Décor refusé : %s" % result.get("error", "inconnu"), true)
-		return
-	_commit_change("Changer le décor — %s" % source.display_name, result.before, result.after)
+		return false
+	arena.visual_mode = visual_mode
+	if visual_mode == ArenaDefinition.VisualMode.HYBRID:
+		if arena.modular_visual_profile == null:
+			arena.modular_visual_profile = ArenaModularVisualProfile.new()
+		arena.modular_visual_profile.theme_id = arena.theme_id
+		arena.modular_visual_profile.base_terrain_id = &"stone"
+		arena.modular_visual_profile.hybrid_floor_policy = (
+			ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED
+		)
+	if visual_mode == ArenaDefinition.VisualMode.MODULAR:
+		arena.battle_scene = load(ArenaDefinition.MODULAR_BATTLE_SCENE) as PackedScene
+	else:
+		arena.battle_scene = load(ArenaDefinition.DEFAULT_BATTLE_SCENE) as PackedScene
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	var action := "Changer l'illustration — %s" % source.display_name
+	if int(before.get("visual_mode", visual_mode)) != visual_mode:
+		action += " — %s" % VISUAL_MODE_LABELS[visual_mode]
+	_commit_change(action, before, arena.to_snapshot())
 	_close_backdrop_preview()
 	canvas.set_arena(arena)
 	_refresh_all(false)
-	_set_status("APPLIQUÉ À LA VERSION EN COURS — NON SAUVEGARDÉ. Gameplay inchangé ; Annuler/Rétablir disponible.")
+	var mode_message := (
+		"Le combat affichera l'illustration et les éléments tactiques."
+		if visual_mode == ArenaDefinition.VisualMode.HYBRID else (
+			"Le combat affichera l'illustration comme sol principal."
+			if visual_mode == ArenaDefinition.VisualMode.PAINTED else
+			"Le combat modulaire n'affichera pas l'illustration ; elle reste une référence d'édition."
+		)
+	)
+	_set_status("%s Changement annulable ; rien n'est publié." % mode_message)
+	return true
+
+
+func _confirm_modular_backdrop_choice() -> void:
+	if _pending_backdrop_source == null:
+		return
+	var source := _pending_backdrop_source
+	var copy_mode := int(source.get_meta(
+		"copy_mode", ArenaBackdropTransactionService.CopyMode.BACKGROUND_ONLY
+	))
+	var visual_mode := int(modular_backdrop_choice_option.get_selected_metadata())
+	_pending_backdrop_source = null
+	_apply_backdrop_choice(source, copy_mode, visual_mode)
+
+
+func _refresh_modular_backdrop_choice_summary() -> void:
+	if modular_backdrop_choice_summary == null or modular_backdrop_choice_option == null:
+		return
+	var mode := int(modular_backdrop_choice_option.get_selected_metadata())
+	match mode:
+		ArenaDefinition.VisualMode.HYBRID:
+			modular_backdrop_choice_summary.text = (
+				"Recommandé : l'illustration reste visible et toutes les dalles tactiques "
+				+ "déjà définies sont conservées au-dessus."
+			)
+		ArenaDefinition.VisualMode.PAINTED:
+			modular_backdrop_choice_summary.text = (
+				"L'illustration devient le sol principal. Les dalles modulaires ordinaires "
+				+ "ne seront plus dessinées."
+			)
+		_:
+			modular_backdrop_choice_summary.text = (
+				"Le mode ne change pas. L'illustration sera visible dans le Studio, mais pas "
+				+ "dans le combat modulaire."
+			)
 
 
 func _restore_previous_backdrop() -> void:
@@ -3970,18 +4156,21 @@ func _apply_guided_backdrop(path: String) -> void:
 	source.display_name = path.get_file()
 	source.background_path = str(staged.staged_path)
 	source.source_image_size = image.get_size()
-	var result := backdrop_transaction.apply(
-		arena, source, ArenaBackdropTransactionService.CopyMode.BACKGROUND_ONLY
-	)
-	if not bool(result.get("ok", false)):
-		_set_status("Illustration refusée : %s" % result.get("error", "inconnu"), true)
+	if arena.visual_mode == ArenaDefinition.VisualMode.MODULAR:
+		_pending_backdrop_source = source
+		_pending_backdrop_source.set_meta(
+			"copy_mode", ArenaBackdropTransactionService.CopyMode.BACKGROUND_ONLY
+		)
+		modular_backdrop_choice_option.select(0)
+		_refresh_modular_backdrop_choice_summary()
+		modular_backdrop_choice_dialog.popup_centered(Vector2i(720, 410))
 		return
-	_commit_change("Changer l'illustration — %s" % path.get_file(), result.before, result.after)
-	canvas.set_arena(arena)
-	canvas.fit_to_image()
-	_refresh_all(false)
-	_start_manual_grid_alignment()
-	_set_status("Illustration remplacée. Ajustez maintenant la grille directement dessus.")
+	if _apply_backdrop_choice(
+		source, ArenaBackdropTransactionService.CopyMode.BACKGROUND_ONLY,
+		arena.visual_mode
+	):
+		canvas.fit_to_image()
+		_start_manual_grid_alignment()
 
 
 func _build_vortex_dialog() -> void:
@@ -4811,9 +5000,11 @@ func _update_validation_report(show_status := false) -> ArenaValidationReport:
 		return null
 	# La working copy d'une map ouverte porte volontairement le meme identifiant
 	# que sa source. Le conflit de destination est controle au moment de sauver.
-	validation_report = ArenaValidator.validate(
-		arena, false, project_context.active_run if project_context != null else null
-	)
+	var validation_run := _selected_production_run() \
+		if production_dialog != null and production_dialog.visible else null
+	if validation_run == null and project_context != null:
+		validation_run = project_context.active_run
+	validation_report = ArenaValidator.validate(arena, false, validation_run)
 	if validation_list != null:
 		validation_list.clear()
 	for entry in validation_report.messages:
@@ -4918,7 +5109,9 @@ func _production_candidate() -> ArenaDefinition:
 		return null
 	candidate.set_identity(production_name_edit.text, production_id_edit.text)
 	candidate.theme_id = StringName(production_theme_edit.text.strip_edges())
-	candidate.visual_mode = production_mode_option.selected
+	# Le mode est une donnée de la working copy. L'assistant ne fabrique jamais
+	# une seconde candidate visuelle concurrente.
+	candidate.visual_mode = arena.visual_mode
 	if candidate.visual_mode in [
 		ArenaDefinition.VisualMode.MODULAR, ArenaDefinition.VisualMode.HYBRID,
 	] and candidate.modular_visual_profile == null:
@@ -4937,13 +5130,18 @@ func _refresh_production_wizard() -> void:
 	if production_dialog == null:
 		return
 	var candidate := _production_candidate()
+	if production_mode_option != null and arena != null:
+		production_mode_option.select(arena.visual_mode)
 	var destination := production_destination_edit.text.strip_edges()
 	var target_run := _selected_production_run()
 	var attachment_action := _selected_production_action()
 	var integration_plan := ArenaIntegrationService.plan(
 		candidate, target_run, attachment_action, int(production_index_spin.value),
 		destination, shared_reference_graph,
-		_integration_gate_options(candidate, target_run)
+		_integration_gate_options(
+			candidate, target_run, attachment_action,
+			int(production_index_spin.value)
+		)
 	)
 	_production_last_plan = integration_plan
 	_refresh_production_dashboard()
@@ -5025,13 +5223,26 @@ func _refresh_production_wizard() -> void:
 			(issue as Dictionary).get("message", "Avertissement"),
 			" — choix accepté" if accepted else "",
 		])
+	if _has_validation_code(report, &"encounter_missing") \
+			and attachment_action == ArenaProductionAttachmentService.UPDATE \
+			and target_run != null \
+			and int(production_index_spin.value) >= 0 \
+			and int(production_index_spin.value) < target_run.rooms.size() \
+			and target_run.rooms[int(production_index_spin.value)].encounter_definition != null:
+		validation_lines.append(
+			"[color=light_blue]La rencontre de la salle cible sera conservée par la mise à jour ; "
+			+ "il n'est pas nécessaire de terminer l'onglet Rencontres.[/color]"
+		)
 	if gate_blockers.is_empty():
 		validation_lines.append("[color=green]✓ Projection, assemblage et vraie scène de jeu vérifiés.[/color]")
 	production_validation_text.text = "\n".join(validation_lines)
 	if production_test_now_button != null:
 		production_test_now_button.visible = (
 			_has_validation_code(report, &"runtime_scene_missing")
-			or not bool(_integration_gate_options(candidate, target_run).get(
+			or not bool(_integration_gate_options(
+				candidate, target_run, attachment_action,
+				int(production_index_spin.value)
+			).get(
 				"manual_test_performed", false
 			))
 		)
@@ -5042,7 +5253,7 @@ func _refresh_production_wizard() -> void:
 	if production_open_encounters_button != null:
 		production_open_encounters_button.visible = _has_validation_code(
 			report, &"encounter_missing"
-		)
+		) and attachment_action != ArenaProductionAttachmentService.UPDATE
 	if production_confirm_alignment_button != null:
 		production_confirm_alignment_button.visible = _art_alignment_decision != 1
 	if production_reject_alignment_button != null:
@@ -5352,7 +5563,9 @@ func _perform_room_integration(
 		&"UI_GATE_PLAN", {}, pipeline_files, pipeline_fingerprints,
 		pipeline_monitor.timeout_for(&"UI_GATE_PLAN")
 	)
-	var gate_options := _integration_gate_options(candidate, target_run)
+	var gate_options := _integration_gate_options(
+		candidate, target_run, action, target_index
+	)
 	var final_plan := ArenaIntegrationService.plan(
 		candidate, target_run, action, target_index, destination,
 		shared_reference_graph, gate_options
@@ -5744,17 +5957,94 @@ func _apply_art_reimport() -> void:
 
 
 func test_arena() -> void:
-	var report := validate_arena()
-	if not report.is_valid():
+	if arena == null or test_configuration_dialog == null:
 		return
-	var run_context := (
-		project_context.active_run
-		if project_context != null else null
+	_refresh_test_configuration_summary()
+	test_configuration_dialog.popup_centered(Vector2i(620, 360))
+
+
+func _selected_test_configuration() -> StringName:
+	if test_configuration_option == null or test_configuration_option.selected < 0:
+		return &""
+	return StringName(test_configuration_option.get_selected_metadata())
+
+
+func _selected_test_context() -> Dictionary:
+	var use_production := production_dialog != null and production_dialog.visible
+	var run_data := _selected_production_run() if use_production \
+		else _selected_destination_run()
+	if run_data == null and project_context != null:
+		run_data = project_context.active_run
+	var action := _selected_production_action() if use_production \
+		else _selected_destination_action()
+	if action == ArenaProductionAttachmentService.NONE and run_data != null:
+		action = ArenaProductionAttachmentService.UPDATE
+	var target_index := int(production_index_spin.value) if use_production \
+		else _selected_destination_room_index()
+	if target_index < 0 and project_context != null:
+		target_index = project_context.active_room_index
+	return {
+		"run": run_data,
+		"action": action,
+		"target_room_index": target_index,
+	}
+
+
+func _refresh_test_configuration_summary() -> void:
+	if test_configuration_summary == null or test_configuration_option == null:
+		return
+	var configuration := _selected_test_configuration()
+	var context := _selected_test_context()
+	var run_data := context.get("run") as RunData
+	var action := StringName(context.get("action", &""))
+	var target_index := int(context.get("target_room_index", -1))
+	var target_text := "aucune salle cible compatible"
+	if run_data != null and target_index >= 0 and target_index < run_data.rooms.size():
+		target_text = "%s — salle %d" % [run_data.run_name, target_index + 1]
+	var detail := "Configuration choisie : %s." % (
+		test_configuration_option.get_item_text(test_configuration_option.selected)
 	)
+	if configuration == &"real_encounter":
+		if action == ArenaProductionAttachmentService.UPDATE \
+				and run_data != null and target_index >= 0 \
+				and target_index < run_data.rooms.size():
+			detail += (
+				" La rencontre de %s sera conservée dans une copie temporaire ; "
+				+ "les sources resteront inchangées."
+			) % target_text
+		else:
+			detail += " Aucun UPDATE compatible : la configuration de secours sera utilisée clairement."
+	else:
+		detail += " Cible d'intégration : %s." % target_text
+	test_configuration_summary.text = detail
+
+
+func _launch_selected_test_configuration() -> void:
+	var configuration := _selected_test_configuration()
+	if configuration == &"":
+		_set_status("Choisissez une configuration de combat avant le lancement.", true)
+		return
+	var context := _selected_test_context()
+	var run_context := context.get("run") as RunData
+	var candidate_result := ArenaDirectTestService.build_candidate(
+		arena, run_context, StringName(context.get("action", &"")),
+		int(context.get("target_room_index", -1))
+	)
+	var candidate := candidate_result.get("candidate") as ArenaDefinition
+	var report := ArenaValidator.validate(candidate, false, run_context)
+	if not report.is_valid():
+		validation_report = report
+		_open_validation_drawer()
+		_set_status("La configuration choisie ne peut pas être lancée : corrigez les erreurs indiquées.", true)
+		return
 	var preparation := ArenaDirectTestService.prepare(
 		arena,
 		run_context,
-		StringName(TEST_CONFIGURATIONS[test_configuration_option.selected][1])
+		configuration,
+		{
+			"integration_action": context.get("action", &""),
+			"target_room_index": context.get("target_room_index", -1),
+		}
 	)
 	if not bool(preparation.get("ok", false)):
 		_set_status(
@@ -5764,12 +6054,14 @@ func test_arena() -> void:
 			true
 		)
 		return
-	_last_test_log = "Test direct demandé pour %s via %s" % [arena.arena_id, TEST_RUNNER_SCENE]
+	_last_test_log = "Test direct %s demandé pour %s via %s" % [
+		configuration, arena.arena_id, TEST_RUNNER_SCENE,
+	]
 	_tested_once = true
 	_refresh_workflow()
 	if editor_interface != null:
 		editor_interface.play_custom_scene(TEST_RUNNER_SCENE)
-		_set_status("Version en cours lancée dans le combat réel. Aucune sauvegarde de production n'a été effectuée ; F8 revient à l'éditeur.")
+		_set_status("Configuration « %s » lancée sur la candidate d'intégration. Aucune ressource canonique n'a été modifiée ; F8 revient à l'éditeur." % test_configuration_option.get_item_text(test_configuration_option.selected))
 	else:
 		_set_status("Configuration de test direct préparée.")
 
@@ -6343,6 +6635,7 @@ func _commit_change(
 	if edit_session == null or before == after:
 		return
 	edit_session.commit(action_name, before, after, topology_unchanged)
+	_tested_once = false
 	_autosave()
 	_refresh_title()
 	history_state_changed.emit()

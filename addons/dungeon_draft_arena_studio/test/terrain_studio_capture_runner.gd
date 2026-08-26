@@ -74,6 +74,10 @@ func _run() -> void:
 
 func _capture_view(view: String) -> bool:
 	print("TERRAIN_STUDIO_CAPTURE_STAGE view_begin ", view)
+	if _arena.test_configuration_dialog != null:
+		_arena.test_configuration_dialog.hide()
+	if _arena.modular_backdrop_choice_dialog != null:
+		_arena.modular_backdrop_choice_dialog.hide()
 	# Écarter le pointeur des actions : une infobulle transitoire ne fait pas
 	# partie de la disposition à valider.
 	DisplayServer.warp_mouse(Vector2i(_size.x - 8, _size.y - 8))
@@ -143,6 +147,17 @@ func _capture_view(view: String) -> bool:
 			_arena.set_current_step(TerrainWorkflowService.Step.SCENERY)
 			_arena._on_tool_selected(ArenaStudioCanvas.Tool.CALIBRATION_ANCHORS)
 			_arena.set_inspector_drawer_open(true)
+		"test_config_guided", "test_config_advanced":
+			_arena.set_guided(view == "test_config_guided")
+			_arena.show_editor()
+			_arena.test_arena()
+		"modular_illustration_choice":
+			_arena.set_guided(true)
+			_arena.show_editor()
+			_arena.arena.visual_mode = ArenaDefinition.VisualMode.MODULAR
+			_arena.modular_backdrop_choice_option.select(0)
+			_arena._refresh_modular_backdrop_choice_summary()
+			_arena.modular_backdrop_choice_dialog.popup_centered()
 		"focus":
 			_arena.set_guided(true)
 			_arena.show_editor()

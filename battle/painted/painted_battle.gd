@@ -89,6 +89,16 @@ func _import_terrain_from_tilemap() -> void:
 func _create_unit_view(unit: Unit) -> void:
 	super(unit)
 	var view = _unit_views.get(unit)
+	if is_instance_valid(view) and painted_visual_data != null:
+		# Les profils d'unite sont calibres sur les salles peintes historiques.
+		# Une illustration auteur peut employer des cases beaucoup plus grandes ;
+		# la racine visuelle suit alors l'empreinte reelle de la case, sans toucher
+		# a la position logique, au Pathfinder ni aux statistiques de l'unite.
+		var calibration_scale := ArenaVisualAssembler.painted_unit_scale_for_axes(
+			painted_visual_data.axis_x, painted_visual_data.axis_y
+		)
+		view.scale *= calibration_scale
+		view.set_meta("painted_calibration_scale", calibration_scale)
 	if is_instance_valid(view) and view.has_method("apply_painted_presentation"):
 		view.apply_painted_presentation(
 			presentation_profile,

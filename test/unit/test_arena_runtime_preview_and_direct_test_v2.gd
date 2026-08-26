@@ -64,7 +64,7 @@ func test_direct_test_preparation_proves_working_temp_runtime_identity() -> void
 	if not prepared.get("ok", false):
 		return
 	var request := prepared.request as Dictionary
-	assert_eq(request.contract_version, 4)
+	assert_eq(request.contract_version, 5)
 	assert_true(request.arena_path.begins_with(ArenaDirectTestService.WORK_ROOT + "/"))
 	assert_false(request.arena_path.begins_with("res://data/arenas/produced/"))
 	assert_true(FileAccess.file_exists(request.arena_path))

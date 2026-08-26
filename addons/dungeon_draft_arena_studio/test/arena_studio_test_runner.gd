@@ -123,9 +123,6 @@ func _ready() -> void:
 	):
 		heroes = DEFAULT_HEROES
 
-	print("ARENA_STUDIO_DIRECT_TEST configuration=%s applied=%s arena=%s" % [
-		configuration, test_options.get("applied_mode", "unknown"), arena.arena_id,
-	])
 	var game_manager := get_node_or_null("/root/GameManager")
 	if game_manager == null:
 		push_error("Arena Studio : l'autoload GameManager est introuvable.")
@@ -135,18 +132,24 @@ func _ready() -> void:
 	if bool(request.get("probe_runtime", false)):
 		probe = DirectTestProbe.new()
 		probe.configure(request, provenance)
-		get_tree().root.add_child(probe)
 	var started: bool = game_manager.start_direct_encounter_test(
 		run, heroes, test_options
 	)
 	_write_launch_result(request, started, arena, provenance)
 	if not started:
 		if probe != null:
-			probe.queue_free()
+			probe.free()
 		push_error("Arena Studio : le lancement direct a ete refuse par GameManager.")
 		_cleanup_temporary_request(request)
 		get_tree().quit(4)
 		return
+	if probe != null:
+		# `_ready()` s'execute pendant l'installation des enfants de la scene
+		# runner. Godot refuse alors un `add_child()` immediat sur la racine et la
+		# preuve reste indefiniment `probe_pending`. La racine survit au changement
+		# vers la bataille : lui confier l'ajout differe garde la sonde en vie et
+		# lui permet d'inspecter la vraie scene au frame suivant.
+		get_tree().root.call_deferred("add_child", probe)
 	if probe == null:
 		_cleanup_temporary_request(request)
 

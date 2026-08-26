@@ -5,7 +5,7 @@ extends RefCounted
 const REQUEST_PATH := "user://arena_studio/test_request.json"
 const WORK_ROOT := "user://dungeon_draft_studio/arena_studio/tests"
 const LAST_RESULT_PATH := WORK_ROOT + "/last_result.json"
-const CONTRACT_VERSION := 4
+const CONTRACT_VERSION := 5
 const QUICK_FIXTURE_HEROES := [
 	"res://data/units/alliés/elfe.tres",
 	"res://data/units/alliés/mage.tres",
@@ -21,6 +21,16 @@ static func prepare(
 	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "error": "arena_missing"}
+	var candidate_result := build_candidate(
+		arena, active_run,
+		StringName(options.get("integration_action", &"")),
+		int(options.get("target_room_index", -1))
+	)
+	if not bool(candidate_result.get("ok", false)):
+		return candidate_result
+	var prepared_candidate := candidate_result.get("candidate") as ArenaDefinition
+	if prepared_candidate == null:
+		return {"ok": false, "error": "test_candidate_missing"}
 	_consume_previous_request()
 	var generation_id := "%d_%d" % [
 		int(Time.get_unix_time_from_system() * 1000000.0), Time.get_ticks_usec(),
@@ -35,9 +45,9 @@ static func prepare(
 		return {"ok": false, "error": "context_directory_failed"}
 
 	var test_arena := ArenaDefinition.new()
-	var working_topology := ArenaTopologySignatureService.build(arena)
+	var working_topology := ArenaTopologySignatureService.build(prepared_candidate)
 	if not RoomDataSnapshotService.restore(
-			test_arena, RoomDataSnapshotService.capture(arena)
+			test_arena, RoomDataSnapshotService.capture(prepared_candidate)
 		):
 		return _failed(context_root, "working_copy_restore_failed")
 	var restored_topology := ArenaTopologySignatureService.build(test_arena)
@@ -57,7 +67,7 @@ static func prepare(
 	if temporary == null:
 		return _failed(context_root, "temporary_copy_load_failed")
 
-	var working_fingerprint := ArenaSnapshotService.arena_fingerprint(arena)
+	var working_fingerprint := ArenaSnapshotService.arena_fingerprint(prepared_candidate)
 	var temporary_fingerprint := ArenaSnapshotService.arena_fingerprint(temporary)
 	var runtime_state := ArenaRuntimeProjectionService.build(temporary)
 	var temporary_topology := ArenaTopologySignatureService.build(temporary)
@@ -120,6 +130,16 @@ static func prepare(
 		"arena_path": arena_path,
 		"run_path": run_path,
 		"configuration": str(configuration),
+		"integration_action": str(candidate_result.get("integration_action", &"")),
+		"target_room_index": int(candidate_result.get("target_room_index", -1)),
+		"target_room_path": str(candidate_result.get("target_room_path", "")),
+		"target_room_identity": candidate_result.get("target_room_identity", {}).duplicate(true),
+		"gameplay_preserved": bool(candidate_result.get("gameplay_preserved", false)),
+		"gameplay_signature": candidate_result.get("gameplay_signature", {}).duplicate(true),
+		"encounter_path": str(candidate_result.get("encounter_path", "")),
+		"canonical_sources_unchanged": bool(candidate_result.get(
+			"canonical_sources_unchanged", false
+		)),
 		"context_root": context_root,
 		"context_id": context_id,
 		"generation_id": generation_id,
@@ -142,6 +162,7 @@ static func prepare(
 		"expected_floor_cells": render_plan.expected_floor_cells.duplicate(),
 		"removed_cells": working_topology.removed_cells.duplicate(),
 		"expected_battle_scene_path": expected_battle_scene_path,
+		"illustration_required": temporary.visual_mode != ArenaDefinition.VisualMode.MODULAR,
 		"runtime_probe_key": runtime_probe_key,
 		"camera_mode": "STUDIO_MATCH",
 		"exact_run_content": exact_run_content,
@@ -186,7 +207,85 @@ static func prepare(
 		"runtime_probe_key": runtime_probe_key,
 		"generation_id": generation_id,
 		"produced_bundle_loaded": false,
+		"gameplay_preserved": bool(candidate_result.get("gameplay_preserved", false)),
+		"canonical_sources_unchanged": bool(candidate_result.get(
+			"canonical_sources_unchanged", false
+		)),
 	}
+
+
+## Construit l'unique candidate testée. UPDATE réutilise exactement la politique
+## de fusion de l'intégration ; les autres actions ne récupèrent aucun gameplay
+## de la salle cible.
+static func build_candidate(
+		arena: ArenaDefinition,
+		target_run: RunData,
+		integration_action: StringName,
+		target_room_index: int
+	) -> Dictionary:
+	if arena == null:
+		return {"ok": false, "error": "arena_missing"}
+	var arena_before := RoomDataSnapshotService.room_fingerprint(arena)
+	var run_before := _resource_content_signature(target_run)
+	var target_room: RoomData = null
+	if target_run != null and target_room_index >= 0 \
+			and target_room_index < target_run.rooms.size():
+		target_room = target_run.rooms[target_room_index]
+	var target_room_before := RoomDataSnapshotService.room_fingerprint(target_room) \
+		if target_room != null else ""
+	var candidate: ArenaDefinition = null
+	var gameplay_preserved := false
+	if integration_action == ArenaProductionAttachmentService.UPDATE \
+			and target_room != null:
+		candidate = RoomIntegrationFieldPolicy.merge_arena_into_room(arena, target_room)
+		gameplay_preserved = candidate != null
+	else:
+		candidate = ArenaDefinition.new()
+		if not RoomDataSnapshotService.restore(
+			candidate, RoomDataSnapshotService.capture(arena)
+		):
+			return {"ok": false, "error": "working_copy_restore_failed"}
+		ArenaRuntimeBridge.sync_runtime_resources(candidate)
+	if candidate == null:
+		return {"ok": false, "error": "test_candidate_merge_failed"}
+	var arena_after := RoomDataSnapshotService.room_fingerprint(arena)
+	var run_after := _resource_content_signature(target_run)
+	var target_room_after := RoomDataSnapshotService.room_fingerprint(target_room) \
+		if target_room != null else ""
+	return {
+		"ok": true,
+		"candidate": candidate,
+		"integration_action": integration_action,
+		"target_room_index": target_room_index,
+		"target_room_path": target_room.resource_path if target_room != null else "",
+		"target_room_identity": RoomIntegrationFieldPolicy.signature(
+			target_room, RoomIntegrationFieldPolicy.IDENTITY_OWNED
+		) if target_room != null else {},
+		"gameplay_preserved": gameplay_preserved,
+		"gameplay_signature": RoomIntegrationFieldPolicy.signature(
+			candidate, RoomIntegrationFieldPolicy.GAMEPLAY_OWNED
+		),
+		"encounter_path": candidate.encounter_definition.resource_path \
+			if candidate.encounter_definition != null else "",
+		"canonical_sources_unchanged": (
+			arena_after == arena_before
+			and run_before == run_after
+			and target_room_before == target_room_after
+		),
+	}
+
+
+static func _resource_content_signature(resource: Resource) -> Dictionary:
+	var signature := {}
+	if resource == null:
+		return signature
+	for property_name in RoomIntegrationFieldPolicy.stored_property_names(resource):
+		if property_name == &"script":
+			continue
+		signature[str(property_name)] = RoomIntegrationFieldPolicy.stable_value(
+			resource.get(property_name)
+		)
+	return signature
 
 
 static func load_last_result() -> Dictionary:

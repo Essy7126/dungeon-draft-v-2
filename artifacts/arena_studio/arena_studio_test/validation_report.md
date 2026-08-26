@@ -1,15 +1,16 @@
 # Rapport Arena Studio — arena_studio_test
 
-Verdict : **ARENE VALIDE**
+Verdict : **ARENE VALIDE — 1 POINT(S) A VERIFIER**
 
 - Erreurs : 0
-- Avertissements : 0
+- Avertissements : 1
 - Informations : 6
 
 ## Resultats
 
 - **INFO** `visual_mode` : Mode visuel : PAINTED.
 - **INFO** `battle_scene` : Scène de bataille : res://data/rooms/maps/painted_battle.tscn.
+- **AVERTISSEMENT** `hero_capacity_unverified` : Sélectionnez une run pour vérifier la capacité de départ des héros.
 - **INFO** `theme_alias_resolved` : L'alias de theme 'painted_default' est resolu explicitement vers 'forest'.
 - **INFO** `foreground_missing` : Aucun foreground n'est configure.
 - **INFO** `topology_summary` : Topologie : 80 cellules definies, 0 dalles attendues, 0 rendues, 0 case(s) retirée(s) rendue(s), 0 inattendue(s), 0 manquante(s).

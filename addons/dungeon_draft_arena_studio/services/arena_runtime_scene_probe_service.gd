@@ -147,6 +147,24 @@ static func inspect(
 	var produced_bundle_loaded := _depends_on_produced_bundle(
 		room, request_data, provenance_data
 	)
+	var illustration_required := bool(request_data.get(
+		"illustration_required",
+		room != null and room.visual_mode != ArenaDefinition.VisualMode.MODULAR
+	))
+	var illustration_loaded := false
+	if room != null:
+		var runtime_state := ArenaRuntimeBridge.build_runtime_projection(room)
+		illustration_loaded = runtime_state != null \
+			and runtime_state.painted_map_visual_data != null \
+			and runtime_state.painted_map_visual_data.load_background_texture() != null
+	var expected_encounter_path := str(request_data.get("encounter_path", ""))
+	var loaded_encounter_path := room.encounter_definition.resource_path \
+		if room != null and room.encounter_definition != null else ""
+	var encounter_preserved_and_loaded := (
+		bool(request_data.get("gameplay_preserved", false))
+		and not expected_encounter_path.is_empty()
+		and loaded_encounter_path == expected_encounter_path
+	)
 	var expected_floor_cells := ArenaTopologySignatureService.normalized_keys(
 		request_data.get(
 			"expected_floor_cells",
@@ -244,6 +262,19 @@ static func inspect(
 			errors, &"PRODUCED_BUNDLE_LOADED", &"provenance",
 			"La sonde de jeu a détecté une dépendance au dossier de production figé."
 		)
+	if illustration_required and not illustration_loaded:
+		_add_diagnostic(
+			errors, &"ILLUSTRATION_NOT_LOADED", &"render",
+			"L'illustration peinte ou hybride n'a pas produit de Texture2D runtime."
+		)
+	if requested_configuration == "real_encounter" \
+			and bool(request_data.get("gameplay_preserved", false)) \
+			and not encounter_preserved_and_loaded:
+		_add_diagnostic(
+			errors, &"PRESERVED_ENCOUNTER_NOT_LOADED", &"encounter",
+			"La rencontre conservée par UPDATE n'est pas celle chargée par le combat.",
+			{"expected": expected_encounter_path, "actual": loaded_encounter_path}
+		)
 
 	var legacy_contract_valid := render_ready and configuration_consumed \
 		and camera_mode == "STUDIO_MATCH" and fingerprints_identical \
@@ -291,6 +322,15 @@ static func inspect(
 		"duplicate_tile_count": duplicate_tiles,
 		"misplaced_floor_node_count": misplaced_floor_nodes,
 		"configuration_consumed": configuration_consumed,
+		"illustration_required": illustration_required,
+		"illustration_loaded": illustration_loaded,
+		"gameplay_preserved": bool(request_data.get("gameplay_preserved", false)),
+		"expected_encounter_path": expected_encounter_path,
+		"loaded_encounter_path": loaded_encounter_path,
+		"encounter_preserved_and_loaded": encounter_preserved_and_loaded,
+		"canonical_sources_unchanged": bool(request_data.get(
+			"canonical_sources_unchanged", false
+		)),
 		"camera_mode": camera_mode,
 		"camera_position": camera.position if camera != null else Vector2.ZERO,
 		"camera_zoom": camera.zoom if camera != null else Vector2.ZERO,

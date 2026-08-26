@@ -662,7 +662,7 @@ func _apply_toolbar_responsive() -> void:
 	history_button.text = "Hist." if compact else "Historique ▾"
 	home_button.text = "Accueil"
 	save_button.text = "Brouillon" if compact else "Enregistrer le brouillon"
-	produce_button.text = "Intégrer" if compact else "Intégrer à la partie"
+	produce_button.text = "Intégrer à la partie"
 	if domain_buttons.size() >= 4:
 		domain_buttons[3].text = "VFX" if compact else "Effets visuels"
 	workspace_preset_option.custom_minimum_size.x = 104 if compact else 0

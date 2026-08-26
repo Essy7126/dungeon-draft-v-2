@@ -473,6 +473,12 @@ func test_direct_test_serializes_working_copy_without_saving_source() -> void:
 	studio._commit_change("Deplacer la grille", before, studio.arena.to_snapshot())
 	assert_true(studio.dirty)
 	studio.test_arena()
+	for index in range(studio.test_configuration_option.item_count):
+		if StringName(studio.test_configuration_option.get_item_metadata(index)) \
+				== &"no_characters":
+			studio.test_configuration_option.select(index)
+			break
+	studio._launch_selected_test_configuration()
 	var request_exists := FileAccess.file_exists(ArenaStudioMain.TEST_REQUEST)
 	assert_true(
 		request_exists,

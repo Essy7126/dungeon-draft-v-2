@@ -71,19 +71,28 @@ func cell_polygon_display(cell: Vector2i) -> PackedVector2Array:
 
 
 func load_background_texture() -> Texture2D:
-	if background_texture != null:
-		return background_texture
-	if background_texture_path.is_empty():
-		return null
-	return load(background_texture_path) as Texture2D
+	return _load_texture(background_texture, background_texture_path)
 
 
 func load_foreground_texture() -> Texture2D:
-	if foreground_texture != null:
-		return foreground_texture
-	if foreground_texture_path.is_empty():
+	return _load_texture(foreground_texture, foreground_texture_path)
+
+
+## Les images préparées par le Studio vivent volontairement sous user:// avant
+## publication. Elles ne passent pas par l'importeur de Resources de Godot :
+## construire une ImageTexture est donc le contrat runtime temporaire attendu.
+static func _load_texture(texture: Texture2D, path: String) -> Texture2D:
+	if texture != null:
+		return texture
+	if path.is_empty():
 		return null
-	return load(foreground_texture_path) as Texture2D
+	if ResourceLoader.exists(path):
+		return load(path) as Texture2D
+	if path.begins_with("user://") and FileAccess.file_exists(path):
+		var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+		if image != null and not image.is_empty():
+			return ImageTexture.create_from_image(image)
+	return null
 
 
 ## Reutilise directement les pixels du background dans un Polygon2D Y-sorte.
@@ -186,7 +195,7 @@ func validation_errors() -> PackedStringArray:
 	if background_texture == null and background_texture_path.is_empty():
 		errors.append("Une texture ou un chemin de background est requis.")
 	if not background_texture_path.is_empty() \
-			and not ResourceLoader.exists(background_texture_path):
+			and load_background_texture() == null:
 		errors.append("Le chemin du background n'existe pas.")
 	if source_image_size.x <= 0 or source_image_size.y <= 0:
 		errors.append("source_image_size doit etre renseigne.")

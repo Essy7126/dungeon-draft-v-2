@@ -3,7 +3,7 @@
   "blocking_errors": 0,
   "context": "arena_validation",
   "errors": 0,
-  "generated_at": "2026-08-24T17:51:25",
+  "generated_at": "2026-08-26T13:52:22",
   "generated_by": "dungeon_draft_studio_2_0_0",
   "godot_version": "4.7-stable (official)",
   "information": 6,
@@ -41,6 +41,23 @@
       "technical_details": "",
       "title": "Battle Scene",
       "why": "Scène de bataille : res://data/rooms/maps/painted_battle.tscn."
+    },
+    {
+      "acknowledged": false,
+      "auto_fix_available": false,
+      "blocks_integration": false,
+      "can_fix": false,
+      "can_localize": false,
+      "category": "AVERTISSEMENT A VERIFIER",
+      "cell": null,
+      "code": "hero_capacity_unverified",
+      "message": "Sélectionnez une run pour vérifier la capacité de départ des héros.",
+      "severity": "warning",
+      "subject_id": "",
+      "suggested_fix": "",
+      "technical_details": "",
+      "title": "Hero Capacity Unverified",
+      "why": "Sélectionnez une run pour vérifier la capacité de départ des héros."
     },
     {
       "acknowledged": false,
@@ -1098,6 +1115,8 @@
       "enemy_groups": 6,
       "enemy_spawns": 0,
       "hero_pool": 3,
+      "hero_spawn_capacity": 3,
+      "hero_spawns": 3,
       "required_hero_spawns": 3,
       "summon_zones": 0
     },
@@ -1298,6 +1317,8 @@
         "enemy_groups": 6,
         "enemy_spawns": 0,
         "hero_pool": 3,
+        "hero_spawn_capacity": 3,
+        "hero_spawns": 3,
         "required_hero_spawns": 3,
         "summon_zones": 0
       },
@@ -1775,7 +1796,7 @@
   },
   "status": "WORKTREE_CANDIDATE",
   "studio_product_version": "2.0.0",
-  "technical_verdict": "ARENA_VALID",
-  "verdict": "ARENE VALIDE",
-  "warnings": 0
+  "technical_verdict": "ARENA_VALID_WITH_WARNINGS",
+  "verdict": "ARENE VALIDE — 1 POINT(S) A VERIFIER",
+  "warnings": 1
 }

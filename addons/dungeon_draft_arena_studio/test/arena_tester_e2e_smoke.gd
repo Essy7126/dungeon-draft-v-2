@@ -218,8 +218,8 @@ func _preparation_errors(request: Dictionary) -> Array[String]:
 	)
 	_check(
 		errors,
-		int(request.get("contract_version", 0)) == 4,
-		"REQUEST_CONTRACT_IS_NOT_V4"
+		int(request.get("contract_version", 0)) == 5,
+		"REQUEST_CONTRACT_IS_NOT_V5"
 	)
 	_check(errors, bool(request.get("probe_runtime", false)), "PROBE_NOT_REQUESTED")
 	_check(errors, bool(request.get("probe_only", false)), "PROBE_ONLY_NOT_REQUESTED")
@@ -260,8 +260,8 @@ func _preparation_errors(request: Dictionary) -> Array[String]:
 	)
 	_check(
 		errors,
-		int(disk_request.get("contract_version", 0)) == 4,
-		"DISK_REQUEST_CONTRACT_IS_NOT_V4"
+		int(disk_request.get("contract_version", 0)) == 5,
+		"DISK_REQUEST_CONTRACT_IS_NOT_V5"
 	)
 	_check(
 		errors,

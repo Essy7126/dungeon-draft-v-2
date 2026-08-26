@@ -37,7 +37,9 @@ static func plan(
 		destination = suggested_destination(arena)
 	if not _valid_destination(destination):
 		return {"ok": false, "error": "invalid_destination"}
-	var report := ArenaValidator.validate(arena, false)
+	var report := ArenaValidator.validate(
+		arena, false, options.get("target_run") as RunData
+	)
 	var visual_report := ArenaVisualAssembler.inspect(arena)
 	var automatic_smoke := ArenaAutomaticRuntimeSmokeService.run(arena)
 	var compatibility_outputs := _is_diagnostic_destination(destination)
@@ -222,7 +224,13 @@ static func build_staged_bundle(
 			"expected_arena": expected_produced_fingerprint,
 			"actual_arena": produced_fingerprint,
 		}
-	var final_report := ArenaValidator.validate(reloaded, false)
+	var final_report := ArenaValidator.validate(reloaded, false, null, {
+		# Les chemins sérialisés ciblent déjà le futur bundle publié. Pendant
+		# cette validation pré-commit, les fichiers existent encore uniquement
+		# dans le staging possédé par la transaction.
+		"owned_staging_root": staging,
+		"visual_path_redirects": runtime_assets.get("validation_path_redirects", {}),
+	})
 	if not final_report.is_valid():
 		return {"ok": false, "error": "produced_validation_failed", "validation": final_report}
 	var final_visual_report := ArenaVisualAssembler.inspect(reloaded)
@@ -342,6 +350,7 @@ static func _write_runtime_assets(
 		provided: Dictionary
 	) -> Dictionary:
 	var files := PackedStringArray()
+	var validation_path_redirects := {}
 	var mappings := {
 		"background.png": "background_path",
 		"foreground.png": "foreground_path",
@@ -386,7 +395,9 @@ static func _write_runtime_assets(
 		var save_error := (supplied as Image).save_png(ProjectSettings.globalize_path(staged_path))
 		if save_error != OK:
 			return {"ok": false, "error": error_string(save_error), "file": staged_path}
-		clone.set(property_name, published_destination.path_join("assets").path_join(file_name))
+		var published_path := published_destination.path_join("assets").path_join(file_name)
+		clone.set(property_name, published_path)
+		validation_path_redirects[published_path] = staged_path
 		files.append("assets/%s" % file_name)
 	for property_name in mappings.values():
 		var final_path := str(clone.get(property_name))
@@ -398,7 +409,11 @@ static func _write_runtime_assets(
 				"error": "transient_visual_path_not_materialized",
 				"property": property_name,
 			}
-	return {"ok": true, "files": files}
+	return {
+		"ok": true,
+		"files": files,
+		"validation_path_redirects": validation_path_redirects,
+	}
 
 
 static func _write_preview_images(

@@ -179,7 +179,8 @@ static func _cache_key(
 static func entry_for(
 		arena: ArenaDefinition,
 		cell: Vector2i,
-		profile: ArenaModularVisualProfile = null
+		profile: ArenaModularVisualProfile = null,
+		known_topology_hash := ""
 	) -> Dictionary:
 	if arena == null:
 		return _missing_entry(cell, "arena_missing")
@@ -187,9 +188,12 @@ static func entry_for(
 	if definition == null:
 		return _missing_entry(cell, "cell_undefined")
 	profile = profile if profile != null else arena.modular_visual_profile
+	var topology_hash := known_topology_hash
+	if topology_hash.is_empty():
+		topology_hash = str(ArenaTopologySignatureService.build(arena).topology_hash)
 	return _entry_for(
 		arena, profile, definition,
-		str(ArenaTopologySignatureService.build(arena).topology_hash), {}, {}
+		topology_hash, {}, {}
 	)
 
 

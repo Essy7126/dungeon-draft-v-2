@@ -1,14 +1,22 @@
 extends GutTest
 
 const ROOT := "user://dungeon_draft_studio/tests/arena_atomic_production_v2"
+const STAGED_SOURCE := \
+	"user://dungeon_draft_studio/backdrop_staging/tests/atomic_background.png"
+const STAGED_PRODUCTION_DESTINATION := \
+	"res://artifacts/arena_studio/atomic_staged_background"
 
 
 func before_each() -> void:
 	ArenaProductionTransactionService._remove_tree(ROOT)
+	ArenaProductionTransactionService._remove_tree(STAGED_PRODUCTION_DESTINATION)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(STAGED_SOURCE))
 
 
 func after_each() -> void:
 	ArenaProductionTransactionService._remove_tree(ROOT)
+	ArenaProductionTransactionService._remove_tree(STAGED_PRODUCTION_DESTINATION)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(STAGED_SOURCE))
 
 
 func test_runtime_bundle_is_minimal_reloadable_relative_and_idempotent() -> void:
@@ -35,6 +43,75 @@ func test_runtime_bundle_is_minimal_reloadable_relative_and_idempotent() -> void
 	assert_true(second.ok, str(second))
 	assert_true(second.idempotent_reuse)
 	assert_eq(second.manifest.files, result.manifest.files)
+
+
+func test_staged_background_is_validated_before_atomic_commit() -> void:
+	_make_directory(STAGED_SOURCE.get_base_dir())
+	var image := Image.create(16, 16, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0.18, 0.42, 0.73, 1.0))
+	assert_eq(image.save_png(ProjectSettings.globalize_path(STAGED_SOURCE)), OK)
+	var arena := ArenaLegacyImporter.import_production(&"room_01_forest")
+	assert_not_null(arena)
+	arena.set_identity("Atomic staged background", "atomic_staged_background")
+	arena.visual_mode = ArenaDefinition.VisualMode.HYBRID
+	arena.modular_visual_profile = ArenaModularVisualProfile.new()
+	ArenaTerrainRegistry.configure_cell(arena.ensure_cell(Vector2i(6, 4)), &"water")
+	arena.background_path = STAGED_SOURCE
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
+
+	var result := ArenaProductionService.produce(
+		arena, STAGED_PRODUCTION_DESTINATION
+	)
+
+	assert_true(result.ok, str(result))
+	if not result.ok:
+		return
+	var produced := ResourceLoader.load(
+		STAGED_PRODUCTION_DESTINATION.path_join("arena.tres"),
+		"",
+		ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaDefinition
+	assert_not_null(produced)
+	if produced == null:
+		return
+	assert_eq(
+		produced.background_path,
+		STAGED_PRODUCTION_DESTINATION.path_join("assets/background.png")
+	)
+	assert_true(FileAccess.file_exists(produced.background_path))
+
+
+func test_failed_validation_report_serializes_readable_messages() -> void:
+	var transaction_directory := ROOT.path_join("readable_report")
+	_make_directory(transaction_directory)
+	var validation := ArenaValidationReport.new()
+	validation.add_message(
+		ArenaValidationMessage.Severity.ERROR,
+		&"background_not_found",
+		"L'image de fond est introuvable dans le projet."
+	)
+	ArenaProductionTransactionService._write_report({
+		"transaction_directory": transaction_directory,
+		"transaction_id": "readable_report",
+		"destination": ROOT.path_join("destination"),
+		"staging": ROOT.path_join("staging"),
+		"backup": ROOT.path_join("backup"),
+	}, &"STAGING_FAILED", {
+		"ok": false,
+		"error": "produced_validation_failed",
+		"validation": validation,
+	})
+
+	var report := ArenaProductionService._read_json(
+		transaction_directory.path_join("transaction_report.json")
+	)
+	var serialized_validation := report.details.validation as Dictionary
+	assert_eq(int(serialized_validation.errors), 1)
+	assert_eq(str(serialized_validation.messages[0].code), "background_not_found")
+	assert_true(
+		"introuvable" in str(serialized_validation.messages[0].message),
+		str(serialized_validation)
+	)
 
 
 func test_every_precommit_failure_leaves_no_final_file() -> void:

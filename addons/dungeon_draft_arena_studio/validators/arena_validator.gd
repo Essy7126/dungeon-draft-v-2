@@ -12,7 +12,8 @@ static var _cache := {}
 static func validate(
 		arena: ArenaDefinition,
 		check_duplicate_id := true,
-		target_run: RunData = null
+		target_run: RunData = null,
+		validation_context: Dictionary = {}
 	) -> ArenaValidationReport:
 	var report := ArenaValidationReport.new()
 	report.generated_at = Time.get_datetime_string_from_system(true)
@@ -29,14 +30,17 @@ static func validate(
 		target_run.resource_path if target_run != null else "",
 		int(hero_capacity.get("minimum", 0)),
 	]
-	if not check_duplicate_id and _cache.has(cache_key):
+	var uses_temporary_paths := not validation_context.is_empty()
+	if not check_duplicate_id and not uses_temporary_paths and _cache.has(cache_key):
 		var cached := (_cache[cache_key] as ArenaValidationReport).duplicate(true) \
 			as ArenaValidationReport
 		cached.set_meta("cache_hit", true)
 		return cached
 	report.arena_id = arena.arena_id
 	var runtime_state := ArenaRuntimeBridge.build_validation_state(arena)
-	_validate_identity(arena, report, check_duplicate_id, runtime_state)
+	_validate_identity(
+		arena, report, check_duplicate_id, runtime_state, validation_context
+	)
 	_validate_calibration(arena, report, runtime_state)
 	_validate_cells(arena, report, hero_capacity)
 	_validate_visual_resources(arena, report)
@@ -53,7 +57,7 @@ static func validate(
 		arena, report, tactical, visual_report, field_coverage, runtime_state
 	)
 	report.set_meta("cache_hit", false)
-	if not check_duplicate_id:
+	if not check_duplicate_id and not uses_temporary_paths:
 		_cache[cache_key] = report.duplicate(true)
 	return report
 
@@ -70,7 +74,8 @@ static func _validate_identity(
 		arena: ArenaDefinition,
 		report: ArenaValidationReport,
 		check_duplicate_id: bool,
-		runtime_state: ArenaRuntimeState
+		runtime_state: ArenaRuntimeState,
+		validation_context: Dictionary
 	) -> void:
 	var resolved_arena := (
 		runtime_state.arena_projection
@@ -105,7 +110,7 @@ static func _validate_identity(
 			"L'image doit être importée dans le projet, pas liée par un chemin local.")
 	elif not background_path.is_empty() \
 			and not staged_background \
-			and not ResourceLoader.exists(background_path):
+			and not _visual_path_exists(background_path, validation_context):
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"background_not_found",
 			"L'image de fond est introuvable dans le projet.")
@@ -141,6 +146,21 @@ static func _is_owned_staged_background(path: String) -> bool:
 	return path == path.simplify_path() \
 		and path.begins_with(ArenaSerializer.STAGING_ROOT) \
 		and FileAccess.file_exists(path)
+
+
+## Une transaction de production sérialise les futurs chemins res:// avant son
+## commit. Le redirect ne vaut que pour sa validation pré-commit et doit pointer
+## vers un fichier réellement présent dans son staging privé.
+static func _visual_path_exists(path: String, validation_context: Dictionary) -> bool:
+	if ResourceLoader.exists(path):
+		return true
+	var redirects := validation_context.get("visual_path_redirects", {}) as Dictionary
+	var staged_path := str(redirects.get(path, ""))
+	var owned_root := str(validation_context.get("owned_staging_root", "")).trim_suffix("/")
+	return not owned_root.is_empty() \
+		and staged_path == staged_path.simplify_path() \
+		and staged_path.begins_with(owned_root + "/") \
+		and FileAccess.file_exists(staged_path)
 
 
 static func _validate_calibration(

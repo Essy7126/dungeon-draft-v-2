@@ -297,7 +297,7 @@ func test_direct_test_uses_new_generation_and_identical_topology_hashes() -> voi
 	if not first.get("ok", false):
 		return
 	_direct_requests.append(first.request)
-	assert_eq(first.request.contract_version, 4)
+	assert_eq(first.request.contract_version, 5)
 	assert_eq(
 		first.request.expected_battle_scene_path,
 		arena.battle_scene.resource_path

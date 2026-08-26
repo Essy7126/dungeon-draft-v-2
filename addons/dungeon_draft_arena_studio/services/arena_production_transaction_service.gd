@@ -244,7 +244,10 @@ static func _verify_bundle(directory: String, source: ArenaDefinition) -> Dictio
 			"gameplay_expected": expected_gameplay_fingerprint,
 		}
 	var arena_text := FileAccess.get_file_as_string(arena_path)
-	if ".staging" in arena_text or str(directory).trim_suffix("/") in arena_text:
+	# Le chemin publié du bundle est une référence res:// canonique attendue
+	# (notamment pour assets/background.png). Seul un chemin de staging ayant
+	# fui dans la Resource rend le bundle non portable.
+	if ".staging" in arena_text:
 		return {"ok": false, "error": "non_relative_staging_reference"}
 	var visual := ArenaVisualAssembler.inspect(arena)
 	var runtime := ArenaRuntimeProjectionService.build(arena)
@@ -366,6 +369,12 @@ static func _write_report(
 	var directory := str(transaction.get("transaction_directory", ""))
 	if directory.is_empty():
 		return
+	var serialized_details: Dictionary = details.duplicate(true) \
+		if details is Dictionary else {}
+	if details is Dictionary:
+		var validation: Variant = serialized_details.get("validation")
+		if validation is ArenaValidationReport:
+			serialized_details["validation"] = validation.to_dict()
 	var report := StudioVersion.metadata("arena_production_transaction")
 	report.merge({
 		"transaction_id": transaction.get("transaction_id", ""),
@@ -373,7 +382,7 @@ static func _write_report(
 		"destination": transaction.get("destination", ""),
 		"staging": transaction.get("staging", ""),
 		"backup": transaction.get("backup", ""),
-		"details": details,
+		"details": serialized_details,
 	}, true)
 	ArenaProductionService._write_json(directory.path_join("transaction_report.json"), report)
 	ArenaBundleReferenceService.invalidate_transaction_cache()
