@@ -9,7 +9,11 @@ const DIRECTIONS: Array[Vector2i] = [
 static var _cache := {}
 
 
-static func validate(arena: ArenaDefinition, check_duplicate_id := true) -> ArenaValidationReport:
+static func validate(
+		arena: ArenaDefinition,
+		check_duplicate_id := true,
+		target_run: RunData = null
+	) -> ArenaValidationReport:
 	var report := ArenaValidationReport.new()
 	report.generated_at = Time.get_datetime_string_from_system(true)
 	if arena == null:
@@ -19,7 +23,12 @@ static func validate(arena: ArenaDefinition, check_duplicate_id := true) -> Aren
 			"Aucune carte n'est ouverte."
 		)
 		return report
-	var cache_key := ArenaSnapshotService.room_fingerprint(arena)
+	var hero_capacity := ArenaHeroStartCapacityService.resolve(target_run)
+	var cache_key := "%s:%s:%d" % [
+		ArenaSnapshotService.room_fingerprint(arena),
+		target_run.resource_path if target_run != null else "",
+		int(hero_capacity.get("minimum", 0)),
+	]
 	if not check_duplicate_id and _cache.has(cache_key):
 		var cached := (_cache[cache_key] as ArenaValidationReport).duplicate(true) \
 			as ArenaValidationReport
@@ -29,7 +38,7 @@ static func validate(arena: ArenaDefinition, check_duplicate_id := true) -> Aren
 	var runtime_state := ArenaRuntimeBridge.build_validation_state(arena)
 	_validate_identity(arena, report, check_duplicate_id, runtime_state)
 	_validate_calibration(arena, report, runtime_state)
-	_validate_cells(arena, report)
+	_validate_cells(arena, report, hero_capacity)
 	_validate_visual_resources(arena, report)
 	# Ces rapports dérivés étaient reconstruits jusqu'à trois fois pendant une
 	# même validation. Ils décrivent tous le même snapshot canonique immobile.
@@ -80,19 +89,23 @@ static func _validate_identity(
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"duplicate_id",
 			"Une autre arène utilise déjà cet identifiant.")
+	var background_path := arena.background_path.strip_edges()
+	var staged_background := _is_owned_staged_background(background_path)
 	if arena.visual_mode != ArenaDefinition.VisualMode.MODULAR \
 			and arena.background_path.is_empty():
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"missing_background",
 			"Ajoutez une image de fond avant de tester la carte.")
-	elif not arena.background_path.is_empty() \
-			and not arena.background_path.begins_with("res://") \
-			and not arena.background_path.begins_with("uid://"):
+	elif not background_path.is_empty() \
+			and not background_path.begins_with("res://") \
+			and not background_path.begins_with("uid://") \
+			and not staged_background:
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"absolute_background_path",
 			"L'image doit être importée dans le projet, pas liée par un chemin local.")
-	elif not arena.background_path.is_empty() \
-			and not ResourceLoader.exists(arena.background_path):
+	elif not background_path.is_empty() \
+			and not staged_background \
+			and not ResourceLoader.exists(background_path):
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"background_not_found",
 			"L'image de fond est introuvable dans le projet.")
@@ -118,6 +131,16 @@ static func _validate_identity(
 			if resolved_arena != null and resolved_arena.battle_scene != null \
 			else "absente"
 		))
+
+
+## Une image externe choisie dans le Studio appartient d'abord à sa zone de
+## préparation privée. Elle reste valide dans la working copy tant que le
+## fichier existe ; la sauvegarde et la production la matérialisent ensuite
+## sous leur destination res:// transactionnelle.
+static func _is_owned_staged_background(path: String) -> bool:
+	return path == path.simplify_path() \
+		and path.begins_with(ArenaSerializer.STAGING_ROOT) \
+		and FileAccess.file_exists(path)
 
 
 static func _validate_calibration(
@@ -204,7 +227,8 @@ static func _validate_calibration(
 
 static func _validate_cells(
 		arena: ArenaDefinition,
-		report: ArenaValidationReport
+		report: ArenaValidationReport,
+		hero_capacity: Dictionary
 	) -> void:
 	var seen := {}
 	var verified_overrides: Array[Dictionary] = []
@@ -295,20 +319,16 @@ static func _validate_cells(
 			ArenaValidationMessage.Severity.WARNING, &"missing_border",
 			"La bordure de sécurité n'a pas encore ete créée.",
 			GridTransformService.INVALID_CELL, &"create_border")
-	_validate_obstacles_and_spawns(arena, report)
+	_validate_obstacles_and_spawns(arena, report, hero_capacity)
 	_validate_vortex_pairs(arena, report)
 
 
 static func _validate_obstacles_and_spawns(
 		arena: ArenaDefinition,
-		report: ArenaValidationReport
+		report: ArenaValidationReport,
+		hero_capacity: Dictionary
 	) -> void:
 	var occupied := {}
-	var required_heroes := {
-		ArenaSpawnDefinition.Kind.HERO_1: 0,
-		ArenaSpawnDefinition.Kind.HERO_2: 0,
-		ArenaSpawnDefinition.Kind.HERO_3: 0,
-	}
 	var hero_pool_count := 0
 	var enemy_count := 0
 	var obstacle_cells := {}
@@ -376,8 +396,6 @@ static func _validate_obstacles_and_spawns(
 			continue
 		if spawn.is_hero():
 			hero_pool_count += 1
-			if spawn.required:
-				required_heroes[spawn.kind] = int(required_heroes.get(spawn.kind, 0)) + 1
 		elif spawn.is_enemy():
 			enemy_count += 1
 		if not DIRECTIONS.has(spawn.facing):
@@ -412,20 +430,22 @@ static func _validate_obstacles_and_spawns(
 				ArenaValidationMessage.Severity.ERROR, &"spawn_collision",
 				"Deux unités utilisent la même position de depart.", spawn.cell)
 		occupied[spawn.cell] = true
-	for kind in required_heroes:
-		if int(required_heroes[kind]) != 1:
+	if not bool(hero_capacity.get("known", false)):
+		report.add_message(
+			ArenaValidationMessage.Severity.WARNING, &"hero_capacity_unverified",
+			str(hero_capacity.get("message", "Sélectionnez une run pour vérifier les départs."))
+		)
+		if hero_pool_count == 0:
 			report.add_message(
-				ArenaValidationMessage.Severity.ERROR, &"required_hero_spawn_contract",
-				"Chaque emplacement HERO_1, HERO_2 et HERO_3 doit exister exactement une fois en obligatoire."
+				ArenaValidationMessage.Severity.WARNING, &"missing_heroes",
+				"Aucune zone de départ des héros n'est définie ; sélectionnez une run pour connaître la capacité requise."
 			)
-	if hero_pool_count < 3:
+	elif hero_pool_count < int(hero_capacity.get("minimum", 0)):
 		report.add_message(
 			ArenaValidationMessage.Severity.ERROR, &"hero_pool_too_small",
-			"Le pool de déploiement héros doit contenir au moins trois cellules.")
-		# Code historique conserve pour les integrations et rapports existants.
-		report.add_message(
-			ArenaValidationMessage.Severity.ERROR, &"missing_heroes",
-			"La carte ne peut pas être testée : trois positions héros valides sont requises."
+			"La zone de départ des héros contient %d case(s) ; cette run en demande au moins %d." % [
+				hero_pool_count, int(hero_capacity.get("minimum", 0)),
+			]
 		)
 	if enemy_count == 0:
 		report.add_message(
@@ -560,9 +580,14 @@ static func _validate_vortex_networks(
 			)
 		ids[network.network_id] = true
 		if network.cells.is_empty():
-			report.add_message(
+			var empty_message := report.add_message(
 				ArenaValidationMessage.Severity.WARNING, &"vortex_network_empty",
-				"Le réseau '%s' ne contient aucune dalle." % network.display_name
+				"Le réseau '%s' ne contient aucune dalle." % network.display_name,
+				GridTransformService.INVALID_CELL, &"remove_empty_vortex_network"
+			)
+			empty_message.subject_id = network.network_id
+			empty_message.why = (
+				"Un réseau vide n'a aucun effet dans le jeu. Complétez-le ou supprimez-le."
 			)
 		for cell in network.unique_cells():
 			if occupied.has(cell):

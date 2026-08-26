@@ -534,14 +534,17 @@ func _build_foreground(value: ArenaDefinition, y_sorted_world: Node2D) -> void:
 
 func _build_units(value: ArenaDefinition, parent: Node2D) -> void:
 	var placed := 0
+	var hero_index := 0
 	var enemy_index := 0
 	for spawn in value.spawns:
 		if spawn == null or placed >= 12 or not grid.is_walkable(spawn.cell):
 			continue
-		var data := _unit_data_for_spawn(spawn, enemy_index)
+		var data := _unit_data_for_spawn(spawn, hero_index, enemy_index)
 		if data == null:
 			continue
-		if spawn.is_enemy():
+		if spawn.is_hero():
+			hero_index += 1
+		else:
 			enemy_index += 1
 		var unit := Unit.from_data(data)
 		unit.grid_pos = spawn.cell
@@ -560,12 +563,15 @@ func _build_units(value: ArenaDefinition, parent: Node2D) -> void:
 		placed += 1
 
 
-func _unit_data_for_spawn(spawn: ArenaSpawnDefinition, enemy_index := 0) -> UnitData:
+func _unit_data_for_spawn(
+		spawn: ArenaSpawnDefinition,
+		hero_index := 0,
+		enemy_index := 0
+	) -> UnitData:
 	if spawn.is_hero():
-		if resolved_heroes.is_empty():
+		if resolved_heroes.is_empty() or hero_index >= resolved_heroes.size():
 			return null
-		var index := clampi(spawn.kind, 0, resolved_heroes.size() - 1)
-		return resolved_heroes[index]
+		return resolved_heroes[hero_index]
 	if str(spawn.unit_id).begins_with("res://") and ResourceLoader.exists(str(spawn.unit_id)):
 		return load(str(spawn.unit_id)) as UnitData
 	if resolved_enemies.is_empty():

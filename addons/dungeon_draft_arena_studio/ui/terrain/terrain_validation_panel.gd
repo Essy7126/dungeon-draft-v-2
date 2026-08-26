@@ -186,7 +186,8 @@ func _build_card(message: ArenaValidationMessage) -> PanelContainer:
 	var actions := HFlowContainer.new()
 	actions.add_theme_constant_override("h_separation", 4)
 	box.add_child(actions)
-	var localizable := message.cell != GridTransformService.INVALID_CELL
+	var localizable := message.cell != GridTransformService.INVALID_CELL \
+		or message.subject_id != &""
 	var show_button := Button.new()
 	show_button.name = "TerrainValidationShow_%s" % message.code
 	show_button.text = "Me montrer"
@@ -199,7 +200,7 @@ func _build_card(message: ArenaValidationMessage) -> PanelContainer:
 	select_button.name = "TerrainValidationSelect_%s" % message.code
 	select_button.text = "Sélectionner la case"
 	select_button.tooltip_text = "Sélectionner la case pour la corriger à la main."
-	select_button.disabled = not localizable
+	select_button.disabled = message.cell == GridTransformService.INVALID_CELL
 	select_button.focus_mode = Control.FOCUS_ALL
 	select_button.pressed.connect(func(): select_cell_requested.emit(message))
 	actions.add_child(select_button)

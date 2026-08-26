@@ -44,6 +44,8 @@ var analysis_text: RichTextLabel
 var analysis_progress: ProgressBar
 var advanced_text: RichTextLabel
 var validation_list: ItemList
+var analysis_presets: Control
+var guided := true
 var catalog_search: LineEdit
 var catalog_list: ItemList
 var seed_spin: SpinBox
@@ -226,6 +228,7 @@ func _build_properties_panel() -> Control:
 	var analysis_page := VBoxContainer.new()
 	analysis_page.name = "Analyse"
 	var presets := HBoxContainer.new()
+	analysis_presets = presets
 	var presets_label := Label.new()
 	presets_label.text = "Analyser sur"
 	presets_label.tooltip_text = "Nombre de valeurs de départ testées"
@@ -592,9 +595,12 @@ func validate_session() -> Array[StudioValidationMessage]:
 	for index in range(messages.size()):
 		var message := messages[index]
 		validation_list.add_item(message.display_text())
-		validation_list.set_item_tooltip(index, "%s\nCode : %s\n%s" % [
-			message.explanation, message.code, message.resource_path,
-		])
+		validation_list.set_item_tooltip(
+			index,
+			message.explanation if guided else "%s\nCode : %s\n%s" % [
+				message.explanation, message.code, message.resource_path,
+			]
+		)
 		validation_list.set_item_metadata(index, index)
 		match message.severity:
 			StudioValidationMessage.Severity.ERROR:
@@ -608,6 +614,14 @@ func validate_session() -> Array[StudioValidationMessage]:
 		summary.errors, summary.warnings,
 	], summary.errors > 0)
 	return messages
+
+
+func set_guided(value: bool) -> void:
+	guided = value
+	if analysis_presets != null:
+		analysis_presets.visible = not guided
+	if validation_list != null and session != null:
+		validate_session()
 
 
 func analyze_seeds(count: int) -> void:

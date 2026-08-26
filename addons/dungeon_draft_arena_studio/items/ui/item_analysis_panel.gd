@@ -36,6 +36,7 @@ var _comparison := {}
 var _spell_projection := {}
 var _previous_error_count := 0
 var _had_comparison := false
+var _guided := true
 
 
 func _ready() -> void:
@@ -62,6 +63,13 @@ func open_section(section: int) -> void:
 	if tabs != null:
 		tabs.current_tab = clampi(section, 0, tabs.get_tab_count() - 1)
 	set_expanded(true)
+
+
+func set_guided(value: bool) -> void:
+	_guided = value
+	if tabs != null:
+		tabs.set_tab_hidden(SECTION_REFERENCES, _guided)
+	_render()
 
 
 func show_report(
@@ -365,8 +373,8 @@ func _render_references() -> void:
 		reference_box.add_child(_muted_label("Aucune référence entrante observée."))
 	for path in _references:
 		var label := Label.new()
-		label.text = path
-		label.tooltip_text = path
+		label.text = "Référence utilisée" if _guided else path
+		label.tooltip_text = "" if _guided else path
 		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		label.add_theme_color_override("font_color", MUTED_COLOR)
 		reference_box.add_child(label)

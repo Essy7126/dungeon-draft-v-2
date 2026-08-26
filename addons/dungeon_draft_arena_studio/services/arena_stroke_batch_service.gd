@@ -50,6 +50,18 @@ func apply_terrain_cells(cells: Array[Vector2i], terrain_id: StringName) -> Arra
 	return changed
 
 
+func record_external_changes(cells: Array[Vector2i], require_runtime_sync := true) -> void:
+	## Enregistre les mutations locales réalisées par les autres familles de la
+	## bibliothèque. Le geste reste propriétaire de l'unique instantané et de
+	## l'unique synchronisation runtime effectuée dans `finish()`.
+	if not _active or _arena == null:
+		return
+	for cell in cells:
+		_received_cells[cell] = int(_received_cells.get(cell, 0)) + 1
+		_changed_cells[cell] = true
+	_logical_change = _logical_change or require_runtime_sync
+
+
 func finish() -> Dictionary:
 	if not _active or _arena == null:
 		return {"changed": false}

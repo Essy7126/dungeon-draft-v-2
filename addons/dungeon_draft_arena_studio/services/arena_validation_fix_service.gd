@@ -30,6 +30,11 @@ const APPLICABLE_FIXES := {
 		"action": "Déplacer le point de départ",
 		"explanation": "Le point de départ rejoint la case jouable libre la plus proche.",
 	},
+	&"remove_empty_vortex_network": {
+		"label": "Supprimer ce réseau vide",
+		"action": "Supprimer le réseau vide",
+		"explanation": "Seul le réseau sans aucune case est retiré de la version en cours.",
+	},
 }
 
 
@@ -74,6 +79,8 @@ static func apply(
 			return _make_border_non_playable(arena, message.cell)
 		&"move_spawn_to_nearest_valid":
 			return _move_spawn(arena, message.cell)
+		&"remove_empty_vortex_network":
+			return _remove_empty_vortex_network(arena, message.subject_id)
 	return {
 		"ok": false, "changed": false, "action": "",
 		"message": "Cette anomalie n'a pas de correction automatique sûre.",
@@ -138,6 +145,25 @@ static func _move_spawn(arena: ArenaDefinition, cell: Vector2i) -> Dictionary:
 		"message": "%s déplacé en (%d, %d)." % [
 			spawn.display_label(), target.x, target.y,
 		],
+	}
+
+
+static func _remove_empty_vortex_network(
+		arena: ArenaDefinition,
+		network_id: StringName
+	) -> Dictionary:
+	var before := arena.vortex_networks.size()
+	arena.vortex_networks = arena.vortex_networks.filter(func(network):
+		return network != null and (
+			network.network_id != network_id or not network.cells.is_empty()
+		)
+	)
+	var changed := arena.vortex_networks.size() != before
+	return {
+		"ok": changed,
+		"changed": changed,
+		"action": "Supprimer le réseau vide",
+		"message": "Réseau vide supprimé." if changed else "Ce réseau n'est plus vide.",
 	}
 
 

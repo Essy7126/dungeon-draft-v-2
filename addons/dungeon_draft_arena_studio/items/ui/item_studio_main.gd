@@ -38,6 +38,7 @@ var editor_interface = null
 var editor_undo_redo = null
 var project_context: StudioProjectContext = null
 var reference_graph: StudioReferenceGraphService = null
+var guided := true
 
 var catalog := ItemStudioCatalogService.new()
 var document := ItemStudioDocument.new()
@@ -111,6 +112,17 @@ var _cached_fingerprint := ""
 var _is_dirty := false
 var _status_message := ""
 var _narrow_layout := false
+
+
+func set_guided(value: bool) -> void:
+	guided = value
+	for control in [path_label, id_edit, tags_edit, fx_edit, audio_edit]:
+		if control != null:
+			control.visible = not guided
+	if section_tabs != null and section_tabs.get_tab_count() > SECTION_ADVANCED:
+		section_tabs.set_tab_hidden(SECTION_ADVANCED, guided)
+	if analysis_panel != null:
+		analysis_panel.set_guided(guided)
 
 
 func setup(

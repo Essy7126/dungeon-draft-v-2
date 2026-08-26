@@ -69,10 +69,15 @@ static func build(
 	var tactical := ArenaTacticalMetricsService.analyze(arena, runtime_state)
 	var camps := tactical.get("camps", {}) as Dictionary
 	var spawn_metrics := tactical.get("spawns", {}) as Dictionary
+	var hero_capacity := ArenaHeroStartCapacityService.resolve(
+		options.get("target_run") as RunData
+	)
 	certificate.pathfinding_valid = bool(tactical.get("ok", false)) \
 		and int(camps.get("unreachable_pair_count", 1)) == 0
 	certificate.spawn_contract_valid = (
-		int(spawn_metrics.get("required_hero_spawns", 0)) == 3
+		bool(hero_capacity.get("known", false))
+		and int(spawn_metrics.get("hero_spawns", 0)) \
+			>= int(hero_capacity.get("minimum", 0))
 		and int(camps.get("enemy_spawn_pool", []).size()) > 0
 	)
 	certificate.preview_logic_valid = bool(options.get(

@@ -102,12 +102,13 @@ static func paint_permanent_terrain_local(
 static func place_wall(
 		arena: ArenaDefinition,
 		cell: Vector2i,
-		wall_id: StringName
+		wall_id: StringName,
+		sync_runtime := true
 	) -> bool:
 	if arena == null or not arena.is_in_bounds(cell):
 		return false
 	if wall_id == &"remove" or wall_id == &"":
-		return remove_wall(arena, cell)
+		return remove_wall(arena, cell, sync_runtime)
 	if not ArenaWallRegistry.has(wall_id):
 		return false
 	var cell_definition := arena.get_cell_definition(cell)
@@ -132,11 +133,16 @@ static func place_wall(
 	else:
 		obstacle.apply_preset(ArenaObstacleDefinition.Preset.FULL_WALL)
 	obstacle.blocks_push = true
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	if sync_runtime:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return before != obstacle.to_dict()
 
 
-static func remove_wall(arena: ArenaDefinition, cell: Vector2i) -> bool:
+static func remove_wall(
+		arena: ArenaDefinition,
+		cell: Vector2i,
+		sync_runtime := true
+	) -> bool:
 	if arena == null:
 		return false
 	var before := arena.obstacles.size()
@@ -145,12 +151,18 @@ static func remove_wall(arena: ArenaDefinition, cell: Vector2i) -> bool:
 	)
 	if arena.obstacles.size() == before:
 		return false
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	if sync_runtime:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return true
 
 
-static func place_spawn(arena: ArenaDefinition, cell: Vector2i, kind: int) -> bool:
-	return ArenaEditingService.place_spawn(arena, cell, kind)
+static func place_spawn(
+		arena: ArenaDefinition,
+		cell: Vector2i,
+		kind: int,
+		sync_runtime := true
+	) -> bool:
+	return ArenaEditingService.place_spawn(arena, cell, kind, sync_runtime)
 
 
 static func move_or_place_primary_spawn(
@@ -212,7 +224,8 @@ static func apply_placeable(
 		arena: ArenaDefinition,
 		definition: TerrainPlaceableDefinition,
 		cell: Vector2i,
-		erase := false
+		erase := false,
+		sync_runtime := true
 	) -> bool:
 	if arena == null or definition == null:
 		return false
@@ -242,11 +255,13 @@ static func apply_placeable(
 				arena.modular_visual_profile.hybrid_floor_policy = (
 					ArenaModularVisualProfile.HybridFloorPolicy.NON_BASE_TERRAINS
 				)
-			return paint_permanent_terrain(arena, cell, terrain_id)
+			return paint_permanent_terrain(arena, cell, terrain_id) \
+				if sync_runtime else paint_permanent_terrain_local(arena, cell, terrain_id)
 		TerrainPlaceableDefinition.PlacementKind.WALL:
 			return place_wall(
 				arena, cell,
-				&"remove" if erase else StringName(definition.payload.get("wall_id", &""))
+				&"remove" if erase else StringName(definition.payload.get("wall_id", &"")),
+				sync_runtime
 			)
 		TerrainPlaceableDefinition.PlacementKind.SPAWN_POINT:
 			if erase:
@@ -255,11 +270,12 @@ static func apply_placeable(
 					return value != null and value.cell != cell
 				)
 				if before != arena.spawns.size():
-					ArenaRuntimeBridge.sync_runtime_resources(arena)
+					if sync_runtime:
+						ArenaRuntimeBridge.sync_runtime_resources(arena)
 					return true
 				return false
 			return place_spawn(
-				arena, cell, int(definition.payload.get("spawn_kind", -1))
+				arena, cell, int(definition.payload.get("spawn_kind", -1)), sync_runtime
 			)
 		TerrainPlaceableDefinition.PlacementKind.DECORATION_MARKER:
 			if erase:

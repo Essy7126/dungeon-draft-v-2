@@ -45,7 +45,6 @@ func add_cell(arena: ArenaDefinition, cell: Vector2i) -> Dictionary:
 	if not ArenaVortexNetworkService.add_cell(arena, vortex_network_id, cell):
 		return {"changed": false, "complete": false, "reason": "occupied"}
 	placed_cells.append(cell)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return {
 		"changed": true,
 		"complete": _finite_complete(),
@@ -61,7 +60,6 @@ func remove_cell(arena: ArenaDefinition, cell: Vector2i) -> bool:
 	if not ArenaVortexNetworkService.remove_cell(arena, vortex_network_id, cell):
 		return false
 	placed_cells.erase(cell)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return true
 
 
@@ -73,6 +71,7 @@ func can_finish() -> bool:
 func finish(arena: ArenaDefinition) -> Dictionary:
 	if arena == null or not can_finish():
 		return {"ok": false, "reason": "minimum_not_reached"}
+	ArenaRuntimeBridge.sync_runtime_resources(arena)
 	var result := {
 		"ok": true,
 		"action_name": "Placer %s" % definition.display_name,

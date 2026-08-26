@@ -4,6 +4,7 @@ extends Control
 
 signal history_state_changed
 signal integrate_room_requested(plan: Dictionary)
+signal domain_navigation_requested(domain: StringName)
 
 enum WorkspaceMode {
 	EDITOR,
@@ -271,6 +272,13 @@ var production_index_spin: SpinBox
 var _production_runs: Array[RunData] = []
 var production_summary_text: RichTextLabel
 var production_validation_text: RichTextLabel
+var production_diagnostic_actions: HFlowContainer
+var production_test_now_button: Button
+var production_create_border_button: Button
+var production_open_encounters_button: Button
+var production_confirm_alignment_button: Button
+var production_reject_alignment_button: Button
+var _art_alignment_decision := -1
 var production_preview_text: RichTextLabel
 var production_plan_text: RichTextLabel
 var production_resolution_text: RichTextLabel
@@ -738,6 +746,7 @@ func _build_canvas_panel() -> Control:
 	library_panel.placeable_selected.connect(_on_library_placeable_selected)
 	library_panel.card_action_requested.connect(_on_library_card_action_requested)
 	library_panel.state_changed.connect(_on_library_state_changed)
+	library_panel.paint_options_changed.connect(_on_library_paint_options_changed)
 	library_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	library_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	library_panel.custom_minimum_size.y = 160.0
@@ -1206,6 +1215,22 @@ func _on_library_card_action_requested(action: StringName, entry: Dictionary) ->
 				definition.payload.get("terrain_id", &"")
 			))
 			_show_terrain_replace_dialog()
+
+
+func _on_library_paint_options_changed(shape: int, size: int, erase: bool) -> void:
+	if canvas == null:
+		return
+	canvas.brush_shape = clampi(
+		shape, ArenaStudioCanvas.BrushShape.BRUSH, ArenaStudioCanvas.BrushShape.FILL
+	)
+	canvas.brush_size = clampi(size, 1, 3)
+	canvas.erase_mode = erase
+	_set_status(
+		"Effacer au clic gauche." if erase else "%s actif — taille %d." % [
+			["Pinceau", "Rectangle", "Remplissage contigu"][canvas.brush_shape],
+			canvas.brush_size,
+		]
+	)
 
 
 func _open_terrain_type_editor(entry: Dictionary) -> void:
@@ -2008,7 +2033,19 @@ func _remember_recent_document(include_new := false) -> void:
 ## --- Validation actionnable ------------------------------------------------
 
 func _on_validation_show(message: ArenaValidationMessage) -> void:
-	if message == null or message.cell == GridTransformService.INVALID_CELL:
+	if message == null:
+		return
+	if message.cell == GridTransformService.INVALID_CELL:
+		var network := ArenaVortexNetworkService.network_by_id(arena, message.subject_id)
+		if network == null:
+			return
+		show_editor()
+		_selected_spatial = {
+			"kind": &"vortex", "object": network,
+			"cell": GridTransformService.INVALID_CELL,
+		}
+		_refresh_inspector_context()
+		_set_status("Réseau sélectionné : ajoutez des cases ou supprimez-le.")
 		return
 	show_editor()
 	canvas.center_on_cell(message.cell)
@@ -2493,11 +2530,13 @@ func _integration_gate_options(
 		and run_authoring.source_path == target_run.resource_path
 	return {
 		"validation_profile": ArenaIntegrationGatePolicy.Profile.PRODUCTION,
+		"target_run": target_run,
 		"accepted_warnings": edit_session.accepted_design_warnings(fingerprint) \
 			if edit_session != null else [],
 		"manual_test_performed": manual_performed,
 		"runtime_scene_result": manual_result,
-		"art_alignment_confirmed": false,
+		"art_alignment_confirmed": _art_alignment_decision == 1,
+		"art_alignment_rejected": _art_alignment_decision == 0,
 		"external_source_conflict": edit_session != null \
 			and edit_session.has_external_conflict(),
 		"run_conflict": run_conflict,
@@ -3491,6 +3530,34 @@ func _build_production_dialog() -> void:
 	validation_tab.add_child(_section_label("ÉTAPE 2 — VALIDATION"))
 	production_validation_text = _production_text()
 	validation_tab.add_child(production_validation_text)
+	production_diagnostic_actions = HFlowContainer.new()
+	production_diagnostic_actions.name = "ProductionDiagnosticActions"
+	validation_tab.add_child(production_diagnostic_actions)
+	production_test_now_button = _add_button(
+		production_diagnostic_actions, "Tester maintenant", test_arena
+	)
+	production_create_border_button = _add_button(
+		production_diagnostic_actions, "Créer la bordure de sécurité",
+		func():
+			create_safety_border()
+			_refresh_production_wizard()
+	)
+	production_open_encounters_button = _add_button(
+		production_diagnostic_actions, "Ouvrir Rencontres",
+		func(): domain_navigation_requested.emit(&"encounters")
+	)
+	production_confirm_alignment_button = _add_button(
+		production_diagnostic_actions, "Alignement conforme",
+		func():
+			_art_alignment_decision = 1
+			_refresh_production_wizard()
+	)
+	production_reject_alignment_button = _add_button(
+		production_diagnostic_actions, "Alignement à corriger",
+		func():
+			_art_alignment_decision = 0
+			_refresh_production_wizard()
+	)
 	var preview_tab := _production_tab("3 — Aperçu")
 	preview_tab.add_child(_section_label("ÉTAPE 3 — APERÇU DU JEU RÉEL"))
 	production_preview_text = _production_text()
@@ -4155,6 +4222,7 @@ func _connect_canvas() -> void:
 func _set_arena(value: ArenaDefinition, mark_dirty: bool, key := "") -> void:
 	if value == null:
 		return
+	_art_alignment_decision = -1
 	_finish_grid_alignment_edit()
 	if canvas != null and canvas.has_method("cancel_active_gesture"):
 		canvas.cancel_active_gesture()
@@ -4626,8 +4694,17 @@ func save_arena(options := {}) -> Dictionary:
 func prepare_automatically() -> void:
 	if arena == null:
 		return
+	var target_run := project_context.active_run if project_context != null else null
+	if not bool(ArenaHeroStartCapacityService.resolve(target_run).get("known", false)):
+		_set_status(
+			"Sélectionnez une run avant la préparation automatique afin de connaître l’effectif réel.",
+			true
+		)
+		return
 	var before := arena.to_snapshot()
-	var result := ArenaEditingService.prepare_automatically(arena)
+	var result := ArenaEditingService.prepare_automatically(
+		arena, target_run
+	)
 	_commit_change("Préparer automatiquement la carte", before, arena.to_snapshot())
 	_refresh_all()
 	_set_status(
@@ -4734,7 +4811,9 @@ func _update_validation_report(show_status := false) -> ArenaValidationReport:
 		return null
 	# La working copy d'une map ouverte porte volontairement le meme identifiant
 	# que sa source. Le conflit de destination est controle au moment de sauver.
-	validation_report = ArenaValidator.validate(arena, false)
+	validation_report = ArenaValidator.validate(
+		arena, false, project_context.active_run if project_context != null else null
+	)
 	if validation_list != null:
 		validation_list.clear()
 	for entry in validation_report.messages:
@@ -4949,6 +5028,25 @@ func _refresh_production_wizard() -> void:
 	if gate_blockers.is_empty():
 		validation_lines.append("[color=green]✓ Projection, assemblage et vraie scène de jeu vérifiés.[/color]")
 	production_validation_text.text = "\n".join(validation_lines)
+	if production_test_now_button != null:
+		production_test_now_button.visible = (
+			_has_validation_code(report, &"runtime_scene_missing")
+			or not bool(_integration_gate_options(candidate, target_run).get(
+				"manual_test_performed", false
+			))
+		)
+	if production_create_border_button != null:
+		production_create_border_button.visible = _has_validation_code(
+			report, &"missing_border"
+		)
+	if production_open_encounters_button != null:
+		production_open_encounters_button.visible = _has_validation_code(
+			report, &"encounter_missing"
+		)
+	if production_confirm_alignment_button != null:
+		production_confirm_alignment_button.visible = _art_alignment_decision != 1
+	if production_reject_alignment_button != null:
+		production_reject_alignment_button.visible = _art_alignment_decision != 0
 	production_preview_text.text = (
 		"[b]Même chaîne que le jeu réel[/b]\n\n"
 		+ "• Grille logique et calcul des déplacements identiques au jeu\n"
@@ -5015,6 +5113,15 @@ func _refresh_production_wizard() -> void:
 	if unacknowledged > 0:
 		production_dialog.get_ok_button().text += " — %d avertissement(s)" % unacknowledged
 	production_dialog.get_ok_button().disabled = not gate_blockers.is_empty()
+
+
+func _has_validation_code(
+		report: ArenaValidationReport,
+		code: StringName
+	) -> bool:
+	if report == null:
+		return false
+	return report.messages.any(func(message): return message != null and message.code == code)
 
 
 func _production_action_human(action: StringName) -> String:
@@ -5894,6 +6001,7 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 		return
 	for cell in cells:
 		var changed := false
+		var used_placeable_path := false
 		if workspace_mode == WorkspaceMode.DYNAMIC_CONSTRUCTION:
 			changed = _apply_dynamic_cell_edit(cell, erase)
 			if changed:
@@ -5906,8 +6014,9 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 			ArenaStudioCanvas.Tool.OBSTACLE,
 			ArenaStudioCanvas.Tool.SPAWN,
 		]:
+			used_placeable_path = true
 			changed = ArenaDynamicEditingService.apply_placeable(
-				arena, placeable, cell, erase
+				arena, placeable, cell, erase, false
 			)
 		else:
 			match canvas.active_tool:
@@ -5937,9 +6046,9 @@ func _on_cells_edit_requested(cells: Array[Vector2i], erase: bool) -> void:
 		if changed:
 			_stroke_changed = true
 			_stroke_cell_count += 1
-	if canvas.active_tool != ArenaStudioCanvas.Tool.TERRAIN:
-		ArenaRuntimeBridge.sync_runtime_resources(arena)
-	if edit_session != null and canvas.active_tool != ArenaStudioCanvas.Tool.TERRAIN:
+			if used_placeable_path or canvas.active_tool != ArenaStudioCanvas.Tool.TERRAIN:
+				stroke_batch.record_external_changes([cell])
+	if edit_session != null:
 		edit_session.history.notify_preview_changed()
 	canvas.update_terrain_cells(cells)
 	_refresh_inspector(cells[-1] if not cells.is_empty() else GridTransformService.INVALID_CELL)
@@ -5960,7 +6069,7 @@ func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
 			var wall_id := &"remove" if erase else StringName(
 				dynamic_wall_option.get_selected_metadata()
 			)
-			return ArenaDynamicEditingService.place_wall(arena, cell, wall_id)
+			return ArenaDynamicEditingService.place_wall(arena, cell, wall_id, false)
 		ArenaStudioCanvas.Tool.SPAWN:
 			if _vortex_edit_active:
 				return _edit_vortex_network_cell(cell, erase)
@@ -5968,13 +6077,13 @@ func _apply_dynamic_cell_edit(cell: Vector2i, erase: bool) -> bool:
 			var special_id := &"remove" if erase else selected_special
 			match special_id:
 				&"hero": return ArenaDynamicEditingService.place_spawn(
-					arena, cell, ArenaSpawnDefinition.Kind.HERO_1
+					arena, cell, ArenaSpawnDefinition.Kind.HERO_1, false
 				)
 				&"enemy": return ArenaDynamicEditingService.place_spawn(
-					arena, cell, ArenaSpawnDefinition.Kind.ENEMY
+					arena, cell, ArenaSpawnDefinition.Kind.ENEMY, false
 				)
 				&"summon": return ArenaDynamicEditingService.place_spawn(
-					arena, cell, ArenaSpawnDefinition.Kind.SUMMON_ZONE
+					arena, cell, ArenaSpawnDefinition.Kind.SUMMON_ZONE, false
 				)
 				&"objective": return ArenaDynamicEditingService.place_objective(arena, cell)
 				&"decoration": return ArenaDynamicEditingService.place_decoration(arena, cell)
@@ -7702,6 +7811,12 @@ func _spatial_at(cell: Vector2i) -> Dictionary:
 
 
 func _library_id_for_spawn_kind(kind: int) -> StringName:
+	if kind in [
+		ArenaSpawnDefinition.Kind.HERO_1,
+		ArenaSpawnDefinition.Kind.HERO_2,
+		ArenaSpawnDefinition.Kind.HERO_3,
+	]:
+		return &"hero_start_zone"
 	for entry in TerrainPlaceableCatalogService.entries(arena, guided):
 		var definition := entry.get("definition") as TerrainPlaceableDefinition
 		if definition != null \

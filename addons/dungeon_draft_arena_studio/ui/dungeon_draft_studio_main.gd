@@ -78,6 +78,7 @@ func _ready() -> void:
 	arena_studio.auto_load_initial_arena = arena_auto_load_enabled
 	arena_studio.production_planning_enabled = arena_production_planning_enabled
 	arena_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
+	arena_studio.domain_navigation_requested.connect(_on_domain_navigation_requested)
 	tabs.add_child(arena_studio)
 	# Le shell commun porte désormais les mêmes actions via leurs handlers
 	# existants. La barre Terrain interne reste instanciée comme adaptateur
@@ -419,7 +420,7 @@ func _refresh_history_controls() -> void:
 		lab_transfer_button.text = "Importer depuis le laboratoire (%d)" % transfer_count \
 			if transfer_count > 0 else "Importer depuis le laboratoire"
 	if guided_toggle != null:
-		guided_toggle.disabled = not arena_active
+		guided_toggle.disabled = false
 	_sync_shell_from_arena()
 
 
@@ -496,7 +497,23 @@ func _refresh_domain_buttons() -> void:
 func _on_guided_toggled(value: bool) -> void:
 	if arena_studio != null:
 		arena_studio.set_guided(value)
-		_refresh_history_controls()
+	if encounter_studio != null and encounter_studio.has_method("set_guided"):
+		encounter_studio.set_guided(value)
+	if item_studio != null and item_studio.has_method("set_guided"):
+		item_studio.set_guided(value)
+	_refresh_history_controls()
+
+
+func _on_domain_navigation_requested(domain: StringName) -> void:
+	if tabs == null:
+		return
+	match domain:
+		&"encounters":
+			tabs.current_tab = 1
+		&"items":
+			tabs.current_tab = 2
+	_refresh_domain_buttons()
+	_refresh_history_controls()
 
 
 func _rebuild_window_menu() -> void:

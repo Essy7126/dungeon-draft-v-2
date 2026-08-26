@@ -391,6 +391,8 @@ static func _spawn_metrics(arena: ArenaDefinition) -> Dictionary:
 				summon_zones += 1
 	return {
 		"required_hero_spawns": required_heroes,
+		"hero_spawns": required_heroes,
+		"hero_spawn_capacity": required_heroes,
 		"hero_pool": hero_pool,
 		"enemy_spawns": enemies,
 		"enemy_groups": groups,

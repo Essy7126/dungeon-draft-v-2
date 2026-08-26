@@ -6,7 +6,10 @@ const DEFAULT_ENCOUNTER := "res://data/encounters/first_run_room_01_encounter.tr
 const HERO_IDS := [&"elf", &"mage", &"warrior"]
 
 
-static func prepare_automatically(arena: ArenaDefinition) -> Dictionary:
+static func prepare_automatically(
+		arena: ArenaDefinition,
+		target_run: RunData = null
+	) -> Dictionary:
 	if arena == null:
 		return {"ok": false, "message": "Aucune arène n'est ouverte."}
 	var total_started: int = Time.get_ticks_usec()
@@ -26,7 +29,7 @@ static func prepare_automatically(arena: ArenaDefinition) -> Dictionary:
 		arena.encounter_definition = load(DEFAULT_ENCOUNTER) as EncounterDefinition
 	var encounter_resolution_ms := _elapsed_ms(phase_started)
 	phase_started = Time.get_ticks_usec()
-	propose_spawns(arena, false)
+	propose_spawns(arena, false, target_run)
 	var spawn_proposal_ms := _elapsed_ms(phase_started)
 	phase_started = Time.get_ticks_usec()
 	# Les Resources de production historiques conservent leur contrat synchronise.
@@ -109,12 +112,16 @@ static func set_cell_state(arena: ArenaDefinition, cell: Vector2i, state: String
 			definition.playable = true
 			definition.border = false
 			definition.cell_type = GridData.CellType.NORMAL
+			if definition.terrain_id == &"":
+				ArenaTerrainRegistry.configure_cell(definition, &"neutral")
 		&"remove":
 			return arena.erase_cell(cell)
 		&"playable":
 			var definition := arena.ensure_cell(cell)
 			definition.playable = true
 			definition.border = false
+			if definition.terrain_id == &"":
+				ArenaTerrainRegistry.configure_cell(definition, &"neutral")
 		&"non_playable":
 			var definition := arena.ensure_cell(cell)
 			definition.playable = false
@@ -161,7 +168,12 @@ static func set_terrain(arena: ArenaDefinition, cell: Vector2i, cell_type: int) 
 	return true
 
 
-static func place_spawn(arena: ArenaDefinition, cell: Vector2i, kind: int) -> bool:
+static func place_spawn(
+		arena: ArenaDefinition,
+		cell: Vector2i,
+		kind: int,
+		sync_runtime := true
+	) -> bool:
 	if arena == null:
 		return false
 	var definition := arena.get_cell_definition(cell)
@@ -185,35 +197,51 @@ static func place_spawn(arena: ArenaDefinition, cell: Vector2i, kind: int) -> bo
 			spawn.group_id = StringName("group_%d_%d" % [cell.x, cell.y])
 	spawn.cell = cell
 	arena.spawns.append(spawn)
-	ArenaRuntimeBridge.sync_runtime_resources(arena)
+	if sync_runtime:
+		ArenaRuntimeBridge.sync_runtime_resources(arena)
 	return true
 
 
-static func propose_spawns(arena: ArenaDefinition, sync_runtime := true) -> void:
+static func propose_spawns(
+		arena: ArenaDefinition,
+		sync_runtime := true,
+		target_run: RunData = null
+	) -> void:
 	for index in range(arena.spawns.size() - 1, -1, -1):
 		if str(arena.spawns[index].spawn_id).begins_with("auto_"):
 			arena.spawns.remove_at(index)
 	# Une map importee possede deja ses positions runtime. Les propositions ne
 	# doivent pas leur superposer un second trio et un second groupe ennemi.
-	var has_heroes := arena.spawns.any(func(spawn):
+	var hero_count := arena.spawns.filter(func(spawn):
 		return spawn != null and spawn.is_hero()
-	)
+	).size()
 	var has_enemies := arena.spawns.any(func(spawn):
 		return spawn != null and spawn.is_enemy()
 	)
-	if has_heroes and has_enemies:
+	var capacity := ArenaHeroStartCapacityService.resolve(target_run)
+	var required_heroes := int(capacity.get("minimum", 0)) \
+		if bool(capacity.get("known", false)) else 3
+	if hero_count >= required_heroes and has_enemies:
 		if sync_runtime:
 			ArenaRuntimeBridge.sync_runtime_resources(arena)
 		return
 	var playable := arena.playable_cells()
-	if playable.size() < 6:
+	if playable.size() < maxi(1, required_heroes):
 		return
 	playable.sort_custom(func(a: Vector2i, b: Vector2i):
 		return _camp_score(a, arena) < _camp_score(b, arena)
 	)
-	for hero_index in range(3):
+	var resolved_heroes: Array = capacity.get("heroes", [])
+	for hero_index in range(hero_count, required_heroes):
+		var kind := mini(hero_index, ArenaSpawnDefinition.Kind.HERO_3)
+		var hero_data := resolved_heroes[hero_index] as UnitData \
+			if hero_index < resolved_heroes.size() else null
 		_add_auto_spawn(
-			arena, playable[hero_index], hero_index, HERO_IDS[hero_index], hero_index
+			arena, playable[hero_index], kind,
+			StringName(hero_data.resource_path) if hero_data != null \
+				and not hero_data.resource_path.is_empty() \
+				else HERO_IDS[hero_index] if hero_index < HERO_IDS.size() else &"run_hero",
+			hero_index
 		)
 	var enemy_candidates := playable.duplicate()
 	enemy_candidates.reverse()

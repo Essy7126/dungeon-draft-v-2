@@ -8,6 +8,7 @@ extends PanelContainer
 signal placeable_selected(entry: Dictionary)
 signal card_action_requested(action: StringName, entry: Dictionary)
 signal state_changed(state: Dictionary)
+signal paint_options_changed(shape: int, size: int, erase: bool)
 
 const FILTERS := [
 	["Tous", -1],
@@ -26,6 +27,9 @@ var search_edit: LineEdit = null
 var filter_buttons: Array[Button] = []
 var cards: HFlowContainer = null
 var empty_label: Label = null
+var shape_option: OptionButton = null
+var size_spin: SpinBox = null
+var erase_toggle: CheckButton = null
 
 var _entries: Array[Dictionary] = []
 var _filter := -1
@@ -63,6 +67,37 @@ func _build() -> void:
 		filters.add_child(button)
 		filter_buttons.append(button)
 	filter_buttons[0].set_pressed_no_signal(true)
+	var paint_row := HBoxContainer.new()
+	paint_row.name = "TerrainLibraryPaintTools"
+	paint_row.add_theme_constant_override("separation", 6)
+	root.add_child(paint_row)
+	var paint_label := Label.new()
+	paint_label.text = "Peindre :"
+	paint_row.add_child(paint_label)
+	shape_option = OptionButton.new()
+	shape_option.name = "TerrainLibraryBrushShape"
+	shape_option.add_item("Pinceau", ArenaStudioCanvas.BrushShape.BRUSH)
+	shape_option.add_item("Rectangle", ArenaStudioCanvas.BrushShape.RECTANGLE)
+	shape_option.add_item("Remplissage contigu", ArenaStudioCanvas.BrushShape.FILL)
+	shape_option.item_selected.connect(func(_index): _emit_paint_options())
+	paint_row.add_child(shape_option)
+	var size_label := Label.new()
+	size_label.text = "Taille"
+	paint_row.add_child(size_label)
+	size_spin = SpinBox.new()
+	size_spin.name = "TerrainLibraryBrushSize"
+	size_spin.min_value = 1
+	size_spin.max_value = 3
+	size_spin.value = 1
+	size_spin.custom_minimum_size.x = 64
+	size_spin.value_changed.connect(func(_value): _emit_paint_options())
+	paint_row.add_child(size_spin)
+	erase_toggle = CheckButton.new()
+	erase_toggle.name = "TerrainLibraryErase"
+	erase_toggle.text = "Effacer"
+	erase_toggle.tooltip_text = "Effacer au clic gauche ; le clic droit reste disponible à tout moment."
+	erase_toggle.toggled.connect(func(_value): _emit_paint_options())
+	paint_row.add_child(erase_toggle)
 	search_edit = LineEdit.new()
 	search_edit.name = "TerrainLibrarySearch"
 	search_edit.placeholder_text = "Rechercher un sol, un obstacle, un départ…"
@@ -85,6 +120,14 @@ func _build() -> void:
 	empty_label.add_theme_color_override("font_color", MUTED)
 	empty_label.visible = false
 	root.add_child(empty_label)
+
+
+func _emit_paint_options() -> void:
+	if shape_option == null or size_spin == null or erase_toggle == null:
+		return
+	paint_options_changed.emit(
+		shape_option.get_selected_id(), int(size_spin.value), erase_toggle.button_pressed
+	)
 
 
 func set_entries(entries: Array[Dictionary]) -> void:

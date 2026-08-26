@@ -1,38 +1,18 @@
-[gd_resource type="Resource" script_class="TerrainPlaceableCatalog" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="TerrainPlaceableCatalog" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/terrain_placeable_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/terrain_placeable_definition.gd" id="2"]
 [ext_resource type="Texture2D" path="res://tools/labs/dynamic_arena/assets/normalized/vortex.png" id="3"]
 
-[sub_resource type="Resource" id="Hero1"]
+[sub_resource type="Resource" id="HeroStartZone"]
 script = ExtResource("2")
-stable_id = &"spawn_hero_1"
-display_name = "Départ du héros 1"
+stable_id = &"hero_start_zone"
+display_name = "Zone de départ des héros"
 family = 2
 placement_kind = 2
-result_in_game = "Le premier héros commence le combat sur cette case."
-badges = PackedStringArray("Départ", "1 case")
+result_in_game = "Un héros de la run peut commencer le combat sur cette case. Ajoutez au moins autant de cases que de héros."
+badges = PackedStringArray("Départ", "Capacité variable")
 payload = {"spawn_kind": 0}
-
-[sub_resource type="Resource" id="Hero2"]
-script = ExtResource("2")
-stable_id = &"spawn_hero_2"
-display_name = "Départ du héros 2"
-family = 2
-placement_kind = 2
-result_in_game = "Le deuxième héros commence le combat sur cette case."
-badges = PackedStringArray("Départ", "1 case")
-payload = {"spawn_kind": 1}
-
-[sub_resource type="Resource" id="Hero3"]
-script = ExtResource("2")
-stable_id = &"spawn_hero_3"
-display_name = "Départ du héros 3"
-family = 2
-placement_kind = 2
-result_in_game = "Le troisième héros commence le combat sur cette case."
-badges = PackedStringArray("Départ", "1 case")
-payload = {"spawn_kind": 2}
 
 [sub_resource type="Resource" id="Enemy"]
 script = ExtResource("2")
@@ -113,4 +93,4 @@ payload = {"visual_variant": &"marker"}
 
 [resource]
 script = ExtResource("1")
-entries = Array[ExtResource("2")]([SubResource("Hero1"), SubResource("Hero2"), SubResource("Hero3"), SubResource("Enemy"), SubResource("EnemyGroup"), SubResource("Summon"), SubResource("Impulse"), SubResource("PortalTwo"), SubResource("PortalMulti"), SubResource("Decoration")])
+entries = Array[ExtResource("2")]([SubResource("HeroStartZone"), SubResource("Enemy"), SubResource("EnemyGroup"), SubResource("Summon"), SubResource("Impulse"), SubResource("PortalTwo"), SubResource("PortalMulti"), SubResource("Decoration")])

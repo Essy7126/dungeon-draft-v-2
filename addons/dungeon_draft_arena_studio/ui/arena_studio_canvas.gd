@@ -74,6 +74,7 @@ var arena: ArenaDefinition = null
 var active_tool := Tool.SELECT
 var brush_shape := BrushShape.BRUSH
 var brush_size := 1
+var erase_mode := false
 var zoom := 1.0
 var pan := Vector2.ZERO
 var show_grid := true
@@ -662,7 +663,7 @@ func _handle_mouse_button(event: InputEventMouseButton) -> void:
 			accept_event()
 			return
 		_painting = true
-		_painting_erase = event.button_index == MOUSE_BUTTON_RIGHT
+		_painting_erase = erase_mode or event.button_index == MOUSE_BUTTON_RIGHT
 		input_router.begin_gesture(_input_mode_for_tool(active_tool), "active_tool")
 		_painted_this_stroke.clear()
 		stroke_started.emit(_action_name())

@@ -31,7 +31,7 @@ func is_enemy() -> bool:
 
 func display_label() -> String:
 	return [
-		"Héros 1", "Héros 2", "Héros 3", "Ennemi", "Groupe ennemi",
+		"Zone de départ des héros", "Zone de départ des héros", "Zone de départ des héros", "Ennemi", "Groupe ennemi",
 		"Zone d'invocation",
 	][kind]
 
