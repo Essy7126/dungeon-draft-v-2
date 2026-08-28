@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cncfkovfisgvg"]
 
-[ext_resource type="Texture2D" path="res://data/items/catalogs/manteau_givre.png" id="1_oyx0c"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_h7lr5"]
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_w222f"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_pj17y"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_4o6dj"]
+[ext_resource type="Texture2D" uid="uid://bb3i0wbel52l2" path="res://data/items/catalogs/manteau_givre.png" id="1_oyx0c"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_h7lr5"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_w222f"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_pj17y"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_4o6dj"]
 
 [sub_resource type="Resource" id="Resource_jixud"]
 script = ExtResource("5_4o6dj")

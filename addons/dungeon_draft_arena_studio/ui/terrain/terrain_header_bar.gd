@@ -9,6 +9,7 @@ signal guided_toggled(value: bool)
 signal preview_selected(index: int)
 signal validation_requested
 signal test_requested
+signal encounters_requested
 signal integrate_requested
 
 var home_button: Button
@@ -19,6 +20,8 @@ var preview_option: OptionButton
 var document_state_label: Label
 var validation_button: Button
 var test_button: Button
+var encounters_button: Button
+var encounters_help_label: Label
 var integrate_button: Button
 
 
@@ -87,11 +90,27 @@ func _init() -> void:
 		"Tester la version en cours sans rien publier"
 	)
 	test_button.pressed.connect(test_requested.emit)
+	encounters_button = _action(
+		actions, "TerrainCreateEncountersButton",
+		RoomDraftAuthority.ENCOUNTERS_ACTION_LABEL,
+		RoomDraftAuthority.ENCOUNTERS_ACTION_HELP
+	)
+	encounters_button.pressed.connect(encounters_requested.emit)
 	integrate_button = _action(
-		actions, "TerrainIntegrateButton", "Intégrer",
-		"Préparer le plan d'intégration dans une salle"
+		actions, "TerrainIntegrateButton", "Intégrer à la partie",
+		"Dernière étape : publier le terrain et ses affrontements dans une salle"
 	)
 	integrate_button.pressed.connect(integrate_requested.emit)
+
+	# L'aide de l'action principale reste lisible sans survol : à 15 ans, une
+	# infobulle seule ne suffit pas à comprendre ce que fait le bouton.
+	encounters_help_label = Label.new()
+	encounters_help_label.name = "TerrainCreateEncountersHelp"
+	encounters_help_label.text = RoomDraftAuthority.ENCOUNTERS_ACTION_HELP
+	encounters_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	encounters_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	encounters_help_label.add_theme_color_override("font_color", Color(0.72, 0.77, 0.84))
+	box.add_child(encounters_help_label)
 
 	document_state_label = Label.new()
 	document_state_label.name = "TerrainDocumentState"

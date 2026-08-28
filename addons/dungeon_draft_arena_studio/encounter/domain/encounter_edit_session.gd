@@ -18,6 +18,82 @@ var selected_room_index := 0
 var selected_wave_index := 0
 var shared_edit_acknowledged: Dictionary = {}
 var last_save_report := {}
+var opening_fingerprint := ""
+var saved_fingerprint := ""
+
+## --- Mode brouillon de salle ------------------------------------------------
+## Dans ce mode, l'autorité éditée n'est pas une RunData canonique mais le
+## brouillon de salle de Terrain (une ArenaDefinition, qui hérite de RoomData).
+## `working_run` n'est alors qu'un porteur en mémoire — voir RoomDraftAuthority.
+## Aucune écriture canonique n'est possible tant que ce mode est actif.
+var room_draft_mode := false
+var draft_room: RoomData = null
+var context_run: RunData = null
+var context_run_path := ""
+## Copie profonde de la moitié Rencontres à l'ouverture puis au dernier
+## brouillon confirmé. DISCARD restaure ce point sans relire de fichier.
+var _draft_opening_room: RoomData = null
+var _draft_opening_to_canonical := {}
+var _runtime_room: RoomData = null
+var _runtime_room_fingerprint := ""
+
+
+## Ouvre le brouillon de salle courant. `draft` est **l'instance même** éditée
+## par Terrain : les deux domaines écrivent dans une seule autorité, sans
+## synchronisation implicite au changement d'onglet. `context` n'est lu que pour
+## ses règles de partie et n'est jamais modifié.
+func open_room_draft(
+		draft: RoomData,
+		context: RunData,
+		context_path := "",
+		gameplay_mapping := {}
+	) -> bool:
+	if draft == null:
+		return false
+	var carrier := RoomDraftAuthority.build_context_run(draft, context)
+	if carrier == null:
+		return false
+	room_draft_mode = true
+	draft_room = draft
+	context_run = context
+	context_run_path = context_path if not context_path.is_empty() else (
+		context.resource_path if context != null else ""
+	)
+	source_run = null
+	source_run_path = ""
+	working_run = carrier
+	source_to_work = (gameplay_mapping.get("source_to_work", {}) as Dictionary).duplicate()
+	work_to_source = (gameplay_mapping.get("work_to_source", {}) as Dictionary).duplicate()
+	selected_room_index = 0
+	selected_wave_index = 0
+	dirty_resources.clear()
+	new_resource_paths.clear()
+	shared_edit_acknowledged.clear()
+	validation_messages.clear()
+	_capture_sources()
+	_capture_draft_checkpoint()
+	_capture_opening_fingerprint()
+	return true
+
+
+func _capture_draft_checkpoint() -> void:
+	_draft_opening_room = RoomData.new()
+	var opening := RoomDraftAuthority.isolate_gameplay_into(_draft_opening_room, draft_room)
+	_draft_opening_to_canonical.clear()
+	var opening_to_draft := opening.get("work_to_source", {}) as Dictionary
+	for opening_resource in opening_to_draft:
+		var draft_resource: Variant = opening_to_draft[opening_resource]
+		if work_to_source.has(draft_resource):
+			_draft_opening_to_canonical[opening_resource] = work_to_source[draft_resource]
+
+
+func close_room_draft() -> void:
+	room_draft_mode = false
+	draft_room = null
+	context_run = null
+	context_run_path = ""
+	_draft_opening_room = null
+	_draft_opening_to_canonical.clear()
 
 
 func open(run: RunData, run_path := "") -> bool:
@@ -26,10 +102,12 @@ func open(run: RunData, run_path := "") -> bool:
 	var copied := EncounterCopyService.copy_run(run)
 	if copied.is_empty():
 		return false
+	close_room_draft()
 	source_run = run
 	working_run = copied["run"]
 	source_to_work = copied["source_to_work"]
 	work_to_source = copied["work_to_source"]
+	_coalesce_external_encounters()
 	source_run_path = run_path if not run_path.is_empty() else run.resource_path
 	selected_room_index = 0
 	selected_wave_index = 0
@@ -38,10 +116,63 @@ func open(run: RunData, run_path := "") -> bool:
 	shared_edit_acknowledged.clear()
 	validation_messages.clear()
 	_capture_sources()
+	_capture_opening_fingerprint()
 	return true
 
 
+## IGNORE_DEEP peut charger plusieurs instances d'un même fichier externe.
+## Elles désignent néanmoins une seule rencontre canonique. Conserver ce
+## partage dans la copie sans fusionner les rencontres embarquées sans chemin.
+func _coalesce_external_encounters() -> void:
+	var by_path := {}
+	var replacements := {}
+	for source in source_to_work.keys():
+		if not source is EncounterDefinition or source.resource_path.is_empty() \
+				or "::" in source.resource_path:
+			continue
+		var work: Resource = source_to_work[source]
+		if by_path.has(source.resource_path):
+			replacements[work] = by_path[source.resource_path]
+			source_to_work[source] = by_path[source.resource_path]
+			work_to_source.erase(work)
+		else:
+			by_path[source.resource_path] = work
+	for room in working_run.rooms:
+		if room == null:
+			continue
+		room.encounter_definition = replacements.get(room.encounter_definition, room.encounter_definition)
+		for wave in room.waves:
+			if wave != null:
+				wave.encounter_definition = replacements.get(wave.encounter_definition, wave.encounter_definition)
+
+
 func discard() -> bool:
+	if room_draft_mode:
+		# Le brouillon reste l'autorité : on rétablit sa moitié Rencontres telle
+		# qu'elle était à l'ouverture, sans jamais recharger de fichier canonique.
+		if draft_room == null or _draft_opening_room == null:
+			return false
+		var restored := RoomDraftAuthority.isolate_gameplay_into(
+			draft_room, _draft_opening_room
+		)
+		source_to_work.clear()
+		work_to_source.clear()
+		var restored_to_opening := restored.get("work_to_source", {}) as Dictionary
+		for restored_resource in restored_to_opening:
+			var opening_resource: Variant = restored_to_opening[restored_resource]
+			if _draft_opening_to_canonical.has(opening_resource):
+				var canonical: Variant = _draft_opening_to_canonical[opening_resource]
+				source_to_work[canonical] = restored_resource
+				work_to_source[restored_resource] = canonical
+		dirty_resources.clear()
+		new_resource_paths.clear()
+		shared_edit_acknowledged.clear()
+		validation_messages.clear()
+		selected_wave_index = 0
+		select(0, 0)
+		_capture_sources()
+		saved_fingerprint = document_fingerprint()
+		return true
 	return open(source_run, source_run_path) if source_run != null else false
 
 
@@ -51,9 +182,18 @@ func restore_recovery(
 		canonical_path: String,
 		manifest: Dictionary
 	) -> bool:
-	if recovered_run == null or canonical_run == null \
-			or recovered_run.rooms.size() != canonical_run.rooms.size():
+	if recovered_run == null or canonical_run == null:
 		return false
+	var by_path := {}
+	var canonical_copy := EncounterCopyService.copy_run(canonical_run)
+	for source in canonical_copy.get("source_to_work", {}):
+		if source != null and not source.resource_path.is_empty():
+			by_path[source.resource_path] = source
+	var room_sources: Array = manifest.get("room_sources", [])
+	var encounter_sources: Dictionary = manifest.get("encounter_sources", {})
+	for path in room_sources + encounter_sources.values():
+		if not str(path).is_empty() and not by_path.has(path):
+			return false
 	if not open(canonical_run, canonical_path):
 		return false
 	working_run = recovered_run
@@ -69,28 +209,46 @@ func restore_recovery(
 			new_usage_paths[_usage_key(
 				int(usage.get("room", -1)), int(usage.get("wave", -2))
 			)] = str(descriptor.get("path", ""))
-	for room_index in range(canonical_run.rooms.size()):
-		var source_room := canonical_run.rooms[room_index]
+	for room_index in range(recovered_run.rooms.size()):
+		var source_room: RoomData = by_path.get(room_sources[room_index]) \
+			if room_index < room_sources.size() else (
+				canonical_run.rooms[room_index] if room_index < canonical_run.rooms.size() else null)
 		var work_room := recovered_run.rooms[room_index]
-		if source_room == null or work_room == null:
+		if work_room == null:
 			continue
-		source_to_work[source_room] = work_room
-		work_to_source[work_room] = source_room
+		if source_room != null:
+			source_to_work[source_room] = work_room
+			work_to_source[work_room] = source_room
+		var source_encounter: EncounterDefinition = by_path.get(encounter_sources.get(_usage_key(room_index, -1), "")) \
+			if manifest.has("encounter_sources") else (source_room.encounter_definition if source_room != null else null)
 		_restore_encounter_mapping(
-			source_room.encounter_definition, work_room.encounter_definition,
+			source_encounter, work_room.encounter_definition,
 			room_index, -1, new_usage_paths
 		)
-		for wave_index in range(mini(source_room.waves.size(), work_room.waves.size())):
-			var source_wave := source_room.waves[wave_index]
+		for wave_index in range(work_room.waves.size()):
+			var source_wave: RoomWaveData = source_room.waves[wave_index] \
+				if source_room != null and wave_index < source_room.waves.size() else null
 			var work_wave := work_room.waves[wave_index]
-			if source_wave == null or work_wave == null:
+			if work_wave == null:
 				continue
-			source_to_work[source_wave] = work_wave
-			work_to_source[work_wave] = source_wave
+			if source_wave != null:
+				source_to_work[source_wave] = work_wave
+				work_to_source[work_wave] = source_wave
+			source_encounter = by_path.get(encounter_sources.get(_usage_key(room_index, wave_index), "")) \
+				if manifest.has("encounter_sources") else (source_wave.encounter_definition if source_wave != null else null)
 			_restore_encounter_mapping(
-				source_wave.encounter_definition, work_wave.encounter_definition,
+				source_encounter, work_wave.encounter_definition,
 				room_index, wave_index, new_usage_paths
 			)
+	# Les nouvelles vagues n'ont pas d'équivalent canonique à parcourir.
+	# Réappliquer leurs destinations depuis les usages du manifeste vérifié.
+	for descriptor_value in manifest.get("new_encounters", []):
+		var descriptor := descriptor_value as Dictionary
+		for usage_value in descriptor.get("usages", []):
+			var usage := usage_value as Dictionary
+			var encounter := _encounter_at_usage(int(usage.room), int(usage.wave))
+			if encounter != null:
+				new_resource_paths[encounter] = str(descriptor.path)
 	dirty_resources.clear()
 	for room_index_value in manifest.get("dirty_rooms", []):
 		var room_index := int(room_index_value)
@@ -112,11 +270,76 @@ func restore_recovery(
 	var recovered_fingerprints = manifest.get("source_fingerprints", {})
 	if recovered_fingerprints is Dictionary:
 		source_fingerprints = recovered_fingerprints.duplicate(true)
+		# JSON représente les nombres en flottants ; l'horodatage disque est
+		# entier. Comparer le même type sans masquer un vrai conflit externe.
+		for path in source_fingerprints:
+			var fingerprint: Dictionary = source_fingerprints[path]
+			if fingerprint.has("modified"):
+				fingerprint["modified"] = int(fingerprint.modified)
 	return true
 
 
 func is_dirty() -> bool:
-	return not dirty_resources.is_empty() or not new_resource_paths.is_empty()
+	return working_run != null and document_fingerprint() != saved_fingerprint
+
+
+## Numérotation par parcours du graphe : deux copies indépendantes ont la même
+## empreinte, mais partager une rencontre et en dupliquer le contenu diffèrent.
+## Les identités mémoire servent seulement à reconnaître les arêtes du graphe,
+## jamais à produire la valeur sérialisée.
+func document_fingerprint() -> String:
+	var root: Variant = RoomDraftAuthority.gameplay_state(draft_room) \
+		if room_draft_mode else working_run
+	return JSON.stringify(_document_value(root, {})).sha256_text()
+
+
+func _document_value(value: Variant, seen: Dictionary) -> Variant:
+	if value is Resource:
+		var resource := value as Resource
+		var editable := resource is RunData or resource is RoomData \
+			or resource is RoomWaveData or resource is EncounterDefinition
+		if not editable and not resource.resource_path.is_empty() \
+				and not "::" in resource.resource_path:
+			return {"external": resource.resource_path}
+		if seen.has(resource):
+			return {"ref": seen[resource]}
+		var ordinal := seen.size()
+		seen[resource] = ordinal
+		var fields := {}
+		var names := RoomIntegrationFieldPolicy.stored_property_names(resource)
+		names.sort()
+		for property in names:
+			if property in [&"resource_name", &"resource_local_to_scene", &"resource_scene_unique_id"]:
+				continue
+			fields[str(property)] = _document_value(resource.get(property), seen)
+		return {"id": ordinal, "fields": fields,
+			"publication_path": str(new_resource_paths.get(resource, ""))}
+	if value is Dictionary:
+		var entries := []
+		var keys: Array = value.keys()
+		keys.sort_custom(func(a, b): return var_to_str(a) < var_to_str(b))
+		for key in keys:
+			entries.append([_document_value(key, seen), _document_value(value[key], seen)])
+		return {"dictionary": entries}
+	if value is Array:
+		var entries := []
+		for entry in value:
+			entries.append(_document_value(entry, seen))
+		return entries
+	return var_to_str(value)
+
+
+func _capture_opening_fingerprint() -> void:
+	opening_fingerprint = document_fingerprint()
+	saved_fingerprint = opening_fingerprint
+
+
+## Un brouillon confirmé devient le point propre sans oublier les fichiers
+## restant à publier ni rafraîchir les empreintes des sources canoniques.
+func confirm_draft_saved() -> void:
+	saved_fingerprint = document_fingerprint()
+	if room_draft_mode:
+		_capture_draft_checkpoint()
 
 
 func select(room_index: int, wave_index: int = 0) -> bool:
@@ -126,6 +349,19 @@ func select(room_index: int, wave_index: int = 0) -> bool:
 	var room := current_room()
 	selected_wave_index = clampi(wave_index, 0, maxi(0, room.get_wave_count() - 1))
 	return true
+
+
+## Salle telle que les services runtime doivent la lire : grille, visuel et
+## scène de combat reconstruits. Hors brouillon, c'est la salle elle-même.
+## Cette lecture ne mute jamais l'autorité.
+func runtime_room() -> RoomData:
+	if not room_draft_mode or draft_room == null:
+		return current_room()
+	var fingerprint := RoomDraftAuthority.fingerprint(draft_room)
+	if _runtime_room == null or _runtime_room_fingerprint != fingerprint:
+		_runtime_room = RoomDraftAuthority.runtime_projection(draft_room)
+		_runtime_room_fingerprint = fingerprint
+	return _runtime_room
 
 
 func current_room() -> RoomData:
@@ -184,6 +420,7 @@ func mark_clean() -> void:
 	new_resource_paths.clear()
 	shared_edit_acknowledged.clear()
 	_capture_sources()
+	saved_fingerprint = document_fingerprint()
 
 
 func set_current_encounter(encounter: EncounterDefinition) -> bool:

@@ -14,7 +14,6 @@ script = ExtResource("1_t8061")
 script = ExtResource("5_duijt")
 amount = 5
 modifier_name = "Onde renforcée"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_ksw1x"]
 script = ExtResource("3_1swla")
@@ -24,7 +23,6 @@ display_name = "Onde renforcée"
 description = "+5 dégâts à toutes les cibles de la ligne."
 discipline_id = &"mage_geomancy"
 rank = 2
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_s3jc0")])
 
 [sub_resource type="Resource" id="Resource_4li21"]
@@ -32,7 +30,6 @@ script = ExtResource("5_duijt")
 effect_type = 18
 amount = 1
 modifier_name = "Recul tectonique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_xxxig"]
 script = ExtResource("3_1swla")
@@ -42,7 +39,6 @@ display_name = "Recul tectonique"
 description = "+1 case de poussée."
 discipline_id = &"mage_geomancy"
 rank = 2
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_4li21")])
 
 [sub_resource type="Resource" id="Resource_e0fjg"]
@@ -61,7 +57,6 @@ status_group = &"mage_geomancy_vulnerability"
 status_name = "Vulnérabilité physique"
 status_damage_type = 0
 modifier_name = "Fracture"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_aiox8"]
 script = ExtResource("3_1swla")
@@ -71,7 +66,6 @@ display_name = "Fracture"
 description = "Les cibles subissent +2 dégâts sur les 2 prochaines attaques."
 discipline_id = &"mage_geomancy"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_emwxe")])
 
 [sub_resource type="Resource" id="Resource_6t37m"]
@@ -79,7 +73,6 @@ script = ExtResource("5_duijt")
 effect_type = 5
 amount = 2
 modifier_name = "Faille prolongée"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_lfd3w"]
 script = ExtResource("3_1swla")
@@ -89,7 +82,6 @@ display_name = "Faille prolongée"
 description = "+2 portée."
 discipline_id = &"mage_geomancy"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_6t37m")])
 
 [sub_resource type="Resource" id="Resource_egdnd"]
@@ -97,7 +89,6 @@ script = ExtResource("5_duijt")
 effect_type = 20
 amount = 4
 modifier_name = "Fracasseur"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_s8rq5"]
 script = ExtResource("3_1swla")
@@ -107,7 +98,6 @@ display_name = "Fracasseur"
 description = "Une collision inflige 4 dégâts supplémentaires."
 discipline_id = &"mage_geomancy"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_egdnd")])
 
 [sub_resource type="Resource" id="Resource_ku1ux"]
@@ -118,7 +108,6 @@ duration = 1
 status_group = &"mage_geomancy_slow"
 status_name = "Entrave"
 modifier_name = "Éboulement"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_mlnhy"]
 script = ExtResource("3_1swla")
@@ -128,7 +117,6 @@ display_name = "Éboulement"
 description = "Les cibles touchées perdent 1 PM au prochain tour."
 discipline_id = &"mage_geomancy"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_ku1ux")])
 
 [sub_resource type="Resource" id="Resource_frmwp"]
@@ -147,7 +135,6 @@ status_group = &"mage_geomancy_vulnerability"
 status_name = "Vulnérabilité physique"
 status_damage_type = 0
 modifier_name = "Brèche profonde"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_le6vx"]
 script = ExtResource("3_1swla")
@@ -157,7 +144,6 @@ display_name = "Brèche profonde"
 description = "Le bonus de dégâts reçus passe à +4."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_pywcq")])
 
 [sub_resource type="Resource" id="Resource_usts8"]
@@ -170,7 +156,6 @@ status_group = &"mage_geomancy_vulnerability"
 status_name = "Vulnérabilité physique"
 status_damage_type = 0
 modifier_name = "Fracture durable"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_msmj0"]
 script = ExtResource("3_1swla")
@@ -180,7 +165,6 @@ display_name = "Fracture durable"
 description = "Le bonus s’applique aux 3 prochaines attaques."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_usts8")])
 
 [sub_resource type="Resource" id="Resource_3r48v"]
@@ -188,7 +172,6 @@ script = ExtResource("5_duijt")
 effect_type = 5
 amount = 2
 modifier_name = "Portée tellurique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_hrjko"]
 script = ExtResource("3_1swla")
@@ -198,14 +181,12 @@ display_name = "Portée tellurique"
 description = "+2 portée supplémentaire."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_3r48v")])
 
 [sub_resource type="Resource" id="Resource_c15e3"]
 script = ExtResource("5_duijt")
 amount = 2
 modifier_name = "Secousse puissante"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_6bqtx"]
 script = ExtResource("3_1swla")
@@ -215,7 +196,6 @@ display_name = "Secousse puissante"
 description = "+2 dégâts supplémentaires."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_c15e3")])
 
 [sub_resource type="Resource" id="Resource_nqh5y"]
@@ -223,7 +203,6 @@ script = ExtResource("5_duijt")
 effect_type = 20
 amount = 4
 modifier_name = "Écrasement"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_1xej1"]
 script = ExtResource("3_1swla")
@@ -233,7 +212,6 @@ display_name = "Écrasement"
 description = "+4 dégâts de collision supplémentaires."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_nqh5y")])
 
 [sub_resource type="Resource" id="Resource_grx0g"]
@@ -241,7 +219,6 @@ script = ExtResource("5_duijt")
 effect_type = 18
 amount = 1
 modifier_name = "Projection"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_82e12"]
 script = ExtResource("3_1swla")
@@ -251,7 +228,6 @@ display_name = "Projection"
 description = "+1 case de poussée."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_grx0g")])
 
 [sub_resource type="Resource" id="Resource_rmhmx"]
@@ -262,7 +238,6 @@ duration = 1
 status_group = &"mage_geomancy_slow"
 status_name = "Entrave"
 modifier_name = "Terrain instable"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_0yk86"]
 script = ExtResource("3_1swla")
@@ -272,14 +247,12 @@ display_name = "Terrain instable"
 description = "La perte passe à −2 PM."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_rmhmx")])
 
 [sub_resource type="Resource" id="Resource_q82ii"]
 script = ExtResource("5_duijt")
 amount = 2
 modifier_name = "Secousse"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_m554b"]
 script = ExtResource("3_1swla")
@@ -289,7 +262,6 @@ display_name = "Secousse"
 description = "+2 dégâts directs."
 discipline_id = &"mage_geomancy"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_q82ii")])
 
 [sub_resource type="Resource" id="Resource_nypbv"]
@@ -302,7 +274,6 @@ choices = Array[ExtResource("2_0g0cx")]([SubResource("Resource_le6vx"), SubResou
 script = ExtResource("5_duijt")
 amount = 5
 modifier_name = "Cataclysme"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_rbwx2"]
 script = ExtResource("5_duijt")
@@ -314,7 +285,6 @@ status_group = &"mage_geomancy_vulnerability"
 status_name = "Vulnérabilité physique"
 status_damage_type = 0
 modifier_name = "Cataclysme"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_abtr4"]
 script = ExtResource("3_1swla")
@@ -324,7 +294,6 @@ display_name = "Cataclysme"
 description = "+5 dégâts de ligne et +4 dégâts reçus sur les 2 prochaines attaques."
 discipline_id = &"mage_geomancy"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_n6joj"), SubResource("Resource_rbwx2")])
 
 [sub_resource type="Resource" id="Resource_37wx7"]
@@ -332,13 +301,11 @@ script = ExtResource("5_duijt")
 effect_type = 5
 amount = 4
 modifier_name = "Faille majeure"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_ex2pe"]
 script = ExtResource("5_duijt")
 amount = 3
 modifier_name = "Faille majeure"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_5q8vr"]
 script = ExtResource("3_1swla")
@@ -348,7 +315,6 @@ display_name = "Faille majeure"
 description = "+4 portée totale supplémentaire et +3 dégâts."
 discipline_id = &"mage_geomancy"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_37wx7"), SubResource("Resource_ex2pe")])
 
 [sub_resource type="Resource" id="Resource_dbbct"]
@@ -356,14 +322,12 @@ script = ExtResource("5_duijt")
 effect_type = 19
 amount = 3
 modifier_name = "Impact tectonique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_fshxh"]
 script = ExtResource("5_duijt")
 effect_type = 21
 amount = 8
 modifier_name = "Impact tectonique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_t0yl8"]
 script = ExtResource("3_1swla")
@@ -373,7 +337,6 @@ display_name = "Impact tectonique"
 description = "Poussée totale de 3 cases et 8 dégâts de collision."
 discipline_id = &"mage_geomancy"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_dbbct"), SubResource("Resource_fshxh")])
 
 [sub_resource type="Resource" id="Resource_f0sqs"]
@@ -381,7 +344,6 @@ script = ExtResource("5_duijt")
 effect_type = 19
 amount = 2
 modifier_name = "Glissement de terrain"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_uxrcm"]
 script = ExtResource("5_duijt")
@@ -391,13 +353,11 @@ duration = 1
 status_group = &"mage_geomancy_slow"
 status_name = "Terrain instable"
 modifier_name = "Glissement de terrain"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_o5u7w"]
 script = ExtResource("5_duijt")
 amount = 3
 modifier_name = "Glissement de terrain"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_8pt4e"]
 script = ExtResource("3_1swla")
@@ -407,7 +367,6 @@ display_name = "Glissement de terrain"
 description = "Poussée de 2 cases, −2 PM et +3 dégâts."
 discipline_id = &"mage_geomancy"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_4yf0j")]([SubResource("Resource_f0sqs"), SubResource("Resource_uxrcm"), SubResource("Resource_o5u7w")])
 
 [sub_resource type="Resource" id="Resource_7y6my"]

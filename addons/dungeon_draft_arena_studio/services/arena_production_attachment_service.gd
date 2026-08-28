@@ -15,13 +15,20 @@ const ACTIONS: Array[StringName] = [
 ]
 
 
+## `options.publish_draft_gameplay` est la seule façon de publier le gameplay du
+## brouillon avec « Mettre à jour ». Elle n'est jamais déduite : sans elle, le
+## comportement historique — mettre à jour le terrain en conservant le gameplay
+## du disque — reste strictement inchangé.
 static func plan(
 		run_data: RunData,
 		action: StringName,
 		requested_index: int,
 		arena_path := "",
-		graph: StudioReferenceGraphService = null
+		graph: StudioReferenceGraphService = null,
+		options := {}
 	) -> Dictionary:
+	var publish_draft_gameplay := action == UPDATE \
+		and bool(options.get("publish_draft_gameplay", false))
 	if action not in ACTIONS:
 		return {"ok": false, "error": "Action de rattachement inconnue."}
 	if action == NONE:
@@ -113,7 +120,8 @@ static func plan(
 		"target_from_produced_bundle": target_from_produced_bundle,
 		"run_owned_root": ArenaRunOwnedRoomPathPolicy.run_owned_root_for(run_data),
 		"run_will_change": run_will_change,
-		"preserves_gameplay": action == UPDATE,
+		"preserves_gameplay": action == UPDATE and not publish_draft_gameplay,
+		"publish_draft_gameplay": publish_draft_gameplay,
 		"affected_files": affected_files,
 		"replaced_path": run_data.rooms[target].resource_path \
 			if action in [REPLACE, UPDATE] and target < before_count else "",
@@ -125,9 +133,12 @@ static func attach_and_save(
 		run_data: RunData,
 		action: StringName,
 		requested_index: int,
-		graph: StudioReferenceGraphService = null
+		graph: StudioReferenceGraphService = null,
+		options := {}
 	) -> Dictionary:
-	var attachment_plan := plan(run_data, action, requested_index, arena_path, graph)
+	var attachment_plan := plan(
+		run_data, action, requested_index, arena_path, graph, options
+	)
 	if not attachment_plan.get("ok", false) or action == NONE:
 		return attachment_plan.merged({"saved": action == NONE}, true)
 	var produced := ResourceLoader.load(
@@ -264,13 +275,22 @@ static func _update_and_save(
 			"target_unknown": target_coverage.get("unknown", []),
 			"plan": attachment_plan,
 		}
+	# Intention explicite : publier la salle complète, gameplay du brouillon
+	# compris. Sans elle, `gameplay_before` reste celui du disque et toutes les
+	# vérifications ci-dessous continuent d'exiger sa préservation exacte.
+	var publish_draft_gameplay := bool(
+		attachment_plan.get("publish_draft_gameplay", false)
+	)
+	var gameplay_reference: RoomData = produced if publish_draft_gameplay else target_room
 	var gameplay_before := RoomIntegrationFieldPolicy.signature(
-		target_room, RoomIntegrationFieldPolicy.GAMEPLAY_OWNED
+		gameplay_reference, RoomIntegrationFieldPolicy.GAMEPLAY_OWNED
 	)
 	var identity_before := RoomIntegrationFieldPolicy.signature(
 		target_room, RoomIntegrationFieldPolicy.IDENTITY_OWNED
 	)
-	var merged := RoomIntegrationFieldPolicy.merge_arena_into_room(produced, target_room)
+	var merged := RoomIntegrationFieldPolicy.merge_draft_into_room(produced, target_room) \
+		if publish_draft_gameplay \
+		else RoomIntegrationFieldPolicy.merge_arena_into_room(produced, target_room)
 	if merged == null:
 		return {"ok": false, "error": "La fusion Arena/Gameplay a échoué.", "plan": attachment_plan}
 	var integrated_path := str(attachment_plan.get("integrated_room_path", ""))
@@ -383,7 +403,8 @@ static func _update_and_save(
 		"reloaded_run": verified_run,
 		"reloaded_room": verified_room,
 		"run_saved": bool(attachment_plan.get("run_will_change", false)),
-		"preserved_gameplay": true,
+		"preserved_gameplay": not publish_draft_gameplay,
+		"published_draft_gameplay": publish_draft_gameplay,
 		"copy_on_write": bool(attachment_plan.get("copy_on_write", false)),
 		"materialized_run_owned": materialize_run_owned,
 	}

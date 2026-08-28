@@ -13,6 +13,11 @@ var is_new_document := false
 var topology_generation := 0
 var topology_hash := ""
 var history := StudioHistoryController.new()
+## Correspondance source ↔ copie des Resources de gameplay du brouillon. Elle
+## permet à Rencontres de distinguer une rencontre déjà canonique d'une
+## rencontre créée dans le brouillon, sans jamais partager l'instance source.
+var gameplay_source_to_work := {}
+var gameplay_work_to_source := {}
 var _runtime_projection: ArenaDefinition = null
 var _runtime_projection_fingerprint := ""
 var editor_state := {
@@ -47,6 +52,12 @@ func open(
 	if not working_arena.restore_snapshot(source.to_snapshot()):
 		working_arena = null
 		return false
+	# to_snapshot() ne transporte que le chemin de la rencontre : la moitié
+	# Rencontres du brouillon est reprise séparément, en copie profonde, pour que
+	# la working copy porte la salle complète sans toucher aux Resources sources.
+	var isolation := RoomDraftAuthority.isolate_gameplay_into(working_arena, source)
+	gameplay_source_to_work = isolation.get("source_to_work", {}) as Dictionary
+	gameplay_work_to_source = isolation.get("work_to_source", {}) as Dictionary
 	working_arena.authoring_document = true
 	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
 	_invalidate_runtime_projection()
@@ -71,8 +82,13 @@ func apply_snapshot(snapshot: Dictionary) -> void:
 	var before_hash := topology_hash
 	if working_arena == null:
 		working_arena = ArenaDefinition.new()
+	# L'historique de Terrain ne possède que les champs de terrain. La moitié
+	# Rencontres du brouillon est conservée telle quelle : Annuler/Rétablir dans
+	# un domaine ne doit jamais modifier l'autre.
+	var gameplay := RoomDraftAuthority.gameplay_state(working_arena)
 	working_arena.authoring_document = false
 	working_arena.restore_snapshot(snapshot)
+	RoomDraftAuthority.restore_gameplay_state(working_arena, gameplay)
 	working_arena.authoring_document = true
 	ArenaRuntimeBridge.sync_runtime_resources(working_arena)
 	_invalidate_runtime_projection()

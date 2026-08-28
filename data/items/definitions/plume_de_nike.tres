@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c3a7wie2unn54"]
 
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="1_128wr"]
-[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="2_cgjbq"]
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_bonkd"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_lswsj"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_otyv1"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="1_128wr"]
+[ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="2_cgjbq"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_bonkd"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_lswsj"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_otyv1"]
 
 [sub_resource type="Resource" id="Resource_qwa2g"]
 script = ExtResource("2_cgjbq")

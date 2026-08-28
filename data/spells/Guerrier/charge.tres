@@ -4,13 +4,12 @@
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_b5at6"]
 [ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="2_modifier"]
 [ext_resource type="Texture2D" uid="uid://3x280qssvstq" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="3_icon"]
-[ext_resource type="Resource" path="res://data/characters/warrior/disciplines/assault.tres" id="4_tree"]
+[ext_resource type="Resource" uid="uid://0ulosbvctw75" path="res://data/characters/warrior/disciplines/assault.tres" id="4_tree"]
 
 [sub_resource type="Resource" id="MoveCasterModifier"]
 script = ExtResource("2_modifier")
 effect_type = 29
 modifier_name = "Déplacement de Charge"
-target_spell_id = &""
 
 [resource]
 script = ExtResource("1_spell")

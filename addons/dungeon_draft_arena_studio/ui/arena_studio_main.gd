@@ -279,7 +279,6 @@ var production_validation_text: RichTextLabel
 var production_diagnostic_actions: HFlowContainer
 var production_test_now_button: Button
 var production_create_border_button: Button
-var production_open_encounters_button: Button
 var production_confirm_alignment_button: Button
 var production_reject_alignment_button: Button
 var _art_alignment_decision := -1
@@ -313,6 +312,11 @@ var bundle_resolution_dialog: ConfirmationDialog
 var bundle_resolution_confirmation_text: RichTextLabel
 var _pending_bundle_resolution_action: StringName = &""
 var _integration_running := false
+## Action principale « Créer les combats de la salle » de l'en-tête Terrain.
+var create_encounters_button: Button
+## Intention explicite de publication du gameplay du brouillon. Décochée par
+## défaut : « Mettre à jour » conserve le gameplay du disque tant qu'elle l'est.
+var publish_draft_gameplay_check: CheckBox
 var _pending_integration_warning_flow: StringName = &""
 var _pending_integration_warnings: Array[Dictionary] = []
 var migration_dialog: ConfirmationDialog
@@ -668,7 +672,9 @@ func _build_header() -> PanelContainer:
 	header.preview_selected.connect(_on_preview_option_selected)
 	header.validation_requested.connect(_open_validation_drawer)
 	header.test_requested.connect(test_arena)
+	header.encounters_requested.connect(open_room_encounters)
 	header.integrate_requested.connect(show_production_wizard)
+	create_encounters_button = header.encounters_button
 	home_button = header.home_button
 	new_terrain_button = header.new_terrain_button
 	open_terrain_button = header.open_terrain_button
@@ -2157,7 +2163,7 @@ func primary_action_controls() -> Array[Control]:
 	var result: Array[Control] = []
 	for control in [
 		home_button, new_terrain_button, open_terrain_button, guided_toggle,
-		preview_option, inspector_drawer_button,
+		preview_option, inspector_drawer_button, create_encounters_button,
 	]:
 		if control != null:
 			result.append(control as Control)
@@ -2344,9 +2350,14 @@ func _render_destination_plan(plan: Dictionary) -> void:
 	var affected_files := PackedStringArray()
 	for path in plan.get("affected_files", []):
 		affected_files.append(str(path))
+	var publishes_draft := bool(plan.get("publish_draft_gameplay", false))
 	var result_label := "Production isolée"
 	if action == ArenaProductionAttachmentService.UPDATE:
-		result_label = "%s / Salle %d — gameplay conservé" % [run_label, room_number]
+		result_label = "%s / Salle %d — %s" % [
+			run_label, room_number,
+			"terrain et affrontements du brouillon" if publishes_draft \
+				else "gameplay conservé",
+		]
 	elif action == ArenaProductionAttachmentService.REPLACE:
 		result_label = "%s / Salle %d — remplacement complet" % [run_label, room_number]
 	elif action == ArenaProductionAttachmentService.APPEND:
@@ -2369,6 +2380,7 @@ func _render_destination_plan(plan: Dictionary) -> void:
 	])
 	for path in affected_files:
 		lines.append("• %s" % path)
+	lines.append_array(_gameplay_decision_lines(plan))
 	var gate := plan.get("gate_report", {}) as Dictionary
 	var readiness := plan.get("readiness_report") as ArenaReadinessReport
 	var resolution := plan.get("bundle_resolution", {}) as Dictionary
@@ -2447,6 +2459,40 @@ func _render_destination_plan(plan: Dictionary) -> void:
 		destination_resolve_button.tooltip_text = str(resolution.get(
 			"explanation", "Examiner et résoudre le dossier existant."
 		))
+
+
+## Ce que le plan de confirmation doit toujours dire, en clair : ce que devient
+## le gameplay existant, quelles rencontres du brouillon seront créées, et
+## lesquelles sont déjà partagées avec d'autres salles.
+func _gameplay_decision_lines(plan: Dictionary) -> PackedStringArray:
+	var lines := PackedStringArray()
+	var decision := plan.get("gameplay_decision", {}) as Dictionary
+	if not decision.is_empty():
+		lines.append("")
+		lines.append("[b]Affrontements[/b] : %s" % decision.get("decision", ""))
+		for line in decision.get("gameplay_kept", []):
+			lines.append("• conservé — %s" % line)
+		for line in decision.get("gameplay_replaced", []):
+			lines.append("[color=orange]• remplacé — %s[/color]" % line)
+		for line in decision.get("gameplay_published", []):
+			lines.append("• publié — %s" % line)
+	var draft_encounters := plan.get("draft_encounters", {}) as Dictionary
+	if draft_encounters.is_empty():
+		return lines
+	var new_encounters: Array = draft_encounters.get("new_encounters", [])
+	var existing_usages: Array = draft_encounters.get("existing_usages", [])
+	lines.append("[b]Nouvelles rencontres à créer[/b] : %d" % new_encounters.size())
+	for entry_value in new_encounters:
+		var entry := entry_value as Dictionary
+		lines.append("• %s — %d ennemi(s), enregistrée dans la salle" % [
+			"Salle" if int(entry.get("wave_index", -1)) < 0 \
+				else "Affrontement %d" % (int(entry.get("wave_index", 0)) + 1),
+			int(entry.get("enemy_count", 0)),
+		])
+	lines.append("[b]Rencontres déjà partagées[/b] : %d" % existing_usages.size())
+	for entry_value in existing_usages:
+		lines.append("• %s" % str((entry_value as Dictionary).get("path", "")))
+	return lines
 
 
 func _mark_destination_plan_obsolete() -> void:
@@ -2572,7 +2618,18 @@ func _integration_gate_options(
 			and edit_session.has_external_conflict(),
 		"run_conflict": run_conflict,
 		"unrelated_dirty_domains": Array(_blocking_context_domains()),
+		# Intention explicite, cochée par l'utilisateur. Jamais déduite d'un
+		# brouillon dirty ni d'une session Rencontres ouverte.
+		"publish_draft_gameplay": publish_draft_gameplay_requested(),
 	}
+
+
+## Vrai seulement si l'utilisateur a explicitement demandé de publier les
+## affrontements du brouillon avec « Mettre à jour ». Sinon, le comportement
+## historique — conserver le gameplay du disque — reste inchangé.
+func publish_draft_gameplay_requested() -> bool:
+	return publish_draft_gameplay_check != null \
+		and publish_draft_gameplay_check.button_pressed
 
 
 func _unacknowledged_gate_warnings(plan: Dictionary) -> Array[Dictionary]:
@@ -3650,10 +3707,6 @@ func _build_production_dialog() -> void:
 			create_safety_border()
 			_refresh_production_wizard()
 	)
-	production_open_encounters_button = _add_button(
-		production_diagnostic_actions, "Ouvrir Rencontres",
-		func(): domain_navigation_requested.emit(&"encounters")
-	)
 	production_confirm_alignment_button = _add_button(
 		production_diagnostic_actions, "Alignement conforme",
 		func():
@@ -3679,6 +3732,23 @@ func _build_production_dialog() -> void:
 	_add_button(preview_buttons, "Importer le décor...", _show_art_reimport_dialog)
 	var plan_tab := _production_tab("4 — Production")
 	plan_tab.add_child(_section_label("ÉTAPE 4 — FICHIERS ET CONFLITS"))
+	# Intention explicite de publication du gameplay du brouillon. Elle vit dans
+	# l'assistant, juste au-dessus du plan qu'elle change : c'est le seul écran
+	# réellement visible au moment de décider.
+	publish_draft_gameplay_check = CheckBox.new()
+	publish_draft_gameplay_check.name = "PublishDraftGameplayCheck"
+	publish_draft_gameplay_check.text = "Publier aussi les affrontements du brouillon"
+	publish_draft_gameplay_check.button_pressed = false
+	publish_draft_gameplay_check.tooltip_text = (
+		"Décoché : le terrain est mis à jour et les ennemis déjà enregistrés dans "
+		+ "la salle sont conservés.\nCoché : les ennemis et les vagues préparés "
+		+ "dans Rencontres remplacent ceux de la salle."
+	)
+	publish_draft_gameplay_check.toggled.connect(func(_value):
+		_refresh_production_wizard()
+		_refresh_destination_panel()
+	)
+	plan_tab.add_child(publish_draft_gameplay_check)
 	production_plan_text = _production_text()
 	plan_tab.add_child(production_plan_text)
 	production_resolution_text = _production_text(190)
@@ -5145,6 +5215,11 @@ func _refresh_production_wizard() -> void:
 	)
 	_production_last_plan = integration_plan
 	_refresh_production_dashboard()
+	if publish_draft_gameplay_check != null:
+		# L'intention n'a de sens que pour « Mettre à jour » : les autres actions
+		# publient déjà le document complet.
+		publish_draft_gameplay_check.visible = attachment_action \
+			== ArenaProductionAttachmentService.UPDATE
 	if not bool(integration_plan.get("ok", false)):
 		production_summary_text.text = "[b]Vous allez :[/b]\n\n[color=red]Le plan doit être corrigé avant toute écriture.[/color]"
 		production_validation_text.text = "[color=red]Plan impossible : %s[/color]" % integration_plan.get("error", "erreur")
@@ -5250,10 +5325,6 @@ func _refresh_production_wizard() -> void:
 		production_create_border_button.visible = _has_validation_code(
 			report, &"missing_border"
 		)
-	if production_open_encounters_button != null:
-		production_open_encounters_button.visible = _has_validation_code(
-			report, &"encounter_missing"
-		) and attachment_action != ArenaProductionAttachmentService.UPDATE
 	if production_confirm_alignment_button != null:
 		production_confirm_alignment_button.visible = _art_alignment_decision != 1
 	if production_reject_alignment_button != null:
@@ -5304,6 +5375,7 @@ func _refresh_production_wizard() -> void:
 		plan_lines.append("Terrain final : %s" % attachment_plan.get("integrated_room_path", ""))
 		plan_lines.append("Gameplay conservé : %s" % ("oui" if attachment_plan.get("preserves_gameplay", false) else "non"))
 		plan_lines.append("Salle partagée : %s" % ("oui — copie spécifique" if attachment_plan.get("shared", false) else "non"))
+		plan_lines.append_array(_gameplay_decision_lines(integration_plan))
 	else:
 		plan_lines.append("[color=red]Plan impossible : %s[/color]" % attachment_plan.get("error", "erreur"))
 	var run_conflict := target_run != null and run_authoring.is_dirty() \
@@ -5497,6 +5569,43 @@ func _start_guided_sandbox() -> void:
 	_set_status("Exercice d’entraînement prêt sous %s. Aucune partie officielle n’a été modifiée." % created.get("root", ""))
 
 
+## --- Créer les combats de la salle -----------------------------------------
+##
+## Action principale unique du parcours Terrain vers Rencontres. Elle ne
+## sauvegarde rien, n'intègre rien et n'ouvre pas l'assistant « Intégrer à la
+## partie » : elle ouvre le brouillon de salle courant — la working copy — dans
+## le domaine Rencontres. La partie active n'est utilisée qu'en contexte de
+## lecture. Voir RoomDraftAuthority pour l'autorité retenue.
+func open_room_encounters() -> bool:
+	if arena == null or edit_session == null:
+		_set_status("Ouvrez ou créez un terrain avant de créer ses combats.", true)
+		return false
+	if project_context != null and project_context.has_pending_transition():
+		_set_status(
+			"Une décision sur des changements non enregistrés est en attente. "
+			+ "Terminez-la, puis cliquez à nouveau.",
+			true
+		)
+		return false
+	domain_navigation_requested.emit(&"encounters")
+	return true
+
+
+## Brouillon complet remis au domaine Rencontres : l'instance de la working
+## copy elle-même, jamais une copie. Les deux domaines partagent une autorité.
+func room_draft() -> RoomData:
+	return edit_session.working_arena if edit_session != null else null
+
+
+func room_draft_gameplay_mapping() -> Dictionary:
+	if edit_session == null:
+		return {}
+	return {
+		"source_to_work": edit_session.gameplay_source_to_work,
+		"work_to_source": edit_session.gameplay_work_to_source,
+	}
+
+
 func _production_confirmed() -> void:
 	call_deferred("_request_confirmed_production")
 
@@ -5518,12 +5627,16 @@ func _request_confirmed_production() -> void:
 func _run_confirmed_production() -> void:
 	if edit_session == null or arena == null:
 		return
+	if _integration_running:
+		return
+	_integration_running = true
 	var candidate := _production_candidate()
 	var before := arena.to_snapshot().duplicate(true)
 	await _perform_room_integration(
 		candidate, before, _selected_production_run(), _selected_production_action(),
 		int(production_index_spin.value), production_destination_edit.text.strip_edges()
 	)
+	_integration_running = false
 
 
 func _perform_room_integration(
@@ -5740,9 +5853,10 @@ func _perform_room_integration(
 			"run": reloaded_run,
 			"room_index": int(attachment.get("target_index", 0)),
 		}, &"arena")
+		integration["context_selection"] = selection
 		if not selection.get("ok", false):
 			production_result_text.text += "\n[color=orange]Salle intégrée, mais sélection en attente : %s[/color]" % selection.get("status", "")
-	production_tabs.current_tab = 4
+	production_tabs.current_tab = production_tabs.get_tab_count() - 1
 	production_dialog.get_ok_button().hide()
 	production_dialog.popup_centered()
 	_set_status(
@@ -5854,7 +5968,7 @@ func _restore_runtime_preview_after_capture(
 
 func _show_production_failure(message: String) -> void:
 	production_result_text.text = "[font_size=24][b][color=red]SALLE NON PRODUITE[/color][/b][/font_size]\n\n%s" % message
-	production_tabs.current_tab = 4
+	production_tabs.current_tab = production_tabs.get_tab_count() - 1
 	production_dialog.get_ok_button().show()
 	production_dialog.popup_centered()
 	_set_status(message, true)

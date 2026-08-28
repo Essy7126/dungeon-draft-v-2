@@ -7,6 +7,19 @@ const ILLUSTRATION := (
 )
 
 
+func _continuation_workspace() -> StudioWorkspace:
+	var context := StudioProjectContext.new()
+	assert_true(context.request_selection({"run": load(ODYSSEY_RUN), "room_index": 1}).ok)
+	var workspace := StudioWorkspace.new()
+	workspace.arena_auto_load_enabled = false
+	workspace.arena_production_planning_enabled = false
+	workspace.setup(null, null, context, StudioReferenceGraphService.new())
+	add_child_autofree(workspace)
+	await wait_process_frames(2)
+	assert_true(workspace.arena_studio._open_context_room(context.active_room()))
+	return workspace
+
+
 func test_modular_illustration_choice_changes_working_copy_and_is_undoable() -> void:
 	var studio := ArenaStudioMain.new()
 	add_child_autofree(studio)

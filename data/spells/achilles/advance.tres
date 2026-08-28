@@ -1,17 +1,16 @@
 [gd_resource type="Resource" script_class="Spell" format=3 uid="uid://7d8r125eqye5"]
 
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Texture2D" uid="uid://3x280qssvstq" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="2_icon"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="2_icon"]
 [ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="3_modifier"]
-[ext_resource type="Resource" path="res://data/characters/achilles/disciplines/advance.tres" id="4_tree"]
+[ext_resource type="Resource" uid="uid://cdnc2yqjk7tog" path="res://data/characters/achilles/disciplines/advance.tres" id="4_tree"]
 
 [sub_resource type="Resource" id="MoveCasterModifier"]
 script = ExtResource("3_modifier")
 effect_type = 29
 movement_requires_clear_path = true
 modifier_name = "Percée L’Odyssée"
-target_spell_id = &""
 
 [resource]
 script = ExtResource("1_spell")

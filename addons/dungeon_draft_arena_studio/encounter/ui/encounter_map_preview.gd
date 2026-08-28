@@ -25,9 +25,16 @@ func set_context(value: RoomData, result: Dictionary) -> void:
 	room = value
 	preview = result
 	grid = result.get("grid") as GridData
+	# Le terrain existe avant son premier affrontement. Le résultat de placement
+	# est alors volontairement vide, mais la grille reste reconstructible depuis
+	# le brouillon Terrain et doit continuer à être affichée.
+	if grid == null and room != null:
+		grid = EncounterGridFactory.build_from_room(room)
 	_background_texture = null
 	if room != null and room.painted_map_visual_data != null:
 		_background_texture = room.painted_map_visual_data.load_background_texture()
+	elif room != null:
+		_background_texture = room.background_image
 	queue_redraw()
 
 
@@ -38,9 +45,9 @@ func _draw() -> void:
 		return
 	_configure_projection()
 	var visual := room.painted_map_visual_data
-	if visual != null and _background_texture != null:
-			draw_texture_rect(
-				_background_texture,
+	if _background_texture != null:
+		draw_texture_rect(
+			_background_texture,
 				Rect2(_offset + _logical_rect.position * _scale, _logical_rect.size * _scale),
 				false,
 				Color(0.82, 0.82, 0.82, 0.92),
@@ -91,6 +98,8 @@ func _draw() -> void:
 	if selected_cell != Vector2i(-1, -1) and grid.is_valid(selected_cell):
 		_draw_outline(_cell_polygon(selected_cell), Color.YELLOW, 3.0)
 	_draw_legend()
+	if _encounter() == null:
+		_draw_empty_encounter_message()
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -197,6 +206,32 @@ func _draw_centered_message(message: String) -> void:
 	draw_string(
 		ThemeDB.fallback_font, size * 0.5 - Vector2(180, 0), message,
 		HORIZONTAL_ALIGNMENT_CENTER, 360, 16, Color(0.72, 0.78, 0.86)
+	)
+
+
+func _draw_empty_encounter_message() -> void:
+	var panel_size := Vector2(minf(520.0, size.x - 40.0), 58.0)
+	var panel_position := Vector2((size.x - panel_size.x) * 0.5, 16.0)
+	draw_rect(
+		Rect2(panel_position, panel_size), Color(0.015, 0.025, 0.04, 0.9), true
+	)
+	draw_string(
+		ThemeDB.fallback_font,
+		panel_position + Vector2(12.0, 23.0),
+		"Terrain de la salle affiché en lecture seule",
+		HORIZONTAL_ALIGNMENT_CENTER,
+		panel_size.x - 24.0,
+		15,
+		Color(0.55, 0.86, 1.0),
+	)
+	draw_string(
+		ThemeDB.fallback_font,
+		panel_position + Vector2(12.0, 45.0),
+		"Créez le premier affrontement pour ajouter des ennemis.",
+		HORIZONTAL_ALIGNMENT_CENTER,
+		panel_size.x - 24.0,
+		13,
+		Color(0.9, 0.93, 0.96),
 	)
 
 

@@ -252,6 +252,13 @@ static func _runtime_projection_copy(arena: ArenaDefinition) -> ArenaDefinition:
 	var projection := ArenaDefinition.new()
 	if not projection.restore_snapshot(arena.to_snapshot()):
 		return null
+	# to_snapshot() ne transporte que le *chemin* de la rencontre : une salle en
+	# cours d'edition porte des EncounterDefinition et des vagues isolees, encore
+	# sans fichier. Sans cette reprise, la projection runtime jouerait une salle
+	# sans aucun affrontement.
+	RoomDraftAuthority.restore_gameplay_state(
+		projection, RoomDraftAuthority.gameplay_state(arena)
+	)
 	return projection
 
 

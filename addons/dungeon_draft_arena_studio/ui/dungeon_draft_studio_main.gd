@@ -22,6 +22,8 @@ var document_state_label: Label
 var save_button: Button
 var validate_button: Button
 var test_button: Button
+## Action principale « Créer les combats de la salle » du parcours Terrain.
+var create_encounters_button: Button
 var produce_button: Button
 var lab_transfer_button: Button
 var lab_menu_button: MenuButton
@@ -93,6 +95,7 @@ func _ready() -> void:
 	encounter_studio.name = "Rencontres"
 	encounter_studio.setup(editor_interface, editor_undo_redo, project_context, reference_graph)
 	encounter_studio.open_arena_requested.connect(_open_arena_tab)
+	encounter_studio.room_draft_opened.connect(_on_room_draft_opened)
 	tabs.add_child(encounter_studio)
 	tabs.set_tab_title(tabs.get_tab_count() - 1, "RENCONTRES")
 
@@ -168,7 +171,7 @@ func _build_shared_history_bar() -> Control:
 	var panel := PanelContainer.new()
 	panel.name = "StudioDocumentBar"
 	panel.custom_minimum_size.y = 46
-	var bar := HBoxContainer.new()
+	var bar := HFlowContainer.new()
 	bar.add_theme_constant_override("separation", 5)
 	panel.add_child(bar)
 	home_button = _global_button(
@@ -208,8 +211,7 @@ func _build_shared_history_bar() -> Control:
 	guided_toggle.tooltip_text = "Masquer les réglages techniques et afficher les consignes"
 	guided_toggle.toggled.connect(_on_guided_toggled)
 	bar.add_child(guided_toggle)
-	# Contrat explicite : le brouillon reste local, Tester n'écrit rien, et
-	# seule l'intégration rend le document disponible dans une partie.
+	# Le libellé est ensuite ajusté à l'autorité réellement ouverte.
 	save_button = _global_button(
 		bar, "Enregistrer le brouillon", _global_save,
 		"Garder le travail en cours dans votre dossier personnel. Aucune partie n'est modifiée."
@@ -226,9 +228,17 @@ func _build_shared_history_bar() -> Control:
 		bar, "Tester", _global_test,
 		"Lancer un vrai combat sur la version en cours, sans rien publier"
 	)
+	# Étape intermédiaire du parcours : elle ne publie rien et n'ouvre pas
+	# l'assistant d'intégration. Elle ouvre le brouillon de salle courant dans
+	# Rencontres. Voir RoomDraftAuthority.
+	create_encounters_button = _global_button(
+		bar, RoomDraftAuthority.ENCOUNTERS_ACTION_LABEL, _global_create_encounters,
+		RoomDraftAuthority.ENCOUNTERS_ACTION_HELP
+	)
+	create_encounters_button.name = "StudioCreateRoomEncountersButton"
 	produce_button = _global_button(
 		bar, "Intégrer à la partie", _global_produce,
-		"Choisir la salle de destination, lire le résumé, puis publier le terrain"
+		"Dernière étape : publier le terrain et ses affrontements dans une salle"
 	)
 	workspace_preset_option = OptionButton.new()
 	workspace_preset_option.tooltip_text = "Disposition de l'espace de travail"
@@ -261,7 +271,8 @@ func _build_shared_history_bar() -> Control:
 	bar.move_child(validate_button, spacer.get_index() + 1)
 	bar.move_child(save_button, validate_button.get_index() + 1)
 	bar.move_child(test_button, save_button.get_index() + 1)
-	bar.move_child(produce_button, test_button.get_index() + 1)
+	bar.move_child(create_encounters_button, test_button.get_index() + 1)
+	bar.move_child(produce_button, create_encounters_button.get_index() + 1)
 	return panel
 
 
@@ -395,7 +406,10 @@ func _refresh_history_controls() -> void:
 	if home_button != null:
 		home_button.visible = arena_active
 	if produce_button != null:
-		produce_button.disabled = not arena_active
+		produce_button.visible = arena_active or _active_room_draft()
+		produce_button.disabled = not (arena_active or _active_room_draft())
+	if create_encounters_button != null:
+		create_encounters_button.visible = arena_active
 	# Dispositions, laboratoire et transferts sont des preferences avancees :
 	# ils disparaissent du parcours guide au lieu de concurrencer le rail des
 	# etapes du domaine Terrain.
@@ -422,6 +436,7 @@ func _refresh_history_controls() -> void:
 	if guided_toggle != null:
 		guided_toggle.disabled = false
 	_sync_shell_from_arena()
+	_refresh_action_labels()
 
 
 func _rebuild_file_menu() -> void:
@@ -478,8 +493,34 @@ func _on_file_entry_pressed(index: int) -> void:
 func _on_tab_changed(_index: int) -> void:
 	if arena_studio != null and arena_studio.has_method("cancel_active_gesture"):
 		arena_studio.cancel_active_gesture()
+	# Terrain et Rencontres partagent le même brouillon de salle. Revenir dans
+	# Rencontres reconstruit seulement sa projection visuelle en lecture seule ;
+	# les affrontements et leurs historiques restent sur l'autorité partagée.
+	if tabs != null and tabs.current_tab == 1 and encounter_studio != null \
+			and encounter_studio.is_room_draft_mode() and arena_studio != null \
+			and encounter_studio.session.draft_room == arena_studio.room_draft():
+		encounter_studio.refresh_draft_context(
+			project_context.active_run if project_context != null else null
+		)
+	_report_obsolete_room_draft()
 	_refresh_history_controls()
 	_refresh_domain_buttons()
+
+
+## Un changement d'onglet ne synchronise jamais les domaines : il se contente de
+## signaler qu'un brouillon ouvert dans Rencontres ne correspond plus au terrain
+## courant. Rouvrir passe par « Créer les combats de la salle ».
+func _report_obsolete_room_draft() -> void:
+	if encounter_studio == null or arena_studio == null \
+			or not encounter_studio.is_room_draft_mode():
+		return
+	if encounter_studio.session.draft_room == arena_studio.room_draft():
+		return
+	encounter_studio._set_status(
+		"Ce brouillon ne correspond plus au terrain ouvert. Revenez dans Terrain "
+		+ "et cliquez sur « %s »." % RoomDraftAuthority.ENCOUNTERS_ACTION_LABEL,
+		true
+	)
 
 
 func _select_domain(index: int) -> void:
@@ -509,9 +550,40 @@ func _on_domain_navigation_requested(domain: StringName) -> void:
 		return
 	match domain:
 		&"encounters":
+			# Le brouillon de salle de Terrain est l'autorité ouverte ici : rien
+			# n'est publié, la partie active ne sert que de contexte de lecture.
+			var draft := arena_studio.room_draft()
+			if draft == null:
+				arena_studio._set_status(
+					"Ouvrez ou créez un terrain avant de créer ses combats.", true
+				)
+				return
+			if not encounter_studio.open_room_draft(
+					draft,
+					project_context.active_run if project_context != null else null,
+					project_context.active_run.resource_path \
+						if project_context != null and project_context.active_run != null else "",
+					arena_studio.room_draft_gameplay_mapping()
+				):
+				if project_context != null and project_context.has_pending_transition():
+					return
+				arena_studio._set_status(
+					"Rencontres n'a pas pu ouvrir ce brouillon de salle.", true
+				)
+				return
+			if arena_studio.production_dialog != null:
+				arena_studio.production_dialog.hide()
 			tabs.current_tab = 1
 		&"items":
 			tabs.current_tab = 2
+	_refresh_domain_buttons()
+	_refresh_history_controls()
+
+
+func _on_room_draft_opened() -> void:
+	if arena_studio.production_dialog != null:
+		arena_studio.production_dialog.hide()
+	tabs.current_tab = 1
 	_refresh_domain_buttons()
 	_refresh_history_controls()
 
@@ -661,7 +733,19 @@ func _apply_toolbar_responsive() -> void:
 	redo_button.custom_minimum_size.x = 34 if compact else 0
 	history_button.text = "Hist." if compact else "Historique ▾"
 	home_button.text = "Accueil"
-	save_button.text = "Brouillon" if compact else "Enregistrer le brouillon"
+	_refresh_action_labels()
+	if guided_toggle != null:
+		# En 1280 de large, l'étape « Créer les combats » a besoin de sa place :
+		# l'interrupteur garde son sens avec un libellé plus court et son
+		# infobulle complète.
+		guided_toggle.text = "Guidé" if compact else "Mode guidé"
+	if create_encounters_button != null:
+		# En 1280 de large la barre est déjà dense : le libellé raccourci garde
+		# le même sens et l'aide complète reste dans l'infobulle.
+		create_encounters_button.text = (
+			RoomDraftAuthority.ENCOUNTERS_ACTION_LABEL_COMPACT if compact
+			else RoomDraftAuthority.ENCOUNTERS_ACTION_LABEL
+		)
 	produce_button.text = "Intégrer à la partie"
 	if domain_buttons.size() >= 4:
 		domain_buttons[3].text = "VFX" if compact else "Effets visuels"
@@ -687,6 +771,31 @@ func _global_save() -> void:
 		item_studio.save_as_draft()
 	elif tabs.current_tab == 3:
 		vfx_composer.save_as_draft()
+
+
+func _active_room_draft() -> bool:
+	return tabs != null and tabs.current_tab == 1 and encounter_studio != null \
+		and encounter_studio.is_room_draft_mode() and arena_studio != null \
+		and encounter_studio.session.draft_room == arena_studio.room_draft()
+
+
+func _refresh_action_labels() -> void:
+	if save_button == null or tabs == null:
+		return
+	var canonical_encounter := tabs.current_tab == 1 and encounter_studio != null \
+		and not encounter_studio.is_room_draft_mode()
+	save_button.text = "Publier les rencontres" if canonical_encounter else "Enregistrer le brouillon"
+	save_button.tooltip_text = (
+		"Publier les changements dans les fichiers de la partie, après confirmation du plan."
+		if canonical_encounter else
+		"Garder le travail en cours dans votre dossier personnel. Aucune partie n'est modifiée."
+	)
+	if test_button != null:
+		test_button.text = "Tester"
+	if tabs.current_tab == 1 and encounter_studio != null:
+		validate_button.text = "Valider"
+		validate_button.remove_theme_color_override("font_color")
+		document_state_label.text = "Modifié" if encounter_studio.session.is_dirty() else "Enregistré"
 
 
 func _open_terrain_home() -> void:
@@ -744,8 +853,15 @@ func _global_test() -> void:
 		vfx_composer.test_document()
 
 
+func _global_create_encounters() -> void:
+	if tabs.current_tab == 0:
+		arena_studio.open_room_encounters()
+
+
 func _global_produce() -> void:
-	if tabs.current_tab == 0 and arena_studio.has_method("show_production_wizard"):
+	if (tabs.current_tab == 0 or _active_room_draft()) \
+			and arena_studio.has_method("show_production_wizard"):
+		tabs.current_tab = 0
 		arena_studio.show_production_wizard()
 
 

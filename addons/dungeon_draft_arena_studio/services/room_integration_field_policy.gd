@@ -202,6 +202,67 @@ static func merge_arena_into_room(
 	return merged
 
 
+## Frontière explicite de publication d'un **brouillon de salle complet**.
+##
+## `merge_arena_into_room()` implémente le comportement historique de
+## « Mettre à jour » : le terrain vient du Studio, le gameplay reste celui du
+## disque. Cette variante implémente l'autre intention, et seulement lorsqu'elle
+## a été demandée explicitement : le gameplay retenu est celui du brouillon.
+##
+## L'identité de la salle cible est conservée dans les deux cas. Publier des
+## affrontements ne doit jamais renommer une salle par effet de bord.
+static func merge_draft_into_room(
+		draft_source: ArenaDefinition,
+		target_room: RoomData
+	) -> ArenaDefinition:
+	if draft_source == null or target_room == null:
+		return null
+	if not coverage_report(draft_source).get("ok", false) \
+			or not coverage_report(target_room).get("ok", false):
+		return null
+	var merged := ArenaDefinition.new()
+	if not merged.restore_snapshot(draft_source.to_snapshot()):
+		return null
+	for property_name in stored_property_names(draft_source):
+		var classification := classification_for(property_name, draft_source)
+		if classification not in [ARENA_OWNED, GAMEPLAY_OWNED] \
+				or not _has_property(merged, property_name):
+			continue
+		merged.set(property_name, draft_source.get(property_name))
+	for property_name in stored_property_names(target_room):
+		if classification_for(property_name, target_room) != IDENTITY_OWNED \
+				or property_name == &"script" \
+				or not _has_property(merged, property_name):
+			continue
+		merged.set(property_name, target_room.get(property_name))
+	if not target_room is ArenaDefinition:
+		merged.display_name = target_room.room_name
+	merged.room_name = target_room.room_name
+	ArenaRuntimeBridge.sync_runtime_resources(merged)
+	return merged
+
+
+## Résumé lisible de ce que la publication va faire du gameplay existant. Il
+## alimente le plan de confirmation : l'utilisateur voit toujours si le
+## gameplay du disque est conservé ou remplacé par celui du brouillon.
+static func publication_summary(
+		draft_source: ArenaDefinition,
+		target_room: RoomData,
+		publish_draft_gameplay: bool
+	) -> Dictionary:
+	var kept := gameplay_summary(target_room)
+	var replacement := gameplay_summary(draft_source)
+	return {
+		"publish_draft_gameplay": publish_draft_gameplay,
+		"decision": "Gameplay remplacé par celui du brouillon" \
+			if publish_draft_gameplay else "Gameplay existant conservé",
+		"gameplay_kept": PackedStringArray() if publish_draft_gameplay else kept,
+		"gameplay_replaced": kept if publish_draft_gameplay else PackedStringArray(),
+		"gameplay_published": replacement if publish_draft_gameplay \
+			else PackedStringArray(),
+	}
+
+
 static func preserves_signature(
 		before: Dictionary,
 		after: Dictionary

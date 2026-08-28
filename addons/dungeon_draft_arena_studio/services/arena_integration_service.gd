@@ -34,8 +34,15 @@ static func plan(
 	if not production.get("ok", false):
 		return {"ok": false, "error": production.get("error", "Plan de production impossible.")}
 	var produced_path := str(production.get("destination", "")).path_join("arena.tres")
+	# Intention explicite, jamais déduite : publier la salle complète avec le
+	# gameplay du brouillon. Absente, « Mettre à jour » conserve le gameplay
+	# du disque exactement comme avant.
+	var publish_draft_gameplay := bool(
+		gate_options.get("publish_draft_gameplay", false)
+	)
 	var attachment := ArenaProductionAttachmentService.plan(
-		run_data, action, requested_index, produced_path, graph
+		run_data, action, requested_index, produced_path, graph,
+		{"publish_draft_gameplay": publish_draft_gameplay}
 	)
 	var field_coverage := RoomIntegrationFieldPolicy.coverage_report(arena)
 	var target_room: RoomData = null
@@ -44,7 +51,8 @@ static func plan(
 	var target_coverage := RoomIntegrationFieldPolicy.coverage_report(target_room) \
 		if target_room != null else {"ok": true, "unknown": PackedStringArray()}
 	var run_errors := _simulated_run_errors(
-		arena, run_data, action, int(attachment.get("target_index", requested_index))
+		arena, run_data, action, int(attachment.get("target_index", requested_index)),
+		publish_draft_gameplay
 	) if attachment.get("ok", false) else PackedStringArray()
 	var affected_files := PackedStringArray()
 	for path in production.get("creates", []):
@@ -64,9 +72,10 @@ static func plan(
 	policy_options["run_validation_errors"] = run_errors
 	policy_options["destination_conflicts"] = production.get("conflicts", [])
 	policy_options["gameplay_preservation_required"] = action \
-		== ArenaProductionAttachmentService.UPDATE
+		== ArenaProductionAttachmentService.UPDATE and not publish_draft_gameplay
 	policy_options["gameplay_preserved"] = action \
 		!= ArenaProductionAttachmentService.UPDATE \
+		or publish_draft_gameplay \
 		or bool(attachment.get("preserves_gameplay", false))
 	policy_options["rollback_available"] = bool(attachment.get("ok", false))
 	policy_options["requires_runtime_scene"] = action \
@@ -124,10 +133,51 @@ static func plan(
 		"scope": "Copie unique à cette partie" if bool(attachment.get("copy_on_write", false)) \
 			else "Unique à cette partie",
 		"affected_files": affected_files,
-		"preserved_gameplay": action == ArenaProductionAttachmentService.UPDATE,
+		"preserved_gameplay": action == ArenaProductionAttachmentService.UPDATE \
+			and not publish_draft_gameplay,
+		"publish_draft_gameplay": publish_draft_gameplay,
+		"gameplay_decision": RoomIntegrationFieldPolicy.publication_summary(
+			arena, target_room, publish_draft_gameplay
+		) if target_room != null else {},
+		"draft_encounters": draft_encounter_plan(arena),
 		"abandoned_gameplay": RoomIntegrationFieldPolicy.gameplay_summary(target_room) \
-			if action == ArenaProductionAttachmentService.REPLACE else PackedStringArray(),
+			if action == ArenaProductionAttachmentService.REPLACE \
+				or publish_draft_gameplay else PackedStringArray(),
 	}
+
+
+## Rencontres du brouillon qui n'ont pas encore de fichier canonique. Elles sont
+## annoncées dans le plan de confirmation ; tant que la phase d'écriture dédiée
+## n'existe pas, elles sont publiées comme sous-ressources de la salle.
+static func draft_encounter_plan(arena: ArenaDefinition) -> Dictionary:
+	var new_encounters: Array[Dictionary] = []
+	var existing_usages: Array[Dictionary] = []
+	if arena == null:
+		return {"new_encounters": new_encounters, "existing_usages": existing_usages}
+	var seen := {}
+	var usages: Array = [{"wave": -1, "encounter": arena.encounter_definition}]
+	for index in range(arena.waves.size()):
+		var wave := arena.waves[index]
+		if wave != null:
+			usages.append({"wave": index, "encounter": wave.encounter_definition})
+	for usage_value in usages:
+		var usage := usage_value as Dictionary
+		var encounter := usage.get("encounter") as EncounterDefinition
+		if encounter == null or seen.has(encounter):
+			continue
+		seen[encounter] = true
+		var entry := {
+			"wave_index": int(usage.get("wave", -1)),
+			"path": encounter.resource_path,
+			"enemy_count": encounter.get_initial_enemy_count(),
+		}
+		# Une sous-ressource (`fichier.tres::id`) n'est pas une rencontre
+		# canonique partagée : elle appartient au document qui la porte.
+		if encounter.resource_path.is_empty() or "::" in encounter.resource_path:
+			new_encounters.append(entry)
+		else:
+			existing_usages.append(entry)
+	return {"new_encounters": new_encounters, "existing_usages": existing_usages}
 
 
 static func integrate(
@@ -303,7 +353,11 @@ static func integrate_with_options(
 	if str(options.get("failure_step", "")) != "before_attachment":
 		attachment = ArenaProductionAttachmentService.attach_and_save(
 			str(production.get("arena_path", "")), run_data, action,
-			requested_index, graph
+			requested_index, graph, {
+				"publish_draft_gameplay": bool((options.get(
+					"gate_options", {}
+				) as Dictionary).get("publish_draft_gameplay", false)),
+			}
 		)
 	monitor.update_step_evidence(
 		{},
@@ -773,7 +827,8 @@ static func _simulated_run_errors(
 		arena: ArenaDefinition,
 		run_data: RunData,
 		action: StringName,
-		target_index: int
+		target_index: int,
+		publish_draft_gameplay := false
 	) -> PackedStringArray:
 	if action == ArenaProductionAttachmentService.NONE:
 		return PackedStringArray()
@@ -786,9 +841,12 @@ static func _simulated_run_errors(
 	if action == ArenaProductionAttachmentService.UPDATE:
 		if target_index < 0 or target_index >= rooms.size():
 			return PackedStringArray(["L'index UPDATE est hors limites."])
-		var merged := RoomIntegrationFieldPolicy.merge_arena_into_room(
+		var merged := RoomIntegrationFieldPolicy.merge_draft_into_room(
 			arena, rooms[target_index]
-		)
+		) if publish_draft_gameplay \
+			else RoomIntegrationFieldPolicy.merge_arena_into_room(
+				arena, rooms[target_index]
+			)
 		if merged == null:
 			return PackedStringArray(["La politique de champs refuse la fusion « Mettre à jour »."])
 		rooms[target_index] = merged

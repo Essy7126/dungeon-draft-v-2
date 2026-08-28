@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://22b786uakgoo"]
 
-[ext_resource type="Texture2D" path="res://data/items/catalogs/harnois.png" id="1_1o8n6"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_on0e2"]
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_umeh5"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_ss74i"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_b71ie"]
+[ext_resource type="Texture2D" uid="uid://ncwgxnvq21as" path="res://data/items/catalogs/harnois.png" id="1_1o8n6"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_on0e2"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_umeh5"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_ss74i"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_b71ie"]
 
 [sub_resource type="Resource" id="Resource_whma3"]
 script = ExtResource("5_b71ie")

@@ -198,6 +198,7 @@ func pending_transition() -> Dictionary:
 
 
 func request_selection(selection: Dictionary, requester_domain := &"") -> Dictionary:
+	_refresh_document_dirty()
 	var normalized := _normalized_selection(selection)
 	var validation := _validate_selection(normalized)
 	if not validation.get("ok", false):
@@ -233,6 +234,7 @@ func request_selection(selection: Dictionary, requester_domain := &"") -> Dictio
 ## selection projet. Les memes handlers transactionnels et les memes quatre
 ## decisions que pour un changement de run/salle restent l'unique autorite.
 func request_dirty_transition(intent: StringName, requester_domain := &"") -> Dictionary:
+	_refresh_document_dirty()
 	if has_pending_transition():
 		return {
 			"ok": false,
@@ -300,6 +302,21 @@ func resolve_pending_transition(action: StringName) -> Dictionary:
 	}
 	transition_resolved.emit(result)
 	return result
+
+
+## Consulter le contenu à la frontière de navigation, même si le rafraîchissement
+## visuel de l'éditeur est encore différé. Un contrat incomplet reste bloquant.
+func _refresh_document_dirty() -> void:
+	for domain in _transition_handlers:
+		var handler := (_transition_handlers[domain] as Dictionary).get("is_dirty", Callable()) as Callable
+		if not handler.is_valid():
+			continue
+		var dirty := bool(handler.call())
+		if dirty:
+			if not _dirty_domains.has(domain):
+				_dirty_domains[domain] = {}
+		else:
+			_dirty_domains.erase(domain)
 
 
 func request_run(run_data: RunData, requester_domain := &"") -> Dictionary:

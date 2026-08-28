@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dpg3qdpsrhkc7"]
 
-[ext_resource type="Texture2D" path="res://data/items/catalogs/cape_brume.png" id="1_fco81"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_6aji2"]
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_8tmuj"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_0gibc"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="5_nse65"]
+[ext_resource type="Texture2D" uid="uid://bwblqjvjbjso6" path="res://data/items/catalogs/cape_brume.png" id="1_fco81"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_6aji2"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_8tmuj"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_0gibc"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="5_nse65"]
 
 [sub_resource type="Resource" id="Resource_dtpu1"]
 script = ExtResource("5_nse65")

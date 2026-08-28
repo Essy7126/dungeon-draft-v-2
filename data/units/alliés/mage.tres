@@ -9,11 +9,6 @@
 [ext_resource type="PackedScene" path="res://characters/mage/MageIsoUnitView.tscn" id="6_combat_visual"]
 [ext_resource type="Resource" uid="uid://cbi1rlct0akbn" path="res://data/spells/Mage/onde_sismique.tres" id="6_seismic_wave"]
 [ext_resource type="PackedScene" path="res://characters/mage/MageVisual3D.tscn" id="7_preview_visual"]
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
-[ext_resource type="Resource" uid="uid://dh8b4ap3c5e0w" path="res://data/characters/mage/disciplines/fire.tres" id="9_fire"]
-[ext_resource type="Resource" uid="uid://clhr1umue7rku" path="res://data/characters/mage/disciplines/ice.tres" id="10_ice"]
-[ext_resource type="Resource" uid="uid://buwjhk5vnq6c2" path="res://data/characters/mage/disciplines/lightning.tres" id="11_lightning"]
-[ext_resource type="Resource" uid="uid://bifd0rgsaork4" path="res://data/characters/mage/disciplines/earth.tres" id="12_earth"]
 [ext_resource type="Resource" path="res://data/characters/mage/animations.tres" id="90_animations"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]

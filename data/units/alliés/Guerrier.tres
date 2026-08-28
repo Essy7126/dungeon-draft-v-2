@@ -9,11 +9,6 @@
 [ext_resource type="Resource" path="res://data/spells/Guerrier/garde.tres" id="18_guard"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorIsoUnitView.tscn" id="20_combat_visual"]
 [ext_resource type="PackedScene" path="res://characters/warrior/WarriorVisual3D.tscn" id="21_preview_visual"]
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="22_discipline_type"]
-[ext_resource type="Resource" uid="uid://cd061iquu3wbs" path="res://data/characters/warrior/disciplines/breaker.tres" id="23_breaker"]
-[ext_resource type="Resource" uid="uid://0ulosbvctw75" path="res://data/characters/warrior/disciplines/assault.tres" id="24_assault"]
-[ext_resource type="Resource" uid="uid://io1jxobadgaq" path="res://data/characters/warrior/disciplines/fury.tres" id="25_fury"]
-[ext_resource type="Resource" uid="uid://68f0tvsim4nb" path="res://data/characters/warrior/disciplines/bulwark.tres" id="26_bulwark"]
 [ext_resource type="Resource" path="res://data/characters/warrior/animations.tres" id="90_animations"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]

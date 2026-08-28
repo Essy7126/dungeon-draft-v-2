@@ -13,6 +13,19 @@ const DEFAULT_HEROES := [
 ]
 
 
+## Héros du test : ceux de la partie de contexte quand elle en fournit,
+## sinon le trio de secours historique.
+static func _heroes_for(session: EncounterEditSession) -> Array:
+	var context: RunData = session.context_run if session.context_run != null \
+		else session.working_run
+	var paths: Array = []
+	for hero in RunContentCatalogService.heroes_for_run(context):
+		if hero != null and hero.base_unit_data != null \
+				and not hero.base_unit_data.resource_path.is_empty():
+			paths.append(hero.base_unit_data.resource_path)
+	return paths if not paths.is_empty() else DEFAULT_HEROES
+
+
 static func prepare_and_launch(
 		session: EncounterEditSession,
 		editor_interface,
@@ -44,7 +57,11 @@ static func prepare_and_launch(
 	wave.encounter_definition = ResourceLoader.load(
 		encounter_path, "", ResourceLoader.CACHE_MODE_IGNORE
 	) as EncounterDefinition
-	var room := EncounterCopyService.copy_room(session.current_room())
+	# En brouillon de salle, `runtime_room()` reconstruit la grille, le visuel et
+	# la scène de combat du terrain courant sans muter l'autorité.
+	var room := EncounterCopyService.copy_room(session.runtime_room())
+	if room == null:
+		return {"ok": false, "error": "room_projection_failed"}
 	room.encounter_definition = wave.encounter_definition
 	room.waves = [wave]
 	room.minimum_wave_count = 1
@@ -54,6 +71,11 @@ static func prepare_and_launch(
 		return {"ok": false, "error": "room_save_failed"}
 	var run := RunData.new()
 	run.run_name = "Test Encounter Studio — %s" % room.room_name
+	# La partie de contexte n'est jamais modifiée : seul son profil de contenu
+	# est repris, pour que le test joue les vrais héros et règles de la run.
+	if session.context_run != null:
+		run.content_profile = session.context_run.content_profile
+		run.economy_profile = session.context_run.economy_profile
 	run.default_seed = run_seed
 	# Tester une rencontre n'a de sens que si elle se rejoue à l'identique : ce
 	# run de test garde donc la graine demandée au lieu d'en tirer une nouvelle.
@@ -71,7 +93,7 @@ static func prepare_and_launch(
 		"context_id": context_id,
 		"run_path": run_path,
 		"result_path": result_path,
-		"heroes": DEFAULT_HEROES,
+		"heroes": _heroes_for(session),
 		"run_seed": run_seed,
 		"automatic_deployment": automatic_deployment,
 		"debug_overlays": debug_overlays,

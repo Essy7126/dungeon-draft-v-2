@@ -16,7 +16,6 @@ effect_type = 8
 target_scope = 1
 amount = 5
 modifier_name = "Bouclier renforcé"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_icfwp"]
 script = ExtResource("3_s7ts0")
@@ -26,7 +25,6 @@ display_name = "Bouclier renforcé"
 description = "+5 points de bouclier."
 discipline_id = &"warrior_bulwark"
 rank = 2
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_ix67p")])
 
 [sub_resource type="Resource" id="Resource_p2cdp"]
@@ -35,7 +33,6 @@ effect_type = 10
 target_scope = 1
 amount = 1
 modifier_name = "Garde mobile"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_p2pxe"]
 script = ExtResource("3_s7ts0")
@@ -45,7 +42,6 @@ display_name = "Garde mobile"
 description = "La cible gagne 1 PM pendant son prochain tour."
 discipline_id = &"warrior_bulwark"
 rank = 2
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_p2cdp")])
 
 [sub_resource type="Resource" id="Resource_vwdl6"]
@@ -60,7 +56,6 @@ effect_type = 8
 target_scope = 1
 amount = 4
 modifier_name = "Bastion"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_0tswo"]
 script = ExtResource("3_s7ts0")
@@ -70,7 +65,6 @@ display_name = "Bastion"
 description = "Ajoute 4 boucliers supplémentaires."
 discipline_id = &"warrior_bulwark"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_btqmc")])
 
 [sub_resource type="Resource" id="Resource_8c44j"]
@@ -79,7 +73,6 @@ effect_type = 9
 target_scope = 1
 amount = 3
 modifier_name = "Protection partagée"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_tgf1f"]
 script = ExtResource("3_s7ts0")
@@ -89,7 +82,6 @@ display_name = "Protection partagée"
 description = "Le Guerrier reçoit 3 boucliers lorsqu’il protège un allié."
 discipline_id = &"warrior_bulwark"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_8c44j")])
 
 [sub_resource type="Resource" id="Resource_by465"]
@@ -100,7 +92,6 @@ amount = 2
 status_group = &"warrior_bulwark_attack_order"
 status_name = "Ordre d'assaut"
 modifier_name = "Ordre d’assaut"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_onvh2"]
 script = ExtResource("3_s7ts0")
@@ -110,7 +101,6 @@ display_name = "Ordre d’assaut"
 description = "La prochaine attaque de la cible inflige +2 dégâts."
 discipline_id = &"warrior_bulwark"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_by465")])
 
 [sub_resource type="Resource" id="Resource_i0dge"]
@@ -119,7 +109,6 @@ effect_type = 24
 target_scope = 1
 amount = 1
 modifier_name = "Purification martiale"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_0wqcn"]
 script = ExtResource("3_s7ts0")
@@ -129,7 +118,6 @@ display_name = "Purification martiale"
 description = "Retire un Poison, Saignement, Brûlure ou ralentissement."
 discipline_id = &"warrior_bulwark"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_i0dge")])
 
 [sub_resource type="Resource" id="Resource_ybnk2"]
@@ -144,7 +132,6 @@ effect_type = 8
 target_scope = 1
 amount = 3
 modifier_name = "Fortification"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_58te0"]
 script = ExtResource("3_s7ts0")
@@ -154,7 +141,6 @@ display_name = "Fortification"
 description = "Ajoute encore 3 boucliers."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_ekrn1")])
 
 [sub_resource type="Resource" id="Resource_g1lys"]
@@ -162,7 +148,6 @@ script = ExtResource("5_2v242")
 effect_type = 5
 amount = 2
 modifier_name = "Vigilance"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_xkugv"]
 script = ExtResource("3_s7ts0")
@@ -172,7 +157,6 @@ display_name = "Vigilance"
 description = "+2 portée."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_g1lys")])
 
 [sub_resource type="Resource" id="Resource_j0bnp"]
@@ -181,7 +165,6 @@ effect_type = 9
 target_scope = 1
 amount = 3
 modifier_name = "Serment"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_nhtgh"]
 script = ExtResource("3_s7ts0")
@@ -191,7 +174,6 @@ display_name = "Serment"
 description = "Le bouclier reçu par le Guerrier passe à 6."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_j0bnp")])
 
 [sub_resource type="Resource" id="Resource_3jn5v"]
@@ -203,7 +185,6 @@ duration = 2
 status_group = &"warrior_bulwark_regeneration"
 status_name = "Régénération"
 modifier_name = "Soutien durable"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_scb0h"]
 script = ExtResource("3_s7ts0")
@@ -213,7 +194,6 @@ display_name = "Soutien durable"
 description = "L’allié protégé récupère 2 PV pendant 2 tours."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_3jn5v")])
 
 [sub_resource type="Resource" id="Resource_lumbx"]
@@ -224,7 +204,6 @@ amount = 4
 status_group = &"warrior_bulwark_attack_order"
 status_name = "Ordre d'assaut"
 modifier_name = "Commandement"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_jlego"]
 script = ExtResource("3_s7ts0")
@@ -234,7 +213,6 @@ display_name = "Commandement"
 description = "Le bonus de la prochaine attaque passe à +4 dégâts."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_lumbx")])
 
 [sub_resource type="Resource" id="Resource_jvr05"]
@@ -243,7 +221,6 @@ effect_type = 10
 target_scope = 1
 amount = 2
 modifier_name = "Marche forcée"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_0eamp"]
 script = ExtResource("3_s7ts0")
@@ -253,7 +230,6 @@ display_name = "Marche forcée"
 description = "Le bonus de mobilité passe à +2 PM."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_jvr05")])
 
 [sub_resource type="Resource" id="Resource_12le2"]
@@ -262,7 +238,6 @@ effect_type = 24
 target_scope = 1
 amount = 2
 modifier_name = "Nettoyage complet"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_gfdc7"]
 script = ExtResource("3_s7ts0")
@@ -272,7 +247,6 @@ display_name = "Nettoyage complet"
 description = "Retire jusqu’à 2 effets négatifs simples."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_12le2")])
 
 [sub_resource type="Resource" id="Resource_1onxh"]
@@ -281,7 +255,6 @@ effect_type = 8
 target_scope = 1
 amount = 3
 modifier_name = "Garde purifiante"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_025p0"]
 script = ExtResource("3_s7ts0")
@@ -291,7 +264,6 @@ display_name = "Garde purifiante"
 description = "Ajoute aussi 3 boucliers."
 discipline_id = &"warrior_bulwark"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_1onxh")])
 
 [sub_resource type="Resource" id="Resource_ulci5"]
@@ -306,7 +278,6 @@ effect_type = 8
 target_scope = 1
 amount = 10
 modifier_name = "Forteresse vivante"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_6v2g7"]
 script = ExtResource("3_s7ts0")
@@ -316,7 +287,6 @@ display_name = "Forteresse vivante"
 description = "Ajoute 10 boucliers à la cible."
 discipline_id = &"warrior_bulwark"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_fub4o")])
 
 [sub_resource type="Resource" id="Resource_67wbn"]
@@ -325,7 +295,6 @@ effect_type = 8
 target_scope = 1
 amount = 7
 modifier_name = "Serment du protecteur"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_n4yrk"]
 script = ExtResource("5_2v242")
@@ -333,7 +302,6 @@ effect_type = 9
 target_scope = 1
 amount = 7
 modifier_name = "Serment du protecteur"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_mp5ja"]
 script = ExtResource("3_s7ts0")
@@ -343,7 +311,6 @@ display_name = "Serment du protecteur"
 description = "Le Guerrier et l’allié ciblé reçoivent chacun 7 boucliers."
 discipline_id = &"warrior_bulwark"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_67wbn"), SubResource("Resource_n4yrk")])
 
 [sub_resource type="Resource" id="Resource_68dl3"]
@@ -352,7 +319,6 @@ effect_type = 10
 target_scope = 1
 amount = 2
 modifier_name = "Ordre de guerre"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_a4oq4"]
 script = ExtResource("5_2v242")
@@ -362,7 +328,6 @@ amount = 4
 status_group = &"warrior_bulwark_attack_order"
 status_name = "Ordre d'assaut"
 modifier_name = "Ordre de guerre"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_w1ltv"]
 script = ExtResource("3_s7ts0")
@@ -372,7 +337,6 @@ display_name = "Ordre de guerre"
 description = "+2 PM et +4 dégâts sur la prochaine attaque."
 discipline_id = &"warrior_bulwark"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_68dl3"), SubResource("Resource_a4oq4")])
 
 [sub_resource type="Resource" id="Resource_2ttnj"]
@@ -381,7 +345,6 @@ effect_type = 8
 target_scope = 1
 amount = 6
 modifier_name = "Protection absolue"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_0tpg4"]
 script = ExtResource("5_2v242")
@@ -389,7 +352,6 @@ effect_type = 24
 target_scope = 1
 amount = 99
 modifier_name = "Protection absolue"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_kpoyf"]
 script = ExtResource("3_s7ts0")
@@ -399,7 +361,6 @@ display_name = "Protection absolue"
 description = "Ajoute 6 boucliers et retire tous les effets négatifs simples."
 discipline_id = &"warrior_bulwark"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_q3v26")]([SubResource("Resource_2ttnj"), SubResource("Resource_0tpg4")])
 
 [sub_resource type="Resource" id="Resource_2jjtu"]

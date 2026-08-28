@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://e7mwjbtj1a7p"]
 
-[ext_resource type="Texture2D" path="res://data/items/catalogs/anneau_faille.png" id="1_6jbbi"]
-[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_um1v5"]
-[ext_resource type="Script" path="res://data/items/item_definition.gd" id="3_cyvil"]
-[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_188h7"]
-[ext_resource type="Script" path="res://data/items/item_spell_modifier_data.gd" id="5_0bpy1"]
-[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="6_kdrg4"]
+[ext_resource type="Texture2D" uid="uid://b187wc7g35c8" path="res://data/items/catalogs/anneau_faille.png" id="1_6jbbi"]
+[ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_um1v5"]
+[ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_cyvil"]
+[ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="4_188h7"]
+[ext_resource type="Script" uid="uid://chdeuiwnqyk61" path="res://data/items/item_spell_modifier_data.gd" id="5_0bpy1"]
+[ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="6_kdrg4"]
 
 [sub_resource type="Resource" id="Resource_yp80k"]
 script = ExtResource("5_0bpy1")

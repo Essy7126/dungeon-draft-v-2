@@ -89,6 +89,37 @@ func _capture_view(view: String) -> bool:
 	if view != "validation" and _arena.bottom_drawer_content.visible:
 		_arena._toggle_bottom_drawer()
 	match view:
+		"terrain_encounters_action":
+			# Terrain, avec l'unique action principale « Créer les combats ».
+			_studio.tabs.current_tab = 0
+			_arena.set_guided(true)
+			_arena.show_editor()
+			# Dans le vrai StudioWorkspace, l'en-tête Terrain est masqué : la
+			# seule action visible est celle de la barre partagée du Studio.
+			if _studio.create_encounters_button == null \
+					or not _studio.create_encounters_button.is_visible_in_tree():
+				push_error("Capture : l'action « Créer les combats de la salle » est absente.")
+				return false
+		"room_draft_encounters", "back_to_terrain":
+			# Arrivée dans Rencontres en mode brouillon, puis retour dans Terrain.
+			_studio.tabs.current_tab = 0
+			_arena.show_editor()
+			_studio.create_encounters_button.pressed.emit()
+			if _studio.tabs.current_tab != 1 \
+					or not _studio.encounter_studio.is_room_draft_mode() \
+					or _studio.encounter_studio.session.draft_room != _arena.room_draft():
+				push_error("Capture : Rencontres n'a pas ouvert le brouillon de salle.")
+				return false
+			if view == "back_to_terrain":
+				_studio.tabs.current_tab = 0
+		"room_draft_integration_plan":
+			# Plan d'intégration de la salle complète, avant toute écriture.
+			_studio.tabs.current_tab = 0
+			_arena.show_editor()
+			_arena.show_production_wizard()
+			# Onglet « Production » : c'est lui qui porte le plan de confirmation
+			# et l'intention explicite de publier les affrontements du brouillon.
+			_arena.production_tabs.current_tab = 3
 		"home":
 			_arena.set_guided(true)
 			_arena.show_home()

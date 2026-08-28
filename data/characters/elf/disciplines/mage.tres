@@ -15,7 +15,6 @@ script = ExtResource("5_6gupd")
 effect_type = 1
 amount = 5
 modifier_name = "Cœur incandescent"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_c1er6"]
 script = ExtResource("3_ab43m")
@@ -25,7 +24,6 @@ display_name = "Cœur incandescent"
 description = "+5 dégâts sur la cellule centrale."
 discipline_id = &"mage"
 rank = 2
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_c8o8f")])
 
 [sub_resource type="Resource" id="Resource_o5vlc"]
@@ -33,7 +31,6 @@ script = ExtResource("5_6gupd")
 effect_type = 22
 amount = 1
 modifier_name = "Braises persistantes"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_s2gj3"]
 script = ExtResource("3_ab43m")
@@ -43,7 +40,6 @@ display_name = "Braises persistantes"
 description = "Le terrain enflammé dure 1 tour supplémentaire."
 discipline_id = &"mage"
 rank = 2
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_o5vlc")])
 
 [sub_resource type="Resource" id="Resource_but8i"]
@@ -57,7 +53,6 @@ script = ExtResource("5_6gupd")
 effect_type = 1
 amount = 3
 modifier_name = "Détonation"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_u5sta"]
 script = ExtResource("3_ab43m")
@@ -67,7 +62,6 @@ display_name = "Détonation"
 description = "+3 dégâts supplémentaires au centre."
 discipline_id = &"mage"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_tl771")])
 
 [sub_resource type="Resource" id="Resource_pdh6e"]
@@ -75,7 +69,6 @@ script = ExtResource("5_6gupd")
 effect_type = 17
 amount = 1
 modifier_name = "Explosion élargie"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_wow6u"]
 script = ExtResource("3_ab43m")
@@ -85,7 +78,6 @@ display_name = "Explosion élargie"
 description = "La zone gagne 1 cellule sur ses extrémités cardinales."
 discipline_id = &"mage"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_pdh6e")])
 
 [sub_resource type="Resource" id="Resource_o0nhd"]
@@ -97,7 +89,6 @@ status_group = &"elf_mage_burn"
 status_name = "Burn"
 status_element = 1
 modifier_name = "Incendiaire"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_iooox"]
 script = ExtResource("3_ab43m")
@@ -107,7 +98,6 @@ display_name = "Incendiaire"
 description = "Applique Brûlure : 2 dégâts pendant 2 tours."
 discipline_id = &"mage"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_o0nhd")])
 
 [sub_resource type="Resource" id="Resource_p3ax5"]
@@ -115,7 +105,6 @@ script = ExtResource("5_6gupd")
 effect_type = 18
 amount = 1
 modifier_name = "Souffle ardent"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_4qnlu"]
 script = ExtResource("3_ab43m")
@@ -125,7 +114,6 @@ display_name = "Souffle ardent"
 description = "Repousse les ennemis touchés de 1 case."
 discipline_id = &"mage"
 rank = 3
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_p3ax5")])
 
 [sub_resource type="Resource" id="Resource_rwayi"]
@@ -139,7 +127,6 @@ script = ExtResource("5_6gupd")
 effect_type = 1
 amount = 4
 modifier_name = "Noyau ardent"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_c33ox"]
 script = ExtResource("3_ab43m")
@@ -149,7 +136,6 @@ display_name = "Noyau ardent"
 description = "+4 dégâts supplémentaires au centre."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_27p0g")])
 
 [sub_resource type="Resource" id="Resource_pn3p5"]
@@ -157,7 +143,6 @@ script = ExtResource("5_6gupd")
 effect_type = 5
 amount = 2
 modifier_name = "Portée arcanique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_qxpc2"]
 script = ExtResource("3_ab43m")
@@ -167,7 +152,6 @@ display_name = "Portée arcanique"
 description = "+2 portée."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_pn3p5")])
 
 [sub_resource type="Resource" id="Resource_yhvb8"]
@@ -175,7 +159,6 @@ script = ExtResource("5_6gupd")
 effect_type = 17
 amount = 1
 modifier_name = "Grande explosion"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_bs4rx"]
 script = ExtResource("3_ab43m")
@@ -185,14 +168,12 @@ display_name = "Grande explosion"
 description = "La zone gagne encore 1 cellule cardinale."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_yhvb8")])
 
 [sub_resource type="Resource" id="Resource_j5gng"]
 script = ExtResource("5_6gupd")
 amount = 2
 modifier_name = "Éclats brûlants"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_lna1t"]
 script = ExtResource("3_ab43m")
@@ -202,7 +183,6 @@ display_name = "Éclats brûlants"
 description = "+2 dégâts à toutes les cibles touchées."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_j5gng")])
 
 [sub_resource type="Resource" id="Resource_slegd"]
@@ -214,7 +194,6 @@ status_name = "Burn"
 status_mode = 1
 status_element = 1
 modifier_name = "Braises longues"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_soj6c"]
 script = ExtResource("3_ab43m")
@@ -224,7 +203,6 @@ display_name = "Braises longues"
 description = "La Brûlure dure 1 tour supplémentaire."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_slegd")])
 
 [sub_resource type="Resource" id="Resource_2lr8q"]
@@ -236,7 +214,6 @@ status_name = "Burn"
 status_mode = 1
 status_element = 1
 modifier_name = "Feu mordant"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_87cs7"]
 script = ExtResource("3_ab43m")
@@ -246,7 +223,6 @@ display_name = "Feu mordant"
 description = "La Brûlure inflige +1 dégât par tour."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_2lr8q")])
 
 [sub_resource type="Resource" id="Resource_xp5y0"]
@@ -254,7 +230,6 @@ script = ExtResource("5_6gupd")
 effect_type = 18
 amount = 1
 modifier_name = "Souffle puissant"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_rjtsu"]
 script = ExtResource("3_ab43m")
@@ -264,7 +239,6 @@ display_name = "Souffle puissant"
 description = "+1 case de poussée."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_xp5y0")])
 
 [sub_resource type="Resource" id="Resource_s25lj"]
@@ -272,7 +246,6 @@ script = ExtResource("5_6gupd")
 effect_type = 20
 amount = 4
 modifier_name = "Fracas ardent"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_h74pn"]
 script = ExtResource("3_ab43m")
@@ -282,7 +255,6 @@ display_name = "Fracas ardent"
 description = "Une collision inflige 4 dégâts supplémentaires."
 discipline_id = &"mage"
 rank = 4
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_s25lj")])
 
 [sub_resource type="Resource" id="Resource_b3smq"]
@@ -296,14 +268,12 @@ script = ExtResource("5_6gupd")
 effect_type = 5
 amount = 2
 modifier_name = "Comète elfique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_vnjxm"]
 script = ExtResource("5_6gupd")
 effect_type = 1
 amount = 8
 modifier_name = "Comète elfique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_sgf04"]
 script = ExtResource("3_ab43m")
@@ -313,21 +283,18 @@ display_name = "Comète elfique"
 description = "+8 dégâts au centre et +2 portée."
 discipline_id = &"mage"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_mbr5t"), SubResource("Resource_vnjxm")])
 
 [sub_resource type="Resource" id="Resource_kvtor"]
 script = ExtResource("5_6gupd")
 amount = 3
 modifier_name = "Nova elfique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_kohr5"]
 script = ExtResource("5_6gupd")
 effect_type = 17
 amount = 1
 modifier_name = "Nova elfique"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_qi6ew"]
 script = ExtResource("3_ab43m")
@@ -337,7 +304,6 @@ display_name = "Nova elfique"
 description = "+3 dégâts à toutes les cibles et zone agrandie."
 discipline_id = &"mage"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_kvtor"), SubResource("Resource_kohr5")])
 
 [sub_resource type="Resource" id="Resource_n6h10"]
@@ -350,14 +316,12 @@ status_name = "Brûlure"
 status_mode = 2
 status_element = 1
 modifier_name = "Incendie sauvage"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_nulxh"]
 script = ExtResource("5_6gupd")
 effect_type = 22
 amount = 1
 modifier_name = "Incendie sauvage"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_5h1ae"]
 script = ExtResource("3_ab43m")
@@ -367,7 +331,6 @@ display_name = "Incendie sauvage"
 description = "Brûlure : 3 dégâts pendant 3 tours et terrain +1 tour."
 discipline_id = &"mage"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_n6h10"), SubResource("Resource_nulxh")])
 
 [sub_resource type="Resource" id="Resource_yj54h"]
@@ -375,21 +338,18 @@ script = ExtResource("5_6gupd")
 effect_type = 19
 amount = 2
 modifier_name = "Onde explosive"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_8d0qq"]
 script = ExtResource("5_6gupd")
 effect_type = 21
 amount = 6
 modifier_name = "Onde explosive"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_dgcb5"]
 script = ExtResource("5_6gupd")
 effect_type = 22
 amount = 1
 modifier_name = "Onde explosive"
-target_spell_id = &""
 
 [sub_resource type="Resource" id="Resource_r5f2o"]
 script = ExtResource("3_ab43m")
@@ -399,7 +359,6 @@ display_name = "Onde explosive"
 description = "Poussée de 2 cases, 6 dégâts de collision et terrain +1 tour."
 discipline_id = &"mage"
 rank = 5
-target_spell_id = &""
 spell_modifiers = Array[ExtResource("4_74y2y")]([SubResource("Resource_yj54h"), SubResource("Resource_8d0qq"), SubResource("Resource_dgcb5")])
 
 [sub_resource type="Resource" id="Resource_yyqk6"]

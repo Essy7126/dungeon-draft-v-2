@@ -9,11 +9,6 @@
 [ext_resource type="Resource" path="res://data/characters/elf/spells/sylvan_heal.tres" id="6_heal"]
 [ext_resource type="PackedScene" path="res://characters/elf/ElfVisual3D.tscn" id="7_elf_preview"]
 [ext_resource type="PackedScene" path="res://characters/elf/ElfIsoUnitView.tscn" id="7_elf_visual"]
-[ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="8_discipline_type"]
-[ext_resource type="Resource" uid="uid://bhvjdy2w5itp4" path="res://data/characters/elf/disciplines/archer.tres" id="9_archer"]
-[ext_resource type="Resource" uid="uid://dkgtp1fjeyiuf" path="res://data/characters/elf/disciplines/assassin.tres" id="10_assassin"]
-[ext_resource type="Resource" uid="uid://cocndd1kqgpax" path="res://data/characters/elf/disciplines/mage.tres" id="11_mage"]
-[ext_resource type="Resource" uid="uid://cudk8c1n1xwn5" path="res://data/characters/elf/disciplines/healer.tres" id="12_healer"]
 [ext_resource type="Resource" path="res://data/characters/elf/animations.tres" id="90_animations"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fallback"]

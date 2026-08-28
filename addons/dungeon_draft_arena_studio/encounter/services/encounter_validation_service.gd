@@ -37,6 +37,18 @@ static func validate_session(
 				{"room_index": room_index}
 			))
 			continue
+		# En brouillon de salle, la grille et le visuel sont des projections
+		# reconstruites à la lecture : la validation les lit sans muter l'autorité.
+		if session.room_draft_mode and room == session.draft_room:
+			room = session.runtime_room()
+			if room == null:
+				messages.append(_message(
+					StudioValidationMessage.Severity.ERROR,
+					&"draft_projection_missing", "Terrain du brouillon illisible",
+					"Le terrain de ce brouillon ne peut pas être projeté.",
+					{"room_index": room_index}
+				))
+				continue
 		_validate_room(messages, run, room, room_index, test_seed, graph)
 	var conflict := session.conflict_report()
 	if conflict.get("conflict", false):
