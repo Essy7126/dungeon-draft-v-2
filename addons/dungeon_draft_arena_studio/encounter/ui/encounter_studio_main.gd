@@ -205,23 +205,7 @@ func _build_interface() -> void:
 	workspace_split.add_child(validation_panel)
 	validation_panel.hide()
 	var footer := HBoxContainer.new()
-	validation_toggle = _add_button(footer, "Validation", func():
-		validation_panel.visible = validation_toggle.button_pressed
-		# Les détails textuels de la case sont secondaires pendant la lecture
-		# des diagnostics ; la carte et sa légende restent visibles.
-		cell_info_label.visible = not validation_panel.visible
-		if timeline_panel != null:
-			timeline_panel.visible = not (validation_panel.visible and size.y < 650.0)
-		if encounter_toolbar != null:
-			encounter_toolbar.visible = not (validation_panel.visible and size.y < 650.0)
-		if draft_banner != null and size.y < 650.0:
-			draft_banner.visible = not validation_panel.visible and session.room_draft_mode
-		if validation_panel.visible:
-			# Le titre, les filtres et la première carte actionnable doivent être
-			# visibles dès l'ouverture à 1280 x 720.
-			_validation_height = maxf(_validation_height, 250.0)
-		_queue_layout()
-	)
+	validation_toggle = _add_button(footer, "Validation", _apply_validation_panel_visibility)
 	validation_toggle.toggle_mode = true
 	validation_toggle.tooltip_text = "Ouvrir ou replier les erreurs, avertissements et informations"
 	# G5 — ce résumé reste visible même quand le panneau est replié : le
@@ -524,6 +508,34 @@ func _build_validation_panel() -> Control:
 	validation_empty_label.hide()
 	box.add_child(validation_empty_label)
 	return panel
+
+
+## Applique la visibilité du panneau de diagnostic à partir de l'état du bouton.
+## Extrait du bouton lui-même pour qu'une action bloquée puisse ouvrir le
+## panneau sans simuler un clic.
+func _apply_validation_panel_visibility() -> void:
+	validation_panel.visible = validation_toggle.button_pressed
+	# Les détails textuels de la case sont secondaires pendant la lecture
+	# des diagnostics ; la carte et sa légende restent visibles.
+	cell_info_label.visible = not validation_panel.visible
+	if timeline_panel != null:
+		timeline_panel.visible = not (validation_panel.visible and size.y < 650.0)
+	if encounter_toolbar != null:
+		encounter_toolbar.visible = not (validation_panel.visible and size.y < 650.0)
+	if draft_banner != null and size.y < 650.0:
+		draft_banner.visible = not validation_panel.visible and session.room_draft_mode
+	if validation_panel.visible:
+		# Le titre, les filtres et la première carte actionnable doivent être
+		# visibles dès l'ouverture à 1280 x 720.
+		_validation_height = maxf(_validation_height, 250.0)
+	_queue_layout()
+
+
+func _open_validation_panel() -> void:
+	if validation_toggle == null or validation_panel == null:
+		return
+	validation_toggle.set_pressed_no_signal(true)
+	_apply_validation_panel_visibility()
 
 
 func _queue_layout() -> void:
@@ -1196,6 +1208,50 @@ func validate_session() -> Array[StudioValidationMessage]:
 	return messages
 
 
+## Barrière commune aux actions qui publient ou lancent le vrai jeu.
+##
+## Une ERREUR est bloquante : elle ferme l'action. Un AVERTISSEMENT ne ferme
+## jamais rien, il est seulement rappelé dans le message pour que la distinction
+## reste lisible. La barrière revalide au lieu de relire le dernier compte
+## affiché : une action ne doit jamais s'appuyer sur un diagnostic périmé.
+func blocking_validation_report() -> Dictionary:
+	var messages := validate_session()
+	var summary := EncounterValidationService.summary(messages)
+	var titles := PackedStringArray()
+	for message in messages:
+		if message.severity == StudioValidationMessage.Severity.ERROR \
+				and titles.size() < 3:
+			titles.append(message.title)
+	return {
+		"blocked": int(summary.errors) > 0,
+		"errors": int(summary.errors),
+		"warnings": int(summary.warnings),
+		"titles": titles,
+	}
+
+
+## Signale une action fermée par la validation : message explicite en statut et
+## panneau de diagnostic ouvert sur les cartes concernées. Jamais un simple
+## bouton inerte.
+func report_blocked_action(action: String, report: Dictionary) -> void:
+	_open_validation_panel()
+	_set_status(_blocking_message(action, report), true)
+
+
+func _blocking_message(action: String, report: Dictionary) -> String:
+	var errors := int(report.get("errors", 0))
+	var warnings := int(report.get("warnings", 0))
+	var text := "%s : %d erreur(s) bloquante(s)" % [action, errors]
+	var titles: PackedStringArray = report.get("titles", PackedStringArray())
+	if not titles.is_empty():
+		text += " — %s" % ", ".join(titles)
+		if errors > titles.size():
+			text += "…"
+	if warnings > 0:
+		text += " • %d avertissement(s), qui ne bloquent pas" % warnings
+	return text + ". Corrigez-les dans le panneau de diagnostic."
+
+
 ## G5 — résumé permanent, visible même panneau replié : icône + libellé +
 ## couleur, jamais la couleur seule. Ordre de priorité erreurs > avertissements
 ## > informations.
@@ -1337,6 +1393,13 @@ func analyze_seeds(count: int) -> void:
 
 
 func test_current_encounter() -> Dictionary:
+	# Le lanceur refuse déjà une session en erreur, mais son code de retour seul
+	# ne dit pas à l'auteur ce qui bloque : la barrière parle avant lui.
+	var gate := blocking_validation_report()
+	if bool(gate.blocked):
+		last_test_result = {"ok": false, "error": "validation_failed", "gate": gate}
+		report_blocked_action("Test impossible", gate)
+		return last_test_result
 	last_test_result = EncounterTestLauncher.prepare_and_launch(
 		session, editor_interface, int(seed_spin.value)
 	)
@@ -1400,6 +1463,12 @@ func _show_save_dialog() -> void:
 		# La sauvegarde canonique n'est pas atteignable en brouillon de salle :
 		# le bouton enregistre le brouillon dans le dossier personnel.
 		save_room_draft()
+		return
+	# Une erreur bloquante ferme la publication ; un avertissement ne l'a jamais
+	# fermée et n'a donc pas à changer de comportement ici.
+	var gate := blocking_validation_report()
+	if bool(gate.blocked):
+		report_blocked_action("Publication impossible", gate)
 		return
 	var plan := EncounterSaveService.build_plan(session)
 	if not plan.get("ok", false):

@@ -867,10 +867,26 @@ func _global_create_encounters() -> void:
 
 
 func _global_produce() -> void:
+	# Le gate d'intégration de Terrain (ArenaIntegrationGatePolicy) ne juge que
+	# le terrain : une rencontre en erreur bloquante le franchirait sans un mot.
+	# Depuis Rencontres, la barrière du domaine passe donc en premier. Un
+	# avertissement, lui, laisse l'assistant s'ouvrir comme avant.
+	if tabs.current_tab == 1 and encounter_studio != null:
+		var gate := encounter_studio.blocking_validation_report()
+		if bool(gate.get("blocked", false)):
+			encounter_studio.report_blocked_action("Intégration impossible", gate)
+			return
 	if (tabs.current_tab == 0 or _active_room_draft()) \
 			and arena_studio.has_method("show_production_wizard"):
 		tabs.current_tab = 0
 		arena_studio.show_production_wizard()
+	elif tabs.current_tab == 1 and encounter_studio != null:
+		# Sans brouillon de salle partagé avec Terrain, ce bouton ne faisait
+		# rien du tout et sans le moindre message.
+		encounter_studio._set_status(
+			"Ce document n'est pas un brouillon de salle : publiez-le avec "
+			+ "« Publier les rencontres ».", true
+		)
 
 
 func _global_lab_transfer() -> void:
