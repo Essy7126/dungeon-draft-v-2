@@ -76,6 +76,7 @@ var _summon_settings_open := false
 var _focus_catalog_search_next_refresh := false
 var seed_spin: SpinBox
 var generate_placement_button: Button
+var randomize_seed_button: Button
 var add_wave_button: Button
 var duplicate_wave_button: Button
 var edit_terrain_button: Button
@@ -263,9 +264,9 @@ func _build_toolbar() -> Control:
 	navigation_toggle.toggle_mode = true
 	navigation_toggle.tooltip_text = "Ouvrir ou replier la navigation pour agrandir le terrain"
 	_add_button(bar, "Ouvrir une partie", _show_open_dialog, "Folder")
-	generate_placement_button = _add_button(
-		bar, "Générer un placement", generate_preview, "preview"
-	)
+	# « Générer un placement » a rejoint le bloc « Variante de placement » de la
+	# barre TERRAIN ET PLACEMENT : le champ et l'action qui l'applique vivaient
+	# dans deux zones opposées de l'écran. Voir _build_center_panel().
 	_add_button(bar, "Rapport", export_report, "report")
 	return panel
 
@@ -297,12 +298,19 @@ func _build_center_panel() -> Control:
 	var preview_heading := _section("TERRAIN ET PLACEMENT")
 	preview_heading.autowrap_mode = TextServer.AUTOWRAP_OFF
 	preview_toolbar.add_child(preview_heading)
+	# La variante, son tirage au hasard et le bouton qui l'applique ne servent
+	# qu'ensemble : ils forment un seul bloc, que le flux ne peut pas séparer.
+	var placement_group := HBoxContainer.new()
+	placement_group.add_theme_constant_override(
+		"separation", EncounterVisualConstants.SPACING_TIGHT
+	)
+	preview_toolbar.add_child(placement_group)
 	var seed_label := Label.new()
 	seed_label.text = "Variante de placement"
 	seed_label.tooltip_text = (
 		"Change la disposition proposée des ennemis sans modifier le terrain."
 	)
-	preview_toolbar.add_child(seed_label)
+	placement_group.add_child(seed_label)
 	seed_spin = SpinBox.new()
 	seed_spin.min_value = -2_147_483_648
 	seed_spin.max_value = 2_147_483_647
@@ -312,7 +320,16 @@ func _build_center_panel() -> Control:
 	seed_spin.value_changed.connect(func(_value):
 		if not _syncing: generate_preview()
 	)
-	preview_toolbar.add_child(seed_spin)
+	placement_group.add_child(seed_spin)
+	randomize_seed_button = _add_button(
+		placement_group, "Au hasard", _randomize_seed, "RandomNumberGenerator"
+	)
+	randomize_seed_button.tooltip_text = (
+		"Tirer une variante au hasard et régénérer le placement."
+	)
+	generate_placement_button = _add_button(
+		placement_group, "Générer un placement", generate_preview, "preview"
+	)
 	edit_terrain_button = _add_button(
 		preview_toolbar, "Modifier le terrain", func(): open_arena_requested.emit()
 	)
@@ -1095,6 +1112,13 @@ func _refresh_document_actions() -> void:
 			if has_encounter else
 			"Créez d'abord le premier affrontement."
 		)
+	if randomize_seed_button != null:
+		randomize_seed_button.disabled = not has_encounter
+		randomize_seed_button.tooltip_text = (
+			"Tirer une variante au hasard et régénérer le placement."
+			if has_encounter else
+			"Créez d'abord le premier affrontement."
+		)
 	# Le plafond d'affrontements par salle est une règle de partie : un bouton
 	# grisé sans explication laisserait croire à une panne. Le survol dit donc
 	# toujours pourquoi l'action est fermée, et avec quelle limite.
@@ -1174,6 +1198,22 @@ func _refresh_technical_details() -> void:
 		messages.append(message.to_dictionary())
 	technical_text.text += "\n\nVALIDATION\n%s" % JSON.stringify(messages, "  ")
 	technical_text.text += "\n\nDERNIÈRE OPÉRATION SIGNALÉE\n%s" % JSON.stringify(_operation_details, "  ")
+
+
+## Tire une variante de placement au hasard. La graine du Studio est une
+## préférence d'aperçu : elle n'est jamais écrite dans le document et ne crée
+## donc aucune entrée d'historique — comme la saisie manuelle du champ.
+func _randomize_seed() -> void:
+	if seed_spin == null:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var previous := seed_spin.value
+	# value_changed relance déjà l'aperçu ; un tirage retombant sur la valeur
+	# courante n'émettrait rien, d'où la relance explicite.
+	seed_spin.value = rng.randi_range(0, 2_147_483_647)
+	if seed_spin.value == previous:
+		generate_preview()
 
 
 func generate_preview() -> Dictionary:
