@@ -391,7 +391,12 @@ func _build_timeline_panel() -> Control:
 	box.add_child(timeline_scroll)
 	var actions := HFlowContainer.new()
 	add_wave_button = _add_button(actions, "Ajouter un affrontement", _add_wave)
-	duplicate_wave_button = _add_button(actions, "Dupliquer", _duplicate_wave)
+	# « Dupliquer l'affrontement » copie la vague sélectionnée ; « Dupliquer la
+	# rencontre » plus bas détache la rencontre partagée. Deux portées
+	# différentes : le libellé court les rendait indistinguables.
+	duplicate_wave_button = _add_button(
+		actions, "Dupliquer l'affrontement", _duplicate_wave
+	)
 	# G6 — action destructrice : identifiable par sa couleur de texte, sans
 	# dominer l'écran (pas de fond plein, pas de taille agrandie).
 	_add_button(actions, "Supprimer", _remove_wave, "", true)
