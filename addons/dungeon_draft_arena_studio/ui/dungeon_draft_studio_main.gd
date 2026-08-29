@@ -6,6 +6,11 @@ signal detach_requested
 signal reintegrate_requested
 signal skill_studio_requested
 
+## Accent du Studio, repris du titre de la barre de domaines : le domaine
+## ouvert le porte, les autres restent atténués.
+const DOMAIN_ACCENT := Color(0.48, 0.86, 1.0)
+const DOMAIN_IDLE := Color(0.72, 0.77, 0.84)
+
 var editor_interface = null
 var editor_undo_redo = null
 var tabs: TabContainer
@@ -533,7 +538,47 @@ func _refresh_domain_buttons() -> void:
 	if tabs == null:
 		return
 	for index in range(domain_buttons.size()):
-		domain_buttons[index].set_pressed_no_signal(index == tabs.current_tab)
+		var active := index == tabs.current_tab
+		domain_buttons[index].set_pressed_no_signal(active)
+		_apply_domain_button_state(domain_buttons[index], active)
+	if skill_studio_button != null:
+		# Studio séparé, jamais l'onglet courant : il garde l'état inactif, mais
+		# la même atténuation que les autres pour rester dans la même famille.
+		_apply_domain_button_state(skill_studio_button, false)
+
+
+## Sur un bouton `flat`, Godot ne dessine aucune StyleBox : l'état `pressed`
+## posé par set_pressed_no_signal() était donc strictement invisible. Le domaine
+## ouvert quitte `flat` et prend un fond très discret, un soulignement de 2 px
+## et l'accent du Studio ; les autres restent plats et atténués. La StyleBox
+## `focus` n'est jamais surchargée : l'anneau de focus clavier doit survivre au
+## changement d'onglet.
+func _apply_domain_button_state(button: Button, active: bool) -> void:
+	button.flat = not active
+	var font_states := [
+		"font_color", "font_hover_color", "font_pressed_color", "font_focus_color",
+	]
+	for state in font_states:
+		button.add_theme_color_override(state, DOMAIN_ACCENT if active else DOMAIN_IDLE)
+	for state in ["normal", "hover", "pressed"]:
+		if active:
+			button.add_theme_stylebox_override(state, _domain_active_style())
+		else:
+			button.remove_theme_stylebox_override(state)
+
+
+func _domain_active_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(DOMAIN_ACCENT.r, DOMAIN_ACCENT.g, DOMAIN_ACCENT.b, 0.12)
+	style.border_color = DOMAIN_ACCENT
+	style.border_width_bottom = 2
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	style.content_margin_top = 4
+	style.content_margin_bottom = 4
+	style.corner_radius_top_left = 3
+	style.corner_radius_top_right = 3
+	return style
 
 
 func _on_guided_toggled(value: bool) -> void:
