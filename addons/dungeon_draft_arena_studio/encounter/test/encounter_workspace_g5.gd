@@ -48,7 +48,10 @@ func _run() -> void:
 	ui.validation_toggle.button_pressed = false
 	ui.validation_toggle.pressed.emit()
 	await _g5_capture("02_validation_repliee_avec_erreurs")
-	_check(ui.validation_summary_label.text.begins_with("✖"), "Le résumé replié annonce l'erreur")
+	_check(
+		ui.validation_toggle.text.begins_with("▸") and ui.validation_toggle.text.contains("✖"),
+		"Le résumé replié annonce l'erreur sur le bouton qui déplie le détail"
+	)
 
 	# --- État 3 : validation ouverte, plusieurs gravités -----------------
 	ui.validation_toggle.button_pressed = true

@@ -94,7 +94,7 @@ func test_no_blocking_diagnostics_shows_the_positive_state() -> void:
 	assert_string_contains(ui.validation_empty_label.text, "Aucun problème bloquant")
 	assert_false(ui.validation_empty_label.text.to_lower().contains("équilibr"),
 		"L'état positif ne promet jamais un équilibrage")
-	assert_string_contains(ui.validation_summary_label.text, "Aucun problème bloquant")
+	assert_string_contains(ui.validation_toggle.text, "Aucun problème bloquant")
 
 
 func test_one_error_hides_the_positive_state_and_shows_a_card() -> void:
@@ -105,7 +105,7 @@ func test_one_error_hides_the_positive_state_and_shows_a_card() -> void:
 	assert_false(ui.validation_empty_label.visible)
 	var card := _card_for(ui, &"living_cap_too_low")
 	assert_not_null(card)
-	assert_string_contains(ui.validation_summary_label.text, "erreur")
+	assert_string_contains(ui.validation_toggle.text, "erreur")
 
 
 func test_one_warning_alone_still_counts_as_no_blocking_problem() -> void:

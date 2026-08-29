@@ -51,7 +51,9 @@ var validation_details_dialog: AcceptDialog
 var validation_details_text: RichTextLabel
 ## G5 — cartes de diagnostic compréhensibles ; « Voir » et « Corriger » sont
 ## des actions distinctes, jamais déclenchées par une simple sélection.
-var validation_summary_label: Label
+## Résumé courant du pied de page, sans le chevron : `validation_toggle` le
+## réaffiche avec l'indicateur d'ouverture qui convient.
+var _validation_summary_text := "Aucun problème bloquant"
 var validation_cards_box: VBoxContainer
 var validation_empty_label: Label
 var validation_filter_buttons := {}
@@ -205,15 +207,15 @@ func _build_interface() -> void:
 	workspace_split.add_child(validation_panel)
 	validation_panel.hide()
 	var footer := HBoxContainer.new()
-	validation_toggle = _add_button(footer, "Validation", _apply_validation_panel_visibility)
+	# G5 — le résumé reste visible même quand le panneau est replié : il ne
+	# doit jamais falloir ouvrir quoi que ce soit pour savoir s'il reste des
+	# problèmes bloquants. Le compte EST le bouton qui déplie le détail : un
+	# libellé séparé « Validation » à côté du même compte, et le statut qui le
+	# répétait une troisième fois, disaient trois fois la même chose.
+	validation_toggle = _add_button(footer, "", _apply_validation_panel_visibility)
 	validation_toggle.toggle_mode = true
-	validation_toggle.tooltip_text = "Ouvrir ou replier les erreurs, avertissements et informations"
-	# G5 — ce résumé reste visible même quand le panneau est replié : le
-	# bouton seul ne doit jamais être la seule façon de savoir s'il reste des
-	# problèmes bloquants.
-	validation_summary_label = Label.new()
-	validation_summary_label.text = "Aucun problème bloquant"
-	footer.add_child(validation_summary_label)
+	validation_toggle.tooltip_text = "Déplier ou replier le détail des erreurs, avertissements et informations"
+	_refresh_validation_toggle_text()
 
 	status_label = Label.new()
 	status_label.text = "Initialisation du Studio de rencontres..."
@@ -520,6 +522,7 @@ func _build_validation_panel() -> Control:
 ## panneau sans simuler un clic.
 func _apply_validation_panel_visibility() -> void:
 	validation_panel.visible = validation_toggle.button_pressed
+	_refresh_validation_toggle_text()
 	# Les détails textuels de la case sont secondaires pendant la lecture
 	# des diagnostics ; la carte et sa légende restent visibles.
 	cell_info_label.visible = not validation_panel.visible
@@ -1204,11 +1207,7 @@ func validate_session() -> Array[StudioValidationMessage]:
 		session, int(seed_spin.value)
 	)
 	_rebuild_validation_cards()
-	var summary := EncounterValidationService.summary(messages)
-	_refresh_validation_summary(summary)
-	_set_status("Validation : %d erreur(s), %d avertissement(s)." % [
-		summary.errors, summary.warnings,
-	], summary.errors > 0)
+	_refresh_validation_summary(EncounterValidationService.summary(messages))
 	_refresh_technical_details()
 	return messages
 
@@ -1261,27 +1260,39 @@ func _blocking_message(action: String, report: Dictionary) -> String:
 ## couleur, jamais la couleur seule. Ordre de priorité erreurs > avertissements
 ## > informations.
 func _refresh_validation_summary(summary: Dictionary) -> void:
-	if validation_summary_label == null:
+	if validation_toggle == null:
 		return
 	var errors := int(summary.get("errors", 0))
 	var warnings := int(summary.get("warnings", 0))
+	var color := EncounterVisualConstants.COLOR_SUCCESS
 	if errors > 0:
-		validation_summary_label.text = "✖ %d erreur(s)%s" % [
+		_validation_summary_text = "✖ %d erreur(s)%s" % [
 			errors, " • %d avertissement(s)" % warnings if warnings > 0 else "",
 		]
-		validation_summary_label.add_theme_color_override(
-			"font_color", EncounterVisualConstants.severity_color(StudioValidationMessage.Severity.ERROR)
+		color = EncounterVisualConstants.severity_color(
+			StudioValidationMessage.Severity.ERROR
 		)
 	elif warnings > 0:
 		# Un avertissement n'empêche jamais de tester : le message reste
 		# rassurant en tête, le compte reste visible et honnête.
-		validation_summary_label.text = "Aucun problème bloquant (%d avertissement(s))" % warnings
-		validation_summary_label.add_theme_color_override(
-			"font_color", EncounterVisualConstants.severity_color(StudioValidationMessage.Severity.WARNING)
+		_validation_summary_text = "Aucun problème bloquant (%d avertissement(s))" % warnings
+		color = EncounterVisualConstants.severity_color(
+			StudioValidationMessage.Severity.WARNING
 		)
 	else:
-		validation_summary_label.text = "Aucun problème bloquant"
-		validation_summary_label.add_theme_color_override("font_color", EncounterVisualConstants.COLOR_SUCCESS)
+		_validation_summary_text = "Aucun problème bloquant"
+	for state in ["font_color", "font_hover_color", "font_focus_color"]:
+		validation_toggle.add_theme_color_override(state, color)
+	_refresh_validation_toggle_text()
+
+
+## Le chevron dit si un clic déplie ou replie — même idiome que _fold_section.
+func _refresh_validation_toggle_text() -> void:
+	if validation_toggle == null:
+		return
+	validation_toggle.text = "%s %s" % [
+		"▾" if validation_toggle.button_pressed else "▸", _validation_summary_text,
+	]
 
 
 ## G5 — reconstruit les cartes à partir des messages actuels et des filtres
