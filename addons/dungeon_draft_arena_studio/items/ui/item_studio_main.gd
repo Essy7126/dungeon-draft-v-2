@@ -162,8 +162,10 @@ func _ready() -> void:
 		_queue_refresh()
 
 
-func _exit_tree() -> void:
-	if project_context != null:
+func _notification(what: int) -> void:
+	# Le même Studio est reparenté entre l'hôte intégré et la fenêtre native.
+	# Un EXIT_TREE intermédiaire ne doit pas désarmer la protection dirty.
+	if what == NOTIFICATION_PREDELETE and project_context != null:
 		project_context.unregister_transition_handler(&"items")
 
 

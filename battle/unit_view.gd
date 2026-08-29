@@ -1,3 +1,4 @@
+@tool
 # battle/unit_view.gd
 extends Node2D
 
@@ -31,28 +32,31 @@ var _painted_family_profile: UnitVisualProfile = null
 var _painted_optional_base_scale := Vector2.ONE
 var _painted_visual_scale := 1.0
 var _painted_readability_enabled := false
+var _runtime_signals_connected := false
 
-func setup(p_unit: Unit) -> void:
+func setup(p_unit: Unit, connect_runtime_signals := true) -> void:
 	unit = p_unit
 	add_to_group("unit_views")
 	_build_visual()
-	unit.hp_changed.connect(_on_hp_changed)
-	unit.died.connect(_on_died)
-	unit.moved.connect(_on_unit_moved)
-	unit.shield_changed.connect(_on_shield_changed)
-	unit.stats_changed.connect(_on_stats_changed)
-	EventBus.basic_attack_performed.connect(_on_attack_performed)
-	EventBus.turn_started.connect(_on_any_turn_started)
-	EventBus.health_damage_taken.connect(_on_damage_dealt)
-	EventBus.lethal_hit_resolved.connect(_on_lethal_hit_resolved)
-	EventBus.unit_healed.connect(_on_unit_healed)
-	EventBus.shield_absorbed.connect(_on_shield_absorbed)
-	EventBus.shield_broken.connect(_on_shield_broken)
-	EventBus.shield_gained.connect(_on_shield_gained)
-	EventBus.status_applied.connect(_on_status_changed)
-	EventBus.status_refreshed.connect(_on_status_changed)
-	EventBus.status_expired.connect(_on_status_expired)
-	EventBus.status_removed.connect(_on_status_removed)
+	if connect_runtime_signals:
+		unit.hp_changed.connect(_on_hp_changed)
+		unit.died.connect(_on_died)
+		unit.moved.connect(_on_unit_moved)
+		unit.shield_changed.connect(_on_shield_changed)
+		unit.stats_changed.connect(_on_stats_changed)
+		EventBus.basic_attack_performed.connect(_on_attack_performed)
+		EventBus.turn_started.connect(_on_any_turn_started)
+		EventBus.health_damage_taken.connect(_on_damage_dealt)
+		EventBus.lethal_hit_resolved.connect(_on_lethal_hit_resolved)
+		EventBus.unit_healed.connect(_on_unit_healed)
+		EventBus.shield_absorbed.connect(_on_shield_absorbed)
+		EventBus.shield_broken.connect(_on_shield_broken)
+		EventBus.shield_gained.connect(_on_shield_gained)
+		EventBus.status_applied.connect(_on_status_changed)
+		EventBus.status_refreshed.connect(_on_status_changed)
+		EventBus.status_expired.connect(_on_status_expired)
+		EventBus.status_removed.connect(_on_status_removed)
+		_runtime_signals_connected = true
 	_update_all_bars()
 	_update_status_icons()
 
@@ -133,6 +137,9 @@ func _disconnect_optional_visual_waits() -> void:
 
 
 func _disconnect_runtime_signals() -> void:
+	if not _runtime_signals_connected:
+		return
+	_runtime_signals_connected = false
 	if is_instance_valid(unit):
 		var unit_connections := [
 			[unit.hp_changed, _on_hp_changed],

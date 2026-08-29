@@ -432,8 +432,11 @@ func _ready() -> void:
 	call_deferred("_poll_lab_transfers")
 
 
-func _exit_tree() -> void:
-	if project_context != null:
+func _notification(what: int) -> void:
+	# Un détachement du workspace provoque EXIT_TREE sans détruire le Studio.
+	# Les handlers doivent donc survivre au reparentage et ne disparaître qu'à
+	# la destruction réelle de cette instance.
+	if what == NOTIFICATION_PREDELETE and project_context != null:
 		project_context.unregister_transition_handler(&"arena")
 		project_context.unregister_transition_handler(&"arena_run")
 

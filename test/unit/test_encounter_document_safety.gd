@@ -105,7 +105,7 @@ func test_content_fingerprint_undo_redo_and_preferences() -> void:
 	assert_false(session.is_dirty())
 	ui.seed_spin.value += 42
 	ui.properties_tabs.current_tab = 1
-	ui.set_guided(false)
+	ui.properties_tabs.current_tab = ui.properties_tabs.get_tab_count() - 1
 	session.select(1, 1)
 	assert_false(session.is_dirty())
 	await wait_process_frames(2)

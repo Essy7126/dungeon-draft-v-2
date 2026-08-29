@@ -554,7 +554,9 @@ func _build_units(value: ArenaDefinition, parent: Node2D) -> void:
 		unit.visual_scene = null
 		var view := UNIT_VIEW_SCENE.instantiate()
 		parent.add_child(view)
-		view.setup(unit)
+		# L'aperçu ne participe pas au combat actif : il utilise le vrai UnitView
+		# pour son rendu, sans s'abonner aux signaux globaux du runtime.
+		view.setup(unit, false)
 		view.position = parent.to_local(
 			grid_view.to_global(grid_view.grid_to_local(spawn.cell))
 		)

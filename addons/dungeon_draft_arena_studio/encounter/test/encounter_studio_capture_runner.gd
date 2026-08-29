@@ -56,11 +56,12 @@ func _capture_suite() -> void:
 	studio.session.current_encounter().forbidden_initial_spawn_cells.append(
 		Vector2i(99, 99)
 	)
-	var validation := studio.validate_session()
-	for index in range(validation.size()):
-		if validation[index].severity == StudioValidationMessage.Severity.ERROR:
-			studio.validation_list.select(index)
-			studio.validation_list.ensure_current_is_visible()
+	studio.validate_session()
+	for card in studio.validation_cards_box.get_children():
+		if card.message != null and card.message.severity == StudioValidationMessage.Severity.ERROR:
+			var scroll := card.get_parent().get_parent() as ScrollContainer
+			if scroll != null:
+				scroll.ensure_control_visible(card)
 			break
 	await _capture("10_panneau_validation")
 	print("ENCOUNTER_STUDIO_CAPTURES_OK ", resolution)

@@ -379,6 +379,42 @@ func test_dirty_draft_uses_the_four_explicit_decisions() -> void:
 		await wait_process_frames(1)
 
 
+func test_opening_a_room_draft_never_overrides_a_pending_transition() -> void:
+	var workspace := await _workspace()
+	var context := workspace.project_context
+	var terrain := _unpublished_terrain(workspace)
+	var encounter := workspace.encounter_studio
+	# Un autre domaine (Terrain) est modifié et une décision SAVE/DRAFT/DISCARD/
+	# CANCEL est déjà ouverte ailleurs dans le Studio, sans que Rencontres n'ait
+	# lui-même le moindre changement. C'est exactement le cas dangereux visé :
+	# ouvrir directement le brouillon de salle ne doit ni écraser cette
+	# décision, ni la résoudre implicitement, ni changer l'autorité du
+	# document de Rencontres pendant qu'elle reste ouverte.
+	context.set_dirty(&"arena", true, {"document": "Fixture"})
+	var requested := context.request_room(0, &"encounter")
+	assert_false(bool(requested.get("ok", false)))
+	assert_true(context.has_pending_transition())
+	var pending_before := context.pending_transition()
+	assert_false(encounter.session.is_dirty())
+	assert_false(encounter.session.room_draft_mode)
+
+	var opened := encounter.open_room_draft(
+		terrain.room_draft(), context.active_run, context.active_run.resource_path,
+		terrain.room_draft_gameplay_mapping()
+	)
+
+	assert_false(opened,
+		"Une décision déjà ouverte ailleurs doit bloquer l'ouverture directe du brouillon.")
+	assert_false(encounter.session.room_draft_mode,
+		"Rencontres ne doit pas changer d'autorité pendant une décision ouverte.")
+	assert_true(context.has_pending_transition(),
+		"La décision en attente ne doit pas être écrasée.")
+	assert_eq(context.pending_transition(), pending_before,
+		"La transition en attente ne doit ni être écrasée ni résolue implicitement.")
+	assert_true(context.is_dirty(&"arena"),
+		"Le domaine modifié en attente de décision doit rester intact.")
+
+
 ## --- Enregistrement du brouillon --------------------------------------------
 
 func test_saving_a_room_draft_only_writes_under_user_and_restores_everything() -> void:

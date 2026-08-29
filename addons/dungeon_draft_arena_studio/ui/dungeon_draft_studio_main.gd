@@ -435,6 +435,7 @@ func _refresh_history_controls() -> void:
 			if transfer_count > 0 else "Importer depuis le laboratoire"
 	if guided_toggle != null:
 		guided_toggle.disabled = false
+		guided_toggle.visible = tabs == null or tabs.current_tab != 1
 	_sync_shell_from_arena()
 	_refresh_action_labels()
 
@@ -538,8 +539,6 @@ func _refresh_domain_buttons() -> void:
 func _on_guided_toggled(value: bool) -> void:
 	if arena_studio != null:
 		arena_studio.set_guided(value)
-	if encounter_studio != null and encounter_studio.has_method("set_guided"):
-		encounter_studio.set_guided(value)
 	if item_studio != null and item_studio.has_method("set_guided"):
 		item_studio.set_guided(value)
 	_refresh_history_controls()
@@ -723,8 +722,13 @@ func _apply_toolbar_responsive() -> void:
 	if studio_title_label == null or detach_button == null:
 		return
 	var compact := size.x < 1500.0
-	studio_title_label.text = StudioVersion.display_name(compact)
-	studio_title_label.custom_minimum_size.x = 82 if compact else 224
+	# Le shell dispose encore de la place nécessaire à 1280 px : le titre
+	# abrégé n'est réservé qu'aux largeurs logiques réellement insuffisantes
+	# (notamment lorsqu'une échelle de contenu réduit l'espace disponible).
+	var compact_title := uses_compact_title(size.x)
+	studio_title_label.text = StudioVersion.display_name(compact_title)
+	studio_title_label.tooltip_text = StudioVersion.display_name(false)
+	studio_title_label.custom_minimum_size.x = 82 if compact_title else 224
 	if document_label != null and document_label.get_parent() != null:
 		document_label.get_parent().custom_minimum_size.x = 132 if compact else 168
 	undo_button.text = "↶" if compact else "Annuler"
@@ -760,6 +764,10 @@ func _apply_toolbar_responsive() -> void:
 		("Réint. fenêtre" if compact else "Réintégrer la fenêtre") if detached \
 		else ("Dét. fenêtre" if compact else "Détacher la fenêtre")
 	)
+
+
+static func uses_compact_title(logical_width: float) -> bool:
+	return logical_width < 1120.0
 
 
 func _global_save() -> void:

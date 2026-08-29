@@ -258,7 +258,7 @@ func _setup_logic() -> void:
 		room_data, self, grid_cols, grid_rows
 	)
 	pathfinder = Pathfinder.new(grid)
-	var relic_service := GameManager.get_relic_runtime_service()
+	var relic_service: RelicRuntimeService = GameManager.get_relic_runtime_service()
 	if relic_service != null:
 		pathfinder.set_voluntary_cost_modifier(
 			Callable(relic_service, "modify_voluntary_transition_cost")
@@ -633,7 +633,7 @@ func _setup_ui() -> void:
 
 
 func _apply_accessibility_preferences() -> void:
-	var reduced_motion := GameManager.is_reduced_motion_enabled()
+	var reduced_motion: bool = GameManager.is_reduced_motion_enabled()
 	if _hud_port != null:
 		_hud_port.set_reduced_motion(reduced_motion)
 	set_reduced_motion(reduced_motion)
@@ -1210,10 +1210,10 @@ func _on_item_activation_requested(instance_id: StringName) -> void:
 	var unit = turn_queue.get_current_unit()
 	if unit == null or unit.team != 0:
 		return
-	var relic_service := GameManager.get_relic_runtime_service()
+	var relic_service: RelicRuntimeService = GameManager.get_relic_runtime_service()
 	if relic_service == null:
 		return
-	var result := relic_service.activate_relic_manually(unit, instance_id)
+	var result: Dictionary = relic_service.activate_relic_manually(unit, instance_id)
 	if not bool(result.get("success", false)):
 		DebugLogger.debug(
 			DebugLogger.LogCategory.COMBAT,
@@ -1485,7 +1485,7 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	var paid_cost := int(cost_breakdown.get("total", 0))
 	var base_cost := int(cost_breakdown.get("unmodified_total", paid_cost))
 	var action_id := _next_action_id(&"move")
-	var relic_service := GameManager.get_relic_runtime_service()
+	var relic_service: RelicRuntimeService = GameManager.get_relic_runtime_service()
 	if relic_service != null and relic_service.try_intercept(
 			unit,
 			ItemReactiveEffectData.TRIGGER_VOLUNTARY_MOVE_PREPARED,

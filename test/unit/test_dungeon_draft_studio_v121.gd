@@ -271,9 +271,19 @@ func test_twenty_detach_reintegrate_cycles_keep_the_same_dynamic_workspace_and_r
 	var window := NativeStudioWindowHost.new()
 	add_child_autofree(window)
 	await get_tree().process_frame
+	var context := StudioProjectContext.new()
 	var workspace := StudioWorkspace.new()
+	workspace.setup(null, null, context, StudioReferenceGraphService.new())
 	embedded.attach_workspace(workspace)
 	await get_tree().process_frame
+	var protected_domains: Array[StringName] = [
+		&"arena", &"arena_run", &"encounter", &"items",
+	]
+	for domain in protected_domains:
+		assert_true(
+			bool(context.transition_handler_contract(domain).valid),
+			"contrat initial %s" % domain
+		)
 	workspace.arena_studio.show_dynamic_construction()
 	if workspace.arena_studio.arena.visual_mode == ArenaDefinition.VisualMode.PAINTED:
 		workspace.arena_studio._enter_painted_logic_only()
@@ -285,6 +295,11 @@ func test_twenty_detach_reintegrate_cycles_keep_the_same_dynamic_workspace_and_r
 	for iteration in range(20):
 		window.attach_workspace(workspace)
 		assert_true(workspace.get_parent() == window, "detach %d" % iteration)
+		for domain in protected_domains:
+			assert_true(
+				bool(context.transition_handler_contract(domain).valid),
+				"contrat %s apres detachement %d" % [domain, iteration]
+			)
 		assert_eq(workspace.workspace_instance_id, workspace_identity)
 		assert_eq(workspace.arena_studio.edit_session.get_instance_id(), session_identity)
 		assert_eq(workspace.arena_studio.edit_session.history.get_instance_id(), history_identity)
@@ -292,7 +307,18 @@ func test_twenty_detach_reintegrate_cycles_keep_the_same_dynamic_workspace_and_r
 		assert_eq(workspace.arena_studio.workspace_mode, ArenaStudioMain.WorkspaceMode.DYNAMIC_CONSTRUCTION)
 		embedded.attach_workspace(window.detach_workspace())
 		assert_true(workspace.get_parent() == embedded, "reintegrate %d" % iteration)
+		for domain in protected_domains:
+			assert_true(
+				bool(context.transition_handler_contract(domain).valid),
+				"contrat %s apres reintegration %d" % [domain, iteration]
+			)
 		assert_eq(workspace.arena_studio.canvas.selected_cells, [Vector2i(2, 2), Vector2i(3, 2)])
+	context.set_dirty(&"arena", true)
+	context.set_dirty(&"encounter", true)
+	assert_true(context.is_dirty(&"arena"))
+	assert_true(context.is_dirty(&"encounter"))
+	context.set_dirty(&"arena", false)
+	context.set_dirty(&"encounter", false)
 	assert_eq(window.get_child_count(), 0)
 	assert_eq(embedded.find_children("*", "StudioWorkspace", true, false).size(), 1)
 	assert_false(workspace.arena_studio.canvas.has_active_gesture())

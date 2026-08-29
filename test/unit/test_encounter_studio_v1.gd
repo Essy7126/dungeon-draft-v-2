@@ -126,6 +126,8 @@ func test_timeline_ajout_duplication_reorganisation_suppression_et_references() 
 
 func test_studio_fallback_undo_redo_et_registre_des_formations() -> void:
 	var studio := EncounterStudioMain.new()
+	# Les transitions documentaires exigent désormais le contexte du Studio.
+	studio.setup(null, null, StudioProjectContext.new(), StudioReferenceGraphService.new())
 	add_child_autofree(studio)
 	await get_tree().process_frame
 	assert_true(studio.open_run(RUN_PATH))
@@ -343,8 +345,12 @@ func test_sauvegarde_enfants_parents_rechargement_recuperation_et_chemins_surs()
 	var failed_session := EncounterEditSession.new()
 	assert_true(failed_session.open(failed_source, failed_fixture.run_path))
 	var unsafe := failed_session.duplicate_current_encounter()
-	failed_session.new_resource_paths[unsafe] = "C:/outside_encounter.tres"
+	failed_session.new_resource_paths[unsafe] = str(failed_fixture.root).path_join("recovered_encounter.tres")
 	failed_session.mark_dirty(failed_session.current_room())
+	# Un plan invalide est refusé avant toute écriture. La récupération est
+	# celle du brouillon explicitement confirmé, pas un effet d'une erreur.
+	assert_true(EncounterSaveService.save_draft(failed_session).ok)
+	failed_session.new_resource_paths[unsafe] = "C:/outside_encounter.tres"
 	var failed := EncounterSaveService.save(failed_session)
 	assert_false(failed.ok)
 	assert_eq(failed.error, "unsafe_or_missing_path")
@@ -383,7 +389,8 @@ func test_migration_historique_explicite_preserve_source_et_comportement() -> vo
 
 
 func test_pont_test_direct_prepare_copie_temporaire_sans_muter_canonique() -> void:
-	var session := _production_session()
+	var fixture := _create_user_hierarchy("direct_test")
+	var session := _session_for_run(load(fixture.run_path), fixture.run_path)
 	var canonical := session.source_encounter()
 	var before := EncounterCopyService.encounter_snapshot(canonical)
 	session.current_encounter().living_enemy_cap += 1
@@ -528,11 +535,16 @@ func _validation_codes(session: EncounterEditSession) -> Array:
 
 
 func _create_user_hierarchy(label: String) -> Dictionary:
-	var root := USER_FIXTURE_ROOT.path_join(label)
+	var root := USER_FIXTURE_ROOT.path_join("%s_%d" % [label, Time.get_ticks_usec()])
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(root))
-	var production_room := load(ROOM_PATH) as RoomData
-	var room := EncounterCopyService.copy_room(production_room)
-	room.waves = [room.waves[0]]
+	# Fixture géométriquement cohérente, indépendante des cartes de production
+	# qui évoluent. Les exclusions restent testées, sans réduire la validation.
+	# Les unités sont des références externes, comme dans le catalogue réel ;
+	# les sous-ressources mutables de Rencontre restent embarquées et copiées.
+	var unit_path := root.path_join("unit.tres")
+	assert_eq(ResourceSaver.save(_unit(&"save_fixture", &""), unit_path), OK)
+	var room := _small_room(_encounter(load(unit_path), 1))
+	room.encounter_definition.forbidden_initial_spawn_cells = [Vector2i(3, 3)]
 	room.minimum_wave_count = 1
 	room.maximum_wave_count = 1
 	var encounter := room.waves[0].encounter_definition
@@ -553,6 +565,9 @@ func _create_user_hierarchy(label: String) -> Dictionary:
 	run.rooms = [ResourceLoader.load(
 		room_path, "", ResourceLoader.CACHE_MODE_IGNORE
 	) as RoomData]
+	assert_false(EncounterValidationService.has_errors(
+		EncounterValidationService.validate_session(_session_for_run(run))
+	), "La fixture de publication doit satisfaire toutes les validations")
 	var run_path := root.path_join("source_run.tres")
 	assert_eq(ResourceSaver.save(run, run_path), OK)
 	return {
