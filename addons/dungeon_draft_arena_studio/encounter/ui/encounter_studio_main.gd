@@ -36,6 +36,8 @@ var status_label: Label
 var run_tree: Tree
 var timeline: HBoxContainer
 var timeline_panel: Control
+var timeline_row: HBoxContainer
+var timeline_actions: HBoxContainer
 var map_preview: EncounterMapPreview
 var properties_tabs: TabContainer
 var composition_box: VBoxContainer
@@ -77,6 +79,9 @@ var _focus_catalog_search_next_refresh := false
 var seed_spin: SpinBox
 var generate_placement_button: Button
 var randomize_seed_button: Button
+var zoom_in_button: Button
+var zoom_out_button: Button
+var zoom_reset_button: Button
 var add_wave_button: Button
 var duplicate_wave_button: Button
 var edit_terrain_button: Button
@@ -135,6 +140,8 @@ func _ready() -> void:
 		if forbidden_tool_toggle != null:
 			forbidden_tool_toggle.set_pressed_no_signal(active)
 	)
+	map_preview.zoom_changed.connect(_on_map_zoom_changed)
+	_on_map_zoom_changed(map_preview.zoom)
 	if editor_interface != null:
 		var filesystem = editor_interface.get_resource_filesystem()
 		if filesystem != null and not filesystem.filesystem_changed.is_connected(
@@ -299,18 +306,16 @@ func _build_center_panel() -> Control:
 	preview_heading.autowrap_mode = TextServer.AUTOWRAP_OFF
 	preview_toolbar.add_child(preview_heading)
 	# La variante, son tirage au hasard et le bouton qui l'applique ne servent
-	# qu'ensemble : ils forment un seul bloc, que le flux ne peut pas séparer.
-	var placement_group := HBoxContainer.new()
-	placement_group.add_theme_constant_override(
-		"separation", EncounterVisualConstants.SPACING_TIGHT
-	)
-	preview_toolbar.add_child(placement_group)
+	# qu'ensemble : ils se suivent donc dans la barre. Ils restent des enfants
+	# directs du flux et non un bloc rigide — enfermés dans un HBoxContainer, ils
+	# imposaient au panneau central une largeur minimale de 591 px qui poussait
+	# tout le Studio au-delà de 1280 de large.
 	var seed_label := Label.new()
 	seed_label.text = "Variante de placement"
 	seed_label.tooltip_text = (
 		"Change la disposition proposée des ennemis sans modifier le terrain."
 	)
-	placement_group.add_child(seed_label)
+	preview_toolbar.add_child(seed_label)
 	seed_spin = SpinBox.new()
 	seed_spin.min_value = -2_147_483_648
 	seed_spin.max_value = 2_147_483_647
@@ -320,15 +325,30 @@ func _build_center_panel() -> Control:
 	seed_spin.value_changed.connect(func(_value):
 		if not _syncing: generate_preview()
 	)
-	placement_group.add_child(seed_spin)
+	preview_toolbar.add_child(seed_spin)
 	randomize_seed_button = _add_button(
-		placement_group, "Au hasard", _randomize_seed, "RandomNumberGenerator"
+		preview_toolbar, "Au hasard", _randomize_seed, "RandomNumberGenerator"
 	)
 	randomize_seed_button.tooltip_text = (
 		"Tirer une variante au hasard et régénérer le placement."
 	)
 	generate_placement_button = _add_button(
-		placement_group, "Générer un placement", generate_preview, "preview"
+		preview_toolbar, "Générer un placement", generate_preview, "preview"
+	)
+	# Trois contrôles serrés : réduire, le grossissement courant qui sert aussi
+	# de retour à la vue d'ensemble, agrandir.
+	var zoom_group := HBoxContainer.new()
+	zoom_group.add_theme_constant_override(
+		"separation", EncounterVisualConstants.SPACING_TIGHT
+	)
+	preview_toolbar.add_child(zoom_group)
+	zoom_out_button = _add_button(zoom_group, "−", func():
+		map_preview.zoom_by(1.0 / EncounterMapPreview.ZOOM_STEP)
+	)
+	zoom_reset_button = _add_button(zoom_group, "100 %", func(): map_preview.reset_view())
+	zoom_reset_button.tooltip_text = "Revenir à la vue d'ensemble du terrain."
+	zoom_in_button = _add_button(zoom_group, "+", func():
+		map_preview.zoom_by(EncounterMapPreview.ZOOM_STEP)
 	)
 	edit_terrain_button = _add_button(
 		preview_toolbar, "Modifier le terrain", func(): open_arena_requested.emit()
@@ -393,26 +413,79 @@ func _on_display_option_pressed(id: int) -> void:
 
 func _on_cell_selected(cell: Vector2i) -> void:
 	if cell_info_label != null:
-		cell_info_label.text = map_preview.get_cell_info_text(cell)
+		# Sur une seule ligne : ce détail de consultation ne doit pas prendre
+		# quatre lignes de hauteur au terrain, qui est l'objet du panneau.
+		cell_info_label.text = " • ".join(
+			map_preview.get_cell_info_text(cell).split("\n")
+		)
 
 
+## Le grossissement courant s'affiche sur le bouton qui ramène à la vue
+## d'ensemble, et chaque borne atteinte dit pourquoi elle est fermée plutôt que
+## de laisser un bouton gris sans explication.
+func _on_map_zoom_changed(value: float) -> void:
+	if zoom_reset_button != null:
+		zoom_reset_button.text = "%d %%" % roundi(value * 100.0)
+	if zoom_in_button != null:
+		var at_maximum := value >= EncounterMapPreview.ZOOM_MAX - 0.001
+		zoom_in_button.disabled = at_maximum
+		zoom_in_button.tooltip_text = (
+			"Grossissement maximal atteint (%d %%)." % roundi(
+				EncounterMapPreview.ZOOM_MAX * 100.0
+			) if at_maximum else
+			"Grossir le terrain. Molette vers le haut pour zoomer sur le curseur."
+		)
+	if zoom_out_button != null:
+		var at_minimum := value <= EncounterMapPreview.ZOOM_MIN + 0.001
+		zoom_out_button.disabled = at_minimum
+		zoom_out_button.tooltip_text = (
+			"Vue d'ensemble : tout le terrain tient déjà dans le panneau."
+			if at_minimum else
+			"Réduire le terrain. Molette vers le bas pour dézoomer."
+		)
+
+
+## Une seule ligne : le titre, les affrontements et leurs actions. Empilés sur
+## trois lignes, ils réservaient une bande pleine largeur pour une poignée de
+## cartes de 150 px — de la hauteur prise au terrain, qui est l'objet de
+## l'onglet. Les cartes reçoivent le surplus et défilent au-delà ; les actions
+## restent posées à droite, toujours au même endroit.
 func _build_timeline_panel() -> Control:
 	var box := VBoxContainer.new()
-	box.add_child(_section("CHRONOLOGIE DES AFFRONTEMENTS"))
+	box.add_theme_constant_override(
+		"separation", EncounterVisualConstants.SPACING_TIGHT
+	)
+	timeline_row = HBoxContainer.new()
+	timeline_row.add_theme_constant_override(
+		"separation", EncounterVisualConstants.SPACING_NORMAL
+	)
+	box.add_child(timeline_row)
+	var heading := _section("CHRONOLOGIE")
+	heading.autowrap_mode = TextServer.AUTOWRAP_OFF
+	heading.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.tooltip_text = (
+		"Les affrontements de cette salle, dans leur ordre de jeu."
+	)
+	timeline_row.add_child(heading)
 	timeline_scroll = ScrollContainer.new()
 	timeline_scroll.custom_minimum_size.y = 56
+	timeline_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	timeline_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	timeline_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	timeline_scroll.follow_focus = true
 	timeline = HBoxContainer.new()
 	timeline.add_theme_constant_override("separation", 5)
 	timeline_scroll.add_child(timeline)
-	box.add_child(timeline_scroll)
-	var actions := HFlowContainer.new()
+	timeline_row.add_child(timeline_scroll)
+	# HBoxContainer et non HFlowContainer : dans une ligne partagée avec une zone
+	# extensible, le flux replie les actions de façon imprévisible.
+	timeline_actions = HBoxContainer.new()
+	timeline_actions.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var actions := timeline_actions
 	add_wave_button = _add_button(actions, "Ajouter un affrontement", _add_wave)
 	# « Dupliquer l'affrontement » copie la vague sélectionnée ; « Dupliquer la
-	# rencontre » plus bas détache la rencontre partagée. Deux portées
-	# différentes : le libellé court les rendait indistinguables.
+	# rencontre », au bout de la même barre, détache la rencontre partagée. Deux
+	# portées différentes : le libellé court les rendait indistinguables.
 	duplicate_wave_button = _add_button(
 		actions, "Dupliquer l'affrontement", _duplicate_wave
 	)
@@ -424,7 +497,7 @@ func _build_timeline_panel() -> Control:
 	var move_right := _add_button(actions, "→", func(): _move_wave(1))
 	move_right.tooltip_text = "Déplacer cet affrontement plus tard dans la chronologie"
 	_add_button(actions, "Dupliquer la rencontre", _duplicate_encounter_for_usage)
-	box.add_child(actions)
+	timeline_row.add_child(timeline_actions)
 	return box
 
 

@@ -12,6 +12,13 @@ extends Control
 signal forbidden_cell_toggled(cell: Vector2i)
 signal cell_selected(cell: Vector2i)
 signal edit_mode_changed(active: bool)
+signal zoom_changed(value: float)
+
+## Grossissement du terrain. 1.0 = vue d'ensemble : tout le terrain tient dans
+## le panneau. Dézoomer en dessous n'a donc aucun sens et la borne basse le dit.
+const ZOOM_MIN := 1.0
+const ZOOM_MAX := 6.0
+const ZOOM_STEP := 1.25
 
 var room: RoomData = null
 var preview := {}
@@ -25,18 +32,31 @@ var show_zones := true
 var show_placements := true
 var show_legend := true
 var _background_texture: Texture2D = null
+var zoom := ZOOM_MIN
 var _scale := 1.0
+## Échelle qui fait tenir tout le terrain dans le panneau, avant grossissement.
+var _fit_scale := 1.0
+## Décalage de consultation, en pixels écran. Purement une préférence de vue :
+## aucune donnée métier, jamais sérialisé dans le document.
+var _pan := Vector2.ZERO
+var _panning := false
 var _offset := Vector2.ZERO
 var _logical_rect := Rect2()
 
 
 func _ready() -> void:
+	# Zoomé, le terrain déborde du panneau : sans découpe il peindrait par-dessus
+	# la navigation et les propriétés voisines.
+	clip_contents = true
 	_update_cursor()
 	_update_tooltip()
 	resized.connect(queue_redraw)
 
 
 func set_context(value: RoomData, result: Dictionary) -> void:
+	# Régénérer un placement ne doit pas défaire le cadrage choisi ; changer de
+	# salle, si : le terrain précédent n'a plus rien à voir avec celui-ci.
+	var room_changed := value != room
 	room = value
 	preview = result
 	grid = result.get("grid") as GridData
@@ -50,6 +70,8 @@ func set_context(value: RoomData, result: Dictionary) -> void:
 		_background_texture = room.painted_map_visual_data.load_background_texture()
 	elif room != null:
 		_background_texture = room.background_image
+	if room_changed:
+		reset_view()
 	queue_redraw()
 
 
@@ -174,10 +196,31 @@ func _draw() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
+		if _panning:
+			_pan += event.relative
+			queue_redraw()
+			accept_event()
+			return
 		var cell := _position_to_cell(event.position)
 		if cell != hover_cell:
 			hover_cell = cell
 			queue_redraw()
+	elif event is InputEventMouseButton and event.pressed \
+			and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+		# La molette zoome sur le curseur. Le panneau n'est pas défilable : aucun
+		# défilement n'est volé à un parent.
+		zoom_at(event.position, ZOOM_STEP \
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / ZOOM_STEP)
+		accept_event()
+	elif event is InputEventMouseButton \
+			and event.button_index == MOUSE_BUTTON_MIDDLE:
+		# Déplacement au clic milieu : le clic gauche reste la sélection de case,
+		# et l'outil des cases interdites garde son geste intact.
+		_panning = event.pressed
+		mouse_default_cursor_shape = Control.CURSOR_DRAG if _panning else (
+			Control.CURSOR_CROSS if edit_forbidden_mode else Control.CURSOR_ARROW
+		)
+		accept_event()
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT \
 			and event.pressed:
 		var cell := _position_to_cell(event.position)
@@ -216,12 +259,58 @@ func _configure_projection() -> void:
 		_logical_rect = Rect2(Vector2.ZERO, Vector2(grid.cols, grid.rows) * 48.0)
 	if _logical_rect.size.x <= 0.0 or _logical_rect.size.y <= 0.0:
 		_logical_rect = Rect2(Vector2.ZERO, Vector2.ONE)
-	_scale = minf(
+	_fit_scale = minf(
 		maxf(0.01, (size.x - padding * 2.0) / _logical_rect.size.x),
 		maxf(0.01, (size.y - padding * 2.0) / _logical_rect.size.y),
 	)
-	_offset = (size - _logical_rect.size * _scale) * 0.5 \
-		- _logical_rect.position * _scale
+	_scale = _fit_scale * zoom
+	var content := _logical_rect.size * _scale
+	_pan = _clamped_pan(_pan, content)
+	_offset = (size - content) * 0.5 - _logical_rect.position * _scale + _pan
+
+
+## Le terrain ne doit jamais pouvoir être traîné hors du panneau : sur un axe où
+## il est plus petit que le panneau il reste centré, sinon il ne peut pas
+## décoller du bord correspondant.
+func _clamped_pan(value: Vector2, content: Vector2) -> Vector2:
+	var limit := ((content - size) * 0.5).max(Vector2.ZERO)
+	return value.clamp(-limit, limit)
+
+
+## Grossit ou réduit en gardant fixe le point du terrain sous `screen_position`.
+## C'est la seule façon d'explorer une grande carte sans perdre le repère qu'on
+## visait ; un zoom centré sur le panneau ferait fuir la zone regardée.
+func zoom_at(screen_position: Vector2, factor: float) -> void:
+	if room == null or grid == null:
+		return
+	var target := clampf(zoom * factor, ZOOM_MIN, ZOOM_MAX)
+	if is_equal_approx(target, zoom):
+		return
+	_configure_projection()
+	var logical := (screen_position - _offset) / _scale
+	zoom = target
+	_configure_projection()
+	_pan += screen_position - (_offset + logical * _scale)
+	_configure_projection()
+	zoom_changed.emit(zoom)
+	queue_redraw()
+
+
+## Zoom depuis un bouton : le centre du panneau est le seul point de référence
+## disponible quand le geste ne vient pas de la souris.
+func zoom_by(factor: float) -> void:
+	zoom_at(size * 0.5, factor)
+
+
+## Revient à la vue d'ensemble : tout le terrain visible, recentré.
+func reset_view() -> void:
+	var changed := not is_equal_approx(zoom, ZOOM_MIN) or _pan != Vector2.ZERO
+	zoom = ZOOM_MIN
+	_pan = Vector2.ZERO
+	_panning = false
+	if changed:
+		zoom_changed.emit(zoom)
+	queue_redraw()
 
 
 func _cell_center(cell: Vector2i) -> Vector2:
@@ -420,10 +509,13 @@ func _update_cursor() -> void:
 
 
 func _update_tooltip() -> void:
-	tooltip_text = (
+	var navigation := (
+		"\nMolette : zoomer sur le curseur • Clic milieu maintenu : déplacer la vue."
+	)
+	tooltip_text = ((
 		"Outil actif : cliquez une case praticable pour l'ajouter ou la retirer "
 		+ "des cases interdites au déploiement ennemi. Échap pour arrêter."
 	) if edit_forbidden_mode else (
 		"Cliquez une case pour voir son résumé. Activez « Modifier les cases "
 		+ "interdites » pour éditer le déploiement ennemi."
-	)
+	)) + navigation

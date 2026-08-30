@@ -86,6 +86,21 @@ func _run() -> void:
 	_check(ui.session.draft_room == workspace.arena_studio.room_draft(), "Autorité Terrain du brouillon")
 	_check(ui.session.room_draft_mode, "Mode brouillon")
 	await _capture("room_draft", true)
+	# Zoom du terrain : préférence de consultation, jamais une donnée métier.
+	var zoom_fingerprint := ui.session.document_fingerprint()
+	ui.map_preview.zoom_at(ui.map_preview.size * 0.5, 2.5)
+	await _frames(2)
+	_check(ui.map_preview.zoom > EncounterMapPreview.ZOOM_MIN, "Zoom appliqué au terrain")
+	_check(ui.zoom_reset_button.text != "100 %", "Grossissement courant affiché")
+	_check(not ui.zoom_out_button.disabled, "Dézoomer redevient possible une fois zoomé")
+	await _capture("zoom", true)
+	_check(ui.session.document_fingerprint() == zoom_fingerprint,
+		"Zoomer ne modifie aucune donnée du brouillon")
+	ui.map_preview.reset_view()
+	await _frames(2)
+	_check(is_equal_approx(ui.map_preview.zoom, EncounterMapPreview.ZOOM_MIN)
+		and ui.zoom_reset_button.text == "100 %" and ui.zoom_out_button.disabled,
+		"Retour à la vue d'ensemble, borne basse expliquée")
 	var identity := workspace.workspace_instance_id
 	var session := ui.session
 	var summary := ui._usage_summary(session.current_encounter())
