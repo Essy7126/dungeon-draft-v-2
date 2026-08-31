@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://addons/dungeon_draft_arena_studio/encounter/test/encounter_workspace_baseline.tscn" id="1"]
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/encounter/test/encounter_workspace_g5.gd" id="2"]
+
+[node name="EncounterWorkspaceG5" instance=ExtResource("1")]
+script = ExtResource("2")

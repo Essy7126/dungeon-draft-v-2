@@ -36,6 +36,21 @@ func test_game_preview_is_run_aware_when_exact_context_is_available() -> void:
 	)
 	assert_true(fidelity.errors.is_empty())
 	assert_string_contains(preview.fidelity_badge.text, "EXACT")
+	var preview_units := _preview_units(preview)
+	assert_gt(preview_units.size(), 0)
+	for view in preview_units:
+		assert_true(view.has_method("setup"))
+		assert_false(_event_bus_is_connected_to(view))
+
+
+func test_unit_view_remains_executable_inside_the_editor_preview() -> void:
+	var source := FileAccess.get_file_as_string("res://battle/unit_view.gd")
+	assert_true(source.begins_with("@tool"))
+	var scene := load("res://battle/unit_view.tscn") as PackedScene
+	assert_not_null(scene)
+	var view := scene.instantiate()
+	add_child_autofree(view)
+	assert_true(view.has_method("setup"))
 
 
 func test_game_preview_labels_fixture_fallback_instead_of_silent_enemy() -> void:
@@ -182,3 +197,19 @@ func _hybrid_working_copy() -> ArenaDefinition:
 	# La working copy metier ne porte plus les champs derives : le contrat
 	# runtime se lit desormais sur sa projection.
 	return ArenaRuntimeBridge.build_runtime_projection(arena)
+
+
+func _preview_units(root: Node) -> Array[Node]:
+	var result: Array[Node] = []
+	for node in root.find_children("*", "", true, false):
+		if node.has_meta("preview_unit") and not node.is_queued_for_deletion():
+			result.append(node)
+	return result
+
+
+func _event_bus_is_connected_to(target: Object) -> bool:
+	for connection in EventBus.basic_attack_performed.get_connections():
+		var callable := connection.get("callable", Callable()) as Callable
+		if callable.is_valid() and callable.get_object() == target:
+			return true
+	return false

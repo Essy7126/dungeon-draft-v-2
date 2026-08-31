@@ -6,20 +6,11 @@ signal open_arena_requested
 signal history_state_changed
 signal room_draft_opened
 
-const FORMATION_LABELS := {
-	&"line": "Ligne",
-	&"double_line": "Double ligne",
-	&"left_flank": "Flanc gauche",
-	&"right_flank": "Flanc droit",
-	&"chief_forward": "Chefs en première ligne",
-	&"centurion_rear": "Centurions à l'arrière",
-	&"split": "Deux groupes",
-}
+const FORMATION_LABELS := EncounterPresentation.FORMATION_LABELS
 
 var editor_interface = null
 var editor_undo_redo = null
 var session := EncounterEditSession.new()
-var project_graph := {}
 var enemy_catalog: Array[UnitData] = []
 var preview_result := {}
 var analysis_result := {}
@@ -31,35 +22,92 @@ var _syncing := false
 var _pending_shared_action: Callable
 var project_context: StudioProjectContext = null
 var shared_reference_graph: StudioReferenceGraphService = null
+var _reference_refresh_queued := false
+var _reference_scan_queued := false
+var _reference_scan_state := "Analyse des usages en cours"
 var _pending_navigation := Callable()
 var _navigation_token := ""
 var _syncing_context := false
 
 var title_label: Label
+var encounter_toolbar: Control
 var draft_banner: Label
 var status_label: Label
 var run_tree: Tree
 var timeline: HBoxContainer
+var timeline_panel: Control
+var timeline_row: HBoxContainer
+var timeline_actions: HBoxContainer
 var map_preview: EncounterMapPreview
 var properties_tabs: TabContainer
 var composition_box: VBoxContainer
+var _usage_label: Label
 var placement_box: VBoxContainer
 var progression_text: RichTextLabel
 var analysis_text: RichTextLabel
 var analysis_progress: ProgressBar
-var advanced_text: RichTextLabel
-var validation_list: ItemList
+var technical_text: RichTextLabel
+var _progression_details := {}
+var _operation_details := {}
+var validation_details_dialog: AcceptDialog
+var validation_details_text: RichTextLabel
+## G5 — cartes de diagnostic compréhensibles ; « Voir » et « Corriger » sont
+## des actions distinctes, jamais déclenchées par une simple sélection.
+## Résumé courant du pied de page, sans le chevron : `validation_toggle` le
+## réaffiche avec l'indicateur d'ouverture qui convient.
+var _validation_summary_text := "Aucun problème bloquant"
+var validation_cards_box: VBoxContainer
+var validation_empty_label: Label
+var validation_filter_buttons := {}
+var _validation_severity_filters := {
+	StudioValidationMessage.Severity.ERROR: true,
+	StudioValidationMessage.Severity.WARNING: true,
+	StudioValidationMessage.Severity.INFO: true,
+}
 var analysis_presets: Control
-var guided := true
 var catalog_search: LineEdit
-var catalog_list: ItemList
+var catalog_cards_box: VBoxContainer
+var catalog_empty_label: Label
+var catalog_faction_filter_button: OptionButton
+var catalog_role_filter_button: OptionButton
+var _catalog_search_text := ""
+var _catalog_faction_filter: StringName = &""
+var _catalog_role_filter: StringName = &""
+var _wave_settings_open := false
+var _summon_settings_open := false
+var _focus_catalog_search_next_refresh := false
 var seed_spin: SpinBox
 var generate_placement_button: Button
+var randomize_seed_button: Button
+var zoom_in_button: Button
+var zoom_out_button: Button
+var zoom_reset_button: Button
+var add_wave_button: Button
+var duplicate_wave_button: Button
 var edit_terrain_button: Button
+var forbidden_tool_toggle: Button
+var display_menu_button: MenuButton
+var cell_info_label: Label
 var open_dialog: FileDialog
 var save_dialog: ConfirmationDialog
 var shared_dialog: ConfirmationDialog
 var shared_duplicate_button: Button
+var workspace_split: VSplitContainer
+var navigation_split: HSplitContainer
+var properties_split: HSplitContainer
+var navigation_panel: Control
+var properties_panel: Control
+var validation_panel: Control
+var timeline_scroll: ScrollContainer
+var navigation_toggle: Button
+var validation_toggle: Button
+var properties_navigation: HFlowContainer
+# Préférences de disposition uniquement, sérialisées par le workspace existant.
+var _navigation_width := 220.0
+var _properties_width := 360.0
+var _validation_height := 250.0
+var _layout_queued := false
+var _layout_dragging := false
 
 
 func setup(
@@ -71,7 +119,14 @@ func setup(
 	editor_interface = host_editor_interface
 	editor_undo_redo = undo_manager
 	project_context = shared_context
+	_disconnect_reference_graph()
 	shared_reference_graph = reference_graph
+	if shared_reference_graph != null:
+		shared_reference_graph.scan_started.connect(_on_reference_scan_started)
+		shared_reference_graph.scan_progress.connect(_on_reference_scan_progress)
+		shared_reference_graph.scan_completed.connect(_on_reference_scan_completed)
+		shared_reference_graph.scan_cancelled.connect(_on_reference_scan_cancelled)
+		shared_reference_graph.invalidated.connect(_on_reference_invalidated)
 
 
 func _ready() -> void:
@@ -80,6 +135,13 @@ func _ready() -> void:
 	_build_dialogs()
 	analysis_service.progress_changed.connect(_on_analysis_progress)
 	map_preview.forbidden_cell_toggled.connect(_on_forbidden_cell_toggled)
+	map_preview.cell_selected.connect(_on_cell_selected)
+	map_preview.edit_mode_changed.connect(func(active):
+		if forbidden_tool_toggle != null:
+			forbidden_tool_toggle.set_pressed_no_signal(active)
+	)
+	map_preview.zoom_changed.connect(_on_map_zoom_changed)
+	_on_map_zoom_changed(map_preview.zoom)
 	if editor_interface != null:
 		var filesystem = editor_interface.get_resource_filesystem()
 		if filesystem != null and not filesystem.filesystem_changed.is_connected(
@@ -99,8 +161,14 @@ func _ready() -> void:
 		)
 
 
-func _exit_tree() -> void:
+func _notification(what: int) -> void:
+	# Le workspace quitte brièvement l'arbre lors d'un détachement de fenêtre.
+	# Ce n'est pas une fermeture : la session et son contrat doivent rester
+	# actifs. Le nettoyage permanent appartient uniquement à PREDELETE.
+	if what != NOTIFICATION_PREDELETE:
+		return
 	analysis_service.cancel()
+	_disconnect_reference_graph()
 	if project_context != null:
 		project_context.unregister_transition_handler(&"encounter")
 	if editor_interface != null:
@@ -141,7 +209,8 @@ func _build_interface() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_theme_constant_override("separation", 5)
 	add_child(root)
-	root.add_child(_build_toolbar())
+	encounter_toolbar = _build_toolbar()
+	root.add_child(encounter_toolbar)
 
 	draft_banner = Label.new()
 	draft_banner.name = "EncounterRoomDraftBanner"
@@ -151,35 +220,68 @@ func _build_interface() -> void:
 	draft_banner.visible = false
 	root.add_child(draft_banner)
 
-	var vertical := VSplitContainer.new()
-	vertical.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vertical.split_offset = -155
-	root.add_child(vertical)
-	var horizontal := HSplitContainer.new()
-	horizontal.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	horizontal.split_offset = 230
-	vertical.add_child(horizontal)
-	horizontal.add_child(_build_run_panel())
-	var center_right := HSplitContainer.new()
-	center_right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	center_right.split_offset = -390
-	horizontal.add_child(center_right)
-	center_right.add_child(_build_center_panel())
-	center_right.add_child(_build_properties_panel())
-	vertical.add_child(_build_validation_panel())
+	timeline_panel = _build_timeline_panel()
+	root.add_child(timeline_panel)
+	workspace_split = VSplitContainer.new()
+	workspace_split.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root.add_child(workspace_split)
+	navigation_split = HSplitContainer.new()
+	navigation_split.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	workspace_split.add_child(navigation_split)
+	navigation_panel = _build_run_panel()
+	navigation_split.add_child(navigation_panel)
+	properties_split = HSplitContainer.new()
+	properties_split.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	navigation_split.add_child(properties_split)
+	properties_split.add_child(_build_center_panel())
+	properties_panel = _build_properties_panel()
+	properties_split.add_child(properties_panel)
+	validation_panel = _build_validation_panel()
+	workspace_split.add_child(validation_panel)
+	validation_panel.hide()
+	var footer := HBoxContainer.new()
+	# G5 — le résumé reste visible même quand le panneau est replié : il ne
+	# doit jamais falloir ouvrir quoi que ce soit pour savoir s'il reste des
+	# problèmes bloquants. Le compte EST le bouton qui déplie le détail : un
+	# libellé séparé « Validation » à côté du même compte, et le statut qui le
+	# répétait une troisième fois, disaient trois fois la même chose.
+	validation_toggle = _add_button(footer, "", _apply_validation_panel_visibility)
+	validation_toggle.toggle_mode = true
+	validation_toggle.tooltip_text = "Déplier ou replier le détail des erreurs, avertissements et informations"
+	_refresh_validation_toggle_text()
 
 	status_label = Label.new()
 	status_label.text = "Initialisation du Studio de rencontres..."
 	status_label.custom_minimum_size.y = 25
+	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	status_label.add_theme_color_override("font_color", Color(0.74, 0.84, 0.94))
-	root.add_child(status_label)
+	footer.add_child(status_label)
+	root.add_child(footer)
+	navigation_toggle.set_pressed_no_signal(true)
+	for split in [workspace_split, navigation_split, properties_split]:
+		split.resized.connect(_queue_layout)
+		split.drag_started.connect(func(): _layout_dragging = true)
+		split.drag_ended.connect(func():
+			_layout_dragging = false
+			_queue_layout()
+		)
+	navigation_split.dragged.connect(func(offset):
+		_navigation_width = offset
+	)
+	properties_split.dragged.connect(func(offset):
+		_properties_width = -offset
+	)
+	workspace_split.dragged.connect(func(offset):
+		_validation_height = -offset
+	)
+	_queue_layout()
 
 
 func _build_toolbar() -> Control:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.y = 50
-	var bar := HBoxContainer.new()
-	bar.add_theme_constant_override("separation", 5)
+	var bar := HFlowContainer.new()
+	bar.add_theme_constant_override("h_separation", 5)
 	panel.add_child(bar)
 	title_label = Label.new()
 	title_label.text = "STUDIO DE RENCONTRES"
@@ -187,17 +289,24 @@ func _build_toolbar() -> Control:
 	title_label.add_theme_font_size_override("font_size", 18)
 	title_label.add_theme_color_override("font_color", Color(0.5, 0.88, 1.0))
 	bar.add_child(title_label)
-	_add_button(bar, "Ouvrir une partie", _show_open_dialog, "folder")
-	generate_placement_button = _add_button(
-		bar, "Générer un placement", generate_preview, "preview"
+	navigation_toggle = _add_button(bar, "Partie et salles", func():
+		navigation_panel.visible = navigation_toggle.button_pressed
+		_queue_layout()
 	)
+	navigation_toggle.toggle_mode = true
+	navigation_toggle.tooltip_text = "Ouvrir ou replier la navigation pour agrandir le terrain"
+	_add_button(bar, "Ouvrir une partie", _show_open_dialog, "Folder")
+	# « Générer un placement » a rejoint le bloc « Variante de placement » de la
+	# barre TERRAIN ET PLACEMENT : le champ et l'action qui l'applique vivaient
+	# dans deux zones opposées de l'écran. Voir _build_center_panel().
 	_add_button(bar, "Rapport", export_report, "report")
 	return panel
 
 
 func _build_run_panel() -> Control:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.x = 220
+	panel.custom_minimum_size.x = 180
+	panel.size_flags_horizontal = Control.SIZE_FILL
 	var box := VBoxContainer.new()
 	panel.add_child(box)
 	box.add_child(_section("PARTIE / SALLES"))
@@ -206,8 +315,10 @@ func _build_run_panel() -> Control:
 	run_tree.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	run_tree.item_selected.connect(_on_tree_selected)
 	box.add_child(run_tree)
-	_add_button(box, "Convertir en vagues configurables", _migrate_current_room)
-	_add_button(box, "Restaurer la dernière récupération", _restore_latest_recovery)
+	var convert := _add_button(box, "Convertir en vagues configurables", _migrate_current_room)
+	convert.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var restore := _add_button(box, "Restaurer la dernière récupération", _restore_latest_recovery)
+	restore.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return panel
 
 
@@ -215,8 +326,15 @@ func _build_center_panel() -> Control:
 	var box := VBoxContainer.new()
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var preview_toolbar := HBoxContainer.new()
-	preview_toolbar.add_child(_section("TERRAIN ET PLACEMENT"))
+	var preview_toolbar := HFlowContainer.new()
+	var preview_heading := _section("TERRAIN ET PLACEMENT")
+	preview_heading.autowrap_mode = TextServer.AUTOWRAP_OFF
+	preview_toolbar.add_child(preview_heading)
+	# La variante, son tirage au hasard et le bouton qui l'applique ne servent
+	# qu'ensemble : ils se suivent donc dans la barre. Ils restent des enfants
+	# directs du flux et non un bloc rigide — enfermés dans un HBoxContainer, ils
+	# imposaient au panneau central une largeur minimale de 591 px qui poussait
+	# tout le Studio au-delà de 1280 de large.
 	var seed_label := Label.new()
 	seed_label.text = "Variante de placement"
 	seed_label.tooltip_text = (
@@ -233,49 +351,199 @@ func _build_center_panel() -> Control:
 		if not _syncing: generate_preview()
 	)
 	preview_toolbar.add_child(seed_spin)
+	randomize_seed_button = _add_button(
+		preview_toolbar, "Au hasard", _randomize_seed, "RandomNumberGenerator"
+	)
+	randomize_seed_button.tooltip_text = (
+		"Tirer une variante au hasard et régénérer le placement."
+	)
+	generate_placement_button = _add_button(
+		preview_toolbar, "Générer un placement", generate_preview, "preview"
+	)
+	# Trois contrôles serrés : réduire, le grossissement courant qui sert aussi
+	# de retour à la vue d'ensemble, agrandir.
+	var zoom_group := HBoxContainer.new()
+	zoom_group.add_theme_constant_override(
+		"separation", EncounterVisualConstants.SPACING_TIGHT
+	)
+	preview_toolbar.add_child(zoom_group)
+	zoom_out_button = _add_button(zoom_group, "−", func():
+		map_preview.zoom_by(1.0 / EncounterMapPreview.ZOOM_STEP)
+	)
+	zoom_reset_button = _add_button(zoom_group, "100 %", func(): map_preview.reset_view())
+	zoom_reset_button.tooltip_text = "Revenir à la vue d'ensemble du terrain."
+	zoom_in_button = _add_button(zoom_group, "+", func():
+		map_preview.zoom_by(EncounterMapPreview.ZOOM_STEP)
+	)
 	edit_terrain_button = _add_button(
 		preview_toolbar, "Modifier le terrain", func(): open_arena_requested.emit()
 	)
 	edit_terrain_button.tooltip_text = (
 		"Revenir au Studio Terrain. Le terrain reste en lecture seule dans Rencontres."
 	)
+	forbidden_tool_toggle = _add_button(preview_toolbar, "Modifier les cases interdites", func():
+		map_preview.set_edit_mode(forbidden_tool_toggle.button_pressed)
+	)
+	forbidden_tool_toggle.toggle_mode = true
+	forbidden_tool_toggle.tooltip_text = (
+		"Par défaut, la carte est en consultation : cliquer une case ne change rien. "
+		+ "Activez cet outil pour ajouter ou retirer des cases interdites au "
+		+ "déploiement ennemi. Échap l'arrête sans autre changement."
+	)
+	display_menu_button = MenuButton.new()
+	display_menu_button.text = "Affichage"
+	display_menu_button.tooltip_text = "Choisir ce que la carte montre, sans modifier la rencontre."
+	var display_popup := display_menu_button.get_popup()
+	display_popup.hide_on_checkable_item_selection = false
+	display_popup.add_check_item("Grille", 0)
+	display_popup.set_item_checked(0, true)
+	display_popup.add_check_item("Zones", 1)
+	display_popup.set_item_checked(1, true)
+	display_popup.add_check_item("Placements", 2)
+	display_popup.set_item_checked(2, true)
+	display_popup.add_check_item("Distances", 3)
+	display_popup.set_item_checked(3, true)
+	display_popup.add_check_item("Légende", 4)
+	display_popup.set_item_checked(4, true)
+	display_popup.id_pressed.connect(_on_display_option_pressed)
+	preview_toolbar.add_child(display_menu_button)
 	box.add_child(preview_toolbar)
 	map_preview = EncounterMapPreview.new()
-	map_preview.custom_minimum_size = Vector2(430, 310)
+	map_preview.custom_minimum_size = Vector2(320, 100)
 	map_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(map_preview)
-	box.add_child(_section("CHRONOLOGIE DES AFFRONTEMENTS"))
-	var timeline_scroll := ScrollContainer.new()
-	timeline_scroll.custom_minimum_size.y = 78
+	cell_info_label = Label.new()
+	cell_info_label.text = "Aucune case sélectionnée."
+	cell_info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	cell_info_label.custom_minimum_size.y = 24
+	cell_info_label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.94))
+	box.add_child(cell_info_label)
+	return box
+
+
+func _on_display_option_pressed(id: int) -> void:
+	var popup := display_menu_button.get_popup()
+	var index := popup.get_item_index(id)
+	var value := not popup.is_item_checked(index)
+	popup.set_item_checked(index, value)
+	match id:
+		0: map_preview.show_grid = value
+		1: map_preview.show_zones = value
+		2: map_preview.show_placements = value
+		3: map_preview.show_distances = value
+		4: map_preview.show_legend = value
+	map_preview.queue_redraw()
+
+
+func _on_cell_selected(cell: Vector2i) -> void:
+	if cell_info_label != null:
+		# Sur une seule ligne : ce détail de consultation ne doit pas prendre
+		# quatre lignes de hauteur au terrain, qui est l'objet du panneau.
+		cell_info_label.text = " • ".join(
+			map_preview.get_cell_info_text(cell).split("\n")
+		)
+
+
+## Le grossissement courant s'affiche sur le bouton qui ramène à la vue
+## d'ensemble, et chaque borne atteinte dit pourquoi elle est fermée plutôt que
+## de laisser un bouton gris sans explication.
+func _on_map_zoom_changed(value: float) -> void:
+	if zoom_reset_button != null:
+		zoom_reset_button.text = "%d %%" % roundi(value * 100.0)
+	if zoom_in_button != null:
+		var at_maximum := value >= EncounterMapPreview.ZOOM_MAX - 0.001
+		zoom_in_button.disabled = at_maximum
+		zoom_in_button.tooltip_text = (
+			"Grossissement maximal atteint (%d %%)." % roundi(
+				EncounterMapPreview.ZOOM_MAX * 100.0
+			) if at_maximum else
+			"Grossir le terrain. Molette vers le haut pour zoomer sur le curseur."
+		)
+	if zoom_out_button != null:
+		var at_minimum := value <= EncounterMapPreview.ZOOM_MIN + 0.001
+		zoom_out_button.disabled = at_minimum
+		zoom_out_button.tooltip_text = (
+			"Vue d'ensemble : tout le terrain tient déjà dans le panneau."
+			if at_minimum else
+			"Réduire le terrain. Molette vers le bas pour dézoomer."
+		)
+
+
+## Une seule ligne : le titre, les affrontements et leurs actions. Empilés sur
+## trois lignes, ils réservaient une bande pleine largeur pour une poignée de
+## cartes de 150 px — de la hauteur prise au terrain, qui est l'objet de
+## l'onglet. Les cartes reçoivent le surplus et défilent au-delà ; les actions
+## restent posées à droite, toujours au même endroit.
+func _build_timeline_panel() -> Control:
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override(
+		"separation", EncounterVisualConstants.SPACING_TIGHT
+	)
+	timeline_row = HBoxContainer.new()
+	timeline_row.add_theme_constant_override(
+		"separation", EncounterVisualConstants.SPACING_NORMAL
+	)
+	box.add_child(timeline_row)
+	var heading := _section("CHRONOLOGIE")
+	heading.autowrap_mode = TextServer.AUTOWRAP_OFF
+	heading.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.tooltip_text = (
+		"Les affrontements de cette salle, dans leur ordre de jeu."
+	)
+	timeline_row.add_child(heading)
+	timeline_scroll = ScrollContainer.new()
+	timeline_scroll.custom_minimum_size.y = 56
+	timeline_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	timeline_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	timeline_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	timeline_scroll.follow_focus = true
 	timeline = HBoxContainer.new()
 	timeline.add_theme_constant_override("separation", 5)
 	timeline_scroll.add_child(timeline)
-	box.add_child(timeline_scroll)
-	var actions := HBoxContainer.new()
-	_add_button(actions, "Ajouter un affrontement", _add_wave)
-	_add_button(actions, "Dupliquer", _duplicate_wave)
-	_add_button(actions, "Supprimer", _remove_wave)
-	_add_button(actions, "←", func(): _move_wave(-1))
-	_add_button(actions, "→", func(): _move_wave(1))
+	timeline_row.add_child(timeline_scroll)
+	# HBoxContainer et non HFlowContainer : dans une ligne partagée avec une zone
+	# extensible, le flux replie les actions de façon imprévisible.
+	timeline_actions = HBoxContainer.new()
+	timeline_actions.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var actions := timeline_actions
+	add_wave_button = _add_button(actions, "Ajouter un affrontement", _add_wave)
+	# « Dupliquer l'affrontement » copie la vague sélectionnée ; « Dupliquer la
+	# rencontre », au bout de la même barre, détache la rencontre partagée. Deux
+	# portées différentes : le libellé court les rendait indistinguables.
+	duplicate_wave_button = _add_button(
+		actions, "Dupliquer l'affrontement", _duplicate_wave
+	)
+	# G6 — action destructrice : identifiable par sa couleur de texte, sans
+	# dominer l'écran (pas de fond plein, pas de taille agrandie).
+	_add_button(actions, "Supprimer", _remove_wave, "", true)
+	var move_left := _add_button(actions, "←", func(): _move_wave(-1))
+	move_left.tooltip_text = "Déplacer cet affrontement plus tôt dans la chronologie"
+	var move_right := _add_button(actions, "→", func(): _move_wave(1))
+	move_right.tooltip_text = "Déplacer cet affrontement plus tard dans la chronologie"
 	_add_button(actions, "Dupliquer la rencontre", _duplicate_encounter_for_usage)
-	box.add_child(actions)
+	timeline_row.add_child(timeline_actions)
 	return box
 
 
 func _build_properties_panel() -> Control:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.x = 355
+	panel.custom_minimum_size.x = 320
+	panel.size_flags_horizontal = Control.SIZE_FILL
+	var column := VBoxContainer.new()
+	panel.add_child(column)
+	properties_navigation = HFlowContainer.new()
+	column.add_child(properties_navigation)
 	properties_tabs = TabContainer.new()
-	panel.add_child(properties_tabs)
+	properties_tabs.tabs_visible = false
+	properties_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(properties_tabs)
 	composition_box = _scroll_page("Composition")
 	placement_box = _scroll_page("Placement")
 	progression_text = _rich_page("Progression")
 	var analysis_page := VBoxContainer.new()
 	analysis_page.name = "Analyse"
-	var presets := HBoxContainer.new()
+	var presets := HFlowContainer.new()
 	analysis_presets = presets
 	var presets_label := Label.new()
 	presets_label.text = "Analyser sur"
@@ -293,30 +561,171 @@ func _build_properties_panel() -> Control:
 	analysis_progress.max_value = 100
 	analysis_page.add_child(analysis_progress)
 	analysis_text = RichTextLabel.new()
-	analysis_text.bbcode_enabled = true
+	analysis_text.bbcode_enabled = false
+	analysis_text.text = EncounterPresentation.analysis({})
 	analysis_text.fit_content = false
 	analysis_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	analysis_page.add_child(analysis_text)
 	properties_tabs.add_child(analysis_page)
-	advanced_text = _rich_page("Avance")
-	properties_tabs.set_tab_title(properties_tabs.get_tab_count() - 1, "Avancé")
+	technical_text = _rich_page("Détails techniques")
+	properties_tabs.current_tab = 0
+	var group := ButtonGroup.new()
+	for index in properties_tabs.get_tab_count():
+		var tab_button := _add_button(properties_navigation, properties_tabs.get_tab_title(index), func():
+			properties_tabs.current_tab = index
+		)
+		tab_button.toggle_mode = true
+		tab_button.button_group = group
+		tab_button.set_pressed_no_signal(index == 0)
+	properties_tabs.tab_changed.connect(func(index):
+		(properties_navigation.get_child(index) as Button).set_pressed_no_signal(true)
+		if map_preview != null:
+			map_preview.set_edit_mode(false)
+	)
 	return panel
 
 
 func _build_validation_panel() -> Control:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.y = 145
+	panel.custom_minimum_size.y = 220
+	panel.size_flags_vertical = Control.SIZE_FILL
 	var box := VBoxContainer.new()
 	panel.add_child(box)
-	box.add_child(_section("ERREURS / AVERTISSEMENTS / INFORMATIONS"))
-	validation_list = ItemList.new()
-	validation_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	validation_list.item_activated.connect(_on_validation_activated)
-	box.add_child(validation_list)
+	var heading := HFlowContainer.new()
+	var label := _section("ERREURS / AVERTISSEMENTS / INFORMATIONS")
+	label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	heading.add_child(label)
+	box.add_child(heading)
+	# G5 — les filtres sont une préférence d'affichage : ils ne salissent
+	# jamais le brouillon et survivent à un rafraîchissement de validation.
+	var filters := HBoxContainer.new()
+	filters.add_theme_constant_override("separation", 10)
+	box.add_child(filters)
+	for entry in [
+		[StudioValidationMessage.Severity.ERROR, "Erreurs"],
+		[StudioValidationMessage.Severity.WARNING, "Avertissements"],
+		[StudioValidationMessage.Severity.INFO, "Informations"],
+	]:
+		var severity: int = entry[0]
+		var check := CheckBox.new()
+		check.text = entry[1]
+		check.button_pressed = bool(_validation_severity_filters.get(severity, true))
+		check.toggled.connect(func(pressed):
+			_validation_severity_filters[severity] = pressed
+			_rebuild_validation_cards()
+		)
+		filters.add_child(check)
+		validation_filter_buttons[severity] = check
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	box.add_child(scroll)
+	validation_cards_box = VBoxContainer.new()
+	validation_cards_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	validation_cards_box.add_theme_constant_override("separation", 6)
+	scroll.add_child(validation_cards_box)
+	validation_empty_label = _wrapped_label(
+		"Aucun problème bloquant détecté. Vous pouvez tester l'affrontement."
+	)
+	validation_empty_label.hide()
+	box.add_child(validation_empty_label)
 	return panel
 
 
+## Applique la visibilité du panneau de diagnostic à partir de l'état du bouton.
+## Extrait du bouton lui-même pour qu'une action bloquée puisse ouvrir le
+## panneau sans simuler un clic.
+func _apply_validation_panel_visibility() -> void:
+	validation_panel.visible = validation_toggle.button_pressed
+	_refresh_validation_toggle_text()
+	# Les détails textuels de la case sont secondaires pendant la lecture
+	# des diagnostics ; la carte et sa légende restent visibles.
+	cell_info_label.visible = not validation_panel.visible
+	if timeline_panel != null:
+		timeline_panel.visible = not (validation_panel.visible and size.y < 650.0)
+	if encounter_toolbar != null:
+		encounter_toolbar.visible = not (validation_panel.visible and size.y < 650.0)
+	if draft_banner != null and size.y < 650.0:
+		draft_banner.visible = not validation_panel.visible and session.room_draft_mode
+	if validation_panel.visible:
+		# Le titre, les filtres et la première carte actionnable doivent être
+		# visibles dès l'ouverture à 1280 x 720.
+		_validation_height = maxf(_validation_height, 250.0)
+	_queue_layout()
+
+
+func _open_validation_panel() -> void:
+	if validation_toggle == null or validation_panel == null:
+		return
+	validation_toggle.set_pressed_no_signal(true)
+	_apply_validation_panel_visibility()
+
+
+func _queue_layout() -> void:
+	if _layout_queued or not is_inside_tree():
+		return
+	_layout_queued = true
+	_apply_layout.call_deferred()
+
+
+func _apply_layout() -> void:
+	_layout_queued = false
+	if not is_inside_tree() or _layout_dragging:
+		return
+	# Les côtés gardent leur largeur préférée ; le terrain reçoit le surplus.
+	# Borner l'affichage ne remplace jamais la préférence d'une grande fenêtre.
+	var left_min := navigation_panel.get_combined_minimum_size().x
+	var right_min := properties_panel.get_combined_minimum_size().x
+	var left_width := clampf(_navigation_width, left_min, maxf(left_min, size.x * 0.24))
+	var right_width := clampf(_properties_width, right_min, maxf(right_min, size.x * 0.34))
+	navigation_split.split_offsets = PackedInt32Array([roundi(left_width)])
+	properties_split.split_offsets = PackedInt32Array([-roundi(right_width)])
+	var bottom_min := validation_panel.get_combined_minimum_size().y
+	var bottom_height := clampf(_validation_height, bottom_min,
+		maxf(bottom_min, workspace_split.size.y * 0.58))
+	workspace_split.split_offsets = PackedInt32Array([-roundi(bottom_height)])
+
+
+func get_layout_snapshot() -> Dictionary:
+	return {
+		"navigation_open": navigation_panel.visible,
+		"validation_open": validation_panel.visible,
+		"navigation_width": _navigation_width,
+		"properties_width": _properties_width,
+		"validation_height": _validation_height,
+	}
+
+
+func apply_layout_snapshot(layout: Dictionary) -> void:
+	_navigation_width = clampf(float(layout.get("navigation_width", 220.0)), 180.0, 700.0)
+	_properties_width = clampf(float(layout.get("properties_width", 360.0)), 320.0, 900.0)
+	_validation_height = clampf(float(layout.get("validation_height", 250.0)), 220.0, 600.0)
+	navigation_panel.visible = bool(layout.get("navigation_open", true))
+	validation_panel.visible = bool(layout.get("validation_open", false))
+	if cell_info_label != null:
+		cell_info_label.visible = not validation_panel.visible
+	if timeline_panel != null:
+		timeline_panel.visible = not (validation_panel.visible and size.y < 650.0)
+	if encounter_toolbar != null:
+		encounter_toolbar.visible = not (validation_panel.visible and size.y < 650.0)
+	if draft_banner != null and size.y < 650.0:
+		draft_banner.visible = not validation_panel.visible and session.room_draft_mode
+	navigation_toggle.set_pressed_no_signal(navigation_panel.visible)
+	validation_toggle.set_pressed_no_signal(validation_panel.visible)
+	_queue_layout()
+
+
 func _build_dialogs() -> void:
+	validation_details_dialog = AcceptDialog.new()
+	validation_details_dialog.title = "Détails techniques"
+	validation_details_dialog.ok_button_text = "Fermer"
+	validation_details_dialog.min_size = Vector2i(320, 200)
+	validation_details_text = RichTextLabel.new()
+	validation_details_text.bbcode_enabled = false
+	validation_details_text.selection_enabled = true
+	validation_details_dialog.add_child(validation_details_text)
+	add_child(validation_details_dialog)
+
 	open_dialog = FileDialog.new()
 	open_dialog.title = "Ouvrir une configuration de partie"
 	open_dialog.access = FileDialog.ACCESS_RESOURCES
@@ -374,7 +783,6 @@ func _open_approved_run(run: RunData, path: String) -> bool:
 	if run == null or not session.open(run, path):
 		_set_status("Le fichier sélectionné n'est pas une configuration de partie valide.", true)
 		return false
-	project_graph = EncounterReferenceGraphService.build_project_graph()
 	_fallback_undo_redo.clear_history()
 	_last_history_object = null
 	_syncing = true
@@ -399,6 +807,29 @@ func open_room_draft(
 	) -> bool:
 	if session.room_draft_mode and session.draft_room == draft_room:
 		return refresh_draft_context(context_run)
+	if project_context != null and project_context.has_pending_transition():
+		# Une décision SAVE/DRAFT/DISCARD/CANCEL est déjà ouverte ailleurs
+		# (par exemple un changement de salle en attente). Changer l'autorité
+		# du document de Rencontres maintenant la résoudrait implicitement ou
+		# laisserait la session dans un état partiellement modifié. On refuse
+		# temporairement, sans rien perdre : l'utilisateur doit d'abord
+		# répondre à la décision en cours.
+		_set_status(
+			"Une décision est déjà en attente ailleurs dans le Studio. "
+			+ "Résolvez-la avant de créer les combats de cette salle.", true
+		)
+		return false
+	if not session.is_dirty():
+		# Rien n'est perdu côté Rencontres : ouvrir le brouillon de Terrain ne
+		# discute jamais SON PROPRE document, quel que soit l'état d'un autre
+		# domaine (Terrain peut être modifié — c'est justement le cas normal
+		# en créant les combats d'un terrain tout juste créé). Bloquer ce geste
+		# derrière la décision globale à quatre choix laisserait Rencontres
+		# silencieusement lié aux Resources canoniques au lieu du brouillon
+		# isolé — un risque réel d'écriture sur des données de production à
+		# la prochaine sauvegarde. Si Rencontres a lui-même des changements non
+		# enregistrés, la décision explicite reste demandée ci-dessous.
+		return _open_approved_draft(draft_room, context_run, context_run_path, gameplay_mapping)
 	return _request_navigation(
 		Callable(self, "_open_approved_draft").bind(
 			draft_room, context_run, context_run_path, gameplay_mapping
@@ -420,7 +851,6 @@ func _open_approved_draft(
 		):
 		_set_status("Le brouillon de salle n'a pas pu être ouvert.", true)
 		return false
-	project_graph = EncounterReferenceGraphService.build_project_graph()
 	_fallback_undo_redo.clear_history()
 	_last_history_object = null
 	_syncing = true
@@ -455,6 +885,10 @@ func _refresh_draft_banner() -> void:
 func _refresh_all() -> void:
 	if session.working_run == null:
 		return
+	# Changer de salle, d'affrontement ou de partie doit sortir proprement de
+	# l'outil d'édition des cases interdites : ce n'est qu'un état d'interface.
+	if map_preview != null:
+		map_preview.set_edit_mode(false)
 	_refresh_draft_banner()
 	if project_context != null:
 		project_context.set_dirty(&"encounter", session.is_dirty(), {
@@ -468,7 +902,7 @@ func _refresh_all() -> void:
 	_refresh_composition()
 	_refresh_placement()
 	_refresh_progression()
-	_refresh_advanced()
+	_refresh_technical_details()
 	_refresh_document_actions()
 	_syncing = false
 	generate_preview()
@@ -525,7 +959,7 @@ func _refresh_timeline() -> void:
 				index + 1,
 				name,
 				encounter.get_initial_enemy_count() if encounter != null else room.enemies.size(),
-				" • PARTAGÉE" if _usage_count(encounter) > 1 else "",
+			_usage_badge(encounter),
 			]
 		button.tooltip_text = _wave_tooltip(wave, encounter)
 		button.pressed.connect(func():
@@ -538,82 +972,176 @@ func _refresh_timeline() -> void:
 
 
 func _refresh_composition() -> void:
+	_usage_label = null
+	var previous_search := _catalog_search_text
+	var scroll := composition_box.get_parent() as ScrollContainer
+	var previous_scroll := scroll.scroll_vertical if scroll != null else 0
 	_clear_children(composition_box)
 	var room := session.current_room()
-	var wave := session.current_wave()
 	var encounter := session.current_encounter()
 	if room == null:
 		return
+	if encounter == null:
+		_build_empty_encounter_block()
+		return
+	_build_composition_summary(encounter)
+	composition_box.add_child(_section("Ennemis ajoutés"))
+	if encounter.roster_units.is_empty():
+		composition_box.add_child(_wrapped_label(
+			"Ajoutez au moins un ennemi depuis le catalogue ci-dessous."
+		))
+	for index in range(encounter.roster_units.size()):
+		composition_box.add_child(_build_roster_card(encounter, index))
+	composition_box.add_child(_section("Catalogue des ennemis"))
+	_build_catalog_section(composition_box)
+	var settings_content := _fold_section(
+		composition_box, "Réglages de l'affrontement", _wave_settings_open,
+		func(open): _wave_settings_open = open
+	)
+	_build_wave_settings(settings_content)
+	var summon_content := _fold_section(
+		composition_box, "Invocations et capacités", _summon_settings_open,
+		func(open): _summon_settings_open = open
+	)
+	_build_summon_settings(summon_content, encounter)
+	if not encounter.roster_units.is_empty():
+		var next_button := _add_button(composition_box, "Voir le placement", func():
+			properties_tabs.current_tab = 1
+		)
+		next_button.tooltip_text = (
+			"La composition contient au moins un ennemi : passez au réglage du placement."
+		)
+	_filter_catalog(previous_search)
+	if scroll != null:
+		scroll.scroll_vertical = previous_scroll
+	if _focus_catalog_search_next_refresh and catalog_search != null:
+		_focus_catalog_search_next_refresh = false
+		catalog_search.grab_focus.call_deferred()
+
+
+## Résumé toujours visible : nom, effectif total, nombre de types distincts et
+## avertissements reposant uniquement sur une règle métier réelle (jamais une
+## alerte inventée pour l'occasion).
+func _build_composition_summary(encounter: EncounterDefinition) -> void:
+	var wave := session.current_wave()
 	composition_box.add_child(_section(session.room_mode_label()))
 	if wave != null:
 		_add_line_edit(composition_box, "Nom de l'affrontement", wave.wave_name, func(value):
 			_set_property(wave, &"wave_name", value, "Renommer l'affrontement")
 		)
-		_add_float_spin(composition_box, "PV ennemis ×", wave.enemy_health_multiplier, 0.1, 5.0, func(value):
-			_set_property(wave, &"enemy_health_multiplier", value, "Modifier le multiplicateur de PV")
-		)
-		_add_float_spin(composition_box, "Attaque ennemie ×", wave.enemy_attack_multiplier, 0.1, 5.0, func(value):
-			_set_property(wave, &"enemy_attack_multiplier", value, "Modifier le multiplicateur d'attaque")
-		)
-		_add_float_spin(composition_box, "Récompense ×", wave.reward_multiplier, 0.0, 10.0, func(value):
-			_set_property(wave, &"reward_multiplier", value, "Modifier le multiplicateur de récompense")
-		)
-	if encounter == null:
-		composition_box.add_child(_section("Créer le premier affrontement"))
-		composition_box.add_child(_wrapped_label(
-			"Le terrain est prêt. Créez maintenant un affrontement, puis choisissez "
-			+ "ses ennemis dans le catalogue."
-		))
-		var create_button := _add_button(
-			composition_box, "Créer le premier affrontement", _add_wave
-		)
-		create_button.custom_minimum_size.y = 46
-		create_button.tooltip_text = (
-			"Ajoute un premier affrontement vide à ce brouillon de salle."
-		)
-		return
-	var usage := _usage_summary(encounter)
-	var shared := _wrapped_label(
-		"Ressource %s • %d affrontement(s), %d salle(s)" % [
-			"externe" if usage.external else "integree",
-			usage.usage_count, usage.room_count,
+	var distinct_types := {}
+	for unit in encounter.roster_units:
+		if unit != null:
+			distinct_types[unit] = true
+	composition_box.add_child(_wrapped_label(
+		"%d ennemi(s) au total • %d type(s) d'ennemi" % [
+			encounter.get_initial_enemy_count(), distinct_types.size(),
 		]
-	)
+	))
+	var usage := _usage_summary(encounter)
+	var shared := _wrapped_label(_usage_text(usage))
+	_usage_label = shared
+	shared.name = "EncounterUsageSummary"
 	shared.add_theme_color_override(
-		"font_color", Color(1.0, 0.72, 0.3) if usage.usage_count > 1 else Color(0.7, 0.9, 0.75)
+		"font_color", Color(1.0, 0.72, 0.3) if not usage.published.ready \
+			or _usage_count(encounter) > 1 else Color(0.7, 0.9, 0.75)
 	)
 	composition_box.add_child(shared)
-	composition_box.add_child(_section("Composition ennemie"))
-	for index in range(encounter.roster_units.size()):
-		_add_roster_row(encounter, index)
-	composition_box.add_child(_section("Catalogue des ennemis"))
-	catalog_search = LineEdit.new()
-	catalog_search.placeholder_text = "Rechercher par nom, faction ou rôle"
-	catalog_search.text_changed.connect(_filter_catalog)
-	composition_box.add_child(catalog_search)
-	catalog_list = ItemList.new()
-	catalog_list.custom_minimum_size.y = 145
-	catalog_list.item_activated.connect(_on_catalog_activated)
-	composition_box.add_child(catalog_list)
-	_filter_catalog("")
-	composition_box.add_child(_section("Présence et invocations"))
-	_add_int_spin(composition_box, "Plafond vivant simultané", encounter.living_enemy_cap, 0, 99, func(value):
+	if encounter.living_enemy_cap > 0 \
+			and encounter.living_enemy_cap < encounter.get_initial_enemy_count():
+		var warning := _wrapped_label(
+			"Le plafond simultané (%d) est inférieur au nombre d'ennemis au début (%d)." % [
+				encounter.living_enemy_cap, encounter.get_initial_enemy_count(),
+			]
+		)
+		warning.add_theme_color_override("font_color", Color(1.0, 0.76, 0.3))
+		composition_box.add_child(warning)
+
+
+func _build_empty_encounter_block() -> void:
+	composition_box.add_child(_section("Aucun affrontement dans cette salle"))
+	composition_box.add_child(_wrapped_label(
+		"Cette salle n'a pas encore d'affrontement. Créez-en un pour choisir "
+		+ "ses ennemis. Ce travail reste un brouillon tant qu'il n'est pas "
+		+ "intégré à la partie."
+	))
+	var create_button := _add_button(
+		composition_box, "Créer le premier affrontement", func():
+			_focus_catalog_search_next_refresh = true
+			_add_wave()
+	)
+	create_button.custom_minimum_size.y = 46
+	create_button.tooltip_text = (
+		"Ajoute un premier affrontement vide à ce brouillon de salle."
+	)
+
+
+func _build_roster_card(encounter: EncounterDefinition, index: int) -> Control:
+	var card := EncounterEnemyCard.new()
+	var unit := encounter.roster_units[index]
+	var quantity := int(encounter.roster_counts[index]) if index < encounter.roster_counts.size() else 1
+	card.configure_roster(unit, enemy_catalog, quantity)
+	card.quantity_changed.connect(func(value): _change_quantity(index, value))
+	card.removed.connect(func(): _remove_roster_index(index))
+	return card
+
+
+func _build_wave_settings(parent: Control) -> void:
+	var wave := session.current_wave()
+	if wave == null:
+		return
+	_add_float_spin(parent, "PV ennemis ×", wave.enemy_health_multiplier, 0.1, 5.0, func(value):
+		_set_property(wave, &"enemy_health_multiplier", value, "Modifier le multiplicateur de PV")
+	)
+	_add_float_spin(parent, "Attaque ennemie ×", wave.enemy_attack_multiplier, 0.1, 5.0, func(value):
+		_set_property(wave, &"enemy_attack_multiplier", value, "Modifier le multiplicateur d'attaque")
+	)
+	_add_float_spin(parent, "Récompense ×", wave.reward_multiplier, 0.0, 10.0, func(value):
+		_set_property(wave, &"reward_multiplier", value, "Modifier le multiplicateur de récompense")
+	)
+
+
+func _build_summon_settings(parent: Control, encounter: EncounterDefinition) -> void:
+	_add_int_spin(parent, "Plafond vivant simultané", encounter.living_enemy_cap, 0, 99, func(value):
 		_edit_encounter_property(&"living_enemy_cap", value, "Modifier le plafond vivant")
 	)
-	_add_int_spin(composition_box, "Budget total — invocations normales", encounter.shared_normal_summon_budget, 0, 99, func(value):
+	_add_int_spin(parent, "Budget total — invocations normales", encounter.shared_normal_summon_budget, 0, 99, func(value):
 		_edit_encounter_property(&"shared_normal_summon_budget", value, "Modifier le budget normal")
 	)
-	_add_int_spin(composition_box, "Budget total — invocations de chef", encounter.shared_chief_summon_budget, 0, 99, func(value):
+	_add_int_spin(parent, "Budget total — invocations de chef", encounter.shared_chief_summon_budget, 0, 99, func(value):
 		_edit_encounter_property(&"shared_chief_summon_budget", value, "Modifier le budget de chef")
 	)
-	composition_box.add_child(_wrapped_label(
+	parent.add_child(_wrapped_label(
 		"Ennemis initiaux : %d • Total théorique apparu : %d" % [
 			encounter.get_initial_enemy_count(),
 			encounter.get_initial_enemy_count() + encounter.shared_normal_summon_budget \
 				+ encounter.shared_chief_summon_budget,
 		]
 	))
-	_refresh_disabled_abilities(encounter)
+	_refresh_disabled_abilities(parent, encounter)
+
+
+## Section locale repliable : purement une préférence d'interface, jamais une
+## action d'historique ni une salissure du brouillon.
+func _fold_section(parent: Control, title: String, initially_open: bool, on_toggled: Callable) -> VBoxContainer:
+	var container := VBoxContainer.new()
+	parent.add_child(container)
+	var header := Button.new()
+	header.flat = true
+	header.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	header.toggle_mode = true
+	header.button_pressed = initially_open
+	header.text = ("▾ " if initially_open else "▸ ") + title
+	container.add_child(header)
+	var content := VBoxContainer.new()
+	content.visible = initially_open
+	container.add_child(content)
+	header.toggled.connect(func(pressed):
+		content.visible = pressed
+		header.text = ("▾ " if pressed else "▸ ") + title
+		on_toggled.call(pressed)
+	)
+	return content
 
 
 func _refresh_placement() -> void:
@@ -624,8 +1152,9 @@ func _refresh_placement() -> void:
 	placement_box.add_child(_section("Formations autorisées"))
 	for formation_id in EncounterDefinition.FORMATION_IDS:
 		var checkbox := CheckBox.new()
-		checkbox.text = FORMATION_LABELS.get(formation_id, str(formation_id))
-		checkbox.tooltip_text = "Identifiant technique : %s" % formation_id
+		checkbox.text = EncounterPresentation.formation_name(formation_id)
+		checkbox.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		checkbox.tooltip_text = EncounterPresentation.FORMATION_DESCRIPTIONS[formation_id]
 		checkbox.button_pressed = encounter.formation_profiles.has(formation_id)
 		checkbox.toggled.connect(func(enabled): _toggle_formation(formation_id, enabled))
 		placement_box.add_child(checkbox)
@@ -646,7 +1175,7 @@ func _refresh_placement() -> void:
 			roles[unit.tactical_role_id] = true
 	for role_value in roles:
 		var role := StringName(role_value)
-		placement_box.add_child(_section(str(role)))
+		placement_box.add_child(_section(EncounterPresentation.role_name(role, enemy_catalog)))
 		_add_int_spin(placement_box, "Distance minimale obligatoire", int(encounter.minimum_path_distance_by_role.get(role, 0)), 0, 99, func(value):
 			_set_role_distance(true, role, value)
 		)
@@ -661,6 +1190,17 @@ func _refresh_placement() -> void:
 	))
 
 
+## Plafond d'affrontements de la salle. Aucune constante locale : la partie —
+## ou la partie de contexte en brouillon de salle, recopiée par
+## RoomDraftAuthority.build_context_run — porte la règle dans
+## `maximum_waves_per_room`. Monter ce plafond doit donc rouvrir le bouton
+## sans qu'aucune ligne d'interface ne change.
+func _wave_cap() -> int:
+	if session.working_run == null:
+		return 1
+	return maxi(1, session.working_run.maximum_waves_per_room)
+
+
 func _refresh_document_actions() -> void:
 	var has_encounter := session.current_encounter() != null
 	if generate_placement_button != null:
@@ -669,6 +1209,37 @@ func _refresh_document_actions() -> void:
 			"Proposer une disposition des ennemis sur le terrain."
 			if has_encounter else
 			"Créez d'abord le premier affrontement."
+		)
+	if randomize_seed_button != null:
+		randomize_seed_button.disabled = not has_encounter
+		randomize_seed_button.tooltip_text = (
+			"Tirer une variante au hasard et régénérer le placement."
+			if has_encounter else
+			"Créez d'abord le premier affrontement."
+		)
+	# Le plafond d'affrontements par salle est une règle de partie : un bouton
+	# grisé sans explication laisserait croire à une panne. Le survol dit donc
+	# toujours pourquoi l'action est fermée, et avec quelle limite.
+	var room := session.current_room()
+	var cap := _wave_cap()
+	var cap_reached := room != null and room.waves.size() >= cap
+	var cap_reason := "Limite de %d affrontement(s) atteinte pour cette salle." % cap
+	if add_wave_button != null:
+		add_wave_button.disabled = room == null or cap_reached
+		add_wave_button.tooltip_text = (
+			"Ouvrez une salle avant d'ajouter un affrontement." if room == null
+			else cap_reason if cap_reached
+			else "Ajouter un affrontement à la fin de la chronologie de cette salle."
+		)
+	# Dupliquer ajoute lui aussi un affrontement : le laisser actif contournerait
+	# la même limite.
+	if duplicate_wave_button != null:
+		var has_wave := session.current_wave() != null
+		duplicate_wave_button.disabled = not has_wave or cap_reached
+		duplicate_wave_button.tooltip_text = (
+			cap_reason if cap_reached
+			else "Sélectionnez d'abord un affrontement à copier." if not has_wave
+			else "Copier l'affrontement sélectionné, sa rencontre comprise."
 		)
 	if edit_terrain_button != null:
 		edit_terrain_button.visible = session.room_draft_mode
@@ -694,19 +1265,16 @@ func _refresh_progression() -> void:
 	var projection := EncounterRunProjectionService.project(
 		session.working_run, int(seed_spin.value), 100
 	)
-	progression_text.text = "[b]MESURES STRUCTURELLES — pas de note de difficulté[/b]\n\n%s\n\n[b]Évolution[/b]\n%s\n\n[b]Projection de la partie (100 valeurs de départ)[/b]\n%s" % [
-		JSON.stringify(current, "  "),
-		JSON.stringify(comparison, "  "),
-		JSON.stringify(projection, "  "),
-	]
+	_progression_details = {"metrics": current, "comparison": comparison, "projection": projection}
+	progression_text.text = EncounterPresentation.progression(current, comparison, projection, walkable, enemy_catalog)
 
 
-func _refresh_advanced() -> void:
-	if advanced_text == null:
+func _refresh_technical_details() -> void:
+	if technical_text == null:
 		return
 	var encounter := session.current_encounter()
 	var source := session.source_encounter()
-	advanced_text.text = "[b]Informations techniques — utile seulement au débogage[/b]\n\nPartie : %s\nSalle : %s\nRencontre : %s\nNuméro de salle visé : %s\nGroupes d'apparition autorisés : %s\n\n[b]Utilisée par[/b]\n%s\n\n[i]Les groupes d'apparition autorisés ne sont pas encore lus par le jeu.[/i]" % [
+	technical_text.text = "DÉTAILS TECHNIQUES — facultatifs, destinés au diagnostic\n\nPartie : %s\nSalle : %s\nRencontre : %s\nNuméro de salle visé : %s\nGroupes d'apparition autorisés : %s\n\nUSAGES PUBLIÉS ET LOCAUX (périmètres séparés)\n%s\n\nCe réglage de groupes est conservé dans le fichier, mais il n'est pas encore utilisé pendant les combats." % [
 		session.source_run_path,
 		(session.source_for(session.current_room()) as Resource).resource_path \
 			if session.source_for(session.current_room()) != null else "version en cours",
@@ -715,6 +1283,35 @@ func _refresh_advanced() -> void:
 		str(encounter.allowed_spawn_groups) if encounter != null else "—",
 		JSON.stringify(_usage_summary(encounter), "  ") if encounter != null else "—",
 	]
+	technical_text.text += "\n\nGénération du graphe partagé : %s" % (str(shared_reference_graph.generation) if shared_reference_graph != null else "indisponible")
+	if encounter != null:
+		technical_text.text += "\n\nFormations : %s\nCapacités désactivées : %s" % [encounter.formation_profiles, encounter.disabled_ability_ids]
+		for unit in encounter.roster_units:
+			if unit != null:
+				technical_text.text += "\n%s : %s\nIdentifiant : %s • Faction : %s • Rôle : %s" % [unit.unit_name, unit.resource_path, unit.get_effective_unit_id(), unit.faction_id, unit.tactical_role_id]
+	technical_text.text += "\n\nPROGRESSION\n%s\n\nANALYSE\n%s" % [JSON.stringify(_progression_details, "  "), JSON.stringify(analysis_result, "  ")]
+	technical_text.text += "\n\nPLACEMENT\n%s" % JSON.stringify(EncounterPreviewService.serializable(preview_result), "  ")
+	var messages: Array = []
+	for message in session.validation_messages:
+		messages.append(message.to_dictionary())
+	technical_text.text += "\n\nVALIDATION\n%s" % JSON.stringify(messages, "  ")
+	technical_text.text += "\n\nDERNIÈRE OPÉRATION SIGNALÉE\n%s" % JSON.stringify(_operation_details, "  ")
+
+
+## Tire une variante de placement au hasard. La graine du Studio est une
+## préférence d'aperçu : elle n'est jamais écrite dans le document et ne crée
+## donc aucune entrée d'historique — comme la saisie manuelle du champ.
+func _randomize_seed() -> void:
+	if seed_spin == null:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var previous := seed_spin.value
+	# value_changed relance déjà l'aperçu ; un tirage retombant sur la valeur
+	# courante n'émettrait rien, d'où la relance explicite.
+	seed_spin.value = rng.randi_range(0, 2_147_483_647)
+	if seed_spin.value == previous:
+		generate_preview()
 
 
 func generate_preview() -> Dictionary:
@@ -729,14 +1326,17 @@ func generate_preview() -> Dictionary:
 		session.selected_room_index, session.selected_wave_index
 	)
 	map_preview.set_context(room, preview_result)
+	if map_preview.selected_cell != Vector2i(-1, -1):
+		_on_cell_selected(map_preview.selected_cell)
 	_set_status(
 		"Placement %s • valeur de départ effective %d • formation %s" % [
 			"valide" if preview_result.get("valid", false) else "impossible",
 			int(preview_result.get("effective_seed", 0)),
-			str(preview_result.get("formation_id", preview_result.get("reason", &""))),
+			EncounterPresentation.formation_name(StringName(preview_result.get("formation_id", &""))) if preview_result.get("valid", false) else EncounterPresentation.failure_text(str(preview_result.get("reason", ""))),
 		],
 		not preview_result.get("valid", false),
 	)
+	_refresh_technical_details()
 	return preview_result
 
 
@@ -744,37 +1344,190 @@ func validate_session() -> Array[StudioValidationMessage]:
 	var messages := EncounterValidationService.validate_session(
 		session, int(seed_spin.value)
 	)
-	validation_list.clear()
-	for index in range(messages.size()):
-		var message := messages[index]
-		validation_list.add_item(message.display_text())
-		validation_list.set_item_tooltip(
-			index,
-			message.explanation if guided else "%s\nCode : %s\n%s" % [
-				message.explanation, message.code, message.resource_path,
-			]
-		)
-		validation_list.set_item_metadata(index, index)
-		match message.severity:
-			StudioValidationMessage.Severity.ERROR:
-				validation_list.set_item_custom_fg_color(index, Color(1.0, 0.36, 0.32))
-			StudioValidationMessage.Severity.WARNING:
-				validation_list.set_item_custom_fg_color(index, Color(1.0, 0.76, 0.3))
-			_:
-				validation_list.set_item_custom_fg_color(index, Color(0.58, 0.82, 1.0))
-	var summary := EncounterValidationService.summary(messages)
-	_set_status("Validation : %d erreur(s), %d avertissement(s)." % [
-		summary.errors, summary.warnings,
-	], summary.errors > 0)
+	_rebuild_validation_cards()
+	_refresh_validation_summary(EncounterValidationService.summary(messages))
+	_refresh_technical_details()
 	return messages
 
 
-func set_guided(value: bool) -> void:
-	guided = value
-	if analysis_presets != null:
-		analysis_presets.visible = not guided
-	if validation_list != null and session != null:
-		validate_session()
+## Barrière commune aux actions qui publient ou lancent le vrai jeu.
+##
+## Une ERREUR est bloquante : elle ferme l'action. Un AVERTISSEMENT ne ferme
+## jamais rien, il est seulement rappelé dans le message pour que la distinction
+## reste lisible. La barrière revalide au lieu de relire le dernier compte
+## affiché : une action ne doit jamais s'appuyer sur un diagnostic périmé.
+func blocking_validation_report() -> Dictionary:
+	var messages := validate_session()
+	var summary := EncounterValidationService.summary(messages)
+	var titles := PackedStringArray()
+	for message in messages:
+		if message.severity == StudioValidationMessage.Severity.ERROR \
+				and titles.size() < 3:
+			titles.append(message.title)
+	return {
+		"blocked": int(summary.errors) > 0,
+		"errors": int(summary.errors),
+		"warnings": int(summary.warnings),
+		"titles": titles,
+	}
+
+
+## Signale une action fermée par la validation : message explicite en statut et
+## panneau de diagnostic ouvert sur les cartes concernées. Jamais un simple
+## bouton inerte.
+func report_blocked_action(action: String, report: Dictionary) -> void:
+	_open_validation_panel()
+	_set_status(_blocking_message(action, report), true)
+
+
+func _blocking_message(action: String, report: Dictionary) -> String:
+	var errors := int(report.get("errors", 0))
+	var warnings := int(report.get("warnings", 0))
+	var text := "%s : %d erreur(s) bloquante(s)" % [action, errors]
+	var titles: PackedStringArray = report.get("titles", PackedStringArray())
+	if not titles.is_empty():
+		text += " — %s" % ", ".join(titles)
+		if errors > titles.size():
+			text += "…"
+	if warnings > 0:
+		text += " • %d avertissement(s), qui ne bloquent pas" % warnings
+	return text + ". Corrigez-les dans le panneau de diagnostic."
+
+
+## G5 — résumé permanent, visible même panneau replié : icône + libellé +
+## couleur, jamais la couleur seule. Ordre de priorité erreurs > avertissements
+## > informations.
+func _refresh_validation_summary(summary: Dictionary) -> void:
+	if validation_toggle == null:
+		return
+	var errors := int(summary.get("errors", 0))
+	var warnings := int(summary.get("warnings", 0))
+	var color := EncounterVisualConstants.COLOR_SUCCESS
+	if errors > 0:
+		_validation_summary_text = "✖ %d erreur(s)%s" % [
+			errors, " • %d avertissement(s)" % warnings if warnings > 0 else "",
+		]
+		color = EncounterVisualConstants.severity_color(
+			StudioValidationMessage.Severity.ERROR
+		)
+	elif warnings > 0:
+		# Un avertissement n'empêche jamais de tester : le message reste
+		# rassurant en tête, le compte reste visible et honnête.
+		_validation_summary_text = "Aucun problème bloquant (%d avertissement(s))" % warnings
+		color = EncounterVisualConstants.severity_color(
+			StudioValidationMessage.Severity.WARNING
+		)
+	else:
+		_validation_summary_text = "Aucun problème bloquant"
+	for state in ["font_color", "font_hover_color", "font_focus_color"]:
+		validation_toggle.add_theme_color_override(state, color)
+	_refresh_validation_toggle_text()
+
+
+## Le chevron dit si un clic déplie ou replie — même idiome que _fold_section.
+func _refresh_validation_toggle_text() -> void:
+	if validation_toggle == null:
+		return
+	validation_toggle.text = "%s %s" % [
+		"▾" if validation_toggle.button_pressed else "▸", _validation_summary_text,
+	]
+
+
+## G5 — reconstruit les cartes à partir des messages actuels et des filtres
+## de gravité en vigueur (préférence d'affichage, jamais de mutation).
+func _rebuild_validation_cards() -> void:
+	if validation_cards_box == null:
+		return
+	# G6 — Corriger relance la validation, qui reconstruit les cartes : sans
+	# ce garde, le focus clavier posé sur le bouton qu'on vient d'activer
+	# serait perdu (le contrôle est libéré). On le reporte sur un point
+	# d'ancrage stable et déjà compris de l'utilisateur : le bouton qui
+	# ouvre/replie le panneau lui-même.
+	var focus_owner := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var focus_was_in_panel := focus_owner != null and validation_cards_box.is_ancestor_of(focus_owner)
+	_clear_children(validation_cards_box)
+	if focus_was_in_panel and validation_toggle != null:
+		validation_toggle.grab_focus.call_deferred()
+	var messages := session.validation_messages
+	var shown := 0
+	for message in messages:
+		if not bool(_validation_severity_filters.get(message.severity, true)):
+			continue
+		shown += 1
+		var card := EncounterDiagnosticCard.new()
+		validation_cards_box.add_child(card)
+		var can_view := message.room_index >= 0 or message.cell != Vector2i(-1, -1)
+		var can_fix := message.fix_id != &""
+		card.setup(message, can_view, can_fix)
+		card.view_requested.connect(_view_diagnostic.bind(message))
+		card.fix_requested.connect(_apply_diagnostic_fix.bind(message))
+		card.details_requested.connect(_show_validation_details_for.bind(message))
+	# « Aucun problème bloquant » ne dépend que des erreurs : un avertissement
+	# n'empêche jamais de tester (EncounterPresentation.validation_consequence).
+	# Les avertissements et informations restent consultables séparément,
+	# affichés sous le message positif plutôt qu'à sa place.
+	var has_blocking := messages.any(func(m: StudioValidationMessage) -> bool:
+		return m.severity == StudioValidationMessage.Severity.ERROR
+	)
+	validation_empty_label.visible = not has_blocking
+	validation_cards_box.visible = shown > 0
+
+
+## G5 — « Voir » ouvre le bon endroit sans jamais rien modifier.
+func _view_diagnostic(message: StudioValidationMessage) -> void:
+	if message.room_index >= 0:
+		if not _request_room(message.room_index, maxi(0, message.wave_index)):
+			return
+	if message.cell != Vector2i(-1, -1) and map_preview != null:
+		map_preview.selected_cell = message.cell
+		map_preview.queue_redraw()
+		_on_cell_selected(message.cell)
+
+
+## G5 — « Corriger » est le seul chemin qui applique une correction. Elle
+## passe par la protection des rencontres partagées (_ensure_editable) et par
+## l'historique (une action Annuler/Rétablir), puis relance la validation.
+func _apply_diagnostic_fix(message: StudioValidationMessage) -> void:
+	if message.room_index >= 0:
+		if not _request_room(message.room_index, maxi(0, message.wave_index)):
+			return
+	match message.fix_id:
+		&"fit_living_cap":
+			_edit_encounter_property(&"living_enemy_cap", session.current_encounter().get_initial_enemy_count(), "Ajuster le plafond vivant")
+		&"use_actual_room_index":
+			_edit_encounter_property(&"room_index", session.selected_room_index + 1, "Utiliser le numéro réel de la salle")
+		&"deduplicate_forbidden":
+			var encounter := session.current_encounter()
+			var unique: Array[Vector2i] = []
+			for cell in encounter.forbidden_initial_spawn_cells:
+				if not unique.has(cell): unique.append(cell)
+			_edit_encounter_property(&"forbidden_initial_spawn_cells", unique, "Retirer les doublons de cases interdites")
+	_refresh_all()
+
+
+func _show_validation_details_for(message: StudioValidationMessage) -> void:
+	var path := message.resource_path
+	# Les copies en mémoire n'ont pas toujours de chemin ; retrouver la source
+	# sans changer de salle, de vague, de sélection métier ou d'historique.
+	if path.is_empty() and message.room_index >= 0 and message.room_index < session.working_run.rooms.size():
+		var room := session.working_run.rooms[message.room_index]
+		var concerned: Resource = room
+		if room != null and message.wave_index >= 0:
+			concerned = room.get_encounter_for_wave(message.wave_index)
+		var source := session.source_for(concerned)
+		if source != null:
+			path = source.resource_path
+		if path.is_empty():
+			path = str(session.new_resource_paths.get(concerned, ""))
+	if path.is_empty() and message.room_index < 0:
+		path = session.source_run_path
+	validation_details_text.text = "Diagnostic facultatif — consultation seule\n\n%s\n\nCode stable : %s\nChemin concerné : %s\nSalle (index) : %s\nAffrontement (index) : %s\nCellule : %s\n\nMétadonnées\n%s" % [
+		EncounterPresentation.validation_explanation(message), message.code,
+		path if not path.is_empty() else "Copie en mémoire — aucun fichier associé",
+		message.room_index, message.wave_index, message.cell,
+		JSON.stringify(message.to_dictionary(), "  "),
+	]
+	validation_details_dialog.popup_centered(Vector2i(700, 430).min(Vector2i(get_viewport_rect().size) - Vector2i(40, 40)))
 
 
 func analyze_seeds(count: int) -> void:
@@ -794,15 +1547,21 @@ func analyze_seeds(count: int) -> void:
 
 
 func test_current_encounter() -> Dictionary:
-	var result := EncounterTestLauncher.prepare_and_launch(
+	# Le lanceur refuse déjà une session en erreur, mais son code de retour seul
+	# ne dit pas à l'auteur ce qui bloque : la barrière parle avant lui.
+	var gate := blocking_validation_report()
+	if bool(gate.blocked):
+		last_test_result = {"ok": false, "error": "validation_failed", "gate": gate}
+		report_blocked_action("Test impossible", gate)
+		return last_test_result
+	last_test_result = EncounterTestLauncher.prepare_and_launch(
 		session, editor_interface, int(seed_spin.value)
 	)
-	_set_status(
-		"Test direct lancé dans le vrai jeu." if result.get("ok", false) \
-		else "Test direct impossible : %s" % result.get("error", "inconnu"),
-		not result.get("ok", false),
-	)
-	return result
+	if last_test_result.get("ok", false):
+		_set_status("Test direct lancé dans le vrai jeu.")
+	else:
+		_show_operation_failure("Le test n'a pas pu être lancé", last_test_result)
+	return last_test_result
 
 
 func export_report() -> Dictionary:
@@ -814,7 +1573,7 @@ func export_report() -> Dictionary:
 		DisplayServer.clipboard_set(str(result.get("markdown", "")))
 		_set_status("Rapport Markdown et JSON exporté ; le Markdown est copié dans le presse-papiers.")
 	else:
-		_set_status("Export impossible : %s" % result.get("error", "inconnu"), true)
+		_show_operation_failure("Le rapport n'a pas pu être exporté", result)
 	return result
 
 
@@ -827,10 +1586,14 @@ func get_state_snapshot() -> Dictionary:
 		"wave_index": session.selected_wave_index,
 		"seed": int(seed_spin.value) if seed_spin != null else 1337,
 		"properties_tab": properties_tabs.current_tab if properties_tabs != null else 0,
+		"layout": get_layout_snapshot() if navigation_panel != null else {},
 	}
 
 
 func apply_state_snapshot(state: Dictionary) -> void:
+	var layout = state.get("layout", {})
+	if layout is Dictionary and navigation_panel != null:
+		apply_layout_snapshot(layout)
 	if bool(state.get("room_draft", false)):
 		# Un brouillon de salle appartient à la session Terrain : il se rouvre
 		# par « Créer les combats de la salle », jamais par un chemin de partie.
@@ -855,9 +1618,15 @@ func _show_save_dialog() -> void:
 		# le bouton enregistre le brouillon dans le dossier personnel.
 		save_room_draft()
 		return
+	# Une erreur bloquante ferme la publication ; un avertissement ne l'a jamais
+	# fermée et n'a donc pas à changer de comportement ici.
+	var gate := blocking_validation_report()
+	if bool(gate.blocked):
+		report_blocked_action("Publication impossible", gate)
+		return
 	var plan := EncounterSaveService.build_plan(session)
 	if not plan.get("ok", false):
-		_set_status("Publication bloquée : %s" % plan.get("error", "plan invalide"), true)
+		_show_operation_failure("La publication est bloquée ; vérifiez la validation", plan)
 		return
 	if plan.entries.is_empty():
 		_set_status("Aucun changement à publier.")
@@ -872,6 +1641,7 @@ func _show_save_dialog() -> void:
 func _save_confirmed() -> void:
 	var result := EncounterSaveService.save(session)
 	if result.get("ok", false):
+		_invalidate_published_paths(result)
 		_fallback_undo_redo.clear_history()
 		_last_history_object = null
 		if editor_interface != null:
@@ -880,7 +1650,7 @@ func _save_confirmed() -> void:
 		_refresh_title()
 		history_state_changed.emit()
 	else:
-		_set_status("Sauvegarde arrêtée : %s" % result.get("error", "inconnu"), true)
+		_show_operation_failure("La sauvegarde a été arrêtée", result)
 	if project_context != null:
 		project_context.set_dirty(&"encounter", session.is_dirty())
 
@@ -958,6 +1728,17 @@ func save_room_draft() -> Dictionary:
 		if not bool(loaded.get("ok", false)) or not verified.open_room_draft(
 				loaded.get("room") as RoomData, session.context_run):
 			return {"ok": false, "error": "draft_reload_failed", "details": loaded}
+		# ArenaDefinition.authoring_document est un marqueur d'édition non
+		# sérialisé (RoomIntegrationFieldPolicy en dépend pour classer
+		# enemies/background_image/arena_visual_profile/battle_scene comme
+		# GAMEPLAY_OWNED ou DERIVED_RUNTIME). RoomDraftSaveService.load_draft()
+		# le reconstruit toujours à sa valeur par défaut : sans réalignement,
+		# la comparaison d'empreinte ci-dessous compare deux classifications de
+		# champs différentes, pas deux contenus différents. On aligne la copie
+		# rechargée sur le brouillon vivant avant de comparer.
+		if verified.draft_room is ArenaDefinition and session.draft_room is ArenaDefinition:
+			(verified.draft_room as ArenaDefinition).authoring_document = \
+				(session.draft_room as ArenaDefinition).authoring_document
 		# Les destinations canoniques restent en mémoire : le fichier de salle
 		# publie ses rencontres comme sous-ressources lors de l'intégration.
 		var expected := EncounterEditSession.new()
@@ -977,10 +1758,7 @@ func save_room_draft() -> Dictionary:
 			+ "Aucune partie ni rencontre n'a été publiée."
 		)
 	else:
-		_set_status(
-			"Le brouillon n'a pas pu être enregistré : %s" % result.get("error", "erreur"),
-			true
-		)
+		_show_operation_failure("Le brouillon n'a pas pu être enregistré", result)
 	return result
 
 
@@ -994,10 +1772,7 @@ func _restore_approved_room_draft() -> bool:
 		return false
 	var loaded := RoomDraftSaveService.load_draft(_room_draft_session_key())
 	if not bool(loaded.get("ok", false)):
-		_set_status(
-			"Aucun brouillon de salle enregistré : %s" % loaded.get("error", "introuvable"),
-			true
-		)
+		_show_operation_failure("Aucun brouillon de salle n'a pu être chargé", loaded)
 		return false
 	var stored := loaded.get("room") as RoomData
 	RoomDraftAuthority.isolate_gameplay_into(session.draft_room, stored)
@@ -1025,6 +1800,7 @@ func _context_save() -> Dictionary:
 		return save_room_draft()
 	var result := EncounterSaveService.save(session)
 	if result.get("ok", false):
+		_invalidate_published_paths(result)
 		_refresh_all()
 	return result
 
@@ -1091,14 +1867,11 @@ func _restore_approved_recovery() -> bool:
 	var result := EncounterSaveService.restore_latest(session)
 	if result.get("ok", false):
 		_refresh_all()
-		_set_status(
-			"Session restaurée depuis %s. Vérifiez puis sauvegardez pour confirmer." \
-			% result.get("recovery_path", "")
-		)
+		_operation_details = result.duplicate(true)
+		_refresh_technical_details()
+		_set_status("Session restaurée depuis la récupération locale. Vérifiez puis sauvegardez pour confirmer.")
 	else:
-		_set_status(
-			"Restauration impossible : %s" % result.get("error", "inconnu"), true
-		)
+		_show_operation_failure("La session n'a pas pu être restaurée", result)
 	return bool(result.get("ok", false))
 
 
@@ -1152,7 +1925,9 @@ func _finish_document_selection(run: RunData, path: String, index: int, state: D
 	if state.has("seed"):
 		seed_spin.value = int(state.seed)
 	if state.has("properties_tab"):
-		properties_tabs.current_tab = int(state.properties_tab)
+		var tab := int(state.properties_tab)
+		# Une ancienne préférence Avancé ne doit pas ouvrir les diagnostics.
+		properties_tabs.current_tab = tab if tab >= 0 and tab < properties_tabs.get_tab_count() - 1 else 0
 	_refresh_all()
 	return true
 
@@ -1210,59 +1985,118 @@ func _on_forbidden_cell_toggled(cell: Vector2i) -> void:
 	)
 
 
-func _add_roster_row(encounter: EncounterDefinition, index: int) -> void:
-	var card := VBoxContainer.new()
-	card.add_theme_constant_override("separation", 2)
-	var unit := encounter.roster_units[index]
-	var label := Label.new()
-	label.text = unit.unit_name if unit != null else "Ennemi introuvable"
-	label.tooltip_text = "%s • %s • %s" % [
-		unit.resource_path if unit != null else "",
-		unit.faction_id if unit != null else &"",
-		unit.tactical_role_id if unit != null else &"",
-	]
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	card.add_child(label)
-	var row := HBoxContainer.new()
-	var quantity := SpinBox.new()
-	quantity.min_value = 1
-	quantity.max_value = 99
-	quantity.value = encounter.roster_counts[index] if index < encounter.roster_counts.size() else 1
-	quantity.custom_minimum_size.x = 72
-	quantity.value_changed.connect(func(value): _change_quantity(index, int(value)))
-	row.add_child(quantity)
-	_add_button(row, "−", func(): _change_quantity(index, maxi(1, int(quantity.value) - 1)))
-	_add_button(row, "+", func(): _change_quantity(index, int(quantity.value) + 1))
-	_add_button(row, "Retirer", func(): _remove_roster_index(index))
-	card.add_child(row)
-	composition_box.add_child(card)
+func _build_catalog_section(parent: Control) -> void:
+	var filters := HBoxContainer.new()
+	filters.add_theme_constant_override("separation", 6)
+	parent.add_child(filters)
+	catalog_search = LineEdit.new()
+	catalog_search.placeholder_text = "Rechercher par nom, faction ou rôle"
+	catalog_search.text = _catalog_search_text
+	catalog_search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	catalog_search.text_changed.connect(_filter_catalog)
+	filters.add_child(catalog_search)
+	catalog_faction_filter_button = OptionButton.new()
+	_populate_filter_button(
+		catalog_faction_filter_button, _catalog_factions(), _catalog_faction_filter,
+		"Toutes les factions", Callable(EncounterPresentation, "faction_name")
+	)
+	catalog_faction_filter_button.item_selected.connect(func(index):
+		_catalog_faction_filter = catalog_faction_filter_button.get_item_metadata(index)
+		_filter_catalog(_catalog_search_text)
+	)
+	filters.add_child(catalog_faction_filter_button)
+	catalog_role_filter_button = OptionButton.new()
+	_populate_filter_button(
+		catalog_role_filter_button, _catalog_roles(), _catalog_role_filter,
+		"Tous les rôles", func(role): return EncounterPresentation.role_name(role, enemy_catalog)
+	)
+	catalog_role_filter_button.item_selected.connect(func(index):
+		_catalog_role_filter = catalog_role_filter_button.get_item_metadata(index)
+		_filter_catalog(_catalog_search_text)
+	)
+	filters.add_child(catalog_role_filter_button)
+	catalog_cards_box = VBoxContainer.new()
+	catalog_cards_box.add_theme_constant_override("separation", 4)
+	parent.add_child(catalog_cards_box)
+	catalog_empty_label = _wrapped_label(
+		"Aucun ennemi ne correspond à cette recherche. Effacez la recherche ou changez les filtres."
+	)
+	catalog_empty_label.hide()
+	parent.add_child(catalog_empty_label)
+
+
+func _catalog_factions() -> Array[StringName]:
+	var seen := {}
+	var result: Array[StringName] = []
+	for unit in enemy_catalog:
+		if unit != null and not seen.has(unit.faction_id):
+			seen[unit.faction_id] = true
+			result.append(unit.faction_id)
+	return result
+
+
+func _catalog_roles() -> Array[StringName]:
+	var seen := {}
+	var result: Array[StringName] = []
+	for unit in enemy_catalog:
+		if unit != null and not seen.has(unit.tactical_role_id):
+			seen[unit.tactical_role_id] = true
+			result.append(unit.tactical_role_id)
+	return result
+
+
+func _populate_filter_button(
+		button: OptionButton, values: Array, current: StringName,
+		none_label: String, label_fn: Callable
+	) -> void:
+	button.clear()
+	button.add_item(none_label)
+	button.set_item_metadata(0, &"")
+	var select_index := 0
+	for index in values.size():
+		var value: StringName = values[index]
+		button.add_item(str(label_fn.call(value)))
+		button.set_item_metadata(index + 1, value)
+		if value == current:
+			select_index = index + 1
+	button.selected = select_index
 
 
 func _filter_catalog(query: String) -> void:
-	if catalog_list == null:
+	_catalog_search_text = query
+	if catalog_cards_box == null:
 		return
-	catalog_list.clear()
 	var normalized := query.to_lower().strip_edges()
+	var filtered: Array[UnitData] = []
 	for unit in enemy_catalog:
-		var haystack := "%s %s %s" % [unit.unit_name, unit.faction_id, unit.tactical_role_id]
+		if unit == null:
+			continue
+		if _catalog_faction_filter != &"" and unit.faction_id != _catalog_faction_filter:
+			continue
+		if _catalog_role_filter != &"" and unit.tactical_role_id != _catalog_role_filter:
+			continue
+		var haystack := "%s %s %s %s %s" % [unit.unit_name, unit.faction_id, unit.tactical_role_id, EncounterPresentation.faction_name(unit.faction_id), EncounterPresentation.role_name(unit.tactical_role_id, enemy_catalog)]
 		if not normalized.is_empty() and normalized not in haystack.to_lower():
 			continue
-		var index := catalog_list.add_item("%s — %s • %s • PV %d • PA %d • PM %d • %d sort(s)%s" % [
-			unit.unit_name,
-			str(unit.faction_id) if unit.faction_id != &"" else "Faction non renseignée",
-			str(unit.tactical_role_id) if unit.tactical_role_id != &"" else "Rôle générique",
-			unit.max_hp, unit.max_ap, unit.max_mp, unit.spells.size(),
-			" • INVOCATION" if unit.spells.any(func(spell): return spell != null and spell.is_summon()) else "",
-		])
-		catalog_list.set_item_metadata(index, unit.resource_path)
-		catalog_list.set_item_tooltip(index, "Double-cliquez pour ajouter à la composition.")
+		filtered.append(unit)
+	_rebuild_catalog_cards(filtered)
 
 
-func _on_catalog_activated(index: int) -> void:
-	var path := str(catalog_list.get_item_metadata(index))
-	var unit := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_REUSE) as UnitData
-	if unit != null:
-		_add_unit(unit)
+func _rebuild_catalog_cards(units: Array[UnitData]) -> void:
+	_clear_children(catalog_cards_box)
+	catalog_empty_label.visible = units.is_empty()
+	var encounter := session.current_encounter()
+	for unit in units:
+		var card := EncounterEnemyCard.new()
+		catalog_cards_box.add_child(card)
+		var current_quantity := 0
+		if encounter != null:
+			var roster_index := encounter.roster_units.find(unit)
+			if roster_index >= 0 and roster_index < encounter.roster_counts.size():
+				current_quantity = int(encounter.roster_counts[roster_index])
+		card.configure_catalog(unit, enemy_catalog, current_quantity)
+		card.add_pressed.connect(func(): _add_unit(unit))
+		card.activated.connect(func(): _add_unit(unit))
 
 
 func _add_unit(unit: UnitData) -> void:
@@ -1313,8 +2147,8 @@ func _remove_roster_index(index: int) -> void:
 	)
 
 
-func _refresh_disabled_abilities(encounter: EncounterDefinition) -> void:
-	composition_box.add_child(_section("Capacités désactivées"))
+func _refresh_disabled_abilities(parent: Control, encounter: EncounterDefinition) -> void:
+	parent.add_child(_section("Capacités désactivées"))
 	var abilities := {}
 	for unit in encounter.roster_units:
 		if unit == null: continue
@@ -1323,10 +2157,11 @@ func _refresh_disabled_abilities(encounter: EncounterDefinition) -> void:
 				abilities[spell.get_effective_spell_id()] = spell.spell_name
 	for ability_id in abilities:
 		var checkbox := CheckBox.new()
-		checkbox.text = "%s (%s)" % [abilities[ability_id], ability_id]
+		checkbox.text = str(abilities[ability_id]) if not str(abilities[ability_id]).is_empty() else "Capacité sans nom"
+		checkbox.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		checkbox.button_pressed = encounter.disabled_ability_ids.has(ability_id)
 		checkbox.toggled.connect(func(disabled): _toggle_disabled_ability(ability_id, disabled))
-		composition_box.add_child(checkbox)
+		parent.add_child(checkbox)
 
 
 func _toggle_disabled_ability(ability_id: StringName, disabled: bool) -> void:
@@ -1449,8 +2284,9 @@ func _refresh_after_edit() -> void:
 	_refresh_composition()
 	_refresh_placement()
 	_refresh_timeline()
+	_refresh_document_actions()
 	_refresh_progression()
-	_refresh_advanced()
+	_refresh_technical_details()
 	generate_preview()
 	validate_session()
 	_refresh_title()
@@ -1479,7 +2315,7 @@ func _draft_local_usage_count(encounter: EncounterDefinition) -> int:
 func _shared_acknowledgement_key(encounter: EncounterDefinition) -> String:
 	if session.room_draft_mode:
 		return "draft:%d" % encounter.get_instance_id()
-	return str(_usage_summary(encounter).key)
+	return str(_usage_summary(encounter).published.key)
 
 
 func _ensure_editable(action: Callable) -> void:
@@ -1505,7 +2341,10 @@ func _ensure_editable(action: Callable) -> void:
 		shared_dialog.popup_centered(Vector2i(650, 360))
 		shared_duplicate_button.grab_focus.call_deferred()
 		return
-	var usage := _usage_summary(encounter)
+	var usage: Dictionary = _usage_summary(encounter).published
+	if not usage.ready and session.source_for(encounter) != null:
+		_set_status(_reference_scan_state + " — réessayez avant de modifier la rencontre.", true)
+		return
 	var key := str(usage.key)
 	if usage.usage_count <= 1 \
 			or session.shared_edit_acknowledged.has(key) \
@@ -1513,7 +2352,7 @@ func _ensure_editable(action: Callable) -> void:
 		action.call()
 		return
 	_pending_shared_action = action
-	shared_dialog.dialog_text = "Cette rencontre est utilisée par %d affrontements dans %d salles.\n\nModifier la rencontre partagée affectera tous ses usages.\n\nAction recommandée : DUPLIQUER POUR CET AFFRONTEMENT." % [usage.usage_count, usage.room_count]
+	shared_dialog.dialog_text = "Dans le projet publié, cette rencontre est utilisée par %d affrontements dans %d salles.\n\nModifier la rencontre partagée affectera tous ses usages après publication.\n\nAction recommandée : DUPLIQUER POUR CET AFFRONTEMENT." % [usage.usage_count, usage.room_count]
 	shared_dialog.popup_centered(Vector2i(650, 360))
 	shared_duplicate_button.grab_focus.call_deferred()
 
@@ -1557,6 +2396,11 @@ func _duplicate_encounter_for_usage() -> void:
 func _add_wave() -> void:
 	var room := session.current_room()
 	if room == null: return
+	# Le plafond de la partie reste vrai même si le bouton est contourné
+	# (raccourci, script de test, action rejouée par l'historique).
+	if room.waves.size() >= _wave_cap():
+		_set_status("Limite de %d affrontement(s) atteinte pour cette salle." % _wave_cap(), true)
+		return
 	var waves: Array[RoomWaveData] = room.waves.duplicate()
 	var wave := RoomWaveData.new()
 	wave.wave_name = "Affrontement %d" % (waves.size() + 1)
@@ -1579,6 +2423,9 @@ func _duplicate_wave() -> void:
 	var room := session.current_room()
 	var current := session.current_wave()
 	if room == null or current == null: return
+	if room.waves.size() >= _wave_cap():
+		_set_status("Limite de %d affrontement(s) atteinte pour cette salle." % _wave_cap(), true)
+		return
 	var waves: Array[RoomWaveData] = room.waves.duplicate()
 	var copy := EncounterCopyService.copy_wave(current)
 	copy.wave_name += " — copie"
@@ -1640,26 +2487,6 @@ func _migrate_current_room() -> void:
 			&"maximum_wave_count": migrated_maximum,
 		}, "Convertir la salle en vagues configurables")
 		_set_status("Migration appliquée uniquement à la version en cours. Sauvegardez pour confirmer.")
-
-
-func _on_validation_activated(index: int) -> void:
-	if index < 0 or index >= session.validation_messages.size(): return
-	var message := session.validation_messages[index]
-	if message.room_index >= 0:
-		if not _request_room(message.room_index, maxi(0, message.wave_index)):
-			return
-	match message.fix_id:
-		&"fit_living_cap":
-			_edit_encounter_property(&"living_enemy_cap", session.current_encounter().get_initial_enemy_count(), "Ajuster le plafond vivant")
-		&"use_actual_room_index":
-			_edit_encounter_property(&"room_index", session.selected_room_index + 1, "Utiliser le numéro réel de la salle")
-		&"deduplicate_forbidden":
-			var encounter := session.current_encounter()
-			var unique: Array[Vector2i] = []
-			for cell in encounter.forbidden_initial_spawn_cells:
-				if not unique.has(cell): unique.append(cell)
-			_edit_encounter_property(&"forbidden_initial_spawn_cells", unique, "Retirer les doublons de cases interdites")
-	_refresh_all()
 
 
 func _undo() -> void:
@@ -1780,25 +2607,122 @@ func _on_analysis_progress(completed: int, total: int, _generation: int) -> void
 
 func _on_filesystem_changed() -> void:
 	enemy_catalog = StudioResourceCatalog.load_enemy_units()
-	project_graph = EncounterReferenceGraphService.build_project_graph()
-	if catalog_list != null:
-		_filter_catalog(catalog_search.text if catalog_search != null else "")
+	if catalog_cards_box != null:
+		_filter_catalog(_catalog_search_text)
 
 
 func _usage_summary(encounter: EncounterDefinition) -> Dictionary:
-	if encounter == null:
-		return {"key": "missing", "usage_count": 0, "room_count": 0, "external": false, "usages": []}
 	var source := session.source_for(encounter) as EncounterDefinition
-	if source != null:
-		return EncounterReferenceGraphService.summary_for(source, project_graph)
-	var working_graph := EncounterReferenceGraphService.build_for_run(
-		session.working_run, session.source_run_path
-	)
-	return EncounterReferenceGraphService.summary_for(encounter, working_graph)
+	var published := EncounterReferenceGraphService.published_summary(source, shared_reference_graph)
+	var local := EncounterReferenceGraphService.summary_for(encounter,
+		EncounterReferenceGraphService.build_for_run(session.working_run))
+	local["scope"] = "room_draft" if session.room_draft_mode else "working_copy"
+	if session.room_draft_mode:
+		local.usage_count = _draft_local_usage_count(encounter)
+		local.room_count = 1 if local.usage_count > 0 else 0
+	return {"published": published, "local": local}
 
 
 func _usage_count(encounter: EncounterDefinition) -> int:
-	return int(_usage_summary(encounter).usage_count) if encounter != null else 0
+	var summary := _usage_summary(encounter)
+	return int(summary.local.usage_count) if session.room_draft_mode \
+		else int(summary.published.usage_count)
+
+
+func _usage_badge(encounter: EncounterDefinition) -> String:
+	if encounter == null:
+		return ""
+	if session.room_draft_mode:
+		return " • PARTAGÉE DANS LE BROUILLON" if _draft_local_usage_count(encounter) > 1 else ""
+	var published: Dictionary = _usage_summary(encounter).published
+	if not published.ready:
+		return " • ANALYSE EN COURS"
+	return " • PARTAGÉE (PROJET PUBLIÉ)" if published.usage_count > 1 else ""
+
+
+func _usage_text(summary: Dictionary) -> String:
+	var published: Dictionary = summary.published
+	var local: Dictionary = summary.local
+	var text := "Usages de cette rencontre"
+	if published.ready:
+		text += "\nProjet publié : %d affrontement(s), %d salle(s)." % [published.usage_count, published.room_count]
+	else:
+		text += "\nProjet publié : " + _reference_scan_state + "."
+	text += "\n%s : %d référence(s)." % ["Brouillon courant" if session.room_draft_mode else "Copie de travail", local.usage_count]
+	return text
+
+
+func _disconnect_reference_graph() -> void:
+	if shared_reference_graph == null:
+		return
+	for connection in [
+		[shared_reference_graph.scan_started, _on_reference_scan_started],
+		[shared_reference_graph.scan_progress, _on_reference_scan_progress],
+		[shared_reference_graph.scan_completed, _on_reference_scan_completed],
+		[shared_reference_graph.scan_cancelled, _on_reference_scan_cancelled],
+		[shared_reference_graph.invalidated, _on_reference_invalidated],
+	]:
+		if connection[0].is_connected(connection[1]):
+			connection[0].disconnect(connection[1])
+
+
+func _on_reference_scan_started() -> void:
+	_reference_scan_state = "Analyse des usages en cours"
+	_queue_reference_refresh()
+
+
+func _on_reference_scan_progress(completed: int, total: int, _label: String) -> void:
+	_reference_scan_state = "Analyse des usages en cours (%d/%d)" % [completed, total]
+	_queue_reference_refresh()
+
+
+func _on_reference_scan_completed(_report: Dictionary) -> void:
+	_queue_reference_refresh()
+
+
+func _on_reference_scan_cancelled(_report: Dictionary) -> void:
+	_reference_scan_state = "Analyse des usages annulée — résultats indisponibles"
+	_queue_reference_refresh()
+
+
+func _on_reference_invalidated(_keys: PackedStringArray) -> void:
+	_reference_scan_state = "Analyse des usages en cours"
+	_queue_reference_refresh()
+	# Un lot de publications peut invalider plusieurs fichiers. Un seul scan
+	# différé du service partagé suffit ; scan(false) conserve son cache.
+	if not _reference_scan_queued:
+		_reference_scan_queued = true
+		call_deferred("_scan_invalidated_references")
+
+
+func _scan_invalidated_references() -> void:
+	_reference_scan_queued = false
+	if shared_reference_graph != null:
+		shared_reference_graph.scan()
+
+
+func _queue_reference_refresh() -> void:
+	if not _reference_refresh_queued:
+		_reference_refresh_queued = true
+		call_deferred("_refresh_reference_summary")
+
+
+func _refresh_reference_summary() -> void:
+	_reference_refresh_queued = false
+	if not is_inside_tree() or session.working_run == null or composition_box == null:
+		return
+	# Ne pas relancer la preview ni détruire un champ en cours de saisie.
+	if is_instance_valid(_usage_label):
+		_usage_label.text = _usage_text(_usage_summary(session.current_encounter()))
+	_refresh_timeline()
+	_refresh_technical_details()
+
+
+func _invalidate_published_paths(result: Dictionary) -> void:
+	if shared_reference_graph == null:
+		return
+	for path in result.get("saved_paths", []):
+		shared_reference_graph.invalidate(str(path))
 
 
 func _wave_tooltip(wave: RoomWaveData, encounter: EncounterDefinition) -> String:
@@ -1807,19 +2731,12 @@ func _wave_tooltip(wave: RoomWaveData, encounter: EncounterDefinition) -> String
 		wave.enemy_health_multiplier if wave != null else 1.0,
 		wave.enemy_attack_multiplier if wave != null else 1.0,
 		wave.reward_multiplier if wave != null else 1.0,
-		"Rencontre partagée" if _usage_count(encounter) > 1 else "Rencontre unique",
+		_usage_text(_usage_summary(encounter)) if encounter != null else "Aucune rencontre",
 	]
 
 
 func _format_analysis(report: Dictionary) -> String:
-	if report.is_empty(): return "Aucune analyse."
-	return "[b]%d valeurs de départ analysées[/b] • succès %.1f %% • %d échec(s)%s\n\nFormations : %s\nFormations jamais retenues : %s\nTentatives moyennes : %.2f\nDistances min / moy / max : %s / %s / %s\nDans la zone préférée : %.1f %%\n\nRaisons d'échec : %s\nValeurs de départ problématiques : %s" % [
-		report.completed, report.success_rate_percent, report.failures,
-		" • ANNULÉE" if report.cancelled else "",
-		JSON.stringify(report.formations), JSON.stringify(report.formations_never_selected),
-		report.average_attempts, str(report.distance_minimum), str(report.distance_average), str(report.distance_maximum),
-		report.preferred_percent, JSON.stringify(report.failure_reasons), JSON.stringify(report.problem_seeds),
-	]
+	return EncounterPresentation.analysis(report)
 
 
 func _refresh_title() -> void:
@@ -1833,9 +2750,34 @@ func _set_status(message: String, error := false) -> void:
 	status_label.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35) if error else Color(0.74, 0.84, 0.94))
 
 
-func _add_button(parent: Control, text: String, callback: Callable, _icon_name := "") -> Button:
+func _show_operation_failure(explanation: String, result: Dictionary) -> void:
+	_operation_details = result.duplicate(true)
+	_refresh_technical_details()
+	_set_status(explanation + ". Consultez Détails techniques.", true)
+
+
+func _add_button(
+		parent: Control, text: String, callback: Callable,
+		icon_name := "", destructive := false
+	) -> Button:
 	var button := Button.new()
 	button.text = text
+	# G6 — une hauteur commune évite les boutons de hauteurs incohérentes sur
+	# une même barre ; la largeur reste libre pour garder chaque libellé lisible.
+	button.custom_minimum_size.y = EncounterVisualConstants.BUTTON_MIN_HEIGHT
+	var focus_style := StyleBoxFlat.new()
+	focus_style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	focus_style.border_color = Color(1.0, 0.82, 0.2, 1.0)
+	focus_style.set_border_width_all(2)
+	focus_style.corner_radius_top_left = 3
+	focus_style.corner_radius_top_right = 3
+	focus_style.corner_radius_bottom_left = 3
+	focus_style.corner_radius_bottom_right = 3
+	button.add_theme_stylebox_override("focus", focus_style)
+	if destructive:
+		EncounterVisualConstants.apply_destructive_style(button)
+	if not icon_name.is_empty() and has_theme_icon(icon_name, "EditorIcons"):
+		button.icon = get_theme_icon(icon_name, "EditorIcons")
 	button.pressed.connect(callback)
 	parent.add_child(button)
 	return button
@@ -1844,6 +2786,7 @@ func _add_button(parent: Control, text: String, callback: Callable, _icon_name :
 func _section(text: String) -> Label:
 	var label := Label.new()
 	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.add_theme_font_size_override("font_size", 14)
 	label.add_theme_color_override("font_color", Color(0.58, 0.86, 1.0))
 	return label
@@ -1860,6 +2803,7 @@ func _scroll_page(name: String) -> VBoxContainer:
 	var scroll := ScrollContainer.new()
 	scroll.name = name
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
 	var box := VBoxContainer.new()
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(box)
@@ -1870,28 +2814,28 @@ func _scroll_page(name: String) -> VBoxContainer:
 func _rich_page(name: String) -> RichTextLabel:
 	var text := RichTextLabel.new()
 	text.name = name
-	text.bbcode_enabled = true
+	text.bbcode_enabled = false
 	text.fit_content = false
 	properties_tabs.add_child(text)
 	return text
 
 
 func _add_line_edit(parent: Control, label_text: String, value: String, callback: Callable) -> void:
-	var label := Label.new(); label.text = label_text; parent.add_child(label)
+	var label := _wrapped_label(label_text); parent.add_child(label)
 	var edit := LineEdit.new(); edit.text = value; edit.text_submitted.connect(callback); edit.focus_exited.connect(func(): callback.call(edit.text)); parent.add_child(edit)
 
 
 func _add_int_spin(parent: Control, label_text: String, value: int, minimum: int, maximum: int, callback: Callable) -> void:
-	var row := HBoxContainer.new(); var label := Label.new(); label.text = label_text; label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
+	var row := HBoxContainer.new(); var label := _wrapped_label(label_text); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
 	var spin := SpinBox.new(); spin.min_value = minimum; spin.max_value = maximum; spin.step = 1; spin.value = value; spin.value_changed.connect(func(new_value): callback.call(int(new_value))); row.add_child(spin); parent.add_child(row)
 
 
 func _add_float_spin(parent: Control, label_text: String, value: float, minimum: float, maximum: float, callback: Callable) -> void:
-	var row := HBoxContainer.new(); var label := Label.new(); label.text = label_text; label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
+	var row := HBoxContainer.new(); var label := _wrapped_label(label_text); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
 	var spin := SpinBox.new(); spin.min_value = minimum; spin.max_value = maximum; spin.step = 0.05; spin.value = value; spin.value_changed.connect(callback); row.add_child(spin); parent.add_child(row)
 
 
 func _clear_children(parent: Node) -> void:
 	for child in parent.get_children():
-		child.hide()
+		parent.remove_child(child)
 		child.queue_free()

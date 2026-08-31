@@ -59,9 +59,61 @@ static func summary_for(encounter: EncounterDefinition, graph: Dictionary) -> Di
 		"resource_path": encounter.resource_path if encounter != null else "",
 		"usage_count": usages.size(),
 		"room_count": rooms.size(),
-		"external": encounter != null and not encounter.resource_path.is_empty(),
+		"external": encounter != null and not encounter.resource_path.is_empty() \
+			and not encounter.resource_path.contains("::"),
 		"usages": usages,
 	}
+
+
+## Adaptateur de lecture : aucune découverte ni chargement de catalogue.
+## Les liens historiques de salle sont ignorés dès que des vagues existent,
+## comme dans build_for_run(). Un même lien vague peut avoir plusieurs usages
+## (plusieurs indices, salles ou parties) : on conserve ces occurrences.
+static func published_summary(
+		encounter: EncounterDefinition, shared: StudioReferenceGraphService
+	) -> Dictionary:
+	var result := summary_for(encounter, {})
+	result["ready"] = shared != null and bool(shared.report().ready)
+	result["scope"] = "published"
+	result["generation"] = shared.generation if shared != null else 0
+	if not result.ready:
+		result.usage_count = -1
+		result.room_count = -1
+		return result
+	var usages: Array = []
+	if encounter != null:
+		for edge in shared.usages(encounter):
+			if edge.relation != &"encounter_definition":
+				continue
+			var owner := str(edge.from)
+			# Une salle référencée directement par une partie : mode historique.
+			var has_waves := bool(shared.node_for(owner).get("has_waves", false))
+			if not has_waves:
+				_append_room_occurrences(shared, owner, 0, "historique", usages)
+			# Sinon (ou en plus), le propriétaire est une RoomWaveData.
+			for wave_edge in shared.usages(owner):
+				if wave_edge.relation == &"waves":
+					_append_room_occurrences(
+						shared, str(wave_edge.from), int(wave_edge.metadata.index),
+						"vagues", usages
+					)
+	var local_graph := {key_for(encounter): usages}
+	result.merge(summary_for(encounter, local_graph), true)
+	return result
+
+
+static func _append_room_occurrences(
+		shared: StudioReferenceGraphService, room_key: String,
+		wave_index: int, mode: String, usages: Array
+	) -> void:
+	for room_edge in shared.usages(room_key):
+		if room_edge.relation != &"ROOM_AT":
+			continue
+		usages.append({
+			"run_path": str(room_edge.from), "room_path": room_key,
+			"room_index": int(room_edge.metadata.index),
+			"wave_index": wave_index, "mode": mode,
+		})
 
 
 static func key_for(encounter: EncounterDefinition) -> String:

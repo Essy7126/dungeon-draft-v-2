@@ -21,29 +21,45 @@ var last_memory_delta_bytes := 0
 var last_object_delta := 0
 var _cancel_requested := false
 var _invalid_keys := {}
+var _scanning := false
+var _last_scan_cancelled := false
+## Le catalogue conserve ses propres objets chargés. Après publication, ces
+## racines doivent rester relues au disque aux scans suivants, même si une
+## invalidation ultérieure concerne un autre fichier. Aucun objet supplémentaire
+## n'est retenu : seules les clés des racines potentiellement périmées le sont.
+var _stale_catalog_roots := {}
 
 
 func scan(force := false) -> Dictionary:
-	if not force and not nodes.is_empty() and _invalid_keys.is_empty():
+	if _scanning:
+		return report(false, true)
+	if not force and generation > 0 and _invalid_keys.is_empty() and not _last_scan_cancelled:
 		return report(true, true)
 	var started_usec := Time.get_ticks_usec()
 	var memory_before := int(Performance.get_monitor(Performance.MEMORY_STATIC))
 	var objects_before := int(Performance.get_monitor(Performance.OBJECT_COUNT))
 	_cancel_requested = false
+	_scanning = true
+	_last_scan_cancelled = false
 	scan_started.emit()
 	var next_nodes := {}
 	var next_outgoing := {}
 	var next_incoming := {}
 	var visited := {}
-	var runs := RunContentCatalogService.discover_runs()
+	_mark_stale_catalog_roots()
+	var runs := _discover_runs()
 	var total := maxi(1, runs.size())
 	for run_index in range(runs.size()):
 		if _cancel_requested:
-			var cancelled_report := report(false, false)
-			cancelled_report["cancelled"] = true
-			scan_cancelled.emit(cancelled_report)
-			return cancelled_report
+			return _finish_cancelled_scan()
 		var run_data := runs[run_index]
+		# Les ressources du catalogue peuvent encore être en cache après une
+		# publication. Seules les racines affectées sont relues profondément,
+		# sans remplacer les objets détenus par les sessions déjà ouvertes.
+		if _stale_catalog_roots.has(resource_key(run_data)) and not run_data.resource_path.is_empty():
+			var fresh := ResourceLoader.load(run_data.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP) as RunData
+			if fresh != null:
+				run_data = fresh
 		var run_key := _record_resource(run_data, &"RUN", next_nodes)
 		for room_index in range(run_data.rooms.size()):
 			var room := run_data.rooms[room_index]
@@ -57,7 +73,9 @@ func scan(force := false) -> Dictionary:
 				continue
 			var hero_key := _walk_resource(hero, &"RUN_HERO", next_nodes, next_outgoing, next_incoming, visited)
 			_link(run_key, hero_key, &"HERO_AT", {"index": hero_index}, next_outgoing, next_incoming)
-			scan_progress.emit(run_index + 1, total, run_data.run_name)
+		scan_progress.emit(run_index + 1, total, run_data.run_name)
+	if _cancel_requested:
+		return _finish_cancelled_scan()
 	nodes = next_nodes
 	outgoing = next_outgoing
 	incoming = next_incoming
@@ -67,8 +85,44 @@ func scan(force := false) -> Dictionary:
 	last_memory_delta_bytes = int(Performance.get_monitor(Performance.MEMORY_STATIC)) - memory_before
 	last_object_delta = int(Performance.get_monitor(Performance.OBJECT_COUNT)) - objects_before
 	_invalid_keys.clear()
+	_scanning = false
 	var result := report(true, false)
 	scan_completed.emit(result)
+	return result
+
+
+func _discover_runs() -> Array[RunData]:
+	return RunContentCatalogService.discover_runs()
+
+
+func _mark_stale_catalog_roots() -> void:
+	if _invalid_keys.is_empty():
+		return
+	var frontier: Array = _invalid_keys.keys()
+	# Un chemin de fichier peut posséder plusieurs sous-ressources indexées.
+	for key in nodes:
+		if _invalid_keys.has(str(key).get_slice("::", 0)):
+			frontier.append(key)
+	var seen := {}
+	for key in _invalid_keys:
+		# Couvre aussi une nouvelle RunData, absente du graphe précédent.
+		_stale_catalog_roots[str(key)] = true
+	while not frontier.is_empty():
+		var key := str(frontier.pop_back())
+		if seen.has(key):
+			continue
+		seen[key] = true
+		if (nodes.get(key, {}) as Dictionary).get("kind") == &"RUN":
+			_stale_catalog_roots[key] = true
+		for edge in incoming.get(key, []):
+			frontier.append(str(edge.from))
+
+
+func _finish_cancelled_scan() -> Dictionary:
+	_scanning = false
+	_last_scan_cancelled = true
+	var result := report(false, false)
+	scan_cancelled.emit(result)
 	return result
 
 
@@ -141,6 +195,9 @@ func report(ok := true, cached := false) -> Dictionary:
 		"ok": ok,
 		"cached": cached,
 		"generation": generation,
+		"scanning": _scanning,
+		"cancelled": _last_scan_cancelled,
+		"ready": generation > 0 and _invalid_keys.is_empty() and not _scanning and not _last_scan_cancelled,
 		"nodes": nodes.size(),
 		"edges": edge_count,
 		"invalidated": _invalid_keys.size(),
@@ -171,6 +228,7 @@ func _record_resource(resource: Resource, kind: StringName, target_nodes: Dictio
 		"path": resource.resource_path,
 		"kind": effective_kind,
 		"class": resource.get_class(),
+		"has_waves": resource is RoomData and not (resource as RoomData).waves.is_empty(),
 		"resource": weakref(resource),
 	}
 	return key
@@ -187,9 +245,9 @@ func _walk_resource(
 	if resource == null:
 		return ""
 	var key := _record_resource(resource, kind, target_nodes)
-	if visited.has(resource.get_instance_id()):
+	if visited.has(key):
 		return key
-	visited[resource.get_instance_id()] = true
+	visited[key] = true
 	for property in resource.get_property_list():
 		var usage := int(property.get("usage", 0))
 		if (usage & PROPERTY_USAGE_STORAGE) == 0:
