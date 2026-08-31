@@ -3,7 +3,13 @@ extends GutTest
 const FOREST_ROOM := "res://data/rooms/first_run_room_01.tres"
 const VOLCANO_ROOM := "res://data/rooms/room_05_volcano.tres"
 const SPACE_ROOM := "res://data/rooms/room_06_space.tres"
-const TEST_RESOURCE := "res://artifacts/arena_studio/tests/arena_roundtrip.tres"
+const TEST_RESOURCE := "res://output/tests/arena_studio_v1/arena_roundtrip.tres"
+
+
+func after_each() -> void:
+	var absolute := ProjectSettings.globalize_path(TEST_RESOURCE)
+	if FileAccess.file_exists(absolute):
+		DirAccess.remove_absolute(absolute)
 
 
 func test_grid_transform_cellule_position_et_aller_retour_asymetrique() -> void:
@@ -190,9 +196,6 @@ func test_sauvegarde_rechargement_schema_migration_et_absence_de_perte() -> void
 	assert_true(migrated.changed)
 	assert_eq(migrated.snapshot.schema_version, ArenaDefinition.CURRENT_SCHEMA_VERSION)
 	assert_eq(ArenaMigrationService.migrate_snapshot(migrated.snapshot).snapshot, migrated.snapshot)
-	var absolute := ProjectSettings.globalize_path(TEST_RESOURCE)
-	if FileAccess.file_exists(absolute):
-		DirAccess.remove_absolute(absolute)
 
 
 func test_runtime_generation_deterministe_idempotente_et_64_par_64() -> void:

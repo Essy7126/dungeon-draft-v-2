@@ -1,0 +1,373 @@
+[gd_resource type="Resource" script_class="CinematicSequenceData" load_steps=48 format=3]
+
+[ext_resource type="Script" path="res://cinematics/core/cinematic_sequence_data.gd" id="1_sequence"]
+[ext_resource type="Script" path="res://cinematics/core/cinematic_frame_data.gd" id="2_frame"]
+[ext_resource type="Script" path="res://cinematics/core/cinematic_text_cue_data.gd" id="3_cue"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/00_contexte_fond.png" id="10_image_00"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/01_troie_assiegee.png" id="11_image_01"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/02_achille_deux_destins.png" id="12_image_02"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/03_achille_choisit_troie.png" id="13_image_03"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/04_mort_achille.png" id="14_image_04"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/05_ame_quitte_corps.png" id="15_image_05"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/06_passions_du_vivant.png" id="16_image_06"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/07_enfers.png" id="17_image_07"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/08_paris.png" id="18_image_08"]
+[ext_resource type="Texture2D" path="res://cinematics/catabase/assets/09_titre.png" id="19_image_09"]
+[ext_resource type="AudioStream" path="res://cinematics/catabase/audio/Catabase.mp3" id="20_music"]
+
+[sub_resource type="Resource" id="Frame_00"]
+script = ExtResource("2_frame")
+texture = ExtResource("10_image_00")
+end_time_seconds = 6.0
+transition_mode = 0
+transition_duration_seconds = 0.0
+ken_burns_enabled = false
+end_zoom = 1.0
+
+[sub_resource type="Resource" id="Frame_01"]
+script = ExtResource("2_frame")
+texture = ExtResource("11_image_01")
+start_time_seconds = 6.0
+end_time_seconds = 10.5
+transition_duration_seconds = 0.6
+ken_burns_direction = Vector2(-0.25, 0.08)
+end_zoom = 1.025
+
+[sub_resource type="Resource" id="Frame_02"]
+script = ExtResource("2_frame")
+texture = ExtResource("12_image_02")
+start_time_seconds = 10.5
+end_time_seconds = 25.0
+transition_duration_seconds = 0.7
+ken_burns_direction = Vector2(0.18, -0.08)
+end_zoom = 1.03
+
+[sub_resource type="Resource" id="Frame_03"]
+script = ExtResource("2_frame")
+texture = ExtResource("13_image_03")
+start_time_seconds = 25.0
+end_time_seconds = 32.5
+transition_duration_seconds = 0.65
+ken_burns_direction = Vector2(-0.14, 0.06)
+end_zoom = 1.025
+
+[sub_resource type="Resource" id="Frame_04"]
+script = ExtResource("2_frame")
+texture = ExtResource("14_image_04")
+start_time_seconds = 32.5
+end_time_seconds = 40.5
+transition_duration_seconds = 0.6
+ken_burns_direction = Vector2(0.12, -0.05)
+end_zoom = 1.025
+
+[sub_resource type="Resource" id="Frame_05"]
+script = ExtResource("2_frame")
+texture = ExtResource("15_image_05")
+start_time_seconds = 40.5
+end_time_seconds = 50.5
+transition_duration_seconds = 0.75
+ken_burns_direction = Vector2(-0.1, -0.04)
+end_zoom = 1.03
+
+[sub_resource type="Resource" id="Frame_06"]
+script = ExtResource("2_frame")
+texture = ExtResource("16_image_06")
+start_time_seconds = 50.5
+end_time_seconds = 57.5
+transition_duration_seconds = 0.65
+ken_burns_direction = Vector2(0.08, 0.05)
+end_zoom = 1.025
+
+[sub_resource type="Resource" id="Frame_07"]
+script = ExtResource("2_frame")
+texture = ExtResource("17_image_07")
+start_time_seconds = 57.5
+end_time_seconds = 63.5
+transition_duration_seconds = 0.7
+ken_burns_direction = Vector2(-0.08, 0.03)
+end_zoom = 1.025
+
+[sub_resource type="Resource" id="Frame_08"]
+script = ExtResource("2_frame")
+texture = ExtResource("18_image_08")
+start_time_seconds = 63.5
+end_time_seconds = 67.5
+transition_duration_seconds = 0.55
+ken_burns_enabled = false
+end_zoom = 1.0
+
+[sub_resource type="Resource" id="Frame_09"]
+script = ExtResource("2_frame")
+texture = ExtResource("19_image_09")
+start_time_seconds = 67.5
+end_time_seconds = 72.0
+transition_duration_seconds = 0.7
+ken_burns_enabled = false
+end_zoom = 1.0
+
+[sub_resource type="Resource" id="Cue_001"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_001"
+fallback_text = "TROIE"
+start_time_seconds = 0.6
+end_time_seconds = 5.72
+style_id = &"context_title"
+normalized_position = Vector2(0.5, 0.305556)
+fade_in_seconds = 0.36
+fade_out_seconds = 0.42
+
+[sub_resource type="Resource" id="Cue_002"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_002"
+fallback_text = "CÔTE D’ANATOLIE"
+start_time_seconds = 1.8
+end_time_seconds = 5.72
+style_id = &"context_line"
+normalized_position = Vector2(0.5, 0.407407)
+fade_in_seconds = 0.36
+fade_out_seconds = 0.42
+
+[sub_resource type="Resource" id="Cue_003"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_003"
+fallback_text = "VERS 1200 AV. J.-C."
+start_time_seconds = 3.0
+end_time_seconds = 5.72
+style_id = &"context_line"
+normalized_position = Vector2(0.5, 0.476852)
+fade_in_seconds = 0.36
+fade_out_seconds = 0.42
+
+[sub_resource type="Resource" id="Cue_004"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_004"
+fallback_text = "DIXIÈME ANNÉE DU SIÈGE"
+start_time_seconds = 4.2
+end_time_seconds = 6.15
+style_id = &"context_strong"
+normalized_position = Vector2(0.5, 0.574074)
+fade_in_seconds = 0.36
+fade_out_seconds = 0.62
+layer = 1
+
+[sub_resource type="Resource" id="Cue_005"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_005"
+fallback_text = "Depuis dix ans, les Grecs assiègent la cité."
+start_time_seconds = 6.42
+end_time_seconds = 10.18
+style_id = &"narrative"
+fade_in_seconds = 0.32
+fade_out_seconds = 0.32
+
+[sub_resource type="Resource" id="Cue_006"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_006"
+fallback_text = "Sa mère, la déesse Thétis,\nlui avait révélé deux destins."
+start_time_seconds = 11.0
+end_time_seconds = 14.48
+style_id = &"narrative_small"
+fade_in_seconds = 0.32
+fade_out_seconds = 0.32
+
+[sub_resource type="Resource" id="Cue_007"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_007"
+fallback_text = "Rentrer chez lui. Vivre longtemps.\nEt voir sa gloire s’éteindre."
+start_time_seconds = 14.88
+end_time_seconds = 19.02
+style_id = &"narrative_small"
+fade_in_seconds = 0.32
+fade_out_seconds = 0.32
+
+[sub_resource type="Resource" id="Cue_008"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_008"
+fallback_text = "Ou rester à Troie. Mourir jeune.\nEt laisser aux hommes un nom impérissable."
+start_time_seconds = 19.48
+end_time_seconds = 24.68
+style_id = &"narrative_small"
+fade_in_seconds = 0.34
+fade_out_seconds = 0.36
+
+[sub_resource type="Resource" id="Cue_009"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_009"
+fallback_text = "Hector tua Patrocle,\nson plus proche compagnon."
+start_time_seconds = 25.38
+end_time_seconds = 28.34
+style_id = &"narrative_small"
+fade_in_seconds = 0.3
+fade_out_seconds = 0.3
+
+[sub_resource type="Resource" id="Cue_010"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_010"
+fallback_text = "Achille resta. Il tua Hector pour le venger,\nsachant que sa propre mort suivrait."
+start_time_seconds = 28.72
+end_time_seconds = 32.36
+style_id = &"narrative_small"
+fade_in_seconds = 0.3
+fade_out_seconds = 0.34
+
+[sub_resource type="Resource" id="Cue_011"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_011"
+fallback_text = "Puis Paris décocha la flèche."
+start_time_seconds = 33.0
+end_time_seconds = 35.58
+style_id = &"narrative"
+fade_in_seconds = 0.28
+fade_out_seconds = 0.26
+
+[sub_resource type="Resource" id="Cue_012"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_012"
+fallback_text = "Achille mourut devant Troie."
+start_time_seconds = 35.92
+end_time_seconds = 38.18
+style_id = &"narrative"
+fade_in_seconds = 0.26
+fade_out_seconds = 0.26
+
+[sub_resource type="Resource" id="Cue_013"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_013"
+fallback_text = "Une vie brève. Un nom impérissable."
+start_time_seconds = 38.42
+end_time_seconds = 40.4
+style_id = &"key"
+fade_in_seconds = 0.24
+fade_out_seconds = 0.3
+
+[sub_resource type="Resource" id="Cue_014"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_014"
+fallback_text = "Il avait obtenu ce qu’il avait choisi."
+start_time_seconds = 41.0
+end_time_seconds = 43.96
+style_id = &"narrative"
+fade_in_seconds = 0.3
+fade_out_seconds = 0.32
+
+[sub_resource type="Resource" id="Cue_015"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_015"
+fallback_text = "Les hommes gardèrent la légende."
+start_time_seconds = 44.3
+end_time_seconds = 47.18
+style_id = &"narrative"
+fade_in_seconds = 0.3
+fade_out_seconds = 0.32
+
+[sub_resource type="Resource" id="Cue_016"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_016"
+fallback_text = "Les Enfers reçurent l’homme."
+start_time_seconds = 47.52
+end_time_seconds = 50.34
+style_id = &"key"
+fade_in_seconds = 0.32
+fade_out_seconds = 0.42
+layer = 1
+
+[sub_resource type="Resource" id="Cue_017"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_017"
+fallback_text = "Il était mort."
+start_time_seconds = 51.0
+end_time_seconds = 53.18
+style_id = &"narrative"
+fade_in_seconds = 0.26
+fade_out_seconds = 0.26
+
+[sub_resource type="Resource" id="Cue_018"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_018"
+fallback_text = "Mais il portait encore en lui\nles passions des vivants."
+start_time_seconds = 53.52
+end_time_seconds = 57.28
+style_id = &"narrative_small"
+fade_in_seconds = 0.3
+fade_out_seconds = 0.3
+
+[sub_resource type="Resource" id="Cue_019"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_019"
+fallback_text = "La vengeance. La victoire.\nLa domination. La renommée."
+start_time_seconds = 57.82
+end_time_seconds = 60.34
+style_id = &"passions"
+fade_in_seconds = 0.26
+fade_out_seconds = 0.26
+
+[sub_resource type="Resource" id="Cue_020"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_020"
+fallback_text = "Dans les Enfers, aucune victoire ne rend la vie.\nAucun nom n’ouvre un avenir."
+start_time_seconds = 60.58
+end_time_seconds = 63.34
+style_id = &"narrative_small"
+fade_in_seconds = 0.26
+fade_out_seconds = 0.32
+
+[sub_resource type="Resource" id="Cue_021"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_021"
+fallback_text = "Sa vengeance avait encore un visage."
+start_time_seconds = 64.0
+end_time_seconds = 66.1
+style_id = &"narrative"
+fade_in_seconds = 0.26
+fade_out_seconds = 0.24
+
+[sub_resource type="Resource" id="Cue_022"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_022"
+fallback_text = "PARIS"
+start_time_seconds = 66.18
+end_time_seconds = 67.38
+style_id = &"paris"
+normalized_position = Vector2(0.5, 0.740741)
+fade_in_seconds = 0.22
+fade_out_seconds = 0.36
+layer = 1
+
+[sub_resource type="Resource" id="Cue_023"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_023"
+fallback_text = "CATABASE"
+start_time_seconds = 68.0
+end_time_seconds = 71.8
+style_id = &"main_title"
+normalized_position = Vector2(0.5, 0.416667)
+fade_in_seconds = 0.48
+fade_out_seconds = 0.76
+
+[sub_resource type="Resource" id="Cue_024"]
+script = ExtResource("3_cue")
+localization_key = &"CATABASE_INTRO_024"
+fallback_text = "I — L’OMBRE DE PARIS"
+start_time_seconds = 68.7
+end_time_seconds = 71.8
+style_id = &"subtitle"
+normalized_position = Vector2(0.5, 0.560185)
+fade_in_seconds = 0.43
+fade_out_seconds = 0.76
+
+[resource]
+script = ExtResource("1_sequence")
+sequence_id = &"catabase_intro_v4"
+duration_seconds = 72.0
+frames = Array[ExtResource("2_frame")]([SubResource("Frame_00"), SubResource("Frame_01"), SubResource("Frame_02"), SubResource("Frame_03"), SubResource("Frame_04"), SubResource("Frame_05"), SubResource("Frame_06"), SubResource("Frame_07"), SubResource("Frame_08"), SubResource("Frame_09")])
+text_cues = Array[ExtResource("3_cue")]([SubResource("Cue_001"), SubResource("Cue_002"), SubResource("Cue_003"), SubResource("Cue_004"), SubResource("Cue_005"), SubResource("Cue_006"), SubResource("Cue_007"), SubResource("Cue_008"), SubResource("Cue_009"), SubResource("Cue_010"), SubResource("Cue_011"), SubResource("Cue_012"), SubResource("Cue_013"), SubResource("Cue_014"), SubResource("Cue_015"), SubResource("Cue_016"), SubResource("Cue_017"), SubResource("Cue_018"), SubResource("Cue_019"), SubResource("Cue_020"), SubResource("Cue_021"), SubResource("Cue_022"), SubResource("Cue_023"), SubResource("Cue_024")])
+music_stream = ExtResource("20_music")
+music_volume_db = -12.0
+music_fade_in_seconds = 0.8
+music_fade_out_start_seconds = 70.5
+music_fade_out_seconds = 1.5
+allow_skip = true
+opening_fade_seconds = 0.8
+exit_fade_seconds = 0.8
+continuation = 0
+

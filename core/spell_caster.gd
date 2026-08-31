@@ -422,7 +422,10 @@ func resolve_pending_activation(
 		result["reason"] = &"caster_dead"
 		EventBus.pending_ability_cancelled.emit(caster, pending, result["reason"])
 		return result
-	if spell.delayed_resolution == Spell.DelayedResolution.STRIKE_AND_PUSH:
+	if spell.delayed_resolution in [
+		Spell.DelayedResolution.STRIKE_AND_PUSH,
+		Spell.DelayedResolution.RANGED_STRIKE,
+	]:
 		result["consume_activation"] = spell.consumes_activation_on_resolution
 		caster.activation_consumed = bool(result["consume_activation"])
 		if caster.activation_consumed:
@@ -430,10 +433,23 @@ func resolve_pending_activation(
 			caster.current_mp = 0
 			EventBus.ap_changed.emit(caster, caster.current_ap, caster.max_ap.get_int())
 		var target := pending.get("target") as Unit
-		if target == null or not target.is_alive \
-				or not _grid.are_adjacent(caster.grid_pos, target.grid_pos):
+		if target == null or not target.is_alive:
 			result["blocked"] = true
-			result["reason"] = &"target_not_adjacent"
+			result["reason"] = &"target_unavailable"
+			EventBus.pending_ability_blocked.emit(caster, spell, result["reason"])
+			return result
+		var target_still_valid := (
+			_grid.are_adjacent(caster.grid_pos, target.grid_pos)
+			if spell.delayed_resolution == Spell.DelayedResolution.STRIKE_AND_PUSH
+			else is_valid_target(caster, spell, target.grid_pos)
+		)
+		if not target_still_valid:
+			result["blocked"] = true
+			result["reason"] = (
+				&"target_not_adjacent"
+				if spell.delayed_resolution == Spell.DelayedResolution.STRIKE_AND_PUSH
+				else &"target_escaped_telegraph"
+			)
 			EventBus.pending_ability_blocked.emit(caster, spell, result["reason"])
 			return result
 		target.take_damage(spell.damage, caster, spell.damage_type, spell.element)

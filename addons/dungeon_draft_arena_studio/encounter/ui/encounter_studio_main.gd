@@ -111,6 +111,31 @@ func _exit_tree() -> void:
 			filesystem.filesystem_changed.disconnect(_on_filesystem_changed)
 
 
+## Une fermeture de plugin ne peut pas afficher un dialogue de décision. Elle
+## conserve donc toute working copy sale dans l'autorité locale récupérable,
+## sans publier silencieusement les rencontres canoniques.
+func prepare_for_close() -> Dictionary:
+	analysis_service.cancel()
+	if session == null or session.working_run == null or not session.is_dirty():
+		return {"ok": true, "skipped": true, "reason": "document_clean"}
+	var result := save_room_draft() if session.room_draft_mode \
+		else EncounterSaveService.save_draft(session)
+	if bool(result.get("ok", false)):
+		if project_context != null:
+			project_context.set_dirty(&"encounter", false)
+		_set_status(
+			"Brouillon de récupération enregistré avant la fermeture. "
+			+ "Aucune rencontre canonique n'a été publiée."
+		)
+		history_state_changed.emit()
+	else:
+		push_error(
+			"La working copy Rencontre n'a pas pu être récupérée à la fermeture : %s"
+			% result.get("error", "erreur inconnue")
+		)
+	return result
+
+
 func _build_interface() -> void:
 	var root := VBoxContainer.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -1054,6 +1079,7 @@ func _restore_latest_recovery() -> void:
 
 func _restore_approved_recovery() -> bool:
 	var candidate := EncounterEditSession.new()
+	candidate.recovery_root = session.recovery_root
 	var loaded := EncounterSaveService.restore_latest(candidate)
 	if not loaded.get("ok", false):
 		return false
@@ -1591,13 +1617,28 @@ func _migrate_current_room() -> void:
 	if not preview.get("available", false):
 		_set_status("Migration indisponible : %s" % preview.get("reason", ""), true)
 		return
+	var previous_waves: Array[RoomWaveData] = room.waves.duplicate()
+	var previous_minimum := room.minimum_wave_count
+	var previous_maximum := room.maximum_wave_count
 	var report := EncounterMigrationService.migrate_working_room(room, session.selected_room_index)
 	if report.get("success", false):
+		var migrated_waves: Array[RoomWaveData] = room.waves.duplicate()
+		var migrated_minimum := room.minimum_wave_count
+		var migrated_maximum := room.maximum_wave_count
 		var encounter := report.get("encounter") as EncounterDefinition
 		if encounter.resource_path.is_empty():
 			session.new_resource_paths[encounter] = EncounterCopyService.suggested_path(room, 0)
-		session.mark_dirty(room)
-		_refresh_all()
+		# Le service construit la migration en mémoire ; l'éditeur restaure
+		# d'abord le checkpoint, puis applique les trois propriétés dans une
+		# seule action afin que Annuler/Rétablir couvre toute la conversion.
+		room.waves = previous_waves
+		room.minimum_wave_count = previous_minimum
+		room.maximum_wave_count = previous_maximum
+		_set_properties(room, {
+			&"waves": migrated_waves,
+			&"minimum_wave_count": migrated_minimum,
+			&"maximum_wave_count": migrated_maximum,
+		}, "Convertir la salle en vagues configurables")
 		_set_status("Migration appliquée uniquement à la version en cours. Sauvegardez pour confirmer.")
 
 

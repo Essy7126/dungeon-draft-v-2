@@ -126,6 +126,7 @@ func test_timeline_ajout_duplication_reorganisation_suppression_et_references() 
 
 func test_studio_fallback_undo_redo_et_registre_des_formations() -> void:
 	var studio := EncounterStudioMain.new()
+	studio.setup(null, null, StudioProjectContext.new())
 	add_child_autofree(studio)
 	await get_tree().process_frame
 	assert_true(studio.open_run(RUN_PATH))
@@ -383,7 +384,7 @@ func test_migration_historique_explicite_preserve_source_et_comportement() -> vo
 
 
 func test_pont_test_direct_prepare_copie_temporaire_sans_muter_canonique() -> void:
-	var session := _production_session()
+	var session := _session_for_run(_small_run())
 	var canonical := session.source_encounter()
 	var before := EncounterCopyService.encounter_snapshot(canonical)
 	session.current_encounter().living_enemy_cap += 1
@@ -453,6 +454,15 @@ func test_rapport_markdown_json_contient_contexte_verdict_et_validation() -> voi
 	var markdown := FileAccess.get_file_as_string(result.markdown_path)
 	for expected in ["Run", "Salle", "Affrontement", "Seed", "Validation", "Verdict"]:
 		assert_true(expected in markdown, expected)
+
+
+func test_allowed_spawn_groups_warning_only_when_field_is_populated() -> void:
+	var session := _session_for_run(_small_run())
+	var encounter := session.current_encounter()
+	encounter.allowed_spawn_groups.clear()
+	assert_false(_validation_codes(session).has(&"allowed_spawn_groups_unused"))
+	encounter.allowed_spawn_groups = [&"enemy"]
+	assert_true(_validation_codes(session).has(&"allowed_spawn_groups_unused"))
 
 
 func _production_session() -> EncounterEditSession:
@@ -528,13 +538,13 @@ func _validation_codes(session: EncounterEditSession) -> Array:
 
 
 func _create_user_hierarchy(label: String) -> Dictionary:
-	var root := USER_FIXTURE_ROOT.path_join(label)
+	var root := USER_FIXTURE_ROOT.path_join(
+		"%s_%d" % [label, Time.get_ticks_usec()]
+	)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(root))
-	var production_room := load(ROOM_PATH) as RoomData
-	var room := EncounterCopyService.copy_room(production_room)
-	room.waves = [room.waves[0]]
-	room.minimum_wave_count = 1
-	room.maximum_wave_count = 1
+	# La fixture de transaction ne doit pas dépendre du contenu de production,
+	# qui peut légitimement évoluer (taille de grille, exclusions, profils).
+	var room := _small_room(_encounter(_unit(&"save_fixture", &""), 1))
 	var encounter := room.waves[0].encounter_definition
 	var encounter_path := root.path_join("source_encounter.tres")
 	assert_eq(ResourceSaver.save(encounter, encounter_path), OK)

@@ -2,11 +2,11 @@
 class_name ItemStudioValidationService
 extends RefCounted
 
-const VALID_CHARACTER_IDS: Array[StringName] = [&"elf", &"mage", &"warrior"]
-
 var registry := ItemEffectRegistry.new()
 var relic_registry := RelicEffectRegistry.new()
 var copy_service := ItemDeepCopyService.new()
+var hero_catalog := ItemHeroCatalogService.new()
+var path_service := ItemIdPathService.new()
 
 
 func validate_interactive(
@@ -47,6 +47,13 @@ func _validate_definition(
 		return _report(messages)
 	if definition.item_id == &"":
 		_error(messages, &"ITEM_ID_EMPTY", "L’identifiant de l’objet est obligatoire.", "item_id")
+	elif path_service.normalize_item_id(str(definition.item_id)) != str(definition.item_id):
+		_error(
+			messages,
+			&"ITEM_ID_INVALID",
+			"L’identifiant doit contenir uniquement des minuscules, chiffres et underscores.",
+			"item_id",
+		)
 	elif catalog != null and catalog.has_item_id(definition.item_id, source_path):
 		_error(messages, &"ITEM_ID_DUPLICATE", "Cet item_id est déjà utilisé.", "item_id")
 	if published_item_id != &"" and definition.item_id != published_item_id:
@@ -84,8 +91,9 @@ func _validate_definition(
 				"Effet réactif %d : %s" % [index + 1, issue.get("message", "combinaison invalide")],
 				"reactive_effects[%d]" % index,
 			)
+	var valid_character_ids := hero_catalog.known_ids()
 	for character_id in definition.compatible_character_ids:
-		if character_id not in VALID_CHARACTER_IDS:
+		if character_id not in valid_character_ids:
 			_error(messages, &"CHARACTER_UNKNOWN", "Héros compatible introuvable : %s." % character_id, "compatible_character_ids")
 	for index in range(definition.stat_modifiers.size()):
 		var modifier := definition.stat_modifiers[index]
@@ -125,8 +133,8 @@ func _validate_definition(
 	if definition.compatible_character_ids.is_empty():
 		_info(messages, &"ALL_HEROES", "L’objet est compatible avec tous les héros contrôlés.")
 	if definition.tags.has(FirstRunEquipmentRewardService.POOL_TAG) \
-			and definition.compatible_character_ids.any(func(id): return id not in VALID_CHARACTER_IDS):
-		_warning(messages, &"REWARD_WITHOUT_HERO", "L’objet de récompense ne possède aucun héros compatible reconnu.")
+			and definition.compatible_character_ids.any(func(id): return id not in valid_character_ids):
+		_warning(messages, &"REWARD_WITHOUT_HERO", "L’objet de récompense référence au moins un héros inconnu.")
 	var debug_text := "%s %s %s" % [definition.display_name, definition.description, " ".join(_strings(definition.tags))]
 	if ["DEBUG", "CHEAT", "PLACEHOLDER"].any(func(marker): return debug_text.to_upper().contains(marker)):
 		_warning(messages, &"DEBUG_VALUE", "Une valeur DEBUG/CHEAT/PLACEHOLDER ne doit pas fonder l’analyse.")

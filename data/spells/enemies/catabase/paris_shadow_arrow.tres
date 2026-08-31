@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="PackedScene" path="res://battle/vfx/skeleton_ranged_projectile_vfx.tscn" id="2_vfx"]
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"catabase_shadow_paris_arrow"
+spell_name = "Flèche de l’Ombre"
+description = "Prépare un trait spectral de 18 dégâts pour la prochaine activation. Brisez la ligne de vue ou sortez de portée pour l’éviter."
+vfx_scene = ExtResource("2_vfx")
+ap_cost = 4
+minimum_range = 3
+spell_range = 7
+needs_line_of_sight = true
+once_per_activation = true
+can_target_enemy = true
+can_target_ally = false
+can_target_free_cell = false
+can_target_self = false
+aoe_shape = 0
+aoe_size = 1
+damage = 18
+damage_type = 0
+element = 0
+delayed_resolution = 3
+consumes_activation_on_resolution = true
+telegraph_label = "Trait fatal — brisez la ligne de vue"
+telegraph_color = Color(0.43, 0.78, 1, 0.95)

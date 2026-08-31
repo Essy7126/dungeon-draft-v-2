@@ -143,6 +143,7 @@ custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 
 [node name="RoomSelectionLabel" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Salle de départ"

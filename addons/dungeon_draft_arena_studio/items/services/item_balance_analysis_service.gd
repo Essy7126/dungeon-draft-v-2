@@ -2,24 +2,20 @@
 class_name ItemBalanceAnalysisService
 extends RefCounted
 
-const PRODUCTION_HERO_PATHS := [
-	"res://data/units/alliés/elfe.tres",
-	"res://data/units/alliés/mage.tres",
-	"res://data/units/alliés/Guerrier.tres",
-]
-
 var preview_service := ItemRuntimePreviewService.new()
+var hero_catalog := ItemHeroCatalogService.new()
 
 
 func spell_choices(definition: ItemDefinition) -> Array[Dictionary]:
 	var choices: Array[Dictionary] = []
 	if definition == null:
 		return choices
-	for path in PRODUCTION_HERO_PATHS:
-		var unit_data := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	for entry in hero_catalog.entries():
+		var path := str(entry.get("path", ""))
+		var unit_data := entry.get("resource") as UnitData
 		if unit_data == null:
 			continue
-		var character_id := StringName(unit_data.get("unit_id"))
+		var character_id := unit_data.get_effective_unit_id()
 		if not definition.is_compatible_with(character_id):
 			continue
 		var spells_value: Variant = unit_data.get("spells")
@@ -54,7 +50,15 @@ func project_selected_spell(
 	) -> Dictionary:
 	if definition == null or hero_path.is_empty():
 		return {"ok": false, "error": "Sélection de sort incomplète."}
-	var unit_resource := ResourceLoader.load(hero_path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	var unit_resource: UnitData = null
+	for entry in hero_catalog.entries():
+		if str(entry.get("path", "")) == hero_path:
+			unit_resource = entry.get("resource") as UnitData
+			break
+	if unit_resource == null:
+		unit_resource = ResourceLoader.load(
+			hero_path, "", ResourceLoader.CACHE_MODE_IGNORE
+		) as UnitData
 	if unit_resource == null:
 		return {"ok": false, "error": "Héros de projection introuvable."}
 	var character_id := StringName(unit_resource.get("unit_id"))
@@ -144,8 +148,8 @@ func analyze(definition: ItemDefinition) -> Dictionary:
 	if Engine.is_editor_hint():
 		return _analyze_editor_projection(definition)
 	var heroes: Array[Dictionary] = []
-	for path in PRODUCTION_HERO_PATHS:
-		var unit_data := load(path) as UnitData
+	for entry in hero_catalog.entries():
+		var unit_data := entry.get("resource") as UnitData
 		if unit_data == null or not definition.is_compatible_with(unit_data.get_effective_unit_id()):
 			continue
 		var preview := preview_service.preview_equipment(unit_data, definition) \
@@ -165,7 +169,7 @@ func analyze(definition: ItemDefinition) -> Dictionary:
 		"heroes": heroes,
 		"breakpoints": diagnostic_breakpoints,
 		"assumptions": [
-			"Projection isolée sur le trio de production au HEAD.",
+			"Projection isolée sur le catalogue de héros découvert dans le projet.",
 			"EHP estimé avec DamageResolver.mitigation, sans statuts conditionnels ni esquive.",
 			"Les effets nécessitant une grille de bataille sont signalés, pas simulés silencieusement.",
 		],
@@ -175,8 +179,8 @@ func analyze(definition: ItemDefinition) -> Dictionary:
 
 func _analyze_editor_projection(definition: ItemDefinition) -> Dictionary:
 	var heroes: Array[Dictionary] = []
-	for path in PRODUCTION_HERO_PATHS:
-		var unit_data := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	for entry in hero_catalog.entries():
+		var unit_data := entry.get("resource") as UnitData
 		if unit_data == null:
 			continue
 		var character_id := StringName(unit_data.get("unit_id"))
@@ -368,8 +372,8 @@ func _spell_beneficiary_breakpoints(
 
 func _compatible_spells(definition: ItemDefinition) -> Array[Spell]:
 	var result: Array[Spell] = []
-	for path in PRODUCTION_HERO_PATHS:
-		var unit_data := load(path) as UnitData
+	for entry in hero_catalog.entries():
+		var unit_data := entry.get("resource") as UnitData
 		if unit_data == null or not definition.is_compatible_with(unit_data.get_effective_unit_id()):
 			continue
 		for spell in unit_data.spells:

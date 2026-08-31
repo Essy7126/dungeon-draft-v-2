@@ -3,6 +3,7 @@ class_name VFXComposer
 extends Control
 
 signal history_state_changed
+signal document_state_changed(is_dirty: bool)
 
 const PROFILE_PATHS := [
 	"res://vfx/profiles/test/shield_lifecycle.tres",
@@ -26,6 +27,7 @@ const MODULE_TYPE_LABELS := {
 
 var document := VFXStudioDocument.new()
 var draft_service := VFXDraftService.new()
+var project_context: StudioProjectContext = null
 var catalogue: ItemList
 var sequence_list: ItemList
 var module_list: ItemList
@@ -47,14 +49,41 @@ var current_instance: VFXRuntimeInstance
 var _selected_sequence := 0
 var _selected_module := 0
 var _refreshing := false
+var _active_profile_index := -1
+var _pending_navigation := Callable()
+var _navigation_token := ""
+var _profile_selection_syncing := false
+var dirty_dialog: ConfirmationDialog
+
+
+func setup(shared_context: StudioProjectContext = null) -> void:
+	project_context = shared_context
 
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build_ui()
+	_build_dirty_dialog()
 	document.changed.connect(_refresh_all)
 	document.history.history_changed.connect(func(): history_state_changed.emit())
+	document.dirty_changed.connect(_on_document_dirty_changed)
+	if project_context != null:
+		project_context.transition_resolved.connect(_on_transition_resolved)
+		project_context.register_transition_handler(
+			&"vfx", Callable(self, "_context_save"),
+			Callable(self, "_context_draft"), Callable(self, "_context_discard"),
+			Callable(), Callable(), Callable(), Callable(document, "is_dirty"),
+			Callable(self, "_context_snapshot"), Callable(self, "_context_restore")
+		)
 	_load_catalogue()
+
+
+func _exit_tree() -> void:
+	clear_preview()
+	if project_context != null:
+		project_context.unregister_transition_handler(&"vfx")
+		if project_context.transition_resolved.is_connected(_on_transition_resolved):
+			project_context.transition_resolved.disconnect(_on_transition_resolved)
 
 
 func _build_ui() -> void:
@@ -63,7 +92,10 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 6)
 	add_child(root)
 	var header := Label.new()
-	header.text = "COMPOSITEUR D'EFFETS VISUELS — version technique — la validation artistique reste manuelle"
+	header.text = (
+		"LAB VFX — profils de test uniquement — aucune publication de production — "
+		+ "validation artistique manuelle"
+	)
 	header.add_theme_color_override("font_color", Color("77d9ff"))
 	header.add_theme_font_size_override("font_size", 16)
 	root.add_child(header)
@@ -77,6 +109,32 @@ func _build_ui() -> void:
 	status_label.text = "Initialisation du catalogue des effets visuels…"
 	status_label.add_theme_color_override("font_color", Color("a8c8d9"))
 	root.add_child(status_label)
+
+
+func _build_dirty_dialog() -> void:
+	dirty_dialog = ConfirmationDialog.new()
+	dirty_dialog.title = "Modifications VFX non sauvegardées"
+	dirty_dialog.dialog_text = (
+		"Ouvrir un autre profil remplacerait la version en cours. "
+		+ "Choisissez explicitement quoi faire."
+	)
+	dirty_dialog.ok_button_text = "Sauvegarder et continuer"
+	dirty_dialog.cancel_button_text = "Annuler"
+	dirty_dialog.add_button("Garder comme brouillon", false, "draft")
+	dirty_dialog.add_button("Abandonner", true, "discard")
+	dirty_dialog.confirmed.connect(
+		func(): _resolve_local_dirty_decision(StudioProjectContext.ACTION_SAVE)
+	)
+	dirty_dialog.custom_action.connect(func(action: StringName):
+		if action == &"draft":
+			_resolve_local_dirty_decision(StudioProjectContext.ACTION_DRAFT)
+		elif action == &"discard":
+			_resolve_local_dirty_decision(StudioProjectContext.ACTION_DISCARD)
+	)
+	dirty_dialog.canceled.connect(
+		func(): _resolve_local_dirty_decision(StudioProjectContext.ACTION_CANCEL)
+	)
+	add_child(dirty_dialog)
 
 
 func _build_catalogue_panel(parent: Node) -> void:
@@ -175,6 +233,7 @@ func _build_blackboard_panel(parent: Node) -> void:
 
 func _load_catalogue() -> void:
 	catalogue.clear()
+	_active_profile_index = -1
 	for path in PROFILE_PATHS:
 		var profile := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as VFXProfile
 		if profile == null:
@@ -186,17 +245,68 @@ func _load_catalogue() -> void:
 		_on_profile_selected(0)
 
 
-func _on_profile_selected(index: int) -> void:
-	clear_preview()
+func _on_profile_selected(index: int) -> bool:
+	if _profile_selection_syncing or index == _active_profile_index:
+		return true
+	return _request_document_replacement(
+		Callable(self, "_open_profile_index").bind(index), &"vfx_profile_change"
+	)
+
+
+func _open_profile_index(index: int) -> bool:
+	if catalogue == null or index < 0 or index >= catalogue.item_count:
+		return false
 	var path := str(catalogue.get_item_metadata(index))
 	var profile := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as VFXProfile
 	if not document.open_profile(profile):
 		_set_status("Profil impossible à ouvrir.", true)
-		return
+		_restore_catalogue_selection()
+		return false
+	clear_preview()
+	_active_profile_index = index
+	_profile_selection_syncing = true
+	catalogue.select(index)
+	_profile_selection_syncing = false
 	_selected_sequence = 0
 	_selected_module = 0
 	_refresh_all()
 	play_preview()
+	if project_context != null:
+		project_context.bump_generation(&"vfx")
+	return true
+
+
+func _request_document_replacement(action: Callable, intent: StringName) -> bool:
+	if not action.is_valid():
+		return false
+	if not document.is_dirty():
+		return bool(action.call())
+	_restore_catalogue_selection()
+	if project_context == null:
+		_pending_navigation = action
+		_navigation_token = "local"
+		dirty_dialog.popup_centered(Vector2i(620, 250))
+		return false
+	if project_context.has_pending_transition():
+		_set_status("Une décision de sauvegarde est déjà en attente.", true)
+		return false
+	_sync_context_dirty(true)
+	var result := project_context.request_dirty_transition(intent, &"vfx")
+	if bool(result.get("ok", false)):
+		return bool(action.call())
+	if result.get("status") == &"REQUIRES_DECISION":
+		_pending_navigation = action
+		_navigation_token = str((result.get("transition", {}) as Dictionary).get("token", ""))
+	return false
+
+
+func _restore_catalogue_selection() -> void:
+	if catalogue == null or _active_profile_index < 0 \
+			or _active_profile_index >= catalogue.item_count:
+		return
+	_profile_selection_syncing = true
+	catalogue.select(_active_profile_index)
+	_profile_selection_syncing = false
 
 
 func _on_sequence_selected(index: int) -> void:
@@ -289,7 +399,7 @@ func play_preview() -> void:
 		document.working_copy, context, _current_sequence().sequence_id, stage, true
 	)
 	if not bool(result.ok):
-		_set_status("Aperçu refusé : %s" % result.errors, true)
+		_set_status("Aperçu refusé : %s" % str(result.get("errors", [])), true)
 		return
 	current_instance = result.instance as VFXRuntimeInstance
 	_set_status("Aperçu — %s — valeur de départ %d — empreinte %s" % [
@@ -336,21 +446,44 @@ func test_document() -> void:
 	play_preview()
 
 
-func save_as_draft() -> void:
+func save_as_draft() -> Dictionary:
 	var result := draft_service.save_draft(document)
-	_set_status("Brouillon sauvegardé : %s" % result.get("path", "") if bool(result.ok) else str(result.error), not bool(result.ok))
+	if bool(result.get("ok", false)):
+		var message := "Brouillon sauvegardé : %s" % result.get("path", "")
+		if not bool(result.get("valid", true)):
+			message += " — récupération conservée malgré des erreurs de validation."
+		_set_status(message)
+		_sync_context_dirty(false)
+	else:
+		_set_status(str(result.get("error", "Sauvegarde du brouillon impossible.")), true)
+	return result
 
 
-func reload_draft() -> void:
+func reload_draft() -> bool:
 	if document.working_copy == null:
-		return
+		return false
+	return _request_document_replacement(
+		Callable(self, "_reload_approved_draft"), &"vfx_reload_draft"
+	)
+
+
+func _reload_approved_draft() -> bool:
 	var result := draft_service.load_draft(document.working_copy.profile_id)
-	if not bool(result.ok):
-		_set_status(str(result.error), true)
-		return
-	document.open_profile(result.profile as VFXProfile)
-	_set_status("Brouillon rechargé depuis la sauvegarde locale.")
+	if not bool(result.get("ok", false)):
+		_set_status(str(result.get("error", "Brouillon introuvable.")), true)
+		return false
+	if not document.open_profile(result.get("profile") as VFXProfile):
+		_set_status("Le brouillon VFX n'a pas pu être ouvert.", true)
+		return false
+	document.mark_draft_loaded(str(result.path), str(result.sha256))
+	_set_status(
+		"Brouillon rechargé depuis la sauvegarde locale."
+		+ (" Corrigez ses erreurs de validation." if not bool(result.get("valid", true)) else "")
+	)
 	play_preview()
+	if project_context != null:
+		project_context.bump_generation(&"vfx")
+	return true
 
 
 func _preview_context() -> VFXExecutionContext:
@@ -489,7 +622,152 @@ func history_is_at_saved_state() -> bool: return document.history.is_at_saved_st
 func ensure_initial_content_loaded() -> void:
 	if document.working_copy == null:
 		_load_catalogue()
-func prepare_for_close() -> void: clear_preview()
+
+
+func prepare_for_close() -> Dictionary:
+	clear_preview()
+	if not document.is_dirty():
+		return {"ok": true, "skipped": true, "reason": "document_clean"}
+	var result := save_as_draft()
+	if bool(result.get("ok", false)):
+		return result
+	var recovery := draft_service.save_recovery(document)
+	if bool(recovery.get("ok", false)):
+		_set_status(
+			"Conflit sur le brouillon : copie de récupération conservée dans %s."
+			% recovery.get("path", "")
+		)
+		recovery["draft_error"] = result
+		return recovery
+	push_error(
+		"Le brouillon VFX sale n'a pas pu être récupéré à la fermeture : %s"
+		% recovery.get("error", result.get("error", "erreur inconnue"))
+	)
+	recovery["draft_error"] = result
+	if not recovery.has("error"):
+		recovery["error"] = result.get("error", "Récupération VFX impossible.")
+	return recovery
+
+
+func _on_document_dirty_changed(is_dirty: bool) -> void:
+	_sync_context_dirty(is_dirty)
+	document_state_changed.emit(is_dirty)
+	history_state_changed.emit()
+
+
+func _sync_context_dirty(is_dirty: bool) -> void:
+	if project_context == null:
+		return
+	var profile_id := document.working_copy.profile_id \
+		if document.working_copy != null else &""
+	project_context.set_dirty(&"vfx", is_dirty, {
+		"document": document.source_path,
+		"profile_id": str(profile_id),
+		"draft_path": draft_service.draft_path_for(profile_id),
+	})
+
+
+func _context_save() -> Dictionary:
+	# Le slice VFX ne possède pas encore d'autorité canonique : SAVE reste une
+	# sauvegarde durable sous user://, sans prétendre publier en production.
+	return save_as_draft()
+
+
+func _context_draft() -> Dictionary:
+	return save_as_draft()
+
+
+func _context_discard() -> Dictionary:
+	clear_preview()
+	var ok := document.discard_changes()
+	if ok:
+		_sync_context_dirty(false)
+		_refresh_all()
+		play_preview()
+		_set_status("Modifications VFX abandonnées.")
+		if project_context != null:
+			project_context.bump_generation(&"vfx")
+	return {
+		"ok": ok,
+		"error": "Le profil source VFX n'est plus disponible." if not ok else "",
+	}
+
+
+func _context_snapshot() -> Dictionary:
+	return {
+		"document": document.snapshot_state(),
+		"profile": _active_profile_index,
+		"sequence": _selected_sequence,
+		"module": _selected_module,
+	}
+
+
+func _context_restore(snapshot: Dictionary) -> Dictionary:
+	var document_snapshot := snapshot.get("document", {}) as Dictionary
+	var history_snapshot := document_snapshot.get("history", {}) as Dictionary
+	var snapshot_profile := VFXProfileSnapshotService.from_dictionary(
+		document_snapshot.get("working_copy", {}) as Dictionary
+	)
+	var snapshot_fingerprint := VFXProfileSnapshotService.fingerprint(
+		snapshot_profile
+	)
+	var unchanged: bool = document.current_fingerprint() == snapshot_fingerprint \
+		and document.history.snapshot_state() == history_snapshot \
+		and document.source == document_snapshot.get("source") \
+		and document.saved_as_draft == bool(
+			document_snapshot.get("saved_as_draft", false)
+		) and document.draft_path == str(document_snapshot.get("draft_path", "")) \
+		and document.draft_sha256 == str(
+			document_snapshot.get("draft_sha256", "")
+		)
+	var ok := true if unchanged else document.restore_state(document_snapshot)
+	if not ok:
+		return {"ok": false, "error": "La working copy VFX n'a pas pu être restaurée."}
+	_active_profile_index = int(snapshot.get("profile", _active_profile_index))
+	_selected_sequence = int(snapshot.get("sequence", 0))
+	_selected_module = int(snapshot.get("module", 0))
+	_restore_catalogue_selection()
+	_refresh_all()
+	play_preview()
+	_sync_context_dirty(document.is_dirty())
+	if project_context != null:
+		project_context.bump_generation(&"vfx")
+	return {"ok": true}
+
+
+func _on_transition_resolved(result: Dictionary) -> void:
+	var transition := result.get("transition", {}) as Dictionary
+	if str(transition.get("token", "")) != _navigation_token:
+		return
+	var action := _pending_navigation
+	_pending_navigation = Callable()
+	_navigation_token = ""
+	_restore_catalogue_selection()
+	if result.get("status") != &"CANCELLED" \
+			and bool(result.get("ok", false)) and action.is_valid():
+		action.call()
+
+
+func _resolve_local_dirty_decision(action: StringName) -> void:
+	if action == StudioProjectContext.ACTION_CANCEL:
+		_pending_navigation = Callable()
+		_navigation_token = ""
+		_restore_catalogue_selection()
+		return
+	var result := _context_discard() \
+		if action == StudioProjectContext.ACTION_DISCARD else _context_draft()
+	if not bool(result.get("ok", false)):
+		dirty_dialog.dialog_text = "Décision impossible :\n%s" % result.get(
+			"error", "Erreur inconnue"
+		)
+		dirty_dialog.popup_centered(Vector2i(620, 250))
+		return
+	var pending := _pending_navigation
+	_pending_navigation = Callable()
+	_navigation_token = ""
+	dirty_dialog.hide()
+	if pending.is_valid():
+		pending.call()
 
 
 func get_state_snapshot() -> Dictionary:
@@ -506,7 +784,8 @@ func apply_state_snapshot(state: Dictionary) -> void:
 		return
 	var profile_index := clampi(int(state.get("profile", 0)), 0, catalogue.item_count - 1)
 	catalogue.select(profile_index)
-	_on_profile_selected(profile_index)
+	if not _on_profile_selected(profile_index):
+		return
 	_selected_sequence = clampi(int(state.get("sequence", 0)), 0, maxi(sequence_list.item_count - 1, 0))
 	scenario_option.select(clampi(int(state.get("scenario", 0)), 0, SCENARIOS.size() - 1))
 	quality_option.select(clampi(int(state.get("quality", 2)), 0, 2))

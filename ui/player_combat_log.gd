@@ -6,7 +6,7 @@ var _scroll: ScrollContainer
 var _toggle_btn: Button
 var _collapse_btn: Button
 var _detailed: bool = false
-var _expanded: bool = true
+var _expanded: bool = false
 var _layout_initialized := false
 var _tactical_focus := false
 var _dragging: bool = false
@@ -101,7 +101,6 @@ func _apply_responsive_layout() -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	var compact := viewport_size.y <= 800.0 or viewport_size.x <= 1366.0
 	if not _layout_initialized:
-		_expanded = not compact
 		_layout_initialized = true
 	var effective_expanded := _expanded and not _tactical_focus
 	var panel_width := clampf(

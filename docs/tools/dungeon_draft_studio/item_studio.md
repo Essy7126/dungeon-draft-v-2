@@ -1,10 +1,10 @@
 # Studio des objets et effets — guide utilisateur V1
 
-- Date : 2026-08-23
+- Date : 2026-08-28
 - Branche : `main`
-- HEAD de base : `77799ec945071bf91b1bc4996da2b3bd7b6a81e1`
+- HEAD de base : `b642e905f851d9444a22b76cad18da14e19b34d1`
 - Statut : **WORKTREE_CANDIDATE — non promu CURRENT**
-- Tests exécutés : GUT Item Studio 30/30 (190 assertions) ; smoke intégré PASS ; captures réelles inspectées en 1280×720 et 1920×1080.
+- Dernière preuve historique : GUT Item Studio 30/30 (190 assertions) ; smoke intégré PASS ; captures réelles inspectées en 1280×720 et 1920×1080. Les tests ciblés du durcissement du 28 août sont ajoutés mais restent à exécuter sur le worktree consolidé.
 - Non vérifié à ce stade du document : validation humaine dans l’éditeur Godot interactif.
 
 ## Ouvrir le Studio
@@ -26,6 +26,13 @@ n’encode aucun nombre fixe d’objets. Il permet de rechercher par nom, `item_
 tag ou chemin, puis de filtrer par catégorie, rareté, emplacement, héros,
 éligibilité aux récompenses et statut. Le tri est disponible par nom, identifiant,
 rareté, catégorie ou chemin.
+
+Les héros compatibles ne sont pas une liste UI. Le Studio découvre récursivement
+les `UnitData` de l’équipe joueur sous `data/units/alliés` et
+`data/units/allies`, écarte les dépendances cassées et les identifiants dupliqués,
+puis résout l’unique profil de progression disponible pour retrouver le loadout
+réel. Ce catalogue alimente création, filtres, validation et test. Achille est
+donc disponible sans branche spéciale dans l’éditeur.
 
 Les badges signalent notamment les brouillons, erreurs et objets éligibles au
 pool de récompense. Cliquer un objet charge une working copy isolée. Si le
@@ -74,6 +81,10 @@ retiré, puis le snapshot final doit être strictement égal au snapshot initial
 Un consommable passe par le vrai `ItemUseService`. Aucun scénario ne touche
 `GameManager`, la run active ou l’inventaire actif.
 
+Le résultat du bouton est conservé avec l’empreinte du document, affiché dans le
+panneau d’analyse et résumé dans la barre d’état. Toute modification ultérieure
+invalide ce résultat afin qu’un succès ancien ne soit pas présenté comme actuel.
+
 Le panneau droit affiche la carte, l’empreinte sémantique, les erreurs et
 avertissements, les deltas par héros, l’EHP physique/magique estimé avec la loi
 du `DamageResolver`, les breakpoints et les références entrantes.
@@ -93,14 +104,34 @@ budget éventuel est exploratoire et n’est jamais sauvegardé.
 ## Brouillon, publication et récompenses
 
 **Enregistrer en brouillon** affiche d’abord le plan complet, puis écrit sous
-`res://data/items/drafts`. Ce dossier est extérieur aux dossiers auto-découverts
-du catalogue de production. L’écriture utilise un fichier temporaire, une
+`user://dungeon_draft_studio/item_studio/drafts`. Ce dossier personnel est
+extérieur au dépôt et aux dossiers auto-découverts du catalogue de production.
+Les anciens brouillons sous `res://data/items/drafts` restent découvrables afin
+d’être ouverts puis migrés, mais toute nouvelle sauvegarde cible `user://`.
+Le nom de fichier d’un nouveau brouillon est normalisé depuis l’`item_id` et ne
+peut pas sortir de ce dossier, même si le document en cours contient encore un
+identifiant invalide.
+L’écriture utilise un fichier temporaire, une
 relecture et une comparaison d’empreinte ; une erreur restaure l’original.
+Un brouillon peut conserver un document encore invalide : ses erreurs restent
+des avertissements de non-publication, sans empêcher la récupération du travail.
+
+Juste avant le remplacement, le Studio relit la cible sans cache. Une création,
+modification ou suppression externe depuis la revue du plan bloque l’écriture et
+demande un rechargement. Fermer le plugin avec un document modifié déclenche la
+même sauvegarde de brouillon vérifiée ; le document n’est pas abandonné
+silencieusement. Si le chemin principal existe déjà sans être le document
+ouvert — même avec le même `item_id` — ou apparaît pendant la fermeture, une
+copie de récupération horodatée est écrite à côté. L’ancien brouillon reste
+intact ; seul un brouillon effectivement ouvert est mis à jour directement.
 
 **Publier** calcule un chemin dans un dossier auto-découvert, affiche collisions,
 opération, empreintes et avertissements, puis demande confirmation. Après
 écriture, le catalogue est reconstruit et l’objet doit être présent exactement
-une fois.
+une fois. Un brouillon issu d’un objet de production peut mettre à jour ce même
+objet : la cible canonique est photographiée lors de la revue du plan, contrôlée
+à nouveau avant remplacement, puis ce seul brouillon effectivement publié est
+retiré. Les autres copies de récupération du même objet restent disponibles.
 
 La case **Éligible aux récompenses du premier run** contrôle uniquement le tag
 autoritatif `first_run_equipment_reward`, et seulement pour un équipement. Le

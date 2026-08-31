@@ -1,15 +1,10 @@
 [
   "test_dark_pause_menu.gd::test_theme_uses_distinct_texture_states_and_focus_style",
-  "test_dynamic_arena.gd::test_all_sixteen_final_capture_files_are_present_and_non_empty",
   "test_elf_archer_skill_tree.gd::test_archer_rank_two_resources_keep_their_contract",
   "test_elf_rank_two_disciplines.gd::test_cross_discipline_choices_install_independent_targeted_modifiers",
-  "test_forest_arena_integration.gd::test_les_22_captures_contractuelles_sont_presentes",
-  "test_forest_dynamic_grid.gd::test_onze_captures_contractuelles_sont_presentes",
-  "test_mountain_pass_blueprint.gd::test_six_exports_png_sont_pixel_alignes_en_1920_par_1080",
   "test_mountain_pass_blueprint.gd::test_logic_export_distingue_chaque_type_sans_deplacer_les_cellules",
   "test_mountain_pass_blueprint.gd::test_foreground_est_transparent_et_ne_recouvre_aucune_cellule",
   "test_mountain_pass_blueprint.gd::test_reference_remplit_un_environnement_bleu_gris_non_studio",
-  "test_painted_run_integration.gd::test_pool_et_copies_de_production_sont_bit_a_bit_identiques",
   "test_progression_lifecycle.gd::test_return_to_title_clears_each_new_rank_two_modifier",
   "test_turn_order_timeline.gd::test_timeline_rotates_scales_animates_and_selects_units"
 ]

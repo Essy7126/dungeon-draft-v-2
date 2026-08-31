@@ -1,6 +1,6 @@
 # Dungeon Draft v2
 
-[![CI](https://github.com/essy7126/dungeon-draft-v-2/actions/workflows/ci.yml/badge.svg)](https://github.com/essy7126/dungeon-draft-v-2/actions/workflows/ci.yml)
+[![Godot validation](https://github.com/essy7126/dungeon-draft-v-2/actions/workflows/godot-validation.yml/badge.svg)](https://github.com/essy7126/dungeon-draft-v-2/actions/workflows/godot-validation.yml)
 
 Tactique roguelite au tour par tour sur grille, développé avec Godot 4.7,
 GDScript et des ressources data-driven.
@@ -31,6 +31,10 @@ godot --headless --path . -s res://addons/gut/gut_cmdln.gd \
   -gdir=res://test/unit -ginclude_subdirs -gprefix=test_ -gexit
 ```
 
-La CI (`.github/workflows/ci.yml`) rejoue ces deux étapes sur chaque
-push / pull request : import du projet (échec sur erreur de parse),
-puis exécution de la suite GUT.
+La CI bloquante (`.github/workflows/godot-validation.yml`) s’exécute sur chaque
+push et pull request. Elle vérifie l’import Godot, les contrats explicites des
+éditeurs actuels, la suite GUT globale avec son allowlist historique, la
+portabilité des chemins du code des éditeurs audités, l’absence de mutation du
+worktree par la suite GUT globale et les smokes Terrain/Rencontres/Objets. Le
+workflow historique `.github/workflows/ci.yml` reste uniquement lançable à la
+demande.

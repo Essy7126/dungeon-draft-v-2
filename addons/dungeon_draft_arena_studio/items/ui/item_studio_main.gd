@@ -41,6 +41,7 @@ var reference_graph: StudioReferenceGraphService = null
 var guided := true
 
 var catalog := ItemStudioCatalogService.new()
+var hero_catalog := ItemHeroCatalogService.new()
 var document := ItemStudioDocument.new()
 var validation_service := ItemStudioValidationService.new()
 var balance_service := ItemBalanceAnalysisService.new()
@@ -109,9 +110,14 @@ var _cached_validation := {}
 var _cached_analysis := {}
 var _cached_references: Array[String] = []
 var _cached_fingerprint := ""
+var _last_test_report := {}
+var _last_test_fingerprint := ""
 var _is_dirty := false
 var _status_message := ""
 var _narrow_layout := false
+var _context_pending_transaction := {}
+var _context_pending_service: ItemTransactionalSaveService = null
+var _context_pending_result := {}
 
 
 func set_guided(value: bool) -> void:
@@ -139,6 +145,9 @@ func setup(
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hero_catalog.rebuild()
+	validation_service.hero_catalog = hero_catalog
+	balance_service.hero_catalog = hero_catalog
 	_build_interface()
 	_build_dialogs()
 	document.refresh_requested.connect(_on_document_refresh_requested)
@@ -150,7 +159,10 @@ func _ready() -> void:
 	add_child(_analysis_timer)
 	if project_context != null:
 		project_context.register_transition_handler(
-			&"items", _transition_save, _transition_draft, _transition_discard
+			&"items", _transition_save, _transition_draft, _transition_discard,
+			Callable(), Callable(), Callable(self, "_context_rollback"),
+			Callable(document, "is_dirty"), Callable(self, "_context_snapshot"),
+			Callable(self, "_context_restore")
 		)
 		project_context.scope_changed.connect(_on_scope_changed)
 	_on_scope_changed(project_context.edit_scope if project_context != null else StudioProjectContext.SCOPE_SHARED)
@@ -189,6 +201,7 @@ func _build_interface() -> void:
 	catalog_panel.filters_changed.connect(func(_filters): _remember_ui_state())
 	catalog_panel.reward_bulk_apply_requested.connect(_on_reward_bulk_apply_requested)
 	splitter.add_child(catalog_panel)
+	catalog_panel.set_hero_entries(hero_catalog.entries())
 	splitter.add_child(_build_editor_column())
 	analysis_panel = ItemAnalysisPanel.new()
 	analysis_panel.navigation_resolver = func(path, code): return int(_navigation_target(path, code).get("section", -1)) >= 0
@@ -593,9 +606,12 @@ func _build_availability_section(parent: VBoxContainer) -> void:
 	hero_section = audience.get_parent() as Control
 	var compatibility := HFlowContainer.new()
 	compatibility.add_theme_constant_override("h_separation", 14)
-	for hero_id in [&"elf", &"mage", &"warrior"]:
+	for entry in hero_catalog.entries():
+		var hero_id := StringName(entry.get("id", &""))
+		if hero_id == &"":
+			continue
 		var check := CheckBox.new()
-		check.text = {&"elf": "Elfe", &"mage": "Mage", &"warrior": "Guerrier"}[hero_id]
+		check.text = str(entry.get("display_name", hero_id))
 		check.tooltip_text = "Aucune case cochée signifie : tous les héros"
 		check.toggled.connect(func(enabled): _set_hero_compatibility(hero_id, enabled))
 		hero_checks[hero_id] = check
@@ -642,7 +658,7 @@ func _build_advanced_section(parent: VBoxContainer) -> void:
 
 func _build_dialogs() -> void:
 	creation_dialog = ItemCreationDialog.new()
-	creation_dialog.setup(catalog)
+	creation_dialog.setup(catalog, hero_catalog.entries())
 	creation_dialog.create_requested.connect(_create_document)
 	add_child(creation_dialog)
 	duplication_dialog = ItemDuplicationDialog.new()
@@ -721,7 +737,9 @@ func _create_document(data: Dictionary) -> void:
 	definition.compatible_character_ids = _to_string_names(data.get("compatible_character_ids", []) as Array)
 	_apply_template(definition, int(data.get("template", ItemDefinition.Category.ACCESSORY)))
 	document.create_new(definition)
-	document.destination_path = str(data.get("draft_path", ""))
+	document.destination_path = ItemIdPathService.new().draft_path(
+		definition.item_id, catalog.draft_directory
+	)
 	if creation_wizard != null and definition.is_relic():
 		creation_wizard.start()
 	_queue_refresh()
@@ -732,7 +750,9 @@ func _duplicate_document(item_id: StringName, copy_acquisition_tags: bool) -> vo
 		return
 	var source := document.working_copy
 	document.duplicate_as_new(source, item_id, copy_acquisition_tags)
-	document.destination_path = ItemIdPathService.new().draft_path(item_id)
+	document.destination_path = ItemIdPathService.new().draft_path(
+		item_id, catalog.draft_directory
+	)
 	_queue_refresh()
 
 
@@ -880,6 +900,15 @@ func _queue_refresh() -> void:
 
 
 func _on_document_refresh_requested(kind: StringName, _path: String) -> void:
+	if document.is_dirty():
+		_sync_context_dirty_metadata(true)
+	if not _last_test_report.is_empty() \
+			and (kind == ItemStudioDocument.CHANGE_PREVIEW \
+			or document.current_fingerprint() != _last_test_fingerprint):
+		_last_test_report.clear()
+		_last_test_fingerprint = ""
+		if _status_message.begins_with("Test "):
+			_status_message = ""
 	match kind:
 		ItemStudioDocument.CHANGE_VALUE, ItemStudioDocument.CHANGE_PREVIEW:
 			_queue_refresh_flags(REFRESH_LIGHT | REFRESH_HEAVY)
@@ -1051,8 +1080,31 @@ func test_document() -> Dictionary:
 	var preview := document.preview_copy()
 	var report := ItemRuntimePreviewService.new().preview_relic(preview) \
 		if preview != null and preview.is_relic() else balance_service.analyze(preview)
+	_cached_analysis = report.duplicate(true)
+	_cached_fingerprint = document.current_fingerprint()
+	_last_test_report = report.duplicate(true)
+	_last_test_fingerprint = _cached_fingerprint
+	_status_message = _test_status_message(report)
+	if analysis_panel != null:
+		analysis_panel.set_expanded(true)
 	_queue_refresh_flags(REFRESH_LIGHT)
 	return report
+
+
+func last_test_report() -> Dictionary:
+	return _last_test_report.duplicate(true)
+
+
+func _test_status_message(report: Dictionary) -> String:
+	if not report.get("ok", false):
+		return "Test refusé : %s" % report.get("error", "aucun héros compatible ou scénario valide")
+	if document.working_copy != null and document.working_copy.is_relic():
+		var scenario_count := (report.get("scenarios", []) as Array).size()
+		return "Test réussi : %d scénario%s de relique vérifié%s." % [
+			scenario_count, _plural(scenario_count), _plural(scenario_count),
+		]
+	var hero_count := (report.get("heroes", []) as Array).size()
+	return "Test réussi : projection vérifiée sur %d héros." % hero_count
 
 
 func save_as_draft() -> void:
@@ -1080,13 +1132,18 @@ func _show_save_plan(mode: StringName) -> void:
 	save_plan_dialog.show_plan(plan)
 
 
-func _execute_pending_save(_confirmed_plan: ItemSavePlan) -> void:
+func _execute_pending_save(confirmed_plan: ItemSavePlan) -> void:
 	var result := {}
 	if _pending_save_mode == &"DRAFT":
-		result = draft_service.save_draft(document, catalog)
+		result = draft_service.save_draft(document, catalog, confirmed_plan)
 	elif _pending_save_mode == &"PUBLISH":
 		var projection := publication_service.eligibility_projection(document, catalog)
-		result = publication_service.publish(document, catalog, bool(projection.get("requires_publication_confirmation", false)))
+		result = publication_service.publish(
+			document,
+			catalog,
+			bool(projection.get("requires_publication_confirmation", false)),
+			confirmed_plan,
+		)
 	if not result.get("ok", false):
 		_status_message = "Échec de sauvegarde : %s" % result.get("error", "erreur inconnue")
 	else:
@@ -1255,13 +1312,31 @@ func _on_dirty_custom_action(action: StringName) -> void:
 
 func _on_dirty_changed(dirty: bool) -> void:
 	_is_dirty = dirty
-	if project_context != null:
-		project_context.set_dirty(&"items", dirty, {
-			"item_id": str(document.working_copy.item_id) if document.working_copy != null else "",
-			"path": document.source_path,
-			"status": str(document.status),
-		})
+	_sync_context_dirty_metadata(dirty)
 	history_state_changed.emit()
+
+
+func _sync_context_dirty_metadata(dirty: bool) -> void:
+	if project_context == null:
+		return
+	var draft_path := draft_service.target_path(document, catalog) \
+		if document.working_copy != null else ""
+	var publication_path := publication_service.target_path(document, catalog) \
+		if document.working_copy != null else ""
+	project_context.set_dirty(&"items", dirty, {
+		"item_id": str(document.working_copy.item_id) \
+			if document.working_copy != null else "",
+		"path": document.source_path,
+		"source_path": document.source_path,
+		"destination_path": document.destination_path,
+		"draft_path": draft_path,
+		"publication_path": publication_path,
+		"candidate_paths": [
+			document.source_path, document.destination_path,
+			draft_path, publication_path,
+		],
+		"status": str(document.status),
+	})
 
 
 func _on_scope_changed(scope: StringName) -> void:
@@ -1278,18 +1353,28 @@ func _on_scope_changed(scope: StringName) -> void:
 func _transition_save() -> Dictionary:
 	if project_context != null and project_context.edit_scope == StudioProjectContext.SCOPE_RUN_SPECIFIC:
 		return {"ok": false, "error": "RUN_SPECIFIC est différé pour les objets."}
-	var result := publication_service.publish(document, catalog)
+	var result := publication_service.publish(
+		document, catalog, false, null, true
+	)
 	if result.get("ok", false) and project_context != null:
 		project_context.set_dirty(&"items", false)
 		project_context.bump_generation(&"items")
+	if result.get("ok", false):
+		result["item_save_kind"] = &"PUBLISH"
+		_schedule_context_finalization(
+			result, publication_service.save_service
+		)
 	return result
 
 
 func _transition_draft() -> Dictionary:
-	var result := draft_service.save_draft(document, catalog)
+	var result := draft_service.save_draft(document, catalog, null, true)
 	if result.get("ok", false) and project_context != null:
 		project_context.set_dirty(&"items", false)
 		project_context.bump_generation(&"items")
+	if result.get("ok", false):
+		result["item_save_kind"] = &"DRAFT"
+		_schedule_context_finalization(result, draft_service.save_service)
 	return result
 
 
@@ -1300,8 +1385,113 @@ func _transition_discard() -> Dictionary:
 	return result
 
 
-func prepare_for_close() -> void:
+func _context_snapshot() -> Dictionary:
+	return {
+		"document": document.snapshot_state(),
+		"status_message": _status_message,
+		"is_dirty": _is_dirty,
+	}
+
+
+func _context_restore(snapshot: Dictionary) -> Dictionary:
+	var ok := document.restore_state(
+		snapshot.get("document", {}) as Dictionary
+	)
+	if not ok:
+		return {
+			"ok": false,
+			"error": "Le document Item n’a pas pu être restauré après rollback.",
+		}
+	_status_message = str(snapshot.get("status_message", ""))
+	_is_dirty = bool(snapshot.get("is_dirty", document.is_dirty()))
+	catalog.rebuild()
+	if is_inside_tree():
+		_queue_refresh()
+	if project_context != null:
+		_on_dirty_changed(document.is_dirty())
+	return {"ok": true}
+
+
+func _context_rollback(
+		_action: StringName,
+		_metadata: Dictionary,
+		plan: Dictionary
+	) -> Dictionary:
+	var committed := plan.get("committed", {}) as Dictionary
+	var transaction := committed.get("transaction", {}) as Dictionary
+	if transaction.is_empty():
+		return {"ok": true, "skipped": true}
+	var service := publication_service.save_service \
+		if committed.get("item_save_kind") == &"PUBLISH" \
+		else draft_service.save_service
+	var rollback := service.rollback_committed(transaction)
+	_context_pending_transaction = {}
+	_context_pending_service = null
+	_context_pending_result = {}
+	catalog.rebuild()
+	return rollback
+
+
+func _schedule_context_finalization(
+		result: Dictionary,
+		service: ItemTransactionalSaveService
+	) -> void:
+	_context_pending_transaction = result.get("transaction", {}) as Dictionary
+	_context_pending_service = service
+	_context_pending_result = result
+	call_deferred("_finalize_context_transaction")
+
+
+func _finalize_context_transaction() -> void:
+	if _context_pending_service == null \
+			or _context_pending_transaction.is_empty():
+		return
+	if str(_context_pending_transaction.get("last_status", "")) == "COMMITTED":
+		var finalized := _context_pending_service.finalize_commit(
+			_context_pending_transaction
+		)
+		if finalized.get("ok", false) \
+				and _context_pending_result.get("item_save_kind") == &"PUBLISH":
+			publication_service.cleanup_deferred_draft(
+				_context_pending_result, catalog
+			)
+	_context_pending_transaction = {}
+	_context_pending_service = null
+	_context_pending_result = {}
+
+
+func prepare_for_close() -> Dictionary:
 	_remember_ui_state()
+	if not document.is_dirty():
+		return {"ok": true, "saved": false}
+	# On fige d'abord l'intention de la sauvegarde principale. Si un fichier
+	# apparaît ensuite, l'exécution de ce même plan CREATE le refusera et la
+	# récupération horodatée prendra le relais sans écraser ce nouveau fichier.
+	var primary_plan := draft_service.plan(document, catalog)
+	var primary_target := draft_service.target_path(document, catalog)
+	if not primary_plan.entries.is_empty():
+		primary_target = primary_plan.entries[0].destination_path
+	var preserve_existing_draft := FileAccess.file_exists(primary_target) \
+		and primary_target != document.source_path
+	var result := draft_service.save_recovery_draft(document, catalog) \
+		if preserve_existing_draft \
+		else draft_service.save_draft(document, catalog, primary_plan)
+	if not result.get("ok", false):
+		var primary_error := str(result.get("error", "brouillon principal indisponible"))
+		result = draft_service.save_recovery_draft(document, catalog)
+		if result.get("ok", false):
+			result["primary_error"] = primary_error
+	if result.get("ok", false):
+		_status_message = "%s de fermeture vérifié : %s" % [
+			"Brouillon de récupération" if result.get("recovery", false) else "Brouillon",
+			result.get("path", ""),
+		]
+		if project_context != null:
+			project_context.set_dirty(&"items", false)
+			project_context.bump_generation(&"items")
+	else:
+		push_error("Item Studio : brouillon de fermeture impossible — %s" % result.get("error", "erreur inconnue"))
+	return result
 
 
 func get_state_snapshot() -> Dictionary:

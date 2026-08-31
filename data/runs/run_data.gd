@@ -31,6 +31,11 @@ enum RoomFlowMode {
 @export_range(1, 10, 1) var maximum_waves_per_room: int = 1
 @export var content_profile: RunContentProfile = null
 @export var economy_profile: RunEconomyProfile = null
+@export_group("Hub et cinematique")
+@export var intro_sequence: CinematicSequenceData = null
+@export var hub_room_selection_enabled := true
+@export_range(0, 99, 1) var hub_forced_start_room_index := 0
+@export_group("")
 @export var rooms: Array[RoomData] = []
 
 
@@ -54,6 +59,12 @@ func validation_errors() -> PackedStringArray:
 		errors.append("La duree etendue doit etre superieure a la duree cible.")
 	if rooms.is_empty():
 		errors.append("La run doit contenir au moins une salle.")
+	if intro_sequence != null:
+		for error in intro_sequence.validation_errors():
+			errors.append("Cinematique : %s" % error)
+	if not hub_room_selection_enabled \
+			and hub_forced_start_room_index >= rooms.size():
+		errors.append("La salle de depart forcee du hub est hors limites.")
 	if content_profile != null:
 		errors.append_array(content_profile.validation_errors())
 	if economy_profile != null:
@@ -169,3 +180,9 @@ func validation_warnings() -> PackedStringArray:
 
 func is_valid() -> bool:
 	return validation_errors().is_empty()
+
+
+func get_hub_start_room_index(requested_room_index: int) -> int:
+	if not hub_room_selection_enabled:
+		return hub_forced_start_room_index
+	return requested_room_index

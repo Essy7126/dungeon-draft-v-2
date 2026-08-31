@@ -43,14 +43,19 @@ func normalize_item_id(value: String) -> String:
 
 
 func draft_path(item_id: StringName, draft_directory := ItemStudioCatalogService.DRAFT_DIRECTORY) -> String:
-	return draft_directory.path_join("%s.tres" % item_id)
+	return draft_directory.path_join("%s.tres" % _safe_stem(item_id))
 
 
 func shared_path(item_id: StringName, catalog: ItemStudioCatalogService) -> String:
 	var directories := catalog.auto_discovery_directories() if catalog != null else PackedStringArray()
 	var directory := str(directories[0]) if not directories.is_empty() \
 		else "res://data/items/definitions"
-	return directory.path_join("%s.tres" % item_id)
+	return directory.path_join("%s.tres" % _safe_stem(item_id))
+
+
+func _safe_stem(item_id: StringName) -> String:
+	var stem := normalize_item_id(str(item_id))
+	return stem if not stem.is_empty() else "objet_sans_identifiant"
 
 
 func collision_report(

@@ -1,0 +1,57 @@
+[Script Info]
+Title: Catabase - Cinematique v4
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: ContextTitle,EB Garamond,78,&H006AB5D8,&H000000FF,&HAA000000,&H00000000,-1,0,0,0,100,100,4,0,1,1.8,2.6,5,80,80,80,1
+Style: ContextLine,EB Garamond,45,&H00F1E8D8,&H000000FF,&HAA000000,&H00000000,0,0,0,0,100,100,2,0,1,1.4,2.2,5,80,80,80,1
+Style: ContextStrong,EB Garamond,53,&H006AB5D8,&H000000FF,&HAA000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.6,2.4,5,80,80,80,1
+Style: Narrative,EB Garamond,50,&H00F5EEE2,&H000000FF,&HCC000000,&H7A000000,0,0,0,0,100,100,0,0,3,1.8,2.8,2,150,150,92,1
+Style: NarrativeSmall,EB Garamond,45,&H00F5EEE2,&H000000FF,&HCC000000,&H7A000000,0,0,0,0,100,100,0,0,3,1.8,2.8,2,150,150,92,1
+Style: Key,EB Garamond,60,&H006AB5D8,&H000000FF,&HDD000000,&H78000000,-1,0,0,0,100,100,1,0,3,2.0,3.2,2,150,150,96,1
+Style: Passions,EB Garamond,48,&H006AB5D8,&H000000FF,&HDD000000,&H78000000,-1,0,0,0,100,100,2,0,3,2.0,3.0,2,150,150,92,1
+Style: Paris,EB Garamond,90,&H006AB5D8,&H000000FF,&HDD000000,&H00000000,-1,0,0,0,100,100,7,0,1,2.4,4.0,5,100,100,80,1
+Style: MainTitle,EB Garamond,118,&H006AB5D8,&H000000FF,&HDD000000,&H00000000,-1,0,0,0,100,100,11,0,1,2.5,4.0,5,80,80,80,1
+Style: SubTitle,EB Garamond,48,&H00F1E8D8,&H000000FF,&HBB000000,&H00000000,0,0,0,0,100,100,3,0,1,1.8,3.0,5,80,80,80,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.60,0:00:05.72,ContextTitle,,0,0,0,,{\fad(360,420)\pos(960,330)}TROIE
+Dialogue: 0,0:00:01.80,0:00:05.72,ContextLine,,0,0,0,,{\fad(360,420)\pos(960,440)}CÔTE D’ANATOLIE
+Dialogue: 0,0:00:03.00,0:00:05.72,ContextLine,,0,0,0,,{\fad(360,420)\pos(960,515)}VERS 1200 AV. J.-C.
+Dialogue: 1,0:00:04.20,0:00:06.15,ContextStrong,,0,0,0,,{\fad(360,620)\pos(960,620)}DIXIÈME ANNÉE DU SIÈGE
+
+Dialogue: 0,0:00:06.42,0:00:10.18,Narrative,,0,0,0,,{\fad(320,320)}Depuis dix ans, les Grecs assiègent la cité.
+
+Dialogue: 0,0:00:11.00,0:00:14.48,NarrativeSmall,,0,0,0,,{\fad(320,320)}Sa mère, la déesse Thétis,\Nlui avait révélé deux destins.
+Dialogue: 0,0:00:14.88,0:00:19.02,NarrativeSmall,,0,0,0,,{\fad(320,320)}Rentrer chez lui. Vivre longtemps.\NEt voir sa gloire s’éteindre.
+Dialogue: 0,0:00:19.48,0:00:24.68,NarrativeSmall,,0,0,0,,{\fad(340,360)}Ou rester à Troie. Mourir jeune.\NEt laisser aux hommes un nom impérissable.
+
+Dialogue: 0,0:00:25.38,0:00:28.34,NarrativeSmall,,0,0,0,,{\fad(300,300)}Hector tua Patrocle,\Nson plus proche compagnon.
+Dialogue: 0,0:00:28.72,0:00:32.36,NarrativeSmall,,0,0,0,,{\fad(300,340)}Achille resta. Il tua Hector pour le venger,\Nsachant que sa propre mort suivrait.
+
+Dialogue: 0,0:00:33.00,0:00:35.58,Narrative,,0,0,0,,{\fad(280,260)}Puis Paris décocha la flèche.
+Dialogue: 0,0:00:35.92,0:00:38.18,Narrative,,0,0,0,,{\fad(260,260)}Achille mourut devant Troie.
+Dialogue: 0,0:00:38.42,0:00:40.40,Key,,0,0,0,,{\fad(240,300)}Une vie brève. Un nom impérissable.
+
+Dialogue: 0,0:00:41.00,0:00:43.96,Narrative,,0,0,0,,{\fad(300,320)}Il avait obtenu ce qu’il avait choisi.
+Dialogue: 0,0:00:44.30,0:00:47.18,Narrative,,0,0,0,,{\fad(300,320)}Les hommes gardèrent la légende.
+Dialogue: 1,0:00:47.52,0:00:50.34,Key,,0,0,0,,{\fad(320,420)}Les Enfers reçurent l’homme.
+
+Dialogue: 0,0:00:51.00,0:00:53.18,Narrative,,0,0,0,,{\fad(260,260)}Il était mort.
+Dialogue: 0,0:00:53.52,0:00:57.28,NarrativeSmall,,0,0,0,,{\fad(300,300)}Mais il portait encore en lui\Nles passions des vivants.
+
+Dialogue: 0,0:00:57.82,0:01:00.34,Passions,,0,0,0,,{\fad(260,260)}La vengeance. La victoire.\NLa domination. La renommée.
+Dialogue: 0,0:01:00.58,0:01:03.34,NarrativeSmall,,0,0,0,,{\fad(260,320)}Dans les Enfers, aucune victoire ne rend la vie.\NAucun nom n’ouvre un avenir.
+
+Dialogue: 0,0:01:04.00,0:01:06.10,Narrative,,0,0,0,,{\fad(260,240)}Sa vengeance avait encore un visage.
+Dialogue: 1,0:01:06.18,0:01:07.38,Paris,,0,0,0,,{\fad(220,360)\pos(960,800)}PARIS
+
+Dialogue: 0,0:01:08.00,0:01:11.80,MainTitle,,0,0,0,,{\fad(480,760)\pos(960,450)}CATABASE
+Dialogue: 0,0:01:08.70,0:01:11.80,SubTitle,,0,0,0,,{\fad(430,760)\pos(960,605)}I — L’OMBRE DE PARIS

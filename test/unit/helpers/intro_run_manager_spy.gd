@@ -7,6 +7,23 @@ var next_run_data: RunData = null
 var used_run_content_resolver := false
 
 
+func peek_next_run_data() -> RunData:
+	return next_run_data
+
+
+func has_next_run_configuration() -> bool:
+	return next_run_data != null
+
+
+func start_configured_run() -> bool:
+	var selected_run := next_run_data
+	if selected_run == null:
+		return false
+	next_run_data = null
+	start_run(selected_run)
+	return true
+
+
 func take_next_run_data(default_run_data: RunData) -> RunData:
 	var selected_run := next_run_data
 	next_run_data = null

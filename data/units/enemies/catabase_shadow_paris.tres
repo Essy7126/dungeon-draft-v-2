@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/spells/enemies/catabase/paris_shadow_arrow.tres" id="3_arrow"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn" id="4_visual"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonVisual3D.tscn" id="5_preview"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"catabase_shadow_paris"
+unit_name = "L’Ombre de Paris"
+description = "PLACEHOLDER_VISUAL — silhouette d’archer spectral temporairement représentée par le visuel squelette à distance. PLACEHOLDER_BALANCE."
+team = 1
+max_hp = 52
+initiative = 9
+max_ap = 4
+max_mp = 3
+attack_power = 9
+visual_scene = ExtResource("4_visual")
+preview_visual_scene = ExtResource("5_preview")
+basic_attack_enabled = false
+spells = Array[ExtResource("2_spell_type")]([ExtResource("3_arrow")])
+ai_behavior = 1
+combat_style = 1
+preferred_range = 6
+minimum_range = 3
+maximum_range = 7
+keep_distance = true
+faction_id = &"catabase_shadows"
+tactical_role_id = &"catabase_shadow_paris"
+

@@ -7,7 +7,7 @@ enum AoeShape { SINGLE, CROSS, SQUARE, LINE }
 enum DamageType { PHYSICAL, MAGICAL }
 enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY, EARTH }
 enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
-enum DelayedResolution { NONE, STRIKE_AND_PUSH, SUMMON }
+enum DelayedResolution { NONE, STRIKE_AND_PUSH, SUMMON, RANGED_STRIKE }
 enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 
 @export var spell_id: StringName = &""

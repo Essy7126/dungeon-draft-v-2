@@ -29,9 +29,13 @@ const PRODUCTION_HERO_DATA_PATHS = [
 
 const RUN_RESULT_SCREEN_PATH := "res://ui/RunResultScreen.tscn"
 const TITLE_SCREEN_PATH := "res://ui/TitreEcran.tscn"
+const START_HUB_SCREEN_PATH := "res://hub/StartHub.tscn"
 const PROGRESSION_CHOICE_SCREEN_PATH := "res://ui/progression/ProgressionChoiceScreen.tscn"
 const ROOM_TRANSITION_SCREEN_PATH := "res://ui/Transitionsalle.tscn"
 const POST_COMBAT_SCREEN_PATH := "res://ui/post_combat/PostCombatScreen.tscn"
+const RUN_RESULT_NARRATIVE_SERVICE := preload(
+	"res://core/run_result_narrative_service.gd"
+)
 const PERSISTENT_RUN_UI_SCENE := preload("res://ui/run/PersistentRunUI.tscn")
 const PersistentRunUIScript := preload("res://ui/run/persistent_run_ui.gd")
 const DEFAULT_ITEM_CATALOG: ItemCatalog = preload(
@@ -160,10 +164,13 @@ func resolve_run_hero_data(
 
 ## Conserve le choix du hub pendant la cinematique qui precede le lancement.
 func configure_next_run(run_data: RunData, room_index: int) -> bool:
-	if run_data == null or room_index < 0 or room_index >= run_data.rooms.size():
+	if run_data == null:
+		return false
+	var effective_room_index := run_data.get_hub_start_room_index(room_index)
+	if effective_room_index < 0 or effective_room_index >= run_data.rooms.size():
 		return false
 	_next_run_data = run_data
-	_next_run_start_room_index = room_index
+	_next_run_start_room_index = effective_room_index
 	return true
 
 
@@ -172,6 +179,26 @@ func take_next_run_data(default_run_data: RunData) -> RunData:
 	var selected_run := _next_run_data
 	_next_run_data = null
 	return selected_run if selected_run != null else default_run_data
+
+
+## Vue non consommatrice utilisee par le lecteur de cinematique generique.
+func peek_next_run_data() -> RunData:
+	return _next_run_data
+
+
+func has_next_run_configuration() -> bool:
+	return _next_run_data != null
+
+
+## Consomme la RunData configuree par le hub exactement une fois, puis emprunte
+## le pipeline normal de demarrage et de resolution des heros.
+func start_configured_run() -> bool:
+	var selected_run := _next_run_data
+	if selected_run == null:
+		return false
+	_next_run_data = null
+	start_run(selected_run)
+	return run_active
 
 
 func clear_next_run_configuration() -> void:
@@ -1586,11 +1613,31 @@ func _finish_run(victory: bool) -> void:
 	_request_scene_change(RUN_RESULT_SCREEN_PATH)
 
 func _record_run_result(victory: bool) -> void:
-	_last_run_result = {
-		"victory": victory,
-		"run_name": _active_run_name,
-		"room_flow_mode": get_active_room_flow_mode_name(),
-	}
+	var room_names := PackedStringArray()
+	for room_value in rooms:
+		var room := room_value as RoomData
+		room_names.append(room.room_name if room != null else "")
+	var hero_states: Array[Dictionary] = []
+	for hero_value in get_ordered_heroes():
+		var hero := hero_value as Unit
+		if hero == null:
+			continue
+		hero_states.append({
+			"name": hero.unit_name,
+			"current_hp": hero.current_hp,
+			"max_hp": hero.max_hp.get_int(),
+			"alive": hero.is_alive,
+		})
+	_last_run_result = RUN_RESULT_NARRATIVE_SERVICE.build_snapshot(
+		victory,
+		_active_run_name,
+		get_active_room_flow_mode_name(),
+		current_room_index,
+		room_names,
+		run_seed,
+		_active_run_data != null or run_seed != 0,
+		hero_states,
+	)
 
 func get_last_run_result() -> Dictionary:
 	return _last_run_result.duplicate(true)
@@ -1598,6 +1645,11 @@ func get_last_run_result() -> Dictionary:
 func return_to_title() -> void:
 	cleanup_run_state()
 	_request_scene_change(TITLE_SCREEN_PATH)
+
+
+func return_to_hub() -> void:
+	cleanup_run_state()
+	_request_scene_change(START_HUB_SCREEN_PATH)
 
 
 func _request_scene_change(

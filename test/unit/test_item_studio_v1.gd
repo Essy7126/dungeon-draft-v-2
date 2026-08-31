@@ -3,11 +3,13 @@ extends GutTest
 const TEST_ROOT := "user://item_studio_v1"
 const DEFINITIONS_ROOT := TEST_ROOT + "/definitions"
 const DRAFTS_ROOT := TEST_ROOT + "/drafts"
+const TRANSACTIONS_ROOT := TEST_ROOT + "/transactions"
 const CATALOG_PATH := TEST_ROOT + "/catalog.tres"
 const CHARACTERIZATION_PATH := "res://artifacts/item_studio/characterization.json"
 
 
 func before_all() -> void:
+	_remove_tree(TEST_ROOT)
 	assert_eq(DirAccess.make_dir_recursive_absolute(
 		ProjectSettings.globalize_path(DEFINITIONS_ROOT)
 	), OK)
@@ -176,6 +178,10 @@ func test_preview_disable_removes_only_the_isolated_effect() -> void:
 func test_draft_directory_is_outside_production_auto_discovery() -> void:
 	var service := ItemStudioCatalogService.new()
 	assert_true(service.rebuild().get("ok", false))
+	assert_true(ItemStudioCatalogService.DRAFT_DIRECTORY.begins_with("user://"))
+	assert_false(ItemStudioCatalogService.DRAFT_DIRECTORY.begins_with("res://"))
+	assert_eq(service.draft_directories()[0], ItemStudioCatalogService.DRAFT_DIRECTORY)
+	assert_true(service.draft_directories().has(ItemStudioCatalogService.LEGACY_DRAFT_DIRECTORY))
 	assert_false(service.is_path_auto_discovered(
 		ItemStudioCatalogService.DRAFT_DIRECTORY.path_join("probe.tres")
 	))
@@ -186,18 +192,31 @@ func test_draft_save_remains_absent_from_fixture_production_catalog() -> void:
 	var service := _fixture_catalog()
 	var document := ItemStudioDocument.new()
 	assert_true(document.create_new(_weapon(&"draft_only")))
-	var result := ItemDraftService.new().save_draft(document, service)
+	var result := _draft_save_service().save_draft(document, service)
 	assert_true(result.get("ok", false), str(result))
 	assert_true(str(result.get("path", "")).begins_with(DRAFTS_ROOT))
 	assert_null(service.production_catalog.get_definition(&"draft_only"))
 	assert_true(result.get("not_in_production_catalog", false))
 
 
+func test_new_draft_normalizes_dangerous_item_id_inside_draft_root() -> void:
+	var service := _fixture_catalog()
+	var document := ItemStudioDocument.new()
+	assert_true(document.create_new(_weapon(&"../../sortie illisible")))
+	var result := _draft_save_service().save_draft(document, service)
+	assert_true(result.get("ok", false), str(result))
+	var saved_path := str(result.get("path", ""))
+	assert_eq(saved_path.get_base_dir(), DRAFTS_ROOT)
+	assert_true(saved_path.begins_with(DRAFTS_ROOT.trim_suffix("/") + "/"))
+	assert_false(saved_path.get_file().contains(".."))
+	assert_true(FileAccess.file_exists(saved_path))
+
+
 func test_publication_writes_once_into_configured_auto_discovery_directory() -> void:
 	var service := _fixture_catalog()
 	var document := ItemStudioDocument.new()
 	assert_true(document.create_new(_weapon(&"published_once")))
-	var result := ItemPublicationService.new().publish(document, service)
+	var result := _publication_save_service().publish(document, service)
 	assert_true(result.get("ok", false), str(result))
 	assert_eq(int(result.get("catalog_occurrences", 0)), 1)
 	assert_true(str(result.get("path", "")).begins_with(DEFINITIONS_ROOT))
@@ -206,6 +225,34 @@ func test_publication_writes_once_into_configured_auto_discovery_directory() -> 
 		ItemFingerprintService.semantic_fingerprint(service.production_catalog.get_definition(&"published_once")),
 		str(result.get("fingerprint", "")),
 	)
+
+
+func test_publication_promotes_draft_back_over_same_canonical_item() -> void:
+	var item_id := &"draft_updates_canonical"
+	var canonical_path := DEFINITIONS_ROOT + "/%s.tres" % item_id
+	var canonical := _weapon(item_id)
+	canonical.display_name = "Production précédente"
+	assert_eq(ResourceSaver.save(canonical, canonical_path), OK)
+	var draft_path := DRAFTS_ROOT + "/%s_recovery_fixture.tres" % item_id
+	var draft := _weapon(item_id)
+	draft.display_name = "Version récupérée"
+	assert_eq(ResourceSaver.save(draft, draft_path), OK)
+	var service := _fixture_catalog()
+	var document := ItemStudioDocument.new()
+	assert_true(document.open_definition(
+		ResourceLoader.load(draft_path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition,
+		ItemStudioDocument.STATUS_DRAFT,
+	))
+	var result := _publication_save_service().publish(document, service)
+	assert_true(result.get("ok", false), str(result))
+	assert_eq(result.get("path"), canonical_path)
+	assert_eq(int(result.get("catalog_occurrences", 0)), 1)
+	assert_true(result.get("draft_removed", false))
+	assert_false(FileAccess.file_exists(draft_path))
+	var reloaded := ResourceLoader.load(
+		canonical_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_eq(reloaded.display_name, "Version récupérée")
 
 
 func test_transactional_failure_restores_existing_file() -> void:
@@ -217,15 +264,261 @@ func test_transactional_failure_restores_existing_file() -> void:
 	var document := ItemStudioDocument.new()
 	assert_true(document.open_definition(canonical))
 	document.record_edit("Nom", func(): document.working_copy.display_name = "Après")
-	var save := ItemTransactionalSaveService.new()
+	var save := _transactional_save_service()
 	save.force_failure_after_write = true
 	var result := save.execute(save.build_plan(
 		document, path, ItemStudioDocument.STATUS_SHARED, _fixture_catalog()
 	), document)
-	assert_false(result.get("ok", true))
+	assert_false(result.get("ok", true), str(result))
+	assert_true((result.get("rollback", {}) as Dictionary).get("ok", false), str(result))
 	var restored := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
 	assert_not_null(restored)
 	assert_eq(restored.display_name, "Avant")
+	var transaction := result.get("transaction", {}) as Dictionary
+	assert_true(transaction.get("cleaned", false), str(transaction))
+	assert_true(str(transaction.get("stage_path", "")).begins_with(
+		TRANSACTIONS_ROOT + "/"
+	))
+	assert_true(str(transaction.get("backup_path", "")).begins_with(
+		TRANSACTIONS_ROOT + "/"
+	))
+	assert_false(DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(
+		str(transaction.get("directory", ""))
+	)))
+
+
+func test_transaction_update_preserves_uid_and_leaves_no_production_auxiliary() -> void:
+	var path := DEFINITIONS_ROOT + "/uid_preserved.tres"
+	assert_eq(ResourceSaver.save(_weapon(&"uid_preserved"), path), OK)
+	var canonical_uid := ResourceUID.create_id()
+	assert_true(_write_serialized_resource_uid(path, canonical_uid))
+	assert_eq(_serialized_resource_uid(path), canonical_uid)
+	var document := ItemStudioDocument.new()
+	assert_true(document.open_definition(
+		ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	))
+	document.record_edit(
+		"Nom", func(): document.working_copy.display_name = "UID conservé"
+	)
+	var save := _transactional_save_service()
+	var result := save.execute(save.build_plan(
+		document, path, ItemStudioDocument.STATUS_SHARED, _fixture_catalog()
+	), document)
+	assert_true(result.get("ok", false), str(result))
+	assert_eq(_serialized_resource_uid(path), canonical_uid)
+	var transaction := result.get("transaction", {}) as Dictionary
+	assert_true(transaction.get("cleaned", false), str(transaction))
+	assert_false(DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(
+		str(transaction.get("directory", ""))
+	)))
+	var production_directory := DirAccess.open(DEFINITIONS_ROOT)
+	assert_not_null(production_directory)
+	for file_name in production_directory.get_files():
+		assert_false(file_name.contains("studio_tmp"), file_name)
+		assert_false(file_name.contains("studio_backup"), file_name)
+		assert_false(file_name.contains("staged_candidate"), file_name)
+		assert_false(file_name.contains("original_before"), file_name)
+
+
+func test_publication_preserves_draft_changed_during_verified_publish() -> void:
+	var item_id := &"concurrent_draft_preserved"
+	var draft_path := DRAFTS_ROOT + "/%s.tres" % item_id
+	var draft := _weapon(item_id)
+	draft.display_name = "Version ouverte"
+	assert_eq(ResourceSaver.save(draft, draft_path), OK)
+	var document := ItemStudioDocument.new()
+	assert_true(document.open_definition(
+		ResourceLoader.load(draft_path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition,
+		ItemStudioDocument.STATUS_DRAFT,
+	))
+	document.record_edit(
+		"Publier", func(): document.working_copy.display_name = "Version publiée"
+	)
+	var publication := _publication_save_service()
+	publication.before_draft_cleanup_hook = func(source_path: String):
+		var concurrent := _weapon(item_id)
+		concurrent.display_name = "Version concurrente"
+		assert_eq(ResourceSaver.save(concurrent, source_path), OK)
+	var result := publication.publish(document, _fixture_catalog())
+	assert_true(result.get("ok", false), str(result))
+	assert_false(result.get("draft_removed", true), str(result))
+	assert_true(result.get("draft_preserved_external_change", false), str(result))
+	var preserved := ResourceLoader.load(
+		draft_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_not_null(preserved)
+	assert_eq(preserved.display_name, "Version concurrente")
+
+
+func test_publication_postcondition_failure_rolls_back_new_target() -> void:
+	var document := ItemStudioDocument.new()
+	assert_true(document.create_new(_weapon(&"postcondition_rollback")))
+	var catalog := _fixture_catalog()
+	var publication := _publication_save_service()
+	publication.force_postcondition_failure = true
+	var target := publication.target_path(document, catalog)
+	assert_false(FileAccess.file_exists(target))
+	var result := publication.publish(document, catalog)
+	assert_false(result.get("ok", true), str(result))
+	assert_true((result.get("rollback", {}) as Dictionary).get("ok", false), str(result))
+	assert_false(FileAccess.file_exists(target))
+	assert_eq(document.status, ItemStudioDocument.STATUS_NEW)
+	assert_true(document.is_dirty())
+
+
+func test_item_context_rollback_restores_document_history_and_target() -> void:
+	var studio := _item_studio()
+	studio.catalog.configure(CATALOG_PATH, DRAFTS_ROOT)
+	assert_true(studio.catalog.rebuild().get("ok", false))
+	assert_true(studio.document.create_new(_weapon(&"context_document_rollback")))
+	studio.document.record_edit(
+		"Nom A", func(): studio.document.working_copy.display_name = "Travail local"
+	)
+	var expected_fingerprint := studio.document.current_fingerprint()
+	var expected_history_count := studio.document.history.get_history_entries().size()
+	var snapshot := studio._context_snapshot()
+	var target := studio.draft_service.target_path(studio.document, studio.catalog)
+	var committed := studio._transition_draft()
+	assert_true(committed.get("ok", false), str(committed))
+	assert_true(FileAccess.file_exists(target))
+	var committed_transaction := committed.get("transaction", {}) as Dictionary
+	assert_eq(committed_transaction.get("last_status"), "COMMITTED")
+	assert_true(FileAccess.file_exists(str(
+		committed_transaction.get("manifest_path", "")
+	)))
+	var rollback := studio._context_rollback(
+		StudioProjectContext.ACTION_DRAFT, {}, {"committed": committed}
+	)
+	assert_true(rollback.get("ok", false), str(rollback))
+	assert_false(DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(
+		str(committed_transaction.get("directory", ""))
+	)))
+	assert_true(studio._context_restore(snapshot).get("ok", false))
+	assert_false(FileAccess.file_exists(target))
+	assert_eq(studio.document.status, ItemStudioDocument.STATUS_NEW)
+	assert_eq(studio.document.current_fingerprint(), expected_fingerprint)
+	assert_eq(
+		studio.document.history.get_history_entries().size(), expected_history_count
+	)
+	assert_true(studio.document.is_dirty())
+	studio._finalize_context_transaction()
+	studio.free()
+
+
+func test_failed_verification_preserves_third_party_write_and_recovery_backup() -> void:
+	var path := TEST_ROOT + "/rollback_external_write.tres"
+	var source := _weapon(&"rollback_external_write")
+	source.display_name = "Avant"
+	assert_eq(ResourceSaver.save(source, path), OK)
+	var document := ItemStudioDocument.new()
+	assert_true(document.open_definition(
+		ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	))
+	document.record_edit(
+		"Nom Studio", func(): document.working_copy.display_name = "Studio"
+	)
+	var hook_result := {"error": ERR_UNCONFIGURED}
+	var save := _transactional_save_service()
+	save.before_verification_hook = func(written_path: String):
+		var third_party := _weapon(&"rollback_external_write")
+		third_party.display_name = "Écriture tierce"
+		hook_result["error"] = ResourceSaver.save(third_party, written_path)
+	var result := save.execute(save.build_plan(
+		document, path, ItemStudioDocument.STATUS_SHARED, _fixture_catalog()
+	), document)
+	assert_eq(hook_result.get("error"), OK)
+	assert_false(result.get("ok", true), str(result))
+	assert_eq(result.get("code"), &"POST_WRITE_VERIFICATION_FAILED")
+	var rollback := result.get("rollback", {}) as Dictionary
+	assert_true(rollback.get("skipped_external_change", false), str(result))
+	var disk := ResourceLoader.load(
+		path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_not_null(disk)
+	assert_eq(disk.display_name, "Écriture tierce")
+	var transaction := result.get("transaction", {}) as Dictionary
+	var manifest_path := str(transaction.get("manifest_path", ""))
+	var backup_path := str(transaction.get("backup_path", ""))
+	assert_true(FileAccess.file_exists(manifest_path))
+	assert_true(FileAccess.file_exists(backup_path))
+	assert_eq(
+		FileAccess.get_sha256(backup_path),
+		str(transaction.get("original_sha256", "")),
+	)
+	var backup := ResourceLoader.load(
+		backup_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_not_null(backup)
+	assert_eq(backup.display_name, "Avant")
+	var manifest = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
+	assert_true(manifest is Dictionary)
+	assert_eq(str((manifest as Dictionary).get("status", "")), "PREPARED")
+	assert_eq(
+		str(transaction.get("last_status", "")),
+		"ROLLBACK_SKIPPED_EXTERNAL_CHANGE",
+	)
+	assert_true(_remove_tree(str(transaction.get("directory", ""))))
+
+
+func test_transaction_blocks_external_modification_before_replacing_target() -> void:
+	var path := TEST_ROOT + "/external_modified.tres"
+	var source := _weapon(&"external_modified")
+	source.display_name = "Ouvert"
+	assert_eq(ResourceSaver.save(source, path), OK)
+	var document := ItemStudioDocument.new()
+	assert_true(document.open_definition(
+		ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	))
+	document.record_edit("Nom Studio", func(): document.working_copy.display_name = "Studio")
+	var save := _transactional_save_service()
+	var plan := save.build_plan(
+		document, path, ItemStudioDocument.STATUS_SHARED, _fixture_catalog()
+	)
+	var external := _weapon(&"external_modified")
+	external.display_name = "Externe"
+	assert_eq(ResourceSaver.save(external, path), OK)
+	var result := save.execute(plan, document)
+	assert_false(result.get("ok", true), str(result))
+	assert_eq(result.get("code"), &"EXTERNAL_TARGET_MODIFIED")
+	var disk := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	assert_eq(disk.display_name, "Externe")
+
+
+func test_transaction_blocks_external_deletion_before_replacing_target() -> void:
+	var path := TEST_ROOT + "/external_deleted.tres"
+	assert_eq(ResourceSaver.save(_weapon(&"external_deleted"), path), OK)
+	var document := ItemStudioDocument.new()
+	assert_true(document.open_definition(
+		ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	))
+	document.record_edit("Nom Studio", func(): document.working_copy.display_name = "Studio")
+	var save := _transactional_save_service()
+	var plan := save.build_plan(
+		document, path, ItemStudioDocument.STATUS_SHARED, _fixture_catalog()
+	)
+	assert_eq(DirAccess.remove_absolute(ProjectSettings.globalize_path(path)), OK)
+	var result := save.execute(plan, document)
+	assert_false(result.get("ok", true), str(result))
+	assert_eq(result.get("code"), &"EXTERNAL_TARGET_DELETED")
+	assert_false(FileAccess.file_exists(path))
+
+
+func test_transaction_blocks_target_created_after_plan_review() -> void:
+	var path := TEST_ROOT + "/external_created.tres"
+	var document := ItemStudioDocument.new()
+	assert_true(document.create_new(_weapon(&"external_created")))
+	var save := _transactional_save_service()
+	var plan := save.build_plan(
+		document, path, ItemStudioDocument.STATUS_SHARED, _fixture_catalog()
+	)
+	var external := _weapon(&"external_created")
+	external.display_name = "Externe"
+	assert_eq(ResourceSaver.save(external, path), OK)
+	var result := save.execute(plan, document)
+	assert_false(result.get("ok", true), str(result))
+	assert_eq(result.get("code"), &"EXTERNAL_TARGET_CREATED")
+	var disk := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	assert_eq(disk.display_name, "Externe")
 
 
 func test_save_plan_blocks_duplicate_item_id_and_path_collision() -> void:
@@ -235,7 +528,7 @@ func test_save_plan_blocks_duplicate_item_id_and_path_collision() -> void:
 	assert_true(service.rebuild().get("ok", false))
 	var document := ItemStudioDocument.new()
 	assert_true(document.create_new(_weapon(&"collision")))
-	var plan := ItemTransactionalSaveService.new().build_plan(
+	var plan := _transactional_save_service().build_plan(
 		document, existing_path, ItemStudioDocument.STATUS_SHARED, service
 	)
 	assert_false(plan.is_valid())
@@ -254,7 +547,7 @@ func test_published_item_id_is_immutable() -> void:
 
 
 func test_reward_eligibility_is_explicit_and_equipment_only() -> void:
-	var publication := ItemPublicationService.new()
+	var publication := _publication_save_service()
 	var document := ItemStudioDocument.new()
 	assert_true(document.create_new(_weapon(&"rewardable")))
 	assert_true(publication.set_reward_eligibility(document, true))
@@ -346,6 +639,34 @@ func test_spell_analysis_uses_real_hero_loadout_and_target_profile() -> void:
 	)
 
 
+func test_hero_catalog_discovers_achilles_and_validation_accepts_it() -> void:
+	var hero_catalog := ItemHeroCatalogService.new()
+	var rebuilt := hero_catalog.rebuild()
+	assert_true(rebuilt.get("ok", false), str(rebuilt))
+	assert_has(hero_catalog.known_ids(), &"achilles")
+	var achilles_entry := hero_catalog.entry_for_id(&"achilles")
+	assert_eq(achilles_entry.get("display_name"), "Achille")
+	assert_eq(achilles_entry.get("path"), "res://data/units/allies/achilles.tres")
+	var definition := _weapon(&"achilles_item")
+	definition.compatible_character_ids = [&"achilles"]
+	var validation := ItemStudioValidationService.new()
+	validation.hero_catalog = hero_catalog
+	var validation_report := validation.validate_interactive(definition, _fixture_catalog())
+	assert_true(validation_report.get("valid", false), str(validation_report))
+	assert_false(_has_message(validation_report, &"CHARACTER_UNKNOWN"))
+	var balance := ItemBalanceAnalysisService.new()
+	balance.hero_catalog = hero_catalog
+	var spell_choices := balance.spell_choices(definition)
+	assert_eq(spell_choices.size(), 1)
+	assert_eq((spell_choices[0] as Dictionary).get("character_id"), &"achilles")
+	assert_false(((spell_choices[0] as Dictionary).get("spells", []) as Array).is_empty())
+	var analysis := balance.analyze(definition)
+	assert_true(analysis.get("ok", false), str(analysis))
+	assert_true((analysis.get("heroes", []) as Array).any(func(hero):
+		return StringName((hero as Dictionary).get("character_id", &"")) == &"achilles"
+	))
+
+
 func test_drawback_noop_is_reported_for_compatible_heroes() -> void:
 	var definition := _weapon(&"noop_drawback")
 	definition.stat_modifiers[0].stat_id = &"armure"
@@ -412,7 +733,7 @@ func test_ui_state_round_trip_preserves_filters_selection_and_scope() -> void:
 func test_run_specific_scope_is_explicitly_blocked_by_save_plan() -> void:
 	var document := ItemStudioDocument.new()
 	assert_true(document.create_new(_weapon(&"run_specific")))
-	var plan := ItemTransactionalSaveService.new().build_plan(
+	var plan := _transactional_save_service().build_plan(
 		document, DEFINITIONS_ROOT + "/run_specific.tres",
 		StudioProjectContext.SCOPE_RUN_SPECIFIC, _fixture_catalog()
 	)
@@ -434,6 +755,144 @@ func test_dirty_item_domain_blocks_context_change_until_explicit_decision() -> v
 	assert_eq(blocked.get("status"), &"REQUIRES_DECISION")
 	assert_true(context.resolve_pending_transition(StudioProjectContext.ACTION_CANCEL).get("ok", false))
 	assert_true(context.is_dirty(&"items"))
+
+
+func test_prepare_for_close_writes_dirty_document_to_configured_draft_directory() -> void:
+	var studio := _item_studio()
+	studio.catalog.configure(CATALOG_PATH, DRAFTS_ROOT)
+	assert_true(studio.catalog.rebuild().get("ok", false))
+	assert_true(studio.document.create_new(_weapon(&"close_recovery")))
+	assert_true(studio.document.is_dirty())
+	var result := studio.prepare_for_close()
+	assert_true(result.get("ok", false), str(result))
+	assert_true(str(result.get("path", "")).begins_with(DRAFTS_ROOT))
+	assert_true(FileAccess.file_exists(str(result.get("path", ""))))
+	assert_false(studio.document.is_dirty())
+	assert_eq(studio.document.status, ItemStudioDocument.STATUS_DRAFT)
+	studio.free()
+
+
+func test_prepare_for_close_preserves_existing_same_id_draft_and_writes_recovery() -> void:
+	var item_id := &"close_existing_draft"
+	var draft_path := DRAFTS_ROOT + "/%s.tres" % item_id
+	var previous_draft := _weapon(item_id)
+	previous_draft.display_name = "Ancien brouillon"
+	assert_eq(ResourceSaver.save(previous_draft, draft_path), OK)
+	var source_path := TEST_ROOT + "/close_existing_source.tres"
+	var source := _weapon(item_id)
+	source.display_name = "Production"
+	assert_eq(ResourceSaver.save(source, source_path), OK)
+	var studio := _item_studio()
+	studio.catalog.configure(CATALOG_PATH, DRAFTS_ROOT)
+	assert_true(studio.catalog.rebuild().get("ok", false))
+	assert_true(studio.document.open_definition(
+		ResourceLoader.load(source_path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	))
+	studio.document.record_edit(
+		"Nom récupéré", func(): studio.document.working_copy.display_name = "Récupéré"
+	)
+	var result := studio.prepare_for_close()
+	assert_true(result.get("ok", false), str(result))
+	assert_true(result.get("recovery", false))
+	assert_ne(result.get("path"), draft_path)
+	assert_true(FileAccess.file_exists(str(result.get("path", ""))))
+	var preserved := ResourceLoader.load(
+		draft_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_eq(preserved.display_name, "Ancien brouillon")
+	var recovered := ResourceLoader.load(
+		str(result.get("path", "")), "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_eq(recovered.item_id, item_id)
+	assert_eq(recovered.display_name, "Récupéré")
+	studio.free()
+
+
+func test_explicit_draft_save_updates_existing_same_id_target_with_fingerprint() -> void:
+	var item_id := &"explicit_existing_draft"
+	var draft_path := DRAFTS_ROOT + "/%s.tres" % item_id
+	var previous_draft := _weapon(item_id)
+	previous_draft.display_name = "Ancien brouillon"
+	assert_eq(ResourceSaver.save(previous_draft, draft_path), OK)
+	var source_path := TEST_ROOT + "/explicit_existing_source.tres"
+	var source := _weapon(item_id)
+	source.display_name = "Production"
+	assert_eq(ResourceSaver.save(source, source_path), OK)
+	var studio := _item_studio()
+	studio.catalog.configure(CATALOG_PATH, DRAFTS_ROOT)
+	assert_true(studio.catalog.rebuild().get("ok", false))
+	assert_true(studio.document.open_definition(
+		ResourceLoader.load(source_path, "", ResourceLoader.CACHE_MODE_IGNORE) as ItemDefinition
+	))
+	studio.document.record_edit(
+		"Nom récupéré", func(): studio.document.working_copy.display_name = "Récupéré"
+	)
+	var plan := studio.draft_service.plan(studio.document, studio.catalog)
+	assert_true(plan.is_valid(), str(plan.conflicts))
+	assert_eq(plan.entries.size(), 1)
+	var plan_entry := plan.entries[0] as ItemSavePlanEntry
+	assert_eq(plan_entry.operation, &"UPDATE")
+	assert_false(plan_entry.old_fingerprint.is_empty())
+	var result := studio.draft_service.save_draft(
+		studio.document, studio.catalog, plan
+	)
+	assert_true(result.get("ok", false), str(result))
+	assert_eq(result.get("path"), draft_path)
+	var reloaded := ResourceLoader.load(
+		draft_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_eq(reloaded.display_name, "Récupéré")
+	studio.free()
+
+
+func test_draft_save_preserves_semantically_invalid_work_in_progress() -> void:
+	var studio := _item_studio()
+	studio.catalog.configure(CATALOG_PATH, DRAFTS_ROOT)
+	assert_true(studio.catalog.rebuild().get("ok", false))
+	var invalid := _weapon(&"invalid_work_in_progress")
+	invalid.display_name = ""
+	assert_true(studio.document.create_new(invalid))
+	var result := studio.draft_service.save_draft(studio.document, studio.catalog)
+	assert_true(result.get("ok", false), str(result))
+	var reloaded := ResourceLoader.load(
+		str(result.get("path", "")), "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_not_null(reloaded)
+	assert_false(reloaded.is_valid())
+	studio.free()
+
+
+func test_prepare_for_close_falls_back_to_unique_recovery_on_foreign_collision() -> void:
+	var expected_path := DRAFTS_ROOT + "/close_foreign_collision.tres"
+	var foreign := _weapon(&"another_item")
+	foreign.display_name = "À préserver"
+	assert_eq(ResourceSaver.save(foreign, expected_path), OK)
+	var studio := _item_studio()
+	studio.catalog.configure(CATALOG_PATH, DRAFTS_ROOT)
+	assert_true(studio.catalog.rebuild().get("ok", false))
+	assert_true(studio.document.create_new(_weapon(&"close_foreign_collision")))
+	var result := studio.prepare_for_close()
+	assert_true(result.get("ok", false), str(result))
+	assert_true(result.get("recovery", false))
+	assert_ne(result.get("path"), expected_path)
+	assert_true(FileAccess.file_exists(str(result.get("path", ""))))
+	var preserved := ResourceLoader.load(
+		expected_path, "", ResourceLoader.CACHE_MODE_IGNORE
+	) as ItemDefinition
+	assert_eq(preserved.item_id, &"another_item")
+	assert_eq(preserved.display_name, "À préserver")
+	studio.free()
+
+
+func test_test_document_caches_and_summarizes_observable_result() -> void:
+	var studio := _item_studio()
+	assert_true(studio.document.create_new(_weapon(&"observable_test")))
+	var report := studio.test_document()
+	assert_true(report.get("ok", false), str(report))
+	assert_eq(studio.last_test_report(), report)
+	assert_eq(studio._cached_fingerprint, studio.document.current_fingerprint())
+	assert_true(studio._status_message.begins_with("Test réussi"))
+	studio.free()
 
 
 func test_mutable_sharing_audit_passes_on_production_catalog() -> void:
@@ -522,6 +981,31 @@ func _fixture_catalog() -> ItemStudioCatalogService:
 	return service
 
 
+func _transactional_save_service() -> ItemTransactionalSaveService:
+	var service := ItemTransactionalSaveService.new()
+	service.transaction_root = TRANSACTIONS_ROOT
+	return service
+
+
+func _draft_save_service() -> ItemDraftService:
+	var service := ItemDraftService.new()
+	service.save_service.transaction_root = TRANSACTIONS_ROOT
+	return service
+
+
+func _publication_save_service() -> ItemPublicationService:
+	var service := ItemPublicationService.new()
+	service.save_service.transaction_root = TRANSACTIONS_ROOT
+	return service
+
+
+func _item_studio() -> ItemStudioMain:
+	var studio := ItemStudioMain.new()
+	studio.draft_service.save_service.transaction_root = TRANSACTIONS_ROOT
+	studio.publication_service.save_service.transaction_root = TRANSACTIONS_ROOT
+	return studio
+
+
 func _weapon(item_id: StringName) -> ItemDefinition:
 	var definition := ItemDefinition.new()
 	definition.item_id = item_id
@@ -554,6 +1038,62 @@ func _consumable(item_id: StringName) -> ItemDefinition:
 func _characterization() -> Dictionary:
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(CHARACTERIZATION_PATH))
 	return parsed as Dictionary if parsed is Dictionary else {}
+
+
+func _serialized_resource_uid(path: String) -> int:
+	if not FileAccess.file_exists(path):
+		return ResourceUID.INVALID_ID
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return ResourceUID.INVALID_ID
+	var header := file.get_line()
+	file.close()
+	var marker := "uid=\""
+	var marker_index := header.find(marker)
+	if marker_index < 0:
+		return ResourceUID.INVALID_ID
+	var value_start := marker_index + marker.length()
+	var value_end := header.find("\"", value_start)
+	if value_end < 0:
+		return ResourceUID.INVALID_ID
+	return ResourceUID.text_to_id(header.substr(
+		value_start, value_end - value_start
+	))
+
+
+func _write_serialized_resource_uid(path: String, uid: int) -> bool:
+	if uid == ResourceUID.INVALID_ID or not FileAccess.file_exists(path):
+		return false
+	var content := FileAccess.get_file_as_string(path)
+	var line_end := content.find("\n")
+	var header := content.substr(0, line_end) if line_end >= 0 else content
+	if not header.begins_with("[gd_resource"):
+		return false
+	var uid_text := ResourceUID.id_to_text(uid)
+	var marker := "uid=\""
+	var marker_index := header.find(marker)
+	if marker_index >= 0:
+		var value_start := marker_index + marker.length()
+		var value_end := header.find("\"", value_start)
+		if value_end < 0:
+			return false
+		header = header.substr(0, value_start) + uid_text + header.substr(value_end)
+	else:
+		var closing_bracket := header.rfind("]")
+		if closing_bracket < 0:
+			return false
+		header = header.substr(0, closing_bracket) \
+			+ " uid=\"%s\"" % uid_text \
+			+ header.substr(closing_bracket)
+	var rewritten := header + content.substr(line_end) \
+		if line_end >= 0 else header
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(rewritten)
+	file.flush()
+	file.close()
+	return _serialized_resource_uid(path) == uid
 
 
 func _has_message(report: Dictionary, code: StringName) -> bool:

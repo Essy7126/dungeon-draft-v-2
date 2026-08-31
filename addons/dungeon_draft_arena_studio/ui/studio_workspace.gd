@@ -27,4 +27,6 @@ func active_session_identity() -> Dictionary:
 			if arena_studio != null and arena_studio.edit_session != null else "",
 		"encounter_session": encounter_studio.session.source_run_path \
 			if encounter_studio != null and encounter_studio.session != null else "",
+		"vfx_session": vfx_composer.document.source_path \
+			if vfx_composer != null and vfx_composer.document != null else "",
 	}

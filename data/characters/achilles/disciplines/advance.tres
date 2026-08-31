@@ -1,11 +1,53 @@
 [gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://cdnc2yqjk7tog"]
 
 [ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_4g61i"]
+[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_upgrade_type"]
 [ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_modifier_type"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_modifier"]
 
 [sub_resource type="Resource" id="Rank1"]
 script = ExtResource("2_rank")
+
+[sub_resource type="Resource" id="AdvanceRangeModifier"]
+script = ExtResource("5_modifier")
+effect_type = 5
+amount = 1
+modifier_name = "Élan des Myrmidons"
+
+[sub_resource type="Resource" id="AdvanceRangeChoice"]
+script = ExtResource("3_node")
+excluded_node_ids = Array[StringName]([&"achilles_advance_bronze_impact"])
+upgrade_id = &"achilles_advance_myrmidon_momentum"
+display_name = "Élan des Myrmidons"
+description = "+1 portée. La Percée devient un véritable outil d’engagement."
+discipline_id = &"advance"
+rank = 2
+target_spell_id = &"achilles_advance"
+spell_modifiers = Array[ExtResource("4_modifier_type")]([SubResource("AdvanceRangeModifier")])
+
+[sub_resource type="Resource" id="AdvanceDamageModifier"]
+script = ExtResource("5_modifier")
+amount = 3
+modifier_name = "Impact d’airain"
+
+[sub_resource type="Resource" id="AdvanceDamageChoice"]
+script = ExtResource("3_node")
+excluded_node_ids = Array[StringName]([&"achilles_advance_myrmidon_momentum"])
+upgrade_id = &"achilles_advance_bronze_impact"
+display_name = "Impact d’airain"
+description = "+3 dégâts. La Percée sacrifie l’allonge pour un choc plus brutal."
+discipline_id = &"advance"
+rank = 2
+target_spell_id = &"achilles_advance"
+spell_modifiers = Array[ExtResource("4_modifier_type")]([SubResource("AdvanceDamageModifier")])
+
+[sub_resource type="Resource" id="Rank2"]
+script = ExtResource("2_rank")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_upgrade_type")]([SubResource("AdvanceRangeChoice"), SubResource("AdvanceDamageChoice")])
 
 [resource]
 script = ExtResource("1_discipline")
@@ -13,4 +55,4 @@ discipline_id = &"advance"
 display_name = "Élan"
 description = "Maîtrise des percées en ligne et du repositionnement offensif."
 presentation_color = Color(0.75, 0.38, 0.18, 1)
-ranks = Array[ExtResource("2_rank")]([SubResource("Rank1")])
+ranks = Array[ExtResource("2_rank")]([SubResource("Rank1"), SubResource("Rank2")])

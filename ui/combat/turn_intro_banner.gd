@@ -1,9 +1,9 @@
 class_name CharacterTurnIntroBanner
 extends Control
 
-const ENTER_DURATION := 0.30
-const HOLD_DURATION := 1.40
-const EXIT_DURATION := 0.30
+const ENTER_DURATION := 0.22
+const HOLD_DURATION := 0.90
+const EXIT_DURATION := 0.22
 const TEXTURE_RATIO := 468.0 / 1245.0
 
 @onready var presentation: Control = %Presentation
@@ -111,7 +111,7 @@ func _present_unit(
 	visible = true
 	_active_tween = create_tween()
 	if _reduced_motion:
-		_active_tween.tween_interval(0.72)
+		_active_tween.tween_interval(0.45)
 		_active_tween.tween_callback(_finish_presentation)
 		return true
 	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -143,7 +143,7 @@ func hide_immediately() -> void:
 
 
 func total_animation_duration() -> float:
-	return 0.72 if _reduced_motion else ENTER_DURATION + HOLD_DURATION + EXIT_DURATION
+	return 0.45 if _reduced_motion else ENTER_DURATION + HOLD_DURATION + EXIT_DURATION
 
 
 func set_reduced_motion(enabled: bool) -> void:
@@ -154,7 +154,7 @@ func set_reduced_motion(enabled: bool) -> void:
 		presentation.position = _rest_position
 		presentation.modulate.a = 1.0
 		_active_tween = create_tween()
-		_active_tween.tween_interval(0.72)
+		_active_tween.tween_interval(0.45)
 		_active_tween.tween_callback(_finish_presentation)
 
 
@@ -166,14 +166,11 @@ func get_presentation_size() -> Vector2:
 	return presentation.size if is_instance_valid(presentation) else Vector2.ZERO
 
 
-func _turn_title(character_name: String) -> String:
-	var upper_name := character_name.to_upper()
-	if (
-		not upper_name.is_empty()
-		and upper_name.left(1) in ["A", "E", "I", "O", "U", "Y", "É", "È", "Ê"]
-	):
-		return "TOUR DE L'%s" % upper_name
-	return "TOUR DE %s" % upper_name
+func _turn_title(_character_name: String) -> String:
+	# Le nom du héros est déjà affiché sur la ligne suivante. Une consigne
+	# directe évite les articles fragiles devant les noms propres (Achille) et
+	# garde la bannière lisible quelle que soit la langue du personnage.
+	return "À VOUS DE JOUER"
 
 
 func _finish_presentation() -> void:
@@ -189,7 +186,7 @@ func _apply_responsive_layout() -> void:
 	var target_width := clampf(available_width * 0.19, 330.0, 420.0)
 	var banner_height := minf(
 		target_width / TEXTURE_RATIO,
-		available_height * 0.72
+		available_height * 0.58
 	)
 	var banner_width := banner_height * TEXTURE_RATIO
 	presentation.anchor_left = 0.5

@@ -8,6 +8,10 @@ var operation: StringName = &"CREATE"
 var status: StringName = &"DRAFT"
 var item_id: StringName = &""
 var old_fingerprint := ""
+var old_sha256 := ""
+var target_uid := ""
+var source_fingerprint := ""
+var source_sha256 := ""
 var new_fingerprint := ""
 var subresource_count := 0
 
@@ -20,6 +24,10 @@ func to_snapshot() -> Dictionary:
 		"status": str(status),
 		"item_id": str(item_id),
 		"old_fingerprint": old_fingerprint,
+		"old_sha256": old_sha256,
+		"target_uid": target_uid,
+		"source_fingerprint": source_fingerprint,
+		"source_sha256": source_sha256,
 		"new_fingerprint": new_fingerprint,
 		"subresource_count": subresource_count,
 	}

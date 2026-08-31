@@ -1,5 +1,8 @@
 extends GutTest
 
+# Cette suite doit rester dans test/unit : c'est la racine canonique découverte
+# par GUT localement et dans les gates CI.
+
 const SOLO_RUN := "res://data/runs/odyssey.tres"
 const TRIO_RUN := "res://data/runs/fixed_trio_prototype_run.tres"
 const STAGED_BACKGROUND := (

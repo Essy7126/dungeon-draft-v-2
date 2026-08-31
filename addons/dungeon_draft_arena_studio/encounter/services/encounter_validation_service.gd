@@ -350,11 +350,12 @@ static func _validate_encounter(
 			&"ability_without_budget", "Invocation active sans budget",
 			"La capacité ne pourra pas être préparée au lancement de la rencontre.", context
 		))
-	messages.append(_message(
-		StudioValidationMessage.Severity.WARNING,
-		&"allowed_spawn_groups_unused", "Groupes d'apparition non utilisés",
-		"allowed_spawn_groups est conserve en mode Avance mais n'est pas lu par le runtime actuel.", context
-	))
+	if not encounter.allowed_spawn_groups.is_empty():
+		messages.append(_message(
+			StudioValidationMessage.Severity.WARNING,
+			&"allowed_spawn_groups_unused", "Groupes d'apparition non utilisés",
+			"allowed_spawn_groups est conserve en mode Avance mais n'est pas lu par le runtime actuel.", context
+		))
 	var usage_count := EncounterReferenceGraphService.usages_for(encounter, graph).size()
 	if usage_count > 1:
 		messages.append(_message(

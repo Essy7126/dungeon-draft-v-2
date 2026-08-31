@@ -300,3 +300,32 @@ ordinaires supplémentaires exigent l'activation explicite
 Les contrats de brouillon, test, intégration, projection runtime et sauvegarde
 transactionnelle ne changent pas. Aucune donnée d'équilibrage ou de production
 officielle n'est modifiée.
+
+## CATABASE_CINEMATIC_INTEGRATION_V4 — introduction data-driven
+
+- Date : 2026-08-28
+- Branche observée : `main`
+- BASE de mission : `0bdc2540b1e257e405d708e576ae11ac1a43da5a`
+- HEAD de départ observé : `b642e905f851d9444a22b76cad18da14e19b34d1`
+- Statut : **WORKTREE_CANDIDATE — revue humaine obligatoire**
+
+Le nom public de la run devient **Catabase** ; l'ancien nom public
+« L'Odyssée » est remplacé pour le sélecteur de run et les surfaces de la
+première salle concernées. Les chemins, dossiers, profils et identifiants
+techniques `odyssey` restent provisoirement inchangés afin d'éviter une
+migration cosmétique sans bénéfice fonctionnel.
+
+La cinématique V4 de 72,000 secondes est la source canonique de l'introduction
+Catabase. Elle raconte les deux destins révélés à Achille par Thétis, le choix
+qui suit la mort de Patrocle, puis la vengeance qu'Achille porte encore aux
+Enfers. La phrase centrale reste intangible : « Les hommes gardèrent la
+légende. Les Enfers reçurent l'homme. » La musique est la source fournie par
+l'utilisateur ; elle n'est jamais l'horloge de la séquence.
+
+Les cinématiques deviennent data-driven : `RunData` référence une
+`CinematicSequenceData`, composée de frames et cues typés, puis le lecteur
+générique exécute la continuation demandée sur la configuration de run déjà
+établie. Le lecteur ne connaît ni Catabase ni une scène de bataille précise.
+La salle de départ de Catabase est imposée par les données à l'index 0 et sa
+première rencontre devient **Catabase I — L'Ombre de Paris**, avec une seule
+Ombre de Paris face à Achille.

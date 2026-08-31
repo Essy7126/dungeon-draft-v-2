@@ -24,7 +24,7 @@ const DISCIPLINE_IDS: Array[StringName] = [
 func test_odyssey_is_a_valid_three_room_single_encounter_run() -> void:
 	var run := _run()
 	assert_not_null(run)
-	assert_eq(run.run_name, "L'Odyssée")
+	assert_eq(run.run_name, "Catabase")
 	assert_true(run.is_single_encounter_flow())
 	assert_eq(run.maximum_waves_per_room, 1)
 	assert_eq(run.rooms.size(), 3)
@@ -108,10 +108,18 @@ func test_achilles_spells_and_initial_disciplines_match_contract() -> void:
 			spell.description.to_lower().contains("prototype"),
 			spell.resource_path,
 		)
-	for discipline in progression.disciplines:
-		assert_eq(discipline.ranks.size(), 1, discipline.resource_path)
+	for index in range(progression.disciplines.size()):
+		var discipline := progression.disciplines[index]
+		assert_eq(discipline.ranks.size(), 2, discipline.resource_path)
 		assert_eq(discipline.ranks[0].rank, 1, discipline.resource_path)
 		assert_true(discipline.ranks[0].choices.is_empty(), discipline.resource_path)
+		assert_eq(discipline.ranks[1].rank, 2, discipline.resource_path)
+		assert_eq(discipline.ranks[1].required_total_xp, 3, discipline.resource_path)
+		assert_eq(discipline.ranks[1].choices.size(), 2, discipline.resource_path)
+		for choice in discipline.ranks[1].choices:
+			assert_eq(choice.discipline_id, discipline.discipline_id)
+			assert_eq(choice.target_spell_id, spells[index].spell_id)
+			assert_eq(choice.spell_modifiers.size(), 1)
 
 
 func test_odyssey_enemy_stats_and_room_rosters_are_exact() -> void:
@@ -142,14 +150,12 @@ func test_odyssey_enemy_stats_and_room_rosters_are_exact() -> void:
 		assert_eq(enemy.team, 1)
 		assert_true(enemy.spells.is_empty())
 	var run := _run()
-	assert_eq(_roster_ids(run.rooms[0]), [
-		&"odyssey_skirmisher", &"odyssey_skirmisher",
-	])
+	assert_eq(_roster_ids(run.rooms[0]), [&"catabase_shadow_paris"])
 	assert_eq(_roster_ids(run.rooms[1]), [
 		&"odyssey_skirmisher", &"odyssey_skirmisher", &"odyssey_guard",
 	])
 	assert_eq(_roster_ids(run.rooms[2]), [
-		&"odyssey_champion", &"odyssey_skirmisher",
+		&"odyssey_champion", &"catabase_shadow_paris",
 	])
 
 
@@ -222,7 +228,7 @@ func test_odyssey_victory_defeat_relaunch_and_trio_switches_are_clean() -> void:
 		assert_true(report.victory)
 		assert_true(manager.complete_post_combat_transition(report.report_id))
 	assert_true(bool(manager.get_last_run_result().get("victory", false)))
-	assert_eq(manager.get_last_run_result().get("run_name"), "L'Odyssée")
+	assert_eq(manager.get_last_run_result().get("run_name"), "Catabase")
 
 	assert_true(manager._prepare_preconfigured_run(run, resolved.heroes))
 	manager.current_room_index = 0
@@ -387,17 +393,36 @@ func test_odyssey_economy_has_only_three_consumables_and_no_reward_deck() -> voi
 	manager.free()
 
 
-func test_minimal_disciplines_never_create_evolution_prompts() -> void:
+func test_catabase_disciplines_offer_one_signature_evolution_each() -> void:
 	var run := _run()
 	var resolved := RunHeroResolver.resolve_runtime_hero_data(run, false)
 	var manager = GameManagerScript.new()
 	assert_true(manager._prepare_preconfigured_run(run, resolved.heroes))
 	var state: CharacterRunState = manager.get_character_state(&"achilles")
 	for discipline_id in DISCIPLINE_IDS:
-		state.add_discipline_xp(discipline_id, 999)
+		state.add_discipline_xp(discipline_id, 3)
 		var progress := state.get_discipline_progress(discipline_id)
-		assert_eq(progress.rank, 1)
-		assert_true(progress.get_pending_rank_choices().is_empty())
+		assert_eq(progress.rank, 2)
+		assert_eq(progress.get_pending_rank_choices(), [2])
+	var pending := manager.get_pending_progression_choices()
+	assert_eq(pending.size(), 4)
+	assert_eq(
+		pending.map(func(choice): return choice["discipline_id"]),
+		DISCIPLINE_IDS,
+	)
+	assert_true(pending.all(func(choice): return choice["choices"].size() == 2))
+	for choice in pending:
+		var selected = choice["choices"][0]
+		assert_true(manager.choose_progression_upgrade(
+			&"achilles",
+			choice["discipline_id"],
+			choice["rank"],
+			selected.upgrade_id,
+		))
+		assert_eq(
+			state.get_discipline_progress(choice["discipline_id"]).rank,
+			2,
+		)
 	assert_true(manager.get_pending_progression_choices().is_empty())
 	manager.cleanup_run_state()
 	manager.free()

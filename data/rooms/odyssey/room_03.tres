@@ -3,15 +3,15 @@
 [ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="PackedScene" path="res://data/rooms/maps/painted_battle.tscn" id="3_battle"]
-[ext_resource type="Resource" path="res://data/units/enemies/odyssey_skirmisher.tres" id="4_skirmisher"]
+[ext_resource type="Resource" path="res://data/units/enemies/catabase_shadow_paris.tres" id="4_paris"]
 [ext_resource type="Resource" path="res://data/units/enemies/odyssey_champion.tres" id="5_champion"]
-[ext_resource type="Resource" path="res://data/maps/painted/room_06_space_layout.tres" id="6_layout"]
+[ext_resource type="Resource" path="res://data/maps/painted/odyssey/room_03_layout.tres" id="6_layout"]
 [ext_resource type="Resource" path="res://data/maps/painted/odyssey/room_03_visual.tres" id="7_visual"]
 [ext_resource type="Resource" path="res://data/encounters/odyssey_room_03_encounter.tres" id="8_encounter"]
 
 [resource]
 script = ExtResource("2_room")
-room_name = "L'Odyssée III - Le champion"
+room_name = "Catabase III — Le Jugement de Paris"
 battle_scene = ExtResource("3_battle")
 grid_layout = ExtResource("6_layout")
 painted_map_visual_data = ExtResource("7_visual")
@@ -21,6 +21,6 @@ maximum_wave_count = 1
 ultimate_reward_base_chance = 0
 ultimate_reward_min_gain_per_wave = 0
 ultimate_reward_max_gain_per_wave = 0
-enemies = Array[ExtResource("1_unit")]([ExtResource("5_champion"), ExtResource("4_skirmisher")])
+enemies = Array[ExtResource("1_unit")]([ExtResource("5_champion"), ExtResource("4_paris")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(4, 9), Vector2i(3, 10), Vector2i(4, 10), Vector2i(5, 10), Vector2i(3, 11), Vector2i(4, 11)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(8, 2), Vector2i(9, 2), Vector2i(10, 2), Vector2i(8, 3), Vector2i(9, 3), Vector2i(10, 3)])

@@ -3,7 +3,8 @@ class_name ItemStudioCatalogService
 extends RefCounted
 
 const DEFAULT_CATALOG_PATH := "res://data/items/catalogs/default_item_catalog.tres"
-const DRAFT_DIRECTORY := "res://data/items/drafts"
+const DRAFT_DIRECTORY := "user://dungeon_draft_studio/item_studio/drafts"
+const LEGACY_DRAFT_DIRECTORY := "res://data/items/drafts"
 const PRODUCTION_STATUS := &"SHARED"
 const DRAFT_STATUS := &"DRAFT"
 const LEGACY_STATUS := &"LEGACY"
@@ -43,13 +44,36 @@ func production_definitions() -> Array[ItemDefinition]:
 
 func discover_drafts() -> Array[ItemDefinition]:
 	var result: Array[ItemDefinition] = []
-	var paths: Array[String] = []
-	_collect_resource_paths(draft_directory, paths)
-	paths.sort()
-	for path in paths:
-		var resource := load(path)
-		if resource is ItemDefinition:
-			result.append(resource as ItemDefinition)
+	var primary_item_ids := {}
+	var directories := draft_directories()
+	for directory_index in directories.size():
+		var directory := str(directories[directory_index])
+		var directory_paths: Array[String] = []
+		_collect_resource_paths(directory, directory_paths)
+		directory_paths.sort()
+		for path in directory_paths:
+			var resource := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
+			if not resource is ItemDefinition:
+				continue
+			var definition := resource as ItemDefinition
+			# Une copie user:// masque uniquement son homologue legacy. Plusieurs
+			# récupérations user:// du même item_id restent visibles : elles sont
+			# des versions concurrentes que l'auteur doit pouvoir choisir.
+			if directory_index > 0 and primary_item_ids.has(definition.item_id):
+				continue
+			if directory_index == 0:
+				primary_item_ids[definition.item_id] = true
+			result.append(definition)
+	return result
+
+
+func draft_directories() -> PackedStringArray:
+	var result := PackedStringArray([draft_directory])
+	# Les brouillons historiques du dépôt restent découvrables le temps d'être
+	# ouverts puis réenregistrés sous user://. Une configuration de test ou de
+	# projet explicite reste, elle, strictement isolée dans son propre dossier.
+	if draft_directory == DRAFT_DIRECTORY and LEGACY_DRAFT_DIRECTORY != draft_directory:
+		result.append(LEGACY_DRAFT_DIRECTORY)
 	return result
 
 
@@ -80,10 +104,19 @@ func auto_discovery_directories() -> PackedStringArray:
 
 func is_path_auto_discovered(resource_path: String) -> bool:
 	for directory in auto_discovery_directories():
-		var normalized_directory := str(directory).trim_suffix("/")
-		if resource_path == normalized_directory or resource_path.begins_with(normalized_directory + "/"):
+		if path_is_within_directory(resource_path, str(directory)):
 			return true
 	return false
+
+
+static func path_is_within_directory(resource_path: String, directory_path: String) -> bool:
+	var candidate := resource_path.replace("\\", "/")
+	var normalized_candidate := candidate.simplify_path()
+	var normalized_directory := directory_path.replace("\\", "/").simplify_path().trim_suffix("/")
+	if candidate != normalized_candidate \
+			or normalized_candidate.get_extension().to_lower() not in ["tres", "res"]:
+		return false
+	return normalized_candidate.begins_with(normalized_directory + "/")
 
 
 func has_item_id(item_id: StringName, excluded_path := "") -> bool:

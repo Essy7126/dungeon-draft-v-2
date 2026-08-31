@@ -1,0 +1,204 @@
+[gd_resource type="Resource" script_class="CinematicSequenceData" load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://cinematics/core/cinematic_sequence_data.gd" id="1_sequence"]
+[ext_resource type="Script" path="res://cinematics/core/cinematic_frame_data.gd" id="2_frame"]
+[ext_resource type="Script" path="res://cinematics/core/cinematic_text_cue_data.gd" id="3_cue"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_01_legende.tres" id="10_image_01"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_02_montagne.tres" id="11_image_02"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_03_souvenirs.tres" id="12_image_03"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_04_ombre.tres" id="13_image_04"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_05_voyageurs.tres" id="14_image_05"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_06_promesse.tres" id="15_image_06"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_07_coeur_aube.tres" id="16_image_07"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_08_transformation.tres" id="17_image_08"]
+[ext_resource type="Texture2D" path="res://cinematics/intro/atlas/intro_09_marchand.tres" id="18_image_09"]
+[ext_resource type="AudioStream" path="res://cinematics/intro/audio/intro_narration.mp3" id="20_narration"]
+[ext_resource type="AudioStream" path="res://cinematics/intro/audio/The Heart of Dawn.mp3" id="21_music"]
+
+[sub_resource type="Resource" id="Frame_01"]
+script = ExtResource("2_frame")
+texture = ExtResource("10_image_01")
+end_time_seconds = 13.0
+transition_mode = 0
+transition_duration_seconds = 0.0
+ken_burns_direction = Vector2(0.8, -0.25)
+
+[sub_resource type="Resource" id="Frame_02"]
+script = ExtResource("2_frame")
+texture = ExtResource("11_image_02")
+start_time_seconds = 13.0
+end_time_seconds = 25.0
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(-0.65, 0.2)
+
+[sub_resource type="Resource" id="Frame_03"]
+script = ExtResource("2_frame")
+texture = ExtResource("12_image_03")
+start_time_seconds = 25.0
+end_time_seconds = 34.0
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(0.45, 0.35)
+
+[sub_resource type="Resource" id="Frame_04"]
+script = ExtResource("2_frame")
+texture = ExtResource("13_image_04")
+start_time_seconds = 34.0
+end_time_seconds = 42.0
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(-0.75, -0.15)
+
+[sub_resource type="Resource" id="Frame_05"]
+script = ExtResource("2_frame")
+texture = ExtResource("14_image_05")
+start_time_seconds = 42.0
+end_time_seconds = 51.0
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(0.15, -0.35)
+
+[sub_resource type="Resource" id="Frame_06"]
+script = ExtResource("2_frame")
+texture = ExtResource("15_image_06")
+start_time_seconds = 51.0
+end_time_seconds = 59.0
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(0.7, 0.2)
+
+[sub_resource type="Resource" id="Frame_07"]
+script = ExtResource("2_frame")
+texture = ExtResource("16_image_07")
+start_time_seconds = 59.0
+end_time_seconds = 67.0
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(-0.35, 0.25)
+
+[sub_resource type="Resource" id="Frame_08"]
+script = ExtResource("2_frame")
+texture = ExtResource("17_image_08")
+start_time_seconds = 67.0
+end_time_seconds = 84.0
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(0.6, -0.2)
+
+[sub_resource type="Resource" id="Frame_09"]
+script = ExtResource("2_frame")
+texture = ExtResource("18_image_09")
+start_time_seconds = 84.0
+end_time_seconds = 94.46
+transition_duration_seconds = 0.9
+ken_burns_direction = Vector2(-0.5, -0.15)
+
+[sub_resource type="Resource" id="Cue_01"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_01"
+fallback_text = "Au-delà des royaumes connus s’élève une montagne qui défie les cieux."
+end_time_seconds = 13.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_02"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_02"
+fallback_text = "À son sommet repose un donjon ancien, gardien d’un pouvoir oublié."
+start_time_seconds = 13.0
+end_time_seconds = 25.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_03"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_03"
+fallback_text = "Ceux qui l’ont affronté n’en rapportent que des souvenirs brisés."
+start_time_seconds = 25.0
+end_time_seconds = 34.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_04"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_04"
+fallback_text = "Et dans son ombre, quelque chose s’éveille."
+start_time_seconds = 34.0
+end_time_seconds = 42.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_05"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_05"
+fallback_text = "Pourtant, trois voyageurs ont répondu à l’appel."
+start_time_seconds = 42.0
+end_time_seconds = 51.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_06"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_06"
+fallback_text = "L’Elfe, le Mage et le Guerrier ont juré d’atteindre le sommet."
+start_time_seconds = 51.0
+end_time_seconds = 59.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_07"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_07"
+fallback_text = "Au cœur de la montagne, l’aube attend encore d’être libérée."
+start_time_seconds = 59.0
+end_time_seconds = 67.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_08"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_08"
+fallback_text = "Mais l’ascension transforme tous ceux qui osent la tenter."
+start_time_seconds = 67.0
+end_time_seconds = 84.0
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.45
+
+[sub_resource type="Resource" id="Cue_09"]
+script = ExtResource("3_cue")
+localization_key = &"INTRO_SUBTITLE_09"
+fallback_text = "L’Archiviste ouvre la voie. Leur histoire commence ici."
+start_time_seconds = 84.0
+end_time_seconds = 94.46
+style_id = &"legacy_subtitle"
+normalized_position = Vector2(0.5, 0.865)
+fade_in_seconds = 0.45
+fade_out_seconds = 0.65
+
+[resource]
+script = ExtResource("1_sequence")
+sequence_id = &"legacy_intro"
+duration_seconds = 94.46
+frames = Array[ExtResource("2_frame")]([SubResource("Frame_01"), SubResource("Frame_02"), SubResource("Frame_03"), SubResource("Frame_04"), SubResource("Frame_05"), SubResource("Frame_06"), SubResource("Frame_07"), SubResource("Frame_08"), SubResource("Frame_09")])
+text_cues = Array[ExtResource("3_cue")]([SubResource("Cue_01"), SubResource("Cue_02"), SubResource("Cue_03"), SubResource("Cue_04"), SubResource("Cue_05"), SubResource("Cue_06"), SubResource("Cue_07"), SubResource("Cue_08"), SubResource("Cue_09")])
+music_stream = ExtResource("21_music")
+music_volume_db = -18.0
+music_fade_in_seconds = 1.5
+music_fade_out_start_seconds = 93.46
+music_fade_out_seconds = 1.0
+narration_stream = ExtResource("20_narration")
+allow_skip = true
+opening_fade_seconds = 0.8
+exit_fade_seconds = 0.8
+continuation = 0
+

@@ -25,7 +25,9 @@ func _ready() -> void:
 	warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(warning)
 	id_edit = LineEdit.new()
-	id_edit.text_changed.connect(func(value): path_label.text = path_service.draft_path(StringName(path_service.normalize_item_id(value))))
+	id_edit.text_changed.connect(func(value): path_label.text = path_service.draft_path(
+		StringName(path_service.normalize_item_id(value)), _draft_directory()
+	))
 	root.add_child(id_edit)
 	tags_check = CheckBox.new()
 	tags_check.text = "Copier les tags d’acquisition (le tag de récompense reste décoché par défaut)"
@@ -39,7 +41,7 @@ func open_for(definition: ItemDefinition) -> void:
 	var proposed := path_service.suggest_item_id("%s copie" % definition.display_name, catalog)
 	id_edit.text = str(proposed)
 	tags_check.button_pressed = false
-	path_label.text = path_service.draft_path(proposed)
+	path_label.text = path_service.draft_path(proposed, _draft_directory())
 	popup_centered(Vector2i(560, 220))
 
 
@@ -47,3 +49,8 @@ func _confirm() -> void:
 	var item_id := StringName(path_service.normalize_item_id(id_edit.text))
 	if item_id != &"":
 		duplicate_requested.emit(item_id, tags_check.button_pressed)
+
+
+func _draft_directory() -> String:
+	return catalog.draft_directory if catalog != null \
+		else ItemStudioCatalogService.DRAFT_DIRECTORY

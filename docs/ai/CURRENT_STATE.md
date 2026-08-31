@@ -1,5 +1,38 @@
 # État courant vérifié du projet
 
+## Catabase — cinématique V4 (WORKTREE_CANDIDATE, 2026-08-28)
+
+- Dépôt : `Essy7126/dungeon-draft-v-2` ; branche : `main` ; BASE de mission :
+  `0bdc2540b1e257e405d708e576ae11ac1a43da5a` ; HEAD local de départ et HEAD
+  actuel non commité : `b642e905f851d9444a22b76cad18da14e19b34d1`.
+- Le HEAD attendu avait avancé avant la mission. Le commit attendu est un
+  ancêtre du HEAD observé et le worktree était propre ; aucune modification
+  externe concurrente n'a été écrasée.
+- La séquence réellement intégrée référence dix PNG, 24 cues français issus de
+  l'ASS et une timeline de 72,000 s. Elle joue la source utilisateur
+  `Catabase.mp3` sur le bus Music, avec une durée mesurée par Godot de
+  80,053497 s ; l'horloge monotone de 72 s reste l'unique autorité.
+- Le flux data-driven configuré est `RunData -> CinematicSequenceData -> lecteur
+  générique -> GameManager.start_configured_run()`. Catabase masque le choix de
+  salle et force l'index 0 ; les deux autres runs de production conservent leur
+  séquence historique. Les tests d'intégration du hub vérifient la sélection
+  publique « Catabase » et l'impossibilité de lancer sa salle 2 ou 3.
+- Les captures runtime ont été produites aux douze temps demandés en
+  1280 x 720, 1920 x 1080 et 1280 x 800. La proportion non 16:9 conserve
+  l'image complète avec bandes noires. Une capture du combat réel, après le
+  flux normal de transition, montre Achille seul déployé face à une seule Ombre
+  de Paris dans la salle d'index 0.
+- Validation automatisée déjà exécutée : contrat Catabase 17/17 (432
+  assertions), lecteur générique 11/11 (48), hub vertical 21/21 (1 558),
+  isolation du contenu 14/14 (1 509), isolation du flux 22/22 (224) et sortie
+  post-combat 4/4 (16). La régression Achille/Odyssée passe 17/19 ; ses deux
+  échecs de rendu `SubViewport` avec le driver headless reproduisent une limite
+  graphique préexistante et ne touchent aucun fichier visuel modifié ici.
+- Non vérifié humainement : écoute et visionnage continus des 72 secondes,
+  qualité subjective des fondus et du mixage, confort réel des skips à 2, 35
+  et 69 secondes, puis transition perçue vers le combat. Ce candidat ne doit
+  donc pas être déclaré CURRENT.
+
 ## Studio Terrain — retour humain illustration et grille (WORKTREE_CANDIDATE, 2026-08-24)
 
 - **PROUVÉ** — `Depuis une illustration` affiche désormais un grand aperçu du

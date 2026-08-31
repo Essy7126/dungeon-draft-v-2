@@ -975,7 +975,7 @@ terrain_id = &"void"
 [sub_resource type="Resource" id="Resource_ju4hm"]
 script = ExtResource("13_g1yqc")
 layout_id = &"room_05_volcano"
-debug_name = "L'Odyssée II - La garde"
+debug_name = "Catabase II — La Porte des Cendres"
 layout_rows = PackedStringArray("XXXX..XXXXXXXX", "XXXX........XX", "X...........XX", "......X.....XX", "......X..##.XX", "....#....##.XX", "..##.........X", ".............X", "XX.......#...X", "XX........#..X", "........##...X", "X..........XXX", "XXXX...XXX..XX", "XXXXX...XXXXXX")
 cell_type_overrides = {
 Vector2i(2, 6): 1,
@@ -2123,7 +2123,7 @@ cell = Vector2i(9, 10)
 [sub_resource type="Resource" id="Resource_ebjuq"]
 script = ExtResource("18_yghgf")
 map_id = &"room_05_volcano"
-debug_name = "L'Odyssée II - La garde"
+debug_name = "Catabase II — La Porte des Cendres"
 background_texture_path = "res://asset/map/painted/greece/greece.png"
 source_image_size = Vector2i(1254, 1254)
 grid_origin = Vector2(621, 283)
@@ -2234,8 +2234,8 @@ group_id = &"legacy_enemy_pool"
 [resource]
 script = ExtResource("19_na53v")
 arena_id = &"room_05_volcano"
-display_name = "L'Odyssée II - La garde"
-visual_mode = 2
+display_name = "Catabase II — La Porte des Cendres"
+visual_mode = 0
 modular_visual_profile = ExtResource("14_61dsa")
 background_path = "res://asset/map/painted/greece/greece.png"
 source_image_size = Vector2i(1254, 1254)
@@ -2256,7 +2256,7 @@ calibration_pixels = Array[Vector2]([Vector2(833.6, 242.5), Vector2(1006.85, 330
 presentation_profile_path = "res://data/maps/painted/room_05_volcano_presentation.tres"
 source_room_path = "res://data/rooms/odyssey/room_02.tres"
 source_visual_path = "res://data/maps/painted/odyssey/room_02_visual.tres"
-room_name = "L'Odyssée II - La garde"
+room_name = "Catabase II — La Porte des Cendres"
 battle_scene = ExtResource("3_battle")
 arena_visual_profile = SubResource("Resource_w0ri3")
 grid_layout = SubResource("Resource_ju4hm")

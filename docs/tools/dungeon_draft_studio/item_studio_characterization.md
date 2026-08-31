@@ -53,7 +53,10 @@ partageables.
 
 ## Brouillons, legacy et références
 
-`res://data/items/drafts` n’est pas auto-découvert. Les chemins
+Le brouillon personnel courant est
+`user://dungeon_draft_studio/item_studio/drafts`, hors dépôt et hors découverte
+de production. `res://data/items/drafts` reste lu comme emplacement historique
+de migration, mais n’est plus la destination par défaut. Les chemins
 `data/equipment/**` et l’ancien format `data/relics/**` sont **HISTORIQUE**.
 Il n’existe pas de seconde autorité `RelicDefinition` : les reliques actives sont
 des `ItemDefinition` exécutées par `RelicRuntimeService`.

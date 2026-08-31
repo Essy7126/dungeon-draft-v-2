@@ -5,11 +5,19 @@ const LIGHTNING_PATH := "res://vfx/profiles/test/lightning_multi_target.tres"
 const PATH_PATH := "res://vfx/profiles/test/player_path_preview.tres"
 const PUBLICATION_PATH := "res://test/fixtures/vfx/published/codex_vfx_slice_test.tres"
 const DRAFT_ID := &"codex.vfx.slice.draft_test"
+const INVALID_DRAFT_ID := &"codex.vfx.slice.invalid_recovery"
+const CONCURRENT_DRAFT_ID := &"codex.vfx.slice.concurrent_recovery"
+const EXTERNAL_BASELINE_DRAFT_ID := &"codex.vfx.slice.external_baseline"
 
 
 func after_all() -> void:
 	_remove_owned_file(PUBLICATION_PATH)
 	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % DRAFT_ID))
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % INVALID_DRAFT_ID))
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % CONCURRENT_DRAFT_ID))
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join(
+		"%s.json" % EXTERNAL_BASELINE_DRAFT_ID
+	))
 
 
 func test_profiles_load_with_schema_stable_ids_sequences_and_placeholder_art() -> void:
@@ -130,6 +138,7 @@ func test_deep_working_copy_has_no_shared_mutable_subresources() -> void:
 
 
 func test_document_undo_redo_draft_save_and_reload() -> void:
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % DRAFT_ID))
 	var profile := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
 	profile.profile_id = DRAFT_ID
 	var document := VFXStudioDocument.new()
@@ -148,6 +157,242 @@ func test_document_undo_redo_draft_save_and_reload() -> void:
 	assert_true(str(draft.path).begins_with("user://"))
 	var loaded := VFXDraftService.new().load_draft(DRAFT_ID)
 	assert_true(loaded.ok, str(loaded))
+	assert_eq(
+		VFXProfileSnapshotService.fingerprint(loaded.profile),
+		VFXProfileSnapshotService.fingerprint(document.working_copy),
+	)
+	var draft_bytes := FileAccess.get_file_as_bytes(str(draft.path))
+	assert_true(document.record_edit("Échec transactionnel", func():
+		document.working_copy.sequences[0].modules[0].duration += 0.3
+	))
+	var failing_service := VFXDraftService.new()
+	failing_service.force_failure_after_replace = true
+	var failed := failing_service.save_draft(document)
+	assert_false(failed.ok)
+	assert_true(bool(failed.get("rolled_back", false)), str(failed))
+	assert_eq(FileAccess.get_file_as_bytes(str(draft.path)), draft_bytes)
+	assert_true(document.is_dirty())
+
+
+func test_draft_service_rejects_path_traversal_profile_id() -> void:
+	for unsafe_id in [&"../outside", &"CON", &"com1.profile", &"LPT9"]:
+		var profile := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+		profile.profile_id = unsafe_id
+		var document := VFXStudioDocument.new()
+		assert_true(document.open_profile(profile))
+		var result := VFXDraftService.new().save_draft(document)
+		assert_false(result.ok, str(unsafe_id))
+		assert_eq(result.get("code", ""), "unsafe_profile_id", str(unsafe_id))
+
+
+func test_draft_rollback_preserves_third_party_json_and_durable_backup() -> void:
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join(
+		"%s.json" % CONCURRENT_DRAFT_ID
+	))
+	var profile := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+	profile.profile_id = CONCURRENT_DRAFT_ID
+	var document := VFXStudioDocument.new()
+	assert_true(document.open_profile(profile))
+	var initial := VFXDraftService.new().save_draft(document)
+	assert_true(initial.ok, str(initial))
+	var original_bytes := FileAccess.get_file_as_bytes(str(initial.path))
+	assert_true(document.record_edit("Écriture Studio", func():
+		document.working_copy.sequences[0].modules[0].duration += 0.4
+	))
+	var external_duration := 7.25
+	var hook_result := {"ok": false, "sha256": ""}
+	var service := VFXDraftService.new()
+	service.before_verification_hook = func(written_path: String):
+		var external := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+		external.profile_id = CONCURRENT_DRAFT_ID
+		external.sequences[0].modules[0].duration = external_duration
+		var external_file := FileAccess.open(written_path, FileAccess.WRITE)
+		if external_file != null:
+			external_file.store_string(JSON.stringify(
+				VFXProfileSnapshotService.to_dictionary(external), "  "
+			))
+			external_file.flush()
+			external_file.close()
+			hook_result["ok"] = true
+			hook_result["sha256"] = FileAccess.get_sha256(written_path)
+	var failed := service.save_draft(document)
+	assert_true(hook_result.ok)
+	assert_false(failed.ok, str(failed))
+	assert_false(bool(failed.get("rolled_back", true)), str(failed))
+	assert_true(bool((failed.rollback as Dictionary).get(
+		"skipped_external_change", false
+	)), str(failed))
+	assert_eq(FileAccess.get_sha256(str(initial.path)), hook_result.sha256)
+	var external_loaded := service.load_draft(CONCURRENT_DRAFT_ID)
+	assert_true(external_loaded.ok, str(external_loaded))
+	assert_eq(
+		external_loaded.profile.sequences[0].modules[0].duration,
+		external_duration,
+	)
+	var transaction := failed.transaction as Dictionary
+	assert_true(FileAccess.file_exists(str(transaction.manifest_path)))
+	assert_true(FileAccess.file_exists(str(transaction.backup_path)))
+	assert_eq(
+		FileAccess.get_file_as_bytes(str(transaction.backup_path)),
+		original_bytes,
+	)
+	var manifest = JSON.parse_string(
+		FileAccess.get_file_as_string(str(transaction.manifest_path))
+	)
+	assert_true(manifest is Dictionary)
+	assert_eq(str((manifest as Dictionary).get("status", "")), "PREPARED")
+	assert_false(str((manifest as Dictionary).get("staged_sha256", "")).is_empty())
+	_remove_owned_file(str(transaction.get("local_backup_path", "")))
+	service._cleanup_transaction(transaction)
+
+
+func test_draft_save_refuses_a_change_made_since_the_last_verified_save() -> void:
+	var path := VFXDraftService.DRAFT_DIRECTORY.path_join(
+		"%s.json" % EXTERNAL_BASELINE_DRAFT_ID
+	)
+	_remove_owned_file(path)
+	var profile := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+	profile.profile_id = EXTERNAL_BASELINE_DRAFT_ID
+	var document := VFXStudioDocument.new()
+	assert_true(document.open_profile(profile))
+	var service := VFXDraftService.new()
+	var initial := service.save_draft(document)
+	assert_true(initial.ok, str(initial))
+	var external := VFXProfileCopyService.new().duplicate_profile(profile)
+	external.sequences[0].modules[0].duration = 8.75
+	var external_file := FileAccess.open(path, FileAccess.WRITE)
+	assert_not_null(external_file)
+	external_file.store_string(JSON.stringify(
+		VFXProfileSnapshotService.to_dictionary(external), "  "
+	))
+	external_file.flush()
+	external_file.close()
+	var external_sha := FileAccess.get_sha256(path)
+	assert_true(document.record_edit("Écriture locale après concurrence", func():
+		document.working_copy.sequences[0].modules[0].duration += 0.2
+	))
+	var refused := service.save_draft(document)
+	assert_false(refused.ok, str(refused))
+	assert_eq(str(refused.get("code", "")), "external_change")
+	assert_eq(FileAccess.get_sha256(path), external_sha)
+	assert_true(document.is_dirty())
+	var recovery := service.save_recovery(document)
+	assert_true(recovery.ok, str(recovery))
+	assert_true(str(recovery.path).begins_with(VFXDraftService.RECOVERY_DIRECTORY + "/"))
+	assert_true(FileAccess.file_exists(str(recovery.path)))
+	_remove_owned_file(str(recovery.path))
+
+
+func test_draft_save_rechecks_baseline_immediately_before_transaction() -> void:
+	var path := VFXDraftService.DRAFT_DIRECTORY.path_join(
+		"%s.json" % EXTERNAL_BASELINE_DRAFT_ID
+	)
+	_remove_owned_file(path)
+	var profile := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+	profile.profile_id = EXTERNAL_BASELINE_DRAFT_ID
+	var document := VFXStudioDocument.new()
+	assert_true(document.open_profile(profile))
+	var initial_service := VFXDraftService.new()
+	assert_true(initial_service.save_draft(document).ok)
+	assert_true(document.record_edit("Écriture locale concurrente", func():
+		document.working_copy.sequences[0].modules[0].duration += 0.3
+	))
+	var external_sha := {"value": ""}
+	var service := VFXDraftService.new()
+	service.before_transaction_hook = func(target_path: String):
+		var external := VFXProfileCopyService.new().duplicate_profile(profile)
+		external.sequences[0].modules[0].duration = 6.5
+		var file := FileAccess.open(target_path, FileAccess.WRITE)
+		if file != null:
+			file.store_string(JSON.stringify(
+				VFXProfileSnapshotService.to_dictionary(external), "  "
+			))
+			file.flush()
+			file.close()
+			external_sha["value"] = FileAccess.get_sha256(target_path)
+	var refused := service.save_draft(document)
+	assert_false(refused.ok, str(refused))
+	assert_eq(str(refused.get("code", "")), "external_change")
+	assert_false(str(external_sha.value).is_empty())
+	assert_eq(FileAccess.get_sha256(path), str(external_sha.value))
+
+
+func test_document_snapshot_restores_transient_flipbook_and_full_history() -> void:
+	var profile := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+	var module := VFXFlipbookModuleData.new()
+	module.module_id = &"transient_flipbook"
+	module.module_type = &"FlipbookModule"
+	module.asset = VFXFlipbookAsset.new()
+	module.asset.asset_id = &"transient_asset"
+	profile.sequences[0].modules[0] = module
+	var document := VFXStudioDocument.new()
+	assert_true(document.open_profile(profile))
+	assert_true(document.record_edit("Opacité intermédiaire", func():
+		(document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData).opacity = 0.6
+	))
+	var snapshot := document.snapshot_state()
+	var snapshot_asset := (
+		document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData
+	).asset
+	snapshot_asset.display_name = "Mutation après snapshot"
+	snapshot_asset.columns = 9
+	assert_true(document.record_edit("Opacité finale", func():
+		(document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData).opacity = 0.2
+	))
+	(document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData).asset = null
+	assert_true(document.restore_state(snapshot))
+	var restored := document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData
+	assert_not_null(restored.asset)
+	assert_eq(restored.asset.asset_id, &"transient_asset")
+	assert_ne(restored.asset.display_name, "Mutation après snapshot")
+	assert_eq(restored.asset.columns, 1)
+	assert_almost_eq(restored.opacity, 0.6, 0.0001)
+	assert_true(document.is_dirty())
+	assert_true(document.history.can_undo())
+	assert_true(document.history.undo())
+	assert_almost_eq(
+		(document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData).opacity,
+		1.0, 0.0001
+	)
+	assert_false(document.is_dirty())
+	assert_true(document.history.redo())
+	assert_almost_eq(
+		(document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData).opacity,
+		0.6, 0.0001
+	)
+	assert_true(document.is_dirty())
+	var recovery := VFXDraftService.new().save_recovery(document)
+	assert_true(recovery.ok, str(recovery))
+	assert_eq(str(recovery.format), "tres")
+	var recovered := ResourceLoader.load(
+		str(recovery.path), "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as VFXProfile
+	assert_not_null(recovered)
+	assert_not_null(
+		(recovered.sequences[0].modules[0] as VFXFlipbookModuleData).asset
+	)
+	assert_eq(
+		(recovered.sequences[0].modules[0] as VFXFlipbookModuleData).asset.columns,
+		1
+	)
+	_remove_owned_file(str(recovery.path))
+
+
+func test_semantically_invalid_vfx_remains_recoverable_as_local_draft() -> void:
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join(
+		"%s.json" % INVALID_DRAFT_ID
+	))
+	var profile := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+	profile.profile_id = INVALID_DRAFT_ID
+	profile.schema_version = 999
+	var document := VFXStudioDocument.new()
+	assert_true(document.open_profile(profile))
+	var result := VFXDraftService.new().save_draft(document)
+	assert_true(result.ok, str(result))
+	assert_false(bool(result.get("valid", true)))
+	var loaded := VFXDraftService.new().load_draft(INVALID_DRAFT_ID)
+	assert_true(loaded.ok, str(loaded))
+	assert_false(bool(loaded.get("valid", true)))
 	assert_eq(
 		VFXProfileSnapshotService.fingerprint(loaded.profile),
 		VFXProfileSnapshotService.fingerprint(document.working_copy),
@@ -271,16 +516,127 @@ func test_composer_loads_catalogue_working_copy_preview_and_clear() -> void:
 	assert_eq(composer.stage.get_children().filter(func(child): return child is VFXRuntimeInstance).size(), 0)
 
 
+func test_dirty_profile_change_requires_explicit_context_decision() -> void:
+	var context := StudioProjectContext.new()
+	var composer := VFXComposer.new()
+	composer.setup(context)
+	add_child_autofree(composer)
+	await get_tree().process_frame
+	assert_true(context.transition_handler_contract(&"vfx").valid)
+	var opening_source := composer.document.source
+	var opening_duration := composer.document.working_copy.sequences[0].modules[0].duration
+	assert_true(composer.document.record_edit("Durée sale", func():
+		composer.document.working_copy.sequences[0].modules[0].duration = opening_duration + 0.2
+	))
+	assert_true(context.is_dirty(&"vfx"))
+	composer.catalogue.select(1)
+	assert_false(composer._on_profile_selected(1))
+	assert_same(composer.document.source, opening_source)
+	assert_eq(composer._active_profile_index, 0)
+	assert_true(context.has_pending_transition())
+	assert_true(context.resolve_pending_transition(StudioProjectContext.ACTION_CANCEL).ok)
+	assert_same(composer.document.source, opening_source)
+	assert_true(composer.document.is_dirty())
+	composer.catalogue.select(1)
+	assert_false(composer._on_profile_selected(1))
+	assert_true(context.resolve_pending_transition(StudioProjectContext.ACTION_DISCARD).ok)
+	assert_eq(composer._active_profile_index, 1)
+	assert_eq(composer.document.source_path, LIGHTNING_PATH)
+	assert_false(composer.document.is_dirty())
+	assert_false(context.is_dirty(&"vfx"))
+
+
+func test_prepare_for_close_saves_dirty_vfx_draft() -> void:
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % DRAFT_ID))
+	var composer := VFXComposer.new()
+	add_child_autofree(composer)
+	await get_tree().process_frame
+	var owned := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+	owned.profile_id = DRAFT_ID
+	assert_true(composer.document.open_profile(owned))
+	var before := composer.document.working_copy.sequences[0].modules[0].duration
+	assert_true(composer.document.record_edit("Préparer fermeture", func():
+		composer.document.working_copy.sequences[0].modules[0].duration = before + 0.1
+	))
+	var result := composer.prepare_for_close()
+	assert_true(result.ok, str(result))
+	assert_false(composer.document.is_dirty())
+	assert_true(FileAccess.file_exists(
+		VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % DRAFT_ID)
+	))
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % DRAFT_ID))
+
+
+func test_discard_after_a_draft_save_restores_the_saved_draft_not_the_source() -> void:
+	var document := VFXStudioDocument.new()
+	assert_true(document.open_profile(_profile(SHIELD_PATH)))
+	var original := document.working_copy.sequences[0].modules[0].duration
+	assert_true(document.record_edit("Version brouillon", func():
+		document.working_copy.sequences[0].modules[0].duration = original + 0.4
+	))
+	document.mark_draft_saved("user://test-vfx-draft.json", "test-sha")
+	var saved_draft_duration := document.working_copy.sequences[0].modules[0].duration
+	assert_true(document.record_edit("Après brouillon", func():
+		document.working_copy.sequences[0].modules[0].duration += 0.7
+	))
+	assert_true(document.discard_changes())
+	assert_eq(
+		document.working_copy.sequences[0].modules[0].duration,
+		saved_draft_duration,
+	)
+	assert_ne(saved_draft_duration, original)
+	assert_false(document.is_dirty())
+	assert_true(document.saved_as_draft)
+
+
 func test_dungeon_draft_studio_registers_vfx_as_fourth_shared_domain() -> void:
+	_remove_owned_file(VFXDraftService.DRAFT_DIRECTORY.path_join("%s.json" % DRAFT_ID))
+	var context := StudioProjectContext.new()
 	var studio := DungeonDraftStudioMain.new()
+	studio.setup(null, null, context)
 	add_child_autofree(studio)
 	studio.set_deferred("size", Vector2(1500, 850))
 	await get_tree().process_frame
 	assert_eq(studio.tabs.get_tab_count(), 4)
 	assert_eq(studio.tabs.get_child(3).name, StringName("VFX"))
+	assert_eq(studio.tabs.get_tab_title(3), "LAB VFX")
+	assert_eq(studio.domain_buttons[3].text, "LAB VFX")
 	assert_not_null(studio.vfx_composer)
+	assert_true(context.transition_handler_contract(&"vfx").valid)
+	var item_source := studio.item_studio.document.source
+	assert_not_null(item_source)
+	assert_true(studio.item_studio.document.open_definition(
+		item_source, ItemStudioDocument.STATUS_SHARED
+	))
+	studio.tabs.current_tab = 2
+	studio._on_tab_changed(2)
+	assert_eq(studio.document_state_label.text, "Production chargée")
+	assert_true(studio.item_studio.document.open_definition(
+		item_source, ItemStudioDocument.STATUS_DRAFT
+	))
+	studio._refresh_history_controls()
+	assert_eq(studio.document_state_label.text, "Brouillon enregistré")
 	studio.tabs.current_tab = 3
+	studio._on_tab_changed(3)
 	assert_same(studio._active_history_provider(), studio.vfx_composer)
+	assert_false(studio.guided_toggle.visible)
+	assert_eq(studio.document_state_label.text, "Profil source chargé")
+	var owned := VFXProfileCopyService.new().duplicate_profile(_profile(SHIELD_PATH))
+	owned.profile_id = DRAFT_ID
+	assert_true(studio.vfx_composer.document.open_profile(owned))
+	var before := studio.vfx_composer.document.working_copy.sequences[0].modules[0].duration
+	assert_true(studio.vfx_composer.document.record_edit("Raccourci sauvegarde", func():
+		studio.vfx_composer.document.working_copy.sequences[0].modules[0].duration = before + 0.1
+	))
+	studio._refresh_history_controls()
+	assert_eq(studio.document_state_label.text, "Profil source modifié")
+	var save_event := InputEventKey.new()
+	save_event.pressed = true
+	save_event.ctrl_pressed = true
+	save_event.keycode = KEY_S
+	studio._unhandled_key_input(save_event)
+	assert_false(studio.vfx_composer.document.is_dirty())
+	assert_eq(studio.document_state_label.text, "Brouillon enregistré")
 	studio.prepare_for_close()
 
 

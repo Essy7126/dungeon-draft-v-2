@@ -111,9 +111,13 @@ func _ready() -> void:
 
 	vfx_composer = VFXComposer.new()
 	vfx_composer.name = "VFX"
+	vfx_composer.setup(project_context)
 	tabs.add_child(vfx_composer)
-	tabs.set_tab_title(tabs.get_tab_count() - 1, "EFFETS VISUELS")
+	tabs.set_tab_title(tabs.get_tab_count() - 1, "LAB VFX")
 	vfx_composer.history_state_changed.connect(_refresh_history_controls)
+	vfx_composer.document_state_changed.connect(
+		func(_dirty: bool): _refresh_history_controls()
+	)
 
 	if not _pending_state.is_empty():
 		apply_state_snapshot(_pending_state)
@@ -143,7 +147,7 @@ func _build_domain_bar() -> Control:
 		var button := Button.new()
 		button.flat = true
 		button.toggle_mode = true
-		button.text = [TerrainVocabulary.TAB_TITLE, "Rencontres", "Objets", "Effets visuels"][index]
+		button.text = [TerrainVocabulary.TAB_TITLE, "Rencontres", "Objets", "LAB VFX"][index]
 		button.pressed.connect(_select_domain.bind(index))
 		bar.add_child(button)
 		domain_buttons.append(button)
@@ -342,15 +346,39 @@ func _open_arena_tab() -> void:
 		tabs.current_tab = 0
 
 
-func prepare_for_close() -> void:
+func prepare_for_close() -> Dictionary:
+	var failures := PackedStringArray()
 	if arena_studio != null and arena_studio.has_method("cancel_active_gesture"):
 		arena_studio.cancel_active_gesture()
 	if arena_studio != null and arena_studio.has_method("_flush_recovery"):
-		arena_studio._flush_recovery()
+		var arena_result = arena_studio._flush_recovery()
+		if arena_result is Dictionary \
+				and not bool((arena_result as Dictionary).get("ok", false)):
+			failures.append("La récupération Terrain a échoué.")
+	if encounter_studio != null:
+		var encounter_result = encounter_studio.prepare_for_close()
+		if encounter_result is Dictionary \
+				and not bool((encounter_result as Dictionary).get("ok", false)):
+			failures.append("La récupération Rencontres a échoué.")
 	if item_studio != null:
-		item_studio.prepare_for_close()
+		var item_result = item_studio.prepare_for_close()
+		if item_result is Dictionary \
+				and not bool((item_result as Dictionary).get("ok", false)):
+			failures.append("La récupération Objets a échoué.")
 	if vfx_composer != null:
-		vfx_composer.prepare_for_close()
+		var vfx_result = vfx_composer.prepare_for_close()
+		if vfx_result is Dictionary \
+				and not bool((vfx_result as Dictionary).get("ok", false)):
+			failures.append("La récupération VFX a échoué.")
+	if not failures.is_empty() and arena_studio != null \
+			and arena_studio.has_method("_set_status"):
+		arena_studio._set_status(
+			"Fermeture refusée : %s" % failures[0], true
+		)
+	return {
+		"ok": failures.is_empty(),
+		"failures": failures,
+	}
 
 
 func cancel_active_gesture() -> bool:
@@ -434,7 +462,9 @@ func _refresh_history_controls() -> void:
 		lab_transfer_button.text = "Importer depuis le laboratoire (%d)" % transfer_count \
 			if transfer_count > 0 else "Importer depuis le laboratoire"
 	if guided_toggle != null:
-		guided_toggle.disabled = false
+		var vfx_active := tabs != null and tabs.current_tab == 3
+		guided_toggle.visible = not vfx_active
+		guided_toggle.disabled = vfx_active
 	_sync_shell_from_arena()
 	_refresh_action_labels()
 
@@ -639,6 +669,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	if not key.ctrl_pressed:
 		return
+	if key.keycode == KEY_S and not key.shift_pressed and not key.alt_pressed:
+		_global_save()
+		get_viewport().set_input_as_handled()
+		return
 	var requests_undo := key.keycode == KEY_Z and not key.shift_pressed
 	var requests_redo := (key.keycode == KEY_Z and key.shift_pressed) \
 		or key.keycode == KEY_Y
@@ -748,7 +782,7 @@ func _apply_toolbar_responsive() -> void:
 		)
 	produce_button.text = "Intégrer à la partie"
 	if domain_buttons.size() >= 4:
-		domain_buttons[3].text = "VFX" if compact else "Effets visuels"
+		domain_buttons[3].text = "LAB VFX"
 	workspace_preset_option.custom_minimum_size.x = 104 if compact else 0
 	preview_view_option.custom_minimum_size.x = 94 if compact else 138
 	if window_menu_button != null:
@@ -792,10 +826,47 @@ func _refresh_action_labels() -> void:
 	)
 	if test_button != null:
 		test_button.text = "Tester"
-	if tabs.current_tab == 1 and encounter_studio != null:
+	if tabs.current_tab != 0:
 		validate_button.text = "Valider"
 		validate_button.remove_theme_color_override("font_color")
-		document_state_label.text = "Modifié" if encounter_studio.session.is_dirty() else "Enregistré"
+	var dirty := false
+	var clean_label := "Enregistré"
+	var dirty_label := "Modifié"
+	match tabs.current_tab:
+		0:
+			dirty = arena_studio != null and arena_studio.dirty
+			clean_label = "Enregistré"
+			dirty_label = "Brouillon modifié"
+		1:
+			dirty = encounter_studio != null and encounter_studio.session.is_dirty()
+			clean_label = "Enregistré"
+			dirty_label = "Modifié"
+		2:
+			dirty = item_studio != null and item_studio.document.is_dirty()
+			if item_studio != null:
+				match item_studio.document.status:
+					ItemStudioDocument.STATUS_DRAFT:
+						clean_label = "Brouillon enregistré"
+						dirty_label = "Brouillon modifié"
+					ItemStudioDocument.STATUS_SHARED:
+						clean_label = "Production chargée"
+						dirty_label = "Production modifiée"
+					_:
+						clean_label = "Nouvel objet"
+						dirty_label = "Nouvel objet non enregistré"
+		3:
+			dirty = vfx_composer != null and vfx_composer.document.is_dirty()
+			var has_vfx_draft: bool = vfx_composer != null \
+				and vfx_composer.document.saved_as_draft
+			clean_label = "Brouillon enregistré" if has_vfx_draft \
+				else "Profil source chargé"
+			dirty_label = "Brouillon modifié" if has_vfx_draft \
+				else "Profil source modifié"
+	if document_state_label != null:
+		document_state_label.text = dirty_label if dirty else clean_label
+		document_state_label.add_theme_color_override(
+			"font_color", Color(1.0, 0.66, 0.25) if dirty else Color(0.48, 0.9, 0.62)
+		)
 
 
 func _open_terrain_home() -> void:

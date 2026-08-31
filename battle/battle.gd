@@ -1071,7 +1071,25 @@ func _on_turn_started(unit: Unit) -> void:
 		_end_active_turn_if_dead(unit)
 		return
 
-	# 4. Stun : l'unité saute son tour.
+	# 4. Une capacité annoncée à l'activation précédente se résout avant que
+	# l'acteur puisse choisir un nouveau plan. C'est le contrat runtime des
+	# télégraphes : le joueur a eu un tour complet pour briser la portée, la
+	# ligne de vue ou la condition spatiale affichée.
+	var pending_result := _resolve_pending_ability(unit)
+	if bool(pending_result.get("consume_activation", false)):
+		if not unit.is_alive:
+			_end_active_turn_if_dead(unit)
+			return
+		_update_active_highlight(unit)
+		_hud_port.update_info(unit)
+		_hud_port.build_actions(unit)
+		if not await _wait_battle_seconds_safe(0.45, lifecycle_generation):
+			return
+		if not _battle_over and is_instance_valid(turn_queue):
+			_finish_active_turn(&"pending_ability_resolved")
+		return
+
+	# 5. Stun : l'unité saute son tour.
 	if is_stunned:
 		DebugLogger.debug(DebugLogger.LogCategory.TURN, "%s est stun, passe son tour" % unit.unit_name)
 		if not await _wait_battle_seconds_safe(0.6, lifecycle_generation):
@@ -1080,7 +1098,7 @@ func _on_turn_started(unit: Unit) -> void:
 			_finish_active_turn(&"stunned")
 		return
 
-	# 5. Déroulement normal.
+	# 6. Déroulement normal.
 	_update_active_highlight(unit)
 	_hud_port.update_info(unit)
 	_hud_port.build_actions(unit)
@@ -1098,6 +1116,43 @@ func _on_turn_started(unit: Unit) -> void:
 		turn_state.begin_player_turn()
 		_hud_port.set_controls_enabled(true)
 		_hud_port.set_active_mode("")
+
+
+func _resolve_pending_ability(unit: Unit) -> Dictionary:
+	if unit == null or spell_caster == null or unit.pending_ability.is_empty():
+		return {
+			"had_pending": false,
+			"resolved": false,
+			"blocked": false,
+			"consume_activation": false,
+		}
+	var pending := unit.pending_ability as Dictionary
+	var pending_spell := pending.get("spell") as Spell
+	var target := pending.get("target") as Unit
+	var impact_cell: Vector2i = pending.get("cell", unit.grid_pos)
+	if target != null and target.is_alive:
+		impact_cell = target.grid_pos
+	var result := spell_caster.resolve_pending_activation(
+		unit,
+		units,
+		turn_queue,
+		Callable(self, "_on_pending_unit_spawned"),
+	)
+	if bool(result.get("resolved", false)) and pending_spell != null:
+		VFXManager.play_spell_vfx(unit, pending_spell, impact_cell)
+	if is_instance_valid(grid_view):
+		grid_view.queue_redraw()
+	return result
+
+
+func _on_pending_unit_spawned(unit: Unit) -> void:
+	if unit == null or not unit.is_alive:
+		return
+	if not unit.died.is_connected(_on_unit_died):
+		unit.died.connect(_on_unit_died)
+	_create_unit_view(unit)
+	_sync_unit_terrain(unit)
+	_orient_unit_toward_nearest_opponent(unit)
 
 
 func get_active_unit():

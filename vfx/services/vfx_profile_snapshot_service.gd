@@ -93,7 +93,8 @@ static func _module_to_dictionary(
 		var flipbook := module as VFXFlipbookModuleData
 		snapshot["concrete_type"] = "VFXFlipbookModuleData"
 		snapshot["flipbook"] = {
-			"asset_path": flipbook.asset.resource_path if flipbook.asset != null else "",
+			"asset_path": _persistent_resource_path(flipbook.asset),
+			"asset_fingerprint": _flipbook_asset_fingerprint(flipbook.asset),
 			"scale_multiplier": _encode_variant(flipbook.scale_multiplier),
 			"rotation_degrees": flipbook.rotation_degrees,
 			"opacity": flipbook.opacity,
@@ -101,8 +102,8 @@ static func _module_to_dictionary(
 			"frame_offset": flipbook.frame_offset,
 		}
 		if include_transient_references and flipbook.asset != null \
-				and flipbook.asset.resource_path.is_empty():
-			snapshot["flipbook"]["asset_reference"] = flipbook.asset
+				and _persistent_resource_path(flipbook.asset).is_empty():
+			snapshot["flipbook"]["asset_reference"] = flipbook.asset.duplicate(true)
 	return snapshot
 
 
@@ -135,7 +136,10 @@ static func _module_from_dictionary(snapshot: Dictionary) -> VFXModuleData:
 		if not asset_path.is_empty():
 			flipbook.asset = ResourceLoader.load(asset_path) as VFXFlipbookAsset
 		elif details.get("asset_reference") is VFXFlipbookAsset:
-			flipbook.asset = details.get("asset_reference") as VFXFlipbookAsset
+			var transient_asset := details.get(
+				"asset_reference"
+			) as VFXFlipbookAsset
+			flipbook.asset = transient_asset.duplicate(true) as VFXFlipbookAsset
 		flipbook.scale_multiplier = _decode_variant(
 			details.get("scale_multiplier", {"__vfx_type": "Vector2", "value": [1.0, 1.0]})
 		) as Vector2
@@ -172,6 +176,65 @@ static func validate_durable_snapshot(profile: VFXProfile) -> Array[String]:
 						% [module.module_id, asset.resource_path]
 					)
 	return errors
+
+
+static func _flipbook_asset_fingerprint(asset: VFXFlipbookAsset) -> String:
+	if asset == null:
+		return ""
+	var variants: Array[Dictionary] = []
+	for variant in asset.variants:
+		if variant == null:
+			variants.append({"null": true})
+			continue
+		variants.append({
+			"variant_id": str(variant.variant_id),
+			"texture_low": _texture_signature(variant.texture_low),
+			"texture_medium": _texture_signature(variant.texture_medium),
+			"texture_high": _texture_signature(variant.texture_high),
+		})
+	var snapshot := {
+		"schema_version": asset.schema_version,
+		"asset_id": str(asset.asset_id),
+		"display_name": asset.display_name,
+		"variants": variants,
+		"columns": asset.columns,
+		"rows": asset.rows,
+		"frame_count": asset.frame_count,
+		"frames_per_second": asset.frames_per_second,
+		"loop": asset.loop,
+		"playback_mode": str(asset.playback_mode),
+		"blend_mode": str(asset.blend_mode),
+		"alpha_mode": str(asset.alpha_mode),
+		"pivot_normalized": [asset.pivot_normalized.x, asset.pivot_normalized.y],
+		"nominal_size_in_cells": [
+			asset.nominal_size_in_cells.x, asset.nominal_size_in_cells.y,
+		],
+		"local_offset": [asset.local_offset.x, asset.local_offset.y],
+		"art_status": str(asset.art_status),
+		"license_status": str(asset.license_status),
+		"manifest_path": asset.manifest_path,
+	}
+	return JSON.stringify(snapshot).sha256_text()
+
+
+static func _persistent_resource_path(resource: Resource) -> String:
+	if resource == null:
+		return ""
+	var path := resource.resource_path
+	# Une sous-ressource embarquée reçoit un chemin « fichier::id » après reload,
+	# mais reste transitoire : ce suffixe ne doit pas modifier son empreinte.
+	return "" if path.contains("::") else path
+
+
+static func _texture_signature(texture: Texture2D) -> Dictionary:
+	if texture == null:
+		return {}
+	return {
+		"class": texture.get_class(),
+		"path": _persistent_resource_path(texture),
+		"width": texture.get_width(),
+		"height": texture.get_height(),
+	}
 
 
 static func _curve_snapshot(curve: Curve) -> Dictionary:

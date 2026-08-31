@@ -1,11 +1,53 @@
 [gd_resource type="Resource" script_class="DisciplineData" format=3 uid="uid://fosmfpo7gu3a"]
 
 [ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_gvb8y"]
+[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_upgrade_type"]
 [ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_modifier_type"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_modifier"]
 
 [sub_resource type="Resource" id="Rank1"]
 script = ExtResource("2_rank")
+
+[sub_resource type="Resource" id="SpearDamageModifier"]
+script = ExtResource("5_modifier")
+amount = 4
+modifier_name = "Pointe inexorable"
+
+[sub_resource type="Resource" id="SpearDamageChoice"]
+script = ExtResource("3_node")
+excluded_node_ids = Array[StringName]([&"achilles_spear_long_reach"])
+upgrade_id = &"achilles_spear_inexorable_point"
+display_name = "Pointe inexorable"
+description = "+4 dégâts. La lance choisit l’exécution plutôt que la distance."
+discipline_id = &"spear"
+rank = 2
+target_spell_id = &"achilles_spear_thrust"
+spell_modifiers = Array[ExtResource("4_modifier_type")]([SubResource("SpearDamageModifier")])
+
+[sub_resource type="Resource" id="SpearRangeModifier"]
+script = ExtResource("5_modifier")
+effect_type = 5
+amount = 1
+modifier_name = "Allonge du Styx"
+
+[sub_resource type="Resource" id="SpearRangeChoice"]
+script = ExtResource("3_node")
+excluded_node_ids = Array[StringName]([&"achilles_spear_inexorable_point"])
+upgrade_id = &"achilles_spear_long_reach"
+display_name = "Allonge du Styx"
+description = "+1 portée. Achille menace au-delà du contact immédiat."
+discipline_id = &"spear"
+rank = 2
+target_spell_id = &"achilles_spear_thrust"
+spell_modifiers = Array[ExtResource("4_modifier_type")]([SubResource("SpearRangeModifier")])
+
+[sub_resource type="Resource" id="Rank2"]
+script = ExtResource("2_rank")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_upgrade_type")]([SubResource("SpearDamageChoice"), SubResource("SpearRangeChoice")])
 
 [resource]
 script = ExtResource("1_discipline")
@@ -13,4 +55,4 @@ discipline_id = &"spear"
 display_name = "Lance"
 description = "Maîtrise des attaques de courte portée menées avec précision."
 presentation_color = Color(0.76, 0.62, 0.3, 1)
-ranks = Array[ExtResource("2_rank")]([SubResource("Rank1")])
+ranks = Array[ExtResource("2_rank")]([SubResource("Rank1"), SubResource("Rank2")])

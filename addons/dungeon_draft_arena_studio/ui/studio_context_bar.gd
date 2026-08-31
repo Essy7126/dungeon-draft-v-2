@@ -264,9 +264,12 @@ func _show_transition(transition: Dictionary) -> void:
 	var domains: Array[String] = []
 	for domain_value in (transition.get("dirty_domains", {}) as Dictionary).keys():
 		domains.append(context.human_domain_name(StringName(domain_value)))
-	var action_text := "Quitter le terrain courant" \
-		if StringName(transition.get("intent", &"")) == &"terrain_home" \
-		else "Changer de contexte"
+	var intent := StringName(transition.get("intent", &""))
+	var action_text := str({
+		&"terrain_home": "Quitter le terrain courant",
+		&"vfx_profile_change": "Ouvrir un autre profil d'effet visuel",
+		&"vfx_reload_draft": "Recharger le brouillon de l'effet visuel",
+	}.get(intent, "Changer de contexte"))
 	transition_dialog.dialog_text = "%s remplacerait une version en cours modifiée.\n\nDomaines : %s\n\nChoisissez explicitement quoi faire." % [
 		action_text, ", ".join(domains),
 	]

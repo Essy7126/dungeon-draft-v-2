@@ -144,12 +144,15 @@ func test_four_production_spells_and_disciplines_keep_their_combat_contract() ->
 	assert_true(guard.once_per_activation)
 
 	for discipline in progression.disciplines:
-		assert_eq(discipline.ranks.size(), 1, discipline.resource_path)
+		assert_eq(discipline.ranks.size(), 2, discipline.resource_path)
 		assert_eq(discipline.ranks[0].rank, 1, discipline.resource_path)
 		assert_true(
 			discipline.ranks[0].choices.is_empty(),
 			discipline.resource_path,
 		)
+		assert_eq(discipline.ranks[1].rank, 2, discipline.resource_path)
+		assert_eq(discipline.ranks[1].required_total_xp, 3, discipline.resource_path)
+		assert_eq(discipline.ranks[1].choices.size(), 2, discipline.resource_path)
 
 
 func test_achilles_hud_and_player_copy_are_production_ready() -> void:

@@ -28,6 +28,9 @@ const TerrainGridAlignmentPanelComponent = preload(
 const TerrainGridAlignmentServiceComponent = preload(
 	"res://addons/dungeon_draft_arena_studio/services/terrain_grid_alignment_service.gd"
 )
+const TerrainTypeSaveTransaction = preload(
+	"res://addons/dungeon_draft_arena_studio/services/arena_terrain_type_save_transaction_service.gd"
+)
 ## Vocabulaire utilisateur des outils. Il suit TerrainVocabulary : « Sols » et
 ## « Points de départ » remplacent « Terrains » et « Spawns » dans tout le
 ## parcours nominal.
@@ -91,7 +94,10 @@ var editor_interface = null
 var editor_undo_redo = null
 var dirty: bool:
 	get:
-		return edit_session != null and edit_session.is_dirty()
+		return (edit_session != null and edit_session.is_dirty()) \
+			or TerrainTypeSaveTransaction.has_changes(
+				_terrain_type_source, _terrain_type_working
+			) or not _terrain_type_input_error.is_empty()
 
 var canvas: ArenaStudioCanvas
 var runtime_preview: ArenaRuntimePreview
@@ -240,7 +246,10 @@ var terrain_type_shared_button: Button = null
 var terrain_type_duplicate_button: Button = null
 var _terrain_type_source: ArenaTerrainDefinition = null
 var _terrain_type_working: ArenaTerrainDefinition = null
+var _terrain_type_opening_state := {}
 var _terrain_type_syncing := false
+var _terrain_type_input_error := ""
+var _terrain_transaction_recovery_report := {}
 var spatial_enabled_check: CheckBox = null
 var spatial_team_option: OptionButton = null
 var spatial_edit_cells_button: Button = null
@@ -383,6 +392,9 @@ func setup(
 
 
 func _ready() -> void:
+	_terrain_transaction_recovery_report = (
+		TerrainTypeSaveTransaction.recover_pending_transactions()
+	)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build_interface()
 	_build_dialogs()
@@ -398,6 +410,11 @@ func _ready() -> void:
 	add_child(_transfer_poll_timer)
 	_transfer_poll_timer.start()
 	_refresh_recovery_button()
+	if not bool(_terrain_transaction_recovery_report.get("ok", true)):
+		_set_status(
+			"Une sauvegarde de type de tuile interrompue nécessite une récupération manuelle.",
+			true
+		)
 	if project_context != null:
 		project_context.context_changed.connect(_refresh_destination_panel.bind())
 		project_context.room_changed.connect(_on_context_room_changed)
@@ -1268,57 +1285,77 @@ func _open_terrain_type_editor(entry: Dictionary) -> void:
 	if source == null:
 		_set_status("Ce type de tuile n’a pas de définition éditable connue.", true)
 		return
-	_terrain_type_source = source
-	_selected_spatial = {}
-	_terrain_type_working = _clone_terrain_type(source)
-	if _terrain_type_working == null:
+	if _terrain_type_source != null and _terrain_type_working != null:
+		var current_sync := _sync_terrain_type_working_copy()
+		if not bool(current_sync.get("ok", false)):
+			return
+		if TerrainTypeSaveTransaction.has_changes(
+				_terrain_type_source, _terrain_type_working
+			):
+			_set_status(
+				"Enregistrez le type ouvert ou choisissez « Annuler les modifications » avant d’en ouvrir un autre.",
+				true
+			)
+			return
+	var candidate_working := _clone_terrain_type(source)
+	if candidate_working == null:
 		_set_status("La copie de travail du type de tuile n’a pas pu être créée.", true)
 		return
+	var candidate_opening := TerrainTypeSaveTransaction.capture_opening_state(
+		source
+	)
+	if not bool(candidate_opening.get("ok", false)):
+		if _terrain_type_source == null:
+			_reset_terrain_type_session()
+		_set_status(str(candidate_opening.get(
+			"message", "Le type de tuile ne peut pas être ouvert en écriture."
+		)), true)
+		return
+	var recovered := TerrainTypeSaveTransaction.load_working_recovery(
+		source, candidate_opening
+	)
+	var recovered_ui_state := {}
+	if bool(recovered.get("found", false)):
+		if not bool(recovered.get("ok", false)):
+			_set_status(
+				"Une récupération du type existe mais n’a pas pu être vérifiée ; ouverture refusée.",
+				true
+			)
+			return
+		candidate_working = recovered.get("working") as ArenaTerrainDefinition
+		recovered_ui_state = recovered.get("ui_state", {}) as Dictionary
+		if candidate_working == null:
+			_set_status("La récupération du type est illisible.", true)
+			return
+	_terrain_type_source = source
+	_terrain_type_working = candidate_working
+	_terrain_type_opening_state = candidate_opening
+	_terrain_type_input_error = ""
+	_selected_spatial = {}
 	_populate_terrain_type_editor()
+	if not recovered_ui_state.is_empty():
+		_apply_terrain_type_ui_recovery(recovered_ui_state)
 	terrain_type_editor.show()
 	inspector_panel.set_spatial_context(
 		[&"tile_type"], "Type de tuile — %s" % source.display_name, guided
 	)
 	# Seule l'action explicite du menu de carte ouvre le tiroir.
 	set_inspector_drawer_open(true)
-	_set_status("Type « %s » ouvert dans une copie de travail isolée." % source.display_name)
+	_set_status(
+		"Brouillon récupéré pour « %s » ; rien n’a été publié." % source.display_name
+		if bool(recovered.get("found", false)) else
+		"Type « %s » ouvert dans une copie de travail isolée." % source.display_name
+	)
 
 
 func _clone_terrain_type(source: ArenaTerrainDefinition) -> ArenaTerrainDefinition:
-	if source == null:
-		return null
-	var copy := source.duplicate(true) as ArenaTerrainDefinition
-	if copy == null:
-		return null
-	copy.unit_effect = _clone_terrain_effect(source.unit_effect)
-	return copy
+	return TerrainTypeSaveTransaction.create_working_copy(source)
 
 
 func _clone_terrain_effect(source: TerrainEffectData) -> TerrainEffectData:
-	var copy := TerrainEffectData.new()
 	if source == null:
-		return copy
-	copy.effect_name = source.effect_name
-	copy.description = source.description
-	copy.color = source.color
-	copy.surface_id = source.surface_id
-	copy.visual_terrain_id = source.visual_terrain_id
-	copy.same_surface_policy = source.same_surface_policy
-	copy.trigger = source.trigger
-	copy.damage = source.damage
-	copy.damage_over_time = source.damage_over_time
-	copy.damage_type = source.damage_type
-	copy.element = source.element
-	copy.ignores_defense = source.ignores_defense
-	copy.can_be_dodged = source.can_be_dodged
-	copy.applied_status = source.applied_status
-	copy.blocks_movement = source.blocks_movement
-	copy.blocks_vision = source.blocks_vision
-	copy.cell_type = source.cell_type
-	copy.dangerous_for_ai = source.dangerous_for_ai
-	copy.ai_danger_weight = source.ai_danger_weight
-	copy.duration = source.duration
-	return copy
+		return TerrainEffectData.new()
+	return source.duplicate(true) as TerrainEffectData
 
 
 func _populate_terrain_type_editor() -> void:
@@ -1348,9 +1385,19 @@ func _populate_terrain_type_editor() -> void:
 	_terrain_type_syncing = false
 
 
-func _sync_terrain_type_working_copy() -> void:
+func _sync_terrain_type_working_copy() -> Dictionary:
 	if _terrain_type_syncing or _terrain_type_working == null:
-		return
+		return {"ok": true}
+	var validation := _validate_terrain_type_resource_fields()
+	if not bool(validation.get("ok", false)):
+		_terrain_type_input_error = str(validation.get(
+			"error", "Une Resource saisie est invalide."
+		))
+		_set_status(_terrain_type_input_error, true)
+		_on_dirty_state_changed(dirty)
+		_autosave()
+		return validation
+	_terrain_type_input_error = ""
 	var base_texture := _load_typed_resource(
 		terrain_type_base_texture_edit.text, "Texture2D"
 	) as Texture2D
@@ -1381,6 +1428,69 @@ func _sync_terrain_type_working_copy() -> void:
 	effect.ai_danger_weight = terrain_type_ai_weight_spin.value
 	_terrain_type_working.ai_danger_weight = terrain_type_ai_weight_spin.value
 	terrain_type_preview.texture = _terrain_type_working.base_texture
+	_on_dirty_state_changed(dirty)
+	_autosave()
+	return {"ok": true}
+
+
+func _validate_terrain_type_resource_fields() -> Dictionary:
+	for field_value in [
+		[terrain_type_base_texture_edit, "Texture de base", "Texture2D"],
+		[terrain_type_overlay_texture_edit, "Texture de surcouche", "Texture2D"],
+		[terrain_type_status_edit, "Statut appliqué", "StatusData"],
+	]:
+		var field := field_value[0] as LineEdit
+		var label_text := str(field_value[1])
+		var expected_class := str(field_value[2])
+		var clean := field.text.strip_edges()
+		if clean.is_empty():
+			continue
+		if not clean.begins_with("res://"):
+			return {
+				"ok": false,
+				"error": "%s : le chemin doit commencer par res://." % label_text,
+			}
+		if _load_typed_resource(clean, expected_class) == null:
+			return {
+				"ok": false,
+				"error": "%s : aucune Resource %s valide à ce chemin." % [
+					label_text, expected_class,
+				],
+			}
+	return {"ok": true}
+
+
+func _terrain_type_ui_recovery_state() -> Dictionary:
+	if _terrain_type_source == null or terrain_type_base_texture_edit == null:
+		return {}
+	return {
+		"base_texture_path": terrain_type_base_texture_edit.text,
+		"overlay_texture_path": terrain_type_overlay_texture_edit.text,
+		"status_path": terrain_type_status_edit.text,
+		"input_error": _terrain_type_input_error,
+	}
+
+
+func _terrain_type_recovery_options() -> Dictionary:
+	return {"ui_state": _terrain_type_ui_recovery_state()}
+
+
+func _apply_terrain_type_ui_recovery(state: Dictionary) -> void:
+	if terrain_type_base_texture_edit == null:
+		return
+	_terrain_type_syncing = true
+	terrain_type_base_texture_edit.text = str(state.get(
+		"base_texture_path", terrain_type_base_texture_edit.text
+	))
+	terrain_type_overlay_texture_edit.text = str(state.get(
+		"overlay_texture_path", terrain_type_overlay_texture_edit.text
+	))
+	terrain_type_status_edit.text = str(state.get(
+		"status_path", terrain_type_status_edit.text
+	))
+	_terrain_type_input_error = str(state.get("input_error", ""))
+	_terrain_type_syncing = false
+	_on_dirty_state_changed(dirty)
 
 
 func _load_typed_resource(path: String, expected_class: String) -> Resource:
@@ -1400,58 +1510,199 @@ func _resource_path(resource: Resource) -> String:
 
 
 func _terrain_type_usage_text(source: ArenaTerrainDefinition) -> String:
+	if source == null:
+		return "Aucun type partagé ouvert."
 	var current_cells := 0
 	if arena != null:
 		for cell in arena.cells:
 			if cell != null and cell.terrain_id == source.stable_id:
 				current_cells += 1
 	var known_usages: Array[Dictionary] = []
+	var effect_usages: Array[Dictionary] = []
 	if shared_reference_graph != null:
 		known_usages = shared_reference_graph.usages(source)
+		if source.unit_effect != null:
+			effect_usages = shared_reference_graph.usages(source.unit_effect)
+	var effect_warning := ""
+	if source.unit_effect != null:
+		effect_warning = (
+			"\nAVERTISSEMENT — effet partagé : %d consommateur(s) transversal(aux) "
+			+ "connu(s), y compris sorts, surfaces ou runtime. Toute modification "
+			+ "de TerrainEffectData s’applique partout."
+		) % effect_usages.size()
 	return (
 		"Portée : type partagé du catalogue.\n"
 		+ "Resource : %s\n" % source.resource_path
 		+ "Terrain ouvert : %d case(s).\n" % current_cells
-		+ "Références connues du contexte : %d." % known_usages.size()
+		+ "Références connues du type : %d." % known_usages.size()
+		+ effect_warning
 	)
 
 
 func _show_terrain_type_save_choices() -> void:
 	if _terrain_type_source == null or _terrain_type_working == null:
 		return
-	_sync_terrain_type_working_copy()
+	var sync_result := _sync_terrain_type_working_copy()
+	if not bool(sync_result.get("ok", false)):
+		return
+	var save_plan := TerrainTypeSaveTransaction.plan(
+		_terrain_type_source,
+		_terrain_type_working,
+		_terrain_type_opening_state
+	)
 	if terrain_type_save_dialog == null:
 		terrain_type_save_dialog = ConfirmationDialog.new()
 		terrain_type_save_dialog.title = "Enregistrer le type de tuile"
 		terrain_type_save_dialog.size = Vector2i(660, 360)
 		terrain_type_save_dialog.ok_button_text = "Modifier le type partagé"
 		terrain_type_save_dialog.get_cancel_button().text = "Annuler"
-		terrain_type_duplicate_button = terrain_type_save_dialog.add_button(
-			"Dupliquer pour créer une variante", true, "duplicate"
-		)
+		terrain_type_save_dialog.confirmed.connect(_save_shared_terrain_type)
 		add_child(terrain_type_save_dialog)
 		terrain_type_shared_button = terrain_type_save_dialog.get_ok_button()
-	terrain_type_save_dialog.dialog_text = (
-		_terrain_type_usage_text(_terrain_type_source)
-		+ "\n\nEnregistrement bloqué : le mécanisme transactionnel existant vérifie "
-		+ "ArenaDefinition uniquement. Il ne garantit pas encore l’écriture couplée "
-		+ "ArenaTerrainDefinition / TerrainEffectData ni l’enregistrement d’une variante."
+	# Une variante doit être découvrable par le catalogue et posséder un nouvel
+	# identifiant stable. Ce parcours n'existe pas encore : ne pas présenter un
+	# bouton qui ne pourrait produire qu'une copie orpheline.
+	terrain_type_duplicate_button = null
+	var blocking := save_plan.get("blocking", PackedStringArray()) as PackedStringArray
+	var transaction_text := ""
+	if bool(save_plan.get("writes_effect", false)):
+		transaction_text = (
+			"\n\nCette opération met à jour ensemble ArenaTerrainDefinition et "
+			+ "TerrainEffectData. Les deux fichiers sont sauvegardés, relus et "
+			+ "restaurés ensemble si une étape échoue."
+		)
+	else:
+		transaction_text = (
+			"\n\nCette opération met à jour ArenaTerrainDefinition avec sauvegarde, "
+			+ "relecture et rollback. Aucun TerrainEffectData vide ne sera créé."
+		)
+	if blocking.is_empty():
+		terrain_type_save_dialog.dialog_text = (
+			_terrain_type_usage_text(_terrain_type_source)
+			+ transaction_text
+			+ "\n\nLa création de variante n’est pas proposée ici : seule la modification "
+			+ "transactionnelle du type partagé est disponible."
+		)
+	else:
+		terrain_type_save_dialog.dialog_text = (
+			_terrain_type_usage_text(_terrain_type_source)
+			+ transaction_text
+			+ "\n\nEnregistrement indisponible : "
+			+ blocking[0]
+		)
+	terrain_type_shared_button.disabled = not bool(save_plan.get("ok", false))
+	terrain_type_shared_button.tooltip_text = (
+		"Sauvegarder et vérifier la transaction, avec rollback complet."
+		if bool(save_plan.get("ok", false)) else blocking[0]
 	)
-	terrain_type_shared_button.disabled = true
-	terrain_type_duplicate_button.disabled = true
-	terrain_type_shared_button.tooltip_text = "Écriture sûre non disponible pour ces Resources."
-	terrain_type_duplicate_button.tooltip_text = "Catalogue de variantes transactionnel non disponible."
 	terrain_type_save_dialog.popup_centered()
 
 
+func _save_shared_terrain_type() -> void:
+	if _terrain_type_source == null or _terrain_type_working == null:
+		return
+	var sync_result := _sync_terrain_type_working_copy()
+	if not bool(sync_result.get("ok", false)):
+		return
+	var saved := TerrainTypeSaveTransaction.save(
+		_terrain_type_source,
+		_terrain_type_working,
+		_terrain_type_opening_state
+	)
+	if not bool(saved.get("ok", false)):
+		_set_status(
+			"Type de tuile non enregistré : %s" % str(saved.get(
+				"error", "la transaction a été refusée."
+			)),
+			true
+		)
+		return
+	ArenaCatalogService.reset_cache()
+	var refreshed := ArenaCatalogService.terrain(_terrain_type_source.stable_id)
+	if refreshed == null:
+		var recovery_cleared := TerrainTypeSaveTransaction.clear_working_recovery(
+			_terrain_type_source
+		)
+		_reset_terrain_type_session()
+		_refresh_permanent_terrain_options()
+		_refresh_library()
+		_set_status(
+			("Les fichiers ont été enregistrés, mais le catalogue n’a pas pu les relire. "
+			+ ("Fermez puis rouvrez le Studio." if recovery_cleared else
+			"La récupération périmée n’a pas pu être supprimée.")),
+			true
+		)
+		return
+	var refreshed_working := _clone_terrain_type(refreshed)
+	var refreshed_opening := TerrainTypeSaveTransaction.capture_opening_state(
+		refreshed
+	)
+	if refreshed_working == null or not bool(refreshed_opening.get("ok", false)):
+		var recovery_cleared := TerrainTypeSaveTransaction.clear_working_recovery(
+			_terrain_type_source
+		)
+		_reset_terrain_type_session()
+		_refresh_permanent_terrain_options()
+		_refresh_library()
+		_set_status(
+			("Les fichiers ont été enregistrés, mais la nouvelle session vérifiée "
+			+ "n’a pas pu être ouverte. "
+			+ ("Fermez puis rouvrez le Studio." if recovery_cleared else
+			"La récupération périmée n’a pas pu être supprimée.")),
+			true
+		)
+		return
+	var recovery_cleared := TerrainTypeSaveTransaction.clear_working_recovery(
+		_terrain_type_source
+	)
+	_terrain_type_source = refreshed
+	_terrain_type_working = refreshed_working
+	_terrain_type_opening_state = refreshed_opening
+	_terrain_type_input_error = ""
+	_populate_terrain_type_editor()
+	_refresh_permanent_terrain_options()
+	_refresh_library()
+	if canvas != null:
+		canvas.refresh_terrain_plan()
+		canvas.queue_redraw()
+	var saved_effect := bool((saved.get("plan", {}) as Dictionary).get(
+		"writes_effect", false
+	))
+	if not recovery_cleared:
+		_set_status(
+			"Type partagé enregistré, mais la récupération périmée n’a pas pu être supprimée.",
+			true
+		)
+	else:
+		_set_status("Type partagé « %s » enregistré et vérifié%s." % [
+			refreshed.display_name,
+			" avec son effet" if saved_effect else "",
+		])
+
+
 func _cancel_terrain_type_edit() -> void:
-	_terrain_type_source = null
-	_terrain_type_working = null
-	if terrain_type_editor != null:
-		terrain_type_editor.hide()
+	if not TerrainTypeSaveTransaction.clear_working_recovery(_terrain_type_source):
+		_set_status(
+			"Annulation suspendue : la récupération du type n’a pas pu être supprimée.",
+			true
+		)
+		return
+	_reset_terrain_type_session()
 	_refresh_inspector_context()
 	set_inspector_drawer_open(false)
 	_set_status("Modifications du type de tuile annulées ; la Resource partagée est inchangée.")
+
+
+func _reset_terrain_type_session() -> void:
+	_terrain_type_source = null
+	_terrain_type_working = null
+	_terrain_type_opening_state = {}
+	_terrain_type_input_error = ""
+	if terrain_type_save_dialog != null:
+		terrain_type_save_dialog.hide()
+	if terrain_type_editor != null:
+		terrain_type_editor.hide()
+	_on_dirty_state_changed(dirty)
 
 
 func _select_terrain_replace_source(terrain_id: StringName) -> void:
@@ -1563,11 +1814,21 @@ func request_home() -> void:
 		_enter_home()
 		return
 	cancel_active_gesture()
-	if project_context == null or not dirty:
+	if project_context == null:
+		if _terrain_type_is_dirty():
+			_set_status(
+				"Enregistrez ou annulez le brouillon du type avant de quitter l’éditeur.",
+				true
+			)
+			return
+		_enter_home()
+		return
+	var any_dirty := dirty or _terrain_type_is_dirty()
+	if not any_dirty:
 		_enter_home()
 		return
 	if not project_context.is_dirty(&"arena"):
-		_on_dirty_state_changed(true)
+		_on_dirty_state_changed(any_dirty)
 	_home_transition_session_key = edit_session.session_key if edit_session != null else ""
 	_home_transition_was_new = edit_session != null and edit_session.is_new_document
 	var result := project_context.request_dirty_transition(&"terrain_home", &"arena")
@@ -2109,11 +2370,15 @@ func _on_validation_auto_fix(message: ArenaValidationMessage) -> void:
 
 func _open_validation_drawer() -> void:
 	_update_validation_report(false)
+	var drawer_tabs := bottom_drawer_content as TabContainer
+	if drawer_tabs != null:
+		drawer_tabs.current_tab = 0
 	if checklist_panel != null:
 		checklist_panel.set_collapsed(false)
 	if bottom_drawer_content != null:
 		bottom_drawer_content.visible = true
-		_sync_drawer_split()
+	_refresh_bottom_drawer_button()
+	_sync_drawer_split()
 
 
 ## --- Raccourcis clavier ----------------------------------------------------
@@ -3137,7 +3402,7 @@ func _build_bottom_drawer() -> VBoxContainer:
 	var header := HBoxContainer.new()
 	drawer.add_child(header)
 	bottom_drawer_button = Button.new()
-	bottom_drawer_button.text = "✓ Validation fermee • Historique • Rapport • Console • Analyse   ▲"
+	bottom_drawer_button.text = "Validation non exécutée • Historique • Rapport • Console • Analyse   ▲"
 	bottom_drawer_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bottom_drawer_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	bottom_drawer_button.pressed.connect(_toggle_bottom_drawer)
@@ -5088,6 +5353,7 @@ func _update_validation_report(show_status := false) -> ArenaValidationReport:
 			else "Données Arena à corriger",
 			validation_report.error_count(), validation_report.warning_count(),
 		]
+	_refresh_bottom_drawer_button()
 	_refresh_workflow()
 	if show_status:
 		_set_status(
@@ -6781,14 +7047,41 @@ func _restore_snapshot(snapshot: Dictionary) -> void:
 
 
 func _autosave() -> void:
-	if arena != null and _recovery_timer != null:
+	if _recovery_timer != null and (
+			arena != null or _terrain_type_is_dirty()
+		):
 		_recovery_timer.start()
 
 
-func _flush_recovery() -> void:
-	if arena != null and dirty:
-		ArenaSerializer.save_recovery(arena, _recovery_context())
+func _flush_recovery() -> Dictionary:
+	var failures := PackedStringArray()
+	if arena != null and edit_session != null and edit_session.is_dirty():
+		if ArenaSerializer.save_recovery(arena, _recovery_context()) != OK:
+			failures.append("La récupération Arena n'a pas pu être écrite.")
+	if _terrain_type_is_dirty():
+		var type_recovery := TerrainTypeSaveTransaction.save_working_recovery(
+			_terrain_type_source,
+			_terrain_type_working,
+			_terrain_type_opening_state,
+			_terrain_type_recovery_options()
+		)
+		if not bool(type_recovery.get("ok", false)):
+			failures.append(
+				"Le brouillon du type de tuile n'a pas pu être vérifié."
+			)
+			_set_status(
+				"Le brouillon du type de tuile n’a pas pu être sauvegardé pour récupération.",
+				true
+			)
+	elif _terrain_type_source != null:
+		if not TerrainTypeSaveTransaction.clear_working_recovery(
+				_terrain_type_source
+			):
+			failures.append(
+				"La récupération obsolète du type de tuile n'a pas pu être supprimée."
+			)
 	_refresh_recovery_button()
+	return {"ok": failures.is_empty(), "failures": failures}
 
 
 func _recovery_context() -> Dictionary:
@@ -6879,7 +7172,7 @@ func _on_history_changed() -> void:
 
 func _on_dirty_state_changed(_is_dirty: bool) -> void:
 	if project_context != null:
-		project_context.set_dirty(&"arena", dirty, {
+		project_context.set_dirty(&"arena", dirty or _terrain_type_is_dirty(), {
 			"document": history_document_name(),
 			"source_path": edit_session.source_path if edit_session != null else "",
 		})
@@ -7223,50 +7516,184 @@ func _open_context_room(room: RoomData) -> bool:
 
 
 func _context_save() -> Dictionary:
+	var arena_was_dirty := edit_session != null and edit_session.is_dirty()
+	var arena_source_path := edit_session.source_path if edit_session != null else ""
 	save_arena()
+	if edit_session != null and edit_session.is_dirty():
+		return {
+			"ok": false,
+			"error": "La sauvegarde Arena n'a pas validé le document.",
+		}
+	var owned_file_states := {}
+	if arena_was_dirty and not arena_source_path.is_empty() \
+			and FileAccess.file_exists(arena_source_path):
+		# Capturé immédiatement après le commit Arena : si un tiers écrit ensuite,
+		# son empreinte différera et le rollback global la préservera.
+		owned_file_states[arena_source_path] = {
+			"exists": true,
+			"sha256": FileAccess.get_sha256(arena_source_path),
+		}
+	if _terrain_type_is_dirty():
+		var drafted := _draft_terrain_type_for_context_transition()
+		if not bool(drafted.get("ok", false)):
+			if not owned_file_states.is_empty():
+				drafted["owned_file_states"] = owned_file_states
+			return drafted
+		return {
+			"ok": true,
+			"terrain_type_status": "RECOVERABLE_NOT_PUBLISHED",
+			"message": (
+				"L'Arena est enregistrée. Le type partagé reste un brouillon récupérable "
+				+ "car sa publication exige une confirmation explicite."
+			),
+		}
+	if _terrain_type_source != null:
+		_reset_terrain_type_session()
 	return {
-		"ok": not dirty,
-		"error": "La sauvegarde Arena n'a pas validé le document." if dirty else "",
+		"ok": true,
+		"error": "",
 	}
 
 
 func _context_draft() -> Dictionary:
-	_flush_recovery()
-	return {"ok": arena != null}
+	var recovered := _flush_recovery()
+	if not bool(recovered.get("ok", false)):
+		return {
+			"ok": false,
+			"error": "Une récupération du contexte n'a pas pu être écrite.",
+			"details": recovered,
+		}
+	if _terrain_type_source != null:
+		_reset_terrain_type_session()
+	return {"ok": arena != null or edit_session == null}
 
 
 func _context_discard() -> Dictionary:
-	if edit_session == null or edit_session.source_arena == null:
+	var terrain_source_to_discard := _terrain_type_source
+	if edit_session == null:
+		if terrain_source_to_discard != null:
+			if not TerrainTypeSaveTransaction.clear_working_recovery(
+					terrain_source_to_discard
+				):
+				return {
+					"ok": false,
+					"error": "La récupération du type partagé n'a pas pu être supprimée.",
+				}
+			_reset_terrain_type_session()
+			return {"ok": true}
 		return {"ok": false, "error": "Aucune source Arena à recharger."}
+	if edit_session.source_arena == null:
+		return {
+			"ok": false,
+			"error": "La nouvelle Arena n'a aucune source à restaurer.",
+		}
 	var source := edit_session.source_arena
 	var source_path := edit_session.source_path
 	var key := edit_session.session_key
 	var replacement := ArenaEditSession.new()
 	if not replacement.open(source, source_path, false, key):
 		return {"ok": false, "error": "La source Arena n'a pas pu être rechargée."}
+	if terrain_source_to_discard != null and not (
+			TerrainTypeSaveTransaction.clear_working_recovery(
+				terrain_source_to_discard
+			)
+		):
+		return {
+			"ok": false,
+			"error": "La récupération du type partagé n'a pas pu être supprimée.",
+		}
 	_sessions[key] = replacement
 	_activate_session(replacement)
+	if terrain_source_to_discard != null:
+		_reset_terrain_type_session()
 	if project_context != null:
 		project_context.set_dirty(&"arena", false)
 	return {"ok": true}
 
 
 func _context_is_dirty() -> bool:
-	return dirty
+	return dirty or _terrain_type_is_dirty()
 
 
 func _context_snapshot() -> Dictionary:
-	return edit_session.working_arena.to_snapshot().duplicate(true) \
-		if edit_session != null and edit_session.working_arena != null else {}
+	return {
+		"arena_snapshot": edit_session.working_arena.to_snapshot().duplicate(true) \
+			if edit_session != null and edit_session.working_arena != null else {},
+		"terrain_type_source": _terrain_type_source,
+		"terrain_type_working": _clone_terrain_type(_terrain_type_working),
+		"terrain_type_opening": _terrain_type_opening_state.duplicate(true),
+		"terrain_type_ui": _terrain_type_ui_recovery_state(),
+	}
 
 
 func _context_restore(snapshot: Dictionary) -> Dictionary:
 	if edit_session == null or snapshot.is_empty():
 		return {"ok": false, "error": "Instantané Arena absent."}
-	edit_session.apply_snapshot(snapshot)
+	var arena_snapshot := snapshot.get("arena_snapshot", snapshot) as Dictionary
+	if arena_snapshot.is_empty():
+		return {"ok": false, "error": "Instantané Arena absent."}
+	edit_session.apply_snapshot(arena_snapshot)
 	arena = edit_session.working_arena
+	_terrain_type_source = snapshot.get(
+		"terrain_type_source"
+	) as ArenaTerrainDefinition
+	_terrain_type_working = snapshot.get(
+		"terrain_type_working"
+	) as ArenaTerrainDefinition
+	_terrain_type_opening_state = snapshot.get(
+		"terrain_type_opening", {}
+	) as Dictionary
+	if _terrain_type_source != null and _terrain_type_working != null:
+		_populate_terrain_type_editor()
+		_apply_terrain_type_ui_recovery(
+			snapshot.get("terrain_type_ui", {}) as Dictionary
+		)
+		terrain_type_editor.show()
+		if _terrain_type_is_dirty():
+			var type_recovery := TerrainTypeSaveTransaction.save_working_recovery(
+				_terrain_type_source,
+				_terrain_type_working,
+				_terrain_type_opening_state,
+				_terrain_type_recovery_options()
+			)
+			if not bool(type_recovery.get("ok", false)):
+				return {
+					"ok": false,
+					"error": "Le rollback n'a pas pu recréer la récupération du type.",
+				}
+	else:
+		_reset_terrain_type_session()
 	_on_history_changed()
 	return {"ok": true}
+
+
+func _terrain_type_is_dirty() -> bool:
+	return TerrainTypeSaveTransaction.has_changes(
+		_terrain_type_source, _terrain_type_working
+	) or not _terrain_type_input_error.is_empty()
+
+
+func _draft_terrain_type_for_context_transition() -> Dictionary:
+	if not _terrain_type_is_dirty():
+		return {"ok": true, "saved": false}
+	var recovered := TerrainTypeSaveTransaction.save_working_recovery(
+		_terrain_type_source,
+		_terrain_type_working,
+		_terrain_type_opening_state,
+		_terrain_type_recovery_options()
+	)
+	if not bool(recovered.get("ok", false)):
+		return {
+			"ok": false,
+			"error": "Le brouillon du type partagé n'a pas pu être sécurisé.",
+			"details": recovered,
+		}
+	_reset_terrain_type_session()
+	return {
+		"ok": true,
+		"saved": true,
+		"status": "RECOVERABLE_NOT_PUBLISHED",
+	}
 
 
 func _on_run_authoring_changed(_report: Dictionary) -> void:
@@ -7663,11 +8090,7 @@ func _toggle_bottom_drawer() -> void:
 	if bottom_drawer_content == null:
 		return
 	bottom_drawer_content.visible = not bottom_drawer_content.visible
-	bottom_drawer_button.text = (
-		"Validation • Historique • Rapport • Console • Analyse   ▼"
-		if bottom_drawer_content.visible else
-		"✓ Validation fermée • Historique • Rapport • Console • Analyse   ▲"
-	)
+	_refresh_bottom_drawer_button()
 	_sync_drawer_split()
 	# Sur un écran court, guidage et tiroir ne tiennent pas ensemble au-dessus
 	# du canvas. Le guidage s'efface le temps de lire le tiroir, puis revient :
@@ -7680,6 +8103,27 @@ func _toggle_bottom_drawer() -> void:
 	elif _guidance_hidden_for_drawer and not bottom_drawer_content.visible:
 		_guidance_hidden_for_drawer = false
 		guidance_panel.visible = guidance_visible
+
+
+func _refresh_bottom_drawer_button() -> void:
+	if bottom_drawer_button == null:
+		return
+	var validation_summary := "Validation non exécutée"
+	if validation_report != null:
+		var errors := validation_report.error_count()
+		var warnings := validation_report.warning_count()
+		if errors > 0:
+			validation_summary = "⚠ Validation : %d erreur(s), %d avertissement(s)" % [
+				errors, warnings,
+			]
+		elif warnings > 0:
+			validation_summary = "⚠ Validation : %d avertissement(s)" % warnings
+		else:
+			validation_summary = "✓ Validation réussie"
+	var arrow := "▼" if bottom_drawer_content != null and bottom_drawer_content.visible else "▲"
+	bottom_drawer_button.text = "%s • Historique • Rapport • Console • Analyse   %s" % [
+		validation_summary, arrow,
+	]
 
 
 func toggle_focus_map() -> bool:

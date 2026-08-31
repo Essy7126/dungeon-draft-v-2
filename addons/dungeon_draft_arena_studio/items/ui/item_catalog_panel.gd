@@ -56,6 +56,7 @@ var apply_bar: HBoxContainer
 var apply_button: Button
 var cancel_button: Button
 var _entries: Array[Dictionary] = []
+var _hero_entries: Array[Dictionary] = []
 # Chemin de ressource -> état de récompense voulu, tant qu'il diffère du fichier.
 # Une entrée disparaît d'elle-même dès que le disque rattrape l'intention.
 var _pending_rewards := {}
@@ -100,6 +101,7 @@ func _ready() -> void:
 	item_list.gui_input.connect(_on_item_list_gui_input)
 	content.add_child(item_list)
 	content.add_child(_build_apply_bar())
+	_rebuild_hero_filter()
 	_refresh_pending_indicators()
 
 
@@ -109,13 +111,39 @@ func set_entries(entries: Array[Dictionary]) -> void:
 	_refresh()
 
 
+func set_hero_entries(entries: Array[Dictionary]) -> void:
+	_hero_entries = entries.duplicate(false)
+	if hero_filter == null:
+		return
+	_rebuild_hero_filter()
+	_refresh()
+
+
+func _rebuild_hero_filter() -> void:
+	if hero_filter == null:
+		return
+	var selected_key := _selected_hero_filter_key()
+	hero_filter.clear()
+	hero_filter.add_item("Tous les héros")
+	hero_filter.set_item_metadata(0, &"ALL")
+	for entry in _hero_entries:
+		var hero_id := StringName(entry.get("id", &""))
+		if hero_id == &"":
+			continue
+		hero_filter.add_item(str(entry.get("display_name", hero_id)))
+		hero_filter.set_item_metadata(hero_filter.item_count - 1, hero_id)
+	hero_filter.add_item("Universel")
+	hero_filter.set_item_metadata(hero_filter.item_count - 1, &"UNIVERSAL")
+	_select_hero_filter_key(selected_key)
+
+
 func snapshot_filters() -> Dictionary:
 	return {
 		"search": search_edit.text if search_edit != null else "",
 		"category": category_filter.selected if category_filter != null else 0,
 		"rarity": rarity_filter.selected if rarity_filter != null else 0,
 		"slot": slot_filter.selected if slot_filter != null else 0,
-		"hero": hero_filter.selected if hero_filter != null else 0,
+		"hero": str(_selected_hero_filter_key()),
 		"reward": reward_filter.selected if reward_filter != null else 0,
 		"status": status_filter.selected if status_filter != null else 0,
 		"sort": sort_option.selected if sort_option != null else 0,
@@ -128,12 +156,27 @@ func restore_filters(state: Dictionary) -> void:
 	search_edit.text = str(state.get("search", ""))
 	for pair in [
 		[category_filter, "category"], [rarity_filter, "rarity"],
-		[slot_filter, "slot"], [hero_filter, "hero"],
+		[slot_filter, "slot"],
 		[reward_filter, "reward"], [status_filter, "status"],
 		[sort_option, "sort"],
 	]:
 		var option := pair[0] as OptionButton
 		option.select(clampi(int(state.get(pair[1], 0)), 0, option.item_count - 1))
+	var saved_hero = state.get("hero", "ALL")
+	if saved_hero is String or saved_hero is StringName:
+		_select_hero_filter_key(StringName(saved_hero))
+	else:
+		# Migration des snapshots V1, qui persistaient l'index de la liste fixe
+		# Tous / Elfe / Mage / Guerrier / Universel.
+		var legacy_keys: Array[StringName] = [
+			&"ALL", &"elf", &"mage", &"warrior", &"UNIVERSAL",
+		]
+		var legacy_index := int(saved_hero)
+		_select_hero_filter_key(
+			legacy_keys[legacy_index]
+			if legacy_index >= 0 and legacy_index < legacy_keys.size()
+			else &"ALL"
+		)
 	_refresh()
 
 
@@ -238,7 +281,9 @@ func _build_filters() -> Control:
 	category_filter = _filter(box, ["Toutes catégories", "Arme", "Armure", "Accessoire", "Consommable", "Parchemin", "Relique"])
 	rarity_filter = _filter(box, ["Toutes raretés", "common", "uncommon", "rare"])
 	slot_filter = _filter(box, ["Tous emplacements", "Aucun", "Arme", "Armure", "Accessoire"])
-	hero_filter = _filter(box, ["Tous les héros", "Elfe", "Mage", "Guerrier", "Universel"])
+	hero_filter = _filter(box, ["Tous les héros", "Universel"])
+	hero_filter.set_item_metadata(0, &"ALL")
+	hero_filter.set_item_metadata(1, &"UNIVERSAL")
 	reward_filter = _filter(box, ["Récompense : tous", "Oui", "Non"])
 	status_filter = _filter(box, ["Tous statuts", "Production", "Brouillon", "Legacy", "Invalide"])
 	box.add_child(HSeparator.new())
@@ -505,13 +550,13 @@ func _matches(entry: Dictionary) -> bool:
 		var expected_slot := slot_filter.selected - 2
 		if int(entry.get("slot", -99)) != expected_slot:
 			return false
-	if hero_filter.selected > 0:
+	var hero_key := _selected_hero_filter_key()
+	if hero_key != &"ALL":
 		var ids := entry.get("compatible_character_ids", []) as Array
-		if hero_filter.selected == 4 and not ids.is_empty():
+		if hero_key == &"UNIVERSAL" and not ids.is_empty():
 			return false
-		if hero_filter.selected < 4:
-			var expected: StringName = [&"elf", &"mage", &"warrior"][hero_filter.selected - 1]
-			if not ids.is_empty() and expected not in ids:
+		if hero_key != &"UNIVERSAL":
+			if not ids.is_empty() and hero_key not in ids:
 				return false
 	if reward_filter.selected == 1 and not bool(entry.get("reward_eligible", false)):
 		return false
@@ -522,6 +567,23 @@ func _matches(entry: Dictionary) -> bool:
 		if StringName(entry.get("status", &"")) != expected_status:
 			return false
 	return true
+
+
+func _selected_hero_filter_key() -> StringName:
+	if hero_filter == null or hero_filter.item_count == 0 or hero_filter.selected < 0:
+		return &"ALL"
+	var metadata = hero_filter.get_item_metadata(hero_filter.selected)
+	return StringName(metadata) if metadata != null else &"ALL"
+
+
+func _select_hero_filter_key(key: StringName) -> void:
+	if hero_filter == null or hero_filter.item_count == 0:
+		return
+	for index in hero_filter.item_count:
+		if StringName(hero_filter.get_item_metadata(index)) == key:
+			hero_filter.select(index)
+			return
+	hero_filter.select(0)
 
 
 func _sort_entries(entries: Array[Dictionary]) -> void:

@@ -1,8 +1,8 @@
 extends GutTest
 
-const ART_TEST_ROOT := "res://artifacts/studio_2_0/round_trip_test"
-const ATTACHMENT_TEST_ROOT := "res://artifacts/studio_2_0/attachment_test"
-const SKILL_SAVE_TEST_ROOT := "res://artifacts/studio_2_0/skill_profile_save_test"
+const ART_TEST_ROOT := "user://dungeon_draft_studio/tests/studio_2_0/round_trip"
+const ATTACHMENT_TEST_ROOT := "user://dungeon_draft_studio/tests/studio_2_0/attachment"
+const SKILL_SAVE_TEST_ROOT := "user://dungeon_draft_studio/tests/studio_2_0/skill_profile_save"
 
 
 func after_all() -> void:
@@ -305,7 +305,7 @@ func test_principal_catalog_selection_resolves_achilles_unique_odyssey_profile()
 	studio._choose_character("res://data/units/allies/achilles.tres")
 	for _frame in range(4):
 		await get_tree().process_frame
-	assert_eq(context.active_run.run_name, "L'Odyssée")
+	assert_eq(context.active_run.run_name, "Catabase")
 	assert_eq(
 		context.active_authority,
 		RunContentCatalogService.AUTHORITY_PROGRESSION_PROFILE

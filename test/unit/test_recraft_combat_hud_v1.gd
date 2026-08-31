@@ -40,13 +40,16 @@ func test_first_room_binds_the_persistent_recraft_hud() -> void:
 	))
 	assert_not_null(battle.turn_order_timeline)
 	assert_false(battle.units.is_empty())
+	assert_false(battle.inspect_panel._panel.visible)
 	var inspected_unit := battle.units[0] as Unit
 	battle._on_turn_order_unit_selected(inspected_unit)
 	assert_true(battle.inspect_panel.visible)
+	assert_true(battle.inspect_panel._panel.visible)
 	assert_same(battle.inspect_panel.get("_displayed_unit"), inspected_unit)
 	assert_true(battle.inspect_panel.is_locked())
 	battle.inspect_panel.release_lock()
 	await get_tree().process_frame
+	assert_false(battle.inspect_panel._panel.visible)
 
 func test_hud_builds_four_real_slots_for_every_fixed_hero() -> void:
 	var run := load("res://data/runs/first_run.tres") as RunData
@@ -138,7 +141,8 @@ func test_primary_and_utility_actions_have_stable_keyboard_shortcuts() -> void:
 	hud.set_reduced_motion(true)
 	assert_true(hud.is_reduced_motion_enabled())
 	assert_true(hud.get_turn_intro_banner().is_reduced_motion_enabled())
-	assert_almost_eq(hud.get_turn_intro_banner().total_animation_duration(), 0.72, 0.001)
+	assert_almost_eq(hud.get_turn_intro_banner().total_animation_duration(), 0.45, 0.001)
+	assert_eq(hud.get_turn_intro_banner()._turn_title("Achille"), "À VOUS DE JOUER")
 
 
 func test_hud_switch_disconnects_hp_and_stats_signals() -> void:

@@ -135,6 +135,19 @@ func test_player_log_compact_layout_stays_above_hud_at_720p() -> void:
 	assert_false(snapshot["scroll_visible"])
 
 
+func test_player_log_starts_collapsed_on_a_full_hd_battlefield() -> void:
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1920, 1080)
+	add_child_autofree(viewport)
+	var combat_log := CanvasLayer.new()
+	combat_log.set_script(load("res://ui/player_combat_log.gd"))
+	viewport.add_child(combat_log)
+	await get_tree().process_frame
+	var snapshot: Dictionary = combat_log.get_layout_snapshot()
+	assert_false(snapshot["expanded"])
+	assert_false(snapshot["scroll_visible"])
+
+
 func test_target_feedback_explains_invalid_move_spell_range_and_ap() -> void:
 	var field = Factory.make_battlefield(5, 5)
 	var unit := Factory.make_unit("Joueur", 0)

@@ -95,7 +95,7 @@ theme_override_colors/font_color = Color(0.98, 0.9, 0.68, 1)
 theme_override_colors/font_outline_color = Color(0.04, 0.025, 0.015, 1)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 15
-text = "TOUR DE L'ELFE"
+text = "À VOUS DE JOUER"
 horizontal_alignment = 1
 
 [node name="CharacterName" type="Label" parent="Presentation/Content/TextPanel/Labels"]

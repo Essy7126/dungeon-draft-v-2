@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/cinematics/catabase_full_flow_qa_runner.gd" id="1"]
+
+[node name="CatabaseFullFlowQARunner" type="Node"]
+script = ExtResource("1")

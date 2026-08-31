@@ -11,10 +11,12 @@ var name_edit: LineEdit
 var id_edit: LineEdit
 var compatibility_option: OptionButton
 var path_label: Label
+var hero_entries: Array[Dictionary] = []
 
 
-func setup(p_catalog: ItemStudioCatalogService) -> void:
+func setup(p_catalog: ItemStudioCatalogService, p_hero_entries: Array[Dictionary] = []) -> void:
 	catalog = p_catalog
+	hero_entries = p_hero_entries.duplicate(false)
 
 
 func _ready() -> void:
@@ -40,8 +42,14 @@ func _ready() -> void:
 	root.add_child(id_edit)
 	root.add_child(_label("4. Compatibilité"))
 	compatibility_option = OptionButton.new()
-	for label in ["Tous", "Elfe", "Mage", "Guerrier"]:
-		compatibility_option.add_item(label)
+	compatibility_option.add_item("Tous")
+	compatibility_option.set_item_metadata(0, &"")
+	for entry in hero_entries:
+		compatibility_option.add_item(str(entry.get("display_name", entry.get("id", "Héros"))))
+		compatibility_option.set_item_metadata(
+			compatibility_option.item_count - 1,
+			StringName(entry.get("id", &"")),
+		)
 	root.add_child(compatibility_option)
 	template_option.item_selected.connect(_on_template_selected)
 	path_label = Label.new()
@@ -73,7 +81,9 @@ func _update_proposal(value: String) -> void:
 	if id_edit == null:
 		return
 	id_edit.text = str(path_service.suggest_item_id(value, catalog))
-	path_label.text = "Brouillon proposé : %s" % path_service.draft_path(StringName(id_edit.text))
+	path_label.text = "Brouillon proposé : %s" % path_service.draft_path(
+		StringName(id_edit.text), _draft_directory()
+	)
 
 
 func _confirm() -> void:
@@ -82,14 +92,23 @@ func _confirm() -> void:
 		return
 	var compatible: Array[StringName] = []
 	if template_option.selected != ItemDefinition.Category.RELIC and compatibility_option.selected > 0:
-		compatible.append([&"elf", &"mage", &"warrior"][compatibility_option.selected - 1])
+		var selected_id := StringName(
+			compatibility_option.get_item_metadata(compatibility_option.selected)
+		)
+		if selected_id != &"":
+			compatible.append(selected_id)
 	create_requested.emit({
 		"template": template_option.selected,
 		"display_name": name_edit.text.strip_edges(),
 		"item_id": item_id,
 		"compatible_character_ids": compatible,
-		"draft_path": path_service.draft_path(item_id),
+		"draft_path": path_service.draft_path(item_id, _draft_directory()),
 	})
+
+
+func _draft_directory() -> String:
+	return catalog.draft_directory if catalog != null \
+		else ItemStudioCatalogService.DRAFT_DIRECTORY
 
 
 func _label(text: String) -> Label:

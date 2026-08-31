@@ -2,10 +2,52 @@
 
 [ext_resource type="Script" uid="uid://da4pwu768ynrc" path="res://data/characters/discipline_data.gd" id="1_discipline"]
 [ext_resource type="Script" uid="uid://dygdaxh7c07ia" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
-[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_voe6j"]
+[ext_resource type="Script" uid="uid://b6n8d7tngulau" path="res://data/characters/skill_upgrade_data.gd" id="2_upgrade_type"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
+[ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_modifier_type"]
+[ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_modifier"]
 
 [sub_resource type="Resource" id="Rank1"]
 script = ExtResource("2_rank")
+
+[sub_resource type="Resource" id="SweepPushModifier"]
+script = ExtResource("5_modifier")
+effect_type = 18
+amount = 1
+modifier_name = "Horizon brisé"
+
+[sub_resource type="Resource" id="SweepPushChoice"]
+script = ExtResource("3_node")
+excluded_node_ids = Array[StringName]([&"achilles_sweep_bronze_circle"])
+upgrade_id = &"achilles_sweep_broken_horizon"
+display_name = "Horizon brisé"
+description = "+1 case de poussée. Le Balayage devient un outil de terrain."
+discipline_id = &"sweep"
+rank = 2
+target_spell_id = &"achilles_sweep"
+spell_modifiers = Array[ExtResource("4_modifier_type")]([SubResource("SweepPushModifier")])
+
+[sub_resource type="Resource" id="SweepDamageModifier"]
+script = ExtResource("5_modifier")
+amount = 4
+modifier_name = "Cercle de bronze"
+
+[sub_resource type="Resource" id="SweepDamageChoice"]
+script = ExtResource("3_node")
+excluded_node_ids = Array[StringName]([&"achilles_sweep_broken_horizon"])
+upgrade_id = &"achilles_sweep_bronze_circle"
+display_name = "Cercle de bronze"
+description = "+4 dégâts. Le Balayage devient une exécution rapprochée."
+discipline_id = &"sweep"
+rank = 2
+target_spell_id = &"achilles_sweep"
+spell_modifiers = Array[ExtResource("4_modifier_type")]([SubResource("SweepDamageModifier")])
+
+[sub_resource type="Resource" id="Rank2"]
+script = ExtResource("2_rank")
+rank = 2
+required_total_xp = 3
+choices = Array[ExtResource("2_upgrade_type")]([SubResource("SweepPushChoice"), SubResource("SweepDamageChoice")])
 
 [resource]
 script = ExtResource("1_discipline")
@@ -13,4 +55,4 @@ discipline_id = &"sweep"
 display_name = "Horizon"
 description = "Maîtrise des frappes circulaires et du contrôle des ennemis proches."
 presentation_color = Color(0.46, 0.54, 0.6, 1)
-ranks = Array[ExtResource("2_rank")]([SubResource("Rank1")])
+ranks = Array[ExtResource("2_rank")]([SubResource("Rank1"), SubResource("Rank2")])

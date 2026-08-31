@@ -329,7 +329,7 @@ func test_commencer_run_ouvre_intro_sans_demarrer_run_et_une_seule_fois() -> voi
 	assert_eq(run_selector.item_count, 3)
 	assert_eq(run_selector.get_item_text(0), "Principal")
 	assert_eq(run_selector.get_item_text(1), "Run de test")
-	assert_eq(run_selector.get_item_text(2), "L'Odyssée")
+	assert_eq(run_selector.get_item_text(2), "Catabase")
 	controller.archivist_panel.get_node("%RoomSelector").select(2)
 	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
 	controller.archivist_panel.get_node("%ConfirmRunButton").pressed.emit()
@@ -379,7 +379,7 @@ func test_donnees_archiviste_preparent_le_trio_reel_dans_game_manager() -> void:
 	assert_true(
 		available_runs[1].is_valid(), str(available_runs[1].validation_errors())
 	)
-	assert_eq(available_runs[2].run_name, "L'Odyssée")
+	assert_eq(available_runs[2].run_name, "Catabase")
 	assert_eq(available_runs[2].rooms.size(), 3)
 	assert_true(
 		available_runs[2].is_valid(), str(available_runs[2].validation_errors())

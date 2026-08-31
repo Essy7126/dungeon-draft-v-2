@@ -287,14 +287,28 @@ func _begin_run_transition() -> void:
 	else:
 		transition_fade.color.a = 1.0
 
+	var configured_run := GameManager.peek_next_run_data()
+	if configured_run == null:
+		_restore_failed_run_transition("configuration de run perdue avant transition")
+		return
+	if configured_run.intro_sequence == null:
+		if GameManager.start_configured_run():
+			return
+		_restore_failed_run_transition("demarrage direct de la run refuse")
+		return
+
 	intro_cinematic_requested.emit(intro_cinematic_scene_path)
 	var opened = cinematic_open_callable.call(intro_cinematic_scene_path)
 	if opened is bool and opened:
 		return
-	push_error(
-		"StartHub: impossible d'ouvrir la cinematique d'introduction : %s"
+	_restore_failed_run_transition(
+		"impossible d'ouvrir la cinematique d'introduction : %s"
 		% intro_cinematic_scene_path
 	)
+
+
+func _restore_failed_run_transition(reason: String) -> void:
+	push_error("StartHub: %s" % reason)
 	_cinematic_transition_committed = false
 	GameManager.clear_next_run_configuration()
 	archivist.set_interaction_enabled(true)

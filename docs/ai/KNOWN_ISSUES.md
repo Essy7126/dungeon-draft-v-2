@@ -218,3 +218,37 @@ régressions introduites par la migration.
   vocabulaire de l'ancien parcours.
 - La revue humaine interactive dans l'éditeur Godot reste distincte des
   captures automatisées et du smoke headless.
+
+## Catabase — limites du candidat cinématique V4 2026-08-28
+
+- Statut : **WORKTREE_CANDIDATE**. Aucun commit, stage, push ou marquage CURRENT.
+- Deux sources fournies contredisent le contrat 1920 x 1080 :
+  `01_troie_assiegee.png` et `03_achille_choisit_troie.png` mesurent
+  1672 x 941. Elles sont conservées byte-for-byte et mises à l'échelle en
+  préservant leur ratio ; leur remplacement par des masters 1920 x 1080 reste
+  nécessaire avant validation artistique finale.
+- Aucun visuel Paris dédié n'existe dans le dépôt. L'Ombre de Paris réutilise
+  temporairement le meilleur archer spectral compatible et reste explicitement
+  `PLACEHOLDER_VISUAL`. Ses statistiques restent `PLACEHOLDER_BALANCE` et ne
+  sont pas inscrites dans `BALANCE_BASELINE.md`.
+- EB Garamond n'est pas légalement présente dans le dépôt. Le lecteur réutilise
+  `LobsterTwo`, la serif déjà approuvée du projet, tout en conservant la
+  hiérarchie et les proportions. L'écart typographique avec la référence MP4
+  demande une revue humaine.
+- Seule la localisation française exacte est livrée. La traduction anglaise
+  est absente par décision de périmètre ; le français sert de fallback.
+- `Catabase.mp3` est une source utilisateur prémixée : la musique et ses effets
+  ne peuvent pas être ajustés séparément. Sa durée réellement importée par
+  Godot est 80,053497 s, et non l'estimation 80,088 s du brief. Sa provenance
+  est consignée ; son statut juridique reste `TO_CONFIRM`.
+- Le MP4 de référence n'est pas embarqué au runtime. Les textes restent rendus
+  par Godot ; les captures prises exactement au début d'un cue montrent donc
+  normalement son alpha initial nul pendant le fondu ASS.
+- Les salles techniques `odyssey` 2 et 3 ne sont pas renommées : leur migration
+  était explicitement hors périmètre. Les IDs, dossiers, économie, seed,
+  reliques et progression restent inchangés.
+- La fermeture forcée des runners graphiques signale des ressources renderer,
+  comme les runners historiques du dépôt, sans échec fonctionnel ciblé.
+- Le visionnage et l'écoute humains continus des 72 secondes, ainsi que les
+  skips perçus vers 2, 35 et 69 secondes, restent obligatoires avant toute
+  déclaration prête ou CURRENT.

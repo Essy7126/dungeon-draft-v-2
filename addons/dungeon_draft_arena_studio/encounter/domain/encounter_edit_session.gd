@@ -4,6 +4,9 @@ extends RefCounted
 
 const RECOVERY_ROOT := "user://dungeon_draft_studio/encounter_studio/recovery"
 
+## Point d'injection des tests et des environnements isolés. La production
+## conserve RECOVERY_ROOT ; aucune suite ne doit partager cette autorité.
+var recovery_root := RECOVERY_ROOT
 var source_run: RunData = null
 var working_run: RunData = null
 var source_run_path := ""

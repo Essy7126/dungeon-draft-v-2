@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://cd70yyesrcj" path="res://data/rooms/test_waves/first_run_room_03_waves.tres" id="4_forge"]
 [ext_resource type="Resource" uid="uid://cu75nfsk7bpui" path="res://data/rooms/terrain_2.tres" id="6_terrain_2"]
 [ext_resource type="Resource" uid="uid://buiqsb71lud8" path="res://data/rooms/bible/la_rune.tres" id="7_rune"]
+[ext_resource type="Resource" path="res://cinematics/intro/sequences/legacy_intro_sequence.tres" id="8_intro"]
 
 [resource]
 script = ExtResource("1_run")
@@ -15,4 +16,5 @@ randomize_seed_each_run = false
 room_flow_mode = 1
 maximum_waves_per_room = 10
 content_profile = ExtResource("1_nro2u")
+intro_sequence = ExtResource("8_intro")
 rooms = Array[ExtResource("2_room_type")]([ExtResource("3_gue"), ExtResource("6_terrain_2"), ExtResource("4_forge"), ExtResource("7_rune")])

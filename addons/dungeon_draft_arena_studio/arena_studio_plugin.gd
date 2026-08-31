@@ -75,9 +75,15 @@ func _scan_reference_graph() -> void:
 
 
 func _exit_tree() -> void:
-	_save_ui_state()
 	if is_instance_valid(_workspace):
-		_workspace.prepare_for_close()
+		var close_result := _workspace.prepare_for_close()
+		if not bool(close_result.get("ok", false)):
+			push_error(
+				"Récupération durable échouée pendant la désactivation du Studio ; "
+				+ "l'arrêt déjà engagé ne peut pas être annulé ici. L'interface est "
+				+ "tout de même détachée proprement pour éviter des callbacks orphelins."
+			)
+	_save_ui_state()
 	_reintegrate_workspace()
 	remove_tool_menu_item(TOOL_MENU_DETACH)
 	remove_tool_menu_item(TOOL_MENU_SKILLS)

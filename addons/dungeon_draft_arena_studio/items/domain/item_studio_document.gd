@@ -22,6 +22,7 @@ var destination_path := ""
 var status: StringName = STATUS_NEW
 var original_item_id: StringName = &""
 var original_fingerprint := ""
+var original_file_sha256 := ""
 var preview_disabled_effects := {}
 var history := StudioHistoryController.new()
 var copy_service := ItemDeepCopyService.new()
@@ -47,6 +48,7 @@ func open_definition(definition: ItemDefinition, p_status := STATUS_SHARED) -> b
 	status = p_status
 	original_item_id = definition.item_id
 	original_fingerprint = ItemFingerprintService.semantic_fingerprint(definition)
+	original_file_sha256 = _file_sha256(source_path)
 	preview_disabled_effects.clear()
 	history.clear()
 	history.set_saved_fingerprint(current_fingerprint())
@@ -66,6 +68,7 @@ func create_new(template: ItemDefinition) -> bool:
 	status = STATUS_NEW
 	original_item_id = &""
 	original_fingerprint = ""
+	original_file_sha256 = ""
 	preview_disabled_effects.clear()
 	history.clear()
 	history.set_saved_fingerprint("__unsaved__")
@@ -85,6 +88,7 @@ func duplicate_as_new(
 	destination_path = ""
 	original_item_id = &""
 	original_fingerprint = ""
+	original_file_sha256 = ""
 	working_copy.item_id = new_item_id
 	working_copy.display_name = "%s — copie" % definition.display_name
 	if not copy_acquisition_tags:
@@ -140,8 +144,15 @@ func record_snapshot(
 func discard_changes() -> Dictionary:
 	if source == null:
 		return {"ok": false, "error": "Le nouvel objet n’a aucune source à recharger."}
+	var reload_source := source
+	if not source_path.is_empty() and FileAccess.file_exists(source_path):
+		var disk_source := ResourceLoader.load(
+			source_path, "", ResourceLoader.CACHE_MODE_IGNORE
+		) as ItemDefinition
+		if disk_source != null:
+			reload_source = disk_source
 	return {
-		"ok": open_definition(source, status),
+		"ok": open_definition(reload_source, status),
 		"fingerprint": original_fingerprint,
 	}
 
@@ -154,6 +165,7 @@ func mark_saved(reloaded: ItemDefinition, p_status: StringName, saved_path: Stri
 	status = p_status
 	original_item_id = reloaded.item_id
 	original_fingerprint = ItemFingerprintService.semantic_fingerprint(reloaded)
+	original_file_sha256 = _file_sha256(saved_path)
 	history.clear()
 	history.set_saved_fingerprint(current_fingerprint())
 	changed.emit()
@@ -165,6 +177,52 @@ func is_dirty() -> bool:
 
 func current_fingerprint() -> String:
 	return ItemFingerprintService.semantic_fingerprint(working_copy)
+
+
+func snapshot_state() -> Dictionary:
+	return {
+		"source": copy_service.duplicate_definition(source),
+		"working_copy": copy_service.duplicate_definition(working_copy),
+		"source_path": source_path,
+		"destination_path": destination_path,
+		"status": status,
+		"original_item_id": original_item_id,
+		"original_fingerprint": original_fingerprint,
+		"original_file_sha256": original_file_sha256,
+		"preview_disabled_effects": preview_disabled_effects.duplicate(true),
+		"history": history.snapshot_state(),
+		"pending_change_kind": _pending_change_kind,
+		"pending_change_path": _pending_change_path,
+	}
+
+
+func restore_state(state: Dictionary) -> bool:
+	if state.is_empty():
+		return false
+	var snapshot_source := state.get("source") as ItemDefinition
+	var snapshot_working := state.get("working_copy") as ItemDefinition
+	if snapshot_working == null:
+		return false
+	source = copy_service.duplicate_definition(snapshot_source)
+	working_copy = copy_service.duplicate_definition(snapshot_working)
+	if working_copy == null:
+		return false
+	source_path = str(state.get("source_path", ""))
+	destination_path = str(state.get("destination_path", ""))
+	status = StringName(state.get("status", STATUS_NEW))
+	original_item_id = StringName(state.get("original_item_id", &""))
+	original_fingerprint = str(state.get("original_fingerprint", ""))
+	original_file_sha256 = str(state.get("original_file_sha256", ""))
+	preview_disabled_effects = (
+		state.get("preview_disabled_effects", {}) as Dictionary
+	).duplicate(true)
+	_pending_change_kind = StringName(state.get("pending_change_kind", CHANGE_DOCUMENT))
+	_pending_change_path = str(state.get("pending_change_path", ""))
+	if not history.restore_state(state.get("history", {}) as Dictionary):
+		return false
+	changed.emit()
+	refresh_requested.emit(CHANGE_DOCUMENT, "")
+	return true
 
 
 func change_set() -> ItemChangeSet:
@@ -318,3 +376,8 @@ func _string_names(values: Array) -> Array[StringName]:
 	for value in values:
 		result.append(StringName(value))
 	return result
+
+
+static func _file_sha256(path: String) -> String:
+	return FileAccess.get_sha256(path) if not path.is_empty() \
+		and FileAccess.file_exists(path) else ""

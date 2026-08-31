@@ -12,6 +12,7 @@ signal dialogue_opened
 @onready var dialogue_label: Label = %DialogueText
 @onready var room_selection_view: VBoxContainer = %RoomSelectionView
 @onready var run_selector: OptionButton = %RunSelector
+@onready var room_selection_label: Label = %RoomSelectionLabel
 @onready var room_selector: OptionButton = %RoomSelector
 
 var data: LanternboundArchivistData = null
@@ -90,26 +91,47 @@ func _populate_room_selector(run_index: int) -> void:
 	room_selector.clear()
 	if run_index >= 0 and run_index < _available_runs.size():
 		var run_data := _available_runs[run_index]
-		for index in range(run_data.rooms.size()):
-			var room := run_data.rooms[index]
-			var room_name := room.room_name if room != null else "Salle %d" % (index + 1)
-			room_selector.add_item(room_name, index)
+		room_selection_label.visible = run_data.hub_room_selection_enabled
+		room_selector.visible = run_data.hub_room_selection_enabled
+		if run_data.hub_room_selection_enabled:
+			for index in range(run_data.rooms.size()):
+				var room := run_data.rooms[index]
+				var room_name := (
+					room.room_name if room != null else "Salle %d" % (index + 1)
+				)
+				room_selector.add_item(room_name, index)
+		else:
+			var forced_index := run_data.hub_forced_start_room_index
+			if forced_index >= 0 and forced_index < run_data.rooms.size():
+				var forced_room := run_data.rooms[forced_index]
+				var forced_name := (
+					forced_room.room_name
+					if forced_room != null else "Salle %d" % (forced_index + 1)
+				)
+				room_selector.add_item(forced_name, forced_index)
+	else:
+		room_selection_label.visible = true
+		room_selector.visible = true
 	if room_selector.item_count > 0:
 		room_selector.select(0)
 
 
 func _update_run_confirmation_state() -> void:
-	%ConfirmRunButton.disabled = run_selector.item_count == 0 \
+	var selected_run_index := run_selector.get_selected_id()
+	%ConfirmRunButton.disabled = selected_run_index < 0 \
+		or selected_run_index >= _available_runs.size() \
 		or room_selector.item_count == 0
 
 
 func _confirm_run() -> void:
 	var selected_run_index := run_selector.get_selected_id()
-	var selected_room_index := room_selector.get_selected_id()
-	if selected_run_index < 0 or selected_run_index >= _available_runs.size() \
-			or selected_room_index < 0:
+	if selected_run_index < 0 or selected_run_index >= _available_runs.size():
+		return
+	var selected_run := _available_runs[selected_run_index]
+	var selected_room_index := selected_run.get_hub_start_room_index(
+		room_selector.get_selected_id()
+	)
+	if selected_room_index < 0 or selected_room_index >= selected_run.rooms.size():
 		return
 	%ConfirmRunButton.disabled = true
-	run_requested.emit(
-		_available_runs[selected_run_index], selected_room_index
-	)
+	run_requested.emit(selected_run, selected_room_index)

@@ -15,8 +15,6 @@ const DISCIPLINE_PATHS := [
 	"res://data/characters/achilles/disciplines/sweep.tres",
 	"res://data/characters/achilles/disciplines/guard.tres",
 ]
-const GATE_A_WORKTREE := "C:/Users/paolo/Documents/dungeon-draft-v-2-worktrees/achilles-3d-sword-odyssey-v1-20260820_133257"
-const GATE_A_HEAD := "924a9799d70e0aa2230a1e97bf705ee0d7fd17d9"
 
 var exporter := AchillesTheorycraftSnapshotExporter.new()
 var catalog := AchillesTheorycraftCatalog.new()
@@ -31,6 +29,18 @@ var baseline: AchillesTheorycraftBuild
 func before_all() -> void:
 	snapshot = exporter.build_snapshot()
 	baseline = catalog.create_current_baseline(str(snapshot.get("snapshot_sha", "")))
+
+
+func after_all() -> void:
+	for draft_id in [
+		"gut_isolated_character_state_draft",
+		"gut_state_isolation_draft",
+		"gut_user_path",
+	]:
+		_remove_file(AchillesTheorycraftStore.DRAFT_ROOT.path_join("%s.json" % draft_id))
+	_remove_tree(AchillesTheorycraftStore.EXPORT_ROOT.path_join("gut"))
+	_remove_tree(AchillesTheorycraftStore.EXPORT_ROOT.path_join("gut_determinism"))
+	_remove_tree("user://theorycraft_rejected")
 
 
 func test_snapshot_records_repository_sha() -> void:
@@ -96,10 +106,13 @@ func test_snapshot_matches_four_discipline_resources() -> void:
 	ids.sort()
 	assert_eq(ids, ["advance", "guard", "spear", "sweep"])
 	for discipline in snapshot.disciplines:
-		assert_eq(discipline.ranks.size(), 1)
+		assert_eq(discipline.ranks.size(), 2)
 		assert_eq(discipline.ranks[0].rank, 1)
 		assert_eq(discipline.ranks[0].required_total_xp, 0)
 		assert_true(discipline.ranks[0].choices.is_empty())
+		assert_eq(discipline.ranks[1].rank, 2)
+		assert_eq(discipline.ranks[1].required_total_xp, 3)
+		assert_eq(discipline.ranks[1].choices.size(), 2)
 
 
 func test_snapshot_matches_odyssey_rooms() -> void:
@@ -165,19 +178,19 @@ func test_theorycraft_export_does_not_modify_production_resources() -> void:
 	assert_eq(_production_fingerprints(), before)
 
 
-func test_export_destinations_reject_arbitrary_canonical_and_gate_a_paths() -> void:
+func test_export_destinations_reject_arbitrary_and_canonical_paths() -> void:
 	var builds := catalog.initial_builds(snapshot.snapshot_sha)
 	var report := comparison.compare(builds)
-	var fake_mission_root := (
-		"C:/tmp/fake/artifacts/"
-		+ AchillesTheorycraftStore.MISSION_ARTIFACT_DIRECTORY
+	var rejected_root := ProjectSettings.globalize_path("user://theorycraft_rejected")
+	var fake_mission_root := rejected_root.path_join(
+		AchillesTheorycraftStore.MISSION_ARTIFACT_DIRECTORY
 	)
 	var fake_existed_before := DirAccess.dir_exists_absolute(fake_mission_root)
 	for forbidden_root in [
-		"C:/arbitrary/outside/project",
+		rejected_root.path_join("arbitrary"),
 		fake_mission_root,
-		"C:/Dungeon_Draft_Production/Achilles/Canonical/ACHILLES_CANONICAL_SOURCE_V1_20260819_212027/review",
-		GATE_A_WORKTREE.path_join("review"),
+		rejected_root.path_join("canonical/review"),
+		rejected_root.path_join("external_worktree/review"),
 	]:
 		assert_false(store.configure_artifact_root(forbidden_root), forbidden_root)
 		assert_false(store.export_review(report, builds, forbidden_root).ok, forbidden_root)
@@ -639,11 +652,6 @@ func test_templates_contain_no_weapon_asset_reference() -> void:
 		assert_false(content.contains("res://assets/"), path)
 
 
-func test_gate_a_worktree_unchanged() -> void:
-	assert_eq(_git_at(GATE_A_WORKTREE, ["rev-parse", "HEAD"]), GATE_A_HEAD)
-	assert_eq(_git_at(GATE_A_WORKTREE, ["status", "--porcelain"]), "")
-
-
 func test_gate_a_artifacts_not_loaded_by_runtime() -> void:
 	for path in [ODYSSEY, ACHILLES, PROGRESSION, "res://characters/achilles/AchillesIsoUnitView.tscn"]:
 		assert_false(_text(path).contains("ACHILLES_3D_SWORD_ODYSSEY_V1"), path)
@@ -725,6 +733,23 @@ func _files_recursive(root: String) -> Array[String]:
 		name = directory.get_next()
 	directory.list_dir_end()
 	return result
+
+
+func _remove_file(path: String) -> void:
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _remove_tree(path: String) -> bool:
+	var absolute := ProjectSettings.globalize_path(path)
+	var directory := DirAccess.open(absolute)
+	if directory == null:
+		return true
+	for file_name in directory.get_files():
+		DirAccess.remove_absolute(absolute.path_join(file_name))
+	for child in directory.get_directories():
+		_remove_tree(path.path_join(child))
+	return DirAccess.remove_absolute(absolute) == OK
 
 
 func _git(arguments: Array[String]) -> String:

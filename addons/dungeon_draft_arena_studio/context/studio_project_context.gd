@@ -49,6 +49,7 @@ var generations := {
 	&"encounter": 0,
 	&"items": 0,
 	&"skills": 0,
+	&"vfx": 0,
 }
 var persisted_ui := {}
 
@@ -169,6 +170,7 @@ func human_domain_name(domain: StringName) -> String:
 		&"encounter": "Rencontre",
 		&"items": "Objets",
 		&"skills": "Compétences",
+		&"vfx": "Effets visuels",
 	}.get(domain, str(domain).capitalize())
 
 

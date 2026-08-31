@@ -1,0 +1,32 @@
+[gd_resource type="Translation" format=3]
+
+[resource]
+resource_name = "Catabase cinematic V4 (French)"
+locale = "fr"
+messages = {
+&"CATABASE_INTRO_001": "TROIE",
+&"CATABASE_INTRO_002": "CÔTE D’ANATOLIE",
+&"CATABASE_INTRO_003": "VERS 1200 AV. J.-C.",
+&"CATABASE_INTRO_004": "DIXIÈME ANNÉE DU SIÈGE",
+&"CATABASE_INTRO_005": "Depuis dix ans, les Grecs assiègent la cité.",
+&"CATABASE_INTRO_006": "Sa mère, la déesse Thétis,\nlui avait révélé deux destins.",
+&"CATABASE_INTRO_007": "Rentrer chez lui. Vivre longtemps.\nEt voir sa gloire s’éteindre.",
+&"CATABASE_INTRO_008": "Ou rester à Troie. Mourir jeune.\nEt laisser aux hommes un nom impérissable.",
+&"CATABASE_INTRO_009": "Hector tua Patrocle,\nson plus proche compagnon.",
+&"CATABASE_INTRO_010": "Achille resta. Il tua Hector pour le venger,\nsachant que sa propre mort suivrait.",
+&"CATABASE_INTRO_011": "Puis Paris décocha la flèche.",
+&"CATABASE_INTRO_012": "Achille mourut devant Troie.",
+&"CATABASE_INTRO_013": "Une vie brève. Un nom impérissable.",
+&"CATABASE_INTRO_014": "Il avait obtenu ce qu’il avait choisi.",
+&"CATABASE_INTRO_015": "Les hommes gardèrent la légende.",
+&"CATABASE_INTRO_016": "Les Enfers reçurent l’homme.",
+&"CATABASE_INTRO_017": "Il était mort.",
+&"CATABASE_INTRO_018": "Mais il portait encore en lui\nles passions des vivants.",
+&"CATABASE_INTRO_019": "La vengeance. La victoire.\nLa domination. La renommée.",
+&"CATABASE_INTRO_020": "Dans les Enfers, aucune victoire ne rend la vie.\nAucun nom n’ouvre un avenir.",
+&"CATABASE_INTRO_021": "Sa vengeance avait encore un visage.",
+&"CATABASE_INTRO_022": "PARIS",
+&"CATABASE_INTRO_023": "CATABASE",
+&"CATABASE_INTRO_024": "I — L’OMBRE DE PARIS"
+}
+

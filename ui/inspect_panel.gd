@@ -162,6 +162,7 @@ func show_unit(unit, locked: bool = false) -> void:
 	if unit == null:
 		_show_empty()
 		return
+	_panel.visible = true
 	_title.text = unit.unit_name
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
 	_add_resources(unit)
@@ -186,6 +187,7 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 	if unit != null:
 		show_unit(unit, locked)
 		return
+	_panel.visible = true
 	_title.text = "Case %d, %d" % [cell.x, cell.y]
 	var base: Dictionary = terrain_effects.get_base_state(cell) \
 		if terrain_effects != null and terrain_effects.has_method("get_base_state") \
@@ -260,6 +262,7 @@ func show_spell_preview(caster, spell: Spell, cell: Vector2i, grid: GridData, sp
 	if caster == null or spell == null or grid == null or spell_caster == null:
 		_show_empty()
 		return
+	_panel.visible = true
 	_title.text = "Apercu : %s" % spell.spell_name
 	_subtitle.text = "Cible %d, %d" % [cell.x, cell.y]
 	_add_section("Cout")
@@ -351,6 +354,7 @@ func _preview_effect_on_unit(_caster, spell: Spell, _target) -> String:
 func _show_empty() -> void:
 	_displayed_unit = null
 	_clear_content()
+	_panel.visible = false
 	_title.text = "Inspection"
 	_subtitle.text = "Survole une case, ou clique une unite pour figer le panneau."
 	_add_paragraph("Les ressources, statuts, terrains et sorts apparaissent ici pendant le combat.")

@@ -20,9 +20,16 @@ const GridAlignmentService = preload(
 const GridAlignmentPanel = preload(
 	"res://addons/dungeon_draft_arena_studio/ui/terrain/terrain_grid_alignment_panel.gd"
 )
+const TerrainTypeSaveTransaction = preload(
+	"res://addons/dungeon_draft_arena_studio/services/arena_terrain_type_save_transaction_service.gd"
+)
+const TERRAIN_TYPE_TEST_ROOT := (
+	"user://dungeon_draft_studio/tests/terrain_type_transaction"
+)
 
 
 func before_each() -> void:
+	_remove_user_tree(TERRAIN_TYPE_TEST_ROOT)
 	ArenaValidator.clear_cache()
 	ArenaVisualAssembler.clear_inspection_cache()
 	ArenaTerrainRenderPlanService.clear_cache()
@@ -31,6 +38,10 @@ func before_each() -> void:
 	# chaque test repart donc explicitement des valeurs par défaut.
 	TerrainStudioUiStateService.clear_cache()
 	TerrainStudioUiStateService.save_state(TerrainStudioUiStateService.default_state())
+
+
+func after_each() -> void:
+	_remove_user_tree(TERRAIN_TYPE_TEST_ROOT)
 
 
 # --- 1. Nouveau / Ouvrir accessibles depuis le vrai StudioWorkspace ---------
@@ -81,7 +92,7 @@ func test_02b_calibration_model_never_participates_in_the_toolbar_layout() -> vo
 	workspace._apply_toolbar_responsive()
 	assert_false(workspace.workspace_preset_option.visible)
 	assert_eq(workspace.workspace_preset_option.get_parent(), workspace)
-	assert_eq(workspace.domain_buttons[3].text, "Effets visuels")
+	assert_eq(workspace.domain_buttons[3].text, "LAB VFX")
 	assert_eq(workspace.save_button.text, "Enregistrer le brouillon")
 	assert_eq(workspace.produce_button.text, "Intégrer à la partie")
 	workspace._rebuild_window_menu()
@@ -575,6 +586,34 @@ func test_20_dirty_transitions_keep_the_four_explicit_choices() -> void:
 	ArenaSerializer.remove_recovery(draft_arena_id)
 
 
+func test_20b_home_treats_a_terrain_type_only_edit_as_dirty() -> void:
+	var context := StudioProjectContext.new()
+	assert_true(bool(context.initialize().get("ok", false)))
+	var direct := ArenaStudioMain.new()
+	direct.auto_load_initial_arena = false
+	direct.setup(null, null, context, StudioReferenceGraphService.new())
+	add_child_autofree(direct)
+	await wait_process_frames(2)
+	_open_forest(direct)
+	assert_false(direct.dirty)
+	var fixture := _terrain_type_fixture("home_type_only")
+	direct._terrain_type_source = fixture.source as ArenaTerrainDefinition
+	direct._terrain_type_working = TerrainTypeSaveTransaction.create_working_copy(
+		direct._terrain_type_source
+	)
+	direct._terrain_type_opening_state = TerrainTypeSaveTransaction.capture_opening_state(
+		direct._terrain_type_source, _terrain_type_test_options(str(fixture.root))
+	)
+	direct._terrain_type_working.walkable = not direct._terrain_type_source.walkable
+	direct._on_dirty_state_changed(false)
+	assert_true(context.is_dirty(&"arena"))
+	direct.request_home()
+	assert_true(context.has_pending_transition())
+	assert_false(direct.is_home_visible())
+	assert_true(context.resolve_pending_transition(StudioProjectContext.ACTION_CANCEL).ok)
+	direct._reset_terrain_type_session()
+
+
 # --- 14. L'intégration UPDATE conserve rencontre, vagues et récompenses ----
 
 func test_21_update_integration_preserves_encounter_waves_and_rewards() -> void:
@@ -920,10 +959,20 @@ func test_28_checklist_and_problems_only_appear_in_detailed_validation() -> void
 	assert_null(studio.guidance_panel)
 	assert_not_null(studio.checklist_panel)
 	assert_false(studio.checklist_panel.is_visible_in_tree())
+	var drawer_tabs := studio.bottom_drawer_content as TabContainer
+	assert_not_null(drawer_tabs)
+	drawer_tabs.current_tab = 2
 	studio._open_validation_drawer()
 	await wait_process_frames(1)
+	assert_eq(drawer_tabs.current_tab, 0)
 	assert_true(studio.checklist_panel.is_visible_in_tree())
 	assert_true(studio.checklist_panel.entries_box.visible)
+	studio._toggle_bottom_drawer()
+	if studio.validation_report.error_count() == 0 \
+			and studio.validation_report.warning_count() == 0:
+		assert_true(studio.bottom_drawer_button.text.begins_with("✓ Validation réussie"))
+	else:
+		assert_true(studio.bottom_drawer_button.text.begins_with("⚠ Validation"))
 	assert_false(studio.canvas.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	studio._on_tool_selected(ArenaStudioCanvas.Tool.OBSTACLE)
 	assert_eq(studio.canvas.active_tool, ArenaStudioCanvas.Tool.OBSTACLE)
@@ -997,13 +1046,435 @@ func test_29d_terrain_type_editor_is_a_cancelable_isolated_working_copy() -> voi
 	assert_eq(studio._terrain_type_working.walkable, not source_walkable)
 	assert_eq(source.walkable, source_walkable)
 	studio._show_terrain_type_save_choices()
-	assert_true(studio.terrain_type_shared_button.disabled)
-	assert_true(studio.terrain_type_duplicate_button.disabled)
+	assert_false(studio.terrain_type_shared_button.disabled)
+	assert_null(studio.terrain_type_duplicate_button)
 	assert_string_contains(studio.terrain_type_save_dialog.dialog_text, "ArenaTerrainDefinition")
+	assert_string_contains(studio.terrain_type_save_dialog.dialog_text, "transactionnelle")
+	assert_string_contains(studio.terrain_type_save_dialog.dialog_text, "variante n’est pas proposée")
 	studio.terrain_type_save_dialog.hide()
 	studio._cancel_terrain_type_edit()
 	assert_null(studio._terrain_type_working)
 	assert_eq(source.walkable, source_walkable)
+
+
+func test_29f_terrain_type_transaction_writes_and_reloads_both_user_resources() -> void:
+	var fixture := _terrain_type_fixture("success")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := _terrain_type_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	assert_true(bool(opening.get("ok", false)), str(opening))
+	var terrain_uid_before := ResourceLoader.get_resource_uid(str(fixture.terrain_path))
+	var effect_uid_before := ResourceLoader.get_resource_uid(str(fixture.effect_path))
+	assert_ne(terrain_uid_before, ResourceUID.INVALID_ID)
+	assert_ne(effect_uid_before, ResourceUID.INVALID_ID)
+	assert_eq(
+		_serialized_resource_uid(str(fixture.terrain_path)), terrain_uid_before
+	)
+	assert_eq(
+		_serialized_resource_uid(str(fixture.effect_path)), effect_uid_before
+	)
+	working.walkable = false
+	working.movement_cost = 4
+	working.unit_effect.damage = 42
+	working.unit_effect.dangerous_for_ai = true
+	var result := TerrainTypeSaveTransaction.save(
+		source, working, opening, options
+	)
+	assert_true(bool(result.get("ok", false)), str(result))
+	assert_false(bool(result.get("rolled_back", true)))
+	for path in result.saved_paths as PackedStringArray:
+		assert_true(path.begins_with(TERRAIN_TYPE_TEST_ROOT + "/"), path)
+	var reloaded := ResourceLoader.load(
+		str(fixture.terrain_path), "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaTerrainDefinition
+	assert_not_null(reloaded)
+	assert_false(reloaded.walkable)
+	assert_eq(reloaded.movement_cost, 4)
+	assert_not_null(reloaded.unit_effect)
+	assert_eq(reloaded.unit_effect.damage, 42)
+	assert_true(reloaded.unit_effect.dangerous_for_ai)
+	assert_eq(reloaded.unit_effect.resource_path, str(fixture.effect_path))
+	assert_eq(ResourceLoader.get_resource_uid(
+		str(fixture.terrain_path)
+	), terrain_uid_before)
+	assert_eq(ResourceLoader.get_resource_uid(
+		str(fixture.effect_path)
+	), effect_uid_before)
+	assert_eq(
+		_serialized_resource_uid(str(fixture.terrain_path)), terrain_uid_before
+	)
+	assert_eq(
+		_serialized_resource_uid(str(fixture.effect_path)), effect_uid_before
+	)
+	assert_eq(ResourceUID.get_id_path(terrain_uid_before), str(fixture.terrain_path))
+	assert_eq(ResourceUID.get_id_path(effect_uid_before), str(fixture.effect_path))
+
+
+func test_29g_terrain_type_transaction_refuses_an_external_effect_change() -> void:
+	var fixture := _terrain_type_fixture("external_conflict")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := _terrain_type_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	working.unit_effect.damage = 23
+	var external := _terrain_effect_copy(source.unit_effect)
+	external.damage = 77
+	assert_eq(ResourceSaver.save(external, str(fixture.effect_path)), OK)
+	var external_hash := FileAccess.get_sha256(str(fixture.effect_path))
+	var terrain_hash := FileAccess.get_sha256(str(fixture.terrain_path))
+	var result := TerrainTypeSaveTransaction.save(
+		source, working, opening, options
+	)
+	assert_false(bool(result.get("ok", true)))
+	assert_eq(str(result.get("step", "")), "BLOCKED")
+	assert_false(bool(result.get("rolled_back", true)))
+	assert_eq(FileAccess.get_sha256(str(fixture.effect_path)), external_hash)
+	assert_eq(FileAccess.get_sha256(str(fixture.terrain_path)), terrain_hash)
+	assert_false((result.plan.conflicts as Array).is_empty())
+	assert_eq(
+		StringName((result.plan.conflicts[0] as Dictionary).code),
+		&"EXTERNAL_MODIFICATION"
+	)
+
+
+func test_29h_terrain_type_transaction_rolls_back_both_files_byte_for_byte() -> void:
+	var fixture := _terrain_type_fixture("rollback")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := _terrain_type_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	options["failure_step"] = "after_effect_commit"
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	var terrain_hash := FileAccess.get_sha256(str(fixture.terrain_path))
+	var effect_hash := FileAccess.get_sha256(str(fixture.effect_path))
+	var terrain_uid := ResourceLoader.get_resource_uid(str(fixture.terrain_path))
+	var effect_uid := ResourceLoader.get_resource_uid(str(fixture.effect_path))
+	working.transparent = false
+	working.unit_effect.damage = 99
+	var result := TerrainTypeSaveTransaction.save(
+		source, working, opening, options
+	)
+	assert_false(bool(result.get("ok", true)))
+	assert_true(bool(result.get("rolled_back", false)), str(result))
+	assert_eq(FileAccess.get_sha256(str(fixture.terrain_path)), terrain_hash)
+	assert_eq(FileAccess.get_sha256(str(fixture.effect_path)), effect_hash)
+	assert_eq(ResourceLoader.get_resource_uid(str(fixture.terrain_path)), terrain_uid)
+	assert_eq(ResourceLoader.get_resource_uid(str(fixture.effect_path)), effect_uid)
+
+
+func test_29i_terrain_type_save_does_not_create_an_empty_effect() -> void:
+	var fixture := _terrain_type_fixture("without_effect", false)
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := _terrain_type_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	var plan := TerrainTypeSaveTransaction.plan(source, working, opening, options)
+	assert_true(bool(plan.get("ok", false)), str(plan))
+	assert_false(bool(plan.get("writes_effect", true)))
+	working.walkable = false
+	var result := TerrainTypeSaveTransaction.save(
+		source, working, opening, options
+	)
+	assert_true(bool(result.get("ok", false)), str(result))
+	assert_eq((result.saved_paths as PackedStringArray).size(), 1)
+	assert_false(FileAccess.file_exists(str(fixture.derived_effect_path)))
+	var reloaded := ResourceLoader.load(
+		str(fixture.terrain_path), "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaTerrainDefinition
+	assert_not_null(reloaded)
+	assert_false(reloaded.walkable)
+	assert_null(reloaded.unit_effect)
+
+
+func test_29j_terrain_type_dirty_working_copy_has_verified_user_recovery() -> void:
+	var fixture := _terrain_type_fixture("working_recovery")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	options["ui_state"] = {
+		"base_texture_path": "res://missing_texture_for_recovery.png",
+		"input_error": "Texture de base invalide",
+	}
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	working.walkable = not source.walkable
+	working.unit_effect.damage = source.unit_effect.damage + 17
+	var saved := TerrainTypeSaveTransaction.save_working_recovery(
+		source, working, opening, options
+	)
+	assert_true(bool(saved.get("ok", false)), str(saved))
+	assert_true(str(saved.get("manifest_path", "")).begins_with(
+		TERRAIN_TYPE_TEST_ROOT + "/"
+	))
+	var recovered := TerrainTypeSaveTransaction.load_working_recovery(
+		source, opening, options
+	)
+	assert_true(bool(recovered.get("ok", false)), str(recovered))
+	assert_true(bool(recovered.get("found", false)), str(recovered))
+	var restored := recovered.working as ArenaTerrainDefinition
+	assert_not_null(restored)
+	assert_eq(restored.walkable, working.walkable)
+	assert_eq(restored.unit_effect.damage, working.unit_effect.damage)
+	assert_eq(str((recovered.ui_state as Dictionary).get(
+		"base_texture_path", ""
+	)), "res://missing_texture_for_recovery.png")
+	assert_eq(FileAccess.get_sha256(str(fixture.terrain_path)), (
+		(opening.files[str(fixture.terrain_path)] as Dictionary).sha256
+	))
+	assert_true(TerrainTypeSaveTransaction.clear_working_recovery(source, options))
+	assert_false(FileAccess.file_exists(str(saved.manifest_path)))
+
+
+func test_29k_interrupted_terrain_type_transaction_recovers_on_next_open() -> void:
+	var fixture := _terrain_type_fixture("interrupted_recovery")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	var terrain_hash := FileAccess.get_sha256(str(fixture.terrain_path))
+	var effect_hash := FileAccess.get_sha256(str(fixture.effect_path))
+	var terrain_uid := ResourceLoader.get_resource_uid(str(fixture.terrain_path))
+	var effect_uid := ResourceLoader.get_resource_uid(str(fixture.effect_path))
+	working.unit_effect.damage += 50
+	options["failure_step"] = "interrupt_after_effect_rename"
+	var interrupted := TerrainTypeSaveTransaction.save(
+		source, working, opening, options
+	)
+	assert_false(bool(interrupted.get("ok", true)))
+	assert_eq(str(interrupted.get("step", "")), "INJECTED_INTERRUPTION")
+	assert_ne(FileAccess.get_sha256(str(fixture.effect_path)), effect_hash)
+	options.erase("failure_step")
+	var recovered := TerrainTypeSaveTransaction.recover_pending_transactions(options)
+	assert_true(bool(recovered.get("ok", false)), str(recovered))
+	assert_eq(int(recovered.get("recovered_count", 0)), 1)
+	assert_eq(FileAccess.get_sha256(str(fixture.terrain_path)), terrain_hash)
+	assert_eq(FileAccess.get_sha256(str(fixture.effect_path)), effect_hash)
+	assert_eq(ResourceLoader.get_resource_uid(str(fixture.terrain_path)), terrain_uid)
+	assert_eq(ResourceLoader.get_resource_uid(str(fixture.effect_path)), effect_uid)
+
+
+func test_29n_ui_only_recovery_keeps_the_unchanged_shared_effect() -> void:
+	var fixture := _terrain_type_fixture("ui_only_recovery")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	options["ui_state"] = {
+		"status_path": "res://missing_status_for_recovery.tres",
+		"input_error": "Statut appliqué invalide",
+	}
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	assert_false(TerrainTypeSaveTransaction.has_changes(source, working))
+	var saved := TerrainTypeSaveTransaction.save_working_recovery(
+		source, working, opening, options
+	)
+	assert_true(bool(saved.get("ok", false)), str(saved))
+	var recovered := TerrainTypeSaveTransaction.load_working_recovery(
+		source, opening, options
+	)
+	assert_true(bool(recovered.get("ok", false)), str(recovered))
+	assert_true(bool(recovered.get("found", false)), str(recovered))
+	var restored := recovered.working as ArenaTerrainDefinition
+	assert_not_null(restored)
+	assert_not_null(restored.unit_effect)
+	assert_eq(
+		TerrainTypeSaveTransaction.effect_fingerprint(restored.unit_effect),
+		TerrainTypeSaveTransaction.effect_fingerprint(source.unit_effect)
+	)
+	assert_eq(str((recovered.ui_state as Dictionary).get(
+		"input_error", ""
+	)), "Statut appliqué invalide")
+
+
+func test_29o_recovery_does_not_overwrite_a_post_rename_deletion() -> void:
+	var fixture := _terrain_type_fixture("rename_then_external_delete")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	working.unit_effect.damage += 33
+	options["failure_step"] = "interrupt_after_effect_rename"
+	var interrupted := TerrainTypeSaveTransaction.save(
+		source, working, opening, options
+	)
+	assert_false(bool(interrupted.get("ok", true)))
+	assert_eq(str(interrupted.get("step", "")), "INJECTED_INTERRUPTION")
+	assert_eq(DirAccess.remove_absolute(
+		ProjectSettings.globalize_path(str(fixture.effect_path))
+	), OK)
+	options.erase("failure_step")
+	var recovered := TerrainTypeSaveTransaction.recover_pending_transactions(options)
+	assert_false(bool(recovered.get("ok", true)), str(recovered))
+	assert_false(FileAccess.file_exists(str(fixture.effect_path)))
+	var failures := recovered.get("failures", []) as Array
+	assert_false(failures.is_empty())
+	assert_eq(str((failures[0] as Dictionary).get(
+		"status", ""
+	)), "ROLLBACK_CONFLICT")
+
+
+func test_29p_commit_quarantine_preserves_a_racing_external_write() -> void:
+	var fixture := _terrain_type_fixture("commit_quarantine_race")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	var external_bytes := "external-during-commit".to_utf8_buffer()
+	var hook_state := {"injected": false}
+	options["before_target_quarantine_hook"] = func(
+			source_path: String, _destination_path: String
+		) -> void:
+		if bool(hook_state.injected) or source_path != str(fixture.effect_path):
+			return
+		hook_state.injected = true
+		var file := FileAccess.open(source_path, FileAccess.WRITE)
+		assert_not_null(file)
+		file.store_buffer(external_bytes)
+		file.flush()
+		file.close()
+	working.unit_effect.damage += 9
+	var result := TerrainTypeSaveTransaction.save(source, working, opening, options)
+	assert_false(bool(result.get("ok", true)), str(result))
+	assert_true(bool(hook_state.injected))
+	assert_eq(FileAccess.get_file_as_bytes(str(fixture.effect_path)), external_bytes)
+	assert_eq(StringName(result.get("rollback_status", &"")), &"ROLLBACK_CONFLICT")
+
+
+func test_29q_rollback_quarantine_preserves_a_racing_external_write() -> void:
+	var fixture := _terrain_type_fixture("rollback_quarantine_race")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	var terrain_hash := FileAccess.get_sha256(str(fixture.terrain_path))
+	var external_bytes := "external-during-rollback".to_utf8_buffer()
+	var hook_state := {"injected": false}
+	options["failure_step"] = "after_effect_commit"
+	options["before_rollback_quarantine_hook"] = func(
+			source_path: String, _destination_path: String
+		) -> void:
+		if bool(hook_state.injected) or source_path != str(fixture.effect_path):
+			return
+		hook_state.injected = true
+		var file := FileAccess.open(source_path, FileAccess.WRITE)
+		assert_not_null(file)
+		file.store_buffer(external_bytes)
+		file.flush()
+		file.close()
+	working.unit_effect.damage += 11
+	var result := TerrainTypeSaveTransaction.save(source, working, opening, options)
+	assert_false(bool(result.get("ok", true)), str(result))
+	assert_true(bool(hook_state.injected))
+	assert_eq(StringName(result.get("rollback_status", &"")), &"ROLLBACK_CONFLICT")
+	assert_eq(FileAccess.get_file_as_bytes(str(fixture.effect_path)), external_bytes)
+	assert_eq(FileAccess.get_sha256(str(fixture.terrain_path)), terrain_hash)
+
+
+func test_29r_clear_and_terminal_journal_failures_are_explicit() -> void:
+	var fixture := _terrain_type_fixture("terminal_failures")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	var clear_options := options.duplicate(true)
+	clear_options["test_fail_clear"] = true
+	var clear_result := TerrainTypeSaveTransaction.save_working_recovery(
+		source, working, opening, clear_options
+	)
+	assert_false(bool(clear_result.get("ok", true)), str(clear_result))
+	assert_eq(str(clear_result.get("error", "")), "working_recovery_cleanup_failed")
+	var terrain_hash := FileAccess.get_sha256(str(fixture.terrain_path))
+	var effect_hash := FileAccess.get_sha256(str(fixture.effect_path))
+	working.unit_effect.damage += 13
+	options["failure_step"] = "close_journal"
+	var result := TerrainTypeSaveTransaction.save(source, working, opening, options)
+	assert_false(bool(result.get("ok", true)), str(result))
+	assert_eq(StringName(result.get("status", &"")), &"ROLLBACK_JOURNAL_FAILED")
+	assert_false(bool(result.get("transaction_terminal", true)))
+	assert_eq(FileAccess.get_sha256(str(fixture.terrain_path)), terrain_hash)
+	assert_eq(FileAccess.get_sha256(str(fixture.effect_path)), effect_hash)
+
+
+func test_29s_original_neighbor_is_retained_when_target_is_raced() -> void:
+	var fixture := _terrain_type_fixture("post_quarantine_race")
+	var source := fixture.source as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	var original_hash := FileAccess.get_sha256(str(fixture.effect_path))
+	var external_bytes := "external-after-quarantine".to_utf8_buffer()
+	var hook_state := {"injected": false}
+	options["after_target_quarantine_hook"] = func(
+			target_path: String, _previous_path: String
+		) -> void:
+		if bool(hook_state.injected) or target_path != str(fixture.effect_path):
+			return
+		hook_state.injected = true
+		var file := FileAccess.open(target_path, FileAccess.WRITE)
+		assert_not_null(file)
+		file.store_buffer(external_bytes)
+		file.flush()
+		file.close()
+	working.unit_effect.damage += 17
+	var result := TerrainTypeSaveTransaction.save(source, working, opening, options)
+	assert_false(bool(result.get("ok", true)), str(result))
+	assert_eq(StringName(result.get("rollback_status", &"")), &"ROLLBACK_CONFLICT")
+	assert_eq(FileAccess.get_file_as_bytes(str(fixture.effect_path)), external_bytes)
+	var cleanup_conflicts := result.cleanup.get("conflicts", []) as Array
+	var retained := cleanup_conflicts.filter(func(entry):
+		return str((entry as Dictionary).get("target", "")) == str(fixture.effect_path)
+	)
+	assert_eq(retained.size(), 1, str(result.cleanup))
+	if retained.size() == 1:
+		var previous_path := str((retained[0] as Dictionary).get("path", ""))
+		assert_true(FileAccess.file_exists(previous_path), previous_path)
+		assert_eq(FileAccess.get_sha256(previous_path), original_hash)
+
+
+func test_29l_opening_rejects_an_external_unit_effect_reference_change() -> void:
+	var fixture := _terrain_type_fixture("reference_change")
+	var source := fixture.source as ArenaTerrainDefinition
+	var options := _terrain_type_test_options(str(fixture.root))
+	var other_effect_path := str(fixture.root).path_join("other_effect.tres")
+	var other_effect := _terrain_effect_copy(source.unit_effect)
+	other_effect.damage += 1
+	assert_eq(ResourceSaver.save(other_effect, other_effect_path), OK)
+	var stored_other := ResourceLoader.load(
+		other_effect_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as TerrainEffectData
+	var changed_terrain := source.duplicate(true) as ArenaTerrainDefinition
+	changed_terrain.unit_effect = stored_other
+	assert_eq(ResourceSaver.save(changed_terrain, str(fixture.terrain_path)), OK)
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	assert_false(bool(opening.get("ok", true)), str(opening))
+	assert_string_contains(str(opening.get("message", "")), "differe")
+
+
+func test_29m_legacy_uidless_resources_can_be_saved_transactionally() -> void:
+	var fixture := _terrain_type_fixture("legacy_uidless")
+	_strip_resource_uid(str(fixture.terrain_path))
+	_strip_resource_uid(str(fixture.effect_path))
+	# Le registre global peut conserver une entrée de cache pour un chemin
+	# user:// ; l'autorité historique à tester est bien l'en-tête sur disque.
+	assert_false(FileAccess.get_file_as_string(
+		str(fixture.terrain_path)
+	).get_slice("\n", 0).contains(' uid="'))
+	assert_false(FileAccess.get_file_as_string(
+		str(fixture.effect_path)
+	).get_slice("\n", 0).contains(' uid="'))
+	var source := ResourceLoader.load(
+		str(fixture.terrain_path), "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaTerrainDefinition
+	var working := TerrainTypeSaveTransaction.create_working_copy(source)
+	var options := _terrain_type_test_options(str(fixture.root))
+	var opening := TerrainTypeSaveTransaction.capture_opening_state(source, options)
+	assert_true(bool(opening.get("ok", false)), str(opening))
+	working.movement_cost += 1
+	working.unit_effect.damage += 1
+	var saved := TerrainTypeSaveTransaction.save(
+		source, working, opening, options
+	)
+	assert_true(bool(saved.get("ok", false)), str(saved))
+	assert_true(FileAccess.file_exists(str(fixture.terrain_path)))
+	assert_true(FileAccess.file_exists(str(fixture.effect_path)))
 
 
 func test_29e_editor_status_uses_context_line_without_reserving_bottom_height() -> void:
@@ -1128,3 +1599,182 @@ func _spawn_fix_result() -> Vector2i:
 	message.cell = border[0]
 	var result := ArenaValidationFixService.apply(arena, message)
 	return arena.spawns[0].cell if bool(result.get("ok", false)) else Vector2i(-1, -1)
+
+
+func _terrain_type_fixture(label: String, with_effect := true) -> Dictionary:
+	var root := TERRAIN_TYPE_TEST_ROOT.path_join(
+		"%s_%d" % [label, Time.get_ticks_usec()]
+	)
+	assert_eq(DirAccess.make_dir_recursive_absolute(
+		ProjectSettings.globalize_path(root)
+	), OK)
+	var effect_path := root.path_join("effect.tres")
+	var stored_effect: TerrainEffectData = null
+	if with_effect:
+		var effect := TerrainEffectData.new()
+		effect.effect_name = "Effet de test"
+		effect.surface_id = &"test_surface"
+		effect.visual_terrain_id = &"test_terrain"
+		effect.trigger = TerrainEffectData.Trigger.ON_ENTER
+		effect.damage = 3
+		effect.duration = 2
+		assert_eq(ResourceSaver.save(effect, effect_path), OK)
+		_ensure_test_resource_uid(effect_path)
+		stored_effect = ResourceLoader.load(
+			effect_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+		) as TerrainEffectData
+		assert_not_null(stored_effect)
+	var terrain_path := root.path_join("terrain.tres")
+	var terrain := ArenaTerrainDefinition.new()
+	terrain.stable_id = &"test_terrain"
+	terrain.display_name = "Terrain de test"
+	terrain.unit_effect = stored_effect
+	terrain.apply_on_enter = with_effect
+	terrain.ai_danger_weight = 3.0
+	assert_eq(ResourceSaver.save(terrain, terrain_path), OK)
+	_ensure_test_resource_uid(terrain_path)
+	var source := ResourceLoader.load(
+		terrain_path, "", ResourceLoader.CACHE_MODE_IGNORE_DEEP
+	) as ArenaTerrainDefinition
+	assert_not_null(source)
+	return {
+		"root": root,
+		"terrain_path": terrain_path,
+		"effect_path": effect_path,
+		"derived_effect_path": terrain_path.get_basename() + "_effect.tres",
+		"source": source,
+	}
+
+
+func _terrain_type_working_copy(
+		source: ArenaTerrainDefinition
+	) -> ArenaTerrainDefinition:
+	var working := source.duplicate(true) as ArenaTerrainDefinition
+	assert_not_null(working)
+	working.set_path_cache("")
+	working.unit_effect = _terrain_effect_copy(source.unit_effect) \
+		if source.unit_effect != null else TerrainEffectData.new()
+	return working
+
+
+func _terrain_effect_copy(source: TerrainEffectData) -> TerrainEffectData:
+	var copy := TerrainEffectData.new()
+	for property_value in source.get_property_list():
+		var property := property_value as Dictionary
+		var property_name := str(property.get("name", ""))
+		if property_name in [
+			"resource_local_to_scene", "resource_name", "resource_path", "script",
+		] or not (int(property.get("usage", 0)) & PROPERTY_USAGE_STORAGE):
+			continue
+		copy.set(property_name, source.get(property_name))
+	return copy
+
+
+func _terrain_type_test_options(root: String) -> Dictionary:
+	return {
+		"allowed_roots": PackedStringArray([root]),
+		"transaction_root": root.path_join("transactions"),
+		"working_recovery_root": root.path_join("working_recovery"),
+	}
+
+
+func _strip_resource_uid(path: String) -> void:
+	var contents := FileAccess.get_file_as_string(path)
+	var header := contents.get_slice("\n", 0)
+	var marker := ' uid="'
+	var marker_index := header.find(marker)
+	# Selon la version de Godot, set_uid() sous user:// peut ne renseigner que le
+	# registre en mémoire. Dans ce cas la fixture est déjà réellement historique.
+	if marker_index < 0:
+		return
+	var value_start := marker_index + marker.length()
+	var value_end := header.find('"', value_start)
+	if value_end <= value_start:
+		return
+	var uid_text := header.substr(value_start, value_end - value_start)
+	var uid := ResourceUID.text_to_id(uid_text)
+	var uid_attribute := ' uid="%s"' % uid_text
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	assert_not_null(file)
+	file.store_string(contents.replace(uid_attribute, ""))
+	file.flush()
+	file.close()
+	if uid != ResourceUID.INVALID_ID and ResourceUID.has_id(uid):
+		ResourceUID.remove_id(uid)
+
+
+func _ensure_test_resource_uid(path: String) -> void:
+	var uid := ResourceUID.create_id()
+	assert_ne(uid, ResourceUID.INVALID_ID)
+	assert_eq(ResourceSaver.set_uid(path, uid), OK)
+	if _serialized_resource_uid(path) != uid:
+		_write_test_resource_uid(path, uid)
+	if ResourceUID.has_id(uid):
+		ResourceUID.set_id(uid, path)
+	else:
+		ResourceUID.add_id(uid, path)
+	assert_eq(_serialized_resource_uid(path), uid)
+	assert_eq(ResourceLoader.get_resource_uid(path), uid)
+
+
+func _serialized_resource_uid(path: String) -> int:
+	if not FileAccess.file_exists(path):
+		return ResourceUID.INVALID_ID
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return ResourceUID.INVALID_ID
+	var header := file.get_line()
+	file.close()
+	var marker := " uid=\""
+	var marker_index := header.find(marker)
+	if marker_index < 0:
+		return ResourceUID.INVALID_ID
+	var value_start := marker_index + marker.length()
+	var value_end := header.find("\"", value_start)
+	if value_end <= value_start:
+		return ResourceUID.INVALID_ID
+	return ResourceUID.text_to_id(header.substr(
+		value_start, value_end - value_start
+	))
+
+
+func _write_test_resource_uid(path: String, uid: int) -> void:
+	var uid_text := ResourceUID.id_to_text(uid)
+	var contents := FileAccess.get_file_as_string(path)
+	var line_end := contents.find("\n")
+	assert_gt(line_end, 0, path)
+	var header := contents.substr(0, line_end)
+	assert_true(header.trim_suffix("\r").begins_with("[gd_resource"), path)
+	var marker := " uid=\""
+	var marker_index := header.find(marker)
+	if marker_index >= 0:
+		var value_start := marker_index + marker.length()
+		var value_end := header.find("\"", value_start)
+		assert_gt(value_end, value_start, path)
+		header = header.substr(0, value_start) + uid_text + header.substr(value_end)
+	else:
+		var bracket_index := header.rfind("]")
+		assert_gt(bracket_index, 0, path)
+		header = header.insert(bracket_index, " uid=\"%s\"" % uid_text)
+	var rewritten := header + contents.substr(line_end)
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	assert_not_null(file)
+	file.store_string(rewritten)
+	file.flush()
+	file.close()
+	assert_eq(FileAccess.get_file_as_string(path), rewritten)
+
+
+func _remove_user_tree(path: String) -> bool:
+	if path != TERRAIN_TYPE_TEST_ROOT \
+			and not path.begins_with(TERRAIN_TYPE_TEST_ROOT + "/"):
+		return false
+	var absolute := ProjectSettings.globalize_path(path)
+	var directory := DirAccess.open(absolute)
+	if directory == null:
+		return true
+	for child_directory in directory.get_directories():
+		_remove_user_tree(path.path_join(child_directory))
+	for file_name in directory.get_files():
+		DirAccess.remove_absolute(absolute.path_join(file_name))
+	return DirAccess.remove_absolute(absolute) == OK

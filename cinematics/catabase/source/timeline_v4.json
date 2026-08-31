@@ -1,0 +1,24 @@
+{
+  "title": "Catabase — Les deux destins",
+  "version": 4,
+  "resolution": [1920, 1080],
+  "fps": 24,
+  "duration_seconds": 72.0,
+  "audio": {
+    "status": "silent AAC stereo placeholder",
+    "sample_rate_hz": 48000,
+    "recommended_mix_duration_seconds": 72.0
+  },
+  "segments": [
+    {"start": 0.0, "end": 6.0, "asset": "assets/00_contexte_fond.png", "purpose": "progressive location/date card"},
+    {"start": 6.0, "end": 10.5, "asset": "assets/01_troie_assiegee.png", "purpose": "siege context"},
+    {"start": 10.5, "end": 25.0, "asset": "assets/02_achille_deux_destins.png", "purpose": "Thetis and the two destinies"},
+    {"start": 25.0, "end": 32.5, "asset": "assets/03_achille_choisit_troie.png", "purpose": "Patroclus, Hector, Achilles' choice"},
+    {"start": 32.5, "end": 40.5, "asset": "assets/04_mort_achille.png", "purpose": "death by Paris"},
+    {"start": 40.5, "end": 50.5, "asset": "assets/05_ame_quitte_corps.png", "purpose": "legend versus man"},
+    {"start": 50.5, "end": 57.5, "asset": "assets/06_passions_du_vivant.png", "purpose": "passions carried into death"},
+    {"start": 57.5, "end": 63.5, "asset": "assets/07_enfers.png", "purpose": "the impotence of victory in the Underworld"},
+    {"start": 63.5, "end": 67.5, "asset": "assets/08_paris.png", "purpose": "Paris reveal; cropped so Achilles' old spear placeholder is absent"},
+    {"start": 67.5, "end": 72.0, "asset": "assets/09_titre.png", "purpose": "title and direct transition to first combat"}
+  ]
+}

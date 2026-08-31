@@ -16,6 +16,7 @@ var _base_fingerprint := ""
 var _fingerprint_provider: Callable
 var _snapshot_applier: Callable
 var _last_dirty := false
+var _restoring := false
 
 
 func _init(requested_max_steps := DEFAULT_MAX_STEPS) -> void:
@@ -34,7 +35,9 @@ func record(
 		before: Dictionary,
 		after: Dictionary,
 		already_applied := true,
-		merge_key := ""
+		merge_key := "",
+		before_fingerprint := "",
+		after_fingerprint := ""
 	) -> bool:
 	if action_name.strip_edges().is_empty() or before == after:
 		_notify_changed()
@@ -58,14 +61,17 @@ func record(
 	undo_redo.commit_action(not already_applied)
 	if can_merge:
 		_entries[-1]["after"] = stored_after
-		_entries[-1]["after_fingerprint"] = _fingerprint(after)
+		_entries[-1]["after_fingerprint"] = after_fingerprint \
+			if not after_fingerprint.is_empty() else _fingerprint(after)
 	else:
 		_entries.append({
 			"name": action_name,
 			"before": stored_before,
 			"after": stored_after,
-			"before_fingerprint": _fingerprint(before),
-			"after_fingerprint": _fingerprint(after),
+			"before_fingerprint": before_fingerprint \
+				if not before_fingerprint.is_empty() else _fingerprint(before),
+			"after_fingerprint": after_fingerprint \
+				if not after_fingerprint.is_empty() else _fingerprint(after),
 			"merge_key": merge_key,
 		})
 		_current_index += 1
@@ -131,6 +137,69 @@ func get_current_index() -> int:
 	return _current_index
 
 
+## Capture l'historique complet pour permettre le rollback d'une transition
+## multi-domaine sans sacrifier Annuler/Rétablir.
+func snapshot_state() -> Dictionary:
+	var entries: Array[Dictionary] = []
+	for entry in _entries:
+		entries.append(entry.duplicate(true))
+	return {
+		"max_steps": max_steps,
+		"entries": entries,
+		"current_index": _current_index,
+		"saved_fingerprint": _saved_fingerprint,
+		"base_fingerprint": _base_fingerprint,
+		"last_dirty": _last_dirty,
+	}
+
+
+func restore_state(state: Dictionary) -> bool:
+	var raw_entries = state.get("entries", [])
+	if not raw_entries is Array:
+		return false
+	var restored_entries: Array[Dictionary] = []
+	for value in raw_entries:
+		if not value is Dictionary:
+			return false
+		var entry := (value as Dictionary).duplicate(true)
+		if not entry.get("before", null) is Dictionary \
+				or not entry.get("after", null) is Dictionary:
+			return false
+		restored_entries.append(entry)
+	var target_index := int(state.get("current_index", restored_entries.size()))
+	if target_index < 0 or target_index > restored_entries.size():
+		return false
+	_restoring = true
+	max_steps = maxi(1, int(state.get("max_steps", DEFAULT_MAX_STEPS)))
+	undo_redo.clear_history()
+	undo_redo.max_steps = max_steps
+	_entries.clear()
+	_current_index = 0
+	_saved_fingerprint = str(state.get("saved_fingerprint", ""))
+	_base_fingerprint = str(state.get("base_fingerprint", ""))
+	for entry in restored_entries:
+		var before := (entry.get("before", {}) as Dictionary).duplicate(true)
+		var after := (entry.get("after", {}) as Dictionary).duplicate(true)
+		undo_redo.create_action(str(entry.get("name", "Modification")))
+		undo_redo.add_do_method(
+			Callable(self, "_apply_snapshot").bind(after, 1)
+		)
+		undo_redo.add_undo_method(
+			Callable(self, "_apply_snapshot").bind(before, -1)
+		)
+		undo_redo.commit_action(false)
+		_entries.append(entry)
+		_current_index += 1
+	while _current_index > target_index:
+		if not undo_redo.undo():
+			_restoring = false
+			return false
+	_last_dirty = bool(state.get("last_dirty", false))
+	_restoring = false
+	_notify_changed(true)
+	return true
+
+
 func jump_to(index: int) -> bool:
 	if index < 0 or index > _entries.size():
 		return false
@@ -181,6 +250,8 @@ func _apply_snapshot(snapshot: Dictionary, index_delta: int) -> void:
 
 
 func _notify_changed(force_dirty_signal := false) -> void:
+	if _restoring:
+		return
 	var dirty := not is_at_saved_state()
 	if force_dirty_signal or dirty != _last_dirty:
 		_last_dirty = dirty

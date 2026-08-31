@@ -16,7 +16,9 @@ func _ready() -> void:
 	EventBus.battle_view_ready.connect(register_battle_view)
 
 func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
-	if spell.impact_delay_seconds > 0.0:
+	# A delayed cast is only its warning phase. Its impact is played explicitly
+	# by Battle after the pending ability has passed its spatial revalidation.
+	if spell.is_delayed() or spell.impact_delay_seconds > 0.0:
 		return
 	play_spell_vfx(caster, spell, report.get("cell", caster.grid_pos))
 

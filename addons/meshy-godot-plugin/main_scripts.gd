@@ -4,8 +4,31 @@ extends CenterContainer
 var bridge_running = false
 var tcp_server: TCPServer
 var peerTCP: StreamPeerTCP
+var _peer_receive_buffer := PackedByteArray()
+var _peer_request_deadline_msec := 0
 var server_port = 5325
 var editor_interface: EditorInterface
+
+const BRIDGE_BIND_ADDRESS := "127.0.0.1"
+const ALLOWED_WEB_ORIGINS := [
+	"https://meshy.ai",
+	"https://www.meshy.ai",
+]
+const ALLOWED_IMPORT_FORMATS := [
+	# Keep this list aligned with _import_model's magic-byte detection. Text
+	# glTF and OBJ were previously accepted by the HTTP endpoint but could never
+	# pass the importer, which made the bridge acknowledge doomed jobs.
+	"fbx", "glb", "zip",
+]
+const ALLOWED_DOWNLOAD_DOMAIN := "meshy.ai"
+const HTTP_MAX_HEADER_BYTES := 16 * 1024
+const HTTP_MAX_BODY_BYTES := 64 * 1024
+const HTTP_REQUEST_TIMEOUT_MSEC := 5000
+const BLOCKED_ZIP_EXTENSIONS := [
+	"bat", "cmd", "cs", "dll", "dylib", "exe", "gd", "gdc", "gdextension",
+	"gdshader", "gdshaderinc", "godot", "import", "pck", "ps1", "py", "res",
+	"scn", "sh", "so", "tscn", "tres", "uid",
+]
 
 # --- Download / import progress toast (bottom-right editor overlay) ---
 var _active_download: HTTPRequest = null
@@ -14,6 +37,8 @@ var _progress_title: Label = null
 var _progress_detail: Label = null
 var _progress_bar: ProgressBar = null
 var _progress_hide_at_msec: int = 0
+var _next_import_request_id := 1
+var _import_jobs := {}
 
 func _ready():
 	tcp_server = TCPServer.new()
@@ -27,11 +52,20 @@ func _ready():
 func _process(_delta):
 	# process request every frame
 	# print(bridge_running, tcp_server, tcp_server.get_local_port(), tcp_server.is_connection_available())
-	if bridge_running and tcp_server and tcp_server.is_connection_available():
+	# Process one short-lived HTTP/1.1 connection at a time. In particular, do
+	# not replace peerTCP while an earlier request is still being assembled: TCP
+	# is a byte stream and headers/body routinely arrive in several frames.
+	if bridge_running and tcp_server and peerTCP == null \
+			and tcp_server.is_connection_available():
 		peerTCP = tcp_server.take_connection()
+		_peer_receive_buffer = PackedByteArray()
+		_peer_request_deadline_msec = (
+			Time.get_ticks_msec() + HTTP_REQUEST_TIMEOUT_MSEC
+		)
 	if peerTCP != null:
 		# https://docs.godotengine.org/en/stable/classes/class_streampeertcp.html#class-streampeertcp
-		_handle_peer_tcp()
+		var request_peer := peerTCP
+		_handle_peer_tcp(request_peer)
 	# Keep the download/import progress toast in sync each frame.
 	_update_download_progress()
 
@@ -149,6 +183,11 @@ func _exit_tree() -> void:
 	if _progress_panel and is_instance_valid(_progress_panel):
 		_progress_panel.queue_free()
 		_progress_panel = null
+	if peerTCP != null:
+		peerTCP.disconnect_from_host()
+		peerTCP = null
+		_peer_receive_buffer = PackedByteArray()
+		_peer_request_deadline_msec = 0
 
 # 创建一个新的3D场景
 func _create_new_3d_scene() -> Node3D:
@@ -199,51 +238,264 @@ func _on_run_bridge_pressed():
 	
 	if bridge_running:
 		# start server
-		var error = tcp_server.listen(server_port)
+		var error = tcp_server.listen(server_port, BRIDGE_BIND_ADDRESS)
 		if error != OK:
 			print("ERROR: cannot start server: ", error)
 			bridge_running = false
 		else:
-			print("Meshy Bridge started, listening on port: ", server_port)
+			print(
+				"Meshy Bridge started on ", BRIDGE_BIND_ADDRESS, ":", server_port
+			)
 	else:
 		# stop server
 		tcp_server.stop()
+		if peerTCP != null:
+			peerTCP.disconnect_from_host()
+			peerTCP = null
+			_peer_receive_buffer = PackedByteArray()
+			_peer_request_deadline_msec = 0
 		print("Meshy Bridge stopped")
 	
 	# update status label
 	_update_status_label()
 
-func _handle_peer_tcp():
-	# read request
-	var status = peerTCP.get_status()
-	if status == 3: # STATUS_DISCONNECTED
+func _handle_peer_tcp(client: StreamPeerTCP) -> void:
+	# Capture the peer for the full operation. A later connection must never
+	# receive (or close) a response belonging to this request.
+	if client == null or client != peerTCP:
+		return
+	if _peer_request_deadline_msec > 0 \
+			and Time.get_ticks_msec() > _peer_request_deadline_msec:
+		_send_json_response(
+			client,
+			{"status": "error", "message": "HTTP request timed out"},
+			408
+		)
+		_release_peer(client, false)
+		return
+	var poll_error := client.poll()
+	if poll_error != OK:
+		_release_peer(client, true)
+		return
+	var available := client.get_available_bytes()
+	if available > 0:
+		var data := client.get_data(available)
+		if data[0] != OK:
+			_release_peer(client, true)
+			return
+		var parsed := _consume_http_fragment(_peer_receive_buffer, data[1])
+		_peer_receive_buffer = parsed.get("buffer", PackedByteArray())
+		match str(parsed.get("state", "error")):
+			"waiting":
+				return
+			"ready":
+				_handle_http_request(client, parsed.get("request", {}))
+				_release_peer(client, false)
+				return
+			_:
+				_send_json_response(
+					client,
+					{
+						"status": "error",
+						"message": str(parsed.get("message", "Malformed HTTP request")),
+					},
+					int(parsed.get("status_code", 400))
+				)
+				_release_peer(client, false)
+				return
+	var status := client.get_status()
+	if status == StreamPeerTCP.STATUS_NONE or status == StreamPeerTCP.STATUS_ERROR:
+		_release_peer(client, false)
+
+
+func _release_peer(client: StreamPeerTCP, disconnect := false) -> void:
+	if disconnect and client != null:
+		client.disconnect_from_host()
+	if client == peerTCP:
 		peerTCP = null
-	elif status == 2: # STATUS_CONNECTED
-		var code = peerTCP.poll()
-		var bytes := peerTCP.get_available_bytes()
-		if bytes > 0:
-			var data := peerTCP.get_data(bytes)
-			if data[0] == 0: # OK
-				var request_str = _bytes_to_string(data[1])
-				_handle_http_request(request_str)
+		_peer_receive_buffer = PackedByteArray()
+		_peer_request_deadline_msec = 0
 
-func _bytes_to_string(bytes: PackedByteArray) -> String:
-	return bytes.get_string_from_ascii()
+func _consume_http_fragment(
+		receive_buffer: PackedByteArray,
+		fragment: PackedByteArray
+) -> Dictionary:
+	var maximum_request_size := HTTP_MAX_HEADER_BYTES + HTTP_MAX_BODY_BYTES
+	if receive_buffer.size() > maximum_request_size \
+			or fragment.size() > maximum_request_size - receive_buffer.size():
+		return _http_parse_error(
+			PackedByteArray(),
+			413,
+			"HTTP request exceeds the bridge limit"
+		)
+	var buffer := receive_buffer.duplicate()
+	buffer.append_array(fragment)
+	var header_end := _find_http_header_end(buffer)
+	if header_end < 0:
+		if buffer.size() > HTTP_MAX_HEADER_BYTES:
+			return _http_parse_error(buffer, 431, "HTTP headers are too large")
+		return {"state": "waiting", "buffer": buffer}
+	var complete_header_size := header_end + 4
+	if complete_header_size > HTTP_MAX_HEADER_BYTES:
+		return _http_parse_error(buffer, 431, "HTTP headers are too large")
+	var head_bytes := buffer.slice(0, header_end)
+	if not _is_valid_http_head_bytes(head_bytes):
+		return _http_parse_error(buffer, 400, "Malformed HTTP headers")
+	var parsed_head := _parse_http_head(head_bytes.get_string_from_ascii())
+	if not bool(parsed_head.get("ok", false)):
+		return _http_parse_error(
+			buffer,
+			int(parsed_head.get("status_code", 400)),
+			str(parsed_head.get("message", "Malformed HTTP request"))
+		)
+	var content_length := int(parsed_head.get("content_length", 0))
+	if content_length > HTTP_MAX_BODY_BYTES:
+		return _http_parse_error(buffer, 413, "HTTP request body is too large")
+	var expected_size := complete_header_size + content_length
+	if buffer.size() > expected_size:
+		return _http_parse_error(buffer, 400, "HTTP body exceeds Content-Length")
+	if buffer.size() < expected_size:
+		return {"state": "waiting", "buffer": buffer}
+	var request: Dictionary = parsed_head.get("request", {})
+	request["body_bytes"] = buffer.slice(complete_header_size, expected_size)
+	return {
+		"state": "ready",
+		"buffer": buffer,
+		"request": request,
+	}
 
-func _handle_http_request(request_str: String):
-	
-	# parse HTTP request
-	var request_lines = request_str.split("\n")
-	if request_lines.is_empty():
+
+func _find_http_header_end(bytes: PackedByteArray) -> int:
+	if bytes.size() < 4:
+		return -1
+	for index in range(bytes.size() - 3):
+		if bytes[index] == 13 and bytes[index + 1] == 10 \
+				and bytes[index + 2] == 13 and bytes[index + 3] == 10:
+			return index
+	return -1
+
+
+func _is_valid_http_head_bytes(bytes: PackedByteArray) -> bool:
+	for byte in bytes:
+		# HTTP field syntax is ASCII. Permit CR/LF separators and horizontal tab
+		# inside values, but reject NUL, other controls and non-ASCII octets.
+		if byte > 126:
+			return false
+		if byte < 32 and byte != 9 and byte != 10 and byte != 13:
+			return false
+	return true
+
+
+func _parse_http_head(head: String) -> Dictionary:
+	var lines := head.split("\r\n", true)
+	if lines.is_empty():
+		return {"ok": false, "message": "Missing HTTP request line"}
+	var request_line := lines[0].split(" ", false)
+	if request_line.size() != 3 or request_line[2] != "HTTP/1.1":
+		return {"ok": false, "message": "Malformed HTTP request line"}
+	var method := str(request_line[0])
+	var path := str(request_line[1])
+	if method not in ["GET", "POST", "OPTIONS"] or not path.begins_with("/") \
+			or _contains_control_character(path):
+		return {"ok": false, "message": "Unsupported HTTP request line"}
+	var headers := {}
+	for index in range(1, lines.size()):
+		var line := str(lines[index])
+		if line.is_empty() or line.begins_with(" ") or line.begins_with("\t") \
+				or line.contains("\r") or line.contains("\n"):
+			return {"ok": false, "message": "Malformed HTTP header"}
+		var separator := line.find(":")
+		if separator <= 0:
+			return {"ok": false, "message": "Malformed HTTP header"}
+		var name := line.left(separator).to_lower()
+		if not _is_valid_http_header_name(name) or headers.has(name):
+			return {"ok": false, "message": "Duplicate or malformed HTTP header"}
+		headers[name] = line.substr(separator + 1).strip_edges()
+	if headers.has("transfer-encoding"):
+		return {
+			"ok": false,
+			"message": "Transfer-Encoding is not supported",
+		}
+	var content_length := 0
+	if headers.has("content-length"):
+		var raw_length := str(headers["content-length"])
+		if not _is_ascii_decimal(raw_length) or raw_length.length() > 10:
+			return {"ok": false, "message": "Malformed Content-Length"}
+		content_length = int(raw_length)
+		if content_length > HTTP_MAX_BODY_BYTES:
+			return {
+				"ok": false,
+				"status_code": 413,
+				"message": "HTTP request body is too large",
+			}
+	elif method == "POST":
+		return {
+			"ok": false,
+			"status_code": 411,
+			"message": "Content-Length is required",
+		}
+	if method != "POST" and content_length != 0:
+		return {"ok": false, "message": "Request body is not allowed for this method"}
+	return {
+		"ok": true,
+		"content_length": content_length,
+		"request": {
+			"method": method,
+			"path": path,
+			"headers": headers,
+		},
+	}
+
+
+func _is_valid_http_header_name(name: String) -> bool:
+	if name.is_empty():
+		return false
+	for index in range(name.length()):
+		var codepoint := name.unicode_at(index)
+		var is_letter := codepoint >= 97 and codepoint <= 122
+		var is_digit := codepoint >= 48 and codepoint <= 57
+		if not is_letter and not is_digit and not "!#$%&'*+-.^_`|~".contains(
+				char(codepoint)
+		):
+			return false
+	return true
+
+
+func _is_ascii_decimal(value: String) -> bool:
+	if value.is_empty():
+		return false
+	for index in range(value.length()):
+		var codepoint := value.unicode_at(index)
+		if codepoint < 48 or codepoint > 57:
+			return false
+	return true
+
+
+func _http_parse_error(
+		buffer: PackedByteArray,
+		status_code: int,
+		message: String
+) -> Dictionary:
+	return {
+		"state": "error",
+		"buffer": buffer,
+		"status_code": status_code,
+		"message": message,
+	}
+
+
+func _handle_http_request(client, request: Dictionary) -> void:
+	var method := str(request.get("method", ""))
+	var path := str(request.get("path", ""))
+	var headers: Dictionary = request.get("headers", {})
+	var origin := str(headers.get("origin", "")).strip_edges()
+	if not _is_allowed_origin(origin):
+		_send_json_response(
+			client,
+			{"status": "error", "message": "Origin not allowed"},
+			403
+		)
 		return
-	
-	# parse request line
-	var request_line = request_lines[0].split(" ")
-	if request_line.size() < 2:
-		return
-	
-	var method = request_line[0]
-	var path = request_line[1]
 	# print("HTTP request: ", method, " ", path)
 
 	var response = {}
@@ -256,60 +508,220 @@ func _handle_http_request(request_str: String):
 			"dcc": "godot",
 			"version": Engine.get_version_info().string
 		}
-		_send_json_response(peerTCP, response, 200)
+		_send_json_response(client, response, 200, origin)
+	elif method == "GET" and path.begins_with("/imports/"):
+		var import_id := path.trim_prefix("/imports/")
+		if import_id.is_empty() or not _import_jobs.has(import_id):
+			_send_json_response(
+				client,
+				{"status": "error", "message": "Import request not found"},
+				404,
+				origin
+			)
+		else:
+			_send_json_response(client, _import_jobs[import_id], 200, origin)
 	elif  path == "/import":
 		if method == "OPTIONS":
-			_send_cors_headers(peerTCP)
+			_send_cors_headers(client, origin)
 		elif method == "POST":
-			var body_start = request_str.find("\r\n\r\n") + 4
-			if body_start > 0:
-				var body = request_str.substr(body_start)
-				var json = JSON.parse_string(body)
-				_download_and_import_file(json)
-				# wait 2 seconds
-				await get_tree().create_timer(2.0).timeout
-				_send_json_response(peerTCP, {
-					"status": "ok",
-					"message": "File imported successfully"
-				}, 200)
+			var raw_content_type := str(headers.get("content-type", ""))
+			var content_type := ""
+			if not raw_content_type.is_empty():
+				var content_type_parts := raw_content_type.split(";", false)
+				if not content_type_parts.is_empty():
+					content_type = content_type_parts[0].strip_edges().to_lower()
+			if content_type != "application/json":
+				_send_json_response(
+					client,
+					{"status": "error", "message": "Content-Type must be application/json"},
+					415,
+					origin
+				)
+				return
+			var body_bytes: PackedByteArray = request.get("body_bytes", PackedByteArray())
+			var body := body_bytes.get_string_from_utf8()
+			var json = JSON.parse_string(body)
+			if not _is_valid_import_payload(json):
+				_send_json_response(
+					client,
+					{"status": "error", "message": "Invalid import payload"},
+					400,
+					origin
+				)
+				return
+			var import_payload: Dictionary = json
+			var accepted := _queue_import_request(import_payload)
+			if not bool(accepted.get("accepted", false)):
+				_send_json_response(
+					client,
+					{
+						"status": "error",
+						"message": str(accepted.get("message", "Import could not be queued")),
+					},
+					int(accepted.get("status_code", 503)),
+					origin
+				)
+				return
+			_send_import_accepted_response(
+				client,
+				str(accepted["import_id"]),
+				origin
+			)
 		else:
 			# return error response
 			response = {
 				"status": "error",
 				"message": "Invalid request format"
 			}
-			_send_json_response(peerTCP, response, 400)
+			_send_json_response(client, response, 400, origin)
 	else:
 		# return 404 response
 		response = {
 			"status": "path not found"
 		}
-		_send_json_response(peerTCP, response, 404)
+		_send_json_response(client, response, 404, origin)
 
-func _send_cors_headers(client):
+
+func _is_allowed_origin(origin: String) -> bool:
+	# Native clients do not send Origin. Browser callers must be Meshy itself.
+	return origin.is_empty() or ALLOWED_WEB_ORIGINS.has(origin.to_lower())
+
+
+func _is_valid_import_payload(payload: Variant) -> bool:
+	if typeof(payload) != TYPE_DICTIONARY:
+		return false
+	var data: Dictionary = payload
+	# Valider exactement la chaîne qui sera transmise à HTTPRequest : ne jamais
+	# normaliser silencieusement une URL différente de celle reçue.
+	var url := str(data.get("url", ""))
+	var format := str(data.get("format", "")).strip_edges().to_lower()
+	return _is_safe_download_url(url) and ALLOWED_IMPORT_FORMATS.has(format)
+
+
+func _is_safe_download_url(url: String) -> bool:
+	var trimmed_url := url.strip_edges()
+	if url != trimmed_url or _contains_control_character(trimmed_url):
+		return false
+	var lower := trimmed_url.to_lower()
+	if not lower.begins_with("https://"):
+		return false
+	var remainder := lower.substr("https://".length())
+	var authority_end := remainder.length()
+	for separator in ["/", "?", "#"]:
+		var separator_index := remainder.find(separator)
+		if separator_index >= 0:
+			authority_end = mini(authority_end, separator_index)
+	var authority := remainder.left(authority_end)
+	if authority.is_empty() or authority.contains("@"):
+		return false
+	# Meshy currently provides DNS hostnames. Refusing IP literals avoids the
+	# many alternate IPv4/IPv6 spellings that can bypass textual private-range
+	# checks (for example ::ffff:127.0.0.1 or octal IPv4 components).
+	if authority.begins_with("["):
+		return false
+	var port_separator := authority.find(":")
+	if authority.count(":") > 1:
+		return false
+	var host := authority.left(port_separator) if port_separator >= 0 else authority
+	var port := authority.substr(port_separator + 1) if port_separator >= 0 else ""
+	if port_separator >= 0 and port != "443":
+		return false
+	host = host.trim_suffix(".")
+	if host.is_empty() or not host.contains("."):
+		return false
+	for label in host.split("."):
+		if label.is_empty() or label.begins_with("-") or label.ends_with("-"):
+			return false
+		for index in range(label.length()):
+			var codepoint := label.unicode_at(index)
+			var is_letter := codepoint >= 97 and codepoint <= 122
+			var is_digit := codepoint >= 48 and codepoint <= 57
+			if not is_letter and not is_digit and codepoint != 45:
+				return false
+	# A domain allow-list prevents DNS rebinding and public-host SSRF without
+	# trying to duplicate an IP resolver in request validation.
+	return host == ALLOWED_DOWNLOAD_DOMAIN or host.ends_with(
+		"." + ALLOWED_DOWNLOAD_DOMAIN
+	)
+
+
+func _send_cors_headers(client, origin := ""):
 	var response = "HTTP/1.1 200 OK\r\n"
-	response += "Access-Control-Allow-Origin: *\r\n"
+	if not origin.is_empty():
+		response += "Access-Control-Allow-Origin: " + origin + "\r\n"
+		response += "Vary: Origin\r\n"
+		# Chromium's Private Network Access preflight requires this when a public
+		# Meshy page calls a loopback bridge. Origin validation above keeps the
+		# permission scoped to Meshy.
+		response += "Access-Control-Allow-Private-Network: true\r\n"
 	response += "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
-	response += "Access-Control-Allow-Headers: *\r\n"
+	response += "Access-Control-Allow-Headers: Content-Type\r\n"
 	response += "Access-Control-Max-Age: 86400\r\n"
 	response += "Content-Length: 0\r\n"
+	response += "Connection: close\r\n"
 	response += "\r\n"
 	
 	client.put_data(response.to_utf8_buffer())
+	client.disconnect_from_host()
 
-func _send_json_response(client, data, status_code = 200):
+func _send_json_response(client, data, status_code = 200, origin := ""):
 	var json = JSON.stringify(data)
-	var response = "HTTP/1.1 " + str(status_code) + " OK\r\n"
+	var response = "HTTP/1.1 %d %s\r\n" % [
+		status_code,
+		_http_reason_phrase(status_code),
+	]
 	response += "Content-Type: application/json\r\n"
-	response += "Access-Control-Allow-Origin: *\r\n"
+	if not origin.is_empty() and _is_allowed_origin(origin):
+		response += "Access-Control-Allow-Origin: " + origin + "\r\n"
+		response += "Vary: Origin\r\n"
 	response += "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
-	response += "Access-Control-Allow-Headers: *\r\n"
-	response += "Content-Length: " + str(json.length()) + "\r\n"
+	response += "Access-Control-Allow-Headers: Content-Type\r\n"
+	response += "Content-Length: " + str(json.to_utf8_buffer().size()) + "\r\n"
+	response += "Connection: close\r\n"
 	response += "\r\n"
 	response += json
 	
 	client.put_data(response.to_utf8_buffer())
 	client.disconnect_from_host()
+
+
+func _send_import_accepted_response(client, import_id: String, origin := "") -> void:
+	_send_json_response(client, {
+		"status": "accepted",
+		"import_id": import_id,
+		"status_url": "/imports/" + import_id,
+		"message": "Download and import queued",
+	}, 202, origin)
+
+
+func _http_reason_phrase(status_code: int) -> String:
+	match status_code:
+		200:
+			return "OK"
+		202:
+			return "Accepted"
+		400:
+			return "Bad Request"
+		403:
+			return "Forbidden"
+		404:
+			return "Not Found"
+		408:
+			return "Request Timeout"
+		409:
+			return "Conflict"
+		411:
+			return "Length Required"
+		413:
+			return "Content Too Large"
+		415:
+			return "Unsupported Media Type"
+		431:
+			return "Request Header Fields Too Large"
+		503:
+			return "Service Unavailable"
+		_:
+			return "Error"
 
 # Turn the webapp-supplied model name into a filesystem-safe file/dir name.
 # Reserved characters (\ / : * ? " < > | and control chars) are stripped, but
@@ -319,11 +731,26 @@ func _sanitize_name(raw: String) -> String:
 	var out := raw.strip_edges()
 	for ch in ["/", "\\", ":", "*", "?", "\"", "<", ">", "|", "\n", "\r", "\t"]:
 		out = out.replace(ch, "_")
+	for index in range(out.length() - 1, -1, -1):
+		var codepoint := out.unicode_at(index)
+		if codepoint < 32 or codepoint == 127:
+			out = out.erase(index, 1)
 	while out.contains("  "):
 		out = out.replace("  ", " ")
 	out = out.strip_edges()
 	while out.ends_with(".") or out.ends_with(" "):
 		out = out.substr(0, out.length() - 1)
+	# Windows interprets these names as devices, extension comprise. They must
+	# not become directories under imported_models/.
+	var device_name := out.get_slice(".", 0).to_upper()
+	if device_name in ["CON", "PRN", "AUX", "NUL"] \
+			or _is_numbered_windows_device(device_name):
+		out = "Meshy_" + out
+	# Keep enough headroom for the generated suffix, file name and import files.
+	if out.length() > 96:
+		out = out.left(96).strip_edges()
+		while out.ends_with(".") or out.ends_with(" "):
+			out = out.left(out.length() - 1)
 	return out
 
 # Recover a model name from the download URL when the request carries no `name`.
@@ -366,14 +793,75 @@ func _make_unique_dir(parent_dir: String, base_name: String) -> String:
 	dir.make_dir(candidate)
 	return parent_dir.path_join(candidate)
 
-func _download_and_import_file(json_payload):
+
+func _queue_import_request(json_payload: Dictionary) -> Dictionary:
+	# The importer has one download and one recognition slot. Reject overlap
+	# explicitly instead of acknowledging a second request that would overwrite
+	# the first one's progress state.
+	if (_active_download and is_instance_valid(_active_download)) \
+			or not _pending_import_path.is_empty() \
+			or not _pending_import_id.is_empty():
+		return {
+			"accepted": false,
+			"status_code": 409,
+			"message": "Another Meshy import is already in progress",
+		}
+	var import_id := "meshy-%d-%d" % [
+		int(Time.get_unix_time_from_system()),
+		_next_import_request_id,
+	]
+	_next_import_request_id += 1
+	_import_jobs[import_id] = {
+		"status": "queued",
+		"import_id": import_id,
+	}
+	if not _download_and_import_file(json_payload, import_id):
+		_import_jobs[import_id] = {
+			"status": "failed",
+			"import_id": import_id,
+			"message": "Download could not be started",
+		}
+		return {
+			"accepted": false,
+			"status_code": 503,
+			"message": "Download could not be started",
+		}
+	return {
+		"accepted": true,
+		"import_id": import_id,
+	}
+
+
+func _set_import_job_status(
+		import_id: String,
+		status: String,
+		message := ""
+) -> void:
+	if import_id.is_empty():
+		return
+	var job := {
+		"status": status,
+		"import_id": import_id,
+	}
+	if not message.is_empty():
+		job["message"] = message
+	_import_jobs[import_id] = job
+
+
+func _download_and_import_file(json_payload, import_id := "") -> bool:
 	print("Starting file download: ", json_payload.url, " format: ", json_payload.format)
 	
 	# download file
 	var http = HTTPRequest.new()
+	# Do not let an allow-listed URL redirect the editor towards a local or
+	# otherwise untrusted endpoint after validation.
+	http.max_redirects = 0
 	add_child(http)
 	# connect signal
-	http.connect("request_completed", _on_download_completed.bind(json_payload))
+	http.connect(
+		"request_completed",
+		_on_download_completed.bind(json_payload, import_id)
+	)
 
 	# Track this request so _process can poll its byte counts for the toast.
 	_active_download = http
@@ -386,8 +874,19 @@ func _download_and_import_file(json_payload):
 		_active_download = null
 		_finish_progress("Download failed")
 		http.queue_free()
+		return false
+	_set_import_job_status(import_id, "downloading")
+	return true
 
-func _on_download_completed(result, response_code, headers, body, json_payload):
+
+func _on_download_completed(
+		result,
+		response_code,
+		headers,
+		body,
+		json_payload,
+		import_id := ""
+):
 	print("Download completed: result=", result, " response_code=", response_code, " data_size=", body.size())
 
 	# Stop polling the request for progress and release the node.
@@ -398,11 +897,17 @@ func _on_download_completed(result, response_code, headers, body, json_payload):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		print("ERROR: download failed: ", result)
 		_finish_progress("Download failed")
+		_set_import_job_status(import_id, "failed", "Download failed")
 		return
 
 	if response_code != 200:
 		print("ERROR: download response code error: ", response_code)
 		_finish_progress("Download failed (HTTP %d)" % response_code)
+		_set_import_job_status(
+			import_id,
+			"failed",
+			"Download failed (HTTP %d)" % response_code
+		)
 		return
 	
 	# Save into a per-model subfolder named after the model, so each model's mesh
@@ -450,6 +955,8 @@ func _on_download_completed(result, response_code, headers, body, json_payload):
 			# Remember the unique folder name so _continue_import names the imported
 			# node to match its folder exactly (including any _1/_2 suffix).
 			_pending_import_name = unique_name
+			_pending_import_id = import_id
+			_set_import_job_status(import_id, "processing")
 
 			_show_progress("Meshy · Importing", "Processing model…", -1.0)
 
@@ -457,13 +964,16 @@ func _on_download_completed(result, response_code, headers, body, json_payload):
 			_wait_for_file_recognition(file_path)
 		else:
 			print("ERROR: file not found: ", file_path)
+			_set_import_job_status(import_id, "failed", "Downloaded file was not saved")
 	else:
 		print("ERROR: cannot save file: ", file_path)
+		_set_import_job_status(import_id, "failed", "Downloaded file could not be written")
 
 # 存储待导入的文件路径和重试信息
 var _pending_import_path: String = ""
 # 来自前端请求 body 的模型名(与其它 bridge 对齐:优先用请求 name,缺失时回退文件名)
 var _pending_import_name: String = ""
+var _pending_import_id: String = ""
 var _pending_import_retries: int = 0
 const IMPORT_MAX_RETRIES: int = 30  # 使用常量避免脚本重载时被重置
 var _import_check_timer: Timer = null
@@ -559,16 +1069,31 @@ func _continue_import(file_path: String) -> void:
 	}
 	
 	# 导入模型
-	_import_model(file_path, json_payload)
-	_finish_progress("Imported: " + name)
+	var import_id := _pending_import_id
+	_pending_import_id = ""
+	var handed_to_importer := _import_model(file_path, json_payload)
+	# Some importers (notably FBX) continue asynchronously after this hand-off.
+	# Report that fact honestly; individual importer logs/toasts remain the source
+	# of final success or failure until they expose a completion signal.
+	if handed_to_importer:
+		_set_import_job_status(import_id, "handed_to_importer")
+		_finish_progress("Import processing started: " + name)
+	else:
+		_set_import_job_status(
+			import_id,
+			"failed",
+			"Downloaded file is not a supported model"
+		)
+		_finish_progress("Import failed: unsupported model")
 
-func _import_model(file_path, json_payload):
+
+func _import_model(file_path, json_payload) -> bool:
 	print("Preparing to detect and import model: ", file_path)
 	
 	var file = FileAccess.open(file_path, FileAccess.READ)
 	if not file:
 		print("ERROR: Cannot open file for type detection: ", file_path)
-		return
+		return false
 		
 	# 读取文件头部的魔数 (读取更多字节以检测FBX)
 	var magic_bytes = file.get_buffer(21) # FBX magic number is 21 bytes long
@@ -593,13 +1118,13 @@ func _import_model(file_path, json_payload):
 			
 	if detected_format.is_empty():
 		print("ERROR: Unknown or unsupported file format. Magic bytes: ", magic_bytes.hex_encode())
-		return
+		return false
 
 	print("Detected file format: ", detected_format)
 	
 	# 使用检测到的格式进行处理
 	match detected_format:
-		"glb", "gltf": # 仍然处理 gltf 以防万一，尽管魔数是 glb
+		"glb":
 			_import_gltf(file_path, json_payload.name)
 		"fbx":
 			_import_fbx(file_path, json_payload.name)
@@ -607,6 +1132,8 @@ func _import_model(file_path, json_payload):
 			_import_zip(file_path, json_payload.name)
 		_:
 			print("Unsupported format (logical error): ", detected_format)
+			return false
+	return true
 
 func _import_gltf(file_path, name):
 	print("Starting GLTF/GLB import")
@@ -902,8 +1429,16 @@ func _import_zip(file_path, name):
 
 	# 提取文件
 	for file_in_zip in files_in_zip:
+		var target_file_path := _safe_zip_target(extract_path, file_in_zip)
+		if target_file_path.is_empty():
+			print("WARNING: Refusing unsafe ZIP entry: ", file_in_zip)
+			continue
+		if file_in_zip.ends_with("/") or file_in_zip.ends_with("\\"):
+			continue
+		if not _is_safe_zip_content(file_in_zip):
+			print("WARNING: Refusing active ZIP content: ", file_in_zip)
+			continue
 		var file_data = zip_reader.read_file(file_in_zip)
-		var target_file_path = extract_path.path_join(file_in_zip)
 		
 		# 确保目标文件的父目录存在 (处理ZIP内的目录结构)
 		var target_dir = target_file_path.get_base_dir()
@@ -948,5 +1483,64 @@ func _import_zip(file_path, name):
 		print("Successfully deleted original ZIP file: ", file_path)
 	else:
 		print("ERROR: Failed to delete original ZIP file: ", file_path, " error code: ", remove_err)
+
+
+func _safe_zip_target(extract_path: String, archive_entry: String) -> String:
+	var normalized_entry := archive_entry.replace("\\", "/")
+	if normalized_entry != normalized_entry.strip_edges():
+		return ""
+	if normalized_entry.is_empty() or normalized_entry.begins_with("/"):
+		return ""
+	var components := normalized_entry.split("/", false)
+	for component in components:
+		if not _is_safe_zip_component(component):
+			return ""
+	var root := extract_path.simplify_path().trim_suffix("/")
+	if root.is_empty():
+		return ""
+	var target := root.path_join(normalized_entry).simplify_path()
+	if target != root and not target.begins_with(root + "/"):
+		return ""
+	return target
+
+
+func _is_safe_zip_component(component: String) -> bool:
+	if component.is_empty() or component == "." or component == "..":
+		return false
+	if component != component.strip_edges() or component.ends_with("."):
+		return false
+	if component.contains(":"):
+		return false
+	if _contains_control_character(component):
+		return false
+	# Windows treats these device names specially even when an extension is
+	# present. Rejecting them also keeps extraction behavior cross-platform.
+	var device_name := component.get_slice(".", 0).to_upper()
+	if device_name in ["CON", "PRN", "AUX", "NUL"]:
+		return false
+	if _is_numbered_windows_device(device_name):
+		return false
+	return true
+
+
+func _is_numbered_windows_device(device_name: String) -> bool:
+	if not device_name.begins_with("COM") and not device_name.begins_with("LPT"):
+		return false
+	var suffix := device_name.substr(3)
+	return suffix.length() == 1 and suffix.is_valid_int() \
+		and int(suffix) >= 1 and int(suffix) <= 9
+
+
+func _is_safe_zip_content(archive_entry: String) -> bool:
+	var extension := archive_entry.replace("\\", "/").get_extension().to_lower()
+	return not BLOCKED_ZIP_EXTENSIONS.has(extension)
+
+
+func _contains_control_character(value: String) -> bool:
+	for index in range(value.length()):
+		var codepoint := value.unicode_at(index)
+		if codepoint < 32 or codepoint == 127:
+			return true
+	return false
 
 	

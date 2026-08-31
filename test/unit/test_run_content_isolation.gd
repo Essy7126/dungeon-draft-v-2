@@ -235,7 +235,7 @@ func test_hub_runs_resolve_their_own_profiles() -> void:
 		hub_data.available_runs[0].content_profile,
 		hub_data.available_runs[1].content_profile,
 	)
-	assert_eq(hub_data.available_runs[2].run_name, "L'Odyssée")
+	assert_eq(hub_data.available_runs[2].run_name, "Catabase")
 	assert_eq(hub_data.available_runs[2].content_profile.hero_profiles.size(), 1)
 
 
