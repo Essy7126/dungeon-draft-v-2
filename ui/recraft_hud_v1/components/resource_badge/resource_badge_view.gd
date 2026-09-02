@@ -2,6 +2,9 @@ class_name RecraftResourceBadgeView
 extends Control
 
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
 
 @onready var base: TextureRect = %Base
 @onready var color_overlay: Panel = %ColorOverlay
@@ -11,6 +14,8 @@ const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.g
 @onready var empty_overlay: ColorRect = %EmptyOverlay
 
 var _refined_style := false
+var _visual_skin: HudVisualSkinData = null
+var _badge_style: StyleBoxFlat = null
 
 
 func _ready() -> void:
@@ -58,19 +63,21 @@ func set_badge(
 	icon_texture: Texture2D = null,
 	icon_text: String = ""
 ) -> void:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(color.r, color.g, color.b, 0.3 if _refined_style else 0.34)
-	var radius := 9 if _refined_style else 15
-	style.corner_radius_top_left = radius
-	style.corner_radius_top_right = radius
-	style.corner_radius_bottom_left = radius
-	style.corner_radius_bottom_right = radius
-	if _refined_style:
-		style.border_width_left = 1
-		style.border_width_top = 1
-		style.border_width_right = 1
-		style.border_width_bottom = 1
-		style.border_color = Color(color.r, color.g, color.b, 0.64)
+	var style := _badge_style
+	if style == null:
+		style = StyleBoxFlat.new()
+		style.bg_color = Color(color.r, color.g, color.b, 0.3 if _refined_style else 0.34)
+		var radius := 9 if _refined_style else 15
+		style.corner_radius_top_left = radius
+		style.corner_radius_top_right = radius
+		style.corner_radius_bottom_left = radius
+		style.corner_radius_bottom_right = radius
+		if _refined_style:
+			style.border_width_left = 1
+			style.border_width_top = 1
+			style.border_width_right = 1
+			style.border_width_bottom = 1
+			style.border_color = Color(color.r, color.g, color.b, 0.64)
 	color_overlay.add_theme_stylebox_override("panel", style)
 	icon.texture = icon_texture
 	icon.visible = icon_texture != null
@@ -84,3 +91,32 @@ func set_badge(
 func set_refined_style(enabled: bool) -> void:
 	_refined_style = enabled
 	base.visible = not enabled
+	if _visual_skin != null:
+		apply_visual_skin(_visual_skin)
+
+
+func apply_visual_skin(skin: HudVisualSkinData) -> void:
+	_visual_skin = skin
+	_badge_style = null
+	if skin == null:
+		return
+	_badge_style = VISUAL_THEME_FACTORY.make_panel_style(
+		skin,
+		skin.surface_raised,
+		skin.border_strong_color,
+		skin.border_thin,
+		skin.radius_control,
+		true
+	)
+	color_overlay.add_theme_stylebox_override("panel", _badge_style)
+	icon.modulate = skin.text_primary
+	icon_fallback.add_theme_font_override("font", skin.font_emphasis)
+	icon_fallback.add_theme_color_override("font_color", skin.text_secondary)
+	value_label.add_theme_font_override("font", skin.font_numeric)
+	value_label.add_theme_color_override("font_color", skin.text_primary)
+	empty_overlay.color = Color(
+		skin.surface_scrim.r,
+		skin.surface_scrim.g,
+		skin.surface_scrim.b,
+		0.62
+	)

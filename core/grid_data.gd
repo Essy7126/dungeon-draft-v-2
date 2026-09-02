@@ -467,11 +467,13 @@ func _after_occupancy_change(
 func place_unit(unit, pos: Vector2i) -> bool:
 	if unit == null or not is_valid(pos):
 		return false
+	# Le placement est atomique : une destination occupée ne doit jamais retirer
+	# l'unité de sa case actuelle avant de signaler l'échec.
+	if _units.has(pos) and _units[pos] != unit:
+		return false
 	var previous := find_unit(unit)
 	if previous != Vector2i(-1, -1):
 		_units.erase(previous)
-	if _units.has(pos) and _units[pos] != unit:
-		return false
 	_units[pos] = unit
 	if unit.combat_order < 0:
 		unit.combat_order = _next_combat_order
@@ -512,8 +514,8 @@ func relocate_unit(unit, to: Vector2i) -> bool:
 	_after_occupancy_change(&"relocated", unit, from, to)
 	return true
 
-func set_unit(pos: Vector2i, unit) -> void:
-	place_unit(unit, pos)
+func set_unit(pos: Vector2i, unit) -> bool:
+	return place_unit(unit, pos)
 
 func clear_unit(pos: Vector2i) -> void:
 	var unit = _units.get(pos, null)

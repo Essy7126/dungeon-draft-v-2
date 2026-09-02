@@ -197,6 +197,54 @@ func test_hero_faces_nearest_enemy_as_soon_as_placed() -> void:
 	assert_eq(hero.facing_dir, Vector2i.RIGHT)
 
 
+func test_failed_placement_never_creates_a_phantom_unit_view() -> void:
+	var battle := MovementBattleFixture.new()
+	add_child_autofree(battle)
+	battle.grid = GridData.new(2, 1)
+	var occupant := Unit.new("Occupant")
+	var hero := Unit.new("Placement refusé")
+	assert_true(battle.grid.place_unit(occupant, Vector2i.ZERO))
+
+	assert_false(battle._place(hero, Vector2i.ZERO))
+
+	assert_same(battle.grid.get_unit(Vector2i.ZERO), occupant)
+	assert_eq(hero.grid_pos, Vector2i(-1, -1))
+	assert_false(battle._unit_views.has(hero))
+
+
+func test_grid_placement_failure_preserves_the_units_previous_cell() -> void:
+	var grid := GridData.new(2, 1)
+	var mover := Unit.new("Déjà placé")
+	var blocker := Unit.new("Destination occupée")
+	assert_true(grid.place_unit(mover, Vector2i.ZERO))
+	assert_true(grid.place_unit(blocker, Vector2i.RIGHT))
+
+	assert_false(grid.place_unit(mover, Vector2i.RIGHT))
+
+	assert_same(grid.get_unit(Vector2i.ZERO), mover)
+	assert_same(grid.get_unit(Vector2i.RIGHT), blocker)
+	assert_eq(mover.grid_pos, Vector2i.ZERO)
+
+
+func test_missing_unit_view_does_not_cancel_logical_movement() -> void:
+	var battle := MovementBattleFixture.new()
+	add_child_autofree(battle)
+	var grid := GridData.new(3, 1)
+	var unit := Unit.new("Sans vue")
+	battle.grid = grid
+	battle.pathfinder = Pathfinder.new(grid)
+	battle.terrain_effects = TerrainEffects.new(grid)
+	assert_true(grid.place_unit(unit, Vector2i.ZERO))
+
+	battle._animate_move(
+		unit,
+		[Vector2i.ZERO, Vector2i.RIGHT, Vector2i(2, 0)],
+	)
+
+	assert_eq(unit.grid_pos, Vector2i(2, 0))
+	assert_same(grid.get_unit(Vector2i(2, 0)), unit)
+
+
 func test_enemy_faces_nearest_hero_after_movement_feedback_ends() -> void:
 	var battle := MovementBattleFixture.new()
 	add_child_autofree(battle)

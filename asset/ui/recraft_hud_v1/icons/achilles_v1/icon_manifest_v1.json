@@ -1,0 +1,51 @@
+{
+  "schema": "dungeon-draft.hud-icon-kit.v1",
+  "kit_id": "achilles_hud_icons_v1",
+  "version": 1,
+  "status": "candidate",
+  "visual_contract": {
+    "canvas": [64, 64],
+    "safe_area": [6, 6, 58, 58],
+    "base_stroke": 4,
+    "line_cap": "round",
+    "line_join": "round",
+    "source_color": "#FFFFFF",
+    "background": "transparent",
+    "runtime_tint": "Use modulate/self_modulate; do not recolor source SVG files per state.",
+    "recommended_raster_sizes": [24, 32, 40, 48, 64],
+    "minimum_primary_action_size": 32,
+    "minimum_state_overlay_size": 16
+  },
+  "icons": {
+    "abilities": {
+      "achilles_spear_thrust": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/ability_achilles_spear_thrust.svg",
+      "achilles_advance": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/ability_achilles_advance.svg",
+      "achilles_sweep": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/ability_achilles_sweep.svg",
+      "achilles_guard": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/ability_achilles_guard.svg"
+    },
+    "actions": {
+      "move": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/action_move.svg",
+      "end_turn": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/action_end_turn.svg"
+    },
+    "resources": {
+      "action_points": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/resource_action_points.svg",
+      "movement_points": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/resource_movement_points.svg"
+    },
+    "states": {
+      "cooldown": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_cooldown.svg",
+      "locked": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_locked.svg",
+      "unavailable": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_unavailable.svg",
+      "resolving": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_resolving.svg"
+    },
+    "targets": {
+      "valid": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_valid.svg",
+      "invalid": "res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_invalid.svg"
+    }
+  },
+  "semantic_sources": {
+    "achilles_spear_thrust": "2 PA; range 1-2; 9 physical damage; once per activation.",
+    "achilles_advance": "2 PA; linear range 2-3; move to contact; 5 physical damage; clear path required.",
+    "achilles_sweep": "3 PA; adjacent cross area; 6 physical damage; push 1.",
+    "achilles_guard": "2 PA; self-target; grant 10 shield."
+  }
+}

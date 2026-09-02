@@ -107,7 +107,7 @@ func test_update_real_encounter_candidate_preserves_odyssey_room_without_mutatio
 	assert_not_null(target.encounter_definition)
 	assert_eq(
 		target.encounter_definition.resource_path,
-		"res://data/encounters/catabase_shadow_paris_encounter.tres"
+		"res://data/encounters/catabase_frail_hellspawn_encounter.tres"
 	)
 	var run_before: Variant = RoomIntegrationFieldPolicy.stable_value(run)
 	var target_before: Dictionary = RoomDataSnapshotService.capture(target)

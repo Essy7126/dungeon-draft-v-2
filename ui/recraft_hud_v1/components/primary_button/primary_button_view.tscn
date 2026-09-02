@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/components/primary_button/primary_button_view.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/primary_button_base.png" id="2_base"]
@@ -6,31 +6,43 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_button"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
-bg_color = Color(0.1, 0.1, 0.08, 0.08)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.95, 0.75, 0.3, 0.9)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_refined"]
-bg_color = Color(0.055, 0.061, 0.055, 0.98)
+draw_center = false
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.46, 0.39, 0.25, 0.88)
+border_color = Color(0.9, 0.9, 0.9, 0.92)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selection"]
+bg_color = Color(0.16, 0.16, 0.16, 0.16)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.98, 0.98, 0.98, 0.98)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_refined"]
+bg_color = Color(0.055, 0.055, 0.055, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.48, 0.48, 0.48, 0.88)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_refined_top_edge"]
-bg_color = Color(0.72, 0.59, 0.33, 0.62)
+bg_color = Color(0.76, 0.76, 0.76, 0.62)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 
@@ -88,12 +100,86 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 1.0
+offset_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_focus")
+
+[node name="SelectionOverlay" type="Panel" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 2.0
 offset_top = 2.0
 offset_right = -2.0
 offset_bottom = -2.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_focus")
+theme_override_styles/panel = SubResource("StyleBoxFlat_selection")
+
+[node name="HoverRail" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = -4.0
+offset_right = -9.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.98, 0.98, 0.98, 0.92)
+
+[node name="SelectedMarker" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -9.0
+offset_right = -5.0
+offset_bottom = 9.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.98, 0.98, 0.98, 1)
+theme_override_colors/font_outline_color = Color(0.015, 0.015, 0.015, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 9
+text = "◆"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DisabledBar" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -1.5
+offset_right = 30.0
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.174533
+pivot_offset = Vector2(30, 1.5)
+mouse_filter = 2
+color = Color(0.9, 0.9, 0.9, 0.72)
 
 [node name="ActionIcon" type="TextureRect" parent="."]
 unique_name_in_owner = true
@@ -122,7 +208,7 @@ offset_top = 2.0
 offset_right = -6.0
 offset_bottom = -2.0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 0.96, 1)
 theme_override_colors/font_outline_color = Color(0.015, 0.02, 0.03, 1)
 theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 10

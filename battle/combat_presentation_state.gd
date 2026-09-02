@@ -39,6 +39,7 @@ func begin_player_turn() -> void:
 	_phase = Phase.PLAYER_IDLE
 	_selection_mode = &""
 	_resolution_kind = &""
+	_reset_feedback_value()
 	_emit_snapshot()
 
 
@@ -46,13 +47,19 @@ func begin_targeting(mode: StringName) -> void:
 	_phase = Phase.PLAYER_TARGETING
 	_selection_mode = mode
 	_resolution_kind = &""
+	_reset_feedback_value()
 	_emit_snapshot()
 
 
 func begin_resolution(kind: StringName) -> void:
 	_phase = Phase.RESOLVING_ACTION
-	_selection_mode = &""
+	# Conserver la commande qui vient d'etre validee pendant sa resolution.
+	# Le HUD peut ainsi montrer « selectionnee + verrouillee » jusqu'a l'impact,
+	# au lieu de faire disparaitre le lien visuel entre le clic et son resultat.
+	# Les resolutions sans selection (debut/fin de tour, terrain...) gardent
+	# naturellement un mode vide.
 	_resolution_kind = kind
+	_reset_feedback_value()
 	_emit_snapshot()
 
 
@@ -60,6 +67,7 @@ func begin_enemy_turn() -> void:
 	_phase = Phase.ENEMY_TURN
 	_selection_mode = &""
 	_resolution_kind = &""
+	_reset_feedback_value()
 	_emit_snapshot()
 
 
@@ -67,6 +75,7 @@ func begin_modal() -> void:
 	_phase = Phase.MODAL
 	_selection_mode = &""
 	_resolution_kind = &""
+	_reset_feedback_value()
 	_emit_snapshot()
 
 
@@ -74,6 +83,7 @@ func begin_battle_ending() -> void:
 	_phase = Phase.BATTLE_ENDING
 	_selection_mode = &""
 	_resolution_kind = &""
+	_reset_feedback_value()
 	_emit_snapshot()
 
 
@@ -109,6 +119,11 @@ func clear_feedback() -> void:
 	_feedback_text = ""
 	_feedback_kind = &"info"
 	_emit_snapshot()
+
+
+func _reset_feedback_value() -> void:
+	_feedback_text = ""
+	_feedback_kind = &"info"
 
 
 func is_locked() -> bool:
@@ -147,6 +162,10 @@ func get_snapshot() -> Dictionary:
 		"input_locked": is_locked(),
 		"controls_enabled": can_accept_player_intent(),
 		"focus_active": _phase == Phase.PLAYER_TARGETING,
+		"interaction_step": _interaction_step(),
+		"selection_active": not _selection_mode.is_empty() \
+			and _phase in [Phase.PLAYER_TARGETING, Phase.RESOLVING_ACTION],
+		"selection_cancellable": _phase == Phase.PLAYER_TARGETING,
 		"ownership": (
 			&"player"
 			if _phase in [Phase.PLAYER_IDLE, Phase.PLAYER_TARGETING]
@@ -156,6 +175,23 @@ func get_snapshot() -> Dictionary:
 		"feedback_text": _feedback_text,
 		"feedback_kind": _feedback_kind,
 	}
+
+
+func _interaction_step() -> StringName:
+	match _phase:
+		Phase.PLAYER_IDLE:
+			return &"choose"
+		Phase.PLAYER_TARGETING:
+			return &"target"
+		Phase.RESOLVING_ACTION:
+			return &"resolve"
+		Phase.ENEMY_TURN:
+			return &"wait"
+		Phase.MODAL:
+			return &"decide"
+		Phase.BATTLE_ENDING:
+			return &"complete"
+	return &"unknown"
 
 
 func _emit_snapshot() -> void:

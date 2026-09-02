@@ -64,8 +64,14 @@ func start() -> void:
 		zone = [Vector2i(2, 6), Vector2i(2, 8)]
 
 	_deploy_zone = []
+	var known_cells := {}
 	for cell in zone:
-		if _battle.grid.is_valid(cell) and _battle.grid.is_walkable(cell):
+		if known_cells.has(cell):
+			continue
+		known_cells[cell] = true
+		if _battle.grid.is_valid(cell) \
+				and _battle.grid.is_walkable(cell) \
+				and not _battle.grid.has_unit(cell):
 			_deploy_zone.append(cell)
 
 	# Cas dégénéré : aucun héros, ou pas assez de cases pour les placer.
@@ -85,19 +91,82 @@ func start() -> void:
 	_refresh_deploy()
 
 # --- Secours : si la zone est trop petite, on place automatiquement. ---
-# Garantit qu'on n'a JAMAIS un combat sans héros (sinon boucle infinie).
+# La zone de héros reste prioritaire, puis le secours s'étend à toute case libre
+# de la grille. Le combat ne peut démarrer que si chaque héros a réellement été
+# enregistré dans GridData.
 func _deploy_fallback_auto() -> void:
-	var pool = _deploy_zone.duplicate()
-	for hero in _heroes_to_place:
+	var pool := _build_fallback_pool()
+	if pool.size() < _heroes_to_place.size():
+		push_error(
+			"Déploiement : capacité totale insuffisante (%d case(s) pour %d héros)." \
+					% [pool.size(), _heroes_to_place.size()]
+		)
+		# Aucun placement n'a encore été effectué. Rendre la main à Battle lui
+		# permet d'appliquer son contrat terminal « zéro héros = défaite » au lieu
+		# de laisser la partie suspendue dans une phase de déploiement impossible.
+		deployment_completed.emit()
+		return
+
+	while not _heroes_to_place.is_empty():
+		var hero = _heroes_to_place[0]
 		hero.current_ap = hero.max_ap.get_int()
 		hero.current_mp = hero.max_mp.get_int()
 		var cell = _battle._resolve_spawn_cell(pool, hero.unit_name)
 		if cell == Vector2i(-1, -1):
-			continue
-		_battle._place(hero, cell)
-		_battle.units.append(hero)
-	_heroes_to_place = []
+			push_error(
+				"Déploiement : aucune case de secours pour %s." % hero.unit_name
+			)
+			return
+		if not _battle._place(hero, cell) \
+				or _battle.grid.get_unit(cell) != hero:
+			push_error(
+				"Déploiement : placement de secours refusé pour %s." % hero.unit_name
+			)
+			_abort_fallback_to_terminal_outcome()
+			return
+		if not _battle.units.has(hero):
+			_battle.units.append(hero)
+		_deployed.append({ "unit": hero, "cell": cell })
+		_heroes_to_place.pop_front()
 	deployment_completed.emit()
+
+
+func _abort_fallback_to_terminal_outcome() -> void:
+	# Un échec inattendu après un placement partiel ne doit ni démarrer avec une
+	# équipe tronquée, ni laisser la phase active sans issue. On remet la grille
+	# dans son état pré-déploiement ; Battle constatera alors zéro héros.
+	for deployment in _deployed:
+		var hero := deployment.get("unit") as Unit
+		var cell := deployment.get("cell", Vector2i(-1, -1)) as Vector2i
+		if _battle.grid.get_unit(cell) == hero:
+			_battle.grid.clear_unit(cell)
+		if hero != null and hero.died.is_connected(_battle._on_unit_died):
+			hero.died.disconnect(_battle._on_unit_died)
+		var view = _battle._unit_views.get(hero)
+		if is_instance_valid(view):
+			view.queue_free()
+		_battle._unit_views.erase(hero)
+		_battle.units.erase(hero)
+	_deployed.clear()
+	deployment_completed.emit()
+
+
+func _build_fallback_pool() -> Array:
+	var result: Array = []
+	var known_cells := {}
+	for cell in _deploy_zone:
+		if known_cells.has(cell) or not _battle.grid.is_walkable(cell):
+			continue
+		known_cells[cell] = true
+		result.append(cell)
+	for y in _battle.grid.rows:
+		for x in _battle.grid.cols:
+			var cell := Vector2i(x, y)
+			if known_cells.has(cell) or not _battle.grid.is_walkable(cell):
+				continue
+			known_cells[cell] = true
+			result.append(cell)
+	return result
 
 # --- Rafraîchit l'affichage : cases libres illuminées + label. ---
 func _refresh_deploy() -> void:
@@ -128,10 +197,16 @@ func on_cell_clicked(cell: Vector2i) -> void:
 		return
 
 	# Place le héros courant (ordre imposé : le premier de la liste).
-	var hero = _heroes_to_place.pop_front()
+	var hero = _heroes_to_place[0]
 	hero.current_ap = hero.max_ap.get_int()
 	hero.current_mp = hero.max_mp.get_int()
-	_battle._place(hero, cell)
+	if not _battle._place(hero, cell):
+		push_error(
+			"Déploiement : placement manuel refusé pour %s." % hero.unit_name
+		)
+		_refresh_deploy()
+		return
+	_heroes_to_place.pop_front()
 	_battle.units.append(hero)
 	_deployed.append({ "unit": hero, "cell": cell })
 

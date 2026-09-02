@@ -2,6 +2,9 @@ class_name RecraftResourceBarView
 extends Control
 
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
 
 @onready var trough: ColorRect = %Trough
 @onready var delayed_value_fill: ColorRect = %DelayedValueFill
@@ -23,6 +26,9 @@ var resource_color := Color(0.76, 0.18, 0.18)
 var _delayed_value := 0.0
 var _delayed_tween: Tween
 var _layout_scale := 1.0
+var _visual_skin: HudVisualSkinData = null
+var _reduced_motion := false
+var _is_critical_health := false
 
 
 func _ready() -> void:
@@ -82,6 +88,49 @@ func set_refined_style(enabled: bool) -> void:
 	if enabled:
 		frame.visible = false
 		theme_frame.visible = false
+	if _visual_skin != null:
+		_apply_visual_frame()
+
+
+func apply_visual_skin(skin: HudVisualSkinData) -> void:
+	_visual_skin = skin
+	if skin == null:
+		return
+	_apply_visual_frame()
+	trough.color = skin.surface_recessed
+	cost_preview_fill.color = Color(
+		skin.surface_scrim.r,
+		skin.surface_scrim.g,
+		skin.surface_scrim.b,
+		0.82
+	)
+	gain_preview_fill.color = Color(
+		skin.text_secondary.r,
+		skin.text_secondary.g,
+		skin.text_secondary.b,
+		0.58
+	)
+	resource_icon.modulate = skin.text_primary
+	resource_icon_fallback.add_theme_font_override("font", skin.font_emphasis)
+	resource_icon_fallback.add_theme_color_override("font_color", skin.text_secondary)
+	value_label.add_theme_font_override("font", skin.font_numeric)
+	value_label.add_theme_color_override("font_color", skin.text_primary)
+	_apply_resource_colors(_is_critical_health)
+
+
+func set_reduced_motion(enabled: bool) -> void:
+	_reduced_motion = enabled
+	if not enabled:
+		return
+	if _delayed_tween != null and _delayed_tween.is_valid():
+		_delayed_tween.kill()
+	_delayed_tween = null
+	_delayed_value = current_value
+	_layout_fills()
+
+
+func is_reduced_motion_enabled() -> bool:
+	return _reduced_motion
 
 
 func set_resource(
@@ -97,26 +146,27 @@ func set_resource(
 	current_value = clampf(value, 0.0, maxf(maximum, 0.0))
 	maximum_value = maxf(maximum, 0.0001)
 	resource_color = color
-	var is_critical_health := icon_fallback == "PV" and current_value / maximum_value <= 0.25
-	main_fill.color = color.lightened(0.12) if is_critical_health else color
-	delayed_value_fill.color = color.lightened(0.28)
+	_is_critical_health = icon_fallback == "PV" and current_value / maximum_value <= 0.25
+	_apply_resource_colors(_is_critical_health)
 	resource_icon.texture = icon
 	resource_icon.visible = icon != null
 	resource_icon_fallback.visible = icon == null
 	resource_icon_fallback.text = icon_fallback
 	value_label.visible = show_text
 	value_label.text = "%d / %d" % [int(round(current_value)), int(round(maximum))]
-	value_label.add_theme_color_override(
-		"font_color",
-		Color(1.0, 0.78, 0.7) if is_critical_health else Color(0.96, 0.94, 0.86)
-	)
+	value_label.add_theme_color_override("font_color", _resource_text_color())
 	if _delayed_tween != null:
 		_delayed_tween.kill()
-	if animate_change and current_value < previous:
+	if animate_change and current_value < previous and not _reduced_motion:
 		_delayed_value = previous
 		_delayed_tween = create_tween()
 		_delayed_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		_delayed_tween.tween_method(_set_delayed_value, previous, current_value, 0.32)
+		var duration := (
+			_visual_skin.motion_duration(&"panel", _reduced_motion)
+			if _visual_skin != null
+			else 0.32
+		)
+		_delayed_tween.tween_method(_set_delayed_value, previous, current_value, duration)
 	else:
 		_delayed_value = current_value
 	_layout_fills()
@@ -128,7 +178,11 @@ func set_preview(cost: float = 0.0, gain: float = 0.0) -> void:
 	var insufficient := preview_cost > current_value
 	value_label.add_theme_color_override(
 		"font_color",
-		Color(1.0, 0.48, 0.42) if insufficient else Color(0.96, 0.94, 0.86)
+		_visual_skin.text_primary
+		if _visual_skin != null
+		else Color(1.0, 0.48, 0.42)
+		if insufficient
+		else Color(0.96, 0.94, 0.86)
 	)
 	_layout_fills()
 
@@ -140,6 +194,40 @@ func clear_preview() -> void:
 func _set_delayed_value(value: float) -> void:
 	_delayed_value = value
 	_layout_fills()
+
+
+func _apply_visual_frame() -> void:
+	if _visual_skin == null or not is_node_ready():
+		return
+	refined_frame.add_theme_stylebox_override(
+		"panel",
+		VISUAL_THEME_FACTORY.make_panel_style(
+			_visual_skin,
+			Color.TRANSPARENT,
+			_visual_skin.border_strong_color,
+			_visual_skin.border_thin,
+			_visual_skin.radius_tight
+		)
+	)
+
+
+func _apply_resource_colors(is_critical: bool) -> void:
+	if _visual_skin != null and _visual_skin.neutral_grayscale:
+		main_fill.color = (
+			_visual_skin.text_primary
+			if is_critical
+			else _visual_skin.border_selected_color
+		)
+		delayed_value_fill.color = _visual_skin.border_strong_color
+		return
+	main_fill.color = resource_color.lightened(0.12) if is_critical else resource_color
+	delayed_value_fill.color = resource_color.lightened(0.28)
+
+
+func _resource_text_color() -> Color:
+	if _visual_skin != null:
+		return _visual_skin.text_primary
+	return Color(1.0, 0.78, 0.7) if _is_critical_health else Color(0.96, 0.94, 0.86)
 
 
 func _layout_fills() -> void:

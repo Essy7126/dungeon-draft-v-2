@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Résolution</title>
+  <desc id="desc">Deux arcs en mouvement convergent autour d’un impact.</desc>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 29A20 20 0 0 1 45 15"/>
+    <path d="m39 10 9 3-4 9"/>
+    <path d="M51 35A20 20 0 0 1 19 49"/>
+    <path d="m25 54-9-3 4-9"/>
+    <path d="m32 21 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#FFFFFF" stroke="none"/>
+  </g>
+</svg>

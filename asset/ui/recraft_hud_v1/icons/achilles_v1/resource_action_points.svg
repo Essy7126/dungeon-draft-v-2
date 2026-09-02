@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Points d’action</title>
+  <desc id="desc">Une étincelle angulaire symbolise l’énergie d’action disponible.</desc>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 7v10M32 47v10M7 32h10M47 32h10M14 14l7 7M43 43l7 7M50 14l-7 7M21 43l-7 7"/>
+    <path d="m32 18 5 9 9 5-9 5-5 9-5-9-9-5 9-5Z" fill="#FFFFFF" stroke="none"/>
+  </g>
+</svg>

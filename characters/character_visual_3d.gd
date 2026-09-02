@@ -71,6 +71,8 @@ var _cast_release_emitted := true
 var _release_animation_name: StringName = &""
 var _release_time_seconds := -1.0
 var _release_normalized_time := 0.0
+var _release_action_elapsed_seconds := 0.0
+var _release_action_finish_seconds := -1.0
 var _death_locked := false
 
 
@@ -90,28 +92,49 @@ func _ready() -> void:
 	play_idle()
 
 
-func _process(_delta: float) -> void:
-	if _animation_player == null or _cast_release_emitted or _death_locked:
+func _process(delta: float) -> void:
+	if _animation_player == null or _death_locked \
+			or _release_animation_name == &"":
 		return
-	if _release_animation_name == &"" \
-			or not _animation_player.is_playing() \
-			or get_current_animation() != _release_animation_name:
+	if get_current_animation() != _release_animation_name:
 		return
-	var animation := _animation_player.get_animation(_release_animation_name)
-	if animation == null or animation.length <= 0.0:
+	_release_action_elapsed_seconds += maxf(delta, 0.0)
+	if not _cast_release_emitted and _animation_player.is_playing():
+		var animation := _animation_player.get_animation(_release_animation_name)
+		if animation != null and animation.length > 0.0:
+			var release_time := _release_time_seconds
+			if release_time < 0.0:
+				release_time = animation.length * clampf(
+					_release_normalized_time, 0.0, 1.0
+				)
+			if _animation_player.current_animation_position + 0.000001 \
+					>= release_time:
+				_cast_release_emitted = true
+				cast_release_reached.emit()
+	# Une animation importee marquee en boucle n'emet jamais animation_finished.
+	# Quand elle sert de sort (notamment une Charge/Ruee), un cycle est pourtant
+	# une action finie : on clot explicitement ce cycle pour rendre la main.
+	if _release_action_finish_seconds > 0.0 \
+			and _release_action_elapsed_seconds + 0.000001 \
+			>= _release_action_finish_seconds:
+		_finish_release_action_once()
+
+
+func _finish_release_action_once() -> void:
+	if _release_animation_name == &"" or _animation_player == null:
 		return
-	var release_time := _release_time_seconds
-	if release_time < 0.0:
-		release_time = animation.length * clampf(_release_normalized_time, 0.0, 1.0)
-	if _animation_player.current_animation_position + 0.000001 < release_time:
-		return
-	_cast_release_emitted = true
-	cast_release_reached.emit()
+	var completed_animation := _release_animation_name
+	if get_current_animation() == completed_animation \
+			and _animation_player.is_playing():
+		_animation_player.stop()
+	_on_player_animation_finished(completed_animation)
 
 
 func _exit_tree() -> void:
 	_cast_release_emitted = true
 	_release_animation_name = &""
+	_release_action_elapsed_seconds = 0.0
+	_release_action_finish_seconds = -1.0
 	if _animation_player != null:
 		var started := Callable(self, "_on_player_animation_started")
 		var finished := Callable(self, "_on_player_animation_finished")
@@ -202,6 +225,8 @@ func play_animation(
 	_release_animation_name = &""
 	_release_time_seconds = -1.0
 	_release_normalized_time = 0.0
+	_release_action_elapsed_seconds = 0.0
+	_release_action_finish_seconds = -1.0
 	_animation_player.play(animation_name, maxf(blend_time, 0.0), speed_scale)
 	return true
 
@@ -220,6 +245,12 @@ func play_animation_with_release(
 	_release_animation_name = animation_name
 	_release_time_seconds = release_time_seconds
 	_release_normalized_time = clampf(release_normalized_time, 0.0, 1.0)
+	_release_action_elapsed_seconds = 0.0
+	var animation := _animation_player.get_animation(animation_name)
+	_release_action_finish_seconds = (
+		animation.length / maxf(speed_scale, 0.01)
+		if animation != null else -1.0
+	)
 	_cast_release_emitted = false
 	return true
 
@@ -233,6 +264,8 @@ func stop_animation() -> void:
 	_release_animation_name = &""
 	_release_time_seconds = -1.0
 	_release_normalized_time = 0.0
+	_release_action_elapsed_seconds = 0.0
+	_release_action_finish_seconds = -1.0
 
 
 func reset_to_idle() -> void:
@@ -447,9 +480,15 @@ func _on_player_animation_started(animation_name: StringName) -> void:
 
 func _on_player_animation_finished(animation_name: StringName) -> void:
 	_animation_player.speed_scale = 1.0
-	if animation_name == _release_animation_name and not _cast_release_emitted and not _death_locked:
-		_cast_release_emitted = true
-		cast_release_reached.emit()
+	if animation_name == _release_animation_name:
+		if not _cast_release_emitted and not _death_locked:
+			_cast_release_emitted = true
+			cast_release_reached.emit()
+		_release_animation_name = &""
+		_release_time_seconds = -1.0
+		_release_normalized_time = 0.0
+		_release_action_elapsed_seconds = 0.0
+		_release_action_finish_seconds = -1.0
 	animation_finished.emit(animation_name)
 	if animation_name == animation_death:
 		death_animation_finished.emit()

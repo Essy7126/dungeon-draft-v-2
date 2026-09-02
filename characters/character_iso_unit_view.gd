@@ -212,6 +212,33 @@ func play_spell_action(_spell: Spell = null) -> bool:
 	return play_cast()
 
 
+## Contrat commun appele par UnitView lors d'une annulation, d'un timeout ou
+## d'une fermeture de salle. Les specialisations peuvent le surcharger pour
+## nettoyer leurs accessoires (arc, projectile, etc.).
+func cancel_spell_action() -> void:
+	_movement_active = false
+	_movement_seen_motion = false
+	_movement_stable_time = 0.0
+	_has_parent_sample = false
+	if is_instance_valid(character_visual) and not character_visual.is_death_locked():
+		character_visual.reset_to_idle()
+		_visual_priority = VisualPriority.IDLE
+
+
+func cancel_pending_visual_actions() -> void:
+	cancel_spell_action()
+
+
+func synchronize_external_movement() -> void:
+	var parent_2d := get_parent() as Node2D
+	if parent_2d != null:
+		_last_parent_position = parent_2d.position
+		_has_parent_sample = true
+	_movement_active = false
+	_movement_seen_motion = false
+	_movement_stable_time = 0.0
+
+
 func _play_cast_action(animation_name: StringName, play_callable: Callable) -> bool:
 	if _death_locked or _visual_priority > VisualPriority.CAST:
 		return false

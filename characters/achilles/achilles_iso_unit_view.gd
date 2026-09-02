@@ -173,6 +173,14 @@ func cancel_pending_visual_actions() -> void:
 	_activate_deferred_viewport_if_available()
 
 
+func synchronize_external_movement() -> void:
+	var parent_2d := get_parent() as Node2D
+	if parent_2d != null:
+		_last_parent_position = parent_2d.position
+	_movement_active = false
+	_movement_stable_time = 0.0
+
+
 func begin_movement_feedback(from_cell: Vector2i, to_cell: Vector2i) -> void:
 	_begin_movement_feedback(from_cell, to_cell, &"walk")
 
@@ -553,6 +561,12 @@ func _track_parent_movement(delta: float) -> void:
 		_last_parent_position
 	) > 0.0001
 	_last_parent_position = parent_2d.position
+	# Un deplacement du parent pendant une action fait partie de cette action
+	# (Percée notamment). Il ne doit jamais demarrer Walking par-dessus son RUN.
+	if _action_pending:
+		_movement_active = false
+		_movement_stable_time = 0.0
+		return
 	if moved:
 		_movement_stable_time = 0.0
 		if not _movement_active:

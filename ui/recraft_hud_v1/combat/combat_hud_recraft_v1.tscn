@@ -56,6 +56,9 @@ shadow_offset = Vector2(0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_context_plate"]
 bg_color = Color(0.025, 0.031, 0.029, 0.96)
+border_width_left = 3
+border_width_top = 1
+border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.48, 0.41, 0.25, 0.72)
 corner_radius_top_left = 4
@@ -340,6 +343,7 @@ layout_mode = 0
 mouse_filter = 2
 
 [node name="ActionResourcesPlate" type="Panel" parent="Root/HudBand/ActionResourcesAnchor"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -491,6 +495,8 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_context_plate")
 text = "Sort sélectionné"
 horizontal_alignment = 1
 vertical_alignment = 1
+text_overrun_behavior = 3
+clip_text = true
 
 [node name="BarToggleAnchor" type="Control" parent="Root/HudBand"]
 unique_name_in_owner = true

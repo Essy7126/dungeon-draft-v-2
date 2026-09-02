@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://ui/recraft_hud_v1/components/spell_slot/spell_slot_view.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/processed/spell_slot_base.png" id="2_frame"]
@@ -6,52 +6,76 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_button"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selection"]
-bg_color = Color(0.08, 0.15, 0.22, 0.2)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.93, 0.72, 0.29, 0.95)
+bg_color = Color(0.16, 0.16, 0.16, 0.18)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.96, 0.96, 0.96, 0.98)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cost"]
-bg_color = Color(0.035, 0.045, 0.06, 0.96)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+draw_center = false
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.61, 0.47, 0.25, 0.95)
+border_color = Color(0.88, 0.88, 0.88, 0.92)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cost"]
+bg_color = Color(0.04, 0.04, 0.04, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.58, 0.58, 0.58, 0.95)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shortcut"]
-bg_color = Color(0.025, 0.031, 0.035, 0.96)
+bg_color = Color(0.03, 0.03, 0.03, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.42, 0.4, 0.32, 0.82)
+border_color = Color(0.46, 0.46, 0.46, 0.82)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_refined_frame"]
-bg_color = Color(0.025, 0.03, 0.029, 0.32)
+bg_color = Color(0.035, 0.035, 0.035, 0.48)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.42, 0.37, 0.27, 0.84)
+border_color = Color(0.48, 0.48, 0.48, 0.9)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cooldown_disc"]
+bg_color = Color(0.035, 0.035, 0.035, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.88, 0.88, 0.88, 0.92)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
 
 [sub_resource type="Shader" id="Shader_icon_polish"]
 code = "shader_type canvas_item;\nuniform float saturation : hint_range(0.0, 1.2) = 0.9;\nuniform float brightness : hint_range(0.0, 1.3) = 0.96;\nvoid fragment() {\n\tvec4 source = texture(TEXTURE, UV);\n\tfloat luminance = dot(source.rgb, vec3(0.2126, 0.7152, 0.0722));\n\tsource.rgb = mix(vec3(luminance), source.rgb, saturation) * brightness;\n\tCOLOR = source * COLOR;\n}\n"
@@ -92,7 +116,7 @@ offset_top = 8.0
 offset_right = -8.0
 offset_bottom = -8.0
 mouse_filter = 2
-color = Color(0.035, 0.045, 0.06, 0.97)
+color = Color(0.04, 0.04, 0.04, 0.97)
 
 [node name="SpellIcon" type="TextureRect" parent="VisualArea"]
 unique_name_in_owner = true
@@ -120,7 +144,7 @@ offset_top = 8.0
 offset_right = -8.0
 offset_bottom = -8.0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.72, 0.76, 0.82, 1)
+theme_override_colors/font_color = Color(0.76, 0.76, 0.76, 1)
 theme_override_font_sizes/font_size = 24
 text = "?"
 horizontal_alignment = 1
@@ -163,6 +187,20 @@ offset_bottom = -2.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_selection")
 
+[node name="FocusOverlay" type="Panel" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 1.0
+offset_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_focus")
+
 [node name="HoverOverlay" type="ColorRect" parent="VisualArea"]
 unique_name_in_owner = true
 visible = false
@@ -175,7 +213,23 @@ offset_top = 7.0
 offset_right = -7.0
 offset_bottom = -7.0
 mouse_filter = 2
-color = Color(0.48, 0.68, 0.9, 0.16)
+color = Color(0.92, 0.92, 0.92, 0.12)
+
+[node name="HoverRail" type="ColorRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = -8.0
+offset_right = -9.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.96, 0.96, 0.96, 0.9)
 
 [node name="DisabledOverlay" type="ColorRect" parent="VisualArea"]
 unique_name_in_owner = true
@@ -191,6 +245,64 @@ offset_bottom = -7.0
 mouse_filter = 2
 color = Color(0.03, 0.04, 0.055, 0.68)
 
+[node name="DisabledBar" type="ColorRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -2.0
+offset_right = 19.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.94, 0.94, 0.94, 0.94)
+
+[node name="UnavailableCrossA" type="ColorRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -1.5
+offset_right = 23.0
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.785398
+pivot_offset = Vector2(23, 1.5)
+mouse_filter = 2
+color = Color(0.94, 0.94, 0.94, 0.86)
+
+[node name="UnavailableCrossB" type="ColorRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -1.5
+offset_right = 23.0
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.785398
+pivot_offset = Vector2(23, 1.5)
+mouse_filter = 2
+color = Color(0.94, 0.94, 0.94, 0.86)
+
 [node name="CooldownOverlay" type="ColorRect" parent="VisualArea"]
 unique_name_in_owner = true
 visible = false
@@ -205,6 +317,24 @@ offset_bottom = -7.0
 mouse_filter = 2
 color = Color(0.015, 0.02, 0.03, 0.64)
 
+[node name="CooldownDisc" type="Panel" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -19.0
+offset_right = 19.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cooldown_disc")
+
 [node name="CooldownLabel" type="Label" parent="VisualArea"]
 unique_name_in_owner = true
 visible = false
@@ -212,14 +342,68 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 7.0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.96, 0.91, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 0.96, 1)
 theme_override_colors/font_outline_color = Color(0.01, 0.015, 0.02, 1)
 theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 17
 text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="CooldownGlyph" type="TextureRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = -16.0
+offset_right = 9.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StateGlyph" type="TextureRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_top = -11.0
+offset_right = 11.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SelectedMarker" type="ColorRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -10.0
+offset_top = -3.0
+offset_right = 10.0
+offset_bottom = 1.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.98, 0.98, 0.98, 1)
 
 [node name="ShortcutLabel" type="Label" parent="VisualArea"]
 unique_name_in_owner = true
@@ -229,7 +413,7 @@ offset_top = 4.0
 offset_right = 30.0
 offset_bottom = 28.0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.94, 0.92, 0.84, 1)
+theme_override_colors/font_color = Color(0.94, 0.94, 0.94, 1)
 theme_override_colors/font_outline_color = Color(0.015, 0.02, 0.03, 1)
 theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 16
@@ -252,20 +436,23 @@ grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cost")
 
-[node name="CostIcon" type="Label" parent="VisualArea/CostBadge"]
+[node name="CostIcon" type="TextureRect" parent="VisualArea/CostBadge"]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-visible = false
-offset_right = -11.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -7.0
+offset_right = -5.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.96, 0.76, 0.25, 1)
-theme_override_font_sizes/font_size = 8
-text = "PA"
-horizontal_alignment = 1
-vertical_alignment = 1
+expand_mode = 1
+stretch_mode = 5
 
 [node name="CostLabel" type="Label" parent="VisualArea/CostBadge"]
 unique_name_in_owner = true
@@ -273,27 +460,59 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 2.0
+offset_left = 18.0
 offset_right = -1.0
 mouse_filter = 2
-theme_override_colors/font_color = Color(1, 0.94, 0.72, 1)
+theme_override_colors/font_color = Color(0.96, 0.96, 0.96, 1)
 theme_override_font_sizes/font_size = 15
-text = "1 PA"
+text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LockIcon" type="Label" parent="VisualArea"]
+[node name="LockIcon" type="TextureRect" parent="VisualArea"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LockRailLeft" type="ColorRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 8.0
+offset_right = 9.0
+offset_bottom = -8.0
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.92, 0.92, 0.92, 0.82)
+
+[node name="LockRailRight" type="ColorRect" parent="VisualArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -9.0
+offset_top = 8.0
+offset_right = -6.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.95, 0.83, 0.48, 1)
-theme_override_colors/font_outline_color = Color(0.01, 0.015, 0.02, 1)
-theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 20
-text = "×"
-horizontal_alignment = 1
-vertical_alignment = 1
+color = Color(0.92, 0.92, 0.92, 0.82)

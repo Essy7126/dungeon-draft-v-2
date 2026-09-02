@@ -88,7 +88,11 @@ func test_achilles_spells_and_initial_disciplines_match_contract() -> void:
 	var spells := progression.spells
 	assert_eq([spells[0].ap_cost, spells[0].minimum_range, spells[0].spell_range], [2, 1, 2])
 	assert_eq([spells[0].damage, spells[0].damage_type], [9, Spell.DamageType.PHYSICAL])
-	assert_eq([spells[1].ap_cost, spells[1].spell_range, spells[1].damage], [2, 3, 5])
+	assert_eq(
+		[spells[1].ap_cost, spells[1].minimum_range,
+		spells[1].spell_range, spells[1].damage],
+		[2, 2, 3, 5],
+	)
 	assert_true(spells[1].line_from_caster)
 	assert_eq(spells[1].modifiers.size(), 1)
 	assert_eq(spells[1].modifiers[0].effect_type, 29)
@@ -150,7 +154,7 @@ func test_odyssey_enemy_stats_and_room_rosters_are_exact() -> void:
 		assert_eq(enemy.team, 1)
 		assert_true(enemy.spells.is_empty())
 	var run := _run()
-	assert_eq(_roster_ids(run.rooms[0]), [&"catabase_shadow_paris"])
+	assert_eq(_roster_ids(run.rooms[0]), [&"catabase_frail_hellspawn"])
 	assert_eq(_roster_ids(run.rooms[1]), [
 		&"odyssey_skirmisher", &"odyssey_skirmisher", &"odyssey_guard",
 	])
@@ -324,8 +328,13 @@ func test_advance_moves_to_contact_and_never_crosses_wall_or_unit() -> void:
 	wall_field.grid.place_unit(wall_achilles, Vector2i(0, 0))
 	wall_field.grid.place_unit(wall_target, Vector2i(3, 0))
 	wall_field.grid.set_type(Vector2i(1, 0), GridData.CellType.WALL)
-	wall_field.caster.cast(wall_achilles, advance, wall_target.grid_pos)
+	var wall_report := wall_field.caster.cast(
+		wall_achilles, advance, wall_target.grid_pos
+	)
+	assert_true(wall_report.get("failed", false), str(wall_report))
 	assert_eq(wall_achilles.grid_pos, Vector2i(0, 0))
+	assert_eq(wall_achilles.current_ap, 6)
+	assert_eq(wall_target.current_hp, 100)
 
 	var unit_field := Factory.make_battlefield(5, 1)
 	var unit_achilles := _runtime_unit()
@@ -334,8 +343,54 @@ func test_advance_moves_to_contact_and_never_crosses_wall_or_unit() -> void:
 	unit_field.grid.place_unit(unit_achilles, Vector2i(0, 0))
 	unit_field.grid.place_unit(blocker, Vector2i(1, 0))
 	unit_field.grid.place_unit(unit_target, Vector2i(3, 0))
-	unit_field.caster.cast(unit_achilles, advance, unit_target.grid_pos)
+	var blocked_report := unit_field.caster.cast(
+		unit_achilles, advance, unit_target.grid_pos
+	)
+	assert_true(blocked_report.get("failed", false), str(blocked_report))
+	assert_eq(blocked_report.get("reason"), "movement_path")
 	assert_eq(unit_achilles.grid_pos, Vector2i(0, 0))
+	assert_eq(unit_achilles.current_ap, 6)
+	assert_eq(unit_target.current_hp, 100)
+
+	var adjacent_field := Factory.make_battlefield(3, 1)
+	var adjacent_achilles := _runtime_unit()
+	var adjacent_target := Unit.new("Cible déjà au contact", 1, 100)
+	adjacent_field.grid.place_unit(adjacent_achilles, Vector2i(0, 0))
+	adjacent_field.grid.place_unit(adjacent_target, Vector2i(1, 0))
+	assert_false(
+		adjacent_field.caster.get_targetable_cells(adjacent_achilles, advance) \
+			.has(adjacent_target.grid_pos)
+	)
+	var adjacent_report := adjacent_field.caster.cast(
+		adjacent_achilles, advance, adjacent_target.grid_pos
+	)
+	assert_true(adjacent_report.get("failed", false), str(adjacent_report))
+	assert_eq(adjacent_achilles.current_ap, 6)
+	assert_eq(adjacent_target.current_hp, 100)
+
+	var lethal_field := Factory.make_battlefield(5, 1)
+	var lethal_achilles := _runtime_unit()
+	var lethal_target := Unit.new("Cible fragile", 1, 5)
+	lethal_field.grid.place_unit(lethal_achilles, Vector2i(0, 0))
+	lethal_field.grid.place_unit(lethal_target, Vector2i(3, 0))
+	var lethal_movement: Array[Vector2i] = []
+	var capture_lethal_move := func(
+			moved_unit: Unit,
+			_from: Vector2i,
+			to: Vector2i,
+			_collision: bool
+		) -> void:
+		if moved_unit == lethal_achilles:
+			lethal_movement.append(to)
+	EventBus.unit_pushed.connect(capture_lethal_move)
+	var lethal_report := lethal_field.caster.cast(
+		lethal_achilles, advance, lethal_target.grid_pos
+	)
+	EventBus.unit_pushed.disconnect(capture_lethal_move)
+	assert_false(lethal_report.get("failed", false), str(lethal_report))
+	assert_false(lethal_target.is_alive)
+	assert_eq(lethal_achilles.grid_pos, Vector2i(2, 0))
+	assert_eq(lethal_movement, [Vector2i(2, 0)])
 
 
 func test_sweep_hits_and_pushes_only_cardinal_adjacent_enemies() -> void:

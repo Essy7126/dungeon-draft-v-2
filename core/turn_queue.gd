@@ -76,14 +76,16 @@ func _sort_by_initiative() -> void:
 # ============================================================
 
 # Passe à l'unité suivante vivante. C'est LA méthode appelée en fin de tour.
-func advance() -> void:
-	if _order.is_empty():
-		return
+func advance() -> bool:
+	if _order.is_empty() or not _order.any(
+		func(unit): return unit != null and unit.is_alive
+	):
+		return false
 
 	# On cherche la prochaine unité vivante.
 	# Limite de sécurité : on ne boucle pas indéfiniment si tout le monde est mort.
 	var attempts = 0
-	var max_attempts = _order.size() + 1
+	var max_attempts = _order.size()
 
 	while attempts < max_attempts:
 		_current_index += 1
@@ -105,10 +107,9 @@ func advance() -> void:
 					participant.on_actor_activation_started(unit)
 			unit.start_turn()       # Recharge PA/PM, vieillit les buffs
 			turn_started.emit(unit)
-			return
+			return true
 
-	# Si on sort de la boucle, c'est que personne n'est vivant.
-	# Le BattleManager détectera la fin de combat de son côté.
+	return false
 
 # Démarre le tout premier tour du combat.
 func start() -> void:

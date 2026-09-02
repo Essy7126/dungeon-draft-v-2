@@ -43,6 +43,24 @@ func get_range_bonus(_caster, _spell) -> int:
 func allows_free_cell_target(_caster, _spell) -> bool:
 	return false
 
+
+# Indique a la presentation qu'un sort deplace son propre lanceur. Ce contrat
+# reste purement descriptif : la grille et la resolution demeurent autoritaires.
+func moves_caster_during_cast(_caster, _spell) -> bool:
+	return false
+
+
+## Contrainte de ciblage propre à un modificateur. Elle est évaluée avant le
+## lancement visuel et avant toute dépense, puis réutilisée pour les cases
+## ciblables afin que gameplay et interface restent alignés.
+func get_target_cell_failure_reason(
+		_caster,
+		_spell,
+		_cell: Vector2i,
+		_grid
+	) -> StringName:
+	return &""
+
 # ============================================================
 # HOOKS DU PIPELINE — no-op par défaut, à surcharger au besoin.
 # Ordre d'appel dans un cast : costs → targets → damage → terrain

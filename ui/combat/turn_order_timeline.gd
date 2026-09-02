@@ -2,6 +2,12 @@ class_name TurnOrderTimeline
 extends CanvasLayer
 
 const CARD_SCENE := preload("res://ui/combat/turn_order_card.tscn")
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
+const DEFAULT_VISUAL_SKIN: HudVisualSkinData = preload(
+	"res://data/ui/hud_visual_skin_neutral_v1.tres"
+)
 const CARD_GAP_RATIO := 0.0054
 const WIDTH_RATIOS := [0.08, 0.065, 0.06, 0.057]
 const HEIGHT_RATIOS := [0.06, 0.05, 0.044, 0.039]
@@ -9,6 +15,7 @@ const HEIGHT_RATIOS := [0.06, 0.05, 0.044, 0.039]
 signal unit_selected(unit: Unit)
 
 @export_range(0.05, 1.0, 0.05) var scroll_duration := 0.32
+@export var visual_skin: HudVisualSkinData = DEFAULT_VISUAL_SKIN
 
 @onready var cards_layer: Control = %CardsLayer
 
@@ -17,10 +24,13 @@ var _cards: Dictionary = {}
 var _display_order: Array = []
 var _layout_tween: Tween = null
 var _tactical_focus := false
+var _reduced_motion := false
 
 
 func _ready() -> void:
 	visible = false
+	if visual_skin != null:
+		cards_layer.theme = VISUAL_THEME_FACTORY.build(visual_skin)
 	_update_timeline_geometry()
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 
@@ -74,6 +84,18 @@ func set_tactical_focus(active: bool) -> void:
 		cards_layer.modulate.a = 0.28 if active else 1.0
 
 
+func set_reduced_motion(enabled: bool) -> void:
+	_reduced_motion = enabled
+	if enabled and _layout_tween != null and _layout_tween.is_valid():
+		_layout_tween.kill()
+		_layout_tween = null
+		_apply_layout(false)
+
+
+func is_reduced_motion_enabled() -> bool:
+	return _reduced_motion
+
+
 func is_tactical_focus_active() -> bool:
 	return _tactical_focus
 
@@ -100,7 +122,7 @@ func _sync_cards(animate: bool) -> void:
 	if _queue == null or not is_instance_valid(cards_layer):
 		return
 	var next_order := _queue.get_upcoming_order()
-	var should_animate := animate and next_order != _display_order
+	var should_animate := animate and not _reduced_motion and next_order != _display_order
 	_remove_obsolete_cards(next_order)
 	for unit_variant in next_order:
 		var unit := unit_variant as Unit
@@ -108,6 +130,7 @@ func _sync_cards(animate: bool) -> void:
 			continue
 		var card = CARD_SCENE.instantiate()
 		cards_layer.add_child(card)
+		card.apply_visual_skin(visual_skin)
 		card.configure(unit)
 		card.unit_requested.connect(_on_card_unit_requested)
 		_cards[unit] = card
@@ -143,23 +166,28 @@ func _apply_layout(animate: bool) -> void:
 		card.set_visual_rank(rank)
 		card.z_index = _display_order.size() - rank
 		if animate:
+			var duration := (
+				visual_skin.motion_duration(&"panel", _reduced_motion)
+				if visual_skin != null
+				else scroll_duration
+			)
 			_layout_tween.tween_property(
 				card,
 				"position",
 				target["position"],
-				scroll_duration,
+				duration,
 			)
 			_layout_tween.tween_property(
 				card,
 				"size",
 				target["size"],
-				scroll_duration,
+				duration,
 			)
 			_layout_tween.tween_property(
 				card,
 				"custom_minimum_size",
 				target["size"],
-				scroll_duration,
+				duration,
 			)
 		else:
 			card.position = target["position"]

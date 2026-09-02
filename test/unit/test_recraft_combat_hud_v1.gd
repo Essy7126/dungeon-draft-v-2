@@ -9,6 +9,18 @@ const PARTY := [
 	"res://data/units/alliés/Guerrier.tres",
 ]
 
+
+class PresentationContextStub extends Node:
+	var active_unit = null
+	var snapshot: Dictionary = {}
+
+	func get_active_unit():
+		return active_unit
+
+	func get_combat_presentation_snapshot() -> Dictionary:
+		return snapshot.duplicate(true)
+
+
 func after_each() -> void:
 	GameManager.set_reduced_motion_enabled(false)
 	GameManager.cleanup_run_state()
@@ -166,6 +178,7 @@ func test_presentation_snapshot_controls_focus_ownership_and_feedback() -> void:
 	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
 	add_child_autofree(hud)
 	await get_tree().process_frame
+	hud.set_reduced_motion(true)
 	hud.apply_presentation_snapshot({
 		"phase_name": &"PLAYER_TARGETING",
 		"ownership": &"player",
@@ -176,8 +189,16 @@ func test_presentation_snapshot_controls_focus_ownership_and_feedback() -> void:
 	})
 	assert_true(bool(hud.get("_player_controls_enabled")))
 	assert_eq((hud.get_node("%TurnLabel") as Label).text, "VOTRE TOUR")
-	assert_lt((hud.get_node("%CharacterSection") as Control).modulate.a, 1.0)
+	assert_eq((hud.get_node("%CharacterSection") as Control).modulate.a, 1.0)
+	assert_eq((hud.get_node("%TurnSection") as Control).modulate.a, 1.0)
+	assert_lt((hud.get_node("%UtilityDock") as Control).modulate.a, 1.0)
+	assert_string_contains(
+		(hud.get_node("%SelectedSpellPlate") as Label).text, "CIBLAGE"
+	)
 	assert_true((hud.get_node("%ContextFeedback") as Label).visible)
+	assert_string_contains(
+		(hud.get_node("%ContextFeedback") as Label).text, "ACTION IMPOSSIBLE"
+	)
 
 	hud.apply_presentation_snapshot({
 		"phase_name": &"RESOLVING_ACTION",
@@ -191,6 +212,97 @@ func test_presentation_snapshot_controls_focus_ownership_and_feedback() -> void:
 		(hud.get_node("%ContextFeedback") as Label).visible,
 		"Un ancien refus de cible ne doit pas survivre a la resolution.",
 	)
+
+
+func test_context_rebind_replaces_stale_modal_snapshot() -> void:
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	add_child_autofree(hud)
+	await get_tree().process_frame
+	hud.apply_presentation_snapshot({
+		"phase_name": &"MODAL",
+		"ownership": &"system",
+		"controls_enabled": false,
+		"focus_active": false,
+	})
+	var end_turn := hud.get_node("%EndTurnButton") as RecraftPrimaryButtonView
+	assert_eq(end_turn.label.text, "Indisponible")
+	hud.set_player_controls_enabled(true)
+	assert_false(
+		hud.are_player_controls_enabled(),
+		"Un appel imperatif ne doit pas contourner un snapshot verrouille.",
+	)
+	assert_true(end_turn.disabled)
+
+	var context := PresentationContextStub.new()
+	context.active_unit = Unit.from_data(load(PARTY[0]) as UnitData)
+	context.snapshot = {
+		"phase_name": &"PLAYER_IDLE",
+		"ownership": &"player",
+		"controls_enabled": true,
+		"focus_active": false,
+	}
+	add_child_autofree(context)
+	hud.bind_combat_context(context)
+
+	assert_true(hud.are_player_controls_enabled())
+	assert_false(end_turn.disabled)
+	assert_eq(end_turn.label.text, "Fin de tour")
+	assert_eq(hud.get_presentation_snapshot()["phase_name"], &"PLAYER_IDLE")
+
+
+func test_spell_slots_distinguish_runtime_locks_without_blocking_the_next_spell() -> void:
+	var first := _runtime_spell(&"first_once", 2)
+	first.once_per_activation = true
+	var second := _runtime_spell(&"second_once", 2)
+	second.once_per_activation = true
+	var cooldown := _runtime_spell(&"cooldown", 1)
+	cooldown.cooldown_activations = 2
+	var exhausted := _runtime_spell(&"exhausted", 1)
+	exhausted.max_uses_per_combat = 1
+	var expensive := _runtime_spell(&"expensive", 7)
+	var hero := Unit.new("Test", 0, 30, 10, 6, 3, 10)
+	for spell in [first, second, cooldown, exhausted, expensive]:
+		hero.add_spell(spell)
+	hero.start_turn()
+	hero.mark_spell_used(first)
+	hero.mark_spell_used(cooldown)
+	hero.mark_spell_used(exhausted)
+	assert_true(hero.spend_ap(2))
+
+	var hud := (load(HUD_SCENE) as PackedScene).instantiate()
+	add_child_autofree(hud)
+	await get_tree().process_frame
+	hud.update_info(hero)
+	hud.build_spell_buttons(hero)
+	hud.set_player_controls_enabled(true)
+	var slots := hud.get("_spell_buttons") as Array
+	assert_eq(slots[0].visual_state, RecraftSpellSlotView.VisualState.LOCKED)
+	assert_eq(
+		slots[1].visual_state,
+		RecraftSpellSlotView.VisualState.NORMAL,
+		"Utiliser un sort once-per-activation ne doit pas verrouiller le suivant.",
+	)
+	assert_eq(slots[2].visual_state, RecraftSpellSlotView.VisualState.COOLDOWN)
+	assert_eq(slots[2].cooldown_label.text, "2")
+	assert_eq(slots[3].visual_state, RecraftSpellSlotView.VisualState.LOCKED)
+	assert_eq(slots[4].visual_state, RecraftSpellSlotView.VisualState.UNAFFORDABLE)
+
+	# La seconde capacité reste réellement jouable, puis seule sa propre clé est
+	# verrouillée : les états ne fuient pas d'un sort vers l'autre.
+	assert_true(hero.can_use_spell(second))
+	hero.mark_spell_used(second)
+	assert_true(hero.spend_ap(2))
+	hud._refresh_button_states()
+	assert_eq(slots[0].visual_state, RecraftSpellSlotView.VisualState.LOCKED)
+	assert_eq(slots[1].visual_state, RecraftSpellSlotView.VisualState.LOCKED)
+
+
+func _runtime_spell(id: StringName, ap_cost: int) -> Spell:
+	var spell := Spell.new()
+	spell.spell_id = id
+	spell.spell_name = String(id)
+	spell.ap_cost = ap_cost
+	return spell
 
 
 func _shortcut_key(button: Button) -> Key:

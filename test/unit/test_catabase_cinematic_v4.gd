@@ -197,31 +197,35 @@ func test_new_catabase_launch_replays_intro() -> void:
 		assert_eq(spy.start_call_count, expected_count)
 
 
-func test_catabase_room_one_contains_only_shadow_paris() -> void:
+func test_catabase_room_one_contains_only_the_frail_hellspawn() -> void:
 	var room := CATABASE_RUN.rooms[0]
-	assert_eq(room.room_name, "Catabase I — L’Ombre de Paris")
+	assert_eq(room.room_name, "Catabase I — Le Rejeton chétif")
 	assert_eq(room.enemies.size(), 1)
-	assert_eq(room.enemies[0].unit_id, &"catabase_shadow_paris")
+	assert_eq(room.enemies[0].unit_id, &"catabase_frail_hellspawn")
 	assert_eq(room.encounter_definition.get_initial_enemy_count(), 1)
 	assert_eq(room.encounter_definition.living_enemy_cap, 1)
 	assert_eq(room.encounter_definition.roster_units[0], room.enemies[0])
 
 
-func test_shadow_paris_uses_dedicated_unit_and_spell_ids() -> void:
-	var paris: UnitData = CATABASE_RUN.rooms[0].enemies[0]
-	assert_eq(paris.unit_id, &"catabase_shadow_paris")
-	assert_eq(paris.unit_name, "L’Ombre de Paris")
-	assert_true(paris.description.contains("PLACEHOLDER_VISUAL"))
-	assert_true(paris.description.contains("PLACEHOLDER_BALANCE"))
-	assert_eq(paris.ai_behavior, EnemyAI.BEHAVIOR_RANGED)
-	assert_true(paris.keep_distance)
-	assert_eq(paris.spells.size(), 1)
-	assert_eq(paris.spells[0].spell_id, &"catabase_shadow_paris_arrow")
-	assert_false(String(paris.spells[0].spell_id).contains("skeleton"))
-	assert_true(paris.spells[0].needs_line_of_sight)
+func test_frail_hellspawn_uses_coherent_unit_and_spell_ids() -> void:
+	var hellspawn: UnitData = CATABASE_RUN.rooms[0].enemies[0]
+	assert_eq(hellspawn.unit_id, &"catabase_frail_hellspawn")
+	assert_eq(hellspawn.unit_name, "Rejeton chétif des Enfers")
+	assert_true(hellspawn.description.contains("Faible créature infernale"))
+	assert_false(hellspawn.description.contains("PLACEHOLDER"))
+	assert_eq(hellspawn.ai_behavior, EnemyAI.BEHAVIOR_RANGED)
+	assert_true(hellspawn.keep_distance)
+	assert_eq(hellspawn.spells.size(), 1)
+	assert_eq(
+		hellspawn.spells[0].spell_id,
+		&"catabase_hellspawn_shadow_bolt",
+	)
+	assert_false(String(hellspawn.spells[0].spell_id).contains("skeleton"))
+	assert_true(hellspawn.spells[0].needs_line_of_sight)
+	assert_eq(hellspawn.spells[0].element, Spell.Element.SHADOW)
 
 
-func test_shadow_paris_has_a_counterable_telegraphed_intent_contract() -> void:
+func test_frail_hellspawn_has_a_counterable_telegraphed_intent_contract() -> void:
 	var spell: Spell = CATABASE_RUN.rooms[0].enemies[0].spells[0]
 	assert_eq(spell.delayed_resolution, Spell.DelayedResolution.RANGED_STRIKE)
 	assert_true(spell.is_delayed())
@@ -231,74 +235,74 @@ func test_shadow_paris_has_a_counterable_telegraphed_intent_contract() -> void:
 	assert_null(spell.summon_unit_data)
 
 
-func test_shadow_paris_trait_can_hit_or_be_broken_by_distance() -> void:
-	var paris_data := load(
-		"res://data/units/enemies/catabase_shadow_paris.tres"
+func test_frail_hellspawn_trait_can_hit_or_be_broken_by_distance() -> void:
+	var hellspawn_data := load(
+		"res://data/units/enemies/catabase_frail_hellspawn.tres"
 	) as UnitData
-	var spell := paris_data.spells[0]
+	var spell := hellspawn_data.spells[0]
 
 	var hit_field := Factory.make_battlefield(10, 1)
-	var paris := Unit.from_data(paris_data)
+	var hellspawn := Unit.from_data(hellspawn_data)
 	var achilles := Unit.new("Achille", 0, 110)
-	hit_field.grid.place_unit(paris, Vector2i(0, 0))
+	hit_field.grid.place_unit(hellspawn, Vector2i(0, 0))
 	hit_field.grid.place_unit(achilles, Vector2i(5, 0))
-	paris.start_turn()
-	var prepared := hit_field.caster.cast(paris, spell, achilles.grid_pos)
+	hellspawn.start_turn()
+	var prepared := hit_field.caster.cast(hellspawn, spell, achilles.grid_pos)
 	assert_true(prepared.telegraphed)
 	assert_eq(achilles.current_hp, 110)
-	paris.start_turn()
-	var resolved := hit_field.caster.resolve_pending_activation(paris)
+	hellspawn.start_turn()
+	var resolved := hit_field.caster.resolve_pending_activation(hellspawn)
 	assert_true(resolved.resolved)
 	assert_true(resolved.consume_activation)
 	assert_eq(achilles.current_hp, 92)
 
 	var escape_field := Factory.make_battlefield(10, 1)
-	var second_paris := Unit.from_data(paris_data)
+	var second_hellspawn := Unit.from_data(hellspawn_data)
 	var escaping_achilles := Unit.new("Achille", 0, 110)
-	escape_field.grid.place_unit(second_paris, Vector2i(0, 0))
+	escape_field.grid.place_unit(second_hellspawn, Vector2i(0, 0))
 	escape_field.grid.place_unit(escaping_achilles, Vector2i(5, 0))
-	second_paris.start_turn()
+	second_hellspawn.start_turn()
 	var second_prepare := escape_field.caster.cast(
-		second_paris,
+		second_hellspawn,
 		spell,
 		escaping_achilles.grid_pos,
 	)
 	assert_true(second_prepare.telegraphed)
 	assert_true(escape_field.grid.relocate_unit(escaping_achilles, Vector2i(8, 0)))
-	second_paris.start_turn()
-	var escaped := escape_field.caster.resolve_pending_activation(second_paris)
+	second_hellspawn.start_turn()
+	var escaped := escape_field.caster.resolve_pending_activation(second_hellspawn)
 	assert_true(escaped.blocked)
 	assert_eq(escaped.reason, &"target_escaped_telegraph")
 	assert_eq(escaping_achilles.current_hp, 110)
 
 	var cover_field := Factory.make_battlefield(10, 1)
-	var third_paris := Unit.from_data(paris_data)
+	var third_hellspawn := Unit.from_data(hellspawn_data)
 	var covered_achilles := Unit.new("Achille", 0, 110)
-	cover_field.grid.place_unit(third_paris, Vector2i(0, 0))
+	cover_field.grid.place_unit(third_hellspawn, Vector2i(0, 0))
 	cover_field.grid.place_unit(covered_achilles, Vector2i(5, 0))
-	third_paris.start_turn()
+	third_hellspawn.start_turn()
 	var third_prepare := cover_field.caster.cast(
-		third_paris,
+		third_hellspawn,
 		spell,
 		covered_achilles.grid_pos,
 	)
 	assert_true(third_prepare.telegraphed)
 	cover_field.grid.set_type(Vector2i(3, 0), GridData.CellType.WALL)
-	third_paris.start_turn()
-	var covered := cover_field.caster.resolve_pending_activation(third_paris)
+	third_hellspawn.start_turn()
+	var covered := cover_field.caster.resolve_pending_activation(third_hellspawn)
 	assert_true(covered.blocked)
 	assert_true(covered.consume_activation)
 	assert_eq(covered.reason, &"target_escaped_telegraph")
 	assert_eq(covered_achilles.current_hp, 110)
 
 
-func test_shadow_paris_warning_does_not_play_its_impact_vfx() -> void:
-	var paris_data := load(
-		"res://data/units/enemies/catabase_shadow_paris.tres"
+func test_frail_hellspawn_warning_does_not_play_its_impact_vfx() -> void:
+	var hellspawn_data := load(
+		"res://data/units/enemies/catabase_frail_hellspawn.tres"
 	) as UnitData
-	var paris := Unit.from_data(paris_data)
-	paris.grid_pos = Vector2i(1, 1)
-	var spell := paris_data.spells[0]
+	var hellspawn := Unit.from_data(hellspawn_data)
+	hellspawn.grid_pos = Vector2i(1, 1)
+	var spell := hellspawn_data.spells[0]
 	var battle_root := Node2D.new()
 	add_child_autofree(battle_root)
 	var battle_view := FakeBattleView.new()
@@ -307,9 +311,9 @@ func test_shadow_paris_warning_does_not_play_its_impact_vfx() -> void:
 	vfx_layer.name = "VFXLayer"
 	battle_root.add_child(vfx_layer)
 	VFXManager.register_battle_view(battle_view)
-	VFXManager._on_spell_cast(paris, spell, {"cell": Vector2i(5, 1)})
+	VFXManager._on_spell_cast(hellspawn, spell, {"cell": Vector2i(5, 1)})
 	assert_eq(vfx_layer.get_child_count(), 0)
-	assert_not_null(VFXManager.play_spell_vfx(paris, spell, Vector2i(5, 1)))
+	assert_not_null(VFXManager.play_spell_vfx(hellspawn, spell, Vector2i(5, 1)))
 	assert_eq(vfx_layer.get_child_count(), 1)
 	VFXManager.unregister_battle_view(battle_view)
 

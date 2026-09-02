@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Garde d’airain</title>
+  <desc id="desc">Un bouclier hoplitique est dressé contre une lance.</desc>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 18 29 12l15 6v14c0 11-6 19-17 23C16 51 10 43 10 32Z"/>
+    <path d="M27 20v27"/>
+    <circle cx="27" cy="32" r="4" fill="#FFFFFF" stroke="none"/>
+    <path d="M51 14v42"/>
+    <path d="m51 7-6 10h12Z" fill="#FFFFFF" stroke="none"/>
+  </g>
+</svg>

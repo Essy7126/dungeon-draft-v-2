@@ -13,7 +13,7 @@ func test_catabase_victory_records_only_real_progress_seed_and_health() -> void:
 		&"SINGLE_ENCOUNTER",
 		3,
 		PackedStringArray([
-			"Catabase I — L’Ombre de Paris",
+			"Catabase I — Le Rejeton chétif",
 			"Catabase II — La Porte des Cendres",
 			"Catabase III — Le Jugement de Paris",
 		]),
@@ -42,7 +42,7 @@ func test_catabase_defeat_records_reached_room_and_prior_clears() -> void:
 		&"SINGLE_ENCOUNTER",
 		1,
 		PackedStringArray([
-			"Catabase I — L’Ombre de Paris",
+			"Catabase I — Le Rejeton chétif",
 			"Catabase II — La Porte des Cendres",
 			"Catabase III — Le Jugement de Paris",
 		]),

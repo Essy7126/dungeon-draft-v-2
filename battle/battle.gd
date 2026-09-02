@@ -107,15 +107,25 @@ var units: Array = []
 var _enemy_turn: EnemyTurnRunner = null
 var _spell_impact_scheduler: SpellImpactScheduler = null
 var _spell_resolution_pending := false
+var _active_spell_movement_caster: Unit = null
+var _spell_movement_feedback_unit: Unit = null
+var _spell_movement_feedback_tween: Tween = null
+var _spell_movement_feedback_generation := 0
 var _evolution_queue := EvolutionRequestQueue.new()
 var _evolution_processing := false
 var _evolution_request_counter := 0
+var _evolution_retry_scheduled := false
+var _evolution_retry_attempt := 0
+var _evolution_retry_ticket := 0
+var _evolution_retry_base_seconds := 0.2
+var _evolution_retry_max_seconds := 1.6
 var _trigger_sequence := 0
 var _active_trigger_sequence := 0
 var _action_sequence := 0
 var _turn_end_committed := false
 var _battle_outcome_waiting := false
 var _waiting_outcome_victory := false
+var _outcome_deferral_depth := 0
 var _turn_start_deferred_for_evolution := false
 
 # --- Visuel ---
@@ -644,6 +654,9 @@ func set_reduced_motion(enabled: bool) -> void:
 	if feedback_controller != null \
 			and feedback_controller.has_method("set_reduced_motion"):
 		feedback_controller.set_reduced_motion(enabled)
+	if is_instance_valid(turn_order_timeline) \
+			and turn_order_timeline.has_method("set_reduced_motion"):
+		turn_order_timeline.set_reduced_motion(enabled)
 
 
 func _setup_state() -> void:
@@ -710,6 +723,7 @@ func _on_turn_state_changed(
 		_previous: TurnState.State,
 		current: TurnState.State
 	) -> void:
+	_sync_hud_mode_from_turn_state(current)
 	if presentation_state == null:
 		return
 	match current:
@@ -730,6 +744,24 @@ func _on_turn_state_changed(
 		TurnState.State.SKILL_EVOLUTION_PENDING, \
 		TurnState.State.SKILL_EVOLUTION_UI:
 			presentation_state.begin_modal()
+
+
+func _sync_hud_mode_from_turn_state(current: TurnState.State) -> void:
+	if _hud_port == null:
+		return
+	match current:
+		TurnState.State.MOVE:
+			_hud_port.set_active_mode("move")
+		TurnState.State.TARGET_MELEE:
+			_hud_port.set_active_mode("attack")
+		TurnState.State.TARGET_SPELL:
+			_hud_port.set_active_mode("spell", turn_state.selected_spell)
+		TurnState.State.ANIMATING:
+			# La commande validee reste marquee jusqu'a la fin de son animation.
+			# La presentation la rend verrouillee ; elle n'est pas cliquable.
+			pass
+		_:
+			_hud_port.set_active_mode("")
 
 
 func _on_presentation_snapshot_changed(snapshot: Dictionary) -> void:
@@ -807,8 +839,8 @@ func _spawn_direct_test_units() -> void:
 			break
 		hero.current_ap = hero.max_ap.get_int()
 		hero.current_mp = hero.max_mp.get_int()
-		_place(hero, spawn_cell)
-		units.append(hero)
+		if _place(hero, spawn_cell):
+			units.append(hero)
 
 
 func _direct_test_flag(key: String, production_default: bool) -> bool:
@@ -886,8 +918,14 @@ func _spawn_enemies() -> void:
 			break
 		var enemy = Unit.from_data(enemy_data)
 		_apply_current_wave_scaling(enemy)
-		_place(enemy, spawn_cell)
-		units.append(enemy)
+		if _place(enemy, spawn_cell):
+			units.append(enemy)
+		else:
+			push_error(
+				"Placement refusé pour %s en %s." % [
+					enemy_data.unit_name, spawn_cell,
+				]
+			)
 
 
 func _apply_current_wave_scaling(enemy: Unit) -> void:
@@ -919,13 +957,15 @@ func _resolve_spawn_cell(pool: Array, who: String) -> Vector2i:
 			return candidate
 	return Vector2i(-1, -1)
 
-func _place(unit: Unit, pos: Vector2i) -> void:
-	grid.set_unit(pos, unit)
-	unit.grid_pos = pos
-	unit.died.connect(_on_unit_died)
+func _place(unit: Unit, pos: Vector2i) -> bool:
+	if unit == null or grid == null or not grid.place_unit(unit, pos):
+		return false
+	if not unit.died.is_connected(_on_unit_died):
+		unit.died.connect(_on_unit_died)
 	_create_unit_view(unit)
 	if unit.team == 0:
 		_orient_unit_toward_nearest_opponent(unit)
+	return true
 
 func _create_unit_view(unit: Unit) -> void:
 	var view = preload("res://battle/unit_view.tscn").instantiate()
@@ -1037,11 +1077,116 @@ func _launch_combat() -> void:
 # HANDLER POUSSÉE VISUELLE
 # ============================================================
 
-func _on_unit_pushed(unit: Unit, _from: Vector2i, to_pos: Vector2i, _collision: bool) -> void:
+func _on_unit_pushed(unit: Unit, from_pos: Vector2i, to_pos: Vector2i, _collision: bool) -> void:
 	_sync_unit_terrain(unit)
 	var view = _unit_views.get(unit)
+	if not is_instance_valid(view):
+		return
+	if _spell_resolution_pending \
+			and unit == _active_spell_movement_caster \
+			and from_pos != to_pos:
+		_start_spell_movement_feedback(unit, view, from_pos, to_pos)
+		return
+	view.position = grid_cell_to_parent_local(to_pos, view.get_parent())
+	if view.has_method("synchronize_external_movement"):
+		view.synchronize_external_movement()
+
+
+func _start_spell_movement_feedback(
+		unit: Unit,
+		view: Node2D,
+		from_pos: Vector2i,
+		to_pos: Vector2i
+	) -> void:
+	_cancel_spell_movement_feedback(true)
+	if _closing or _battle_over or not is_instance_valid(view):
+		return
+	var parent := view.get_parent() as Node2D
+	if parent == null:
+		return
+	var origin_local := grid_cell_to_parent_local(from_pos, parent)
+	var destination_local := grid_cell_to_parent_local(to_pos, parent)
+	view.position = origin_local
+	if view.has_method("face_grid_direction"):
+		view.face_grid_direction(to_pos - from_pos)
+	var cell_distance := maxi(1, abs(to_pos.x - from_pos.x) + abs(to_pos.y - from_pos.y))
+	# Une ruee couvre plusieurs cases sur une portion du cycle de course. La
+	# borner evite aussi qu'une grande portee ne prolonge artificiellement le lock.
+	var duration := clampf(
+		float(cell_distance) * MovementTiming.MOVE_SEGMENT_DURATION * 0.55,
+		0.14,
+		0.48,
+	)
+	_spell_movement_feedback_generation += 1
+	var feedback_generation := _spell_movement_feedback_generation
+	_spell_movement_feedback_unit = unit
+	_spell_movement_feedback_tween = create_tween()
+	_spell_movement_feedback_tween.set_trans(Tween.TRANS_QUAD)
+	_spell_movement_feedback_tween.set_ease(Tween.EASE_OUT)
+	_spell_movement_feedback_tween.tween_property(
+		view, "position", destination_local, duration
+	)
+	_spell_movement_feedback_tween.finished.connect(
+		_on_spell_movement_feedback_finished.bind(
+			unit, view, destination_local, feedback_generation
+		),
+		CONNECT_ONE_SHOT,
+	)
+
+
+func _on_spell_movement_feedback_finished(
+		unit: Unit,
+		view: Node2D,
+		destination_local: Vector2,
+		feedback_generation: int
+	) -> void:
+	if feedback_generation != _spell_movement_feedback_generation:
+		return
+	_spell_movement_feedback_tween = null
+	_spell_movement_feedback_unit = null
 	if is_instance_valid(view):
-		view.position = grid_cell_to_parent_local(to_pos, view.get_parent())
+		view.position = destination_local
+		if view.has_method("synchronize_external_movement"):
+			view.synchronize_external_movement()
+		# L'arrivee est le terme artistique de la ruee. Le backend de course est
+		# explicitement remis au repos, meme si son clip source est boucle.
+		if view.has_method("cancel_pending_visual_actions"):
+			view.cancel_pending_visual_actions()
+
+
+func _cancel_spell_movement_feedback(snap_to_grid: bool) -> void:
+	_spell_movement_feedback_generation += 1
+	var moved_unit := _spell_movement_feedback_unit
+	var tween := _spell_movement_feedback_tween
+	_spell_movement_feedback_unit = null
+	_spell_movement_feedback_tween = null
+	if tween != null and tween.is_valid():
+		tween.kill()
+	if not snap_to_grid or not is_instance_valid(moved_unit):
+		return
+	var view = _unit_views.get(moved_unit)
+	if not is_instance_valid(view):
+		return
+	view.position = grid_cell_to_parent_local(moved_unit.grid_pos, view.get_parent())
+	if view.has_method("synchronize_external_movement"):
+		view.synchronize_external_movement()
+
+
+func _wait_for_spell_movement_feedback(unit: Unit, generation: int) -> void:
+	var deadline := Time.get_ticks_msec() + 1200
+	while _spell_movement_feedback_unit == unit \
+			and _spell_movement_feedback_tween != null \
+			and _spell_movement_feedback_tween.is_valid() \
+			and Time.get_ticks_msec() < deadline:
+		if not _is_operation_current(generation):
+			return
+		var tree := get_tree()
+		if tree == null:
+			return
+		await tree.process_frame
+	if _spell_movement_feedback_unit == unit:
+		push_warning("Battle: la presentation de ruee a depasse son watchdog.")
+		_cancel_spell_movement_feedback(true)
 
 func _on_turn_started(unit: Unit) -> void:
 	if _battle_over or _closing or not is_instance_valid(unit):
@@ -1053,14 +1198,24 @@ func _on_turn_started(unit: Unit) -> void:
 		return
 	var lifecycle_generation := _lifecycle_generation
 	_turn_end_committed = false
-	if presentation_state != null:
-		presentation_state.set_lock(&"battle_not_started", false)
 
 	# Un ciblage appartient exclusivement au personnage qui l'a ouvert. Il est
 	# annule avant de remplacer le HUD, y compris lors d'un passage allie -> allie.
 	_cancel_action_selection_for_active_unit()
+	# Le debut d'activation peut resoudre du terrain, des statuts ou une capacite
+	# differee avant de rendre la main. Il doit donc etre un etat verrouille a
+	# part entiere. En plus d'eviter une breve fenetre d'entree joueur, cette
+	# transition garantit qu'un tour allie suivant une confirmation de fin de
+	# tour quitte bien MODAL, meme si TurnState etait deja IDLE.
+	_begin_action_resolution(&"turn_start")
+	if presentation_state != null:
+		presentation_state.set_lock(&"battle_not_started", false)
 
 	# 1. Effet de terrain en début de tour (lave, feu...).
+	# Le contrat turn_started a déjà été publié par Unit.start_turn(). Si cette
+	# phase tue l'acteur, sa fin d'activation doit encore être publiée avant la
+	# fermeture du combat.
+	_begin_outcome_deferral()
 	var is_stunned = ArenaTerrainStatusTimingService.resolve_activation_start(
 		unit, terrain_effects
 	)
@@ -1069,33 +1224,46 @@ func _on_turn_started(unit: Unit) -> void:
 	# 3. Mort des dégâts (terrain ou poison) en début de tour ?
 	if not unit.is_alive:
 		_end_active_turn_if_dead(unit)
+		_finish_outcome_deferral()
+		return
+	if _finish_outcome_deferral():
 		return
 
-	# 4. Une capacité annoncée à l'activation précédente se résout avant que
-	# l'acteur puisse choisir un nouveau plan. C'est le contrat runtime des
-	# télégraphes : le joueur a eu un tour complet pour briser la portée, la
-	# ligne de vue ou la condition spatiale affichée.
-	var pending_result := _resolve_pending_ability(unit)
-	if bool(pending_result.get("consume_activation", false)):
-		if not unit.is_alive:
-			_end_active_turn_if_dead(unit)
-			return
-		_update_active_highlight(unit)
-		_hud_port.update_info(unit)
-		_hud_port.build_actions(unit)
-		if not await _wait_battle_seconds_safe(0.45, lifecycle_generation):
-			return
-		if not _battle_over and is_instance_valid(turn_queue):
-			_finish_active_turn(&"pending_ability_resolved")
-		return
-
-	# 5. Stun : l'unité saute son tour.
+	# 4. Un stun saute toute l'activation, y compris la résolution d'une
+	# capacité différée. Le télégraphe reste en attente : il se résoudra à la
+	# prochaine activation que l'acteur peut réellement jouer.
 	if is_stunned:
 		DebugLogger.debug(DebugLogger.LogCategory.TURN, "%s est stun, passe son tour" % unit.unit_name)
 		if not await _wait_battle_seconds_safe(0.6, lifecycle_generation):
 			return
 		if not _battle_over and is_instance_valid(turn_queue):
 			_finish_active_turn(&"stunned")
+		return
+
+	# 5. Une capacité annoncée à l'activation précédente se résout avant que
+	# l'acteur puisse choisir un nouveau plan. C'est le contrat runtime des
+	# télégraphes : le joueur a eu un tour complet pour briser la portée, la
+	# ligne de vue ou la condition spatiale affichée. La résolution et la fin
+	# d'activation forment une seule transaction : une frappe létale ne peut pas
+	# fermer le combat avant pending_ability_resolved puis turn_ended.
+	_begin_outcome_deferral()
+	var pending_result := _resolve_pending_ability(unit)
+	if bool(pending_result.get("consume_activation", false)):
+		if not unit.is_alive:
+			_end_active_turn_if_dead(unit)
+			_finish_outcome_deferral()
+			return
+		_update_active_highlight(unit)
+		_hud_port.update_info(unit)
+		_hud_port.build_actions(unit)
+		if not await _wait_battle_seconds_safe(0.45, lifecycle_generation):
+			_finish_outcome_deferral()
+			return
+		if not _battle_over and is_instance_valid(turn_queue):
+			_finish_active_turn(&"pending_ability_resolved")
+		_finish_outcome_deferral()
+		return
+	if _finish_outcome_deferral():
 		return
 
 	# 6. Déroulement normal.
@@ -1105,7 +1273,6 @@ func _on_turn_started(unit: Unit) -> void:
 
 	if unit.team == 1:
 		turn_state.begin_enemy_turn()
-		_hud_port.set_controls_enabled(false)
 		await _enemy_turn.run(unit)
 		if not _is_operation_current(lifecycle_generation) \
 				or not is_instance_valid(unit):
@@ -1114,7 +1281,6 @@ func _on_turn_started(unit: Unit) -> void:
 			_finish_active_turn(&"enemy_completed")
 	else:
 		turn_state.begin_player_turn()
-		_hud_port.set_controls_enabled(true)
 		_hud_port.set_active_mode("")
 
 
@@ -1185,9 +1351,21 @@ func _finish_active_turn(reason: StringName) -> bool:
 	if unit == null:
 		return false
 	_turn_end_committed = true
+	_begin_outcome_deferral()
 	ArenaTerrainStatusTimingService.resolve_activation_end(unit)
 	EventBus.turn_ended.emit(unit, reason)
-	turn_queue.advance()
+	if _finish_outcome_deferral():
+		return true
+	# Une issue peut rester suspendue par une résolution atomique englobante ou
+	# une évolution. Dans ce cas, ne pas démarrer l'activation suivante.
+	if _battle_outcome_waiting:
+		return true
+	# Les dégâts de fin d'activation peuvent avoir clos le combat de manière
+	# synchrone. Ne jamais avancer alors vers un faux round après le shutdown.
+	if _battle_over or _closing:
+		return true
+	if not turn_queue.advance():
+		_check_battle_end()
 	return true
 
 
@@ -1250,6 +1428,17 @@ func _on_attack_pressed() -> void:
 func _on_spell_pressed(spell: Spell) -> void:
 	if _is_evolution_locked() or not _can_accept_player_intent():
 		return
+	var unit: Unit = (
+		turn_queue.get_current_unit() as Unit if turn_queue != null else null
+	)
+	if unit == null or spell == null:
+		return
+	var availability_reason: StringName = unit.get_spell_availability_reason(spell)
+	if availability_reason != &"":
+		_show_intent_feedback(_spell_cast_rejection_reason(
+			unit, spell, unit.grid_pos, availability_reason
+		))
+		return
 	turn_state.on_spell_selected(spell)
 	_refresh_mode_button()
 
@@ -1282,8 +1471,9 @@ func _on_end_turn_pressed() -> void:
 			or not _can_accept_player_intent():
 		return
 	var unit := get_active_unit() as Unit
-	if unit != null \
-			and not _skip_end_turn_confirmation \
+	if unit == null or unit.team != 0:
+		return
+	if not _skip_end_turn_confirmation \
 			and (unit.current_ap > 0 or unit.current_mp > 0):
 		_show_end_turn_confirmation(unit)
 		return
@@ -1291,6 +1481,20 @@ func _on_end_turn_pressed() -> void:
 
 
 func _commit_player_end_turn() -> void:
+	if _turn_end_committed \
+			or turn_queue == null \
+			or _battle_over \
+			or _closing:
+		return
+	var unit := get_active_unit() as Unit
+	if unit == null or unit.team != 0:
+		return
+	# La fin de tour est elle aussi une resolution. Sans cette transition,
+	# confirmer la modale depuis IDLE puis avancer vers un autre allie laisse la
+	# presentation en MODAL : le bouton affiche alors « Indisponible » alors que
+	# le nouveau personnage peut jouer.
+	cancel_active_selection()
+	_begin_action_resolution(&"end_turn")
 	_clear_movement_path_preview()
 	grid_view.clear_highlights()
 	_finish_active_turn(&"player_requested")
@@ -1336,17 +1540,9 @@ func dismiss_top_combat_modal() -> bool:
 		and _end_turn_confirmation.dismiss()
 
 func _refresh_mode_button() -> void:
-	if _hud_port == null:
+	if _hud_port == null or turn_state == null:
 		return
-	match turn_state.current:
-		TurnState.State.MOVE:
-			_hud_port.set_active_mode("move")
-		TurnState.State.TARGET_MELEE:
-			_hud_port.set_active_mode("attack")
-		TurnState.State.TARGET_SPELL:
-			_hud_port.set_active_mode("spell", turn_state.selected_spell)
-		_:
-			_hud_port.set_active_mode("")
+	_sync_hud_mode_from_turn_state(turn_state.current)
 
 # ============================================================
 # CLICS + ANNULATION
@@ -1397,12 +1593,40 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 		inspect_panel.show_cell(cell, grid, terrain_effects, false)
 	if turn_state == null:
 		_clear_movement_path_preview()
+		_clear_target_hover_feedback()
 		return
 	if turn_state.current == TurnState.State.MOVE:
+		var moving_unit = (
+			turn_queue.get_current_unit() if turn_queue != null else null
+		)
+		var reachable: Array = (
+			pathfinder.get_reachable(
+				moving_unit.grid_pos,
+				moving_unit.current_mp,
+				moving_unit,
+			)
+			if moving_unit != null else []
+		)
+		_set_target_hover_feedback(
+			cell,
+			moving_unit != null
+				and cell != moving_unit.grid_pos
+				and reachable.has(cell),
+		)
 		_update_movement_path_preview(cell)
 		return
 	_clear_movement_path_preview()
+	if turn_state.current == TurnState.State.TARGET_MELEE:
+		var attacker = (
+			turn_queue.get_current_unit() if turn_queue != null else null
+		)
+		_set_target_hover_feedback(
+			cell,
+			attacker != null and _get_attackable_cells(attacker).has(cell),
+		)
+		return
 	if turn_state.current != TurnState.State.TARGET_SPELL:
+		_clear_target_hover_feedback()
 		return
 	var spell = turn_state.selected_spell
 	var unit = turn_queue.get_current_unit()
@@ -1410,6 +1634,7 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 		return
 	grid_view.clear_highlights()
 	var targetable = spell_caster.get_targetable_cells(unit, spell)
+	_set_target_hover_feedback(cell, targetable.has(cell))
 	grid_view.highlight(
 		targetable,
 		SPELL_COLOR,
@@ -1485,6 +1710,7 @@ func _on_request_show_move_range() -> void:
 	if unit == null:
 		return
 	_clear_movement_path_preview()
+	_clear_target_hover_feedback()
 	grid_view.clear_highlights()
 	var range_layers := _movement_range_layers(unit)
 	grid_view.highlight(
@@ -1500,7 +1726,22 @@ func _on_request_show_move_range() -> void:
 
 func _on_request_clear_highlights() -> void:
 	_clear_movement_path_preview()
+	_clear_target_hover_feedback()
 	grid_view.clear_highlights()
+
+
+func _set_target_hover_feedback(cell: Vector2i, valid_target: bool) -> void:
+	if not is_instance_valid(grid_view) \
+			or not grid_view.has_method("set_cell_feedback_marker"):
+		return
+	grid_view.clear_cell_feedback_markers()
+	grid_view.set_cell_feedback_marker(cell, valid_target)
+
+
+func _clear_target_hover_feedback() -> void:
+	if is_instance_valid(grid_view) \
+			and grid_view.has_method("clear_cell_feedback_markers"):
+		grid_view.clear_cell_feedback_markers()
 
 
 func _update_movement_path_preview(cell: Vector2i) -> void:
@@ -1561,11 +1802,11 @@ func _on_request_move_to(cell: Vector2i) -> void:
 		_show_intent_feedback("PM insuffisants pour ce déplacement.")
 		return
 	_begin_action_resolution(&"move")
+	_begin_outcome_deferral()
 	var lifecycle_generation := _lifecycle_generation
 	await _animate_move(unit, path)
 	if not _is_operation_current(lifecycle_generation):
-		return
-	if _end_active_turn_if_dead(unit):
+		_finish_outcome_deferral()
 		return
 	EventBus.voluntary_movement_resolved.emit(
 		unit, path.duplicate(), paid_cost, action_id
@@ -1573,6 +1814,10 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	EventBus.action_resolved.emit(unit, action_id, &"voluntary_movement", {
 		"distance": maxi(0, path.size() - 1), "paid_mp": paid_cost,
 	})
+	if _finish_outcome_deferral():
+		return
+	if _end_active_turn_if_dead(unit):
+		return
 	turn_state.end_animating()
 	_hud_port.update_info(unit)
 
@@ -1581,46 +1826,47 @@ func _on_request_move_to(cell: Vector2i) -> void:
 # vérifie is_instance_valid(view) ET unit.is_alive avant/après chaque await.
 # Sans ça : erreur "Freed Object" + tour figé (cause des freezes passés).
 func _animate_move(unit: Unit, path: Array) -> void:
-	if _closing or _battle_over:
+	if _closing or _battle_over or path.size() < 2:
 		return
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
-	if not is_instance_valid(view) or path.size() < 2:
-		return
-	if view.has_method("begin_path_movement_feedback"):
-		view.begin_path_movement_feedback(path.duplicate())
-	else:
-		view.begin_movement_feedback(path[0], path[1])
+	if is_instance_valid(view):
+		if view.has_method("begin_path_movement_feedback"):
+			view.begin_path_movement_feedback(path.duplicate())
+		else:
+			view.begin_movement_feedback(path[0], path[1])
 	var segment_duration := _movement_segment_duration_for(view, path)
 	terrain_effects.begin_unit_resolution(unit, &"movement")
 	for i in range(1, path.size()):
 		# L'unité a pu mourir à l'étape précédente : on s'arrête proprement.
-		if not unit.is_alive or not is_instance_valid(view):
+		if not unit.is_alive:
 			break
 		if pathfinder.is_vortex_edge(path[i - 1], path[i]):
 			continue
-		var from_pos = grid_cell_to_parent_local(path[i - 1], view.get_parent())
-		var target_pos = grid_cell_to_parent_local(path[i], view.get_parent())
-		if view.has_method("face_grid_direction"):
-			view.face_grid_direction(path[i] - path[i - 1])
-		else:
-			view.face_direction(from_pos, target_pos)
-		var tween = create_tween()
-		tween.tween_property(
-			view,
-			"position",
-			target_pos,
-			segment_duration
-		)
-		await tween.finished
-		# La vue a pu être libérée pendant l'await.
-		if not _is_operation_current(lifecycle_generation) \
-				or not is_instance_valid(view):
-			break
+		if is_instance_valid(view):
+			var from_pos = grid_cell_to_parent_local(
+				path[i - 1], view.get_parent()
+			)
+			var target_pos = grid_cell_to_parent_local(path[i], view.get_parent())
+			if view.has_method("face_grid_direction"):
+				view.face_grid_direction(path[i] - path[i - 1])
+			else:
+				view.face_direction(from_pos, target_pos)
+			var tween = create_tween()
+			tween.tween_property(
+				view,
+				"position",
+				target_pos,
+				segment_duration
+			)
+			await tween.finished
+			if not _is_operation_current(lifecycle_generation):
+				break
 		if not grid.relocate_unit(unit, path[i]):
 			break
 		var entry_result := terrain_effects.consume_last_entry_result(unit)
-		if bool(entry_result.get("teleported", false)):
+		if bool(entry_result.get("teleported", false)) \
+				and is_instance_valid(view):
 			var destination := entry_result.get("destination", path[i]) as Vector2i
 			view.position = grid_cell_to_parent_local(destination, view.get_parent())
 		_sync_unit_terrain(unit)
@@ -1656,6 +1902,7 @@ func _on_request_show_attack_range() -> void:
 	if _is_evolution_locked():
 		return
 	_clear_movement_path_preview()
+	_clear_target_hover_feedback()
 	var unit = turn_queue.get_current_unit()
 	if unit == null or not unit.basic_attack_enabled:
 		turn_state.set_state(TurnState.State.IDLE)
@@ -1712,15 +1959,17 @@ func _on_request_attack(cell: Vector2i) -> void:
 			return
 		has_action_visual = view.has_method("has_optional_visual") \
 			and view.has_optional_visual()
-	var action_id := _next_action_id(&"basic_attack")
-	var ap_before: int = unit.current_ap
-	if not unit.spend_ap(ap_cost):
-		turn_state.end_animating()
-		return
 	if not has_action_visual:
 		await _animate_attack_to_impact(unit, target)
 		if not _is_operation_current(lifecycle_generation):
 			return
+	_begin_outcome_deferral()
+	var action_id := _next_action_id(&"basic_attack")
+	var ap_before: int = unit.current_ap
+	if not unit.spend_ap(ap_cost):
+		_finish_outcome_deferral()
+		turn_state.end_animating()
+		return
 	var result = target.take_damage(
 		unit.get_attack(),
 		unit,
@@ -1730,6 +1979,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(unit, target)
 	if not _is_operation_current(lifecycle_generation):
+		_finish_outcome_deferral()
 		return
 	if has_action_visual and is_instance_valid(view) \
 			and view.has_method("wait_for_action_visual_finished"):
@@ -1737,13 +1987,16 @@ func _on_request_attack(cell: Vector2i) -> void:
 	else:
 		await _animate_attack_recovery(unit)
 	if not _is_operation_current(lifecycle_generation):
-		return
-	if _end_active_turn_if_dead(unit):
+		_finish_outcome_deferral()
 		return
 	EventBus.ap_after_action_changed.emit(unit, ap_before, unit.current_ap, action_id)
 	EventBus.action_resolved.emit(unit, action_id, &"basic_attack", {"target": target})
-	turn_state.end_animating()
 	_hud_port.update_info(unit)
+	if _finish_outcome_deferral():
+		return
+	if _end_active_turn_if_dead(unit):
+		return
+	turn_state.end_animating()
 
 # Animation d'attaque BLINDÉE (accès .get() + vérif de validité).
 func _animate_attack(unit: Unit, target: Unit) -> void:
@@ -1792,8 +2045,16 @@ func _on_request_show_spell_range(spell: Spell) -> void:
 	if _is_evolution_locked():
 		return
 	_clear_movement_path_preview()
+	_clear_target_hover_feedback()
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
+		return
+	var availability_reason: StringName = unit.get_spell_availability_reason(spell)
+	if availability_reason != &"":
+		grid_view.clear_highlights()
+		_show_intent_feedback(_spell_cast_rejection_reason(
+			unit, spell, unit.grid_pos, availability_reason
+		))
 		return
 	grid_view.clear_highlights()
 	grid_view.highlight(
@@ -1814,6 +2075,66 @@ func _spell_target_rejection_reason(
 		else "Cible incompatible avec cette capacité."
 	)
 
+
+func _spell_cast_rejection_reason(
+		unit: Unit,
+		spell: Spell,
+		cell: Vector2i,
+		reason: StringName
+	) -> String:
+	match reason:
+		&"pa":
+			return "PA insuffisants pour utiliser cette capacité."
+		&"cooldown":
+			var cooldown := unit.get_spell_cooldown_remaining(spell)
+			return "Cette capacité sera disponible dans %d activation(s)." % cooldown
+		&"max_uses":
+			return "Toutes les utilisations de cette capacité ont été dépensées."
+		&"once_per_activation":
+			return "Cette capacité a déjà été utilisée pendant cette activation."
+		&"caster_dead", &"availability":
+			return "Cette capacité est actuellement indisponible."
+		&"target":
+			return _spell_target_rejection_reason(unit, spell, cell)
+		&"pending_ability":
+			return "Une autre capacité différée est déjà préparée."
+		&"hp_condition":
+			return "La condition de points de vie de cette capacité n'est pas remplie."
+		&"team_limit", &"required_unit_present":
+			return "La limite de créatures de cette capacité est déjà atteinte."
+		&"movement_required":
+			return "Cette ruée exige une cible distante."
+		&"movement_destination":
+			return "Aucune case libre au contact de la cible."
+		&"movement_path":
+			return "Le chemin de cette ruée est bloqué."
+		&"movement_line":
+			return "Cette ruée doit suivre une ligne droite."
+		_:
+			return "Cette capacité ne peut pas être utilisée maintenant."
+
+
+func _abort_spell_resolution(unit: Unit, show_player_turn := true) -> void:
+	_spell_resolution_pending = false
+	_active_spell_movement_caster = null
+	_cancel_spell_movement_feedback(true)
+	var view = _unit_views.get(unit)
+	if is_instance_valid(view) and view.has_method("cancel_pending_visual_actions"):
+		view.cancel_pending_visual_actions()
+	if not show_player_turn or _closing or _battle_over \
+			or not is_instance_valid(unit) or not unit.is_alive \
+			or unit.team != 0 or turn_queue == null \
+			or turn_queue.get_current_unit() != unit:
+		return
+	if turn_state != null:
+		turn_state.begin_player_turn()
+	elif presentation_state != null:
+		presentation_state.begin_player_turn()
+	if _hud_port != null:
+		_hud_port.update_info(unit)
+		_hud_port.set_active_mode("")
+
+
 func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	if _spell_resolution_pending \
 			or _closing \
@@ -1824,33 +2145,36 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 	var unit = turn_queue.get_current_unit()
 	if unit == null or spell == null:
 		return
-	if not spell_caster.is_valid_target(unit, spell, cell):
-		_show_intent_feedback(_spell_target_rejection_reason(unit, spell, cell))
+	var failure_reason := spell_caster.get_cast_failure_reason(unit, spell, cell)
+	if failure_reason != &"":
+		_show_intent_feedback(
+			_spell_cast_rejection_reason(unit, spell, cell, failure_reason)
+		)
 		return
 	_spell_resolution_pending = true
+	_active_spell_movement_caster = (
+		unit if spell_caster.spell_moves_caster(unit, spell) else null
+	)
 	_trigger_sequence += 1
 	_active_trigger_sequence = _trigger_sequence
 	_begin_action_resolution(&"spell")
-	_hud_port.set_controls_enabled(false)
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view):
 		if view.has_method("prepare_spell_visual"):
 			var visual_ready: bool = await view.prepare_spell_visual(cell, spell)
 			if not visual_ready or not _is_operation_current(lifecycle_generation):
-				_spell_resolution_pending = false
-				if turn_state != null:
-					turn_state.begin_player_turn()
-				if _hud_port != null:
-					_hud_port.set_controls_enabled(true)
+				_abort_spell_resolution(unit)
 				return
 		elif view.has_method("face_grid_direction"):
 			view.face_grid_direction(cell - unit.grid_pos)
 	var context := spell_caster.begin_cast(unit, spell, cell)
 	if context.failed:
-		_spell_resolution_pending = false
-		turn_state.begin_player_turn()
-		_hud_port.set_controls_enabled(true)
+		var context_reason := StringName(context.report.get("reason", "availability"))
+		_show_intent_feedback(
+			_spell_cast_rejection_reason(unit, spell, cell, context_reason)
+		)
+		_abort_spell_resolution(unit)
 		return
 	if spell.impact_delay_seconds > 0.0:
 		VFXManager.play_spell_vfx(unit, spell, cell)
@@ -1862,15 +2186,18 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 
 func _on_delayed_spell_impact(context: CastContext) -> void:
 	if _closing or _battle_over or context == null or spell_caster == null:
-		_spell_resolution_pending = false
+		_abort_spell_resolution(context.caster if context != null else null, false)
 		return
 	var report := spell_caster.resolve_cast(context)
-	_finish_spell_resolution(context.caster, report)
+	await _finish_spell_resolution(context.caster, report)
 
 
 func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
-	if _closing or _battle_over or report.get("failed", false):
-		_spell_resolution_pending = false
+	if _closing or _battle_over:
+		_abort_spell_resolution(unit, false)
+		return
+	if report.get("failed", false):
+		_abort_spell_resolution(unit)
 		return
 	var lifecycle_generation := _lifecycle_generation
 	var view = _unit_views.get(unit)
@@ -1880,13 +2207,17 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 			and view.has_method("wait_for_action_visual_finished"):
 		await view.wait_for_action_visual_finished()
 		if not _is_operation_current(lifecycle_generation):
-			_spell_resolution_pending = false
+			_abort_spell_resolution(unit, false)
 			return
+	await _wait_for_spell_movement_feedback(unit, lifecycle_generation)
+	if not _is_operation_current(lifecycle_generation):
+		_abort_spell_resolution(unit, false)
+		return
 	var tree := get_tree()
 	if tree != null:
 		await tree.process_frame
 		if not _is_operation_current(lifecycle_generation):
-			_spell_resolution_pending = false
+			_abort_spell_resolution(unit, false)
 			return
 	if is_instance_valid(grid_view):
 		grid_view.queue_redraw()
@@ -1901,6 +2232,8 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		)
 		EventBus.action_resolved.emit(unit, action_id, &"spell", report.duplicate(false))
 	_spell_resolution_pending = false
+	_active_spell_movement_caster = null
+	_cancel_spell_movement_feedback(true)
 	if _evolution_queue.has_pending():
 		await _process_evolution_queue_at_safe_point()
 		return
@@ -1911,8 +2244,6 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		return
 	if turn_state != null:
 		turn_state.begin_player_turn()
-	if _hud_port != null:
-		_hud_port.set_controls_enabled(true)
 
 
 func _on_discipline_xp_gained(
@@ -1975,6 +2306,7 @@ func _process_evolution_queue_at_safe_point() -> void:
 		return
 	_evolution_processing = true
 	_lock_combat_for_evolution(false)
+	var retry_reason := ""
 	while _evolution_queue.has_pending() and not _closing and not _battle_over:
 		var request := _evolution_queue.peek()
 		if not _is_request_still_pending(request):
@@ -1982,13 +2314,15 @@ func _process_evolution_queue_at_safe_point() -> void:
 			continue
 		var run_ui: PersistentRunUI = GameManager.get_persistent_run_ui()
 		if run_ui == null:
-			push_error("Évolution en combat impossible : PersistentRunUI indisponible.")
+			retry_reason = (
+				"Évolution en combat différée : interface persistante indisponible."
+			)
 			break
 		_lock_combat_for_evolution(false)
 		var opened: bool = await run_ui.open_evolution_request(request)
 		if not opened:
-			push_error(
-				"Évolution en combat impossible : ouverture de l’arbre refusée."
+			retry_reason = (
+				"Évolution en combat différée : ouverture de l’arbre refusée."
 			)
 			break
 		_lock_combat_for_evolution(true)
@@ -1998,16 +2332,70 @@ func _process_evolution_queue_at_safe_point() -> void:
 			if resolution.size() >= 1:
 				resolved_request_id = StringName(resolution[0])
 		if _is_request_still_pending(request):
-			push_error(
-				"Évolution en combat refusée : le choix n’a pas été enregistré."
+			retry_reason = (
+				"Évolution en combat différée : choix non enregistré."
 			)
 			break
 		_evolution_queue.complete_current()
 		run_ui.refresh_from_context()
 	_evolution_processing = false
+	if not retry_reason.is_empty():
+		_lock_combat_for_evolution(false)
+		_schedule_evolution_retry(retry_reason)
+		return
 	if _evolution_queue.has_pending() or _closing or _battle_over:
 		return
+	_cancel_evolution_retry()
 	_resume_combat_after_evolutions()
+
+
+func _schedule_evolution_retry(reason: String) -> void:
+	if _evolution_retry_scheduled \
+			or _closing \
+			or _battle_over \
+			or not _evolution_queue.has_pending():
+		return
+	if _evolution_retry_attempt == 0:
+		push_warning(reason)
+		_show_intent_feedback(
+			"Évolution momentanément indisponible — nouvelle tentative…"
+		)
+	_evolution_retry_attempt += 1
+	_evolution_retry_scheduled = true
+	_evolution_retry_ticket += 1
+	var ticket := _evolution_retry_ticket
+	var exponent := mini(_evolution_retry_attempt - 1, 3)
+	var delay := minf(
+		_evolution_retry_base_seconds * pow(2.0, float(exponent)),
+		_evolution_retry_max_seconds,
+	)
+	_retry_evolution_after_delay(ticket, _lifecycle_generation, delay)
+
+
+func _retry_evolution_after_delay(
+		ticket: int,
+		lifecycle_generation: int,
+		delay: float
+	) -> void:
+	var tree := get_tree()
+	if tree == null:
+		if ticket == _evolution_retry_ticket:
+			_evolution_retry_scheduled = false
+		return
+	await tree.create_timer(maxf(delay, 0.001), true).timeout
+	if ticket != _evolution_retry_ticket \
+			or lifecycle_generation != _lifecycle_generation:
+		return
+	_evolution_retry_scheduled = false
+	if _closing or _battle_over or not _evolution_queue.has_pending():
+		return
+	_process_evolution_queue_at_safe_point()
+
+
+func _cancel_evolution_retry() -> void:
+	_evolution_retry_scheduled = false
+	_evolution_retry_attempt = 0
+	_evolution_retry_ticket += 1
 
 
 func _is_request_still_pending(request: EvolutionRequest) -> bool:
@@ -2058,12 +2446,9 @@ func _resume_combat_after_evolutions() -> void:
 	if active_unit.team == 0:
 		turn_state.begin_player_turn()
 		if _hud_port != null:
-			_hud_port.set_controls_enabled(true)
 			_hud_port.update_info(active_unit)
 	else:
 		turn_state.begin_enemy_turn()
-		if _hud_port != null:
-			_hud_port.set_controls_enabled(false)
 
 
 func _is_evolution_locked() -> bool:
@@ -2095,11 +2480,18 @@ func _begin_battle_shutdown() -> void:
 	if not _closing:
 		_closing = true
 		_lifecycle_generation += 1
+	_cancel_evolution_retry()
+	_outcome_deferral_depth = 0
+	_active_spell_movement_caster = null
+	_cancel_spell_movement_feedback(false)
 	if is_instance_valid(_enemy_turn):
 		_enemy_turn.cancel_pending_actions()
 	if turn_queue != null \
 			and turn_queue.turn_started.is_connected(_on_turn_started):
 		turn_queue.turn_started.disconnect(_on_turn_started)
+	if turn_queue != null \
+			and turn_queue.round_started.is_connected(_on_round_started):
+		turn_queue.round_started.disconnect(_on_round_started)
 	if is_instance_valid(turn_order_timeline):
 		turn_order_timeline.clear_queue()
 	for view in _unit_views.values():
@@ -2145,17 +2537,48 @@ func _check_battle_end() -> void:
 
 
 func _request_battle_outcome(victory: bool) -> void:
-	if _spell_resolution_pending \
+	if _outcome_deferral_depth > 0 \
+			or _spell_resolution_pending \
 			or _evolution_processing \
 			or _evolution_queue.has_pending():
 		_battle_outcome_waiting = true
 		_waiting_outcome_victory = victory
+		if not _spell_resolution_pending \
+				and not _evolution_processing \
+				and _evolution_queue.has_pending():
+			_process_evolution_queue_at_safe_point.call_deferred()
 		return
 	_end_battle(victory)
 
 
-func _commit_waiting_battle_outcome() -> void:
+## Certaines actions émettent des événements contractuels après leur impact
+## (PA dépensés, reliques, rapport). Une mort synchrone ne doit pas fermer le
+## combat avant cette fin atomique.
+func _begin_outcome_deferral() -> void:
+	if not _closing and not _battle_over:
+		_outcome_deferral_depth += 1
+
+
+## Retourne true lorsqu'une issue en attente vient d'être engagée.
+func _finish_outcome_deferral() -> bool:
+	if _outcome_deferral_depth > 0:
+		_outcome_deferral_depth -= 1
+	if _outcome_deferral_depth > 0 or _closing or _battle_over:
+		return _battle_over
 	if not _battle_outcome_waiting:
+		return false
+	if _evolution_processing or _evolution_queue.has_pending():
+		if not _evolution_processing and _evolution_queue.has_pending():
+			_process_evolution_queue_at_safe_point.call_deferred()
+		return false
+	if _spell_resolution_pending:
+		return false
+	_commit_waiting_battle_outcome()
+	return _battle_over
+
+
+func _commit_waiting_battle_outcome() -> void:
+	if not _battle_outcome_waiting or _outcome_deferral_depth > 0:
 		return
 	var victory := _waiting_outcome_victory
 	_battle_outcome_waiting = false
@@ -2169,7 +2592,9 @@ func _commit_waiting_battle_outcome() -> void:
 func _end_battle(victory: bool) -> void:
 	if _battle_over:
 		return
-	if _evolution_processing or _evolution_queue.has_pending():
+	if _outcome_deferral_depth > 0 \
+			or _evolution_processing \
+			or _evolution_queue.has_pending():
 		_battle_outcome_waiting = true
 		_waiting_outcome_victory = victory
 		return

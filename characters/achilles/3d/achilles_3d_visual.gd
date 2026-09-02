@@ -147,9 +147,9 @@ func play_action(
 		_action_release_seconds = effective_duration * float(
 			runtime.get("release_normalized", 0.5)
 		)
-		_action_finish_seconds = (
-			effective_duration + ACTION_TIMEOUT_MARGIN_SECONDS
-		)
+		# Le watchdog du backend porte deja sa propre marge. Ajouter cette marge a
+		# la duree artistique faisait courir Achille immobile apres son arrivee.
+		_action_finish_seconds = effective_duration
 		_play_clip(
 			action_clip,
 			_active_semantic,

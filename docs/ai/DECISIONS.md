@@ -329,3 +329,8 @@ générique exécute la continuation demandée sur la configuration de run déj�
 La salle de départ de Catabase est imposée par les données à l'index 0 et sa
 première rencontre devient **Catabase I — L'Ombre de Paris**, avec une seule
 Ombre de Paris face à Achille.
+
+Cette composition de départ est supplantée par l'audit combat du 2026-09-02 :
+la salle I introduit désormais le **Rejeton chétif des Enfers**, créature
+infernale faible et dédiée à l'apprentissage du trait télégraphié. L'Ombre de
+Paris et son identité narrative restent intactes dans la salle III.

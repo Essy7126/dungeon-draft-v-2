@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Verrouillé</title>
+  <desc id="desc">Un cadenas fermé indique que la sélection ne peut plus changer.</desc>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="12" y="28" width="40" height="28" rx="5"/>
+    <path d="M20 28v-7a12 12 0 0 1 24 0v7"/>
+    <circle cx="32" cy="41" r="3" fill="#FFFFFF" stroke="none"/>
+    <path d="M32 44v5"/>
+  </g>
+</svg>

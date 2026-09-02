@@ -271,19 +271,27 @@ func _ensure_ability_state(spell: Spell) -> Dictionary:
 	return _ability_states[spell_id]
 
 
-func can_use_spell(spell: Spell) -> bool:
-	if spell == null or not is_alive or not can_afford_spell_resources(spell):
-		return false
+func get_spell_availability_reason(spell: Spell) -> StringName:
+	if spell == null:
+		return &"spell"
+	if not is_alive:
+		return &"caster_dead"
 	var state := _ensure_ability_state(spell)
 	if activation_index < int(state.get("ready_activation", 0)):
-		return false
+		return &"cooldown"
 	if spell.max_uses_per_combat > 0 \
 			and int(state.get("uses_this_combat", 0)) >= spell.max_uses_per_combat:
-		return false
+		return &"max_uses"
 	if spell.once_per_activation \
 			and int(state.get("used_activation", -1)) == activation_index:
-		return false
-	return true
+		return &"once_per_activation"
+	if not can_afford_spell_resources(spell):
+		return &"pa"
+	return &""
+
+
+func can_use_spell(spell: Spell) -> bool:
+	return get_spell_availability_reason(spell) == &""
 
 
 func mark_spell_used(spell: Spell) -> void:

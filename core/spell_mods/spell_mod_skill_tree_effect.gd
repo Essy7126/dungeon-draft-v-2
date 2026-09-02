@@ -85,6 +85,21 @@ func allows_free_cell_target(_caster, _spell) -> bool:
 	return effect_type == EffectType.ALLOW_FREE_CELL_TARGET
 
 
+func moves_caster_during_cast(_caster, _spell) -> bool:
+	return effect_type == EffectType.MOVE_CASTER_TO_TARGET
+
+
+func get_target_cell_failure_reason(
+		caster,
+		_spell,
+		cell: Vector2i,
+		grid
+	) -> StringName:
+	if effect_type != EffectType.MOVE_CASTER_TO_TARGET:
+		return &""
+	return _movement_failure_reason(caster as Unit, cell, grid as GridData)
+
+
 func on_area_resolved(ctx) -> void:
 	if ctx != null and effect_type == EffectType.AREA_CARDINAL:
 		_expand_cardinal_area(ctx, amount)
@@ -562,46 +577,94 @@ func _apply_adjacent_heal(ctx) -> void:
 
 
 func _move_caster_to_target(ctx) -> void:
-	var destination: Vector2i = ctx.cell
 	var target := ctx.primary_target as Unit
-	if target != null and target != ctx.caster:
-		var delta: Vector2i = target.grid_pos - ctx.caster.grid_pos
-		var direction := Vector2i(signi(delta.x), signi(delta.y))
-		if delta.x != 0 and delta.y != 0:
-			return
-		destination = target.grid_pos - direction
-	if destination == ctx.caster.grid_pos:
+	if _movement_failure_reason_for_target(
+			ctx.caster, ctx.cell, ctx.grid, target
+		) != &"":
 		return
-	if not ctx.grid.is_valid(destination) \
-			or not ctx.grid.is_walkable(destination) \
-			or ctx.grid.has_unit(destination):
-		return
+	# primary_target reste l'autorité même si les dégâts viennent de tuer la
+	# cible et de vider sa case. La destination demeure la case juste avant elle,
+	# telle qu'elle a été validée au préflight.
+	var destination := _movement_destination(ctx.caster, ctx.cell, target)
 	var origin: Vector2i = ctx.caster.grid_pos
-	if movement_requires_clear_path:
-		var travel_delta := destination - origin
-		if travel_delta.x != 0 and travel_delta.y != 0:
-			return
-		var travel_direction := Vector2i(
-			signi(travel_delta.x), signi(travel_delta.y)
-		)
-		var cursor := origin + travel_direction
-		while cursor != destination:
-			if not ctx.grid.is_valid(cursor) \
-					or not ctx.grid.is_walkable(cursor) \
-					or ctx.grid.has_unit(cursor):
-				return
-			cursor += travel_direction
 	if ctx.grid.relocate_unit(ctx.caster, destination):
+		var relocation: Dictionary = ctx.terrain.consume_relocation_result(
+			ctx.caster, destination
+		) if ctx.terrain != null else {}
+		var resolved_destination := relocation.get(
+			"destination", ctx.caster.grid_pos
+		) as Vector2i
 		ctx.movement.append({
 			"unit": ctx.caster,
 			"from": origin,
-			"to": destination,
+			"to": resolved_destination,
 			"collision": false,
 		})
 		# The grid remains authoritative. This presentation event keeps the
 		# UnitView aligned with the resolved cell, just like native teleports
 		# and forced movement handled by SpellCaster.
-		EventBus.unit_pushed.emit(ctx.caster, origin, destination, false)
+		EventBus.unit_pushed.emit(
+			ctx.caster, origin, resolved_destination, false
+		)
+
+
+func _movement_failure_reason(
+		caster: Unit,
+		cell: Vector2i,
+		grid: GridData
+	) -> StringName:
+	var target: Unit = null
+	if grid != null:
+		target = grid.get_unit(cell) as Unit
+	return _movement_failure_reason_for_target(
+		caster, cell, grid, target
+	)
+
+
+func _movement_failure_reason_for_target(
+		caster: Unit,
+		cell: Vector2i,
+		grid: GridData,
+		target: Unit
+	) -> StringName:
+	if caster == null or grid == null:
+		return &"movement_context"
+	var destination := _movement_destination(caster, cell, target)
+	if destination == Vector2i(-1, -1):
+		return &"movement_line"
+	if destination == caster.grid_pos:
+		return &"movement_required"
+	if not grid.is_valid(destination) or not grid.is_walkable(destination):
+		return &"movement_destination"
+	if not movement_requires_clear_path:
+		return &""
+	var travel_delta := destination - caster.grid_pos
+	if travel_delta.x != 0 and travel_delta.y != 0:
+		return &"movement_line"
+	var travel_direction := Vector2i(
+		signi(travel_delta.x), signi(travel_delta.y)
+	)
+	var cursor := caster.grid_pos + travel_direction
+	while cursor != destination:
+		if not grid.is_valid(cursor) or not grid.is_walkable(cursor):
+			return &"movement_path"
+		cursor += travel_direction
+	return &""
+
+
+func _movement_destination(
+		caster: Unit,
+		cell: Vector2i,
+		target: Unit
+	) -> Vector2i:
+	var destination := cell
+	if target != null and target != caster:
+		var delta: Vector2i = cell - caster.grid_pos
+		if delta.x != 0 and delta.y != 0:
+			return Vector2i(-1, -1)
+		var direction := Vector2i(signi(delta.x), signi(delta.y))
+		destination = cell - direction
+	return destination
 
 
 func _apply_adjacent_shield(ctx) -> void:

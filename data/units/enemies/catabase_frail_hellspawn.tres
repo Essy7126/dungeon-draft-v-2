@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
+[ext_resource type="Script" path="res://data/spell.gd" id="2_spell_type"]
+[ext_resource type="Resource" path="res://data/spells/enemies/catabase/hellspawn_shadow_bolt.tres" id="3_bolt"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonRangedIsoUnitView.tscn" id="4_visual"]
+[ext_resource type="PackedScene" path="res://characters/enemies/skeleton/SkeletonVisual3D.tscn" id="5_preview"]
+
+[resource]
+script = ExtResource("1_unit")
+unit_id = &"catabase_frail_hellspawn"
+unit_name = "Rejeton chétif des Enfers"
+description = "Faible créature infernale qui prépare un trait d’ombre avant de chercher à reprendre ses distances."
+team = 1
+max_hp = 52
+initiative = 9
+max_ap = 4
+max_mp = 3
+attack_power = 9
+visual_scene = ExtResource("4_visual")
+preview_visual_scene = ExtResource("5_preview")
+basic_attack_enabled = false
+spells = Array[ExtResource("2_spell_type")]([ExtResource("3_bolt")])
+ai_behavior = 1
+combat_style = 1
+preferred_range = 6
+minimum_range = 3
+maximum_range = 7
+keep_distance = true
+faction_id = &"catabase_underworld"
+tactical_role_id = &"catabase_frail_hellspawn"

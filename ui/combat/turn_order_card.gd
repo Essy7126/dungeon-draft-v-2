@@ -3,13 +3,21 @@ extends Button
 
 signal unit_requested(unit: Unit)
 
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
+
 @onready var preview: CharacterPreview3D = %CharacterPreview
 @onready var fallback_portrait: TextureRect = %FallbackPortrait
 @onready var active_marker: Label = %ActiveMarker
 @onready var team_accent: ColorRect = %TeamAccent
+@onready var portrait_shade: ColorRect = $PortraitClip/PortraitShade
 
 var unit: Unit = null
 var _rank := 0
+var _visual_skin: HudVisualSkinData = null
+var _active_styles: Dictionary = {}
+var _inactive_styles: Dictionary = {}
 
 
 func _ready() -> void:
@@ -31,7 +39,47 @@ func configure(source: Unit) -> void:
 func set_visual_rank(rank: int) -> void:
 	_rank = maxi(0, rank)
 	active_marker.visible = _rank == 0
-	modulate = Color.WHITE if _rank == 0 else Color(0.82, 0.84, 0.86, 0.94)
+	modulate = (
+		Color.WHITE
+		if _rank == 0
+		else Color(
+			1.0,
+			1.0,
+			1.0,
+			_visual_skin.cooldown_content_opacity
+			if _visual_skin != null
+			else 0.94
+		)
+	)
+	_refresh_style()
+
+
+func apply_visual_skin(skin: HudVisualSkinData) -> void:
+	_visual_skin = skin
+	_active_styles.clear()
+	_inactive_styles.clear()
+	if skin == null or not is_node_ready():
+		_refresh_style()
+		return
+	theme_type_variation = &"HudSpellSlot"
+	for state_name in [&"normal", &"hover", &"pressed", &"focus", &"disabled"]:
+		var active_state: StringName = state_name
+		if state_name == &"normal":
+			active_state = &"selected"
+		_active_styles[state_name] = VISUAL_THEME_FACTORY.make_control_style(
+			skin, active_state, skin.border_regular, skin.radius_tight
+		)
+		_inactive_styles[state_name] = VISUAL_THEME_FACTORY.make_control_style(
+			skin, state_name, skin.border_thin, skin.radius_tight
+		)
+	active_marker.add_theme_font_override("font", skin.font_emphasis)
+	active_marker.add_theme_color_override("font_color", skin.text_primary)
+	portrait_shade.color = Color(
+		skin.surface_scrim.r,
+		skin.surface_scrim.g,
+		skin.surface_scrim.b,
+		0.18
+	)
 	_refresh_style()
 
 
@@ -152,6 +200,17 @@ func _calculate_visual_bounds(root: Node3D) -> AABB:
 
 
 func _refresh_style() -> void:
+	if _visual_skin != null and not _active_styles.is_empty():
+		var styles := _active_styles if _rank == 0 else _inactive_styles
+		for style_name in styles:
+			add_theme_stylebox_override(style_name, styles[style_name])
+		if is_node_ready():
+			team_accent.color = (
+				_visual_skin.text_secondary
+				if unit != null and unit.team == 0
+				else _visual_skin.border_unavailable_color
+			)
+		return
 	var team_color := (
 		Color(0.3, 0.68, 0.92, 1.0)
 		if unit != null and unit.team == 0

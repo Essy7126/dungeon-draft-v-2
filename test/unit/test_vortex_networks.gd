@@ -1,5 +1,21 @@
 extends GutTest
 
+const Factory := preload("res://test/support/factory.gd")
+
+
+class MovementJournalSpy:
+	extends SpellModifier
+
+	var destinations: Array[Vector2i] = []
+
+	func on_movement_resolved(ctx) -> void:
+		for movement_value in ctx.movement:
+			var movement := movement_value as Dictionary
+			var destination := movement.get(
+				"to", Vector2i(-1, -1)
+			) as Vector2i
+			destinations.append(destination)
+
 
 func test_00_composite_placement_finishes_as_one_before_after_transaction() -> void:
 	var arena := _arena()
@@ -240,6 +256,149 @@ func test_22_editor_behavior_summary_covers_all_cardinalities() -> void:
 	for expected in ["Aucune", "impulsion", "deux cases", "plusieurs sorties"]:
 		assert_string_contains(ArenaVortexNetworkService.behavior_summary(network), expected)
 		network.cells.append(Vector2i(network.cells.size(), 0))
+
+
+func test_23_rush_uses_vortex_exit_as_resolved_destination() -> void:
+	var entry := Vector2i(1, 1)
+	var exit := Vector2i(4, 4)
+	var fixture := _runtime([entry, exit], Vector2i(0, 1))
+	var runtime: ArenaRuntimeState = fixture.runtime
+	var caster: Unit = fixture.unit
+	var target := Unit.new("Cible de ruée", 1, 100)
+	assert_true(runtime.grid.place_unit(target, Vector2i(2, 1)))
+	var spell := Factory.make_spell({
+		"spell_id": &"vortex_rush",
+		"ap_cost": 1,
+		"minimum_range": 2,
+		"spell_range": 3,
+	})
+	var rush := SpellModSkillTreeEffect.new()
+	rush.effect_type = SpellModSkillTreeEffect.EffectType.MOVE_CASTER_TO_TARGET
+	rush.movement_requires_clear_path = true
+	var journal := MovementJournalSpy.new()
+	spell.modifiers = [rush, journal]
+	var emitted_destinations := _capture_pushed_destinations(caster)
+	var spell_caster := SpellCaster.new(
+		runtime.grid, Pathfinder.new(runtime.grid), runtime.terrain_effects
+	)
+
+	var report := spell_caster.cast(caster, spell, target.grid_pos)
+
+	_stop_capturing_pushed_destinations(emitted_destinations)
+	assert_false(report.get("failed", false), str(report))
+	assert_eq(caster.grid_pos, exit)
+	assert_eq(journal.destinations, [exit])
+	assert_eq(emitted_destinations.values, [exit])
+	assert_eq(report.get("movement_count"), 1)
+
+
+func test_24_push_uses_vortex_exit_for_journal_and_event() -> void:
+	var entry := Vector2i(2, 1)
+	var exit := Vector2i(4, 4)
+	var fixture := _runtime([entry, exit], Vector2i(0, 1))
+	var runtime: ArenaRuntimeState = fixture.runtime
+	var caster: Unit = fixture.unit
+	var target := Unit.new("Cible poussée", 1, 100)
+	assert_true(runtime.grid.place_unit(target, Vector2i(1, 1)))
+	var spell := Factory.make_spell({
+		"spell_id": &"vortex_push",
+		"ap_cost": 1,
+		"spell_range": 1,
+		"push_distance": 1,
+	})
+	var journal := MovementJournalSpy.new()
+	spell.modifiers = [journal]
+	var emitted_destinations := _capture_pushed_destinations(target)
+	var spell_caster := SpellCaster.new(
+		runtime.grid, Pathfinder.new(runtime.grid), runtime.terrain_effects
+	)
+
+	var report := spell_caster.cast(caster, spell, target.grid_pos)
+
+	_stop_capturing_pushed_destinations(emitted_destinations)
+	assert_false(report.get("failed", false), str(report))
+	assert_true(report.get("pushed", false))
+	assert_eq(target.grid_pos, exit)
+	assert_eq(journal.destinations, [exit])
+	assert_eq(emitted_destinations.values, [exit])
+
+
+func test_25_pull_uses_vortex_exit_for_journal_and_event() -> void:
+	var entry := Vector2i(1, 1)
+	var exit := Vector2i(4, 4)
+	var fixture := _runtime([entry, exit], Vector2i(0, 1))
+	var runtime: ArenaRuntimeState = fixture.runtime
+	var caster: Unit = fixture.unit
+	var target := Unit.new("Cible attirée", 1, 100)
+	assert_true(runtime.grid.place_unit(target, Vector2i(3, 1)))
+	var spell := Factory.make_spell({
+		"spell_id": &"vortex_pull",
+		"ap_cost": 1,
+		"spell_range": 3,
+		"pull_distance": 2,
+	})
+	var journal := MovementJournalSpy.new()
+	spell.modifiers = [journal]
+	var emitted_destinations := _capture_pushed_destinations(target)
+	var spell_caster := SpellCaster.new(
+		runtime.grid, Pathfinder.new(runtime.grid), runtime.terrain_effects
+	)
+
+	var report := spell_caster.cast(caster, spell, target.grid_pos)
+
+	_stop_capturing_pushed_destinations(emitted_destinations)
+	assert_false(report.get("failed", false), str(report))
+	assert_true(report.get("pushed", false))
+	assert_eq(target.grid_pos, exit)
+	assert_eq(journal.destinations, [exit])
+	assert_eq(emitted_destinations.values, [exit])
+
+
+func test_26_teleport_uses_vortex_exit_for_journal_event_and_report() -> void:
+	var entry := Vector2i(2, 1)
+	var exit := Vector2i(4, 4)
+	var fixture := _runtime([entry, exit], Vector2i(0, 1))
+	var runtime: ArenaRuntimeState = fixture.runtime
+	var caster: Unit = fixture.unit
+	var target := Unit.new("Cible de téléportation", 1, 100)
+	assert_true(runtime.grid.place_unit(target, Vector2i(1, 1)))
+	var spell := Factory.make_spell({
+		"spell_id": &"vortex_teleport",
+		"ap_cost": 1,
+		"spell_range": 1,
+		"teleport_behind_target": true,
+	})
+	var journal := MovementJournalSpy.new()
+	spell.modifiers = [journal]
+	var emitted_destinations := _capture_pushed_destinations(caster)
+	var spell_caster := SpellCaster.new(
+		runtime.grid, Pathfinder.new(runtime.grid), runtime.terrain_effects
+	)
+
+	var report := spell_caster.cast(caster, spell, target.grid_pos)
+
+	_stop_capturing_pushed_destinations(emitted_destinations)
+	assert_false(report.get("failed", false), str(report))
+	assert_false(report.get("angle_advantage", true))
+	assert_eq(caster.grid_pos, exit)
+	assert_eq(journal.destinations, [exit])
+	assert_eq(emitted_destinations.values, [exit])
+
+
+func _capture_pushed_destinations(unit: Unit) -> Dictionary:
+	var capture := {"values": []}
+	var callback := func(moved_unit, _from, to, _collision) -> void:
+		if moved_unit == unit:
+			(capture.values as Array).append(to)
+	capture["callback"] = callback
+	EventBus.unit_pushed.connect(callback)
+	return capture
+
+
+func _stop_capturing_pushed_destinations(capture: Dictionary) -> void:
+	var callback := capture.get("callback", Callable()) as Callable
+	if callback.is_valid() and EventBus.unit_pushed.is_connected(callback):
+		EventBus.unit_pushed.disconnect(callback)
 
 
 func _entry(fixture: Dictionary, cell: Vector2i, reason: StringName) -> Dictionary:

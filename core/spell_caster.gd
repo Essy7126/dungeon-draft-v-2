@@ -24,25 +24,19 @@ func set_encounter_runtime_state(state: EncounterRuntimeState) -> void:
 
 func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 	var result: Array = []
+	if caster == null or spell == null or _grid == null:
+		return result
 	if spell.is_self_only():
-		return [caster.grid_pos]
-	var effective_range := get_effective_spell_range(caster, spell)
+		return (
+			[caster.grid_pos]
+			if _modifier_target_failure(caster, spell, caster.grid_pos) == &""
+			else []
+		)
 	for x in _grid.cols:
 		for y in _grid.rows:
 			var pos = Vector2i(x, y)
-			if pos == caster.grid_pos and not spell.can_target_self:
-				continue
-			if not _grid.is_terrain_interactable(pos):
-				continue
-			if _grid.manhattan(caster.grid_pos, pos) > effective_range:
-				continue
-			if _grid.manhattan(caster.grid_pos, pos) < spell.minimum_range:
-				continue
-			if spell.line_from_caster and not _is_cardinal_line_target(caster.grid_pos, pos):
-				continue
-			if spell.needs_line_of_sight and not _pathfinder.has_line_of_sight(caster.grid_pos, pos):
-				continue
-			if _matches_target(caster, spell, pos):
+			if _is_base_valid_target(caster, spell, pos) \
+					and _modifier_target_failure(caster, spell, pos) == &"":
 				result.append(pos)
 	return result
 
@@ -54,6 +48,17 @@ func get_effective_spell_range(caster: Unit, spell: Spell) -> int:
 	for modifier in _gather_modifiers(caster, spell):
 		effective_range += int(modifier.get_range_bonus(caster, spell))
 	return maxi(0, effective_range)
+
+
+## Metadonnees de presentation derivees des memes modificateurs que le cast.
+## Cela permet d'animer une ruee sans deviner son identite depuis un nom de sort.
+func spell_moves_caster(caster: Unit, spell: Spell) -> bool:
+	if caster == null or spell == null:
+		return false
+	for modifier in _gather_modifiers(caster, spell):
+		if modifier.moves_caster_during_cast(caster, spell):
+			return true
+	return false
 
 func get_aoe_cells(
 		spell: Spell,
@@ -113,9 +118,48 @@ func _matches_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 	return false
 
 func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
-	if not get_targetable_cells(caster, spell).has(cell):
+	return _is_base_valid_target(caster, spell, cell) \
+		and _modifier_target_failure(caster, spell, cell) == &""
+
+
+func _is_base_valid_target(
+		caster: Unit,
+		spell: Spell,
+		cell: Vector2i
+	) -> bool:
+	if caster == null or spell == null or _grid == null:
+		return false
+	if spell.is_self_only():
+		return cell == caster.grid_pos
+	if cell == caster.grid_pos and not spell.can_target_self:
+		return false
+	if not _grid.is_terrain_interactable(cell):
+		return false
+	var distance := _grid.manhattan(caster.grid_pos, cell)
+	if distance > get_effective_spell_range(caster, spell) \
+			or distance < spell.minimum_range:
+		return false
+	if spell.line_from_caster \
+			and not _is_cardinal_line_target(caster.grid_pos, cell):
+		return false
+	if spell.needs_line_of_sight \
+			and not _pathfinder.has_line_of_sight(caster.grid_pos, cell):
 		return false
 	return _matches_target(caster, spell, cell)
+
+
+func _modifier_target_failure(
+		caster: Unit,
+		spell: Spell,
+		cell: Vector2i
+	) -> StringName:
+	for modifier in _gather_modifiers(caster, spell):
+		var reason: StringName = modifier.get_target_cell_failure_reason(
+			caster, spell, cell, _grid
+		)
+		if reason != &"":
+			return reason
+	return &""
 
 func _has_ally_adjacent(unit: Unit) -> bool:
 	for dir in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
@@ -207,21 +251,28 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 	if landed_pos != from_pos:
 		if not _grid.relocate_unit(target, landed_pos):
 			return result
-		if _terrain.get_effect_data(landed_pos) != null:
+		var relocation := _terrain.consume_relocation_result(target, landed_pos)
+		var resolved_pos := relocation.get("destination", landed_pos) as Vector2i
+		if _terrain.get_effect_data(landed_pos) != null \
+				or bool(relocation.get("applied", false)) \
+				or bool(relocation.get("destination_effect_applied", false)):
 			result["landed_on_terrain"] = true
-			_terrain.on_enter_cell(target, landed_pos)
 		result["pushed"] = true
 		result["collision"] = had_collision
-		result["pushed_away_from_ally"] = _pushed_away_from_ally(caster, from_pos, landed_pos)
+		result["pushed_away_from_ally"] = _pushed_away_from_ally(
+			caster, from_pos, resolved_pos
+		)
 		journal.append({
 			"unit": target,
 			"from": from_pos,
-			"to": landed_pos,
+			"to": resolved_pos,
 			"collision": had_collision,
 			"collision_units": result["collision_units"].duplicate(),
 		})
-		EventBus.unit_pushed.emit(target, from_pos, landed_pos, had_collision)
-		DebugLogger.debug(CAT_SPELL, "%s pousse de %s a %s" % [target.unit_name, str(from_pos), str(landed_pos)])
+		EventBus.unit_pushed.emit(target, from_pos, resolved_pos, had_collision)
+		DebugLogger.debug(CAT_SPELL, "%s pousse de %s a %s" % [
+			target.unit_name, str(from_pos), str(resolved_pos),
+		])
 	elif had_collision:
 		result["collision"] = true
 		journal.append({
@@ -268,14 +319,22 @@ func _pull_unit(caster: Unit, target: Unit, cells: int, journal: Array = []) -> 
 	if landed_pos != from_pos:
 		if not _grid.relocate_unit(target, landed_pos):
 			return result
-		if _terrain.get_effect_data(landed_pos) != null:
+		var relocation := _terrain.consume_relocation_result(target, landed_pos)
+		var resolved_pos := relocation.get("destination", landed_pos) as Vector2i
+		if _terrain.get_effect_data(landed_pos) != null \
+				or bool(relocation.get("applied", false)) \
+				or bool(relocation.get("destination_effect_applied", false)):
 			result["landed_on_terrain"] = true
-			_terrain.on_enter_cell(target, landed_pos)
 		# Un deplacement force : compte comme une poussee pour la generation EXPLOIT.
 		result["pushed"] = true
-		journal.append({ "unit": target, "from": from_pos, "to": landed_pos, "collision": false })
-		EventBus.unit_pushed.emit(target, from_pos, landed_pos, false)
-		DebugLogger.debug(CAT_SPELL, "%s attire %s en %s" % [caster.unit_name, target.unit_name, str(landed_pos)])
+		journal.append({
+			"unit": target, "from": from_pos, "to": resolved_pos,
+			"collision": false,
+		})
+		EventBus.unit_pushed.emit(target, from_pos, resolved_pos, false)
+		DebugLogger.debug(CAT_SPELL, "%s attire %s en %s" % [
+			caster.unit_name, target.unit_name, str(resolved_pos),
+		])
 	return result
 
 func _teleport_behind_target(caster: Unit, target: Unit, journal: Array = []) -> bool:
@@ -295,9 +354,18 @@ func _teleport_behind_target(caster: Unit, target: Unit, journal: Array = []) ->
 	var from_pos := caster.grid_pos
 	if not _grid.relocate_unit(caster, destination):
 		return false
-	journal.append({ "unit": caster, "from": from_pos, "to": destination, "collision": false })
-	EventBus.unit_pushed.emit(caster, from_pos, destination, false)
-	DebugLogger.debug(CAT_SPELL, "%s se replace en %s" % [caster.unit_name, str(destination)])
+	var relocation := _terrain.consume_relocation_result(caster, destination)
+	var resolved_destination := relocation.get(
+		"destination", destination
+	) as Vector2i
+	journal.append({
+		"unit": caster, "from": from_pos, "to": resolved_destination,
+		"collision": false,
+	})
+	EventBus.unit_pushed.emit(caster, from_pos, resolved_destination, false)
+	DebugLogger.debug(CAT_SPELL, "%s se replace en %s" % [
+		caster.unit_name, str(resolved_destination),
+	])
 	return true
 
 func _pushed_away_from_ally(caster: Unit, from_pos: Vector2i, to_pos: Vector2i) -> bool:
@@ -329,11 +397,28 @@ func can_afford(caster: Unit, spell: Spell) -> bool:
 
 
 func can_cast(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
-	return caster != null \
-		and spell != null \
-		and caster.can_use_spell(spell) \
-		and is_valid_target(caster, spell, cell) \
-		and _special_condition_failure(caster, spell) == &""
+	return get_cast_failure_reason(caster, spell, cell) == &""
+
+
+## Autorite unique pour la validation d'un cast. L'interface et begin_cast()
+## consultent exactement les memes gardes afin qu'un sort indisponible ne
+## demarre jamais une animation qui devra ensuite etre annulee.
+func get_cast_failure_reason(
+		caster: Unit,
+		spell: Spell,
+		cell: Vector2i
+	) -> StringName:
+	if caster == null or spell == null:
+		return &"arguments"
+	var availability_reason := caster.get_spell_availability_reason(spell)
+	if availability_reason != &"":
+		return availability_reason
+	if not _is_base_valid_target(caster, spell, cell):
+		return &"target"
+	var modifier_failure := _modifier_target_failure(caster, spell, cell)
+	if modifier_failure != &"":
+		return modifier_failure
+	return _special_condition_failure(caster, spell)
 
 
 func _special_condition_failure(caster: Unit, spell: Spell) -> StringName:
@@ -560,26 +645,10 @@ func begin_cast(
 	ctx.grid = _grid
 	ctx.terrain = _terrain
 	ctx.ap_before = caster.current_ap if caster != null else 0
-	if caster == null or spell == null:
+	var failure_reason := get_cast_failure_reason(caster, spell, cell)
+	if failure_reason != &"":
 		ctx.failed = true
-		ctx.report = _failed_report(caster, spell, cell, "arguments")
-		return ctx
-	if not caster.can_afford_spell_resources(spell):
-		ctx.failed = true
-		ctx.report = _failed_report(caster, spell, cell, "pa")
-		return ctx
-	if not caster.can_use_spell(spell):
-		ctx.failed = true
-		ctx.report = _failed_report(caster, spell, cell, "availability")
-		return ctx
-	if not is_valid_target(caster, spell, cell):
-		ctx.failed = true
-		ctx.report = _failed_report(caster, spell, cell, "target")
-		return ctx
-	var special_reason := _special_condition_failure(caster, spell)
-	if special_reason != &"":
-		ctx.failed = true
-		ctx.report = _failed_report(caster, spell, cell, String(special_reason))
+		ctx.report = _failed_report(caster, spell, cell, String(failure_reason))
 		return ctx
 	ctx.modifiers = _gather_modifiers(caster, spell)
 
@@ -987,7 +1056,8 @@ func _resolve_movement(ctx: CastContext) -> void:
 	if spell.teleport_behind_target:
 		var teleport_target = _grid.get_unit(ctx.cell)
 		if teleport_target != null and teleport_target.team != caster.team and _teleport_behind_target(caster, teleport_target, ctx.movement):
-			report["angle_advantage"] = true
+			report["angle_advantage"] = bool(report["angle_advantage"]) \
+				or _grid.are_adjacent(caster.grid_pos, teleport_target.grid_pos)
 	for push_target_value in ctx.additional_push_by_unit:
 		var push_target := push_target_value as Unit
 		if push_target == null or not push_target.is_alive or push_target.team == caster.team:

@@ -2,11 +2,18 @@ class_name RecraftPrimaryButtonView
 extends Button
 
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
 
 @onready var background: TextureRect = %Background
 @onready var action_icon: TextureRect = %ActionIcon
 @onready var label: Label = %Label
 @onready var focus_overlay: Panel = %FocusOverlay
+@onready var selection_overlay: Panel = %SelectionOverlay
+@onready var hover_rail: ColorRect = %HoverRail
+@onready var selected_marker: Label = %SelectedMarker
+@onready var disabled_bar: ColorRect = %DisabledBar
 @onready var refined_background: Panel = %RefinedBackground
 @onready var refined_top_edge: Panel = %RefinedTopEdge
 
@@ -17,6 +24,11 @@ var _compact_icon_size := 56.0
 var _default_background_texture: Texture2D = null
 var _refined_style := false
 var _refined_primary := false
+var _reduced_motion := false
+var _state_tween: Tween = null
+var _motion_target_scale := Vector2.ONE
+var _visual_skin: HudVisualSkinData = null
+var _control_styles: Dictionary = {}
 
 
 func _ready() -> void:
@@ -83,12 +95,55 @@ func set_active(active: bool) -> void:
 	_refresh_visuals()
 
 
+func set_reduced_motion(enabled: bool) -> void:
+	_reduced_motion = enabled
+	_refresh_visuals()
+
+
+func is_reduced_motion_enabled() -> bool:
+	return _reduced_motion
+
+
+func apply_visual_skin(skin: HudVisualSkinData) -> void:
+	_visual_skin = skin
+	_control_styles.clear()
+	if skin == null:
+		_refresh_visuals()
+		return
+	for state_id in [&"normal", &"hover", &"focus", &"pressed", &"selected", &"disabled"]:
+		_control_styles[state_id] = VISUAL_THEME_FACTORY.make_control_style(
+			skin,
+			state_id,
+			skin.border_regular if _refined_primary else skin.border_thin,
+			skin.radius_control
+		)
+	var focus_style := VISUAL_THEME_FACTORY.make_control_style(
+		skin, &"focus", skin.focus_ring_width, skin.radius_control + skin.focus_ring_offset
+	)
+	focus_style.draw_center = false
+	focus_overlay.add_theme_stylebox_override("panel", focus_style)
+	var selected_style := VISUAL_THEME_FACTORY.make_control_style(
+		skin, &"selected", skin.border_emphasis, skin.radius_control
+	)
+	selection_overlay.add_theme_stylebox_override("panel", selected_style)
+	label.add_theme_font_override("font", skin.font_emphasis)
+	label.add_theme_color_override("font_color", skin.text_primary)
+	selected_marker.add_theme_font_override("font", skin.font_emphasis)
+	selected_marker.add_theme_color_override("font_color", skin.text_primary)
+	hover_rail.color = skin.border_focus_color
+	disabled_bar.color = skin.border_unavailable_color
+	_refresh_visuals()
+
+
 func set_refined_style(enabled: bool, primary: bool = false) -> void:
 	_refined_style = enabled
 	_refined_primary = primary
 	background.visible = not enabled
 	refined_background.visible = enabled
 	refined_top_edge.visible = enabled
+	if _visual_skin != null:
+		apply_visual_skin(_visual_skin)
+		return
 	_refresh_visuals()
 
 
@@ -100,26 +155,52 @@ func refresh_visual_state(active: bool = false) -> void:
 func _refresh_visuals() -> void:
 	if not is_node_ready():
 		return
-	focus_overlay.visible = has_focus() or _active
+	var focused := has_focus()
+	focus_overlay.visible = focused
+	selection_overlay.visible = _active
+	hover_rail.visible = _hovered and not disabled and not _active
+	selected_marker.visible = _active
+	disabled_bar.visible = disabled
 	var tint := Color.WHITE
 	if disabled:
-		tint = Color(0.44, 0.45, 0.48, 0.72)
+		tint = Color(0.45, 0.45, 0.45, 0.7)
 	elif is_pressed():
-		tint = Color(0.76, 0.72, 0.68, 1.0)
+		tint = Color(0.76, 0.76, 0.76, 1.0)
 	elif _active:
-		tint = Color(1.08, 0.93, 0.65, 1.0)
+		tint = Color(1.12, 1.12, 1.12, 1.0)
 	elif _hovered:
-		tint = Color(1.08, 1.04, 0.94, 1.0)
+		tint = Color(1.07, 1.07, 1.07, 1.0)
 	background.modulate = tint
-	if _refined_style:
+	if _refined_style and _visual_skin != null:
+		var state_id := &"normal"
+		if disabled:
+			state_id = &"disabled"
+		elif is_pressed():
+			state_id = &"pressed"
+		elif _active:
+			state_id = &"selected"
+		elif focused:
+			state_id = &"focus"
+		elif _hovered:
+			state_id = &"hover"
+		refined_background.add_theme_stylebox_override(
+			"panel", _control_styles.get(state_id)
+		)
+		refined_top_edge.modulate = Color(
+			1.0,
+			1.0,
+			1.0,
+			0.88 if _refined_primary or _active else 0.58
+		)
+	elif _refined_style:
 		var style := StyleBoxFlat.new()
 		style.bg_color = (
-			Color(0.12, 0.105, 0.065, 0.98)
+			Color(0.12, 0.12, 0.12, 0.98)
 			if _refined_primary
-			else Color(0.052, 0.06, 0.055, 0.98)
+			else Color(0.055, 0.055, 0.055, 0.98)
 		)
 		if disabled:
-			style.bg_color = Color(0.035, 0.038, 0.038, 0.9)
+			style.bg_color = Color(0.035, 0.035, 0.035, 0.9)
 		elif is_pressed():
 			style.bg_color = style.bg_color.darkened(0.2)
 		elif _hovered or _active:
@@ -128,7 +209,7 @@ func _refresh_visuals() -> void:
 		style.border_width_top = 2 if _refined_primary else 1
 		style.border_width_right = 2 if _refined_primary else 1
 		style.border_width_bottom = 2 if _refined_primary else 1
-		style.border_color = Color(0.65, 0.51, 0.27, 0.92 if _refined_primary else 0.7)
+		style.border_color = Color(0.62, 0.62, 0.62, 0.92 if _refined_primary else 0.72)
 		style.shadow_color = Color(0.0, 0.0, 0.0, 0.38)
 		style.shadow_size = 3 if _refined_primary else 2
 		style.shadow_offset = Vector2(0.0, 1.0)
@@ -143,10 +224,47 @@ func _refresh_visuals() -> void:
 			1.0,
 			0.82 if _refined_primary else 0.52
 		)
-	label.modulate = Color(0.56, 0.57, 0.59, 0.82) if disabled else Color.WHITE
-	action_icon.modulate = Color(0.48, 0.49, 0.5, 0.72) if disabled else Color.WHITE
-	var target_scale := Vector2(0.98, 0.98) if is_pressed() else Vector2(1.02, 1.02) if _hovered and not disabled else Vector2.ONE
-	scale = target_scale
+	var disabled_opacity := (
+		_visual_skin.disabled_content_opacity
+		if _visual_skin != null
+		else 0.72
+	)
+	label.modulate = Color(1.0, 1.0, 1.0, disabled_opacity) if disabled else Color.WHITE
+	action_icon.modulate = Color(1.0, 1.0, 1.0, disabled_opacity) if disabled else Color.WHITE
+	var target_scale := (
+		Vector2(0.98, 0.98)
+		if is_pressed()
+		else Vector2.ONE * (
+			_visual_skin.hover_scale if _visual_skin != null else 1.015
+		)
+		if _hovered and not disabled
+		else Vector2.ONE
+	)
+	_animate_scale(target_scale)
+
+
+func _animate_scale(target_scale: Vector2) -> void:
+	if (
+		_motion_target_scale.is_equal_approx(target_scale)
+		and _state_tween != null
+		and _state_tween.is_valid()
+	):
+		return
+	_motion_target_scale = target_scale
+	if _state_tween != null and _state_tween.is_valid():
+		_state_tween.kill()
+	_state_tween = null
+	if _reduced_motion:
+		scale = Vector2.ONE
+		return
+	_state_tween = create_tween()
+	_state_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	var duration := (
+		_visual_skin.motion_duration(&"hover", _reduced_motion)
+		if _visual_skin != null
+		else 0.09
+	)
+	_state_tween.tween_property(self, "scale", target_scale, duration)
 
 
 func _on_mouse_entered() -> void:
@@ -190,3 +308,13 @@ func _apply_content_layout() -> void:
 	label.offset_top = 2.0
 	label.offset_right = -6.0
 	label.offset_bottom = -2.0
+
+
+func get_visual_cue_snapshot() -> Dictionary:
+	return {
+		"hover": hover_rail.visible,
+		"focus": focus_overlay.visible,
+		"selected": selection_overlay.visible and selected_marker.visible,
+		"disabled_bar": disabled_bar.visible,
+		"reduced_motion": _reduced_motion,
+	}

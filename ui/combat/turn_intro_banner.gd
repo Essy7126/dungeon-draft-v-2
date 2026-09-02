@@ -5,6 +5,14 @@ const ENTER_DURATION := 0.22
 const HOLD_DURATION := 0.90
 const EXIT_DURATION := 0.22
 const TEXTURE_RATIO := 468.0 / 1245.0
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
+const DEFAULT_VISUAL_SKIN: HudVisualSkinData = preload(
+	"res://data/ui/hud_visual_skin_neutral_v1.tres"
+)
+
+@export var visual_skin: HudVisualSkinData = DEFAULT_VISUAL_SKIN
 
 @onready var presentation: Control = %Presentation
 @onready var banner_texture: TextureRect = %BannerTexture
@@ -12,6 +20,7 @@ const TEXTURE_RATIO := 468.0 / 1245.0
 @onready var turn_label: Label = %TurnLabel
 @onready var character_name_label: Label = %CharacterName
 @onready var discipline_label: Label = %DisciplineName
+@onready var text_panel: PanelContainer = $Presentation/Content/TextPanel
 
 var presentation_count := 0
 var _active_tween: Tween
@@ -24,6 +33,7 @@ var _reduced_motion := false
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visible = false
+	_apply_visual_skin()
 	if not resized.is_connected(_apply_responsive_layout):
 		resized.connect(_apply_responsive_layout)
 	_apply_responsive_layout()
@@ -92,7 +102,9 @@ func _present_unit(
 		discipline_parts.append(theme.discipline_name)
 	discipline_label.text = " · ".join(discipline_parts)
 	var text_color := (
-		Color(1.0, 0.56, 0.86)
+		visual_skin.text_primary
+		if visual_skin != null and visual_skin.neutral_grayscale
+		else Color(1.0, 0.56, 0.86)
 		if enemy
 		else theme.text_color
 	)
@@ -116,21 +128,30 @@ func _present_unit(
 		return true
 	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_active_tween.tween_property(
-		presentation, "modulate:a", 1.0, ENTER_DURATION
+		presentation,
+		"modulate:a",
+		1.0,
+		_motion_duration(&"panel", ENTER_DURATION)
 	)
 	_active_tween.parallel().tween_property(
-		presentation, "position", _rest_position, ENTER_DURATION
+		presentation,
+		"position",
+		_rest_position,
+		_motion_duration(&"panel", ENTER_DURATION)
 	)
 	_active_tween.tween_interval(HOLD_DURATION)
 	_active_tween.set_ease(Tween.EASE_IN)
 	_active_tween.tween_property(
-		presentation, "modulate:a", 0.0, EXIT_DURATION
+		presentation,
+		"modulate:a",
+		0.0,
+		_motion_duration(&"panel", EXIT_DURATION)
 	)
 	_active_tween.parallel().tween_property(
 		presentation,
 		"position",
 		_rest_position + Vector2(0.0, -12.0),
-		EXIT_DURATION
+		_motion_duration(&"panel", EXIT_DURATION)
 	)
 	_active_tween.tween_callback(_finish_presentation)
 	return true
@@ -160,6 +181,33 @@ func set_reduced_motion(enabled: bool) -> void:
 
 func is_reduced_motion_enabled() -> bool:
 	return _reduced_motion
+
+
+func _apply_visual_skin() -> void:
+	if visual_skin == null:
+		return
+	theme = VISUAL_THEME_FACTORY.build(visual_skin)
+	text_panel.remove_theme_stylebox_override("panel")
+	text_panel.theme_type_variation = &"HudSurface"
+	portrait_view.apply_visual_skin(visual_skin)
+	turn_label.theme_type_variation = &"HudEyebrow"
+	character_name_label.theme_type_variation = &"HudTitle"
+	discipline_label.theme_type_variation = &"HudMuted"
+	for label in [turn_label, character_name_label, discipline_label]:
+		label.remove_theme_font_override("font")
+		label.remove_theme_color_override("font_color")
+		label.remove_theme_color_override("font_outline_color")
+		label.remove_theme_constant_override("outline_size")
+
+
+func _motion_duration(token_id: StringName, fallback: float) -> float:
+	return (
+		visual_skin.motion_duration(token_id, _reduced_motion)
+		if visual_skin != null
+		else 0.0
+		if _reduced_motion
+		else fallback
+	)
 
 
 func get_presentation_size() -> Vector2:

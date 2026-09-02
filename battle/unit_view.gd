@@ -217,8 +217,22 @@ func _instantiate_optional_visual() -> void:
 func has_optional_visual() -> bool:
 	return is_instance_valid(_optional_visual)
 
+
+func is_action_visual_pending() -> bool:
+	return _optional_visual_action_pending
+
+
 func get_optional_visual() -> Node2D:
 	return _optional_visual if is_instance_valid(_optional_visual) else null
+
+
+## Recale l'echantillon de locomotion apres un deplacement pilote par Battle
+## (ruee, teletransportation). Sans ce recalage, la frame suivante peut prendre
+## le saut deja termine pour un nouveau depart de marche.
+func synchronize_external_movement() -> void:
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("synchronize_external_movement"):
+		_optional_visual.synchronize_external_movement()
 
 
 ## Ne touche qu'au rendu enfant. La position, l'echelle historique et l'ordre
@@ -299,7 +313,11 @@ func get_cast_effect_origin_global() -> Vector2:
 
 ## Synchronisation visuelle seulement : le calcul du sort reste dans
 ## SpellCaster. Le bool false ignore un second clic pendant le meme wind-up.
-func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
+func prepare_spell_visual(
+		target_cell: Vector2i,
+		spell: Spell = null,
+		release_timeout_msec: int = 5000
+	) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
 		return false
 	face_grid_direction(target_cell - unit.grid_pos)
@@ -315,28 +333,36 @@ func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 	_optional_visual_action_finished = false
 	_optional_visual_cast_generation += 1
 	var cast_generation := _optional_visual_cast_generation
+	var lifecycle_generation := _lifecycle_generation
+	var release_state := {"released": false}
+	var mark_released := func() -> void:
+		if cast_generation == _optional_visual_cast_generation \
+				and not _closing:
+			release_state["released"] = true
+	var has_release_signal := _optional_visual.has_signal("cast_release_reached")
+	# Un fallback ou un clip tres court peut atteindre son marqueur pendant
+	# play_* lui-meme. Brancher apres le demarrage perdrait alors le signal et
+	# garderait tout le combat verrouille jusqu'au watchdog.
+	if has_release_signal:
+		_optional_visual.connect(
+			"cast_release_reached", mark_released, CONNECT_ONE_SHOT
+		)
+		_active_release_callables.append(mark_released)
 	var started = (
 		_optional_visual.play_spell_action(spell)
 		if has_spell_action
 		else _optional_visual.play_cast()
 	)
 	if started is bool and not started:
-		_optional_visual_cast_pending = false
-		_optional_visual_action_pending = false
+		if has_release_signal:
+			_disconnect_release_callable(mark_released)
+		cancel_pending_visual_actions()
 		return false
-	if not _optional_visual.has_signal("cast_release_reached"):
+	if not has_release_signal:
 		_optional_visual_cast_pending = false
 		_optional_visual_action_pending = false
 		return true
-	var release_state := {"released": false}
-	var mark_released := func() -> void:
-		if cast_generation == _optional_visual_cast_generation \
-				and not _closing:
-			release_state["released"] = true
-	_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
-	_active_release_callables.append(mark_released)
-	var deadline := Time.get_ticks_msec() + 5000
-	var lifecycle_generation := _lifecycle_generation
+	var deadline := Time.get_ticks_msec() + maxi(release_timeout_msec, 1)
 	while cast_generation == _optional_visual_cast_generation \
 			and not release_state["released"] \
 			and is_instance_valid(unit) and unit.is_alive \
@@ -350,15 +376,12 @@ func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 	if context_active:
 		_optional_visual_cast_pending = false
 	if context_active and not release_state["released"] \
-			and is_instance_valid(_optional_visual) \
-			and _optional_visual.has_method("cancel_spell_action"):
-		_optional_visual.cancel_spell_action()
-	if context_active and not release_state["released"]:
-		_optional_visual_action_pending = false
-	if context_active and not release_state["released"] \
 			and is_instance_valid(unit) and unit.is_alive \
 			and Time.get_ticks_msec() >= deadline:
 		push_warning("UnitView: cast_release_reached absent apres 5 s pour %s; le cast visuel est annule." % unit.unit_name)
+	if context_active and not release_state["released"]:
+		cancel_pending_visual_actions()
+		return false
 	return context_active \
 		and is_instance_valid(unit) and unit.is_alive \
 		and release_state["released"]
@@ -366,7 +389,10 @@ func prepare_spell_visual(target_cell: Vector2i, spell: Spell = null) -> bool:
 
 ## Joue l'attaque jusqu'a son impact artistique. Les degats restent entierement
 ## dans le systeme de combat et ne sont appliques qu'apres le retour true.
-func prepare_basic_attack_visual(target_cell: Vector2i) -> bool:
+func prepare_basic_attack_visual(
+		target_cell: Vector2i,
+		release_timeout_msec: int = 5000
+	) -> bool:
 	if _closing or not is_inside_tree() or not is_instance_valid(unit):
 		return false
 	face_grid_direction(target_cell - unit.grid_pos)
@@ -380,24 +406,29 @@ func prepare_basic_attack_visual(target_cell: Vector2i) -> bool:
 	_optional_visual_action_finished = false
 	_optional_visual_cast_generation += 1
 	var cast_generation := _optional_visual_cast_generation
-	var started = _optional_visual.play_basic_attack()
-	if started is bool and not started:
-		_optional_visual_cast_pending = false
-		_optional_visual_action_pending = false
-		return false
-	if not _optional_visual.has_signal("cast_release_reached"):
-		_optional_visual_cast_pending = false
-		_optional_visual_action_pending = false
-		return true
+	var lifecycle_generation := _lifecycle_generation
 	var release_state := {"released": false}
 	var mark_released := func() -> void:
 		if cast_generation == _optional_visual_cast_generation \
 				and not _closing:
 			release_state["released"] = true
-	_optional_visual.connect("cast_release_reached", mark_released, CONNECT_ONE_SHOT)
-	_active_release_callables.append(mark_released)
-	var deadline := Time.get_ticks_msec() + 5000
-	var lifecycle_generation := _lifecycle_generation
+	var has_release_signal := _optional_visual.has_signal("cast_release_reached")
+	if has_release_signal:
+		_optional_visual.connect(
+			"cast_release_reached", mark_released, CONNECT_ONE_SHOT
+		)
+		_active_release_callables.append(mark_released)
+	var started = _optional_visual.play_basic_attack()
+	if started is bool and not started:
+		if has_release_signal:
+			_disconnect_release_callable(mark_released)
+		cancel_pending_visual_actions()
+		return false
+	if not has_release_signal:
+		_optional_visual_cast_pending = false
+		_optional_visual_action_pending = false
+		return true
+	var deadline := Time.get_ticks_msec() + maxi(release_timeout_msec, 1)
 	while cast_generation == _optional_visual_cast_generation \
 			and not release_state["released"] \
 			and is_instance_valid(unit) and unit.is_alive \
@@ -410,12 +441,13 @@ func prepare_basic_attack_visual(target_cell: Vector2i) -> bool:
 		and cast_generation == _optional_visual_cast_generation
 	if context_active:
 		_optional_visual_cast_pending = false
-	if context_active and not release_state["released"]:
-		_optional_visual_action_pending = false
 	if context_active and not release_state["released"] \
 			and is_instance_valid(unit) and unit.is_alive \
 			and Time.get_ticks_msec() >= deadline:
-		push_warning("UnitView: impact d'attaque absent apres 5 s pour %s." % unit.unit_name)
+		push_warning("UnitView: impact d'attaque absent apres 5 s pour %s; l'action visuelle est annulee." % unit.unit_name)
+	if context_active and not release_state["released"]:
+		cancel_pending_visual_actions()
+		return false
 	var released: bool = context_active \
 		and is_instance_valid(unit) and unit.is_alive \
 		and release_state["released"]
@@ -445,6 +477,11 @@ func wait_for_action_visual_finished(timeout_msec: int = 8000) -> void:
 			and is_instance_valid(_optional_visual) \
 			and Time.get_ticks_msec() >= deadline:
 		push_warning("UnitView: recuperation visuelle incomplete pour %s." % unit.unit_name)
+		# Liberer uniquement les drapeaux du wrapper laisserait le backend en
+		# CAST/RUN. Le prochain sort serait alors refuse meme si le gameplay est
+		# revenu en IDLE : le timeout doit annuler les deux couches ensemble.
+		cancel_pending_visual_actions()
+		return
 	_optional_visual_action_pending = false
 	_optional_visual_action_finished = false
 	_suppress_next_attack_event_visual = false

@@ -6,11 +6,17 @@
 
 Ce bilan décrit uniquement le lot Catabase/Achille réalisé dans un worktree déjà modifié. Il ne transforme pas les autres changements présents dans le dépôt en livrables de ce lot.
 
+> Mise à jour du 2026-09-02 : la première salle emploie désormais le
+> **Rejeton chétif des Enfers** et son Trait d'ombre dédiés. L'Ombre de Paris
+> reste l'antagoniste à distance de la salle III. Les preuves ci-dessous
+> décrivent l'état vérifié du 2026-08-28 et ne valent pas revalidation de cette
+> mise à jour.
+
 ## Résultat jouable
 
 La Catabase est une run forcée de trois salles, prévue pour Achille seul :
 
-1. **L’Ombre de Paris** enseigne un trait retardé de 18 dégâts. La cible peut l’éviter en quittant la portée ou en brisant la ligne de vue.
+1. **Le Rejeton chétif des Enfers** enseigne un trait retardé de 18 dégâts. La cible peut l’éviter en quittant la portée ou en brisant la ligne de vue.
 2. **La Porte des Cendres** oppose deux escarmoucheurs et un garde dans une arène peinte à obstacles. Le mode peinture pure conserve la topologie logique sans recouvrir l’illustration de dalles modulaires.
 3. **Le Jugement de Paris** combine un champion de mêlée et Paris sur un damier grec ouvert de 13×13, calibré sur l’image native.
 

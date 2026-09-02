@@ -90,6 +90,32 @@ func consume_last_entry_result(unit: Unit) -> Dictionary:
 	return runtime_service.consume_last_entry_result(unit)
 
 
+## Consomme la résolution synchrone déclenchée par GridData.relocate_unit().
+## Un terrain (notamment un vortex) peut avoir déplacé l'unité une seconde fois
+## avant le retour de relocate_unit : la case réellement occupée est alors la
+## destination autoritaire pour les rapports et la présentation.
+func consume_relocation_result(
+		unit: Unit,
+		requested_destination: Vector2i
+	) -> Dictionary:
+	var result := consume_last_entry_result(unit)
+	if result.is_empty():
+		result = {
+			"entry_cell": requested_destination,
+			"destination": requested_destination,
+		}
+	var resolved_destination: Vector2i = result.get(
+		"destination", requested_destination
+	) as Vector2i
+	if _grid != null and unit != null:
+		var occupied_cell := _grid.find_unit(unit)
+		if occupied_cell != Vector2i(-1, -1):
+			resolved_destination = occupied_cell
+	result["requested_destination"] = requested_destination
+	result["destination"] = resolved_destination
+	return result
+
+
 func tick_all_effects() -> void:
 	runtime_service.tick_all_effects()
 

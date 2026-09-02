@@ -1,5 +1,10 @@
 ﻿extends CanvasLayer
 
+const VisualThemeFactory = preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
+const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
+
 var _panel: PanelContainer
 var _entries: VBoxContainer
 var _scroll: ScrollContainer
@@ -30,12 +35,14 @@ func _exit_tree() -> void:
 
 func _build_ui() -> void:
 	_panel = PanelContainer.new()
+	_panel.theme = VisualThemeFactory.build(VISUAL_SKIN)
+	_panel.theme_type_variation = &"HudLog"
 	_panel.position = Vector2(12, 520)
 	_panel.custom_minimum_size = Vector2(340, 250)
 	add_child(_panel)
 
 	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 4)
+	root.add_theme_constant_override("separation", VISUAL_SKIN.space_xs)
 	_panel.add_child(root)
 
 	var header := HBoxContainer.new()
@@ -44,12 +51,13 @@ func _build_ui() -> void:
 	root.add_child(header)
 
 	var title := Label.new()
+	title.theme_type_variation = &"HudSection"
 	title.text = "Historique"
-	title.add_theme_font_size_override("font_size", 14)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
 	_toggle_btn = Button.new()
+	_toggle_btn.theme_type_variation = &"HudUtilityButton"
 	_toggle_btn.text = "Joueur"
 	_toggle_btn.custom_minimum_size = Vector2(86, 28)
 	_toggle_btn.tooltip_text = "Basculer entre log joueur et log detaille."
@@ -57,6 +65,7 @@ func _build_ui() -> void:
 	header.add_child(_toggle_btn)
 
 	_collapse_btn = Button.new()
+	_collapse_btn.theme_type_variation = &"HudUtilityButton"
 	_collapse_btn.text = "Fermer"
 	_collapse_btn.custom_minimum_size = Vector2(72, 28)
 	_collapse_btn.tooltip_text = "Replier ou ouvrir l'historique du combat."
@@ -70,7 +79,7 @@ func _build_ui() -> void:
 
 	_entries = VBoxContainer.new()
 	_entries.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_entries.add_theme_constant_override("separation", 3)
+	_entries.add_theme_constant_override("separation", VISUAL_SKIN.space_xs)
 	_scroll.add_child(_entries)
 
 
@@ -143,11 +152,11 @@ func _add_entry_if_visible(entry: Dictionary) -> void:
 		_current_round = round_number
 		_add_round_header(round_number)
 	var label := RichTextLabel.new()
+	label.theme_type_variation = &"HudRichText"
 	label.bbcode_enabled = true
 	label.fit_content = true
 	label.scroll_active = false
 	label.custom_minimum_size = Vector2(330, 0)
-	label.add_theme_font_size_override("normal_font_size", 12)
 	label.tooltip_text = _detail_text(entry)
 	label.text = _entry_bbcode(entry)
 	_entries.add_child(label)
@@ -192,18 +201,18 @@ func _prefix_for_category(cat: int) -> String:
 func _color_for_category(cat: int) -> Color:
 	match cat:
 		DebugLogger.LogCategory.COMBAT:
-			return Color(1.0, 0.55, 0.42)
+			return VISUAL_SKIN.text_primary
 		DebugLogger.LogCategory.STATS:
-			return Color(0.95, 0.72, 1.0)
+			return VISUAL_SKIN.text_secondary
 		DebugLogger.LogCategory.SPELL:
-			return Color(0.54, 0.78, 1.0)
+			return VISUAL_SKIN.border_strong_color
 		DebugLogger.LogCategory.TERRAIN:
-			return Color(0.55, 0.95, 0.62)
+			return VISUAL_SKIN.text_secondary
 		DebugLogger.LogCategory.TURN:
-			return Color(1.0, 0.82, 0.45)
+			return VISUAL_SKIN.border_selected_color
 		DebugLogger.LogCategory.AI:
-			return Color(0.85, 0.85, 0.85)
-	return Color(0.75, 0.75, 0.75)
+			return VISUAL_SKIN.text_muted
+	return VISUAL_SKIN.text_secondary
 
 func _detail_text(entry: Dictionary) -> String:
 	var ctx: Dictionary = entry.get("context", {})
@@ -216,9 +225,8 @@ func _detail_text(entry: Dictionary) -> String:
 
 func _add_round_header(round_number: int) -> void:
 	var label := Label.new()
+	label.theme_type_variation = &"HudSection"
 	label.text = "Round %d" % round_number
-	label.add_theme_font_size_override("font_size", 13)
-	label.add_theme_color_override("font_color", Color(1.0, 0.82, 0.45))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_entries.add_child(label)
 

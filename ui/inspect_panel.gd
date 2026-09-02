@@ -2,6 +2,10 @@
 
 const KeywordText = preload("res://ui/keyword_rich_text_label.gd")
 const Glossary = preload("res://ui/combat_glossary.gd")
+const VisualThemeFactory = preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
+const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
 
 var _panel: PanelContainer
 var _title: Label
@@ -13,8 +17,11 @@ var _details_expanded: bool = false
 var _displayed_unit = null
 var _pathfinder: Pathfinder = null
 var _grid: GridData = null
+var _last_subject_key := ""
+var _last_subject_fingerprint := ""
 
 func _ready() -> void:
+	layer = 30
 	_build_ui()
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_apply_responsive_layout()
@@ -27,6 +34,8 @@ func _exit_tree() -> void:
 
 func _build_ui() -> void:
 	_panel = PanelContainer.new()
+	_panel.theme = VisualThemeFactory.build(VISUAL_SKIN)
+	_panel.theme_type_variation = &"HudInspect"
 	_panel.anchor_left = 1.0
 	_panel.anchor_right = 1.0
 	_panel.anchor_top = 0.0
@@ -38,18 +47,14 @@ func _build_ui() -> void:
 	add_child(_panel)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 12)
-	margin.add_theme_constant_override("margin_top", 10)
-	margin.add_theme_constant_override("margin_right", 12)
-	margin.add_theme_constant_override("margin_bottom", 10)
 	_panel.add_child(margin)
 
 	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 8)
+	root.add_theme_constant_override("separation", VISUAL_SKIN.space_md)
 	margin.add_child(root)
 
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 8)
+	header.add_theme_constant_override("separation", VISUAL_SKIN.space_md)
 	root.add_child(header)
 
 	var title_box := VBoxContainer.new()
@@ -57,17 +62,17 @@ func _build_ui() -> void:
 	header.add_child(title_box)
 
 	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", 18)
+	_title.theme_type_variation = &"HudTitle"
 	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_box.add_child(_title)
 
 	_subtitle = Label.new()
-	_subtitle.add_theme_font_size_override("font_size", 12)
-	_subtitle.add_theme_color_override("font_color", Color(0.72, 0.72, 0.66))
+	_subtitle.theme_type_variation = &"HudMuted"
 	_subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_box.add_child(_subtitle)
 
 	_release_button = Button.new()
+	_release_button.theme_type_variation = &"HudUtilityButton"
 	_release_button.text = "Libre"
 	_release_button.custom_minimum_size = Vector2(66, 28)
 	_release_button.tooltip_text = "Reprendre l'inspection au survol."
@@ -75,6 +80,7 @@ func _build_ui() -> void:
 	header.add_child(_release_button)
 
 	var sep := HSeparator.new()
+	sep.theme_type_variation = &"HudSeparator"
 	root.add_child(sep)
 
 	var scroll := ScrollContainer.new()
@@ -83,7 +89,7 @@ func _build_ui() -> void:
 
 	_content = VBoxContainer.new()
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_content.add_theme_constant_override("separation", 7)
+	_content.add_theme_constant_override("separation", VISUAL_SKIN.space_sm)
 	scroll.add_child(_content)
 
 
@@ -132,6 +138,7 @@ func setup(pathfinder: Pathfinder, grid: GridData = null) -> void:
 		_on_grid_occupancy_changed
 	):
 		_grid.occupancy_changed.disconnect(_on_grid_occupancy_changed)
+	_invalidate_subject_cache()
 	_pathfinder = pathfinder
 	_grid = grid
 	if _grid != null and not _grid.occupancy_changed.is_connected(
@@ -147,6 +154,7 @@ func _on_grid_occupancy_changed(
 		_to_pos: Vector2i
 	) -> void:
 	if _displayed_unit != null and is_instance_valid(_displayed_unit):
+		_invalidate_subject_cache()
 		show_unit(_displayed_unit, _locked)
 
 
@@ -155,13 +163,21 @@ func show_unit(unit, locked: bool = false) -> void:
 		return
 	if unit != _displayed_unit:
 		_details_expanded = false
+	if unit == null:
+		_displayed_unit = null
+		_locked = locked
+		_release_button.disabled = not _locked
+		_show_empty()
+		return
+	var subject_key := "unit:%d" % _object_identity(unit)
+	var subject_fingerprint := _unit_subject_fingerprint(unit)
 	_displayed_unit = unit
 	_locked = locked
 	_release_button.disabled = not _locked
-	_clear_content()
-	if unit == null:
-		_show_empty()
+	if _subject_is_unchanged(subject_key, subject_fingerprint):
+		_panel.visible = true
 		return
+	_clear_content()
 	_panel.visible = true
 	_title.text = unit.unit_name
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
@@ -172,6 +188,7 @@ func show_unit(unit, locked: bool = false) -> void:
 	if _details_expanded:
 		_add_detailed_stats(unit)
 	_add_spells(unit)
+	_remember_subject(subject_key, subject_fingerprint)
 
 func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = false) -> void:
 	if _locked and not locked:
@@ -179,7 +196,6 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 	_displayed_unit = null
 	_locked = locked
 	_release_button.disabled = not _locked
-	_clear_content()
 	if grid == null or not grid.is_valid(cell):
 		_show_empty()
 		return
@@ -187,6 +203,16 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 	if unit != null:
 		show_unit(unit, locked)
 		return
+	var subject_key := "cell:%d:%d:%d" % [
+		_object_identity(grid), cell.x, cell.y,
+	]
+	var subject_fingerprint := _cell_subject_fingerprint(
+		cell, grid, terrain_effects
+	)
+	if _subject_is_unchanged(subject_key, subject_fingerprint):
+		_panel.visible = true
+		return
+	_clear_content()
 	_panel.visible = true
 	_title.text = "Case %d, %d" % [cell.x, cell.y]
 	var base: Dictionary = terrain_effects.get_base_state(cell) \
@@ -221,6 +247,7 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 	var effect: TerrainEffectData = state.active_effect if state != null and state.is_dynamic() else null
 	if effect == null:
 		_add_paragraph("Aucune surface temporaire active. La map reste inchangée.")
+		_remember_subject(subject_key, subject_fingerprint)
 		return
 	_add_section("Surface active — temporaire")
 	_add_terrain_effect_details(effect)
@@ -239,6 +266,7 @@ func show_cell(cell: Vector2i, grid: GridData, terrain_effects, locked: bool = f
 	if state != null and state.source_unit != null:
 		_add_line("Lanceur", str(state.source_unit.unit_name))
 	_add_paragraph("Surface de combat temporaire : ArenaDefinition n'est pas modifiée.")
+	_remember_subject(subject_key, subject_fingerprint)
 
 
 func _add_terrain_effect_details(effect: TerrainEffectData) -> void:
@@ -257,6 +285,7 @@ func _add_terrain_effect_details(effect: TerrainEffectData) -> void:
 func show_spell_preview(caster, spell: Spell, cell: Vector2i, grid: GridData, spell_caster: SpellCaster) -> void:
 	if _locked:
 		return
+	_invalidate_subject_cache()
 	_displayed_unit = caster
 	_clear_content()
 	if caster == null or spell == null or grid == null or spell_caster == null:
@@ -317,6 +346,7 @@ func _add_engagement(unit) -> void:
 
 func _add_details_toggle(unit) -> void:
 	var btn := Button.new()
+	btn.theme_type_variation = &"HudUtilityButton"
 	btn.text = "Details v" if _details_expanded else "Details >"
 	btn.custom_minimum_size = Vector2(286, 28)
 	btn.pressed.connect(func():
@@ -353,6 +383,7 @@ func _preview_effect_on_unit(_caster, spell: Spell, _target) -> String:
 
 func _show_empty() -> void:
 	_displayed_unit = null
+	_invalidate_subject_cache()
 	_clear_content()
 	_panel.visible = false
 	_title.text = "Inspection"
@@ -410,15 +441,13 @@ func _add_spells(unit) -> void:
 		_add_spell_row(unit, spell)
 
 func _add_spell_row(unit, spell: Spell) -> void:
-	# couleur d'ecole, a cote du cout en PA (le reste du texte est inchange).
 	var label := RichTextLabel.new()
+	label.theme_type_variation = &"HudRichText"
 	label.bbcode_enabled = true
 	label.fit_content = true
 	label.scroll_active = false
 	label.custom_minimum_size = Vector2(286, 0)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("normal_font_size", 12)
-	label.add_theme_color_override("default_color", Color(0.9, 0.88, 0.82))
 	label.mouse_filter = Control.MOUSE_FILTER_STOP
 	label.text = "%s - %s" % [spell.spell_name, _spell_summary(spell, unit)]
 	label.mouse_entered.connect(func(): _show_spell_tooltip(unit, spell))
@@ -448,23 +477,22 @@ func _spell_summary(spell: Spell, unit = null) -> String:
 
 func _add_section(text: String) -> void:
 	var label := Label.new()
+	label.theme_type_variation = &"HudSection"
 	label.text = text
-	label.add_theme_font_size_override("font_size", 14)
-	label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.45))
 	_content.add_child(label)
 
 func _add_line(name: String, value: String) -> void:
 	var label := KeywordText.new()
+	label.theme_type_variation = &"HudRichText"
 	label.custom_minimum_size = Vector2(286, 0)
-	label.add_theme_font_size_override("normal_font_size", 12)
 	label.set_keyword_text(Glossary.annotate_text("%s : %s" % [name, value]))
 	_content.add_child(label)
 
 func _add_paragraph(text: String) -> void:
 	var label := KeywordText.new()
+	label.theme_type_variation = &"HudRichText"
 	label.custom_minimum_size = Vector2(286, 0)
-	label.add_theme_font_size_override("normal_font_size", 12)
-	label.add_theme_color_override("default_color", Color(0.78, 0.78, 0.72))
+	label.add_theme_color_override("default_color", VISUAL_SKIN.text_secondary)
 	label.set_keyword_text(Glossary.annotate_text(text))
 	_content.add_child(label)
 
@@ -493,6 +521,103 @@ func _spell_unusable_reason(unit, spell: Spell) -> String:
 	if unit.current_ap < ap_cost:
 		return "PA insuffisants (%d / %d)" % [unit.current_ap, ap_cost]
 	return ""
+
+
+func _unit_subject_fingerprint(unit) -> String:
+	var values: Array = [
+		unit.unit_name,
+		unit.team,
+		unit.current_hp,
+		unit.max_hp.get_int(),
+		unit.current_shield,
+		unit.current_mp,
+		unit.max_mp.get_int(),
+		unit.current_ap,
+		unit.max_ap.get_int(),
+		_details_expanded,
+		str(unit.get_active_statuses()),
+	]
+	if _details_expanded:
+		values.append_array([
+			unit.get_attack(),
+			unit.get_initiative(),
+			unit.armure.get_value(),
+			unit.resist_magique.get_value(),
+			unit.esquive.get_value(),
+			unit.crit_chance.get_value(),
+			unit.crit_multi.get_value(),
+		])
+	for spell in unit.spells:
+		if spell != null:
+			values.append([
+				_object_identity(spell),
+				unit.get_spell_ap_cost(spell),
+			])
+	if _pathfinder != null:
+		for controller in _pathfinder.get_engaging_controllers(unit):
+			values.append([
+				_object_identity(controller),
+				controller.unit_name,
+				controller.grid_pos,
+				controller.get_control_cost(),
+			])
+	return str(values)
+
+
+func _cell_subject_fingerprint(
+		cell: Vector2i,
+		grid: GridData,
+		terrain_effects
+	) -> String:
+	var values: Array = [
+		grid.get_type(cell),
+		grid.is_walkable(cell),
+		grid.is_transparent(cell),
+		grid.is_projectile_passable(cell),
+	]
+	if terrain_effects == null:
+		return str(values)
+	if terrain_effects.has_method("get_base_state"):
+		values.append(str(terrain_effects.get_base_state(cell)))
+	if terrain_effects.has_method("get_surface_id"):
+		values.append(terrain_effects.get_surface_id(cell))
+		values.append(terrain_effects.get_visual_terrain_id(cell))
+	if terrain_effects.has_method("get_remaining_duration"):
+		values.append(terrain_effects.get_remaining_duration(cell))
+	if terrain_effects.has_method("get_surface_state"):
+		var state := terrain_effects.get_surface_state(cell) as CellSurfaceState
+		if state != null:
+			values.append([
+				state.is_dynamic(),
+				_object_identity(state.active_effect),
+				_object_identity(state.source_spell),
+				_object_identity(state.source_unit),
+			])
+	return str(values)
+
+
+func _subject_is_unchanged(key: String, fingerprint: String) -> bool:
+	return (
+		_panel.visible
+		and _last_subject_key == key
+		and _last_subject_fingerprint == fingerprint
+	)
+
+
+func _remember_subject(key: String, fingerprint: String) -> void:
+	_last_subject_key = key
+	_last_subject_fingerprint = fingerprint
+
+
+func _invalidate_subject_cache() -> void:
+	_last_subject_key = ""
+	_last_subject_fingerprint = ""
+
+
+func _object_identity(value) -> int:
+	if value is Object and is_instance_valid(value):
+		return value.get_instance_id()
+	return 0
 
 func _clear_content() -> void:
 	if _content == null:

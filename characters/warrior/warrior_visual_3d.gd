@@ -165,6 +165,9 @@ func get_default_cast_mount() -> Node3D:
 func is_cast_animation(animation_name: StringName) -> bool:
 	return animation_name in [
 		ANIM_ATTACK,
+		# La course est une locomotion en temps normal, mais elle constitue une
+		# action one-shot lorsqu'elle presente le sort Charge.
+		ANIM_RUN,
 		ANIM_SPIN_ATTACK,
 		ANIM_HEAVY_ATTACK,
 		ANIM_PARRY,

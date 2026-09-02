@@ -21,7 +21,10 @@
   1280 x 720, 1920 x 1080 et 1280 x 800. La proportion non 16:9 conserve
   l'image complète avec bandes noires. Une capture du combat réel, après le
   flux normal de transition, montre Achille seul déployé face à une seule Ombre
-  de Paris dans la salle d'index 0.
+  de Paris dans la salle d'index 0. Ce dernier constat visuel est désormais
+  historique : depuis l'audit du 2026-09-02, la salle d'index 0 emploie le
+  `Rejeton chétif des Enfers`, tandis que l'Ombre de Paris reste réservée à la
+  finale.
 - Validation automatisée déjà exécutée : contrat Catabase 17/17 (432
   assertions), lecteur générique 11/11 (48), hub vertical 21/21 (1 558),
   isolation du contenu 14/14 (1 509), isolation du flux 22/22 (224) et sortie

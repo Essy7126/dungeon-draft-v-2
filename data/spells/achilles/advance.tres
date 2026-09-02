@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Spell" format=3 uid="uid://7d8r125eqye5"]
 
 [ext_resource type="Script" uid="uid://bd5080ch70ymn" path="res://data/spell.gd" id="1_spell"]
-[ext_resource type="Texture2D" uid="uid://3x280qssvstq" path="res://asset/ui/character_hud/generated/spell_icon_r02_c05.png" id="2_icon"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/ability_achilles_advance.svg" id="2_icon"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="2_modifier_type"]
 [ext_resource type="Script" uid="uid://enw0asavcpvu" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="3_modifier"]
 [ext_resource type="Resource" uid="uid://cdnc2yqjk7tog" path="res://data/characters/achilles/disciplines/advance.tres" id="4_tree"]
@@ -17,10 +17,10 @@ script = ExtResource("1_spell")
 spell_id = &"achilles_advance"
 skill_tree = ExtResource("4_tree")
 spell_name = "Percée"
-description = "2 PA · Portée 1–3 en ligne · Avance au contact et inflige 5 dégâts physiques."
+description = "2 PA · Portée 2–3 en ligne · Avance au contact et inflige 5 dégâts physiques."
 icon = ExtResource("2_icon")
 ap_cost = 2
-minimum_range = 1
+minimum_range = 2
 once_per_activation = true
 line_from_caster = true
 damage = 5

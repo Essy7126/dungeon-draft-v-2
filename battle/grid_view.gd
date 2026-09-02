@@ -21,6 +21,7 @@ const TYPE_COLORS = {
 
 var grid: GridData
 var _highlights: Dictionary = {}
+var _cell_feedback_markers: Dictionary = {}
 var _hovered: Vector2i = Vector2i(-1, -1)
 var show_terrain_colors: bool = false
 var show_grid_lines: bool = false
@@ -30,6 +31,7 @@ signal cell_hovered(grid_pos: Vector2i)
 
 func setup(grid_data: GridData) -> void:
 	grid = grid_data
+	_cell_feedback_markers.clear()
 	queue_redraw()
 
 # --- Conversions ---
@@ -67,6 +69,39 @@ func get_highlight_snapshot() -> Dictionary:
 func clear_highlights() -> void:
 	_highlights.clear()
 	queue_redraw()
+
+
+# --- Feedback de ciblage (couche au-dessus du hover) ---
+
+func set_cell_feedback_marker(
+	cell: Vector2i,
+	is_valid_target: bool,
+	color: Color = Color(0.97, 0.97, 0.91, 0.94)
+	) -> void:
+	if grid == null or not grid.is_valid(cell):
+		return
+	_cell_feedback_markers[cell] = HIGHLIGHT_MARKER.feedback_entry(
+		is_valid_target,
+		color,
+	)
+	queue_redraw()
+
+
+func clear_cell_feedback_marker(cell: Vector2i) -> void:
+	if not _cell_feedback_markers.erase(cell):
+		return
+	queue_redraw()
+
+
+func clear_cell_feedback_markers() -> void:
+	if _cell_feedback_markers.is_empty():
+		return
+	_cell_feedback_markers.clear()
+	queue_redraw()
+
+
+func get_cell_feedback_snapshot() -> Dictionary:
+	return _cell_feedback_markers.duplicate(true)
 
 # --- Input souris ---
 
@@ -138,4 +173,15 @@ func _draw() -> void:
 			# Liseré de grille : optionnel.
 			if show_grid_lines:
 				draw_rect(rect, Color(1, 1, 1, 0.10), false)
+
+	# Le feedback de cible est volontairement dessine apres portees, effets,
+	# hover et grille afin que sa forme reste lisible avec n'importe quelle teinte.
+	for cell in _cell_feedback_markers:
+		if cell is Vector2i and grid.is_valid(cell):
+			HIGHLIGHT_MARKER.draw_feedback(
+				self,
+				grid_to_world(cell),
+				_cell_feedback_markers[cell],
+				CELL_SIZE * 0.36,
+			)
 	

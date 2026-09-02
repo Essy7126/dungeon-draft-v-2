@@ -11,6 +11,13 @@ const HERO_PATHS := [
 ]
 
 
+class EvolutionBattleFixture:
+	extends "res://battle/battle.gd"
+
+	func _ready() -> void:
+		pass
+
+
 class ProgressionController:
 	extends RefCounted
 
@@ -450,11 +457,11 @@ func test_last_action_choice_is_resolved_before_victory_screen() -> void:
 	run_ui.evolution_feedback_duration = 0.001
 	run_ui.get_skill_evolution_overlay().reduced_motion = true
 	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
-	var battle = BATTLE_SCRIPT.new()
+	var battle := EvolutionBattleFixture.new()
+	add_child_autofree(battle)
 	battle.turn_state = TurnState.new()
 	battle._evolution_queue.enqueue(_request(state, discipline.discipline_id, 2))
 	battle._request_battle_outcome(true)
-	battle._process_evolution_queue_at_safe_point()
 	await _settle(3)
 	var overlay := run_ui.get_skill_evolution_overlay()
 	assert_true(overlay.visible)
@@ -466,4 +473,47 @@ func test_last_action_choice_is_resolved_before_victory_screen() -> void:
 	assert_true(
 		state.get_discipline_progress(discipline.discipline_id).get_selected_upgrade_ids().has(choice)
 	)
-	battle.free()
+
+
+func test_refused_evolution_ui_retries_without_losing_the_required_choice() -> void:
+	var state := _prepare_global_run()
+	await _settle(1)
+	var discipline := state.get_disciplines()[0] as DisciplineData
+	state.add_discipline_xp(discipline.discipline_id, 5)
+	var run_ui := GameManager.get_persistent_run_ui()
+	run_ui.evolution_feedback_duration = 0.001
+	run_ui.get_skill_evolution_overlay().reduced_motion = true
+	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.NON_COMBAT)
+	var battle := EvolutionBattleFixture.new()
+	battle._evolution_retry_base_seconds = 0.001
+	battle._evolution_retry_max_seconds = 0.005
+	battle.turn_state = TurnState.new()
+	battle._evolution_queue.enqueue(
+		_request(state, discipline.discipline_id, 2)
+	)
+	add_child_autofree(battle)
+
+	battle._process_evolution_queue_at_safe_point()
+	await _settle(2)
+
+	assert_true(battle._evolution_queue.has_pending())
+	assert_false(battle._evolution_processing)
+	assert_true(battle._evolution_retry_scheduled)
+	assert_true(battle.is_combat_input_locked_for_evolution())
+	assert_false(run_ui.get_skill_evolution_overlay().visible)
+
+	GameManager.set_run_ui_mode(PersistentRunUI.RunUIMode.COMBAT)
+	await get_tree().create_timer(0.08, true).timeout
+	await _settle(3)
+
+	var overlay := run_ui.get_skill_evolution_overlay()
+	assert_true(overlay.visible)
+	assert_true(battle._evolution_queue.has_pending())
+	var choice := await _resolve_first_overlay_choice(run_ui)
+	assert_false(battle._evolution_queue.has_pending())
+	assert_false(battle._evolution_retry_scheduled)
+	assert_false(battle.is_combat_input_locked_for_evolution())
+	assert_true(
+		state.get_discipline_progress(discipline.discipline_id) \
+			.get_selected_upgrade_ids().has(choice)
+	)

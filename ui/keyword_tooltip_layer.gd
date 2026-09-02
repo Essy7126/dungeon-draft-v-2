@@ -2,12 +2,17 @@
 extends CanvasLayer
 
 const Glossary = preload("res://ui/combat_glossary.gd")
+const VisualThemeFactory = preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
+const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
 
 var _panel: PanelContainer
 var _label: RichTextLabel
 var _pinned: bool = false
 var _hide_queued: bool = false
 var _modal_blocked: bool = false
+var _request_generation: int = 0
 
 func _ready() -> void:
 	layer = 120
@@ -16,23 +21,21 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	_panel = PanelContainer.new()
+	_panel.theme = VisualThemeFactory.build(VISUAL_SKIN)
+	_panel.theme_type_variation = &"HudTooltip"
 	_panel.visible = false
 	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_panel)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 8)
 	_panel.add_child(margin)
 
 	_label = RichTextLabel.new()
+	_label.theme_type_variation = &"HudRichText"
 	_label.bbcode_enabled = true
 	_label.fit_content = true
 	_label.scroll_active = false
 	_label.custom_minimum_size = Vector2(300, 0)
-	_label.add_theme_font_size_override("normal_font_size", 13)
 	_label.meta_hover_started.connect(_on_meta_hover_started)
 	_label.meta_clicked.connect(_on_meta_clicked)
 	margin.add_child(_label)
@@ -48,6 +51,8 @@ func show_text(title: String, body: String, global_pos: Vector2, pin: bool = fal
 	show_bbcode(bbcode, global_pos, pin)
 
 func show_bbcode(bbcode: String, global_pos: Vector2, pin: bool = false) -> void:
+	_request_generation += 1
+	var request_generation := _request_generation
 	if _modal_blocked:
 		return
 	_pinned = pin
@@ -56,6 +61,8 @@ func show_bbcode(bbcode: String, global_pos: Vector2, pin: bool = false) -> void
 	_label.text = bbcode
 	_panel.visible = true
 	await get_tree().process_frame
+	if request_generation != _request_generation:
+		return
 	if _modal_blocked:
 		hide_all()
 		return
@@ -65,12 +72,19 @@ func show_bbcode(bbcode: String, global_pos: Vector2, pin: bool = false) -> void
 func request_hide() -> void:
 	if _pinned:
 		return
+	_request_generation += 1
+	var request_generation := _request_generation
 	_hide_queued = true
 	await get_tree().create_timer(0.08).timeout
-	if _hide_queued and not _pinned:
+	if (
+		request_generation == _request_generation
+		and _hide_queued
+		and not _pinned
+	):
 		_panel.visible = false
 
 func hide_all() -> void:
+	_request_generation += 1
 	_pinned = false
 	_hide_queued = false
 	_panel.visible = false

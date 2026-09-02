@@ -2,6 +2,9 @@ class_name RecraftPortraitView
 extends Control
 
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
 
 @onready var portrait_texture: TextureRect = %PortraitTexture
 @onready var character_preview: CharacterPreview3D = %CharacterPreview
@@ -13,6 +16,7 @@ const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.g
 var character_data: UnitData = null
 var _default_frame_texture: Texture2D = null
 var _discipline_emblem_scale := 1.0
+var _visual_skin: HudVisualSkinData = null
 
 
 func _ready() -> void:
@@ -93,6 +97,18 @@ func set_character_data(data: UnitData) -> void:
 
 func set_active(active: bool) -> void:
 	active_indicator.visible = active
+	if _visual_skin != null:
+		frame.modulate = (
+			_visual_skin.text_primary
+			if active
+			else Color(
+				_visual_skin.text_secondary.r,
+				_visual_skin.text_secondary.g,
+				_visual_skin.text_secondary.b,
+				0.9
+			)
+		)
+		return
 	frame.modulate = Color(1.08, 1.04, 0.84, 1.0) if active else Color(0.72, 0.74, 0.78, 0.9)
 
 
@@ -105,6 +121,26 @@ func set_refined_style(enabled: bool) -> void:
 	frame.visible = not enabled
 
 
+func apply_visual_skin(skin: HudVisualSkinData) -> void:
+	_visual_skin = skin
+	if skin == null:
+		return
+	active_indicator.add_theme_stylebox_override(
+		"panel",
+		VISUAL_THEME_FACTORY.make_panel_style(
+			skin,
+			Color.TRANSPARENT,
+			skin.border_focus_color,
+			skin.border_regular,
+			skin.radius_control
+		)
+	)
+	placeholder_label.add_theme_font_override("font", skin.font_emphasis)
+	placeholder_label.add_theme_color_override("font_color", skin.text_secondary)
+	discipline_emblem.modulate = skin.text_primary
+	set_active(active_indicator.visible)
+
+
 func set_discipline_emblem(
 		texture: Texture2D,
 		accent_color := Color.WHITE,
@@ -113,7 +149,11 @@ func set_discipline_emblem(
 	_discipline_emblem_scale = clampf(size_scale, 0.5, 1.0)
 	discipline_emblem.texture = texture
 	discipline_emblem.visible = texture != null
-	discipline_emblem.modulate = accent_color
+	discipline_emblem.modulate = (
+		_visual_skin.text_primary
+		if _visual_skin != null and _visual_skin.neutral_grayscale
+		else accent_color
+	)
 	if is_node_ready():
 		var current_scale := (
 			custom_minimum_size.x / METRICS.PORTRAIT_SIZE

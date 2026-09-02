@@ -46,6 +46,7 @@ var _geometry_layer: TileMapLayer = null
 var _hovered_cell := INVALID_CELL
 var _selected_cell := INVALID_CELL
 var _highlights: Dictionary = {}
+var _cell_feedback_markers: Dictionary = {}
 
 
 func setup(grid_data: GridData) -> void:
@@ -57,6 +58,7 @@ func setup(grid_data: GridData) -> void:
 	_hovered_cell = INVALID_CELL
 	_selected_cell = INVALID_CELL
 	_highlights.clear()
+	_cell_feedback_markers.clear()
 	queue_redraw()
 
 
@@ -130,6 +132,37 @@ func get_highlight_snapshot() -> Dictionary:
 func clear_highlights() -> void:
 	_highlights.clear()
 	queue_redraw()
+
+
+func set_cell_feedback_marker(
+	cell: Vector2i,
+	is_valid_target: bool,
+	color: Color = Color(0.97, 0.97, 0.91, 0.94)
+	) -> void:
+	if grid == null or not grid.is_valid(cell):
+		return
+	_cell_feedback_markers[cell] = HIGHLIGHT_MARKER.feedback_entry(
+		is_valid_target,
+		color,
+	)
+	queue_redraw()
+
+
+func clear_cell_feedback_marker(cell: Vector2i) -> void:
+	if not _cell_feedback_markers.erase(cell):
+		return
+	queue_redraw()
+
+
+func clear_cell_feedback_markers() -> void:
+	if _cell_feedback_markers.is_empty():
+		return
+	_cell_feedback_markers.clear()
+	queue_redraw()
+
+
+func get_cell_feedback_snapshot() -> Dictionary:
+	return _cell_feedback_markers.duplicate(true)
 
 
 func grid_to_local(cell: Vector2i) -> Vector2:
@@ -298,6 +331,21 @@ func _draw() -> void:
 
 	if draw_map_bounds:
 		draw_rect(get_map_bounds(), BOUNDS_COLOR, false, 2.0)
+	_draw_cell_feedback_markers()
+
+
+func _draw_cell_feedback_markers() -> void:
+	for cell in _cell_feedback_markers:
+		if not (cell is Vector2i) or not grid.is_valid(cell):
+			continue
+		var polygon := get_cell_polygon(cell)
+		var center := grid_to_local(cell)
+		HIGHLIGHT_MARKER.draw_feedback(
+			self,
+			center,
+			_cell_feedback_markers[cell],
+			HIGHLIGHT_MARKER.radius_for_polygon(center, polygon) * 1.08,
+		)
 
 
 func _draw_polygon_outline(

@@ -6,16 +6,48 @@ const COMBAT_TARGET_FEEDBACK = preload(
 )
 
 
+class HudPortSpy extends RefCounted:
+	var controls_enabled := false
+
+	func update_info(_unit) -> bool:
+		return true
+
+	func build_actions(_unit) -> bool:
+		return true
+
+	func set_active_mode(_mode: String, _spell = null) -> bool:
+		return true
+
+	func set_controls_enabled(enabled: bool) -> bool:
+		controls_enabled = enabled
+		return true
+
+	func apply_presentation_snapshot(snapshot: Dictionary) -> bool:
+		controls_enabled = bool(snapshot.get("controls_enabled", false))
+		return true
+
+
+class GridViewStub extends Node2D:
+	var clear_count := 0
+
+	func clear_highlights() -> void:
+		clear_count += 1
+
+
 func test_presentation_snapshot_separates_targeting_resolution_and_locks() -> void:
 	var state := CombatPresentationState.new()
 	var snapshot := state.get_snapshot()
 	assert_eq(snapshot["phase_name"], &"PLAYER_IDLE")
+	assert_eq(snapshot["interaction_step"], &"choose")
 	assert_true(snapshot["controls_enabled"])
 
 	state.begin_targeting(&"spell")
 	snapshot = state.get_snapshot()
 	assert_eq(snapshot["phase_name"], &"PLAYER_TARGETING")
 	assert_eq(snapshot["selection_mode"], &"spell")
+	assert_eq(snapshot["interaction_step"], &"target")
+	assert_true(snapshot["selection_active"])
+	assert_true(snapshot["selection_cancellable"])
 	assert_true(snapshot["focus_active"])
 
 	state.set_lock(&"external:inventory", true)
@@ -24,10 +56,16 @@ func test_presentation_snapshot_separates_targeting_resolution_and_locks() -> vo
 	assert_false(snapshot["controls_enabled"])
 	assert_has(snapshot["lock_reasons"], &"external:inventory")
 
+	state.set_feedback("Ancienne cible invalide", &"warning")
 	state.begin_resolution(&"spell")
 	state.set_lock(&"external:inventory", false)
 	snapshot = state.get_snapshot()
 	assert_eq(snapshot["phase_name"], &"RESOLVING_ACTION")
+	assert_eq(snapshot["interaction_step"], &"resolve")
+	assert_eq(snapshot["selection_mode"], &"spell")
+	assert_true(snapshot["selection_active"])
+	assert_false(snapshot["selection_cancellable"])
+	assert_eq(snapshot["feedback_text"], "")
 	assert_true(snapshot["input_locked"], "La résolution reste verrouillée sans lock externe")
 
 	state.begin_player_turn()
@@ -71,6 +109,77 @@ func test_cancelling_end_turn_modal_restores_player_presentation() -> void:
 	assert_eq(snapshot["phase_name"], &"PLAYER_IDLE")
 	assert_true(snapshot["controls_enabled"])
 	assert_does_not_have(snapshot["lock_reasons"], &"end_turn_confirmation")
+	battle.free()
+
+
+func test_player_activation_exits_stale_end_turn_modal_from_idle_state() -> void:
+	var battle = load("res://battle/battle.gd").new()
+	battle.turn_state = TurnState.new()
+	battle.presentation_state = CombatPresentationState.new()
+	var hud_port := HudPortSpy.new()
+	battle.set("_hud_port", hud_port)
+	battle.turn_state.state_changed.connect(
+		Callable(battle, "_on_turn_state_changed")
+	)
+	battle.presentation_state.snapshot_changed.connect(
+		Callable(battle, "_on_presentation_snapshot_changed")
+	)
+	battle.presentation_state.begin_modal()
+	battle.presentation_state.set_lock(&"end_turn_confirmation", true)
+	battle.presentation_state.set_lock(&"end_turn_confirmation", false)
+	assert_eq(battle.turn_state.current, TurnState.State.IDLE)
+	assert_eq(
+		battle.get_combat_presentation_snapshot()["phase_name"],
+		&"MODAL",
+		"La confirmation fermee reproduit l'etat stale observe en jeu.",
+	)
+
+	var next_ally := Factory.make_unit("Allie suivant", 0)
+	battle.call("_on_turn_started", next_ally)
+	var snapshot: Dictionary = battle.get_combat_presentation_snapshot()
+	assert_eq(snapshot["phase_name"], &"PLAYER_IDLE")
+	assert_eq(snapshot["ownership"], &"player")
+	assert_true(snapshot["controls_enabled"])
+	assert_false(snapshot["input_locked"])
+	assert_true(hud_port.controls_enabled)
+	battle.free()
+
+
+func test_confirmed_end_turn_advances_between_consecutive_allies() -> void:
+	var battle = load("res://battle/battle.gd").new()
+	battle.turn_state = TurnState.new()
+	battle.presentation_state = CombatPresentationState.new()
+	var hud_port := HudPortSpy.new()
+	var grid_view := GridViewStub.new()
+	battle.set("_hud_port", hud_port)
+	battle.grid_view = grid_view
+	battle.add_child(grid_view)
+	battle.turn_state.state_changed.connect(
+		Callable(battle, "_on_turn_state_changed")
+	)
+	battle.presentation_state.snapshot_changed.connect(
+		Callable(battle, "_on_presentation_snapshot_changed")
+	)
+
+	var first_ally := Factory.make_unit("Premier allie", 0)
+	var second_ally := Factory.make_unit("Second allie", 0)
+	battle.turn_queue = TurnQueue.new()
+	battle.turn_queue.setup([first_ally, second_ally])
+	battle.turn_queue.turn_started.connect(Callable(battle, "_on_turn_started"))
+	battle.turn_queue.start()
+	assert_same(battle.get_active_unit(), first_ally)
+
+	battle.presentation_state.begin_modal()
+	battle.presentation_state.set_lock(&"end_turn_confirmation", true)
+	battle.presentation_state.set_lock(&"end_turn_confirmation", false)
+	battle.call("_commit_player_end_turn")
+
+	var snapshot: Dictionary = battle.get_combat_presentation_snapshot()
+	assert_same(battle.get_active_unit(), second_ally)
+	assert_eq(snapshot["phase_name"], &"PLAYER_IDLE")
+	assert_true(snapshot["controls_enabled"])
+	assert_true(hud_port.controls_enabled)
+	assert_gt(grid_view.clear_count, 0)
 	battle.free()
 
 

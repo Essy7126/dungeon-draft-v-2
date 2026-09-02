@@ -32,16 +32,25 @@ const ACTIVE_ROOMS := [
 class AttackVisualSpy extends Node2D:
 	var spell_prepare_count := 0
 	var attack_prepare_count := 0
+	var attack_release_count := 0
 	var recovery_count := 0
+	var cancel_count := 0
+	var action_pending := false
+	var attack_release_hook := Callable()
 
 	func prepare_spell_visual(_cell: Vector2i, _spell: Spell) -> bool:
 		spell_prepare_count += 1
+		action_pending = true
 		await get_tree().process_frame
 		return true
 
 	func prepare_basic_attack_visual(_cell: Vector2i) -> bool:
 		attack_prepare_count += 1
+		action_pending = true
 		await get_tree().process_frame
+		if attack_release_hook.is_valid():
+			attack_release_hook.call()
+		attack_release_count += 1
 		return true
 
 	func has_optional_visual() -> bool:
@@ -50,6 +59,14 @@ class AttackVisualSpy extends Node2D:
 	func wait_for_action_visual_finished(_timeout_msec: int = 8000) -> void:
 		recovery_count += 1
 		await get_tree().process_frame
+		action_pending = false
+
+	func cancel_pending_visual_actions() -> void:
+		cancel_count += 1
+		action_pending = false
+
+	func is_action_visual_pending() -> bool:
+		return action_pending
 
 
 class EnemyRunnerBattleSpy extends Node:
@@ -58,11 +75,27 @@ class EnemyRunnerBattleSpy extends Node:
 	var grid_view := Node2D.new()
 	var _unit_views := {}
 	var _battle_over := false
+	var _outcome_deferral_depth := 0
+	var _action_sequence := 0
 
 	func _init() -> void:
 		add_child(grid_view)
 
-	func _animate_attack(_unit: Unit, _target: Unit) -> void:
+	func _begin_outcome_deferral() -> void:
+		_outcome_deferral_depth += 1
+
+	func _finish_outcome_deferral() -> bool:
+		_outcome_deferral_depth = maxi(0, _outcome_deferral_depth - 1)
+		return false
+
+	func _next_action_id(kind: StringName) -> StringName:
+		_action_sequence += 1
+		return StringName("%s_%d" % [kind, _action_sequence])
+
+	func _animate_attack_to_impact(_unit: Unit, _target: Unit) -> void:
+		await get_tree().process_frame
+
+	func _animate_attack_recovery(_unit: Unit) -> void:
 		await get_tree().process_frame
 
 
@@ -296,6 +329,102 @@ func test_enemy_runner_resolves_each_skeleton_impact_once_and_waits_recovery() -
 	assert_eq(melee_hp_before - melee_target.current_hp, 18)
 	assert_eq(melee_view.spell_prepare_count, 1)
 	assert_eq(melee_view.recovery_count, 1)
+
+
+func test_enemy_runner_revalidates_stale_attack_after_spell_spends_last_ap() -> void:
+	var field := Factory.make_battlefield(2, 1)
+	var enemy := Unit.new("Ennemi combo", 1, 100, 10, 6, 3, 20)
+	var target := Unit.new("Cible combo", 0, 100)
+	assert_true(field.grid.place_unit(enemy, Vector2i.ZERO))
+	assert_true(field.grid.place_unit(target, Vector2i.RIGHT))
+	enemy.current_ap = 2
+	var spell := Factory.make_spell({
+		"spell_id": &"enemy_combo_spell",
+		"spell_name": "Sort de combo",
+		"ap_cost": 2,
+		"spell_range": 1,
+		"damage": 3,
+	})
+	enemy.add_spell(spell)
+
+	var view := AttackVisualSpy.new()
+	add_child_autofree(view)
+	var battle := EnemyRunnerBattleSpy.new()
+	add_child_autofree(battle)
+	battle.grid = field.grid
+	battle.spell_caster = field.caster
+	battle._unit_views[enemy] = view
+	var runner := EnemyTurnRunner.new()
+	add_child_autofree(runner)
+	runner.setup(battle)
+	var basic_attack_count := 0
+	var basic_action_count := 0
+	var on_basic := func(source, _target) -> void:
+		if source == enemy:
+			basic_attack_count += 1
+	var on_action := func(source, _action_id, kind, _report) -> void:
+		if source == enemy and kind == &"basic_attack":
+			basic_action_count += 1
+	EventBus.basic_attack_performed.connect(on_basic)
+	EventBus.action_resolved.connect(on_action)
+
+	# Simule l'exécution d'un plan construit avec les ressources d'avant-sort.
+	await runner._execute_cast(enemy, spell, target.grid_pos)
+	await runner._execute_attack(enemy, target)
+
+	EventBus.basic_attack_performed.disconnect(on_basic)
+	EventBus.action_resolved.disconnect(on_action)
+	assert_eq(enemy.current_ap, 0)
+	assert_eq(target.current_hp, 97)
+	assert_eq(view.spell_prepare_count, 1)
+	assert_eq(view.recovery_count, 1)
+	assert_eq(view.attack_prepare_count, 0)
+	assert_eq(view.attack_release_count, 0)
+	assert_eq(basic_attack_count, 0)
+	assert_eq(basic_action_count, 0)
+	assert_false(view.is_action_visual_pending())
+	assert_eq(battle._outcome_deferral_depth, 0)
+
+
+func test_enemy_runner_cancels_released_attack_if_ap_changes_during_visual() -> void:
+	var field := Factory.make_battlefield(2, 1)
+	var enemy := Unit.new("Ennemi visuel", 1, 100, 10, 1, 3, 20)
+	var target := Unit.new("Cible visuelle", 0, 100)
+	assert_true(field.grid.place_unit(enemy, Vector2i.ZERO))
+	assert_true(field.grid.place_unit(target, Vector2i.RIGHT))
+	var view := AttackVisualSpy.new()
+	view.attack_release_hook = func() -> void:
+		enemy.current_ap = 0
+	add_child_autofree(view)
+	var battle := EnemyRunnerBattleSpy.new()
+	add_child_autofree(battle)
+	battle.grid = field.grid
+	battle.spell_caster = field.caster
+	battle._unit_views[enemy] = view
+	var runner := EnemyTurnRunner.new()
+	add_child_autofree(runner)
+	runner.setup(battle)
+	var events := {"basic": 0, "action": 0}
+	var on_basic := func(source, _target) -> void:
+		if source == enemy:
+			events["basic"] = int(events["basic"]) + 1
+	var on_action := func(source, _action_id, kind, _report) -> void:
+		if source == enemy and kind == &"basic_attack":
+			events["action"] = int(events["action"]) + 1
+	EventBus.basic_attack_performed.connect(on_basic)
+	EventBus.action_resolved.connect(on_action)
+
+	await runner._execute_attack(enemy, target)
+
+	EventBus.basic_attack_performed.disconnect(on_basic)
+	EventBus.action_resolved.disconnect(on_action)
+	assert_eq(target.current_hp, 100)
+	assert_eq(view.attack_prepare_count, 1)
+	assert_eq(view.attack_release_count, 1)
+	assert_eq(view.cancel_count, 1)
+	assert_eq(events, {"basic": 0, "action": 0})
+	assert_false(view.is_action_visual_pending())
+	assert_eq(battle._outcome_deferral_depth, 0)
 
 
 func test_grid_cleanup_keeps_skeleton_visual_root_stable() -> void:

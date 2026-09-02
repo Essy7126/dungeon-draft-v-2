@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Déplacement</title>
+  <desc id="desc">Un chemin courbe progresse sur une case isométrique.</desc>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m9 42 23 13 23-13-23-13Z"/>
+    <circle cx="18" cy="44" r="3" fill="#FFFFFF" stroke="none"/>
+    <path d="M20 42c6-9 15-11 27-7" stroke-dasharray="1 7"/>
+    <path d="m40 29 10 7-8 8"/>
+  </g>
+</svg>

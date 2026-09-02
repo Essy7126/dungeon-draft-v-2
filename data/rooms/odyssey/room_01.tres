@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="PackedScene" path="res://data/rooms/maps/painted_battle.tscn" id="3_battle"]
-[ext_resource type="Resource" path="res://data/units/enemies/catabase_shadow_paris.tres" id="4_paris"]
+[ext_resource type="Resource" path="res://data/units/enemies/catabase_frail_hellspawn.tres" id="4_hellspawn"]
 [ext_resource type="Resource" path="res://data/maps/painted/room_01_forest_layout.tres" id="5_layout"]
 [ext_resource type="Resource" path="res://data/maps/painted/odyssey/room_01_visual.tres" id="6_visual"]
-[ext_resource type="Resource" path="res://data/encounters/catabase_shadow_paris_encounter.tres" id="7_encounter"]
+[ext_resource type="Resource" path="res://data/encounters/catabase_frail_hellspawn_encounter.tres" id="7_encounter"]
 
 [resource]
 script = ExtResource("2_room")
-room_name = "Catabase I — L’Ombre de Paris"
+room_name = "Catabase I — Le Rejeton chétif"
 battle_scene = ExtResource("3_battle")
 grid_layout = ExtResource("5_layout")
 painted_map_visual_data = ExtResource("6_visual")
@@ -20,6 +20,6 @@ maximum_wave_count = 1
 ultimate_reward_base_chance = 0
 ultimate_reward_min_gain_per_wave = 0
 ultimate_reward_max_gain_per_wave = 0
-enemies = Array[ExtResource("1_unit")]([ExtResource("4_paris")])
+enemies = Array[ExtResource("1_unit")]([ExtResource("4_hellspawn")])
 hero_spawn_zone = Array[Vector2i]([Vector2i(4, 9), Vector2i(3, 10), Vector2i(4, 10), Vector2i(5, 10), Vector2i(3, 11), Vector2i(4, 11)])
 enemy_spawn_zone = Array[Vector2i]([Vector2i(8, 2), Vector2i(9, 2), Vector2i(10, 2), Vector2i(8, 3), Vector2i(9, 3), Vector2i(10, 3)])

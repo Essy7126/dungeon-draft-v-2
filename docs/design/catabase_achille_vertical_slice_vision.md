@@ -15,7 +15,7 @@ Ce document distingue volontairement l’existant des critères à atteindre. Il
 
 | Pilier | Expérience attendue | Ancrage actuel | Contrat du slice |
 |---|---|---|---|
-| **Intentions lisibles** | « J’ai compris le destin qu’on m’imposait et je l’ai retourné. » | La Flèche de l’Ombre annonce une cible, 18 dégâts et deux contres : rompre la ligne de vue ou sortir de portée (`data/spells/enemies/catabase/paris_shadow_arrow.tres`). Achille dispose aussi de la poussée via `data/spells/achilles/sweep.tres`. | Toute conséquence critique est visible avant résolution ; le joueur connaît cible, ampleur et contre-jeu avant de valider son tour. |
+| **Intentions lisibles** | « J’ai compris le destin qu’on m’imposait et je l’ai retourné. » | Le Trait d’ombre du Rejeton annonce une cible, 18 dégâts et deux contres : rompre la ligne de vue ou sortir de portée (`data/spells/enemies/catabase/hellspawn_shadow_bolt.tres`). Achille dispose aussi de la poussée via `data/spells/achilles/sweep.tres`. | Toute conséquence critique est visible avant résolution ; le joueur connaît cible, ampleur et contre-jeu avant de valider son tour. |
 | **Évolution par l’action** | « Mon comportement tactique a façonné cet Achille. » | Lance, Élan, Horizon et Airain ont chacune un rang 2 à 3 XP et deux choix exclusifs (`data/characters/achilles/disciplines/`). | Le premier choix significatif survient au plus tard pendant la salle II ; l’interface ne montre que le chemin actif et les deux futurs utiles, avec leur breakpoint concret. |
 | **Mémoire mythologique** | « Cette tentative avait une histoire vérifiable, même en cas d’échec. » | L’écran de résultat peut restituer progression, salle atteinte, seed disponible et PV d’Achille à partir de faits runtime (`core/run_result_narrative_service.gd`, `ui/run_result_screen.gd`). | Victoire et défaite produisent immédiatement une épitaphe factuelle. Aucune phrase ne doit déduire un exploit non enregistré. Cette mémoire n’est pas encore une Archive persistante. |
 
@@ -27,7 +27,7 @@ La run commence obligatoirement en salle I, sans choix de route au hub. Sa seed 
 
 | Étape | Contenu actuel | Fonction d’apprentissage | Condition de sortie attendue |
 |---|---|---|---|
-| **I — L’Ombre de Paris** | Duel contre `catabase_shadow_paris` sur l’arène peinte de forêt (`data/rooms/odyssey/room_01.tres`). | Lire le trait retardé, manipuler distance et ligne de vue, découvrir que la poussée peut aussi créer de la sécurité. | Le joueur sait nommer la cible, le délai, les 18 dégâts et au moins un contre avant la première résolution. |
+| **I — Le Rejeton chétif** | Duel contre `catabase_frail_hellspawn` sur l’arène peinte de forêt (`data/rooms/odyssey/room_01.tres`). | Lire le trait retardé, manipuler distance et ligne de vue, découvrir que la poussée peut aussi créer de la sécurité. | Le joueur identifie la créature comme un faible rejeton des Enfers, puis sait nommer la cible, le délai, les 18 dégâts et au moins un contre avant la première résolution. |
 | **II — La Porte des Cendres** | Deux skirmishers et un garde, formations seedées, arène grecque à obstacles (`data/rooms/odyssey/room_02.tres`, `data/encounters/odyssey_room_02_encounter.tres`). | Passer du duel à une formation de mêlée ; transformer positionnement et usages répétés en premier choix d’évolution. | Au moins une discipline peut atteindre son rang 2 ; le joueur comprend exactement ce que son choix change dans l’action suivante. |
 | **III — Le Jugement de Paris** | Un champion ancre la mêlée pendant que Paris réemploie son trait (`data/rooms/odyssey/room_03.tres`, `data/encounters/odyssey_room_03_encounter.tres`). Arène finale en bronze grec, grille 13×13 (`data/maps/painted/odyssey/room_03_layout.tres`, `data/maps/painted/odyssey/room_03_visual.tres`). | Retourner la règle apprise : échapper au trait tout en subissant la pression d’un protecteur de contact. Le test porte sur la maîtrise combinée, pas sur davantage de systèmes. | La victoire exige lecture, repositionnement et usage du build choisi ; Paris reste l’événement dramatique identifiable de la finale. |
 | **Registre de l’Archiviste** | Résultat immédiat, seed si connue, salles franchies, salle atteinte et PV (`ui/RunResultScreen.tscn`), puis retour direct au hub. | Donner une conclusion factuelle à la réussite comme à l’échec. | Le texte correspond exactement à l’état runtime et n’invente ni build, ni exploit, ni cause de victoire. |
@@ -36,7 +36,7 @@ Les trois salles restent actuellement des combats d’élimination. Les objectif
 
 ## Contrat de lisibilité
 
-1. **Exactitude critique.** Action retardée, conséquence létale, grande zone et invocation doivent annoncer leur cellule ou cible réelle, leur moment de résolution et leur contre-jeu. Le télégraphe de Paris suit sa cible vivante et ne doit jamais devenir un simple décor.
+1. **Exactitude critique.** Action retardée, conséquence létale, grande zone et invocation doivent annoncer leur cellule ou cible réelle, leur moment de résolution et leur contre-jeu. Le télégraphe du Rejeton en salle I, puis celui de Paris en finale, suivent leur cible vivante et ne doivent jamais devenir un simple décor.
 2. **Prévisualisation avant engagement.** Avant validation, l’interface doit exposer dégâts directs, poussée, case finale, collision, réaction de terrain et raison d’invalidité lorsqu’ils s’appliquent. Ce qui n’est pas prévisualisé ne doit pas produire une conséquence majeure inattendue.
 3. **Hiérarchie immédiate.** À 1920×1080 sans zoom, héros, ennemis, danger critique et action sélectionnée doivent être distinguables. Une information critique ne dépend jamais de la couleur seule : forme, texte, animation et son la doublent selon le contexte.
 4. **Divulgation progressive.** En combat, une évolution montre la discipline concernée, deux choix orthogonaux au maximum et leur effet sur le prochain usage. L’arbre global n’interrompt pas la lecture de la bataille.
@@ -48,7 +48,7 @@ Les trois salles restent actuellement des combats d’élimination. Les objectif
 | Axe | Seuil d’acceptation du slice |
 |---|---|
 | **Contenu déterministe** | Les trois salles chargent leurs arènes et rosters attendus ; les formations des salles II et III sont valides sur au moins 20 seeds consécutives. |
-| **Compréhension de Paris** | Sur un test d’au moins 8 nouveaux joueurs, au moins 80 % identifient avant résolution la cible, les 18 dégâts et un des deux contres du trait dès la salle I. |
+| **Compréhension du Rejeton** | Sur un test d’au moins 8 nouveaux joueurs, au moins 80 % identifient avant résolution la cible, les 18 dégâts et un des deux contres du trait dès la salle I. |
 | **Justice perçue** | Au moins 90 % des dégâts critiques reçus pendant le test sont expliqués correctement par le joueur après l’événement ; aucun télégraphe affiché ne ment sur sa cible ou sa résolution. |
 | **Évolution** | Au moins 90 % des runs atteignant la fin de la salle II déclenchent un choix de rang 2 ; le temps médian de choix reste inférieur à 30 secondes et le joueur peut reformuler son effet. |
 | **Maîtrise finale** | La salle III réemploie effectivement le trait de Paris avec le champion vivant ; les causes d’échec permettent de distinguer erreur de lecture, positionnement et manque de dégâts. |
@@ -94,9 +94,10 @@ Les ressources autoritaires à vérifier lors de toute modification sont :
 
 - run et ordre : `data/runs/odyssey.tres` ;
 - salles : `data/rooms/odyssey/room_01.tres`, `data/rooms/odyssey/room_02.tres`, `data/rooms/odyssey/room_03.tres` ;
-- rencontres : `data/encounters/catabase_shadow_paris_encounter.tres`, `data/encounters/odyssey_room_02_encounter.tres`, `data/encounters/odyssey_room_03_encounter.tres` ;
+- rencontres : `data/encounters/catabase_frail_hellspawn_encounter.tres`, `data/encounters/odyssey_room_02_encounter.tres`, `data/encounters/odyssey_room_03_encounter.tres` ;
 - Achille et évolution : `data/units/allies/achilles.tres`, `data/characters/achilles/disciplines/` ;
-- intention de Paris : `data/units/enemies/catabase_shadow_paris.tres`, `data/spells/enemies/catabase/paris_shadow_arrow.tres` ;
+- intention d'ouverture : `data/units/enemies/catabase_frail_hellspawn.tres`, `data/spells/enemies/catabase/hellspawn_shadow_bolt.tres` ;
+- intention finale de Paris : `data/units/enemies/catabase_shadow_paris.tres`, `data/spells/enemies/catabase/paris_shadow_arrow.tres` ;
 - finale visuelle : `data/maps/painted/odyssey/room_03_layout.tres`, `data/maps/painted/odyssey/room_03_visual.tres` ;
 - résultat immédiat : `core/run_result_narrative_service.gd`, `ui/run_result_screen.gd` ;
 - contrats automatisés actuels : `test/unit/test_catabase_cinematic_v4.gd`, `test/unit/test_catabase_vertical_slice_content.gd`, `test/unit/test_catabase_run_chronicle.gd`.

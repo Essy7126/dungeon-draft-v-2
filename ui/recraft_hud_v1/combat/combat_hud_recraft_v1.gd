@@ -11,6 +11,12 @@ const ITEM_SLOT_SCENE := preload(
 	"res://ui/recraft_hud_v1/components/item_slot/item_slot_view.tscn"
 )
 const METRICS := preload("res://ui/recraft_hud_v1/theme/recraft_hud_metrics_v1.gd")
+const VISUAL_THEME_FACTORY := preload(
+	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
+)
+const DEFAULT_VISUAL_SKIN: HudVisualSkinData = preload(
+	"res://data/ui/hud_visual_skin_neutral_v1.tres"
+)
 const DEFAULT_CHARACTER_THEME: CharacterHUDThemeData = preload(
 	"res://data/ui/elf_hud_theme.tres"
 )
@@ -63,6 +69,7 @@ enum HudSkinVariant {
 @export var character_themes: Array[CharacterHUDThemeData] = []
 @export var skin_variant := HudSkinVariant.ORNATE
 @export var layout_data: CombatHUDLayoutData = DEFAULT_LAYOUT
+@export var visual_skin: HudVisualSkinData = DEFAULT_VISUAL_SKIN
 @export var show_layout_debug := false:
 	set(value):
 		show_layout_debug = value
@@ -70,6 +77,7 @@ enum HudSkinVariant {
 			_layout_debug_overlay.set_debug_enabled(value)
 
 @onready var _portrait_view: Control = %PortraitView
+@onready var _root: Control = $Root
 @onready var _hp_bar: Control = %HealthBar
 @onready var _ap_badge: Control = %ActionPointsBadge
 @onready var _mp_badge: Control = %MovementPointsBadge
@@ -114,6 +122,10 @@ enum HudSkinVariant {
 @onready var _action_depth: TextureRect = %ActionDepth
 @onready var _turn_depth: TextureRect = %TurnDepth
 @onready var _identity_divider: Panel = %IdentityDivider
+@onready var _identity_plate: Panel = %IdentityPlate
+@onready var _action_resources_plate: Panel = %ActionResourcesPlate
+@onready var _spell_block_plate: Panel = %SpellBlockPlate
+@onready var _turn_plate: Panel = %TurnPlate
 
 var _active_mode := ""
 var _active_spell = null
@@ -140,6 +152,9 @@ var _item_buttons: Array = []
 var _presentation_snapshot: Dictionary = {}
 var _last_feedback_text := ""
 var _feedback_tween: Tween = null
+var _hierarchy_tween: Tween = null
+var _interaction_tween: Tween = null
+var _last_interaction_text := ""
 var _reduced_motion := false
 
 
@@ -160,6 +175,7 @@ func _ready() -> void:
 	_ap_badge_home_index = _ap_badge.get_index()
 	_mp_badge_home = _mp_badge.get_parent()
 	_mp_badge_home_index = _mp_badge.get_index()
+	_apply_visual_skin()
 
 	_move_btn.set_label("Déplacer")
 	_attack_btn.set_label("Attaquer")
@@ -198,9 +214,139 @@ func _ready() -> void:
 	_build_item_slots()
 	_apply_bar_mode()
 	_apply_layout_metrics()
+	_propagate_reduced_motion()
 	_refresh_resource_bars(null)
 	_refresh_button_states()
 	set_ui_mode(_ui_mode)
+
+
+func apply_visual_skin(skin: HudVisualSkinData) -> void:
+	visual_skin = skin
+	if not is_node_ready():
+		return
+	_apply_visual_skin()
+	_refresh_resource_bars(_current_unit, false)
+	_apply_character_theme(_current_unit)
+
+
+func _apply_visual_skin() -> void:
+	if visual_skin == null:
+		return
+	_root.theme = VISUAL_THEME_FACTORY.build(visual_skin)
+	_apply_panel_variation(_neutral_background, &"HudDockPanel")
+	_apply_panel_variation(_identity_plate, &"HudIdentityPanel")
+	_apply_panel_variation(_action_resources_plate, &"HudResourcePanel")
+	_apply_panel_variation(_spell_block_plate, &"HudActionPanel")
+	_apply_panel_variation(_turn_plate, &"HudActionPanel")
+	_identity_divider.add_theme_stylebox_override(
+		"panel",
+		VISUAL_THEME_FACTORY.make_panel_style(
+			visual_skin,
+			visual_skin.border_subtle_color,
+			Color.TRANSPARENT,
+			0,
+			0
+		)
+	)
+
+	_apply_label_variation(_identity_discipline_label, &"HudEyebrow", true)
+	_apply_label_variation(_info_label, &"HudTitle", true)
+	_apply_label_variation(_turn_label, &"HudEyebrow", true)
+	_apply_label_variation(_selected_spell_plate, &"HudContextLabel", true)
+	_apply_label_variation(_context_feedback, &"HudContextLabel", true)
+
+	for utility_button in [
+		_show_spells_button,
+		_show_items_button,
+		_inventory_button,
+		_map_button,
+		_skills_button,
+	]:
+		utility_button.theme_type_variation = &"HudUtilityButton"
+		for style_name in [&"normal", &"hover", &"pressed", &"disabled", &"focus"]:
+			utility_button.remove_theme_stylebox_override(style_name)
+		utility_button.add_theme_color_override("icon_normal_color", visual_skin.text_primary)
+		utility_button.add_theme_color_override("icon_hover_color", visual_skin.text_primary)
+		utility_button.add_theme_color_override("icon_pressed_color", visual_skin.text_secondary)
+		utility_button.add_theme_color_override("icon_disabled_color", visual_skin.text_muted)
+
+	_portrait_view.apply_visual_skin(visual_skin)
+	_hp_bar.apply_visual_skin(visual_skin)
+	_ap_badge.apply_visual_skin(visual_skin)
+	_mp_badge.apply_visual_skin(visual_skin)
+	for primary_button in [_move_btn, _attack_btn, _end_btn]:
+		primary_button.apply_visual_skin(visual_skin)
+	for button_value in _spell_buttons:
+		var spell_button := button_value as RecraftSpellSlotView
+		if is_instance_valid(spell_button):
+			spell_button.apply_visual_skin(visual_skin)
+	for button_value in _item_buttons:
+		var item_button := button_value as RecraftItemSlotView
+		if is_instance_valid(item_button):
+			item_button.apply_visual_skin(visual_skin)
+	_move_btn.set_icon(visual_skin.icon_move)
+	_end_btn.set_icon(visual_skin.icon_end_turn)
+
+
+func _apply_panel_variation(panel: Panel, variation: StringName) -> void:
+	panel.remove_theme_stylebox_override("panel")
+	panel.theme_type_variation = variation
+
+
+func _apply_label_variation(
+		label: Label,
+		variation: StringName,
+		clear_local_style := false
+	) -> void:
+	label.theme_type_variation = variation
+	label.remove_theme_font_override("font")
+	label.remove_theme_font_size_override("font_size")
+	label.remove_theme_color_override("font_color")
+	label.remove_theme_color_override("font_outline_color")
+	label.remove_theme_constant_override("outline_size")
+	if clear_local_style:
+		label.remove_theme_stylebox_override("normal")
+
+
+func _visual_motion_duration(token_id: StringName, fallback: float) -> float:
+	return (
+		visual_skin.motion_duration(token_id, _reduced_motion)
+		if visual_skin != null
+		else 0.0
+		if _reduced_motion
+		else fallback
+	)
+
+
+func _name_text_color() -> Color:
+	if visual_skin != null and visual_skin.neutral_grayscale:
+		return visual_skin.text_primary
+	if _active_character_theme != null:
+		return _active_character_theme.text_color
+	return NEUTRAL_NAME_COLOR
+
+
+func _decorative_character_bar_enabled() -> bool:
+	return (
+		_character_theme_bar.texture != null
+		and not (
+			visual_skin != null
+			and visual_skin.neutral_grayscale
+		)
+	)
+
+
+func get_visual_skin_snapshot() -> Dictionary:
+	return {
+		"skin_id": visual_skin.skin_id if visual_skin != null else &"",
+		"neutral_grayscale": (
+			visual_skin.neutral_grayscale if visual_skin != null else false
+		),
+		"theme_assigned": _root.theme != null if is_node_ready() else false,
+		"move_icon": visual_skin.icon_move if visual_skin != null else null,
+		"end_turn_icon": visual_skin.icon_end_turn if visual_skin != null else null,
+		"reduced_motion": _reduced_motion,
+	}
 
 
 func _exit_tree() -> void:
@@ -272,6 +418,15 @@ func refresh_from_context() -> void:
 			active_unit = context_turn_queue.get_current_unit()
 	update_info(active_unit)
 	build_spell_buttons(active_unit)
+	# Le HUD est persistant entre les salles. Lors d'un rebind, son dernier
+	# snapshot peut donc encore decrire une modale ou la resolution du combat
+	# precedent. Le contexte actif est l'autorite : on relit son snapshot au lieu
+	# d'attendre une future transition qui peut ne jamais etre emise si l'etat de
+	# tour est deja IDLE.
+	if _combat_context.has_method("get_combat_presentation_snapshot"):
+		var snapshot: Dictionary = _combat_context.get_combat_presentation_snapshot()
+		if not snapshot.is_empty():
+			apply_presentation_snapshot(snapshot)
 
 
 func set_ui_mode(mode: RunUIMode) -> void:
@@ -280,6 +435,9 @@ func set_ui_mode(mode: RunUIMode) -> void:
 	if mode != RunUIMode.COMBAT:
 		set_player_controls_enabled(false)
 		_turn_intro_banner.hide_immediately()
+		_selected_spell_plate.hide()
+	elif is_node_ready():
+		_refresh_interaction_plate(false)
 
 
 func get_ui_mode() -> RunUIMode:
@@ -345,6 +503,7 @@ func _add_spell_button(unit, spell) -> void:
 		return
 	var ap_cost: int = unit.get_spell_ap_cost(spell)
 	_spell_box.add_child(button)
+	button.apply_visual_skin(visual_skin)
 	button.configure(
 		spell,
 		ap_cost,
@@ -358,6 +517,7 @@ func _add_spell_button(unit, spell) -> void:
 			_active_character_theme.get_spell_frame_for(spell)
 		)
 	button.set_refined_style(_refined_skin_active())
+	button.set_reduced_motion(_reduced_motion)
 	button.set_meta("spell", spell)
 	button.mouse_entered.connect(func() -> void: _show_spell_card(unit, spell))
 	button.mouse_exited.connect(_hide_keyword_tooltip)
@@ -401,7 +561,9 @@ func _build_item_slots() -> void:
 			push_error("Impossible d'instancier ItemSlotView.")
 			return
 		_item_slots_container.add_child(button)
+		button.apply_visual_skin(visual_skin)
 		button.clear_item()
+		button.set_reduced_motion(_reduced_motion)
 		button.pressed.connect(
 			func() -> void: _on_item_slot_pressed(button)
 		)
@@ -553,8 +715,16 @@ func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:
 		_hp_bar.set_resource(
 			0.0, 1.0, Color(0.64, 0.15, 0.16), null, "PV", true, animate_changes
 		)
-		_ap_badge.set_badge(0, 0, Color(0.92, 0.69, 0.18), null, "PA")
-		_mp_badge.set_badge(0, 0, Color(0.31, 0.67, 0.9), null, "PM")
+		_ap_badge.set_badge(
+			0, 0, Color(0.92, 0.69, 0.18),
+			visual_skin.icon_action_points if visual_skin != null else null,
+			"PA"
+		)
+		_mp_badge.set_badge(
+			0, 0, Color(0.31, 0.67, 0.9),
+			visual_skin.icon_movement_points if visual_skin != null else null,
+			"PM"
+		)
 		return
 
 	_hp_bar.set_resource(
@@ -570,14 +740,14 @@ func _refresh_resource_bars(unit, animate_changes: bool = true) -> void:
 		unit.current_ap,
 		unit.max_ap.get_int(),
 		Color(0.94, 0.68, 0.12),
-		null,
+		visual_skin.icon_action_points if visual_skin != null else null,
 		"PA"
 	)
 	_mp_badge.set_badge(
 		unit.current_mp,
 		unit.max_mp.get_int(),
 		Color(0.27, 0.62, 0.92),
-		null,
+		visual_skin.icon_movement_points if visual_skin != null else null,
 		"PM"
 	)
 
@@ -611,17 +781,34 @@ func _refresh_button_states() -> void:
 	_attack_btn.tooltip_text = _attack_tooltip(_current_unit)
 
 	for button_value in _spell_buttons:
-		var button := button_value as Button
+		var button := button_value as RecraftSpellSlotView
 		var spell = button.get_meta("spell") if button.has_meta("spell") else null
-		var reason := _spell_unusable_reason(_current_unit, spell)
+		var availability: StringName = StringName(
+			_current_unit.get_spell_availability_reason(spell)
+			if _current_unit != null else &"spell"
+		)
 		var is_selected: bool = (
 			_active_mode == "spell"
 			and spell == _active_spell
 		)
-		if not _player_controls_enabled:
+		var phase := StringName(
+			_presentation_snapshot.get("phase_name", &"PLAYER_IDLE")
+		)
+		if is_selected and phase == &"RESOLVING_ACTION":
+			button.set_visual_state(
+				RecraftSpellSlotView.VisualState.SELECTED_LOCKED
+			)
+		elif not _player_controls_enabled:
 			button.set_visual_state(RecraftSpellSlotView.VisualState.DISABLED)
-		elif not reason.is_empty():
+		elif availability == &"pa":
 			button.set_visual_state(RecraftSpellSlotView.VisualState.UNAFFORDABLE)
+		elif availability == &"cooldown":
+			button.set_visual_state(
+				RecraftSpellSlotView.VisualState.COOLDOWN,
+				_current_unit.get_spell_cooldown_remaining(spell),
+			)
+		elif availability != &"":
+			button.set_visual_state(RecraftSpellSlotView.VisualState.LOCKED)
 		elif is_selected:
 			button.set_visual_state(RecraftSpellSlotView.VisualState.SELECTED)
 		else:
@@ -634,36 +821,52 @@ func _refresh_button_states() -> void:
 	_sync_primary_button(_end_btn, false)
 
 
+func _spell_unusable_reason(unit, spell: Spell) -> String:
+	if unit == null:
+		return "aucun lanceur actif"
+	if spell == null:
+		return "sort invalide"
+	match unit.get_spell_availability_reason(spell):
+		&"pa":
+			return "PA insuffisants (%d / %d)" % [
+				unit.current_ap, unit.get_spell_ap_cost(spell)
+			]
+		&"cooldown":
+			return "recharge : %d activation(s)" % unit.get_spell_cooldown_remaining(spell)
+		&"max_uses":
+			return "nombre maximal d'utilisations atteint"
+		&"once_per_activation":
+			return "déjà utilisé pendant cette activation"
+		&"caster_dead":
+			return "lanceur hors combat"
+		&"":
+			return ""
+		_:
+			return "capacité verrouillée"
+
+
 func set_active_mode(mode: String, active_spell = null) -> void:
 	_active_mode = mode
 	_active_spell = active_spell
-	_selected_spell_plate.visible = (
-		mode in ["move", "attack"] \
-		or (mode == "spell" and active_spell != null)
-	)
-	if mode == "move":
-		_selected_spell_plate.text = (
-			"Déplacer  ·  Choisissez une case  ·  Échap pour annuler"
-		)
-	elif mode == "attack":
-		_selected_spell_plate.text = (
-			"Attaquer  ·  Choisissez un ennemi adjacent  ·  Échap pour annuler"
-		)
-	elif active_spell != null and _current_unit != null:
-		_selected_spell_plate.text = (
-			"%s  ·  %d PA  ·  Échap pour annuler"
-			% [active_spell.spell_name, _current_unit.get_spell_ap_cost(active_spell)]
-		)
-	else:
-		_selected_spell_plate.text = ""
+	_refresh_interaction_plate()
 	if _current_unit != null:
 		_refresh_resource_bars(_current_unit)
 	_refresh_button_states()
 
 
 func set_player_controls_enabled(enabled: bool) -> void:
-	super.set_player_controls_enabled(enabled)
-	if not enabled or _ui_mode != RunUIMode.COMBAT or not is_node_ready():
+	# Une commande imperative ne doit jamais pouvoir contredire le dernier
+	# snapshot de presentation. Battle conserve cet appel pour la compatibilite
+	# avec le HUD historique, mais le Recraft persistant derive toujours son etat
+	# effectif de l'autorite CombatPresentationState des qu'elle est disponible.
+	var presentation_allows_controls := bool(
+		_presentation_snapshot.get("controls_enabled", enabled)
+	)
+	var effective_enabled := enabled and presentation_allows_controls
+	super.set_player_controls_enabled(effective_enabled)
+	if not effective_enabled \
+			or _ui_mode != RunUIMode.COMBAT \
+			or not is_node_ready():
 		return
 	var focus_owner := get_viewport().gui_get_focus_owner()
 	if focus_owner == null:
@@ -672,6 +875,7 @@ func set_player_controls_enabled(enabled: bool) -> void:
 
 func apply_presentation_snapshot(snapshot: Dictionary) -> void:
 	_presentation_snapshot = snapshot.duplicate(true)
+	_sync_active_mode_from_presentation(snapshot)
 	set_player_controls_enabled(
 		bool(snapshot.get("controls_enabled", false))
 	)
@@ -695,13 +899,9 @@ func apply_presentation_snapshot(snapshot: Dictionary) -> void:
 				if phase == &"RESOLVING_ACTION"
 				else "Combat terminé" if phase == &"BATTLE_ENDING" else "Indisponible"
 			)
-	var focus_active := bool(snapshot.get("focus_active", false))
-	_character_section.modulate.a = 0.78 if focus_active else 1.0
-	_turn_section.modulate.a = 0.72 if focus_active else 1.0
-	_utility_dock.modulate.a = 0.32 if focus_active else 1.0
-	_spell_section.modulate.a = (
-		0.78 if phase == &"RESOLVING_ACTION" else 1.0
-	)
+	_apply_presentation_hierarchy(phase)
+	_refresh_interaction_plate()
+	_refresh_button_states()
 	var feedback := str(snapshot.get("feedback_text", ""))
 	if feedback.is_empty():
 		_hide_context_feedback()
@@ -717,6 +917,190 @@ func get_presentation_snapshot() -> Dictionary:
 	return _presentation_snapshot.duplicate(true)
 
 
+func _sync_active_mode_from_presentation(snapshot: Dictionary) -> void:
+	var phase := StringName(snapshot.get("phase_name", &"UNKNOWN"))
+	var selection_mode := str(snapshot.get("selection_mode", &""))
+	if phase in [&"PLAYER_TARGETING", &"RESOLVING_ACTION"] \
+			and selection_mode in ["move", "attack", "spell"]:
+		_active_mode = selection_mode
+		if selection_mode == "spell" and _active_spell == null \
+				and is_instance_valid(_combat_context):
+			var context_turn_state = _combat_context.get("turn_state")
+			if context_turn_state != null:
+				_active_spell = context_turn_state.get("selected_spell")
+		return
+	if phase != &"RESOLVING_ACTION":
+		_active_mode = ""
+		_active_spell = null
+
+
+func _active_action_title() -> String:
+	match _active_mode:
+		"move":
+			return "DÉPLACEMENT"
+		"attack":
+			return "ATTAQUE"
+		"spell":
+			if _active_spell != null:
+				var title := str(_active_spell.spell_name).to_upper()
+				if _current_unit != null:
+					return "%s · %d PA" % [
+						title,
+						_current_unit.get_spell_ap_cost(_active_spell),
+					]
+				return title
+	return _resolution_title(
+		StringName(_presentation_snapshot.get("resolution_kind", &""))
+	)
+
+
+func _resolution_title(kind: StringName) -> String:
+	match kind:
+		&"move":
+			return "DÉPLACEMENT"
+		&"basic_attack", &"attack":
+			return "ATTAQUE"
+		&"spell":
+			return "CAPACITÉ"
+		&"turn_start":
+			return "DÉBUT D'ACTIVATION"
+		&"end_turn":
+			return "FIN D'ACTIVATION"
+		&"action":
+			return "ACTION"
+	return "ACTION"
+
+
+func _targeting_instruction() -> String:
+	match _active_mode:
+		"move":
+			return "CASE"
+		"attack":
+			return "ENNEMI"
+		"spell":
+			return "CIBLE"
+	return "CIBLE"
+
+
+func _active_action_short_title() -> String:
+	match _active_mode:
+		"move":
+			return "BOUGER"
+		"attack":
+			return "ATTAQUE"
+		"spell":
+			if _active_spell != null:
+				var spell_name := str(_active_spell.spell_name).strip_edges()
+				if not spell_name.is_empty():
+					return spell_name.get_slice(" ", 0).to_upper()
+	return "ACTION"
+
+
+func _interaction_plate_text() -> String:
+	var phase := StringName(
+		_presentation_snapshot.get("phase_name", &"PLAYER_IDLE")
+	)
+	match phase:
+		&"PLAYER_TARGETING":
+			return "2/3 CIBLAGE · %s · %s · ÉCHAP" % [
+				_active_action_short_title(),
+				_targeting_instruction(),
+			]
+		&"RESOLVING_ACTION":
+			return "3/3 RÉSOLUTION · ACTION EN COURS"
+		&"ENEMY_TURN":
+			return "ATTENTE · TOUR ADVERSE · ORDRE À GAUCHE"
+		&"MODAL":
+			return "DÉCISION · CHOISISSEZ UNE OPTION"
+		&"BATTLE_ENDING":
+			return "COMBAT TERMINÉ · RÉSULTAT EN COURS"
+		_:
+			return "1/3 CHOISIR · M BOUGER · A ATTAQUER · 1–4 SORTS"
+
+
+func _refresh_interaction_plate(animate: bool = true) -> void:
+	if not is_node_ready() or not is_instance_valid(_selected_spell_plate):
+		return
+	_selected_spell_plate.visible = _ui_mode == RunUIMode.COMBAT
+	var next_text := _interaction_plate_text()
+	_selected_spell_plate.text = next_text
+	_selected_spell_plate.tooltip_text = next_text
+	_selected_spell_plate.accessibility_name = "Contexte de combat : %s" % next_text
+	# Conserve le contexte a jour meme pendant une transition. Le HUD est
+	# persistant et peut recevoir le snapshot autoritaire avant de repasser en
+	# mode COMBAT ; dans ce cas le texte doit etre pret des sa reouverture.
+	if not _selected_spell_plate.visible:
+		_last_interaction_text = next_text
+		return
+	if next_text == _last_interaction_text:
+		return
+	_last_interaction_text = next_text
+	if _interaction_tween != null and _interaction_tween.is_valid():
+		_interaction_tween.kill()
+	_interaction_tween = null
+	if _reduced_motion or not animate:
+		_selected_spell_plate.modulate.a = 1.0
+		return
+	_selected_spell_plate.modulate.a = 0.48
+	_interaction_tween = create_tween()
+	_interaction_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_interaction_tween.tween_property(
+		_selected_spell_plate,
+		"modulate:a",
+		1.0,
+		_visual_motion_duration(&"selection", 0.12)
+	)
+
+
+func _apply_presentation_hierarchy(phase: StringName) -> void:
+	# Identité, PV et ownership restent toujours au premier plan. Les états
+	# d'action portent eux-mêmes leur verrouillage par forme, texte et contour.
+	_character_section.modulate.a = 1.0
+	_turn_section.modulate.a = 1.0
+	_spell_section.modulate.a = 1.0
+	var utility_alpha := 1.0
+	var toggle_alpha := 1.0
+	match phase:
+		&"PLAYER_TARGETING":
+			utility_alpha = 0.34
+			toggle_alpha = 0.68
+		&"RESOLVING_ACTION":
+			utility_alpha = 0.24
+			toggle_alpha = 0.42
+		&"ENEMY_TURN":
+			utility_alpha = 0.42
+			toggle_alpha = 0.5
+		&"MODAL", &"BATTLE_ENDING":
+			utility_alpha = 0.22
+			toggle_alpha = 0.36
+	_apply_hierarchy_alphas(utility_alpha, toggle_alpha)
+
+
+func _apply_hierarchy_alphas(utility_alpha: float, toggle_alpha: float) -> void:
+	if _hierarchy_tween != null and _hierarchy_tween.is_valid():
+		_hierarchy_tween.kill()
+	_hierarchy_tween = null
+	if _reduced_motion:
+		_utility_dock.modulate.a = utility_alpha
+		_bar_toggle.modulate.a = toggle_alpha
+		return
+	_hierarchy_tween = create_tween()
+	_hierarchy_tween.set_parallel(true)
+	_hierarchy_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_hierarchy_tween.tween_property(
+		_utility_dock,
+		"modulate:a",
+		utility_alpha,
+		_visual_motion_duration(&"selection", 0.12)
+	)
+	_hierarchy_tween.tween_property(
+		_bar_toggle,
+		"modulate:a",
+		toggle_alpha,
+		_visual_motion_duration(&"selection", 0.12)
+	)
+
+
 func show_context_feedback(
 		message: String,
 		kind: StringName = &"warning"
@@ -726,15 +1110,32 @@ func show_context_feedback(
 		return
 	if _feedback_tween != null and _feedback_tween.is_valid():
 		_feedback_tween.kill()
-	_context_feedback.text = message
-	_context_feedback.add_theme_color_override(
-		"font_color",
-		Color(1.0, 0.46, 0.4)
+	var prefix := (
+		"[X] ACTION REFUSÉE"
+		if kind == &"error"
+		else "[!] ACTION IMPOSSIBLE"
+		if kind == &"warning"
+		else "[i] INFORMATION"
+	)
+	_context_feedback.text = "%s · %s" % [prefix, message]
+	_context_feedback.accessibility_name = "%s : %s" % [
+		prefix.replace("[X] ", "").replace("[!] ", "").replace("[i] ", ""),
+		message,
+	]
+	var feedback_color := (
+		visual_skin.text_primary
+		if visual_skin != null and kind == &"error"
+		else visual_skin.text_secondary
+		if visual_skin != null and kind == &"warning"
+		else visual_skin.text_muted
+		if visual_skin != null
+		else Color(1.0, 0.46, 0.4)
 		if kind == &"error"
 		else Color(1.0, 0.86, 0.48)
 		if kind == &"warning"
 		else Color(0.67, 0.88, 1.0)
 	)
+	_context_feedback.add_theme_color_override("font_color", feedback_color)
 	_context_feedback.modulate.a = 0.0
 	_context_feedback.show()
 	if _reduced_motion:
@@ -745,10 +1146,20 @@ func show_context_feedback(
 		return
 	_feedback_tween = create_tween()
 	_feedback_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_feedback_tween.tween_property(_context_feedback, "modulate:a", 1.0, 0.12)
+	_feedback_tween.tween_property(
+		_context_feedback,
+		"modulate:a",
+		1.0,
+		_visual_motion_duration(&"feedback", 0.12)
+	)
 	_feedback_tween.tween_interval(1.15)
 	_feedback_tween.set_ease(Tween.EASE_IN)
-	_feedback_tween.tween_property(_context_feedback, "modulate:a", 0.0, 0.22)
+	_feedback_tween.tween_property(
+		_context_feedback,
+		"modulate:a",
+		0.0,
+		_visual_motion_duration(&"feedback", 0.22)
+	)
 	_feedback_tween.tween_callback(_context_feedback.hide)
 
 
@@ -782,6 +1193,36 @@ func set_reduced_motion(enabled: bool) -> void:
 	_reduced_motion = enabled
 	if is_instance_valid(_turn_intro_banner):
 		_turn_intro_banner.set_reduced_motion(enabled)
+	if not is_node_ready():
+		return
+	_propagate_reduced_motion()
+	if _hierarchy_tween != null and _hierarchy_tween.is_valid():
+		_hierarchy_tween.kill()
+	_hierarchy_tween = null
+	if _interaction_tween != null and _interaction_tween.is_valid():
+		_interaction_tween.kill()
+	_interaction_tween = null
+	_selected_spell_plate.modulate.a = 1.0
+	_apply_presentation_hierarchy(
+		StringName(_presentation_snapshot.get("phase_name", &"PLAYER_IDLE"))
+	)
+
+
+func _propagate_reduced_motion() -> void:
+	if is_instance_valid(_hp_bar) and _hp_bar.has_method("set_reduced_motion"):
+		_hp_bar.set_reduced_motion(_reduced_motion)
+	for primary_button in [_move_btn, _attack_btn, _end_btn]:
+		if is_instance_valid(primary_button) \
+				and primary_button.has_method("set_reduced_motion"):
+			primary_button.set_reduced_motion(_reduced_motion)
+	for button_value in _spell_buttons:
+		var spell_button := button_value as RecraftSpellSlotView
+		if is_instance_valid(spell_button):
+			spell_button.set_reduced_motion(_reduced_motion)
+	for button_value in _item_buttons:
+		var item_button := button_value as RecraftItemSlotView
+		if is_instance_valid(item_button):
+			item_button.set_reduced_motion(_reduced_motion)
 
 
 func is_reduced_motion_enabled() -> bool:
@@ -804,43 +1245,43 @@ func _resolve_character_theme(unit) -> CharacterHUDThemeData:
 func _apply_character_theme(unit) -> void:
 	_active_character_theme = _resolve_character_theme(unit)
 	if _active_character_theme == null:
+		var refined_fallback := _refined_skin_active()
 		_character_theme_bar.texture = null
 		_character_theme_bar.visible = false
-		_info_label.add_theme_color_override(
-			"font_color",
-			NEUTRAL_NAME_COLOR
-		)
+		_info_label.add_theme_color_override("font_color", _name_text_color())
 		_portrait_view.set_discipline_emblem(null)
 		_portrait_view.set_portrait_frame(null)
 		_hp_bar.set_frame_texture(null)
 		_attack_btn.set_icon(null)
-		_move_btn.set_icon(null)
+		_move_btn.set_icon(
+			visual_skin.icon_move if visual_skin != null else null
+		)
+		_end_btn.set_icon(
+			visual_skin.icon_end_turn if visual_skin != null else null
+		)
 		_attack_btn.set_background_texture(null)
 		_move_btn.set_background_texture(null)
 		_end_btn.set_background_texture(null)
-		_portrait_view.set_refined_style(false)
-		_hp_bar.set_refined_style(false)
-		_ap_badge.set_refined_style(false)
-		_mp_badge.set_refined_style(false)
-		_move_btn.set_refined_style(false)
-		_attack_btn.set_refined_style(false)
-		_end_btn.set_refined_style(false)
+		_portrait_view.set_refined_style(refined_fallback)
+		_hp_bar.set_refined_style(refined_fallback)
+		_ap_badge.set_refined_style(refined_fallback)
+		_mp_badge.set_refined_style(refined_fallback)
+		_move_btn.set_refined_style(refined_fallback)
+		_attack_btn.set_refined_style(refined_fallback)
+		_end_btn.set_refined_style(refined_fallback, true)
 		_identity_discipline_label.text = ""
 		_identity_discipline_label.visible = false
 		_utility_dock.visible = false
 		_inventory_button.disabled = true
 		_skills_button.disabled = true
-		_set_refined_depth_visible(false)
-		_set_attack_grouped_with_spells(false)
-		_set_clean_composition(false)
+		_set_refined_depth_visible(refined_fallback)
+		_set_attack_grouped_with_spells(_official_chassis_active())
+		_set_clean_composition(_clean_skin_active())
 		_apply_layout_metrics()
 		return
 	_character_theme_bar.texture = _active_character_theme.character_bar_texture
-	_character_theme_bar.visible = _character_theme_bar.texture != null
-	_info_label.add_theme_color_override(
-		"font_color",
-		_active_character_theme.text_color
-	)
+	_character_theme_bar.visible = _decorative_character_bar_enabled()
+	_info_label.add_theme_color_override("font_color", _name_text_color())
 	if _active_character_theme.portrait_texture != null:
 		_portrait_view.set_portrait(
 			_active_character_theme.portrait_texture,
@@ -867,7 +1308,14 @@ func _apply_character_theme(unit) -> void:
 	_attack_btn.set_icon(
 		_active_character_theme.get_spell_icon(&"basic_attack")
 	)
-	_move_btn.set_icon(_active_character_theme.move_action_icon)
+	_move_btn.set_icon(
+		visual_skin.icon_move
+		if visual_skin != null and visual_skin.icon_move != null
+		else _active_character_theme.move_action_icon
+	)
+	_end_btn.set_icon(
+		visual_skin.icon_end_turn if visual_skin != null else null
+	)
 	_attack_btn.set_background_texture(
 		_active_character_theme.get_spell_frame(&"basic_attack")
 	)
@@ -946,7 +1394,13 @@ func get_calibrated_spell_metrics() -> Dictionary:
 
 
 func _official_chassis_active() -> bool:
-	return _active_character_theme != null
+	return (
+		_active_character_theme != null
+		or (
+			skin_variant == HudSkinVariant.REFINED
+			and visual_skin != null
+		)
+	)
 
 
 func _clean_skin_active() -> bool:
@@ -957,7 +1411,10 @@ func _refined_skin_active() -> bool:
 	return (
 		_official_chassis_active()
 		and skin_variant == HudSkinVariant.REFINED
-		and _active_character_theme.refined_components
+		and (
+			_active_character_theme == null
+			or _active_character_theme.refined_components
+		)
 	)
 
 
@@ -965,7 +1422,7 @@ func _compact_layout_active() -> bool:
 	return (
 		_clean_skin_active()
 		and layout_data != null
-		and layout_data.overall_height <= 118.0
+		and layout_data.overall_height <= 150.0
 	)
 
 
@@ -1196,8 +1653,9 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 	_character_panel_size = Vector2(panel_width, panel_height)
 	_hud_band.offset_top = -panel_height
 	_hud_band.offset_bottom = 0.0
-	_neutral_background.visible = _character_theme_bar.texture == null
-	_character_theme_bar.visible = _character_theme_bar.texture != null
+	_apply_context_feedback_layout(viewport_width, panel_height)
+	_neutral_background.visible = not _decorative_character_bar_enabled()
+	_character_theme_bar.visible = _decorative_character_bar_enabled()
 	_spellbar_background.visible = false
 	if _clean_skin_active():
 		_set_control_rect(
@@ -1336,7 +1794,29 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 				)
 			)
 		)
-		_selected_spell_plate.add_theme_font_size_override("font_size", maxi(layout_data.contextual_text_size, 12))
+		_selected_spell_plate.add_theme_font_size_override(
+			"font_size",
+			maxi(roundi(layout_data.contextual_text_size * calibration_scale), 11)
+		)
+
+
+func _apply_context_feedback_layout(
+		viewport_width: float,
+		panel_height: float
+	) -> void:
+	# Le retour ponctuel vit toujours au-dessus du chassis. Une position fixe
+	# finissait dans le bandeau d'etape des layouts hauts et sur certaines
+	# resolutions. Le placement suit maintenant la hauteur reelle du HUD.
+	var visual_scale := _base_chassis_visual_scale(viewport_width)
+	var feedback_height := clampf(40.0 * visual_scale, 34.0, 44.0)
+	var feedback_gap := clampf(12.0 * visual_scale, 10.0, 16.0)
+	var feedback_width := clampf(720.0 * visual_scale, 560.0, 760.0)
+	_context_feedback.offset_left = -feedback_width * 0.5
+	_context_feedback.offset_right = feedback_width * 0.5
+	_context_feedback.offset_bottom = -panel_height - feedback_gap
+	_context_feedback.offset_top = (
+		_context_feedback.offset_bottom - feedback_height
+	)
 
 
 func _restore_neutral_panel_layout() -> void:
@@ -1551,13 +2031,45 @@ func _apply_layout_metrics() -> void:
 			Rect2(0.0, end_top, end_turn_size.x, end_turn_size.y)
 		)
 		var utility_size := clampf(28.0 * compact_scale, 22.0, 30.0)
-		_skills_button.custom_minimum_size = Vector2.ONE * utility_size
+		for utility_button in [_inventory_button, _map_button, _skills_button]:
+			utility_button.custom_minimum_size = Vector2.ONE * utility_size
 		_set_control_rect(
 			_utility_dock,
 			Rect2(
 				(end_turn_size.x - utility_size) * 0.5,
 				turn_content_height - utility_size - 2.0,
 				utility_size,
+				utility_size
+			)
+		)
+	elif _refined_skin_active():
+		var refined_scale := _chassis_visual_scale(viewport_width)
+		var refined_end_top := 6.0 * refined_scale
+		_set_control_rect(
+			_end_btn,
+			Rect2(0.0, refined_end_top, end_turn_size.x, end_turn_size.y)
+		)
+		var utility_size := clampf(40.0 * refined_scale, 32.0, 42.0)
+		var utility_gap := clampf(6.0 * refined_scale, 4.0, 7.0)
+		for utility_button in [_inventory_button, _map_button, _skills_button]:
+			utility_button.custom_minimum_size = Vector2.ONE * utility_size
+		_utility_dock.add_theme_constant_override(
+			"separation", int(roundf(utility_gap))
+		)
+		var visible_utility_count := 0
+		for utility_button in [_inventory_button, _map_button, _skills_button]:
+			if utility_button.visible:
+				visible_utility_count += 1
+		var utility_width := (
+			visible_utility_count * utility_size
+			+ maxi(visible_utility_count - 1, 0) * utility_gap
+		)
+		_set_control_rect(
+			_utility_dock,
+			Rect2(
+				(end_turn_size.x - utility_width) * 0.5,
+				turn_content_height - utility_size - 2.0 * refined_scale,
+				utility_width,
 				utility_size
 			)
 		)

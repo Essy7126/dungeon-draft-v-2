@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Balayage</title>
+  <desc id="desc">Une lance pivote dans un large arc circulaire.</desc>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 20A22 22 0 1 0 48 46"/>
+    <path d="m39 49 10-2-2-10"/>
+    <path d="m18 45 25-25"/>
+    <path d="m40 16 10-3-3 10Z" fill="#FFFFFF" stroke="none"/>
+    <circle cx="18" cy="45" r="3" fill="#FFFFFF" stroke="none"/>
+  </g>
+</svg>

@@ -130,9 +130,7 @@ func _execute_cast(
 		generation = _operation_generation
 	if not _can_continue(generation, enemy) or spell == null:
 		return
-	if not enemy.can_use_spell(spell):
-		return
-	if not _battle.spell_caster.is_valid_target(enemy, spell, cell):
+	if _battle.spell_caster.get_cast_failure_reason(enemy, spell, cell) != &"":
 		return
 	var target := _battle.grid.get_unit(cell) as Unit
 	var view = _battle._unit_views.get(enemy)
@@ -151,37 +149,46 @@ func _execute_cast(
 		return
 	var context: CastContext = _battle.spell_caster.begin_cast(enemy, spell, cell)
 	if context.failed:
+		if is_instance_valid(view) \
+				and view.has_method("cancel_pending_visual_actions"):
+			view.cancel_pending_visual_actions()
 		return
+	_battle._begin_outcome_deferral()
 	if spell.impact_delay_seconds > 0.0:
 		VFXManager.play_spell_vfx(enemy, spell, cell)
 		if not await _wait_seconds_safe(
 			spell.impact_delay_seconds,
 			generation,
-			enemy,
-			target,
-			target != null
+			enemy
 		):
+			_battle._finish_outcome_deferral()
 			return
-	if not _can_continue(generation, enemy, target, target != null):
+	if not _can_continue(generation, enemy):
+		_battle._finish_outcome_deferral()
 		return
 	var report: Dictionary = _battle.spell_caster.resolve_cast(context)
-	EventBus.ap_after_action_changed.emit(
-		enemy, context.ap_before, enemy.current_ap, context.action_id
-	)
-	EventBus.action_resolved.emit(
-		enemy, context.action_id, &"spell", report.duplicate(false)
-	)
-	if not _can_continue(generation, enemy):
+	if not _can_continue(generation):
+		_battle._finish_outcome_deferral()
 		return
 	if is_instance_valid(_battle.grid_view):
 		_battle.grid_view.queue_redraw()
 	if has_action_visual and is_instance_valid(view) \
 			and view.has_method("wait_for_action_visual_finished"):
 		await view.wait_for_action_visual_finished()
-		if not _can_continue(generation, enemy):
+		if not _can_continue(generation):
+			_battle._finish_outcome_deferral()
 			return
 	else:
-		await _wait_seconds_safe(0.3, generation, enemy)
+		if not await _wait_seconds_safe(0.3, generation):
+			_battle._finish_outcome_deferral()
+			return
+	EventBus.ap_after_action_changed.emit(
+		enemy, context.ap_before, enemy.current_ap, context.action_id
+	)
+	EventBus.action_resolved.emit(
+		enemy, context.action_id, &"spell", report.duplicate(false)
+	)
+	_battle._finish_outcome_deferral()
 
 
 func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
@@ -210,8 +217,10 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 	)
 	if not enemy.spend_mp(cost):
 		return
+	_battle._begin_outcome_deferral()
 	await _battle._animate_move(enemy, path)
-	if not _can_continue(generation, enemy):
+	if not _can_continue(generation):
+		_battle._finish_outcome_deferral()
 		return
 	EventBus.voluntary_movement_resolved.emit(
 		enemy, path.duplicate(), cost, action_id
@@ -219,6 +228,7 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 	EventBus.action_resolved.emit(enemy, action_id, &"voluntary_movement", {
 		"distance": maxi(0, path.size() - 1), "paid_mp": cost,
 	})
+	_battle._finish_outcome_deferral()
 
 
 func _execute_attack(
@@ -230,7 +240,10 @@ func _execute_attack(
 		generation = _operation_generation
 	if not _can_continue(generation, enemy, target, true):
 		return
-	if not enemy.basic_attack_enabled:
+	# The AI plans a whole sequence from the activation's initial resources.
+	# A preceding spell may therefore have spent the AP reserved implicitly by a
+	# later basic attack. Reject it before starting any presentation.
+	if not enemy.can_use_basic_attack():
 		return
 	if not _battle.grid.are_adjacent(enemy.grid_pos, target.grid_pos):
 		return
@@ -239,13 +252,32 @@ func _execute_attack(
 	if is_instance_valid(view) and view.has_method("prepare_basic_attack_visual"):
 		var visual_ready: bool = await view.prepare_basic_attack_visual(target.grid_pos)
 		if not visual_ready or not _can_continue(generation, enemy, target, true):
+			if is_instance_valid(view) \
+					and view.has_method("cancel_pending_visual_actions"):
+				view.cancel_pending_visual_actions()
 			return
 		has_action_visual = view.has_method("has_optional_visual") \
 			and view.has_optional_visual()
+	if not has_action_visual:
+		await _battle._animate_attack_to_impact(enemy, target)
+		if not _can_continue(generation, enemy, target, true):
+			return
+	# Keep the spend as the atomic authority, but close a visual that reached its
+	# release if resources changed during the asynchronous preparation.
+	if not enemy.can_use_basic_attack():
+		if is_instance_valid(view) \
+				and view.has_method("cancel_pending_visual_actions"):
+			view.cancel_pending_visual_actions()
+		return
+	_battle._begin_outcome_deferral()
 	var action_id: StringName = _battle._next_action_id(&"enemy_basic_attack")
 	var ap_before := enemy.current_ap
 	if not _can_continue(generation, enemy, target, true) \
 			or not enemy.spend_ap(enemy.get_basic_attack_ap_cost()):
+		if is_instance_valid(view) \
+				and view.has_method("cancel_pending_visual_actions"):
+			view.cancel_pending_visual_actions()
+		_battle._finish_outcome_deferral()
 		return
 	var result = target.take_damage(
 		enemy.get_attack(),
@@ -256,16 +288,20 @@ func _execute_attack(
 	)
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(enemy, target)
-	if not _can_continue(generation, enemy):
+	if not _can_continue(generation):
+		_battle._finish_outcome_deferral()
 		return
 	if has_action_visual and is_instance_valid(view) \
 			and view.has_method("wait_for_action_visual_finished"):
 		await view.wait_for_action_visual_finished()
-		if not _can_continue(generation, enemy):
+		if not _can_continue(generation):
+			_battle._finish_outcome_deferral()
 			return
 	else:
-		await _battle._animate_attack(enemy, target)
-		if not _can_continue(generation, enemy):
+		await _battle._animate_attack_recovery(enemy)
+		if not _can_continue(generation):
+			_battle._finish_outcome_deferral()
 			return
 	EventBus.ap_after_action_changed.emit(enemy, ap_before, enemy.current_ap, action_id)
 	EventBus.action_resolved.emit(enemy, action_id, &"basic_attack", {"target": target})
+	_battle._finish_outcome_deferral()

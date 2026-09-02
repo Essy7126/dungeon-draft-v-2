@@ -271,6 +271,8 @@ func _combat_context_allows_run_modal() -> bool:
 			or not context.has_method("get_combat_presentation_snapshot"):
 		return true
 	var snapshot: Dictionary = context.get_combat_presentation_snapshot()
+	if snapshot.has("input_locked"):
+		return not bool(snapshot.get("input_locked", false))
 	return StringName(snapshot.get("phase_name", &"PLAYER_IDLE")) not in [
 		&"RESOLVING_ACTION",
 		&"MODAL",
