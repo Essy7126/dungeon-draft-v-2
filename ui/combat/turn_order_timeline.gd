@@ -11,6 +11,13 @@ const DEFAULT_VISUAL_SKIN: HudVisualSkinData = preload(
 const CARD_GAP_RATIO := 0.0054
 const WIDTH_RATIOS := [0.08, 0.065, 0.06, 0.057]
 const HEIGHT_RATIOS := [0.06, 0.05, 0.044, 0.039]
+const PREMIUM_REFERENCE_SIZE := Vector2(1672.0, 941.0)
+const PREMIUM_CARD_SIZES := [
+	Vector2(76.0, 64.0),
+	Vector2(70.0, 58.0),
+	Vector2(66.0, 54.0),
+	Vector2(62.0, 50.0),
+]
 
 signal unit_selected(unit: Unit)
 
@@ -18,6 +25,8 @@ signal unit_selected(unit: Unit)
 @export var visual_skin: HudVisualSkinData = DEFAULT_VISUAL_SKIN
 
 @onready var cards_layer: Control = %CardsLayer
+@onready var turn_header: Control = %TurnHeader
+@onready var turn_header_title: Label = %Title
 
 var _queue: TurnQueue = null
 var _cards: Dictionary = {}
@@ -29,10 +38,23 @@ var _reduced_motion := false
 
 func _ready() -> void:
 	visible = false
-	if visual_skin != null:
-		cards_layer.theme = VISUAL_THEME_FACTORY.build(visual_skin)
+	_apply_skin_to_chrome()
 	_update_timeline_geometry()
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
+
+
+func apply_visual_skin(skin: HudVisualSkinData) -> void:
+	visual_skin = skin
+	if not is_node_ready():
+		return
+	_apply_skin_to_chrome()
+	for card_variant in _cards.values():
+		var card := card_variant as TurnOrderCard
+		if is_instance_valid(card):
+			card.apply_visual_skin(visual_skin)
+	_update_timeline_geometry()
+	_apply_layout(false)
+	_refresh_turn_header(_queue.get_current_unit() if _queue != null else null)
 
 
 func bind_queue(queue: TurnQueue) -> void:
@@ -45,6 +67,7 @@ func bind_queue(queue: TurnQueue) -> void:
 	_queue.queue_changed.connect(_on_queue_changed)
 	visible = true
 	_sync_cards(false)
+	_refresh_turn_header(_queue.get_current_unit())
 
 
 func clear_queue() -> void:
@@ -58,6 +81,7 @@ func clear_queue() -> void:
 			card.queue_free()
 	_cards.clear()
 	_display_order.clear()
+	_refresh_turn_header(null)
 	visible = false
 
 
@@ -110,12 +134,14 @@ func _unbind_queue() -> void:
 	_queue = null
 
 
-func _on_turn_started(_unit: Unit) -> void:
+func _on_turn_started(unit: Unit) -> void:
 	_sync_cards(not _display_order.is_empty())
+	_refresh_turn_header(unit)
 
 
 func _on_queue_changed() -> void:
 	_sync_cards(not _display_order.is_empty())
+	_refresh_turn_header(_queue.get_current_unit() if _queue != null else null)
 
 
 func _sync_cards(animate: bool) -> void:
@@ -200,7 +226,11 @@ func _build_layout_targets(count: int) -> Array[Dictionary]:
 	if count <= 0:
 		return targets
 	var unscaled_total := 0.0
-	var card_gap := get_viewport().get_visible_rect().size.y * CARD_GAP_RATIO
+	var card_gap := (
+		6.0 * _premium_scale()
+		if _premium_skin_active()
+		else get_viewport().get_visible_rect().size.y * CARD_GAP_RATIO
+	)
 	for rank in range(count):
 		unscaled_total += _base_size_for_rank(rank).y
 	unscaled_total += card_gap * maxi(0, count - 1)
@@ -220,6 +250,14 @@ func _build_layout_targets(count: int) -> Array[Dictionary]:
 
 
 func _base_size_for_rank(rank: int) -> Vector2:
+	if _premium_skin_active():
+		var premium_index := mini(rank, PREMIUM_CARD_SIZES.size() - 1)
+		var card_size: Vector2 = PREMIUM_CARD_SIZES[premium_index] * _premium_scale()
+		if rank >= PREMIUM_CARD_SIZES.size():
+			var extra_rank := float(rank - PREMIUM_CARD_SIZES.size() + 1)
+			card_size.x = maxf(48.0 * _premium_scale(), card_size.x - 2.0 * extra_rank)
+			card_size.y = maxf(42.0 * _premium_scale(), card_size.y - 2.0 * extra_rank)
+		return card_size
 	var viewport_size := get_viewport().get_visible_rect().size
 	var metric_index := mini(rank, WIDTH_RATIOS.size() - 1)
 	var width: float = viewport_size.x * float(WIDTH_RATIOS[metric_index])
@@ -244,7 +282,64 @@ func _update_timeline_geometry() -> void:
 	if not is_instance_valid(cards_layer):
 		return
 	var viewport_size := get_viewport().get_visible_rect().size
+	if _premium_skin_active():
+		var scale := _premium_scale()
+		cards_layer.offset_left = 20.0 * scale
+		cards_layer.offset_top = 20.0 * scale
+		cards_layer.offset_right = cards_layer.offset_left + 84.0 * scale
+		cards_layer.offset_bottom = -120.0 * scale
+		var header_width := 360.0 * scale
+		var header_top := 10.0 * scale
+		turn_header.offset_left = -header_width * 0.5
+		turn_header.offset_top = header_top
+		turn_header.offset_right = header_width * 0.5
+		turn_header.offset_bottom = header_top + 64.0 * scale
+		return
 	cards_layer.offset_left = viewport_size.x * 0.004
 	cards_layer.offset_top = viewport_size.y * 0.055
 	cards_layer.offset_right = viewport_size.x * 0.084
 	cards_layer.offset_bottom = -viewport_size.y * 0.12
+
+
+func _apply_skin_to_chrome() -> void:
+	if visual_skin != null:
+		cards_layer.theme = VISUAL_THEME_FACTORY.build(visual_skin)
+		turn_header_title.add_theme_font_override("font", visual_skin.font_emphasis)
+		turn_header_title.add_theme_color_override("font_color", visual_skin.text_primary)
+	turn_header.visible = _premium_skin_active() and _queue != null
+
+
+func _refresh_turn_header(unit: Unit) -> void:
+	if not is_instance_valid(turn_header):
+		return
+	turn_header.visible = _premium_skin_active() and _queue != null
+	if unit == null:
+		turn_header_title.text = "ORDRE DU TOUR"
+		return
+	turn_header_title.text = _turn_title(unit.unit_name)
+
+
+func _turn_title(unit_name: String) -> String:
+	var display_name := unit_name.strip_edges().to_upper()
+	if display_name.is_empty():
+		return "TOUR EN COURS"
+	var first_letter := display_name.substr(0, 1)
+	if first_letter in ["A", "À", "Â", "Ä", "E", "É", "È", "Ê", "Ë", "I", "Î", "Ï", "O", "Ô", "Ö", "U", "Ù", "Û", "Ü", "Y", "H"]:
+		return "TOUR D’%s" % display_name
+	return "TOUR DE %s" % display_name
+
+
+func _premium_skin_active() -> bool:
+	return visual_skin != null and not visual_skin.neutral_grayscale
+
+
+func _premium_scale() -> float:
+	var viewport_size := get_viewport().get_visible_rect().size
+	return clampf(
+		minf(
+			viewport_size.x / PREMIUM_REFERENCE_SIZE.x,
+			viewport_size.y / PREMIUM_REFERENCE_SIZE.y,
+		),
+		0.72,
+		1.1,
+	)

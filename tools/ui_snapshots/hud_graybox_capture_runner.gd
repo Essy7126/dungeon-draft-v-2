@@ -5,6 +5,7 @@ const OUTPUT_ROOT := "res://artifacts/hud_graybox_validation"
 const RESOLUTIONS := [
 	Vector2i(1280, 720),
 	Vector2i(1200, 896),
+	Vector2i(1672, 941),
 	Vector2i(1920, 1080),
 ]
 const STATES: Array[StringName] = [
@@ -26,6 +27,8 @@ var _requested_state: StringName = &""
 var _requested_resolution := Vector2i.ZERO
 var _output_root := OUTPUT_ROOT
 var _preserve_color := false
+var _premium_skin := false
+var _output_root_explicit := false
 
 
 func _ready() -> void:
@@ -53,8 +56,15 @@ func _parse_arguments() -> void:
 			var candidate := argument.trim_prefix("--output-root=").trim_suffix("/")
 			if candidate.begins_with("res://artifacts/"):
 				_output_root = candidate
+				_output_root_explicit = true
 		elif argument == "--preserve-color":
 			_preserve_color = true
+		elif argument == "--premium-achilles":
+			_premium_skin = true
+	if _premium_skin:
+		_preserve_color = true
+		if not _output_root_explicit:
+			_output_root = "res://artifacts/hud_premium_achilles_validation"
 
 
 func _run() -> void:
@@ -91,6 +101,7 @@ func _capture_state(state_id: StringName, resolution: Vector2i) -> void:
 		DisplayServer.window_set_size(resolution)
 	var gallery := GALLERY_SCENE.instantiate() as HudGrayboxGallery
 	gallery.state_id = state_id
+	gallery.premium_skin = _premium_skin
 	get_tree().root.add_child(gallery)
 	await gallery.gallery_ready
 	# The signal is emitted from the gallery's asynchronous _ready(). Waiting one
@@ -110,7 +121,9 @@ func _capture_state(state_id: StringName, resolution: Vector2i) -> void:
 	var directory := _output_root.path_join(resolution_name)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
 	var file_name := "%s__%s__%s.png" % [
-		"hud_visual" if _preserve_color else "hud_graybox",
+		"hud_achilles_premium" if _premium_skin else (
+			"hud_visual" if _preserve_color else "hud_graybox"
+		),
 		state_id,
 		resolution_name,
 	]
@@ -181,7 +194,11 @@ func _build_contact_sheet(resolution: Vector2i, states: Array) -> void:
 			(index / columns) * (thumb_height + gap)
 		)
 		sheet.blit_rect(source, Rect2i(Vector2i.ZERO, source.get_size()), destination)
-	var name := "contact_sheet_%dx%d.png" % [resolution.x, resolution.y]
+	var name := "%s_%dx%d.png" % [
+		"contact_sheet_achilles_premium" if _premium_skin else "contact_sheet",
+		resolution.x,
+		resolution.y,
+	]
 	sheet.save_png(ProjectSettings.globalize_path(_output_root.path_join(name)))
 
 
@@ -204,7 +221,7 @@ func _write_gallery_html() -> void:
 
 func _write_validation_report() -> void:
 	var lines := [
-		"# Validation du HUD Visual System v1",
+		"# Validation du HUD Achille premium" if _premium_skin else "# Validation du HUD Visual System v1",
 		"",
 		"Le runner utilise `CombatHUDRecraftV1`, ses composants réels et le preset ",
 		"de production `combat_hud_layout_run_v1_compact.tres` (144 px). Le plateau ",
@@ -235,10 +252,13 @@ func _write_validation_report() -> void:
 			metrics.filter(func(entry): return entry.end_turn_intersects_utility_dock).size(),
 			metrics.filter(func(entry): return not entry.hud_inside_viewport).size(),
 		])
+	var sheet_prefix := "contact_sheet_achilles_premium" if _premium_skin else "contact_sheet"
+	var sheet_names: Array[String] = []
+	for resolution in RESOLUTIONS:
+		sheet_names.append("`%s_%dx%d.png`" % [sheet_prefix, resolution.x, resolution.y])
 	lines.append_array([
 		"",
-		"Planches : `contact_sheet_1280x720.png`, `contact_sheet_1200x896.png` et ",
-		"`contact_sheet_1920x1080.png`. La galerie interactive est `gallery.html`.",
+		"Planches : %s. La galerie interactive est `gallery.html`." % ", ".join(sheet_names),
 		"",
 	])
 	_write_text("validation_report.md", "\n".join(lines))

@@ -50,6 +50,7 @@ var spell = null
 var _hovered := false
 var _icon_override: Texture2D = null
 var _default_frame_texture: Texture2D = null
+var _has_custom_frame := false
 var _refined_style := false
 var _selection_intensity := 1.0
 var _desaturation_intensity := 0.62
@@ -161,13 +162,14 @@ func get_displayed_icon() -> Texture2D:
 
 
 func set_frame_override(texture: Texture2D) -> void:
+	_has_custom_frame = texture != null
 	frame.texture = texture if texture != null else _default_frame_texture
 
 
 func set_refined_style(enabled: bool) -> void:
 	_refined_style = enabled
-	frame.visible = not enabled
-	refined_frame.visible = enabled
+	frame.visible = not enabled or _has_custom_frame
+	refined_frame.visible = enabled and not _has_custom_frame
 	_refresh_visuals()
 
 
@@ -378,14 +380,18 @@ func _refresh_visuals() -> void:
 		_animate_state_transform(selected, hovered, focused)
 		return
 	spell_icon.modulate = Color.WHITE
-	var saturation := 0.14
+	var saturation := (
+		1.0
+		if _visual_skin != null and not _visual_skin.neutral_grayscale
+		else 0.14
+	)
 	var brightness := 0.96
 	if visual_state == VisualState.HOVER:
 		brightness = 1.06
 	elif selected:
 		brightness = 1.03
 	elif visual_state in [VisualState.DISABLED, VisualState.UNAFFORDABLE]:
-		saturation = 0.14 * (1.0 - _desaturation_intensity)
+		saturation *= 1.0 - _desaturation_intensity
 		brightness = 0.68
 	elif visual_state == VisualState.COOLDOWN:
 		saturation = 0.04

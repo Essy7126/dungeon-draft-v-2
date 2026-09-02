@@ -7,8 +7,19 @@ const HUD_SCENE := preload("res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1
 const FIXTURE_UNIT := preload("res://tools/ui_snapshots/hud_graybox_fixture_unit.gd")
 const BACKDROP := preload("res://tools/ui_snapshots/hud_graybox_backdrop.gd")
 const ANNOTATION := preload("res://tools/ui_snapshots/hud_graybox_annotation.gd")
+const TURN_ORDER_TIMELINE_SCENE := preload("res://ui/combat/turn_order_timeline.tscn")
 const LAYOUT: CombatHUDLayoutData = preload(
 	"res://data/ui/combat_hud_layout_run_v1_compact.tres"
+)
+const PREMIUM_VISUAL_SKIN: HudVisualSkinData = preload(
+	"res://data/ui/hud_visual_skin_achilles_v1.tres"
+)
+const PREMIUM_CHARACTER_THEME: CharacterHUDThemeData = preload(
+	"res://data/ui/achilles_hud_theme_refined.tres"
+)
+const ACHILLES_UNIT_DATA: UnitData = preload("res://data/units/allies/achilles.tres")
+const SKELETON_UNIT_DATA: UnitData = preload(
+	"res://data/units/ennemie/skeleton_melee.tres"
 )
 
 const SPELLS: Array[Spell] = [
@@ -26,11 +37,14 @@ const PLAYER_SNAPSHOT := {
 }
 
 @export var state_id: StringName = &"idle"
+@export var premium_skin := false
 
 var _hud: Node = null
 var _fixture: HudGrayboxFixtureUnit = null
 var _backdrop: HudGrayboxBackdrop = null
 var _annotation: HudGrayboxAnnotation = null
+var _timeline: TurnOrderTimeline = null
+var _turn_queue: TurnQueue = null
 
 
 func _ready() -> void:
@@ -43,13 +57,36 @@ func _ready() -> void:
 	_hud = HUD_SCENE.instantiate()
 	_hud.skin_variant = 2
 	_hud.layout_data = LAYOUT
+	if premium_skin:
+		var premium_character_themes: Array[CharacterHUDThemeData] = [
+			PREMIUM_CHARACTER_THEME,
+		]
+		_hud.visual_skin = PREMIUM_VISUAL_SKIN
+		_hud.character_themes = premium_character_themes
 	add_child(_hud)
+	if premium_skin:
+		_build_premium_timeline()
 	await get_tree().process_frame
 	_configure_hud()
-	_build_annotation()
+	if not premium_skin:
+		_build_annotation()
 	for _frame in 5:
 		await get_tree().process_frame
 	gallery_ready.emit()
+
+
+func _build_premium_timeline() -> void:
+	_timeline = TURN_ORDER_TIMELINE_SCENE.instantiate() as TurnOrderTimeline
+	_timeline.visual_skin = PREMIUM_VISUAL_SKIN
+	add_child(_timeline)
+	var achilles := Unit.from_data(ACHILLES_UNIT_DATA)
+	var skeleton := Unit.from_data(SKELETON_UNIT_DATA)
+	_turn_queue = TurnQueue.new()
+	_turn_queue.setup([achilles, skeleton])
+	_timeline.set_reduced_motion(true)
+	_timeline.apply_visual_skin(PREMIUM_VISUAL_SKIN)
+	_timeline.bind_queue(_turn_queue)
+	_turn_queue.start()
 
 
 func _build_backdrop() -> void:

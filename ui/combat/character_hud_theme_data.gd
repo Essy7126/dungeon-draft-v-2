@@ -17,6 +17,7 @@ extends Resource
 @export var health_bar_frame_texture: Texture2D
 @export var end_turn_button_texture: Texture2D
 @export var move_action_icon: Texture2D
+@export var move_action_frame_texture: Texture2D
 @export var utility_inventory_icon: Texture2D
 @export var utility_map_icon: Texture2D
 @export var utility_skills_icon: Texture2D

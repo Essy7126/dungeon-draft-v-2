@@ -22,6 +22,7 @@ var _hovered := false
 var _compact_icon_mode := false
 var _compact_icon_size := 56.0
 var _default_background_texture: Texture2D = null
+var _has_custom_background := false
 var _refined_style := false
 var _refined_primary := false
 var _reduced_motion := false
@@ -73,6 +74,7 @@ func set_background_texture(
 	texture: Texture2D,
 	stretch_to_fit: bool = false
 	) -> void:
+	_has_custom_background = texture != null
 	background.texture = (
 		texture if texture != null else _default_background_texture
 	)
@@ -138,9 +140,9 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 func set_refined_style(enabled: bool, primary: bool = false) -> void:
 	_refined_style = enabled
 	_refined_primary = primary
-	background.visible = not enabled
-	refined_background.visible = enabled
-	refined_top_edge.visible = enabled
+	background.visible = not enabled or _has_custom_background
+	refined_background.visible = enabled and not _has_custom_background
+	refined_top_edge.visible = enabled and not _has_custom_background
 	if _visual_skin != null:
 		apply_visual_skin(_visual_skin)
 		return

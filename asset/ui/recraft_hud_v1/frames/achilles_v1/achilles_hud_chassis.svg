@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1444" height="140" viewBox="0 0 1444 140">
+  <defs>
+    <linearGradient id="enamel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#242027" stop-opacity="0.98"/>
+      <stop offset="0.46" stop-color="#121116" stop-opacity="0.99"/>
+      <stop offset="1" stop-color="#08090d" stop-opacity="0.99"/>
+    </linearGradient>
+    <linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5f4027"/>
+      <stop offset="0.35" stop-color="#d0a45e"/>
+      <stop offset="0.58" stop-color="#765033"/>
+      <stop offset="1" stop-color="#e2ba70"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6b482b"/>
+      <stop offset="0.48" stop-color="#f0cb76"/>
+      <stop offset="1" stop-color="#735034"/>
+    </linearGradient>
+    <radialGradient id="gem">
+      <stop offset="0" stop-color="#9cf3a0"/>
+      <stop offset="0.45" stop-color="#2b9b58"/>
+      <stop offset="1" stop-color="#0b3a2b"/>
+    </radialGradient>
+  </defs>
+
+  <!-- soft painted shadows -->
+  <path d="M74 12H458L486 38V121L461 139H69L43 119V28Z" fill="#000" opacity="0.62"/>
+  <path d="M508 12H1034L1060 38V121L1036 139H529L500 119V37Z" fill="#000" opacity="0.62"/>
+  <path d="M1076 12H1421L1444 37V121L1423 139H1093L1068 119V37Z" fill="#000" opacity="0.62"/>
+
+  <!-- identity module -->
+  <path d="M72 6H456L484 31V114L458 134H72L46 116V25Z" fill="url(#enamel)" stroke="#211711" stroke-width="8" stroke-linejoin="bevel"/>
+  <path d="M72 8H455L480 33V111L456 130H73L51 113V28Z" fill="none" stroke="url(#bronze)" stroke-width="4" stroke-linejoin="bevel"/>
+  <path d="M112 15H451L472 36V108L451 123H112" fill="none" stroke="#e5bc6a" stroke-opacity="0.76" stroke-width="1.4"/>
+  <path d="M116 21H447" stroke="#61442f" stroke-width="2"/>
+  <path d="M116 117H447" stroke="#412f26" stroke-width="2"/>
+  <circle cx="72" cy="70" r="66" fill="#08090c" stroke="#211711" stroke-width="8"/>
+  <circle cx="72" cy="70" r="62" fill="#111117" stroke="url(#bronze)" stroke-width="4"/>
+  <circle cx="72" cy="70" r="55" fill="none" stroke="#e1b667" stroke-opacity="0.72" stroke-width="1.5"/>
+  <path d="M14 49L4 70L14 91M130 49L140 70L130 91" fill="none" stroke="#8c6237" stroke-width="3"/>
+  <path d="M72 126l9 9-9 9-9-9z" fill="#23160f" stroke="#d3a657" stroke-width="2"/>
+  <path d="M72 129l6 6-6 6-6-6z" fill="url(#gem)"/>
+
+  <!-- actions module -->
+  <path d="M528 6H1031L1059 31V114L1034 134H528L500 116V30Z" fill="url(#enamel)" stroke="#211711" stroke-width="8" stroke-linejoin="bevel"/>
+  <path d="M530 9H1029L1055 33V111L1032 130H530L505 113V33Z" fill="none" stroke="url(#bronze)" stroke-width="4" stroke-linejoin="bevel"/>
+  <path d="M540 16H1025L1047 37V106L1027 123H538L513 108V38Z" fill="none" stroke="#e1b567" stroke-opacity="0.72" stroke-width="1.4"/>
+  <path d="M550 22H1019" stroke="#63452e" stroke-width="2"/>
+  <path d="M550 117H1019" stroke="#402e25" stroke-width="2"/>
+  <path d="M501 45l-14 12v26l14 12M1058 45l14 12v26l-14 12" fill="#171219" stroke="#8a6038" stroke-width="2"/>
+  <path d="M779 7l8 8-8 8-8-8z" fill="#25170f" stroke="#d5aa5d" stroke-width="2"/>
+  <path d="M779 10l5 5-5 5-5-5z" fill="#b84628"/>
+
+  <!-- turn module -->
+  <path d="M1095 6H1419L1442 31V115L1421 134H1094L1069 115V31Z" fill="url(#enamel)" stroke="#211711" stroke-width="8" stroke-linejoin="bevel"/>
+  <path d="M1097 9H1417L1438 33V112L1419 130H1096L1074 112V34Z" fill="none" stroke="url(#bronze)" stroke-width="4" stroke-linejoin="bevel"/>
+  <path d="M1107 16H1413L1430 37V106L1413 123H1105L1082 108V38Z" fill="none" stroke="#e1b567" stroke-opacity="0.72" stroke-width="1.4"/>
+  <path d="M1115 22H1407" stroke="#63452e" stroke-width="2"/>
+  <path d="M1115 117H1407" stroke="#402e25" stroke-width="2"/>
+  <path d="M1256 2l10 10-10 10-10-10z" fill="#21150f" stroke="#d8ac5d" stroke-width="2"/>
+  <path d="M1256 6l6 6-6 6-6-6z" fill="url(#gem)"/>
+</svg>

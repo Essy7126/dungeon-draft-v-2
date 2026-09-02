@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/combat/turn_order_timeline.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/turn_header_plate.svg" id="2_header"]
 
 [node name="TurnOrderTimeline" type="CanvasLayer"]
 layer = 24
@@ -14,6 +15,52 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="TurnHeader" type="Control" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 10.0
+offset_right = 180.0
+offset_bottom = 74.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="Plate" type="TextureRect" parent="Root/TurnHeader"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_header")
+expand_mode = 1
+
+[node name="Title" type="Label" parent="Root/TurnHeader"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 58.0
+offset_top = 8.0
+offset_right = -58.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_shadow_color = Color(0.015, 0.01, 0.012, 0.95)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "TOUR D’ACHILLE"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
 
 [node name="CardsLayer" type="Control" parent="Root"]
 unique_name_in_owner = true

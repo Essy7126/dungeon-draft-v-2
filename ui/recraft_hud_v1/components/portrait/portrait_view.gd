@@ -15,6 +15,7 @@ const VISUAL_THEME_FACTORY := preload(
 
 var character_data: UnitData = null
 var _default_frame_texture: Texture2D = null
+var _has_custom_frame := false
 var _discipline_emblem_scale := 1.0
 var _visual_skin: HudVisualSkinData = null
 
@@ -113,12 +114,13 @@ func set_active(active: bool) -> void:
 
 
 func set_portrait_frame(texture: Texture2D) -> void:
+	_has_custom_frame = texture != null
 	frame.texture = texture if texture != null else _default_frame_texture
 	frame.visible = true
 
 
 func set_refined_style(enabled: bool) -> void:
-	frame.visible = not enabled
+	frame.visible = not enabled or _has_custom_frame
 
 
 func apply_visual_skin(skin: HudVisualSkinData) -> void:
@@ -132,7 +134,7 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 			Color.TRANSPARENT,
 			skin.border_focus_color,
 			skin.border_regular,
-			skin.radius_control
+			skin.radius_round if not skin.neutral_grayscale else skin.radius_control
 		)
 	)
 	placeholder_label.add_theme_font_override("font", skin.font_emphasis)

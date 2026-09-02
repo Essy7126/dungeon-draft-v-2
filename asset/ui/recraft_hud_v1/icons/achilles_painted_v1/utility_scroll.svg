@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0d89a"/>
+      <stop offset="0.55" stop-color="#c99d53"/>
+      <stop offset="1" stop-color="#80602f"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dy="8"/>
+      <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .75 0"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke-linejoin="round">
+    <path d="M71 46h112c18 0 25 13 20 29l-7 20v103c0 10-8 18-18 18H76c-10 0-18-8-18-18V67c0-12 6-21 13-21z" fill="url(#paper)" stroke="#2a1a12" stroke-width="10"/>
+    <path d="M71 48c18 0 25 13 20 29l-6 18H47l7-23c4-14 8-24 17-24z" fill="#d8b66f" stroke="#2a1a12" stroke-width="10"/>
+    <path d="M180 216c-17 0-24-13-19-28l6-18h41l-8 24c-4 13-10 22-20 22z" fill="#aa7b3e" stroke="#2a1a12" stroke-width="10"/>
+    <path d="M92 112h68M92 139h56M92 166h62" fill="none" stroke="#59401f" stroke-width="9" stroke-linecap="round"/>
+    <path d="M120 81l8-8 8 8-8 8z" fill="#e6c46e" stroke="#5e351b" stroke-width="5"/>
+  </g>
+</svg>

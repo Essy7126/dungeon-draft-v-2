@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="64" viewBox="0 0 360 64">
+  <defs>
+    <linearGradient id="bronze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6a856"/>
+      <stop offset="0.42" stop-color="#72502b"/>
+      <stop offset="1" stop-color="#2a1c16"/>
+    </linearGradient>
+    <linearGradient id="enamel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#201b22"/>
+      <stop offset="0.5" stop-color="#0b0a10"/>
+      <stop offset="1" stop-color="#171218"/>
+    </linearGradient>
+  </defs>
+  <path d="M10 21h41l13-11h232l13 11h41l-15 11 15 11h-42l-13 11H65L52 43H10l15-11z"
+        fill="#08070b" stroke="#09070a" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M14 21h42l12-9h224l12 9h42l-15 11 15 11h-43l-12 9H69l-12-9H14l15-11z"
+        fill="url(#bronze)" stroke="#a47a42" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M23 24h39l11-8h214l11 8h39l-11 8 11 8h-40l-11 8H74l-11-8H23l11-8z"
+        fill="#151019" stroke="#332622" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M70 14h220l13 18-13 18H70L57 32z"
+        fill="url(#enamel)" stroke="#c4984e" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M76 19h208l8 13-8 13H76L66 32z"
+        fill="none" stroke="#493421" stroke-width="1"/>
+  <path d="M180 48l7 8-7 7-7-7z" fill="#9b672d" stroke="#e2b45b" stroke-width="1"/>
+  <path d="M180 51l4 5-4 4-4-4z" fill="#d88b1f"/>
+</svg>

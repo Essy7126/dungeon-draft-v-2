@@ -1,0 +1,112 @@
+[gd_resource type="Resource" script_class="HudVisualSkinData" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://ui/recraft_hud_v1/theme/hud_visual_skin_data.gd" id="1_skin"]
+[ext_resource type="FontFile" path="res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf" id="2_font_regular"]
+[ext_resource type="FontFile" path="res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf" id="3_font_display"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/action_move_ornate.svg" id="4_move"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/resource_action_points.svg" id="5_ap"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/resource_movement_points.svg" id="6_mp"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_cooldown.svg" id="7_cooldown"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_locked.svg" id="8_locked"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_unavailable.svg" id="9_unavailable"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/state_resolving.svg" id="10_resolving"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_valid.svg" id="11_target_valid"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/target_invalid.svg" id="12_target_invalid"]
+
+[resource]
+script = ExtResource("1_skin")
+skin_id = &"hud_achilles_premium_v1"
+revision = 1
+neutral_grayscale = false
+surface_backdrop = Color(0.025, 0.022, 0.03, 0.97)
+surface_dock = Color(0.055, 0.048, 0.06, 0.98)
+surface_panel = Color(0.09, 0.075, 0.085, 0.99)
+surface_raised = Color(0.13, 0.105, 0.105, 1)
+surface_recessed = Color(0.018, 0.017, 0.023, 1)
+surface_scrim = Color(0.012, 0.009, 0.012, 0.9)
+text_primary = Color(0.96, 0.87, 0.68, 1)
+text_secondary = Color(0.78, 0.64, 0.43, 1)
+text_muted = Color(0.49, 0.43, 0.38, 1)
+text_inverse = Color(0.08, 0.055, 0.035, 1)
+minimum_body_contrast = 4.5
+minimum_large_text_contrast = 3.0
+minimum_focus_contrast = 3.0
+border_subtle_color = Color(0.24, 0.18, 0.15, 1)
+border_default_color = Color(0.48, 0.33, 0.2, 1)
+border_strong_color = Color(0.76, 0.56, 0.31, 1)
+border_focus_color = Color(1, 0.78, 0.28, 1)
+border_selected_color = Color(0.95, 0.65, 0.14, 1)
+border_locked_color = Color(0.56, 0.43, 0.32, 1)
+border_unavailable_color = Color(0.72, 0.22, 0.17, 1)
+border_thin = 1
+border_regular = 2
+border_emphasis = 3
+focus_ring_width = 3
+focus_ring_offset = 2
+radius_tight = 2
+radius_control = 3
+radius_panel = 4
+radius_modal = 6
+radius_round = 999
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+space_xxs = 2
+space_xs = 4
+space_sm = 6
+space_md = 8
+space_lg = 12
+space_xl = 16
+space_xxl = 24
+font_regular = ExtResource("2_font_regular")
+font_emphasis = ExtResource("3_font_display")
+font_numeric = ExtResource("2_font_regular")
+font_size_caption = 11
+font_size_shortcut = 12
+font_size_body = 14
+font_size_emphasis = 16
+font_size_title = 20
+font_size_display = 26
+line_height_multiplier = 1.2
+uppercase_tracking = 1
+icon_move = ExtResource("4_move")
+icon_action_points = ExtResource("5_ap")
+icon_movement_points = ExtResource("6_mp")
+icon_cooldown = ExtResource("7_cooldown")
+icon_locked = ExtResource("8_locked")
+icon_unavailable = ExtResource("9_unavailable")
+icon_resolving = ExtResource("10_resolving")
+icon_target_valid = ExtResource("11_target_valid")
+icon_target_invalid = ExtResource("12_target_invalid")
+motion_instant = 0.0
+motion_press = 0.07
+motion_hover = 0.1
+motion_selection = 0.14
+motion_panel = 0.18
+motion_feedback = 0.2
+reduced_motion_duration = 0.0
+hover_scale = 1.025
+hover_lift = 3.0
+pressed_offset = 1.0
+state_normal_background = Color(0.055, 0.044, 0.05, 0.98)
+state_hover_background = Color(0.12, 0.085, 0.065, 1)
+state_focus_background = Color(0.14, 0.1, 0.06, 1)
+state_pressed_background = Color(0.035, 0.028, 0.034, 1)
+state_selected_background = Color(0.17, 0.115, 0.055, 1)
+state_selected_locked_background = Color(0.1, 0.075, 0.065, 1)
+state_cooldown_background = Color(0.025, 0.022, 0.03, 1)
+state_disabled_background = Color(0.022, 0.021, 0.026, 1)
+state_unavailable_background = Color(0.09, 0.035, 0.035, 1)
+state_resolving_background = Color(0.16, 0.1, 0.045, 1)
+disabled_content_opacity = 0.48
+cooldown_content_opacity = 0.62
+locked_content_opacity = 0.7
+cue_normal = &"none"
+cue_hover = &"lift"
+cue_focus = &"outer_ring"
+cue_pressed = &"inset"
+cue_selected = &"double_rail"
+cue_selected_locked = &"double_rail_lock"
+cue_cooldown = &"radial_disc_countdown"
+cue_disabled = &"horizontal_bar"
+cue_unavailable = &"diagonal_cross"
+cue_resolving = &"double_rail_progress"

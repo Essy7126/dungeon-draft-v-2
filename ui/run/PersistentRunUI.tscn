@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://ui/run/persistent_run_ui.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/combat/combat_hud_recraft_v1.tscn" id="2_hud"]
@@ -9,6 +9,7 @@
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="7_skill_tree_theme"]
 [ext_resource type="PackedScene" path="res://ui/inventory/InventoryScreen.tscn" id="8_inventory"]
 [ext_resource type="PackedScene" path="res://ui/progression/evolution/SkillEvolutionOverlay.tscn" id="9_evolution"]
+[ext_resource type="Resource" path="res://data/ui/hud_visual_skin_achilles_v1.tres" id="10_hud_skin"]
 
 [node name="PersistentRunUI" type="Node"]
 script = ExtResource("1_script")
@@ -17,6 +18,7 @@ script = ExtResource("1_script")
 unique_name_in_owner = true
 skin_variant = 2
 layout_data = ExtResource("6_compact_layout")
+visual_skin = ExtResource("10_hud_skin")
 
 [node name="ContextualUILayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true

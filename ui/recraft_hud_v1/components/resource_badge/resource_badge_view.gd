@@ -64,6 +64,15 @@ func set_badge(
 	icon_text: String = ""
 ) -> void:
 	var style := _badge_style
+	if _visual_skin != null and not _visual_skin.neutral_grayscale:
+		style = VISUAL_THEME_FACTORY.make_panel_style(
+			_visual_skin,
+			Color(color.r, color.g, color.b, 0.24),
+			color.lightened(0.28),
+			_visual_skin.border_regular,
+			_visual_skin.radius_round,
+			true
+		)
 	if style == null:
 		style = StyleBoxFlat.new()
 		style.bg_color = Color(color.r, color.g, color.b, 0.3 if _refined_style else 0.34)

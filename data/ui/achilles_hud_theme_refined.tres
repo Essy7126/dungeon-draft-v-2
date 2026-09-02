@@ -1,13 +1,23 @@
-[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="CharacterHUDThemeData" load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://ui/combat/character_hud_theme_data.gd" id="1_theme"]
 [ext_resource type="Texture2D" path="res://assets/characters/Achilles/processed/idle_00.png" id="2_portrait"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/turn_intro_banner.png" id="3_banner"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r02_c02.png" id="4_spear"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="8_inventory"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/utility_scroll.svg" id="8_inventory"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_map.png" id="9_map"]
-[ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/utility_skills.png" id="10_skills"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/utility_settings.svg" id="10_skills"]
 [ext_resource type="Texture2D" path="res://asset/ui/character_hud/refined/move_action_icon.svg" id="11_move"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/achilles_hud_chassis.svg" id="12_chassis"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/portrait_ring.svg" id="13_portrait_frame"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/spell_slot_frame.svg" id="14_spell_frame"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/health_bar_frame.svg" id="15_health_frame"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/end_turn_frame.svg" id="16_end_turn"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/action_button_frame.svg" id="17_move_frame"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/ability_achilles_spear_thrust.png" id="18_spear_thrust"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/ability_achilles_sweep.png" id="19_sweep"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/ability_achilles_advance.png" id="20_advance"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_painted_v1/ability_achilles_guard.png" id="21_guard"]
 
 [resource]
 script = ExtResource("1_theme")
@@ -17,8 +27,14 @@ discipline_name = "Lance · CATABASE"
 default_discipline_id = &"spear"
 discipline_emblem_texture = ExtResource("4_spear")
 portrait_texture = ExtResource("2_portrait")
+portrait_frame_texture = ExtResource("13_portrait_frame")
+character_bar_texture = ExtResource("12_chassis")
 turn_banner_texture = ExtResource("3_banner")
+spell_slot_frame_texture = ExtResource("14_spell_frame")
+health_bar_frame_texture = ExtResource("15_health_frame")
+end_turn_button_texture = ExtResource("16_end_turn")
 move_action_icon = ExtResource("11_move")
+move_action_frame_texture = ExtResource("17_move_frame")
 utility_inventory_icon = ExtResource("8_inventory")
 utility_map_icon = ExtResource("9_map")
 utility_skills_icon = ExtResource("10_skills")
@@ -26,3 +42,10 @@ refined_components = true
 primary_color = Color(0.30, 0.22, 0.12, 1)
 secondary_color = Color(0.78, 0.58, 0.24, 1)
 text_color = Color(0.98, 0.90, 0.72, 1)
+spell_icon_mapping = {
+&"achilles_advance": ExtResource("20_advance"),
+&"achilles_guard": ExtResource("21_guard"),
+&"achilles_spear_thrust": ExtResource("18_spear_thrust"),
+&"achilles_sweep": ExtResource("19_sweep"),
+&"basic_attack": ExtResource("18_spear_thrust")
+}

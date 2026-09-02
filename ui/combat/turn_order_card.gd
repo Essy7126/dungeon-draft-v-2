@@ -12,6 +12,7 @@ const VISUAL_THEME_FACTORY := preload(
 @onready var active_marker: Label = %ActiveMarker
 @onready var team_accent: ColorRect = %TeamAccent
 @onready var portrait_shade: ColorRect = $PortraitClip/PortraitShade
+@onready var premium_frame: TextureRect = %PremiumFrame
 
 var unit: Unit = null
 var _rank := 0
@@ -58,6 +59,8 @@ func apply_visual_skin(skin: HudVisualSkinData) -> void:
 	_visual_skin = skin
 	_active_styles.clear()
 	_inactive_styles.clear()
+	if is_node_ready():
+		premium_frame.visible = _premium_skin_active()
 	if skin == null or not is_node_ready():
 		_refresh_style()
 		return
@@ -200,6 +203,13 @@ func _calculate_visual_bounds(root: Node3D) -> AABB:
 
 
 func _refresh_style() -> void:
+	if is_node_ready():
+		premium_frame.visible = _premium_skin_active()
+		premium_frame.self_modulate = (
+			Color(1.0, 0.9, 0.63, 1.0)
+			if _rank == 0
+			else Color(0.62, 0.5, 0.4, 0.84)
+		)
 	if _visual_skin != null and not _active_styles.is_empty():
 		var styles := _active_styles if _rank == 0 else _inactive_styles
 		for style_name in styles:
@@ -223,6 +233,10 @@ func _refresh_style() -> void:
 	add_theme_stylebox_override("hover", _make_style(border_color.lightened(0.18), 0.98))
 	add_theme_stylebox_override("pressed", _make_style(Color.WHITE, 1.0))
 	add_theme_stylebox_override("focus", _make_style(border_color.lightened(0.25), 1.0))
+
+
+func _premium_skin_active() -> bool:
+	return _visual_skin != null and not _visual_skin.neutral_grayscale
 
 
 func _make_style(border_color: Color, opacity: float) -> StyleBoxFlat:

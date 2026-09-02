@@ -29,6 +29,7 @@ var _layout_scale := 1.0
 var _visual_skin: HudVisualSkinData = null
 var _reduced_motion := false
 var _is_critical_health := false
+var _hide_inline_marker := false
 
 
 func _ready() -> void:
@@ -72,7 +73,10 @@ func _apply_layout(bar_size: Vector2, scale_factor: float) -> void:
 		roundf((custom_minimum_size.y - icon_size) * 0.5)
 	)
 	resource_icon_fallback.size = Vector2(icon_size, icon_size)
-	value_label.offset_left = METRICS.scaled(24.0, scale_factor)
+	value_label.offset_left = METRICS.scaled(
+		6.0 if _hide_inline_marker else 24.0,
+		scale_factor
+	)
 	value_label.offset_right = -METRICS.scaled(6.0, scale_factor)
 	_layout_fills()
 
@@ -84,10 +88,10 @@ func set_frame_texture(texture: Texture2D) -> void:
 
 
 func set_refined_style(enabled: bool) -> void:
-	refined_frame.visible = enabled
+	refined_frame.visible = enabled and theme_frame.texture == null
 	if enabled:
 		frame.visible = false
-		theme_frame.visible = false
+		theme_frame.visible = theme_frame.texture != null
 	if _visual_skin != null:
 		_apply_visual_frame()
 
@@ -147,11 +151,20 @@ func set_resource(
 	maximum_value = maxf(maximum, 0.0001)
 	resource_color = color
 	_is_critical_health = icon_fallback == "PV" and current_value / maximum_value <= 0.25
+	_hide_inline_marker = (
+		icon_fallback == "PV"
+		and _visual_skin != null
+		and not _visual_skin.neutral_grayscale
+	)
 	_apply_resource_colors(_is_critical_health)
 	resource_icon.texture = icon
-	resource_icon.visible = icon != null
-	resource_icon_fallback.visible = icon == null
+	resource_icon.visible = icon != null and not _hide_inline_marker
+	resource_icon_fallback.visible = icon == null and not _hide_inline_marker
 	resource_icon_fallback.text = icon_fallback
+	value_label.offset_left = METRICS.scaled(
+		6.0 if _hide_inline_marker else 24.0,
+		_layout_scale
+	)
 	value_label.visible = show_text
 	value_label.text = "%d / %d" % [int(round(current_value)), int(round(maximum))]
 	value_label.add_theme_color_override("font_color", _resource_text_color())

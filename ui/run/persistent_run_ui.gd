@@ -105,9 +105,24 @@ func bind_combat_context(context: Node) -> CanvasLayer:
 		unbind_combat_context()
 		return null
 	_hud_port.bind_context(context)
+	_apply_combat_visual_skin.call_deferred(context)
 	set_ui_mode(RunUIMode.COMBAT)
 	skill_tree_status_button.refresh_from_state()
 	return combat_hud
+
+
+func _apply_combat_visual_skin(expected_context: Node) -> void:
+	if (
+		not is_instance_valid(expected_context)
+		or _hud_port == null
+		or _hud_port.get_bound_context() != expected_context
+	):
+		return
+	var timeline := expected_context.get_node_or_null("TurnOrderTimeline")
+	if not is_instance_valid(timeline) or not timeline.has_method("apply_visual_skin"):
+		return
+	var skin := combat_hud.get("visual_skin") as HudVisualSkinData
+	timeline.apply_visual_skin(skin)
 
 
 func unbind_combat_context(expected_context: Node = null) -> void:

@@ -6,6 +6,15 @@ const HUD_SCENE := preload(
 const FIXTURE_UNIT := preload(
 	"res://tools/ui_snapshots/hud_graybox_fixture_unit.gd"
 )
+const PREMIUM_SKIN: HudVisualSkinData = preload(
+	"res://data/ui/hud_visual_skin_achilles_v1.tres"
+)
+const PREMIUM_THEME: CharacterHUDThemeData = preload(
+	"res://data/ui/achilles_hud_theme_refined.tres"
+)
+const PREMIUM_LAYOUT: CombatHUDLayoutData = preload(
+	"res://data/ui/combat_hud_layout_run_v1_compact.tres"
+)
 const SPELLS: Array[Spell] = [
 	preload("res://data/spells/achilles/spear_thrust.tres"),
 	preload("res://data/spells/achilles/sweep.tres"),
@@ -103,12 +112,36 @@ func test_resolution_keeps_selected_spell_locked_and_reduced_motion_propagated()
 		assert_eq(item_slot.scale, Vector2.ONE)
 
 
-func _spawn_hud_context() -> Dictionary:
+func test_premium_achilles_layout_keeps_exactly_four_actions_and_clean_identity() -> void:
+	var context := _spawn_hud_context(true)
+	var hud = context.hud
+	var slots: Array = hud.get("_spell_buttons")
+
+	assert_eq(slots.size(), 4)
+	assert_false(hud.get_node("%AttackButton").visible)
+	assert_false(hud.get_node("%SelectedSpellPlate").visible)
+	assert_eq(
+		hud.get_node("%ResourceBadges").get_parent(),
+		hud.get_node("%CharacterRow"),
+	)
+	assert_true(hud.get_node("%InventoryButton").visible)
+	assert_false(hud.get_node("%MapButton").visible)
+	assert_true(hud.get_node("%SkillsButton").visible)
+	for slot_value in slots:
+		assert_true((slot_value as RecraftSpellSlotView).visible)
+
+
+func _spawn_hud_context(premium: bool = false) -> Dictionary:
 	var fixture = FIXTURE_UNIT.new()
 	fixture.configure_for_state(&"idle", SPELLS)
 	add_child_autofree(fixture)
 	var hud = HUD_SCENE.instantiate()
 	hud.skin_variant = 2
+	if premium:
+		var themes: Array[CharacterHUDThemeData] = [PREMIUM_THEME]
+		hud.visual_skin = PREMIUM_SKIN
+		hud.character_themes = themes
+		hud.layout_data = PREMIUM_LAYOUT
 	add_child_autofree(hud)
 	hud.set_ui_mode(0)
 	hud.update_info(fixture)

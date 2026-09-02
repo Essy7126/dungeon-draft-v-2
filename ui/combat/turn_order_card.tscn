@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/combat/turn_order_card.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/characters/CharacterPreview3D.tscn" id="2_preview"]
+[ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/frames/achilles_v1/turn_timeline_card_frame.svg" id="3_frame"]
 
 [node name="TurnOrderCard" type="Button"]
 mouse_default_cursor_shape = 2
@@ -69,6 +70,19 @@ grow_horizontal = 0
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0.3, 0.68, 0.92, 1)
+
+[node name="PremiumFrame" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_frame")
+expand_mode = 1
 
 [node name="ActiveMarker" type="Label" parent="."]
 unique_name_in_owner = true

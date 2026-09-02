@@ -144,6 +144,8 @@ var _ap_badge_home: Node = null
 var _ap_badge_home_index := 0
 var _mp_badge_home: Node = null
 var _mp_badge_home_index := 0
+var _resource_badges_home: Node = null
+var _resource_badges_home_index := 0
 # Vue choisie par le joueur : sorts ou objets. Volontairement jamais remise à
 # zéro entre deux tours — si le joueur a affiché ses objets, ils restent
 # affichés au tour suivant.
@@ -175,6 +177,8 @@ func _ready() -> void:
 	_ap_badge_home_index = _ap_badge.get_index()
 	_mp_badge_home = _mp_badge.get_parent()
 	_mp_badge_home_index = _mp_badge.get_index()
+	_resource_badges_home = _resource_badges.get_parent()
+	_resource_badges_home_index = _resource_badges.get_index()
 	_apply_visual_skin()
 
 	_move_btn.set_label("Déplacer")
@@ -238,6 +242,10 @@ func _apply_visual_skin() -> void:
 	_apply_panel_variation(_action_resources_plate, &"HudResourcePanel")
 	_apply_panel_variation(_spell_block_plate, &"HudActionPanel")
 	_apply_panel_variation(_turn_plate, &"HudActionPanel")
+	var premium := _premium_skin_active()
+	_identity_plate.visible = not premium
+	_spell_block_plate.visible = not premium
+	_turn_plate.visible = not premium
 	_identity_divider.add_theme_stylebox_override(
 		"panel",
 		VISUAL_THEME_FACTORY.make_panel_style(
@@ -334,6 +342,10 @@ func _decorative_character_bar_enabled() -> bool:
 			and visual_skin.neutral_grayscale
 		)
 	)
+
+
+func _premium_skin_active() -> bool:
+	return visual_skin != null and not visual_skin.neutral_grayscale
 
 
 func get_visual_skin_snapshot() -> Dictionary:
@@ -688,7 +700,7 @@ func update_info(unit) -> void:
 		_refresh_button_states()
 		return
 
-	_info_label.text = unit.unit_name
+	_info_label.text = unit.unit_name.to_upper() if _premium_skin_active() else unit.unit_name
 	_portrait_view.set_character_data(unit.character_data)
 	_portrait_view.set_active(true)
 	_apply_character_theme(unit)
@@ -768,7 +780,10 @@ func _refresh_button_states() -> void:
 		_current_unit != null
 		and _current_unit.can_use_basic_attack()
 	)
-	_attack_btn.visible = _current_unit == null or _current_unit.basic_attack_enabled
+	_attack_btn.visible = (
+		not _premium_skin_active()
+		and (_current_unit == null or _current_unit.basic_attack_enabled)
+	)
 	_attack_btn.disabled = not _player_controls_enabled or not attack_available
 	var attack_label := "Attaquer"
 	if _current_unit != null:
@@ -1021,7 +1036,13 @@ func _interaction_plate_text() -> String:
 func _refresh_interaction_plate(animate: bool = true) -> void:
 	if not is_node_ready() or not is_instance_valid(_selected_spell_plate):
 		return
-	_selected_spell_plate.visible = _ui_mode == RunUIMode.COMBAT
+	var phase := StringName(
+		_presentation_snapshot.get("phase_name", &"PLAYER_IDLE")
+	)
+	_selected_spell_plate.visible = (
+		_ui_mode == RunUIMode.COMBAT
+		and (not _premium_skin_active() or phase != &"PLAYER_IDLE")
+	)
 	var next_text := _interaction_plate_text()
 	_selected_spell_plate.text = next_text
 	_selected_spell_plate.tooltip_text = next_text
@@ -1275,7 +1296,9 @@ func _apply_character_theme(unit) -> void:
 		_inventory_button.disabled = true
 		_skills_button.disabled = true
 		_set_refined_depth_visible(refined_fallback)
-		_set_attack_grouped_with_spells(_official_chassis_active())
+		_set_attack_grouped_with_spells(
+			_official_chassis_active() and not _premium_skin_active()
+		)
 		_set_clean_composition(_clean_skin_active())
 		_apply_layout_metrics()
 		return
@@ -1291,14 +1314,17 @@ func _apply_character_theme(unit) -> void:
 		_active_character_theme.portrait_frame_texture
 	)
 	_portrait_view.set_discipline_emblem(
-		_active_character_theme.discipline_emblem_texture,
+		null if _premium_skin_active() else _active_character_theme.discipline_emblem_texture,
 		Color.WHITE,
 		0.85
 	)
 	var refined := _refined_skin_active()
 	_portrait_view.set_refined_style(refined)
 	_identity_discipline_label.text = _active_character_theme.discipline_name.to_upper()
-	_identity_discipline_label.visible = not _active_character_theme.discipline_name.is_empty()
+	_identity_discipline_label.visible = (
+		not _premium_skin_active()
+		and not _active_character_theme.discipline_name.is_empty()
+	)
 	_hp_bar.set_frame_texture(
 		_active_character_theme.health_bar_frame_texture
 	)
@@ -1319,11 +1345,10 @@ func _apply_character_theme(unit) -> void:
 	_attack_btn.set_background_texture(
 		_active_character_theme.get_spell_frame(&"basic_attack")
 	)
-	_move_btn.set_background_texture(
-		_active_character_theme.spell_slot_frame_texture
-		if _clean_skin_active()
-		else null
-	)
+	var move_frame_texture := _active_character_theme.move_action_frame_texture
+	if move_frame_texture == null:
+		move_frame_texture = _active_character_theme.spell_slot_frame_texture
+	_move_btn.set_background_texture(move_frame_texture if _clean_skin_active() else null)
 	_end_btn.set_background_texture(
 		_active_character_theme.end_turn_button_texture,
 		true
@@ -1335,15 +1360,19 @@ func _apply_character_theme(unit) -> void:
 	_map_button.icon = _active_character_theme.utility_map_icon
 	_skills_button.icon = _active_character_theme.utility_skills_icon
 	_utility_dock.visible = refined
-	_inventory_button.visible = refined and not _compact_layout_active()
+	_inventory_button.visible = refined and (
+		_premium_skin_active() or not _compact_layout_active()
+	)
 	_inventory_button.disabled = not refined or not _player_controls_enabled
-	_map_button.visible = refined and not _compact_layout_active()
+	_map_button.visible = refined and not _premium_skin_active() and not _compact_layout_active()
 	_skills_button.visible = refined
 	_set_refined_depth_visible(refined)
 	_skills_button.disabled = (
 		not refined
 	)
-	_set_attack_grouped_with_spells(_official_chassis_active())
+	_set_attack_grouped_with_spells(
+		_official_chassis_active() and not _premium_skin_active()
+	)
 	_set_clean_composition(_clean_skin_active())
 	_apply_layout_metrics()
 
@@ -1453,11 +1482,12 @@ func set_refined_polish_tuning(
 
 
 func _set_refined_depth_visible(visible: bool) -> void:
-	_identity_depth.visible = visible
-	_action_depth.visible = visible
-	_turn_depth.visible = visible
-	_identity_divider.visible = visible
-	if visible:
+	var show_depth := visible and not _premium_skin_active()
+	_identity_depth.visible = show_depth
+	_action_depth.visible = show_depth
+	_turn_depth.visible = show_depth
+	_identity_divider.visible = show_depth
+	if show_depth:
 		set_refined_polish_tuning()
 
 
@@ -1480,7 +1510,7 @@ func _on_inventory_button_pressed() -> void:
 
 
 func _base_chassis_visual_scale(viewport_width: float) -> float:
-	return clampf(viewport_width / 1920.0, 0.8, 1.1)
+	return clampf(viewport_width / 1672.0, 0.75, 1.1)
 
 
 func _chassis_visual_scale(viewport_width: float) -> float:
@@ -1610,15 +1640,31 @@ func _reparent_attack_button(new_parent: Node) -> void:
 
 
 func _set_clean_composition(enabled: bool) -> void:
-	_action_resources_anchor.visible = enabled
+	var premium := enabled and _premium_skin_active()
+	_action_resources_anchor.visible = enabled and not premium
 	_move_action_host.visible = enabled
 	_turn_label.visible = not enabled
 	if enabled:
 		_reparent_control(_move_btn, _move_action_host)
-		_reparent_control(_ap_badge, _clean_resource_badges)
-		_reparent_control(_mp_badge, _clean_resource_badges)
+		if premium:
+			_restore_control_home(_ap_badge, _ap_badge_home, _ap_badge_home_index)
+			_restore_control_home(_mp_badge, _mp_badge_home, _mp_badge_home_index)
+			_reparent_control(_resource_badges, _character_row)
+		else:
+			_restore_control_home(
+				_resource_badges,
+				_resource_badges_home,
+				_resource_badges_home_index
+			)
+			_reparent_control(_ap_badge, _clean_resource_badges)
+			_reparent_control(_mp_badge, _clean_resource_badges)
 		return
 	_restore_control_home(_move_btn, _move_button_home, _move_button_home_index)
+	_restore_control_home(
+		_resource_badges,
+		_resource_badges_home,
+		_resource_badges_home_index
+	)
 	_restore_control_home(_ap_badge, _ap_badge_home, _ap_badge_home_index)
 	_restore_control_home(_mp_badge, _mp_badge_home, _mp_badge_home_index)
 
@@ -1650,10 +1696,15 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 		if _clean_skin_active()
 		else panel_width / CHARACTER_BAR_TEXTURE_RATIO
 	)
+	var bottom_margin := (
+		12.0 * _base_chassis_visual_scale(viewport_width)
+		if _premium_skin_active()
+		else 0.0
+	)
 	_character_panel_size = Vector2(panel_width, panel_height)
-	_hud_band.offset_top = -panel_height
+	_hud_band.offset_top = -panel_height - bottom_margin
 	_hud_band.offset_bottom = 0.0
-	_apply_context_feedback_layout(viewport_width, panel_height)
+	_apply_context_feedback_layout(viewport_width, panel_height + bottom_margin)
 	_neutral_background.visible = not _decorative_character_bar_enabled()
 	_character_theme_bar.visible = _decorative_character_bar_enabled()
 	_spellbar_background.visible = false
@@ -1668,11 +1719,21 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 			Vector4(0.0, 0.0, 1.0, 1.0),
 			Vector4.ZERO
 		)
-	_set_anchor_geometry(
-		_character_theme_bar,
-		Vector4(0.0, 0.0, 1.0, 1.0),
-		Vector4.ZERO
-	)
+	if _premium_skin_active():
+		_set_control_rect(
+			_character_theme_bar,
+			Rect2(0.0, 0.0, viewport_width, panel_height)
+		)
+	else:
+		_set_anchor_geometry(
+			_character_theme_bar,
+			Vector4(0.0, 0.0, 1.0, 1.0),
+			Vector4.ZERO
+		)
+	if _premium_skin_active():
+		_apply_premium_chassis_layout(viewport_width, panel_height)
+		return
+	_bar_toggle_anchor.visible = true
 
 	var calibration_scale := _chassis_visual_scale(viewport_width)
 	var visual_size := _effective_spell_visual_size(viewport_width)
@@ -1800,6 +1861,83 @@ func _apply_character_panel_layout(viewport_width: float) -> void:
 		)
 
 
+func _apply_premium_chassis_layout(
+		viewport_width: float,
+		panel_height: float
+	) -> void:
+	var visual_scale := _chassis_visual_scale(viewport_width)
+	var chassis_width := 1444.0 * visual_scale
+	var chassis_height := 140.0 * visual_scale
+	var content_left := (viewport_width - chassis_width) * 0.5
+	var content_top := panel_height - chassis_height
+	var character_width := 486.0 * visual_scale
+	var action_left := content_left + 504.0 * visual_scale
+	var turn_left := content_left + 1072.0 * visual_scale
+	var visual_size := _effective_spell_visual_size(viewport_width)
+	var ability_width := 430.0 * visual_scale
+
+	_set_control_rect(
+		_character_anchor,
+		Rect2(content_left, content_top, character_width, chassis_height)
+	)
+	_set_control_rect(
+		_move_action_host,
+		Rect2(
+			action_left + 12.0 * visual_scale,
+			content_top + 14.0 * visual_scale,
+			90.0 * visual_scale,
+			112.0 * visual_scale
+		)
+	)
+	_set_control_rect(
+		_spell_anchor,
+		Rect2(
+			action_left + 110.0 * visual_scale,
+			content_top + 4.0 * visual_scale,
+			ability_width,
+			132.0 * visual_scale
+		)
+	)
+	_set_control_rect(
+		_turn_anchor,
+		Rect2(
+			turn_left,
+			content_top,
+			373.0 * visual_scale,
+			chassis_height
+		)
+	)
+	_action_resources_anchor.visible = false
+	_bar_toggle_anchor.visible = false
+	_set_control_rect(
+		_basic_attack_host,
+		Rect2(0.0, 14.0 * visual_scale, visual_size, 112.0 * visual_scale)
+	)
+	for slots_center in [_spell_slots_center, _item_slots_center]:
+		_set_control_rect(
+			slots_center,
+			Rect2(
+				0.0,
+				14.0 * visual_scale,
+				ability_width,
+				112.0 * visual_scale
+			)
+		)
+	_set_control_rect(
+		_selected_spell_plate,
+		Rect2(
+			0.0,
+			-34.0 * visual_scale,
+			ability_width,
+			28.0 * visual_scale
+		)
+	)
+	_selected_spell_plate.add_theme_font_size_override(
+		"font_size",
+		maxi(roundi(layout_data.contextual_text_size * visual_scale), 12)
+	)
+
+
 func _apply_context_feedback_layout(
 		viewport_width: float,
 		panel_height: float
@@ -1811,9 +1949,12 @@ func _apply_context_feedback_layout(
 	var feedback_height := clampf(40.0 * visual_scale, 34.0, 44.0)
 	var feedback_gap := clampf(12.0 * visual_scale, 10.0, 16.0)
 	var feedback_width := clampf(720.0 * visual_scale, 560.0, 760.0)
+	var interaction_reserve := 40.0 * visual_scale if _premium_skin_active() else 0.0
 	_context_feedback.offset_left = -feedback_width * 0.5
 	_context_feedback.offset_right = feedback_width * 0.5
-	_context_feedback.offset_bottom = -panel_height - feedback_gap
+	_context_feedback.offset_bottom = (
+		-panel_height - feedback_gap - interaction_reserve
+	)
 	_context_feedback.offset_top = (
 		_context_feedback.offset_bottom - feedback_height
 	)
@@ -1926,7 +2067,11 @@ func _apply_layout_metrics() -> void:
 		)
 	_character_row.add_theme_constant_override(
 		"separation",
-		int(roundf((6.0 if _clean_skin_active() else METRICS.CHARACTER_SECTION_GAP) * _layout_scale))
+		int(roundf(
+			(16.0 * _chassis_visual_scale(viewport_width))
+			if _premium_skin_active()
+			else (6.0 if _clean_skin_active() else METRICS.CHARACTER_SECTION_GAP) * _layout_scale
+		))
 	)
 	_identity_discipline_label.add_theme_font_size_override(
 		"font_size", 11 if _compact_layout_active() else (13 if _clean_skin_active() else 12)
@@ -2015,15 +2160,46 @@ func _apply_layout_metrics() -> void:
 	)
 	var compact_turn_height := maxf(_character_panel_size.y - 16.0 * _base_chassis_visual_scale(viewport_width), 64.0)
 	var turn_content_height := (
-		compact_turn_height
+		112.0 * _chassis_visual_scale(viewport_width)
+		if _premium_skin_active()
+		else compact_turn_height
 		if _compact_layout_active()
 		else (118.0 if _refined_skin_active() else 68.0)
 	)
 	_turn_content.custom_minimum_size = Vector2(
-		end_turn_size.x,
+		337.0 * _chassis_visual_scale(viewport_width)
+		if _premium_skin_active()
+		else end_turn_size.x,
 		turn_content_height if _compact_layout_active() else METRICS.scaled(turn_content_height, _layout_scale)
 	)
-	if _compact_layout_active():
+	if _premium_skin_active():
+		var premium_scale := _chassis_visual_scale(viewport_width)
+		_set_control_rect(
+			_end_btn,
+			Rect2(
+				0.0,
+				25.0 * premium_scale,
+				end_turn_size.x,
+				end_turn_size.y
+			)
+		)
+		var utility_size := 52.0 * premium_scale
+		var utility_gap := 8.0 * premium_scale
+		for utility_button in [_inventory_button, _map_button, _skills_button]:
+			utility_button.custom_minimum_size = Vector2.ONE * utility_size
+		_utility_dock.add_theme_constant_override(
+			"separation", int(roundf(utility_gap))
+		)
+		_set_control_rect(
+			_utility_dock,
+			Rect2(
+				196.0 * premium_scale,
+				30.0 * premium_scale,
+				112.0 * premium_scale,
+				utility_size
+			)
+		)
+	elif _compact_layout_active():
 		var compact_scale := _chassis_visual_scale(viewport_width)
 		var end_top := 11.0 * compact_scale
 		_set_control_rect(
