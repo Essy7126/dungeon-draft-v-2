@@ -4,9 +4,9 @@
 [ext_resource type="Script" path="res://data/rooms/room_data.gd" id="2_room"]
 [ext_resource type="Resource" path="res://data/runs/profiles/odyssey_content_profile.tres" id="3_content"]
 [ext_resource type="Resource" path="res://data/runs/economy/odyssey_economy_profile.tres" id="4_economy"]
-[ext_resource type="Resource" path="res://data/rooms/odyssey/room_01.tres" id="5_room_01"]
-[ext_resource type="Resource" path="res://data/rooms/odyssey/room_02.tres" id="6_room_02"]
-[ext_resource type="Resource" path="res://data/rooms/odyssey/room_03.tres" id="7_room_03"]
+[ext_resource type="Resource" path="res://data/arenas/produced/catabase_room_01_frail_hellspawn/arena.tres" id="5_room_01"]
+[ext_resource type="Resource" path="res://data/arenas/produced/catabase_room_02_ash_gate/arena.tres" id="6_room_02"]
+[ext_resource type="Resource" path="res://data/arenas/produced/catabase_room_03_judgement/arena.tres" id="7_room_03"]
 [ext_resource type="Resource" path="res://cinematics/catabase/catabase_intro_v4.tres" id="8_intro"]
 
 [resource]

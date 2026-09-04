@@ -10,6 +10,23 @@ const EXPECTED_FINALE_ROSTER: Array[StringName] = [
 	&"odyssey_champion",
 	&"catabase_shadow_paris",
 ]
+const EXPECTED_ARENA_PATHS := [
+	"res://data/arenas/produced/catabase_room_01_frail_hellspawn/arena.tres",
+	"res://data/arenas/produced/catabase_room_02_ash_gate/arena.tres",
+	"res://data/arenas/produced/catabase_room_03_judgement/arena.tres",
+]
+const EXPECTED_ARENA_IDS: Array[StringName] = [
+	&"catabase_room_01_frail_hellspawn",
+	&"catabase_room_02_ash_gate",
+	&"catabase_room_03_judgement",
+]
+const EXPECTED_BACKGROUNDS := [
+	"res://asset/map/painted/greece/map2-_achilles.png",
+	"res://asset/map/painted/catabase/catabase_ash_gate_v1.png",
+	"res://asset/map/painted/greece/maps_achille_dalle.png",
+]
+const EXPECTED_NEUTRAL_TILE_COUNTS := [164, 134, 169]
+const EXPECTED_DECORATION_COUNTS := [11, 62, 0]
 
 
 func test_catabase_keeps_three_distinct_ordered_arenas() -> void:
@@ -34,9 +51,45 @@ func test_catabase_keeps_three_distinct_ordered_arenas() -> void:
 	assert_eq(map_ids.size(), 3, "chaque salle garde une arène visuelle propre")
 
 
+func test_catabase_run_uses_the_three_produced_beige_arenas() -> void:
+	for room_index in range(CATABASE_RUN.rooms.size()):
+		var room := CATABASE_RUN.rooms[room_index]
+		assert_true(room is ArenaDefinition)
+		assert_eq(room.resource_path, EXPECTED_ARENA_PATHS[room_index])
+		assert_eq(room.arena_id, EXPECTED_ARENA_IDS[room_index])
+		assert_eq(room.visual_mode, ArenaDefinition.VisualMode.HYBRID)
+		assert_eq(
+			room.painted_map_visual_data.background_texture_path,
+			EXPECTED_BACKGROUNDS[room_index],
+		)
+		assert_almost_eq(room.painted_map_visual_data.camera_zoom, 0.99, 0.001)
+		assert_eq(
+			room.painted_map_visual_data.presentation_profile.resource_path,
+			"res://data/maps/painted/catabase_presentation.tres",
+		)
+		assert_not_null(room.modular_visual_profile)
+		assert_eq(room.modular_visual_profile.base_terrain_id, &"neutral")
+		assert_eq(
+			room.modular_visual_profile.hybrid_floor_policy,
+			ArenaModularVisualProfile.HybridFloorPolicy.ALL_DEFINED,
+		)
+		var render_plan := ArenaTerrainRenderPlanService.build(room)
+		assert_true(render_plan.get("ok", false), str(render_plan))
+		assert_eq(
+			int(render_plan.get("expected_terrain_cell_count", 0)),
+			EXPECTED_NEUTRAL_TILE_COUNTS[room_index],
+		)
+		var terrain_counts: Dictionary = render_plan.get("expected_by_terrain_id", {})
+		assert_eq(
+			int(terrain_counts.get("neutral", 0)),
+			EXPECTED_NEUTRAL_TILE_COUNTS[room_index],
+		)
+		assert_eq(room.decorations.size(), EXPECTED_DECORATION_COUNTS[room_index])
+
+
 func test_middle_room_is_the_melee_formation_escalation() -> void:
 	var room := CATABASE_RUN.rooms[1]
-	assert_eq(room.visual_mode, ArenaDefinition.VisualMode.PAINTED)
+	assert_eq(room.visual_mode, ArenaDefinition.VisualMode.HYBRID)
 	assert_eq(_roster_ids(room), EXPECTED_MIDDLE_ROSTER)
 	assert_eq(room.encounter_definition.get_initial_enemy_count(), 3)
 	assert_eq(room.encounter_definition.living_enemy_cap, 3)

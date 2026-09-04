@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[node name="CatabaseAshVoidCell" type="Node2D"]
+
+[node name="DeepAsh" type="Polygon2D" parent="."]
+z_index = -20
+polygon = PackedVector2Array(0, -27, 53, 0, 0, 27, -53, 0)
+color = Color(0.055, 0.045, 0.04, 0.74)
+
+[node name="Rim" type="Line2D" parent="."]
+z_index = -20
+points = PackedVector2Array(0, -27, 53, 0, 0, 27, -53, 0)
+width = 0.75
+default_color = Color(0.32, 0.26, 0.2, 0.18)
+closed = true
+antialiased = true

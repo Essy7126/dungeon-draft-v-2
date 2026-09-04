@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ArenaModularVisualProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/dungeon_draft_arena_studio/domain/arena_modular_visual_profile.gd" id="1_w3y0o"]
+
+[resource]
+script = ExtResource("1_w3y0o")
+theme_id = &"painted_default"
+hybrid_floor_policy = 2
+base_terrain_id = &"neutral"
