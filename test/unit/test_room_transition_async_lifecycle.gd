@@ -49,6 +49,7 @@ class RunnerBattleSpy extends Node:
 	var _unit_views := {}
 	var _battle_over := false
 	var _action_sequence := 0
+	var _outcome_deferral_depth := 0
 
 	func _init() -> void:
 		add_child(grid_view)
@@ -66,6 +67,15 @@ class RunnerBattleSpy extends Node:
 	func _next_action_id(kind: StringName) -> StringName:
 		_action_sequence += 1
 		return StringName("%s_%06d" % [kind, _action_sequence])
+
+	func _begin_outcome_deferral() -> void:
+		if not _battle_over:
+			_outcome_deferral_depth += 1
+
+	func _finish_outcome_deferral() -> bool:
+		if _outcome_deferral_depth > 0:
+			_outcome_deferral_depth -= 1
+		return _battle_over
 
 
 func _make_controlled_view(unit: Unit, parent: Node = self) -> Dictionary:

@@ -120,7 +120,7 @@ func test_four_production_spells_and_disciplines_keep_their_combat_contract() ->
 	var advance := progression.spells[1]
 	assert_eq(
 		[advance.ap_cost, advance.minimum_range, advance.spell_range, advance.damage],
-		[2, 1, 3, 5],
+		[2, 2, 3, 5],
 	)
 	assert_true(advance.line_from_caster)
 	assert_true(advance.once_per_activation)

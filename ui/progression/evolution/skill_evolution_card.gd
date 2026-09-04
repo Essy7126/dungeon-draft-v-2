@@ -230,6 +230,7 @@ func get_layout_snapshot() -> Dictionary:
 		"compact_mode": _compact_mode,
 		"presentation_scale": _presentation_scale,
 		"card_global": get_global_rect(),
+		"decorated_global": get_decorated_global_rect(),
 		"art_global": art_stage.get_global_rect(),
 		"title_global": display_title.get_global_rect(),
 		"description_global": display_description.get_global_rect(),
@@ -240,6 +241,28 @@ func get_layout_snapshot() -> Dictionary:
 		"eyebrow_global": eyebrow.get_global_rect(),
 		"selection_badge_global": selection_badge.get_global_rect(),
 	}
+
+
+func get_decorated_global_rect() -> Rect2:
+	var local_bounds := Rect2(Vector2.ZERO, size)
+	local_bounds = local_bounds.merge(back_glow.get_rect())
+	local_bounds = local_bounds.merge(card_shadow.get_rect())
+	var transform := visual_root.get_global_transform()
+	var corners := [
+		transform * local_bounds.position,
+		transform * Vector2(local_bounds.end.x, local_bounds.position.y),
+		transform * local_bounds.end,
+		transform * Vector2(local_bounds.position.x, local_bounds.end.y),
+	]
+	var minimum := corners[0] as Vector2
+	var maximum := corners[0] as Vector2
+	for corner_value in corners.slice(1):
+		var corner := corner_value as Vector2
+		minimum.x = minf(minimum.x, corner.x)
+		minimum.y = minf(minimum.y, corner.y)
+		maximum.x = maxf(maximum.x, corner.x)
+		maximum.y = maxf(maximum.y, corner.y)
+	return Rect2(minimum, maximum - minimum)
 
 
 func set_selected(value: bool) -> void:
@@ -327,8 +350,8 @@ func _refresh_state(animated: bool) -> void:
 	var saturation := 1.0
 	var outline := 0.0
 	if _selected:
-		scale_value = 1.045
-		y_value = -10.0
+		scale_value = 1.025 if _compact_mode else 1.045
+		y_value = -4.0 if _compact_mode else -10.0
 		rotation_value = 0.0
 		brightness = 1.06
 		saturation = 1.04

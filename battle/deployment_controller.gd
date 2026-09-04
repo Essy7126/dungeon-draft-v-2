@@ -28,10 +28,14 @@ extends Node
 const COMBAT_HIGHLIGHT_MARKER := preload(
 	"res://battle/combat_highlight_marker.gd"
 )
+const PREMIUM_UI := preload("res://ui/theme/premium_ui.gd")
+const PREMIUM_ORNAMENT := preload("res://ui/theme/premium_panel_ornament.gd")
+const INVALID_CELL := Vector2i(-1, -1)
 
 # Émis quand la phase de déploiement est terminée : placement manuel fini,
 # secours auto, ou aucun héros à placer. battle.gd écoute pour lancer le combat.
 signal deployment_completed
+signal spatial_focus_requested(grid_pos: Vector2i)
 
 var _battle = null
 
@@ -41,6 +45,8 @@ var _deploy_zone: Array = []            # toutes les cases de placement valides
 var _deployed: Array = []               # historique : [{ "unit":Unit, "cell":Vector2i }]
 var _deploy_ui: CanvasLayer = null      # label + bouton "Annuler" pendant la phase
 var _deploy_label: Label = null
+var _deploy_hint: Label = null
+var _undo_button: Button = null
 
 func setup(battle) -> void:
 	_battle = battle
@@ -48,6 +54,23 @@ func setup(battle) -> void:
 # Le déploiement est-il en cours ? (battle.gd route les clics ici si oui)
 func is_active() -> bool:
 	return _deploying
+
+
+func get_available_cells() -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	if not _deploying or _battle == null or _battle.grid == null:
+		return result
+	for cell_value in _deploy_zone:
+		var cell := cell_value as Vector2i
+		if _battle.grid.is_terrain_interactable(cell) \
+				and not _battle.grid.has_unit(cell):
+			result.append(cell)
+	return result
+
+
+func get_preferred_cursor_cell() -> Vector2i:
+	var available := get_available_cells()
+	return available[0] if not available.is_empty() else INVALID_CELL
 
 # Démarre la phase de déploiement. On ne place RIEN tant que le joueur n'a pas
 # cliqué : le combat ne démarre qu'à l'émission de deployment_completed.
@@ -218,8 +241,12 @@ func on_cell_clicked(cell: Vector2i) -> void:
 
 # --- Annule le dernier placement (bouton "Annuler"). ---
 func _undo_last_deploy() -> void:
+	undo_last_deploy()
+
+
+func undo_last_deploy() -> bool:
 	if _deployed.is_empty():
-		return
+		return false
 	var last = _deployed.pop_back()
 	var hero: Unit = last["unit"]
 	var cell: Vector2i = last["cell"]
@@ -237,6 +264,17 @@ func _undo_last_deploy() -> void:
 	# Le héros repasse en tête de file (il sera le prochain à placer).
 	_heroes_to_place.push_front(hero)
 	_refresh_deploy()
+	_release_deploy_ui_focus()
+	spatial_focus_requested.emit(get_preferred_cursor_cell())
+	return true
+
+
+func _release_deploy_ui_focus() -> void:
+	if not is_inside_tree():
+		return
+	var viewport := get_viewport()
+	if viewport != null:
+		viewport.gui_release_focus()
 
 func _end_deployment() -> void:
 	_deploying = false
@@ -251,36 +289,66 @@ func _end_deployment() -> void:
 
 func _build_deploy_ui() -> void:
 	_deploy_ui = CanvasLayer.new()
+	_deploy_ui.layer = 12
 	add_child(_deploy_ui)
 
-	var panel = PanelContainer.new()
+	var root := Control.new()
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	PREMIUM_UI.apply(root)
+	_deploy_ui.add_child(root)
+
+	var panel := PanelContainer.new()
 	panel.anchor_left = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_top = 0.0
-	panel.offset_left = -220
-	panel.offset_right = 220
-	panel.offset_top = 16
-	_deploy_ui.add_child(panel)
+	panel.offset_left = -310
+	panel.offset_right = 310
+	panel.offset_top = 18
+	panel.offset_bottom = 132
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 28)
+	margin.add_theme_constant_override("margin_right", 28)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	panel.add_child(margin)
 
 	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
-	panel.add_child(vbox)
+	vbox.add_theme_constant_override("separation", 6)
+	margin.add_child(vbox)
 
 	_deploy_label = Label.new()
-	_deploy_label.add_theme_font_size_override("font_size", 20)
+	_deploy_label.add_theme_font_size_override("font_size", 22)
+	_deploy_label.add_theme_color_override("font_color", Color("f0d49a"))
 	_deploy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(_deploy_label)
 
-	var hint = Label.new()
-	hint.text = "Cliquez une case bleue pour placer ce héros."
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
-	vbox.add_child(hint)
+	_deploy_hint = Label.new()
+	_deploy_hint.text = (
+		"CASE MARQUÉE · Souris ou croix directionnelle · Entrée / A pour placer"
+	)
+	_deploy_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_deploy_hint.add_theme_font_size_override("font_size", 12)
+	_deploy_hint.add_theme_color_override("font_color", Color("b8b1a3"))
+	vbox.add_child(_deploy_hint)
 
-	var undo_btn = Button.new()
-	undo_btn.text = "Annuler le dernier placement"
-	undo_btn.pressed.connect(_undo_last_deploy)
-	vbox.add_child(undo_btn)
+	_undo_button = Button.new()
+	_undo_button.text = "ANNULER LE DERNIER PLACEMENT  [B / ÉCHAP]"
+	_undo_button.custom_minimum_size = Vector2(300, 32)
+	_undo_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_undo_button.focus_mode = Control.FOCUS_ALL
+	_undo_button.pressed.connect(_undo_last_deploy)
+	vbox.add_child(_undo_button)
+
+	var ornament := Control.new()
+	ornament.set_script(PREMIUM_ORNAMENT)
+	ornament.set("variant", "header")
+	ornament.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(ornament)
 
 func _update_deploy_label() -> void:
 	if _deploy_label == null:
@@ -291,10 +359,16 @@ func _update_deploy_label() -> void:
 	var hero = _heroes_to_place[0]
 	var total = GameManager.get_living_heroes().size()
 	var current = total - _heroes_to_place.size() + 1
-	_deploy_label.text = "Placez : %s  (%d/%d)" % [hero.unit_name, current, total]
+	_deploy_label.text = "DÉPLOIEMENT · %s  —  %d/%d" % [
+		hero.unit_name.to_upper(), current, total,
+	]
+	if is_instance_valid(_undo_button):
+		_undo_button.disabled = _deployed.is_empty()
 
 func _destroy_deploy_ui() -> void:
 	if is_instance_valid(_deploy_ui):
 		_deploy_ui.queue_free()
 	_deploy_ui = null
 	_deploy_label = null
+	_deploy_hint = null
+	_undo_button = null

@@ -51,6 +51,38 @@ func test_selection_is_visually_dominant_without_hiding_other_card() -> void:
 	assert_gt(snapshot["card_scales"][0].x, snapshot["card_scales"][1].x)
 	assert_true(overlay.get_card(0).selection_badge.visible)
 	assert_gt(overlay.get_card(1).modulate.a, 0.5)
+	assert_gte(overlay.get_card(1).visual_root.modulate.r, 0.9)
+	assert_gte(overlay.get_card(1).visual_root.modulate.g, 0.9)
+	assert_lte(snapshot["card_scales"][0].x, 1.05)
+
+
+func test_keyboard_focus_has_an_explicit_ring_and_badge_on_either_card() -> void:
+	var overlay := await _make_overlay()
+	var left := overlay.get_card(0)
+	var right := overlay.get_card(1)
+	left.grab_card_focus()
+	await get_tree().process_frame
+	assert_gt(left.focus_ring.modulate.a, 0.8)
+	assert_true(left.selection_badge.visible)
+	assert_eq(left.selection_badge.text, "◇ SÉLECTIONNER")
+	right.grab_card_focus()
+	await get_tree().process_frame
+	assert_lt(left.focus_ring.modulate.a, 0.1)
+	assert_gt(right.focus_ring.modulate.a, 0.8)
+	assert_true(right.selection_badge.visible)
+	assert_eq(right.selection_badge.text, "◇ SÉLECTIONNER")
+
+
+func test_hover_keeps_the_other_relic_card_readable() -> void:
+	var overlay := await _make_relic_overlay()
+	var left := overlay.get_card(0)
+	var right := overlay.get_card(1)
+	left.interaction.mouse_entered.emit()
+	await get_tree().create_timer(0.2).timeout
+	assert_gte(right.visual_root.modulate.r, 0.9)
+	assert_gte(right.visual_root.modulate.g, 0.9)
+	assert_gte(right.visual_root.modulate.b, 0.9)
+	assert_gte(right.visual_root.scale.x, 0.98)
 
 
 func test_cards_remain_centered_and_uncut_at_supported_resolutions() -> void:
@@ -65,8 +97,46 @@ func test_cards_remain_centered_and_uncut_at_supported_resolutions() -> void:
 		for rect in rects:
 			assert_true(_rect_contains(outer, rect), str(viewport_size))
 		var sizes := snapshot["card_sizes"] as Array
-		assert_almost_eq(sizes[0].x / sizes[0].y, 0.535, 0.01)
-		assert_lte(sizes[0].y, 735.0)
+		assert_almost_eq(sizes[0].x / sizes[0].y, 0.57, 0.01)
+		assert_lte(sizes[0].y, 660.0)
+
+
+func test_relic_content_density_remains_coherent_at_supported_resolutions() -> void:
+	var overlay := await _make_relic_overlay()
+	for viewport_size in [Vector2(1280, 720), Vector2(1920, 1080)]:
+		overlay.apply_viewport_size_for_test(viewport_size)
+		assert_true(overlay.select_item_by_id(overlay.get_card(0).item_id))
+		await get_tree().process_frame
+		assert_gt(
+			overlay.get_card(0).visual_root.scale.x,
+			overlay.get_card(1).visual_root.scale.x,
+			str(viewport_size),
+		)
+		assert_gte(
+			overlay.get_card(1).visual_root.modulate.r,
+			0.9,
+			str(viewport_size),
+		)
+		assert_true(overlay.get_card(0).selection_badge.visible)
+		for card_index in 2:
+			var card := overlay.get_card(card_index)
+			var card_height := card.size.y
+			assert_eq(
+				card.fallback_description.size_flags_vertical,
+				Control.SIZE_SHRINK_CENTER,
+				str(viewport_size),
+			)
+			assert_lte(
+				card.fallback_description.size.y,
+				card_height * 0.28,
+				str(viewport_size),
+			)
+			assert_gte(
+				card.illustration_frame.size.y,
+				card_height * 0.34,
+				str(viewport_size),
+			)
+			assert_gte(card.fallback_title.size.y, 48.0, str(viewport_size))
 
 
 func test_missing_texture_uses_readable_fallback_and_reduced_motion() -> void:
@@ -183,6 +253,22 @@ func _make_overlay() -> EquipmentRewardOverlay:
 	]
 	assert_true(overlay.present(options))
 	await get_tree().create_timer(0.65).timeout
+	return overlay
+
+
+func _make_relic_overlay() -> EquipmentRewardOverlay:
+	var overlay := OVERLAY_SCENE.instantiate() as EquipmentRewardOverlay
+	add_child_autofree(overlay)
+	await get_tree().process_frame
+	overlay.apply_viewport_size_for_test(Vector2(1920, 1080))
+	var first := CATALOG.get_definition(&"chaines_de_promethee")
+	var second := CATALOG.get_definition(&"sablier_de_chronos")
+	var options: Array[Dictionary] = [
+		{"item_id": first.item_id, "reward_id": first.item_id, "definition": first},
+		{"item_id": second.item_id, "reward_id": second.item_id, "definition": second},
+	]
+	assert_true(overlay.present(options, true))
+	await get_tree().process_frame
 	return overlay
 
 

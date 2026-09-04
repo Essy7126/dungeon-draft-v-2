@@ -8,15 +8,30 @@ extends Node2D
 
 signal cell_hovered(grid_pos: Vector2i)
 signal cell_clicked(grid_pos: Vector2i)
+signal spatial_cursor_released
 
 const INVALID_CELL := Vector2i(-1, -1)
 const HIGHLIGHT_MARKER := preload("res://battle/combat_highlight_marker.gd")
 const GRID_LINE_COLOR := Color(0.72, 0.94, 1.0, 0.42)
 const CENTER_COLOR := Color(1.0, 0.86, 0.2, 0.95)
-const HOVER_FILL_COLOR := Color(0.35, 0.88, 1.0, 0.32)
-const HOVER_LINE_COLOR := Color(0.48, 0.94, 1.0, 1.0)
-const SELECTED_FILL_COLOR := Color(1.0, 0.70, 0.18, 0.36)
+const RANGE_FILL_ALPHA_SCALE := 0.52
+const RANGE_FILL_ALPHA_MAX := 0.24
+const RANGE_OUTLINE_ALPHA_MIN := 0.58
+const RANGE_OUTLINE_ALPHA_MAX := 0.86
+const RANGE_OUTLINE_WIDTH := 1.35
+const HOVER_FILL_COLOR := Color(0.35, 0.88, 1.0, 0.10)
+const HOVER_LINE_COLOR := Color(0.48, 0.94, 1.0, 0.92)
+const HOVER_OUTLINE_WIDTH := 1.5
+const SELECTED_FILL_COLOR := Color(1.0, 0.70, 0.18, 0.16)
 const SELECTED_LINE_COLOR := Color(1.0, 0.78, 0.28, 1.0)
+const SELECTED_OUTLINE_WIDTH := 2.5
+const CURSOR_FILL_COLOR := Color(1.0, 0.96, 0.78, 0.08)
+const CURSOR_LINE_COLOR := Color(1.0, 0.96, 0.78, 1.0)
+const CURSOR_SHADOW_COLOR := Color(0.015, 0.02, 0.025, 0.9)
+const CURSOR_LINE_WIDTH := 2.5
+const CURSOR_SHADOW_WIDTH := 5.0
+const TARGET_FILL_ALPHA_MAX := 0.14
+const TARGET_OUTLINE_WIDTH := 3.0
 const TYPE_COLORS := {
 	GridData.CellType.NORMAL: Color(0.18, 0.55, 0.34, 0.28),
 	GridData.CellType.WALL: Color(0.85, 0.25, 0.18, 0.58),
@@ -54,6 +69,7 @@ var hero_spawn_cells: Array[Vector2i] = []
 var enemy_spawn_cells: Array[Vector2i] = []
 var _hovered_cell := INVALID_CELL
 var _selected_cell := INVALID_CELL
+var _cursor_cell := INVALID_CELL
 var _highlights: Dictionary = {}
 var _cell_feedback_markers: Dictionary = {}
 
@@ -78,6 +94,7 @@ func setup(grid_data: GridData) -> void:
 	grid = grid_data
 	_hovered_cell = INVALID_CELL
 	_selected_cell = INVALID_CELL
+	_cursor_cell = INVALID_CELL
 	_highlights.clear()
 	_cell_feedback_markers.clear()
 	queue_redraw()
@@ -120,15 +137,48 @@ func get_selected_cell() -> Vector2i:
 
 
 func set_selected_cell(cell: Vector2i) -> void:
-	if grid == null or not grid.is_terrain_interactable(cell):
+	if grid == null or not grid.is_terrain_interactable(cell) \
+			or _selected_cell == cell:
 		return
 	_selected_cell = cell
 	queue_redraw()
 
 
 func clear_selection() -> void:
+	if _selected_cell == INVALID_CELL:
+		return
 	_selected_cell = INVALID_CELL
 	queue_redraw()
+
+
+## Focus spatial reserve au clavier et a la manette. Il ne modifie ni le
+## survol souris, ni la cellule effectivement selectionnee.
+func set_cursor_cell(cell: Vector2i) -> bool:
+	if grid == null or not grid.is_terrain_interactable(cell):
+		return false
+	if _cursor_cell == cell:
+		return true
+	_cursor_cell = cell
+	queue_redraw()
+	return true
+
+
+func clear_cursor() -> void:
+	if _cursor_cell == INVALID_CELL:
+		return
+	_cursor_cell = INVALID_CELL
+	queue_redraw()
+
+
+func get_cursor_cell() -> Vector2i:
+	return _cursor_cell
+
+
+func _release_spatial_cursor_to_pointer() -> void:
+	if _cursor_cell == INVALID_CELL:
+		return
+	clear_cursor()
+	spatial_cursor_released.emit()
 
 
 func highlight(
@@ -149,6 +199,8 @@ func get_highlight_snapshot() -> Dictionary:
 
 
 func clear_highlights() -> void:
+	if _highlights.is_empty():
+		return
 	_highlights.clear()
 	queue_redraw()
 
@@ -238,6 +290,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if grid == null or visual_data == null:
 		return
 	if event is InputEventMouseMotion:
+		if not event.relative.is_zero_approx():
+			_release_spatial_cursor_to_pointer()
 		update_hover(get_local_mouse_position())
 	elif event is InputEventMouseButton \
 			and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -266,9 +320,11 @@ func _draw() -> void:
 				draw_colored_polygon(polygon, TYPE_COLORS[cell_type])
 			if _highlights.has(cell):
 				var highlight_value = _highlights[cell]
-				draw_colored_polygon(
+				draw_colored_polygon(polygon, _range_fill_color(highlight_value))
+				_draw_polygon_outline(
 					polygon,
-					HIGHLIGHT_MARKER.color_of(highlight_value),
+					_range_outline_color(highlight_value),
+					RANGE_OUTLINE_WIDTH,
 				)
 				var marker_center := grid_to_local(cell)
 				HIGHLIGHT_MARKER.draw(
@@ -301,19 +357,31 @@ func _draw() -> void:
 			elif draw_spawns and enemy_spawn_cells.has(cell):
 				draw_circle(grid_to_local(cell), 6.0, Color(1.0, 0.25, 0.2, 0.95))
 
-	if grid.is_valid(_selected_cell):
-		var selected_polygon := get_cell_polygon(_selected_cell)
-		draw_colored_polygon(selected_polygon, SELECTED_FILL_COLOR)
-		_draw_polygon_outline(selected_polygon, SELECTED_LINE_COLOR, 2.5)
-	if grid.is_valid(_hovered_cell):
-		var hovered_polygon := get_cell_polygon(_hovered_cell)
-		draw_colored_polygon(hovered_polygon, HOVER_FILL_COLOR)
-		_draw_polygon_outline(hovered_polygon, HOVER_LINE_COLOR, 2.0)
 	if draw_map_bounds:
 		draw_rect(get_map_bounds(), Color(1.0, 0.25, 0.75, 0.95), false, 2.0)
 		draw_rect(get_logical_bounds(), Color(0.25, 1.0, 0.75, 0.95), false, 2.0)
 	if draw_calibration:
 		_draw_calibration()
+
+	# Les etats d'interaction restent independants. Leur ordre rend la selection
+	# plus forte que le hover, puis le curseur clavier/manette plus prioritaire.
+	if grid.is_terrain_interactable(_hovered_cell):
+		var hovered_polygon := get_cell_polygon(_hovered_cell)
+		draw_colored_polygon(hovered_polygon, HOVER_FILL_COLOR)
+		_draw_polygon_outline(
+			hovered_polygon, HOVER_LINE_COLOR, HOVER_OUTLINE_WIDTH
+		)
+	if grid.is_terrain_interactable(_selected_cell):
+		var selected_polygon := get_cell_polygon(_selected_cell)
+		draw_colored_polygon(selected_polygon, SELECTED_FILL_COLOR)
+		_draw_polygon_outline(
+			selected_polygon, SELECTED_LINE_COLOR, SELECTED_OUTLINE_WIDTH
+		)
+	if grid.is_terrain_interactable(_cursor_cell):
+		_draw_cursor_polygon(get_cell_polygon(_cursor_cell))
+
+	# La cible primaire et son symbole restent au-dessus de toutes les portees
+	# et de tous les etats d'interaction.
 	_draw_cell_feedback_markers()
 
 
@@ -323,12 +391,71 @@ func _draw_cell_feedback_markers() -> void:
 			continue
 		var polygon := get_cell_polygon(cell)
 		var center := grid_to_local(cell)
+		var feedback_value := _cell_feedback_markers[cell] as Dictionary
+		var feedback_color := HIGHLIGHT_MARKER.color_of(feedback_value)
+		draw_colored_polygon(
+			polygon,
+			_with_alpha(feedback_color, minf(
+				feedback_color.a * 0.16, TARGET_FILL_ALPHA_MAX
+			)),
+		)
+		_draw_polygon_outline(
+			polygon,
+			_with_alpha(feedback_color, maxf(feedback_color.a, 0.86)),
+			TARGET_OUTLINE_WIDTH,
+		)
 		HIGHLIGHT_MARKER.draw_feedback(
 			self,
 			center,
-			_cell_feedback_markers[cell],
-			HIGHLIGHT_MARKER.radius_for_polygon(center, polygon) * 1.08,
+			feedback_value,
+			HIGHLIGHT_MARKER.radius_for_polygon(center, polygon) * 1.18,
 		)
+
+
+func _range_fill_color(value) -> Color:
+	var color := HIGHLIGHT_MARKER.color_of(value)
+	color.a = minf(color.a * RANGE_FILL_ALPHA_SCALE, RANGE_FILL_ALPHA_MAX)
+	return color
+
+
+func _range_outline_color(value) -> Color:
+	var color := HIGHLIGHT_MARKER.color_of(value)
+	if color.a <= 0.0:
+		return Color.TRANSPARENT
+	color = color.lightened(0.16)
+	color.a = clampf(
+		color.a * 1.65,
+		RANGE_OUTLINE_ALPHA_MIN,
+		RANGE_OUTLINE_ALPHA_MAX,
+	)
+	return color
+
+
+func _with_alpha(color: Color, alpha: float) -> Color:
+	return Color(color.r, color.g, color.b, clampf(alpha, 0.0, 1.0))
+
+
+func _draw_cursor_polygon(polygon: PackedVector2Array) -> void:
+	if polygon.size() < 3:
+		return
+	draw_colored_polygon(polygon, CURSOR_FILL_COLOR)
+	var center := Vector2.ZERO
+	for point in polygon:
+		center += point
+	center /= float(polygon.size())
+	for index in polygon.size():
+		var corner := polygon[index]
+		var previous := polygon[(index - 1 + polygon.size()) % polygon.size()]
+		var next := polygon[(index + 1) % polygon.size()]
+		for endpoint in [corner.lerp(previous, 0.27), corner.lerp(next, 0.27)]:
+			draw_line(
+				corner, endpoint, CURSOR_SHADOW_COLOR, CURSOR_SHADOW_WIDTH, true
+			)
+			draw_line(
+				corner, endpoint, CURSOR_LINE_COLOR, CURSOR_LINE_WIDTH, true
+			)
+	draw_circle(center, 3.8, CURSOR_SHADOW_COLOR)
+	draw_circle(center, 2.2, CURSOR_LINE_COLOR)
 
 
 func diagnostic_fill_cells() -> Array[String]:

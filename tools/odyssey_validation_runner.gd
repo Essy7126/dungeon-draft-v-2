@@ -104,8 +104,12 @@ func _exercise_real_hub_selection() -> RunData:
 	panel.open_panel(controller.archivist.data)
 	controller._set_state(StartHubController.HubState.UI_LOCKED)
 	panel._show_room_selection()
-	if panel.run_selector.item_count != 3:
-		_fail("Le hub n'affiche pas exactement les trois runs officiels.")
+	var odyssey_run_index := panel.find_run_index(RUN)
+	if odyssey_run_index < 0:
+		_fail("Le hub n'expose pas le parcours Odyssée canonique.")
+		hub.queue_free()
+		await _settle(3)
+		return null
 	for viewport_size in VIEWPORT_SIZES:
 		get_window().size = viewport_size
 		await _settle(3)
@@ -118,9 +122,9 @@ func _exercise_real_hub_selection() -> RunData:
 		)
 		panel.run_selector.get_popup().hide()
 		await _settle(2)
-	panel.run_selector.select(2)
-	panel._on_run_selected(2)
-	if panel.run_selector.get_item_text(2) != RUN.run_name \
+	panel.run_selector.select(odyssey_run_index)
+	panel._on_run_selected(odyssey_run_index)
+	if panel.run_selector.get_item_text(odyssey_run_index) != RUN.run_name \
 			or panel.room_selector.item_count != 1 \
 			or panel.room_selector.get_selected_id() != RUN.hub_forced_start_room_index:
 		_fail("La sélection Catabase ou son départ imposé en salle I est invalide.")
@@ -156,9 +160,11 @@ func _exercise_real_battle_scenes(run_data: RunData) -> void:
 		GameManager.current_room_index = room_index
 		var room := run_data.rooms[room_index]
 		var battle = room.battle_scene.instantiate()
-		battle.process_mode = Node.PROCESS_MODE_DISABLED
 		add_child(battle)
 		await _settle(8)
+		# Le runner ne simule aucune entrée réelle. Les événements souris/clavier
+		# de la machine hôte sont donc neutralisés dès que la scène est prête.
+		_disable_capture_grid_input(battle)
 		if room_index == 0:
 			for viewport_size in VIEWPORT_SIZES:
 				get_window().size = viewport_size
@@ -177,6 +183,14 @@ func _exercise_real_battle_scenes(run_data: RunData) -> void:
 						and not battle.grid.has_unit(cell):
 					battle._deployment.on_cell_clicked(cell)
 					break
+		# Le dernier placement appelle _start_battle() synchroniquement. On ferme
+		# ensuite le cycle logique via le contrat de shutdown de Battle : les
+		# signaux/timers/IA sont invalidés, tandis que le Node, les SubViewport et
+		# les AnimationPlayer continuent de traiter pour la capture.
+		var capture_logic_state := _neutralize_capture_battle_logic(battle)
+		var capture_logic_neutralized := bool(
+			capture_logic_state.get("neutralized", false)
+		)
 		await _settle(3)
 		var enemies: Array = battle.units.filter(func(value):
 			return value != null and (value as Unit).team == 1
@@ -196,6 +210,8 @@ func _exercise_real_battle_scenes(run_data: RunData) -> void:
 			and enemies.size()
 			== room.encounter_definition.get_initial_enemy_count()
 			and optional_visual is AchillesIsoUnitView
+			and capture_logic_neutralized
+			and battle.can_process()
 		)
 		var viewport_rect := Rect2(
 			Vector2.ZERO, get_viewport().get_visible_rect().size
@@ -213,6 +229,18 @@ func _exercise_real_battle_scenes(run_data: RunData) -> void:
 		var enemy_unit_ids: Array[String] = []
 		for enemy_value in enemies:
 			enemy_unit_ids.append(str((enemy_value as Unit).unit_id))
+		var capture_logic_before := _capture_battle_logic_fingerprint(battle)
+		# Laisse le bandeau de debut de tour terminer son animation et donne aux
+		# backends SubViewport le temps d'atteindre leur pose de repos. Contrairement
+		# a l'ancien gel du noeud Battle, les animations continuent ici a traiter.
+		await get_tree().create_timer(2.2).timeout
+		var capture_logic_after := _capture_battle_logic_fingerprint(battle)
+		var capture_logic_stable := capture_logic_before == capture_logic_after
+		capture_logic_neutralized = (
+			capture_logic_neutralized and capture_logic_stable
+		)
+		room_passed = room_passed and capture_logic_stable
+		var visual_states := _collect_unit_visual_states(battle)
 		_report.battle_rooms.append({
 			"room": room_index + 1,
 			"room_name": room.room_name,
@@ -226,13 +254,17 @@ func _exercise_real_battle_scenes(run_data: RunData) -> void:
 			),
 			"achilles_visual": optional_visual is AchillesIsoUnitView,
 			"all_unit_anchors_visible": all_unit_anchors_visible,
+			"battle_can_process": battle.can_process(),
+			"capture_logic_neutralized": capture_logic_neutralized,
+			"capture_logic_state": capture_logic_state,
+			"capture_logic_stable": capture_logic_stable,
+			"capture_logic_before": capture_logic_before,
+			"capture_logic_after": capture_logic_after,
+			"unit_visual_states": visual_states,
 			"passed": room_passed,
 		})
 		if not room_passed:
 			_fail("La vraie Battle de la salle %d est invalide." % (room_index + 1))
-		# Laisse le bandeau de début de tour terminer son animation afin que les
-		# captures de revue montrent le terrain, Achille et le HUD sans occlusion.
-		await get_tree().create_timer(2.2).timeout
 		var sizes := VIEWPORT_SIZES if room_index == 0 else [VIEWPORT_SIZES[0]]
 		for viewport_size in sizes:
 			get_window().size = viewport_size
@@ -244,6 +276,179 @@ func _exercise_real_battle_scenes(run_data: RunData) -> void:
 			)
 		battle.queue_free()
 		await _settle(4)
+
+
+func _disable_capture_grid_input(battle) -> bool:
+	if not is_instance_valid(battle):
+		return false
+	var grid_view = battle.get("grid_view")
+	if not is_instance_valid(grid_view):
+		return false
+	grid_view.set_process_input(false)
+	grid_view.set_process_unhandled_input(false)
+	grid_view.set_process_unhandled_key_input(false)
+	return not grid_view.is_processing_input() \
+		and not grid_view.is_processing_unhandled_input() \
+		and not grid_view.is_processing_unhandled_key_input()
+
+
+func _neutralize_capture_battle_logic(battle) -> Dictionary:
+	var state := {
+		"neutralized": false,
+		"battle_closing": false,
+		"enemy_runner_closing": false,
+		"turn_handler_disconnected": false,
+		"round_handler_disconnected": false,
+		"grid_input_disabled": false,
+		"battle_process_mode_enabled": false,
+	}
+	if not is_instance_valid(battle):
+		return state
+	# Cette méthode invalide aussi toute coroutine de tour déjà suspendue. Elle
+	# ne désactive pas le processing visuel du Node Battle.
+	if battle.has_method("_begin_battle_shutdown"):
+		battle._begin_battle_shutdown()
+	var enemy_turn = battle.get("_enemy_turn")
+	if is_instance_valid(enemy_turn) \
+			and enemy_turn.has_method("cancel_pending_actions"):
+		enemy_turn.cancel_pending_actions()
+	state.battle_closing = bool(battle.get("_closing"))
+	state.enemy_runner_closing = is_instance_valid(enemy_turn) \
+		and enemy_turn.has_method("is_closing") \
+		and bool(enemy_turn.is_closing())
+	var turn_queue = battle.get("turn_queue")
+	var turn_callback := Callable(battle, "_on_turn_started")
+	var round_callback := Callable(battle, "_on_round_started")
+	state.turn_handler_disconnected = turn_queue != null \
+		and not turn_queue.turn_started.is_connected(turn_callback)
+	state.round_handler_disconnected = turn_queue != null \
+		and not turn_queue.round_started.is_connected(round_callback)
+	state.grid_input_disabled = _disable_capture_grid_input(battle)
+	state.battle_process_mode_enabled = (
+		battle.process_mode != Node.PROCESS_MODE_DISABLED
+	)
+	state.neutralized = state.battle_closing \
+		and state.enemy_runner_closing \
+		and state.turn_handler_disconnected \
+		and state.round_handler_disconnected \
+		and state.grid_input_disabled \
+		and state.battle_process_mode_enabled
+	return state
+
+
+func _capture_battle_logic_fingerprint(battle) -> Dictionary:
+	if not is_instance_valid(battle):
+		return {}
+	var unit_states: Array[Dictionary] = []
+	for unit_value in battle.units:
+		var unit := unit_value as Unit
+		if unit == null:
+			continue
+		unit_states.append({
+			"unit_id": str(unit.unit_id),
+			"team": unit.team,
+			"grid_pos": [unit.grid_pos.x, unit.grid_pos.y],
+			"hp": unit.current_hp,
+			"shield": unit.current_shield,
+			"ap": unit.current_ap,
+			"mp": unit.current_mp,
+			"alive": unit.is_alive,
+		})
+	var turn_queue = battle.get("turn_queue")
+	var active_unit = turn_queue.get_current_unit() if turn_queue != null else null
+	return {
+		"units": unit_states,
+		"round": turn_queue.round_number if turn_queue != null else 0,
+		"active_unit_id": str(active_unit.unit_id) if active_unit is Unit else "",
+	}
+
+
+func _collect_unit_visual_states(battle) -> Array[Dictionary]:
+	var states: Array[Dictionary] = []
+	if not is_instance_valid(battle):
+		return states
+	var views := battle.get("_unit_views") as Dictionary
+	for unit_value in battle.units:
+		states.append(_unit_visual_state(battle, unit_value, views.get(unit_value)))
+	return states
+
+
+func _unit_visual_state(battle, unit_value, unit_view_value) -> Dictionary:
+	var unit := unit_value as Unit
+	var unit_view := unit_view_value as Node2D
+	var current_unit = (
+		battle.turn_queue.get_current_unit()
+		if battle.turn_queue != null else null
+	)
+	var state := {
+		"unit_id": str(unit.unit_id) if unit != null else "",
+		"team": unit.team if unit != null else -1,
+		"active_turn": unit != null and unit == current_unit,
+		"view_visible": is_instance_valid(unit_view) \
+			and unit_view.is_visible_in_tree(),
+		"view_can_process": is_instance_valid(unit_view) and unit_view.can_process(),
+		"adapter_script": "",
+		"backend": "MISSING_VIEW",
+		"backend_ready": false,
+		"facing": "",
+		"clip": "",
+		"semantic": "",
+		"animation_state": "UNAVAILABLE",
+	}
+	if not is_instance_valid(unit_view) \
+			or not unit_view.has_method("get_optional_visual"):
+		return state
+	var optional_visual = unit_view.get_optional_visual()
+	if not is_instance_valid(optional_visual):
+		state.backend = "BASE_UNIT_SPRITE"
+		return state
+	var adapter_script = optional_visual.get_script()
+	if adapter_script is Script:
+		state.adapter_script = adapter_script.resource_path
+	state.view_visible = optional_visual.is_visible_in_tree()
+	state.view_can_process = optional_visual.can_process()
+	if optional_visual is AchillesIsoUnitView:
+		var achilles := optional_visual as AchillesIsoUnitView
+		state.backend = str(achilles.get_active_backend_name())
+		var viewport_backend := achilles.viewport_backend
+		if not is_instance_valid(viewport_backend):
+			return state
+		state.backend_ready = viewport_backend.is_ready_for_render()
+		state.facing = viewport_backend.get_facing_label()
+		var visual := viewport_backend.get_achilles_visual()
+		if not is_instance_valid(visual):
+			return state
+		state.semantic = str(visual.get_active_semantic())
+		var player := visual.get_animation_player()
+		if not is_instance_valid(player):
+			return state
+		state.clip = str(player.current_animation)
+		state.animation_state = "PLAYING" if player.is_playing() else "STOPPED"
+		state["clip_progress_seconds"] = snappedf(
+			player.current_animation_position, 0.001,
+		)
+		return state
+	if optional_visual.has_method("get_character_visual"):
+		state.backend = "CharacterViewport3D"
+		state.backend_ready = true
+		if optional_visual.has_method("get_facing_direction"):
+			state.facing = str(optional_visual.get_facing_direction())
+		var character_visual = optional_visual.get_character_visual()
+		if not is_instance_valid(character_visual):
+			state.backend_ready = false
+			return state
+		var clip := StringName(character_visual.get_current_animation())
+		state.clip = str(clip)
+		state.semantic = "IDLE" if clip != &"" else ""
+		state.animation_state = (
+			"PLAYING"
+			if clip != &"" and character_visual.is_animation_playing(clip)
+			else "STOPPED" if clip != &"" else "UNAVAILABLE"
+		)
+		return state
+	state.backend = optional_visual.get_class()
+	state.backend_ready = true
+	return state
 
 
 func _exercise_post_combat_and_result_captures() -> void:

@@ -41,6 +41,7 @@ const COMBAT_HUD_PORT := preload("res://ui/combat/combat_hud_port.gd")
 const COMBAT_HIGHLIGHT_MARKER := preload(
 	"res://battle/combat_highlight_marker.gd"
 )
+const INVALID_GRID_CELL := Vector2i(-1, -1)
 
 @export var grid_cols: int = 20
 @export var grid_rows: int = 14
@@ -91,6 +92,16 @@ const COMBAT_HIGHLIGHT_MARKER := preload(
 ## salles legacy, mais la premiere run de production peut les masquer afin de
 ## conserver une vue de combat lisible.
 @export var show_auxiliary_panels := true
+
+## Le panneau contextuel au survol reste le comportement par défaut des
+## combats historiques. Les cartes peintes privilégient la lecture directe
+## du plateau et conservent l'inspection détaillée au clic / via la timeline.
+@export var show_transient_inspection := true
+
+## Les combats historiques conservent le facing logique défini par leurs scènes.
+## Les plateaux peints peuvent explicitement orienter leurs ennemis vers le
+## héros une fois le déploiement terminé, quand les deux équipes sont connues.
+@export var orient_enemies_at_battle_start := false
 
 # --- Logique ---
 var grid: GridData
@@ -159,6 +170,8 @@ var _outcome_overlay: CombatOutcomeOverlay = null
 var _end_turn_confirmation: EndTurnConfirmation = null
 var _skip_end_turn_confirmation := false
 var _target_feedback = null
+var _grid_cursor_cell := INVALID_GRID_CELL
+var _tactical_focus_unit: Unit = null
 
 # --- Fin de combat ---
 var _battle_over: bool = false
@@ -302,6 +315,9 @@ func _setup_logic() -> void:
 		add_child(_deployment)
 		_deployment.setup(self)
 		_deployment.deployment_completed.connect(_start_battle)
+		_deployment.spatial_focus_requested.connect(
+			_on_deployment_spatial_focus_requested
+		)
 	if not GameManager.discipline_xp_gained.is_connected(
 		_on_discipline_xp_gained
 	):
@@ -359,6 +375,11 @@ func _setup_view() -> void:
 	# variation de nuages ni de teinte). Seuls les persos sont eclaires.
 	grid_view.cell_clicked.connect(_on_cell_clicked)
 	grid_view.cell_hovered.connect(_on_cell_hovered)
+	if grid_view.has_signal(&"spatial_cursor_released"):
+		grid_view.connect(
+			&"spatial_cursor_released",
+			Callable(self, "_on_grid_spatial_cursor_released"),
+		)
 	_unit_view_parent = _find_unit_view_parent()
 	_setup_movement_path_preview()
 
@@ -657,6 +678,10 @@ func set_reduced_motion(enabled: bool) -> void:
 	if is_instance_valid(turn_order_timeline) \
 			and turn_order_timeline.has_method("set_reduced_motion"):
 		turn_order_timeline.set_reduced_motion(enabled)
+	var impact_feedback := get_node_or_null("ImpactJuice")
+	if is_instance_valid(impact_feedback) \
+			and impact_feedback.has_method("set_reduced_motion"):
+		impact_feedback.set_reduced_motion(enabled)
 
 
 func _setup_state() -> void:
@@ -724,6 +749,12 @@ func _on_turn_state_changed(
 		current: TurnState.State
 	) -> void:
 	_sync_hud_mode_from_turn_state(current)
+	if current not in [
+		TurnState.State.MOVE,
+		TurnState.State.TARGET_MELEE,
+		TurnState.State.TARGET_SPELL,
+	]:
+		_clear_grid_cursor()
 	if presentation_state == null:
 		return
 	match current:
@@ -744,6 +775,15 @@ func _on_turn_state_changed(
 		TurnState.State.SKILL_EVOLUTION_PENDING, \
 		TurnState.State.SKILL_EVOLUTION_UI:
 			presentation_state.begin_modal()
+	if current in [
+		TurnState.State.MOVE,
+		TurnState.State.TARGET_MELEE,
+		TurnState.State.TARGET_SPELL,
+	] and is_inside_tree():
+		# Une commande choisie au pad transfere le focus du bouton vers le
+		# plateau. Sinon les fleches continuent de naviguer entre les boutons et
+		# n'atteignent jamais le curseur spatial.
+		get_viewport().gui_release_focus()
 
 
 func _sync_hud_mode_from_turn_state(current: TurnState.State) -> void:
@@ -1051,11 +1091,22 @@ func _start_battle() -> void:
 			_process_evolution_queue_at_safe_point.call_deferred()
 		return
 
+	_orient_enemies_for_battle_start()
+
 	# Connexion du handler de poussée (visuel — logique dans SpellCaster)
 	EventBus.unit_pushed.connect(_on_unit_pushed)
 
 	_reset_combat_resources()
 	_launch_combat()
+
+
+func _orient_enemies_for_battle_start() -> void:
+	if not orient_enemies_at_battle_start:
+		return
+	for combatant_value in units:
+		var combatant := combatant_value as Unit
+		if combatant != null and combatant.is_alive and combatant.team != 0:
+			_orient_unit_toward_nearest_opponent(combatant)
 
 
 func _reset_combat_resources() -> void:
@@ -1549,10 +1600,16 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
+	# Le losange `selected` de la vue est une primitive generique d'edition. En
+	# combat, l'intention est deja representee par le curseur, le reticule et le
+	# mode actif du HUD : le conserver apres un clic creerait un faux etat.
+	if is_instance_valid(grid_view) and grid_view.has_method("clear_selection"):
+		grid_view.clear_selection()
 	if _is_evolution_locked():
 		return
 	if _deployment != null and _deployment.is_active():
 		_deployment.on_cell_clicked(cell)
+		_clear_grid_cursor()
 		return
 	if turn_state == null:
 		if inspect_panel != null:
@@ -1589,11 +1646,25 @@ func _on_turn_order_unit_selected(unit: Unit) -> void:
 
 
 func _on_cell_hovered(cell: Vector2i) -> void:
-	if inspect_panel != null:
-		inspect_panel.show_cell(cell, grid, terrain_effects, false)
+	_sync_grid_cursor_from_view()
+	# Pendant le déploiement, seule l'intention de placement reste pertinente.
+	if _deployment != null and _deployment.is_active():
+		if is_instance_valid(inspect_panel) \
+				and inspect_panel.has_method("release_transient_preview"):
+			inspect_panel.release_transient_preview()
+		_clear_movement_path_preview()
+		_clear_target_hover_feedback()
+		_set_tactical_unit_focus(cell, &"hover")
+		return
+	if is_instance_valid(inspect_panel):
+		if show_transient_inspection:
+			inspect_panel.show_cell(cell, grid, terrain_effects, false)
+		elif inspect_panel.has_method("release_transient_preview"):
+			inspect_panel.release_transient_preview()
 	if turn_state == null:
 		_clear_movement_path_preview()
 		_clear_target_hover_feedback()
+		_set_tactical_unit_focus(cell, &"hover")
 		return
 	if turn_state.current == TurnState.State.MOVE:
 		var moving_unit = (
@@ -1627,6 +1698,8 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 		return
 	if turn_state.current != TurnState.State.TARGET_SPELL:
 		_clear_target_hover_feedback()
+		if turn_state.current == TurnState.State.IDLE:
+			_set_tactical_unit_focus(cell, &"hover")
 		return
 	var spell = turn_state.selected_spell
 	var unit = turn_queue.get_current_unit()
@@ -1646,24 +1719,198 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 			AOE_COLOR,
 			COMBAT_HIGHLIGHT_MARKER.AOE,
 		)
-		if inspect_panel != null:
+		if show_transient_inspection and is_instance_valid(inspect_panel):
 			inspect_panel.show_spell_preview(unit, spell, cell, grid, spell_caster)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _is_evolution_locked():
 		return
-	var cancel_requested := event.is_action_pressed("ui_cancel")
+	if _handle_grid_navigation_input(event):
+		get_viewport().set_input_as_handled()
+		return
+	var cancel_requested := (
+		event.is_action_pressed("ui_cancel", true) and not event.is_echo()
+	)
 	if event is InputEventMouseButton:
 		cancel_requested = cancel_requested or (
 			event.pressed and event.button_index == MOUSE_BUTTON_RIGHT
 		)
 	if not cancel_requested:
 		return
+	if _deployment != null and _deployment.is_active() \
+			and _deployment.undo_last_deploy():
+		get_viewport().set_input_as_handled()
+		return
 	if dismiss_top_combat_modal():
 		get_viewport().set_input_as_handled()
 		return
 	if cancel_active_selection():
 		get_viewport().set_input_as_handled()
+
+
+func _handle_grid_navigation_input(event: InputEvent) -> bool:
+	if not _is_grid_navigation_available():
+		return false
+	var direction := Vector2i.ZERO
+	if event.is_action_pressed("ui_left", true):
+		direction = Vector2i.LEFT
+	elif event.is_action_pressed("ui_right", true):
+		direction = Vector2i.RIGHT
+	elif event.is_action_pressed("ui_up", true):
+		direction = Vector2i.UP
+	elif event.is_action_pressed("ui_down", true):
+		direction = Vector2i.DOWN
+	elif event.is_action_pressed("ui_accept", true):
+		if event.is_echo():
+			return true
+		var accepted_cell := _grid_cursor_cell
+		if not _is_interactable_grid_cell(accepted_cell):
+			accepted_cell = _preferred_grid_cursor_cell()
+			_set_grid_cursor(accepted_cell)
+		if _is_interactable_grid_cell(accepted_cell):
+			_on_cell_clicked(accepted_cell)
+		return true
+	else:
+		return false
+
+	var origin := _grid_cursor_cell
+	if not _is_interactable_grid_cell(origin):
+		origin = _preferred_grid_cursor_cell()
+	var destination := _next_interactable_grid_cell(origin, direction)
+	if not _is_interactable_grid_cell(destination):
+		destination = origin
+	_set_grid_cursor(destination)
+	return true
+
+
+func _is_grid_navigation_available() -> bool:
+	if _closing or _battle_over or grid == null or not is_instance_valid(grid_view):
+		return false
+	if _deployment != null and _deployment.is_active():
+		return true
+	return is_action_selection_active() and _can_accept_player_intent()
+
+
+func _preferred_grid_cursor_cell() -> Vector2i:
+	if _deployment != null and _deployment.is_active() \
+			and _deployment.has_method("get_preferred_cursor_cell"):
+		return _deployment.get_preferred_cursor_cell()
+	var active_unit: Unit = (
+		turn_queue.get_current_unit() as Unit if turn_queue != null else null
+	)
+	if active_unit == null:
+		return INVALID_GRID_CELL
+	var candidates: Array = []
+	match turn_state.current if turn_state != null else TurnState.State.IDLE:
+		TurnState.State.TARGET_MELEE:
+			candidates = _get_attackable_cells(active_unit)
+		TurnState.State.TARGET_SPELL:
+			if turn_state.selected_spell != null:
+				candidates = spell_caster.get_targetable_cells(
+					active_unit, turn_state.selected_spell
+				)
+		TurnState.State.MOVE:
+			return active_unit.grid_pos
+		_:
+			pass
+	if candidates.is_empty():
+		return active_unit.grid_pos
+	var nearest := candidates[0] as Vector2i
+	var nearest_distance := grid.manhattan(active_unit.grid_pos, nearest)
+	for candidate_value in candidates:
+		var candidate := candidate_value as Vector2i
+		var distance := grid.manhattan(active_unit.grid_pos, candidate)
+		if distance < nearest_distance:
+			nearest = candidate
+			nearest_distance = distance
+	return nearest
+
+
+func _next_interactable_grid_cell(
+		origin: Vector2i,
+		direction: Vector2i
+	) -> Vector2i:
+	if not grid.is_valid(origin) or direction == Vector2i.ZERO:
+		return INVALID_GRID_CELL
+	var candidate := origin + direction
+	var guard := maxi(grid.cols, grid.rows)
+	while guard > 0 and grid.is_valid(candidate):
+		if _is_interactable_grid_cell(candidate):
+			return candidate
+		candidate += direction
+		guard -= 1
+	return INVALID_GRID_CELL
+
+
+func _is_interactable_grid_cell(cell: Vector2i) -> bool:
+	return grid != null and grid.is_terrain_interactable(cell)
+
+
+func _set_grid_cursor(cell: Vector2i) -> void:
+	if not _is_interactable_grid_cell(cell):
+		return
+	_grid_cursor_cell = cell
+	if grid_view.has_method("set_cursor_cell"):
+		grid_view.set_cursor_cell(cell)
+	_on_cell_hovered(cell)
+
+
+func _clear_grid_cursor() -> void:
+	_grid_cursor_cell = INVALID_GRID_CELL
+	if is_instance_valid(grid_view) and grid_view.has_method("clear_cursor"):
+		grid_view.clear_cursor()
+
+
+func _on_grid_spatial_cursor_released() -> void:
+	# `cell_hovered` n'est pas réémis lorsque la souris reste dans la même case.
+	# Ce signal dédié maintient malgré tout le curseur logique en phase avec la vue.
+	_grid_cursor_cell = INVALID_GRID_CELL
+
+
+func _on_deployment_spatial_focus_requested(cell: Vector2i) -> void:
+	_clear_grid_cursor()
+	if _is_interactable_grid_cell(cell):
+		_set_grid_cursor(cell)
+
+
+func _sync_grid_cursor_from_view() -> void:
+	if not is_instance_valid(grid_view) \
+			or not grid_view.has_method("get_cursor_cell"):
+		return
+	var view_cursor: Vector2i = grid_view.get_cursor_cell()
+	# Les vues effacent leur curseur des qu'un vrai mouvement souris reprend la
+	# main. Aligner l'etat du chef d'orchestre evite qu'Entrée confirme ensuite
+	# une ancienne case invisible.
+	if view_cursor == INVALID_GRID_CELL:
+		_grid_cursor_cell = INVALID_GRID_CELL
+
+
+func _set_tactical_unit_focus(cell: Vector2i, emphasis: StringName) -> void:
+	var focused_unit: Unit = null
+	if grid != null and grid.is_valid(cell):
+		focused_unit = grid.get_unit(cell) as Unit
+	if focused_unit == _tactical_focus_unit:
+		var current_view = _unit_views.get(focused_unit)
+		if is_instance_valid(current_view) \
+				and current_view.has_method("set_tactical_emphasis"):
+			current_view.set_tactical_emphasis(emphasis)
+		return
+	_clear_tactical_unit_focus()
+	if focused_unit == null or not focused_unit.is_alive:
+		return
+	var view = _unit_views.get(focused_unit)
+	if not is_instance_valid(view) or not view.has_method("set_tactical_emphasis"):
+		return
+	_tactical_focus_unit = focused_unit
+	view.set_tactical_emphasis(emphasis)
+
+
+func _clear_tactical_unit_focus() -> void:
+	if _tactical_focus_unit != null:
+		var view = _unit_views.get(_tactical_focus_unit)
+		if is_instance_valid(view) and view.has_method("set_tactical_emphasis"):
+			view.set_tactical_emphasis(&"")
+	_tactical_focus_unit = null
 
 # ============================================================
 # INTENTIONS — DÉPLACEMENT
@@ -1727,6 +1974,7 @@ func _on_request_show_move_range() -> void:
 func _on_request_clear_highlights() -> void:
 	_clear_movement_path_preview()
 	_clear_target_hover_feedback()
+	_clear_grid_cursor()
 	grid_view.clear_highlights()
 
 
@@ -1736,12 +1984,17 @@ func _set_target_hover_feedback(cell: Vector2i, valid_target: bool) -> void:
 		return
 	grid_view.clear_cell_feedback_markers()
 	grid_view.set_cell_feedback_marker(cell, valid_target)
+	_set_tactical_unit_focus(
+		cell,
+		&"target_valid" if valid_target else &"target_invalid",
+	)
 
 
 func _clear_target_hover_feedback() -> void:
 	if is_instance_valid(grid_view) \
 			and grid_view.has_method("clear_cell_feedback_markers"):
 		grid_view.clear_cell_feedback_markers()
+	_clear_tactical_unit_focus()
 
 
 func _update_movement_path_preview(cell: Vector2i) -> void:
@@ -2481,6 +2734,8 @@ func _begin_battle_shutdown() -> void:
 		_closing = true
 		_lifecycle_generation += 1
 	_cancel_evolution_retry()
+	_clear_grid_cursor()
+	_clear_tactical_unit_focus()
 	_outcome_deferral_depth = 0
 	_active_spell_movement_caster = null
 	_cancel_spell_movement_feedback(false)
