@@ -90,17 +90,10 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_font_sizes/font_size = 17
 text = "Archer"
 text_overrun_behavior = 3
-
-[node name="RankLabel" type="Label" parent="ContentMargin/Content/Information/TitleRow"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.93, 0.78, 0.46, 1)
-theme_override_font_sizes/font_size = 13
-text = "RANG 1"
 
 [node name="XPProgress" type="ProgressBar" parent="ContentMargin/Content/Information"]
 unique_name_in_owner = true
@@ -119,9 +112,19 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
+theme_type_variation = &"SkillTreeMetaLabel"
 theme_override_colors/font_color = Color(0.78, 0.81, 0.82, 1)
 theme_override_font_sizes/font_size = 12
 text = "0 / 3 XP"
+
+[node name="RankLabel" type="Label" parent="ContentMargin/Content/Information/ProgressRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"SkillTreeSectionLabel"
+theme_override_colors/font_color = Color(0.93, 0.78, 0.46, 1)
+theme_override_font_sizes/font_size = 13
+text = "RANG 1"
 
 [node name="ActiveMarker" type="Label" parent="ContentMargin/Content/Information/ProgressRow"]
 unique_name_in_owner = true
@@ -136,6 +139,7 @@ text = "BRANCHE ACTIVE"
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
+theme_type_variation = &"SkillTreeMutedLabel"
 theme_override_colors/font_color = Color(0.62, 0.67, 0.72, 1)
 theme_override_font_sizes/font_size = 11
 text = "Prochain rang : 2"
@@ -144,6 +148,7 @@ text = "Prochain rang : 2"
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
+theme_type_variation = &"SkillTreeMutedLabel"
 theme_override_colors/font_color = Color(0.72, 0.74, 0.69, 1)
 theme_override_font_sizes/font_size = 11
 text = "Aucun choix acquis"

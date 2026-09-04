@@ -3,7 +3,7 @@
 const VisualThemeFactory = preload(
 	"res://ui/recraft_hud_v1/theme/hud_visual_theme_factory.gd"
 )
-const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_neutral_v1.tres")
+const VISUAL_SKIN = preload("res://data/ui/hud_visual_skin_achilles_v1.tres")
 
 var _panel: PanelContainer
 var _entries: VBoxContainer
@@ -52,13 +52,13 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.theme_type_variation = &"HudSection"
-	title.text = "Historique"
+	title.text = "HISTORIQUE"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
 	_toggle_btn = Button.new()
 	_toggle_btn.theme_type_variation = &"HudUtilityButton"
-	_toggle_btn.text = "Joueur"
+	_toggle_btn.text = "JOURNAL"
 	_toggle_btn.custom_minimum_size = Vector2(86, 28)
 	_toggle_btn.tooltip_text = "Basculer entre log joueur et log detaille."
 	_toggle_btn.pressed.connect(_toggle_mode)
@@ -66,7 +66,7 @@ func _build_ui() -> void:
 
 	_collapse_btn = Button.new()
 	_collapse_btn.theme_type_variation = &"HudUtilityButton"
-	_collapse_btn.text = "Fermer"
+	_collapse_btn.text = "FERMER"
 	_collapse_btn.custom_minimum_size = Vector2(72, 28)
 	_collapse_btn.tooltip_text = "Replier ou ouvrir l'historique du combat."
 	_collapse_btn.pressed.connect(_toggle_expanded)
@@ -131,11 +131,11 @@ func _apply_responsive_layout() -> void:
 		maxf(12.0, viewport_size.y - reserved_bottom - panel_height - 12.0),
 	)
 	_panel.modulate.a = 0.72 if _tactical_focus else 1.0
-	_collapse_btn.text = "Fermer" if effective_expanded else "Ouvrir"
+	_collapse_btn.text = "FERMER" if effective_expanded else "OUVRIR"
 
 func _toggle_mode() -> void:
 	_detailed = not _detailed
-	_toggle_btn.text = "Detail" if _detailed else "Joueur"
+	_toggle_btn.text = "DÉTAIL" if _detailed else "JOURNAL"
 	_clear()
 	_current_round = -1
 	for entry in DebugLogger.entries:

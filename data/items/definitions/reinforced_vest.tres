@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_modifier"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_12gue"]
 [ext_resource type="Texture2D" uid="uid://bcrswtltewnvb" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://asset/ui/items/basics_premium_v1/plastron_renforce.png" id="premium_icon"]
 
 [sub_resource type="Resource" id="Resource_armor"]
 script = ExtResource("2_modifier")
@@ -15,8 +16,9 @@ value = 5.0
 script = ExtResource("1_definition")
 item_id = &"reinforced_vest"
 display_name = "Plastron renforcé"
-description = "Une protection commune qui accorde 5 points d’armure. Son apparence sera ajoutée plus tard."
+description = "Une protection de cuir et de bronze qui accorde 5 points d’armure."
 icon = ExtResource("3_icon")
+inventory_icon = ExtResource("premium_icon")
 tags = Array[StringName]([&"armor"])
 category = 1
 equipment_slot = 1

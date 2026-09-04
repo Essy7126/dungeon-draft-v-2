@@ -106,10 +106,13 @@ rangs 5 avant la salle 6. Sur l'ensemble : 154 invocations normales, 1 chef et
 un pic de 10 ennemis vivants. La validation dédiée force en plus les deux types
 d'invocation et contrôle exactement leurs événements de télégraphe/résolution.
 
-Les six compositions réelles sont dans
-`artifacts/first_run_v2/captures/rooms/`; le flux de récompense aux trois
-résolutions est dans `artifacts/first_run_v2/captures/post_combat/`; les actions
-tactiques sont dans `artifacts/skeleton_faction_audit/`.
+Les six compositions historiques sont dans
+`artifacts/first_run_v2/captures/rooms/`. Le runner actuel
+`tools/capture_post_combat_flow.gd` cible la véritable Odyssée avec Achille seul
+et écrit le rapport, la progression ainsi que les états de sélection et
+d'acquisition des reliques dans
+`artifacts/odyssey_ui/captures/post_combat/`. Les actions tactiques historiques
+sont dans `artifacts/skeleton_faction_audit/`.
 
 Le stress réel de la salle 6 est écrit dans
 `artifacts/first_run_v2/room_six_performance.json` : 8 ennemis initiaux, 2

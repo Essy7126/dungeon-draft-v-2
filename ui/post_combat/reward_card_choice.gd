@@ -1,20 +1,24 @@
 class_name RewardCardChoice
 extends Control
-
 signal choice_requested(item_id: StringName)
 signal hover_changed(card_index: int, hovered: bool)
 
-const CARD_SHADER := preload("res://ui/post_combat/shaders/reward_card.gdshader")
 const CONTENT_PADDING := 8
 
 @onready var floating_root: Control = %FloatingRoot
 @onready var visual_root: Control = %VisualRoot
-@onready var back_glow: TextureRect = %BackGlow
-@onready var card_shadow: TextureRect = %CardShadow
+@onready var back_glow: PanelContainer = %BackGlow
+@onready var card_shadow: PanelContainer = %CardShadow
 @onready var card_texture: TextureRect = %CardTexture
 @onready var fallback: PanelContainer = %Fallback
+@onready var fallback_margin: MarginContainer = $FloatingRoot/VisualRoot/Fallback/FallbackMargin
+@onready var fallback_content: VBoxContainer = $FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent
+@onready var fallback_meta: Label = $FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent/FallbackMeta
+@onready var illustration_frame: PanelContainer = $FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent/IllustrationFrame
+@onready var fallback_icon: TextureRect = %FallbackIcon
 @onready var fallback_title: Label = %FallbackTitle
 @onready var fallback_description: Label = %FallbackDescription
+@onready var fallback_footer: Label = %FallbackFooter
 @onready var selection_badge: Label = %SelectionBadge
 @onready var particles: GPUParticles2D = %Particles
 @onready var interaction: Button = %Interaction
@@ -34,11 +38,13 @@ var _sweep_time := 0.0
 var _material: ShaderMaterial = null
 var _state_tween: Tween = null
 var _entrance_tween: Tween = null
+var _compact := false
 
 static var _crop_cache: Dictionary = {}
 
 
 func _ready() -> void:
+	PremiumUI.apply(self)
 	size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	interaction.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
@@ -59,32 +65,86 @@ func configure(option: Dictionary, index: int, use_reduced_motion: bool) -> void
 	item_id = StringName(option.get("item_id", &""))
 	_rest_rotation = -1.5 if index == 0 else 1.5
 	_float_phase = float(index) * PI
-	var source := definition.get_reward_card_texture() if definition != null else null
-	var visible_texture := _visible_card_texture(source)
-	card_texture.texture = visible_texture
-	card_shadow.texture = visible_texture
-	back_glow.texture = visible_texture
-	fallback.visible = visible_texture == null
-	card_texture.visible = visible_texture != null
-	card_shadow.visible = visible_texture != null
-	back_glow.visible = visible_texture != null
+	var visible_icon := InventoryItemTile.presentation_icon(definition)
+	var reward_source := definition.get_reward_card_texture() if definition != null else null
+	var visible_card := (
+		_visible_card_texture(reward_source)
+		if definition != null and definition.card_texture != null
+		else null
+	)
+	card_texture.texture = visible_card
+	card_texture.visible = visible_card != null
+	fallback.visible = visible_card == null
+	card_shadow.show()
+	back_glow.show()
+	fallback_icon.texture = visible_icon
+	fallback_meta.text = _meta_text(definition)
 	fallback_title.text = (
 		definition.display_name.to_upper() if definition != null else "OBJET INCONNU"
 	)
 	fallback_description.text = (
 		definition.description if definition != null else "Visuel indisponible"
 	)
+	fallback_footer.text = (
+		(
+			"ACTIF · SAC PARTAGÉ"
+			if definition.has_manual_activation()
+			else "PASSIF · SAC PARTAGÉ"
+		)
+		if definition != null and definition.is_relic()
+		else "ÉQUIPEMENT · ATTRIBUTION IMMÉDIATE"
+	)
 	interaction.tooltip_text = ""
-	_material = ShaderMaterial.new()
-	_material.shader = CARD_SHADER
-	card_texture.material = _material
+	_material = null
 	_refresh_state(false)
 
 
+func _meta_text(definition: ItemDefinition) -> String:
+	if definition == null:
+		return "RÉCOMPENSE"
+	if definition.is_relic():
+		return "RELIQUE DE L’ODYSSÉE"
+	match definition.category:
+		ItemDefinition.Category.WEAPON:
+			return "ARME · ÉQUIPEMENT"
+		ItemDefinition.Category.ARMOR:
+			return "ARMURE · ÉQUIPEMENT"
+		ItemDefinition.Category.ACCESSORY:
+			return "ACCESSOIRE · ÉQUIPEMENT"
+		_:
+			return "ÉQUIPEMENT"
+
+
 func set_card_size(card_size: Vector2) -> void:
+	set_compact_mode(card_size.y <= 500.0)
 	custom_minimum_size = card_size
 	size = card_size
 	_update_geometry()
+
+
+func set_compact_mode(value: bool) -> void:
+	_compact = value
+	clip_contents = false
+	var side_margin := 18 if value else 28
+	fallback_margin.add_theme_constant_override("margin_left", side_margin)
+	fallback_margin.add_theme_constant_override("margin_right", side_margin)
+	fallback_margin.add_theme_constant_override("margin_top", 17 if value else 32)
+	fallback_margin.add_theme_constant_override("margin_bottom", 15 if value else 28)
+	fallback_content.add_theme_constant_override("separation", 6 if value else 12)
+	illustration_frame.custom_minimum_size.y = 154.0 if value else 260.0
+	if value:
+		fallback_meta.add_theme_font_size_override("font_size", 10)
+		fallback_title.add_theme_font_size_override("font_size", 20)
+		fallback_description.add_theme_font_size_override("font_size", 13)
+		fallback_footer.add_theme_font_size_override("font_size", 10)
+		selection_badge.add_theme_font_size_override("font_size", 11)
+	else:
+		fallback_meta.remove_theme_font_size_override("font_size")
+		fallback_title.remove_theme_font_size_override("font_size")
+		fallback_description.remove_theme_font_size_override("font_size")
+		fallback_footer.remove_theme_font_size_override("font_size")
+		selection_badge.remove_theme_font_size_override("font_size")
+	_refresh_state(false)
 
 
 func set_selected(value: bool) -> void:
@@ -147,7 +207,11 @@ func play_confirmation(chosen: bool) -> void:
 	particles.emitting = chosen and not reduced_motion
 	var duration := 0.18 if reduced_motion else 0.58
 	var target_scale := Vector2.ONE * (1.11 if chosen else 0.91)
-	var target_x := 0.0 if chosen else (-90.0 if card_index == 0 else 90.0)
+	var target_x := (
+		get_viewport_rect().size.x * 0.5 - get_global_rect().get_center().x
+		if chosen
+		else (-90.0 if card_index == 0 else 90.0)
+	)
 	var tween := create_tween().set_parallel(true)
 	tween.tween_property(visual_root, "scale", target_scale, duration) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -178,25 +242,29 @@ func _refresh_state(animated: bool) -> void:
 	var brightness := 1.0
 	var saturation := 1.0
 	var outline := 0.0
+	var visual_tint := Color.WHITE
 	if _selected:
-		scale_value = 1.085
-		y_value = -24.0
+		scale_value = 1.045 if _compact else 1.085
+		y_value = 0.0
 		rotation_value = 0.0
 		brightness = 1.08
 		saturation = 1.08
 		outline = 0.88
+		visual_tint = Color(1.04, 1.02, 0.96, 1.0)
 	elif _peer_dimmed:
 		scale_value = 0.96
 		y_value = 4.0
 		rotation_value = _rest_rotation * 1.35
 		brightness = 0.64
 		saturation = 0.44
+		visual_tint = Color(0.58, 0.56, 0.53, 1.0)
 	elif _hovered or _focused:
-		scale_value = 1.048
-		y_value = -14.0
+		scale_value = 1.025 if _compact else 1.048
+		y_value = -6.0 if _compact else -14.0
 		rotation_value = 0.0
 		brightness = 1.04
 		outline = 0.34
+		visual_tint = Color(1.03, 1.01, 0.96, 1.0)
 	_state_y = y_value
 	if animated and _entrance_tween != null and _entrance_tween.is_valid():
 		_entrance_tween.kill()
@@ -214,15 +282,17 @@ func _refresh_state(animated: bool) -> void:
 		_state_tween.kill()
 	if not animated or reduced_motion:
 		visual_root.scale = Vector2.ONE * scale_value
-		visual_root.position.y = y_value
+		visual_root.position = Vector2(0.0, y_value)
 		visual_root.rotation_degrees = rotation_value
+		visual_root.modulate = visual_tint
 		return
 	_state_tween = create_tween().set_parallel(true)
 	_state_tween.tween_property(visual_root, "scale", Vector2.ONE * scale_value, 0.15) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_state_tween.tween_property(visual_root, "position:y", y_value, 0.15) \
+	_state_tween.tween_property(visual_root, "position", Vector2(0.0, y_value), 0.15) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_state_tween.tween_property(visual_root, "rotation_degrees", rotation_value, 0.15)
+	_state_tween.tween_property(visual_root, "modulate", visual_tint, 0.15)
 
 
 func _update_geometry() -> void:
@@ -264,7 +334,6 @@ func _on_focus_exited() -> void:
 
 func _visible_card_texture(source: Texture2D) -> Texture2D:
 	if source == null:
-		push_warning("Carte de récompense absente pour %s." % item_id)
 		return null
 	var cache_key := source.resource_path
 	if cache_key != "" and _crop_cache.has(cache_key):

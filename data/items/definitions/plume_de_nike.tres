@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c3a7wie2unn54"]
 
+[ext_resource type="Texture2D" path="res://asset/ui/items/relics_premium_v1/plume_de_nike.png" id="relic_icon"]
 [ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="1_128wr"]
 [ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="2_cgjbq"]
 [ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_bonkd"]
@@ -21,7 +22,9 @@ frequency_id = &"per_turn"
 script = ExtResource("3_bonkd")
 item_id = &"plume_de_nike"
 display_name = "Plume de Niké"
+inventory_icon = ExtResource("relic_icon")
 description = "Ta première élimination de chaque tour te rend immédiatement 1 PM utilisable ce tour."
+rarity = &"mythic"
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5
 reactive_effects = Array[ExtResource("1_128wr")]([SubResource("Resource_tvm6t")])

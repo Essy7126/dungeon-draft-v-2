@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://d17xhv7drx70f"]
 
+[ext_resource type="Texture2D" path="res://asset/ui/items/relics_premium_v1/croc_de_cerbere.png" id="relic_icon"]
 [ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="1_dxsxb"]
 [ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="2_x7rdk"]
 [ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_jnf8j"]
@@ -22,7 +23,9 @@ frequency_id = &"per_turn"
 script = ExtResource("3_jnf8j")
 item_id = &"croc_de_cerbere"
 display_name = "Croc de Cerbère"
+inventory_icon = ExtResource("relic_icon")
 description = "Ta première élimination de chaque tour te rend 8 % de tes PV maximum."
+rarity = &"mythic"
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5
 reactive_effects = Array[ExtResource("1_dxsxb")]([SubResource("Resource_hdb6k")])

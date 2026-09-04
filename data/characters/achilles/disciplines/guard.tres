@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_modifier_type"]
 [ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_modifier"]
+[ext_resource type="Texture2D" path="res://asset/ui/progression/achilles_evolutions_v1/rempart_du_pelion.png" id="6_rempart"]
+[ext_resource type="Texture2D" path="res://asset/ui/progression/achilles_evolutions_v1/pas_du_revenant.png" id="7_revenant"]
 
 [sub_resource type="Resource" id="Rank1"]
 script = ExtResource("2_rank")
@@ -22,6 +24,8 @@ excluded_node_ids = Array[StringName]([&"achilles_guard_returning_stride"])
 upgrade_id = &"achilles_guard_pelion_rampart"
 display_name = "Rempart du Pélion"
 description = "+6 boucliers après la Garde. Achille choisit l’endurance."
+icon = ExtResource("6_rempart")
+card_texture = ExtResource("6_rempart")
 discipline_id = &"guard"
 rank = 2
 target_spell_id = &"achilles_guard"
@@ -39,6 +43,8 @@ excluded_node_ids = Array[StringName]([&"achilles_guard_pelion_rampart"])
 upgrade_id = &"achilles_guard_returning_stride"
 display_name = "Pas du revenant"
 description = "+1 PM au prochain tour. La Garde prépare la contre-attaque."
+icon = ExtResource("7_revenant")
+card_texture = ExtResource("7_revenant")
 discipline_id = &"guard"
 rank = 2
 target_spell_id = &"achilles_guard"

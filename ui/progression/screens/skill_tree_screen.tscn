@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/screens/skill_tree_screen.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/progression/components/skill_tree_graph_view.tscn" id="2_graph"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" path="res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres" id="5_skin"]
 [ext_resource type="Resource" path="res://ui/progression/skin/elf_archer_visual_map.tres" id="6_map"]
 [ext_resource type="PackedScene" path="res://ui/recraft_hud_v1/components/portrait/portrait_view.tscn" id="7_portrait"]
+[ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="8_ornament"]
 
 [node name="SkillTreeScreen" type="Control"]
 visible = false
@@ -67,6 +68,18 @@ patch_margin_top = 84
 patch_margin_right = 112
 patch_margin_bottom = 84
 
+[node name="ScreenOrnament" type="Control" parent="OuterMargin/Frame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_ornament")
+variant = "screen"
+accent_alpha = 0.78
+
 [node name="FrameMargin" type="MarginContainer" parent="OuterMargin/Frame"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -86,10 +99,15 @@ custom_minimum_size = Vector2(0, 104)
 layout_mode = 2
 theme_type_variation = &"SkillTreeCharacterHeader"
 
-[node name="HeaderAccent" type="Panel" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader"]
+[node name="HeaderChrome" type="Control" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HeaderAccent" type="Panel" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderChrome"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -3.0
@@ -97,6 +115,18 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 theme_type_variation = &"SkillTreeSelectionRail"
+
+[node name="HeaderOrnament" type="Control" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderChrome"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_ornament")
+variant = "header"
+accent_alpha = 0.72
 
 [node name="HeaderMargin" type="MarginContainer" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader"]
 layout_mode = 2
@@ -130,6 +160,7 @@ theme_override_constants/separation = 1
 [node name="TitleLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent/IdentityColumn"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeTitleLabel"
 theme_override_colors/font_color = Color(0.96, 0.84, 0.52, 1)
 theme_override_font_sizes/font_size = 27
 text = "ELF · PROGRESSION"
@@ -137,6 +168,7 @@ text = "ELF · PROGRESSION"
 [node name="DisciplineSummaryLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent/IdentityColumn"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeMetaLabel"
 theme_override_colors/font_color = Color(0.72, 0.77, 0.82, 1)
 theme_override_font_sizes/font_size = 14
 text = "4 branches · Archer actif"
@@ -144,6 +176,7 @@ text = "4 branches · Archer actif"
 [node name="HeaderSummaryLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/CharacterHeader/HeaderMargin/HeaderContent/IdentityColumn"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeMutedLabel"
 theme_override_colors/font_color = Color(0.62, 0.68, 0.72, 1)
 theme_override_font_sizes/font_size = 13
 text = "0 choix acquis · 0 choix disponibles"
@@ -152,6 +185,7 @@ text = "0 choix acquis · 0 choix disponibles"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.65, 0.7, 0.75, 1)
 theme_override_font_sizes/font_size = 12
 text = "CONSULTATION\nProgression de la run"
@@ -193,6 +227,7 @@ theme_override_constants/separation = 7
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.91, 0.78, 0.48, 1)
 theme_override_font_sizes/font_size = 14
 text = "BRANCHES"
@@ -235,6 +270,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.82, 0.84, 0.82, 1)
 theme_override_font_sizes/font_size = 14
 text = "CHEMIN DE PROGRESSION"
@@ -242,6 +278,7 @@ text = "CHEMIN DE PROGRESSION"
 [node name="CanvasHintLabel" type="Label" parent="OuterMargin/Frame/FrameMargin/Main/ContentSplit/CanvasSurface/CanvasMargin/CanvasContent/CanvasToolbar"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeMutedLabel"
 theme_override_colors/font_color = Color(0.54, 0.59, 0.63, 1)
 theme_override_font_sizes/font_size = 11
 text = "Molette / glisser milieu pour parcourir"
@@ -304,6 +341,7 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
+theme_type_variation = &"SkillTreeMetaLabel"
 theme_override_colors/font_color = Color(0.72, 0.75, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0.015, 0.02, 0.028, 0.96)
 theme_override_constants/outline_size = 4

@@ -67,10 +67,16 @@ func test_every_eligible_entry_is_a_relic_carrying_the_pool_tag() -> void:
 		assert_not_null(definition, str(item_id))
 		assert_true(definition.is_relic(), str(item_id))
 		assert_true(definition.tags.has(FirstRunEquipmentRewardService.POOL_TAG), str(item_id))
-		assert_eq(definition.rarity, &"common", str(item_id))
+		assert_eq(definition.rarity, &"mythic", str(item_id))
+		assert_eq(PremiumUI.rarity_label(definition.rarity), "MYTHIQUE", str(item_id))
+		assert_not_null(definition.get_inventory_icon(), str(item_id))
+		assert_lte(definition.get_inventory_icon().get_width(), 768, str(item_id))
+		assert_lte(definition.get_inventory_icon().get_height(), 768, str(item_id))
 		assert_eq(definition.stack_limit, 1, str(item_id))
 		assert_true(definition.compatible_character_ids.is_empty(), str(item_id))
 		assert_false(definition.reactive_effects.is_empty(), str(item_id))
+	assert_has(ItemStudioMain.RARITY_VALUES, &"mythic")
+	assert_eq(ItemStudioMain.RARITY_VALUES.size(), ItemStudioMain.RARITY_LABELS.size())
 
 
 func test_previously_tagged_equipment_left_the_pool() -> void:
@@ -112,6 +118,101 @@ func test_pool_offers_two_distinct_relic_options_after_a_victory() -> void:
 			assert_true(definition.is_relic(), str(item_id))
 
 
+func test_declined_relics_are_recycled_only_after_the_fresh_deck_is_exhausted() -> void:
+	var catalog := _catalog()
+	var service := FirstRunEquipmentRewardService.new()
+	assert_true(service.reset(catalog, 1337))
+	var states := _make_states()
+	var inventory := RunInventory.new()
+	assert_true(inventory.initialize(catalog, 24))
+	var declined := {}
+	var chosen := {}
+	var seen := {}
+	for room_index in 4:
+		var deck_before := service.snapshot().get("deck", []) as Array
+		assert_gte(deck_before.size(), 2, "salle %d" % (room_index + 1))
+		var report := _report(room_index)
+		var options := service.build_options(report, states, inventory)
+		assert_eq(options.size(), 2, "salle %d" % (room_index + 1))
+		for option in options:
+			var item_id := StringName(option.get("item_id", &""))
+			assert_false(seen.has(item_id), "%s recycle avant epuisement" % item_id)
+			seen[item_id] = true
+		var chosen_id := StringName(options[0].get("item_id", &""))
+		var declined_id := StringName(options[1].get("item_id", &""))
+		chosen[chosen_id] = true
+		declined[declined_id] = true
+		assert_true(
+			service.apply(report, chosen_id, &"", states, inventory).get("success", false)
+		)
+	assert_true((service.snapshot().get("deck", []) as Array).is_empty())
+
+	var recycled_report := _report(4)
+	var recycled := service.build_options(recycled_report, states, inventory)
+	assert_eq(recycled.size(), 2)
+	for option in recycled:
+		var item_id := StringName(option.get("item_id", &""))
+		assert_true(declined.has(item_id), "%s ne vient pas des refus" % item_id)
+		assert_false(chosen.has(item_id), "%s avait deja ete choisi" % item_id)
+		assert_false(inventory.contains_definition(item_id), "%s est deja possede" % item_id)
+
+	var recycled_chosen := StringName(recycled[0].get("item_id", &""))
+	assert_true(
+		service.apply(recycled_report, recycled_chosen, &"", states, inventory).get(
+			"success", false
+		)
+	)
+	assert_false(
+		(service.snapshot().get("discarded_ids", []) as Array).has(str(recycled_chosen)),
+		"Une relique recyclee puis choisie ne doit plus rester parmi les refus",
+	)
+
+
+func test_recycling_tops_up_one_fresh_choice_and_survives_snapshot_restore() -> void:
+	var catalog := _catalog()
+	var service := FirstRunEquipmentRewardService.new()
+	assert_true(service.reset(catalog, 2026))
+	var states := _make_states()
+	var inventory := RunInventory.new()
+	assert_true(inventory.initialize(catalog, 24))
+	var declined := {}
+	for room_index in 3:
+		var report := _report(room_index)
+		var options := service.build_options(report, states, inventory)
+		assert_eq(options.size(), 2)
+		var chosen_id := StringName(options[0].get("item_id", &""))
+		declined[StringName(options[1].get("item_id", &""))] = true
+		assert_true(
+			service.apply(report, chosen_id, &"", states, inventory).get("success", false)
+		)
+
+	var remaining_deck := service.snapshot().get("deck", []) as Array
+	assert_eq(remaining_deck.size(), 2)
+	var externally_owned := StringName(remaining_deck[0])
+	var only_fresh_choice := StringName(remaining_deck[1])
+	assert_true(inventory.try_add(externally_owned).get("success", false))
+	var snapshot_before_offer := service.snapshot()
+	var restored := FirstRunEquipmentRewardService.new()
+	assert_true(restored.restore_snapshot(snapshot_before_offer, catalog, states))
+
+	var report := _report(3)
+	var options := service.build_options(report, states, inventory)
+	var restored_options := restored.build_options(report, states, inventory)
+	assert_eq(_option_ids(restored_options), _option_ids(options))
+	assert_eq(options.size(), 2)
+	assert_true(_option_ids(options).has(only_fresh_choice))
+	assert_false(_option_ids(options).has(externally_owned))
+	for option in options:
+		var item_id := StringName(option.get("item_id", &""))
+		if item_id != only_fresh_choice:
+			assert_true(declined.has(item_id), "%s aurait du etre un refus recycle" % item_id)
+
+	var offered_snapshot := service.snapshot()
+	var offered_restore := FirstRunEquipmentRewardService.new()
+	assert_true(offered_restore.restore_snapshot(offered_snapshot, catalog, states))
+	assert_eq(_option_ids(offered_restore.build_options(report, states, inventory)), _option_ids(options))
+
+
 func test_a_relic_reward_is_acquired_without_targeting_a_hero() -> void:
 	var catalog := _catalog()
 	var service := FirstRunEquipmentRewardService.new()
@@ -122,11 +223,17 @@ func test_a_relic_reward_is_acquired_without_targeting_a_hero() -> void:
 	var report := _report(0)
 	var options := service.build_options(report, states, inventory)
 	assert_eq(options.size(), 2)
+	var invalid := service.apply(report, &"recompense_absente", &"", states, inventory)
+	assert_eq(invalid.get("error_code"), "REWARD_OPTION_INVALID")
+	assert_eq(invalid.get("error"), "Cette récompense n'est pas proposée.")
 	var chosen := StringName(options[0].get("item_id", &""))
 	var result := service.apply(report, chosen, &"", states, inventory)
 	assert_true(result.get("success", false), str(result))
 	assert_eq(result.get("target_character_id"), &"")
 	assert_true(inventory.contains_definition(chosen))
+	var duplicate := service.apply(report, chosen, &"", states, inventory)
+	assert_eq(duplicate.get("error_code"), "REWARD_ALREADY_APPLIED")
+	assert_eq(duplicate.get("error"), "Une récompense a déjà été attribuée.")
 
 
 func test_each_relic_passes_studio_validation_and_effect_coverage() -> void:
@@ -235,3 +342,10 @@ func _report(report_index: int) -> CombatReport:
 	report.victory = true
 	report.finalized = true
 	return report
+
+
+func _option_ids(options: Array[Dictionary]) -> Array[StringName]:
+	var result: Array[StringName] = []
+	for option in options:
+		result.append(StringName(option.get("item_id", &"")))
+	return result

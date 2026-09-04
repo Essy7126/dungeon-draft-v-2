@@ -20,6 +20,7 @@ var _available_runs: Array[RunData] = []
 
 
 func _ready() -> void:
+	PremiumUI.apply(self)
 	%TalkButton.pressed.connect(_show_dialogue)
 	%TradeButton.pressed.connect(func(): trade_requested.emit())
 	%RunButton.pressed.connect(_show_room_selection)
@@ -36,6 +37,7 @@ func open_panel(p_data: LanternboundArchivistData) -> void:
 	dialogue_label.text = data.dialogue_text if data != null else ""
 	show_menu()
 	visible = true
+	%TalkButton.grab_focus.call_deferred()
 
 
 func close_panel() -> void:
@@ -53,6 +55,8 @@ func show_menu() -> void:
 	main_menu.visible = true
 	dialogue_view.visible = false
 	room_selection_view.visible = false
+	if visible:
+		%TalkButton.grab_focus.call_deferred()
 
 
 func is_dialogue_open() -> bool:
@@ -64,6 +68,17 @@ func _show_dialogue() -> void:
 	dialogue_view.visible = true
 	room_selection_view.visible = false
 	dialogue_opened.emit()
+	%DialogueBackButton.grab_focus.call_deferred()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible or not event.is_action_pressed("ui_cancel"):
+		return
+	get_viewport().set_input_as_handled()
+	if dialogue_view.visible or room_selection_view.visible:
+		show_menu()
+	else:
+		close_panel()
 
 
 func _show_room_selection() -> void:

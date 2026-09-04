@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://ui/post_combat/reward_card_choice.gd" id="1_script"]
+[ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="2_ornament"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcess"]
 emission_shape = 3
@@ -12,35 +13,30 @@ initial_velocity_min = 3.0
 initial_velocity_max = 12.0
 scale_min = 1.0
 scale_max = 3.0
-color = Color(0.83, 0.9, 1, 0.34)
+color = Color(0.96, 0.68, 0.24, 0.34)
 
-[sub_resource type="StyleBoxFlat" id="FallbackStyle"]
-bg_color = Color(0.055, 0.065, 0.078, 0.98)
+[sub_resource type="StyleBoxFlat" id="GlowStyle"]
+bg_color = Color(0.42, 0.23, 0.06, 0.3)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.78, 0.64, 0.35, 0.86)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
+border_color = Color(1, 0.72, 0.22, 0.72)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+shadow_color = Color(0.95, 0.52, 0.12, 0.38)
+shadow_size = 18
 
-[sub_resource type="StyleBoxFlat" id="BadgeStyle"]
-bg_color = Color(0.06, 0.08, 0.09, 0.92)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.98, 0.79, 0.38, 1)
+[sub_resource type="StyleBoxFlat" id="ShadowStyle"]
+bg_color = Color(0, 0, 0, 0.64)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-content_margin_left = 12.0
-content_margin_top = 7.0
-content_margin_right = 12.0
-content_margin_bottom = 7.0
+shadow_color = Color(0, 0, 0, 0.72)
+shadow_size = 14
 
 [node name="RewardCardChoice" type="Control"]
 custom_minimum_size = Vector2(360, 680)
@@ -78,42 +74,41 @@ randomness = 0.72
 visibility_rect = Rect2(-230, -390, 460, 780)
 process_material = SubResource("ParticleProcess")
 
-[node name="BackGlow" type="TextureRect" parent="FloatingRoot/VisualRoot"]
+[node name="BackGlow" type="PanelContainer" parent="FloatingRoot/VisualRoot"]
 unique_name_in_owner = true
 modulate = Color(1, 0.79, 0.36, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -14.0
-offset_top = -14.0
-offset_right = 14.0
-offset_bottom = 14.0
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
+theme_override_styles/panel = SubResource("GlowStyle")
 
-[node name="CardShadow" type="TextureRect" parent="FloatingRoot/VisualRoot"]
+[node name="CardShadow" type="PanelContainer" parent="FloatingRoot/VisualRoot"]
 unique_name_in_owner = true
-modulate = Color(0, 0, 0, 0.42)
+modulate = Color(0, 0, 0, 0.5)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 18.0
-offset_right = 12.0
-offset_bottom = 18.0
+offset_left = 10.0
+offset_top = 16.0
+offset_right = 10.0
+offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
+theme_override_styles/panel = SubResource("ShadowStyle")
 
 [node name="CardTexture" type="TextureRect" parent="FloatingRoot/VisualRoot"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -126,7 +121,6 @@ stretch_mode = 5
 
 [node name="Fallback" type="PanelContainer" parent="FloatingRoot/VisualRoot"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -134,44 +128,86 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_styles/panel = SubResource("FallbackStyle")
+theme_type_variation = &"PremiumCard"
+
+[node name="Ornament" type="Control" parent="FloatingRoot/VisualRoot/Fallback"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_ornament")
+variant = "card"
 
 [node name="FallbackMargin" type="MarginContainer" parent="FloatingRoot/VisualRoot/Fallback"]
 layout_mode = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
 
 [node name="FallbackContent" type="VBoxContainer" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin"]
 layout_mode = 2
-theme_override_constants/separation = 22
+theme_override_constants/separation = 12
 alignment = 1
 
-[node name="FallbackGlyph" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+[node name="FallbackMeta" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.82, 0.69, 0.42, 1)
-theme_override_font_sizes/font_size = 76
-text = "◇"
+theme_type_variation = &"PremiumEyebrow"
+text = "RELIQUE DE L’ODYSSÉE"
 horizontal_alignment = 1
+
+[node name="IllustrationFrame" type="PanelContainer" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"PremiumInset"
+
+[node name="IllustrationMargin" type="MarginContainer" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent/IllustrationFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="FallbackIcon" type="TextureRect" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent/IllustrationFrame/IllustrationMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="FallbackTitle" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.97, 0.83, 0.55, 1)
-theme_override_font_sizes/font_size = 24
+theme_type_variation = &"PremiumTitle"
 text = "OBJET INCONNU"
 horizontal_alignment = 1
 autowrap_mode = 2
 
+[node name="Rule" type="HSeparator" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+layout_mode = 2
+theme_type_variation = &"PremiumSeparator"
+
 [node name="FallbackDescription" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.74, 0.78, 0.78, 1)
-theme_override_font_sizes/font_size = 17
+size_flags_vertical = 3
+theme_type_variation = &"PremiumBody"
 text = "Visuel indisponible"
 horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="FallbackFooter" type="Label" parent="FloatingRoot/VisualRoot/Fallback/FallbackMargin/FallbackContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "PASSIF · SAC PARTAGÉ"
+horizontal_alignment = 1
 
 [node name="SelectionBadge" type="Label" parent="FloatingRoot/VisualRoot"]
 unique_name_in_owner = true
@@ -180,15 +216,13 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -155.0
-offset_top = 16.0
-offset_right = -16.0
-offset_bottom = 52.0
+offset_left = -164.0
+offset_top = -18.0
+offset_right = -14.0
+offset_bottom = 18.0
 grow_horizontal = 0
-theme_override_colors/font_color = Color(1, 0.88, 0.6, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = SubResource("BadgeStyle")
-text = "✓ SÉLECTIONNÉ"
+theme_type_variation = &"PremiumSelectionBadge"
+text = "◆ CHOISI"
 horizontal_alignment = 1
 vertical_alignment = 1
 

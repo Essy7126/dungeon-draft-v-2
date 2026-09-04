@@ -10,14 +10,19 @@ extends Node2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 const START_HUB_SCENE_PATH := "res://hub/StartHub.tscn"
+const REFERENCE_VIEWPORT := Vector2(1200.0, 896.0)
 
 var _intro_en_cours: bool = true
 
 
 func _ready() -> void:
+	PremiumUI.apply(boutons)
 	bouton_nouvelle_partie.pressed.connect(_on_nouvelle_partie)
 	bouton_quitter.pressed.connect(_on_quitter)
 	animation_player.animation_finished.connect(_on_intro_terminee)
+	get_viewport().size_changed.connect(_apply_responsive_layout)
+	_configure_focus_navigation()
+	_apply_responsive_layout()
 	animation_player.play("intro")
 
 
@@ -40,6 +45,7 @@ func _on_intro_terminee(anim_name: StringName) -> void:
 	if anim_name == "intro":
 		_intro_en_cours = false
 		animation_player.play("idle")
+		bouton_nouvelle_partie.grab_focus.call_deferred()
 
 
 func _on_nouvelle_partie() -> void:
@@ -49,3 +55,32 @@ func _on_nouvelle_partie() -> void:
 
 func _on_quitter() -> void:
 	get_tree().quit()
+
+
+func _configure_focus_navigation() -> void:
+	bouton_nouvelle_partie.focus_neighbor_top = (
+		bouton_nouvelle_partie.get_path_to(bouton_quitter)
+	)
+	bouton_nouvelle_partie.focus_neighbor_bottom = (
+		bouton_nouvelle_partie.get_path_to(bouton_quitter)
+	)
+	bouton_quitter.focus_neighbor_top = (
+		bouton_quitter.get_path_to(bouton_nouvelle_partie)
+	)
+	bouton_quitter.focus_neighbor_bottom = (
+		bouton_quitter.get_path_to(bouton_nouvelle_partie)
+	)
+
+
+func _apply_responsive_layout() -> void:
+	var viewport_size := get_viewport_rect().size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		return
+	fond.scale = viewport_size / REFERENCE_VIEWPORT
+	var left := clampf(viewport_size.x * 0.045, 42.0, 88.0)
+	var width := clampf(viewport_size.x * 0.3, 360.0, 460.0)
+	var top := clampf(viewport_size.y * 0.135, 104.0, 176.0)
+	boutons.offset_left = left
+	boutons.offset_right = left + width
+	boutons.offset_top = top
+	boutons.offset_bottom = top + 190.0

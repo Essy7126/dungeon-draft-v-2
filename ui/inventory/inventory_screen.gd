@@ -3,11 +3,15 @@ extends Control
 
 signal screen_closed
 
+const ITEM_TILE_SCENE := preload("res://ui/inventory/InventoryItemTile.tscn")
+
 @onready var _title: Label = %Title
+@onready var _capacity_label: Label = %CapacityLabel
 @onready var _hero_selector: OptionButton = %HeroSelector
 @onready var _inventory_grid: GridContainer = %InventoryGrid
 @onready var _equipment_list: VBoxContainer = %EquipmentList
 @onready var _detail_name: Label = %DetailName
+@onready var _detail_icon: TextureRect = %DetailIcon
 @onready var _detail_rarity: Label = %DetailRarity
 @onready var _detail_description: Label = %DetailDescription
 @onready var _modifier_summary: Label = %ModifierSummary
@@ -18,6 +22,7 @@ signal screen_closed
 @onready var _unequip_button: Button = %UnequipButton
 @onready var _close_button: Button = %CloseButton
 @onready var _panel: PanelContainer = %Panel
+@onready var _detail_scroll: ScrollContainer = %DetailScroll
 
 var _manager = null
 var _hero_ids: Array[StringName] = []
@@ -29,6 +34,7 @@ var _test_viewport_size := Vector2.ZERO
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	PremiumUI.apply(self)
 	_close_button.pressed.connect(close_screen)
 	_hero_selector.item_selected.connect(_on_hero_selected)
 	_equip_button.pressed.connect(_on_equip_pressed)
@@ -55,6 +61,7 @@ func open_for_character(character_id: StringName, manager = GameManager) -> bool
 	_selected_instance_id = &""
 	_selected_equipment_slot = ItemDefinition.EquipmentSlot.NONE
 	_feedback.text = ""
+	_detail_scroll.scroll_vertical = 0
 	show()
 	move_to_front()
 	_refresh()
@@ -95,10 +102,10 @@ func _apply_responsive_layout() -> void:
 		else get_viewport_rect().size
 	)
 	_panel.custom_minimum_size = Vector2(
-		minf(1120.0, maxf(960.0, viewport_size.x - 48.0)),
-		minf(760.0, maxf(600.0, viewport_size.y - 40.0)),
+		clampf(viewport_size.x - 48.0, 960.0, 1240.0),
+		clampf(viewport_size.y - 40.0, 650.0, 820.0),
 	)
-	_inventory_grid.columns = 3 if viewport_size.x < 1500.0 else 4
+	_inventory_grid.columns = 3
 
 
 func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
@@ -108,9 +115,14 @@ func apply_viewport_size_for_test(viewport_size: Vector2) -> void:
 
 
 func get_layout_snapshot() -> Dictionary:
+	var detail_scrollbar := _detail_scroll.get_v_scroll_bar()
 	return {
 		"screen_rect": get_global_rect(),
+		"panel_global": _panel.get_global_rect(),
 		"panel_minimum_size": _panel.custom_minimum_size,
+		"detail_scroll_global": _detail_scroll.get_global_rect(),
+		"detail_scroll_max": detail_scrollbar.max_value,
+		"detail_scroll_page": detail_scrollbar.page,
 		"inventory_columns": _inventory_grid.columns,
 	}
 
@@ -169,6 +181,7 @@ func _on_hero_selected(index: int) -> void:
 	_selected_character_id = _hero_ids[index]
 	_selected_equipment_slot = ItemDefinition.EquipmentSlot.NONE
 	_feedback.text = ""
+	_detail_scroll.scroll_vertical = 0
 	_refresh()
 
 
@@ -188,7 +201,8 @@ func _refresh() -> void:
 	if inventory == null or catalog == null or state == null:
 		close_screen()
 		return
-	_title.text = "INVENTAIRE DE LA RUN · %d/%d emplacements" % [
+	_title.text = "INVENTAIRE"
+	_capacity_label.text = "%d / %d" % [
 		inventory.capacity - inventory.get_empty_slot_count(),
 		inventory.capacity,
 	]
@@ -198,56 +212,52 @@ func _refresh() -> void:
 
 
 func _rebuild_inventory(inventory: RunInventory, catalog: ItemCatalog) -> void:
-	_clear_children(_inventory_grid)
+	_ensure_inventory_tile_count(inventory.capacity)
+	var state: CharacterRunState = (
+		_manager.get_character_state(_selected_character_id)
+		if _manager != null else null
+	)
 	for slot_index in range(inventory.capacity):
 		var instance := inventory.get_slot(slot_index)
-		var button := Button.new()
-		button.custom_minimum_size = Vector2(148.0, 82.0)
-		button.focus_mode = Control.FOCUS_ALL
-		if instance == null:
-			button.text = "Emplacement %02d\n—" % (slot_index + 1)
-			button.disabled = true
-		else:
-			var definition := catalog.get_definition(instance.definition_id)
-			button.text = "%s\n%s" % [
-				definition.display_name if definition != null else str(instance.definition_id),
-				("Relique active" if definition != null and definition.is_relic() \
-				else ("x%d" % instance.quantity if instance.quantity > 1 else "Objet unique")),
-			]
-			button.tooltip_text = definition.description if definition != null else ""
-			button.icon = definition.get_inventory_icon() if definition != null else null
-			if definition != null and definition.is_relic():
-				button.self_modulate = Color(0.88, 0.72, 1.0)
-				button.tooltip_text = "%s\nACTIVE POUR LA RUN" % definition.description
-			button.toggle_mode = true
-			button.button_pressed = instance.instance_id == _selected_instance_id
-			button.pressed.connect(_select_inventory_item.bind(instance.instance_id))
-		_inventory_grid.add_child(button)
+		var definition := (
+			catalog.get_definition(instance.definition_id)
+			if instance != null else null
+		)
+		var compatible := (
+			definition == null
+			or state == null
+			or definition.is_compatible_with(state.character_id)
+		)
+		var tile := _inventory_grid.get_child(slot_index) as InventoryItemTile
+		tile.configure_inventory(
+			slot_index,
+			instance,
+			definition,
+			instance != null and instance.instance_id == _selected_instance_id,
+			compatible,
+		)
 
 
 func _rebuild_equipment(
 		state: CharacterRunState,
 		catalog: ItemCatalog
 	) -> void:
-	_clear_children(_equipment_list)
-	for slot in EquipmentLoadout.EQUIPMENT_SLOTS:
+	_ensure_equipment_tile_count(EquipmentLoadout.EQUIPMENT_SLOTS.size())
+	for index in EquipmentLoadout.EQUIPMENT_SLOTS.size():
+		var slot: int = EquipmentLoadout.EQUIPMENT_SLOTS[index]
 		var instance := state.equipment_loadout.get_item(slot)
 		var definition := (
 			catalog.get_definition(instance.definition_id)
 			if instance != null
 			else null
 		)
-		var button := Button.new()
-		button.custom_minimum_size = Vector2(330.0, 58.0)
-		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.toggle_mode = true
-		button.button_pressed = slot == _selected_equipment_slot
-		button.text = "%s : %s" % [
-			EquipmentLoadout.get_slot_display_name(slot),
-			definition.display_name if definition != null else "Vide",
-		]
-		button.pressed.connect(_select_equipment_slot.bind(slot))
-		_equipment_list.add_child(button)
+		var tile := _equipment_list.get_child(index) as InventoryItemTile
+		tile.configure_equipment(
+			slot,
+			instance,
+			definition,
+			slot == _selected_equipment_slot,
+		)
 
 
 func _refresh_details(
@@ -268,8 +278,14 @@ func _refresh_details(
 		else null
 	)
 	_detail_name.text = definition.display_name if definition != null else "Sélectionnez un objet"
+	_detail_icon.texture = InventoryItemTile.presentation_icon(definition)
 	_detail_rarity.text = (
-		str(definition.rarity).to_upper() if definition != null else ""
+		PremiumUI.rarity_label(definition.rarity)
+		if definition != null else ""
+	)
+	_detail_rarity.modulate = (
+		PremiumUI.rarity_color(definition.rarity)
+		if definition != null else Color.WHITE
 	)
 	_detail_description.text = definition.description if definition != null else (
 		"Choisissez un objet du sac ou un emplacement équipé."
@@ -293,12 +309,14 @@ func _refresh_details(
 		_equip_button.hide()
 		_use_button.hide()
 		_unequip_button.hide()
+	_refresh_action_truth(state, inventory, definition, from_inventory)
 
 
 func _select_inventory_item(instance_id: StringName) -> void:
 	_selected_instance_id = instance_id
 	_selected_equipment_slot = ItemDefinition.EquipmentSlot.NONE
 	_feedback.text = ""
+	_detail_scroll.scroll_vertical = 0
 	_refresh()
 
 
@@ -306,6 +324,7 @@ func _select_equipment_slot(slot: int) -> void:
 	_selected_instance_id = &""
 	_selected_equipment_slot = slot
 	_feedback.text = ""
+	_detail_scroll.scroll_vertical = 0
 	_refresh()
 
 
@@ -329,6 +348,7 @@ func _on_equip_pressed() -> void:
 		if result.get("success", false)
 		else str(result.get("error", "Équipement impossible."))
 	)
+	_set_feedback_state(bool(result.get("success", false)))
 	if result.get("success", false):
 		_selected_instance_id = &""
 		_selected_equipment_slot = definition.equipment_slot
@@ -345,6 +365,7 @@ func _on_use_pressed() -> void:
 		if result.get("success", false)
 		else str(result.get("error", "Utilisation impossible."))
 	)
+	_set_feedback_state(bool(result.get("success", false)))
 	if result.get("success", false):
 		_selected_instance_id = &""
 	_refresh()
@@ -360,6 +381,7 @@ func _on_unequip_pressed() -> void:
 		if result.get("success", false)
 		else str(result.get("error", "Retrait impossible."))
 	)
+	_set_feedback_state(bool(result.get("success", false)))
 	if result.get("success", false):
 		_selected_equipment_slot = ItemDefinition.EquipmentSlot.NONE
 	_refresh()
@@ -399,12 +421,16 @@ func _modifier_text(definition: ItemDefinition) -> String:
 func _stats_text(unit: Unit) -> String:
 	if unit == null:
 		return ""
-	return "STATISTIQUES ACTUELLES\nPV %d/%d · Attaque %d\nArmure %.0f · Résistance magique %.0f\nCritique %.0f%% · Force %.0f" % [
+	return "STATISTIQUES ACTUELLES\nPV %d/%d · Attaque %d · Initiative %.0f\nPA %d · PM %d · Armure %.0f\nRés. magique %.0f · Rés. glace %.0f\nCritique %.0f%% · Force %.0f" % [
 		unit.current_hp,
 		unit.max_hp.get_int(),
 		unit.attack_power.get_int(),
+		unit.initiative.get_value(),
+		unit.max_ap.get_int(),
+		unit.max_mp.get_int(),
 		unit.armure.get_value(),
 		unit.resist_magique.get_value(),
+		unit.get_resistance_value(Spell.Element.ICE) * 100.0,
 		unit.crit_chance.get_value() * 100.0,
 		unit.force.get_value(),
 	]
@@ -423,7 +449,61 @@ func _stat_label(stat_id: StringName) -> String:
 		&"crit_chance": return "Chance critique"
 		&"crit_multi": return "Dégâts critiques"
 		&"force": return "Force"
+		&"resistance_ice": return "Résistance glace"
 		_: return str(stat_id)
+
+
+func _ensure_inventory_tile_count(wanted_count: int) -> void:
+	while _inventory_grid.get_child_count() < wanted_count:
+		var tile := ITEM_TILE_SCENE.instantiate() as InventoryItemTile
+		tile.inventory_item_requested.connect(_select_inventory_item)
+		_inventory_grid.add_child(tile)
+	while _inventory_grid.get_child_count() > wanted_count:
+		var child := _inventory_grid.get_child(_inventory_grid.get_child_count() - 1)
+		_inventory_grid.remove_child(child)
+		child.queue_free()
+
+
+func _ensure_equipment_tile_count(wanted_count: int) -> void:
+	while _equipment_list.get_child_count() < wanted_count:
+		var tile := ITEM_TILE_SCENE.instantiate() as InventoryItemTile
+		tile.equipment_slot_requested.connect(_select_equipment_slot)
+		_equipment_list.add_child(tile)
+	while _equipment_list.get_child_count() > wanted_count:
+		var child := _equipment_list.get_child(_equipment_list.get_child_count() - 1)
+		_equipment_list.remove_child(child)
+		child.queue_free()
+
+
+func _refresh_action_truth(
+		state: CharacterRunState,
+		inventory: RunInventory,
+		definition: ItemDefinition,
+		from_inventory: bool
+	) -> void:
+	if definition == null:
+		return
+	if _use_button.visible:
+		match definition.use_effect:
+			ItemDefinition.UseEffect.HEAL_FLAT:
+				_use_button.disabled = (
+					not from_inventory
+					or state.unit == null
+					or state.unit.current_hp <= 0
+					or state.unit.current_hp >= state.unit.max_hp.get_int()
+				)
+			ItemDefinition.UseEffect.RESTORE_AP_FLAT:
+				_use_button.disabled = (
+					not from_inventory
+					or state.unit == null
+					or state.unit.current_ap >= state.unit.max_ap.get_int()
+				)
+	if _unequip_button.visible:
+		_unequip_button.disabled = inventory.get_empty_slot_count() <= 0
+
+
+func _set_feedback_state(success: bool) -> void:
+	_feedback.theme_type_variation = &"PremiumPositive" if success else &"PremiumDanger"
 
 
 func _clear_children(container: Node) -> void:

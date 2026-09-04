@@ -250,7 +250,7 @@ func test_item_definition_directory_auto_populates_the_reward_pool() -> void:
 	assert_true(catalog.rebuild_index())
 	var expected_reward_ids: Array[StringName] = []
 	for definition in catalog.get_definitions():
-		if definition != null and definition.is_equippable() \
+		if definition != null and (definition.is_equippable() or definition.is_relic()) \
 				and definition.tags.has(FirstRunEquipmentRewardService.POOL_TAG):
 			expected_reward_ids.append(definition.item_id)
 	expected_reward_ids.sort_custom(func(a: StringName, b: StringName) -> bool:
@@ -263,10 +263,12 @@ func test_item_definition_directory_auto_populates_the_reward_pool() -> void:
 	for value in snapshot.get("eligible_ids", []) as Array:
 		actual_reward_ids.append(StringName(value))
 	assert_eq(actual_reward_ids, expected_reward_ids)
-	assert_gte(actual_reward_ids.size(), 14)
+	assert_eq(actual_reward_ids.size(), 8)
+	for item_id in actual_reward_ids:
+		assert_true(catalog.get_definition(item_id).is_relic(), str(item_id))
 
 
-func test_reward_deck_reserves_five_distinct_pairs_for_non_final_rooms() -> void:
+func test_reward_deck_recycles_declined_relics_for_five_non_final_rooms() -> void:
 	var catalog := load(CATALOG_PATH) as ItemCatalog
 	var service := FirstRunEquipmentRewardService.new()
 	assert_true(service.reset(catalog, 1337))
@@ -282,32 +284,37 @@ func test_reward_deck_reserves_five_distinct_pairs_for_non_final_rooms() -> void
 		assert_eq(options.size(), 2, "salle %d" % (room_index + 1))
 		assert_ne(options[0].get("item_id"), options[1].get("item_id"))
 		for option in options:
-			assert_false(offered.has(option.get("item_id")), "aucune répétition")
-			offered[option.get("item_id")] = true
+			var item_id := StringName(option.get("item_id", &""))
+			if room_index < 4:
+				assert_false(offered.has(item_id), "pioche fraîche avant recyclage")
+			else:
+				assert_true(offered.has(item_id), "relique refusée attendue au recyclage")
+			offered[item_id] = true
+			assert_true((option.get("definition") as ItemDefinition).is_relic())
+			assert_true((option.get("compatible_character_ids", []) as Array).is_empty())
 		var chosen := options[0] as Dictionary
-		var compatible := chosen.get("compatible_character_ids", []) as Array
-		assert_false(compatible.is_empty())
 		var result := service.apply(
 			report,
 			chosen.get("item_id"),
-			compatible[0],
+			&"",
 			states,
 			inventory,
 			equipment,
 		)
 		assert_true(result.get("success", false), str(result))
+		assert_eq(result.get("target_character_id"), &"")
 		assert_false(result.get("equipped", true), str(result))
 		for state in states:
 			assert_true(state.equipment_loadout.get_equipped_items().is_empty())
 		assert_false(service.apply(
 			report,
 			chosen.get("item_id"),
-			compatible[0],
+			&"",
 			states,
 			inventory,
 			equipment,
 		).get("success", true))
-	assert_eq(offered.size(), 10)
+	assert_eq(offered.size(), 8)
 
 
 func test_xp_requires_real_effect_limits_same_spell_and_caps_combat_at_five() -> void:

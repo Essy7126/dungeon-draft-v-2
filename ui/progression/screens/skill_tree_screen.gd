@@ -61,6 +61,7 @@ var _evolution_source_spell_id: StringName = &""
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	PremiumUI.apply(self)
 	_main_frame.texture = skin.main_panel_texture if skin != null else null
 	_graph.skin = skin
 	_graph.visual_map = visual_map
@@ -552,8 +553,12 @@ func _configure_focus_navigation() -> void:
 		var button := _tab_buttons[index]
 		if index > 0:
 			button.focus_neighbor_top = button.get_path_to(_tab_buttons[index - 1])
+		else:
+			button.focus_neighbor_top = button.get_path_to(_close_button)
 		if index + 1 < _tab_buttons.size():
 			button.focus_neighbor_bottom = button.get_path_to(_tab_buttons[index + 1])
+		else:
+			button.focus_neighbor_bottom = button.get_path_to(_center_graph_button)
 	var nodes := _graph.get_node_views_in_focus_order()
 	if not nodes.is_empty():
 		for button in _tab_buttons:
@@ -566,7 +571,18 @@ func _configure_focus_navigation() -> void:
 	_close_button.focus_neighbor_bottom = _close_button.get_path_to(
 		_tab_buttons[0] if not _tab_buttons.is_empty() else _center_graph_button
 	)
+	_close_button.focus_neighbor_left = _close_button.get_path_to(
+		_center_graph_button
+	)
 	_center_graph_button.focus_neighbor_top = _center_graph_button.get_path_to(_close_button)
+	if not _tab_buttons.is_empty():
+		_center_graph_button.focus_neighbor_left = _center_graph_button.get_path_to(
+			_tab_buttons[_tab_buttons.size() - 1]
+		)
+	if not nodes.is_empty():
+		_center_graph_button.focus_neighbor_bottom = _center_graph_button.get_path_to(
+			nodes[0]
+		)
 
 
 func _focus_last_or_first() -> void:
@@ -672,46 +688,89 @@ func _apply_responsive_layout(viewport_size: Vector2) -> void:
 	var compact := viewport_size.x <= 1320.0 or viewport_size.y <= 760.0
 	var medium := viewport_size.x <= 1650.0 or viewport_size.y <= 940.0
 	_layout_profile = &"compact" if compact else &"medium" if medium else &"large"
+	var presentation_scale := (
+		clampf(
+			minf(viewport_size.x / 1920.0, viewport_size.y / 1080.0),
+			1.0,
+			1.18
+		)
+		if not medium
+		else 1.0
+	)
 	var screen_margin := 8.0 if compact else 12.0 if medium else 18.0
 	var wanted_size := Vector2(
-		minf(viewport_size.x - screen_margin * 2.0, 1700.0),
-		minf(viewport_size.y - screen_margin * 2.0, 940.0)
+		minf(viewport_size.x - screen_margin * 2.0, 1700.0 * presentation_scale),
+		minf(viewport_size.y - screen_margin * 2.0, 940.0 * presentation_scale)
 	)
 	_outer_margin.set_anchors_preset(Control.PRESET_CENTER)
 	_outer_margin.offset_left = -wanted_size.x * 0.5
 	_outer_margin.offset_top = -wanted_size.y * 0.5
 	_outer_margin.offset_right = wanted_size.x * 0.5
 	_outer_margin.offset_bottom = wanted_size.y * 0.5
-	var frame_margin := 10 if compact else 16 if medium else 22
+	var frame_margin := 10 if compact else 16 if medium else roundi(22.0 * presentation_scale)
 	_frame_margin.add_theme_constant_override("margin_left", frame_margin)
 	_frame_margin.add_theme_constant_override("margin_right", frame_margin)
-	_frame_margin.add_theme_constant_override("margin_top", 10 if compact else 14 if medium else 18)
-	_frame_margin.add_theme_constant_override("margin_bottom", 9 if compact else 12 if medium else 15)
+	_frame_margin.add_theme_constant_override(
+		"margin_top",
+		10 if compact else 14 if medium else roundi(18.0 * presentation_scale)
+	)
+	_frame_margin.add_theme_constant_override(
+		"margin_bottom",
+		9 if compact else 12 if medium else roundi(15.0 * presentation_scale)
+	)
 	_main.add_theme_constant_override("separation", 5 if compact else 7 if medium else 8)
 	_content_split.add_theme_constant_override("separation", 6 if compact else 8 if medium else 10)
-	_character_header.custom_minimum_size.y = 86.0 if compact else 96.0 if medium else 104.0
-	_header_portrait.apply_layout(0.66 if compact else 0.74 if medium else 0.78)
-	_identity_badge.custom_minimum_size = Vector2.ONE * (30.0 if compact else 34.0 if medium else 38.0)
-	_title_label.add_theme_font_size_override("font_size", 21 if compact else 24 if medium else 27)
-	_discipline_summary_label.add_theme_font_size_override("font_size", 12 if compact else 13 if medium else 14)
-	_header_summary_label.add_theme_font_size_override("font_size", 11 if compact else 12 if medium else 13)
-	_consultative_label.add_theme_font_size_override("font_size", 10 if compact else 11 if medium else 12)
+	_character_header.custom_minimum_size.y = (
+		86.0 if compact else 96.0 if medium else 104.0 * presentation_scale
+	)
+	_header_portrait.apply_layout(
+		0.66 if compact else 0.74 if medium else 0.78 * presentation_scale
+	)
+	_identity_badge.custom_minimum_size = Vector2.ONE * (
+		30.0 if compact else 34.0 if medium else 38.0 * presentation_scale
+	)
+	_title_label.add_theme_font_size_override(
+		"font_size",
+		21 if compact else 24 if medium else roundi(27.0 * presentation_scale)
+	)
+	_discipline_summary_label.add_theme_font_size_override(
+		"font_size",
+		12 if compact else 13 if medium else roundi(14.0 * presentation_scale)
+	)
+	_header_summary_label.add_theme_font_size_override(
+		"font_size",
+		11 if compact else 12 if medium else roundi(13.0 * presentation_scale)
+	)
+	_consultative_label.add_theme_font_size_override(
+		"font_size",
+		10 if compact else 11 if medium else roundi(12.0 * presentation_scale)
+	)
 	_consultative_label.visible = viewport_size.x >= 1460.0
-	_branch_navigation.custom_minimum_size.x = 206.0 if compact else 226.0 if medium else 252.0
-	_branch_title_label.add_theme_font_size_override("font_size", 12 if compact else 13 if medium else 14)
+	_branch_navigation.custom_minimum_size.x = (
+		206.0 if compact else 226.0 if medium else 252.0 * presentation_scale
+	)
+	_branch_title_label.add_theme_font_size_override(
+		"font_size",
+		12 if compact else 13 if medium else roundi(14.0 * presentation_scale)
+	)
 	_tabs.add_theme_constant_override("separation", 5 if compact else 6 if medium else 7)
 	for button in _tab_buttons:
 		button.apply_layout_profile(_layout_profile)
-	var detail_width := 286.0 if compact else 326.0 if medium else 360.0
+	var detail_width := (
+		286.0 if compact else 326.0 if medium else 360.0 * presentation_scale
+	)
 	_detail_panel.custom_minimum_size.x = detail_width
 	_detail_panel.apply_layout_profile(_layout_profile)
 	_close_button.custom_minimum_size = Vector2(
-		94.0 if compact else 104.0 if medium else 112.0,
-		34.0 if compact else 38.0 if medium else 42.0
+		94.0 if compact else 104.0 if medium else 112.0 * presentation_scale,
+		34.0 if compact else 38.0 if medium else 42.0 * presentation_scale
 	)
 	_canvas_hint_label.visible = not compact
 	_footer_label.custom_minimum_size.y = 18.0 if compact else 20.0 if medium else 22.0
-	_footer_label.add_theme_font_size_override("font_size", 11 if compact else 12 if medium else 13)
+	_footer_label.add_theme_font_size_override(
+		"font_size",
+		11 if compact else 12 if medium else roundi(13.0 * presentation_scale)
+	)
 	_queue_graph_layout()
 
 

@@ -3,6 +3,12 @@ extends GutTest
 const SCREEN_SCENE := preload(
 	"res://ui/progression/screens/skill_tree_screen.tscn"
 )
+const NODE_SCENE := preload(
+	"res://ui/progression/components/skill_tree_node_view.tscn"
+)
+const DEFAULT_SKILL_TREE_SKIN := preload(
+	"res://ui/progression/skin/dungeon_draft_skill_tree_skin.tres"
+)
 const HERO_PATHS := [
 	"res://data/units/alliés/elfe.tres",
 	"res://data/units/alliés/mage.tres",
@@ -27,6 +33,62 @@ func _settle_layout() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	await get_tree().process_frame
+
+
+func test_achilles_node_art_is_visible_only_after_the_rank_is_revealed() -> void:
+	var discipline := load(
+		"res://data/characters/achilles/disciplines/spear.tres"
+	) as DisciplineData
+	assert_not_null(discipline)
+	var node := discipline.ranks[1].choices[0] as SkillUpgradeData
+	assert_not_null(node)
+	assert_not_null(node.icon)
+	var presentation := {
+		"state": SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE,
+		"required_xp": 3,
+	}
+
+	var visible_view := NODE_SCENE.instantiate() as SkillTreeNodeView
+	add_child_autofree(visible_view)
+	await get_tree().process_frame
+	visible_view.configure_node(
+		discipline,
+		node,
+		presentation,
+		DEFAULT_SKILL_TREE_SKIN,
+		null,
+		&"achilles",
+		SkillTreeNodeView.RevealMode.FULL,
+	)
+	var visible_icon := visible_view.get_node("%IconOverride") as TextureRect
+	assert_same(visible_icon.texture, node.icon)
+	assert_true(visible_view.is_content_revealed())
+	assert_false((visible_view.get_node("%LockOverlay") as Control).visible)
+
+	var masked_skin := SkillTreeSkinData.new()
+	masked_skin.icon_catalog = DEFAULT_SKILL_TREE_SKIN.icon_catalog
+	masked_skin.refined_config = (
+		DEFAULT_SKILL_TREE_SKIN.refined_config.duplicate(true)
+		as SkillTreeRefinedConfig
+	)
+	masked_skin.refined_config.show_next_rank_icons = false
+	var masked_view := NODE_SCENE.instantiate() as SkillTreeNodeView
+	add_child_autofree(masked_view)
+	await get_tree().process_frame
+	masked_view.configure_node(
+		discipline,
+		node,
+		presentation,
+		masked_skin,
+		null,
+		&"achilles",
+		SkillTreeNodeView.RevealMode.NEXT_RANK,
+	)
+	var masked_icon := masked_view.get_node("%IconOverride") as TextureRect
+	assert_same(masked_icon.texture, masked_skin.icon_catalog.hidden_icon)
+	assert_not_same(masked_icon.texture, node.icon)
+	assert_false(masked_view.is_content_revealed())
+	assert_true((masked_view.get_node("%LockOverlay") as Control).visible)
 
 
 func test_every_hero_exposes_four_spell_backed_tabs_and_progressive_reveal() -> void:
@@ -99,6 +161,8 @@ func test_responsive_layout_stays_inside_720p_1080p_and_1440p() -> void:
 	var state := _state(HERO_PATHS[2])
 	state.get_discipline_progress(state.get_disciplines()[0].discipline_id).add_xp(30)
 	var screen := _screen()
+	await get_tree().process_frame
+	assert_same(screen.theme, PremiumUI.get_theme())
 	assert_true(screen.open_for_state(
 		state,
 		state.get_disciplines()[0].discipline_id
@@ -120,6 +184,9 @@ func test_responsive_layout_stays_inside_720p_1080p_and_1440p() -> void:
 		assert_true(snapshot["outer_global"].encloses(snapshot["detail_global"]))
 		assert_false(snapshot["branch_global"].intersects(snapshot["canvas_global"]))
 		assert_false(snapshot["canvas_global"].intersects(snapshot["detail_global"]))
+		if case["size"] == Vector2(2560, 1440):
+			assert_gte((snapshot["outer_global"] as Rect2).size.x, 2000.0)
+			assert_gte((snapshot["outer_global"] as Rect2).size.y, 1100.0)
 		assert_true(screen.get_graph().get_node_views_in_focus_order().all(
 			func(view): return view.focus_mode == Control.FOCUS_ALL
 		))

@@ -21,6 +21,11 @@ static func build(skin: HudVisualSkinData) -> Theme:
 	theme.set_color(&"font_focus_color", &"Button", skin.text_primary)
 	theme.set_color(&"font_pressed_color", &"Button", skin.text_primary)
 	theme.set_color(&"font_disabled_color", &"Button", skin.text_muted)
+	theme.set_color(&"font_color", &"OptionButton", skin.text_primary)
+	theme.set_color(&"font_hover_color", &"OptionButton", skin.text_primary)
+	theme.set_color(&"font_focus_color", &"OptionButton", skin.text_primary)
+	theme.set_color(&"font_pressed_color", &"OptionButton", skin.text_primary)
+	theme.set_color(&"font_disabled_color", &"OptionButton", skin.text_muted)
 
 	_add_panel_variation(
 		theme, skin, &"HudDockPanel", &"Panel", skin.surface_backdrop,
@@ -77,6 +82,7 @@ static func build(skin: HudVisualSkinData) -> Theme:
 	_add_button_variation(theme, skin, &"HudPrimaryButton", skin.border_regular)
 	_add_button_variation(theme, skin, &"HudUtilityButton", skin.border_thin)
 	_add_button_variation(theme, skin, &"HudSpellSlot", skin.border_thin)
+	_add_premium_ui_variations(theme, skin)
 
 	_add_label_variation(
 		theme, skin, &"HudEyebrow", skin.font_emphasis,
@@ -112,6 +118,166 @@ static func build(skin: HudVisualSkinData) -> Theme:
 	theme.set_type_variation(&"HudSeparator", &"HSeparator")
 	theme.set_stylebox(&"separator", &"HudSeparator", separator)
 	return theme
+
+
+static func _add_premium_ui_variations(
+		theme: Theme,
+		skin: HudVisualSkinData
+	) -> void:
+	# Ces variations prolongent le langage du HUD sur les ecrans de run. Elles
+	# restent nommees afin que les composants du HUD historique ne changent pas
+	# d'apparence par effet de bord.
+	_add_panel_variation(
+		theme, skin, &"PremiumScreen", &"PanelContainer", skin.surface_backdrop,
+		skin.border_strong_color, skin.border_regular, skin.radius_modal, true
+	)
+	_add_panel_variation(
+		theme, skin, &"PremiumPanel", &"PanelContainer", skin.surface_panel,
+		skin.border_default_color, skin.border_regular, skin.radius_panel, true
+	)
+	_add_panel_variation(
+		theme, skin, &"PremiumInset", &"PanelContainer", skin.surface_recessed,
+		skin.border_subtle_color, skin.border_thin, skin.radius_control, false
+	)
+	_add_panel_variation(
+		theme, skin, &"PremiumHeader", &"PanelContainer", skin.surface_dock,
+		skin.border_strong_color, skin.border_regular, skin.radius_control, true
+	)
+	_add_panel_variation(
+		theme, skin, &"PremiumFooter", &"PanelContainer", skin.surface_dock,
+		skin.border_default_color, skin.border_thin, skin.radius_control, true
+	)
+	_add_panel_variation(
+		theme, skin, &"PremiumCard", &"PanelContainer", skin.surface_raised,
+		skin.border_default_color, skin.border_regular, skin.radius_panel, true
+	)
+
+	_add_button_variation(theme, skin, &"PremiumButton", skin.border_regular)
+	_add_button_variation(theme, skin, &"PremiumPrimaryButton", skin.border_emphasis)
+	_add_button_variation(theme, skin, &"PremiumQuietButton", skin.border_thin)
+	_add_button_variation(theme, skin, &"PremiumTileButton", skin.border_thin)
+	_add_option_button_variation(theme, skin, &"PremiumOptionButton")
+
+	_add_label_variation(
+		theme, skin, &"PremiumDisplay", skin.font_emphasis,
+		skin.font_size_display + 12, skin.text_primary
+	)
+	_add_label_variation(
+		theme, skin, &"PremiumTitle", skin.font_emphasis,
+		skin.font_size_title + 4, skin.text_primary
+	)
+	_add_label_variation(
+		theme, skin, &"PremiumSubtitle", skin.font_emphasis,
+		skin.font_size_emphasis, skin.text_secondary
+	)
+	_add_label_variation(
+		theme, skin, &"PremiumEyebrow", skin.font_emphasis,
+		skin.font_size_caption, skin.text_secondary
+	)
+	_add_label_variation(
+		theme, skin, &"PremiumBody", skin.font_regular,
+		skin.font_size_body, skin.text_primary
+	)
+	_add_label_variation(
+		theme, skin, &"PremiumMuted", skin.font_regular,
+		skin.font_size_caption, skin.text_muted
+	)
+	_add_label_variation(
+		theme, skin, &"PremiumPositive", skin.font_emphasis,
+		skin.font_size_body, Color(0.62, 0.82, 0.52, 1.0)
+	)
+	_add_label_variation(
+		theme, skin, &"PremiumDanger", skin.font_emphasis,
+		skin.font_size_body, Color(0.92, 0.42, 0.31, 1.0)
+	)
+
+	var badge_style := make_panel_style(
+		skin,
+		skin.state_selected_background,
+		skin.border_selected_color,
+		skin.border_regular,
+		skin.radius_control,
+		true,
+		skin.space_md
+	)
+	theme.set_type_variation(&"PremiumSelectionBadge", &"Label")
+	theme.set_stylebox(&"normal", &"PremiumSelectionBadge", badge_style)
+	theme.set_font(&"font", &"PremiumSelectionBadge", skin.font_emphasis)
+	theme.set_font_size(
+		&"font_size", &"PremiumSelectionBadge", skin.font_size_caption
+	)
+	theme.set_color(
+		&"font_color", &"PremiumSelectionBadge", skin.text_primary
+	)
+
+	var progress_background := make_panel_style(
+		skin, skin.surface_recessed, skin.border_subtle_color,
+		skin.border_thin, skin.radius_control
+	)
+	var progress_fill := make_panel_style(
+		skin, skin.border_strong_color, skin.border_selected_color,
+		0, skin.radius_control
+	)
+	theme.set_type_variation(&"PremiumProgress", &"ProgressBar")
+	theme.set_stylebox(&"background", &"PremiumProgress", progress_background)
+	theme.set_stylebox(&"fill", &"PremiumProgress", progress_fill)
+	theme.set_font(&"font", &"PremiumProgress", skin.font_numeric)
+	theme.set_color(&"font_color", &"PremiumProgress", skin.text_primary)
+	theme.set_color(&"font_outline_color", &"PremiumProgress", skin.surface_scrim)
+	theme.set_constant(&"outline_size", &"PremiumProgress", 2)
+
+	var premium_separator := StyleBoxLine.new()
+	premium_separator.color = skin.border_default_color
+	premium_separator.thickness = skin.border_thin
+	theme.set_type_variation(&"PremiumSeparator", &"HSeparator")
+	theme.set_stylebox(&"separator", &"PremiumSeparator", premium_separator)
+
+	# Compatibilite temporaire : les ecrans de progression et d'apres-combat
+	# utilisaient ces noms bien avant l'introduction du systeme premium partage.
+	_alias_panel_variation(theme, &"SkillTreeScreen", &"PremiumScreen")
+	_alias_panel_variation(theme, &"SkillTreeCharacterHeader", &"PremiumHeader")
+	_alias_panel_variation(theme, &"SkillTreeCanvasSurface", &"PremiumPanel")
+	_alias_panel_variation(theme, &"SkillTreeDetailReadingSurface", &"PremiumInset")
+	_alias_button_variation(theme, &"SkillTreeCloseButton", &"PremiumButton")
+	_alias_button_variation(theme, &"SkillTreeAcquireButton", &"PremiumPrimaryButton")
+	theme.set_type_variation(&"SkillTreeXpProgress", &"PremiumProgress")
+
+
+static func _add_option_button_variation(
+		theme: Theme,
+		skin: HudVisualSkinData,
+		variation: StringName
+	) -> void:
+	theme.set_type_variation(variation, &"OptionButton")
+	for state_id in [&"normal", &"hover", &"focus", &"pressed", &"disabled"]:
+		theme.set_stylebox(
+			state_id,
+			variation,
+			make_control_style(skin, state_id, skin.border_regular)
+		)
+	theme.set_font(&"font", variation, skin.font_regular)
+	theme.set_font_size(&"font_size", variation, skin.font_size_body)
+	theme.set_color(&"font_color", variation, skin.text_primary)
+	theme.set_color(&"font_hover_color", variation, skin.text_primary)
+	theme.set_color(&"font_focus_color", variation, skin.text_primary)
+	theme.set_color(&"font_pressed_color", variation, skin.text_primary)
+	theme.set_color(&"font_disabled_color", variation, skin.text_muted)
+
+
+static func _alias_panel_variation(
+		theme: Theme,
+		alias_name: StringName,
+		source_name: StringName
+	) -> void:
+	theme.set_type_variation(alias_name, source_name)
+
+
+static func _alias_button_variation(
+		theme: Theme,
+		alias_name: StringName,
+		source_name: StringName
+	) -> void:
+	theme.set_type_variation(alias_name, source_name)
 
 
 static func make_panel_style(

@@ -90,6 +90,86 @@ func test_missing_texture_uses_readable_fallback_and_reduced_motion() -> void:
 	assert_true(overlay.get_visual_snapshot()["reduced_motion"])
 
 
+func test_offer_copy_and_card_meta_distinguish_relics_from_equipment() -> void:
+	var overlay := OVERLAY_SCENE.instantiate() as EquipmentRewardOverlay
+	add_child_autofree(overlay)
+	await get_tree().process_frame
+	var first_relic := CATALOG.get_definition(&"cendres_du_phenix")
+	var second_relic := CATALOG.get_definition(&"chaines_de_promethee")
+	assert_not_null(first_relic)
+	assert_not_null(second_relic)
+	var relic_options: Array[Dictionary] = [
+		{
+			"item_id": first_relic.item_id,
+			"reward_id": first_relic.item_id,
+			"definition": first_relic,
+		},
+		{
+			"item_id": second_relic.item_id,
+			"reward_id": second_relic.item_id,
+			"definition": second_relic,
+		},
+	]
+	assert_true(overlay.present(relic_options, true))
+	assert_eq(overlay.title_label.text, "CHOISISSEZ UNE RELIQUE")
+	assert_eq(
+		overlay.subtitle_label.text,
+		"Une seule relique rejoindra le Sac partagé",
+	)
+	assert_eq(overlay.get_card(0).fallback_meta.text, "RELIQUE DE L’ODYSSÉE")
+
+	var first_equipment := CATALOG.get_definition(&"arc_maudit")
+	var second_equipment := CATALOG.get_definition(&"excalibur")
+	var equipment_options: Array[Dictionary] = [
+		{
+			"item_id": first_equipment.item_id,
+			"reward_id": first_equipment.item_id,
+			"definition": first_equipment,
+		},
+		{
+			"item_id": second_equipment.item_id,
+			"reward_id": second_equipment.item_id,
+			"definition": second_equipment,
+		},
+	]
+	assert_true(overlay.present(equipment_options, true))
+	assert_eq(overlay.title_label.text, "CHOISISSEZ UN ÉQUIPEMENT")
+	assert_eq(
+		overlay.subtitle_label.text,
+		"Un seul équipement sera attribué à un héros",
+	)
+	assert_eq(overlay.get_card(0).fallback_meta.text, "ARME · ÉQUIPEMENT")
+
+
+func test_dedicated_reward_card_texture_takes_priority_over_composed_fallback() -> void:
+	var overlay := await _make_overlay()
+	var card := overlay.get_card(0)
+	assert_not_null(card.card_texture.texture)
+	assert_true(card.card_texture.visible)
+	assert_false(card.fallback.visible)
+
+
+func test_confirmation_transform_is_reset_before_the_next_offer() -> void:
+	var overlay := OVERLAY_SCENE.instantiate() as EquipmentRewardOverlay
+	add_child_autofree(overlay)
+	await get_tree().process_frame
+	overlay.apply_viewport_size_for_test(Vector2(1920, 1080))
+	var first := CATALOG.get_definition(&"arc_maudit")
+	var second := CATALOG.get_definition(&"excalibur")
+	var options: Array[Dictionary] = [
+		{"item_id": first.item_id, "reward_id": first.item_id, "definition": first},
+		{"item_id": second.item_id, "reward_id": second.item_id, "definition": second},
+	]
+	assert_true(overlay.present(options, true))
+	assert_true(overlay.select_item_by_id(first.item_id))
+	overlay.resolve_confirmation(true)
+	await get_tree().create_timer(0.2, true, false, true).timeout
+	assert_ne(overlay.get_card(0).visual_root.position.x, 0.0)
+	assert_true(overlay.present(options, true))
+	assert_eq(overlay.get_card(0).visual_root.position.x, 0.0)
+	assert_eq(overlay.get_card(1).visual_root.position.x, 0.0)
+
+
 func _make_overlay() -> EquipmentRewardOverlay:
 	var overlay := OVERLAY_SCENE.instantiate() as EquipmentRewardOverlay
 	add_child_autofree(overlay)

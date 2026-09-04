@@ -2,6 +2,13 @@ extends GutTest
 
 const CATALOG_PATH := "res://data/items/catalogs/default_item_catalog.tres"
 const SAVE_PATH := "user://gut_inventory_equipment_state.json"
+const PREMIUM_BASIC_ITEM_IDS: Array[StringName] = [
+	&"warrior_training_sword",
+	&"reinforced_vest",
+	&"runic_charm",
+	&"minor_healing_potion",
+	&"minor_action_scroll",
+]
 
 
 func after_each() -> void:
@@ -80,6 +87,29 @@ func test_catalog_contains_at_least_the_nineteen_stable_definitions() -> void:
 		&"minor_action_scroll",
 	]:
 		assert_not_null(catalog.get_definition(item_id), str(item_id))
+
+
+func test_inventory_presentation_icon_reuses_the_cached_crop() -> void:
+	var definition := load(
+		"res://data/items/definitions/anneau_faille.tres"
+	) as ItemDefinition
+	var first := InventoryItemTile.presentation_icon(definition)
+	var second := InventoryItemTile.presentation_icon(definition)
+	assert_true(first is AtlasTexture)
+	assert_same(second, first)
+
+
+func test_premium_square_icons_keep_the_source_and_respect_the_import_budget() -> void:
+	var catalog := _catalog()
+	for item_id in PREMIUM_BASIC_ITEM_IDS:
+		var definition := catalog.get_definition(item_id)
+		assert_not_null(definition, str(item_id))
+		var source := definition.get_inventory_icon()
+		assert_not_null(source, str(item_id))
+		assert_lte(source.get_width(), 512, str(item_id))
+		assert_lte(source.get_height(), 512, str(item_id))
+		assert_same(InventoryItemTile.presentation_icon(definition), source, str(item_id))
+		assert_same(InventoryItemTile.presentation_icon(definition), source, str(item_id))
 
 
 func test_inventory_stacks_atomically_and_round_trips_snapshot() -> void:

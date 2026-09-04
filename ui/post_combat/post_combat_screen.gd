@@ -32,8 +32,13 @@ enum Phase {
 @onready var room_label: Label = %RoomLabel
 @onready var phase_title: Label = %PhaseTitle
 @onready var contract_label: Label = %ContractLabel
+@onready var rail_result: Label = %RailResult
+@onready var rail_report: Label = %RailReport
+@onready var rail_progress: Label = %RailProgress
+@onready var rail_reward: Label = %RailReward
 @onready var victory_panel: Control = %VictoryPanel
 @onready var victory_title: Label = %VictoryTitle
+@onready var victory_subtitle: Label = %VictorySubtitle
 @onready var decision_panel: Control = %DecisionPanel
 @onready var decision_detail: Label = %DecisionDetail
 @onready var party_cards: HBoxContainer = %PartyCards
@@ -79,6 +84,7 @@ var _reduced_motion := false
 
 
 func _ready() -> void:
+	PremiumUI.apply(self)
 	_reduced_motion = GameManager.is_reduced_motion_enabled()
 	reward_overlay.set_reduced_motion(_reduced_motion)
 	continue_button.pressed.connect(advance_or_skip)
@@ -96,6 +102,7 @@ func _ready() -> void:
 	_room_completed = bool(_decision_snapshot.get("room_completed", false))
 	_configure_background()
 	room_label.text = report.room_name
+	_configure_run_context()
 	_build_decision_party_cards()
 	_build_stat_cards()
 	_build_progression_cards()
@@ -250,7 +257,7 @@ func confirm_selected_reward() -> bool:
 	if phase != Phase.REWARD_SELECTION or _reward_applied:
 		return false
 	if _selected_reward_id == &"":
-		reward_overlay.resolve_confirmation(false, "Sélectionnez un équipement avant de confirmer.")
+		reward_overlay.resolve_confirmation(false, "Sélectionnez une récompense avant de confirmer.")
 		return false
 	if _selected_target_character_id == &"":
 		var selected_option := _find_reward_option(_selected_reward_id)
@@ -327,6 +334,7 @@ func _enter_phase(next_phase: Phase) -> void:
 		next_phase = Phase.COMBAT_STATS
 	_sequence_generation += 1
 	phase = next_phase
+	_update_phase_rail()
 	_animation_active = false
 	_set_phase_visibility()
 	reward_error.hide()
@@ -475,6 +483,7 @@ func _make_decision_party_card(state: CharacterRunState) -> Control:
 	var hp_line := HBoxContainer.new()
 	details.add_child(hp_line)
 	var hp_bar := ProgressBar.new()
+	hp_bar.theme_type_variation = &"PremiumProgress"
 	hp_bar.custom_minimum_size = Vector2(0, 10)
 	hp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hp_bar.max_value = maximum_hp
@@ -521,8 +530,33 @@ func _get_unit_condition(
 
 
 func _start_victory_reveal() -> void:
-	phase_title.text = "COMBAT ACHEVÉ"
-	status_label.text = "Le champ de bataille est sécurisé."
+	var room_decision_pending := _can_enter_room_decision()
+	phase_title.text = (
+		"RÉSULTAT DE VAGUE" if room_decision_pending else "RÉSULTAT DE SALLE"
+	)
+	victory_title.text = (
+		"VAGUE REPOUSSÉE" if room_decision_pending else "SALLE SÉCURISÉE"
+	)
+	var states := GameManager.get_ordered_character_states()
+	if states.size() == 1:
+		var state := states[0] as CharacterRunState
+		var unit_name := (
+			state.unit.unit_name.strip_edges()
+			if state != null and state.unit != null
+			else ""
+		)
+		victory_subtitle.text = (
+			"%s demeure debout." % unit_name
+			if not unit_name.is_empty()
+			else "Le héros demeure debout."
+		)
+	else:
+		victory_subtitle.text = "Le groupe demeure debout."
+	status_label.text = (
+		"Une décision reste à prendre."
+		if room_decision_pending
+		else "Le champ de bataille est sécurisé."
+	)
 	continue_button.text = "CONTINUER"
 	continue_button.disabled = false
 	victory_title.modulate.a = 0.0
@@ -593,14 +627,14 @@ func _start_progression_reveal() -> void:
 	if _final_room:
 		continue_button.text = "TERMINER LA RUN"
 	elif equipment_rewards_enabled:
-		continue_button.text = "CHOISIR L'ÉQUIPEMENT SÉCURISÉ"
+		continue_button.text = "CHOISIR UNE RELIQUE"
 	else:
 		continue_button.text = "PASSER À LA SALLE SUIVANTE"
 	if not _room_completed:
 		if equipment_rewards_enabled:
 			status_label.text = (
 				"Salle quittée avant son terme — coffre perdu, "
-				+ "équipement sécurisé."
+				+ "relique sécurisée."
 			)
 		else:
 			status_label.text = (
@@ -707,12 +741,34 @@ func _begin_transition() -> void:
 	)
 	await _current_tween.finished
 	if not GameManager.complete_post_combat_transition(report.report_id):
-		_transition_requested = false
-		phase = Phase.COMPLETED
-		transition_layer.hide()
-		continue_button.disabled = false
-		reward_error.text = "La transition a été refusée. La récompense reste enregistrée."
-		reward_error.show()
+		_show_transition_recovery()
+
+
+func _show_transition_recovery() -> void:
+	_transition_requested = false
+	phase = Phase.COMPLETED
+	_update_phase_rail()
+	transition_layer.hide()
+	reward_overlay.hide()
+	safe_margin.show()
+	background_dim.show()
+	victory_panel.hide()
+	decision_panel.hide()
+	stats_panel.hide()
+	progression_panel.hide()
+	rewards_panel.show()
+	recipient_panel.hide()
+	reward_error.text = (
+		"La transition a été refusée. La récompense reste enregistrée."
+	)
+	reward_error.show()
+	phase_title.text = "TRANSITION INTERROMPUE"
+	status_label.text = "Vous pouvez relancer la transition sans perdre votre récompense."
+	status_label.show()
+	continue_button.text = "RÉESSAYER LA TRANSITION"
+	continue_button.disabled = false
+	continue_button.show()
+	continue_button.grab_focus.call_deferred()
 
 
 func _motion_duration(duration: float) -> float:
@@ -721,7 +777,7 @@ func _motion_duration(duration: float) -> float:
 
 func _show_reward_access_error() -> void:
 	status_label.text = (
-		"La sortie est enregistrée, mais l'offre de deux équipements "
+		"La sortie est enregistrée, mais l'offre de deux reliques "
 		+ "n'a pas pu être ouverte. La transition reste bloquée."
 	)
 	status_label.add_theme_color_override("font_color", Color(0.94, 0.42, 0.35))
@@ -738,10 +794,28 @@ func _configure_background() -> void:
 	background_dim.color = Color(0.015, 0.02, 0.024, 0.82)
 
 
+func _configure_run_context() -> void:
+	var active_run := GameManager.get_active_run_data()
+	if active_run == null or active_run.rooms.is_empty():
+		contract_label.text = "CONTRAT · FIN INCONNUE"
+		return
+	contract_label.text = "%s · SALLE %d / %d" % [
+		active_run.run_name.to_upper(),
+		GameManager.current_room_index + 1,
+		active_run.rooms.size(),
+	]
+
+
 func _build_stat_cards() -> void:
 	_clear_container(stats_cards)
 	for character in report.character_reports:
 		stats_cards.add_child(_make_stat_card(character))
+	stats_cards.alignment = BoxContainer.ALIGNMENT_CENTER
+	if stats_cards.get_child_count() == 1:
+		var solo_card := stats_cards.get_child(0) as Control
+		solo_card.custom_minimum_size = Vector2(720.0, 360.0)
+		solo_card.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		solo_card.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 
 
 func _make_stat_card(character: CharacterCombatReport) -> Control:
@@ -831,6 +905,11 @@ func _build_progression_cards() -> void:
 	_progress_rows.clear()
 	for character in report.character_reports:
 		progression_cards.add_child(_make_progression_card(character))
+	progression_cards.alignment = BoxContainer.ALIGNMENT_CENTER
+	if progression_cards.get_child_count() == 1:
+		var solo_card := progression_cards.get_child(0) as Control
+		solo_card.custom_minimum_size.x = 980.0
+		solo_card.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 
 
 func _make_progression_card(character: CharacterCombatReport) -> Control:
@@ -1295,6 +1374,39 @@ func _show_fatal_error(message: String) -> void:
 	stats_panel.hide()
 	progression_panel.hide()
 	rewards_panel.hide()
+
+
+func _update_phase_rail() -> void:
+	if not is_node_ready():
+		return
+	rail_result.text = "DÉCISION" if phase == Phase.ROOM_DECISION else "RÉSULTAT"
+	rail_reward.text = (
+		"— RELIQUE"
+		if GameManager.are_equipment_rewards_enabled() and not _final_room
+		else "— SORTIE"
+	)
+	var steps: Array[Label] = [
+		rail_result,
+		rail_report,
+		rail_progress,
+		rail_reward,
+	]
+	var active_index := 0
+	match phase:
+		Phase.COMBAT_STATS:
+			active_index = 1
+		Phase.PROGRESSION:
+			active_index = 2
+		Phase.REWARD_SELECTION, Phase.COMPLETED:
+			active_index = 3
+	for index in steps.size():
+		steps[index].theme_type_variation = (
+			&"PremiumEyebrow" if index == active_index else &"PremiumMuted"
+		)
+		steps[index].modulate = (
+			PremiumUI.SKIN.border_focus_color
+			if index == active_index else Color.WHITE
+		)
 
 
 func _clear_container(container: Container) -> void:

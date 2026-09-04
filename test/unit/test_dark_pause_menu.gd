@@ -139,6 +139,22 @@ func test_reusable_button_supports_dynamic_text_disabled_and_size() -> void:
 	assert_false(button.disabled)
 
 
+func test_reusable_button_resolves_a_theme_inherited_after_ready() -> void:
+	var host := Control.new()
+	var button := DarkMenuButton.new()
+	host.add_child(button)
+	add_child_autofree(host)
+	await get_tree().process_frame
+	var late_theme := Theme.new()
+	var late_hover := StyleBoxFlat.new()
+	late_hover.bg_color = Color("5c4328")
+	late_theme.set_stylebox(&"hover", &"Button", late_hover)
+	host.theme = late_theme
+	button.grab_focus()
+	await get_tree().process_frame
+	assert_same(button.get_theme_stylebox(&"normal"), late_hover)
+
+
 func test_menu_contains_exact_labels_and_only_real_actions_enabled() -> void:
 	var menu := await _spawn_menu()
 	var expected := {

@@ -10,6 +10,7 @@ artifacts/item_studio/*
 output/*
 !output/.gdignore
 tests/characters/**/screenshots/
+/data/runs/__g6_closure_e2e/
 *.blend1
 
 # Fichiers temporaires de l'éditeur (sauvegardes de scène en cours d'écriture)

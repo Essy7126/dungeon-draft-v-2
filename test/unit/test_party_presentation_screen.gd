@@ -105,13 +105,18 @@ func test_back_emits_and_frees_cards_previews_without_navigation() -> void:
 
 func test_title_has_one_primary_entry_and_quit() -> void:
 	var title = load("res://ui/TitreEcran.tscn").instantiate()
-	var buttons: Array = title.get_node("UI/Boutons").get_children()
+	var menu_items: Array = title.get_node("UI/Boutons").get_children()
+	assert_eq(menu_items.map(func(control): return control.name), [
+		&"MenuEyebrow", &"BoutonNouvellePartie", &"BoutonQuitter",
+	])
+	assert_eq((menu_items[0] as Label).text, "CHOISISSEZ VOTRE DESTIN")
+	var buttons := menu_items.filter(func(control): return control is Button)
 	assert_eq(buttons.map(func(button): return button.name), [
 		&"BoutonNouvellePartie", &"BoutonQuitter",
 	])
 	assert_eq(
 		buttons.map(func(button): return button.text),
-		["Nouvelle partie", "Quitter"],
+		["COMMENCER L’ODYSSÉE", "QUITTER"],
 	)
 	assert_eq(
 		title.get_script().get_script_constant_map()["START_HUB_SCENE_PATH"],

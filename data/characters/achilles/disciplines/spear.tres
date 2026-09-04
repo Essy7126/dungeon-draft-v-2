@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_modifier_type"]
 [ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_modifier"]
+[ext_resource type="Texture2D" path="res://asset/ui/progression/achilles_evolutions_v1/pointe_inexorable.png" id="6_inexorable"]
+[ext_resource type="Texture2D" path="res://asset/ui/progression/achilles_evolutions_v1/allonge_du_styx.png" id="7_allonge"]
 
 [sub_resource type="Resource" id="Rank1"]
 script = ExtResource("2_rank")
@@ -21,6 +23,8 @@ excluded_node_ids = Array[StringName]([&"achilles_spear_long_reach"])
 upgrade_id = &"achilles_spear_inexorable_point"
 display_name = "Pointe inexorable"
 description = "+4 dégâts. La lance choisit l’exécution plutôt que la distance."
+icon = ExtResource("6_inexorable")
+card_texture = ExtResource("6_inexorable")
 discipline_id = &"spear"
 rank = 2
 target_spell_id = &"achilles_spear_thrust"
@@ -38,6 +42,8 @@ excluded_node_ids = Array[StringName]([&"achilles_spear_inexorable_point"])
 upgrade_id = &"achilles_spear_long_reach"
 display_name = "Allonge du Styx"
 description = "+1 portée. Achille menace au-delà du contact immédiat."
+icon = ExtResource("7_allonge")
+card_texture = ExtResource("7_allonge")
 discipline_id = &"spear"
 rank = 2
 target_spell_id = &"achilles_spear_thrust"

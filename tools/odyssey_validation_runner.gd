@@ -120,9 +120,10 @@ func _exercise_real_hub_selection() -> RunData:
 		await _settle(2)
 	panel.run_selector.select(2)
 	panel._on_run_selected(2)
-	if panel.run_selector.get_item_text(2) != "L'Odyssée" \
-			or panel.room_selector.item_count != 3:
-		_fail("La sélection hub de L'Odyssée ou ses trois salles est invalide.")
+	if panel.run_selector.get_item_text(2) != RUN.run_name \
+			or panel.room_selector.item_count != 1 \
+			or panel.room_selector.get_selected_id() != RUN.hub_forced_start_room_index:
+		_fail("La sélection Catabase ou son départ imposé en salle I est invalide.")
 	for viewport_size in VIEWPORT_SIZES:
 		get_window().size = viewport_size
 		await _settle(3)
@@ -265,21 +266,31 @@ func _exercise_post_combat_and_result_captures() -> void:
 		guard += 1
 		screen.advance_or_skip()
 		await _settle(2)
-	var post_combat_passed := (
+	var reward_options := GameManager.get_post_combat_reward_options()
+	var progression_passed := (
 		screen.get_phase_name() == &"PROGRESSION"
 		and screen.get_reward_card_count() == 0
-		and GameManager.get_post_combat_reward_options().is_empty()
-		and screen.continue_button.text == "PASSER À LA SALLE SUIVANTE"
-		and not screen.status_label.text.contains("équipement sécurisé")
+		and reward_options.size() == 2
+		and screen.continue_button.text == "CHOISIR UNE RELIQUE"
+	)
+	guard = 0
+	while screen.get_phase_name() != &"REWARD_SELECTION" and guard < 8:
+		guard += 1
+		screen.advance_or_skip()
+		await _settle(2)
+	var reward_passed := (
+		screen.get_phase_name() == &"REWARD_SELECTION"
+		and screen.get_reward_card_count() == 2
 	)
 	var post_combat_phase := str(screen.get_phase_name())
 	var post_combat_button := screen.continue_button.text
+	var reward_card_count := screen.get_reward_card_count()
 	for viewport_size in VIEWPORT_SIZES:
 		get_window().size = viewport_size
 		screen.apply_viewport_size_for_test(viewport_size)
 		await _settle(3)
 		await _capture(
-			"post_combat_no_reward_%dx%d.png" % [
+			"post_combat_relic_choice_%dx%d.png" % [
 				viewport_size.x, viewport_size.y,
 			]
 		)
@@ -297,7 +308,7 @@ func _exercise_post_combat_and_result_captures() -> void:
 	) as Label
 	var result_passed := (
 		result_label.text == "Victoire"
-		and run_name_label.text.contains("L'Odyssée")
+		and run_name_label.text.contains(RUN.run_name)
 	)
 	var result_text := result_label.text
 	var run_name_text := run_name_label.text
@@ -314,14 +325,14 @@ func _exercise_post_combat_and_result_captures() -> void:
 	_report.post_combat_and_result = {
 		"post_combat_phase": post_combat_phase,
 		"continue_button": post_combat_button,
-		"reward_card_count": 0,
-		"reward_options_seen": 0,
+		"reward_card_count": reward_card_count,
+		"reward_options_seen": reward_options.size(),
 		"result_label": result_text,
 		"run_name_label": run_name_text,
-		"passed": post_combat_passed and result_passed,
+		"passed": progression_passed and reward_passed and result_passed,
 	}
 	if not _report.post_combat_and_result.passed:
-		_fail("Le post-combat sans récompense ou le résultat final est invalide.")
+		_fail("Le choix de relique post-combat ou le résultat final est invalide.")
 
 
 func _exercise_forced_transitions(
@@ -334,6 +345,7 @@ func _exercise_forced_transitions(
 	)
 	var completed_rooms := 0
 	var reward_options_seen := 0
+	var relics_claimed := 0
 	if prepared:
 		for room_index in range(run_data.rooms.size()):
 			manager.current_room_index = room_index
@@ -341,16 +353,31 @@ func _exercise_forced_transitions(
 			manager.begin_combat_report()
 			manager.on_battle_won()
 			var report := manager.get_current_combat_report()
-			reward_options_seen += manager.get_post_combat_reward_options().size()
-			if report == null \
-					or manager.can_claim_post_combat_equipment(report.report_id) \
+			var options := manager.get_post_combat_reward_options()
+			reward_options_seen += options.size()
+			if report == null:
+				break
+			if room_index < run_data.rooms.size() - 1:
+				if options.size() != 2:
+					break
+				var reward_result := manager.confirm_post_combat_equipment(
+					StringName(options[0].get("item_id", &"")),
+					&"",
+				)
+				if not reward_result.get("success", false):
+					break
+				relics_claimed += 1
+			elif not options.is_empty():
+				break
+			if manager.can_claim_post_combat_equipment(report.report_id) \
 					or not manager.complete_post_combat_transition(report.report_id):
 				break
 			completed_rooms += 1
 	var result := manager.get_last_run_result()
 	var victory_passed := prepared \
 		and completed_rooms == 3 \
-		and reward_options_seen == 0 \
+		and reward_options_seen == 4 \
+		and relics_claimed == 2 \
 		and bool(result.get("victory", false))
 	manager.cleanup_run_state()
 	var defeat_prepared: bool = manager._prepare_preconfigured_run(
@@ -368,6 +395,7 @@ func _exercise_forced_transitions(
 		"prepared": prepared,
 		"completed_rooms": completed_rooms,
 		"reward_options_seen": reward_options_seen,
+		"relics_claimed": relics_claimed,
 		"run_result": result,
 		"defeat_prepared": defeat_prepared,
 		"defeat_result": defeat_result,

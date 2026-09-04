@@ -1305,9 +1305,9 @@ func confirm_post_combat_equipment(
 				if final_room else "ROOM_REWARD_UNAVAILABLE"
 			),
 			"error": (
-				"La salle finale ne distribue pas d'équipement."
+				"La salle finale ne distribue pas de récompense."
 				if final_room else (
-					"Sécurisez la sortie de la salle avant de choisir l'équipement."
+					"Sécurisez la sortie de la salle avant de choisir une récompense."
 				)
 			),
 		}

@@ -1194,6 +1194,7 @@ func _exercise_forced_transitions_and_result(hero_sources: Array) -> void:
 	var prepared: bool = manager._prepare_preconfigured_run(RUN, hero_sources)
 	var completed_rooms := 0
 	var reward_options_seen := 0
+	var relics_claimed := 0
 	if prepared:
 		for room_index in range(RUN.rooms.size()):
 			manager.current_room_index = room_index
@@ -1201,9 +1202,23 @@ func _exercise_forced_transitions_and_result(hero_sources: Array) -> void:
 			manager.begin_combat_report()
 			manager.on_battle_won()
 			var report = manager.get_current_combat_report()
-			reward_options_seen += manager.get_post_combat_reward_options().size()
-			if report == null \
-					or manager.can_claim_post_combat_equipment(report.report_id) \
+			var options := manager.get_post_combat_reward_options()
+			reward_options_seen += options.size()
+			if report == null:
+				break
+			if room_index < RUN.rooms.size() - 1:
+				if options.size() != 2:
+					break
+				var reward_result := manager.confirm_post_combat_equipment(
+					StringName(options[0].get("item_id", &"")),
+					&"",
+				)
+				if not reward_result.get("success", false):
+					break
+				relics_claimed += 1
+			elif not options.is_empty():
+				break
+			if manager.can_claim_post_combat_equipment(report.report_id) \
 					or not manager.complete_post_combat_transition(report.report_id):
 				break
 			completed_rooms += 1
@@ -1211,7 +1226,8 @@ func _exercise_forced_transitions_and_result(hero_sources: Array) -> void:
 	var passed := (
 		prepared
 		and completed_rooms == RUN.rooms.size()
-		and reward_options_seen == 0
+		and reward_options_seen == 4
+		and relics_claimed == 2
 		and bool(result.get("victory", false))
 	)
 	_report.forced_transitions = {
@@ -1220,6 +1236,7 @@ func _exercise_forced_transitions_and_result(hero_sources: Array) -> void:
 		"prepared": prepared,
 		"completed_rooms": completed_rooms,
 		"reward_options_seen": reward_options_seen,
+		"relics_claimed": relics_claimed,
 		"result": result,
 		"passed": passed,
 	}

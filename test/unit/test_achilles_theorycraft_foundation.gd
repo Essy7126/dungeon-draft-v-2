@@ -125,7 +125,12 @@ func test_snapshot_matches_odyssey_rooms() -> void:
 		{"item_id": "minor_healing_potion", "quantity": 2},
 		{"item_id": "minor_action_scroll", "quantity": 1},
 	])
-	assert_false(snapshot.odyssey.equipment_rewards_enabled)
+	assert_true(snapshot.odyssey.equipment_rewards_enabled)
+	assert_true(snapshot.odyssey.rewards.equipment_enabled)
+	assert_eq(
+		snapshot.odyssey.rewards.equipment_pool_tag,
+		str(FirstRunEquipmentRewardService.POOL_TAG),
+	)
 
 
 func test_snapshot_matches_odyssey_enemies() -> void:

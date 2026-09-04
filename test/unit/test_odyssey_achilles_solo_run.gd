@@ -230,6 +230,18 @@ func test_odyssey_victory_defeat_relaunch_and_trio_switches_are_clean() -> void:
 		var report := manager.get_current_combat_report()
 		assert_not_null(report)
 		assert_true(report.victory)
+		if room_index < run.rooms.size() - 1:
+			var options := manager.get_post_combat_reward_options()
+			assert_eq(options.size(), 2)
+			var reward_result := manager.confirm_post_combat_equipment(
+				StringName(options[0].get("item_id", &"")),
+				&"",
+			)
+			assert_true(reward_result.get("success", false), str(reward_result))
+			assert_eq(reward_result.get("target_character_id"), &"")
+		else:
+			assert_false(manager.can_claim_post_combat_equipment(report.report_id))
+			assert_true(manager.get_post_combat_reward_options().is_empty())
 		assert_true(manager.complete_post_combat_transition(report.report_id))
 	assert_true(bool(manager.get_last_run_result().get("victory", false)))
 	assert_eq(manager.get_last_run_result().get("run_name"), "Catabase")
@@ -414,14 +426,18 @@ func test_sweep_hits_and_pushes_only_cardinal_adjacent_enemies() -> void:
 	assert_eq(achilles.current_ap, 3)
 
 
-func test_odyssey_economy_has_only_three_consumables_and_no_reward_deck() -> void:
+func test_odyssey_economy_starts_with_consumables_and_offers_relics() -> void:
 	var run := _run()
 	assert_not_null(run.economy_profile)
-	assert_false(run.economy_profile.equipment_rewards_enabled)
+	assert_true(run.economy_profile.equipment_rewards_enabled)
+	assert_eq(
+		run.economy_profile.equipment_reward_pool_tag,
+		FirstRunEquipmentRewardService.POOL_TAG,
+	)
 	var resolved := RunHeroResolver.resolve_runtime_hero_data(run, false)
 	var manager = GameManagerScript.new()
 	assert_true(manager._prepare_preconfigured_run(run, resolved.heroes))
-	assert_false(manager.are_equipment_rewards_enabled())
+	assert_true(manager.are_equipment_rewards_enabled())
 	assert_same(manager.get_active_economy_profile(), run.economy_profile)
 	var quantities := _inventory_quantities(manager.get_run_inventory())
 	assert_eq(quantities, {
@@ -435,14 +451,61 @@ func test_odyssey_economy_has_only_three_consumables_and_no_reward_deck() -> voi
 		assert_not_null(definition)
 		assert_false(definition.is_equippable())
 	var reward_snapshot := manager.get_equipment_reward_deck_snapshot()
-	assert_true((reward_snapshot.get("deck", []) as Array).is_empty())
-	assert_true((reward_snapshot.get("eligible_ids", []) as Array).is_empty())
+	assert_eq((reward_snapshot.get("deck", []) as Array).size(), 8)
+	assert_eq((reward_snapshot.get("eligible_ids", []) as Array).size(), 8)
+	assert_true((reward_snapshot.get("offered_ids", []) as Array).is_empty())
 	manager.current_room_index = 0
 	manager.begin_combat_report()
 	manager.on_battle_won()
 	var report_id: StringName = manager.get_current_combat_report().report_id
-	assert_true(manager.get_post_combat_reward_options().is_empty())
+	assert_true(manager.can_claim_post_combat_equipment(report_id))
+	var options := manager.get_post_combat_reward_options()
+	assert_eq(options.size(), 2)
+	assert_ne(options[0].get("item_id"), options[1].get("item_id"))
+	for option in options:
+		var definition := option.get("definition") as ItemDefinition
+		assert_not_null(definition)
+		assert_true(definition.is_relic())
+		assert_true((option.get("compatible_character_ids", []) as Array).is_empty())
+	var selected_id := StringName(options[0].get("item_id", &""))
+	assert_true(manager.select_post_combat_equipment(selected_id))
+	assert_eq(manager.get_selected_post_combat_equipment(), selected_id)
+	var empty_slots_before := manager.get_run_inventory().get_empty_slot_count()
+	var reward_result := manager.confirm_post_combat_equipment(selected_id, &"")
+	assert_true(reward_result.get("success", false), str(reward_result))
+	assert_eq(reward_result.get("item_id"), selected_id)
+	assert_eq(reward_result.get("target_character_id"), &"")
+	assert_false(reward_result.get("equipped", true))
+	assert_eq(
+		manager.get_run_inventory().get_empty_slot_count(),
+		empty_slots_before - 1,
+	)
+	assert_true(manager.complete_post_combat_transition(report_id))
+	manager.cleanup_run_state()
+	manager.free()
+
+
+func test_odyssey_final_room_keeps_the_no_relic_reward_rule() -> void:
+	var run := _run()
+	var resolved := RunHeroResolver.resolve_runtime_hero_data(run, false)
+	var manager = GameManagerScript.new()
+	assert_true(manager._prepare_preconfigured_run(run, resolved.heroes))
+	manager.current_room_index = run.rooms.size() - 1
+	var deck_before := manager.get_equipment_reward_deck_snapshot()
+	manager.begin_combat_report()
+	manager.on_battle_won()
+	var report_id: StringName = manager.get_current_combat_report().report_id
 	assert_false(manager.can_claim_post_combat_equipment(report_id))
+	assert_true(manager.get_post_combat_reward_options().is_empty())
+	assert_false(manager.select_post_combat_equipment(&"cendres_du_phenix"))
+	assert_eq(
+		manager.confirm_post_combat_equipment(
+			&"cendres_du_phenix",
+			&"",
+		).get("error_code"),
+		"FINAL_ROOM_HAS_NO_REWARD",
+	)
+	assert_eq(manager.get_equipment_reward_deck_snapshot(), deck_before)
 	assert_true(manager.complete_post_combat_transition(report_id))
 	manager.cleanup_run_state()
 	manager.free()
@@ -467,6 +530,15 @@ func test_catabase_disciplines_offer_one_signature_evolution_each() -> void:
 	)
 	assert_true(pending.all(func(choice): return choice["choices"].size() == 2))
 	for choice in pending:
+		for upgrade_value in (choice["choices"] as Array):
+			var upgrade := upgrade_value as SkillUpgradeData
+			assert_not_null(upgrade.icon, str(upgrade.upgrade_id))
+			assert_not_null(upgrade.card_texture, str(upgrade.upgrade_id))
+			assert_same(
+				upgrade.get_card_texture(),
+				upgrade.card_texture,
+				str(upgrade.upgrade_id),
+			)
 		var selected = choice["choices"][0]
 		assert_true(manager.choose_progression_upgrade(
 			&"achilles",
@@ -620,7 +692,7 @@ func test_odyssey_rooms_encounters_and_progression_are_isolated() -> void:
 		assert_eq(audit.get("progression_shared_count"), 0, other_path)
 
 
-func test_odyssey_never_mutates_or_consumes_the_main_reward_deck() -> void:
+func test_odyssey_reward_deck_is_scoped_and_main_restarts_cleanly() -> void:
 	var manager = GameManagerScript.new()
 	var main := load(MAIN_PATH) as RunData
 	var main_resolution := RunHeroResolver.resolve_runtime_hero_data(main, false)
@@ -638,8 +710,23 @@ func test_odyssey_never_mutates_or_consumes_the_main_reward_deck() -> void:
 		odyssey, odyssey_resolution.heroes
 	))
 	var during := manager.get_equipment_reward_deck_snapshot()
-	assert_true((during.get("deck", []) as Array).is_empty())
+	assert_eq((during.get("deck", []) as Array).size(), 8)
+	assert_eq((during.get("eligible_ids", []) as Array).size(), 8)
 	assert_true((during.get("offered_ids", []) as Array).is_empty())
+	manager.current_room_index = 0
+	manager.begin_combat_report()
+	manager.on_battle_won()
+	var options := manager.get_post_combat_reward_options()
+	assert_eq(options.size(), 2)
+	var odyssey_reward := manager.confirm_post_combat_equipment(
+		StringName(options[0].get("item_id", &"")),
+		&"",
+	)
+	assert_true(odyssey_reward.get("success", false), str(odyssey_reward))
+	var consumed := manager.get_equipment_reward_deck_snapshot()
+	assert_eq((consumed.get("deck", []) as Array).size(), 6)
+	assert_eq((consumed.get("offered_ids", []) as Array).size(), 2)
+	assert_eq((consumed.get("discarded_ids", []) as Array).size(), 1)
 
 	assert_true(manager._prepare_preconfigured_run(
 		main, main_resolution.heroes

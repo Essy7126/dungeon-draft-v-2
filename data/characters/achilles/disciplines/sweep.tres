@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
 [ext_resource type="Script" path="res://core/spell_modifier.gd" id="4_modifier_type"]
 [ext_resource type="Script" path="res://core/spell_mods/spell_mod_skill_tree_effect.gd" id="5_modifier"]
+[ext_resource type="Texture2D" path="res://asset/ui/progression/achilles_evolutions_v1/horizon_brise.png" id="6_horizon"]
+[ext_resource type="Texture2D" path="res://asset/ui/progression/achilles_evolutions_v1/cercle_de_bronze.png" id="7_cercle"]
 
 [sub_resource type="Resource" id="Rank1"]
 script = ExtResource("2_rank")
@@ -22,6 +24,8 @@ excluded_node_ids = Array[StringName]([&"achilles_sweep_bronze_circle"])
 upgrade_id = &"achilles_sweep_broken_horizon"
 display_name = "Horizon brisé"
 description = "+1 case de poussée. Le Balayage devient un outil de terrain."
+icon = ExtResource("6_horizon")
+card_texture = ExtResource("6_horizon")
 discipline_id = &"sweep"
 rank = 2
 target_spell_id = &"achilles_sweep"
@@ -38,6 +42,8 @@ excluded_node_ids = Array[StringName]([&"achilles_sweep_broken_horizon"])
 upgrade_id = &"achilles_sweep_bronze_circle"
 display_name = "Cercle de bronze"
 description = "+4 dégâts. Le Balayage devient une exécution rapprochée."
+icon = ExtResource("7_cercle")
+card_texture = ExtResource("7_cercle")
 discipline_id = &"sweep"
 rank = 2
 target_spell_id = &"achilles_sweep"

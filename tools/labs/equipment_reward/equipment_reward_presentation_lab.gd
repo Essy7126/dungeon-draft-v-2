@@ -3,10 +3,9 @@ extends Control
 
 const CATALOG := preload("res://data/items/catalogs/default_item_catalog.tres")
 const REWARD_IDS := [
-	&"anneau_faille", &"arc_maudit", &"broche", &"caillou",
-	&"cape_brume", &"collier_sages", &"couronne", &"excalibur",
-	&"hache_executeur", &"harnois", &"manteau_givre",
-	&"matraque_troll", &"prisme_elementaire", &"sceau",
+	&"cendres_du_phenix", &"chaines_de_promethee",
+	&"croc_de_cerbere", &"fureur_d_ares", &"lyre_d_orphee",
+	&"plume_de_nike", &"sablier_de_chronos", &"sandales_d_hermes",
 ]
 
 @export var show_debug_controls := true
@@ -15,8 +14,8 @@ const REWARD_IDS := [
 @onready var toolbar: PanelContainer = %Toolbar
 @onready var status_label: Label = %StatusLabel
 
-var first_index := 1
-var second_index := 7
+var first_index := 0
+var second_index := 5
 var reduced_motion := false
 var inventory_full := false
 var missing_texture := false

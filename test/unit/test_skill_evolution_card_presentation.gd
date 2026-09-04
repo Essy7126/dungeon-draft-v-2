@@ -22,6 +22,12 @@ const ARCHER_CARD_UPGRADE_PATHS := [
 	"res://data/characters/elf/upgrades/tactical_retreat.tres",
 	"res://data/characters/elf/upgrades/transpiercing_bolt.tres",
 ]
+const ACHILLES_DISCIPLINE_PATHS := [
+	"res://data/characters/achilles/disciplines/spear.tres",
+	"res://data/characters/achilles/disciplines/advance.tres",
+	"res://data/characters/achilles/disciplines/sweep.tres",
+	"res://data/characters/achilles/disciplines/guard.tres",
+]
 
 
 func _upgrade(file_name: String) -> SkillUpgradeData:
@@ -62,6 +68,20 @@ func _overlay() -> SkillEvolutionOverlay:
 	return overlay
 
 
+func _achilles_upgrades() -> Array[SkillUpgradeData]:
+	var result: Array[SkillUpgradeData] = []
+	for resource_path in ACHILLES_DISCIPLINE_PATHS:
+		var discipline := load(resource_path) as DisciplineData
+		assert_not_null(discipline, resource_path)
+		for rank in discipline.ranks:
+			if rank == null:
+				continue
+			for upgrade in rank.choices:
+				if upgrade != null:
+					result.append(upgrade)
+	return result
+
+
 func test_elf_archer_assets_are_bound_to_every_generated_card() -> void:
 	for resource_path in ARCHER_CARD_UPGRADE_PATHS:
 		var upgrade := load(resource_path) as SkillUpgradeData
@@ -71,6 +91,70 @@ func test_elf_archer_assets_are_bound_to_every_generated_card() -> void:
 	var missing_asset := _upgrade("open_breach")
 	assert_not_null(missing_asset)
 	assert_null(missing_asset.get_card_texture())
+
+
+func test_odyssey_evolution_assets_are_bound_cropped_and_import_bounded() -> void:
+	var upgrades := _achilles_upgrades()
+	assert_eq(upgrades.size(), 8)
+	for upgrade in upgrades:
+		var texture := upgrade.get_card_texture()
+		assert_not_null(texture, str(upgrade.upgrade_id))
+		assert_true(
+			str(texture.resource_path).begins_with(
+				"res://asset/ui/progression/achilles_evolutions_v1/"
+			),
+			str(upgrade.upgrade_id),
+		)
+		assert_has(
+			SkillEvolutionCard.ARTWORK_CROP_REGIONS,
+			texture.resource_path,
+			str(upgrade.upgrade_id),
+		)
+		assert_lte(texture.get_width(), 768, str(upgrade.upgrade_id))
+		assert_lte(texture.get_height(), 768, str(upgrade.upgrade_id))
+	var spear_upgrades := upgrades.filter(func(value: SkillUpgradeData) -> bool:
+		return value.discipline_id == &"spear"
+	)
+	assert_eq(spear_upgrades.size(), 2)
+	var overlay := _overlay()
+	await get_tree().process_frame
+	var request := EvolutionRequest.create(
+		&"achilles", &"spear", 2, &"achilles_spear_thrust", 1, &"odyssey_art_crop"
+	)
+	var choice := {
+		"character_id": &"achilles",
+		"character_name": "Achille",
+		"discipline_id": &"spear",
+		"discipline_name": "Lance",
+		"rank": 2,
+		"choices": spear_upgrades,
+	}
+	assert_true(overlay.present(request, choice, true))
+	await get_tree().process_frame
+	for card_index in 2:
+		var cropped := overlay.get_card(card_index).card_texture.texture
+		assert_true(cropped is AtlasTexture)
+		assert_same((cropped as AtlasTexture).atlas, spear_upgrades[card_index].card_texture)
+
+
+func test_reused_cards_reset_confirmation_translation_before_next_choice() -> void:
+	var overlay := _overlay()
+	await get_tree().process_frame
+	var first := _upgrade("eagle_eye")
+	var second := _upgrade("repel_arrow")
+	assert_true(overlay.present(_request(), _choice(2, first, second), true))
+	assert_true(overlay.select_upgrade_by_id(first.upgrade_id))
+	assert_true(overlay.request_confirmation())
+	overlay.resolve_confirmation(true)
+	await overlay.confirmation_finished
+	assert_gt(overlay.get_card(1).visual_root.position.x, 50.0)
+	assert_lt(overlay.get_card(1).modulate.a, 0.1)
+	assert_true(overlay.present(_request(), _choice(2, first, second), true))
+	await get_tree().process_frame
+	for card_index in 2:
+		var card := overlay.get_card(card_index)
+		assert_almost_eq(card.visual_root.position.x, 0.0, 0.01)
+		assert_almost_eq(card.modulate.a, 1.0, 0.01)
 
 
 func test_overlay_requires_two_cards_and_separates_hover_selection_and_confirmation() -> void:
@@ -135,9 +219,53 @@ func test_overlay_cards_remain_inside_common_run_resolutions() -> void:
 		var snapshot := overlay.get_visual_snapshot()
 		var overlay_rect := snapshot.get("overlay_rect") as Rect2
 		var card_rects := snapshot.get("card_rects") as Array
+		var card_layouts := snapshot.get("card_layouts") as Array
 		assert_eq(card_rects.size(), 2)
+		assert_eq(card_layouts.size(), 2)
 		assert_true(overlay_rect.encloses(card_rects[0]), str(viewport_size))
 		assert_true(overlay_rect.encloses(card_rects[1]), str(viewport_size))
 		assert_false((card_rects[0] as Rect2).intersects(card_rects[1]), str(viewport_size))
+		for layout in card_layouts:
+			var card_global := layout.get("card_global") as Rect2
+			assert_true(card_global.encloses(layout.get("art_global") as Rect2), str(viewport_size))
+			assert_true(card_global.encloses(layout.get("title_global") as Rect2), str(viewport_size))
+			assert_true(card_global.encloses(layout.get("description_global") as Rect2), str(viewport_size))
+			assert_true(card_global.encloses(layout.get("rank_global") as Rect2), str(viewport_size))
+		if viewport_size == Vector2(1280, 720):
+			assert_true(bool(card_layouts[0].get("compact_mode")))
+			assert_lte(float(card_layouts[0].get("art_minimum_height")), 170.0)
+			assert_gte(float(card_layouts[0].get("description_minimum_height")), 68.0)
+			assert_gte(int(card_layouts[0].get("description_font_size")), 12)
+		elif viewport_size == Vector2(2560, 1440):
+			assert_false(bool(card_layouts[0].get("compact_mode")))
+			assert_gt(float(card_layouts[0].get("presentation_scale")), 1.0)
+			assert_gte((snapshot.get("card_sizes") as Array)[0].y, 700.0)
+			assert_gte(int(card_layouts[0].get("description_font_size")), 15)
 		overlay.queue_free()
 		await get_tree().process_frame
+
+
+func test_selection_badge_sits_on_art_and_never_masks_the_eyebrow() -> void:
+	var overlay := _overlay()
+	await get_tree().process_frame
+	var first := _upgrade("eagle_eye")
+	assert_true(overlay.present(
+		_request(),
+		_choice(2, first, _upgrade("repel_arrow")),
+		true,
+	))
+	overlay.apply_viewport_size_for_test(Vector2(1280, 720))
+	assert_true(overlay.select_upgrade_by_id(first.upgrade_id))
+	await get_tree().process_frame
+	var layout := overlay.get_card(0).get_layout_snapshot()
+	assert_true(bool(layout.get("compact_mode")))
+	assert_false(
+		(layout.get("selection_badge_global") as Rect2).intersects(
+			layout.get("eyebrow_global") as Rect2
+		)
+	)
+	assert_true(
+		(layout.get("art_global") as Rect2).encloses(
+			layout.get("selection_badge_global") as Rect2
+		)
+	)

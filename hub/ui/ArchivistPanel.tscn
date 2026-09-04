@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://hub/ui/archivist_panel.gd" id="1_panel"]
+[ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="2_ornament"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
 bg_color = Color(0.035, 0.045, 0.065, 0.97)
@@ -33,7 +34,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-color = Color(0, 0, 0, 0.28)
+color = Color(0.008, 0.007, 0.01, 0.72)
 
 [node name="Panel" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -48,7 +49,18 @@ offset_right = 250.0
 offset_bottom = 295.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBox_panel")
+theme_type_variation = &"PremiumScreen"
+
+[node name="Ornament" type="Control" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_ornament")
+variant = "screen"
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 layout_mode = 2
@@ -64,13 +76,13 @@ theme_override_constants/separation = 18
 [node name="Title" type="Label" parent="Panel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.8, 0.46, 1)
-theme_override_font_sizes/font_size = 30
+theme_type_variation = &"PremiumTitle"
 text = "Lanternbound Archivist"
 horizontal_alignment = 1
 
 [node name="Separator" type="HSeparator" parent="Panel/Margin/Content"]
 layout_mode = 2
+theme_type_variation = &"PremiumSeparator"
 
 [node name="MainMenu" type="VBoxContainer" parent="Panel/Margin/Content"]
 unique_name_in_owner = true
@@ -81,24 +93,28 @@ theme_override_constants/separation = 12
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
+theme_type_variation = &"PremiumButton"
 text = "Parler"
 
 [node name="TradeButton" type="Button" parent="Panel/Margin/Content/MainMenu"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
+theme_type_variation = &"PremiumButton"
 text = "Échanger"
 
 [node name="RunButton" type="Button" parent="Panel/Margin/Content/MainMenu"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
+theme_type_variation = &"PremiumPrimaryButton"
 text = "Commencer la run"
 
 [node name="LeaveButton" type="Button" parent="Panel/Margin/Content/MainMenu"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
+theme_type_variation = &"PremiumQuietButton"
 text = "Partir"
 
 [node name="DialogueView" type="VBoxContainer" parent="Panel/Margin/Content"]
@@ -111,7 +127,7 @@ theme_override_constants/separation = 18
 unique_name_in_owner = true
 custom_minimum_size = Vector2(420, 220)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_type_variation = &"PremiumBody"
 text = "Dialogue"
 autowrap_mode = 2
 vertical_alignment = 1
@@ -120,6 +136,7 @@ vertical_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
+theme_type_variation = &"PremiumButton"
 text = "Retour"
 
 [node name="RoomSelectionView" type="VBoxContainer" parent="Panel/Margin/Content"]
@@ -131,7 +148,7 @@ theme_override_constants/separation = 18
 [node name="RoomSelectionPrompt" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
 custom_minimum_size = Vector2(420, 64)
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_type_variation = &"PremiumSubtitle"
 text = "Choisis ton parcours."
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -141,11 +158,12 @@ autowrap_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
+theme_type_variation = &"PremiumOptionButton"
 
 [node name="RoomSelectionLabel" type="Label" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"PremiumEyebrow"
 text = "Salle de départ"
 horizontal_alignment = 1
 
@@ -153,15 +171,18 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
+theme_type_variation = &"PremiumOptionButton"
 
 [node name="ConfirmRunButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
+theme_type_variation = &"PremiumPrimaryButton"
 text = "Lancer la run"
 
 [node name="RoomBackButton" type="Button" parent="Panel/Margin/Content/RoomSelectionView"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
+theme_type_variation = &"PremiumButton"
 text = "Retour"

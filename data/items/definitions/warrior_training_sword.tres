@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bex4v32kexmii" path="res://data/items/item_stat_modifier_data.gd" id="2_modifier"]
 [ext_resource type="Script" uid="uid://m0ak4pxklwkk" path="res://core/spell_modifier.gd" id="3_1pt42"]
 [ext_resource type="Texture2D" uid="uid://bcrswtltewnvb" path="res://asset/ui/character_hud/refined/utility_inventory.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://asset/ui/items/basics_premium_v1/epee_entrainement.png" id="premium_icon"]
 
 [sub_resource type="Resource" id="Resource_attack"]
 script = ExtResource("2_modifier")
@@ -17,6 +18,7 @@ item_id = &"warrior_training_sword"
 display_name = "Épée d’entraînement"
 description = "Une lame équilibrée qui augmente l’attaque du Guerrier de 3."
 icon = ExtResource("3_icon")
+inventory_icon = ExtResource("premium_icon")
 tags = Array[StringName]([&"weapon", &"one_handed"])
 category = 0
 equipment_slot = 0

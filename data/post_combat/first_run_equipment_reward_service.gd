@@ -58,10 +58,11 @@ func build_options(
 	if _options_by_report.has(report.report_id):
 		return (_options_by_report[report.report_id] as Array).duplicate(true)
 	var owned := _owned_definition_ids(character_states, inventory)
+	var chosen := _chosen_definition_ids()
 	var available: Array[StringName] = []
 	for candidate in _deck:
 		var definition := _catalog.get_definition(candidate)
-		if owned.has(candidate) or _offered_ids.has(candidate) \
+		if owned.has(candidate) or chosen.has(candidate) or _offered_ids.has(candidate) \
 				or definition == null \
 				or (not definition.is_relic() and _compatible_character_ids(definition, character_states).is_empty()):
 			continue
@@ -82,15 +83,18 @@ func build_options(
 				second_id = candidate
 				break
 		selected.append(second_id)
-	# Fallback defensif : il ne produit jamais deux fois le meme ID et filtre
-	# tout objet inutilisable par le trio.
+	# Les objets refuses restent hors de la pioche tant que celle-ci suffit a
+	# produire deux choix frais. Une fois ce seuil franchi, ils completent
+	# l'offre dans leur ordre de refus, ce qui preserve le determinisme sans
+	# reintroduire une relique possedee, choisie ou deja en attente.
 	if selected.size() < 2:
-		for candidate in _eligible_ids:
+		var pending := _pending_option_ids()
+		for candidate in _discarded_ids:
 			if selected.size() >= 2:
 				break
 			var definition := _catalog.get_definition(candidate)
 			if selected.has(candidate) or owned.has(candidate) \
-					or _offered_ids.has(candidate) \
+					or chosen.has(candidate) or pending.has(candidate) \
 					or definition == null \
 					or (not definition.is_relic() and _compatible_character_ids(definition, character_states).is_empty()):
 				continue
@@ -128,12 +132,12 @@ func apply(
 	if report == null or not report.finalized or not report.victory:
 		return _failure("COMBAT_REPORT_INVALID", "Rapport de victoire indisponible.")
 	if _applied_report_ids.has(report.report_id):
-		return _failure("REWARD_ALREADY_APPLIED", "Un équipement a déjà été attribué.")
+		return _failure("REWARD_ALREADY_APPLIED", "Une récompense a déjà été attribuée.")
 	var options := _options_by_report.get(report.report_id, []) as Array
 	if not options.any(func(option):
 		return StringName((option as Dictionary).get("item_id", &"")) == item_id
 	):
-		return _failure("REWARD_OPTION_INVALID", "Cet équipement n'est pas proposé.")
+		return _failure("REWARD_OPTION_INVALID", "Cette récompense n'est pas proposée.")
 	var definition := _catalog.get_definition(item_id) if _catalog != null else null
 	if definition != null and definition.is_relic():
 		character_id = &""
@@ -147,7 +151,7 @@ func apply(
 	var state := _find_state(character_states, character_id)
 	if definition == null or (not definition.is_relic() and (state == null or state.unit == null)) \
 			or (not definition.is_relic() and not definition.is_compatible_with(character_id)):
-		return _failure("CHARACTER_INCOMPATIBLE", "Ce héros ne peut pas utiliser cet équipement.")
+		return _failure("CHARACTER_INCOMPATIBLE", "Ce héros ne peut pas recevoir cette récompense.")
 	if inventory == null:
 		return _failure("EQUIPMENT_STATE_INVALID", "Inventaire indisponible.")
 	var added := inventory.try_add(item_id, 1)
@@ -161,6 +165,7 @@ func apply(
 	var instance_id := StringName(instance_ids[0])
 	_applied_report_ids[report.report_id] = true
 	_selected_by_report[report.report_id] = item_id
+	_discarded_ids.erase(item_id)
 	for option_value in options:
 		var option := option_value as Dictionary
 		var offered_id := StringName(option.get("item_id", &""))
@@ -333,6 +338,27 @@ func _owned_definition_ids(
 		for instance in state.equipment_loadout.get_equipped_items():
 			if instance != null:
 				result[instance.definition_id] = true
+	return result
+
+
+func _chosen_definition_ids() -> Dictionary:
+	var result := {}
+	for report_id in _selected_by_report:
+		var item_id := StringName(_selected_by_report[report_id])
+		if item_id != &"":
+			result[item_id] = true
+	return result
+
+
+func _pending_option_ids() -> Dictionary:
+	var result := {}
+	for report_id in _options_by_report:
+		if _applied_report_ids.has(report_id):
+			continue
+		for option_value in _options_by_report[report_id] as Array:
+			var item_id := StringName((option_value as Dictionary).get("item_id", &""))
+			if item_id != &"":
+				result[item_id] = true
 	return result
 
 

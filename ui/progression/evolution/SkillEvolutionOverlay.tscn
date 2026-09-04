@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://ui/progression/evolution/skill_evolution_overlay.gd" id="1_script"]
 [ext_resource type="Shader" path="res://ui/post_combat/shaders/post_combat_background.gdshader" id="2_background"]
 [ext_resource type="PackedScene" path="res://ui/progression/evolution/SkillEvolutionCard.tscn" id="3_card"]
+[ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="4_ornament"]
 
 [sub_resource type="ShaderMaterial" id="BackgroundMaterial"]
 shader = ExtResource("2_background")
@@ -28,35 +29,76 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
-color = Color(1, 1, 1, 1)
+color = Color(0.56, 0.46, 0.36, 1)
 
-[node name="TitleLabel" type="Label" parent="."]
-unique_name_in_owner = true
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.008, 0.006, 0.009, 0.48)
+
+[node name="TopHeader" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 24.0
-offset_bottom = 68.0
+offset_top = 18.0
+offset_bottom = 122.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.82, 0.98, 0.74, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.88)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 3
-theme_override_font_sizes/font_size = 34
+mouse_filter = 1
+
+[node name="HeaderPlate" type="PanelContainer" parent="TopHeader"]
+custom_minimum_size = Vector2(760, 96)
+layout_mode = 2
+theme_type_variation = &"PremiumHeader"
+
+[node name="Ornament" type="Control" parent="TopHeader/HeaderPlate"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_ornament")
+variant = "header"
+accent_alpha = 0.86
+
+[node name="HeaderMargin" type="MarginContainer" parent="TopHeader/HeaderPlate"]
+layout_mode = 2
+theme_override_constants/margin_left = 38
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 38
+theme_override_constants/margin_bottom = 11
+
+[node name="HeaderContent" type="VBoxContainer" parent="TopHeader/HeaderPlate/HeaderMargin"]
+layout_mode = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="PhaseLabel" type="Label" parent="TopHeader/HeaderPlate/HeaderMargin/HeaderContent"]
+layout_mode = 2
+theme_type_variation = &"PremiumEyebrow"
+text = "DÉCISION DE PROGRESSION"
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="TopHeader/HeaderPlate/HeaderMargin/HeaderContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumTitle"
+theme_override_font_sizes/font_size = 30
 text = "CHOISISSEZ UNE ÉVOLUTION"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SubtitleLabel" type="Label" parent="."]
+[node name="SubtitleLabel" type="Label" parent="TopHeader/HeaderPlate/HeaderMargin/HeaderContent"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 68.0
-offset_bottom = 98.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.7, 0.78, 0.72, 1)
-theme_override_font_sizes/font_size = 16
+layout_mode = 2
+theme_type_variation = &"PremiumSubtitle"
+theme_override_font_sizes/font_size = 14
 text = "Elfe · Archer · Niveau 2"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -67,8 +109,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 106.0
-offset_bottom = -150.0
+offset_top = 130.0
+offset_bottom = -174.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
@@ -77,7 +119,7 @@ mouse_filter = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_constants/separation = 96
+theme_override_constants/separation = 72
 alignment = 1
 
 [node name="SkillEvolutionCardA" parent="CardZone/CardRow" instance=ExtResource("3_card")]
@@ -88,60 +130,88 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BottomControls" type="VBoxContainer" parent="."]
+[node name="BottomCenter" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -144.0
-offset_right = -24.0
-offset_bottom = -16.0
+offset_left = 20.0
+offset_top = -166.0
+offset_right = -20.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/separation = 5
+mouse_filter = 1
+
+[node name="BottomPlate" type="PanelContainer" parent="BottomCenter"]
+custom_minimum_size = Vector2(900, 148)
+layout_mode = 2
+theme_type_variation = &"PremiumFooter"
+
+[node name="Ornament" type="Control" parent="BottomCenter/BottomPlate"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_ornament")
+variant = "header"
+accent_alpha = 0.62
+
+[node name="BottomMargin" type="MarginContainer" parent="BottomCenter/BottomPlate"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 9
+
+[node name="BottomControls" type="VBoxContainer" parent="BottomCenter/BottomPlate/BottomMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
 alignment = 1
 
-[node name="ChoiceDetails" type="Label" parent="BottomControls"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 36)
+[node name="DetailInset" type="PanelContainer" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls"]
+custom_minimum_size = Vector2(0, 38)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.84, 0.9, 0.84, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 14
-text = "Effet de l’évolution"
+theme_type_variation = &"PremiumInset"
+
+[node name="ChoiceDetails" type="Label" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls/DetailInset"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumBody"
+theme_override_font_sizes/font_size = 13
+text = "Survolez une évolution pour en lire l’effet."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ConfirmCenter" type="CenterContainer" parent="BottomControls"]
+[node name="ConfirmCenter" type="CenterContainer" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls"]
 layout_mode = 2
 
-[node name="ConfirmButton" type="Button" parent="BottomControls/ConfirmCenter"]
+[node name="ConfirmButton" type="Button" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls/ConfirmCenter"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 44)
+custom_minimum_size = Vector2(320, 42)
 layout_mode = 2
 focus_mode = 2
 disabled = true
-theme_type_variation = &"SkillTreeCloseButton"
-text = "CONFIRMER"
+theme_type_variation = &"PremiumPrimaryButton"
+text = "CONFIRMER L’ÉVOLUTION"
 
-[node name="InputHints" type="Label" parent="BottomControls"]
+[node name="InputHints" type="Label" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.66, 0.72, 0.68, 1)
-theme_override_font_sizes/font_size = 13
-text = "← →  Choisir    ·    Entrée / A  Valider    ·    Échap indisponible"
+theme_type_variation = &"PremiumMuted"
+theme_override_font_sizes/font_size = 11
+text = "← →  Choisir    ·    Entrée / A  Valider    ·    Choix obligatoire"
 horizontal_alignment = 1
 
-[node name="ErrorLabel" type="Label" parent="BottomControls"]
+[node name="ErrorLabel" type="Label" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.98, 0.46, 0.38, 1)
-theme_override_font_sizes/font_size = 14
+theme_type_variation = &"PremiumDanger"
+theme_override_font_sizes/font_size = 13
 text = "Évolution impossible"
 horizontal_alignment = 1
-

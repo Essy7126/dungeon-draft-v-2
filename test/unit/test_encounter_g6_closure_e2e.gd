@@ -4,6 +4,11 @@ const ROOT := "res://artifacts/encounter_g6_closure_e2e"
 const RUN_ROOT := "res://data/runs/__g6_closure_e2e"
 
 
+func after_all() -> void:
+	assert_true(_remove_fixture_tree(RUN_ROOT))
+	assert_true(_remove_fixture_tree(ROOT))
+
+
 func _fixture() -> Dictionary:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(ROOT))
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(RUN_ROOT))
@@ -258,3 +263,22 @@ func _descendants(node: Node) -> Array[Node]:
 		result.append(child)
 		result.append_array(_descendants(child))
 	return result
+
+
+func _remove_fixture_tree(path: String) -> bool:
+	var allowed := path == RUN_ROOT or path.begins_with(RUN_ROOT + "/") \
+		or path == ROOT or path.begins_with(ROOT + "/")
+	if not allowed:
+		return false
+	var directory := DirAccess.open(path)
+	if directory == null:
+		return not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(path))
+	for file_name in directory.get_files():
+		if DirAccess.remove_absolute(
+			ProjectSettings.globalize_path(path.path_join(file_name))
+		) != OK:
+			return false
+	for child_name in directory.get_directories():
+		if not _remove_fixture_tree(path.path_join(child_name)):
+			return false
+	return DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK

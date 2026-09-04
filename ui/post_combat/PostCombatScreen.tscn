@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://ui/post_combat/post_combat_screen.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/progression/theme/skill_tree_graybox_theme.tres" id="2_theme"]
 [ext_resource type="PackedScene" path="res://ui/post_combat/EquipmentRewardOverlay.tscn" id="3_reward_overlay"]
+[ext_resource type="Script" path="res://ui/theme/premium_panel_ornament.gd" id="4_ornament"]
 
 [node name="PostCombatScreen" type="Control"]
 layout_mode = 3
@@ -58,6 +59,17 @@ theme_override_constants/margin_bottom = 0
 layout_mode = 2
 theme_type_variation = &"SkillTreeScreen"
 
+[node name="Ornament" type="Control" parent="SafeMargin/MainPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_ornament")
+variant = "screen"
+
 [node name="MainMargin" type="MarginContainer" parent="SafeMargin/MainPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 22
@@ -109,6 +121,45 @@ theme_override_font_sizes/font_size = 13
 text = "CONTRAT · FIN INCONNUE"
 vertical_alignment = 1
 
+[node name="PhaseRail" type="PanelContainer" parent="SafeMargin/MainPanel/MainMargin/Main"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_type_variation = &"PremiumInset"
+
+[node name="RailMargin" type="MarginContainer" parent="SafeMargin/MainPanel/MainMargin/Main/PhaseRail"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+
+[node name="Rail" type="HBoxContainer" parent="SafeMargin/MainPanel/MainMargin/Main/PhaseRail/RailMargin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="RailResult" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/PhaseRail/RailMargin/Rail"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumEyebrow"
+text = "◆ RÉSULTAT"
+
+[node name="RailReport" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/PhaseRail/RailMargin/Rail"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "— RAPPORT"
+
+[node name="RailProgress" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/PhaseRail/RailMargin/Rail"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "— PROGRESSION"
+
+[node name="RailReward" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/PhaseRail/RailMargin/Rail"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "— RELIQUE"
+
 [node name="ContentStack" type="Control" parent="SafeMargin/MainPanel/MainMargin/Main"]
 custom_minimum_size = Vector2(0, 440)
 layout_mode = 2
@@ -135,11 +186,12 @@ theme_override_colors/font_color = Color(1, 0.78, 0.28, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 5
-theme_override_font_sizes/font_size = 74
-text = "VICTOIRE"
+theme_override_font_sizes/font_size = 56
+text = "SALLE SÉCURISÉE"
 horizontal_alignment = 1
 
 [node name="VictorySubtitle" type="Label" parent="SafeMargin/MainPanel/MainMargin/Main/ContentStack/VictoryPanel/VictoryContent"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.78, 0.82, 0.8, 1)
 theme_override_font_sizes/font_size = 18

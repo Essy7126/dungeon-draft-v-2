@@ -382,20 +382,53 @@ func test_inventory_screen_marks_relic_active_and_hides_actions() -> void:
 
 
 func test_inventory_relic_layout_remains_responsive_at_supported_resolutions() -> void:
+	var relic := load(
+		"res://data/items/definitions/cendres_du_phenix.tres"
+	) as ItemDefinition
+	assert_not_null(relic)
+	var catalog := _catalog([relic])
+	var inventory := RunInventory.new()
+	assert_true(inventory.initialize(catalog, 24))
+	var added := inventory.try_add(relic.item_id)
+	assert_true(added.get("success", false), str(added))
+	var unit_data := UnitData.new()
+	unit_data.unit_id = &"responsive_ui_hero"
+	unit_data.unit_name = "Héros responsive"
+	var hero := Unit.from_data(unit_data)
+	var state := CharacterRunState.new()
+	assert_true(state.initialize(hero, unit_data))
 	var screen := preload("res://ui/inventory/InventoryScreen.tscn").instantiate() as InventoryScreen
 	add_child_autofree(screen)
 	await wait_process_frames(1)
+	screen.show()
+	screen._selected_instance_id = StringName(
+		(added.get("instance_ids", []) as Array)[0]
+	)
+	screen._rebuild_inventory(inventory, catalog)
+	screen._rebuild_equipment(state, catalog)
+	screen._refresh_details(state, inventory, catalog)
 	for viewport_size in [Vector2(1280, 720), Vector2(1920, 1080)]:
 		screen.apply_viewport_size_for_test(viewport_size)
-		await get_tree().process_frame
+		await wait_process_frames(2)
 		var snapshot := screen.get_layout_snapshot()
+		var screen_rect := snapshot.get("screen_rect") as Rect2
+		var panel_global := snapshot.get("panel_global") as Rect2
+		var detail_scroll_global := snapshot.get("detail_scroll_global") as Rect2
 		var panel_size := snapshot.get("panel_minimum_size") as Vector2
 		assert_lte(panel_size.x, viewport_size.x - 48.0, str(viewport_size))
 		assert_lte(panel_size.y, viewport_size.y - 40.0, str(viewport_size))
+		assert_true(screen_rect.encloses(panel_global), str(viewport_size))
+		assert_true(panel_global.encloses(detail_scroll_global), str(viewport_size))
+		assert_gt(float(snapshot.get("detail_scroll_page", 0.0)), 0.0)
+		assert_gte(
+			float(snapshot.get("detail_scroll_max", 0.0)),
+			float(snapshot.get("detail_scroll_page", 0.0)),
+		)
 		assert_eq(
 			int(snapshot.get("inventory_columns")),
-			3 if viewport_size.x < 1500.0 else 4,
+			3,
 		)
+	state.dispose()
 
 
 func test_turn_end_fact_is_emitted_once() -> void:

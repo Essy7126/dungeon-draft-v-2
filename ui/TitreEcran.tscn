@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bklisc2gyx17o" path="res://ui/Particles/rayons_lumiere.tscn" id="4_2ct6b"]
 [ext_resource type="Texture2D" uid="uid://byae4w3iiyyjw" path="res://asset/Background/feuille_basique-removebg-preview.png" id="5_ci13c"]
 [ext_resource type="AudioStream" uid="uid://houstmy1a82l" path="res://asset/musique/Dungeon Draft.mp3" id="7_1acc0"]
+[ext_resource type="Script" path="res://ui/components/dark_menu_button.gd" id="8_menu_button"]
 
 [sub_resource type="Gradient" id="Gradient_mdtna"]
 colors = PackedColorArray(1, 0.6, 0.101960786, 1, 0, 0, 0, 0)
@@ -459,17 +460,31 @@ anchor_bottom = 0.5
 offset_left = 50.0
 offset_top = 152.0
 offset_right = 380.0
-offset_bottom = 290.0
+offset_bottom = 344.0
 grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="MenuEyebrow" type="Label" parent="UI/Boutons"]
+layout_mode = 2
+theme_type_variation = &"PremiumEyebrow"
+text = "CHOISISSEZ VOTRE DESTIN"
+horizontal_alignment = 1
 
 [node name="BoutonNouvellePartie" type="Button" parent="UI/Boutons" unique_id=2051366516]
+custom_minimum_size = Vector2(360, 58)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Nouvelle partie"
+theme_type_variation = &"PremiumPrimaryButton"
+text = "COMMENCER L’ODYSSÉE"
+script = ExtResource("8_menu_button")
+minimum_button_size = Vector2(360, 58)
 
 [node name="BoutonQuitter" type="Button" parent="UI/Boutons" unique_id=2044655594]
+custom_minimum_size = Vector2(360, 52)
 layout_mode = 2
-text = "Quitter"
+theme_type_variation = &"PremiumButton"
+text = "QUITTER"
+script = ExtResource("8_menu_button")
+minimum_button_size = Vector2(360, 52)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1915723325]
 libraries/ = SubResource("AnimationLibrary_2ct6b")

@@ -33,6 +33,7 @@ var _cards: Array[SkillEvolutionCard] = []
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	PremiumUI.apply(self)
 	_cards = [card_left, card_right]
 	for card in _cards:
 		card.choice_requested.connect(_on_card_choice_requested)
@@ -88,13 +89,13 @@ func reset() -> void:
 	_locked = false
 	_presented = false
 	confirm_button.disabled = true
-	confirm_button.text = "CONFIRMER"
+	confirm_button.text = "CONFIRMER L’ÉVOLUTION"
 	error_label.hide()
 	for card in _cards:
 		card.set_selected(false)
 		card.set_peer_dimmed(false)
 		card.set_locked(false)
-		card.modulate.a = 1.0
+		card.reset_visual_state()
 
 
 func close_overlay() -> void:
@@ -129,7 +130,7 @@ func request_confirmation() -> bool:
 		return false
 	_locked = true
 	confirm_button.disabled = true
-	confirm_button.text = "APPLICATION…"
+	confirm_button.text = "APPLICATION EN COURS…"
 	for card in _cards:
 		card.set_locked(true)
 	confirmation_requested.emit(_request.request_id, _selected_upgrade_id)
@@ -191,6 +192,7 @@ func get_visual_snapshot() -> Dictionary:
 		"card_rects": [card_left.get_global_rect(), card_right.get_global_rect()],
 		"card_sizes": [card_left.size, card_right.size],
 		"card_scales": [card_left.visual_root.scale, card_right.visual_root.scale],
+		"card_layouts": [card_left.get_layout_snapshot(), card_right.get_layout_snapshot()],
 		"selected_upgrade_id": _selected_upgrade_id,
 		"confirm_disabled": confirm_button.disabled,
 		"reduced_motion": reduced_motion,
@@ -235,19 +237,48 @@ func _update_detail(index: int) -> void:
 func _apply_responsive_layout() -> void:
 	if not is_node_ready() or size.x <= 0.0 or size.y <= 0.0:
 		return
-	var card_height := clampf(size.y * 0.61, 360.0, 680.0)
-	var vertical_allowance := maxf(300.0, size.y - 258.0)
+	var presentation_scale := clampf(
+		minf(size.x / 1920.0, size.y / 1080.0),
+		1.0,
+		1.14
+	)
+	var card_height := clampf(
+		size.y * 0.57,
+		338.0,
+		620.0 * presentation_scale
+	)
+	var vertical_allowance := maxf(300.0, size.y - 304.0 * presentation_scale)
 	card_height = minf(card_height, vertical_allowance)
-	var gap := clampf(size.x * 0.05, 52.0, 104.0)
+	var compact_cards := card_height <= 500.0 or size.x <= 1320.0
+	var gap := clampf(size.x * 0.045, 42.0, 82.0 * presentation_scale)
 	var maximum_width := maxf(210.0, (size.x - gap - 96.0) * 0.5)
 	card_row.add_theme_constant_override("separation", int(gap))
 	for card in _cards:
+		card.set_compact_mode(compact_cards)
+		card.set_presentation_scale(presentation_scale)
 		card.set_card_height(card_height, maximum_width)
-	card_zone.offset_top = 96.0 if size.y <= 760.0 else 106.0
-	card_zone.offset_bottom = -144.0 if size.y <= 760.0 else -150.0
-	title_label.add_theme_font_size_override("font_size", 26 if size.y <= 760.0 else 34)
-	subtitle_label.add_theme_font_size_override("font_size", 14 if size.y <= 760.0 else 16)
-	choice_details.add_theme_font_size_override("font_size", 12 if size.y <= 760.0 else 14)
+	card_zone.offset_top = (
+		118.0 if size.y <= 760.0 else 130.0 * presentation_scale
+	)
+	card_zone.offset_bottom = (
+		-166.0 if size.y <= 760.0 else -174.0 * presentation_scale
+	)
+	title_label.add_theme_font_size_override(
+		"font_size",
+		24 if size.y <= 760.0 else roundi(30.0 * presentation_scale)
+	)
+	subtitle_label.add_theme_font_size_override(
+		"font_size",
+		12 if size.y <= 760.0 else roundi(14.0 * presentation_scale)
+	)
+	choice_details.add_theme_font_size_override(
+		"font_size",
+		11 if size.y <= 760.0 else roundi(13.0 * presentation_scale)
+	)
+	confirm_button.add_theme_font_size_override(
+		"font_size",
+		13 if compact_cards else roundi(15.0 * presentation_scale)
+	)
 
 
 func _configure_focus() -> void:
@@ -262,6 +293,8 @@ func _configure_focus() -> void:
 		card_left.interaction.get_path(),
 	)
 	confirm_button.focus_neighbor_top = card_left.interaction.get_path()
+	confirm_button.focus_neighbor_left = card_left.interaction.get_path()
+	confirm_button.focus_neighbor_right = card_right.interaction.get_path()
 	card_left.interaction.focus_neighbor_bottom = confirm_button.get_path()
 	card_right.interaction.focus_neighbor_bottom = confirm_button.get_path()
 	card_left.grab_card_focus()
@@ -300,4 +333,3 @@ func _finish_confirmation_after_delay() -> void:
 	var delay := 0.22 if reduced_motion else 0.62
 	await get_tree().create_timer(delay, true, false, true).timeout
 	confirmation_finished.emit(request_id, upgrade_id)
-

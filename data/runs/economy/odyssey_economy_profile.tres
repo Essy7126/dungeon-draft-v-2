@@ -15,5 +15,5 @@ item_id = &"minor_action_scroll"
 [resource]
 script = ExtResource("1_profile")
 starting_items = Array[ExtResource("2_item")]([SubResource("HealingPotions"), SubResource("ActionScroll")])
-equipment_rewards_enabled = false
-equipment_reward_pool_tag = &""
+equipment_rewards_enabled = true
+equipment_reward_pool_tag = &"first_run_equipment_reward"

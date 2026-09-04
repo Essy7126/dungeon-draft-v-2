@@ -7,8 +7,8 @@ signal history_state_changed
 const CATEGORY_LABELS := ["Arme", "Armure", "Accessoire", "Consommable", "Parchemin", "Relique"]
 const SLOT_LABELS := ["Aucun", "Arme", "Armure", "Accessoire"]
 const USE_LABELS := ["Aucun", "Soin fixe", "Restauration de PA fixe"]
-const RARITY_VALUES := [&"common", &"uncommon", &"rare", &"epic", &"legendary"]
-const RARITY_LABELS := ["Commun", "Peu commun", "Rare", "Épique", "Légendaire"]
+const RARITY_VALUES := [&"common", &"uncommon", &"rare", &"epic", &"legendary", &"mythic"]
+const RARITY_LABELS := ["Commun", "Peu commun", "Rare", "Épique", "Légendaire", "Mythique"]
 const REFRESH_LIGHT := 1
 const REFRESH_STRUCTURE := 2
 const REFRESH_HEAVY := 4

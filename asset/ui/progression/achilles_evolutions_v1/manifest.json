@@ -1,0 +1,49 @@
+{
+  "collection": "achilles_evolutions_v1",
+  "generation_mode": "built-in image_gen",
+  "canvas": "1254x1254 RGBA PNG",
+  "validation": "All eight outputs were visually inspected in their Odyssée card layout; every corner alpha sample is between 0 and 1 on a 0-255 scale.",
+  "common_prompt": "Use case: stylized-concept. Asset type: square game skill-evolution illustration for Achille's Odyssée progression card, production-ready transparent PNG. No scene: a complete emblem-like composition isolated on genuine transparency. Premium hand-painted dark Greek fantasy, refined painterly realism, blackened bronze and antique gold, warm upper-left rim light, strong centered silhouette, generous margin, no crop, character, hands, text, logo, watermark, border or UI frame.",
+  "assets": [
+    {
+      "filename": "pointe_inexorable.png",
+      "upgrade_id": "achilles_spear_inexorable_point",
+      "prompt": "A compact ancient Greek spearhead thrusting through a fractured round hoplite shield, one bright antique-gold impact point and restrained crimson sparks; communicates +4 damage and execution rather than range."
+    },
+    {
+      "filename": "allonge_du_styx.png",
+      "upgrade_id": "achilles_spear_long_reach",
+      "prompt": "An elegant long Greek spear crossing three thin spectral-blue reach rings and a restrained ribbon of River Styx water; communicates +1 attack range, precision and distance."
+    },
+    {
+      "filename": "elan_des_myrmidons.png",
+      "upgrade_id": "achilles_advance_myrmidon_momentum",
+      "prompt": "A bronze hoplite greave and forward shield followed by two disciplined translucent shield echoes and tight amber trails; communicates accelerating Myrmidon momentum."
+    },
+    {
+      "filename": "impact_d_airain.png",
+      "upgrade_id": "achilles_advance_bronze_impact",
+      "prompt": "A heavy blackened-bronze hoplite shield driving into a fractured stone marker with an angular gold shockwave; communicates a brutal close-range collision."
+    },
+    {
+      "filename": "rempart_du_pelion.png",
+      "upgrade_id": "achilles_guard_pelion_rampart",
+      "prompt": "A massive round hoplite shield braced into a compact dark mountain peak under a restrained gold defensive halo; communicates an immovable heroic rampart."
+    },
+    {
+      "filename": "pas_du_revenant.png",
+      "upgrade_id": "achilles_guard_returning_stride",
+      "prompt": "An ornate bronze greave stepping backward through a broken laurel-ring portal while a spectral shield echo returns to guard the vacated space; communicates tactical retreat and restored protection."
+    },
+    {
+      "filename": "horizon_brise.png",
+      "upgrade_id": "achilles_sweep_broken_horizon",
+      "prompt": "A broad Greek spear sweeping through and splitting a bronze horizon disc with a controlled crimson-gold force arc; communicates a wider punishing sweep."
+    },
+    {
+      "filename": "cercle_de_bronze.png",
+      "upgrade_id": "achilles_sweep_bronze_circle",
+      "prompt": "Two short Greek spears rotating around an engraved bronze ring like a disciplined phalanx wheel with four gold motion notches; communicates exact circular area control."
+    }
+  ]
+}

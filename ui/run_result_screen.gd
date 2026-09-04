@@ -1,6 +1,8 @@
 extends Control
 
 @onready var result_label: Label = $Background/Center/Panel/Content/Result
+@onready var panel: PanelContainer = %Panel
+@onready var crest: TextureRect = $Background/Center/Panel/Content/Crest
 @onready var register_label: Label = $Background/Center/Panel/Content/Register
 @onready var run_name_label: Label = $Background/Center/Panel/Content/RunName
 @onready var progression_label: Label = $Background/Center/Panel/Content/Progression
@@ -12,13 +14,23 @@ var _is_catabase := false
 
 
 func _ready() -> void:
+	PremiumUI.apply(self)
+	_apply_panel_margins()
 	_apply_result(GameManager.get_last_run_result())
 	return_button.pressed.connect(_on_return_pressed)
+	get_viewport().size_changed.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
+	return_button.grab_focus.call_deferred()
 
 
 func _apply_result(result: Dictionary) -> void:
 	var victory := bool(result.get("victory", false))
 	result_label.text = "Victoire" if victory else "Défaite"
+	result_label.modulate = (
+		PremiumUI.SKIN.text_primary
+		if victory else Color(0.92, 0.42, 0.31, 1.0)
+	)
+	crest.modulate = Color.WHITE if victory else Color(0.78, 0.42, 0.36, 0.78)
 	var run_name := str(result.get("run_name", "")).strip_edges()
 	var is_catabase := bool(result.get("is_catabase", false))
 	_is_catabase = is_catabase
@@ -72,3 +84,23 @@ func _on_return_pressed() -> void:
 		GameManager.return_to_hub()
 	else:
 		GameManager.return_to_title()
+
+
+func _apply_panel_margins() -> void:
+	var source := PremiumUI.get_theme().get_stylebox(&"panel", &"PremiumScreen")
+	if source == null:
+		return
+	var style := source.duplicate() as StyleBox
+	style.content_margin_left = 42.0
+	style.content_margin_top = 28.0
+	style.content_margin_right = 42.0
+	style.content_margin_bottom = 30.0
+	panel.add_theme_stylebox_override(&"panel", style)
+
+
+func _apply_responsive_layout() -> void:
+	var viewport_size := get_viewport_rect().size
+	panel.custom_minimum_size = Vector2(
+		clampf(viewport_size.x - 48.0, 620.0, 760.0),
+		clampf(viewport_size.y - 40.0, 600.0, 680.0),
+	)

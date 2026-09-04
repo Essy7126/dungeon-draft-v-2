@@ -110,6 +110,7 @@ grow_vertical = 2
 [node name="NameLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeTitleLabel"
 theme_override_colors/font_color = Color(0.96, 0.84, 0.5, 1)
 theme_override_font_sizes/font_size = 24
 text = "DÉTAIL DU NŒUD"
@@ -119,6 +120,7 @@ autowrap_mode = 2
 [node name="MetaLabel" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeMetaLabel"
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 16
 text = "Archer — Rang 1"
@@ -136,6 +138,7 @@ horizontal_alignment = 1
 [node name="DescriptionHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "EFFET"
@@ -154,6 +157,7 @@ layout_mode = 2
 [node name="SpellHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "SORT AFFECTÉ"
@@ -169,6 +173,7 @@ autowrap_mode = 2
 [node name="PrerequisitesHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "PRÉREQUIS"
@@ -188,6 +193,7 @@ layout_mode = 2
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.82, 0.52, 0.5, 1)
 theme_override_font_sizes/font_size = 13
 text = "INCOMPATIBILITÉ"
@@ -204,6 +210,7 @@ autowrap_mode = 2
 [node name="StateHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "ÉTAT"
@@ -219,6 +226,7 @@ autowrap_mode = 2
 [node name="ReasonHeading" type="Label" parent="SafeMargin/ContentScroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"SkillTreeSectionLabel"
 theme_override_colors/font_color = Color(0.72, 0.77, 0.84, 1)
 theme_override_font_sizes/font_size = 13
 text = "RAISON"

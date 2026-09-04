@@ -94,6 +94,25 @@ func test_deep_copy_shares_immutable_texture_assets() -> void:
 	assert_same(copy.card_texture, source.card_texture)
 
 
+func test_reward_card_texture_keeps_studio_fallback_strict() -> void:
+	var definition := ItemDefinition.new()
+	var inventory_texture := ImageTexture.create_from_image(
+		Image.create(1, 1, false, Image.FORMAT_RGBA8)
+	)
+	var icon_texture := ImageTexture.create_from_image(
+		Image.create(2, 2, false, Image.FORMAT_RGBA8)
+	)
+	var card_texture := ImageTexture.create_from_image(
+		Image.create(3, 3, false, Image.FORMAT_RGBA8)
+	)
+	definition.inventory_icon = inventory_texture
+	assert_null(definition.get_reward_card_texture())
+	definition.icon = icon_texture
+	assert_same(definition.get_reward_card_texture(), icon_texture)
+	definition.card_texture = card_texture
+	assert_same(definition.get_reward_card_texture(), card_texture)
+
+
 func test_document_mutation_never_changes_canonical_resource() -> void:
 	var source := _weapon(&"canonical")
 	var before := ItemFingerprintService.semantic_fingerprint(source)

@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://b2ghdbaihjk73"]
 
+[ext_resource type="Texture2D" path="res://asset/ui/items/relics_premium_v1/cendres_du_phenix.png" id="relic_icon"]
 [ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="1_v8ash"]
 [ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="2_pbyy5"]
 [ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="3_48b47"]
@@ -27,7 +28,9 @@ frequency_id = &"per_combat"
 script = ExtResource("3_48b47")
 item_id = &"cendres_du_phenix"
 display_name = "Cendres du Phénix"
+inventory_icon = ExtResource("relic_icon")
 description = "Une fois par combat, si une perte de PV ennemie te fait passer à 30 % de tes PV maximum ou moins sans te tuer, tu récupères immédiatement 15 % de tes PV maximum, arrondis au supérieur."
+rarity = &"mythic"
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5
 reactive_effects = Array[ExtResource("1_v8ash")]([SubResource("Resource_ow65d")])

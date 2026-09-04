@@ -73,13 +73,13 @@ func configure(
 func set_selected(value: bool) -> void:
 	button_pressed = value
 	_selection_rail.visible = value
-	_selection_rail.modulate = _accent
+	_selection_rail.modulate = Color(1.0, 0.72, 0.22, 1.0)
 	_active_marker.visible = value
 	_active_marker.text = "BRANCHE ACTIVE" if value else ""
 	_frame_texture.modulate = (
-		Color(1.08, 1.04, 0.94, 1.0)
+		Color(1.06, 1.01, 0.9, 1.0)
 		if value
-		else Color(0.72, 0.75, 0.78, 0.86)
+		else Color(0.62, 0.59, 0.56, 0.86)
 	)
 
 

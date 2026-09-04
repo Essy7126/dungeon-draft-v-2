@@ -25,7 +25,7 @@ const EXPECTED_PROGRESSION_SHA := (
 	"082F2220789CD6C1385990DF910D399317868DB84A10B5789D02148E5AE0E582"
 )
 const EXPECTED_ECONOMY_SHA := (
-	"70F6CE8085E5D7A7C0AFA5B2ADB37161380B7A5364470B17A3192E89506A24D6"
+	"71F90EFA4F7F332A3B8376B4D557951154B3A354F505D1A5E65151BF95BF3344"
 )
 const EXPECTED_SPELL_HASHES := {
 	"res://data/spells/achilles/spear_thrust.tres": (
@@ -584,7 +584,11 @@ func test_odyssey_economy_unchanged() -> void:
 		EXPECTED_ECONOMY_SHA,
 	)
 	var economy = load(ECONOMY_PATH)
-	assert_false(economy.equipment_rewards_enabled)
+	assert_true(economy.equipment_rewards_enabled)
+	assert_eq(
+		economy.equipment_reward_pool_tag,
+		FirstRunEquipmentRewardService.POOL_TAG,
+	)
 	assert_eq(economy.starting_items.size(), 2)
 	assert_eq(ODYSSEY_RUN.economy_profile.resource_path, ECONOMY_PATH)
 

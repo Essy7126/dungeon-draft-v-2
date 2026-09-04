@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://c2ydtg5o52ckb"]
 
-[ext_resource type="Texture2D" uid="uid://do40uj7voqbij" path="res://addons/meshy-godot-plugin/Meshy_Icon_36.png" id="1_hton6"]
+[ext_resource type="Texture2D" path="res://asset/ui/items/relics_premium_v1/fureur_d_ares.png" id="1_hton6"]
 [ext_resource type="Script" uid="uid://cbevwgj3ygpf1" path="res://data/items/item_reactive_effect_data.gd" id="2_5tb72"]
 [ext_resource type="Script" uid="uid://dkfahubcultgs" path="res://data/items/item_reactive_condition_data.gd" id="3_rgajr"]
 [ext_resource type="Script" uid="uid://sm6f561h20ro" path="res://data/items/item_definition.gd" id="4_km3qs"]
@@ -40,6 +40,7 @@ item_id = &"fureur_d_ares"
 display_name = "Fureur d’Arès"
 description = "Tu choisis le moment : une fois par tour, si tu es à 40 % de tes PV maximum ou moins, clique sur l’objet pour perdre 5 % de tes PV maximum (tu ne meurs jamais de cette perte, tu gardes au moins 1 PV) et gagner 1 PA pour ce tour."
 inventory_icon = ExtResource("1_hton6")
+rarity = &"mythic"
 tags = Array[StringName]([&"first_run_equipment_reward"])
 category = 5
 reactive_effects = Array[ExtResource("2_5tb72")]([SubResource("Resource_gjygn"), SubResource("Resource_ibsix")])

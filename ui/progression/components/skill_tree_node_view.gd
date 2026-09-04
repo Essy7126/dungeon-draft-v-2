@@ -400,7 +400,9 @@ func _configure_glyphs(legacy_icon: Texture2D = null) -> void:
 		icon_id = &"root"
 	elif node_data != null:
 		icon_id = node_data.upgrade_id
-		if catalog != null:
+		if reveal_mode == RevealMode.FULL and node_data.icon != null:
+			icon = node_data.icon
+		elif catalog != null:
 			var config := _config()
 			if (
 				reveal_mode == RevealMode.NEXT_RANK
@@ -448,10 +450,10 @@ func _apply_visual_state() -> void:
 	match state:
 		SkillTreeVisualPresentation.SkillTreeVisualState.SELECTED:
 			self_modulate = Color.WHITE
-			_set_state_colors(Color(0.64, 0.84, 0.72), Color(0.64, 0.84, 0.72))
+			_set_state_colors(Color(0.82, 0.66, 0.38), Color(0.92, 0.76, 0.46))
 		SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE:
 			self_modulate = Color.WHITE
-			_set_state_colors(Color(0.82, 0.68, 0.42), Color(0.88, 0.72, 0.42))
+			_set_state_colors(Color(1.0, 0.72, 0.2), Color(1.0, 0.8, 0.36))
 		SkillTreeVisualPresentation.SkillTreeVisualState.LOCKED_BY_BRANCH:
 			self_modulate = Color(0.66, 0.66, 0.68, 1.0)
 			_set_state_colors(Color(0.56, 0.48, 0.48), Color(0.72, 0.48, 0.48))
@@ -466,7 +468,7 @@ func _apply_locked_reveal() -> void:
 	var rank := get_rank()
 	var config := _config()
 	_lock_overlay.show()
-	_darkening_layer.color = Color(0.015, 0.02, 0.025, 0.68)
+	_darkening_layer.color = Color(0.012, 0.01, 0.014, 0.72)
 	_lock_icon.texture = config.lock_icon_texture if config != null else null
 	_requirement_label.text = (
 		config.locked_rank_label_format % rank
@@ -481,8 +483,8 @@ func _apply_locked_reveal() -> void:
 	var opacity := config.locked_node_opacity if config != null else 0.42
 	_icon_override.modulate = Color(0.72, 0.75, 0.78, maxf(opacity, 0.32))
 	_primary_glyph.modulate = _icon_override.modulate
-	_name_label.add_theme_color_override("font_color", Color(0.66, 0.68, 0.7))
-	_threshold_label.add_theme_color_override("font_color", Color(0.5, 0.53, 0.56))
+	_name_label.add_theme_color_override("font_color", Color(0.58, 0.54, 0.5))
+	_threshold_label.add_theme_color_override("font_color", Color(0.46, 0.42, 0.39))
 	tooltip_text = "Compétence verrouillée — Rang %d requis" % rank
 	_apply_surface_style()
 	_refresh_inspection_frame()
@@ -491,7 +493,7 @@ func _apply_locked_reveal() -> void:
 func _apply_rank_gate() -> void:
 	var config := _config()
 	_lock_overlay.show()
-	_darkening_layer.color = Color(0.012, 0.016, 0.02, 0.76)
+	_darkening_layer.color = Color(0.01, 0.008, 0.012, 0.8)
 	_lock_icon.texture = config.lock_icon_texture if config != null else null
 	_requirement_label.text = "INCONNU"
 	_state_icon.hide()
@@ -503,8 +505,8 @@ func _apply_rank_gate() -> void:
 	_icon_override.modulate = Color(0.66, 0.68, 0.7, opacity)
 	_primary_glyph.modulate = _icon_override.modulate
 	_discipline_icon.hide()
-	_name_label.add_theme_color_override("font_color", Color(0.48, 0.51, 0.54))
-	_threshold_label.add_theme_color_override("font_color", Color(0.4, 0.43, 0.46))
+	_name_label.add_theme_color_override("font_color", Color(0.43, 0.4, 0.38))
+	_threshold_label.add_theme_color_override("font_color", Color(0.36, 0.33, 0.32))
 	_apply_surface_style()
 	_refresh_inspection_frame()
 
@@ -513,32 +515,32 @@ func _apply_surface_style() -> void:
 	if not is_node_ready():
 		return
 	var style := StyleBoxFlat.new()
-	var accent := discipline_data.presentation_color if discipline_data != null else Color(0.65, 0.52, 0.34)
-	style.bg_color = Color(0.055, 0.065, 0.076, 0.98)
-	style.border_color = accent.darkened(0.1)
+	style.bg_color = Color(0.042, 0.035, 0.04, 0.99)
+	style.border_color = Color(0.42, 0.3, 0.2, 0.94)
 	style.set_border_width_all(1)
-	style.corner_radius_top_left = 7
-	style.corner_radius_top_right = 7
-	style.corner_radius_bottom_left = 7
-	style.corner_radius_bottom_right = 7
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
 	if reveal_mode == RevealMode.RANK_GATE:
-		style.bg_color = Color(0.035, 0.041, 0.049, 0.98)
-		style.border_color = Color(0.28, 0.31, 0.34, 0.9)
+		style.bg_color = Color(0.022, 0.02, 0.025, 0.99)
+		style.border_color = Color(0.26, 0.21, 0.18, 0.9)
 		style.set_border_width_all(1)
 	elif reveal_mode == RevealMode.NEXT_RANK:
-		style.bg_color = Color(0.045, 0.052, 0.061, 0.98)
-		style.border_color = Color(0.38, 0.4, 0.42, 0.95)
+		style.bg_color = Color(0.03, 0.027, 0.033, 0.99)
+		style.border_color = Color(0.34, 0.28, 0.23, 0.95)
 	elif int(visual_presentation.get("state", -1)) == SkillTreeVisualPresentation.SkillTreeVisualState.SELECTED:
-		style.bg_color = Color(0.07, 0.09, 0.095, 0.98)
-		style.border_color = accent.lightened(0.2)
+		style.bg_color = Color(0.13, 0.09, 0.05, 0.99)
+		style.border_color = Color(0.86, 0.63, 0.28, 0.98)
 		style.set_border_width_all(2)
 	elif int(visual_presentation.get("state", -1)) == SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE:
-		style.border_color = Color(0.82, 0.68, 0.42, 0.98)
+		style.bg_color = Color(0.16, 0.1, 0.04, 0.99)
+		style.border_color = Color(1.0, 0.72, 0.2, 0.98)
 		style.set_border_width_all(2)
 	_state_backdrop.add_theme_stylebox_override("panel", style)
 	var halo := StyleBoxFlat.new()
 	halo.bg_color = Color(0, 0, 0, 0)
-	halo.border_color = accent.darkened(0.05)
+	halo.border_color = Color(0.82, 0.58, 0.25, 0.82)
 	halo.set_border_width_all(1)
 	halo.corner_radius_top_left = 10
 	halo.corner_radius_top_right = 10
@@ -549,8 +551,8 @@ func _apply_surface_style() -> void:
 
 func _set_state_colors(border: Color, text_color: Color) -> void:
 	_state_text.add_theme_color_override("font_color", text_color)
-	_name_label.add_theme_color_override("font_color", Color(0.9, 0.88, 0.82))
-	_threshold_label.add_theme_color_override("font_color", Color(0.58, 0.62, 0.66))
+	_name_label.add_theme_color_override("font_color", Color(0.94, 0.87, 0.73))
+	_threshold_label.add_theme_color_override("font_color", Color(0.6, 0.53, 0.46))
 
 
 func _refresh_inspection_frame() -> void:

@@ -13,6 +13,7 @@ const CARD_ASPECT := 0.535
 @export var reduced_motion := false
 
 @onready var title_label: Label = %TitleLabel
+@onready var subtitle_label: Label = $TopCenter/TitlePlate/TitleContent/SubtitleLabel
 @onready var card_zone: CenterContainer = %CardZone
 @onready var card_row: HBoxContainer = %CardRow
 @onready var card_left: RewardCardChoice = %RewardCardChoiceA
@@ -30,6 +31,7 @@ var _cards: Array[RewardCardChoice] = []
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	PremiumUI.apply(self)
 	_cards = [card_left, card_right]
 	for card in _cards:
 		card.choice_requested.connect(_on_card_choice_requested)
@@ -44,7 +46,7 @@ func present(options: Array[Dictionary], use_reduced_motion: bool = false) -> bo
 	reset()
 	reduced_motion = use_reduced_motion
 	if options.size() != 2:
-		error_label.text = "Deux équipements valides sont requis."
+		error_label.text = "Deux récompenses valides sont requises."
 		error_label.show()
 		visible = true
 		return false
@@ -56,6 +58,15 @@ func present(options: Array[Dictionary], use_reduced_motion: bool = false) -> bo
 		visible = true
 		return false
 	_options = options.duplicate(true)
+	var relic_offer := _options_are_relics()
+	title_label.text = (
+		"CHOISISSEZ UNE RELIQUE" if relic_offer else "CHOISISSEZ UN ÉQUIPEMENT"
+	)
+	subtitle_label.text = (
+		"Une seule relique rejoindra le Sac partagé"
+		if relic_offer
+		else "Un seul équipement sera attribué à un héros"
+	)
 	visible = true
 	_presented = true
 	for index in _cards.size():
@@ -111,7 +122,7 @@ func request_confirmation() -> bool:
 		return false
 	_locked = true
 	confirm_button.disabled = true
-	confirm_button.text = "ATTRIBUTION…"
+	confirm_button.text = "ACQUISITION…"
 	for card in _cards:
 		card.set_locked(true)
 	confirmation_requested.emit(_selected_item_id)
@@ -121,7 +132,11 @@ func request_confirmation() -> bool:
 func resolve_confirmation(success: bool, error_message: String = "") -> void:
 	if success:
 		error_label.hide()
-		confirm_button.text = "ÉQUIPEMENT OBTENU"
+		confirm_button.text = (
+			"RELIQUE OBTENUE"
+			if _selected_definition_is_relic()
+			else "ÉQUIPEMENT OBTENU"
+		)
 		for card in _cards:
 			card.play_confirmation(card.item_id == _selected_item_id)
 		AudioManager.play_sfx(REVEAL_SFX, -7.0)
@@ -208,8 +223,13 @@ func _on_card_hover_changed(card_index: int, hovered: bool) -> void:
 func _apply_responsive_layout() -> void:
 	if not is_node_ready() or size.x <= 0.0 or size.y <= 0.0:
 		return
-	var card_height := clampf(size.y * 0.655, 410.0, 735.0)
-	var vertical_allowance := maxf(330.0, size.y - 224.0)
+	var compact := size.y <= 760.0
+	var card_height := clampf(
+		size.y * (0.59 if compact else 0.655),
+		400.0 if compact else 410.0,
+		735.0,
+	)
+	var vertical_allowance := maxf(330.0, size.y - (252.0 if compact else 224.0))
 	card_height = minf(card_height, vertical_allowance)
 	var gap := clampf(size.x * 0.055, 56.0, 110.0)
 	var card_width := card_height * CARD_ASPECT
@@ -220,8 +240,8 @@ func _apply_responsive_layout() -> void:
 	card_row.add_theme_constant_override("separation", int(gap))
 	for card in _cards:
 		card.set_card_size(Vector2(card_width, card_height))
-	card_zone.offset_top = 104.0 if size.y <= 760.0 else 118.0
-	card_zone.offset_bottom = -104.0 if size.y <= 760.0 else -118.0
+	card_zone.offset_top = 116.0 if compact else 112.0
+	card_zone.offset_bottom = -120.0 if compact else -126.0
 	title_label.add_theme_font_size_override(
 		"font_size",
 		26 if size.y <= 760.0 else 34,
@@ -249,3 +269,22 @@ func _finish_confirmation_after_delay() -> void:
 	var delay := 0.22 if reduced_motion else 0.62
 	await get_tree().create_timer(delay, true, false, true).timeout
 	confirmation_finished.emit()
+
+
+func _options_are_relics() -> bool:
+	if _options.is_empty():
+		return false
+	for option in _options:
+		var definition := option.get("definition") as ItemDefinition
+		if definition == null or not definition.is_relic():
+			return false
+	return true
+
+
+func _selected_definition_is_relic() -> bool:
+	for option in _options:
+		if StringName(option.get("item_id", &"")) != _selected_item_id:
+			continue
+		var definition := option.get("definition") as ItemDefinition
+		return definition != null and definition.is_relic()
+	return false

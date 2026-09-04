@@ -38,6 +38,7 @@ var _reduced_motion := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	PremiumUI.apply(_pause_root)
 	_actions = {
 		&"resume": _resume_button,
 		&"characters": _characters_button,
@@ -172,6 +173,16 @@ func get_layout_profile() -> StringName:
 
 func set_reduced_motion(enabled: bool) -> void:
 	_reduced_motion = enabled
+	for button in [
+		_resume_button,
+		_characters_button,
+		_equipment_button,
+		_compendium_button,
+		_options_button,
+		_abandon_button,
+	]:
+		if button != null:
+			button.set_reduced_motion(enabled)
 	if enabled and is_open():
 		if _open_tween != null and _open_tween.is_valid():
 			_open_tween.kill()

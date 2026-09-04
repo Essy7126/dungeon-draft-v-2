@@ -5,6 +5,7 @@ const GAME_MANAGER_SCRIPT := preload("res://core/game_manager.gd")
 const TEAM_HEAL := preload("res://data/post_combat/rewards/team_heal_percent.tres")
 const HERO_MAX_HP := preload("res://data/post_combat/rewards/hero_max_hp.tres")
 const NEXT_SHIELD := preload("res://data/post_combat/rewards/next_combat_shield.tres")
+const ELF_PATH := "res://data/units/alliés/elfe.tres"
 
 
 func before_each() -> void:
@@ -170,7 +171,7 @@ func test_next_combat_shield_is_stored_max_applied_and_consumed_once() -> void:
 		assert_eq(state.unit.current_shield, 6)
 
 
-func test_reward_options_are_two_deterministic_equipment_cards() -> void:
+func test_reward_options_are_two_deterministic_relic_cards() -> void:
 	GameManager._last_combat_report = _reward_report(&"options")
 	GameManager._room_exit_selected = true
 	assert_true(GameManager.can_claim_post_combat_equipment(&"options"))
@@ -182,8 +183,9 @@ func test_reward_options_are_two_deterministic_equipment_cards() -> void:
 	for option in options:
 		var definition := option["definition"] as ItemDefinition
 		assert_true(definition.is_valid())
-		assert_not_null(definition.get_reward_card_texture())
-		assert_false((option["compatible_character_ids"] as Array).is_empty())
+		assert_true(definition.is_relic())
+		assert_not_null(definition.get_inventory_icon())
+		assert_true((option["compatible_character_ids"] as Array).is_empty())
 
 
 func test_reward_offer_and_applied_state_survive_snapshot_restore() -> void:
@@ -194,7 +196,7 @@ func test_reward_offer_and_applied_state_survive_snapshot_restore() -> void:
 	var selected := initial_options[0] as Dictionary
 	assert_true(GameManager.confirm_post_combat_equipment(
 		selected["item_id"],
-		selected["compatible_character_ids"][0],
+		&"",
 	).get("success", false))
 	var snapshot := GameManager.get_inventory_equipment_snapshot()
 	assert_true(snapshot.has("equipment_reward"))
@@ -211,7 +213,7 @@ func test_reward_offer_and_applied_state_survive_snapshot_restore() -> void:
 	assert_false(GameManager.can_claim_post_combat_equipment(&"persistent_offer"))
 	assert_false(GameManager.confirm_post_combat_equipment(
 		selected["item_id"],
-		selected["compatible_character_ids"][0],
+		&"",
 	).get("success", true))
 
 
@@ -277,6 +279,52 @@ func test_screen_runs_victory_stats_progression_and_displays_two_cards() -> void
 		(deck_after["deck"] as Array).size(),
 		(deck_before["deck"] as Array).size() - 2,
 	)
+
+
+func test_solo_victory_names_the_actual_non_achilles_hero() -> void:
+	GameManager.cleanup_run_state()
+	assert_true(GameManager._prepare_preconfigured_run(_run_data(2), [ELF_PATH]))
+	GameManager.current_room_index = 0
+	var states := GameManager.get_ordered_character_states()
+	var tracker := CombatReportTracker.new()
+	tracker.begin(states, 0, "Salle solo")
+	GameManager._last_combat_report = tracker.finalize(states, true)
+	GameManager.set_reduced_motion_enabled(true)
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	assert_eq((screen.get_node("%VictoryTitle") as Label).text, "SALLE SÉCURISÉE")
+	assert_eq((screen.get_node("%VictorySubtitle") as Label).text, "Elfe demeure debout.")
+	assert_false((screen.get_node("%VictorySubtitle") as Label).text.contains("Achille"))
+
+
+func test_incomplete_wave_chain_announces_a_wave_and_pending_decision() -> void:
+	GameManager.cleanup_run_state()
+	var run := RunData.new()
+	run.run_name = "Chaîne de vagues"
+	run.room_flow_mode = RunData.RoomFlowMode.WAVE_CHAIN
+	run.maximum_waves_per_room = 10
+	run.rooms = [
+		load("res://data/rooms/test_waves/first_run_room_01_waves.tres") as RoomData,
+		load("res://data/rooms/first_run_room_02.tres") as RoomData,
+	]
+	assert_true(GameManager._prepare_preconfigured_run(run, [ELF_PATH]))
+	GameManager.current_room_index = 0
+	var states := GameManager.get_ordered_character_states()
+	var tracker := CombatReportTracker.new()
+	tracker.begin(states, 0, "Vague solo")
+	GameManager._last_combat_report = tracker.finalize(states, true)
+	GameManager.set_reduced_motion_enabled(true)
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	assert_eq((screen.get_node("%PhaseTitle") as Label).text, "RÉSULTAT DE VAGUE")
+	assert_eq((screen.get_node("%VictoryTitle") as Label).text, "VAGUE REPOUSSÉE")
+	assert_eq(
+		(screen.get_node("%StatusLabel") as Label).text,
+		"Une décision reste à prendre.",
+	)
+	assert_true(screen._can_enter_room_decision())
 
 
 func test_room_decision_shows_secured_gains_party_state_and_qualitative_risk() -> void:
@@ -485,6 +533,44 @@ func test_reward_error_blocks_completion_and_stays_controlled() -> void:
 	assert_eq(GameManager.get_run_inventory().get_empty_slot_count(), 0)
 
 
+func test_refused_transition_restores_visible_retry_without_losing_reward() -> void:
+	GameManager._last_combat_report = _finalized_global_report_with_progress()
+	GameManager.set_reduced_motion_enabled(true)
+	var screen := SCREEN_SCENE.instantiate() as PostCombatScreen
+	add_child_autofree(screen)
+	await get_tree().process_frame
+	_reach_reward_phase(screen)
+	var option := GameManager.get_post_combat_reward_options()[0] as Dictionary
+	assert_true(screen.select_reward_by_id(StringName(option["item_id"])))
+	assert_true(screen.confirm_selected_reward())
+	GameManager._post_combat_transition_pending = true
+	var overlay := screen.get_node("%EquipmentRewardOverlay") as EquipmentRewardOverlay
+	await overlay.confirmation_finished
+	var transition_tween := screen.get("_current_tween") as Tween
+	if transition_tween != null and transition_tween.is_running():
+		await transition_tween.finished
+
+	var retry_button := screen.get_node("%ContinueButton") as Button
+	var visible_error := screen.get_node("%RewardError") as Label
+	assert_eq(screen.get_phase_name(), &"COMPLETED")
+	assert_true(visible_error.is_visible_in_tree())
+	assert_string_contains(visible_error.text, "récompense reste enregistrée")
+	assert_true(retry_button.is_visible_in_tree())
+	assert_false(retry_button.disabled)
+	assert_eq(retry_button.text, "RÉESSAYER LA TRANSITION")
+	assert_false(overlay.visible)
+	assert_true(GameManager.get_current_combat_report().reward_result.get("success", false))
+
+	retry_button.pressed.emit()
+	assert_eq(screen.get_phase_name(), &"TRANSITIONING")
+	var retry_tween := screen.get("_current_tween") as Tween
+	if retry_tween != null and retry_tween.is_running():
+		await retry_tween.finished
+	assert_eq(screen.get_phase_name(), &"COMPLETED")
+	assert_true(visible_error.is_visible_in_tree())
+	assert_false(retry_button.disabled)
+
+
 func test_invalid_two_card_offer_is_visible_blocking_and_transactional() -> void:
 	GameManager._last_combat_report = _finalized_global_report_with_progress()
 	var reward_snapshot := GameManager.get_equipment_reward_deck_snapshot()
@@ -584,15 +670,33 @@ func test_last_room_keeps_existing_no_equipment_rule_and_run_result() -> void:
 	assert_false(manager.can_claim_post_combat_equipment(report_id))
 	assert_true(manager.get_post_combat_reward_options().is_empty())
 	assert_false(manager.select_post_combat_equipment(&"any_item"))
-	assert_eq(
-		manager.confirm_post_combat_equipment(&"any_item").get("error_code"),
-		"FINAL_ROOM_HAS_NO_REWARD",
-	)
+	var unavailable_reward := manager.confirm_post_combat_equipment(&"any_item")
+	assert_eq(unavailable_reward.get("error_code"), "FINAL_ROOM_HAS_NO_REWARD")
+	assert_string_contains(str(unavailable_reward.get("error", "")), "récompense")
+	assert_false(str(unavailable_reward.get("error", "")).contains("équipement"))
 	var requested: Array[String] = []
 	manager.scene_change_requested.connect(func(path): requested.append(path))
 	assert_true(manager.complete_post_combat_transition(report_id))
 	assert_eq(requested, [manager.RUN_RESULT_SCREEN_PATH])
 	assert_false(manager.complete_post_combat_transition(report_id))
+	manager.cleanup_run_state()
+	manager.free()
+
+
+func test_unsecured_room_reward_error_uses_neutral_reward_wording() -> void:
+	var manager := GAME_MANAGER_SCRIPT.new()
+	assert_true(manager._prepare_preconfigured_run(
+		_run_data(2),
+		GameManager.PRODUCTION_HERO_DATA_PATHS,
+	))
+	manager.current_room_index = 0
+	manager.begin_combat_report()
+	manager.on_battle_won()
+	manager._room_exit_selected = false
+	var unavailable_reward := manager.confirm_post_combat_equipment(&"any_item")
+	assert_eq(unavailable_reward.get("error_code"), "ROOM_REWARD_UNAVAILABLE")
+	assert_string_contains(str(unavailable_reward.get("error", "")), "récompense")
+	assert_false(str(unavailable_reward.get("error", "")).contains("équipement"))
 	manager.cleanup_run_state()
 	manager.free()
 

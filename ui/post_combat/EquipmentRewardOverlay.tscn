@@ -29,22 +29,39 @@ grow_vertical = 2
 mouse_filter = 0
 color = Color(1, 1, 1, 1)
 
-[node name="TitleLabel" type="Label" parent="."]
-unique_name_in_owner = true
+[node name="TopCenter" type="CenterContainer" parent="."]
+z_index = 10
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 36.0
-offset_bottom = 84.0
+offset_top = 20.0
+offset_bottom = 104.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.95, 0.88, 0.72, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 3
-theme_override_font_sizes/font_size = 34
-text = "CHOISISSEZ UN ÉQUIPEMENT"
+mouse_filter = 2
+
+[node name="TitlePlate" type="PanelContainer" parent="TopCenter"]
+custom_minimum_size = Vector2(620, 76)
+layout_mode = 2
+theme_type_variation = &"PremiumHeader"
+
+[node name="TitleContent" type="VBoxContainer" parent="TopCenter/TitlePlate"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="TopCenter/TitlePlate/TitleContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PremiumTitle"
+text = "CHOISISSEZ UNE RELIQUE"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="TopCenter/TitlePlate/TitleContent"]
+layout_mode = 2
+theme_type_variation = &"PremiumMuted"
+text = "Une seule faveur rejoindra le Sac partagé"
+horizontal_alignment = 1
 
 [node name="CardZone" type="CenterContainer" parent="."]
 unique_name_in_owner = true
@@ -52,8 +69,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 118.0
-offset_bottom = -118.0
+offset_top = 112.0
+offset_bottom = -126.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
@@ -73,45 +90,59 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BottomControls" type="VBoxContainer" parent="."]
+[node name="BottomCenter" type="CenterContainer" parent="."]
+z_index = 10
 layout_mode = 1
 anchors_preset = 12
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = -108.0
+offset_top = -120.0
 offset_right = -24.0
-offset_bottom = -20.0
+offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/separation = 6
+
+[node name="BottomPlate" type="PanelContainer" parent="BottomCenter"]
+custom_minimum_size = Vector2(640, 102)
+layout_mode = 2
+theme_type_variation = &"PremiumFooter"
+
+[node name="BottomMargin" type="MarginContainer" parent="BottomCenter/BottomPlate"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 8
+
+[node name="BottomControls" type="VBoxContainer" parent="BottomCenter/BottomPlate/BottomMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
 alignment = 1
 
-[node name="ConfirmCenter" type="CenterContainer" parent="BottomControls"]
+[node name="ConfirmCenter" type="CenterContainer" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls"]
 layout_mode = 2
 
-[node name="ConfirmButton" type="Button" parent="BottomControls/ConfirmCenter"]
+[node name="ConfirmButton" type="Button" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls/ConfirmCenter"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 46)
+custom_minimum_size = Vector2(310, 46)
 layout_mode = 2
 focus_mode = 2
 disabled = true
-theme_type_variation = &"SkillTreeCloseButton"
+theme_type_variation = &"PremiumPrimaryButton"
 text = "CONFIRMER"
 
-[node name="InputHints" type="Label" parent="BottomControls"]
+[node name="InputHints" type="Label" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.67, 0.7, 0.72, 1)
-theme_override_font_sizes/font_size = 13
+theme_type_variation = &"PremiumMuted"
 text = "← →  Choisir    ·    Entrée / A  Valider    ·    Échap  indisponible"
 horizontal_alignment = 1
 
-[node name="ErrorLabel" type="Label" parent="BottomControls"]
+[node name="ErrorLabel" type="Label" parent="BottomCenter/BottomPlate/BottomMargin/BottomControls"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.98, 0.46, 0.38, 1)
-theme_override_font_sizes/font_size = 14
+theme_type_variation = &"PremiumDanger"
 text = "Attribution impossible"
 horizontal_alignment = 1
