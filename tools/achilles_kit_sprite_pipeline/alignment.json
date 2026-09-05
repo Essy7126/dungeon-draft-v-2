@@ -1,0 +1,568 @@
+{
+  "base_E": {
+    "scale": 0.7,
+    "roots": [
+      [
+        128,
+        316
+      ],
+      [
+        526,
+        317
+      ],
+      [
+        928,
+        311
+      ],
+      [
+        1259,
+        325
+      ],
+      [
+        164,
+        683
+      ],
+      [
+        526,
+        684
+      ],
+      [
+        884,
+        684
+      ],
+      [
+        1258,
+        684
+      ],
+      [
+        164,
+        1048
+      ],
+      [
+        544,
+        1048
+      ],
+      [
+        903,
+        1047
+      ],
+      [
+        1289,
+        1053
+      ]
+    ],
+    "notes": [
+      "Global source coordinates, row-major 4x3, source 1448x1086. Scale fixed across all twelve poses; standing bow body approximately 320px becomes 224px.",
+      "Planted-pose X is between the sole supports; Y is just below the lowest sole, preserving the canonical idle root offset. Estimate +/-4px.",
+      "Dash frames 1 and 2 (zero-based) use virtual ground roots below the pelvis, with the adjacent planted dash baseline retained. Their lifted feet and spear bbox do not determine alignment; estimate +/-10px.",
+      "Identity remains coherent: red crest, bronze helmet, ivory cuirass, petrol pteruges, red belt, dark teal shield with ivory chevron. Bow uses the back-mounted shield and spear. No visibly clipped spear or bow tips. Compact crouch in shield pose 2 is intentional; do not scale it up to the standing height."
+    ]
+  },
+  "base_S": {
+    "scale": 0.66,
+    "roots": [
+      [
+        251,
+        326
+      ],
+      [
+        576,
+        326
+      ],
+      [
+        962,
+        327
+      ],
+      [
+        1313,
+        338
+      ],
+      [
+        199,
+        696
+      ],
+      [
+        575,
+        704
+      ],
+      [
+        966,
+        705
+      ],
+      [
+        1309,
+        711
+      ],
+      [
+        245,
+        1059
+      ],
+      [
+        601,
+        1064
+      ],
+      [
+        972,
+        1073
+      ],
+      [
+        1323,
+        1072
+      ]
+    ],
+    "notes": [
+      "Global source coordinates, row-major 4x3, source 1448x1086. This sheet's standing body is approximately 340px, so .66 preserves the same approximately 225px target body height as base_E at .70.",
+      "Planted-pose X is between the sole supports; Y is just below the lowest sole. Front/back feet have visibly different projected depths, as in canonical idle_S. Estimate +/-4px.",
+      "Dash frames 1 and 2 (zero-based) use a virtual pelvis-derived ground root near the neighboring planted baseline. Frame 2 is a strongly forward-pitched flight drawing: do not center its bbox or lower its lifted feet onto the floor. Estimate +/-12px.",
+      "Matching crest, helmet, cuirass, belt and shield; bow/quiver/back equipment are readable. Hands are connected to bow/string or spear, with no obvious detached grip. No visibly clipped weapon tip. Root of the final shield poses lies close to source bottom because the complete feet remain near y1065."
+    ]
+  },
+  "base_N": {
+    "scale": 0.68,
+    "roots": [
+      [
+        139,
+        340
+      ],
+      [
+        534,
+        340
+      ],
+      [
+        936,
+        342
+      ],
+      [
+        1238,
+        341
+      ],
+      [
+        178,
+        716
+      ],
+      [
+        540,
+        718
+      ],
+      [
+        900,
+        718
+      ],
+      [
+        1244,
+        718
+      ],
+      [
+        137,
+        1058
+      ],
+      [
+        538,
+        1049
+      ],
+      [
+        892,
+        1061
+      ],
+      [
+        1235,
+        1059
+      ]
+    ]
+  },
+  "base_W": {
+    "scale": 0.7,
+    "roots": [
+      [
+        250,
+        340
+      ],
+      [
+        580,
+        354
+      ],
+      [
+        936,
+        354
+      ],
+      [
+        1287,
+        341
+      ],
+      [
+        189,
+        712
+      ],
+      [
+        559,
+        710
+      ],
+      [
+        923,
+        714
+      ],
+      [
+        1256,
+        715
+      ],
+      [
+        217,
+        1063
+      ],
+      [
+        571,
+        1065
+      ],
+      [
+        929,
+        1059
+      ],
+      [
+        1283,
+        1063
+      ]
+    ]
+  },
+  "notes": {
+    "status": "Mesure de la génération E v3, à confirmer en combat ; fichier alignment.json de production inchangé.",
+    "source": "art/source/characters/achilles/sprites_kit_v2/source_extra_E.png",
+    "source_sha256": "fecf66ba7f71edcb340ba8f4935c267681d63de2c7b93d6e968f4222d03bc847",
+    "source_dimensions": [
+      1254,
+      1254
+    ],
+    "source_grid": [
+      4,
+      4
+    ],
+    "components": 16,
+    "transparent_fraction": 0.721448,
+    "max_removed_alpha": 20,
+    "generator": "Outil imagegen intégré, nouvelle génération textuelle sans image de référence ni réutilisation automatique des images du contexte.",
+    "exact_prompt": "art/source/characters/achilles/sprites_kit_v2/prompts/extra_E_v3.txt",
+    "generated_original": "C:/Users/paolo/.codex/generated_images/01a0723f-0c26-7b41-9b67-80f7f03e3f41/exec-650e080f-e6f7-47d6-bad3-798102070563.png",
+    "previous_source_preserved": "art/source/characters/achilles/sprites_kit_v2/source_extra_E_overlap_review.png",
+    "previous_source_sha256": "3514f845df94fc4392ed12c35dfbbc3fa439cc5fd68c22741a54324a535b421e",
+    "scale_measurement": "La pose debout hit/3 mesure environ 264 px entre crête et semelles, soit 227 px à .86. La tête avec crête mesure environ 69 px, soit 59 px à .86, comparable aux quelque 60 px du vrai idle E V1. Les poses de volée ont les genoux légèrement plus fléchis et restent autour de 214 à 221 px de haut. Échelle identique sur toute la feuille, y compris la mort.",
+    "root_method": "Coordonnées globales de la feuille. Sweep, volley et hit : entre les deux appuis, juste sous le pied avant, avec le petit décalage horizontal du vrai idle E V1. Le penché avant de sweep/2 et le recul de hit/1 restent des déformations dessinées autour du sol ; pas de recentrage du tronc ni de recalage sur une pointe de lance.",
+    "death_roots": "Pose 12 : appui des deux pieds, sans utiliser le bas de la pointe. Pose 13 : projection du bassin entre genou et pied d'appui. Poses 14/15 : sol sous le bassin projeté ; la tête et les épaules avancent naturellement vers la droite quand le corps se replie et s'allonge. Le corps couché conserve sa taille anatomique, sans redimensionnement pour remplir la cellule.",
+    "art_review": [
+      "Les seize silhouettes sont séparées. La lance de sweep/2 ne touche plus la cheville de sweep/3 ; aucune région opaque supprimée pour obtenir ce résultat.",
+      "Une seule pointe claire sur chaque lance ; talon du manche en bois brun. Un bouclier par personnage, fixé au bras gauche ou rangé dans le dos pendant l'arc.",
+      "Le visage reste ouvert et lisible ; casque bronze à courte crête rouge, cuirasse ivoire, jupe pétrole, bordures or et sandales restent cohérents avec le V1.",
+      "Les armes restent reliées au personnage, y compris pendant la chute. Aucun accessoire flottant ou pointe coupée observé."
+    ],
+    "limits": "Aucune exécution Godot ni validation en combat dans cette revue. Le rendu de la transition depuis l'idle, des dégâts et des durées relève des vérifications centrales.",
+    "in_memory_verification": "Contrôle en mémoire réussi : 16 régions d'atlas RGBA identiques aux canvas préparés, zéro clipping aux bords. Contact de 20 vues affiché (4 copies idle E V1 puis 16 poses), échelle .86 et racines de ce fichier. Taille du casque cohérente ; pieds au plan de sol et chute autour du bassin projeté. Aucun atlas de production écrit."
+  },
+  "extra_E": {
+    "scale": 0.86,
+    "roots": [
+      [
+        164,
+        289
+      ],
+      [
+        474,
+        286
+      ],
+      [
+        766,
+        292
+      ],
+      [
+        1095,
+        290
+      ],
+      [
+        159,
+        604
+      ],
+      [
+        487,
+        606
+      ],
+      [
+        796,
+        609
+      ],
+      [
+        1106,
+        609
+      ],
+      [
+        166,
+        916
+      ],
+      [
+        506,
+        909
+      ],
+      [
+        789,
+        911
+      ],
+      [
+        1103,
+        915
+      ],
+      [
+        160,
+        1196
+      ],
+      [
+        471,
+        1188
+      ],
+      [
+        739,
+        1165
+      ],
+      [
+        1057,
+        1158
+      ]
+    ]
+  },
+  "extra_S": {
+    "scale": 0.88,
+    "roots": [
+      [
+        195,
+        286
+      ],
+      [
+        519,
+        286
+      ],
+      [
+        879,
+        292
+      ],
+      [
+        1125,
+        291
+      ],
+      [
+        194,
+        596
+      ],
+      [
+        501,
+        595
+      ],
+      [
+        815,
+        603
+      ],
+      [
+        1127,
+        599
+      ],
+      [
+        197,
+        892
+      ],
+      [
+        500,
+        889
+      ],
+      [
+        820,
+        897
+      ],
+      [
+        1125,
+        892
+      ],
+      [
+        199,
+        1174
+      ],
+      [
+        510,
+        1170
+      ],
+      [
+        824,
+        1148
+      ],
+      [
+        1109,
+        1124
+      ]
+    ],
+    "notes": [
+      "Global source coordinates; source_extra_S.png is 1254x1254, sixteen poses in row-major 4x4. Rows are sweep, volley, hit, death.",
+      "Fixed sheet scale .88. The upright final hit pose is approximately 256px crest-to-sole and its head approximately 67px; output approximately 225px/59px matches canonical V1. Shorter apparent height in the other poses follows knee flexion and torso inclination, not a separate per-pose scale.",
+      "Standing root X is between the sole supports, Y just below the lowest sole. The first twelve sole coordinates were checked against the actual alpha components in the lower leg region. Estimate +/-3px.",
+      "Death roots use the body/pelvis projection onto its support plane: standing feet, kneeling supports, seated pelvis, then prone pelvis/contact. The last two roots deliberately ignore the dropped spear, which extends below the body. Estimate +/-6px, especially the prone contact projection.",
+      "Sweep pose2's right foot crosses x940 into the next nominal tile (visible foot alpha approximately x933..953,y250..265). Keep that foot connected to its original character; do not crop on the 4x4 tile line.",
+      "Red crest, bronze helmet, ivory cuirass, petrol clothing, red belt and chevron shield remain consistent. Volley visibly nocks multiple arrows and returns to bow-low; right/left equipment connections remain readable. Hit clearly recoils then recovers. Death progresses from slump to knee, seated fall and curled prone pose. No visibly clipped weapon tip, disconnected hand or obvious duplicate limb."
+    ]
+  },
+  "extra_N": {
+    "scale": 0.94,
+    "roots": [
+      [
+        147,
+        275
+      ],
+      [
+        452,
+        287
+      ],
+      [
+        741,
+        287
+      ],
+      [
+        1081,
+        283
+      ],
+      [
+        157,
+        604
+      ],
+      [
+        459,
+        602
+      ],
+      [
+        770,
+        600
+      ],
+      [
+        1077,
+        601
+      ],
+      [
+        154,
+        887
+      ],
+      [
+        473,
+        887
+      ],
+      [
+        758,
+        896
+      ],
+      [
+        1079,
+        900
+      ],
+      [
+        155,
+        1177
+      ],
+      [
+        451,
+        1183
+      ],
+      [
+        762,
+        1152
+      ],
+      [
+        1088,
+        1148
+      ]
+    ],
+    "notes": [
+      "Global source coordinates, source_extra_N.png is 1254x1254; sixteen poses row-major 4x4. Rows sweep, volley, hit, death. Fixed scale .94: final upright hit pose approximately 233px crest-to-sole becomes 219px, matching the actual idle_N V1 approximately 218px; head/crest proportions also match.",
+      "Planted root X is between sole supports; Y is slightly below the lowest sole, as in the canonical idle. Sole coordinates were checked against alpha components in the lower leg region. Estimate +/-3px.",
+      "SOURCE POSE 6 IS EXCLUDED: the volley release drawing lacks its shield/back equipment. The measured [770,600] is provided only for complete source indexing, not permission to use this drawing. The production frame must retain the planned override to base_N pose6 with coherent back equipment.",
+      "Death roots use feet, kneeling supports and then pelvis ground projection. Seated [762,1152] and prone [1088,1148] deliberately ignore the spear shaft below the body. Estimate +/-6px, +/-8px for the prone pelvis projection.",
+      "The other fifteen poses retain the red crest, bronze helmet, ivory back plate, petrol clothing, red belt and shield. Raised spear grip, bow draw, recoil and collapse remain anatomically readable; seated far leg is occluded by the skirt. In the final prone pose the shield lies high across the back and its forearm connection is obscured, so this connection cannot be certified from the drawing alone.",
+      "No other visibly clipped tip, detached hand, duplicated limb or opaque contact with a neighboring pose was found. All normal planted roots are independent of weapon bounds."
+    ]
+  },
+  "extra_W": {
+    "scale": 0.95,
+    "roots": [
+      [
+        181,
+        293
+      ],
+      [
+        520,
+        306
+      ],
+      [
+        842,
+        303
+      ],
+      [
+        1107,
+        308
+      ],
+      [
+        187,
+        629
+      ],
+      [
+        502,
+        635
+      ],
+      [
+        807,
+        637
+      ],
+      [
+        1107,
+        637
+      ],
+      [
+        179,
+        919
+      ],
+      [
+        478,
+        918
+      ],
+      [
+        809,
+        925
+      ],
+      [
+        1115,
+        933
+      ],
+      [
+        193,
+        1184
+      ],
+      [
+        514,
+        1189
+      ],
+      [
+        805,
+        1161
+      ],
+      [
+        1126,
+        1163
+      ]
+    ],
+    "notes": [
+      "Global source coordinates; source_extra_W.png is 1254x1254, sixteen poses row-major 4x4. Rows sweep, volley, hit, death. Fixed scale .95. Final upright hit crest-to-sole is approximately 224px, giving approximately 213px, close to canonical idle_W approximately 218px; its root sits 4px below the sole. Bow and raised-weapon stances are somewhat taller but remain at one sheet scale.",
+      "First twelve roots use X between sole supports and Y just below the lowest sole. Actual sole alpha extents were measured in the lower leg regions. Estimate +/-3px. No root uses the weapon bbox.",
+      "Volley's last three right feet extend slightly below the nominal y627 tile edge, to y631..633. Retain their complete connected character components; there is a visible gap to the hit-row weapons below.",
+      "Death roots follow planted feet, kneeling pelvis support, seated pelvis [805,1161], then prone pelvis [1126,1163]. The head is allowed to fall left of that root naturally. The dropped spear below the body is deliberately excluded from the ground-root estimate. Estimate +/-6px for kneel/seated and +/-8px for prone.",
+      "All sixteen poses retain bronze helmet, red crest, blonde nape, ivory back plate, petrol pteruges, red belt, teal shield and ivory chevron. The shield and spear remain on the back during volley including release. Multiple arrows are visibly nocked in the draw pose. Weapon grips, elbows and connected limbs are readable; no missing shield like the excluded north volley pose was found.",
+      "No visibly clipped weapon tip, disconnected hand, duplicated limb or opaque contact with another pose was found. The final prone shield overlaps the upper back, with its arm connection occluded by the body, as in the other prone views."
+    ]
+  },
+  "clip_overrides": {
+    "volley_N": {
+      "3": {
+        "group": "base",
+        "direction": "N",
+        "index": 6,
+        "reason": "Release commun au tir et a la volee pour conserver le bouclier au dos."
+      }
+    }
+  }
+}

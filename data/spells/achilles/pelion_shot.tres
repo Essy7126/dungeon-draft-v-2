@@ -19,6 +19,7 @@ ap_cost = 3
 minimum_range = 2
 spell_range = 6
 needs_line_of_sight = true
+impact_delay_seconds = 0.2
 once_per_activation = true
 damage = 0
 damage_type = 0

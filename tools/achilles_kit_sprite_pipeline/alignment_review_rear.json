@@ -1,0 +1,148 @@
+{
+  "base_N": {
+    "scale": 0.68,
+    "roots": [
+      [
+        139,
+        340
+      ],
+      [
+        534,
+        340
+      ],
+      [
+        936,
+        342
+      ],
+      [
+        1238,
+        341
+      ],
+      [
+        178,
+        716
+      ],
+      [
+        540,
+        718
+      ],
+      [
+        900,
+        718
+      ],
+      [
+        1244,
+        718
+      ],
+      [
+        137,
+        1058
+      ],
+      [
+        538,
+        1049
+      ],
+      [
+        892,
+        1061
+      ],
+      [
+        1235,
+        1059
+      ]
+    ]
+  },
+  "base_W": {
+    "scale": 0.7,
+    "roots": [
+      [
+        250,
+        340
+      ],
+      [
+        580,
+        354
+      ],
+      [
+        936,
+        354
+      ],
+      [
+        1287,
+        341
+      ],
+      [
+        189,
+        712
+      ],
+      [
+        559,
+        710
+      ],
+      [
+        923,
+        714
+      ],
+      [
+        1256,
+        715
+      ],
+      [
+        217,
+        1063
+      ],
+      [
+        571,
+        1065
+      ],
+      [
+        929,
+        1059
+      ],
+      [
+        1283,
+        1063
+      ]
+    ]
+  },
+  "notes": {
+    "status": "Proposition de mesure visuelle, à confirmer en combat ; aucun changement du fichier alignment.json de production.",
+    "sources": {
+      "base_N": {
+        "path": "art/source/characters/achilles/sprites_kit_v2/source_base_N.png",
+        "sha256": "381c27e9f62dbf53cddad7206738b0fe7faa4c9987ff909497a63c3b147dae7b",
+        "dimensions": [
+          1448,
+          1086
+        ],
+        "components": 12,
+        "transparent_fraction": 0.669693,
+        "max_removed_alpha": 21
+      },
+      "base_W": {
+        "path": "art/source/characters/achilles/sprites_kit_v2/source_base_W.png",
+        "sha256": "289a45fafea37dacfe29e101c616b559003254f3a28f50d728fbad1128293596",
+        "dimensions": [
+          1448,
+          1086
+        ],
+        "components": 12,
+        "transparent_fraction": 0.70255,
+        "max_removed_alpha": 17
+      }
+    },
+    "reference": "Poses idle N/W V1 affichées dans leurs canvas 512x384, ancre 256/320 ; distance crête-semelles de l'ordre de 218 à 220 px, cible du kit environ 225 px.",
+    "scale_measurement": "Sur les poses d'arc debout, N à 0.68 donne environ 221 à 228 px de crête à semelles ; W à 0.70 donne environ 221 à 226 px. Les poses de garde accroupies restent volontairement plus basses. Aucune échelle par pose.",
+    "root_method": "Coordonnées globales source. Arc et garde : appui entre les deux semelles, plan de sol au-dessous du pied avant, avec le léger décalage de l'ancre observé dans idle V1. Dash 0/3 : appuis de la fente. Dash 1/2 : projection virtuelle du bassin et des jambes, sans ramener automatiquement la semelle la plus basse au sol.",
+    "dash_flight": "Les points virtuels maintiennent la silhouette en charge dans le canvas ; le dépliage des jambes et l'inclinaison du tronc restent dans le dessin. Les poses aériennes n'ont aucun mouvement de racine ajouté par ce fichier.",
+    "art_review": [
+      "La source N finale a été contrôlée, et non source_base_N_review.png. Le second bouclier de l'ancienne pose 0 n'apparaît plus.",
+      "Aucun équipement dupliqué, membre isolé, poignée disjointe ou pointe de lance coupée observé dans les 24 poses affichées sur fond clair.",
+      "Les poses de dash 2 dans N et W portent la lance en arrière de la trajectoire : ce sont des silhouettes de charge, pas une frappe de lance vers la cible.",
+      "L'arc conserve sa corde et la flèche préparée ; lance et bouclier sont rangés dans le dos pendant cette famille.",
+      "La pose W/0 dépasse la cellule source nominale par la droite ; la composante est entière et le pipeline ne découpe pas à la frontière de cellule."
+    ],
+    "limits": "Mesure artistique manuelle, sans exécution Godot, sans modification de sprites ni validation du combat. Les variations de posture dessinées restent visibles ; la transition et la taille perçue doivent être confirmées avec l'idle et la marche conservés.",
+    "in_memory_verification": "24 régions RGBA vérifiées par prepareDirection avec ces racines ; aucun clipping du canvas. Contacts N/W affichés avec quatre copies idle V1 puis les 12 poses, sans écriture d'atlas. Les appuis restent sur le plan de sol et la variation de hauteur du dash provient des poses aériennes."
+  }
+}

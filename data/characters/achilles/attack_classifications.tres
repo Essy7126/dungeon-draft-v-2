@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="CombatActionClassificationCatalogData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://data/characters/combat_action_classification_catalog_data.gd" id="1_catalog"]
 [ext_resource type="Script" path="res://data/characters/combat_action_classification_data.gd" id="2_entry"]
@@ -23,7 +23,12 @@ script = ExtResource("2_entry")
 ability_id = &"achilles_bronze_guard"
 classification = 3
 
+[sub_resource type="Resource" id="SpectreHeavyCleave"]
+script = ExtResource("2_entry")
+ability_id = &"spectre_heavy_cleave"
+classification = 0
+
 [resource]
 script = ExtResource("1_catalog")
 catalog_id = &"achilles_combat_action_classifications_v1"
-entries = Array[ExtResource("2_entry")]([SubResource("Strike"), SubResource("Dash"), SubResource("Shot"), SubResource("Guard")])
+entries = Array[ExtResource("2_entry")]([SubResource("Strike"), SubResource("Dash"), SubResource("Shot"), SubResource("Guard"), SubResource("SpectreHeavyCleave")])

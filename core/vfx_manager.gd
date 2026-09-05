@@ -1,21 +1,48 @@
 # core/vfx_manager.gd
 extends Node
 
+const ACHILLES_EFFECTS_PATH := "res://assets/vfx/achilles_kit_v2/effects.tres"
+const AchillesFX := preload("res://vfx/achilles_kit/achilles_spell_sprite_vfx.gd")
+
 var _battle_view : Node = null
+var _achilles_frames: SpriteFrames
+var _achilles_flights: Dictionary = {}
+var _achilles_arrivals: Dictionary = {}
+var _achilles_effects: Array[Node] = []
+var _barrier_bindings: Dictionary = {}
 
 func register_battle_view(view: Node) -> void:
+	if _battle_view != view:
+		_clear_achilles_effects()
 	_battle_view = view
+	# Load outside the release frame so a first disk read cannot consume most
+	# of the short projectile delay before the player sees frame zero.
+	if _achilles_frames == null and ResourceLoader.exists(ACHILLES_EFFECTS_PATH):
+		_achilles_frames = load(ACHILLES_EFFECTS_PATH) as SpriteFrames
 
 func unregister_battle_view(view: Node = null) -> void:
 	if view == null or _battle_view == view:
+		_clear_achilles_effects()
 		_battle_view = null
 
 func _ready() -> void:
 	EventBus.spell_cast.connect(_on_spell_cast)
+	EventBus.spell_visual_resolved.connect(_on_spell_visual_resolved)
+	EventBus.unit_visual_movement_finished.connect(_on_unit_visual_movement_finished)
+	EventBus.combat_ended.connect(_on_combat_ended)
 	EventBus.status_applied.connect(_on_status_applied)
 	EventBus.battle_view_ready.connect(register_battle_view)
 
 func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
+	if caster == null or spell == null or bool(report.get("failed", false)):
+		return
+	var presentation := _achilles_presentation(caster, spell, report)
+	if _is_achilles_presentation(presentation) and not spell.is_delayed():
+		_resolve_achilles_vfx(caster, spell, report, presentation)
+		# Preserve the source-bound bronze guard aura and its existing lifecycle.
+		if presentation.action_family == &"guard":
+			_play_legacy_spell_vfx(caster, spell, report.get("cell", caster.grid_pos))
+		return
 	# A delayed cast is only its warning phase. Its impact is played explicitly
 	# by Battle after the pending ability has passed its spatial revalidation.
 	if spell.is_delayed() or spell.impact_delay_seconds > 0.0:
@@ -24,6 +51,16 @@ func _on_spell_cast(caster: Unit, spell: Spell, report: Dictionary) -> void:
 
 
 func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
+	if caster == null or spell == null:
+		return null
+	var presentation := _achilles_presentation(caster, spell)
+	if _is_achilles_presentation(presentation) and presentation.action_family == &"shot" \
+			and spell.impact_delay_seconds > 0.0:
+		return _launch_achilles_projectile(caster, spell, cell, presentation)
+	return _play_legacy_spell_vfx(caster, spell, cell)
+
+
+func _play_legacy_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 	if spell.vfx_scene == null:
 		return null
 	if not is_instance_valid(_battle_view) or not _battle_view.is_inside_tree():
@@ -124,3 +161,286 @@ func _vfx_parent() -> Node:
 		if layer != null:
 			return layer
 	return _battle_view
+
+
+func _is_achilles_presentation(presentation: Dictionary) -> bool:
+	return presentation.get("action_family", &"generic") in [&"strike", &"dash", &"shot", &"guard"] \
+		and str(presentation.get("inherited_spell_id", &"")).begins_with("achilles_")
+
+
+func _achilles_presentation(caster: Unit, spell: Spell, report: Dictionary = {}) -> Dictionary:
+	var resolved: Dictionary = report.get("visual_presentation", {})
+	if not resolved.is_empty():
+		return resolved.duplicate(true)
+	var unit_view := _find_unit_view(caster)
+	if unit_view != null:
+		# The façade snapshot was also sent to the body sprite renderer.
+		var visual: Node = unit_view.get("_optional_visual") as Node
+		if visual != null and visual.has_method("get_action_presentation"):
+			var current: Dictionary = visual.get_action_presentation()
+			if current.get("spell_id", &"") == spell.get_effective_spell_id():
+				return current.duplicate(true)
+	return AchillesSpellVisualResolver.resolve(spell, caster)
+
+
+func _launch_achilles_projectile(caster: Unit, spell: Spell, cell: Vector2i,
+		presentation: Dictionary) -> Node:
+	if not _has_battle_view():
+		return null
+	var origin_cell := caster.grid_pos
+	var cells: Array = [cell]
+	var adapter = caster.mastery_combat_adapter
+	if adapter != null:
+		origin_cell = adapter.projectile_origin(caster, spell)
+		var shaped: Array = adapter.preview_target_cells(caster, spell, cell)
+		if not shaped.is_empty():
+			cells = shaped
+	# A piercing arrow traverses the real preview line; a volley separates into
+	# one arrow per legal fan cell. No targets are fabricated outside the grid.
+	if presentation.get("variant", &"base") in [&"piercing", &"death_line"] and cells.size() > 1:
+		cells = [cells.back()]
+	var origin := _caster_effect_origin(caster)
+	if origin_cell != caster.grid_pos:
+		origin += _grid_cell_global(origin_cell) - _grid_cell_global(caster.grid_pos)
+	var targets: Array[Vector2] = []
+	for target_cell in cells:
+		targets.append(_impact_cell_position(target_cell))
+	var fx := _new_achilles_effect(presentation, origin, targets, _cell_visual_width() * 0.85)
+	if fx == null:
+		return null
+	var key := _flight_key(caster, spell)
+	var previous: Node = _achilles_flights.get(key) as Node
+	if is_instance_valid(previous):
+		previous.cancel()
+	_achilles_flights[key] = fx
+	fx.start_flight(spell.impact_delay_seconds)
+	return fx
+
+
+func _resolve_achilles_vfx(caster: Unit, spell: Spell, report: Dictionary,
+		presentation: Dictionary) -> void:
+	if not _has_battle_view():
+		return
+	var cell: Vector2i = report.get("cell", caster.grid_pos)
+	var targets := _resolved_impact_positions(report)
+	var family := StringName(presentation.get("action_family", &"generic"))
+	var origin := _caster_effect_origin(caster)
+	match family:
+		&"shot":
+			var key := _flight_key(caster, spell)
+			var flight: Node = _achilles_flights.get(key) as Node
+			_achilles_flights.erase(key)
+			if is_instance_valid(flight):
+				flight.confirm_impact(targets)
+			elif not targets.is_empty():
+				# Headless/direct calls and automatic reactions only acknowledge
+				# the actual hit: never start a late flight after the HP loss.
+				_burst(presentation, &"impact", origin, targets, 0.55)
+		&"strike":
+			if presentation.get("variant", &"base") in [&"scourge", &"sweep"]:
+				_burst(presentation, &"sweep", origin, [_impact_cell_position(cell)], 1.15)
+			if not targets.is_empty():
+				_burst(presentation, &"impact", origin, targets, 0.52)
+		&"guard":
+			if int(report.get("shield_increase_total", 0)) > 0:
+				_burst(presentation, &"guard", origin, [origin], 1.12)
+			_bind_barrier_visuals(caster.mastery_combat_adapter)
+		&"dash":
+			if int(report.get("movement_count", 0)) <= 0:
+				return
+			var from_cell: Vector2i = presentation.get("origin_cell", caster.grid_pos)
+			var departure := _grid_cell_global(from_cell)
+			_burst(presentation, &"dust", departure, [departure], 0.72)
+			_achilles_arrivals[caster] = {"spell": spell, "report": report.duplicate(true),
+				"presentation": presentation.duplicate(true), "destination": cell, "arrived": false}
+
+
+func _on_spell_visual_resolved(caster: Unit, spell: Spell, report: Dictionary,
+		presentation: Dictionary) -> void:
+	if caster == null or spell == null or not _is_achilles_presentation(presentation) \
+			or bool(report.get("failed", false)) or not _has_battle_view():
+		return
+	if bool(presentation.get("movement_arrival_only", false)):
+		var pending: Dictionary = _achilles_arrivals.get(caster, {})
+		if pending.is_empty() or pending.destination != report.get("cell"):
+			return
+		var pending_visual: Dictionary = pending.presentation
+		if pending_visual.get("action_id", &"") != presentation.get("action_id", &""):
+			return
+		var pending_report: Dictionary = pending.report
+		var feedback: Array = pending_report.get("visual_feedback", [])
+		feedback.append_array(report.get("visual_feedback", []))
+		pending_report["visual_feedback"] = feedback
+		if bool(pending.get("arrived", false)):
+			_play_bastion_feedback(caster, pending)
+		return
+	var actual := _resolved_impact_positions(report)
+	if not actual.is_empty():
+		# Synchronous acknowledgement of a resolved automatic action. This does
+		# not call UnitView, launch another cast, or enqueue any gameplay work.
+		_burst(presentation, &"impact", _caster_effect_origin(caster), actual, 0.52, 0.16)
+
+
+func _on_unit_visual_movement_finished(unit: Unit) -> void:
+	var pending: Dictionary = _achilles_arrivals.get(unit, {})
+	if pending.is_empty() or not _has_battle_view() or unit == null or not unit.is_alive \
+			or unit.grid_pos != pending.destination:
+		return
+	var presentation: Dictionary = pending.presentation
+	var arrival := _grid_cell_global(unit.grid_pos)
+	if not bool(pending.get("arrived", false)):
+		_burst(presentation, &"dust", arrival, [arrival], 0.65, 0.18)
+	pending["arrived"] = true
+	_play_bastion_feedback(unit, pending)
+
+
+func _play_bastion_feedback(unit: Unit, pending: Dictionary) -> void:
+	if unit == null or not unit.is_alive or unit.grid_pos != pending.destination:
+		return
+	var presentation: Dictionary = pending.presentation
+	var feedback: Array = (pending.report as Dictionary).get("visual_feedback", [])
+	for fact in feedback:
+		if fact.get("kind", &"") != &"bastion_impact" or fact.get("cell") != unit.grid_pos:
+			continue
+		# This acknowledges the real Bastion reaction. Battle flushes it at
+		# arrival; an already recorded arrival is accepted too. Victim cells
+		# were captured before their resolved push.
+		var bastion_visual := presentation.duplicate(true)
+		bastion_visual["variant"] = &"bastion"
+		bastion_visual["effect_variant"] = &"dash_bastion"
+		var center := _caster_effect_origin(unit)
+		_burst(bastion_visual, &"guard", center, [center], 1.25)
+		var targets: Array[Vector2] = []
+		for target_cell in fact.get("target_cells", []):
+			targets.append(_impact_cell_position(target_cell))
+		if not targets.is_empty() and int(fact.get("raw_damage", 0)) > 0:
+			_burst(bastion_visual, &"impact", center, targets, 0.58)
+	feedback.clear()
+
+
+func _resolved_impact_positions(report: Dictionary) -> Array[Vector2]:
+	var targets: Array[Vector2] = []
+	if report.has("visual_impact_cells"):
+		for cell in report.visual_impact_cells:
+			targets.append(_impact_cell_position(cell))
+		return targets
+	for value in report.get("damaged_enemies", []):
+		var target := value as Unit
+		if target != null:
+			targets.append(_impact_cell_position(target.grid_pos))
+	return targets
+
+
+func _burst(presentation: Dictionary, animation: StringName, origin: Vector2,
+		targets: Array[Vector2], width_ratio: float, duration: float = 0.24) -> Node:
+	var fx := _new_achilles_effect(presentation, origin, targets, _cell_visual_width() * width_ratio)
+	if fx != null:
+		fx.start_burst(animation, duration)
+	return fx
+
+
+func _new_achilles_effect(presentation: Dictionary, origin: Vector2,
+		targets: Array[Vector2], width: float) -> Node:
+	if not _has_battle_view() or not ResourceLoader.exists(ACHILLES_EFFECTS_PATH):
+		return null
+	if _achilles_frames == null:
+		_achilles_frames = load(ACHILLES_EFFECTS_PATH) as SpriteFrames
+	if _achilles_frames == null:
+		return null
+	var parent := _vfx_parent()
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		return null
+	var fx := AchillesFX.new()
+	parent.add_child(fx)
+	# A mastery accent changes visual weight only, never its affected cells.
+	var tier := clampi(int(presentation.get("intensity_tier", 0)), 0, 2)
+	var visual_width := width * (1.0 + 0.08 * float(tier))
+	fx.configure(_achilles_frames, presentation, origin, targets, visual_width)
+	_prune_achilles_effects()
+	_achilles_effects.append(fx)
+	return fx
+
+
+func _prune_achilles_effects() -> void:
+	# Freed Object references cannot enter a typed Node callback. Test the
+	# array slot before any typed assignment, and preserve the typed array.
+	for index in range(_achilles_effects.size() - 1, -1, -1):
+		if not is_instance_valid(_achilles_effects[index]):
+			_achilles_effects.remove_at(index)
+
+
+func _bind_barrier_visuals(adapter) -> void:
+	if adapter == null or not adapter.has_method("barrier_visual_entries"):
+		return
+	if not _barrier_bindings.has(adapter):
+		var callback := _sync_barrier_visuals.bind(adapter)
+		adapter.barrier_changed.connect(callback)
+		_barrier_bindings[adapter] = {"callback": callback, "nodes": {}}
+	_sync_barrier_visuals([], adapter)
+
+
+func _sync_barrier_visuals(_cells: Array, adapter) -> void:
+	if not _barrier_bindings.has(adapter) or not _has_battle_view():
+		return
+	var nodes: Dictionary = _barrier_bindings[adapter].nodes
+	var wanted := {}
+	for entry in adapter.barrier_visual_entries():
+		var owner := entry.get("owner") as Unit
+		if owner == null:
+			continue
+		for cell in entry.get("cells", []):
+			var key := "%s:%s" % [owner.get_instance_id(), str(cell)]
+			wanted[key] = true
+			if is_instance_valid(nodes.get(key)):
+				continue
+			var presentation := {"spell_id": &"achilles_bronze_guard", "action_family": &"guard",
+				"variant": &"rampart", "effect_variant": &"guard_rampart", "cell": cell,
+				"palette_variant": &"aeacus"}
+			var position := _impact_cell_position(cell)
+			var fx := _new_achilles_effect(presentation, position, [position], _cell_visual_width() * 0.92)
+			if fx != null:
+				fx.start_hold()
+				nodes[key] = fx
+	for key in nodes.keys():
+		if not wanted.has(key):
+			if is_instance_valid(nodes[key]):
+				nodes[key].cancel()
+			nodes.erase(key)
+
+
+func _flight_key(caster: Unit, spell: Spell) -> String:
+	return "%s:%s" % [caster.get_instance_id(), spell.get_effective_spell_id()]
+
+
+func _impact_cell_position(cell: Vector2i) -> Vector2:
+	return _grid_cell_global(cell) + Vector2(0.0, -_cell_visual_width() * 0.32)
+
+
+func _cell_visual_width() -> float:
+	if not _has_battle_view():
+		return 128.0
+	# The sum of the two isometric basis lengths is stable across map zooms.
+	var origin := _grid_cell_global(Vector2i.ZERO)
+	return maxf(1.0, (_grid_cell_global(Vector2i.RIGHT) - origin).length() * 1.8)
+
+
+func _has_battle_view() -> bool:
+	return is_instance_valid(_battle_view) and _battle_view.is_inside_tree()
+
+
+func _on_combat_ended(_victory: bool) -> void:
+	_clear_achilles_effects()
+
+
+func _clear_achilles_effects() -> void:
+	for adapter in _barrier_bindings:
+		var callback: Callable = _barrier_bindings[adapter].callback
+		if adapter.barrier_changed.is_connected(callback):
+			adapter.barrier_changed.disconnect(callback)
+	_barrier_bindings.clear()
+	for index in range(_achilles_effects.size() - 1, -1, -1):
+		if is_instance_valid(_achilles_effects[index]):
+			_achilles_effects[index].cancel()
+	_achilles_effects.clear()
+	_achilles_flights.clear()
+	_achilles_arrivals.clear()

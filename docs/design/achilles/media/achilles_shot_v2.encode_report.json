@@ -1,0 +1,253 @@
+{
+  "input": "artifacts/achilles_kit_sprite_validation_v2/base_shot_E_visual/clip/achilles_shot_v2.clip_manifest.json",
+  "output": "docs/design/achilles/media/achilles_shot_v2.gif",
+  "frames": 46,
+  "encoded_frames": 28,
+  "distinct_source_states": 28,
+  "merged_capture_frames": 18,
+  "source_images_checked_in_order": 46,
+  "image_order_signature_size": [
+    96,
+    85
+  ],
+  "maximum_palette_mean_error": 0.26952614379084966,
+  "encoded_timeline": [
+    {
+      "encoded_frame": 0,
+      "first_source_frame": 0,
+      "last_source_frame": 0,
+      "start_ms": 0,
+      "end_ms": 70
+    },
+    {
+      "encoded_frame": 1,
+      "first_source_frame": 1,
+      "last_source_frame": 1,
+      "start_ms": 70,
+      "end_ms": 120
+    },
+    {
+      "encoded_frame": 2,
+      "first_source_frame": 2,
+      "last_source_frame": 2,
+      "start_ms": 120,
+      "end_ms": 180
+    },
+    {
+      "encoded_frame": 3,
+      "first_source_frame": 3,
+      "last_source_frame": 3,
+      "start_ms": 180,
+      "end_ms": 250
+    },
+    {
+      "encoded_frame": 4,
+      "first_source_frame": 4,
+      "last_source_frame": 4,
+      "start_ms": 250,
+      "end_ms": 310
+    },
+    {
+      "encoded_frame": 5,
+      "first_source_frame": 5,
+      "last_source_frame": 15,
+      "start_ms": 310,
+      "end_ms": 1010
+    },
+    {
+      "encoded_frame": 6,
+      "first_source_frame": 16,
+      "last_source_frame": 17,
+      "start_ms": 1010,
+      "end_ms": 1130
+    },
+    {
+      "encoded_frame": 7,
+      "first_source_frame": 18,
+      "last_source_frame": 19,
+      "start_ms": 1130,
+      "end_ms": 1250
+    },
+    {
+      "encoded_frame": 8,
+      "first_source_frame": 20,
+      "last_source_frame": 21,
+      "start_ms": 1250,
+      "end_ms": 1370
+    },
+    {
+      "encoded_frame": 9,
+      "first_source_frame": 22,
+      "last_source_frame": 22,
+      "start_ms": 1370,
+      "end_ms": 1420
+    },
+    {
+      "encoded_frame": 10,
+      "first_source_frame": 23,
+      "last_source_frame": 23,
+      "start_ms": 1420,
+      "end_ms": 1480
+    },
+    {
+      "encoded_frame": 11,
+      "first_source_frame": 24,
+      "last_source_frame": 24,
+      "start_ms": 1480,
+      "end_ms": 1550
+    },
+    {
+      "encoded_frame": 12,
+      "first_source_frame": 25,
+      "last_source_frame": 25,
+      "start_ms": 1550,
+      "end_ms": 1610
+    },
+    {
+      "encoded_frame": 13,
+      "first_source_frame": 26,
+      "last_source_frame": 26,
+      "start_ms": 1610,
+      "end_ms": 1670
+    },
+    {
+      "encoded_frame": 14,
+      "first_source_frame": 27,
+      "last_source_frame": 27,
+      "start_ms": 1670,
+      "end_ms": 1730
+    },
+    {
+      "encoded_frame": 15,
+      "first_source_frame": 28,
+      "last_source_frame": 28,
+      "start_ms": 1730,
+      "end_ms": 1780
+    },
+    {
+      "encoded_frame": 16,
+      "first_source_frame": 29,
+      "last_source_frame": 29,
+      "start_ms": 1780,
+      "end_ms": 1840
+    },
+    {
+      "encoded_frame": 17,
+      "first_source_frame": 30,
+      "last_source_frame": 30,
+      "start_ms": 1840,
+      "end_ms": 1900
+    },
+    {
+      "encoded_frame": 18,
+      "first_source_frame": 31,
+      "last_source_frame": 31,
+      "start_ms": 1900,
+      "end_ms": 1960
+    },
+    {
+      "encoded_frame": 19,
+      "first_source_frame": 32,
+      "last_source_frame": 32,
+      "start_ms": 1960,
+      "end_ms": 2020
+    },
+    {
+      "encoded_frame": 20,
+      "first_source_frame": 33,
+      "last_source_frame": 33,
+      "start_ms": 2020,
+      "end_ms": 2080
+    },
+    {
+      "encoded_frame": 21,
+      "first_source_frame": 34,
+      "last_source_frame": 34,
+      "start_ms": 2080,
+      "end_ms": 2150
+    },
+    {
+      "encoded_frame": 22,
+      "first_source_frame": 35,
+      "last_source_frame": 35,
+      "start_ms": 2150,
+      "end_ms": 2210
+    },
+    {
+      "encoded_frame": 23,
+      "first_source_frame": 36,
+      "last_source_frame": 36,
+      "start_ms": 2210,
+      "end_ms": 2270
+    },
+    {
+      "encoded_frame": 24,
+      "first_source_frame": 37,
+      "last_source_frame": 37,
+      "start_ms": 2270,
+      "end_ms": 2330
+    },
+    {
+      "encoded_frame": 25,
+      "first_source_frame": 38,
+      "last_source_frame": 38,
+      "start_ms": 2330,
+      "end_ms": 2390
+    },
+    {
+      "encoded_frame": 26,
+      "first_source_frame": 39,
+      "last_source_frame": 39,
+      "start_ms": 2390,
+      "end_ms": 2450
+    },
+    {
+      "encoded_frame": 27,
+      "first_source_frame": 40,
+      "last_source_frame": 45,
+      "start_ms": 2450,
+      "end_ms": 2820
+    }
+  ],
+  "size": [
+    772,
+    686
+  ],
+  "source_duration_ms": 2818.467,
+  "encoded_duration_ms": 2820,
+  "delays_ms": [
+    70,
+    50,
+    60,
+    70,
+    60,
+    700,
+    120,
+    120,
+    120,
+    50,
+    60,
+    70,
+    60,
+    60,
+    60,
+    50,
+    60,
+    60,
+    60,
+    60,
+    60,
+    70,
+    60,
+    60,
+    60,
+    60,
+    60,
+    370
+  ],
+  "note": "Real game capture, fixed crop enlarged 2x. Original timestamps rounded to GIF centiseconds; identical holds may merge without changing duration. Dimensions, total duration, transition timestamps and nearest captured image in chronological order are checked after decoding. GPU capture may perturb playback; use the separate timing report for measurements.",
+  "source_manifest_archive": "docs/design/achilles/media/achilles_shot_v2.clip_manifest.json",
+  "source_frame_index_offset": 0,
+  "gif_sha256": "96c085aeacd9e7ae50a18cdf1aaea2cd353927beb4ef8bcd560199e417741a69",
+  "gif_bytes": 528652
+}

@@ -2,7 +2,19 @@ extends GutTest
 
 const UNIT_VIEW := preload("res://battle/unit_view.tscn")
 const ACHILLES_DATA := preload("res://data/units/allies/achilles.tres")
-const ADVANCE := preload("res://data/spells/achilles/advance.tres")
+const ADVANCE := preload("res://data/spells/achilles/fulminant_dash.tres")
+
+
+class PendingCastVisual:
+	extends Node2D
+
+	signal cast_release_reached
+
+	func play_spell_action(_spell: Spell = null) -> bool:
+		return true
+
+	func cancel_pending_visual_actions() -> void:
+		pass
 
 
 class AdvanceBattleFixture:
@@ -49,6 +61,10 @@ func _assert_advance_arrival(distance: int) -> void:
 	# Use UnitView's real release wait, then the same logical-position-first
 	# ordering used by the spell system. Battle owns the actual visual tween.
 	assert_true(await view.prepare_spell_visual(destination, ADVANCE))
+	# Keep Battle's real translation clock, then sample the sprite explicitly
+	# so a busy frame cannot consume the short landing before it is asserted.
+	adapter.set_process(false)
+	adapter.sprite_backend.set_process(false)
 	assert_eq(state.releases, 1)
 	assert_eq(unit.grid_pos, Vector2i.ZERO, "The sprite action must not move gameplay")
 	unit.grid_pos = destination
@@ -60,15 +76,21 @@ func _assert_advance_arrival(distance: int) -> void:
 	movement_tween.finished.connect(func() -> void: state.arrived = true, CONNECT_ONE_SHOT)
 	var late_samples := 0
 	var deadline := Time.get_ticks_msec() + 1800
-	var expected_speed := adapter.sprite_profile.walk_segment_duration_seconds \
-		/ adapter.sprite_profile.run_segment_duration_seconds
+	var expected_speed := 1.0
+	var last_sample_usec := Time.get_ticks_usec()
 	while not bool(state.arrived) and Time.get_ticks_msec() < deadline:
 		await wait_process_frames(1)
+		var now_usec := Time.get_ticks_usec()
+		if not bool(state.arrived):
+			adapter.sprite_backend.advance_simulation(float(now_usec - last_sample_usec) / 1000000.0)
+		last_sample_usec = now_usec
 		if bool(state.arrived) or Time.get_ticks_msec() - int(state.release_at) < 315:
 			continue
 		late_samples += 1
-		assert_eq(sprite.animation, &"walk_E", "Long advance must not drop to idle in flight")
-		assert_true(sprite.is_playing(), "Advance keeps its running clock until arrival")
+		assert_eq(sprite.animation, &"dash_E", "Long advance must not drop to idle in flight")
+		assert_eq(sprite.frame, 2, "Planted landing cannot slide across the grid")
+		assert_false(sprite.is_playing(), "Charge is sampled by the manual clock")
+		assert_true(bool(adapter.sprite_backend.get_runtime_state().manual_clock))
 		assert_true(adapter._action_pending, "Ordinary movement must not replace the active advance")
 		assert_eq(state.finishes, 0, "The clip budget must not finish ahead of the movement tween")
 		assert_almost_eq(sprite.speed_scale, expected_speed, 0.0001)
@@ -78,14 +100,51 @@ func _assert_advance_arrival(distance: int) -> void:
 	assert_almost_eq(view.position, battle.grid_cell_to_parent_local(destination, battle), Vector2(0.001, 0.001))
 	assert_false(adapter._action_pending)
 	assert_false(view._optional_visual_action_pending)
+	assert_eq(sprite.animation, &"dash_E")
+	assert_eq(sprite.frame, 3, "Real arrival starts a short planted reception")
+	var landing_seconds := float(adapter.sprite_backend.get_runtime_state().landing_duration_seconds)
+	adapter.sprite_backend.advance_simulation(landing_seconds - 0.001)
+	assert_eq(sprite.frame, 3)
+	adapter.sprite_backend.advance_simulation(0.001)
 	assert_eq(sprite.animation, &"idle_E")
 	assert_eq(sprite.frame, 0)
 	assert_false(sprite.is_playing())
 	# Arrival cancels the remaining fallback budget. It must neither emit a
 	# stale completion nor let parent-motion tracking restart the walk clip.
-	await wait_seconds(0.35)
+	adapter.sprite_backend.advance_simulation(adapter.sprite_profile.advance_duration_seconds + 0.5)
+	await wait_process_frames(2)
 	assert_eq(sprite.animation, &"idle_E")
 	assert_eq(sprite.frame, 0)
 	assert_false(sprite.is_playing())
 	assert_eq(state.releases, 1)
 	assert_eq(state.finishes, 0)
+	view.cancel_pending_visual_actions()
+	await view.wait_for_action_visual_finished()
+
+
+func test_unit_view_cancellation_and_removal_resume_pending_release_before_free() -> void:
+	var view = UNIT_VIEW.instantiate()
+	add_child_autofree(view)
+	view.unit = Unit.from_data(ACHILLES_DATA)
+	var waiting_visual := PendingCastVisual.new()
+	view.add_child(waiting_visual)
+	view._optional_visual = waiting_visual
+	var cancelled := {"done": false, "released": true}
+	_capture_pending_release(view, cancelled)
+	assert_false(bool(cancelled.done))
+	view.cancel_pending_visual_actions()
+	assert_true(bool(cancelled.done), "Cancel wakes the release waiter synchronously")
+	assert_false(bool(cancelled.released))
+	var removed := {"done": false, "released": true}
+	_capture_pending_release(view, removed)
+	assert_false(bool(removed.done))
+	view.queue_free()
+	await wait_process_frames(2)
+	assert_false(is_instance_valid(view))
+	assert_true(bool(removed.done), "Removal drains the coroutine before its instance disappears")
+	assert_false(bool(removed.released))
+
+
+func _capture_pending_release(view: Node2D, state: Dictionary) -> void:
+	state.released = await view.prepare_spell_visual(Vector2i.RIGHT, ADVANCE)
+	state.done = true

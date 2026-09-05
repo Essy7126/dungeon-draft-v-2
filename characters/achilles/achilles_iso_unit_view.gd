@@ -14,6 +14,7 @@ const DEFAULT_FALLBACK_BACKEND_SCENE := "res://characters/achilles/3d/AchillesLe
 const FALLBACK_BACKEND_SCRIPT := "res://characters/achilles/3d/achilles_legacy_2d_backend.gd"
 const VIEWPORT_BACKEND_SCENE := "res://characters/achilles/3d/AchillesViewport3DBackend.tscn"
 const SPRITE_BACKEND_SCRIPT := preload("res://characters/achilles/2d/achilles_sprite_2d_backend.gd")
+const SPELL_VISUAL_RESOLVER := preload("res://data/visuals/achilles/achilles_spell_visual_resolver.gd")
 
 @export var visual_profile: AchillesVisualProfile
 @export_enum("VIEWPORT_3D", "SPRITE_2D") var rendering_backend: String = "VIEWPORT_3D"
@@ -49,9 +50,15 @@ var _runtime_diagnostics_enabled := false
 var _runtime_room_id := ""
 var _runtime_commit := ""
 var _dead := false
+var _last_tick_usec := 0
+var _pending_action_presentation: Dictionary = {}
+var _last_action_presentation: Dictionary = {}
+var _death_fade_started := false
+var _death_signal_emitted := false
 
 
 func _ready() -> void:
+	_last_tick_usec = Time.get_ticks_usec()
 	if rendering_backend != "SPRITE_2D":
 		_ensure_viewport_backend()
 	var parent_2d := get_parent() as Node2D
@@ -61,6 +68,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	var now := Time.get_ticks_usec()
+	if rendering_backend == "SPRITE_2D":
+		delta = maxf(0.0, float(now - _last_tick_usec) / 1000000.0) * Engine.time_scale
+	_last_tick_usec = now
 	if _closing or _dead:
 		return
 	if _action_pending:
@@ -74,6 +85,11 @@ func _process(delta: float) -> void:
 				_complete_action_once(ACTION_FALLBACK)
 		return
 	_track_parent_movement(delta)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PAUSED or what == NOTIFICATION_UNPAUSED:
+		_last_tick_usec = Time.get_ticks_usec()
 
 
 func _exit_tree() -> void:
@@ -133,7 +149,9 @@ func play_cast() -> bool:
 	return _begin_action(&"cast")
 
 
-func play_spell_action(spell: Spell = null) -> bool:
+func play_spell_action(spell: Spell = null, resolved_profile: Dictionary = {}) -> bool:
+	if _closing or _dead or _action_pending:
+		return false
 	var action_id := &"cast"
 	if spell != null:
 		var spell_action_id := CharacterAnimationSetData.cast_action_id_for_spell_id(
@@ -141,7 +159,10 @@ func play_spell_action(spell: Spell = null) -> bool:
 		)
 		if spell_action_id != &"":
 			action_id = spell_action_id
-	return _begin_action(action_id)
+	# Capture the live unit/mastery geometry exactly once when accepting the
+	# action. Deferred backend startup must not resolve a different variant.
+	var presentation := SPELL_VISUAL_RESOLVER.resolve(spell, _unit, resolved_profile)
+	return _begin_action(action_id, presentation)
 
 
 func play_hit() -> bool:
@@ -168,6 +189,8 @@ func cancel_pending_visual_actions() -> void:
 	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
 	_pending_action_id = ACTION_FALLBACK
 	_pending_action_clip = &""
+	_pending_action_presentation = {}
+	_last_tick_usec = Time.get_ticks_usec()
 	_release_emitted = false
 	_queued_action_for_backend = false
 	_movement_active = false
@@ -185,6 +208,24 @@ func cancel_pending_visual_actions() -> void:
 	if is_instance_valid(_active_backend) and not _closing and not _dead:
 		_play_active_idle()
 	_activate_deferred_viewport_if_available()
+
+
+## Actual arrival releases the cast budget immediately. The short landing
+## remains interruptible presentation and never creates another impact.
+func finish_external_spell_movement() -> void:
+	if _closing or _dead:
+		return
+	var landing_facing := ""
+	if is_instance_valid(sprite_backend) and _active_backend == sprite_backend:
+		var state := sprite_backend.get_runtime_state()
+		if bool(state.landing_pending):
+			return
+		if bool(state.action_pending) and bool(state.release_emitted) and String(state.stem) == "dash":
+			landing_facing = String(state.facing)
+	synchronize_external_movement()
+	cancel_pending_visual_actions()
+	if landing_facing != "":
+		sprite_backend.finish_dash_landing(landing_facing)
 
 
 func synchronize_external_movement() -> void:
@@ -379,6 +420,10 @@ func configure_runtime_diagnostics(
 	_emit_runtime_state(&"ACHILLES_VISUAL_RUNTIME_DIAGNOSTICS_CONFIGURED")
 
 
+func get_action_presentation() -> Dictionary:
+	return _last_action_presentation.duplicate(true)
+
+
 func get_visual_runtime_state() -> Dictionary:
 	var character_scene_path := ""
 	var evidence_profile := _selected_profile \
@@ -418,6 +463,8 @@ func get_visual_runtime_state() -> Dictionary:
 		"ACHILLES_VIEWPORT_TEXTURE_VALID": viewport_texture_valid,
 		"ACHILLES_SPRITE_FRAMES_PATH": sprite_profile.sprite_frames_path if sprite_profile != null else "",
 		"ACHILLES_SPRITE_DIRECTION": _facing,
+		"ACHILLES_ACTION_PRESENTATION": _last_action_presentation.duplicate(true),
+		"ACHILLES_SPRITE_RUNTIME": sprite_backend.get_runtime_state() if is_instance_valid(sprite_backend) else {},
 		"ACHILLES_SPRITE_FLIP_H": sprite_backend.animated_sprite.flip_h if is_instance_valid(sprite_backend) else false,
 		"ACHILLES_LEGACY_BODY_VISIBLE": legacy_visible,
 		"ACHILLES_LEGACY_BODY_PROCESSING": legacy_processing,
@@ -439,7 +486,7 @@ func _initialize_selected_backend() -> void:
 	request_subviewport_backend()
 
 
-func _begin_action(action_id: StringName = ACTION_FALLBACK) -> bool:
+func _begin_action(action_id: StringName = ACTION_FALLBACK, presentation: Dictionary = {}) -> bool:
 	if _closing or _dead or _action_pending:
 		return false
 	_generation += 1
@@ -448,6 +495,9 @@ func _begin_action(action_id: StringName = ACTION_FALLBACK) -> bool:
 	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
 	_pending_action_id = action_id if action_id != &"" else ACTION_FALLBACK
 	_pending_action_clip = _clip_for_action(_pending_action_id)
+	_pending_action_presentation = presentation.duplicate(true)
+	_last_action_presentation = _pending_action_presentation.duplicate(true)
+	_last_tick_usec = Time.get_ticks_usec()
 	_release_emitted = false
 	_movement_active = false
 	_movement_feedback_owned = false
@@ -664,6 +714,8 @@ func _on_bound_unit_died(_dead_unit: Unit) -> void:
 	_action_timeout_seconds = ACTION_TIMEOUT_SECONDS
 	_pending_action_id = ACTION_FALLBACK
 	_pending_action_clip = &""
+	_pending_action_presentation = {}
+	_last_tick_usec = Time.get_ticks_usec()
 	_release_emitted = false
 	_queued_action_for_backend = false
 	_movement_active = false
@@ -674,12 +726,29 @@ func _on_bound_unit_died(_dead_unit: Unit) -> void:
 		sprite_backend.cancel_action()
 	if is_instance_valid(fallback_backend):
 		fallback_backend.cancel_action()
+	if is_instance_valid(sprite_backend) and _active_backend == sprite_backend \
+			and sprite_backend.play_death(_facing):
+		return
+	_start_death_fade(0.28)
+
+
+func _on_sprite_death_pose_finished() -> void:
+	if not _closing and _dead:
+		_start_death_fade(sprite_profile.death_fade_seconds if sprite_profile != null else 0.12)
+
+
+func _start_death_fade(duration: float) -> void:
+	if _closing or not _dead or _death_fade_started:
+		return
+	_death_fade_started = true
 	var death_generation := _generation
 	_death_tween = create_tween()
-	_death_tween.tween_property(self, "modulate:a", 0.0, 0.28)
+	preload("res://characters/presentation_tween_clock.gd").drive(self, _death_tween)
+	_death_tween.tween_property(self, "modulate:a", 0.0, duration)
 	_death_tween.finished.connect(func() -> void:
 		_death_tween = null
-		if not _closing and death_generation == _generation:
+		if not _closing and death_generation == _generation and not _death_signal_emitted:
+			_death_signal_emitted = true
 			death_animation_finished.emit()
 	, CONNECT_ONE_SHOT)
 
@@ -739,9 +808,12 @@ func _play_active_movement() -> bool:
 func _play_active_action() -> bool:
 	if not is_instance_valid(_active_backend):
 		return false
+	# A queued action begins after its textures/backend finished loading.
+	# That loading time must not consume its freshly assigned watchdog budget.
+	_last_tick_usec = Time.get_ticks_usec()
 	if is_instance_valid(sprite_backend) and _active_backend == sprite_backend:
-		_action_timeout_seconds = sprite_backend.get_action_watchdog_seconds(_pending_action_id)
-		return sprite_backend.play_action(_facing, _pending_action_id)
+		_action_timeout_seconds = sprite_backend.get_action_watchdog_seconds(_pending_action_id, _pending_action_presentation)
+		return sprite_backend.play_action(_facing, _pending_action_id, _pending_action_presentation)
 	if _active_backend == viewport_backend:
 		_action_timeout_seconds = viewport_backend.get_action_watchdog_seconds(
 			_pending_action_id, _pending_action_clip
@@ -878,6 +950,7 @@ func _initialize_sprite_backend() -> void:
 	sprite_backend.name = "Sprite2DBackend"
 	add_child(sprite_backend)
 	_connect_backend_signals(sprite_backend)
+	sprite_backend.death_pose_finished.connect(_on_sprite_death_pose_finished)
 	if not sprite_backend.configure(sprite_profile):
 		_record_backend_error(sprite_backend.get_last_error())
 		if _action_pending:

@@ -118,6 +118,7 @@ var _enemy_turn: EnemyTurnRunner = null
 var _spell_impact_scheduler: SpellImpactScheduler = null
 var _spell_resolution_pending := false
 var _active_spell_movement_caster: Unit = null
+var _deferred_spell_reaction_context: CastContext = null
 var _spell_movement_feedback_unit: Unit = null
 var _spell_movement_feedback_tween: Tween = null
 var _spell_movement_feedback_generation := 0
@@ -273,6 +274,34 @@ func _publish_runtime_ready() -> void:
 # MISE EN PLACE — LOGIQUE
 # ============================================================
 
+func _configure_action_classifications(active_run: RunData, character_states: Array) -> void:
+	if spell_caster == null:
+		return
+	var catalogs: Array[CombatActionClassificationCatalogData] = []
+	for value in character_states:
+		var state := value as CharacterRunState
+		if state != null and state.progression_profile != null:
+			var profile_catalog := state.progression_profile.combat_action_classification_catalog
+			if profile_catalog != null:
+				catalogs.append(profile_catalog)
+	# Explicit run entries override shared character defaults for this battle.
+	if active_run != null and active_run.action_classification_catalog != null:
+		catalogs.append(active_run.action_classification_catalog)
+	var by_ability: Dictionary = {}
+	for catalog in catalogs:
+		if not catalog.is_valid():
+			continue
+		for entry in catalog.entries:
+			by_ability[entry.ability_id] = entry
+	if by_ability.is_empty():
+		return
+	var merged := CombatActionClassificationCatalogData.new()
+	merged.catalog_id = &"battle_explicit_action_classifications"
+	for entry: CombatActionClassificationData in by_ability.values():
+		merged.entries.append(entry)
+	spell_caster.set_action_classification_catalog(merged)
+
+
 func _setup_logic() -> void:
 	grid = EncounterGridFactory.build_for_battle(
 		room_data, self, grid_cols, grid_rows
@@ -285,6 +314,9 @@ func _setup_logic() -> void:
 		)
 	terrain_effects = TerrainEffects.new(grid)
 	spell_caster = SpellCaster.new(grid, pathfinder, terrain_effects)
+	_configure_action_classifications(
+		GameManager.get_active_run_data(), GameManager.get_ordered_character_states()
+	)
 	_target_feedback = COMBAT_TARGET_FEEDBACK.new(
 		grid, pathfinder, spell_caster
 	)
@@ -1172,9 +1204,19 @@ func _on_spell_movement_feedback_finished(
 		view.position = destination_local
 		if view.has_method("synchronize_external_movement"):
 			view.synchronize_external_movement()
-		# L'arrivee est le terme artistique de la ruee. Le backend de course est
-		# explicitement remis au repos, meme si son clip source est boucle.
-		if view.has_method("cancel_pending_visual_actions"):
+		# Acquitter le contact avant de reveiller les attentes du UnitView :
+		# finish_external_spell_movement peut reprendre le cast synchroniquement.
+		if not _closing and not _battle_over and is_instance_valid(unit) and unit.is_alive \
+				and feedback_generation == _spell_movement_feedback_generation:
+			EventBus.unit_visual_movement_finished.emit(unit)
+		if not is_instance_valid(view) or _closing or _battle_over \
+				or feedback_generation != _spell_movement_feedback_generation:
+			return
+		# La pose de reception commence seulement une fois la case atteinte.
+		# Les autres visuels conservent leur annulation habituelle.
+		if view.has_method("finish_external_spell_movement"):
+			view.finish_external_spell_movement()
+		elif view.has_method("cancel_pending_visual_actions"):
 			view.cancel_pending_visual_actions()
 
 
@@ -1194,6 +1236,13 @@ func _cancel_spell_movement_feedback(snap_to_grid: bool) -> void:
 	view.position = grid_cell_to_parent_local(moved_unit.grid_pos, view.get_parent())
 	if view.has_method("synchronize_external_movement"):
 		view.synchronize_external_movement()
+	# Un recalage engage acquitte sa vraie position avant le reglement des
+	# reactions. Il ne joue pas de reception et ne recree aucun marqueur de sort.
+	var context := _deferred_spell_reaction_context
+	if context != null and context.resolved and not context.failed \
+			and context.caster == moved_unit and moved_unit.is_alive \
+			and not _closing and not _battle_over:
+		EventBus.unit_visual_movement_finished.emit(moved_unit)
 
 
 func _wait_for_spell_movement_feedback(unit: Unit, generation: int) -> void:
@@ -2167,13 +2216,38 @@ func _spell_cast_rejection_reason(
 			return "Cette capacité ne peut pas être utilisée maintenant."
 
 
+func _flush_deferred_spell_reactions() -> void:
+	# Drop ownership before executing callbacks: a reentrant abort or shutdown
+	# cannot replay the command, charge its source twice, or flush a later cast.
+	var context := _deferred_spell_reaction_context
+	_deferred_spell_reaction_context = null
+	if context == null or not context.resolved or context.failed:
+		return
+	if _mastery_adapter != null and not _closing and not _battle_over:
+		_mastery_adapter.flush_automatic()
+
+
 func _abort_spell_resolution(unit: Unit, show_player_turn := true) -> void:
-	_spell_resolution_pending = false
+	var settles_committed_reactions := _deferred_spell_reaction_context != null \
+		and _deferred_spell_reaction_context.resolved and not _deferred_spell_reaction_context.failed
 	_active_spell_movement_caster = null
 	_cancel_spell_movement_feedback(true)
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view) and view.has_method("cancel_pending_visual_actions"):
 		view.cancel_pending_visual_actions()
+	# A cancelled presentation is snapped above. Already committed gameplay
+	# still settles once while input is locked; shutdown disposes its queues.
+	_flush_deferred_spell_reactions()
+	_spell_resolution_pending = false
+	if settles_committed_reactions and not _closing and not _battle_over:
+		if _evolution_queue.has_pending():
+			_process_evolution_queue_at_safe_point.call_deferred()
+			return
+		if _battle_outcome_waiting:
+			_commit_waiting_battle_outcome()
+			return
+		if _end_active_turn_if_dead(unit):
+			return
 	if not show_player_turn or _closing or _battle_over \
 			or not is_instance_valid(unit) or not unit.is_alive \
 			or unit.team != 0 or turn_queue == null \
@@ -2186,6 +2260,8 @@ func _abort_spell_resolution(unit: Unit, show_player_turn := true) -> void:
 	if _hud_port != null:
 		_hud_port.update_info(unit)
 		_hud_port.set_active_mode("")
+	if settles_committed_reactions:
+		_process_mastery_choices_at_safe_point()
 
 
 func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
@@ -2237,6 +2313,10 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 		)
 		_abort_spell_resolution(unit)
 		return
+	if _active_spell_movement_caster == unit and is_instance_valid(view) \
+			and _mastery_adapter != null:
+		context.set_meta("defer_automatic_reactions", true)
+		_deferred_spell_reaction_context = context
 	if spell.impact_delay_seconds > 0.0:
 		VFXManager.play_spell_vfx(unit, spell, cell)
 		if _spell_impact_scheduler.schedule(context, spell.impact_delay_seconds):
@@ -2261,6 +2341,8 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		_abort_spell_resolution(unit)
 		return
 	var lifecycle_generation := _lifecycle_generation
+	var reaction_context := _deferred_spell_reaction_context
+	var trigger_sequence := _active_trigger_sequence
 	var view = _unit_views.get(unit)
 	if is_instance_valid(view) \
 			and view.has_method("has_optional_visual") \
@@ -2274,12 +2356,23 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 	if not _is_operation_current(lifecycle_generation):
 		_abort_spell_resolution(unit, false)
 		return
+	# An explicit cancellation may have settled this context while we waited.
+	# Its suspended completion must not publish a stale action over a new cast.
+	if reaction_context != null and _deferred_spell_reaction_context != reaction_context:
+		return
+	_flush_deferred_spell_reactions()
+	if not _is_operation_current(lifecycle_generation):
+		_abort_spell_resolution(unit, false)
+		return
 	var tree := get_tree()
 	if tree != null:
 		await tree.process_frame
 		if not _is_operation_current(lifecycle_generation):
 			_abort_spell_resolution(unit, false)
 			return
+	if reaction_context != null and (not _spell_resolution_pending \
+			or trigger_sequence != _active_trigger_sequence):
+		return
 	if is_instance_valid(grid_view):
 		grid_view.queue_redraw()
 	if _hud_port != null:
@@ -2541,6 +2634,7 @@ func _exit_tree() -> void:
 
 
 func _begin_battle_shutdown() -> void:
+	_deferred_spell_reaction_context = null
 	if _mastery_adapter != null:
 		_mastery_adapter.dispose()
 		_mastery_adapter = null

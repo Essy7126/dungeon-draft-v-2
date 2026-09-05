@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://characters/achilles/achilles_iso_unit_view.gd" id="1_adapter"]
-[ext_resource type="Resource" path="res://data/visuals/achilles/achilles_cour_des_sources_sprite_profile_v1.tres" id="2_profile"]
+[ext_resource type="Resource" path="res://data/visuals/achilles/achilles_kit_sprite_profile_v2.tres" id="2_profile"]
 
 [node name="AchillesIsoUnitView" type="Node2D"]
 script = ExtResource("1_adapter")

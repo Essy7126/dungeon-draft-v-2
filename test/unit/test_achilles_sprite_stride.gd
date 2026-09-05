@@ -65,9 +65,22 @@ func test_running_stride_keeps_all_contacts_and_does_not_block_next_action() -> 
 		assert_true(sprite.frame in [3, 7])
 		assert_almost_eq(float(_lowest_opaque_pixel(sprite)), 320.0, 3.0)
 	visual.cancel_movement_feedback()
+	visual.set_process(false)
+	visual.sprite_backend.set_process(false)
+	var released := {"count": 0}
+	visual.cast_release_reached.connect(func() -> void: released.count += 1)
 	assert_true(visual.play_basic_attack())
 	assert_eq(sprite.animation, &"attack_E")
-	assert_true(sprite.is_playing(), "Distance-driven walking must not pause the next attack")
+	assert_false(sprite.is_playing(), "The backend samples the next attack with its own clock")
+	var marker := visual.sprite_profile.attack_release_seconds
+	visual.sprite_backend.advance_simulation(marker - 0.001)
+	assert_eq(released.count, 0)
+	visual.sprite_backend.advance_simulation(0.001)
+	assert_eq(released.count, 1, "Distance-driven walking must not stall the next attack marker")
+	assert_eq(sprite.frame, visual.sprite_profile.attack_release_frame)
+	visual.sprite_backend.advance_simulation(visual.sprite_profile.attack_duration_seconds - marker + 0.001)
+	assert_eq(sprite.animation, &"idle_E")
+	assert_false(visual._action_pending)
 	visual.cancel_pending_visual_actions()
 
 

@@ -2,6 +2,8 @@
 # battle/unit_view.gd
 extends Node2D
 
+signal _visual_wait_frame_ready
+
 const Glossary = preload("res://ui/combat_glossary.gd")
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 
@@ -70,17 +72,22 @@ func _exit_tree() -> void:
 	_disconnect_runtime_signals()
 
 
-func cancel_pending_visual_actions() -> void:
+func _clear_pending_visual_action_tracking() -> void:
 	_optional_visual_cast_generation += 1
 	_optional_visual_cast_pending = false
 	_optional_visual_action_pending = false
 	_optional_visual_action_finished = false
 	_suppress_next_attack_event_visual = false
 	_disconnect_release_callables()
+
+
+func cancel_pending_visual_actions() -> void:
+	_clear_pending_visual_action_tracking()
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("cancel_pending_visual_actions") \
 			and (not is_instance_valid(unit) or unit.is_alive):
 		_optional_visual.cancel_pending_visual_actions()
+	_resume_visual_frame_wait()
 
 
 func _is_async_context_valid(generation: int) -> bool:
@@ -95,8 +102,20 @@ func _wait_one_safe_process_frame(generation: int) -> bool:
 	var tree := get_tree()
 	if tree == null:
 		return false
-	await tree.process_frame
+	# Await our own gate, so cancellation and _exit_tree can resume the
+	# coroutine while this instance still exists. Awaiting SceneTree directly
+	# would leave a callback scheduled after this UnitView has been freed.
+	if not tree.process_frame.is_connected(_resume_visual_frame_wait):
+		tree.process_frame.connect(_resume_visual_frame_wait, CONNECT_ONE_SHOT)
+	await _visual_wait_frame_ready
 	return _is_async_context_valid(generation)
+
+
+func _resume_visual_frame_wait() -> void:
+	var tree := get_tree() if is_inside_tree() else null
+	if tree != null and tree.process_frame.is_connected(_resume_visual_frame_wait):
+		tree.process_frame.disconnect(_resume_visual_frame_wait)
+	_visual_wait_frame_ready.emit()
 
 
 func _disconnect_release_callable(callback: Callable) -> void:
@@ -229,6 +248,18 @@ func get_optional_visual() -> Node2D:
 ## Recale l'echantillon de locomotion apres un deplacement pilote par Battle
 ## (ruee, teletransportation). Sans ce recalage, la frame suivante peut prendre
 ## le saut deja termine pour un nouveau depart de marche.
+func finish_external_spell_movement() -> void:
+	if _closing or (is_instance_valid(unit) and not unit.is_alive):
+		return
+	_clear_pending_visual_action_tracking()
+	if is_instance_valid(_optional_visual):
+		if _optional_visual.has_method("finish_external_spell_movement"):
+			_optional_visual.finish_external_spell_movement()
+		elif _optional_visual.has_method("cancel_pending_visual_actions"):
+			_optional_visual.cancel_pending_visual_actions()
+	_resume_visual_frame_wait()
+
+
 func synchronize_external_movement() -> void:
 	if is_instance_valid(_optional_visual) \
 			and _optional_visual.has_method("synchronize_external_movement"):

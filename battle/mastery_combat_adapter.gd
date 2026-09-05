@@ -197,10 +197,22 @@ func prepare_cast(ctx: CastContext) -> void:
 				event_sources.append(effect.source_id)
 	extra["only_source_ids"] = event_sources
 	var profile := spell_profile(ctx.caster, ctx.spell)
+	# Snapshot before damage, shield consumption and projectile-origin cleanup.
+	# Presentation fields never enter the rules registry.
+	var visual := AchillesSpellVisualResolver.resolve(ctx.spell, ctx.caster, profile)
+	visual["origin_cell"] = projectile_origin(ctx.caster, ctx.spell)
+	visual["cell"] = ctx.cell
+	visual["action_id"] = ctx.action_id
 	_apply_static_cast_profile(ctx, profile)
+	var visual_target_cells := {}
+	for cell in ctx.affected_cells:
+		var target := grid.get_unit(cell) as Unit
+		if target != null:
+			visual_target_cells[target] = cell
 	var directives := dispatch(ctx.caster, &"spell_cast", extra)
 	_casts[ctx.action_id] = {"actor": ctx.caster, "directives": directives,
-		"spell": ctx.spell, "origin": ctx.caster.grid_pos, "cell": ctx.cell, "profile": profile}
+		"spell": ctx.spell, "origin": ctx.caster.grid_pos, "cell": ctx.cell, "profile": profile,
+		"visual_presentation": visual, "visual_feedback": [], "visual_target_cells": visual_target_cells}
 	if ctx.spell.get_effective_spell_id() == &"achilles_peleid_strike":
 		var bonus := int(_data(ctx.caster).conversion_bonus)
 		if bonus > 0:
@@ -228,6 +240,14 @@ func complete_cast(ctx: CastContext) -> void:
 				"spell_id": ctx.spell.get_effective_spell_id(), "action_id": ctx.action_id})
 	if _relic_executor != null:
 		_relic_executor.on_spell_completed(ctx.caster, ctx.spell, ctx.report)
+	var hit_cells: Array[Vector2i] = []
+	var target_cells: Dictionary = entry.get("visual_target_cells", {})
+	for target in ctx.report.get("damaged_enemies", []):
+		if target_cells.has(target):
+			hit_cells.append(target_cells[target])
+	ctx.report["visual_impact_cells"] = hit_cells
+	ctx.report["visual_presentation"] = (entry.get("visual_presentation", {}) as Dictionary).duplicate(true)
+	ctx.report["visual_feedback"] = (entry.get("visual_feedback", []) as Array).duplicate(true)
 	_casts.erase(ctx.action_id)
 	for unit in _units:
 		_data(unit).control = {}
@@ -463,7 +483,9 @@ func _bastion(actor: Unit, directive: Dictionary, context: Dictionary) -> void:
 	if _guard(actor) == null:
 		_clear_guard_aura(actor)
 	var raw := mini(spent, int(round(actor.max_hp.get_int() * float(directive.get("damage_cap_max_hp_ratio", 0.0)))))
+	var visual_targets: Array[Vector2i] = []
 	for target in _adjacent_enemies(actor):
+		visual_targets.append(target.grid_pos)
 		target.take_damage(raw, actor, Spell.DamageType.PHYSICAL, Spell.Element.NONE,
 			{"ability_id": context.get("spell_id", &""), "action_id": context.get("action_id", &""), "attack_classification": &"MELEE"})
 		if target.is_alive:
@@ -472,6 +494,18 @@ func _bastion(actor: Unit, directive: Dictionary, context: Dictionary) -> void:
 			for move in journal:
 				dispatch(actor, &"collision" if move.get("collision", false) else &"unit_moved", {"target": move.unit, "forced_move": true, "collision": move.get("collision", false)})
 	actor.shield_changed.emit(actor)
+	# Reactions may resolve after complete_cast erased its entry, or after a
+	# player choice. Publish the fact now; the view still waits for arrival.
+	var spell := _spell(actor, StringName(context.get("spell_id", &"")))
+	if spell != null:
+		var visual := AchillesSpellVisualResolver.resolve(spell, actor, spell_profile(actor, spell))
+		visual.merge({"variant": &"bastion", "effect_variant": &"dash_bastion",
+			"guard_active": bool(context.get("guard_active", true)),
+			"movement_arrival_only": true, "action_id": context.get("action_id", &""),
+			"origin_cell": context.get("from", actor.grid_pos), "cell": actor.grid_pos}, true)
+		var report := {"cell": actor.grid_pos, "visual_feedback": [{"kind": &"bastion_impact",
+			"cell": actor.grid_pos, "target_cells": visual_targets, "shield_spent": spent, "raw_damage": raw}]}
+		EventBus.spell_visual_resolved.emit(actor, spell, report, visual)
 
 func _remove_barriers(actor: Unit) -> void:
 	for index in range(_barriers.size() - 1, -1, -1):
@@ -487,6 +521,13 @@ func barrier_cells() -> Array:
 	for entry in _barriers:
 		cells.append_array(entry.cells)
 	return cells
+
+## Read-only presentation snapshot of the actual registered blockers.
+func barrier_visual_entries() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for entry in _barriers:
+		result.append({"owner": entry.owner, "cells": entry.cells.duplicate()})
+	return result
 
 func modify_movement_cost(unit: Unit, from_cell: Vector2i, to_cell: Vector2i, cost: int) -> int:
 	var result := cost
@@ -580,7 +621,12 @@ func flush_automatic() -> void:
 		count += 1
 		_automatic_chain.assign(command.chain)
 		_serial += 1
-		caster.cast_automatic(actor, spell, target.grid_pos, float(command.multiplier), StringName("mastery_auto_%d" % _serial))
+		var visual := AchillesSpellVisualResolver.resolve(spell, actor, spell_profile(actor, spell))
+		visual.merge({"automatic": true, "source_chain": command.chain.duplicate(),
+			"origin_cell": projectile_origin(actor, spell), "cell": target.grid_pos}, true)
+		var report := caster.cast_automatic(actor, spell, target.grid_pos, float(command.multiplier), StringName("mastery_auto_%d" % _serial))
+		if not bool(report.get("failed", false)):
+			EventBus.spell_visual_resolved.emit(actor, spell, report, visual)
 		_resolve_reaction_commands()
 	_automatic_chain.clear()
 	_flushing = false

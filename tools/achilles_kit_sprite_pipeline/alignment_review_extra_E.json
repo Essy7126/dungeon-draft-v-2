@@ -1,0 +1,103 @@
+{
+  "extra_E": {
+    "scale": 0.86,
+    "roots": [
+      [
+        164,
+        289
+      ],
+      [
+        474,
+        286
+      ],
+      [
+        766,
+        292
+      ],
+      [
+        1095,
+        290
+      ],
+      [
+        159,
+        604
+      ],
+      [
+        487,
+        606
+      ],
+      [
+        796,
+        609
+      ],
+      [
+        1106,
+        609
+      ],
+      [
+        166,
+        916
+      ],
+      [
+        506,
+        909
+      ],
+      [
+        789,
+        911
+      ],
+      [
+        1103,
+        915
+      ],
+      [
+        160,
+        1196
+      ],
+      [
+        471,
+        1188
+      ],
+      [
+        739,
+        1165
+      ],
+      [
+        1057,
+        1158
+      ]
+    ]
+  },
+  "notes": {
+    "status": "Mesure de la génération E v3, à confirmer en combat ; fichier alignment.json de production inchangé.",
+    "source": "art/source/characters/achilles/sprites_kit_v2/source_extra_E.png",
+    "source_sha256": "fecf66ba7f71edcb340ba8f4935c267681d63de2c7b93d6e968f4222d03bc847",
+    "source_dimensions": [
+      1254,
+      1254
+    ],
+    "source_grid": [
+      4,
+      4
+    ],
+    "components": 16,
+    "transparent_fraction": 0.721448,
+    "max_removed_alpha": 20,
+    "generator": "Outil imagegen intégré, nouvelle génération textuelle sans image de référence ni réutilisation automatique des images du contexte.",
+    "exact_prompt": "art/source/characters/achilles/sprites_kit_v2/prompts/extra_E_v3.txt",
+    "generated_original": "C:/Users/paolo/.codex/generated_images/01a0723f-0c26-7b41-9b67-80f7f03e3f41/exec-650e080f-e6f7-47d6-bad3-798102070563.png",
+    "previous_source_preserved": "art/source/characters/achilles/sprites_kit_v2/source_extra_E_overlap_review.png",
+    "previous_source_sha256": "3514f845df94fc4392ed12c35dfbbc3fa439cc5fd68c22741a54324a535b421e",
+    "scale_measurement": "La pose debout hit/3 mesure environ 264 px entre crête et semelles, soit 227 px à .86. La tête avec crête mesure environ 69 px, soit 59 px à .86, comparable aux quelque 60 px du vrai idle E V1. Les poses de volée ont les genoux légèrement plus fléchis et restent autour de 214 à 221 px de haut. Échelle identique sur toute la feuille, y compris la mort.",
+    "root_method": "Coordonnées globales de la feuille. Sweep, volley et hit : entre les deux appuis, juste sous le pied avant, avec le petit décalage horizontal du vrai idle E V1. Le penché avant de sweep/2 et le recul de hit/1 restent des déformations dessinées autour du sol ; pas de recentrage du tronc ni de recalage sur une pointe de lance.",
+    "death_roots": "Pose 12 : appui des deux pieds, sans utiliser le bas de la pointe. Pose 13 : projection du bassin entre genou et pied d'appui. Poses 14/15 : sol sous le bassin projeté ; la tête et les épaules avancent naturellement vers la droite quand le corps se replie et s'allonge. Le corps couché conserve sa taille anatomique, sans redimensionnement pour remplir la cellule.",
+    "art_review": [
+      "Les seize silhouettes sont séparées. La lance de sweep/2 ne touche plus la cheville de sweep/3 ; aucune région opaque supprimée pour obtenir ce résultat.",
+      "Une seule pointe claire sur chaque lance ; talon du manche en bois brun. Un bouclier par personnage, fixé au bras gauche ou rangé dans le dos pendant l'arc.",
+      "Le visage reste ouvert et lisible ; casque bronze à courte crête rouge, cuirasse ivoire, jupe pétrole, bordures or et sandales restent cohérents avec le V1.",
+      "Les armes restent reliées au personnage, y compris pendant la chute. Aucun accessoire flottant ou pointe coupée observé."
+    ],
+    "limits": "Aucune exécution Godot ni validation en combat dans cette revue. Le rendu de la transition depuis l'idle, des dégâts et des durées relève des vérifications centrales.",
+    "in_memory_verification": "Contrôle en mémoire réussi : 16 régions d'atlas RGBA identiques aux canvas préparés, zéro clipping aux bords. Contact de 20 vues affiché (4 copies idle E V1 puis 16 poses), échelle .86 et racines de ce fichier. Taille du casque cohérente ; pieds au plan de sol et chute autour du bassin projeté. Aucun atlas de production écrit."
+  }
+}

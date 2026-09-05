@@ -206,3 +206,9 @@ signal hazard_kill(unit, effect_name)
 #   "pushed_away_from_ally"  : bool — poussée éloignant d'un allié (futur)
 # ============================================================
 signal spell_cast(caster, spell, report)
+
+## Presentation acknowledgement only: automatic casts have already resolved.
+## Consumers must never replay a cast or emit gameplay events from this signal.
+signal spell_visual_resolved(caster: Unit, spell: Spell, report: Dictionary, presentation: Dictionary)
+## Battle emits this only after the current spell movement reaches its view cell.
+signal unit_visual_movement_finished(unit: Unit)

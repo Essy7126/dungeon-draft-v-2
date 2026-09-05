@@ -1,0 +1,475 @@
+{
+  "schema_version": 1,
+  "kind": "original_game_capture_excerpt",
+  "description": "Bastion mobile : marche, Percée fulgurante, réception puis effets réels à l’arrivée.",
+  "output": "docs/design/achilles/media/achilles_bastion_v2.gif",
+  "working_encoder_manifest": "artifacts/achilles_kit_sprite_validation_v2/bastion_E_final_visual/clip/achilles_bastion_v2.clip_manifest.json",
+  "source_manifest": "artifacts/achilles_kit_sprite_validation_v2/bastion_E_final_visual/clip/clip_manifest.json",
+  "source_manifest_sha256": "9f268afd697390c5a0b2ea36dbfeacaf6b4f8ae036ca71bbe963b9b9b06a1602",
+  "source_frame_count": 54,
+  "selected_frame_count": 54,
+  "source_frame_indices": [
+    0,
+    53
+  ],
+  "timestamp_clock": "Original Godot Time.get_ticks_usec; timestamps are not rebased or interpolated.",
+  "first_capture_usec": 10174569,
+  "ended_usec": 13514195,
+  "source_time_interval_ms": [
+    0,
+    3339.626
+  ],
+  "source_duration_ms": 3339.626,
+  "viewport_rectangle_px": [
+    148,
+    33,
+    352,
+    360
+  ],
+  "output_enlargement": 2,
+  "policy": "Unmodified contiguous captured frames. Original capture_usec and ended_usec preserved. No synthesized frame, time stretch, retiming or duplicated tail.",
+  "measurement_limit": "Actual rendered game frames. GPU readback can affect the recorded cadence; separate runs without capture measure gameplay timing.",
+  "frames": [
+    {
+      "index": 0,
+      "capture_usec": 10174569,
+      "source_file": "frame_0000.png",
+      "sha256": "9038a5e0a2850c6b563a3bab2c5a6d174f4b62fbdeecda33b1736e7a611eb91a",
+      "hero_animation": "walk_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 1,
+      "capture_usec": 10233746,
+      "source_file": "frame_0001.png",
+      "sha256": "938a8b9710166e516b8aa2f5e227b72abee81673c2b6204512d99b01219236c6",
+      "hero_animation": "walk_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 2,
+      "capture_usec": 10294064,
+      "source_file": "frame_0002.png",
+      "sha256": "28d4612cf65f064f74caeaa5f1f54c6a6b1bbc02e3c88cb7171c1fbf766f0948",
+      "hero_animation": "walk_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 3,
+      "capture_usec": 10351649,
+      "source_file": "frame_0003.png",
+      "sha256": "4b4194689824aff91c1f3f501b807c254823cc71cf675cbed472ba699db3c5bf",
+      "hero_animation": "walk_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 4,
+      "capture_usec": 10410377,
+      "source_file": "frame_0004.png",
+      "sha256": "bf23cf2b81e94442996d6b55f3c3c7516d03351ba4555c8a780c683b9445db4c",
+      "hero_animation": "walk_E",
+      "hero_frame": 3
+    },
+    {
+      "index": 5,
+      "capture_usec": 10468430,
+      "source_file": "frame_0005.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 6,
+      "capture_usec": 10523694,
+      "source_file": "frame_0006.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 7,
+      "capture_usec": 10581658,
+      "source_file": "frame_0007.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 8,
+      "capture_usec": 10637610,
+      "source_file": "frame_0008.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 9,
+      "capture_usec": 10695237,
+      "source_file": "frame_0009.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 10,
+      "capture_usec": 10752223,
+      "source_file": "frame_0010.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 11,
+      "capture_usec": 10809990,
+      "source_file": "frame_0011.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 12,
+      "capture_usec": 10866668,
+      "source_file": "frame_0012.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 13,
+      "capture_usec": 10924121,
+      "source_file": "frame_0013.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 14,
+      "capture_usec": 10980597,
+      "source_file": "frame_0014.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 15,
+      "capture_usec": 11040289,
+      "source_file": "frame_0015.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 16,
+      "capture_usec": 11095969,
+      "source_file": "frame_0016.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 17,
+      "capture_usec": 11152672,
+      "source_file": "frame_0017.png",
+      "sha256": "b6f15c2f74132842cdbafc8f3d31680e3b8a0e7c125753f7d42d93637e7944ac",
+      "hero_animation": "guard_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 18,
+      "capture_usec": 11218157,
+      "source_file": "frame_0018.png",
+      "sha256": "af606dbd5b084fe8098a7bcae93099c2bb672cc2f0e6778bc0c2b4ca990d3d00",
+      "hero_animation": "guard_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 19,
+      "capture_usec": 11276195,
+      "source_file": "frame_0019.png",
+      "sha256": "af606dbd5b084fe8098a7bcae93099c2bb672cc2f0e6778bc0c2b4ca990d3d00",
+      "hero_animation": "guard_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 20,
+      "capture_usec": 11332757,
+      "source_file": "frame_0020.png",
+      "sha256": "f2eee9719b07796cca1144c9e38302d5bc51fcbd79ba1bf870624068e746daa1",
+      "hero_animation": "guard_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 21,
+      "capture_usec": 11456099,
+      "source_file": "frame_0021.png",
+      "sha256": "3ec0626e74d0f5a2128fc61bcd59287bba2c903bd2b3564b77ad90c91333e273",
+      "hero_animation": "guard_E",
+      "hero_frame": 3
+    },
+    {
+      "index": 22,
+      "capture_usec": 11513415,
+      "source_file": "frame_0022.png",
+      "sha256": "50dcaa70467acc67ba132822e3664c50b2cd5fbc68e5925beec579e20bcedf3a",
+      "hero_animation": "guard_E",
+      "hero_frame": 4
+    },
+    {
+      "index": 23,
+      "capture_usec": 11573475,
+      "source_file": "frame_0023.png",
+      "sha256": "cede2097e6cf952afb9f562f39e529956746974bda5770a4c9c7fd9f12ec0c9c",
+      "hero_animation": "guard_E",
+      "hero_frame": 5
+    },
+    {
+      "index": 24,
+      "capture_usec": 11636346,
+      "source_file": "frame_0024.png",
+      "sha256": "74643df4afc7eb2202339f8840f6ce2bb0281d39f6fa946a7639b192dc0645fa",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 25,
+      "capture_usec": 11696476,
+      "source_file": "frame_0025.png",
+      "sha256": "1c5254e55e7490bee4ebed854ac1626390980e8f640bc195e2fee0866a500c1b",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 26,
+      "capture_usec": 11752795,
+      "source_file": "frame_0026.png",
+      "sha256": "a849737c5ced45ce80b383e5d20dfb77eba0d0f1a7bb379def884fa7ba6edad2",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 27,
+      "capture_usec": 11826089,
+      "source_file": "frame_0027.png",
+      "sha256": "94fc32b2ee39d97d04cee03922718f8119f2d312127e73b33cc664ece8986ec4",
+      "hero_animation": "dash_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 28,
+      "capture_usec": 11885391,
+      "source_file": "frame_0028.png",
+      "sha256": "7c8f0dcd2fdfe63f92b079a8167caad4a06d35ac64f337565edcd8b3a97763b7",
+      "hero_animation": "dash_E",
+      "hero_frame": 1
+    },
+    {
+      "index": 29,
+      "capture_usec": 11967896,
+      "source_file": "frame_0029.png",
+      "sha256": "c0b0d99d07a6c3ab894cd887c3d0c319c7d1492d94c452496ad352a2ad34a916",
+      "hero_animation": "dash_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 30,
+      "capture_usec": 12023690,
+      "source_file": "frame_0030.png",
+      "sha256": "9c006cf091a51e90fe77c79cd1ee31828ac3f77250739b9fdefc45b4a53fb86e",
+      "hero_animation": "dash_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 31,
+      "capture_usec": 12084078,
+      "source_file": "frame_0031.png",
+      "sha256": "9bb2349aac1662e7ec2104010bbb43f9d3c69427a5efdc0c95f6d665b7e72874",
+      "hero_animation": "dash_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 32,
+      "capture_usec": 12143039,
+      "source_file": "frame_0032.png",
+      "sha256": "142e63d9ab54f1796cadf5c8b135bec9f416a17c0df33dfa18ddc0084df546fc",
+      "hero_animation": "dash_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 33,
+      "capture_usec": 12202172,
+      "source_file": "frame_0033.png",
+      "sha256": "d55e850a4a79c18d64d46137f0e105e3997af39160a20683b0e5cc11b023f30c",
+      "hero_animation": "dash_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 34,
+      "capture_usec": 12257392,
+      "source_file": "frame_0034.png",
+      "sha256": "ccc87d4be9fc7ae69873b33e8e3f1a771c34a06d2b795adc0dc88c6e5a7f27ee",
+      "hero_animation": "dash_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 35,
+      "capture_usec": 12315630,
+      "source_file": "frame_0035.png",
+      "sha256": "ae3b72e866b8e745736162cbc5e11097f27092ce8b3958c48558afb07a473e1d",
+      "hero_animation": "dash_E",
+      "hero_frame": 2
+    },
+    {
+      "index": 36,
+      "capture_usec": 12436018,
+      "source_file": "frame_0036.png",
+      "sha256": "d7bfe3dc725f5eda98930cb4b6734350297b522ff96d36be889b3a9953eebe9e",
+      "hero_animation": "dash_E",
+      "hero_frame": 3
+    },
+    {
+      "index": 37,
+      "capture_usec": 12493211,
+      "source_file": "frame_0037.png",
+      "sha256": "7fef9ec132acce1e27e86c6105046e0eae09e36cec9b4fea45536618ccc21e26",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 38,
+      "capture_usec": 12550058,
+      "source_file": "frame_0038.png",
+      "sha256": "42e64f77d4b3f9a631c92f0a601e7cab25162ee45cd7156a2851dba671ad1a7e",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 39,
+      "capture_usec": 12609290,
+      "source_file": "frame_0039.png",
+      "sha256": "316faf9fb3e61e6daaee1b3abc391253d8f16d11317e15bb44337466336b4fb9",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 40,
+      "capture_usec": 12665532,
+      "source_file": "frame_0040.png",
+      "sha256": "036429ae16f64fdc87ae7a533d9340317ba025433046bbbd5b50d42b20fbcdc4",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 41,
+      "capture_usec": 12721763,
+      "source_file": "frame_0041.png",
+      "sha256": "716bfcf3ce5eb610f300da1d6b5558752b48586731857ea4a971bf0d82e3c44e",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 42,
+      "capture_usec": 12778274,
+      "source_file": "frame_0042.png",
+      "sha256": "030dcecd48637aa55e0a44eb01c744203ef01e6f657c375f7f21a59f6e9cedc8",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 43,
+      "capture_usec": 12837930,
+      "source_file": "frame_0043.png",
+      "sha256": "b9eb9d4ace253dd3a9014655a6c9d4b5e8fc8508e506b6e6bcd7b672a45192be",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 44,
+      "capture_usec": 12896886,
+      "source_file": "frame_0044.png",
+      "sha256": "f71a27c15224a0ec69f914549022b7e4c0bcf809b0449ec69f71165f84dbad2f",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 45,
+      "capture_usec": 12955974,
+      "source_file": "frame_0045.png",
+      "sha256": "e1597f0e46d1354e85c1e778e8fcf3f6f6b6f2aa763e87aa8cd588406ab24444",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 46,
+      "capture_usec": 13015306,
+      "source_file": "frame_0046.png",
+      "sha256": "bb826dc4706226f0958ca2549c47ad6d2df9212c398f58c4a3283a9daff7e0e8",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 47,
+      "capture_usec": 13075752,
+      "source_file": "frame_0047.png",
+      "sha256": "60cd50dd20b720d0d9a1bf3ca872ff60caa032417eec98f13b51b82e127b3192",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 48,
+      "capture_usec": 13136619,
+      "source_file": "frame_0048.png",
+      "sha256": "b64f98da5e98b1d91963f83ab727e79f065670e475978c2c6e5ea6b0a8707573",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 49,
+      "capture_usec": 13196080,
+      "source_file": "frame_0049.png",
+      "sha256": "d8125d97980c91ef51a03ee0d4d99460dfb9d76838684e1414d883e391212deb",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 50,
+      "capture_usec": 13254452,
+      "source_file": "frame_0050.png",
+      "sha256": "d8125d97980c91ef51a03ee0d4d99460dfb9d76838684e1414d883e391212deb",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 51,
+      "capture_usec": 13310387,
+      "source_file": "frame_0051.png",
+      "sha256": "d8125d97980c91ef51a03ee0d4d99460dfb9d76838684e1414d883e391212deb",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 52,
+      "capture_usec": 13365918,
+      "source_file": "frame_0052.png",
+      "sha256": "d8125d97980c91ef51a03ee0d4d99460dfb9d76838684e1414d883e391212deb",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    },
+    {
+      "index": 53,
+      "capture_usec": 13424562,
+      "source_file": "frame_0053.png",
+      "sha256": "d8125d97980c91ef51a03ee0d4d99460dfb9d76838684e1414d883e391212deb",
+      "hero_animation": "idle_E",
+      "hero_frame": 0
+    }
+  ],
+  "encoded_duration_ms": 3340,
+  "encoded_dimensions_px": [
+    704,
+    720
+  ],
+  "encoded_frame_count": 37,
+  "output_sha256": "64865355d8667e3ae227e0409f4fe285d668e32fc821c7029c7244ac84fde7d9",
+  "output_bytes": 958820,
+  "validation_report": "docs/design/achilles/media/achilles_bastion_v2.encode_report.json"
+}

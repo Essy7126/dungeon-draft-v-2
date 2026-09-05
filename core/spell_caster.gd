@@ -807,7 +807,10 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 		ctx.caster.mastery_combat_adapter.complete_cast(ctx)
 	if not bool(ctx.get_meta("automatic_cast", false)):
 		EventBus.spell_cast.emit(ctx.caster, ctx.spell, ctx.report)
-	if ctx.caster.mastery_combat_adapter != null:
+	# A battle-owned movement keeps its already-reserved reactions queued
+	# until the unit view reaches the resolved cell. Headless casts stay immediate.
+	if ctx.caster.mastery_combat_adapter != null \
+			and not bool(ctx.get_meta("defer_automatic_reactions", false)):
 		ctx.caster.mastery_combat_adapter.flush_automatic()
 	return ctx.report
 
@@ -1236,6 +1239,10 @@ func _resolve_caster_movement(ctx: CastContext) -> void:
 		"collision": false,
 		"voluntary": true,
 	})
+	# Use the same presentation event as modifier-based dashes and teleports.
+	# GridData has already resolved terrain entry; views follow its final cell
+	# without replaying gameplay movement or depending on a particular spell id.
+	EventBus.unit_pushed.emit(ctx.caster, origin, destination, false)
 	if _terrain.get_effect_data(ctx.cell) != null \
 			or bool(relocation.get("applied", false)) \
 			or bool(relocation.get("destination_effect_applied", false)):
