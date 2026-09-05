@@ -16,6 +16,14 @@ static func build_plan(
 	var roots := _allowed_roots(options)
 	var reservations := SkillTreePathReservationService.new(roots)
 	var work_keys := SkillTreeCopyService.keys_by_resource(session.working_unit)
+	if session.working_progression_profile != null:
+		work_keys.merge(SkillTreeCopyService.keys_by_resource(
+			session.working_progression_profile
+		), true)
+	if session.working_character_unit != null:
+		work_keys.merge(SkillTreeCopyService.keys_by_resource(
+			session.working_character_unit
+		), true)
 	var candidates: Array[Resource] = []
 	for source_value in session.source_to_work:
 		var source := source_value as Resource
@@ -115,6 +123,15 @@ static func save(
 		return _failure("SESSION", "Aucun personnage n'est ouvert.")
 	if not session.is_dirty():
 		return {"ok": true, "saved_paths": [], "message": "Aucun changement à sauvegarder."}
+	if session.working_progression_profile != null:
+		var profile_errors := session.working_progression_profile.validation_errors()
+		if not profile_errors.is_empty():
+			return {
+				"ok": false,
+				"step": "VALIDATION",
+				"error": "Le profil de progression contient des erreurs bloquantes.",
+				"validation": Array(profile_errors),
+			}
 	var validation := SkillTreeEditorValidator.validate_unit(
 		session.working_unit,
 		false,

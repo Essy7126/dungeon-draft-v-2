@@ -12,6 +12,7 @@
 extends Node2D
 
 signal runtime_ready(snapshot: Dictionary)
+signal _mastery_choice_finished
 
 const MovementTiming = preload("res://characters/character_movement_timing.gd")
 const MovementPathPreviewScript = preload("res://battle/movement_path_preview.gd")
@@ -97,6 +98,15 @@ var grid: GridData
 var pathfinder: Pathfinder
 var spell_caster: SpellCaster
 var terrain_effects: TerrainEffects
+var _mastery_adapter: MasteryCombatAdapter
+var _mastery_panel
+var _mastery_choice_actor: Unit
+var _mastery_choice: TacticalFollowupRequest
+var _mastery_facing_cast: Dictionary = {}
+var _mastery_facing_confirmed := false
+var _mastery_processing := false
+var _mastery_barrier_overlay: Node2D
+var _resolved_walk_paths: Dictionary = {}
 var enemy_ai: EnemyAI
 var encounter_runtime_state: EncounterRuntimeState = null
 var encounter_formation_snapshot: Dictionary = {}
@@ -1064,6 +1074,19 @@ func _reset_combat_resources() -> void:
 			unit.reset_combat_resources()
 
 func _launch_combat() -> void:
+	_mastery_adapter = MasteryCombatAdapter.new()
+	_mastery_adapter.reaction_priority_overrides = GameManager.get_champion_reaction_priorities()
+	_mastery_adapter.reaction_priority_selected.connect(GameManager.set_champion_reaction_priority)
+	_mastery_adapter.configure(grid, spell_caster, terrain_effects, pathfinder, units,
+		GameManager.get_relic_runtime_service())
+	pathfinder.set_voluntary_cost_modifier(_mastery_adapter.modify_movement_cost)
+	_mastery_barrier_overlay = preload("res://battle/mastery_barrier_overlay.gd").new()
+	grid_view.add_child(_mastery_barrier_overlay)
+	_mastery_adapter.barrier_changed.connect(_mastery_barrier_overlay.set_cells)
+	_mastery_panel = preload("res://battle/mastery_tactical_panel.gd").new()
+	add_child(_mastery_panel)
+	_mastery_panel.option_selected.connect(_on_mastery_option)
+	_mastery_panel.declined.connect(_on_mastery_decline)
 	turn_queue = TurnQueue.new()
 	turn_queue.setup(units)
 	turn_queue.turn_started.connect(_on_turn_started)
@@ -1121,6 +1144,7 @@ func _start_spell_movement_feedback(
 	var feedback_generation := _spell_movement_feedback_generation
 	_spell_movement_feedback_unit = unit
 	_spell_movement_feedback_tween = create_tween()
+	preload("res://characters/presentation_tween_clock.gd").drive(self, _spell_movement_feedback_tween)
 	_spell_movement_feedback_tween.set_trans(Tween.TRANS_QUAD)
 	_spell_movement_feedback_tween.set_ease(Tween.EASE_OUT)
 	_spell_movement_feedback_tween.tween_property(
@@ -1278,10 +1302,14 @@ func _on_turn_started(unit: Unit) -> void:
 				or not is_instance_valid(unit):
 			return
 		if not _battle_over:
-			_finish_active_turn(&"enemy_completed")
+			_mastery_adapter.flush_automatic()
+			await _process_mastery_choices_at_safe_point()
+			if _is_operation_current(lifecycle_generation):
+				_finish_active_turn(&"enemy_completed")
 	else:
 		turn_state.begin_player_turn()
 		_hud_port.set_active_mode("")
+		await _process_mastery_choices_at_safe_point()
 
 
 func _resolve_pending_ability(unit: Unit) -> Dictionary:
@@ -1312,6 +1340,8 @@ func _resolve_pending_ability(unit: Unit) -> Dictionary:
 
 
 func _on_pending_unit_spawned(unit: Unit) -> void:
+	if _mastery_adapter != null:
+		_mastery_adapter.attach_unit(unit)
 	if unit == null or not unit.is_alive:
 		return
 	if not unit.died.is_connected(_on_unit_died):
@@ -1536,6 +1566,10 @@ func _on_end_turn_confirmation_cancelled() -> void:
 
 
 func dismiss_top_combat_modal() -> bool:
+	if is_instance_valid(_mastery_panel) and _mastery_panel.is_open():
+		if _mastery_panel.can_decline():
+			_on_mastery_decline()
+		return true
 	return is_instance_valid(_end_turn_confirmation) \
 		and _end_turn_confirmation.dismiss()
 
@@ -1549,6 +1583,9 @@ func _refresh_mode_button() -> void:
 # ============================================================
 
 func _on_cell_clicked(cell: Vector2i) -> void:
+	if _mastery_choice != null and _mastery_choice_actor != null:
+		_resolve_mastery_cell(cell)
+		return
 	if _is_evolution_locked():
 		return
 	if _deployment != null and _deployment.is_active():
@@ -1642,7 +1679,7 @@ func _on_cell_hovered(cell: Vector2i) -> void:
 	)
 	if targetable.has(cell):
 		grid_view.highlight(
-			spell_caster.get_aoe_cells(spell, cell),
+			spell_caster.get_aoe_cells(spell, cell, unit.grid_pos),
 			AOE_COLOR,
 			COMBAT_HIGHLIGHT_MARKER.AOE,
 		)
@@ -1808,11 +1845,12 @@ func _on_request_move_to(cell: Vector2i) -> void:
 	if not _is_operation_current(lifecycle_generation):
 		_finish_outcome_deferral()
 		return
+	var resolved_path: Array = _resolved_walk_paths.get(unit, path)
 	EventBus.voluntary_movement_resolved.emit(
-		unit, path.duplicate(), paid_cost, action_id
+		unit, resolved_path.duplicate(), paid_cost, action_id
 	)
 	EventBus.action_resolved.emit(unit, action_id, &"voluntary_movement", {
-		"distance": maxi(0, path.size() - 1), "paid_mp": paid_cost,
+		"distance": maxi(0, resolved_path.size() - 1), "paid_mp": paid_cost,
 	})
 	if _finish_outcome_deferral():
 		return
@@ -1820,12 +1858,14 @@ func _on_request_move_to(cell: Vector2i) -> void:
 		return
 	turn_state.end_animating()
 	_hud_port.update_info(unit)
+	await _process_mastery_choices_at_safe_point()
 
 # Animation de déplacement BLINDÉE contre les objets détruits.
 # Une unité peut mourir en cours de route (lave via on_enter_cell) : on
 # vérifie is_instance_valid(view) ET unit.is_alive avant/après chaque await.
 # Sans ça : erreur "Freed Object" + tour figé (cause des freezes passés).
 func _animate_move(unit: Unit, path: Array) -> void:
+	_resolved_walk_paths[unit] = [unit.grid_pos]
 	if _closing or _battle_over or path.size() < 2:
 		return
 	var lifecycle_generation := _lifecycle_generation
@@ -1853,17 +1893,28 @@ func _animate_move(unit: Unit, path: Array) -> void:
 			else:
 				view.face_direction(from_pos, target_pos)
 			var tween = create_tween()
+			preload("res://characters/presentation_tween_clock.gd").drive(self, tween)
+			tween.set_parallel(true)
 			tween.tween_property(
 				view,
 				"position",
 				target_pos,
 				segment_duration
 			)
+			if view.has_method("update_movement_stride"):
+				var stride_index := i - 1
+				view.update_movement_stride(stride_index, 0.0)
+				tween.tween_method(func(progress: float) -> void:
+					if is_instance_valid(view):
+						view.update_movement_stride(stride_index, progress)
+				, 0.0, 1.0, segment_duration)
 			await tween.finished
 			if not _is_operation_current(lifecycle_generation):
 				break
 		if not grid.relocate_unit(unit, path[i]):
 			break
+		unit.record_runtime_movement(1)
+		_resolved_walk_paths[unit].append(unit.grid_pos)
 		var entry_result := terrain_effects.consume_last_entry_result(unit)
 		if bool(entry_result.get("teleported", false)) \
 				and is_instance_valid(view):
@@ -1975,7 +2026,7 @@ func _on_request_attack(cell: Vector2i) -> void:
 		unit,
 		Spell.DamageType.PHYSICAL,
 		Spell.Element.NONE,
-		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id)})
+		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id), "attack_classification": &"MELEE"})
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(unit, target)
 	if not _is_operation_current(lifecycle_generation):
@@ -1989,6 +2040,8 @@ func _on_request_attack(cell: Vector2i) -> void:
 	if not _is_operation_current(lifecycle_generation):
 		_finish_outcome_deferral()
 		return
+	if _mastery_adapter != null:
+		_mastery_adapter.flush_automatic()
 	EventBus.ap_after_action_changed.emit(unit, ap_before, unit.current_ap, action_id)
 	EventBus.action_resolved.emit(unit, action_id, &"basic_attack", {"target": target})
 	_hud_port.update_info(unit)
@@ -2151,6 +2204,14 @@ func _on_request_cast_spell(spell: Spell, cell: Vector2i) -> void:
 			_spell_cast_rejection_reason(unit, spell, cell, failure_reason)
 		)
 		return
+	if _mastery_adapter != null and spell.shield_tags.has(&"guard") \
+			and _mastery_adapter.has_directional_guard(unit) and not _mastery_facing_confirmed:
+		_mastery_facing_cast = {"spell": spell, "cell": cell, "unit": unit}
+		set_external_interaction_lock(&"mastery_choice", true)
+		_mastery_panel.present("Orienter la Garde", "Choisissez la direction protégée par votre bouclier.",
+			{&"north": "↑ Nord", &"east": "→ Est", &"south": "↓ Sud", &"west": "← Ouest"}, true)
+		return
+	_mastery_facing_confirmed = false
 	_spell_resolution_pending = true
 	_active_spell_movement_caster = (
 		unit if spell_caster.spell_moves_caster(unit, spell) else null
@@ -2244,6 +2305,7 @@ func _finish_spell_resolution(unit: Unit, report: Dictionary) -> void:
 		return
 	if turn_state != null:
 		turn_state.begin_player_turn()
+	await _process_mastery_choices_at_safe_point()
 
 
 func _on_discipline_xp_gained(
@@ -2451,6 +2513,8 @@ func _resume_combat_after_evolutions() -> void:
 		turn_state.begin_enemy_turn()
 
 
+	_process_mastery_choices_at_safe_point.call_deferred()
+
 func _is_evolution_locked() -> bool:
 	return _evolution_processing \
 		or _evolution_queue.has_pending() \
@@ -2477,6 +2541,15 @@ func _exit_tree() -> void:
 
 
 func _begin_battle_shutdown() -> void:
+	if _mastery_adapter != null:
+		_mastery_adapter.dispose()
+		_mastery_adapter = null
+	_mastery_choice = null
+	_mastery_choice_actor = null
+	_mastery_facing_cast.clear()
+	if is_instance_valid(_mastery_panel):
+		_mastery_panel.close()
+	_mastery_choice_finished.emit()
 	if not _closing:
 		_closing = true
 		_lifecycle_generation += 1
@@ -2518,6 +2591,8 @@ func _on_round_started(number: int) -> void:
 		grid_view.queue_redraw()
 
 func _on_unit_died(unit: Unit) -> void:
+	if _mastery_adapter != null:
+		_mastery_adapter.on_unit_died(unit)
 	# Logique de combat uniquement. Le LOG ("est vaincu") est désormais produit
 	# par le CombatLogger, abonné au signal unit_died du bus. battle.gd ne logge
 	# plus la mort : il réagit à ses conséquences sur le terrain et le combat.
@@ -2661,3 +2736,108 @@ func _show_end_screen(victory: bool) -> void:
 	_outcome_overlay = COMBAT_OUTCOME_OVERLAY.new()
 	add_child(_outcome_overlay)
 	_outcome_overlay.present(victory, GameManager.is_reduced_motion_enabled())
+
+
+func _process_mastery_choices_at_safe_point() -> void:
+	if _mastery_processing or _mastery_adapter == null or _closing or _battle_over or _is_evolution_locked():
+		return
+	_mastery_processing = true
+	while not _closing and not _battle_over:
+		_mastery_choice = null
+		_mastery_choice_actor = null
+		for actor in units:
+			if actor.team == 0 and actor.is_alive:
+				var request := _mastery_adapter.pending_choice(actor)
+				if request != null:
+					_mastery_choice_actor = actor
+					_mastery_choice = request
+					break
+		if _mastery_choice == null:
+			break
+		set_external_interaction_lock(&"mastery_choice", true)
+		var title := "Suivi tactique"
+		for node in _mastery_choice_actor.mastery_nodes:
+			for effect in node.reactive_effects:
+				if effect.source_id == _mastery_choice.source_id:
+					title = node.display_name
+		var body := "Choisissez une case surlignée. Ce déplacement est gratuit."
+		var options := {}
+		match _mastery_choice.request_type:
+			&"projectile_origin":
+				body = "D’où partira votre prochain Tir du Pélion ?"
+				options = {&"dash_start": "Depuis le départ de la Percée", &"dash_end": "Depuis l’arrivée de la Percée"}
+			&"shield_conversion":
+				body = "Votre Garde expire. Choisissez comment employer son bouclier restant."
+				options = {&"retain_half_as_new_shield": "Conserver la moitié en bouclier", &"convert_remaining_to_next_strike": "Renforcer la prochaine Frappe"}
+			&"reaction_choice":
+				body = "Ces effets partagent le même déclenchement. Choisissez celui à activer."
+				for option in _mastery_choice.valid_option_ids:
+					options[option] = _mastery_adapter.reaction_option_label(option)
+		grid_view.clear_highlights()
+		grid_view.highlight(_mastery_choice.valid_cells, MOVE_COLOR, COMBAT_HIGHLIGHT_MARKER.MOVE)
+		_mastery_panel.present(title, body, options, _mastery_choice.optional)
+		await _mastery_choice_finished
+	if is_instance_valid(_mastery_panel):
+		_mastery_panel.close()
+	set_external_interaction_lock(&"mastery_choice", false)
+	_mastery_processing = false
+	if not _closing and not _battle_over:
+		grid_view.clear_highlights()
+		if _hud_port != null and get_active_unit() != null:
+			_hud_port.update_info(get_active_unit())
+
+func _on_mastery_option(option: StringName) -> void:
+	if not _mastery_facing_cast.is_empty():
+		var pending := _mastery_facing_cast.duplicate()
+		var actor := pending.unit as Unit
+		actor.facing_dir = {&"north": Vector2i.UP, &"east": Vector2i.RIGHT,
+			&"south": Vector2i.DOWN, &"west": Vector2i.LEFT}.get(option, actor.facing_dir)
+		_mastery_facing_cast.clear()
+		_mastery_panel.close()
+		set_external_interaction_lock(&"mastery_choice", false)
+		_mastery_facing_confirmed = true
+		_on_request_cast_spell(pending.spell, pending.cell)
+		return
+	if _mastery_choice_actor != null and _mastery_choice != null:
+		var result := _mastery_adapter.resolve_choice(_mastery_choice_actor, _mastery_choice, null, option)
+		if result.get("resolved", false):
+			_mastery_choice = null
+			_mastery_adapter.flush_automatic()
+			_mastery_choice_finished.emit()
+
+func _on_mastery_decline() -> void:
+	if not _mastery_facing_cast.is_empty():
+		_mastery_facing_cast.clear()
+		_mastery_facing_confirmed = false
+		_mastery_panel.close()
+		set_external_interaction_lock(&"mastery_choice", false)
+		return
+	if _mastery_choice_actor != null and _mastery_choice != null:
+		var result := _mastery_choice_actor.mastery_runtime.followup_queue.decline(_mastery_choice.request_id)
+		if result.get("resolved", false):
+			_mastery_choice = null
+			_mastery_choice_finished.emit()
+
+func _resolve_mastery_cell(cell: Vector2i) -> void:
+	if _mastery_choice == null or _mastery_choice_actor == null or _mastery_adapter == null:
+		return
+	var actor := _mastery_choice_actor
+	var request := _mastery_choice
+	var path := _mastery_adapter.choice_path(actor, request, cell)
+	if path.size() < 2:
+		_show_intent_feedback("Choisissez une case surlignée encore accessible.")
+		return
+	var result := _mastery_adapter.resolve_choice(actor, request, cell)
+	if not result.get("resolved", false):
+		return
+	_mastery_choice = null
+	_mastery_panel.close()
+	_begin_outcome_deferral()
+	var generation := _lifecycle_generation
+	await _animate_move(actor, path)
+	if _is_operation_current(generation) and actor.is_alive:
+		var resolved_path: Array = _resolved_walk_paths.get(actor, path)
+		_mastery_adapter.movement_resolved(actor, {"unit": actor, "from": path[0], "to": actor.grid_pos,
+			"distance": maxi(0, resolved_path.size() - 1)}, &"", _next_action_id(&"mastery_move"))
+	_finish_outcome_deferral()
+	_mastery_choice_finished.emit()

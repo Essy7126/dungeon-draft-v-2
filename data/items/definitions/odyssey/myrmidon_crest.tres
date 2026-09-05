@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_stat_modifier_data.gd" id="2_stat"]
+
+[sub_resource type="Resource" id="Hp"]
+script = ExtResource("2_stat")
+stat_id = &"max_hp"
+value = 0.10
+modifier_type = 1
+
+[sub_resource type="Resource" id="Prowess"]
+script = ExtResource("2_stat")
+stat_id = &"attack_power"
+value = 0.12
+modifier_type = 1
+
+[sub_resource type="Resource" id="Initiative"]
+script = ExtResource("2_stat")
+stat_id = &"initiative"
+value = 2.0
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_myrmidon_crest"
+display_name = "Aigrette des Myrmidons"
+description = "+10 % PV max, +12 % Prouesse, +2 Initiative."
+tags = Array[StringName]([&"odyssey", &"achilles", &"universal"])
+category = 2
+equipment_slot = 2
+compatible_character_ids = Array[StringName]([&"achilles"])
+stat_modifiers = Array[ItemStatModifierData]([SubResource("Hp"), SubResource("Prowess"), SubResource("Initiative")])

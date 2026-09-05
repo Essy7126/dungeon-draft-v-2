@@ -4,6 +4,7 @@ extends Resource
 
 @export var definitions: Array[ItemDefinition] = []
 @export var auto_discovery_directories: PackedStringArray = PackedStringArray()
+@export var excluded_discovery_directories: PackedStringArray = PackedStringArray()
 
 var _definitions_by_id: Dictionary = {}
 var _resolved_definitions: Array[ItemDefinition] = []
@@ -86,6 +87,10 @@ func _collect_resource_paths(
 		directory_path: String,
 		result: Array[String]
 	) -> void:
+	for excluded_directory in excluded_discovery_directories:
+		var excluded := str(excluded_directory).trim_suffix("/")
+		if directory_path == excluded or directory_path.begins_with(excluded + "/"):
+			return
 	var directory := DirAccess.open(directory_path)
 	if directory == null:
 		push_warning("Dossier d’objets introuvable : %s" % directory_path)

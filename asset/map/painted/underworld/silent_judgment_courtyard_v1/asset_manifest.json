@@ -1,0 +1,148 @@
+{
+  "asset_id": "silent_judgment_courtyard_v1",
+  "revision": 1,
+  "created_at": "2026-09-05",
+  "title": "Le Parvis du Jugement",
+  "method": "built_in_image_gen_and_shared_registered_terrain_runtime",
+  "native_canvas_size": [
+    1920,
+    1200
+  ],
+  "template": "data/arenas/greek_drawn_courtyard_v1",
+  "production_scene": "battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+  "terrain_plan": "data/arenas/silent_judgment_courtyard_v1/terrain_plan.json",
+  "geometry_manifest": "data/arenas/silent_judgment_courtyard_v1/geometry_manifest.json",
+  "campaign_room": "data/rooms/odyssey/room_03.tres",
+  "geometry_contract": {
+    "floor_cells": 217,
+    "pit_cells": 16,
+    "pit_groups": 5,
+    "blocked_cells": 12,
+    "walkable_cells": 205,
+    "grid_size": [
+      19,
+      18
+    ],
+    "origin": [
+      830.676793205,
+      46.52893691
+    ],
+    "axis_x": [
+      51.6,
+      25.8
+    ],
+    "axis_y": [
+      -51.6,
+      25.8
+    ],
+    "ground_band_width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20
+  },
+  "readability_contract": {
+    "world_decor_count": 0,
+    "perimeter_props_count": 0,
+    "foreground_sprite_count": 0,
+    "ground_details_enabled": false,
+    "interior_joint_land_weight": 0,
+    "shared_shader_default_weight": 1,
+    "band_palette": [
+      "#b0aa9c",
+      "#bbb5a8",
+      "#a7a192"
+    ],
+    "water_shader_below_land": true,
+    "geometry_from_raster": false
+  },
+  "artwork": [
+    {
+      "file": "land_composed.png",
+      "prompt": "land_composed_prompt.txt",
+      "method": "Built-in image_gen style transfer from the validated Greek landscape composition; no CLI/API fallback.",
+      "source_generated_image": "exec-0318119a-6a2b-4c86-9be2-41c15e1d7390.png",
+      "source_size": [
+        1683,
+        935
+      ],
+      "output_size": [
+        1920,
+        1200
+      ],
+      "normalization": "Whole opaque painting mechanically resampled bicubically to the native canvas. Runtime Land clipping and exact shared geometry define the court, not generated pixels.",
+      "runtime_used": true,
+      "sha256": "40debbcd3259a7dd927e2115fd2ec57eeffffc08ba8b28abb167799eab9b8e7b",
+      "prompt_sha256": "ead0964428879268e895af16b1d54c6a3a72523470d5ea5897857120c8c9ea43"
+    },
+    {
+      "file": "still_water.png",
+      "prompt": "still_water_prompt.txt",
+      "method": "Built-in image_gen original material, copied without raster modification.",
+      "source_generated_image": "exec-04f8d839-f089-46f3-9bfa-6270cd9187ac.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "output_size": [
+        1254,
+        1254
+      ],
+      "runtime_used": true,
+      "sha256": "7200f701d464ce0cddea05832f43dddc44d98720e80015068b18a96fba20c8b0",
+      "prompt_sha256": "eefc235bf74912a1b26bdc3e25a24ce98746ccc5b59754f0d68f6277ddf7ba2a"
+    }
+  ],
+  "shaders": [
+    {
+      "file": "still_water.gdshader",
+      "method": "Project-local canvas_item shader: subtle UV drift and blue-grey surface variation on the water polygon only.",
+      "sha256": "8fd73c0e59bf3671a57d31bac767b2293344e8e53fc3488c6cf839379f29e8a2"
+    }
+  ],
+  "validation": {
+    "gut": {
+      "tests": 13,
+      "passed": 13,
+      "assertions": 5565,
+      "log": "artifacts/catabase_third_map_2026-09-05/gut_maps.log"
+    },
+    "gpu_reports": [
+      "artifacts/catabase_third_map_2026-09-05/1920x1080/registered_terrain_report.json",
+      "artifacts/catabase_third_map_2026-09-05/1200x896_exact/registered_terrain_report.json"
+    ],
+    "verified_resolutions": [
+      [
+        1920,
+        1080
+      ],
+      [
+        1200,
+        896
+      ]
+    ],
+    "per_run": {
+      "rooms": 3,
+      "successful_movement_and_guard": 3,
+      "transitions": 2,
+      "captures": 6
+    },
+    "quiet_center": {
+      "declared_world_decor": 0,
+      "runtime_external_decor": 0,
+      "contact_fills": 0,
+      "tactical_obstacle_cells": 12,
+      "neutral_interior_joint_materials": 217,
+      "floor_sprites_above_land": 217
+    },
+    "visually_reviewed_captures": [
+      "artifacts/catabase_third_map_2026-09-05/1920x1080/room_03_combat_1920x1080.png",
+      "artifacts/catabase_third_map_2026-09-05/1200x896_exact/room_03_combat_1200x896.png"
+    ],
+    "earlier_mixed_resolution_run": "artifacts/catabase_third_map_2026-09-05/1200x896/registered_terrain_report.json",
+    "limits": [
+      "Movement and guard use live GridView/controller endpoints; no OS mouse event certification.",
+      "Rooms I and II victories forced by QA after real actions; rewards and room transitions use production APIs. Room III left in combat before process exit.",
+      "No complete combat victory or encounter balance claim.",
+      "Godot reports resources not freed at shutdown; no project-wide clean-runtime claim.",
+      "The earlier compact run changed native window size in room III; the exact rerun above is the compact proof."
+    ]
+  }
+}

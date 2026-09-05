@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://characters/enemies/spectre_greatsword/spectre_greatsword_iso_unit_view.gd" id="1_view"]
+[ext_resource type="Resource" path="res://data/visuals/spectre_greatsword/spectre_greatsword_sprite_profile_v1.tres" id="2_profile"]
+
+[node name="SpectreGreatswordIsoUnitView" type="Node2D"]
+texture_filter = 2
+script = ExtResource("1_view")
+sprite_profile = ExtResource("2_profile")

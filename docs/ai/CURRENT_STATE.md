@@ -1,5 +1,13 @@
 # État courant vérifié du projet
 
+> Troisième carte intégrée le 5 septembre 2026 : [Le Parvis du Jugement](../maps/silent_judgment_courtyard_v1.md) remplace l'ancienne map de la salle III de Catabase. Les trois salles utilisent désormais la [pipeline partagée de terrain peint](../maps/registered_terrain_pipeline.md). III conserve sa rencontre finale et adopte un centre clair : 217 vraies dalles, 12 cases d'obstacles tactiques, aucun décor cosmétique séparé, joints neutres et bandeau de terre fondu. Validation ciblée : 13 tests / 5 565 assertions ; parcours GPU en 1920 × 1080 et 1200 × 896 exacts, trois couples déplacement/garde, deux transitions et six captures par parcours. Les victoires I/II sont forcées uniquement pour la QA ; III reste en combat après ses actions. Rapports et limites dans la fiche de carte.
+
+
+> Point d’entrée de reprise au 5 septembre 2026 : [Catabase, référence Dofus et production VFX](REPRISE_PROJET_2026-09-05.md). Cette synthèse confronte les décisions récentes au HEAD `13cb587` par lecture statique. Les statuts, chiffres et validations ci-dessous restent attachés à leurs dates ; ils ne constituent pas une certification globale du HEAD actuel.
+
+> Arène reconstruite le 5 septembre 2026 : [La Cour des Sources, géométrie et terrain issus du relevé Dofus](../maps/greek_drawn_courtyard_v1.md). Repère natif commun 1920 × 1200, 217 dalles existantes, cinq fosses/16 VOID, 12 cases bloquées, berges et décors séparés. Combat, support complet des dalles et déplacement/Garde vérifiés en 1920 × 1080 et 1200 × 896. Les parties masquées de la référence restent inférées. Passe artistique V4 achevée : paysage grec peint composé, premiers plans transparents assortis et raccord Land/dalles contrôlé sur les 217 matériaux. Bandeau de terre calcaire ajouté autour du contour réel : 0,42 cellule, fondu extérieur, aucune nouvelle case ; marge de rive minimale mesurée de 26,434 px.
+
+
 ## Catabase — cinématique V4 (WORKTREE_CANDIDATE, 2026-08-28)
 
 - Dépôt : `Essy7126/dungeon-draft-v-2` ; branche : `main` ; BASE de mission :

@@ -156,7 +156,7 @@ func test_odyssey_enemy_stats_and_room_rosters_are_exact() -> void:
 	var run := _run()
 	assert_eq(_roster_ids(run.rooms[0]), [&"catabase_frail_hellspawn"])
 	assert_eq(_roster_ids(run.rooms[1]), [
-		&"odyssey_skirmisher", &"odyssey_skirmisher", &"odyssey_guard",
+		&"odyssey_skirmisher", &"odyssey_skirmisher", &"spectre_greatsword",
 	])
 	assert_eq(_roster_ids(run.rooms[2]), [
 		&"odyssey_champion", &"catabase_shadow_paris",

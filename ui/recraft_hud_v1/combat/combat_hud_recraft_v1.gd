@@ -700,7 +700,8 @@ func update_info(unit) -> void:
 		_refresh_button_states()
 		return
 
-	_info_label.text = unit.unit_name.to_upper() if _premium_skin_active() else unit.unit_name
+	var display_name := CombatGlossary.unit_display_name(unit)
+	_info_label.text = display_name.to_upper() if _premium_skin_active() else display_name
 	_portrait_view.set_character_data(unit.character_data)
 	_portrait_view.set_active(true)
 	_apply_character_theme(unit)
@@ -1320,10 +1321,10 @@ func _apply_character_theme(unit) -> void:
 	)
 	var refined := _refined_skin_active()
 	_portrait_view.set_refined_style(refined)
-	_identity_discipline_label.text = _active_character_theme.discipline_name.to_upper()
+	_identity_discipline_label.text = "PROUESSE %d" % unit.attack_power.get_int() if CombatGlossary.uses_champion_progression(unit) else _active_character_theme.discipline_name.to_upper()
 	_identity_discipline_label.visible = (
 		not _premium_skin_active()
-		and not _active_character_theme.discipline_name.is_empty()
+		and (CombatGlossary.uses_champion_progression(unit) or not _active_character_theme.discipline_name.is_empty())
 	)
 	_hp_bar.set_frame_texture(
 		_active_character_theme.health_bar_frame_texture

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="VFXFlipbookAsset" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://vfx/data/vfx_flipbook_asset.gd" id="1_asset"]
+[ext_resource type="Script" path="res://vfx/data/vfx_flipbook_variant.gd" id="2_variant"]
+[ext_resource type="Texture2D" path="res://vfx/assets/flipbooks/achilles_guard_bronze_v1/end.png" id="3_texture"]
+
+[sub_resource type="Resource" id="Variant_bronze"]
+script = ExtResource("2_variant")
+variant_id = &"bronze"
+texture_low = ExtResource("3_texture")
+
+[resource]
+script = ExtResource("1_asset")
+asset_id = &"achilles.guard.bronze.end.v1"
+display_name = "Garde d'airain - end"
+variants = Array[ExtResource("2_variant")]([SubResource("Variant_bronze")])
+columns = 4
+rows = 1
+frame_count = 4
+frames_per_second = 13.333333
+loop = false
+playback_mode = &"FIT_MODULE_DURATION"
+blend_mode = &"MIX"
+alpha_mode = &"STRAIGHT"
+pivot_normalized = Vector2(0.5, 0.82)
+nominal_size_in_cells = Vector2(1, 1)
+art_status = &"READY_FOR_HUMAN_REVIEW"
+license_status = &"INTERNAL_TEST"
+manifest_path = "res://vfx/assets/flipbooks/achilles_guard_bronze_v1/manifest.json"
+

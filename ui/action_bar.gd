@@ -179,7 +179,7 @@ func update_info(unit) -> void:
 		_refresh_button_states()
 		return
 	_info_label.text = "Tour : %s\nPM : %d / %d" % [
-		unit.unit_name,
+		CombatGlossary.unit_display_name(unit),
 		unit.current_mp,
 		unit.max_mp.get_int(),
 	]

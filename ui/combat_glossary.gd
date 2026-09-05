@@ -147,11 +147,26 @@ static func spell_card_bbcode(caster, spell: Spell, unusable_reason: String = ""
 	var lines: Array = []
 	lines.append("[b][font_size=18]%s[/font_size][/b] [color=#b9b2a8]%s[/color]" % [_escape_bbcode(title), spell_tier(spell)])
 	lines.append("Cout : " + render_keywords(_cost_text(caster, spell)))
-	lines.append("Portee : %d | Zone : %s" % [spell.spell_range, _aoe_text(spell)])
+	var minimum_range := spell.minimum_range
+	var maximum_range := spell.spell_range
+	if caster is Unit:
+		var resolver := SpellCaster.new(null, null, null)
+		minimum_range = resolver.get_effective_spell_minimum_range(caster, spell)
+		maximum_range = resolver.get_effective_spell_range(caster, spell)
+	lines.append("Portée : %s | Zone : %s" % [
+		"sur soi" if spell.is_self_only() else "%d–%d" % [minimum_range, maximum_range], _aoe_text(spell, caster)
+	])
+	if spell.once_per_activation:
+		lines.append("Une utilisation par activation")
+	if spell.needs_line_of_sight and not spell.is_self_only():
+		lines.append("Ligne de vue requise")
 	if unusable_reason != "":
 		lines.append("[color=#ff5a4f]Injouable : %s[/color]" % _escape_bbcode(unusable_reason))
-	lines.append("\n[b]Effet normal[/b]")
-	lines.append(render_keywords(_effect_text(spell)))
+	var mastery_values: bool = caster is Unit and (uses_champion_progression(caster) or not caster.mastery_nodes.is_empty())
+	lines.append("\n[b]Avec vos statistiques et maîtrises[/b]" if mastery_values else "\n[b]Effet de base[/b]")
+	lines.append(render_keywords(_effect_text(spell, caster)))
+	if mastery_values:
+		lines.append("Avant armure et résistances. Les bonus conditionnels dépendent de la situation de combat.")
 	return "\n".join(lines)
 
 static func _cost_text(caster, spell: Spell) -> String:
@@ -162,7 +177,14 @@ static func _cost_text(caster, spell: Spell) -> String:
 	parts.append("%d PA" % ap_cost)
 	return " / ".join(parts)
 
-static func _aoe_text(spell: Spell) -> String:
+static func _aoe_text(spell: Spell, caster = null) -> String:
+	if caster is Unit:
+		var profile := MasteryStaticModifierResolver.resolve_spell_profile(spell, caster.mastery_nodes)
+		match StringName(profile.target_shape):
+			&"LINE":
+				return "Ligne · %d cibles" % int(profile.maximum_targets)
+			&"FAN":
+				return "Éventail · %d cibles" % int(profile.maximum_targets)
 	match spell.aoe_shape:
 		Spell.AoeShape.CROSS:
 			return "Croix %d" % spell.aoe_size
@@ -172,17 +194,58 @@ static func _aoe_text(spell: Spell) -> String:
 			return "Ligne"
 	return "1"
 
-static func _effect_text(spell: Spell) -> String:
+static func _effect_text(spell: Spell, caster = null) -> String:
+	if not caster is Unit:
+		return _effect_text_from_values(spell, spell.damage, spell.shield_grant)
+	var profile := MasteryStaticModifierResolver.resolve_spell_profile(spell, caster.mastery_nodes)
+	var base_damage := spell.get_scaled_damage(caster)
+	var target_damage := PackedInt32Array()
+	if base_damage > 0:
+		for target_index in range(maxi(1, int(profile.maximum_targets))):
+			target_damage.append(MasteryStaticModifierResolver.resolve_target_damage(
+				base_damage, profile, target_index
+			))
+	var shield := MasteryStaticModifierResolver.resolve_shield_amount(
+		spell.get_scaled_shield(caster), profile, caster.shield_creation_multiplier
+	)
+	return _effect_text_from_values(
+		spell, target_damage[0] if not target_damage.is_empty() else 0, shield, target_damage
+	)
+
+
+static func spell_base_effect_text(unit: UnitData, spell: Spell) -> String:
+	if unit == null or spell == null:
+		return ""
+	return _effect_text_from_values(
+		spell,
+		SpellScalingResolver.resolve_from_values(spell.damage_scaling, unit.attack_power, unit.max_hp, 1, spell.damage),
+		SpellScalingResolver.resolve_from_values(spell.shield_scaling, unit.attack_power, unit.max_hp, 1, spell.shield_grant),
+	)
+
+
+static func _effect_text_from_values(spell: Spell, damage: int, shield: int, target_damage: PackedInt32Array = PackedInt32Array()) -> String:
 	var effects: Array = []
-	var damage := spell.damage
 	var heal := spell.heal
-	var shield := spell.shield_grant
 	if damage > 0:
-		effects.append("Inflige %d degats." % damage)
+		var damage_text := str(damage)
+		if target_damage.size() > 1:
+			var values := PackedStringArray()
+			for amount in target_damage:
+				values.append(str(amount))
+			damage_text = " / ".join(values)
+		effects.append("Inflige %s dégâts %s%s." % [damage_text,
+			"physiques" if spell.damage_type == Spell.DamageType.PHYSICAL else "magiques",
+			" par cible" if target_damage.size() > 1 else ""])
 	if heal > 0:
 		effects.append("Rend %d PV." % heal)
 	if shield > 0:
-		effects.append("Donne %d bouclier." % shield)
+		effects.append("Accorde %d bouclier." % shield)
+		if spell.shield_duration_activations > 0:
+			effects.append("Expire au début de la prochaine activation." if spell.shield_duration_activations == 1 else "Durée : %d activations." % spell.shield_duration_activations)
+	if spell.caster_movement != Spell.CasterMovement.NONE:
+		effects.append("Déplace vers une case libre en ligne." if spell.line_from_caster else "Déplace vers une case libre.")
+		if spell.movement_requires_clear_path:
+			effects.append("Ne traverse ni unité ni obstacle.")
 	if spell.applied_status != null:
 		effects.append("Applique %s." % token_for_name(spell.applied_status.status_name))
 	if spell.terrain_effect != null:
@@ -204,3 +267,24 @@ static func _effect_text(spell: Spell) -> String:
 static func _escape_bbcode(text: String) -> String:
 	var escaped := text.replace("[", "__CODEX_LB__").replace("]", "__CODEX_RB__")
 	return escaped.replace("__CODEX_LB__", "[lb]").replace("__CODEX_RB__", "[rb]")
+
+
+static func uses_champion_progression(unit: Unit) -> bool:
+	return unit != null and unit.character_data != null \
+		and unit.character_data.progression_profile != null \
+		and unit.character_data.progression_profile.progression_model == CharacterProgressionProfile.ProgressionModel.CHAMPION_LEVEL_AND_MASTERY
+
+
+static func champion_level(unit: Unit) -> int:
+	if unit == null or not uses_champion_progression(unit):
+		return 1
+	var state := GameManager.get_character_state(StringName(unit.unit_id)) as CharacterRunState
+	return state.champion_progression.current_level \
+		if state != null and state.unit == unit and state.champion_progression != null else 1
+
+
+static func unit_display_name(unit: Unit) -> String:
+	if unit == null:
+		return ""
+	return "%s · Niv. %d" % [unit.unit_name, champion_level(unit)] \
+		if uses_champion_progression(unit) else unit.unit_name

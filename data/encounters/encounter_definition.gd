@@ -25,6 +25,14 @@ const FORMATION_IDS: Array[StringName] = [
 @export_range(0, 99, 1) var shared_chief_summon_budget := 0
 @export var disabled_ability_ids: Array[StringName] = []
 
+@export_group("Progression")
+## Identite stable de la recompense. Elle est l'autorite d'idempotence : ni le
+## numero de salle ni le nombre d'ennemis ne doivent permettre de recreer l'XP.
+@export var encounter_id: StringName = &""
+@export_range(0, 1000000, 1) var base_xp: int = 0
+@export_range(0, 1000000, 1) var optional_xp_budget: int = 0
+@export var glory_challenge: GloryChallengeData = null
+
 @export_group("Placement")
 @export_range(1, 99, 1) var maximum_formation_attempts := 7
 @export var minimum_path_distance_by_role := {
@@ -70,6 +78,13 @@ func validation_errors() -> PackedStringArray:
 		errors.append("room_index doit etre positif.")
 	if roster_units.is_empty() or roster_units.size() != roster_counts.size():
 		errors.append("roster_units et roster_counts doivent etre non vides et paralleles.")
+	if (base_xp > 0 or optional_xp_budget > 0 or glory_challenge != null) \
+			and encounter_id == &"":
+		errors.append("Une rencontre recompensee exige un encounter_id stable.")
+	if glory_challenge != null:
+		errors.append_array(glory_challenge.validation_errors())
+		if not is_equal_approx(glory_challenge.xp_multiplier, 1.30):
+			errors.append("Le multiplicateur de Gloire Odyssey doit etre egal a 1,30.")
 	var seen := {}
 	for index in range(mini(roster_units.size(), roster_counts.size())):
 		var data := roster_units[index]

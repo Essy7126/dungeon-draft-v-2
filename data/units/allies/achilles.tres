@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://data/unit_data.gd" id="1_unit"]
 [ext_resource type="PackedScene" path="res://characters/achilles/AchillesIsoUnitView.tscn" id="2_visual"]
-[ext_resource type="PackedScene" path="res://assets/characters/Achilles/3d/achilles_meshy_animation_pool_v3.glb" id="3_preview"]
+[ext_resource type="SpriteFrames" path="res://assets/characters/Achilles/sprites_cour_des_sources_v1/achilles_sprite_frames.tres" id="3_preview"]
 [ext_resource type="Resource" path="res://data/characters/achilles/animations_meshy_v3.tres" id="4_animations"]
 
 [resource]
@@ -16,7 +16,8 @@ max_ap = 6
 max_mp = 3
 attack_power = 18
 visual_scene = ExtResource("2_visual")
-preview_visual_scene = ExtResource("3_preview")
+preview_sprite_frames = ExtResource("3_preview")
+preview_sprite_animation = &"idle_E"
 animation_set = ExtResource("4_animations")
 role = "Hoplite de Catabase"
 presentation_summary = "Héros solo prêt à affronter les trois rencontres de Catabase."

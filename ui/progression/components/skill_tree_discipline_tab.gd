@@ -1,6 +1,8 @@
 class_name SkillTreeDisciplineTab
 extends Button
 
+const CODEX_STYLE := preload("res://ui/progression/theme/spell_codex_style.gd")
+
 @onready var _frame_texture: TextureRect = %FrameTexture
 @onready var _selection_rail: Panel = %SelectionRail
 @onready var _content_margin: MarginContainer = %ContentMargin
@@ -25,6 +27,13 @@ func _ready() -> void:
 	toggle_mode = true
 	focus_mode = Control.FOCUS_ALL
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	CODEX_STYLE.button(self)
+	for label in [_name_label, _rank_label, _xp_label, _next_rank_label, _path_label, _active_marker]:
+		CODEX_STYLE.label(label)
+	_name_label.add_theme_font_override("font", CODEX_STYLE.BOLD)
+	_name_label.add_theme_color_override("font_color", CODEX_STYLE.TEXT)
+	_xp_progress.add_theme_stylebox_override("background", CODEX_STYLE.box(CODEX_STYLE.INK, Color.TRANSPARENT, 2))
+	_xp_progress.add_theme_stylebox_override("fill", CODEX_STYLE.box(CODEX_STYLE.GOLD, Color.TRANSPARENT, 2))
 	apply_layout_profile(_layout_profile)
 
 
@@ -71,11 +80,12 @@ func configure(
 
 
 func set_selected(value: bool) -> void:
-	button_pressed = value
+	CODEX_STYLE.selected(self, value)
+	_frame_texture.hide()
 	_selection_rail.visible = value
 	_selection_rail.modulate = Color(1.0, 0.72, 0.22, 1.0)
 	_active_marker.visible = value
-	_active_marker.text = "BRANCHE ACTIVE" if value else ""
+	_active_marker.text = " •" if value else ""
 	_frame_texture.modulate = (
 		Color(1.06, 1.01, 0.9, 1.0)
 		if value
@@ -90,8 +100,8 @@ func apply_layout_profile(profile: StringName) -> void:
 	var compact := profile == &"compact"
 	var medium := profile == &"medium"
 	custom_minimum_size = Vector2(
-		202.0 if compact else 222.0 if medium else 252.0,
-		104.0 if compact else 112.0 if medium else 122.0
+		206.0 if compact else 228.0 if medium else 250.0,
+		94.0 if compact else 108.0 if medium else 122.0
 	)
 	_content_margin.add_theme_constant_override(
 		"margin_left", 12 if compact else 14 if medium else 16
@@ -105,6 +115,10 @@ func apply_layout_profile(profile: StringName) -> void:
 	_content_margin.add_theme_constant_override(
 		"margin_bottom", 7 if compact else 8 if medium else 9
 	)
+	_content_margin.offset_left = 0
+	_content_margin.offset_top = 0
+	_content_margin.offset_right = 0
+	_content_margin.offset_bottom = 0
 	_content.add_theme_constant_override(
 		"separation", 7 if compact else 8 if medium else 10
 	)
@@ -119,16 +133,16 @@ func apply_layout_profile(profile: StringName) -> void:
 		"font_size", 11 if compact else 12 if medium else 13
 	)
 	_xp_label.add_theme_font_size_override(
-		"font_size", 10 if compact else 11 if medium else 12
+		"font_size", 11 if compact else 12 if medium else 13
 	)
 	_next_rank_label.add_theme_font_size_override(
-		"font_size", 9 if compact else 10 if medium else 11
+		"font_size", 10 if compact else 11 if medium else 12
 	)
 	_path_label.add_theme_font_size_override(
-		"font_size", 9 if compact else 10 if medium else 11
+		"font_size", 10 if compact else 11 if medium else 12
 	)
 	_active_marker.add_theme_font_size_override(
-		"font_size", 9 if compact else 10 if medium else 11
+		"font_size", 10 if compact else 11 if medium else 12
 	)
 	_pending_badge.custom_minimum_size = Vector2(
 		20.0 if compact else 22.0 if medium else 24.0,
@@ -198,6 +212,8 @@ func _configure_progress(
 	else:
 		_xp_label.text = "%d XP" % progress.xp
 		_next_rank_label.text = "Progression non définie"
+	if not progress.get_pending_rank_choices().is_empty():
+		_next_rank_label.text = "Choix d’évolution prêt"
 	var selected := progress.get_selected_upgrades()
 	if selected.is_empty():
 		_path_label.text = "Aucun choix acquis"
@@ -226,3 +242,9 @@ func _tooltip_text(
 	if progress != null:
 		lines.append("Rang %d · %d XP" % [progress.rank, progress.xp])
 	return "\n".join(lines)
+
+
+func set_spell_label(spell_name: String) -> void:
+	_name_label.text = spell_name
+	_name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_name_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING

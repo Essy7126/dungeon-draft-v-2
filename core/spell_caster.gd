@@ -9,6 +9,7 @@ var _grid: GridData
 var _pathfinder: Pathfinder
 var _terrain: TerrainEffects
 var _encounter_runtime_state: EncounterRuntimeState = null
+var _action_classification_registry := CombatActionClassificationRegistry.new()
 var _cast_sequence := 0
 
 const CAT_SPELL: LogDefinitions.LogCategory = LogDefinitions.LogCategory.SPELL
@@ -21,6 +22,17 @@ func _init(grid: GridData, pathfinder: Pathfinder, terrain: TerrainEffects) -> v
 
 func set_encounter_runtime_state(state: EncounterRuntimeState) -> void:
 	_encounter_runtime_state = state
+
+
+func set_action_classification_catalog(
+		catalog: CombatActionClassificationCatalogData
+	) -> bool:
+	_action_classification_registry = CombatActionClassificationRegistry.new()
+	return catalog != null and _action_classification_registry.initialize(catalog)
+
+
+func get_action_classification(spell: Spell) -> StringName:
+	return _action_classification_registry.classification_for_spell(spell)
 
 func get_targetable_cells(caster: Unit, spell: Spell) -> Array:
 	var result: Array = []
@@ -45,8 +57,14 @@ func get_effective_spell_range(caster: Unit, spell: Spell) -> int:
 	if caster == null or spell == null:
 		return 0
 	var effective_range := spell.spell_range
+	if caster.mastery_combat_adapter != null:
+		effective_range = int(caster.mastery_combat_adapter.spell_profile(caster, spell).maximum_range)
 	for modifier in _gather_modifiers(caster, spell):
+		if modifier is MasterySpellModifierData and caster.mastery_combat_adapter != null:
+			continue
 		effective_range += int(modifier.get_range_bonus(caster, spell))
+	if caster.mastery_combat_adapter != null:
+		effective_range += caster.mastery_combat_adapter.range_bonus(caster, spell)
 	return maxi(0, effective_range)
 
 
@@ -55,10 +73,31 @@ func get_effective_spell_range(caster: Unit, spell: Spell) -> int:
 func spell_moves_caster(caster: Unit, spell: Spell) -> bool:
 	if caster == null or spell == null:
 		return false
+	if spell.caster_movement != Spell.CasterMovement.NONE:
+		return true
 	for modifier in _gather_modifiers(caster, spell):
 		if modifier.moves_caster_during_cast(caster, spell):
 			return true
 	return false
+
+
+func get_effective_spell_minimum_range(caster: Unit, spell: Spell) -> int:
+	if caster == null or spell == null:
+		return 0
+	var effective_minimum := maxi(0, spell.minimum_range)
+	if caster.mastery_combat_adapter != null:
+		effective_minimum = int(caster.mastery_combat_adapter.spell_profile(caster, spell).minimum_range)
+	for modifier in _gather_modifiers(caster, spell):
+		if modifier.ignores_minimum_range(caster, spell):
+			return 0
+		var override_value := int(
+			modifier.get_minimum_range_override(caster, spell)
+		)
+		if override_value >= 0:
+			effective_minimum = maxi(effective_minimum, override_value)
+	if caster.mastery_combat_adapter != null:
+		effective_minimum = caster.mastery_combat_adapter.minimum_range(caster, spell, effective_minimum)
+	return mini(effective_minimum, get_effective_spell_range(caster, spell))
 
 func get_aoe_cells(
 		spell: Spell,
@@ -66,6 +105,11 @@ func get_aoe_cells(
 		origin: Vector2i = Vector2i(-1, -1)
 	) -> Array:
 	var result: Array = []
+	var actor := _grid.get_unit(origin) as Unit if _grid != null else null
+	if actor != null and actor.mastery_combat_adapter != null:
+		var modified: Array = actor.mastery_combat_adapter.preview_target_cells(actor, spell, center)
+		if not modified.is_empty():
+			return modified
 	match spell.aoe_shape:
 		Spell.AoeShape.SINGLE:
 			result.append(center)
@@ -110,12 +154,36 @@ func _matches_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 		return spell.can_target_ally
 	if occupant == null:
 		if spell.can_target_free_cell:
-			return true
+			return _is_valid_caster_movement_target(caster, spell, cell)
 		for modifier in _gather_modifiers(caster, spell):
 			if modifier.allows_free_cell_target(caster, spell):
 				return true
 		return false
 	return false
+
+
+func _is_valid_caster_movement_target(
+		caster: Unit,
+		spell: Spell,
+		cell: Vector2i
+	) -> bool:
+	if spell.caster_movement == Spell.CasterMovement.NONE:
+		return true
+	if spell.caster_movement != Spell.CasterMovement.TARGET_CELL \
+			or caster == null or not _grid.is_walkable(cell):
+		return false
+	if not spell.movement_requires_clear_path:
+		return true
+	var delta := cell - caster.grid_pos
+	if delta == Vector2i.ZERO or (delta.x != 0 and delta.y != 0):
+		return false
+	var direction := Vector2i(signi(delta.x), signi(delta.y))
+	var distance := absi(delta.x) + absi(delta.y)
+	for step in range(1, distance + 1):
+		var traversed_cell := caster.grid_pos + direction * step
+		if not _grid.is_walkable(traversed_cell, caster):
+			return false
+	return true
 
 func is_valid_target(caster: Unit, spell: Spell, cell: Vector2i) -> bool:
 	return _is_base_valid_target(caster, spell, cell) \
@@ -135,17 +203,24 @@ func _is_base_valid_target(
 		return false
 	if not _grid.is_terrain_interactable(cell):
 		return false
-	var distance := _grid.manhattan(caster.grid_pos, cell)
+	var origin := get_cast_origin(caster, spell)
+	var distance := _grid.manhattan(origin, cell)
 	if distance > get_effective_spell_range(caster, spell) \
-			or distance < spell.minimum_range:
+			or distance < get_effective_spell_minimum_range(caster, spell):
 		return false
 	if spell.line_from_caster \
-			and not _is_cardinal_line_target(caster.grid_pos, cell):
+			and not _is_cardinal_line_target(origin, cell):
 		return false
 	if spell.needs_line_of_sight \
-			and not _pathfinder.has_line_of_sight(caster.grid_pos, cell):
+			and not _pathfinder.has_line_of_sight(origin, cell):
+		return false
+	if get_action_classification(spell) == &"PROJECTILE" and not _pathfinder.has_projectile_path(origin, cell):
 		return false
 	return _matches_target(caster, spell, cell)
+
+
+func get_cast_origin(caster: Unit, spell: Spell) -> Vector2i:
+	return caster.mastery_combat_adapter.projectile_origin(caster, spell) if caster.mastery_combat_adapter != null else caster.grid_pos
 
 
 func _modifier_target_failure(
@@ -196,6 +271,8 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 	}
 	if cells <= 0 or target == null:
 		return result
+	if target.mastery_combat_adapter != null and target.mastery_combat_adapter.blocks_control(target, &"push"):
+		return result
 	cells = target.reduce_forced_movement(cells)
 	if cells <= 0:
 		return result
@@ -244,6 +321,10 @@ func _push_unit(caster: Unit, target: Unit, cells: int, collision_damage: int = 
 				_apply_collision_damage(caster, target, collision_damage)
 			break
 		landed_pos = next
+	if had_collision and collision_damage <= 0:
+		EventBus.collision_impact.emit(caster, target, 0)
+	if caster != null and (had_collision or landed_pos != from_pos):
+		caster.record_target_moved_or_collided(target)
 	# La cible a pu mourir d'une collision (mur/hasard) avant tout deplacement.
 	if not target.is_alive:
 		result["collision"] = had_collision
@@ -296,6 +377,8 @@ func _apply_collision_damage(caster: Unit, victim, amount: int) -> void:
 # Attire la cible VERS le lanceur (Crochet). S'arrete avant le lanceur / obstacle.
 func _pull_unit(caster: Unit, target: Unit, cells: int, journal: Array = []) -> Dictionary:
 	var result := { "pushed": false, "collision": false, "pushed_away_from_ally": false, "landed_on_terrain": false }
+	if target != null and target.mastery_combat_adapter != null and target.mastery_combat_adapter.blocks_control(target, &"pull"):
+		return result
 	if cells <= 0 or target == null:
 		return result
 	cells = target.reduce_forced_movement(cells)
@@ -537,7 +620,12 @@ func resolve_pending_activation(
 			)
 			EventBus.pending_ability_blocked.emit(caster, spell, result["reason"])
 			return result
-		target.take_damage(spell.damage, caster, spell.damage_type, spell.element)
+		target.take_damage(
+			spell.get_scaled_damage(caster),
+			caster,
+			spell.damage_type,
+			spell.element,
+		)
 		if target.is_alive and spell.push_distance > 0:
 			_push_unit(caster, target, spell.push_distance)
 		result["resolved"] = true
@@ -628,6 +716,30 @@ func cast(caster: Unit, spell: Spell, cell: Vector2i) -> Dictionary:
 	return resolve_cast(begin_cast(caster, spell, cell))
 
 
+func cast_automatic(actor: Unit, spell: Spell, cell: Vector2i, multiplier: float, action_id: StringName) -> Dictionary:
+	if actor == null or spell == null or not actor.is_alive or not is_valid_target(actor, spell, cell):
+		return _failed_report(actor, spell, cell, "automatic_target")
+	var ctx := CastContext.new()
+	ctx.caster = actor
+	ctx.spell = spell
+	ctx.cell = cell
+	ctx.grid = _grid
+	ctx.terrain = _terrain
+	ctx.cast_id = action_id
+	ctx.action_id = action_id
+	ctx.ap_before = actor.current_ap
+	ctx.costs_committed = true
+	ctx.modifiers = _gather_modifiers(actor, spell)
+	ctx.set_meta("automatic_cast", true)
+	ctx.set_meta("automatic_multiplier", maxf(0.0, multiplier))
+	var report := resolve_cast(ctx)
+	report["automatic"] = true
+	report["awards_xp"] = false
+	report["spends_action_points"] = false
+	report["consumes_manual_spell_use"] = false
+	return report
+
+
 ## Valide et engage les couts au release, sans appliquer les impacts.
 ## Le CastContext retourne est ensuite resolu exactement une fois par resolve_cast().
 func begin_cast(
@@ -678,6 +790,8 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 	_run_hook(ctx, "on_area_resolved")
 	_run_hook(ctx, "on_targets_resolved")
 	_run_hook(ctx, "on_targets_finalized")
+	if ctx.caster.mastery_combat_adapter != null:
+		ctx.caster.mastery_combat_adapter.prepare_cast(ctx)
 
 	_resolve_impacts(ctx)
 	_run_hook(ctx, "on_damage_resolved")
@@ -689,8 +803,12 @@ func resolve_cast(ctx: CastContext) -> Dictionary:
 	_log_cast_resolution(ctx)
 	_run_hook(ctx, "on_cast_complete")
 	_finalize_effectiveness(ctx)
-
-	EventBus.spell_cast.emit(ctx.caster, ctx.spell, ctx.report)
+	if ctx.caster.mastery_combat_adapter != null:
+		ctx.caster.mastery_combat_adapter.complete_cast(ctx)
+	if not bool(ctx.get_meta("automatic_cast", false)):
+		EventBus.spell_cast.emit(ctx.caster, ctx.spell, ctx.report)
+	if ctx.caster.mastery_combat_adapter != null:
+		ctx.caster.mastery_combat_adapter.flush_automatic()
 	return ctx.report
 
 # Les modifiers actifs viennent des données du sort et de la progression.
@@ -745,6 +863,8 @@ func _resolve_targets(ctx: CastContext) -> void:
 				snapshot_unit
 			)
 	ctx.report = {
+		"automatic": bool(ctx.get_meta("automatic_cast", false)),
+		"awards_xp": not bool(ctx.get_meta("automatic_cast", false)),
 		"caster": ctx.caster, "spell": ctx.spell, "cell": ctx.cell,
 		"action_id": ctx.action_id, "ap_before": ctx.ap_before,
 		"ap_after": ctx.caster.current_ap,
@@ -764,6 +884,16 @@ func _resolve_targets(ctx: CastContext) -> void:
 		ctx.caster.grid_pos
 	)
 	ctx.primary_target = _grid.get_unit(ctx.cell) as Unit
+	ctx.report["equipment_condition_facts"] = (
+		ctx.caster.get_equipment_condition_facts(ctx.primary_target)
+		if ctx.caster != null else {
+			"prior_moved_cells": 0,
+			"mp_spent": 0,
+			"hp_lost_since_previous_activation": false,
+			"target_moved_or_collided": false,
+			"guard_destroyed": false,
+		}
+	)
 
 # --- Étape 3 : impacts. Par cellule : effets sur l'unité PUIS terrains du
 # sort — l'ordre par cellule est préservé (une réaction de terrain peut
@@ -795,7 +925,7 @@ func _resolve_unit_impact(
 	if spell.deals_damage() or cell_bonus != 0:
 		var hp_before_damage: int = target.current_hp
 		var shield_before_damage: int = target.current_shield
-		var base_dmg := spell.damage + cell_bonus
+		var base_dmg := spell.get_scaled_damage(caster) + cell_bonus
 		var has_bonus_status := _has_status(target, spell.bonus_damage_status_id)
 		if spell.bonus_requires_linked_status_source:
 			has_bonus_status = caster.target_has_linked_source_status(
@@ -804,6 +934,7 @@ func _resolve_unit_impact(
 			)
 		if spell.bonus_damage_if_marked > 0 and has_bonus_status:
 			base_dmg += spell.bonus_damage_if_marked
+		base_dmg = int(round(base_dmg * float(ctx.get_meta("automatic_multiplier", 1.0))))
 		var impact_id := StringName("%s:%03d" % [ctx.cast_id, sequence_index])
 		var damage_result = target.take_damage(
 			base_dmg,
@@ -817,6 +948,7 @@ func _resolve_unit_impact(
 				"impact_id": impact_id,
 				"sequence_index": sequence_index,
 				"ability_id": spell.get_effective_spell_id(),
+				"attack_classification": get_action_classification(spell),
 				"impact_origin_cell": _damage_impact_origin_cell(ctx),
 			}
 		)
@@ -919,7 +1051,7 @@ func _resolve_unit_impact(
 				and not report["drained_units"].has(target):
 			report["drained_units"].append(target)
 		affected = true
-	var raw_shield := spell.shield_grant \
+	var raw_shield := spell.get_scaled_shield(caster) \
 		+ int(ctx.additional_shield_by_unit.get(target, 0))
 	if raw_shield > 0 and target.team == caster.team:
 		var before_shield: int = target.current_shield
@@ -929,6 +1061,9 @@ func _resolve_unit_impact(
 			"impact_id": StringName("%s:%03d" % [ctx.cast_id, sequence_index]),
 			"sequence_index": sequence_index,
 			"ability_id": spell.get_effective_spell_id(),
+			"shield_source_id": spell.get_effective_spell_id(),
+			"tags": spell.shield_tags.duplicate(),
+			"expires_after_activations": spell.shield_duration_activations,
 		})
 		report["shield_increase_total"] += maxi(0, target.current_shield - before_shield)
 		if target.current_shield > before_shield and not report["shielded_units"].has(target):
@@ -944,7 +1079,7 @@ func _damage_impact_origin_cell(ctx: CastContext) -> Vector2i:
 	if ctx.spell.aoe_shape != Spell.AoeShape.SINGLE \
 			or ctx.affected_cells.size() > 1:
 		return ctx.cell
-	return ctx.caster.grid_pos
+	return get_cast_origin(ctx.caster, ctx.spell)
 
 # Terrain porté par le sort, posé sur une cellule.
 func _resolve_cell_terrain(ctx: CastContext, target_cell: Vector2i) -> void:
@@ -978,6 +1113,7 @@ func _resolve_movement(ctx: CastContext) -> void:
 	var caster: Unit = ctx.caster
 	var spell: Spell = ctx.spell
 	var report: Dictionary = ctx.report
+	_resolve_caster_movement(ctx)
 	var force_mult := caster.get_force_multiplier()
 	var eff_push := int(round(spell.push_distance * force_mult))
 	var eff_collision := int(round(spell.collision_damage * force_mult))
@@ -1072,6 +1208,38 @@ func _resolve_movement(ctx: CastContext) -> void:
 		report["landed_on_terrain"] = report["landed_on_terrain"] or extra_push.get("landed_on_terrain", false)
 		if extra_push["pushed"] and not report["affected_units"].has(push_target):
 			report["affected_units"].append(push_target)
+
+
+func _resolve_caster_movement(ctx: CastContext) -> void:
+	if ctx == null or ctx.caster == null or ctx.spell == null \
+			or ctx.spell.caster_movement == Spell.CasterMovement.NONE:
+		return
+	if ctx.spell.caster_movement != Spell.CasterMovement.TARGET_CELL \
+			or not _is_valid_caster_movement_target(
+				ctx.caster,
+				ctx.spell,
+				ctx.cell,
+			):
+		return
+	var origin := ctx.caster.grid_pos
+	if not _grid.relocate_unit(ctx.caster, ctx.cell):
+		return
+	# GridData owns terrain entry; consume its resolved destination so a portal
+	# or hazard is applied once and the presentation follows the actual endpoint.
+	var relocation := _terrain.consume_relocation_result(ctx.caster, ctx.cell)
+	var destination := relocation.get("destination", ctx.cell) as Vector2i
+	ctx.caster.record_runtime_movement(_grid.manhattan(origin, ctx.cell))
+	ctx.movement.append({
+		"unit": ctx.caster,
+		"from": origin,
+		"to": destination,
+		"collision": false,
+		"voluntary": true,
+	})
+	if _terrain.get_effect_data(ctx.cell) != null \
+			or bool(relocation.get("applied", false)) \
+			or bool(relocation.get("destination_effect_applied", false)):
+		ctx.report["landed_on_terrain"] = true
 
 # --- Étape 5 : journalisation du résultat. ---
 func _status_state_signature(

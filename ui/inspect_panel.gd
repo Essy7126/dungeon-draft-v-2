@@ -179,7 +179,7 @@ func show_unit(unit, locked: bool = false) -> void:
 		return
 	_clear_content()
 	_panel.visible = true
-	_title.text = unit.unit_name
+	_title.text = Glossary.unit_display_name(unit)
 	_subtitle.text = "Allie" if unit.team == 0 else "Ennemi"
 	_add_resources(unit)
 	_add_engagement(unit)
@@ -357,20 +357,21 @@ func _add_details_toggle(unit) -> void:
 
 func _add_detailed_stats(unit) -> void:
 	_add_section("Stats")
-	_add_line("Attaque", str(unit.get_attack()))
+	_add_line("Prouesse" if Glossary.uses_champion_progression(unit) else "Attaque", str(unit.attack_power.get_int() if Glossary.uses_champion_progression(unit) else unit.get_attack()))
 	_add_line("Initiative", str(unit.get_initiative()))
 	_add_line("Armure", _fmt_float(unit.armure.get_value()))
 	_add_line("Resist. magique", _fmt_float(unit.resist_magique.get_value()))
 	_add_line("Esquive", "%d%%" % int(round(unit.esquive.get_value() * 100.0)))
 	_add_line("Critique", "%d%% x%s" % [int(round(unit.crit_chance.get_value() * 100.0)), _fmt_float(unit.crit_multi.get_value())])
 
-func _preview_effect_on_unit(_caster, spell: Spell, _target) -> String:
+func _preview_effect_on_unit(caster, spell: Spell, _target) -> String:
 	var parts: Array = []
-	if spell.damage > 0:
-		parts.append("~%d degats" % spell.damage)
+	var damage := spell.get_scaled_damage(caster)
+	if damage > 0:
+		parts.append("~%d dégâts avant défenses" % damage)
 	if spell.heal > 0:
 		parts.append("~%d PV rendus" % spell.heal)
-	var shield: int = spell.shield_grant
+	var shield: int = spell.get_scaled_shield(caster)
 	if shield > 0:
 		parts.append("%d bouclier" % shield)
 	if spell.applied_status != null:
@@ -458,9 +459,9 @@ func _spell_summary(spell: Spell, unit = null) -> String:
 	var parts: Array = []
 	var ap_cost: int = unit.get_spell_ap_cost(spell) if unit != null else spell.ap_cost
 	parts.append("%d PA" % ap_cost)
-	var damage: int = spell.damage
+	var damage: int = spell.get_scaled_damage(unit) if unit is Unit else spell.damage
 	var heal: int = spell.heal
-	var shield: int = spell.shield_grant
+	var shield: int = spell.get_scaled_shield(unit) if unit is Unit else spell.shield_grant
 	if damage > 0:
 		parts.append("%d degats" % damage)
 	if heal > 0:
@@ -526,6 +527,8 @@ func _spell_unusable_reason(unit, spell: Spell) -> String:
 func _unit_subject_fingerprint(unit) -> String:
 	var values: Array = [
 		unit.unit_name,
+		Glossary.champion_level(unit),
+		unit.attack_power.get_int(),
 		unit.team,
 		unit.current_hp,
 		unit.max_hp.get_int(),

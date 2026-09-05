@@ -92,12 +92,13 @@ func _configure_portrait() -> void:
 	if unit == null:
 		return
 	var data := unit.character_data
-	if data != null and data.preview_visual_scene != null:
+	if data != null and (data.preview_sprite_frames != null or data.preview_visual_scene != null):
 		preview.visible = true
 		preview.configure(data)
-		preview.visual_root.rotation_degrees = Vector3(0.0, 32.0, 0.0)
-		_frame_preview_face()
-		preview.preview_viewport.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
+		if not preview.is_using_sprite_preview():
+			preview.visual_root.rotation_degrees = Vector3(0.0, 32.0, 0.0)
+			_frame_preview_face()
+			preview.preview_viewport.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
 		return
 	var texture := _get_fallback_texture()
 	fallback_portrait.texture = texture

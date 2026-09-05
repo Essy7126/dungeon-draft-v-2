@@ -64,6 +64,10 @@ enum Phase {
 @onready var push_wave_button: Button = %PushWaveButton
 @onready var continue_button: Button = %ContinueButton
 
+var _champion_summaries: Array[ChampionProgressionSummary] = []
+var _champion_codex_screen: Control = null
+var _champion_camp_screen: Control = null
+
 var phase: Phase = Phase.VICTORY_REVEAL
 var report: CombatReport = null
 var _reward_options: Array[Dictionary] = []
@@ -110,6 +114,11 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if is_instance_valid(_champion_codex_screen) or is_instance_valid(_champion_camp_screen):
+		return
+	var persistent_ui := GameManager.get_persistent_run_ui()
+	if persistent_ui != null and persistent_ui.has_active_modal():
+		return
 	if phase in [
 		Phase.ROOM_DECISION,
 		Phase.REWARD_SELECTION,
@@ -642,6 +651,17 @@ func _start_progression_reveal() -> void:
 				+ "pour cette run."
 			)
 	continue_button.disabled = false
+	if not _champion_summaries.is_empty():
+		phase_title.text = "L’ÉVEIL DU CHAMPION"
+		if not _final_room and equipment_rewards_enabled:
+			continue_button.text = "CHOISIR UNE RÉCOMPENSE"
+		status_label.text = "Préparez vos caractéristiques et vos doctrines, ou conservez vos points."
+		for summary in _champion_summaries:
+			summary.refresh_points()
+			summary.reveal(not _reduced_motion)
+		_animation_active = false
+		continue_button.grab_focus.call_deferred()
+		return
 	_prepare_progression_initial_values()
 	if _reduced_motion:
 		for row in _progress_rows:
@@ -867,6 +887,14 @@ func _make_stat_card(character: CharacterCombatReport) -> Control:
 
 
 func _make_character_visual(state: CharacterRunState) -> Control:
+	# Sprite-authored heroes keep the same model in battle and the results UI.
+	# Other heroes retain their existing themed portrait / 3D precedence.
+	if state != null and state.unit != null and state.unit.character_data != null \
+			and state.unit.character_data.preview_sprite_frames != null:
+		var sprite_preview := CHARACTER_PREVIEW_SCENE.instantiate() as CharacterPreview3D
+		sprite_preview.custom_minimum_size = Vector2(92, 78)
+		sprite_preview.unit_data = state.unit.character_data
+		return sprite_preview
 	var theme_data := (
 		CharacterHUDThemeCatalog.resolve_refined(state.unit)
 		if state != null and state.unit != null
@@ -882,7 +910,8 @@ func _make_character_visual(state: CharacterRunState) -> Control:
 	if state != null \
 			and state.unit != null \
 			and state.unit.character_data != null \
-			and state.unit.character_data.preview_visual_scene != null:
+			and (state.unit.character_data.preview_sprite_frames != null \
+				or state.unit.character_data.preview_visual_scene != null):
 		var preview := CHARACTER_PREVIEW_SCENE.instantiate() as CharacterPreview3D
 		preview.custom_minimum_size = Vector2(92, 78)
 		preview.unit_data = state.unit.character_data
@@ -903,8 +932,19 @@ func _make_character_visual(state: CharacterRunState) -> Control:
 func _build_progression_cards() -> void:
 	_clear_container(progression_cards)
 	_progress_rows.clear()
+	_champion_summaries.clear()
+	var awards: Dictionary = GameManager.get_last_champion_progression_results().get("character_results", {})
 	for character in report.character_reports:
-		progression_cards.add_child(_make_progression_card(character))
+		var state := GameManager.get_character_state(character.character_id)
+		if state != null and state.uses_champion_progression():
+			var summary := ChampionProgressionSummary.new()
+			progression_cards.add_child(summary)
+			summary.configure(state, awards.get(state.character_id, {}))
+			summary.preparation_requested.connect(_open_champion_preparation.bind(state.character_id))
+			summary.camp_requested.connect(_open_champion_camp)
+			_champion_summaries.append(summary)
+		else:
+			progression_cards.add_child(_make_progression_card(character))
 	progression_cards.alignment = BoxContainer.ALIGNMENT_CENTER
 	if progression_cards.get_child_count() == 1:
 		var solo_card := progression_cards.get_child(0) as Control
@@ -1413,3 +1453,39 @@ func _clear_container(container: Container) -> void:
 	for child in container.get_children():
 		container.remove_child(child)
 		child.queue_free()
+
+
+func _open_champion_preparation(character_id: StringName) -> void:
+	if is_instance_valid(_champion_codex_screen):
+		return
+	var scene := load("res://ui/progression/screens/skill_tree_screen.tscn") as PackedScene
+	_champion_codex_screen = scene.instantiate()
+	add_child(_champion_codex_screen)
+	_champion_codex_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_champion_codex_screen.screen_closed.connect(func() -> void:
+		_champion_codex_screen.queue_free()
+		_champion_codex_screen = null
+		for summary in _champion_summaries:
+			summary.refresh_points()
+	)
+	_champion_codex_screen.open_for_character(character_id, GameManager)
+
+
+func get_champion_summary_snapshots() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for summary in _champion_summaries:
+		result.append(summary.get_summary_snapshot())
+	return result
+
+
+func _open_champion_camp() -> void:
+	if is_instance_valid(_champion_camp_screen):
+		return
+	_champion_camp_screen = ChampionCampScreen.new()
+	add_child(_champion_camp_screen)
+	_champion_camp_screen.closed.connect(func() -> void:
+		_champion_camp_screen.queue_free()
+		_champion_camp_screen = null
+		for summary in _champion_summaries:
+			summary.refresh_points()
+	)

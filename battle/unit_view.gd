@@ -705,6 +705,11 @@ func _begin_movement_feedback(
 		_optional_visual.play_walk()
 
 
+func update_movement_stride(step_index: int, progress: float) -> void:
+	if is_instance_valid(_optional_visual) \
+			and _optional_visual.has_method("update_movement_stride"):
+		_optional_visual.update_movement_stride(step_index, progress)
+
 func end_movement_feedback() -> void:
 	var optional_handles_idle := false
 	if is_instance_valid(_optional_visual) \

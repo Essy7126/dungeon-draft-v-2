@@ -6,6 +6,10 @@
 script = ExtResource("1_animation_set")
 animation_names = {
 &"cast": &"mage_soell_cast_7",
+&"cast:achilles_bronze_guard": &"Sword_Parry_Backward_2",
+&"cast:achilles_fulminant_dash": &"run_fast_3_inplace",
+&"cast:achilles_peleid_strike": &"Left_Slash",
+&"cast:achilles_pelion_shot": &"Archery_Shot_3",
 &"cast:achilles_advance": &"run_fast_3_inplace",
 &"cast:achilles_guard": &"Sword_Parry_Backward_2",
 &"cast:achilles_spear_thrust": &"Left_Slash",

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://tools/labs/greek_drawn_arena/greek_stone_prop.gd" id="1"]
+[node name="BrokenColumn" type="Node2D"]
+script = ExtResource("1")
+block_height = 54.0
+carved_column = true
+

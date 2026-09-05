@@ -61,7 +61,19 @@ const DEFENSE_MAX := 1000.0
 var current_hp: int = 0
 var current_ap: int = 0
 var current_mp: int = 0
-var current_shield: int = 0
+const LEGACY_SHIELD_SOURCE_ID: StringName = &"legacy_aggregate"
+var _shield_instances: Array[ShieldInstance] = []
+var current_shield: int:
+	get:
+		return get_total_shield()
+	set(value):
+		_set_legacy_aggregate_shield(value)
+var shield_creation_multiplier: float = 1.0
+var created_shield_multiplier: float:
+	get:
+		return shield_creation_multiplier
+	set(value):
+		shield_creation_multiplier = maxf(0.0, value)
 var is_alive: bool = true
 var _grid_pos: Vector2i = Vector2i(-1, -1)
 var grid_context = null
@@ -134,13 +146,23 @@ var preview_visual_scene: PackedScene = null
 # --- Sorts ---
 var basic_attack_enabled: bool = true
 var spells: Array = []
+var mastery_runtime: MasteryReactiveRuntimeService = null
+var mastery_nodes: Array[SkillTreeNodeData] = []
+# Borrowed from the active battle; detached at shutdown.
+var mastery_combat_adapter = null
 var _progression_spell_modifiers: Array[SpellModifier] = []
 var _progression_spell_modifiers_by_spell: Dictionary = {}
 var _equipment_spell_modifiers_by_source: Dictionary = {}
+var _equipment_guard_effectiveness_by_source: Dictionary = {}
 var activation_index: int = 0
 var activation_consumed: bool = false
 var _ability_states: Dictionary = {}
 var pending_ability: Dictionary = {}
+var _moved_cells_this_activation := 0
+var _mp_spent_this_activation := 0
+var _last_hp_loss_activation_index := -1000000
+var _last_guard_destroyed_activation_index := -1000000
+var _moved_or_collided_targets_this_activation: Dictionary = {}
 
 # --- Statuts actifs ---
 # Liste de dictionnaires : { "data": StatusData, "remaining": int }
@@ -153,6 +175,9 @@ signal moved(from_pos: Vector2i, to_pos: Vector2i)
 signal hp_changed(unit)
 signal stats_changed(unit)
 signal shield_changed(unit)
+## Rupture d'une source individuelle. Le signal global EventBus.shield_broken
+## reste reserve a la disparition du total agrege pour compatibilite.
+signal shield_source_broken(unit, source_id)
 
 # Raccourcis de catÃ©gories de log (combat = vu par le joueur).
 const CAT_COMBAT: LogDefinitions.LogCategory = LogDefinitions.LogCategory.COMBAT
@@ -334,6 +359,11 @@ func reset_ability_runtime() -> void:
 	activation_consumed = false
 	_ability_states.clear()
 	pending_ability.clear()
+	_moved_cells_this_activation = 0
+	_mp_spent_this_activation = 0
+	_last_hp_loss_activation_index = -1000000
+	_last_guard_destroyed_activation_index = -1000000
+	_moved_or_collided_targets_this_activation.clear()
 	for spell_value in spells:
 		_ensure_ability_state(spell_value as Spell)
 
@@ -405,6 +435,74 @@ func get_equipment_spell_modifiers() -> Array[SpellModifier]:
 			if modifier != null and not result.has(modifier):
 				result.append(modifier)
 	return result
+
+
+func set_equipment_guard_effectiveness(
+		source_id: StringName,
+		melee_multiplier: float,
+		projectile_multiplier: float
+	) -> void:
+	if source_id == &"":
+		return
+	var melee := maxf(0.01, melee_multiplier)
+	var projectile := maxf(0.01, projectile_multiplier)
+	if is_equal_approx(melee, 1.0) and is_equal_approx(projectile, 1.0):
+		_equipment_guard_effectiveness_by_source.erase(source_id)
+		return
+	_equipment_guard_effectiveness_by_source[source_id] = {
+		"MELEE": melee,
+		"PROJECTILE": projectile,
+	}
+
+
+func clear_equipment_guard_effectiveness(source_id: StringName) -> void:
+	_equipment_guard_effectiveness_by_source.erase(source_id)
+
+
+func get_guard_effectiveness(attack_classification: StringName) -> float:
+	if attack_classification not in [&"MELEE", &"PROJECTILE"]:
+		return 1.0
+	var result := 1.0
+	var source_ids := _equipment_guard_effectiveness_by_source.keys()
+	source_ids.sort_custom(func(a: Variant, b: Variant) -> bool:
+		return str(a) < str(b)
+	)
+	for source_id in source_ids:
+		var values := _equipment_guard_effectiveness_by_source[source_id] as Dictionary
+		result *= float(values.get(str(attack_classification), 1.0))
+	return maxf(0.01, result)
+
+
+func record_runtime_movement(cells: int) -> void:
+	_moved_cells_this_activation += maxi(0, cells)
+
+
+func record_target_moved_or_collided(target: Unit) -> void:
+	if target == null:
+		return
+	var target_id := target.get_runtime_stable_id()
+	if target_id != &"":
+		_moved_or_collided_targets_this_activation[target_id] = activation_index
+
+
+func get_equipment_condition_facts(target: Unit = null) -> Dictionary:
+	var target_moved_or_collided := false
+	if target != null:
+		var target_id := target.get_runtime_stable_id()
+		target_moved_or_collided = int(
+			_moved_or_collided_targets_this_activation.get(target_id, -1)
+		) == activation_index
+	return {
+		"prior_moved_cells": _moved_cells_this_activation,
+		"mp_spent": _mp_spent_this_activation,
+		"hp_lost_since_previous_activation": (
+			activation_index - _last_hp_loss_activation_index <= 1
+		),
+		"target_moved_or_collided": target_moved_or_collided,
+		"guard_destroyed": (
+			activation_index - _last_guard_destroyed_activation_index <= 1
+		),
+	}
 
 # ============================================================
 # ACCÃˆS AUX STATS
@@ -880,8 +978,14 @@ func cleanse_simple_negative_statuses(maximum: int = 1) -> int:
 # ============================================================
 
 func start_turn() -> void:
+	if mastery_combat_adapter != null:
+		mastery_combat_adapter.before_activation_start(self)
 	activation_index += 1
 	activation_consumed = false
+	_moved_cells_this_activation = 0
+	_mp_spent_this_activation = 0
+	_moved_or_collided_targets_this_activation.clear()
+	_expire_shields_at_activation_start()
 	# Tick TOUTES les stats Ã  durÃ©e d'un coup (dÃ©fenses et rÃ©sistances
 	# comprises). Avant, seules 5 stats Ã©taient tickÃ©es â†’ un buff temporaire
 	# "+20 armure 2 tours" ne expirait jamais. CorrigÃ© : liste centralisÃ©e.
@@ -906,9 +1010,10 @@ func start_turn() -> void:
 # ============================================================
 
 func spend_mp(amount: int) -> bool:
-	if amount > current_mp:
+	if amount < 0 or amount > current_mp:
 		return false
 	current_mp -= amount
+	_mp_spent_this_activation += amount
 	stats_changed.emit(self)
 	return true
 
@@ -945,6 +1050,8 @@ func spend_ap(amount: int) -> bool:
 # ============================================================
 
 func reset_combat_resources() -> void:
+	# SpellCaster impact IDs restart in each battle; keep deduplication combat-local.
+	_resolved_combat_effects.clear()
 	reset_ability_runtime()
 	next_turn_ap_modifier = 0
 	next_turn_mp_bonus = 0
@@ -981,17 +1088,31 @@ func get_force_multiplier() -> float:
 	return 1.0 + force.get_value() / 100.0
 
 # ============================================================
-# Le bouclier absorbe les dÃ©gÃ¢ts AVANT les PV. Il n'expire pas
-# naturellement : il tient jusqu'Ã  Ãªtre Ã©puisÃ© ou remplacÃ©.
-# Design : on ne cumule pas les boucliers â€” un nouveau remplace
-# l'ancien s'il est plus Ã©levÃ©, sinon il est ignorÃ©. Ã‰vite le
-# spam de boucliers qui empilement indÃ©finiment.
+# Les boucliers absorbent les degats AVANT les PV. Chaque source conserve sa
+# valeur et sa propre expiration ; current_shield reste une vue agregee pour
+# le HUD et les anciens consommateurs.
 # ============================================================
 
-# Accorde un bouclier. Remplace l'ancien s'il est plus faible.
-# Un bouclier plus faible est ignorÃ© : on ne perd jamais son bouclier
-# parce qu'un sort de soutien a donnÃ© moins que ce qu'on a dÃ©jÃ .
 func add_shield(
+		amount: int,
+		source: Unit = null,
+		options: Dictionary = {}
+	) -> CombatEventFact:
+	var created_amount := amount
+	if source != null:
+		created_amount = int(round(
+			float(amount) * source.shield_creation_multiplier
+		))
+	return add_sourced_shield(
+		_resolve_shield_source_id(source, options),
+		created_amount,
+		source,
+		options,
+	)
+
+
+func add_sourced_shield(
+		source_id: StringName,
 		amount: int,
 		source: Unit = null,
 		options: Dictionary = {}
@@ -1001,31 +1122,289 @@ func add_shield(
 	var effect_key := _combat_effect_key(&"shield", options)
 	if effect_key != &"" and _resolved_combat_effects.has(effect_key):
 		return _resolved_combat_effects[effect_key] as CombatEventFact
-	if amount <= current_shield:
+	if source_id == &"":
 		return null
-	var before := current_shield
-	current_shield = amount
-	EventBus.shield_gained.emit(self, amount)
-	var applied := current_shield - before
+	var existing := _find_shield_instance(source_id)
+	if existing != null and amount <= existing.value:
+		return null
+	var previous_source_value := existing.value if existing != null else 0
+	var expiry_policy := _shield_expiry_policy_from_options(options)
+	var created_at := maxi(0, int(options.get("created_activation", activation_index)))
+	var priority := int(options.get("priority", 0))
+	var tags := _shield_tags_from_options(options)
+	if existing == null:
+		existing = ShieldInstance.new()
+		_shield_instances.append(existing)
+	if not existing.configure(
+			source_id, amount, created_at, expiry_policy, priority, tags
+		):
+		_shield_instances.erase(existing)
+		return null
+	var applied := amount - previous_source_value
+	EventBus.shield_gained.emit(self, applied)
 	EventBus.shield_applied.emit(self, source, applied)
 	shield_changed.emit(self)
 	var fact := CombatEventFact.create(
 		&"shield_granted", self, source,
-		_combat_fact_metadata(options, {"amount_applied": applied})
+		_combat_fact_metadata(options, {
+			"amount_applied": applied,
+			"source_id": source_id,
+			"shield_value": amount,
+			"shield_total": current_shield,
+		})
 	)
 	EventBus.shield_granted.emit(fact)
 	if effect_key != &"":
 		_resolved_combat_effects[effect_key] = fact
 	DebugLogger.debug(CAT_STATS,
-		"%s reÃ§oit un bouclier de %d" % [unit_name, amount])
+		"%s reçoit %d bouclier de %s (total %d)" % [
+			unit_name, applied, source_id, current_shield,
+		])
 	return fact
 
-# Retire le bouclier complÃ¨tement (fin de tour, sort ennemi...).
+
+func get_total_shield() -> int:
+	var total := 0
+	for instance in _shield_instances:
+		if instance != null:
+			total += maxi(0, instance.value)
+	return total
+
+
+func get_shield_value(source_id: StringName) -> int:
+	var instance := _find_shield_instance(source_id)
+	return instance.value if instance != null else 0
+
+
+func get_shield_instances() -> Array[ShieldInstance]:
+	var result: Array[ShieldInstance] = []
+	for instance in _ordered_shield_instances():
+		result.append(instance.duplicate(true) as ShieldInstance)
+	return result
+
+
+func get_shield_instances_snapshot() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for instance in _ordered_shield_instances():
+		result.append(instance.to_snapshot())
+	return result
+
+
+func restore_shield_instances_snapshot(snapshot: Variant) -> bool:
+	if not snapshot is Array:
+		return false
+	var candidates: Array[ShieldInstance] = []
+	var seen_sources := {}
+	for value in snapshot:
+		if not value is Dictionary:
+			return false
+		var data := value as Dictionary
+		var source_id := StringName(data.get("source_id", &""))
+		var shield_value := int(data.get("value", -1))
+		var initial_value := int(data.get("initial_value", -1))
+		var created_at := int(data.get("created_activation", -1))
+		var expiry_policy := int(data.get(
+			"expiry_policy", ShieldInstance.ExpiryPolicy.NEVER
+		))
+		if source_id == &"" \
+				or seen_sources.has(source_id) \
+				or shield_value <= 0 \
+				or initial_value < shield_value \
+				or created_at < 0 \
+				or expiry_policy not in [
+					ShieldInstance.ExpiryPolicy.NEVER,
+					ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION,
+				]:
+			return false
+		var tags := _shield_tags_from_options({"tags": data.get("tags", [])})
+		var instance := ShieldInstance.new()
+		if not instance.configure(
+				source_id,
+				initial_value,
+				created_at,
+				expiry_policy,
+				int(data.get("priority", 0)),
+				tags,
+			):
+			return false
+		instance.value = shield_value
+		candidates.append(instance)
+		seen_sources[source_id] = true
+	var before := get_shield_instances_snapshot()
+	_shield_instances.assign(candidates)
+	if before != get_shield_instances_snapshot():
+		shield_changed.emit(self)
+	return true
+
+
+## Explicit consumption preserves collateral sources and never reports an enemy break.
+func consume_shield_source(source_id: StringName, amount: int) -> int:
+	var instance := _find_shield_instance(source_id)
+	if instance == null or amount <= 0:
+		return 0
+	var spent := mini(amount, instance.value)
+	instance.value -= spent
+	if instance.value <= 0:
+		_shield_instances.erase(instance)
+	shield_changed.emit(self)
+	return spent
+
+
+func clear_shield_source(source_id: StringName) -> bool:
+	var instance := _find_shield_instance(source_id)
+	if instance == null:
+		return false
+	_shield_instances.erase(instance)
+	shield_changed.emit(self)
+	return true
+
+
+# Compatibilite : cet appel historique signifie explicitement « tout retirer ».
 func clear_shield() -> void:
 	if current_shield <= 0:
 		return
-	current_shield = 0
+	_shield_instances.clear()
 	shield_changed.emit(self)
+
+
+func _set_legacy_aggregate_shield(value: int) -> void:
+	_shield_instances.clear()
+	var safe_value := maxi(0, value)
+	if safe_value <= 0:
+		return
+	var legacy := ShieldInstance.new()
+	legacy.configure(
+		LEGACY_SHIELD_SOURCE_ID,
+		safe_value,
+		maxi(0, activation_index),
+	)
+	_shield_instances.append(legacy)
+
+
+func _find_shield_instance(source_id: StringName) -> ShieldInstance:
+	for instance in _shield_instances:
+		if instance != null and instance.source_id == source_id:
+			return instance
+	return null
+
+
+func _resolve_shield_source_id(source: Unit, options: Dictionary) -> StringName:
+	for key in [&"shield_source_id", &"source_id", &"ability_id"]:
+		var candidate := StringName(options.get(key, &""))
+		if candidate != &"":
+			return candidate
+	if source != null:
+		return StringName("unit:%s" % source.get_runtime_stable_id())
+	return LEGACY_SHIELD_SOURCE_ID
+
+
+func _shield_expiry_policy_from_options(
+		options: Dictionary
+	) -> int:
+	if bool(options.get("expires_next_activation", false)):
+		return ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION
+	if int(options.get("expires_after_activations", 0)) == 1:
+		return ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION
+	var policy := int(options.get(
+		"expiry_policy", ShieldInstance.ExpiryPolicy.NEVER
+	))
+	if policy == ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION:
+		return ShieldInstance.ExpiryPolicy.START_OF_NEXT_ACTIVATION
+	return ShieldInstance.ExpiryPolicy.NEVER
+
+
+func _shield_tags_from_options(options: Dictionary) -> Array[StringName]:
+	var result: Array[StringName] = []
+	var values: Variant = options.get("tags", [])
+	if values is Array:
+		for value in values:
+			var tag := StringName(value)
+			if tag != &"" and not result.has(tag):
+				result.append(tag)
+	return result
+
+
+func _ordered_shield_instances() -> Array[ShieldInstance]:
+	var result: Array[ShieldInstance] = []
+	for instance in _shield_instances:
+		if instance != null and instance.value > 0:
+			result.append(instance)
+	result.sort_custom(func(a: ShieldInstance, b: ShieldInstance) -> bool:
+		if a.priority != b.priority:
+			return a.priority > b.priority
+		if a.created_activation != b.created_activation:
+			return a.created_activation < b.created_activation
+		return str(a.source_id) < str(b.source_id)
+	)
+	return result
+
+
+func _expire_shields_at_activation_start() -> void:
+	var expired := false
+	for index in range(_shield_instances.size() - 1, -1, -1):
+		var instance := _shield_instances[index]
+		if instance == null \
+				or instance.should_expire_at_activation_start(activation_index):
+			_shield_instances.remove_at(index)
+			expired = true
+	if expired:
+		shield_changed.emit(self)
+
+
+func _absorb_with_shield_instances(
+		amount: int,
+		attack_classification: StringName = &"",
+		guard_damage_multiplier: float = 1.0
+	) -> Dictionary:
+	var remaining := maxi(0, amount)
+	var absorbed := 0
+	var breakdown: Array[Dictionary] = []
+	var broken_source_ids: Array[StringName] = []
+	var broken_guard_source_ids: Array[StringName] = []
+	for instance in _ordered_shield_instances():
+		if remaining <= 0:
+			break
+		var effectiveness := (
+			get_guard_effectiveness(attack_classification) / maxf(0.01, guard_damage_multiplier)
+			if instance.tags.has(&"guard") else 1.0
+		)
+		var effective_capacity := maxi(
+			1,
+			int(round(float(instance.value) * effectiveness)),
+		)
+		var damage_absorbed := mini(effective_capacity, remaining)
+		if damage_absorbed <= 0:
+			continue
+		var shield_points_spent := mini(
+			instance.value,
+			maxi(1, int(ceil(float(damage_absorbed) / effectiveness - 0.000001))),
+		)
+		instance.value -= shield_points_spent
+		remaining -= damage_absorbed
+		absorbed += damage_absorbed
+		breakdown.append({
+			"source_id": instance.source_id,
+			"amount_absorbed": damage_absorbed,
+			"shield_points_spent": shield_points_spent,
+			"remaining_value": instance.value,
+			"effectiveness": effectiveness,
+			"tags": instance.tags.duplicate(),
+		})
+		if instance.value <= 0:
+			broken_source_ids.append(instance.source_id)
+			if instance.tags.has(&"guard"):
+				broken_guard_source_ids.append(instance.source_id)
+	for index in range(_shield_instances.size() - 1, -1, -1):
+		var instance := _shield_instances[index]
+		if instance == null or instance.value <= 0:
+			_shield_instances.remove_at(index)
+	return {
+		"absorbed": absorbed,
+		"remaining_damage": remaining,
+		"breakdown": breakdown,
+		"broken_source_ids": broken_source_ids,
+		"broken_guard_source_ids": broken_guard_source_ids,
+	}
 
 # ============================================================
 # COMBAT
@@ -1080,6 +1459,9 @@ func take_damage(
 	ctx.impact_id = StringName(options.get("impact_id", &""))
 	ctx.sequence_index = maxi(0, int(options.get("sequence_index", 0)))
 	ctx.ability_id = StringName(options.get("ability_id", &""))
+	ctx.attack_classification = StringName(options.get(
+		"attack_classification", &""
+	))
 	ctx.status_id = StringName(options.get("status_id", &""))
 	ctx.is_periodic = bool(options.get("is_periodic", false))
 
@@ -1087,6 +1469,8 @@ func take_damage(
 	if effect_key != &"" and _resolved_combat_effects.has(effect_key):
 		return _resolved_combat_effects[effect_key] as DamageResolver.DamageResult
 
+	if mastery_combat_adapter != null:
+		mastery_combat_adapter.before_hit(self, ctx)
 	var result := DamageResolver.compute(self, ctx)
 	if result != null and not result.dodged and charged_bonus > 0:
 		_consume_charged_damage_vulnerabilities(category)
@@ -1119,6 +1503,8 @@ func take_hit(ctx: DamageResolver.HitContext) -> DamageResolver.DamageResult:
 	if ctx.attacker is Unit:
 		outgoing_bonus = (ctx.attacker as Unit)._get_outgoing_damage_bonus(ctx.category)
 	ctx.raw_damage += charged_bonus + outgoing_bonus
+	if mastery_combat_adapter != null:
+		mastery_combat_adapter.before_hit(self, ctx)
 	var result := DamageResolver.compute(self, ctx)
 	if result != null and not result.dodged and charged_bonus > 0:
 		_consume_charged_damage_vulnerabilities(ctx.category)
@@ -1265,10 +1651,17 @@ func _apply_damage_result(
 	# Le bouclier prend les dÃ©gÃ¢ts en premier. Si tout est absorbÃ©, les PV ne bougent pas.
 	var damage_to_hp := result.amount
 	var absorbed := 0
+	var shield_resolution: Dictionary = {}
 	if current_shield > 0 and damage_to_hp > 0:
-		absorbed = mini(current_shield, damage_to_hp)
-		current_shield -= absorbed
-		damage_to_hp -= absorbed
+		shield_resolution = _absorb_with_shield_instances(
+			damage_to_hp,
+			ctx.attack_classification if ctx != null else &"",
+			ctx.guard_damage_multiplier if ctx != null else 1.0,
+		)
+		absorbed = int(shield_resolution.get("absorbed", 0))
+		damage_to_hp = int(shield_resolution.get(
+			"remaining_damage", damage_to_hp
+		))
 		EventBus.shield_absorbed.emit(self, absorbed)
 		EventBus.shield_absorption_resolved.emit(CombatEventFact.create(
 			&"shield_absorbed", self, attacker,
@@ -1277,8 +1670,22 @@ func _apply_damage_result(
 				"is_critical": result.is_crit,
 				"damage_type": result.category,
 				"element": result.element,
+				"source_absorption": shield_resolution.get("breakdown", []),
+				"broken_source_ids": shield_resolution.get(
+					"broken_source_ids", []
+				),
+				"guard_absorbed": _shield_resolution_used_guard(
+					shield_resolution
+				),
 			})
 		))
+		if attacker is Unit and (attacker as Unit).team != team \
+				and not (shield_resolution.get(
+					"broken_guard_source_ids", []
+				) as Array).is_empty():
+			_last_guard_destroyed_activation_index = activation_index
+		for broken_source_id in shield_resolution.get("broken_source_ids", []):
+			shield_source_broken.emit(self, StringName(broken_source_id))
 		if current_shield <= 0:
 			EventBus.shield_broken.emit(self)
 		shield_changed.emit(self)
@@ -1292,6 +1699,8 @@ func _apply_damage_result(
 	if damage_to_hp > 0:
 		health_loss = mini(current_hp, damage_to_hp)
 		current_hp -= health_loss
+		if health_loss > 0:
+			_last_hp_loss_activation_index = activation_index
 		if current_hp <= 0 and impact_origin_cell != Vector2i(-1, -1):
 			EventBus.lethal_hit_resolved.emit(self, attacker, impact_origin_cell)
 		var health_fact := CombatEventFact.create(
@@ -1326,6 +1735,13 @@ func _apply_damage_result(
 			"amount_resolved": result.amount,
 			"amount_applied": health_loss,
 			"amount_absorbed": absorbed,
+			"source_absorption": shield_resolution.get("breakdown", []),
+			"broken_source_ids": shield_resolution.get(
+				"broken_source_ids", []
+			),
+			"guard_absorbed": _shield_resolution_used_guard(
+				shield_resolution
+			),
 			"is_critical": result.is_crit,
 			"damage_type": result.category,
 			"element": result.element,
@@ -1397,6 +1813,7 @@ func _combat_fact_metadata(base: Dictionary, extra: Dictionary = {}) -> Dictiona
 		"impact_id": base.get("impact_id", &""),
 		"sequence_index": base.get("sequence_index", 0),
 		"ability_id": base.get("ability_id", &""),
+		"attack_classification": base.get("attack_classification", &""),
 		"status_id": base.get("status_id", &""),
 		"is_periodic": base.get("is_periodic", false),
 	}
@@ -1414,9 +1831,19 @@ func _hit_context_metadata(ctx: DamageResolver.HitContext) -> Dictionary:
 		"impact_id": ctx.impact_id,
 		"sequence_index": ctx.sequence_index,
 		"ability_id": ctx.ability_id,
+		"attack_classification": ctx.attack_classification,
 		"status_id": ctx.status_id,
 		"is_periodic": ctx.is_periodic,
 	}
+
+
+func _shield_resolution_used_guard(resolution: Dictionary) -> bool:
+	for entry_value in resolution.get("breakdown", []):
+		var entry := entry_value as Dictionary
+		var tags: Variant = entry.get("tags", [])
+		if tags is Array and (tags as Array).has(&"guard"):
+			return true
+	return false
 
 
 func _die(killer: Unit = null) -> void:

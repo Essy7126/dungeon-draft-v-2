@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Spell" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
+[ext_resource type="Texture2D" path="res://asset/ui/character_hud/generated/spell_icon_r09_c01.png" id="2_icon"]
+[ext_resource type="Script" path="res://data/spells/scaling/spell_scaling_data.gd" id="3_scaling"]
+[ext_resource type="Resource" path="res://data/characters/achilles/doctrines/lesson_of_chiron.tres" id="4_tree"]
+
+[sub_resource type="Resource" id="DamageScaling"]
+script = ExtResource("3_scaling")
+prowess_coefficient = 0.5
+
+[resource]
+script = ExtResource("1_spell")
+spell_id = &"achilles_pelion_shot"
+spell_name = "Tir du Pélion"
+description = "3 PA · Portée 2–6 avec ligne de vue · Inflige 50 % de la Prouesse en dégâts physiques. Une utilisation par activation."
+icon = ExtResource("2_icon")
+ap_cost = 3
+minimum_range = 2
+spell_range = 6
+needs_line_of_sight = true
+once_per_activation = true
+damage = 0
+damage_type = 0
+damage_scaling = SubResource("DamageScaling")
+skill_tree = ExtResource("4_tree")

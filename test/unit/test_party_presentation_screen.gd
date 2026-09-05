@@ -119,7 +119,7 @@ func test_title_has_one_primary_entry_and_quit() -> void:
 		["COMMENCER L’ODYSSÉE", "QUITTER"],
 	)
 	assert_eq(
-		title.get_script().get_script_constant_map()["START_HUB_SCENE_PATH"],
-		"res://hub/StartHub.tscn",
+		title.get_script().get_script_constant_map()["CHARACTER_SELECTION_SCENE_PATH"],
+		"res://ui/selection/CharacterSelectionScreen.tscn",
 	)
 	title.free()

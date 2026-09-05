@@ -109,13 +109,10 @@ func open_progression(run_data: RunData, hero_profile: RunHeroProfile) -> bool:
 	hero_profile.base_unit_data = canonical_character
 	hero_profile.progression_profile = canonical_profile
 	source_progression_profile = canonical_profile
-	working_progression_profile = _copy_progression_profile_shell(
-		source_progression_profile
+	working_progression_profile = SkillTreeCopyService.copy_progression_profile(
+		source_progression_profile, source_to_work, work_to_source
 	)
-	working_progression_profile.set_path_cache(source_progression_profile.resource_path)
 	_sync_profile_from_unit()
-	source_to_work[source_progression_profile] = working_progression_profile
-	work_to_source[working_progression_profile] = source_progression_profile
 	if not _configure_character_authority(canonical_character):
 		release_document(false)
 		return false
@@ -287,8 +284,8 @@ func _adapter_fingerprint(
 		character: UnitData
 	) -> String:
 	return "%s|%s" % [
-		SkillTreeSnapshotService.storage_fingerprint(profile),
-		SkillTreeSnapshotService.storage_fingerprint(character) \
+		SkillTreeSnapshotService.fingerprint(profile),
+		SkillTreeSnapshotService.fingerprint(character) \
 			if character != null else "aucun_chassis",
 	]
 
@@ -325,7 +322,9 @@ func is_resource_reachable(resource: Resource) -> bool:
 		return true
 	if is_profile_authoritative():
 		_sync_profile_from_unit()
-		if resource == working_progression_profile:
+		if SkillTreeSaveService._is_reachable(
+			working_progression_profile, resource
+		):
 			return true
 	return SkillTreeSaveService._is_reachable(working_unit, resource) \
 		or SkillTreeSaveService._is_reachable(working_character_unit, resource)
@@ -357,11 +356,10 @@ func restore_profile_draft(
 	source_run = run_data
 	source_hero_profile = hero
 	source_progression_profile = profile
-	working_progression_profile = _copy_progression_profile_shell(profile)
-	working_progression_profile.set_path_cache(profile.resource_path)
+	working_progression_profile = SkillTreeCopyService.copy_progression_profile(
+		profile, source_to_work, work_to_source
+	)
 	_sync_profile_from_unit()
-	source_to_work[profile] = working_progression_profile
-	work_to_source[working_progression_profile] = profile
 	if not _configure_character_authority(character):
 		release_document(false)
 		return false
@@ -395,18 +393,6 @@ func _sync_profile_from_unit() -> void:
 	var working_spells: Array[Spell] = []
 	working_spells.assign(working_unit.spells)
 	working_progression_profile.spells = working_spells
-
-
-func _copy_progression_profile_shell(
-		source: CharacterProgressionProfile
-	) -> CharacterProgressionProfile:
-	if source == null:
-		return null
-	var copied := source.duplicate(false) as CharacterProgressionProfile
-	var copied_spells: Array[Spell] = []
-	copied_spells.assign(source.spells)
-	copied.spells = copied_spells
-	return copied
 
 
 func _load_canonical_progression_profile(

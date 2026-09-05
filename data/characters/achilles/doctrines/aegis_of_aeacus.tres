@@ -1,0 +1,505 @@
+[gd_resource type="Resource" script_class="DisciplineData" load_steps=56 format=3]
+
+[ext_resource type="Script" path="res://data/characters/discipline_data.gd" id="1_discipline"]
+[ext_resource type="Script" path="res://data/characters/discipline_rank_data.gd" id="2_rank"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="3_node"]
+[ext_resource type="Script" path="res://data/characters/targeted_spell_modifier_data.gd" id="4_targeted"]
+[ext_resource type="Script" path="res://data/characters/mastery_spell_modifier_data.gd" id="5_static"]
+[ext_resource type="Script" path="res://data/characters/mastery_reactive_effect_data.gd" id="6_reactive"]
+[ext_resource type="Script" path="res://data/characters/directional_guard_data.gd" id="7_direction"]
+[ext_resource type="Script" path="res://data/characters/temporary_barrier_data.gd" id="8_barrier"]
+
+[sub_resource type="Resource" id="FxActiveGuardTrack"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_active_guard.track"
+effect_id = &"track_absorption"
+event_id = &"damage_absorbed"
+scope = 2
+frequency = 3
+max_triggers = 1
+priority = 110
+requires_guard = true
+minimum_absorbed_max_hp_ratio = 0.1
+flag_id = &"aeacus_active_guard_ready"
+
+[sub_resource type="Resource" id="FxActiveGuardConsume"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_active_guard.consume"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 112
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot"])
+required_flag_id = &"aeacus_active_guard_ready"
+flag_id = &"aeacus_active_guard_ready"
+multiplier = 1.15
+
+[sub_resource type="Resource" id="NodeActiveGuard"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_active_guard"
+display_name = "Garde active"
+description = "Si Garde absorbe au moins 10 % des PV maximum avant la prochaine activation, la prochaine technique offensive gagne 15 %."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 1
+mastery_cost = 1
+tier = 1
+node_type = 1
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxActiveGuardTrack"), SubResource("FxActiveGuardConsume")])
+effect_axis = &"guard_absorption_to_offense"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 112
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_peleid_strike", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="DirectionalGuard"]
+script = ExtResource("7_direction")
+front_damage_multiplier = 0.65
+side_damage_multiplier = 1.15
+rear_damage_multiplier = 1.15
+
+[sub_resource type="Resource" id="FxDirectionalGuard"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_directional_guard.sector"
+effect_id = &"modify_shield_damage"
+event_id = &"damage_received"
+scope = 2
+frequency = 0
+reaction_group = &"shield_damage_multiplier"
+stackable = false
+priority = 180
+requires_guard = true
+directional_guard = SubResource("DirectionalGuard")
+
+[sub_resource type="Resource" id="NodeDirectionalGuard"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_directional_guard"
+display_name = "Garde orientée"
+description = "Le joueur choisit une direction : les attaques frontales infligent 35 % de moins à Garde, les attaques latérales ou arrière 15 % de plus."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 2
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_active_guard"])
+mastery_cost = 1
+tier = 2
+node_type = 2
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxDirectionalGuard")])
+effect_axis = &"directional_guard"
+reaction_group = &"shield_damage_multiplier"
+stackable = false
+priority = 180
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxBronzeAnchor"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_bronze_anchor.guard_aura"
+effect_id = &"guard_aura"
+event_id = &"spell_cast"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"guard_aura"
+stackable = false
+priority = 170
+valid_spell_ids = Array[StringName]([&"achilles_bronze_guard"])
+flat_value = 30
+secondary_value = 3
+
+[sub_resource type="Resource" id="NodeBronzeAnchor"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_bronze_anchor"
+display_name = "Ancrage d’airain"
+description = "Tant que Garde subsiste : +30 Armure, immunité aux poussées et aux attractions."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 2
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_active_guard"])
+mastery_cost = 1
+tier = 2
+node_type = 2
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxBronzeAnchor")])
+effect_axis = &"anchored_guard"
+reaction_group = &"guard_aura"
+stackable = false
+priority = 170
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_fulminant_dash"])
+
+[sub_resource type="Resource" id="FxRiposteTrackDamage"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_riposte.track_damage"
+effect_id = &"track_absorption"
+event_id = &"damage_absorbed"
+scope = 2
+frequency = 3
+max_triggers = 1
+priority = 125
+requires_guard = true
+minimum_absorbed_max_hp_ratio = 0.1
+flag_id = &"aeacus_riposte_damage_ready"
+
+[sub_resource type="Resource" id="FxRiposteTrackArmor"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_riposte.track_armor"
+effect_id = &"track_absorption"
+event_id = &"damage_absorbed"
+scope = 2
+frequency = 3
+max_triggers = 1
+priority = 124
+requires_guard = true
+minimum_absorbed_max_hp_ratio = 0.1
+flag_id = &"aeacus_riposte_armor_ready"
+
+[sub_resource type="Resource" id="FxRiposteDamage"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_riposte.damage"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 135
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"aeacus_riposte_damage_ready"
+target_spell_id = &"achilles_peleid_strike"
+flag_id = &"aeacus_riposte_damage_ready"
+multiplier = 1.4
+
+[sub_resource type="Resource" id="FxRiposteArmor"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_riposte.armor"
+effect_id = &"ignore_armor"
+event_id = &"spell_cast"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"armor_ignore"
+stackable = true
+priority = 134
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"aeacus_riposte_armor_ready"
+target_spell_id = &"achilles_peleid_strike"
+flat_value = 25
+
+[sub_resource type="Resource" id="NodeRiposte"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_riposte"
+display_name = "Réplique"
+description = "Après absorption d’au moins 10 % des PV max, la prochaine Frappe gagne 40 % et ignore 25 Armure."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 3
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_directional_guard", &"achilles_aeacus_bronze_anchor"])
+mastery_cost = 1
+tier = 3
+node_type = 2
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxRiposteTrackDamage"), SubResource("FxRiposteTrackArmor"), SubResource("FxRiposteDamage"), SubResource("FxRiposteArmor")])
+effect_axis = &"guard_riposte"
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 135
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxArrowWallDamage"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_arrow_wall.shield_damage"
+effect_id = &"modify_shield_damage"
+event_id = &"projectile_received"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"shield_damage_multiplier"
+stackable = false
+priority = 190
+requires_guard = true
+required_attack_classification = 2
+multiplier = 0.5
+
+[sub_resource type="Resource" id="FxArrowWallControl"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_arrow_wall.control"
+effect_id = &"block_control"
+event_id = &"projectile_received"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"control_immunity"
+stackable = false
+priority = 189
+requires_guard = true
+required_attack_classification = 2
+flat_value = 7
+
+[sub_resource type="Resource" id="NodeArrowWall"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_arrow_wall"
+display_name = "Mur aux flèches"
+description = "Le premier projectile reçu sous Garde inflige 50 % de dégâts au bouclier et ne pousse, n’attire ni ne retire de PM."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 3
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_directional_guard", &"achilles_aeacus_bronze_anchor"])
+mastery_cost = 1
+tier = 3
+node_type = 2
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxArrowWallDamage"), SubResource("FxArrowWallControl")])
+effect_axis = &"projectile_guard"
+reaction_group = &"projectile_guard"
+stackable = false
+priority = 190
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_pelion_shot", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxBrokenShieldArmRange"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_broken_shield.arm_range"
+effect_id = &"set_flag"
+event_id = &"shield_destroyed"
+scope = 2
+frequency = 3
+max_triggers = 1
+priority = 120
+requires_enemy_source = true
+flag_id = &"aeacus_broken_shield_range"
+
+[sub_resource type="Resource" id="FxBrokenShieldArmEngagement"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_broken_shield.arm_engagement"
+effect_id = &"set_flag"
+event_id = &"shield_destroyed"
+scope = 2
+frequency = 3
+max_triggers = 1
+priority = 119
+requires_enemy_source = true
+flag_id = &"aeacus_broken_shield_engagement"
+
+[sub_resource type="Resource" id="FxBrokenShieldRange"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_broken_shield.range"
+effect_id = &"modify_range"
+event_id = &"spell_cast"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"temporary_range_bonus"
+stackable = false
+priority = 125
+valid_spell_ids = Array[StringName]([&"achilles_fulminant_dash"])
+required_flag_id = &"aeacus_broken_shield_range"
+target_spell_id = &"achilles_fulminant_dash"
+flat_value = 1
+
+[sub_resource type="Resource" id="FxBrokenShieldEngagement"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_broken_shield.engagement"
+effect_id = &"ignore_engagement"
+event_id = &"spell_cast"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"engagement_penalty_ignore"
+stackable = false
+priority = 124
+valid_spell_ids = Array[StringName]([&"achilles_fulminant_dash"])
+required_flag_id = &"aeacus_broken_shield_engagement"
+target_spell_id = &"achilles_fulminant_dash"
+flat_value = 99
+
+[sub_resource type="Resource" id="NodeBrokenShield"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_broken_shield"
+display_name = "Bouclier brisé"
+description = "Si Garde est détruite par un ennemi, la prochaine Percée gagne 1 portée et ignore les pénalités d’engagement."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 4
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_riposte", &"achilles_aeacus_arrow_wall"])
+mastery_cost = 1
+tier = 4
+node_type = 2
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxBrokenShieldArmRange"), SubResource("FxBrokenShieldArmEngagement"), SubResource("FxBrokenShieldRange"), SubResource("FxBrokenShieldEngagement")])
+effect_axis = &"broken_shield_dash"
+reaction_group = &"temporary_range_bonus"
+stackable = false
+priority = 125
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_fulminant_dash"])
+
+[sub_resource type="Resource" id="FxMobileBastion"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_mobile_bastion.impact"
+effect_id = &"bastion_impact"
+event_id = &"movement_resolved"
+scope = 0
+frequency = 0
+reaction_group = &"dash_impact"
+stackable = false
+priority = 160
+valid_spell_ids = Array[StringName]([&"achilles_fulminant_dash"])
+requires_guard = true
+flat_value = 1
+ratio_value = 0.2
+cap_max_hp_ratio = 0.08
+
+[sub_resource type="Resource" id="NodeMobileBastion"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_mobile_bastion"
+display_name = "Bastion mobile"
+description = "Percée sous Garde consomme 20 % de sa valeur actuelle, pousse les ennemis adjacents et inflige la valeur consommée, plafonnée à 8 % des PV max."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 4
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_riposte", &"achilles_aeacus_arrow_wall"])
+mastery_cost = 1
+tier = 4
+node_type = 2
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxMobileBastion")])
+effect_axis = &"shield_dash_impact"
+reaction_group = &"dash_impact"
+stackable = false
+priority = 160
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_fulminant_dash", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="FxAeacusCounter"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_counter.automatic_strike"
+effect_id = &"automatic_attack"
+event_id = &"damage_received"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"automatic_counterattack"
+stackable = false
+priority = 220
+requires_guard = true
+required_attack_classification = 1
+required_facing_sector = 1
+target_spell_id = &"achilles_peleid_strike"
+multiplier = 0.7
+requires_line_of_sight = true
+automatic_action = true
+spends_action_points = false
+awards_xp = false
+consumes_manual_spell_use = false
+
+[sub_resource type="Resource" id="NodeAeacusCounter"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_counter"
+display_name = "Contre d’Éaque"
+description = "La première attaque de mêlée frontale reçue sous Garde demande une Frappe automatique à 70 %, une fois avant la prochaine activation."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 5
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_broken_shield", &"achilles_aeacus_mobile_bastion"])
+excluded_node_ids = Array[StringName]([&"achilles_aeacus_myrmidon_rampart"])
+mastery_cost = 2
+required_champion_level = 10
+tier = 5
+node_type = 3
+exclusive_group = &"achilles_aeacus_capstone"
+doctrine_id = &"achilles_aegis_of_aeacus"
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxAeacusCounter")])
+effect_axis = &"automatic_counter"
+reaction_group = &"automatic_counterattack"
+stackable = false
+priority = 220
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="MyrmidonBarrier"]
+script = ExtResource("8_barrier")
+line_length = 3
+blocks_projectiles = true
+enemy_movement_surcharge = 1
+expiry_scope = &"UNTIL_NEXT_ACTIVATION"
+personal_shield_multiplier = 0.75
+
+[sub_resource type="Resource" id="StaticRampartShield"]
+script = ExtResource("5_static")
+modifier_name = "Rempart des Myrmidons — Garde personnelle"
+effect_type = 1
+multiplier = 0.75
+
+[sub_resource type="Resource" id="TargetRampartGuard"]
+script = ExtResource("4_targeted")
+spell_id = &"achilles_bronze_guard"
+modifiers = Array[ExtResource("5_static")]([SubResource("StaticRampartShield")])
+
+[sub_resource type="Resource" id="FxMyrmidonBarrier"]
+script = ExtResource("6_reactive")
+source_id = &"achilles_aeacus_myrmidon_rampart.barrier"
+effect_id = &"create_temporary_barrier"
+event_id = &"spell_cast"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"temporary_barrier"
+stackable = false
+priority = 210
+valid_spell_ids = Array[StringName]([&"achilles_bronze_guard"])
+temporary_barrier = SubResource("MyrmidonBarrier")
+
+[sub_resource type="Resource" id="NodeMyrmidonRampart"]
+script = ExtResource("3_node")
+upgrade_id = &"achilles_aeacus_myrmidon_rampart"
+display_name = "Rempart des Myrmidons"
+description = "Garde crée devant Achille une ligne temporaire de trois cases : bloque les projectiles, +1 PM de traversée ennemi, expire à la prochaine activation ; Garde personnelle -25 %."
+discipline_id = &"achilles_aegis_of_aeacus"
+rank = 5
+requires_any_node_ids = Array[StringName]([&"achilles_aeacus_broken_shield", &"achilles_aeacus_mobile_bastion"])
+excluded_node_ids = Array[StringName]([&"achilles_aeacus_counter"])
+mastery_cost = 2
+required_champion_level = 13
+tier = 5
+node_type = 3
+exclusive_group = &"achilles_aeacus_capstone"
+doctrine_id = &"achilles_aegis_of_aeacus"
+targeted_spell_modifiers = Array[ExtResource("4_targeted")]([SubResource("TargetRampartGuard")])
+reactive_effects = Array[ExtResource("6_reactive")]([SubResource("FxMyrmidonBarrier")])
+effect_axis = &"temporary_rampart"
+reaction_group = &"temporary_barrier"
+stackable = false
+priority = 210
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_fulminant_dash", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="Rank1"]
+script = ExtResource("2_rank")
+rank = 1
+required_total_xp = 0
+choices = Array[ExtResource("3_node")]([SubResource("NodeActiveGuard")])
+
+[sub_resource type="Resource" id="Rank2"]
+script = ExtResource("2_rank")
+rank = 2
+required_total_xp = 1
+choices = Array[ExtResource("3_node")]([SubResource("NodeDirectionalGuard"), SubResource("NodeBronzeAnchor")])
+
+[sub_resource type="Resource" id="Rank3"]
+script = ExtResource("2_rank")
+rank = 3
+required_total_xp = 2
+choices = Array[ExtResource("3_node")]([SubResource("NodeRiposte"), SubResource("NodeArrowWall")])
+
+[sub_resource type="Resource" id="Rank4"]
+script = ExtResource("2_rank")
+rank = 4
+required_total_xp = 3
+choices = Array[ExtResource("3_node")]([SubResource("NodeBrokenShield"), SubResource("NodeMobileBastion")])
+
+[sub_resource type="Resource" id="Rank5"]
+script = ExtResource("2_rank")
+rank = 5
+required_total_xp = 4
+choices = Array[ExtResource("3_node")]([SubResource("NodeAeacusCounter"), SubResource("NodeMyrmidonRampart")])
+
+[resource]
+script = ExtResource("1_discipline")
+discipline_id = &"achilles_aegis_of_aeacus"
+display_name = "Rempart d’Éaque"
+description = "Doctrine de garde, de contre et de contrôle défensif."
+presentation_color = Color(0.31, 0.67, 0.52, 1)
+progression_mode = 1
+ranks = Array[ExtResource("2_rank")]([SubResource("Rank1"), SubResource("Rank2"), SubResource("Rank3"), SubResource("Rank4"), SubResource("Rank5")])

@@ -50,8 +50,9 @@ func test_timeline_rotates_scales_animates_and_selects_units() -> void:
 	assert_eq(timeline.get_display_order(), [third, first])
 
 
-func test_achilles_card_uses_refined_hud_portrait_without_character_preview() -> void:
+func test_achilles_card_uses_same_sprite_preview_without_3d_model() -> void:
 	assert_null(ACHILLES_DATA.preview_visual_scene)
+	assert_not_null(ACHILLES_DATA.preview_sprite_frames)
 	var achilles := Unit.from_data(ACHILLES_DATA)
 	assert_null(achilles.sprite_frames)
 	var queue := TurnQueue.new()
@@ -65,12 +66,25 @@ func test_achilles_card_uses_refined_hud_portrait_without_character_preview() ->
 	var cards: Array[Node] = timeline.cards_layer.get_children()
 	var achilles_card := _find_card(cards, achilles) as TurnOrderCard
 	assert_not_null(achilles_card)
-	assert_false(achilles_card.preview.visible)
-	assert_true(achilles_card.fallback_portrait.visible)
-	var hud_theme := CharacterHUDThemeCatalog.resolve_refined(achilles)
-	assert_not_null(hud_theme)
-	assert_not_null(hud_theme.portrait_texture)
-	assert_eq(achilles_card.fallback_portrait.texture, hud_theme.portrait_texture)
+	if achilles_card == null:
+		return
+	assert_true(achilles_card.preview.visible)
+	assert_false(achilles_card.fallback_portrait.visible)
+	assert_true(achilles_card.preview.is_using_sprite_preview())
+	assert_false(achilles_card.preview.is_using_fallback())
+	assert_null(achilles_card.preview.get_visual_instance())
+	assert_false(achilles_card.preview.viewport_container.visible)
+	assert_eq(achilles_card.preview.preview_viewport.render_target_update_mode, SubViewport.UPDATE_DISABLED)
+	assert_eq(achilles_card.preview.visual_root.get_child_count(), 0)
+	var sprite := achilles_card.preview.get_sprite_instance()
+	assert_not_null(sprite)
+	if sprite == null:
+		return
+	assert_eq(sprite.sprite_frames, ACHILLES_DATA.preview_sprite_frames)
+	assert_eq(sprite.animation, ACHILLES_DATA.preview_sprite_animation)
+	assert_eq(sprite.frame, 0)
+	assert_false(sprite.is_playing())
+	assert_false(sprite.flip_h)
 
 
 func _find_card(cards: Array[Node], unit: Unit) -> Control:

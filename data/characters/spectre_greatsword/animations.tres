@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterAnimationSetData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/characters/character_animation_set_data.gd" id="1_animation_set"]
+
+[resource]
+script = ExtResource("1_animation_set")
+animation_names = {
+&"cast": &"attack",
+&"cast:spectre_heavy_cleave": &"attack",
+&"cast_end": &"idle",
+&"cast_start": &"attack",
+&"death": &"idle",
+&"hit": &"idle",
+&"idle": &"idle",
+&"run": &"walk",
+&"walk": &"walk"
+}

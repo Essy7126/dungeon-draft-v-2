@@ -4,7 +4,7 @@ const CATABASE_RUN: RunData = preload("res://data/runs/odyssey.tres")
 const EXPECTED_MIDDLE_ROSTER: Array[StringName] = [
 	&"odyssey_skirmisher",
 	&"odyssey_skirmisher",
-	&"odyssey_guard",
+	&"spectre_greatsword",
 ]
 const EXPECTED_FINALE_ROSTER: Array[StringName] = [
 	&"odyssey_champion",
@@ -36,7 +36,7 @@ func test_catabase_keeps_three_distinct_ordered_arenas() -> void:
 
 func test_middle_room_is_the_melee_formation_escalation() -> void:
 	var room := CATABASE_RUN.rooms[1]
-	assert_eq(room.visual_mode, ArenaDefinition.VisualMode.PAINTED)
+	assert_eq(room.visual_mode, ArenaDefinition.VisualMode.HYBRID)
 	assert_eq(_roster_ids(room), EXPECTED_MIDDLE_ROSTER)
 	assert_eq(room.encounter_definition.get_initial_enemy_count(), 3)
 	assert_eq(room.encounter_definition.living_enemy_cap, 3)
@@ -59,17 +59,17 @@ func test_shadow_paris_is_in_the_final_room_with_a_melee_anchor() -> void:
 	assert_eq(paris.spells.size(), 1)
 	assert_eq(paris.spells[0].spell_id, &"catabase_shadow_paris_arrow")
 	assert_true(paris.spells[0].needs_line_of_sight)
-	assert_eq(finale.grid_layout.logical_size, Vector2i(13, 13))
-	assert_eq(finale.painted_map_visual_data.logical_grid_size, Vector2i(13, 13))
+	assert_eq(finale.grid_layout.logical_size, Vector2i(19, 18))
+	assert_eq(finale.painted_map_visual_data.logical_grid_size, Vector2i(19, 18))
 	assert_eq(
 		finale.painted_map_visual_data.background_texture_path,
-		"res://asset/map/painted/greece/maps_achille_dalle.png",
+		"res://data/arenas/silent_judgment_courtyard_v1/grid_reference.png",
 	)
 	assert_eq(
 		finale.painted_map_visual_data.load_background_texture().get_size(),
 		Vector2(finale.painted_map_visual_data.source_image_size),
 	)
-	assert_eq(finale.painted_map_visual_data.calibration_rms(), 0.0)
+	assert_lt(finale.painted_map_visual_data.calibration_rms(), 0.001)
 	assert_true(finale.grid_layout.validation_errors().is_empty())
 	assert_true(finale.painted_map_visual_data.validation_errors().is_empty())
 	assert_true(finale.painted_map_visual_data.foreground_occluder_polygon.is_empty())

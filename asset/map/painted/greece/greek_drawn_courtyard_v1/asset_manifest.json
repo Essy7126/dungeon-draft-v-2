@@ -1,0 +1,190 @@
+{
+  "asset_id": "greek_drawn_courtyard_v1",
+  "revision": 6,
+  "created_at": "2026-09-05",
+  "method": "geometry_registered_composed_painting_and_transparent_foreground_clusters",
+  "purpose": "A complete original Greek sanctuary landscape around the accepted playable 217 stone floor, using one shared native coordinate system.",
+  "native_canvas_size": [
+    1920,
+    1200
+  ],
+  "reference_capture": "artifacts/arena_dofus_greece_2026-09-05/reference/dofus_geometry_review.png",
+  "reference_note": "Read-only PrintWindow capture 2560x1600. Source capture and measured/occluded-inferred geometry remain authoring evidence, never a shipped Dofus background.",
+  "geometry": "data/arenas/greek_drawn_courtyard_v1/geometry_manifest.json",
+  "terrain_plan": "data/arenas/greek_drawn_courtyard_v1/terrain_plan.json",
+  "assets": [
+    {
+      "file": "decor_atlas.png",
+      "prompt": "terrain_decor_prompt.txt",
+      "sha256": "94369a154549e67e541e2d00e58d165af3c3b9ea74a8c44045d2b2c9399e16bc",
+      "method": "built_in_image_gen_original",
+      "runtime_used": false
+    },
+    {
+      "file": "cliff_atlas.png",
+      "prompt": "cliff_atlas_prompt.txt",
+      "sha256": "f63939c2dc837ade8fa2802f60483b5c6da726f713d167b13a05757efa007973",
+      "method": "built_in_image_gen_original",
+      "runtime_used": false
+    },
+    {
+      "file": "grass_material.png",
+      "prompt": "grass_material_prompt.txt",
+      "sha256": "fb993789447776ab14052739ea1ba1d2d269c382eb376e9dc7d87fb96c30f59e",
+      "method": "built_in_image_gen_original",
+      "runtime_used": false
+    },
+    {
+      "file": "water_material.png",
+      "prompt": "water_material_prompt.txt",
+      "sha256": "3ad9fe937db9071c8ace94da58c74436591f510f31549b51d3775d796225536d",
+      "method": "built_in_image_gen_original",
+      "runtime_used": true
+    },
+    {
+      "file": "land_composed_v4.png",
+      "prompt": "land_composed_v4_prompt.txt",
+      "sha256": "61795bbced602e2f09335c4ee0cb583e8e1d753d88d94e4d66e8adc85fae5125",
+      "method": "built_in_image_gen_original",
+      "runtime_used": true
+    },
+    {
+      "file": "environment_clusters_v4.png",
+      "prompt": "environment_clusters_v4_prompt.txt",
+      "sha256": "e40caf5b1e076709c676d938b92f9c22c5f7bf25f0d7929a97c20aab70ca926e",
+      "method": "built_in_image_gen_original",
+      "runtime_used": true
+    }
+  ],
+  "normalization": "Reference geometry uniformly scaled by 0.75. The generated 1503x1047 landscape painting is mechanically resampled to 1920x1200 as a decorative surface only, clipped to the unchanged Land polygon. Foreground regions use uniform scales. Combat geometry never derives from raster pixels.",
+  "source_stone_texture": "tools/labs/dynamic_arena/assets/normalized/stone.png",
+  "stone_contract": "Original stone sprites, alpha and vertices retained; local limestone palette and flat front bevel. Interior joints use the Land meadow; exterior edges share compacted earth with the combat band.",
+  "legacy_sources": {
+    "files": [
+      "background_master.png",
+      "background_meadow_master.png",
+      "background.png"
+    ],
+    "note": "Earlier monolithic compositions retained as historical source assets after user rejection. They are not displayed by the current battle scene.",
+    "runtime_used": false
+  },
+  "calibration_background": "data/arenas/greek_drawn_courtyard_v1/grid_reference.png",
+  "calibration_background_visible": false,
+  "internal_dofus_technology": "Unknown. The observed projection and contour were measured from screenshots. Layered Godot rendering, local shaders and the terrain composition architecture are our implementation choices.",
+  "validation": {
+    "scope": "217 complete rendered floor polygons on rendered land; no rock-footing overlap; shared Land/stone texture instance and UV/tint/repeat; real GridView movement and guard cast. Native OS pointer input not certified.",
+    "reports": [
+      "artifacts/arena_dofus_greece_2026-09-05/runtime/runtime_validation_1920x1080.json",
+      "artifacts/arena_dofus_greece_2026-09-05/runtime/runtime_validation_1200x896.json"
+    ]
+  },
+  "art_completion": {
+    "revision": 4,
+    "method": "Original image_gen landscape painting clipped to the unchanged authored Land polygon; separate alpha foreground atlas; real stone combat sprites.",
+    "land_paint": {
+      "file": "land_composed_v4.png",
+      "prompt": "land_composed_v4_prompt.txt",
+      "source_generated_image": "C:/Users/paolo/.codex/generated_images/01a070fd-3307-7cf0-b040-62863b2b7678/exec-3013b341-22b3-47dd-99a3-fa580331c698.png",
+      "source_dimensions": [
+        1503,
+        1047
+      ],
+      "runtime_dimensions": [
+        1920,
+        1200
+      ],
+      "normalization": "Whole illustration resampled bicubically to native canvas. This normalizes artwork only; no grid vertex, camera, land or shore coordinate is derived from the painting.",
+      "sampling": "Native plane UVs; clamp; same Texture2D instance, UV scale and tint used by 217 stone meadow joins.",
+      "rear_scenery": "Olive grove, Greek ruined arch, columns and continuous broad limestone bluff are painted into Land; old two isolated back sprites removed."
+    },
+    "foreground_atlas": {
+      "file": "environment_clusters_v4.png",
+      "prompt": "environment_clusters_v4_prompt.txt",
+      "source_generated_image": "C:/Users/paolo/.codex/generated_images/01a070fd-3307-7cf0-b040-62863b2b7678/exec-4256012b-853e-4c6d-ac26-a077d4b27567.png",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "handling": "Exact generated PNG bytes, native alpha; two bottom regions sampled directly, no independent X/Y stretching.",
+      "regions": [
+        {
+          "id": "tree_foreground_left",
+          "region_px": [
+            0,
+            518,
+            740,
+            506
+          ],
+          "alpha_bounds_atlas_xywh": [
+            43,
+            524,
+            636,
+            481
+          ],
+          "alpha_threshold": 32
+        },
+        {
+          "id": "rock_mass_foreground_right",
+          "region_px": [
+            740,
+            528,
+            796,
+            496
+          ],
+          "alpha_bounds_atlas_xywh": [
+            744,
+            554,
+            777,
+            443
+          ],
+          "alpha_threshold": 32
+        }
+      ]
+    },
+    "geometry_invariant": "Land polygon, shorelines, canvas, exclusions, all floor and VOID cells, origin, axes, blocker/spawn data and foreground world anchors unchanged from the accepted registered terrain version.",
+    "art_direction": "Warm sunlit Greek sanctuary; continuous olive grove, limestone bluff, textured meadow, separate foreground vegetation and stones; quiet tactical center."
+  },
+  "combat_ground_band": {
+    "method": "Geometry-derived outline and procedural soil shader; no new bitmap",
+    "width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20,
+    "measured_clearance_native_px": 26.434,
+    "canonical_floor": 217,
+    "annotated_pits": 16,
+    "contour_vertices": 26,
+    "source": "tools/labs/greek_drawn_arena/greek_combat_ground_band.gd",
+    "shader": "tools/labs/greek_drawn_arena/combat_ground_band.gdshader",
+    "shared_material": "tools/labs/greek_drawn_arena/combat_ground_surface.gdshaderinc"
+  },
+  "production_scene": "battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+  "campaign": "data/rooms/odyssey/room_01.tres",
+  "reusable_pipeline": "docs/maps/registered_terrain_pipeline.md",
+  "production_promotion_validation": {
+    "checked_at_utc": "2026-09-05T16:24:54",
+    "status": "complete",
+    "native_geometry_checks": 35,
+    "native_geometry_ok": true,
+    "gut_tests_passed": 21,
+    "gut_assertions": 3845,
+    "gut_log": "artifacts/catabase_registered_maps_2026-09-05/gut_current_with_spectre.log",
+    "gut_scope": "Current Catabase including room-II spectre integration",
+    "gpu_reports": [
+      "artifacts/catabase_registered_maps_2026-09-05/current_1920x1080/registered_terrain_report.json",
+      "artifacts/catabase_registered_maps_2026-09-05/current_1200x896/registered_terrain_report.json"
+    ],
+    "gpu_passes": 2,
+    "rooms_loaded_per_pass": 3,
+    "guarded_transitions_per_pass": 2,
+    "visual_preview_resolutions": [
+      "1920x1080",
+      "1200x896"
+    ],
+    "final_campaign_traversal": "passed_current_production_resources",
+    "gameplay_fix": "Clear combat-effect deduplication at Unit.reset_combat_resources, regression red then green",
+    "limitations": [
+      "QA victory is forced after real movement/guard; no complete combat or balance certification",
+      "Old Odyssey solo suite still expects old kit, 3D backend and economy; 9/20 passed",
+      "Shutdown logs include resource leak diagnostics"
+    ]
+  }
+}

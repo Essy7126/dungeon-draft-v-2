@@ -356,15 +356,20 @@ func test_snapshot_copy_and_durable_path_round_trip_keep_concrete_type() -> void
 	var transient_source_module := transient.sequences[0].modules[0] as VFXFlipbookModuleData
 	var transient_copy := VFXProfileCopyService.new().duplicate_profile(transient)
 	var transient_copy_module := transient_copy.sequences[0].modules[0] as VFXFlipbookModuleData
-	assert_same(transient_copy_module.asset, transient_source_module.asset)
+	# Transient assets are mutable editor data. Memory snapshots deep-copy them
+	# so edits cannot mutate the source or an earlier undo state.
+	_assert_isolated_transient_asset_copy(transient_copy_module.asset, transient_source_module.asset)
 	assert_not_same(transient_copy_module, transient_source_module)
+	var source_columns := transient_source_module.asset.columns
+	transient_copy_module.asset.columns = source_columns + 1
+	assert_eq(transient_source_module.asset.columns, source_columns)
 	var transient_document := VFXStudioDocument.new()
 	assert_true(transient_document.open_profile(transient))
 	assert_true(transient_document.record_edit("transient duration", func():
 		transient_document.working_copy.sequences[0].modules[0].duration = 1.7
 	))
 	assert_true(transient_document.history.undo())
-	assert_same(
+	_assert_isolated_transient_asset_copy(
 		(transient_document.working_copy.sequences[0].modules[0] as VFXFlipbookModuleData).asset,
 		transient_source_module.asset,
 	)
@@ -625,6 +630,24 @@ func test_versioned_launchers_are_portable_and_target_the_autonomous_lab() -> vo
 	assert_true(launcher.contains('$Mode -eq "Smoke"'))
 	var smoke := FileAccess.get_file_as_string(paths[3])
 	assert_true(smoke.contains("WATCHDOG_SECONDS"))
+
+
+func _assert_isolated_transient_asset_copy(copy: VFXFlipbookAsset, source: VFXFlipbookAsset) -> void:
+	assert_not_same(copy, source)
+	assert_eq(copy.asset_id, source.asset_id)
+	assert_eq(copy.columns, source.columns)
+	assert_eq(copy.rows, source.rows)
+	assert_eq(copy.frame_count, source.frame_count)
+	assert_eq(copy.pivot_normalized, source.pivot_normalized)
+	assert_eq(copy.variants.size(), source.variants.size())
+	for index in source.variants.size():
+		assert_not_same(copy.variants[index], source.variants[index])
+		assert_eq(copy.variants[index].variant_id, source.variants[index].variant_id)
+		assert_eq(
+			copy.variants[index].texture_low.get_image().get_data(),
+			source.variants[index].texture_low.get_image().get_data(),
+			"Isolating transient editor data must preserve the actual flipbook pixels",
+		)
 
 
 func _profile() -> VFXProfile:

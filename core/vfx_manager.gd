@@ -46,6 +46,10 @@ func play_spell_vfx(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 		vfx.initialiser(caster_view_pos, target_position)
 	elif vfx is Node2D:
 		(vfx as Node2D).global_position = target_position
+	# Optional contract for status-bound sprite effects. Ordinary scene VFX
+	# retain their existing placement and initialization behavior.
+	if vfx.has_method("bind_source_unit"):
+		vfx.bind_source_unit(caster, _find_unit_view(caster))
 	return vfx
 
 
@@ -71,6 +75,15 @@ func play_profile(
 		push_warning("VFXProfile ignoré sans impact gameplay : %s" % result.get("errors", []))
 		return null
 	return result.get("instance") as VFXRuntimeInstance
+
+func _find_unit_view(unit: Unit) -> Node2D:
+	if not is_instance_valid(_battle_view) or not _battle_view.is_inside_tree():
+		return null
+	for candidate in _battle_view.get_tree().get_nodes_in_group("unit_views"):
+		if candidate is Node2D and candidate.get("unit") == unit:
+			return candidate as Node2D
+	return null
+
 
 func _caster_effect_origin(caster: Unit) -> Vector2:
 	if is_instance_valid(_battle_view) and _battle_view.is_inside_tree():

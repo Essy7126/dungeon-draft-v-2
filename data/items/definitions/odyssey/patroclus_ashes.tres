@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://data/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://data/items/item_reactive_effect_data.gd" id="2_effect"]
+[ext_resource type="Script" path="res://data/items/item_reactive_condition_data.gd" id="3_condition"]
+[ext_resource type="Script" path="res://data/items/item_reactive_parameter_data.gd" id="4_parameter"]
+
+[sub_resource type="Resource" id="Enemy"]
+script = ExtResource("3_condition")
+condition_id = &"enemy_source_required"
+
+[sub_resource type="Resource" id="MinimumLoss"]
+script = ExtResource("3_condition")
+condition_id = &"minimum_hp_loss_ratio"
+value = 0.15
+
+[sub_resource type="Resource" id="DamageBonus"]
+script = ExtResource("4_parameter")
+parameter_id = &"damage_bonus"
+float_value = 0.25
+
+[sub_resource type="Resource" id="GuardBonus"]
+script = ExtResource("4_parameter")
+parameter_id = &"guard_bonus"
+float_value = 0.25
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2_effect")
+trigger_id = &"hp_lost"
+conditions = Array[ItemReactiveConditionData]([SubResource("Enemy"), SubResource("MinimumLoss")])
+target_id = &"trigger_hero"
+result_id = &"mark_vengeance"
+value = 0.0
+frequency_id = &"per_combat"
+parameters = Array[ItemReactiveParameterData]([SubResource("DamageBonus"), SubResource("GuardBonus")])
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"odyssey_patroclus_ashes"
+display_name = "Cendres de Patrocle"
+description = "Le premier ennemi infligeant au moins 15 % des PV max devient la Vengeance : +25 % dégâts et +25 % Garde contre lui."
+rarity = &"legendary"
+tags = Array[StringName]([&"odyssey", &"wrath", &"recovery"])
+category = 5
+reactive_effects = Array[ItemReactiveEffectData]([SubResource("Effect")])

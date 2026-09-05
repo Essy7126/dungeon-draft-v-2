@@ -235,6 +235,24 @@ static func _validate_encounter(
 			"Assignez une rencontre a cet affrontement.", context
 		))
 		return
+	if encounter.base_xp < 0 or encounter.optional_xp_budget < 0:
+		messages.append(_message(
+			StudioValidationMessage.Severity.ERROR,
+			&"encounter_xp_invalid", "Récompense d’expérience invalide",
+			"L’expérience de victoire et le budget optionnel doivent être positifs ou nuls.", context
+		))
+	if encounter.base_xp > 0 and encounter.encounter_id == &"":
+		messages.append(_message(
+			StudioValidationMessage.Severity.ERROR,
+			&"encounter_xp_id_missing", "Identifiant de rencontre requis",
+			"Un identifiant stable est nécessaire pour attribuer l’expérience une seule fois.", context
+		))
+	if encounter.glory_challenge != null:
+		for error in encounter.glory_challenge.validation_errors():
+			messages.append(_message(
+				StudioValidationMessage.Severity.ERROR,
+				&"glory_challenge_invalid", "Défi de Gloire invalide", error, context
+			))
 	if encounter.roster_units.is_empty():
 		messages.append(_message(
 			StudioValidationMessage.Severity.ERROR,

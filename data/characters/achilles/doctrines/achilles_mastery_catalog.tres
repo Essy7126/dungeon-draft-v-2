@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MasteryCatalogData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/characters/mastery_catalog_data.gd" id="1_catalog"]
+[ext_resource type="Resource" path="res://data/characters/achilles/doctrines/wrath_of_peleus.tres" id="2_wrath"]
+[ext_resource type="Resource" path="res://data/characters/achilles/doctrines/lesson_of_chiron.tres" id="3_chiron"]
+[ext_resource type="Resource" path="res://data/characters/achilles/doctrines/aegis_of_aeacus.tres" id="4_aeacus"]
+[ext_resource type="Resource" path="res://data/characters/achilles/doctrines/advanced_masteries.tres" id="5_advanced"]
+
+[resource]
+script = ExtResource("1_catalog")
+catalog_id = &"achilles_mastery_catalog_v1"
+doctrines = Array[DisciplineData]([ExtResource("2_wrath"), ExtResource("3_chiron"), ExtResource("4_aeacus")])
+advanced_catalog = ExtResource("5_advanced")

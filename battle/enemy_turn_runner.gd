@@ -222,11 +222,12 @@ func _execute_move(enemy: Unit, path: Array, generation: int = -1) -> void:
 	if not _can_continue(generation):
 		_battle._finish_outcome_deferral()
 		return
+	var resolved_path: Array = _battle._resolved_walk_paths.get(enemy, path)
 	EventBus.voluntary_movement_resolved.emit(
-		enemy, path.duplicate(), cost, action_id
+		enemy, resolved_path.duplicate(), cost, action_id
 	)
 	EventBus.action_resolved.emit(enemy, action_id, &"voluntary_movement", {
-		"distance": maxi(0, path.size() - 1), "paid_mp": cost,
+		"distance": maxi(0, resolved_path.size() - 1), "paid_mp": cost,
 	})
 	_battle._finish_outcome_deferral()
 
@@ -284,7 +285,7 @@ func _execute_attack(
 		enemy,
 		Spell.DamageType.PHYSICAL,
 		Spell.Element.NONE,
-		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id)}
+		{"action_id": action_id, "impact_id": StringName("%s:000" % action_id), "attack_classification": &"MELEE"}
 	)
 	if result != null and not result.dodged:
 		EventBus.basic_attack_performed.emit(enemy, target)

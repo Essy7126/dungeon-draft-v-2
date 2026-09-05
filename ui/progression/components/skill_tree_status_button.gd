@@ -83,6 +83,10 @@ func refresh_from_state(animate_change: bool = false) -> void:
 		_tooltip_panel.refresh_from_state(null)
 		_last_rank = -1
 		return
+	if character_state.uses_champion_progression() and character_state.champion_progression != null:
+		_refresh_champion_state(character_state.champion_progression, animate_change)
+		return
+	tooltip_text = ""
 	var discipline := _find_discipline(character_state, discipline_id)
 	var progress := character_state.get_discipline_progress(discipline_id)
 	if discipline == null or progress == null:
@@ -162,12 +166,17 @@ func _on_discipline_xp_gained(
 
 func _on_pressed() -> void:
 	_hide_structured_tooltip()
-	tree_requested.emit(character_id, discipline_id)
+	var state := _get_character_state()
+	tree_requested.emit(character_id, &"" if state != null and state.uses_champion_progression() else discipline_id)
 
 
 func _show_structured_tooltip() -> void:
 	refresh_from_state()
 	if not _has_character_state:
+		return
+	var state := _get_character_state()
+	if state != null and state.uses_champion_progression():
+		_tooltip_panel.hide()
 		return
 	_tooltip_panel.show()
 	_position_tooltip.call_deferred()
@@ -236,6 +245,10 @@ func _find_discipline(
 
 
 func _connect_progression_signal() -> void:
+	if progression_controller != null:
+		for signal_name in [&"champion_progression_awarded", &"champion_build_changed"]:
+			if progression_controller.has_signal(signal_name) and not progression_controller.is_connected(signal_name, _on_champion_changed):
+				progression_controller.connect(signal_name, _on_champion_changed)
 	if progression_controller == null \
 			or not progression_controller.has_signal("discipline_xp_gained"):
 		return
@@ -245,9 +258,35 @@ func _connect_progression_signal() -> void:
 
 
 func _disconnect_progression_signal() -> void:
+	if progression_controller != null:
+		for signal_name in [&"champion_progression_awarded", &"champion_build_changed"]:
+			if progression_controller.has_signal(signal_name) and progression_controller.is_connected(signal_name, _on_champion_changed):
+				progression_controller.disconnect(signal_name, _on_champion_changed)
 	if progression_controller == null \
 			or not progression_controller.has_signal("discipline_xp_gained"):
 		return
 	var callback := Callable(self, "_on_discipline_xp_gained")
 	if progression_controller.discipline_xp_gained.is_connected(callback):
 		progression_controller.discipline_xp_gained.disconnect(callback)
+
+
+func _on_champion_changed(_value = null) -> void:
+	refresh_from_state(true)
+
+
+func _refresh_champion_state(champion: ChampionProgressionState, animate_change: bool) -> void:
+	_discipline_label.text = "Maîtrises"
+	_rank_label.text = "N%d" % champion.current_level
+	var at_cap := champion.current_level >= champion.profile.level_cap
+	var threshold := champion.profile.xp_for_level(champion.current_level + 1) if not at_cap else champion.current_xp
+	_xp_label.text = "%d / %d XP" % [champion.current_xp, threshold] if not at_cap else "%d XP · MAX" % champion.current_xp
+	_progress_bar.min_value = 0.0
+	_progress_bar.max_value = maxf(1.0, threshold)
+	if animate_change and is_inside_tree():
+		_animate_progress(champion.current_xp, champion.current_level != _last_rank)
+	else:
+		_progress_bar.value = champion.current_xp
+	_pending_badge.visible = champion.unspent_attribute_points > 0 or champion.unspent_mastery_points > 0
+	tooltip_text = "Niveau %d · Expérience gagnée après victoire\n%d point(s) de caractéristique · %d point(s) de maîtrise" % [champion.current_level, champion.unspent_attribute_points, champion.unspent_mastery_points]
+	_tooltip_panel.hide()
+	_last_rank = champion.current_level

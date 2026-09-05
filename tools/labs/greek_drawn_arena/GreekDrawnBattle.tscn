@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://data/rooms/maps/painted_battle.tscn" id="1"]
+[ext_resource type="Script" path="res://tools/labs/greek_drawn_arena/greek_drawn_battle.gd" id="2"]
+[node name="GreekDrawnBattle" instance=ExtResource("1")]
+script = ExtResource("2")
+registered_terrain_plan_path = "res://data/arenas/greek_drawn_courtyard_v1/terrain_plan.json"
+

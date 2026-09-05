@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="UnitVisualProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/maps/painted/unit_visual_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+family_id = &"spectre_greatsword"
+unit_ids = Array[StringName]([&"spectre_greatsword"])
+base_visual_scale = 1.58
+minimum_visual_scale = 1.5
+maximum_visual_scale = 1.9
+contact_shadow_scale = 0.8
+contact_shadow_opacity = 0.28

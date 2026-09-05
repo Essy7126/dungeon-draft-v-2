@@ -1,0 +1,1149 @@
+{
+  "version": 1,
+  "canvas_size": [
+    1920,
+    1200
+  ],
+  "land_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1920,
+      0
+    ],
+    [
+      1920,
+      631.5
+    ],
+    [
+      1893,
+      627
+    ],
+    [
+      1870.5,
+      640.5
+    ],
+    [
+      1837.5,
+      658.5
+    ],
+    [
+      1803,
+      679.5
+    ],
+    [
+      1774.5,
+      691.5
+    ],
+    [
+      1731,
+      702
+    ],
+    [
+      1684.5,
+      711
+    ],
+    [
+      1665,
+      739.5
+    ],
+    [
+      1656,
+      777
+    ],
+    [
+      1636.5,
+      793.5
+    ],
+    [
+      1602,
+      792
+    ],
+    [
+      1579.5,
+      801
+    ],
+    [
+      1542,
+      804
+    ],
+    [
+      1504.5,
+      808.5
+    ],
+    [
+      1494,
+      832.5
+    ],
+    [
+      1473,
+      837
+    ],
+    [
+      1455,
+      859.5
+    ],
+    [
+      1438.5,
+      876
+    ],
+    [
+      1411.5,
+      888
+    ],
+    [
+      1392,
+      900
+    ],
+    [
+      1378.5,
+      915
+    ],
+    [
+      1350,
+      922.5
+    ],
+    [
+      1321.5,
+      928.5
+    ],
+    [
+      1294.5,
+      933
+    ],
+    [
+      1278,
+      922.5
+    ],
+    [
+      1255.5,
+      916.5
+    ],
+    [
+      1239,
+      910.5
+    ],
+    [
+      1216.5,
+      913.5
+    ],
+    [
+      1197,
+      907.5
+    ],
+    [
+      1170,
+      907.5
+    ],
+    [
+      1135.5,
+      894
+    ],
+    [
+      1116,
+      904.5
+    ],
+    [
+      1087.5,
+      901.5
+    ],
+    [
+      1066.5,
+      918
+    ],
+    [
+      1054.5,
+      940.5
+    ],
+    [
+      1036.5,
+      958.5
+    ],
+    [
+      1024.5,
+      984
+    ],
+    [
+      1006.5,
+      997.5
+    ],
+    [
+      981,
+      999
+    ],
+    [
+      946.5,
+      997.5
+    ],
+    [
+      925.5,
+      1003.5
+    ],
+    [
+      892.5,
+      1000.5
+    ],
+    [
+      867,
+      1012.5
+    ],
+    [
+      841.5,
+      1009.5
+    ],
+    [
+      813,
+      1008
+    ],
+    [
+      783,
+      1012.5
+    ],
+    [
+      759,
+      1005
+    ],
+    [
+      735,
+      1018.5
+    ],
+    [
+      645,
+      1069.5
+    ],
+    [
+      562.5,
+      1116
+    ],
+    [
+      510,
+      1149
+    ],
+    [
+      493.5,
+      1167
+    ],
+    [
+      474,
+      1173
+    ],
+    [
+      435,
+      1173
+    ],
+    [
+      414,
+      1168.5
+    ],
+    [
+      376.5,
+      1165.5
+    ],
+    [
+      348,
+      1149
+    ],
+    [
+      315,
+      1140
+    ],
+    [
+      240,
+      1129.5
+    ],
+    [
+      120,
+      1128
+    ],
+    [
+      0,
+      1128
+    ],
+    [
+      0,
+      732
+    ],
+    [
+      57,
+      717
+    ],
+    [
+      99,
+      702
+    ],
+    [
+      132,
+      700.5
+    ],
+    [
+      150,
+      678
+    ],
+    [
+      147,
+      654
+    ],
+    [
+      133.5,
+      634.5
+    ],
+    [
+      139.5,
+      613.5
+    ],
+    [
+      159,
+      594
+    ],
+    [
+      178.5,
+      576
+    ],
+    [
+      202.5,
+      559.5
+    ],
+    [
+      226.5,
+      544.5
+    ],
+    [
+      246,
+      522
+    ],
+    [
+      225,
+      504
+    ],
+    [
+      217.5,
+      483
+    ],
+    [
+      196.5,
+      471
+    ],
+    [
+      190.5,
+      442.5
+    ],
+    [
+      168,
+      430.5
+    ],
+    [
+      147,
+      421.5
+    ],
+    [
+      120,
+      424.5
+    ],
+    [
+      93,
+      421.5
+    ],
+    [
+      60,
+      429
+    ],
+    [
+      30,
+      430.5
+    ],
+    [
+      0,
+      427.5
+    ]
+  ],
+  "water": {
+    "color": "#992d17",
+    "texture_path": "res://asset/map/painted/underworld/ashen_hell_courtyard_v1/lava_material.png",
+    "shader_path": "res://asset/map/painted/underworld/ashen_hell_courtyard_v1/lava_ink.gdshader",
+    "tint": "#e6bbaa",
+    "shader_parameters": {
+      "flow_amount": 0.6,
+      "ember_pulse": 0.045
+    },
+    "texture_scale": [
+      1.6,
+      1.6
+    ]
+  },
+  "land": {
+    "color": "#49312b",
+    "texture_path": "res://asset/map/painted/underworld/ashen_hell_courtyard_v1/land_composed.png",
+    "texture_scale": [
+      1,
+      1
+    ],
+    "texture_repeat": false
+  },
+  "soil_patches": [],
+  "shorelines": [
+    {
+      "id": "west_inlet_visible",
+      "points": [
+        [
+          0,
+          427.5
+        ],
+        [
+          30,
+          430.5
+        ],
+        [
+          60,
+          429
+        ],
+        [
+          93,
+          421.5
+        ],
+        [
+          120,
+          424.5
+        ],
+        [
+          147,
+          421.5
+        ],
+        [
+          168,
+          430.5
+        ],
+        [
+          190.5,
+          442.5
+        ],
+        [
+          196.5,
+          471
+        ],
+        [
+          217.5,
+          483
+        ],
+        [
+          225,
+          504
+        ],
+        [
+          246,
+          522
+        ],
+        [
+          226.5,
+          544.5
+        ],
+        [
+          202.5,
+          559.5
+        ],
+        [
+          178.5,
+          576
+        ],
+        [
+          159,
+          594
+        ],
+        [
+          139.5,
+          613.5
+        ],
+        [
+          133.5,
+          634.5
+        ],
+        [
+          147,
+          654
+        ],
+        [
+          150,
+          678
+        ],
+        [
+          132,
+          700.5
+        ],
+        [
+          99,
+          702
+        ],
+        [
+          57,
+          717
+        ],
+        [
+          0,
+          732
+        ]
+      ],
+      "width": 10.5,
+      "color": "#563831",
+      "confidence": "visible"
+    },
+    {
+      "id": "southeast_main_bank",
+      "points": [
+        [
+          1920,
+          631.5
+        ],
+        [
+          1893,
+          627
+        ],
+        [
+          1870.5,
+          640.5
+        ],
+        [
+          1837.5,
+          658.5
+        ],
+        [
+          1803,
+          679.5
+        ],
+        [
+          1774.5,
+          691.5
+        ],
+        [
+          1731,
+          702
+        ],
+        [
+          1684.5,
+          711
+        ],
+        [
+          1665,
+          739.5
+        ],
+        [
+          1656,
+          777
+        ],
+        [
+          1636.5,
+          793.5
+        ],
+        [
+          1602,
+          792
+        ],
+        [
+          1579.5,
+          801
+        ],
+        [
+          1542,
+          804
+        ],
+        [
+          1504.5,
+          808.5
+        ],
+        [
+          1494,
+          832.5
+        ],
+        [
+          1473,
+          837
+        ],
+        [
+          1455,
+          859.5
+        ],
+        [
+          1438.5,
+          876
+        ],
+        [
+          1411.5,
+          888
+        ],
+        [
+          1392,
+          900
+        ],
+        [
+          1378.5,
+          915
+        ],
+        [
+          1350,
+          922.5
+        ],
+        [
+          1321.5,
+          928.5
+        ],
+        [
+          1294.5,
+          933
+        ],
+        [
+          1278,
+          922.5
+        ],
+        [
+          1255.5,
+          916.5
+        ],
+        [
+          1239,
+          910.5
+        ],
+        [
+          1216.5,
+          913.5
+        ],
+        [
+          1197,
+          907.5
+        ],
+        [
+          1170,
+          907.5
+        ],
+        [
+          1135.5,
+          894
+        ],
+        [
+          1116,
+          904.5
+        ],
+        [
+          1087.5,
+          901.5
+        ],
+        [
+          1066.5,
+          918
+        ],
+        [
+          1054.5,
+          940.5
+        ],
+        [
+          1036.5,
+          958.5
+        ],
+        [
+          1024.5,
+          984
+        ],
+        [
+          1006.5,
+          997.5
+        ],
+        [
+          981,
+          999
+        ],
+        [
+          946.5,
+          997.5
+        ],
+        [
+          925.5,
+          1003.5
+        ],
+        [
+          892.5,
+          1000.5
+        ],
+        [
+          867,
+          1012.5
+        ],
+        [
+          841.5,
+          1009.5
+        ],
+        [
+          813,
+          1008
+        ],
+        [
+          783,
+          1012.5
+        ],
+        [
+          759,
+          1005
+        ],
+        [
+          735,
+          1018.5
+        ]
+      ],
+      "width": 10.5,
+      "color": "#563831",
+      "confidence": "visible_with_local_inference"
+    },
+    {
+      "id": "south_bank_under_hud",
+      "points": [
+        [
+          735,
+          1018.5
+        ],
+        [
+          645,
+          1069.5
+        ],
+        [
+          562.5,
+          1116
+        ],
+        [
+          510,
+          1149
+        ],
+        [
+          493.5,
+          1167
+        ]
+      ],
+      "width": 10.5,
+      "color": "#563831",
+      "confidence": "inferred"
+    },
+    {
+      "id": "southwest_bank_visible",
+      "points": [
+        [
+          493.5,
+          1167
+        ],
+        [
+          474,
+          1173
+        ],
+        [
+          435,
+          1173
+        ],
+        [
+          414,
+          1168.5
+        ],
+        [
+          376.5,
+          1165.5
+        ],
+        [
+          348,
+          1149
+        ]
+      ],
+      "width": 10.5,
+      "color": "#563831",
+      "confidence": "visible"
+    },
+    {
+      "id": "southwest_bank_under_chat",
+      "points": [
+        [
+          348,
+          1149
+        ],
+        [
+          315,
+          1140
+        ],
+        [
+          240,
+          1129.5
+        ],
+        [
+          120,
+          1128
+        ],
+        [
+          0,
+          1128
+        ]
+      ],
+      "width": 10.5,
+      "color": "#563831",
+      "confidence": "inferred"
+    }
+  ],
+  "world_decor": [
+    {
+      "id": "tree_foreground_left",
+      "texture_path": "res://asset/map/painted/underworld/ashen_hell_courtyard_v1/environment_clusters_chroma.png",
+      "anchor": [
+        378,
+        973.5
+      ],
+      "pivot": [
+        0.50572459613,
+        0.89118160203
+      ],
+      "scale": 0.57781201849,
+      "layer": "foreground",
+      "region_px": [
+        16,
+        523,
+        702,
+        485
+      ],
+      "contact_profiles": [
+        [
+          [
+            0.071,
+            0.971
+          ],
+          [
+            0.254,
+            0.971
+          ],
+          [
+            0.412,
+            0.981
+          ]
+        ],
+        [
+          [
+            0.6,
+            0.973
+          ],
+          [
+            0.785,
+            0.977
+          ],
+          [
+            0.925,
+            0.963
+          ]
+        ]
+      ],
+      "chroma_key": {
+        "color": "#ff00ff",
+        "threshold": 0.18,
+        "softness": 0.16,
+        "magenta_despill": 1.0
+      }
+    },
+    {
+      "id": "rock_mass_foreground_right",
+      "texture_path": "res://asset/map/painted/underworld/ashen_hell_courtyard_v1/environment_clusters_chroma.png",
+      "anchor": [
+        1728.75,
+        1177.5
+      ],
+      "pivot": [
+        0.58114478126,
+        0.83929824597
+      ],
+      "scale": 0.859375,
+      "layer": "foreground",
+      "region_px": [
+        718,
+        537,
+        810,
+        475
+      ],
+      "contact_profiles": [
+        [
+          [
+            0.038,
+            0.922
+          ],
+          [
+            0.161,
+            0.972
+          ],
+          [
+            0.335,
+            0.947
+          ]
+        ],
+        [
+          [
+            0.472,
+            0.915
+          ],
+          [
+            0.719,
+            0.848
+          ],
+          [
+            0.953,
+            0.682
+          ]
+        ]
+      ],
+      "chroma_key": {
+        "color": "#ff00ff",
+        "threshold": 0.18,
+        "softness": 0.16,
+        "magenta_despill": 1.0
+      }
+    },
+    {
+      "id": "cliff_bench_14_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        10,
+        2
+      ],
+      "anchor": [
+        1243.476793205,
+        356.12893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_15_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        11,
+        2
+      ],
+      "anchor": [
+        1295.076793205,
+        381.92893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_16_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        12,
+        2
+      ],
+      "anchor": [
+        1346.676793205,
+        407.72893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_17_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        13,
+        2
+      ],
+      "anchor": [
+        1398.276793205,
+        433.52893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_18_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        14,
+        2
+      ],
+      "anchor": [
+        1449.876793205,
+        459.32893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_19_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        15,
+        2
+      ],
+      "anchor": [
+        1501.476793205,
+        485.12893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    },
+    {
+      "id": "cliff_bench_20_6",
+      "scene_path": "res://battle/painted/registered_terrain/props/StoneBenchSection.tscn",
+      "anchor_grid": [
+        16,
+        2
+      ],
+      "anchor": [
+        1553.076793205,
+        510.92893691
+      ],
+      "layer": "y_sorted",
+      "scale": 1
+    }
+  ],
+  "excluded_floor_polygons": [
+    {
+      "id": "rear_cliff_ground_foot",
+      "polygon": [
+        [
+          1327.5,
+          317.25
+        ],
+        [
+          1387.5,
+          351
+        ],
+        [
+          1455,
+          399.75
+        ],
+        [
+          1518.75,
+          431.25
+        ],
+        [
+          1567.5,
+          461.25
+        ],
+        [
+          1605,
+          433.5
+        ],
+        [
+          1552.5,
+          391.5
+        ],
+        [
+          1470,
+          345
+        ],
+        [
+          1395,
+          292.5
+        ],
+        [
+          1353.75,
+          277.5
+        ]
+      ]
+    }
+  ],
+  "minimum_floor_margin_px": 0,
+  "western_margin_probe_native": [
+    314.676793205,
+    536.72893691
+  ],
+  "minimum_west_land_margin_tiles": 0.6,
+  "metadata": {
+    "biome": "scorched_earth_greek_underworld",
+    "geometry": "Exact registered Greek template: 217 floor cells,16 annotated pit cells,12 blockers. Identical geometry, new original art and palette.",
+    "art_method": "Built-in image_gen; landscape mechanically normalized from1586x992to1920x1200; foreground RGB magenta atlas keyed by existing runtime chroma support, not native alpha.",
+    "land_source": "exec-e1849e24-3a95-4595-a85b-d8b2705ce693.png",
+    "atlas_source": "exec-4081df21-5403-4b20-9f96-d0385c845b1f.png",
+    "lava_source": "exec-0abbda8c-c7e0-474f-a077-9db3c775be8d.png"
+  },
+  "combat_ground_band": {
+    "enabled": true,
+    "width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20.0,
+    "shader_path": "res://battle/painted/registered_terrain/shaders/combat_ground_band.gdshader",
+    "description": "Continuous compacted limestone soil around the canonical combat footprint; outer feather, no raised edge or tactical cells.",
+    "shader_parameters": {
+      "band_earth": "#63504a",
+      "band_light": "#8e7566",
+      "band_shadow": "#45323a"
+    }
+  },
+  "geometry_manifest_path": "res://data/arenas/ashen_hell_courtyard_v1/geometry_manifest.json",
+  "floor_palette": {
+    "shade": "#393137",
+    "body": "#625451",
+    "light": "#a6947c",
+    "warmth": [
+      -0.08,
+      -0.025,
+      0.025,
+      0.065
+    ],
+    "painted_steps": 0.22,
+    "bevel_flatten_strength": 0.9
+  },
+  "props_palette": {
+    "ink": "#3a2b2a",
+    "top": "#9f8972",
+    "left": "#76635c",
+    "right": "#514449",
+    "highlight": "#c3a07c",
+    "moss": [
+      0.25,
+      0.14,
+      0.1,
+      0.28
+    ],
+    "shadow": [
+      0.08,
+      0.04,
+      0.04,
+      0.28
+    ],
+    "edge_shadow": [
+      0.2,
+      0.12,
+      0.1,
+      0.32
+    ],
+    "carving": [
+      0.25,
+      0.17,
+      0.14,
+      0.65
+    ],
+    "crack": [
+      0.2,
+      0.1,
+      0.09,
+      0.5
+    ],
+    "fleck_dark": [
+      0.42,
+      0.3,
+      0.23,
+      0.4
+    ],
+    "fleck_light": [
+      0.74,
+      0.5,
+      0.32,
+      0.7
+    ],
+    "column": [
+      0.25,
+      0.17,
+      0.15,
+      0.5
+    ],
+    "bench": "#bd956b"
+  },
+  "pit_palette": {
+    "floor": "#1a1116",
+    "back_wall": "#4d3636",
+    "left_wall": "#33242d",
+    "depth_native_px": 16
+  },
+  "ground_details": {
+    "mode": "contacts_only",
+    "contact_outer": "#26131244",
+    "contact_inner": "#1b101066"
+  }
+}

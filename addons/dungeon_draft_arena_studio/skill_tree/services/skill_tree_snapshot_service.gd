@@ -146,12 +146,23 @@ static func _encode_storage(
 
 static func _is_editable_resource(resource: Resource) -> bool:
 	return resource is CharacterProgressionProfile \
+		or resource is ChampionProgressionProfile \
+		or resource is MasteryCatalogData \
+		or resource is AdvancedMasteryCatalogData \
+		or resource is CombatActionClassificationCatalogData \
+		or resource is CombatActionClassificationData \
 		or resource is UnitData \
 		or resource is CharacterAnimationSetData \
 		or resource is DisciplineData \
 		or resource is DisciplineRankData \
 		or resource is SkillUpgradeData \
+		or resource is TargetedSpellModifierData \
+		or resource is MasteryReactiveEffectData \
+		or resource is DoctrinePointRequirementData \
+		or resource is DirectionalGuardData \
+		or resource is TemporaryBarrierData \
 		or resource is Spell \
+		or resource is SpellScalingData \
 		or resource is SpellModifier
 
 

@@ -3,6 +3,7 @@ class_name ItemStudioCatalogService
 extends RefCounted
 
 const DEFAULT_CATALOG_PATH := "res://data/items/catalogs/default_item_catalog.tres"
+const ODYSSEY_CATALOG_PATH := "res://data/items/catalogs/odyssey_item_catalog.tres"
 const DRAFT_DIRECTORY := "user://dungeon_draft_studio/item_studio/drafts"
 const LEGACY_DRAFT_DIRECTORY := "res://data/items/drafts"
 const PRODUCTION_STATUS := &"SHARED"
@@ -19,6 +20,10 @@ func configure(p_catalog_path := DEFAULT_CATALOG_PATH, p_draft_directory := DRAF
 	catalog_path = p_catalog_path
 	draft_directory = p_draft_directory
 	production_catalog = null
+
+
+func configure_odyssey() -> void:
+	configure(ODYSSEY_CATALOG_PATH, DRAFT_DIRECTORY)
 
 
 func rebuild() -> Dictionary:

@@ -3,6 +3,14 @@ extends PanelContainer
 
 @export var skin: SkillTreeSkinData = null
 
+const DETAIL_TEXT := Color("f0ebdc")
+const DETAIL_MUTED := Color("a6b4ad")
+const DETAIL_GOLD := Color("d6b77c")
+const DETAIL_LINE := Color("42514e")
+const DETAIL_BODY := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Regular.otf")
+const DETAIL_BOLD := preload("res://asset/ui/recraft_hud_v1/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Bold.otf")
+const DETAIL_HEADING := preload("res://asset/ui/recraft_hud_v1/fonts/cinzel/Cinzel-Variable.ttf")
+
 @onready var _frame_texture: NinePatchRect = %FrameTexture
 @onready var _safe_margin: MarginContainer = %SafeMargin
 @onready var _content: VBoxContainer = %Content
@@ -35,11 +43,22 @@ extends PanelContainer
 var current_presentation_id: StringName = &""
 var _layout_profile: StringName = &"large"
 var _accent := Color(0.76, 0.58, 0.28, 1.0)
+var _spell_context: Spell = null
+var _metrics: VBoxContainer
+var _metrics_note: Label
+var _cost_value: Label
+var _range_value: Label
+var _zone_value: Label
+var _effect_value: Label
+var _casting_value: Label
+var _metric_captions: Array[Label] = []
 
 
 func _ready() -> void:
 	_frame_texture.texture = skin.detail_panel_texture if skin != null else null
 	_action_button.disabled = true
+	_build_spell_metrics()
+	_apply_detail_style()
 	apply_layout_profile(_layout_profile)
 	set_accent(_accent)
 
@@ -55,8 +74,8 @@ func apply_layout_profile(profile: StringName) -> void:
 	var description_font := 13 if compact else 14 if medium else 15
 	var heading_font := 10 if compact else 11 if medium else 12
 	var value_font := 12 if compact else 13 if medium else 14
-	var horizontal_margin := 22 if compact else 28 if medium else 34
-	var vertical_margin := 20 if compact else 24 if medium else 28
+	var horizontal_margin := 15 if compact else 18 if medium else 22
+	var vertical_margin := 16 if compact else 20 if medium else 24
 	_safe_margin.add_theme_constant_override("margin_left", horizontal_margin)
 	_safe_margin.add_theme_constant_override("margin_right", horizontal_margin)
 	_safe_margin.add_theme_constant_override("margin_top", vertical_margin)
@@ -65,15 +84,13 @@ func apply_layout_profile(profile: StringName) -> void:
 		"separation", 5 if compact else 6 if medium else 7
 	)
 	_icon_stage.custom_minimum_size.y = (
-		58.0 if compact else 66.0 if medium else 74.0
+		100.0 if compact else 108.0 if medium else 116.0
 	)
 	_name_label.add_theme_font_size_override("font_size", title_font)
 	_meta_label.add_theme_font_size_override("font_size", subtitle_font)
 	_xp_label.add_theme_font_size_override("font_size", value_font)
 	_description_label.add_theme_font_size_override("font_size", description_font)
-	_description_label.custom_minimum_size.y = (
-		64.0 if compact else 76.0 if medium else 88.0
-	)
+	_description_label.custom_minimum_size.y = 0.0
 	for heading in _section_headings:
 		heading.add_theme_font_size_override("font_size", heading_font)
 	for value_label in [
@@ -86,15 +103,28 @@ func apply_layout_profile(profile: StringName) -> void:
 		(value_label as Label).add_theme_font_size_override(
 			"font_size", value_font
 		)
-	_reason_label.custom_minimum_size.y = (
-		38.0 if compact else 44.0 if medium else 50.0
-	)
+	_reason_label.custom_minimum_size.y = 0.0
 	_action_button.custom_minimum_size.y = (
-		36.0 if compact else 40.0 if medium else 44.0
+		40.0 if compact else 42.0 if medium else 46.0
 	)
 	_action_button.add_theme_font_size_override(
 		"font_size", 12 if compact else 13 if medium else 14
 	)
+
+	for caption in _metric_captions:
+		caption.add_theme_font_size_override("font_size", 10 if compact else 11)
+	for metric in [_cost_value, _range_value]:
+		(metric as Label).add_theme_font_size_override("font_size", 19 if compact else 22)
+	_zone_value.add_theme_font_size_override("font_size", 12 if compact else 14)
+	_effect_value.add_theme_font_size_override("font_size", value_font)
+	_casting_value.add_theme_font_size_override("font_size", value_font)
+	_metrics_note.add_theme_font_size_override("font_size", 10 if compact else 11)
+	var art_size := 90.0 if compact else 98.0 if medium else 104.0
+	for art in [_icon_override, _primary_glyph]:
+		(art as Control).offset_left = -art_size * 0.5
+		(art as Control).offset_top = -art_size * 0.5
+		(art as Control).offset_right = art_size * 0.5
+		(art as Control).offset_bottom = art_size * 0.5
 
 
 func get_layout_profile() -> StringName:
@@ -134,12 +164,12 @@ func configure_node(
 		set_empty()
 		return
 	current_presentation_id = node.upgrade_id
-	_name_label.text = node.display_name.to_upper()
+	_name_label.text = node.display_name
 	var max_rank := _maximum_rank(discipline)
 	_meta_label.text = "%s · Rang %d%s" % [
 		discipline.display_name if discipline != null else "Discipline",
 		node.rank,
-		" · SPÉCIALISATION FINALE"
+		" · Ultime évolution"
 		if max_rank >= 5 and node.rank == max_rank
 		else "",
 	]
@@ -171,7 +201,9 @@ func configure_node(
 		str(presentation.get("reason", "")) if is_incompatible else ""
 	)
 	_configure_action(state)
-	_configure_icon(discipline, node.icon, node_visual)
+	_configure_icon(discipline, node.get_card_texture(), node_visual)
+	_set_supporting_sections(false)
+	_refresh_spell_metrics()
 	_scroll.scroll_vertical = 0
 
 
@@ -184,11 +216,11 @@ func configure_base(
 		base_icon: Texture2D = null
 	) -> void:
 	current_presentation_id = &"__base_rank_1"
-	_name_label.text = display_name.to_upper()
-	_meta_label.text = "%s · Rang 1 · ARCHÉTYPE INITIAL" % (
+	_name_label.text = display_name
+	_meta_label.text = "%s · Sort initial" % (
 		discipline.display_name if discipline != null else "Discipline"
 	)
-	_xp_label.text = "%d XP · acquis" % int(presentation.get("xp", 0))
+	_xp_label.text = "%d XP" % int(presentation.get("xp", 0))
 	_description_label.text = description
 	_spell_heading.show()
 	_spell_label.show()
@@ -203,6 +235,9 @@ func configure_base(
 		SkillTreeVisualPresentation.SkillTreeVisualState.SELECTED
 	)
 	_configure_icon(discipline, base_icon, node_visual)
+	_set_supporting_sections(true)
+	_reason_label.hide()
+	_refresh_spell_metrics()
 	_scroll.scroll_vertical = 0
 
 
@@ -212,7 +247,8 @@ func configure_locked(
 		character_id: StringName = &"elf"
 	) -> void:
 	current_presentation_id = StringName("__locked_rank_%d" % rank_number)
-	_name_label.text = "COMPÉTENCE VERROUILLÉE"
+	_hide_spell_metrics()
+	_name_label.text = "Évolution à découvrir"
 	_meta_label.text = "%s · Rang %d" % [
 		discipline.display_name if discipline != null else "Discipline",
 		rank_number,
@@ -250,16 +286,18 @@ func configure_locked(
 		]
 	)
 	_discipline_icon.configure_discipline(discipline_icon_id, skin)
+	_set_supporting_sections(true)
 	_scroll.scroll_vertical = 0
 
 
 func set_empty() -> void:
 	current_presentation_id = &""
-	_name_label.text = "DÉTAIL DU NODE"
+	_hide_spell_metrics()
+	_name_label.text = "Choisissez un sort"
 	_meta_label.text = ""
 	_xp_label.text = ""
 	_description_label.text = (
-		"Survolez un node ou placez-y le focus pour consulter ses détails."
+		"Sélectionnez un sort ou une évolution pour découvrir ses effets."
 	)
 	_spell_heading.hide()
 	_spell_label.hide()
@@ -270,16 +308,18 @@ func set_empty() -> void:
 	_incompatibilities_heading.hide()
 	_incompatibilities_label.hide()
 	_incompatibilities_label.text = ""
-	_action_button.text = "SÉLECTIONNEZ UN NODE"
+	_action_button.text = "SÉLECTIONNEZ UN SORT"
 	_action_button.disabled = true
 	_icon_override.hide()
 	_primary_glyph.configure(&"generic")
 	_primary_glyph.show()
 	_discipline_icon.configure(&"generic")
+	_set_supporting_sections(true)
 
 
 func set_progression_undefined(character_name: String) -> void:
 	current_presentation_id = &""
+	_hide_spell_metrics()
 	_name_label.text = "PROGRESSION NON DÉFINIE"
 	_meta_label.text = character_name.to_upper()
 	_xp_label.text = ""
@@ -301,16 +341,17 @@ func set_progression_undefined(character_name: String) -> void:
 	_primary_glyph.configure(&"future")
 	_primary_glyph.show()
 	_discipline_icon.configure(&"future")
+	_set_supporting_sections(true)
 
 
 func set_accent(accent: Color) -> void:
 	_accent = accent
 	if is_node_ready():
 		_name_label.add_theme_color_override(
-			"font_color", _accent.lightened(0.26)
+			"font_color", DETAIL_TEXT
 		)
 		_state_label.add_theme_color_override(
-			"font_color", _accent.lightened(0.24)
+			"font_color", DETAIL_GOLD
 		)
 
 
@@ -326,6 +367,7 @@ func get_detail_text() -> String:
 		_state_label.text,
 		_reason_label.text,
 		_action_button.text,
+		get_spell_metrics_text(),
 	])
 
 
@@ -350,12 +392,15 @@ func configure_evolution_action(
 	_action_button.disabled = not enabled
 	if not rejection_reason.is_empty():
 		_reason_label.text = rejection_reason
+		_reason_label.show()
 
 
 func show_evolution_rejection(reason: String) -> void:
 	_action_button.text = "CHOIX REFUSÉ"
 	_action_button.disabled = true
 	_reason_label.text = reason
+	_reason_label.show()
+	_reason_label.add_theme_color_override("font_color", Color("e9a89b"))
 
 
 func _prerequisite_text(
@@ -386,9 +431,9 @@ func _configure_icon(
 	)
 	_discipline_icon.configure_discipline(discipline_icon_id, skin)
 	var override := (
-		node_visual.icon_override
-		if node_visual != null and node_visual.icon_override != null
-		else legacy_icon
+		legacy_icon
+		if legacy_icon != null
+		else node_visual.icon_override if node_visual != null else null
 	)
 	_icon_override.texture = override
 	_icon_override.visible = override != null
@@ -427,3 +472,246 @@ func _maximum_rank(discipline: DisciplineData) -> int:
 		if rank_data != null:
 			result = maxi(result, rank_data.rank)
 	return result
+
+
+## Context is prepared by the screen before applying its reveal policy.
+## Merely supplying a spell never reveals its mechanics.
+func set_spell_context(spell: Spell) -> void:
+	_spell_context = spell
+	if is_node_ready():
+		_metrics.hide()
+
+
+func get_spell_metrics_text() -> String:
+	if not is_instance_valid(_metrics) or not _metrics.visible:
+		return ""
+	return "\n".join([
+		_metrics_note.text,
+		"%s PA" % _cost_value.text,
+		"Portée : %s" % _range_value.text,
+		"Zone : %s" % _zone_value.text,
+		_effect_value.text,
+		_casting_value.text,
+	])
+
+
+func _build_spell_metrics() -> void:
+	_metrics = VBoxContainer.new()
+	_metrics.name = "SpellMetrics"
+	_metrics.add_theme_constant_override("separation", 9)
+	_content.add_child(_metrics)
+	_content.move_child(_metrics, _spell_label.get_index() + 1)
+	_metrics_note = _metric_label("VALEURS DE BASE", DETAIL_MUTED)
+	_metrics.add_child(_metrics_note)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 5)
+	_metrics.add_child(row)
+	_cost_value = _metric_tile(row, "PA", "2")
+	_range_value = _metric_tile(row, "PORTÉE", "0–7")
+	_zone_value = _metric_tile(row, "ZONE", "Cible")
+	_effect_value = _metric_label("", DETAIL_TEXT)
+	_effect_value.add_theme_font_override("font", DETAIL_BOLD)
+	_metrics.add_child(_effect_value)
+	var separator := HSeparator.new()
+	separator.add_theme_stylebox_override("separator", _detail_line())
+	_metrics.add_child(separator)
+	_casting_value = _metric_label("", DETAIL_MUTED)
+	_metrics.add_child(_casting_value)
+	_metrics.hide()
+
+
+func _metric_tile(parent: HBoxContainer, caption: String, value: String) -> Label:
+	var surface := PanelContainer.new()
+	surface.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var style := _detail_style(Color("142225"), DETAIL_LINE, 5)
+	style.content_margin_left = 4.0
+	style.content_margin_right = 4.0
+	style.content_margin_top = 7.0
+	style.content_margin_bottom = 7.0
+	surface.add_theme_stylebox_override("panel", style)
+	parent.add_child(surface)
+	var stack := VBoxContainer.new()
+	stack.add_theme_constant_override("separation", 2)
+	surface.add_child(stack)
+	var caption_label := _metric_label(caption, DETAIL_MUTED)
+	caption_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_metric_captions.append(caption_label)
+	stack.add_child(caption_label)
+	var value_label := _metric_label(value, DETAIL_TEXT)
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	value_label.add_theme_font_override("font", DETAIL_BOLD)
+	stack.add_child(value_label)
+	return value_label
+
+
+func _metric_label(value: String, color: Color) -> Label:
+	var label := Label.new()
+	label.text = value
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_override("font", DETAIL_BODY)
+	label.add_theme_color_override("font_color", color)
+	return label
+
+
+func _refresh_spell_metrics() -> void:
+	if _spell_context == null:
+		_hide_spell_metrics()
+		return
+	var spell := _spell_context
+	_metrics_note.text = "VALEURS DE BASE"
+	_cost_value.text = str(spell.ap_cost)
+	_range_value.text = (
+		str(spell.spell_range) if spell.minimum_range == spell.spell_range
+		else "%d–%d" % [spell.minimum_range, spell.spell_range]
+	)
+	match spell.aoe_shape:
+		Spell.AoeShape.CROSS:
+			_zone_value.text = "Croix %d" % spell.aoe_size
+		Spell.AoeShape.SQUARE:
+			_zone_value.text = "Carré %d" % spell.aoe_size
+		Spell.AoeShape.LINE:
+			_zone_value.text = "Ligne %d" % spell.aoe_size
+		_:
+			_zone_value.text = "Cible"
+	_effect_value.text = _spell_effect_text(spell)
+	_effect_value.visible = not _effect_value.text.is_empty()
+	_casting_value.text = _spell_casting_text(spell)
+	_metrics.show()
+
+
+func _hide_spell_metrics() -> void:
+	_spell_context = null
+	if is_instance_valid(_metrics):
+		_metrics.hide()
+		_cost_value.text = ""
+		_range_value.text = ""
+		_zone_value.text = ""
+		_effect_value.text = ""
+		_casting_value.text = ""
+
+
+func _spell_effect_text(spell: Spell) -> String:
+	var effects: Array[String] = []
+	if spell.damage > 0:
+		var damage_kind := "physiques" if spell.damage_type == Spell.DamageType.PHYSICAL else "magiques"
+		effects.append("%d dégâts %s" % [spell.damage, damage_kind])
+	if spell.heal > 0:
+		effects.append("%d points de soin" % spell.heal)
+	if spell.shield_grant > 0:
+		effects.append("%d points de bouclier" % spell.shield_grant)
+	if spell.push_distance > 0:
+		effects.append("Repousse de %d case%s" % [spell.push_distance, "s" if spell.push_distance > 1 else ""])
+	if spell.pull_distance > 0:
+		effects.append("Attire de %d case%s" % [spell.pull_distance, "s" if spell.pull_distance > 1 else ""])
+	if spell.ap_drain > 0:
+		effects.append("Retire %d PA" % spell.ap_drain)
+	if spell.applied_status != null:
+		effects.append("%s · %d tour%s" % [spell.applied_status.status_name, spell.applied_status.duration, "s" if spell.applied_status.duration > 1 else ""])
+	if spell.terrain_effect != null:
+		effects.append("Terrain : %s" % spell.terrain_effect.effect_name)
+	return "\n".join(effects)
+
+
+func _spell_casting_text(spell: Spell) -> String:
+	var lines: Array[String] = []
+	var targets: Array[String] = []
+	if spell.can_target_enemy:
+		targets.append("ennemis")
+	if spell.can_target_ally:
+		targets.append("alliés")
+	if spell.can_target_self:
+		targets.append("soi-même")
+	if spell.can_target_free_cell:
+		targets.append("case libre")
+	if not targets.is_empty():
+		lines.append("Cibles : %s" % ", ".join(targets))
+	if not spell.is_self_only():
+		lines.append("Ligne de vue requise" if spell.needs_line_of_sight else "Sans ligne de vue")
+	if spell.line_from_caster:
+		lines.append("Zone orientée depuis le lanceur")
+	if spell.once_per_activation:
+		lines.append("1 lancer par activation")
+	if spell.cooldown_activations > 0:
+		lines.append("Relance : %d activation%s" % [spell.cooldown_activations, "s" if spell.cooldown_activations > 1 else ""])
+	if spell.initial_cooldown > 0:
+		lines.append("Délai initial : %d activation%s" % [spell.initial_cooldown, "s" if spell.initial_cooldown > 1 else ""])
+	if spell.max_uses_per_combat > 0:
+		lines.append("%d lancer%s par combat" % [spell.max_uses_per_combat, "s" if spell.max_uses_per_combat > 1 else ""])
+	if spell.is_delayed():
+		lines.append("Résolution : %s" % spell.telegraph_label)
+	return "\n".join(lines)
+
+
+func _set_supporting_sections(is_base_or_locked: bool) -> void:
+	var has_prerequisites := not is_base_or_locked and _prerequisites_label.text != "Aucun"
+	%PrerequisitesHeading.visible = has_prerequisites
+	_prerequisites_label.visible = has_prerequisites
+	%DescriptionHeading.visible = not is_base_or_locked
+	%StateHeading.hide()
+	%ReasonHeading.hide()
+	_reason_label.add_theme_color_override("font_color", DETAIL_MUTED)
+	_reason_label.visible = not _reason_label.text.is_empty() and _reason_label.text != "—"
+	if is_base_or_locked:
+		_spell_heading.hide()
+		_spell_label.hide()
+	else:
+		_spell_heading.text = "SORT CONCERNÉ"
+	%SeparatorA.visible = _spell_context != null or _spell_label.visible
+	%SeparatorB.visible = not is_base_or_locked
+	# The incompatible reason is already presented once under its own heading.
+	if _incompatibilities_label.visible:
+		_reason_label.hide()
+
+
+func _apply_detail_style() -> void:
+	# The centered artwork identifies the spell; a generic discipline fallback is misleading.
+	_discipline_icon.hide()
+	_frame_texture.hide()
+	%ReadingVeil.hide()
+	add_theme_stylebox_override("panel", _detail_style(Color("18272a"), DETAIL_LINE, 8))
+	for label in [_meta_label, _xp_label, _prerequisites_label, _reason_label]:
+		(label as Label).add_theme_font_override("font", DETAIL_BODY)
+		(label as Label).add_theme_color_override("font_color", DETAIL_MUTED)
+	for label in [_description_label, _spell_label]:
+		(label as Label).add_theme_font_override("font", DETAIL_BODY)
+		(label as Label).add_theme_color_override("font_color", DETAIL_TEXT)
+	_name_label.add_theme_font_override("font", DETAIL_HEADING)
+	_description_label.add_theme_font_override("font", DETAIL_BODY)
+	for heading in _section_headings:
+		heading.add_theme_font_override("font", DETAIL_BOLD)
+		heading.add_theme_color_override("font_color", DETAIL_GOLD)
+	for separator in [%SeparatorA, %SeparatorB]:
+		(separator as HSeparator).add_theme_stylebox_override("separator", _detail_line())
+	var normal := _detail_style(DETAIL_GOLD, Color("efcf91"), 5)
+	var hover := _detail_style(Color("ebce91"), DETAIL_GOLD, 5)
+	var disabled := _detail_style(Color("263735"), DETAIL_LINE, 5)
+	_action_button.add_theme_stylebox_override("normal", normal)
+	_action_button.add_theme_stylebox_override("hover", hover)
+	_action_button.add_theme_stylebox_override("pressed", _detail_style(Color("b39b6c"), DETAIL_GOLD, 5))
+	_action_button.add_theme_stylebox_override("disabled", disabled)
+	var focus := _detail_style(Color.TRANSPARENT, Color("f0dfae"), 5)
+	focus.set_border_width_all(2)
+	_action_button.add_theme_stylebox_override("focus", focus)
+	_action_button.add_theme_color_override("font_color", Color("152124"))
+	_action_button.add_theme_color_override("font_hover_color", Color("152124"))
+	_action_button.add_theme_color_override("font_pressed_color", Color("152124"))
+	_action_button.add_theme_color_override("font_disabled_color", DETAIL_MUTED)
+	_action_button.add_theme_font_override("font", DETAIL_BOLD)
+
+
+func _detail_style(fill: Color, border: Color, radius: int) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = fill
+	style.border_color = border
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(radius)
+	return style
+
+
+func _detail_line() -> StyleBoxLine:
+	var style := StyleBoxLine.new()
+	style.color = Color("354743")
+	style.thickness = 1
+	style.content_margin_top = 6
+	style.content_margin_bottom = 6
+	return style

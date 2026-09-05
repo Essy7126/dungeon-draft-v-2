@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://vfx/runtime/vfx_shield_sprite_effect.gd" id="1_script"]
+[ext_resource type="Resource" path="res://vfx/profiles/achilles_guard_bronze_v1/guard_profile.tres" id="2_profile"]
+
+[node name="AchillesGuardSpriteVFX" type="Node2D"]
+script = ExtResource("1_script")
+profile = ExtResource("2_profile")
+effect_id = &"achilles_guard_bronze"
+canvas_display_size = 130.0
+end_fade_seconds = 0.05
+

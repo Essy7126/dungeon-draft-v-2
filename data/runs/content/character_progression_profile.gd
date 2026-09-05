@@ -2,9 +2,21 @@
 class_name CharacterProgressionProfile
 extends Resource
 
+enum ProgressionModel {
+	LEGACY_CAST_XP,
+	CHAMPION_LEVEL_AND_MASTERY,
+}
+
 @export var character_id: StringName = &""
 @export_range(1, 12, 1) var active_spell_slots: int = 4
 @export var spells: Array[Spell] = []
+@export var progression_model: ProgressionModel = ProgressionModel.LEGACY_CAST_XP
+@export var champion_progression_profile: ChampionProgressionProfile = null
+## Autorités explicites des outils et du runtime Champion. Elles restent
+## optionnelles pour tous les profils legacy et évitent toute découverte par
+## nom de personnage ou par dossier.
+@export var mastery_catalog: MasteryCatalogData = null
+@export var combat_action_classification_catalog: CombatActionClassificationCatalogData = null
 var _legacy_disciplines: Array[DisciplineData] = []
 var disciplines: Array[DisciplineData]:
 	get:
@@ -55,8 +67,33 @@ func validation_errors() -> PackedStringArray:
 			errors.append("L'arbre %s est associe a plusieurs sorts distincts." % tree_id)
 		tree_ids[tree_id] = true
 		tree_owners[tree_id] = spell_id
+	if progression_model == ProgressionModel.CHAMPION_LEVEL_AND_MASTERY:
+		if champion_progression_profile == null:
+			errors.append("La progression Champion exige un ChampionProgressionProfile.")
+		else:
+			errors.append_array(champion_progression_profile.validation_errors())
+		if mastery_catalog == null:
+			errors.append("La progression Champion exige un MasteryCatalogData explicite.")
+		else:
+			errors.append_array(mastery_catalog.validation_errors())
+		if combat_action_classification_catalog == null:
+			errors.append(
+				"La progression Champion exige un catalogue explicite de classifications."
+			)
+		else:
+			errors.append_array(
+				combat_action_classification_catalog.validation_errors()
+			)
 	return errors
 
 
 func is_valid() -> bool:
 	return validation_errors().is_empty()
+
+
+func uses_champion_progression() -> bool:
+	return progression_model == ProgressionModel.CHAMPION_LEVEL_AND_MASTERY
+
+
+func uses_legacy_cast_xp() -> bool:
+	return progression_model == ProgressionModel.LEGACY_CAST_XP

@@ -113,6 +113,7 @@ const RULES := {
 		"calibration_cells": Classification.EDITOR_ONLY,
 		"calibration_pixels": Classification.EDITOR_ONLY,
 		"presentation_profile_path": Classification.RUNTIME_CONSUMED,
+		"registered_terrain_plan_path": Classification.RUNTIME_CONSUMED,
 		"source_room_path": Classification.MANIFEST_ONLY,
 		"source_visual_path": Classification.MANIFEST_ONLY,
 		"intentionally_isolated_cells": Classification.EDITOR_ONLY,

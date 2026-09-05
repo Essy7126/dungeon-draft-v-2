@@ -71,6 +71,8 @@ class HitContext:
 	var impact_id: StringName = &""
 	var sequence_index: int = 0
 	var ability_id: StringName = &""
+	var attack_classification: StringName = &""
+	var guard_damage_multiplier: float = 1.0
 	var status_id: StringName = &""
 	var is_periodic: bool = false
 

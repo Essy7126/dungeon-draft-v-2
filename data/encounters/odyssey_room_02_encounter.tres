@@ -1,8 +1,11 @@
-[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://data/encounters/encounter_definition.gd" id="1_encounter"]
 [ext_resource type="Resource" path="res://data/units/enemies/odyssey_skirmisher.tres" id="2_skirmisher"]
-[ext_resource type="Resource" path="res://data/units/enemies/odyssey_guard.tres" id="3_guard"]
+[ext_resource type="Resource" path="res://data/units/enemies/spectre_greatsword.tres" id="3_guard"]
+[ext_resource type="Resource" path="res://data/runs/glory/odyssey_no_consumables.tres" id="champion_glory"]
+
+
 
 [resource]
 script = ExtResource("1_encounter")
@@ -11,6 +14,10 @@ roster_units = Array[UnitData]([ExtResource("2_skirmisher"), ExtResource("3_guar
 roster_counts = PackedInt32Array(2, 1)
 formation_profiles = Array[StringName]([&"double_line", &"split", &"left_flank", &"right_flank"])
 living_enemy_cap = 3
-minimum_path_distance_by_role = {&"odyssey_skirmisher": 5, &"odyssey_guard": 6}
-maximum_path_distance_by_role = {&"odyssey_skirmisher": 8, &"odyssey_guard": 9}
+minimum_path_distance_by_role = {&"odyssey_skirmisher": 5, &"spectre_greatsword": 6}
+maximum_path_distance_by_role = {&"odyssey_skirmisher": 8, &"spectre_greatsword": 9}
 forbidden_initial_spawn_cells = Array[Vector2i]([Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(4, 1), Vector2i(5, 1), Vector2i(6, 1), Vector2i(7, 1), Vector2i(5, 2), Vector2i(6, 2), Vector2i(7, 2), Vector2i(8, 2), Vector2i(6, 3), Vector2i(7, 3), Vector2i(8, 3), Vector2i(9, 3), Vector2i(7, 4), Vector2i(8, 4), Vector2i(9, 4), Vector2i(10, 4), Vector2i(8, 5), Vector2i(9, 5), Vector2i(10, 5), Vector2i(9, 6)])
+
+encounter_id = &"catabase_room_02"
+base_xp = 120
+glory_challenge = ExtResource("champion_glory")

@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="Spell" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="Spell" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://data/spell.gd" id="1_spell"]
 [ext_resource type="Texture2D" path="res://asset/ui/recraft_hud_v1/icons/achilles_v1/ability_achilles_guard.svg" id="2_icon"]
 [ext_resource type="Resource" path="res://data/characters/achilles/disciplines/guard.tres" id="3_tree"]
+
+[ext_resource type="PackedScene" path="res://battle/vfx/achilles_guard_sprite_vfx.tscn" id="4_vfx"]
 
 [resource]
 script = ExtResource("1_spell")
@@ -17,3 +19,4 @@ once_per_activation = true
 can_target_enemy = false
 can_target_self = true
 shield_grant = 10
+vfx_scene = ExtResource("4_vfx")

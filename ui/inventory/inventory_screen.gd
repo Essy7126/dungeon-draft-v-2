@@ -421,9 +421,11 @@ func _modifier_text(definition: ItemDefinition) -> String:
 func _stats_text(unit: Unit) -> String:
 	if unit == null:
 		return ""
-	return "STATISTIQUES ACTUELLES\nPV %d/%d · Attaque %d · Initiative %.0f\nPA %d · PM %d · Armure %.0f\nRés. magique %.0f · Rés. glace %.0f\nCritique %.0f%% · Force %.0f" % [
+	return "STATISTIQUES ACTUELLES · Niv. %d\nPV %d/%d · %s %d · Initiative %.0f\nPA %d · PM %d · Armure %.0f\nRés. magique %.0f · Rés. glace %.0f\nCritique %.0f%% · Force %.0f" % [
+		CombatGlossary.champion_level(unit),
 		unit.current_hp,
 		unit.max_hp.get_int(),
+		"Prouesse" if CombatGlossary.uses_champion_progression(unit) else "Attaque",
 		unit.attack_power.get_int(),
 		unit.initiative.get_value(),
 		unit.max_ap.get_int(),

@@ -1,0 +1,577 @@
+[gd_resource type="Resource" script_class="AdvancedMasteryCatalogData" load_steps=58 format=3]
+
+[ext_resource type="Script" path="res://data/characters/advanced_mastery_catalog_data.gd" id="1_catalog"]
+[ext_resource type="Script" path="res://data/characters/skill_tree_node_data.gd" id="2_node"]
+[ext_resource type="Script" path="res://data/characters/targeted_spell_modifier_data.gd" id="3_targeted"]
+[ext_resource type="Script" path="res://data/characters/mastery_spell_modifier_data.gd" id="4_static"]
+[ext_resource type="Script" path="res://data/characters/mastery_reactive_effect_data.gd" id="5_reactive"]
+[ext_resource type="Script" path="res://data/characters/doctrine_point_requirement_data.gd" id="6_requirement"]
+
+[sub_resource type="Resource" id="StaticWrathStrike"]
+script = ExtResource("4_static")
+modifier_name = "Sommet Colère — amplification conditionnelle"
+effect_type = 13
+multiplier = 1.15
+
+[sub_resource type="Resource" id="StaticWrathDash"]
+script = ExtResource("4_static")
+modifier_name = "Sommet Colère — amplification conditionnelle"
+effect_type = 13
+multiplier = 1.15
+
+[sub_resource type="Resource" id="StaticWrathShot"]
+script = ExtResource("4_static")
+modifier_name = "Sommet Colère — amplification conditionnelle"
+effect_type = 13
+multiplier = 1.15
+
+[sub_resource type="Resource" id="TargetWrathStrike"]
+script = ExtResource("3_targeted")
+spell_id = &"achilles_peleid_strike"
+modifiers = Array[ExtResource("4_static")]([SubResource("StaticWrathStrike")])
+
+[sub_resource type="Resource" id="TargetWrathDash"]
+script = ExtResource("3_targeted")
+spell_id = &"achilles_fulminant_dash"
+modifiers = Array[ExtResource("4_static")]([SubResource("StaticWrathDash")])
+
+[sub_resource type="Resource" id="TargetWrathShot"]
+script = ExtResource("3_targeted")
+spell_id = &"achilles_pelion_shot"
+modifiers = Array[ExtResource("4_static")]([SubResource("StaticWrathShot")])
+
+[sub_resource type="Resource" id="FxWrathSummitStep"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_summit_wrath.victorious_step"
+effect_id = &"queue_followup"
+event_id = &"elimination"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"optional_reposition"
+stackable = false
+priority = 205
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot", &"achilles_fulminant_dash"])
+requires_elimination = true
+maximum_cells = 2
+optional = true
+followup_request_type = &"free_move"
+
+[sub_resource type="Resource" id="NodeSummitWrath"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_summit_wrath"
+display_name = "Sommet Colère"
+description = "Les bonus conditionnels augmentent de 15 % de leur valeur ; Pas victorieux répond à toute élimination offensive."
+discipline_id = &"achilles_advanced"
+mastery_cost = 3
+required_champion_level = 13
+tier = 6
+node_type = 4
+exclusive_group = &"achilles_specialist_summit"
+doctrine_id = &"achilles_advanced"
+targeted_spell_modifiers = Array[ExtResource("3_targeted")]([SubResource("TargetWrathStrike"), SubResource("TargetWrathDash"), SubResource("TargetWrathShot")])
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxWrathSummitStep")])
+requires_completed_tree_ids = Array[StringName]([&"achilles_wrath_of_peleus"])
+effect_axis = &"wrath_specialist_summit"
+reaction_group = &"optional_reposition"
+stackable = false
+priority = 205
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_fulminant_dash", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="StaticChironRange"]
+script = ExtResource("4_static")
+modifier_name = "Sommet Chiron — portée maximale"
+effect_type = 2
+flat_value = 1
+
+[sub_resource type="Resource" id="StaticChironShotThreshold"]
+script = ExtResource("4_static")
+modifier_name = "Sommet Chiron — seuil de déplacement"
+effect_type = 14
+flat_value = -1
+minimum_value = 1
+
+[sub_resource type="Resource" id="StaticChironDashThreshold"]
+script = ExtResource("4_static")
+modifier_name = "Sommet Chiron — seuil de déplacement"
+effect_type = 14
+flat_value = -1
+minimum_value = 1
+
+[sub_resource type="Resource" id="TargetChironShot"]
+script = ExtResource("3_targeted")
+spell_id = &"achilles_pelion_shot"
+modifiers = Array[ExtResource("4_static")]([SubResource("StaticChironRange"), SubResource("StaticChironShotThreshold")])
+
+[sub_resource type="Resource" id="TargetChironDash"]
+script = ExtResource("3_targeted")
+spell_id = &"achilles_fulminant_dash"
+modifiers = Array[ExtResource("4_static")]([SubResource("StaticChironDashThreshold")])
+
+[sub_resource type="Resource" id="NodeSummitChiron"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_summit_chiron"
+display_name = "Sommet Chiron"
+description = "Tir gagne 1 portée maximale et les conditions de déplacement demandent une case de moins, minimum une."
+discipline_id = &"achilles_advanced"
+mastery_cost = 3
+required_champion_level = 13
+tier = 6
+node_type = 4
+exclusive_group = &"achilles_specialist_summit"
+doctrine_id = &"achilles_advanced"
+targeted_spell_modifiers = Array[ExtResource("3_targeted")]([SubResource("TargetChironShot"), SubResource("TargetChironDash")])
+requires_completed_tree_ids = Array[StringName]([&"achilles_lesson_of_chiron"])
+effect_axis = &"chiron_specialist_summit"
+reaction_group = &"movement_threshold"
+stackable = false
+priority = 200
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_fulminant_dash", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="StaticAeacusGuard"]
+script = ExtResource("4_static")
+modifier_name = "Sommet Rempart — Garde +20 %"
+effect_type = 1
+multiplier = 1.2
+
+[sub_resource type="Resource" id="TargetAeacusGuard"]
+script = ExtResource("3_targeted")
+spell_id = &"achilles_bronze_guard"
+modifiers = Array[ExtResource("4_static")]([SubResource("StaticAeacusGuard")])
+
+[sub_resource type="Resource" id="FxAeacusThreshold"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_summit_aeacus.absorption_threshold"
+effect_id = &"modify_absorption_threshold"
+event_id = &"combat_started"
+scope = 3
+frequency = 4
+max_triggers = 1
+reaction_group = &"absorption_threshold"
+stackable = false
+priority = 200
+ratio_value = 0.08
+
+[sub_resource type="Resource" id="NodeSummitAeacus"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_summit_aeacus"
+display_name = "Sommet Rempart"
+description = "Garde gagne 20 % ; les seuils de 10 % passent à 8 % des PV maximum."
+discipline_id = &"achilles_advanced"
+mastery_cost = 3
+required_champion_level = 13
+tier = 6
+node_type = 4
+exclusive_group = &"achilles_specialist_summit"
+doctrine_id = &"achilles_advanced"
+targeted_spell_modifiers = Array[ExtResource("3_targeted")]([SubResource("TargetAeacusGuard")])
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxAeacusThreshold")])
+requires_completed_tree_ids = Array[StringName]([&"achilles_aegis_of_aeacus"])
+effect_axis = &"aeacus_specialist_summit"
+reaction_group = &"absorption_threshold"
+stackable = false
+priority = 200
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_peleid_strike", &"achilles_fulminant_dash"])
+
+[sub_resource type="Resource" id="ReqPredatorWrath"]
+script = ExtResource("6_requirement")
+tree_id = &"achilles_wrath_of_peleus"
+minimum_points = 6
+
+[sub_resource type="Resource" id="ReqPredatorChiron"]
+script = ExtResource("6_requirement")
+tree_id = &"achilles_lesson_of_chiron"
+minimum_points = 6
+
+[sub_resource type="Resource" id="FxPredatorStrikeArmShotDamage"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.strike_arm_shot_damage"
+effect_id = &"set_flag"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+priority = 150
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+flag_id = &"predator_shot_damage"
+
+[sub_resource type="Resource" id="FxPredatorStrikeArmShotRange"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.strike_arm_shot_range"
+effect_id = &"set_flag"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+priority = 149
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+flag_id = &"predator_shot_range"
+
+[sub_resource type="Resource" id="FxPredatorShotDamage"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.shot_damage"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 155
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+required_flag_id = &"predator_shot_damage"
+target_spell_id = &"achilles_pelion_shot"
+flag_id = &"predator_shot_damage"
+multiplier = 1.25
+
+[sub_resource type="Resource" id="FxPredatorShotRange"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.shot_range"
+effect_id = &"modify_range"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"temporary_range_bonus"
+stackable = false
+priority = 154
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+required_flag_id = &"predator_shot_range"
+target_spell_id = &"achilles_pelion_shot"
+minimum_range_override = 0
+
+[sub_resource type="Resource" id="FxPredatorShotArmStrikeDamage"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.shot_arm_strike_damage"
+effect_id = &"set_flag"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+priority = 148
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+flag_id = &"predator_strike_damage"
+
+[sub_resource type="Resource" id="FxPredatorShotArmStrikeRange"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.shot_arm_strike_range"
+effect_id = &"set_flag"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+priority = 147
+valid_spell_ids = Array[StringName]([&"achilles_pelion_shot"])
+flag_id = &"predator_strike_range"
+
+[sub_resource type="Resource" id="FxPredatorStrikeDamage"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.strike_damage"
+effect_id = &"consume_flag_damage"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"conditional_damage_bonus"
+stackable = true
+priority = 156
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"predator_strike_damage"
+target_spell_id = &"achilles_peleid_strike"
+flag_id = &"predator_strike_damage"
+multiplier = 1.25
+
+[sub_resource type="Resource" id="FxPredatorStrikeRange"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_battlefield_predator.strike_range"
+effect_id = &"modify_range"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"temporary_range_bonus"
+stackable = false
+priority = 154
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"predator_strike_range"
+target_spell_id = &"achilles_peleid_strike"
+flat_value = 1
+
+[sub_resource type="Resource" id="NodeBattlefieldPredator"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_junction_battlefield_predator"
+display_name = "Prédateur du champ de bataille"
+description = "Après Frappe, le prochain Tir ignore sa portée minimale et gagne 25 % ; après Tir, la prochaine Frappe gagne portée 2 et 25 %, une fois par relation et activation."
+discipline_id = &"achilles_advanced"
+mastery_cost = 1
+required_champion_level = 14
+tier = 7
+node_type = 5
+exclusive_group = &"achilles_mythic_junction"
+doctrine_id = &"achilles_advanced"
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxPredatorStrikeArmShotDamage"), SubResource("FxPredatorStrikeArmShotRange"), SubResource("FxPredatorShotDamage"), SubResource("FxPredatorShotRange"), SubResource("FxPredatorShotArmStrikeDamage"), SubResource("FxPredatorShotArmStrikeRange"), SubResource("FxPredatorStrikeDamage"), SubResource("FxPredatorStrikeRange")])
+doctrine_point_requirements = Array[ExtResource("6_requirement")]([SubResource("ReqPredatorWrath"), SubResource("ReqPredatorChiron")])
+effect_axis = &"battlefield_predator"
+reaction_group = &"cross_doctrine_followup"
+stackable = false
+priority = 156
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot", &"achilles_fulminant_dash"])
+
+[sub_resource type="Resource" id="ReqAvengerWrath"]
+script = ExtResource("6_requirement")
+tree_id = &"achilles_wrath_of_peleus"
+minimum_points = 6
+
+[sub_resource type="Resource" id="ReqAvengerAeacus"]
+script = ExtResource("6_requirement")
+tree_id = &"achilles_aegis_of_aeacus"
+minimum_points = 6
+
+[sub_resource type="Resource" id="FxAvengerTrackDamage"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_bronze_avenger.track_damage"
+effect_id = &"track_absorption"
+event_id = &"damage_absorbed"
+scope = 1
+frequency = 0
+max_triggers = 1
+priority = 160
+requires_guard = true
+minimum_absorbed_max_hp_ratio = 0.01
+flag_id = &"bronze_avenger_damage"
+cap_max_hp_ratio = 0.15
+
+[sub_resource type="Resource" id="FxAvengerTrackRestore"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_bronze_avenger.track_restore"
+effect_id = &"track_absorption"
+event_id = &"damage_absorbed"
+scope = 1
+frequency = 0
+max_triggers = 1
+priority = 159
+requires_guard = true
+minimum_absorbed_max_hp_ratio = 0.01
+flag_id = &"bronze_avenger_restore"
+cap_max_hp_ratio = 0.15
+
+[sub_resource type="Resource" id="FxAvengerDamage"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_bronze_avenger.raw_damage"
+effect_id = &"raw_damage_bonus"
+event_id = &"spell_cast"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"raw_damage_bonus"
+stackable = false
+priority = 165
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"bronze_avenger_damage"
+target_spell_id = &"achilles_peleid_strike"
+flag_id = &"bronze_avenger_damage"
+cap_max_hp_ratio = 0.15
+
+[sub_resource type="Resource" id="FxAvengerRestore"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_bronze_avenger.restore"
+effect_id = &"restore_shield_source"
+event_id = &"elimination"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"shield_source_restore"
+stackable = false
+priority = 164
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike"])
+required_flag_id = &"bronze_avenger_restore"
+requires_elimination = true
+ratio_value = 0.25
+
+[sub_resource type="Resource" id="NodeBronzeAvenger"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_junction_bronze_avenger"
+display_name = "Vengeur d’airain"
+description = "Les dégâts absorbés par Garde (plafond 15 % PV max) deviennent un bonus brut pour la prochaine Frappe ; une élimination restaure 25 % de la Garde initiale, une fois par activation."
+discipline_id = &"achilles_advanced"
+mastery_cost = 1
+required_champion_level = 14
+tier = 7
+node_type = 5
+exclusive_group = &"achilles_mythic_junction"
+doctrine_id = &"achilles_advanced"
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxAvengerTrackDamage"), SubResource("FxAvengerTrackRestore"), SubResource("FxAvengerDamage"), SubResource("FxAvengerRestore")])
+doctrine_point_requirements = Array[ExtResource("6_requirement")]([SubResource("ReqAvengerWrath"), SubResource("ReqAvengerAeacus")])
+effect_axis = &"bronze_avenger"
+reaction_group = &"raw_damage_bonus"
+stackable = false
+priority = 165
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_peleid_strike", &"achilles_pelion_shot"])
+
+[sub_resource type="Resource" id="ReqSentinelChiron"]
+script = ExtResource("6_requirement")
+tree_id = &"achilles_lesson_of_chiron"
+minimum_points = 6
+
+[sub_resource type="Resource" id="ReqSentinelAeacus"]
+script = ExtResource("6_requirement")
+tree_id = &"achilles_aegis_of_aeacus"
+minimum_points = 6
+
+[sub_resource type="Resource" id="FxPelionSentinel"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_junction_pelion_sentinel.response_shot"
+effect_id = &"automatic_attack"
+event_id = &"projectile_received"
+scope = 2
+frequency = 3
+max_triggers = 1
+reaction_group = &"automatic_counterattack"
+stackable = false
+priority = 225
+requires_guard = true
+required_attack_classification = 2
+target_spell_id = &"achilles_pelion_shot"
+multiplier = 0.6
+requires_line_of_sight = true
+automatic_action = true
+
+[sub_resource type="Resource" id="NodePelionSentinel"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_junction_pelion_sentinel"
+display_name = "Sentinelle du Pélion"
+description = "Le premier projectile neutralisé ou fortement réduit par Garde demande un Tir de réponse à 60 % si une ligne de vue valide existe."
+discipline_id = &"achilles_advanced"
+mastery_cost = 1
+required_champion_level = 14
+tier = 7
+node_type = 5
+exclusive_group = &"achilles_mythic_junction"
+doctrine_id = &"achilles_advanced"
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxPelionSentinel")])
+doctrine_point_requirements = Array[ExtResource("6_requirement")]([SubResource("ReqSentinelChiron"), SubResource("ReqSentinelAeacus")])
+effect_axis = &"pelion_sentinel"
+reaction_group = &"automatic_counterattack"
+stackable = false
+priority = 225
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_pelion_shot", &"achilles_fulminant_dash"])
+
+[sub_resource type="Resource" id="FxScourgeTrojans"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_apotheosis_scourge_trojans.automatic_strike"
+effect_id = &"automatic_attack"
+event_id = &"elimination"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"automatic_followup_attack"
+stackable = false
+priority = 230
+valid_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot", &"achilles_fulminant_dash"])
+requires_elimination = true
+target_spell_id = &"achilles_peleid_strike"
+multiplier = 0.5
+requires_line_of_sight = true
+automatic_action = true
+
+[sub_resource type="Resource" id="NodeScourgeTrojans"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_apotheosis_scourge_trojans"
+display_name = "Fléau des Troyens"
+description = "La première élimination offensive de l’activation demande une Frappe à 50 % sur une cible adjacente valide, une fois par activation."
+discipline_id = &"achilles_advanced"
+prerequisite_node_ids = Array[StringName]([&"achilles_summit_wrath"])
+mastery_cost = 1
+required_champion_level = 14
+tier = 8
+node_type = 6
+exclusive_group = &"achilles_apotheosis"
+doctrine_id = &"achilles_advanced"
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxScourgeTrojans")])
+requires_completed_tree_ids = Array[StringName]([&"achilles_wrath_of_peleus"])
+effect_axis = &"scourge_of_trojans"
+reaction_group = &"automatic_followup_attack"
+stackable = false
+priority = 230
+affected_spell_ids = Array[StringName]([&"achilles_peleid_strike", &"achilles_pelion_shot", &"achilles_fulminant_dash"])
+
+[sub_resource type="Resource" id="FxFateShot"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_apotheosis_fate_shot.origin_choice"
+effect_id = &"choose_projectile_origin"
+event_id = &"movement_resolved"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"projectile_origin_choice"
+stackable = false
+priority = 220
+valid_spell_ids = Array[StringName]([&"achilles_fulminant_dash"])
+target_spell_id = &"achilles_pelion_shot"
+optional = true
+followup_request_type = &"projectile_origin"
+valid_option_ids = Array[StringName]([&"dash_start", &"dash_end"])
+
+[sub_resource type="Resource" id="NodeFateShot"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_apotheosis_fate_shot"
+display_name = "Trait du destin"
+description = "Après Percée, Tir peut calculer portée, ligne de vue et origine depuis la case de départ ou d’arrivée ; le choix est prévisualisé."
+discipline_id = &"achilles_advanced"
+prerequisite_node_ids = Array[StringName]([&"achilles_summit_chiron"])
+mastery_cost = 1
+required_champion_level = 14
+tier = 8
+node_type = 6
+exclusive_group = &"achilles_apotheosis"
+doctrine_id = &"achilles_advanced"
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxFateShot")])
+requires_completed_tree_ids = Array[StringName]([&"achilles_lesson_of_chiron"])
+effect_axis = &"fate_shot"
+reaction_group = &"projectile_origin_choice"
+stackable = false
+priority = 220
+affected_spell_ids = Array[StringName]([&"achilles_fulminant_dash", &"achilles_pelion_shot", &"achilles_peleid_strike"])
+
+[sub_resource type="Resource" id="FxInvincibleHero"]
+script = ExtResource("5_reactive")
+source_id = &"achilles_apotheosis_invincible_hero.choice"
+effect_id = &"choose_shield_conversion"
+event_id = &"activation_started"
+scope = 1
+frequency = 2
+max_triggers = 1
+reaction_group = &"shield_conversion_choice"
+stackable = false
+priority = 220
+requires_guard = true
+optional = false
+followup_request_type = &"shield_conversion"
+valid_option_ids = Array[StringName]([&"retain_half_as_new_shield", &"convert_remaining_to_next_strike"])
+ratio_value = 0.5
+
+[sub_resource type="Resource" id="NodeInvincibleHero"]
+script = ExtResource("2_node")
+upgrade_id = &"achilles_apotheosis_invincible_hero"
+display_name = "Le héros invincible"
+description = "À l’activation suivante, si Garde subsiste, choisir entre en conserver 50 % comme nouveau bouclier ou convertir le reste pour la prochaine Frappe, jamais les deux."
+discipline_id = &"achilles_advanced"
+prerequisite_node_ids = Array[StringName]([&"achilles_summit_aeacus"])
+mastery_cost = 1
+required_champion_level = 14
+tier = 8
+node_type = 6
+exclusive_group = &"achilles_apotheosis"
+doctrine_id = &"achilles_advanced"
+reactive_effects = Array[ExtResource("5_reactive")]([SubResource("FxInvincibleHero")])
+requires_completed_tree_ids = Array[StringName]([&"achilles_aegis_of_aeacus"])
+effect_axis = &"invincible_hero"
+reaction_group = &"shield_conversion_choice"
+stackable = false
+priority = 220
+affected_spell_ids = Array[StringName]([&"achilles_bronze_guard", &"achilles_peleid_strike", &"achilles_fulminant_dash"])
+
+[resource]
+script = ExtResource("1_catalog")
+catalog_id = &"achilles_advanced_masteries_v1"
+nodes = Array[ExtResource("2_node")]([SubResource("NodeSummitWrath"), SubResource("NodeSummitChiron"), SubResource("NodeSummitAeacus"), SubResource("NodeBattlefieldPredator"), SubResource("NodeBronzeAvenger"), SubResource("NodePelionSentinel"), SubResource("NodeScourgeTrojans"), SubResource("NodeFateShot"), SubResource("NodeInvincibleHero")])

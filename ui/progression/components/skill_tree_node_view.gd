@@ -26,6 +26,7 @@ const PROFILE_COMPACT := &"compact"
 @onready var _name_label: Label = %NameLabel
 @onready var _threshold_label: Label = %ThresholdLabel
 @onready var _state_text: Label = %StateText
+@onready var _description_label: Label = %DescriptionLabel
 @onready var _focus_overlay: Panel = %FocusOverlay
 @onready var _capstone_halo: Panel = %CapstoneHalo
 @onready var _lock_overlay: Control = %LockOverlay
@@ -46,12 +47,13 @@ var _rank_gate_rank := 0
 var _layout_profile: StringName = PROFILE_LARGE
 var _visual_frame_size := 82.0
 var _inspection_selected := false
+var _short_tree_card_width := 0.0
+var _dense_short_tree := false
 
 
 func _ready() -> void:
 	focus_mode = Control.FOCUS_ALL
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	mouse_entered.connect(_request_inspection)
 	focus_entered.connect(_on_focus_entered)
 	focus_exited.connect(_on_focus_exited)
 	gui_input.connect(_on_gui_input)
@@ -251,6 +253,11 @@ func get_rank_badge_text() -> String:
 	return _rank_label.text
 
 
+func set_short_tree_card_width(value: float, dense: bool = false) -> void:
+	_short_tree_card_width = maxf(0.0, value)
+	_dense_short_tree = dense and _short_tree_card_width > 0.0
+
+
 func apply_layout_profile(profile: StringName) -> void:
 	_layout_profile = profile
 	if not is_node_ready():
@@ -263,24 +270,36 @@ func apply_layout_profile(profile: StringName) -> void:
 		if config != null
 		else _fallback_frame_size(profile, kind)
 	)
-	var control_width := _visual_frame_size + (38.0 if kind == &"capstone" else 28.0)
+	var is_short_tree := _short_tree_card_width > 0.0
+	if _dense_short_tree:
+		_visual_frame_size = 60.0
+	var control_width := (
+		_short_tree_card_width if is_short_tree
+		else _visual_frame_size + (38.0 if kind == &"capstone" else 28.0)
+	)
 	var title_height := 42.0 if profile == PROFILE_LARGE else 39.0 if profile == PROFILE_MEDIUM else 36.0
-	var control_height := _visual_frame_size + title_height + 46.0
+	if _dense_short_tree:
+		title_height = 34.0
+	var control_height := (
+		150.0 if _dense_short_tree
+		else _visual_frame_size + title_height + (64.0 if is_short_tree else 46.0)
+	)
 	var control_size := Vector2(control_width, control_height)
 	custom_minimum_size = control_size
 	size = control_size
 	var frame_rect := Rect2(
-		Vector2((control_size.x - _visual_frame_size) * 0.5, 0.0),
+		Vector2((control_size.x - _visual_frame_size) * 0.5, 4.0 if _dense_short_tree else 9.0 if is_short_tree else 0.0),
 		Vector2.ONE * _visual_frame_size
 	)
 	var halo_padding := 6.0 if kind == &"capstone" or kind == &"specialization" else 0.0
 	_set_control_rect(_capstone_halo, frame_rect.grow(halo_padding).position, frame_rect.grow(halo_padding).size)
 	_set_control_rect(_state_backdrop, frame_rect.position, frame_rect.size)
 	_set_control_rect(_frame_texture, frame_rect.position, frame_rect.size)
-	_set_control_rect(_focus_overlay, frame_rect.grow(3.0).position, frame_rect.grow(3.0).size)
+	var focus_rect := Rect2(Vector2.ZERO, control_size) if is_short_tree else frame_rect.grow(3.0)
+	_set_control_rect(_focus_overlay, focus_rect.position, focus_rect.size)
 	_set_control_rect(_lock_overlay, frame_rect.position, frame_rect.size)
 	_set_control_rect(_darkening_layer, Vector2.ZERO, frame_rect.size)
-	var discipline_size := 22.0 if profile == PROFILE_LARGE else 20.0 if profile == PROFILE_MEDIUM else 18.0
+	var discipline_size := 17.0 if profile == PROFILE_LARGE else 15.0
 	_set_control_rect(_discipline_icon, frame_rect.position + Vector2(7.0, 7.0), Vector2.ONE * discipline_size)
 	var major := kind in [&"root", &"specialization", &"capstone"]
 	var icon_size := (
@@ -288,6 +307,8 @@ func apply_layout_profile(profile: StringName) -> void:
 		if config != null
 		else _visual_frame_size * (0.58 if major else 0.54)
 	)
+	if _dense_short_tree:
+		icon_size = 46.0
 	var icon_position := frame_rect.position + (frame_rect.size - Vector2.ONE * icon_size) * 0.5
 	_set_control_rect(_icon_override, icon_position, Vector2.ONE * icon_size)
 	_set_control_rect(_primary_glyph, icon_position, Vector2.ONE * icon_size)
@@ -297,13 +318,13 @@ func apply_layout_profile(profile: StringName) -> void:
 		Vector2(frame_rect.end.x - secondary_size - 7.0, frame_rect.end.y - secondary_size - 7.0),
 		Vector2.ONE * secondary_size
 	)
-	var state_size := 21.0 if profile == PROFILE_LARGE else 19.0
+	var state_size := 16.0 if _dense_short_tree else 21.0 if profile == PROFILE_LARGE else 19.0
 	_set_control_rect(
 		_state_icon,
 		Vector2(frame_rect.end.x - state_size - 6.0, frame_rect.position.y + 6.0),
 		Vector2.ONE * state_size
 	)
-	var badge_size := config.get_badge_size(profile) if config != null else Vector2.ONE * 34.0
+	var badge_size := Vector2(27.0, 18.0)
 	var badge_position := Vector2(frame_rect.position.x + 5.0, frame_rect.end.y - badge_size.y - 5.0)
 	_set_control_rect(_rank_badge_fallback, badge_position, badge_size)
 	_set_control_rect(_rank_label, badge_position, badge_size)
@@ -327,6 +348,23 @@ func apply_layout_profile(profile: StringName) -> void:
 	_threshold_label.add_theme_font_size_override("font_size", 9 if profile == PROFILE_COMPACT else 10)
 	_state_text.add_theme_font_size_override("font_size", 9 if profile == PROFILE_COMPACT else 10)
 	_requirement_label.add_theme_font_size_override("font_size", 8 if profile == PROFILE_COMPACT else 9)
+	_description_label.visible = is_short_tree
+	_threshold_label.visible = not is_short_tree
+	if is_short_tree:
+		var description_top := title_top + title_height
+		var description_height := 28.0 if _dense_short_tree else 30.0
+		_set_control_rect(_description_label, Vector2(8.0, description_top), Vector2(control_size.x - 16.0, description_height))
+		_set_control_rect(_state_text, Vector2(0.0, description_top + description_height + 3.0), Vector2(control_size.x, 18.0))
+		_description_label.text = (
+			node_data.description.split(". ", false)[0].trim_suffix(".")
+			if reveal_mode == RevealMode.FULL and node_data != null and not node_data.description.is_empty()
+			else "Disponible dès le rang 1" if is_base_rank
+			else "Progressez pour révéler ce choix"
+		)
+		_description_label.add_theme_color_override("font_color", Color("afbbb5"))
+		_description_label.add_theme_font_size_override("font_size", 12)
+		_name_label.add_theme_font_size_override("font_size", 14 if _dense_short_tree else 15)
+		_state_text.add_theme_font_size_override("font_size", 10)
 	_apply_surface_style()
 
 
@@ -363,6 +401,8 @@ func is_inspection_selected() -> bool:
 func get_connection_anchor(side: StringName) -> Vector2:
 	var frame_rect := _state_backdrop.get_rect()
 	var frame_center := frame_rect.position + frame_rect.size * 0.5
+	if _short_tree_card_width > 0.0:
+		return Vector2(size.x if side == &"right" else 0.0, frame_center.y)
 	return Vector2(frame_rect.end.x, frame_center.y) if side == &"right" else Vector2(frame_rect.position.x, frame_center.y)
 
 
@@ -382,7 +422,7 @@ func _configure_skin(rank: int) -> void:
 	_rank_badge_texture.texture = null
 	_rank_badge_texture.hide()
 	_rank_badge_fallback.show()
-	_capstone_halo.visible = _node_kind(rank) in [&"specialization", &"capstone"]
+	_capstone_halo.visible = _node_kind(rank) == &"capstone"
 
 
 func _configure_glyphs(legacy_icon: Texture2D = null) -> void:
@@ -450,15 +490,15 @@ func _apply_visual_state() -> void:
 	match state:
 		SkillTreeVisualPresentation.SkillTreeVisualState.SELECTED:
 			self_modulate = Color.WHITE
-			_set_state_colors(Color(0.82, 0.66, 0.38), Color(0.92, 0.76, 0.46))
+			_set_state_colors(Color("84a78b"), Color("b4d1b5"))
 		SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE:
 			self_modulate = Color.WHITE
-			_set_state_colors(Color(1.0, 0.72, 0.2), Color(1.0, 0.8, 0.36))
+			_set_state_colors(Color("d6b77c"), Color("e9cfa0"))
 		SkillTreeVisualPresentation.SkillTreeVisualState.LOCKED_BY_BRANCH:
-			self_modulate = Color(0.66, 0.66, 0.68, 1.0)
+			self_modulate = Color(0.83, 0.86, 0.85, 1.0)
 			_set_state_colors(Color(0.56, 0.48, 0.48), Color(0.72, 0.48, 0.48))
 		_:
-			self_modulate = Color(0.76, 0.78, 0.8, 1.0)
+			self_modulate = Color(0.9, 0.93, 0.92, 1.0)
 			_set_state_colors(Color(0.42, 0.47, 0.52), Color(0.64, 0.68, 0.72))
 	_apply_surface_style()
 	_refresh_inspection_frame()
@@ -468,7 +508,7 @@ func _apply_locked_reveal() -> void:
 	var rank := get_rank()
 	var config := _config()
 	_lock_overlay.show()
-	_darkening_layer.color = Color(0.012, 0.01, 0.014, 0.72)
+	_darkening_layer.color = Color(0.05, 0.08, 0.09, 0.62)
 	_lock_icon.texture = config.lock_icon_texture if config != null else null
 	_requirement_label.text = (
 		config.locked_rank_label_format % rank
@@ -483,8 +523,8 @@ func _apply_locked_reveal() -> void:
 	var opacity := config.locked_node_opacity if config != null else 0.42
 	_icon_override.modulate = Color(0.72, 0.75, 0.78, maxf(opacity, 0.32))
 	_primary_glyph.modulate = _icon_override.modulate
-	_name_label.add_theme_color_override("font_color", Color(0.58, 0.54, 0.5))
-	_threshold_label.add_theme_color_override("font_color", Color(0.46, 0.42, 0.39))
+	_name_label.add_theme_color_override("font_color", Color("a6b2b1"))
+	_threshold_label.add_theme_color_override("font_color", Color("859392"))
 	tooltip_text = "Compétence verrouillée — Rang %d requis" % rank
 	_apply_surface_style()
 	_refresh_inspection_frame()
@@ -515,44 +555,57 @@ func _apply_surface_style() -> void:
 	if not is_node_ready():
 		return
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.042, 0.035, 0.04, 0.99)
-	style.border_color = Color(0.42, 0.3, 0.2, 0.94)
+	style.bg_color = Color("18272a")
+	style.border_color = Color("526665")
 	style.set_border_width_all(1)
 	style.corner_radius_top_left = 4
 	style.corner_radius_top_right = 4
 	style.corner_radius_bottom_left = 4
 	style.corner_radius_bottom_right = 4
 	if reveal_mode == RevealMode.RANK_GATE:
-		style.bg_color = Color(0.022, 0.02, 0.025, 0.99)
-		style.border_color = Color(0.26, 0.21, 0.18, 0.9)
+		style.bg_color = Color("111d20")
+		style.border_color = Color("334347")
 		style.set_border_width_all(1)
 	elif reveal_mode == RevealMode.NEXT_RANK:
-		style.bg_color = Color(0.03, 0.027, 0.033, 0.99)
-		style.border_color = Color(0.34, 0.28, 0.23, 0.95)
+		style.bg_color = Color("1d2b30")
+		style.border_color = Color("485c62")
 	elif int(visual_presentation.get("state", -1)) == SkillTreeVisualPresentation.SkillTreeVisualState.SELECTED:
-		style.bg_color = Color(0.13, 0.09, 0.05, 0.99)
-		style.border_color = Color(0.86, 0.63, 0.28, 0.98)
+		style.bg_color = Color("2a4139")
+		style.border_color = Color("8dae93")
 		style.set_border_width_all(2)
 	elif int(visual_presentation.get("state", -1)) == SkillTreeVisualPresentation.SkillTreeVisualState.AVAILABLE:
-		style.bg_color = Color(0.16, 0.1, 0.04, 0.99)
-		style.border_color = Color(1.0, 0.72, 0.2, 0.98)
+		style.bg_color = Color("354039")
+		style.border_color = Color("d6b77c")
 		style.set_border_width_all(2)
 	_state_backdrop.add_theme_stylebox_override("panel", style)
 	var halo := StyleBoxFlat.new()
 	halo.bg_color = Color(0, 0, 0, 0)
-	halo.border_color = Color(0.82, 0.58, 0.25, 0.82)
+	halo.border_color = Color(0.66, 0.58, 0.42, 0.48)
 	halo.set_border_width_all(1)
 	halo.corner_radius_top_left = 10
 	halo.corner_radius_top_right = 10
 	halo.corner_radius_bottom_left = 10
 	halo.corner_radius_bottom_right = 10
 	_capstone_halo.add_theme_stylebox_override("panel", halo)
+	var focus := StyleBoxFlat.new()
+	focus.bg_color = Color(0, 0, 0, 0)
+	focus.border_color = Color("ead09a")
+	focus.set_border_width_all(2)
+	focus.set_corner_radius_all(5)
+	_focus_overlay.add_theme_stylebox_override("panel", focus)
+	var badge := StyleBoxFlat.new()
+	badge.bg_color = Color("18272a")
+	badge.border_color = Color("7c8b79")
+	badge.set_border_width_all(1)
+	badge.set_corner_radius_all(3)
+	_rank_badge_fallback.add_theme_stylebox_override("panel", badge)
+	_rank_label.add_theme_color_override("font_color", Color("f0ebdc"))
 
 
 func _set_state_colors(border: Color, text_color: Color) -> void:
 	_state_text.add_theme_color_override("font_color", text_color)
-	_name_label.add_theme_color_override("font_color", Color(0.94, 0.87, 0.73))
-	_threshold_label.add_theme_color_override("font_color", Color(0.6, 0.53, 0.46))
+	_name_label.add_theme_color_override("font_color", Color("f0ebdc"))
+	_threshold_label.add_theme_color_override("font_color", Color("97aaa5"))
 
 
 func _refresh_inspection_frame() -> void:
@@ -676,6 +729,7 @@ func _config() -> SkillTreeRefinedConfig:
 
 func _catalog() -> SkillTreeIconCatalog:
 	return skin.icon_catalog if skin != null else null
+
 
 
 func _request_inspection() -> void:

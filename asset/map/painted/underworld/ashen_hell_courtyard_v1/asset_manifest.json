@@ -1,0 +1,157 @@
+{
+  "asset_id": "ashen_hell_courtyard_v1",
+  "revision": 1,
+  "created_at": "2026-09-05",
+  "title": "La Porte des Cendres",
+  "method": "built_in_image_gen_and_shared_registered_terrain_runtime",
+  "native_canvas_size": [
+    1920,
+    1200
+  ],
+  "template": "data/arenas/greek_drawn_courtyard_v1",
+  "production_scene": "battle/painted/registered_terrain/RegisteredTerrainBattle.tscn",
+  "terrain_plan": "data/arenas/ashen_hell_courtyard_v1/terrain_plan.json",
+  "geometry_manifest": "data/arenas/ashen_hell_courtyard_v1/geometry_manifest.json",
+  "geometry_contract": {
+    "floor_cells": 217,
+    "pit_cells": 16,
+    "pit_groups": 5,
+    "blocked_cells": 12,
+    "walkable_cells": 205,
+    "grid_size": [
+      19,
+      18
+    ],
+    "ground_band_width_cells": 0.42,
+    "minimum_shore_clearance_native_px": 20
+  },
+  "artwork": [
+    {
+      "file": "land_composed.png",
+      "prompt": "land_composed_prompt.txt",
+      "method": "image_gen style transfer from validated landscape composition",
+      "source_generated_image": "exec-e1849e24-3a95-4595-a85b-d8b2705ce693.png",
+      "source_size": [
+        1586,
+        992
+      ],
+      "normalization": "Whole painting mechanically resampled bicubically to1920x1200; no gameplay/terrain geometry derived from raster pixels.",
+      "runtime_used": true,
+      "sha256": "da1931c3154661a3c7a92f9c9ef4be33462420e76640387a11aa2e9ab3a42d78"
+    },
+    {
+      "file": "environment_clusters_chroma.png",
+      "prompt": "environment_clusters_prompt.txt",
+      "final_edit_prompt": "environment_clusters_chroma_prompt.txt",
+      "source_generated_image": "exec-4081df21-5403-4b20-9f96-d0385c845b1f.png",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "method": "Generated scorched variant followed by image_gen solid-magenta background replacement. Real RGB atlas; shared renderer chroma key, no claim of native alpha.",
+      "chroma_key": {
+        "color": "#ff00ff",
+        "threshold": 0.18,
+        "softness": 0.16,
+        "magenta_despill": 1.0
+      },
+      "runtime_used": true,
+      "sha256": "b33ccc74f235cc8aea3150f8ec7224e330e44252e989952096ce034c9485d185"
+    },
+    {
+      "file": "lava_material.png",
+      "prompt": "lava_material_prompt.txt",
+      "source_generated_image": "exec-0abbda8c-c7e0-474f-a077-9db3c775be8d.png",
+      "method": "Original generated hand-painted lava surface; local shader supplies subtle motion.",
+      "runtime_used": true,
+      "sha256": "c00a7b8b83a3fb63093ec101e6cf3ce9041c218bee71dc563459e3b7b07674a3"
+    },
+    {
+      "file": "environment_clusters.png",
+      "prompt": "environment_clusters_prompt.txt",
+      "method": "Earlier rejected atlas with a baked checkerboard; retained source only.",
+      "runtime_used": false,
+      "sha256": "c99c6f56a45e76f3cf61b317b1cd573449aae9e6f0d1fc20a6a54e276b27f017"
+    }
+  ],
+  "foreground_fit": {
+    "tree": {
+      "region_px": [
+        16,
+        523,
+        702,
+        485
+      ],
+      "nonkey_bounds": [
+        37,
+        529,
+        649,
+        469
+      ],
+      "uniform_scale": 0.57781201849,
+      "pivot": [
+        0.50572459613,
+        0.89118160203
+      ],
+      "anchor": [
+        378,
+        973.5
+      ]
+    },
+    "rock": {
+      "region_px": [
+        718,
+        537,
+        810,
+        475
+      ],
+      "nonkey_bounds": [
+        748,
+        544,
+        768,
+        450
+      ],
+      "uniform_scale": 0.859375,
+      "pivot": [
+        0.58114478126,
+        0.83929824597
+      ],
+      "anchor": [
+        1728.75,
+        1177.5
+      ]
+    }
+  },
+  "campaign": "data/rooms/odyssey/room_02.tres",
+  "runtime_proof_directory": "artifacts/catabase_registered_maps_2026-09-05",
+  "notes": "Lava is decorative outside the authored land; no new tactical hazard or extra walkable cell. Historical Dofus geometry measurements belong to the shared template, not to a proprietary data extraction.",
+  "reusable_pipeline": "docs/maps/registered_terrain_pipeline.md",
+  "production_promotion_validation": {
+    "checked_at_utc": "2026-09-05T16:24:54",
+    "status": "complete",
+    "native_geometry_checks": 35,
+    "native_geometry_ok": true,
+    "gut_tests_passed": 21,
+    "gut_assertions": 3845,
+    "gut_log": "artifacts/catabase_registered_maps_2026-09-05/gut_current_with_spectre.log",
+    "gut_scope": "Current Catabase including room-II spectre integration",
+    "gpu_reports": [
+      "artifacts/catabase_registered_maps_2026-09-05/current_1920x1080/registered_terrain_report.json",
+      "artifacts/catabase_registered_maps_2026-09-05/current_1200x896/registered_terrain_report.json"
+    ],
+    "gpu_passes": 2,
+    "rooms_loaded_per_pass": 3,
+    "guarded_transitions_per_pass": 2,
+    "visual_preview_resolutions": [
+      "1920x1080",
+      "1200x896"
+    ],
+    "final_campaign_traversal": "passed_current_production_resources",
+    "gameplay_fix": "Clear combat-effect deduplication at Unit.reset_combat_resources, regression red then green",
+    "limitations": [
+      "QA victory is forced after real movement/guard; no complete combat or balance certification",
+      "Old Odyssey solo suite still expects old kit, 3D backend and economy; 9/20 passed",
+      "Shutdown logs include resource leak diagnostics"
+    ]
+  }
+}

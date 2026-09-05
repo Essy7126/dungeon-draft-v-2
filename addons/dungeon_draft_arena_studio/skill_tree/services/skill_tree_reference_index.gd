@@ -67,6 +67,12 @@ func build(unit: UnitData, candidates: Array[Resource] = []) -> SkillTreeReferen
 		_register_id("spell", spell.get_effective_spell_id(), spell)
 		if spell.skill_tree != null:
 			_register_reference(spell, &"skill_tree", spell.skill_tree, "RESOURCE")
+		if spell.damage_scaling != null:
+			_register_reference(spell, &"damage_scaling", spell.damage_scaling, "RESOURCE")
+			_register_resource(spell.damage_scaling, "spell_scaling")
+		if spell.shield_scaling != null:
+			_register_reference(spell, &"shield_scaling", spell.shield_scaling, "RESOURCE")
+			_register_resource(spell.shield_scaling, "spell_scaling")
 		for modifier in spell.modifiers:
 			if modifier == null:
 				continue
@@ -91,6 +97,7 @@ func build(unit: UnitData, candidates: Array[Resource] = []) -> SkillTreeReferen
 				_register_id_reference(node, &"discipline_id", "discipline", node.discipline_id)
 				_register_id_reference(node, &"target_spell_id", "spell", node.target_spell_id)
 				if node is SkillTreeNodeData:
+					_register_mastery_node(node as SkillTreeNodeData)
 					for prerequisite_id in node.prerequisite_node_ids:
 						_register_id_reference(
 							node, &"prerequisite_node_ids", "node", prerequisite_id
@@ -104,6 +111,12 @@ func build(unit: UnitData, candidates: Array[Resource] = []) -> SkillTreeReferen
 						continue
 					_register_reference(node, &"spell_modifiers", modifier, "RESOURCE")
 					_register_modifier(modifier)
+	# Dans une session AUTHORITY_PROGRESSION_PROFILE, le profil est un second
+	# root canonique à côté de la vue UnitData. Il figure dans les candidats du
+	# document et rend ses courbes/catalogues explicitement atteignables.
+	for candidate in candidates:
+		if candidate is CharacterProgressionProfile:
+			_register_progression_profile(candidate as CharacterProgressionProfile)
 	var reachable := {}
 	for resource in resources:
 		reachable[resource] = true
@@ -187,6 +200,103 @@ func _register_modifier(modifier: SpellModifier) -> void:
 	_register_id_reference(
 		modifier, &"target_spell_id", "spell", modifier.target_spell_id
 	)
+
+
+func _register_progression_profile(profile: CharacterProgressionProfile) -> void:
+	_register_resource(profile, "progression_profile")
+	for spell in profile.spells:
+		if spell != null:
+			_register_reference(profile, &"spells", spell, "RESOURCE")
+	if profile.champion_progression_profile != null:
+		_register_reference(
+			profile, &"champion_progression_profile",
+			profile.champion_progression_profile, "RESOURCE"
+		)
+		_register_resource(profile.champion_progression_profile, "champion_profile")
+	if profile.mastery_catalog != null:
+		_register_reference(profile, &"mastery_catalog", profile.mastery_catalog, "RESOURCE")
+		_register_mastery_catalog(profile.mastery_catalog)
+	if profile.combat_action_classification_catalog != null:
+		var classifications := profile.combat_action_classification_catalog
+		_register_reference(
+			profile, &"combat_action_classification_catalog", classifications,
+			"RESOURCE"
+		)
+		_register_resource(classifications, "attack_classification_catalog")
+		for entry in classifications.entries:
+			if entry == null:
+				continue
+			_register_reference(classifications, &"entries", entry, "RESOURCE")
+			_register_resource(entry, "attack_classification")
+			_register_id_reference(entry, &"ability_id", "spell", entry.ability_id)
+
+
+func _register_mastery_catalog(catalog: MasteryCatalogData) -> void:
+	_register_resource(catalog, "mastery_catalog")
+	for doctrine in catalog.doctrines:
+		if doctrine != null:
+			_register_reference(catalog, &"doctrines", doctrine, "RESOURCE")
+	if catalog.advanced_catalog != null:
+		_register_reference(
+			catalog, &"advanced_catalog", catalog.advanced_catalog, "RESOURCE"
+		)
+		_register_resource(catalog.advanced_catalog, "advanced_mastery_catalog")
+		for node in catalog.advanced_catalog.nodes:
+			if node != null:
+				_register_reference(
+					catalog.advanced_catalog, &"nodes", node, "RESOURCE"
+				)
+				_register_resource(node, "advanced_mastery_node")
+				_register_id("node", node.upgrade_id, node)
+				_register_mastery_node(node)
+	else:
+		for node in catalog.advanced_nodes:
+			if node != null:
+				_register_reference(catalog, &"advanced_nodes", node, "RESOURCE")
+				_register_resource(node, "advanced_mastery_node")
+				_register_id("node", node.upgrade_id, node)
+				_register_mastery_node(node)
+
+
+func _register_mastery_node(node: SkillTreeNodeData) -> void:
+	for prerequisite_id in node.requires_any_node_ids:
+		_register_id_reference(
+			node, &"requires_any_node_ids", "node", prerequisite_id
+		)
+	for spell_id in node.affected_spell_ids:
+		_register_id_reference(node, &"affected_spell_ids", "spell", spell_id)
+	for targeted in node.targeted_spell_modifiers:
+		if targeted == null:
+			continue
+		_register_reference(
+			node, &"targeted_spell_modifiers", targeted, "RESOURCE"
+		)
+		_register_resource(targeted, "targeted_spell_modifier")
+		_register_id_reference(targeted, &"spell_id", "spell", targeted.spell_id)
+		for modifier in targeted.modifiers:
+			if modifier != null:
+				_register_reference(targeted, &"modifiers", modifier, "RESOURCE")
+				_register_modifier(modifier)
+	for effect in node.reactive_effects:
+		if effect == null:
+			continue
+		_register_reference(node, &"reactive_effects", effect, "RESOURCE")
+		_register_resource(effect, "mastery_reactive_effect")
+		_register_id_reference(
+			effect, &"target_spell_id", "spell", effect.target_spell_id
+		)
+		for spell_id in effect.valid_spell_ids:
+			_register_id_reference(effect, &"valid_spell_ids", "spell", spell_id)
+	for requirement in node.doctrine_point_requirements:
+		if requirement == null:
+			continue
+		_register_reference(
+			node, &"doctrine_point_requirements", requirement, "RESOURCE"
+		)
+		_register_resource(requirement, "doctrine_point_requirement")
+		_register_id_reference(
+			requirement, &"tree_id", "discipline", requirement.tree_id
+		)
 
 
 func _register_resource(resource: Resource, logical_type: String) -> void:

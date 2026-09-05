@@ -1,0 +1,2989 @@
+{
+  "schema_version": 1,
+  "asset": "Achilles Cour des Sources sprite v1",
+  "generator": "OpenAI built-in ImageGen",
+  "complete": true,
+  "canvas": [
+    512,
+    384
+  ],
+  "foot_anchor": [
+    256,
+    320
+  ],
+  "body_target_height": 220,
+  "directions": [
+    "N",
+    "E",
+    "S",
+    "W"
+  ],
+  "animation_layout": {
+    "idle": {
+      "indices": [
+        0
+      ],
+      "speed": 1,
+      "loop": true
+    },
+    "walk": {
+      "indices": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        4
+      ],
+      "speed": 14.285714285714285,
+      "loop": true
+    },
+    "attack": {
+      "indices": [
+        0,
+        12,
+        13,
+        14,
+        14,
+        15,
+        0,
+        0
+      ],
+      "speed": 12,
+      "loop": false,
+      "impact_frame": 3
+    }
+  },
+  "animation_overrides": {
+    "S": {
+      "attack": [
+        0,
+        0,
+        13,
+        14,
+        14,
+        15,
+        0,
+        0
+      ]
+    },
+    "W": {
+      "walk": [
+        8,
+        9,
+        10,
+        11,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  "walk_timing": {
+    "frames_per_cell": 4,
+    "normal_cell_seconds": 0.28,
+    "run_speed_multiplier": 1.4,
+    "run_cell_seconds": 0.2,
+    "contact_frame_indices": [
+      3,
+      7
+    ],
+    "note": "Cyclic source offsets put planted contact poses at each four-frame cell boundary; no texture or source pose changes."
+  },
+  "source_grid": [
+    4,
+    4
+  ],
+  "segmentation_policy": "Eight-connected alpha >32 sprites; retain source RGB/alpha unchanged in each core and its two-pixel dilation. Discard only far alpha <=32 debris. Full-component extraction preserves spears crossing nominal grid boundaries. Walk shares ground per source row to preserve airborne poses. Idle and stationary attacks use the actual lowest foot contact per pose to prevent floating. Shared horizontal pivots and fixed source scales preserve authored body motion and knee bends.",
+  "sheets": [
+    {
+      "direction": "N",
+      "supplemental_attack": null,
+      "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+      "source_sha256": "64725424f768626a15191231a8242c11c66de8a06e411b0f3623fca4429a1735",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1107948,
+        "full": 1052,
+        "partial": 463516,
+        "transparent_fraction": 0.7046
+      },
+      "segmentation": {
+        "threshold": 32,
+        "edge_preservation_radius": 2,
+        "removed_pixels": 122820,
+        "removed_alpha_sum": 187116,
+        "max_removed_alpha": 26,
+        "discarded_core_components": []
+      },
+      "fixed_scale": 0.824,
+      "crest_top": 35,
+      "idle_ground_y": 302,
+      "shared_row_ground_y": [
+        302,
+        610,
+        921,
+        1215
+      ],
+      "source_root_local_x": 158.5,
+      "idle_root_measurements": [
+        172,
+        161,
+        156,
+        143
+      ],
+      "atlas": "assets/characters/Achilles/sprites_cour_des_sources_v1/atlas_N.png",
+      "atlas_sha256": "eef2d6b2c12dc405ac1996c0dc40b99b985264707a5b7c24b0f0e00bf3ce055f",
+      "frames": [
+        {
+          "index": 0,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            105,
+            8,
+            245,
+            303
+          ],
+          "source_preserved_bbox": [
+            103,
+            6,
+            247,
+            305
+          ],
+          "source_root": [
+            158.5,
+            302
+          ],
+          "core_pixels": 19551,
+          "output_core_pixels": 13405,
+          "output_core_bbox": [
+            211,
+            76,
+            328,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            210,
+            76,
+            119,
+            246
+          ],
+          "png_sha256": "71719c8a896da008dd194ef792c68bfb344d8f85c3d9e27884e8295360a0a70b",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 1,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            405,
+            7,
+            547,
+            303
+          ],
+          "source_preserved_bbox": [
+            403,
+            5,
+            549,
+            305
+          ],
+          "source_root": [
+            472,
+            302
+          ],
+          "core_pixels": 19946,
+          "output_core_pixels": 13562,
+          "output_core_bbox": [
+            201,
+            77,
+            318,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            199,
+            75,
+            120,
+            247
+          ],
+          "png_sha256": "43b747c02f08ccc30211c619dfa2479dcef3ce6f3004892128ed544a5d40b4d1",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 2,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            710,
+            11,
+            856,
+            303
+          ],
+          "source_preserved_bbox": [
+            708,
+            9,
+            858,
+            305
+          ],
+          "source_root": [
+            785.5,
+            302
+          ],
+          "core_pixels": 19842,
+          "output_core_pixels": 13606,
+          "output_core_bbox": [
+            194,
+            80,
+            314,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            192,
+            79,
+            124,
+            244
+          ],
+          "png_sha256": "148ab761a3e8254605558853a875ba8ddd2ba91aed0c88597694134f800daf5e",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 3,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1012,
+            8,
+            1156,
+            303
+          ],
+          "source_preserved_bbox": [
+            1010,
+            6,
+            1158,
+            305
+          ],
+          "source_root": [
+            1099,
+            302
+          ],
+          "core_pixels": 19816,
+          "output_core_pixels": 13513,
+          "output_core_bbox": [
+            185,
+            77,
+            303,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            183,
+            76,
+            122,
+            246
+          ],
+          "png_sha256": "1a183e25354b9cd94f17ccf8a0516d5dfbaeb8db23e857d4107244e312df0f68",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 4,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            100,
+            328,
+            276,
+            611
+          ],
+          "source_preserved_bbox": [
+            98,
+            326,
+            278,
+            613
+          ],
+          "source_root": [
+            158.5,
+            610
+          ],
+          "core_pixels": 17934,
+          "output_core_pixels": 12165,
+          "output_core_bbox": [
+            208,
+            88,
+            352,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            206,
+            86,
+            148,
+            236
+          ],
+          "png_sha256": "f5b64a5a6c52f208f9a0f8e91400c1934ce38a0ed3fad97b89b202d166f21867",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 5,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            406,
+            330,
+            579,
+            607
+          ],
+          "source_preserved_bbox": [
+            404,
+            328,
+            581,
+            609
+          ],
+          "source_root": [
+            472,
+            610
+          ],
+          "core_pixels": 17178,
+          "output_core_pixels": 11728,
+          "output_core_bbox": [
+            201,
+            90,
+            344,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            200,
+            88,
+            146,
+            232
+          ],
+          "png_sha256": "ad882eec32eb2d6f186a5bf0b7ce7d49956f1b68a5e44173ea4b3ca9cc8e3f75",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 6,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            711,
+            330,
+            888,
+            611
+          ],
+          "source_preserved_bbox": [
+            709,
+            328,
+            890,
+            613
+          ],
+          "source_root": [
+            785.5,
+            610
+          ],
+          "core_pixels": 18238,
+          "output_core_pixels": 12431,
+          "output_core_bbox": [
+            194,
+            90,
+            340,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            193,
+            88,
+            149,
+            235
+          ],
+          "png_sha256": "de4491c7b534c6bc6978555eaa4d4b160099f76a9d3c99a8656ca048440753e4",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 7,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            999,
+            327,
+            1198,
+            591
+          ],
+          "source_preserved_bbox": [
+            997,
+            325,
+            1200,
+            593
+          ],
+          "source_root": [
+            1099,
+            610
+          ],
+          "core_pixels": 18860,
+          "output_core_pixels": 12848,
+          "output_core_bbox": [
+            174,
+            87,
+            338,
+            305
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            172,
+            85,
+            167,
+            221
+          ],
+          "png_sha256": "178bab27f3a78ce4855be3fe9288ddbb3622972cf53c881fe4b94167ee51a673",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 8,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            76,
+            630,
+            250,
+            921
+          ],
+          "source_preserved_bbox": [
+            74,
+            628,
+            252,
+            923
+          ],
+          "source_root": [
+            158.5,
+            921
+          ],
+          "core_pixels": 18320,
+          "output_core_pixels": 12534,
+          "output_core_bbox": [
+            188,
+            80,
+            331,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            186,
+            79,
+            147,
+            243
+          ],
+          "png_sha256": "d089bd4b218cac63d01a0f0190d755c572dc4d22876caad194ad7206cc88f2c5",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 9,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            400,
+            630,
+            562,
+            921
+          ],
+          "source_preserved_bbox": [
+            398,
+            628,
+            564,
+            923
+          ],
+          "source_root": [
+            472,
+            921
+          ],
+          "core_pixels": 18051,
+          "output_core_pixels": 12330,
+          "output_core_bbox": [
+            197,
+            80,
+            330,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            195,
+            79,
+            137,
+            243
+          ],
+          "png_sha256": "88275191d88c06b7053f47cc74f6f323be1b9198271c8d6c60024cc7f2bf6b8b",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 10,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            707,
+            631,
+            871,
+            922
+          ],
+          "source_preserved_bbox": [
+            705,
+            629,
+            873,
+            924
+          ],
+          "source_root": [
+            785.5,
+            921
+          ],
+          "core_pixels": 18402,
+          "output_core_pixels": 12534,
+          "output_core_bbox": [
+            191,
+            81,
+            327,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            190,
+            79,
+            138,
+            243
+          ],
+          "png_sha256": "4a45fcde4d21519f9310b4556e4493b4c38eac5c6eb4891a0d93583bd7547124",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 11,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            995,
+            627,
+            1191,
+            914
+          ],
+          "source_preserved_bbox": [
+            993,
+            625,
+            1193,
+            916
+          ],
+          "source_root": [
+            1099,
+            921
+          ],
+          "core_pixels": 19192,
+          "output_core_pixels": 13111,
+          "output_core_bbox": [
+            170,
+            77,
+            332,
+            314
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            169,
+            76,
+            165,
+            240
+          ],
+          "png_sha256": "51dcd6449a7a931c6a9b24d2ed735c616efdd04eb3c7f8e608cd337a246648ce",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 12,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            75,
+            963,
+            288,
+            1209
+          ],
+          "source_preserved_bbox": [
+            73,
+            961,
+            290,
+            1211
+          ],
+          "source_root": [
+            158.5,
+            1208
+          ],
+          "core_pixels": 18326,
+          "output_core_pixels": 12500,
+          "output_core_bbox": [
+            188,
+            118,
+            363,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            186,
+            116,
+            179,
+            206
+          ],
+          "png_sha256": "55d7e5e73b17dac8188d558e427f60d5fb2ae08facab28fdc9912b77d932e3c3",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 13,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            370,
+            968,
+            616,
+            1215
+          ],
+          "source_preserved_bbox": [
+            368,
+            966,
+            618,
+            1217
+          ],
+          "source_root": [
+            472,
+            1214
+          ],
+          "core_pixels": 18944,
+          "output_core_pixels": 12921,
+          "output_core_bbox": [
+            172,
+            118,
+            374,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            170,
+            116,
+            206,
+            207
+          ],
+          "png_sha256": "ca82e3069ce7c5d2ff34fcd7a55b26725cad1904dc96194f7cb20b98755efa51",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 14,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            650,
+            975,
+            944,
+            1216
+          ],
+          "source_preserved_bbox": [
+            648,
+            973,
+            946,
+            1218
+          ],
+          "source_root": [
+            785.5,
+            1215
+          ],
+          "core_pixels": 18476,
+          "output_core_pixels": 12617,
+          "output_core_bbox": [
+            145,
+            122,
+            387,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            143,
+            121,
+            246,
+            202
+          ],
+          "png_sha256": "86979f74284dc82b38295e55cc558eac55d5e44aeea1aa1f65cf41a1d239278d",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 15,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_N.png",
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            1002,
+            959,
+            1207,
+            1211
+          ],
+          "source_preserved_bbox": [
+            1000,
+            957,
+            1209,
+            1213
+          ],
+          "source_root": [
+            1099,
+            1210
+          ],
+          "core_pixels": 18869,
+          "output_core_pixels": 12857,
+          "output_core_bbox": [
+            175,
+            114,
+            344,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            174,
+            112,
+            172,
+            211
+          ],
+          "png_sha256": "c6e6b3e15321605e637523f5088384b782214632ccc21150e8861e260c1aa9f5",
+          "crosses_nominal_cell": false
+        }
+      ]
+    },
+    {
+      "direction": "E",
+      "supplemental_attack": {
+        "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_E.png",
+        "source_sha256": "5cc14f7d673ba7d602969bf15cffa6dc3199380c2f51bb1693245d5cb3aa06e8",
+        "source_dimensions": [
+          1254,
+          1254
+        ],
+        "grid": [
+          2,
+          2
+        ],
+        "source_alpha": {
+          "zero": 1115977,
+          "full": 2621,
+          "partial": 453918,
+          "transparent_fraction": 0.7096760859666928
+        },
+        "segmentation": {
+          "threshold": 32,
+          "edge_preservation_radius": 2,
+          "removed_pixels": 24730,
+          "max_removed_alpha": 12,
+          "removed_alpha_sum": 30934,
+          "discarded_core_components": []
+        },
+        "fixed_scale": 0.368705035971223,
+        "crest_top": 4,
+        "shared_row_ground_y": [
+          560,
+          1188
+        ],
+        "source_root_local_x": 251.25,
+        "replaces_source_indices": [
+          12,
+          13,
+          14,
+          15
+        ]
+      },
+      "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+      "source_sha256": "5432f8473493736dbf03b82b116f3b409edca9b90fc614969f6ac3490e1e42dc",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1083322,
+        "full": 1302,
+        "partial": 487892,
+        "transparent_fraction": 0.6889
+      },
+      "segmentation": {
+        "threshold": 32,
+        "edge_preservation_radius": 2,
+        "removed_pixels": 100901,
+        "removed_alpha_sum": 159901,
+        "max_removed_alpha": 20,
+        "discarded_core_components": []
+      },
+      "fixed_scale": 0.8148,
+      "crest_top": 41,
+      "idle_ground_y": 311,
+      "shared_row_ground_y": [
+        311,
+        619,
+        929,
+        1221
+      ],
+      "source_root_local_x": 173.75,
+      "idle_root_measurements": [
+        174,
+        174.5,
+        173.5,
+        171.5
+      ],
+      "atlas": "assets/characters/Achilles/sprites_cour_des_sources_v1/atlas_E.png",
+      "atlas_sha256": "153aa2625d154db13cbd0766b60a51f59715e2ca8b08fb1e503fe568c2a69243",
+      "frames": [
+        {
+          "index": 0,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            95,
+            1,
+            250,
+            311
+          ],
+          "source_preserved_bbox": [
+            93,
+            0,
+            252,
+            313
+          ],
+          "source_root": [
+            173.75,
+            310
+          ],
+          "core_pixels": 23361,
+          "output_core_pixels": 15658,
+          "output_core_bbox": [
+            192,
+            67,
+            319,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            190,
+            67,
+            130,
+            255
+          ],
+          "png_sha256": "505da8f570fb5dac4143a0e9d8eda70cde1820c9c75328a38925b45282555f05",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 1,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            411,
+            1,
+            567,
+            310
+          ],
+          "source_preserved_bbox": [
+            409,
+            0,
+            569,
+            312
+          ],
+          "source_root": [
+            487.25,
+            309
+          ],
+          "core_pixels": 23367,
+          "output_core_pixels": 15565,
+          "output_core_bbox": [
+            193,
+            68,
+            321,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            192,
+            68,
+            130,
+            254
+          ],
+          "png_sha256": "472db767974be723279c4475205d5d6300c85a016b478d93eb1b3ba7ce14a99f",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 2,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            720,
+            8,
+            872,
+            310
+          ],
+          "source_preserved_bbox": [
+            718,
+            6,
+            874,
+            312
+          ],
+          "source_root": [
+            800.75,
+            309
+          ],
+          "core_pixels": 21903,
+          "output_core_pixels": 14558,
+          "output_core_bbox": [
+            191,
+            74,
+            314,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            189,
+            73,
+            127,
+            249
+          ],
+          "png_sha256": "580b07d6495ac0eaef65e80b589cea7299a3a20b4fa9111e13650305a983c74f",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 3,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1034,
+            4,
+            1189,
+            312
+          ],
+          "source_preserved_bbox": [
+            1032,
+            2,
+            1191,
+            314
+          ],
+          "source_root": [
+            1114.25,
+            311
+          ],
+          "core_pixels": 23513,
+          "output_core_pixels": 15774,
+          "output_core_bbox": [
+            190,
+            68,
+            318,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            189,
+            68,
+            130,
+            254
+          ],
+          "png_sha256": "e516017562fdcf805629d425ca0fcb0e01a35611b1128cb99ca9b51bf66a8aae",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 4,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            60,
+            322,
+            258,
+            619
+          ],
+          "source_preserved_bbox": [
+            58,
+            320,
+            260,
+            621
+          ],
+          "source_root": [
+            173.75,
+            619
+          ],
+          "core_pixels": 20437,
+          "output_core_pixels": 13664,
+          "output_core_bbox": [
+            164,
+            77,
+            325,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            162,
+            76,
+            165,
+            245
+          ],
+          "png_sha256": "4ede4410f907c8c9c672549380f13400cdd1988202d14f0d75562fe67e2b9f8a",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 5,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            373,
+            328,
+            575,
+            620
+          ],
+          "source_preserved_bbox": [
+            371,
+            326,
+            577,
+            622
+          ],
+          "source_root": [
+            487.25,
+            619
+          ],
+          "core_pixels": 19357,
+          "output_core_pixels": 12904,
+          "output_core_bbox": [
+            162,
+            83,
+            328,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            161,
+            81,
+            168,
+            241
+          ],
+          "png_sha256": "dd05292613d4e194368e89e890416ebcea9831931c2d3fad9f4ed52675a423d3",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 6,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            688,
+            323,
+            878,
+            619
+          ],
+          "source_preserved_bbox": [
+            686,
+            321,
+            880,
+            621
+          ],
+          "source_root": [
+            800.75,
+            619
+          ],
+          "core_pixels": 20652,
+          "output_core_pixels": 13733,
+          "output_core_bbox": [
+            165,
+            78,
+            320,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            163,
+            77,
+            158,
+            244
+          ],
+          "png_sha256": "b236af62eedbecfe69e731dd72f58542f4c22dc4524fd76525ab0592ae38f823",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 7,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1001,
+            327,
+            1201,
+            577
+          ],
+          "source_preserved_bbox": [
+            999,
+            325,
+            1203,
+            579
+          ],
+          "source_root": [
+            1114.25,
+            619
+          ],
+          "core_pixels": 20394,
+          "output_core_pixels": 13582,
+          "output_core_bbox": [
+            163,
+            82,
+            327,
+            285
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            162,
+            80,
+            166,
+            207
+          ],
+          "png_sha256": "eac5e3683585b478778a645205fd3cc4aef432b38822762922822d2d399d3460",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 8,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            65,
+            634,
+            249,
+            930
+          ],
+          "source_preserved_bbox": [
+            63,
+            632,
+            251,
+            932
+          ],
+          "source_root": [
+            173.75,
+            929
+          ],
+          "core_pixels": 20839,
+          "output_core_pixels": 13848,
+          "output_core_bbox": [
+            167,
+            80,
+            318,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            166,
+            78,
+            153,
+            244
+          ],
+          "png_sha256": "b6ed2023c049fc38799be7dd1b36331cc303a4dd660cbc297a4550c5a0ac9858",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 9,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            387,
+            635,
+            576,
+            912
+          ],
+          "source_preserved_bbox": [
+            385,
+            633,
+            578,
+            914
+          ],
+          "source_root": [
+            487.25,
+            929
+          ],
+          "core_pixels": 20228,
+          "output_core_pixels": 13472,
+          "output_core_bbox": [
+            175,
+            80,
+            328,
+            306
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            173,
+            79,
+            157,
+            229
+          ],
+          "png_sha256": "cd4d2547fbc1dcdb9a411ae844941949d0f55c9ad093338a7cdd130084f274f1",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 10,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            691,
+            635,
+            879,
+            930
+          ],
+          "source_preserved_bbox": [
+            689,
+            633,
+            881,
+            932
+          ],
+          "source_root": [
+            800.75,
+            929
+          ],
+          "core_pixels": 19592,
+          "output_core_pixels": 13091,
+          "output_core_bbox": [
+            166,
+            80,
+            319,
+            322
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            165,
+            79,
+            156,
+            244
+          ],
+          "png_sha256": "8ce396faf994766bbd1c4938f2fd883624e9ef26f0eacec506b7c6ca30e655d4",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 11,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_E.png",
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1004,
+            631,
+            1199,
+            891
+          ],
+          "source_preserved_bbox": [
+            1002,
+            629,
+            1201,
+            893
+          ],
+          "source_root": [
+            1114.25,
+            929
+          ],
+          "core_pixels": 21248,
+          "output_core_pixels": 14143,
+          "output_core_bbox": [
+            167,
+            78,
+            325,
+            289
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            165,
+            76,
+            162,
+            215
+          ],
+          "png_sha256": "817af12aaf00f3ff0cd49b917bc01c575cbcd362e8ffc4d4656daa358390a0cd",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 12,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_E.png",
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            30,
+            4,
+            539,
+            560
+          ],
+          "source_preserved_bbox": [
+            28,
+            2,
+            541,
+            562
+          ],
+          "source_root": [
+            251.25,
+            559
+          ],
+          "core_pixels": 106586,
+          "output_core_pixels": 14712,
+          "output_core_bbox": [
+            174,
+            115,
+            362,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            174,
+            115,
+            189,
+            206
+          ],
+          "png_sha256": "4346b3d32da3e843b8db8c2666944fe007fba34d82a73aa182f7a770f03ada66",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 13,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_E.png",
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            670,
+            33,
+            1249,
+            561
+          ],
+          "source_preserved_bbox": [
+            668,
+            31,
+            1251,
+            563
+          ],
+          "source_root": [
+            878.25,
+            560
+          ],
+          "core_pixels": 99545,
+          "output_core_pixels": 13760,
+          "output_core_bbox": [
+            179,
+            125,
+            392,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            178,
+            125,
+            215,
+            196
+          ],
+          "png_sha256": "e35017fc68918628e2ebf12917e70aa81242d76a008173dcffeeca32c3691568",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 14,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_E.png",
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            15,
+            651,
+            833,
+            1162
+          ],
+          "source_preserved_bbox": [
+            13,
+            649,
+            835,
+            1164
+          ],
+          "source_root": [
+            251.25,
+            1161
+          ],
+          "core_pixels": 97011,
+          "output_core_pixels": 13435,
+          "output_core_bbox": [
+            168,
+            132,
+            470,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            168,
+            131,
+            303,
+            190
+          ],
+          "png_sha256": "d585e06aebeaf33c899773f7fa644ab4737303caff95da2fa780395a9b92d62a",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 15,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_E.png",
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            681,
+            631,
+            1230,
+            1189
+          ],
+          "source_preserved_bbox": [
+            679,
+            629,
+            1232,
+            1191
+          ],
+          "source_root": [
+            878.25,
+            1188
+          ],
+          "core_pixels": 104932,
+          "output_core_pixels": 14528,
+          "output_core_bbox": [
+            184,
+            114,
+            386,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            183,
+            114,
+            204,
+            207
+          ],
+          "png_sha256": "4fbf3bc89a37d1738d52e23b69ce9e10cd9a0494fd9bf58f23bbefd2e91a42b1",
+          "crosses_nominal_cell": false
+        }
+      ]
+    },
+    {
+      "direction": "S",
+      "supplemental_attack": null,
+      "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+      "source_sha256": "ed5f1f257bc889b4cd0a808caef991398968ea40d9aafcad1e8e6e37fdc225eb",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1079304,
+        "full": 1630,
+        "partial": 491582,
+        "transparent_fraction": 0.6864
+      },
+      "segmentation": {
+        "threshold": 32,
+        "edge_preservation_radius": 2,
+        "removed_pixels": 122622,
+        "removed_alpha_sum": 180706,
+        "max_removed_alpha": 19,
+        "discarded_core_components": []
+      },
+      "fixed_scale": 0.8302,
+      "crest_top": 52,
+      "idle_ground_y": 317,
+      "shared_row_ground_y": [
+        317,
+        605,
+        921,
+        1203
+      ],
+      "source_root_local_x": 165.5,
+      "idle_root_measurements": [
+        184.5,
+        166.5,
+        164.5,
+        160
+      ],
+      "atlas": "assets/characters/Achilles/sprites_cour_des_sources_v1/atlas_S.png",
+      "atlas_sha256": "1a1d307b4a2103f899167e3e0d341a050896de3702f903ba689684f572524f46",
+      "frames": [
+        {
+          "index": 0,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            102,
+            9,
+            259,
+            318
+          ],
+          "source_preserved_bbox": [
+            100,
+            7,
+            261,
+            320
+          ],
+          "source_root": [
+            165.5,
+            317
+          ],
+          "core_pixels": 22262,
+          "output_core_pixels": 15467,
+          "output_core_bbox": [
+            203,
+            64,
+            335,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            202,
+            63,
+            134,
+            260
+          ],
+          "png_sha256": "8aae6936ea14633d5dacd7da48ef4e97e99fe24bce294bf3b6cec2bbf392a352",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 1,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            393,
+            8,
+            559,
+            318
+          ],
+          "source_preserved_bbox": [
+            391,
+            6,
+            561,
+            320
+          ],
+          "source_root": [
+            479,
+            317
+          ],
+          "core_pixels": 23572,
+          "output_core_pixels": 16345,
+          "output_core_bbox": [
+            185,
+            64,
+            322,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            183,
+            62,
+            141,
+            261
+          ],
+          "png_sha256": "22d01fa159c0dc645c311ed520ad81f594f78a645027c665a2370b81ccd9ad12",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 2,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            703,
+            35,
+            871,
+            318
+          ],
+          "source_preserved_bbox": [
+            701,
+            33,
+            873,
+            320
+          ],
+          "source_root": [
+            792.5,
+            317
+          ],
+          "core_pixels": 22458,
+          "output_core_pixels": 15558,
+          "output_core_bbox": [
+            182,
+            85,
+            321,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            180,
+            84,
+            143,
+            238
+          ],
+          "png_sha256": "3f32d77c161e53065b3dcbc5b8579b0b5e7e229c2b75b6a402b5390d5d5a8562",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 3,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1016,
+            8,
+            1179,
+            318
+          ],
+          "source_preserved_bbox": [
+            1014,
+            6,
+            1181,
+            320
+          ],
+          "source_root": [
+            1106,
+            317
+          ],
+          "core_pixels": 23421,
+          "output_core_pixels": 16294,
+          "output_core_bbox": [
+            182,
+            64,
+            318,
+            322
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            180,
+            62,
+            139,
+            261
+          ],
+          "png_sha256": "4383d842bee35ba34852a182301b5b58f00163a4deff7decb848eadc0c0fc6ad",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 4,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            61,
+            324,
+            266,
+            606
+          ],
+          "source_preserved_bbox": [
+            59,
+            322,
+            268,
+            608
+          ],
+          "source_root": [
+            165.5,
+            605
+          ],
+          "core_pixels": 20014,
+          "output_core_pixels": 13895,
+          "output_core_bbox": [
+            169,
+            86,
+            340,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            168,
+            85,
+            174,
+            237
+          ],
+          "png_sha256": "39121f90964ddff00fbe710dda9147e5819c89f2fda57383353a1e0be7fc8f13",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 5,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            367,
+            327,
+            564,
+            604
+          ],
+          "source_preserved_bbox": [
+            365,
+            325,
+            566,
+            606
+          ],
+          "source_root": [
+            479,
+            605
+          ],
+          "core_pixels": 19040,
+          "output_core_pixels": 13180,
+          "output_core_bbox": [
+            163,
+            90,
+            327,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            161,
+            88,
+            167,
+            233
+          ],
+          "png_sha256": "1c93ffb87e301e4ca3903eb3828c544305bff37db01cbda13d7c7984295c4173",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 6,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            678,
+            324,
+            883,
+            606
+          ],
+          "source_preserved_bbox": [
+            676,
+            322,
+            885,
+            608
+          ],
+          "source_root": [
+            792.5,
+            605
+          ],
+          "core_pixels": 20181,
+          "output_core_pixels": 14015,
+          "output_core_bbox": [
+            161,
+            86,
+            331,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            159,
+            85,
+            174,
+            237
+          ],
+          "png_sha256": "2699bab5b29fc13fe8b905a5e9c7a4a9172c9eb0b66b136d51136877cdc9e002",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 7,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            994,
+            310,
+            1199,
+            592
+          ],
+          "source_preserved_bbox": [
+            992,
+            308,
+            1201,
+            594
+          ],
+          "source_root": [
+            1106,
+            605
+          ],
+          "core_pixels": 18885,
+          "output_core_pixels": 13121,
+          "output_core_bbox": [
+            163,
+            74,
+            333,
+            309
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            161,
+            73,
+            174,
+            237
+          ],
+          "png_sha256": "a9efdd80552d015a12517f9d39fef92f611587b92daebc0553fa40b16ee4c689",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 8,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            61,
+            633,
+            259,
+            922
+          ],
+          "source_preserved_bbox": [
+            59,
+            631,
+            261,
+            924
+          ],
+          "source_root": [
+            165.5,
+            921
+          ],
+          "core_pixels": 19536,
+          "output_core_pixels": 13555,
+          "output_core_bbox": [
+            170,
+            80,
+            335,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            168,
+            79,
+            168,
+            243
+          ],
+          "png_sha256": "df731fa8dd0deba30169045492f6e3a408a85bc6932b3aed0f4125a7604d89c7",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 9,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            376,
+            633,
+            568,
+            916
+          ],
+          "source_preserved_bbox": [
+            374,
+            631,
+            570,
+            918
+          ],
+          "source_root": [
+            479,
+            921
+          ],
+          "core_pixels": 19190,
+          "output_core_pixels": 13308,
+          "output_core_bbox": [
+            171,
+            80,
+            330,
+            316
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            169,
+            79,
+            163,
+            238
+          ],
+          "png_sha256": "a74cf60c7431d29f7e7243570ad1b88bffbd1cb0c363f6eaee22adf5d6a1b3a8",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 10,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            690,
+            633,
+            884,
+            909
+          ],
+          "source_preserved_bbox": [
+            688,
+            631,
+            886,
+            911
+          ],
+          "source_root": [
+            792.5,
+            921
+          ],
+          "core_pixels": 19634,
+          "output_core_pixels": 13516,
+          "output_core_bbox": [
+            171,
+            80,
+            331,
+            309
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            169,
+            79,
+            164,
+            232
+          ],
+          "png_sha256": "6d6afdb5427c71fc18f3d00f982acddb688fe61c51a446bcdad60f56f9de32ea",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 11,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1009,
+            632,
+            1197,
+            902
+          ],
+          "source_preserved_bbox": [
+            1007,
+            630,
+            1199,
+            904
+          ],
+          "source_root": [
+            1106,
+            921
+          ],
+          "core_pixels": 18956,
+          "output_core_pixels": 13030,
+          "output_core_bbox": [
+            176,
+            80,
+            332,
+            303
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            174,
+            78,
+            159,
+            227
+          ],
+          "png_sha256": "b4fe350ea737d967cbe9327839673abccf0dda8899961f436be5cb553a5c7d2a",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 12,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            0,
+            3
+          ],
+          "source_core_bbox": [
+            32,
+            948,
+            283,
+            1202
+          ],
+          "source_preserved_bbox": [
+            30,
+            946,
+            285,
+            1204
+          ],
+          "source_root": [
+            165.5,
+            1201
+          ],
+          "core_pixels": 21705,
+          "output_core_pixels": 15055,
+          "output_core_bbox": [
+            146,
+            109,
+            355,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            144,
+            108,
+            212,
+            214
+          ],
+          "png_sha256": "387c48d091de4c0a075ed270ecb59242fe34d388337d8382e5f967c22f5a71c6",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 13,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            1,
+            3
+          ],
+          "source_core_bbox": [
+            319,
+            962,
+            613,
+            1202
+          ],
+          "source_preserved_bbox": [
+            317,
+            960,
+            615,
+            1204
+          ],
+          "source_root": [
+            479,
+            1201
+          ],
+          "core_pixels": 19133,
+          "output_core_pixels": 13302,
+          "output_core_bbox": [
+            122,
+            122,
+            367,
+            322
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            122,
+            120,
+            247,
+            203
+          ],
+          "png_sha256": "16602637867a638ea9fc0df85fecde308029e26e1ae330f445310d2effad0bf2",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 14,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            2,
+            3
+          ],
+          "source_core_bbox": [
+            624,
+            975,
+            961,
+            1204
+          ],
+          "source_preserved_bbox": [
+            622,
+            973,
+            963,
+            1206
+          ],
+          "source_root": [
+            792.5,
+            1203
+          ],
+          "core_pixels": 19506,
+          "output_core_pixels": 13467,
+          "output_core_bbox": [
+            116,
+            131,
+            395,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            114,
+            129,
+            283,
+            193
+          ],
+          "png_sha256": "e9d58ad971ea0bcf8a6841482933e0c412c5e3d6c7c6c7092ccedd93208c192f",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 15,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_S.png",
+          "source_cell": [
+            3,
+            3
+          ],
+          "source_core_bbox": [
+            985,
+            934,
+            1209,
+            1200
+          ],
+          "source_preserved_bbox": [
+            983,
+            932,
+            1211,
+            1202
+          ],
+          "source_root": [
+            1106,
+            1199
+          ],
+          "core_pixels": 21147,
+          "output_core_pixels": 14609,
+          "output_core_bbox": [
+            156,
+            100,
+            342,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            154,
+            98,
+            189,
+            224
+          ],
+          "png_sha256": "a863a235be445766db454fea0974e4f5aa2d61da7fc1658c709e2efdc230efbf",
+          "crosses_nominal_cell": true
+        }
+      ]
+    },
+    {
+      "direction": "W",
+      "supplemental_attack": {
+        "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_W.png",
+        "source_sha256": "ed9d31a287dbcc3a7c208373932e57ba70b8254474e5f78f1b6ebe2a06ac3995",
+        "source_dimensions": [
+          1254,
+          1254
+        ],
+        "grid": [
+          2,
+          2
+        ],
+        "source_alpha": {
+          "zero": 1185175,
+          "full": 2552,
+          "partial": 384789,
+          "transparent_fraction": 0.7536807256651125
+        },
+        "segmentation": {
+          "threshold": 32,
+          "edge_preservation_radius": 2,
+          "removed_pixels": 25759,
+          "max_removed_alpha": 18,
+          "removed_alpha_sum": 34265,
+          "discarded_core_components": [
+            {
+              "pixels": 1,
+              "bbox": [
+                467,
+                156,
+                468,
+                157
+              ]
+            }
+          ]
+        },
+        "fixed_scale": 0.4123314065510597,
+        "crest_top": 58,
+        "shared_row_ground_y": [
+          577,
+          1187
+        ],
+        "source_root_local_x": 454,
+        "replaces_source_indices": [
+          12,
+          13,
+          14,
+          15
+        ]
+      },
+      "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+      "source_sha256": "448f58e4b2d44fec7ed308ca57101d224e092f54bf5d399c433b8372ed0c3c34",
+      "source_dimensions": [
+        1254,
+        1254
+      ],
+      "source_alpha": {
+        "zero": 1090159,
+        "full": 1176,
+        "partial": 481181,
+        "transparent_fraction": 0.6933
+      },
+      "segmentation": {
+        "threshold": 32,
+        "edge_preservation_radius": 2,
+        "removed_pixels": 106397,
+        "removed_alpha_sum": 171450,
+        "max_removed_alpha": 22,
+        "discarded_core_components": []
+      },
+      "fixed_scale": 0.8429,
+      "crest_top": 35,
+      "idle_ground_y": 296,
+      "shared_row_ground_y": [
+        296,
+        615,
+        924,
+        1223
+      ],
+      "source_root_local_x": 160,
+      "idle_root_measurements": [
+        176.5,
+        165,
+        155,
+        154
+      ],
+      "atlas": "assets/characters/Achilles/sprites_cour_des_sources_v1/atlas_W.png",
+      "atlas_sha256": "0ceebe35401d2894ce9ef8d0f154feb969d9f08b0c807a76e0bcef22224781aa",
+      "frames": [
+        {
+          "index": 0,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            106,
+            9,
+            250,
+            297
+          ],
+          "source_preserved_bbox": [
+            104,
+            7,
+            252,
+            299
+          ],
+          "source_root": [
+            160,
+            296
+          ],
+          "core_pixels": 21234,
+          "output_core_pixels": 15194,
+          "output_core_bbox": [
+            211,
+            77,
+            332,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            209,
+            76,
+            125,
+            246
+          ],
+          "png_sha256": "370f0b51a7f596f2b2171edf5812f2c0b239d62d6cae77d0b174d90e8cc1767c",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 1,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            409,
+            6,
+            555,
+            297
+          ],
+          "source_preserved_bbox": [
+            407,
+            4,
+            557,
+            299
+          ],
+          "source_root": [
+            473.5,
+            296
+          ],
+          "core_pixels": 21364,
+          "output_core_pixels": 15280,
+          "output_core_bbox": [
+            201,
+            76,
+            324,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            200,
+            74,
+            126,
+            249
+          ],
+          "png_sha256": "ac0593cf35d83c354aea058d628a50fce220c7464e9c406430d16bae26d37ae7",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 2,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            2,
+            0
+          ],
+          "source_core_bbox": [
+            712,
+            22,
+            858,
+            297
+          ],
+          "source_preserved_bbox": [
+            710,
+            20,
+            860,
+            299
+          ],
+          "source_root": [
+            787,
+            296
+          ],
+          "core_pixels": 20675,
+          "output_core_pixels": 14757,
+          "output_core_bbox": [
+            192,
+            88,
+            316,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            191,
+            87,
+            126,
+            235
+          ],
+          "png_sha256": "7378628e88c62f6659bddbff94c074c33e390325e8ac756dfdf505c2aa794e8f",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 3,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            3,
+            0
+          ],
+          "source_core_bbox": [
+            1027,
+            6,
+            1175,
+            297
+          ],
+          "source_preserved_bbox": [
+            1025,
+            4,
+            1177,
+            299
+          ],
+          "source_root": [
+            1100.5,
+            296
+          ],
+          "core_pixels": 21494,
+          "output_core_pixels": 15362,
+          "output_core_bbox": [
+            193,
+            75,
+            319,
+            322
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            192,
+            74,
+            128,
+            249
+          ],
+          "png_sha256": "059cdcace2566a8238524349305c2fbae98116388598b30f3f37ddbc0e207c97",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 4,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            92,
+            319,
+            275,
+            596
+          ],
+          "source_preserved_bbox": [
+            90,
+            317,
+            277,
+            598
+          ],
+          "source_root": [
+            160,
+            615
+          ],
+          "core_pixels": 20761,
+          "output_core_pixels": 14857,
+          "output_core_bbox": [
+            199,
+            70,
+            354,
+            305
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            197,
+            69,
+            158,
+            237
+          ],
+          "png_sha256": "b059f99690b714669570d3ad83c97c1f723787cb1089de2592db57659e126f17",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 5,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            394,
+            318,
+            582,
+            605
+          ],
+          "source_preserved_bbox": [
+            392,
+            316,
+            584,
+            607
+          ],
+          "source_root": [
+            473.5,
+            615
+          ],
+          "core_pixels": 19280,
+          "output_core_pixels": 13772,
+          "output_core_bbox": [
+            189,
+            69,
+            348,
+            311
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            187,
+            68,
+            162,
+            245
+          ],
+          "png_sha256": "dfc93fb3b96696bf00b6396a80365b9dd42e21075ede5495bef3208da1a6ef2d",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 6,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            2,
+            1
+          ],
+          "source_core_bbox": [
+            696,
+            324,
+            904,
+            608
+          ],
+          "source_preserved_bbox": [
+            694,
+            322,
+            906,
+            610
+          ],
+          "source_root": [
+            787,
+            615
+          ],
+          "core_pixels": 19390,
+          "output_core_pixels": 13867,
+          "output_core_bbox": [
+            180,
+            75,
+            356,
+            315
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            178,
+            73,
+            179,
+            243
+          ],
+          "png_sha256": "8ed3aba83d6002f974b4fb2e29e83736b43976e068ded385baf3d070dd5fa1ce",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 7,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            3,
+            1
+          ],
+          "source_core_bbox": [
+            1007,
+            314,
+            1207,
+            616
+          ],
+          "source_preserved_bbox": [
+            1005,
+            312,
+            1209,
+            618
+          ],
+          "source_root": [
+            1100.5,
+            615
+          ],
+          "core_pixels": 20549,
+          "output_core_pixels": 14617,
+          "output_core_bbox": [
+            177,
+            67,
+            347,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            176,
+            65,
+            172,
+            258
+          ],
+          "png_sha256": "917708d70860e8b2040446d10610742bdf2c78a658261a6d38f0dffe8dad8f6b",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 8,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            0,
+            2
+          ],
+          "source_core_bbox": [
+            91,
+            630,
+            278,
+            925
+          ],
+          "source_preserved_bbox": [
+            89,
+            628,
+            280,
+            927
+          ],
+          "source_root": [
+            160,
+            924
+          ],
+          "core_pixels": 20847,
+          "output_core_pixels": 14843,
+          "output_core_bbox": [
+            198,
+            72,
+            355,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            196,
+            70,
+            161,
+            252
+          ],
+          "png_sha256": "92d89f78dc25d14c13ae35def67dd2680c5059f03dc8fb1c4a0006d3409afa4c",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 9,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            1,
+            2
+          ],
+          "source_core_bbox": [
+            398,
+            631,
+            591,
+            923
+          ],
+          "source_preserved_bbox": [
+            396,
+            629,
+            593,
+            925
+          ],
+          "source_root": [
+            473.5,
+            924
+          ],
+          "core_pixels": 19679,
+          "output_core_pixels": 14083,
+          "output_core_bbox": [
+            192,
+            72,
+            355,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            191,
+            71,
+            166,
+            250
+          ],
+          "png_sha256": "c8326c971c49abd874bce1d483718c2a1113873ae4f3e8f88b810e2aa50a2222",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 10,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            2,
+            2
+          ],
+          "source_core_bbox": [
+            704,
+            630,
+            914,
+            924
+          ],
+          "source_preserved_bbox": [
+            702,
+            628,
+            916,
+            926
+          ],
+          "source_root": [
+            787,
+            924
+          ],
+          "core_pixels": 19780,
+          "output_core_pixels": 14068,
+          "output_core_bbox": [
+            185,
+            72,
+            363,
+            319
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            184,
+            70,
+            180,
+            251
+          ],
+          "png_sha256": "ca9b3fd3fbe9ea65060c3c350ed6b37514454e0680628243d7bc8e9bc3ac99c1",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 11,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/source_W.png",
+          "source_cell": [
+            3,
+            2
+          ],
+          "source_core_bbox": [
+            1020,
+            626,
+            1215,
+            921
+          ],
+          "source_preserved_bbox": [
+            1018,
+            624,
+            1217,
+            923
+          ],
+          "source_root": [
+            1100.5,
+            924
+          ],
+          "core_pixels": 19061,
+          "output_core_pixels": 13611,
+          "output_core_bbox": [
+            188,
+            68,
+            353,
+            318
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            186,
+            67,
+            168,
+            252
+          ],
+          "png_sha256": "7be579e37f5bffbda345f64e53f78c8e7883722ff5489f563bb769609ffe0897",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 12,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_W.png",
+          "source_cell": [
+            0,
+            0
+          ],
+          "source_core_bbox": [
+            44,
+            55,
+            640,
+            562
+          ],
+          "source_preserved_bbox": [
+            42,
+            53,
+            642,
+            564
+          ],
+          "source_root": [
+            454,
+            561
+          ],
+          "core_pixels": 83983,
+          "output_core_pixels": 14539,
+          "output_core_bbox": [
+            86,
+            112,
+            332,
+            321
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            86,
+            111,
+            247,
+            211
+          ],
+          "png_sha256": "7a477f32c2507a00551bd696ece6a62cc786d7116c9c67c72c2d1b7a67d6ede7",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 13,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_W.png",
+          "source_cell": [
+            1,
+            0
+          ],
+          "source_core_bbox": [
+            632,
+            61,
+            1220,
+            578
+          ],
+          "source_preserved_bbox": [
+            630,
+            59,
+            1222,
+            580
+          ],
+          "source_root": [
+            1081,
+            577
+          ],
+          "core_pixels": 86398,
+          "output_core_pixels": 14935,
+          "output_core_bbox": [
+            71,
+            107,
+            314,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            70,
+            106,
+            244,
+            215
+          ],
+          "png_sha256": "5e6926fbe466cdd9f7e248978133860575db7347574fc6e3455482ffdc9d426d",
+          "crosses_nominal_cell": false
+        },
+        {
+          "index": 14,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_W.png",
+          "source_cell": [
+            0,
+            1
+          ],
+          "source_core_bbox": [
+            28,
+            646,
+            806,
+            1188
+          ],
+          "source_preserved_bbox": [
+            26,
+            644,
+            808,
+            1190
+          ],
+          "source_root": [
+            454,
+            1187
+          ],
+          "core_pixels": 84662,
+          "output_core_pixels": 14577,
+          "output_core_bbox": [
+            81,
+            96,
+            402,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            80,
+            96,
+            322,
+            225
+          ],
+          "png_sha256": "86e00728d73c4bb399ccc5e4b2787b3400b71c8e37a22df66664dd443ce6d606",
+          "crosses_nominal_cell": true
+        },
+        {
+          "index": 15,
+          "source": "art/source/characters/achilles/sprites_cour_des_sources_v1/attack_W.png",
+          "source_cell": [
+            1,
+            1
+          ],
+          "source_core_bbox": [
+            683,
+            683,
+            1222,
+            1176
+          ],
+          "source_preserved_bbox": [
+            681,
+            681,
+            1224,
+            1178
+          ],
+          "source_root": [
+            1081,
+            1175
+          ],
+          "core_pixels": 83856,
+          "output_core_pixels": 14477,
+          "output_core_bbox": [
+            92,
+            117,
+            314,
+            320
+          ],
+          "border_core_pixels": 0,
+          "placement": [
+            91,
+            116,
+            224,
+            205
+          ],
+          "png_sha256": "245021d85d3ca4f187bc6c001e96dc16b6e293763712cde3e7596241cae380a6",
+          "crosses_nominal_cell": false
+        }
+      ]
+    }
+  ]
+}

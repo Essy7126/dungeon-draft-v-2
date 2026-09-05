@@ -135,15 +135,15 @@ func get_connection_width(state: StringName) -> float:
 			else &"rank_gate" if state == &"rank_gate"
 			else &"locked"
 		)
-		return float(config.connection_widths.get(key, 2.0)) * scale
+		return float(config.connection_widths.get(key, 2.0)) * scale * 0.72
 	match state:
 		&"selected":
-			return 4.5 * scale
+			return 3.0 * scale
 		&"available":
-			return 3.8 * scale
+			return 2.4 * scale
 		&"incompatible":
-			return 2.8 * scale
-	return 2.8 * scale
+			return 1.6 * scale
+	return 1.6 * scale
 
 
 func get_branch_band_count() -> int:
@@ -180,7 +180,7 @@ func get_layout_snapshot() -> Dictionary:
 	var right_edge := 0.0
 	for value in _node_views.values():
 		var view := value as SkillTreeNodeView
-		if view != null and view.get_rank() == 5:
+		if view != null and view.get_rank() == _display_maximum_rank():
 			right_edge = maxf(
 				right_edge,
 				get_visual_node_bounds(view.presentation_id).end.x
@@ -258,6 +258,14 @@ func _draw() -> void:
 			else "branch_repel_accent"
 		)
 		var branch_rect := _branch_rects[index]
+		if _uses_short_tree_layout():
+			var band := StyleBoxFlat.new()
+			band.bg_color = Color("18272a")
+			band.border_color = Color("314448")
+			band.set_border_width_all(1)
+			band.set_corner_radius_all(7)
+			draw_style_box(band, branch_rect)
+			continue
 		draw_rect(
 			branch_rect,
 			_theme_graph_color(
@@ -366,7 +374,7 @@ func _draw_root_branch_trunk() -> void:
 		Vector2(fork_x, second_anchor.y),
 		second_anchor,
 	])
-	var width := 3.2 * float(_layout_spec.get("line_scale", 1.0))
+	var width := 1.7 * float(_layout_spec.get("line_scale", 1.0))
 	var underlay := _theme_graph_color(
 		"connection_underlay",
 		Color(0.012, 0.016, 0.023, 0.9)
@@ -433,9 +441,21 @@ func _reflow_layout() -> void:
 		return
 	_layout_profile = _profile_for_viewport(_viewport_size)
 	_layout_spec = _make_layout_spec(_layout_profile)
+	if _uses_short_tree_layout():
+		_layout_spec.merge({
+			"minimum_width": 420.0,
+			"side_margin": 22.0,
+			"header_height": 44.0 if _uses_dense_short_tree_layout() else 56.0,
+			"bottom_margin": 16.0,
+		}, true)
 	for value in _node_views.values():
 		var view := value as SkillTreeNodeView
 		if view != null:
+			view.set_short_tree_card_width(
+				clampf(_available_size.x * 0.32, 156.0, 206.0)
+				if _uses_short_tree_layout() else 0.0,
+				_uses_dense_short_tree_layout()
+			)
 			view.apply_layout_profile(_layout_profile)
 
 	var max_rank := _display_maximum_rank()
@@ -481,7 +501,9 @@ func _reflow_layout() -> void:
 			int(_rank_thresholds(_discipline).get(rank_number, 0))
 		)
 	var nodes_by_rank := _display_nodes_by_rank
-	if _uses_split_branch_layout():
+	if _uses_short_tree_layout():
+		_layout_short_tree(nodes_by_rank, graph_height)
+	elif _uses_split_branch_layout():
 		_layout_split_branches(nodes_by_rank)
 	else:
 		_layout_generic(nodes_by_rank, graph_height)
@@ -559,7 +581,11 @@ func _compute_rank_centers(max_rank: int) -> void:
 		if view != null and view.get_rank() >= 5:
 			capstone_width = view.size.x
 			break
+	if _uses_short_tree_layout():
+		capstone_width = root_width
 	var side_margin := float(_layout_spec["side_margin"])
+	if _uses_short_tree_layout():
+		side_margin = maxf(side_margin, (size.x - 740.0) * 0.5)
 	var left_center := side_margin + root_width * 0.5
 	var right_center := size.x - side_margin - capstone_width * 0.5
 	if max_rank == 1:
@@ -573,7 +599,10 @@ func _compute_rank_centers(max_rank: int) -> void:
 		else right_center - left_center
 	)
 	_rank_centers[1] = left_center
-	_rank_centers[2] = left_center + regular_gap * 0.84
+	_rank_centers[2] = (
+		right_center if max_rank == 2
+		else left_center + regular_gap * 0.84
+	)
 	for rank_number in range(3, max_rank + 1):
 		_rank_centers[rank_number] = (
 			float(_rank_centers[rank_number - 1]) + regular_gap
@@ -751,8 +780,8 @@ func _layout_split_branches(nodes_by_rank: Dictionary) -> void:
 		_add_branch_header(
 			"SPÉCIALISATION · %s" % (
 				branch_node.display_name.to_upper()
-				if branch_node != null
-				else "BRANCHE %d" % (branch_index + 1)
+				if branch_node != null and _progress.rank >= 2
+				else "CHOIX %d" % (branch_index + 1)
 			),
 			_branch_rects[branch_index],
 			(
@@ -950,11 +979,11 @@ func _generic_graph_height(nodes_by_rank: Dictionary) -> float:
 		if view != null:
 			max_node_height = maxf(max_node_height, view.size.y)
 	return maxf(
-		520.0,
+		_available_size.y if _uses_short_tree_layout() else 520.0,
 		float(_layout_spec["header_height"])
 		+ max_count * max_node_height
 		+ maxf(max_count - 1, 0) * 18.0
-		+ 36.0
+		+ (20.0 if _uses_dense_short_tree_layout() else 36.0)
 	)
 
 
@@ -971,9 +1000,10 @@ func _build_connections() -> void:
 			var target := get_node_view(node.upgrade_id)
 			if target == null:
 				continue
-			for prerequisite_id in (
-				node as SkillTreeNodeData
-			).prerequisite_node_ids:
+			var prerequisite_ids := (node as SkillTreeNodeData).prerequisite_node_ids.duplicate()
+			if _uses_short_tree_layout() and node.rank == 2 and prerequisite_ids.is_empty():
+				prerequisite_ids.append(BASE_ID)
+			for prerequisite_id in prerequisite_ids:
 				var source := get_node_view(prerequisite_id)
 				if source == null:
 					continue
@@ -1285,7 +1315,11 @@ func _neighbor_path(
 
 func _add_rank_header(rank_number: int, threshold: int) -> void:
 	var header := Label.new()
-	header.text = "RANG %d\n%d XP" % [rank_number, threshold]
+	header.text = (
+		("SORT INITIAL\nRang 1" if rank_number == 1 else "ÉVOLUTIONS\nRang %d · %d XP" % [rank_number, threshold])
+		if _uses_short_tree_layout()
+		else "RANG %d\n%d XP" % [rank_number, threshold]
+	)
 	header.position = Vector2(
 		get_rank_center(rank_number) - 82.0,
 		2.0
@@ -1308,7 +1342,7 @@ func _add_rank_header(rank_number: int, threshold: int) -> void:
 		"font_outline_color",
 		Color(0.02, 0.025, 0.03, 0.9)
 	)
-	header.add_theme_constant_override("outline_size", 3)
+	header.add_theme_constant_override("outline_size", 0)
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(header)
 	_rank_headers.append(header)
@@ -1323,12 +1357,13 @@ func _add_branch_header(
 	panel.theme_type_variation = &"SkillTreeBranchTitle"
 	panel.position = band_rect.position + Vector2(16.0, 9.0)
 	panel.size = Vector2(
-		310.0 if _layout_profile == PROFILE_LARGE else 276.0,
+		minf(band_rect.size.x - 32.0, 310.0 if _layout_profile == PROFILE_LARGE else 276.0),
 		float(_layout_spec["branch_title_height"]) - 10.0
 	)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var label := Label.new()
 	label.text = title
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	label.add_theme_font_size_override(
 		"font_size",
 		int(_layout_spec["branch_title_font"])
@@ -1344,6 +1379,29 @@ func _add_branch_header(
 	add_child(panel)
 	move_child(panel, 0)
 	_branch_headers.append(panel)
+
+
+func _uses_short_tree_layout() -> bool:
+	return _discipline != null and _maximum_rank(_discipline) <= 2
+
+
+func _uses_dense_short_tree_layout() -> bool:
+	return (
+		_uses_short_tree_layout()
+		and _layout_profile == PROFILE_COMPACT
+		and _available_size.y < 460.0
+	)
+
+
+func _layout_short_tree(nodes_by_rank: Dictionary, graph_height: float) -> void:
+	_layout_generic(nodes_by_rank, graph_height)
+	var alternatives: Array = nodes_by_rank.get(2, [])
+	for node_value in alternatives:
+		if not node_value is SkillUpgradeData:
+			continue
+		var view := get_node_view((node_value as SkillUpgradeData).upgrade_id)
+		if view != null:
+			_branch_rects.append(Rect2(view.position, view.size).grow(5.0))
 
 
 func _uses_split_branch_layout() -> bool:

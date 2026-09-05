@@ -1,0 +1,36 @@
+{
+  "schema": "dd.character-concept.v1",
+  "character_id": "spectre_greatsword",
+  "status": "CONCEPT_READY_FOR_HUMAN_REVIEW",
+  "runtime_integrated": false,
+  "animations_delivered": false,
+  "generation_route": "built-in image_gen.imagegen",
+  "selected_master": "spectre_master_v4.png",
+  "selected_prompt": "generation_final_prompt_v4.txt",
+  "selected_source": "C:/Users/paolo/.codex/generated_images/01a07142-7204-75f3-8756-a631e644ed0d/exec-e0bf9199-2eab-416b-a0d6-1f336d088c9c.png",
+  "sha256": "37fe48e6237f7d9af23bf6c69c7a6e7fd84ad05d4e83398148e2a31c8c21a598",
+  "width": 1024,
+  "height": 1536,
+  "channels": 4,
+  "has_alpha": true,
+  "transparent_pixels": 1018365,
+  "partial_alpha_pixels": 554499,
+  "validation": {
+    "full_body_and_sword_visible": true,
+    "face_hidden": true,
+    "two_hands_on_one_sword": true,
+    "robe_and_detached_shadow_separated": true,
+    "small_scale_inspection_height_px": 140,
+    "in_game_validation": false
+  },
+  "explorations": [
+    {"file": "spectre_master_v1.png", "prompt": "generation_master_prompt.txt", "note": "First illustrated exploration with genuine alpha; more textured rendering."},
+    {"file": "spectre_master_v2.png", "prompt": "generation_clean_inline_prompt_v2.txt", "note": "Style exploration. RGB with a baked checkerboard: not a transparent runtime sprite."},
+    {"file": "spectre_cutout_attempt_v3.png", "prompt": "generation_cutout_prompt_v3.txt", "note": "Background-extraction attempt still returned RGB/checkerboard. Not selected or used."}
+  ],
+  "technical_notes": [
+    "Path-referenced edit calls failed with the Windows sandbox helper ACL error. The inline inspection previews had no local file path and were used for subsequent edits.",
+    "The selected final master was generated afresh with the clarified clean rendering and transparent-background specification. It defines one design; explorations must not be mixed as animation frames.",
+    "No alpha keying, painted replacement art or procedural sprite reconstruction was performed."
+  ]
+}

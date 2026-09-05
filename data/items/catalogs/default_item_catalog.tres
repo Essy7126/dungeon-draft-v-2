@@ -25,4 +25,5 @@
 [resource]
 script = ExtResource("1_catalog")
 auto_discovery_directories = PackedStringArray("res://data/items/definitions")
+excluded_discovery_directories = PackedStringArray("res://data/items/definitions/odyssey")
 definitions = Array[ExtResource("2_definition")]([ExtResource("3_sword"), ExtResource("4_vest"), ExtResource("5_charm"), ExtResource("6_potion"), ExtResource("7_scroll"), ExtResource("8_ring"), ExtResource("9_bow"), ExtResource("10_brooch"), ExtResource("11_stone"), ExtResource("12_cape"), ExtResource("13_necklace"), ExtResource("14_crown"), ExtResource("15_excalibur"), ExtResource("16_axe"), ExtResource("17_harness"), ExtResource("18_coat"), ExtResource("19_club"), ExtResource("20_prism"), ExtResource("21_seal")])

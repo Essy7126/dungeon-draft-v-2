@@ -9,6 +9,7 @@ extends RoomData
 const CURRENT_SCHEMA_VERSION := 3
 const DEFAULT_BATTLE_SCENE := "res://data/rooms/maps/painted_battle.tscn"
 const MODULAR_BATTLE_SCENE := "res://data/rooms/maps/modular_battle.tscn"
+const REGISTERED_TERRAIN_BATTLE_SCENE := "res://battle/painted/registered_terrain/RegisteredTerrainBattle.tscn"
 const DEFAULT_PRESENTATION := "res://data/maps/painted/room_01_forest_presentation.tres"
 
 enum CampOrientation {
@@ -32,6 +33,8 @@ var visual_mode: int = VisualMode.PAINTED
 @export var theme_id: StringName = &"painted_default"
 @export var modular_visual_profile: ArenaModularVisualProfile = null
 @export_file("*.png", "*.jpg", "*.jpeg", "*.webp") var background_path := ""
+## Explicit native terrain plan used by RegisteredTerrainBattle; empty preserves historical maps.
+@export_file("*.json") var registered_terrain_plan_path := ""
 @export var source_image_size := Vector2i.ZERO
 @export var grid_size := Vector2i(10, 8)
 @export var grid_origin := Vector2.ZERO
@@ -241,6 +244,7 @@ func to_snapshot() -> Dictionary:
 		"modular_visual_profile": modular_visual_profile.to_dict() \
 			if modular_visual_profile != null else {},
 		"background_path": background_path,
+		"registered_terrain_plan_path": registered_terrain_plan_path,
 		"source_image_size": [source_image_size.x, source_image_size.y],
 		"grid_size": [grid_size.x, grid_size.y],
 		"grid_origin": [grid_origin.x, grid_origin.y],
@@ -322,6 +326,7 @@ func restore_snapshot(data: Dictionary) -> bool:
 		if modular_data is Dictionary and not modular_data.is_empty() else null
 	room_name = display_name
 	background_path = str(data.get("background_path", ""))
+	registered_terrain_plan_path = str(data.get("registered_terrain_plan_path", ""))
 	source_image_size = _vector2i(data.get("source_image_size", [0, 0]))
 	grid_size = _vector2i(data.get("grid_size", [10, 8]))
 	grid_origin = _vector2(data.get("grid_origin", [0.0, 0.0]))

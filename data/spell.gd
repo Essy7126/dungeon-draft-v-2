@@ -9,6 +9,7 @@ enum Element { NONE, FIRE, ICE, LIGHTNING, SHADOW, HOLY, EARTH }
 enum VfxPlacement { FROM_CASTER_TO_TARGET, TARGET_CELL }
 enum DelayedResolution { NONE, STRIKE_AND_PUSH, SUMMON, RANGED_STRIKE }
 enum VisualAction { DEFAULT, PRIMARY, HEAVY }
+enum CasterMovement { NONE, TARGET_CELL }
 
 @export var spell_id: StringName = &""
 ## Arbre de competences apporte par ce sort. Cette reference est l'unique
@@ -65,6 +66,10 @@ enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 @export var damage_type: DamageType = DamageType.MAGICAL
 @export var element: Element = Element.NONE
 @export_range(0.0, 1.0) var crit_chance: float = 0.0
+## Scaling optionnel commun au runtime, aux tooltips, aux Studios et aux
+## simulations. `damage` reste la valeur plate legacy quand cette Resource est
+## absente.
+@export var damage_scaling: SpellScalingData = null
 
 @export_group("Effet de terrain")
 @export var terrain_effect: TerrainEffectData = null
@@ -89,6 +94,17 @@ enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 # avant de detoner. N'a de sens qu'avec push_all_adjacent.
 @export var cluster_bonus_damage: int = 0
 @export var shield_grant: int = 0
+## Scaling optionnel du bouclier. La valeur plate legacy reste autoritaire si
+## cette Resource est absente.
+@export var shield_scaling: SpellScalingData = null
+## Tags sémantiques de la source créée (par exemple `guard`). Ils permettent
+## aux réactions et équipements de distinguer une Garde d'un autre bouclier
+## sans tester l'identifiant ou le nom du sort.
+@export var shield_tags: Array[StringName] = []
+## Zéro conserve le comportement historique. Une valeur positive décrit le
+## nombre d'activations après lequel une future architecture de boucliers
+## sourcés doit expirer cette source.
+@export_range(0, 99, 1) var shield_duration_activations: int = 0
 @export var bonus_damage_if_marked: int = 0
 @export var bonus_damage_status_id: StringName = &""
 @export var bonus_requires_linked_status_source: bool = false
@@ -100,6 +116,13 @@ enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 @export var teleport_behind_target: bool = false
 @export var heal_bonus_effect_name: String = ""
 @export var heal_bonus_multiplier: float = 1.0
+
+@export_group("Deplacement volontaire")
+## Déplacement produit par le sort lui-même. NONE préserve strictement le
+## comportement de toutes les Resources existantes.
+@export var caster_movement: CasterMovement = CasterMovement.NONE
+## Pour TARGET_CELL, vérifie chaque case intermédiaire auprès de GridData.
+@export var movement_requires_clear_path: bool = false
 
 @export_group("Resolution differee")
 @export var delayed_resolution: DelayedResolution = DelayedResolution.NONE
@@ -122,7 +145,27 @@ enum VisualAction { DEFAULT, PRIMARY, HEAVY }
 @export var modifiers: Array[SpellModifier] = []
 
 func deals_damage() -> bool:
-	return damage > 0
+	return damage > 0 or (
+		damage_scaling != null and damage_scaling.has_effect()
+	)
+
+
+func get_scaled_damage(caster: Unit, level: int = 1) -> int:
+	return SpellScalingResolver.resolve(
+		damage_scaling,
+		caster,
+		damage,
+		level,
+	)
+
+
+func get_scaled_shield(caster: Unit, level: int = 1) -> int:
+	return SpellScalingResolver.resolve(
+		shield_scaling,
+		caster,
+		shield_grant,
+		level,
+	)
 
 func is_healing() -> bool:
 	return heal > 0

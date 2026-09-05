@@ -243,7 +243,8 @@ func snapshot() -> Dictionary:
 func restore_snapshot(
 		snapshot_data: Dictionary,
 		catalog: ItemCatalog,
-		character_states: Array
+		character_states: Array,
+		pool_tag: StringName = POOL_TAG
 	) -> bool:
 	if catalog == null or not catalog.rebuild_index() \
 			or int(snapshot_data.get("version", -1)) != SNAPSHOT_VERSION:
@@ -258,7 +259,7 @@ func restore_snapshot(
 	for item_id in eligible:
 		var definition := catalog.get_definition(item_id)
 		if definition == null or not (definition.is_equippable() or definition.is_relic()) \
-				or not definition.tags.has(POOL_TAG):
+				or not definition.tags.has(pool_tag):
 			return false
 	for item_id in deck + offered + discarded:
 		if not eligible.has(item_id):
