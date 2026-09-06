@@ -15,6 +15,66 @@ const read = p => JSON.parse(readText(p));
 const demand = (condition, message) => { if (!condition) throw Error(message); };
 const sha256 = p => crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT,p))).digest('hex');
 const shutdown = /resources still in use at exit|RID allocations .* were leaked at exit|Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE/;
+// Log-backed unit receipt. This does not execute GUT or manufacture process results.
+function readGutReceipt() {
+  const folder = 'artifacts/paris_sprite_validation_v1/gut_final';
+  const stdoutPath = folder + '/stdout.log', stderrPath = folder + '/stderr.log';
+  const stdout = readText(stdoutPath), stderr = readText(stderrPath);
+  const summaryStart = stdout.lastIndexOf('= Run Summary');
+  demand(summaryStart >= 0, 'GUT has no completed run summary.');
+  const tail = stdout.slice(summaryStart);
+  const number = label => {
+    const match = tail.match(new RegExp('^' + label + '\\s+(\\d+)\\s*$', 'm'));
+    demand(match !== null, 'Missing GUT total: ' + label);
+    return Number(match[1]);
+  };
+  const scripts = number('Scripts'), tests = number('Tests');
+  const passing = number('Passing Tests'), assertions = number('Asserts');
+  demand(scripts === 30 && tests === 298 && passing === tests && assertions === 17224,
+    'The complete verified GUT regression set (30 scripts, 298 tests, 17224 assertions) is required.');
+  demand(tail.includes('---- All tests passed! ----') && !/^\s*Failing Tests\s+[1-9]/m.test(tail) &&
+    !/^\s*(Pending|Skipped)(?: Tests)?\s+[1-9]/m.test(tail), 'GUT must finish without failed or pending tests.');
+  const headers = [...stdout.matchAll(/^res:\/\/(test\/unit\/[^\r\n]+\.gd)\s*$/gm)];
+  demand(headers.length === scripts && new Set(headers.map(match => match[1])).size === scripts,
+    'GUT script headers do not match the completed summary.');
+  const perScript = headers.map((header, index) => {
+    const block = stdout.slice(header.index, index + 1 < headers.length ? headers[index + 1].index : summaryStart);
+    const matches = [...block.matchAll(/^(\d+)\/(\d+) passed\.\s*$/gm)];
+    demand(matches.length === 1, 'Missing or repeated GUT script result: ' + header[1]);
+    const passed = Number(matches[0][1]), total = Number(matches[0][2]);
+    demand(passed === total && total > 0, 'Incomplete GUT script: ' + header[1]);
+    return {script: 'res://' + header[1], passed, total};
+  });
+  demand(perScript.reduce((sum, script) => sum + script.total, 0) === tests,
+    'Per-script GUT tests do not sum to the final total.');
+  const required = ['paris_gameplay','paris_sprite_runtime','paris_sprite_vfx','paris_visual_phase_lifecycle',
+    'paris_phase_portrait','paris_sprite_mirroring','paris_production_access','paris_campaign_classifications',
+    'paris_enemy_inspection','paris_phase_hud','optional_preview_frames','paris_release_origins',
+    'philosopher_gameplay','philosopher_terrain_ai','philosopher_sprite_runtime','philosopher_sprite_vfx',
+    'philosopher_shield_lifetime','sourced_shields','turn_order_timeline','room_transition_async_lifecycle',
+    'unit_movement_presentation','catabase_vertical_slice_content','catabase_registered_terrain',
+    'achilles_kit_movement_v2','achilles_kit_sprite_runtime_v2','achilles_kit_sprite_vfx','vortex_networks',
+    'terrain_status_timing','spectre_gameplay','spectre_sprite_runtime'];
+  demand(required.every(name => perScript.some(script => script.script === 'res://test/unit/test_' + name + '.gd')),
+    'The final GUT receipt is missing a required Paris or shared-system regression script.');
+  const diagnostics = [['stdout', stdout], ['stderr', stderr]].flatMap(([stream, content]) =>
+    content.split(/\r?\n/).map((line, index) => ({stream, line: index + 1, message: line}))
+      .filter(entry => /^(SCRIPT ERROR:|ERROR:|WARNING:)/.test(entry.message)));
+  const isKnownShutdown = entry => shutdown.test(entry.message) ||
+    /^WARNING: \d+ ObjectDB instances were leaked at exit/.test(entry.message);
+  const unexpected = diagnostics.filter(entry => !isKnownShutdown(entry));
+  demand(unexpected.length === 0, 'Unexpected GUT runtime diagnostics: ' + JSON.stringify(unexpected));
+  const time = tail.match(/^Time\s+([\d.]+)s\s*$/m);
+  const godot = stdout.match(/^Godot version:\s*(.+)$/m), gut = stdout.match(/^GUT version:\s*(.+)$/m);
+  return {ok: true, evidence: 'Completed GUT summary cross-checked against all 30 per-script results and both raw logs.',
+    scripts, tests, passing_tests: passing, assertions, elapsed_seconds: time ? Number(time[1]) : null,
+    godot_version: godot ? godot[1].trim() : null, gut_version: gut ? gut[1].trim() : null,
+    logs: {stdout: {path: stdoutPath, sha256: sha256(stdoutPath)}, stderr: {path: stderrPath, sha256: sha256(stderrPath)}},
+    script_results: perScript, unexpected_runtime_diagnostics: unexpected,
+    retained_shutdown_diagnostics: diagnostics.filter(isKnownShutdown),
+    scope: 'Paris gameplay, sprite runtime/VFX, phase/HUD/inspection, release origins and shared Catabase, mage, Achilles, spectre, terrain, movement and transition regressions. Distinct from the graphical combat matrix.'};
+}
+
 const expected = ['spectral','ice','fire','vortex','teleport','approach','transform','defeat']
   .flatMap(scenario => ['E','N','S','W'].map(direction => `${scenario}_${direction}`));
 const summary = read(`${folder}/summary.json`);
@@ -123,7 +183,9 @@ const production = { batch: productionBatch, ok: true, source_report: production
     release_seconds:cast.release_seconds, duration_seconds:cast.duration_seconds, ap_paid:cast.ap_cost})),
   actual_boss_movements: productionReport.real_ai_movements, turn_order: productionReport.turn_order,
   scope: productionReport.scope };
+const unitTests = readGutReceipt();
 const result = {schema:'dd.paris.verified-combat-evidence.v1', generated_utc:new Date().toISOString(),
+  unit_tests: unitTests,
   matrix:{batch,passed:cases.length,total:expected.length,directions:['E','N','S','W']},
   scope:'Real registered-terrain combat using canonical Catabase Paris. Declared precombat spawn, facing, terrain and XP fixtures; no runtime HP/AP/MP/cooldown/position/clock writes. Not a campaign playthrough.',
   production_access:'Normal Catabase selection, final room V: Le Temple du Serment Noir.', production,

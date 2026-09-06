@@ -36,7 +36,7 @@ func launch(caster: Unit, spell: Spell, cell: Vector2i) -> Node:
 	var previous: Variant = flights.get(key)
 	if is_instance_valid(previous) and not previous.get_debug_state().closed:
 		return previous
-	var origin: Vector2 = manager._caster_effect_origin(caster)
+	var origin: Vector2 = _release_origin(caster, spell)
 	var targets: Array[Vector2] = [manager._impact_cell_position(cell)]
 	var effect := _new_effect(spell.spell_id, origin, targets, 0.72)
 	if effect != null:
@@ -63,7 +63,7 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 		resolved_actions.append(resolved_key)
 		if resolved_actions.size() > 128:
 			resolved_actions.pop_front()
-	var origin: Vector2 = manager._caster_effect_origin(caster)
+	var origin: Vector2 = flight.get_debug_state().origin if is_instance_valid(flight) else _release_origin(caster, spell)
 	var cell: Vector2i = report.get("cell", caster.grid_pos)
 	var impacted: Array[Vector2] = manager._resolved_impact_positions(report)
 	if impacted.is_empty() and (not (report.get("terrain_changed", []) as Array).is_empty() \
@@ -97,6 +97,17 @@ func resolve(caster: Unit, spell: Spell, report: Dictionary) -> void:
 			_burst(id, &"whip", origin, targets, 1.0, 0.34)
 	elif id == &"paris_infernal_sweep" and not impacted.is_empty():
 		_burst(id, &"hellfire", origin, impacted, 1.0, 0.40)
+
+
+func _release_origin(caster: Unit, spell: Spell) -> Vector2:
+	var wrapper: Node2D = manager._find_unit_view(caster)
+	if is_instance_valid(wrapper) and wrapper.has_method("get_optional_visual"):
+		var visual: Variant = wrapper.get_optional_visual()
+		if is_instance_valid(visual) and visual.has_method("consume_spell_release_origin"):
+			var captured: Variant = visual.consume_spell_release_origin(spell)
+			if captured is Vector2:
+				return captured
+	return manager._caster_effect_origin(caster)
 
 
 func _burst(spell_id: StringName, animation: StringName, origin: Vector2,

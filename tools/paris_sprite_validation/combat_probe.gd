@@ -709,8 +709,14 @@ func _begin_clip() -> void:
 	var bounds := Rect2(_observed_unit_view.get_global_transform_with_canvas().origin, Vector2.ONE)
 	for view: Node2D in (_battle.get("_unit_views") as Dictionary).values():
 		bounds = bounds.expand(view.get_global_transform_with_canvas().origin)
-	bounds.position -= Vector2(135, 200)
-	bounds.size += Vector2(270, 270)
+	# Leave room for the real vortex retreat and the infernal whip silhouette.
+	# This capture-only rectangle stays fixed; no camera or gameplay changes.
+	if configuration.scenario in ["transform", "defeat"]:
+		bounds.position -= Vector2(220, 230)
+		bounds.size += Vector2(440, 330)
+	else:
+		bounds.position -= Vector2(135, 200)
+		bounds.size += Vector2(270, 270)
 	_clip_rect = Rect2i(bounds).intersection(Rect2i(Vector2i.ZERO, viewport_size))
 	_clip_start = Time.get_ticks_usec()
 	_clip_active = true

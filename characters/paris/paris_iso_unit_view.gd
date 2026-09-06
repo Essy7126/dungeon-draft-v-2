@@ -16,6 +16,37 @@ var _transformation_pending := false
 var _transformation_elapsed := 0.0
 var _transformation_count := 0
 var _transformation_fx: Node
+var _released_spell_id: StringName = &""
+var _released_spell_origin := Vector2.ZERO
+
+
+func _ready() -> void:
+	super._ready()
+	cast_release_reached.connect(_capture_spell_release_origin)
+
+
+func _begin_action(action_id: StringName, stem: String) -> bool:
+	if not super._begin_action(action_id, stem):
+		return false
+	_released_spell_id = &""
+	return true
+
+
+func _capture_spell_release_origin() -> void:
+	var action := String(_pending_action_id)
+	if not action.begins_with("cast:"):
+		return
+	_released_spell_id = StringName(action.trim_prefix("cast:"))
+	_released_spell_origin = to_global(get_default_cast_effect_origin())
+
+
+## A slow frame can reach recovery before UnitView resumes its coroutine.
+## Preserve the actual release pose/world position for exactly one VFX start.
+func consume_spell_release_origin(spell: Spell) -> Variant:
+	if spell == null or _released_spell_id != spell.get_effective_spell_id():
+		return null
+	_released_spell_id = &""
+	return _released_spell_origin
 
 
 func configure_profile(profile: PhilosopherSpriteVisualProfile) -> bool:
@@ -109,6 +140,7 @@ func get_visual_runtime_state() -> Dictionary:
 
 
 func cancel_pending_visual_actions() -> void:
+	_released_spell_id = &""
 	var was_transforming := is_transformation_pending()
 	_clear_transformation_effect()
 	_transformation_pending = false

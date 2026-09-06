@@ -11,7 +11,7 @@ New-Item -ItemType Directory -Force -Path $output | Out-Null
 $scripts = @(
     'test_paris_gameplay', 'test_paris_sprite_runtime', 'test_paris_sprite_vfx',
     'test_paris_visual_phase_lifecycle', 'test_paris_phase_portrait', 'test_paris_sprite_mirroring',
-    'test_paris_production_access', 'test_paris_campaign_classifications', 'test_paris_enemy_inspection', 'test_paris_phase_hud', 'test_optional_preview_frames'
+    'test_paris_production_access', 'test_paris_campaign_classifications', 'test_paris_enemy_inspection', 'test_paris_phase_hud', 'test_optional_preview_frames', 'test_paris_release_origins'
 )
 if ($Regression) {
     $scripts += @(
